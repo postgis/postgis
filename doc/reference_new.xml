@@ -1699,8 +1699,7 @@ aline                            | null_return
 	  <refnamediv>
 		<refname>ST_LineFromWKB</refname>
 
-		<refpurpose>Makes a Geometry from WKB with the given SRID. If SRID is
-				not give, it defaults to -1.</refpurpose>
+		<refpurpose>Makes a <varname>LINESTRING</varname> from WKB with the given SRID</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1721,8 +1720,13 @@ aline                            | null_return
 	  <refsection>
 		<title>Description</title>
 
-		<para>Makes a Geometry from WKB with the given SRID. If SRID is
-				not give, it defaults to -1. This an alias for ST_LinestringFromWKB.</para>
+	  <para>The <varname>ST_LineFromWKB</varname> function, takes a well-known binary 
+    	representation of geometry and a Spatial Reference System ID (<varname>SRID</varname>) 
+    	and creates an instance of the appropriate geometry type - in this case, a 
+    	<varname>LINESTRING</varname> geometry. This function plays the role of the Geometry 
+    	Factory in SQL.</para>
+    	
+      <para>If an SRID is not specified, it defaults to -1.</para>
 
 		<note>
 			<para><varname>NULL</varname> is returned if the input <varname>bytea</varname>
@@ -1785,8 +1789,7 @@ aline                            | null_return
 	  <refnamediv>
 		<refname>ST_LinestringFromWKB</refname>
 
-		<refpurpose>Makes a Geometry from WKB with the given SRID. If SRID is
-				not given, it defaults to -1.</refpurpose>
+		<refpurpose>Makes a geometry from WKB with the given SRID.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1807,21 +1810,26 @@ aline                            | null_return
 	  <refsection>
 		<title>Description</title>
 
-		<para>Makes a Geometry from WKB with the given SRID. If SRID is
-				not give, it defaults to -1. This an alias for ST_LineFromWKB.</para>
-
-		<note><para>If WKB passed in is not a LINESTRING, then null is returned.</para></note>
+      <para>The <varname>ST_LinestringFromWKB</varname> function, takes a well-known binary 
+    	representation of geometry and a Spatial Reference System ID (<varname>SRID</varname>) 
+    	and creates an instance of the appropriate geometry type - in this case, a 
+    	<varname>LINESTRING</varname> geometry. This function plays the role of the Geometry 
+    	Factory in SQL.</para>
+    	
+      <para>If an SRID is not specified, it defaults to -1.  <varname>NULL</varname> is 
+        returned if the input <varname>bytea</varname> does not represent a 
+        <varname>LINESTRING</varname> geometry. This an alias for <xref linkend="ST_LineFromWKB" />.</para>
 
 		<note>
-		  <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
-				suite.</para>
+		  <para>OGC SPEC 3.2.6.2 - optional SRID is from the conformance suite.</para>
 		</note>
 
 		<note>
-		  <para>If you know all your geometries are LINESTRINGS, its more efficient to just use ST_GeomFromWKB.
-			This just calls ST_GeomFromWKB and adds additional validation that it returns a linestring.</para>
+		  <para>If you know all your geometries are <varname>LINESTRING</varname>s, it's more 
+		  efficient to just use <xref linkend="ST_GeomFromWKB" />.  This function just calls 
+		  <xref linkend="ST_GeomFromWKB" /> and adds additional validation that it returns a 
+		  <varname>LINESTRING</varname>.</para>
 		</note>
-
 
 		<!-- Optionally mention OpenGIS compliancy if appropriate -->
 		<para><inlinemediaobject>
@@ -1839,19 +1847,21 @@ aline                            | null_return
 			</imageobject>
 		  </inlinemediaobject> This method implements the SQL/MM specification:
 		SQL-MM 3: 7.2.9</para>
-
 	  </refsection>
-
 
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_LineStringFromWKB(ST_AsBinary(ST_GeomFromText('LINESTRING(1 2, 3 4)'))) AS aline,
-		ST_LinestringFromWKB(ST_AsBinary(ST_GeomFromText('POINT(1 2)'))) IS NULL AS null_return;
-aline                            | null_return
+		<programlisting>SELECT 
+  ST_LineStringFromWKB(
+    ST_AsBinary(ST_GeomFromText('LINESTRING(1 2, 3 4)'))
+  ) AS aline,
+  ST_LinestringFromWKB(
+    ST_AsBinary(ST_GeomFromText('POINT(1 2)'))
+  ) IS NULL AS null_return;
+   aline                            | null_return
 ------------------------------------------------
-010200000002000000000000000000F ... | t
-		</programlisting>
+010200000002000000000000000000F ... | t</programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -2650,7 +2660,7 @@ SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
       <refnamediv>
         <refname>ST_PointFromWKB</refname>
     
-        <refpurpose>Makes a Geometry from WKB with the given SRID</refpurpose>
+        <refpurpose>Makes a geometry from WKB with the given SRID</refpurpose>
       </refnamediv>
     
       <refsynopsisdiv>
@@ -2677,7 +2687,9 @@ SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
         	<varname>POINT</varname> geometry. This function plays the role of the Geometry 
         	Factory in SQL.</para>
         	
-        <para>If an SRID is not specified, it defaults to -1.</para>
+        <para>If an SRID is not specified, it defaults to -1.  <varname>NULL</varname> is 
+        returned if the input <varname>bytea</varname> does not represent a 
+        <varname>POINT</varname> geometry.</para>
     
         <!-- Optionally mention OpenGIS compliancy if appropriate -->
         <para><inlinemediaobject>
