@@ -1726,12 +1726,9 @@ aline                            | null_return
     	<varname>LINESTRING</varname> geometry. This function plays the role of the Geometry 
     	Factory in SQL.</para>
     	
-      <para>If an SRID is not specified, it defaults to -1.</para>
-
-		<note>
-			<para><varname>NULL</varname> is returned if the input <varname>bytea</varname>
-			is not a <varname>LINESTRING</varname>.</para>
-		</note>
+      <para>If an SRID is not specified, it defaults to -1. <varname>NULL</varname> is 
+        returned if the input <varname>bytea</varname>
+	    does not represent a <varname>LINESTRING</varname>.</para>
 
 		<note>
 		  <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance

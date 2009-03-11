@@ -24,20 +24,6 @@
 
       <variablelist>
 
-        <varlistentry>
-          <term>ST_LineFromWKB(bytea,[&lt;srid&gt;])</term>
-
-          <listitem>
-            <para>Makes a Geometry from WKB with the given SRID. If SRID is
-            not give, it defaults to -1.</para>
-
-            <para>OGC SPEC 3.2.7.2 - option SRID is from the conformance
-            suite</para>
-
-            <para>throws an error if WKB is not a LINESTRING</para>
-          </listitem>
-        </varlistentry>
-
         <varlistentry id="ST_PolyFromWKB">
           <term>ST_PolyFromWKB(bytea,[&lt;srid&gt;])</term>
 
