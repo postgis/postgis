@@ -38,7 +38,7 @@
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="ST_PolyFromWKB">
           <term>ST_PolyFromWKB(bytea,[&lt;srid&gt;])</term>
 
           <listitem>
