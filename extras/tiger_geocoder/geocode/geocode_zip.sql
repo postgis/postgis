@@ -5,13 +5,13 @@ AS $_$
 DECLARE
   result REFCURSOR;
   tempString VARCHAR;
-  tempInt VARCHAR;
+  tempInt INTEGER;
 BEGIN
   -- Check to see if the road name can be matched.
   SELECT INTO tempInt count(*)
     FROM zip_lookup_base zip
     JOIN state_lookup sl on (zip.state = sl.name)
-    JOIN zt99_d00 zl ON (lpad(zip.zip,5,'0') = zl.zcta)
+    JOIN zt99_d00 zl ON (zip.zip = zl.zcta::integer)
     WHERE zip = parsed.zip;
 
   IF tempInt = 0 THEN
@@ -32,7 +32,7 @@ BEGIN
   FROM
     zip_lookup_base zip
     JOIN state_lookup sl on (zip.state = sl.name)
-    JOIN zt99_d00 zl ON (lpad(zip.zip,5,'0') = zl.zcta)
+    JOIN zt99_d00 zl ON (zip.zip = zl.zcta::integer)
   WHERE
     zip.zip = parsed.zip;
 

@@ -6,7 +6,7 @@ AS $_$
 DECLARE
   result REFCURSOR;
   tempString VARCHAR;
-  tempInt VARCHAR;
+  tempInt INTEGER;
 BEGIN
   -- The first step is to determine what weve been given, and if its enough.
   IF parsed.location IS NULL THEN

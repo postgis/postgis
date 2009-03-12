@@ -28,7 +28,7 @@ BEGIN
          || CASE WHEN input.location IS NOT NULL THEN ', ' ELSE '' END
          || cull_null(input.stateAbbrev)
          || CASE WHEN input.stateAbbrev IS NOT NULL THEN ' ' ELSE '' END
-         || cull_null(lpad(input.zip,5,'0'));
+         || cull_null(lpad(input.zip::text,5,'0'));
 
   RETURN result;
 

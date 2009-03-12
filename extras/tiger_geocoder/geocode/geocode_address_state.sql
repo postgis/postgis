@@ -4,7 +4,7 @@ CREATE OR REPLACE FUNCTION geocode_address_state(
 ) RETURNS REFCURSOR
 AS $_$
 DECLARE
-  tempInt VARCHAR;
+  tempInt INTEGER;
 BEGIN
   -- Check to see if the road name can be matched.
   SELECT INTO tempInt count(*) FROM tiger_geocode_roads

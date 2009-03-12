@@ -6,7 +6,7 @@ AS $_$
 DECLARE
   result REFCURSOR;
   tempString VARCHAR;
-  tempInt VARCHAR;
+  tempInt INTEGER;
 BEGIN
   -- Check to see if the road name can be matched.
   IF parsed.stateAbbrev IS NOT NULL THEN

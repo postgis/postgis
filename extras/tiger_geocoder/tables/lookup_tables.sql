@@ -727,7 +727,7 @@ INSERT INTO place_lookup
     pl.name             as name
   FROM
     pl99_d00 pl
-    JOIN state_lookup sl ON (pl.state = lpad(sl.st_code,2,'0'))
+    JOIN state_lookup sl ON (pl.state::integer = sl.st_code)
   GROUP BY pl.state, sl.abbrev, pl.placefp, pl.name;
 
 CREATE INDEX place_lookup_name_idx ON place_lookup (soundex(name));
@@ -750,7 +750,7 @@ INSERT INTO county_lookup
     co.name              as name
   FROM
     co99_d00 co
-    JOIN state_lookup sl ON (co.state = lpad(sl.st_code,2,'0'))
+    JOIN state_lookup sl ON (co.state::integer = sl.st_code)
   GROUP BY co.state, sl.abbrev, co.county, co.name;
 
 CREATE INDEX county_lookup_name_idx ON county_lookup (soundex(name));
@@ -777,8 +777,8 @@ INSERT INTO countysub_lookup
     cs.name              as name
   FROM
     cs99_d00 cs
-    JOIN state_lookup sl ON (cs.state = lpad(sl.st_code,2,'0'))
-    JOIN county_lookup cl ON (cs.state = lpad(cl.st_code,2,'0') AND cs.county = cl.co_code)
+    JOIN state_lookup sl ON (cs.state::integer = sl.st_code)
+    JOIN county_lookup cl ON (cs.state::integer = cl.st_code AND cs.county::integer = cl.co_code)
   GROUP BY cs.state, sl.abbrev, cs.county, cl.name, cs.cousubfp, cs.name;
 
 CREATE INDEX countysub_lookup_name_idx ON countysub_lookup (soundex(name));
@@ -814,10 +814,10 @@ INSERT INTO zip_lookup_all
     pl.name              as place
   FROM
     roads_local rl
-    JOIN state_lookup sl ON (rl.statel = lpad(sl.st_code,2,'0'))
-    LEFT JOIN county_lookup cl ON (rl.statel = lpad(cl.st_code,2,'0') AND rl.countyl = cl.co_code)
-    LEFT JOIN countysub_lookup cs ON (rl.statel = lpad(cs.st_code,2,'0') AND rl.countyl = cs.co_code AND rl.cousubl = cs.cs_code)
-    LEFT JOIN place_lookup pl ON (rl.statel = lpad(pl.st_code,2,'0') AND rl.placel = pl.pl_code)
+    JOIN state_lookup sl ON (rl.statel::integer = sl.st_code)
+    LEFT JOIN county_lookup cl ON (rl.statel::integer = cl.st_code AND rl.countyl::integer = cl.co_code)
+    LEFT JOIN countysub_lookup cs ON (rl.statel::integer = cs.st_code AND rl.countyl::integer = cs.co_code AND rl.cousubl = cs.cs_code)
+    LEFT JOIN place_lookup pl ON (rl.statel::integer = pl.st_code AND rl.placel::integer = pl.pl_code)
   WHERE zipl IS NOT NULL
   UNION ALL
   SELECT
@@ -832,10 +832,10 @@ INSERT INTO zip_lookup_all
     pl.name              as place
   FROM
     roads_local rl
-    JOIN state_lookup sl ON (rl.stater = lpad(sl.st_code,2,'0'))
-    LEFT JOIN county_lookup cl ON (rl.stater = lpad(cl.st_code,2,'0') AND rl.countyr = cl.co_code)
-    LEFT JOIN countysub_lookup cs ON (rl.stater = lpad(cs.st_code,2,'0') AND rl.countyr = cs.co_code AND rl.cousubr = cs.cs_code)
-    LEFT JOIN place_lookup pl ON (rl.stater = lpad(pl.st_code,2,'0') AND rl.placer = pl.pl_code)
+    JOIN state_lookup sl ON (rl.stater = sl.st_code)
+    LEFT JOIN county_lookup cl ON (rl.stater = cl.st_code AND rl.countyr = cl.co_code)
+    LEFT JOIN countysub_lookup cs ON (rl.stater = cs.st_code AND rl.countyr = cs.co_code AND rl.cousubr = cs.cs_code)
+    LEFT JOIN place_lookup pl ON (rl.stater = pl.st_code AND rl.placer = pl.pl_code)
   WHERE zipr IS NOT NULL
   ) as subquery
   GROUP BY zip, st_code, state, co_code, county, cs_code, countysub, pl_code, place;

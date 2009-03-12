@@ -6,7 +6,7 @@ AS $_$
 DECLARE
   result REFCURSOR;
   tempString VARCHAR;
-  tempInt VARCHAR;
+  tempInt INTEGER;
 BEGIN
   IF parsed.location IS NULL THEN
     -- location is manditory.  This is the location geocoder after all.

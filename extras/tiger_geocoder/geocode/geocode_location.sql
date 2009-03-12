@@ -5,13 +5,13 @@ AS $_$
 DECLARE
   result REFCURSOR;
   tempString VARCHAR;
-  tempInt VARCHAR;
+  tempInt INTEGER;
 BEGIN
   -- Try to match the city/state to a zipcode first
   SELECT INTO tempInt count(*)
     FROM zip_lookup_base zip
     JOIN state_lookup sl ON (zip.state = sl.name)
-    JOIN zt99_d00 zl ON (lpad(zip.zip,5,'0') = zl.zcta)
+    JOIN zt99_d00 zl ON (zip.zip = zl.zcta::integer)
     WHERE soundex(zip.city) = soundex(parsed.location) and sl.abbrev = parsed.stateAbbrev;
 
   -- If that worked, just use the zipcode lookup
@@ -30,7 +30,7 @@ BEGIN
     FROM
       zip_lookup_base zip
       JOIN state_lookup sl on (zip.state = sl.name)
-      JOIN zt99_d00 zl ON (lpad(zip.zip,5,'0') = zl.zcta)
+      JOIN zt99_d00 zl ON (zip.zip = zl.zcta::integer)
     WHERE
       soundex(zip.city) = soundex(parsed.location) and sl.abbrev = parsed.stateAbbrev;
 
@@ -40,7 +40,7 @@ BEGIN
   -- Try to match the city/state to a place next
   SELECT INTO tempInt count(*)
     FROM pl99_d00 pl
-    JOIN state_lookup sl ON (pl.state = lpad(sl.st_code,2,'0'))
+    JOIN state_lookup sl ON (pl.state::integer = sl.st_code)
     WHERE soundex(pl.name) = soundex(parsed.location) and sl.abbrev = parsed.stateAbbrev;
 
   -- If that worked then use it
@@ -57,7 +57,7 @@ BEGIN
         centroid(wkb_geometry) as address_geom,
         100::integer + levenshtein_ignore_case(coalesce(zip.city), parsed.location) as rating
     FROM pl99_d00 pl
-    JOIN state_lookup sl ON (pl.state = lpad(sl.st_code,2,'0'))
+    JOIN state_lookup sl ON (pl.state::integer = sl.st_code)
     WHERE soundex(pl.name) = soundex(parsed.location) and sl.abbrev = parsed.stateAbbrev;
 
     RETURN result;
