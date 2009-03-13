@@ -54,8 +54,8 @@
   &introduction;
   &installation;
   &faq;
-  &using_postgis_app;
   &using_postgis_dataman;
+  &using_postgis_app;
   &performance_tips;
   &reference_new;
   &postgis_aggs_mm;
