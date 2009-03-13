@@ -2749,8 +2749,7 @@ SELECT
       <refsection>
         <title>See Also</title>
     
-        <para><xref linkend="ST_GeomFromWKB" />, <xref linkend="ST_LineFromWKB" />, 
-        	<xref linkend="ST_PolyFromWKB" /></para>
+        <para><xref linkend="ST_GeomFromWKB" />, <xref linkend="ST_LineFromWKB" /></para>
       </refsection>
     </refentry>
 
