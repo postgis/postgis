@@ -15,7 +15,6 @@
 <!ENTITY using_postgis_dataman SYSTEM "using_postgis_dataman.xml">
 <!ENTITY using_postgis_app SYSTEM "using_postgis_app.xml">
 <!ENTITY performance_tips SYSTEM "performance_tips.xml">
-<!ENTITY reference SYSTEM "reference.xml">
 <!ENTITY reference_new SYSTEM "reference_new.xml">
 <!ENTITY postgis_aggs_mm SYSTEM "postgis_aggs_mm.xml">
 <!ENTITY reporting SYSTEM "reporting.xml">
