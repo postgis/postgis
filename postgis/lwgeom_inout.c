@@ -7,8 +7,6 @@
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
-#include <sys/param.h>
-#include <sys/types.h>
 
 #include "access/gist.h"
 #include "access/itup.h"

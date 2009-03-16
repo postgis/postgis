@@ -3350,7 +3350,6 @@ char *lwg_parse_yytext;
 
 #line 11 "wktparse.lex"
 #include "wktparse.tab.h"
-#include <unistd.h>
 #include <stdlib.h> /* need stdlib for atof() definition */
 
 void init_parser(const char *src);
@@ -3366,7 +3365,7 @@ static YY_BUFFER_STATE buf_state;
 /* Macro to keep track of the current parse position */
 #define UPDATE_YYLLOC() (lwg_parse_yylloc.last_column += lwg_parse_yyleng)
 
-#line 3370 "lex.yy.c"
+#line 3369 "lex.yy.c"
 
 #define INITIAL 0
 #define vals_ok 1
@@ -3448,8 +3447,7 @@ static int input (void );
 
 /* Amount of stuff to slurp up with each read. */
 #ifndef YY_READ_BUF_SIZE
-/* On IA-64, the buffer size is 16k, not 8k */
-#define YY_READ_BUF_SIZE 16384
+#define YY_READ_BUF_SIZE 8192
 #endif
 
 /* Copy whatever the last rule matched to the standard output. */
@@ -3534,10 +3532,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 30 "wktparse.lex"
+#line 29 "wktparse.lex"
 
 
-#line 3541 "lex.yy.c"
+#line 3539 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -3610,196 +3608,196 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 32 "wktparse.lex"
+#line 31 "wktparse.lex"
 { lwg_parse_yylval.value=atof(lwg_parse_yytext); UPDATE_YYLLOC(); return VALUE; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 33 "wktparse.lex"
+#line 32 "wktparse.lex"
 { lwg_parse_yylval.value=atof(lwg_parse_yytext); UPDATE_YYLLOC(); return VALUE; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 35 "wktparse.lex"
+#line 34 "wktparse.lex"
 {  lwg_parse_yylval.wkb=lwg_parse_yytext; return WKB;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 36 "wktparse.lex"
+#line 35 "wktparse.lex"
 {  lwg_parse_yylval.wkb=lwg_parse_yytext; return WKB;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 38 "wktparse.lex"
+#line 37 "wktparse.lex"
 { UPDATE_YYLLOC(); return POINT; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 39 "wktparse.lex"
+#line 38 "wktparse.lex"
 { UPDATE_YYLLOC(); return POINTM; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 40 "wktparse.lex"
+#line 39 "wktparse.lex"
 { UPDATE_YYLLOC(); return LINESTRING; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 41 "wktparse.lex"
+#line 40 "wktparse.lex"
 { UPDATE_YYLLOC(); return LINESTRINGM; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 42 "wktparse.lex"
+#line 41 "wktparse.lex"
 { UPDATE_YYLLOC(); return CIRCULARSTRING; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 43 "wktparse.lex"
+#line 42 "wktparse.lex"
 { UPDATE_YYLLOC(); return CIRCULARSTRINGM; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 44 "wktparse.lex"
+#line 43 "wktparse.lex"
 { UPDATE_YYLLOC(); return POLYGON; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 45 "wktparse.lex"
+#line 44 "wktparse.lex"
 { UPDATE_YYLLOC(); return POLYGONM; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 46 "wktparse.lex"
+#line 45 "wktparse.lex"
 { UPDATE_YYLLOC(); return COMPOUNDCURVE; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 47 "wktparse.lex"
+#line 46 "wktparse.lex"
 { UPDATE_YYLLOC(); return COMPOUNDCURVEM; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 48 "wktparse.lex"
+#line 47 "wktparse.lex"
 { UPDATE_YYLLOC(); return CURVEPOLYGON; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 49 "wktparse.lex"
+#line 48 "wktparse.lex"
 { UPDATE_YYLLOC(); return CURVEPOLYGONM; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 50 "wktparse.lex"
+#line 49 "wktparse.lex"
 { UPDATE_YYLLOC(); return MULTIPOINT; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 51 "wktparse.lex"
+#line 50 "wktparse.lex"
 { UPDATE_YYLLOC(); return MULTIPOINTM; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 52 "wktparse.lex"
+#line 51 "wktparse.lex"
 { UPDATE_YYLLOC(); return MULTILINESTRING; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 53 "wktparse.lex"
+#line 52 "wktparse.lex"
 { UPDATE_YYLLOC(); return MULTILINESTRINGM; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 54 "wktparse.lex"
+#line 53 "wktparse.lex"
 { UPDATE_YYLLOC(); return MULTICURVE; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 55 "wktparse.lex"
+#line 54 "wktparse.lex"
 { UPDATE_YYLLOC(); return MULTICURVEM; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 56 "wktparse.lex"
+#line 55 "wktparse.lex"
 { UPDATE_YYLLOC(); return MULTIPOLYGON; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 57 "wktparse.lex"
+#line 56 "wktparse.lex"
 { UPDATE_YYLLOC(); return MULTIPOLYGONM; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 58 "wktparse.lex"
+#line 57 "wktparse.lex"
 { UPDATE_YYLLOC(); return MULTISURFACE; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 59 "wktparse.lex"
+#line 58 "wktparse.lex"
 { UPDATE_YYLLOC(); return MULTISURFACEM; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 60 "wktparse.lex"
+#line 59 "wktparse.lex"
 { UPDATE_YYLLOC(); return GEOMETRYCOLLECTION; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 61 "wktparse.lex"
+#line 60 "wktparse.lex"
 { UPDATE_YYLLOC(); return GEOMETRYCOLLECTIONM; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 62 "wktparse.lex"
+#line 61 "wktparse.lex"
 { BEGIN(vals_ok); UPDATE_YYLLOC(); return SRID; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 63 "wktparse.lex"
+#line 62 "wktparse.lex"
 { UPDATE_YYLLOC(); return EMPTY; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 65 "wktparse.lex"
+#line 64 "wktparse.lex"
 { BEGIN(vals_ok); UPDATE_YYLLOC(); return LPAREN; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 66 "wktparse.lex"
+#line 65 "wktparse.lex"
 { UPDATE_YYLLOC(); return RPAREN; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 67 "wktparse.lex"
+#line 66 "wktparse.lex"
 { UPDATE_YYLLOC(); return COMMA ; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 68 "wktparse.lex"
+#line 67 "wktparse.lex"
 { UPDATE_YYLLOC(); return EQUALS ; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 69 "wktparse.lex"
+#line 68 "wktparse.lex"
 { BEGIN(0); UPDATE_YYLLOC(); return SEMICOLON; }
 	YY_BREAK
 case 36:
 /* rule 36 can match eol */
 YY_RULE_SETUP
-#line 70 "wktparse.lex"
+#line 69 "wktparse.lex"
 /*eat whitespace*/ { UPDATE_YYLLOC(); }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 71 "wktparse.lex"
+#line 70 "wktparse.lex"
 { return lwg_parse_yytext[0]; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 73 "wktparse.lex"
+#line 72 "wktparse.lex"
 ECHO;
 	YY_BREAK
-#line 3803 "lex.yy.c"
+#line 3801 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(vals_ok):
 	yyterminate();
@@ -4553,8 +4551,8 @@ YY_BUFFER_STATE lwg_parse_yy_scan_string (yyconst char * yystr )
 
 /** Setup the input buffer state to scan the given bytes. The next call to lwg_parse_yylex() will
  * scan from a @e copy of @a bytes.
- * @param yybytes the byte buffer to scan
- * @param _yybytes_len the number of bytes in the buffer pointed to by @a bytes.
+ * @param bytes the byte buffer to scan
+ * @param len the number of bytes in the buffer pointed to by @a bytes.
  * 
  * @return the newly allocated buffer state object.
  */
@@ -4793,7 +4791,7 @@ void lwg_parse_yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 73 "wktparse.lex"
+#line 72 "wktparse.lex"
 
 
 

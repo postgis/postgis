@@ -11,9 +11,6 @@
 #include <string.h>
 #include <math.h>
 #include <stdio.h>
-/* TO get byte order */
-#include <sys/types.h>
-#include <sys/param.h>
 /* Solaris9 does not provide stdint.h */
 /* #include <stdint.h> */
 #include <inttypes.h>
