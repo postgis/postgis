@@ -92,7 +92,12 @@ See,
 
 Given a set of points, generate a heat map output. Or, given a set of points, generate a clustering and set of representative points. In general, extract a trend from a collection.
 
+-- LIDAR / Point Clouds --
+
+A new object type to hold point cloud information in chunks < page size, filter functions to extract subsets of points from those types based on LIDAR-specific requests ("only return type 1"), and union functions to build complete sets from subsets.  Index bindings (likely 3d) for searching.  Potentially processing functions to extract surfaces or derived products like contours.
+
 == Breaking Changes ==
+
 
 * Convert the "default SRID" from -1 to 0
 * Convert the LWGEOM struct(s) to have enough padding that the coordinates
