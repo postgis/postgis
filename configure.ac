@@ -69,6 +69,13 @@ AC_PROG_YACC
 AC_SUBST([LEX])
 AC_SUBST([YACC])
 
+dnl
+dnl Search for OS-specific headers
+dnl
+AC_CHECK_HEADER([ieeefp.h], [HAVE_IEEEFP_H=1], [HAVE_IEEEFP_H=0])
+AC_DEFINE_UNQUOTED([HAVE_IEEEFP_H], [$HAVE_IEEEFP_H], [ieeefp.h header])
+
+
 
 dnl ===========================================================================
 dnl Find components needed to build documentation
