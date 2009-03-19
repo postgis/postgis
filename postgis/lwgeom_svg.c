@@ -230,8 +230,8 @@ assvg_polygon_size(LWPOLY *poly, bool relative, int precision)
         size_t size=0;
 
 	for (i=0; i<poly->nrings; i++)
-	size += pointArray_svg_size(poly->rings[i], precision);
-	size += sizeof(" M Z") * poly->nrings;
+		size += pointArray_svg_size(poly->rings[i], precision) + sizeof(" ");
+	size += sizeof("M  Z") * poly->nrings;
 
         return size;
 }
@@ -288,7 +288,7 @@ assvg_multipoint_size(LWGEOM_INSPECTED *insp, bool relative, int precision)
                 size += assvg_point_size(point, relative, precision);
                 if (point) lwpoint_release(point);
 	}
-        size += sizeof(" ") * --i;  /* Arbitrary comma separator */
+        size += sizeof(",") * --i;  /* Arbitrary comma separator */
 
 	return size;
 }
@@ -662,6 +662,6 @@ pointArray_svg_abs(POINTARRAY *pa, char *output, bool close_ring, int precision)
 static size_t
 pointArray_svg_size(POINTARRAY *pa, int precision)
 {
-        return (MAX_DIGS_DOUBLE + precision + sizeof(", "))
+        return (MAX_DIGS_DOUBLE + precision + sizeof(" "))
                         * 2 * pa->npoints + sizeof(" L ");
 }
