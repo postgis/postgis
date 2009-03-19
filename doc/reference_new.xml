@@ -10929,8 +10929,8 @@ SELECT ST_AsText(ST_PointOnSurface('POLYGON((0 0, 0 5, 5 5, 5 0, 0 0))'::geometr
 		<refpurpose>Returns true if this Geometry is spatially related to
 				anotherGeometry, by testing for intersections between the
 				Interior, Boundary and Exterior of the two geometries as specified
-				by the values in the intersectionPatternMatrix.  If no intersectionPatternMatrix
-				is passed in, then returns the maximum intersectionPatternMatrix that relates the 2 geometries.</refpurpose>
+				by the values in the intersectionMatrixPattern.  If no intersectionMatrixPattern
+				is passed in, then returns the maximum intersectionMatrixPattern that relates the 2 geometries.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -10945,7 +10945,7 @@ SELECT ST_AsText(ST_PointOnSurface('POLYGON((0 0, 0 5, 5 5, 5 0, 0 0))'::geometr
 			<funcdef>boolean <function>ST_Relate</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 			<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
-			<paramdef><type>text </type> <parameter>intersectionPatternMatrix</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>intersectionMatrixPattern</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -10956,7 +10956,7 @@ SELECT ST_AsText(ST_PointOnSurface('POLYGON((0 0, 0 5, 5 5, 5 0, 0 0))'::geometr
 		<para>Version 1: Takes geomA, geomB, intersectionMatrix and Returns 1 (TRUE) if this Geometry is spatially related to
 				anotherGeometry, by testing for intersections between the
 				Interior, Boundary and Exterior of the two geometries as specified
-				by the values in the <ulink url="http://docs.codehaus.org/display/GEOTDOC/Point+Set+Theory+and+the+DE-9IM+Matrix#PointSetTheoryandtheDE-9IMMatrix-9IntersectionMatrix">intersectionPatternMatrix</ulink>.</para>
+				by the values in the <ulink url="http://docs.codehaus.org/display/GEOTDOC/Point+Set+Theory+and+the+DE-9IM+Matrix#PointSetTheoryandtheDE-9IMMatrix-9IntersectionMatrix">intersectionMatrixPattern</ulink>.</para>
 
 		<para>This is especially useful for testing compound checks of intersection, crosses, etc in one step.</para>
 		<para>Do not call with a GeometryCollection as an argument</para>
