@@ -1,8 +1,10 @@
-#include <stdio.h>
-#include <string.h>
 
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
+
+#include <stdio.h>
+#include <string.h>
+
 
 char *lwcollection_summary(LWCOLLECTION *collection, int offset);
 char *lwpoly_summary(LWPOLY *poly, int offset);
