@@ -67,9 +67,8 @@ typedef struct
 {
 	MemoryContext context;
 	const GEOSPreparedGeometry* prepared_geom;
-	GEOSGeometry* geom;
-}
-PrepGeomHashEntry;
+	const GEOSGeometry* geom;
+} PrepGeomHashEntry;
 
 /* Memory context hash table function prototypes */
 uint32 mcxt_ptr_hasha(const void *key, Size keysize);
@@ -131,7 +130,7 @@ PreparedCacheDelete(MemoryContext context)
 	if ( pghe->prepared_geom )
 		GEOSPreparedGeom_destroy( pghe->prepared_geom );
 	if ( pghe->geom )
-		GEOSGeom_destroy( pghe->geom );
+		GEOSGeom_destroy( (GEOSGeometry *)pghe->geom );
 
 	/* Remove the hash entry as it is no longer needed */
 	DeletePrepGeomHashEntry(context);
@@ -410,7 +409,7 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *pg_geom1, PG_LWGEOM *p
 
 		POSTGIS_DEBUGF(1, "GetPrepGeomCache: cache miss, argument %d", cache->argnum);
 		GEOSPreparedGeom_destroy( cache->prepared_geom );
-		GEOSGeom_destroy( cache->geom );
+		GEOSGeom_destroy( (GEOSGeometry *)cache->geom );
 
 		cache->prepared_geom = 0;
 		cache->geom = 0;

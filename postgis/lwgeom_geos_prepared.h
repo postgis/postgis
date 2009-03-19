@@ -57,10 +57,9 @@ typedef struct
 	size_t                        pg_geom2_size;
 	int32                         argnum;
 	const GEOSPreparedGeometry    *prepared_geom;
-	GEOSGeometry                  *geom;
+	const GEOSGeometry                  *geom;
 	MemoryContext                 context;
-}
-PrepGeomCache;
+} PrepGeomCache;
 
 /*
 ** Get the current cache, given the input geometries.
