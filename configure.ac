@@ -14,6 +14,7 @@ AC_INIT()
 AC_CONFIG_HEADERS([postgis_config.h])
 AC_CONFIG_MACRO_DIR([macros])
 
+
 dnl Invoke libtool: we do this as it is the easiest way to find the PIC
 dnl flags required to build liblwgeom
 AC_PROG_LIBTOOL
