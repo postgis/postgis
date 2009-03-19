@@ -167,8 +167,8 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		*/
 		int geoms_size = nelems;
 		int curgeom = 0;
-		GEOSGeom *geoms = NULL;
-		geoms = palloc( sizeof(GEOSGeom) * geoms_size );
+		GEOSGeometry **geoms = NULL;
+		geoms = palloc( sizeof(GEOSGeometry *) * geoms_size );
 		/*
 		** We need to convert the array of PG_LWGEOM into a GEOS MultiPolygon.
 		** First make an array of GEOS Polygons.
@@ -186,7 +186,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 					geoms_size *= 2;
 					geoms = repalloc( geoms, sizeof(GEOSGeom) * geoms_size );
 				}
-				geoms[curgeom] = POSTGIS2GEOS(pggeom);
+				geoms[curgeom] = (GEOSGeometry *)POSTGIS2GEOS(pggeom);
 				curgeom++;
 			}
 			if( pgtype == MULTIPOLYGONTYPE )
@@ -225,7 +225,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		if ( g2 ) GEOSSetSRID(g2, SRID);
 		if ( g2 ) result = GEOS2POSTGIS(g2, is3d);
 		/* Clean up the mess. */
-		if ( g1 ) GEOSGeom_destroy(g1);
+		if ( g1 ) GEOSGeom_destroy((GEOSGeometry *)g1);
 		if ( g2 ) GEOSGeom_destroy(g2);
 	}
 	else 
@@ -1086,20 +1086,20 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 	char *reason_str = NULL;
 	int len = 0;
 	char *result = NULL;
-	GEOSGeom g1 = NULL;
+	const GEOSGeometry *g1 = NULL;
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	initGEOS(lwnotice, lwnotice);
 
-	g1 = POSTGIS2GEOS(geom);
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom);
 	if ( ! g1 )
 	{
 		PG_RETURN_NULL();
 	}
 
 	reason_str = GEOSisValidReason(g1);
-	GEOSGeom_destroy(g1);
+	GEOSGeom_destroy((GEOSGeometry *)g1);
 	
 	if (reason_str == NULL)
 	{
@@ -1292,7 +1292,7 @@ Datum contains(PG_FUNCTION_ARGS)
 
 	if ( prep_cache && prep_cache->prepared_geom && prep_cache->argnum == 1 )
 	{
-		g1 = POSTGIS2GEOS(geom2);
+		g1 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 		POSTGIS_DEBUG(4, "containsPrepared: cache is live, running preparedcontains");
 		result = GEOSPreparedContains( prep_cache->prepared_geom, g1);
 		GEOSGeom_destroy(g1);
@@ -1358,7 +1358,7 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 
 	if ( prep_cache && prep_cache->prepared_geom && prep_cache->argnum == 1 )
 	{
-		GEOSGeom g = POSTGIS2GEOS(geom2);
+		GEOSGeometry *g = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 		result = GEOSPreparedContainsProperly( prep_cache->prepared_geom, g);
 		GEOSGeom_destroy(g);
 	}
@@ -1492,7 +1492,7 @@ Datum covers(PG_FUNCTION_ARGS)
 
 	if ( prep_cache && prep_cache->prepared_geom && prep_cache->argnum == 1 )
 	{
-		GEOSGeom g1 = POSTGIS2GEOS(geom2);
+		GEOSGeometry *g1 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 		result = GEOSPreparedCovers( prep_cache->prepared_geom, g1);
 		GEOSGeom_destroy(g1);
 	}
@@ -1955,13 +1955,13 @@ Datum intersects(PG_FUNCTION_ARGS)
 	{
 		if ( prep_cache->argnum == 1 )
 		{
-			GEOSGeom g = POSTGIS2GEOS(geom2);
+			GEOSGeometry *g = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 			result = GEOSPreparedIntersects( prep_cache->prepared_geom, g);
 			GEOSGeom_destroy(g);
 		}
 		else
 		{
-			GEOSGeom g = POSTGIS2GEOS(geom1);
+			GEOSGeometry *g = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 			result = GEOSPreparedIntersects( prep_cache->prepared_geom, g);
 			GEOSGeom_destroy(g);
 		}
