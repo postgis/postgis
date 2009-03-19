@@ -1,4 +1,3 @@
-#include "../postgis_config.h"
 ndims01|4
 geometrytype01|COMPOUNDCURVE
 ndims02|3
