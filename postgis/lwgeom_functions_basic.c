@@ -1638,8 +1638,6 @@ Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS)
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
-	lwgeom_release((LWGEOM *)line1);
-	lwgeom_release((LWGEOM *)line2);
 
 	PG_RETURN_FLOAT8(maxdist);
 }

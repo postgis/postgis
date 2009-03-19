@@ -24,7 +24,7 @@
 #include "lwgeom_pg.h"
 
 #include <math.h>
-#ifdef HAVE_IEEEFP_H
+#if HAVE_IEEEFP_H
 #include <ieeefp.h>
 #endif
 #include <float.h>
