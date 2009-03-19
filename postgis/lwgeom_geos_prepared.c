@@ -50,8 +50,6 @@
 
 #ifdef PREPARED_GEOM
 
-#warning COMPILING PREPARED GEOMETRY
-
 /*
 ** Backend prepared hash table
 **
