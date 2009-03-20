@@ -1978,25 +1978,29 @@ BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)
 
 		<refsynopsisdiv>
 		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_MakeLine</function></funcdef>
-			<paramdef><type>geometry set</type> <parameter>pointfield</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_MakeLine</function></funcdef>
-			<paramdef><type>geometry</type> <parameter>point1</parameter></paramdef>
-			<paramdef><type>geometry</type> <parameter>point2</parameter></paramdef>
-		  </funcprototype>
+			<funcprototype>
+				<funcdef>geometry <function>ST_MakeLine</function></funcdef>
+				<paramdef><type>geometry set</type> <parameter>pointfield</parameter></paramdef>
+			</funcprototype>
+			
+			<funcprototype>
+				<funcdef>geometry <function>ST_MakeLine</function></funcdef>
+				<paramdef><type>geometry</type> <parameter>point1</parameter></paramdef>
+				<paramdef><type>geometry</type> <parameter>point2</parameter></paramdef>
+			</funcprototype>
+		  
+			<funcprototype>
+				<funcdef>geometry <function>ST_MakeLine</function></funcdef>
+				<paramdef><type>geometry[]</type> <parameter>point_array</parameter></paramdef>
+			</funcprototype>
 		</funcsynopsis>
 		</refsynopsisdiv>
 
 		<refsection>
 		<title>Description</title>
 
-		<para>ST_MakeLine comes in 2 forms: a spatial aggregate that takes
-			rows of point geometries and returns a line string, and a regular function that takes two point geometries. You
+		<para>ST_MakeLine comes in 3 forms: a spatial aggregate that takes
+			rows of point geometries and returns a line string, a function that takes an array of points, and a regular function that takes two point geometries. You
 			might want to use a subselect to order points before feeding them
 			to  the aggregate version of this function.</para>
 
@@ -2006,6 +2010,8 @@ BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)
 			  <imagedata fileref="images/check.png" />
 			</imageobject>
 		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+		  
+		  <para>Availability: 1.4.0 -  ST_MakeLine(geomarray) was introduced. ST_MakeLine aggregate functions was enhanced to handle more points faster.</para>
 		</refsection>
 
 		<refsection>
@@ -2038,6 +2044,21 @@ SELECT ST_AsEWKT(ST_MakeLine(ST_MakePoint(1,2,3), ST_MakePoint(3,4,5)));
 		st_asewkt
 -------------------------
  LINESTRING(1 2 3,3 4 5)
+			</programlisting>
+		</refsection>
+		
+		<refsection>
+			<title>Examples: Using Array version</title>
+
+			<programlisting>
+SELECT ST_MakeLine(ARRAY(SELECT ST_Centroid(the_geom) FROM visit_locations ORDER BY visit_time));
+
+--Making a 3d line with 3 3-d points
+SELECT ST_AsEWKT(ST_MakeLine(ARRAY[ST_MakePoint(1,2,3), 
+				ST_MakePoint(3,4,5), ST_MakePoint(6,6,6)]));
+		st_asewkt
+-------------------------
+LINESTRING(1 2 3,3 4 5,6 6 6)
 			</programlisting>
 		</refsection>
 		<refsection>
