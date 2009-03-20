@@ -11502,15 +11502,19 @@ FROM (SELECT ST_Buffer(ST_MakeLine(ST_MakePoint(21, 22),ST_MakePoint(-19, -18)),
 
 	  <refsynopsisdiv>
 		<funcsynopsis>
-		  <funcprototype>
+			<funcprototype>
+				<funcdef>geometry <function>ST_Collect</function></funcdef>
+				<paramdef><type>geometry set</type> <parameter>g1field</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
 			<funcdef>geometry <function>ST_Collect</function></funcdef>
-			<paramdef><type>geometry set</type> <parameter>g1field</parameter></paramdef>
-		  </funcprototype>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_Collect</function></funcdef>
-			<paramdef><type>geometry</type> <parameter>g1</parameter></paramdef>
-			<paramdef><type>geometry</type> <parameter>g2</parameter></paramdef>
-		  </funcprototype>
+				<paramdef><type>geometry</type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>geometry</type> <parameter>g2</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>geometry <function>ST_Collect</function></funcdef>
+				<paramdef><type>geometry[]</type> <parameter>g1_array</parameter></paramdef>
+			</funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
@@ -11542,6 +11546,8 @@ FROM (SELECT ST_Buffer(ST_MakeLine(ST_MakePoint(21, 22),ST_MakePoint(-19, -18)),
 			returning a Geometry Collection when collecting MULTI geometries,
 			one can use the below trick that utilizes <xref linkend="ST_Dump" /> to expand the
 			MULTIs out to singles and then regroup them.</para></note>
+			
+		<para>Availability: 1.4.0 -  ST_Collect(geomarray) was introduced. ST_Collect was enhanced to handle more geometries faster.</para>
 		<!-- Optionally mention 3d support -->
 		<para><inlinemediaobject>
 			<imageobject>
@@ -11600,6 +11606,15 @@ ST_GeomFromText('CIRCULARSTRING(220227 150406,2220227 150407,220227 150406)')));
 ------------------------------------------------------------------------------------
  GEOMETRYCOLLECTION(CIRCULARSTRING(220268 150415,220227 150505,220227 150406),
  CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))
+ 
+--New ST_Collect array construct
+SELECT ST_Collect(ARRAY(SELECT the_geom FROM sometable));
+
+SELECT ST_AsText(ST_Collect(ARRAY[ST_GeomFromText('LINESTRING(1 2, 3 4)'), 
+			ST_GeomFromText('LINESTRING(3 4, 4 5)')])) As wktcollect;
+
+--wkt collect --
+MULTILINESTRING((1 2,3 4),(3 4,4 5))
 
 </programlisting>
 	  </refsection>
@@ -12801,7 +12816,14 @@ st_asewkt
 ---------
 GEOMETRYCOLLECTION(POINT(-2 3 1),LINESTRING(5 5 5,10 10 10),POLYGON((-7 4.2 2,-7.1 4.2 3,-7.1 4.3 2,-7 4.2 2)))
 
+--Examples using new Array construct
+SELECT ST_Union(ARRAY(SELECT the_geom FROM sometable));
 
+SELECT ST_AsText(ST_Union(ARRAY[ST_GeomFromText('LINESTRING(1 2, 3 4)'), 
+			ST_GeomFromText('LINESTRING(3 4, 4 5)')])) As wktunion;
+
+--wktunion---
+MULTILINESTRING((3 4,4 5),(1 2,3 4))
 
 			  </programlisting>
 	  </refsection>
