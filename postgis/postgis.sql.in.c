@@ -2311,7 +2311,7 @@ LANGUAGE 'plpgsql' _VOLATILE;
 -----------------------------------------------------------------------
 -- POPULATE_GEOMETRY_COLUMNS() 
 -----------------------------------------------------------------------
--- Truncates and refills the geometry_column table from all tables and 
+-- Truncates and refills the geometry_columns table from all tables and 
 -- views in the database that contain geometry columns. This function 
 -- is a simple wrapper for populate_geometry_columns(oid).  In essence,
 -- this function ensures every geometry column in the database has the
@@ -2410,13 +2410,13 @@ LANGUAGE 'plpgsql' _VOLATILE;
 -----------------------------------------------------------------------
 -- POPULATE_GEOMETRY_COLUMNS(tbl_oid oid) 
 -----------------------------------------------------------------------
--- DELETEs from and reINSERTs into the geometry_column table all entries 
+-- DELETEs from and reINSERTs into the geometry_columns table all entries 
 -- associated with the oid of a particular table or view.  
 --
 -- If the provided oid is for a table, this function tries to determine 
 -- the srid, dimension, and geometry type of the all geometries 
 -- in the table, adding contraints as necessary to the table.  If 
--- successful, an appropriate row is inserted into the geometry_column 
+-- successful, an appropriate row is inserted into the geometry_columns 
 -- table, otherwise, the exception is caught and an error notice is 
 -- raised describing the problem. (This is so the wrapper function 
 -- populate_geometry_columns() can apply spatial constraints to all
@@ -2661,7 +2661,7 @@ LANGUAGE 'plpgsql' _VOLATILE;
 --
 -- Note that bogus records already in geometry_columns are not
 -- overridden (a check for schema.table.column is performed), so
--- to have a fresh probe backup your geometry_column, delete from
+-- to have a fresh probe backup your geometry_columns, delete from
 -- it and probe.
 -----------------------------------------------------------------------
 CREATEFUNCTION probe_geometry_columns() RETURNS text AS
@@ -2889,7 +2889,7 @@ BEGIN
 	EXECUTE sql;
 
 
-	-- Delete stale record in geometry_column (if any)
+	-- Delete stale record in geometry_columns (if any)
 	sql := 'DELETE FROM geometry_columns WHERE
 		f_table_catalog = ' || quote_literal('') ||
 		' AND f_table_schema = ' ||
@@ -2900,7 +2900,7 @@ BEGIN
 	EXECUTE sql;
 
 
-	-- Add record in geometry_column
+	-- Add record in geometry_columns
 	sql := 'INSERT INTO geometry_columns (f_table_catalog,f_table_schema,f_table_name,' ||
 										  'f_geometry_column,coord_dimension,srid,type)' ||
 		' VALUES (' ||
