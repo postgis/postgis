@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter>
+  <title>PostGIS Reference</title>
+
+  <para>The functions given below are the ones which a user of PostGIS is
+  likely to need. There are other functions which are required support
+  functions to the PostGIS objects which are not of use to a general
+  user.</para>
+
+  <note>
+    <para>PostGIS has begun a transition from the existing naming convention
+    to an SQL-MM-centric convention. As a result, most of the functions that
+    you know and love have been renamed using the standard spatial type (ST)
+    prefix. Previous functions are still available, though are not listed in
+    this document where updated functions are equivalent. These will be
+    deprecated in a future release.</para>
+  </note>
+
+  <sect1>
+    <title>OpenGIS Functions</title>
+
+    <sect2>
+      <title>Geometry Constructors</title>
+
+      <variablelist>
+
+        <varlistentry id="ST_PolyFromWKB">
+          <term>ST_PolyFromWKB(bytea,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKB with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>OGC SPEC 3.2.7.2 - option SRID is from the conformance
+            suite</para>
+
+            <para>throws an error if WKB is not a POLYGON</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_PolygonFromWKB(bytea,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKB with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>from the conformance suite</para>
+
+            <para>throws an error if WKB is not a POLYGON</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_MPointFromWKB(bytea,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKB with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>OGC SPEC 3.2.7.2 - option SRID is from the conformance
+            suite</para>
+
+            <para>throws an error if WKB is not a MULTIPOINT</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_MLineFromWKB(bytea,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKB with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>OGC SPEC 3.2.7.2 - option SRID is from the conformance
+            suite</para>
+
+            <para>throws an error if WKB is not a MULTILINESTRING</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_MPolyFromWKB(bytea,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKB with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>OGC SPEC 3.2.7.2 - option SRID is from the conformance
+            suite</para>
+
+            <para>throws an error if WKB is not a MULTIPOLYGON</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_GeomCollFromWKB(bytea,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKB with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>OGC SPEC 3.2.7.2 - option SRID is from the conformance
+            suite</para>
+
+            <para>throws an error if WKB is not a GEOMETRYCOLLECTION</para>
+          </listitem>
+        </varlistentry>
+	</variablelist>
+
+    </sect2>
+  </sect1>
+
+  <sect1>
+    <title>SQL-MM Functions</title>
+
+    <para>This is a listing of the SQL-MM defined functions that PostGIS
+    currently supports. The implementations of these functions follow the
+    ArcSDE implementation, and thus deviate somewhat from the spec. These
+    deviations will be noted.</para>
+
+    <para>As of version 1.2.0, these functions have been implemented by
+    wrapping existing PostGIS functions. As a result, full support for curved
+    geometries may not be in place for many functions.</para>
+
+    <note>
+      <para>SQL-MM defines the default SRID of all geometry constructors as 0.
+      PostGIS uses a default SRID of -1.</para>
+    </note>
+
+    <variablelist>  
+      <varlistentry>
+        <term>ST_MLineFromWKB</term>
+
+        <listitem>
+          <para>Return a specified ST_MultiLineString value.</para>
+
+          <para>SQL-MM 3: 9.4.5</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_MPointFromWKB</term>
+
+        <listitem>
+          <para>Return a specified ST_MultiPoint value.</para>
+
+          <para>SQL-MM 3: 9.2.5</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_MPolyFromWKB</term>
+
+        <listitem>
+          <para>Return a specified ST_MultiPolygon value.</para>
+
+          <para>SQL-MM 3: 9.6.5</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_PolyFromWKB</term>
+
+        <listitem>
+          <para>Return a specified ST_Polygon value.</para>
+
+          <para>SQL-MM 3: 8.3.7</para>
+        </listitem>
+      </varlistentry>
+	 </variablelist>
+  </sect1>
+
+  <sect1>
+    <title>ArcSDE Functions</title>
+
+    <para>Additional functions have been added to improve support for an
+    ArcSDE style interface.</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>SE_EnvelopesIntersect</term>
+
+        <listitem>
+          <para>Returns t (TRUE) if the envelopes of two geometries intersect;
+          otherwise, it returns f (FALSE).</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>SE_Is3d</term>
+
+        <listitem>
+          <para>Test if a geometry value has z coordinate values.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>SE_IsMeasured</term>
+
+        <listitem>
+          <para>Test if a geometry value has m coordinate values.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>SE_LocateAlong</term>
+
+        <listitem>
+          <para>Return a derived geometry collection value with elements that
+          match the specified measur.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>SE_LocateBetween</term>
+
+        <listitem>
+          <para>Return a derived geometry collection value with elements that
+          match the specified range of measures inclusively.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>SE_M</term>
+
+        <listitem>
+          <para>Returns the m coordinate value of an ST_Point value.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>SE_Z</term>
+
+        <listitem>
+          <para>Returns the z coordinate value of an ST_Point value</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </sect1>
+</chapter>

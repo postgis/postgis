@@ -90,19 +90,6 @@ if test "x$XSLTPROC" = "x"; then
 	AC_MSG_WARN([xsltproc is not installed so documentation cannot be built])
 fi
 
-dnl
-dnl Search for db2pdf which is required for building PDF documentation
-dnl
-
-AC_PATH_PROG([DB2PDF], [db2pdf], [])
-if test "x$DB2PDF" = "x"; then
-	AC_MSG_WARN([db2pdf is not installed so PDF documentation cannot be built])
-fi
-
-dnl
-dnl Search for dblatex which is required for building PDF documentation
-dnl
-
 AC_PATH_PROG([DBLATEX], [dblatex], [])
 if test "x$DBLATEX" = "x"; then
 	AC_MSG_WARN([dblatex is not installed so PDF documentation cannot be built])

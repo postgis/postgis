@@ -34,9 +34,6 @@ XSLTPROC_HTMLOPTS = \
 HTML_DOCBOOK_XSL=$(XSLBASE)/html/docbook.xsl
 CHUNK_HTML_DOCBOOK_XSL=$(XSLBASE)/html/chunk.xsl
 
-# OpenJade's db2pdf script for PDF generation from DocBook
-DB2PDF = @DB2PDF@
-
 # DBLatex's dblatex script for PDF generation from DocBook
 DBLATEX = @DBLATEX@
 
@@ -56,13 +53,13 @@ all: html/postgis.html	../postgis_comments.sql
 endif
 endif
 
-postgis_aggs_mm.xml: ./xsl/postgis_aggs_mm.xml.xsl reference_new.xml
-	$(XSLTPROC) ./xsl/postgis_aggs_mm.xml.xsl reference_new.xml > $@
+postgis_aggs_mm.xml: ./xsl/postgis_aggs_mm.xml.xsl reference.xml
+	$(XSLTPROC) ./xsl/postgis_aggs_mm.xml.xsl reference.xml > $@
 
-../postgis_comments.sql: ./xsl/postgis_comments.sql.xsl reference_new.xml
-	$(XSLTPROC) ./xsl/postgis_comments.sql.xsl reference_new.xml > $@
+../postgis_comments.sql: ./xsl/postgis_comments.sql.xsl reference.xml
+	$(XSLTPROC) ./xsl/postgis_comments.sql.xsl reference.xml > $@
 
-postgis-out.xml: postgis.xml introduction.xml installation.xml faq.xml using_postgis_dataman.xml  using_postgis_app.xml performance_tips.xml reference_new.xml postgis_aggs_mm.xml reporting.xml release_notes.xml ../Version.config
+postgis-out.xml: postgis.xml introduction.xml installation.xml faq.xml using_postgis_dataman.xml  using_postgis_app.xml performance_tips.xml reference.xml postgis_aggs_mm.xml reporting.xml release_notes.xml ../Version.config
 	cat $< | sed "s/@@LAST_RELEASE_VERSION@@/${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}/g" > $@
 
 chunked-html: postgis-out.xml
@@ -78,15 +75,6 @@ html/postgis.html: postgis-out.xml
 		$(HTML_DOCBOOK_XSL) \
 		$<
 
-# This will soon be deprecated.
-postgis.pdf: postgis-out.xml
-	@if test x"$(DB2PDF)" = x; then \
-	   echo "Error: db2pdf not found, can't build posgis.pdf"; \
-	   echo "       try installing docbook-utils package and then re-run configure"; \
-	   false; \
-	else \
-	   $(DB2PDF) $< && mv postgis-out.pdf postgis.pdf; \
-	fi
 
 postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf: postgis-out.xml
 	@if test x"$(DBLATEX)" = x; then \
