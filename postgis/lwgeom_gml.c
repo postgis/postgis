@@ -51,7 +51,6 @@ static size_t pointArray_GMLsize(POINTARRAY *pa, int precision);
 static char *getSRSbySRID(int SRID, bool short_crs);
 
 
-/* Add dot, sign, exponent sign, 'e', exponent digits */
 #define SHOW_DIGS_DOUBLE 15
 #define MAX_DOUBLE_PRECISION 15
 #define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 2) /* +2 mean add dot and sign */
@@ -443,9 +442,9 @@ pointArray_toGML2(POINTARRAY *pa, char *output, int precision)
 {
 	int i;
 	char *ptr;
-	char x[MAX_DIGS_DOUBLE+3];
-	char y[MAX_DIGS_DOUBLE+3];
-	char z[MAX_DIGS_DOUBLE+3];
+	char x[MAX_DIGS_DOUBLE+MAX_DOUBLE_PRECISION+1];
+	char y[MAX_DIGS_DOUBLE+MAX_DOUBLE_PRECISION+1];
+	char z[MAX_DIGS_DOUBLE+MAX_DOUBLE_PRECISION+1];
 
 	ptr = output;
 
@@ -811,9 +810,9 @@ pointArray_toGML3(POINTARRAY *pa, char *output, int precision)
 {
 	int i;
 	char *ptr;
-	char x[MAX_DIGS_DOUBLE+3];
-	char y[MAX_DIGS_DOUBLE+3];
-	char z[MAX_DIGS_DOUBLE+3];
+	char x[MAX_DIGS_DOUBLE+MAX_DOUBLE_PRECISION+1];
+	char y[MAX_DIGS_DOUBLE+MAX_DOUBLE_PRECISION+1];
+	char z[MAX_DIGS_DOUBLE+MAX_DOUBLE_PRECISION+1];
 
 	ptr = output;
 

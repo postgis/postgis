@@ -799,9 +799,9 @@ pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 {
 	int i;
 	char *ptr;
-	char x[MAX_DIGS_DOUBLE+3];
-	char y[MAX_DIGS_DOUBLE+3];
-	char z[MAX_DIGS_DOUBLE+3];
+	char x[MAX_DIGS_DOUBLE+MAX_DOUBLE_PRECISION+1];
+	char y[MAX_DIGS_DOUBLE+MAX_DOUBLE_PRECISION+1];
+	char z[MAX_DIGS_DOUBLE+MAX_DOUBLE_PRECISION+1];
 
 	ptr = output;
 

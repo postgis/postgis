@@ -145,8 +145,8 @@ static size_t
 assvg_point_buf(LWPOINT *point, char * output, bool circle, int precision)
 {
         char *ptr=output;
-	char x[MAX_DIGS_DOUBLE+3];
-        char y[MAX_DIGS_DOUBLE+3];
+	char x[MAX_DIGS_DOUBLE+MAX_DOUBLE_PRECISION+1];
+        char y[MAX_DIGS_DOUBLE+MAX_DOUBLE_PRECISION+1];
         POINT2D pt;
 
         getPoint2d_p(point->point, 0, &pt);
@@ -187,6 +187,7 @@ assvg_line_size(LWLINE *line, bool relative, int precision)
 
         size = sizeof("M ");
 	size += pointArray_svg_size(line->points, precision);
+
         return size;
 }
 
@@ -589,8 +590,8 @@ pointArray_svg_rel(POINTARRAY *pa, char *output, bool close_ring, int precision)
 {
         int i, end;
         char *ptr;
-        char x[MAX_DIGS_DOUBLE+3];
-        char y[MAX_DIGS_DOUBLE+3];
+        char x[MAX_DIGS_DOUBLE+MAX_DOUBLE_PRECISION+1];
+        char y[MAX_DIGS_DOUBLE+MAX_DOUBLE_PRECISION+1];
         POINT2D pt, lpt;
 
         ptr = output;
@@ -631,8 +632,8 @@ pointArray_svg_abs(POINTARRAY *pa, char *output, bool close_ring, int precision)
 {
         int i, end;
         char *ptr;
-        char x[MAX_DIGS_DOUBLE+3];
-        char y[MAX_DIGS_DOUBLE+3];
+        char x[MAX_DIGS_DOUBLE+MAX_DOUBLE_PRECISION+1];
+        char y[MAX_DIGS_DOUBLE+MAX_DOUBLE_PRECISION+1];
         POINT2D pt;
 
         ptr = output;
