@@ -1066,7 +1066,7 @@ probed:6 inserted:0 conflicts:6 stale:0
 			<para><xref linkend="ST_BuildArea" />, <xref linkend="ST_BdMPolyFromText" /></para>
 		  </refsection>
 		</refentry>
-		
+
 		<refentry id="ST_BdMPolyFromText">
 			<refnamediv>
 				<refname>ST_BdMPolyFromText</refname>
@@ -1335,7 +1335,7 @@ SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 15
 		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_GeomFromEWKT" /></para>
 	  </refsection>
 	</refentry>
-	
+
 	<refentry id="ST_GeometryFromText">
 		  <refnamediv>
 			<refname>ST_GeometryFromText</refname>
@@ -1376,7 +1376,7 @@ SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 15
 			<para><xref linkend="ST_GeomFromText" /></para>
 		  </refsection>
 	</refentry>
-	
+
 	<refentry id="ST_GeomFromText">
 		  <refnamediv>
 			<refname>ST_GeomFromText</refname>
@@ -1481,7 +1481,7 @@ SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406
 	<refentry id="ST_GeomFromWKB">
 	  <refnamediv>
 		<refname>ST_GeomFromWKB</refname>
-		<refpurpose>Creates a geometry instance from a Well-Known Binary geometry 
+		<refpurpose>Creates a geometry instance from a Well-Known Binary geometry
 		representation (WKB) and optional SRID.</refpurpose>
 	  </refnamediv>
 
@@ -1503,10 +1503,10 @@ SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406
 	  <refsection>
 		<title>Description</title>
 
-		<para>The <varname>ST_GeomFromWKB</varname> function, takes a well-known 
-		binary representation of a geometry and a Spatial Reference System ID 
-		(<varname>SRID</varname>) and creates an instance of the appropriate 
-		geometry type. This function plays the role of the Geometry Factory in 
+		<para>The <varname>ST_GeomFromWKB</varname> function, takes a well-known
+		binary representation of a geometry and a Spatial Reference System ID
+		(<varname>SRID</varname>) and creates an instance of the appropriate
+		geometry type. This function plays the role of the Geometry Factory in
 		SQL. This is an alternate name for ST_WKBToSQL.</para>
 
 		<para>If SRID is not specified, it defaults to -1 (Unknown).</para>
@@ -1543,18 +1543,18 @@ SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406
 SELECT ST_AsEWKT(
 ST_GeomFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\270~\\\\\\300\\323Mb\\020X\\231C@\\020X9\\264\\310~\\\\\\300)\\\\\\217\\302\\365\\230C@',4326)
 );
-                      st_asewkt                       
+					  st_asewkt
 ------------------------------------------------------
  SRID=4326;LINESTRING(-113.98 39.198,-113.981 39.195)
 (1 row)
 
-SELECT 
+SELECT
   ST_AsText(
-    ST_GeomFromWKB(
-      ST_AsEWKB('POINT(2 5)'::geometry)
-    )
+	ST_GeomFromWKB(
+	  ST_AsEWKB('POINT(2 5)'::geometry)
+	)
   );
- st_astext  
+ st_astext
 ------------
  POINT(2 5)
 (1 row)</programlisting>
@@ -1720,15 +1720,15 @@ aline                            | null_return
 	  <refsection>
 		<title>Description</title>
 
-	  <para>The <varname>ST_LineFromWKB</varname> function, takes a well-known binary 
-    	representation of geometry and a Spatial Reference System ID (<varname>SRID</varname>) 
-    	and creates an instance of the appropriate geometry type - in this case, a 
-    	<varname>LINESTRING</varname> geometry. This function plays the role of the Geometry 
-    	Factory in SQL.</para>
-    	
-      <para>If an SRID is not specified, it defaults to -1. <varname>NULL</varname> is 
-        returned if the input <varname>bytea</varname>
-	    does not represent a <varname>LINESTRING</varname>.</para>
+	  <para>The <varname>ST_LineFromWKB</varname> function, takes a well-known binary
+		representation of geometry and a Spatial Reference System ID (<varname>SRID</varname>)
+		and creates an instance of the appropriate geometry type - in this case, a
+		<varname>LINESTRING</varname> geometry. This function plays the role of the Geometry
+		Factory in SQL.</para>
+
+	  <para>If an SRID is not specified, it defaults to -1. <varname>NULL</varname> is
+		returned if the input <varname>bytea</varname>
+		does not represent a <varname>LINESTRING</varname>.</para>
 
 		<note>
 		  <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
@@ -1736,9 +1736,9 @@ aline                            | null_return
 		</note>
 
 		<note>
-		  <para>If you know all your geometries are <varname>LINESTRING</varname>s, its more 
-		  efficient to just use <xref linkend="ST_GeomFromWKB" />.  This function just 
-		  calls <xref linkend="ST_GeomFromWKB" /> and adds additional validation that 
+		  <para>If you know all your geometries are <varname>LINESTRING</varname>s, its more
+		  efficient to just use <xref linkend="ST_GeomFromWKB" />.  This function just
+		  calls <xref linkend="ST_GeomFromWKB" /> and adds additional validation that
 		  it returns a linestring.</para>
 		</note>
 
@@ -1807,24 +1807,24 @@ aline                            | null_return
 	  <refsection>
 		<title>Description</title>
 
-      <para>The <varname>ST_LinestringFromWKB</varname> function, takes a well-known binary 
-    	representation of geometry and a Spatial Reference System ID (<varname>SRID</varname>) 
-    	and creates an instance of the appropriate geometry type - in this case, a 
-    	<varname>LINESTRING</varname> geometry. This function plays the role of the Geometry 
-    	Factory in SQL.</para>
-    	
-      <para>If an SRID is not specified, it defaults to -1.  <varname>NULL</varname> is 
-        returned if the input <varname>bytea</varname> does not represent a 
-        <varname>LINESTRING</varname> geometry. This an alias for <xref linkend="ST_LineFromWKB" />.</para>
+	  <para>The <varname>ST_LinestringFromWKB</varname> function, takes a well-known binary
+		representation of geometry and a Spatial Reference System ID (<varname>SRID</varname>)
+		and creates an instance of the appropriate geometry type - in this case, a
+		<varname>LINESTRING</varname> geometry. This function plays the role of the Geometry
+		Factory in SQL.</para>
+
+	  <para>If an SRID is not specified, it defaults to -1.  <varname>NULL</varname> is
+		returned if the input <varname>bytea</varname> does not represent a
+		<varname>LINESTRING</varname> geometry. This an alias for <xref linkend="ST_LineFromWKB" />.</para>
 
 		<note>
 		  <para>OGC SPEC 3.2.6.2 - optional SRID is from the conformance suite.</para>
 		</note>
 
 		<note>
-		  <para>If you know all your geometries are <varname>LINESTRING</varname>s, it's more 
-		  efficient to just use <xref linkend="ST_GeomFromWKB" />.  This function just calls 
-		  <xref linkend="ST_GeomFromWKB" /> and adds additional validation that it returns a 
+		  <para>If you know all your geometries are <varname>LINESTRING</varname>s, it's more
+		  efficient to just use <xref linkend="ST_GeomFromWKB" />.  This function just calls
+		  <xref linkend="ST_GeomFromWKB" /> and adds additional validation that it returns a
 		  <varname>LINESTRING</varname>.</para>
 		</note>
 
@@ -1849,12 +1849,12 @@ aline                            | null_return
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT 
+		<programlisting>SELECT
   ST_LineStringFromWKB(
-    ST_AsBinary(ST_GeomFromText('LINESTRING(1 2, 3 4)'))
+	ST_AsBinary(ST_GeomFromText('LINESTRING(1 2, 3 4)'))
   ) AS aline,
   ST_LinestringFromWKB(
-    ST_AsBinary(ST_GeomFromText('POINT(1 2)'))
+	ST_AsBinary(ST_GeomFromText('POINT(1 2)'))
   ) IS NULL AS null_return;
    aline                            | null_return
 ------------------------------------------------
@@ -1982,13 +1982,13 @@ BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)
 				<funcdef>geometry <function>ST_MakeLine</function></funcdef>
 				<paramdef><type>geometry set</type> <parameter>pointfield</parameter></paramdef>
 			</funcprototype>
-			
+
 			<funcprototype>
 				<funcdef>geometry <function>ST_MakeLine</function></funcdef>
 				<paramdef><type>geometry</type> <parameter>point1</parameter></paramdef>
 				<paramdef><type>geometry</type> <parameter>point2</parameter></paramdef>
 			</funcprototype>
-		  
+
 			<funcprototype>
 				<funcdef>geometry <function>ST_MakeLine</function></funcdef>
 				<paramdef><type>geometry[]</type> <parameter>point_array</parameter></paramdef>
@@ -2010,7 +2010,7 @@ BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)
 			  <imagedata fileref="images/check.png" />
 			</imageobject>
 		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
-		  
+
 		  <para>Availability: 1.4.0 -  ST_MakeLine(geomarray) was introduced. ST_MakeLine aggregate functions was enhanced to handle more points faster.</para>
 		</refsection>
 
@@ -2046,7 +2046,7 @@ SELECT ST_AsEWKT(ST_MakeLine(ST_MakePoint(1,2,3), ST_MakePoint(3,4,5)));
  LINESTRING(1 2 3,3 4 5)
 			</programlisting>
 		</refsection>
-		
+
 		<refsection>
 			<title>Examples: Using Array version</title>
 
@@ -2054,7 +2054,7 @@ SELECT ST_AsEWKT(ST_MakeLine(ST_MakePoint(1,2,3), ST_MakePoint(3,4,5)));
 SELECT ST_MakeLine(ARRAY(SELECT ST_Centroid(the_geom) FROM visit_locations ORDER BY visit_time));
 
 --Making a 3d line with 3 3-d points
-SELECT ST_AsEWKT(ST_MakeLine(ARRAY[ST_MakePoint(1,2,3), 
+SELECT ST_AsEWKT(ST_MakeLine(ARRAY[ST_MakePoint(1,2,3),
 				ST_MakePoint(3,4,5), ST_MakePoint(6,6,6)]));
 		st_asewkt
 -------------------------
@@ -2233,12 +2233,12 @@ FROM
 		<refsection>
 			<title>Description</title>
 
-			<para>Creates a 2D,3DZ or 4D point geometry (geometry with measure).  
-			<varname>ST_MakePoint</varname> while not being OGC compliant is 
-			generally faster and more precise than <xref linkend="ST_GeomFromText" /> 
-			and <xref linkend="ST_PointFromText" />.  It is also easier to use if 
+			<para>Creates a 2D,3DZ or 4D point geometry (geometry with measure).
+			<varname>ST_MakePoint</varname> while not being OGC compliant is
+			generally faster and more precise than <xref linkend="ST_GeomFromText" />
+			and <xref linkend="ST_PointFromText" />.  It is also easier to use if
 			you have raw coordinates rather than WKT.</para>
-			
+
 			<note><para>Note x is longitude and y is latitude</para></note>
 
 			<!-- Optionally mention 3d support -->
@@ -2673,106 +2673,106 @@ SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
 			<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_MakePoint" />, <xref linkend="ST_Point" />, <xref linkend="ST_SRID" /></para>
 		  </refsection>
 	</refentry>
-	
-    <refentry id="ST_PointFromWKB">
-      <refnamediv>
-        <refname>ST_PointFromWKB</refname>
-    
-        <refpurpose>Makes a geometry from WKB with the given SRID</refpurpose>
-      </refnamediv>
-    
-      <refsynopsisdiv>
-        <funcsynopsis>
-          <funcprototype>
-            <funcdef>geometry <function>ST_GeomFromWKB</function></funcdef>
-            <paramdef><type>bytea </type> <parameter>geom</parameter></paramdef>
-          </funcprototype>
-    
-          <funcprototype>
-            <funcdef>geometry <function>ST_GeomFromWKB</function></funcdef>
-            <paramdef><type>bytea </type> <parameter>geom</parameter></paramdef>
-            <paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
-          </funcprototype>
-        </funcsynopsis>
-      </refsynopsisdiv>
-    
-      <refsection>
-        <title>Description</title>
-    
-        <para>The <varname>ST_PointFromWKB</varname> function, takes a well-known binary 
-        	representation of geometry and a Spatial Reference System ID (<varname>SRID</varname>) 
-        	and creates an instance of the appropriate geometry type - in this case, a 
-        	<varname>POINT</varname> geometry. This function plays the role of the Geometry 
-        	Factory in SQL.</para>
-        	
-        <para>If an SRID is not specified, it defaults to -1.  <varname>NULL</varname> is 
-        returned if the input <varname>bytea</varname> does not represent a 
-        <varname>POINT</varname> geometry.</para>
-    
-        <!-- Optionally mention OpenGIS compliancy if appropriate -->
-        <para><inlinemediaobject>
-            <imageobject>
-              <imagedata fileref="images/check.png" />
-            </imageobject>
-          </inlinemediaobject>This method implements the <ulink
-        url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
-        Implementation Specification for SQL. 3.2.7.2</ulink></para>
 
-        <para><inlinemediaobject>
-            <imageobject>
-              <imagedata fileref="images/check.png" />
-            </imageobject>
-            </inlinemediaobject>This method implements the SQL/MM specification: SQL-MM 3: 6.1.9
-        </para>
-    	
-    	<!-- Optionally mention 3d support -->
-        <para><inlinemediaobject>
-            <imageobject>
-              <imagedata fileref="images/check.png" />
-            </imageobject>
-          </inlinemediaobject>This function supports 3D</para>
-    	  
-    	<!-- Optionally mention Circular String Support -->
-    	    <para><inlinemediaobject>
-    	        <imageobject>
-    	          <imagedata fileref="images/check.png" />
-    	        </imageobject>
-    	      </inlinemediaobject>This method supports Circular Strings and Curves</para>
-      </refsection>
-      
-      <refsection>
-        <title>Examples</title>
-    
-        <programlisting>SELECT 
+	<refentry id="ST_PointFromWKB">
+	  <refnamediv>
+		<refname>ST_PointFromWKB</refname>
+
+		<refpurpose>Makes a geometry from WKB with the given SRID</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomFromWKB</function></funcdef>
+			<paramdef><type>bytea </type> <parameter>geom</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomFromWKB</function></funcdef>
+			<paramdef><type>bytea </type> <parameter>geom</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>The <varname>ST_PointFromWKB</varname> function, takes a well-known binary
+			representation of geometry and a Spatial Reference System ID (<varname>SRID</varname>)
+			and creates an instance of the appropriate geometry type - in this case, a
+			<varname>POINT</varname> geometry. This function plays the role of the Geometry
+			Factory in SQL.</para>
+
+		<para>If an SRID is not specified, it defaults to -1.  <varname>NULL</varname> is
+		returned if the input <varname>bytea</varname> does not represent a
+		<varname>POINT</varname> geometry.</para>
+
+		<!-- Optionally mention OpenGIS compliancy if appropriate -->
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject>This method implements the <ulink
+		url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+		Implementation Specification for SQL. 3.2.7.2</ulink></para>
+
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+			</inlinemediaobject>This method implements the SQL/MM specification: SQL-MM 3: 6.1.9
+		</para>
+
+		<!-- Optionally mention 3d support -->
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject>This function supports 3D</para>
+
+		<!-- Optionally mention Circular String Support -->
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject>This method supports Circular Strings and Curves</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT
   ST_AsText(
-    ST_PointFromWKB(
-      ST_AsEWKB('POINT(2 5)'::geometry)
-    )
+	ST_PointFromWKB(
+	  ST_AsEWKB('POINT(2 5)'::geometry)
+	)
   );
- st_astext  
+ st_astext
 ------------
  POINT(2 5)
 (1 row)
 
-SELECT 
+SELECT
   ST_AsText(
-    ST_PointFromWKB(
-      ST_AsEWKB('LINESTRING(2 5, 2 6)'::geometry)
-    )
+	ST_PointFromWKB(
+	  ST_AsEWKB('LINESTRING(2 5, 2 6)'::geometry)
+	)
   );
- st_astext 
+ st_astext
 -----------
- 
+
 (1 row)</programlisting>
-      </refsection>
-    
-      <!-- Optionally add a "See Also" section -->
-      <refsection>
-        <title>See Also</title>
-    
-        <para><xref linkend="ST_GeomFromWKB" />, <xref linkend="ST_LineFromWKB" /></para>
-      </refsection>
-    </refentry>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeomFromWKB" />, <xref linkend="ST_LineFromWKB" /></para>
+	  </refsection>
+	</refentry>
 
 	<refentry id="ST_Polygon">
 	  <refnamediv>
@@ -3662,52 +3662,7 @@ WHERE n &gt;= ST_NumGeometries(the_geom);</programlisting>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_HasBBox">
-	  <refnamediv>
-		<refname>ST_HasBBox</refname>
 
-		<refpurpose>Returns TRUE if the bbox of this geometry is cached, FALSE otherwise.</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>boolean <function>ST_HasBBox</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Returns TRUE if the bbox of this geometry is cached, FALSE
-				otherwise. Use <xref linkend="ST_AddBBox" /> and <xref linkend="ST_DropBBox" /> to control caching.</para>
-
-
-	<!-- Optionally mention Circular String Support -->
-			<para><inlinemediaobject>
-				<imageobject>
-				  <imagedata fileref="images/check.png" />
-				</imageobject>
-			  </inlinemediaobject> This method supports Circular Strings and curves </para>
-	  </refsection>
-
-
-	  <refsection>
-		<title>Examples</title>
-
-		<programlisting>SELECT the_geom
-FROM sometable WHERE ST_HasBBox(the_geom) = false;</programlisting>
-	  </refsection>
-
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_AddBBox" />, <xref linkend="ST_DropBBox" /></para>
-	  </refsection>
-	</refentry>
 
 	<refentry id="ST_InteriorRingN">
 	  <refnamediv>
@@ -5287,59 +5242,6 @@ SELECT ST_Zmflag(ST_GeomFromEWKT('POINT(1 2 3 4)'));
   <sect1 id="Geometry_Editors">
 	  <title>Geometry Editors</title>
 
-		<refentry id="ST_AddBBox">
-		  <refnamediv>
-			<refname>ST_AddBBox</refname>
-
-			<refpurpose>Add bounding box to the geometry.</refpurpose>
-		  </refnamediv>
-
-		  <refsynopsisdiv>
-			<funcsynopsis>
-			  <funcprototype>
-				<funcdef>geometry <function>ST_AddBBox</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
-			  </funcprototype>
-			</funcsynopsis>
-		  </refsynopsisdiv>
-
-		  <refsection>
-			<title>Description</title>
-
-			<para>Add bounding box to the geometry. This would make bounding
-			box based queries faster, but will increase the size of the
-			geometry.</para>
-
-			<note>
-			  <para>Bounding boxes are automatically added to geometries so in general this is not needed
-				unless the generated bounding box somehow becomes corrupted or you have an old install that is lacking bounding boxes.  Then you need to drop the old and readd.</para>
-			</note>
-
-		<!-- Optionally mention Circular String Support -->
-			<para><inlinemediaobject>
-				<imageobject>
-				  <imagedata fileref="images/check.png" />
-				</imageobject>
-			  </inlinemediaobject> This method supports Circular Strings and curves </para>
-		  </refsection>
-
-
-		  <refsection>
-			<title>Examples</title>
-
-			<programlisting>UPDATE sometable
- SET the_geom =  ST_AddBBox(the_geom)
- WHERE ST_HasBBox(the_geom) = false;</programlisting>
-		  </refsection>
-
-		  <!-- Optionally add a "See Also" section -->
-		  <refsection>
-			<title>See Also</title>
-
-			<para><xref linkend="ST_DropBBox" />, <xref linkend="ST_HasBBox" /></para>
-		  </refsection>
-		</refentry>
-
 		<refentry id="ST_AddPoint">
 		  <refnamediv>
 			<refname>ST_AddPoint</refname>
@@ -5522,58 +5424,6 @@ SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi
 
 		<para><xref linkend="ST_Rotate" />, <xref linkend="ST_Scale" />, <xref linkend="ST_Translate" />, <xref linkend="ST_TransScale" /></para>
 	  </refsection>
-	</refentry>
-
-	<refentry id="ST_DropBBox">
-		  <refnamediv>
-			<refname>ST_DropBBox</refname>
-
-			<refpurpose>Drop the bounding box cache from the geometry.</refpurpose>
-		  </refnamediv>
-
-		  <refsynopsisdiv>
-			<funcsynopsis>
-			  <funcprototype>
-				<funcdef>geometry <function>ST_DropBBox</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
-			  </funcprototype>
-			</funcsynopsis>
-		  </refsynopsisdiv>
-
-		  <refsection>
-			<title>Description</title>
-
-			<para>Drop the bounding box cache from the geometry. This reduces
-			geometry size, but makes bounding-box based queries slower.</para>
-
-			<note>
-			  <para>Bounding boxes are automatically added to geometries and improve speed of queries so in general this is not needed
-				unless the generated bounding box somehow becomes corrupted or you have an old install that is lacking bounding boxes.  Then you need to drop the old and readd.</para>
-			</note>
-
-		<!-- Optionally mention Circular String Support -->
-			<para><inlinemediaobject>
-				<imageobject>
-				  <imagedata fileref="images/check.png" />
-				</imageobject>
-			  </inlinemediaobject> This method supports Circular Strings and curves </para>
-		  </refsection>
-
-
-		  <refsection>
-			<title>Examples</title>
-
-			<programlisting>UPDATE sometable
- SET the_geom =  ST_DropBBox(the_geom)
- WHERE ST_HasBBox(the_geom) = true;</programlisting>
-		  </refsection>
-
-		  <!-- Optionally add a "See Also" section -->
-		  <refsection>
-			<title>See Also</title>
-
-			<para><xref linkend="ST_AddBBox" />, <xref linkend="ST_HasBBox" /></para>
-		  </refsection>
 	</refentry>
 
 	<refentry id="ST_Force_2D">
@@ -6920,15 +6770,15 @@ CREATE INDEX idx_the_geom_26986_parcels
 
 	  <refsection>
 		<title>Configuring transformation behaviour</title>
-                <para>Sometimes coordinate transformation involving a grid-shift can fail, for example if PROJ.4 has not been built with grid-shift files or the coordinate does not lie within the range for which the grid shift is defined. By default, PostGIS will throw an error if a grid shift file is not present, but this behaviour can be configured on a per-SRID basis by altering the proj4text value within the spatial_ref_sys table.</para>
-                <para>For example, the proj4text parameter +datum=NAD87 is a shorthand form for the following +nadgrids parameter:</para>
-                <programlisting>+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat</programlisting>  
-                <para>The @ prefix means no error is reported if the files are not present, but if the end of the list is reached with no file having been appropriate (ie. found and overlapping) then an error is issued.</para>
-                <para>If, conversely, you wanted to ensure that at least the standard files were present, but that if all files were scanned without a hit a null transformation is applied you could use:</para>
-                <programlisting>+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null</programlisting>
-                <para>The null grid shift file is a valid grid shift file covering the whole world and applying no shift. So for a complete example, if you wanted to alter PostGIS so that transformations to SRID 4267 that didn't lie within the correct range did not throw an ERROR, you would use the following:</para>
-                <programlisting>UPDATE spatial_ref_sys SET proj4text = '+proj=longlat +ellps=clrk66 +nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null +no_defs' WHERE srid = 4267;</programlisting>
-          </refsection>
+				<para>Sometimes coordinate transformation involving a grid-shift can fail, for example if PROJ.4 has not been built with grid-shift files or the coordinate does not lie within the range for which the grid shift is defined. By default, PostGIS will throw an error if a grid shift file is not present, but this behaviour can be configured on a per-SRID basis by altering the proj4text value within the spatial_ref_sys table.</para>
+				<para>For example, the proj4text parameter +datum=NAD87 is a shorthand form for the following +nadgrids parameter:</para>
+				<programlisting>+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat</programlisting>
+				<para>The @ prefix means no error is reported if the files are not present, but if the end of the list is reached with no file having been appropriate (ie. found and overlapping) then an error is issued.</para>
+				<para>If, conversely, you wanted to ensure that at least the standard files were present, but that if all files were scanned without a hit a null transformation is applied you could use:</para>
+				<programlisting>+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null</programlisting>
+				<para>The null grid shift file is a valid grid shift file covering the whole world and applying no shift. So for a complete example, if you wanted to alter PostGIS so that transformations to SRID 4267 that didn't lie within the correct range did not throw an ERROR, you would use the following:</para>
+				<programlisting>UPDATE spatial_ref_sys SET proj4text = '+proj=longlat +ellps=clrk66 +nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null +no_defs' WHERE srid = 4267;</programlisting>
+		  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
@@ -7520,18 +7370,18 @@ st_asgeojson
 			may be used to reduce the maximum number of decimal places
 			used in output (defaults to 15).</para>
 		<para>GML 2 refer to 2.1.2 version, GML 3 to 3.1.1 version</para>
-                <para>The last 'options' argument could be used to define Crs output type
-                        in GML output:
-                          <itemizedlist>
-                                <listitem>
-                                  <para>1: GML Short CRS (e.g EPSG:4326), default value</para>
-                                </listitem>
+				<para>The last 'options' argument could be used to define Crs output type
+						in GML output:
+						  <itemizedlist>
+								<listitem>
+								  <para>1: GML Short CRS (e.g EPSG:4326), default value</para>
+								</listitem>
 
-                                <listitem>
-                                  <para>2: GML Long CRS (e.g urn:ogc:def:crs:EPSG:4326)</para>
-                                </listitem>
-                          </itemizedlist>
-                        </para>
+								<listitem>
+								  <para>2: GML Long CRS (e.g urn:ogc:def:crs:EPSG:4326)</para>
+								</listitem>
+						  </itemizedlist>
+						</para>
 
 		<!-- TODO: Itemize defaults for each function -->
 
@@ -7797,13 +7647,13 @@ st_asgeojson
 		<note>
 			<para>ST_GeoHash will not work with geometries that are not in geographic (lon/lat) coordinates.</para>
 		</note>
-		
+
 		<!-- Optionally mention Circular String Support -->
-	    <para><inlinemediaobject>
-	        <imageobject>
-	          <imagedata fileref="images/check.png" />
-	        </imageobject>
-	      </inlinemediaobject> This method supports Circular Strings and Curves </para>
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This method supports Circular Strings and Curves </para>
 
 	  </refsection>
 
@@ -8597,17 +8447,17 @@ FROM
 			<programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 |&amp;&gt; tbl2.column2 AS overabove
 FROM
   ( VALUES
-    (1, 'LINESTRING(6 0, 6 4)'::geometry)) AS tbl1,
+	(1, 'LINESTRING(6 0, 6 4)'::geometry)) AS tbl1,
   ( VALUES
-    (2, 'LINESTRING(0 0, 3 3)'::geometry),
-    (3, 'LINESTRING(0 1, 0 5)'::geometry),
-    (4, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl2;
+	(2, 'LINESTRING(0 0, 3 3)'::geometry),
+	(3, 'LINESTRING(0 1, 0 5)'::geometry),
+	(4, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl2;
 
  column1 | column1 | overabove
 ---------+---------+-----------
-       1 |       2 | t
-       1 |       3 | f
-       1 |       4 | f
+	   1 |       2 | t
+	   1 |       3 | f
+	   1 |       4 | f
 (3 rows)</programlisting>
 		  </refsection>
 
@@ -8735,17 +8585,17 @@ FROM
 			<programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 ~ tbl2.column2 AS contains
 FROM
   ( VALUES
-    (1, 'LINESTRING (0 0, 3 3)'::geometry)) AS tbl1,
+	(1, 'LINESTRING (0 0, 3 3)'::geometry)) AS tbl1,
   ( VALUES
-    (2, 'LINESTRING (0 0, 4 4)'::geometry),
-    (3, 'LINESTRING (1 1, 2 2)'::geometry),
-    (4, 'LINESTRING (0 0, 3 3)'::geometry)) AS tbl2;
+	(2, 'LINESTRING (0 0, 4 4)'::geometry),
+	(3, 'LINESTRING (1 1, 2 2)'::geometry),
+	(4, 'LINESTRING (0 0, 3 3)'::geometry)) AS tbl2;
 
  column1 | column1 | contains
 ---------+---------+----------
-       1 |       2 | f
-       1 |       3 | t
-       1 |       4 | t
+	   1 |       2 | f
+	   1 |       3 | t
+	   1 |       4 | t
 (3 rows)</programlisting>
 		  </refsection>
 
@@ -8803,17 +8653,17 @@ FROM
 			<programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 ~= tbl2.column2 AS same
 FROM
   ( VALUES
-    (1, 'LINESTRING (0 0, 2 2)'::geometry)) AS tbl1,
+	(1, 'LINESTRING (0 0, 2 2)'::geometry)) AS tbl1,
   ( VALUES
-    (2, 'LINESTRING (0 0, 1 1, 2 2)'::geometry),
-    (3, 'LINESTRING (2 2, 0 0)'::geometry),
-    (4, 'LINESTRING (0 0, 2 2)'::geometry)) AS tbl2;
+	(2, 'LINESTRING (0 0, 1 1, 2 2)'::geometry),
+	(3, 'LINESTRING (2 2, 0 0)'::geometry),
+	(4, 'LINESTRING (0 0, 2 2)'::geometry)) AS tbl2;
 
  column1 | column1 | same
 ---------+---------+------
-       1 |       2 | f
-       1 |       3 | f
-       1 |       4 | t
+	   1 |       2 | f
+	   1 |       3 | f
+	   1 |       4 | t
 (3 rows)</programlisting>
 		  </refsection>
 
@@ -11563,7 +11413,7 @@ FROM (SELECT ST_Buffer(ST_MakeLine(ST_MakePoint(21, 22),ST_MakePoint(-19, -18)),
 			returning a Geometry Collection when collecting MULTI geometries,
 			one can use the below trick that utilizes <xref linkend="ST_Dump" /> to expand the
 			MULTIs out to singles and then regroup them.</para></note>
-			
+
 		<para>Availability: 1.4.0 -  ST_Collect(geomarray) was introduced. ST_Collect was enhanced to handle more geometries faster.</para>
 		<!-- Optionally mention 3d support -->
 		<para><inlinemediaobject>
@@ -11623,11 +11473,11 @@ ST_GeomFromText('CIRCULARSTRING(220227 150406,2220227 150407,220227 150406)')));
 ------------------------------------------------------------------------------------
  GEOMETRYCOLLECTION(CIRCULARSTRING(220268 150415,220227 150505,220227 150406),
  CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))
- 
+
 --New ST_Collect array construct
 SELECT ST_Collect(ARRAY(SELECT the_geom FROM sometable));
 
-SELECT ST_AsText(ST_Collect(ARRAY[ST_GeomFromText('LINESTRING(1 2, 3 4)'), 
+SELECT ST_AsText(ST_Collect(ARRAY[ST_GeomFromText('LINESTRING(1 2, 3 4)'),
 			ST_GeomFromText('LINESTRING(3 4, 4 5)')])) As wktcollect;
 
 --wkt collect --
@@ -12836,7 +12686,7 @@ GEOMETRYCOLLECTION(POINT(-2 3 1),LINESTRING(5 5 5,10 10 10),POLYGON((-7 4.2 2,-7
 --Examples using new Array construct
 SELECT ST_Union(ARRAY(SELECT the_geom FROM sometable));
 
-SELECT ST_AsText(ST_Union(ARRAY[ST_GeomFromText('LINESTRING(1 2, 3 4)'), 
+SELECT ST_AsText(ST_Union(ARRAY[ST_GeomFromText('LINESTRING(1 2, 3 4)'),
 			ST_GeomFromText('LINESTRING(3 4, 4 5)')])) As wktunion;
 
 --wktunion---
@@ -14801,6 +14651,169 @@ st_zmin
 		<title>See Also</title>
 
 		<para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_XMin" />, <xref linkend="ST_XMax" />, <xref linkend="ST_YMax" />, <xref linkend="ST_YMin" />, <xref linkend="ST_ZMax" /></para>
+	  </refsection>
+	</refentry>
+
+ </sect1>
+ <sect1 id="Exceptional_Functions">
+	<title>Exceptional Functions</title>
+	<para>These functions are rarely used functions that should only be used if your data is corrupted in someway.  They are used for troubleshooting corruption
+		and also fixing things that should under normal circumstances, never happen.</para>
+
+	<refentry id="ST_AddBBox">
+		  <refnamediv>
+			<refname>ST_AddBBox</refname>
+
+			<refpurpose>Add bounding box to the geometry.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_AddBBox</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>Add bounding box to the geometry. This would make bounding
+			box based queries faster, but will increase the size of the
+			geometry.</para>
+
+			<note>
+			  <para>Bounding boxes are automatically added to geometries so in general this is not needed
+				unless the generated bounding box somehow becomes corrupted or you have an old install that is lacking bounding boxes.  Then you need to drop the old and readd.</para>
+			</note>
+
+		<!-- Optionally mention Circular String Support -->
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method supports Circular Strings and curves </para>
+		  </refsection>
+
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>UPDATE sometable
+ SET the_geom =  ST_AddBBox(the_geom)
+ WHERE ST_HasBBox(the_geom) = false;</programlisting>
+		  </refsection>
+
+		  <!-- Optionally add a "See Also" section -->
+		  <refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="ST_DropBBox" />, <xref linkend="ST_HasBBox" /></para>
+		  </refsection>
+	</refentry>
+
+	<refentry id="ST_DropBBox">
+		  <refnamediv>
+			<refname>ST_DropBBox</refname>
+
+			<refpurpose>Drop the bounding box cache from the geometry.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_DropBBox</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>Drop the bounding box cache from the geometry. This reduces
+			geometry size, but makes bounding-box based queries slower.  It is also used to drop a corrupt bounding box.  A tale-tell sign of a corrupt cached bounding box
+				is when your ST_Intersects and other relation queries leave out geometries that rightfully should return true.</para>
+
+			<note>
+			  <para>Bounding boxes are automatically added to geometries and improve speed of queries so in general this is not needed
+				unless the generated bounding box somehow becomes corrupted or you have an old install that is lacking bounding boxes.  Then you need to drop the old and readd.</para>
+			</note>
+
+		<!-- Optionally mention Circular String Support -->
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method supports Circular Strings and curves </para>
+		  </refsection>
+
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>--This example drops bounding boxes where the cached box is not correct
+			--The force to ST_AsBinary before applying ST_box2D forces a recalculation of the box, and ST_Box2D applied to the table geometry always
+			-- returns the cached bounding box.
+			UPDATE sometable
+ SET the_geom =  ST_DropBBox(the_geom)
+ WHERE Not (ST_Box2D(ST_AsBinary(the_geom)) = ST_Box2D(the_geom));</programlisting>
+		  </refsection>
+
+		  <!-- Optionally add a "See Also" section -->
+		  <refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="ST_AddBBox" />, <xref linkend="ST_HasBBox" />, <xref linkend="ST_Box2D" /></para>
+		  </refsection>
+	</refentry>
+
+
+	<refentry id="ST_HasBBox">
+	  <refnamediv>
+		<refname>ST_HasBBox</refname>
+
+		<refpurpose>Returns TRUE if the bbox of this geometry is cached, FALSE otherwise.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_HasBBox</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns TRUE if the bbox of this geometry is cached, FALSE
+				otherwise. Use <xref linkend="ST_AddBBox" /> and <xref linkend="ST_DropBBox" /> to control caching.</para>
+
+
+	<!-- Optionally mention Circular String Support -->
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method supports Circular Strings and curves </para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT the_geom
+FROM sometable WHERE ST_HasBBox(the_geom) = false;</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_AddBBox" />, <xref linkend="ST_DropBBox" /></para>
 	  </refsection>
 	</refentry>
 
