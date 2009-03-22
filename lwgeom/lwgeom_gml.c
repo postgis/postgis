@@ -309,7 +309,6 @@ asgml2_inspected_size(LWGEOM_INSPECTED *insp, char *srs)
 
 	/* the longest possible multi version */
 	size = sizeof("<gml:MultiLineString></gml:MultiLineString>");
-	size += sizeof("<gml:lineStringMember>/") * 2;
 
 	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
 
@@ -323,16 +322,19 @@ asgml2_inspected_size(LWGEOM_INSPECTED *insp, char *srs)
 
 		if ((point=lwgeom_getpoint_inspected(insp, i)))
 		{
+			size += sizeof("<gml:pointMember>/") * 2;
 			size += asgml2_point_size(point, 0);
 			pfree_point(point);
 		}
 		else if ((line=lwgeom_getline_inspected(insp, i)))
 		{
+			size += sizeof("<gml:lineStringMember>/") * 2;
 			size += asgml2_line_size(line, 0);
 			pfree_line(line);
 		}
 		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
 		{
+			size += sizeof("<gml:polygonMember>/") * 2;
 			size += asgml2_poly_size(poly, 0);
 			pfree_polygon(poly);
 		}
@@ -666,7 +668,6 @@ asgml3_inspected_size(LWGEOM_INSPECTED *insp, char *srs)
 
 	/* the longest possible multi version */
 	size = sizeof("<gml:MultiLineString></gml:MultiLineString>");
-	size += sizeof("<gml:curveMember>/") * 2;
 
 	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
 
@@ -680,16 +681,19 @@ asgml3_inspected_size(LWGEOM_INSPECTED *insp, char *srs)
 
 		if ((point=lwgeom_getpoint_inspected(insp, i)))
 		{
+			size += sizeof("<gml:pointMember>/") * 2;
 			size += asgml3_point_size(point, 0);
 			pfree_point(point);
 		}
 		else if ((line=lwgeom_getline_inspected(insp, i)))
 		{
+			size += sizeof("<gml:curveMember>/") * 2;
 			size += asgml3_line_size(line, 0);
 			pfree_line(line);
 		}
 		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
 		{
+			size += sizeof("<gml:surfaceMember>/") * 2;
 			size += asgml3_poly_size(poly, 0);
 			pfree_polygon(poly);
 		}
