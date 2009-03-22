@@ -530,3 +530,24 @@ dnl AC_MSG_RESULT([SHLIB_LINK: $SHLIB_LINK])
 dnl Output the relevant files
 AC_OUTPUT([liblwgeom/Makefile liblwgeom/cunit/Makefile postgis/Makefile postgis/sqldefines.h loader/Makefile topology/Makefile regress/Makefile doc/Makefile])
 
+dnl ===========================================================================
+dnl Display the configuration status information
+dnl ===========================================================================
+
+AC_MSG_RESULT()
+AC_MSG_RESULT([  PostGIS is now configured for ${host}])
+AC_MSG_RESULT()
+AC_MSG_RESULT([ -------------- Compiler Info ------------- ])
+AC_MSG_RESULT([  C compiler:           ${CC} ${CFLAGS}])
+AC_MSG_RESULT([  C++ compiler:         ${CXX} ${CXXFLAGS}])
+AC_MSG_RESULT()
+AC_MSG_RESULT([ -------------- Dependencies -------------- ])
+AC_MSG_RESULT([  GEOS config:          ${GEOSCONFIG}])
+AC_MSG_RESULT([  GEOS version:         ${GEOS_MAJOR_VERSION}.${GEOS_MINOR_VERSION}])
+AC_MSG_RESULT([  PostgreSQL config:    ${PGCONFIG}])
+AC_MSG_RESULT([  PostgreSQL version:   ${PGSQL_MAJOR_VERSION}.${PGSQL_MINOR_VERSION}])
+AC_MSG_RESULT([  PROJ4 version:        ${POSTGIS_PROJ_VERSION}])
+AC_MSG_RESULT([  PostGIS debug level:  ${POSTGIS_DEBUG_LEVEL}])
+AC_MSG_RESULT()
+
+
