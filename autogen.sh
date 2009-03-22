@@ -31,8 +31,24 @@ if [ ! $ACLOCAL ]; then
 fi
 
 #
+# Look for libtoolize under various names.
+#
+for libtoolize in glibtoolize libtoolize; do
+    LIBTOOLIZE=`which $libtoolize 2>/dev/null`
+    if test -x "${LIBTOOLIZE}"; then
+        break;
+    fi
+done
+if [ ! $LIBTOOLIZE ]; then
+    echo "Missing libtoolize!"
+    exit
+fi
+
+#
 # Run the actual autotools routines.
 # 
+echo "Running libtoolize --force --copy"
+$LIBTOOLIZE --force --copy
 echo "Running aclocal -I macros"
 $ACLOCAL -I macros || giveup
 echo "Running autoconf"
