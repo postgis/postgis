@@ -47,8 +47,8 @@ fi
 #
 # Run the actual autotools routines.
 # 
-echo "Running libtoolize --force --copy"
-$LIBTOOLIZE --force --copy
+#echo "Running libtoolize --force --copy"
+#$LIBTOOLIZE --force --copy
 echo "Running aclocal -I macros"
 $ACLOCAL -I macros || giveup
 echo "Running autoconf"
