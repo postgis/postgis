@@ -297,6 +297,9 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(type,'box') or type = 'geometry' or type = 'geometry '">
 						<xsl:text>foo2.the_geom</xsl:text>
 					</xsl:when>
+					<xsl:when test="contains(type, 'geometry[]') AND count($func/paramdef/type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1'">
+						ARRAY[foo1.the_geom]
+					</xsl:when>
 					<xsl:when test="contains(type, 'geometry[]')">
 						ARRAY[foo2.the_geom]
 					</xsl:when>
