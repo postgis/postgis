@@ -14738,7 +14738,9 @@ st_zmin
 
 			<note>
 			  <para>Bounding boxes are automatically added to geometries and improve speed of queries so in general this is not needed
-				unless the generated bounding box somehow becomes corrupted or you have an old install that is lacking bounding boxes.  Then you need to drop the old and readd.</para>
+				unless the generated bounding box somehow becomes corrupted or you have an old install that is lacking bounding boxes.
+				Then you need to drop the old and readd.  This kind of corruption has been observed in 8.3-8.3.6 series whereby cached bboxes were not always recalculated when a geometry changed and upgrading to a newer version without a dump reload will not
+				correct already corrupted boxes.  So one can manually correct using below and readd the bbox or do a dump reload.</para>
 			</note>
 
 		<!-- Optionally mention Circular String Support -->
@@ -14758,7 +14760,14 @@ st_zmin
 			-- returns the cached bounding box.
 			UPDATE sometable
  SET the_geom =  ST_DropBBox(the_geom)
- WHERE Not (ST_Box2D(ST_AsBinary(the_geom)) = ST_Box2D(the_geom));</programlisting>
+ WHERE Not (ST_Box2D(ST_AsBinary(the_geom)) = ST_Box2D(the_geom));
+
+	UPDATE sometable
+ SET the_geom =  ST_AddBBox(the_geom)
+ WHERE Not ST_HasBBOX(the_geom);
+
+
+ </programlisting>
 		  </refsection>
 
 		  <!-- Optionally add a "See Also" section -->
