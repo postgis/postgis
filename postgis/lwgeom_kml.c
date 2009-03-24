@@ -78,8 +78,7 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 		else if ( precision < 0 ) precision = 0;
 	}
 	
-	if (version == 2)
-		kml = geometry_to_kml2(SERIALIZED_FORM(geom), precision);
+	kml = geometry_to_kml2(SERIALIZED_FORM(geom), precision);
 	
 	PG_FREE_IF_COPY(geom, 1);
 
