@@ -359,10 +359,6 @@ CREATE OR REPLACE FUNCTION ST_box2d(box3d_extent)
         AS 'MODULE_PATHNAME', 'BOX3D_to_BOX2DFLOAT4'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- Casts to allow the box3d_extent type to automatically cast to box3d/box2d in queries
-CREATE CAST (box3d_extent AS box3d) WITH FUNCTION ST_box3d_extent(box3d_extent) AS IMPLICIT;
-CREATE CAST (box3d_extent AS box2d) WITH FUNCTION ST_box2d(box3d_extent) AS IMPLICIT;
-
 -- End of temporary hack
 
 -- Deprecation in 1.2.3
@@ -3671,6 +3667,10 @@ CREATE CAST (geometry AS text) WITH FUNCTION ST_text(geometry) AS IMPLICIT;
 CREATE CAST (chip AS geometry) WITH FUNCTION ST_geometry(chip) AS IMPLICIT;
 CREATE CAST (bytea AS geometry) WITH FUNCTION ST_geometry(bytea) AS IMPLICIT;
 CREATE CAST (geometry AS bytea) WITH FUNCTION ST_bytea(geometry) AS IMPLICIT;
+
+-- Casts to allow the box3d_extent type to automatically cast to box3d/box2d in queries
+CREATE CAST (box3d_extent AS box3d) WITH FUNCTION ST_box3d_extent(box3d_extent) AS IMPLICIT;
+CREATE CAST (box3d_extent AS box2d) WITH FUNCTION ST_box2d(box3d_extent) AS IMPLICIT;
 
 ---------------------------------------------------------------
 -- Algorithms
