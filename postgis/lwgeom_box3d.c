@@ -25,6 +25,7 @@
 Datum BOX3D_in(PG_FUNCTION_ARGS);
 Datum BOX3D_out(PG_FUNCTION_ARGS);
 Datum BOX3D_extent_out(PG_FUNCTION_ARGS);
+Datum BOX3D_extent_to_BOX3D(PG_FUNCTION_ARGS);
 Datum LWGEOM_to_BOX3D(PG_FUNCTION_ARGS);
 Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS);
 Datum BOX3D_expand(PG_FUNCTION_ARGS);
@@ -172,6 +173,19 @@ Datum BOX3D_extent_out(PG_FUNCTION_ARGS)
 			bbox->xmax,bbox->ymax);
 
 	PG_RETURN_CSTRING(result);
+}
+
+PG_FUNCTION_INFO_V1(BOX3D_extent_to_BOX3D);
+Datum BOX3D_extent_to_BOX3D(PG_FUNCTION_ARGS)
+{
+	BOX3D *in = (BOX3D *)PG_GETARG_POINTER(0);
+	BOX3D *out = palloc(sizeof(BOX3D));
+	out->xmin = in->xmin;
+	out->xmax = in->xmax;
+	out->ymin = in->ymin;
+	out->ymax = in->ymax;
+
+	PG_RETURN_POINTER(out);
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_to_BOX2DFLOAT4);
