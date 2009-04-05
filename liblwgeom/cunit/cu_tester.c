@@ -15,6 +15,7 @@
 #include "CUnit/Basic.h"
 
 #include "cu_algorithm.h"
+#include "cu_measures.h"
 
 
 /*
@@ -38,8 +39,15 @@ int main()
 	if (CUE_SUCCESS != CU_initialize_registry())
 		return CU_get_error();
 
-	/* Add the PostGIS suite to the registry */
+	/* Add the algorithms suite to the registry */
 	if (NULL == register_cg_suite())
+	{
+		CU_cleanup_registry();
+		return CU_get_error();
+	}
+
+	/* Add the measures suite to the registry */
+	if (NULL == register_measures_suite())
 	{
 		CU_cleanup_registry();
 		return CU_get_error();
