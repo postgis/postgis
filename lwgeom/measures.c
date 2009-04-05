@@ -711,6 +711,16 @@ lwgeom_mindistance2d_recursive_tolerance(uchar *lw1, uchar *lw2, double toleranc
 			uchar *g2 = lwgeom_getsubgeometry_inspected(in2, j);
 			int t2 = lwgeom_getType(g2[0]);
 
+			/* Argument 2 is a multitype... recurse */
+			if ( lwgeom_contains_subgeoms(t2) )
+			{
+				dist = lwgeom_mindistance2d_recursive_tolerance(g1, g2, tolerance);
+				if ( dist <= tolerance ) return tolerance; /* can't be closer */
+				if ( mindist == -1 ) mindist = dist;
+				else mindist = LW_MIN(dist, mindist);
+				continue;
+			}
+
 			if  ( t1 == POINTTYPE )
 			{
 				if  ( t2 == POINTTYPE )
@@ -794,10 +804,6 @@ lwgeom_mindistance2d_recursive_tolerance(uchar *lw1, uchar *lw2, double toleranc
 				{
 					lwerror("Unsupported geometry type: %s", lwgeom_typename(t2));
 				}
-			}
-			else if (lwgeom_contains_subgeoms(t1)) /* it's a multitype... recurse */
-			{
-				dist = lwgeom_mindistance2d_recursive_tolerance(g1, g2, tolerance);
 			}
 			else
 			{
