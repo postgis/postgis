@@ -12,159 +12,159 @@
   GIS data, and web-based access tools.</para>
 
   <sect1 id="credits">
-    <title>Credits</title>
+	<title>Credits</title>
 
-    <variablelist>
-      <varlistentry>
-        <term>Mark Cave-Ayland</term>
+	<variablelist>
+	  <varlistentry>
+		<term>Mark Cave-Ayland</term>
 
-        <listitem>
-          <para>Coordinates bug fixing and maintenance effort, alignment of
-          PostGIS with PostgreSQL releases, windows build, integration of new
-          GEOS functionality, and new function enhancements.</para>
-        </listitem>
-      </varlistentry>
+		<listitem>
+		  <para>Coordinates bug fixing and maintenance effort, alignment of
+		  PostGIS with PostgreSQL releases, windows build, integration of new
+		  GEOS functionality, and new function enhancements.</para>
+		</listitem>
+	  </varlistentry>
 
-      <varlistentry>
-        <term>Paul Ramsey</term>
+	  <varlistentry>
+		<term>Paul Ramsey</term>
 
-        <listitem>
-          <para>Release Manager, coordinates general direction of the project,
-          often gets his hands dirty doing real coding.</para>
-        </listitem>
-      </varlistentry>
+		<listitem>
+		  <para>Release Manager, coordinates general direction of the project,
+		  often gets his hands dirty doing real coding.</para>
+		</listitem>
+	  </varlistentry>
 
-      <varlistentry>
-        <term>Mark Leslie</term>
+	  <varlistentry>
+		<term>Mark Leslie</term>
 
-        <listitem>
-          <para>Ongoing maintenance and development of core functions.</para>
-        </listitem>
-      </varlistentry>
+		<listitem>
+		  <para>Ongoing maintenance and development of core functions.</para>
+		</listitem>
+	  </varlistentry>
 
-      <varlistentry>
-        <term>Kevin Neufeld</term>
+	  <varlistentry>
+		<term>Kevin Neufeld</term>
 
-        <listitem>
-          <para>Documentation, Hudson automated build, advanced user support
-          on PostGIS newsgroup.</para>
-        </listitem>
-      </varlistentry>
+		<listitem>
+		  <para>Documentation, Hudson automated build, advanced user support
+		  on PostGIS newsgroup.</para>
+		</listitem>
+	  </varlistentry>
 
-      <varlistentry>
-        <term>Sandro Santilli</term>
+	  <varlistentry>
+		<term>Sandro Santilli</term>
 
-        <listitem>
-          <para>Bug fixes and maintenance and integration of new GEOS
-          functionality</para>
-        </listitem>
-      </varlistentry>
+		<listitem>
+		  <para>Bug fixes and maintenance and integration of new GEOS
+		  functionality</para>
+		</listitem>
+	  </varlistentry>
 
-      <varlistentry>
-        <term>Chris Hodgson</term>
+	  <varlistentry>
+		<term>Chris Hodgson</term>
 
-        <listitem>
-          <para>General development</para>
-        </listitem>
-      </varlistentry>
+		<listitem>
+		  <para>General development</para>
+		</listitem>
+	  </varlistentry>
 
-      <varlistentry>
-        <term>Dave Blasby</term>
+	  <varlistentry>
+		<term>Dave Blasby</term>
 
-        <listitem>
-          <para>The original developer of PostGIS. Dave wrote the server side
-          objects, index bindings, and many of the server side analytical
-          functions.</para>
-        </listitem>
-      </varlistentry>
+		<listitem>
+		  <para>The original developer of PostGIS. Dave wrote the server side
+		  objects, index bindings, and many of the server side analytical
+		  functions.</para>
+		</listitem>
+	  </varlistentry>
 
-      <varlistentry>
-        <term>Jeff Lounsbury</term>
+	  <varlistentry>
+		<term>Jeff Lounsbury</term>
 
-        <listitem>
-          <para>Original development of the Shape file loader/dumper.</para>
-        </listitem>
-      </varlistentry>
+		<listitem>
+		  <para>Original development of the Shape file loader/dumper.</para>
+		</listitem>
+	  </varlistentry>
 
-      <varlistentry>
-        <term>Other contributors</term>
+	  <varlistentry>
+		<term>Other contributors</term>
 
-        <listitem>
-          <para>In alphabetical order: Alex Bodnaru, Alex Mayrhofer, Barbara
-          Phillipot, Ben Jubb, Bernhard Reiter, Bruce Rindahl, Bruno Wolff
-          III, Carl Anderson, Charlie Savage, Dane Springmeyer, David Skea,
-          David Techer, Eduin Carillo, IIDA Tetsushi, Geographic Data BC,
-          Gerald Fenoy, Gino Lucrezi, Klaus Foerster, Kris Jurka, Mark
-          Sondheim, Markus Schaber, Michael Fuhr, Nikita Shulga, Norman Vine,
-          Olivier Courtin, Ralph Mason, Regina Obe, Steffen Macke, Stephen
-          Frost.</para>
-        </listitem>
-      </varlistentry>
+		<listitem>
+		  <para>In alphabetical order: Alex Bodnaru, Alex Mayrhofer, Barbara
+		  Phillipot, Ben Jubb, Bernhard Reiter, Bruce Rindahl, Bruno Wolff
+		  III, Carl Anderson, Charlie Savage, Dane Springmeyer, David Skea,
+		  David Techer, Eduin Carillo, IIDA Tetsushi, Geographic Data BC,
+		  Gerald Fenoy, Gino Lucrezi, Klaus Foerster, Kris Jurka, Mark
+		  Sondheim, Markus Schaber, Michael Fuhr, Nikita Shulga, Nicklas Avén, Norman Vine,
+		  Olivier Courtin, Ralph Mason, Regina Obe, Steffen Macke, Stephen
+		  Frost.</para>
+		</listitem>
+	  </varlistentry>
 
-      <varlistentry>
-        <term>Important Support Libraries</term>
+	  <varlistentry>
+		<term>Important Support Libraries</term>
 
-        <listitem>
-          <para>The <ulink url="http://trac.osgeo.org/geos/">GEOS</ulink>
-          geometry operations library, and the algorithmic work of Martin
-          Davis in making it all work, ongoing maintenance and support of
-          Mateusz Loskot, Paul Ramsey and others.</para>
+		<listitem>
+		  <para>The <ulink url="http://trac.osgeo.org/geos/">GEOS</ulink>
+		  geometry operations library, and the algorithmic work of Martin
+		  Davis in making it all work, ongoing maintenance and support of
+		  Mateusz Loskot, Paul Ramsey and others.</para>
 
-          <para>The <ulink url="http://trac.osgeo.org/proj/">Proj4</ulink>
-          cartographic projection library, and the work of Gerald Evenden and
-          Frank Warmerdam in creating and maintaining it.</para>
-        </listitem>
-      </varlistentry>
-    </variablelist>
+		  <para>The <ulink url="http://trac.osgeo.org/proj/">Proj4</ulink>
+		  cartographic projection library, and the work of Gerald Evenden and
+		  Frank Warmerdam in creating and maintaining it.</para>
+		</listitem>
+	  </varlistentry>
+	</variablelist>
   </sect1>
 
   <sect1>
-    <title>More Information</title>
+	<title>More Information</title>
 
-    <itemizedlist>
-      <listitem>
-        <para>The latest software, documentation and news items are available
-        at the PostGIS web site, <ulink
-        url="http://postgis.refractions.net">http://postgis.refractions.net</ulink>.</para>
-      </listitem>
+	<itemizedlist>
+	  <listitem>
+		<para>The latest software, documentation and news items are available
+		at the PostGIS web site, <ulink
+		url="http://postgis.refractions.net">http://postgis.refractions.net</ulink>.</para>
+	  </listitem>
 
-      <listitem>
-        <para>More information about the GEOS geometry operations library is
-        available at<ulink url="http://trac.osgeo.org/geos/">
-        http://trac.osgeo.org/geos/</ulink>.</para>
-      </listitem>
+	  <listitem>
+		<para>More information about the GEOS geometry operations library is
+		available at<ulink url="http://trac.osgeo.org/geos/">
+		http://trac.osgeo.org/geos/</ulink>.</para>
+	  </listitem>
 
-      <listitem>
-        <para>More information about the Proj4 reprojection library is
-        available at <ulink
-        url="http://trac.osgeo.org/proj/">http://trac.osgeo.org/proj/</ulink>.</para>
-      </listitem>
+	  <listitem>
+		<para>More information about the Proj4 reprojection library is
+		available at <ulink
+		url="http://trac.osgeo.org/proj/">http://trac.osgeo.org/proj/</ulink>.</para>
+	  </listitem>
 
-      <listitem>
-        <para>More information about the PostgreSQL database server is
-        available at the PostgreSQL main site <ulink
-        url="http://www.postgresql.org">http://www.postgresql.org</ulink>.</para>
-      </listitem>
+	  <listitem>
+		<para>More information about the PostgreSQL database server is
+		available at the PostgreSQL main site <ulink
+		url="http://www.postgresql.org">http://www.postgresql.org</ulink>.</para>
+	  </listitem>
 
-      <listitem>
-        <para>More information about GiST indexing is available at the
-        PostgreSQL GiST development site, <ulink
-        url="http://www.sai.msu.su/~megera/postgres/gist/">http://www.sai.msu.su/~megera/postgres/gist/</ulink>.</para>
-      </listitem>
+	  <listitem>
+		<para>More information about GiST indexing is available at the
+		PostgreSQL GiST development site, <ulink
+		url="http://www.sai.msu.su/~megera/postgres/gist/">http://www.sai.msu.su/~megera/postgres/gist/</ulink>.</para>
+	  </listitem>
 
-      <listitem>
-        <para>More information about MapServer internet map server is
-        available at <ulink
-        url="http://mapserver.gis.umn.edu/">http://mapserver.gis.umn.edu</ulink>.</para>
-      </listitem>
+	  <listitem>
+		<para>More information about MapServer internet map server is
+		available at <ulink
+		url="http://mapserver.gis.umn.edu/">http://mapserver.gis.umn.edu</ulink>.</para>
+	  </listitem>
 
-      <listitem>
-        <para>The "<ulink
-        url="http://www.opengeospatial.org/standards/sfs">Simple Features for
-        Specification for SQL</ulink>" is available at the OpenGIS Consortium
-        web site: <ulink
-        url="http://www.opengeospatial.org/">http://www.opengeospatial.org/</ulink>.</para>
-      </listitem>
-    </itemizedlist>
+	  <listitem>
+		<para>The "<ulink
+		url="http://www.opengeospatial.org/standards/sfs">Simple Features for
+		Specification for SQL</ulink>" is available at the OpenGIS Consortium
+		web site: <ulink
+		url="http://www.opengeospatial.org/">http://www.opengeospatial.org/</ulink>.</para>
+	  </listitem>
+	</itemizedlist>
   </sect1>
 </chapter>
