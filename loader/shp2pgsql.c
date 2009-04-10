@@ -101,8 +101,8 @@ int 	sr_id = 0;
 
 /* Prototypes */
 int Insert_attributes(DBFHandle hDBFHandle, int row);
-char *make_good_string(char *str);
-char *protect_quotes_string(char *str);
+char *escape_copy_string(char *str);
+char *escape_insert_string(char *str);
 int PIP( Point P, Point* V, int n );
 void *safe_malloc(size_t size);
 void CreateTable(void);
@@ -152,16 +152,20 @@ void *safe_malloc(size_t size)
 #define malloc(x) safe_malloc(x)
 
 
+/*
+ * Escape input string suitable for COPY
+ */
+
 char *
-make_good_string(char *str)
+escape_copy_string(char *str)
 {
 	/*
-	 * find all the tabs and make them \<tab>s
-	 *
-	 * 1. find # of tabs
+	 * Escape the following characters by adding a preceding backslash 
+ 	 *      tab, backslash, cr, lf
+ 	 *
+	 * 1. find # of escaped characters
 	 * 2. make new string 
 	 *
-	 * we dont escape already escaped tabs
 	 */
 
 	char *result;
@@ -182,7 +186,9 @@ make_good_string(char *str)
 	ptr = str;
 
 	while (*ptr) {
-		if ( *ptr == '\t' || *ptr == '\\' ) toescape++;
+		if ( *ptr == '\t' || *ptr == '\\' || 
+			*ptr == '\n' || *ptr == '\r' ) 
+				toescape++;
 		ptr++;
 	}
 
@@ -195,8 +201,10 @@ make_good_string(char *str)
 	optr=result;
 	ptr=str;
 	while (*ptr) {
-		if ( *ptr == '\t' || *ptr == '\\' ) *optr++='\\';
-		*optr++=*ptr++;
+		if ( *ptr == '\t' || *ptr == '\\' ||
+			*ptr == '\n' || *ptr == '\r' ) 
+				*optr++='\\';
+				*optr++=*ptr++;
 	}
 	*optr='\0';
 
@@ -209,12 +217,11 @@ make_good_string(char *str)
 }
 
 char *
-protect_quotes_string(char *str)
+escape_insert_string(char *str)
 {
 	/*
-	 * find all quotes and make them \quotes
-	 * find all '\' and make them '\\'
-	 * 	 
+	 * Escape single quotes by adding a preceding single quote 
+	 * 
 	 * 1. find # of characters
 	 * 2. make new string 
 	 */
@@ -237,7 +244,7 @@ protect_quotes_string(char *str)
 	ptr = str;
 
 	while (*ptr) {
-		if ( *ptr == '\'' || *ptr == '\\' ) toescape++;
+		if ( *ptr == '\'' ) toescape++;
 		ptr++;
 	}
 
@@ -250,7 +257,6 @@ protect_quotes_string(char *str)
 	optr=result;
 	ptr=str;
 	while (*ptr) {
-		if ( *ptr == '\\' ) *optr++='\\';
                 if ( *ptr == '\'') *optr++='\'';
 		*optr++=*ptr++;
 	}
@@ -354,12 +360,12 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
          }
  
 			if (dump_format) {
-				escval = make_good_string(val);
+				escval = escape_copy_string(val);
 				printf("%s", escval);
 				//printf("\t");
 			} else {
-				escval = protect_quotes_string(val);
-				printf("E'%s'", escval);
+				escval = escape_insert_string(val);
+				printf("'%s'", escval);
 				//printf(",");
 			}
 			if ( val != escval ) free(escval);
