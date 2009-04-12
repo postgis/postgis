@@ -12,7 +12,7 @@
 	<!--Exclude this from testing - it crashes or already tested in special section -->
 	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 branch -->
-	<xsl:variable name='fnexclude13'>Populate_Geometry_Columns ST_IsValidReason</xsl:variable>
+	<xsl:variable name='fnexclude13'>Populate_Geometry_Columns ST_IsValidReason ST_ContainsProperly</xsl:variable>
 	<xsl:variable name='var_srid'>3395</xsl:variable>
 	<xsl:variable name='var_position'>1</xsl:variable>
 	<xsl:variable name='var_integer1'>3</xsl:variable>
