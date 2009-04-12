@@ -478,6 +478,11 @@ translation_start ()
 #endif /* defined HAVE_ICONV */
 
 	/*
+	 * Use SQL-standard string escaping rather than PostgreSQL standard
+	 */
+	printf("SET STANDARD_CONFORMING_STRINGS TO ON;\n");
+
+	/*
 	 * Drop table if requested
 	 */
 	if (opt == 'd')
