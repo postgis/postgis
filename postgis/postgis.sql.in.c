@@ -359,6 +359,10 @@ CREATE OR REPLACE FUNCTION ST_box2d(box3d_extent)
         AS 'MODULE_PATHNAME', 'BOX3D_to_BOX2DFLOAT4'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+CREATEFUNCTION ST_geometry(box3d_extent)
+        RETURNS geometry
+        AS 'MODULE_PATHNAME','BOX3D_to_LWGEOM'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 -- End of temporary hack
 
 -- Deprecation in 1.2.3
@@ -3671,6 +3675,7 @@ CREATE CAST (geometry AS bytea) WITH FUNCTION ST_bytea(geometry) AS IMPLICIT;
 -- Casts to allow the box3d_extent type to automatically cast to box3d/box2d in queries
 CREATE CAST (box3d_extent AS box3d) WITH FUNCTION ST_box3d_extent(box3d_extent) AS IMPLICIT;
 CREATE CAST (box3d_extent AS box2d) WITH FUNCTION ST_box2d(box3d_extent) AS IMPLICIT;
+CREATE CAST (box3d_extent AS geometry) WITH FUNCTION ST_geometry(box3d_extent) AS IMPLICIT;
 
 ---------------------------------------------------------------
 -- Algorithms
