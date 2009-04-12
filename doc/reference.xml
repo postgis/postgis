@@ -8927,7 +8927,7 @@ degaz	degazrev
 	  <refnamediv>
 		<refname>ST_Contains</refname>
 
-		<refpurpose>Returns true if the geometry B is completely inside geometry A. </refpurpose>
+		<refpurpose>Returns true if and only if no points of B lie in the exterior of A, and at least one point of the interior of B lies in the interior of A. </refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -8946,6 +8946,10 @@ degaz	degazrev
 
 	  <refsection>
 		<title>Description</title>
+
+		<para>Geometry A contains Geometry B if and only if no points of B lie in the exterior of A, and at least one point of the interior of B lies in the interior of A.
+		An important subtlety of this definition is that A does not contain its boundary, but A does contain itself. Contrast that to <xref linkend="ST_ContainsProperly" /> where geometry
+		A does not Contain Properly itself.</para>
 
 		<para>Returns TRUE if geometry B is completely inside geometry A. For this function to make
 		sense, the source geometries must both be of the same coordinate projection,
@@ -9009,12 +9013,112 @@ degaz	degazrev
 	--Result
   smallcontainsbig | bigcontainssmall | bigcontainsunion | bigisunion | bigcoversexterior | bigcontainsexterior
 ------------------+------------------+------------------+------------+-------------------+---------------------
- f                | t                | t                | t          | t        | f	</programlisting>
+ f                | t                | t                | t          | t        | f
+
+  --example demonstrating difference between contains and contains properly
+ SELECT ST_GeometryType(geomA) As geomtype, ST_Contains(geomA,geomA) AS acontainsa, ST_ContainsProperly(geomA, geomA) AS acontainspropa,
+ ST_Contains(geomA, ST_Boundary(geomA)) As acontainsba, ST_ContainsProperly(geomA, ST_Boundary(geomA)) As acontainspropba
+ FROM (VALUES ( ST_Buffer(ST_Point(1,1), 5,1) ),
+		  ( ST_MakeLine(ST_Point(1,1), ST_Point(-1,-1) ) ),
+		  ( ST_Point(1,1) )
+	) As foo(geomA);
+
+  geomtype    | acontainsa | acontainspropa | acontainsba | acontainspropba
+--------------+------------+----------------+-------------+-----------------
+ST_Polygon    | t          | f              | f           | f
+ST_LineString | t          | f              | f           | f
+ST_Point      | t          | t              | f           | f
+
+ </programlisting>
 	  </refsection>
 
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_Covers" />,<xref linkend="ST_CoveredBy" />, <xref linkend="ST_Equals"/>,<xref linkend="ST_Within"/></para>
+		<para><xref linkend="ST_Boundary" />, <xref linkend="ST_ContainsProperly" />, <xref linkend="ST_Covers" />,<xref linkend="ST_CoveredBy" />, <xref linkend="ST_Equals"/>,<xref linkend="ST_Within"/></para>
+	  </refsection>
+ </refentry>
+
+ <refentry id="ST_ContainsProperly">
+	  <refnamediv>
+		<refname>ST_ContainsProperly</refname>
+
+		<refpurpose>Returns true if B intersects the interior of A but not the boundary (or exterior). A does not contain properly itself, but does contain itself.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_ContainsProperly</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>geomA</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>geomB</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns true if B intersects the interior of A but not the boundary (or exterior).</para>
+
+		<para>A does not contain properly itself, but does contain itself.</para>
+
+		<para>Availability: 1.4.0 - requires GEOS &gt;= 3.1.0.</para>
+
+		<important>
+		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+		</important>
+
+		<important>
+		  <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
+		</important>
+
+		<para>This function call will automatically include a bounding box
+			comparison that will make use of any indexes that are available on
+			the geometries. To avoid index use, use the function
+			_ST_ContainsProperly.</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		  <programlisting>
+	--a circle within a circle
+	SELECT ST_ContainsProperly(smallc, bigc) As smallcontainspropbig,
+	ST_ContainsProperly(bigc,smallc) As bigcontainspropsmall,
+	ST_ContainsProperly(bigc, ST_Union(smallc, bigc)) as bigcontainspropunion,
+	ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion,
+	ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,
+	ST_ContainsProperly(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior
+	FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
+	ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;
+	--Result
+  smallcontainspropbig | bigcontainspropsmall | bigcontainspropunion | bigisunion | bigcoversexterior | bigcontainsexterior
+------------------+------------------+------------------+------------+-------------------+---------------------
+ f                     | t                    | f                    | t          | t                 | f
+
+ --example demonstrating difference between contains and contains properly
+ SELECT ST_GeometryType(geomA) As geomtype, ST_Contains(geomA,geomA) AS acontainsa, ST_ContainsProperly(geomA, geomA) AS acontainspropa,
+ ST_Contains(geomA, ST_Boundary(geomA)) As acontainsba, ST_ContainsProperly(geomA, ST_Boundary(geomA)) As acontainspropba
+ FROM (VALUES ( ST_Buffer(ST_Point(1,1), 5,1) ),
+		  ( ST_MakeLine(ST_Point(1,1), ST_Point(-1,-1) ) ),
+		  ( ST_Point(1,1) )
+	) As foo(geomA);
+
+  geomtype    | acontainsa | acontainspropa | acontainsba | acontainspropba
+--------------+------------+----------------+-------------+-----------------
+ST_Polygon    | t          | f              | f           | f
+ST_LineString | t          | f              | f           | f
+ST_Point      | t          | t              | f           | f
+ </programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_GeometryType" />, <xref linkend="ST_Boundary" />, <xref linkend="ST_Contains" />, <xref linkend="ST_Covers" />,<xref linkend="ST_CoveredBy" />, <xref linkend="ST_Equals"/>,<xref linkend="ST_Within"/></para>
 	  </refsection>
  </refentry>
 
