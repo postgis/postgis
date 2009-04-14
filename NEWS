@@ -3,6 +3,7 @@ PostGIS 1.4.0
 		- New Features
 		  - ST_Union() uses high-speed cascaded union when compiled against
 			GEOS 3.1+ (Paul Ramsey)
+		  - ST_ContainsProperly() requires GEOS 3.1+
 		  - ST_Intersects(), ST_Contains(), ST_Within() use high-speed cached
 			prepared geometry against GEOS 3.1+ (Paul Ramsey)
 		  - Vastly improved documentation and reference manual
