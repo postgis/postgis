@@ -480,7 +480,7 @@ translation_start ()
 	/*
 	 * Use SQL-standard string escaping rather than PostgreSQL standard
 	 */
-	printf("SET STANDARD_CONFORMING_STRINGS TO ON;\n");
+	if ( ! pgis_exec("SET STANDARD_CONFORMING_STRINGS TO ON") ) return 0;
 
 	/*
 	 * Drop table if requested
