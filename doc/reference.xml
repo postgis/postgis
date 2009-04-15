@@ -9066,7 +9066,7 @@ ST_Point      | t          | t              | f           | f
 
 		<para>A does not contain properly itself, but does contain itself.</para>
 		<para>Every point of the other geometry is a point of this geometry's interior. The DE-9IM Intersection Matrix for the two geometries matches
-   [T**FF*FF*]</para>
+   [T**FF*FF*] used in <xref linkend="ST_Relate" /></para>
 
 		<note>
 		  <para>From JTS docs slightly reworded: The advantage to using this predicate over <xref linkend="ST_Contains" /> and <xref linkend="ST_Intersects" /> is that it can be computed
@@ -9133,7 +9133,7 @@ ST_Point      | t          | t              | f           | f
 
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_GeometryType" />, <xref linkend="ST_Boundary" />, <xref linkend="ST_Contains" />, <xref linkend="ST_Covers" />,<xref linkend="ST_CoveredBy" />, <xref linkend="ST_Equals"/>,<xref linkend="ST_Within"/></para>
+		<para><xref linkend="ST_GeometryType" />, <xref linkend="ST_Boundary" />, <xref linkend="ST_Contains" />, <xref linkend="ST_Covers" />,<xref linkend="ST_CoveredBy" />, <xref linkend="ST_Equals"/>,<xref linkend="ST_Relate" />,<xref linkend="ST_Within"/></para>
 	  </refsection>
  </refentry>
 
