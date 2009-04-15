@@ -51,7 +51,7 @@ PostGIS 1.4.0
 			parsing/unparsing code in liblwgeom (Mark Cave-Ayland)
 		  - More attractive CSS for HTML documentation (Dane Springmeyer)
 		- Bug fixes
-		  - http://code.google.com/p/postgis/issues/list?can=1&q=label%3AMilestone-1.4%20status%3AFixed
+		  - http://trac.osgeo.org/postgis/query?status=closed&milestone=postgis+1.4.0&order=priority
 
 PostGIS 1.3.5
 2008/12/15
