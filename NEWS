@@ -1,535 +1,536 @@
 PostGIS 1.4.0
 2009/04/XX
-		- New Features
-		  - ST_Union() uses high-speed cascaded union when compiled against
-			GEOS 3.1+ (Paul Ramsey)
-		  - ST_ContainsProperly() requires GEOS 3.1+
-		  - ST_Intersects(), ST_Contains(), ST_Within() use high-speed cached
-			prepared geometry against GEOS 3.1+ (Paul Ramsey)
-		  - Vastly improved documentation and reference manual
-			(Regina Obe & Kevin Neufeld)
-		  - Figures and diagram examples in the reference manual (Kevin Neufeld)
-		  - ST_IsValidReason() returns readable explanations for validity
-			failures (Paul Ramsey)
-		  - ST_GeoHash() returns a geohash.org signature for geometries
-			(Paul Ramsey)
-		  - GTK+ multi-platform GUI for shape file loading (Paul Ramsey)
-		  - ST_LineCrossingDirection() returns crossing directions (Paul Ramsey)
-		  - ST_LocateBetweenElevations() returns sub-string based on Z-ordinate.
-			(Paul Ramsey)
-		  - Geometry parser returns explicit error message about location of
-			syntax errors (Mark Cave-Ayland)
-		  - ST_AsGeoJSON() return JSON formatted geometry (Olivier Courtin)
-		- Compatibility
-		  - The versions below are the *minimum* requirements for PostGIS 1.4
-			- PostgreSQL 8.1 and higher on Linux / *NIX
-			- PostgreSQL 8.2 and higher on Windows
-			- GEOS 3.0 and higher only
-			- PROJ4 4.5 and higher only
-		- Enhancements
-		  - Core geometry system moved into independent library, liblwgeom.
-			(Mark Cave-Ayland)
-		  - New build system uses PostgreSQL "pgxs" build bootstrapper.
-			(Mark Cave-Ayland)
-		  - Debugging framework formalized and simplified. (Mark Cave-Ayland)
-		  - All build-time #defines generated at configure time and placed in
-			headers for easier cross-platform support (Mark Cave-Ayland)
-		  - Logging framework formalized and simplified (Mark Cave-Ayland)
-		  - Expanded and more stable support for CIRCULARSTRING,
-			COMPOUNDCURVE and CURVEPOLYGON, better parsing, wider support
-			in functions (Mark Leslie & Mark Cave-Ayland)
-		  - Improved support for OpenSolaris builds (Paul Ramsey)
-		  - Improved support for MSVC builds (Mateusz Loskot)
-		  - Updated KML support (Olivier Courtin)
-		  - Unit testing framework for liblwgeom (Paul Ramsey)
-		  - New testing framework to comprehensively exercise every PostGIS
-			function (Regine Obe)
-		  - Performance improvements to all geometry aggregate functions
-			(Paul Ramsey)
-		  - Support for the upcoming PostgreSQL 8.4 (Mark Cave-Ayland, Talha Bin Rizwan)
-		  - Shp2pgsql and pgsql2shp re-worked to depend on the common
-			parsing/unparsing code in liblwgeom (Mark Cave-Ayland)
-		  - More attractive CSS for HTML documentation (Dane Springmeyer)
-		- Bug fixes
-		  - http://trac.osgeo.org/postgis/query?status=closed&milestone=postgis+1.4.0&order=priority
+  - New Features
+    - ST_Union() uses high-speed cascaded union when compiled against
+      GEOS 3.1+ (Paul Ramsey)
+    - ST_ContainsProperly() requires GEOS 3.1+
+    - ST_Intersects(), ST_Contains(), ST_Within() use high-speed cached
+      prepared geometry against GEOS 3.1+ (Paul Ramsey)
+    - Vastly improved documentation and reference manual
+      (Regina Obe & Kevin Neufeld)
+    - Figures and diagram examples in the reference manual (Kevin Neufeld)
+    - ST_IsValidReason() returns readable explanations for validity
+      failures (Paul Ramsey)
+    - ST_GeoHash() returns a geohash.org signature for geometries
+      (Paul Ramsey)
+    - GTK+ multi-platform GUI for shape file loading (Paul Ramsey)
+    - ST_LineCrossingDirection() returns crossing directions (Paul Ramsey)
+    - ST_LocateBetweenElevations() returns sub-string based on Z-ordinate.
+      (Paul Ramsey)
+    - Geometry parser returns explicit error message about location of
+      syntax errors (Mark Cave-Ayland)
+    - ST_AsGeoJSON() return JSON formatted geometry (Olivier Courtin)
+  - Compatibility
+    - The versions below are the *minimum* requirements for PostGIS 1.4
+    - PostgreSQL 8.1 and higher on Linux / *NIX
+    - PostgreSQL 8.2 and higher on Windows
+    - GEOS 3.0 and higher only
+    - PROJ4 4.5 and higher only
+  - Enhancements
+    - Core geometry system moved into independent library, liblwgeom.
+      (Mark Cave-Ayland)
+    - New build system uses PostgreSQL "pgxs" build bootstrapper.
+      (Mark Cave-Ayland)
+    - Debugging framework formalized and simplified. (Mark Cave-Ayland)
+    - All build-time #defines generated at configure time and placed in
+      headers for easier cross-platform support (Mark Cave-Ayland)
+    - Logging framework formalized and simplified (Mark Cave-Ayland)
+    - Expanded and more stable support for CIRCULARSTRING,
+      COMPOUNDCURVE and CURVEPOLYGON, better parsing, wider support
+      in functions (Mark Leslie & Mark Cave-Ayland)
+    - Improved support for OpenSolaris builds (Paul Ramsey)
+    - Improved support for MSVC builds (Mateusz Loskot)
+    - Updated KML support (Olivier Courtin)
+    - Unit testing framework for liblwgeom (Paul Ramsey)
+    - New testing framework to comprehensively exercise every PostGIS
+      function (Regine Obe)
+    - Performance improvements to all geometry aggregate functions
+      (Paul Ramsey)
+    - Support for the upcoming PostgreSQL 8.4 (Mark Cave-Ayland, Talha Bin 
+      Rizwan)
+    - Shp2pgsql and pgsql2shp re-worked to depend on the common
+      parsing/unparsing code in liblwgeom (Mark Cave-Ayland)
+    - More attractive CSS for HTML documentation (Dane Springmeyer)
+  - Bug fixes
+    - http://trac.osgeo.org/postgis/query?status=closed&milestone=postgis+1.4.0&order=priority
 
 PostGIS 1.3.5
 2008/12/15
-		- A quick bug fix release, to remove crashes in cases of
-		  collecting LINESTRING (ST_Force_Collection(), ST_Multi())
-		  that had a large affect on Mapserver with LINE layers.
-		- Enhancements and Bug Fixes
-		  - GBT#21: improve LRS fix to apply to more platforms
-		  - GBT#72: fix st_estimated_extent for better schema sensitivity
-		  - GBT#80: segfault on st_multi in MULTILINESTRING repaired
-		  - GBT#83: segfault on collecting LINESTRING repaired
+  - A quick bug fix release, to remove crashes in cases of
+    collecting LINESTRING (ST_Force_Collection(), ST_Multi())
+    that had a large affect on Mapserver with LINE layers.
+  - Enhancements and Bug Fixes
+    - GBT#21: improve LRS fix to apply to more platforms
+    - GBT#72: fix st_estimated_extent for better schema sensitivity
+    - GBT#80: segfault on st_multi in MULTILINESTRING repaired
+    - GBT#83: segfault on collecting LINESTRING repaired
 
 PostGIS 1.3.4
 2008/11/24
-		- New Features
-		  - Add new ST_AsGeoJSON() function to allow conversion of
-			geometries to GeoJSON format within the database. (Olivier Courtin)
-		  - Add forthcoming PostgreSQL 8.4 support
-			(Paul Ramsey, Mark Cave-Ayland)
-		  - Improved CSS for PostGIS documentation (Dane Springmeyer)
-		  - Inclusion of new "postgis_comments.sql" file to enable detailed
-			function comments to be installed for PostGIS functions. This
-			attaches a description and associated parameter information
-			to each function so that this information is available directly
-			within psql/pgAdmin (Regina Obe)
-		- Enhancements and Bug Fixes
-		  - General documentation improvements (Regina Obe, Kevin Neufield)
-		  - Improve PiP code by removing substantial memory leaks and adding
-			multi-polygon support (Paul Ramsey)
-		  - Improve GiST consistent performance (Paul Ramsey)
-		  - GBT#20: Improved algorithm for ST_DWithin (Paul Ramsey)
-		  - GBT#21: locate_along_measure: wrong values, invalid data
-			(Mark Cave-Ayland)
-		  - GBT#23: wrong proj4text in spatial_ref_sys for SRID 31300 and 31370
-			(Paul Ramsey)
-		  - GBT#43: Heap over-read in compute_geometry_stats() (Landon Fuller)
-		  - GBT#44: ST_Relate(geom,geom,pattern) is case sensitive (Paul Ramsey)
-		  - GBT#45: bug in postgis_restore.pl - not passing options to createdb
-			(Paul Ramsey)
-		  - GBT#58: bounding box of circular string is incorrect (Mark Leslie)
-		  - GBT#65: ST_AsGML kills the backend when fed a CIRCULAR STRING
-			(Mark Cave-Ayland)
-		  - GBT#66: ST_Dump kills backend when fed CIRCULAR STRING
-			(Mark Cave-Ayland)
-		  - GBT#68: ST_Shift_Longitude doesn't work with MULTIPOINT
-			(Mark Cave-Ayland)
-		  - GBT#69: ST_Translate crashes when fed circular string
-			(Mark Cave-Ayland)
-		  - GBT#70: ST_NPoints Crashes with Curves (Mark Cave-Ayland)
+  - New Features
+    - Add new ST_AsGeoJSON() function to allow conversion of
+      geometries to GeoJSON format within the database. (Olivier Courtin)
+    - Add forthcoming PostgreSQL 8.4 support
+      (Paul Ramsey, Mark Cave-Ayland)
+    - Improved CSS for PostGIS documentation (Dane Springmeyer)
+    - Inclusion of new "postgis_comments.sql" file to enable detailed
+      function comments to be installed for PostGIS functions. This
+      attaches a description and associated parameter information
+      to each function so that this information is available directly
+      within psql/pgAdmin (Regina Obe)
+  - Enhancements and Bug Fixes
+    - General documentation improvements (Regina Obe, Kevin Neufield)
+    - Improve PiP code by removing substantial memory leaks and adding
+      multi-polygon support (Paul Ramsey)
+    - Improve GiST consistent performance (Paul Ramsey)
+    - GBT#20: Improved algorithm for ST_DWithin (Paul Ramsey)
+    - GBT#21: locate_along_measure: wrong values, invalid data
+      (Mark Cave-Ayland)
+    - GBT#23: wrong proj4text in spatial_ref_sys for SRID 31300 and 31370
+      (Paul Ramsey)
+    - GBT#43: Heap over-read in compute_geometry_stats() (Landon Fuller)
+    - GBT#44: ST_Relate(geom,geom,pattern) is case sensitive (Paul Ramsey)
+    - GBT#45: bug in postgis_restore.pl - not passing options to createdb
+      (Paul Ramsey)
+    - GBT#58: bounding box of circular string is incorrect (Mark Leslie)
+    - GBT#65: ST_AsGML kills the backend when fed a CIRCULAR STRING
+      (Mark Cave-Ayland)
+    - GBT#66: ST_Dump kills backend when fed CIRCULAR STRING
+      (Mark Cave-Ayland)
+    - GBT#68: ST_Shift_Longitude doesn't work with MULTIPOINT
+      (Mark Cave-Ayland)
+    - GBT#69: ST_Translate crashes when fed circular string
+      (Mark Cave-Ayland)
+    - GBT#70: ST_NPoints Crashes with Curves (Mark Cave-Ayland)
 
 PostGIS 1.3.3
 2008/04/12
-		- shp2pgsql, pgsql2shp improvements
-		  - regression tests on Windows
-		  - OS/X 10.5 compatibility
-		  - DBF-only loading flag (-n)
-		  - fix to Date DBF output
-		- ST_SimplifyPreserveTopology(geometry, float8)
-		  Allows simplification of polygons without creating
-		  invalid geometries.
-		- Fix to |>> and <<| operators
-		- Build system more sensitive to GEOS version number
-		- KML support updates (from Eduin Carrillo)
-		- SVG support updates (from Marco Hugentobler)
+  - shp2pgsql, pgsql2shp improvements
+    - regression tests on Windows
+    - OS/X 10.5 compatibility
+    - DBF-only loading flag (-n)
+    - fix to Date DBF output
+  - ST_SimplifyPreserveTopology(geometry, float8)
+    Allows simplification of polygons without creating
+    invalid geometries.
+  - Fix to |>> and <<| operators
+  - Build system more sensitive to GEOS version number
+  - KML support updates (from Eduin Carrillo)
+  - SVG support updates (from Marco Hugentobler)
 
 PostGIS 1.3.2
 2007/12/01
-		- Improvements in the TIGER geocoder
-		- Fix to ST_EndPoint() crasher bug
-		- Modified ST_AsGML() improving v2 and adding v3 support
-		- Fix to ensure ST_Envelope() returns valid geometries
-		- Change JDBC build to use Ant
-		- Fix for better OS/X support
-		- Fix to WKB parser to do simple validity checks
+  - Improvements in the TIGER geocoder
+  - Fix to ST_EndPoint() crasher bug
+  - Modified ST_AsGML() improving v2 and adding v3 support
+  - Fix to ensure ST_Envelope() returns valid geometries
+  - Change JDBC build to use Ant
+  - Fix for better OS/X support
+  - Fix to WKB parser to do simple validity checks
 
 PostGIS 1.3.1
 2007/08/13
-		- Fixed documentation bugs and release number errors
-		  in previous cut
+  - Fixed documentation bugs and release number errors
+    in previous cut
 
 PostGIS 1.3.0
 2007/08/09
-		- Began migration of functions to the SQL-MM-centric naming convension
-		  using the spatial type (SP) prefix
-		- Performance enhancements:
-				- Created cached and indexed point-in-polygon short-circuits
-				  for the functions ST_Contains, ST_Intersects, ST_Within
-				  ST_Disjoint.
-				- Added inline index support for relational functions
-				  (except disjoint)
-		- Added ST_Covers, ST_CoveredBy and ST_DWithin relational functions
-		- Extended curved geometry support to geometry accessor functions and
-		  some geometry processing functions
-		- JDBC: Added Hibernate Dialect from Norman Barker
-		- Enhanced regression tests for curved geometries and kml functions
+  - Began migration of functions to the SQL-MM-centric naming convension
+    using the spatial type (SP) prefix
+  - Performance enhancements:
+    - Created cached and indexed point-in-polygon short-circuits
+      for the functions ST_Contains, ST_Intersects, ST_Within
+      ST_Disjoint.
+    - Added inline index support for relational functions
+      (except disjoint)
+  - Added ST_Covers, ST_CoveredBy and ST_DWithin relational functions
+  - Extended curved geometry support to geometry accessor functions and
+    some geometry processing functions
+  - JDBC: Added Hibernate Dialect from Norman Barker
+  - Enhanced regression tests for curved geometries and kml functions
 
 PostGIS 1.2.1
 2007/01/11
-		- Fix point-in-polygon shortcut bug in Within()
-		- Fix PgSQL 8.2 null handling for indexes
-		- Update RPM spec files
-		- Add AsKML() function
-		- Add short-circuit for transform() in no-op case
-		- JDBC: - Fixed JTS handling for multi-dimensional geometries
-				  (thanks to Thomas Marti for hint and partial patch)
-				- Additionally, now JavaDoc is compiled and packaged
-				- Fixed classpath problems with GCJ
-				- Fixed pgjdbc 8.2 compatibility, losing support for
-				  jdk 1.3 and older.
+  - Fix point-in-polygon shortcut bug in Within()
+  - Fix PgSQL 8.2 null handling for indexes
+  - Update RPM spec files
+  - Add AsKML() function
+  - Add short-circuit for transform() in no-op case
+  - JDBC: - Fixed JTS handling for multi-dimensional geometries
+      (thanks to Thomas Marti for hint and partial patch)
+    - Additionally, now JavaDoc is compiled and packaged
+    - Fixed classpath problems with GCJ
+    - Fixed pgjdbc 8.2 compatibility, losing support for
+      jdk 1.3 and older.
 
 PostGIS 1.2.0
 2006/12/08
-		- Added curved geometry type support for serialization/deserialization.
-		- Added point-in-polygon shortcircuit to Contains and Within functions.
-		- JDBC: Added awt.shape implementation for JTS geometries
-		- EJB3: Fixed NullPointer bug, thanks to Norman Barker
+  - Added curved geometry type support for serialization/deserialization.
+  - Added point-in-polygon shortcircuit to Contains and Within functions.
+  - JDBC: Added awt.shape implementation for JTS geometries
+  - EJB3: Fixed NullPointer bug, thanks to Norman Barker
 
 PostGIS 1.1.6
 2006/11/02
 
-	- fixed CAPI change that broke 64-bit platforms
-	- use Z ordinate in reprojections
-	- spatial_ref_sys.sql updated to EPSG 6.11.1
-		- Simplified Version.config infrastructure to use a single
-		  pack of version variables for everything.
-		- Include the Version.config in loader/dumper USAGE messages
-		- Replace hand-made, fragile JDBC version parser with Properties
-		- Fixed setSRID() bug in JDBC, thanks to Thomas Marti
-		- loader/dumper: fixed regression tests and usage output
+ - fixed CAPI change that broke 64-bit platforms
+ - use Z ordinate in reprojections
+ - spatial_ref_sys.sql updated to EPSG 6.11.1
+  - Simplified Version.config infrastructure to use a single
+    pack of version variables for everything.
+  - Include the Version.config in loader/dumper USAGE messages
+  - Replace hand-made, fragile JDBC version parser with Properties
+  - Fixed setSRID() bug in JDBC, thanks to Thomas Marti
+  - loader/dumper: fixed regression tests and usage output
 
 
 PostGIS 1.1.5
 2006/10/13
-	- Java:
-	  - Removed obsolete synchronization from Jts code.
-	  - fixed nullpointer Exception in Geometry.equals() method
-		  - Added EJB3Spatial.odt to fulfill the GPL requirement of
-			distributing the "preferred form of modification"
-	- Added -S option for non-multi geometries to shp2pgsql
-	- Updated heavily outdated README files for shp2pgsql/pgsql2shp by
-	  merging them with the manpages.
-	- Fixed MingW link error that was causing pgsql2shp to
-	  segfault on Win32 when compiled for PostgreSQL 8.2
+ - Java:
+   - Removed obsolete synchronization from Jts code.
+   - fixed nullpointer Exception in Geometry.equals() method
+    - Added EJB3Spatial.odt to fulfill the GPL requirement of
+   distributing the "preferred form of modification"
+ - Added -S option for non-multi geometries to shp2pgsql
+ - Updated heavily outdated README files for shp2pgsql/pgsql2shp by
+   merging them with the manpages.
+ - Fixed MingW link error that was causing pgsql2shp to
+   segfault on Win32 when compiled for PostgreSQL 8.2
 
 PostGIS 1.1.4
 2006/09/27
-	- Fixed support for PostgreSQL 8.2
-	- Fixed bug in collect() function discarding SRID of
-	  input
-	- Added SRID match check in MakeBox2d and MakeBox3d
-	- Fixed regress tests to pass with GEOS-3.0.0
-	- Improved pgsql2shp run concurrency.
-	- Java:
-		- reworked JTS support to reflect new upstream
-		  JTS developers' attitude to SRID handling.
-		  Simplifies code and drops build depend on GNU trove.
-		- Added EJB2 support generously donated by the
-		  "Geodetix s.r.l. Company" http://www.geodetix.it/
-		- Added EJB3 tutorial / examples donated by
-		  Norman Barker <nbarker@ittvis.com>
-		- Reorganized java directory layout a little.
+ - Fixed support for PostgreSQL 8.2
+ - Fixed bug in collect() function discarding SRID of
+   input
+ - Added SRID match check in MakeBox2d and MakeBox3d
+ - Fixed regress tests to pass with GEOS-3.0.0
+ - Improved pgsql2shp run concurrency.
+ - Java:
+  - reworked JTS support to reflect new upstream
+    JTS developers' attitude to SRID handling.
+    Simplifies code and drops build depend on GNU trove.
+  - Added EJB2 support generously donated by the
+    "Geodetix s.r.l. Company" http://www.geodetix.it/
+  - Added EJB3 tutorial / examples donated by
+    Norman Barker <nbarker@ittvis.com>
+  - Reorganized java directory layout a little.
 
 PostGIS 1.1.3
 2006/06/30
 
-	- NEW Long Transactions support.
-	- Can run the regress tests with 'make check' now.
-	- New regress test support for loader/dumper.
-	- BUGFIX in pgsql2shp successful return code.
-	- BUGFIX in shp2pgsql handling of MultiLine WKT.
-	- BUGFIX in affine() failing to update bounding box.
-	- WKT parser: forbidden construction of multigeometries with
-	  EMPTY elements (still supported for GEOMETRYCOLLECTION).
-	- Added --with-proj-libdir and --with-geos-libdir configure
-	  switches.
-	- JDBC:
-		- Improved regression tests: MultiPoint and scientific ordinates
-		- Fixed some minor bugs in jdbc code
-		- Added proper accessor functions for all fields in preparation of
-		  making those fields private later
-	- Support for build Tru64 build.
-	- Use Jade for generating documentation.
-	- NEW DumpRings() function.
-	- BUGFIX in distance(poly,poly) giving wrong results.
-	- NEW AsHEXEWKB(geom, XDR|NDR) function.
-	- Don't link pgsql2shp to more libs then required.
-	- Initial support for PostgreSQL 8.2.
+ - NEW Long Transactions support.
+ - Can run the regress tests with 'make check' now.
+ - New regress test support for loader/dumper.
+ - BUGFIX in pgsql2shp successful return code.
+ - BUGFIX in shp2pgsql handling of MultiLine WKT.
+ - BUGFIX in affine() failing to update bounding box.
+ - WKT parser: forbidden construction of multigeometries with
+   EMPTY elements (still supported for GEOMETRYCOLLECTION).
+ - Added --with-proj-libdir and --with-geos-libdir configure
+   switches.
+ - JDBC:
+   - Improved regression tests: MultiPoint and scientific ordinates
+   - Fixed some minor bugs in jdbc code
+   - Added proper accessor functions for all fields in preparation of
+     making those fields private later
+ - Support for build Tru64 build.
+ - Use Jade for generating documentation.
+ - NEW DumpRings() function.
+ - BUGFIX in distance(poly,poly) giving wrong results.
+ - NEW AsHEXEWKB(geom, XDR|NDR) function.
+ - Don't link pgsql2shp to more libs then required.
+ - Initial support for PostgreSQL 8.2.
 
 PostGIS 1.1.2
 2006/03/30
 
-	- Regress tests can now be run *before* postgis intallation
-	- BUGFIX in SnapToGrid() computation of output bounding box
-	- More portable ./configure script
-	- Changed ./run_test script to have more sane default behaviour
-	- Fixed support for 64bit archs
-	- jdbc2 SRID handling fixes in JTS code
-	- New affine() matrix transformation functions
-	- New rotate{,X,Y,Z}() function
-	- Old translating and scaling functions now use affine() internally
-	- BUGFIX in EnforceRHR()
-	- Embedded access control in estimated_extent() for builds against
-	  pgsql >= 8.0.0
+ - Regress tests can now be run *before* postgis intallation
+ - BUGFIX in SnapToGrid() computation of output bounding box
+ - More portable ./configure script
+ - Changed ./run_test script to have more sane default behaviour
+ - Fixed support for 64bit archs
+ - jdbc2 SRID handling fixes in JTS code
+ - New affine() matrix transformation functions
+ - New rotate{,X,Y,Z}() function
+ - Old translating and scaling functions now use affine() internally
+ - BUGFIX in EnforceRHR()
+ - Embedded access control in estimated_extent() for builds against
+   pgsql >= 8.0.0
 
 PostGIS 1.1.1
 2006/01/23
 
-	- Source code cleanups
-	- Solaris 2.7 and MingW support improvements
-	- added NumInteriorRing() alias due to OpenGIS ambiguity
-	- BUGFIX in geometrycollection handling of GEOS-CAPI connector
-	- BUGFIX in line_locate_point()
-	- Fixed handling of postgresql paths
-	- Fixed a premature exit in postgis_restore.pl
-	- BUGFIX in line_substring()
-	- New Z and M interpolation in line_substring()
-	- New Z and M interpolation in line_interpolate_point()
-	- Added support for localized cluster in regress tester
+ - Source code cleanups
+ - Solaris 2.7 and MingW support improvements
+ - added NumInteriorRing() alias due to OpenGIS ambiguity
+ - BUGFIX in geometrycollection handling of GEOS-CAPI connector
+ - BUGFIX in line_locate_point()
+ - Fixed handling of postgresql paths
+ - Fixed a premature exit in postgis_restore.pl
+ - BUGFIX in line_substring()
+ - New Z and M interpolation in line_substring()
+ - New Z and M interpolation in line_interpolate_point()
+ - Added support for localized cluster in regress tester
 
 PostGIS 1.1.0
 2005/12/21
 
-	- New functions:
-		- scale() and transscale() companion methods to translate()
-		- line_substring()
-		- line_locate_point()
-		- M(point)
-		- LineMerge(geometry)
-		- shift_longitude(geometry)
-		- azimuth(geometry)
-		- locate_along_measure(geometry, float8)
-		- locate_between_measures(geometry, float8, float8)
-		- SnapToGrid by point offset (up to 4d support)
-		- BuildArea(any_geometry)
-		- OGC BdPolyFromText(linestring_wkt, srid)
-		- OGC BdMPolyFromText(linestring_wkt, srid)
-		- RemovePoint(linestring, offset)
-		- ReplacePoint(linestring, offset, point)
+ - New functions:
+   - scale() and transscale() companion methods to translate()
+   - line_substring()
+   - line_locate_point()
+   - M(point)
+   - LineMerge(geometry)
+   - shift_longitude(geometry)
+   - azimuth(geometry)
+   - locate_along_measure(geometry, float8)
+   - locate_between_measures(geometry, float8, float8)
+   - SnapToGrid by point offset (up to 4d support)
+   - BuildArea(any_geometry)
+   - OGC BdPolyFromText(linestring_wkt, srid)
+   - OGC BdMPolyFromText(linestring_wkt, srid)
+   - RemovePoint(linestring, offset)
+   - ReplacePoint(linestring, offset, point)
 
-	- Bug fixes:
-		- Fixed memory leak in polygonize()
-		- Fixed bug in lwgeom_as_anytype cast funcions
-		- Fixed USE_GEOS, USE_PROJ and USE_STATS elements
-		  of postgis_version() output to always reflect
-		  library state.
+ - Bug fixes:
+   - Fixed memory leak in polygonize()
+   - Fixed bug in lwgeom_as_anytype cast funcions
+   - Fixed USE_GEOS, USE_PROJ and USE_STATS elements
+     of postgis_version() output to always reflect
+     library state.
 
-	- Function semantic changes:
-		- SnapToGrid doesn't discard higher dimensions
-		- Changed Z() function to return NULL if requested
-		  dimension is not available
+ - Function semantic changes:
+   - SnapToGrid doesn't discard higher dimensions
+   - Changed Z() function to return NULL if requested
+     dimension is not available
 
-	- Peformance improvements:
-		- Much faster transform() function, caching proj4 objects
-		- Removed automatic call to fix_geometry_columns() in
-		  AddGeometryColumns() and update_geometry_stats()
+ - Peformance improvements:
+   - Much faster transform() function, caching proj4 objects
+   - Removed automatic call to fix_geometry_columns() in
+     AddGeometryColumns() and update_geometry_stats()
 
-	- jdbc2 works:
-		- Makefile improvements
-		- JTS support improvements
-		- Improved regression test system
-		- Basic consistency check method for geometry collections
-		- Support for (Hex)(E)wkb
-		- Autoprobing DriverWrapper for HexWKB / EWKT switching
-		- fix compile problems in ValueSetter for ancient jdk releases.
-		- fix EWKT constructors to accept SRID=4711; representation
-		- added preliminary read-only support for java2d geometries
+ - jdbc2 works:
+   - Makefile improvements
+   - JTS support improvements
+   - Improved regression test system
+   - Basic consistency check method for geometry collections
+   - Support for (Hex)(E)wkb
+   - Autoprobing DriverWrapper for HexWKB / EWKT switching
+   - fix compile problems in ValueSetter for ancient jdk releases.
+   - fix EWKT constructors to accept SRID=4711; representation
+   - added preliminary read-only support for java2d geometries
 
-	- Other new things:
-		- Full autoconf-based configuration, with
-		  PostgreSQL source dependency relief
-		- GEOS C-API support (2.2.0 and higher)
-		- Initial support for topology modelling
-		- Debian and RPM specfiles
-		- New lwpostgis_upgrade.sql script
+ - Other new things:
+   - Full autoconf-based configuration, with
+     PostgreSQL source dependency relief
+   - GEOS C-API support (2.2.0 and higher)
+   - Initial support for topology modelling
+   - Debian and RPM specfiles
+   - New lwpostgis_upgrade.sql script
 
-	- Other changes:
-		- JTS support improvements
-		- Stricter mapping between DBF and SQL integer and
-		  string attributes
-		- Wider and cleaner regression test suite
-		- old jdbc code removed from release
-		- obsoleted direct use of postgis_proc_upgrade.pl
-		- scripts version unified with release version
+ - Other changes:
+   - JTS support improvements
+   - Stricter mapping between DBF and SQL integer and
+     string attributes
+   - Wider and cleaner regression test suite
+   - old jdbc code removed from release
+   - obsoleted direct use of postgis_proc_upgrade.pl
+   - scripts version unified with release version
 
 PostGIS 1.0.6
 2005/12/06
-	- Fixed palloc(0) call in collection deserializer (only gives
-	  problem with --enable-cassert)
-	- Fixed bbox cache handling bugs
-	- Fixed geom_accum(NULL, NULL) segfault
-	- Initial support for postgresql 8.2
-	- Fixed segfault in addPoint()
-	- Fixed short-allocation in lwcollection_clone()
-	- Fixed bug in segmentize()
-	- Added missing SRID mismatch checks in GEOS ops
-	- Fixed bbox computation of SnapToGrid output
+ - Fixed palloc(0) call in collection deserializer (only gives
+   problem with --enable-cassert)
+ - Fixed bbox cache handling bugs
+ - Fixed geom_accum(NULL, NULL) segfault
+ - Initial support for postgresql 8.2
+ - Fixed segfault in addPoint()
+ - Fixed short-allocation in lwcollection_clone()
+ - Fixed bug in segmentize()
+ - Added missing SRID mismatch checks in GEOS ops
+ - Fixed bbox computation of SnapToGrid output
 
 PostGIS 1.0.5
 2005/11/25
-	- New "Reporting Bugs" chapter in manual
-	- Segfault fix in shp2pgsql (utf8 encoding)
-	- Fixed computation of null values fraction in analyzer
-	- Fixed return code of shp2pgsql
-	- Fixed handling of trailing dots in dbf numerical attributes
-	- Schema aware postgis_proc_upgrade.pl, support for pgsql 7.2+
-	- Fixed a small bug in the getPoint4d_p() low-level function
-	- Fixed memory alignment problems
-	- Speedup of serializer functions
-	- Bug fix in force_4d, force_3dm and force_3dz functions
+ - New "Reporting Bugs" chapter in manual
+ - Segfault fix in shp2pgsql (utf8 encoding)
+ - Fixed computation of null values fraction in analyzer
+ - Fixed return code of shp2pgsql
+ - Fixed handling of trailing dots in dbf numerical attributes
+ - Schema aware postgis_proc_upgrade.pl, support for pgsql 7.2+
+ - Fixed a small bug in the getPoint4d_p() low-level function
+ - Fixed memory alignment problems
+ - Speedup of serializer functions
+ - Bug fix in force_4d, force_3dm and force_3dz functions
 
 PostGIS 1.0.4
 2005/09/09
-	- Memory leak plugged in GiST indexing
-	- Segfault fix in transform() handling of proj4 errors
-	- Fixed some proj4 texts in spatial_ref_sys (missing +proj)
-	- GiST indexing cleanup
-	- Loader: fixed string functions usage, reworked NULL objects check,
-	  fixed segfault on MULTILINESTRING input.
-	- Fixed bug in MakeLine dimension handling
-	- Looser syntax acceptance in box3d parser
-	- Documentation improvements
-	- More robust selectivity estimator
-	- Minor speedup in distance()
-	- Minor cleanups
-	- Fixed bug in translate() corrupting output bounding box
-	- Initial implementation of postgis_proc_upgrade script
+ - Memory leak plugged in GiST indexing
+ - Segfault fix in transform() handling of proj4 errors
+ - Fixed some proj4 texts in spatial_ref_sys (missing +proj)
+ - GiST indexing cleanup
+ - Loader: fixed string functions usage, reworked NULL objects check,
+   fixed segfault on MULTILINESTRING input.
+ - Fixed bug in MakeLine dimension handling
+ - Looser syntax acceptance in box3d parser
+ - Documentation improvements
+ - More robust selectivity estimator
+ - Minor speedup in distance()
+ - Minor cleanups
+ - Fixed bug in translate() corrupting output bounding box
+ - Initial implementation of postgis_proc_upgrade script
 
 PostGIS 1.0.3
 2005/08/08
-	- Severe bugfix in lwgeom's 2d bounding box computation
-	- Bugfix in WKT (-w) POINT handling in loader
-	- Bugfix in dumper on 64bit machines
-	- Bugfix in dumper handling of user-defined queries
-	- Bugfix in create_undef.pl script
-	- Small performance improvement in canonical input function
-	- Minor cleanups in loader
-	- Support for multibyte field names in loader
-	- Improvement in the postgis_restore.pl script
-	- New rebuild_bbox_caches.pl util script
+ - Severe bugfix in lwgeom's 2d bounding box computation
+ - Bugfix in WKT (-w) POINT handling in loader
+ - Bugfix in dumper on 64bit machines
+ - Bugfix in dumper handling of user-defined queries
+ - Bugfix in create_undef.pl script
+ - Small performance improvement in canonical input function
+ - Minor cleanups in loader
+ - Support for multibyte field names in loader
+ - Improvement in the postgis_restore.pl script
+ - New rebuild_bbox_caches.pl util script
 
 PostGIS 1.0.2
 2005/07/04
-	- Fault tolerant btree ops
-	- Memory Leak fix in pg_error
-	- Rtree index fix. See:
-	  http://archives.postgresql.org/pgsql-hackers/2005-06/msg01108.php
-		- Initial support for postgresql 8.1dev
-	- Cleaner build scripts: avoided mix of CFLAGS and CXXFLAGS
-	- NEW -I switch for pgsql2shp (GiST index)
+ - Fault tolerant btree ops
+ - Memory Leak fix in pg_error
+ - Rtree index fix. See:
+   http://archives.postgresql.org/pgsql-hackers/2005-06/msg01108.php
+   - Initial support for postgresql 8.1dev
+ - Cleaner build scripts: avoided mix of CFLAGS and CXXFLAGS
+ - NEW -I switch for pgsql2shp (GiST index)
 
 PostGIS 1.0.1
 2005/05/24
-	- BUGFIX in shp2pgql escape functions
-	- BUGFIX in 3d computation of lenght_spheroid
-	- better support for concurrent postgis in multiple schemas
-	- documentation fixes
-	- BUGFIX in join selectivity estimator returning invalid estimates (>1)
-	- jdbc2: compile with "-target 1.2 -source 1.2" by default
-	- NEW support for custom createdb options in postgis_restore.pl
-	- NEW -k switch for pgsql2shp
-	- BUGFIX in pgsql2shp attribute names unicity enforcement
-	- BUGFIX in Paris projections definitions
-	- postgis_restore.pl cleanups
+ - BUGFIX in shp2pgql escape functions
+ - BUGFIX in 3d computation of lenght_spheroid
+ - better support for concurrent postgis in multiple schemas
+ - documentation fixes
+ - BUGFIX in join selectivity estimator returning invalid estimates (>1)
+ - jdbc2: compile with "-target 1.2 -source 1.2" by default
+ - NEW support for custom createdb options in postgis_restore.pl
+ - NEW -k switch for pgsql2shp
+ - BUGFIX in pgsql2shp attribute names unicity enforcement
+ - BUGFIX in Paris projections definitions
+ - postgis_restore.pl cleanups
 
 PostGIS 1.0.0
 2005/04/19
-	- NEW manual pages for loader/dumper
-	- NEW shp2pgsql support for old (HWGEOM) postgis versions
-	- NEW -p flag for shp2pgsql
-	- BUGFIX in transform() releasing random memory address
-	- BUGFIX in force_3dm() allocating less memory then required
-	- NEW chapter about OGC compliancy enforcement
-	- BUGFIX in shp2pgsql escape of values starting with "'" or "\t"
-	- NEW autoconf support for JTS lib
-	- BUGFIX in estimator testers (support for LWGEOM and schema parsing)
-	- BUGFIX in join selectivity estimator (defaults, leaks, tuplecount, sd)
+ - NEW manual pages for loader/dumper
+ - NEW shp2pgsql support for old (HWGEOM) postgis versions
+ - NEW -p flag for shp2pgsql
+ - BUGFIX in transform() releasing random memory address
+ - BUGFIX in force_3dm() allocating less memory then required
+ - NEW chapter about OGC compliancy enforcement
+ - BUGFIX in shp2pgsql escape of values starting with "'" or "\t"
+ - NEW autoconf support for JTS lib
+ - BUGFIX in estimator testers (support for LWGEOM and schema parsing)
+ - BUGFIX in join selectivity estimator (defaults, leaks, tuplecount, sd)
 
 PostGIS 1.0.0RC6
 2005/03/30
-	- BUGFIX dumper 64bit
-	- BUGFIX in multi()
-	- BUGFIX in postgis_restore.pl script
-	- early return [when noop] from multi()
-	- dropped {x,y}{min,max}(box2d) functions
+ - BUGFIX dumper 64bit
+ - BUGFIX in multi()
+ - BUGFIX in postgis_restore.pl script
+ - early return [when noop] from multi()
+ - dropped {x,y}{min,max}(box2d) functions
 
 PostGIS 1.0.0RC5
 2005/03/25
-	- small build scripts refinements
-	- BUGFIX in box3d computation (yes, another!)
-	- BUGFIX in estimated_extent()
-		- additional performance tips documented
+ - small build scripts refinements
+ - BUGFIX in box3d computation (yes, another!)
+ - BUGFIX in estimated_extent()
+   - additional performance tips documented
 
 PostGIS 1.0.0RC4
 2005/03/18
-	- early return from force_collection
-	- segfault fix in geom_accum()
-	- consistency check fix in SnapToGrid()
-	- jdbc2: code cleanups, Makefile improvements
-	- FLEX & YACC variables set *after* pgsql Makefile.global
-	  is included and only if the pgsql *stripped* version
-	  evaulates to the empty string
-	- added already generated parser in release
-	- build scripts refinements
-	- MultiLine handling BUG fix in loader and dumper
-	- improved version handling, central Version.config
-		- added distance_sphere function
-	- subselects support in selectivity estimator
-	- bug fixes for 64bit architectures
-	- bugfix in loaded, skipping all but first hole of polygons.
-	- changed get_proj4_from_srid implementation to use plpgsql
-	  instead of sql to workaround a pgsql80x bug.
-	- box2d output changed back to 15 significant digits
-	- BUGFIX in box3d computation function with collections
-	- improvements in postgis_restore.pl
+ - early return from force_collection
+ - segfault fix in geom_accum()
+ - consistency check fix in SnapToGrid()
+ - jdbc2: code cleanups, Makefile improvements
+ - FLEX & YACC variables set *after* pgsql Makefile.global
+   is included and only if the pgsql *stripped* version
+   evaulates to the empty string
+ - added already generated parser in release
+ - build scripts refinements
+ - MultiLine handling BUG fix in loader and dumper
+ - improved version handling, central Version.config
+   - added distance_sphere function
+ - subselects support in selectivity estimator
+ - bug fixes for 64bit architectures
+ - bugfix in loaded, skipping all but first hole of polygons.
+ - changed get_proj4_from_srid implementation to use plpgsql
+   instead of sql to workaround a pgsql80x bug.
+ - box2d output changed back to 15 significant digits
+ - BUGFIX in box3d computation function with collections
+ - improvements in postgis_restore.pl
 
 PostGIS 1.0.0RC3
 2005/02/24
-	- transform(): missing SRID bugfix, better error handling
-	- jdbc2: small patches, box2d/3d tests, revised docs and license.
-	- jdbc2: bug fix and testcase in for pgjdbc 8.0 type autoregistration
-	- few changes in autoconf
-	- reduced precision of box2d output.
-	- some functions made IMMUTABLE from STABLE,
-	  for performance improvement
-	- new performance tips chapter in manual
-	- BUILDDATE extraction made more portable
-	- fixed bogus 72 index bindings
-	- prefixed DEBUG macros with PGIS_ to avoid clash with pgsql one
-	- fixes in probe_geometry_columns() to work with PG72 and support
-	  multiple geometry columns in a single table
-	- fixed spatial_ref_sys.sql to avoid vacuuming the whole database.
-	- jdbc2: Removed use of jdk1.4 only features to enable build with
-	  older jdk releases.
-	- jdbc2: Added support for building against pg72jdbc2.jar
-	- documentation updates: pgsql72 requirement, lwpostgis.sql
-	- memory alignment handling
-	- fixed bug in force_collection causing mapserver connector
-	  failures on simple (single) geometry types.
-	- jdbc2: updated and cleaned makefile
-	- plugged a leak in GEOS2POSTGIS converter
-	- jdbc2: added BETA support for jts geometry classes
-	- jdbc2: Skip known-to-fail tests against older PostGIS servers.
-	- jdbc2: Fixed handling of measured geometries in EWKT.
-	- Reduced memory usage by early releasing query-context palloced one.
-	- Added bool::text cast in lwpostgis.sql
-	- bug fix in GeometryFromText() missing to add a bbox cache.
-	- spatial_ref_sys: changed Paris entries to match the ones
-	  distributed with 0.x.
+ - transform(): missing SRID bugfix, better error handling
+ - jdbc2: small patches, box2d/3d tests, revised docs and license.
+ - jdbc2: bug fix and testcase in for pgjdbc 8.0 type autoregistration
+ - few changes in autoconf
+ - reduced precision of box2d output.
+ - some functions made IMMUTABLE from STABLE,
+   for performance improvement
+ - new performance tips chapter in manual
+ - BUILDDATE extraction made more portable
+ - fixed bogus 72 index bindings
+ - prefixed DEBUG macros with PGIS_ to avoid clash with pgsql one
+ - fixes in probe_geometry_columns() to work with PG72 and support
+   multiple geometry columns in a single table
+ - fixed spatial_ref_sys.sql to avoid vacuuming the whole database.
+ - jdbc2: Removed use of jdk1.4 only features to enable build with
+   older jdk releases.
+ - jdbc2: Added support for building against pg72jdbc2.jar
+ - documentation updates: pgsql72 requirement, lwpostgis.sql
+ - memory alignment handling
+ - fixed bug in force_collection causing mapserver connector
+   failures on simple (single) geometry types.
+ - jdbc2: updated and cleaned makefile
+ - plugged a leak in GEOS2POSTGIS converter
+ - jdbc2: added BETA support for jts geometry classes
+ - jdbc2: Skip known-to-fail tests against older PostGIS servers.
+ - jdbc2: Fixed handling of measured geometries in EWKT.
+ - Reduced memory usage by early releasing query-context palloced one.
+ - Added bool::text cast in lwpostgis.sql
+ - bug fix in GeometryFromText() missing to add a bbox cache.
+ - spatial_ref_sys: changed Paris entries to match the ones
+   distributed with 0.x.
 
 PostGIS 1.0.0RC2
 2005/01/26
-	- More correct STABLE, IMMUTABLE, STRICT uses in lwpostgis.sql
-	- GEOMETRYCOLLECTION(EMPTY) syntax support for backward compatibility
-	- faster and more robust loader (both i18n and not)
-	- faster binary outputs
-	- bug fix in pointarray box3d computation
-	- initial autoconf script
-	- bug fix in distance_spheroid definition
-	- stricter OGC WKB constructors
-	- stricter OGC WKT constructors
-	- bug fix in transform() missing to update bbox cache
-	- LWGEOM aware JDBC driver (jdbc2)
+ - More correct STABLE, IMMUTABLE, STRICT uses in lwpostgis.sql
+ - GEOMETRYCOLLECTION(EMPTY) syntax support for backward compatibility
+ - faster and more robust loader (both i18n and not)
+ - faster binary outputs
+ - bug fix in pointarray box3d computation
+ - initial autoconf script
+ - bug fix in distance_spheroid definition
+ - stricter OGC WKB constructors
+ - stricter OGC WKT constructors
+ - bug fix in transform() missing to update bbox cache
+ - LWGEOM aware JDBC driver (jdbc2)
 
 PostGIS 1.0.0RC1
 2005/01/13
 
 - New Things
   - Objects are all now "lightweight" with a smaller disk
-	and index representation. Large databases should see a moderate
-	to large performance increase.
+    and index representation. Large databases should see a moderate
+    to large performance increase.
   - Objects now have a hexidecimal canonical representation.
-	To see a "user friendly" version of the objects use the
-	AsText() function.
+    To see a "user friendly" version of the objects use the
+    AsText() function.
   - The loader and dumper use the hexidecimal canonical representation,
-	so coordinate drift due to floating point string parsing is now
-	eliminated.
+    so coordinate drift due to floating point string parsing is now
+    eliminated.
   - New functions: UpdateGeometrySRID(), AsGML(), SnapToGrid(),
-	ForceRHR(), estimated_extent(), Accum().
+    ForceRHR(), estimated_extent(), Accum().
   - Vertical positioning operators.
   - Geometry constructors/editors.
   - Coordinate dimensions handling (up to 4d).
@@ -543,7 +544,7 @@ PostGIS 0.9.0
 
 - New Things
   - GEOMETRY_COLUMNS management functions
-	- fix_geometry_columns(), probe_geometry_columns()
+  - fix_geometry_columns(), probe_geometry_columns()
   - Support for PgSQL 8.0 / Support for Win32
   - Support for GEOS 2.0
 - Bug Fixes
@@ -560,8 +561,8 @@ PostGIS 0.8.2
   - Integrated PgSQL 7.5 statistics rathering
   - Improved schema support
   - Optional experimental lightweight geometries (LWGEOM)
-	- Faster performance
-	- Lower disk usage
+  - Faster performance
+  - Lower disk usage
   - Multi() function to create MULTI* geometries
   - line_interpolate_point() function for linear referencing
 - Bug Fixes
@@ -586,21 +587,21 @@ PostGIS 0.8.0
 - New Things
   - Support for PostgreSQL 7.4
   - Support for all OpenGIS SFSQL functions (requires GEOS)
-	- Contains()
-	- Within()
-	- GeomUnion()
-	- Intersection()
-	- Buffer()
-	- and many more...!
+    - Contains()
+    - Within()
+    - GeomUnion()
+    - Intersection()
+    - Buffer()
+    - and many more...!
   - Includes OpenGIS conformance tests
   - Passes all OpenGIS conformance tests
   - Spatial aggregate functions
-	- GeomUnion()
-	- Collect()
+    - GeomUnion()
+    - Collect()
 - Bug Fixes
   - shp2pgsql/pgsql2shp
-	- Numerous special cases in rings and
-	  attributes repaired
+     - Numerous special cases in rings and
+       attributes repaired
   - Some OpenGIS conformance changes
 
 
@@ -609,10 +610,10 @@ PostGIS 0.7.5
 
 - Bug Fixes
   - shp2pgsql
-	- Z coordinate handling
-	- M coordinate handling
-	- Ring handling fixed in some cases
-	- Support for large numbers in attribute tables
+    - Z coordinate handling
+    - M coordinate handling
+    - Ring handling fixed in some cases
+    - Support for large numbers in attribute tables
   - Some obscure operators fixed
   - Some cygwin build improvements
 
@@ -635,7 +636,7 @@ PostGIS 0.7.3
 
 - Bug Fixes
   - Stupid bug in .sql install script breaks install for
-	many. Squashed. New release needed.
+    many. Squashed. New release needed.
   - Automatic version detection for appropriate GiST bindings
   - postgis_transform now supports box3d types as well as geometry
 
@@ -645,7 +646,7 @@ PostGIS 0.7.2
 
 - Bug Fixes
   - Numerous subtle bugs fixed in pgsql2shp and shp2pgsql DBF and
-	SHP file handling
+    SHP file handling
   - Some pgsql 7.3 preparations
   - Patch to truly_inside() corner case
   - Updates to the ~ and @ operators
@@ -657,11 +658,11 @@ PostGIS 0.7.1
 
 - Bug Fixes
   - PgSQL 7.2 RTree-over-GIST bug fix. Rare data cases
-	caused index building to fail.
+    caused index building to fail.
   - Carriage returns removed from source code. Were
-	causing compilation failures.
+    causing compilation failures.
   - collect() now returns simplest homogeneous type
-	being aggregated (e.g.M ULTIPOLYGON for collect(*POLYGON))
+    being aggregated (e.g.M ULTIPOLYGON for collect(*POLYGON))
 
 
 PostGIS 0.7.0
@@ -669,12 +670,12 @@ PostGIS 0.7.0
 
 - New Things
   - transform() function provides coordinate reprojection
-	using proj4 library
+    using proj4 library
   - spatial_ref_sys.sql has a complete set of proj4
-	definitions for each EPSG coordinate system
+    definitions for each EPSG coordinate system
   - support for PostgreSQL 7.2 GiST index API
   - refactoring of source code to separate index support
-	functions from other functions
+    functions from other functions
   - max_distance() function
   - distance_spheroid() function
   - collect() aggregate function
@@ -710,36 +711,36 @@ PostGIS 0.6
 
 - New functions
   - postgis_version()
-	Return the PostGIS version number.
+    Return the PostGIS version number.
   - find_srid(<db/schema>::varchar, <table>::varchar, <column>::varchar)
-	Return the SRID number for a particular column of a database.
+    Return the SRID number for a particular column of a database.
   - AddGeometryColumn(<db/schema>::varchar, <table>::varchar,
-	  <column>::varchar, <srid>::integer, <type>::varchar,
-	  <dimension>::integer)
-	Appends a geometry column to an existing table and updates the
-	metadata tables appropriately.
+   <column>::varchar, <srid>::integer, <type>::varchar,
+   <dimension>::integer)
+    Appends a geometry column to an existing table and updates the
+    metadata tables appropriately.
   - DropGeometryColumn(<db/schema>::varchar, <table>::varchar,
-	  <column>::varchar)
-	Removes a geometry column from an existing spatial table.
+   <column>::varchar)
+    Removes a geometry column from an existing spatial table.
   - Distance(<geom1>::geometry, <geom2>::geometry)
-	Returns the cartesian distance between two geometries.
+    Returns the cartesian distance between two geometries.
   - AsText(<geom>::geometry)
-	Returns the OGC well-known text version of the geometry.
+    Returns the OGC well-known text version of the geometry.
   - SRID(<geom>::geometry)
-	Returns the integer SRID of the geometry.
+    Returns the integer SRID of the geometry.
   - GeometryFromText(<geom>::varchar, <srid>::integer)
-	Creates a geometry object given the OGC well-known text and a valid
-	SRID.
+    Creates a geometry object given the OGC well-known text and a valid
+    SRID.
   - SetSRID(<geom>::geometry)
-	Sets the SRID of a geometry to a particular value.
+    Sets the SRID of a geometry to a particular value.
   - IsClosed(<geom>::geometry)
-	Returns true of first and last points of geometry are coincident.
+    Returns true of first and last points of geometry are coincident.
   - StartPoint(<geom>::geometry)
-	Returns the first point of a geometry.
+    Returns the first point of a geometry.
   - EndPoint(<geom>::geometry)
-	Returns the last point of a geometry.
+    Returns the last point of a geometry.
   - Centroid(<geom>::geometry)
-	Returns the centroid of a geometry.
+    Returns the centroid of a geometry.
 - More OpenGIS SFSQL compatibility
   - SPATIAL_REF_SYS table
   - GEOMETRY_COLUMNS table
@@ -775,17 +776,17 @@ PostGIS 0.5
   - wkb_xdr()
 - New Objects
   - SPHEROID(<NAME>,<SEMIMAJOR AXIS>,<INVERSE FLATTENING>)
-	To be used with the length_spheroid functions for accurate
-	length calculations on lat/lon data.
+    To be used with the length_spheroid functions for accurate
+    length calculations on lat/lon data.
 - Minor bug fixes
 - Internal Functions
   - Extra constructors to make geometry manipulation easier
 - Structural Reorganization
   - Broke postgis.c up into four new files
-	postgis_debug.c -- debugging functions
-	postgis_fn.c -- generic functions (like length())
-	postgis_ops.c -- operators and indexing functions
-	postgis_inout.c -- type support functions and data conversion functions
+    postgis_debug.c -- debugging functions
+    postgis_fn.c -- generic functions (like length())
+    postgis_ops.c -- operators and indexing functions
+    postgis_inout.c -- type support functions and data conversion functions
 
 
 PostGIS 0.2
@@ -806,7 +807,7 @@ PostGIS 0.2
   - documentation in docbook xml
   - example program for WKB access
   - removed 'make test' until we can get regression
-	working more cleanly
+    working more cleanly
 
 
 PostGIS 0.1
