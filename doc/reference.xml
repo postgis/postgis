@@ -9065,6 +9065,21 @@ ST_Point      | t          | t              | f           | f
 		<para>Returns true if B intersects the interior of A but not the boundary (or exterior).</para>
 
 		<para>A does not contain properly itself, but does contain itself.</para>
+		<para>Every point of the other geometry is a point of this geometry's interior. The DE-9IM Intersection Matrix for the two geometries matches
+   [T**FF*FF*]</para>
+
+		<note>
+		  <para>From JTS docs slightly reworded: The advantage to using this predicate over <xref linkend="ST_Contains" /> and <xref linkend="ST_Intersects" /> is that it can be computed
+	  efficiently, with no need to compute topology at individual points.</para>
+		<para>
+			 An example use case for this predicate is computing the intersections
+	 of a set of geometries with a large polygonal geometry.
+	Since intersection is a fairly slow operation, it can be more efficient
+	 to use containsProperly to filter out test geometries which lie
+	wholly inside the area.  In these cases the intersection is
+	known a priori to be exactly the original test geometry.
+	 </para>
+		</note>
 
 		<para>Availability: 1.4.0 - requires GEOS &gt;= 3.1.0.</para>
 
