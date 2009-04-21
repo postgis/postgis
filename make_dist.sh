@@ -18,8 +18,6 @@ version=cvs
 
 if [ -n "$1" ]; then
 	version="$1"
-	#version=`echo $version | sed 's/RC/-rc/'`
-	#tag=pgis_`echo "$version" | sed 's/\./_/g'`
 	tag="tags/$version"
 fi
 
@@ -33,7 +31,7 @@ fi
 
 echo "Exporting tag $tag"
 #cvs export -r "$tag" -d "$outdir" postgis 
-svn export "http://svn.refractions.net/postgis/$tag" "$outdir"
+svn export "http://svn.osgeo.org/postgis/$version" "$outdir"
 if [ $? -gt 0 ]; then
 	exit 1
 fi
