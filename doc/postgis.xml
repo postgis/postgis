@@ -6286,7 +6286,15 @@ z' = z </programlisting> This method is a subcase of
       <title>Release Notes</title>
 
       <sect2>
-        <title>Release 1.3.4</title>
+        <title>Release 1.3.6</title>
+        <para>Release date: 2009/04/21</para>
+        <para>This release adds support for PostgreSQL 8.4, exporting
+        prj files from the database with shape data, and several small
+        bug fixes in the handling of "curve" types.</para>
+      </sect2>
+
+      <sect2>
+        <title>Release 1.3.5</title>
         <para>Release date: 2008/12/15</para>
         <para>This release is a bug fix release to address a failure
         in ST_Force_Collection and related functions that critically
