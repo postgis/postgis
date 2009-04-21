@@ -112,6 +112,9 @@ if test "x$XSLBASE" = "x"; then
 		/usr/share/sgml/docbook/xsl-stylesheets 
 		/usr/share/xml/docbook/stylesheet/nwalsh
 		/usr/share/sgml/docbook/stylesheet/xsl/nwalsh
+		/opt/local/share/xsl/docbook-xsl
+		/usr/local/share/xsl/docbook-xsl
+		/usr/share/xsl/docbook-xsl
 		"
 	for p in ${SEARCHPATH}; do
 		if test -r "${p}"/html/docbook.xsl; then
@@ -548,6 +551,10 @@ AC_MSG_RESULT([  PostgreSQL config:    ${PGCONFIG}])
 AC_MSG_RESULT([  PostgreSQL version:   ${PGSQL_MAJOR_VERSION}.${PGSQL_MINOR_VERSION}])
 AC_MSG_RESULT([  PROJ4 version:        ${POSTGIS_PROJ_VERSION}])
 AC_MSG_RESULT([  PostGIS debug level:  ${POSTGIS_DEBUG_LEVEL}])
+AC_MSG_RESULT()
+AC_MSG_RESULT([ -------- Documentation Generation -------- ])
+AC_MSG_RESULT([  xsltproc:             ${XSLTPROC}])
+AC_MSG_RESULT([  xsl style sheets:     ${XSLBASE}])
 AC_MSG_RESULT()
 
 

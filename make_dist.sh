@@ -33,7 +33,7 @@ fi
 
 echo "Exporting tag $tag"
 #cvs export -r "$tag" -d "$outdir" postgis 
-svn export "http://svn.refractions.net/postgis/$tag" "$outdir"
+svn export "http://svn.osgeo.org/postgis/$tag" "$outdir"
 if [ $? -gt 0 ]; then
 	exit 1
 fi
