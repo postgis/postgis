@@ -9,10 +9,10 @@
 			using a garden variety of geometries.  Its intent is to flag major crashes.
 	 ******************************************************************** -->
 	<xsl:output method="text" />
-	<!--Exclude this from testing - it crashes or already tested in special section -->
+	<xsl:variable name='testversion'>1.3.5</xsl:variable>
 	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 or tested separately -->
-	<xsl:variable name='fnexclude13'>AddGeometryColumn DropGeometryColumn DropGeometryTable Populate_Geometry_Columns ST_IsValidReason ST_ContainsProperly ST_MinimumBoundingCircle</xsl:variable>
+	
 	<xsl:variable name='var_srid'>3395</xsl:variable>
 	<xsl:variable name='var_position'>1</xsl:variable>
 	<xsl:variable name='var_integer1'>3</xsl:variable>
@@ -72,13 +72,6 @@
 			CROSS JOIN generate_series(1,2) As m
 			GROUP BY m)</pgis:gset>
 
-		<pgis:gset ID='CurvePolySet' GeometryType='CURVEPOLYGON'>(SELECT ST_LineToCurve(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j))  As the_geom
-		FROM generate_series(-10,50,10) As i
-			CROSS JOIN generate_series(40,70, 20) As j)</pgis:gset>
-		<pgis:gset ID='CircularStringSet' GeometryType='CIRCULARSTRING'>(SELECT ST_LineToCurve(ST_Boundary(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j)))  As the_geom
-		FROM generate_series(-10,50,10) As i
-			CROSS JOIN generate_series(40,70, 20) As j)</pgis:gset>
-
 <!-- MULTIs start here -->
 		<pgis:gset ID='MultiPointSet' GeometryType='MULTIPOINT'>(SELECT ST_Collect(s.the_geom) As the_geom
 		FROM (SELECT ST_SetSRID(ST_Point(i,j),4326) As the_geom
@@ -93,45 +86,52 @@
 
 		<pgis:gset ID='MultiPolySet' GeometryType='POLYGON'>(SELECT ST_Multi(ST_Union(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j)))  As the_geom
 		FROM generate_series(-10,50,10) As i
-			CROSS JOIN generate_series(40,70, 20) As j)</pgis:gset>
+			CROSS JOIN generate_series(40,70, 25) As j)</pgis:gset>
 
 		<pgis:gset ID='MultiPointSet3D' GeometryType='MULTIPOINT'>(SELECT ST_Collect(ST_SetSRID(ST_MakePoint(i,j,k),4326)) As the_geom
 		FROM generate_series(-10,50,20) As i
-			CROSS JOIN generate_series(40,70, 20) j
+			CROSS JOIN generate_series(40,70, 25) j
 			CROSS JOIN generate_series(1,3) k
 			)</pgis:gset>
 
 		<pgis:gset ID='MultiLineSet3D' GeometryType='MULTILINESTRING'>(SELECT ST_Multi(ST_Union(ST_SetSRID(ST_MakeLine(ST_MakePoint(i,j,k), ST_MakePoint(i+k,j+k,k)),4326))) As the_geom
 		FROM generate_series(-10,50,20) As i
-			CROSS JOIN generate_series(40,70, 20) j
+			CROSS JOIN generate_series(40,70, 25) j
 			CROSS JOIN generate_series(1,2) k
 			)</pgis:gset>
 
 		<pgis:gset ID='MultiPolySet3D' GeometryType='MULTIPOLYGON'>(SELECT ST_Multi(ST_Union(s.the_geom)) As the_geom
 		FROM (SELECT ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_SetSRID(ST_MakePointM(i+m,j,m),4326),ST_SetSRID(ST_MakePointM(j+m,i-m,m),4326)),ST_SetSRID(ST_MakePointM(i,j,m),4326)),ST_SetSRID(ST_MakePointM(i+m,j,m),4326)))  As the_geom
 		FROM generate_series(-10,50,20) As i
-			CROSS JOIN generate_series(50,70, 20) As j
+			CROSS JOIN generate_series(50,70, 25) As j
 			CROSS JOIN generate_series(1,2) As m
 			) As s)</pgis:gset>
 
 		<pgis:gset ID='MultiPointMSet' GeometryType='MULTIPOINTM'>(SELECT ST_Collect(s.the_geom) As the_geom
 		FROM (SELECT ST_SetSRID(ST_MakePointM(i,j,m),4326) As the_geom
 		FROM generate_series(-10,50,10) As i
-			CROSS JOIN generate_series(50,70, 20) AS j
+			CROSS JOIN generate_series(50,70, 25) AS j
 			CROSS JOIN generate_series(1,2) As m) As s)</pgis:gset>
 
 		<pgis:gset ID='MultiLineMSet' GeometryType='MULTILINESTRINGM'>(SELECT ST_Collect(s.the_geom) As the_geom
 		FROM (SELECT ST_MakeLine(ST_SetSRID(ST_MakePointM(i,j,m),4326),ST_SetSRID(ST_MakePointM(j,i,m),4326))  As the_geom
-		FROM generate_series(-10,50,10) As i
-			CROSS JOIN generate_series(50,70, 20) As j
+		FROM generate_series(-10,50,20) As i
+			CROSS JOIN generate_series(50,70, 25) As j
 			CROSS JOIN generate_series(1,2) As m
 			WHERE NOT(i = j)) As s)</pgis:gset>
 
 		<pgis:gset ID='MultiPolygonMSet' GeometryType='MULTIPOLYGONM'>(SELECT ST_Multi(ST_Union(ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_SetSRID(ST_MakePointM(i+m,j,m),4326),ST_SetSRID(ST_MakePointM(j+m,i-m,m),4326)),ST_SetSRID(ST_MakePointM(i,j,m),4326)),ST_SetSRID(ST_MakePointM(i+m,j,m),4326)))))  As the_geom
 		FROM generate_series(-10,50,20) As i
-			CROSS JOIN generate_series(50,70, 20) As j
+			CROSS JOIN generate_series(50,70, 25) As j
 			CROSS JOIN generate_series(1,2) As m
 			)</pgis:gset>
+			
+		<pgis:gset ID='CurvePolySet' GeometryType='CURVEPOLYGON'>(SELECT ST_LineToCurve(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j))  As the_geom
+		FROM generate_series(-10,50,10) As i
+			CROSS JOIN generate_series(40,70, 20) As j)</pgis:gset>
+		<pgis:gset ID='CircularStringSet' GeometryType='CIRCULARSTRING'>(SELECT ST_LineToCurve(ST_Boundary(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j)))  As the_geom
+		FROM generate_series(-10,50,10) As i
+			CROSS JOIN generate_series(40,70, 20) As j)</pgis:gset>
 	<!-- TODO: Finish off MULTI list -->
 	</pgis:gardens>
 	<!--This is just a placeholder to hold geometries that will crash server when hitting against some functions
@@ -141,6 +141,15 @@
 	</pgis:gardencrashers>
 
 	<xsl:template match='/chapter'>
+		<!--Exclude this from testing - it crashes or already tested in special section -->
+	<xsl:choose>
+	  <xsl:when test="$testversion = '1.3.5'">
+		  <xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable Populate_Geometry_Columns ST_CurveToLine ST_LineToCurve ST_IsValidReason ST_ContainsProperly ST_MinimumBoundingCircle</xsl:variable>
+	  </xsl:when>
+	  <xsl:otherwise>
+	  		<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
+	  </xsl:otherwise>
+	</xsl:choose>
 <!--Start Test table creation, insert, drop -->
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 SELECT 'create,insert,drop Test: Start Testing Multi/<xsl:value-of select="@GeometryType" />';
@@ -181,7 +190,7 @@ SELECT 'create,insert,drop Test: Start Testing Multi/<xsl:value-of select="@Geom
 			BEGIN;
 			SELECT foo1.the_geom <xsl:value-of select="$fnname" /> foo2.the_geom
 					FROM (<xsl:value-of select="$from1" />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2
-					LIMIT 3;
+					;
 			COMMIT;
 					</xsl:for-each>
 		SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: End Testing <xsl:value-of select="@GeometryType" /> against other types';
@@ -251,7 +260,7 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 			  </xsl:otherwise>
 			</xsl:choose>
 			FROM (<xsl:value-of select="$from1" />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2
-			LIMIT 3;
+			;
 	COMMIT;
 	SELECT '<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnargs" />) <xsl:text> </xsl:text> <xsl:value-of select="@ID" />: End Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
 		<xsl:text>
