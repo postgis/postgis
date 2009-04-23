@@ -125,13 +125,8 @@
 			CROSS JOIN generate_series(50,70, 25) As j
 			CROSS JOIN generate_series(1,2) As m
 			)</pgis:gset>
-			
-		<pgis:gset ID='CurvePolySet' GeometryType='CURVEPOLYGON'>(SELECT ST_LineToCurve(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j))  As the_geom
-		FROM generate_series(-10,50,10) As i
-			CROSS JOIN generate_series(40,70, 20) As j)</pgis:gset>
-		<pgis:gset ID='CircularStringSet' GeometryType='CIRCULARSTRING'>(SELECT ST_LineToCurve(ST_Boundary(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j)))  As the_geom
-		FROM generate_series(-10,50,10) As i
-			CROSS JOIN generate_series(40,70, 20) As j)</pgis:gset>
+
+	
 	<!-- TODO: Finish off MULTI list -->
 	</pgis:gardens>
 	<!--This is just a placeholder to hold geometries that will crash server when hitting against some functions
@@ -144,10 +139,19 @@
 		<!--Exclude this from testing - it crashes or already tested in special section -->
 	<xsl:choose>
 	  <xsl:when test="$testversion = '1.3.5'">
-		  <xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable Populate_Geometry_Columns ST_BdMPolyFromText ST_CurveToLine ST_LineToCurve ST_IsValidReason ST_ContainsProperly ST_MinimumBoundingCircle</xsl:variable>
+		  <xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable Populate_Geometry_Columns ST_CurveToLine ST_LineToCurve ST_IsValidReason ST_ContainsProperly ST_MinimumBoundingCircle</xsl:variable>
 	  </xsl:when>
 	  <xsl:otherwise>
 	  		<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
+			<!--Exclude curved geometries testing 1.3.5 it crashes the server for some functions thus preventing further testing  -->
+			<pgis:gardens>
+				<pgis:gset ID='CurvePolySet' GeometryType='CURVEPOLYGON'>(SELECT ST_LineToCurve(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j))  As the_geom
+				FROM generate_series(-10,50,10) As i
+					CROSS JOIN generate_series(40,70, 20) As j)</pgis:gset>
+				<pgis:gset ID='CircularStringSet' GeometryType='CIRCULARSTRING'>(SELECT ST_LineToCurve(ST_Boundary(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j)))  As the_geom
+				FROM generate_series(-10,50,10) As i
+					CROSS JOIN generate_series(40,70, 20) As j)</pgis:gset>
+			</pgis:gardens>
 	  </xsl:otherwise>
 	</xsl:choose>
 <!--Start Test table creation, insert, drop -->
