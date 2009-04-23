@@ -144,7 +144,7 @@
 		<!--Exclude this from testing - it crashes or already tested in special section -->
 	<xsl:choose>
 	  <xsl:when test="$testversion = '1.3.5'">
-		  <xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable Populate_Geometry_Columns ST_CurveToLine ST_LineToCurve ST_IsValidReason ST_ContainsProperly ST_MinimumBoundingCircle</xsl:variable>
+		  <xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable Populate_Geometry_Columns ST_BdMPolyFromText ST_CurveToLine ST_LineToCurve ST_IsValidReason ST_ContainsProperly ST_MinimumBoundingCircle</xsl:variable>
 	  </xsl:when>
 	  <xsl:otherwise>
 	  		<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
