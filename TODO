@@ -53,6 +53,20 @@ but providing some utility.
 Current curve support does include indexing and in/out functions but needs
 much better documentation, particularly about the valid WKT and WKB forms.
 
+-- Data Mangling for Performance --
+
+Often geofeatures will be very large, 1000s of vertices, but the use case
+for the features will only be using a few vertices at a time. For example,
+an ocean polygon could be huge, but if a map is only zoomed into the coastline,
+a small portion will be needed. Nonetheless, the database will have to 
+retrieve the whole feature. Similarly, when carrying out spatial joins,
+retrieving very large features and matching against small features is a bad
+performance bargain, particularly since large features tend to reside in 
+the TOAST tables, for yet more performance pain.
+
+The solution is to cut up the large features into smaller features. 
+Some standard utilities for doing so are required.
+
 -- Geodetic support --
 
 A new "geography" type which is indexed in cartesian 3-space, possibly
