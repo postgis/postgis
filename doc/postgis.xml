@@ -4184,7 +4184,8 @@ dimension
 				is the same as B's bounding box.</para>
 				<note><para>This is cause for a lot of confusion.  When you compare geometryA = geometryB it will return 
 				true even when the geometries are clearly different if their bounding boxes are the same.  To check for 
-				true equality use <xref linkend="ST_OrderingEquals"/> or <xref linkend="ST_Equals"/></para></note>
+				true equality use <link linkend="ST_OrderingEquals">ST_OrderingEquals</link> or <link 
+				linkend="ST_Equals">ST_Equals</link></para></note>
 			</listitem>
 		  </varlistentry>
 		
