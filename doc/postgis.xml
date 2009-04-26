@@ -2910,7 +2910,7 @@ VACUUM FULL ANALYZE mytable;</programlisting>
             </listitem>
           </varlistentry>
 
-          <varlistentry>
+          <varlistentry id="ST_Equals">
             <term>ST_Equals(geometry, geometry)</term>
 
             <listitem>
@@ -5875,7 +5875,7 @@ z' = z </programlisting> This method is a subcase of
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="ST_OrderingEquals">
           <term>ST_OrderingEquals</term>
 
           <listitem>
