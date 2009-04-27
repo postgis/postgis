@@ -35,7 +35,7 @@
       comparison that will make use of any indexes that are available on the
       geometries.</para>
     </note>
-	
+
 	<para>Availability: version goes here - requires GEOS &gt;= 2.1.0.</para>
 
     <!-- Optionally mention OpenGIS compliancy if appropriate -->
@@ -53,14 +53,14 @@
           <imagedata fileref="images/check.png" />
         </imageobject>
       </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 5.1.23</para>
-	
+
 	<!-- Optionally mention 3d support -->
     <para><inlinemediaobject>
         <imageobject>
           <imagedata fileref="images/check.png" />
         </imageobject>
       </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
-	  
+
 	<!-- Optionally mention Circular String Support -->
 	    <para><inlinemediaobject>
 	        <imageobject>
@@ -68,7 +68,7 @@
 	        </imageobject>
 	      </inlinemediaobject> This method supports Circular Strings and Curves </para>
   </refsection>
-  
+
 
   <refsection>
     <title>Examples</title>
