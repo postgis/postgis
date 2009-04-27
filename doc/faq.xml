@@ -212,7 +212,7 @@ WHERE
         1000) the following query would work well:</para>
 
         <programlisting>SELECT * FROM geotable 
-  WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);</programlisting>
+WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);</programlisting>
       </answer>
     </qandaentry>
 
