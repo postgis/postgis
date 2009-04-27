@@ -34,7 +34,7 @@
   </bookinfo>
 
   <chapter>
-	<title>Introduction</title>
+    <title>Introduction</title>
 	
 	<para>PostGIS is developed by Refractions Research Inc, as a spatial
 	database technology research project. Refractions is a GIS and database
