@@ -23,14 +23,14 @@ package.
 
 Common requirements
 ===================
- 
+
 debian packages:
-	- xlstproc 
+	- xsltproc
 
 Requirements to build postgis.pdf
 =================================
 
 debian packages:
-	- passivetex 
+	- passivetex
 	- xmltex  (for pdfxmltex)
 
