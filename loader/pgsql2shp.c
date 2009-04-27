@@ -7,7 +7,7 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************
  *
  * PostGIS to Shapefile converter
@@ -39,7 +39,7 @@ static char rcsid[] =
 #include <unistd.h> // for getpid()
 
 #ifdef __CYGWIN__
-#include <sys/param.h>       
+#include <sys/param.h>
 #endif
 
 #include "../liblwgeom/liblwgeom.h"
@@ -105,9 +105,9 @@ static void parse_table(char *spec);
 static int create_usrquerytable(void);
 static const char *nullDBFValue(char fieldType);
 int projFileCreate(const char * pszFilename, char *schema, char *table, char *geo_col_name);
-/* 
+/*
  * Make appropriate formatting of a DBF value based on type.
- * Might return untouched input or pointer to static private 
+ * Might return untouched input or pointer to static private
  * buffer: use return value right away.
  */
 static const char * goodDBFValue(const char *in, char fieldType);
@@ -162,19 +162,19 @@ main(int ARGC, char **ARGV)
 	/*
 	 * Make sure dates are returned in ISO
 	 * style (YYYY-MM-DD).
-	 * This is to allow goodDBFValue() function 
+	 * This is to allow goodDBFValue() function
 	 * to successfully extract YYYYMMDD format
 	 * expected in shapefile's dbf file.
 	 */
 	putenv("PGDATESTYLE=ISO");
 
 	if ( ! parse_commandline(ARGC, ARGV) ) {
-                printf("\n**ERROR** invalid option or command parameters\n\n");
+				printf("\n**ERROR** invalid option or command parameters\n\n");
 		usage(ARGV[0], 2, stderr);
 	}
 
 	/* Use table name as shapefile name */
-        if(shp_file == NULL) shp_file = table;
+		if(shp_file == NULL) shp_file = table;
 
 	/* Make a connection to the specified database, and exit on failure */
 	conn = PQconnectdb(conn_string);
@@ -200,7 +200,7 @@ main(int ARGC, char **ARGV)
 	fprintf(stdout, "Initializing... "); fflush(stdout);
 	if ( ! initialize() ) exit_nicely(conn, 1);
 	fprintf(stdout, "Done (postgis major version: %d).\n",
-		pgis_major_version); 
+		pgis_major_version);
 
 	if ( pgis_major_version > 0 && dswitchprovided )
 	{
@@ -280,7 +280,7 @@ main(int ARGC, char **ARGV)
 		{
 			/* Add record in all output files */
 			if ( ! addRecord(res, i, row) ) exit_nicely(conn, 1);
-			row++; 
+			row++;
 		}
 
 		LWDEBUG(4, "End of result, clearing...");
@@ -407,14 +407,14 @@ create_polygon(LWPOLY *lwpolygon)
 		for (j = 0; j < lwpolygon->rings[i]->npoints; j++)
 		{
 			p4d = getPoint4d(lwpolygon->rings[i], j);
-	
+
 			xpts[shppoint] = p4d.x;
 			ypts[shppoint] = p4d.y;
 			zpts[shppoint] = p4d.z;
 			mpts[shppoint] = p4d.m;
-	
+
 			LWDEBUGF(4, "Polygon Ring %d - Point: %g %g %g %g", i, xpts[shppoint], ypts[shppoint], zpts[shppoint], mpts[shppoint]);
-			
+
 			/* Increment the point counter */
 			shppoint++;
 		}
@@ -424,17 +424,17 @@ create_polygon(LWPOLY *lwpolygon)
 		 * other rings should be counter-clockwise
 		 */
 		if ( i == 0 ) {
-			if ( ! is_clockwise(lwpolygon->rings[i]->npoints, 
+			if ( ! is_clockwise(lwpolygon->rings[i]->npoints,
 				&xpts[shpparts[i]], &ypts[shpparts[i]], NULL) )
 			{
 				LWDEBUG(4, "Outer ring not clockwise, forcing clockwise\n");
 
-				reverse_points(lwpolygon->rings[i]->npoints, 
-					&xpts[shpparts[i]], &ypts[shpparts[i]], 
+				reverse_points(lwpolygon->rings[i]->npoints,
+					&xpts[shpparts[i]], &ypts[shpparts[i]],
 					&zpts[shpparts[i]], &mpts[shpparts[i]]);
 			}
-		} 
-		else 
+		}
+		else
 		{
 			if ( is_clockwise(lwpolygon->rings[i]->npoints,
 				&xpts[shpparts[i]], &ypts[shpparts[i]], NULL) )
@@ -442,7 +442,7 @@ create_polygon(LWPOLY *lwpolygon)
 				LWDEBUGF(4, "Inner ring %d not counter-clockwise, forcing counter-clockwise\n", i);
 
 				reverse_points(lwpolygon->rings[i]->npoints,
-					&xpts[shpparts[i]], &ypts[shpparts[i]], 
+					&xpts[shpparts[i]], &ypts[shpparts[i]],
 					&zpts[shpparts[i]], &mpts[shpparts[i]]);
 			}
 		}
@@ -497,20 +497,20 @@ create_multipolygon(LWMPOLY *lwmultipolygon)
 		{
 			/* For each ring, store the integer coordinate offset for the start of each ring */
 			shpparts[shpring] = shppoint;
-	
+
 			LWDEBUGF(4, "Ring offset: %d", shpring);
 
 			for (k = 0; k < lwmultipolygon->geoms[i]->rings[j]->npoints; k++)
 			{
 				p4d = getPoint4d(lwmultipolygon->geoms[i]->rings[j], k);
-		
+
 				xpts[shppoint] = p4d.x;
 				ypts[shppoint] = p4d.y;
 				zpts[shppoint] = p4d.z;
 				mpts[shppoint] = p4d.m;
-		
+
 				LWDEBUGF(4, "MultiPolygon %d Polygon Ring %d - Point: %g %g %g %g", i, j, xpts[shppoint], ypts[shppoint], zpts[shppoint], mpts[shppoint]);
-				
+
 				/* Increment the point counter */
 				shppoint++;
 			}
@@ -520,25 +520,25 @@ create_multipolygon(LWMPOLY *lwmultipolygon)
 			* other rings should be counter-clockwise
 			*/
 			if ( j == 0 ) {
-				if ( ! is_clockwise(lwmultipolygon->geoms[i]->rings[j]->npoints, 
+				if ( ! is_clockwise(lwmultipolygon->geoms[i]->rings[j]->npoints,
 					&xpts[shpparts[shpring]], &ypts[shpparts[shpring]], NULL) )
 				{
 					LWDEBUG(4, "Outer ring not clockwise, forcing clockwise\n");
-	
-					reverse_points(lwmultipolygon->geoms[i]->rings[j]->npoints, 
-						&xpts[shpparts[shpring]], &ypts[shpparts[shpring]], 
+
+					reverse_points(lwmultipolygon->geoms[i]->rings[j]->npoints,
+						&xpts[shpparts[shpring]], &ypts[shpparts[shpring]],
 						&zpts[shpparts[shpring]], &mpts[shpparts[shpring]]);
 				}
-			} 
-			else 
+			}
+			else
 			{
 				if ( is_clockwise(lwmultipolygon->geoms[i]->rings[j]->npoints,
 					&xpts[shpparts[shpring]], &ypts[shpparts[shpring]], NULL) )
 				{
 					LWDEBUGF(4, "Inner ring %d not counter-clockwise, forcing counter-clockwise\n", i);
-	
+
 					reverse_points(lwmultipolygon->geoms[i]->rings[j]->npoints,
-						&xpts[shpparts[shpring]], &ypts[shpparts[shpring]], 
+						&xpts[shpparts[shpring]], &ypts[shpparts[shpring]],
 						&zpts[shpparts[shpring]], &mpts[shpparts[shpring]]);
 				}
 			}
@@ -627,7 +627,7 @@ create_multilinestring(LWMLINE *lwmultilinestring)
 		for (j = 0; j < lwmultilinestring->geoms[i]->points->npoints; j++)
 		{
 			p4d = getPoint4d(lwmultilinestring->geoms[i]->points, j);
-	
+
 			xpts[shppoint] = p4d.x;
 			ypts[shppoint] = p4d.y;
 			zpts[shppoint] = p4d.z;
@@ -711,7 +711,7 @@ shape_creator_wrapper_WKB(char *hexwkb, int idx)
 int
 reverse_points(int num_points, double *x, double *y, double *z, double *m)
 {
-	
+
 	int i,j;
 	double temp;
 	j = num_points -1;
@@ -753,10 +753,10 @@ is_clockwise(int num_points, double *x, double *y, double *z)
 	int i;
 	double x_change,y_change,area;
 	double *x_new, *y_new; /* the points, translated to the origin
-	                        * for safer accuracy */
+							* for safer accuracy */
 
-	x_new = (double *)malloc(sizeof(double) * num_points);	
-	y_new = (double *)malloc(sizeof(double) * num_points);	
+	x_new = (double *)malloc(sizeof(double) * num_points);
+	y_new = (double *)malloc(sizeof(double) * num_points);
 	area=0.0;
 	x_change = x[0];
 	y_change = y[0];
@@ -792,7 +792,7 @@ getGeometryOID(PGconn *conn)
 	char *temp_int;
 	int OID;
 
-	res1=PQexec(conn, "select OID from pg_type where typname = 'geometry'");	
+	res1=PQexec(conn, "select OID from pg_type where typname = 'geometry'");
 	if ( ! res1 || PQresultStatus(res1) != PGRES_TUPLES_OK )
 	{
 		printf( "OIDQuery: %s", PQerrorMessage(conn));
@@ -815,7 +815,7 @@ getGeometryOID(PGconn *conn)
 
 
 
-/* 
+/*
  * Passed result is a 1 row result.
  * Return 1 on success.
  * Return 0 on failure.
@@ -866,7 +866,7 @@ addRecord(PGresult *res, int residx, int row)
 			flds++;
 			continue;
 		}
-		
+
 		/* If we arrived here it is a geometry attribute */
 
 		/* Handle NULL shapes */
@@ -891,7 +891,7 @@ addRecord(PGresult *res, int residx, int row)
 			if ( pgis_major_version > 0 )
 			{
 				LWDEBUG(4, "PostGIS >= 1.0, non-binary cursor");
-			
+
 				/* Input is bytea encoded text field, so it must be unescaped and
 				then converted to hexewkb string */
 				hexewkb_binary = PQunescapeBytea((byte *)val, &hexewkb_len);
@@ -918,7 +918,7 @@ addRecord(PGresult *res, int residx, int row)
 		}
 
 		LWDEBUGF(4, "HexEWKB - length: %d  value: %s", strlen(hexewkb), hexewkb);
-		
+
 		obj = shape_creator_wrapper_WKB(hexewkb, row);
 		if ( ! obj )
 		{
@@ -944,7 +944,7 @@ addRecord(PGresult *res, int residx, int row)
 	return 1;
 }
 
-/* 
+/*
  * Return allocate memory. Free after use.
  */
 char *
@@ -982,7 +982,7 @@ getTableOID(char *schema, char *table)
 	}else{
 		ret = strdup(PQgetvalue(res3, 0, 0));
 		printf( "Warning: Multiple relations detected, the program will only dump the first relation.\n");
-	}	
+	}
 	PQclear(res3);
 	return ret;
 }
@@ -1025,7 +1025,7 @@ getGeometryType(char *schema, char *table, char *geo_col_name)
 #if VERBOSE > 2
 	printf( "%s\n",query);
 #endif
-	res = PQexec(conn, query);	
+	res = PQexec(conn, query);
 	if ( ! res || PQresultStatus(res) != PGRES_TUPLES_OK ) {
 		printf( "GeometryType: %s", PQerrorMessage(conn));
 		return -1;
@@ -1131,7 +1131,7 @@ getGeometryMaxDims(char *schema, char *table, char *geo_col_name)
 	if ( schema )
 	{
 		sprintf(query, "SELECT max(zmflag(\"%s\")) "
-			"FROM \"%s\".\"%s\"", 
+			"FROM \"%s\".\"%s\"",
 			 geo_col_name, schema, table);
 	}
 	else
@@ -1144,7 +1144,7 @@ getGeometryMaxDims(char *schema, char *table, char *geo_col_name)
 #if VERBOSE > 2
 	printf("%s\n",query);
 #endif
-	res = PQexec(conn, query);	
+	res = PQexec(conn, query);
 	if ( ! res || PQresultStatus(res) != PGRES_TUPLES_OK ) {
 		printf( "ZMflagQuery: %s", PQerrorMessage(conn));
 		PQclear(res);
@@ -1181,27 +1181,27 @@ getGeometryMaxDims(char *schema, char *table, char *geo_col_name)
 void
 usage(char* me, int status, FILE* out)
 {
-        fprintf(out,"RCSID: %s RELEASE: %s\n", rcsid, POSTGIS_VERSION);
+		fprintf(out,"RCSID: %s RELEASE: %s\n", rcsid, POSTGIS_VERSION);
 	fprintf(out,"USAGE: %s [<options>] <database> [<schema>.]<table>\n", me);
 	fprintf(out,"       %s [<options>] <database> <query>\n", me);
 	fprintf(out,"\n");
-       	fprintf(out,"OPTIONS:\n");
-       	fprintf(out,"  -f <filename>  Use this option to specify the name of the file\n");
-       	fprintf(out,"     to create.\n");
-       	fprintf(out,"  -h <host>  Allows you to specify connection to a database on a\n");
+		fprintf(out,"OPTIONS:\n");
+		fprintf(out,"  -f <filename>  Use this option to specify the name of the file\n");
+		fprintf(out,"     to create.\n");
+		fprintf(out,"  -h <host>  Allows you to specify connection to a database on a\n");
 	fprintf(out,"     machine other than the default.\n");
-       	fprintf(out,"  -p <port>  Allows you to specify a database port other than the default.\n");
-       	fprintf(out,"  -P <password>  Connect to the database with the specified password.\n");
-       	fprintf(out,"  -u <user>  Connect to the database as the specified user.\n");
+		fprintf(out,"  -p <port>  Allows you to specify a database port other than the default.\n");
+		fprintf(out,"  -P <password>  Connect to the database with the specified password.\n");
+		fprintf(out,"  -u <user>  Connect to the database as the specified user.\n");
 	fprintf(out,"  -g <geometry_column> Specify the geometry column to be exported.\n");
 	fprintf(out,"  -b Use a binary cursor.\n");
 	fprintf(out,"  -r Raw mode. Do not assume table has been created by \n");
 	fprintf(out,"     the loader. This would not unescape attribute names\n");
 	fprintf(out,"     and will not skip the 'gid' attribute.\n");
 	fprintf(out,"  -k Keep postgresql identifiers case.\n");
-        fprintf(out,"  -? Display this help screen.\n");
-       	fprintf(out,"\n");
-       	exit (status);
+		fprintf(out,"  -? Display this help screen.\n");
+		fprintf(out,"\n");
+		exit (status);
 }
 
 /* Parse command line parameters */
@@ -1210,15 +1210,15 @@ parse_commandline(int ARGC, char **ARGV)
 {
 	int c, curindex;
 	char buf[2048];
-        
-        if ( ARGC == 1 ) {
-                usage(ARGV[0], 0, stdout);
-        }
+
+		if ( ARGC == 1 ) {
+				usage(ARGV[0], 0, stdout);
+		}
 
 	memset(buf, 0, 2048); /* just in case... */
 
 	/* Parse command line */
-        while ((c = pgis_getopt(ARGC, ARGV, "bf:h:du:p:P:g:rk")) != EOF){
+		while ((c = pgis_getopt(ARGC, ARGV, "bf:h:du:p:P:g:rk")) != EOF){
 		switch (c) {
 			case 'b':
 				binary = 1;
@@ -1227,21 +1227,21 @@ parse_commandline(int ARGC, char **ARGV)
 				shp_file = optarg;
 				break;
 			case 'h':
-				snprintf(buf + strlen(buf), 255, "host=%s ", optarg);	
+				snprintf(buf + strlen(buf), 255, "host=%s ", optarg);
 				break;
 			case 'd':
 				dswitchprovided = 1;
 				outtype = 'z';
-				break;		  
+				break;
 			case 'r':
 				includegid = 1;
 				unescapedattrs = 1;
-				break;		  
+				break;
 			case 'u':
 				snprintf(buf + strlen(buf), 255, "user=%s ", optarg);
 				break;
 			case 'p':
-				snprintf(buf + strlen(buf), 255, "port=%s ", optarg);	
+				snprintf(buf + strlen(buf), 255, "port=%s ", optarg);
 				break;
 			case 'P':
 				snprintf(buf + strlen(buf), 255, "password=%s ", optarg);
@@ -1253,27 +1253,27 @@ parse_commandline(int ARGC, char **ARGV)
 				keep_fieldname_case = 1;
 				break;
 			case '?':
-                                usage(ARGV[0], 0, stdout);
+								usage(ARGV[0], 0, stdout);
 			default:
 				return 0;
 		}
-        }
+		}
 
-        curindex=0;
-        for (; optind<ARGC; optind++){
-                if (curindex == 0) {
-		    	snprintf(buf + strlen(buf), 255, "dbname=%s", ARGV[optind]);
-                }else if(curindex == 1){
+		curindex=0;
+		for (; optind<ARGC; optind++){
+				if (curindex == 0) {
+				snprintf(buf + strlen(buf), 255, "dbname=%s", ARGV[optind]);
+				}else if(curindex == 1){
 			parse_table(ARGV[optind]);
 
-                }
-                curindex++;
-        }
-        if (curindex < 2) return 0;
-	
+				}
+				curindex++;
+		}
+		if (curindex < 2) return 0;
+
 	/* Copy the buffer result to the connection string */
-	strncpy(conn_string, buf, 2048);	
-	
+	strncpy(conn_string, buf, 2048);
+
 	return 1;
 }
 
@@ -1379,7 +1379,7 @@ initialize(void)
 		printf( "Could not create dbf file\n");
 		return 0;
 	}
-	
+
 	/* Get geometry oid */
 	geo_oid = getGeometryOID(conn);
 	if ( geo_oid == -1 )
@@ -1420,7 +1420,7 @@ initialize(void)
 			if ( ! geo_col_name )
 			{
 				geom_fld = mainscan_nflds;
-				type_ary[mainscan_nflds]=9; 
+				type_ary[mainscan_nflds]=9;
 				geo_col_name = fname;
 				mainscan_flds[mainscan_nflds++] = fname;
 			}
@@ -1432,7 +1432,7 @@ initialize(void)
 			else if (!strcmp(geo_col_name, fname))
 			{
 				geom_fld = mainscan_nflds;
-				type_ary[mainscan_nflds]=9; 
+				type_ary[mainscan_nflds]=9;
 				mainscan_flds[mainscan_nflds++] = fname;
 			}
 
@@ -1440,7 +1440,7 @@ initialize(void)
 		}
 
 
-		/* 
+		/*
 		 * Everything else (non geometries) will be
 		 * a DBF attribute.
 		 */
@@ -1467,7 +1467,7 @@ initialize(void)
 		strncpy(field_name, ptr, 10);
 		field_name[10] = 0;
 
-		/* 
+		/*
 		 * make sure the fields all have unique names,
 		 */
 		tmpint=1;
@@ -1502,7 +1502,7 @@ initialize(void)
 		/* int2 type */
 		if ( type == 21 )
 		{
-			/* 
+			/*
 			 * Longest text representation for
 			 * an int2 type (16bit) is 6 bytes
 			 * (-32768)
@@ -1522,7 +1522,7 @@ initialize(void)
 		/* int4 type */
 		if ( type == 23 )
 		{
-			/* 
+			/*
 			 * Longest text representation for
 			 * an int4 type (32bit) is 11 bytes
 			 * (-2147483648)
@@ -1542,7 +1542,7 @@ initialize(void)
 		/* int8 type */
 		if ( type == 20 )
 		{
-			/* 
+			/*
 			 * Longest text representation for
 			 * an int8 type (64bit) is 20 bytes
 			 * (-9223372036854775808)
@@ -1558,10 +1558,10 @@ initialize(void)
 			mainscan_flds[mainscan_nflds++] = fname;
 			continue;
 		}
-		
+
 		/*
 		 * double or numeric types:
-  		 *    700: float4
+		 *    700: float4
 		 *    701: float8
 		 *   1700: numeric
 		 *
@@ -1625,7 +1625,7 @@ initialize(void)
 		}
 
 		/*
-		 * For variable-sized fields we'll use either 
+		 * For variable-sized fields we'll use either
 		 * maximum allowed size (atttypmod) or max actual
 		 * attribute value in table.
 		 */
@@ -1710,7 +1710,7 @@ initialize(void)
 				else if (outtype == 'm') outshptype=SHPT_ARCM;
 				else outshptype=SHPT_ARC;
 				break;
-				
+
 			case POLYGONTYPE:
 			case MULTIPOLYGONTYPE:
 				if (outtype == 'z') outshptype=SHPT_POLYGONZ;
@@ -1740,7 +1740,7 @@ initialize(void)
 		shp = SHPCreate(shp_file, outshptype);
 	}
 
-	/* 
+	/*
 	 * Ok. Now we should have an array of allocate strings
 	 * representing the fields we'd like to be returned by
 	 * main scan query.
@@ -1762,7 +1762,7 @@ initialize(void)
 		/* this is the geometry */
 		if ( type_ary[i] == 9 )
 		{
-			if ( big_endian ) 
+			if ( big_endian )
 			{
 				if ( pgis_major_version > 0 )
 				{
@@ -1821,7 +1821,7 @@ initialize(void)
 	return 1;
 }
 
-/* 
+/*
  * Return the maximum octet_length from given table.
  * Return -1 on error.
  */
@@ -1838,14 +1838,14 @@ getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname)
 	if ( schema )
 	{
 		query = (char *)malloc(strlen(fname)+strlen(table)+
-			strlen(schema)+40); 
+			strlen(schema)+40);
 		sprintf(query,
 			"select max(octet_length(\"%s\")) from \"%s\".\"%s\"",
 			fname, schema, table);
 	}
 	else
 	{
-		query = (char *)malloc(strlen(fname)+strlen(table)+40); 
+		query = (char *)malloc(strlen(fname)+strlen(table)+40);
 		sprintf(query,
 			"select max(octet_length(\"%s\")) from \"%s\"",
 			fname, table);
@@ -1940,17 +1940,17 @@ parse_table(char *spec)
 		usrquery = spec;
 
 		/*
-		 * encode pid in table name to reduce 
+		 * encode pid in table name to reduce
 		 * clashes probability (see bug#115)
 		 */
 		sprintf(temptablename,
 			"__pgsql2shp%lu_tmp_table",
 			(long)getpid());
-		table = temptablename; 
+		table = temptablename;
 	}
 	else
 	{
-        	table = spec;
+			table = spec;
 		if ( (ptr=strchr(table, '.')) )
 		{
 			*ptr = '\0';
@@ -1969,7 +1969,7 @@ create_usrquerytable(void)
 	query = malloc(strlen(table)+strlen(usrquery)+32);
 	sprintf(query, "CREATE TEMP TABLE \"%s\" AS %s", table, usrquery);
 
-        printf("Preparing table for user query... ");
+		printf("Preparing table for user query... ");
 	fflush(stdout);
 	res = PQexec(conn, query);
 	free(query);
@@ -1999,7 +1999,7 @@ nullDBFValue(char fieldType)
 			return "00000000";
 
 		case FTLogical:
-			/* NULL boolean fields have value "?" */ 
+			/* NULL boolean fields have value "?" */
 			return "?";
 
 		default:
@@ -2008,9 +2008,9 @@ nullDBFValue(char fieldType)
 	}
 }
 
-/* 
+/*
  * Make appropriate formatting of a DBF value based on type.
- * Might return untouched input or pointer to static private 
+ * Might return untouched input or pointer to static private
  * buffer: use return value right away.
  */
 static const char *
@@ -2061,9 +2061,9 @@ char *convert_bytes_to_hex(uchar *ewkb, size_t size)
 
 int projFileCreate(const char * pszFilename, char *schema, char *table, char *geo_col_name)
 {
-    FILE	*fp;
-    char	*pszFullname, *pszBasename;
-    int		i, result;
+	FILE	*fp;
+	char	*pszFullname, *pszBasename;
+	int		i, result;
 	char *srtext;
 	char *query;
 	char *esc_schema;
@@ -2072,7 +2072,7 @@ int projFileCreate(const char * pszFilename, char *schema, char *table, char *ge
 	int error;
 	PGresult *res;
 	int size;
-	
+
 	/***********
 	*** I'm multiplying by 2 instead of 3 because I am too lazy to figure out how many characters to add
 	*** after escaping if any **/
@@ -2089,13 +2089,13 @@ int projFileCreate(const char * pszFilename, char *schema, char *table, char *ge
 	/** make our address space large enough to hold query with table/schema **/
 	query = (char *) malloc(size);
 	if ( ! query ) return 0; /* out of virtual memory */
-	
+
 	/**************************************************
 	 * Get what kind of spatial ref is the selected geometry field
 	 * We first check the geometry_columns table for a match and then if no match do a distinct against the table
 	 * NOTE: COALESCE does a short-circuit check returning the faster query result and skipping the second if first returns something
-	 *	Escaping quotes in the schema and table in query may not be necessary except to prevent malicious attacks 
-	 *	or should someone be crazy enough to have quotes or other weird character in their table, column or schema names 
+	 *	Escaping quotes in the schema and table in query may not be necessary except to prevent malicious attacks
+	 *	or should someone be crazy enough to have quotes or other weird character in their table, column or schema names
 	 **************************************************/
 	if ( schema )
 	{
@@ -2103,9 +2103,9 @@ int projFileCreate(const char * pszFilename, char *schema, char *table, char *ge
 		PQescapeStringConn(conn, esc_schema, schema, strlen(schema), &error);
 		sprintf(query, "SELECT COALESCE((SELECT sr.srtext "
 				" FROM  geometry_columns As gc INNER JOIN spatial_ref_sys sr ON sr.srid = gc.srid "
-				" WHERE gc.f_table_schema = '%s' AND gc.f_table_name = '%s' AND gc.f_geometry_column = '%s' LIMIT 1),  " 
+				" WHERE gc.f_table_schema = '%s' AND gc.f_table_name = '%s' AND gc.f_geometry_column = '%s' LIMIT 1),  "
 				" (SELECT CASE WHEN COUNT(DISTINCT sr.srid) > 1 THEN 'm' ELSE MAX(sr.srtext) END As srtext "
-			" FROM \"%s\".\"%s\" As g INNER JOIN spatial_ref_sys sr ON sr.srid = ST_SRID(g.\"%s\")) , ' ') As srtext ", 
+			" FROM \"%s\".\"%s\" As g INNER JOIN spatial_ref_sys sr ON sr.srid = ST_SRID(g.\"%s\")) , ' ') As srtext ",
 				esc_schema, esc_table,esc_geo_col_name, schema, table, geo_col_name);
 		free(esc_schema);
 	}
@@ -2115,7 +2115,7 @@ int projFileCreate(const char * pszFilename, char *schema, char *table, char *ge
 				" FROM  geometry_columns As gc INNER JOIN spatial_ref_sys sr ON sr.srid = gc.srid "
 				" WHERE gc.f_table_name = '%s' AND gc.f_geometry_column = '%s' AND pg_table_is_visible((gc.f_table_schema || '.' || gc.f_table_name)::regclass) LIMIT 1),  "
 				" (SELECT CASE WHEN COUNT(DISTINCT sr.srid) > 1 THEN 'm' ELSE MAX(sr.srtext) END as srtext "
-			" FROM \"%s\" As g INNER JOIN spatial_ref_sys sr ON sr.srid = ST_SRID(g.\"%s\")), ' ') As srtext ", 
+			" FROM \"%s\" As g INNER JOIN spatial_ref_sys sr ON sr.srid = ST_SRID(g.\"%s\")), ' ') As srtext ",
 				esc_table, esc_geo_col_name, table, geo_col_name);
 	}
 
@@ -2124,7 +2124,7 @@ int projFileCreate(const char * pszFilename, char *schema, char *table, char *ge
 	free(esc_geo_col_name);
 
 	res = PQexec(conn, query);
-	
+
 	if ( ! res || PQresultStatus(res) != PGRES_TUPLES_OK ) {
 		printf( "Error: %s", PQerrorMessage(conn));
 		return 0;
@@ -2134,36 +2134,36 @@ int projFileCreate(const char * pszFilename, char *schema, char *table, char *ge
 	{
 		srtext = PQgetvalue(res, i, 0);
 		if (strcmp(srtext,"m") == 0){
-			printf("ERROR: Mixed set of spatial references.\n");	
+			printf("ERROR: Mixed set of spatial references. No prj file will be generated.\n");
 			PQclear(res);
 			return 0;
 		}
 		else {
 			if (srtext[0] == ' '){
-				printf("ERROR: Cannot determine spatial reference (empty table or unknown spatial ref).\n");
+				printf("WARNING: Cannot determine spatial reference (empty table or unknown spatial ref). No prj file will be generated.\n");
 				PQclear(res);
 				return 0;
 			}
-			else {	
+			else {
 				/* -------------------------------------------------------------------- */
 				/*	Compute the base (layer) name.  If there is any extension	*/
 				/*	on the passed in filename we will strip it off.			*/
 				/* -------------------------------------------------------------------- */
 					pszBasename = (char *) malloc(strlen(pszFilename)+5);
 					strcpy( pszBasename, pszFilename );
-					for( i = strlen(pszBasename)-1; 
+					for( i = strlen(pszBasename)-1;
 					 i > 0 && pszBasename[i] != '.' && pszBasename[i] != '/'
 						   && pszBasename[i] != '\\';
 					 i-- ) {}
-				
+
 					if( pszBasename[i] == '.' )
 						pszBasename[i] = '\0';
-				
+
 					pszFullname = (char *) malloc(strlen(pszBasename) + 5);
 					sprintf( pszFullname, "%s.prj", pszBasename );
 					free( pszBasename );
-					
-				
+
+
 				/* -------------------------------------------------------------------- */
 				/*      Create the file.                                                */
 				/* -------------------------------------------------------------------- */
@@ -2172,7 +2172,7 @@ int projFileCreate(const char * pszFilename, char *schema, char *table, char *ge
 					return 0;
 				}
 				result = fputs (srtext,fp);
-				LWDEBUGF(3, "\n result %d proj SRText is %s .\n", result, srtext);	
+				LWDEBUGF(3, "\n result %d proj SRText is %s .\n", result, srtext);
 				fclose( fp );
 				free( pszFullname );
 			}
