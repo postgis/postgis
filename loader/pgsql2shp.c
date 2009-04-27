@@ -3434,13 +3434,13 @@ int projFileCreate(const char * pszFilename, char *schema, char *table, char *ge
 	{
 		srtext = PQgetvalue(res, i, 0);
 		if (strcmp(srtext,"m") == 0){
-			printf("ERROR: Mixed set of spatial references.\n");
+			printf("ERROR: Mixed set of spatial references. No prj file will be generated.\n");
 			PQclear(res);
 			return 0;
 		}
 		else {
 			if (srtext[0] == ' '){
-				printf("WARNING: Can not determine spatial reference (empty table or unknown spatial ref).\n");
+				printf("WARNING: Can not determine spatial reference (empty table or unknown spatial ref). No prj file will be generated.\n");
 				PQclear(res);
 				return 0;
 			}
