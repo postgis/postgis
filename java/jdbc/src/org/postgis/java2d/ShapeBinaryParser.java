@@ -70,7 +70,7 @@ public class ShapeBinaryParser {
      * Is synchronized to protect offset counter. (Unfortunately, Java does not
      * have neither call by reference nor multiple return values.)
      * 
-     * @returns a potential SRID or -1 if not present
+     * @return a potential SRID or -1 if not present
      */
     public synchronized int parse(String value, GeneralPath path) {
         StringByteGetter bytes = new ByteGetter.StringByteGetter(value);
@@ -83,7 +83,7 @@ public class ShapeBinaryParser {
      * Is synchronized to protect offset counter. (Unfortunately, Java does not
      * have neither call by reference nor multiple return values.)
      * 
-     * @returns a potential SRID or -1 if not present
+     * @return a potential SRID or -1 if not present
      */
     public synchronized int parse(byte[] value, GeneralPath path) {
         BinaryByteGetter bytes = new ByteGetter.BinaryByteGetter(value);

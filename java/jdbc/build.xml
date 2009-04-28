@@ -120,12 +120,12 @@
     <copy file="../../COPYING" tofile="${build}/COPYING"/>
 
     <!-- Create the non-debug version -->
-    <jar destfile="postgis_${postgis_version}.jar" duplicate="preserve">
+    <jar destfile="postgis-${postgis_version}.jar" duplicate="preserve">
       <fileset dir="${build}"/>
     </jar>
 
     <!-- Create debug version -->
-    <jar destfile="postgis_debug_${postgis_version}.jar" duplicate="preserve">
+    <jar destfile="postgis_debug-${postgis_version}.jar" duplicate="preserve">
       <fileset dir="${build}"/>
       <fileset dir="${src}" includes="org/**"/>
       <fileset dir="${src}" includes="examples/**"/>

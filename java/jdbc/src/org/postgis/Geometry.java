@@ -303,7 +303,7 @@ public abstract class Geometry implements Serializable {
     /**
      * Splits the SRID=4711; part of a EWKT rep if present and sets the srid.
      * 
-     * @returns value without the SRID=4711; part
+     * @return value without the SRID=4711; part
      */
     protected String initSRID(String value) {
         value = value.trim();
