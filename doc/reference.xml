@@ -7392,15 +7392,19 @@ st_asgeojson
 			may be used to reduce the maximum number of decimal places
 			used in output (defaults to 15).</para>
 		<para>GML 2 refer to 2.1.2 version, GML 3 to 3.1.1 version</para>
-				<para>The last 'options' argument could be used to define Crs output type
-						in GML output:
+		<para>The last 'options' argument is a bitfield. It could be used to define CRS output type
+					in GML output, and to declare data as lat/lon:
 						  <itemizedlist>
 								<listitem>
-								  <para>1: GML Short CRS (e.g EPSG:4326), default value</para>
+								  <para>0: GML Short CRS (e.g EPSG:4326), default value</para>
 								</listitem>
 
 								<listitem>
-								  <para>2: GML Long CRS (e.g urn:ogc:def:crs:EPSG:4326)</para>
+								  <para>1: GML Long CRS (e.g urn:ogc:def:crs:EPSG:4326)</para>
+								</listitem>
+
+								<listitem>
+								  <para>16: Declare that datas are lat/lon (e.g srid=4326). Default is to assume that data are planars. This option is usefull for GML 3.1.1 output only, related to axis order.</para>
 								</listitem>
 						  </itemizedlist>
 						</para>
@@ -7422,11 +7426,16 @@ st_asgeojson
 	  <refsection>
 		<title>Examples</title>
 		<programlisting><![CDATA[SELECT ST_AsGML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
-
 		st_asgml
 		--------
-		<gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,0 0,1 1,1 1,0 0,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>]]>
-		</programlisting>
+		<gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,0 0,1 1,1 1,0 0,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>]]>
+	        </programlisting>
+		<programlisting><![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('POINT(5.234234233242 6.34534534534)',4326), 5, 17);
+	        st_asgml                                                    
+	        --------
+		<gml:Point srsName="urn:ogc:def:crs:EPSG:4326"><gml:pos>6.34535 5.23423</gml:pos></gml:Point>]]>
+	        </programlisting>
+
 	  </refsection>
 	</refentry>
 
