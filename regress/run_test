@@ -177,7 +177,10 @@ run_loader_test ()
 
 	show_progress
 
-	${PSQL} -c "DROP table ${_tblname}" "${DB}" >> ${TMPDIR}/regress_log 2>&1
+	if [ `${PSQL} -t -A -c "SELECT count(*) FROM pg_tables WHERE tablename = '${_tblname}'" "${DB}"` -gt 0 ]; then
+		${PSQL} -c "DROP TABLE ${_tblname}" "${DB}" >> ${TMPDIR}/regress_log 2>&1
+	fi
+
 	${PSQL} ${_psql_opts} -f ${TMPDIR}/loader "${DB}" > ${TMPDIR}/loader.err 2>&1
 	if [ $? -gt 0 ]; then
 		fail "sourcing shp2pgsql output" "${TMPDIR}/loader.err"
