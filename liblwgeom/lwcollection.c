@@ -165,7 +165,7 @@ lwcollection_serialize_size(LWCOLLECTION *col)
 }
 
 /**
- * convert this collectoin into its serialize form writing it into
+ * convert this collection into its serialize form writing it into
  * the given buffer, and returning number of bytes written into
  * the given int pointer.
  */
