@@ -137,8 +137,9 @@ lwcollection_getsubgeom(LWCOLLECTION *col, int gnum)
 	return (LWGEOM *)col->geoms[gnum];
 }
 
-/**
- *	find serialized size of this collection
+/*!
+ *	\brief find serialized size of this collection
+ *	\param col lwcollection to find serialized size of
  */
 size_t
 lwcollection_serialize_size(LWCOLLECTION *col)
@@ -164,10 +165,9 @@ lwcollection_serialize_size(LWCOLLECTION *col)
 	return size;
 }
 
-/**
- * convert this collection into its serialize form writing it into
- * the given buffer, and returning number of bytes written into
- * the given int pointer.
+/*! \brief convert this collection into its serialize form writing it into
+ *          the given buffer, and returning number of bytes written into
+ *          the given int pointer.
  */
 void
 lwcollection_serialize_buf(LWCOLLECTION *coll, uchar *buf, size_t *retsize)
@@ -266,10 +266,9 @@ lwcollection_clone(const LWCOLLECTION *g)
 	return ret;
 }
 
-/**
- * Add 'what' to this collection at position 'where'.
- * where=0 == prepend
- * where=-1 == append
+/*! \brief Add 'what' to this collection at position 'where'.
+ * 		where=0 == prepend
+ * 		where=-1 == append
  * Returns a GEOMETRYCOLLECTION
  */
 LWGEOM *
@@ -331,8 +330,8 @@ lwcollection_segmentize2d(LWCOLLECTION *col, double dist)
 		col->ngeoms, newgeoms);
 }
 
-/**
- * check for same geometry composition
+/*! \brief check for same geometry composition
+ *
  */
 char
 lwcollection_same(const LWCOLLECTION *c1, const LWCOLLECTION *c2)
