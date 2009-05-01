@@ -239,7 +239,7 @@ lwcollection_compute_box2d_p(LWCOLLECTION *col, BOX2DFLOAT4 *box)
 	return 1;
 }
 
-/*
+/**
  * Clone LWCOLLECTION object. POINTARRAY are not copied.
  * Bbox is cloned if present in input.
  */
@@ -266,7 +266,7 @@ lwcollection_clone(const LWCOLLECTION *g)
 	return ret;
 }
 
-/*
+/**
  * Add 'what' to this collection at position 'where'.
  * where=0 == prepend
  * where=-1 == append
@@ -331,7 +331,9 @@ lwcollection_segmentize2d(LWCOLLECTION *col, double dist)
 		col->ngeoms, newgeoms);
 }
 
-/* check for same geometry composition */
+/**
+ * check for same geometry composition
+ */
 char
 lwcollection_same(const LWCOLLECTION *c1, const LWCOLLECTION *c2)
 {
