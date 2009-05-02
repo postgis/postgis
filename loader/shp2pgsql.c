@@ -7,18 +7,20 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
- * 
- **********************************************************************
- * Using shapelib 1.2.8, this program reads in shape files and 
- * processes it's contents into a Insert statements which can be 
- * easily piped into a database frontend.
- * Specifically designed to insert type 'geometry' (a custom 
- * written PostgreSQL type) for the shape files and PostgreSQL 
- * standard types for all attributes of the entity. 
  *
- * Original Author: Jeff Lounsbury, jeffloun@refractions.net
+ /
+
+ /*! *********************************************************************
+ * \file Using shapelib 1.2.8, this program reads in shape files and
+ * 	processes it's contents into a Insert statements which can be
+ * 	easily piped into a database frontend.
+ * 	Specifically designed to insert type 'geometry' (a custom
+ * 	written PostgreSQL type) for the shape files and PostgreSQL
+ * 	standard types for all attributes of the entity.
  *
- * Maintainer: Sandro Santilli, strk@refractions.net
+ * 	Original Author: Jeff Lounsbury, jeffloun@refractions.net
+ *
+ * 	Maintainer: Sandro Santilli, strk@refractions.net
  *
  **********************************************************************/
 
@@ -60,7 +62,7 @@ typedef struct Ring {
 	unsigned int linked; 	/* number of "next" rings */
 } Ring;
 
-/* Values for null_policy global */
+/*! \brief Values for null_policy global */
 enum {
 	insert_null,
 	skip_null,
@@ -152,19 +154,19 @@ void *safe_malloc(size_t size)
 #define malloc(x) safe_malloc(x)
 
 
-/*
- * Escape input string suitable for COPY
+/*!
+ * \brief Escape input string suitable for COPY
  */
 
 char *
 escape_copy_string(char *str)
 {
 	/*
-	 * Escape the following characters by adding a preceding backslash 
- 	 *      tab, backslash, cr, lf
- 	 *
+	 * Escape the following characters by adding a preceding backslash
+	 *      tab, backslash, cr, lf
+	 *
 	 * 1. find # of escaped characters
-	 * 2. make new string 
+	 * 2. make new string
 	 *
 	 */
 
@@ -179,15 +181,15 @@ escape_copy_string(char *str)
 	{
 		utf8str=utf8(encoding, str);
 		if ( ! utf8str ) exit(1);
-		str = utf8str; 
+		str = utf8str;
 	}
 #endif
 
 	ptr = str;
 
 	while (*ptr) {
-		if ( *ptr == '\t' || *ptr == '\\' || 
-			*ptr == '\n' || *ptr == '\r' ) 
+		if ( *ptr == '\t' || *ptr == '\\' ||
+			*ptr == '\n' || *ptr == '\r' )
 				toescape++;
 		ptr++;
 	}
@@ -202,7 +204,7 @@ escape_copy_string(char *str)
 	ptr=str;
 	while (*ptr) {
 		if ( *ptr == '\t' || *ptr == '\\' ||
-			*ptr == '\n' || *ptr == '\r' ) 
+			*ptr == '\n' || *ptr == '\r' )
 				*optr++='\\';
 				*optr++=*ptr++;
 	}
@@ -213,17 +215,17 @@ escape_copy_string(char *str)
 #endif
 
 	return result;
-	
+
 }
 
 char *
 escape_insert_string(char *str)
 {
 	/*
-	 * Escape single quotes by adding a preceding single quote 
-	 * 
+	 * Escape single quotes by adding a preceding single quote
+	 *
 	 * 1. find # of characters
-	 * 2. make new string 
+	 * 2. make new string
 	 */
 
 	char	*result;
@@ -237,7 +239,7 @@ escape_insert_string(char *str)
 	{
 		utf8str=utf8(encoding, str);
 		if ( ! utf8str ) exit(1);
-		str = utf8str; 
+		str = utf8str;
 	}
 #endif
 
@@ -249,7 +251,7 @@ escape_insert_string(char *str)
 	}
 
 	if (toescape == 0) return str;
-	
+
 	size = ptr-str+toescape+1;
 
 	result = calloc(1, size);
@@ -257,7 +259,7 @@ escape_insert_string(char *str)
 	optr=result;
 	ptr=str;
 	while (*ptr) {
-                if ( *ptr == '\'') *optr++='\'';
+				if ( *ptr == '\'') *optr++='\'';
 		*optr++=*ptr++;
 	}
 	*optr='\0';
@@ -271,11 +273,11 @@ escape_insert_string(char *str)
 
 
 
-/*
- * PIP(): crossing number test for a point in a polygon
+/*!
+ * \brief PIP(): crossing number test for a point in a polygon
  *      input:   P = a point,
  *               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
- *      returns: 0 = outside, 1 = inside
+ * \return   0 = outside, 1 = inside
  */
 int
 PIP( Point P, Point* V, int n )
@@ -283,21 +285,23 @@ PIP( Point P, Point* V, int n )
 	int cn = 0;    /* the crossing number counter */
 	int i;
 
-    /* loop through all edges of the polygon */
-    for (i=0; i<n-1; i++) {    /* edge from V[i] to V[i+1] */
-       if (((V[i].y <= P.y) && (V[i+1].y > P.y))    /* an upward crossing */
-        || ((V[i].y > P.y) && (V[i+1].y <= P.y))) { /* a downward crossing */
-            double vt = (float)(P.y - V[i].y) / (V[i+1].y - V[i].y);
-            if (P.x < V[i].x + vt * (V[i+1].x - V[i].x)) /* P.x < intersect */
-                ++cn;   /* a valid crossing of y=P.y right of P.x */
-        }
-    }
-    return (cn&1);    /* 0 if even (out), and 1 if odd (in) */
+	/* loop through all edges of the polygon */
+	for (i=0; i<n-1; i++) {    /* edge from V[i] to V[i+1] */
+	   if (((V[i].y <= P.y) && (V[i+1].y > P.y))    /* an upward crossing */
+		|| ((V[i].y > P.y) && (V[i+1].y <= P.y))) { /* a downward crossing */
+			double vt = (float)(P.y - V[i].y) / (V[i+1].y - V[i].y);
+			if (P.x < V[i].x + vt * (V[i+1].x - V[i].x)) /* P.x < intersect */
+				++cn;   /* a valid crossing of y=P.y right of P.x */
+		}
+	}
+	return (cn&1);    /* 0 if even (out), and 1 if odd (in) */
 
 }
 
 
-/*Insert the attributes from the correct row of dbf file */
+/*!
+ * \brief Insert the attributes from the correct row of dbf file
+ */
 
 int
 Insert_attributes(DBFHandle hDBFHandle, int row)
@@ -309,8 +313,8 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
    num_fields = DBFGetFieldCount( hDBFHandle );
    for( i = 0; i < num_fields; i++ )
    {
-      if(DBFIsAttributeNULL( hDBFHandle, row, i))
-      {
+	  if(DBFIsAttributeNULL( hDBFHandle, row, i))
+	  {
 
 		if(dump_format)
 		{
@@ -324,41 +328,41 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
 		}
 	  }
 
-      else /* Attribute NOT NULL */
-      {
-         switch (types[i]) 
-         {
-            case FTInteger:
-            case FTDouble:
-               if ( -1 == snprintf(val, 1024, "%s",
-                     DBFReadStringAttribute(hDBFHandle, row, i)) )
-               {
-                  fprintf(stderr, "Warning: field %d name truncated\n", i);
-                  val[1023] = '\0';
-               }
-	       /* pg_atoi() does not do this */
-	       if ( val[0] == '\0' ) { val[0] = '0'; val[1] = '\0'; }
-	       if ( val[strlen(val)-1] == '.' ) val[strlen(val)-1] = '\0';
-               break;
+	  else /* Attribute NOT NULL */
+	  {
+		 switch (types[i])
+		 {
+			case FTInteger:
+			case FTDouble:
+			   if ( -1 == snprintf(val, 1024, "%s",
+					 DBFReadStringAttribute(hDBFHandle, row, i)) )
+			   {
+				  fprintf(stderr, "Warning: field %d name truncated\n", i);
+				  val[1023] = '\0';
+			   }
+		   /* pg_atoi() does not do this */
+		   if ( val[0] == '\0' ) { val[0] = '0'; val[1] = '\0'; }
+		   if ( val[strlen(val)-1] == '.' ) val[strlen(val)-1] = '\0';
+			   break;
 
-            case FTString:
-            case FTLogical:
-	    case FTDate:
-               if ( -1 == snprintf(val, 1024, "%s",
-                     DBFReadStringAttribute(hDBFHandle, row, i)) )
-               {
-                  fprintf(stderr, "Warning: field %d name truncated\n", i);
-                  val[1023] = '\0';
-               }
-               break;
+			case FTString:
+			case FTLogical:
+		case FTDate:
+			   if ( -1 == snprintf(val, 1024, "%s",
+					 DBFReadStringAttribute(hDBFHandle, row, i)) )
+			   {
+				  fprintf(stderr, "Warning: field %d name truncated\n", i);
+				  val[1023] = '\0';
+			   }
+			   break;
 
-            default:
-               fprintf(stderr,
-                  "Error: field %d has invalid or unknown field type (%d)\n",
-                  i, types[i]);
-               exit(1);
-         }
- 
+			default:
+			   fprintf(stderr,
+				  "Error: field %d has invalid or unknown field type (%d)\n",
+				  i, types[i]);
+			   exit(1);
+		 }
+
 			if (dump_format) {
 				escval = escape_copy_string(val);
 				printf("%s", escval);
@@ -374,10 +378,10 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
 		if(readshape == 1 || i < (num_fields - 1))
 		{
 			if (dump_format){
-			   printf("\t");   
+			   printf("\t");
 			}
 			else {
-				printf(",");   
+				printf(",");
 			}
 		}
 	}
@@ -387,9 +391,9 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
 
 
 
-/*
- * main()     
- * see description at the top of this file
+/*!
+ * main()
+ * \brief see description at the top of this file
  */
 int
 main (int ARGC, char **ARGV)
@@ -405,13 +409,13 @@ main (int ARGC, char **ARGV)
 	 */
 	OpenShape();
 
-	if (readshape == 1){	
+	if (readshape == 1){
 		/*
 		 * Compute output geometry type
 		 */
-		 
+
 		SetPgType();
-	
+
 		fprintf(stderr, "Shapefile type: %s\n", SHPTypeName(shpfiletype));
 		fprintf(stderr, "Postgis type: %s[%d]\n", pgtype, pgdims);
 	}
@@ -459,7 +463,7 @@ main (int ARGC, char **ARGV)
 	printf("END;\n"); /* End the last transaction */
 
 
-	return 0; 
+	return 0;
 }/*end main() */
 
 void
@@ -484,23 +488,23 @@ OpenShape(void)
 	if (readshape == 1)
 	{
 		hSHPHandle = SHPOpen( shp_file, "rb" );
-		if (hSHPHandle == NULL) 
+		if (hSHPHandle == NULL)
 		{
 			fprintf(stderr, "%s: shape (.shp) or index files (.shx) can not be opened, will just import attribute data.\n", shp_file);
 			readshape = 0;
 		}
 	}
-	
+
 	hDBFHandle = DBFOpen( shp_file, "rb" );
 	if ((hSHPHandle == NULL && readshape == 1) || hDBFHandle == NULL){
 		fprintf(stderr, "%s: dbf file (.dbf) can not be opened.\n",shp_file);
 		exit(-1);
 	}
-	
+
 	if (readshape == 1)
 	{
 		SHPGetInfo(hSHPHandle, &num_entities, &shpfiletype, NULL, NULL);
-	
+
 		if ( null_policy == abort_on_null )
 		{
 			for (j=0; j<num_entities; j++)
@@ -533,7 +537,7 @@ CreateTable(void)
 	int field_precision, field_width;
 	DBFFieldType type = -1;
 
-	/* 
+	/*
 	 * Create a table for inserting the shapes into with appropriate
 	 * columns and types
 	 */
@@ -583,7 +587,7 @@ CreateTable(void)
 			{
 				printf ("int8");
 			}
-			else 
+			else
 			{
 				printf("numeric(%d,0)",
 					field_width);
@@ -631,7 +635,7 @@ CreateTable(void)
 void
 CreateIndex(void)
 {
-	/* 
+	/*
 	 * Create gist index
 	 */
 	if ( schema )
@@ -664,9 +668,9 @@ LoadData(void)
 
 
 	/**************************************************************
-	 * 
+	 *
 	 *   MAIN SHAPE OBJECTS SCAN
-	 * 
+	 *
 	 **************************************************************/
 	for (j=0; j<num_entities; j++)
 	{
@@ -684,7 +688,7 @@ LoadData(void)
 
 		/* skip the record if it has been deleted */
 		if(readshape != 1 && DBFReadDeleted(hDBFHandle, j)) {
-			continue; 
+			continue;
 		}
 
 		/* open the next object */
@@ -696,40 +700,40 @@ LoadData(void)
 				fprintf(stderr, "Error reading shape object %d\n", j);
 				exit(1);
 			}
-	
+
 			if ( null_policy == skip_null && obj->nVertices == 0 )
 			{
 				SHPDestroyObject(obj);
 				continue;
 			}
 		}
-		
+
 		if (!dump_format)
 		{
 			if ( schema )
 			{
 				printf("INSERT INTO \"%s\".\"%s\" %s VALUES (",
-                                        schema, table, col_names);
+										schema, table, col_names);
 			}
 			else
 			{
-		  		printf("INSERT INTO \"%s\" %s VALUES (",
+				printf("INSERT INTO \"%s\" %s VALUES (",
 					table, col_names);
 			}
 		}
 		Insert_attributes(hDBFHandle,j);
 
-		if (readshape == 1) 
+		if (readshape == 1)
 		{
 			/* ---------- NULL SHAPE ----------------- */
 			if (obj->nVertices == 0)
 			{
 				if (dump_format) printf("\\N\n");
 				else printf("NULL);\n");
-				SHPDestroyObject(obj);	
+				SHPDestroyObject(obj);
 				continue;
 			}
-	
+
 			switch (obj->nSHPType)
 			{
 				case SHPT_POLYGON:
@@ -737,7 +741,7 @@ LoadData(void)
 				case SHPT_POLYGONZ:
 					InsertPolygon();
 					break;
-	
+
 				case SHPT_POINT:
 				case SHPT_POINTM:
 				case SHPT_POINTZ:
@@ -746,44 +750,44 @@ LoadData(void)
 				case SHPT_MULTIPOINTZ:
 					InsertPoint();
 					break;
-	
+
 				case SHPT_ARC:
 				case SHPT_ARCM:
 				case SHPT_ARCZ:
 					InsertLineString();
 					break;
-	
+
 				default:
 					printf ("\n\n**** Type is NOT SUPPORTED, type id = %d ****\n\n",
 						obj->nSHPType);
 					break;
-	
+
 			}
-			
-			SHPDestroyObject(obj);	
+
+			SHPDestroyObject(obj);
 		}
-		else 
+		else
 			if (dump_format){ /*close for dbf only dump format */
 				printf("\n");
 			}
 			else { /*close for dbf only sql insert format */
 				printf(");\n");
 			}
-	
+
 	} /* END of MAIN SHAPE OBJECT LOOP */
-	
+
 
 
 	if ((dump_format) ) {
 		printf("\\.\n");
 
-	} 
+	}
 }
 
 void
 usage(char *me, int exitcode, FILE* out)
 {
-    fprintf(out, "RCSID: %s RELEASE: %s\n", rcsid, POSTGIS_VERSION);
+	fprintf(out, "RCSID: %s RELEASE: %s\n", rcsid, POSTGIS_VERSION);
 	fprintf(out, "USAGE: %s [<options>] <shapefile> [<schema>.]<table>\n", me);
 	fprintf(out, "OPTIONS:\n");
 	fprintf(out, "  -s <srid>  Set the SRID field. If not specified it defaults to -1.\n");
@@ -794,7 +798,7 @@ usage(char *me, int exitcode, FILE* out)
 	fprintf(out, "          exactly the same table schema.\n");
 	fprintf(out, "      -c  Creates a new table and populates it, this is the\n");
 	fprintf(out, "          default if you do not specify any options.\n");
- 	fprintf(out, "      -p  Prepare mode, only creates the table.\n");
+	fprintf(out, "      -p  Prepare mode, only creates the table.\n");
 	fprintf(out, "  -g <geometry_column> Specify the name of the geometry column\n");
 	fprintf(out, "     (mostly useful in append mode).\n");
 	fprintf(out, "  -D  Use postgresql dump format (defaults to sql insert statments.\n");
@@ -809,7 +813,7 @@ usage(char *me, int exitcode, FILE* out)
 #endif
 	fprintf(out, "  -N <policy> Specify NULL geometries handling policy (insert,skip,abort)\n");
 	fprintf(out, "  -n  Only import DBF file.\n");
-    fprintf(out, "  -? Display this help screen\n");
+	fprintf(out, "  -? Display this help screen\n");
 	exit (exitcode);
 }
 
@@ -839,11 +843,11 @@ InsertLineString()
 	if (simple_geometries == 1 && obj->nParts > 1)
 	{
 		fprintf(stderr, "We have a Multilinestring with %d parts, can't use -S switch!\n", obj->nParts);
-		exit(1);	
+		exit(1);
 	}
 
 	/* Allocate memory for our array of LWLINEs and our dynptarrays */
-	lwmultilinestrings = malloc(sizeof(LWPOINT *) * obj->nParts);	
+	lwmultilinestrings = malloc(sizeof(LWPOINT *) * obj->nParts);
 	dpas = malloc(sizeof(DYNPTARRAY *) * obj->nParts);
 
 	/* We need an array of pointers to each of our sub-geometries */
@@ -856,9 +860,9 @@ InsertLineString()
 		a MULTILINESTRING or not */
 		if ( u == obj->nParts-1 )
 			end_vertex = obj->nVertices;
-		else 
+		else
 			end_vertex = obj->panPartStart[u + 1];
-		
+
 		start_vertex = obj->panPartStart[u];
 
 		for (v = start_vertex; v < end_vertex; v++)
@@ -866,15 +870,15 @@ InsertLineString()
 			/* Generate the point */
 			point4d.x = obj->padfX[v];
 			point4d.y = obj->padfY[v];
-	
+
 			if (wkbtype & WKBZOFFSET)
 				point4d.z = obj->padfZ[v];
 			if (wkbtype & WKBMOFFSET)
 				point4d.m = obj->padfM[v];
-	
+
 			dynptarray_addPoint4d(dpas[u], &point4d, 0);
 		}
-	
+
 		/* Generate the LWLINE */
 		lwmultilinestrings[u] = lwline_as_lwgeom(lwline_construct(sr_id, NULL, dpas[u]->pa));
 	}
@@ -894,23 +898,23 @@ InsertLineString()
 		result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_ALL, -1);
 	else
 		result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_ALL);
-	
+
 	if (result)
 	{
 		fprintf(stderr, "ERROR: %s\n", lwg_unparser_result.message);
-		exit(1);	
+		exit(1);
 	}
 
 	OutputGeometry(lwg_unparser_result.wkoutput);
 
 	/* Free all of the allocated items */
-        lwfree(lwg_unparser_result.wkoutput);
-        lwfree(serialized_lwgeom);
+		lwfree(lwg_unparser_result.wkoutput);
+		lwfree(serialized_lwgeom);
 
 	for (u = 0; u < obj->nParts; u++)
 	{
-        	lwline_free(lwgeom_as_lwline(lwmultilinestrings[u]));
-        	lwfree(dpas[u]);
+			lwline_free(lwgeom_as_lwline(lwmultilinestrings[u]));
+			lwfree(dpas[u]);
 	}
 
 	lwfree(dpas);
@@ -974,7 +978,7 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 			ring->list[vi-vs].m = obj->padfM[vi];
 
 			area += (obj->padfX[vi] * obj->padfY[vn]) -
-				(obj->padfY[vi] * obj->padfX[vn]); 
+				(obj->padfY[vi] * obj->padfX[vn]);
 		}
 
 		/* Close the ring with first vertex  */
@@ -1067,16 +1071,16 @@ ReleasePolygons(Ring **polys, int npolys)
 	free(polys);
 }
 
-/*This function basically deals with the polygon case. */
-/*it sorts the polys in order of outer,inner,inner, so that inners */
-/*always come after outers they are within  */
+/*! \brief This function basically deals with the polygon case. */
+/*		it sorts the polys in order of outer,inner,inner, so that inners */
+/*		always come after outers they are within  */
 void
 InsertPolygon(void)
 {
 	Ring **Outer;
 	int polygon_total, ring_total;
 	int pi, vi; // part index and vertex index
-	int u;	
+	int u;
 
 	LWCOLLECTION *lwcollection = NULL;
 
@@ -1104,7 +1108,7 @@ InsertPolygon(void)
 	if (simple_geometries == 1 && polygon_total != 1) /* We write Non-MULTI geometries, but have several parts: */
 	{
 		fprintf(stderr, "We have a Multipolygon with %d parts, can't use -S switch!\n", polygon_total);
-		exit(1);		
+		exit(1);
 	}
 
 	/* Allocate memory for our array of LWPOLYs */
@@ -1144,7 +1148,7 @@ InsertPolygon(void)
 				/* Build up a point array of all the points in this ring */
 				point4d.x = polyring->list[vi].x;
 				point4d.y = polyring->list[vi].y;
-		
+
 				if (wkbtype & WKBZOFFSET)
 					point4d.z = polyring->list[vi].z;
 				if (wkbtype & WKBMOFFSET)
@@ -1166,7 +1170,7 @@ InsertPolygon(void)
 		}
 
 		/* Generate the LWGEOM */
-		lwpoly = lwpoly_construct(sr_id, NULL, ring_total, pas[pi]);	
+		lwpoly = lwpoly_construct(sr_id, NULL, ring_total, pas[pi]);
 		lwpolygons[pi] = lwpoly_as_lwgeom(lwpoly);
 	}
 
@@ -1187,18 +1191,18 @@ InsertPolygon(void)
 		result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_ALL, -1);
 	else
 		result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_ALL);
-	
+
 	if (result)
 	{
 		fprintf(stderr, "ERROR: %s\n", lwg_unparser_result.message);
-		exit(1);	
+		exit(1);
 	}
 
 	OutputGeometry(lwg_unparser_result.wkoutput);
 
 	/* Free all of the allocated items */
-        lwfree(lwg_unparser_result.wkoutput);
-        lwfree(serialized_lwgeom);
+		lwfree(lwg_unparser_result.wkoutput);
+		lwfree(serialized_lwgeom);
 
 	/* Cycle through each polygon, freeing everything we need... */
 	for (u = 0; u < polygon_total; u++)
@@ -1211,8 +1215,8 @@ InsertPolygon(void)
 		lwfree(lwcollection);
 }
 
-/*
- * Insert either a POINT or MULTIPOINT into the output stream
+/*!
+ * \brief Insert either a POINT or MULTIPOINT into the output stream
  */
 void
 InsertPoint(void)
@@ -1238,7 +1242,7 @@ InsertPoint(void)
 	TYPE_SETZM(dims, hasz, hasm);
 
 	/* Allocate memory for our array of LWPOINTs and our dynptarrays */
-	lwmultipoints = malloc(sizeof(LWPOINT *) * obj->nVertices);	
+	lwmultipoints = malloc(sizeof(LWPOINT *) * obj->nVertices);
 	dpas = malloc(sizeof(DYNPTARRAY *) * obj->nVertices);
 
 	/* We need an array of pointers to each of our sub-geometries */
@@ -1277,23 +1281,23 @@ InsertPoint(void)
 		result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_ALL, -1);
 	else
 		result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_ALL);
-	
+
 	if (result)
 	{
 		fprintf(stderr, "ERROR: %s\n", lwg_unparser_result.message);
-		exit(1);	
+		exit(1);
 	}
 
 	OutputGeometry(lwg_unparser_result.wkoutput);
 
 	/* Free all of the allocated items */
-        lwfree(lwg_unparser_result.wkoutput);
-        lwfree(serialized_lwgeom);
+		lwfree(lwg_unparser_result.wkoutput);
+		lwfree(serialized_lwgeom);
 
 	for (u = 0; u < obj->nVertices; u++)
 	{
-        	lwpoint_free(lwgeom_as_lwpoint(lwmultipoints[u]));
-        	lwfree(dpas[u]);
+			lwpoint_free(lwgeom_as_lwpoint(lwmultipoints[u]));
+			lwfree(dpas[u]);
 	}
 
 	lwfree(dpas);
@@ -1306,10 +1310,10 @@ OutputGeometry(char *geometry)
 	/* This function outputs the specified geometry string (WKB or WKT) formatted
 	 * according to whether we have specified dump format or hwgeom format */
 
-	if (hwgeom) 
+	if (hwgeom)
 	{
 		if (!dump_format)
-			printf("GeomFromText('"); 
+			printf("GeomFromText('");
 		else
 		{
 			/* Output SRID if relevant */
@@ -1331,7 +1335,7 @@ OutputGeometry(char *geometry)
 		}
 		else
 			printf("\n");
-	}	
+	}
 	else
 	{
 		if (!dump_format)
@@ -1422,7 +1426,7 @@ ParseCmdline(int ARGC, char **ARGV)
 				break;
 			case 'N':
 				switch (optarg[0])
-				{	
+				{
 					case 'a':
 						null_policy = abort_on_null;
 						break;
@@ -1438,8 +1442,8 @@ ParseCmdline(int ARGC, char **ARGV)
 				}
 				break;
 			case '?':
-				usage(ARGV[0], 0, stdout); 
-			default:              
+				usage(ARGV[0], 0, stdout);
+			default:
 				return 0;
 		}
 	}
@@ -1464,7 +1468,7 @@ ParseCmdline(int ARGC, char **ARGV)
 		}
 		curindex++;
 	}
-	
+
 	/*
 	 * Third argument (if present) is supported for compatibility
 	 * with old shp2pgsql versions taking also database name.
@@ -1473,7 +1477,7 @@ ParseCmdline(int ARGC, char **ARGV)
 		return 0;
 	}
 
-	/* 
+	/*
 	 * Transform table name to lower case unless asked
 	 * to keep original case (we'll quote it later on)
 	 */
@@ -1589,12 +1593,12 @@ SetPgType(void)
 			break;
 	}
 
-        if (simple_geometries)
-        {
-                // adjust geometry name for CREATE TABLE by skipping MULTI
-                if ((wkbtype & 0x7) == MULTIPOLYGONTYPE) pgtype += 5;
-                if ((wkbtype & 0x7) == MULTILINETYPE) pgtype += 5;
-        }                        
+		if (simple_geometries)
+		{
+				// adjust geometry name for CREATE TABLE by skipping MULTI
+				if ((wkbtype & 0x7) == MULTIPOLYGONTYPE) pgtype += 5;
+				if ((wkbtype & 0x7) == MULTILINETYPE) pgtype += 5;
+		}
 }
 
 char *
@@ -1617,14 +1621,14 @@ dump_ring(Ring *ring)
 void
 DropTable(char *schema, char *table, char *geom)
 {
-		/*---------------Drop the table--------------------------
-		 * TODO: if the table has more then one geometry column
-		 * the DROP TABLE call will leave spurious records in
-		 * geometry_columns. 
+		/*!---------------Drop the table--------------------------
+		 * TODO: \todo if the table has more then one geometry column
+		 * 	the DROP TABLE call will leave spurious records in
+		 * 	geometry_columns.
 		 *
 		 * If the geometry column in the table being dropped
 		 * does not match 'the_geom' or the name specified with
-		 * -g an error is returned by DropGeometryColumn. 
+		 * -g an error is returned by DropGeometryColumn.
 		 *
 		 * The table to be dropped might not exist.
 		 *
@@ -1682,7 +1686,7 @@ GetFieldsSpec(void)
 	/*fprintf(stderr, "Number of fields from DBF: %d\n", num_fields); */
 	for(j=0;j<num_fields;j++)
 	{
-		type = DBFGetFieldInfo(hDBFHandle, j, name, &field_width, &field_precision); 
+		type = DBFGetFieldInfo(hDBFHandle, j, name, &field_width, &field_precision);
 
 /*fprintf(stderr, "Field %d (%s) width/decimals: %d/%d\n", j, name, field_width, field_precision); */
 		types[j] = type;
@@ -1734,7 +1738,7 @@ GetFieldsSpec(void)
 				sprintf(name+strlen(name),"%i",j);
 				break;
 			}
-		}	
+		}
 
 		field_names[j] = malloc (strlen(name)+1);
 		strcpy(field_names[j], name);
@@ -1805,7 +1809,7 @@ utf8 (const char *fromcode, char *inputbuf)
  * $Log$
  * Revision 1.109  2008/04/09 14:12:17  robe
  *         - Added support to load dbf-only files
- * 
+ *
  * Revision 1.108  2006/06/16 14:12:17  strk
  *         - BUGFIX in pgsql2shp successful return code.
  *         - BUGFIX in shp2pgsql handling of MultiLine WKT.
