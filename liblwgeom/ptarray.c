@@ -7,7 +7,7 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************/
 
 #include <stdio.h>
@@ -20,10 +20,10 @@ POINTARRAY *
 ptarray_construct(char hasz, char hasm, unsigned int npoints)
 {
 	uchar dims = 0;
-	size_t size; 
+	size_t size;
 	uchar *ptlist;
 	POINTARRAY *pa;
-	
+
 	TYPE_SETZM(dims, hasz?1:0, hasm?1:0);
 	size = TYPE_NDIMS(dims)*npoints*sizeof(double);
 
@@ -39,12 +39,12 @@ ptarray_construct(char hasz, char hasm, unsigned int npoints)
 
 void ptarray_free(POINTARRAY *pa)
 {
-	/* TODO 
-	*  Turn this on after retrofitting all calls to lwfree_ in /lwgeom 
-	if( pa->serialized_pointlist )
-		lwfree(pa->serialized_pointlist);
+	/*!
+	*  	TODO: \todo	Turn this on after retrofitting all calls to lwfree_ in /lwgeom
+	*		if( pa->serialized_pointlist )
+	*		lwfree(pa->serialized_pointlist);
   */
-  
+
 	lwfree(pa);
 }
 
@@ -69,10 +69,10 @@ ptarray_reverse(POINTARRAY *pa)
 
 }
 
-/*
- * calculate the 2d bounding box of a set of points
- * write result to the provided BOX2DFLOAT4
- * Return 0 if bounding box is NULL (empty geom)
+/*!
+ * \brief calculate the 2d bounding box of a set of points
+ * 		write result to the provided BOX2DFLOAT4
+ * 		Return 0 if bounding box is NULL (empty geom)
  */
 int
 ptarray_compute_box2d_p(const POINTARRAY *pa, BOX2DFLOAT4 *result)
@@ -104,9 +104,9 @@ ptarray_compute_box2d_p(const POINTARRAY *pa, BOX2DFLOAT4 *result)
 	return 1;
 }
 
-/*
- * Calculate the 2d bounding box of a set of points.
- * Return allocated BOX2DFLOAT4 or NULL (for empty array).
+/*!
+ * \brief Calculate the 2d bounding box of a set of points.
+ * \return allocated #BOX2DFLOAT4 or NULL (for empty array).
  */
 BOX2DFLOAT4 *
 ptarray_compute_box2d(const POINTARRAY *pa)
@@ -138,9 +138,10 @@ ptarray_compute_box2d(const POINTARRAY *pa)
 	return result;
 }
 
-/*
- * Returns a modified POINTARRAY so that no segment is 
- * longer then the given distance (computed using 2d).
+/*!
+ * \brief Returns a modified #POINTARRAY so that no segment is
+ * 		longer than the given distance (computed using 2d).
+ *
  * Every input point is kept.
  * Z and M values for added points (if needed) are set to 0.
  */
@@ -168,7 +169,7 @@ ptarray_segmentize2d(POINTARRAY *ipa, double dist)
 	opa->npoints++;
 	getPoint4d_p(ipa, ipoff, &p1);
 	op = getPoint_internal(opa, opa->npoints-1);
-	memcpy(op, &p1, ptsize); 
+	memcpy(op, &p1, ptsize);
 	ipoff++;
 
 	while (ipoff<ipa->npoints)
@@ -213,7 +214,7 @@ ptarray_segmentize2d(POINTARRAY *ipa, double dist)
 			);
 		}
 		op = getPoint_internal(opa, opa->npoints-1);
-		memcpy(op, ip, ptsize); 
+		memcpy(op, ip, ptsize);
 	}
 
 	return opa;
@@ -240,10 +241,10 @@ ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2)
 	return 1;
 }
 
-/*
- * Add a point in a pointarray.
- * 'where' is the offset (starting at 0)
- * if 'where' == -1 append is required.
+/*!
+ * \brief Add a point in a pointarray.
+ * 		'where' is the offset (starting at 0)
+ * 		if 'where' == -1 append is required.
  */
 POINTARRAY *
 ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims, unsigned int where)
@@ -270,7 +271,7 @@ ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims, unsigned int where)
 	}
 
 	LWDEBUG(3, "called with a %dD point");
-	
+
 	pbuf.x = pbuf.y = pbuf.z = pbuf.m = 0.0;
 	memcpy((uchar *)&pbuf, p, pdims*sizeof(double));
 
@@ -278,7 +279,7 @@ ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims, unsigned int where)
 
 	ret = ptarray_construct(TYPE_HASZ(pa->dims),
 		TYPE_HASM(pa->dims), pa->npoints+1);
-	
+
 	if ( where == -1 ) where = pa->npoints;
 
 	if ( where )
@@ -298,10 +299,10 @@ ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims, unsigned int where)
 	return ret;
 }
 
-/*
- * Remove a point from a pointarray.
- * 'which' is the offset (starting at 0)
- * Returned pointarray is newly allocated
+/*!
+ * \brief Remove a point from a pointarray.
+ * 	\param which -  is the offset (starting at 0)
+ * \return #POINTARRAY is newly allocated
  */
 POINTARRAY *
 ptarray_removePoint(POINTARRAY *pa, unsigned int which)
@@ -327,7 +328,7 @@ ptarray_removePoint(POINTARRAY *pa, unsigned int which)
 
 	ret = ptarray_construct(TYPE_HASZ(pa->dims),
 		TYPE_HASM(pa->dims), pa->npoints-1);
-	
+
 	/* copy initial part */
 	if ( which )
 	{
@@ -344,8 +345,8 @@ ptarray_removePoint(POINTARRAY *pa, unsigned int which)
 	return ret;
 }
 
-/* 
- * Clone a pointarray 
+/*!
+ * \brief Clone a pointarray
  */
 POINTARRAY *
 ptarray_clone(const POINTARRAY *in)
@@ -353,7 +354,7 @@ ptarray_clone(const POINTARRAY *in)
 	POINTARRAY *out = lwalloc(sizeof(POINTARRAY));
 	size_t size;
 
-        LWDEBUG(3, "ptarray_clone called.");
+		LWDEBUG(3, "ptarray_clone called.");
 
 	out->dims = in->dims;
 	out->npoints = in->npoints;
@@ -372,10 +373,10 @@ ptarray_isclosed2d(const POINTARRAY *in)
 	return 1;
 }
 
-/*
- * calculate the BOX3D bounding box of a set of points
- * returns a lwalloced BOX3D, or NULL on empty array.
- * zmin/zmax values are set to NO_Z_VALUE if not available.
+/*!
+ * \brief calculate the #BOX3D bounding box of a set of points
+ * \return  a lwalloced #BOX3D, or NULL on empty array.
+ * 		#zmin / #zmax values are set to #NO_Z_VALUE if not available.
  */
 BOX3D *
 ptarray_compute_box3d(const POINTARRAY *pa)
@@ -391,11 +392,11 @@ ptarray_compute_box3d(const POINTARRAY *pa)
 	return result;
 }
 
-/*
- * calculate the BOX3D bounding box of a set of points
- * zmin/zmax values are set to NO_Z_VALUE if not available.
- * write result to the provided BOX3D
- * Return 0 if bounding box is NULL (empty geom)
+/*!
+ * \brief calculate the #BOX3D bounding box of a set of points
+ * 		zmin/zmax values are set to #NO_Z_VALUE if not available.
+ * write result to the provided #BOX3D
+ * \return 0 if bounding box is NULL (empty geom) and 1 otherwise
  */
 int
 ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *result)
@@ -404,7 +405,7 @@ ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *result)
 	POINT3DZ pt;
 
 	LWDEBUGF(3, "ptarray_compute_box3d call (array has %d points)", pa->npoints);
-	
+
 	if (pa->npoints == 0) return 0;
 
 	getPoint3dz_p(pa, 0, &pt);
@@ -445,8 +446,8 @@ ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *result)
 	return 1;
 }
 
-/*
- * TODO: implement point interpolation
+/*!
+ * TODO: \todo implement point interpolation
  */
 POINTARRAY *
 ptarray_substring(POINTARRAY *ipa, double from, double to)
@@ -574,7 +575,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 			 * Didn't reach the 'end' point,
 			 * just copy second point
 			 */
-			if ( to > tlength + slength ) 
+			if ( to > tlength + slength )
 			{
 				dynptarray_addPoint4d(dpa, &p2, 0);
 				goto END;
@@ -674,7 +675,7 @@ closest_point_on_segment(POINT2D *p, POINT2D *A, POINT2D *B, POINT2D *ret)
 	 *	r<0 P is on the backward extension of AB
 	 *	r>1 P is on the forward extension of AB
 	 *	0<r<1 P is interior to AB
-	 *	
+	 *
 	 */
 	r = ( (p->x-A->x) * (B->x-A->x) + (p->y-A->y) * (B->y-A->y) )/( (B->x-A->x)*(B->x-A->x) +(B->y-A->y)*(B->y-A->y) );
 
@@ -722,7 +723,7 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p)
 	LWDEBUGF(3, "Closest segment: %d", seg);
 
 	/*
-	 * If mindist is not 0 we need to project the 
+	 * If mindist is not 0 we need to project the
 	 * point on the closest segment.
 	 */
 	if ( mindist > 0 )
@@ -758,14 +759,14 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p)
 	return plen/tlen;
 }
 
-/*
- * Longitude shift for a pointarray.
- *  Y remains the same
- *  X is converted:
- *	 from -180..180 to 0..360
- *	 from 0..360 to -180..180
- *  X < 0 becomes X + 360
- *  X > 180 becomes X - 360
+/*!
+ * \brief Longitude shift for a pointarray.
+ *  	Y remains the same
+ *  	X is converted:
+ *	 		from -180..180 to 0..360
+ *	 		from 0..360 to -180..180
+ *  	X < 0 becomes X + 360
+ *  	X > 180 becomes X - 360
  */
 void
 ptarray_longitude_shift(POINTARRAY *pa)
@@ -786,7 +787,7 @@ dynptarray_create(size_t initial_capacity, int dims)
 {
 	DYNPTARRAY *ret=lwalloc(sizeof(DYNPTARRAY));
 
-        LWDEBUGF(3, "dynptarray_create called, dims=%d.", dims);
+		LWDEBUGF(3, "dynptarray_create called, dims=%d.", dims);
 
 	if ( initial_capacity < 1 ) initial_capacity=1;
 
@@ -800,8 +801,8 @@ dynptarray_create(size_t initial_capacity, int dims)
 	return ret;
 }
 
-/*
- * Add a POINT4D to the dynamic pointarray.
+/*!
+ * \brief Add a #POINT4D to the dynamic pointarray.
  *
  * The dynamic pointarray may be of any dimension, only
  * accepted dimensions will be copied.
@@ -809,7 +810,7 @@ dynptarray_create(size_t initial_capacity, int dims)
  * If allow_duplicates is set to 0 (false) a check
  * is performed to see if last point in array is equal to the
  * provided one. NOTE that the check is 4d based, with missing
- * ordinates in the pointarray set to NO_Z_VALUE and NO_M_VALUE
+ * ordinates in the pointarray set to #NO_Z_VALUE and #NO_M_VALUE
  * respectively.
  */
 int
@@ -818,7 +819,7 @@ dynptarray_addPoint4d(DYNPTARRAY *dpa, POINT4D *p4d, int allow_duplicates)
 	POINTARRAY *pa=dpa->pa;
 	POINT4D tmp;
 
-        LWDEBUG(3, "dynptarray_addPoint4d called.");
+		LWDEBUG(3, "dynptarray_addPoint4d called.");
 
 	if ( ! allow_duplicates && pa->npoints > 0 )
 	{
