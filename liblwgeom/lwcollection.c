@@ -139,7 +139,7 @@ lwcollection_getsubgeom(LWCOLLECTION *col, int gnum)
 
 /*!
  *	\brief find serialized size of this collection
- *	\param col lwcollection to find serialized size of
+ *	\param col #LWCOLLECTION to find serialized size of
  */
 size_t
 lwcollection_serialize_size(LWCOLLECTION *col)
@@ -165,7 +165,7 @@ lwcollection_serialize_size(LWCOLLECTION *col)
 	return size;
 }
 
-/*! \brief convert this collection into its serialize form writing it into
+/*! \brief convert an #LWCOLLECTION into its serialized form writing it into
  *          the given buffer, and returning number of bytes written into
  *          the given int pointer.
  */
@@ -239,9 +239,9 @@ lwcollection_compute_box2d_p(LWCOLLECTION *col, BOX2DFLOAT4 *box)
 	return 1;
 }
 
-/**
- * Clone LWCOLLECTION object. POINTARRAY are not copied.
- * Bbox is cloned if present in input.
+/*!
+ * \brief Clone #LWCOLLECTION object. #POINTARRAY are not copied.
+ * 			Bbox is cloned if present in input.
  */
 LWCOLLECTION *
 lwcollection_clone(const LWCOLLECTION *g)
@@ -266,9 +266,9 @@ lwcollection_clone(const LWCOLLECTION *g)
 	return ret;
 }
 
-/*! \brief Add 'what' to this collection at position 'where'.
- * 		where=0 == prepend
- * 		where=-1 == append
+/*! \brief Add 'what' to this to #LWCOLLECTION at position 'where'.
+ * 			where=0 then prepend
+ * 			where=-1 then append
  * Returns a GEOMETRYCOLLECTION
  */
 LWGEOM *

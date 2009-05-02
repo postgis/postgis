@@ -46,17 +46,21 @@ int lw_segment_envelope_intersects(POINT2D p1, POINT2D p2, POINT2D q1, POINT2D q
 	return LW_TRUE;
 }
 
-/*
-** lw_segment_intersects()
-**
-** Returns one of
-**	SEG_ERROR = -1,
-**	SEG_NO_INTERSECTION = 0,
-**	SEG_COLINEAR = 1,
-**	SEG_CROSS_LEFT = 2,
-**	SEG_CROSS_RIGHT = 3,
-**	SEG_TOUCH_LEFT = 4,
-**	SEG_TOUCH_RIGHT = 5
+/*!
+** \brief returns the kind of #CG_SEGMENT_INTERSECTION_TYPE  behavior of lineseg 1 (constructed from p1 and p2) and lineseg 2 (constructed from q1 and q2)
+**	\param p1 start point of first straight linesegment
+**	\param p2 end point of first straight linesegment
+**	\param q1 start point of second line segment
+**	\param q2 end point of second line segment
+**	\return a #CG_SEGMENT_INTERSECTION_TYPE
+** 	Returns one of
+**		SEG_ERROR = -1,
+**		SEG_NO_INTERSECTION = 0,
+**		SEG_COLINEAR = 1,
+**		SEG_CROSS_LEFT = 2,
+**		SEG_CROSS_RIGHT = 3,
+**		SEG_TOUCH_LEFT = 4,
+**		SEG_TOUCH_RIGHT = 5
 */
 int lw_segment_intersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2)
 {
@@ -92,7 +96,7 @@ int lw_segment_intersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2)
 	}
 
 	/*
-	** When one end-point touches, the sidedness is determined by the 
+	** When one end-point touches, the sidedness is determined by the
 	** location of the other end-point.
 	*/
 	if ( pq2 == 0.0 )
@@ -121,10 +125,11 @@ int lw_segment_intersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2)
 
 }
 
-/*
-** lwline_crossing_direction()
-**
-** Returns one of
+/*!
+** \brief lwline_crossing_direction: returns the kind of #CG_LINE_CROSS_TYPE behavior  of 2 linestrings
+** \param l1 first line string
+** \param l2 second line string
+** \return a #CG_LINE_CROSS_TYPE
 **   LINE_NO_CROSS = 0
 **   LINE_CROSS_LEFT = -1
 **   LINE_CROSS_RIGHT = 1
@@ -248,7 +253,7 @@ int lwline_crossing_direction(LWLINE *l1, LWLINE *l2)
 			}
 
 			/*
-			** TODO Handle co-linear cases. 
+			** TODO Handle co-linear cases.
 			*/
 
 			LWDEBUGF(4, "lineCrossingDirection: this_cross=%d, vertex_touch=%d, vertex_touch_type=%d", this_cross, vertex_touch, vertex_touch_type);
@@ -335,7 +340,7 @@ void lwpoint_set_ordinate(POINT4D *p, int ordinate, double value)
 		lwerror("Cannot extract ordinate %d.", ordinate);
 		return;
 	}
-	
+
 	LWDEBUGF(4, "    setting ordinate %d to %g", ordinate, value);
 
 	switch ( ordinate )
@@ -370,7 +375,7 @@ int lwpoint_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int nd
 	}
 
 	if ( FP_MIN(p1_value, p2_value) > interpolation_value ||
-	        FP_MAX(p1_value, p2_value) < interpolation_value )
+			FP_MAX(p1_value, p2_value) < interpolation_value )
 	{
 		lwerror("Cannot interpolate to a value (%g) not between the input points (%g, %g).", interpolation_value, p1_value, p2_value);
 		return 0;
@@ -562,13 +567,13 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				dp = dynptarray_create(64, line->type);
 
 				/* We're transiting into the range so add an interpolated
-				*  point at the range boundary. 
-				*  If we're on a boundary and crossing from the far side, 
+				*  point at the range boundary.
+				*  If we're on a boundary and crossing from the far side,
 				*  we also need an interpolated point. */
 				if ( i > 0 && ( /* Don't try to interpolate if this is the first point */
-				            ( ordinate_value_p > from && ordinate_value_p < to ) || /* Inside */
-				            ( ordinate_value_p == from && ordinate_value_q > to ) || /* Hopping from above */
-				            ( ordinate_value_p == to && ordinate_value_q < from ) ) ) /* Hopping from below */
+							( ordinate_value_p > from && ordinate_value_p < to ) || /* Inside */
+							( ordinate_value_p == from && ordinate_value_q > to ) || /* Hopping from above */
+							( ordinate_value_p == to && ordinate_value_q < from ) ) ) /* Hopping from below */
 				{
 					double interpolation_value;
 					(ordinate_value_q > to) ? (interpolation_value = to) : (interpolation_value = from);
@@ -608,8 +613,8 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				*  If the last point was the near boundary, nothing to do.
 				*  If it was the far boundary, we need an interpolated point. */
 				if ( from != to && (
-				     (ordinate_value_q == from && ordinate_value_p > from) ||
-				     (ordinate_value_q == to && ordinate_value_p < to) ) )
+					 (ordinate_value_q == from && ordinate_value_p > from) ||
+					 (ordinate_value_q == to && ordinate_value_p < to) ) )
 				{
 					double interpolation_value;
 					(ordinate_value_p > to) ? (interpolation_value = to) : (interpolation_value = from);
@@ -695,7 +700,7 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 		LWDEBUG(4, "saving pointarray to multi-line (2)");
 		LWDEBUGF(4, "dp->pa->npoints == %d", dp->pa->npoints);
 		LWDEBUGF(4, "lwgeom_out->ngeoms == %d", lwgeom_out->ngeoms);
-		
+
 		if ( dp->pa->npoints == 1 )
 		{
 			oline = (LWGEOM*)lwpoint_construct(line->SRID, NULL, dp->pa);
@@ -707,7 +712,7 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 			oline = (LWGEOM*)lwline_construct(line->SRID, NULL, dp->pa);
 			oline->type = lwgeom_makeType(hasz, hasm, hassrid, LINETYPE);
 		}
-		
+
 		lwgeom_out->ngeoms++;
 		if ( lwgeom_out->geoms ) /* We can't just realloc, since repalloc chokes on a starting null ptr. */
 		{
@@ -743,7 +748,7 @@ static char *base32 = "0123456789bcdefghjkmnpqrstuvwxyz";
 ** Released under the MIT License.
 */
 char *geohash_point(double longitude, double latitude, int precision)
-{   
+{
 	int is_even=1, i=0;
 	double lat[2], lon[2], mid;
 	char bits[] = {16,8,4,2,1};
@@ -755,29 +760,29 @@ char *geohash_point(double longitude, double latitude, int precision)
 	lat[0] = -90.0;  lat[1] = 90.0;
 	lon[0] = -180.0; lon[1] = 180.0;
 
-	while (i < precision) 
+	while (i < precision)
 	{
-		if (is_even) 
+		if (is_even)
 		{
 			mid = (lon[0] + lon[1]) / 2;
-			if (longitude > mid) 
+			if (longitude > mid)
 			{
 				ch |= bits[bit];
 				lon[0] = mid;
-			} 
+			}
 			else
 			{
 				lon[1] = mid;
 			}
-		} 
-		else 
+		}
+		else
 		{
 			mid = (lat[0] + lat[1]) / 2;
-			if (latitude > mid) 
+			if (latitude > mid)
 			{
 				ch |= bits[bit];
 				lat[0] = mid;
-			} 
+			}
 			else
 			{
 				lat[1] = mid;
@@ -789,7 +794,7 @@ char *geohash_point(double longitude, double latitude, int precision)
 		{
 			bit++;
 		}
-		else 
+		else
 		{
 			geohash[i++] = base32[ch];
 			bit = 0;
@@ -807,7 +812,7 @@ int lwgeom_geohash_precision(BOX3D bbox, BOX3D *bounds)
 	double lonwidth, latwidth;
 	double latmaxadjust, lonmaxadjust, latminadjust, lonminadjust;
 	int precision = 0;
-	
+
 	/* Get the bounding box, return error if things don't work out. */
 	minx = bbox.xmin;
 	miny = bbox.ymin;
@@ -816,7 +821,7 @@ int lwgeom_geohash_precision(BOX3D bbox, BOX3D *bounds)
 
 	if( minx == maxx && miny == maxy )
 	{
-		/* It's a point. Doubles have 51 bits of precision. 
+		/* It's a point. Doubles have 51 bits of precision.
 		** 2 * 51 / 5 == 20 */
 		return 20;
 	}
@@ -828,25 +833,25 @@ int lwgeom_geohash_precision(BOX3D bbox, BOX3D *bounds)
 
 	/* Shrink a world bounding box until one of the edges interferes with the
 	** bounds of our rectangle. */
-	while( 1 ) 
+	while( 1 )
 	{
 		lonwidth = lonmax - lonmin;
 		latwidth = latmax - latmin;
 		latmaxadjust = lonmaxadjust = latminadjust = lonminadjust = 0.0;
 
-		if( minx > lonmin + lonwidth / 2.0 ) 
+		if( minx > lonmin + lonwidth / 2.0 )
 		{
 			lonminadjust = lonwidth / 2.0;
 		}
-		else if ( maxx < lonmax - lonwidth / 2.0 ) 
+		else if ( maxx < lonmax - lonwidth / 2.0 )
 		{
 			lonmaxadjust = -1 * lonwidth / 2.0;
 		}
-		if( miny > latmin + latwidth / 2.0 ) 
+		if( miny > latmin + latwidth / 2.0 )
 		{
 			latminadjust = latwidth / 2.0;
 		}
-		else if (maxy < latmax - latwidth / 2.0 ) 
+		else if (maxy < latmax - latwidth / 2.0 )
 		{
 			latmaxadjust = -1 * latwidth / 2.0;
 		}
@@ -857,23 +862,23 @@ int lwgeom_geohash_precision(BOX3D bbox, BOX3D *bounds)
 			lonmin += lonminadjust;
 			latmax += latmaxadjust;
 			lonmax += lonmaxadjust;
-            /* Each adjustment cycle corresponds to 2 bits of storage in the 
-	        ** geohash.	*/
-	        precision += 2;
+			/* Each adjustment cycle corresponds to 2 bits of storage in the
+			** geohash.	*/
+			precision += 2;
 		}
-		else 
+		else
 		{
 			break;
 		}
 	}
-	
-	/* Save the edges of our bounds, in case someone cares later. */
-    bounds->xmin = lonmin;
-    bounds->xmax = lonmax;
-    bounds->ymin = latmin;
-    bounds->ymax = latmax;
 
-	/* Each geohash character (base32) can contain 5 bits of information. 
+	/* Save the edges of our bounds, in case someone cares later. */
+	bounds->xmin = lonmin;
+	bounds->xmax = lonmax;
+	bounds->ymin = latmin;
+	bounds->ymax = latmax;
+
+	/* Each geohash character (base32) can contain 5 bits of information.
 	** We are returning the precision in characters, so here we divide. */
 	return precision / 5;
 }
@@ -881,19 +886,19 @@ int lwgeom_geohash_precision(BOX3D bbox, BOX3D *bounds)
 
 /*
 ** Return a geohash string for the geometry. <http://geohash.org>
-** Where the precision is non-positive, calculate a precision based on the 
+** Where the precision is non-positive, calculate a precision based on the
 ** bounds of the feature. Big features have loose precision.
 ** Small features have tight precision.
 */
-char *lwgeom_geohash(const LWGEOM *lwgeom, int precision) 
+char *lwgeom_geohash(const LWGEOM *lwgeom, int precision)
 {
 	BOX3D *bbox = NULL;
-    BOX3D precision_bounds;
+	BOX3D precision_bounds;
 	double lat, lon;
-	
+
 	bbox = lwgeom_compute_box3d(lwgeom);
 	if( ! bbox ) return NULL;
-	
+
 	/* Return error if we are being fed something outside our working bounds */
 	if ( bbox->xmin < -180 || bbox->ymin < -90 || bbox->xmax > 180 || bbox->ymax > 90 )
 	{
@@ -902,21 +907,21 @@ char *lwgeom_geohash(const LWGEOM *lwgeom, int precision)
 		return NULL;
 	}
 
-	/* What is the center of our geometry bounds? We'll use that to 
+	/* What is the center of our geometry bounds? We'll use that to
 	** approximate location. */
 	lon = bbox->xmin + (bbox->xmax - bbox->xmin) / 2;
 	lat = bbox->ymin + (bbox->ymax - bbox->ymin) / 2;
 
-	if ( precision <= 0 ) 
+	if ( precision <= 0 )
 	{
-	    precision = lwgeom_geohash_precision(*bbox, &precision_bounds);
-    }
-	
+		precision = lwgeom_geohash_precision(*bbox, &precision_bounds);
+	}
+
 	lwfree(bbox);
 
-	/* 
+	/*
 	** Return the geohash of the center, with a precision determined by the
-	** extent of the bounds. 
+	** extent of the bounds.
 	** Possible change: return the point at the center of the precision bounds?
 	*/
 	return geohash_point(lon, lat, precision);
