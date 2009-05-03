@@ -8,7 +8,7 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************/
 
 #include "lwgeom_geos.h"
@@ -16,13 +16,13 @@
 #include "lwgeom_geos_prepared.h"
 
 
-/*
+/**
 ** NOTE: Buffer-based GeomUnion has been disabled due to
 ** limitations in the GEOS code (it would only work against polygons)
-** TODO: Implement cascaded GeomUnion and remove old buffer-based code.
+** DONE: Implement cascaded GeomUnion and remove old buffer-based code.
 */
 
-/* 
+/*
 ** Prototypes for SQL-bound functions
 */
 Datum relate_full(PG_FUNCTION_ARGS);
@@ -54,7 +54,8 @@ Datum GEOSnoop(PG_FUNCTION_ARGS);
 Datum postgis_geos_version(PG_FUNCTION_ARGS);
 Datum centroid(PG_FUNCTION_ARGS);
 Datum polygonize_garray(PG_FUNCTION_ARGS);
-Datum LWGEOM_buildarea(PG_FUNCTION_ARGS); /* TODO: rename to match others */
+Datum LWGEOM_buildarea(PG_FUNCTION_ARGS); /* TODO: rename to match others
+*/
 Datum linemerge(PG_FUNCTION_ARGS);
 Datum coveredby(PG_FUNCTION_ARGS);
 
@@ -62,14 +63,15 @@ Datum pgis_union_geometry_array_old(PG_FUNCTION_ARGS);
 Datum pgis_union_geometry_array(PG_FUNCTION_ARGS);
 
 
-/* TODO: move these to a lwgeom_functions_analytic.h */
+/** @todo TODO: move these to a lwgeom_functions_analytic.h
+	*/
 int point_in_polygon_rtree(RTREE_NODE **root, int ringCount, LWPOINT *point);
 int point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int ringCount, LWPOINT *point);
 int point_in_polygon(LWPOLY *polygon, LWPOINT *point);
 int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *pont);
 
-/* 
-** Prototypes end 
+/*
+** Prototypes end
 */
 
 
@@ -84,12 +86,12 @@ Datum postgis_geos_version(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/*
- * This is the final function for GeomUnion
- * aggregate. Will have as input an array of Geometries.
- * Will iteratively call GEOSUnion on the GEOS-converted
- * versions of them and return PGIS-converted version back.
- * Changing combination order *might* speed up performance.
+/**
+ * @brief This is the final function for GeomUnion
+ * 		aggregate. Will have as input an array of Geometries.
+ * 		Will iteratively call GEOSUnion on the GEOS-converted
+ * 		versions of them and return PGIS-converted version back.
+ * 		Changing combination order *might* speed up performance.
  */
 PG_FUNCTION_INFO_V1(pgis_union_geometry_array);
 Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
@@ -139,11 +141,11 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 #if POSTGIS_GEOS_VERSION >= 31
 
 	/*
-	** First, see if all our elements are POLYGON/MULTIPOLYGON 
+	** First, see if all our elements are POLYGON/MULTIPOLYGON
 	** If they are, we can use UnionCascaded for faster results.
 	*/
 	offset = 0;
-	for ( i = 0; i < nelems; i++ ) 
+	for ( i = 0; i < nelems; i++ )
 	{
 		PG_LWGEOM *pggeom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
 		int pgtype = TYPE_GETTYPE(pggeom->type);
@@ -160,7 +162,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		}
 	}
 
-	if ( allpolys ) 
+	if ( allpolys )
 	{
 		/*
 		** Everything is polygonal, so let's run the cascaded polygon union!
@@ -174,12 +176,12 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		** First make an array of GEOS Polygons.
 		*/
 		offset = 0;
-		for( i = 0; i < nelems; i++ ) 
+		for( i = 0; i < nelems; i++ )
 		{
 			PG_LWGEOM *pggeom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
 			int pgtype = TYPE_GETTYPE(pggeom->type);
 			offset += INTALIGN(VARSIZE(pggeom));
-			if( pgtype == POLYGONTYPE ) 
+			if( pgtype == POLYGONTYPE )
 			{
 				if( curgeom == geoms_size )
 				{
@@ -198,15 +200,15 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 					LWPOLY *lwpoly = NULL;
 					int k = 0;
 					if( curgeom == geoms_size )
-					{				
+					{
 						geoms_size *= 2;
 						geoms = repalloc( geoms, sizeof(GEOSGeom) * geoms_size );
 					}
 					/* This builds a LWPOLY on top of the serialized form */
-					lwpoly = lwgeom_getpoly_inspected(lwgeom, j); 
+					lwpoly = lwgeom_getpoly_inspected(lwgeom, j);
 					geoms[curgeom] = LWGEOM2GEOS(lwpoly_as_lwgeom(lwpoly));
 					/* We delicately free the LWPOLY and POINTARRAY structs, leaving the serialized form below untouched. */
-					for( k = 0; k < lwpoly->nrings; k++ ) 
+					for( k = 0; k < lwpoly->nrings; k++ )
 					{
 						lwfree(lwpoly->rings[k]);
 					}
@@ -228,7 +230,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		if ( g1 ) GEOSGeom_destroy((GEOSGeometry *)g1);
 		if ( g2 ) GEOSGeom_destroy(g2);
 	}
-	else 
+	else
 	{
 #endif /* POSTGIS_GEOS_VERSION >= 31 */
 		/*
@@ -263,7 +265,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 			g1 = POSTGIS2GEOS(pgis_geom);
 
 			POSTGIS_DEBUGF(3, "unite_garray(%d): adding geom %d to union (%s)",
-		                      call, i, lwgeom_typename(TYPE_GETTYPE(geom->type)));
+							  call, i, lwgeom_typename(TYPE_GETTYPE(geom->type)));
 
 			g2 = GEOSUnion(g1, geos_result);
 			if ( g2 == NULL )
@@ -284,7 +286,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 #if POSTGIS_GEOS_VERSION >= 31
 	}
 #endif
-	
+
 	if ( result == NULL )
 	{
 		elog(ERROR, "Union returned a NULL geometry.");
@@ -296,8 +298,8 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 }
 
 
-/*
- * select geomunion(
+/**
+ * @example geomunion {@link #geomunion} SELECT geomunion(
  *      'POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))',
  *      'POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))'
  * );
@@ -321,7 +323,7 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	is3d = ( TYPE_HASZ(geom1->type) ) ||
-	       ( TYPE_HASZ(geom2->type) );
+		   ( TYPE_HASZ(geom2->type) );
 
 	SRID = pglwgeom_getSRID(geom1);
 	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
@@ -381,8 +383,8 @@ Datum geomunion(PG_FUNCTION_ARGS)
 }
 
 
-/*
- *  select symdifference(
+/**
+ *  @example symdifference {@link #symdifference} - SELECT symdifference(
  *      'POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))',
  *      'POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))');
  */
@@ -402,7 +404,7 @@ Datum symdifference(PG_FUNCTION_ARGS)
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	is3d = ( TYPE_HASZ(geom1->type) ) ||
-	       ( TYPE_HASZ(geom2->type) );
+		   ( TYPE_HASZ(geom2->type) );
 
 	SRID = pglwgeom_getSRID(geom1);
 	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
@@ -727,7 +729,7 @@ Datum intersection(PG_FUNCTION_ARGS)
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	is3d = ( TYPE_HASZ(geom1->type) ) ||
-	       ( TYPE_HASZ(geom2->type) );
+		   ( TYPE_HASZ(geom2->type) );
 
 	SRID = pglwgeom_getSRID(geom1);
 	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
@@ -794,8 +796,8 @@ Datum intersection(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/*
- * select difference(
+/**
+ * @example difference {@link #difference} - SELECT difference(
  *      'POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))',
  *	'POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))');
  */
@@ -815,7 +817,7 @@ Datum difference(PG_FUNCTION_ARGS)
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	is3d = ( TYPE_HASZ(geom1->type) ) ||
-	       ( TYPE_HASZ(geom2->type) );
+		   ( TYPE_HASZ(geom2->type) );
 
 	SRID = pglwgeom_getSRID(geom1);
 	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
@@ -875,7 +877,9 @@ Datum difference(PG_FUNCTION_ARGS)
 }
 
 
-/* select pointonsurface('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))'); */
+/**
+	@example pointonsurface - {@link #pointonsurface} SELECT pointonsurface('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))');
+*/
 PG_FUNCTION_INFO_V1(pointonsurface);
 Datum pointonsurface(PG_FUNCTION_ARGS)
 {
@@ -989,17 +993,17 @@ Datum centroid(PG_FUNCTION_ARGS)
 /*---------------------------------------------*/
 
 
-/* 
- * Throws an ereport ERROR if either geometry is a COLLECTIONTYPE.  Additionally
- * displays a HINT of the first 80 characters of the WKT representation of the
- * problematic geometry so a user knows which parameter and which geometry
- * is causing the problem.
+/**
+ * @brief Throws an ereport ERROR if either geometry is a COLLECTIONTYPE.  Additionally
+ * 		displays a HINT of the first 80 characters of the WKT representation of the
+ * 		problematic geometry so a user knows which parameter and which geometry
+ * 		is causing the problem.
  */
 void errorIfGeometryCollection(PG_LWGEOM *g1, PG_LWGEOM *g2)
 {
 	int t1 = lwgeom_getType(g1->type);
 	int t2 = lwgeom_getType(g2->type);
-	
+
 	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
 	int result;
 	char* hintmsg;
@@ -1010,7 +1014,7 @@ void errorIfGeometryCollection(PG_LWGEOM *g1, PG_LWGEOM *g2)
 		ereport(ERROR,
 			(errmsg("Relate Operation called with a LWGEOMCOLLECTION type.  This is unsupported."),
 			 errhint("Change argument 1: '%s'", hintmsg))
-		);	
+		);
 		pfree(hintmsg);
 	}
 	else if (t2 == COLLECTIONTYPE) {
@@ -1019,7 +1023,7 @@ void errorIfGeometryCollection(PG_LWGEOM *g1, PG_LWGEOM *g2)
 		ereport(ERROR,
 			(errmsg("Relate Operation called with a LWGEOMCOLLECTION type.  This is unsupported."),
 			 errhint("Change argument 2: '%s'", hintmsg))
-		);	
+		);
 		pfree(hintmsg);
 	}
 }
@@ -1075,9 +1079,9 @@ Datum isvalid(PG_FUNCTION_ARGS)
 }
 
 #if POSTGIS_GEOS_VERSION >= 31
-/* 
+/*
 ** IsValidReason is only available in the GEOS
-** C API > version 3.0 
+** C API > version 3.0
 */
 PG_FUNCTION_INFO_V1(isvalidreason);
 Datum isvalidreason(PG_FUNCTION_ARGS)
@@ -1100,7 +1104,7 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 
 	reason_str = GEOSisValidReason(g1);
 	GEOSGeom_destroy((GEOSGeometry *)g1);
-	
+
 	if (reason_str == NULL)
 	{
 		elog(ERROR,"GEOS isvalidreason() threw an error!");
@@ -1114,14 +1118,16 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(result);
-	
+
 }
 #endif
 
-/*
+/**
  * overlaps(PG_LWGEOM g1,PG_LWGEOM g2)
- * returns  if GEOS::g1->overlaps(g2) returns true
- * throws an error (elog(ERROR,...)) if GEOS throws an error
+ * @param g1
+ * @param g2
+ * @return  if GEOS::g1->overlaps(g2) returns true
+ * @throw an error (elog(ERROR,...)) if GEOS throws an error
  */
 PG_FUNCTION_INFO_V1(overlaps);
 Datum overlaps(PG_FUNCTION_ARGS)
@@ -1146,7 +1152,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	     getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+		 getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( box2.xmax < box1.xmin ) PG_RETURN_BOOL(FALSE);
 		if ( box2.xmin > box1.xmax ) PG_RETURN_BOOL(FALSE);
@@ -1217,10 +1223,10 @@ Datum contains(PG_FUNCTION_ARGS)
 	** Do the test IFF BOUNDING BOX AVAILABLE.
 	*/
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	     getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+		 getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( ( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
-		     ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ) )
+			 ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ) )
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -1242,7 +1248,7 @@ Datum contains(PG_FUNCTION_ARGS)
 
 		/*
 		 * Switch the context to the function-scope context,
-		 * retrieve the appropriate cache object, cache it for 
+		 * retrieve the appropriate cache object, cache it for
 		 * future use, then switch back to the local context.
 		 */
 		old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
@@ -1344,10 +1350,10 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 	* Do the test IFF BOUNDING BOX AVAILABLE.
 	*/
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	     getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+		 getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if (( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
-		    ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
+			( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
 			PG_RETURN_BOOL(FALSE);
 	}
 
@@ -1416,10 +1422,10 @@ Datum covers(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	     getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+		 getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if (( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
-		    ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax )) 
+			( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -1441,7 +1447,7 @@ Datum covers(PG_FUNCTION_ARGS)
 
 		/*
 		 * Switch the context to the function-scope context,
-		 * retrieve the appropriate cache object, cache it for 
+		 * retrieve the appropriate cache object, cache it for
 		 * future use, then switch back to the local context.
 		 */
 		old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
@@ -1549,10 +1555,10 @@ Datum within(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	     getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+		 getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( ( box1.xmin < box2.xmin ) || ( box1.xmax > box2.xmax ) ||
-		     ( box1.ymin < box2.ymin ) || ( box1.ymax > box2.ymax ) )
+			 ( box1.ymin < box2.ymin ) || ( box1.ymax > box2.ymax ) )
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -1572,7 +1578,7 @@ Datum within(PG_FUNCTION_ARGS)
 
 		/*
 		 * Switch the context to the function-scope context,
-		 * retrieve the appropriate cache object, cache it for 
+		 * retrieve the appropriate cache object, cache it for
 		 * future use, then switch back to the local context.
 		 */
 		old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
@@ -1678,10 +1684,10 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	     getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+		 getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( ( box1.xmin < box2.xmin ) || ( box1.xmax > box2.xmax ) ||
-		     ( box1.ymin < box2.ymin ) || ( box1.ymax > box2.ymax ) )
+			 ( box1.ymin < box2.ymin ) || ( box1.ymax > box2.ymax ) )
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -1703,7 +1709,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 
 		/*
 		 * Switch the context to the function-scope context,
-		 * retrieve the appropriate cache object, cache it for 
+		 * retrieve the appropriate cache object, cache it for
 		 * future use, then switch back to the local context.
 		 */
 		old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
@@ -1800,10 +1806,10 @@ Datum crosses(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+					getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
-		     ( box2.ymax < box1.ymin ) || ( box2.ymin > box2.ymax ) )
+			 ( box2.ymax < box1.ymin ) || ( box2.ymin > box2.ymax ) )
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -1871,10 +1877,10 @@ Datum intersects(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	     getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+		 getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
-		     ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
+			 ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -1887,7 +1893,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 	type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
 	type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
 	if ( (type1 == POINTTYPE && (type2 == POLYGONTYPE || type2 == MULTIPOLYGONTYPE)) ||
-	     (type2 == POINTTYPE && (type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE)))
+		 (type2 == POINTTYPE && (type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE)))
 	{
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
 
@@ -1907,7 +1913,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 		}
 		/*
 		 * Switch the context to the function-scope context,
-		 * retrieve the appropriate cache object, cache it for 
+		 * retrieve the appropriate cache object, cache it for
 		 * future use, then switch back to the local context.
 		 */
 		old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
@@ -2012,10 +2018,10 @@ Datum touches(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	     getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+		 getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
-		     ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
+			 ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -2077,10 +2083,10 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	     getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+		 getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
-		     ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
+			 ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
 		{
 			PG_RETURN_BOOL(TRUE);
 		}
@@ -2141,10 +2147,10 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 
 	patt =  DatumGetCString(DirectFunctionCall1(textout,
-	                        PointerGetDatum(PG_GETARG_DATUM(2))));
+							PointerGetDatum(PG_GETARG_DATUM(2))));
 
 	/*
-	** Need to make sure 't' and 'f' are upper-case before handing to GEOS 
+	** Need to make sure 't' and 'f' are upper-case before handing to GEOS
 	*/
 	for ( i = 0; i < strlen(patt); i++ )
 	{
@@ -2259,7 +2265,7 @@ Datum geomequals(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+					getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( box2.xmax != box1.xmax ) PG_RETURN_BOOL(FALSE);
 		if ( box2.xmin != box1.xmin ) PG_RETURN_BOOL(FALSE);
@@ -2478,10 +2484,10 @@ GEOS2LWGEOM(const GEOSGeometry *geom, char want3d)
 			g = GEOSGetInteriorRingN(geom, i);
 			cs = GEOSGeom_getCoordSeq(g);
 			ppaa[i+1] = ptarray_from_GEOSCoordSeq(cs,
-			                                      want3d);
+												  want3d);
 		}
 		return (LWGEOM *)lwpoly_construct(SRID, NULL,
-		                                  ngeoms+1, ppaa);
+										  ngeoms+1, ppaa);
 
 	case GEOS_MULTIPOINT:
 	case GEOS_MULTILINESTRING:
@@ -2501,7 +2507,7 @@ GEOS2LWGEOM(const GEOSGeometry *geom, char want3d)
 			}
 		}
 		return (LWGEOM *)lwcollection_construct(type,
-		                                        SRID, NULL, ngeoms, geoms);
+												SRID, NULL, ngeoms, geoms);
 
 	default:
 		lwerror("GEOS2LWGEOM: unknown geometry type: %d", type);
@@ -2712,7 +2718,7 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	GEOSGeometry *geosgeom;
 	PG_LWGEOM *lwgeom_result;
 #if POSTGIS_DEBUG_LEVEL > 0
-	int result; 
+	int result;
 	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
 #endif
 
@@ -2738,7 +2744,7 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, SERIALIZED_FORM(lwgeom_result), PARSER_CHECK_NONE);
 	POSTGIS_DEBUGF(4, "GEOSnoop: OUT: %s", lwg_unparser_result.wkoutput);
 #endif
-	
+
 	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(lwgeom_result);
@@ -2989,12 +2995,12 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 		 * a LinearRing clone.
 		 */
 		sq=GEOSCoordSeq_clone(GEOSGeom_getCoordSeq(
-		                              GEOSGetExteriorRing(GEOSGetGeometryN( geos_result, i))
-		                      ));
+									  GEOSGetExteriorRing(GEOSGetGeometryN( geos_result, i))
+							  ));
 		extring = GEOSGeom_createPolygon(
-		                  GEOSGeom_createLinearRing(sq),
-		                  NULL, 0
-		          );
+						  GEOSGeom_createLinearRing(sq),
+						  NULL, 0
+				  );
 
 		if ( extring == NULL ) /* exception */
 		{
