@@ -46,13 +46,13 @@ int lw_segment_envelope_intersects(POINT2D p1, POINT2D p2, POINT2D q1, POINT2D q
 	return LW_TRUE;
 }
 
-/*!
-** \brief returns the kind of #CG_SEGMENT_INTERSECTION_TYPE  behavior of lineseg 1 (constructed from p1 and p2) and lineseg 2 (constructed from q1 and q2)
-**	\param p1 start point of first straight linesegment
-**	\param p2 end point of first straight linesegment
-**	\param q1 start point of second line segment
-**	\param q2 end point of second line segment
-**	\return a #CG_SEGMENT_INTERSECTION_TYPE
+/**
+** @brief returns the kind of #CG_SEGMENT_INTERSECTION_TYPE  behavior of lineseg 1 (constructed from p1 and p2) and lineseg 2 (constructed from q1 and q2)
+**	@param p1 start point of first straight linesegment
+**	@param p2 end point of first straight linesegment
+**	@param q1 start point of second line segment
+**	@param q2 end point of second line segment
+**	@return a #CG_SEGMENT_INTERSECTION_TYPE
 ** 	Returns one of
 **		SEG_ERROR = -1,
 **		SEG_NO_INTERSECTION = 0,
@@ -125,11 +125,11 @@ int lw_segment_intersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2)
 
 }
 
-/*!
-** \brief lwline_crossing_direction: returns the kind of #CG_LINE_CROSS_TYPE behavior  of 2 linestrings
-** \param l1 first line string
-** \param l2 second line string
-** \return a #CG_LINE_CROSS_TYPE
+/**
+** @brief lwline_crossing_direction: returns the kind of #CG_LINE_CROSS_TYPE behavior  of 2 linestrings
+** @param l1 first line string
+** @param l2 second line string
+** @return a #CG_LINE_CROSS_TYPE
 **   LINE_NO_CROSS = 0
 **   LINE_CROSS_LEFT = -1
 **   LINE_CROSS_RIGHT = 1

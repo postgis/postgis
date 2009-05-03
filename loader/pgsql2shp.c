@@ -105,14 +105,14 @@ static void parse_table(char *spec);
 static int create_usrquerytable(void);
 static const char *nullDBFValue(char fieldType);
 int projFileCreate(const char * pszFilename, char *schema, char *table, char *geo_col_name);
-/*!
- * \brief Make appropriate formatting of a DBF value based on type.
+/**
+ * @brief Make appropriate formatting of a DBF value based on type.
  * Might return untouched input or pointer to static private
  * buffer: use return value right away.
  */
 static const char * goodDBFValue(const char *in, char fieldType);
 
-/*! \brief Binary to hexewkb conversion function */
+/** @brief Binary to hexewkb conversion function */
 char *convert_bytes_to_hex(uchar *ewkb, size_t size);
 
 
@@ -944,8 +944,8 @@ addRecord(PGresult *res, int residx, int row)
 	return 1;
 }
 
-/*!
- * \brief Return allocate memory. Free after use.
+/**
+ * @brief Return allocate memory. Free after use.
  */
 char *
 getTableOID(char *schema, char *table)
@@ -987,8 +987,8 @@ getTableOID(char *schema, char *table)
 	return ret;
 }
 
-/*! \brief Return geometry type as defined at top file.
- * \return -1 on error.
+/** @brief Return geometry type as defined at top file.
+ * @return -1 on error.
  * 			0 on unknown or unsupported geometry type.
  * Set outtype to 'm' or 'z' depending on input type.
  */
@@ -1112,12 +1112,12 @@ getGeometryType(char *schema, char *table, char *geo_col_name)
 
 }
 
-/*!
- * \brief Set global outtype variable to:
+/**
+ * @brief Set global outtype variable to:
  * 	'm' for 3dm input
  * 	'z' for 3dz or 4d input
  * 	's' for 2d
- * \return -1 on error, 0 on success.
+ * @return -1 on error, 0 on success.
  * 	Call only on postgis >= 1.0.0
  */
 int
@@ -1203,7 +1203,7 @@ usage(char* me, int status, FILE* out)
 		exit (status);
 }
 
-/*! \brief Parse command line parameters */
+/** @brief Parse command line parameters */
 int
 parse_commandline(int ARGC, char **ARGV)
 {
@@ -1298,8 +1298,8 @@ get_postgis_major_version(void)
 	return ver;
 }
 
-/*!
- * \brief Initialize shapefile files, main scan query,
+/**
+ * @brief Initialize shapefile files, main scan query,
  * 		type array.
  */
 int
@@ -1923,8 +1923,8 @@ shapetypename(int num)
 	}
 }
 
-/*!
- * \brief Either get a table (and optionally a schema)
+/**
+ * @brief Either get a table (and optionally a schema)
  * 		or a query.
  * 		A query starts with a "select" or "SELECT" string.
  */
@@ -2007,8 +2007,8 @@ nullDBFValue(char fieldType)
 	}
 }
 
-/*!
- * \brief Make appropriate formatting of a DBF value based on type.
+/**
+ * @brief Make appropriate formatting of a DBF value based on type.
  * 		Might return untouched input or pointer to static private
  * 		buffer: use return value right away.
  */
@@ -2058,11 +2058,11 @@ char *convert_bytes_to_hex(uchar *ewkb, size_t size)
 	return hexewkb;
 }
 
-/*!
- * \brief Creates ESRI .prj file for this shp output
+/**
+ * @brief Creates ESRI .prj file for this shp output
  * 		It looks in the spatial_ref_sys table and outputs the srtext field for this data
  * 		If data is a table will use geometry_columns, if a query or view will read SRID from query output.
- *	\warning Will give warning and not output a .prj file if SRID is -1, Unknown, mixed SRIDS or not found in spatial_ref_sys.  The dbf and shp will still be output.
+ *	@warning Will give warning and not output a .prj file if SRID is -1, Unknown, mixed SRIDS or not found in spatial_ref_sys.  The dbf and shp will still be output.
  */
 int projFileCreate(const char * pszFilename, char *schema, char *table, char *geo_col_name)
 {

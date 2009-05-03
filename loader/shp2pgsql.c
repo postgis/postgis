@@ -10,7 +10,7 @@
  *
  /
 
- /*! *********************************************************************
+ /** *********************************************************************
  * \file Using shapelib 1.2.8, this program reads in shape files and
  * 	processes it's contents into a Insert statements which can be
  * 	easily piped into a database frontend.
@@ -62,7 +62,7 @@ typedef struct Ring {
 	unsigned int linked; 	/* number of "next" rings */
 } Ring;
 
-/*! \brief Values for null_policy global */
+/** @brief Values for null_policy global */
 enum {
 	insert_null,
 	skip_null,
@@ -154,8 +154,8 @@ void *safe_malloc(size_t size)
 #define malloc(x) safe_malloc(x)
 
 
-/*!
- * \brief Escape input string suitable for COPY
+/**
+ * @brief Escape input string suitable for COPY
  */
 
 char *
@@ -273,11 +273,11 @@ escape_insert_string(char *str)
 
 
 
-/*!
- * \brief PIP(): crossing number test for a point in a polygon
+/**
+ * @brief PIP(): crossing number test for a point in a polygon
  *      input:   P = a point,
  *               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
- * \return   0 = outside, 1 = inside
+ * @return   0 = outside, 1 = inside
  */
 int
 PIP( Point P, Point* V, int n )
@@ -299,8 +299,8 @@ PIP( Point P, Point* V, int n )
 }
 
 
-/*!
- * \brief Insert the attributes from the correct row of dbf file
+/**
+ * @brief Insert the attributes from the correct row of dbf file
  */
 
 int
@@ -391,9 +391,9 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
 
 
 
-/*!
+/**
  * main()
- * \brief see description at the top of this file
+ * @brief see description at the top of this file
  */
 int
 main (int ARGC, char **ARGV)
@@ -1071,7 +1071,7 @@ ReleasePolygons(Ring **polys, int npolys)
 	free(polys);
 }
 
-/*! \brief This function basically deals with the polygon case. */
+/** @brief This function basically deals with the polygon case. */
 /*		it sorts the polys in order of outer,inner,inner, so that inners */
 /*		always come after outers they are within  */
 void
@@ -1215,8 +1215,8 @@ InsertPolygon(void)
 		lwfree(lwcollection);
 }
 
-/*!
- * \brief Insert either a POINT or MULTIPOINT into the output stream
+/**
+ * @brief Insert either a POINT or MULTIPOINT into the output stream
  */
 void
 InsertPoint(void)
@@ -1621,7 +1621,7 @@ dump_ring(Ring *ring)
 void
 DropTable(char *schema, char *table, char *geom)
 {
-		/*!---------------Drop the table--------------------------
+		/**---------------Drop the table--------------------------
 		 * TODO: \todo if the table has more then one geometry column
 		 * 	the DROP TABLE call will leave spurious records in
 		 * 	geometry_columns.

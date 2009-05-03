@@ -39,7 +39,7 @@ ptarray_construct(char hasz, char hasm, unsigned int npoints)
 
 void ptarray_free(POINTARRAY *pa)
 {
-	/*!
+	/**
 	*  	TODO: \todo	Turn this on after retrofitting all calls to lwfree_ in /lwgeom
 	*		if( pa->serialized_pointlist )
 	*		lwfree(pa->serialized_pointlist);
@@ -69,8 +69,8 @@ ptarray_reverse(POINTARRAY *pa)
 
 }
 
-/*!
- * \brief calculate the 2d bounding box of a set of points
+/**
+ * @brief calculate the 2d bounding box of a set of points
  * 		write result to the provided BOX2DFLOAT4
  * 		Return 0 if bounding box is NULL (empty geom)
  */
@@ -104,9 +104,9 @@ ptarray_compute_box2d_p(const POINTARRAY *pa, BOX2DFLOAT4 *result)
 	return 1;
 }
 
-/*!
- * \brief Calculate the 2d bounding box of a set of points.
- * \return allocated #BOX2DFLOAT4 or NULL (for empty array).
+/**
+ * @brief Calculate the 2d bounding box of a set of points.
+ * @return allocated #BOX2DFLOAT4 or NULL (for empty array).
  */
 BOX2DFLOAT4 *
 ptarray_compute_box2d(const POINTARRAY *pa)
@@ -138,8 +138,8 @@ ptarray_compute_box2d(const POINTARRAY *pa)
 	return result;
 }
 
-/*!
- * \brief Returns a modified #POINTARRAY so that no segment is
+/**
+ * @brief Returns a modified #POINTARRAY so that no segment is
  * 		longer than the given distance (computed using 2d).
  *
  * Every input point is kept.
@@ -241,8 +241,8 @@ ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2)
 	return 1;
 }
 
-/*!
- * \brief Add a point in a pointarray.
+/**
+ * @brief Add a point in a pointarray.
  * 		'where' is the offset (starting at 0)
  * 		if 'where' == -1 append is required.
  */
@@ -299,10 +299,10 @@ ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims, unsigned int where)
 	return ret;
 }
 
-/*!
- * \brief Remove a point from a pointarray.
- * 	\param which -  is the offset (starting at 0)
- * \return #POINTARRAY is newly allocated
+/**
+ * @brief Remove a point from a pointarray.
+ * 	@param which -  is the offset (starting at 0)
+ * @return #POINTARRAY is newly allocated
  */
 POINTARRAY *
 ptarray_removePoint(POINTARRAY *pa, unsigned int which)
@@ -345,8 +345,8 @@ ptarray_removePoint(POINTARRAY *pa, unsigned int which)
 	return ret;
 }
 
-/*!
- * \brief Clone a pointarray
+/**
+ * @brief Clone a pointarray
  */
 POINTARRAY *
 ptarray_clone(const POINTARRAY *in)
@@ -373,9 +373,9 @@ ptarray_isclosed2d(const POINTARRAY *in)
 	return 1;
 }
 
-/*!
- * \brief calculate the #BOX3D bounding box of a set of points
- * \return  a lwalloced #BOX3D, or NULL on empty array.
+/**
+ * @brief calculate the #BOX3D bounding box of a set of points
+ * @return  a lwalloced #BOX3D, or NULL on empty array.
  * 		#zmin / #zmax values are set to #NO_Z_VALUE if not available.
  */
 BOX3D *
@@ -392,11 +392,11 @@ ptarray_compute_box3d(const POINTARRAY *pa)
 	return result;
 }
 
-/*!
- * \brief calculate the #BOX3D bounding box of a set of points
+/**
+ * @brief calculate the #BOX3D bounding box of a set of points
  * 		zmin/zmax values are set to #NO_Z_VALUE if not available.
  * write result to the provided #BOX3D
- * \return 0 if bounding box is NULL (empty geom) and 1 otherwise
+ * @return 0 if bounding box is NULL (empty geom) and 1 otherwise
  */
 int
 ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *result)
@@ -446,7 +446,7 @@ ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *result)
 	return 1;
 }
 
-/*!
+/**
  * TODO: \todo implement point interpolation
  */
 POINTARRAY *
@@ -759,8 +759,8 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p)
 	return plen/tlen;
 }
 
-/*!
- * \brief Longitude shift for a pointarray.
+/**
+ * @brief Longitude shift for a pointarray.
  *  	Y remains the same
  *  	X is converted:
  *	 		from -180..180 to 0..360
@@ -801,8 +801,8 @@ dynptarray_create(size_t initial_capacity, int dims)
 	return ret;
 }
 
-/*!
- * \brief Add a #POINT4D to the dynamic pointarray.
+/**
+ * @brief Add a #POINT4D to the dynamic pointarray.
  *
  * The dynamic pointarray may be of any dimension, only
  * accepted dimensions will be copied.
