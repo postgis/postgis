@@ -88,10 +88,10 @@ Datum postgis_geos_version(PG_FUNCTION_ARGS)
 
 /**
  * @brief This is the final function for GeomUnion
- * 		aggregate. Will have as input an array of Geometries.
- * 		Will iteratively call GEOSUnion on the GEOS-converted
- * 		versions of them and return PGIS-converted version back.
- * 		Changing combination order *might* speed up performance.
+ * 			aggregate. Will have as input an array of Geometries.
+ * 			Will iteratively call GEOSUnion on the GEOS-converted
+ * 			versions of them and return PGIS-converted version back.
+ * 			Changing combination order *might* speed up performance.
  */
 PG_FUNCTION_INFO_V1(pgis_union_geometry_array);
 Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
