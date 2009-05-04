@@ -1,3 +1,59 @@
+2009-04-29 19:36  kneufeld
+
+	* regress/run_test: fix for ERROR in regression logs
+	  - first test if the table is there before attempting to drop it
+
+2009-04-27 22:08  robe
+
+	* loader/pgsql2shp.c: add another sentence
+
+2009-04-27 22:04  robe
+
+	* loader/pgsql2shp.c: change empty table error to just a warning
+
+2009-04-27 22:01  robe
+
+	* doc/README: typo
+
+2009-04-27 19:48  kneufeld
+
+	* doc/README: test commit
+
+2009-04-27 19:21  kneufeld
+
+	* doc/postgis.xml: test commit
+
+2009-04-27 19:09  kneufeld
+
+	* TODO: Test commit to test autobuild
+
+2009-04-26 20:12  kneufeld
+
+	* Version.config: reverted the name of the branch back to 1.3.6SVN,
+	  otherwise changes made in the branch will overwrite the already
+	  named postgis-1.3.6RC1.tar.gz tagged release in the snapshot
+	  autobuilding process. Also, an every changing branch repo should
+	  not have the same name as a tagged static release.
+
+2009-04-26 05:08  kneufeld
+
+	* doc/postgis.xml: converted xref to link so dblatex can build a
+	  pdf
+
+2009-04-26 04:56  kneufeld
+
+	* doc/postgis.xml: added missing id references
+
+2009-04-21 20:04  pramsey
+
+	* ChangeLog, HOWTO_RELEASE, NEWS, README.postgis, Version.config,
+	  doc/postgis.xml, make_dist.sh: 1.3.6rc1 release preparation
+
+2009-04-21 17:45  pramsey
+
+	* configure.in, make_dist.sh: more search paths for XSL sheets in
+	  configure
+
 2009-04-06 17:32  pramsey
 
 	* NEWS, doc/postgis.xml: Fix mis-spelling in Eduin Carrillo's name
