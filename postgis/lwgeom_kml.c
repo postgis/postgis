@@ -8,8 +8,10 @@
  * This is free software; you can redistribute and/or modify it under
  * the terms of hte GNU General Public Licence. See the COPYING file.
  *
- **********************************************************************
- *
+ **********************************************************************/
+ 
+ /**
+ * @file
  * KML output routines based on lwgeom_gml.c
  * Written by: Eduin Carrillo <yecarrillo@cas.gov.co>
  *             © 2006 Corporacion Autonoma Regional de Santander - CAS

@@ -119,9 +119,9 @@ void popc(void);
 
 void alloc_wkb(const char* parser);
 
-/*
-	Use these functions to parse and unparse lwgeoms
-	You are responsible for freeing the returned memory.
+/**
+	@file Use these functions to parse and unparse lwgeoms
+			You are responsible for freeing the returned memory.
 */
 
 int parse_lwg(LWGEOM_PARSER_RESULT *lwg_parser_result, const char* wkt, int flags, allocator allocfunc,report_error errfunc);

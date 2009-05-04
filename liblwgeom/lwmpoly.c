@@ -71,11 +71,10 @@ lwmpoly_deserialize(uchar *srl)
 	return result;
 }
 
-/*
+/**
  * Add 'what' to this multiline at position 'where'.
- * where=0 == prepend
- * where=-1 == append
- * Returns a MULTIPOLY or a COLLECTION
+ * @param where if 0 == prepend, if = -1 then append
+ * @return a {@link #MULTIPOLY} or a {@link #COLLECTION}
  */
 LWGEOM *
 lwmpoly_add(const LWMPOLY *to, uint32 where, const LWGEOM *what)
