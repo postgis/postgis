@@ -8,8 +8,8 @@
  * This is free software; you can redistribute and/or modify it under
  * the terms of hte GNU General Public Licence. See the COPYING file.
  *
- **********************************************************************
- *
+ **********************************************************************/
+ /** @file
  * GeoJSON output routines.
  * Originally written by Olivier Courtin (Camptocamp)
  *
@@ -45,7 +45,7 @@ static char *getSRSbySRID(int SRID, bool short_crs);
 
 
 /**
- * Encode Feature in GeoJson 
+ * Encode Feature in GeoJson
  */
 PG_FUNCTION_INFO_V1(LWGEOM_asGeoJson);
 Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
@@ -61,48 +61,48 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 	int precision = MAX_DOUBLE_PRECISION;
 	char * srs = NULL;
 
-   	/* Get the version */
-    	version = PG_GETARG_INT32(0);
-        if ( version != 1) {
-                elog(ERROR, "Only GeoJSON 1 is supported");
-                PG_RETURN_NULL();
-        }
+	/* Get the version */
+		version = PG_GETARG_INT32(0);
+		if ( version != 1) {
+				elog(ERROR, "Only GeoJSON 1 is supported");
+				PG_RETURN_NULL();
+		}
 
 	/* Get the geometry */
 	if (PG_ARGISNULL(1) ) PG_RETURN_NULL();
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	/* Retrieve precision if any (default is max) */
-     	if (PG_NARGS() >2 && !PG_ARGISNULL(2)) {
-                precision = PG_GETARG_INT32(2);
-                if ( precision > MAX_DOUBLE_PRECISION )
-                        precision = MAX_DOUBLE_PRECISION;
-                else if ( precision < 0 ) precision = 0;
-        }
+		if (PG_NARGS() >2 && !PG_ARGISNULL(2)) {
+				precision = PG_GETARG_INT32(2);
+				if ( precision > MAX_DOUBLE_PRECISION )
+						precision = MAX_DOUBLE_PRECISION;
+				else if ( precision < 0 ) precision = 0;
+		}
 
-	/* Retrieve output option 
+	/* Retrieve output option
 	 * 0 = without option (default)
 	 * 1 = bbox
 	 * 2 = short crs
 	 * 4 = long crs
 	 */
-     	if (PG_NARGS() >3 && !PG_ARGISNULL(3)) 
-                option = PG_GETARG_INT32(3);
+		if (PG_NARGS() >3 && !PG_ARGISNULL(3))
+				option = PG_GETARG_INT32(3);
 
 	if (option & 2 || option & 4) {
- 		SRID = lwgeom_getsrid(SERIALIZED_FORM(geom));
-        	if ( SRID != -1 ) {
+		SRID = lwgeom_getsrid(SERIALIZED_FORM(geom));
+			if ( SRID != -1 ) {
 			if (option & 2) srs = getSRSbySRID(SRID, true);
 			if (option & 4) srs = getSRSbySRID(SRID, false);
 			if (!srs) {
-                		elog(ERROR, "SRID %i unknown in spatial_ref_sys table", SRID);
-                		PG_RETURN_NULL();
+						elog(ERROR, "SRID %i unknown in spatial_ref_sys table", SRID);
+						PG_RETURN_NULL();
 			}
 		}
 	}
 
 	if (option & 1) has_bbox = 1;
-	
+
 	geojson = geometry_to_geojson(SERIALIZED_FORM(geom), srs, has_bbox, precision);
 	PG_FREE_IF_COPY(geom, 1);
 	if (srs) pfree(srs);
@@ -119,8 +119,8 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 
 
 
-/* 
- * Takes a GEOMETRY and returns a GeoJson representation 
+/*
+ * Takes a GEOMETRY and returns a GeoJson representation
  */
 char *
 geometry_to_geojson(uchar *geom, char *srs, bool has_bbox, int precision)
@@ -186,8 +186,8 @@ geometry_to_geojson(uchar *geom, char *srs, bool has_bbox, int precision)
 }
 
 
-/*
- * Handle SRS 
+/**
+ * Handle SRS
  */
 static size_t
 asgeojson_srs_size(char *srs) {
@@ -211,8 +211,8 @@ asgeojson_srs_buf(char *output, char *srs) {
 }
 
 
-/*
- * Handle Bbox 
+/**
+ * Handle Bbox
  */
 static size_t
 asgeojson_bbox_size(bool hasz, int precision) {
@@ -221,10 +221,10 @@ asgeojson_bbox_size(bool hasz, int precision) {
 
 	if (!hasz) {
 		size = sizeof("\"bbox\":[,,,],");
- 		size +=	2 * 2 * (MAX_DIGS_DOUBLE + precision);
+		size +=	2 * 2 * (MAX_DIGS_DOUBLE + precision);
 	} else {
 		size = sizeof("\"bbox\":[,,,,,],");
- 		size +=	2 * 3 * (MAX_DIGS_DOUBLE + precision);
+		size +=	2 * 3 * (MAX_DIGS_DOUBLE + precision);
 	}
 
 	return size;
@@ -239,7 +239,7 @@ asgeojson_bbox_buf(char *output, BOX3D *bbox, bool hasz, int precision)
 		ptr += sprintf(ptr, "\"bbox\":[%.*f,%.*f,%.*f,%.*f],",
 			precision, bbox->xmin, precision, bbox->ymin,
 			precision, bbox->xmax, precision, bbox->ymax);
-	else  
+	else
 		ptr += sprintf(ptr, "\"bbox\":[%.*f,%.*f,%.*f,%.*f,%.*f,%.*f],",
 			precision, bbox->xmin, precision, bbox->ymin, precision, bbox->zmin,
 			precision, bbox->xmax, precision, bbox->ymax, precision, bbox->zmax);
@@ -249,7 +249,7 @@ asgeojson_bbox_buf(char *output, BOX3D *bbox, bool hasz, int precision)
 
 
 
-/*
+/**
  * Point Geometry
  */
 
@@ -276,7 +276,7 @@ asgeojson_point_buf(LWPOINT *point, char *srs, char *output, BOX3D *bbox, int pr
 	ptr += sprintf(ptr, "{\"type\":\"Point\",");
 	if (srs) ptr += asgeojson_srs_buf(ptr, srs);
 	if (bbox) ptr += asgeojson_bbox_buf(ptr, bbox, TYPE_HASZ(point->type), precision);
-	
+
 	ptr += sprintf(ptr, "\"coordinates\":");
 	ptr += pointArray_to_geojson(point->point, ptr, precision);
 	ptr += sprintf(ptr, "}");
@@ -298,7 +298,7 @@ asgeojson_point(LWPOINT *point, char *srs, BOX3D *bbox, int precision)
 
 
 
-/*
+/**
  * Line Geometry
  */
 
@@ -346,7 +346,7 @@ asgeojson_line(LWLINE *line, char *srs, BOX3D *bbox, int precision)
 
 
 
-/*
+/**
  * Polygon Geometry
  */
 
@@ -382,7 +382,7 @@ asgeojson_poly_buf(LWPOLY *poly, char *srs, char *output, BOX3D *bbox, int preci
 	ptr += sprintf(ptr, "\"coordinates\":[");
 	for (i=0; i<poly->nrings; i++)
 	{
-                if (i) ptr += sprintf(ptr, ",");
+				if (i) ptr += sprintf(ptr, ",");
 		ptr += sprintf(ptr, "[");
 		ptr += pointArray_to_geojson(poly->rings[i], ptr, precision);
 		ptr += sprintf(ptr, "]");
@@ -407,7 +407,7 @@ asgeojson_poly(LWPOLY *poly, char *srs, BOX3D *bbox, int precision)
 
 
 
-/*
+/**
  * Multipoint Geometry
  */
 
@@ -425,8 +425,8 @@ asgeojson_multipoint_size(LWGEOM_INSPECTED *insp, char *srs, BOX3D *bbox, int pr
 
 	for (i=0; i<insp->ngeometries; i++) {
 		point = lwgeom_getpoint_inspected(insp, i);
-         	size += pointArray_geojson_size(point->point, precision);
-                lwpoint_release(point);
+			size += pointArray_geojson_size(point->point, precision);
+				lwpoint_release(point);
 	}
 	size += sizeof(",") * i;
 
@@ -446,11 +446,11 @@ asgeojson_multipoint_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, BOX3D 
 	ptr += sprintf(ptr, "\"coordinates\":[");
 
 	for (i=0; i<insp->ngeometries; i++)
-        {
-                if (i) ptr += sprintf(ptr, ",");
-                point=lwgeom_getpoint_inspected(insp, i);
+		{
+				if (i) ptr += sprintf(ptr, ",");
+				point=lwgeom_getpoint_inspected(insp, i);
 		ptr += pointArray_to_geojson(point->point, ptr, precision);
-                lwpoint_release(point);
+				lwpoint_release(point);
 	}
 	ptr += sprintf(ptr, "]}");
 
@@ -472,7 +472,7 @@ asgeojson_multipoint(LWGEOM_INSPECTED *insp, char *srs, BOX3D *bbox, int precisi
 
 
 
-/*
+/**
  * Multiline Geometry
  */
 
@@ -490,9 +490,9 @@ asgeojson_multiline_size(LWGEOM_INSPECTED *insp, char *srs, BOX3D *bbox, int pre
 
 	for (i=0 ; i<insp->ngeometries; i++) {
 		line = lwgeom_getline_inspected(insp, i);
-         	size += pointArray_geojson_size(line->points, precision);
+			size += pointArray_geojson_size(line->points, precision);
 		size += sizeof("[]");
-                lwline_release(line);
+				lwline_release(line);
 	}
 	size += sizeof(",") * i;
 
@@ -512,14 +512,14 @@ asgeojson_multiline_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, BOX3D *
 	ptr += sprintf(ptr, "\"coordinates\":[");
 
 	for (i=0; i<insp->ngeometries; i++)
-        {
-                if (i) ptr += sprintf(ptr, ",");
-                ptr += sprintf(ptr, "[");
-                line = lwgeom_getline_inspected(insp, i);
+		{
+				if (i) ptr += sprintf(ptr, ",");
+				ptr += sprintf(ptr, "[");
+				line = lwgeom_getline_inspected(insp, i);
 		ptr += pointArray_to_geojson(line->points, ptr, precision);
-                ptr += sprintf(ptr, "]");
-		
-                lwline_release(line);
+				ptr += sprintf(ptr, "]");
+
+				lwline_release(line);
 	}
 
 	ptr += sprintf(ptr, "]}");
@@ -542,7 +542,7 @@ asgeojson_multiline(LWGEOM_INSPECTED *insp, char *srs, BOX3D *bbox, int precisio
 
 
 
-/*
+/**
  * MultiPolygon Geometry
  */
 
@@ -561,10 +561,10 @@ asgeojson_multipolygon_size(LWGEOM_INSPECTED *insp, char *srs, BOX3D *bbox, int 
 	for (i=0; i < insp->ngeometries; i++) {
 		poly = lwgeom_getpoly_inspected(insp, i);
 		for (j=0 ; j <poly->nrings ; j++) {
-	         	size += pointArray_geojson_size(poly->rings[j], precision);
+				size += pointArray_geojson_size(poly->rings[j], precision);
 			size += sizeof("[]");
 		}
-                lwpoly_release(poly);
+				lwpoly_release(poly);
 		size += sizeof("[]");
 	}
 	size += sizeof(",") * i;
@@ -585,18 +585,18 @@ asgeojson_multipolygon_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, BOX3
 	if (bbox) ptr += asgeojson_bbox_buf(ptr, bbox, TYPE_HASZ(insp->type), precision);
 	ptr += sprintf(ptr, "\"coordinates\":[");
 	for (i=0; i<insp->ngeometries; i++)
-        {
-                if (i) ptr += sprintf(ptr, ",");
-                ptr += sprintf(ptr, "[");
-                poly = lwgeom_getpoly_inspected(insp, i);
+		{
+				if (i) ptr += sprintf(ptr, ",");
+				ptr += sprintf(ptr, "[");
+				poly = lwgeom_getpoly_inspected(insp, i);
 		for (j=0 ; j < poly->nrings ; j++) {
 			if (j) ptr += sprintf(ptr, ",");
-                	ptr += sprintf(ptr, "[");
+					ptr += sprintf(ptr, "[");
 			ptr += pointArray_to_geojson(poly->rings[j], ptr, precision);
-                	ptr += sprintf(ptr, "]");
+					ptr += sprintf(ptr, "]");
 		}
-                ptr += sprintf(ptr, "]");
-                lwpoly_release(poly);
+				ptr += sprintf(ptr, "]");
+				lwpoly_release(poly);
 	}
 	ptr += sprintf(ptr, "]}");
 
@@ -618,7 +618,7 @@ asgeojson_multipolygon(LWGEOM_INSPECTED *insp, char *srs, BOX3D *bbox, int preci
 
 
 
-/*
+/**
  * Collection Geometry
  */
 
@@ -636,7 +636,7 @@ asgeojson_collection_size(LWGEOM_INSPECTED *insp, char *srs, BOX3D *bbox, int pr
 	size += sizeof("'geometries':");
 
 	for (i=0; i<insp->ngeometries; i++)
-        {
+		{
 		subgeom = lwgeom_getsubgeometry_inspected(insp, i);
 		subinsp = lwgeom_inspect(subgeom);
 		size += asgeojson_inspected_size(subinsp, bbox, precision);
@@ -662,7 +662,7 @@ asgeojson_collection_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, BOX3D 
 	ptr += sprintf(ptr, "\"geometries\":[");
 
 	for (i=0; i<insp->ngeometries; i++)
-        {
+		{
 		if (i) ptr += sprintf(ptr, ",");
 		subgeom = lwgeom_getsubgeometry_inspected(insp, i);
 		subinsp = lwgeom_inspect(subgeom);
@@ -695,43 +695,43 @@ asgeojson_inspected_size(LWGEOM_INSPECTED *insp, BOX3D *bbox, int precision)
 {
 	int type = lwgeom_getType(insp->serialized_form[0]);
 	size_t size = 0;
-    	LWPOINT *point;
-        LWLINE *line;
-        LWPOLY *poly;
+		LWPOINT *point;
+		LWLINE *line;
+		LWPOLY *poly;
 
 	switch(type) {
 		case POINTTYPE:
 			point=lwgeom_getpoint_inspected(insp, 0);
-                        size = asgeojson_point_size(point, NULL, bbox, precision);
-        	        lwpoint_release(point);
+						size = asgeojson_point_size(point, NULL, bbox, precision);
+					lwpoint_release(point);
 			break;
 
 		case LINETYPE:
 			line=lwgeom_getline_inspected(insp, 0);
-                        size = asgeojson_line_size(line, NULL, bbox, precision);
-       	                lwline_release(line);
+						size = asgeojson_line_size(line, NULL, bbox, precision);
+						lwline_release(line);
 			break;
-			
+
 		case POLYGONTYPE:
 			poly=lwgeom_getpoly_inspected(insp, 0);
-                        size = asgeojson_poly_size(poly, NULL, bbox, precision);
+						size = asgeojson_poly_size(poly, NULL, bbox, precision);
 			lwpoly_release(poly);
 			break;
 
 		case MULTIPOINTTYPE:
-                        size = asgeojson_multipoint_size(insp, NULL, bbox, precision);
+						size = asgeojson_multipoint_size(insp, NULL, bbox, precision);
 			break;
 
 		case MULTILINETYPE:
-                        size = asgeojson_multiline_size(insp, NULL, bbox, precision);
+						size = asgeojson_multiline_size(insp, NULL, bbox, precision);
 			break;
 
 		case MULTIPOLYGONTYPE:
-                        size = asgeojson_multipolygon_size(insp, NULL, bbox, precision);
+						size = asgeojson_multipolygon_size(insp, NULL, bbox, precision);
 			break;
 
 		default: lwerror("GeoJson: geometry not supported.");
-                }
+				}
 
 	return size;
 }
@@ -740,9 +740,9 @@ asgeojson_inspected_size(LWGEOM_INSPECTED *insp, BOX3D *bbox, int precision)
 static size_t
 asgeojson_inspected_buf(LWGEOM_INSPECTED *insp, char *output, BOX3D *bbox, int precision)
 {
-    	LWPOINT *point;
-        LWLINE *line;
-        LWPOLY *poly;
+		LWPOINT *point;
+		LWLINE *line;
+		LWPOLY *poly;
 	int type = lwgeom_getType(insp->serialized_form[0]);
 	char *ptr=output;
 
@@ -757,16 +757,16 @@ asgeojson_inspected_buf(LWGEOM_INSPECTED *insp, char *output, BOX3D *bbox, int p
 	switch(type) {
 		case POINTTYPE:
 			point=lwgeom_getpoint_inspected(insp, 0);
-                        ptr += asgeojson_point_buf(point, NULL, ptr, bbox, precision);
-        	        lwpoint_release(point);
+						ptr += asgeojson_point_buf(point, NULL, ptr, bbox, precision);
+					lwpoint_release(point);
 			break;
 
 		case LINETYPE:
 			line=lwgeom_getline_inspected(insp, 0);
-                        ptr += asgeojson_line_buf(line, NULL, ptr, bbox, precision);
-       	                lwline_release(line);
+						ptr += asgeojson_line_buf(line, NULL, ptr, bbox, precision);
+						lwline_release(line);
 			break;
-			
+
 		case POLYGONTYPE:
 			poly=lwgeom_getpoly_inspected(insp, 0);
 			ptr += asgeojson_poly_buf(poly, NULL, ptr, bbox, precision);
@@ -836,7 +836,7 @@ pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 
 
 /*
- * Common geojson routines 
+ * Common geojson routines
  */
 
 static char *
@@ -858,7 +858,7 @@ getSRSbySRID(int SRID, bool short_crs)
 	else
 		sprintf(query, "SELECT 'urn:ogc:def:crs:'||auth_name||':'||auth_srid \
 				FROM spatial_ref_sys WHERE srid='%d'", SRID);
-		
+
 	err = SPI_exec(query, 1);
 	if ( err < 0 ) {
 		elog(NOTICE, "getSRSbySRID: error executing query %d", err);
@@ -874,7 +874,7 @@ getSRSbySRID(int SRID, bool short_crs)
 
 	/* get result  */
 	srs = SPI_getvalue(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1);
-	
+
 	/* NULL result */
 	if ( ! srs ) {
 		SPI_finish();
@@ -893,7 +893,7 @@ getSRSbySRID(int SRID, bool short_crs)
 }
 
 
-/*
+/**
  * Returns maximum size of rendered pointarray in bytes.
  */
 static size_t

@@ -37,30 +37,30 @@ Datum polygonize_garray(PG_FUNCTION_ARGS);
 Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS);
 
 
-/*
-** Versions of PostgreSQL < 8.4 perform array accumulation internally using 
+/** @file
+** Versions of PostgreSQL < 8.4 perform array accumulation internally using
 ** pass by value, which is very slow working with large/many geometries.
 ** Hence PostGIS currently implements its own aggregate for building
 ** geometry arrays using pass by reference, which is significantly faster and
 ** similar to the method used in PostgreSQL 8.4.
 **
 ** Hence we can revert this to the original aggregate functions from 1.3 at
-** whatever point PostgreSQL 8.4 becomes the minimum version we support :) 
+** whatever point PostgreSQL 8.4 becomes the minimum version we support :)
 */
 
 
-/*
-** To pass the internal ArrayBuildState pointer between the 
+/**
+** To pass the internal ArrayBuildState pointer between the
 ** transfn and finalfn we need to wrap it into a custom type first,
-** the pgis_abs type in our case.  
+** the pgis_abs type in our case.
 */
 
 typedef struct {
 	ArrayBuildState *a;
 	} pgis_abs;
 
-/*
-** We're never going to use this type externally so the in/out 
+/**
+** We're never going to use this type externally so the in/out
 ** functions are dummies.
 */
 PG_FUNCTION_INFO_V1(pgis_abs_in);
@@ -68,7 +68,7 @@ Datum
 pgis_abs_in(PG_FUNCTION_ARGS)
 {
 	ereport(ERROR,(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-            errmsg("function pgis_abs_in not implemented")));
+			errmsg("function pgis_abs_in not implemented")));
 	PG_RETURN_POINTER(NULL);
 }
 PG_FUNCTION_INFO_V1(pgis_abs_out);
@@ -76,11 +76,11 @@ Datum
 pgis_abs_out(PG_FUNCTION_ARGS)
 {
 	ereport(ERROR,(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-            errmsg("function pgis_abs_out not implemented")));
+			errmsg("function pgis_abs_out not implemented")));
 	PG_RETURN_POINTER(NULL);
 }
 
-/*
+/**
 ** The transfer function hooks into the PostgreSQL accumArrayResult()
 ** function (present since 8.0) to build an array in a side memory
 ** context.
@@ -136,40 +136,40 @@ pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
 
 Datum pgis_accum_finalfn(pgis_abs *p, MemoryContext mctx, FunctionCallInfo fcinfo);
 
-/*
+/**
 ** The final function rescues the built array from the side memory context
 ** using the PostgreSQL built-in function makeMdArrayResult
 */
-Datum 
+Datum
 pgis_accum_finalfn(pgis_abs *p, MemoryContext mctx, FunctionCallInfo fcinfo)
 {
 	int dims[1];
 	int lbs[1];
 	ArrayBuildState *state;
 	Datum result;
-	
+
 	/* cannot be called directly because of internal-type argument */
 	Assert(fcinfo->context &&
-	       (IsA(fcinfo->context, AggState) 
+		   (IsA(fcinfo->context, AggState)
 #if POSTGIS_PGSQL_VERSION >= 84
 			|| IsA(fcinfo->context, WindowAggState)
 #endif
 			));
-	
+
 	state = p->a;
 	dims[0] = state->nelems;
 	lbs[0] = 1;
 #if POSTGIS_PGSQL_VERSION < 84
-    result = makeMdArrayResult(state, 1, dims, lbs, mctx);
+	result = makeMdArrayResult(state, 1, dims, lbs, mctx);
 #else
 	/* Release working state if regular aggregate, but not if window agg */
- 	result = makeMdArrayResult(state, 1, dims, lbs, mctx,
-                       	       IsA(fcinfo->context, AggState));
+	result = makeMdArrayResult(state, 1, dims, lbs, mctx,
+							   IsA(fcinfo->context, AggState));
 #endif
 	return result;
 }
 
-/*
+/**
 ** The "accum" final function just returns the geometry[]
 */
 PG_FUNCTION_INFO_V1(pgis_geometry_accum_finalfn);
@@ -190,9 +190,9 @@ pgis_geometry_accum_finalfn(PG_FUNCTION_ARGS)
 
 }
 
-/*
-** The "accum" final function passes the geometry[] to a union 
-** conversion before returning the result.
+/**
+* The "accum" final function passes the geometry[] to a union
+* conversion before returning the result.
 */
 PG_FUNCTION_INFO_V1(pgis_geometry_union_finalfn);
 Datum
@@ -213,9 +213,9 @@ pgis_geometry_union_finalfn(PG_FUNCTION_ARGS)
 	PG_RETURN_DATUM(result);
 }
 
-/*
-** The "collect" final function passes the geometry[] to a geometrycollection 
-** conversion before returning the result.
+/**
+* The "collect" final function passes the geometry[] to a geometrycollection
+* conversion before returning the result.
 */
 PG_FUNCTION_INFO_V1(pgis_geometry_collect_finalfn);
 Datum
@@ -236,9 +236,9 @@ pgis_geometry_collect_finalfn(PG_FUNCTION_ARGS)
 	PG_RETURN_DATUM(result);
 }
 
-/*
-** The "polygonize" final function passes the geometry[] to a polygonization
-** before returning the result.
+/**
+* The "polygonize" final function passes the geometry[] to a polygonization
+* before returning the result.
 */
 PG_FUNCTION_INFO_V1(pgis_geometry_polygonize_finalfn);
 Datum
@@ -259,9 +259,9 @@ pgis_geometry_polygonize_finalfn(PG_FUNCTION_ARGS)
 	PG_RETURN_DATUM(result);
 }
 
-/*
-** The "makeline" final function passes the geometry[] to a line builder
-** before returning the result.
+/**
+* The "makeline" final function passes the geometry[] to a line builder
+* before returning the result.
 */
 PG_FUNCTION_INFO_V1(pgis_geometry_makeline_finalfn);
 Datum
