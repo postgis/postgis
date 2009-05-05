@@ -77,14 +77,14 @@ Datum optimistic_overlap(PG_FUNCTION_ARGS);
 Datum ST_GeoHash(PG_FUNCTION_ARGS);
 
 void lwgeom_affine_ptarray(POINTARRAY *pa, double afac, double bfac, double cfac,
-                           double dfac, double efac, double ffac, double gfac, double hfac, double ifac, double xoff, double yoff, double zoff);
+						   double dfac, double efac, double ffac, double gfac, double hfac, double ifac, double xoff, double yoff, double zoff);
 
 void lwgeom_affine_recursive(uchar *serialized, double afac, double bfac, double cfac,
-                             double dfac, double efac, double ffac, double gfac, double hfac, double ifac, double xoff, double yoff, double zoff);
+							 double dfac, double efac, double ffac, double gfac, double hfac, double ifac, double xoff, double yoff, double zoff);
 
 /*------------------------------------------------------------------*/
 
-/*find the size of geometry */
+/** find the size of geometry */
 PG_FUNCTION_INFO_V1(LWGEOM_mem_size);
 Datum LWGEOM_mem_size(PG_FUNCTION_ARGS)
 {
@@ -95,15 +95,15 @@ Datum LWGEOM_mem_size(PG_FUNCTION_ARGS)
 	if ( size != computed_size )
 	{
 		elog(NOTICE, "varlena size (%lu) != computed size+4 (%lu)",
-		     (unsigned long)size,
-		     (unsigned long)computed_size);
+			 (unsigned long)size,
+			 (unsigned long)computed_size);
 	}
 
 	PG_FREE_IF_COPY(geom,0);
 	PG_RETURN_INT32(size);
 }
 
-/* get summary info on a GEOMETRY */
+/** get summary info on a GEOMETRY */
 PG_FUNCTION_INFO_V1(LWGEOM_summary);
 Datum LWGEOM_summary(PG_FUNCTION_ARGS)
 {
@@ -189,7 +189,7 @@ Datum postgis_autocache_bbox(PG_FUNCTION_ARGS)
 }
 
 
-/*
+/**
  * Recursively count points in a SERIALIZED lwgeom
  */
 int32
@@ -252,7 +252,7 @@ lwgeom_npoints(uchar *serialized)
 	return npoints;
 }
 
-/*
+/**
  * Recursively count rings in a SERIALIZED lwgeom
  */
 int32
@@ -291,7 +291,7 @@ lwgeom_nrings_recursive(uchar *serialized)
 	return nrings;
 }
 
-/* number of points in an object */
+/** number of points in an object */
 PG_FUNCTION_INFO_V1(LWGEOM_npoints);
 Datum LWGEOM_npoints(PG_FUNCTION_ARGS)
 {
@@ -304,7 +304,7 @@ Datum LWGEOM_npoints(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(npoints);
 }
 
-/* number of rings in an object */
+/** number of rings in an object */
 PG_FUNCTION_INFO_V1(LWGEOM_nrings);
 Datum LWGEOM_nrings(PG_FUNCTION_ARGS)
 {
@@ -317,11 +317,11 @@ Datum LWGEOM_nrings(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(nrings);
 }
 
-/*
- * Calculate the area of all the subobj in a polygon
- * area(point) = 0
- * area (line) = 0
- * area(polygon) = find its 2d area
+/**
+ * @brief Calculate the area of all the subobj in a polygon
+ * 		area(point) = 0
+ * 		area (line) = 0
+ * 		area(polygon) = find its 2d area
  */
 PG_FUNCTION_INFO_V1(LWGEOM_area_polygon);
 Datum LWGEOM_area_polygon(PG_FUNCTION_ARGS)
@@ -360,12 +360,12 @@ Datum LWGEOM_area_polygon(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(area);
 }
 
-/*
- * find the "length of a geometry"
- *  length2d(point) = 0
- *  length2d(line) = length of line
- *  length2d(polygon) = 0  -- could make sense to return sum(ring perimeter)
- *  uses euclidian 2d length (even if input is 3d)
+/**
+ * @brief find the "length of a geometry"
+ *  	length2d(point) = 0
+ *  	length2d(line) = length of line
+ *  	length2d(polygon) = 0  -- could make sense to return sum(ring perimeter)
+ *  	uses euclidian 2d length (even if input is 3d)
  */
 PG_FUNCTION_INFO_V1(LWGEOM_length2d_linestring);
 Datum LWGEOM_length2d_linestring(PG_FUNCTION_ARGS)
@@ -393,12 +393,12 @@ Datum LWGEOM_length2d_linestring(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(dist);
 }
 
-/*
- * find the "length of a geometry"
- *  length(point) = 0
- *  length(line) = length of line
- *  length(polygon) = 0  -- could make sense to return sum(ring perimeter)
- *  uses euclidian 3d/2d length depending on input dimensions.
+/**
+ * @brief find the "length of a geometry"
+ *  	length(point) = 0
+ *  	length(line) = length of line
+ *  	length(polygon) = 0  -- could make sense to return sum(ring perimeter)
+ *  	uses euclidian 3d/2d length depending on input dimensions.
  */
 PG_FUNCTION_INFO_V1(LWGEOM_length_linestring);
 Datum LWGEOM_length_linestring(PG_FUNCTION_ARGS)
@@ -422,12 +422,12 @@ Datum LWGEOM_length_linestring(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(dist);
 }
 
-/*
- *  find the "perimeter of a geometry"
- *  perimeter(point) = 0
- *  perimeter(line) = 0
- *  perimeter(polygon) = sum of ring perimeters
- *  uses euclidian 3d/2d computation depending on input dimension.
+/**
+ *  @brief find the "perimeter of a geometry"
+ *  	perimeter(point) = 0
+ *  	perimeter(line) = 0
+ *  	perimeter(polygon) = sum of ring perimeters
+ *  	uses euclidian 3d/2d computation depending on input dimension.
  */
 PG_FUNCTION_INFO_V1(LWGEOM_perimeter_poly);
 Datum LWGEOM_perimeter_poly(PG_FUNCTION_ARGS)
@@ -451,12 +451,12 @@ Datum LWGEOM_perimeter_poly(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(ret);
 }
 
-/*
- *  find the "perimeter of a geometry"
- *  perimeter(point) = 0
- *  perimeter(line) = 0
- *  perimeter(polygon) = sum of ring perimeters
- *  uses euclidian 2d computation even if input is 3d
+/**
+ *  @brief find the "perimeter of a geometry"
+ *  	perimeter(point) = 0
+ *  	perimeter(line) = 0
+ *  	perimeter(polygon) = sum of ring perimeters
+ *  	uses euclidian 2d computation even if input is 3d
  */
 PG_FUNCTION_INFO_V1(LWGEOM_perimeter2d_poly);
 Datum LWGEOM_perimeter2d_poly(PG_FUNCTION_ARGS)
@@ -481,11 +481,11 @@ Datum LWGEOM_perimeter2d_poly(PG_FUNCTION_ARGS)
 }
 
 
-/*
- * Write to already allocated memory 'optr' a 2d version of
- * the given serialized form.
- * Higher dimensions in input geometry are discarded.
- * Return number bytes written in given int pointer.
+/**
+ *	@brief  Write to already allocated memory 'optr' a 2d version of
+ * 		the given serialized form.
+ * 		Higher dimensions in input geometry are discarded.
+ * 	@return number bytes written in given int pointer.
  */
 void
 lwgeom_force2d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
@@ -602,7 +602,7 @@ lwgeom_force2d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 			TYPE_SETZM(nring->dims, 0, 0);
 			nring->npoints = ring->npoints;
 			nring->serialized_pointlist =
-			        lwalloc(ring->npoints*sizeof(POINT2D));
+					lwalloc(ring->npoints*sizeof(POINT2D));
 			loc = nring->serialized_pointlist;
 			for (k=0; k<ring->npoints; k++)
 			{
@@ -616,7 +616,8 @@ lwgeom_force2d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 		TYPE_SETZM(poly->type, 0, 0);
 		lwpoly_serialize_buf(poly, optr, retsize);
 		lwfree(poly);
-		/* TODO: free nrigs[*]->serialized_pointlist */
+		/** @todo TODO: free nrigs[*]->serialized_pointlist
+			*/
 
 		LWDEBUG(3, "lwgeom_force2d_recursive returning");
 
@@ -624,12 +625,12 @@ lwgeom_force2d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 	}
 
 	if ( type != MULTIPOINTTYPE && type != MULTIPOLYGONTYPE &&
-	                type != MULTILINETYPE && type != COLLECTIONTYPE &&
-	                type != COMPOUNDTYPE && type != CURVEPOLYTYPE &&
-	                type != MULTICURVETYPE && type != MULTISURFACETYPE)
+					type != MULTILINETYPE && type != COLLECTIONTYPE &&
+					type != COMPOUNDTYPE && type != CURVEPOLYTYPE &&
+					type != MULTICURVETYPE && type != MULTISURFACETYPE)
 	{
 		lwerror("lwgeom_force2d_recursive: unknown geometry: %d",
-		        type);
+				type);
 	}
 
 	/*
@@ -642,7 +643,7 @@ lwgeom_force2d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 
 	/* Add type */
 	newtypefl = lwgeom_makeType_full(0, 0, lwgeom_hasSRID(serialized[0]),
-	                                 type, lwgeom_hasBBOX(serialized[0]));
+									 type, lwgeom_hasBBOX(serialized[0]));
 	optr[0] = newtypefl;
 	optr++;
 	totsize++;
@@ -697,7 +698,7 @@ lwgeom_force2d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 		optr += size;
 
 		LWDEBUGF(3, "lwgeom_force2d_recursive: added elem %d size: %d (tot: %d)",
-		         i, size, totsize);
+				 i, size, totsize);
 	}
 	lwinspected_release(inspected);
 
@@ -706,12 +707,12 @@ lwgeom_force2d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 	if ( retsize ) *retsize = totsize;
 }
 
-/*
- * Write to already allocated memory 'optr' a 3dz version of
- * the given serialized form.
- * Higher dimensions in input geometry are discarder.
- * If the given version is 2d Z is set to 0.
- * Return number bytes written in given int pointer.
+/**
+ * @brief Write to already allocated memory 'optr' a 3dz version of
+ * 		the given serialized form.
+ * 		Higher dimensions in input geometry are discarder.
+ * 		If the given version is 2d Z is set to 0.
+ * @return number bytes written in given int pointer.
  */
 void
 lwgeom_force3dz_recursive(uchar *serialized, uchar *optr, size_t *retsize)
@@ -818,7 +819,7 @@ lwgeom_force3dz_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 			TYPE_SETZM(nring->dims, 1, 0);
 			nring->npoints = ring->npoints;
 			nring->serialized_pointlist =
-			        lwalloc(ring->npoints*sizeof(POINT3DZ));
+					lwalloc(ring->npoints*sizeof(POINT3DZ));
 			loc = nring->serialized_pointlist;
 			for (k=0; k<ring->npoints; k++)
 			{
@@ -846,7 +847,7 @@ lwgeom_force3dz_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 
 	/* Add type */
 	*optr = lwgeom_makeType_full(1, 0, lwgeom_hasSRID(serialized[0]),
-	                             type, lwgeom_hasBBOX(serialized[0]));
+								 type, lwgeom_hasBBOX(serialized[0]));
 	optr++;
 	totsize++;
 	loc=serialized+1;
@@ -892,12 +893,12 @@ lwgeom_force3dz_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 	*retsize = totsize;
 }
 
-/*
- * Write to already allocated memory 'optr' a 3dm version of
- * the given serialized form.
- * Higher dimensions in input geometry are discarder.
- * If the given version is 2d M is set to 0.
- * Return number bytes written in given int pointer.
+/**
+ * @brief Write to already allocated memory 'optr' a 3dm version of
+ * 		the given serialized form.
+ * 		Higher dimensions in input geometry are discarder.
+ * 		If the given version is 2d M is set to 0.
+ * @return number bytes written in given int pointer.
  */
 void
 lwgeom_force3dm_recursive(uchar *serialized, uchar *optr, size_t *retsize)
@@ -1012,7 +1013,7 @@ lwgeom_force3dm_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 			TYPE_SETZM(nring->dims, 0, 1);
 			nring->npoints = ring->npoints;
 			nring->serialized_pointlist =
-			        lwalloc(ring->npoints*sizeof(POINT3DM));
+					lwalloc(ring->npoints*sizeof(POINT3DM));
 			loc = nring->serialized_pointlist;
 			for (k=0; k<ring->npoints; k++)
 			{
@@ -1026,7 +1027,8 @@ lwgeom_force3dm_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 		TYPE_SETZM(poly->type, 0, 1);
 		lwpoly_serialize_buf(poly, optr, retsize);
 		lwfree(poly);
-		/* TODO: free nrigs[*]->serialized_pointlist */
+		/** @todo TODO: free nrigs[*]->serialized_pointlist
+		*/
 
 		LWDEBUG(3, "lwgeom_force3dm_recursive returning");
 
@@ -1034,12 +1036,12 @@ lwgeom_force3dm_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 	}
 
 	if ( type != MULTIPOINTTYPE && type != MULTIPOLYGONTYPE &&
-	                type != MULTILINETYPE && type != COLLECTIONTYPE &&
-	                type != COMPOUNDTYPE && type != CURVEPOLYTYPE &&
-	                type != MULTICURVETYPE && type != MULTISURFACETYPE)
+					type != MULTILINETYPE && type != COLLECTIONTYPE &&
+					type != COMPOUNDTYPE && type != CURVEPOLYTYPE &&
+					type != MULTICURVETYPE && type != MULTISURFACETYPE)
 	{
 		lwerror("lwgeom_force3dm_recursive: unknown geometry: %d",
-		        type);
+				type);
 	}
 
 	/*
@@ -1052,7 +1054,7 @@ lwgeom_force3dm_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 
 	/* Add type */
 	newtypefl = lwgeom_makeType_full(0, 1, lwgeom_hasSRID(serialized[0]),
-	                                 type, lwgeom_hasBBOX(serialized[0]));
+									 type, lwgeom_hasBBOX(serialized[0]));
 	optr[0] = newtypefl;
 	optr++;
 	totsize++;
@@ -1107,7 +1109,7 @@ lwgeom_force3dm_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 		optr += size;
 
 		LWDEBUGF(3, "lwgeom_force3dm_recursive: added elem %d size: %d (tot: %d)",
-		         i, size, totsize);
+				 i, size, totsize);
 	}
 	lwinspected_release(inspected);
 
@@ -1224,7 +1226,7 @@ lwgeom_force4d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 			TYPE_SETZM(nring->dims, 1, 1);
 			nring->npoints = ring->npoints;
 			nring->serialized_pointlist =
-			        lwalloc(ring->npoints*sizeof(POINT4D));
+					lwalloc(ring->npoints*sizeof(POINT4D));
 			loc = nring->serialized_pointlist;
 			for (k=0; k<ring->npoints; k++)
 			{
@@ -1252,9 +1254,9 @@ lwgeom_force4d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 
 	/* Add type */
 	*optr = lwgeom_makeType_full(
-	                1, 1,
-	                lwgeom_hasSRID(serialized[0]),
-	                type, lwgeom_hasBBOX(serialized[0]));
+					1, 1,
+					lwgeom_hasSRID(serialized[0]),
+					type, lwgeom_hasBBOX(serialized[0]));
 	optr++;
 	totsize++;
 	loc=serialized+1;
@@ -1316,10 +1318,10 @@ Datum LWGEOM_force_2d(PG_FUNCTION_ARGS)
 	srl = lwalloc(VARSIZE(geom));
 
 	lwgeom_force2d_recursive(SERIALIZED_FORM(geom),
-	                         srl, &size);
+							 srl, &size);
 
 	result = PG_LWGEOM_construct(srl, pglwgeom_getSRID(geom),
-	                             lwgeom_hasBBOX(geom->type));
+								 lwgeom_hasBBOX(geom->type));
 	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(result);
@@ -1351,16 +1353,16 @@ Datum LWGEOM_force_3dz(PG_FUNCTION_ARGS)
 	}
 
 	lwgeom_force3dz_recursive(SERIALIZED_FORM(geom),
-	                          srl, &size);
+							  srl, &size);
 
 	result = PG_LWGEOM_construct(srl, pglwgeom_getSRID(geom),
-	                             lwgeom_hasBBOX(geom->type));
+								 lwgeom_hasBBOX(geom->type));
 
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(result);
 }
 
-/* transform input geometry to 3dm if not 3dm already */
+/** transform input geometry to 3dm if not 3dm already */
 PG_FUNCTION_INFO_V1(LWGEOM_force_3dm);
 Datum LWGEOM_force_3dm(PG_FUNCTION_ARGS)
 {
@@ -1389,12 +1391,12 @@ Datum LWGEOM_force_3dm(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(3, "LWGEOM_force_3dm: allocated %d bytes for result", (int)size);
 
 	lwgeom_force3dm_recursive(SERIALIZED_FORM(geom),
-	                          srl, &size);
+							  srl, &size);
 
 	POSTGIS_DEBUGF(3, "LWGEOM_force_3dm: lwgeom_force3dm_recursive returned a %d sized geom", (int)size);
 
 	result = PG_LWGEOM_construct(srl, pglwgeom_getSRID(geom),
-	                             lwgeom_hasBBOX(geom->type));
+								 lwgeom_hasBBOX(geom->type));
 
 	PG_FREE_IF_COPY(geom, 0);
 
@@ -1420,17 +1422,17 @@ Datum LWGEOM_force_4d(PG_FUNCTION_ARGS)
 	srl = lwalloc(VARSIZE(geom)*2);
 
 	lwgeom_force4d_recursive(SERIALIZED_FORM(geom),
-	                         srl, &size);
+							 srl, &size);
 
 	result = PG_LWGEOM_construct(srl, pglwgeom_getSRID(geom),
-	                             lwgeom_hasBBOX(geom->type));
+								 lwgeom_hasBBOX(geom->type));
 
 	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(result);
 }
 
-/* transform input geometry to a collection type */
+/** transform input geometry to a collection type */
 PG_FUNCTION_INFO_V1(LWGEOM_force_collection);
 Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 {
@@ -1449,7 +1451,7 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	 * automatic bbox addition FOR_COMPLEX_GEOMS.
 	 */
 	if ( TYPE_GETTYPE(geom->type) == COLLECTIONTYPE &&
-	                TYPE_HASBBOX(geom->type) )
+					TYPE_HASBBOX(geom->type) )
 	{
 		PG_RETURN_POINTER(geom);
 	}
@@ -1473,8 +1475,8 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 		lwgeom->bbox = NULL;
 		lwgeoms[0] = lwgeom;
 		lwgeom = (LWGEOM *)lwcollection_construct(COLLECTIONTYPE,
-		                SRID, bbox, 1,
-		                lwgeoms);
+						SRID, bbox, 1,
+						lwgeoms);
 	}
 
 	result = pglwgeom_serialize(lwgeom);
@@ -1485,7 +1487,7 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/* transform input geometry to a multi* type */
+/** transform input geometry to a multi* type */
 PG_FUNCTION_INFO_V1(LWGEOM_force_multi);
 Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 {
@@ -1540,7 +1542,7 @@ Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS)
 	}
 
 	mindist = lwgeom_mindistance2d_recursive(SERIALIZED_FORM(geom1),
-	                SERIALIZED_FORM(geom2));
+					SERIALIZED_FORM(geom2));
 
 	PROFSTOP(PROF_QRUN);
 	PROFREPORT("dist",geom1, geom2, NULL);
@@ -1578,10 +1580,10 @@ Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
 	}
 
 	mindist = lwgeom_mindistance2d_recursive_tolerance(
-	                  SERIALIZED_FORM(geom1),
-	                  SERIALIZED_FORM(geom2),
-	                  tolerance
-	          );
+					  SERIALIZED_FORM(geom1),
+					  SERIALIZED_FORM(geom2),
+					  tolerance
+			  );
 
 	PROFSTOP(PROF_QRUN);
 	PROFREPORT("dist",geom1, geom2, NULL);
@@ -1642,12 +1644,12 @@ Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(maxdist);
 }
 
-/*
- * Longitude shift:
- *  Y remains the same
- *  X is converted:
- *	 from -180..180 to 0..360
- *	 from 0..360 to -180..180
+/**
+ * @brief Longitude shift:
+ *  	Y remains the same
+ *  	X is converted:
+ *	 		from -180..180 to 0..360
+ *	 		from 0..360 to -180..180
  */
 PG_FUNCTION_INFO_V1(LWGEOM_longitude_shift);
 Datum LWGEOM_longitude_shift(PG_FUNCTION_ARGS)
@@ -1704,12 +1706,12 @@ Datum LWGEOM_inside_circle_point(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(lwgeom_pt_inside_circle(&pt, cx, cy, rr));
 }
 
-/*
- *  collect( geom, geom ) returns a geometry which contains
- *  all the sub_objects from both of the argument geometries
- *  returned geometry is the simplest possible, based on the types
- *  of the collected objects
- *  ie. if all are of either X or multiX, then a multiX is returned.
+/**
+ *  @brief collect( geom, geom ) returns a geometry which contains
+ *  		all the sub_objects from both of the argument geometries
+ *  @return geometry is the simplest possible, based on the types
+ *  	of the collected objects
+ *  	ie. if all are of either X or multiX, then a multiX is returned.
  */
 PG_FUNCTION_INFO_V1(LWGEOM_collect);
 Datum LWGEOM_collect(PG_FUNCTION_ARGS)
@@ -1788,8 +1790,8 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	lwgeom_dropSRID(lwgeoms[1]);
 
 	outlwg = (LWGEOM *)lwcollection_construct(
-	                 outtype, SRID,
-	                 box, 2, lwgeoms);
+					 outtype, SRID,
+					 box, 2, lwgeoms);
 
 	result = pglwgeom_serialize(outlwg);
 
@@ -1801,13 +1803,13 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/*
- * This is a geometry array constructor
- * for use as aggregates sfunc.
- * Will have as input an array of Geometry pointers and a Geometry.
- * Will DETOAST given geometry and put a pointer to it
- * in the given array. DETOASTED value is first copied
- * to a safe memory context to avoid premature deletion.
+/**
+ * @brief This is a geometry array constructor
+ * 		for use as aggregates sfunc.
+ * 		Will have as input an array of Geometry pointers and a Geometry.
+ * 		Will DETOAST given geometry and put a pointer to it
+ * 			in the given array. DETOASTED value is first copied
+ * 		to a safe memory context to avoid premature deletion.
  */
 PG_FUNCTION_INFO_V1(LWGEOM_accum);
 Datum LWGEOM_accum(PG_FUNCTION_ARGS)
@@ -1866,7 +1868,7 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 		nbytes = ARR_OVERHEAD_NONULLS(1)+INTALIGN(VARSIZE(geom));
 
 		POSTGIS_DEBUGF(3, "geom_accum: adding %p (nelems=%d; nbytes=%d)",
-		               (void*)geom, nelems, (int)nbytes);
+					   (void*)geom, nelems, (int)nbytes);
 
 		result = lwalloc(nbytes);
 		if ( ! result )
@@ -1907,14 +1909,14 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 
 		POSTGIS_DEBUGF(3, " array start  @ %p", (void*)result);
 		POSTGIS_DEBUGF(3, " ARR_DATA_PTR @ %p (%d)",
-		               ARR_DATA_PTR(result), (uchar *)ARR_DATA_PTR(result)-(uchar *)result);
+					   ARR_DATA_PTR(result), (uchar *)ARR_DATA_PTR(result)-(uchar *)result);
 		POSTGIS_DEBUGF(3, " next element @ %p", (uchar *)result+oldsize);
 
 		SET_VARSIZE(result, nbytes);
 		memcpy(ARR_DIMS(result), &nelems, sizeof(int));
 
 		POSTGIS_DEBUGF(3, " writing next element starting @ %p",
-		               (void*)(result+oldsize));
+					   (void*)(result+oldsize));
 
 		memcpy((uchar *)result+oldsize, geom, VARSIZE(geom));
 	}
@@ -1925,14 +1927,14 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 
 }
 
-/*
- * collect_garray ( GEOMETRY[] ) returns a geometry which contains
- * all the sub_objects from all of the geometries in given array.
+/**
+ * @brief collect_garray ( GEOMETRY[] ) returns a geometry which contains
+ * 		all the sub_objects from all of the geometries in given array.
  *
- * returned geometry is the simplest possible, based on the types
- * of the collected objects
- * ie. if all are of either X or multiX, then a multiX is returned
- * bboxonly types are treated as null geometries (no sub_objects)
+ * @return geometry is the simplest possible, based on the types
+ * 		of the collected objects
+ * 		ie. if all are of either X or multiX, then a multiX is returned
+ * 		bboxonly types are treated as null geometries (no sub_objects)
  */
 PG_FUNCTION_INFO_V1(LWGEOM_collect_garray);
 Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
@@ -1965,7 +1967,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	array = DatumGetArrayTypeP(datum);
 
 	POSTGIS_DEBUGF(3, " array is %d-bytes in size, %ld w/out header",
-	               ARR_SIZE(array), ARR_SIZE(array)-ARR_OVERHEAD_NONULLS(ARR_NDIM(array)));
+				   ARR_SIZE(array), ARR_SIZE(array)-ARR_OVERHEAD_NONULLS(ARR_NDIM(array)));
 
 
 	/* Get number of geometries in array */
@@ -2015,7 +2017,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 			if ( lwgeoms[i]->SRID != SRID )
 			{
 				elog(ERROR,
-				     "Operation on mixed SRID geometries");
+					 "Operation on mixed SRID geometries");
 				PG_RETURN_NULL();
 			}
 
@@ -2062,17 +2064,17 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(3, "LWGEOM_collect_garray: outtype = %d", outtype);
 
 	outlwg = (LWGEOM *)lwcollection_construct(
-	                 outtype, SRID,
-	                 box, nelems, lwgeoms);
+					 outtype, SRID,
+					 box, nelems, lwgeoms);
 
 	result = pglwgeom_serialize(outlwg);
 
 	PG_RETURN_POINTER(result);
 }
 
-/*
+/**
  * LineFromMultiPoint ( GEOMETRY ) returns a LINE formed by
- * all the points in the in given multipoint.
+ * 		all the points in the in given multipoint.
  */
 PG_FUNCTION_INFO_V1(LWGEOM_line_from_mpoint);
 Datum LWGEOM_line_from_mpoint(PG_FUNCTION_ARGS)
@@ -2109,10 +2111,10 @@ Datum LWGEOM_line_from_mpoint(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/*
- * makeline_garray ( GEOMETRY[] ) returns a LINE formed by
- * all the point geometries in given array.
- * array elements that are NOT points are discarded..
+/**
+ * @brief makeline_garray ( GEOMETRY[] ) returns a LINE formed by
+ * 		all the point geometries in given array.
+ * 		array elements that are NOT points are discarded..
  */
 PG_FUNCTION_INFO_V1(LWGEOM_makeline_garray);
 Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
@@ -2175,7 +2177,7 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 		if ( TYPE_GETTYPE(geom->type) != POINTTYPE ) continue;
 
 		lwpoints[npoints++] =
-		        lwpoint_deserialize(SERIALIZED_FORM(geom));
+				lwpoint_deserialize(SERIALIZED_FORM(geom));
 
 		/* Check SRID homogeneity */
 		if ( npoints == 1 )
@@ -2188,13 +2190,13 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 			if ( lwpoints[npoints-1]->SRID != SRID )
 			{
 				elog(ERROR,
-				     "Operation on mixed SRID geometries");
+					 "Operation on mixed SRID geometries");
 				PG_RETURN_NULL();
 			}
 		}
 
 		POSTGIS_DEBUGF(3, "LWGEOM_makeline_garray: element %d deserialized",
-		               i);
+					   i);
 	}
 
 	/* Return null on 0-points input array */
@@ -2213,7 +2215,7 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/*
+/**
  * makeline ( GEOMETRY, GEOMETRY ) returns a LINESTRIN segment
  * formed by the given point geometries.
  */
@@ -2232,7 +2234,7 @@ Datum LWGEOM_makeline(PG_FUNCTION_ARGS)
 	pglwg2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	if ( ! TYPE_GETTYPE(pglwg1->type) == POINTTYPE ||
-	                ! TYPE_GETTYPE(pglwg2->type) == POINTTYPE )
+					! TYPE_GETTYPE(pglwg2->type) == POINTTYPE )
 	{
 		elog(ERROR, "Input geometries must be points");
 		PG_RETURN_NULL();
@@ -2255,9 +2257,9 @@ Datum LWGEOM_makeline(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/*
+/**
  * makepoly( GEOMETRY, GEOMETRY[] ) returns a POLYGON
- * formed by the given shell and holes geometries.
+ * 		formed by the given shell and holes geometries.
  */
 PG_FUNCTION_INFO_V1(LWGEOM_makepoly);
 Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
@@ -2315,7 +2317,7 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/*
+/**
  *  makes a polygon of the expanded features bvol - 1st point = LL 3rd=UR
  *  2d only. (3d might be worth adding).
  *  create new geometry of type polygon, 1 ring, 5 points
@@ -2376,7 +2378,7 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/* Convert geometry to BOX (internal postgres type) */
+/** Convert geometry to BOX (internal postgres type) */
 PG_FUNCTION_INFO_V1(LWGEOM_to_BOX);
 Datum LWGEOM_to_BOX(PG_FUNCTION_ARGS)
 {
@@ -2396,7 +2398,7 @@ Datum LWGEOM_to_BOX(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/*
+/**
  *  makes a polygon of the features bvol - 1st point = LL 3rd=UR
  *  2d only. (3d might be worth adding).
  *  create new geometry of type polygon, 1 ring, 5 points
@@ -2436,14 +2438,14 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 
 
 	if (box.xmin == box.xmax &&
-	                box.ymin == box.ymax)
+					box.ymin == box.ymax)
 	{
 		/* Construct and serialize point */
 		LWPOINT *point = make_lwpoint2d(SRID, box.xmin, box.ymin);
 		ser = lwpoint_serialize(point);
 	}
 	else if (box.xmin == box.xmax ||
-	                box.ymin == box.ymax)
+					box.ymin == box.ymax)
 	{
 		LWLINE *line;
 		POINT2D *pts = palloc(sizeof(POINT2D)*2);
@@ -2513,11 +2515,11 @@ Datum LWGEOM_isempty(PG_FUNCTION_ARGS)
 }
 
 
-/*
- *  Returns a modified geometry so that no segment is
- *  longer then the given distance (computed using 2d).
- *  Every input point is kept.
- *  Z and M values for added points (if needed) are set to 0.
+/**
+ *  @brief Returns a modified geometry so that no segment is
+ *  	longer then the given distance (computed using 2d).
+ *  	Every input point is kept.
+ *  	Z and M values for added points (if needed) are set to 0.
  */
 PG_FUNCTION_INFO_V1(LWGEOM_segmentize2d);
 Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS)
@@ -2533,7 +2535,7 @@ Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS)
 
 	/* Avoid deserialize/serialize steps */
 	if ( (TYPE_GETTYPE(ingeom->type) == POINTTYPE) ||
-	                (TYPE_GETTYPE(ingeom->type) == MULTIPOINTTYPE) )
+					(TYPE_GETTYPE(ingeom->type) == MULTIPOINTTYPE) )
 		PG_RETURN_POINTER(ingeom);
 
 	inlwgeom = lwgeom_deserialize(SERIALIZED_FORM(ingeom));
@@ -2552,7 +2554,7 @@ Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(outgeom);
 }
 
-/* Reverse vertex order of geometry */
+/** Reverse vertex order of geometry */
 PG_FUNCTION_INFO_V1(LWGEOM_reverse);
 Datum LWGEOM_reverse(PG_FUNCTION_ARGS)
 {
@@ -2571,7 +2573,7 @@ Datum LWGEOM_reverse(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(geom);
 }
 
-/* Force polygons of the collection to obey Right-Hand-Rule */
+/** Force polygons of the collection to obey Right-Hand-Rule */
 PG_FUNCTION_INFO_V1(LWGEOM_forceRHR_poly);
 Datum LWGEOM_forceRHR_poly(PG_FUNCTION_ARGS)
 {
@@ -2593,7 +2595,7 @@ Datum LWGEOM_forceRHR_poly(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(outgeom);
 }
 
-/* Test deserialize/serialize operations */
+/** Test deserialize/serialize operations */
 PG_FUNCTION_INFO_V1(LWGEOM_noop);
 Datum LWGEOM_noop(PG_FUNCTION_ARGS)
 {
@@ -2616,8 +2618,8 @@ Datum LWGEOM_noop(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(out);
 }
 
-/*
- *  Return:
+/**
+ *  @return:
  *   0==2d
  *   1==3dm
  *   2==3dz
@@ -2651,7 +2653,7 @@ Datum LWGEOM_hasBBOX(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(res);
 }
 
-/* Return: 2,3 or 4 */
+/** Return: 2,3 or 4 */
 PG_FUNCTION_INFO_V1(LWGEOM_ndims);
 Datum LWGEOM_ndims(PG_FUNCTION_ARGS)
 {
@@ -2664,7 +2666,7 @@ Datum LWGEOM_ndims(PG_FUNCTION_ARGS)
 	PG_RETURN_INT16(ret);
 }
 
-/* lwgeom_same(lwgeom1, lwgeom2) */
+/** lwgeom_same(lwgeom1, lwgeom2) */
 PG_FUNCTION_INFO_V1(LWGEOM_same);
 Datum LWGEOM_same(PG_FUNCTION_ARGS)
 {
@@ -2730,7 +2732,7 @@ Datum LWGEOM_makepoint(PG_FUNCTION_ARGS)
 	else
 	{
 		elog(ERROR, "LWGEOM_makepoint: unsupported number of args: %d",
-		     PG_NARGS());
+			 PG_NARGS());
 		PG_RETURN_NULL();
 	}
 
@@ -2954,11 +2956,11 @@ Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(lwgeom_result);
 }
 
-/*
+/**
  * Compute the azimuth of segment defined by the two
  * given Point geometries.
- * Return NULL on exception (same point).
- * Return radians otherwise.
+ * @return NULL on exception (same point).
+ * 		Return radians otherwise.
  */
 PG_FUNCTION_INFO_V1(LWGEOM_azimuth);
 Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
@@ -3080,9 +3082,9 @@ Datum optimistic_overlap(PG_FUNCTION_ARGS)
 	g1_bvol.ymax = g1_bvol.ymax + dist;
 
 	if (  (g1_bvol.xmin > geom2->bbox->xmax) ||
-	                (g1_bvol.xmax < geom2->bbox->xmin) ||
-	                (g1_bvol.ymin > geom2->bbox->ymax) ||
-	                (g1_bvol.ymax < geom2->bbox->ymin)
+					(g1_bvol.xmax < geom2->bbox->xmin) ||
+					(g1_bvol.ymin > geom2->bbox->ymax) ||
+					(g1_bvol.ymax < geom2->bbox->ymin)
 	   )
 	{
 		PG_RETURN_BOOL(FALSE);  /*bbox not overlap */
@@ -3097,15 +3099,15 @@ Datum optimistic_overlap(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(calc_dist < dist);
 }
 
-/*
+/**
  * Affine transform a pointarray.
  */
 void
 lwgeom_affine_ptarray(POINTARRAY *pa,
-                      double afac, double bfac, double cfac,
-                      double dfac, double efac, double ffac,
-                      double gfac, double hfac, double ifac,
-                      double xoff, double yoff, double zoff)
+					  double afac, double bfac, double cfac,
+					  double dfac, double efac, double ffac,
+					  double gfac, double hfac, double ifac,
+					  double xoff, double yoff, double zoff)
 {
 	int i;
 	double x,y,z;
@@ -3154,10 +3156,10 @@ lwgeom_affine_ptarray(POINTARRAY *pa,
 
 void
 lwgeom_affine_recursive(uchar *serialized,
-                        double afac, double bfac, double cfac,
-                        double dfac, double efac, double ffac,
-                        double gfac, double hfac, double ifac,
-                        double xoff, double yoff, double zoff)
+						double afac, double bfac, double cfac,
+						double dfac, double efac, double ffac,
+						double gfac, double hfac, double ifac,
+						double xoff, double yoff, double zoff)
 {
 	LWGEOM_INSPECTED *inspected;
 	int i, j;
@@ -3177,10 +3179,10 @@ lwgeom_affine_recursive(uchar *serialized,
 		if (point !=NULL)
 		{
 			lwgeom_affine_ptarray(point->point,
-			                      afac, bfac, cfac,
-			                      dfac, efac, ffac,
-			                      gfac, hfac, ifac,
-			                      xoff, yoff, zoff);
+								  afac, bfac, cfac,
+								  dfac, efac, ffac,
+								  gfac, hfac, ifac,
+								  xoff, yoff, zoff);
 			lwgeom_release((LWGEOM *)point);
 			continue;
 		}
@@ -3191,10 +3193,10 @@ lwgeom_affine_recursive(uchar *serialized,
 			for (j=0; j<poly->nrings; j++)
 			{
 				lwgeom_affine_ptarray(poly->rings[j],
-				                      afac, bfac, cfac,
-				                      dfac, efac, ffac,
-				                      gfac, hfac, ifac,
-				                      xoff, yoff, zoff);
+									  afac, bfac, cfac,
+									  dfac, efac, ffac,
+									  gfac, hfac, ifac,
+									  xoff, yoff, zoff);
 			}
 			lwgeom_release((LWGEOM *)poly);
 			continue;
@@ -3204,10 +3206,10 @@ lwgeom_affine_recursive(uchar *serialized,
 		if (line != NULL)
 		{
 			lwgeom_affine_ptarray(line->points,
-			                      afac, bfac, cfac,
-			                      dfac, efac, ffac,
-			                      gfac, hfac, ifac,
-			                      xoff, yoff, zoff);
+								  afac, bfac, cfac,
+								  dfac, efac, ffac,
+								  gfac, hfac, ifac,
+								  xoff, yoff, zoff);
 			lwgeom_release((LWGEOM *)line);
 			continue;
 		}
@@ -3231,10 +3233,10 @@ lwgeom_affine_recursive(uchar *serialized,
 		}
 
 		lwgeom_affine_recursive(subgeom,
-		                        afac, bfac, cfac,
-		                        dfac, efac, ffac,
-		                        gfac, hfac, ifac,
-		                        xoff, yoff, zoff);
+								afac, bfac, cfac,
+								dfac, efac, ffac,
+								gfac, hfac, ifac,
+								xoff, yoff, zoff);
 	}
 
 	lwinspected_release(inspected);
@@ -3265,10 +3267,10 @@ Datum LWGEOM_affine(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUG(2, "LWGEOM_affine called.");
 
 	lwgeom_affine_recursive(srl,
-	                        afac, bfac, cfac,
-	                        dfac, efac, ffac,
-	                        gfac, hfac, ifac,
-	                        xoff, yoff, zoff);
+							afac, bfac, cfac,
+							dfac, efac, ffac,
+							gfac, hfac, ifac,
+							xoff, yoff, zoff);
 
 	/* COMPUTE_BBOX TAINTING */
 	tmp = pglwgeom_deserialize(geom);
@@ -3287,37 +3289,37 @@ PG_FUNCTION_INFO_V1(ST_GeoHash);
 Datum ST_GeoHash(PG_FUNCTION_ARGS)
 {
 
-    PG_LWGEOM *geom = NULL;
-    int precision = 0;
-    int len = 0;
-    char *geohash = NULL;
-    char *result = NULL;
+	PG_LWGEOM *geom = NULL;
+	int precision = 0;
+	int len = 0;
+	char *geohash = NULL;
+	char *result = NULL;
 
-    if( PG_ARGISNULL(0) )
-    {
+	if( PG_ARGISNULL(0) )
+	{
 		PG_RETURN_NULL();
-    }
+	}
 
-    geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-    if( ! PG_ARGISNULL(1) ) 
-    {
-        precision = PG_GETARG_INT32(1);
-    }
+	if( ! PG_ARGISNULL(1) )
+	{
+		precision = PG_GETARG_INT32(1);
+	}
 
-    geohash = lwgeom_geohash((LWGEOM*)(pglwgeom_deserialize(geom)), precision);
+	geohash = lwgeom_geohash((LWGEOM*)(pglwgeom_deserialize(geom)), precision);
 
-    if( ! geohash ) 
-    {
+	if( ! geohash )
+	{
 		elog(ERROR,"ST_GeoHash: lwgeom_geohash returned NULL.\n");
 		PG_RETURN_NULL();
-    }
+	}
 
 	len = strlen(geohash) + VARHDRSZ;
-    result = palloc(len);
+	result = palloc(len);
 	SET_VARSIZE(result, len);
 	memcpy(VARDATA(result), geohash, len-VARHDRSZ);
 	pfree(geohash);
 	PG_RETURN_POINTER(result);
-    
+
 }
