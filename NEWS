@@ -1,12 +1,18 @@
 PostGIS 1.3.6
 2009/05/04
-  - pgsql2shp now creates .prj files where applicable (Regina Obe)
-  - Big fixes for CURVE handling in many functions 
+  - Enhancement - Trac#PostgreSQL 8.4 compile support (Talha Rizwan, Mark Cave-Ayland)
+  - Fix Big fixes for CURVE handling in many functions 
     (Mark Cave-Ayland, Mark Leslie)
-  - Windows Vista bug fixes (Regina Obe)
-  - PostgreSQL 8.4 support (Mark Cave-Ayland)
-  - Fix for distance calculation on collections (Nicklas Aven)
-  - Fix crashers for rare EWKB cases (Paul Ramsey)
+  - Enhancement Trac#34 - pgsql2shp now creates .prj files where applicable (Regina Obe)
+  - Fix Trac#88 -  Windows Vista pgsql2shp memory bug (Regina Obe)
+  - Fix Trac#146 - for distance calculation on collections (Nicklas Aven, Paul Ramsey)
+  - Fix Trac#116 - crashers for rare EWKB cases (Paul Ramsey)
+  - Fix to address an SRID of -1 in probe_geometry_columns (Kevin Neufeld)
+  - Fix Trac#99 shp2pgsql logical error when importing DBF-only (Regina Obe)
+  - Fix Trac#105 pgsql2shp dbase file creation (EOF marker issue) (Paul Ramsey)
+  - Fix updated AddGeometryColumn to throw an error if then specified schema does not exist, 
+  	rather than throwing a notice and then an error. (Kevin Neufeld)
+  - Fix - Documentation corrections for better handling with PDF DbLatex (Kevin Neufeld)
 
 PostGIS 1.3.5
 2008/12/15
