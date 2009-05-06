@@ -57,7 +57,7 @@ PostGIS 1.4.0
   
 PostGIS 1.3.6
 2009/05/04
-  - Enhancement - Trac#PostgreSQL 8.4 compile support (Talha Rizwan, Mark Cave-Ayland)
+  - Enhancement - PostgreSQL 8.4 compile support (Talha Rizwan, Mark Cave-Ayland)
   - Fix Big fixes for CURVE handling in many functions 
     (Mark Cave-Ayland, Mark Leslie)
   - Enhancement Trac#34 - pgsql2shp now creates .prj files where applicable (Regina Obe)
