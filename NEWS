@@ -1,5 +1,5 @@
 PostGIS 1.4.0
-2009/04/XX
+2009/05/XX
 
  - New Features
    - ST_Union() uses high-speed cascaded union when compiled against
@@ -54,6 +54,22 @@ PostGIS 1.4.0
    - More attractive CSS for HTML documentation (Dane Springmeyer)
  - Bug fixes
    - http://trac.osgeo.org/postgis/query?status=closed&milestone=postgis+1.4.0&order=priority
+  
+PostGIS 1.3.6
+2009/05/04
+  - Enhancement - Trac#PostgreSQL 8.4 compile support (Talha Rizwan, Mark Cave-Ayland)
+  - Fix Big fixes for CURVE handling in many functions 
+    (Mark Cave-Ayland, Mark Leslie)
+  - Enhancement Trac#34 - pgsql2shp now creates .prj files where applicable (Regina Obe)
+  - Fix Trac#88 -  Windows Vista pgsql2shp memory bug (Regina Obe)
+  - Fix Trac#146 - for distance calculation on collections (Nicklas Aven, Paul Ramsey)
+  - Fix Trac#116 - crashers for rare EWKB cases (Paul Ramsey)
+  - Fix to address an SRID of -1 in probe_geometry_columns (Kevin Neufeld)
+  - Fix Trac#99 shp2pgsql logical error when importing DBF-only (Regina Obe)
+  - Fix Trac#105 pgsql2shp dbase file creation (EOF marker issue) (Paul Ramsey)
+  - Fix updated AddGeometryColumn to throw an error if then specified schema does not exist, 
+  	rather than throwing a notice and then an error. (Kevin Neufeld)
+  - Fix - Documentation corrections for better handling with PDF DbLatex (Kevin Neufeld)
 
 
 PostGIS 1.3.5
