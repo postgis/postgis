@@ -1,0 +1,64 @@
+# **********************************************************************
+# * $Id: Makefile.in
+# *
+# * PostGIS - Spatial Types for PostgreSQL
+# * http://postgis.refractions.net
+# * Copyright 2008 Kevin Neufeld
+# *
+# * This is free software; you can redistribute and/or modify it under
+# * the terms of the GNU General Public Licence. See the COPYING file.
+# *
+# **********************************************************************
+
+CC=@CC@
+CFLAGS=@CFLAGS@ @WARNFLAGS@
+
+CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
+CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I../../../liblwgeom
+
+IMAGES= \
+	../images/st_centroid01.png \
+	../images/st_centroid02.png \
+	../images/st_centroid03.png \
+	../images/st_centroid04.png \
+	../images/st_crosses01.png \
+	../images/st_crosses02.png \
+	../images/st_crosses03.png \
+	../images/st_crosses04.png \
+	../images/st_issimple01.png \
+	../images/st_issimple02.png \
+	../images/st_issimple03.png \
+	../images/st_issimple04.png \
+	../images/st_issimple05.png \
+	../images/st_issimple06.png \
+	../images/st_issimple07.png \
+	../images/st_isvalid01.png \
+	../images/st_isvalid02.png \
+	../images/st_isvalid03.png \
+	../images/st_isvalid04.png \
+	../images/st_isvalid05.png 
+	
+OBJS=generator.o
+
+# Build the generator
+all: $(IMAGES)
+
+# Command to build each of the .o files
+$(OBJS): %.o: %.c
+	$(CC) $(CFLAGS) $(CUNIT_CPPFLAGS) -c -o $@ $<
+	
+# Command to build each of the .wkt files
+$(IMAGES): ../images/%.png: %.wkt generator
+	@./generator $<
+
+# Build the main unit test executable
+generator: ../../../liblwgeom/liblwgeom.a $(OBJS)
+	$(CC) -o $@ $(OBJS) ../../../liblwgeom/liblwgeom.a -lm $(CUNIT_LDFLAGS)
+
+# Clean target
+clean:
+	@rm -f $(OBJS)
+	@rm -f ../images/${IMAGES}
+	@rm -f generator
+	@rm -f tmp[0-9].png
+

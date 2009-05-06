@@ -531,7 +531,7 @@ AC_SUBST([SHLIB_LINK])
 dnl AC_MSG_RESULT([SHLIB_LINK: $SHLIB_LINK])
 
 dnl Output the relevant files
-AC_OUTPUT([liblwgeom/Makefile liblwgeom/cunit/Makefile postgis/Makefile postgis/sqldefines.h loader/Makefile topology/Makefile regress/Makefile doc/Makefile])
+AC_OUTPUT([liblwgeom/Makefile liblwgeom/cunit/Makefile postgis/Makefile postgis/sqldefines.h loader/Makefile topology/Makefile regress/Makefile doc/Makefile doc/html/image_src/Makefile])
 
 dnl ===========================================================================
 dnl Display the configuration status information

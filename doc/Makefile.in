@@ -106,9 +106,12 @@ doxygen.cfg: doxygen.cfg.in
 doxygen: doxygen.cfg
 	doxygen $<
 
+images: 
+	make -C html/image_src
+	
 clean:
-	@rm -f \
-		postgis-out.xml
+	make -C html/image_src clean
+	@rm -f  postgis-out.xml
 
 maintainer-clean: clean
 	@rm -f html/*.html \
