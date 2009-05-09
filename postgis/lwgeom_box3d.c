@@ -328,42 +328,42 @@ PG_FUNCTION_INFO_V1(BOX3D_xmin);
 Datum BOX3D_xmin(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
-	PG_RETURN_FLOAT8(box->xmin);
+	PG_RETURN_FLOAT8(LWGEOM_Mind(box->xmin, box->xmax));
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_ymin);
 Datum BOX3D_ymin(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
-	PG_RETURN_FLOAT8(box->ymin);
+	PG_RETURN_FLOAT8(LWGEOM_Mind(box->ymin, box->ymax));
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_zmin);
 Datum BOX3D_zmin(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
-	PG_RETURN_FLOAT8(box->zmin);
+	PG_RETURN_FLOAT8(LWGEOM_Mind(box->zmin, box->zmax));
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_xmax);
 Datum BOX3D_xmax(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
-	PG_RETURN_FLOAT8(box->xmax);
+	PG_RETURN_FLOAT8(LWGEOM_Maxd(box->xmin, box->xmax));
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_ymax);
 Datum BOX3D_ymax(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
-	PG_RETURN_FLOAT8(box->ymax);
+	PG_RETURN_FLOAT8(LWGEOM_Maxd(box->ymin, box->ymax));
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_zmax);
 Datum BOX3D_zmax(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
-	PG_RETURN_FLOAT8(box->zmax);
+	PG_RETURN_FLOAT8(LWGEOM_Maxd(box->zmin, box->zmax));
 }
 
 
