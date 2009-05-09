@@ -357,8 +357,6 @@ output_polygon_ring_collection(uchar* geom,outfunc func,int supress)
              (first_point[0] != last_point[0] || first_point[1] != last_point[1] ) &&
 			 (current_unparser_check_flags & PARSER_CHECK_CLOSURE))
 			{
-			lwfree(first_point);
-			lwfree(last_point);
                 	LWGEOM_WKT_UNPARSER_ERROR(UNPARSER_ERROR_UNCLOSED);	
 			}
 
@@ -366,8 +364,6 @@ output_polygon_ring_collection(uchar* geom,outfunc func,int supress)
 		/* Ensure that POLYGON has a minimum of 4 points */
         	if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && orig_cnt < 4)
 		{
-			lwfree(first_point);
-			lwfree(last_point);
                 	LWGEOM_WKT_UNPARSER_ERROR(UNPARSER_ERROR_MOREPOINTS);
 		}
 	}
