@@ -7,8 +7,7 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
- *
- /
+ */
 
  /** *********************************************************************
  * \file Using shapelib 1.2.8, this program reads in shape files and
