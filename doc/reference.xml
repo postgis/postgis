@@ -9433,7 +9433,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
 			  <entry><para><informalfigure>
 				  <mediaobject>
 					<imageobject>
-					  <imagedata fileref="images/st_crosses01.gif" />
+					  <imagedata fileref="images/st_crosses01.png" />
 					</imageobject>
 
 					<caption><para><varname>MULTIPOINT</varname> / <varname>LINESTRING</varname></para></caption>
@@ -9443,7 +9443,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
 			  <entry><para><informalfigure>
 				  <mediaobject>
 					<imageobject>
-					  <imagedata fileref="images/st_crosses02.gif" />
+					  <imagedata fileref="images/st_crosses02.png" />
 					</imageobject>
 
 					<caption><para><varname>MULTIPOINT</varname> / <varname>POLYGON</varname></para></caption>
@@ -9455,7 +9455,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
 			  <entry><para><informalfigure>
 				  <mediaobject>
 					<imageobject>
-					  <imagedata fileref="images/st_crosses03.gif" />
+					  <imagedata fileref="images/st_crosses03.png" />
 					</imageobject>
 
 					<caption><para><varname>LINESTRING</varname> / <varname>POLYGON</varname></para></caption>
@@ -9465,7 +9465,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
 			  <entry><para><informalfigure>
 				  <mediaobject>
 					<imageobject>
-					  <imagedata fileref="images/st_crosses04.gif" />
+					  <imagedata fileref="images/st_crosses04.png" />
 					</imageobject>
 
 					<caption><para><varname>LINESTRING</varname> / <varname>LINESTRING</varname></para></caption>

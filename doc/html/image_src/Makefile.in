@@ -36,22 +36,34 @@ IMAGES= \
 	../images/st_isvalid02.png \
 	../images/st_isvalid03.png \
 	../images/st_isvalid04.png \
-	../images/st_isvalid05.png 
+	../images/st_isvalid05.png \
+	../images/st_isvalid06.png \
+	../images/st_isvalid07.png \
+	../images/st_isvalid08.png \
+	../images/st_touches01.png \
+	../images/st_touches02.png \
+	../images/st_touches03.png \
+	../images/st_touches04.png \
+	../images/st_touches05.png \
+	../images/st_touches06.png 
 	
-OBJS=generator.o
+OBJS=styles.o generator.o
 
 # Build the generator
-all: $(IMAGES)
+all: generator
+
+# generate the images
+images: $(IMAGES)
 
 # Command to build each of the .o files
 $(OBJS): %.o: %.c
 	$(CC) $(CFLAGS) $(CUNIT_CPPFLAGS) -c -o $@ $<
 	
 # Command to build each of the .wkt files
-$(IMAGES): ../images/%.png: %.wkt generator
+$(IMAGES): ../images/%.png: %.wkt generator styles.conf
 	@./generator $<
 
-# Build the main unit test executable
+# Build the main executable
 generator: ../../../liblwgeom/liblwgeom.a $(OBJS)
 	$(CC) -o $@ $(OBJS) ../../../liblwgeom/liblwgeom.a -lm $(CUNIT_LDFLAGS)
 

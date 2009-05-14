@@ -85,6 +85,11 @@ dnl
 dnl Search for xsltproc which is required for building documentation
 dnl
 
+AC_PATH_PROG([IMAGEMAGICK], [convert], [])
+if test "x$IMAGEMAGICK" = "x"; then
+	AC_MSG_WARN([ImageMagick does not seem to be installed. Documentation cannot be built])
+fi
+
 AC_PATH_PROG([XSLTPROC], [xsltproc], [])
 if test "x$XSLTPROC" = "x"; then
 	AC_MSG_WARN([xsltproc is not installed so documentation cannot be built])

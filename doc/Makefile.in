@@ -49,7 +49,11 @@ else
 ifeq ($(XSLBASE),)
 all: requirements_not_met_xslbase
 else
+ifeq ($(IMAGEMAGICK),)
+all: requirements_not_met_imagemagick
+else
 all: html/postgis.html	../postgis_comments.sql
+endif
 endif
 endif
 
@@ -107,7 +111,7 @@ doxygen: doxygen.cfg
 	doxygen $<
 
 images: 
-	make -C html/image_src
+	make -C html/image_src images
 	
 clean:
 	make -C html/image_src clean
@@ -149,5 +153,14 @@ requirements_not_met_xslbase:
 	@echo "  http://postgis.refractions.net/docs"
 	@echo
 
+requirements_not_met_imagemagick:
+	@echo 
+	@echo "configure was unable to find the ImageMagick's 'convert' utility program."
+	@echo "To build the documentation, install ImageMagick and then re-run configure. Alternatively "
+	@echo "refer to online manual:"
+	@echo
+	@echo "  http://postgis.refractions.net/docs"
+	@echo 
+	
 .PHONY: html
 

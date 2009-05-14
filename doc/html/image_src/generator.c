@@ -30,9 +30,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "CUnit/Basic.h"
 
 #include "lwalgorithm.h"
+#include "styles.h"
 
 #define SHOW_DIGS_DOUBLE 15
 #define MAX_DOUBLE_PRECISION 15
@@ -41,26 +43,16 @@
 // Some global styling variables
 char *imageSize = "200x200";
 
-typedef struct {	
-	int	  pointSize;
-	char *pointColor;
-	
-	int   lineWidth;
-	char *lineColor;
-	
-	char *polygonFillColor;
-	char *polygonStrokeColor;
-	int   polygonStrokeWidth;
-} LAYERSTYLE;
 
+int getStyleName(char **styleName, char* line);
 
 /**
  * Set up liblwgeom to run in stand-alone mode using the 
  * usual system memory handling functions.
  */
 void lwgeom_init_allocators(void) {
-		/* liblwgeom callback - install default handlers */
-		lwgeom_install_default_allocators();
+	/* liblwgeom callback - install default handlers */
+	lwgeom_install_default_allocators();
 }
 
 /**
@@ -103,9 +95,7 @@ pointarrayToString(char *output, POINTARRAY *pa) {
  * @return the numbers of character written to *output
  */
 static size_t
-drawPoint(char *output, LWPOINT *lwp, LAYERSTYLE style) {
-	LWDEBUGF( 4, "%s", "enter drawPoint" );
-	
+drawPoint(char *output, LWPOINT *lwp, LAYERSTYLE *styles) {	
 	char x[MAX_DIGS_DOUBLE+MAX_DOUBLE_PRECISION+1];
 	char y1[MAX_DIGS_DOUBLE+MAX_DOUBLE_PRECISION+1];
 	char y2[MAX_DIGS_DOUBLE+MAX_DOUBLE_PRECISION+1];
@@ -118,10 +108,10 @@ drawPoint(char *output, LWPOINT *lwp, LAYERSTYLE style) {
 	trim_trailing_zeros(x);
 	sprintf(y1, "%f", p.y);
 	trim_trailing_zeros(y1);
-	sprintf(y2, "%f", p.y + style.pointSize);
+	sprintf(y2, "%f", p.y + styles->pointSize);
 	trim_trailing_zeros(y2);
 		
-	ptr += sprintf(ptr, "-fill %s -strokewidth 5 ", style.pointColor);
+	ptr += sprintf(ptr, "-fill %s -strokewidth 0 ", styles->pointColor);
 	ptr += sprintf(ptr, "-draw \"circle %s,%s %s,%s", x, y1, x, y2);
 	ptr += sprintf(ptr, "'\" ");
 	
@@ -138,11 +128,10 @@ drawPoint(char *output, LWPOINT *lwp, LAYERSTYLE style) {
  * @return the numbers of character written to *output
  */
 static size_t
-drawLineString(char *output, LWLINE *lwl, LAYERSTYLE style) {
-	LWDEBUGF( 4, "%s", "enter drawLineString" );
+drawLineString(char *output, LWLINE *lwl, LAYERSTYLE *style) {
 	char *ptr = output;
 
-	ptr += sprintf(ptr, "-fill none -stroke %s -strokewidth %d ", style.lineColor, style.lineWidth);
+	ptr += sprintf(ptr, "-fill none -stroke %s -strokewidth %d ", style->lineColor, style->lineWidth);
 	ptr += sprintf(ptr, "-draw \"stroke-linecap round stroke-linejoin round path 'M ");
 	ptr += pointarrayToString(ptr, lwl->points );
 	ptr += sprintf(ptr, "'\" ");
@@ -160,13 +149,11 @@ drawLineString(char *output, LWLINE *lwl, LAYERSTYLE style) {
  * @return the numbers of character written to *output
  */
 static size_t
-drawPolygon(char *output, LWPOLY *lwp, LAYERSTYLE style) {
-	LWDEBUGF( 4, "%s", "enter drawPolygon" );
-	
+drawPolygon(char *output, LWPOLY *lwp, LAYERSTYLE *style) {	
 	char *ptr = output;
 	int i;
 
-	ptr += sprintf(ptr, "-fill %s -stroke %s -strokewidth %d ", style.polygonFillColor, style.polygonStrokeColor, style.polygonStrokeWidth );
+	ptr += sprintf(ptr, "-fill %s -stroke %s -strokewidth %d ", style->polygonFillColor, style->polygonStrokeColor, style->polygonStrokeWidth );
 	ptr += sprintf(ptr, "-draw \"path '");
 	for (i=0; i<lwp->nrings; i++) {
 		ptr += sprintf(ptr, "M ");
@@ -188,29 +175,27 @@ drawPolygon(char *output, LWPOLY *lwp, LAYERSTYLE style) {
  * @return the numbers of character written to *output
  */
 static size_t
-drawGeometry(char *output, LWGEOM *lwgeom, LAYERSTYLE style ) {
-	LWDEBUGF( 4, "%s", "enter drawGeometry" );
+drawGeometry(char *output, LWGEOM *lwgeom, LAYERSTYLE *styles ) {
 	char *ptr = output;
 	int i;
 	int type = lwgeom_getType(lwgeom->type);	
 				
-	LWDEBUGF( 4, "switching on %d", type );
 	switch(type) {
 		case POINTTYPE:
-			ptr += drawPoint(ptr, (LWPOINT*)lwgeom, style );
+			ptr += drawPoint(ptr, (LWPOINT*)lwgeom, styles );
 			break;
 		case LINETYPE:
-			ptr += drawLineString(ptr, (LWLINE*)lwgeom, style );
+			ptr += drawLineString(ptr, (LWLINE*)lwgeom, styles );
 			break;
 		case POLYGONTYPE:
-			ptr += drawPolygon(ptr, (LWPOLY*)lwgeom, style );
+			ptr += drawPolygon(ptr, (LWPOLY*)lwgeom, styles );
 			break;
 		case MULTIPOINTTYPE:
 		case MULTILINETYPE:
 		case MULTIPOLYGONTYPE:
 		case COLLECTIONTYPE:
 			for (i=0; i<((LWCOLLECTION*)lwgeom)->ngeoms; i++) {
-				ptr += drawGeometry( ptr, lwcollection_getsubgeom ((LWCOLLECTION*)lwgeom, i), style );
+				ptr += drawGeometry( ptr, lwcollection_getsubgeom ((LWCOLLECTION*)lwgeom, i), styles );
 			}
 			break;
 	 }
@@ -226,12 +211,14 @@ drawGeometry(char *output, LWGEOM *lwgeom, LAYERSTYLE style ) {
  */
 static void
 addDropShadow(int layerNumber) {
-	char str[129];
+	// TODO: change to properly sized string
+	char str[512];
 	sprintf(
 		str, 
 		"convert tmp%d.png -gravity center \\( +clone -background navy -shadow 100x3+4+4 \\) +swap -background none -flatten tmp%d.png", 
 		layerNumber, layerNumber);
 	system(str);
+	LWDEBUGF(4, "%s", str);
 }
 
 /**
@@ -242,12 +229,30 @@ addDropShadow(int layerNumber) {
  */
 static void
 addHighlight(int layerNumber) {
-	char str[129];
+	// TODO: change to properly sized string
+	char str[512];
 	sprintf(
 		str, 
-		"convert tmp%d.png  -fx A +matte -blur 1x1  -shade 120x45  -normalize tmp%d.png  -compose Overlay -composite tmp%d.png  -matte  -compose Dst_In  -composite tmp%d.png", 
-		layerNumber, layerNumber, layerNumber, layerNumber);
+		"convert tmp%d.png \\( +clone -channel A -separate +channel -negate -background black -virtual-pixel background -blur 0x3 -shade 120x55 -contrast-stretch 0%% +sigmoidal-contrast 7x50%% -fill grey50 -colorize 10%% +clone +swap -compose overlay -composite \\) -compose In -composite tmp%d.png", 
+		layerNumber, layerNumber);
 	system(str);
+	LWDEBUGF(4, "%s", str);
+}
+
+/**
+ * Invokes a system call to ImageMagick's "convert" command that reduces  
+ * the overall filesize
+ * 
+ * @param filename the current working image.
+ */
+static void
+optimizeImage(char* filename) {
+	char *str;
+	str = malloc( (18 + (2*strlen(filename)) + 1) * sizeof(char) );
+	sprintf(str, "convert %s -depth 8 %s", filename, filename);
+	system(str);
+	LWDEBUGF(4, "%s", str);
+	free(str);
 }
 
 /**
@@ -258,9 +263,37 @@ flattenLayers(char* filename) {
 	char *str;
 	str = malloc( (48 + strlen(filename) + 1) * sizeof(char) );
 	sprintf(str, "convert tmp[0-9].png -background none -flatten %s", filename);
+	
+	LWDEBUGF(4, "%s", str);
 	system(str);
-	system("rm -f tmp[0-9].png");
+	// TODO: only remove the tmp files if they exist.
+	remove("tmp0.png");
+	remove("tmp1.png");
+	remove("tmp2.png");
+	remove("tmp3.png");
+	remove("tmp4.png");
+	remove("tmp5.png");
 	free(str);
+}
+
+
+// TODO: comments
+int
+getStyleName(char **styleName, char* line) {
+	char *ptr = strrchr(line, ';');
+	if (ptr == NULL) {
+		*styleName = malloc( 8 );
+		strncpy(*styleName, "Default", 7);
+		(*styleName)[7] = '\0';
+		return 1;
+	}
+	else {
+		*styleName = malloc( ptr - line + 1);
+		strncpy(*styleName, line, ptr - line);
+		(*styleName)[ptr - line] = '\0';
+		LWDEBUGF( 4, "%s", *styleName );
+		return 0;
+	}
 }
 
 
@@ -275,35 +308,12 @@ int main( int argc, const char* argv[] ) {
 	char *filename;
 	int layerCount;
 	int styleNumber;
-	LAYERSTYLE styles[3];
+	LAYERSTYLE *styles;
 	
-	styles[0].pointSize = 6;
-	styles[0].pointColor = "Blue";
-	styles[0].lineWidth = 7;
-	styles[0].lineColor = "Blue";
-	styles[0].polygonFillColor = "Blue";
-	styles[0].polygonStrokeColor = "Blue";
-	styles[0].polygonStrokeWidth = 1;
-	
-	styles[1].pointSize = 6;
-	styles[1].pointColor = "Green";
-	styles[1].lineWidth = 7;
-	styles[1].lineColor = "Green";
-	styles[1].polygonFillColor = "Green";
-	styles[1].polygonStrokeColor = "Green";
-	styles[1].polygonStrokeWidth = 1;
-	
-	styles[2].pointSize = 6;
-	styles[2].pointColor = "Red";
-	styles[2].lineWidth = 7;
-	styles[2].lineColor = "Red";
-	styles[2].polygonFillColor = "Red";
-	styles[2].polygonStrokeColor = "Red";
-	styles[2].polygonStrokeWidth = 1;
-	
+	getStyles(&styles);
 		
 	if ( argc != 2 ) {
-		printf("You must specifiy a wkt filename to convert.\n");
+		lwerror("You must specifiy a wkt filename to convert.\n");
 		return -1;
 	}
 	
@@ -312,27 +322,36 @@ int main( int argc, const char* argv[] ) {
 		return -1;
 	}
 		
-	filename = malloc( (strlen(argv[1])+8) * sizeof(char) );
-	strcpy( filename, "../images/" );
+	filename = malloc( strlen(argv[1])+11 );
+	strncpy( filename, "../images/", 10 );
 	strncat( filename, argv[1], strlen(argv[1])-3 );
-	strcat( filename, "png" );
+	strncat( filename, "png", 3 );
 	
 	printf( "generating %s\n", filename );
 	
 	layerCount = 0;
-	while ( fgets ( line, sizeof line, pfile ) != NULL ) {		
+	while ( fgets ( line, sizeof line, pfile ) != NULL && !isspace(*line) ) {	
 		
-		char output [2048];
+		char output[2048];
 		char *ptr = output;
+		char *styleName;
+		int useDefaultStyle;
+		
 		ptr += sprintf( ptr, "convert -size %s xc:none ", imageSize );
-	
-		lwgeom = lwgeom_from_ewkt( line, PARSER_CHECK_NONE );
+		
+		useDefaultStyle = getStyleName(&styleName, line);
+		LWDEBUGF( 4, "%s", styleName );
+		
+		if (useDefaultStyle) {
+			printf("   Warning: using Default style for layer %d\n", layerCount);
+			lwgeom = lwgeom_from_ewkt( line, PARSER_CHECK_NONE );
+		}
+		else 
+			lwgeom = lwgeom_from_ewkt( line+strlen(styleName)+1, PARSER_CHECK_NONE );
 		LWDEBUGF( 4, "geom = %s", lwgeom_to_ewkt((LWGEOM*)lwgeom,0) );
 		
-		styleNumber = layerCount % 3;
-		LWDEBUGF( 4, "using style %d", styleNumber );
-		ptr += drawGeometry( ptr, lwgeom, styles[styleNumber] );
-		LWDEBUGF( 4, "%s", "after drawGeometry" );
+		styleNumber = layerCount % length(styles);
+		ptr += drawGeometry( ptr, lwgeom, getStyle(styles, styleName) );
 		
 		ptr += sprintf( ptr, "-flip tmp%d.png", layerCount );
 		 
@@ -341,15 +360,17 @@ int main( int argc, const char* argv[] ) {
 		LWDEBUGF( 4, "%s", output );
 		system(output);
 		
-		addHighlight( layerCount );
-		addDropShadow( layerCount );
+		addHighlight( layerCount );	
+		addDropShadow( layerCount );	
 		layerCount++;
+		free(styleName);
 	}
 	
-	LWDEBUGF(4, "%s", filename);
 	flattenLayers(filename);
+	optimizeImage(filename);
 	
 	fclose(pfile);
 	free(filename);
+	freeStyles(&styles);
 	return 0;
 }
