@@ -7429,12 +7429,12 @@ st_asgeojson
 		st_asgml
 		--------
 		<gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,0 0,1 1,1 1,0 0,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>]]>
-	        </programlisting>
+			</programlisting>
 		<programlisting><![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('POINT(5.234234233242 6.34534534534)',4326), 5, 17);
-	        st_asgml                                                    
-	        --------
+			st_asgml
+			--------
 		<gml:Point srsName="urn:ogc:def:crs:EPSG:4326"><gml:pos>6.34535 5.23423</gml:pos></gml:Point>]]>
-	        </programlisting>
+			</programlisting>
 
 	  </refsection>
 	</refentry>
@@ -11994,11 +11994,25 @@ MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)
 		<title>Examples</title>
 	<programlisting>SELECT sometable.field1, sometable.field1,
 	  (ST_Dump(sometable.the_geom)).geom As the_geom
-FROM sometable</programlisting>
+FROM sometable;
+
+--Break a compound curve into its constituent linestrings and circularstrings
+SELECT ST_AsEWKT(a.geom), ST_HasArc(a.geom)
+  FROM ( SELECT (ST_Dump(p_geom)).geom as geom
+		   FROM (SELECT ST_GeomFromEWKT('COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 1, 1 0),(1 0, 0 1))') as p_geom) as b
+	   ) as a;
+		  st_asewkt          | st_hasarc
+-----------------------------+----------
+ CIRCULARSTRING(0 0,1 1,1 0) | t
+ LINESTRING(1 0,0 1)         | f
+(2 rows)
+
+
+</programlisting>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_Collect" /></para>
+		<para><xref linkend="ST_Collect" />, <xref linkend="ST_GeometryN" /></para>
 	  </refsection>
 	</refentry>
 
