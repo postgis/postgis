@@ -21,6 +21,12 @@ IMAGES= \
 	../images/st_centroid02.png \
 	../images/st_centroid03.png \
 	../images/st_centroid04.png \
+	../images/st_contains01.png \
+	../images/st_contains02.png \
+	../images/st_contains03.png \
+	../images/st_contains04.png \
+	../images/st_contains05.png \
+	../images/st_contains06.png \
 	../images/st_crosses01.png \
 	../images/st_crosses02.png \
 	../images/st_crosses03.png \
