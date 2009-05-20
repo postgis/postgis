@@ -3534,7 +3534,7 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 		<refname>ST_GeometryN</refname>
 
 		<refpurpose>Return the 1-based Nth geometry if the geometry is a
-			GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING or MULTIPOLYGON.
+			GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE or MULTIPOLYGON.
 			Otherwise, return NULL.</refpurpose>
 	  </refnamediv>
 
@@ -3552,7 +3552,7 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 		<title>Description</title>
 
 		<para>Return the 1-based Nth geometry if the geometry is a
-			GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING or MULTIPOLYGON.
+			GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE or MULTIPOLYGON.
 			Otherwise, return NULL.</para>
 
 		<note>
@@ -3601,21 +3601,31 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 
 		<programlisting>
 --Extracting a subset of points from a 3d multipoint
-SELECT ST_AsEWKT(ST_GeometryN(the_geom, n))
+SELECT n, ST_AsEWKT(ST_GeometryN(the_geom, n)) As geomewkt
 FROM (
-SELECT ST_GeomFromEWKT('MULTIPOINT(1 2 7, 3 4 7, 5 6 7, 8 9 10)') As the_geom) As foo
+VALUES (ST_GeomFromEWKT('MULTIPOINT(1 2 7, 3 4 7, 5 6 7, 8 9 10)') ),
+( ST_GeomFromEWKT('MULTICURVE(CIRCULARSTRING(2.5 2.5,4.5 2.5, 3.5 3.5), (10 11, 12 11))') ) 
+	)As foo(the_geom)
 	CROSS JOIN generate_series(1,100) n
-WHERE n BETWEEN 2 and 3;
+WHERE n &lt;= ST_NumGeometries(the_geom);
 
-st_asewkt
-------------
-POINT(3 4 7)
-POINT(5 6 7)
+ n |               geomewkt
+---+-----------------------------------------
+ 1 | POINT(1 2 7)
+ 2 | POINT(3 4 7)
+ 3 | POINT(5 6 7)
+ 4 | POINT(8 9 10)
+ 1 | CIRCULARSTRING(2.5 2.5,4.5 2.5,3.5 3.5)
+ 2 | LINESTRING(10 11,12 11)
+
 
 --Extracting all geometries (useful when you want to assign an id)
 SELECT gid, n, ST_GeometryN(the_geom, n)
 FROM sometable CROSS JOIN generate_series(1,100) n
-WHERE n &gt;= ST_NumGeometries(the_geom);</programlisting>
+WHERE n &lt;= ST_NumGeometries(the_geom);
+
+
+</programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
