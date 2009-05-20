@@ -11416,6 +11416,12 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
  t            | t          | f          | t          | t          | t
 (1 row)
 		</programlisting>
+		
+		<para><inlinemediaobject>
+        <imageobject>
+          <imagedata fileref="images/st_within01.png" />
+        </imageobject>
+      </inlinemediaobject> </para>
 	  </refsection>
 
 	  <refsection>
