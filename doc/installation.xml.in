@@ -2,6 +2,28 @@
 <chapter>
   <title>Installation</title>
 
+  <para>
+    This chapter details the steps required to install PostGIS.
+  </para>
+
+  <sect1>
+    <title>Short Version</title>
+
+    <programlisting>tar xvfz postgis-@@LAST_RELEASE_VERSION@@.tar.gz
+cd postgis-@@LAST_RELEASE_VERSION@@
+./configure
+make
+make install
+createlang plpgsql yourdatabase
+psql -d yourdatabase -f lwpostgis.sql
+psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
+
+    <para>
+      The rest of this chapter goes into detail each of the above installation
+      steps.
+    </para>
+  </sect1>
+
   <sect1>
     <title>Requirements</title>
 
@@ -9,15 +31,19 @@
       PostGIS has the following requirements for building and usage:
     </para>
 
+    <para>
+      <emphasis role="bold">Required</emphasis>
+    </para>
+
     <itemizedlist>
       <listitem>
         <para>
-          A complete installation of PostgreSQL (including server headers).
-          PostgreSQL is available from
+          PostgreSQL 8.1 or higher. A complete installation of PostgreSQL
+          (including server headers) is required. PostgreSQL is available from
           <ulink url="http://www.postgresql.org">
             http://www.postgresql.org
           </ulink>
-          . Version 8.1 or higher is required.
+          .
         </para>
       </listitem>
 
@@ -63,14 +89,53 @@
           .
         </para>
       </listitem>
+    </itemizedlist>
+
+    <para>
+      <emphasis role="bold">Optional</emphasis>
+    </para>
+
+    <itemizedlist>
+      <listitem>
+        <para>
+          Apache Ant (<filename>ant</filename>) is required for building any of
+          the drivers under the <filename>java</filename> directory. Ant is
+          available from
+          <ulink url="http://ant.apache.org">
+            http://ant.apache.org
+          </ulink>
+          .
+        </para>
+      </listitem>
 
       <listitem>
         <para>
-          (Recommended) Apache Ant (<filename>ant</filename>). Required for
-          building any of the drivers under the <filename>java</filename>
-          directory. Ant is available for download from
-          <ulink url="http://ant.apache.org">
-            http://ant.apache.org
+          DocBook (<filename>xsltproc</filename>) is required for building the
+          documentation. Docbook is available from
+          <ulink url="http://www.docbook.org/">
+            http://www.docbook.org/
+          </ulink>
+          .
+        </para>
+      </listitem>
+
+      <listitem>
+        <para>
+          DBLatex (<filename>dblatex</filename>) is required for building the
+          documentation in PDF format. DBLatex is available from
+          <ulink url="http://dblatex.sourceforge.net/">
+            http://dblatex.sourceforge.net/
+          </ulink>
+          .
+        </para>
+      </listitem>
+
+      <listitem>
+        <para>
+          ImageMagick (<filename>convert</filename>) is required to generate the
+          images used in the documentation. ImageMagick is available from
+          <ulink url="http://www.imagemagick.org/">
+            http://www.imagemagick.org/
           </ulink>
           .
         </para>
