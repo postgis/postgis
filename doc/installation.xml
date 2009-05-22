@@ -9,8 +9,8 @@
   <sect1>
     <title>Short Version</title>
 
-    <programlisting>tar xvfz postgis-@@LAST_RELEASE_VERSION@@.tar.gz
-cd postgis-@@LAST_RELEASE_VERSION@@
+    <programlisting>tar xvfz postgis-&last_release_version;.tar.gz
+cd postgis-&last_release_version;
 ./configure
 make
 make install
