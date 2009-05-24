@@ -11007,7 +11007,17 @@ st_perimeter
 			  <imagedata fileref="images/check.png" />
 			</imageobject>
 		  </inlinemediaobject> This method implements the SQL/MM
-		specification: SQL-MM 3: 8.1.5, 9.5.6</para>
+		specification: SQL-MM 3: 8.1.5, 9.5.6.
+	     According to the specs, ST_PointOnSurface works for surface geometries (POLYGONs, MULTIPOLYGONS, CURVED POLYGONS).  So PostGIS seems to be extending what
+		 the spec allows here.  Most databases Oracle,DB II, ESRI SDE seem to only support this function for surfaces.  SQL Server 2008 like PostGIS supports for all common geometries.
+	</para>
+		
+			<!-- Optionally mention 3d support -->
+    <para><inlinemediaobject>
+        <imageobject>
+          <imagedata fileref="images/check.png" />
+        </imageobject>
+      </inlinemediaobject> This function supports 3d (only for POINT,MULTIPOINT, LINESTRING, MULTILINESTRING) and will not drop the z-index.</para>
 	  </refsection>
 
 	  <refsection>
@@ -11029,7 +11039,14 @@ SELECT ST_AsText(ST_PointOnSurface('POLYGON((0 0, 0 5, 5 5, 5 0, 0 0))'::geometr
    st_astext
 ----------------
  POINT(2.5 2.5)
-(1 row)</programlisting>
+(1 row)
+
+SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 10 2)')));
+   st_asewkt
+----------------
+ POINT(0 0 1)
+(1 row)
+</programlisting>
 	  </refsection>
 
 	  <refsection>
