@@ -4,7 +4,8 @@
 #
 #-----------------------------------------------------
 
-all: postgis loaderdumper utils 
+all: postgis loaderdumper utils
+	@echo "PostGIS was built successfully. Ready to install." 
 
 install: all postgis-install loaderdumper-install 
 
