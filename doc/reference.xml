@@ -11548,8 +11548,8 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
 			</informaltable>
 
 <programlisting>--A buffered point approximates a circle
--- A buffered point forcing approximation of
--- 4 points per circle is poly with 16 sides
+-- A buffered point forcing approximation of (see diagram)
+-- 2 points per circle is poly with 8 sides (see diagram)
 SELECT ST_NPoints(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50)) As promisingcircle_pcount,
 ST_NPoints(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 2)) As lamecircle_pcount;
 
