@@ -11425,8 +11425,10 @@ SELECT ST_Within(smallc,smallc) As smallinsmall,
 	ST_Within(ST_Union(smallc, bigc), bigc) as unioninbig,
 	ST_Within(bigc, ST_Union(smallc, bigc)) as biginunion,
 	ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion
-FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
-	ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;
+FROM 
+(
+SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 50) As smallc,
+	ST_Buffer(ST_GeomFromText('POINT(50 50)'), 100) As bigc) As foo;
 --Result
  smallinsmall | smallinbig | biginsmall | unioninbig | biginunion | bigisunion
 --------------+------------+------------+------------+------------+------------
