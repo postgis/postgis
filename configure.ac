@@ -565,6 +565,8 @@ AC_MSG_RESULT()
 AC_MSG_RESULT([ -------- Documentation Generation -------- ])
 AC_MSG_RESULT([  xsltproc:             ${XSLTPROC}])
 AC_MSG_RESULT([  xsl style sheets:     ${XSLBASE}])
+AC_MSG_RESULT([  dblatex:              ${DBLATEX}])
+AC_MSG_RESULT([  convert:              ${IMAGEMAGICK}])
 AC_MSG_RESULT()
 
 
