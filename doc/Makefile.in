@@ -118,7 +118,7 @@ images:
 	make -C html/image_src images
 	
 clean:
-	@rm -f postgis-out.xml postgis_comments.sql
+	@rm -f postgis-out.xml postgis_comments.sql postgis_aggs_mm.xml
 
 maintainer-clean: clean
 	make -C html/image_src clean
