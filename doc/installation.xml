@@ -67,9 +67,9 @@ psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
 
       <listitem>
         <para>
-          Proj4 reprojection library. The Proj4 library is used to provide
-          coordinate reprojection support within PostGIS. Proj4 is available for
-          download from
+          Proj4 reprojection library, version 4.5.0 or greater. The Proj4
+          library is used to provide coordinate reprojection support within
+          PostGIS. Proj4 is available for download from
           <ulink url="http://trac.osgeo.org/proj/">
             http://trac.osgeo.org/proj/
           </ulink>
@@ -79,10 +79,10 @@ psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
 
       <listitem>
         <para>
-          GEOS geometry library. The GEOS library is used to provide geometry
-          tests (ST_Touches(), ST_Contains(), ST_Intersects()) and operations
-          (ST_Buffer(), ST_Union(), ST_Difference()) within PostGIS. GEOS is
-          available for download from
+          GEOS geometry library, version 3.0.0 or greater. The GEOS library is
+          used to provide geometry tests (ST_Touches(), ST_Contains(),
+          ST_Intersects()) and operations (ST_Buffer(), ST_Union(),
+          ST_Difference()) within PostGIS. GEOS is available for download from
           <ulink url="http://trac.osgeo.org/geos/">
             http://trac.osgeo.org/geos/
           </ulink>
