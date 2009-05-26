@@ -11539,7 +11539,7 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
 							  <imageobject>
 								<imagedata fileref="images/st_buffer02.png" />
 							  </imageobject>
-							  <caption><para>4 segments quarter circle (lame)</para></caption>
+							  <caption><para>2 segments quarter circle (lame)</para></caption>
 							</mediaobject>
 						  </informalfigure></para></entry>
 					  </row>
@@ -11551,11 +11551,11 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
 -- A buffered point forcing approximation of
 -- 4 points per circle is poly with 16 sides
 SELECT ST_NPoints(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50)) As promisingcircle_pcount,
-ST_NPoints(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 4)) As lamecircle_pcount;
+ST_NPoints(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 2)) As lamecircle_pcount;
 
 promisingcircle_pcount | lamecircle_pcount
 ------------------------+-------------------
-			 33 |                17
+			 33 |                9
 
 --A lighter but lamer circle
 -- only 2 points per quarter circle is an octagon
