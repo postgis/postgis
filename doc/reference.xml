@@ -11427,8 +11427,8 @@ SELECT ST_Within(smallc,smallc) As smallinsmall,
 	ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion
 FROM 
 (
-SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 50) As smallc,
-	ST_Buffer(ST_GeomFromText('POINT(50 50)'), 100) As bigc) As foo;
+SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
+	ST_Buffer(ST_GeomFromText('POINT(50 50)'), 40) As bigc) As foo;
 --Result
  smallinsmall | smallinbig | biginsmall | unioninbig | biginunion | bigisunion
 --------------+------------+------------+------------+------------+------------
@@ -11520,12 +11520,38 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 50) As smallc,
 
 			  <refsection>
 				<title>Examples</title>
+				
+				<informaltable>
+				  <tgroup cols="2">
+					<tbody>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_buffer01.png" />
+							  </imageobject>
+							  <caption><para>Default 8 segments quarter circle (promising)</para></caption>
+							</mediaobject>
+						  </informalfigure></para></entry>
+		
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_buffer02.png" />
+							  </imageobject>
+							  <caption><para>4 segments quarter circle (lame)</para></caption>
+							</mediaobject>
+						  </informalfigure></para></entry>
+					  </row>
+					</tbody>
+				  </tgroup>
+			</informaltable>
 
 <programlisting>--A buffered point approximates a circle
 -- A buffered point forcing approximation of
 -- 4 points per circle is poly with 16 sides
-SELECT ST_NPoints(ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10)) As promisingcircle_pcount,
-ST_NPoints(ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10, 4)) As lamecircle_pcount;
+SELECT ST_NPoints(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50)) As promisingcircle_pcount,
+ST_NPoints(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 4)) As lamecircle_pcount;
 
 promisingcircle_pcount | lamecircle_pcount
 ------------------------+-------------------

@@ -17,6 +17,8 @@ CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
 CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I../../../liblwgeom
 
 IMAGES= \
+	../images/st_buffer01.png \
+	../images/st_buffer02.png \
 	../images/st_centroid01.png \
 	../images/st_centroid02.png \
 	../images/st_centroid03.png \
@@ -52,7 +54,7 @@ IMAGES= \
 	../images/st_touches04.png \
 	../images/st_touches05.png \
 	../images/st_touches06.png \
-	../images/st_within01.png \
+	../images/st_within01.png
 	
 OBJS=styles.o generator.o
 
