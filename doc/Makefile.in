@@ -127,7 +127,7 @@ maintainer-clean: clean
 
 comments: postgis_comments.sql
 
-comments-install:
+comments-install: comments
 	cp postgis_comments.sql $(PGSQL_SHAREDIR)/contrib/postgis_comments.sql
 
 comments-uninstall:
