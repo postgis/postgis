@@ -37,9 +37,13 @@ CHUNK_HTML_DOCBOOK_XSL=$(XSLBASE)/html/chunk.xsl
 # DBLatex's dblatex script for PDF generation from DocBook
 DBLATEX = @DBLATEX@
 
-# Directories for documentation and man pages
+# Imagemagick's convert utility program for generated images used in the documentation
+IMAGEMAGICK = @IMAGEMAGICK@
+
+# Directories for postgresql subdirectories
 PGSQL_DOCDIR=@PGSQL_DOCDIR@
 PGSQL_MANDIR=@PGSQL_MANDIR@
+PGSQL_SHAREDIR=@PGSQL_SHAREDIR@
 
 # If XSLTPROC or XSLBASE were not found during configure, we cannot
 # build the documentation
@@ -52,7 +56,7 @@ else
 ifeq ($(IMAGEMAGICK),)
 all: requirements_not_met_imagemagick
 else
-all: html/postgis.html	../postgis_comments.sql
+all: html/postgis.html postgis_comments.sql
 endif
 endif
 endif
@@ -60,7 +64,7 @@ endif
 postgis_aggs_mm.xml: ./xsl/postgis_aggs_mm.xml.xsl reference.xml
 	$(XSLTPROC) ./xsl/postgis_aggs_mm.xml.xsl reference.xml > $@
 
-../postgis_comments.sql: ./xsl/postgis_comments.sql.xsl reference.xml
+postgis_comments.sql: ./xsl/postgis_comments.sql.xsl reference.xml
 	$(XSLTPROC) ./xsl/postgis_comments.sql.xsl reference.xml > $@
 
 postgis-out.xml: postgis.xml introduction.xml installation.xml faq.xml using_postgis_dataman.xml  using_postgis_app.xml performance_tips.xml reference.xml postgis_aggs_mm.xml reporting.xml release_notes.xml ../Version.config
@@ -114,12 +118,20 @@ images:
 	make -C html/image_src images
 	
 clean:
-	make -C html/image_src clean
-	@rm -f  postgis-out.xml
+	@rm -f postgis-out.xml postgis_comments.sql
 
 maintainer-clean: clean
+	make -C html/image_src clean
 	@rm -f html/*.html \
 		postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
+
+comments: postgis_comments.sql
+
+comments-install:
+	cp postgis_comments.sql $(PGSQL_SHAREDIR)/contrib/postgis_comments.sql
+
+comments-uninstall:
+	rm -f $(PGSQL_SHAREDIR)/contrib/postgis_comments.sql
 
 install: html/postgis.html man/shp2pgsql.1 man/pgsql2shp.1
 	@mkdir -p $(PGSQL_DOCDIR)/postgis

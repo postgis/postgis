@@ -7,9 +7,9 @@
 all: postgis loaderdumper utils
 	@echo "PostGIS was built successfully. Ready to install." 
 
-install: all postgis-install loaderdumper-install 
+install: all postgis-install loaderdumper-install
 
-uninstall: postgis-uninstall loaderdumper-uninstall docs-uninstall 
+uninstall: postgis-uninstall loaderdumper-uninstall docs-uninstall comments-uninstall
 
 clean: liblwgeom-clean postgis-clean loaderdumper-clean docs-clean test-clean 
 	rm -f postgis.sql postgis_upgrade.sql
@@ -85,6 +85,14 @@ docs:
 docs-clean:
 	$(MAKE) -C doc clean
 
+comments:
+	$(MAKE) -C doc comments
+
+comments-install:
+	$(MAKE) -C doc comments-install
+
+comments-uninstall:
+	$(MAKE) -C doc comments-uninstall
 
 docs-install:
 	$(MAKE) -C doc install

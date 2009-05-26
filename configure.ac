@@ -306,6 +306,11 @@ PGSQL_BINDIR=`$PGCONFIG --bindir`
 
 AC_SUBST([PGSQL_BINDIR])
 
+dnl Extract the share directory
+PGSQL_SHAREDIR=`$PGCONFIG --sharedir`
+
+AC_SUBST([PGSQL_SHAREDIR])
+
 
 dnl Ensure that we can parse libpq-fe.h
 CPPFLAGS_SAVE="$CPPFLAGS"
