@@ -14,6 +14,7 @@ cd postgis-&last_release_version;
 ./configure
 make
 make install
+createdb yourdatabase
 createlang plpgsql yourdatabase
 psql -d yourdatabase -f lwpostgis.sql
 psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
@@ -143,25 +144,48 @@ psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
     </itemizedlist>
   </sect1>
 
-  <sect1 id="PGInstall">
-    <title>PostGIS</title>
+  <sect1>
+    <title>Getting the Source</title>
 
     <para>
-      The PostGIS module is an extension to the PostgreSQL backend server. As
-      such, PostGIS &last_release_version; <emphasis>requires</emphasis> full
-      PostgreSQL server headers access in order to compile. The PostgreSQL
-      source code is available at
-      <ulink url="http://www.postgresql.org">
-        http://www.postgresql.org
+      Retrieve the PostGIS source archive from the downloads website
+      <ulink url="http://postgis.refractions.net/download/postgis-&last_release_version;.tar.gz">
+        http://postgis.refractions.net/download/postgis-&last_release_version;.tar.gz
+      </ulink>
+    </para>
+
+    <programlisting>wget http://postgis.refractions.net/download/postgis-&last_release_version;.tar.gz
+tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
+
+    <para>
+      This will create a directory called
+      <varname>postgis-&last_release_version;</varname> in the current working
+      directory.
+    </para>
+
+    <para>
+      Alternatively, checkout the source from the
+      <ulink url="http://subversion.tigris.org/">
+        svn
+      </ulink>
+      repository
+      <ulink url="http://svn.osgeo.org/postgis/trunk/">
+        http://svn.osgeo.org/postgis/trunk/
       </ulink>
       .
     </para>
 
+    <programlisting>svn checkout http://svn.osgeo.org/postgis/trunk/ postgis-&last_release_version;</programlisting>
+
     <para>
-      PostGIS &last_release_version; can be built against PostgreSQL versions
-      8.1.0 or higher. Earlier versions of PostgreSQL are
-      <emphasis>not</emphasis> supported.
+      Change into the newly created
+      <varname>postgis-&last_release_version;</varname> directory to continue
+      the installation.
     </para>
+  </sect1>
+
+  <sect1 id="PGInstall">
+    <title>Installation</title>
 
     <note>
       <para>
@@ -171,412 +195,634 @@ psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
       </para>
     </note>
 
+    <para>
+      The PostGIS module is an extension to the PostgreSQL backend server. As
+      such, PostGIS &last_release_version; <emphasis>requires</emphasis> full
+      PostgreSQL server headers access in order to compile. It can be built
+      against PostgreSQL versions 8.1.0 or higher. Earlier versions of
+      PostgreSQL are <emphasis>not</emphasis> supported.
+    </para>
+
+    <para>
+      Refer to the PostgreSQL installation guides if you haven't already
+      installed PostgreSQL.
+      <ulink url="http://www.postgresql.org">
+        http://www.postgresql.org
+      </ulink>
+      .
+    </para>
+
     <note>
       <para>
-        If you would like to compile your own, more specific instructions for
-        <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiWinCompile">
-          Windows Compiling Guide
-        </ulink>
-        and others are available in
-        <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiMain">
-          PostGIS User Wiki
-        </ulink>
+        For GEOS functionality, when you install PostgresSQL you may need to
+        explicitly link PostgreSQL against the standard C++ library:
+      </para>
+
+      <programlisting>LDFLAGS=-lstdc++ ./configure [YOUR OPTIONS HERE]</programlisting>
+
+      <para>
+        This is a workaround for bogus C++ exceptions interaction with older
+        development tools. If you experience weird problems (backend
+        unexpectedly closed or similar things) try this trick. This will require
+        recompiling your PostgreSQL from scratch, of course.
       </para>
     </note>
 
-    <sect2 id="firsttimeinstall">
-      <title>Compiling and Installing from Source</title>
+    <para>
+      The following steps outline the configuration and compliation of the
+      PostGIS source. They are written for Linux users and will not work on
+      Windows or Mac.
+    </para>
 
-      <orderedlist>
-        <listitem>
-          <para>
-            Before you can compile the PostGIS server modules, you must compile
-            and install the PostgreSQL package.
-          </para>
+    <sect2>
+      <title>Configuration</title>
 
-          <note>
+      <para>
+        As with most linux installations, the first step is to generate the
+        Makefile that will be used to build the source code. This is done by
+        running the shell script
+      </para>
+
+      <para>
+        <command>./configure</command>
+      </para>
+
+      <para>
+        With no additional parameters, this command will attempt to
+        automatically locate the required components and libraries needed to
+        build the PostGIS source code on your system. Although this is the most
+        common usage of <command>./configure</command>, the script accepts
+        several parameters for those who have the required libraries and
+        programs in non-standard locations.
+      </para>
+
+      <para>
+        The following list shows only the most commonly used parameters. For a
+        complete list, use the <command>--help</command> or
+        <command>--help=short</command> parameters.
+      </para>
+
+      <variablelist>
+        <varlistentry>
+          <term><command>--prefix=<emphasis>PREFIX</emphasis></command></term>
+          <listitem>
             <para>
-              For GEOS functionality you might need to explicitly link
-              PostgreSQL against the standard C++ library:
+              This is the location the PostGIS libraries and SQL scripts will be
+              installed to. By default, this location is the same as the
+              detected PostgreSQL installation.
             </para>
 
-            <programlisting>LDFLAGS=-lstdc++ ./configure [YOUR OPTIONS HERE]</programlisting>
+            <caution>
+              <para>
+                This paramater is currently broken, as the package will only
+                install into the PostgreSQL installation directory. Visit
+                <ulink url="http://trac.osgeo.org/postgis/ticket/160">
+                  http://trac.osgeo.org/postgis/ticket/160
+                </ulink>
+                to track this bug.
+              </para>
+            </caution>
+          </listitem>
+        </varlistentry>
 
+        <varlistentry>
+          <term><command>--with-pgconfig=<emphasis>FILE</emphasis></command></term>
+          <listitem>
             <para>
-              This is a workaround for bogus C++ exceptions interaction with
-              older development tools. If you experience weird problems (backend
-              unexpectedly closed or similar things) try this trick. This will
-              require recompiling your PostgreSQL from scratch, of course.
+              PostgreSQL provides a utility called <command>pg_config</command>
+              to enable extensions like PostGIS to locate the PostgreSQL
+              installation directory. Use this parameter
+              (<command>--with-pgconfig=/path/to/pg_config</command>) to
+              manually specify a particular PostgreSQL installation that PostGIS
+              will build against.
             </para>
+          </listitem>
+        </varlistentry>
 
+        <varlistentry>
+          <term><command>--with-geosconfig=<emphasis>FILE</emphasis></command></term>
+          <listitem>
             <para>
-              The steps that follow are for Linux users. They will not work on
-              Windows or Mac
+              GEOS, a required geometry library, provides a utility called
+              <command>geos-config</command> to enable software installations to
+              locate the GEOS installation directory. Use this parameter
+              (<command>--with-geosconfig=/path/to/geos-config</command>) to
+              manually specify a particular GEOS installation that PostGIS will
+              build against.
             </para>
+          </listitem>
+        </varlistentry>
 
+        <varlistentry>
+          <term><command>--with-projdir=<emphasis>FILE</emphasis></command></term>
+          <listitem>
             <para>
-              For the below - if you are not logged in as root, you may need to
-              use sudo or su commands to run the make make install commands
+              Proj4 is a reprojection library required by PostGIS. Use this
+              parameter (<command>--with-projdir=/path/to/projdir</command>) to
+              manually specify a particular Proj4 installation directory that
+              PostGIS will build against.
             </para>
-          </note>
-        </listitem>
+          </listitem>
+        </varlistentry>
+      </variablelist>
 
-        <listitem>
-          <para>
-            Retrieve the PostGIS source archive from
-            <ulink url="http://postgis.refractions.net/download/postgis-&last_release_version;.tar.gz">
-              http://postgis.refractions.net/download/postgis-&last_release_version;.tar.gz
-            </ulink>
-            . Uncompress and untar the archive. configure.
-          </para>
-
-          <para>
-            All files are installed using information provided by
-            <filename>pg_config</filename>
-          </para>
-
-          <itemizedlist>
-            <listitem>
-              <para>
-                Libraries are installed
-                <filename>[pkglibdir]/lib/contrib</filename>.
-              </para>
-            </listitem>
-
-            <listitem>
-              <para>
-                Important support files such as <filename>postgis.sql</filename>
-                are installed in <filename>[prefix]/share/contrib</filename>.
-              </para>
-            </listitem>
-
-            <listitem>
-              <para>
-                Loader and dumper binaries are installed in
-                <filename>[bindir]/</filename>.
-              </para>
-            </listitem>
-          </itemizedlist>
-
-          <programlisting>wget http://postgis.refractions.net/download/postgis-&last_release_version;.tar.gz
-gzip -d -c postgis-&last_release_version;.tar.gz | tar xvf -
-cd postgis-&last_release_version;/
-./configure</programlisting>
-        </listitem>
-
-        <listitem>
-          <para>
-            Make and Install
-          </para>
-
-          <itemizedlist>
-            <listitem>
-              <para>
-                PostgreSQL provides a utility called
-                <filename>pg_config</filename> to enable extensions like PostGIS
-                to locate the PostgreSQL installation directory. If ./configure
-                didn't find <filename>pg_config</filename>, try using the
-                <code>--with-pgconfig=/path/to/pg_config</code> switch to
-                specify a particular PostgreSQL installation.
-              </para>
-            </listitem>
-
-            <listitem>
-              <para>
-                Proj4 is now required in order to build and use PostGIS. If
-                ./configure didn't find the Proj4 library, try using the
-                <code>--with-projdir=/path/to/projdir</code> switch to specify
-                an alternative Proj4 installation directory. If you have not
-                compiled or installed Proj4, follow the instructions below if
-                you wish to compile Proj4 from source.
-              </para>
-            </listitem>
-
-            <listitem>
-              <para>
-                GEOS is now required in order to build and use PostGIS. If
-                ./configure didn't find it, try using the
-                <code>--with-geosconfig=/path/to/geos-config</code> switch to
-                specify the full path to the <filename>geos-config</filename>
-                program. If you have not compiled or installed Geos, follow the
-                instructions that follow below to compile Geos from source.
-              </para>
-            </listitem>
-          </itemizedlist>
-
-          <programlisting>make clean &amp;&amp; make
-make install
-ldconfig</programlisting>
-        </listitem>
-
-        <listitem>
-          <para>
-            If you are missing proj based on above or running a version below
-            4.5, then install by following these steps.
-          </para>
-
-          <programlisting>wget http://download.osgeo.org/proj/proj-&last_proj_release_version;.tar.gz
-gzip -d -c proj-&last_proj_release_version;.tar.gz | tar xvf -
-cd proj-&last_proj_release_version;
-./configure &amp;&amp; make clean &amp;&amp; make
-make install
-ldconfig
-cd ..</programlisting>
-        </listitem>
-
-        <listitem>
-          <para>
-            If you are missing geos based on above or running a version below
-            3.0, then install by following these steps.
-          </para>
-
-          <programlisting>wget http://download.osgeo.org/geos/geos-&last_geos_release_version;.tar.bz2
-bunzip2 -d -c geos-&last_geos_release_version;.tar.bz2 | tar xvf -
-cd geos-&last_geos_release_version;
-./configure &amp;&amp; make clean &amp;&amp; make
-make install
-ldconfig
-cd ..</programlisting>
-        </listitem>
-
-        <listitem>
-          <para>
-            PostGIS requires the PL/pgSQL procedural language extension. Before
-            loading the <filename>postgis.sql</filename> file, you must first
-            enable PL/pgSQL. You should use the <filename>createlang</filename>
-            command. The PostgreSQL Programmer's Guide has the details if you
-            want to this manually for some reason.
-          </para>
-
-          <programlisting># createlang plpgsql [yourdatabase]</programlisting>
-        </listitem>
-
-        <listitem>
-          <para>
-            Now load the PostGIS object and function definitions into your
-            database by loading the <filename>postgis.sql</filename> definitions
-            file.
-          </para>
-
-          <programlisting># psql -d [yourdatabase] -f lwgeom/postgis.sql</programlisting>
-
-          <para>
-            The PostGIS server extensions are now loaded and ready to use.
-          </para>
-        </listitem>
-
-        <listitem>
-          <para>
-            For a complete set of EPSG coordinate system definition identifiers,
-            you can also load the <filename>spatial_ref_sys.sql</filename>
-            definitions file and populate the <varname>SPATIAL_REF_SYS</varname>
-            table.
-          </para>
-
-          <programlisting># psql -d [yourdatabase] -f spatial_ref_sys.sql</programlisting>
-        </listitem>
-      </orderedlist>
-    </sect2>
-
-    <sect2 id="templatepostgis">
-      <title>Creating PostGIS spatially-enabled databases from an in-built
-	  template</title>
-
-      <para>
-        Some packaged distributions of PostGIS (in particular the Win32
-        installers for PostGIS &gt;= 1.1.5) load the PostGIS functions into a
-        template database called <varname>template_postgis</varname>. If the
-        <varname>template_postgis</varname> database exists in your PostgreSQL
-        installation then it is possible for users and/or applications to create
-        spatially-enabled databases using a single command. Note that in both
-        cases, the database user must have been granted the privilege to create
-        new databases.
-      </para>
-
-      <para>
-        From the shell:
-      </para>
-
-      <programlisting># createdb -T template_postgis my_spatial_db</programlisting>
-
-      <para>
-        From SQL:
-      </para>
-
-      <programlisting>postgres=# CREATE DATABASE my_spatial_db TEMPLATE=template_postgis</programlisting>
-    </sect2>
-
-    <sect2 id="upgrading">
-      <title>Upgrading</title>
-
-      <para>
-        Upgrading existing spatial databases can be tricky as it requires
-        replacement or introduction of new PostGIS object definitions.
-      </para>
-
-      <para>
-        Unfortunately not all definitions can be easily replaced in a live
-        database, so sometimes your best bet is a dump/reload process.
-      </para>
-
-      <para>
-        PostGIS provides a SOFT UPGRADE procedure for minor or bugfix releases,
-        and an HARD UPGRADE procedure for major releases.
-      </para>
-
-      <para>
-        Before attempting to upgrade postgis, it is always worth to backup your
-        data. If you use the -Fc flag to pg_dump you will always be able to
-        restore the dump with an HARD UPGRADE.
-      </para>
-
-      <sect3 id="soft_upgrade">
-        <title>Soft upgrade</title>
-
+      <note>
         <para>
-          Soft upgrade consists of sourcing the postgis_upgrade.sql script in
-          your spatial database:
-        </para>
-
-        <programlisting>$ psql -f postgis_upgrade.sql -d your_spatial_database</programlisting>
-
-        <para>
-          If a soft upgrade is not possible the script will abort and you will
-          be warned about HARD UPGRADE being required, so do not hesitate to try
-          a soft upgrade first.
-        </para>
-
-        <note>
-          <para>
-            If you can't find the <filename>postgis_upgrade.sql</filename> file
-            you are probably using a version prior to 1.1 and must generate that
-            file by yourself. This is done with the following command:
-          </para>
-
-          <programlisting>$ utils/postgis_proc_upgrade.pl postgis.sql &gt; postgis_upgrade.sql</programlisting>
-        </note>
-      </sect3>
-
-      <sect3 id="hard_upgrade">
-        <title>Hard upgrade</title>
-
-        <para>
-          By HARD UPGRADE we intend full dump/reload of postgis-enabled
-          databases. You need an HARD UPGRADE when postgis objects' internal
-          storage changes or when SOFT UPGRADE is not possible. The
-          <link linkend="release_notes">Release Notes</link>
-          appendix reports for each version whether you need a dump/reload (HARD
-          UPGRADE) to upgrade.
+          If you obtained PostGIS from the SVN
+          <ulink url="http://svn.osgeo.org/postgis/trunk/">
+            repository
+          </ulink>
+          , the first step is really to run the script
         </para>
 
         <para>
-          PostGIS provides an utility script to restore a dump produced with the
-          pg_dump -Fc command. It is experimental so redirecting its output to a
-          file will help in case of problems. The procedure is as follow:
+          <command>./autogen.sh</command>
         </para>
 
         <para>
-          Create a "custom-format" dump of the database you want to upgrade
-          (let's call it "olddb")
+          This script will generate the <command>configure</command> script that
+          in turn is used to customize the intallation of PostGIS.
         </para>
-
-        <programlisting>$ pg_dump -Fc olddb &gt; olddb.dump</programlisting>
 
         <para>
-          Restore the dump contextually upgrading postgis into a new database.
-          The new database doesn't have to exist. postgis_restore accepts
-          createdb parameters after the dump file name, and that can for
-          instance be used if you are using a non-default character encoding for
-          your database. Let's call it "newdb", with UNICODE as the character
-          encoding:
+          If you instead obtained PostGIS as a tarball, running
+          <command>./autogen.sh</command> is not necessary as
+          <command>configure</command> has already been generated.
         </para>
-
-        <programlisting>$ sh utils/postgis_restore.pl postgis.sql newdb olddb.dump -E=UNICODE &gt; restore.log</programlisting>
-
-        <para>
-          Check that all restored dump objects really had to be restored from
-          dump and do not conflict with the ones defined in postgis.sql
-        </para>
-
-        <programlisting>$ grep ^KEEPING restore.log | less</programlisting>
-
-        <para>
-          If upgrading from PostgreSQL &lt; 8.0 to &gt;= 8.0 you might want to
-          drop the attrelid, varattnum and stats columns in the geometry_columns
-          table, which are no-more needed. Keeping them won't hurt. DROPPING
-          THEM WHEN REALLY NEEDED WILL DO HURT !
-        </para>
-
-        <programlisting>$ psql newdb -c "ALTER TABLE geometry_columns DROP attrelid"
-$ psql newdb -c "ALTER TABLE geometry_columns DROP varattnum"
-$ psql newdb -c "ALTER TABLE geometry_columns DROP stats"</programlisting>
-
-        <para>
-          spatial_ref_sys table is restore from the dump, to ensure your custom
-          additions are kept, but the distributed one might contain modification
-          so you should backup your entries, drop the table and source the new
-          one. If you did make additions we assume you know how to backup them
-          before upgrading the table. Replace of it with the new one is done
-          like this:
-        </para>
-
-        <programlisting>$ psql newdb
-newdb=&gt; drop spatial_ref_sys;
-DROP
-newdb=&gt; \i spatial_ref_sys.sql</programlisting>
-      </sect3>
+      </note>
     </sect2>
 
     <sect2>
-      <title>Common Problems</title>
+      <title>Building</title>
 
       <para>
-        There are several things to check when your installation or upgrade
-        doesn't go as you expected.
+        Once the Makefile has been generated, building PostGIS is as simple as
+        running
       </para>
-
-      <orderedlist>
-        <listitem>
-          <para>
-            Check that you you have installed PostgreSQL 8.1 or newer, and that
-            you are compiling against the same version of the PostgreSQL source
-            as the version of PostgreSQL that is running. Mix-ups can occur when
-            your (Linux) distribution has already installed PostgreSQL, or you
-            have otherwise installed PostgreSQL before and forgotten about it.
-            PostGIS will only work with PostgreSQL 8.1 or newer, and strange,
-            unexpected error messages will result if you use an older version.
-            To check the version of PostgreSQL which is running, connect to the
-            database using psql and run this query:
-          </para>
-
-          <programlisting>SELECT version();</programlisting>
-
-          <para>
-            If you are running an RPM based distribution, you can check for the
-            existence of pre-installed packages using the <command>rpm</command>
-            command as follows: <command>rpm -qa | grep postgresql</command>
-          </para>
-        </listitem>
-      </orderedlist>
 
       <para>
-        Also check that configure has correctly detected the location and
-        version of PostgreSQL, the Proj4 library and the GEOS library.
+        <command>make</command>
       </para>
 
-      <orderedlist>
-        <listitem>
-          <para>
-            The output from configure is used to generate the
-            <filename>postgis_config.h</filename> file. Check that the
-            <varname>POSTGIS_PGSQL_VERSION</varname>,
-            <varname>POSTGIS_PROJ_VERSION</varname> and
-            <varname>POSTGIS_GEOS_VERSION</varname> variables have been set
-            correctly.
-          </para>
-        </listitem>
-      </orderedlist>
+      <para>
+        The last line of the output should be "<code>PostGIS was built
+        successfully. Ready to install.</code>"
+      </para>
+
+      <para>
+        As of PostGIS v1.4.0, all the functions have comments generated from the
+        documentation. If you wish to install these comments into your spatial
+        databases later, run the command
+      </para>
+
+      <para>
+        <command>make comments</command>
+      </para>
     </sect2>
+
+    <sect2>
+      <title>Testing</title>
+
+      <para>
+        If you wish to test the PostGIS build, run
+      </para>
+
+      <para>
+        <command>make check</command>
+      </para>
+
+      <para>
+        The above command will run through various checks and regression tests
+        using the generated library against an actual PostgreSQL database.
+      </para>
+
+      <note>
+        <para>
+          If you configured PostGIS using non-standard PostgreSQL, GEOS, or
+          Proj4 locations, you may need to add their library locations to the
+          LD_LIBRARY_PATH environment variable.
+        </para>
+      </note>
+
+      <caution>
+        <para>
+          Currently, the <command>make check</command> relies on the
+          <code>PATH</code> and <code>PGPORT</code> environment variables when
+          performing the checks - it does <emphasis>not</emphasis> use the
+          PostgreSQL version that may have been specified using the
+          configuration paramter <command>--with-pgconfig</command>. So make
+          sure to modify your PATH to match the detected PostgreSQL installation
+          during configuration or be prepared to deal with the impending
+          headaches. Visit
+          <ulink url="http://trac.osgeo.org/postgis/ticket/186">
+            http://trac.osgeo.org/postgis/ticket/186
+          </ulink>
+          to track this bug.
+        </para>
+      </caution>
+
+      <para>
+        If successful, the output of the test should be similiar to the
+        following:
+      </para>
+
+      <programlisting>     CUnit - A Unit testing framework for C - Version 2.1-0
+     http://cunit.sourceforge.net/
+
+
+Suite: PostGIS Computational Geometry Suite
+  Test: test_lw_segment_side() ... passed
+  Test: test_lw_segment_intersects() ... passed
+  Test: test_lwline_crossing_short_lines() ... passed
+  Test: test_lwline_crossing_long_lines() ... passed
+  Test: test_lwpoint_set_ordinate() ... passed
+  Test: test_lwpoint_get_ordinate() ... passed
+  Test: test_lwpoint_interpolate() ... passed
+  Test: test_lwline_clip() ... passed
+  Test: test_lwline_clip_big() ... passed
+  Test: test_lwmline_clip() ... passed
+  Test: test_geohash_point() ... passed
+  Test: test_geohash_precision() ... passed
+  Test: test_geohash() ... passed
+Suite: PostGIS Measures Suite
+  Test: test_mindistance2d_recursive_tolerance() ... passed
+
+--Run Summary: Type      Total     Ran  Passed  Failed
+               suites        2       2     n/a       0
+               tests        14      14      14       0
+               asserts      84      84      84       0
+
+
+Creating spatial db postgis_reg 
+TMPDIR is /tmp/pgis_reg_15328
+
+ PostgreSQL 8.3.7 on i686-pc-linux-gnu, compiled by GCC gcc (GCC) 4.1.2 20080704 (Red Hat 4.1.2-44)
+ Postgis 1.4.0SVN - 2009-05-25 20:21:55
+   GEOS: 3.1.0-CAPI-1.5.0
+   PROJ: Rel. 4.6.1, 21 August 2008
+
+Running tests
+
+ loader/Point.............. ok
+ loader/PointM.............. ok
+ loader/PointZ.............. ok
+ loader/MultiPoint.............. ok
+ loader/MultiPointM.............. ok
+ loader/MultiPointZ.............. ok
+ loader/Arc.............. ok
+ loader/ArcM.............. ok
+ loader/ArcZ.......... ok
+ loader/Polygon.............. ok
+ loader/PolygonM.............. ok
+ loader/PolygonZ.............. ok
+ regress. ok
+ regress_index. ok
+ regress_index_nulls. ok
+ lwgeom_regress. ok
+ regress_lrs. ok
+ removepoint. ok
+ setpoint. ok
+ simplify. ok
+ snaptogrid. ok
+ affine. ok
+ wkt. ok
+ measures. ok
+ long_xact. ok
+ ctors. ok
+ sql-mm-serialize. ok
+ sql-mm-circularstring. ok
+ sql-mm-compoundcurve. ok
+ sql-mm-curvepoly. ok
+ sql-mm-general. ok
+ sql-mm-multicurve. ok
+ sql-mm-multisurface. ok
+ geojson. ok
+ gml. ok
+ svg. ok
+ kml. ok
+ regress_ogc. ok
+ regress_bdpoly. ok
+ regress_proj. ok
+ regress_ogc_cover. ok
+ regress_ogc_prep. ok
+
+Run tests: 42
+Failed: 0</programlisting>
+    </sect2>
+
+    <sect2>
+      <title>Installation</title>
+
+      <para>
+        To install PostGIS, type
+      </para>
+
+      <para>
+        <command>make install</command>
+      </para>
+
+      <para>
+        This will copy the PostGIS installation files into their appropriate
+        subdirectory specified by the <command>--prefix</command> configuration
+        parameter. In particular:
+      </para>
+
+      <itemizedlist>
+        <listitem>
+          <para>
+            The loader and dumper binaries are installed in
+            <filename>[prefix]/bin</filename>.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            The SQL files, such as <filename>postgis.sql</filename>, are
+            installed in <filename>[prefix]/share/contrib</filename>.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            The PostGIS libraries are installed in
+            <filename>[prefix]/lib</filename>.
+          </para>
+        </listitem>
+      </itemizedlist>
+
+      <para>
+        If you previously ran the <command>make comments</command> command to
+        generate the <filename>postgis_comments.sql</filename> file, install the
+        sql file by running
+      </para>
+
+      <para>
+        <command>make comments-install</command>
+      </para>
+
+      <note>
+        <para>
+          <filename>postgis_comments.sql</filename> was separated from the
+          typical build and installation targets since with it comes the extra
+          dependency of <command>xsltproc</command>.
+        </para>
+      </note>
+    </sect2>
+  </sect1>
+
+  <sect1>
+    <title>Create a spatially-enabled database</title>
+
+    <para>
+      The first step in creating a PostGIS database is to create a simple
+      PostgreSQL database.
+    </para>
+
+    <para>
+      <command>createdb [yourdatabase]</command>
+    </para>
+
+    <para>
+      Many of the PostGIS functions are written in the PL/pgSQL procedural
+      language. As such, the next step to create a PostGIS database is to enable
+      the PL/pgSQL language in your new database. This is accomplish by the
+      command
+    </para>
+
+    <para>
+      <command>createlang plpgsql [yourdatabase]</command>
+    </para>
+
+    <para>
+      Now load the PostGIS object and function definitions into your database by
+      loading the <filename>postgis.sql</filename> definitions file (located in
+      <filename>[prefix]/share/contrib</filename> as specified during the
+      configuration step).
+    </para>
+
+    <para>
+      <command>psql -d [yourdatabase] -f postgis.sql</command>
+    </para>
+
+    <para>
+      For a complete set of EPSG coordinate system definition identifiers, you
+      can also load the <filename>spatial_ref_sys.sql</filename> definitions
+      file and populate the <varname>spatial_ref_sys</varname> table. This will
+      permit you to perform ST_Transform() operations on geometries.
+    </para>
+
+    <para>
+      <command>psql -d [yourdatabase] -f spatial_ref_sys.sql</command>
+    </para>
+
+    <para>
+      If you wish to add comments to the PostGIS functions, the final step is to
+      load the <filename>postgis_comments.sql</filename> into your spatial
+      database. The comments can be viewed by simply typing <command>\dd
+      [function_name]</command> from a <command>psql</command> terminal window.
+    </para>
+
+    <para>
+      <command>psql -d [yourdatabase] -f postgis_comments.sql</command>
+    </para>
+  </sect1>
+
+  <sect1 id="templatepostgis">
+    <title>Create a spatially-enabled database from a template</title>
+
+    <para>
+      Some packaged distributions of PostGIS (in particular the Win32 installers
+      for PostGIS &gt;= 1.1.5) load the PostGIS functions into a template
+      database called <varname>template_postgis</varname>. If the
+      <varname>template_postgis</varname> database exists in your PostgreSQL
+      installation then it is possible for users and/or applications to create
+      spatially-enabled databases using a single command. Note that in both
+      cases, the database user must have been granted the privilege to create
+      new databases.
+    </para>
+
+    <para>
+      From the shell:
+    </para>
+
+    <programlisting># createdb -T template_postgis my_spatial_db</programlisting>
+
+    <para>
+      From SQL:
+    </para>
+
+    <programlisting>postgres=# CREATE DATABASE my_spatial_db TEMPLATE=template_postgis</programlisting>
+  </sect1>
+
+  <sect1 id="upgrading">
+    <title>Upgrading</title>
+
+    <para>
+      Upgrading existing spatial databases can be tricky as it requires
+      replacement or introduction of new PostGIS object definitions.
+    </para>
+
+    <para>
+      Unfortunately not all definitions can be easily replaced in a live
+      database, so sometimes your best bet is a dump/reload process.
+    </para>
+
+    <para>
+      PostGIS provides a SOFT UPGRADE procedure for minor or bugfix releases,
+      and an HARD UPGRADE procedure for major releases.
+    </para>
+
+    <para>
+      Before attempting to upgrade postgis, it is always worth to backup your
+      data. If you use the -Fc flag to pg_dump you will always be able to
+      restore the dump with an HARD UPGRADE.
+    </para>
+
+    <sect2 id="soft_upgrade">
+      <title>Soft upgrade</title>
+
+      <para>
+        Soft upgrade consists of sourcing the postgis_upgrade.sql script in your
+        spatial database:
+      </para>
+
+      <programlisting>$ psql -f postgis_upgrade.sql -d your_spatial_database</programlisting>
+
+      <para>
+        If a soft upgrade is not possible the script will abort and you will be
+        warned about HARD UPGRADE being required, so do not hesitate to try a
+        soft upgrade first.
+      </para>
+
+      <note>
+        <para>
+          If you can't find the <filename>postgis_upgrade.sql</filename> file
+          you are probably using a version prior to 1.1 and must generate that
+          file by yourself. This is done with the following command:
+        </para>
+
+        <programlisting>$ utils/postgis_proc_upgrade.pl postgis.sql &gt; postgis_upgrade.sql</programlisting>
+      </note>
+    </sect2>
+
+    <sect2 id="hard_upgrade">
+      <title>Hard upgrade</title>
+
+      <para>
+        By HARD UPGRADE we intend full dump/reload of postgis-enabled databases.
+        You need an HARD UPGRADE when postgis objects' internal storage changes
+        or when SOFT UPGRADE is not possible. The
+        <link linkend="release_notes">Release Notes</link>
+        appendix reports for each version whether you need a dump/reload (HARD
+        UPGRADE) to upgrade.
+      </para>
+
+      <para>
+        PostGIS provides an utility script to restore a dump produced with the
+        pg_dump -Fc command. It is experimental so redirecting its output to a
+        file will help in case of problems. The procedure is as follow:
+      </para>
+
+      <para>
+        Create a "custom-format" dump of the database you want to upgrade (let's
+        call it "olddb")
+      </para>
+
+      <programlisting>$ pg_dump -Fc olddb &gt; olddb.dump</programlisting>
+
+      <para>
+        Restore the dump contextually upgrading postgis into a new database. The
+        new database doesn't have to exist. postgis_restore accepts createdb
+        parameters after the dump file name, and that can for instance be used
+        if you are using a non-default character encoding for your database.
+        Let's call it "newdb", with UNICODE as the character encoding:
+      </para>
+
+      <programlisting>$ sh utils/postgis_restore.pl postgis.sql newdb olddb.dump -E=UNICODE &gt; restore.log</programlisting>
+
+      <para>
+        Check that all restored dump objects really had to be restored from dump
+        and do not conflict with the ones defined in postgis.sql
+      </para>
+
+      <programlisting>$ grep ^KEEPING restore.log | less</programlisting>
+
+      <para>
+        If upgrading from PostgreSQL &lt; 8.0 to &gt;= 8.0 you might want to
+        drop the attrelid, varattnum and stats columns in the geometry_columns
+        table, which are no-more needed. Keeping them won't hurt. DROPPING THEM
+        WHEN REALLY NEEDED WILL DO HURT !
+      </para>
+
+      <programlisting>$ psql newdb -c "ALTER TABLE geometry_columns DROP attrelid"
+$ psql newdb -c "ALTER TABLE geometry_columns DROP varattnum"
+$ psql newdb -c "ALTER TABLE geometry_columns DROP stats"</programlisting>
+
+      <para>
+        spatial_ref_sys table is restore from the dump, to ensure your custom
+        additions are kept, but the distributed one might contain modification
+        so you should backup your entries, drop the table and source the new
+        one. If you did make additions we assume you know how to backup them
+        before upgrading the table. Replace of it with the new one is done like
+        this:
+      </para>
+
+      <programlisting>$ psql newdb
+newdb=&gt; drop spatial_ref_sys;
+DROP
+newdb=&gt; \i spatial_ref_sys.sql</programlisting>
+    </sect2>
+  </sect1>
+
+  <sect1>
+    <title>Common Problems</title>
+
+    <para>
+      There are several things to check when your installation or upgrade
+      doesn't go as you expected.
+    </para>
+
+    <orderedlist>
+      <listitem>
+        <para>
+          Check that you you have installed PostgreSQL 8.1 or newer, and that
+          you are compiling against the same version of the PostgreSQL source as
+          the version of PostgreSQL that is running. Mix-ups can occur when your
+          (Linux) distribution has already installed PostgreSQL, or you have
+          otherwise installed PostgreSQL before and forgotten about it. PostGIS
+          will only work with PostgreSQL 8.1 or newer, and strange, unexpected
+          error messages will result if you use an older version. To check the
+          version of PostgreSQL which is running, connect to the database using
+          psql and run this query:
+        </para>
+
+        <programlisting>SELECT version();</programlisting>
+
+        <para>
+          If you are running an RPM based distribution, you can check for the
+          existence of pre-installed packages using the <command>rpm</command>
+          command as follows: <command>rpm -qa | grep postgresql</command>
+        </para>
+      </listitem>
+    </orderedlist>
+
+    <para>
+      Also check that configure has correctly detected the location and version
+      of PostgreSQL, the Proj4 library and the GEOS library.
+    </para>
+
+    <orderedlist>
+      <listitem>
+        <para>
+          The output from configure is used to generate the
+          <filename>postgis_config.h</filename> file. Check that the
+          <varname>POSTGIS_PGSQL_VERSION</varname>,
+          <varname>POSTGIS_PROJ_VERSION</varname> and
+          <varname>POSTGIS_GEOS_VERSION</varname> variables have been set
+          correctly.
+        </para>
+      </listitem>
+    </orderedlist>
   </sect1>
 
   <sect1>
