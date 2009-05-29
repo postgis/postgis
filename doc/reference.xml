@@ -805,7 +805,7 @@ the_geom IS NULL)
 		  <funcprototype>
 			<funcdef>int <function>Populate_Geometry_Columns</function></funcdef>
 
-			<paramdef><type>oid</type> <parameter>table_oid</parameter></paramdef>
+			<paramdef><type>oid</type> <parameter>relation_oid</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
