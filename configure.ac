@@ -36,8 +36,8 @@ dnl
 dnl For GCC enable additional warning flags -Wall and -Wmissing-prototypes (using macro included with libtool)
 dnl
 WARNFLAGS=""
-AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -Wall], [dummy], [-Wall], [], [WARNFLAGS="$WARNFLAGS -Wall"], []) 
-AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -Wmissing-prototypes], [dummy], [-Wmissing-prototypes], [], [WARNFLAGS="$WARNFLAGS -Wmissing-prototypes"], []) 
+AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -Wall], [_cv_wall], [-Wall], [], [WARNFLAGS="$WARNFLAGS -Wall"], []) 
+AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -Wmissing-prototypes], [_cv_misprot], [-Wmissing-prototypes], [], [WARNFLAGS="$WARNFLAGS -Wmissing-prototypes"], []) 
 AC_SUBST([WARNFLAGS])
 
 dnl
@@ -310,7 +310,6 @@ dnl Extract the share directory
 PGSQL_SHAREDIR=`$PGCONFIG --sharedir`
 
 AC_SUBST([PGSQL_SHAREDIR])
-
 
 dnl Ensure that we can parse libpq-fe.h
 CPPFLAGS_SAVE="$CPPFLAGS"
