@@ -3,6 +3,7 @@ TMPDIR?=/tmp
 POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 POSTGIS_GEOS_VERSION=@POSTGIS_GEOS_VERSION@
 POSTGIS_PROJ_VERSION=@POSTGIS_PROJ_VERSION@
+PGSQL_BINDIR=@PGSQL_BINDIR@
 
 TESTS = \
 	loader/Point \
@@ -62,7 +63,8 @@ all: test
 
 test check: ../postgis/postgis.so ../loader/pgsql2shp ../loader/shp2pgsql 
 	cp ../postgis/postgis.sql .
-	@USE_VERSION="$(POSTGIS_PGSQL_VERSION)" ./run_test $(TESTS)
+	$(shell USE_VERSION=$(POSTGIS_PGSQL_VERSION) USE_PATH=$(PGSQL_BINDIR) ./run_test $(TESTS))
+
 
 ../postgis/postgis.so:
 	$(MAKE) -C ../postgis

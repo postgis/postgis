@@ -25,6 +25,10 @@ if [ -n "$USE_VERSION" ]; then
 	fi
 fi
 
+if [ -n "$USE_PATH" ]; then
+	export PATH=${USE_PATH}:${PATH}
+fi
+
 PSQL="psql"
 
 if [ -z "$TMPDIR" ]; then
