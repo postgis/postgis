@@ -13,7 +13,7 @@
 MODULE_big=postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 
 # Files to be copied to the contrib/ directory
-DATA_built=postgis.sql
+DATA_built=postgis.sql postgis_upgrade.sql
 DATA=../spatial_ref_sys.sql
 
 # SQL objects (files requiring C pre-processing)
@@ -74,6 +74,9 @@ include $(PGXS)
 # Borrow the $libdir substitution from PGXS but customise by adding the version number
 %.sql: %.sql.in
 	sed 's,MODULE_PATHNAME,$$libdir/$*-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@,g' $< >$@
+
+postgis_upgrade.sql: postgis.sql
+	$(PERL) ../utils/postgis_proc_upgrade.pl $< > $@
 
 # Generate any .sql.in files from .sql.in.c files by running them through the C pre-processor 
 $(SQL_OBJS): %.in: %.in.c
