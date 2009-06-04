@@ -32,7 +32,7 @@ Directory structure:
 REQUIREMENTS
 ------------
 
-PostGIS is compatible with PostgreSQL 8.1 and above.
+PostGIS is compatible with PostgreSQL 8.2 and above.
 
 You *must* have full PostgreSQL - including server headers - installed
 for this to work. 
@@ -115,7 +115,7 @@ The below will create a test database with postgis extensions, run tests and the
 Final lines of output contain a summary of test results:
 run, succeeded, failed. If you have any failure please
 file a bug report using the online bug tracker:
-http://code.google.com/p/postgis/issues/list.
+http://trac.osgeo.org/postgis/report/3 .
 
 
 Installation paths will typically be derived by ``pg_config'':
