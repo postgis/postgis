@@ -5,6 +5,13 @@ POSTGIS_GEOS_VERSION=@POSTGIS_GEOS_VERSION@
 POSTGIS_PROJ_VERSION=@POSTGIS_PROJ_VERSION@
 PGSQL_BINDIR=@PGSQL_BINDIR@
 
+# 
+# Put path from pg_config into front of search path
+#
+PATH := $(PGSQL_BINDIR):$(PATH)
+export PATH
+
+
 TESTS = \
 	loader/Point \
 	loader/PointM \
@@ -63,7 +70,7 @@ all: test
 
 test check: ../postgis/postgis.so ../loader/pgsql2shp ../loader/shp2pgsql 
 	cp ../postgis/postgis.sql .
-	$(shell USE_VERSION=$(POSTGIS_PGSQL_VERSION) USE_PATH=$(PGSQL_BINDIR) ./run_test $(TESTS))
+	@USE_VERSION=$(POSTGIS_PGSQL_VERSION) ./run_test $(TESTS)
 
 
 ../postgis/postgis.so:

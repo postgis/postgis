@@ -25,9 +25,7 @@ if [ -n "$USE_VERSION" ]; then
 	fi
 fi
 
-if [ -n "$USE_PATH" ]; then
-	export PATH=${USE_PATH}:${PATH}
-fi
+
 
 PSQL="psql"
 
@@ -438,6 +436,7 @@ libbuilddate=`${PSQL} -tAc "select postgis_lib_build_date()" "${DB}"`
 pgsqlver=`${PSQL} -tAc "select version()" "${DB}"`
 
 echo "TMPDIR is ${TMPDIR}"
+echo "PATH is ${PATH}"
 
 echo
 echo " $pgsqlver"
