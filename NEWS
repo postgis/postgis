@@ -23,7 +23,7 @@ PostGIS 1.4.0
    - ST_AsGeoJSON() return JSON formatted geometry (Olivier Courtin)
  - Compatibility
    - The versions below are the *minimum* requirements for PostGIS 1.4
-   - PostgreSQL 8.1 and higher on Linux / *NIX
+   - PostgreSQL 8.2 and higher on Linux / *NIX
    - PostgreSQL 8.2 and higher on Windows
    - GEOS 3.0 and higher only
    - PROJ4 4.5 and higher only
