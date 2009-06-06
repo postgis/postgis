@@ -3645,18 +3645,6 @@ CREATEFUNCTION ST_bytea(geometry)
 	AS 'MODULE_PATHNAME','LWGEOM_to_bytea'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- Deprecation in 1.2.3
-CREATEFUNCTION text(bool)
-	RETURNS text
-	AS 'MODULE_PATHNAME','BOOL_to_text'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- Availability: 1.2.2
-CREATEFUNCTION ST_text(bool)
-	RETURNS text
-	AS 'MODULE_PATHNAME','BOOL_to_text'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
 -- 7.3+ explicit casting definitions
 CREATE CAST (geometry AS box2d) WITH FUNCTION ST_box2d(geometry) AS IMPLICIT;
 CREATE CAST (geometry AS box3d) WITH FUNCTION ST_box3d(geometry) AS IMPLICIT;
@@ -4915,12 +4903,6 @@ CREATEFUNCTION Z(geometry)
 	AS 'MODULE_PATHNAME','LWGEOM_z_point'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
--- PostGIS equivalent function: Z(geometry)
-CREATEFUNCTION SE_Z(geometry)
-	RETURNS float8
-	AS 'MODULE_PATHNAME','LWGEOM_z_point'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
 -- Availability: 1.2.2
 CREATEFUNCTION ST_Z(geometry)
 	RETURNS float8
@@ -6134,8 +6116,8 @@ END;
 $$
 LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; 
 
-#include "long_xact.sql.in"
-#include "sqlmm.sql.in"
+#include "long_xact.sql.in.c"
+#include "sqlmm.sql.in.c"
 
 ---------------------------------------------------------------
 -- SQL-MM

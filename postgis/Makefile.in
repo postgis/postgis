@@ -13,11 +13,11 @@
 MODULE_big=postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 
 # Files to be copied to the contrib/ directory
-DATA_built=postgis.sql postgis_upgrade.sql
+DATA_built=postgis.sql uninstall_postgis.sql postgis_upgrade.sql
 DATA=../spatial_ref_sys.sql
 
 # SQL objects (files requiring C pre-processing)
-SQL_OBJS=postgis.sql.in
+SQL_OBJS=postgis.sql.in uninstall_postgis.sql.in
 
 # PostgreSQL objects
 PG_OBJS=lwgeom_pg.o \
