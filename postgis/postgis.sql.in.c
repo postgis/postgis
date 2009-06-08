@@ -2447,7 +2447,6 @@ LANGUAGE 'plpgsql' _VOLATILE;
 -----------------------------------------------------------------------
 CREATEFUNCTION populate_geometry_columns(tbl_oid oid)
   RETURNS integer AS
-  RETURNS integer AS
 $$
 DECLARE
     gcs         RECORD;
