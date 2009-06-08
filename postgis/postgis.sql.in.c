@@ -2447,6 +2447,7 @@ LANGUAGE 'plpgsql' _VOLATILE;
 -----------------------------------------------------------------------
 CREATEFUNCTION populate_geometry_columns(tbl_oid oid)
   RETURNS integer AS
+  RETURNS integer AS
 $$
 DECLARE
     gcs         RECORD;
@@ -2515,7 +2516,7 @@ BEGIN
                              CHECK (srid(' || quote_ident(gcs.attname) || ') = ' || gsrid || ')';
                 EXCEPTION
                     WHEN check_violation THEN
-                        RAISE WARNING 'Not inserting \'%\' in \'%.%\' into geometry_columns: could not apply constraint CHECK (srid(%) = %)', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), quote_ident(gcs.attname), gsrid;
+                        RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not apply constraint CHECK (srid(%) = %)', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), quote_ident(gcs.attname), gsrid;
                         gc_is_valid := false;
                 END;
             END IF;
@@ -2549,7 +2550,7 @@ BEGIN
                              CHECK (ndims(' || quote_ident(gcs.attname) || ') = '||gndims||')';
                 EXCEPTION
                     WHEN check_violation THEN
-                        RAISE WARNING 'Not inserting \'%\' in \'%.%\' into geometry_columns: could not apply constraint CHECK (ndims(%) = %)', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), quote_ident(gcs.attname), gndims;
+                        RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not apply constraint CHECK (ndims(%) = %)', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), quote_ident(gcs.attname), gndims;
                         gc_is_valid := false;
                 END;
             END IF;
@@ -2593,11 +2594,11 @@ BEGIN
         END IF;
                 
         IF (gsrid IS NULL) THEN             
-            RAISE WARNING 'Not inserting \'%\' in \'%.%\' into geometry_columns: could not determine the srid', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname);
+            RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not determine the srid', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname);
         ELSIF (gndims IS NULL) THEN
-            RAISE WARNING 'Not inserting \'%\' in \'%.%\' into geometry_columns: could not determine the number of dimensions', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname);
+            RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not determine the number of dimensions', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname);
         ELSIF (gtype IS NULL) THEN
-            RAISE WARNING 'Not inserting \'%\' in \'%.%\' into geometry_columns: could not determine the geometry type', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname);
+            RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not determine the geometry type', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname);
         ELSE
             -- Only insert into geometry_columns if table constraints could be applied.
             IF (gc_is_valid) THEN
@@ -2645,11 +2646,11 @@ BEGIN
             gtype := gc.geometrytype;
             
 	    IF (gndims IS NULL) THEN
-                RAISE WARNING 'Not inserting \'%\' in \'%.%\' into geometry_columns: could not determine ndims', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname);
+                RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not determine ndims', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname);
             ELSIF (gsrid IS NULL) THEN
-                RAISE WARNING 'Not inserting \'%\' in \'%.%\' into geometry_columns: could not determine srid', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname);
+                RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not determine srid', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname);
             ELSIF (gtype IS NULL) THEN
-                RAISE WARNING 'Not inserting \'%\' in \'%.%\' into geometry_columns: could not determine gtype', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname);
+                RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not determine gtype', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname);
             ELSE
                 query := 'INSERT INTO geometry_columns (f_table_catalog,f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) ' ||
                          'VALUES ('''', ' || quote_literal(gcs.nspname) || ',' || quote_literal(gcs.relname) || ',' || quote_literal(gcs.attname) || ',' || gndims || ',' || gsrid || ',' || quote_literal(gtype) || ')';
