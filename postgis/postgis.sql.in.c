@@ -354,7 +354,7 @@ CREATEFUNCTION ST_box3d_extent(box3d_extent)
         AS 'MODULE_PATHNAME', 'BOX3D_extent_to_BOX3D'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATE OR REPLACE FUNCTION ST_box2d(box3d_extent)
+CREATEFUNCTION ST_box2d(box3d_extent)
         RETURNS box2d
         AS 'MODULE_PATHNAME', 'BOX3D_to_BOX2DFLOAT4'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -6275,7 +6275,7 @@ $BODY$
 $BODY$
   LANGUAGE 'plpgsql' IMMUTABLE STRICT;
   
-CREATE OR REPLACE FUNCTION ST_MinimumBoundingCircle(geometry)
+CREATEFUNCTION ST_MinimumBoundingCircle(geometry)
  RETURNS geometry AS
 'SELECT ST_MinimumBoundingCircle($1, 48)'
  LANGUAGE 'sql' IMMUTABLE STRICT;
