@@ -25,6 +25,7 @@ die "Usage: perl postgis_proc_upgrade.pl <postgis.sql> [<schema>]\nCreates a new
 	if ( @ARGV < 1 || @ARGV > 2 );
 
 my $NEWVERSION = "UNDEF";
+my %newtypes = ( "box3d_extent", 1, "pgis_abs", 1 );
 
 print "BEGIN;\n";
 
@@ -51,13 +52,17 @@ while(<INPUT>)
 	}
 }
 
+print "-- $NEWVERSION\n";
+
 while(<DATA>)
 {
 	s/NEWVERSION/$NEWVERSION/g;
 	print;
 }
 
-close(INPUT); open( INPUT, $ARGV[0] ) || die "Couldn't open file: $ARGV[0]\n";
+close(INPUT); 
+
+open( INPUT, $ARGV[0] ) || die "Couldn't open file: $ARGV[0]\n";
 while(<INPUT>)
 {
 	my $checkit = 0;
@@ -75,6 +80,18 @@ while(<INPUT>)
 			last if m/^\s*LANGUAGE '/;
 		}
 	}
+
+	if (m/^create type (\S+)/i)
+	{
+		my $newtype = $1;
+		print $_ if $newtypes{$newtype};
+		while(<INPUT>)
+		{
+			print $_ if $newtypes{$newtype};
+			last if m/\)/;
+		}
+	}
+
 
 	# This code handles aggregates by dropping and recreating them.
 	# The DROP would fail on aggregates as they would not exist

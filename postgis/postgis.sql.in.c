@@ -4053,12 +4053,12 @@ CREATE AGGREGATE ST_MemUnion (
 -- Container type to hold the ArrayBuildState pointer as it passes through
 -- the geometry array accumulation aggregate.
 --
-CREATE FUNCTION pgis_abs_in(cstring)
+CREATEFUNCTION pgis_abs_in(cstring)
     RETURNS pgis_abs
     AS 'MODULE_PATHNAME'
     LANGUAGE 'C' IMMUTABLE STRICT;
 
-CREATE FUNCTION pgis_abs_out(pgis_abs)
+CREATEFUNCTION pgis_abs_out(pgis_abs)
     RETURNS cstring
     AS 'MODULE_PATHNAME'
     LANGUAGE 'C' IMMUTABLE STRICT;
@@ -4071,49 +4071,49 @@ CREATE TYPE pgis_abs (
 );
 
 -- Availability: 1.4.0
-CREATE FUNCTION pgis_geometry_accum_transfn(pgis_abs, geometry)
+CREATEFUNCTION pgis_geometry_accum_transfn(pgis_abs, geometry)
     RETURNS pgis_abs
     AS 'MODULE_PATHNAME' LANGUAGE 'C';
     
 -- Availability: 1.4.0
-CREATE FUNCTION pgis_geometry_accum_finalfn(pgis_abs)
+CREATEFUNCTION pgis_geometry_accum_finalfn(pgis_abs)
     RETURNS geometry[]
     AS 'MODULE_PATHNAME' LANGUAGE 'C';
 
 -- Availability: 1.4.0
-CREATE FUNCTION pgis_geometry_union_finalfn(pgis_abs)
+CREATEFUNCTION pgis_geometry_union_finalfn(pgis_abs)
     RETURNS geometry
     AS 'MODULE_PATHNAME' LANGUAGE 'C';
     
 -- Availability: 1.4.0
-CREATE FUNCTION pgis_geometry_collect_finalfn(pgis_abs)
+CREATEFUNCTION pgis_geometry_collect_finalfn(pgis_abs)
     RETURNS geometry
     AS 'MODULE_PATHNAME' LANGUAGE 'C';
     
 -- Availability: 1.4.0
-CREATE FUNCTION pgis_geometry_polygonize_finalfn(pgis_abs)
+CREATEFUNCTION pgis_geometry_polygonize_finalfn(pgis_abs)
     RETURNS geometry
     AS 'MODULE_PATHNAME' LANGUAGE 'C';
     
 -- Availability: 1.4.0
-CREATE FUNCTION pgis_geometry_makeline_finalfn(pgis_abs)
+CREATEFUNCTION pgis_geometry_makeline_finalfn(pgis_abs)
     RETURNS geometry
     AS 'MODULE_PATHNAME' LANGUAGE 'C';
     
 -- Deprecation in: 1.2.3
 CREATE AGGREGATE accum (
-    BASETYPE = geometry,
-    SFUNC = pgis_geometry_accum_transfn,
-    STYPE = pgis_abs,
-    FINALFUNC = pgis_geometry_accum_finalfn
+    sfunc = pgis_geometry_accum_transfn,
+    basetype = geometry,
+    stype = pgis_abs,
+    finalfunc = pgis_geometry_accum_finalfn
     );
 
 -- Availability: 1.2.2
 CREATE AGGREGATE ST_Accum (
-    BASETYPE = geometry,
-    SFUNC = pgis_geometry_accum_transfn,
-    STYPE = pgis_abs,
-    FINALFUNC = pgis_geometry_accum_finalfn
+    sfunc = pgis_geometry_accum_transfn,
+    basetype = geometry,
+    stype = pgis_abs,
+    finalfunct = pgis_geometry_accum_finalfn
     );
 
 -- TO BE REMOVED BEFORE RELEASE
