@@ -121,8 +121,6 @@ my %obsoleted_function = (
 	'geometry_inter(geometry, geometry)', 1,
 	'geometry_size', 1,
 	'ggeometry_consistent', 1,
-	'create_histogram2d(box3d, integer)', 1,
-	'estimate_histogram2d(histogram2d, box)', 1,
 	'xmin(box2d)', 1,
 	'ymin(box2d)', 1,
 	'xmax(box2d)', 1,
@@ -130,7 +128,24 @@ my %obsoleted_function = (
 	'optimistic_overlap', 1,
 	'unite_finalfunc', 1,
 	'numb_sub_objs(geometry)', 1,
-	'truly_inside(geometry, geometry)', 1
+	'truly_inside(geometry, geometry)', 1,
+	'jtsnoop', 1,
+	'_st_asgml(integer, geometry, integer)', 1,
+	'text(boolean)', 1,
+	'st_text(boolean)', 1,
+	'postgis_jts_version', 1,
+	'build_histogram2d', 1,
+	'create_histogram2d', 1,
+	'estimate_histogram2d', 1,
+	'explode_histogram2d', 1,
+	'histogram2d_in', 1,
+	'histogram2d_out', 1,
+	'st_histogram2d_in', 1,
+	'st_histogram2d_out', 1,
+	'st_build_histogram2d', 1,
+	'st_create_histogram2d', 1,
+	'st_estimate_histogram2d', 1,
+	'st_explode_histogram2d', 1
 );
 
 # This are old postgis operators which might
