@@ -1,6 +1,9 @@
 PostGIS 1.4.0
 2009/05/XX
 
+ - API Stability
+   - As of the 1.4 release series, the public API of PostGIS will not
+     change during minor releases.
  - New Features
    - ST_Union() uses high-speed cascaded union when compiled against
      GEOS 3.1+ (Paul Ramsey)
@@ -23,8 +26,7 @@ PostGIS 1.4.0
    - ST_AsGeoJSON() return JSON formatted geometry (Olivier Courtin)
  - Compatibility
    - The versions below are the *minimum* requirements for PostGIS 1.4
-   - PostgreSQL 8.2 and higher on Linux / *NIX
-   - PostgreSQL 8.2 and higher on Windows
+   - PostgreSQL 8.2 and higher on all platforms
    - GEOS 3.0 and higher only
    - PROJ4 4.5 and higher only
  - Enhancements
