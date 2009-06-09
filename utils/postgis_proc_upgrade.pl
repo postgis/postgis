@@ -98,7 +98,7 @@ while(<INPUT>)
 	# in old postgis installations, thus we avoid this until we
 	# find a better strategy.
 
-	if (m/^create aggregate (.*) *\(/i)
+	if (/^create aggregate\s+(\S+)\s*\(/i)
 	{
 		my $aggname = $1;
 		my $basetype = 'unknown';
@@ -106,7 +106,7 @@ while(<INPUT>)
 		while(<INPUT>)
 		{
 			$def .= $_;
-			$basetype = $1 if (m/basetype *= *([^,]*) *,/i);
+			$basetype = $1 if (m/basetype\s*=\s*([^,]*)\s*,/i);
 			last if m/\);/;
 		}
 		print "DROP AGGREGATE IF EXISTS $aggname($basetype);\n";
