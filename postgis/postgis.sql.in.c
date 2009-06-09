@@ -4073,32 +4073,38 @@ CREATE TYPE pgis_abs (
 -- Availability: 1.4.0
 CREATEFUNCTION pgis_geometry_accum_transfn(pgis_abs, geometry)
     RETURNS pgis_abs
-    AS 'MODULE_PATHNAME' LANGUAGE 'C';
+    AS 'MODULE_PATHNAME' 
+    LANGUAGE 'C';
     
 -- Availability: 1.4.0
 CREATEFUNCTION pgis_geometry_accum_finalfn(pgis_abs)
     RETURNS geometry[]
-    AS 'MODULE_PATHNAME' LANGUAGE 'C';
+    AS 'MODULE_PATHNAME' 
+    LANGUAGE 'C';
 
 -- Availability: 1.4.0
 CREATEFUNCTION pgis_geometry_union_finalfn(pgis_abs)
     RETURNS geometry
-    AS 'MODULE_PATHNAME' LANGUAGE 'C';
+    AS 'MODULE_PATHNAME' 
+    LANGUAGE 'C';
     
 -- Availability: 1.4.0
 CREATEFUNCTION pgis_geometry_collect_finalfn(pgis_abs)
     RETURNS geometry
-    AS 'MODULE_PATHNAME' LANGUAGE 'C';
+    AS 'MODULE_PATHNAME' 
+    LANGUAGE 'C';
     
 -- Availability: 1.4.0
 CREATEFUNCTION pgis_geometry_polygonize_finalfn(pgis_abs)
     RETURNS geometry
-    AS 'MODULE_PATHNAME' LANGUAGE 'C';
+    AS 'MODULE_PATHNAME' 
+    LANGUAGE 'C';
     
 -- Availability: 1.4.0
 CREATEFUNCTION pgis_geometry_makeline_finalfn(pgis_abs)
     RETURNS geometry
-    AS 'MODULE_PATHNAME' LANGUAGE 'C';
+    AS 'MODULE_PATHNAME' 
+    LANGUAGE 'C';
     
 -- Deprecation in: 1.2.3
 CREATE AGGREGATE accum (
@@ -4164,19 +4170,19 @@ CREATE AGGREGATE ST_Union_Old (
 	);
 	
 CREATE AGGREGATE ST_Union (
-    BASETYPE = geometry,
-    SFUNC = pgis_geometry_accum_transfn,
-    STYPE = pgis_abs,
-	FINALFUNC = pgis_geometry_union_finalfn
-	);
+    basetype = geometry,
+    sfunc = pgis_geometry_accum_transfn,
+    stype = pgis_abs,
+    finalfunc = pgis_geometry_union_finalfn
+    );
 
 -- Deprecation in 1.2.3
 CREATE AGGREGATE collect (
-    BASETYPE = geometry,
-    SFUNC = pgis_geometry_accum_transfn,
-    STYPE = pgis_abs,
-	FINALFUNC = pgis_geometry_collect_finalfn
-	);
+    basetype = geometry,
+    sfunc = pgis_geometry_accum_transfn,
+    stype = pgis_abs,
+    finalfunc = pgis_geometry_collect_finalfn
+);
 
 -- Availability: 1.2.2
 CREATE AGGREGATE ST_Collect (
@@ -4192,7 +4198,6 @@ CREATE AGGREGATE Polygonize (
     SFUNC = pgis_geometry_accum_transfn,
     STYPE = pgis_abs,
 	FINALFUNC = pgis_geometry_polygonize_finalfn
---	finalfunc = polygonize_garray
 	);
 
 -- Availability: 1.2.2
@@ -4201,7 +4206,6 @@ CREATE AGGREGATE ST_Polygonize (
     SFUNC = pgis_geometry_accum_transfn,
     STYPE = pgis_abs,
 	FINALFUNC = pgis_geometry_polygonize_finalfn
---	finalfunc = polygonize_garray
 	);
 
 -- Deprecation in 1.2.3
@@ -4210,7 +4214,6 @@ CREATE AGGREGATE makeline (
     SFUNC = pgis_geometry_accum_transfn,
     STYPE = pgis_abs,
 	FINALFUNC = pgis_geometry_makeline_finalfn
---	finalfunc = makeline_garray
 	);
 
 -- Availability: 1.2.2
@@ -4219,7 +4222,6 @@ CREATE AGGREGATE ST_MakeLine (
     SFUNC = pgis_geometry_accum_transfn,
     STYPE = pgis_abs,
 	FINALFUNC = pgis_geometry_makeline_finalfn
---	finalfunc = ST_makeline_garray
 	);
 
 
