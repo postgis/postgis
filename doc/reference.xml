@@ -9662,7 +9662,7 @@ WHERE ST_Crosses(roads.the_geom, highways.the_geom);</programlisting>
 	<refsection>
 	  <title>Examples</title>
   <!-- TODO: We really badly need diagrams here and more examples -->
-	  <programlisting>SELECT ST_CrossingDirection(foo.line1, foo.line2) As linecrossleft , ST_CrossingDirection(foo.line2, foo.line1) As linecrossright
+	  <programlisting>SELECT ST_LineCrossingDirection(foo.line1, foo.line2) As linecrossleft , ST_CrossingDirection(foo.line2, foo.line1) As linecrossright
 FROM (SELECT ST_GeomFromText('LINESTRING(744589 2923929,744521 2923861)') As line1,
 ST_GeomFromText('LINESTRING(744753 2924117,744563 2923902)') As line2) As foo;
 
@@ -9670,7 +9670,7 @@ ST_GeomFromText('LINESTRING(744753 2924117,744563 2923902)') As line2) As foo;
 ---------------+----------------
 			-1 |              1
 
-SELECT s1.gid, s2.gid, ST_CrossingDirection(s1.the_geom, s2.the_geom)
+SELECT s1.gid, s2.gid, ST_LineCrossingDirection(s1.the_geom, s2.the_geom)
 	FROM streets s1 CROSS JOIN streets s2 ON (s1.gid != s2.gid AND s1.the_geom &amp;&amp; s2.the_geom )
 WHERE ST_CrossingDirection(s1.the_geom, s2.the_geom) > 0;
 </programlisting>
