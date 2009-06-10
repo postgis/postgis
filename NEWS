@@ -4,6 +4,13 @@ PostGIS 1.4.0
  - API Stability
    - As of the 1.4 release series, the public API of PostGIS will not
 	 change during minor releases.
+
+ - Compatibility
+   - The versions below are the *minimum* requirements for PostGIS 1.4
+   - PostgreSQL 8.2 and higher on all platforms
+   - GEOS 3.0 and higher only
+   - PROJ4 4.5 and higher only
+
  - New Features
    - ST_Union() uses high-speed cascaded union when compiled against
 	 GEOS 3.1+ (Paul Ramsey)
@@ -24,11 +31,9 @@ PostGIS 1.4.0
    - Geometry parser returns explicit error message about location of
 	 syntax errors (Mark Cave-Ayland)
    - ST_AsGeoJSON() return JSON formatted geometry (Olivier Courtin)
- - Compatibility
-   - The versions below are the *minimum* requirements for PostGIS 1.4
-   - PostgreSQL 8.2 and higher on all platforms
-   - GEOS 3.0 and higher only
-   - PROJ4 4.5 and higher only
+   - Populate_Geometry_Columns() -- automatically add records to
+	 geometry_columns for TABLES and VIEWS (Kevin Neufeld)
+
  - Enhancements
    - Core geometry system moved into independent library, liblwgeom.
 	 (Mark Cave-Ayland)
@@ -54,6 +59,8 @@ PostGIS 1.4.0
    - Shp2pgsql and pgsql2shp re-worked to depend on the common
 	 parsing/unparsing code in liblwgeom (Mark Cave-Ayland)
    - Use of PDF DbLatex to build PDF docs and preliminary instructions for build  (Jean David Techer)
+   - Automated User documentation build (PDF and HTML) and Developer Doxygen Documentation (Kevin Neufeld)
+   - Automated build of document images using ImageMagick from WKT geometry text files (Kevin Neufeld)
    - More attractive CSS for HTML documentation (Dane Springmeyer)
  - Bug fixes
    - http://trac.osgeo.org/postgis/query?status=closed&milestone=postgis+1.4.0&order=priority
