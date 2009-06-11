@@ -68,7 +68,8 @@ typedef struct
 	MemoryContext context;
 	const GEOSPreparedGeometry* prepared_geom;
 	const GEOSGeometry* geom;
-} PrepGeomHashEntry;
+}
+PrepGeomHashEntry;
 
 /* Memory context hash table function prototypes */
 uint32 mcxt_ptr_hasha(const void *key, Size keysize);
@@ -89,20 +90,20 @@ static void PreparedCacheCheck(MemoryContext context);
 
 /* Memory context definition must match the current version of PostgreSQL */
 static MemoryContextMethods PreparedCacheContextMethods =
-        {
-                NULL,
-                NULL,
-                NULL,
-                PreparedCacheInit,
-                PreparedCacheReset,
-                PreparedCacheDelete,
-                NULL,
-                PreparedCacheIsEmpty,
-                PreparedCacheStats
+    {
+        NULL,
+        NULL,
+        NULL,
+        PreparedCacheInit,
+        PreparedCacheReset,
+        PreparedCacheDelete,
+        NULL,
+        PreparedCacheIsEmpty,
+        PreparedCacheStats
 #ifdef MEMORY_CONTEXT_CHECKING
-                , PreparedCacheCheck
+        , PreparedCacheCheck
 #endif
-        };
+    };
 
 static void
 PreparedCacheInit(MemoryContext context)
@@ -330,9 +331,9 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *pg_geom1, PG_LWGEOM *p
 		POSTGIS_DEBUGF(3, "GetPrepGeomCache: adding context to hash: %p", cache);
 	}
 	else if ( pg_geom1 &&
-	                cache->argnum != 2 &&
-	                cache->pg_geom1_size == pg_geom1_size &&
-	                memcmp(cache->pg_geom1, pg_geom1, pg_geom1_size) == 0)
+	          cache->argnum != 2 &&
+	          cache->pg_geom1_size == pg_geom1_size &&
+	          memcmp(cache->pg_geom1, pg_geom1, pg_geom1_size) == 0)
 	{
 		if ( !cache->prepared_geom )
 		{
@@ -363,9 +364,9 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *pg_geom1, PG_LWGEOM *p
 		copy_keys = 0;
 	}
 	else if ( pg_geom2 &&
-	                cache->argnum != 1 &&
-	                cache->pg_geom2_size == pg_geom2_size &&
-	                memcmp(cache->pg_geom2, pg_geom2, pg_geom2_size) == 0)
+	          cache->argnum != 1 &&
+	          cache->pg_geom2_size == pg_geom2_size &&
+	          memcmp(cache->pg_geom2, pg_geom2, pg_geom2_size) == 0)
 	{
 		if ( !cache->prepared_geom )
 		{
@@ -487,10 +488,10 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 	* Do the test IFF BOUNDING BOX AVAILABLE.
 	*/
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if (( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
-		                ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
+		        ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
 			PG_RETURN_BOOL(FALSE);
 	}
 
@@ -560,10 +561,10 @@ Datum coversPrepared(PG_FUNCTION_ARGS)
 	* Do the test IFF BOUNDING BOX AVAILABLE.
 	*/
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if (( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
-		                ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
+		        ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
 			PG_RETURN_BOOL(FALSE);
 	}
 
@@ -632,10 +633,10 @@ Datum intersectsPrepared(PG_FUNCTION_ARGS)
 	* Do the test IFF BOUNDING BOX AVAILABLE.
 	*/
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if (( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
-		                ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ))
+		        ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ))
 			PG_RETURN_BOOL(FALSE);
 	}
 

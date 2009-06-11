@@ -7,7 +7,7 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************/
 
 /* basic LWLINE functions */
@@ -29,15 +29,15 @@ lwline_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points)
 	LWLINE *result;
 	result = (LWLINE*) lwalloc(sizeof(LWLINE));
 
-        LWDEBUG(2, "lwline_construct called.");
+	LWDEBUG(2, "lwline_construct called.");
 
 	result->type = lwgeom_makeType_full(
-		TYPE_HASZ(points->dims),
-		TYPE_HASM(points->dims),
-		(SRID!=-1), LINETYPE,
-		0);
+	                   TYPE_HASZ(points->dims),
+	                   TYPE_HASM(points->dims),
+	                   (SRID!=-1), LINETYPE,
+	                   0);
 
-        LWDEBUGF(3, "lwline_construct type=%d", result->type);
+	LWDEBUGF(3, "lwline_construct type=%d", result->type);
 
 	result->SRID = SRID;
 	result->points = points;
@@ -150,7 +150,7 @@ lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *retsize)
 	size_t size;
 
 	LWDEBUGF(2, "lwline_serialize_buf(%p, %p, %p) called",
-		line, buf, retsize);
+	         line, buf, retsize);
 
 	if (line == NULL)
 		lwerror("lwline_serialize:: given null line");
@@ -163,8 +163,8 @@ lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *retsize)
 	hasSRID = (line->SRID != -1);
 
 	buf[0] = (uchar) lwgeom_makeType_full(
-		TYPE_HASZ(line->type), TYPE_HASM(line->type),
-		hasSRID, LINETYPE, line->bbox ? 1 : 0);
+	             TYPE_HASZ(line->type), TYPE_HASM(line->type),
+	             hasSRID, LINETYPE, line->bbox ? 1 : 0);
 	loc = buf+1;
 
 	LWDEBUGF(3, "lwline_serialize_buf added type (%d)", line->type);
@@ -189,7 +189,7 @@ lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *retsize)
 	loc += sizeof(uint32);
 
 	LWDEBUGF(3, "lwline_serialize_buf added npoints (%d)",
-		line->points->npoints);
+	         line->points->npoints);
 
 	/*copy in points */
 	size = line->points->npoints*ptsize;
@@ -197,19 +197,19 @@ lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *retsize)
 	loc += size;
 
 	LWDEBUGF(3, "lwline_serialize_buf copied serialized_pointlist (%d bytes)",
-		ptsize * line->points->npoints);
+	         ptsize * line->points->npoints);
 
 	if (retsize) *retsize = loc-buf;
 
 	/*printBYTES((uchar *)result, loc-buf); */
 
 	LWDEBUGF(3, "lwline_serialize_buf returning (loc: %p, size: %d)",
-		loc, loc-buf);
+	         loc, loc-buf);
 }
 
 /*
- * Find bounding box (standard one) 
- * zmin=zmax=NO_Z_VALUE if 2d 
+ * Find bounding box (standard one)
+ * zmin=zmax=NO_Z_VALUE if 2d
  */
 BOX3D *
 lwline_compute_box3d(LWLINE *line)
@@ -243,7 +243,7 @@ lwline_serialize_size(LWLINE *line)
 
 void lwline_free (LWLINE  *line)
 {
-	if ( line->bbox ) 
+	if ( line->bbox )
 		lwfree(line->bbox);
 
 	ptarray_free(line->points);
@@ -310,7 +310,7 @@ LWLINE *
 lwline_clone(const LWLINE *g)
 {
 	LWLINE *ret = lwalloc(sizeof(LWLINE));
-       
+
 	LWDEBUGF(2, "lwline_clone called with %p", g);
 
 	memcpy(ret, g, sizeof(LWLINE));
@@ -364,16 +364,16 @@ lwline_add(const LWLINE *to, uint32 where, const LWGEOM *what)
 	else newtype = COLLECTIONTYPE;
 
 	col = lwcollection_construct(newtype,
-		to->SRID, NULL,
-		2, geoms);
-	
+	                             to->SRID, NULL,
+	                             2, geoms);
+
 	return (LWGEOM *)col;
 }
 
 void
 lwline_release(LWLINE *lwline)
 {
-  lwgeom_release(lwline_as_lwgeom(lwline));
+	lwgeom_release(lwline_as_lwgeom(lwline));
 }
 
 void
@@ -386,7 +386,7 @@ LWLINE *
 lwline_segmentize2d(LWLINE *line, double dist)
 {
 	return lwline_construct(line->SRID, NULL,
-		ptarray_segmentize2d(line->points, dist));
+	                        ptarray_segmentize2d(line->points, dist));
 }
 
 /* check coordinate equality  */
@@ -417,7 +417,7 @@ lwline_from_lwpointarray(int SRID, unsigned int npoints, LWPOINT **points)
 		if ( TYPE_GETTYPE(points[i]->type) != POINTTYPE )
 		{
 			lwerror("lwline_from_lwpointarray: invalid input type: %s",
-				lwgeom_typename(TYPE_GETTYPE(points[i]->type)));
+			        lwgeom_typename(TYPE_GETTYPE(points[i]->type)));
 			return NULL;
 		}
 		if ( TYPE_HASZ(points[i]->type) ) zmflag |= 2;
@@ -474,13 +474,13 @@ lwline_from_lwmpoint(int SRID, LWMPOINT *mpoint)
 	for (i=0; i<mpoint->ngeoms; i++)
 	{
 		memcpy(ptr,
-			getPoint_internal(mpoint->geoms[i]->point, 0),
-			ptsize);
+		       getPoint_internal(mpoint->geoms[i]->point, 0),
+		       ptsize);
 		ptr+=ptsize;
 	}
 
 	pa = pointArray_construct(newpoints, zmflag&2, zmflag&1,
-		mpoint->ngeoms);
+	                          mpoint->ngeoms);
 
 	LWDEBUGF(3, "lwline_from_lwmpoint: constructed pointarray for %d points, %d zmflag", mpoint->ngeoms, zmflag);
 
@@ -494,8 +494,8 @@ lwline_addpoint(LWLINE *line, LWPOINT *point, unsigned int where)
 	LWLINE *ret;
 
 	newpa = ptarray_addPoint(line->points,
-		getPoint_internal(point->point, 0),
-		TYPE_NDIMS(point->type), where);
+	                         getPoint_internal(point->point, 0),
+	                         TYPE_NDIMS(point->type), where);
 
 	ret = lwline_construct(line->SRID, NULL, newpa);
 

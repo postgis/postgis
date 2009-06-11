@@ -15,28 +15,32 @@
 #ifndef _LIBLWGEOM_H
 typedef unsigned char uchar;
 
-typedef struct serialized_lwgeom {
-    uchar *lwgeom;
-    int size;
-} SERIALIZED_LWGEOM;
+typedef struct serialized_lwgeom
+{
+	uchar *lwgeom;
+	int size;
+}
+SERIALIZED_LWGEOM;
 
 typedef struct struct_lwgeom_parser_result
 {
 	const char *wkinput;
-        SERIALIZED_LWGEOM *serialized_lwgeom;
-        int size;
-        const char *message;
-        int errlocation;
-} LWGEOM_PARSER_RESULT;
+	SERIALIZED_LWGEOM *serialized_lwgeom;
+	int size;
+	const char *message;
+	int errlocation;
+}
+LWGEOM_PARSER_RESULT;
 
 typedef struct struct_lwgeom_unparser_result
 {
 	uchar *serialized_lwgeom;
-        char *wkoutput;
-        int size;
+	char *wkoutput;
+	int size;
 	const char *message;
-        int errlocation;
-} LWGEOM_UNPARSER_RESULT;
+	int errlocation;
+}
+LWGEOM_UNPARSER_RESULT;
 #endif
 typedef void* (*allocator)(size_t size);
 typedef void  (*freeor)(void* mem);

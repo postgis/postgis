@@ -7,7 +7,7 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************/
 
 #include <stdio.h>
@@ -19,12 +19,13 @@
 
 
 /*
-** Set up liblwgeom to run in stand-alone mode using the 
+** Set up liblwgeom to run in stand-alone mode using the
 ** usual system memory handling functions.
 */
-void lwgeom_init_allocators(void) {
-        /* liblwgeom callback - install default handlers */
-        lwgeom_install_default_allocators();
+void lwgeom_init_allocators(void)
+{
+	/* liblwgeom callback - install default handlers */
+	lwgeom_install_default_allocators();
 }
 
 /*

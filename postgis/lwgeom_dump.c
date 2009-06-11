@@ -7,7 +7,7 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************/
 #include "postgres.h"
 #include "fmgr.h"
@@ -33,18 +33,22 @@
 Datum LWGEOM_dump(PG_FUNCTION_ARGS);
 Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS);
 
-typedef struct GEOMDUMPNODE_T {
+typedef struct GEOMDUMPNODE_T
+{
 	int idx;
 	LWCOLLECTION *geom;
-} GEOMDUMPNODE;
+}
+GEOMDUMPNODE;
 
 #define MAXDEPTH 32
-typedef struct GEOMDUMPSTATE {
+typedef struct GEOMDUMPSTATE
+{
 	int stacklen;
 	GEOMDUMPNODE *stack[MAXDEPTH];
 	LWGEOM *root;
 	LWGEOM *geom;
-} GEOMDUMPSTATE;
+}
+GEOMDUMPSTATE;
 
 #define PUSH(x,y) ((x)->stack[(x)->stacklen++]=(y))
 #define LAST(x) ((x)->stack[(x)->stacklen-1])
@@ -145,13 +149,15 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 			if ( ! lwgeom_contains_subgeoms(TYPE_GETTYPE(lwgeom->type)) )
 			{
 				/* write address of current geom */
-				ptr=address; *ptr++='{';
+				ptr=address;
+				*ptr++='{';
 				for (i=0; i<state->stacklen; i++)
 				{
 					if ( i ) ptr += sprintf(ptr, ",");
 					ptr += sprintf(ptr, "%d", state->stack[i]->idx+1);
 				}
-				*ptr++='}'; *ptr='\0';
+				*ptr++='}';
+				*ptr='\0';
 
 				break;
 			}
@@ -188,7 +194,8 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 	SRF_RETURN_NEXT(funcctx, result);
 }
 
-struct POLYDUMPSTATE {
+struct POLYDUMPSTATE
+{
 	int ringnum;
 	LWPOLY *poly;
 };
@@ -270,10 +277,10 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 
 		/* Construct another polygon with shell only */
 		ringgeom = (LWGEOM*)lwpoly_construct(
-			poly->SRID,
-			NULL, /* TODO: could use input bounding box here */
-			1, /* one ring */
-			&ring);
+		               poly->SRID,
+		               NULL, /* TODO: could use input bounding box here */
+		               1, /* one ring */
+		               &ring);
 
 		/* Write path as ``{ <ringnum> }'' */
 		sprintf(address, "{%d}", state->ringnum);

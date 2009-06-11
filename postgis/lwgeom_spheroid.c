@@ -76,29 +76,29 @@ Datum ellipsoid_in(PG_FUNCTION_ARGS)
 
 	if (strstr(str,"SPHEROID") !=  str )
 	{
-		 elog(ERROR,"SPHEROID parser - doesnt start with SPHEROID");
-		 pfree(sphere);
-		 PG_RETURN_NULL();
+		elog(ERROR,"SPHEROID parser - doesnt start with SPHEROID");
+		pfree(sphere);
+		PG_RETURN_NULL();
 	}
 
 	nitems = sscanf(str,"SPHEROID[\"%19[^\"]\",%lf,%lf]",
-		sphere->name, &sphere->a, &rf);
+	                sphere->name, &sphere->a, &rf);
 
 	if ( nitems==0)
 		nitems = sscanf(str,"SPHEROID(\"%19[^\"]\",%lf,%lf)",
-			sphere->name, &sphere->a, &rf);
+		                sphere->name, &sphere->a, &rf);
 
 	if (nitems != 3)
 	{
-		 elog(ERROR,"SPHEROID parser - couldnt parse the spheroid");
-		 pfree(sphere);
-		 PG_RETURN_NULL();
+		elog(ERROR,"SPHEROID parser - couldnt parse the spheroid");
+		pfree(sphere);
+		PG_RETURN_NULL();
 	}
 
 	sphere->f = 1.0/rf;
 	sphere->b = sphere->a - (1.0/rf)*sphere->a;
 	sphere->e_sq = ((sphere->a*sphere->a) - (sphere->b*sphere->b)) /
-		(sphere->a*sphere->a);
+	               (sphere->a*sphere->a);
 	sphere->e = sqrt(sphere->e_sq);
 
 	PG_RETURN_POINTER(sphere);
@@ -114,7 +114,7 @@ Datum ellipsoid_out(PG_FUNCTION_ARGS)
 	result = palloc(MAX_DIGS_DOUBLE + MAX_DIGS_DOUBLE + 20 + 9 + 2);
 
 	sprintf(result,"SPHEROID(\"%s\",%.15g,%.15g)",
-		sphere->name, sphere->a, 1.0/sphere->f);
+	        sphere->name, sphere->a, 1.0/sphere->f);
 
 	PG_RETURN_CSTRING(result);
 }
@@ -192,7 +192,7 @@ bigB(double u2)
 
 double
 distance_ellipse(double lat1, double long1,
-	double lat2, double long2, SPHEROID *sphere)
+                 double lat2, double long2, SPHEROID *sphere)
 {
 	double result = 0;
 #if POSTGIS_DEBUG_LEVEL > 0
@@ -210,16 +210,16 @@ distance_ellipse(double lat1, double long1,
 	result2 =  distance_sphere_method(lat1, long1,lat2,long2, sphere);
 
 	LWDEBUGF(4, "delta = %lf, skae says: %.15lf,2 circle says: %.15lf",
-		(result2-result),result,result2);
+	         (result2-result),result,result2);
 	LWDEBUGF(4, "2 circle says: %.15lf",result2);
 #endif
 
 	if (result != result)  /* NaN check
-	                        * (x==x for all x except NaN by IEEE definition)
-	                        */
+			                        * (x==x for all x except NaN by IEEE definition)
+			                        */
 	{
 		result =  distance_sphere_method(lat1, long1,
-			lat2,long2, sphere);
+		                                 lat2,long2, sphere);
 	}
 
 	return result;
@@ -231,7 +231,7 @@ distance_ellipse(double lat1, double long1,
  */
 double
 distance_ellipse_calculation(double lat1, double long1,
-	double lat2, double long2, SPHEROID *sphere)
+                             double lat2, double long2, SPHEROID *sphere)
 {
 	/*
 	 * Code is taken from David Skea
@@ -263,7 +263,8 @@ distance_ellipse_calculation(double lat1, double long1,
 	cosdl1 = cos(dl);
 	sindl1 = sin(dl);
 	iterations = 0;
-	do {
+	do
+	{
 		cosSigma = sinU1 * sinU2 + cosU1 * cosU2 * cosdl1;
 		sigma = acos(cosSigma);
 		azimuthEQ = asin((cosU1 * cosU2 * sindl1)/sin(sigma));
@@ -273,20 +274,20 @@ distance_ellipse_calculation(double lat1, double long1,
 		 * mathematical stability problem
 		 */
 		TEMP = cosSigma - (2.0 * sinU1 * sinU2)/
-			(cos(azimuthEQ)*cos(azimuthEQ));
-		if(TEMP > 1)
+		       (cos(azimuthEQ)*cos(azimuthEQ));
+		if (TEMP > 1)
 		{
-			   TEMP = 1;
+			TEMP = 1;
 		}
-		else if(TEMP < -1)
+		else if (TEMP < -1)
 		{
-			   TEMP = -1;
+			TEMP = -1;
 		}
 		tsm = acos(TEMP);
 
 
 		/* (old code?)
-tsm = acos(cosSigma - (2.0 * sinU1 * sinU2)/(cos(azimuthEQ)*cos(azimuthEQ)));
+		tsm = acos(cosSigma - (2.0 * sinU1 * sinU2)/(cos(azimuthEQ)*cos(azimuthEQ)));
 		*/
 
 		dl2 = deltaLongitude(azimuthEQ, sigma, tsm,sphere);
@@ -295,7 +296,8 @@ tsm = acos(cosSigma - (2.0 * sinU1 * sinU2)/(cos(azimuthEQ)*cos(azimuthEQ)));
 		cosdl1 = cos(dl1);
 		sindl1 = sin(dl1);
 		iterations++;
-	} while ( (iterations<999) && (fabs(dl3) > 1.0e-032));
+	}
+	while ( (iterations<999) && (fabs(dl3) > 1.0e-032));
 
 	/* compute expansions A and B */
 	u2 = mu2(azimuthEQ,sphere);
@@ -304,7 +306,7 @@ tsm = acos(cosSigma - (2.0 * sinU1 * sinU2)/(cos(azimuthEQ)*cos(azimuthEQ)));
 
 	/* compute length of geodesic */
 	dsigma = B * sin(sigma) * (cos(tsm) +
-		(B*cosSigma*(-1.0 + 2.0 * (cos(tsm)*cos(tsm))))/4.0);
+	                           (B*cosSigma*(-1.0 + 2.0 * (cos(tsm)*cos(tsm))))/4.0);
 	return sphere->b * (A * (sigma - dsigma));
 }
 
@@ -337,8 +339,8 @@ double lwgeom_pointarray_length_ellipse(POINTARRAY *pts, SPHEROID *sphere)
 		getPoint3dz_p(pts, i+1, &to);
 
 		distellips = distance_ellipse(
-			frm.y*M_PI/180.0, frm.x*M_PI/180.0,
-			to.y*M_PI/180.0, to.x*M_PI/180.0, sphere);
+		                 frm.y*M_PI/180.0, frm.x*M_PI/180.0,
+		                 to.y*M_PI/180.0, to.x*M_PI/180.0, sphere);
 		dist += sqrt(distellips*distellips + (frm.z-to.z)*(frm.z-to.z));
 	}
 	return dist;
@@ -364,8 +366,8 @@ lwgeom_pointarray_length2d_ellipse(POINTARRAY *pts, SPHEROID *sphere)
 		getPoint2d_p(pts, i, &frm);
 		getPoint2d_p(pts, i+1, &to);
 		dist += distance_ellipse(frm.y*M_PI/180.0,
-			frm.x*M_PI/180.0, to.y*M_PI/180.0,
-			to.x*M_PI/180.0, sphere);
+		                         frm.x*M_PI/180.0, to.y*M_PI/180.0,
+		                         to.x*M_PI/180.0, sphere);
 	}
 	return dist;
 }
@@ -374,7 +376,7 @@ lwgeom_pointarray_length2d_ellipse(POINTARRAY *pts, SPHEROID *sphere)
  * Find the "length of a geometry"
  * length2d_spheroid(point, sphere) = 0
  * length2d_spheroid(line, sphere) = length of line
- * length2d_spheroid(polygon, sphere) = 0 
+ * length2d_spheroid(polygon, sphere) = 0
  *	-- could make sense to return sum(ring perimeter)
  * uses ellipsoidal math to find the distance
  * x's are longitude, and y's are latitude - both in decimal degrees
@@ -396,10 +398,10 @@ Datum LWGEOM_length2d_ellipsoid_linestring(PG_FUNCTION_ARGS)
 		line = lwgeom_getline_inspected(inspected, i);
 		if ( line == NULL ) continue;
 		dist += lwgeom_pointarray_length2d_ellipse(line->points,
-			sphere);
+		        sphere);
 
-	 	POSTGIS_DEBUGF(3, " LWGEOM_length2d_ellipsoid_linestring found a line (%f)",
-			dist);
+		POSTGIS_DEBUGF(3, " LWGEOM_length2d_ellipsoid_linestring found a line (%f)",
+		               dist);
 	}
 
 	lwinspected_release(inspected);
@@ -412,7 +414,7 @@ Datum LWGEOM_length2d_ellipsoid_linestring(PG_FUNCTION_ARGS)
  *
  * length2d_spheroid(point, sphere) = 0
  * length2d_spheroid(line, sphere) = length of line
- * length2d_spheroid(polygon, sphere) = 0 
+ * length2d_spheroid(polygon, sphere) = 0
  *	-- could make sense to return sum(ring perimeter)
  * uses ellipsoidal math to find the distance
  * x's are longitude, and y's are latitude - both in decimal degrees
@@ -434,10 +436,10 @@ Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS)
 		line = lwgeom_getline_inspected(inspected, i);
 		if ( line == NULL ) continue;
 		dist += lwgeom_pointarray_length_ellipse(line->points,
-			sphere);
+		        sphere);
 
 		POSTGIS_DEBUGF(3, " LWGEOM_length_ellipsoid_linestring found a line (%f)",
-			dist);
+		               dist);
 	}
 
 	lwinspected_release(inspected);
@@ -510,32 +512,32 @@ Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS)
 
 double distance_sphere_method(double lat1, double long1,double lat2,double long2, SPHEROID *sphere)
 {
-			double R,S,X,Y,deltaX,deltaY;
+	double R,S,X,Y,deltaX,deltaY;
 
-			double 	distance 	= 0.0;
-			double 	sin_lat 	= sin(lat1);
-			double 	sin2_lat 	= sin_lat * sin_lat;
+	double 	distance 	= 0.0;
+	double 	sin_lat 	= sin(lat1);
+	double 	sin2_lat 	= sin_lat * sin_lat;
 
-			double  Geocent_a 	= sphere->a;
-			double  Geocent_e2 	= sphere->e_sq;
+	double  Geocent_a 	= sphere->a;
+	double  Geocent_e2 	= sphere->e_sq;
 
-			R  	= Geocent_a / (sqrt(1.0e0 - Geocent_e2 * sin2_lat));
-			/* 90 - lat1, but in radians */
-			S 	= R * sin(M_PI/2.0-lat1) ;
+	R  	= Geocent_a / (sqrt(1.0e0 - Geocent_e2 * sin2_lat));
+	/* 90 - lat1, but in radians */
+	S 	= R * sin(M_PI/2.0-lat1) ;
 
-			deltaX = long2 - long1;  /* in rads */
-			deltaY = lat2 - lat1;    /* in rads */
+	deltaX = long2 - long1;  /* in rads */
+	deltaY = lat2 - lat1;    /* in rads */
 
-			/* think: a % of 2*pi*S */
-			X = deltaX/(2.0*M_PI) * 2 * M_PI * S; 
-			Y = deltaY/(2.0*M_PI) * 2 * M_PI * R;
+	/* think: a % of 2*pi*S */
+	X = deltaX/(2.0*M_PI) * 2 * M_PI * S;
+	Y = deltaY/(2.0*M_PI) * 2 * M_PI * R;
 
-			distance = sqrt((X * X + Y * Y));
+	distance = sqrt((X * X + Y * Y));
 
-			return distance;
+	return distance;
 }
 
-/* 
+/*
  * distance (geometry,geometry, sphere)
  * -geometrys MUST be points
  */
@@ -571,13 +573,13 @@ Datum LWGEOM_distance_ellipsoid_point(PG_FUNCTION_ARGS)
 	getPoint2d_p(point1->point, 0, &p1);
 	getPoint2d_p(point2->point, 0, &p2);
 	PG_RETURN_FLOAT8(distance_ellipse(p1.y*M_PI/180.0,
-		p1.x*M_PI/180.0, p2.y*M_PI/180.0,
-		p2.x*M_PI/180.0, sphere));
+	                                  p1.x*M_PI/180.0, p2.y*M_PI/180.0,
+	                                  p2.x*M_PI/180.0, sphere));
 
 }
 
 /*
- * This algorithm was taken from the geo_distance function of the 
+ * This algorithm was taken from the geo_distance function of the
  * earthdistance package contributed by Bruno Wolff III.
  * It was altered to accept GEOMETRY objects and return results in
  * meters.
@@ -585,17 +587,17 @@ Datum LWGEOM_distance_ellipsoid_point(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_distance_sphere);
 Datum LWGEOM_distance_sphere(PG_FUNCTION_ARGS)
 {
-        const double EARTH_RADIUS = 6370986.884258304;
+	const double EARTH_RADIUS = 6370986.884258304;
 	/*const double TWO_PI = 2.0 * M_PI; */
 	PG_LWGEOM *geom1 = (PG_LWGEOM *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_LWGEOM *geom2 = (PG_LWGEOM *) PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-        LWPOINT *lwpt1, *lwpt2;
+	LWPOINT *lwpt1, *lwpt2;
 	POINT2D *pt1, *pt2;
 
 	double long1, lat1, long2, lat2;
 	double longdiff;
 	double sino;
-        double result;
+	double result;
 
 	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
@@ -603,56 +605,56 @@ Datum LWGEOM_distance_sphere(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-        lwpt1 = lwpoint_deserialize(SERIALIZED_FORM(geom1));
+	lwpt1 = lwpoint_deserialize(SERIALIZED_FORM(geom1));
 	if (lwpt1 == NULL)
 	{
 		elog(ERROR, "LWGEOM_distance_sphere first arg isnt a point\n");
 		PG_RETURN_NULL();
 	}
 
-        lwpt2 = lwpoint_deserialize(SERIALIZED_FORM(geom2));
+	lwpt2 = lwpoint_deserialize(SERIALIZED_FORM(geom2));
 	if (lwpt2 == NULL)
 	{
 		elog(ERROR, "optimistic_overlap: second arg isnt a point\n");
 		PG_RETURN_NULL();
 	}
 
-        pt1 = palloc(sizeof(POINT2D));
-        pt2 = palloc(sizeof(POINT2D));
+	pt1 = palloc(sizeof(POINT2D));
+	pt2 = palloc(sizeof(POINT2D));
 
-        lwpoint_getPoint2d_p(lwpt1, pt1);
-        lwpoint_getPoint2d_p(lwpt2, pt2);
+	lwpoint_getPoint2d_p(lwpt1, pt1);
+	lwpoint_getPoint2d_p(lwpt2, pt2);
 
 	/*
 	 * Start geo_distance code.  Longitude is degrees west of
 	 * Greenwich, and thus is negative from what normal things
 	 * will supply the function.
 	 */
-        long1 = -2 * (pt1->x / 360.0) * M_PI;
-        lat1 = 2 * (pt1->y / 360.0) * M_PI;
+	long1 = -2 * (pt1->x / 360.0) * M_PI;
+	lat1 = 2 * (pt1->y / 360.0) * M_PI;
 
 	long2 = -2 * (pt2->x / 360.0) * M_PI;
 	lat2 = 2 * (pt2->y / 360.0) * M_PI;
 
-        /* compute difference in longitudes - want < 180 degrees */
-        longdiff = fabs(long1 - long2);
-        if (longdiff > M_PI)
-        {
-                longdiff = (2 * M_PI) - longdiff;
-        }
+	/* compute difference in longitudes - want < 180 degrees */
+	longdiff = fabs(long1 - long2);
+	if (longdiff > M_PI)
+	{
+		longdiff = (2 * M_PI) - longdiff;
+	}
 
-        sino = sqrt(sin(fabs(lat1 - lat2) / 2.) * sin(fabs(lat1 - lat2) / 2.) +
-                cos(lat1) * cos(lat2) * sin(longdiff / 2.) * sin(longdiff / 2.));
-        if (sino > 1.)
-        {
-                sino = 1.;
-        }
+	sino = sqrt(sin(fabs(lat1 - lat2) / 2.) * sin(fabs(lat1 - lat2) / 2.) +
+	            cos(lat1) * cos(lat2) * sin(longdiff / 2.) * sin(longdiff / 2.));
+	if (sino > 1.)
+	{
+		sino = 1.;
+	}
 
-        result = 2. * EARTH_RADIUS * asin(sino);
-        
-        pfree(pt1);
-        pfree(pt2);
+	result = 2. * EARTH_RADIUS * asin(sino);
 
-        PG_RETURN_FLOAT8(result);
+	pfree(pt1);
+	pfree(pt2);
+
+	PG_RETURN_FLOAT8(result);
 }
 

@@ -33,23 +33,23 @@ pg_parser_errhint(LWGEOM_PARSER_RESULT *lwg_parser_result)
 
 	/* Return a copy of the input string start truncated at the error location */
 	hintbuffer = lwmessage_truncate((char *)lwg_parser_result->wkinput, 0, lwg_parser_result->errlocation - 1, 40, 0);
-	
+
 	/* Only display the parser position if the location is > 0; this provides a nicer output when the first token
-	   within the input stream cannot be matched */	
+	   within the input stream cannot be matched */
 	if (lwg_parser_result->errlocation > 0)
 	{
 		ereport(ERROR,
-			(errmsg("%s", lwg_parser_result->message),
-			errhint("\"%s\" <-- parse error at position %d within geometry", hintbuffer, lwg_parser_result->errlocation))
-		);	
+		        (errmsg("%s", lwg_parser_result->message),
+		         errhint("\"%s\" <-- parse error at position %d within geometry", hintbuffer, lwg_parser_result->errlocation))
+		       );
 	}
 	else
 	{
 		ereport(ERROR,
-			(errmsg("%s", lwg_parser_result->message),
-			errhint("You must specify a valid OGC WKT geometry type such as POINT, LINESTRING or POLYGON"))
-		);	
-	}	
+		        (errmsg("%s", lwg_parser_result->message),
+		         errhint("You must specify a valid OGC WKT geometry type such as POINT, LINESTRING or POLYGON"))
+		       );
+	}
 }
 
 void
@@ -162,7 +162,7 @@ pglwgeom_serialize(LWGEOM *in)
 	SET_VARSIZE(result, size);
 	lwgeom_serialize_buf(in, SERIALIZED_FORM(result), &size);
 
-        POSTGIS_DEBUGF(3, "pglwgeom_serialize: serialized size: %d, computed size: %d", (int)size, VARSIZE(result)-VARHDRSZ);
+	POSTGIS_DEBUGF(3, "pglwgeom_serialize: serialized size: %d, computed size: %d", (int)size, VARSIZE(result)-VARHDRSZ);
 
 #if PARANOIA_LEVEL > 0
 	if ( size != VARSIZE(result)-VARHDRSZ )
@@ -187,27 +187,30 @@ getGeometryOID(void)
 	static Oid OID = InvalidOid;
 	int SPIcode;
 	bool isnull;
-	char *query = "select OID from pg_type where typname = 'geometry'";	
+	char *query = "select OID from pg_type where typname = 'geometry'";
 
 	if ( OID != InvalidOid ) return OID;
-	
+
 	SPIcode = SPI_connect();
-	if (SPIcode  != SPI_OK_CONNECT) {
+	if (SPIcode  != SPI_OK_CONNECT)
+	{
 		lwerror("getGeometryOID(): couldn't connection to SPI");
 	}
 
-	SPIcode = SPI_exec(query, 0); 
-	if (SPIcode != SPI_OK_SELECT ) {
+	SPIcode = SPI_exec(query, 0);
+	if (SPIcode != SPI_OK_SELECT )
+	{
 		lwerror("getGeometryOID(): error querying geometry oid");
 	}
-	if (SPI_processed != 1) {
+	if (SPI_processed != 1)
+	{
 		lwerror("getGeometryOID(): error querying geometry oid");
 	}
 
 	OID = (Oid)SPI_getbinval(SPI_tuptable->vals[0],
-		SPI_tuptable->tupdesc, 1, &isnull);
+	                         SPI_tuptable->tupdesc, 1, &isnull);
 
-	if (isnull) 
+	if (isnull)
 		lwerror("getGeometryOID(): couldn't find geometry oid");
 
 	return OID;
@@ -223,7 +226,7 @@ PG_LWGEOM_construct(uchar *ser, int SRID, int wantbbox)
 	PG_LWGEOM *result;
 
 	/* COMPUTE_BBOX FOR_COMPLEX_GEOMS */
-	if ( is_worth_caching_serialized_bbox(ser) ) 
+	if ( is_worth_caching_serialized_bbox(ser) )
 	{
 		/* if ( ! wantbbox ) elog(NOTICE, "PG_LWGEOM_construct forced wantbbox=1 due to rule FOR_COMPLEX_GEOMS"); */
 		wantbbox=1;
@@ -261,8 +264,8 @@ PG_LWGEOM_construct(uchar *ser, int SRID, int wantbbox)
 	SET_VARSIZE(result, size);
 
 	result->type = lwgeom_makeType_full(
-		TYPE_HASZ(ser[0]), TYPE_HASM(ser[0]),
-		wantsrid, lwgeom_getType(ser[0]), wantbbox);
+	                   TYPE_HASZ(ser[0]), TYPE_HASM(ser[0]),
+	                   wantsrid, lwgeom_getType(ser[0]), wantbbox);
 	optr = result->data;
 	if ( wantbbox )
 	{
@@ -356,19 +359,22 @@ pglwgeom_setSRID(PG_LWGEOM *lwgeom, int32 newSRID)
 
 	if (lwgeom_hasSRID(type))
 	{
-		if ( newSRID != -1 ) {
+		if ( newSRID != -1 )
+		{
 			/* we create a new one and copy the SRID in */
 			result = lwalloc(len);
 			memcpy(result, lwgeom, len);
 			memcpy(result->data+bbox_offset, &newSRID,4);
-		} else {
+		}
+		else
+		{
 			/* we create a new one dropping the SRID */
 			result = lwalloc(len-4);
 			result->size = len-4;
 			result->type = lwgeom_makeType_full(
-				TYPE_HASZ(type), TYPE_HASM(type),
-				0, lwgeom_getType(type),
-				lwgeom_hasBBOX(type));
+			                   TYPE_HASZ(type), TYPE_HASM(type),
+			                   0, lwgeom_getType(type),
+			                   lwgeom_hasBBOX(type));
 			loc_new = result->data;
 			loc_old = lwgeom->data;
 			len_left = len-4-1;
@@ -390,21 +396,23 @@ pglwgeom_setSRID(PG_LWGEOM *lwgeom, int32 newSRID)
 		}
 
 	}
-	else 
+	else
 	{
 		/* just copy input, already w/out a SRID */
-		if ( newSRID == -1 ) {
+		if ( newSRID == -1 )
+		{
 			result = lwalloc(len);
 			memcpy(result, lwgeom, len);
 		}
 		/* need to add one */
-		else {
+		else
+		{
 			len_new = len + 4; /* +4 for SRID */
 			result = lwalloc(len_new);
 			memcpy(result, &len_new, 4); /* size copy in */
 			result->type = lwgeom_makeType_full(
-				TYPE_HASZ(type), TYPE_HASM(type),
-				1, lwgeom_getType(type),lwgeom_hasBBOX(type));
+			                   TYPE_HASZ(type), TYPE_HASM(type),
+			                   1, lwgeom_getType(type),lwgeom_hasBBOX(type));
 
 			loc_new = result->data;
 			loc_old = lwgeom->data;

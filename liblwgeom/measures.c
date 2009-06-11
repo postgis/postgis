@@ -7,7 +7,7 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************/
 
 #include <math.h>
@@ -39,8 +39,8 @@ int pt_in_ring_2d(POINT2D *p, POINTARRAY *ring)
 	if ( memcmp(&first, &last, sizeof(POINT2D)) )
 	{
 		lwerror("pt_in_ring_2d: V[n] != V[0] (%g %g != %g %g)",
-			first.x, first.y, last.x, last.y);
-			
+		        first.x, first.y, last.x, last.y);
+
 	}
 #endif
 
@@ -49,20 +49,20 @@ int pt_in_ring_2d(POINT2D *p, POINTARRAY *ring)
 
 	/* loop through all edges of the polygon */
 	getPoint2d_p(ring, 0, &v1);
-    	for (i=0; i<ring->npoints-1; i++)
-	{   
+	for (i=0; i<ring->npoints-1; i++)
+	{
 		double vt;
 		getPoint2d_p(ring, i+1, &v2);
 
 		/* edge from vertex i to vertex i+1 */
-       		if
+		if
 		(
-			/* an upward crossing */
-			((v1.y <= p->y) && (v2.y > p->y))
-			/* a downward crossing */
-       		 	|| ((v1.y > p->y) && (v2.y <= p->y))
+		    /* an upward crossing */
+		    ((v1.y <= p->y) && (v2.y > p->y))
+		    /* a downward crossing */
+		    || ((v1.y > p->y) && (v2.y <= p->y))
 		)
-	 	{
+		{
 
 			vt = (double)(p->y - v1.y) / (v2.y - v1.y);
 
@@ -70,7 +70,7 @@ int pt_in_ring_2d(POINT2D *p, POINTARRAY *ring)
 			if (p->x < v1.x + vt * (v2.x - v1.x))
 			{
 				/* a valid crossing of y=p.y right of p.x */
-           	     		++cn;
+				++cn;
 			}
 		}
 		v1 = v2;
@@ -108,8 +108,8 @@ double distance2d_pt_seg(POINT2D *p, POINT2D *A, POINT2D *B)
 	 * Frequently Asked Questions method
 	 *
 	 *  (1)     	      AC dot AB
-         *         r = ---------
-         *               ||AB||^2
+	        *         r = ---------
+	        *               ||AB||^2
 	 *	r has the following meaning:
 	 *	r=0 P = A
 	 *	r=1 P = B
@@ -135,11 +135,11 @@ double distance2d_pt_seg(POINT2D *p, POINT2D *A, POINT2D *B)
 	 */
 
 	s = ( (A->y-p->y)*(B->x-A->x)- (A->x-p->x)*(B->y-A->y) ) /
-		( (B->x-A->x)*(B->x-A->x) +(B->y-A->y)*(B->y-A->y) );
+	    ( (B->x-A->x)*(B->x-A->x) +(B->y-A->y)*(B->y-A->y) );
 
 	return LW_ABS(s) * sqrt(
-		(B->x-A->x)*(B->x-A->x) + (B->y-A->y)*(B->y-A->y)
-		);
+	           (B->x-A->x)*(B->x-A->x) + (B->y-A->y)*(B->y-A->y)
+	       );
 }
 
 /* find the minimum 2d distance from AB to CD */
@@ -150,14 +150,14 @@ double distance2d_seg_seg(POINT2D *A, POINT2D *B, POINT2D *C, POINT2D *D)
 	double	r_top, r_bot,r;
 
 	LWDEBUGF(2, "distance2d_seg_seg [%g,%g]->[%g,%g] by [%g,%g]->[%g,%g]",
-		A->x,A->y,B->x,B->y, C->x,C->y, D->x, D->y);
+	         A->x,A->y,B->x,B->y, C->x,C->y, D->x, D->y);
 
 
 	/*A and B are the same point */
 	if (  ( A->x == B->x) && (A->y == B->y) )
 		return distance2d_pt_seg(A,C,D);
 
-		/*U and V are the same point */
+	/*U and V are the same point */
 
 	if (  ( C->x == D->x) && (C->y == D->y) )
 		return distance2d_pt_seg(D,A,B);
@@ -193,13 +193,13 @@ double distance2d_seg_seg(POINT2D *A, POINT2D *B, POINT2D *C, POINT2D *D)
 	if  ( (r_bot==0) || (s_bot == 0) )
 	{
 		return (
-			LW_MIN(distance2d_pt_seg(A,C,D),
-				LW_MIN(distance2d_pt_seg(B,C,D),
-					LW_MIN(distance2d_pt_seg(C,A,B),
-						distance2d_pt_seg(D,A,B))
-				)
-			)
-		);
+		           LW_MIN(distance2d_pt_seg(A,C,D),
+		                  LW_MIN(distance2d_pt_seg(B,C,D),
+		                         LW_MIN(distance2d_pt_seg(C,A,B),
+		                                distance2d_pt_seg(D,A,B))
+		                        )
+		                 )
+		       );
 	}
 	s = s_top/s_bot;
 	r=  r_top/r_bot;
@@ -208,13 +208,13 @@ double distance2d_seg_seg(POINT2D *A, POINT2D *B, POINT2D *C, POINT2D *D)
 	{
 		/*no intersection */
 		return (
-			LW_MIN(distance2d_pt_seg(A,C,D),
-				LW_MIN(distance2d_pt_seg(B,C,D),
-					LW_MIN(distance2d_pt_seg(C,A,B),
-						distance2d_pt_seg(D,A,B))
-				)
-			)
-		);
+		           LW_MIN(distance2d_pt_seg(A,C,D),
+		                  LW_MIN(distance2d_pt_seg(B,C,D),
+		                         LW_MIN(distance2d_pt_seg(C,A,B),
+		                                distance2d_pt_seg(D,A,B))
+		                        )
+		                 )
+		       );
 
 	}
 	else
@@ -260,7 +260,7 @@ double distance2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2)
 	POINT2D	start2, end2;
 
 	LWDEBUGF(2, "distance2d_ptarray_ptarray called (points: %d-%d)",
-			l1->npoints, l2->npoints);
+	         l1->npoints, l2->npoints);
 
 	getPoint2d_p(l1, 0, &start);
 	for (t=1; t<l1->npoints; t++) /*for each segment in L1 */
@@ -287,7 +287,7 @@ double distance2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2)
 			}
 
 			LWDEBUGF(3, " seg%d-seg%d dist: %f, mindist: %f",
-				t, u, dist, result);
+			         t, u, dist, result);
 
 			if (result <= 0) return 0; /*intersection */
 
@@ -342,7 +342,7 @@ double distance2d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly)
 		else mindist = dist;
 
 		LWDEBUGF(3, " distance from ring %d: %f, mindist: %f",
-			i, dist, mindist);
+		         i, dist, mindist);
 
 		if ( mindist <= 0 ) return 0.0; /* intersection */
 	}
@@ -433,7 +433,7 @@ double distance2d_point_poly(LWPOINT *point, LWPOLY *poly)
 	 * see if its inside.  If not, distance==0.
 	 * Otherwise, distance = pt to ring distance
 	 */
-	for (i=1; i<poly->nrings; i++) 
+	for (i=1; i<poly->nrings; i++)
 	{
 		/* Inside a hole. Distance = pt -> ring */
 		if ( pt_in_ring_2d(&p, poly->rings[i]) )
@@ -466,11 +466,11 @@ double distance2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2)
 
 	/* if poly1 inside poly2 return 0 */
 	getPoint2d_p(poly1->rings[0], 0, &pt);
-	if ( pt_in_poly_2d(&pt, poly2) ) return 0.0;  
+	if ( pt_in_poly_2d(&pt, poly2) ) return 0.0;
 
 	/* if poly2 inside poly1 return 0 */
 	getPoint2d_p(poly2->rings[0], 0, &pt);
-	if ( pt_in_poly_2d(&pt, poly1) ) return 0.0;  
+	if ( pt_in_poly_2d(&pt, poly1) ) return 0.0;
 
 	LWDEBUG(3, "  polys not inside each other");
 
@@ -485,7 +485,7 @@ double distance2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2)
 		for (j=0; j<poly2->nrings; j++)
 		{
 			double d = distance2d_ptarray_ptarray(poly1->rings[i],
-				poly2->rings[j]);
+			                                      poly2->rings[j]);
 			if ( d <= 0 ) return 0.0;
 
 			/* mindist is -1 when not yet set */
@@ -522,7 +522,7 @@ double lwgeom_pointarray_length2d(POINTARRAY *pts)
 		getPoint2d_p(pts, i, &frm);
 		getPoint2d_p(pts, i+1, &to);
 		dist += sqrt( ( (frm.x - to.x)*(frm.x - to.x) )  +
-				((frm.y - to.y)*(frm.y - to.y) ) );
+		              ((frm.y - to.y)*(frm.y - to.y) ) );
 	}
 	return dist;
 }
@@ -549,8 +549,8 @@ lwgeom_pointarray_length(POINTARRAY *pts)
 		getPoint3dz_p(pts, i, &frm);
 		getPoint3dz_p(pts, i+1, &to);
 		dist += sqrt( ( (frm.x - to.x)*(frm.x - to.x) )  +
-				((frm.y - to.y)*(frm.y - to.y) ) +
-				((frm.z - to.z)*(frm.z - to.z) ) );
+		              ((frm.y - to.y)*(frm.y - to.y) ) +
+		              ((frm.z - to.z)*(frm.z - to.z) ) );
 	}
 
 	return dist;
@@ -562,8 +562,8 @@ lwgeom_pointarray_length(POINTARRAY *pts)
 double
 lwgeom_curvepolygon_area(LWCURVEPOLY *curvepoly)
 {
-        LWPOLY *poly = (LWPOLY *)lwgeom_segmentize((LWGEOM *)curvepoly, 32);
-        return lwgeom_polygon_area(poly);
+	LWPOLY *poly = (LWPOLY *)lwgeom_segmentize((LWGEOM *)curvepoly, 32);
+	return lwgeom_polygon_area(poly);
 }
 
 /*
@@ -589,7 +589,7 @@ lwgeom_polygon_area(LWPOLY *poly)
 		LWDEBUGF(4, " rings %d has %d points", i, ring->npoints);
 
 		for (j=0; j<ring->npoints-1; j++)
-    		{
+		{
 			getPoint2d_p(ring, j, &p1);
 			getPoint2d_p(ring, j+1, &p2);
 			ringarea += ( p1.x * p2.y ) - ( p1.y * p2.x );
@@ -646,7 +646,7 @@ double lwgeom_polygon_perimeter2d(LWPOLY *poly)
 double
 lwgeom_mindistance2d_recursive(uchar *lw1, uchar *lw2)
 {
-  return lwgeom_mindistance2d_recursive_tolerance( lw1, lw2, 0.0 );
+	return lwgeom_mindistance2d_recursive_tolerance( lw1, lw2, 0.0 );
 }
 
 double
@@ -689,90 +689,90 @@ lwgeom_mindistance2d_recursive_tolerance(uchar *lw1, uchar *lw2, double toleranc
 				else mindist = LW_MIN(dist, mindist);
 				continue;
 			}
-			
+
 			if  ( t1 == POINTTYPE )
 			{
 				if  ( t2 == POINTTYPE )
 				{
 					dist = distance2d_point_point(
-						lwpoint_deserialize(g1),
-						lwpoint_deserialize(g2)
-					);
+					           lwpoint_deserialize(g1),
+					           lwpoint_deserialize(g2)
+					       );
 				}
 				else if  ( t2 == LINETYPE )
 				{
 					dist = distance2d_point_line(
-						lwpoint_deserialize(g1),
-						lwline_deserialize(g2)
-					);
+					           lwpoint_deserialize(g1),
+					           lwline_deserialize(g2)
+					       );
 				}
 				else if  ( t2 == POLYGONTYPE )
 				{
 					dist = distance2d_point_poly(
-						lwpoint_deserialize(g1),
-						lwpoly_deserialize(g2)
-					);
+					           lwpoint_deserialize(g1),
+					           lwpoly_deserialize(g2)
+					       );
 				}
 				else
 				{
 					lwerror("Unsupported geometry type: %s", lwgeom_typename(t2));
-				}	
+				}
 			}
 			else if ( t1 == LINETYPE )
 			{
 				if ( t2 == POINTTYPE )
 				{
 					dist = distance2d_point_line(
-						lwpoint_deserialize(g2),
-						lwline_deserialize(g1)
-					);
+					           lwpoint_deserialize(g2),
+					           lwline_deserialize(g1)
+					       );
 				}
 				else if ( t2 == LINETYPE )
 				{
 					dist = distance2d_line_line(
-						lwline_deserialize(g1),
-						lwline_deserialize(g2)
-					);
+					           lwline_deserialize(g1),
+					           lwline_deserialize(g2)
+					       );
 				}
 				else if ( t2 == POLYGONTYPE )
 				{
 					dist = distance2d_line_poly(
-						lwline_deserialize(g1),
-						lwpoly_deserialize(g2)
-					);
+					           lwline_deserialize(g1),
+					           lwpoly_deserialize(g2)
+					       );
 				}
 				else
 				{
 					lwerror("Unsupported geometry type: %s", lwgeom_typename(t2));
-				}	
+				}
 			}
 			else if ( t1 == POLYGONTYPE )
 			{
 				if ( t2 == POLYGONTYPE )
 				{
 					dist = distance2d_poly_poly(
-						lwpoly_deserialize(g2),
-						lwpoly_deserialize(g1)
-					);
+					           lwpoly_deserialize(g2),
+					           lwpoly_deserialize(g1)
+					       );
 				}
 				else if ( t2 == POINTTYPE )
 				{
 					dist = distance2d_point_poly(
-						lwpoint_deserialize(g2),
-						lwpoly_deserialize(g1)
-					);
+					           lwpoint_deserialize(g2),
+					           lwpoly_deserialize(g1)
+					       );
 				}
 				else if ( t2 == LINETYPE )
 				{
 					dist = distance2d_line_poly(
-						lwline_deserialize(g2),
-						lwpoly_deserialize(g1)
-					);
+					           lwline_deserialize(g2),
+					           lwpoly_deserialize(g1)
+					       );
 				}
 				else
 				{
 					lwerror("Unsupported geometry type: %s", lwgeom_typename(t2));
-				}	
+				}
 			}
 //			else if (lwgeom_contains_subgeoms(t1)) /* it's a multitype... recurse */
 //			{
@@ -787,7 +787,7 @@ lwgeom_mindistance2d_recursive_tolerance(uchar *lw1, uchar *lw2, double toleranc
 			else mindist = LW_MIN(dist, mindist);
 
 			LWDEBUGF(3, "dist %d-%d: %f - mindist: %f",
-				i, j, dist, mindist);
+			         i, j, dist, mindist);
 
 
 			if (mindist <= tolerance) return tolerance; /* can't be closer */
@@ -796,7 +796,7 @@ lwgeom_mindistance2d_recursive_tolerance(uchar *lw1, uchar *lw2, double toleranc
 
 	}
 
-	if (mindist<0) mindist = 0; 
+	if (mindist<0) mindist = 0;
 
 	return mindist;
 }
@@ -826,14 +826,14 @@ azimuth_pt_pt(POINT2D *A, POINT2D *B, double *d)
 	if ( A->x == B->x )
 	{
 		if ( A->y < B->y ) *d=0.0;
-		else if ( A->y > B->y ) *d=M_PI; 
+		else if ( A->y > B->y ) *d=M_PI;
 		else return 0;
 		return 1;
 	}
 
 	if ( A->y == B->y )
 	{
-		if ( A->x < B->x ) *d=M_PI/2; 
+		if ( A->x < B->x ) *d=M_PI/2;
 		else if ( A->x > B->x ) *d=M_PI+(M_PI/2);
 		else return 0;
 		return 1;
@@ -848,7 +848,7 @@ azimuth_pt_pt(POINT2D *A, POINT2D *B, double *d)
 		else /* ( A->y > B->y )  - equality case handled above */
 		{
 			*d=atan(fabs(A->y - B->y) / fabs(A->x - B->x) )
-				+ (M_PI/2);
+			   + (M_PI/2);
 		}
 	}
 
@@ -857,12 +857,12 @@ azimuth_pt_pt(POINT2D *A, POINT2D *B, double *d)
 		if ( A->y > B->y )
 		{
 			*d=atan(fabs(A->x - B->x) / fabs(A->y - B->y) )
-				+ M_PI;
+			   + M_PI;
 		}
 		else /* ( A->y < B->y )  - equality case handled above */
 		{
 			*d=atan(fabs(A->y - B->y) / fabs(A->x - B->x) )
-				+ (M_PI+(M_PI/2));
+			   + (M_PI+(M_PI/2));
 		}
 	}
 

@@ -59,7 +59,8 @@ typedef struct
 	const GEOSPreparedGeometry    *prepared_geom;
 	const GEOSGeometry                  *geom;
 	MemoryContext                 context;
-} PrepGeomCache;
+}
+PrepGeomCache;
 
 /*
 ** Get the current cache, given the input geometries.

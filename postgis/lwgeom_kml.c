@@ -9,14 +9,14 @@
  * the terms of hte GNU General Public Licence. See the COPYING file.
  *
  **********************************************************************/
- 
- /**
- * @file
- * KML output routines based on lwgeom_gml.c
- * Written by: Eduin Carrillo <yecarrillo@cas.gov.co>
- *             © 2006 Corporacion Autonoma Regional de Santander - CAS
- *
- **********************************************************************/
+
+/**
+* @file
+* KML output routines based on lwgeom_gml.c
+* Written by: Eduin Carrillo <yecarrillo@cas.gov.co>
+*             © 2006 Corporacion Autonoma Regional de Santander - CAS
+*
+**********************************************************************/
 
 
 #include "postgres.h"
@@ -47,7 +47,7 @@ static size_t pointArray_KMLsize(POINTARRAY *pa, int precision);
 
 
 /**
- * Encode feature in KML 
+ * Encode feature in KML
  */
 PG_FUNCTION_INFO_V1(LWGEOM_asKML);
 Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
@@ -73,15 +73,16 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	/* Retrieve precision if any (default is max) */
-	if (PG_NARGS() >2 && !PG_ARGISNULL(2)) {
+	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
+	{
 		precision = PG_GETARG_INT32(2);
 		if ( precision > MAX_DOUBLE_PRECISION )
 			precision = MAX_DOUBLE_PRECISION;
 		else if ( precision < 0 ) precision = 0;
 	}
-	
+
 	kml = geometry_to_kml2(SERIALIZED_FORM(geom), precision);
-	
+
 	PG_FREE_IF_COPY(geom, 1);
 
 	len = strlen(kml) + VARHDRSZ;
@@ -99,7 +100,7 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 
 
 /*
- * VERSION KML 2 
+ * VERSION KML 2
  */
 
 /* takes a GEOMETRY and returns a KML representation */
@@ -117,27 +118,27 @@ geometry_to_kml2(uchar *geom, int precision)
 	switch (type)
 	{
 
-		case POINTTYPE:
-			point = lwpoint_deserialize(geom);
-			return askml2_point(point, precision);
+	case POINTTYPE:
+		point = lwpoint_deserialize(geom);
+		return askml2_point(point, precision);
 
-		case LINETYPE:
-			line = lwline_deserialize(geom);
-			return askml2_line(line, precision);
+	case LINETYPE:
+		line = lwline_deserialize(geom);
+		return askml2_line(line, precision);
 
-		case POLYGONTYPE:
-			poly = lwpoly_deserialize(geom);
-			return askml2_poly(poly, precision);
+	case POLYGONTYPE:
+		poly = lwpoly_deserialize(geom);
+		return askml2_poly(poly, precision);
 
-		case MULTIPOINTTYPE:
-		case MULTILINETYPE:
-		case MULTIPOLYGONTYPE:
-			inspected = lwgeom_inspect(geom);
-			return askml2_inspected(inspected, precision);
-		
-		default:
-			lwerror("geometry_to_kml: '%s' geometry type not supported by Google Earth", lwgeom_typename(type));
-			return NULL;
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+		inspected = lwgeom_inspect(geom);
+		return askml2_inspected(inspected, precision);
+
+	default:
+		lwerror("geometry_to_kml: '%s' geometry type not supported by Google Earth", lwgeom_typename(type));
+		return NULL;
 	}
 }
 
@@ -168,7 +169,7 @@ askml2_point(LWPOINT *point, int precision)
 {
 	char *output;
 	int size;
-	
+
 	size = askml2_point_size(point, precision);
 	output = palloc(size);
 	askml2_point_buf(point, output, precision);
@@ -218,7 +219,7 @@ askml2_poly_size(LWPOLY *poly, int precision)
 	size = sizeof("<polygon></polygon>");
 	size += sizeof("<outerboundaryis><linearring><coordinates>/") * 2;
 	size += sizeof("<innerboundaryis><linearring><coordinates>/") * 2 *
-		poly->nrings;
+	        poly->nrings;
 
 	for (i=0; i<poly->nrings; i++)
 		size += pointArray_KMLsize(poly->rings[i], precision);
@@ -260,7 +261,7 @@ askml2_poly(LWPOLY *poly, int precision)
 }
 
 /*
- * Compute max size required for KML version of this 
+ * Compute max size required for KML version of this
  * inspected geometry. Will recurse when needed.
  * Don't call this with single-geoms inspected.
  */
@@ -401,7 +402,7 @@ pointArray_toKML2(POINTARRAY *pa, char *output, int precision)
 			ptr += sprintf(ptr, "%s,%s", x, y);
 		}
 	}
-	else 
+	else
 	{
 		for (i=0; i<pa->npoints; i++)
 		{
@@ -424,7 +425,7 @@ pointArray_toKML2(POINTARRAY *pa, char *output, int precision)
 
 
 /*
- * Common KML routines 
+ * Common KML routines
  */
 
 /*
@@ -435,7 +436,7 @@ pointArray_KMLsize(POINTARRAY *pa, int precision)
 {
 	if (TYPE_NDIMS(pa->dims) == 2)
 		return (MAX_DIGS_DOUBLE + precision + sizeof(", "))
-			* 2 * pa->npoints;
+		       * 2 * pa->npoints;
 
 	return (MAX_DIGS_DOUBLE + precision + sizeof(", ")) * 3 * pa->npoints;
 }

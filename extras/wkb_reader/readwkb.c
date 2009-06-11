@@ -20,8 +20,8 @@ into wkb.
 void
 exit_nicely(PGconn *conn)
 {
-    PQfinish(conn);
-    exit(1);
+	PQfinish(conn);
+	exit(1);
 }
 
 void dump_bytes( char *a, int numb)
@@ -44,26 +44,26 @@ int	find_WKB_typeid(PGconn 	*conn)
 	PGresult *dbresult;
 	char		*num;
 
-	if (PQstatus(conn) == CONNECTION_BAD) 
+	if (PQstatus(conn) == CONNECTION_BAD)
 	{
-		fprintf(stderr, "no connection to db\n"); 
-		exit_nicely(conn); 
-	} 
+		fprintf(stderr, "no connection to db\n");
+		exit_nicely(conn);
+	}
 
 	dbresult = PQexec(conn, "select OID from pg_type where typname = 'bytea';");
 
-	if (PQresultStatus(dbresult) != PGRES_TUPLES_OK) 
+	if (PQresultStatus(dbresult) != PGRES_TUPLES_OK)
 	{
 		fprintf(stderr, "couldnt execute query to find oid of geometry type");
 		exit_nicely(conn);	//command failed
 	}
-	
-	if( PQntuples(dbresult) != 1)
+
+	if ( PQntuples(dbresult) != 1)
 	{
 		fprintf(stderr, "query to find oid of geometry didnt return 1 row!");
-		exit_nicely(conn);	
+		exit_nicely(conn);
 	}
-	
+
 	num =  PQgetvalue(dbresult, 0, 0);  // first row, first field
 
 	PQclear(dbresult);
@@ -74,21 +74,21 @@ int	find_WKB_typeid(PGconn 	*conn)
 
 main()
 {
-    char       *pghost,
-               *pgport,
-               *pgoptions,
-               *pgtty;
-    char       *dbName;
-    int         nFields;
-    int         row,
-                field;
-    PGconn     *conn;
-    PGresult   *res;
+	char       *pghost,
+	*pgport,
+	*pgoptions,
+	*pgtty;
+	char       *dbName;
+	int         nFields;
+	int         row,
+	field;
+	PGconn     *conn;
+	PGresult   *res;
 	int	junk;
 	char	*field_name;
 	int	field_type;
-int	WKB_OID;
-	  char		conn_string[255];
+	int	WKB_OID;
+	char		conn_string[255];
 
 	bool		*bool_val;
 	int		*int_val;
@@ -136,7 +136,8 @@ int	WKB_OID;
 	 */
 	sprintf(query_str, "DECLARE mycursor BINARY CURSOR FOR select text(num), asbinary(the_geom,'ndr') as wkb from %s", table_name);
 
-	printf(query_str); printf("\n");
+	printf(query_str);
+	printf("\n");
 
 	res = PQexec(conn, query_str);
 
@@ -171,56 +172,56 @@ int	WKB_OID;
 
 			if (field_type ==16)// bool
 			{
-				bool_val = (bool *) PQgetvalue(res, row, field);	
+				bool_val = (bool *) PQgetvalue(res, row, field);
 				if (*bool_val)
-					 printf("%s: TRUE\n",field_name);
+					printf("%s: TRUE\n",field_name);
 				else
 					printf("%s: FALSE\n",field_name);
 			}
 			else if (field_type ==23 )//int4 (int)
 			{
 				int_val = (int *) PQgetvalue(res, row, field);
-				printf("%s: %i\n",field_name,*int_val);	
+				printf("%s: %i\n",field_name,*int_val);
 			}
 			else if (field_type ==700 )//float4 (float)
 			{
 				float_val = (float *) PQgetvalue(res, row, field);
-				printf("%s: %g\n",field_name,*float_val);	
+				printf("%s: %g\n",field_name,*float_val);
 			}
 			else if (field_type ==701 )//float8 (double)
 			{
 				double_val = (double *) PQgetvalue(res, row, field);
-				printf("%s: %g\n",field_name,*double_val);	
+				printf("%s: %g\n",field_name,*double_val);
 			}
-			else if ( (field_type ==1043 ) || (field_type==25) )//varchar 
+			else if ( (field_type ==1043 ) || (field_type==25) )//varchar
 			{
 				char_val = (char *) PQgetvalue(res, row, field);
-				printf("%s: %s\n",field_name,char_val);	
+				printf("%s: %s\n",field_name,char_val);
 			}
 			else if (field_type == WKB_OID ) //wkb
 			{
 				char_val = (char *) PQgetvalue(res, row, field);
 				printf("%s: ", field_name);
-				// skip 4 bytes varlena size 
+				// skip 4 bytes varlena size
 				decode_wkb(char_val, &junk);
 				printf("\n");
 			}
-			
+
 		}
 	}
 
-    PQclear(res);
+	PQclear(res);
 
-    /* close the cursor */
-    res = PQexec(conn, "CLOSE mycursor");
-    PQclear(res);
+	/* close the cursor */
+	res = PQexec(conn, "CLOSE mycursor");
+	PQclear(res);
 
-    /* commit the transaction */
-    res = PQexec(conn, "COMMIT");
-    PQclear(res);
+	/* commit the transaction */
+	res = PQexec(conn, "COMMIT");
+	PQclear(res);
 
-    /* close the connection to the database and cleanup */
-    PQfinish(conn);
+	/* close the connection to the database and cleanup */
+	PQfinish(conn);
 
-    return 0;
+	return 0;
 }

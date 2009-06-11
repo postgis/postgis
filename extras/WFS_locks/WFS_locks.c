@@ -80,7 +80,7 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 
 	colname  = trigdata->tg_trigger->tgargs[0];
 	pk_id = SPI_getvalue(trigdata->tg_trigtuple, tupdesc,
-		SPI_fnumber(tupdesc, colname));
+	                     SPI_fnumber(tupdesc, colname));
 
 #if PGIS_DEBUG
 	elog(NOTICE,"check_authorization called");
@@ -148,10 +148,10 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 		return PointerGetDatum(rettuple_ok);
 	}
 
-	fail:
+fail:
 
 	snprintf(errmsg, ERRMSGLEN, "%s where \"%s\" = '%s' requires authorization '%s'",
-		op, colname, pk_id, lockcode);
+	         op, colname, pk_id, lockcode);
 	errmsg[ERRMSGLEN-1] = '\0';
 
 #ifdef ABORT_ON_AUTH_FAILURE
@@ -169,6 +169,6 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(getTransactionID);
 Datum getTransactionID(PG_FUNCTION_ARGS)
 {
-    TransactionId xid = GetCurrentTransactionId();
-    PG_RETURN_DATUM( TransactionIdGetDatum(xid) );
+	TransactionId xid = GetCurrentTransactionId();
+	PG_RETURN_DATUM( TransactionIdGetDatum(xid) );
 }

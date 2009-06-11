@@ -100,7 +100,7 @@ Datum LWGEOM_overlap(PG_FUNCTION_ARGS)
 	if ( pglwgeom_getSRID(lwgeom1) != pglwgeom_getSRID(lwgeom2) )
 	{
 		PG_FREE_IF_COPY(lwgeom1, 0);
-       	PG_FREE_IF_COPY(lwgeom2, 1);
+		PG_FREE_IF_COPY(lwgeom2, 1);
 		elog(ERROR, "Operation on two geometries with different SRIDs");
 		PG_RETURN_NULL();
 	}
@@ -108,7 +108,7 @@ Datum LWGEOM_overlap(PG_FUNCTION_ARGS)
 	if ( ! (getbox2d_p(SERIALIZED_FORM(lwgeom1), &box1) && getbox2d_p(SERIALIZED_FORM(lwgeom2), &box2)) )
 	{
 		PG_FREE_IF_COPY(lwgeom1, 0);
-       	PG_FREE_IF_COPY(lwgeom2, 1);
+		PG_FREE_IF_COPY(lwgeom2, 1);
 		/* One or both are empty geoms */
 		PG_RETURN_BOOL(FALSE);
 	}
@@ -481,11 +481,11 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 
 			rr = (BOX2DFLOAT4*) palloc(sizeof(BOX2DFLOAT4));
 
-			if (	! getbox2d_p(SERIALIZED_FORM(in), rr) ||
-			                ! finite(rr->xmin) ||
-			                ! finite(rr->ymin) ||
-			                ! finite(rr->xmax) ||
-			                ! finite(rr->ymax) )
+			if (    ! getbox2d_p(SERIALIZED_FORM(in), rr) ||
+			        ! finite(rr->xmin) ||
+			        ! finite(rr->ymin) ||
+			        ! finite(rr->xmax) ||
+			        ! finite(rr->ymax) )
 			{
 
 				POSTGIS_DEBUG(4, "found empty or infinite geometry");
@@ -611,8 +611,8 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 		                                      DatumGetPointer(entry->key), &box, strategy );
 	else
 		result = lwgeom_rtree_internal_consistent(
-		                 (BOX2DFLOAT4 *) DatumGetPointer(entry->key),
-		                 &box, strategy );
+		             (BOX2DFLOAT4 *) DatumGetPointer(entry->key),
+		             &box, strategy );
 
 	PG_FREE_IF_COPY(query, 1);
 	PG_RETURN_BOOL(result);
@@ -1020,11 +1020,11 @@ Datum LWGEOM_gist_picksplit(PG_FUNCTION_ARGS)
 		cur = (BOX2DFLOAT4 *) DatumGetPointer(entryvec->vector[i].key);
 
 		if ( allisequal == true &&  (
-		                        pageunion.xmax != cur->xmax ||
-		                        pageunion.ymax != cur->ymax ||
-		                        pageunion.xmin != cur->xmin ||
-		                        pageunion.ymin != cur->ymin
-		                ) )
+		            pageunion.xmax != cur->xmax ||
+		            pageunion.ymax != cur->ymax ||
+		            pageunion.xmin != cur->xmin ||
+		            pageunion.ymin != cur->ymin
+		        ) )
 			allisequal = false;
 
 		if (pageunion.xmax < cur->xmax)

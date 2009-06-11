@@ -33,8 +33,8 @@ typedef unsigned int u_int32_tt;
 
 typedef union
 {
-  float value;
-  u_int32_tt word;
+	float value;
+	u_int32_tt word;
 } ieee_float_shape_type;
 
 #define GET_FLOAT_WORD(i,d)			\
@@ -60,46 +60,59 @@ typedef union
 float
 nextafterf_custom(float x, float y)
 {
-        int32_tt hx,hy,ix,iy;
+	int32_tt hx,hy,ix,iy;
 
-        GET_FLOAT_WORD(hx,x);
-        GET_FLOAT_WORD(hy,y);
-        ix = hx&0x7fffffff;             /* |x| */
-        iy = hy&0x7fffffff;             /* |y| */
+	GET_FLOAT_WORD(hx,x);
+	GET_FLOAT_WORD(hy,y);
+	ix = hx&0x7fffffff;             /* |x| */
+	iy = hy&0x7fffffff;             /* |y| */
 
-        if((ix>0x7f800000) ||   /* x is nan */
-           (iy>0x7f800000))     /* y is nan */
-           return x+y;
-        if(x==y) return y;              /* x=y, return y */
-        if(ix==0) {                             /* x == 0 */
-            SET_FLOAT_WORD(x,(hy&0x80000000)|1);/* return +-minsubnormal */
-            y = x*x;
-            if(y==x) return y; else return x;   /* raise underflow flag */
-        }
-        if(hx>=0) {                             /* x > 0 */
-            if(hx>hy) {                         /* x > y, x -= ulp */
-                hx -= 1;
-            } else {                            /* x < y, x += ulp */
-                hx += 1;
-            }
-        } else {                                /* x < 0 */
-            if(hy>=0||hx>hy){                   /* x < y, x -= ulp */
-                hx -= 1;
-            } else {                            /* x > y, x += ulp */
-                hx += 1;
-            }
-        }
-        hy = hx&0x7f800000;
-        if(hy>=0x7f800000) return x+x;  /* overflow  */
-        if(hy<0x00800000) {             /* underflow */
-            y = x*x;
-            if(y!=x) {          /* raise underflow flag */
-                SET_FLOAT_WORD(y,hx);
-                return y;
-            }
-        }
-        SET_FLOAT_WORD(x,hx);
-        return x;
+	if ((ix>0x7f800000) ||   /* x is nan */
+	        (iy>0x7f800000))     /* y is nan */
+		return x+y;
+	if (x==y) return y;              /* x=y, return y */
+	if (ix==0)
+	{                             /* x == 0 */
+		SET_FLOAT_WORD(x,(hy&0x80000000)|1);/* return +-minsubnormal */
+		y = x*x;
+		if (y==x) return y;
+		else return x;   /* raise underflow flag */
+	}
+	if (hx>=0)
+	{                             /* x > 0 */
+		if (hx>hy)
+		{                         /* x > y, x -= ulp */
+			hx -= 1;
+		}
+		else
+		{                            /* x < y, x += ulp */
+			hx += 1;
+		}
+	}
+	else
+	{                                /* x < 0 */
+		if (hy>=0||hx>hy)
+		{                   /* x < y, x -= ulp */
+			hx -= 1;
+		}
+		else
+		{                            /* x > y, x += ulp */
+			hx += 1;
+		}
+	}
+	hy = hx&0x7f800000;
+	if (hy>=0x7f800000) return x+x;  /* overflow  */
+	if (hy<0x00800000)
+	{             /* underflow */
+		y = x*x;
+		if (y!=x)
+		{          /* raise underflow flag */
+			SET_FLOAT_WORD(y,hx);
+			return y;
+		}
+	}
+	SET_FLOAT_WORD(x,hx);
+	return x;
 }
 
 
@@ -297,7 +310,7 @@ box3d_union(BOX3D *b1, BOX3D *b2)
 		result->xmin = b2->xmin;
 
 	if (b1->ymin < b2->ymin)
-			result->ymin = b1->ymin;
+		result->ymin = b1->ymin;
 	else
 		result->ymin = b2->ymin;
 
@@ -313,9 +326,9 @@ box3d_union(BOX3D *b1, BOX3D *b2)
 		result->ymax = b2->ymax;
 
 	if (b1->zmax > b2->zmax)
-			result->zmax = b1->zmax;
+		result->zmax = b1->zmax;
 	else
-			result->zmax = b2->zmax;
+		result->zmax = b2->zmax;
 
 	if (b1->zmin > b2->zmin)
 		result->zmin = b1->zmin;
@@ -330,9 +343,9 @@ int
 box3d_union_p(BOX3D *b1, BOX3D *b2, BOX3D *ubox)
 {
 
-        LWDEBUG(2, "box3d_union_p called: (xmin, xmax), (ymin, ymax), (zmin, zmax)");
-        LWDEBUGF(4, "b1: (%.16f, %.16f),(%.16f, %.16f),(%.16f, %.16f)", b1->xmin, b1->xmax, b1->ymin, b1->ymax, b1->zmin, b1->zmax);
-        LWDEBUGF(4, "b2: (%.16f, %.16f),(%.16f, %.16f),(%.16f, %.16f)", b2->xmin, b2->xmax, b2->ymin, b2->ymax, b2->zmin, b2->zmax);
+	LWDEBUG(2, "box3d_union_p called: (xmin, xmax), (ymin, ymax), (zmin, zmax)");
+	LWDEBUGF(4, "b1: (%.16f, %.16f),(%.16f, %.16f),(%.16f, %.16f)", b1->xmin, b1->xmax, b1->ymin, b1->ymax, b1->zmin, b1->zmax);
+	LWDEBUGF(4, "b2: (%.16f, %.16f),(%.16f, %.16f),(%.16f, %.16f)", b2->xmin, b2->xmax, b2->ymin, b2->ymax, b2->zmin, b2->zmax);
 
 	if ( (b1 == NULL) && (b2 == NULL) )
 	{
@@ -477,39 +490,39 @@ getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
 	}
 #endif
 
-        LWDEBUG(4, "getPoint4d_p called.");
+	LWDEBUG(4, "getPoint4d_p called.");
 
 	/* Get a pointer to nth point offset and zmflag */
 	ptr=getPoint_internal(pa, n);
 	zmflag=TYPE_GETZM(pa->dims);
 
-        LWDEBUGF(4, "ptr %p, zmflag %d", ptr, zmflag);
+	LWDEBUGF(4, "ptr %p, zmflag %d", ptr, zmflag);
 
 	switch (zmflag)
 	{
-		case 0: /* 2d  */
-			memcpy(op, ptr, sizeof(POINT2D));
-			op->m=NO_M_VALUE;
-			op->z=NO_Z_VALUE;
-			break;
+	case 0: /* 2d  */
+		memcpy(op, ptr, sizeof(POINT2D));
+		op->m=NO_M_VALUE;
+		op->z=NO_Z_VALUE;
+		break;
 
-		case 3: /* ZM */
-			memcpy(op, ptr, sizeof(POINT4D));
-			break;
+	case 3: /* ZM */
+		memcpy(op, ptr, sizeof(POINT4D));
+		break;
 
-		case 2: /* Z */
-			memcpy(op, ptr, sizeof(POINT3DZ));
-			op->m=NO_M_VALUE;
-			break;
+	case 2: /* Z */
+		memcpy(op, ptr, sizeof(POINT3DZ));
+		op->m=NO_M_VALUE;
+		break;
 
-		case 1: /* M */
-			memcpy(op, ptr, sizeof(POINT3DM));
-			op->m=op->z; /* we use Z as temporary storage */
-			op->z=NO_Z_VALUE;
-			break;
+	case 1: /* M */
+		memcpy(op, ptr, sizeof(POINT3DM));
+		op->m=op->z; /* we use Z as temporary storage */
+		op->z=NO_Z_VALUE;
+		break;
 
-		default:
-			lwerror("Unknown ZM flag ??");
+	default:
+		lwerror("Unknown ZM flag ??");
 	}
 	return 1;
 
@@ -547,7 +560,7 @@ getPoint3dm(const POINTARRAY *pa, int n)
 /*
  * Copy a point from the point array into the parameter point
  * will set point's z=NO_Z_VALUE if pa is 2d
- * 
+ *
  * NOTE: this will modify the point3dz pointed to by 'point'.
  */
 int
@@ -566,7 +579,7 @@ getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
 #endif
 
 	LWDEBUGF(2, "getPoint3dz_p called on array of %d-dimensions / %u pts",
-		TYPE_NDIMS(pa->dims), pa->npoints);
+	         TYPE_NDIMS(pa->dims), pa->npoints);
 
 	/* Get a pointer to nth point offset */
 	ptr=getPoint_internal(pa, n);
@@ -597,7 +610,7 @@ getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
 /*
  * Copy a point from the point array into the parameter point
  * will set point's m=NO_Z_VALUE if pa has no M
- * 
+ *
  * NOTE: this will modify the point3dm pointed to by 'point'.
  */
 int
@@ -614,10 +627,10 @@ getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *op)
 		lwerror("%d out of numpoint range (%d)", n, pa->npoints);
 		return 0; /*error */
 	}
-#endif 
+#endif
 
 	LWDEBUGF(2, "getPoint3dm_p(%d) called on array of %d-dimensions / %u pts",
-		n, TYPE_NDIMS(pa->dims), pa->npoints);
+	         n, TYPE_NDIMS(pa->dims), pa->npoints);
 
 
 	/* Get a pointer to nth point offset and zmflag */
@@ -710,20 +723,20 @@ setPoint4d(POINTARRAY *pa, int n, POINT4D *p4d)
 	uchar *ptr=getPoint_internal(pa, n);
 	switch ( TYPE_GETZM(pa->dims) )
 	{
-		case 3:
-			memcpy(ptr, p4d, sizeof(POINT4D));
-			break;
-		case 2:
-			memcpy(ptr, p4d, sizeof(POINT3DZ));
-			break;
-		case 1:
-			memcpy(ptr, p4d, sizeof(POINT2D));
-			ptr+=sizeof(POINT2D);
-			memcpy(ptr, &(p4d->m), sizeof(double));
-			break;
-		case 0:
-			memcpy(ptr, p4d, sizeof(POINT2D));
-			break;
+	case 3:
+		memcpy(ptr, p4d, sizeof(POINT4D));
+		break;
+	case 2:
+		memcpy(ptr, p4d, sizeof(POINT3DZ));
+		break;
+	case 1:
+		memcpy(ptr, p4d, sizeof(POINT2D));
+		ptr+=sizeof(POINT2D);
+		memcpy(ptr, &(p4d->m), sizeof(double));
+		break;
+	case 0:
+		memcpy(ptr, p4d, sizeof(POINT2D));
+		break;
 	}
 }
 
@@ -739,7 +752,8 @@ getPoint_internal(const POINTARRAY *pa, int n)
 	int size;
 
 #if PARANOIA_LEVEL > 0
-	if ( pa == NULL ) {
+	if ( pa == NULL )
+	{
 		lwerror("getPoint got NULL pointarray");
 		return NULL;
 	}
@@ -770,7 +784,7 @@ POINTARRAY *
 pointArray_construct(uchar *points, char hasz, char hasm, uint32 npoints)
 {
 	POINTARRAY  *pa;
-	
+
 	LWDEBUG(2, "pointArray_construct called.");
 
 	pa = (POINTARRAY*)lwalloc(sizeof(POINTARRAY));
@@ -836,7 +850,7 @@ int lwgeom_hasZ(uchar type)
 int
 lwgeom_getType(uchar type)
 {
-        LWDEBUGF(2, "lwgeom_getType %d", type);
+	LWDEBUGF(2, "lwgeom_getType %d", type);
 
 	return (type & 0x0F);
 }
@@ -929,7 +943,7 @@ lwgeom_inspect(const uchar *serialized_form)
 	if (serialized_form == NULL)
 		return NULL;
 
-	result->serialized_form = serialized_form; 
+	result->serialized_form = serialized_form;
 	result->type = (uchar) serialized_form[0];
 	result->SRID = -1; /* assume */
 
@@ -964,7 +978,7 @@ lwgeom_inspect(const uchar *serialized_form)
 	loc +=4;
 
 	LWDEBUGF(3, "lwgeom_inspect: geometry is a collection of %d elements",
-		result->ngeometries);
+	         result->ngeometries);
 
 	if ( ! result->ngeometries ) return result;
 
@@ -979,9 +993,9 @@ lwgeom_inspect(const uchar *serialized_form)
 		/* -1 = entire object */
 		int sub_length = lwgeom_size_subgeom(sub_geoms[t-1], -1);
 		sub_geoms[t] = sub_geoms[t-1] + sub_length;
-                
+
 		LWDEBUGF(3, "subgeom[%d] @ %p (+%d)",
-			t, sub_geoms[t], sub_geoms[0]-serialized_form);
+		         t, sub_geoms[t], sub_geoms[0]-serialized_form);
 	}
 
 	return result;
@@ -1275,7 +1289,7 @@ lwgeom_getnumgeometries(uchar *serialized_form)
 	uchar *loc;
 
 	if ( (type==POINTTYPE) || (type==LINETYPE) || (type==POLYGONTYPE) ||
-            (type==CIRCSTRINGTYPE) || (type==COMPOUNDTYPE) || (type==CURVEPOLYTYPE) )
+	        (type==CIRCSTRINGTYPE) || (type==COMPOUNDTYPE) || (type==CURVEPOLYTYPE) )
 	{
 		return 1;
 	}
@@ -1315,7 +1329,7 @@ lwgeom_getnumgeometries_inspected(LWGEOM_INSPECTED *inspected)
  */
 uchar *
 lwgeom_serialized_construct(int SRID, int finalType, char hasz, char hasm,
-	int nsubgeometries, uchar **serialized_subs)
+                            int nsubgeometries, uchar **serialized_subs)
 {
 	uint32 *lengths;
 	int t;
@@ -1341,7 +1355,7 @@ lwgeom_serialized_construct(int SRID, int finalType, char hasz, char hasm,
 		}
 		else if (type == COLLECTIONTYPE)
 		{
-				/* still a collection type... */
+			/* still a collection type... */
 		}
 		else
 		{
@@ -1458,7 +1472,7 @@ lwgeom_empty_length(int SRID)
  */
 void
 lwgeom_constructempty_buf(int SRID, char hasz, char hasm,
-	uchar *buf, size_t *retsize)
+                          uchar *buf, size_t *retsize)
 {
 	int ngeoms = 0;
 
@@ -1511,22 +1525,22 @@ lwgeom_size(const uchar *serialized_form)
 
 		return lwgeom_size_line(serialized_form);
 	}
-        else if(type == CIRCSTRINGTYPE)
-        {
-                LWDEBUG(3, "lwgeom_size: is a circularstring");
+	else if (type == CIRCSTRINGTYPE)
+	{
+		LWDEBUG(3, "lwgeom_size: is a circularstring");
 
-                return lwgeom_size_circstring(serialized_form);
-        }
+		return lwgeom_size_circstring(serialized_form);
+	}
 	else if (type == POLYGONTYPE)
 	{
 		LWDEBUG(3, "lwgeom_size: is a polygon");
 
 		return lwgeom_size_poly(serialized_form);
-	} 
-        else if (type == COMPOUNDTYPE)
-        {
-                LWDEBUG(3, "lwgeom_size: is a compound curve");
-        }
+	}
+	else if (type == COMPOUNDTYPE)
+	{
+		LWDEBUG(3, "lwgeom_size: is a compound curve");
+	}
 
 	if ( type == 0 )
 	{
@@ -1626,15 +1640,15 @@ compute_serialized_box3d_p(uchar *srl, BOX3D *out)
 int
 compute_serialized_box2d_p(uchar *srl, BOX2DFLOAT4 *out)
 {
-	  BOX3D *result = compute_serialized_box3d(srl);
-	  if ( ! result ) return 0;
-	  out->xmin = result->xmin;
-	  out->xmax = result->xmax;
-	  out->ymin = result->ymin;
-	  out->ymax = result->ymax;
-	  lwfree(result);
+	BOX3D *result = compute_serialized_box3d(srl);
+	if ( ! result ) return 0;
+	out->xmin = result->xmin;
+	out->xmax = result->xmax;
+	out->ymin = result->ymin;
+	out->ymax = result->ymax;
+	lwfree(result);
 
-	  return 1;
+	return 1;
 }
 
 /*
@@ -1680,14 +1694,14 @@ compute_serialized_box3d(uchar *srl)
 		return result;
 	}
 
-	/* 
+	/*
 	** For items that have elements (everything except points), 
 	** nelems == 0 => EMPTY geometry
 	*/
 	nelems = lw_get_uint32(loc);
 	if ( nelems == 0 ) return NULL;
 
- 	if (type == LINETYPE)
+	if (type == LINETYPE)
 	{
 		LWLINE *line = lwline_deserialize(srl);
 		result = lwline_compute_box3d(line);
@@ -1695,13 +1709,13 @@ compute_serialized_box3d(uchar *srl)
 		return result;
 
 	}
-        else if (type == CIRCSTRINGTYPE)
-        {
-                LWCIRCSTRING *curve = lwcircstring_deserialize(srl);
-                result = lwcircstring_compute_box3d(curve);
-                lwcircstring_free(curve);
-                return result;
-        }
+	else if (type == CIRCSTRINGTYPE)
+	{
+		LWCIRCSTRING *curve = lwcircstring_deserialize(srl);
+		result = lwcircstring_compute_box3d(curve);
+		lwcircstring_free(curve);
+		return result;
+	}
 	else if (type == POLYGONTYPE)
 	{
 		LWPOLY *poly = lwpoly_deserialize(srl);
@@ -1711,9 +1725,9 @@ compute_serialized_box3d(uchar *srl)
 	}
 
 	if ( ! ( type == MULTIPOINTTYPE || type == MULTILINETYPE ||
-		type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE ||
-                type == COMPOUNDTYPE || type == CURVEPOLYTYPE ||
-                type == MULTICURVETYPE || type == MULTISURFACETYPE) )
+	         type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE ||
+	         type == COMPOUNDTYPE || type == CURVEPOLYTYPE ||
+	         type == MULTICURVETYPE || type == MULTISURFACETYPE) )
 	{
 		lwnotice("compute_serialized_box3d called on unknown type %d", type);
 		return NULL;
@@ -1725,9 +1739,9 @@ compute_serialized_box3d(uchar *srl)
 	result = NULL;
 	for (t=0; t<nelems; t++)
 	{
-		if ( compute_serialized_box3d_p(loc, &b1) ) 
+		if ( compute_serialized_box3d_p(loc, &b1) )
 		{
-			LWDEBUG(3, "Geom %d have box:"); 
+			LWDEBUG(3, "Geom %d have box:");
 #if POSTGIS_DEBUG_LEVEL >= 3
 			printBOX3D(&b1);
 #endif
@@ -1737,7 +1751,7 @@ compute_serialized_box3d(uchar *srl)
 				nboxes += box3d_union_p(result, &b1, result);
 			}
 			else
-			{ 
+			{
 				result = lwalloc(sizeof(BOX3D));
 				memcpy(result, &b1, sizeof(BOX3D));
 			}
@@ -1752,7 +1766,7 @@ compute_serialized_box3d(uchar *srl)
 }
 
 /****************************************************************
- * memory management 
+ * memory management
  *
  *  these only delete the memory associated
  *  directly with the structure - NOT the stuff pointing into
@@ -1781,7 +1795,7 @@ lwinspected_release(LWGEOM_INSPECTED *inspected)
 void printBOX3D(BOX3D *box)
 {
 	lwnotice("BOX3D: %g %g, %g %g", box->xmin, box->ymin,
-		box->xmax, box->ymax);
+	         box->xmax, box->ymax);
 }
 
 void printPA(POINTARRAY *pa)
@@ -1796,7 +1810,7 @@ void printPA(POINTARRAY *pa)
 
 	lwnotice("      POINTARRAY%s{", mflag);
 	lwnotice("                 ndims=%i,   ptsize=%i",
-		TYPE_NDIMS(pa->dims), pointArray_ptsize(pa));
+	         TYPE_NDIMS(pa->dims), pointArray_ptsize(pa));
 	lwnotice("                 npoints = %i", pa->npoints);
 
 	for (t =0; t<pa->npoints;t++)
@@ -1850,7 +1864,9 @@ printMULTI(uchar *serialized)
 	for (t=0;t<inspected->ngeometries;t++)
 	{
 		lwnotice("      sub-geometry %i:", t);
-		line = NULL; point = NULL; poly = NULL;
+		line = NULL;
+		point = NULL;
+		poly = NULL;
 
 		line = lwgeom_getline_inspected(inspected,t);
 		if (line !=NULL)
@@ -1867,9 +1883,9 @@ printMULTI(uchar *serialized)
 		{
 			printPA(point->point);
 		}
-    }
+	}
 
-    lwnotice("end multi*");
+	lwnotice("end multi*");
 
 	lwinspected_release(inspected);
 }
@@ -2030,117 +2046,117 @@ parse_hex(char *str)
 
 	switch (str[0])
 	{
-		case '0' :
-			result_high = 0;
-			break;
-		case '1' :
-			result_high = 1;
-			break;
-		case '2' :
-			result_high = 2;
-			break;
-		case '3' :
-			result_high = 3;
-			break;
-		case '4' :
-			result_high = 4;
-			break;
-		case '5' :
-			result_high = 5;
-			break;
-		case '6' :
-			result_high = 6;
-			break;
-		case '7' :
-			result_high = 7;
-			break;
-		case '8' :
-			result_high = 8;
-			break;
-		case '9' :
-			result_high = 9;
-			break;
-		case 'A' :
-		case 'a' :
-			result_high = 10;
-			break;
-		case 'B' :
-		case 'b' :
-			result_high = 11;
-			break;
-		case 'C' :
-		case 'c' :
-			result_high = 12;
-			break;
-		case 'D' :
-		case 'd' :
-			result_high = 13;
-			break;
-		case 'E' :
-		case 'e' :
-			result_high = 14;
-			break;
-		case 'F' :
-		case 'f' :
-			result_high = 15;
-			break;
+	case '0' :
+		result_high = 0;
+		break;
+	case '1' :
+		result_high = 1;
+		break;
+	case '2' :
+		result_high = 2;
+		break;
+	case '3' :
+		result_high = 3;
+		break;
+	case '4' :
+		result_high = 4;
+		break;
+	case '5' :
+		result_high = 5;
+		break;
+	case '6' :
+		result_high = 6;
+		break;
+	case '7' :
+		result_high = 7;
+		break;
+	case '8' :
+		result_high = 8;
+		break;
+	case '9' :
+		result_high = 9;
+		break;
+	case 'A' :
+	case 'a' :
+		result_high = 10;
+		break;
+	case 'B' :
+	case 'b' :
+		result_high = 11;
+		break;
+	case 'C' :
+	case 'c' :
+		result_high = 12;
+		break;
+	case 'D' :
+	case 'd' :
+		result_high = 13;
+		break;
+	case 'E' :
+	case 'e' :
+		result_high = 14;
+		break;
+	case 'F' :
+	case 'f' :
+		result_high = 15;
+		break;
 	}
 	switch (str[1])
 	{
-		case '0' :
-			result_low = 0;
-			break;
-		case '1' :
-			result_low = 1;
-			break;
-		case '2' :
-			result_low = 2;
-			break;
-		case '3' :
-			result_low = 3;
-			break;
-		case '4' :
-			result_low = 4;
-			break;
-		case '5' :
-			result_low = 5;
-			break;
-		case '6' :
-			result_low = 6;
-			break;
-		case '7' :
-			result_low = 7;
-			break;
-		case '8' :
-			result_low = 8;
-			break;
-		case '9' :
-			result_low = 9;
-			break;
-		case 'A' :
-		case 'a' :
-			result_low = 10;
-			break;
-		case 'B' :
-		case 'b' :
-			result_low = 11;
-			break;
-		case 'C' :
-		case 'c' :
-			result_low = 12;
-			break;
-		case 'D' :
-		case 'd' :
-			result_low = 13;
-			break;
-		case 'E' :
-		case 'e' :
-			result_low = 14;
-			break;
-		case 'F' :
-		case 'f' :
-			result_low = 15;
-			break;
+	case '0' :
+		result_low = 0;
+		break;
+	case '1' :
+		result_low = 1;
+		break;
+	case '2' :
+		result_low = 2;
+		break;
+	case '3' :
+		result_low = 3;
+		break;
+	case '4' :
+		result_low = 4;
+		break;
+	case '5' :
+		result_low = 5;
+		break;
+	case '6' :
+		result_low = 6;
+		break;
+	case '7' :
+		result_low = 7;
+		break;
+	case '8' :
+		result_low = 8;
+		break;
+	case '9' :
+		result_low = 9;
+		break;
+	case 'A' :
+	case 'a' :
+		result_low = 10;
+		break;
+	case 'B' :
+	case 'b' :
+		result_low = 11;
+		break;
+	case 'C' :
+	case 'c' :
+		result_low = 12;
+		break;
+	case 'D' :
+	case 'd' :
+		result_low = 13;
+		break;
+	case 'E' :
+	case 'e' :
+		result_low = 14;
+		break;
+	case 'F' :
+	case 'f' :
+		result_low = 15;
+		break;
 	}
 	return (uchar) ((result_high<<4) + result_low);
 }
@@ -2160,7 +2176,9 @@ deparse_hex(uchar str, char *result)
 {
 	int	input_high;
 	int  input_low;
-	static char outchr[]={"0123456789ABCDEF" };
+	static char outchr[]=
+	    {"0123456789ABCDEF"
+	    };
 
 	input_high = (str>>4);
 	input_low = (str & 0x0F);
@@ -2173,14 +2191,14 @@ deparse_hex(uchar str, char *result)
 
 /*
  * Find interpolation point I
- * between point A and point B 
+ * between point A and point B
  * so that the len(AI) == len(AB)*F
  * and I falls on AB segment.
  *
  * Example:
  *
- *   F=0.5  :    A----I----B 
- *   F=1    :    A---------B==I 
+ *   F=0.5  :    A----I----B
+ *   F=1    :    A---------B==I
  *   F=0    : A==I---------B
  *   F=.2   :    A-I-------B
  */

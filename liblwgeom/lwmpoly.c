@@ -7,7 +7,7 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************/
 
 #include <stdio.h>
@@ -19,7 +19,7 @@
 void
 lwmpoly_release(LWMPOLY *lwmpoly)
 {
-  lwgeom_release(lwmpoly_as_lwgeom(lwmpoly));
+	lwgeom_release(lwmpoly_as_lwgeom(lwmpoly));
 }
 
 
@@ -33,10 +33,10 @@ lwmpoly_deserialize(uchar *srl)
 
 	LWDEBUG(2, "lwmpoly_deserialize called");
 
-	if ( type != MULTIPOLYGONTYPE ) 
+	if ( type != MULTIPOLYGONTYPE )
 	{
 		lwerror("lwmpoly_deserialize called on NON multipoly: %d",
-			type);
+		        type);
 		return NULL;
 	}
 
@@ -61,9 +61,9 @@ lwmpoly_deserialize(uchar *srl)
 		if ( TYPE_NDIMS(result->geoms[i]->type) != TYPE_NDIMS(result->type) )
 		{
 			lwerror("Mixed dimensions (multipoly:%d, poly%d:%d)",
-				TYPE_NDIMS(result->type), i,
-				TYPE_NDIMS(result->geoms[i]->type)
-			);
+			        TYPE_NDIMS(result->type), i,
+			        TYPE_NDIMS(result->geoms[i]->type)
+			       );
 			return NULL;
 		}
 	}
@@ -88,7 +88,7 @@ lwmpoly_add(const LWMPOLY *to, uint32 where, const LWGEOM *what)
 	else if ( where < -1 || where > to->ngeoms )
 	{
 		lwerror("lwmline_add: add position out of range %d..%d",
-			-1, to->ngeoms);
+		        -1, to->ngeoms);
 		return NULL;
 	}
 
@@ -110,31 +110,32 @@ lwmpoly_add(const LWMPOLY *to, uint32 where, const LWGEOM *what)
 	else newtype = COLLECTIONTYPE;
 
 	col = lwcollection_construct(newtype,
-		to->SRID, NULL,
-		to->ngeoms+1, geoms);
-	
+	                             to->SRID, NULL,
+	                             to->ngeoms+1, geoms);
+
 	return (LWGEOM *)col;
 
 }
 
-void lwmpoly_free(LWMPOLY *mpoly) 
+void lwmpoly_free(LWMPOLY *mpoly)
 {
 	int i;
-	if( mpoly->bbox ) 
+	if ( mpoly->bbox )
 	{
 		lwfree(mpoly->bbox);
 	}
-	for ( i = 0; i < mpoly->ngeoms; i++ ) 
+	for ( i = 0; i < mpoly->ngeoms; i++ )
 	{
-		if( mpoly->geoms[i] ) {
+		if ( mpoly->geoms[i] )
+		{
 			lwpoly_free(mpoly->geoms[i]);
 		}
 	}
-	if( mpoly->geoms ) 
+	if ( mpoly->geoms )
 	{
 		lwfree(mpoly->geoms);
 	}
 	lwfree(mpoly);
-	
+
 };
 

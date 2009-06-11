@@ -20,16 +20,20 @@
 typedef unsigned short int UINT16;
 typedef float FLOAT32;
 
-typedef struct PIXEL_T {
+typedef struct PIXEL_T
+{
 	int type; /* 1=float32, 5=int24, 6=int16 */
 	uchar val[4];
-} PIXEL;
+}
+PIXEL;
 
-typedef struct RGB_T {
+typedef struct RGB_T
+{
 	uchar red;
 	uchar green;
 	uchar blue;
-} RGB;
+}
+RGB;
 
 
 /* Internal funcs */
@@ -82,7 +86,7 @@ Datum CHIP_fill(PG_FUNCTION_ARGS);
 
 
 /*
- * Input is a string with hex chars in it. 
+ * Input is a string with hex chars in it.
  * Convert to binary and put in the result
  */
 PG_FUNCTION_INFO_V1(CHIP_in);
@@ -95,7 +99,7 @@ Datum CHIP_in(PG_FUNCTION_ARGS)
 	int input_str_len;
 	int datum_size;
 
-/*printf("chip_in called\n"); */
+	/*printf("chip_in called\n"); */
 
 	input_str_len = strlen(str);
 
@@ -105,24 +109,24 @@ Datum CHIP_in(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
- 	if (strspn(str,"0123456789ABCDEF") != strlen(str) )
+	if (strspn(str,"0123456789ABCDEF") != strlen(str) )
 	{
 		elog(ERROR,"CHIP_in parser - input contains bad characters.  Should only have '0123456789ABCDEF'!");
-		PG_RETURN_NULL();	
+		PG_RETURN_NULL();
 	}
 	size = (input_str_len/2) ;
 	result = (CHIP *) palloc(size);
-	
+
 	for (t=0;t<size;t++)
 	{
 		((uchar *)result)[t] = parse_hex( &str[t*2]) ;
 	}
-/* if endian is wrong, flip it otherwise do nothing */
+	/* if endian is wrong, flip it otherwise do nothing */
 	result->size = size;
 	if (result->size < sizeof(CHIP)-sizeof(void*) )
 	{
 		elog(ERROR,"CHIP_in parser - bad data (too small to be a CHIP)!");
-		PG_RETURN_NULL();	
+		PG_RETURN_NULL();
 	}
 
 	if (result->endian_hint != 1)
@@ -138,10 +142,10 @@ Datum CHIP_in(PG_FUNCTION_ARGS)
 		flip_endian_double((char *)  &result->bvol.ymax);
 		flip_endian_double((char *)  &result->bvol.zmax);
 
-		flip_endian_int32( (char *)  & result->SRID);	
-			/*dont know what to do with future[8] ... */
+		flip_endian_int32( (char *)  & result->SRID);
+		/*dont know what to do with future[8] ... */
 
-		flip_endian_int32( (char *)  & result->height);	
+		flip_endian_int32( (char *)  & result->height);
 		flip_endian_int32( (char *)  & result->width);
 		flip_endian_int32( (char *)  & result->compression);
 		flip_endian_int32( (char *)  & result->factor);
@@ -151,7 +155,7 @@ Datum CHIP_in(PG_FUNCTION_ARGS)
 	if (result->endian_hint != 1 )
 	{
 		elog(ERROR,"CHIP_in parser - bad data (endian flag != 1)!");
-		PG_RETURN_NULL();	
+		PG_RETURN_NULL();
 	}
 	datum_size = 4;
 
@@ -198,7 +202,7 @@ Datum CHIP_out(PG_FUNCTION_ARGS)
 	{
 		deparse_hex( ((uchar *) chip)[t], &result[t*2]);
 	}
-	PG_RETURN_CSTRING(result);	
+	PG_RETURN_CSTRING(result);
 }
 
 
@@ -215,7 +219,7 @@ Datum CHIP_send(PG_FUNCTION_ARGS)
 	/*SET_VARSIZE(result, chip->size + VARHDRSZ);*/
 	/*memcpy( VARDATA(result), chip, chip->size ); */
 	memcpy( result, chip, chip->size );
-	PG_RETURN_POINTER(result);	
+	PG_RETURN_POINTER(result);
 	/*PG_RETURN_POINTER( (bytea *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0)) );*/
 }
 
@@ -230,14 +234,19 @@ Datum CHIP_to_LWGEOM(PG_FUNCTION_ARGS)
 	LWPOLY *poly;
 	uchar *ser;
 	int wantbbox = false;
-	
+
 	/* Assign coordinates to POINT2D array */
-	pts[0].x = chip->bvol.xmin; pts[0].y = chip->bvol.ymin;
-	pts[1].x = chip->bvol.xmin; pts[1].y = chip->bvol.ymax;
-	pts[2].x = chip->bvol.xmax; pts[2].y = chip->bvol.ymax;
-	pts[3].x = chip->bvol.xmax; pts[3].y = chip->bvol.ymin;
-	pts[4].x = chip->bvol.xmin; pts[4].y = chip->bvol.ymin;
-	
+	pts[0].x = chip->bvol.xmin;
+	pts[0].y = chip->bvol.ymin;
+	pts[1].x = chip->bvol.xmin;
+	pts[1].y = chip->bvol.ymax;
+	pts[2].x = chip->bvol.xmax;
+	pts[2].y = chip->bvol.ymax;
+	pts[3].x = chip->bvol.xmax;
+	pts[3].y = chip->bvol.ymin;
+	pts[4].x = chip->bvol.xmin;
+	pts[4].y = chip->bvol.ymin;
+
 	/* Construct point array */
 	pa[0] = palloc(sizeof(POINTARRAY));
 	pa[0]->serialized_pointlist = (uchar *)pts;
@@ -252,28 +261,28 @@ Datum CHIP_to_LWGEOM(PG_FUNCTION_ARGS)
 
 	/* Construct PG_LWGEOM  */
 	result = PG_LWGEOM_construct(ser, chip->SRID, wantbbox);
-	
+
 	PG_RETURN_POINTER(result);
 
 }
 
 PG_FUNCTION_INFO_V1(CHIP_getSRID);
 Datum CHIP_getSRID(PG_FUNCTION_ARGS)
-{ 
+{
 	CHIP *c = (CHIP *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_RETURN_INT32(c->SRID);
 }
 
 PG_FUNCTION_INFO_V1(CHIP_getFactor);
 Datum CHIP_getFactor(PG_FUNCTION_ARGS)
-{ 
+{
 	CHIP *c = (CHIP *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_RETURN_FLOAT4(c->factor);
 }
 
 PG_FUNCTION_INFO_V1(CHIP_setFactor);
 Datum CHIP_setFactor(PG_FUNCTION_ARGS)
-{ 
+{
 	CHIP 	*c = (CHIP *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	float	factor = PG_GETARG_FLOAT4(1);
 	CHIP  *result;
@@ -290,28 +299,28 @@ Datum CHIP_setFactor(PG_FUNCTION_ARGS)
 
 PG_FUNCTION_INFO_V1(CHIP_getDatatype);
 Datum CHIP_getDatatype(PG_FUNCTION_ARGS)
-{ 
+{
 	CHIP *c = (CHIP *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_RETURN_INT32(c->datatype);
 }
 
 PG_FUNCTION_INFO_V1(CHIP_getCompression);
 Datum CHIP_getCompression(PG_FUNCTION_ARGS)
-{ 
+{
 	CHIP *c = (CHIP *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_RETURN_INT32(c->compression);
 }
 
 PG_FUNCTION_INFO_V1(CHIP_getHeight);
 Datum CHIP_getHeight(PG_FUNCTION_ARGS)
-{ 
+{
 	CHIP *c = (CHIP *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_RETURN_INT32(c->height);
 }
 
 PG_FUNCTION_INFO_V1(CHIP_getWidth);
 Datum CHIP_getWidth(PG_FUNCTION_ARGS)
-{ 
+{
 	CHIP *c = (CHIP *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_RETURN_INT32(c->width);
 }
@@ -319,7 +328,7 @@ Datum CHIP_getWidth(PG_FUNCTION_ARGS)
 
 PG_FUNCTION_INFO_V1(CHIP_setSRID);
 Datum CHIP_setSRID(PG_FUNCTION_ARGS)
-{ 
+{
 	CHIP *c = (CHIP *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	int32 new_srid = PG_GETARG_INT32(1);
 	CHIP *result;
@@ -358,7 +367,7 @@ void		flip_endian_int32(char		*i)
 /********************************************************************
  *
  * NEW chip code
- * 
+ *
  ********************************************************************/
 
 #define CHIP_BOUNDS_CHECKS 1
@@ -374,7 +383,7 @@ size_t chip_pixel_value_size(int datatype);
 /********************************************************************
  *
  * IO primitives
- * 
+ *
  ********************************************************************/
 
 #define PIXELOP_OVERWRITE 1
@@ -382,11 +391,11 @@ size_t chip_pixel_value_size(int datatype);
 #define PIXELOP_MULTIPLY 3
 
 char *pixelop_name[] = {
-	"Unknown",
-	"Overwrite",
-	"Add",
-	"Multiply"
-};
+                           "Unknown",
+                           "Overwrite",
+                           "Add",
+                           "Multiply"
+                       };
 
 const char*
 pixelOpName(int op)
@@ -451,23 +460,23 @@ pixel_writeval(PIXEL *p, char *buf, size_t maxlen)
 
 	switch (p->type)
 	{
-		case 1: /* float32 */
-			memcpy(&f32, p->val, 4);
-			sprintf(buf, "%g", f32);
-			break;
-		case 5: /* int24 (rgb) */
-			buf[0] = '#';
-			deparse_hex(p->val[0], &buf[1]);
-			deparse_hex(p->val[1], &buf[3]);
-			deparse_hex(p->val[2], &buf[5]);
-			buf[7]='\0';
-			break;
-		case 6: /* int16 */
-			i16=pixel_readUINT16(p);
-			snprintf(buf, maxlen, "%u", i16);
-			break;
-		default:
-			lwerror("Unsupported PIXEL value %d", p->type);
+	case 1: /* float32 */
+		memcpy(&f32, p->val, 4);
+		sprintf(buf, "%g", f32);
+		break;
+	case 5: /* int24 (rgb) */
+		buf[0] = '#';
+		deparse_hex(p->val[0], &buf[1]);
+		deparse_hex(p->val[1], &buf[3]);
+		deparse_hex(p->val[2], &buf[5]);
+		buf[7]='\0';
+		break;
+	case 6: /* int16 */
+		i16=pixel_readUINT16(p);
+		snprintf(buf, maxlen, "%u", i16);
+		break;
+	default:
+		lwerror("Unsupported PIXEL value %d", p->type);
 	}
 }
 
@@ -573,7 +582,7 @@ pixel_add_int16(PIXEL *where, PIXEL *what)
 	if ( tmp > 65535 )
 	{
 		lwnotice("UInt16 Pixel saturated by add operation (%u+%u=%u)",
-			i1, i2, tmp);
+		         i1, i2, tmp);
 		tmp = 65535;
 	}
 	i1 = tmp;
@@ -588,21 +597,21 @@ pixel_add(PIXEL *where, PIXEL *what)
 
 	switch (where->type)
 	{
-		case 1: /*float32*/
-			pixel_add_float32(where, what);
-			break;
+	case 1: /*float32*/
+		pixel_add_float32(where, what);
+		break;
 
-		case 5: /*int24*/
-			pixel_add_int24(where, what);
-			break;
+	case 5: /*int24*/
+		pixel_add_int24(where, what);
+		break;
 
-		case 6: /*int16*/
-			pixel_add_int16(where, what);
-			break;
+	case 6: /*int16*/
+		pixel_add_int16(where, what);
+		break;
 
-		default:
-			lwerror("pixel_add: unkown pixel type %d",
-				where->type);
+	default:
+		lwerror("pixel_add: unkown pixel type %d",
+		        where->type);
 	}
 
 }
@@ -613,25 +622,25 @@ pixel_add(PIXEL *where, PIXEL *what)
 size_t
 chip_pixel_value_size(int datatype)
 {
-	switch(datatype)
+	switch (datatype)
 	{
-		case 1:
-		case 101:
-			return 4;
-		case 5:
-		case 105:
-			return 3;
-		case 6:
-		case 7:
-		case 106:
-		case 107:
-			return 2;
-		case 8:
-		case 108:
-			return 1;
-		default:
-			lwerror("Unknown CHIP datatype: %d", datatype);
-			return 0;
+	case 1:
+	case 101:
+		return 4;
+	case 5:
+	case 105:
+		return 3;
+	case 6:
+	case 7:
+	case 106:
+	case 107:
+		return 2;
+	case 8:
+	case 108:
+		return 1;
+	default:
+		lwerror("Unknown CHIP datatype: %d", datatype);
+		return 0;
 	}
 }
 
@@ -682,7 +691,7 @@ chip_setPixel(CHIP *c, int x, int y, PIXEL *p)
 
 #if DEBUG_CHIP
 	lwnotice("Writing %d bytes (%s) at offset %d (%p)",
-		ps, pixelHEX(p), off, where);
+	         ps, pixelHEX(p), off, where);
 #endif
 
 	memcpy(where, &(p->val), ps);
@@ -711,7 +720,7 @@ chip_getPixel(CHIP *c, int x, int y)
 /********************************************************************
  *
  * Drawing primitives
- * 
+ *
  ********************************************************************/
 
 /*
@@ -724,14 +733,14 @@ chip_draw_pixel(CHIP *chip, int x, int y, PIXEL *pixel, int op)
 
 #if DEBUG_CHIP
 	lwnotice("chip_draw_pixel([CHIP %p], %d, %d, [PIXEL %p], %s) called",
-		(void*)chip, x, y, (void*)pixel, pixelOpName(op));
+	         (void*)chip, x, y, (void*)pixel, pixelOpName(op));
 #endif
 
 	if ( x < 0 || x >= chip->width || y < 0 || y >= chip->height )
 	{
-/* should this be a warning ? */
-lwnotice("chip_draw_pixel called with out-of-range coordinates (%d,%d)", x, y);
-return;
+		/* should this be a warning ? */
+		lwnotice("chip_draw_pixel called with out-of-range coordinates (%d,%d)", x, y);
+		return;
 	}
 
 	/*
@@ -743,30 +752,30 @@ return;
 	{
 		PIXEL p;
 
-		case PIXELOP_OVERWRITE:
-			chip_setPixel(chip, x, y, pixel);
-			break;
+	case PIXELOP_OVERWRITE:
+		chip_setPixel(chip, x, y, pixel);
+		break;
 
-		case PIXELOP_ADD:
-			p = chip_getPixel(chip, x, y);
-			pixel_add(&p, pixel);
-			chip_setPixel(chip, x, y, &p);
-			break;
+	case PIXELOP_ADD:
+		p = chip_getPixel(chip, x, y);
+		pixel_add(&p, pixel);
+		chip_setPixel(chip, x, y, &p);
+		break;
 
-		default:
-			lwerror("Unsupported PIXELOP: %d", op);
+	default:
+		lwerror("Unsupported PIXELOP: %d", op);
 	}
 
 }
 
-/* 
+/*
  * Bresenham Line Algorithm
  *  http://www.edepot.com/linebresenham.html
  */
 void
 chip_draw_segment(CHIP *chip,
-	int x1, int y1, int x2, int y2,
-	PIXEL *pixel, int op)
+                  int x1, int y1, int x2, int y2,
+                  PIXEL *pixel, int op)
 {
 	int x, y;
 	int dx, dy;
@@ -815,7 +824,8 @@ chip_draw_segment(CHIP *chip,
 			}
 			balance += dy;
 			x += incx;
-		} chip_draw_pixel(chip, x, y, pixel, op);
+		}
+		chip_draw_pixel(chip, x, y, pixel, op);
 	}
 	else
 	{
@@ -833,7 +843,8 @@ chip_draw_segment(CHIP *chip,
 			}
 			balance += dx;
 			y += incy;
-		} chip_draw_pixel(chip, x, y, pixel, op);
+		}
+		chip_draw_pixel(chip, x, y, pixel, op);
 	}
 }
 
@@ -858,12 +869,12 @@ chip_fill(CHIP *chip, PIXEL *pixel, int op)
 /********************************************************************
  *
  * CHIP constructors
- * 
+ *
  ********************************************************************/
 
 CHIP *
 pgchip_construct(BOX3D *bvol, int SRID, int width, int height,
-	int datatype, PIXEL *initvalue)
+                 int datatype, PIXEL *initvalue)
 {
 	size_t pixsize = chip_pixel_value_size(datatype);
 	size_t datasize = pixsize*width*height;
@@ -884,19 +895,22 @@ pgchip_construct(BOX3D *bvol, int SRID, int width, int height,
 	chip->height=height;
 	chip->width=width;
 	chip->compression=0; /* no compression */
-	if ( ! initvalue ) {
+	if ( ! initvalue )
+	{
 		memset(&(chip->data), '\0', datasize);
-	} else {
+	}
+	else
+	{
 		chip_fill(chip, initvalue, PIXELOP_OVERWRITE);
 	}
 	return chip;
-} 
+}
 
 
 /********************************************************************
  *
  * Drawing functions
- * 
+ *
  ********************************************************************/
 
 
@@ -913,8 +927,8 @@ transform_point(CHIP* chip, POINT2D* p)
 	double geoheight = chip->bvol.ymax - chip->bvol.ymin;
 
 	/* geo size of a cell/pixel */
-	double xscale = geowidth / chip->width; 
-	double yscale = geoheight / chip->height; 
+	double xscale = geowidth / chip->width;
+	double yscale = geoheight / chip->height;
 
 	double xoff = ( chip->bvol.xmin + xscale );
 	double yoff = ( chip->bvol.ymin + yscale );
@@ -999,44 +1013,46 @@ chip_draw_lwgeom(CHIP *chip, LWGEOM *lwgeom, PIXEL *pixel, int op)
 
 	switch (TYPE_GETTYPE(lwgeom->type) )
 	{
-		case POINTTYPE:
-			chip_draw_lwpoint(chip, (LWPOINT*)lwgeom, pixel, op);
-			return;
-		case LINETYPE:
-			chip_draw_lwline(chip, (LWLINE*)lwgeom, pixel, op);
-			return;
-		case POLYGONTYPE:
-			lwerror("%s geometry unsupported by draw operation",
-				lwgeom_typename(TYPE_GETTYPE(lwgeom->type)));
-		case MULTIPOINTTYPE:
-		case MULTILINETYPE:
-		case MULTIPOLYGONTYPE:
-		case COLLECTIONTYPE:
-			coll = (LWCOLLECTION *)lwgeom;
-			for (i=0; i<coll->ngeoms; i++)
-			{
-				chip_draw_lwgeom(chip, coll->geoms[i],
-					pixel, op);
-			}
-			return;
-		default:
-			lwerror("Unknown geometry type: %d", lwgeom->type);
+	case POINTTYPE:
+		chip_draw_lwpoint(chip, (LWPOINT*)lwgeom, pixel, op);
+		return;
+	case LINETYPE:
+		chip_draw_lwline(chip, (LWLINE*)lwgeom, pixel, op);
+		return;
+	case POLYGONTYPE:
+		lwerror("%s geometry unsupported by draw operation",
+		        lwgeom_typename(TYPE_GETTYPE(lwgeom->type)));
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+	case COLLECTIONTYPE:
+		coll = (LWCOLLECTION *)lwgeom;
+		for (i=0; i<coll->ngeoms; i++)
+		{
+			chip_draw_lwgeom(chip, coll->geoms[i],
+			                 pixel, op);
+		}
+		return;
+	default:
+		lwerror("Unknown geometry type: %d", lwgeom->type);
 	}
 }
 
 /********************************************************************
  *
  * PGsql interfaces
- * 
+ *
  ********************************************************************/
 
-typedef struct CHIPDUMPSTATE_T {
+typedef struct CHIPDUMPSTATE_T
+{
 	CHIP *chip;
 	int x;
 	int y;
 	char *values[3];
 	char fmt[8];
-} CHIPDUMPSTATE;
+}
+CHIPDUMPSTATE;
 
 /*
  * Convert a TEXT to a C-String.
@@ -1123,7 +1139,7 @@ Datum CHIP_dump(PG_FUNCTION_ARGS)
 
 	/* Handled simple geometries */
 	while ( state->y < state->chip->height &&
-		state->x < state->chip->width )
+	        state->x < state->chip->width )
 	{
 		char buf[256];
 		PIXEL p;
@@ -1137,9 +1153,9 @@ Datum CHIP_dump(PG_FUNCTION_ARGS)
 		sprintf(state->values[2], "%s", buf);
 
 		tuple = BuildTupleFromCStrings(funcctx->attinmeta,
-			state->values);
+		                               state->values);
 		result = TupleGetDatum(funcctx->slot, tuple);
-		
+
 		if ( state->x < state->chip->width-1 )
 		{
 			state->x++;
@@ -1202,13 +1218,13 @@ Datum CHIP_getpixel(PG_FUNCTION_ARGS)
 	if ( x < 0 || x >= chip->width )
 	{
 		lwerror("X out of range %d..%d",
-			0, chip->width-1);
+		        0, chip->width-1);
 		PG_RETURN_NULL();
 	}
 	if ( y < 0 || y >= chip->height )
 	{
 		lwerror("Y out of range %d..%d",
-			0, chip->height-1);
+		        0, chip->height-1);
 		PG_RETURN_NULL();
 	}
 
@@ -1239,7 +1255,7 @@ Datum CHIP_setpixel(PG_FUNCTION_ARGS)
 	if ( chip->datatype != pixel.type )
 	{
 		lwerror("Pixel datatype %d mismatches chip datatype %d",
-			pixel.type, chip->datatype);
+		        pixel.type, chip->datatype);
 	}
 
 	chip_setPixel(chip, x, y, &pixel);

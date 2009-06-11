@@ -21,13 +21,13 @@
 void
 lwcollection_release(LWCOLLECTION *lwcollection)
 {
-  lwgeom_release(lwcollection_as_lwgeom(lwcollection));
+	lwgeom_release(lwcollection_as_lwgeom(lwcollection));
 }
 
 
 LWCOLLECTION *
 lwcollection_construct(unsigned int type, int SRID, BOX2DFLOAT4 *bbox,
-	unsigned int ngeoms, LWGEOM **geoms)
+                       unsigned int ngeoms, LWGEOM **geoms)
 {
 	LWCOLLECTION *ret;
 	int hasz, hasm;
@@ -36,7 +36,7 @@ lwcollection_construct(unsigned int type, int SRID, BOX2DFLOAT4 *bbox,
 	unsigned int i;
 #endif
 
-		LWDEBUGF(2, "lwcollection_construct called with %d, %d, %p, %d, %p.", type, SRID, bbox, ngeoms, geoms);
+	LWDEBUGF(2, "lwcollection_construct called with %d, %d, %p, %d, %p.", type, SRID, bbox, ngeoms, geoms);
 
 	hasz = 0;
 	hasm = 0;
@@ -47,11 +47,11 @@ lwcollection_construct(unsigned int type, int SRID, BOX2DFLOAT4 *bbox,
 #ifdef CHECK_LWGEOM_ZM
 		zm = TYPE_GETZM(geoms[0]->type);
 
-				LWDEBUGF(3, "lwcollection_construct type[0]=%d", geoms[0]->type);
+		LWDEBUGF(3, "lwcollection_construct type[0]=%d", geoms[0]->type);
 
 		for (i=1; i<ngeoms; i++)
 		{
-						LWDEBUGF(3, "lwcollection_construct type=[%d]=%d", i, geoms[i]->type);
+			LWDEBUGF(3, "lwcollection_construct type=[%d]=%d", i, geoms[i]->type);
 
 			if ( zm != TYPE_GETZM(geoms[i]->type) )
 				lwerror("lwcollection_construct: mixed dimension geometries: %d/%d", zm, TYPE_GETZM(geoms[i]->type));
@@ -62,7 +62,7 @@ lwcollection_construct(unsigned int type, int SRID, BOX2DFLOAT4 *bbox,
 
 	ret = lwalloc(sizeof(LWCOLLECTION));
 	ret->type = lwgeom_makeType_full(hasz, hasm, (SRID!=-1),
-		type, 0);
+	                                 type, 0);
 	ret->SRID = SRID;
 	ret->ngeoms = ngeoms;
 	ret->geoms = geoms;
@@ -78,7 +78,7 @@ lwcollection_construct_empty(int SRID, char hasz, char hasm)
 
 	ret = lwalloc(sizeof(LWCOLLECTION));
 	ret->type = lwgeom_makeType_full(hasz, hasm, (SRID!=-1),
-		COLLECTIONTYPE, 0);
+	                                 COLLECTIONTYPE, 0);
 	ret->SRID = SRID;
 	ret->ngeoms = 0;
 	ret->geoms = NULL;
@@ -123,8 +123,7 @@ lwcollection_deserialize(uchar *srl)
 		result->geoms = lwalloc(sizeof(LWGEOM *)*insp->ngeometries);
 		for (i=0; i<insp->ngeometries; i++)
 		{
-			result->geoms[i] =
-				lwgeom_deserialize(insp->sub_geoms[i]);
+			result->geoms[i] = lwgeom_deserialize(insp->sub_geoms[i]);
 		}
 	}
 
@@ -179,13 +178,15 @@ lwcollection_serialize_buf(LWCOLLECTION *coll, uchar *buf, size_t *retsize)
 	int i;
 
 	LWDEBUGF(2, "lwcollection_serialize_buf called (%s with %d elems)",
-		lwgeom_typename(TYPE_GETTYPE(coll->type)), coll->ngeoms);
+	         lwgeom_typename(TYPE_GETTYPE(coll->type)), coll->ngeoms);
 
 	hasSRID = (coll->SRID != -1);
 
-	buf[0] = lwgeom_makeType_full(
-		TYPE_HASZ(coll->type), TYPE_HASM(coll->type),
-		hasSRID, TYPE_GETTYPE(coll->type), coll->bbox ? 1 : 0);
+	buf[0] = lwgeom_makeType_full(TYPE_HASZ(coll->type), 
+	                              TYPE_HASM(coll->type),
+	                              hasSRID, 
+	                              TYPE_GETTYPE(coll->type),  
+	                              coll->bbox ? 1 : 0 );
 	loc = buf+1;
 
 	/* Add BBOX if requested */
@@ -234,7 +235,8 @@ lwcollection_compute_box2d_p(LWCOLLECTION *col, BOX2DFLOAT4 *box)
 	{
 		if ( ! lwgeom_compute_box2d_p(col->geoms[i], &boxbuf) )
 			return 0;
-		if ( ! box2d_union_p(box, &boxbuf, box) ) return 0;
+		if ( ! box2d_union_p(box, &boxbuf, box) ) 
+			return 0;
 	}
 	return 1;
 }
@@ -281,8 +283,7 @@ lwcollection_add(const LWCOLLECTION *to, uint32 where, const LWGEOM *what)
 	if ( where == -1 ) where = to->ngeoms;
 	else if ( where < -1 || where > to->ngeoms )
 	{
-		lwerror("lwcollection_add: add position out of range %d..%d",
-			-1, to->ngeoms);
+		lwerror("lwcollection_add: add position out of range %d..%d", -1, to->ngeoms);
 		return NULL;
 	}
 
@@ -307,8 +308,8 @@ lwcollection_add(const LWCOLLECTION *to, uint32 where, const LWGEOM *what)
 	}
 
 	col = lwcollection_construct(COLLECTIONTYPE,
-		to->SRID, NULL,
-		to->ngeoms+1, geoms);
+	                             to->SRID, NULL,
+	                             to->ngeoms+1, geoms);
 
 	return (LWGEOM *)col;
 
@@ -326,8 +327,7 @@ lwcollection_segmentize2d(LWCOLLECTION *col, double dist)
 	for (i=0; i<col->ngeoms; i++)
 		newgeoms[i] = lwgeom_segmentize2d(col->geoms[i], dist);
 
-	return lwcollection_construct(col->type, col->SRID, NULL,
-		col->ngeoms, newgeoms);
+	return lwcollection_construct(col->type, col->SRID, NULL, col->ngeoms, newgeoms);
 }
 
 /** @brief check for same geometry composition
@@ -370,30 +370,33 @@ int lwcollection_ngeoms(const LWCOLLECTION *col)
 	int i;
 	int ngeoms = 0;
 
-	if( ! col ) {
+	if ( ! col )
+	{
 		lwerror("Null input geometry.");
 		return 0;
 	}
 
-	for( i = 0; i < col->ngeoms; i++ )
+	for ( i = 0; i < col->ngeoms; i++ )
 	{
-		if( col->geoms[i]) {
-			switch(TYPE_GETTYPE(col->geoms[i]->type)) {
-				case POINTTYPE:
-				case LINETYPE:
-				case CIRCSTRINGTYPE:
-				case POLYGONTYPE:
-					ngeoms += 1;
-					break;
-				case MULTIPOINTTYPE:
-				case MULTILINETYPE:
-				case MULTICURVETYPE:
-				case MULTIPOLYGONTYPE:
-					ngeoms += col->ngeoms;
-					break;
-				case COLLECTIONTYPE:
-					ngeoms += lwcollection_ngeoms((LWCOLLECTION*)col->geoms[i]);
-					break;
+		if ( col->geoms[i])
+		{
+			switch (TYPE_GETTYPE(col->geoms[i]->type))
+			{
+			case POINTTYPE:
+			case LINETYPE:
+			case CIRCSTRINGTYPE:
+			case POLYGONTYPE:
+				ngeoms += 1;
+				break;
+			case MULTIPOINTTYPE:
+			case MULTILINETYPE:
+			case MULTICURVETYPE:
+			case MULTIPOLYGONTYPE:
+				ngeoms += col->ngeoms;
+				break;
+			case COLLECTIONTYPE:
+				ngeoms += lwcollection_ngeoms((LWCOLLECTION*)col->geoms[i]);
+				break;
 			}
 		}
 	}
@@ -450,40 +453,41 @@ TODO: pramsey
 void lwcollection_free(LWCOLLECTION *col)
 {
 	int i;
-	if( col->bbox )
+	if ( col->bbox )
 	{
 		lwfree(col->bbox);
 	}
 	for ( i = 0; i < col->ngeoms; i++ )
 	{
-		if( col->geoms[i] ) {
-			switch( TYPE_GETTYPE(col->geoms[i]->type) )
+		if ( col->geoms[i] )
+		{
+			switch ( TYPE_GETTYPE(col->geoms[i]->type) )
 			{
-				case POINTTYPE:
-					lwpoint_free((LWPOINT*)col->geoms[i]);
-					break;
-				case LINETYPE:
-					lwline_free((LWLINE*)col->geoms[i]);
-					break;
-				case POLYGONTYPE:
-					lwpoly_free((LWPOLY*)col->geoms[i]);
-					break;
-				case MULTIPOINTTYPE:
-					lwmpoint_free((LWMPOINT*)col->geoms[i]);
-					break;
-				case MULTILINETYPE:
-					lwmline_free((LWMLINE*)col->geoms[i]);
-					break;
-				case MULTIPOLYGONTYPE:
-					lwmpoly_free((LWMPOLY*)col->geoms[i]);
-					break;
-				case COLLECTIONTYPE:
-					lwcollection_free((LWCOLLECTION*)col->geoms[i]);
-					break;
+			case POINTTYPE:
+				lwpoint_free((LWPOINT*)col->geoms[i]);
+				break;
+			case LINETYPE:
+				lwline_free((LWLINE*)col->geoms[i]);
+				break;
+			case POLYGONTYPE:
+				lwpoly_free((LWPOLY*)col->geoms[i]);
+				break;
+			case MULTIPOINTTYPE:
+				lwmpoint_free((LWMPOINT*)col->geoms[i]);
+				break;
+			case MULTILINETYPE:
+				lwmline_free((LWMLINE*)col->geoms[i]);
+				break;
+			case MULTIPOLYGONTYPE:
+				lwmpoly_free((LWMPOLY*)col->geoms[i]);
+				break;
+			case COLLECTIONTYPE:
+				lwcollection_free((LWCOLLECTION*)col->geoms[i]);
+				break;
 			}
 		}
 	}
-	if( col->geoms )
+	if ( col->geoms )
 	{
 		lwfree(col->geoms);
 	}
@@ -499,41 +503,42 @@ BOX3D *lwcollection_compute_box3d(LWCOLLECTION *col)
 	BOX3D *boxtmp2 = NULL;
 	for ( i = 0; i < col->ngeoms; i++ )
 	{
-		if( col->geoms[i] ) {
-			switch( TYPE_GETTYPE(col->geoms[i]->type) )
+		if ( col->geoms[i] )
+		{
+			switch ( TYPE_GETTYPE(col->geoms[i]->type) )
 			{
-				case POINTTYPE:
-					boxtmp1 = lwpoint_compute_box3d((LWPOINT*)(col->geoms[i]));
-					break;
-				case LINETYPE:
-					boxtmp1 = lwline_compute_box3d((LWLINE*)(col->geoms[i]));
-					break;
-				case POLYGONTYPE:
-					boxtmp1 = lwpoly_compute_box3d((LWPOLY*)(col->geoms[i]));
-					break;
-				case CIRCSTRINGTYPE:
-					boxtmp1 = lwcircstring_compute_box3d((LWCIRCSTRING *)(col->geoms[i]));
-					break;
-				case COMPOUNDTYPE:
-				case CURVEPOLYTYPE:
-				case MULTIPOINTTYPE:
-				case MULTILINETYPE:
-				case MULTIPOLYGONTYPE:
-				case MULTICURVETYPE:
-				case MULTISURFACETYPE:
-				case COLLECTIONTYPE:
-					boxtmp1 = lwcollection_compute_box3d((LWCOLLECTION*)(col->geoms[i]));
-					boxfinal = box3d_union(boxtmp1, boxtmp2);
-					break;
+			case POINTTYPE:
+				boxtmp1 = lwpoint_compute_box3d((LWPOINT*)(col->geoms[i]));
+				break;
+			case LINETYPE:
+				boxtmp1 = lwline_compute_box3d((LWLINE*)(col->geoms[i]));
+				break;
+			case POLYGONTYPE:
+				boxtmp1 = lwpoly_compute_box3d((LWPOLY*)(col->geoms[i]));
+				break;
+			case CIRCSTRINGTYPE:
+				boxtmp1 = lwcircstring_compute_box3d((LWCIRCSTRING *)(col->geoms[i]));
+				break;
+			case COMPOUNDTYPE:
+			case CURVEPOLYTYPE:
+			case MULTIPOINTTYPE:
+			case MULTILINETYPE:
+			case MULTIPOLYGONTYPE:
+			case MULTICURVETYPE:
+			case MULTISURFACETYPE:
+			case COLLECTIONTYPE:
+				boxtmp1 = lwcollection_compute_box3d((LWCOLLECTION*)(col->geoms[i]));
+				boxfinal = box3d_union(boxtmp1, boxtmp2);
+				break;
 			}
 			boxtmp2 = boxfinal;
 			boxfinal = box3d_union(boxtmp1, boxtmp2);
-			if( boxtmp1 && boxtmp1 != boxfinal )
+			if ( boxtmp1 && boxtmp1 != boxfinal )
 			{
 				lwfree(boxtmp1);
 				boxtmp1 = NULL;
 			}
-			if( boxtmp2 && boxtmp2 != boxfinal )
+			if ( boxtmp2 && boxtmp2 != boxfinal )
 			{
 				lwfree(boxtmp2);
 				boxtmp2 = NULL;

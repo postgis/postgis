@@ -7,7 +7,7 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************/
 
 #include "postgres.h"
@@ -21,8 +21,8 @@
 
 #include "../postgis_config.h"
 
-/* Workaround for GEOS 2.2 compatibility: old geos_c.h does not contain 
-   header guards to protect from multiple inclusion */ 
+/* Workaround for GEOS 2.2 compatibility: old geos_c.h does not contain
+   header guards to protect from multiple inclusion */
 #ifndef GEOS_C_INCLUDED
 #define GEOS_C_INCLUDED
 #include "geos_c.h"

@@ -7,7 +7,7 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************/
 
 #include <stdio.h>
@@ -48,7 +48,7 @@ int main()
 	DYNPTARRAY *dpa;
 	POINT4D point4d;
 	POINTARRAY **rings;
-	
+
 	LWPOINT *testpoint;
 	LWLINE *testline;
 	LWPOLY *testpoly;
@@ -56,25 +56,25 @@ int main()
 
 	/*
 	 * Construct a geometry equivalent to POINT(0 51)
-	 */	
+	 */
 
-	dpa = dynptarray_create(10, 2); 
-        point4d.x = 0;
-        point4d.y = 51;
+	dpa = dynptarray_create(10, 2);
+	point4d.x = 0;
+	point4d.y = 51;
 
-	dynptarray_addPoint4d(dpa, &point4d, 0); 
-	
-        testpoint = lwpoint_construct(-1, NULL, dpa->pa);
+	dynptarray_addPoint4d(dpa, &point4d, 0);
+
+	testpoint = lwpoint_construct(-1, NULL, dpa->pa);
 
 	/* Generate the LWGEOM from LWPOINT, then serialize it ready for the parser */
 	lwgeom = lwpoint_as_lwgeom(testpoint);
-	serialized_lwgeom = lwgeom_serialize(lwgeom); 
+	serialized_lwgeom = lwgeom_serialize(lwgeom);
 
 	/* Output the geometry in WKT and WKB */
 	result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_ALL);
 	printf("WKT format    : %s\n", lwg_unparser_result.wkoutput);
 	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_ALL, NDR);
-	printf("HEXWKB format : %s\n\n", lwg_unparser_result.wkoutput); 
+	printf("HEXWKB format : %s\n\n", lwg_unparser_result.wkoutput);
 
 	/* Free all of the allocated items */
 	lwfree(lwg_unparser_result.wkoutput);
@@ -90,27 +90,27 @@ int main()
 	dpa = dynptarray_create(10, 2);
 	point4d.x = 0;
 	point4d.y = 0;
-	dynptarray_addPoint4d(dpa, &point4d, 0);		
+	dynptarray_addPoint4d(dpa, &point4d, 0);
 
 	point4d.x = 2;
 	point4d.y = 2;
-	dynptarray_addPoint4d(dpa, &point4d, 0);		
+	dynptarray_addPoint4d(dpa, &point4d, 0);
 
 	point4d.x = 4;
 	point4d.y = 1;
-	dynptarray_addPoint4d(dpa, &point4d, 0);		
+	dynptarray_addPoint4d(dpa, &point4d, 0);
 
 	testline = lwline_construct(-1, NULL, dpa->pa);
 
 	/* Generate the LWGEOM from LWLINE, then serialize it ready for the parser */
 	lwgeom = lwline_as_lwgeom(testline);
-	serialized_lwgeom = lwgeom_serialize(lwgeom); 
+	serialized_lwgeom = lwgeom_serialize(lwgeom);
 
 	/* Output the geometry in WKT and WKB */
 	result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_ALL);
 	printf("WKT format    : %s\n", lwg_unparser_result.wkoutput);
 	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_ALL, NDR);
-	printf("HEXWKB format : %s\n\n", lwg_unparser_result.wkoutput); 
+	printf("HEXWKB format : %s\n\n", lwg_unparser_result.wkoutput);
 
 	/* Free all of the allocated items */
 	lwfree(lwg_unparser_result.wkoutput);
@@ -149,7 +149,7 @@ int main()
 	dynptarray_addPoint4d(dpa, &point4d, 0);
 
 	rings[0] = dpa->pa;
-	lwfree(dpa);	
+	lwfree(dpa);
 
 	/* Construct the second ring */
 	dpa = dynptarray_create(10, 2);
@@ -180,13 +180,13 @@ int main()
 
 	/* Generate the LWGEOM from LWPOLY, then serialize it ready for the parser */
 	lwgeom = lwpoly_as_lwgeom(testpoly);
-	serialized_lwgeom = lwgeom_serialize(lwgeom); 
+	serialized_lwgeom = lwgeom_serialize(lwgeom);
 
 	/* Output the geometry in WKT and WKB */
 	result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_NONE);
 	printf("WKT format    : %s\n", lwg_unparser_result.wkoutput);
 	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_NONE, NDR);
-	printf("HEXWKB format : %s\n\n", lwg_unparser_result.wkoutput); 
+	printf("HEXWKB format : %s\n\n", lwg_unparser_result.wkoutput);
 
 	/* Free all of the allocated items */
 	lwfree(lwg_unparser_result.wkoutput);

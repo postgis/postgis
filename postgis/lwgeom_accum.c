@@ -55,9 +55,11 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS);
 ** the pgis_abs type in our case.
 */
 
-typedef struct {
+typedef struct
+{
 	ArrayBuildState *a;
-	} pgis_abs;
+}
+pgis_abs;
 
 /**
 ** We're never going to use this type externally so the in/out
@@ -68,7 +70,7 @@ Datum
 pgis_abs_in(PG_FUNCTION_ARGS)
 {
 	ereport(ERROR,(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-			errmsg("function pgis_abs_in not implemented")));
+	               errmsg("function pgis_abs_in not implemented")));
 	PG_RETURN_POINTER(NULL);
 }
 PG_FUNCTION_INFO_V1(pgis_abs_out);
@@ -76,7 +78,7 @@ Datum
 pgis_abs_out(PG_FUNCTION_ARGS)
 {
 	ereport(ERROR,(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-			errmsg("function pgis_abs_out not implemented")));
+	               errmsg("function pgis_abs_out not implemented")));
 	PG_RETURN_POINTER(NULL);
 }
 
@@ -97,8 +99,8 @@ pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
 
 	if (arg1_typeid == InvalidOid)
 		ereport(ERROR,
-				(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-				 errmsg("could not determine input data type")));
+		        (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+		         errmsg("could not determine input data type")));
 
 	if (fcinfo->context && IsA(fcinfo->context, AggState))
 		aggcontext = ((AggState *) fcinfo->context)->aggcontext;
@@ -125,10 +127,10 @@ pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
 	state = p->a;
 	elem = PG_ARGISNULL(1) ? (Datum) 0 : PG_GETARG_DATUM(1);
 	state = accumArrayResult(state,
-							 elem,
-							 PG_ARGISNULL(1),
-							 arg1_typeid,
-							 aggcontext);
+	                         elem,
+	                         PG_ARGISNULL(1),
+	                         arg1_typeid,
+	                         aggcontext);
 	p->a = state;
 
 	PG_RETURN_POINTER(p);
@@ -150,11 +152,11 @@ pgis_accum_finalfn(pgis_abs *p, MemoryContext mctx, FunctionCallInfo fcinfo)
 
 	/* cannot be called directly because of internal-type argument */
 	Assert(fcinfo->context &&
-		   (IsA(fcinfo->context, AggState)
+	       (IsA(fcinfo->context, AggState)
 #if POSTGIS_PGSQL_VERSION >= 84
-			|| IsA(fcinfo->context, WindowAggState)
+	        || IsA(fcinfo->context, WindowAggState)
 #endif
-			));
+	       ));
 
 	state = p->a;
 	dims[0] = state->nelems;
@@ -164,7 +166,7 @@ pgis_accum_finalfn(pgis_abs *p, MemoryContext mctx, FunctionCallInfo fcinfo)
 #else
 	/* Release working state if regular aggregate, but not if window agg */
 	result = makeMdArrayResult(state, 1, dims, lbs, mctx,
-							   IsA(fcinfo->context, AggState));
+	                           IsA(fcinfo->context, AggState));
 #endif
 	return result;
 }

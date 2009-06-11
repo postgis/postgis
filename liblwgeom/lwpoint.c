@@ -7,7 +7,7 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************/
 
 #include <stdio.h>
@@ -66,8 +66,8 @@ lwpoint_serialize_buf(LWPOINT *point, uchar *buf, size_t *retsize)
 	size += sizeof(double)*TYPE_NDIMS(point->type);
 
 	buf[0] = (uchar) lwgeom_makeType_full(
-		TYPE_HASZ(point->type), TYPE_HASM(point->type),
-		hasSRID, POINTTYPE, point->bbox?1:0);
+	             TYPE_HASZ(point->type), TYPE_HASM(point->type),
+	             hasSRID, POINTTYPE, point->bbox?1:0);
 	loc = buf+1;
 
 	if (point->bbox)
@@ -89,8 +89,8 @@ lwpoint_serialize_buf(LWPOINT *point, uchar *buf, size_t *retsize)
 }
 
 /*
- * Find bounding box (standard one) 
- *   zmin=zmax=NO_Z_VALUE if 2d 
+ * Find bounding box (standard one)
+ *   zmin=zmax=NO_Z_VALUE if 2d
  */
 BOX3D *
 lwpoint_compute_box3d(LWPOINT *point)
@@ -151,7 +151,7 @@ lwpoint_serialize_size(LWPOINT *point)
 
 	LWDEBUGF(3, "lwpoint_serialize_size returning %d", size);
 
-	return size; 
+	return size;
 }
 
 /*
@@ -224,7 +224,7 @@ make_lwpoint4d(int SRID, double x, double y, double z, double m)
 {
 	POINTARRAY *pa = ptarray_construct(1, 1, 1);
 	POINT4D p;
-	
+
 	p.x = x;
 	p.y = y;
 	p.z = z;
@@ -302,7 +302,7 @@ lwpoint_deserialize(uchar *serialized_form)
 
 void lwpoint_free(LWPOINT *pt)
 {
-	if(pt->point)
+	if (pt->point)
 		ptarray_free(pt->point);
 	lwfree(pt);
 }
@@ -381,9 +381,9 @@ lwpoint_add(const LWPOINT *to, uint32 where, const LWGEOM *what)
 	else newtype = COLLECTIONTYPE;
 
 	col = lwcollection_construct(newtype,
-		to->SRID, NULL,
-		2, geoms);
-	
+	                             to->SRID, NULL,
+	                             2, geoms);
+
 	return (LWGEOM *)col;
 }
 
@@ -427,7 +427,7 @@ lwgeom_size_point(const uchar *serialized_point)
 void
 lwpoint_release(LWPOINT *lwpoint)
 {
-  lwgeom_release(lwpoint_as_lwgeom(lwpoint));
+	lwgeom_release(lwpoint_as_lwgeom(lwpoint));
 }
 
 

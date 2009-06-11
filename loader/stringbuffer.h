@@ -1,4 +1,4 @@
-/* 
+/*
  *
  * Copyright 2002 Thamer Alharbash
  *
@@ -37,11 +37,13 @@
 
 #define STRINGBUFFER_CHUNKSIZE 16
 
-typedef struct {
-    size_t len;
-    size_t capacity;
-    char *buf;
-} stringbuffer_t;
+typedef struct
+{
+	size_t len;
+	size_t capacity;
+	char *buf;
+}
+stringbuffer_t;
 
 extern stringbuffer_t *stringbuffer_create(void);
 extern void stringbuffer_destroy(stringbuffer_t *sb);

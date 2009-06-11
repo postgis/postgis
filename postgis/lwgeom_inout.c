@@ -42,10 +42,12 @@ Datum BOOL_to_text(PG_FUNCTION_ARGS);
  *  included here so we can be independent from postgis
  * WKB structure  -- exactly the same as TEXT
  */
-typedef struct Well_known_bin {
-    int32 size;		/* total size of this structure */
-    uchar  data[1];	/* THIS HOLD VARIABLE LENGTH DATA */
-} WellKnownBinary;
+typedef struct Well_known_bin
+{
+	int32 size;		/* total size of this structure */
+	uchar  data[1];	/* THIS HOLD VARIABLE LENGTH DATA */
+}
+WellKnownBinary;
 
 
 /*
@@ -61,7 +63,7 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 {
 	char *str = PG_GETARG_CSTRING(0);
 	LWGEOM_PARSER_RESULT lwg_parser_result;
-	LWGEOM *lwgeom;	
+	LWGEOM *lwgeom;
 	PG_LWGEOM *ret;
 	int result;
 
@@ -71,14 +73,14 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 		PG_PARSER_ERROR(lwg_parser_result);
 
 	lwgeom = lwgeom_deserialize(lwg_parser_result.serialized_lwgeom);
-    
+
 	ret = pglwgeom_serialize(lwgeom);
 	lwgeom_release(lwgeom);
 
 	if ( is_worth_caching_pglwgeom_bbox(ret) )
 	{
 		ret = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
-			LWGEOM_addBBOX, PointerGetDatum(ret)));
+		                                       LWGEOM_addBBOX, PointerGetDatum(ret)));
 	}
 
 	PG_RETURN_POINTER(ret);
@@ -94,7 +96,7 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_out);
 Datum LWGEOM_out(PG_FUNCTION_ARGS)
 {
-	LWGEOM_UNPARSER_RESULT lwg_unparser_result;	
+	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
 	PG_LWGEOM *lwgeom;
 	int result;
 
@@ -124,14 +126,14 @@ Datum LWGEOM_asHEXEWKB(PG_FUNCTION_ARGS)
 	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
 	{
 		type = PG_GETARG_TEXT_P(1);
-		if (VARSIZE(type) < 7)  
+		if (VARSIZE(type) < 7)
 		{
 			elog(ERROR,"AsHEXEWKB(geometry, <type>) - type should be 'XDR' or 'NDR'.  type length is %i",VARSIZE(type) -VARHDRSZ);
 			PG_RETURN_NULL();
 		}
 
 		if  ( ! strncmp(VARDATA(type), "xdr", 3) ||
-			! strncmp(VARDATA(type), "XDR", 3) )
+		        ! strncmp(VARDATA(type), "XDR", 3) )
 		{
 			byteorder = XDR;
 		}
@@ -206,7 +208,7 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 	wkb_input = (WellKnownBinary *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	lwgeom2 = pglwgeom_from_ewkb((uchar *)VARDATA(wkb_input), PARSER_CHECK_ALL,
-		VARSIZE(wkb_input)-VARHDRSZ);
+	                             VARSIZE(wkb_input)-VARHDRSZ);
 
 	if (  ( PG_NARGS()>1) && ( ! PG_ARGISNULL(1) ))
 	{
@@ -218,7 +220,7 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 	if ( is_worth_caching_pglwgeom_bbox(lwgeom) )
 	{
 		lwgeom = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
-			LWGEOM_addBBOX, PointerGetDatum(lwgeom)));
+		                                          LWGEOM_addBBOX, PointerGetDatum(lwgeom)));
 	}
 
 	PG_RETURN_POINTER(lwgeom);
@@ -231,7 +233,7 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(WKBFromLWGEOM);
 Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 {
-/* #define BINARY_FROM_HEX 1 */
+	/* #define BINARY_FROM_HEX 1 */
 
 	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
 	PG_LWGEOM *lwgeom_input; /* SRID=#;<hexized wkb> */
@@ -251,14 +253,14 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
 	{
 		type = PG_GETARG_TEXT_P(1);
-		if (VARSIZE(type) < 7)  
+		if (VARSIZE(type) < 7)
 		{
 			elog(ERROR,"asbinary(geometry, <type>) - type should be 'XDR' or 'NDR'.  type length is %i",VARSIZE(type) -VARHDRSZ);
 			PG_RETURN_NULL();
 		}
 
 		if  ( ! strncmp(VARDATA(type), "xdr", 3) ||
-			! strncmp(VARDATA(type), "XDR", 3) )
+		        ! strncmp(VARDATA(type), "XDR", 3) )
 		{
 			byteorder = XDR;
 		}
@@ -286,7 +288,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 	}
 
 	LWDEBUGF(3, "in WKBFromLWGEOM with WKB (with no 'SRID=#;' = '%s'",
-		hexized_wkb);
+	         hexized_wkb);
 
 	size_result = lwg_unparser_result.size/2 + VARHDRSZ;
 	lwgeom_result = palloc(size_result);
@@ -320,7 +322,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 #endif
 
 	LWDEBUGF(3, "Output size is %lu (comp: %lu)",
-		VARSIZE(lwgeom_result), (unsigned long)size_result);
+	         VARSIZE(lwgeom_result), (unsigned long)size_result);
 
 	PG_RETURN_POINTER(lwgeom_result);
 }
@@ -367,9 +369,9 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 	SET_VARSIZE(result, size);
 
 	result->type = lwgeom_makeType_full(
-		TYPE_HASZ(old_type),
-		TYPE_HASM(old_type),
-		lwgeom_hasSRID(old_type), lwgeom_getType(old_type), 1);
+	                   TYPE_HASZ(old_type),
+	                   TYPE_HASM(old_type),
+	                   lwgeom_hasSRID(old_type), lwgeom_getType(old_type), 1);
 
 	/* copy in bbox */
 	memcpy(result->data, &box, sizeof(BOX2DFLOAT4));
@@ -445,9 +447,9 @@ Datum LWGEOM_dropBBOX(PG_FUNCTION_ARGS)
 	SET_VARSIZE(result, size);
 
 	result->type = lwgeom_makeType_full(
-		TYPE_HASZ(old_type),
-		TYPE_HASM(old_type),
-		lwgeom_hasSRID(old_type), lwgeom_getType(old_type), 0);
+	                   TYPE_HASZ(old_type),
+	                   TYPE_HASM(old_type),
+	                   lwgeom_hasSRID(old_type), lwgeom_getType(old_type), 0);
 
 	/* everything but the type and length */
 	memcpy((char *)VARDATA(result)+1, ((char *)(lwgeom->data))+sizeof(BOX2DFLOAT4), size-VARHDRSZ-1);
@@ -473,7 +475,7 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 	text *wkt_input = PG_GETARG_TEXT_P(0);
 	PG_LWGEOM *ret;  /*with length */
 	LWGEOM_PARSER_RESULT lwg_parser_result;
-	LWGEOM *lwgeom;	
+	LWGEOM *lwgeom;
 	char *wkt;
 	int wkt_size, result;
 
@@ -491,7 +493,7 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 		PG_PARSER_ERROR(lwg_parser_result);
 
 	lwgeom = lwgeom_deserialize(lwg_parser_result.serialized_lwgeom);
-    
+
 	ret = pglwgeom_serialize(lwgeom);
 	lwgeom_release(lwgeom);
 
@@ -504,7 +506,7 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 	if ( is_worth_caching_pglwgeom_bbox(ret) )
 	{
 		ret = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
-			LWGEOM_addBBOX, PointerGetDatum(ret)));
+		                                       LWGEOM_addBBOX, PointerGetDatum(ret)));
 	}
 
 	PG_RETURN_POINTER(ret);
@@ -522,7 +524,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_recv);
 Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 {
 	StringInfo buf = (StringInfo) PG_GETARG_POINTER(0);
-        bytea *wkb;
+	bytea *wkb;
 	PG_LWGEOM *lwgeom_result;
 #if POSTGIS_DEBUG_LEVEL > 0
 	int result;
@@ -540,7 +542,7 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 
 	/* Call LWGEOM_from_bytea function... */
 	lwgeom_result = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
-		LWGEOMFromWKB, PointerGetDatum(wkb)));
+	                    LWGEOMFromWKB, PointerGetDatum(wkb)));
 
 	POSTGIS_DEBUG(3, "LWGEOM_recv advancing StringInfo buffer");
 
@@ -554,7 +556,7 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(3, "LWGEOM_recv returning");
 
-        PG_RETURN_POINTER(lwgeom_result);
+	PG_RETURN_POINTER(lwgeom_result);
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_send);
@@ -565,9 +567,9 @@ Datum LWGEOM_send(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUG(2, "LWGEOM_send called");
 
 	result = (bytea *)DatumGetPointer(DirectFunctionCall1(
-		WKBFromLWGEOM, PG_GETARG_DATUM(0)));
+	                                      WKBFromLWGEOM, PG_GETARG_DATUM(0)));
 
-        PG_RETURN_POINTER(result);
+	PG_RETURN_POINTER(result);
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_to_bytea);
@@ -578,9 +580,9 @@ Datum LWGEOM_to_bytea(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUG(2, "LWGEOM_to_bytea called");
 
 	result = (bytea *)DatumGetPointer(DirectFunctionCall1(
-		WKBFromLWGEOM, PG_GETARG_DATUM(0)));
+	                                      WKBFromLWGEOM, PG_GETARG_DATUM(0)));
 
-        PG_RETURN_POINTER(result);
+	PG_RETURN_POINTER(result);
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_from_bytea);
@@ -591,9 +593,9 @@ Datum LWGEOM_from_bytea(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUG(2, "LWGEOM_from_bytea start");
 
 	result = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
-		LWGEOMFromWKB, PG_GETARG_DATUM(0)));
+	                                          LWGEOMFromWKB, PG_GETARG_DATUM(0)));
 
-        PG_RETURN_POINTER(result);
+	PG_RETURN_POINTER(result);
 }
 
 PG_FUNCTION_INFO_V1(BOOL_to_text);

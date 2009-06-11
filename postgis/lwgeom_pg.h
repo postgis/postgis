@@ -84,7 +84,7 @@ extern Oid getGeometryOID(void);
 
 /* PG-dependant */
 /* BOX is postgresql standard type */
-extern void box_to_box3d_p(BOX *box, BOX3D *out);  
+extern void box_to_box3d_p(BOX *box, BOX3D *out);
 extern void box3d_to_box_p(BOX3D *box, BOX *out);
 
 /* PG-exposed */

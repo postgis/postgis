@@ -375,7 +375,7 @@ int lwpoint_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int nd
 	}
 
 	if ( FP_MIN(p1_value, p2_value) > interpolation_value ||
-			FP_MAX(p1_value, p2_value) < interpolation_value )
+	        FP_MAX(p1_value, p2_value) < interpolation_value )
 	{
 		lwerror("Cannot interpolate to a value (%g) not between the input points (%g, %g).", interpolation_value, p1_value, p2_value);
 		return 0;
@@ -571,9 +571,9 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				*  If we're on a boundary and crossing from the far side,
 				*  we also need an interpolated point. */
 				if ( i > 0 && ( /* Don't try to interpolate if this is the first point */
-							( ordinate_value_p > from && ordinate_value_p < to ) || /* Inside */
-							( ordinate_value_p == from && ordinate_value_q > to ) || /* Hopping from above */
-							( ordinate_value_p == to && ordinate_value_q < from ) ) ) /* Hopping from below */
+				            ( ordinate_value_p > from && ordinate_value_p < to ) || /* Inside */
+				            ( ordinate_value_p == from && ordinate_value_q > to ) || /* Hopping from above */
+				            ( ordinate_value_p == to && ordinate_value_q < from ) ) ) /* Hopping from below */
 				{
 					double interpolation_value;
 					(ordinate_value_q > to) ? (interpolation_value = to) : (interpolation_value = from);
@@ -613,8 +613,8 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				*  If the last point was the near boundary, nothing to do.
 				*  If it was the far boundary, we need an interpolated point. */
 				if ( from != to && (
-					 (ordinate_value_q == from && ordinate_value_p > from) ||
-					 (ordinate_value_q == to && ordinate_value_p < to) ) )
+				            (ordinate_value_q == from && ordinate_value_p > from) ||
+				            (ordinate_value_q == to && ordinate_value_p < to) ) )
 				{
 					double interpolation_value;
 					(ordinate_value_p > to) ? (interpolation_value = to) : (interpolation_value = from);
@@ -757,8 +757,10 @@ char *geohash_point(double longitude, double latitude, int precision)
 
 	geohash = lwalloc(precision + 1);
 
-	lat[0] = -90.0;  lat[1] = 90.0;
-	lon[0] = -180.0; lon[1] = 180.0;
+	lat[0] = -90.0;
+	lat[1] = 90.0;
+	lon[0] = -180.0;
+	lon[1] = 180.0;
 
 	while (i < precision)
 	{
@@ -819,7 +821,7 @@ int lwgeom_geohash_precision(BOX3D bbox, BOX3D *bounds)
 	maxx = bbox.xmax;
 	maxy = bbox.ymax;
 
-	if( minx == maxx && miny == maxy )
+	if ( minx == maxx && miny == maxy )
 	{
 		/* It's a point. Doubles have 51 bits of precision.
 		** 2 * 51 / 5 == 20 */
@@ -833,13 +835,13 @@ int lwgeom_geohash_precision(BOX3D bbox, BOX3D *bounds)
 
 	/* Shrink a world bounding box until one of the edges interferes with the
 	** bounds of our rectangle. */
-	while( 1 )
+	while ( 1 )
 	{
 		lonwidth = lonmax - lonmin;
 		latwidth = latmax - latmin;
 		latmaxadjust = lonmaxadjust = latminadjust = lonminadjust = 0.0;
 
-		if( minx > lonmin + lonwidth / 2.0 )
+		if ( minx > lonmin + lonwidth / 2.0 )
 		{
 			lonminadjust = lonwidth / 2.0;
 		}
@@ -847,7 +849,7 @@ int lwgeom_geohash_precision(BOX3D bbox, BOX3D *bounds)
 		{
 			lonmaxadjust = -1 * lonwidth / 2.0;
 		}
-		if( miny > latmin + latwidth / 2.0 )
+		if ( miny > latmin + latwidth / 2.0 )
 		{
 			latminadjust = latwidth / 2.0;
 		}
@@ -897,7 +899,7 @@ char *lwgeom_geohash(const LWGEOM *lwgeom, int precision)
 	double lat, lon;
 
 	bbox = lwgeom_compute_box3d(lwgeom);
-	if( ! bbox ) return NULL;
+	if ( ! bbox ) return NULL;
 
 	/* Return error if we are being fed something outside our working bounds */
 	if ( bbox->xmin < -180 || bbox->ymin < -90 || bbox->xmax > 180 || bbox->ymax > 90 )

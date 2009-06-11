@@ -26,7 +26,7 @@ CU_pSuite register_measures_suite(void)
 	}
 
 	if (
-	    (NULL == CU_add_test(pSuite, "test_mindistance2d_recursive_tolerance()", test_mindistance2d_recursive_tolerance)) 
+	    (NULL == CU_add_test(pSuite, "test_mindistance2d_recursive_tolerance()", test_mindistance2d_recursive_tolerance))
 	)
 	{
 		CU_cleanup_registry();

@@ -91,12 +91,13 @@ LWGEOM_UNPARSER_RESULT *current_lwg_unparser_result;
  * The 0th element should always be empty since it is unused (error constants start from -1)
  */
 
-const char *unparser_error_messages[] = {
+const char *unparser_error_messages[] =
+    {
         "",
         "geometry requires more points",
-	"geometry must have an odd number of points",
+        "geometry must have an odd number of points",
         "geometry contains non-closed rings"
-};
+    };
 
 /* Macro to return the error message and the current position within WKT */
 #define LWGEOM_WKT_UNPARSER_ERROR(errcode) \
@@ -130,11 +131,13 @@ const char *unparser_error_messages[] = {
  * Reallocate memory is this is not the case.
  */
 void
-ensure(int chars){
+ensure(int chars)
+{
 
 	int pos = out_pos - out_start;
 
-	if (  (pos + chars) >= len ){
+	if (  (pos + chars) >= len )
+	{
 		char* newp =(char*)local_malloc(len*2);
 		memcpy(newp,out_start,len);
 		local_free(out_start);
@@ -147,7 +150,8 @@ ensure(int chars){
 void
 to_end(void)
 {
-	while(*out_pos){
+	while (*out_pos)
+	{
 		out_pos++;
 	}
 }
@@ -161,7 +165,8 @@ write_str(const char* str)
 }
 
 void
-write_double(double val){
+write_double(double val)
+{
 	ensure(32);
 	if (lwgi)
 		sprintf(out_pos,"%.8g",val);
@@ -171,7 +176,8 @@ write_double(double val){
 }
 
 void
-write_int(int i){
+write_int(int i)
+{
 	ensure(32);
 	sprintf(out_pos,"%i",i);
 	to_end();
@@ -182,15 +188,19 @@ read_int(uchar** geom)
 {
 	int4 ret;
 #ifdef SHRINK_INTS
-	if ( getMachineEndian() == NDR ){
-		if( (**geom)& 0x01){
+	if ( getMachineEndian() == NDR )
+	{
+		if ( (**geom)& 0x01)
+		{
 			ret = **geom >>1;
 			(*geom)++;
 			return ret;
 		}
 	}
-	else{
-		if( (**geom)& 0x80){
+	else
+	{
+		if ( (**geom)& 0x80)
+		{
 			ret = **geom & ~0x80;
 			(*geom)++;
 			return ret;
@@ -200,7 +210,8 @@ read_int(uchar** geom)
 	memcpy(&ret,*geom,4);
 
 #ifdef SHRINK_INTS
-	if ( getMachineEndian() == NDR ){
+	if ( getMachineEndian() == NDR )
+	{
 		ret >>= 1;
 	}
 #endif
@@ -211,27 +222,31 @@ read_int(uchar** geom)
 
 double round(double);
 
-double read_double(uchar** geom){
-	if (lwgi){
+double read_double(uchar** geom)
+{
+	if (lwgi)
+	{
 		double ret = *((int4*)*geom);
 		ret /= 0xb60b60;
 		(*geom)+=4;
 		return ret-180.0;
 	}
-	else{
+	else
+	{
 		double ret;
- 		memcpy(&ret, *geom, 8);
+		memcpy(&ret, *geom, 8);
 		(*geom)+=8;
 		return ret;
 	}
 }
-           
+
 uchar *
 output_point(uchar* geom,int supress)
 {
 	int i;
 
-	for( i = 0 ; i < dims ; i++ ){
+	for ( i = 0 ; i < dims ; i++ )
+	{
 		write_double(read_double(&geom));
 		if (i +1 < dims )
 			write_str(" ");
@@ -253,14 +268,18 @@ uchar *
 output_collection(uchar* geom,outfunc func,int supress)
 {
 	int cnt = read_int(&geom);
-	if ( cnt == 0 ){
+	if ( cnt == 0 )
+	{
 		write_str(" EMPTY");
 	}
-	else{
+	else
+	{
 		write_str("(");
-		while(cnt--){
+		while (cnt--)
+		{
 			geom=func(geom,supress);
-			if ( cnt ){
+			if ( cnt )
+			{
 				write_str(",");
 			}
 		}
@@ -276,14 +295,18 @@ output_line_collection(uchar* geom,outfunc func,int supress)
 	int cnt = read_int(&geom);
 	int orig_cnt = cnt;
 
-	if ( cnt == 0 ){
+	if ( cnt == 0 )
+	{
 		write_str(" EMPTY");
 	}
-	else{
+	else
+	{
 		write_str("(");
-		while(cnt--){
+		while (cnt--)
+		{
 			geom=func(geom,supress);
-			if ( cnt ){
+			if ( cnt )
+			{
 				write_str(",");
 			}
 		}
@@ -301,70 +324,74 @@ output_line_collection(uchar* geom,outfunc func,int supress)
 uchar *
 output_polygon_ring_collection(uchar* geom,outfunc func,int supress)
 {
-        uchar *temp;
-        int dimcount;
+	uchar *temp;
+	int dimcount;
 	double *first_point;
 	double *last_point;
 	int cnt;
 	int orig_cnt;
 
-        first_point = lwalloc(dims * sizeof(double));
-        last_point = lwalloc(dims * sizeof(double));
+	first_point = lwalloc(dims * sizeof(double));
+	last_point = lwalloc(dims * sizeof(double));
 
 	cnt = read_int(&geom);
 	orig_cnt = cnt;
-	if ( cnt == 0 ){
+	if ( cnt == 0 )
+	{
 		write_str(" EMPTY");
 	}
-	else{
+	else
+	{
 		write_str("(");
-	
-        	/* Store the first point of the ring (use a temp var since read_double alters
-           	the pointer after use) */
-        	temp = geom;
-        	dimcount = 0;
-        	while (dimcount < dims)
-        	{
-                	first_point[dimcount] = read_double(&temp);
-                	dimcount++;
-        	}
-	
-		while(cnt--){
+
+		/* Store the first point of the ring (use a temp var since read_double alters
+		  	the pointer after use) */
+		temp = geom;
+		dimcount = 0;
+		while (dimcount < dims)
+		{
+			first_point[dimcount] = read_double(&temp);
+			dimcount++;
+		}
+
+		while (cnt--)
+		{
 			geom=func(geom,supress);
-			if ( cnt ){
+			if ( cnt )
+			{
 				write_str(",");
 			}
 		}
 		write_str(")");
 
-        	/* Store the last point of the ring (note: we will have moved past it, so we
-           	need to count backwards) */
-        	temp = geom - sizeof(double) * dims;
-        	dimcount = 0;
-        	while (dimcount < dims)
-        	{
-                	last_point[dimcount] = read_double(&temp);
-                	dimcount++;
-       	 	}
+		/* Store the last point of the ring (note: we will have moved past it, so we
+		  	need to count backwards) */
+		temp = geom - sizeof(double) * dims;
+		dimcount = 0;
+		while (dimcount < dims)
+		{
+			last_point[dimcount] = read_double(&temp);
+			dimcount++;
+		}
 
-        	/* Check if they are the same...
+		/* Check if they are the same...
 
-		   WARNING: due to various GEOS bugs related to producing rings with incorrect
-                   3rd dimensions, the closure check here for outgoing geometries only checks on 2
-		   dimensions. This is currently different to the parser! */
-	
-        	if (
-             (first_point[0] != last_point[0] || first_point[1] != last_point[1] ) &&
-			 (current_unparser_check_flags & PARSER_CHECK_CLOSURE))
-			{
-                	LWGEOM_WKT_UNPARSER_ERROR(UNPARSER_ERROR_UNCLOSED);	
-			}
+		WARNING: due to various GEOS bugs related to producing rings with incorrect
+		          3rd dimensions, the closure check here for outgoing geometries only checks on 2
+		dimensions. This is currently different to the parser! */
+
+		if (
+		    (first_point[0] != last_point[0] || first_point[1] != last_point[1] ) &&
+		    (current_unparser_check_flags & PARSER_CHECK_CLOSURE))
+		{
+			LWGEOM_WKT_UNPARSER_ERROR(UNPARSER_ERROR_UNCLOSED);
+		}
 
 
 		/* Ensure that POLYGON has a minimum of 4 points */
-        	if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && orig_cnt < 4)
+		if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && orig_cnt < 4)
 		{
-                	LWGEOM_WKT_UNPARSER_ERROR(UNPARSER_ERROR_MOREPOINTS);
+			LWGEOM_WKT_UNPARSER_ERROR(UNPARSER_ERROR_MOREPOINTS);
 		}
 	}
 
@@ -381,14 +408,18 @@ output_circstring_collection(uchar* geom,outfunc func,int supress)
 	int cnt = read_int(&geom);
 	int orig_cnt = cnt;
 
-	if ( cnt == 0 ){
+	if ( cnt == 0 )
+	{
 		write_str(" EMPTY");
 	}
-	else{
+	else
+	{
 		write_str("(");
-		while(cnt--){
+		while (cnt--)
+		{
 			geom=func(geom,supress);
-			if ( cnt ){
+			if ( cnt )
+			{
 				write_str(",");
 			}
 		}
@@ -396,13 +427,15 @@ output_circstring_collection(uchar* geom,outfunc func,int supress)
 	}
 
 	/* Ensure that a CIRCULARSTRING has a minimum of 3 points */
-        if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && orig_cnt < 3) {
-                LWGEOM_WKT_UNPARSER_ERROR(UNPARSER_ERROR_MOREPOINTS);
+	if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && orig_cnt < 3)
+	{
+		LWGEOM_WKT_UNPARSER_ERROR(UNPARSER_ERROR_MOREPOINTS);
 	}
 
 	/* Ensure that a CIRCULARSTRING has an odd number of points */
-        if ((current_unparser_check_flags & PARSER_CHECK_ODD) && orig_cnt % 2 != 1) {
-                LWGEOM_WKT_UNPARSER_ERROR(UNPARSER_ERROR_ODDPOINTS);
+	if ((current_unparser_check_flags & PARSER_CHECK_ODD) && orig_cnt % 2 != 1)
+	{
+		LWGEOM_WKT_UNPARSER_ERROR(UNPARSER_ERROR_ODDPOINTS);
 	}
 
 	return geom;
@@ -418,90 +451,95 @@ output_polygon_collection(uchar* geom,int suppress)
 uchar *output_wkt(uchar* geom, int supress);
 
 /* special case for multipoint to supress extra brackets */
-uchar *output_multipoint(uchar* geom,int suppress){
+uchar *output_multipoint(uchar* geom,int suppress)
+{
 	unsigned char type = *geom & 0x0f;
-	
+
 	if ( type  == POINTTYPE )
 		return output_point(++geom,suppress);
-	else if ( type == POINTTYPEI ){
+	else if ( type == POINTTYPEI )
+	{
 		lwgi++;
 		geom=output_point(++geom,0);
 		lwgi--;
 		return geom;
 	}
-	
+
 	return output_wkt(geom,suppress);
 }
 
 /* Special case for compound curves: suppress the LINESTRING prefix from a curve if it appears as
    a component of a COMPOUNDCURVE, but not CIRCULARSTRING */
-uchar *output_compound(uchar* geom, int suppress) {
-        unsigned char type;
+uchar *output_compound(uchar* geom, int suppress)
+{
+	unsigned char type;
 
-        LWDEBUG(2, "output_compound called.");
+	LWDEBUG(2, "output_compound called.");
 
-        type=*geom;
-        switch(TYPE_GETTYPE(type)) 
-        {
-                case LINETYPE:
-                        geom = output_wkt(geom,2);
-                        break;
-                case CIRCSTRINGTYPE:
-                        geom = output_wkt(geom,1);
-                        break;
-        }
+	type=*geom;
+	switch (TYPE_GETTYPE(type))
+	{
+	case LINETYPE:
+		geom = output_wkt(geom,2);
+		break;
+	case CIRCSTRINGTYPE:
+		geom = output_wkt(geom,1);
+		break;
+	}
 	return geom;
 }
 
 /*
  * Supress linestring but not circularstring and correctly handle compoundcurve
  */
-uchar *output_curvepoly(uchar* geom, int supress) {
+uchar *output_curvepoly(uchar* geom, int supress)
+{
 	unsigned type;
 	type = *geom++;
 
 	LWDEBUG(2, "output_curvepoly.");
 
-	switch(TYPE_GETTYPE(type))
+	switch (TYPE_GETTYPE(type))
 	{
-		case LINETYPE:
-			geom = output_collection(geom,output_point,0);
-			break;
-		case CIRCSTRINGTYPE:
-			write_str("CIRCULARSTRING");
-			geom = output_circstring_collection(geom,output_point,1);
-			break;
-		case COMPOUNDTYPE:
-			write_str("COMPOUNDCURVE");
-			geom = output_collection(geom,output_compound,1);
-			break;
+	case LINETYPE:
+		geom = output_collection(geom,output_point,0);
+		break;
+	case CIRCSTRINGTYPE:
+		write_str("CIRCULARSTRING");
+		geom = output_circstring_collection(geom,output_point,1);
+		break;
+	case COMPOUNDTYPE:
+		write_str("COMPOUNDCURVE");
+		geom = output_collection(geom,output_compound,1);
+		break;
 	}
 	return geom;
 }
 
 /* Special case for multisurfaces: suppress the POLYGON prefix from a surface if it appears as
    a component of a MULTISURFACE, but not CURVEPOLYGON */
-uchar *output_multisurface(uchar* geom, int suppress) {
-        unsigned char type;
+uchar *output_multisurface(uchar* geom, int suppress)
+{
+	unsigned char type;
 
-        LWDEBUG(2, "output_multisurface called.");
+	LWDEBUG(2, "output_multisurface called.");
 
-        type=*geom;
-        switch(TYPE_GETTYPE(type))
-        {
-                case POLYGONTYPE:
-                        geom = output_wkt(geom,2);
-                        break;
-                case CURVEPOLYTYPE:
-                        geom = output_wkt(geom,1);
-                        break;
-        }
-        return geom;
+	type=*geom;
+	switch (TYPE_GETTYPE(type))
+	{
+	case POLYGONTYPE:
+		geom = output_wkt(geom,2);
+		break;
+	case CURVEPOLYTYPE:
+		geom = output_wkt(geom,1);
+		break;
+	}
+	return geom;
 }
 
 /*
  * Suppress=0 -- write TYPE, M, coords
- * Suppress=1 -- write TYPE, coords 
+ * Suppress=1 -- write TYPE, coords
  * Suppress=2 -- write only coords
  */
 uchar *
@@ -512,7 +550,7 @@ output_wkt(uchar* geom, int supress)
 	char writeM=0;
 	dims = TYPE_NDIMS(type); /* ((type & 0x30) >> 4)+2; */
 
-        LWDEBUG(2, "output_wkt called.");
+	LWDEBUG(2, "output_wkt called.");
 
 	if ( ! supress && !TYPE_HASZ(type) && TYPE_HASM(type) ) writeM=1;
 
@@ -523,138 +561,142 @@ output_wkt(uchar* geom, int supress)
 		geom+=16;
 	}
 
-	if ( TYPE_HASSRID(type) ) {
-		write_str("SRID=");write_int(read_int(&geom));write_str(";");
+	if ( TYPE_HASSRID(type) )
+	{
+		write_str("SRID=");
+		write_int(read_int(&geom));
+		write_str(";");
 	}
 
-	switch(TYPE_GETTYPE(type)) {
-		case POINTTYPE:
-			if ( supress < 2 )
-			{
-				if (writeM) write_str("POINTM");
-				else write_str("POINT");
-			}
-			geom=output_single(geom,0);
-			break;
-		case LINETYPE:
-			if ( supress < 2 )
-			{
-				if (writeM) write_str("LINESTRINGM");
-				else write_str("LINESTRING");
-			}
-			geom = output_line_collection(geom,output_point,0);
-			break;
-                case CIRCSTRINGTYPE:
-                        if ( supress < 2 )
-                        {
-                                if(writeM) write_str("CIRCULARSTRINGM");
-                                else write_str("CIRCULARSTRING");
-                        }
-                        geom = output_circstring_collection(geom,output_point,0);
-                        break;
-		case POLYGONTYPE:
-			if ( supress < 2 )
-			{
-				if (writeM) write_str("POLYGONM");
-				else write_str("POLYGON");
-			}
-			geom = output_collection(geom,output_polygon_collection,0);
-			break;
-                case COMPOUNDTYPE:
-                        if ( supress < 2 )
-                        {
-                                if (writeM) write_str("COMPOUNDCURVEM");
-                                else write_str("COMPOUNDCURVE");
-                        }
-                        geom = output_collection(geom, output_compound,1);
-                        break;
-                case CURVEPOLYTYPE:
-                        if (supress < 2)
-                        {
-                                if(writeM) write_str("CURVEPOLYGONM");
-                                else write_str("CURVEPOLYGON");
-                        }
-                        geom = output_collection(geom, output_compound,0);
-                        break;
-		case MULTIPOINTTYPE:
-			if ( supress < 2 )
-			{
-				if (writeM) write_str("MULTIPOINTM");
-				else write_str("MULTIPOINT");
-			}
-			geom = output_collection(geom,output_multipoint,2);
-			break;
-		case MULTILINETYPE:
-			if ( supress < 2 )
-			{
-				if (writeM) write_str("MULTILINESTRINGM");
-				else write_str("MULTILINESTRING");
-			}
-			geom = output_collection(geom,output_wkt,2);
-			break;
-                case MULTICURVETYPE:
-                        if ( supress < 2 )
-                        {
-                                if (writeM) write_str("MULTICURVEM");
-                                else write_str("MULTICURVE");
-                        }
-                        geom = output_collection(geom,output_compound,2);
-                        break;
-		case MULTIPOLYGONTYPE:
-			if ( supress < 2 )
-			{
-				if (writeM) write_str("MULTIPOLYGONM");
-				else write_str("MULTIPOLYGON");
-			}
-			geom = output_collection(geom,output_wkt,2);
-			break;
-                case MULTISURFACETYPE:
-                        if ( supress < 2)
-                        {
-                                if (writeM) write_str("MULTISURFACEM");
-                                else write_str("MULTISURFACE");
-                        } 
-                        geom = output_collection(geom,output_multisurface,2);
-                        break;
-		case COLLECTIONTYPE:
-			if ( supress < 2 )
-			{
-				if (writeM) write_str("GEOMETRYCOLLECTIONM");
-				else write_str("GEOMETRYCOLLECTION");
-			}
-			geom = output_collection(geom,output_wkt,1);
-			break;
+	switch (TYPE_GETTYPE(type))
+	{
+	case POINTTYPE:
+		if ( supress < 2 )
+		{
+			if (writeM) write_str("POINTM");
+			else write_str("POINT");
+		}
+		geom=output_single(geom,0);
+		break;
+	case LINETYPE:
+		if ( supress < 2 )
+		{
+			if (writeM) write_str("LINESTRINGM");
+			else write_str("LINESTRING");
+		}
+		geom = output_line_collection(geom,output_point,0);
+		break;
+	case CIRCSTRINGTYPE:
+		if ( supress < 2 )
+		{
+			if (writeM) write_str("CIRCULARSTRINGM");
+			else write_str("CIRCULARSTRING");
+		}
+		geom = output_circstring_collection(geom,output_point,0);
+		break;
+	case POLYGONTYPE:
+		if ( supress < 2 )
+		{
+			if (writeM) write_str("POLYGONM");
+			else write_str("POLYGON");
+		}
+		geom = output_collection(geom,output_polygon_collection,0);
+		break;
+	case COMPOUNDTYPE:
+		if ( supress < 2 )
+		{
+			if (writeM) write_str("COMPOUNDCURVEM");
+			else write_str("COMPOUNDCURVE");
+		}
+		geom = output_collection(geom, output_compound,1);
+		break;
+	case CURVEPOLYTYPE:
+		if (supress < 2)
+		{
+			if (writeM) write_str("CURVEPOLYGONM");
+			else write_str("CURVEPOLYGON");
+		}
+		geom = output_collection(geom, output_compound,0);
+		break;
+	case MULTIPOINTTYPE:
+		if ( supress < 2 )
+		{
+			if (writeM) write_str("MULTIPOINTM");
+			else write_str("MULTIPOINT");
+		}
+		geom = output_collection(geom,output_multipoint,2);
+		break;
+	case MULTILINETYPE:
+		if ( supress < 2 )
+		{
+			if (writeM) write_str("MULTILINESTRINGM");
+			else write_str("MULTILINESTRING");
+		}
+		geom = output_collection(geom,output_wkt,2);
+		break;
+	case MULTICURVETYPE:
+		if ( supress < 2 )
+		{
+			if (writeM) write_str("MULTICURVEM");
+			else write_str("MULTICURVE");
+		}
+		geom = output_collection(geom,output_compound,2);
+		break;
+	case MULTIPOLYGONTYPE:
+		if ( supress < 2 )
+		{
+			if (writeM) write_str("MULTIPOLYGONM");
+			else write_str("MULTIPOLYGON");
+		}
+		geom = output_collection(geom,output_wkt,2);
+		break;
+	case MULTISURFACETYPE:
+		if ( supress < 2)
+		{
+			if (writeM) write_str("MULTISURFACEM");
+			else write_str("MULTISURFACE");
+		}
+		geom = output_collection(geom,output_multisurface,2);
+		break;
+	case COLLECTIONTYPE:
+		if ( supress < 2 )
+		{
+			if (writeM) write_str("GEOMETRYCOLLECTIONM");
+			else write_str("GEOMETRYCOLLECTION");
+		}
+		geom = output_collection(geom,output_wkt,1);
+		break;
 
-		case POINTTYPEI:
-			if ( supress < 2 )
-			{
-				if (writeM) write_str("POINTM");
-				else write_str("POINT");
-			}
-			lwgi++;
-			geom=output_single(geom,0);
-			lwgi--;
-			break;
-		case LINETYPEI:
-			if ( supress < 2 )
-			{
-				if (writeM) write_str("LINESTRINGM");
-				else write_str("LINESTRING");
-			}
-			lwgi++;
-			geom = output_collection(geom,output_point,0);
-			lwgi--;
-			break;
-		case POLYGONTYPEI:
-			if ( supress < 2 )
-			{
-				if (writeM) write_str("POLYGONM");
-				else write_str("POLYGON");
-			}
-			lwgi++;
-			geom = output_collection(geom,output_polygon_collection,0);
-			lwgi--;
-			break;
+	case POINTTYPEI:
+		if ( supress < 2 )
+		{
+			if (writeM) write_str("POINTM");
+			else write_str("POINT");
+		}
+		lwgi++;
+		geom=output_single(geom,0);
+		lwgi--;
+		break;
+	case LINETYPEI:
+		if ( supress < 2 )
+		{
+			if (writeM) write_str("LINESTRINGM");
+			else write_str("LINESTRING");
+		}
+		lwgi++;
+		geom = output_collection(geom,output_point,0);
+		lwgi--;
+		break;
+	case POLYGONTYPEI:
+		if ( supress < 2 )
+		{
+			if (writeM) write_str("POLYGONM");
+			else write_str("POLYGON");
+		}
+		lwgi++;
+		geom = output_collection(geom,output_polygon_collection,0);
+		lwgi--;
+		break;
 	}
 	return geom;
 }
@@ -663,16 +705,16 @@ int
 unparse_WKT(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar* serialized, allocator alloc, freeor free, int flags)
 {
 
-        LWDEBUGF(2, "unparse_WKT called with parser flags %d.", flags);
+	LWDEBUGF(2, "unparse_WKT called with parser flags %d.", flags);
 
 	if (serialized==NULL)
 		return 0;
 
 	/* Setup the inital parser flags and empty the return struct */
 	current_lwg_unparser_result = lwg_unparser_result;
-        current_unparser_check_flags = flags;
+	current_unparser_check_flags = flags;
 	lwg_unparser_result->wkoutput = NULL;
-        lwg_unparser_result->size = 0;
+	lwg_unparser_result->size = 0;
 	lwg_unparser_result->serialized_lwgeom = serialized;
 
 	unparser_ferror_occured = 0;
@@ -691,7 +733,9 @@ unparse_WKT(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar* serialized, allo
 	return unparser_ferror_occured;
 }
 
-static char outchr[]={"0123456789ABCDEF" };
+static char outchr[]=
+    {"0123456789ABCDEF"
+    };
 
 /* Write HEX bytes flipping */
 void
@@ -701,8 +745,9 @@ write_wkb_hex_flip_bytes(uchar* ptr, unsigned int cnt, size_t size)
 
 	ensure(cnt*2*size);
 
-	while(cnt--){
-		for(bc=size; bc; bc--)
+	while (cnt--)
+	{
+		for (bc=size; bc; bc--)
 		{
 			*out_pos++ = outchr[ptr[bc-1]>>4];
 			*out_pos++ = outchr[ptr[bc-1]&0x0F];
@@ -719,8 +764,9 @@ write_wkb_hex_bytes(uchar* ptr, unsigned int cnt, size_t size)
 
 	ensure(cnt*2*size);
 
-	while(cnt--){
-		for(bc=0; bc<size; bc++)
+	while (cnt--)
+	{
+		for (bc=0; bc<size; bc++)
 		{
 			*out_pos++ = outchr[ptr[bc]>>4];
 			*out_pos++ = outchr[ptr[bc]&0x0F];
@@ -737,9 +783,9 @@ write_wkb_bin_flip_bytes(uchar* ptr, unsigned int cnt, size_t size)
 
 	ensure(cnt*size);
 
-	while(cnt--)
+	while (cnt--)
 	{
-		for(bc=size; bc; bc--)
+		for (bc=size; bc; bc--)
 			*out_pos++ = ptr[bc-1];
 		ptr+=size;
 	}
@@ -755,9 +801,9 @@ write_wkb_bin_bytes(uchar* ptr, unsigned int cnt, size_t size)
 	ensure(cnt*size);
 
 	/* Could just use a memcpy here ... */
-	while(cnt--)
+	while (cnt--)
 	{
-		for(bc=0; bc<size; bc++)
+		for (bc=0; bc<size; bc++)
 			*out_pos++ = ptr[bc];
 		ptr+=size;
 	}
@@ -766,18 +812,21 @@ write_wkb_bin_bytes(uchar* ptr, unsigned int cnt, size_t size)
 uchar *
 output_wkb_point(uchar* geom)
 {
-	if ( lwgi ){
+	if ( lwgi )
+	{
 		write_wkb_bytes(geom,dims,4);
 		return geom + (4*dims);
 	}
-	else{
+	else
+	{
 		write_wkb_bytes(geom,dims,8);
 		return geom + (8*dims);
 	}
 }
 
 void
-write_wkb_int(int i){
+write_wkb_int(int i)
+{
 	write_wkb_bytes((uchar*)&i,1,4);
 }
 
@@ -790,7 +839,7 @@ output_wkb_collection(uchar* geom,outwkbfunc func)
 	LWDEBUGF(2, "output_wkb_collection: %d iterations loop", cnt);
 
 	write_wkb_int(cnt);
-	while(cnt--) geom=func(geom);
+	while (cnt--) geom=func(geom);
 	return geom;
 }
 
@@ -804,10 +853,11 @@ output_wkb_line_collection(uchar* geom,outwkbfunc func)
 	LWDEBUGF(2, "output_wkb_line_collection: %d iterations loop", cnt);
 
 	write_wkb_int(cnt);
-	while(cnt--) geom=func(geom);
+	while (cnt--) geom=func(geom);
 
 	/* Ensure that LINESTRING has a minimum of 2 points */
-        if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && orig_cnt < 2) {
+	if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && orig_cnt < 2)
+	{
 		LWGEOM_WKB_UNPARSER_ERROR(UNPARSER_ERROR_MOREPOINTS);
 	}
 
@@ -825,8 +875,8 @@ output_wkb_polygon_ring_collection(uchar* geom,outwkbfunc func)
 	int cnt;
 	int orig_cnt;
 
-        first_point = lwalloc(dims * sizeof(double));
-        last_point = lwalloc(dims * sizeof(double));
+	first_point = lwalloc(dims * sizeof(double));
+	last_point = lwalloc(dims * sizeof(double));
 
 	cnt = read_int(&geom);
 	orig_cnt = cnt;
@@ -835,7 +885,7 @@ output_wkb_polygon_ring_collection(uchar* geom,outwkbfunc func)
 
 	write_wkb_int(cnt);
 
-	/* Store the first point of the ring (use a temp var since read_double alters 
+	/* Store the first point of the ring (use a temp var since read_double alters
 	   the pointer after use) */
 	temp = geom;
 	dimcount = 0;
@@ -845,7 +895,7 @@ output_wkb_polygon_ring_collection(uchar* geom,outwkbfunc func)
 		dimcount++;
 	}
 
-	while(cnt--) geom=func(geom); 
+	while (cnt--) geom=func(geom);
 
 	/* Store the last point of the ring (note: we will have moved past it, so we
 	   need to count backwards) */
@@ -857,10 +907,10 @@ output_wkb_polygon_ring_collection(uchar* geom,outwkbfunc func)
 		dimcount++;
 	}
 
-	/* Check if they are the same... */	
+	/* Check if they are the same... */
 	if (((first_point[0] != last_point[0]) ||
-		(first_point[1] != last_point[1])) &&
-		(current_unparser_check_flags & PARSER_CHECK_CLOSURE)) 
+	        (first_point[1] != last_point[1])) &&
+	        (current_unparser_check_flags & PARSER_CHECK_CLOSURE))
 	{
 		LWGEOM_WKB_UNPARSER_ERROR(UNPARSER_ERROR_UNCLOSED);
 	}
@@ -883,7 +933,7 @@ output_wkb_polygon_collection(uchar* geom)
 {
 	LWDEBUG(2, "output_wkb_polygon_collection");
 
-	return output_wkb_polygon_ring_collection(geom,output_wkb_point); 
+	return output_wkb_polygon_ring_collection(geom,output_wkb_point);
 }
 
 /* Ouput the points from a CIRCULARSTRING */
@@ -896,15 +946,17 @@ output_wkb_circstring_collection(uchar* geom,outwkbfunc func)
 	LWDEBUGF(2, "output_wkb_curve_collection: %d iterations loop", cnt);
 
 	write_wkb_int(cnt);
-	while(cnt--) geom=func(geom);
+	while (cnt--) geom=func(geom);
 
 	/* Ensure that a CIRCULARSTRING has a minimum of 3 points */
-        if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && orig_cnt < 3) {
+	if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && orig_cnt < 3)
+	{
 		LWGEOM_WKB_UNPARSER_ERROR(UNPARSER_ERROR_MOREPOINTS);
 	}
 
 	/* Ensure that a CIRCULARSTRING has an odd number of points */
-        if ((current_unparser_check_flags & PARSER_CHECK_ODD) && orig_cnt % 2 != 1) {
+	if ((current_unparser_check_flags & PARSER_CHECK_ODD) && orig_cnt % 2 != 1)
+	{
 		LWGEOM_WKB_UNPARSER_ERROR(UNPARSER_ERROR_ODDPOINTS);
 	}
 
@@ -917,22 +969,24 @@ output_wkb(uchar* geom)
 	unsigned char type=*geom++;
 	int4 wkbtype;
 
-	dims = TYPE_NDIMS(type); 
+	dims = TYPE_NDIMS(type);
 
 	LWDEBUGF(2, "output_wkb: dims set to %d", dims);
 
 	/* Skip the bounding box */
-	if ( TYPE_HASBBOX(type) ) { 
+	if ( TYPE_HASBBOX(type) )
+	{
 		geom+=16;
 	}
 
-	wkbtype = TYPE_GETTYPE(type); 
+	wkbtype = TYPE_GETTYPE(type);
 
 	if ( TYPE_HASZ(type) )
-		 wkbtype |= WKBZOFFSET;
+		wkbtype |= WKBZOFFSET;
 	if ( TYPE_HASM(type) )
-		 wkbtype |= WKBMOFFSET;
-	if ( TYPE_HASSRID(type) ) {
+		wkbtype |= WKBMOFFSET;
+	if ( TYPE_HASSRID(type) )
+	{
 		wkbtype |= WKBSRIDFLAG;
 	}
 
@@ -942,37 +996,39 @@ output_wkb(uchar* geom)
 
 	write_wkb_int(wkbtype);
 
-	if ( TYPE_HASSRID(type) ) {
+	if ( TYPE_HASSRID(type) )
+	{
 		write_wkb_int(read_int(&geom));
 	}
 
-	switch(TYPE_GETTYPE(type)){
-		case POINTTYPE:
-			geom=output_wkb_point(geom);
-			break;
-		case LINETYPE:
-			geom=output_wkb_line_collection(geom,output_wkb_point);
-			break;
-                case CIRCSTRINGTYPE:
-                        geom=output_wkb_circstring_collection(geom,output_wkb_point);
-                        break;
-		case POLYGONTYPE:
-			geom=output_wkb_collection(geom,output_wkb_polygon_collection);
-			break;
-                case COMPOUNDTYPE:
-                        geom=output_wkb_collection(geom,output_wkb);
-                        break;
-                case CURVEPOLYTYPE:
-                        geom=output_wkb_collection(geom,output_wkb);
-                        break;
-                case MULTICURVETYPE:
-                case MULTISURFACETYPE:
-		case MULTIPOINTTYPE:
-		case MULTILINETYPE:
-		case MULTIPOLYGONTYPE:
-		case COLLECTIONTYPE:
-			geom = output_wkb_collection(geom,output_wkb);
-			break;
+	switch (TYPE_GETTYPE(type))
+	{
+	case POINTTYPE:
+		geom=output_wkb_point(geom);
+		break;
+	case LINETYPE:
+		geom=output_wkb_line_collection(geom,output_wkb_point);
+		break;
+	case CIRCSTRINGTYPE:
+		geom=output_wkb_circstring_collection(geom,output_wkb_point);
+		break;
+	case POLYGONTYPE:
+		geom=output_wkb_collection(geom,output_wkb_polygon_collection);
+		break;
+	case COMPOUNDTYPE:
+		geom=output_wkb_collection(geom,output_wkb);
+		break;
+	case CURVEPOLYTYPE:
+		geom=output_wkb_collection(geom,output_wkb);
+		break;
+	case MULTICURVETYPE:
+	case MULTISURFACETYPE:
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+	case COLLECTIONTYPE:
+		geom = output_wkb_collection(geom,output_wkb);
+		break;
 
 		/*
 			These don't output standard wkb at the moment
@@ -982,21 +1038,21 @@ output_wkb(uchar* geom)
 			for a lwg and then output that.  There should
 			also be a force_to_real_(lwgi)
 		*/
-		case POINTTYPEI:
-			lwgi++;
-			geom=output_wkb_point(geom);
-			lwgi--;
-			break;
-		case LINETYPEI:
-			lwgi++;
-			geom = output_wkb_collection(geom,output_wkb_point);
-			lwgi--;
-			break;
-		case POLYGONTYPEI:
-			lwgi++;
-			geom = output_wkb_collection(geom,output_wkb_polygon_collection);
-			lwgi--;
-			break;
+	case POINTTYPEI:
+		lwgi++;
+		geom=output_wkb_point(geom);
+		lwgi--;
+		break;
+	case LINETYPEI:
+		lwgi++;
+		geom = output_wkb_collection(geom,output_wkb_point);
+		lwgi--;
+		break;
+	case POLYGONTYPEI:
+		lwgi++;
+		geom = output_wkb_collection(geom,output_wkb_polygon_collection);
+		lwgi--;
+		break;
 	}
 	return geom;
 }
@@ -1011,7 +1067,7 @@ unparse_WKB(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar* serialized, allo
 
 	/* Setup the inital parser flags and empty the return struct */
 	current_lwg_unparser_result = lwg_unparser_result;
-        current_unparser_check_flags = flags;
+	current_unparser_check_flags = flags;
 	lwg_unparser_result->wkoutput = NULL;
 	lwg_unparser_result->size = 0;
 	lwg_unparser_result->serialized_lwgeom = serialized;
@@ -1046,16 +1102,17 @@ unparse_WKB(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar* serialized, allo
 
 	output_wkb(serialized);
 
-	if ( hex ) {
+	if ( hex )
+	{
 		ensure(1);
 		*out_pos=0;
 	}
 
-	/* Store the result in the struct */	
+	/* Store the result in the struct */
 	lwg_unparser_result->wkoutput = out_start;
 	lwg_unparser_result->size = (out_pos-out_start);
 
-	return unparser_ferror_occured;	
+	return unparser_ferror_occured;
 }
 
 

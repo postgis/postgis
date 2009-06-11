@@ -30,7 +30,8 @@ typedef uint32_t int4;
 
 typedef struct tag_tuple tuple;
 
-struct tag_outputstate{
+struct tag_outputstate
+{
 	uchar*	pos;
 };
 
@@ -48,25 +49,29 @@ static int parser_ferror_occured;
 static allocator local_malloc;
 static report_error error_func;
 
-struct tag_tuple{
+struct tag_tuple
+{
 	output_func   of;
 	union union_tag {
 		double points[4];
 		int4   pointsi[4];
 
-		struct struct_tag {
+		struct struct_tag
+		{
 			tuple* 	stack_next;
 			int	type;
 			int	num;
 			int	size_here;
 			int parse_location;
-		} nn;
+		}
+		nn;
 
 	} uu;
 	struct tag_tuple *next;
 };
 
-struct {
+struct
+{
 	int	type;
 	int	flags;
 	int	srid;
@@ -91,13 +96,14 @@ struct {
 	*/
 	tuple*  stack;
 
-} the_geom;
+}
+the_geom;
 
 tuple* free_list=0;
 
 
 /*
- * Parser current instance check flags - a bitmap of flags that determine which checks are enabled during the current parse 
+ * Parser current instance check flags - a bitmap of flags that determine which checks are enabled during the current parse
  * (see liblwgeom.h for the related PARSER_CHECK constants)
  */
 int current_parser_check_flags;
@@ -123,18 +129,19 @@ double *last_point=NULL;
  * The 0th element should always be empty since it is unused (error constants start from -1)
  */
 
-const char *parser_error_messages[] = {
-	"",
-	"geometry requires more points",
-	"geometry must have an odd number of points",
-	"geometry contains non-closed rings",
-	"can not mix dimensionality in a geometry",
-	"parse error - invalid geometry",
-	"invalid WKB type",
-	"incontinuous compound curve"
-};
+const char *parser_error_messages[] =
+    {
+        "",
+        "geometry requires more points",
+        "geometry must have an odd number of points",
+        "geometry contains non-closed rings",
+        "can not mix dimensionality in a geometry",
+        "parse error - invalid geometry",
+        "invalid WKB type",
+        "incontinuous compound curve"
+    };
 
-/* Macro to return the error message and the current position within WKT */ 
+/* Macro to return the error message and the current position within WKT */
 #define LWGEOM_WKT_VALIDATION_ERROR(errcode, parse_location) \
 	do { \
 		if (!parser_ferror_occured) { \
@@ -145,7 +152,7 @@ const char *parser_error_messages[] = {
 	} while (0);
 
 
-/* Macro to return the error message and the current position within WKT */ 
+/* Macro to return the error message and the current position within WKT */
 #define LWGEOM_WKT_PARSER_ERROR(errcode) \
 	do { \
 		if (!parser_ferror_occured) { \
@@ -156,8 +163,8 @@ const char *parser_error_messages[] = {
 	} while (0);
 
 
-/* Macro to return the error message and the current position within WKB 
-   NOTE: the position is handled automatically by strhex_readbyte */ 
+/* Macro to return the error message and the current position within WKB
+   NOTE: the position is handled automatically by strhex_readbyte */
 #define LWGEOM_WKB_PARSER_ERROR(errcode) \
 	do { \
 		if (!parser_ferror_occured) { \
@@ -270,13 +277,15 @@ alloc_tuple(output_func of,size_t size)
 {
 	tuple* ret = free_list;
 
-	if ( ! ret ){
+	if ( ! ret )
+	{
 		int toalloc = (ALLOC_CHUNKS /sizeof(tuple));
 		ret = malloc( toalloc *sizeof(tuple) );
 
 		free_list = ret;
 
-		while(--toalloc){
+		while (--toalloc)
+		{
 			ret->next = ret+1;
 			ret++;
 		}
@@ -290,17 +299,19 @@ alloc_tuple(output_func of,size_t size)
 	ret->of = of;
 	ret->next = NULL;
 
-	if ( the_geom.last ) {
+	if ( the_geom.last )
+	{
 		the_geom.last->next = ret;
 		the_geom.last = ret;
 	}
-	else {
+	else
+	{
 		the_geom.first = the_geom.last = ret;
 	}
 
-	LWDEBUGF(5, "alloc_tuple %p: parse_location = %d", 
-			ret, lwg_parse_yylloc.last_column);
- 	ret->uu.nn.parse_location = lwg_parse_yylloc.last_column;
+	LWDEBUGF(5, "alloc_tuple %p: parse_location = %d",
+	         ret, lwg_parse_yylloc.last_column);
+	ret->uu.nn.parse_location = lwg_parse_yylloc.last_column;
 
 	the_geom.alloc_size += size;
 	return ret;
@@ -312,10 +323,11 @@ free_tuple(tuple* to_free)
 
 	tuple* list_end = to_free;
 
-	if( !to_free)
+	if ( !to_free)
 		return;
 
-	while(list_end->next){
+	while (list_end->next)
+	{
 		list_end=list_end->next;
 	}
 
@@ -326,7 +338,7 @@ free_tuple(tuple* to_free)
 void
 alloc_lwgeom(int srid)
 {
-		LWDEBUGF(3, "alloc_lwgeom %d", srid);
+	LWDEBUGF(3, "alloc_lwgeom %d", srid);
 
 	the_geom.srid=srid;
 	the_geom.alloc_size=0;
@@ -336,12 +348,14 @@ alloc_lwgeom(int srid)
 	the_geom.hasM=0;
 
 	/* Free if used already */
-	if ( the_geom.first ){
+	if ( the_geom.first )
+	{
 		free_tuple(the_geom.first);
 		the_geom.first=the_geom.last=NULL;
 	}
 
-	if ( srid != -1 ){
+	if ( srid != -1 )
+	{
 		the_geom.alloc_size+=4;
 	}
 
@@ -358,7 +372,7 @@ alloc_point_2d(double x,double y)
 
 	LWDEBUGF(3, "alloc_point_2d %f,%f", x, y);
 	LWDEBUGF(5, "  * %p", p);
-	
+
 	/* keep track of point */
 
 	inc_num();
@@ -373,7 +387,7 @@ alloc_point_3d(double x,double y,double z)
 	p->uu.points[1] = y;
 	p->uu.points[2] = z;
 
-		LWDEBUGF(3, "alloc_point_3d %f, %f, %f", x, y, z);
+	LWDEBUGF(3, "alloc_point_3d %f, %f, %f", x, y, z);
 	LWDEBUGF(5, "  * %p", p);
 
 	inc_num();
@@ -389,8 +403,8 @@ alloc_point_4d(double x,double y,double z,double m)
 	p->uu.points[2] = z;
 	p->uu.points[3] = m;
 
-		LWDEBUGF(3, "alloc_point_4d %f, %f, %f, %f", x, y, z, m);
-		LWDEBUGF(5, "  * %p", p);
+	LWDEBUGF(3, "alloc_point_4d %f, %f, %f, %f", x, y, z, m);
+	LWDEBUGF(5, "  * %p", p);
 
 	inc_num();
 	check_dims(4);
@@ -413,8 +427,8 @@ alloc_stack_tuple(int type,output_func of,size_t size)
 	tuple*	p;
 	inc_num();
 
-		LWDEBUGF(3, "alloc_stack_tuple: type = %d, size = %d", type, size);
-	
+	LWDEBUGF(3, "alloc_stack_tuple: type = %d, size = %d", type, size);
+
 	p = alloc_tuple(of,size);
 	p->uu.nn.stack_next = the_geom.stack;
 	p->uu.nn.type = type;
@@ -486,7 +500,7 @@ check_compoundcurve_continuity(void)
 
 	LWDEBUG(3, "compound_continuity_check");
 	num = tp->uu.nn.num;
-	for(i = 0; i < num; i++)
+	for (i = 0; i < num; i++)
 	{
 		tp = tp->next->next;
 		mum = tp->uu.nn.num;
@@ -494,54 +508,54 @@ check_compoundcurve_continuity(void)
 
 		first = tp->next;
 		LWDEBUGF(5, "First point identified: %p", first);
-		if(i > 0)
+		if (i > 0)
 		{
-			if(the_geom.ndims > 3)
+			if (the_geom.ndims > 3)
 			{
-				LWDEBUGF(5, "comparing points (%f,%f,%f,%f), (%f,%f,%f,%f)", 
-						first->uu.points[0], first->uu.points[1],
-						first->uu.points[2], first->uu.points[3],
-						last->uu.points[0], last->uu.points[1],
-						last->uu.points[2], last->uu.points[3]);
+				LWDEBUGF(5, "comparing points (%f,%f,%f,%f), (%f,%f,%f,%f)",
+				         first->uu.points[0], first->uu.points[1],
+				         first->uu.points[2], first->uu.points[3],
+				         last->uu.points[0], last->uu.points[1],
+				         last->uu.points[2], last->uu.points[3]);
 			}
-			else if(the_geom.ndims > 2)
+			else if (the_geom.ndims > 2)
 			{
-				LWDEBUGF(5, "comparing points (%f,%f,%f), (%f,%f,%f)", 
-						first->uu.points[0], first->uu.points[1],
-						first->uu.points[2], last->uu.points[0], 
-						last->uu.points[1], last->uu.points[2]);
+				LWDEBUGF(5, "comparing points (%f,%f,%f), (%f,%f,%f)",
+				         first->uu.points[0], first->uu.points[1],
+				         first->uu.points[2], last->uu.points[0],
+				         last->uu.points[1], last->uu.points[2]);
 			}
 			else
 			{
-				LWDEBUGF(5, "comparing points (%f,%f), (%f,%f)", 
-						first->uu.points[0], first->uu.points[1],
-						last->uu.points[0], last->uu.points[1]);
+				LWDEBUGF(5, "comparing points (%f,%f), (%f,%f)",
+				         first->uu.points[0], first->uu.points[1],
+				         last->uu.points[0], last->uu.points[1]);
 			}
-					
-			if(first->uu.points[0] != last->uu.points[0])
+
+			if (first->uu.points[0] != last->uu.points[0])
 			{
 				LWDEBUG(5, "x value mismatch");
 				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_INCONTINUOUS,last->uu.nn.parse_location);
 			}
-			else if(first->uu.points[1] != last->uu.points[1])
+			else if (first->uu.points[1] != last->uu.points[1])
 			{
 				LWDEBUG(5, "y value mismatch");
 				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_INCONTINUOUS,last->uu.nn.parse_location);
 			}
-			else if(the_geom.ndims > 2 &&
-					first->uu.points[2] != last->uu.points[2])
+			else if (the_geom.ndims > 2 &&
+			         first->uu.points[2] != last->uu.points[2])
 			{
 				LWDEBUG(5, "z/m value mismatch");
 				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_INCONTINUOUS,last->uu.nn.parse_location);
 			}
-			else if(the_geom.ndims > 3 &&
-					first->uu.points[3] != last->uu.points[3])
+			else if (the_geom.ndims > 3 &&
+			         first->uu.points[3] != last->uu.points[3])
 			{
 				LWDEBUG(5, "m value mismatch");
 				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_INCONTINUOUS,last->uu.nn.parse_location);
 			}
 		}
-		for(j = 0; j < mum; j++)
+		for (j = 0; j < mum; j++)
 		{
 			tp = tp->next;
 		}
@@ -554,17 +568,17 @@ void check_circularstring_isodd(void)
 {
 	tuple *tp = the_geom.stack->next;
 	int i, num;
-	
+
 	LWDEBUG(3, "check_circularstring_isodd");
-	if(tp->uu.nn.num % 2 == 0)
+	if (tp->uu.nn.num % 2 == 0)
 	{
 		num = tp->uu.nn.num;
 		LWDEBUGF(5, "Odd check failed: pointcount = %d", num);
-		for(i = 0; i < num; i++)
+		for (i = 0; i < num; i++)
 		{
 			tp = tp->next;
 		}
-	   	LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_ODDPOINTS, tp->uu.nn.parse_location);
+		LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_ODDPOINTS, tp->uu.nn.parse_location);
 	}
 }
 
@@ -588,28 +602,28 @@ check_compoundcurve_closed(void)
 	num = tp->uu.nn.num;
 
 	LWDEBUGF(5, "Found %d subgeoms.", num);
-	
+
 	/* counting tuple -> subgeom tuple -> counting tuple -> first point*/
 	first = tp->next->next->next;
-	for(i = 0; i < num; i++)
+	for (i = 0; i < num; i++)
 	{
 		/* Advance to the next subgeometry's counting tuple */
 		tp = tp->next->next;
 		mum = tp->uu.nn.num;
 
 		LWDEBUGF(5, "Subgeom %d at %p has %d points.", i, tp, mum);
-		for(j = 0; j < mum; j++)
+		for (j = 0; j < mum; j++)
 		{
 			tp = tp->next;
 		}
 	}
 	last = tp;
-	if(first->uu.points[0] != last->uu.points[0] ||
-			first->uu.points[1] != last->uu.points[1])
+	if (first->uu.points[0] != last->uu.points[0] ||
+	        first->uu.points[1] != last->uu.points[1])
 	{
 		LWDEBUGF(4, "Unclosed geometry: (%f, %f) != (%f, %f)",
-				first->uu.points[0], first->uu.points[1],
-				last->uu.points[0], last->uu.points[1]);
+		         first->uu.points[0], first->uu.points[1],
+		         last->uu.points[0], last->uu.points[1]);
 		LWDEBUGF(5, "First %p, last %p", first, last);
 		LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_UNCLOSED, last->uu.nn.parse_location);
 	}
@@ -620,7 +634,7 @@ check_compoundcurve_closed(void)
 }
 
 /*
- * Determines if the current linestring is closed and raises an error if it 
+ * Determines if the current linestring is closed and raises an error if it
  * is not.
  * This is done by walking through the tuple list and identifying the first
  * and last point tuples, then comparing their 2d values.
@@ -635,21 +649,21 @@ check_linestring_closed(void)
 
 	/* tuple counting points */
 	tp = tp->next;
-	if(tp->uu.nn.num > 0)
+	if (tp->uu.nn.num > 0)
 	{
 		first = tp->next;
 		num = tp->uu.nn.num;
-		for(i = 0; i < num; i++)
-		{	
+		for (i = 0; i < num; i++)
+		{
 			tp = tp->next;
 		}
 		last = tp;
-		if(first->uu.points[0] != last->uu.points[0] || 
-				first->uu.points[1] != last->uu.points[1])
+		if (first->uu.points[0] != last->uu.points[0] ||
+		        first->uu.points[1] != last->uu.points[1])
 		{
 			LWDEBUGF(4, "Unclosed geometry: (%f, %f) != (%f, %f)",
-					first->uu.points[0], first->uu.points[1], 
-					last->uu.points[0], last->uu.points[1]);
+			         first->uu.points[0], first->uu.points[1],
+			         last->uu.points[0], last->uu.points[1]);
 			LWDEBUGF(5, "First %p, last %p", first, last);
 			LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_UNCLOSED, last->uu.nn.parse_location);
 		}
@@ -660,8 +674,8 @@ check_linestring_closed(void)
 	}
 }
 
-/* 
- * Determines if all rings of the current polygon are closed.  This is done 
+/*
+ * Determines if all rings of the current polygon are closed.  This is done
  * by marching through the tuple list finding the first and last point tuples
  * of each ring and comparing their 2d values.
  */
@@ -677,27 +691,27 @@ check_polygon_closed(void)
 	/* tuple counting rings */
 	tp = tp->next;
 	num = tp->uu.nn.num;
-	for(i = 0; i < num; i++)
+	for (i = 0; i < num; i++)
 	{
 		/* ring tuple counting points */
 		tp = tp->next;
 		mum = tp->uu.nn.num;
 		first = tp->next;
-		for(j = 0; j < mum; j++)
+		for (j = 0; j < mum; j++)
 		{
 			tp = tp->next;
 		}
 		last = tp;
-		if(first->uu.points[0] != last->uu.points[0] ||
-				first->uu.points[1] != last->uu.points[1])
+		if (first->uu.points[0] != last->uu.points[0] ||
+		        first->uu.points[1] != last->uu.points[1])
 		{
 			LWDEBUGF(4, "Unclosed geometry: (%f, %f) != (%f, %f)",
-					first->uu.points[0], first->uu.points[1],
-					last->uu.points[0], last->uu.points[1]);
+			         first->uu.points[0], first->uu.points[1],
+			         last->uu.points[0], last->uu.points[1]);
 			LWDEBUGF(5, "First %p, last %p", first, last);
 			LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_UNCLOSED, last->uu.nn.parse_location);
 		}
-		else 
+		else
 		{
 			LWDEBUGF(5, "Ring %d found closed.", i);
 		}
@@ -705,8 +719,8 @@ check_polygon_closed(void)
 }
 
 /*
- * Checks to ensure that each ring of the current polygon contains the 
- * given number of points.  The given number should be four, but 
+ * Checks to ensure that each ring of the current polygon contains the
+ * given number of points.  The given number should be four, but
  * lets keep things generic here for now.
  */
 void
@@ -722,24 +736,24 @@ check_polygon_minpoints(void)
 	num = tp->uu.nn.num;
 
 	/* Check each ring for minpoints */
-	for(i = 0; i < num; i++)
+	for (i = 0; i < num; i++)
 	{
 		/* Step into the point counter tuple */
 		tp = tp->next;
 		mum = tp->uu.nn.num;
 
 		/* Skip the point tuples */
-		for(j = 0; j < mum; j++)
+		for (j = 0; j < mum; j++)
 		{
 			tp = tp->next;
 		}
 
-		if(mum < minpoints)
+		if (mum < minpoints)
 		{
 			LWDEBUGF(5, "Minpoint check failed: needed %d, got %d",
-					minpoints, mum);
+			         minpoints, mum);
 			LWDEBUGF(5, "tuple = %p; parse_location = %d; parser reported column = %d",
-					tp, tp->uu.nn.parse_location, lwg_parse_yylloc.last_column);
+			         tp, tp->uu.nn.parse_location, lwg_parse_yylloc.last_column);
 			LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_MOREPOINTS, tp->uu.nn.parse_location);
 		}
 
@@ -763,56 +777,57 @@ check_curvepolygon_minpoints()
 	LWDEBUG(3, "check_curvepolygon_minpoints");
 
 	/* Check each sub-geom for minpoints */
-	for(i = 0; i < num; i++)
+	for (i = 0; i < num; i++)
 	{
 		tp = tp->next;
 		LWDEBUGF(5, "Subgeom type %d: %p", tp->uu.nn.type, tp);
-		switch(TYPE_GETTYPE(tp->uu.nn.type)) {
-			case COMPOUNDTYPE:
-				/* sub-geom counter */
-				tp = tp->next;
-				mum = tp->uu.nn.num;
+		switch (TYPE_GETTYPE(tp->uu.nn.type))
+		{
+		case COMPOUNDTYPE:
+			/* sub-geom counter */
+			tp = tp->next;
+			mum = tp->uu.nn.num;
 
-				/* sub-geom loop */
-				for(j = 0; j < mum; j++)
-				{
-					tp = tp->next->next;
-					lum = tp->uu.nn.num;
-					if(j == 0) count += lum;
-					else count += lum - 1;
-					for(k = 0; k < lum; k++)
-					{
-						tp = tp->next;
-					}
-				}
-				if(count < minpoints)
-				{
-					LWDEBUGF(5, "Minpoint check failed: needed %d, got %d",
-							minpoints, count);
-					LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_MOREPOINTS, tp->uu.nn.parse_location);
-				}
-				break;
-			case LINETYPE:
-			case CIRCSTRINGTYPE:
-				tp = tp->next;
-				mum = tp->uu.nn.num;
-				for(j = 0; j < mum; j++)
+			/* sub-geom loop */
+			for (j = 0; j < mum; j++)
+			{
+				tp = tp->next->next;
+				lum = tp->uu.nn.num;
+				if (j == 0) count += lum;
+				else count += lum - 1;
+				for (k = 0; k < lum; k++)
 				{
 					tp = tp->next;
 				}
-				if(mum < minpoints)
-				{
-					LWDEBUGF(5, "Minpoint check failed: needed %d, got %d",
-							minpoints, count);
-					LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_MOREPOINTS, tp->uu.nn.parse_location);
-				}
-				break;
+			}
+			if (count < minpoints)
+			{
+				LWDEBUGF(5, "Minpoint check failed: needed %d, got %d",
+				         minpoints, count);
+				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_MOREPOINTS, tp->uu.nn.parse_location);
+			}
+			break;
+		case LINETYPE:
+		case CIRCSTRINGTYPE:
+			tp = tp->next;
+			mum = tp->uu.nn.num;
+			for (j = 0; j < mum; j++)
+			{
+				tp = tp->next;
+			}
+			if (mum < minpoints)
+			{
+				LWDEBUGF(5, "Minpoint check failed: needed %d, got %d",
+				         minpoints, count);
+				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_MOREPOINTS, tp->uu.nn.parse_location);
+			}
+			break;
 		}
 	}
 }
 
 /*
- * Determines if the compound curve contains the required minimum number of 
+ * Determines if the compound curve contains the required minimum number of
  * points.  This cannot push off to sub-geometries, as it isn't just a matter
  * counting their points.  The first point of all but the first geometry are
  * redundant and shall not be counted.
@@ -830,18 +845,18 @@ check_compoundcurve_minpoints()
 	num = tp->uu.nn.num;
 	LWDEBUGF(5, "subgeom count %d: %p", num, tp);
 
-	for(i = 0; i < num; i++)
+	for (i = 0; i < num; i++)
 	{
 		LWDEBUG(5, "loop start");
 		/* Step into the sub-geometry's counting tuple */
 		tp = tp->next->next;
 		mum = tp->uu.nn.num;
 		LWDEBUGF(5, "subgeom %d of %d type %d, point count %d: %p", i, num, tp->uu.nn.type, mum, tp);
-		if(i == 0) count += mum;
+		if (i == 0) count += mum;
 		else count += mum - 1;
 
 		/* Skip the sub-geoms point tuples */
-		for(j = 0; j < mum; j++) 
+		for (j = 0; j < mum; j++)
 		{
 			tp = tp->next;
 			LWDEBUGF(5, "skipping point tuple %p", tp);
@@ -851,10 +866,10 @@ check_compoundcurve_minpoints()
 	LWDEBUGF(5, "comparison %d", minpoints);
 	LWDEBUGF(5, "comparison %d", count);
 
-	if(count < minpoints)
+	if (count < minpoints)
 	{
 		LWDEBUGF(5, "Minpoint check failed: needed %d, got %d",
-				minpoints, count);
+		         minpoints, count);
 		LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_MOREPOINTS, tp->uu.nn.parse_location);
 	}
 	LWDEBUG(4, "check_compoundcurve_minpoints complete");
@@ -868,15 +883,15 @@ check_linestring_minpoints()
 	int minpoints = 2;
 
 	LWDEBUG(3, "check_linestring_minpoints");
-	if(tp->uu.nn.num < minpoints)
+	if (tp->uu.nn.num < minpoints)
 	{
 		num = tp->uu.nn.num;
-		for(i = 0; i < num; i++)
+		for (i = 0; i < num; i++)
 		{
 			tp = tp->next;
 		}
 		LWDEBUGF(5, "Minpoint check failed: needed %d, got %d",
-				minpoints, tp->uu.nn.num);
+		         minpoints, tp->uu.nn.num);
 		LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_MOREPOINTS, tp->uu.nn.parse_location);
 	}
 }
@@ -889,8 +904,8 @@ void check_circularstring_minpoints()
 void
 pop(void)
 {
-	LWDEBUGF(3, "pop: type= %d, tuple= %p", the_geom.stack->uu.nn.type, 
-			the_geom.stack);
+	LWDEBUGF(3, "pop: type= %d, tuple= %p", the_geom.stack->uu.nn.type,
+	         the_geom.stack);
 	the_geom.stack = the_geom.stack->uu.nn.stack_next;
 }
 
@@ -899,12 +914,16 @@ check_dims(int num)
 {
 	LWDEBUGF(3, "check_dims the_geom.ndims = %d, num = %d", the_geom.ndims, num);
 
-	if( the_geom.ndims != num){
-		if (the_geom.ndims) {
+	if ( the_geom.ndims != num)
+	{
+		if (the_geom.ndims)
+		{
 			LWGEOM_WKT_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
-		} else {
+		}
+		else
+		{
 
-						LWDEBUGF(3, "check_dims: setting dim %d", num);
+			LWDEBUGF(3, "check_dims: setting dim %d", num);
 
 			the_geom.ndims = num;
 			if ( num > 2 ) the_geom.hasZ = 1;
@@ -927,19 +946,24 @@ check_dims(int num)
 void
 WRITE_INT4(output_state * out,int4 val)
 {
-	if ( val <= 0x7f ){
-		if ( getMachineEndian() == NDR ){
+	if ( val <= 0x7f )
+	{
+		if ( getMachineEndian() == NDR )
+		{
 			val = (val<<1) | 1;
 		}
-		else{
+		else
+		{
 			val |=0x80;
 		}
 
 		*out->pos++ = (uchar)val;
 		the_geom.alloc_size-=3;
 	}
-	else{
-		if ( getMachineEndian() == NDR ){
+	else
+	{
+		if ( getMachineEndian() == NDR )
+		{
 			val <<=1;
 		}
 		WRITE_INT4_REAL(out,val);
@@ -953,17 +977,20 @@ WRITE_INT4(output_state * out,int4 val)
 void
 WRITE_DOUBLES(output_state* out,double* points, int cnt)
 {
-	if ( the_geom.lwgi){
+	if ( the_geom.lwgi)
+	{
 		int4 vals[4];
 		int i;
 
-		for(i=0; i<cnt;i++){
+		for (i=0; i<cnt;i++)
+		{
 			vals[i] = (int4)(((points[i]+180.0)*0xB60B60)+.5);
 		}
 		memcpy(out->pos,vals,sizeof(int4)*cnt);
 		out->pos+=sizeof(int4)*cnt;
 	}
-	else{
+	else
+	{
 		memcpy(out->pos,points,sizeof(double)*cnt);
 		out->pos+=sizeof(double)*cnt;
 	}
@@ -1026,14 +1053,16 @@ write_type(tuple* this,output_state* out)
 		TYPE_SETZM(type, the_geom.hasZ, the_geom.hasM);
 	}
 
-	if ( the_geom.srid != -1 ){
+	if ( the_geom.srid != -1 )
+	{
 		type |= 0x40;
 	}
 
 	*(out->pos)=type;
 	out->pos++;
 
-	if ( the_geom.srid != -1 ){
+	if ( the_geom.srid != -1 )
+	{
 		/* Only the first geometry will have a srid attached */
 		WRITE_INT4(out,the_geom.srid);
 		the_geom.srid = -1;
@@ -1057,9 +1086,9 @@ write_type_count(tuple* this,output_state* out)
 void
 alloc_point(void)
 {
-		LWDEBUG(3, "alloc_point");
+	LWDEBUG(3, "alloc_point");
 
-	if( the_geom.lwgi)
+	if ( the_geom.lwgi)
 		alloc_stack_tuple(POINTTYPEI,write_type,1);
 	else
 		alloc_stack_tuple(POINTTYPE,write_type,1);
@@ -1069,9 +1098,9 @@ alloc_point(void)
 void
 alloc_linestring(void)
 {
-		LWDEBUG(3, "alloc_linestring");
+	LWDEBUG(3, "alloc_linestring");
 
-	if( the_geom.lwgi)
+	if ( the_geom.lwgi)
 		alloc_stack_tuple(LINETYPEI,write_type,1);
 	else
 		alloc_stack_tuple(LINETYPE,write_type,1);
@@ -1105,7 +1134,7 @@ alloc_polygon(void)
 {
 	LWDEBUG(3, "alloc_polygon");
 
-	if( the_geom.lwgi)
+	if ( the_geom.lwgi)
 		alloc_stack_tuple(POLYGONTYPEI, write_type,1);
 	else
 		alloc_stack_tuple(POLYGONTYPE, write_type,1);
@@ -1122,7 +1151,7 @@ alloc_curvepolygon(void)
 void
 alloc_compoundcurve(void)
 {
-		LWDEBUG(3, "alloc_compoundcurve called.");
+	LWDEBUG(3, "alloc_compoundcurve called.");
 
 	alloc_stack_tuple(COMPOUNDTYPE, write_type, 1);
 }
@@ -1130,15 +1159,15 @@ alloc_compoundcurve(void)
 void
 alloc_compoundcurve_closed(void)
 {
-		LWDEBUG(3, "alloc_compoundcurve called.");
+	LWDEBUG(3, "alloc_compoundcurve called.");
 
-		alloc_stack_tuple(COMPOUNDTYPE, write_type, 1);
+	alloc_stack_tuple(COMPOUNDTYPE, write_type, 1);
 }
 
 void
 alloc_multipoint(void)
 {
-		LWDEBUG(3, "alloc_multipoint");
+	LWDEBUG(3, "alloc_multipoint");
 
 	alloc_stack_tuple(MULTIPOINTTYPE,write_type,1);
 }
@@ -1146,7 +1175,7 @@ alloc_multipoint(void)
 void
 alloc_multilinestring(void)
 {
-		LWDEBUG(3, "alloc_multilinestring");
+	LWDEBUG(3, "alloc_multilinestring");
 
 	alloc_stack_tuple(MULTILINETYPE,write_type,1);
 }
@@ -1154,15 +1183,15 @@ alloc_multilinestring(void)
 void
 alloc_multicurve(void)
 {
-		LWDEBUG(3, "alloc_multicurve");
+	LWDEBUG(3, "alloc_multicurve");
 
-		alloc_stack_tuple(MULTICURVETYPE,write_type,1);
+	alloc_stack_tuple(MULTICURVETYPE,write_type,1);
 }
 
 void
 alloc_multipolygon(void)
 {
-		LWDEBUG(3, "alloc_multipolygon");
+	LWDEBUG(3, "alloc_multipolygon");
 
 	alloc_stack_tuple(MULTIPOLYGONTYPE,write_type,1);
 }
@@ -1170,15 +1199,15 @@ alloc_multipolygon(void)
 void
 alloc_multisurface(void)
 {
-		LWDEBUG(3, "alloc_multisurface called");
+	LWDEBUG(3, "alloc_multisurface called");
 
-		alloc_stack_tuple(MULTISURFACETYPE,write_type,1);
+	alloc_stack_tuple(MULTISURFACETYPE,write_type,1);
 }
 
 void
 alloc_geomertycollection(void)
 {
-		LWDEBUG(3, "alloc_geometrycollection");
+	LWDEBUG(3, "alloc_geometrycollection");
 
 	alloc_stack_tuple(COLLECTIONTYPE,write_type,1);
 }
@@ -1186,7 +1215,7 @@ alloc_geomertycollection(void)
 void
 alloc_counter(void)
 {
-		LWDEBUG(3, "alloc_counter");
+	LWDEBUG(3, "alloc_counter");
 
 	alloc_stack_tuple(0,write_count,4);
 }
@@ -1199,7 +1228,8 @@ alloc_empty(void)
 	LWDEBUG(3, "alloc_empty");
 
 	/* Find the last geometry */
-	while(st->uu.nn.type == 0){
+	while (st->uu.nn.type == 0)
+	{
 		st =st->uu.nn.stack_next;
 	}
 
@@ -1212,7 +1242,8 @@ alloc_empty(void)
 	the_geom.alloc_size=st->uu.nn.size_here;
 
 	/* Mark as a empty stop */
-	if (st->uu.nn.type != 0xFF){
+	if (st->uu.nn.type != 0xFF)
+	{
 		st->uu.nn.type=0xFF;
 		st->of = write_type_count;
 		the_geom.alloc_size+=4;
@@ -1228,7 +1259,7 @@ make_serialized_lwgeom(LWGEOM_PARSER_RESULT *lwg_parser_result)
 	uchar* out_c;
 	output_state out;
 	tuple* cur;
-	
+
 	LWDEBUG(3, "make_serialized_lwgeom");
 
 	/* Allocate the LWGEOM itself */
@@ -1236,7 +1267,8 @@ make_serialized_lwgeom(LWGEOM_PARSER_RESULT *lwg_parser_result)
 	out.pos = out_c;
 	cur = the_geom.first ;
 
-	while(cur){
+	while (cur)
+	{
 		cur->of(cur,&out);
 		cur=cur->next;
 	}
@@ -1251,7 +1283,7 @@ make_serialized_lwgeom(LWGEOM_PARSER_RESULT *lwg_parser_result)
 void
 lwg_parse_yynotice(char* s)
 {
-		lwnotice(s);
+	lwnotice(s);
 }
 
 int
@@ -1269,38 +1301,45 @@ lwg_parse_yyerror(char* s)
  puts '{'+a.join(",")+'}'
 
  */
-static const uchar to_hex[]  = {
-	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
-	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
-	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
-	0,1,2,3,4,5,6,7,8,9,255,255,255,255,255,255,255,10,11,12,13,14,
-	15,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
-	255,255,255,255,255,255,255,255,255,255,255,10,11,12,13,14,15,255,
-	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
-	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
-	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
-	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
-	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
-	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
-	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
-	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
-	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
-	255,255,255,255,255,255,255,255};
+static const uchar to_hex[]  =
+    {
+        255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+        255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+        255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+        0,1,2,3,4,5,6,7,8,9,255,255,255,255,255,255,255,10,11,12,13,14,
+        15,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+        255,255,255,255,255,255,255,255,255,255,255,10,11,12,13,14,15,255,
+        255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+        255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+        255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+        255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+        255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+        255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+        255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+        255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+        255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+        255,255,255,255,255,255,255,255
+    };
 
 uchar
 strhex_readbyte(const char* in)
 {
-	if ( *in == 0 ){
-		if ( ! parser_ferror_occured){
+	if ( *in == 0 )
+	{
+		if ( ! parser_ferror_occured)
+		{
 			LWGEOM_WKB_PARSER_ERROR(PARSER_ERROR_INVALIDGEOM);
 		}
 		return 0;
 	}
 
-	if (!parser_ferror_occured) {
+	if (!parser_ferror_occured)
+	{
 		lwg_parse_yylloc.last_column++;
 		return to_hex[(int)*in]<<4 | to_hex[(int)*(in+1)];
-	} else {
+	}
+	else
+	{
 		return 0;
 	}
 }
@@ -1318,12 +1357,14 @@ int swap_order;
 void
 read_wkb_bytes(const char** in, uchar* out, int cnt)
 {
-	if ( ! swap_order ){
-		while(cnt--) *out++ = read_wkb_byte(in);
+	if ( ! swap_order )
+	{
+		while (cnt--) *out++ = read_wkb_byte(in);
 	}
-	else{
+	else
+	{
 		out += (cnt-1);
-		while(cnt--) *out-- = read_wkb_byte(in);
+		while (cnt--) *out-- = read_wkb_byte(in);
 	}
 }
 
@@ -1340,14 +1381,17 @@ read_wkb_double(const char** in, int convert_from_int)
 {
 	double ret=0;
 
-	if ( ! convert_from_int){
+	if ( ! convert_from_int)
+	{
 		read_wkb_bytes(in,(uchar*)&ret,8);
 		return ret;
-	}else{
+	}
+	else
+	{
 		ret  = read_wkb_int(in);
 		ret /= 0xb60b60;
 		return ret-180.0;
- 	}
+	}
 }
 
 void
@@ -1357,31 +1401,49 @@ read_wkb_point(const char **b)
 	tuple* p = NULL;
 
 
-	if(the_geom.lwgi && the_geom.from_lwgi ){
+	if (the_geom.lwgi && the_geom.from_lwgi )
+	{
 		/*
 		 * Special case - reading from lwgi to lwgi
 		 * we don't want to go via doubles in the middle.
 		 */
-		switch(the_geom.ndims){
-			case 2: p=alloc_tuple(write_point_2i,8); break;
-			case 3: p=alloc_tuple(write_point_3i,12); break;
-			case 4: p=alloc_tuple(write_point_4i,16); break;
+		switch (the_geom.ndims)
+		{
+		case 2:
+			p=alloc_tuple(write_point_2i,8);
+			break;
+		case 3:
+			p=alloc_tuple(write_point_3i,12);
+			break;
+		case 4:
+			p=alloc_tuple(write_point_4i,16);
+			break;
 		}
 
-		for(i=0;i<the_geom.ndims;i++){
+		for (i=0;i<the_geom.ndims;i++)
+		{
 			p->uu.pointsi[i]=read_wkb_int(b);
 		}
 	}
-	else{
+	else
+	{
 		int mul = the_geom.lwgi ? 1 : 2;
 
-		switch(the_geom.ndims){
-			case 2: p=alloc_tuple(write_point_2,8*mul); break;
-			case 3: p=alloc_tuple(write_point_3,12*mul); break;
-			case 4: p=alloc_tuple(write_point_4,16*mul); break;
+		switch (the_geom.ndims)
+		{
+		case 2:
+			p=alloc_tuple(write_point_2,8*mul);
+			break;
+		case 3:
+			p=alloc_tuple(write_point_3,12*mul);
+			break;
+		case 4:
+			p=alloc_tuple(write_point_4,16*mul);
+			break;
 		}
 
-		for(i=0;i<the_geom.ndims;i++){
+		for (i=0;i<the_geom.ndims;i++)
+		{
 			p->uu.points[i]=read_wkb_double(b,the_geom.from_lwgi);
 		}
 	}
@@ -1398,7 +1460,8 @@ read_wkb_polygon(const char **b)
 	alloc_counter();
 
 	/* Read through each ORDINATE_ARRAY in turn */
-	while(cnt--){
+	while (cnt--)
+	{
 		if ( parser_ferror_occured )	return;
 
 		read_wkb_ordinate_array(b);
@@ -1429,7 +1492,8 @@ read_wkb_ordinate_array(const char **b)
 	int4 cnt=read_wkb_int(b);
 	alloc_counter();
 
-	while(cnt--){
+	while (cnt--)
+	{
 		if ( parser_ferror_occured )	return;
 		read_wkb_point(b);
 	}
@@ -1445,7 +1509,8 @@ read_collection(const char **b, read_col_func f)
 	int4 cnt=read_wkb_int(b);
 	alloc_counter();
 
-	while(cnt--){
+	while (cnt--)
+	{
 		if ( parser_ferror_occured )	return;
 		f(b);
 	}
@@ -1460,7 +1525,7 @@ parse_wkb(const char **b)
 	uchar xdr = read_wkb_byte(b);
 	int4 localsrid;
 
-		LWDEBUG(3, "parse_wkb");
+	LWDEBUG(3, "parse_wkb");
 
 	swap_order=0;
 
@@ -1501,69 +1566,73 @@ parse_wkb(const char **b)
 
 	type &=0x0f;
 
-	if ( the_geom.lwgi  ){
+	if ( the_geom.lwgi  )
+	{
 
 		if ( type<= POLYGONTYPE )
 			alloc_stack_tuple(type +9,write_type,1);
 		else
 			alloc_stack_tuple(type,write_type,1);
 	}
-	else{
+	else
+	{
 		/* If we are writing lwg and are reading wbki */
 		int4 towrite=type;
-		if (towrite >= POINTTYPEI && towrite <= POLYGONTYPEI){
+		if (towrite >= POINTTYPEI && towrite <= POLYGONTYPEI)
+		{
 			towrite-=9;
 		}
 		alloc_stack_tuple(towrite,write_type,1);
 	}
 
-	switch(type ){
-		case	POINTTYPE:
-			read_wkb_point(b);
-			break;
-		case	LINETYPE:
-			read_wkb_linestring(b);
-			break;
-		case	CIRCSTRINGTYPE:
-			read_wkb_circstring(b);
-			break;
-		case	POLYGONTYPE:
-			read_wkb_polygon(b);
-			break;
+	switch (type )
+	{
+	case	POINTTYPE:
+		read_wkb_point(b);
+		break;
+	case	LINETYPE:
+		read_wkb_linestring(b);
+		break;
+	case	CIRCSTRINGTYPE:
+		read_wkb_circstring(b);
+		break;
+	case	POLYGONTYPE:
+		read_wkb_polygon(b);
+		break;
 
-		case	COMPOUNDTYPE:
-			read_collection(b,parse_wkb);
-			break;
+	case	COMPOUNDTYPE:
+		read_collection(b,parse_wkb);
+		break;
 
-		case	CURVEPOLYTYPE:
-			read_collection(b,parse_wkb);
-			break;
-		case	MULTIPOINTTYPE:
-		case	MULTILINETYPE:
-		case	MULTICURVETYPE:
-		case	MULTIPOLYGONTYPE:
-		case	MULTISURFACETYPE:
-		case	COLLECTIONTYPE:
-			read_collection(b,parse_wkb);
-			break;
+	case	CURVEPOLYTYPE:
+		read_collection(b,parse_wkb);
+		break;
+	case	MULTIPOINTTYPE:
+	case	MULTILINETYPE:
+	case	MULTICURVETYPE:
+	case	MULTIPOLYGONTYPE:
+	case	MULTISURFACETYPE:
+	case	COLLECTIONTYPE:
+		read_collection(b,parse_wkb);
+		break;
 
-		case	POINTTYPEI:
-			the_geom.from_lwgi=1;
-			read_wkb_point(b);
-			break;
+	case	POINTTYPEI:
+		the_geom.from_lwgi=1;
+		read_wkb_point(b);
+		break;
 
-		case	LINETYPEI:
-			the_geom.from_lwgi=1;
-			read_wkb_linestring(b);
-			break;
+	case	LINETYPEI:
+		the_geom.from_lwgi=1;
+		read_wkb_linestring(b);
+		break;
 
-		case	POLYGONTYPEI:
-			the_geom.from_lwgi=1;
-			read_wkb_polygon(b);
-			break;
+	case	POLYGONTYPEI:
+		the_geom.from_lwgi=1;
+		read_wkb_polygon(b);
+		break;
 
-		default:
-			LWGEOM_WKB_PARSER_ERROR(PARSER_ERROR_INVALIDWKBTYPE);
+	default:
+		LWGEOM_WKB_PARSER_ERROR(PARSER_ERROR_INVALIDWKBTYPE);
 	}
 
 	the_geom.from_lwgi=0;
@@ -1575,7 +1644,7 @@ parse_wkb(const char **b)
 void
 alloc_wkb(const char *parser)
 {
-		LWDEBUG(3, "alloc_wkb");
+	LWDEBUG(3, "alloc_wkb");
 
 	parse_wkb(&parser);
 }
@@ -1586,7 +1655,7 @@ alloc_wkb(const char *parser)
 int
 parse_it(LWGEOM_PARSER_RESULT *lwg_parser_result, const char *geometry, int flags, allocator allocfunc, report_error errfunc)
 {
-		LWDEBUGF(3, "parse_it: %s with parser flags %d", geometry, flags);
+	LWDEBUGF(3, "parse_it: %s with parser flags %d", geometry, flags);
 
 	local_malloc = allocfunc;
 	error_func=errfunc;

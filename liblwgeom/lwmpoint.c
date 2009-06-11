@@ -7,7 +7,7 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************/
 
 #include <stdio.h>
@@ -18,7 +18,7 @@
 void
 lwmpoint_release(LWMPOINT *lwmpoint)
 {
-  lwgeom_release(lwmpoint_as_lwgeom(lwmpoint));
+	lwgeom_release(lwmpoint_as_lwgeom(lwmpoint));
 }
 
 
@@ -30,10 +30,10 @@ lwmpoint_deserialize(uchar *srl)
 	int type = lwgeom_getType(srl[0]);
 	int i;
 
-	if ( type != MULTIPOINTTYPE ) 
+	if ( type != MULTIPOINTTYPE )
 	{
 		lwerror("lwmpoint_deserialize called on NON multipoint: %d",
-			type);
+		        type);
 		return NULL;
 	}
 
@@ -58,9 +58,9 @@ lwmpoint_deserialize(uchar *srl)
 		if ( TYPE_NDIMS(result->geoms[i]->type) != TYPE_NDIMS(result->type) )
 		{
 			lwerror("Mixed dimensions (multipoint:%d, point%d:%d)",
-				TYPE_NDIMS(result->type), i,
-				TYPE_NDIMS(result->geoms[i]->type)
-			);
+			        TYPE_NDIMS(result->type), i,
+			        TYPE_NDIMS(result->geoms[i]->type)
+			       );
 			return NULL;
 		}
 	}
@@ -86,7 +86,7 @@ lwmpoint_add(const LWMPOINT *to, uint32 where, const LWGEOM *what)
 	else if ( where < -1 || where > to->ngeoms )
 	{
 		lwerror("lwmpoint_add: add position out of range %d..%d",
-			-1, to->ngeoms);
+		        -1, to->ngeoms);
 		return NULL;
 	}
 
@@ -108,31 +108,32 @@ lwmpoint_add(const LWMPOINT *to, uint32 where, const LWGEOM *what)
 	else newtype = COLLECTIONTYPE;
 
 	col = lwcollection_construct(newtype,
-		to->SRID, NULL,
-		to->ngeoms+1, geoms);
-	
+	                             to->SRID, NULL,
+	                             to->ngeoms+1, geoms);
+
 	return (LWGEOM *)col;
 
 }
 
-void lwmpoint_free(LWMPOINT *mpt) 
+void lwmpoint_free(LWMPOINT *mpt)
 {
 	int i;
-	if( mpt->bbox ) 
+	if ( mpt->bbox )
 	{
 		lwfree(mpt->bbox);
 	}
-	for ( i = 0; i < mpt->ngeoms; i++ ) 
+	for ( i = 0; i < mpt->ngeoms; i++ )
 	{
-		if( mpt->geoms[i] ) {
+		if ( mpt->geoms[i] )
+		{
 			lwpoint_free(mpt->geoms[i]);
 		}
 	}
-	if( mpt->geoms ) 
+	if ( mpt->geoms )
 	{
 		lwfree(mpt->geoms);
 	}
 	lwfree(mpt);
-	
+
 };
 

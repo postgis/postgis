@@ -20,15 +20,16 @@ lwfreeor lwfree_var = init_freeor;
 lwreporter lwnotice_var = init_noticereporter;
 lwreporter lwerror_var = init_errorreporter;
 
-static char *lwgeomTypeName[] = {
-	"Unknown",
-	"Point",
-	"Line",
-	"Polygon",
-	"MultiPoint",
-	"MultiLine",
-	"MultiPolygon",
-	"GeometryCollection",
+static char *lwgeomTypeName[] =
+    {
+        "Unknown",
+        "Point",
+        "Line",
+        "Polygon",
+        "MultiPoint",
+        "MultiLine",
+        "MultiPolygon",
+        "GeometryCollection",
         "CircularString",
         "CompoundString",
         "Invalid Type",  /* POINTTYPEI */
@@ -37,7 +38,7 @@ static char *lwgeomTypeName[] = {
         "CurvePolygon",
         "MultiCurve",
         "MultiSurface"
-};
+    };
 
 
 /*
@@ -92,7 +93,7 @@ init_allocator(size_t size)
 	return lwalloc_var(size);
 }
 
-void 
+void
 init_freeor(void *mem)
 {
 	lwgeom_init_allocators();
@@ -115,7 +116,7 @@ init_noticereporter(const char *fmt, va_list ap)
 
 	(*lwnotice_var)(fmt, ap);
 }
-	
+
 void
 init_errorreporter(const char *fmt, va_list ap)
 {
@@ -201,16 +202,17 @@ void lwgeom_install_default_allocators(void)
 	lwalloc_var = default_allocator;
 	lwrealloc_var = default_reallocator;
 	lwfree_var = default_freeor;
-	lwerror_var = default_errorreporter;	
+	lwerror_var = default_errorreporter;
 	lwnotice_var = default_noticereporter;
 }
- 
+
 
 const char *
 lwgeom_typename(int type)
 {
 	/* something went wrong somewhere */
-	if ( type < 0 || type > 15 ) {
+	if ( type < 0 || type > 15 )
+	{
 		/* assert(0); */
 		return "Invalid type";
 	}
@@ -250,7 +252,7 @@ trim_trailing_zeros(char *str)
 	int i;
 
 	LWDEBUGF(3, "input: %s", str);
-	
+
 	ptr = strchr(str, '.');
 	if ( ! ptr ) return; /* no dot, no decimal digits */
 
@@ -267,22 +269,22 @@ trim_trailing_zeros(char *str)
 		if ( ptr == totrim-1 ) *ptr = '\0';
 		else *totrim = '\0';
 	}
-	
+
 	LWDEBUGF(3, "output: %s", str);
 }
 
 
 /*
- * Returns a new string which contains a maximum of maxlength characters starting 
- * from startpos and finishing at endpos (0-based indexing). If the string is 
- * truncated then the first or last characters are replaced by "..." as 
+ * Returns a new string which contains a maximum of maxlength characters starting
+ * from startpos and finishing at endpos (0-based indexing). If the string is
+ * truncated then the first or last characters are replaced by "..." as
  * appropriate.
  *
  * The caller should specify start or end truncation by setting the truncdirection
  * parameter as follows:
  *    0 - start truncation (i.e. characters are removed from the beginning)
  *    1 - end trunctation (i.e. characters are removed from the end)
- */  
+ */
 
 char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int truncdirection)
 {
@@ -297,11 +299,11 @@ char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int
 	if (truncdirection == 0)
 	{
 		/* Calculate the start position */
-		if (endpos - startpos < maxlength) 
+		if (endpos - startpos < maxlength)
 		{
 			outstart = str + startpos;
-			strncat(output, outstart, endpos - startpos + 1); 
-		}		
+			strncat(output, outstart, endpos - startpos + 1);
+		}
 		else
 		{
 			if (maxlength >= 3)
@@ -309,7 +311,7 @@ char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int
 				/* Add "..." prefix */
 				outstart = str + endpos + 1 - maxlength + 3;
 				strncat(output, "...", 3);
-				strncat(output, outstart, maxlength - 3); 
+				strncat(output, outstart, maxlength - 3);
 			}
 			else
 			{
@@ -327,15 +329,15 @@ char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int
 		{
 			outstart = str + startpos;
 			strncat(output, outstart, endpos - startpos + 1);
-		}	
+		}
 		else
 		{
 			if (maxlength >= 3)
 			{
 				/* Add "..." suffix */
-				outstart = str + startpos;	
+				outstart = str + startpos;
 				strncat(output, outstart, maxlength - 3);
-				strncat(output, "...", 3); 
+				strncat(output, "...", 3);
 			}
 			else
 			{
@@ -355,8 +357,8 @@ getMachineEndian(void)
 	static int endian_check_int = 1; /* dont modify this!!! */
 
 	return *((char *) &endian_check_int); /* 0 = big endian | xdr,
-					       * 1 = little endian | ndr
-	                                       */
+						       * 1 = little endian | ndr
+		                                       */
 }
 
 

@@ -43,7 +43,7 @@ Datum lwgeom_lt(PG_FUNCTION_ARGS)
 	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
 		elog(BTREE_SRID_MISMATCH_SEVERITY,
-			"Operation on two GEOMETRIES with different SRIDs\n");
+		     "Operation on two GEOMETRIES with different SRIDs\n");
 		if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 )
 			pfree(geom1);
 		if ( (Pointer *)PG_GETARG_DATUM(1) != (Pointer *)geom2 )
@@ -58,22 +58,26 @@ Datum lwgeom_lt(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(3, "lwgeom_lt getbox2d_p passed");
 
-	if  ( ! FPeq(box1.xmin , box2.xmin) ) {
+	if  ( ! FPeq(box1.xmin , box2.xmin) )
+	{
 		if  (box1.xmin < box2.xmin)
 			PG_RETURN_BOOL(TRUE);
 	}
 
-	if  ( ! FPeq(box1.ymin , box2.ymin) ) {
+	if  ( ! FPeq(box1.ymin , box2.ymin) )
+	{
 		if  (box1.ymin < box2.ymin)
 			PG_RETURN_BOOL(TRUE);
 	}
 
-	if  ( ! FPeq(box1.xmax , box2.xmax) ) {
+	if  ( ! FPeq(box1.xmax , box2.xmax) )
+	{
 		if  (box1.xmax < box2.xmax)
 			PG_RETURN_BOOL(TRUE);
 	}
 
-	if  ( ! FPeq(box1.ymax , box2.ymax) ) {
+	if  ( ! FPeq(box1.ymax , box2.ymax) )
+	{
 		if  (box1.ymax < box2.ymax)
 			PG_RETURN_BOOL(TRUE);
 	}
@@ -94,7 +98,7 @@ Datum lwgeom_le(PG_FUNCTION_ARGS)
 	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
 		elog(BTREE_SRID_MISMATCH_SEVERITY,
-			"Operation on two GEOMETRIES with different SRIDs\n");
+		     "Operation on two GEOMETRIES with different SRIDs\n");
 		if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 )
 			pfree(geom1);
 		if ( (Pointer *)PG_GETARG_DATUM(1) != (Pointer *)geom2 )
@@ -105,7 +109,8 @@ Datum lwgeom_le(PG_FUNCTION_ARGS)
 	getbox2d_p(SERIALIZED_FORM(geom1), &box1);
 	getbox2d_p(SERIALIZED_FORM(geom2), &box2);
 
-	if  ( ! FPeq(box1.xmin , box2.xmin) ) {
+	if  ( ! FPeq(box1.xmin , box2.xmin) )
+	{
 		if  (box1.xmin < box2.xmin)
 		{
 			if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 ) pfree(geom1);
@@ -117,7 +122,8 @@ Datum lwgeom_le(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(FALSE);
 	}
 
-	if  ( ! FPeq(box1.ymin , box2.ymin) ) {
+	if  ( ! FPeq(box1.ymin , box2.ymin) )
+	{
 		if  (box1.ymin < box2.ymin)
 		{
 			if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 ) pfree(geom1);
@@ -129,7 +135,8 @@ Datum lwgeom_le(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(FALSE);
 	}
 
-	if  ( ! FPeq(box1.xmax , box2.xmax) ) {
+	if  ( ! FPeq(box1.xmax , box2.xmax) )
+	{
 		if  (box1.xmax < box2.xmax)
 		{
 			if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 ) pfree(geom1);
@@ -141,7 +148,8 @@ Datum lwgeom_le(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(FALSE);
 	}
 
-	if  ( ! FPeq(box1.ymax , box2.ymax) ) {
+	if  ( ! FPeq(box1.ymax , box2.ymax) )
+	{
 		if  (box1.ymax < box2.ymax)
 		{
 			if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 ) pfree(geom1);
@@ -172,7 +180,7 @@ Datum lwgeom_eq(PG_FUNCTION_ARGS)
 	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
 		elog(BTREE_SRID_MISMATCH_SEVERITY,
-			"Operation on two GEOMETRIES with different SRIDs\n");
+		     "Operation on two GEOMETRIES with different SRIDs\n");
 		if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 )
 			pfree(geom1);
 		if ( (Pointer *)PG_GETARG_DATUM(1) != (Pointer *)geom2 )
@@ -183,21 +191,21 @@ Datum lwgeom_eq(PG_FUNCTION_ARGS)
 	getbox2d_p(SERIALIZED_FORM(geom1), &box1);
 	getbox2d_p(SERIALIZED_FORM(geom2), &box2);
 
-	if  ( ! FPeq(box1.xmin , box2.xmin) ) 
+	if  ( ! FPeq(box1.xmin , box2.xmin) )
 	{
 		if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 ) pfree(geom1);
 		if ( (Pointer *)PG_GETARG_DATUM(1) != (Pointer *)geom2 ) pfree(geom2);
 		PG_RETURN_BOOL(FALSE);
 	}
 
-	if  ( ! FPeq(box1.ymin , box2.ymin) ) 
+	if  ( ! FPeq(box1.ymin , box2.ymin) )
 	{
 		if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 ) pfree(geom1);
 		if ( (Pointer *)PG_GETARG_DATUM(1) != (Pointer *)geom2 ) pfree(geom2);
 		PG_RETURN_BOOL(FALSE);
 	}
 
-	if  ( ! FPeq(box1.xmax , box2.xmax) ) 
+	if  ( ! FPeq(box1.xmax , box2.xmax) )
 	{
 		if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 ) pfree(geom1);
 		if ( (Pointer *)PG_GETARG_DATUM(1) != (Pointer *)geom2 ) pfree(geom2);
@@ -230,7 +238,7 @@ Datum lwgeom_ge(PG_FUNCTION_ARGS)
 	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
 		elog(BTREE_SRID_MISMATCH_SEVERITY,
-			"Operation on two GEOMETRIES with different SRIDs\n");
+		     "Operation on two GEOMETRIES with different SRIDs\n");
 		if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 )
 			pfree(geom1);
 		if ( (Pointer *)PG_GETARG_DATUM(1) != (Pointer *)geom2 )
@@ -241,7 +249,8 @@ Datum lwgeom_ge(PG_FUNCTION_ARGS)
 	getbox2d_p(SERIALIZED_FORM(geom1), &box1);
 	getbox2d_p(SERIALIZED_FORM(geom2), &box2);
 
-	if  ( ! FPeq(box1.xmin , box2.xmin) ) {
+	if  ( ! FPeq(box1.xmin , box2.xmin) )
+	{
 		if  (box1.xmin > box2.xmin)
 		{
 			if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 ) pfree(geom1);
@@ -251,7 +260,8 @@ Datum lwgeom_ge(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(FALSE);
 	}
 
-	if  ( ! FPeq(box1.ymin , box2.ymin) ) {
+	if  ( ! FPeq(box1.ymin , box2.ymin) )
+	{
 		if  (box1.ymin > box2.ymin)
 		{
 			if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 ) pfree(geom1);
@@ -261,7 +271,8 @@ Datum lwgeom_ge(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(FALSE);
 	}
 
-	if  ( ! FPeq(box1.xmax , box2.xmax) ) {
+	if  ( ! FPeq(box1.xmax , box2.xmax) )
+	{
 		if  (box1.xmax > box2.xmax)
 		{
 			if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 ) pfree(geom1);
@@ -271,7 +282,8 @@ Datum lwgeom_ge(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(FALSE);
 	}
 
-	if  ( ! FPeq(box1.ymax , box2.ymax) ) {
+	if  ( ! FPeq(box1.ymax , box2.ymax) )
+	{
 		if  (box1.ymax > box2.ymax)
 		{
 			if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 ) pfree(geom1);
@@ -300,7 +312,7 @@ Datum lwgeom_gt(PG_FUNCTION_ARGS)
 	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
 		elog(BTREE_SRID_MISMATCH_SEVERITY,
-			"Operation on two GEOMETRIES with different SRIDs\n");
+		     "Operation on two GEOMETRIES with different SRIDs\n");
 		if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 )
 			pfree(geom1);
 		if ( (Pointer *)PG_GETARG_DATUM(1) != (Pointer *)geom2 )
@@ -311,7 +323,8 @@ Datum lwgeom_gt(PG_FUNCTION_ARGS)
 	getbox2d_p(SERIALIZED_FORM(geom1), &box1);
 	getbox2d_p(SERIALIZED_FORM(geom2), &box2);
 
-	if  ( ! FPeq(box1.xmin , box2.xmin) ) {
+	if  ( ! FPeq(box1.xmin , box2.xmin) )
+	{
 		if  (box1.xmin > box2.xmin)
 		{
 			if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 ) pfree(geom1);
@@ -320,7 +333,8 @@ Datum lwgeom_gt(PG_FUNCTION_ARGS)
 		}
 	}
 
-	if  ( ! FPeq(box1.ymin , box2.ymin) ) {
+	if  ( ! FPeq(box1.ymin , box2.ymin) )
+	{
 		if  (box1.ymin > box2.ymin)
 		{
 			if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 ) pfree(geom1);
@@ -329,7 +343,8 @@ Datum lwgeom_gt(PG_FUNCTION_ARGS)
 		}
 	}
 
-	if  ( ! FPeq(box1.xmax , box2.xmax) ) {
+	if  ( ! FPeq(box1.xmax , box2.xmax) )
+	{
 		if  (box1.xmax > box2.xmax)
 		{
 			if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 ) pfree(geom1);
@@ -338,7 +353,8 @@ Datum lwgeom_gt(PG_FUNCTION_ARGS)
 		}
 	}
 
-	if  ( ! FPeq(box1.ymax , box2.ymax) ) {
+	if  ( ! FPeq(box1.ymax , box2.ymax) )
+	{
 		if  (box1.ymax > box2.ymax)
 		{
 			if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 ) pfree(geom1);
@@ -366,7 +382,7 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
 		elog(BTREE_SRID_MISMATCH_SEVERITY,
-			"Operation on two GEOMETRIES with different SRIDs\n");
+		     "Operation on two GEOMETRIES with different SRIDs\n");
 		if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 )
 			pfree(geom1);
 		if ( (Pointer *)PG_GETARG_DATUM(1) != (Pointer *)geom2 )
@@ -377,7 +393,8 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 	getbox2d_p(SERIALIZED_FORM(geom1), &box1);
 	getbox2d_p(SERIALIZED_FORM(geom2), &box2);
 
-	if  ( ! FPeq(box1.xmin , box2.xmin) ) {
+	if  ( ! FPeq(box1.xmin , box2.xmin) )
+	{
 		if  (box1.xmin < box2.xmin)
 		{
 			if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 ) pfree(geom1);
@@ -389,7 +406,8 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 		PG_RETURN_INT32(1);
 	}
 
-	if  ( ! FPeq(box1.ymin , box2.ymin) ) {
+	if  ( ! FPeq(box1.ymin , box2.ymin) )
+	{
 		if  (box1.ymin < box2.ymin)
 		{
 			if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 ) pfree(geom1);
@@ -401,7 +419,8 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 		PG_RETURN_INT32(1);
 	}
 
-	if  ( ! FPeq(box1.xmax , box2.xmax) ) {
+	if  ( ! FPeq(box1.xmax , box2.xmax) )
+	{
 		if  (box1.xmax < box2.xmax)
 		{
 			if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 ) pfree(geom1);
@@ -413,7 +432,8 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 		PG_RETURN_INT32(1);
 	}
 
-	if  ( ! FPeq(box1.ymax , box2.ymax) ) {
+	if  ( ! FPeq(box1.ymax , box2.ymax) )
+	{
 		if  (box1.ymax < box2.ymax)
 		{
 			if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 ) pfree(geom1);

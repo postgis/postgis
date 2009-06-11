@@ -23,7 +23,7 @@ void decode_wkb(char *wkb, int *size);
 
 /*
 //we need to know the endian of the client machine.  This is
-// taken from postgres's os.h file 
+// taken from postgres's os.h file
 
 #if defined(__i386) && !defined(__i386__)
 #define __i386__

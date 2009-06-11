@@ -165,8 +165,8 @@ DP_simplify2d(POINTARRAY *inpts, double epsilon)
 	if ( outpts->npoints < inpts->npoints )
 	{
 		outpts->serialized_pointlist = repalloc(
-		                                       outpts->serialized_pointlist,
-		                                       ptsize*outpts->npoints);
+		                                   outpts->serialized_pointlist,
+		                                   ptsize*outpts->npoints);
 		if ( outpts->serialized_pointlist == NULL )
 		{
 			elog(ERROR, "Out of virtual memory");
@@ -284,15 +284,15 @@ simplify2d_lwgeom(const LWGEOM *igeom, double dist)
 		return lwgeom_clone(igeom);
 	case LINETYPE:
 		return (LWGEOM *)simplify2d_lwline(
-		               (LWLINE *)igeom, dist);
+		           (LWLINE *)igeom, dist);
 	case POLYGONTYPE:
 		return (LWGEOM *)simplify2d_lwpoly(
-		               (LWPOLY *)igeom, dist);
+		           (LWPOLY *)igeom, dist);
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
 	case COLLECTIONTYPE:
 		return (LWGEOM *)simplify2d_collection(
-		               (LWCOLLECTION *)igeom, dist);
+		           (LWCOLLECTION *)igeom, dist);
 	default:
 		lwerror("simplify2d_lwgeom: unknown geometry type: %d",
 		        TYPE_GETTYPE(igeom->type));
@@ -393,8 +393,8 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 	{
 		POINT4D p1, p2;
 		POINT4D *p1ptr=&p1, *p2ptr=&p2; /* don't break
-				                                 * strict-aliasing rules
-				                                 */
+						                                 * strict-aliasing rules
+						                                 */
 
 		getPoint4d_p(ipa, i, &p1);
 		getPoint4d_p(ipa, i+1, &p2);
@@ -529,9 +529,9 @@ static int
 grid_isNull(const gridspec *grid)
 {
 	if ( grid->xsize==0 &&
-	                grid->ysize==0 &&
-	                grid->zsize==0 &&
-	                grid->msize==0 ) return 1;
+	        grid->ysize==0 &&
+	        grid->zsize==0 &&
+	        grid->msize==0 ) return 1;
 	else return 0;
 }
 
@@ -944,9 +944,9 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 }
 
 
-/* 
+/*
 ** crossingDirection(line1, line2)
-** 
+**
 ** Determines crossing direction of line2 relative to line1.
 ** Only accepts LINESTRING ass parameters!
 */
@@ -959,39 +959,39 @@ Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS)
 	LWLINE *l2 = NULL;
 	PG_LWGEOM *geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_LWGEOM *geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	
+
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
-	
+
 	/*
 	** If the bounding boxes don't interact, then there can't be any 
 	** crossing, return right away.
 	*/
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	     getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
-		     ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
+		        ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
 		{
-			PG_RETURN_INT32(LINE_NO_CROSS); 
+			PG_RETURN_INT32(LINE_NO_CROSS);
 		}
 	}
 
 	type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
 	type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
 
-	if ( type1 != LINETYPE || type2 != LINETYPE ) 
+	if ( type1 != LINETYPE || type2 != LINETYPE )
 	{
-			elog(ERROR,"This function only accepts LINESTRING as arguments.");
-			PG_RETURN_NULL();
+		elog(ERROR,"This function only accepts LINESTRING as arguments.");
+		PG_RETURN_NULL();
 	}
 
 	l1 = lwline_deserialize(SERIALIZED_FORM(geom1));
 	l2 = lwline_deserialize(SERIALIZED_FORM(geom2));
 
 	rv = lwline_crossing_direction(l1, l2);
-	
+
 	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 0);	
+	PG_FREE_IF_COPY(geom2, 0);
 
 	PG_RETURN_INT32(rv);
 
@@ -1009,21 +1009,21 @@ Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS)
 	char geomtype = TYPE_GETTYPE(type);
 	char hasz = TYPE_HASZ(type);
 	static int ordinate = 2; /* Z */
-	
+
 	if ( ! ( geomtype == LINETYPE || geomtype == MULTILINETYPE ) )
 	{
 		elog(ERROR,"This function only accepts LINESTRING or MULTILINESTRING as arguments.");
 		PG_RETURN_NULL();
 	}
 
-	if( ! hasz ) 
+	if ( ! hasz )
 	{
 		elog(ERROR,"This function only accepts LINESTRING or MULTILINESTRING with Z values as arguments.");
 		PG_RETURN_NULL();
 	}
 
 	line_in = lwgeom_deserialize(SERIALIZED_FORM(geom_in));
-	if ( geomtype == LINETYPE ) 
+	if ( geomtype == LINETYPE )
 	{
 		geom_out = lwline_clip_to_ordinate_range((LWLINE*)line_in, ordinate, from, to);
 	}
@@ -1033,7 +1033,8 @@ Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS)
 	}
 	lwgeom_free(line_in);
 
-	if( ! geom_out ) {
+	if ( ! geom_out )
+	{
 		elog(ERROR,"The lwline_clip_to_ordinate_range returned null.");
 		PG_RETURN_NULL();
 	}

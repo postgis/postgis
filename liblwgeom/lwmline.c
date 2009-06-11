@@ -7,7 +7,7 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************/
 
 #include <stdio.h>
@@ -18,7 +18,7 @@
 void
 lwmline_release(LWMLINE *lwmline)
 {
-  lwgeom_release(lwmline_as_lwgeom(lwmline));
+	lwgeom_release(lwmline_as_lwgeom(lwmline));
 }
 
 LWMLINE *
@@ -29,10 +29,10 @@ lwmline_deserialize(uchar *srl)
 	int type = lwgeom_getType(srl[0]);
 	int i;
 
-	if ( type != MULTILINETYPE ) 
+	if ( type != MULTILINETYPE )
 	{
 		lwerror("lwmline_deserialize called on NON multiline: %d",
-			type);
+		        type);
 		return NULL;
 	}
 
@@ -58,9 +58,9 @@ lwmline_deserialize(uchar *srl)
 		if ( TYPE_NDIMS(result->geoms[i]->type) != TYPE_NDIMS(result->type) )
 		{
 			lwerror("Mixed dimensions (multiline:%d, line%d:%d)",
-				TYPE_NDIMS(result->type), i,
-				TYPE_NDIMS(result->geoms[i]->type)
-			);
+			        TYPE_NDIMS(result->type), i,
+			        TYPE_NDIMS(result->geoms[i]->type)
+			       );
 			return NULL;
 		}
 	}
@@ -86,7 +86,7 @@ lwmline_add(const LWMLINE *to, uint32 where, const LWGEOM *what)
 	else if ( where < -1 || where > to->ngeoms )
 	{
 		lwerror("lwmline_add: add position out of range %d..%d",
-			-1, to->ngeoms);
+		        -1, to->ngeoms);
 		return NULL;
 	}
 
@@ -108,30 +108,31 @@ lwmline_add(const LWMLINE *to, uint32 where, const LWGEOM *what)
 	else newtype = COLLECTIONTYPE;
 
 	col = lwcollection_construct(newtype,
-		to->SRID, NULL,
-		to->ngeoms+1, geoms);
-	
+	                             to->SRID, NULL,
+	                             to->ngeoms+1, geoms);
+
 	return (LWGEOM *)col;
 
 }
 
-void lwmline_free(LWMLINE *mline) 
+void lwmline_free(LWMLINE *mline)
 {
 	int i;
-	if( mline->bbox ) 
+	if ( mline->bbox )
 	{
 		lwfree(mline->bbox);
 	}
-	for ( i = 0; i < mline->ngeoms; i++ ) 
+	for ( i = 0; i < mline->ngeoms; i++ )
 	{
-		if( mline->geoms[i] ) {
+		if ( mline->geoms[i] )
+		{
 			lwline_free(mline->geoms[i]);
 		}
 	}
-	if( mline->geoms ) 
+	if ( mline->geoms )
 	{
 		lwfree(mline->geoms);
 	}
 	lwfree(mline);
-	
+
 };

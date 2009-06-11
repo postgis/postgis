@@ -62,7 +62,8 @@ typedef struct struct_PROJ4SRSCacheItem
 	int srid;
 	projPJ projection;
 	MemoryContext projection_mcxt;
-} PROJ4SRSCacheItem;
+}
+PROJ4SRSCacheItem;
 
 /** The portal cache: it's contents and cache context
  */
@@ -71,7 +72,8 @@ typedef struct struct_PROJ4PortalCache
 	PROJ4SRSCacheItem PROJ4SRSCache[PROJ4_CACHE_ITEMS];
 	int PROJ4SRSCacheCount;
 	MemoryContext PROJ4SRSCacheContext;
-} PROJ4PortalCache;
+}
+PROJ4PortalCache;
 
 
 /**
@@ -91,7 +93,8 @@ typedef struct struct_PJHashEntry
 {
 	MemoryContext ProjectionContext;
 	projPJ projection;
-} PJHashEntry;
+}
+PJHashEntry;
 
 
 /* PJ Hash API */
@@ -124,20 +127,21 @@ static void PROJ4SRSCacheCheck(MemoryContext context);
 
 
 /* Memory context definition must match the current version of PostgreSQL */
-static MemoryContextMethods PROJ4SRSCacheContextMethods = {
-	NULL,
-	NULL,
-	NULL,
-	PROJ4SRSCacheInit,
-	PROJ4SRSCacheReset,
-	PROJ4SRSCacheDelete,
-	NULL,
-	PROJ4SRSCacheIsEmpty,
-	PROJ4SRSCacheStats
+static MemoryContextMethods PROJ4SRSCacheContextMethods =
+    {
+        NULL,
+        NULL,
+        NULL,
+        PROJ4SRSCacheInit,
+        PROJ4SRSCacheReset,
+        PROJ4SRSCacheDelete,
+        NULL,
+        PROJ4SRSCacheIsEmpty,
+        PROJ4SRSCacheStats
 #ifdef MEMORY_CONTEXT_CHECKING
-	,PROJ4SRSCacheCheck
+        ,PROJ4SRSCacheCheck
 #endif
-};
+    };
 
 
 static void
@@ -261,7 +265,7 @@ static void AddPJHashEntry(MemoryContext mcxt, projPJ projection)
 	else
 	{
 		elog(ERROR, "AddPJHashEntry: PROJ4 projection object already exists for this MemoryContext (%p)",
-			(void *)mcxt);
+		     (void *)mcxt);
 	}
 }
 
@@ -359,22 +363,22 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 
 	/* Connect */
 	spi_result = SPI_connect();
-		if (spi_result != SPI_OK_CONNECT)
-		{
-				elog(ERROR, "AddToPROJ4SRSCache: Could not connect to database using SPI");
-		}
+	if (spi_result != SPI_OK_CONNECT)
+	{
+		elog(ERROR, "AddToPROJ4SRSCache: Could not connect to database using SPI");
+	}
 
-		/* Execute the lookup query */
-		snprintf(proj4_spi_buffer, 255, "SELECT proj4text FROM spatial_ref_sys WHERE srid = %d LIMIT 1", srid);
-		spi_result = SPI_exec(proj4_spi_buffer, 1);
+	/* Execute the lookup query */
+	snprintf(proj4_spi_buffer, 255, "SELECT proj4text FROM spatial_ref_sys WHERE srid = %d LIMIT 1", srid);
+	spi_result = SPI_exec(proj4_spi_buffer, 1);
 
-		/* Read back the PROJ4 text */
-		if (spi_result == SPI_OK_SELECT && SPI_processed > 0)
-		{
-				/* Select the first (and only tuple) */
-				TupleDesc tupdesc = SPI_tuptable->tupdesc;
-				SPITupleTable *tuptable = SPI_tuptable;
-				HeapTuple tuple = tuptable->vals[0];
+	/* Read back the PROJ4 text */
+	if (spi_result == SPI_OK_SELECT && SPI_processed > 0)
+	{
+		/* Select the first (and only tuple) */
+		TupleDesc tupdesc = SPI_tuptable->tupdesc;
+		SPITupleTable *tuptable = SPI_tuptable;
+		HeapTuple tuple = tuptable->vals[0];
 
 		/* Make a projection object out of it */
 		proj_str = palloc(strlen(SPI_getvalue(tuple, tupdesc, 1)) + 1);
@@ -420,9 +424,9 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 		LWDEBUGF(3, "adding SRID %d with proj4text \"%s\" to query cache at index %d", srid, proj_str, PROJ4Cache->PROJ4SRSCacheCount);
 
 		PJMemoryContext = MemoryContextCreate(T_AllocSetContext, 8192,
-					&PROJ4SRSCacheContextMethods,
-					PROJ4Cache->PROJ4SRSCacheContext,
-					"PostGIS PROJ4 PJ Memory Context");
+		                                      &PROJ4SRSCacheContextMethods,
+		                                      PROJ4Cache->PROJ4SRSCacheContext,
+		                                      "PostGIS PROJ4 PJ Memory Context");
 
 		/* Create the backend hash if it doesn't already exist */
 		if (!PJHash)
@@ -444,17 +448,17 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 		/* Free the projection string */
 		pfree(proj_str);
 	}
-		else
-		{
-				elog(ERROR, "AddToPROJ4SRSCache: Cannot find SRID (%d) in spatial_ref_sys", srid);
-		}
+	else
+	{
+		elog(ERROR, "AddToPROJ4SRSCache: Cannot find SRID (%d) in spatial_ref_sys", srid);
+	}
 
-		/* Close the connection */
-		spi_result = SPI_finish();
-		if (spi_result != SPI_OK_FINISH)
-		{
-				elog(ERROR, "AddToPROJ4SRSCache: Could not disconnect from database using SPI");
-		}
+	/* Close the connection */
+	spi_result = SPI_finish();
+	if (spi_result != SPI_OK_FINISH)
+	{
+		elog(ERROR, "AddToPROJ4SRSCache: Could not disconnect from database using SPI");
+	}
 
 }
 
@@ -787,7 +791,7 @@ Datum transform(PG_FUNCTION_ARGS)
 
 	/* now we have a geometry, and input/output PJ structs. */
 	lwgeom_transform_recursive(SERIALIZED_FORM(geom),
-		input_pj, output_pj);
+	                           input_pj, output_pj);
 
 	srl = SERIALIZED_FORM(geom);
 
@@ -859,19 +863,19 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 
 	input_proj4 = (char *)palloc(VARSIZE(input_proj4_text)+1-4);
 	memcpy(input_proj4, VARDATA(input_proj4_text),
-		VARSIZE(input_proj4_text)-VARHDRSZ);
+	       VARSIZE(input_proj4_text)-VARHDRSZ);
 	input_proj4[VARSIZE(input_proj4_text)-VARHDRSZ] = 0; /* null terminate */
 
 	output_proj4 = (char *) palloc(VARSIZE(output_proj4_text) +1-VARHDRSZ);
 	memcpy(output_proj4, VARDATA(output_proj4_text),
-		VARSIZE(output_proj4_text)-VARHDRSZ);
+	       VARSIZE(output_proj4_text)-VARHDRSZ);
 	output_proj4[VARSIZE(output_proj4_text)-VARHDRSZ] = 0; /* null terminate */
 
 	/* make input and output projection objects */
 	input_pj = make_project(input_proj4);
 
 	pj_errno_ref = pj_get_errno_ref();
-		if ( (input_pj == NULL) || (*pj_errno_ref))
+	if ( (input_pj == NULL) || (*pj_errno_ref))
 	{
 		/* we need this for error reporting */
 		/* pfree(input_proj4); */
@@ -899,7 +903,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 
 	/* now we have a geometry, and input/output PJ structs. */
 	lwgeom_transform_recursive(SERIALIZED_FORM(geom),
-		input_pj, output_pj);
+	                           input_pj, output_pj);
 
 	/* clean up */
 	pj_free(input_pj);
@@ -964,16 +968,16 @@ transform_point(POINT4D *pt, projPJ srcpj, projPJ dstpj)
 		if (*pj_errno_ref == -38)
 		{
 			ereport(ERROR, (
-				errmsg_internal("transform: couldn't project point (%g %g %g): %s (%d)",
-				orig_pt.x, orig_pt.y, orig_pt.z, pj_strerrno(*pj_errno_ref), *pj_errno_ref),
-				errhint("PostGIS was unable to transform the point because either no grid shift files were found, or the point does not lie within the range for which the grid shift is defined. Refer to the ST_Transform() section of the PostGIS manual for details on how to configure PostGIS to alter this behaviour.")
-				));
+			            errmsg_internal("transform: couldn't project point (%g %g %g): %s (%d)",
+			                            orig_pt.x, orig_pt.y, orig_pt.z, pj_strerrno(*pj_errno_ref), *pj_errno_ref),
+			            errhint("PostGIS was unable to transform the point because either no grid shift files were found, or the point does not lie within the range for which the grid shift is defined. Refer to the ST_Transform() section of the PostGIS manual for details on how to configure PostGIS to alter this behaviour.")
+			        ));
 			return 0;
 		}
 		else
 		{
 			elog(ERROR, "transform: couldn't project point (%g %g %g): %s (%d)",
-				orig_pt.x, orig_pt.y, orig_pt.z, pj_strerrno(*pj_errno_ref), *pj_errno_ref);
+			     orig_pt.x, orig_pt.y, orig_pt.z, pj_strerrno(*pj_errno_ref), *pj_errno_ref);
 			return 0;
 		}
 	}

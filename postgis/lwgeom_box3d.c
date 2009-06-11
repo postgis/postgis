@@ -59,27 +59,27 @@ Datum BOX3D_in(PG_FUNCTION_ARGS)
 	box->zmax = 0;
 
 
-/*printf( "box3d_in gets '%s'\n",str); */
+	/*printf( "box3d_in gets '%s'\n",str); */
 
 	if (strstr(str,"BOX3D(") !=  str )
 	{
-		 pfree(box);
-		 elog(ERROR,"BOX3D parser - doesnt start with BOX3D(");
-		 PG_RETURN_NULL();
+		pfree(box);
+		elog(ERROR,"BOX3D parser - doesnt start with BOX3D(");
+		PG_RETURN_NULL();
 	}
 
 	nitems = sscanf(str,"BOX3D(%le %le %le ,%le %le %le)",
-		&box->xmin, &box->ymin, &box->zmin,
-		&box->xmax, &box->ymax, &box->zmax);
+	                &box->xmin, &box->ymin, &box->zmin,
+	                &box->xmax, &box->ymax, &box->zmax);
 	if (nitems != 6 )
 	{
 		nitems = sscanf(str,"BOX3D(%le %le ,%le %le)",
-			&box->xmin, &box->ymin, &box->xmax, &box->ymax);
+		                &box->xmin, &box->ymin, &box->xmax, &box->ymax);
 		if (nitems != 4)
 		{
-			 pfree(box);
-			 elog(ERROR,"BOX3D parser - couldnt parse.  It should look like: BOX3D(xmin ymin zmin,xmax ymax zmax) or BOX3D(xmin ymin,xmax ymax)");
-			 PG_RETURN_NULL();
+			pfree(box);
+			elog(ERROR,"BOX3D parser - couldnt parse.  It should look like: BOX3D(xmin ymin zmin,xmax ymax zmax) or BOX3D(xmin ymin,xmax ymax)");
+			PG_RETURN_NULL();
 		}
 	}
 
@@ -132,8 +132,8 @@ Datum BOX3D_out(PG_FUNCTION_ARGS)
 	result = (char *) palloc(size);
 
 	sprintf(result, "BOX3D(%.15g %.15g %.15g,%.15g %.15g %.15g)",
-			bbox->xmin, bbox->ymin, bbox->zmin,
-			bbox->xmax,bbox->ymax,bbox->zmax);
+	        bbox->xmin, bbox->ymin, bbox->zmin,
+	        bbox->xmax,bbox->ymax,bbox->zmax);
 
 	PG_RETURN_CSTRING(result);
 }
@@ -143,7 +143,7 @@ Datum BOX3D_out(PG_FUNCTION_ARGS)
  *  but beginning with BOX(...) and with only 2 dimensions. This
  *  is a temporary hack to allow ST_Extent() to return a result
  *  with the precision of BOX2DFLOAT4 but with the BOX2DFLOAT4
- *  output format. 
+ *  output format.
  *
  *  example:
  *     "BOX(xmin ymin, xmax ymax)"
@@ -169,8 +169,8 @@ Datum BOX3D_extent_out(PG_FUNCTION_ARGS)
 	result = (char *) palloc(size);
 
 	sprintf(result, "BOX(%.15g %.15g,%.15g %.15g)",
-			bbox->xmin, bbox->ymin,
-			bbox->xmax,bbox->ymax);
+	        bbox->xmin, bbox->ymin,
+	        bbox->xmax,bbox->ymax);
 
 	PG_RETURN_CSTRING(result);
 }
@@ -216,7 +216,7 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 	uchar *ser;
 
 
-	/* 
+	/*
 	 * Alter BOX3D cast so that a valid geometry is always
 	 * returned depending upon the size of the BOX3D. The
 	 * code makes the following assumptions:
@@ -228,54 +228,61 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 	 */
 
 	if (box->xmin == box->xmax &&
-	    box->ymin == box->ymax)
-        {
-	  /* Construct and serialize point */
-          LWPOINT *point = make_lwpoint2d(-1, box->xmin, box->ymin);
-   	  ser = lwpoint_serialize(point);
-        }
+	        box->ymin == box->ymax)
+	{
+		/* Construct and serialize point */
+		LWPOINT *point = make_lwpoint2d(-1, box->xmin, box->ymin);
+		ser = lwpoint_serialize(point);
+	}
 	else if (box->xmin == box->xmax ||
 	         box->ymin == box->ymax)
-        {
-  	  LWLINE *line;
-	  POINT2D *pts = palloc(sizeof(POINT2D)*2);
-	  
-	  /* Assign coordinates to POINT2D array */
-	  pts[0].x = box->xmin; pts[0].y = box->ymin;
-	  pts[1].x = box->xmax; pts[1].y = box->ymax;
-	  
-	  /* Construct point array */
-          pa = pointArray_construct((uchar *)pts, 0, 0, 2);	  
+	{
+		LWLINE *line;
+		POINT2D *pts = palloc(sizeof(POINT2D)*2);
 
-	  /* Construct and serialize linestring */
-	  line = lwline_construct(-1, NULL, pa);
-	  ser = lwline_serialize(line);
-        }
-        else
-        {
-  	  LWPOLY *poly;
-	  POINT2D *pts = palloc(sizeof(POINT2D)*5);
+		/* Assign coordinates to POINT2D array */
+		pts[0].x = box->xmin;
+		pts[0].y = box->ymin;
+		pts[1].x = box->xmax;
+		pts[1].y = box->ymax;
 
-	  /* Assign coordinates to POINT2D array */
-	  pts[0].x = box->xmin; pts[0].y = box->ymin;
-	  pts[1].x = box->xmin; pts[1].y = box->ymax;
-	  pts[2].x = box->xmax; pts[2].y = box->ymax;
-	  pts[3].x = box->xmax; pts[3].y = box->ymin;
-	  pts[4].x = box->xmin; pts[4].y = box->ymin;
+		/* Construct point array */
+		pa = pointArray_construct((uchar *)pts, 0, 0, 2);
 
-	  /* Construct point array */
-          pa = pointArray_construct((uchar *)pts, 0, 0, 5);	  
+		/* Construct and serialize linestring */
+		line = lwline_construct(-1, NULL, pa);
+		ser = lwline_serialize(line);
+	}
+	else
+	{
+		LWPOLY *poly;
+		POINT2D *pts = palloc(sizeof(POINT2D)*5);
 
-	  /* Construct polygon */
-	  poly = lwpoly_construct(-1, NULL, 1, &pa);
+		/* Assign coordinates to POINT2D array */
+		pts[0].x = box->xmin;
+		pts[0].y = box->ymin;
+		pts[1].x = box->xmin;
+		pts[1].y = box->ymax;
+		pts[2].x = box->xmax;
+		pts[2].y = box->ymax;
+		pts[3].x = box->xmax;
+		pts[3].y = box->ymin;
+		pts[4].x = box->xmin;
+		pts[4].y = box->ymin;
 
-	  /* Serialize polygon */
-	  ser = lwpoly_serialize(poly);
-        }
-        
+		/* Construct point array */
+		pa = pointArray_construct((uchar *)pts, 0, 0, 5);
+
+		/* Construct polygon */
+		poly = lwpoly_construct(-1, NULL, 1, &pa);
+
+		/* Serialize polygon */
+		ser = lwpoly_serialize(poly);
+	}
+
 	/* Construct PG_LWGEOM  */
 	result = PG_LWGEOM_construct(ser, -1, wantbbox);
-	
+
 	PG_RETURN_POINTER(result);
 }
 
@@ -378,7 +385,7 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 
 	if  ( (box3d_ptr == NULL) && (geom_ptr == NULL) )
 	{
-		PG_RETURN_NULL(); 
+		PG_RETURN_NULL();
 	}
 
 	result = (BOX3D *)palloc(sizeof(BOX3D));
@@ -387,7 +394,8 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 	{
 		lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 		box = compute_serialized_box3d(SERIALIZED_FORM(lwgeom));
-		if ( ! box ) {
+		if ( ! box )
+		{
 			PG_FREE_IF_COPY(lwgeom, 1);
 			PG_RETURN_NULL(); /* must be the empty geom */
 		}
@@ -437,7 +445,7 @@ Datum BOX3D_construct(PG_FUNCTION_ARGS)
 	maxpoint = lwgeom_deserialize(SERIALIZED_FORM(max));
 
 	if ( TYPE_GETTYPE(minpoint->type) != POINTTYPE ||
-		TYPE_GETTYPE(maxpoint->type) != POINTTYPE )
+	        TYPE_GETTYPE(maxpoint->type) != POINTTYPE )
 	{
 		elog(ERROR, "BOX3D_construct: args must be points");
 		PG_RETURN_NULL();

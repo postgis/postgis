@@ -40,140 +40,140 @@ int global_total_width;
 int lw_vasprintf (char **result, const char *format, va_list args);
 int lw_asprintf
 #if __STDC__
-     (char **result, const char *format, ...);
+(char **result, const char *format, ...);
 #else
-     (result, va_alist);
-     char **result;
-     va_dcl
+(result, va_alist);
+char **result;
+va_dcl
 #endif
 
 
 static int
 int_vasprintf (result, format, args)
-     char **result;
-     const char *format;
-     va_list *args;
+char **result;
+const char *format;
+va_list *args;
 {
-  const char *p = format;
-  /* Add one to make sure that it is never zero, which might cause malloc
-     to return NULL.  */
-  int total_width = strlen (format) + 1;
-  va_list ap;
+	const char *p = format;
+	/* Add one to make sure that it is never zero, which might cause malloc
+	   to return NULL.  */
+	int total_width = strlen (format) + 1;
+	va_list ap;
 
-  memcpy (&ap, args, sizeof (va_list));
+	memcpy (&ap, args, sizeof (va_list));
 
-  while (*p != '\0')
-    {
-      if (*p++ == '%')
+	while (*p != '\0')
 	{
-	  while (strchr ("-+ #0", *p))
-	    ++p;
-	  if (*p == '*')
-	    {
-	      ++p;
-	      total_width += abs (va_arg (ap, int));
-	    }
-	  else
-	    total_width += strtoul (p, (char **) &p, 10);
-	  if (*p == '.')
-	    {
-	      ++p;
-	      if (*p == '*')
+		if (*p++ == '%')
 		{
-		  ++p;
-		  total_width += abs (va_arg (ap, int));
+			while (strchr ("-+ #0", *p))
+				++p;
+			if (*p == '*')
+			{
+				++p;
+				total_width += abs (va_arg (ap, int));
+			}
+			else
+				total_width += strtoul (p, (char **) &p, 10);
+			if (*p == '.')
+			{
+				++p;
+				if (*p == '*')
+				{
+					++p;
+					total_width += abs (va_arg (ap, int));
+				}
+				else
+					total_width += strtoul (p, (char **) &p, 10);
+			}
+			while (strchr ("hlLjtz", *p))
+				++p;
+			/* Should be big enough for any format specifier except %s
+			   and floats.  */
+			total_width += 30;
+			switch (*p)
+			{
+			case 'd':
+			case 'i':
+			case 'o':
+			case 'u':
+			case 'x':
+			case 'X':
+			case 'c':
+				(void) va_arg (ap, int);
+				break;
+			case 'f':
+			{
+				double arg = va_arg (ap, double);
+				if (arg >= 1.0 || arg <= -1.0)
+					/* Since an ieee double can have an exponent of 307, we'll
+					   make the buffer wide enough to cover the gross case. */
+					total_width += 307;
+			}
+			break;
+			case 'e':
+			case 'E':
+			case 'g':
+			case 'G':
+				(void) va_arg (ap, double);
+				break;
+			case 's':
+				total_width += strlen (va_arg (ap, char *));
+				break;
+			case 'p':
+			case 'n':
+				(void) va_arg (ap, char *);
+				break;
+			}
+			p++;
 		}
-	      else
-		total_width += strtoul (p, (char **) &p, 10);
-	    }
-	  while (strchr ("hlLjtz", *p))
-	    ++p;
-	  /* Should be big enough for any format specifier except %s
-	     and floats.  */
-	  total_width += 30;
-	  switch (*p)
-	    {
-	    case 'd':
-	    case 'i':
-	    case 'o':
-	    case 'u':
-	    case 'x':
-	    case 'X':
-	    case 'c':
-	      (void) va_arg (ap, int);
-	      break;
-	    case 'f':
-	      {
-		double arg = va_arg (ap, double);
-		if (arg >= 1.0 || arg <= -1.0)
-		  /* Since an ieee double can have an exponent of 307, we'll
-		     make the buffer wide enough to cover the gross case. */
-		  total_width += 307;
-	      }
-	      break;
-	    case 'e':
-	    case 'E':
-	    case 'g':
-	    case 'G':
-	      (void) va_arg (ap, double);
-	      break;
-	    case 's':
-	      total_width += strlen (va_arg (ap, char *));
-	      break;
-	    case 'p':
-	    case 'n':
-	      (void) va_arg (ap, char *);
-	      break;
-	    }
-	  p++;
 	}
-    }
 #ifdef TEST
-  global_total_width = total_width;
+	global_total_width = total_width;
 #endif
-  *result = malloc (total_width);
-  if (*result != NULL)
-    return vsprintf (*result, format, *args);
-  else
-    return 0;
+	*result = malloc (total_width);
+	if (*result != NULL)
+		return vsprintf (*result, format, *args);
+	else
+		return 0;
 }
 
 int
 lw_vasprintf (result, format, args)
-     char **result;
-     const char *format;
-     va_list args;
+char **result;
+const char *format;
+va_list args;
 {
-  va_list temp;
+	va_list temp;
 
-  /* Use va_copy for compatibility with both 32 and 64 bit args */
-  __va_copy(temp, args);
+	/* Use va_copy for compatibility with both 32 and 64 bit args */
+	__va_copy(temp, args);
 
-  return int_vasprintf (result, format, &temp);
+	return int_vasprintf (result, format, &temp);
 }
 
 int
 lw_asprintf
 #if __STDC__
-     (char **result, const char *format, ...)
+(char **result, const char *format, ...)
 #else
-     (result, va_alist)
-     char **result;
-     va_dcl
+(result, va_alist)
+char **result;
+va_dcl
 #endif
 {
-  va_list args;
-  int done;
+	va_list args;
+	int done;
 
 #if __STDC__
-  va_start (args, format);
+	va_start (args, format);
 #else
-  char *format;
-  va_start (args);
-  format = va_arg (args, char *);
+	char *format;
+	va_start (args);
+	format = va_arg (args, char *);
 #endif
-  done = lw_vasprintf (result, format, args);
-  va_end (args);
+	done = lw_vasprintf (result, format, args);
+	va_end (args);
 
-  return done;
-} 
+	return done;
+}

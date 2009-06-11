@@ -35,20 +35,20 @@ Datum BOX2DFLOAT4_in(PG_FUNCTION_ARGS)
 
 
 
-/*printf( "box3d_in gets '%s'\n",str); */
+	/*printf( "box3d_in gets '%s'\n",str); */
 
 	if (strstr(str,"BOX(") !=  str )
 	{
-		 pfree(box);
-		 elog(ERROR,"BOX2DFLOAT4 parser - doesnt start with BOX(");
-		 PG_RETURN_NULL();
+		pfree(box);
+		elog(ERROR,"BOX2DFLOAT4 parser - doesnt start with BOX(");
+		PG_RETURN_NULL();
 	}
 	nitems = sscanf(str,"BOX(%f %f,%f %f)", &box->xmin,&box->ymin,&box->xmax,&box->ymax);
 	if (nitems != 4)
 	{
-		 pfree(box);
-		 elog(ERROR,"BOX2DFLOAT4 parser - couldnt parse.  It should look like: BOX(xmin ymin,xmax ymax)");
-		 PG_RETURN_NULL();
+		pfree(box);
+		elog(ERROR,"BOX2DFLOAT4 parser - couldnt parse.  It should look like: BOX(xmin ymin,xmax ymax)");
+		PG_RETURN_NULL();
 	}
 
 	if (box->xmin > box->xmax)
@@ -76,7 +76,7 @@ Datum BOX2DFLOAT4_out(PG_FUNCTION_ARGS)
 	int size;
 
 	size  = sprintf(tmp,"BOX(%.15g %.15g,%.15g %.15g)",
-		box->xmin, box->ymin, box->xmax, box->ymax);
+	                box->xmin, box->ymin, box->xmax, box->ymax);
 
 	result= palloc(size+1); /* +1= null term */
 
@@ -116,9 +116,9 @@ Datum BOX2D_same(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4		   *box2 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
 
 	PG_RETURN_BOOL(FPeq(box1->xmax, box2->xmax) &&
-				   FPeq(box1->xmin, box2->xmin) &&
-				   FPeq(box1->ymax, box2->ymax) &&
-				   FPeq(box1->ymin, box2->ymin));
+	               FPeq(box1->xmin, box2->xmin) &&
+	               FPeq(box1->ymax, box2->ymax) &&
+	               FPeq(box1->ymin, box2->ymin));
 }
 
 /*
@@ -133,14 +133,14 @@ Datum BOX2D_overlap(PG_FUNCTION_ARGS)
 
 
 	result = ((FPge(box1->xmax, box2->xmax) &&
-			 FPle(box1->xmin, box2->xmax)) ||
-			(FPge(box2->xmax, box1->xmax) &&
-			 FPle(box2->xmin, box1->xmax)))
-		&&
-		((FPge(box1->ymax, box2->ymax) &&
-		  FPle(box1->ymin, box2->ymax)) ||
-		 (FPge(box2->ymax, box1->ymax) &&
-		  FPle(box2->ymin, box1->ymax)));
+	           FPle(box1->xmin, box2->xmax)) ||
+	          (FPge(box2->xmax, box1->xmax) &&
+	           FPle(box2->xmin, box1->xmax)))
+	         &&
+	         ((FPge(box1->ymax, box2->ymax) &&
+	           FPle(box1->ymin, box2->ymax)) ||
+	          (FPge(box2->ymax, box1->ymax) &&
+	           FPle(box2->ymin, box1->ymax)));
 
 	PG_RETURN_BOOL(result);
 }
@@ -150,7 +150,7 @@ Datum BOX2D_overlap(PG_FUNCTION_ARGS)
  * box_overleft - is the right edge of box1 to the left of
  *                the right edge of box2?
  */
- PG_FUNCTION_INFO_V1(BOX2D_overleft);
+PG_FUNCTION_INFO_V1(BOX2D_overleft);
 Datum BOX2D_overleft(PG_FUNCTION_ARGS)
 {
 	BOX2DFLOAT4 *box1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
@@ -159,10 +159,10 @@ Datum BOX2D_overleft(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(FPle(box1->xmax, box2->xmax));
 }
 
-/* 
+/*
  * box_left - is box1 strictly left of box2?
  */
- PG_FUNCTION_INFO_V1(BOX2D_left);
+PG_FUNCTION_INFO_V1(BOX2D_left);
 Datum BOX2D_left(PG_FUNCTION_ARGS)
 {
 	BOX2DFLOAT4		   *box1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
@@ -174,7 +174,7 @@ Datum BOX2D_left(PG_FUNCTION_ARGS)
 /*
  * box_right - is box1 strictly right of box2?
  */
- PG_FUNCTION_INFO_V1(BOX2D_right);
+PG_FUNCTION_INFO_V1(BOX2D_right);
 Datum BOX2D_right(PG_FUNCTION_ARGS)
 {
 	BOX2DFLOAT4		   *box1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
@@ -183,11 +183,11 @@ Datum BOX2D_right(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(FPgt(box1->xmin, box2->xmax));
 }
 
-/* 
+/*
  * box_overright - is the left edge of box1 to the right of
  *                 the left edge of box2?
  */
- PG_FUNCTION_INFO_V1(BOX2D_overright);
+PG_FUNCTION_INFO_V1(BOX2D_overright);
 Datum BOX2D_overright(PG_FUNCTION_ARGS)
 {
 	BOX2DFLOAT4		   *box1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
@@ -196,11 +196,11 @@ Datum BOX2D_overright(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(FPge(box1->xmin, box2->xmin));
 }
 
-/* 
+/*
  * box_overbelow - is the bottom edge of box1 below
  *                 the bottom edge of box2?
  */
- PG_FUNCTION_INFO_V1(BOX2D_overbelow);
+PG_FUNCTION_INFO_V1(BOX2D_overbelow);
 Datum BOX2D_overbelow(PG_FUNCTION_ARGS)
 {
 	BOX2DFLOAT4		   *box1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
@@ -212,7 +212,7 @@ Datum BOX2D_overbelow(PG_FUNCTION_ARGS)
 /*
  * box_below - is box1 strictly below box2?
  */
- PG_FUNCTION_INFO_V1(BOX2D_below);
+PG_FUNCTION_INFO_V1(BOX2D_below);
 Datum BOX2D_below(PG_FUNCTION_ARGS)
 {
 	BOX2DFLOAT4		   *box1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
@@ -224,7 +224,7 @@ Datum BOX2D_below(PG_FUNCTION_ARGS)
 /*
  * box_above - is box1 strictly above box2?
  */
- PG_FUNCTION_INFO_V1(BOX2D_above);
+PG_FUNCTION_INFO_V1(BOX2D_above);
 Datum BOX2D_above(PG_FUNCTION_ARGS)
 {
 	BOX2DFLOAT4		   *box1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
@@ -237,7 +237,7 @@ Datum BOX2D_above(PG_FUNCTION_ARGS)
  * box_overabove - the top edge of box1 above
  *                 the top edge of box2?
  */
- PG_FUNCTION_INFO_V1(BOX2D_overabove);
+PG_FUNCTION_INFO_V1(BOX2D_overabove);
 Datum BOX2D_overabove(PG_FUNCTION_ARGS)
 {
 	BOX2DFLOAT4		   *box1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
@@ -249,31 +249,31 @@ Datum BOX2D_overabove(PG_FUNCTION_ARGS)
 /*
  * box_contained - is box1 contained by box2?
  */
- PG_FUNCTION_INFO_V1(BOX2D_contained);
+PG_FUNCTION_INFO_V1(BOX2D_contained);
 Datum BOX2D_contained(PG_FUNCTION_ARGS)
 {
 	BOX2DFLOAT4		   *box1 =(BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
 	BOX2DFLOAT4		   *box2 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
 
 	PG_RETURN_BOOL(FPle(box1->xmax, box2->xmax) &&
-				   FPge(box1->xmin, box2->xmin) &&
-				   FPle(box1->ymax, box2->ymax) &&
-				   FPge(box1->ymin, box2->ymin));
+	               FPge(box1->xmin, box2->xmin) &&
+	               FPle(box1->ymax, box2->ymax) &&
+	               FPge(box1->ymin, box2->ymin));
 }
 
 /*
  * box_contain - does box1 contain box2?
  */
- PG_FUNCTION_INFO_V1(BOX2D_contain);
+PG_FUNCTION_INFO_V1(BOX2D_contain);
 Datum BOX2D_contain(PG_FUNCTION_ARGS)
 {
 	BOX2DFLOAT4		   *box1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
 	BOX2DFLOAT4		   *box2 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
 
 	PG_RETURN_BOOL(FPge(box1->xmax, box2->xmax) &&
-				   FPle(box1->xmin, box2->xmin) &&
-				   FPge(box1->ymax, box2->ymax) &&
-				   FPle(box1->ymin, box2->ymin));
+	               FPle(box1->xmin, box2->xmin) &&
+	               FPge(box1->ymax, box2->ymax) &&
+	               FPle(box1->ymin, box2->ymin));
 
 }
 
@@ -459,7 +459,7 @@ Datum BOX2DFLOAT4_to_LWGEOM(PG_FUNCTION_ARGS)
 	uchar *ser;
 
 
-	/* 
+	/*
 	 * Alter BOX2D cast so that a valid geometry is always
 	 * returned depending upon the size of the BOX2D. The
 	 * code makes the following assumptions:
@@ -471,54 +471,61 @@ Datum BOX2DFLOAT4_to_LWGEOM(PG_FUNCTION_ARGS)
 	 */
 
 	if (box->xmin == box->xmax &&
-	    box->ymin == box->ymax)
-        {
-	  /* Construct and serialize point */
-          LWPOINT *point = make_lwpoint2d(-1, box->xmin, box->ymin);
-   	  ser = lwpoint_serialize(point);
-        }
+	        box->ymin == box->ymax)
+	{
+		/* Construct and serialize point */
+		LWPOINT *point = make_lwpoint2d(-1, box->xmin, box->ymin);
+		ser = lwpoint_serialize(point);
+	}
 	else if (box->xmin == box->xmax ||
 	         box->ymin == box->ymax)
-        {
-  	  LWLINE *line;
-	  POINT2D *pts = palloc(sizeof(POINT2D)*2);
-	  
-	  /* Assign coordinates to POINT2D array */
-	  pts[0].x = box->xmin; pts[0].y = box->ymin;
-	  pts[1].x = box->xmax; pts[1].y = box->ymax;
-	  
-	  /* Construct point array */
-          pa = pointArray_construct((uchar *)pts, 0, 0, 2);	  
+	{
+		LWLINE *line;
+		POINT2D *pts = palloc(sizeof(POINT2D)*2);
 
-	  /* Construct and serialize linestring */
-	  line = lwline_construct(-1, NULL, pa);
-	  ser = lwline_serialize(line);
-        }
-        else
-        {
-  	  LWPOLY *poly;
-	  POINT2D *pts = palloc(sizeof(POINT2D)*5);
+		/* Assign coordinates to POINT2D array */
+		pts[0].x = box->xmin;
+		pts[0].y = box->ymin;
+		pts[1].x = box->xmax;
+		pts[1].y = box->ymax;
 
-	  /* Assign coordinates to POINT2D array */
-	  pts[0].x = box->xmin; pts[0].y = box->ymin;
-	  pts[1].x = box->xmin; pts[1].y = box->ymax;
-	  pts[2].x = box->xmax; pts[2].y = box->ymax;
-	  pts[3].x = box->xmax; pts[3].y = box->ymin;
-	  pts[4].x = box->xmin; pts[4].y = box->ymin;
+		/* Construct point array */
+		pa = pointArray_construct((uchar *)pts, 0, 0, 2);
 
-	  /* Construct point array */
-          pa = pointArray_construct((uchar *)pts, 0, 0, 5);	  
+		/* Construct and serialize linestring */
+		line = lwline_construct(-1, NULL, pa);
+		ser = lwline_serialize(line);
+	}
+	else
+	{
+		LWPOLY *poly;
+		POINT2D *pts = palloc(sizeof(POINT2D)*5);
 
-	  /* Construct polygon */
-	  poly = lwpoly_construct(-1, NULL, 1, &pa);
+		/* Assign coordinates to POINT2D array */
+		pts[0].x = box->xmin;
+		pts[0].y = box->ymin;
+		pts[1].x = box->xmin;
+		pts[1].y = box->ymax;
+		pts[2].x = box->xmax;
+		pts[2].y = box->ymax;
+		pts[3].x = box->xmax;
+		pts[3].y = box->ymin;
+		pts[4].x = box->xmin;
+		pts[4].y = box->ymin;
 
-	  /* Serialize polygon */
-	  ser = lwpoly_serialize(poly);
-        }
-        
+		/* Construct point array */
+		pa = pointArray_construct((uchar *)pts, 0, 0, 5);
+
+		/* Construct polygon */
+		poly = lwpoly_construct(-1, NULL, 1, &pa);
+
+		/* Serialize polygon */
+		ser = lwpoly_serialize(poly);
+	}
+
 	/* Construct PG_LWGEOM  */
 	result = PG_LWGEOM_construct(ser, -1, wantbbox);
-	
+
 	PG_RETURN_POINTER(result);
 }
 
@@ -535,7 +542,7 @@ Datum BOX2DFLOAT4_construct(PG_FUNCTION_ARGS)
 	maxpoint = lwgeom_deserialize(SERIALIZED_FORM(max));
 
 	if ( TYPE_GETTYPE(minpoint->type) != POINTTYPE ||
-		TYPE_GETTYPE(maxpoint->type) != POINTTYPE )
+	        TYPE_GETTYPE(maxpoint->type) != POINTTYPE )
 	{
 		elog(ERROR, "BOX2DFLOAT4_construct: args must be points");
 		PG_RETURN_NULL();

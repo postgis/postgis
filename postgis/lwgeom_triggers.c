@@ -63,19 +63,19 @@ Datum cache_bbox(PG_FUNCTION_ARGS)
 
 	tupdesc = trigdata->tg_relation->rd_att;
 
-		/* Connect to SPI manager */
-		if ((ret = SPI_connect()) < 0)
-				elog(ERROR, "cache_bbox: SPI_connect returned %d", ret);
+	/* Connect to SPI manager */
+	if ((ret = SPI_connect()) < 0)
+		elog(ERROR, "cache_bbox: SPI_connect returned %d", ret);
 
 	/* Find number of requested argument */
 	attno = SPI_fnumber(tupdesc, trigger->tgargs[0]);
 	if ( attno == SPI_ERROR_NOATTRIBUTE )
-				elog(ERROR, "trigger %s can't find attribute %s",
-			trigger->tgname, trigger->tgargs[0]);
+		elog(ERROR, "trigger %s can't find attribute %s",
+		     trigger->tgname, trigger->tgargs[0]);
 
 	/* Find number of requested argument */
 	if ( strcmp(SPI_gettype(tupdesc, attno), "geometry") )
-				elog(ERROR, "trigger %s requested to apply to a non-geometry field (%s)", trigger->tgname, trigger->tgargs[0]);
+		elog(ERROR, "trigger %s requested to apply to a non-geometry field (%s)", trigger->tgname, trigger->tgargs[0]);
 
 	/* Get input lwgeom */
 	in = SPI_getbinval(rettuple, tupdesc, attno, &isnull);
@@ -85,7 +85,7 @@ Datum cache_bbox(PG_FUNCTION_ARGS)
 		out = PointerGetDatum(DirectFunctionCall1(LWGEOM_addBBOX, in));
 
 		rettuple = SPI_modifytuple(trigdata->tg_relation, rettuple,
-			1, &attno, &out, NULL);
+		                           1, &attno, &out, NULL);
 	}
 
 	/* Disconnect from SPI */

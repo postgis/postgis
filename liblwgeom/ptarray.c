@@ -43,7 +43,7 @@ void ptarray_free(POINTARRAY *pa)
 	*  	TODO: \todo	Turn this on after retrofitting all calls to lwfree_ in /lwgeom
 	*		if( pa->serialized_pointlist )
 	*		lwfree(pa->serialized_pointlist);
-  */
+	 */
 
 	lwfree(pa);
 }
@@ -206,12 +206,13 @@ ptarray_segmentize2d(POINTARRAY *ipa, double dist)
 		}
 
 		/* Add point */
-		if ( ++(opa->npoints) > maxpoints ) {
+		if ( ++(opa->npoints) > maxpoints )
+		{
 			maxpoints *= 1.5;
 			opa->serialized_pointlist = (uchar *)lwrealloc(
-				opa->serialized_pointlist,
-				maxpoints*ptsize
-			);
+			                                opa->serialized_pointlist,
+			                                maxpoints*ptsize
+			                            );
 		}
 		op = getPoint_internal(opa, opa->npoints-1);
 		memcpy(op, ip, ptsize);
@@ -254,19 +255,19 @@ ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims, unsigned int where)
 	size_t ptsize = pointArray_ptsize(pa);
 
 	LWDEBUGF(3, "pa %x p %x size %d where %d",
-		pa, p, pdims, where);
+	         pa, p, pdims, where);
 
 	if ( pdims < 2 || pdims > 4 )
 	{
 		lwerror("ptarray_addPoint: point dimension out of range (%d)",
-			pdims);
+		        pdims);
 		return NULL;
 	}
 
 	if ( where > pa->npoints )
 	{
 		lwerror("ptarray_addPoint: offset out of range (%d)",
-			where);
+		        where);
 		return NULL;
 	}
 
@@ -278,7 +279,7 @@ ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims, unsigned int where)
 	LWDEBUG(3, "initialized point buffer");
 
 	ret = ptarray_construct(TYPE_HASZ(pa->dims),
-		TYPE_HASM(pa->dims), pa->npoints+1);
+	                        TYPE_HASM(pa->dims), pa->npoints+1);
 
 	if ( where == -1 ) where = pa->npoints;
 
@@ -292,8 +293,8 @@ ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims, unsigned int where)
 	if ( where+1 != ret->npoints )
 	{
 		memcpy(getPoint_internal(ret, where+1),
-			getPoint_internal(pa, where),
-			ptsize*(pa->npoints-where));
+		       getPoint_internal(pa, where),
+		       ptsize*(pa->npoints-where));
 	}
 
 	return ret;
@@ -316,7 +317,7 @@ ptarray_removePoint(POINTARRAY *pa, unsigned int which)
 	if ( which > pa->npoints-1 )
 	{
 		lwerror("ptarray_removePoint: offset (%d) out of range (%d..%d)",
-			which, 0, pa->npoints-1);
+		        which, 0, pa->npoints-1);
 		return NULL;
 	}
 
@@ -327,7 +328,7 @@ ptarray_removePoint(POINTARRAY *pa, unsigned int which)
 #endif
 
 	ret = ptarray_construct(TYPE_HASZ(pa->dims),
-		TYPE_HASM(pa->dims), pa->npoints-1);
+	                        TYPE_HASM(pa->dims), pa->npoints-1);
 
 	/* copy initial part */
 	if ( which )
@@ -339,7 +340,7 @@ ptarray_removePoint(POINTARRAY *pa, unsigned int which)
 	if ( which < pa->npoints-1 )
 	{
 		memcpy(getPoint_internal(ret, which), getPoint_internal(pa, which+1),
-			ptsize*(pa->npoints-which-1));
+		       ptsize*(pa->npoints-which-1));
 	}
 
 	return ret;
@@ -354,7 +355,7 @@ ptarray_clone(const POINTARRAY *in)
 	POINTARRAY *out = lwalloc(sizeof(POINTARRAY));
 	size_t size;
 
-		LWDEBUG(3, "ptarray_clone called.");
+	LWDEBUG(3, "ptarray_clone called.");
 
 	out->dims = in->dims;
 	out->npoints = in->npoints;
@@ -417,10 +418,13 @@ ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *result)
 	result->ymin = pt.y;
 	result->ymax = pt.y;
 
-	if ( TYPE_HASZ(pa->dims) ) {
+	if ( TYPE_HASZ(pa->dims) )
+	{
 		result->zmin = pt.z;
 		result->zmax = pt.z;
-	} else {
+	}
+	else
+	{
 		result->zmin = NO_Z_VALUE;
 		result->zmax = NO_Z_VALUE;
 	}
@@ -435,7 +439,8 @@ ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *result)
 		if (pt.x > result->xmax) result->xmax = pt.x;
 		if (pt.y > result->ymax) result->ymax = pt.y;
 
-		if ( TYPE_HASZ(pa->dims) ) {
+		if ( TYPE_HASZ(pa->dims) )
+		{
 			if (pt.z > result->zmax) result->zmax = pt.z;
 			if (pt.z < result->zmin) result->zmin = pt.z;
 		}
@@ -486,7 +491,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 	tlength = 0;
 	getPoint4d_p(ipa, 0, &p1);
 	nsegs = ipa->npoints - 1;
-	for( i = 0; i < nsegs; i++ )
+	for ( i = 0; i < nsegs; i++ )
 	{
 		double dseg;
 
@@ -494,7 +499,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 
 
 		LWDEBUGF(3 ,"Segment %d: (%g,%g,%g,%g)-(%g,%g,%g,%g)",
-			i, p1.x, p1.y, p1.z, p1.m, p2.x, p2.y, p2.z, p2.m);
+		         i, p1.x, p1.y, p1.z, p1.m, p2.x, p2.y, p2.z, p2.m);
 
 
 		/* Find the length of this segment */
@@ -631,7 +636,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 		}
 
 
-		END:
+END:
 
 		tlength += slength;
 		memcpy(&p1, &p2, sizeof(POINT4D));
@@ -679,10 +684,13 @@ closest_point_on_segment(POINT2D *p, POINT2D *A, POINT2D *B, POINT2D *ret)
 	 */
 	r = ( (p->x-A->x) * (B->x-A->x) + (p->y-A->y) * (B->y-A->y) )/( (B->x-A->x)*(B->x-A->x) +(B->y-A->y)*(B->y-A->y) );
 
-	if (r<0) {
-		*ret = *A; return;
+	if (r<0)
+	{
+		*ret = *A;
+		return;
 	}
-	if (r>1) {
+	if (r>1)
+	{
 		*ret = *B;
 		return;
 	}
@@ -710,7 +718,8 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p)
 		getPoint2d_p(pa, t, &end);
 		dist = distance2d_pt_seg(p, &start, &end);
 
-		if (t==1 || dist < mindist ) {
+		if (t==1 || dist < mindist )
+		{
 			mindist = dist;
 			seg=t-1;
 		}
@@ -731,7 +740,9 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p)
 		getPoint2d_p(pa, seg, &start);
 		getPoint2d_p(pa, seg+1, &end);
 		closest_point_on_segment(p, &start, &end, &proj);
-	} else {
+	}
+	else
+	{
 		proj = *p;
 	}
 
@@ -774,7 +785,8 @@ ptarray_longitude_shift(POINTARRAY *pa)
 	int i;
 	double x;
 
-	for (i=0; i<pa->npoints; i++) {
+	for (i=0; i<pa->npoints; i++)
+	{
 		memcpy(&x, getPoint_internal(pa, i), sizeof(double));
 		if ( x < 0 ) x+= 360;
 		else if ( x > 180 ) x -= 360;
@@ -787,7 +799,7 @@ dynptarray_create(size_t initial_capacity, int dims)
 {
 	DYNPTARRAY *ret=lwalloc(sizeof(DYNPTARRAY));
 
-		LWDEBUGF(3, "dynptarray_create called, dims=%d.", dims);
+	LWDEBUGF(3, "dynptarray_create called, dims=%d.", dims);
 
 	if ( initial_capacity < 1 ) initial_capacity=1;
 
@@ -819,7 +831,7 @@ dynptarray_addPoint4d(DYNPTARRAY *dpa, POINT4D *p4d, int allow_duplicates)
 	POINTARRAY *pa=dpa->pa;
 	POINT4D tmp;
 
-		LWDEBUG(3, "dynptarray_addPoint4d called.");
+	LWDEBUG(3, "dynptarray_addPoint4d called.");
 
 	if ( ! allow_duplicates && pa->npoints > 0 )
 	{
@@ -837,8 +849,8 @@ dynptarray_addPoint4d(DYNPTARRAY *dpa, POINT4D *p4d, int allow_duplicates)
 	{
 		dpa->capacity*=2;
 		pa->serialized_pointlist = lwrealloc(
-			pa->serialized_pointlist,
-			dpa->capacity*dpa->ptsize);
+		                               pa->serialized_pointlist,
+		                               dpa->capacity*dpa->ptsize);
 	}
 
 	setPoint4d(pa, pa->npoints-1, p4d);

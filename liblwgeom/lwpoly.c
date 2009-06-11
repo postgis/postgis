@@ -7,7 +7,7 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************/
 
 /* basic LWPOLY manipulation */
@@ -49,7 +49,7 @@ lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox, unsigned int nrings, POINTARRAY **
 
 	result = (LWPOLY*) lwalloc(sizeof(LWPOLY));
 	result->type = lwgeom_makeType_full(hasz, hasm, (SRID!=-1), POLYGONTYPE,
-		0);
+	                                    0);
 	result->SRID = SRID;
 	result->nrings = nrings;
 	result->rings = points;
@@ -102,13 +102,16 @@ lwpoly_deserialize(uchar *serialized_form)
 
 	loc = serialized_form+1;
 
-	if (lwgeom_hasBBOX(type)) {
+	if (lwgeom_hasBBOX(type))
+	{
 		LWDEBUG(3, "lwpoly_deserialize: input has bbox");
 
 		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
 		memcpy(result->bbox, loc, sizeof(BOX2DFLOAT4));
 		loc += sizeof(BOX2DFLOAT4);
-	} else {
+	}
+	else
+	{
 		result->bbox = NULL;
 	}
 
@@ -154,7 +157,7 @@ lwpoly_serialize(LWPOLY *poly)
 	size = lwpoly_serialize_size(poly);
 	result = lwalloc(size);
 	lwpoly_serialize_buf(poly, result, &retsize);
-	
+
 	if ( retsize != size )
 	{
 		lwerror("lwpoly_serialize_size returned %d, ..serialize_buf returned %d", size, retsize);
@@ -189,8 +192,8 @@ lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *retsize)
 	size += 4*poly->nrings; /* npoints/ring */
 
 	buf[0] = (uchar) lwgeom_makeType_full(
-		TYPE_HASZ(poly->type), TYPE_HASM(poly->type),
-		hasSRID, POLYGONTYPE, poly->bbox ? 1 : 0);
+	             TYPE_HASZ(poly->type), TYPE_HASM(poly->type),
+	             hasSRID, POLYGONTYPE, poly->bbox ? 1 : 0);
 	loc = buf+1;
 
 	if (poly->bbox)
@@ -244,7 +247,7 @@ lwpoly_compute_box3d(LWPOLY *poly)
 	BOX3D *result;
 
 	/* just need to check outer ring -- interior rings are inside */
-	POINTARRAY *pa = poly->rings[0];  
+	POINTARRAY *pa = poly->rings[0];
 	result  = ptarray_compute_box3d(pa);
 
 	return result;
@@ -297,7 +300,7 @@ lwgeom_size_poly(const uchar *serialized_poly)
 	loc +=4;
 	result +=4;
 
-        LWDEBUGF(3, "lwgeom_size_poly contains %d rings", nrings);
+	LWDEBUGF(3, "lwgeom_size_poly contains %d rings", nrings);
 
 	for (t =0;t<nrings;t++)
 	{
@@ -323,7 +326,7 @@ lwgeom_size_poly(const uchar *serialized_poly)
 		}
 	}
 
-        LWDEBUGF(3, "lwgeom_size_poly returning %d", result);
+	LWDEBUGF(3, "lwgeom_size_poly returning %d", result);
 
 	return result;
 }
@@ -339,7 +342,7 @@ lwpoly_serialize_size(LWPOLY *poly)
 	if ( poly->bbox ) size += sizeof(BOX2DFLOAT4);
 
 	LWDEBUGF(2, "lwpoly_serialize_size called with poly[%p] (%d rings)",
-			poly, poly->nrings);
+	         poly, poly->nrings);
 
 	size += 4; /* nrings */
 
@@ -363,11 +366,11 @@ void lwpoly_free  (LWPOLY  *poly)
 
 	for (t=0;t<poly->nrings;t++)
 	{
-		if( poly->rings[t] )
+		if ( poly->rings[t] )
 			ptarray_free(poly->rings[t]);
 	}
 
-	if ( poly->rings ) 
+	if ( poly->rings )
 		lwfree(poly->rings);
 
 	lwfree(poly);
@@ -464,9 +467,9 @@ lwpoly_add(const LWPOLY *to, uint32 where, const LWGEOM *what)
 	else newtype = COLLECTIONTYPE;
 
 	col = lwcollection_construct(newtype,
-		to->SRID, NULL,
-		2, geoms);
-	
+	                             to->SRID, NULL,
+	                             2, geoms);
+
 	return (LWGEOM *)col;
 }
 
@@ -492,7 +495,7 @@ lwpoly_forceRHR(LWPOLY *poly)
 void
 lwpoly_release(LWPOLY *lwpoly)
 {
-  lwgeom_release(lwpoly_as_lwgeom(lwpoly));
+	lwgeom_release(lwpoly_as_lwgeom(lwpoly));
 }
 
 void
@@ -509,18 +512,18 @@ lwpoly_segmentize2d(LWPOLY *poly, double dist)
 {
 	POINTARRAY **newrings;
 	unsigned int i;
-	
+
 	newrings = lwalloc(sizeof(POINTARRAY *)*poly->nrings);
 	for (i=0; i<poly->nrings; i++)
 	{
 		newrings[i] = ptarray_segmentize2d(poly->rings[i], dist);
 	}
 	return lwpoly_construct(poly->SRID, NULL,
-		poly->nrings, newrings);
+	                        poly->nrings, newrings);
 }
 
 /*
- * check coordinate equality 
+ * check coordinate equality
  * ring and coordinate order is considered
  */
 char
@@ -546,7 +549,7 @@ lwpoly_same(const LWPOLY *p1, const LWPOLY *p2)
  */
 LWPOLY *
 lwpoly_from_lwlines(const LWLINE *shell,
-	unsigned int nholes, const LWLINE **holes)
+                    unsigned int nholes, const LWLINE **holes)
 {
 	unsigned int nrings;
 	POINTARRAY **rings = lwalloc((nholes+1)*sizeof(POINTARRAY *));

@@ -36,43 +36,43 @@
 /* Tokens.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-   /* Put the tokens into the symbol table, so that GDB and other debuggers
-      know about them.  */
-   enum yytokentype {
-     POINT = 258,
-     LINESTRING = 259,
-     POLYGON = 260,
-     MULTIPOINT = 261,
-     MULTILINESTRING = 262,
-     MULTIPOLYGON = 263,
-     GEOMETRYCOLLECTION = 264,
-     CIRCULARSTRING = 265,
-     COMPOUNDCURVE = 266,
-     CURVEPOLYGON = 267,
-     MULTICURVE = 268,
-     MULTISURFACE = 269,
-     POINTM = 270,
-     LINESTRINGM = 271,
-     POLYGONM = 272,
-     MULTIPOINTM = 273,
-     MULTILINESTRINGM = 274,
-     MULTIPOLYGONM = 275,
-     GEOMETRYCOLLECTIONM = 276,
-     CIRCULARSTRINGM = 277,
-     COMPOUNDCURVEM = 278,
-     CURVEPOLYGONM = 279,
-     MULTICURVEM = 280,
-     MULTISURFACEM = 281,
-     SRID = 282,
-     EMPTY = 283,
-     VALUE = 284,
-     LPAREN = 285,
-     RPAREN = 286,
-     COMMA = 287,
-     EQUALS = 288,
-     SEMICOLON = 289,
-     WKB = 290
-   };
+/* Put the tokens into the symbol table, so that GDB and other debuggers
+   know about them.  */
+enum yytokentype {
+    POINT = 258,
+    LINESTRING = 259,
+    POLYGON = 260,
+    MULTIPOINT = 261,
+    MULTILINESTRING = 262,
+    MULTIPOLYGON = 263,
+    GEOMETRYCOLLECTION = 264,
+    CIRCULARSTRING = 265,
+    COMPOUNDCURVE = 266,
+    CURVEPOLYGON = 267,
+    MULTICURVE = 268,
+    MULTISURFACE = 269,
+    POINTM = 270,
+    LINESTRINGM = 271,
+    POLYGONM = 272,
+    MULTIPOINTM = 273,
+    MULTILINESTRINGM = 274,
+    MULTIPOLYGONM = 275,
+    GEOMETRYCOLLECTIONM = 276,
+    CIRCULARSTRINGM = 277,
+    COMPOUNDCURVEM = 278,
+    CURVEPOLYGONM = 279,
+    MULTICURVEM = 280,
+    MULTISURFACEM = 281,
+    SRID = 282,
+    EMPTY = 283,
+    VALUE = 284,
+    LPAREN = 285,
+    RPAREN = 286,
+    COMMA = 287,
+    EQUALS = 288,
+    SEMICOLON = 289,
+    WKB = 290
+};
 #endif
 /* Tokens.  */
 #define POINT 258
@@ -121,7 +121,7 @@ typedef union YYSTYPE
 }
 /* Line 1489 of yacc.c.  */
 #line 124 "y.tab.h"
-	YYSTYPE;
+YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 # define YYSTYPE_IS_TRIVIAL 1
@@ -132,11 +132,12 @@ extern YYSTYPE lwg_parse_yylval;
 #if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
 typedef struct YYLTYPE
 {
-  int first_line;
-  int first_column;
-  int last_line;
-  int last_column;
-} YYLTYPE;
+	int first_line;
+	int first_column;
+	int last_line;
+	int last_column;
+}
+YYLTYPE;
 # define yyltype YYLTYPE /* obsolescent; will be withdrawn */
 # define YYLTYPE_IS_DECLARED 1
 # define YYLTYPE_IS_TRIVIAL 1

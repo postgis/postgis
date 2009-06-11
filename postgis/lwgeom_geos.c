@@ -150,7 +150,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		PG_LWGEOM *pggeom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
 		int pgtype = TYPE_GETTYPE(pggeom->type);
 		offset += INTALIGN(VARSIZE(pggeom));
-		if( ! i ) /* Initialize SRID */
+		if ( ! i ) /* Initialize SRID */
 		{
 			SRID = pglwgeom_getSRID(pggeom);
 			if ( TYPE_HASZ(pggeom->type) ) is3d = 1;
@@ -176,14 +176,14 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		** First make an array of GEOS Polygons.
 		*/
 		offset = 0;
-		for( i = 0; i < nelems; i++ )
+		for ( i = 0; i < nelems; i++ )
 		{
 			PG_LWGEOM *pggeom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
 			int pgtype = TYPE_GETTYPE(pggeom->type);
 			offset += INTALIGN(VARSIZE(pggeom));
-			if( pgtype == POLYGONTYPE )
+			if ( pgtype == POLYGONTYPE )
 			{
-				if( curgeom == geoms_size )
+				if ( curgeom == geoms_size )
 				{
 					geoms_size *= 2;
 					geoms = repalloc( geoms, sizeof(GEOSGeom) * geoms_size );
@@ -191,7 +191,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 				geoms[curgeom] = (GEOSGeometry *)POSTGIS2GEOS(pggeom);
 				curgeom++;
 			}
-			if( pgtype == MULTIPOLYGONTYPE )
+			if ( pgtype == MULTIPOLYGONTYPE )
 			{
 				int j = 0;
 				LWGEOM_INSPECTED *lwgeom = lwgeom_inspect(SERIALIZED_FORM(pggeom));
@@ -199,7 +199,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 				{
 					LWPOLY *lwpoly = NULL;
 					int k = 0;
-					if( curgeom == geoms_size )
+					if ( curgeom == geoms_size )
 					{
 						geoms_size *= 2;
 						geoms = repalloc( geoms, sizeof(GEOSGeom) * geoms_size );
@@ -208,7 +208,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 					lwpoly = lwgeom_getpoly_inspected(lwgeom, j);
 					geoms[curgeom] = LWGEOM2GEOS(lwpoly_as_lwgeom(lwpoly));
 					/* We delicately free the LWPOLY and POINTARRAY structs, leaving the serialized form below untouched. */
-					for( k = 0; k < lwpoly->nrings; k++ )
+					for ( k = 0; k < lwpoly->nrings; k++ )
 					{
 						lwfree(lwpoly->rings[k]);
 					}
@@ -265,7 +265,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 			g1 = POSTGIS2GEOS(pgis_geom);
 
 			POSTGIS_DEBUGF(3, "unite_garray(%d): adding geom %d to union (%s)",
-							  call, i, lwgeom_typename(TYPE_GETTYPE(geom->type)));
+			               call, i, lwgeom_typename(TYPE_GETTYPE(geom->type)));
 
 			g2 = GEOSUnion(g1, geos_result);
 			if ( g2 == NULL )
@@ -323,7 +323,7 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	is3d = ( TYPE_HASZ(geom1->type) ) ||
-		   ( TYPE_HASZ(geom2->type) );
+	       ( TYPE_HASZ(geom2->type) );
 
 	SRID = pglwgeom_getSRID(geom1);
 	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
@@ -404,7 +404,7 @@ Datum symdifference(PG_FUNCTION_ARGS)
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	is3d = ( TYPE_HASZ(geom1->type) ) ||
-		   ( TYPE_HASZ(geom2->type) );
+	       ( TYPE_HASZ(geom2->type) );
 
 	SRID = pglwgeom_getSRID(geom1);
 	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
@@ -729,7 +729,7 @@ Datum intersection(PG_FUNCTION_ARGS)
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	is3d = ( TYPE_HASZ(geom1->type) ) ||
-		   ( TYPE_HASZ(geom2->type) );
+	       ( TYPE_HASZ(geom2->type) );
 
 	SRID = pglwgeom_getSRID(geom1);
 	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
@@ -817,7 +817,7 @@ Datum difference(PG_FUNCTION_ARGS)
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	is3d = ( TYPE_HASZ(geom1->type) ) ||
-		   ( TYPE_HASZ(geom2->type) );
+	       ( TYPE_HASZ(geom2->type) );
 
 	SRID = pglwgeom_getSRID(geom1);
 	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
@@ -1008,22 +1008,24 @@ void errorIfGeometryCollection(PG_LWGEOM *g1, PG_LWGEOM *g2)
 	int result;
 	char* hintmsg;
 
-	if ( t1 == COLLECTIONTYPE) {
+	if ( t1 == COLLECTIONTYPE)
+	{
 		result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, SERIALIZED_FORM(g1), PARSER_CHECK_NONE);
 		hintmsg = lwmessage_truncate(lwg_unparser_result.wkoutput, 0, strlen(lwg_unparser_result.wkoutput), 80, 1);
 		ereport(ERROR,
-			(errmsg("Relate Operation called with a LWGEOMCOLLECTION type.  This is unsupported."),
-			 errhint("Change argument 1: '%s'", hintmsg))
-		);
+		        (errmsg("Relate Operation called with a LWGEOMCOLLECTION type.  This is unsupported."),
+		         errhint("Change argument 1: '%s'", hintmsg))
+		       );
 		pfree(hintmsg);
 	}
-	else if (t2 == COLLECTIONTYPE) {
+	else if (t2 == COLLECTIONTYPE)
+	{
 		result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, SERIALIZED_FORM(g2), PARSER_CHECK_NONE);
 		hintmsg = lwmessage_truncate(lwg_unparser_result.wkoutput, 0, strlen(lwg_unparser_result.wkoutput), 80, 1);
 		ereport(ERROR,
-			(errmsg("Relate Operation called with a LWGEOMCOLLECTION type.  This is unsupported."),
-			 errhint("Change argument 2: '%s'", hintmsg))
-		);
+		        (errmsg("Relate Operation called with a LWGEOMCOLLECTION type.  This is unsupported."),
+		         errhint("Change argument 2: '%s'", hintmsg))
+		       );
 		pfree(hintmsg);
 	}
 }
@@ -1152,7 +1154,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-		 getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( box2.xmax < box1.xmin ) PG_RETURN_BOOL(FALSE);
 		if ( box2.xmin > box1.xmax ) PG_RETURN_BOOL(FALSE);
@@ -1223,10 +1225,10 @@ Datum contains(PG_FUNCTION_ARGS)
 	** Do the test IFF BOUNDING BOX AVAILABLE.
 	*/
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-		 getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( ( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
-			 ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ) )
+		        ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ) )
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -1350,10 +1352,10 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 	* Do the test IFF BOUNDING BOX AVAILABLE.
 	*/
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-		 getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if (( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
-			( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
+		        ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
 			PG_RETURN_BOOL(FALSE);
 	}
 
@@ -1422,10 +1424,10 @@ Datum covers(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-		 getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if (( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
-			( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
+		        ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -1555,10 +1557,10 @@ Datum within(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-		 getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( ( box1.xmin < box2.xmin ) || ( box1.xmax > box2.xmax ) ||
-			 ( box1.ymin < box2.ymin ) || ( box1.ymax > box2.ymax ) )
+		        ( box1.ymin < box2.ymin ) || ( box1.ymax > box2.ymax ) )
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -1684,10 +1686,10 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-		 getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( ( box1.xmin < box2.xmin ) || ( box1.xmax > box2.xmax ) ||
-			 ( box1.ymin < box2.ymin ) || ( box1.ymax > box2.ymax ) )
+		        ( box1.ymin < box2.ymin ) || ( box1.ymax > box2.ymax ) )
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -1806,10 +1808,10 @@ Datum crosses(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-					getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
-			 ( box2.ymax < box1.ymin ) || ( box2.ymin > box2.ymax ) )
+		        ( box2.ymax < box1.ymin ) || ( box2.ymin > box2.ymax ) )
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -1877,10 +1879,10 @@ Datum intersects(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-		 getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
-			 ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
+		        ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -1893,7 +1895,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 	type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
 	type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
 	if ( (type1 == POINTTYPE && (type2 == POLYGONTYPE || type2 == MULTIPOLYGONTYPE)) ||
-		 (type2 == POINTTYPE && (type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE)))
+	        (type2 == POINTTYPE && (type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE)))
 	{
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
 
@@ -2018,10 +2020,10 @@ Datum touches(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-		 getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
-			 ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
+		        ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -2083,10 +2085,10 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-		 getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
-			 ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
+		        ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
 		{
 			PG_RETURN_BOOL(TRUE);
 		}
@@ -2147,7 +2149,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 
 	patt =  DatumGetCString(DirectFunctionCall1(textout,
-							PointerGetDatum(PG_GETARG_DATUM(2))));
+	                        PointerGetDatum(PG_GETARG_DATUM(2))));
 
 	/*
 	** Need to make sure 't' and 'f' are upper-case before handing to GEOS
@@ -2265,7 +2267,7 @@ Datum geomequals(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-					getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( box2.xmax != box1.xmax ) PG_RETURN_BOOL(FALSE);
 		if ( box2.xmin != box1.xmin ) PG_RETURN_BOOL(FALSE);
@@ -2484,10 +2486,10 @@ GEOS2LWGEOM(const GEOSGeometry *geom, char want3d)
 			g = GEOSGetInteriorRingN(geom, i);
 			cs = GEOSGeom_getCoordSeq(g);
 			ppaa[i+1] = ptarray_from_GEOSCoordSeq(cs,
-												  want3d);
+			                                      want3d);
 		}
 		return (LWGEOM *)lwpoly_construct(SRID, NULL,
-										  ngeoms+1, ppaa);
+		                                  ngeoms+1, ppaa);
 
 	case GEOS_MULTIPOINT:
 	case GEOS_MULTILINESTRING:
@@ -2507,7 +2509,7 @@ GEOS2LWGEOM(const GEOSGeometry *geom, char want3d)
 			}
 		}
 		return (LWGEOM *)lwcollection_construct(type,
-												SRID, NULL, ngeoms, geoms);
+		                                        SRID, NULL, ngeoms, geoms);
 
 	default:
 		lwerror("GEOS2LWGEOM: unknown geometry type: %d", type);
@@ -2995,12 +2997,12 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 		 * a LinearRing clone.
 		 */
 		sq=GEOSCoordSeq_clone(GEOSGeom_getCoordSeq(
-									  GEOSGetExteriorRing(GEOSGetGeometryN( geos_result, i))
-							  ));
+		                          GEOSGetExteriorRing(GEOSGetGeometryN( geos_result, i))
+		                      ));
 		extring = GEOSGeom_createPolygon(
-						  GEOSGeom_createLinearRing(sq),
-						  NULL, 0
-				  );
+		              GEOSGeom_createLinearRing(sq),
+		              NULL, 0
+		          );
 
 		if ( extring == NULL ) /* exception */
 		{

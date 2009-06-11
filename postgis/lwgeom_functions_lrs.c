@@ -7,7 +7,7 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************/
 
 #include "postgres.h"
@@ -19,28 +19,30 @@
 
 Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS);
 
-typedef struct {
+typedef struct
+{
 	POINTARRAY **ptarrays;
 	uint32 nptarrays;
-} POINTARRAYSET;
+}
+POINTARRAYSET;
 
 static POINTARRAYSET ptarray_locate_between_m(
-	POINTARRAY *ipa, double m0, double m1);
+    POINTARRAY *ipa, double m0, double m1);
 
 static LWGEOM *lwcollection_locate_between_m(
-	LWCOLLECTION *lwcoll, double m0, double m1);
+    LWCOLLECTION *lwcoll, double m0, double m1);
 
 static LWGEOM *lwgeom_locate_between_m(
-	LWGEOM *lwin, double m0, double m1);
+    LWGEOM *lwin, double m0, double m1);
 
 static LWGEOM *lwline_locate_between_m(
-	LWLINE *lwline_in, double m0, double m1);
+    LWLINE *lwline_in, double m0, double m1);
 
 static LWGEOM *lwpoint_locate_between_m(
-	LWPOINT *lwpoint, double m0, double m1);
+    LWPOINT *lwpoint, double m0, double m1);
 
 static int clip_seg_by_m_range(
-	POINT4D *p1, POINT4D *p2, double m0, double m1);
+    POINT4D *p1, POINT4D *p2, double m0, double m1);
 
 
 /*
@@ -77,7 +79,7 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 			return 0;
 
 		/* inside range, no clipping */
-			return 1;
+		return 1;
 	}
 
 	/*
@@ -102,7 +104,7 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 	 * The segment is fully inside the range,
 	 * no clipping.
 	 */
-	if ( p1->m >= m0 && p2->m <= m1 ) 
+	if ( p1->m >= m0 && p2->m <= m1 )
 		return 1;
 
 	/*
@@ -125,7 +127,7 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 	LWDEBUGF(3, "dX:%g dY:%g dZ:%g", dX, dY, dZ);
 	LWDEBUGF(3, "swapped: %d", swapped);
 
-	/* 
+	/*
 	 * First point out of range, project 
 	 * it on the range
 	 */
@@ -156,7 +158,7 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 		else ret |= 0x0010;
 	}
 
-	/* 
+	/*
 	 * Second point out of range, project 
 	 * it on the range
 	 */
@@ -192,7 +194,7 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 
 }
 
-static POINTARRAYSET 
+static POINTARRAYSET
 ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 {
 	POINTARRAYSET ret;
@@ -211,10 +213,10 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 	ret.ptarrays=lwalloc(sizeof(POINTARRAY *)*ipa->npoints-1);
 
 	LWDEBUGF(2, "ptarray_locate...: called for pointarray %x, m0:%g, m1:%g",
-		ipa, m0, m1);
+	         ipa, m0, m1);
 
 
-	for(i=1; i<ipa->npoints; i++)
+	for (i=1; i<ipa->npoints; i++)
 	{
 		POINT4D p1, p2;
 		int clipval;
@@ -223,9 +225,9 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 		getPoint4d_p(ipa, i, &p2);
 
 		LWDEBUGF(3, " segment %d-%d [ %g %g %g %g -  %g %g %g %g ]",
-			i-1, i,
-			p1.x, p1.y, p1.z, p1.m,
-			p2.x, p2.y, p2.z, p2.m);
+		         i-1, i,
+		         p1.x, p1.y, p1.z, p1.m,
+		         p2.x, p2.y, p2.z, p2.m);
 
 		clipval = clip_seg_by_m_range(&p1, &p2, m0, m1);
 
@@ -233,7 +235,7 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 		if (! clipval ) continue;
 
 		LWDEBUGF(3, " clipped to: [ %g %g %g %g - %g %g %g %g ]   clipval: %x", p1.x, p1.y, p1.z, p1.m,
-			p2.x, p2.y, p2.z, p2.m, clipval);
+		         p2.x, p2.y, p2.z, p2.m, clipval);
 
 		/* If no points have been accumulated so far, then if clipval != 0 the first point must be the
 		   start of the intersection */
@@ -249,19 +251,20 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 		if (dpa)
 			dynptarray_addPoint4d(dpa, &p2, 0);
 
-                /*
-                 * second point has been clipped
-                 */
-                if ( clipval & 0x0100 || i == ipa->npoints-1 )
-                {
-                        LWDEBUGF(3, " closing pointarray %x with %d points", dpa->pa, dpa->pa->npoints);
+		/*
+		 * second point has been clipped
+		 */
+		if ( clipval & 0x0100 || i == ipa->npoints-1 )
+		{
+			LWDEBUGF(3, " closing pointarray %x with %d points", dpa->pa, dpa->pa->npoints);
 
-                        ret.ptarrays[ret.nptarrays++] = dpa->pa;
-                        lwfree(dpa); dpa=NULL;
-                }
+			ret.ptarrays[ret.nptarrays++] = dpa->pa;
+			lwfree(dpa);
+			dpa=NULL;
+		}
 	}
 
-	/* 
+	/*
 	 * if dpa!=NULL it means we didn't close it yet.
 	 * this should never happen.
 	 */
@@ -324,7 +327,7 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 	LWDEBUGF(2, "lwline_locate_between called for lwline %x", lwline_in);
 
 	LWDEBUGF(3, " ptarray_locate... returned %d pointarrays",
-		paset.nptarrays);
+	         paset.nptarrays);
 
 	if ( paset.nptarrays == 0 )
 	{
@@ -346,11 +349,11 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 		{
 			lwpoint=lwalloc(sizeof(LWPOINT));
 			lwpoint->type=lwgeom_makeType_full(
-				TYPE_HASZ(pa->dims),
-				TYPE_HASM(pa->dims),
-				lwline_in->SRID,
-				POINTTYPE,
-				0);
+			                  TYPE_HASZ(pa->dims),
+			                  TYPE_HASM(pa->dims),
+			                  lwline_in->SRID,
+			                  POINTTYPE,
+			                  0);
 			lwpoint->SRID=lwline_in->SRID;
 			lwpoint->bbox=NULL;
 			lwpoint->point=pa;
@@ -363,11 +366,11 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 		{
 			lwline=lwalloc(sizeof(LWLINE));
 			lwline->type=lwgeom_makeType_full(
-				TYPE_HASZ(pa->dims),
-				TYPE_HASM(pa->dims),
-				lwline_in->SRID,
-				LINETYPE,
-				0);
+			                 TYPE_HASZ(pa->dims),
+			                 TYPE_HASM(pa->dims),
+			                 lwline_in->SRID,
+			                 LINETYPE,
+			                 0);
 			lwline->SRID=lwline_in->SRID;
 			lwline->bbox=NULL;
 			lwline->points=pa;
@@ -395,7 +398,7 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 		else outtype = COLLECTIONTYPE;
 
 		return (LWGEOM *)lwcollection_construct(outtype,
-			lwline_in->SRID, NULL, ngeoms, geoms);
+		                                        lwline_in->SRID, NULL, ngeoms, geoms);
 	}
 }
 
@@ -416,7 +419,7 @@ lwcollection_locate_between_m(LWCOLLECTION *lwcoll, double m0, double m1)
 	for (i=0; i<lwcoll->ngeoms; i++)
 	{
 		LWGEOM *sub=lwgeom_locate_between_m(lwcoll->geoms[i],
-			m0, m1);
+		                                    m0, m1);
 		if ( sub != NULL )
 			geoms[ngeoms++] = sub;
 	}
@@ -424,7 +427,7 @@ lwcollection_locate_between_m(LWCOLLECTION *lwcoll, double m0, double m1)
 	if ( ngeoms == 0 ) return NULL;
 
 	return (LWGEOM *)lwcollection_construct(COLLECTIONTYPE,
-		lwcoll->SRID, NULL, ngeoms, geoms);
+	                                        lwcoll->SRID, NULL, ngeoms, geoms);
 }
 
 /*
@@ -443,24 +446,24 @@ lwgeom_locate_between_m(LWGEOM *lwin, double m0, double m1)
 
 	switch (TYPE_GETTYPE(lwin->type))
 	{
-		case POINTTYPE:
-			return lwpoint_locate_between_m(
-				(LWPOINT *)lwin, m0, m1);
-		case LINETYPE:
-			return lwline_locate_between_m(
-				(LWLINE *)lwin, m0, m1);
+	case POINTTYPE:
+		return lwpoint_locate_between_m(
+		           (LWPOINT *)lwin, m0, m1);
+	case LINETYPE:
+		return lwline_locate_between_m(
+		           (LWLINE *)lwin, m0, m1);
 
-		case MULTIPOINTTYPE:
-		case MULTILINETYPE:
-		case COLLECTIONTYPE:
-			return lwcollection_locate_between_m(
-				(LWCOLLECTION *)lwin, m0, m1);
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case COLLECTIONTYPE:
+		return lwcollection_locate_between_m(
+		           (LWCOLLECTION *)lwin, m0, m1);
 
 		/* Polygon types are not supported */
-		case POLYGONTYPE:
-		case MULTIPOLYGONTYPE:
-			lwerror("Areal geometries are not supported by locate_between_measures");
-			return NULL;
+	case POLYGONTYPE:
+	case MULTIPOLYGONTYPE:
+		lwerror("Areal geometries are not supported by locate_between_measures");
+		return NULL;
 	}
 
 	lwerror("Unkonwn geometry type (%s:%d)", __FILE__, __LINE__);
@@ -485,7 +488,7 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 	LWGEOM *lwin, *lwout;
 	int type;
 
-	if( end_measure < start_measure )
+	if ( end_measure < start_measure )
 	{
 		lwerror("locate_between_m: 2nd arg must be bigger then 1st arg");
 		PG_RETURN_NULL();
@@ -513,15 +516,15 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 	lwin = pglwgeom_deserialize(gin);
 
 	lwout = lwgeom_locate_between_m(lwin,
-		start_measure, end_measure);
+	                                start_measure, end_measure);
 
 	lwgeom_release(lwin);
 
 	if ( lwout == NULL )
 	{
 		lwout = (LWGEOM *)lwcollection_construct_empty(
-			pglwgeom_getSRID(gin), lwgeom_hasZ(gin->type),
-			lwgeom_hasM(gin->type));
+		            pglwgeom_getSRID(gin), lwgeom_hasZ(gin->type),
+		            lwgeom_hasM(gin->type));
 	}
 
 	gout = pglwgeom_serialize(lwout);
