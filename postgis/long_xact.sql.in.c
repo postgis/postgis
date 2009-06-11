@@ -22,7 +22,7 @@
 -- UnlockRows(authid)
 -- removes all locks held by the given auth
 -- returns the number of locks released
-CREATEFUNCTION UnlockRows(text)
+CREATE OR REPLACE FUNCTION UnlockRows(text)
 	RETURNS int
 	AS $$ 
 DECLARE
@@ -45,7 +45,7 @@ LANGUAGE 'plpgsql' _VOLATILE_STRICT;
 
 -- LockRow([schema], table, rowid, auth, [expires]) 
 -- Returns 1 if successfully obtained the lock, 0 otherwise
-CREATEFUNCTION LockRow(text, text, text, text, timestamp)
+CREATE OR REPLACE FUNCTION LockRow(text, text, text, text, timestamp)
 	RETURNS int
 	AS $$ 
 DECLARE
@@ -96,28 +96,28 @@ $$
 LANGUAGE 'plpgsql' _VOLATILE_STRICT;
 
 -- LockRow(schema, table, rid, authid);
-CREATEFUNCTION LockRow(text, text, text, text)
+CREATE OR REPLACE FUNCTION LockRow(text, text, text, text)
 	RETURNS int
 	AS
 $$ SELECT LockRow($1, $2, $3, $4, now()::timestamp+'1:00'); $$
 	LANGUAGE 'sql' _VOLATILE_STRICT;
 
 -- LockRow(table, rid, authid);
-CREATEFUNCTION LockRow(text, text, text)
+CREATE OR REPLACE FUNCTION LockRow(text, text, text)
 	RETURNS int
 	AS
 $$ SELECT LockRow(current_schema(), $1, $2, $3, now()::timestamp+'1:00'); $$
 	LANGUAGE 'sql' _VOLATILE_STRICT;
 
 -- LockRow(schema, table, rid, expires);
-CREATEFUNCTION LockRow(text, text, text, timestamp)
+CREATE OR REPLACE FUNCTION LockRow(text, text, text, timestamp)
 	RETURNS int
 	AS
 $$ SELECT LockRow(current_schema(), $1, $2, $3, $4); $$
 	LANGUAGE 'sql' _VOLATILE_STRICT;
 
 
-CREATEFUNCTION AddAuth(text)
+CREATE OR REPLACE FUNCTION AddAuth(text)
 	RETURNS BOOLEAN
 	AS $$ 
 DECLARE
@@ -154,7 +154,7 @@ LANGUAGE PLPGSQL;
 --
 -- Returns 0
 --
-CREATEFUNCTION CheckAuth(text, text, text)
+CREATE OR REPLACE FUNCTION CheckAuth(text, text, text)
 	RETURNS INT
 	AS $$ 
 DECLARE
@@ -183,18 +183,18 @@ $$
 LANGUAGE 'plpgsql';
 
 -- CheckAuth(<table>, <ridcolumn>)
-CREATEFUNCTION CheckAuth(text, text)
+CREATE OR REPLACE FUNCTION CheckAuth(text, text)
 	RETURNS INT
 	AS
 	$$ SELECT CheckAuth('', $1, $2) $$
 	LANGUAGE 'SQL';
 
-CREATEFUNCTION CheckAuthTrigger()
+CREATE OR REPLACE FUNCTION CheckAuthTrigger()
 	RETURNS trigger AS 
 	'MODULE_PATHNAME', 'check_authorization'
 	LANGUAGE C;
 
-CREATEFUNCTION GetTransactionID()
+CREATE OR REPLACE FUNCTION GetTransactionID()
 	RETURNS xid AS 
 	'MODULE_PATHNAME', 'getTransactionID'
 	LANGUAGE C;
@@ -205,7 +205,7 @@ CREATEFUNCTION GetTransactionID()
 --
 --  Creates the authorization_table if not already existing
 --
-CREATEFUNCTION EnableLongTransactions()
+CREATE OR REPLACE FUNCTION EnableLongTransactions()
 	RETURNS TEXT
 	AS $$ 
 DECLARE
@@ -261,7 +261,7 @@ LANGUAGE 'plpgsql';
 --
 -- Check if Long transactions support is enabled
 --
-CREATEFUNCTION LongTransactionsEnabled()
+CREATE OR REPLACE FUNCTION LongTransactionsEnabled()
 	RETURNS bool
 AS $$ 
 DECLARE
@@ -283,7 +283,7 @@ LANGUAGE 'plpgsql';
 --  (2) Drop the authorization_table
 --  (3) KEEP the authorized_tables view
 --
-CREATEFUNCTION DisableLongTransactions()
+CREATE OR REPLACE FUNCTION DisableLongTransactions()
 	RETURNS TEXT
 	AS $$ 
 DECLARE

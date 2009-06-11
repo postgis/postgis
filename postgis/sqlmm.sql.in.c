@@ -50,10 +50,10 @@
 
 -- PostGIS equivalent function: ST_GeometryFromText(text)
 -- Note: Defaults to an SRID=-1, not 0 as per SQL/MM specs.
-CREATEFUNCTION ST_WKTToSQL(text)
-    	RETURNS geometry
-        AS 'MODULE_PATHNAME','LWGEOM_from_text'
-        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+CREATE OR REPLACE FUNCTION ST_WKTToSQL(text)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','LWGEOM_from_text'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
 
 -- ST_GeomFromText(text, int4) - already defined
 -- ST_PointFromText(text, int4) - already defined
@@ -71,10 +71,10 @@ CREATEFUNCTION ST_WKTToSQL(text)
 -- PostGIS equivalent function: GeomFromWKB(bytea))
 -- Note: Defaults to an SRID=-1, not 0 as per SQL/MM specs.
 
-CREATEFUNCTION ST_WKBToSQL(bytea)
+CREATE OR REPLACE FUNCTION ST_WKBToSQL(bytea)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_from_WKB'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+	LANGUAGE 'C' IMMUTABLE STRICT; 
 
 -- ST_GeomFromWKB(bytea, int) - already defined
 -- ST_PointFromWKB(bytea, int) - already defined
@@ -118,20 +118,20 @@ CREATEFUNCTION ST_WKBToSQL(bytea)
 -------------------------------------------------------------------------------
 
 -- TODO: SE_AsShape(geometry)
---CREATEFUNCTION SE_AsShape(geometry)
+--CREATE OR REPLACE FUNCTION SE_AsShape(geometry)
 --    RETURNS bytea
 --    AS 'MODULE_PATHNAME','LWGEOM_AsShape'
---    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+--    LANGUAGE 'C' IMMUTABLE STRICT; 
 
 -------------------------------------------------------------------------------
 -- SQL/MM (ArcSDE subset) - SQL Functions on type ST_Geometry
 -------------------------------------------------------------------------------
 
 -- PostGIS equivalent function: ndims(geometry)
-CREATEFUNCTION ST_CoordDim(geometry)
-    RETURNS smallint
-    AS 'MODULE_PATHNAME', 'LWGEOM_ndims'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+CREATE OR REPLACE FUNCTION ST_CoordDim(geometry)
+	RETURNS smallint
+	AS 'MODULE_PATHNAME', 'LWGEOM_ndims'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
 
 -- ST_Dimension(geometry) - already defined.
 -- ST_GeometryType(geometry) - already defined.
@@ -149,40 +149,40 @@ CREATEFUNCTION ST_CoordDim(geometry)
 -- ST_Y(geometry) - already defined.
 
 -- PostGIS equivalent function: ~= 
-CREATEFUNCTION ST_OrderingEquals(geometry, geometry)
-    RETURNS boolean
-    AS $$ 
-    SELECT $1 && $2 AND $1 ~= $2
+CREATE OR REPLACE FUNCTION ST_OrderingEquals(geometry, geometry)
+	RETURNS boolean
+	AS $$ 
+	SELECT $1 && $2 AND $1 ~= $2
 	$$	
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+	LANGUAGE 'SQL' IMMUTABLE STRICT; 
 
 -- PostGIS equivalent function: zmflag(geometry)
-CREATEFUNCTION SE_Is3D(geometry)
-    RETURNS boolean
-    AS $$ 
-    SELECT CASE ST_zmflag($1)
-               WHEN 0 THEN false
-               WHEN 1 THEN false
-               WHEN 2 THEN true
-               WHEN 3 THEN true
-               ELSE false
-           END
+CREATE OR REPLACE FUNCTION SE_Is3D(geometry)
+	RETURNS boolean
+	AS $$ 
+	SELECT CASE ST_zmflag($1)
+	       WHEN 0 THEN false
+	       WHEN 1 THEN false
+	       WHEN 2 THEN true
+	       WHEN 3 THEN true
+	       ELSE false
+	   END
 	$$	
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+	LANGUAGE 'SQL' IMMUTABLE STRICT; 
 
 -- PostGIS equivalent function: zmflag(geometry)
-CREATEFUNCTION SE_IsMeasured(geometry)
-    RETURNS boolean
-    AS $$ 
-    SELECT CASE ST_zmflag($1)
-               WHEN 0 THEN false
-               WHEN 1 THEN true
-               WHEN 2 THEN false
-               WHEN 3 THEN true
-               ELSE false
-           END
+CREATE OR REPLACE FUNCTION SE_IsMeasured(geometry)
+	RETURNS boolean
+	AS $$ 
+	SELECT CASE ST_zmflag($1)
+	       WHEN 0 THEN false
+	       WHEN 1 THEN true
+	       WHEN 2 THEN false
+	       WHEN 3 THEN true
+	       ELSE false
+	   END
 	$$	
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+	LANGUAGE 'SQL' IMMUTABLE STRICT; 
 
 
 
@@ -193,22 +193,22 @@ CREATEFUNCTION SE_IsMeasured(geometry)
 -------------------------------------------------------------------------------
 
 -- PostGIS equivalent function: makePoint(float8,float8)
-CREATEFUNCTION ST_Point(float8, float8)
+CREATE OR REPLACE FUNCTION ST_Point(float8, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+	LANGUAGE 'C' IMMUTABLE STRICT; 
 
 -- PostGIS equivalent function: Z(geometry)
-CREATEFUNCTION SE_Z(geometry)
+CREATE OR REPLACE FUNCTION SE_Z(geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME','LWGEOM_z_point'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+	LANGUAGE 'C' IMMUTABLE STRICT; 
 
 -- PostGIS equivalent function: M(geometry)
-CREATEFUNCTION SE_M(geometry)
+CREATE OR REPLACE FUNCTION SE_M(geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME','LWGEOM_m_point'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+	LANGUAGE 'C' IMMUTABLE STRICT; 
 
 -------------------------------------------------------------------------------
 -- SQL/MM (ArcSDE subset) - SQL Functions on type ST_Curve
@@ -241,12 +241,12 @@ CREATEFUNCTION SE_M(geometry)
 -------------------------------------------------------------------------------
 
 -- PostGIS equivalent function: MakePolygon(geometry)
-CREATEFUNCTION ST_Polygon(geometry, int)
+CREATE OR REPLACE FUNCTION ST_Polygon(geometry, int)
 	RETURNS geometry
 	AS $$ 
 	SELECT setSRID(makepolygon($1), $2)
 	$$	
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+	LANGUAGE 'SQL' IMMUTABLE STRICT; 
 
 -- ST_ExteriorRing(geometry) - already defined.
 -- ST_NumInteriorRing(geometry) - already defined.
@@ -290,12 +290,12 @@ CREATEFUNCTION ST_Polygon(geometry, int)
 -- ST_Relate(geometry, geometry, text) - already defined.
 
 -- PostGIS equivalent function: none
-CREATEFUNCTION SE_EnvelopesIntersect(geometry,geometry)
-    RETURNS boolean
+CREATE OR REPLACE FUNCTION SE_EnvelopesIntersect(geometry,geometry)
+	RETURNS boolean
 	AS $$ 
 	SELECT $1 && $2
 	$$	
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+	LANGUAGE 'SQL' IMMUTABLE STRICT; 
 
 -------------------------------------------------------------------------------
 -- SQL/MM (ArcSDE subset) - SQL Functions for distance relationships
@@ -315,16 +315,16 @@ CREATEFUNCTION SE_EnvelopesIntersect(geometry,geometry)
 -- ST_ConvexHull(geometry) already defined.
 
 -- PostGIS equivalent function: locate_along_measure(geometry, float8)
-CREATEFUNCTION SE_LocateAlong(geometry, float8)
+CREATE OR REPLACE FUNCTION SE_LocateAlong(geometry, float8)
 	RETURNS geometry
 	AS $$ SELECT locate_between_measures($1, $2, $2) $$
-	LANGUAGE 'sql' _IMMUTABLE_STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: locate_between_measures(geometry, float8, float8)
-CREATEFUNCTION SE_LocateBetween(geometry, float8, float8)
+CREATE OR REPLACE FUNCTION SE_LocateBetween(geometry, float8, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_locate_between_m'
-	LANGUAGE 'C' _IMMUTABLE_STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT;
 
 
 
