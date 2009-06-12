@@ -2322,7 +2322,7 @@ BEGIN
 
 END;
 $$
-LANGUAGE 'plpgsql' _VOLATILE;
+LANGUAGE 'plpgsql' VOLATILE;
 
 -----------------------------------------------------------------------
 -- POPULATE_GEOMETRY_COLUMNS() 
@@ -2421,7 +2421,7 @@ BEGIN
 END
 
 $$
-LANGUAGE 'plpgsql' _VOLATILE;
+LANGUAGE 'plpgsql' VOLATILE;
 	
 -----------------------------------------------------------------------
 -- POPULATE_GEOMETRY_COLUMNS(tbl_oid oid) 
@@ -2662,7 +2662,7 @@ BEGIN
 END
 
 $$
-LANGUAGE 'plpgsql' _VOLATILE;
+LANGUAGE 'plpgsql' VOLATILE;
 
 
 -----------------------------------------------------------------------
@@ -2760,7 +2760,7 @@ BEGIN
 END
 
 $$
-LANGUAGE 'plpgsql' _VOLATILE;
+LANGUAGE 'plpgsql' VOLATILE;
 
 -----------------------------------------------------------------------
 -- ADDGEOMETRYCOLUMN
