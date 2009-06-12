@@ -41,7 +41,7 @@ BEGIN
 	RETURN ret;
 END;
 $$
-LANGUAGE 'plpgsql' _VOLATILE_STRICT;
+LANGUAGE 'plpgsql'  VOLATILE STRICT;
 
 -- LockRow([schema], table, rowid, auth, [expires]) 
 -- Returns 1 if successfully obtained the lock, 0 otherwise
@@ -93,28 +93,28 @@ BEGIN
 	RETURN ret;
 END;
 $$
-LANGUAGE 'plpgsql' _VOLATILE_STRICT;
+LANGUAGE 'plpgsql'  VOLATILE STRICT;
 
 -- LockRow(schema, table, rid, authid);
 CREATE OR REPLACE FUNCTION LockRow(text, text, text, text)
 	RETURNS int
 	AS
 $$ SELECT LockRow($1, $2, $3, $4, now()::timestamp+'1:00'); $$
-	LANGUAGE 'sql' _VOLATILE_STRICT;
+	LANGUAGE 'sql'  VOLATILE STRICT;
 
 -- LockRow(table, rid, authid);
 CREATE OR REPLACE FUNCTION LockRow(text, text, text)
 	RETURNS int
 	AS
 $$ SELECT LockRow(current_schema(), $1, $2, $3, now()::timestamp+'1:00'); $$
-	LANGUAGE 'sql' _VOLATILE_STRICT;
+	LANGUAGE 'sql'  VOLATILE STRICT;
 
 -- LockRow(schema, table, rid, expires);
 CREATE OR REPLACE FUNCTION LockRow(text, text, text, timestamp)
 	RETURNS int
 	AS
 $$ SELECT LockRow(current_schema(), $1, $2, $3, $4); $$
-	LANGUAGE 'sql' _VOLATILE_STRICT;
+	LANGUAGE 'sql'  VOLATILE STRICT;
 
 
 CREATE OR REPLACE FUNCTION AddAuth(text)
