@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-  Date: 2006-12-15
+  Date: 2009-06-15
 
 Versioning Scheme
 -----------------
@@ -21,19 +21,27 @@ to work or rather *HIGHLY RECOMMENDED* to get new functionalities.
 Release procedure
 -----------------
 
-1) Update Version.config as specified in Versioning Scheme above.
-2) Add a "release mark" in ChangeLog (search for '---' at the start
-   of a line to see how it looks like)
-3) Edit NEWS: set release date and check all notable changes are
+1) Re-generate the ChangeLog using svn2cl.
+2) Edit NEWS: set release date and check all notable changes are
    been reported (extract from ChangeLog).
-4) Edit README.postgis and set release date and version.
-5) Add release notes in doc/release_notes.xml
-6) Commit all your changes
-7) Tag the release:
-   $ base=http://svn.refractions.net/postgis/
-   $ rel=MAJ.MIN.MIC
-   $ svn copy -m "Tagged release $rel" $base/trunk $base/tags/$rel
-8) Run: sh make_dist.sh MAJ.MIN.MIC
-9) Publish
-10) Announce 
+3) Edit README.postgis and set release date and version.
+4) Add release notes in doc/release_notes.xml
+5) Commit all your changes
+6) Tag trunk:  
+   svn copy http://svn.osgeo.org/postgis/trunk http://svn.osgeo.org/postgis/tags/x.x.x
+7) Checkout tag:
+   svn checkout http://svn.osgeo.org/postgis/tags/x.x.x
+8) Update Version.config as specified in Versioning Scheme above.
+9) Commit your version number change to the tag.
+10) Run: sh make_dist.sh x.x.x
+11) Copy tarball to web site and edit downloads page
+12) Announce on e-mail 
+    - postgis-users
+    - postgis-devel
+    - pgsql-announce
+    - osgeo-discuss
+13) Update web sites
+    - PostGIS News
+    - Freshmeat
+    - Wikipedia
 
