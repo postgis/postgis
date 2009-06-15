@@ -27,7 +27,7 @@ Release procedure
 3) Edit NEWS: set release date and check all notable changes are
    been reported (extract from ChangeLog).
 4) Edit README.postgis and set release date and version.
-5) Add release notes in doc/postgis.xml
+5) Add release notes in doc/release_notes.xml
 6) Commit all your changes
 7) Tag the release:
    $ base=http://svn.refractions.net/postgis/
