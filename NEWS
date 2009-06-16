@@ -33,6 +33,8 @@ PostGIS 1.4.0
    - ST_AsGeoJSON() return JSON formatted geometry (Olivier Courtin)
    - Populate_Geometry_Columns() -- automatically add records to
 	 geometry_columns for TABLES and VIEWS (Kevin Neufeld)
+   -- ST_MinimumBoundingCircle() -- returns the smallest circle 
+   	 polygon that can encompass a geometry (Bruce Rindahl)
 
  - Enhancements
    - Core geometry system moved into independent library, liblwgeom.
