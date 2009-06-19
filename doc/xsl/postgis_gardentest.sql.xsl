@@ -229,6 +229,9 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 	SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@GeometryType" />';
 	BEGIN; <!-- If output is geometry show ewkt rep -->
 			<xsl:choose>
+			  <xsl:when test="contains($fndef, 'geometry set')">
+			  	SELECT ST_AsEWKT(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)), ST_AsEWKT(MAX(foo1.the_geom)) As ref_geom
+			  </xsl:when>
 			  <xsl:when test="contains($fndef, 'geometry ')">
 	SELECT ST_AsEWKT(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)), ST_AsEWKT(foo1.the_geom) As ref_geom
 			  </xsl:when>
