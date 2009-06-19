@@ -229,7 +229,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
     </note>
 
     <para>
-      The following steps outline the configuration and compliation of the
+      The following steps outline the configuration and compilation of the
       PostGIS source. They are written for Linux users and will not work on
       Windows or Mac.
     </para>
@@ -324,8 +324,16 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
             </para>
           </listitem>
         </varlistentry>
+		<varlistentry>
+          <term><command>--with-gui</command></term>
+          <listitem>
+            <para>
+              Compile the data import GUI (requires GTK+2.0).  This will create shp2pgsql-gui graphical interface
+			  to shp2pgsql.
+            </para>
+          </listitem>
+        </varlistentry>
       </variablelist>
-
       <note>
         <para>
           If you obtained PostGIS from the SVN
