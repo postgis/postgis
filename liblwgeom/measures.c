@@ -588,6 +588,7 @@ lwgeom_polygon_area(LWPOLY *poly)
 
 		LWDEBUGF(4, " rings %d has %d points", i, ring->npoints);
 
+		if ( ! ring->npoints ) continue; /* empty ring */
 		for (j=0; j<ring->npoints-1; j++)
 		{
 			getPoint2d_p(ring, j, &p1);
