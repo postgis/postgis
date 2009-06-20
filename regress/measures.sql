@@ -46,3 +46,24 @@ select 'dist', ST_distance(a,b), ST_distance(b,a) from (
 			(15 5, 15 8, 17 8, 17 5, 15 5))'::geometry as b
 	) as foo;
 
+
+-- Area of an empty polygon
+select 'emptyPolyArea', st_area('POLYGON EMPTY');
+
+-- Area of an empty linestring
+select 'emptyLineArea', st_area('LINESTRING EMPTY');
+
+-- Area of an empty point
+select 'emptyPointArea', st_area('POINT EMPTY');
+
+-- Area of an empty multipolygon
+select 'emptyMultiPolyArea', st_area('MULTIPOLYGON EMPTY');
+
+-- Area of an empty multilinestring
+select 'emptyMultiLineArea', st_area('MULTILINESTRING EMPTY');
+
+-- Area of an empty multilipoint
+select 'emptyMultiPointArea', st_area('MULTIPOINT EMPTY');
+
+-- Area of an empty collection
+select 'emptyCollectionArea', st_area('GEOMETRYCOLLECTION EMPTY');

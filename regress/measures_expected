@@ -18,3 +18,10 @@ dist|1|1
 135|13
 136|13
 dist|1|1
+emptyPolyArea|0
+emptyLineArea|0
+emptyPointArea|0
+emptyMultiPolyArea|0
+emptyMultiLineArea|0
+emptyMultiPointArea|0
+emptyCollectionArea|0
