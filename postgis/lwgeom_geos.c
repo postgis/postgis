@@ -2450,6 +2450,11 @@ GEOS2LWGEOM(const GEOSGeometry *geom, char want3d)
 		}
 	}
 
+	if ( GEOSisEmpty(geom) )
+	{
+		return (LWGEOM*)lwcollection_construct_empty(SRID, want3d, 0);
+	}
+
 	switch (type)
 	{
 		const GEOSCoordSequence *cs;
