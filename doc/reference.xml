@@ -3604,7 +3604,7 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 SELECT n, ST_AsEWKT(ST_GeometryN(the_geom, n)) As geomewkt
 FROM (
 VALUES (ST_GeomFromEWKT('MULTIPOINT(1 2 7, 3 4 7, 5 6 7, 8 9 10)') ),
-( ST_GeomFromEWKT('MULTICURVE(CIRCULARSTRING(2.5 2.5,4.5 2.5, 3.5 3.5), (10 11, 12 11))') ) 
+( ST_GeomFromEWKT('MULTICURVE(CIRCULARSTRING(2.5 2.5,4.5 2.5, 3.5 3.5), (10 11, 12 11))') )
 	)As foo(the_geom)
 	CROSS JOIN generate_series(1,100) n
 WHERE n &lt;= ST_NumGeometries(the_geom);
@@ -9048,9 +9048,9 @@ degaz	degazrev
 
 	  <refsection>
 		<title>Examples</title>
-		
+
 		<para>The <function>ST_Contains</function> predicate returns <varname>TRUE</varname> in all the following illustrations.</para>
-		
+
 		<informaltable>
 		  <tgroup cols="2">
 			<tbody>
@@ -9085,7 +9085,7 @@ degaz	degazrev
 					  <caption><para><varname>POLYGON</varname> / <varname>LINESTRING</varname></para></caption>
 					</mediaobject>
 				  </informalfigure></para></entry>
-				  
+
 				<entry><para><informalfigure>
 					<mediaobject>
 					  <imageobject>
@@ -9099,9 +9099,9 @@ degaz	degazrev
 			</tbody>
 		  </tgroup>
 		</informaltable>
-	
+
 		<para>The <function>ST_Contains</function> predicate returns <varname>FALSE</varname> in all the following illustrations.</para>
-		
+
 		<informaltable>
 		  <tgroup cols="2">
 			<tbody>
@@ -9129,7 +9129,7 @@ degaz	degazrev
 			</tbody>
 		  </tgroup>
 		</informaltable>
-		
+
 		  <programlisting>
 -- A circle within a circle
 SELECT ST_Contains(smallc, bigc) As smallcontainsbig,
@@ -9139,7 +9139,7 @@ SELECT ST_Contains(smallc, bigc) As smallcontainsbig,
 	   ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,
 	   ST_Contains(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior
 FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
-	         ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;
+			 ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;
 
 -- Result
   smallcontainsbig | bigcontainssmall | bigcontainsunion | bigisunion | bigcoversexterior | bigcontainsexterior
@@ -9150,8 +9150,8 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
 SELECT ST_GeometryType(geomA) As geomtype, ST_Contains(geomA,geomA) AS acontainsa, ST_ContainsProperly(geomA, geomA) AS acontainspropa,
    ST_Contains(geomA, ST_Boundary(geomA)) As acontainsba, ST_ContainsProperly(geomA, ST_Boundary(geomA)) As acontainspropba
 FROM (VALUES ( ST_Buffer(ST_Point(1,1), 5,1) ),
-		     ( ST_MakeLine(ST_Point(1,1), ST_Point(-1,-1) ) ),
-		     ( ST_Point(1,1) )
+			 ( ST_MakeLine(ST_Point(1,1), ST_Point(-1,-1) ) ),
+			 ( ST_Point(1,1) )
 	  ) As foo(geomA);
 
   geomtype    | acontainsa | acontainspropa | acontainsba | acontainspropba
@@ -9311,7 +9311,7 @@ ST_Point      | t          | t              | f           | f
 			the geometries. To avoid index use, use the function
 			_ST_Covers.</para>
 
-		<para>Availability: 1.2.2</para>
+		<para>Availability: 1.2.2 - requires GEOS &gt;= 3.0</para>
 
 		<para>NOTE: this is the "allowable" version that returns a
 			boolean, not an integer.</para>
@@ -9381,8 +9381,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
 		<important>
 		  <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
 		</important>
-		<para>Availability: 1.2.2</para>
-
+		<para>Availability: 1.2.2 - requires GEOS &gt;= 3.0</para>
 		<para>This function call will automatically include a bounding box
 			comparison that will make use of any indexes that are available on
 			the geometries. To avoid index use, use the function
@@ -11008,16 +11007,16 @@ st_perimeter
 			</imageobject>
 		  </inlinemediaobject> This method implements the SQL/MM
 		specification: SQL-MM 3: 8.1.5, 9.5.6.
-	     According to the specs, ST_PointOnSurface works for surface geometries (POLYGONs, MULTIPOLYGONS, CURVED POLYGONS).  So PostGIS seems to be extending what
+		 According to the specs, ST_PointOnSurface works for surface geometries (POLYGONs, MULTIPOLYGONS, CURVED POLYGONS).  So PostGIS seems to be extending what
 		 the spec allows here.  Most databases Oracle,DB II, ESRI SDE seem to only support this function for surfaces.  SQL Server 2008 like PostGIS supports for all common geometries.
 	</para>
-		
+
 			<!-- Optionally mention 3d support -->
-    <para><inlinemediaobject>
-        <imageobject>
-          <imagedata fileref="images/check.png" />
-        </imageobject>
-      </inlinemediaobject> This function supports 3d (only for POINT,MULTIPOINT, LINESTRING, MULTILINESTRING) and will not drop the z-index.</para>
+	<para><inlinemediaobject>
+		<imageobject>
+		  <imagedata fileref="images/check.png" />
+		</imageobject>
+	  </inlinemediaobject> This function supports 3d (only for POINT,MULTIPOINT, LINESTRING, MULTILINESTRING) and will not drop the z-index.</para>
 	  </refsection>
 
 	  <refsection>
@@ -11425,7 +11424,7 @@ SELECT ST_Within(smallc,smallc) As smallinsmall,
 	ST_Within(ST_Union(smallc, bigc), bigc) as unioninbig,
 	ST_Within(bigc, ST_Union(smallc, bigc)) as biginunion,
 	ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion
-FROM 
+FROM
 (
 SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
 	ST_Buffer(ST_GeomFromText('POINT(50 50)'), 40) As bigc) As foo;
@@ -11435,12 +11434,12 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
  t            | t          | f          | t          | t          | t
 (1 row)
 		</programlisting>
-		
+
 		<para><inlinemediaobject>
-        <imageobject>
-          <imagedata fileref="images/st_within01.png" />
-        </imageobject>
-      </inlinemediaobject> </para>
+		<imageobject>
+		  <imagedata fileref="images/st_within01.png" />
+		</imageobject>
+	  </inlinemediaobject> </para>
 	  </refsection>
 
 	  <refsection>
@@ -11520,7 +11519,7 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
 
 			  <refsection>
 				<title>Examples</title>
-				
+
 				<informaltable>
 				  <tgroup cols="2">
 					<tbody>
@@ -11533,7 +11532,7 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
 							  <caption><para>Default 8 segments quarter circle (promising)</para></caption>
 							</mediaobject>
 						  </informalfigure></para></entry>
-		
+
 						<entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
