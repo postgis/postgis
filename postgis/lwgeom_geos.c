@@ -3,8 +3,10 @@
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
- * Copyright 2001-2003 Refractions Research Inc.
+ *
+ * Copyright 2009 Sandro Santilli <strk@keybit.net>
  * Copyright 2008 Paul Ramsey <pramsey@cleverelephant.ca>
+ * Copyright 2001-2003 Refractions Research Inc.
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -14,6 +16,8 @@
 #include "lwgeom_geos.h"
 #include "lwgeom_rtree.h"
 #include "lwgeom_geos_prepared.h"
+
+#include <string.h>
 
 
 /**
@@ -660,12 +664,35 @@ Datum buffer(PG_FUNCTION_ARGS)
 	GEOSGeometry *g1, *g3;
 	PG_LWGEOM *result;
 	int quadsegs = 8; /* the default */
+	int nargs;
+	enum {
+		ENDCAP_ROUND = 1,
+		ENDCAP_FLAT = 2,
+		ENDCAP_SQUARE = 3
+	};
+	enum {
+		JOIN_ROUND = 1,
+		JOIN_MITRE = 2,
+		JOIN_BEVEL = 3
+	};
+	static const double DEFAULT_MITRE_LIMIT = 5.0;
+	static const int DEFAULT_ENDCAP_STYLE = ENDCAP_ROUND;
+	static const int DEFAULT_JOIN_STYLE = JOIN_ROUND;
+
+	double mitreLimit = DEFAULT_MITRE_LIMIT;
+	int endCapStyle = DEFAULT_ENDCAP_STYLE;
+	int joinStyle  = DEFAULT_JOIN_STYLE;
+	char *param;
+	char *params = NULL;
+	char *saveptr = NULL;
+
 
 	PROFSTART(PROF_QRUN);
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	size = PG_GETARG_FLOAT8(1);
-	if ( PG_NARGS() > 2 ) quadsegs = PG_GETARG_INT32(2);
+
+	nargs = PG_NARGS();
 
 	initGEOS(lwnotice, lwnotice);
 
@@ -673,9 +700,135 @@ Datum buffer(PG_FUNCTION_ARGS)
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 
+	if (nargs > 2)
+	{
+		/* We strdup `cause we're going to modify it */
+		params = pstrdup(PG_GETARG_CSTRING(2));
+
+		POSTGIS_DEBUGF(3, "Params: %s", params);
+
+		for (param=params; ; param=NULL)
+		{
+			char *saveptr2, *key, *val;
+			param = strtok_r(param, " ", &saveptr);
+			if ( param == NULL ) break;
+			/* lwnotice("Param: %s", param); */
+
+			key = strtok_r(param, "=", &saveptr2);
+			if ( key == NULL ) {
+				lwerror("Malformed buffer parameter");
+				break;
+			}
+			val = strtok_r(NULL, "=", &saveptr2);
+			if ( val == NULL ) {
+				lwerror("Missing value for buffer "
+				        "parameter %s", key);
+				break;
+			}
+
+			/* lwnotice("Param: %s : %s", key, val); */
+
+			if ( !strcmp(key, "endcap") )
+			{
+				/* Supported end cap styles:
+				 *   "round", "flat", "square"
+				 */
+				if ( !strcmp(val, "round") )
+				{
+					endCapStyle = ENDCAP_ROUND;
+				}
+				else if ( !strcmp(val, "flat") )
+				{
+					endCapStyle = ENDCAP_FLAT;
+				}
+				else if ( !strcmp(val, "square") )
+				{
+					endCapStyle = ENDCAP_SQUARE;
+				}
+				else 
+				{
+					lwerror("Invalid buffer end cap "
+					        "style: %s (accept "
+					        "'round', 'flat' or 'square'"
+					        ")", val);
+					break;
+				}
+
+			}
+			else if ( !strcmp(key, "join") )
+			{
+				if ( !strcmp(val, "round") )
+				{
+					joinStyle = JOIN_ROUND;
+				}
+				else if ( !strcmp(val, "mitre") )
+				{
+					joinStyle = JOIN_MITRE;
+				}
+				else if ( !strcmp(val, "bevel") )
+				{
+					joinStyle = JOIN_BEVEL;
+				}
+				else 
+				{
+					lwerror("Invalid buffer end cap "
+					        "style: %s (accept "
+					        "'round', 'mitre' or 'bevel'"
+					        ")", val);
+					break;
+				}
+			}
+			else if ( !strcmp(key, "mitre_limit") )
+			{
+				/* mitreLimit is a float */
+				mitreLimit = atof(val);
+			}
+			else if ( !strcmp(key, "quad_segs") )
+			{
+				/* quadrant segments is an int */
+				quadsegs = atoi(val);
+			}
+			else
+			{
+				lwerror("Invalid buffer parameter: %s (accept"
+				        "'endcap', 'join', 'mitre_limit' and "
+				        "'quad_segs')", key);
+				break;
+			}
+		}
+
+		pfree(params); /* was pstrduped */
+
+		POSTGIS_DEBUGF(3, "endCap:%d joinStyle:%d mitreLimit:%g",
+			endCapStyle, joinStyle, mitreLimit);
+
+	}
+
+#if POSTGIS_GEOS_VERSION >= 32
+
+	PROFSTART(PROF_GRUN);
+	g3 = GEOSBufferWithStyle(g1, size, quadsegs,
+	                         endCapStyle, joinStyle, mitreLimit);
+	PROFSTOP(PROF_GRUN);
+
+#else /* POSTGIS_GEOS_VERSION < 32 */
+
+	if ( mitreLimit != DEFAULT_MITRE_LIMIT ||
+		endCapStyle != DEFAULT_ENDCAP_STYLE ||
+		joinStyle != DEFAULT_JOIN_STYLE )
+	{
+		lwerror("The GEOS version this postgis binary "
+			"was compiled against (%d) doesn't support "
+			"specifying a mitre limit != %d or styles different "
+			"from 'round' (needs 3.2 or higher)",
+			DEFAULT_MITRE_LIMIT, POSTGIS_GEOS_VERSION);
+	}
+
 	PROFSTART(PROF_GRUN);
 	g3 = GEOSBuffer(g1,size,quadsegs);
 	PROFSTOP(PROF_GRUN);
+
+#endif /* POSTGIS_GEOS_VERSION < 32 */
 
 	if (g3 == NULL)
 	{

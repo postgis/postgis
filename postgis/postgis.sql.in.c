@@ -3837,8 +3837,8 @@ CREATE OR REPLACE FUNCTION ST_Buffer(geometry,float8)
 	AS 'MODULE_PATHNAME','buffer'
 	LANGUAGE 'C' IMMUTABLE STRICT; 
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION buffer(geometry,float8,integer)
+-- Availability: 1.5.0 - requires GEOS-3.2 or higher
+CREATE OR REPLACE FUNCTION _ST_buffer(geometry,float8,cstring)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','buffer'
 	LANGUAGE 'C' IMMUTABLE STRICT; 
@@ -3846,9 +3846,25 @@ CREATE OR REPLACE FUNCTION buffer(geometry,float8,integer)
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_buffer(geometry,float8,integer)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME','buffer'
-	LANGUAGE 'C' IMMUTABLE STRICT; 
-	
+	AS 'SELECT _ST_Buffer($1, $2,
+		CAST(''quad_segs=''||CAST($3 AS text) as cstring))'
+	LANGUAGE 'SQL' IMMUTABLE STRICT; 
+
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_buffer(geometry,float8,text)
+	RETURNS geometry
+	AS 'SELECT _ST_Buffer($1, $2,
+		CAST( regexp_replace($3, ''^[0123456789]+$'',
+			''quad_segs=''||$3) AS cstring)
+		)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT; 
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION buffer(geometry,float8,integer)
+	RETURNS geometry
+	AS 'SELECT ST_Buffer($1, $2, $3)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT; 
+
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION convexhull(geometry)
 	RETURNS geometry
