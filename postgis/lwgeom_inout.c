@@ -461,7 +461,7 @@ Datum LWGEOM_dropBBOX(PG_FUNCTION_ARGS)
 /* for the wkt parser */
 void elog_ERROR(const char* string)
 {
-	elog(ERROR,string);
+	elog(ERROR, "%s", string);
 }
 
 /*
