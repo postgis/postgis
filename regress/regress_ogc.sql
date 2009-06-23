@@ -6,6 +6,7 @@
 -- Ouput is snapped to grid to account for small floating numbers
 -- differences between architectures
 SELECT 'buffer', astext(SnapToGrid(buffer('POINT(0 0)', 1, 2), 1.0e-6));
+SELECT 'buffer', astext(SnapToGrid(buffer('POINT(0 0)', 1, '2'), 1.0e-6));
 
 SELECT 'geomunion', astext(geomunion('POINT(0 0)', 'POINT(1 1)'));
 SELECT 'unite_garray', equals(unite_garray(geom_accum('{POINT(0 0)}', 'POINT(2 3)')), 'MULTIPOINT(2 3,0 0)');
