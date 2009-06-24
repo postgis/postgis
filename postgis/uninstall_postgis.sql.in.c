@@ -395,6 +395,8 @@ DROP FUNCTION ST_buffer(geometry,float8,integer);
 DROP FUNCTION buffer(geometry,float8,integer);
 DROP FUNCTION ST_Buffer(geometry,float8);
 DROP FUNCTION buffer(geometry,float8);
+DROP FUNCTION ST_buffer(geometry,float8,text);
+DROP FUNCTION _ST_buffer(geometry,float8,cstring);
 DROP FUNCTION ST_Intersection(geometry,geometry);
 DROP FUNCTION intersection(geometry,geometry);
 
