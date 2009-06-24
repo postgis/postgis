@@ -11457,9 +11457,8 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
 
 				<refpurpose>Returns a geometry that represents all points whose distance
 			from this Geometry is less than or equal to distance. Calculations
-			are in the Spatial Reference System of this Geometry. The optional
-			third parameter sets the number of segments used to approximate a
-			quarter circle (defaults to 8).</refpurpose>
+			are in the Spatial Reference System of this Geometry.
+			</refpurpose>
 			</refnamediv>
 
 			<refsynopsisdiv>
@@ -11477,6 +11476,13 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
 					<paramdef><type>integer </type> <parameter>num_seg_quarter_circle</parameter></paramdef>
 				  </funcprototype>
 
+				  <funcprototype>
+					<funcdef>geometry <function>ST_Buffer</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+					<paramdef><type>float </type> <parameter>radius_of_buffer</parameter></paramdef>
+					<paramdef><type>string </type> <parameter>parameters</parameter></paramdef>
+				  </funcprototype>
+
 				</funcsynopsis>
 			</refsynopsisdiv>
 
@@ -11485,11 +11491,27 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
 
 				<para>Returns a geometry that represents all points whose distance
 			from this Geometry is less than or equal to distance. Calculations
-			are in the Spatial Reference System of this Geometry. The optional
-			third parameter sets the number of segments used to approximate a
-			quarter circle (defaults to 8).
+			are in the Spatial Reference System of this Geometry.
 				</para>
-				<para>Units are always measured in units of the spatial reference system.</para>
+				<para>
+The optional third parameter can either specify number of segments used to approximate a quarter circle (integer case, defaults to 8) or a list of blank-separated key=value pairs (string case) to tweak operations as follows:
+<itemizedlist>
+<listitem>
+'quad_segs=#' : number of segments used to approximate a quarter circle (defaults to 8).
+</listitem>
+<listitem>
+'endcap=round|flat|square' : endcap style (defaults to "round", needs GEOS-3.2 or higher for a different value).
+</listitem>
+<listitem>
+'join=round|mitre|bevel' : join style (defaults to "round", needs GEOS-3.2 or higher for a different value).
+</listitem>
+<listitem>
+'mitre_limit=#.#' : mitre ratio limit (only affects mitred join style).
+</listitem>
+</itemizedlist>
+				</para>
+
+				<para>Units of radius are measured in units of the spatial reference system.</para>
 				<para>The inputs can be POINTS, MULTIPOINTS, LINESTRINGS, MULTILINESTRINGS, POLYGONS, MULTIPOLYGONS, and GeometryCollections.</para>
 				<note><para>This function ignores the third dimension (z) and will always give a 2-d buffer even when presented with a 3d-geometry.</para></note>
 
