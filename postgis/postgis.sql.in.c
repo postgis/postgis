@@ -3846,17 +3846,19 @@ CREATE OR REPLACE FUNCTION _ST_buffer(geometry,float8,cstring)
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_buffer(geometry,float8,integer)
 	RETURNS geometry
-	AS 'SELECT _ST_Buffer($1, $2,
-		CAST(''quad_segs=''||CAST($3 AS text) as cstring))'
+	AS $$ SELECT _ST_Buffer($1, $2,
+		CAST('quad_segs='||CAST($3 AS text) as cstring))
+	   $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT; 
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_buffer(geometry,float8,text)
 	RETURNS geometry
-	AS 'SELECT _ST_Buffer($1, $2,
-		CAST( regexp_replace($3, ''^[0123456789]+$'',
-			''quad_segs=''||$3) AS cstring)
-		)'
+	AS $$ SELECT _ST_Buffer($1, $2,
+		CAST( regexp_replace($3, '^[0123456789]+$',
+			'quad_segs='||$3) AS cstring)
+		)
+	   $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT; 
 
 -- Deprecation in 1.2.3
