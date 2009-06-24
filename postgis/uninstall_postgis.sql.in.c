@@ -399,6 +399,12 @@ DROP FUNCTION ST_buffer(geometry,float8,text);
 DROP FUNCTION _ST_buffer(geometry,float8,cstring);
 DROP FUNCTION ST_Intersection(geometry,geometry);
 DROP FUNCTION intersection(geometry,geometry);
+#if POSTGIS_GEOS_VERSION >= 32
+DROP FUNCTION ST_HausdorffDistance(geometry, geometry)
+#endif
+#if POSTGIS_GEOS_VERSION >= 32
+DROP FUNCTION ST_HausdorffDistance(geometry, geometry, float8)
+#endif
 
 
 ---------------------------------------------------------------

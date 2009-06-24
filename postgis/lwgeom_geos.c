@@ -62,6 +62,8 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS); /* TODO: rename to match others
 */
 Datum linemerge(PG_FUNCTION_ARGS);
 Datum coveredby(PG_FUNCTION_ARGS);
+Datum hausdorffdistance(PG_FUNCTION_ARGS);
+Datum hausdorffdistancedensify(PG_FUNCTION_ARGS);
 
 Datum pgis_union_geometry_array_old(PG_FUNCTION_ARGS);
 Datum pgis_union_geometry_array(PG_FUNCTION_ARGS);
@@ -88,6 +90,91 @@ Datum postgis_geos_version(PG_FUNCTION_ARGS)
 	SET_VARSIZE(result, VARHDRSZ + strlen(ver));
 	memcpy(VARDATA(result), ver, strlen(ver));
 	PG_RETURN_POINTER(result);
+}
+
+/**
+ *  @brief Compute the Hausdorff distance thanks to the corresponding GEOS function
+ *  @example hausdorffdistance {@link #hausdorffdistance} - SELECT st_hausdorffdistance(
+ *      'POLYGON((0 0, 0 2, 1 2, 2 2, 2 0, 0 0))'::geometry,
+ *      'POLYGON((0.5 0.5, 0.5 2.5, 1.5 2.5, 2.5 2.5, 2.5 0.5, 0.5 0.5))'::geometry);
+ */
+
+PG_FUNCTION_INFO_V1(hausdorffdistance);
+Datum hausdorffdistance(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *geom1;
+	PG_LWGEOM *geom2;
+	GEOSGeometry *g1;
+	GEOSGeometry *g2;
+	double result;
+	int retcode;
+
+	POSTGIS_DEBUG(2, "hausdorff_distance called");
+
+	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	initGEOS(lwnotice, lwnotice);
+
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
+	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
+	retcode = GEOSHausdorffDistance(g1, g2, &result);
+	GEOSGeom_destroy(g1);
+	GEOSGeom_destroy(g2);
+
+	if (retcode == 0)
+	{
+		elog(ERROR,"GEOS HausdorffDistance() threw an error!");
+		PG_RETURN_NULL(); /*never get here */
+	}
+
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 0);
+
+	PG_RETURN_FLOAT8(result);
+}
+
+/**
+ *  @brief Compute the Hausdorff distance with densification thanks to the corresponding GEOS function
+ *  @example hausdorffdistancedensify {@link #hausdorffdistancedensify} - SELECT st_hausdorffdistancedensify(
+ *      'POLYGON((0 0, 0 2, 1 2, 2 2, 2 0, 0 0))'::geometry,
+ *      'POLYGON((0.5 0.5, 0.5 2.5, 1.5 2.5, 2.5 2.5, 2.5 0.5, 0.5 0.5))'::geometry, 0.5);
+ */
+
+PG_FUNCTION_INFO_V1(hausdorffdistancedensify);
+Datum hausdorffdistancedensify(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *geom1;
+	PG_LWGEOM *geom2;
+	GEOSGeometry *g1;
+	GEOSGeometry *g2;
+    	double densifyFrac;
+    	double result;
+	int retcode;
+
+
+	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+    	densifyFrac = *(double *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(2));
+
+	initGEOS(lwnotice, lwnotice);
+
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
+	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
+	retcode = GEOSHausdorffDistanceDensify(g1, g2, densifyFrac, &result);
+	GEOSGeom_destroy(g1);
+	GEOSGeom_destroy(g2);
+
+	if (retcode == 0)
+	{
+		elog(ERROR,"GEOS HausdorffDistanceDensify() threw an error!");
+		PG_RETURN_NULL(); /*never get here */
+	}
+
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 0);
+
+	PG_RETURN_FLOAT8(result);
 }
 
 /**

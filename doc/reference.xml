@@ -9818,6 +9818,83 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 	  </refsection>
 	</refentry>
 
+	<refentry id="ST_HausdorffDistance">
+	  <refnamediv>
+		<refname>ST_HausdorffDistance</refname>
+
+		<refpurpose>Returns the Hausdorff distance between two geometries.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_HausdorffDistance</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+		  </funcprototype>
+		  <funcprototype>
+			<funcdef>float <function>ST_HausdorffDistance</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+
+			<paramdef><type>float</type>
+			<parameter>densifyFrac</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Implements algorithm for computing a distance metric which can be thought of as the "Discrete Hausdorff Distance".
+This is the Hausdorff distance restricted to discrete points for one of the geometries.</para>
+		<para>
+When densifyFrac is specified, this function performs a segment densification before computing the discrete hausdorff distance. The densifyFrac parameter sets the fraction by which to densify each segment. Each segment will be split into a number of equal-length subsegments, whose fraction of the total length is closest to the given fraction.
+		</para>
+
+		<note>
+			<para>
+The current implementation supports only vertices as the discrete locations. This could be extended to allow an arbitrary density of points to be used.	
+			</para>
+		</note>
+		<note>
+			<para>
+				This algorithm is NOT equivalent to the standard Hausdorff distance. However, it computes an approximation that is correct for a large subset of useful cases.
+			One important part of this subset is Linestrings that are roughly parallel to each other, and roughly equal in length.  This is a useful metric for line matching.
+			</para>
+		</note>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+        		<programlisting>postgis=# SELECT st_HausdorffDistance(
+                'LINESTRING (0 0, 2 0)'::geometry,
+                'MULTIPOINT (0 1, 1 0, 2 1)'::geometry);
+ st_hausdorffdistance
+ ----------------------
+                     1
+(1 row)
+			</programlisting>
+			<programlisting>postgis=# SELECT st_hausdorffdistance('LINESTRING (130 0, 0 0, 0 150)'::geometry, 'LINESTRING (10 10, 10 150, 130 10)'::geometry, 0.5);
+ st_hausdorffdistance
+ ----------------------
+                    70
+(1 row)
+			</programlisting>
+
+	  </refsection>
+	</refentry>
+
 	<refentry id="ST_Distance_Sphere">
 	  <refnamediv>
 		<refname>ST_Distance_Sphere</refname>

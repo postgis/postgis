@@ -52,7 +52,8 @@ TESTS = \
 	kml \
 	regress_ogc \
 	regress_bdpoly \
-	regress_proj
+	regress_proj \
+	hausdorff
 
 # Covers/CoveredBy only if GEOS >= 3.0
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 30),1)

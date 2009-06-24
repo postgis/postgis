@@ -3918,6 +3918,24 @@ CREATE OR REPLACE FUNCTION ST_IsValidReason(geometry)
 	LANGUAGE 'C' IMMUTABLE STRICT; 
 #endif
 
+#if POSTGIS_GEOS_VERSION >= 32
+-- Requires GEOS >= 3.2.0
+-- Availability: 1.5.0 
+CREATE OR REPLACE FUNCTION ST_HausdorffDistance(geometry, geometry)
+	RETURNS FLOAT8
+	AS 'MODULE_PATHNAME', 'hausdorffdistance'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
+#endif
+
+#if POSTGIS_GEOS_VERSION >= 32
+-- Requires GEOS >= 3.2.0
+-- Availability: 1.5.0 
+CREATE OR REPLACE FUNCTION ST_HausdorffDistance(geometry, geometry, float8)
+	RETURNS FLOAT8
+	AS 'MODULE_PATHNAME', 'hausdorffdistancedensify'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+#endif
+
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION difference(geometry,geometry)
 	RETURNS geometry
