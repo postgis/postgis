@@ -333,7 +333,7 @@ CREATE TYPE box3d (
 -- type of ST_Extent() to return something other than BOX2DFLOAT4.
 CREATE OR REPLACE FUNCTION box3d_extent_in(cstring)
 	RETURNS box3d_extent
-	AS '$libdir/postgis-1.4', 'BOX3D_in'
+	AS 'MODULE_PATHNAME', 'BOX3D_in'
 	LANGUAGE 'C' IMMUTABLE STRICT; 
 
 CREATE OR REPLACE FUNCTION box3d_extent_out(box3d_extent)
