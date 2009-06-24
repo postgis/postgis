@@ -988,7 +988,7 @@ InsertLineString()
 		serialized_lwgeom = lwgeom_serialize(lwmultilinestrings[0]);
 	}
 
-	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_ALL, -1);
+	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_NONE, -1);
 
 	if (result)
 	{
@@ -1280,7 +1280,7 @@ InsertPolygon(void)
 		serialized_lwgeom = lwgeom_serialize(lwpolygons[0]);
 	}
 
-	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_ALL, -1);
+	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_NONE, -1);
 
 	if (result)
 	{
@@ -1367,7 +1367,7 @@ InsertPoint(void)
 		serialized_lwgeom = lwgeom_serialize(lwmultipoints[0]);
 	}
 
-	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_ALL, -1);
+	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_NONE, -1);
 
 	if (result)
 	{
