@@ -11628,18 +11628,30 @@ The optional third parameter can either specify number of segments used to appro
 							  <imageobject>
 								<imagedata fileref="images/st_buffer01.png" />
 							  </imageobject>
-							  <caption><para>Default 8 segments quarter circle (promising)</para></caption>
+							  <caption><para>quad_segs=8 (default)</para></caption>
 							</mediaobject>
-						  </informalfigure></para></entry>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText('POINT(100 90)'),
+ 50, 'quad_segs=8');
+				</programlisting>
+						  </para></entry>
 
 						<entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
 								<imagedata fileref="images/st_buffer02.png" />
 							  </imageobject>
-							  <caption><para>2 segments quarter circle (lame)</para></caption>
+							  <caption><para>quad_segs=2 (lame)</para></caption>
 							</mediaobject>
-						  </informalfigure></para></entry>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText('POINT(100 90)'),
+ 50, 'quad_segs=2');
+				</programlisting>
+						</para></entry>
 					  </row>
 					  <row>
 						<entry><para><informalfigure>
@@ -11649,7 +11661,14 @@ The optional third parameter can either specify number of segments used to appro
 							  </imageobject>
 							  <caption><para>endcap=round join=round (default)</para></caption>
 							</mediaobject>
-						  </informalfigure></para></entry>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText(
+  'LINESTRING(50 50,150 150,150 50)'
+ ), 10, 'endcap=round join=round');
+				</programlisting>
+						 </para></entry>
 
 						<entry><para><informalfigure>
 							<mediaobject>
@@ -11658,7 +11677,14 @@ The optional third parameter can either specify number of segments used to appro
 							  </imageobject>
 							  <caption><para>endcap=square</para></caption>
 							</mediaobject>
-						  </informalfigure></para></entry>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText(
+  'LINESTRING(50 50,150 150,150 50)'
+ ), 10, 'endcap=square join=round');
+				</programlisting>
+						  </para></entry>
 
 						<entry><para><informalfigure>
 							<mediaobject>
@@ -11667,7 +11693,14 @@ The optional third parameter can either specify number of segments used to appro
 							  </imageobject>
 							  <caption><para>endcap=flat</para></caption>
 							</mediaobject>
-						  </informalfigure></para></entry>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText(
+  'LINESTRING(50 50,150 150,150 50)'
+ ), 10, 'endcap=flat join=round');
+				</programlisting>
+						  </para></entry>
 					  </row>
 					  <row>
 						<entry><para><informalfigure>
@@ -11677,7 +11710,15 @@ The optional third parameter can either specify number of segments used to appro
 							  </imageobject>
 							  <caption><para>join=bevel</para></caption>
 							</mediaobject>
-						  </informalfigure></para></entry>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText(
+  'LINESTRING(50 50,150 150,150 50)'
+ ), 10, 'join=bevel');
+				</programlisting>
+						  </para></entry>
+
 						<entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
@@ -11685,7 +11726,14 @@ The optional third parameter can either specify number of segments used to appro
 							  </imageobject>
 							  <caption><para>join=mitre mitre_limit=5.0 (default)</para></caption>
 							</mediaobject>
-						  </informalfigure></para></entry>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText(
+  'LINESTRING(50 50,150 150,150 50)'
+ ), 10, 'join=mitre mitre_limit=5.0');
+				</programlisting>
+						  </para></entry>
 
 						<entry><para><informalfigure>
 							<mediaobject>
@@ -11694,7 +11742,14 @@ The optional third parameter can either specify number of segments used to appro
 							  </imageobject>
 							  <caption><para>join=mitre mitre_limit=1</para></caption>
 							</mediaobject>
-						  </informalfigure></para></entry>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText(
+  'LINESTRING(50 50,150 150,150 50)'
+ ), 10, 'join=mitre mitre_limit=1.0');
+				</programlisting>
+						  </para></entry>
 					  </row>
 					</tbody>
 				  </tgroup>
