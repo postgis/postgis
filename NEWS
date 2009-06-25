@@ -1,6 +1,7 @@
 PostGIS 1.5.0
 
   - Add Hausdorff distance calculations (#209) (Vincent Picavet)
+  - Add parameters argument to ST_Buffer operation (Sandro Santilli)
 
 
 PostGIS 1.4.0
