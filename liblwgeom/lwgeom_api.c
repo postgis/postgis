@@ -68,7 +68,7 @@ nextafterf_custom(float x, float y)
 	iy = hy&0x7fffffff;             /* |y| */
 
 	if ((ix>0x7f800000) ||   /* x is nan */
-	        (iy>0x7f800000))     /* y is nan */
+			(iy>0x7f800000))     /* y is nan */
 		return x+y;
 	if (x==y) return y;              /* x=y, return y */
 	if (ix==0)
@@ -579,7 +579,7 @@ getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
 #endif
 
 	LWDEBUGF(2, "getPoint3dz_p called on array of %d-dimensions / %u pts",
-	         TYPE_NDIMS(pa->dims), pa->npoints);
+			 TYPE_NDIMS(pa->dims), pa->npoints);
 
 	/* Get a pointer to nth point offset */
 	ptr=getPoint_internal(pa, n);
@@ -630,7 +630,7 @@ getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *op)
 #endif
 
 	LWDEBUGF(2, "getPoint3dm_p(%d) called on array of %d-dimensions / %u pts",
-	         n, TYPE_NDIMS(pa->dims), pa->npoints);
+			 n, TYPE_NDIMS(pa->dims), pa->npoints);
 
 
 	/* Get a pointer to nth point offset and zmflag */
@@ -648,7 +648,7 @@ getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *op)
 	}
 
 	/*
-	 * Otherwise copy the 2d part and 
+	 * Otherwise copy the 2d part and
 	 * initialize M to NO_M_VALUE
 	 */
 	memcpy(op, ptr, sizeof(POINT2D));
@@ -978,7 +978,7 @@ lwgeom_inspect(const uchar *serialized_form)
 	loc +=4;
 
 	LWDEBUGF(3, "lwgeom_inspect: geometry is a collection of %d elements",
-	         result->ngeometries);
+			 result->ngeometries);
 
 	if ( ! result->ngeometries ) return result;
 
@@ -995,7 +995,7 @@ lwgeom_inspect(const uchar *serialized_form)
 		sub_geoms[t] = sub_geoms[t-1] + sub_length;
 
 		LWDEBUGF(3, "subgeom[%d] @ %p (+%d)",
-		         t, sub_geoms[t], sub_geoms[0]-serialized_form);
+				 t, sub_geoms[t], sub_geoms[0]-serialized_form);
 	}
 
 	return result;
@@ -1289,7 +1289,7 @@ lwgeom_getnumgeometries(uchar *serialized_form)
 	uchar *loc;
 
 	if ( (type==POINTTYPE) || (type==LINETYPE) || (type==POLYGONTYPE) ||
-	        (type==CIRCSTRINGTYPE) || (type==COMPOUNDTYPE) || (type==CURVEPOLYTYPE) )
+			(type==CIRCSTRINGTYPE) || (type==COMPOUNDTYPE) || (type==CURVEPOLYTYPE) )
 	{
 		return 1;
 	}
@@ -1329,7 +1329,7 @@ lwgeom_getnumgeometries_inspected(LWGEOM_INSPECTED *inspected)
  */
 uchar *
 lwgeom_serialized_construct(int SRID, int finalType, char hasz, char hasm,
-                            int nsubgeometries, uchar **serialized_subs)
+							int nsubgeometries, uchar **serialized_subs)
 {
 	uint32 *lengths;
 	int t;
@@ -1466,13 +1466,13 @@ lwgeom_empty_length(int SRID)
 	return size;
 }
 
-/*
+/**
  * Construct the empty geometry (GEOMETRYCOLLECTION(EMPTY))
  * writing it into the provided buffer.
  */
 void
 lwgeom_constructempty_buf(int SRID, char hasz, char hasm,
-                          uchar *buf, size_t *retsize)
+						  uchar *buf, size_t *retsize)
 {
 	int ngeoms = 0;
 
@@ -1490,7 +1490,7 @@ lwgeom_constructempty_buf(int SRID, char hasz, char hasm,
 	if (retsize) *retsize = lwgeom_empty_length(SRID);
 }
 
-/*
+/**
  * helper function (not for general use)
  * find the size a geometry (or a sub-geometry)
  * 1st geometry has geom_number = 0
@@ -1631,7 +1631,7 @@ compute_serialized_box3d_p(uchar *srl, BOX3D *out)
 	return 1;
 }
 
-/*
+/**
  * Compute bounding box of a serialized LWGEOM, even if it is
  * already cached. The computed BOX2DFLOAT4 is stored at
  * the given location, the function returns 0 is the geometry
@@ -1651,7 +1651,7 @@ compute_serialized_box2d_p(uchar *srl, BOX2DFLOAT4 *out)
 	return 1;
 }
 
-/*
+/**
  * Don't forget to lwfree() result !
  */
 BOX3D *
@@ -1695,7 +1695,7 @@ compute_serialized_box3d(uchar *srl)
 	}
 
 	/*
-	** For items that have elements (everything except points), 
+	** For items that have elements (everything except points),
 	** nelems == 0 => EMPTY geometry
 	*/
 	nelems = lw_get_uint32(loc);
@@ -1725,9 +1725,9 @@ compute_serialized_box3d(uchar *srl)
 	}
 
 	if ( ! ( type == MULTIPOINTTYPE || type == MULTILINETYPE ||
-	         type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE ||
-	         type == COMPOUNDTYPE || type == CURVEPOLYTYPE ||
-	         type == MULTICURVETYPE || type == MULTISURFACETYPE) )
+			 type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE ||
+			 type == COMPOUNDTYPE || type == CURVEPOLYTYPE ||
+			 type == MULTICURVETYPE || type == MULTISURFACETYPE) )
 	{
 		lwnotice("compute_serialized_box3d called on unknown type %d", type);
 		return NULL;
@@ -1795,7 +1795,7 @@ lwinspected_release(LWGEOM_INSPECTED *inspected)
 void printBOX3D(BOX3D *box)
 {
 	lwnotice("BOX3D: %g %g, %g %g", box->xmin, box->ymin,
-	         box->xmax, box->ymax);
+			 box->xmax, box->ymax);
 }
 
 void printPA(POINTARRAY *pa)
@@ -1810,7 +1810,7 @@ void printPA(POINTARRAY *pa)
 
 	lwnotice("      POINTARRAY%s{", mflag);
 	lwnotice("                 ndims=%i,   ptsize=%i",
-	         TYPE_NDIMS(pa->dims), pointArray_ptsize(pa));
+			 TYPE_NDIMS(pa->dims), pointArray_ptsize(pa));
 	lwnotice("                 npoints = %i", pa->npoints);
 
 	for (t =0; t<pa->npoints;t++)
@@ -1896,7 +1896,7 @@ printType(uchar type)
 	lwnotice("type 0x%x ==> hasBBOX=%i, hasSRID=%i, ndims=%i, type=%i",(unsigned int) type, lwgeom_hasBBOX(type), lwgeom_hasSRID(type),lwgeom_ndims(type), lwgeom_getType(type));
 }
 
-/*
+/**
  * Get the SRID from the LWGEOM.
  * None present => -1
  */
@@ -1933,7 +1933,7 @@ ptarray_isccw(const POINTARRAY *pa)
 	else return 1;
 }
 
-/*
+/**
  * Returns a BOX2DFLOAT4 that encloses b1 and b2
  *
  * box2d_union(NULL,A) --> A
@@ -1978,7 +1978,7 @@ box2d_union(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2)
 	return result;
 }
 
-/*
+/**
  * ubox may be one of the two args...
  * return 1 if done something to ubox, 0 otherwise.
  */
@@ -2032,7 +2032,7 @@ lwgeom_typeflags(uchar type)
 	return flags;
 }
 
-/*
+/**
  * Given a string with at least 2 chars in it, convert them to
  * a byte value.  No error checking done!
  */
@@ -2162,7 +2162,7 @@ parse_hex(char *str)
 }
 
 
-/*
+/**
  * Given one byte, populate result with two byte representing
  * the hex number.
  *
@@ -2177,8 +2177,8 @@ deparse_hex(uchar str, char *result)
 	int	input_high;
 	int  input_low;
 	static char outchr[]=
-	    {"0123456789ABCDEF"
-	    };
+		{"0123456789ABCDEF"
+		};
 
 	input_high = (str>>4);
 	input_low = (str & 0x0F);
@@ -2189,7 +2189,7 @@ deparse_hex(uchar str, char *result)
 }
 
 
-/*
+/**
  * Find interpolation point I
  * between point A and point B
  * so that the len(AI) == len(AB)*F
