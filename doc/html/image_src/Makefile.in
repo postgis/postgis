@@ -22,6 +22,9 @@ IMAGES= \
 	../images/st_buffer03.png \
 	../images/st_buffer04.png \
 	../images/st_buffer05.png \
+	../images/st_buffer06.png \
+	../images/st_buffer07.png \
+	../images/st_buffer08.png \
 	../images/st_centroid01.png \
 	../images/st_centroid02.png \
 	../images/st_centroid03.png \

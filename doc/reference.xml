@@ -11641,6 +11641,61 @@ The optional third parameter can either specify number of segments used to appro
 							</mediaobject>
 						  </informalfigure></para></entry>
 					  </row>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_buffer03.png" />
+							  </imageobject>
+							  <caption><para>endcap=round join=round (default)</para></caption>
+							</mediaobject>
+						  </informalfigure></para></entry>
+
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_buffer04.png" />
+							  </imageobject>
+							  <caption><para>endcap=square</para></caption>
+							</mediaobject>
+						  </informalfigure></para></entry>
+
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_buffer05.png" />
+							  </imageobject>
+							  <caption><para>endcap=flat</para></caption>
+							</mediaobject>
+						  </informalfigure></para></entry>
+					  </row>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_buffer06.png" />
+							  </imageobject>
+							  <caption><para>join=bevel</para></caption>
+							</mediaobject>
+						  </informalfigure></para></entry>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_buffer07.png" />
+							  </imageobject>
+							  <caption><para>join=mitre mitre_limit=5.0 (default)</para></caption>
+							</mediaobject>
+						  </informalfigure></para></entry>
+
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_buffer08.png" />
+							  </imageobject>
+							  <caption><para>join=mitre mitre_limit=1</para></caption>
+							</mediaobject>
+						  </informalfigure></para></entry>
+					  </row>
 					</tbody>
 				  </tgroup>
 			</informaltable>
