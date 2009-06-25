@@ -39,7 +39,7 @@ Datum BOX3D_ymax(PG_FUNCTION_ARGS);
 Datum BOX3D_zmax(PG_FUNCTION_ARGS);
 Datum BOX3D_combine(PG_FUNCTION_ARGS);
 
-/*
+/**
  *  BOX3D_in - takes a string rep of BOX3D and returns internal rep
  *
  *  example:
@@ -69,12 +69,12 @@ Datum BOX3D_in(PG_FUNCTION_ARGS)
 	}
 
 	nitems = sscanf(str,"BOX3D(%le %le %le ,%le %le %le)",
-	                &box->xmin, &box->ymin, &box->zmin,
-	                &box->xmax, &box->ymax, &box->zmax);
+					&box->xmin, &box->ymin, &box->zmin,
+					&box->xmax, &box->ymax, &box->zmax);
 	if (nitems != 6 )
 	{
 		nitems = sscanf(str,"BOX3D(%le %le ,%le %le)",
-		                &box->xmin, &box->ymin, &box->xmax, &box->ymax);
+						&box->xmin, &box->ymin, &box->xmax, &box->ymax);
 		if (nitems != 4)
 		{
 			pfree(box);
@@ -105,7 +105,7 @@ Datum BOX3D_in(PG_FUNCTION_ARGS)
 }
 
 
-/*
+/**
  *  Takes an internal rep of a BOX3D and returns a string rep.
  *
  *  example:
@@ -132,13 +132,13 @@ Datum BOX3D_out(PG_FUNCTION_ARGS)
 	result = (char *) palloc(size);
 
 	sprintf(result, "BOX3D(%.15g %.15g %.15g,%.15g %.15g %.15g)",
-	        bbox->xmin, bbox->ymin, bbox->zmin,
-	        bbox->xmax,bbox->ymax,bbox->zmax);
+			bbox->xmin, bbox->ymin, bbox->zmin,
+			bbox->xmax,bbox->ymax,bbox->zmax);
 
 	PG_RETURN_CSTRING(result);
 }
 
-/*
+/**
  *  Takes an internal rep of a BOX3D and returns a string rep.
  *  but beginning with BOX(...) and with only 2 dimensions. This
  *  is a temporary hack to allow ST_Extent() to return a result
@@ -169,8 +169,8 @@ Datum BOX3D_extent_out(PG_FUNCTION_ARGS)
 	result = (char *) palloc(size);
 
 	sprintf(result, "BOX(%.15g %.15g,%.15g %.15g)",
-	        bbox->xmin, bbox->ymin,
-	        bbox->xmax,bbox->ymax);
+			bbox->xmin, bbox->ymin,
+			bbox->xmax,bbox->ymax);
 
 	PG_RETURN_CSTRING(result);
 }
@@ -216,7 +216,7 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 	uchar *ser;
 
 
-	/*
+	/**
 	 * Alter BOX3D cast so that a valid geometry is always
 	 * returned depending upon the size of the BOX3D. The
 	 * code makes the following assumptions:
@@ -228,14 +228,14 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 	 */
 
 	if (box->xmin == box->xmax &&
-	        box->ymin == box->ymax)
+			box->ymin == box->ymax)
 	{
 		/* Construct and serialize point */
 		LWPOINT *point = make_lwpoint2d(-1, box->xmin, box->ymin);
 		ser = lwpoint_serialize(point);
 	}
 	else if (box->xmin == box->xmax ||
-	         box->ymin == box->ymax)
+			 box->ymin == box->ymax)
 	{
 		LWLINE *line;
 		POINT2D *pts = palloc(sizeof(POINT2D)*2);
@@ -286,7 +286,7 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/* Expand given box of 'd' units in all directions */
+/** Expand given box of 'd' units in all directions */
 void
 expand_box3d(BOX3D *box, double d)
 {
@@ -312,7 +312,7 @@ Datum BOX3D_expand(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/*
+/**
  * convert a PG_LWGEOM to BOX3D
  *
  * NOTE: the bounding box is *always* recomputed as the cache
@@ -445,7 +445,7 @@ Datum BOX3D_construct(PG_FUNCTION_ARGS)
 	maxpoint = lwgeom_deserialize(SERIALIZED_FORM(max));
 
 	if ( TYPE_GETTYPE(minpoint->type) != POINTTYPE ||
-	        TYPE_GETTYPE(maxpoint->type) != POINTTYPE )
+			TYPE_GETTYPE(maxpoint->type) != POINTTYPE )
 	{
 		elog(ERROR, "BOX3D_construct: args must be points");
 		PG_RETURN_NULL();
@@ -467,7 +467,7 @@ Datum BOX3D_construct(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/* min(a,b) */
+/** min(a,b) */
 double
 LWGEOM_Mind(double a, double b)
 {
@@ -476,7 +476,7 @@ LWGEOM_Mind(double a, double b)
 	return b;
 }
 
-/* max(a,b) */
+/** max(a,b) */
 double
 LWGEOM_Maxd(double a, double b)
 {

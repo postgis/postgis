@@ -21,8 +21,8 @@
 #include <errno.h>
 
 
-/*
- * implementation GiST support and basic LWGEOM operations (like &&)
+/**
+ * @file implementation GiST support and basic LWGEOM operations (like &&)
  */
 
 
@@ -60,7 +60,7 @@ static int counter_leaf = 0;
 static int counter_intern = 0;
 
 
-/* GiST strategies (modified from src/include/access/rtree.h) */
+/** GiST strategies (modified from src/include/access/rtree.h) */
 #define RTLeftStrategyNumber			1
 #define RTOverLeftStrategyNumber		2
 #define RTOverlapStrategyNumber			3
@@ -75,7 +75,7 @@ static int counter_intern = 0;
 #define RTOverAboveStrategyNumber		12
 
 
-/*
+/**
  * all the lwgeom_<same,overlpa,overleft,left,right,overright,overbelow,below,above,overabove,contained,contain>
  *  work the same.
  *  1. get lwgeom1
@@ -114,16 +114,16 @@ Datum LWGEOM_overlap(PG_FUNCTION_ARGS)
 	}
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_overlap,
-	                      PointerGetDatum(&box1), PointerGetDatum(&box2)));
+						  PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
 	PG_FREE_IF_COPY(lwgeom1, 0);
 	PG_FREE_IF_COPY(lwgeom2, 1);
 
 	POSTGIS_DEBUGF(3, "GIST: lwgeom_overlap:\n(%f %f, %f %f) (%f %f %f %f) = %i",
-	               box1.xmin, box1.ymax, box1.xmax, box1.ymax,
-	               box2.xmin, box2.ymax, box2.xmax, box2.ymax,
-	               result
-	              );
+				   box1.xmin, box1.ymax, box1.xmax, box1.ymax,
+				   box2.xmin, box2.ymax, box2.xmax, box2.ymax,
+				   result
+				  );
 
 	PG_RETURN_BOOL(result);
 }
@@ -157,7 +157,7 @@ Datum LWGEOM_overleft(PG_FUNCTION_ARGS)
 
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_overleft,
-	                      PointerGetDatum(&box1), PointerGetDatum(&box2)));
+						  PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
 	PG_FREE_IF_COPY(lwgeom1, 0);
 	PG_FREE_IF_COPY(lwgeom2, 1);
@@ -186,7 +186,7 @@ Datum LWGEOM_left(PG_FUNCTION_ARGS)
 	}
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_left,
-	                      PointerGetDatum(&box1), PointerGetDatum(&box2)));
+						  PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
 	PG_FREE_IF_COPY(lwgeom1, 0);
 	PG_FREE_IF_COPY(lwgeom2, 1);
@@ -216,7 +216,7 @@ Datum LWGEOM_right(PG_FUNCTION_ARGS)
 	}
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_right,
-	                      PointerGetDatum(&box1), PointerGetDatum(&box2)));
+						  PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
 	PG_FREE_IF_COPY(lwgeom1, 0);
 	PG_FREE_IF_COPY(lwgeom2, 1);
@@ -246,7 +246,7 @@ Datum LWGEOM_overright(PG_FUNCTION_ARGS)
 	}
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_overright,
-	                      PointerGetDatum(&box1), PointerGetDatum(&box2)));
+						  PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
 	PG_FREE_IF_COPY(lwgeom1, 0);
 	PG_FREE_IF_COPY(lwgeom2, 1);
@@ -277,7 +277,7 @@ Datum LWGEOM_overbelow(PG_FUNCTION_ARGS)
 
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_overbelow,
-	                      PointerGetDatum(&box1), PointerGetDatum(&box2)));
+						  PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
 	PG_FREE_IF_COPY(lwgeom1, 0);
 	PG_FREE_IF_COPY(lwgeom2, 1);
@@ -306,7 +306,7 @@ Datum LWGEOM_below(PG_FUNCTION_ARGS)
 	}
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_below,
-	                      PointerGetDatum(&box1), PointerGetDatum(&box2)));
+						  PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
 	PG_FREE_IF_COPY(lwgeom1, 0);
 	PG_FREE_IF_COPY(lwgeom2, 1);
@@ -336,7 +336,7 @@ Datum LWGEOM_above(PG_FUNCTION_ARGS)
 	}
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_above,
-	                      PointerGetDatum(&box1), PointerGetDatum(&box2)));
+						  PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
 	PG_FREE_IF_COPY(lwgeom1, 0);
 	PG_FREE_IF_COPY(lwgeom2, 1);
@@ -366,7 +366,7 @@ Datum LWGEOM_overabove(PG_FUNCTION_ARGS)
 	}
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_overabove,
-	                      PointerGetDatum(&box1), PointerGetDatum(&box2)));
+						  PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
 	PG_FREE_IF_COPY(lwgeom1, 0);
 	PG_FREE_IF_COPY(lwgeom2, 1);
@@ -396,7 +396,7 @@ Datum LWGEOM_contained(PG_FUNCTION_ARGS)
 	}
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_contained,
-	                      PointerGetDatum(&box1), PointerGetDatum(&box2)));
+						  PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
 	PG_FREE_IF_COPY(lwgeom1, 0);
 	PG_FREE_IF_COPY(lwgeom2, 1);
@@ -426,7 +426,7 @@ Datum LWGEOM_contain(PG_FUNCTION_ARGS)
 	}
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_contain,
-	                      PointerGetDatum(&box1), PointerGetDatum(&box2)));
+						  PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
 	PG_FREE_IF_COPY(lwgeom1, 0);
 	PG_FREE_IF_COPY(lwgeom2, 1);
@@ -482,10 +482,10 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 			rr = (BOX2DFLOAT4*) palloc(sizeof(BOX2DFLOAT4));
 
 			if (    ! getbox2d_p(SERIALIZED_FORM(in), rr) ||
-			        ! finite(rr->xmin) ||
-			        ! finite(rr->ymin) ||
-			        ! finite(rr->xmax) ||
-			        ! finite(rr->ymax) )
+					! finite(rr->xmin) ||
+					! finite(rr->ymin) ||
+					! finite(rr->xmax) ||
+					! finite(rr->ymax) )
 			{
 
 				POSTGIS_DEBUG(4, "found empty or infinite geometry");
@@ -505,14 +505,14 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 
 #if POSTGIS_PGSQL_VERSION >= 82
 			gistentryinit(*retval, PointerGetDatum(rr),
-			              entry->rel, entry->page,
-			              entry->offset,
-			              FALSE);
+						  entry->rel, entry->page,
+						  entry->offset,
+						  FALSE);
 #else
 			gistentryinit(*retval, PointerGetDatum(rr),
-			              entry->rel, entry->page,
-			              entry->offset, sizeof(BOX2DFLOAT4),
-			              FALSE);
+						  entry->rel, entry->page,
+						  entry->offset, sizeof(BOX2DFLOAT4),
+						  FALSE);
 #endif
 
 
@@ -523,10 +523,10 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 
 #if POSTGIS_PGSQL_VERSION >= 82
 			gistentryinit(*retval, (Datum) 0, entry->rel,
-			              entry->page, entry->offset, FALSE);
+						  entry->page, entry->offset, FALSE);
 #else
 			gistentryinit(*retval, (Datum) 0, entry->rel,
-			              entry->page, entry->offset, 0, FALSE);
+						  entry->page, entry->offset, 0, FALSE);
 #endif
 
 		}
@@ -573,7 +573,7 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 	}
 
 	/*
-	** First pull only a small amount of the tuple, enough to 
+	** First pull only a small amount of the tuple, enough to
 	** get the bounding box, if one exists.
 	** size = header + type + box2df4?
 	*/
@@ -588,7 +588,7 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 
 	/*
 	** If the bounding box exists, copy it into the working variable.
-	** If not, pull the full toasted data out, and call the standard box 
+	** If not, pull the full toasted data out, and call the standard box
 	** retrieval function, which will calculate the box from scratch.
 	*/
 	serialized_lwgeom = SERIALIZED_FORM(query);
@@ -608,11 +608,11 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 
 	if (GIST_LEAF(entry))
 		result = lwgeom_rtree_leaf_consistent((BOX2DFLOAT4 *)
-		                                      DatumGetPointer(entry->key), &box, strategy );
+											  DatumGetPointer(entry->key), &box, strategy );
 	else
 		result = lwgeom_rtree_internal_consistent(
-		             (BOX2DFLOAT4 *) DatumGetPointer(entry->key),
-		             &box, strategy );
+					 (BOX2DFLOAT4 *) DatumGetPointer(entry->key),
+					 &box, strategy );
 
 	PG_FREE_IF_COPY(query, 1);
 	PG_RETURN_BOOL(result);
@@ -621,7 +621,7 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 
 static bool
 lwgeom_rtree_internal_consistent(BOX2DFLOAT4 *key, BOX2DFLOAT4 *query,
-                                 StrategyNumber strategy)
+								 StrategyNumber strategy)
 {
 	bool retval;
 
@@ -638,14 +638,14 @@ lwgeom_rtree_internal_consistent(BOX2DFLOAT4 *key, BOX2DFLOAT4 *query,
 	case RTOverlapStrategyNumber:  /*optimized for speed */
 
 		retval = (((key->xmax>= query->xmax) &&
-		           (key->xmin <= query->xmax)) ||
-		          ((query->xmax>= key->xmax) &&
-		           (query->xmin<= key->xmax)))
-		         &&
-		         (((key->ymax>= query->ymax) &&
-		           (key->ymin<= query->ymax)) ||
-		          ((query->ymax>= key->ymax) &&
-		           (query->ymin<= key->ymax)));
+				   (key->xmin <= query->xmax)) ||
+				  ((query->xmax>= key->xmax) &&
+				   (query->xmin<= key->xmax)))
+				 &&
+				 (((key->ymax>= query->ymax) &&
+				   (key->ymin<= query->ymax)) ||
+				  ((query->ymax>= key->ymax) &&
+				   (query->ymin<= key->ymax)));
 
 
 #if POSTGIS_DEBUG_LEVEL >=4
@@ -653,13 +653,13 @@ lwgeom_rtree_internal_consistent(BOX2DFLOAT4 *key, BOX2DFLOAT4 *query,
 		if (counter_intern == 0)
 		{
 			POSTGIS_DEBUGF(4, "search bounding box is: <%.16g %.16g,%.16g %.16g> - size box2d= %ld",
-			               query->xmin,query->ymin,query->xmax,query->ymax,sizeof(BOX2DFLOAT4));
+						   query->xmin,query->ymin,query->xmax,query->ymax,sizeof(BOX2DFLOAT4));
 
 		}
 
 
 		POSTGIS_DEBUGF(4, "%i:(int)<%.8g %.8g,%.8g %.8g>&&<%.8g %.8g,%.8g %.8g> %i",counter_intern,key->xmin,key->ymin,key->xmax,key->ymax,
-		               query->xmin,query->ymin,query->xmax,query->ymax,   (int) retval);
+					   query->xmin,query->ymin,query->xmax,query->ymax,   (int) retval);
 
 		counter_intern++;
 #endif
@@ -701,7 +701,7 @@ lwgeom_rtree_internal_consistent(BOX2DFLOAT4 *key, BOX2DFLOAT4 *query,
 
 static bool
 lwgeom_rtree_leaf_consistent(BOX2DFLOAT4 *key,
-                             BOX2DFLOAT4 *query, StrategyNumber strategy)
+							 BOX2DFLOAT4 *query, StrategyNumber strategy)
 {
 	bool retval;
 
@@ -717,20 +717,20 @@ lwgeom_rtree_leaf_consistent(BOX2DFLOAT4 *key,
 		break;
 	case RTOverlapStrategyNumber: /*optimized for speed */
 		retval = (((key->xmax>= query->xmax) &&
-		           (key->xmin <= query->xmax)) ||
-		          ((query->xmax>= key->xmax) &&
-		           (query->xmin<= key->xmax)))
-		         &&
-		         (((key->ymax>= query->ymax) &&
-		           (key->ymin<= query->ymax)) ||
-		          ((query->ymax>= key->ymax) &&
-		           (query->ymin<= key->ymax)));
+				   (key->xmin <= query->xmax)) ||
+				  ((query->xmax>= key->xmax) &&
+				   (query->xmin<= key->xmax)))
+				 &&
+				 (((key->ymax>= query->ymax) &&
+				   (key->ymin<= query->ymax)) ||
+				  ((query->ymax>= key->ymax) &&
+				   (query->ymin<= key->ymax)));
 
 #if POSTGIS_DEBUG_LEVEL >= 4
 		/*keep track and report info about how many times this is called */
 		POSTGIS_DEBUGF(4, "%i:gist test (leaf) <%.6g %.6g,%.6g %.6g> &&  <%.6g %.6g,%.6g %.6g> --> %i",
-		               counter_leaf,key->xmin,key->ymin,key->xmax,key->ymax,
-		               query->xmin,query->ymin,query->xmax,query->ymax,   (int) retval);
+					   counter_leaf,key->xmin,key->ymin,key->xmax,key->ymax,
+					   query->xmin,query->ymin,query->xmax,query->ymax,   (int) retval);
 		counter_leaf++;
 #endif
 		return(retval);
@@ -785,7 +785,7 @@ Datum LWGEOM_gist_decompress(PG_FUNCTION_ARGS)
 
 
 
-/*
+/**
  * The GiST Union method for boxes
  * returns the minimal bounding box that encloses all the entries in entryvec
  */
@@ -833,7 +833,7 @@ Datum LWGEOM_gist_union(PG_FUNCTION_ARGS)
 }
 
 
-/*
+/**
  * size of a box is width*height
  * we do this in double precision because width and height can be very very small
  * and it gives screwy results
@@ -865,7 +865,7 @@ size_box2d(Datum box2d)
 	return result;
 }
 
-/*
+/**
  * size of a box is width*height
  * we do this in double precision because width and height can be very very small
  * and it gives screwy results
@@ -903,7 +903,7 @@ static double size_box2d_double(Datum box2d)
 
 
 
-/*
+/**
 ** The GiST Penalty method for boxes
 ** As in the R-tree paper, we use change in area as our penalty metric
 */
@@ -959,7 +959,7 @@ compare_KB(const void* a, const void* b)
 	return ( sa>sb ) ? 1 : -1;
 }
 
-/*
+/**
 ** Equality method
 */
 PG_FUNCTION_INFO_V1(LWGEOM_gist_same);
@@ -980,7 +980,7 @@ Datum LWGEOM_gist_same(PG_FUNCTION_ARGS)
 
 
 
-/*
+/**
 ** The GiST PickSplit method
 ** New linear algorithm, see 'New Linear Node Splitting Algorithm for R-tree',
 ** C.H.Ang and T.C.Tan
@@ -1020,11 +1020,11 @@ Datum LWGEOM_gist_picksplit(PG_FUNCTION_ARGS)
 		cur = (BOX2DFLOAT4 *) DatumGetPointer(entryvec->vector[i].key);
 
 		if ( allisequal == true &&  (
-		            pageunion.xmax != cur->xmax ||
-		            pageunion.ymax != cur->ymax ||
-		            pageunion.xmin != cur->xmin ||
-		            pageunion.ymin != cur->ymin
-		        ) )
+					pageunion.xmax != cur->xmax ||
+					pageunion.ymax != cur->ymax ||
+					pageunion.xmin != cur->xmin ||
+					pageunion.ymin != cur->ymin
+				) )
 			allisequal = false;
 
 		if (pageunion.xmax < cur->xmax)
@@ -1169,12 +1169,12 @@ Datum LWGEOM_gist_picksplit(PG_FUNCTION_ARGS)
 	else
 	{
 		Datum interLR = DirectFunctionCall2(BOX2D_intersects,
-		                                    PointerGetDatum(unionL), PointerGetDatum(unionR));
+											PointerGetDatum(unionL), PointerGetDatum(unionR));
 		Datum interBT = DirectFunctionCall2(BOX2D_intersects,
-		                                    PointerGetDatum(unionB), PointerGetDatum(unionT));
+											PointerGetDatum(unionB), PointerGetDatum(unionT));
 		float sizeLR, sizeBT;
 
-		/*elog(NOTICE,"direction is abigeous"); */
+		/*elog(NOTICE,"direction is ambiguous"); */
 
 		sizeLR = size_box2d(interLR);
 		sizeBT = size_box2d(interBT);
@@ -1278,7 +1278,7 @@ Datum LWGEOM_gist_picksplit(PG_FUNCTION_ARGS)
 }
 
 
-/* debug function */
+/** debug function */
 Datum report_lwgeom_gist_activity(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(report_lwgeom_gist_activity);
 Datum report_lwgeom_gist_activity(PG_FUNCTION_ARGS)

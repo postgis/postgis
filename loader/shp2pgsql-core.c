@@ -185,27 +185,29 @@ pgis_logf(const char *fmt, ... )
 	va_end(ap);
 }
 
-/* liblwgeom allocator callback - install the defaults (malloc/free/stdout/stderr) */
-/* TODO hook lwnotice/lwerr up to the GUI */
+/** liblwgeom allocator callback - install the defaults (malloc/free/stdout/stderr) */
+/**
+	TODO: hook lwnotice/lwerr up to the GUI
+	*/
 void lwgeom_init_allocators()
 {
 	lwgeom_install_default_allocators();
 }
 
 
-/*
+/**
  * Escape input string suitable for COPY
  */
 
 char *
 escape_copy_string(char *str)
 {
-	/*
-	 * Escape the following characters by adding a preceding backslash 
- 	 *      tab, backslash, cr, lf
- 	 *
+	/**
+	 * Escape the following characters by adding a preceding backslash
+	 *      tab, backslash, cr, lf
+	 *
 	 * 1. find # of escaped characters
-	 * 2. make new string 
+	 * 2. make new string
 	 *
 	 */
 
@@ -228,8 +230,8 @@ escape_copy_string(char *str)
 
 	while (*ptr)
 	{
-		if ( *ptr == '\t' || *ptr == '\\' || 
-			*ptr == '\n' || *ptr == '\r' ) 
+		if ( *ptr == '\t' || *ptr == '\\' ||
+			*ptr == '\n' || *ptr == '\r' )
 				toescape++;
 		ptr++;
 	}
@@ -245,7 +247,7 @@ escape_copy_string(char *str)
 	while (*ptr)
 	{
 		if ( *ptr == '\t' || *ptr == '\\' ||
-			*ptr == '\n' || *ptr == '\r' ) 
+			*ptr == '\n' || *ptr == '\r' )
 				*optr++='\\';
 				*optr++=*ptr++;
 	}
@@ -260,7 +262,7 @@ escape_copy_string(char *str)
 }
 
 
-/*
+/**
  * Escape input string suitable for INSERT
  */
 
@@ -268,10 +270,10 @@ char *
 escape_insert_string(char *str)
 {
 	/*
-	 * Escape single quotes by adding a preceding single quote 
-	 * 
+	 * Escape single quotes by adding a preceding single quote
+	 *
 	 * 1. find # of characters
-	 * 2. make new string 
+	 * 2. make new string
 	 */
 
 	char	*result;
@@ -321,7 +323,7 @@ escape_insert_string(char *str)
 
 
 
-/*
+/**
  * PIP(): crossing number test for a point in a polygon
  *      input:   P = a point,
  *               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
@@ -337,7 +339,7 @@ PIP( Point P, Point* V, int n )
 	for (i=0; i<n-1; i++)
 	{    /* edge from V[i] to V[i+1] */
 		if (((V[i].y <= P.y) && (V[i+1].y > P.y))    /* an upward crossing */
-		        || ((V[i].y > P.y) && (V[i+1].y <= P.y)))
+				|| ((V[i].y > P.y) && (V[i+1].y <= P.y)))
 		{ /* a downward crossing */
 			double vt = (float)(P.y - V[i].y) / (V[i+1].y - V[i].y);
 			if (P.x < V[i].x + vt * (V[i+1].x - V[i].x)) /* P.x < intersect */
@@ -405,11 +407,11 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
 
 			default:
 				pgis_logf(
-				    "Error: field %d has invalid or unknown field type (%d)",
-				    i, types[i]);
+					"Error: field %d has invalid or unknown field type (%d)",
+					i, types[i]);
 				return 0;
 			}
-			
+
 			if (dump_format)
 			{
 				escval = escape_copy_string(val);
@@ -443,7 +445,7 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
 
 
 
-/*
+/**
  * formerly main()
  */
 int
@@ -702,12 +704,12 @@ CreateTable(void)
 	if ( schema && readshape == 1 )
 	{
 		stringbuffer_aprintf(sb_row, "SELECT AddGeometryColumn('%s','%s','%s','%d',",
-		                     schema, table, geom, sr_id);
+							 schema, table, geom, sr_id);
 	}
 	else if (readshape == 1)
 	{
 		stringbuffer_aprintf(sb_row, "SELECT AddGeometryColumn('','%s','%s','%d',",
-		                     table, geom, sr_id);
+							 table, geom, sr_id);
 	}
 	if (pgtype)
 	{ //pgtype will only be set if we are loading geometries
@@ -754,21 +756,21 @@ LoadData(void)
 		if ( schema )
 		{
 			asprintf(&copysql, "COPY \"%s\".\"%s\" %s FROM stdin",
-			         schema, table, col_names);
+					 schema, table, col_names);
 		}
 		else
 		{
 			asprintf(&copysql, "COPY \"%s\" %s FROM stdin",
-			         table, col_names);
+					 table, col_names);
 		}
 		pgis_copy_start(copysql);
 		free(copysql);
 	}
 
 	/**************************************************************
-	 * 
+	 *
 	 *   MAIN SHAPE OBJECTS SCAN
-	 * 
+	 *
 	 **************************************************************/
 	while (cur_entity <  num_entities - 1)
 	{
@@ -824,12 +826,12 @@ LoadData(void)
 			if ( schema )
 			{
 				stringbuffer_aprintf(sb_row, "INSERT INTO \"%s\".\"%s\" %s VALUES (",
-				                     schema, table, col_names);
+									 schema, table, col_names);
 			}
 			else
 			{
 				stringbuffer_aprintf(sb_row, "INSERT INTO \"%s\" %s VALUES (",
-				                     table, col_names);
+									 table, col_names);
 			}
 		}
 		if ( ! Insert_attributes(hDBFHandle,cur_entity) ) return 0;
@@ -878,7 +880,7 @@ LoadData(void)
 
 			default:
 				pgis_logf ("**** Type is NOT SUPPORTED, type id = %d ****",
-				           obj->nSHPType);
+						   obj->nSHPType);
 				break;
 
 			}
@@ -1071,7 +1073,7 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 			ring->list[vi-vs].m = obj->padfM[vi];
 
 			area += (obj->padfX[vi] * obj->padfY[vn]) -
-			        (obj->padfY[vi] * obj->padfX[vn]);
+					(obj->padfY[vi] * obj->padfX[vn]);
 		}
 
 		/* Close the ring with first vertex  */
@@ -1509,11 +1511,11 @@ DropTable(char *schema, char *table, char *geom)
 	/*---------------Drop the table--------------------------
 	 * TODO: if the table has more then one geometry column
 	 * the DROP TABLE call will leave spurious records in
-	 * geometry_columns. 
+	 * geometry_columns.
 	 *
 	 * If the geometry column in the table being dropped
 	 * does not match 'the_geom' or the name specified with
-	 * -g an error is returned by DropGeometryColumn. 
+	 * -g an error is returned by DropGeometryColumn.
 	 *
 	 * The table to be dropped might not exist.
 	 *
@@ -1628,14 +1630,14 @@ GetFieldsSpec(void)
 		 * or after pgsql reserved attribute names
 		 */
 		if ( name[0]=='_' ||
-		        ! strcmp(name,"gid") ||
-		        ! strcmp(name, "tableoid") ||
-		        ! strcmp(name, "cmax") ||
-		        ! strcmp(name, "xmax") ||
-		        ! strcmp(name, "cmin") ||
-		        ! strcmp(name, "primary") ||
-		        ! strcmp(name, "oid") ||
-		        ! strcmp(name, "ctid") )
+				! strcmp(name,"gid") ||
+				! strcmp(name, "tableoid") ||
+				! strcmp(name, "cmax") ||
+				! strcmp(name, "xmax") ||
+				! strcmp(name, "cmin") ||
+				! strcmp(name, "primary") ||
+				! strcmp(name, "oid") ||
+				! strcmp(name, "ctid") )
 		{
 			strcpy(name2+2, name);
 			name2[0] = '_';

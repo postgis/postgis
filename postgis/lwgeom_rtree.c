@@ -18,7 +18,7 @@
 Datum LWGEOM_polygon_index(PG_FUNCTION_ARGS);
 
 
-/*
+/**
  * Creates an rtree given a pointer to the point array.
  * Must copy the point array.
  */
@@ -81,7 +81,7 @@ RTREE_NODE *createTree(POINTARRAY *pointArray)
 	return root;
 }
 
-/*
+/**
  * Creates an interior node given the children.
  */
 RTREE_NODE *createInteriorNode(RTREE_NODE *left, RTREE_NODE *right)
@@ -101,7 +101,7 @@ RTREE_NODE *createInteriorNode(RTREE_NODE *left, RTREE_NODE *right)
 	return parent;
 }
 
-/*
+/**
  * Creates a leaf node given the pointer to the start point of the segment.
  */
 RTREE_NODE *createLeafNode(POINTARRAY *pa, int startPoint)
@@ -154,7 +154,7 @@ RTREE_NODE *createLeafNode(POINTARRAY *pa, int startPoint)
 	return parent;
 }
 
-/*
+/**
  * Creates an interval with the total extents of the two given intervals.
  */
 INTERVAL *mergeIntervals(INTERVAL *inter1, INTERVAL *inter2)
@@ -172,7 +172,7 @@ INTERVAL *mergeIntervals(INTERVAL *inter1, INTERVAL *inter2)
 	return interval;
 }
 
-/*
+/**
  * Creates an interval given the min and max values, in arbitrary order.
  */
 INTERVAL *createInterval(double value1, double value2)
@@ -190,7 +190,7 @@ INTERVAL *createInterval(double value1, double value2)
 	return interval;
 }
 
-/*
+/**
  * Recursively frees the child nodes, the interval and the line before
  * freeing the root node.
  */
@@ -213,7 +213,7 @@ void freeTree(RTREE_NODE *root)
 }
 
 
-/*
+/**
  * Free the cache object and all the sub-objects properly.
  */
 void clearCache(RTREE_POLY_CACHE *cache)
@@ -233,7 +233,7 @@ void clearCache(RTREE_POLY_CACHE *cache)
 }
 
 
-/*
+/**
  * Retrieves a collection of line segments given the root and crossing value.
  * The collection is a multilinestring consisting of two point lines
  * representing the segments of the ring that may be crossed by the
@@ -305,7 +305,7 @@ LWMLINE *findLineSegments(RTREE_NODE *root, double value)
 	return result;
 }
 
-/* Merges two multilinestrings into a single multilinestring. */
+/** Merges two multilinestrings into a single multilinestring. */
 LWMLINE *mergeMultiLines(LWMLINE *line1, LWMLINE *line2)
 {
 	LWGEOM **geoms;
@@ -333,7 +333,7 @@ LWMLINE *mergeMultiLines(LWMLINE *line1, LWMLINE *line2)
 	return (LWMLINE *)col;
 }
 
-/*
+/**
  * Returns 1 if min < value <= max, 0 otherwise. */
 uint32 isContained(INTERVAL *interval, double value)
 {
@@ -478,7 +478,7 @@ void populateCache(RTREE_POLY_CACHE *currentCache, LWGEOM *lwgeom, uchar *serial
 	LWDEBUGF(3, "populateCache returning %p", currentCache);
 }
 
-/*
+/**
  * Creates a new cachable index if needed, or returns the current cache if
  * it is applicable to the current polygon.
  * The memory context must be changed to function scope before calling this
