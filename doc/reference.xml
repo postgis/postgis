@@ -11558,7 +11558,7 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
 					<funcdef>geometry <function>ST_Buffer</function></funcdef>
 					<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 					<paramdef><type>float </type> <parameter>radius_of_buffer</parameter></paramdef>
-					<paramdef><type>string </type> <parameter>parameters</parameter></paramdef>
+					<paramdef><type>string </type> <parameter>buffer_style_parameters</parameter></paramdef>
 				  </funcprototype>
 
 				</funcsynopsis>
