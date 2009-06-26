@@ -11534,7 +11534,8 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
 
 				<refpurpose>Returns a geometry that represents all points whose distance
 			from this Geometry is less than or equal to distance. Calculations
-			are in the Spatial Reference System of this Geometry.
+			are in the Spatial Reference System of this Geometry. Introduced in 1.5 support for
+			different end cap and mitre settings to control shape.
 			</refpurpose>
 			</refnamediv>
 
@@ -11568,8 +11569,13 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
 
 				<para>Returns a geometry that represents all points whose distance
 			from this Geometry is less than or equal to distance. Calculations
-			are in the Spatial Reference System of this Geometry.
+			are in the Spatial Reference System of this Geometry. Introduced in 1.5 support for
+			different end cap and mitre settings to control shape.
 				</para>
+				<para>Availability: 1.5 - ST_Buffer was enhanced to support different endcaps and join types. These are useful for example to convert road linestrings
+					into polygon roads with flat or square edges instead of rounded edges.  - requires GEOS &gt;= 3.2 to take advantage of advanced functionality.
+				</para>
+
 				<para>
 The optional third parameter can either specify number of segments used to approximate a quarter circle (integer case, defaults to 8) or a list of blank-separated key=value pairs (string case) to tweak operations as follows:
 <itemizedlist>
