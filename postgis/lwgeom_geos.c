@@ -92,6 +92,9 @@ Datum postgis_geos_version(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+
+#if POSTGIS_GEOS_VERSION >= 32
+
 /**
  *  @brief Compute the Hausdorff distance thanks to the corresponding GEOS function
  *  @example hausdorffdistance {@link #hausdorffdistance} - SELECT st_hausdorffdistance(
@@ -176,6 +179,9 @@ Datum hausdorffdistancedensify(PG_FUNCTION_ARGS)
 
 	PG_RETURN_FLOAT8(result);
 }
+
+#endif
+
 
 /**
  * @brief This is the final function for GeomUnion
