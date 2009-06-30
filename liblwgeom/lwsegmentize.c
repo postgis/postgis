@@ -407,6 +407,12 @@ lwcurvepoly_segmentize(LWCURVEPOLY *curvepoly, uint32 perQuad)
 			line = (LWLINE *)tmp;
 			ptarray[i] = ptarray_clone(line->points);
 		}
+		else if(lwgeom_getType(tmp->type) == COMPOUNDTYPE)
+		{
+			line = lwcompound_segmentize((LWCOMPOUND *)tmp, perQuad);
+			ptarray[i] = ptarray_clone(line->points);
+			lwfree(line);
+		}
 		else
 		{
 			lwerror("Invalid ring type found in CurvePoly.");
