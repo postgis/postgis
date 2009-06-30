@@ -616,7 +616,7 @@ output_wkt(uchar* geom, int supress)
 			if (writeM) write_str("CURVEPOLYGONM");
 			else write_str("CURVEPOLYGON");
 		}
-		geom = output_collection(geom, output_compound,0);
+		geom = output_collection(geom, output_curvepoly,0);
 		break;
 	case MULTIPOINTTYPE:
 		if ( supress < 2 )
