@@ -1,35 +1,46 @@
-CREDITS: 2004/09/10
+CREDITS: 2009/07/01
 
-The core team of PostGIS is from Refractions Research: 
-Sandro Santilli, Paul Ramsey, Jeff Lounsbury and Chris Hodgson. 
+The core team of PostGIS is:
+ 
+ Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
+ Paul Ramsey <pramsey@cleverelephant.ca>
+ Regina Obe <lr@pcorp.us>
+ Kevin Neufeld <kneufeld@refractions.net>
+ Olivier Courtin <olivier.courtin@camptocamp.com>
+ Sandro Santilli <strk@keybit.net>
+
 All versions include substantial contributions from the 
 core team.
 
 
 VERSION SPECIFIC CREDITS:
 
-PostGIS is developed by Refractions Research Inc, of Victora, 
-British Columbia, Canada (http://www.refractions.net), as an ongoing project 
-in using PostgreSQL as a geospatial data-store. The following contributors 
-have participated in the project:
+PostGIS was originally developed by Refractions Research Inc, of Victora, 
+British Columbia, Canada (http://www.refractions.net), as a project 
+in using PostgreSQL as a geospatial data-store. Refractions continues to
+provide hosting and infrastructure support to the project. 
 
-  Sandro Santilli - Maintenance and core programming (the new stuff)
-  Dave Blasby - Core server objects and indexing (original contributions)
-  Paul Ramsey - Extensions to the PostgreSQL JDBC driver, doco, web.
-  Jeff Lounsbury - Shape file loader/dumper.
+The following is a partial list of contributors who have participated 
+in the project:
 
-Version 0.2 of PostGIS includes contributions from:
-  Norman Vine on CygWin compilation issues
+See the postgis manual and the ChangeLog for more contributors.
 
-Version 0.5 of PostGIS includes contributions from:
-  Geographic Data BC (David Skea and Mark Sondheim) with funding and 
-  direction on adding calculations on a spheroid to PostGIS.
+Version 1.2.1 of PostGIS includes patches from:
+  Eduin Carrillo <yecarrillo@cas.gov.co> for AsKML() and Transform() 
+  short circuit.
 
-Version 0.7 of PostGIS includes patches from:
-  Steffen Macke on numerous loader/dumper bugs.
-  Bernhard Reiter on some documentation issues and a loader limit.
-  Mark Cave-Ayland on truly_inside().
-  STRK on shp2pgsql improvements
+Version 1.1.0 of PostGIS includes patches from:
+  Obe, Regina <robe.dnd@cityofboston.gov> with -k switch for pgsql2shp.
+
+Version 1.0.0 of PostGIS includes code from:
+  Mark Cave-Ayland <m.cave-ayland@webbased.co.uk> with new positional
+        operators, join estimator and general testing and support.
+  Markus Schaber <markus@schabi.de> author of the jdbc2 interface
+
+Version 0.9 of PostGIS includes patches from:
+  Klaus Foerster <klaus@svg.cc> on AsSVG()
+  Olivier Courtin <pnine@free.fr> on AsSVG()
+  Bruno Wolff III on the distance_sphere algorithm
 
 Version 0.8 of PostGIS includes patches from:
   Carl Anderson on schemas
@@ -37,22 +48,22 @@ Version 0.8 of PostGIS includes patches from:
   Ralph Mason on WKT parsing for LWGEOM
   Mark Cave-Ayland with help on PgSQL 7.5 statistics
 
-Version 0.9 of PostGIS includes patches from:
-  Klaus Foerster <klaus@svg.cc> on AsSVG()
-  Olivier Courtin <pnine@free.fr> on AsSVG()
-  Bruno Wolff III on the distance_sphere algorithm
+Version 0.7 of PostGIS includes patches from:
+  Steffen Macke on numerous loader/dumper bugs.
+  Bernhard Reiter on some documentation issues and a loader limit.
+  Mark Cave-Ayland on truly_inside().
+  STRK on shp2pgsql improvements
 
-Version 1.0.0 of PostGIS includes code from:
-  Mark Cave-Ayland <m.cave-ayland@webbased.co.uk> with new positional
-        operators, join estimator and general testing and support.
-  Markus Schaber <markus@schabi.de> author of the jdbc2 interface
+Version 0.5 of PostGIS includes contributions from:
+  Geographic Data BC (David Skea and Mark Sondheim) with funding and 
+  direction on adding calculations on a spheroid to PostGIS.
 
-Version 1.1.0 of PostGIS includes patches from:
-  Obe, Regina <robe.dnd@cityofboston.gov> with -k switch for pgsql2shp.
+Version 0.2 of PostGIS includes contributions from:
+  Norman Vine on CygWin compilation issues
 
-Version 1.2.1 of PostGIS includes patches from:
-  Eduin Carrillo <yecarrillo@cas.gov.co> for AsKML() and Transform() 
-  short circuit.
+Version 0.1 of PostGIS included constributions from:
+  Dave Blasby - Core server objects and indexing (original contributions)
+  Paul Ramsey - Extensions to the PostgreSQL JDBC driver, doco, web.
+  Jeff Lounsbury - Shape file loader/dumper.
 
-See the postgis manual for more contributors.
 
