@@ -210,13 +210,15 @@ geometry
         <listitem>
           <para>CURVEPOLYGON(CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0),(1 1, 3
           3, 3 1, 1 1))</para>
+		  <para>Example compound curve in a curve polygon:  
+		  		CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0,2 0, 2 1, 2 3, 4 3),(4 3, 4 5, 1 4, 0 0)), 
+					CIRCULARSTRING(1.7 1, 1.4 0.4, 1.6 0.4, 1.6 0.5, 1.7 1) )
+		  </para>
           <para>A CURVEPOLYGON is just like a polygon, with an outer ring 
           and zero or more inner rings.  The difference is that a ring can 
           take the form of a circular string, linear string or compound 
           string.</para>
-          <para>This is currently where PostGIS falls down.  Due to the way 
-          compound strings are represented internally, we cannot yet embed 
-          them within curve polygons.</para>
+          <para>As of PostGIS 1.4 PostGIS supports compound curves in a curve polygon.</para>
         </listitem>
 
         <listitem>
@@ -235,7 +237,8 @@ geometry
       </itemizedlist>
 
       <note>
-        <para>Currently, PostGIS cannot support the use of Compound Curves in
+        <para>PostGIS prior to 1.4 does not support compound curves in a curve polygon, but
+				PostGIS 1.4 and above do support the use of Compound Curves in
         a Curve Polygon.</para>
       </note>
 
