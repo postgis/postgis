@@ -21,6 +21,7 @@
 #include "lwgeom_pg.h"
 
 /* Local prototypes */
+Datum PGISDirectFunctionCall1(PGFunction func, Datum arg1);
 Datum pgis_geometry_accum_transfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_accum_finalfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS);
@@ -210,7 +211,9 @@ pgis_geometry_union_finalfn(PG_FUNCTION_ARGS)
 	p = (pgis_abs*) PG_GETARG_POINTER(0);
 
 	geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
-	result = DirectFunctionCall1( pgis_union_geometry_array, geometry_array );
+	result = PGISDirectFunctionCall1( pgis_union_geometry_array, geometry_array );
+	if (!result)
+		PG_RETURN_NULL();
 
 	PG_RETURN_DATUM(result);
 }
@@ -284,3 +287,26 @@ pgis_geometry_makeline_finalfn(PG_FUNCTION_ARGS)
 	PG_RETURN_DATUM(result);
 }
 
+/**
+* A modified version of PostgreSQL's DirectFunctionCall1 which allows NULL results; this
+* is required for aggregates that return NULL.
+*/
+Datum
+PGISDirectFunctionCall1(PGFunction func, Datum arg1)
+{
+        FunctionCallInfoData fcinfo;
+        Datum           result;
+
+        InitFunctionCallInfoData(fcinfo, NULL, 1, NULL, NULL);
+
+        fcinfo.arg[0] = arg1;
+        fcinfo.argnull[0] = false;
+
+        result = (*func) (&fcinfo);
+
+        /* Check for null result, returning a "NULL" Datum if indicated */
+        if (fcinfo.isnull)
+                return (Datum) 0;
+
+        return result;
+}

@@ -107,10 +107,13 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	GEOSGeometry * geos_result=NULL;
 	int SRID=-1;
 	size_t offset = 0;
+	bits8 *bitmap;
+	int bitmask;
 #if POSTGIS_DEBUG_LEVEL > 0
 	static int call=1;
 #endif
 #if POSTGIS_GEOS_VERSION >= 31
+	int gotsrid = 0;
 	int allpolys=1;
 #endif
 
@@ -128,12 +131,21 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 
 	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
 
+	bitmap = ARR_NULLBITMAP(array);
+
 	POSTGIS_DEBUGF(3, "unite_garray: number of elements: %d", nelems);
 
 	if ( nelems == 0 ) PG_RETURN_NULL();
 
 	/* One-element union is the element itself */
-	if ( nelems == 1 ) PG_RETURN_POINTER((PG_LWGEOM *)(ARR_DATA_PTR(array)));
+	if ( nelems == 1 )
+	{
+		/* If the element is a NULL then we need to handle it separately */
+		if (bitmap && (*bitmap & 1) == 0)
+			PG_RETURN_NULL();
+		else
+			PG_RETURN_POINTER((PG_LWGEOM *)(ARR_DATA_PTR(array)));
+	}
 
 	/* Ok, we really need geos now ;) */
 	initGEOS(lwnotice, lwnotice);
@@ -145,20 +157,43 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	** If they are, we can use UnionCascaded for faster results.
 	*/
 	offset = 0;
+	bitmask = 1;
+	gotsrid = 0;
 	for ( i = 0; i < nelems; i++ )
 	{
-		PG_LWGEOM *pggeom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
-		int pgtype = TYPE_GETTYPE(pggeom->type);
-		offset += INTALIGN(VARSIZE(pggeom));
-		if ( ! i ) /* Initialize SRID */
+		/* Don't do anything for NULL values */
+		if ((bitmap && (*bitmap & bitmask) != 0) || !bitmap)
 		{
-			SRID = pglwgeom_getSRID(pggeom);
-			if ( TYPE_HASZ(pggeom->type) ) is3d = 1;
+			PG_LWGEOM *pggeom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
+			int pgtype = TYPE_GETTYPE(pggeom->type);
+			offset += INTALIGN(VARSIZE(pggeom));
+			if ( ! gotsrid ) /* Initialize SRID */
+			{
+				SRID = pglwgeom_getSRID(pggeom);
+				gotsrid = 1;
+				if ( TYPE_HASZ(pggeom->type) ) is3d = 1;
+			}
+			else
+			{
+				errorIfSRIDMismatch(SRID, pglwgeom_getSRID(pggeom));
+			}
+
+			if ( pgtype != POLYGONTYPE && pgtype != MULTIPOLYGONTYPE )
+			{
+				allpolys = 0;
+				break;
+			}
 		}
-		if ( pgtype != POLYGONTYPE && pgtype != MULTIPOLYGONTYPE )
-		{
-			allpolys = 0;
-			break;
+
+		/* Advance NULL bitmap */
+		if (bitmap)
+                {
+			bitmask <<= 1;
+			if (bitmask == 0x100)
+			{
+				bitmap++;
+				bitmask = 1;
+			}
 		}
 	}
 
@@ -176,59 +211,83 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		** First make an array of GEOS Polygons.
 		*/
 		offset = 0;
+		bitmap = ARR_NULLBITMAP(array);
+		bitmask = 1;
 		for ( i = 0; i < nelems; i++ )
 		{
-			PG_LWGEOM *pggeom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
-			int pgtype = TYPE_GETTYPE(pggeom->type);
-			offset += INTALIGN(VARSIZE(pggeom));
-			if ( pgtype == POLYGONTYPE )
+			/* Don't do anything for NULL values */
+			if ((bitmap && (*bitmap & bitmask) != 0) || !bitmap)
 			{
-				if ( curgeom == geoms_size )
+				PG_LWGEOM *pggeom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
+				int pgtype = TYPE_GETTYPE(pggeom->type);
+				offset += INTALIGN(VARSIZE(pggeom));
+				if ( pgtype == POLYGONTYPE )
 				{
-					geoms_size *= 2;
-					geoms = repalloc( geoms, sizeof(GEOSGeom) * geoms_size );
-				}
-				geoms[curgeom] = (GEOSGeometry *)POSTGIS2GEOS(pggeom);
-				curgeom++;
-			}
-			if ( pgtype == MULTIPOLYGONTYPE )
-			{
-				int j = 0;
-				LWGEOM_INSPECTED *lwgeom = lwgeom_inspect(SERIALIZED_FORM(pggeom));
-				for ( j = 0; j < lwgeom->ngeometries; j++ )
-				{
-					LWPOLY *lwpoly = NULL;
-					int k = 0;
 					if ( curgeom == geoms_size )
 					{
 						geoms_size *= 2;
 						geoms = repalloc( geoms, sizeof(GEOSGeom) * geoms_size );
 					}
-					/* This builds a LWPOLY on top of the serialized form */
-					lwpoly = lwgeom_getpoly_inspected(lwgeom, j);
-					geoms[curgeom] = LWGEOM2GEOS(lwpoly_as_lwgeom(lwpoly));
-					/* We delicately free the LWPOLY and POINTARRAY structs, leaving the serialized form below untouched. */
-					for ( k = 0; k < lwpoly->nrings; k++ )
-					{
-						lwfree(lwpoly->rings[k]);
-					}
-					lwpoly_release(lwpoly);
+					geoms[curgeom] = (GEOSGeometry *)POSTGIS2GEOS(pggeom);
 					curgeom++;
+				}
+				if ( pgtype == MULTIPOLYGONTYPE )
+				{
+					int j = 0;
+					LWGEOM_INSPECTED *lwgeom = lwgeom_inspect(SERIALIZED_FORM(pggeom));
+					for ( j = 0; j < lwgeom->ngeometries; j++ )
+					{
+						LWPOLY *lwpoly = NULL;
+						int k = 0;
+						if ( curgeom == geoms_size )
+						{
+							geoms_size *= 2;
+							geoms = repalloc( geoms, sizeof(GEOSGeom) * geoms_size );
+						}
+						/* This builds a LWPOLY on top of the serialized form */
+						lwpoly = lwgeom_getpoly_inspected(lwgeom, j);
+						geoms[curgeom] = LWGEOM2GEOS(lwpoly_as_lwgeom(lwpoly));
+						/* We delicately free the LWPOLY and POINTARRAY structs, leaving the serialized form below untouched. */
+						for ( k = 0; k < lwpoly->nrings; k++ )
+						{
+							lwfree(lwpoly->rings[k]);
+						}
+						lwpoly_release(lwpoly);
+						curgeom++;
+					}
 				}
 			}
 
+			/* Advance NULL bitmap */
+			if (bitmap)
+			{
+				bitmask <<= 1;
+				if (bitmask == 0x100)
+				{
+					bitmap++;
+					bitmask = 1;
+				}
+			}
 		}
 		/*
 		** Take our GEOS Polygons and turn them into a GEOS MultiPolygon,
 		** then pass that into cascaded union.
 		*/
-		g1 = GEOSGeom_createCollection(GEOS_MULTIPOLYGON, geoms, curgeom);
-		if ( g1 ) g2 = GEOSUnionCascaded(g1);
-		if ( g2 ) GEOSSetSRID(g2, SRID);
-		if ( g2 ) result = GEOS2POSTGIS(g2, is3d);
-		/* Clean up the mess. */
-		if ( g1 ) GEOSGeom_destroy((GEOSGeometry *)g1);
-		if ( g2 ) GEOSGeom_destroy(g2);
+		if (curgeom > 0)
+		{
+			g1 = GEOSGeom_createCollection(GEOS_MULTIPOLYGON, geoms, curgeom);
+			if ( g1 ) g2 = GEOSUnionCascaded(g1);
+			if ( g2 ) GEOSSetSRID(g2, SRID);
+			if ( g2 ) result = GEOS2POSTGIS(g2, is3d);
+			/* Clean up the mess. */
+			if ( g1 ) GEOSGeom_destroy((GEOSGeometry *)g1);
+			if ( g2 ) GEOSGeom_destroy(g2);
+		}
+		else
+		{
+			/* All we found were NULLs, so let's return NULL */
+			PG_RETURN_NULL();
+		}
 	}
 	else
 	{
@@ -237,51 +296,77 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		** Heterogeneous result, let's slog through this one union at a time.
 		*/
 		offset = 0;
+		bitmap = ARR_NULLBITMAP(array);
+		bitmask = 1;
 		for (i=0; i<nelems; i++)
 		{
-			PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
-			offset += INTALIGN(VARSIZE(geom));
-
-			pgis_geom = geom;
-
-			POSTGIS_DEBUGF(3, "geom %d @ %p", i, geom);
-
-			/* Check is3d flag */
-			if ( TYPE_HASZ(geom->type) ) is3d = 1;
-
-			/* Check SRID homogeneity and initialize geos result */
-			if ( ! i )
+			/* Don't do anything for NULL values */
+			if ((bitmap && (*bitmap & bitmask) != 0) || !bitmap)
 			{
-				geos_result = (GEOSGeometry *)POSTGIS2GEOS(geom);
-				SRID = pglwgeom_getSRID(geom);
-				POSTGIS_DEBUGF(3, "first geom is a %s", lwgeom_typename(TYPE_GETTYPE(geom->type)));
-				continue;
+				PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
+				offset += INTALIGN(VARSIZE(geom));
+	
+				pgis_geom = geom;
+	
+				POSTGIS_DEBUGF(3, "geom %d @ %p", i, geom);
+	
+				/* Check is3d flag */
+				if ( TYPE_HASZ(geom->type) ) is3d = 1;
+	
+				/* Check SRID homogeneity and initialize geos result */
+				if ( ! geos_result )
+				{
+					geos_result = (GEOSGeometry *)POSTGIS2GEOS(geom);
+					SRID = pglwgeom_getSRID(geom);
+					POSTGIS_DEBUGF(3, "first geom is a %s", lwgeom_typename(TYPE_GETTYPE(geom->type)));
+				}
+				else
+				{
+					errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom));
+	
+					g1 = POSTGIS2GEOS(pgis_geom);
+	
+					POSTGIS_DEBUGF(3, "unite_garray(%d): adding geom %d to union (%s)",
+						call, i, lwgeom_typename(TYPE_GETTYPE(geom->type)));
+	
+					g2 = GEOSUnion(g1, geos_result);
+					if ( g2 == NULL )
+					{
+						GEOSGeom_destroy((GEOSGeometry *)g1);
+						GEOSGeom_destroy((GEOSGeometry *)geos_result);
+						elog(ERROR,"GEOS union() threw an error!");
+					}
+					GEOSGeom_destroy((GEOSGeometry *)g1);
+					GEOSGeom_destroy((GEOSGeometry *)geos_result);
+					geos_result = g2;
+				}
 			}
-			else
+
+			/* Advance NULL bitmap */
+			if (bitmap)
 			{
-				errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom));
+				bitmask <<= 1;
+				if (bitmask == 0x100)
+				{
+					bitmap++;
+					bitmask = 1;
+				}
 			}
-
-			g1 = POSTGIS2GEOS(pgis_geom);
-
-			POSTGIS_DEBUGF(3, "unite_garray(%d): adding geom %d to union (%s)",
-			               call, i, lwgeom_typename(TYPE_GETTYPE(geom->type)));
-
-			g2 = GEOSUnion(g1, geos_result);
-			if ( g2 == NULL )
-			{
-				GEOSGeom_destroy((GEOSGeometry *)g1);
-				GEOSGeom_destroy((GEOSGeometry *)geos_result);
-				elog(ERROR,"GEOS union() threw an error!");
-			}
-			GEOSGeom_destroy((GEOSGeometry *)g1);
-			GEOSGeom_destroy((GEOSGeometry *)geos_result);
-			geos_result = g2;
+			
 		}
 
-		GEOSSetSRID(geos_result, SRID);
-		result = GEOS2POSTGIS(geos_result, is3d);
-		GEOSGeom_destroy(geos_result);
+		/* If geos_result is set then we found at least one non-NULL geometry */
+		if (geos_result)
+		{
+			GEOSSetSRID(geos_result, SRID);
+			result = GEOS2POSTGIS(geos_result, is3d);
+			GEOSGeom_destroy(geos_result);
+		}
+		else
+		{
+			/* All we found were NULLs, so let's return NULL */
+			PG_RETURN_NULL();
+		}
 
 #if POSTGIS_GEOS_VERSION >= 31
 	}
@@ -289,8 +374,8 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 
 	if ( result == NULL )
 	{
-		elog(ERROR, "Union returned a NULL geometry.");
-		PG_RETURN_NULL(); /* never get here */
+		/* Union returned a NULL geometry */
+		PG_RETURN_NULL();
 	}
 
 	PG_RETURN_POINTER(result);
