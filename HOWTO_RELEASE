@@ -21,12 +21,17 @@ to work or rather *HIGHLY RECOMMENDED* to get new functionalities.
 Requirements
 ------------
 
-In order to build a release, you will need to build the documentation and
-that means having the required software:
+In order to build a release, you will need to build PostGIS and the 
+documentation -- that means having the required software:
 
-- xsltproc
-- DocBook XSL scripts
-- ImageMagick
+* For PostGIS:
+  - PostgreSQL 
+  - GEOS
+  - Proj4
+* For the docs:
+  - xsltproc
+  - DocBook XSL scripts
+  - ImageMagick
 
 Release procedure
 -----------------

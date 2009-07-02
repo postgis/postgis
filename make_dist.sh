@@ -49,6 +49,18 @@ owd="$PWD"
 cd "$outdir"
 ./autogen.sh
 ./configure
+make
+cd "$owd"
+
+# generating documentation
+echo "Generating documentation images"
+owd="$PWD"
+cd "$outdir"/doc/html/image_src
+sleep 1 # wait some time 
+make images 
+if [ $? -gt 0 ]; then
+	exit 1
+fi
 cd "$owd"
 
 # generating documentation
@@ -62,16 +74,6 @@ if [ $? -gt 0 ]; then
 fi
 make clean # won't drop the html dir
 cd "$owd"
-
-## generating parser
-#echo "Generating parser"
-#owd="$PWD"
-#cd "$outdir"/postgis
-#make lex.yy.c
-#if [ $? -gt 0 ]; then
-#	exit 1
-#fi
-#cd "$owd"
 
 # Run make distclean
 echo "Running make distclean"
