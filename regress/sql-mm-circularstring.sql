@@ -385,3 +385,4 @@ SELECT DropGeometryColumn('public', 'circularstring', 'the_geom_3dm');
 SELECT DropGeometryColumn('public', 'circularstring', 'the_geom_2d');
 DROP TABLE public.circularstring;
 SELECT ST_asText(ST_box2d('CIRCULARSTRING(220268.439465645 150415.359530563,220227.333322076 150505.561285879,220227.353105332 150406.434743975)'::geometry));
+SELECT ST_NumPoints(ST_GeomFromEWKT('CIRCULARSTRING(0 0,2 0, 2 1, 2 3, 4 3)'));

@@ -167,7 +167,8 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 /**
  * Find first linestring in serialized geometry and return
  * the number of points in it. If no linestrings are found
- * return -1.
+ * return -1.  Has been expanded to handle circular strings
+ * as well.
  */
 static int32
 lwgeom_numpoints_linestring_recursive(const uchar *serialized)
@@ -176,6 +177,16 @@ lwgeom_numpoints_linestring_recursive(const uchar *serialized)
 	int i;
 
 	LWDEBUG(2, "lwgeom_numpoints_linestring_recursive called.");
+
+	/* 
+	 * CURVEPOLY and COMPOUND have no concept of numpoints but look like
+	 * collections once inspected.  Fast-fail on these here.
+	 */
+	if (lwgeom_getType(inspected->type) == COMPOUNDTYPE ||
+			lwgeom_getType(inspected->type) == CURVEPOLYTYPE)
+	{
+		return -1;
+	}
 
 	for (i=0; i<inspected->ngeometries; i++)
 	{
@@ -192,6 +203,10 @@ lwgeom_numpoints_linestring_recursive(const uchar *serialized)
 		{
 			return ((LWLINE *)geom)->points->npoints;
 		}
+		else if (lwgeom_getType(geom->type) == CIRCSTRINGTYPE)
+		{
+			return((LWCIRCSTRING *)geom)->points->npoints;
+		}
 
 		subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
 		if ( subgeom == NULL )
@@ -201,8 +216,10 @@ lwgeom_numpoints_linestring_recursive(const uchar *serialized)
 
 		type = lwgeom_getType(subgeom[0]);
 
-		/* MULTILINESTRING && GEOMETRYCOLLECTION are worth checking */
-		if ( type != MULTILINETYPE && type != COLLECTIONTYPE ) continue;
+		/* MULTILINESTRING && MULTICURVE && GEOMETRYCOLLECTION are worth checking */
+		if ( type != MULTILINETYPE && 
+			 type != COLLECTIONTYPE &&
+			 type != MULTICURVETYPE ) continue;
 
 		npoints = lwgeom_numpoints_linestring_recursive(subgeom);
 		if ( npoints == -1 ) continue;
