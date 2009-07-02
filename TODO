@@ -112,7 +112,11 @@ A new object type to hold point cloud information in chunks < page size, filter 
 
 == Breaking Changes ==
 
-
+* Consume and emit ISO standard WKT and WKB for extended dimensionality.
+  Deprecate "EWKT" concept. Consuming is non-breaking change, emitting is 
+  breaking change.
+  WKT example: POINT Z (0 0 0), POINT M (0 0 0), POINT ZM (0 0 0 0)
+  WKB uses different numbering for Z/M variants than EWKB does
 * Convert the "default SRID" from -1 to 0
 * Convert the LWGEOM struct(s) to have enough padding that the coordinates
   are double-aligned and can be accessed directly as doubles on all
