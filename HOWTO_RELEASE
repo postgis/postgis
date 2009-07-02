@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-  Date: 2009-06-15
+  Date: 2009-07-01
 
 Versioning Scheme
 -----------------
@@ -17,6 +17,16 @@ additions have been introduced (one or two functions can be considered
 [POSTGIS_MAJOR_VERSION] is incremented (and MICRO and MINOR set to 0) when
 a dump/reload of existing spatial databases is *REQUIRED* for things
 to work or rather *HIGHLY RECOMMENDED* to get new functionalities.
+
+Requirements
+------------
+
+In order to build a release, you will need to build the documentation and
+that means having the required software:
+
+- xsltproc
+- DocBook XSL scripts
+- ImageMagick
 
 Release procedure
 -----------------
