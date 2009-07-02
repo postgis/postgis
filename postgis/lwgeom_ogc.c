@@ -177,6 +177,16 @@ lwgeom_numpoints_linestring_recursive(const uchar *serialized)
 
 	LWDEBUG(2, "lwgeom_numpoints_linestring_recursive called.");
 
+	/* 
+	 * CURVEPOLY and COMPOUND have no concept of numpoints but look like
+	 * collections once inspected.  Fast-fail on these here.
+	 */
+	if (lwgeom_getType(inspected->type) == COMPOUNDTYPE ||
+			lwgeom_getType(inspected->type) == CURVEPOLYTYPE)
+	{
+		return -1;
+	}
+
 	for (i=0; i<inspected->ngeometries; i++)
 	{
 		int32 npoints;
@@ -191,6 +201,10 @@ lwgeom_numpoints_linestring_recursive(const uchar *serialized)
 		if (lwgeom_getType(geom->type) == LINETYPE)
 		{
 			return ((LWLINE *)geom)->points->npoints;
+		}
+		else if (lwgeom_getType(geom->type) == CIRCSTRINGTYPE)
+		{
+			return ((LWCIRCSTRING *)geom)->points->npoints;
 		}
 
 		subgeom = lwgeom_getsubgeometry_inspected(inspected, i);

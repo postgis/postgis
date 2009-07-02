@@ -770,8 +770,8 @@ check_curvepolygon_minpoints()
 	tuple *tp = the_geom.stack->next; /* Current tuple */
 	int i, j, k; /* Loop counters */
 	int num, mum, lum; /* subgeom, point counts */
+	int minpoints;
 	int count = 0; /* Running counter for compound curve */
-	int minpoints = 4;
 	num = tp->uu.nn.num;
 
 	LWDEBUG(3, "check_curvepolygon_minpoints");
@@ -779,6 +779,7 @@ check_curvepolygon_minpoints()
 	/* Check each sub-geom for minpoints */
 	for (i = 0; i < num; i++)
 	{
+		minpoints = 3;
 		tp = tp->next;
 		LWDEBUGF(5, "Subgeom type %d: %p", tp->uu.nn.type, tp);
 		switch (TYPE_GETTYPE(tp->uu.nn.type))
@@ -808,6 +809,7 @@ check_curvepolygon_minpoints()
 			}
 			break;
 		case LINETYPE:
+			minpoints = 4;
 		case CIRCSTRINGTYPE:
 			tp = tp->next;
 			mum = tp->uu.nn.num;
@@ -818,7 +820,7 @@ check_curvepolygon_minpoints()
 			if (mum < minpoints)
 			{
 				LWDEBUGF(5, "Minpoint check failed: needed %d, got %d",
-				         minpoints, count);
+				         minpoints, mum);
 				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_MOREPOINTS, tp->uu.nn.parse_location);
 			}
 			break;
