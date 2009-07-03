@@ -56,7 +56,7 @@ else
 ifeq ($(IMAGEMAGICK),)
 all: requirements_not_met_imagemagick
 else
-all: html/postgis.html postgis_comments.sql
+all: images html/postgis.html postgis_comments.sql
 endif
 endif
 endif

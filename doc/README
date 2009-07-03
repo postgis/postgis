@@ -1,36 +1,50 @@
+====================================================
 Overview
-========
-
-Postgis documentation is written in docbook xml.
-Input file is postgis.xml. From that file we can
-convert to chunked html, single file html and pdf.
-
-Rules are:
-
-	make html # output in html/postgis.html
-	make chunked-html
-	make postgis.pdf
-
-====================================================
- WARNING
 ====================================================
 
-Informations passed this point are out-of-date.
-We're moving toward only requiring 'docbook-utils'
-package.
+Postgis documentation is written in docbook xml.  The input file is postgis.xml, 
+which in turn includes all the individual chapter xml files.  From that file we 
+can convert to chunked html, single-file html and pdf.
+
+Make targets are:
+
+  make                      # defaults to creating  
+                            #   - the images used in the generated documentation
+                            #   - the documentation as a single html file
+                            #   - a sql script used to apply COMMENTS for every postgis function
+  
+  make html/postgis.html    # generates a single-file html file called html/postgis.html
+  make chunked-html         # generates a separate html file for every chapter or section break
+  make pdf                  # generates a single pdf file with the postgis version as a filename
+  make images               # generates all the images used in the html and pdf targets
+  make comments             # generates a sql script that add COMMENTs for every function (derived from the documentation)
+  make doxygen              # generates the developer's documentation using Doxygen
+  
+  make install              # copies PostGIS' utility (ie. shp2pgsql) man pages to the PostgreSQL's doc directory
+  make uninstall            # removes PostGIS' utility man pages
+  make comments-install     # copies the postgis-comments.sql script to the PostgreSQL's contrib directory
+  make comments-uninstall   # removes the postgis-comments.sql script from the contrib directory
+  
+  make clean                # removes any generated files (except images and html files)
+  make maintainer-clean     # clears out the generated images and html files
+
 
 ====================================================
+Requirements
+====================================================
 
-Common requirements
-===================
+To generate the html files:
+  xsltproc                  (http://xmlsoft.org/XSLT/xsltproc2.html)
+  DocBook XSL scripts
 
-debian packages:
-	- xlstproc 
+To generate the images:
+  ImageMagick               (http://www.imagemagick.org/script/index.php)
 
-Requirements to build postgis.pdf
-=================================
+To generate a pdf:
+  dblatex                   (http://dblatex.sourceforge.net)
 
-debian packages:
-	- passivetex 
-	- xmltex  (for pdfxmltex)
+To generate the developer's documentation:
+  doxygen                   (http://www.stack.nl/~dimitri/doxygen)
+
+
 
