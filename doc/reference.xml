@@ -4746,6 +4746,13 @@ GROUP BY gid, field1,field2;
 			  <imagedata fileref="images/check.png" />
 			</imageobject>
 		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+		  
+		  <!-- Optionally mention Circular String Support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method supports Circular Strings and Curves </para>
 	  </refsection>
 
 
@@ -4765,7 +4772,15 @@ FROM ( VALUES ('LINESTRING(0 0, 1 1, 2 2)'::geometry) ) AS foo;
  POINT(0 0)
  POINT(1 1)
  POINT(2 2)
-(3 rows)</programlisting>
+(3 rows)
+
+--Example circular string
+SELECT ST_AsText(ST_PointN(ST_GeomFromText('CIRCULARSTRING(1 2, 3 2, 1 2)'),2));
+
+st_astext
+----------
+POINT(3 2)
+</programlisting>
 	  </refsection>
 
 	  <refsection>
