@@ -23,9 +23,6 @@ SHP2PGSQL-CLI=shp2pgsql-cli@EXESUFFIX@
 PGSQL_FE_CPPFLAGS=@PGSQL_FE_CPPFLAGS@
 PGSQL_FE_LDFLAGS=@PGSQL_FE_LDFLAGS@
 
-# PostgreSQL executable directory
-PGSQL_BINDIR=@PGSQL_BINDIR@
-
 # iconv flags
 ICONV_LDFLAGS=@ICONV_LDFLAGS@
 
@@ -36,6 +33,18 @@ LIBLWGEOM=../liblwgeom/liblwgeom.a
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_LIBS = @GTK_LIBS@
 
+# PGXS information
+#
+# Note that PGXS currently doesn't handle building FE executables, but we need
+# the INSTALL and DESTDIR variables so we can get the correct install paths. 
+# Hence we include the PGXS Makefile here, but ensure that we override the
+# 'all' and 'install' targets with the ones we really want to use below.
+PG_CONFIG = @PGCONFIG@
+PGXS := @PGXS@
+include $(PGXS)
+
+
+# The real parts of the Makefile
 all: $(SHP2PGSQL) $(PGSQL2SHP) @GTK_BUILD@
 
 gui: $(SHP2PGSQL-GUI) $(SHP2PGSQL-CLI)
@@ -67,12 +76,13 @@ $(SHP2PGSQL-CLI): stringbuffer.o shpopen.o dbfopen.o shp2pgsql-core.o shp2pgsql-
 	$(CC) $(CFLAGS) $(ICONV_LDFLAGS) -lm $^ -o $@
 
 install: all
-	@cp $(PGSQL2SHP) $(PGSQL_BINDIR)/$(PGSQL2SHP)
-	@cp $(SHP2PGSQL) $(PGSQL_BINDIR)/$(SHP2PGSQL)
+	@mkdir -p $(DESTDIR)$(bindir)
+	$(INSTALL) $(PGSQL2SHP) $(DESTDIR)$(bindir)
+	$(INSTALL) $(SHP2PGSQL) $(DESTDIR)$(bindir)
 
 uninstall:
-	@rm -f $(PGSQL_BINDIR)/$(PGSQL2SHP)
-	@rm -f $(PGSQL_BINDIR)/$(SHP2PGSQL)
+	@rm -f $(DESTDIR)$(bindir)/$(PGSQL2SHP)
+	@rm -f $(DESTDIR)$(bindir)/$(SHP2PGSQL)
 
 clean:
 	@rm -f *.o $(SHP2PGSQL) $(PGSQL2SHP) 
