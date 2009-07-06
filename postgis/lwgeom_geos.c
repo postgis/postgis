@@ -862,7 +862,6 @@ Datum buffer(PG_FUNCTION_ARGS)
 	int joinStyle  = DEFAULT_JOIN_STYLE;
 	char *param;
 	char *params = NULL;
-	char *saveptr = NULL;
 
 
 	PROFSTART(PROF_QRUN);
@@ -887,24 +886,21 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 		for (param=params; ; param=NULL)
 		{
-			char *saveptr2, *key, *val;
-			param = strtok_r(param, " ", &saveptr);
+			char *key, *val;
+			param = strtok(param, " ");
 			if ( param == NULL ) break;
-			/* lwnotice("Param: %s", param); */
+			POSTGIS_DEBUGF(3, "Param: %s", param);
 
-			key = strtok_r(param, "=", &saveptr2);
-			if ( key == NULL ) {
-				lwerror("Malformed buffer parameter");
-				break;
-			}
-			val = strtok_r(NULL, "=", &saveptr2);
-			if ( val == NULL ) {
+			key = param;
+			val = strchr(key, '=');
+			if ( val == NULL || *(val+1) == '\0' ) {
 				lwerror("Missing value for buffer "
 				        "parameter %s", key);
 				break;
 			}
+			*val = '\0'; ++val;
 
-			/* lwnotice("Param: %s : %s", key, val); */
+			POSTGIS_DEBUGF(3, "Param: %s : %s", key, val);
 
 			if ( !strcmp(key, "endcap") )
 			{
@@ -926,7 +922,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 				else 
 				{
 					lwerror("Invalid buffer end cap "
-					        "style: %s (accept "
+					        "style: %s (accept: "
 					        "'round', 'flat' or 'square'"
 					        ")", val);
 					break;
@@ -950,7 +946,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 				else 
 				{
 					lwerror("Invalid buffer end cap "
-					        "style: %s (accept "
+					        "style: %s (accept: "
 					        "'round', 'mitre' or 'bevel'"
 					        ")", val);
 					break;
@@ -968,7 +964,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 			}
 			else
 			{
-				lwerror("Invalid buffer parameter: %s (accept"
+				lwerror("Invalid buffer parameter: %s (accept: "
 				        "'endcap', 'join', 'mitre_limit' and "
 				        "'quad_segs')", key);
 				break;
