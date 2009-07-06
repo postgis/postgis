@@ -42,9 +42,7 @@ When describing a function,  the description should be right above the function 
 This is so the function description can be picked up by the doxygen autodocumentor.  For example
 
 /**
-** funny_function()
-**
-** Does something funny
+* Does something funny
 */
 double funny_function(POINT2D *p1, POINT2D *p2, POINT2D *q){
 	funny stuff here;
