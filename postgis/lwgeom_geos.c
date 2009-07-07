@@ -911,7 +911,8 @@ Datum buffer(PG_FUNCTION_ARGS)
 				{
 					endCapStyle = ENDCAP_ROUND;
 				}
-				else if ( !strcmp(val, "flat") )
+				else if ( !strcmp(val, "flat") ||
+				          !strcmp(val, "butt")    )
 				{
 					endCapStyle = ENDCAP_FLAT;
 				}
@@ -923,7 +924,8 @@ Datum buffer(PG_FUNCTION_ARGS)
 				{
 					lwerror("Invalid buffer end cap "
 					        "style: %s (accept: "
-					        "'round', 'flat' or 'square'"
+					        "'round', 'flat', 'butt' "
+					        "or 'square'"
 					        ")", val);
 					break;
 				}
@@ -935,7 +937,8 @@ Datum buffer(PG_FUNCTION_ARGS)
 				{
 					joinStyle = JOIN_ROUND;
 				}
-				else if ( !strcmp(val, "mitre") )
+				else if ( !strcmp(val, "mitre") ||
+				          !strcmp(val, "miter")    )
 				{
 					joinStyle = JOIN_MITRE;
 				}
@@ -947,12 +950,14 @@ Datum buffer(PG_FUNCTION_ARGS)
 				{
 					lwerror("Invalid buffer end cap "
 					        "style: %s (accept: "
-					        "'round', 'mitre' or 'bevel'"
+					        "'round', 'mitre', 'miter' "
+					        " or 'bevel'"
 					        ")", val);
 					break;
 				}
 			}
-			else if ( !strcmp(key, "mitre_limit") )
+			else if ( !strcmp(key, "mitre_limit") ||
+			          !strcmp(key, "miter_limit")    ) 
 			{
 				/* mitreLimit is a float */
 				mitreLimit = atof(val);
@@ -965,7 +970,8 @@ Datum buffer(PG_FUNCTION_ARGS)
 			else
 			{
 				lwerror("Invalid buffer parameter: %s (accept: "
-				        "'endcap', 'join', 'mitre_limit' and "
+				        "'endcap', 'join', 'mitre_limit', "
+				        "'miter_limit and "
 				        "'quad_segs')", key);
 				break;
 			}
