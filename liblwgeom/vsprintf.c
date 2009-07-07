@@ -36,6 +36,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 int global_total_width;
 #endif
 
+/* Make sure we have a va_copy that will work on all platforms */
+#ifndef va_copy
+# ifdef __va_copy
+#  define va_copy(d, s)         __va_copy((d), (s))
+# else
+#  define va_copy(d, s)         memcpy(&(d), &(s), sizeof(va_list))
+# endif
+#endif
 
 int lw_vasprintf (char **result, const char *format, va_list args);
 int lw_asprintf
@@ -146,8 +154,7 @@ va_list args;
 {
 	va_list temp;
 
-	/* Use va_copy for compatibility with both 32 and 64 bit args */
-	__va_copy(temp, args);
+	va_copy(temp, args);
 
 	return int_vasprintf (result, format, &temp);
 }
