@@ -11727,7 +11727,7 @@ SELECT ST_Buffer(
 						<entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_buffer06.png" />
+								<imagedata fileref="images/st_buffer07.png" />
 							  </imageobject>
 							  <caption><para>join=bevel</para></caption>
 							</mediaobject>
@@ -11743,9 +11743,9 @@ SELECT ST_Buffer(
 						<entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_buffer07.png" />
+								<imagedata fileref="images/st_buffer06.png" />
 							  </imageobject>
-							  <caption><para>join=mitre mitre_limit=5.0 (default)</para></caption>
+							  <caption><para>join=mitre mitre_limit=5.0 (default mitre limit)</para></caption>
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
