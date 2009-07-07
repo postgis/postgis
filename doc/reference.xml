@@ -11598,13 +11598,13 @@ The optional third parameter can either specify number of segments used to appro
 'quad_segs=#' : number of segments used to approximate a quarter circle (defaults to 8).
 </listitem>
 <listitem>
-'endcap=round|flat|square' : endcap style (defaults to "round", needs GEOS-3.2 or higher for a different value). 'butt' is also accepted as a synonim for 'flat'.
+'endcap=round|flat|square' : endcap style (defaults to "round", needs GEOS-3.2 or higher for a different value). 'butt' is also accepted as a synonym for 'flat'.
 </listitem>
 <listitem>
-'join=round|mitre|bevel' : join style (defaults to "round", needs GEOS-3.2 or higher for a different value). 'miter' is also accepted as a synonim for 'mitre'.
+'join=round|mitre|bevel' : join style (defaults to "round", needs GEOS-3.2 or higher for a different value). 'miter' is also accepted as a synonym for 'mitre'.
 </listitem>
 <listitem>
-'mitre_limit=#.#' : mitre ratio limit (only affects mitred join style). 'miter_limit' is also accepted as a synonim for 'mitre_limit'.
+'mitre_limit=#.#' : mitre ratio limit (only affects mitred join style). 'miter_limit' is also accepted as a synonym for 'mitre_limit'.
 </listitem>
 </itemizedlist>
 				</para>
