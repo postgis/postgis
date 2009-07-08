@@ -9886,6 +9886,7 @@ The current implementation supports only vertices as the discrete locations. Thi
 			One important part of this subset is Linestrings that are roughly parallel to each other, and roughly equal in length.  This is a useful metric for line matching.
 			</para>
 		</note>
+		<para>Availability: 1.5 - requires GEOS &gt;= 3.2.0</para>
 
 	  </refsection>
 
