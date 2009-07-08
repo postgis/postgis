@@ -27,7 +27,7 @@ outdir="postgis-$version"
 package="postgis-$version.tar.gz"
 
 if [ -d "$outdir" ]; then
-	echo "Output directory $outdir already exist"
+	echo "Output directory $outdir already exists."
 	exit 1
 fi
 
