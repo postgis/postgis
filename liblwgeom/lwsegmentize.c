@@ -165,13 +165,15 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad)
 	LWDEBUG(2, "lwcircle_segmentize called. ");
 
 	radius = lwcircle_center(p1, p2, p3, &center);
-
-	LWDEBUGF(3, "lwcircle_segmentize, (%.16f, %.16f) radius=%.16f", center->x, center->y, radius);
-
 	if (radius < 0)
 	{
+		/* No center because points are colinear */
+		LWDEBUGF(3, "lwcircle_segmentize, (NULL) radius=%.16f", radius);
+
 		return NULL;
 	}
+
+	LWDEBUGF(3, "lwcircle_segmentize, (%.16f, %.16f) radius=%.16f", center->x, center->y, radius);
 
 	a1 = atan2(p1->y - center->y, p1->x - center->x);
 	a2 = atan2(p2->y - center->y, p2->x - center->x);
@@ -311,14 +313,28 @@ lwcurve_segmentize(LWCIRCSTRING *icurve, uint32 perQuad)
 		getPoint4d_p(icurve->points, i, p3);
 		tmp = lwcircle_segmentize(p1, p2, p3, perQuad);
 
-		LWDEBUGF(3, "lwcurve_segmentize: generated %d points", tmp->npoints);
-
-		for (j = 0; j < tmp->npoints; j++)
+		if (tmp)
 		{
-			getPoint4d_p(tmp, j, p4);
-			dynptarray_addPoint4d(ptarray, p4, 1);
+			LWDEBUGF(3, "lwcurve_segmentize: generated %d points", tmp->npoints);
+
+			for (j = 0; j < tmp->npoints; j++)
+			{
+				getPoint4d_p(tmp, j, p4);
+				dynptarray_addPoint4d(ptarray, p4, 1);
+			}
+			lwfree(tmp);
 		}
-		lwfree(tmp);
+		else
+		{
+			LWDEBUG(3, "lwcurve_segmentize: points are colinear, returning curve points as line");
+
+			for (j = i - 1 ; j <= i ; j++)
+			{
+				getPoint4d_p(icurve->points, j, p4);
+				dynptarray_addPoint4d(ptarray, p4, 1);
+			}
+		}
+
 	}
 	oline = lwline_construct(icurve->SRID, NULL, ptarray_clone(ptarray->pa));
 
