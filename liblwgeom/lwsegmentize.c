@@ -828,33 +828,44 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
 				 * We now need to move ahead one point to 
 				 * determine if it's a potential new curve, 
 				 * since the last_angle value is corrupt.
+				 *
+				 * Note we can only look ahead one point if
+				 * we are not already at the end of our
+				 * set of points.
 				 */
-				i++;
-				getPoint4d_p(points, i-2, &a);
-				getPoint4d_p(points, i-1, &b);
-				getPoint4d_p(points, i, &c);
-
-				dxab = b.x - a.x;
-				dyab = b.y - a.y;
-				dxbc = c.x - b.x;
-				dybc = c.y - b.y;
-
-				theta = atan2(dyab, dxab);
-				last_angle = theta - atan2(dybc, dxbc);
-				last_length = sqrt(dxbc*dxbc+dybc*dybc);
-				length = sqrt(dxab*dxab+dyab*dyab);
-				if ((last_length - length) < EPSILON_SQLMM)
+				if (i < points->npoints - 1)
 				{
-					isline = -1;
-					LWDEBUG(3, "Restarting as unknown.");
+					i++;
+
+					getPoint4d_p(points, i-2, &a);
+					getPoint4d_p(points, i-1, &b);
+					getPoint4d_p(points, i, &c);
+
+					dxab = b.x - a.x;
+					dyab = b.y - a.y;
+					dxbc = c.x - b.x;
+					dybc = c.y - b.y;
+
+					theta = atan2(dyab, dxab);
+					last_angle = theta - atan2(dybc, dxbc);
+					last_length = sqrt(dxbc*dxbc+dybc*dybc);
+					length = sqrt(dxab*dxab+dyab*dyab);
+					if ((last_length - length) < EPSILON_SQLMM)
+					{
+						isline = -1;
+						LWDEBUG(3, "Restarting as unknown.");
+					}
+					else
+					{
+						isline = 1;
+						LWDEBUG(3, "Restarting as line.");
+					}
 				}
 				else
 				{
-					isline = 1;
-					LWDEBUG(3, "Restarting as line.");
+					/* Indicate that we have tracked a CIRCSTRING */
+					isline = 0;
 				}
-
-
 			}
 			/* We didn't know what we were tracking, now we do. */
 			else
