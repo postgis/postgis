@@ -150,7 +150,7 @@ BEGIN
 	SELECT into new_maj substring(new_scripts from 1 for 2);
 
 	IF old_maj != new_maj THEN
-		RAISE EXCEPTION ''Scripts upgrade from version % to version % requires a dump/reload. See postgis manual for instructions'', old_scripts, new_scripts;
+		RAISE EXCEPTION ''Upgrade from version % to version % requires a dump/reload. See PostGIS manual for instructions'', old_scripts, new_scripts;
 	ELSE
 		RETURN ''Scripts versions checked for upgrade: ok'';
 	END IF;
