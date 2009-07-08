@@ -79,7 +79,7 @@ generator: ../../../liblwgeom/liblwgeom.a $(OBJS)
 # Clean target
 clean:
 	@rm -f $(OBJS)
-	@rm -f ../images/${IMAGES}
 	@rm -f generator
 	@rm -f tmp[0-9].png
+
 
