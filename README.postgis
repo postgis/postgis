@@ -94,6 +94,23 @@ BUILD
 To build PostGIS library and utilities, as postgres run:
 
   make
+
+TESTING
+-------
+
+You want to run regress tests before installation.
+To do so, as postgres run:  
+
+	make check
+
+The above will create a test database with postgis extensions,
+run tests and then drop the db.
+
+Final lines of output contain a summary of test results:
+run, succeeded, failed. If you have any failure please
+file a bug report using the online bug tracker:
+http://trac.osgeo.org/postgis/report/3.
+
   
 INSTALLATION
 ------------
@@ -101,21 +118,6 @@ INSTALLATION
 To install PostGIS library and utilities, as postgres run:
 
   make install
-
-
-TESTING
--------
-
-You want to run regress tests after installation.
-To do so, as postgres run.  
-The below will create a test database with postgis extensions, run tests and then drop the db:
-
-	make check
-
-Final lines of output contain a summary of test results:
-run, succeeded, failed. If you have any failure please
-file a bug report using the online bug tracker:
-http://trac.osgeo.org/postgis/report/3 .
 
 
 Installation paths will typically be derived by ``pg_config'':
