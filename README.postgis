@@ -275,7 +275,7 @@ with an SRID.
   SELECT name,AsText(geopoint) FROM geotest;
 
 
-Spatial Indexes:
+--- Spatial Indexes ---
 
 PostgreSQL provides support for GiST spatial indexing. The GiST scheme offers 
 indexing even on large objects, using a system of "lossy" indexing where 
