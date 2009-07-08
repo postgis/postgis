@@ -1,3 +1,74 @@
+2009-07-08 04:58  mcayland
+
+	* liblwgeom/lwsegmentize.c: Fix #112: ST_CurveToLine sometimes
+	  crashes server. While the circle segmentiser detected colinear
+	  circle points, it didn't check for the NULL pointer returned in
+	  this case. Since we are converting to a line, the current
+	  behaviour is to simply append the circle points as standard line
+	  points.
+
+2009-07-08 04:46  mcayland
+
+	* liblwgeom/lwsegmentize.c: Fix #183: ST_LineToCurve gives
+	  getPoint4d_p offset error. This was due to the lookahead in the
+	  curve segmentising code going off the end of the point array.
+
+2009-07-07 10:32  mcayland
+
+	* liblwgeom/vsprintf.c: Fix compile problems on non-GNU systems by
+	  using va_copy as an alias onto the real version. Per report from
+	  Stefano Bonnin.
+
+2009-07-05 21:40  mcayland
+
+	* loader/Makefile.in: Alter loader Makefile to include PGXS so that
+	  we can extract DESTDIR to use for the location for
+	  shp2pgsql/pgsql2shp. Per report from Devrim GÜNDÜZ.
+
+2009-07-03 07:24  robe
+
+	* doc/reference.xml: revise to update st_PointN support for curves
+
+2009-07-02 16:32  pramsey
+
+	* HOWTO_RELEASE, make_dist.sh: Build doc images as part of
+	  distribution build.
+
+2009-07-02 15:59  pramsey
+
+	* HOWTO_RELEASE: more notes on requirements
+
+2009-07-02 08:08  mleslie
+
+	* postgis/lwgeom_ogc.c, regress/sql-mm-circularstring.sql,
+	  regress/sql-mm-circularstring_expected,
+	  regress/sql-mm-compoundcurve.sql,
+	  regress/sql-mm-compoundcurve_expected,
+	  regress/sql-mm-curvepoly.sql, regress/sql-mm-curvepoly_expected:
+	  As a lemma to ticket 212, this fixes the inconsistent handling of
+	  ST_NumPoints with regards to curved polygons and compound curves.
+	  They now behave as they should, returning null.
+
+2009-07-02 00:32  mleslie
+
+	* liblwgeom/lwgparse.c, regress/sql-mm-curvepoly.sql,
+	  regress/sql-mm-curvepoly_expected: Fixed the inappropriate
+	  minpoint checking of circular strings within curvepoly, as
+	  reported in ticket 212, comment... 7ish.
+
+2009-07-01 16:56  pramsey
+
+	* CREDITS: Bring this up to date.
+
+2009-07-01 16:16  pramsey
+
+	* ChangeLog: Updated ChangeLog for 1.4.0rc1
+
+2009-07-01 15:42  pramsey
+
+	* postgis/lwgeom_accum.c, postgis/lwgeom_geos.c: Fix bad memory
+	  access in aggregates on nulls (#210), Mark Cave-Ayland.
+
 2009-07-01 11:54  robe
 
 	* doc/using_postgis_dataman.xml: amend documentation on curved
