@@ -31,7 +31,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "CUnit/Basic.h"
 
 #include "lwalgorithm.h"
 #include "styles.h"
