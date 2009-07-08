@@ -5,6 +5,8 @@ POSTGIS_GEOS_VERSION=@POSTGIS_GEOS_VERSION@
 POSTGIS_PROJ_VERSION=@POSTGIS_PROJ_VERSION@
 PGSQL_BINDIR=@PGSQL_BINDIR@
 
+srcdir=$(shell pwd)
+
 # 
 # Put path from pg_config into front of search path
 #
@@ -77,12 +79,12 @@ endif
 
 all: test 
 
-test check: ../postgis/postgis.so ../loader/pgsql2shp ../loader/shp2pgsql 
-	cp ../postgis/postgis.sql .
+test check: ../postgis/postgis.sql ../loader/pgsql2shp ../loader/shp2pgsql 
+	sed 's,$$libdir/postgis,$(srcdir)/../postgis/libpostgis,g' ../postgis/postgis.sql > postgis.sql
 	@USE_VERSION=$(POSTGIS_PGSQL_VERSION) ./run_test $(TESTS)
 
 
-../postgis/postgis.so:
+../postgis/postgis.sql:
 	$(MAKE) -C ../postgis
 
 ../loader/pgsql2shp ../loader/shp2pgsql:
