@@ -121,8 +121,16 @@ void default_freeor(void *ptr);
 void default_errorreporter(const char *fmt, va_list ap);
 void default_noticereporter(const char *fmt, va_list ap);
 
-
 extern int lw_vasprintf (char **result, const char *format, va_list args);
+extern int lw_asprintf
+#if __STDC__
+(char **result, const char *format, ...);
+#else
+(result, va_alist);
+char **result;
+va_dcl
+#endif
+
 
 /* Debug macros */
 #if POSTGIS_DEBUG_LEVEL > 0

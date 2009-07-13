@@ -174,7 +174,7 @@ pgis_logf(const char *fmt, ... )
 #ifdef PGUI
 	pgui_log_va(fmt, ap);
 #else
-	if (!vasprintf (&msg, fmt, ap))
+	if (!lw_vasprintf (&msg, fmt, ap))
 	{
 		va_end (ap);
 		return;
@@ -755,12 +755,12 @@ LoadData(void)
 		char *copysql;
 		if ( schema )
 		{
-			asprintf(&copysql, "COPY \"%s\".\"%s\" %s FROM stdin",
+			lw_asprintf(&copysql, "COPY \"%s\".\"%s\" %s FROM stdin",
 					 schema, table, col_names);
 		}
 		else
 		{
-			asprintf(&copysql, "COPY \"%s\" %s FROM stdin",
+			lw_asprintf(&copysql, "COPY \"%s\" %s FROM stdin",
 					 table, col_names);
 		}
 		pgis_copy_start(copysql);
@@ -1526,7 +1526,7 @@ DropTable(char *schema, char *table, char *geom)
 	{
 		if (readshape == 1)
 		{
-			asprintf(&sql, "SELECT DropGeometryColumn('%s','%s','%s')",	schema, table, geom);
+			lw_asprintf(&sql, "SELECT DropGeometryColumn('%s','%s','%s')",	schema, table, geom);
 			if ( ! pgis_exec(sql) )
 			{
 				free(sql);
@@ -1534,7 +1534,7 @@ DropTable(char *schema, char *table, char *geom)
 			}
 			free(sql);
 		}
-		asprintf(&sql, "DROP TABLE \"%s\".\"%s\"", schema, table);
+		lw_asprintf(&sql, "DROP TABLE \"%s\".\"%s\"", schema, table);
 		if ( ! pgis_exec(sql) )
 		{
 			free(sql);
@@ -1546,7 +1546,7 @@ DropTable(char *schema, char *table, char *geom)
 	{
 		if (readshape == 1)
 		{
-			asprintf(&sql, "SELECT DropGeometryColumn('','%s','%s')", table, geom);
+			lw_asprintf(&sql, "SELECT DropGeometryColumn('','%s','%s')", table, geom);
 			if  ( ! pgis_exec(sql) )
 			{
 				free(sql);
@@ -1554,7 +1554,7 @@ DropTable(char *schema, char *table, char *geom)
 			}
 			free(sql);
 		}
-		asprintf(&sql, "DROP TABLE \"%s\"", table);
+		lw_asprintf(&sql, "DROP TABLE \"%s\"", table);
 		if ( ! pgis_exec(sql) )
 		{
 			free(sql);
