@@ -72,7 +72,7 @@ shp2pgsql-gui.o: shp2pgsql-gui.c
 $(SHP2PGSQL-GUI): stringbuffer.o shpopen.o dbfopen.o shp2pgsql-core-gui.o shp2pgsql-gui.o $(LIBLWGEOM) 
 	$(CC) $(CFLAGS) $(GTK_LIBS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) -lm $^ -o $@
 
-$(SHP2PGSQL-CLI): stringbuffer.o shpopen.o dbfopen.o shp2pgsql-core.o shp2pgsql-cli.o $(LIBLWGEOM) 
+$(SHP2PGSQL-CLI): stringbuffer.o shpopen.o dbfopen.o getopt.o shp2pgsql-core.o shp2pgsql-cli.o $(LIBLWGEOM) 
 	$(CC) $(CFLAGS) $(ICONV_LDFLAGS) -lm $^ -o $@
 
 install: all

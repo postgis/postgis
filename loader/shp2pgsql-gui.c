@@ -12,8 +12,6 @@
  *
  **********************************************************************/
 
-#define _GNU_SOURCE
-
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -79,7 +77,7 @@ pgui_log_va(const char *fmt, va_list ap)
 {
 	char *msg;
 
-	if (!vasprintf (&msg, fmt, ap)) return;
+	if (!lw_vasprintf (&msg, fmt, ap)) return;
 
 	gtk_text_buffer_insert_at_cursor(textbuffer_log, msg, -1);
 	gtk_text_buffer_insert_at_cursor(textbuffer_log, "\n", -1);
@@ -304,7 +302,7 @@ pgui_read_connection(void)
 		pgui_seterr("Server port must be a number.");
 		return NULL;
 	}
-	if ( ! asprintf(&connection_string, "user=%s password=%s port=%s host=%s dbname=%s", pg_user, pg_pass, pg_port, pg_host, pg_db) )
+	if ( ! lw_asprintf(&connection_string, "user=%s password=%s port=%s host=%s dbname=%s", pg_user, pg_pass, pg_port, pg_host, pg_db) )
 	{
 		return NULL;
 	}

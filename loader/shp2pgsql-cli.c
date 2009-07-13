@@ -61,7 +61,7 @@ pcli_cmdline(int ARGC, char **ARGV)
 		pcli_usage(ARGV[0], 0, stdout);
 	}
 
-	while ((c = getopt(ARGC, ARGV, "kcdapDs:Sg:iW:wIN:n")) != EOF){
+	while ((c = pgis_getopt(ARGC, ARGV, "kcdapDs:Sg:iW:wIN:n")) != EOF){
 		switch (c) {
 			case 'c':
 				if (opt == ' ')
