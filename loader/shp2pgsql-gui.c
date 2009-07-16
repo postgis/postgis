@@ -336,7 +336,7 @@ pgui_read_destination(void)
 		pg_geom = "the_geom";
 	}
 
-	if ( ! asprintf(&dest_string, "%s.%s", pg_schema, pg_table) )
+	if ( ! lw_asprintf(&dest_string, "%s.%s", pg_schema, pg_table) )
 	{
 		return NULL;
 	}
