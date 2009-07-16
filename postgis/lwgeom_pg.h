@@ -83,6 +83,14 @@ extern int pglwgeom_getSRID(PG_LWGEOM *pglwgeom);
 extern Oid getGeometryOID(void);
 
 /* PG-dependant */
+
+/*
+ * Use this macro to extract the char * required
+ * by most functions from an PG_LWGEOM struct.
+ * (which is an PG_LWGEOM w/out int32 size casted to char *)
+ */
+#define SERIALIZED_FORM(x) ((uchar *)VARDATA((x)))
+
 /* BOX is postgresql standard type */
 extern void box_to_box3d_p(BOX *box, BOX3D *out);
 extern void box3d_to_box_p(BOX3D *box, BOX *out);

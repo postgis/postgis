@@ -718,12 +718,6 @@ char is_worth_caching_pglwgeom_bbox(const PG_LWGEOM *);
 char is_worth_caching_serialized_bbox(const uchar *);
 char is_worth_caching_lwgeom_bbox(const LWGEOM *);
 
-/*
- * Use this macro to extract the char * required
- * by most functions from an PG_LWGEOM struct.
- * (which is an PG_LWGEOM w/out int32 size casted to char *)
- */
-#define SERIALIZED_FORM(x) ((uchar *)VARDATA((x)))
 
 /*
  * This function computes the size in bytes
