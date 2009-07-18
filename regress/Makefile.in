@@ -3,14 +3,19 @@ TMPDIR?=/tmp
 POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 POSTGIS_GEOS_VERSION=@POSTGIS_GEOS_VERSION@
 POSTGIS_PROJ_VERSION=@POSTGIS_PROJ_VERSION@
-PGSQL_BINDIR=@PGSQL_BINDIR@
+
+# MingW hack: rather than use PGSQL_BINDIR directly, we change
+# to the directory and then use "pwd" to return the path. This
+# ensures that the returned path is in MSYS format, otherwise
+# colons in drive letters will break PATH.
+PGSQL_BINDIR=$(shell pushd "@PGSQL_BINDIR@" && pwd && popd)
 
 srcdir=$(shell pwd)
 
 # 
 # Put path from pg_config into front of search path
 #
-PATH := $(PGSQL_BINDIR):$(PATH)
+PATH := "$(PGSQL_BINDIR):$(PATH)"
 export PATH
 
 
