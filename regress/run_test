@@ -181,7 +181,8 @@ run_loader_test ()
 
 	show_progress
 
-	if [ `${PSQL} -t -A -c "SELECT count(*) FROM pg_tables WHERE tablename = '${_tblname}'" "${DB}"` -gt 0 ]; then
+	# MingW hack: use tr to strip off any trailing CR/LFs introduce by MingW which confuse expr
+	if [ `${PSQL} -t -A -c "SELECT count(*) FROM pg_tables WHERE tablename = '${_tblname}'" "${DB}" | tr -d '\r\n'` -gt 0 ]; then
 		${PSQL} -c "DROP TABLE ${_tblname}" "${DB}" >> ${TMPDIR}/regress_log 2>&1
 	fi
 
