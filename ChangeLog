@@ -1,3 +1,87 @@
+2009-07-18 20:02  mcayland
+
+	* regress/Makefile.in: Fix for Windows combining stdout/stderr when
+	  executing the $(shell) command.
+
+2009-07-18 18:55  mcayland
+
+	* regress/Makefile.in, regress/run_test: Apply fix to allow
+	  regression tests to run on MingW by fixing PATH and removing
+	  trailing CR/LFs on some outputs.
+
+2009-07-18 18:45  mcayland
+
+	* regress/run_test: Fix regression regex listings so that the newer
+	  "LINE n:" lines and lines containing just a position indicator
+	  (^) introduced in PostgreSQL 8.4 are removed from the regression
+	  output.
+
+2009-07-16 21:32  mcayland
+
+	* liblwgeom/liblwgeom.h, postgis/lwgeom_pg.h: Move SERIALIZED_FORM
+	  to lwgeom_pg.h from liblwgeom.h since it references a
+	  PostgreSQL-only structure. Per report from Nicklas Aven.
+
+2009-07-16 21:24  mcayland
+
+	* loader/shp2pgsql-gui.c: Commit patch for missing lw_asprintf()
+	  from #222.
+
+2009-07-13 17:28  pramsey
+
+	* liblwgeom/liblwgeom.h, loader/Makefile.in,
+	  loader/shp2pgsql-cli.c, loader/shp2pgsql-core.c,
+	  loader/shp2pgsql-core.h, loader/shp2pgsql-gui.c: MinGW fix for
+	  loader (#222), Mark Cave-Ayland
+
+2009-07-13 16:55  pramsey
+
+	* doc/html/image_src, doc/html/images,
+	  doc/html/images/st_centroid01.png,
+	  doc/html/images/st_centroid02.png,
+	  doc/html/images/st_centroid03.png,
+	  doc/html/images/st_centroid04.png,
+	  doc/html/images/st_issimple01.png,
+	  doc/html/images/st_issimple02.png,
+	  doc/html/images/st_issimple03.png,
+	  doc/html/images/st_issimple04.png,
+	  doc/html/images/st_issimple05.png,
+	  doc/html/images/st_issimple06.png,
+	  doc/html/images/st_issimple07.png,
+	  doc/html/images/st_isvalid01.png,
+	  doc/html/images/st_isvalid02.png,
+	  doc/html/images/st_isvalid03.png,
+	  doc/html/images/st_isvalid04.png,
+	  doc/html/images/st_isvalid05.png,
+	  doc/html/images/st_isvalid06.png,
+	  doc/html/images/st_isvalid07.png,
+	  doc/html/images/st_isvalid08.png,
+	  doc/html/images/st_touches01.png,
+	  doc/html/images/st_touches02.png,
+	  doc/html/images/st_touches03.png,
+	  doc/html/images/st_touches04.png,
+	  doc/html/images/st_touches05.png,
+	  doc/html/images/st_touches06.png: remove generated images from
+	  source
+
+2009-07-08 15:22  pramsey
+
+	* doc/html/image_src/Makefile.in: Don't remove images on 'make
+	  clean'
+
+2009-07-08 15:16  pramsey
+
+	* doc/Makefile.in: Include image clean in doc clean
+
+2009-07-08 15:08  pramsey
+
+	* doc/html/image_src/generator.c: Remove unnecessary reference to
+	  CUnit
+
+2009-07-08 15:02  pramsey
+
+	* ChangeLog: Updated ChangeLog
+
 2009-07-08 04:58  mcayland
 
 	* liblwgeom/lwsegmentize.c: Fix #112: ST_CurveToLine sometimes
