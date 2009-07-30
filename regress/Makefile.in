@@ -15,7 +15,7 @@ srcdir=$(shell pwd)
 # 
 # Put path from pg_config into front of search path
 #
-PATH := "$(PGSQL_BINDIR):$(PATH)"
+PATH := $(PGSQL_BINDIR):$(PATH)
 export PATH
 
 
