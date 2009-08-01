@@ -4746,13 +4746,13 @@ GROUP BY gid, field1,field2;
 			  <imagedata fileref="images/check.png" />
 			</imageobject>
 		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
-		  
+
 		  <!-- Optionally mention Circular String Support -->
-	    <para><inlinemediaobject>
-	        <imageobject>
-	          <imagedata fileref="images/check.png" />
-	        </imageobject>
-	      </inlinemediaobject> This method supports Circular Strings and Curves </para>
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This method supports Circular Strings and Curves </para>
 	  </refsection>
 
 
@@ -9877,7 +9877,7 @@ When densifyFrac is specified, this function performs a segment densification be
 
 		<note>
 			<para>
-The current implementation supports only vertices as the discrete locations. This could be extended to allow an arbitrary density of points to be used.	
+The current implementation supports only vertices as the discrete locations. This could be extended to allow an arbitrary density of points to be used.
 			</para>
 		</note>
 		<note>
@@ -9893,18 +9893,18 @@ The current implementation supports only vertices as the discrete locations. Thi
 	  <refsection>
 		<title>Examples</title>
 
-        		<programlisting>postgis=# SELECT st_HausdorffDistance(
-                'LINESTRING (0 0, 2 0)'::geometry,
-                'MULTIPOINT (0 1, 1 0, 2 1)'::geometry);
+				<programlisting>postgis=# SELECT st_HausdorffDistance(
+				'LINESTRING (0 0, 2 0)'::geometry,
+				'MULTIPOINT (0 1, 1 0, 2 1)'::geometry);
  st_hausdorffdistance
  ----------------------
-                     1
+					 1
 (1 row)
 			</programlisting>
 			<programlisting>postgis=# SELECT st_hausdorffdistance('LINESTRING (130 0, 0 0, 0 150)'::geometry, 'LINESTRING (10 10, 10 150, 130 10)'::geometry, 0.5);
  st_hausdorffdistance
  ----------------------
-                    70
+					70
 (1 row)
 			</programlisting>
 
@@ -13246,7 +13246,7 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
 	</refentry>
 </sect1>
 
-  <sect1 id="Linear_Referencing">
+<sect1 id="Linear_Referencing">
 	  <title>Linear Referencing</title>
 		<refentry id="ST_Line_Interpolate_Point">
 		  <refnamediv>
@@ -13311,6 +13311,14 @@ SELECT ST_AsEWKT(ST_Line_Interpolate_Point(the_line, 0.5))
 --------------------
  POINT(3.5 4.5 5.5)
 
+
+--find closest point on a line to a point or other geometry
+ SELECT ST_AsText(ST_Line_Interpolate_Point(foo.the_line, ST_Line_Locate_Point(foo.the_line, ST_GeomFromText('POINT(4 3)'))))
+FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
+   st_astext
+----------------
+ POINT(3 4)
+
 </programlisting>
 		  </refsection>
 
@@ -13318,7 +13326,7 @@ SELECT ST_AsEWKT(ST_Line_Interpolate_Point(the_line, 0.5))
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_Length" />, <xref linkend="ST_Line_Locate_Point" /></para>
+			<para><xref linkend="ST_AsText" />,<xref linkend="ST_AsEWKT" />,<xref linkend="ST_Length" />, <xref linkend="ST_Line_Locate_Point" /></para>
 		  </refsection>
 		</refentry>
 
@@ -13384,6 +13392,14 @@ WHERE ST_DWithin(street_line, house_loc, 0.2);
  POINT(1.01 2.06)  |         10
  POINT(2.02 3.09)  |         15
  POINT(3.03 4.12)  |         20
+
+ --find closest point on a line to a point or other geometry
+ SELECT ST_AsText(ST_Line_Interpolate_Point(foo.the_line, ST_Line_Locate_Point(foo.the_line, ST_GeomFromText('POINT(4 3)'))))
+FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
+   st_astext
+----------------
+ POINT(3 4)
+
 </programlisting>
 		  </refsection>
 
