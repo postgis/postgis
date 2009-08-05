@@ -1512,8 +1512,6 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 	/* deserialize into lwgeoms[0] */
 	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
 	ogeom = lwgeom_as_multi(lwgeom);
-	printf("ogeom %p\n",ogeom);
-	printf("ogeom->type %d\n", ogeom->type);
 
 	result = pglwgeom_serialize(ogeom);
 
