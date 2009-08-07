@@ -841,7 +841,7 @@ check_compoundcurve_minpoints()
 	int i, j; /* Loop counters */
 	int num, mum; /* sub-geom / point count */
 	int count = 0; /* Running count of points */
-	int minpoints = 3;
+	int minpoints = 2;
 
 	LWDEBUG(3, "check_compoundcurve_minpoints");
 	num = tp->uu.nn.num;
