@@ -85,7 +85,7 @@ endif
 all: test 
 
 test check: ../postgis/postgis.sql ../loader/pgsql2shp ../loader/shp2pgsql 
-	sed 's,$$libdir/postgis,$(srcdir)/../postgis/libpostgis,g' ../postgis/postgis.sql > postgis.sql
+	sed 's,$$libdir/postgis,$(srcdir)/../postgis/postgis,g' ../postgis/postgis.sql > postgis.sql
 	@USE_VERSION=$(POSTGIS_PGSQL_VERSION) ./run_test $(TESTS)
 
 
