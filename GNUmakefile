@@ -109,4 +109,7 @@ configure: configure.in
 config.status: configure
 	./configure
 
-.PHONY: utils liblwgeom
+ChangeLog.svn:
+	svn2cl --authors=authors.svn -i -o ChangeLog.svn
+
+.PHONY: utils liblwgeom ChangeLog.svn
