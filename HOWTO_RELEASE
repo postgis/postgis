@@ -21,11 +21,11 @@ to work or rather *HIGHLY RECOMMENDED* to get new functionalities.
 Requirements
 ------------
 
-In order to build a release, you will need to build PostGIS and the 
+In order to build a release, you will need to build PostGIS and the
 documentation -- that means having the required software:
 
 * For PostGIS:
-  - PostgreSQL 
+  - PostgreSQL
   - GEOS
   - Proj4
 * For the docs:
@@ -42,7 +42,7 @@ Release procedure
 3) Edit README.postgis and set release date and version.
 4) Add release notes in doc/release_notes.xml
 5) Commit all your changes
-6) Tag trunk:  
+6) Tag trunk:
    svn copy http://svn.osgeo.org/postgis/trunk http://svn.osgeo.org/postgis/tags/x.x.x
 7) Checkout tag:
    svn checkout http://svn.osgeo.org/postgis/tags/x.x.x
@@ -50,13 +50,13 @@ Release procedure
 9) Commit your version number change to the tag.
 10) Run: sh make_dist.sh x.x.x
 11) Copy tarball to web site and edit downloads page
-12) Announce on e-mail 
-    - postgis-users
-    - postgis-devel
-    - pgsql-announce
-    - osgeo-discuss
+12) Announce on e-mail
+	- postgis-users
+	- postgis-devel
+	- pgsql-announce
+	- osgeo-discuss
 13) Update web sites
-    - PostGIS News
-    - Freshmeat
-    - Wikipedia
-
+	- PostGIS News
+	- Freshmeat
+	- Wikipedia
+14) Change Version.config of stable branch to version plus minor number bumped up one.
