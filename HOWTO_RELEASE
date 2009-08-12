@@ -59,4 +59,4 @@ Release procedure
 	- PostGIS News
 	- Freshmeat
 	- Wikipedia
-14) Change Version.config of stable branch to version plus minor number bumped up one.
+14) Change Version.config of stable branch to bump up micro number.
