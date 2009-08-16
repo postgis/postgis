@@ -142,7 +142,7 @@
 		)
 		</pgis:gset>
 
-		<pgis:gset ID="NULL" GeometryType="GEOMETRY">(SELECT Null As the_geom)
+		<pgis:gset ID="NULL" GeometryType="GEOMETRY">(SELECT CAST(Null As geometry) As the_geom)
 		</pgis:gset>
 
 		<pgis:gset ID='CurvePolySet' GeometryType='CURVEPOLYGON'>(SELECT ST_LineToCurve(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j))  As the_geom
