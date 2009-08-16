@@ -13,7 +13,7 @@
 	<xsl:variable name='fnexclude14'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
 	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable Populate_Geometry_Columns ST_CurveToLine ST_GeoHash ST_LineCrossingDirection ST_LineToCurve ST_IsValidReason ST_ContainsProperly ST_MinimumBoundingCircle</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 or tested separately -->
-	
+
 	<xsl:variable name='var_srid'>3395</xsl:variable>
 	<xsl:variable name='var_position'>1</xsl:variable>
 	<xsl:variable name='var_integer1'>3</xsl:variable>
@@ -36,7 +36,7 @@
 		<pgis:gset ID='LineSet' GeometryType='LINESTRING'>(SELECT ST_MakeLine(ST_SetSRID(ST_Point(i,j),4326),ST_SetSRID(ST_Point(j,i),4326))  As the_geom
 		FROM generate_series(-10,50,10) As i
 			CROSS JOIN generate_series(40,70, 15) As j
-			WHERE NOT(i = j) 
+			WHERE NOT(i = j)
 			ORDER BY i, i*j)</pgis:gset>
 		<pgis:gset ID='PolySet' GeometryType='POLYGON'>(SELECT ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j)  As the_geom
 		FROM generate_series(-10,50,10) As i
@@ -45,13 +45,13 @@
 		<pgis:gset ID='PointMSet' GeometryType='POINTM'>(SELECT ST_SetSRID(ST_MakePointM(i,j,m),4326) As the_geom
 		FROM generate_series(-10,50,10) As i
 			CROSS JOIN generate_series(50,70, 20) AS j
-			CROSS JOIN generate_series(1,2) As m 
+			CROSS JOIN generate_series(1,2) As m
 			ORDER BY i, j, i*j*m)</pgis:gset>
 		<pgis:gset ID='LineMSet' GeometryType='LINESTRINGM'>(SELECT ST_MakeLine(ST_SetSRID(ST_MakePointM(i,j,m),4326),ST_SetSRID(ST_MakePointM(j,i,m),4326))  As the_geom
 		FROM generate_series(-10,50,10) As i
 			CROSS JOIN generate_series(50,70, 20) As j
 			CROSS JOIN generate_series(1,2) As m
-			WHERE NOT(i = j) 
+			WHERE NOT(i = j)
 			ORDER BY i, j, m, i*j*m)</pgis:gset>
 		<pgis:gset ID='PolygonMSet' GeometryType='POLYGONM'>(SELECT ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_SetSRID(ST_MakePointM(i+m,j,m),4326),ST_SetSRID(ST_MakePointM(j+m,i-m,m),4326)),ST_SetSRID(ST_MakePointM(i,j,m),4326)),ST_SetSRID(ST_MakePointM(i+m,j,m),4326)))  As the_geom
 		FROM generate_series(-10,50,20) As i
@@ -137,7 +137,15 @@
 			CROSS JOIN generate_series(1,2) As m
 			)</pgis:gset>
 
-	
+		<!--This are special case geometries -->
+		<pgis:gset ID="Empty" GeometryType="GEOMETRY">(SELECT ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326) As the_geom
+			UNION ALL SELECT ST_GeomFromText('POLYGON EMPTY',4326) As the_geom
+		)
+		</pgis:gset>
+
+		<pgis:gset ID="NULL" GeometryType="GEOMETRY">(SELECT CAST(Null As geometry) As the_geom)
+
+
 	<!-- TODO: Finish off MULTI list -->
 	</pgis:gardens>
 	<!--This is just a placeholder to hold geometries that will crash server when hitting against some functions
