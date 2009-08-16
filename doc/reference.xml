@@ -9837,7 +9837,8 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 	  <refnamediv>
 		<refname>ST_HausdorffDistance</refname>
 
-		<refpurpose>Returns the Hausdorff distance between two geometries.</refpurpose>
+		<refpurpose>Returns the Hausdorff distance between two geometries.  Basically a measure of how similar or dissimilar 2 geometries are. Units are in the units of the spatial
+		reference system of the geometries.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -9870,7 +9871,8 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 		<title>Description</title>
 
 		<para>Implements algorithm for computing a distance metric which can be thought of as the "Discrete Hausdorff Distance".
-This is the Hausdorff distance restricted to discrete points for one of the geometries.</para>
+This is the Hausdorff distance restricted to discrete points for one of the geometries. <ulink url="http://en.wikipedia.org/wiki/Hausdorff_distance">Wikipedia article on Hausdorff distance</ulink>
+	<ulink url="http://lin-ear-th-inking.blogspot.com/2009/01/computing-geometric-similarity.html">Martin Davis note on how Hausdorff Distance calculation was used to prove correctness of the CascadePolygonUnion approach.</ulink></para>
 		<para>
 When densifyFrac is specified, this function performs a segment densification before computing the discrete hausdorff distance. The densifyFrac parameter sets the fraction by which to densify each segment. Each segment will be split into a number of equal-length subsegments, whose fraction of the total length is closest to the given fraction.
 		</para>
@@ -11551,7 +11553,7 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
 				<refpurpose>Returns a geometry that represents all points whose distance
 			from this Geometry is less than or equal to distance. Calculations
 			are in the Spatial Reference System of this Geometry. Introduced in 1.5 support for
-			different end cap and mitre settings to control shape.
+			different end cap and mitre settings to control shape. buffer_style options: quad_segs=#,endcap=round|flat|square,join=round|mitre|bevel,mitre_limit=#.#
 			</refpurpose>
 			</refnamediv>
 
