@@ -171,7 +171,7 @@
 	
 				<!-- For each section if there is note about availability in this version -->
 							<xsl:for-each select="refsection">
-								<xsl:for-each select="para">
+								<xsl:for-each select="para|note">
 									<xsl:choose>
 										<xsl:when test="contains(.,'Availability: 1.4')">
 											<listitem><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /> <xsl:text> </xsl:text><xsl:value-of select="." /></listitem>
