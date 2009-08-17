@@ -461,7 +461,8 @@ assvg_collection_size(LWGEOM_INSPECTED *insp, bool relative, int precision)
 		size += assvg_inspected_size(subinsp, relative, precision);
 		lwinspected_release(subinsp);
 	}
-	size += sizeof(";") * --i;
+	if ( size )
+		size += sizeof(";") * --i;
 
 	return size;
 }
