@@ -7653,8 +7653,8 @@ st_asgeojson
 			geometries are delimited by semicolons (";").</para>
 
 		<note>
-		  <para>Availability: 1.2.2.  Availability: 1.4.0  Changed in PostGIS 1.4.0 to include L command in absolute path to conform to <ulink
-			url="http://www.w3.org/TR/SVG/paths.html#PathDataBNF">http://www.w3.org/TR/SVG/paths.html#PathDataBNF</ulink> </para>
+		  <para>Availability: 1.4.0  Changed in PostGIS 1.4.0 to include L command in absolute path to conform to <ulink
+			url="http://www.w3.org/TR/SVG/paths.html#PathDataBNF">http://www.w3.org/TR/SVG/paths.html#PathDataBNF</ulink>. Availability: 1.2.2 was introduced.</para>
 		</note>
 	  </refsection>
 
