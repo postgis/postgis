@@ -449,7 +449,7 @@ assvg_multipolygon(LWGEOM_INSPECTED *poly, bool relative, int precision)
 static size_t
 assvg_collection_size(LWGEOM_INSPECTED *insp, bool relative, int precision)
 {
-	int i;
+	int i = 0;
 	size_t size=0;
 	LWGEOM_INSPECTED *subinsp;
 	uchar *subgeom;
@@ -462,7 +462,7 @@ assvg_collection_size(LWGEOM_INSPECTED *insp, bool relative, int precision)
 		lwinspected_release(subinsp);
 	}
 	
-	if ( i ) /* We have some geometries, so we need extra space for delimiters. */
+	if ( i ) /* We have some geometries, so add space for delimiters. */
 		size += sizeof(";") * --i;
 
 	return size;
