@@ -639,7 +639,7 @@ the_geom IS NULL)
 		<programlisting>SELECT PostGIS_Scripts_Installed();
   postgis_scripts_installed
 -------------------------
- 1.3.4SVN
+ 1.5.0SVN
 (1 row)</programlisting>
 	  </refsection>
 
@@ -654,7 +654,7 @@ the_geom IS NULL)
 	  <refnamediv>
 		<refname>PostGIS_Scripts_Released</refname>
 
-		<refpurpose>Returns the version number of the lwpostgis.sql script
+		<refpurpose>Returns the version number of the postgis.sql script
 		released with the installed postgis lib.</refpurpose>
 	  </refnamediv>
 
@@ -671,7 +671,7 @@ the_geom IS NULL)
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the version number of the lwpostgis.sql script
+		<para>Returns the version number of the postgis.sql script
 		released with the installed postgis lib.</para>
 
 		<note>
