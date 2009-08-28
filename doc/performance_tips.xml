@@ -13,7 +13,7 @@
       "extension room" used to store large (in the sense of data size) values
       that do not fit into normal data pages (like long texts, images or
       complex geometries with lots of vertices), see
-      http://www.postgresql.org/docs/8.0/static/storage-toast.html for more
+      http://www.postgresql.org/docs/current/interactive/storage-toast.html for more
       information).</para>
 
       <para>The problem appears if you happen to have a table with rather
@@ -136,5 +136,154 @@ VACUUM FULL ANALYZE mytable;</programlisting>
     dimension geometries, restricting the UPDATE by "WHERE
     dimension(the_geom)&gt;2" skips re-writing of geometries that already are
     in 2D.</para>
+
   </sect1>
-</chapter>
+
+  <sect1>
+    <title>Tuning your configuration</title>
+
+    <para>These tips are taken from Kevin Neufeld's presentation "Tips for the
+    PostGIS Power User" at the FOSS4G 2007 conference.  Depending on your
+    use of PostGIS (for example, static data and complex analysis vs frequently
+    updated data and lots of users) these changes can provide significant
+    speedups to your queries.</para>
+    
+    <para>For a more tips (and better formatting), the original presentation 
+        is at
+        <ulink url="http://2007.foss4g.org/presentations/view.php?abstract_id=117">
+        http://2007.foss4g.org/presentations/view.php?abstract_id=117</ulink>.
+    </para>
+
+      <sect2>
+        <title>Startup</title>
+        
+        <para>
+          These settings are configured in postgresql.conf:
+        </para>
+        
+        <para>
+          <ulink url="http://www.postgresql.org/docs/current/interactive/runtime-config-wal.html#GUC-CHECKPOINT-SEGMENTS">checkpoint_segment_size</ulink> 
+		  (this setting is obsolete in newer versions of PostgreSQL) got replaced with 
+		  many configurations with names starting with checkpoint and WAL.
+        </para>
+        
+        <itemizedlist>
+          <listitem>
+            <para>
+              # of WAL files = 16MB each; default is 3
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              Set to at least 10 or 30 for databases with heavy write activity, or 
+              more for large database loads. Another article on the topic worth reading  <ulink url="http://www.westnet.com/~gsmith/content/postgresql/chkp-bgw-83.htm">Greg Smith: Checkpoint and Background writer</ulink>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              Possibly store the xlog on a separate disk device
+            </para>
+          </listitem>
+        </itemizedlist>
+        
+        <para>
+           <ulink url="http://www.postgresql.org/docs/current/interactive/runtime-config-query.html#GUC-CONSTRAINT-EXCLUSION">constraint_exclusion</ulink>
+        </para>
+        
+        <itemizedlist>
+          <listitem>
+            <para>
+              Default: off (prior to PostgreSQL 8.4 and for PostgreSQL 8.4+ is set to partition)
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              This is generally used for table partitioning.  If you are running PostgreSQL versions below 8.4, set to "on" to ensure the query planner will optimize as desired.
+			  As of PostgreSQL 8.4, the default for this is set to "partition" which is ideal for PostgreSQL 8.4 and above since
+			  it will force the planner to only analyze tables for constraint consideration if they are in an inherited hierarchy
+			  and not pay the planner penalty otherwise. 
+            </para>
+          </listitem>
+        </itemizedlist>
+        
+        <para>
+           <ulink url="http://www.postgresql.org/docs/current/interactive/runtime-config-resource.html">shared_buffers</ulink>
+        </para>
+        
+        <itemizedlist>
+          <listitem>
+            <para>
+              Default: ~32MB
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              Set to about 1/3 to 3/4 of available RAM
+            </para>
+          </listitem>
+        </itemizedlist>        
+      </sect2>
+      
+      <sect2>
+        <title>Runtime</title>
+        
+        <para>
+          <ulink url="http://www.postgresql.org/docs/current/interactive/runtime-config-resource.html#GUC-WORK-MEM">work_mem</ulink> (the memory used for sort operations and complex queries)
+        </para>
+        
+        <itemizedlist>
+          <listitem>
+            <para>
+              Default: 1MB
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              Adjust up for large dbs, complex queries, lots of RAM
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              Adjust down for many concurrent users or low RAM.  
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+                If you have lots of RAM and few developers:
+                <programlisting>
+                    SET work_mem TO 1200000;
+                </programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+        
+        <para>
+          <ulink url="http://www.postgresql.org/docs/current/interactive/runtime-config-resource.html#GUC-MAINTENANCE-WORK-MEM">maintenance_work_mem</ulink> (used for VACUUM, CREATE INDEX, etc.)
+        </para>
+        
+        <itemizedlist>
+          <listitem>
+            <para>
+              Default: 16MB
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              Generally too low - ties up I/O, locks objects while swapping memory
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              Recommend 32MB to 256MB on production servers w/lots of RAM, but depends
+              on the # of concurrent users.  If you have lots of RAM and few developers:
+                <programlisting>
+                    SET maintainence_work_mem TO 1200000;
+                </programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+       
+      </sect2>
+      
+  </sect1>
+</chapter>    
