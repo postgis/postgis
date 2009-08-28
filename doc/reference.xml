@@ -11867,23 +11867,50 @@ MULTIPOLYGON(((-1 2,3 4,5 6,-1 2)),((-1 2,2 3,5 6,-1 2))) | POLYGON((-1 2,5 6,3 
 
 		  <refsection>
 			<title>Examples</title>
-
-			<programlisting>--This will create a donut
+			<informaltable>
+				  <tgroup cols="2">
+					<tbody>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_buildarea01.png" />
+							  </imageobject>
+							  <caption><para>This will create a donut</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
 SELECT ST_BuildArea(ST_Collect(smallc,bigc))
-FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
-	ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo
+FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(100 90)'), 25) As smallc,
+	ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As bigc) As foo;
+				</programlisting>
+						  </para></entry>
 
---This will create a gaping hole
---inside the circle with prongs sticking out
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_buildarea02.png" />
+							  </imageobject>
+							  <caption><para>This will create a gaping hole inside the circle with prongs sticking out</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
 SELECT ST_BuildArea(ST_Collect(line,circle))
-FROM (SELECT ST_Buffer(ST_MakeLine(ST_MakePoint(21, 22),ST_MakePoint(-19, -18)),1)  As line,
-	ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As circle) As foo;
-
+FROM (SELECT ST_Buffer(ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)),1)  As line,
+	ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
+	
 --this creates the same gaping hole
 --but using linestrings instead of polygons
-SELECT ST_AsBinary(ST_BuildArea(ST_Collect(ST_ExteriorRing(line),ST_ExteriorRing(circle))))
-FROM (SELECT ST_Buffer(ST_MakeLine(ST_MakePoint(21, 22),ST_MakePoint(-19, -18)),1)  As line,
-	ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As circle) As foo</programlisting>
+SELECT ST_BuildArea(ST_Collect(ST_ExteriorRing(line),ST_ExteriorRing(circle)))
+FROM (SELECT ST_Buffer(ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)),1)  As line,
+	ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
+
+				</programlisting>
+						</para></entry>
+					  </row>
+					</tbody>
+				  </tgroup>
+			</informaltable>
 		  </refsection>
 
 		  <refsection>
