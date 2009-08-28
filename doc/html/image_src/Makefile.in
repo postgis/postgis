@@ -19,6 +19,8 @@ CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I../../../liblwgeom
 IMAGES= \
 	../images/st_buffer01.png \
 	../images/st_buffer02.png \
+	../images/st_buildarea01.png \
+	../images/st_buildarea02.png \
 	../images/st_centroid01.png \
 	../images/st_centroid02.png \
 	../images/st_centroid03.png \
