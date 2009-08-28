@@ -128,33 +128,6 @@
 
 		<sect1 id="NewFunctions">
 			<title>New PostGIS Functions</title>
-			<sect2 id="NewFunctions_1_5">
-				<title>PostGIS Functions new in 1.5</title>
-				<para>The functions given below are PostGIS functions that were introduced or enhanced in this major release.</para>
-				<itemizedlist>
-				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-					<xsl:for-each select='sect1/refentry'>
-						<xsl:sort select="@id"/>
-						<xsl:variable name='comment'>
-							<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
-						</xsl:variable>
-						<xsl:variable name="refid">
-							<xsl:value-of select="@id" />
-						</xsl:variable>
-	
-				<!-- For each section if there is note about availability in this version -->
-							<xsl:for-each select="refsection">
-								<xsl:for-each select="para">
-									<xsl:choose>
-										<xsl:when test="contains(.,'Availability: 1.5')">
-											<listitem><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /> <xsl:text> </xsl:text><xsl:value-of select="." /></listitem>
-										</xsl:when>
-									</xsl:choose>
-								</xsl:for-each>
-							</xsl:for-each>
-					</xsl:for-each>
-				</itemizedlist>
-			</sect2>
 			<sect2 id="NewFunctions_1_4">
 				<title>PostGIS Functions new in 1.4</title>
 				<para>The functions given below are PostGIS functions that were introduced or enhanced in the 1.4 release.</para>
