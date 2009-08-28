@@ -47,4 +47,9 @@ To generate the developer's documentation:
   doxygen                   (http://www.stack.nl/~dimitri/doxygen)
 
 
+====================================================
+How To
+====================================================
 
+To generate images used in the documentation, follow these instructions on the PostGIS wiki:
+	http://trac.osgeo.org/postgis/wiki/DevWikiDocNewFeature
