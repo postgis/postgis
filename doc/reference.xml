@@ -12122,19 +12122,40 @@ MULTILINESTRING((1 2,3 4),(3 4,4 5))
 
 	  <refsection>
 		<title>Examples</title>
-<programlisting>SELECT d.disease_type,
+<programlisting>
+--Get estimate of infected area based on point observations
+SELECT d.disease_type,
 	ST_ConvexHull(ST_Collect(d.the_geom)) As the_geom
 	FROM disease_obs As d
 	GROUP BY d.disease_type;
+</programlisting>
 
-	SELECT ST_AsEWKT(ST_ConvexHull(
+<informaltable>
+	<tgroup cols="1">
+	  <tbody>
+		<row>
+		  <entry><para><informalfigure>
+			  <mediaobject>
+				<imageobject>
+				  <imagedata fileref="images/st_convexhull01.png" />
+				</imageobject>
+				<caption><para>Convex Hull of a Linestring and a Point</para></caption>
+			  </mediaobject>
+			</informalfigure>
+				<programlisting>
+SELECT ST_AsText(ST_ConvexHull(
 		ST_Collect(
-			ST_GeomFromEWKT('LINESTRING(1 2 3,3 4 5)'),
-				ST_MakePoint(0, 2, 0))
+			ST_GeomFromText('LINESTRING(100 190,10 8)'),
+				ST_MakePoint(3, 4))
 				));
-	---st_asewkt--
-	POLYGON((0 2 0,3 4 5,1 2 3,0 2 0))
+	---st_astext--
+POLYGON((3 4,100 190,10 8,3 4))
 				</programlisting>
+	</para></entry>
+		</row>
+	</tbody>
+</tgroup>
+</informaltable>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
