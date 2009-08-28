@@ -11868,7 +11868,7 @@ MULTIPOLYGON(((-1 2,3 4,5 6,-1 2)),((-1 2,2 3,5 6,-1 2))) | POLYGON((-1 2,5 6,3 
 		  <refsection>
 			<title>Examples</title>
 			<informaltable>
-				  <tgroup cols="2">
+				  <tgroup cols="1">
 					<tbody>
 					  <row>
 						<entry><para><informalfigure>
@@ -11887,7 +11887,8 @@ FROM (SELECT
     ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As bigc) As foo;
 				</programlisting>
 						  </para></entry>
-
+					</row>
+					<row>
 						<entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
@@ -11901,7 +11902,7 @@ SELECT ST_BuildArea(ST_Collect(line,circle))
 FROM (SELECT 
 	ST_Buffer(
 		ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)),
-				1)  As line,
+				5)  As line,
 	ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
 	
 --this creates the same gaping hole
@@ -11911,7 +11912,7 @@ SELECT ST_BuildArea(
 	)
 FROM (SELECT ST_Buffer(
 	ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190))
-		,1)  As line,
+		,5)  As line,
 	ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
 
 				</programlisting>
