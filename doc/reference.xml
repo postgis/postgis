@@ -12146,10 +12146,10 @@ SELECT d.disease_type,
 SELECT ST_AsText(ST_ConvexHull(
 		ST_Collect(
 			ST_GeomFromText('LINESTRING(100 190,10 8)'),
-				ST_MakePoint(3, 4))
+				ST_MakePoint(50, 3))
 				));
 	---st_astext--
-POLYGON((3 4,100 190,10 8,3 4))
+POLYGON((50 3,10 8,100 190,50 3))
 				</programlisting>
 	</para></entry>
 		</row>
