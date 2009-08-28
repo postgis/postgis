@@ -11881,8 +11881,10 @@ MULTIPOLYGON(((-1 2,3 4,5 6,-1 2)),((-1 2,2 3,5 6,-1 2))) | POLYGON((-1 2,5 6,3 
 						  </informalfigure>
 				<programlisting>
 SELECT ST_BuildArea(ST_Collect(smallc,bigc))
-FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(100 90)'), 25) As smallc,
-	ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As bigc) As foo;
+FROM (SELECT 
+	ST_Buffer(
+	  ST_GeomFromText('POINT(100 90)'), 25) As smallc,
+    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As bigc) As foo;
 				</programlisting>
 						  </para></entry>
 
@@ -11896,13 +11898,20 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(100 90)'), 25) As smallc,
 						  </informalfigure>
 				<programlisting>
 SELECT ST_BuildArea(ST_Collect(line,circle))
-FROM (SELECT ST_Buffer(ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)),1)  As line,
+FROM (SELECT 
+	ST_Buffer(
+		ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)),
+				1)  As line,
 	ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
 	
 --this creates the same gaping hole
 --but using linestrings instead of polygons
-SELECT ST_BuildArea(ST_Collect(ST_ExteriorRing(line),ST_ExteriorRing(circle)))
-FROM (SELECT ST_Buffer(ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)),1)  As line,
+SELECT ST_BuildArea(
+	ST_Collect(ST_ExteriorRing(line),ST_ExteriorRing(circle))
+	)
+FROM (SELECT ST_Buffer(
+	ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190))
+		,1)  As line,
 	ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
 
 				</programlisting>
