@@ -12130,32 +12130,25 @@ SELECT d.disease_type,
 	GROUP BY d.disease_type;
 </programlisting>
 
-<informaltable>
-	<tgroup cols="1">
-	  <tbody>
-		<row>
-		  <entry><para><informalfigure>
-			  <mediaobject>
-				<imageobject>
-				  <imagedata fileref="images/st_convexhull01.png" />
-				</imageobject>
-				<caption><para>Convex Hull of a MultiLinestring and a MultiPoint</para></caption>
-			  </mediaobject>
-			</informalfigure>
-				<programlisting>
+<para>
+	<informalfigure>
+	  <mediaobject>
+		<imageobject>
+		  <imagedata fileref="images/st_convexhull01.png" />
+		</imageobject>
+		<caption><para>Convex Hull of a MultiLinestring and a MultiPoint</para></caption>
+	  </mediaobject>
+	</informalfigure>
+	<programlisting>
 SELECT ST_AsText(ST_ConvexHull(
-		ST_Collect(
-			ST_GeomFromText('MULTILINESTRING((100 190,10 8),(150 10, 20 30))'),
-				ST_GeomFromText('MULTIPOINT(50 5, 150 30, 50 10, 10 10)')
-				)) );
-	---st_astext--
+	ST_Collect(
+		ST_GeomFromText('MULTILINESTRING((100 190,10 8),(150 10, 20 30))'),
+			ST_GeomFromText('MULTIPOINT(50 5, 150 30, 50 10, 10 10)')
+			)) );
+---st_astext--
 POLYGON((50 5,10 8,10 10,100 190,150 30,150 10,50 5))
-				</programlisting>
-	</para></entry>
-		</row>
-	</tbody>
-</tgroup>
-</informaltable>
+	</programlisting>
+</para>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
