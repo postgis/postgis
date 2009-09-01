@@ -12139,17 +12139,17 @@ SELECT d.disease_type,
 				<imageobject>
 				  <imagedata fileref="images/st_convexhull01.png" />
 				</imageobject>
-				<caption><para>Convex Hull of a Linestring and a Point</para></caption>
+				<caption><para>Convex Hull of a MultiLinestring and a MultiPoint</para></caption>
 			  </mediaobject>
 			</informalfigure>
 				<programlisting>
 SELECT ST_AsText(ST_ConvexHull(
 		ST_Collect(
-			ST_GeomFromText('LINESTRING(100 190,10 8)'),
-				ST_MakePoint(50, 5))
-				));
+			ST_GeomFromText('MULTILINESTRING((100 190,10 8),(150 10, 20 30))'),
+				ST_GeomFromText('MULTIPOINT(50 5, 150 30, 50 10, 10 10)')
+				)) );
 	---st_astext--
-POLYGON((50 5,10 8,100 190,50 5))
+POLYGON((50 5,10 8,10 10,100 190,150 30,150 10,50 5))
 				</programlisting>
 	</para></entry>
 		</row>
