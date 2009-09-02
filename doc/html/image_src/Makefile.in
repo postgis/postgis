@@ -31,6 +31,7 @@ IMAGES= \
 	../images/st_contains04.png \
 	../images/st_contains05.png \
 	../images/st_contains06.png \
+	../images/st_convexhull01.png \
 	../images/st_crosses01.png \
 	../images/st_crosses02.png \
 	../images/st_crosses03.png \
