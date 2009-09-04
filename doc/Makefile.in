@@ -84,7 +84,7 @@ html/postgis.html: postgis-out.xml
 		$<
 
 
-postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf: postgis-out.xml
+postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf: images postgis-out.xml
 	@if test x"$(DBLATEX)" = x; then \
 	   echo "Error: dblatex not found, can't build pdf"; \
 	   echo "       try installing dblatex and then re-run configure"; \
