@@ -70,21 +70,21 @@ postgis_comments.sql: ./xsl/postgis_comments.sql.xsl reference.xml
 postgis-out.xml: postgis.xml introduction.xml installation.xml faq.xml using_postgis_dataman.xml  using_postgis_app.xml performance_tips.xml reference.xml postgis_aggs_mm.xml reporting.xml release_notes.xml ../Version.config
 	cat $< | sed "s/@@LAST_RELEASE_VERSION@@/${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}/g" > $@
 
-chunked-html: postgis-out.xml
+chunked-html: postgis-out.xml images
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) $(XSLTPROC_HTMLOPTS) \
 		--output html/ \
 		--stringparam saxon.character.representation decimal \
 		$(CHUNK_HTML_DOCBOOK_XSL) \
 		$<
 
-html/postgis.html: postgis-out.xml
+html/postgis.html: postgis-out.xml images
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) $(XSLTPROC_HTMLOPTS) \
 		--output html/postgis.html \
 		$(HTML_DOCBOOK_XSL) \
 		$<
 
 
-postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf: images postgis-out.xml
+postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf: postgis-out.xml images
 	@if test x"$(DBLATEX)" = x; then \
 	   echo "Error: dblatex not found, can't build pdf"; \
 	   echo "       try installing dblatex and then re-run configure"; \
