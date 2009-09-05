@@ -36,6 +36,7 @@ IMAGES= \
 	../images/st_crosses02.png \
 	../images/st_crosses03.png \
 	../images/st_crosses04.png \
+	../images/st_difference01.png \
 	../images/st_issimple01.png \
 	../images/st_issimple02.png \
 	../images/st_issimple03.png \
@@ -51,6 +52,8 @@ IMAGES= \
 	../images/st_isvalid06.png \
 	../images/st_isvalid07.png \
 	../images/st_isvalid08.png \
+	../images/st_symdifference01.png \
+	../images/st_symdifference02.png \
 	../images/st_touches01.png \
 	../images/st_touches02.png \
 	../images/st_touches03.png \
@@ -58,7 +61,7 @@ IMAGES= \
 	../images/st_touches05.png \
 	../images/st_touches06.png \
 	../images/st_within01.png
-	
+
 OBJS=styles.o generator.o
 
 # Build the generator
@@ -70,7 +73,7 @@ images: $(IMAGES)
 # Command to build each of the .o files
 $(OBJS): %.o: %.c
 	$(CC) $(CFLAGS) $(CUNIT_CPPFLAGS) -c -o $@ $<
-	
+
 # Command to build each of the .wkt files
 $(IMAGES): ../images/%.png: %.wkt generator styles.conf
 	@./generator $<

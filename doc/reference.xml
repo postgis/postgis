@@ -11663,10 +11663,10 @@ MULTIPOLYGON(((-1 2,3 4,5 6,-1 2)),((-1 2,2 3,5 6,-1 2))) | POLYGON((-1 2,5 6,3 
 						  </informalfigure>
 				<programlisting>
 SELECT ST_BuildArea(ST_Collect(smallc,bigc))
-FROM (SELECT 
+FROM (SELECT
 	ST_Buffer(
 	  ST_GeomFromText('POINT(100 90)'), 25) As smallc,
-    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As bigc) As foo;
+	ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As bigc) As foo;
 				</programlisting>
 						  </para></entry>
 					</row>
@@ -11681,12 +11681,12 @@ FROM (SELECT
 						  </informalfigure>
 				<programlisting>
 SELECT ST_BuildArea(ST_Collect(line,circle))
-FROM (SELECT 
+FROM (SELECT
 	ST_Buffer(
 		ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)),
 				5)  As line,
 	ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
-	
+
 --this creates the same gaping hole
 --but using linestrings instead of polygons
 SELECT ST_BuildArea(
@@ -11918,7 +11918,7 @@ SELECT d.disease_type,
 		<imageobject>
 		  <imagedata fileref="images/st_convexhull01.png" />
 		</imageobject>
-		<caption><para>Convex Hull of a MultiLinestring and a MultiPoint</para></caption>
+		<caption><para>Convex Hull of a MultiLinestring and a MultiPoint seen together with the MultiLinestring and MultiPoint</para></caption>
 	  </mediaobject>
 	</informalfigure>
 	<programlisting>
@@ -12127,14 +12127,53 @@ st_astext
 
 	  <refsection>
 		<title>Examples</title>
+			<informaltable>
+			  <tgroup cols="2">
+				<tbody>
+				  <row>
+					<entry>
+						<para>
+							<informalfigure>
+								<mediaobject>
+								  <imageobject>
+									<imagedata fileref="images/st_symdifference01.png" />
+								  </imageobject>
+								  <caption><para>The original linestrings shown together. </para></caption>
+								</mediaobject>
+							</informalfigure>
+						</para>
+					</entry>
 
-		<programlisting>
---Safe for 2d
-SELECT ST_AsText(ST_Difference(ST_GeomFromText('LINESTRING(1 2, 1 4)'), ST_GeomFromText('LINESTRING(1 2, 1 3)')))
+					<entry>
+						<para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_difference01.png" />
+							  </imageobject>
+							  <caption><para>The difference of the two linestrings</para></caption>
+							</mediaobject>
+						  </informalfigure>
+					</para>
+				</entry>
+				  </row>
+		</tbody>
+	</tgroup>
+</informaltable>
+<programlisting>
+--Safe for 2d. This is same geometries as what is shown for st_symdifference
+SELECT ST_AsText(
+	ST_Difference(
+			ST_GeomFromText('LINESTRING(50 100, 50 200)'),
+			ST_GeomFromText('LINESTRING(50 50, 50 150)')
+		)
+	);
 
 st_astext
 ---------
-LINESTRING(1 3,1 4)
+LINESTRING(50 150,50 200)
+</programlisting>
+
+<programlisting>
 
 --When used in 3d doesn't quite do the right thing
 SELECT ST_AsEWKT(ST_Difference(ST_GeomFromEWKT('MULTIPOINT(-118.58 38.38 5,-118.60 38.329 6,-118.614 38.281 7)'), ST_GeomFromEWKT('POINT(-118.614 38.281 5)')));
@@ -12899,13 +12938,53 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>
---Safe for 2d
-SELECT ST_AsText(ST_SymDifference(ST_GeomFromText('LINESTRING(1 2, 1 4)'), ST_GeomFromText('LINESTRING(1 1, 1 3)')))
+		<informaltable>
+			  <tgroup cols="2">
+				<tbody>
+				  <row>
+					<entry>
+						<para>
+							<informalfigure>
+								<mediaobject>
+								  <imageobject>
+									<imagedata fileref="images/st_symdifference01.png" />
+								  </imageobject>
+								  <caption><para>The original linestrings shown together</para></caption>
+								</mediaobject>
+							</informalfigure>
+						</para>
+					</entry>
+
+					<entry>
+						<para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_symdifference02.png" />
+							  </imageobject>
+							  <caption><para>The symmetric difference of the two linestrings</para></caption>
+							</mediaobject>
+						  </informalfigure>
+					</para>
+				</entry>
+				  </row>
+		</tbody>
+	</tgroup>
+</informaltable>
+<programlisting>
+--Safe for 2d - symmetric difference of 2 linestrings
+SELECT ST_AsText(
+	ST_SymDifference(
+		ST_GeomFromText('LINESTRING(50 100, 50 200)'),
+		ST_GeomFromText('LINESTRING(50 50, 50 150)')
+	)
+);
 
 st_astext
 ---------
-MULTILINESTRING((1 3,1 4),(1 1,1 2))
+MULTILINESTRING((50 150,50 200),(50 50,50 100))
+</programlisting>
+
+<programlisting>
 
 --When used in 3d doesn't quite do the right thing
 SELECT ST_AsEWKT(ST_SymDifference(ST_GeomFromEWKT('LINESTRING(1 2 1, 1 4 2)'),
@@ -12921,7 +13000,7 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Difference" /></para>
+		<para><xref linkend="ST_Difference" />, <xref linkend="ST_Intersection" />, <xref linkend="ST_Union" /></para>
 	  </refsection>
 	</refentry>
 
