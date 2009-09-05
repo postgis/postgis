@@ -12345,14 +12345,53 @@ st_astext
 
 	  <refsection>
 		<title>Examples</title>
+			<informaltable>
+			  <tgroup cols="2">
+				<tbody>
+				  <row>
+					<entry>
+						<para>
+							<informalfigure>
+								<mediaobject>
+								  <imageobject>
+									<imagedata fileref="images/st_symdifference01.png" />
+								  </imageobject>
+								  <caption><para>The original linestrings shown together. </para></caption>
+								</mediaobject>
+							</informalfigure>
+						</para>
+					</entry>
 
-		<programlisting>
---Safe for 2d
-SELECT ST_AsText(ST_Difference(ST_GeomFromText('LINESTRING(1 2, 1 4)'), ST_GeomFromText('LINESTRING(1 2, 1 3)')))
+					<entry>
+						<para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_difference01.png" />
+							  </imageobject>
+							  <caption><para>The difference of the two linestrings</para></caption>
+							</mediaobject>
+						  </informalfigure>
+					</para>
+				</entry>
+				  </row>
+		</tbody>
+	</tgroup>
+</informaltable>
+<programlisting>
+--Safe for 2d. This is same geometries as what is shown for st_symdifference
+SELECT ST_AsText(
+	ST_Difference(
+			ST_GeomFromText('LINESTRING(50 100, 50 200)'),
+			ST_GeomFromText('LINESTRING(50 50, 50 150)')
+		)
+	);
 
 st_astext
 ---------
-LINESTRING(1 3,1 4)
+LINESTRING(50 150,50 200)
+</programlisting>
+
+<programlisting>
 
 --When used in 3d doesn't quite do the right thing
 SELECT ST_AsEWKT(ST_Difference(ST_GeomFromEWKT('MULTIPOINT(-118.58 38.38 5,-118.60 38.329 6,-118.614 38.281 7)'), ST_GeomFromEWKT('POINT(-118.614 38.281 5)')));
@@ -13128,7 +13167,7 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
 								  <imageobject>
 									<imagedata fileref="images/st_symdifference01.png" />
 								  </imageobject>
-								  <caption><para>The original lines shown together</para></caption>
+								  <caption><para>The original linestrings shown together</para></caption>
 								</mediaobject>
 							</informalfigure>
 						</para>
@@ -13140,7 +13179,7 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
 							  <imageobject>
 								<imagedata fileref="images/st_symdifference02.png" />
 							  </imageobject>
-							  <caption><para>The symmetric difference of the two lines</para></caption>
+							  <caption><para>The symmetric difference of the two linestrings</para></caption>
 							</mediaobject>
 						  </informalfigure>
 					</para>
@@ -13179,7 +13218,7 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Difference" /></para>
+		<para><xref linkend="ST_Difference" />, <xref linkend="ST_Intersection" />, <xref linkend="ST_Union" /></para>
 	  </refsection>
 	</refentry>
 
