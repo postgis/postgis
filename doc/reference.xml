@@ -13143,9 +13143,14 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
 							  <caption><para>The symmetric difference of the two lines</para></caption>
 							</mediaobject>
 						  </informalfigure>
-
-			<programlisting>
---Safe for 2d
+					</para>
+				</entry>
+				  </row>
+		</tbody>
+	</tgroup>
+</informaltable>
+<programlisting>
+--Safe for 2d - symmetric difference of 2 linestrings
 SELECT ST_AsText(
 	ST_SymDifference(
 		ST_GeomFromText('LINESTRING(50 100, 50 200)'),
@@ -13156,13 +13161,7 @@ SELECT ST_AsText(
 st_astext
 ---------
 MULTILINESTRING((50 150,50 200),(50 50,50 100))
-			</programlisting>
-					</para>
-				</entry>
-				  </row>
-		</tbody>
-	</tgroup>
-</informaltable>
+</programlisting>
 
 <programlisting>
 
