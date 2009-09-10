@@ -9677,9 +9677,18 @@ WHERE ST_Crosses(roads.the_geom, highways.the_geom);</programlisting>
 	<refsection>
 	  <title>Examples</title>
   <!-- TODO: We really badly need diagrams here and more examples -->
-	  <programlisting>SELECT ST_LineCrossingDirection(foo.line1, foo.line2) As linecrossleft , ST_CrossingDirection(foo.line2, foo.line1) As linecrossright
-FROM (SELECT ST_GeomFromText('LINESTRING(744589 2923929,744521 2923861)') As line1,
-ST_GeomFromText('LINESTRING(744753 2924117,744563 2923902)') As line2) As foo;
+			<informalfigure>
+			  <mediaobject>
+				<imageobject>
+				  <imagedata fileref="images/st_linecrossingdirection01.png" />
+				</imageobject>
+				<caption><para>Line 1 fat line, Line 2 thin line, point is start point,
+					triangle are end points. Query below. </para></caption>
+			  </mediaobject>
+			</informalfigure>
+	  <programlisting>SELECT ST_LineCrossingDirection(foo.line1, foo.line2) As linecrossleft , ST_LineCrossingDirection(foo.line2, foo.line1) As linecrossright
+FROM (SELECT ST_GeomFromText('LINESTRING (49.55 194.88, 49.85 194.24, 50.25 194.31)') As line1,
+ST_GeomFromText('LINESTRING (49.61 193.88, 50.25 194.82)') As line2) As foo;
 
  linecrossleft | linecrossright
 ---------------+----------------
