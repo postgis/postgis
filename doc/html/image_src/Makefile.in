@@ -58,7 +58,7 @@ IMAGES= \
 	../images/st_isvalid06.png \
 	../images/st_isvalid07.png \
 	../images/st_isvalid08.png \
-	../images/st_line_crossingdirection01.png \
+	../images/st_linecrossingdirection01.png \
 	../images/st_line_interpolate_point01.png \
 	../images/st_line_substring01.png \
 	../images/st_minimumboundingcircle01.png \
