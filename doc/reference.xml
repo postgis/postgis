@@ -13428,15 +13428,23 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
 
 		  <refsection>
 			<title>Examples</title>
-
-			<programlisting>--Return point mid-way of 2d line
-SELECT ST_AsEWKT(ST_Line_Interpolate_Point(the_line, 0.5))
-	FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2, 4 5, 6 7)') as the_line) As foo;
+			<informalfigure>
+			  <mediaobject>
+				<imageobject>
+				  <imagedata fileref="images/st_line_interpolate_point01.png" />
+				</imageobject>
+				<caption><para>A linestring with the interpolated point at 20% position (0.20) </para></caption>
+			  </mediaobject>
+			</informalfigure>
+			<programlisting>--Return point 20% along 2d line
+SELECT ST_AsEWKT(ST_Line_Interpolate_Point(the_line, 0.20))
+	FROM (SELECT ST_GeomFromEWKT('LINESTRING(25 50, 100 125, 150 190)') as the_line) As foo;
    st_asewkt
 ----------------
- POINT(3.5 4.5)
+ POINT(51.5974135047432 76.5974135047432)
 
-
+</programlisting>
+<programlisting>
 --Return point mid-way of 3d line
 SELECT ST_AsEWKT(ST_Line_Interpolate_Point(the_line, 0.5))
 	FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 4 5 6, 6 7 8)') as the_line) As foo;
