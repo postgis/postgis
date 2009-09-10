@@ -13164,7 +13164,7 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
 
   <sect1 id="Linear_Referencing">
 	  <title>Linear Referencing</title>
-<refentry id="ST_Line_Interpolate_Point">
+		<refentry id="ST_Line_Interpolate_Point">
 		  <refnamediv>
 			<refname>ST_Line_Interpolate_Point</refname>
 
@@ -13210,15 +13210,23 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
 
 		  <refsection>
 			<title>Examples</title>
-
-			<programlisting>--Return point mid-way of 2d line
-SELECT ST_AsEWKT(ST_Line_Interpolate_Point(the_line, 0.5))
-	FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2, 4 5, 6 7)') as the_line) As foo;
+			<informalfigure>
+			  <mediaobject>
+				<imageobject>
+				  <imagedata fileref="images/st_line_interpolate_point01.png" />
+				</imageobject>
+				<caption><para>A linestring with the interpolated point at 20% position (0.20) </para></caption>
+			  </mediaobject>
+			</informalfigure>
+			<programlisting>--Return point 20% along 2d line
+SELECT ST_AsEWKT(ST_Line_Interpolate_Point(the_line, 0.20))
+	FROM (SELECT ST_GeomFromEWKT('LINESTRING(25 50, 100 125, 150 190)') as the_line) As foo;
    st_asewkt
 ----------------
- POINT(3.5 4.5)
+ POINT(51.5974135047432 76.5974135047432)
 
-
+</programlisting>
+<programlisting>
 --Return point mid-way of 3d line
 SELECT ST_AsEWKT(ST_Line_Interpolate_Point(the_line, 0.5))
 	FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 4 5 6, 6 7 8)') as the_line) As foo;
@@ -13381,14 +13389,21 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 
 		  <refsection>
 			<title>Examples</title>
+			<informalfigure>
+			  <mediaobject>
+				<imageobject>
+				  <imagedata fileref="images/st_line_substring01.png" />
+				</imageobject>
+				<caption><para>A linestring seen with 1/3 midrange overlaid (0.333, 0.666) </para></caption>
+			  </mediaobject>
+			</informalfigure>
 	<programlisting>
 --Return the approximate 1/3 mid-range part of a linestring
-SELECT ST_AsText(ST_Line_SubString(ST_GeomFromText('LINESTRING(748130 2919491,
-	747979 2919630,747895 2919705)'), 0.333, 0.666));
+SELECT ST_AsText(ST_Line_SubString(ST_GeomFromText('LINESTRING(25 50, 100 125, 150 190)'), 0.333, 0.666));
 
 										   st_astext
 ------------------------------------------------------------------------------------------------
- LINESTRING(748052.127524758 2919562.68393416,747979 2919630,747974.189261348 2919634.29530237)
+LINESTRING(69.2846934853974 94.2846934853974,100 125,111.700356260683 140.210463138888)
 
 --The below example simulates a while loop in
 --SQL using PostgreSQL generate_series() to cut all
