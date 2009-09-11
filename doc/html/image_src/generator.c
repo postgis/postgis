@@ -22,8 +22,10 @@
  * The goal of this application is to dynamically generate all the spatial
  * pictures used in PostGIS's documentation pages.
  *
- * Note: the coordinates of the supplied geometries should be within the x-y range
- * of 200, otherwise they will appear outside of the generated image.
+ * Note: the coordinates of the supplied geometries should be within and scaled
+ * to the x-y range of [0,200], otherwise the rendered geometries may be 
+ * rendered outside of the generated image's extents, or may be rendered too
+ * small to be recognizable as anything other than a single point.
  *
  **********************************************************************/
 
@@ -106,6 +108,9 @@ drawPoint(char *output, LWPOINT *lwp, LAYERSTYLE *styles)
 	POINTARRAY *pa = lwp->point;
 	POINT2D p;
 	getPoint2d_p(pa, 0, &p);
+	
+	LWDEBUGF(4, "%s", "drawPoint called");
+	LWDEBUGF( 4, "point = %s", lwgeom_to_ewkt((LWGEOM*)lwp,0) );
 
 	sprintf(x, "%f", p.x);
 	trim_trailing_zeros(x);
@@ -135,6 +140,9 @@ drawLineString(char *output, LWLINE *lwl, LAYERSTYLE *style)
 {
 	char *ptr = output;
 
+	LWDEBUGF(4, "%s", "drawLineString called");
+	LWDEBUGF( 4, "line = %s", lwgeom_to_ewkt((LWGEOM*)lwl,0) );
+	
 	ptr += sprintf(ptr, "-fill none -stroke %s -strokewidth %d ", style->lineColor, style->lineWidth);
 	ptr += sprintf(ptr, "-draw \"stroke-linecap round stroke-linejoin round path 'M ");
 	ptr += pointarrayToString(ptr, lwl->points );
@@ -158,6 +166,9 @@ drawPolygon(char *output, LWPOLY *lwp, LAYERSTYLE *style)
 	char *ptr = output;
 	int i;
 
+	LWDEBUGF(4, "%s", "drawPolygon called");
+	LWDEBUGF( 4, "poly = %s", lwgeom_to_ewkt((LWGEOM*)lwp,0) );
+	
 	ptr += sprintf(ptr, "-fill %s -stroke %s -strokewidth %d ", style->polygonFillColor, style->polygonStrokeColor, style->polygonStrokeWidth );
 	ptr += sprintf(ptr, "-draw \"path '");
 	for (i=0; i<lwp->nrings; i++)
@@ -227,8 +238,8 @@ addDropShadow(int layerNumber)
 	    str,
 	    "convert tmp%d.png -gravity center \\( +clone -background navy -shadow 100x3+4+4 \\) +swap -background none -flatten tmp%d.png",
 	    layerNumber, layerNumber);
-	system(str);
 	LWDEBUGF(4, "%s", str);
+	system(str);
 }
 
 /**
@@ -246,8 +257,8 @@ addHighlight(int layerNumber)
 	    str,
 	    "convert tmp%d.png \\( +clone -channel A -separate +channel -negate -background black -virtual-pixel background -blur 0x3 -shade 120x55 -contrast-stretch 0%% +sigmoidal-contrast 7x50%% -fill grey50 -colorize 10%% +clone +swap -compose overlay -composite \\) -compose In -composite tmp%d.png",
 	    layerNumber, layerNumber);
-	system(str);
 	LWDEBUGF(4, "%s", str);
+	system(str);
 }
 
 /**
@@ -262,8 +273,8 @@ optimizeImage(char* filename)
 	char *str;
 	str = malloc( (18 + (2*strlen(filename)) + 1) * sizeof(char) );
 	sprintf(str, "convert %s -depth 8 %s", filename, filename);
-	system(str);
 	LWDEBUGF(4, "%s", str);
+	system(str);
 	free(str);
 }
 

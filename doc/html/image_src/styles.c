@@ -31,7 +31,7 @@ getStyles( LAYERSTYLE **headRef )
 
 	if ((pFile = fopen("styles.conf", "r")) == NULL)
 	{
-		perror ( "styles.properties: No such file or directory" );
+		perror ( "styles.conf: No such file or directory" );
 		return;
 	}
 
