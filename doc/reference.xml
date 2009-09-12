@@ -9693,9 +9693,10 @@ WHERE ST_Crosses(roads.the_geom, highways.the_geom);</programlisting>
 				  <programlisting>
 SELECT ST_LineCrossingDirection(foo.line1, foo.line2) As l1_cross_l2 ,
 	  ST_LineCrossingDirection(foo.line2, foo.line1) As l2_cross_l1
-FROM (SELECT
-		ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As line1,
-		ST_GeomFromText('LINESTRING(171 154,20 140,71 74,161 53)') As line2
+FROM (
+SELECT
+ ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As line1,
+ ST_GeomFromText('LINESTRING(171 154,20 140,71 74,161 53)') As line2
 	) As foo;
 
  l1_cross_l2 | l2_cross_l1
@@ -9711,17 +9712,18 @@ FROM (SELECT
 				  <imageobject>
 					<imagedata fileref="images/st_linecrossingdirection02.png" />
 				  </imageobject>
-				  <caption><para>Line 1 (green), Line 2 ball is start point,
+				  <caption><para>Line 1 (green), Line 2 (blue) ball is start point,
 						triangle are end points. Query below.</para></caption>
 				</mediaobject>
 			  </informalfigure>
 			  <programlisting>
 SELECT ST_LineCrossingDirection(foo.line1, foo.line2) As l1_cross_l2 ,
 	  ST_LineCrossingDirection(foo.line2, foo.line1) As l2_cross_l1
-FROM (SELECT
-	ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As line1,
-	ST_GeomFromText('LINESTRING (171 154, 20 140, 71 74, 2.99 90.16)') As line2
-	) As foo;
+FROM (
+ SELECT
+  ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As line1,
+  ST_GeomFromText('LINESTRING (171 154, 20 140, 71 74, 2.99 90.16)') As line2
+) As foo;
 
  l1_cross_l2 | l2_cross_l1
 -------------+-------------
@@ -9736,7 +9738,7 @@ FROM (SELECT
 					  <imageobject>
 						<imagedata fileref="images/st_linecrossingdirection03.png" />
 					  </imageobject>
-					  <caption><para>Line 1 (green), Line 2 ball is start point,
+					  <caption><para>Line 1 (green), Line 2 (blue) ball is start point,
 					triangle are end points. Query below. </para></caption>
 					</mediaobject>
 				  </informalfigure>
@@ -9744,8 +9746,11 @@ FROM (SELECT
 SELECT
 	ST_LineCrossingDirection(foo.line1, foo.line2) As l1_cross_l2 ,
 	ST_LineCrossingDirection(foo.line2, foo.line1) As l2_cross_l1
-FROM (SELECT ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As line1,
-ST_GeomFromText('LINESTRING (20 140, 71 74, 161 53)') As line2) As foo;
+FROM (
+ SELECT
+  ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As line1,
+  ST_GeomFromText('LINESTRING (20 140, 71 74, 161 53)') As line2
+  ) As foo;
 
  l1_cross_l2 | l2_cross_l1
 -------------+-------------
@@ -9760,7 +9765,7 @@ ST_GeomFromText('LINESTRING (20 140, 71 74, 161 53)') As line2) As foo;
 				  <imageobject>
 					<imagedata fileref="images/st_linecrossingdirection04.png" />
 				  </imageobject>
-				  <caption><para>Line 1 (green), Line 2 ball is start point,
+				  <caption><para>Line 1 (green), Line 2 (blue) ball is start point,
 						triangle are end points. Query below.</para></caption>
 				</mediaobject>
 			  </informalfigure>
