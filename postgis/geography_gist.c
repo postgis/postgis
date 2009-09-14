@@ -832,8 +832,8 @@ Datum geography_gist_penalty(PG_FUNCTION_ARGS)
 	*result = size_union - size_orig;
 
 	/* All things being equal, we prefer to expand small boxes rather than large boxes. */
-	if( FP_ZERO(*result) )
-		if( FP_ZERO(size_orig) )
+	if( FP_IS_ZERO(*result) )
+		if( FP_IS_ZERO(size_orig) )
 			*result = 0.0;
 		else
 			*result = 1.0 - (1.0/(1.0 + size_orig));

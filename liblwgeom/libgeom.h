@@ -377,21 +377,7 @@ extern int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox);
 */
 extern int getPoint2d_p_ro(const POINTARRAY *pa, int n, POINT2D **point);
 
-/**
-* @brief Check whether or not a lwgeom is big enough to warrant a bounding box.
-* 
-* Check whether or not a lwgeom is big enough to warrant a bounding box
-* when stored in the serialized form on disk. Currently only points are 
-* considered small enough to not require a bounding box, because the 
-* index operations can generate a large number of box-retrieval operations
-* when scanning keys.
-*/
-extern int lwgeom_needs_bbox(LWGEOM *geom);
 
-/**
-* Count the total number of vertices in any #LWGEOM.
-*/
-extern int lwgeom_count_vertices(LWGEOM *geom);
 
 /**
 * Calculate box and add values to gbox. Return #G_SUCCESS on success.

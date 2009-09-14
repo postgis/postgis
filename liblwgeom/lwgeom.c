@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 #include "wktparse.h"
 
 
@@ -978,3 +978,88 @@ void lwgeom_free(LWGEOM *lwgeom)
 	return;
 
 };
+
+
+int lwgeom_needs_bbox(LWGEOM *geom)
+{
+	assert(geom);
+	if( TYPE_GETTYPE(geom->type) == POINTTYPE )
+	{
+		return LW_FALSE;
+	}
+	return LW_TRUE;
+}
+
+
+/*
+** Count points in an LWGEOM. 
+*/
+
+static int lwcollection_count_vertices(LWCOLLECTION *col)
+{
+	int i = 0;
+	int v = 0; /* vertices */
+	assert(col);
+	for ( i = 0; i < col->ngeoms; i++ )
+	{
+		v += lwgeom_count_vertices(col->geoms[i]);
+	}
+	return v;
+}
+
+static int lwpolygon_count_vertices(LWPOLY *poly)
+{
+	int i = 0;
+	int v = 0; /* vertices */
+	assert(poly);
+	for ( i = 0; i < poly->nrings; i ++ )
+	{
+		v += poly->rings[i]->npoints;
+	}
+	return v;
+}
+
+static int lwline_count_vertices(LWLINE *line)
+{
+	assert(line);
+	if ( ! line->points )
+		return 0;
+	return line->points->npoints;
+}
+
+static int lwpoint_count_vertices(LWPOINT *point)
+{
+	assert(point);
+	if ( ! point->point )
+		return 0;
+	return 1;
+}
+
+int lwgeom_count_vertices(LWGEOM *geom)
+{
+	int result = 0;
+	LWDEBUGF(4, "got type %d", TYPE_GETTYPE(geom->type));
+	switch (TYPE_GETTYPE(geom->type))
+	{
+		case POINTTYPE:
+			result = lwpoint_count_vertices((LWPOINT *)geom);;
+			break;
+		case LINETYPE:
+			result = lwline_count_vertices((LWLINE *)geom);
+			break;
+		case POLYGONTYPE:
+			result = lwpolygon_count_vertices((LWPOLY *)geom);
+			break;
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+			result = lwcollection_count_vertices((LWCOLLECTION *)geom);
+			break;
+		default:
+			lwerror("unsupported input geometry type: %d", TYPE_GETTYPE(geom->type));
+			break;
+	}
+	LWDEBUGF(3, "counted %d vertices", result);
+	return result;
+}

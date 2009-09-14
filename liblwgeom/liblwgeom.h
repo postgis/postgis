@@ -42,7 +42,7 @@
 ** Floating point comparitors.
 */
 #define FP_TOLERANCE 1e-12
-#define FP_ZERO(A) (fabs(A) <= FP_TOLERANCE)
+#define FP_IS_ZERO(A) (fabs(A) <= FP_TOLERANCE)
 #define FP_MAX(A, B) (((A) > (B)) ? (A) : (B))
 #define FP_MIN(A, B) (((A) < (B)) ? (A) : (B))
 #define FP_EQUALS(A, B) (fabs((A)-(B)) <= FP_TOLERANCE)
@@ -1215,7 +1215,6 @@ extern int azimuth_pt_pt(POINT2D *p1, POINT2D *p2, double *ret);
 extern double lwgeom_mindistance2d_recursive(uchar *lw1, uchar *lw2);
 extern double lwgeom_mindistance2d_recursive_tolerance(uchar *lw1, uchar *lw2, double tolerance);
 extern int lwgeom_pt_inside_circle(POINT2D *p, double cx, double cy, double rad);
-extern int32 lwgeom_npoints(uchar *serialized);
 extern char ptarray_isccw(const POINTARRAY *pa);
 extern void lwgeom_reverse(LWGEOM *lwgeom);
 extern void lwline_reverse(LWLINE *line);
@@ -1242,6 +1241,24 @@ extern BOX2DFLOAT4 *box2d_union(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2);
 extern int box2d_union_p(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2, BOX2DFLOAT4 *ubox);
 extern int lwgeom_compute_box2d_p(LWGEOM *lwgeom, BOX2DFLOAT4 *box);
 void lwgeom_longitude_shift(LWGEOM *lwgeom);
+
+
+/**
+* @brief Check whether or not a lwgeom is big enough to warrant a bounding box.
+* 
+* Check whether or not a lwgeom is big enough to warrant a bounding box
+* when stored in the serialized form on disk. Currently only points are 
+* considered small enough to not require a bounding box, because the 
+* index operations can generate a large number of box-retrieval operations
+* when scanning keys.
+*/
+extern int lwgeom_needs_bbox(LWGEOM *geom);
+
+/**
+* Count the total number of vertices in any #LWGEOM.
+*/
+extern int lwgeom_count_vertices(LWGEOM *geom);
+extern int32 lwgeom_npoints(uchar *serialized);
 
 /* Is lwgeom1 geometrically equal to lwgeom2 ? */
 char lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2);

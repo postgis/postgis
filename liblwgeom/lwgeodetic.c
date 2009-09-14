@@ -9,8 +9,57 @@
  *
  **********************************************************************/
 
-#include <math.h>
-#include "libgeom.h"
+#include "lwgeodetic.h"
+
+
+/**
+* Given two points on a unit sphere, calculate their distance apart. 
+*/
+double sphere_distance(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e)
+{
+	double latS = s.lat;
+	double latE = e.lon;
+	double dlng = e.lon - s.lon;
+	double a1 = pow(cos(latE) * sin(dlng), 2.0);
+	double a2 = pow(cos(latS) * sin(latE) - sin(latS) * cos(latE) * cos(dlng), 2.0);
+	double a = sqrt(a1 + a2);
+	double b = sin(latS) * sin(latE) + cos(latS) * cos(latE) * cos(dlng);
+	return atan2(a, b);
+}
+
+/**
+* Given two points on a unit sphere, calculate the direction from s to e. 
+*/
+double sphere_direction(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e)
+{
+	double latS = s.lat;
+	double latE = e.lon;
+	double dlng = e.lat - s.lon;
+	double heading = atan2(sin(dlng) * cos(latE),
+		             cos(latS) * sin(latE) -
+	                 sin(latS) * cos(latE) * cos(dlng)) / PI; 
+	return heading;
+}
+
+/**
+* Given a starting location r, a distance and an azimuth
+* to the new point, compute the location of the projected point on the unit sphere.
+*/
+void sphere_project(GEOGRAPHIC_POINT r, double distance, double azimuth, GEOGRAPHIC_POINT *n) 
+{
+	double d = distance;
+	double lat1 = r.lat;
+	n->lat = asin(sin(lat1) * cos(d) +
+	        cos(lat1) * sin(d) * cos(azimuth));
+	double a = cos(lat1) * cos(d) - sin(lat1) * sin(d) * cos(azimuth);
+	double b = signum(d) * sin(azimuth);
+	n->lon = atan(b/a) + r.lon;
+}
+
+void sphere_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
+{
+}
+
 
 /* 
 * This function can only be used on LWGEOM that is built on top of
@@ -272,88 +321,7 @@ int lwgeom_check_geodetic(const LWGEOM *geom)
 }
 
 
-/*
-** Count points in an LWGEOM. 
-*/
 
-static int lwcollection_count_vertices(LWCOLLECTION *col)
-{
-	int i = 0;
-	int v = 0; /* vertices */
-	assert(col);
-	for ( i = 0; i < col->ngeoms; i++ )
-	{
-		v += lwgeom_count_vertices(col->geoms[i]);
-	}
-	return v;
-}
-
-static int lwpolygon_count_vertices(LWPOLY *poly)
-{
-	int i = 0;
-	int v = 0; /* vertices */
-	assert(poly);
-	for ( i = 0; i < poly->nrings; i ++ )
-	{
-		v += poly->rings[i]->npoints;
-	}
-	return v;
-}
-
-static int lwline_count_vertices(LWLINE *line)
-{
-	assert(line);
-	if ( ! line->points )
-		return 0;
-	return line->points->npoints;
-}
-
-static int lwpoint_count_vertices(LWPOINT *point)
-{
-	assert(point);
-	if ( ! point->point )
-		return 0;
-	return 1;
-}
-
-int lwgeom_count_vertices(LWGEOM *geom)
-{
-	int result = 0;
-	LWDEBUGF(4, "got type %d", TYPE_GETTYPE(geom->type));
-	switch (TYPE_GETTYPE(geom->type))
-	{
-		case POINTTYPE:
-			result = lwpoint_count_vertices((LWPOINT *)geom);;
-			break;
-		case LINETYPE:
-			result = lwline_count_vertices((LWLINE *)geom);
-			break;
-		case POLYGONTYPE:
-			result = lwpolygon_count_vertices((LWPOLY *)geom);
-			break;
-		case MULTIPOINTTYPE:
-		case MULTILINETYPE:
-		case MULTIPOLYGONTYPE:
-		case COLLECTIONTYPE:
-			result = lwcollection_count_vertices((LWCOLLECTION *)geom);
-			break;
-		default:
-			lwerror("unsupported input geometry type: %d", TYPE_GETTYPE(geom->type));
-			break;
-	}
-	LWDEBUGF(3, "counted %d vertices", result);
-	return result;
-}
-
-int lwgeom_needs_bbox(LWGEOM *geom)
-{
-	assert(geom);
-	if( TYPE_GETTYPE(geom->type) == POINTTYPE )
-	{
-		return G_FALSE;
-	}
-	return G_TRUE;
-}
 
 
 
