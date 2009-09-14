@@ -1,0 +1,165 @@
+Introduction to the Geography Type
+==================================
+
+The geography type provides native support for spatial features represented on "geographic" coordinates (sometimes called "geodetic" coordinates, or "lat/lon", or "lon/lat"). Geographic coordinates are spherical coordinates expressed in angular units (degrees). 
+
+The basis for the PostGIS geometry type is a plane. The shortest path between two points on the plane is a straight line. That means calculations on geometries (areas, distances, lengths, intersections, etc) can be calculated using cartesian mathematics and straight line vectors.
+
+The basis for the PostGIS geographic type is a sphere. The shortest path between two points on the sphere is a great circle arc. That means that calculations on geographies (areas, distances, lengths, intersections, etc) must be calculated on the sphere, using more complicated mathematics. For more accurate measurements, the calculations must take the actual spheroidal shape of the world into account, and the mathematics becomes very complicated indeed.
+
+Because the underlying mathematics is much more complicated, there are fewer functions defined for the geography type than for the geometry type. Over time, as new algorithms are added, the capabilities of the geography type will expand.
+
+
+Geography Basics
+================
+
+The geography type only supports the simplest of simple features:
+
+* POINT
+* LINESTRING
+* POLYGON
+* MULTIPOINT
+* MULTILINESTRING
+* MULTIPOLYGON
+* GEOMETRYCOLLECTION
+
+Properly handing curves on spherical surface would be very difficult indeed.
+
+The text representations for geography objects are the same as for geometries:
+
+* POINT(0 0)
+* LINESTRING(0 0, 1 1)
+* POLYGON((0 0, 1 0, 1 1, 1 0, 0 0)) 
+* ..etc..
+
+The coordinates for geography objects are expected to be in decimal degrees, with longitude as the first ordinate and latitude as the second:
+
+* POINT(-126 45) is a legal geography point
+* POINT(45 -126) is an illegal geography point
+
+The geography implementation currently assumes that all coordinates are relative to the WGS84 spheroid (using an SRID of 4326), and does not allow any other SRID values to be used. Future enhancements may allow multiple spheroids to be supported and transformations between spheroids. An SRID value of 0 (undefined) will be treated as implicitly using WGS84 (4326).
+
+
+Installing the Geography Extension
+==================================
+
+* Pull the source from the geography sandbox.
+
+  svn checkout http://svn.osgeo.org/postgis/spike/pramsey/geodetic postgis-geodetic-svn
+
+* Compile and install PostGIS as usual.
+
+  cd postgis-geodetic-svn
+  ./configure
+  make
+  make install
+
+* Then, create a database and install PostGIS into that database. (Assuming your PostgreSQL is installed in /usr/local/pgsql.)
+
+  createdb geography
+  psql geography < /usr/local/pgsql/share/contrib/postgis.sql
+  psql geography < /usr/local/pgsql/share/contrib/spatial_ref_sys
+  
+* Then, install the geography extension. 
+
+  psql geography < /usr/local/pgsql/share/contrib/geography.sql
+
+* That's it!
+
+
+Creating a Geography Table
+==========================
+
+You can create a geography-enabled table using the CREATE TABLE statement as follows:
+
+  CREATE TABLE gtable ( id integer primary key, geog geography );
+
+Check out the contents of "gtable":
+
+  \d gtable
+  
+       Table "public.gtable"
+   Column |   Type    | Modifiers 
+  --------+-----------+-----------
+   id     | integer   | not null
+   geog   | geography | 
+  Indexes:
+      "gtable_pkey" PRIMARY KEY, btree (id)
+  
+  
+Now, check the "geography_columns" view and see that your table is listed:
+
+  SELECT * FROM geography_columns;
+  
+Note that "geography_columns" metadata is a view against the system tables and kept up to date automatically. This is a big improvement on the manually maintained "geometry_columns" table.
+
+Insert some data into the table and then pull it out:
+
+  INSERT INTO gtable1 VALUES (1, 'POINT(0 0)');
+  SELECT id,ST_AsText(geog) FROM gtable2;
+  
+Try inserting some invalid geography data and see the database complain:
+
+  INSERT INTO gtable1 values (1, 'POINT(1000 0)');
+  
+
+Using Type Restrictions
+=======================
+
+You can restrict the geography types allowed in a column by adding a type restriction when you create the table:
+
+  CREATE TABLE gtable2 ( id integer, geog geography(linestring) );
+  
+  \d gtable2
+  
+             Table "public.gtable2"
+   Column |         Type          | Modifiers 
+  --------+-----------------------+-----------
+   id     | integer               | 
+   geog   | geography(LineString) | 
+  
+
+Now, if you try to insert a point, the database will complain:
+
+  INSERT INTO gtable2 VALUES (1, 'POINT(0 0)');
+  
+You can also add SRID restrictions to a column, though at this point (with only one SRID supported) there is not a lot of utility to the feature:
+
+  CREATE TABLE gtable3 ( id integer, geog geography(polygon, 4326) );
+  
+  \d gtable3
+  
+              Table "public.gtable3"
+   Column |          Type           | Modifiers 
+  --------+-------------------------+-----------
+   id     | integer                 | 
+   geog   | geography(Polygon,4326) | 
+  
+
+
+Using Input/Output Functions
+============================
+
+There are only four intput/output functions at this time supporting the OGC well-known text (WKT) and well-known binary (WKB) formats. Adding further output formats (GML, GeoJSON) should be straight-forward, borrowing code from the geometry implementations.
+
+* ST_AsText(geography) returns text
+* ST_AsBinary(geography) returns bytea
+* ST_GeographyFromText(text) returns geography
+* ST_GeographyFromBinary(bytea) returns geography
+
+You can test that they are bi-directional by stringing them together:
+
+  SELECT ST_AsText(ST_GeographyFromBinary(ST_AsBinary(ST_GeographyFromText('LINESTRING(0 0, 1 1)'))));
+  
+
+Casting from Geometry
+=====================
+
+There is currently a simple cast from geometry to geography, which can be useful for importing larger selections of data into geography until the data loader is upgraded to allow direct shape file imports. In the future, it is possible the cast could do coordinate conversions, and other magic, but for now it is a direct conversion -- if your coordinates are out of range it will error out.
+
+  CREATE TABLE geomtable ( id integer, geom geometry );
+  INSERT INTO geomtable VALUES ( 2, 'POINT(0 0)' );
+  CREATE TABLE geogtable AS SELECT id, geom::geography AS geog FROM geomtable;
+  SELECT ST_AsText(geog), id FROM geogtable;
+  
+

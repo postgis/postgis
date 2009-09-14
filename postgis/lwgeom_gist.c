@@ -559,7 +559,7 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 	bool *recheck = (bool *) PG_GETARG_POINTER(4);
 
 	/* We set recheck to false to avoid repeatedly pulling every "possibly matched" geometry
-	   out during index scans. For cases when the geometries are large, doing this
+	   out during index scans. For cases when the geometries are large, rechecking
 	   can make things twice as slow. */
 	*recheck = false;
 #endif

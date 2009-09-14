@@ -1,5 +1,5 @@
 # **********************************************************************
-# * $Id: Makefile.in 
+# * $Id$
 # *
 # * PostGIS - Spatial Types for PostgreSQL
 # * http://postgis.refractions.net
@@ -13,11 +13,11 @@
 MODULE_big=postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 
 # Files to be copied to the contrib/ directory
-DATA_built=postgis.sql uninstall_postgis.sql postgis_upgrade.sql
+DATA_built=postgis.sql uninstall_postgis.sql postgis_upgrade.sql geography.sql
 DATA=../spatial_ref_sys.sql
 
 # SQL objects (files requiring C pre-processing)
-SQL_OBJS=postgis.sql.in uninstall_postgis.sql.in
+SQL_OBJS=postgis.sql.in uninstall_postgis.sql.in geography.sql.in
 
 # PostgreSQL objects
 PG_OBJS=lwgeom_pg.o \
@@ -47,7 +47,9 @@ PG_OBJS=lwgeom_pg.o \
 	lwgeom_functions_lrs.o \
 	long_xact.o \
 	lwgeom_sqlmm.o \
-	lwgeom_rtree.o
+	lwgeom_rtree.o \
+	geography_inout.o \
+	geography_gist.o
 
 # Objects to build using PGXS
 OBJS=$(PG_OBJS)
@@ -73,7 +75,7 @@ include $(PGXS)
 
 # Borrow the $libdir substitution from PGXS but customise by adding the version number
 %.sql: %.sql.in
-	sed 's,MODULE_PATHNAME,$$libdir/$*-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@,g' $< >$@
+	sed 's,MODULE_PATHNAME,$$libdir/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@,g' $< >$@
 
 postgis_upgrade.sql: postgis.sql
 	$(PERL) ../utils/postgis_proc_upgrade.pl $< > $@

@@ -16,6 +16,7 @@
 
 #include "cu_algorithm.h"
 #include "cu_measures.h"
+#include "cu_libgeom.h"
 
 
 /*
@@ -49,6 +50,13 @@ int main()
 
 	/* Add the measures suite to the registry */
 	if (NULL == register_measures_suite())
+	{
+		CU_cleanup_registry();
+		return CU_get_error();
+	}
+
+	/* Add the libgeom suite to the registry */
+	if (NULL == register_libgeom_suite())
 	{
 		CU_cleanup_registry();
 		return CU_get_error();

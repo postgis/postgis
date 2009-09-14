@@ -64,6 +64,10 @@
 #define NO_Z_VALUE NO_VALUE
 #define NO_M_VALUE NO_VALUE
 
+#ifndef MAXFLOAT
+#define MAXFLOAT      3.402823466e+38F
+#endif
+
 #ifndef C_H
 
 typedef unsigned int uint32;
@@ -620,6 +624,8 @@ extern POINTARRAY *pointArray_construct(uchar *points, char hasz, char hasm,
  */
 extern BOX3D *ptarray_compute_box3d(const POINTARRAY *pa);
 extern int ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *out);
+
+
 
 /*
  * size of point represeneted in the POINTARRAY

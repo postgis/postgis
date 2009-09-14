@@ -219,6 +219,9 @@ lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *retsize)
 		size_t pasize;
 		uint32 npoints;
 
+		LWDEBUGF(4, "TYPE_GETZM(poly->type) == %d", TYPE_GETZM(poly->type));
+		LWDEBUGF(4, "TYPE_GETZM(pa->dims) == %d", TYPE_GETZM(pa->dims));
+
 		if ( TYPE_GETZM(poly->type) != TYPE_GETZM(pa->dims) )
 			lwerror("Dimensions mismatch in lwpoly");
 
@@ -252,6 +255,7 @@ lwpoly_compute_box3d(LWPOLY *poly)
 
 	return result;
 }
+
 
 /* find length of this serialized polygon */
 size_t

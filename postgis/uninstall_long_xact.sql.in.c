@@ -1,6 +1,6 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- 
--- $Id: long_xact.sql.in 2803 2008-06-05 12:09:48Z mcayland $
+-- $Id$
 --
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.refractions.net

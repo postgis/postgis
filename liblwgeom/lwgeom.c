@@ -227,6 +227,7 @@ BOX3D *lwgeom_compute_box3d(const LWGEOM *lwgeom)
 	return NULL;
 }
 
+
 int
 lwgeom_compute_box2d_p(LWGEOM *lwgeom, BOX2DFLOAT4 *buf)
 {

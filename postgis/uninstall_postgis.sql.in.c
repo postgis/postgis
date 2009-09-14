@@ -1,6 +1,6 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- 
--- $Id: uninstall_postgis.sql.in.c 3993 2009-04-12 10:56:33Z mcayland $
+-- $Id$
 --
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.refractions.net

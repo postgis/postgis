@@ -1,6 +1,6 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- 
--- $Id: sqlmm.sql.in 2406 2006-11-02 13:56:52Z kneufeld $
+-- $Id$
 --
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.refractions.net

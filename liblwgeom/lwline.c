@@ -222,6 +222,7 @@ lwline_compute_box3d(LWLINE *line)
 	return ret;
 }
 
+
 /* find length of this deserialized line */
 size_t
 lwline_serialize_size(LWLINE *line)

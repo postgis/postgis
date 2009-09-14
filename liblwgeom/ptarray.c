@@ -27,7 +27,11 @@ ptarray_construct(char hasz, char hasm, unsigned int npoints)
 	TYPE_SETZM(dims, hasz?1:0, hasm?1:0);
 	size = TYPE_NDIMS(dims)*npoints*sizeof(double);
 
-	ptlist = (uchar *)lwalloc(size);
+	if( size ) 
+		ptlist = (uchar *)lwalloc(size);
+	else 
+		ptlist = NULL;
+	
 	pa = lwalloc(sizeof(POINTARRAY));
 	pa->dims = dims;
 	pa->serialized_pointlist = ptlist;

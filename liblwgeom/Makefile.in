@@ -42,7 +42,14 @@ SA_OBJS = \
 	lwsegmentize.o \
 	wktparse.tab.o \
 	lex.yy.o \
-	vsprintf.o	
+	vsprintf.o \
+	g_box.o \
+	g_coord.o \
+	g_geometry.o \
+	g_ptarray.o \
+	g_serialized.o \
+	g_util.o \
+	lwgeodetic.o
 
 SA_HEADERS = \
 	liblwgeom.h \

@@ -109,6 +109,8 @@ lwpoint_compute_box3d(LWPOINT *point)
 	return ptarray_compute_box3d(point->point);
 }
 
+
+
 /*
  * Convenience functions to hide the POINTARRAY
  * TODO: obsolete this

@@ -32,10 +32,6 @@ void lwcircstring_setPoint4d(LWCIRCSTRING *curve, unsigned int index, POINT4D *n
 
 
 
-#ifndef MAXFLOAT
-#define MAXFLOAT      3.402823466e+38F
-#endif
-
 /*
  * Construct a new LWCIRCSTRING.  points will *NOT* be copied
  * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
@@ -260,6 +256,7 @@ lwcircstring_serialize_size(LWCIRCSTRING *curve)
 
 	return size;
 }
+
 
 BOX3D *
 lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3)
@@ -494,9 +491,9 @@ lwcircstring_compute_box3d(LWCIRCSTRING *curve)
 		LWDEBUGF(4, "circularstring %d x=(%.16f,%.16f) y=(%.16f,%.16f) z=(%.16f,%.16f)", i/2, box->xmin, box->xmax, box->ymin, box->ymax, box->zmin, box->zmax);
 	}
 
-
 	return box;
 }
+
 
 int
 lwcircstring_compute_box2d_p(LWCIRCSTRING *curve, BOX2DFLOAT4 *result)

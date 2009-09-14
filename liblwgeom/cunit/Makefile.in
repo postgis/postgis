@@ -18,7 +18,8 @@ CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I..
 
 OBJS=	cu_tester.o \
 	cu_algorithm.o \
-	cu_measures.o
+	cu_measures.o \
+	cu_libgeom.o
 
 # If we couldn't find the cunit library then display a helpful message
 ifeq ($(CUNIT_LDFLAGS),)
