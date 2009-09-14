@@ -830,6 +830,16 @@ Datum geography_gist_penalty(PG_FUNCTION_ARGS)
 	size_union = gidx_union_volume(gbox_index_orig, gbox_index_new);
 	size_orig = gidx_volume(gbox_index_orig);
 	*result = size_union - size_orig;
+
+	/* All things being equal, we prefer to expand small boxes rather than large boxes. */
+	if( FP_ZERO(*result) )
+		if( FP_ZERO(size_orig) )
+			*result = 0.0;
+		else
+			*result = 1.0 - (1.0/(1.0 + size_orig));
+	else
+		*result += 1;
+
 	POSTGIS_DEBUGF(4, "[GIST] union size (%f), original size (%f), penalty (%f)", size_union, size_orig, *result);
 	PG_RETURN_POINTER(result);
 }

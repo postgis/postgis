@@ -39,12 +39,14 @@
 #define INTEGRITY_CHECKS 1
 
 /*
- * Floating point comparitors.
- */
+** Floating point comparitors.
+*/
 #define FP_TOLERANCE 1e-12
+#define FP_ZERO(A) (fabs(A) <= FP_TOLERANCE)
 #define FP_MAX(A, B) (((A) > (B)) ? (A) : (B))
 #define FP_MIN(A, B) (((A) < (B)) ? (A) : (B))
-#define FP_EQUALS(A, B) (fabs((A)-(B)) < FP_TOLERANCE)
+#define FP_EQUALS(A, B) (fabs((A)-(B)) <= FP_TOLERANCE)
+#define FP_NEQUALS(A, B) (fabs((A)-(B)) > FP_TOLERANCE)
 #define FP_LT(A, B) (((A) + FP_TOLERANCE) < (B))
 #define FP_LTEQ(A, B) (((A) - FP_TOLERANCE) <= (B))
 #define FP_GT(A, B) (((A) - FP_TOLERANCE) > (B))
@@ -54,6 +56,10 @@
 #define FP_CONTAINS_INCL(A, X, B) (FP_LTEQ(A, X) && FP_LTEQ(X, B))
 #define FP_CONTAINS_EXCL(A, X, B) (FP_LT(A, X) && FP_LT(X, B))
 #define FP_CONTAINS(A, X, B) FP_CONTAINS_EXCL(A, X, B)
+
+/*
+** Utility true and false defines.
+*/
 #define LW_TRUE 1
 #define LW_FALSE 0
 
