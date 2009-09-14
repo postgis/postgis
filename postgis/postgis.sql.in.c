@@ -2501,7 +2501,7 @@ BEGIN
 		 AND s.consrc LIKE '%srid(% = %');
 	IF (gsrid IS NULL) THEN
 		-- Try to find srid from the geometry itself
-		EXECUTE 'SELECT public.srid(' || quote_ident(gcs.attname) || ')
+		EXECUTE 'SELECT srid(' || quote_ident(gcs.attname) || ')
 				 FROM ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
 				 WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1'
 			INTO gc;
@@ -2535,7 +2535,7 @@ BEGIN
 		 AND s.consrc LIKE '%ndims(% = %');
 	IF (gndims IS NULL) THEN
 		-- Try to find ndims from the geometry itself
-		EXECUTE 'SELECT public.ndims(' || quote_ident(gcs.attname) || ')
+		EXECUTE 'SELECT ndims(' || quote_ident(gcs.attname) || ')
 				 FROM ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
 				 WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1'
 			INTO gc;
@@ -2569,7 +2569,7 @@ BEGIN
 		 AND s.consrc LIKE '%geometrytype(% = %');
 	IF (gtype IS NULL) THEN
 		-- Try to find geotype from the geometry itself
-		EXECUTE 'SELECT public.geometrytype(' || quote_ident(gcs.attname) || ')
+		EXECUTE 'SELECT geometrytype(' || quote_ident(gcs.attname) || ')
 				 FROM ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
 				 WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1'
 			INTO gc;
@@ -2626,19 +2626,19 @@ BEGIN
 	LOOP
 		RAISE DEBUG 'Processing view %.%.%', gcs.nspname, gcs.relname, gcs.attname;
 
-		EXECUTE 'SELECT public.ndims(' || quote_ident(gcs.attname) || ')
+		EXECUTE 'SELECT ndims(' || quote_ident(gcs.attname) || ')
 				 FROM ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
 				 WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1'
 			INTO gc;
 		gndims := gc.ndims;
 
-		EXECUTE 'SELECT public.srid(' || quote_ident(gcs.attname) || ')
+		EXECUTE 'SELECT srid(' || quote_ident(gcs.attname) || ')
 				 FROM ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
 				 WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1'
 			INTO gc;
 		gsrid := gc.srid;
 
-		EXECUTE 'SELECT public.geometrytype(' || quote_ident(gcs.attname) || ')
+		EXECUTE 'SELECT geometrytype(' || quote_ident(gcs.attname) || ')
 				 FROM ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
 				 WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1'
 			INTO gc;
