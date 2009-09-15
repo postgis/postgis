@@ -38,23 +38,11 @@ double inline dot_product(POINT3D p1, POINT3D p2)
 	return (p1.x*p2.x) + (p1.y*p2.y) + (p1.z*p2.z);
 }
 
-void inline unit_normal(POINT3D a, POINT3D b, POINT3D *n)
-{
-	double d;
-	double x = a.y * b.z - a.z * b.y;
-	double y = a.z * b.x - a.x * b.z;
-	double z = a.x * b.y - a.y * b.x;
-	d = sqrt(x*x + y*y + z*z);
-	n->x = x/d;
-	n->y = y/d;
-	n->z = z/d;
-	return;
-}
 
 /**
 * Normalize to a unit vector.
 */
-void normalize(POINT3D *p)
+void inline normalize(POINT3D *p)
 {
 	double d = sqrt(p->x*p->x + p->y*p->y + p->z*p->z);
 	if(FP_IS_ZERO(d)) 
@@ -65,6 +53,16 @@ void normalize(POINT3D *p)
 	p->x = p->x / d;
 	p->y = p->y / d;
 	p->z = p->z / d;
+    return;
+}
+
+void inline unit_normal(POINT3D a, POINT3D b, POINT3D *n)
+{
+    n->x = a.y * b.z - a.z * b.y;
+	n->y = a.z * b.x - a.x * b.z;
+	n->z = a.x * b.y - a.y * b.x;
+    normalize(n);
+	return;
 }
 
 /**
@@ -111,8 +109,8 @@ int edge_point_on_plane(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 	geog2cart(p, &pt);
 	w = dot_product(normal, pt);
 	if( FP_IS_ZERO(w) )
-		return LW_FALSE;
-	return LW_TRUE;
+		return LW_TRUE;
+	return LW_FALSE;
 }
 
 /**
@@ -163,7 +161,7 @@ double sphere_direction(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e)
 	double dlng = e.lat - s.lon;
 	double heading = atan2(sin(dlng) * cos(latE),
 		             cos(latS) * sin(latE) -
-	                 sin(latS) * cos(latE) * cos(dlng)) / PI; 
+	                 sin(latS) * cos(latE) * cos(dlng)) / M_PI; 
 	return heading;
 }
 
@@ -185,9 +183,9 @@ double z_to_latitude(double z)
 {
 	double sign = signum(z);
 	double tlat = acos(z);
-	if(fabs(tlat) > (PI/2.0) )
+	if(fabs(tlat) > M_PI_2 )
 	{
-		tlat = sign * (PI - fabs(tlat));
+		tlat = sign * (M_PI - fabs(tlat));
 	} 
 	else 
 	{
@@ -273,7 +271,7 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 	double distance = sphere_distance(e.start, e.end);
 	int flipped_longitude = LW_FALSE;
     int gimbal_lock = LW_FALSE;
-	POINT3D p, start, end, startXZ, endXZ, startYZ, endYZ, nT1B, nT2B;
+	POINT3D p, start, end, startXZ, endXZ, startYZ, endYZ, nT1, nT2;
 	GEOGRAPHIC_EDGE g;
 	GEOGRAPHIC_POINT vT1, vT2;
 
@@ -296,7 +294,7 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 
 	/* Edge is antipodal (one point on each side of the globe), 
 	   set the box to contain the whole world and return */
-	if( FP_EQUALS(distance, PI) )
+	if( FP_EQUALS(distance, M_PI) )
 	{
 		gbox->xmin = gbox->ymin = gbox->zmin = -1.0;
 		gbox->xmax = gbox->ymax = gbox->zmax = 1.0;
@@ -312,21 +310,21 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 	{
 		double dl = fabs(g.start.lon) + fabs(g.end.lon);
 		/* Less then a hemisphere apart */
-		if( dl < PI )
+		if( dl < M_PI )
 		{
 			deltaLongitude = dl;
 		}
 		/* Exactly a hemisphere apart */
-		else if ( FP_EQUALS( dl, PI ) )
+		else if ( FP_EQUALS( dl, M_PI ) )
 		{
-			deltaLongitude = PI;
+			deltaLongitude = M_PI;
 		}
 		/* More than a hemisphere apart, return the other half of the sphere 
 		   and note that we are crossing the dateline */
 		else
 		{
 			flipped_longitude = LW_TRUE;
-			deltaLongitude = dl - PI;
+			deltaLongitude = dl - M_PI;
 		}
 	}	
 	
@@ -336,17 +334,17 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 	if ( flipped_longitude )
 	{
 		if ( g.start.lon > 0.0 ) 
-			g.start.lon -= PI;
+			g.start.lon -= M_PI;
 		else 
-			g.start.lon += PI;
+			g.start.lon += M_PI;
 		if ( g.end.lon > 0.0 ) 
-			g.end.lon -= PI;
+			g.end.lon -= M_PI;
 		else 
-			g.end.lon += PI;
+			g.end.lon += M_PI;
 	}
 	
 	/* Check for pole crossings. */
-	if( FP_EQUALS(deltaLongitude, PI) ) 
+	if( FP_EQUALS(deltaLongitude, M_PI) ) 
 	{
 		/* Crosses the north pole, adjust box to contain pole */
 		if( (g.start.lat + g.end.lat) > 0.0 )
@@ -389,21 +387,21 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
     {
         gimbal_lock = LW_TRUE;
     }
-    geog2cart(vT1, &nT1B);
-    geog2cart(vT2, &nT2B);
-    x_to_z(&nT1B);
-    x_to_z(&nT2B);
-    cart2geog(nT1B, &vT1);
-    cart2geog(nT2B, &vT2);
+    geog2cart(vT1, &nT1);
+    geog2cart(vT2, &nT2);
+    x_to_z(&nT1);
+    x_to_z(&nT2);
+    cart2geog(nT1, &vT1);
+    cart2geog(nT2, &vT2);
     if( gimbal_lock )
     {
-        vT1.lon = PI;
-        vT2.lon = -1.0 * PI;
+        vT1.lon = M_PI;
+        vT2.lon = -1.0 * M_PI;
     }
     if( edge_contains_point(g, vT1, flipped_longitude) )
     {
-			geog2cart(vT1, &p);
-			gbox_merge_point3d(gbox, &p);
+		geog2cart(vT1, &p);
+		gbox_merge_point3d(gbox, &p);
     }
 	else if ( edge_contains_point(g, vT2, flipped_longitude) )
 	{
@@ -423,21 +421,21 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
     {
         gimbal_lock = LW_TRUE;
     }
-    geog2cart(vT1, &nT1B);
-    geog2cart(vT2, &nT2B);
-    y_to_z(&nT1B);
-    y_to_z(&nT2B);
-    cart2geog(nT1B, &vT1);
-    cart2geog(nT2B, &vT2);
+    geog2cart(vT1, &nT1);
+    geog2cart(vT2, &nT2);
+    y_to_z(&nT1);
+    y_to_z(&nT2);
+    cart2geog(nT1, &vT1);
+    cart2geog(nT2, &vT2);
     if( gimbal_lock )
     {
-        vT1.lon = PI;
-        vT2.lon = -1.0 * PI;
+        vT1.lon = M_PI;
+        vT2.lon = -1.0 * M_PI;
     }
     if( edge_contains_point(g, vT1, flipped_longitude) )
     {
-			geog2cart(vT1, &p);
-			gbox_merge_point3d(gbox, &p);
+		geog2cart(vT1, &p);
+		gbox_merge_point3d(gbox, &p);
     }
 	else if ( edge_contains_point(g, vT2, flipped_longitude) )
 	{
@@ -447,7 +445,7 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 
     /* Our cartesian gbox is complete! 
        If we flipped our longitudes, now we have to flip our cartesian box. */
-    if (flipped_longitude) 
+    if ( flipped_longitude )  
     {
         double tmp;
         tmp = gbox->xmax;
@@ -482,51 +480,62 @@ int getPoint2d_p_ro(const POINTARRAY *pa, int n, POINT2D **point)
 
 int ptarray_calculate_gbox_geodetic(POINTARRAY *pa, GBOX *gbox)
 {
-	//static double wgs84_radius = 6371008.7714;
 	int i;
-/*	int pt_spacing; */
-	double *sphericalcoords;
-	POINT2D *pt;
+    int first = LW_TRUE;
+    POINT2D *start_pt;
+    POINT2D *end_pt;
+    GEOGRAPHIC_EDGE edge;
+    GBOX edge_gbox;
 
 	assert(gbox);
 	assert(pa);
 	
-/*	pt_spacing = 2;
-	if( TYPE_HASZ(pa->dims) ) pt_spacing++;
-	if( TYPE_HASM(pa->dims) ) pt_spacing++;
-*/
-	
 	if ( pa->npoints == 0 ) return G_FAILURE;
 	
-	sphericalcoords = (double*)(pa->serialized_pointlist);
-	
-	for( i = 0; i < pa->npoints; i++ )
+	if ( pa->npoints == 1 )
 	{
-		getPoint2d_p_ro(pa, i, &pt);
-		/* Convert to radians */
-		/* register double theta = sphericalcoords[pt_spacing*i] * PI / 180.0; */
-		/* register double phi = sphericalcoords[pt_spacing*i + 1] * PI / 180; */
-		register double theta = pt->x * PI / 180.0;
-		register double phi = pt->y * PI / 180;
-		/* Convert to geocentric */
-		register double x = cos(theta);
-		register double y = sin(theta);
-		register double z = sin(phi);
+	    POINT2D *in_pt;
+        POINT3D out_pt;
+        GEOGRAPHIC_POINT gp;
+        getPoint2d_p_ro(pa, 0, &in_pt);
+        gp.lon = deg2rad(in_pt->x);
+        gp.lat = deg2rad(in_pt->y);
+        geog2cart(gp, &out_pt);
+        gbox->xmin = gbox->xmax = out_pt.x;
+        gbox->ymin = gbox->ymax = out_pt.y;
+        gbox->zmin = gbox->zmax = out_pt.z;
+        return G_SUCCESS;
+    }
+	
+	for( i = 1; i < pa->npoints; i++ )
+	{
+		getPoint2d_p_ro(pa, i-1, &start_pt);
+		getPoint2d_p_ro(pa, i, &end_pt);
+        edge.start.lon = deg2rad(start_pt->x);
+        edge.start.lat = deg2rad(start_pt->y);
+        edge.end.lon = deg2rad(end_pt->x);
+        edge.end.lat = deg2rad(end_pt->y);
+
+        edge_calculate_gbox(edge, &edge_gbox);
+        
 		/* Initialize the box */
-		if( i == 0 )
+		if( first )
 		{ 
-			gbox->xmin = gbox->xmax = x;
-			gbox->ymin = gbox->ymax = y;
-			gbox->zmin = gbox->zmax = z;
-			gbox->mmin = gbox->mmax = 0.0;
+            gbox->xmin = edge_gbox.xmin;
+            gbox->ymin = edge_gbox.ymin;
+            gbox->zmin = edge_gbox.zmin;
+            gbox->xmax = edge_gbox.xmax;
+            gbox->ymax = edge_gbox.ymax;
+            gbox->zmax = edge_gbox.zmax;
 		}
+		
 		/* Expand the box where necessary */
-		if( x < gbox->xmin ) gbox->xmin = x;
-		if( y < gbox->ymin ) gbox->ymin = y;
-		if( z < gbox->zmin ) gbox->zmin = z;
-		if( x > gbox->xmax ) gbox->xmax = x;
-		if( y > gbox->ymax ) gbox->ymax = y;
-		if( z > gbox->zmax ) gbox->zmax = z;
+		if( edge_gbox.xmin < gbox->xmin ) gbox->xmin = edge_gbox.xmin;
+		if( edge_gbox.ymin < gbox->ymin ) gbox->ymin = edge_gbox.ymin;
+		if( edge_gbox.zmin < gbox->zmin ) gbox->zmin = edge_gbox.zmin;
+		if( edge_gbox.xmax > gbox->xmax ) gbox->xmax = edge_gbox.xmax;
+		if( edge_gbox.ymax > gbox->ymax ) gbox->ymax = edge_gbox.ymax;
+		if( edge_gbox.zmax > gbox->zmax ) gbox->zmax = edge_gbox.zmax;
 	}
 	
 	return G_SUCCESS;

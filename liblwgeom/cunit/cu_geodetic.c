@@ -55,45 +55,50 @@ int clean_geodetic_suite(void)
 	return 0;
 }
 
+
+
 void test_gbox_from_spherical_coordinates(void)
 {
 	double ll[64];
 	GBOX *box = gbox_new(gflags(0, 0, 1));
 	int rv;
 	POINTARRAY *pa;
-
-	ll[0] = 0.0;
-	ll[1] = 0.0;
-	ll[2] = 45.0;
-	ll[3] = 45.0;
+	ll[0] = -3.083333333333333333333333333333333;
+	ll[1] = 9.83333333333333333333333333333333;
+	ll[2] = 15.5;
+	ll[3] = -5.25;
 
 	pa = pointArray_construct((uchar*)ll, 0, 0, 2);
 	rv = ptarray_calculate_gbox_geodetic(pa, box);
-	//printf("%s\n", gbox_to_string(box, gflags(0, 0, 1)));
-	CU_ASSERT_DOUBLE_EQUAL(box->xmin, 0.707106781187, 0.001);
-	lwfree(pa);
-	
-	ll[0] = 45.0;
-	ll[1] = 45.0;
-	ll[2] = 45.5;
-	ll[3] = 45.5;
-	ll[4] = 46.0;
-	ll[5] = 46.0;
-
-	pa = pointArray_construct((uchar*)ll, 0, 0, 3);
-	rv = ptarray_calculate_gbox_geodetic(pa, box);
-	//printf("%s\n", gbox_to_string(box, gflags(0, 0, 1)));
-	CU_ASSERT_DOUBLE_EQUAL(box->xmin, 0.694658370459, 0.001);
+	printf("\n%s\n", gbox_to_string(box));
+    printf("%s\n", "(0.9595879536661512, -0.052998127820754914, -0.09150161866340238)  (0.9949586928172913, 0.2661172917357788, 0.17078275740560678)");
+	CU_ASSERT_DOUBLE_EQUAL(box->xmin, 0.9949586928172913, 0.0001);
 	lwfree(pa);
 
 
-	ll[0] = 45.0;
-	ll[1] = 45.0;
+	ll[0] = -35.0;
+	ll[1] = 52.5;
+	ll[2] = 50.0;
+	ll[3] = 60.0;
 
-	pa = pointArray_construct((uchar*)ll, 0, 0, 1);
+	pa = pointArray_construct((uchar*)ll, 0, 0, 2);
 	rv = ptarray_calculate_gbox_geodetic(pa, box);
-	//printf("%s\n", gbox_to_string(box, gflags(0, 0, 1)));
-	CU_ASSERT_DOUBLE_EQUAL(box->xmin, 0.707106781187, 0.001);
+	printf("\n%s\n", gbox_to_string(box));
+    printf("%s\n", "(0.32139380484326974, -0.3491712110387923, 0.7933533402912352)  (0.49866816905678146, 0.3830222215594891, 0.9014764513830344)");
+	CU_ASSERT_DOUBLE_EQUAL(box->xmin, 0.9014764513830344, 0.0001);
+	lwfree(pa);
+
+
+	ll[0] = -122.5;
+	ll[1] = 56.25;
+	ll[2] = -123.5;
+	ll[3] = 69.166666;
+
+	pa = pointArray_construct((uchar*)ll, 0, 0, 2);
+	rv = ptarray_calculate_gbox_geodetic(pa, box);
+	printf("\n%s\n", gbox_to_string(box));
+    printf("%s\n", "(-0.2985076686105858, -0.46856318207700426, 0.8314696123025452)  (-0.19629681530223578, -0.2965721369531419, 0.9346189212108039)");
+	CU_ASSERT_DOUBLE_EQUAL(box->zmin, 0.8314696123025452, 0.0001);
 	lwfree(pa);
 
 	lwfree(box);
