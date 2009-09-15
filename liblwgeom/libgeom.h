@@ -28,8 +28,8 @@
 
 #define G_FAILURE 0
 #define G_SUCCESS 1
-#define G_TRUE 1
-#define G_FALSE 0
+#define LW_TRUE 1
+#define LW_FALSE 0
 
 /**
 * Maximum allowed SRID value. 
@@ -396,6 +396,11 @@ extern GBOX* gbox_new(uchar flags);
 extern int gbox_merge(GBOX *merged_box, GBOX *new_box);
 
 /**
+* Update the #GBOX to be large enough to include itself and the new point.
+*/
+extern int gbox_merge_point3d(GBOX *gbox, POINT3D *p);
+
+/**
 * Allocate a string representation of the #GBOX, based on dimensionality of flags.
 */
 extern char* gbox_to_string(GBOX *gbox);
@@ -406,7 +411,7 @@ extern char* gbox_to_string(GBOX *gbox);
 extern GBOX* gbox_copy(GBOX *gbox);
 
 /**
-* Return #G_TRUE if the #GBOX overlaps, #G_FALSE otherwise. 
+* Return #LW_TRUE if the #GBOX overlaps, #LW_FALSE otherwise. 
 */
 extern int gbox_overlaps(GBOX *g1, GBOX *g2);
 

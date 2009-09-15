@@ -19,6 +19,17 @@ GBOX* gbox_new(uchar flags)
 	return g;
 }
 
+int gbox_merge_point3d(GBOX *gbox, POINT3D *p)
+{
+	if( gbox->xmin > p->x ) gbox->xmin = p->x;
+	if( gbox->ymin > p->y ) gbox->xmin = p->y;
+	if( gbox->zmin > p->z ) gbox->xmin = p->z;
+	if( gbox->xmax < p->x ) gbox->xmax = p->x;
+	if( gbox->ymax < p->y ) gbox->xmax = p->y;
+	if( gbox->zmax < p->z ) gbox->xmax = p->z;
+	return G_SUCCESS;
+}
+
 int gbox_merge(GBOX *master_box, GBOX *new_box)
 {
 	assert(master_box);
@@ -53,18 +64,18 @@ int gbox_overlaps(GBOX *g1, GBOX *g2)
 		
 	if( g1->xmax < g2->xmin || g1->ymax < g2->ymin ||
 	    g1->xmin > g2->xmax || g1->ymin > g2->ymax )
-		return G_FALSE;
+		return LW_FALSE;
 	if( FLAGS_GET_Z(g1->flags) || FLAGS_GET_GEODETIC(g1->flags) )
 	{
 		if( g1->zmax < g2->zmin || g1->zmin > g2->zmax )
-			return G_FALSE;
+			return LW_FALSE;
 	}
 	if( FLAGS_GET_M(g1->flags) )
 	{
 		if( g1->mmax < g2->mmin || g1->mmin > g2->mmax )
-			return G_FALSE;
+			return LW_FALSE;
 	}
-	return G_TRUE;
+	return LW_TRUE;
 }
 
 char* gbox_to_string(GBOX *gbox)
@@ -429,7 +440,7 @@ static int lwcollection_calculate_gbox(LWCOLLECTION *coll, GBOX *gbox)
 	GBOX subbox;
 	int i;
 	int result = G_FAILURE;
-	int first = G_TRUE;
+	int first = LW_TRUE;
 	assert(coll);
 	if( coll->ngeoms == 0 )
 		return G_FAILURE;
@@ -447,7 +458,7 @@ static int lwcollection_calculate_gbox(LWCOLLECTION *coll, GBOX *gbox)
 			if( first )
 			{
 				gbox_duplicate(gbox, &subbox);
-				first = G_FALSE;
+				first = LW_FALSE;
 			}
 			else
 			{

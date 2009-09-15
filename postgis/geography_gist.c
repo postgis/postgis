@@ -576,7 +576,7 @@ Datum geography_overlaps(PG_FUNCTION_ARGS)
 	geography_datum_gidx(PG_GETARG_DATUM(0), gbox1);
 	geography_datum_gidx(PG_GETARG_DATUM(1), gbox2);
 	
-	if ( gidx_overlaps(gbox1, gbox2) == G_TRUE )
+	if ( gidx_overlaps(gbox1, gbox2) == LW_TRUE )
 		PG_RETURN_BOOL(TRUE);
 	
 	PG_RETURN_BOOL(FALSE);	

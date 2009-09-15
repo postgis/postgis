@@ -16,15 +16,11 @@
 #include "CUnit/Basic.h"
 
 #include "lwalgorithm.h"
+#include "cu_tester.h"
 
 /***********************************************************************
 ** for Computational Geometry Suite
 */
-
-/* Set-up / clean-up functions */
-CU_pSuite register_cg_suite(void);
-int init_cg_suite(void);
-int clean_cg_suite(void);
 
 /* Test functions */
 void test_lw_segment_side(void);

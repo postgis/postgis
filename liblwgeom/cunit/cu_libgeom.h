@@ -16,15 +16,13 @@
 #include "CUnit/Basic.h"
 
 #include "libgeom.h"
+#include "cu_tester.h"
 
 /***********************************************************************
 ** For new geometry library libgeom.h
 */
 
-/* Set-up / clean-up functions */
-CU_pSuite register_libgeom_suite(void);
-int init_libgeom_suite(void);
-int clean_libgeom_suite(void);
+
 
 /* Test functions */
 void test_typmod_macros(void);
@@ -37,6 +35,3 @@ void test_geometry_type_from_string(void);
 void test_lwgeom_check_geodetic(void);
 void test_lwgeom_count_vertices(void);
 void test_on_gser_lwgeom_count_vertices(void);
-void test_gbox_from_spherical_coordinates(void);
-void test_gserialized_get_gbox_geocentric(void);
-void test_gbox_calculation(void);

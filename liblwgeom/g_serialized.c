@@ -747,31 +747,31 @@ static LWCIRCSTRING* lwcircstring_from_gserialized_buffer(uchar *data_ptr, uchar
 static int lwcollection_from_gserialized_allowed_types(int collectiontype, int subtype)
 {
 	if( collectiontype == COLLECTIONTYPE )
-		return G_TRUE;
+		return LW_TRUE;
 	if( collectiontype == MULTIPOINTTYPE && 
 	    subtype == POINTTYPE )
-		return G_TRUE;
+		return LW_TRUE;
 	if( collectiontype == MULTILINETYPE && 
 	    subtype == LINETYPE )
-		return G_TRUE;
+		return LW_TRUE;
 	if( collectiontype == MULTIPOLYGONTYPE && 
 	    subtype == POLYGONTYPE )
-		return G_TRUE;
+		return LW_TRUE;
 	if( collectiontype == COMPOUNDTYPE && 
 	    (subtype == LINETYPE || subtype == CIRCSTRINGTYPE) )
-		return G_TRUE;
+		return LW_TRUE;
 	if( collectiontype == CURVEPOLYTYPE && 
 	    (subtype == CIRCSTRINGTYPE || subtype == LINETYPE || subtype == COMPOUNDTYPE) )
-		return G_TRUE;
+		return LW_TRUE;
 	if( collectiontype == MULTICURVETYPE &&
 	    (subtype == CIRCSTRINGTYPE || subtype == LINETYPE || subtype == COMPOUNDTYPE) )
-		return G_TRUE;
+		return LW_TRUE;
 	if( collectiontype == MULTISURFACETYPE &&
 	    (subtype == POLYGONTYPE || subtype == CURVEPOLYTYPE) )
-		return G_TRUE;
+		return LW_TRUE;
 
 	/* Must be a bad combination! */
-	return G_FALSE;
+	return LW_FALSE;
 }
 
 static LWCOLLECTION* lwcollection_from_gserialized_buffer(uchar *data_ptr, uchar g_flags, size_t *g_size)
@@ -1044,7 +1044,7 @@ static int gserialized_calculate_gbox_geocentric_from_collection(uchar *data_ptr
 	uchar *start_ptr = data_ptr;
 	int ngeoms = 0;
 	int i;
-	int first = G_TRUE;
+	int first = LW_TRUE;
 	int result = G_FAILURE;
 
 	assert(data_ptr);
@@ -1065,7 +1065,7 @@ static int gserialized_calculate_gbox_geocentric_from_collection(uchar *data_ptr
 			if ( first ) 
 			{
 				gbox_duplicate(&subbox, gbox);
-				first = G_FALSE;
+				first = LW_FALSE;
 			}
 			else
 			{

@@ -15,14 +15,15 @@
 #include <string.h>
 #include "CUnit/Basic.h"
 
-#include "liblwgeom.h"
+#include "lwgeodetic.h"
 #include "cu_tester.h"
 
 /***********************************************************************
-** for Computational Geometry Suite
+** For new geography library lwgeodetic.h
 */
 
 
-
 /* Test functions */
-void test_mindistance2d_recursive_tolerance(void);
+void test_gbox_from_spherical_coordinates(void);
+void test_gserialized_get_gbox_geocentric(void);
+void test_gbox_calculation(void);

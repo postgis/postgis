@@ -16,10 +16,12 @@ CFLAGS=@CFLAGS@ @WARNFLAGS@
 CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
 CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I..
 
-OBJS=	cu_tester.o \
+OBJS=	\
 	cu_algorithm.o \
+	cu_geodetic.o \
 	cu_measures.o \
-	cu_libgeom.o
+	cu_libgeom.o \
+	cu_tester.o 
 
 # If we couldn't find the cunit library then display a helpful message
 ifeq ($(CUNIT_LDFLAGS),)

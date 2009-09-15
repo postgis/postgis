@@ -223,7 +223,7 @@ Datum geography_in(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_from_gserialized(g_ser);
 	
 	/* Check if the geography has valid coordinate range. */
-	if( lwgeom_check_geodetic(lwgeom) == G_FALSE )
+	if( lwgeom_check_geodetic(lwgeom) == LW_FALSE )
 	{
 		ereport(ERROR, (
 	  		errcode(ERRCODE_INVALID_PARAMETER_VALUE),
@@ -659,7 +659,7 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_from_gserialized(g_ser);
 	
 	/* Check if the geography has valid coordinate range. */
-	if( lwgeom_check_geodetic(lwgeom) == G_FALSE )
+	if( lwgeom_check_geodetic(lwgeom) == LW_FALSE )
 	{
 		ereport(ERROR, (
 	  		errcode(ERRCODE_INVALID_PARAMETER_VALUE),

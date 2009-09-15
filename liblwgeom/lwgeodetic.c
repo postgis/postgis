@@ -11,6 +11,132 @@
 
 #include "lwgeodetic.h"
 
+/**
+* Convert spherical coordinates to cartesion coordinates on unit sphere
+*/
+void inline geog2cart(GEOGRAPHIC_POINT g, POINT3D *p)
+{
+	p->x = cos(g.lat) * cos(g.lon);
+	p->y = cos(g.lat) * sin(g.lon);
+	p->z = sin(g.lat);
+}
+
+/**
+* Convert cartesion coordinates to spherical coordinates on unit sphere
+*/
+void inline cart2geog(POINT3D p, GEOGRAPHIC_POINT *g)
+{
+	g->lon = atan2(p.x, p.y);
+	g->lat = asin(p.z);
+}
+
+/** 
+* Calculate the dot product of two unit vectors
+*/
+double inline dot_product(POINT3D p1, POINT3D p2)
+{
+	return (p1.x*p2.x) + (p1.y*p2.y) + (p1.z*p2.z);
+}
+
+void inline unit_normal(POINT3D a, POINT3D b, POINT3D *n)
+{
+	double d;
+	double x = a.y * b.z - a.z * b.y;
+	double y = a.z * b.x - a.x * b.z;
+	double z = a.x * b.y - a.y * b.x;
+	d = sqrt(x*x + y*y + z*z);
+	n->x = x/d;
+	n->y = y/d;
+	n->z = z/d;
+	return;
+}
+
+/**
+* Normalize to a unit vector.
+*/
+void normalize(POINT3D *p)
+{
+	double d = sqrt(p->x*p->x + p->y*p->y + p->z*p->z);
+	if(FP_IS_ZERO(d)) 
+	{
+		p->x = p->y = p->z = 0.0;
+		return;
+	}
+	p->x = p->x / d;
+	p->y = p->y / d;
+	p->z = p->z / d;
+}
+
+/**
+* Computes the cross product of two unit vectors using their lat, lng representations.
+* Good for small distances between p and q.
+*/
+void robust_cross_product(GEOGRAPHIC_POINT p, GEOGRAPHIC_POINT q, POINT3D *a)
+{
+	double lon_qpp = (q.lon + p.lon) / -2.0;
+	double lon_qmp = (q.lon - p.lon) / 2.0;
+	a->x = sin(p.lat-q.lat) * sin(lon_qpp) * cos(lon_qmp) -
+	       sin(p.lat+q.lat) * cos(lon_qpp) * sin(lon_qmp);
+	a->y = sin(p.lat-q.lat) * cos(lon_qpp) * cos(lon_qmp) +
+	       sin(p.lat+q.lat) * sin(lon_qpp) * sin(lon_qmp);
+	a->z = cos(p.lat) * cos(q.lat) * sin(q.lon-p.lon);
+    normalize(a);
+}
+
+void x_to_z(POINT3D *p)
+{
+    double tmp = p->z;
+    p->z = p->x;
+    p->x = tmp;
+}
+
+void y_to_z(POINT3D *p)
+{
+    double tmp = p->z;
+    p->z = p->y;
+    p->y = tmp;
+}
+
+/**
+* Returns true if the point p is on the great circle plane.
+* Forms the scalar triple product of A,B,p and if the volume of the
+* resulting parallelepiped is near zero the point p is on the
+* great circle plane.
+*/
+int edge_point_on_plane(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
+{
+	POINT3D normal, pt;
+	double w;
+	robust_cross_product(e.start, e.end, &normal);
+	geog2cart(p, &pt);
+	w = dot_product(normal, pt);
+	if( FP_IS_ZERO(w) )
+		return LW_FALSE;
+	return LW_TRUE;
+}
+
+/**
+* True if the longitude of p is within the range of the longitude of the ends of e
+*/
+int edge_contains_longitude(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p, int flipped_longitude)
+{
+	if( flipped_longitude )
+	{
+		if( p.lon > e.start.lon && p.lon > e.end.lon )
+			return LW_TRUE;
+		if( p.lon < e.start.lon && p.lon < e.end.lon )
+			return LW_TRUE;
+	}
+	else
+	{
+		if( e.start.lon < p.lon && p.lon < e.end.lon )
+			return LW_TRUE;
+		if( e.end.lon < p.lon && p.lon < e.start.lon )
+			return LW_TRUE;
+	}
+	return LW_FALSE;
+}
+
 
 /**
 * Given two points on a unit sphere, calculate their distance apart. 
@@ -42,22 +168,297 @@ double sphere_direction(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e)
 }
 
 /**
+* Returns true if the point p is on the minor edge defined by the
+* end points of e.
+*/
+int edge_contains_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p, int flipped_longitude)
+{
+	if( edge_point_on_plane(e, p) && edge_contains_longitude(e, p, flipped_longitude) )
+		return LW_TRUE;
+	return LW_FALSE;
+}
+
+/**
+* Used in great circle to compute the pole of the great circle.
+*/
+double z_to_latitude(double z)
+{
+	double sign = signum(z);
+	double tlat = acos(z);
+	if(fabs(tlat) > (PI/2.0) )
+	{
+		tlat = sign * (PI - fabs(tlat));
+	} 
+	else 
+	{
+		tlat = sign * tlat;
+	}
+	return tlat;
+}
+
+/**
+* Computes the pole of the great circle disk which is the intersection of
+* the great circle with the line of maximum/minimum gradiant that lies on
+* the great circle plane.
+*/
+int clairaut_cartesian(POINT3D start, POINT3D end, int top, GEOGRAPHIC_POINT *g)
+{
+	POINT3D t1, t2;
+	GEOGRAPHIC_POINT vN1, vN2;
+	unit_normal(start, end, &t1);
+	unit_normal(end, start, &t2);
+	cart2geog(t1, &vN1);
+	cart2geog(t2, &vN2);
+	if( top )
+	{
+		g->lat = z_to_latitude(t1.z);
+		g->lon = vN2.lon;
+	}
+	else
+	{
+		g->lat = z_to_latitude(t2.z);
+		g->lon = vN1.lon;
+	}
+	return G_SUCCESS;
+}
+
+/**
+* Computes the pole of the great circle disk which is the intersection of
+* the great circle with the line of maximum/minimum gradiant that lies on
+* the great circle plane.
+*/
+int clairaut_geographic(GEOGRAPHIC_POINT start, GEOGRAPHIC_POINT end, int top, GEOGRAPHIC_POINT *g)
+{
+	POINT3D t1, t2;
+	GEOGRAPHIC_POINT vN1, vN2;
+    robust_cross_product(start, end, &t1);
+    robust_cross_product(end, start, &t2);
+    cart2geog(t1, &vN1);
+    cart2geog(t2, &vN2);
+    if( top )
+    {
+        g->lat = z_to_latitude(t1.z);
+        g->lon = vN2.lon;
+    }
+    else
+    {
+        g->lat = z_to_latitude(t2.z);
+        g->lon = vN1.lon;
+    }
+    return G_SUCCESS;
+}
+
+
+/**
 * Given a starting location r, a distance and an azimuth
 * to the new point, compute the location of the projected point on the unit sphere.
 */
-void sphere_project(GEOGRAPHIC_POINT r, double distance, double azimuth, GEOGRAPHIC_POINT *n) 
+int sphere_project(GEOGRAPHIC_POINT r, double distance, double azimuth, GEOGRAPHIC_POINT *n) 
 {
 	double d = distance;
 	double lat1 = r.lat;
-	n->lat = asin(sin(lat1) * cos(d) +
-	        cos(lat1) * sin(d) * cos(azimuth));
 	double a = cos(lat1) * cos(d) - sin(lat1) * sin(d) * cos(azimuth);
 	double b = signum(d) * sin(azimuth);
+	n->lat = asin(sin(lat1) * cos(d) +
+	         cos(lat1) * sin(d) * cos(azimuth));
 	n->lon = atan(b/a) + r.lon;
+	return G_SUCCESS;
 }
 
-void sphere_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
+
+
+int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 {
+	double deltaLongitude;
+	double distance = sphere_distance(e.start, e.end);
+	int flipped_longitude = LW_FALSE;
+    int gimbal_lock = LW_FALSE;
+	POINT3D p, start, end, startXZ, endXZ, startYZ, endYZ, nT1B, nT2B;
+	GEOGRAPHIC_EDGE g;
+	GEOGRAPHIC_POINT vT1, vT2;
+
+	/* Initialize our working copy of the edge */
+	g = e;
+
+	/* Initialize box with the start and end points of the edge. */
+	geog2cart(g.start, &start);
+	geog2cart(g.end, &end);
+	gbox->xmin = FP_MIN(start.x, end.x);
+	gbox->ymin = FP_MIN(start.y, end.y);
+	gbox->zmin = FP_MIN(start.z, end.z);
+	gbox->xmax = FP_MAX(start.x, end.x);
+	gbox->ymax = FP_MAX(start.y, end.y);
+	gbox->zmax = FP_MAX(start.z, end.z);
+
+	/* Edge is zero length, just return the naive box */
+	if( FP_IS_ZERO(distance) )
+		return G_SUCCESS;
+
+	/* Edge is antipodal (one point on each side of the globe), 
+	   set the box to contain the whole world and return */
+	if( FP_EQUALS(distance, PI) )
+	{
+		gbox->xmin = gbox->ymin = gbox->zmin = -1.0;
+		gbox->xmax = gbox->ymax = gbox->zmax = 1.0;
+		return G_SUCCESS;
+	}
+
+	/* Calculate the difference in longitude between the two points. */
+	if( signum(g.start.lon) == signum(g.end.lon) )
+	{
+		deltaLongitude = fabs(g.start.lon - g.end.lon);
+	}
+	else
+	{
+		double dl = fabs(g.start.lon) + fabs(g.end.lon);
+		/* Less then a hemisphere apart */
+		if( dl < PI )
+		{
+			deltaLongitude = dl;
+		}
+		/* Exactly a hemisphere apart */
+		else if ( FP_EQUALS( dl, PI ) )
+		{
+			deltaLongitude = PI;
+		}
+		/* More than a hemisphere apart, return the other half of the sphere 
+		   and note that we are crossing the dateline */
+		else
+		{
+			flipped_longitude = LW_TRUE;
+			deltaLongitude = dl - PI;
+		}
+	}	
+	
+	/* If we are crossing the dateline, flip the calculation to the other
+	   side of the globe. We'll flip our output box back at the end of the
+	   calculation. */
+	if ( flipped_longitude )
+	{
+		if ( g.start.lon > 0.0 ) 
+			g.start.lon -= PI;
+		else 
+			g.start.lon += PI;
+		if ( g.end.lon > 0.0 ) 
+			g.end.lon -= PI;
+		else 
+			g.end.lon += PI;
+	}
+	
+	/* Check for pole crossings. */
+	if( FP_EQUALS(deltaLongitude, PI) ) 
+	{
+		/* Crosses the north pole, adjust box to contain pole */
+		if( (g.start.lat + g.end.lat) > 0.0 )
+		{
+			gbox->zmax = 1.0;
+		} 
+		/* Crosses the south pole, adjust box to contain pole */
+		else 
+		{
+			gbox->zmin = -1.0;
+		}
+	}
+	/* How about maximal latitudes in this great circle. Are any
+	   of them contained within this arc? */
+	else
+	{
+		clairaut_cartesian(start, end, LW_TRUE, &vT1);
+		clairaut_cartesian(start, end, LW_FALSE, &vT2);
+		if( edge_contains_point(g, vT1, flipped_longitude) )
+		{
+			geog2cart(vT1, &p);
+			gbox_merge_point3d(gbox, &p);
+		}
+		else if ( edge_contains_point(g, vT2, flipped_longitude) )
+		{
+			geog2cart(vT2, &p);
+			gbox_merge_point3d(gbox, &p);
+		}
+	}
+
+    /* Flip the X axis to Z and check for maximal latitudes again. */
+    startXZ = start;
+    x_to_z(&startXZ);
+    endXZ = end;
+    x_to_z(&endXZ);
+	clairaut_cartesian(startXZ, endXZ, LW_TRUE, &vT1);
+	clairaut_cartesian(startXZ, endXZ, LW_FALSE, &vT2);
+    gimbal_lock = LW_FALSE;
+    if ( FP_IS_ZERO(vT1.lat) ) 
+    {
+        gimbal_lock = LW_TRUE;
+    }
+    geog2cart(vT1, &nT1B);
+    geog2cart(vT2, &nT2B);
+    x_to_z(&nT1B);
+    x_to_z(&nT2B);
+    cart2geog(nT1B, &vT1);
+    cart2geog(nT2B, &vT2);
+    if( gimbal_lock )
+    {
+        vT1.lon = PI;
+        vT2.lon = -1.0 * PI;
+    }
+    if( edge_contains_point(g, vT1, flipped_longitude) )
+    {
+			geog2cart(vT1, &p);
+			gbox_merge_point3d(gbox, &p);
+    }
+	else if ( edge_contains_point(g, vT2, flipped_longitude) )
+	{
+		geog2cart(vT2, &p);
+		gbox_merge_point3d(gbox, &p);
+	}
+    
+    /* Flip the Y axis to Z and check for maximal latitudes again. */
+    startYZ = start;
+    y_to_z(&startYZ);
+    endYZ = end;
+    y_to_z(&endYZ);
+	clairaut_cartesian(startYZ, endYZ, LW_TRUE, &vT1);
+	clairaut_cartesian(startYZ, endYZ, LW_FALSE, &vT2);
+    gimbal_lock = LW_FALSE;
+    if ( FP_IS_ZERO(vT1.lat) ) 
+    {
+        gimbal_lock = LW_TRUE;
+    }
+    geog2cart(vT1, &nT1B);
+    geog2cart(vT2, &nT2B);
+    y_to_z(&nT1B);
+    y_to_z(&nT2B);
+    cart2geog(nT1B, &vT1);
+    cart2geog(nT2B, &vT2);
+    if( gimbal_lock )
+    {
+        vT1.lon = PI;
+        vT2.lon = -1.0 * PI;
+    }
+    if( edge_contains_point(g, vT1, flipped_longitude) )
+    {
+			geog2cart(vT1, &p);
+			gbox_merge_point3d(gbox, &p);
+    }
+	else if ( edge_contains_point(g, vT2, flipped_longitude) )
+	{
+		geog2cart(vT2, &p);
+		gbox_merge_point3d(gbox, &p);
+	}
+
+    /* Our cartesian gbox is complete! 
+       If we flipped our longitudes, now we have to flip our cartesian box. */
+    if (flipped_longitude) 
+    {
+        double tmp;
+        tmp = gbox->xmax;
+        gbox->xmax = -1.0 * gbox->xmin;
+        gbox->xmin = -1.0 * tmp;
+        tmp = gbox->ymax;
+        gbox->ymax = -1.0 * gbox->ymin;
+        gbox->ymin = -1.0 * tmp;
+    }
+    
+	return G_SUCCESS;
 }
 
 
@@ -152,7 +553,7 @@ static int lwpolygon_calculate_gbox_geodetic(LWPOLY *poly, GBOX *gbox)
 {
 	GBOX ringbox;
 	int i;
-	int first = G_TRUE;
+	int first = LW_TRUE;
 	assert(poly);
 	if( poly->nrings == 0 )
 		return G_FAILURE;
@@ -164,7 +565,7 @@ static int lwpolygon_calculate_gbox_geodetic(LWPOLY *poly, GBOX *gbox)
 		if( first )
 		{
 			gbox_duplicate(gbox, &ringbox);
-			first = G_FALSE;
+			first = LW_FALSE;
 		}
 		else
 		{
@@ -179,7 +580,7 @@ static int lwcollection_calculate_gbox_geodetic(LWCOLLECTION *coll, GBOX *gbox)
 	GBOX subbox;
 	int i;
 	int result = G_FAILURE;
-	int first = G_TRUE;
+	int first = LW_TRUE;
 	assert(coll);
 	if( coll->ngeoms == 0 )
 		return G_FAILURE;
@@ -197,7 +598,7 @@ static int lwcollection_calculate_gbox_geodetic(LWCOLLECTION *coll, GBOX *gbox)
 			if( first )
 			{
 				gbox_duplicate(gbox, &subbox);
-				first = G_FALSE;
+				first = LW_FALSE;
 			}
 			else
 			{
@@ -255,10 +656,10 @@ static int ptarray_check_geodetic(POINTARRAY *pa)
 		getPoint2d_p_ro(pa, t, &pt);
 		//printf( "%d (%g, %g)\n", t, pt->x, pt->y);
 		if ( pt->x < -180.0 || pt->y < -90.0 || pt->x > 180.0 || pt->y > 90.0 )
-			return G_FALSE;
+			return LW_FALSE;
 	}
 
-	return G_TRUE;
+	return LW_TRUE;
 }
 
 static int lwpoint_check_geodetic(LWPOINT *point)
@@ -280,10 +681,10 @@ static int lwpoly_check_geodetic(LWPOLY *poly)
 	
 	for( i = 0; i < poly->nrings; i++ )
 	{
-		if( ptarray_check_geodetic(poly->rings[i]) == G_FALSE )
-			return G_FALSE;
+		if( ptarray_check_geodetic(poly->rings[i]) == LW_FALSE )
+			return LW_FALSE;
 	}
-	return G_TRUE;
+	return LW_TRUE;
 }
 
 static int lwcollection_check_geodetic(LWCOLLECTION *col)
@@ -293,10 +694,10 @@ static int lwcollection_check_geodetic(LWCOLLECTION *col)
 	
 	for( i = 0; i < col->ngeoms; i++ )
 	{
-		if( lwgeom_check_geodetic(col->geoms[i]) == G_FALSE )
-			return G_FALSE;
+		if( lwgeom_check_geodetic(col->geoms[i]) == LW_FALSE )
+			return LW_FALSE;
 	}
-	return G_TRUE;
+	return LW_TRUE;
 }
 
 int lwgeom_check_geodetic(const LWGEOM *geom)
@@ -317,7 +718,7 @@ int lwgeom_check_geodetic(const LWGEOM *geom)
 		default:
 			lwerror("unsupported input geometry type: %d", TYPE_GETTYPE(geom->type));
 	}
-	return G_FALSE;
+	return LW_FALSE;
 }
 
 

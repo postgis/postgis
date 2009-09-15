@@ -13,10 +13,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "CUnit/Basic.h"
-
-#include "cu_algorithm.h"
-#include "cu_measures.h"
-#include "cu_libgeom.h"
+#include "liblwgeom.h"
+#include "cu_tester.h"
 
 
 /*
@@ -57,6 +55,13 @@ int main()
 
 	/* Add the libgeom suite to the registry */
 	if (NULL == register_libgeom_suite())
+	{
+		CU_cleanup_registry();
+		return CU_get_error();
+	}
+
+	/* Add the geodetic suite to the registry */
+	if (NULL == register_geodetic_suite())
 	{
 		CU_cleanup_registry();
 		return CU_get_error();
