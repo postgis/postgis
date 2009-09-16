@@ -67,6 +67,7 @@ void test_gbox_from_spherical_coordinates(void)
 {
 	double ll[64];
 	GBOX *box = gbox_new(gflags(0, 0, 1));
+    GBOX *good;
 	int rv;
 	POINTARRAY *pa;
 	ll[0] = -3.083333333333333333333333333333333;
@@ -76,10 +77,17 @@ void test_gbox_from_spherical_coordinates(void)
 
 	pa = pointArray_construct((uchar*)ll, 0, 0, 2);
 	rv = ptarray_calculate_gbox_geodetic(pa, box);
+	good = gbox_from_string("GBOX((0.95958795,-0.05299812,-0.09150161),(0.99495869,0.26611729,0.17078275))");
 //	printf("\n%s\n", gbox_to_string(box));
 //  printf("%s\n", "(0.95958795, -0.05299812, -0.09150161)  (0.99495869, 0.26611729, 0.17078275)");
-	CU_ASSERT_DOUBLE_EQUAL(box->xmin, 0.95958795, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(box->xmin, good->xmin, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(box->xmax, good->xmax, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(box->ymin, good->ymin, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(box->ymax, good->ymax, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(box->zmin, good->zmin, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(box->zmax, good->zmax, 0.0001);
 	lwfree(pa);
+    lwfree(good);
 
 
 	ll[0] = -35.0;
@@ -89,10 +97,17 @@ void test_gbox_from_spherical_coordinates(void)
 
 	pa = pointArray_construct((uchar*)ll, 0, 0, 2);
 	rv = ptarray_calculate_gbox_geodetic(pa, box);
+	good = gbox_from_string("GBOX((0.32139380,-0.34917121,0.79335334),(0.49866816,0.38302222,0.90147645))");
 //	printf("\n%s\n", gbox_to_string(box));
 //  printf("%s\n", "(0.32139380, -0.34917121, 0.79335334)  (0.49866816, 0.38302222, 0.90147645)");
-	CU_ASSERT_DOUBLE_EQUAL(box->xmin, 0.32139380, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(box->xmin, good->xmin, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(box->xmax, good->xmax, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(box->ymin, good->ymin, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(box->ymax, good->ymax, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(box->zmin, good->zmin, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(box->zmax, good->zmax, 0.0001);
 	lwfree(pa);
+    lwfree(good);
 
 
 	ll[0] = -122.5;
@@ -102,10 +117,17 @@ void test_gbox_from_spherical_coordinates(void)
 
 	pa = pointArray_construct((uchar*)ll, 0, 0, 2);
 	rv = ptarray_calculate_gbox_geodetic(pa, box);
+	good = gbox_from_string("GBOX((-0.29850766,-0.46856318,0.83146961),(-0.19629681,-0.29657213,0.93461892))");
 //  printf("\n%s\n", gbox_to_string(box));
 //  printf("%s\n", "(-0.29850766, -0.46856318, 0.83146961)  (-0.19629681, -0.29657213, 0.93461892)");
-	CU_ASSERT_DOUBLE_EQUAL(box->zmin, 0.83146961, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(box->xmin, good->xmin, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(box->xmax, good->xmax, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(box->ymin, good->ymin, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(box->ymax, good->ymax, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(box->zmin, good->zmin, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(box->zmax, good->zmax, 0.0001);
 	lwfree(pa);
+    lwfree(good);
 
 	lwfree(box);
 	

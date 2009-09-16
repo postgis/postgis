@@ -11,6 +11,7 @@
 
 #include "libgeom.h"
 #include <math.h>
+#include <stdlib.h>
 
 GBOX* gbox_new(uchar flags)
 {
@@ -78,28 +79,37 @@ int gbox_overlaps(GBOX *g1, GBOX *g2)
 	return LW_TRUE;
 }
 
-#if 0
+/**
+* Warning, this function is only good for x/y/z boxes, used 
+* in unit testing of geodetic box generation.
+*/
 GBOX* gbox_from_string(char *str)
 {
-    int ndims = 0;
     char *ptr = str;
     char *nextptr;
-    double d;
     char *gbox_start = strstr(str, "GBOX((");
-    GBOX *gbox = gbox_new(0);
+    GBOX *gbox = gbox_new(gflags(0,0,1));
     if( ! gbox_start ) return NULL; /* No header found */
-    ptr += 5;
-    do {
-        ptr++;
-        d = strtod(ptr, &nextptr);
-        if( ptr == nextptr ) return NULL; /* No double found */
-        gbox->xmin = d;
-        ndims++;
-        ptr = nextptr;
-    
-    
+    ptr += 6;
+    gbox->xmin = strtod(ptr, &nextptr);
+    if( ptr == nextptr ) return NULL; /* No double found */
+    ptr = nextptr + 1;
+    gbox->ymin = strtod(ptr, &nextptr);
+    if( ptr == nextptr ) return NULL; /* No double found */
+    ptr = nextptr + 1;
+    gbox->zmin = strtod(ptr, &nextptr);
+    if( ptr == nextptr ) return NULL; /* No double found */
+    ptr = nextptr + 3;
+    gbox->xmax = strtod(ptr, &nextptr);
+    if( ptr == nextptr ) return NULL; /* No double found */
+    ptr = nextptr + 1;
+    gbox->ymax = strtod(ptr, &nextptr);
+    if( ptr == nextptr ) return NULL; /* No double found */
+    ptr = nextptr + 1;
+    gbox->zmax = strtod(ptr, &nextptr);
+    if( ptr == nextptr ) return NULL; /* No double found */
+    return gbox;
 }
-#endif
 
 char* gbox_to_string(GBOX *gbox)
 {

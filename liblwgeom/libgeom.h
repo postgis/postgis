@@ -411,6 +411,11 @@ extern char* gbox_to_string(GBOX *gbox);
 extern GBOX* gbox_copy(GBOX *gbox);
 
 /**
+* Warning, do not use this function, it is very particular about inputs.
+*/
+extern GBOX* gbox_from_string(char *str);
+
+/**
 * Return #LW_TRUE if the #GBOX overlaps, #LW_FALSE otherwise. 
 */
 extern int gbox_overlaps(GBOX *g1, GBOX *g2);
