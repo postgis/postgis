@@ -42,7 +42,6 @@ typedef struct {
 /* 
 ** Prototypes for internal functions.
 */
-
 void inline geog2cart(GEOGRAPHIC_POINT g, POINT3D *p);
 void inline cart2geog(POINT3D p, GEOGRAPHIC_POINT *g);
 double inline dot_product(POINT3D p1, POINT3D p2);
@@ -53,12 +52,12 @@ void x_to_z(POINT3D *p);
 void y_to_z(POINT3D *p);
 int edge_point_on_plane(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p);
 int edge_contains_longitude(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p, int flipped_longitude);
-double sphere_distance(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e);
-double sphere_direction(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e);
 int edge_contains_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p, int flipped_longitude);
 double z_to_latitude(double z);
 int clairaut_cartesian(POINT3D start, POINT3D end, int top, GEOGRAPHIC_POINT *g);
 int clairaut_geographic(GEOGRAPHIC_POINT start, GEOGRAPHIC_POINT end, int top, GEOGRAPHIC_POINT *g);
+double sphere_distance(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e);
+double sphere_direction(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e);
 int sphere_project(GEOGRAPHIC_POINT r, double distance, double azimuth, GEOGRAPHIC_POINT *n);
 int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox);
 

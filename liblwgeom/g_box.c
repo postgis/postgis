@@ -22,11 +22,11 @@ GBOX* gbox_new(uchar flags)
 int gbox_merge_point3d(GBOX *gbox, POINT3D *p)
 {
 	if( gbox->xmin > p->x ) gbox->xmin = p->x;
-	if( gbox->ymin > p->y ) gbox->xmin = p->y;
-	if( gbox->zmin > p->z ) gbox->xmin = p->z;
+	if( gbox->ymin > p->y ) gbox->ymin = p->y;
+	if( gbox->zmin > p->z ) gbox->zmin = p->z;
 	if( gbox->xmax < p->x ) gbox->xmax = p->x;
-	if( gbox->ymax < p->y ) gbox->xmax = p->y;
-	if( gbox->zmax < p->z ) gbox->xmax = p->z;
+	if( gbox->ymax < p->y ) gbox->ymax = p->y;
+	if( gbox->zmax < p->z ) gbox->zmax = p->z;
 	return G_SUCCESS;
 }
 
@@ -90,25 +90,25 @@ char* gbox_to_string(GBOX *gbox)
 
 	if( FLAGS_GET_GEODETIC(gbox->flags) )
 	{
-		snprintf(str, sz, "GBOX((%.12g,%.12g,%.12g),(%.12g,%.12g,%.12g))", gbox->xmin, gbox->ymin, gbox->zmin, gbox->xmax, gbox->ymax, gbox->zmax);
+		snprintf(str, sz, "GBOX((%.8g,%.8g,%.8g),(%.8g,%.8g,%.8g))", gbox->xmin, gbox->ymin, gbox->zmin, gbox->xmax, gbox->ymax, gbox->zmax);
 		return str;
 	}
 	if( FLAGS_GET_Z(gbox->flags) && FLAGS_GET_M(gbox->flags) )
 	{
-		snprintf(str, sz, "GBOX((%.12g,%.12g,%.12g,%.12g),(%.12g,%.12g,%.12g,%.12g))", gbox->xmin, gbox->ymin, gbox->zmin, gbox->mmin, gbox->xmax, gbox->ymax, gbox->zmax, gbox->mmax);
+		snprintf(str, sz, "GBOX((%.8g,%.8g,%.8g,%.8g),(%.8g,%.8g,%.8g,%.8g))", gbox->xmin, gbox->ymin, gbox->zmin, gbox->mmin, gbox->xmax, gbox->ymax, gbox->zmax, gbox->mmax);
 		return str;
 	}
 	if( FLAGS_GET_Z(gbox->flags) )
 	{
-		snprintf(str, sz, "GBOX((%.12g,%.12g,%.12g),(%.12g,%.12g,%.12g))", gbox->xmin, gbox->ymin, gbox->zmin, gbox->xmax, gbox->ymax, gbox->zmax);
+		snprintf(str, sz, "GBOX((%.8g,%.8g,%.8g),(%.8g,%.8g,%.8g))", gbox->xmin, gbox->ymin, gbox->zmin, gbox->xmax, gbox->ymax, gbox->zmax);
 		return str;
 	}
 	if( FLAGS_GET_M(gbox->flags) )
 	{
-		snprintf(str, sz, "GBOX((%.12g,%.12g,%.12g),(%.12g,%.12g,%.12g))", gbox->xmin, gbox->ymin, gbox->mmin, gbox->xmax, gbox->ymax, gbox->mmax);
+		snprintf(str, sz, "GBOX((%.8g,%.8g,%.8g),(%.8g,%.8g,%.8g))", gbox->xmin, gbox->ymin, gbox->mmin, gbox->xmax, gbox->ymax, gbox->mmax);
 		return str;
 	}
-	snprintf(str, sz, "GBOX((%.12g,%.12g),(%.12g,%.12g))", gbox->xmin, gbox->ymin, gbox->xmax, gbox->ymax);
+	snprintf(str, sz, "GBOX((%.8g,%.8g),(%.8g,%.8g))", gbox->xmin, gbox->ymin, gbox->xmax, gbox->ymax);
 	return str;
 }
 

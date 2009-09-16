@@ -26,7 +26,7 @@ void inline geog2cart(GEOGRAPHIC_POINT g, POINT3D *p)
 */
 void inline cart2geog(POINT3D p, GEOGRAPHIC_POINT *g)
 {
-	g->lon = atan2(p.x, p.y);
+	g->lon = atan2(p.y, p.x);
 	g->lat = asin(p.z);
 }
 
@@ -183,6 +183,7 @@ double z_to_latitude(double z)
 {
 	double sign = signum(z);
 	double tlat = acos(z);
+    LWDEBUGF(4, "inputs: sign(%.8g) tlat(%.8g)", sign, tlat);
 	if(fabs(tlat) > M_PI_2 )
 	{
 		tlat = sign * (M_PI - fabs(tlat));
@@ -191,6 +192,7 @@ double z_to_latitude(double z)
 	{
 		tlat = sign * tlat;
 	}
+    LWDEBUGF(4, "output: tlat(%.8g)", tlat);
 	return tlat;
 }
 
@@ -203,8 +205,11 @@ int clairaut_cartesian(POINT3D start, POINT3D end, int top, GEOGRAPHIC_POINT *g)
 {
 	POINT3D t1, t2;
 	GEOGRAPHIC_POINT vN1, vN2;
+    LWDEBUG(4,"entering function");
 	unit_normal(start, end, &t1);
 	unit_normal(end, start, &t2);
+    LWDEBUGF(4, "t1 == POINT(%.8g %.8g %.8g)", t1.x, t1.y, t1.z);
+    LWDEBUGF(4, "t2 == POINT(%.8g %.8g %.8g)", t2.x, t2.y, t2.z);
 	cart2geog(t1, &vN1);
 	cart2geog(t2, &vN2);
 	if( top )
@@ -229,10 +234,15 @@ int clairaut_geographic(GEOGRAPHIC_POINT start, GEOGRAPHIC_POINT end, int top, G
 {
 	POINT3D t1, t2;
 	GEOGRAPHIC_POINT vN1, vN2;
+    LWDEBUG(4,"entering function");
     robust_cross_product(start, end, &t1);
     robust_cross_product(end, start, &t2);
+    LWDEBUGF(4, "t1 == POINT(%.8g %.8g %.8g)", t1.x, t1.y, t1.z);
+    LWDEBUGF(4, "t2 == POINT(%.8g %.8g %.8g)", t2.x, t2.y, t2.z);
     cart2geog(t1, &vN1);
     cart2geog(t2, &vN2);
+        LWDEBUGF(4, "vN1 == GPOINT(%.6g %.6g) ", vN1.lat, vN1.lon);
+        LWDEBUGF(4, "vN2 == GPOINT(%.6g %.6g) ", vN2.lat, vN2.lon);
     if( top )
     {
         g->lat = z_to_latitude(t1.z);
@@ -278,6 +288,9 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 	/* Initialize our working copy of the edge */
 	g = e;
 
+    LWDEBUG(4, "entered function");
+    LWDEBUGF(4, "edge values: (%.6g %.6g, %.6g %.6g)", g.start.lon, g.start.lat, g.end.lon, g.end.lat);
+
 	/* Initialize box with the start and end points of the edge. */
 	geog2cart(g.start, &start);
 	geog2cart(g.end, &end);
@@ -288,23 +301,30 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 	gbox->ymax = FP_MAX(start.y, end.y);
 	gbox->zmax = FP_MAX(start.z, end.z);
 
+    LWDEBUGF(4, "initialized gbox: %s", gbox_to_string(gbox));
+
 	/* Edge is zero length, just return the naive box */
 	if( FP_IS_ZERO(distance) )
+	{
+        LWDEBUG(4, "edge is zero length. returning");
 		return G_SUCCESS;
+	}
 
 	/* Edge is antipodal (one point on each side of the globe), 
 	   set the box to contain the whole world and return */
 	if( FP_EQUALS(distance, M_PI) )
 	{
+        LWDEBUG(4, "edge is antipodal. setting to maximum size box, and returning");
 		gbox->xmin = gbox->ymin = gbox->zmin = -1.0;
 		gbox->xmax = gbox->ymax = gbox->zmax = 1.0;
 		return G_SUCCESS;
 	}
 
-	/* Calculate the difference in longitude between the two points. */
+ 	/* Calculate the difference in longitude between the two points. */
 	if( signum(g.start.lon) == signum(g.end.lon) )
 	{
-		deltaLongitude = fabs(g.start.lon - g.end.lon);
+		deltaLongitude = fabs(fabs(g.start.lon) - fabs(g.end.lon));
+        LWDEBUG(4, "edge does not cross dateline (start.lon same sign as end.long)");
 	}
 	else
 	{
@@ -313,11 +333,13 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 		if( dl < M_PI )
 		{
 			deltaLongitude = dl;
+            LWDEBUG(4, "edge does not cross dateline");
 		}
 		/* Exactly a hemisphere apart */
 		else if ( FP_EQUALS( dl, M_PI ) )
 		{
 			deltaLongitude = M_PI;
+            LWDEBUG(4, "edge points are 180d apart");
 		}
 		/* More than a hemisphere apart, return the other half of the sphere 
 		   and note that we are crossing the dateline */
@@ -325,14 +347,17 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 		{
 			flipped_longitude = LW_TRUE;
 			deltaLongitude = dl - M_PI;
+            LWDEBUG(4, "edge crosses dateline");
 		}
 	}	
+    LWDEBUGF(4, "longitude delta is %g", deltaLongitude);
 	
 	/* If we are crossing the dateline, flip the calculation to the other
 	   side of the globe. We'll flip our output box back at the end of the
 	   calculation. */
 	if ( flipped_longitude )
 	{
+        LWDEBUG(4, "reversing longitudes");
 		if ( g.start.lon > 0.0 ) 
 			g.start.lon -= M_PI;
 		else 
@@ -342,6 +367,7 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 		else 
 			g.end.lon += M_PI;
 	}
+    LWDEBUGF(4, "edge values: (%.6g %.6g, %.6g %.6g)", g.start.lon, g.start.lat, g.end.lon, g.end.lat);
 	
 	/* Check for pole crossings. */
 	if( FP_EQUALS(deltaLongitude, M_PI) ) 
@@ -349,11 +375,13 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 		/* Crosses the north pole, adjust box to contain pole */
 		if( (g.start.lat + g.end.lat) > 0.0 )
 		{
+            LWDEBUG(4, "edge crosses north pole");
 			gbox->zmax = 1.0;
 		} 
 		/* Crosses the south pole, adjust box to contain pole */
 		else 
 		{
+            LWDEBUG(4, "edge crosses south pole");
 			gbox->zmin = -1.0;
 		}
 	}
@@ -361,21 +389,31 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 	   of them contained within this arc? */
 	else
 	{
-		clairaut_cartesian(start, end, LW_TRUE, &vT1);
-		clairaut_cartesian(start, end, LW_FALSE, &vT2);
+        LWDEBUG(4, "not a pole crossing, calculating clairaut points");
+		clairaut_geographic(g.start, g.end, LW_TRUE, &vT1);
+		clairaut_geographic(g.start, g.end, LW_FALSE, &vT2);
+        LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
+        LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
 		if( edge_contains_point(g, vT1, flipped_longitude) )
 		{
 			geog2cart(vT1, &p);
+            LWDEBUGF(4, "p == POINT(%.8g %.8g %.8g)", p.x, p.y, p.z);
 			gbox_merge_point3d(gbox, &p);
+            LWDEBUG(4, "edge contained vT1");
+            LWDEBUGF(4, "gbox: %s", gbox_to_string(gbox));
 		}
 		else if ( edge_contains_point(g, vT2, flipped_longitude) )
 		{
 			geog2cart(vT2, &p);
+            LWDEBUGF(4, "p == POINT(%.8g %.8g %.8g)", p.x, p.y, p.z);
 			gbox_merge_point3d(gbox, &p);
+            LWDEBUG(4, "edge contained vT2");
+            LWDEBUGF(4, "gbox: %s", gbox_to_string(gbox));
 		}
 	}
 
     /* Flip the X axis to Z and check for maximal latitudes again. */
+    LWDEBUG(4, "flipping x to z and calculating clairaut points");
     startXZ = start;
     x_to_z(&startXZ);
     endXZ = end;
@@ -393,23 +431,33 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
     x_to_z(&nT2);
     cart2geog(nT1, &vT1);
     cart2geog(nT2, &vT2);
+        LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
+        LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
     if( gimbal_lock )
     {
+        LWDEBUG(4, "gimbal lock");
         vT1.lon = M_PI;
         vT2.lon = -1.0 * M_PI;
     }
     if( edge_contains_point(g, vT1, flipped_longitude) )
     {
 		geog2cart(vT1, &p);
+        LWDEBUGF(4, "p == POINT(%.8g %.8g %.8g)", p.x, p.y, p.z);
 		gbox_merge_point3d(gbox, &p);
+        LWDEBUG(4, "edge contained vT1");
+        LWDEBUGF(4, "gbox: %s", gbox_to_string(gbox));
     }
 	else if ( edge_contains_point(g, vT2, flipped_longitude) )
 	{
 		geog2cart(vT2, &p);
+        LWDEBUGF(4, "p == POINT(%.8g %.8g %.8g)", p.x, p.y, p.z);
 		gbox_merge_point3d(gbox, &p);
+        LWDEBUG(4, "edge contained vT2");
+        LWDEBUGF(4, "gbox: %s", gbox_to_string(gbox));
 	}
     
     /* Flip the Y axis to Z and check for maximal latitudes again. */
+    LWDEBUG(4, "flipping y to z and calculating clairaut points");
     startYZ = start;
     y_to_z(&startYZ);
     endYZ = end;
@@ -427,20 +475,29 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
     y_to_z(&nT2);
     cart2geog(nT1, &vT1);
     cart2geog(nT2, &vT2);
+        LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
+        LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
     if( gimbal_lock )
     {
+        LWDEBUG(4, "gimbal lock");
         vT1.lon = M_PI;
         vT2.lon = -1.0 * M_PI;
     }
     if( edge_contains_point(g, vT1, flipped_longitude) )
     {
 		geog2cart(vT1, &p);
+        LWDEBUGF(4, "p == POINT(%.8g %.8g %.8g)", p.x, p.y, p.z);
 		gbox_merge_point3d(gbox, &p);
+        LWDEBUG(4, "edge contained vT1");
+        LWDEBUGF(4, "gbox: %s", gbox_to_string(gbox));
     }
 	else if ( edge_contains_point(g, vT2, flipped_longitude) )
 	{
 		geog2cart(vT2, &p);
+        LWDEBUGF(4, "p == POINT(%.8g %.8g %.8g)", p.x, p.y, p.z);
 		gbox_merge_point3d(gbox, &p);
+        LWDEBUG(4, "edge contained vT2");
+        LWDEBUGF(4, "gbox: %s", gbox_to_string(gbox));
 	}
 
     /* Our cartesian gbox is complete! 
@@ -448,14 +505,18 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
     if ( flipped_longitude )  
     {
         double tmp;
+        LWDEBUG(4, "flipping cartesian box back");
+        LWDEBUGF(4, "gbox before: %s", gbox_to_string(gbox));
         tmp = gbox->xmax;
         gbox->xmax = -1.0 * gbox->xmin;
         gbox->xmin = -1.0 * tmp;
         tmp = gbox->ymax;
         gbox->ymax = -1.0 * gbox->ymin;
         gbox->ymin = -1.0 * tmp;
+        LWDEBUGF(4, "gbox after: %s", gbox_to_string(gbox));
     }
     
+    LWDEBUG(4, "leaving function");
 	return G_SUCCESS;
 }
 
@@ -490,6 +551,8 @@ int ptarray_calculate_gbox_geodetic(POINTARRAY *pa, GBOX *gbox)
 	assert(gbox);
 	assert(pa);
 	
+    edge_gbox.flags = gbox->flags;
+	
 	if ( pa->npoints == 0 ) return G_FAILURE;
 	
 	if ( pa->npoints == 1 )
@@ -518,8 +581,18 @@ int ptarray_calculate_gbox_geodetic(POINTARRAY *pa, GBOX *gbox)
 
         edge_calculate_gbox(edge, &edge_gbox);
         
+	    /* Expand the box where necessary */
+		if( ! first )
+		{
+		    if( edge_gbox.xmin < gbox->xmin ) gbox->xmin = edge_gbox.xmin;
+		    if( edge_gbox.ymin < gbox->ymin ) gbox->ymin = edge_gbox.ymin;
+		    if( edge_gbox.zmin < gbox->zmin ) gbox->zmin = edge_gbox.zmin;
+		    if( edge_gbox.xmax > gbox->xmax ) gbox->xmax = edge_gbox.xmax;
+		    if( edge_gbox.ymax > gbox->ymax ) gbox->ymax = edge_gbox.ymax;
+		    if( edge_gbox.zmax > gbox->zmax ) gbox->zmax = edge_gbox.zmax;
+	    }
 		/* Initialize the box */
-		if( first )
+		else
 		{ 
             gbox->xmin = edge_gbox.xmin;
             gbox->ymin = edge_gbox.ymin;
@@ -527,15 +600,9 @@ int ptarray_calculate_gbox_geodetic(POINTARRAY *pa, GBOX *gbox)
             gbox->xmax = edge_gbox.xmax;
             gbox->ymax = edge_gbox.ymax;
             gbox->zmax = edge_gbox.zmax;
+            first = LW_FALSE;
 		}
 		
-		/* Expand the box where necessary */
-		if( edge_gbox.xmin < gbox->xmin ) gbox->xmin = edge_gbox.xmin;
-		if( edge_gbox.ymin < gbox->ymin ) gbox->ymin = edge_gbox.ymin;
-		if( edge_gbox.zmin < gbox->zmin ) gbox->zmin = edge_gbox.zmin;
-		if( edge_gbox.xmax > gbox->xmax ) gbox->xmax = edge_gbox.xmax;
-		if( edge_gbox.ymax > gbox->ymax ) gbox->ymax = edge_gbox.ymax;
-		if( edge_gbox.zmax > gbox->zmax ) gbox->zmax = edge_gbox.zmax;
 	}
 	
 	return G_SUCCESS;
