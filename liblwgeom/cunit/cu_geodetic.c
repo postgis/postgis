@@ -26,10 +26,10 @@ CU_pSuite register_geodetic_suite(void)
 	}
 
 	if (
-	    (NULL == CU_add_test(pSuite, "test_signum()", test_signum))  ||
-	    (NULL == CU_add_test(pSuite, "test_gbox_from_spherical_coordinates()", test_gbox_from_spherical_coordinates)) /* ||
-	    (NULL == CU_add_test(pSuite, "test_gserialized_get_gbox_geocentric()", test_gserialized_get_gbox_geocentric)) ||
-	    (NULL == CU_add_test(pSuite, "test_gbox_calculation()", test_gbox_calculation)) */
+		(NULL == CU_add_test(pSuite, "test_signum()", test_signum))  ||
+/*		(NULL == CU_add_test(pSuite, "test_gbox_from_spherical_coordinates()", test_gbox_from_spherical_coordinates))  ||*/
+		(NULL == CU_add_test(pSuite, "test_gserialized_get_gbox_geocentric()", test_gserialized_get_gbox_geocentric)) /* ||
+		(NULL == CU_add_test(pSuite, "test_gbox_calculation()", test_gbox_calculation)) */
 	)
 	{
 		CU_cleanup_registry();
@@ -59,15 +59,15 @@ int clean_geodetic_suite(void)
 
 void test_signum(void)
 {
-    CU_ASSERT_EQUAL(signum(-5.0),-1);
-    CU_ASSERT_EQUAL(signum(5.0),1);
+	CU_ASSERT_EQUAL(signum(-5.0),-1);
+	CU_ASSERT_EQUAL(signum(5.0),1);
 }
 
 void test_gbox_from_spherical_coordinates(void)
 {
 	double ll[64];
 	GBOX *box = gbox_new(gflags(0, 0, 1));
-    GBOX *good;
+	GBOX *good;
 	int rv;
 	POINTARRAY *pa;
 	ll[0] = -3.083333333333333333333333333333333;
@@ -87,7 +87,7 @@ void test_gbox_from_spherical_coordinates(void)
 	CU_ASSERT_DOUBLE_EQUAL(box->zmin, good->zmin, 0.0001);
 	CU_ASSERT_DOUBLE_EQUAL(box->zmax, good->zmax, 0.0001);
 	lwfree(pa);
-    lwfree(good);
+	lwfree(good);
 
 
 	ll[0] = -35.0;
@@ -107,7 +107,7 @@ void test_gbox_from_spherical_coordinates(void)
 	CU_ASSERT_DOUBLE_EQUAL(box->zmin, good->zmin, 0.0001);
 	CU_ASSERT_DOUBLE_EQUAL(box->zmax, good->zmax, 0.0001);
 	lwfree(pa);
-    lwfree(good);
+	lwfree(good);
 
 
 	ll[0] = -122.5;
@@ -118,60 +118,48 @@ void test_gbox_from_spherical_coordinates(void)
 	pa = pointArray_construct((uchar*)ll, 0, 0, 2);
 	rv = ptarray_calculate_gbox_geodetic(pa, box);
 	good = gbox_from_string("GBOX((-0.29850766,-0.46856318,0.83146961),(-0.19629681,-0.29657213,0.93461892))");
-//  printf("\n%s\n", gbox_to_string(box));
-//  printf("%s\n", "(-0.29850766, -0.46856318, 0.83146961)  (-0.19629681, -0.29657213, 0.93461892)");
-	CU_ASSERT_DOUBLE_EQUAL(box->xmin, good->xmin, 0.0001);
-	CU_ASSERT_DOUBLE_EQUAL(box->xmax, good->xmax, 0.0001);
-	CU_ASSERT_DOUBLE_EQUAL(box->ymin, good->ymin, 0.0001);
-	CU_ASSERT_DOUBLE_EQUAL(box->ymax, good->ymax, 0.0001);
-	CU_ASSERT_DOUBLE_EQUAL(box->zmin, good->zmin, 0.0001);
-	CU_ASSERT_DOUBLE_EQUAL(box->zmax, good->zmax, 0.0001);
+	//printf("\n%s\n", gbox_to_string(box));
+	//printf("%s\n", "(-0.29850766, -0.46856318, 0.83146961)  (-0.19629681, -0.29657213, 0.93461892)");
+	CU_ASSERT_DOUBLE_EQUAL(box->xmin, good->xmin, 0.000001);
+	CU_ASSERT_DOUBLE_EQUAL(box->xmax, good->xmax, 0.000001);
+	CU_ASSERT_DOUBLE_EQUAL(box->ymin, good->ymin, 0.000001);
+	CU_ASSERT_DOUBLE_EQUAL(box->ymax, good->ymax, 0.000001);
+	CU_ASSERT_DOUBLE_EQUAL(box->zmin, good->zmin, 0.000001);
+	CU_ASSERT_DOUBLE_EQUAL(box->zmax, good->zmax, 0.000001);
 	lwfree(pa);
-    lwfree(good);
+	lwfree(good);
 
 	lwfree(box);
 	
 }
 
+#include "cu_geodetic_data.h"
+
 void test_gserialized_get_gbox_geocentric(void)
 {
 	LWGEOM *lwg;
 	GSERIALIZED *g;
-	GBOX *gbox;
+	GBOX *gbox, *gbox_good;
 	int i;
-
-	char wkt[][512] = { 
-		"POINT(45 45)",
-		"MULTILINESTRING((45 45, 45 45),(45 45, 45 45))",
-		"MULTILINESTRING((45 45, 45 45),(45 45, 45.5 45.5),(45 45, 46 46))",
-		"GEOMETRYCOLLECTION(MULTILINESTRING((45 45, 45 45),(45 45, 45.5 45.5),(45 45, 46 46)))",
-		"MULTIPOLYGON(((45 45, 45 45, 45 45, 45 45),(45 45, 45 45, 45 45, 45 45)))",
-		"LINESTRING(45 45, 45.1 45.1)",
-		"MULTIPOINT(45 45, 45.05 45.05, 45.1 45.1)"
-	};
-    
-    double xmin[] = {
-		0.707106781187,
-		0.707106781187,
-		0.694658370459,
-		0.694658370459,
-		0.707106781187,
-		0.705871570679,
-		0.705871570679
-	};
 	
-    for ( i = 0; i < 7; i++ )
-    {
-		//printf("%s\n", wkt[i]);
-		lwg = lwgeom_from_ewkt(wkt[i], PARSER_CHECK_NONE);
+	for ( i = 0; i < gbox_data_length; i++ )
+	{
+//		if( i != 42 ) continue;
+		if( i != 20 ) continue;
+		printf("\n%s\n", gbox_data[2*i]);
+		printf("%s\n", gbox_data[2*i+1]);
+		lwg = lwgeom_from_ewkt(gbox_data[2*i], PARSER_CHECK_NONE);
+		gbox_good = gbox_from_string(gbox_data[2*i+1]);
 		g = gserialized_from_lwgeom(lwg, 1, 0);
 		g->flags = FLAGS_SET_GEODETIC(g->flags, 1);
 		lwgeom_free(lwg);
 		gbox = gserialized_calculate_gbox_geocentric(g);
-		//printf("%s\n", gbox_to_string(box, g->flags));
-		CU_ASSERT_DOUBLE_EQUAL(gbox->xmin, xmin[i], 0.00000001);
+		printf("%s\n", gbox_to_string(gbox));
+		printf("line %d: diff %.9g\n", i, fabs(gbox->xmin - gbox_good->xmin));
+		CU_ASSERT_DOUBLE_EQUAL(gbox->xmin, gbox_good->xmin, 0.000001);
 		lwfree(g);
 		lwfree(gbox);
+		lwfree(gbox_good);
 	}
 
 }

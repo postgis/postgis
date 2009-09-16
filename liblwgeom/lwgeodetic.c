@@ -150,22 +150,12 @@ int edge_point_on_plane(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 /**
 * True if the longitude of p is within the range of the longitude of the ends of e
 */
-int edge_contains_longitude(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p, int flipped_longitude)
+int edge_contains_longitude(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 {
-	if( flipped_longitude )
-	{
-		if( p.lon > e.start.lon && p.lon > e.end.lon )
-			return LW_TRUE;
-		if( p.lon < e.start.lon && p.lon < e.end.lon )
-			return LW_TRUE;
-	}
-	else
-	{
-		if( e.start.lon < p.lon && p.lon < e.end.lon )
-			return LW_TRUE;
-		if( e.end.lon < p.lon && p.lon < e.start.lon )
-			return LW_TRUE;
-	}
+	if( e.start.lon < p.lon && p.lon < e.end.lon )
+		return LW_TRUE;
+	if( e.end.lon < p.lon && p.lon < e.start.lon )
+		return LW_TRUE;
 	return LW_FALSE;
 }
 
@@ -176,7 +166,7 @@ int edge_contains_longitude(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p, int flipped_l
 double sphere_distance(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e)
 {
 	double latS = s.lat;
-	double latE = e.lon;
+	double latE = e.lat;
 	double dlng = e.lon - s.lon;
 	double a1 = pow(cos(latE) * sin(dlng), 2.0);
 	double a2 = pow(cos(latS) * sin(latE) - sin(latS) * cos(latE) * cos(dlng), 2.0);
@@ -203,9 +193,9 @@ double sphere_direction(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e)
 * Returns true if the point p is on the minor edge defined by the
 * end points of e.
 */
-int edge_contains_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p, int flipped_longitude)
+int edge_contains_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 {
-	if( edge_point_on_plane(e, p) && edge_contains_longitude(e, p, flipped_longitude) )
+	if( edge_point_on_plane(e, p) && edge_contains_longitude(e, p) )
 		return LW_TRUE;
 	return LW_FALSE;
 }
@@ -328,17 +318,9 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 	g = e;
 
     LWDEBUG(4, "entered function");
+	LWDEBUGF(4, "edge length: %.8g", distance);
     LWDEBUGF(4, "edge values: (%.6g %.6g, %.6g %.6g)", g.start.lon, g.start.lat, g.end.lon, g.end.lat);
 
-	/* Initialize box with the start and end points of the edge. */
-	geog2cart(g.start, &start);
-	geog2cart(g.end, &end);
-	gbox->xmin = FP_MIN(start.x, end.x);
-	gbox->ymin = FP_MIN(start.y, end.y);
-	gbox->zmin = FP_MIN(start.z, end.z);
-	gbox->xmax = FP_MAX(start.x, end.x);
-	gbox->ymax = FP_MAX(start.y, end.y);
-	gbox->zmax = FP_MAX(start.z, end.z);
 
     LWDEBUGF(4, "initialized gbox: %s", gbox_to_string(gbox));
 
@@ -346,6 +328,14 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 	if( FP_IS_ZERO(distance) )
 	{
         LWDEBUG(4, "edge is zero length. returning");
+		geog2cart(g.start, &start);
+		geog2cart(g.end, &end);
+		gbox->xmin = FP_MIN(start.x, end.x);
+		gbox->ymin = FP_MIN(start.y, end.y);
+		gbox->zmin = FP_MIN(start.z, end.z);
+		gbox->xmax = FP_MAX(start.x, end.x);
+		gbox->ymax = FP_MAX(start.y, end.y);
+		gbox->zmax = FP_MAX(start.z, end.z);
 		return G_SUCCESS;
 	}
 
@@ -407,6 +397,16 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 			g.end.lon += M_PI;
 	}
     LWDEBUGF(4, "edge values: (%.6g %.6g, %.6g %.6g)", g.start.lon, g.start.lat, g.end.lon, g.end.lat);
+
+	/* Initialize box with the start and end points of the edge. */
+	geog2cart(g.start, &start);
+	geog2cart(g.end, &end);
+	gbox->xmin = FP_MIN(start.x, end.x);
+	gbox->ymin = FP_MIN(start.y, end.y);
+	gbox->zmin = FP_MIN(start.z, end.z);
+	gbox->xmax = FP_MAX(start.x, end.x);
+	gbox->ymax = FP_MAX(start.y, end.y);
+	gbox->zmax = FP_MAX(start.z, end.z);
 	
 	/* Check for pole crossings. */
 	if( FP_EQUALS(deltaLongitude, M_PI) ) 
@@ -433,7 +433,7 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 		clairaut_cartesian(start, end, LW_FALSE, &vT2);
         LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
         LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
-		if( edge_contains_point(g, vT1, flipped_longitude) )
+		if( edge_contains_point(g, vT1) )
 		{
 			geog2cart(vT1, &p);
             LWDEBUGF(4, "p == POINT(%.8g %.8g %.8g)", p.x, p.y, p.z);
@@ -441,7 +441,7 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
             LWDEBUG(4, "edge contained vT1");
             LWDEBUGF(4, "gbox: %s", gbox_to_string(gbox));
 		}
-		else if ( edge_contains_point(g, vT2, flipped_longitude) )
+		else if ( edge_contains_point(g, vT2) )
 		{
 			geog2cart(vT2, &p);
             LWDEBUGF(4, "p == POINT(%.8g %.8g %.8g)", p.x, p.y, p.z);
@@ -478,7 +478,7 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
         vT1.lon = M_PI;
         vT2.lon = -1.0 * M_PI;
     }
-    if( edge_contains_point(g, vT1, flipped_longitude) )
+    if( edge_contains_point(g, vT1) )
     {
 		geog2cart(vT1, &p);
         LWDEBUGF(4, "p == POINT(%.8g %.8g %.8g)", p.x, p.y, p.z);
@@ -486,7 +486,7 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
         LWDEBUG(4, "edge contained vT1");
         LWDEBUGF(4, "gbox: %s", gbox_to_string(gbox));
     }
-	else if ( edge_contains_point(g, vT2, flipped_longitude) )
+	else if ( edge_contains_point(g, vT2) )
 	{
 		geog2cart(vT2, &p);
         LWDEBUGF(4, "p == POINT(%.8g %.8g %.8g)", p.x, p.y, p.z);
@@ -522,7 +522,7 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
         vT1.lon = M_PI;
         vT2.lon = -1.0 * M_PI;
     }
-    if( edge_contains_point(g, vT1, flipped_longitude) )
+    if( edge_contains_point(g, vT1) )
     {
 		geog2cart(vT1, &p);
         LWDEBUGF(4, "p == POINT(%.8g %.8g %.8g)", p.x, p.y, p.z);
@@ -530,7 +530,7 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
         LWDEBUG(4, "edge contained vT1");
         LWDEBUGF(4, "gbox: %s", gbox_to_string(gbox));
     }
-	else if ( edge_contains_point(g, vT2, flipped_longitude) )
+	else if ( edge_contains_point(g, vT2) )
 	{
 		geog2cart(vT2, &p);
         LWDEBUGF(4, "p == POINT(%.8g %.8g %.8g)", p.x, p.y, p.z);
