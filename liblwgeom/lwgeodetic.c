@@ -390,8 +390,8 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 	else
 	{
         LWDEBUG(4, "not a pole crossing, calculating clairaut points");
-		clairaut_geographic(g.start, g.end, LW_TRUE, &vT1);
-		clairaut_geographic(g.start, g.end, LW_FALSE, &vT2);
+		clairaut_cartesian(start, end, LW_TRUE, &vT1);
+		clairaut_cartesian(start, end, LW_FALSE, &vT2);
         LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
         LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
 		if( edge_contains_point(g, vT1, flipped_longitude) )
@@ -431,8 +431,8 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
     x_to_z(&nT2);
     cart2geog(nT1, &vT1);
     cart2geog(nT2, &vT2);
-        LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
-        LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
+    LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
+    LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
     if( gimbal_lock )
     {
         LWDEBUG(4, "gimbal lock");
@@ -475,8 +475,8 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
     y_to_z(&nT2);
     cart2geog(nT1, &vT1);
     cart2geog(nT2, &vT2);
-        LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
-        LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
+    LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
+    LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
     if( gimbal_lock )
     {
         LWDEBUG(4, "gimbal lock");
