@@ -393,12 +393,12 @@ extern GBOX* gbox_new(uchar flags);
 /**
 * Update the merged #GBOX to be large enough to include itself and the new box.
 */
-extern int gbox_merge(GBOX *merged_box, GBOX *new_box);
+extern int gbox_merge(GBOX new_box, GBOX *merged_box);
 
 /**
 * Update the #GBOX to be large enough to include itself and the new point.
 */
-extern int gbox_merge_point3d(GBOX *gbox, POINT3D *p);
+extern int gbox_merge_point3d(POINT3D p, GBOX *gbox);
 
 /**
 * Allocate a string representation of the #GBOX, based on dimensionality of flags.
@@ -418,7 +418,7 @@ extern int gbox_overlaps(GBOX *g1, GBOX *g2);
 /**
 * Copy the values of original #GBOX into duplicate.
 */
-extern void gbox_duplicate(GBOX *original, GBOX *duplicate);
+extern void gbox_duplicate(GBOX original, GBOX *duplicate);
 
 /**
 * Return the number of bytes necessary to hold a #GBOX of this dimension in 

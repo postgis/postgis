@@ -1064,12 +1064,12 @@ static int gserialized_calculate_gbox_geocentric_from_collection(uchar *data_ptr
 		{
 			if ( first ) 
 			{
-				gbox_duplicate(&subbox, gbox);
+				gbox_duplicate(subbox, gbox);
 				first = LW_FALSE;
 			}
 			else
 			{
-				gbox_merge(gbox, &subbox);
+				gbox_merge(subbox, gbox);
 			}
 			result = G_SUCCESS;
 		}

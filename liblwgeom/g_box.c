@@ -19,39 +19,39 @@ GBOX* gbox_new(uchar flags)
 	return g;
 }
 
-int gbox_merge_point3d(GBOX *gbox, POINT3D *p)
+int gbox_merge_point3d(POINT3D p, GBOX *gbox)
 {
-	if( gbox->xmin > p->x ) gbox->xmin = p->x;
-	if( gbox->ymin > p->y ) gbox->ymin = p->y;
-	if( gbox->zmin > p->z ) gbox->zmin = p->z;
-	if( gbox->xmax < p->x ) gbox->xmax = p->x;
-	if( gbox->ymax < p->y ) gbox->ymax = p->y;
-	if( gbox->zmax < p->z ) gbox->zmax = p->z;
+	if( gbox->xmin > p.x ) gbox->xmin = p.x;
+	if( gbox->ymin > p.y ) gbox->ymin = p.y;
+	if( gbox->zmin > p.z ) gbox->zmin = p.z;
+	if( gbox->xmax < p.x ) gbox->xmax = p.x;
+	if( gbox->ymax < p.y ) gbox->ymax = p.y;
+	if( gbox->zmax < p.z ) gbox->zmax = p.z;
 	return G_SUCCESS;
 }
 
-int gbox_merge(GBOX *master_box, GBOX *new_box)
+
+int gbox_merge(GBOX new_box, GBOX *merge_box)
 {
-	assert(master_box);
-	assert(new_box);
+	assert(merge_box);
 	
-	if( master_box->flags != new_box->flags ) 
+	if( merge_box->flags != new_box.flags ) 
 		return G_FAILURE;
 	
-	if( new_box->xmin < master_box->xmin) master_box->xmin = new_box->xmin;
-	if( new_box->ymin < master_box->ymin) master_box->ymin = new_box->ymin;
-	if( new_box->xmax > master_box->xmax) master_box->xmax = new_box->xmax;
-	if( new_box->ymax > master_box->ymax) master_box->ymax = new_box->ymax;
+	if( new_box.xmin < merge_box->xmin) merge_box->xmin = new_box.xmin;
+	if( new_box.ymin < merge_box->ymin) merge_box->ymin = new_box.ymin;
+	if( new_box.xmax > merge_box->xmax) merge_box->xmax = new_box.xmax;
+	if( new_box.ymax > merge_box->ymax) merge_box->ymax = new_box.ymax;
 	
-	if( FLAGS_GET_Z(master_box->flags) || FLAGS_GET_GEODETIC(master_box->flags) )
+	if( FLAGS_GET_Z(merge_box->flags) || FLAGS_GET_GEODETIC(merge_box->flags) )
 	{
-		if( new_box->zmin < master_box->zmin) master_box->zmin = new_box->zmin;
-		if( new_box->zmax > master_box->zmax) master_box->zmax = new_box->zmax;
+		if( new_box.zmin < merge_box->zmin) merge_box->zmin = new_box.zmin;
+		if( new_box.zmax > merge_box->zmax) merge_box->zmax = new_box.zmax;
 	}
-	if( FLAGS_GET_M(master_box->flags) )
+	if( FLAGS_GET_M(merge_box->flags) )
 	{
-		if( new_box->mmin < master_box->mmin) master_box->mmin = new_box->mmin;
-		if( new_box->mmax > master_box->mmax) master_box->mmax = new_box->mmax;
+		if( new_box.mmin < merge_box->mmin) merge_box->mmin = new_box.mmin;
+		if( new_box.mmax > merge_box->mmax) merge_box->mmax = new_box.mmax;
 	}
 
 	return G_SUCCESS;
@@ -77,6 +77,29 @@ int gbox_overlaps(GBOX *g1, GBOX *g2)
 	}
 	return LW_TRUE;
 }
+
+#if 0
+GBOX* gbox_from_string(char *str)
+{
+    int ndims = 0;
+    char *ptr = str;
+    char *nextptr;
+    double d;
+    char *gbox_start = strstr(str, "GBOX((");
+    GBOX *gbox = gbox_new(0);
+    if( ! gbox_start ) return NULL; /* No header found */
+    ptr += 5;
+    do {
+        ptr++;
+        d = strtod(ptr, &nextptr);
+        if( ptr == nextptr ) return NULL; /* No double found */
+        gbox->xmin = d;
+        ndims++;
+        ptr = nextptr;
+    
+    
+}
+#endif
 
 char* gbox_to_string(GBOX *gbox)
 {
@@ -119,28 +142,27 @@ GBOX* gbox_copy(GBOX *box)
 	return copy;
 }
 
-void gbox_duplicate(GBOX *original, GBOX *duplicate)
+void gbox_duplicate(GBOX original, GBOX *duplicate)
 {
-    assert(original);
     assert(duplicate);
 
-	if( original->flags != duplicate->flags )
+	if( original.flags != duplicate->flags )
 		lwerror("gbox_duplicate: geometries have inconsistent dimensionality");
 		
-    duplicate->xmin = original->xmin;
-    duplicate->ymin = original->ymin;
-    duplicate->xmax = original->xmax;
-    duplicate->ymax = original->ymax;
+    duplicate->xmin = original.xmin;
+    duplicate->ymin = original.ymin;
+    duplicate->xmax = original.xmax;
+    duplicate->ymax = original.ymax;
 
-    if( FLAGS_GET_GEODETIC(original->flags) || FLAGS_GET_Z(original->flags) )
+    if( FLAGS_GET_GEODETIC(original.flags) || FLAGS_GET_Z(original.flags) )
 	{
-        duplicate->zmin = original->zmin;
-        duplicate->zmax = original->zmax;
+        duplicate->zmin = original.zmin;
+        duplicate->zmax = original.zmax;
 	}
-	if( FLAGS_GET_M(original->flags) )
+	if( FLAGS_GET_M(original.flags) )
 	{
-        duplicate->mmin = original->mmin;
-        duplicate->mmax = original->mmax;
+        duplicate->mmin = original.mmin;
+        duplicate->mmax = original.mmax;
 	}
     return;
 }
@@ -409,7 +431,7 @@ static int lwcircstring_calculate_gbox(LWCIRCSTRING *curve, GBOX *gbox)
 		if (lwcircle_calculate_gbox(p1, p2, p3, &tmp) == G_FAILURE) 
 			continue;
 
-		gbox_merge(gbox, &tmp);
+		gbox_merge(tmp, gbox);
 	}
 	
 	return G_SUCCESS;
@@ -457,12 +479,12 @@ static int lwcollection_calculate_gbox(LWCOLLECTION *coll, GBOX *gbox)
 		{
 			if( first )
 			{
-				gbox_duplicate(gbox, &subbox);
+				gbox_duplicate(subbox, gbox);
 				first = LW_FALSE;
 			}
 			else
 			{
-				gbox_merge(gbox, &subbox);
+				gbox_merge(subbox, gbox);
 			}
 			result = G_SUCCESS;
 		}

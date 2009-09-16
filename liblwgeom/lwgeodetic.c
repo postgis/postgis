@@ -12,9 +12,44 @@
 #include "lwgeodetic.h"
 
 /**
+* Check to see if this geocentric gbox is wrapped around the north pole.
+* Only makes sense if this gbox originated from a polygon, as it's assuming
+* the box is generated from external edges and there's an "interior" which
+* contains the pole.
+*/
+static int gbox_contains_north_pole(GBOX gbox)
+{
+    if( gbox.zmin > 0.0 &&
+        gbox.xmin < 0.0 && gbox.xmax > 0.0 &&
+        gbox.ymin < 0.0 && gbox.ymax > 0.0 )
+    {
+        return LW_TRUE;
+    }
+    return LW_FALSE;
+}
+
+/**
+* Check to see if this geocentric gbox is wrapped around the south pole.
+* Only makes sense if this gbox originated from a polygon, as it's assuming
+* the box is generated from external edges and there's an "interior" which
+* contains the pole.
+*/
+static int gbox_contains_south_pole(GBOX gbox)
+{
+    if( gbox.zmax < 0.0 &&
+        gbox.xmin < 0.0 && gbox.xmax > 0.0 &&
+        gbox.ymin < 0.0 && gbox.ymax > 0.0 )
+    {
+        return LW_TRUE;
+    }
+    return LW_FALSE;
+}
+
+
+/**
 * Convert spherical coordinates to cartesion coordinates on unit sphere
 */
-void inline geog2cart(GEOGRAPHIC_POINT g, POINT3D *p)
+static void inline geog2cart(GEOGRAPHIC_POINT g, POINT3D *p)
 {
 	p->x = cos(g.lat) * cos(g.lon);
 	p->y = cos(g.lat) * sin(g.lon);
@@ -24,7 +59,7 @@ void inline geog2cart(GEOGRAPHIC_POINT g, POINT3D *p)
 /**
 * Convert cartesion coordinates to spherical coordinates on unit sphere
 */
-void inline cart2geog(POINT3D p, GEOGRAPHIC_POINT *g)
+static void inline cart2geog(POINT3D p, GEOGRAPHIC_POINT *g)
 {
 	g->lon = atan2(p.y, p.x);
 	g->lat = asin(p.z);
@@ -33,16 +68,15 @@ void inline cart2geog(POINT3D p, GEOGRAPHIC_POINT *g)
 /** 
 * Calculate the dot product of two unit vectors
 */
-double inline dot_product(POINT3D p1, POINT3D p2)
+static double inline dot_product(POINT3D p1, POINT3D p2)
 {
 	return (p1.x*p2.x) + (p1.y*p2.y) + (p1.z*p2.z);
 }
 
-
 /**
 * Normalize to a unit vector.
 */
-void inline normalize(POINT3D *p)
+static void inline normalize(POINT3D *p)
 {
 	double d = sqrt(p->x*p->x + p->y*p->y + p->z*p->z);
 	if(FP_IS_ZERO(d)) 
@@ -56,7 +90,7 @@ void inline normalize(POINT3D *p)
     return;
 }
 
-void inline unit_normal(POINT3D a, POINT3D b, POINT3D *n)
+static void inline unit_normal(POINT3D a, POINT3D b, POINT3D *n)
 {
     n->x = a.y * b.z - a.z * b.y;
 	n->y = a.z * b.x - a.x * b.z;
@@ -273,8 +307,13 @@ int sphere_project(GEOGRAPHIC_POINT r, double distance, double azimuth, GEOGRAPH
 	return G_SUCCESS;
 }
 
-
-
+/**
+* The magic function, given an edge in spherical coordinates, calculate a
+* 3D bounding box that fully contains it, taking into account the curvature
+* of the sphere on which it is inscribed. Note special case testing
+* for edges over poles and fully around the globe. An edge is assumed
+* to follow the shortest great circle route between the end points.
+*/
 int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 {
 	double deltaLongitude;
@@ -398,7 +437,7 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 		{
 			geog2cart(vT1, &p);
             LWDEBUGF(4, "p == POINT(%.8g %.8g %.8g)", p.x, p.y, p.z);
-			gbox_merge_point3d(gbox, &p);
+			gbox_merge_point3d(p, gbox);
             LWDEBUG(4, "edge contained vT1");
             LWDEBUGF(4, "gbox: %s", gbox_to_string(gbox));
 		}
@@ -406,7 +445,7 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 		{
 			geog2cart(vT2, &p);
             LWDEBUGF(4, "p == POINT(%.8g %.8g %.8g)", p.x, p.y, p.z);
-			gbox_merge_point3d(gbox, &p);
+			gbox_merge_point3d(p, gbox);
             LWDEBUG(4, "edge contained vT2");
             LWDEBUGF(4, "gbox: %s", gbox_to_string(gbox));
 		}
@@ -443,7 +482,7 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
     {
 		geog2cart(vT1, &p);
         LWDEBUGF(4, "p == POINT(%.8g %.8g %.8g)", p.x, p.y, p.z);
-		gbox_merge_point3d(gbox, &p);
+		gbox_merge_point3d(p, gbox);
         LWDEBUG(4, "edge contained vT1");
         LWDEBUGF(4, "gbox: %s", gbox_to_string(gbox));
     }
@@ -451,7 +490,7 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 	{
 		geog2cart(vT2, &p);
         LWDEBUGF(4, "p == POINT(%.8g %.8g %.8g)", p.x, p.y, p.z);
-		gbox_merge_point3d(gbox, &p);
+		gbox_merge_point3d(p, gbox);
         LWDEBUG(4, "edge contained vT2");
         LWDEBUGF(4, "gbox: %s", gbox_to_string(gbox));
 	}
@@ -487,7 +526,7 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
     {
 		geog2cart(vT1, &p);
         LWDEBUGF(4, "p == POINT(%.8g %.8g %.8g)", p.x, p.y, p.z);
-		gbox_merge_point3d(gbox, &p);
+		gbox_merge_point3d(p, gbox);
         LWDEBUG(4, "edge contained vT1");
         LWDEBUGF(4, "gbox: %s", gbox_to_string(gbox));
     }
@@ -495,7 +534,7 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 	{
 		geog2cart(vT2, &p);
         LWDEBUGF(4, "p == POINT(%.8g %.8g %.8g)", p.x, p.y, p.z);
-		gbox_merge_point3d(gbox, &p);
+		gbox_merge_point3d(p, gbox);
         LWDEBUG(4, "edge contained vT2");
         LWDEBUGF(4, "gbox: %s", gbox_to_string(gbox));
 	}
@@ -516,7 +555,7 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
         LWDEBUGF(4, "gbox after: %s", gbox_to_string(gbox));
     }
     
-    LWDEBUG(4, "leaving function");
+    LWDEBUGF(4, "final gbox: %s", gbox_to_string(gbox));
 	return G_SUCCESS;
 }
 
@@ -580,27 +619,21 @@ int ptarray_calculate_gbox_geodetic(POINTARRAY *pa, GBOX *gbox)
         edge.end.lat = deg2rad(end_pt->y);
 
         edge_calculate_gbox(edge, &edge_gbox);
+
+        LWDEBUGF(4, "edge_gbox: %s", gbox_to_string(&edge_gbox));
         
-	    /* Expand the box where necessary */
-		if( ! first )
-		{
-		    if( edge_gbox.xmin < gbox->xmin ) gbox->xmin = edge_gbox.xmin;
-		    if( edge_gbox.ymin < gbox->ymin ) gbox->ymin = edge_gbox.ymin;
-		    if( edge_gbox.zmin < gbox->zmin ) gbox->zmin = edge_gbox.zmin;
-		    if( edge_gbox.xmax > gbox->xmax ) gbox->xmax = edge_gbox.xmax;
-		    if( edge_gbox.ymax > gbox->ymax ) gbox->ymax = edge_gbox.ymax;
-		    if( edge_gbox.zmax > gbox->zmax ) gbox->zmax = edge_gbox.zmax;
-	    }
 		/* Initialize the box */
+		if( first )
+		{
+            gbox_duplicate(edge_gbox,gbox);
+            LWDEBUGF(4, "gbox_duplicate: %s", gbox_to_string(gbox));
+            first = LW_FALSE;
+	    }
+	    /* Expand the box where necessary */
 		else
 		{ 
-            gbox->xmin = edge_gbox.xmin;
-            gbox->ymin = edge_gbox.ymin;
-            gbox->zmin = edge_gbox.zmin;
-            gbox->xmax = edge_gbox.xmax;
-            gbox->ymax = edge_gbox.ymax;
-            gbox->zmax = edge_gbox.zmax;
-            first = LW_FALSE;
+            gbox_merge(edge_gbox, gbox);
+            LWDEBUGF(4, "gbox_merge: %s", gbox_to_string(gbox));
 		}
 		
 	}
@@ -640,14 +673,22 @@ static int lwpolygon_calculate_gbox_geodetic(LWPOLY *poly, GBOX *gbox)
 			return G_FAILURE;
 		if( first )
 		{
-			gbox_duplicate(gbox, &ringbox);
+			gbox_duplicate(ringbox, gbox);
 			first = LW_FALSE;
 		}
 		else
 		{
-			gbox_merge(gbox, &ringbox);
+			gbox_merge(ringbox, gbox);
 		}
 	}
+	
+	/* If the box wraps the south pole, set zmin to the absolute min. */
+	if( gbox_contains_south_pole(*gbox) )
+        gbox->zmin = -1.0;
+	/* If the box wraps the north pole, set zmax to the absolute max. */
+	if( gbox_contains_north_pole(*gbox) )
+        gbox->zmax = 1.0;
+        
 	return G_SUCCESS;
 }
 
@@ -673,12 +714,12 @@ static int lwcollection_calculate_gbox_geodetic(LWCOLLECTION *coll, GBOX *gbox)
 		{
 			if( first )
 			{
-				gbox_duplicate(gbox, &subbox);
+				gbox_duplicate(subbox, gbox);
 				first = LW_FALSE;
 			}
 			else
 			{
-				gbox_merge(gbox, &subbox);
+				gbox_merge(subbox, gbox);
 			}
 			result = G_SUCCESS;
 		}
