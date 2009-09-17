@@ -1906,7 +1906,7 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 		POSTGIS_DEBUGF(3, " %d bytes allocated for array", (int)nbytes);
 
 		POSTGIS_DEBUGF(3, " array start  @ %p", (void*)result);
-		POSTGIS_DEBUGF(3, " ARR_DATA_PTR @ %p (%d)",
+		POSTGIS_DEBUGF(3, " ARR_DATA_PTR @ %p (%ld)",
 		               ARR_DATA_PTR(result), (uchar *)ARR_DATA_PTR(result)-(uchar *)result);
 		POSTGIS_DEBUGF(3, " next element @ %p", (uchar *)result+oldsize);
 

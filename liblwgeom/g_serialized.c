@@ -56,11 +56,6 @@ static size_t gserialized_from_lwpoint_size(LWPOINT *point)
 	
 	assert(point);
 
-	if ( point->bbox )
-	{
-		size += TYPE_NDIMS(point->type) * sizeof(double) * 2;
-	}
-
 	size += 4; /* Number of points (one or zero (empty)). */
 	size += point->point->npoints * TYPE_NDIMS(point->type) * sizeof(double);
 
@@ -74,11 +69,6 @@ static size_t gserialized_from_lwline_size(LWLINE *line)
 	size_t size = 4; /* Type number. */
 	
 	assert(line);
-
-	if ( line->bbox )
-	{
-		size += TYPE_NDIMS(line->type) * sizeof(double) * 2;
-	}
 	
 	size += 4; /* Number of points (zero => empty). */
 	size += line->points->npoints * TYPE_NDIMS(line->type) * sizeof(double);
@@ -95,11 +85,6 @@ static size_t gserialized_from_lwpoly_size(LWPOLY *poly)
 	
 	assert(poly);
 
-	if ( poly->bbox )
-	{
-		size += TYPE_NDIMS(poly->type) * sizeof(double) * 2;
-	}
-	
 	size += 4; /* Number of rings (zero => empty). */
 	if( poly->nrings % 2 ) 
 		size += 4; /* Padding to double alignment. */
@@ -121,11 +106,6 @@ static size_t gserialized_from_lwcircstring_size(LWCIRCSTRING *curve)
 	
 	assert(curve);
 
-	if ( curve->bbox )
-	{
-		size += TYPE_NDIMS(curve->type) * sizeof(double) * 2;
-	}
-	
 	size += 4; /* Number of points (zero => empty). */
 	size += curve->points->npoints * TYPE_NDIMS(curve->type) * sizeof(double);
 
@@ -141,11 +121,6 @@ static size_t gserialized_from_lwcollection_size(LWCOLLECTION *col)
 	
 	assert(col);
 
-	if ( col->bbox )
-	{
-		size += TYPE_NDIMS(col->type) * sizeof(double) * 2;
-	}
-	
 	size += 4; /* Number of sub-geometries (zero => empty). */
 	
 	for( i = 0; i < col->ngeoms; i++ )
@@ -447,6 +422,7 @@ static size_t gserialized_from_gbox(GBOX gbox, uchar *buf)
 {
 	uchar *loc;
 	float f;
+	size_t return_size;
 	
 	assert(buf);
 	
@@ -478,7 +454,9 @@ static size_t gserialized_from_gbox(GBOX gbox, uchar *buf)
 		memcpy(loc, &f, sizeof(float));
 		loc += sizeof(float);
 		
-		return (size_t)(loc - buf);	
+		return_size = (size_t)(loc - buf);
+		LWDEBUGF(4, "returning size %d", return_size);
+		return return_size;	
 	}
 	
 	if( FLAGS_GET_Z(gbox.flags) )
@@ -503,7 +481,9 @@ static size_t gserialized_from_gbox(GBOX gbox, uchar *buf)
 		memcpy(loc, &f, sizeof(float));
 		loc += sizeof(float);
 	}
-	return (size_t)(loc - buf);	
+	return_size = (size_t)(loc - buf);
+	LWDEBUGF(4, "returning size %d", return_size);
+	return return_size;	
 }
 
 /* Public function */
