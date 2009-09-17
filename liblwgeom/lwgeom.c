@@ -1063,3 +1063,72 @@ int lwgeom_count_vertices(LWGEOM *geom)
 	LWDEBUGF(3, "counted %d vertices", result);
 	return result;
 }
+
+static int lwpoint_is_empty(LWPOINT *point)
+{
+	if( ! point->point || point->point->npoints == 0 )
+		return LW_TRUE;
+	return LW_FALSE;
+}
+
+static int lwline_is_empty(LWLINE *line)
+{
+	if( !line->points || line->points->npoints == 0 )
+		return LW_TRUE;
+	return LW_FALSE;
+}
+
+static int lwpoly_is_empty(LWPOLY *poly)
+{
+	if( !poly->rings || poly->nrings == 0 )
+		return LW_TRUE;
+	return LW_FALSE;
+}
+
+static int lwcircstring_is_empty(LWCIRCSTRING *circ)
+{
+	if( !circ->points || circ->points->npoints == 0 )
+		return LW_TRUE;
+	return LW_FALSE;
+}
+
+static int lwcollection_is_empty(LWCOLLECTION *col)
+{
+	if( !col->geoms || col->ngeoms == 0 )
+		return LW_TRUE;
+	return LW_FALSE;
+}
+
+int lwgeom_is_empty(LWGEOM *geom)
+{
+	int result = LW_FALSE;
+	LWDEBUGF(4, "got type %d", TYPE_GETTYPE(geom->type));
+	switch (TYPE_GETTYPE(geom->type))
+	{
+		case POINTTYPE:
+			return lwpoint_is_empty((LWPOINT*)geom);
+			break;
+		case LINETYPE:
+			return lwline_is_empty((LWLINE*)geom);
+			break;
+		case CIRCSTRINGTYPE:
+			return lwcircstring_is_empty((LWCIRCSTRING*)geom);
+			break;
+		case POLYGONTYPE:
+			return lwpoly_is_empty((LWPOLY*)geom);
+			break;
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COMPOUNDTYPE:
+		case MULTICURVETYPE:
+		case MULTISURFACETYPE:
+		case COLLECTIONTYPE:
+			return lwcollection_is_empty((LWCOLLECTION *)geom);
+			break;
+		default:
+			lwerror("unsupported input geometry type: %d", TYPE_GETTYPE(geom->type));
+			break;
+	}
+	return result;
+}

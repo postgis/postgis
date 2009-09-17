@@ -1260,6 +1260,12 @@ extern int lwgeom_needs_bbox(LWGEOM *geom);
 extern int lwgeom_count_vertices(LWGEOM *geom);
 extern int32 lwgeom_npoints(uchar *serialized);
 
+/**
+* Return true of false depending on whether a geometry is an "empty" 
+* geometry (no vertices members)
+*/
+extern int lwgeom_is_empty(LWGEOM *geom);
+
 /* Is lwgeom1 geometrically equal to lwgeom2 ? */
 char lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2);
 char ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2);
