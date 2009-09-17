@@ -9,7 +9,7 @@
 			using a garden variety of geometries.  Its intent is to flag major crashes.
 	 ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='testversion'>1.3.5</xsl:variable>
+	<xsl:variable name='testversion'>1.5.0</xsl:variable>
 	<xsl:variable name='fnexclude14'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
 	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable Populate_Geometry_Columns ST_CurveToLine ST_GeoHash ST_LineCrossingDirection ST_LineToCurve ST_IsValidReason ST_ContainsProperly ST_MinimumBoundingCircle</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 or tested separately -->
@@ -59,17 +59,17 @@
 			CROSS JOIN generate_series(1,2) As m
 			ORDER BY i, j, m, i*j*m
 			)</pgis:gset>
-		<pgis:gset ID='PointSet3D' GeometryType='POINT'>(SELECT ST_SetSRID(ST_MakePoint(i,j,k),4326) As the_geom
+		<pgis:gset ID='PointSet3D' GeometryType='POINTZ'>(SELECT ST_SetSRID(ST_MakePoint(i,j,k),4326) As the_geom
 		FROM generate_series(-10,50,20) As i
 			CROSS JOIN generate_series(40,70, 20) j
 			CROSS JOIN generate_series(1,2) k
 			ORDER BY i,i*j, j*k, i + j + k)</pgis:gset>
-		<pgis:gset ID='LineSet3D' GeometryType='LINESTRING'>(SELECT ST_SetSRID(ST_MakeLine(ST_MakePoint(i,j,k), ST_MakePoint(i+k,j+k,k)),4326) As the_geom
+		<pgis:gset ID='LineSet3D' GeometryType='LINESTRINGZ'>(SELECT ST_SetSRID(ST_MakeLine(ST_MakePoint(i,j,k), ST_MakePoint(i+k,j+k,k)),4326) As the_geom
 		FROM generate_series(-10,50,20) As i
 			CROSS JOIN generate_series(40,70, 20) j
 			CROSS JOIN generate_series(1,2) k
 			ORDER BY i, j, i+j+k, k, i*j*k)</pgis:gset>
-		<pgis:gset ID='PolygonSet3D' GeometryType='POLYGON'>(SELECT ST_SetSRID(ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_MakePoint(i+m,j,m),ST_MakePoint(j+m,i-m,m)),ST_MakePoint(i,j,m)),ST_MakePointM(i+m,j,m))),4326)  As the_geom
+		<pgis:gset ID='PolygonSet3D' GeometryType='POLYGONZ'>(SELECT ST_SetSRID(ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_MakePoint(i+m,j,m),ST_MakePoint(j+m,i-m,m)),ST_MakePoint(i,j,m)),ST_MakePointM(i+m,j,m))),4326)  As the_geom
 		FROM generate_series(-10,50,20) As i
 			CROSS JOIN generate_series(50,70, 20) As j
 			CROSS JOIN generate_series(1,2) As m
@@ -98,19 +98,19 @@
 		FROM generate_series(-10,50,10) As i
 			CROSS JOIN generate_series(40,70, 25) As j)</pgis:gset>
 
-		<pgis:gset ID='MultiPointSet3D' GeometryType='MULTIPOINT'>(SELECT ST_Collect(ST_SetSRID(ST_MakePoint(i,j,k),4326)) As the_geom
+		<pgis:gset ID='MultiPointSet3D' GeometryType='MULTIPOINTZ'>(SELECT ST_Collect(ST_SetSRID(ST_MakePoint(i,j,k),4326)) As the_geom
 		FROM generate_series(-10,50,20) As i
 			CROSS JOIN generate_series(40,70, 25) j
 			CROSS JOIN generate_series(1,3) k
 			)</pgis:gset>
 
-		<pgis:gset ID='MultiLineSet3D' GeometryType='MULTILINESTRING'>(SELECT ST_Multi(ST_Union(ST_SetSRID(ST_MakeLine(ST_MakePoint(i,j,k), ST_MakePoint(i+k,j+k,k)),4326))) As the_geom
+		<pgis:gset ID='MultiLineSet3D' GeometryType='MULTILINESTRINGZ'>(SELECT ST_Multi(ST_Union(ST_SetSRID(ST_MakeLine(ST_MakePoint(i,j,k), ST_MakePoint(i+k,j+k,k)),4326))) As the_geom
 		FROM generate_series(-10,50,20) As i
 			CROSS JOIN generate_series(40,70, 25) j
 			CROSS JOIN generate_series(1,2) k
 			)</pgis:gset>
 
-		<pgis:gset ID='MultiPolySet3D' GeometryType='MULTIPOLYGON'>(SELECT ST_Multi(ST_Union(s.the_geom)) As the_geom
+		<pgis:gset ID='MultiPolySet3D' GeometryType='MULTIPOLYGONZ'>(SELECT ST_Multi(ST_Union(s.the_geom)) As the_geom
 		FROM (SELECT ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_SetSRID(ST_MakePointM(i+m,j,m),4326),ST_SetSRID(ST_MakePointM(j+m,i-m,m),4326)),ST_SetSRID(ST_MakePointM(i,j,m),4326)),ST_SetSRID(ST_MakePointM(i+m,j,m),4326)))  As the_geom
 		FROM generate_series(-10,50,20) As i
 			CROSS JOIN generate_series(50,70, 25) As j
@@ -137,13 +137,13 @@
 			CROSS JOIN generate_series(1,2) As m
 			)</pgis:gset>
 
-		<!--This are special case geometries -->
+		<!--These are special case geometries -->
 		<pgis:gset ID="Empty" GeometryType="GEOMETRY">(SELECT ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326) As the_geom
 			UNION ALL SELECT ST_GeomFromText('POLYGON EMPTY',4326) As the_geom
 		)
 		</pgis:gset>
 
-		<pgis:gset ID="NULL" GeometryType="GEOMETRY">(SELECT CAST(Null As geometry) As the_geom)
+		<pgis:gset ID="NULL" GeometryType="GEOMETRY">(SELECT CAST(Null As geometry) As the_geom)</pgis:gset>
 
 
 	<!-- TODO: Finish off MULTI list -->
@@ -180,7 +180,21 @@ BEGIN;
 	SELECT DropGeometryColumn ('pgis_garden','the_geom');
 	SELECT DropGeometryTable ('pgis_garden');
 COMMIT;
-SELECT 'create,insert,drop Test: Start Testing Multi/<xsl:value-of select="@GeometryType" />';
+SELECT 'create,insert,drop Test: Start Testing Geography Multi/<xsl:value-of select="@GeometryType" />';
+	<xsl:text>
+
+	</xsl:text>
+SELECT 'create,insert,drop Test: Start Testing Geography <xsl:value-of select="@GeometryType" />';
+BEGIN;
+	CREATE TABLE pgis_geoggarden (gid serial, the_geog geography(<xsl:value-of select="@GeometryType" />, 4326));
+	INSERT INTO pgis_geoggarden(the_geog)
+	SELECT the_geom
+	FROM (<xsl:value-of select="." />) As foo;
+	SELECT 'BEFORE DROP' As look_at, * FROM geography_columns;
+	DROP TABLE pgis_geoggarden;
+	SELECT 'AFTER DROP' As look_at, * FROM geography_columns;
+COMMIT;
+SELECT 'create,insert,drop Test: Start Testing Geography <xsl:value-of select="@GeometryType" />';
 	<xsl:text>
 
 	</xsl:text>
