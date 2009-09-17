@@ -514,12 +514,17 @@ GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, int is_geodetic, size_t *size
 
 	flags = gflags(TYPE_HASZ(geom->type), TYPE_HASM(geom->type), is_geodetic);
 
+	/*
+	** TODO check for empty geometry and condition box behavior on that
+	*/
+
 	/* 
 	** We need room for a bounding box in the serialized form. 
 	** Calculate the box and allocate enough size for it. 
 	*/
 	if( lwgeom_needs_bbox(geom) ) 
 	{
+		LWDEBUG(3, "calculating bbox");
 		flags = FLAGS_SET_BBOX(flags, 1);
 		gbox = gbox_new(flags);
 		if( is_geodetic )
@@ -527,6 +532,7 @@ GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, int is_geodetic, size_t *size
 			/* Geodetic input requires geodetic box calculation. */
 			if( lwgeom_calculate_gbox_geodetic(geom, gbox) == G_FAILURE )
 			{
+				LWDEBUG(3, "lwgeom_calculate_gbox_geodetic returned failure");
 				flags = FLAGS_SET_BBOX(flags, 0);
 				lwfree(gbox);
 				gbox = NULL;
@@ -537,6 +543,7 @@ GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, int is_geodetic, size_t *size
 			/* Cartesian box calculation. */
 			if( lwgeom_calculate_gbox(geom, gbox) == G_FAILURE )
 			{
+				LWDEBUG(3, "lwgeom_calculate_gbox returned failure");
 				flags = FLAGS_SET_BBOX(flags, 0);
 				lwfree(gbox);
 				gbox = NULL;
@@ -549,7 +556,7 @@ GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, int is_geodetic, size_t *size
 	serialized = lwalloc(expected_size);
 	ptr = serialized;
 
-	/* Move past srid and flags. */
+	/* Move past size, srid and flags. */
 	ptr += 8; 
 	
 	/* Write in the serialized form of the gbox, if necessary. */

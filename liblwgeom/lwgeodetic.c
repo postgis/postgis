@@ -582,8 +582,8 @@ int ptarray_calculate_gbox_geodetic(POINTARRAY *pa, GBOX *gbox)
 {
 	int i;
     int first = LW_TRUE;
-    POINT2D *start_pt;
-    POINT2D *end_pt;
+    POINT2D start_pt;
+    POINT2D end_pt;
     GEOGRAPHIC_EDGE edge;
     GBOX edge_gbox;
 
@@ -596,12 +596,12 @@ int ptarray_calculate_gbox_geodetic(POINTARRAY *pa, GBOX *gbox)
 	
 	if ( pa->npoints == 1 )
 	{
-	    POINT2D *in_pt;
+	    POINT2D in_pt;
         POINT3D out_pt;
         GEOGRAPHIC_POINT gp;
-        getPoint2d_p_ro(pa, 0, &in_pt);
-        gp.lon = deg2rad(in_pt->x);
-        gp.lat = deg2rad(in_pt->y);
+        getPoint2d_p(pa, 0, &in_pt);
+        gp.lon = deg2rad(in_pt.x);
+        gp.lat = deg2rad(in_pt.y);
         geog2cart(gp, &out_pt);
         gbox->xmin = gbox->xmax = out_pt.x;
         gbox->ymin = gbox->ymax = out_pt.y;
@@ -611,12 +611,12 @@ int ptarray_calculate_gbox_geodetic(POINTARRAY *pa, GBOX *gbox)
 	
 	for( i = 1; i < pa->npoints; i++ )
 	{
-		getPoint2d_p_ro(pa, i-1, &start_pt);
-		getPoint2d_p_ro(pa, i, &end_pt);
-        edge.start.lon = deg2rad(start_pt->x);
-        edge.start.lat = deg2rad(start_pt->y);
-        edge.end.lon = deg2rad(end_pt->x);
-        edge.end.lat = deg2rad(end_pt->y);
+		getPoint2d_p(pa, i-1, &start_pt);
+		getPoint2d_p(pa, i, &end_pt);
+        edge.start.lon = deg2rad(start_pt.x);
+        edge.start.lat = deg2rad(start_pt.y);
+        edge.end.lon = deg2rad(end_pt.x);
+        edge.end.lat = deg2rad(end_pt.y);
 
         edge_calculate_gbox(edge, &edge_gbox);
 
@@ -764,15 +764,15 @@ int lwgeom_calculate_gbox_geodetic(const LWGEOM *geom, GBOX *gbox)
 static int ptarray_check_geodetic(POINTARRAY *pa)
 {
 	int t;
-	POINT2D *pt;
+	POINT2D pt;
 
 	assert(pa);
 
 	for (t=0; t<pa->npoints; t++)
 	{
-		getPoint2d_p_ro(pa, t, &pt);
-		//printf( "%d (%g, %g)\n", t, pt->x, pt->y);
-		if ( pt->x < -180.0 || pt->y < -90.0 || pt->x > 180.0 || pt->y > 90.0 )
+		getPoint2d_p(pa, t, &pt);
+		//printf( "%d (%g, %g)\n", t, pt.x, pt.y);
+		if ( pt.x < -180.0 || pt.y < -90.0 || pt.x > 180.0 || pt.y > 90.0 )
 			return LW_FALSE;
 	}
 
