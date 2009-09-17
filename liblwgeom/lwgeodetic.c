@@ -322,8 +322,6 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
     LWDEBUGF(4, "edge values: (%.6g %.6g, %.6g %.6g)", g.start.lon, g.start.lat, g.end.lon, g.end.lat);
 
 
-    LWDEBUGF(4, "initialized gbox: %s", gbox_to_string(gbox));
-
 	/* Edge is zero length, just return the naive box */
 	if( FP_IS_ZERO(distance) )
 	{
@@ -407,6 +405,7 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 	gbox->xmax = FP_MAX(start.x, end.x);
 	gbox->ymax = FP_MAX(start.y, end.y);
 	gbox->zmax = FP_MAX(start.z, end.z);
+    LWDEBUGF(4, "initialized gbox: %s", gbox_to_string(gbox));
 	
 	/* Check for pole crossings. */
 	if( FP_EQUALS(deltaLongitude, M_PI) ) 
@@ -460,6 +459,8 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 	clairaut_cartesian(startXZ, endXZ, LW_TRUE, &vT1);
 	clairaut_cartesian(startXZ, endXZ, LW_FALSE, &vT2);
     gimbal_lock = LW_FALSE;
+    LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
+    LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
     if ( FP_IS_ZERO(vT1.lat) ) 
     {
         gimbal_lock = LW_TRUE;

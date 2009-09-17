@@ -28,9 +28,9 @@ CU_pSuite register_geodetic_suite(void)
 	if (
 		(NULL == CU_add_test(pSuite, "test_signum()", test_signum))  ||
 		(NULL == CU_add_test(pSuite, "test_gbox_from_spherical_coordinates()", test_gbox_from_spherical_coordinates))  ||
-		(NULL == CU_add_test(pSuite, "test_gserialized_get_gbox_geocentric()", test_gserialized_get_gbox_geocentric))  ||
+		(NULL == CU_add_test(pSuite, "test_gserialized_get_gbox_geocentric()", test_gserialized_get_gbox_geocentric))  /*||
 		(NULL == CU_add_test(pSuite, "test_gbox_calculation()", test_gbox_calculation)) 
-	)
+*/	)
 	{
 		CU_cleanup_registry();
 		return NULL;
@@ -144,10 +144,11 @@ void test_gserialized_get_gbox_geocentric(void)
 	
 	for ( i = 0; i < gbox_data_length; i++ )
 	{
-//		if( i != 42 ) continue;
+		if( i != 41 ) continue;
 //		if( i != 20 ) continue;
-//		printf("\n%s\n", gbox_data[2*i]);
-//		printf("%s\n", gbox_data[2*i+1]);
+		printf("\n------------\n");
+		printf("%s\n", gbox_data[2*i]);
+		printf("%s\n", gbox_data[2*i+1]);
 		lwg = lwgeom_from_ewkt(gbox_data[2*i], PARSER_CHECK_NONE);
 		gbox_good = gbox_from_string(gbox_data[2*i+1]);
 		g = gserialized_from_lwgeom(lwg, 1, 0);
@@ -155,7 +156,7 @@ void test_gserialized_get_gbox_geocentric(void)
 		lwgeom_free(lwg);
 		gbox = gserialized_calculate_gbox_geocentric(g);
 //		printf("%s\n", gbox_to_string(gbox));
-		printf("line %d: diff %.9g\n", i, fabs(gbox->xmin - gbox_good->xmin));
+		printf("line %d: diff %.9g\n", i, fabs(gbox->xmin - gbox_good->xmin)+fabs(gbox->ymin - gbox_good->ymin)+fabs(gbox->zmin - gbox_good->zmin));
 		CU_ASSERT_DOUBLE_EQUAL(gbox->xmin, gbox_good->xmin, 0.000001);
 		lwfree(g);
 		lwfree(gbox);

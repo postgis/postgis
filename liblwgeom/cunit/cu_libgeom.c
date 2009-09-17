@@ -30,6 +30,7 @@ CU_pSuite register_libgeom_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_flags_macros()", test_flags_macros)) ||
 	    (NULL == CU_add_test(pSuite, "test_serialized_srid()", test_serialized_srid)) ||
 	    (NULL == CU_add_test(pSuite, "test_gserialized_from_lwgeom_size()", test_gserialized_from_lwgeom_size)) || 
+	    (NULL == CU_add_test(pSuite, "test_gbox_serialized_size()", test_gbox_serialized_size)) || 
 	    (NULL == CU_add_test(pSuite, "test_gserialized_from_lwgeom()", test_gserialized_from_lwgeom)) || 
 	    (NULL == CU_add_test(pSuite, "test_lwgeom_from_gserialized()", test_lwgeom_from_gserialized))  ||
 	    (NULL == CU_add_test(pSuite, "test_geometry_type_from_string()", test_geometry_type_from_string)) || 
@@ -145,39 +146,54 @@ void test_gserialized_from_lwgeom_size(void)
 	size_t size = 0;
 
 	g = lwgeom_from_ewkt("POINT(0 0)", PARSER_CHECK_NONE);
-	size = gserialized_from_lwgeom_size(g, 0);
+	size = gserialized_from_lwgeom_size(g);
 	CU_ASSERT_EQUAL( size, 32 );
 	lwgeom_free(g);
 
 	g = lwgeom_from_ewkt("POINT(0 0 0)", PARSER_CHECK_NONE);
-	size = gserialized_from_lwgeom_size(g, 0);
+	size = gserialized_from_lwgeom_size(g);
 	CU_ASSERT_EQUAL( size, 40 );
 	lwgeom_free(g);
 
 	g = lwgeom_from_ewkt("MULTIPOINT(0 0 0, 1 1 1)", PARSER_CHECK_NONE);
-	size = gserialized_from_lwgeom_size(g, 0);
+	size = gserialized_from_lwgeom_size(g);
 	CU_ASSERT_EQUAL( size, 80 );
 	lwgeom_free(g);
 
 	g = lwgeom_from_ewkt("LINESTRING(0 0, 1 1)", PARSER_CHECK_NONE);
-	size = gserialized_from_lwgeom_size(g, 0);
+	size = gserialized_from_lwgeom_size(g);
 	CU_ASSERT_EQUAL( size, 48 );
 	lwgeom_free(g);
 
 	g = lwgeom_from_ewkt("MULTILINESTRING((0 0, 1 1),(0 0, 1 1))", PARSER_CHECK_NONE);
-	size = gserialized_from_lwgeom_size(g, 0);
+	size = gserialized_from_lwgeom_size(g);
 	CU_ASSERT_EQUAL( size, 96 );
 	lwgeom_free(g);
 
 	g = lwgeom_from_ewkt("POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))", PARSER_CHECK_NONE);
-	size = gserialized_from_lwgeom_size(g, 0);
+	size = gserialized_from_lwgeom_size(g);
 	CU_ASSERT_EQUAL( size, 104 );
 	lwgeom_free(g);
 	
 	g = lwgeom_from_ewkt("POLYGON((-1 -1, -1 2, 2 2, 2 -1, -1 -1), (0 0, 0 1, 1 1, 1 0, 0 0))", PARSER_CHECK_NONE);
-	size = gserialized_from_lwgeom_size(g, 0);
+	size = gserialized_from_lwgeom_size(g);
 	CU_ASSERT_EQUAL( size, 184 );
 	lwgeom_free(g);
+	
+}
+
+void test_gbox_serialized_size(void)
+{
+	uchar flags = gflags(0, 0, 0);
+	CU_ASSERT_EQUAL(gbox_serialized_size(flags),0);
+	flags = FLAGS_SET_BBOX(flags, 1);
+	CU_ASSERT_EQUAL(gbox_serialized_size(flags),16);
+	flags = FLAGS_SET_Z(flags, 1);
+	CU_ASSERT_EQUAL(gbox_serialized_size(flags),24);
+	flags = FLAGS_SET_M(flags, 1);
+	CU_ASSERT_EQUAL(gbox_serialized_size(flags),32);
+	flags = FLAGS_SET_GEODETIC(flags, 1);
+	CU_ASSERT_EQUAL(gbox_serialized_size(flags),24);
 	
 }
 

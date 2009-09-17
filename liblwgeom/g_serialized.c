@@ -193,13 +193,11 @@ static size_t gserialized_from_any_size(LWGEOM *geom)
 
 /* Public function */
 
-size_t gserialized_from_lwgeom_size(LWGEOM *geom, GBOX *gbox)
+size_t gserialized_from_lwgeom_size(LWGEOM *geom)
 {
 	size_t size = 8; /* Header overhead. */
 	assert(geom);
 	size += gserialized_from_any_size(geom);
-	if( gbox )
-		size += gbox_serialized_size(gbox->flags);
 	LWDEBUGF(3, "g_serialize size = %d", size);
 	return size;
 }
@@ -445,54 +443,64 @@ static size_t gserialized_from_lwgeom_any(LWGEOM *geom, uchar *buf)
 	return 0;
 }
 
-static size_t gserialized_from_gbox(GBOX *gbox, uchar *buf)
+static size_t gserialized_from_gbox(GBOX gbox, uchar *buf)
 {
 	uchar *loc;
-	float xmin, xmax, ymin, ymax;
+	float f;
 	
 	assert(buf);
 	
-	if ( ! gbox )
-		return (size_t)0;
-		
 	loc = buf;
 
-	xmin = nextDown_f(gbox->xmin);
-	memcpy(loc, &xmin, sizeof(float));
+	f = nextDown_f(gbox.xmin);
+	memcpy(loc, &f, sizeof(float));
 	loc += sizeof(float);
 
-	xmax = nextUp_f(gbox->xmax);
-	memcpy(loc, &xmax, sizeof(float));
+	f = nextUp_f(gbox.xmax);
+	memcpy(loc, &f, sizeof(float));
 	loc += sizeof(float);
 
-	ymin = nextDown_f(gbox->ymin);
-	memcpy(loc, &ymin, sizeof(float));
+	f = nextDown_f(gbox.ymin);
+	memcpy(loc, &f, sizeof(float));
 	loc += sizeof(float);
 
-	ymax = nextUp_f(gbox->ymax);
-	memcpy(loc, &ymax, sizeof(float));
+	f = nextUp_f(gbox.ymax);
+	memcpy(loc, &f, sizeof(float));
 	loc += sizeof(float);
 	
-	if( FLAGS_GET_GEODETIC(gbox->flags) || FLAGS_GET_Z(gbox->flags) )
+	if( FLAGS_GET_GEODETIC(gbox.flags) )
 	{
-		float zmin, zmax;
-		zmin = nextDown_f(gbox->zmin);
-		memcpy(loc, &zmin, sizeof(float));
+		f = nextDown_f(gbox.zmin);
+		memcpy(loc, &f, sizeof(float));
 		loc += sizeof(float);
 
-		zmax = nextUp_f(gbox->zmax);
-		memcpy(loc, &zmax, sizeof(float));
+		f = nextUp_f(gbox.zmax);
+		memcpy(loc, &f, sizeof(float));
 		loc += sizeof(float);
+		
+		return (size_t)(loc - buf);	
 	}
-	if( FLAGS_GET_M(gbox->flags) )
+	
+	if( FLAGS_GET_Z(gbox.flags) )
 	{
-		float mmin, mmax;
-		mmin = nextDown_f(gbox->mmin);
-		memcpy(loc, &mmin, sizeof(float));
+		f = nextDown_f(gbox.zmin);
+		memcpy(loc, &f, sizeof(float));
 		loc += sizeof(float);
 
-		mmax = nextUp_f(gbox->mmax);
-		memcpy(loc, &mmax, sizeof(float));
+		f = nextUp_f(gbox.zmax);
+		memcpy(loc, &f, sizeof(float));
+		loc += sizeof(float);
+		
+	}
+	
+	if( FLAGS_GET_M(gbox.flags) )
+	{
+		f = nextDown_f(gbox.mmin);
+		memcpy(loc, &f, sizeof(float));
+		loc += sizeof(float);
+
+		f = nextUp_f(gbox.mmax);
+		memcpy(loc, &f, sizeof(float));
 		loc += sizeof(float);
 	}
 	return (size_t)(loc - buf);	
@@ -502,57 +510,38 @@ static size_t gserialized_from_gbox(GBOX *gbox, uchar *buf)
 
 GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, int is_geodetic, size_t *size)
 {
+	size_t expected_box_size = 0;
 	size_t expected_size = 0;
 	size_t return_size = 0;
 	uchar *serialized = NULL;
 	uchar *ptr = NULL;
 	GSERIALIZED *g = NULL;
-	GBOX *gbox = NULL;
-	uchar flags = 0;
-
+	GBOX gbox;
 	assert(geom);
 
-	flags = gflags(TYPE_HASZ(geom->type), TYPE_HASM(geom->type), is_geodetic);
-
-	/*
-	** TODO check for empty geometry and condition box behavior on that
-	*/
+	gbox.flags = gflags(TYPE_HASZ(geom->type), TYPE_HASM(geom->type), is_geodetic);
 
 	/* 
 	** We need room for a bounding box in the serialized form. 
 	** Calculate the box and allocate enough size for it. 
 	*/
-	if( lwgeom_needs_bbox(geom) ) 
+	if( ! lwgeom_is_empty(geom) && lwgeom_needs_bbox(geom) ) 
 	{
+		int result = G_SUCCESS;
 		LWDEBUG(3, "calculating bbox");
-		flags = FLAGS_SET_BBOX(flags, 1);
-		gbox = gbox_new(flags);
 		if( is_geodetic )
-		{
-			/* Geodetic input requires geodetic box calculation. */
-			if( lwgeom_calculate_gbox_geodetic(geom, gbox) == G_FAILURE )
-			{
-				LWDEBUG(3, "lwgeom_calculate_gbox_geodetic returned failure");
-				flags = FLAGS_SET_BBOX(flags, 0);
-				lwfree(gbox);
-				gbox = NULL;
-			}
-		}
+			result = lwgeom_calculate_gbox_geodetic(geom, &gbox);
 		else
+		 	result = lwgeom_calculate_gbox(geom, &gbox);
+		if( result == G_SUCCESS )
 		{
-			/* Cartesian box calculation. */
-			if( lwgeom_calculate_gbox(geom, gbox) == G_FAILURE )
-			{
-				LWDEBUG(3, "lwgeom_calculate_gbox returned failure");
-				flags = FLAGS_SET_BBOX(flags, 0);
-				lwfree(gbox);
-				gbox = NULL;
-			}
+			gbox.flags = FLAGS_SET_BBOX(gbox.flags, 1);
+			expected_box_size = gbox_serialized_size(gbox.flags);
 		}
 	}
-
+			
 	/* Set up the uchar buffer into which we are going to write the serialized geometry. */
-	expected_size = gserialized_from_lwgeom_size(geom, gbox);
+	expected_size = gserialized_from_lwgeom_size(geom) + expected_box_size;
 	serialized = lwalloc(expected_size);
 	ptr = serialized;
 
@@ -560,10 +549,8 @@ GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, int is_geodetic, size_t *size
 	ptr += 8; 
 	
 	/* Write in the serialized form of the gbox, if necessary. */
-	if( FLAGS_GET_BBOX(flags) ) 
+	if( FLAGS_GET_BBOX(gbox.flags) ) 
 		ptr += gserialized_from_gbox(gbox, ptr);
-	if( gbox )
-		lwfree(gbox);
 
 	/* Write in the serialized form of the geometry. */
 	ptr += gserialized_from_lwgeom_any(geom, ptr);
@@ -593,7 +580,7 @@ GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, int is_geodetic, size_t *size
 	else
 		gserialized_set_srid(g, geom->SRID);
 	
-	g->flags = flags;
+	g->flags = gbox.flags;
 	
 	return g;
 }
@@ -898,12 +885,12 @@ LWGEOM* lwgeom_from_gserialized(GSERIALIZED *g)
 
 	if( FLAGS_GET_BBOX(g_flags) )
 	{
-		double *dptr = (double*)g->data;
-		BOX2DFLOAT4 *bbox = (BOX2DFLOAT4*)lwalloc(sizeof(BOX2DFLOAT4));
-		bbox->xmin = (float)(*dptr); dptr++;
-		bbox->xmax = (float)(*dptr); dptr++;
-		bbox->ymin = (float)(*dptr); dptr++;
-		bbox->ymax = (float)(*dptr); dptr++;
+		float *fptr = (float*)g->data;
+		BOX2DFLOAT4 *bbox = lwalloc(sizeof(BOX2DFLOAT4));
+		bbox->xmin = fptr[0]; 
+		bbox->xmax = fptr[1];
+		bbox->ymin = fptr[2];
+		bbox->ymax = fptr[3];
 		lwgeom->bbox = bbox;
 	}
 	else 

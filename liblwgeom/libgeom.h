@@ -442,7 +442,7 @@ extern int geometry_type_from_string(char *str, int *type, int *z, int *m);
 * Primarily used internally by the serialization code. Exposed to allow the cunit
 * tests to exercise it.
 */
-extern size_t gserialized_from_lwgeom_size(LWGEOM *geom, GBOX *gbox);
+extern size_t gserialized_from_lwgeom_size(LWGEOM *geom);
 
 /**
 * Allocate a new #GSERIALIZED from an #LWGEOM. For all non-point types, a bounding

@@ -54,11 +54,11 @@ int main()
 	}
 
 	/* Add the libgeom suite to the registry */
-//	if (NULL == register_libgeom_suite())
-//	{
-//		CU_cleanup_registry();
-//		return CU_get_error();
-//	}
+	if (NULL == register_libgeom_suite())
+	{
+		CU_cleanup_registry();
+		return CU_get_error();
+	}
 
 	/* Add the geodetic suite to the registry */
 	if (NULL == register_geodetic_suite())
