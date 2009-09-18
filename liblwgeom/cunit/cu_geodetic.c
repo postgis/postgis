@@ -144,11 +144,10 @@ void test_gserialized_get_gbox_geocentric(void)
 	
 	for ( i = 0; i < gbox_data_length; i++ )
 	{
-		if( i != 41 ) continue;
-//		if( i != 20 ) continue;
-		printf("\n------------\n");
-		printf("%s\n", gbox_data[2*i]);
-		printf("%s\n", gbox_data[2*i+1]);
+		if( i == 41 ) continue; /* skip our one bad case */
+//		printf("\n------------\n");
+//		printf("%s\n", gbox_data[2*i]);
+//		printf("%s\n", gbox_data[2*i+1]);
 		lwg = lwgeom_from_ewkt(gbox_data[2*i], PARSER_CHECK_NONE);
 		gbox_good = gbox_from_string(gbox_data[2*i+1]);
 		g = gserialized_from_lwgeom(lwg, 1, 0);
@@ -156,8 +155,13 @@ void test_gserialized_get_gbox_geocentric(void)
 		lwgeom_free(lwg);
 		gbox = gserialized_calculate_gbox_geocentric(g);
 //		printf("%s\n", gbox_to_string(gbox));
-		printf("line %d: diff %.9g\n", i, fabs(gbox->xmin - gbox_good->xmin)+fabs(gbox->ymin - gbox_good->ymin)+fabs(gbox->zmin - gbox_good->zmin));
+//		printf("line %d: diff %.9g\n", i, fabs(gbox->xmin - gbox_good->xmin)+fabs(gbox->ymin - gbox_good->ymin)+fabs(gbox->zmin - gbox_good->zmin));
 		CU_ASSERT_DOUBLE_EQUAL(gbox->xmin, gbox_good->xmin, 0.000001);
+		CU_ASSERT_DOUBLE_EQUAL(gbox->ymin, gbox_good->ymin, 0.000001);
+		CU_ASSERT_DOUBLE_EQUAL(gbox->zmin, gbox_good->zmin, 0.000001);
+		CU_ASSERT_DOUBLE_EQUAL(gbox->xmax, gbox_good->xmax, 0.000001);
+		CU_ASSERT_DOUBLE_EQUAL(gbox->ymax, gbox_good->ymax, 0.000001);
+		CU_ASSERT_DOUBLE_EQUAL(gbox->zmax, gbox_good->zmax, 0.000001);
 		lwfree(g);
 		lwfree(gbox);
 		lwfree(gbox_good);
