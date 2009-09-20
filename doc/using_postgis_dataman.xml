@@ -188,12 +188,12 @@ geometry
 	  <itemizedlist>
 		<listitem>
 		  <para>Creating a table with 2d point geometry:</para>
-		  <para>CREATE TABLE testgeog(gid serial PRIMARY KEY, the_geom(POINT,4326) );</para>
+		  <para>CREATE TABLE testgeog(gid serial PRIMARY KEY, the_geog geography(POINT,4326) );</para>
 		</listitem>
 
 		<listitem>
 		  <para>Creating a table with z coordinate point</para>
-		   <para>CREATE TABLE testgeog(gid serial PRIMARY KEY, the_geog(POINTZ,4326) );</para>
+		   <para>CREATE TABLE testgeog(gid serial PRIMARY KEY, the_geog geography(POINTZ,4326) );</para>
 		</listitem>
 
 	<!-- TODO: Add other examples -->

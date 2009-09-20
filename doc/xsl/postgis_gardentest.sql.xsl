@@ -180,7 +180,7 @@ BEGIN;
 	SELECT DropGeometryColumn ('pgis_garden','the_geom');
 	SELECT DropGeometryTable ('pgis_garden');
 COMMIT;
-SELECT 'create,insert,drop Test: Start Testing Geography Multi/<xsl:value-of select="@GeometryType" />';
+SELECT 'create,insert,drop Test: End Testing  Multi/<xsl:value-of select="@GeometryType" />';
 	<xsl:text>
 
 	</xsl:text>
@@ -194,7 +194,7 @@ BEGIN;
 	DROP TABLE pgis_geoggarden;
 	SELECT 'AFTER DROP' As look_at, * FROM geography_columns;
 COMMIT;
-SELECT 'create,insert,drop Test: Start Testing Geography <xsl:value-of select="@GeometryType" />';
+SELECT 'create,insert,drop Test: End Testing Geography <xsl:value-of select="@GeometryType" />';
 	<xsl:text>
 
 	</xsl:text>
