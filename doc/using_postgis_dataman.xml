@@ -176,7 +176,8 @@ geometry
 	 <!-- TODO: Fill in more information -->
 
 	  <para>The main restriction is that it only supports WGS 84 long lat (SRID:4326).  It uses a new data type called
-	  geography.</para>
+	  geography.  It also has a much fewer set of functions than the geometry type.  None of the GEOS functions support this new
+	  type. As  a workaround one can convert back and forth between geometry and geography types.</para>
 
 	  <para>The new geography type uses the PostgreSQL 8.3+ typmod definition format so that a table with a geography field
 			can be added in a single step.  All the standard OGC formats except for curves are supported.</para>
