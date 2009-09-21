@@ -112,7 +112,7 @@ void geography_valid_typmod(LWGEOM *lwgeom, int32 typmod)
 	lwgeom_z = TYPE_HASZ(lwgeom->type);
 	lwgeom_m = TYPE_HASM(lwgeom->type);
 
-	POSTGIS_DEBUG(3, "Entered function");
+	POSTGIS_DEBUG(2, "Entered function");
 	
 	/* No typmod (-1) => no preferences */
 	if (typmod < 0) return;
@@ -202,11 +202,11 @@ Datum geography_in(PG_FUNCTION_ARGS)
 	if( geog_typmod >= 0 )
 	{
 		geography_valid_typmod(lwgeom, geog_typmod);
-		POSTGIS_DEBUG(2,"typmod and geometry were consistent");
+		POSTGIS_DEBUG(3, "typmod and geometry were consistent");
 	}
 	else
 	{
-		POSTGIS_DEBUG(2,"typmod was -1");
+		POSTGIS_DEBUG(3, "typmod was -1");
 	}
 
 	/*
@@ -315,7 +315,7 @@ Datum geography_typmod_in(PG_FUNCTION_ARGS)
 			int srid = pg_atoi(DatumGetCString(elem_values[i]), sizeof(int32), '\0');
 			if( srid > 0 )
 			{
-				POSTGIS_DEBUGF(1,"srid: %d", srid);
+				POSTGIS_DEBUGF(3, "srid: %d", srid);
 				if( srid > SRID_MAXIMUM ) 
 				{
 					ereport(ERROR,
@@ -389,7 +389,7 @@ Datum geography_typmod_out(PG_FUNCTION_ARGS)
 	uint32 hasz = TYPMOD_GET_Z(typmod);
 	uint32 hasm = TYPMOD_GET_M(typmod);
 
-	POSTGIS_DEBUGF(3,"Got typmod(srid = %d, type = %d, hasz = %d, hasm = %d)", srid, type, hasz, hasm);
+	POSTGIS_DEBUGF(3, "Got typmod(srid = %d, type = %d, hasz = %d, hasm = %d)", srid, type, hasz, hasm);
 
 	/* No SRID or type or dimensionality? Then no typmod at all. Return empty string. */
 	if( ! srid && ! type && ! hasz && ! hasz )

@@ -319,7 +319,7 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *pg_geom1, PG_LWGEOM *p
 		                                     fcinfo->flinfo->fn_mcxt,
 		                                     "PostGIS Prepared Geometry Context");
 
-		POSTGIS_DEBUGF(1, "GetPrepGeomCache: creating cache: %p", cache);
+		POSTGIS_DEBUGF(3, "GetPrepGeomCache: creating cache: %p", cache);
 
 		pghe.context = cache->context;
 		pghe.geom = 0;
@@ -346,7 +346,7 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *pg_geom1, PG_LWGEOM *p
 			cache->geom = POSTGIS2GEOS( pg_geom1 );
 			cache->prepared_geom = GEOSPrepare( cache->geom );
 			cache->argnum = 1;
-			POSTGIS_DEBUG(1, "GetPrepGeomCache: preparing obj in argument 1");
+			POSTGIS_DEBUG(3, "GetPrepGeomCache: preparing obj in argument 1");
 
 			pghe = GetPrepGeomHashEntry(cache->context);
 			pghe->geom = cache->geom;
@@ -358,7 +358,7 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *pg_geom1, PG_LWGEOM *p
 			/*
 			** Cache hit, and we're good to go. Do nothing.
 			*/
-			POSTGIS_DEBUG(1, "GetPrepGeomCache: cache hit, argument 1");
+			POSTGIS_DEBUG(3, "GetPrepGeomCache: cache hit, argument 1");
 		}
 		/* We don't need new keys until we have a cache miss */
 		copy_keys = 0;
@@ -379,7 +379,7 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *pg_geom1, PG_LWGEOM *p
 			cache->geom = POSTGIS2GEOS( pg_geom2 );
 			cache->prepared_geom = GEOSPrepare( cache->geom );
 			cache->argnum = 2;
-			POSTGIS_DEBUG(1, "GetPrepGeomCache: preparing obj in argument 2");
+			POSTGIS_DEBUG(3, "GetPrepGeomCache: preparing obj in argument 2");
 
 			pghe = GetPrepGeomHashEntry(cache->context);
 			pghe->geom = cache->geom;
@@ -391,7 +391,7 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *pg_geom1, PG_LWGEOM *p
 			/*
 			** Cache hit, and we're good to go. Do nothing.
 			*/
-			POSTGIS_DEBUG(1, "GetPrepGeomCache: cache hit, argument 2");
+			POSTGIS_DEBUG(3, "GetPrepGeomCache: cache hit, argument 2");
 		}
 		/* We don't need new keys until we have a cache miss */
 		copy_keys = 0;
@@ -408,7 +408,7 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *pg_geom1, PG_LWGEOM *p
 		pghe->geom = 0;
 		pghe->prepared_geom = 0;
 
-		POSTGIS_DEBUGF(1, "GetPrepGeomCache: cache miss, argument %d", cache->argnum);
+		POSTGIS_DEBUGF(3, "GetPrepGeomCache: cache miss, argument %d", cache->argnum);
 		GEOSPreparedGeom_destroy( cache->prepared_geom );
 		GEOSGeom_destroy( (GEOSGeometry *)cache->geom );
 
@@ -426,7 +426,7 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *pg_geom1, PG_LWGEOM *p
 		** because this copy will be pfree'd at the end of this function
 		** call.
 		*/
-		POSTGIS_DEBUG(1, "GetPrepGeomCache: copying pg_geom1 into cache");
+		POSTGIS_DEBUG(3, "GetPrepGeomCache: copying pg_geom1 into cache");
 		old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
 		if ( cache->pg_geom1 )
 			pfree(cache->pg_geom1);
@@ -437,7 +437,7 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *pg_geom1, PG_LWGEOM *p
 	}
 	if ( copy_keys && pg_geom2 )
 	{
-		POSTGIS_DEBUG(1, "GetPrepGeomCache: copying pg_geom2 into cache");
+		POSTGIS_DEBUG(3, "GetPrepGeomCache: copying pg_geom2 into cache");
 		old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
 		if ( cache->pg_geom2 )
 			pfree(cache->pg_geom2);
