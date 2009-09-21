@@ -103,23 +103,23 @@ Datum geography_overlaps(PG_FUNCTION_ARGS);
 */
 
 /* Returns number of dimensions for this GIDX */
-#define gidx_ndims(gidx) ((VARSIZE((gidx)) - VARHDRSZ) / (2 * sizeof(float)))
+#define GIDX_NDIMS(gidx) ((VARSIZE((gidx)) - VARHDRSZ) / (2 * sizeof(float)))
 /* Minimum accessor. */
-#define gidx_get_min(gidx, dimension) ((gidx)->c[2*(dimension)])
+#define GIDX_GET_MIN(gidx, dimension) ((gidx)->c[2*(dimension)])
 /* Maximum accessor. */
-#define gidx_get_max(gidx, dimension) ((gidx)->c[2*(dimension)+1])
+#define GIDX_GET_MAX(gidx, dimension) ((gidx)->c[2*(dimension)+1])
 /* Minimum setter. */
-#define gidx_set_min(gidx, dimension, value) ((gidx)->c[2*(dimension)] = (value))
+#define GIDX_SET_MIN(gidx, dimension, value) ((gidx)->c[2*(dimension)] = (value))
 /* Maximum setter. */
-#define gidx_set_max(gidx, dimension, value) ((gidx)->c[2*(dimension)+1] = (value))
+#define GIDX_SET_MAX(gidx, dimension, value) ((gidx)->c[2*(dimension)+1] = (value))
 /* Returns the size required to store a GIDX of requested dimension */
-#define gidx_size(dimensions) (sizeof(int32) + 2*(dimensions)*sizeof(float))
+#define GIDX_SIZE(dimensions) (sizeof(int32) + 2*(dimensions)*sizeof(float))
 
 
 /* Allocates a new GIDX on the heap of the requested dimensionality */
 static GIDX* gidx_new(int ndims)
 {
-	size_t size = gidx_size(ndims);
+	size_t size = GIDX_SIZE(ndims);
 	GIDX *g = (GIDX*)palloc(size);
 	POSTGIS_DEBUGF(5,"created new gidx of %d dimensions, size %d", ndims, (int)size);
 	SET_VARSIZE(g, size);
@@ -138,14 +138,14 @@ static char* gidx_to_string(GIDX *a)
 	
 	str = (char*)palloc(128);
 	rv = str;
-	ndims = gidx_ndims(a);
+	ndims = GIDX_NDIMS(a);
 	
 	str += sprintf(str, "GIDX(");
 	for ( i = 0; i < ndims; i++ )
-		str += sprintf(str, " %.12g", gidx_get_min(a,i));
+		str += sprintf(str, " %.12g", GIDX_GET_MIN(a,i));
 	str += sprintf(str, ",");
 	for ( i = 0; i < ndims; i++ )
-		str += sprintf(str, " %.12g", gidx_get_max(a,i));
+		str += sprintf(str, " %.12g", GIDX_GET_MAX(a,i));
 	str += sprintf(str, " )");
 	
 	return rv;
@@ -167,14 +167,14 @@ static inline void gidx_validate(GIDX *b)
 	int i;
 	Assert(b);
 	POSTGIS_DEBUGF(5,"validating gidx (%s)", gidx_to_string(b));
-	for( i = 0; i < gidx_ndims(b); i++ )
+	for( i = 0; i < GIDX_NDIMS(b); i++ )
 	{
-		if( gidx_get_min(b,i) > gidx_get_max(b,i) )
+		if( GIDX_GET_MIN(b,i) > GIDX_GET_MAX(b,i) )
 		{
 			float tmp;
-			tmp = gidx_get_min(b,i);
-			gidx_set_min(b,i,gidx_get_max(b,i));
-			gidx_set_max(b,i,tmp);
+			tmp = GIDX_GET_MIN(b,i);
+			GIDX_SET_MIN(b,i,GIDX_GET_MAX(b,i));
+			GIDX_SET_MAX(b,i,tmp);
 		}
 	}
 	return;
@@ -189,15 +189,15 @@ static void gidx_merge(GIDX **b_union, GIDX *b_new)
 	Assert(*b_union);
 	Assert(b_new);
 
-	dims_union = gidx_ndims(*b_union);
-	dims_new = gidx_ndims(b_new);
+	dims_union = GIDX_NDIMS(*b_union);
+	dims_new = GIDX_NDIMS(b_new);
 
 	POSTGIS_DEBUGF(4, "merging gidx (%s) into gidx (%s)", gidx_to_string(b_new), gidx_to_string(*b_union));
 
 	if( dims_new > dims_union )
 	{
 		POSTGIS_DEBUGF(5, "reallocating b_union from %d dims to %d dims", dims_union, dims_new);
-		*b_union = (GIDX*)repalloc(*b_union, gidx_size(dims_new));
+		*b_union = (GIDX*)repalloc(*b_union, GIDX_SIZE(dims_new));
 		SET_VARSIZE(*b_union, VARSIZE(b_new));
 		dims_union = dims_new;
 	}
@@ -205,9 +205,9 @@ static void gidx_merge(GIDX **b_union, GIDX *b_new)
 	for( i = 0; i < dims_new; i++ )
 	{
 		/* Adjust minimums */
-		gidx_set_min(*b_union, i, Min(gidx_get_min(*b_union,i),gidx_get_min(b_new,i)));
+		GIDX_SET_MIN(*b_union, i, Min(GIDX_GET_MIN(*b_union,i),GIDX_GET_MIN(b_new,i)));
 		/* Adjust maximums */
-		gidx_set_max(*b_union, i, Max(gidx_get_max(*b_union,i),gidx_get_max(b_new,i)));
+		GIDX_SET_MAX(*b_union, i, Max(GIDX_GET_MAX(*b_union,i),GIDX_GET_MAX(b_new,i)));
 	}
 	
 	POSTGIS_DEBUGF(5, "merge complete (%s)", gidx_to_string(*b_union));
@@ -224,9 +224,9 @@ static float gidx_volume(GIDX *a)
 		elog(ERROR, "gidx_volume received a null argument");
 		return 0.0;
 	}
-	result = gidx_get_max(a,0) - gidx_get_min(a,0);
-	for( i = 1; i < gidx_ndims(a); i++ )
-		result *= (gidx_get_max(a,i) - gidx_get_min(a,i));
+	result = GIDX_GET_MAX(a,0) - GIDX_GET_MIN(a,0);
+	for( i = 1; i < GIDX_NDIMS(a); i++ )
+		result *= (GIDX_GET_MAX(a,i) - GIDX_GET_MIN(a,i));
 	POSTGIS_DEBUGF(5, "calculated volume of %s as %.12g", gidx_to_string(a), result);
 	return result;
 }
@@ -234,7 +234,7 @@ static float gidx_volume(GIDX *a)
 /* Ensure the first argument has the higher dimensionality. */
 static void gidx_dimensionality_check(GIDX **a, GIDX **b)
 {
-	if( gidx_ndims(*a) < gidx_ndims(*b) )
+	if( GIDX_NDIMS(*a) < GIDX_NDIMS(*b) )
 	{
 		GIDX *tmp = *b;
 		*b = *a;
@@ -265,22 +265,22 @@ static float gidx_union_volume(GIDX *a, GIDX *b)
 	/* Ensure 'a' has the most dimensions. */
 	gidx_dimensionality_check(&a, &b);
 	
-	ndims_a = gidx_ndims(a);
-	ndims_b = gidx_ndims(b);
+	ndims_a = GIDX_NDIMS(a);
+	ndims_b = GIDX_NDIMS(b);
 
 	/* Initialize with maximal length of first dimension. */
-	result = Max(gidx_get_max(a,0),gidx_get_max(b,0)) - Min(gidx_get_min(a,0),gidx_get_min(b,0));
+	result = Max(GIDX_GET_MAX(a,0),GIDX_GET_MAX(b,0)) - Min(GIDX_GET_MIN(a,0),GIDX_GET_MIN(b,0));
 
 	/* Multiply by maximal length of remaining dimensions. */
 	for( i = 1; i < ndims_b; i++ )
 	{
-		result *= (Max(gidx_get_max(a,i),gidx_get_max(b,i)) - Min(gidx_get_min(a,i),gidx_get_min(b,i)));
+		result *= (Max(GIDX_GET_MAX(a,i),GIDX_GET_MAX(b,i)) - Min(GIDX_GET_MIN(a,i),GIDX_GET_MIN(b,i)));
 	} 
 	
 	/* Add in dimensions of higher dimensional box. */
 	for( i = ndims_b; i < ndims_a; i++ )
 	{
-		result *= (gidx_get_max(a,i) - gidx_get_min(a,i));
+		result *= (GIDX_GET_MAX(a,i) - GIDX_GET_MIN(a,i));
 	} 
 
 	POSTGIS_DEBUGF(5, "volume( %s union %s ) = %.12g", gidx_to_string(a), gidx_to_string(b), result);
@@ -306,15 +306,15 @@ static float gidx_inter_volume(GIDX *a, GIDX *b)
 	gidx_dimensionality_check(&a, &b);
 		
 	/* Initialize with minimal length of first dimension. */
-	result = Min(gidx_get_max(a,0),gidx_get_max(b,0)) - Max(gidx_get_min(a,0),gidx_get_min(b,0));
+	result = Min(GIDX_GET_MAX(a,0),GIDX_GET_MAX(b,0)) - Max(GIDX_GET_MIN(a,0),GIDX_GET_MIN(b,0));
 	
 	/* If they are disjoint (max < min) then return zero. */
 	if ( result < 0.0 ) return 0.0;
 	
 	/* Continue for remaining dimensions. */
-	for( i = 1; i < gidx_ndims(b); i++ )
+	for( i = 1; i < GIDX_NDIMS(b); i++ )
 	{
-		float width = Min(gidx_get_max(a,i),gidx_get_max(b,i)) - Max(gidx_get_min(a,i),gidx_get_min(b,i));
+		float width = Min(GIDX_GET_MAX(a,i),GIDX_GET_MAX(b,i)) - Max(GIDX_GET_MIN(a,i),GIDX_GET_MIN(b,i));
 		if ( width < 0.0 ) return 0.0;
 		/* Multiply by minimal length of remaining dimensions. */
 		result *= width;
@@ -338,35 +338,35 @@ static int gidx_from_gbox_p(GBOX *box, GIDX *a)
 	ndims = (FLAGS_GET_GEODETIC(box->flags) ? 3 : FLAGS_NDIMS(box->flags));
 	SET_VARSIZE(a, VARHDRSZ + ndims * 2 * sizeof(float));
 
-	gidx_set_min(a,0,nextDown_f(box->xmin));
-	gidx_set_max(a,0,nextUp_f(box->xmax));
-	gidx_set_min(a,1,nextDown_f(box->ymin));
-	gidx_set_max(a,1,nextUp_f(box->ymax));
+	GIDX_SET_MIN(a,0,nextDown_f(box->xmin));
+	GIDX_SET_MAX(a,0,nextUp_f(box->xmax));
+	GIDX_SET_MIN(a,1,nextDown_f(box->ymin));
+	GIDX_SET_MAX(a,1,nextUp_f(box->ymax));
 	
 	/* Geodetic indexes are always 3d, geocentric x/y/z */
 	if ( FLAGS_GET_GEODETIC(box->flags) )
 	{
-		gidx_set_min(a,2,nextDown_f(box->zmin));
-		gidx_set_max(a,2,nextUp_f(box->zmax));
+		GIDX_SET_MIN(a,2,nextDown_f(box->zmin));
+		GIDX_SET_MAX(a,2,nextUp_f(box->zmax));
 	}
 	else
 	{
 		/* Cartesian with Z implies Z is third dimension */
 		if ( FLAGS_GET_Z(box->flags) )
 		{
-			gidx_set_min(a,2,nextDown_f(box->zmin));
-			gidx_set_max(a,2,nextUp_f(box->zmax));
+			GIDX_SET_MIN(a,2,nextDown_f(box->zmin));
+			GIDX_SET_MAX(a,2,nextUp_f(box->zmax));
 			if ( FLAGS_GET_M(box->flags) )
 			{
-				gidx_set_min(a,3,nextDown_f(box->mmin));
-				gidx_set_max(a,3,nextUp_f(box->mmax));
+				GIDX_SET_MIN(a,3,nextDown_f(box->mmin));
+				GIDX_SET_MAX(a,3,nextUp_f(box->mmax));
 			}
 		}
 		/* Unless there's no Z, in which case M is third dimension */
 		else if ( FLAGS_GET_M(box->flags) )
 		{
-			gidx_set_min(a,2,nextDown_f(box->mmin));
-			gidx_set_max(a,2,nextUp_f(box->mmax));
+			GIDX_SET_MIN(a,2,nextDown_f(box->mmin));
+			GIDX_SET_MAX(a,2,nextUp_f(box->mmax));
 		}
 	}
 
@@ -407,23 +407,23 @@ static bool gidx_overlaps(GIDX *a, GIDX *b)
 	/* Ensure 'a' has the most dimensions. */
 	gidx_dimensionality_check(&a, &b);
 	
-	ndims_b = gidx_ndims(b);
+	ndims_b = GIDX_NDIMS(b);
 	
 	/* compare within the dimensions of (b) */
 	for( i = 0; i < ndims_b; i++ )
 	{
-		if( gidx_get_min(a,i) > gidx_get_max(b,i) )
+		if( GIDX_GET_MIN(a,i) > GIDX_GET_MAX(b,i) )
 			return FALSE;
-		if( gidx_get_min(b,i) > gidx_get_max(a,i) )
+		if( GIDX_GET_MIN(b,i) > GIDX_GET_MAX(a,i) )
 			return FALSE;
 	}
 	
 	/* compare to zero those dimensions in (a) absent in (b) */
-	for( i = ndims_b; i < gidx_ndims(a); i++ )
+	for( i = ndims_b; i < GIDX_NDIMS(a); i++ )
 	{
-		if( gidx_get_min(a,i) > 0.0 )
+		if( GIDX_GET_MIN(a,i) > 0.0 )
 			return FALSE;
-		if( gidx_get_max(a,i) < 0.0 )
+		if( GIDX_GET_MAX(a,i) < 0.0 )
 			return FALSE;
 	}		
 	return TRUE;
@@ -442,8 +442,8 @@ static bool gidx_contains(GIDX *a, GIDX *b)
 
 	if( (a == NULL) || (b == NULL) ) return FALSE;
 
-	dims_a = gidx_ndims(a);
-	dims_b = gidx_ndims(b);
+	dims_a = GIDX_NDIMS(a);
+	dims_b = GIDX_NDIMS(b);
 
 	if( dims_a < dims_b )
 	{
@@ -453,9 +453,9 @@ static bool gidx_contains(GIDX *a, GIDX *b)
 		*/
 		for (i = dims_a; i < dims_b; i++)
 		{
-			if( gidx_get_min(b,i) != 0 )
+			if( GIDX_GET_MIN(b,i) != 0 )
 				return FALSE;
-			if( gidx_get_max(b,i) != 0 )
+			if( GIDX_GET_MAX(b,i) != 0 )
 				return FALSE;
 		}
 	}
@@ -463,9 +463,9 @@ static bool gidx_contains(GIDX *a, GIDX *b)
 	/* Excess dimensions of (a), don't matter, it just has to contain (b) in (b)'s dimensions */
 	for (i = 0; i < Min(dims_a, dims_b); i++)
 	{
-		if ( gidx_get_min(a,i) > gidx_get_min(b,i) )
+		if ( GIDX_GET_MIN(a,i) > GIDX_GET_MIN(b,i) )
 			return FALSE;
-		if ( gidx_get_max(a,i) < gidx_get_max(b,i) )
+		if ( GIDX_GET_MAX(a,i) < GIDX_GET_MAX(b,i) )
 			return FALSE;
 	}
 	
@@ -489,19 +489,19 @@ static bool gidx_equals(GIDX *a, GIDX *b)
 	gidx_dimensionality_check(&a, &b);
 	
 	/* For all shared dimensions min(a) == min(b), max(a) == max(b) */
-	for (i = 0; i < gidx_ndims(b); i++)
+	for (i = 0; i < GIDX_NDIMS(b); i++)
 	{
-		if ( gidx_get_min(a,i) != gidx_get_min(b,i) )
+		if ( GIDX_GET_MIN(a,i) != GIDX_GET_MIN(b,i) )
 			return FALSE;
-		if ( gidx_get_max(a,i) != gidx_get_max(b,i) )
+		if ( GIDX_GET_MAX(a,i) != GIDX_GET_MAX(b,i) )
 			return FALSE;
 	}
 	/* For all unshared dimensions min(a) == 0.0, max(a) == 0.0 */
-	for (i = gidx_ndims(b); i < gidx_ndims(a); i++)
+	for (i = GIDX_NDIMS(b); i < GIDX_NDIMS(a); i++)
 	{
-		if ( gidx_get_min(a,i) != 0.0 )
+		if ( GIDX_GET_MIN(a,i) != 0.0 )
 			return FALSE;
-		if ( gidx_get_max(a,i) != 0.0 )
+		if ( GIDX_GET_MAX(a,i) != 0.0 )
 			return FALSE;
 	}
 	return TRUE;
@@ -640,9 +640,9 @@ Datum geography_gist_compress(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(4, "[GIST] got entry_in->key: %s", gidx_to_string(bbox_out));
 
 	/* Check all the dimensions for finite values */
-	for( i = 0; i < gidx_ndims(bbox_out); i++ )
+	for( i = 0; i < GIDX_NDIMS(bbox_out); i++ )
 	{
-		if( ! finite(gidx_get_max(bbox_out, i)) || ! finite(gidx_get_min(bbox_out, i)) )
+		if( ! finite(GIDX_GET_MAX(bbox_out, i)) || ! finite(GIDX_GET_MIN(bbox_out, i)) )
 		{
 			POSTGIS_DEBUG(4, "[GIST] infinite geometry!");
 			PG_RETURN_POINTER(entry_in);
@@ -1145,7 +1145,7 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 
 	/* Initialize memory structures. */
 	nbytes = (max_offset + 2) * sizeof(OffsetNumber);
-	ndims_pageunion = gidx_ndims(box_pageunion);
+	ndims_pageunion = GIDX_NDIMS(box_pageunion);
 	pos = palloc(2*ndims_pageunion * sizeof(int));
 	list = palloc(2*ndims_pageunion * sizeof(OffsetNumber*));
 	box_union = palloc(2*ndims_pageunion * sizeof(GIDX*));
@@ -1171,7 +1171,7 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 
 		for ( d = 0; d < ndims_pageunion; d++ )
 		{
-			if( gidx_get_min(box_current,d)-gidx_get_min(box_pageunion,d) < gidx_get_max(box_pageunion,d)-gidx_get_max(box_current,d) )
+			if( GIDX_GET_MIN(box_current,d)-GIDX_GET_MIN(box_pageunion,d) < GIDX_GET_MAX(box_pageunion,d)-GIDX_GET_MAX(box_current,d) )
 			{
 				geography_gist_picksplit_addlist(list[BELOW(d)], &(box_union[BELOW(d)]), box_current, &(pos[BELOW(d)]), i);
 			}
@@ -1211,7 +1211,7 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 			box_current = (GIDX*) DatumGetPointer(entryvec->vector[i].key);
 			for( d = 0; d < ndims_pageunion; d++ )
 			{
-				avgCenter[d] += (gidx_get_max(box_current,d) + gidx_get_min(box_current,d)) / 2.0;
+				avgCenter[d] += (GIDX_GET_MAX(box_current,d) + GIDX_GET_MIN(box_current,d)) / 2.0;
 			}
 		}
 		for( d = 0; d < ndims_pageunion; d++ )
@@ -1229,7 +1229,7 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 
 			for( d = 0; d < ndims_pageunion; d++ )
 			{
-				center = (gidx_get_min(box_current,d)+gidx_get_max(box_current,d))/2.0;
+				center = (GIDX_GET_MIN(box_current,d)+GIDX_GET_MAX(box_current,d))/2.0;
 				if( center < avgCenter[d] )
 					geography_gist_picksplit_addlist(list[BELOW(d)], &(box_union[BELOW(d)]), box_current, &(pos[BELOW(d)]), i);
 				else if( FPeq(center, avgCenter[d]) )
