@@ -325,67 +325,56 @@ static float gidx_inter_volume(GIDX *a, GIDX *b)
 
 /* Convert a double-based GBOX into a float-based GIDX, 
    ensuring the float box is larger than the double box */
-static int gidx_from_gbox_p(GBOX *box, GIDX *a)
+static int gidx_from_gbox_p(GBOX box, GIDX *a)
 {
 	int ndims;
 	
-	if ( box == NULL ) 
-	{
-		elog(ERROR, "gidx_from_gbox received a null argument");
-		return G_FAILURE;
-	}
-	
-	ndims = (FLAGS_GET_GEODETIC(box->flags) ? 3 : FLAGS_NDIMS(box->flags));
+	ndims = (FLAGS_GET_GEODETIC(box.flags) ? 3 : FLAGS_NDIMS(box.flags));
 	SET_VARSIZE(a, VARHDRSZ + ndims * 2 * sizeof(float));
 
-	GIDX_SET_MIN(a,0,nextDown_f(box->xmin));
-	GIDX_SET_MAX(a,0,nextUp_f(box->xmax));
-	GIDX_SET_MIN(a,1,nextDown_f(box->ymin));
-	GIDX_SET_MAX(a,1,nextUp_f(box->ymax));
+	GIDX_SET_MIN(a,0,nextDown_f(box.xmin));
+	GIDX_SET_MAX(a,0,nextUp_f(box.xmax));
+	GIDX_SET_MIN(a,1,nextDown_f(box.ymin));
+	GIDX_SET_MAX(a,1,nextUp_f(box.ymax));
 	
 	/* Geodetic indexes are always 3d, geocentric x/y/z */
-	if ( FLAGS_GET_GEODETIC(box->flags) )
+	if ( FLAGS_GET_GEODETIC(box.flags) )
 	{
-		GIDX_SET_MIN(a,2,nextDown_f(box->zmin));
-		GIDX_SET_MAX(a,2,nextUp_f(box->zmax));
+		GIDX_SET_MIN(a,2,nextDown_f(box.zmin));
+		GIDX_SET_MAX(a,2,nextUp_f(box.zmax));
 	}
 	else
 	{
 		/* Cartesian with Z implies Z is third dimension */
-		if ( FLAGS_GET_Z(box->flags) )
+		if ( FLAGS_GET_Z(box.flags) )
 		{
-			GIDX_SET_MIN(a,2,nextDown_f(box->zmin));
-			GIDX_SET_MAX(a,2,nextUp_f(box->zmax));
-			if ( FLAGS_GET_M(box->flags) )
+			GIDX_SET_MIN(a,2,nextDown_f(box.zmin));
+			GIDX_SET_MAX(a,2,nextUp_f(box.zmax));
+			if ( FLAGS_GET_M(box.flags) )
 			{
-				GIDX_SET_MIN(a,3,nextDown_f(box->mmin));
-				GIDX_SET_MAX(a,3,nextUp_f(box->mmax));
+				GIDX_SET_MIN(a,3,nextDown_f(box.mmin));
+				GIDX_SET_MAX(a,3,nextUp_f(box.mmax));
 			}
 		}
 		/* Unless there's no Z, in which case M is third dimension */
-		else if ( FLAGS_GET_M(box->flags) )
+		else if ( FLAGS_GET_M(box.flags) )
 		{
-			GIDX_SET_MIN(a,2,nextDown_f(box->mmin));
-			GIDX_SET_MAX(a,2,nextUp_f(box->mmax));
+			GIDX_SET_MIN(a,2,nextDown_f(box.mmin));
+			GIDX_SET_MAX(a,2,nextUp_f(box.mmax));
 		}
 	}
 
-	POSTGIS_DEBUGF(5, "converted %s to %s", gbox_to_string(box), gidx_to_string(a));
+	POSTGIS_DEBUGF(5, "converted %s to %s", gbox_to_string(&box), gidx_to_string(a));
 	
 	return G_SUCCESS;
 }
 
-static GIDX* gidx_from_gbox(GBOX *box)
+static GIDX* gidx_from_gbox(GBOX box)
 {
 	int	ndims;
 	GIDX *a;
 
-	if ( box == NULL ) 
-	{
-		elog(ERROR, "gidx_from_gbox received a null argument");
-		return NULL;
-	}
-	ndims = (FLAGS_GET_GEODETIC(box->flags) ? 3 : FLAGS_NDIMS(box->flags));
+	ndims = (FLAGS_GET_GEODETIC(box.flags) ? 3 : FLAGS_NDIMS(box.flags));
 	a = gidx_new(ndims);
 	gidx_from_gbox_p(box, a);
 	return a;
@@ -546,7 +535,7 @@ static int geography_datum_gidx(Datum geography_datum, GIDX *gidx)
 			POSTGIS_DEBUG(4, "calculated null bbox, returning null");
 			return G_FAILURE;
 		}
-		result = gidx_from_gbox_p(&gbox, gidx);
+		result = gidx_from_gbox_p(gbox, gidx);
 	}
 	if( result == G_SUCCESS )
 	{
