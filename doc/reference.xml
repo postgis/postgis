@@ -1125,7 +1125,7 @@ probed:6 inserted:0 conflicts:6 stale:0
 				<para><xref linkend="ST_BuildArea" />, <xref linkend="ST_BdPolyFromText" /></para>
 			</refsection>
 	</refentry>
-	
+
 	<refentry id="ST_GeographyFromText">
 		  <refnamediv>
 			<refname>ST_GeographyFromText</refname>
@@ -7042,7 +7042,7 @@ CREATE INDEX idx_the_geom_26986_parcels
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 			  </funcprototype>
 			  <funcprototype>
-				<funcdef>text <function>ST_AsText</function></funcdef>
+				<funcdef>text <function>ST_AsBinary</function></funcdef>
 				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
 			  </funcprototype>
 			  <funcprototype>
@@ -7068,7 +7068,7 @@ CREATE INDEX idx_the_geom_26986_parcels
 			<note>
 			  <para>ST_AsBinary is the reverse of <xref linkend="ST_GeomFromWKB" /> for geometry.  Use <xref linkend="ST_GeomFromWKB" /> to convert to a postgis geometry from ST_AsBinary representation.</para>
 			</note>
-			
+
 			<para>Availability: 1.5 geography support was introduced.</para>
 
 			<para><inlinemediaobject>
@@ -7801,7 +7801,7 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 			<note>
 			  <para>ST_AsText is the reverse of <xref linkend="ST_GeomFromText" />.  Use <xref linkend="ST_GeomFromText" /> to convert to a postgis geometry from ST_AsText representation.</para>
 			</note>
-			
+
 			<para>Availability: 1.5 - support for geography was introduced.</para>
 
 			<!-- Optionally mention OpenGIS compliancy if appropriate -->
