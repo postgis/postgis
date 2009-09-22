@@ -38,7 +38,7 @@
 			CROSS JOIN generate_series(40,70, 15) As j
 			WHERE NOT(i = j)
 			ORDER BY i, i*j)</pgis:gset>
-		<pgis:gset ID='PolySet' GeometryType='POLYGON'>(SELECT ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j)  As the_geom
+		<pgis:gset ID='PolySet' GeometryType='POLYGON'>(SELECT ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j*0.05)  As the_geom
 		FROM generate_series(-10,50,10) As i
 			CROSS JOIN generate_series(40,70, 20) As j
 			ORDER BY i, i*j, j)</pgis:gset>
@@ -75,7 +75,7 @@
 			CROSS JOIN generate_series(1,2) As m
 			ORDER BY i, j, i+j+m, m, i*j*m)</pgis:gset>
 
-		<pgis:gset ID='GCSet3D' GeometryType='GEOMETRYCOLLECTION' SkipUnary='1'>(SELECT ST_Collect(ST_Collect(ST_SetSRID(ST_MakePoint(i,j,m),4326),ST_SetSRID(ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_MakePoint(i+m,j,m),ST_MakePoint(j+m,i-m,m)),ST_MakePoint(i,j,m)),ST_MakePointM(i+m,j,m))),4326)))  As the_geom
+		<pgis:gset ID='GCSet3D' GeometryType='GEOMETRYCOLLECTIONZ' SkipUnary='1'>(SELECT ST_Collect(ST_Collect(ST_SetSRID(ST_MakePoint(i,j,m),4326),ST_SetSRID(ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_MakePoint(i+m,j,m),ST_MakePoint(j+m,i-m,m)),ST_MakePoint(i,j,m)),ST_MakePointM(i+m,j,m))),4326)))  As the_geom
 		FROM generate_series(-10,50,20) As i
 			CROSS JOIN generate_series(50,70, 20) As j
 			CROSS JOIN generate_series(1,2) As m
@@ -94,7 +94,7 @@
 			CROSS JOIN generate_series(40,70, 15) As j
 			WHERE NOT(i = j)) As s)</pgis:gset>
 
-		<pgis:gset ID='MultiPolySet' GeometryType='POLYGON'>(SELECT ST_Multi(ST_Union(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j)))  As the_geom
+		<pgis:gset ID='MultiPolySet' GeometryType='POLYGON'>(SELECT ST_Multi(ST_Union(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j*0.05)))  As the_geom
 		FROM generate_series(-10,50,10) As i
 			CROSS JOIN generate_series(40,70, 25) As j)</pgis:gset>
 
@@ -138,12 +138,12 @@
 			)</pgis:gset>
 
 		<!--These are special case geometries -->
-		<pgis:gset ID="Empty" GeometryType="GEOMETRY">(SELECT ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326) As the_geom
+		<pgis:gset ID="Empty" GeometryType="GEOMETRY" createtable="false">(SELECT ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326) As the_geom
 			UNION ALL SELECT ST_GeomFromText('POLYGON EMPTY',4326) As the_geom
 		)
 		</pgis:gset>
 
-		<pgis:gset ID="NULL" GeometryType="GEOMETRY">(SELECT CAST(Null As geometry) As the_geom)</pgis:gset>
+		<pgis:gset ID="NULL" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom)</pgis:gset>
 
 
 	<!-- TODO: Finish off MULTI list -->
@@ -163,7 +163,7 @@
 
 	<xsl:template match='/chapter'>
 <!--Start Test table creation, insert, drop -->
-		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
+		<xsl:for-each select="document('')//pgis:gardens/pgis:gset[not(contains(@createtable,'false'))]">
 SELECT 'create,insert,drop Test: Start Testing Multi/<xsl:value-of select="@GeometryType" />';
 BEGIN;
 	CREATE TABLE pgis_garden (gid serial);
