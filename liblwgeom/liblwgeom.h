@@ -1184,7 +1184,7 @@ extern float nextafterf_custom(float x, float y);
 
 #define LW_MAX(a,b) ((a) >	(b) ? (a) : (b))
 #define LW_MIN(a,b) ((a) <= (b) ? (a) : (b))
-#define LW_ABS(a)   ((a) <	(0) ? (-a) : (a))
+#define LW_ABS(a)   ((a) <	(0) ? -(a) : (a))
 
 
 /* general utilities */
