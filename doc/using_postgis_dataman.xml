@@ -172,32 +172,75 @@ geometry
 	<sect2>
 	  <title>PostGIS Geography Type</title>
 
-	  <para>The PostGIS geography type was introduced in PostGIS 1.5 to support geodetic data.</para>
+	  <para>The geography type provides native support for spatial features represented on "geographic" coordinates (sometimes called "geodetic" coordinates, or "lat/lon", or "lon/lat"). Geographic coordinates are spherical coordinates expressed in angular units (degrees). </para>
+
+	  <para>The basis for the PostGIS geometry type is a plane. The shortest path between two points on the plane is a straight line. That means calculations on geometries (areas, distances, lengths, intersections, etc) can be calculated using cartesian mathematics and straight line vectors.</para>
+
+	  <para>The basis for the PostGIS geographic type is a sphere. The shortest path between two points on the sphere is a great circle arc. That means that calculations on geographies (areas, distances, lengths, intersections, etc) must be calculated on the sphere, using more complicated mathematics. For more accurate measurements, the calculations must take the actual spheroidal shape of the world into account, and the mathematics becomes very complicated indeed.</para>
+
+	  <para>Because the underlying mathematics is much more complicated, there are fewer functions defined for the geography type than for the geometry type. Over time, as new algorithms are added, the capabilities of the geography type will expand.</para>
 	 <!-- TODO: Fill in more information -->
 
-	  <para>The main restriction is that it only supports WGS 84 long lat (SRID:4326).  It uses a new data type called
-	  geography.  It also has a much fewer set of functions than the geometry type.  None of the GEOS functions support this new
-	  type. As  a workaround one can convert back and forth between geometry and geography types.</para>
+	  <para>One restriction is that it only supports WGS 84 long lat (SRID:4326).  It uses a new data type called
+	  geography.  I None of the GEOS functions support this new
+	  type. As a workaround one can convert back and forth between geometry and geography types.</para>
 
 	  <para>The new geography type uses the PostgreSQL 8.3+ typmod definition format so that a table with a geography field
 			can be added in a single step.  All the standard OGC formats except for curves are supported.</para>
+			
+	<para>Geography Basics</para>
+ 
 
-	 <para>Standard geometry type data will autocast to geography if it is of SRID 4326.  You can also use the EWKT and EWKB
+
+	 <para>The geography type only supports the simplest of simple features. Standard geometry type data will autocast to geography if it is of SRID 4326.  You can also use the EWKT and EWKB
 			conventions to insert data.</para>
 
-	  <itemizedlist>
+		<itemizedlist>
 		<listitem>
-		  <para>Creating a table with 2d point geometry:</para>
+		  <para>POINT: Creating a table with 2d point geometry:</para>
 		  <para>CREATE TABLE testgeog(gid serial PRIMARY KEY, the_geog geography(POINT,4326) );</para>
-		</listitem>
-
-		<listitem>
 		  <para>Creating a table with z coordinate point</para>
-		   <para>CREATE TABLE testgeog(gid serial PRIMARY KEY, the_geog geography(POINTZ,4326) );</para>
+		  <para>CREATE TABLE testgeog(gid serial PRIMARY KEY, the_geog geography(POINTZ,4326) );</para>
 		</listitem>
+		<listitem>
+			<para>LINESTRING</para>
+		</listitem>
+		<listitem>
+			<para>POLYGON</para>
+		</listitem>
+		<listitem>
+			<para>MULTIPOINT</para>
+		</listitem>
+		<listitem>
+			<para>MULTILINESTRING</para>
+		</listitem>
+		<listitem>
+			<para>MULTIPOLYGON</para>
+		</listitem>
+		<listitem>
+			<para>GEOMETRYCOLLECTION</para>
+		</listitem>
+		<!-- TODO: Add other examples -->
+		</itemizedlist>
+	  	<para>The new geography fields don't get registered in the geometry_columns.  They get registered in a new view called
+				geography_columns which is a view against the system catalogs so is always automatically kept up to date without need 
+					for an AddGeom... like function.</para>
+				
+		<para>Now, check the "geography_columns" view and see that your table is listed:</para>
 
-	<!-- TODO: Add other examples -->
-	  </itemizedlist>
+		<para><programlisting>SELECT * FROM geography_columns;</programlisting></para>
+
+		<para>Using Input/Output Functions</para>
+
+		<para>There are only four intput/output functions at this time supporting the OGC well-known text (WKT) and well-known binary (WKB) formats. 
+		Adding further output formats (GML, GeoJSON) should be straight-forward, borrowing code from the geometry implementations.</para>
+
+		<itemizedlist>
+			<listitem>ST_AsText(geography) returns text</listitem>
+			<listitem>ST_AsBinary(geography) returns bytea</listitem>
+			<listitem>ST_GeographyFromText(text) returns geography</listitem>
+			<listitem>ST_GeographyFromBinary(bytea) returns geography</listitem>
+		</itemizedlist>
 	</sect2>
 	<sect2>
 	  <title>SQL-MM Part 3</title>
