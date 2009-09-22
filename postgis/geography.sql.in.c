@@ -9,6 +9,8 @@
 --
 ---------------------------------------------------------------------------
 
+BEGIN;
+
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_typmod_in(cstring[])
 	RETURNS integer
@@ -40,6 +42,7 @@ CREATE TYPE geography (
 	output = geography_out,
 	typmod_in = geography_typmod_in,
 	typmod_out = geography_typmod_out,
+	analyze = geography_analyze,
 	storage = main,
 	alignment = double
 );
@@ -229,3 +232,4 @@ CREATE OPERATOR CLASS gist_geography_ops
 	FUNCTION        6        geography_gist_picksplit (internal, internal),
 	FUNCTION        7        geography_gist_same (box2d, box2d, internal);
 
+COMMIT;
