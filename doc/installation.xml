@@ -16,7 +16,8 @@ make
 make install
 createdb yourdatabase
 createlang plpgsql yourdatabase
-psql -d yourdatabase -f lwpostgis.sql
+psql -d yourdatabase -f postgis.sql
+psql -d yourdatabase -f geography.sql
 psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
 
     <para>
@@ -39,7 +40,7 @@ psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
     <itemizedlist>
       <listitem>
         <para>
-          PostgreSQL 8.1 or higher. A complete installation of PostgreSQL
+          PostgreSQL 8.3 or higher. A complete installation of PostgreSQL
           (including server headers) is required. PostgreSQL is available from
           <ulink url="http://www.postgresql.org">
             http://www.postgresql.org
@@ -68,7 +69,7 @@ psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
 
       <listitem>
         <para>
-          Proj4 reprojection library, version 4.5.0 or greater. The Proj4
+          Proj4 reprojection library, version 4.6.0 or greater. The Proj4
           library is used to provide coordinate reprojection support within
           PostGIS. Proj4 is available for download from
           <ulink url="http://trac.osgeo.org/proj/">
@@ -80,7 +81,8 @@ psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
 
       <listitem>
         <para>
-          GEOS geometry library, version 3.0.0 or greater. The GEOS library is
+          GEOS geometry library, version 3.1.1 or greater, but GEOS 3.2 is recommended.  Without GEOS 3.2,
+		  	you will be missing some major enhancements with handling of topological exceptions and improvements to ST_Buffer that allow beveling and mitre. The GEOS library is
           used to provide geometry tests (ST_Touches(), ST_Contains(),
           ST_Intersects()) and operations (ST_Buffer(), ST_Union(),
           ST_Difference()) within PostGIS. GEOS is available for download from
