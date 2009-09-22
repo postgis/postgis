@@ -1125,6 +1125,30 @@ probed:6 inserted:0 conflicts:6 stale:0
 				<para><xref linkend="ST_BuildArea" />, <xref linkend="ST_BdPolyFromText" /></para>
 			</refsection>
 	</refentry>
+	
+	<refentry id="ST_GeographyFromText">
+		  <refnamediv>
+			<refname>ST_GeographyFromText</refname>
+			<refpurpose>Return a specified geography value from Well-Known Text representation or extended (WKT). </refpurpose>
+		  </refnamediv>
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geography <function>ST_GeographyFromText</function></funcdef>
+				<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+		  <refsection>
+			<title>Description</title>
+			<para>Returns a geography object from the  well-known text representation.  SRID 4326 is assumed.</para>
+			<!-- TODO: put in example -->
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_AsText" /></para>
+		  </refsection>
+	</refentry>
 
 
 	<refentry id="ST_GeomCollFromText">
@@ -1335,7 +1359,6 @@ SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 15
 		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_GeomFromEWKT" /></para>
 	  </refsection>
 	</refentry>
-
 	<refentry id="ST_GeometryFromText">
 		  <refnamediv>
 			<refname>ST_GeometryFromText</refname>
@@ -7009,7 +7032,7 @@ CREATE INDEX idx_the_geom_26986_parcels
 		  <refentry id="ST_AsBinary">
 		  <refnamediv>
 			<refname>ST_AsBinary</refname>
-			<refpurpose>Return the Well-Known Binary (WKB) representation of the geometry without SRID meta data.</refpurpose>
+			<refpurpose>Return the Well-Known Binary (WKB) representation of the geometry/geography without SRID meta data.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -7017,6 +7040,10 @@ CREATE INDEX idx_the_geom_26986_parcels
 			  <funcprototype>
 				<funcdef>bytea <function>ST_AsBinary</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+			  </funcprototype>
+			  <funcprototype>
+				<funcdef>text <function>ST_AsText</function></funcdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
 			  </funcprototype>
 			  <funcprototype>
 				<funcdef>bytea <function>ST_AsBinary</function></funcdef>
@@ -7039,8 +7066,10 @@ CREATE INDEX idx_the_geom_26986_parcels
 			  <para>The WKB spec does not include the SRID.  To get the OGC WKB with SRID format use ST_AsEWKB</para>
 			</note>
 			<note>
-			  <para>ST_AsBinary is the reverse of <xref linkend="ST_GeomFromWKB" />.  Use <xref linkend="ST_GeomFromWKB" /> to convert to a postgis geometry from ST_AsBinary representation.</para>
+			  <para>ST_AsBinary is the reverse of <xref linkend="ST_GeomFromWKB" /> for geometry.  Use <xref linkend="ST_GeomFromWKB" /> to convert to a postgis geometry from ST_AsBinary representation.</para>
 			</note>
+			
+			<para>Availability: 1.5 geography support was introduced.</para>
 
 			<para><inlinemediaobject>
 				<imageobject>
@@ -7741,7 +7770,7 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 	<refentry id="ST_AsText">
 		  <refnamediv>
 			<refname>ST_AsText</refname>
-			<refpurpose>Return the Well-Known Text (WKT) representation of the geometry without SRID metadata.</refpurpose>
+			<refpurpose>Return the Well-Known Text (WKT) representation of the geometry/geography without SRID metadata.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -7750,13 +7779,17 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 				<funcdef>text <function>ST_AsText</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 			  </funcprototype>
+			  <funcprototype>
+				<funcdef>text <function>ST_AsText</function></funcdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
 
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns the Well-Known Text representation of the geometry.</para>
+			<para>Returns the Well-Known Text representation of the geometry/geography.</para>
 
 			<note>
 			  <para>The WKT spec does not include the SRID.  To get the SRID as part of the data, use the non-standard
@@ -7768,6 +7801,8 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 			<note>
 			  <para>ST_AsText is the reverse of <xref linkend="ST_GeomFromText" />.  Use <xref linkend="ST_GeomFromText" /> to convert to a postgis geometry from ST_AsText representation.</para>
 			</note>
+			
+			<para>Availability: 1.5 - support for geography was introduced.</para>
 
 			<!-- Optionally mention OpenGIS compliancy if appropriate -->
 			<para><inlinemediaobject>
