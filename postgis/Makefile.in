@@ -62,7 +62,7 @@ OBJS=$(PG_OBJS)
 # older version of PostGIS, rather than with the static liblwgeom.a 
 # supplied with newer versions of PostGIS
 PG_CPPFLAGS+=@CPPFLAGS@ -I../liblwgeom
-SHLIB_LINK+=@SHLIB_LINK@ ../liblwgeom/liblwgeom.a @REGEX_LIBS@
+SHLIB_LINK+=@SHLIB_LINK@ ../liblwgeom/liblwgeom.a
 
 # Extra files to remove during 'make clean'
 EXTRA_CLEAN=$(SQL_OBJS)

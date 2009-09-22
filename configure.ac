@@ -536,11 +536,8 @@ CPPFLAGS="$PGSQL_CPPFLAGS $GEOS_CPPFLAGS $PROJ_CPPFLAGS"
 dnl AC_MSG_RESULT([CPPFLAGS: $CPPFLAGS])
 
 SHLIB_LINK="$PGSQL_LDFLAGS $GEOS_LDFLAGS $PROJ_LDFLAGS -lgeos_c -lproj"
-AC_CHECK_FUNCS(regexec, REGEX_LIBS= , [AC_CHECK_LIB(regex, regexec, REGEX_LIBS="$REGEX_LIBS -lregex")])
-
 AC_SUBST([SHLIB_LINK])
 dnl AC_MSG_RESULT([SHLIB_LINK: $SHLIB_LINK])
-AC_SUBST([REGEX_LIBS])
 
 dnl Output the relevant files
 AC_OUTPUT([liblwgeom/Makefile liblwgeom/cunit/Makefile postgis/Makefile postgis/sqldefines.h loader/Makefile topology/Makefile regress/Makefile doc/Makefile doc/html/image_src/Makefile])

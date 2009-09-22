@@ -9,7 +9,56 @@
  *
  **********************************************************************/
 
+#include <ctype.h>
+
 #include "libgeom.h"
+
+/* Structure for the type array */
+struct geomtype_struct
+{
+	char *typename;
+	int type;
+	int z;
+	int m;
+};
+
+/* Type array. Note that the order of this array is important in
+   that any typename in the list must *NOT* occur within an entry
+   before it. Otherwise if we search for "POINT" at the top of the
+   list we would also match MULTIPOINT, for example. */
+
+struct geomtype_struct geomtype_struct_array[28] = 
+{
+	{ "GEOMETRYCOLLECTIONZM", COLLECTIONTYPE, 1, 1 },
+	{ "GEOMETRYCOLLECTIONZ", COLLECTIONTYPE, 1, 0 },
+	{ "GEOMETRYCOLLECTIONM", COLLECTIONTYPE, 0, 1 },
+	{ "GEOMETRYCOLLECTION", COLLECTIONTYPE, 0, 0 },
+	{ "MULTILINESTRINGZM", MULTILINETYPE, 1, 1 },
+	{ "MULTILINESTRINGZ", MULTILINETYPE, 1, 0 },
+	{ "MULTILINESTRINGM", MULTILINETYPE, 0, 1 },
+	{ "MULTILINESTRING", MULTILINETYPE, 0, 0 },
+	{ "MULTIPOLYGONZM", MULTIPOLYGONTYPE, 1, 1 },
+	{ "MULTIPOLYGONZ", MULTIPOLYGONTYPE, 1, 0 },
+	{ "MULTIPOLYGONM", MULTIPOLYGONTYPE, 0, 1 },
+	{ "MULTIPOLYGON", MULTIPOLYGONTYPE, 0, 0 },
+	{ "MULTIPOINTZM", MULTIPOINTTYPE, 1, 1 },
+	{ "MULTIPOINTZ", MULTIPOINTTYPE, 1, 0 },
+	{ "MULTIPOINTM", MULTIPOINTTYPE, 0, 1 },
+	{ "MULTIPOINT", MULTIPOINTTYPE, 0, 0 },
+	{ "LINESTRINGZM", LINETYPE, 1, 1 },
+	{ "LINESTRINGZ", LINETYPE, 1, 0 },
+	{ "LINESTRINGM", LINETYPE, 0, 1 },
+	{ "LINESTRING", LINETYPE, 0, 0 },
+	{ "POLYGONZM", POLYGONTYPE, 1, 1 },
+	{ "POLYGONZ", POLYGONTYPE, 1, 0 },
+	{ "POLYGONM", POLYGONTYPE, 0, 1 },
+	{ "POLYGON", POLYGONTYPE, 0, 0 },
+	{ "POINTZM", POINTTYPE, 1, 1 },
+	{ "POINTZ", POINTTYPE, 1, 0 },
+	{ "POINTM", POINTTYPE, 0, 1 },
+	{ "POINT", POINTTYPE, 0, 0 }
+};
+
 
 uchar gflags(int hasz, int hasm, int geodetic)
 {
@@ -31,13 +80,9 @@ uchar gflags(int hasz, int hasm, int geodetic)
 */
 int geometry_type_from_string(char *str, int *type, int *z, int *m)
 {
-	regex_t rx_point;
-	regex_t rx_linestring;
-	regex_t rx_polygon;
-	regex_t rx_geometrycollection;
-	regex_t rx_geometry;
-	size_t rx_nmatch = 5;
-	regmatch_t rx_matchptr[5];
+	char *tmpstr;
+	int tmpstartpos, tmpendpos;
+	int i;
 
 	assert(str);
 	assert(type);
@@ -49,81 +94,54 @@ int geometry_type_from_string(char *str, int *type, int *z, int *m)
 	*z = 0;
 	*m = 0;
 
-	regcomp(&rx_point, "^ *(st_)?(multi)?point(z)?(m)? *$", REG_ICASE | REG_EXTENDED);
-	regcomp(&rx_linestring, "^ *(st_)?(multi)?linestring(z)?(m)? *$", REG_ICASE | REG_EXTENDED);
-	regcomp(&rx_polygon, "^ *(st_)?(multi)?polygon(z)?(m)? *$", REG_ICASE | REG_EXTENDED);
-	regcomp(&rx_geometrycollection, "^ *(st_)?geometrycollection(z)?(m)? *$", REG_ICASE | REG_EXTENDED);
-	regcomp(&rx_geometry, "^ *(st_)?geometry(z)?(m)? *$", REG_ICASE | REG_EXTENDED);
-
-	if( ! regexec(&rx_point, str, rx_nmatch, rx_matchptr, 0) )
+	/* Locate any leading/trailing spaces */
+	tmpstartpos = 0;
+	for (i = 0; i < strlen(str); i++)
 	{
-		*type = POINTTYPE;
-		if(rx_matchptr[2].rm_so != -1) /* MULTI */
-			*type = MULTIPOINTTYPE;
-			
-		if(rx_matchptr[3].rm_so != -1) /* Z */
-			*z = 1;
-			
-		if(rx_matchptr[4].rm_so != -1) /* M */
-			*m = 1;
+		if (str[i] != ' ')
+		{
+			tmpstartpos = i;
+			break;		
+		}
+	}	
 
-		return G_SUCCESS;
-	}
-	if( ! regexec(&rx_linestring, str, rx_nmatch, rx_matchptr, 0) )
+	tmpendpos = strlen(str) - 1;
+	for (i = strlen(str) - 1; i >= 0; i--)
 	{
-		*type = LINETYPE;
-		if(rx_matchptr[2].rm_so != -1) /* MULTI */
-			*type = MULTILINETYPE;
-			
-		if(rx_matchptr[3].rm_so != -1) /* Z */
-			*z = 1;
-			
-		if(rx_matchptr[4].rm_so != -1) /* M */
-			*m = 1;
+		if (str[i] != ' ')
+		{
+			tmpendpos = i;
+			break;		
+		}
+	}	
 
-		return G_SUCCESS;
-	}
-	if( ! regexec(&rx_polygon, str, rx_nmatch, rx_matchptr, 0) )
+	/* Copy and convert to upper case for comparison */
+	tmpstr = lwalloc(tmpendpos - tmpstartpos + 2);
+	for (i = tmpstartpos; i <= tmpendpos; i++)
+		tmpstr[i - tmpstartpos] = toupper(str[i]);
+
+	/* Add NULL to terminate */
+	tmpstr[i - tmpstartpos] = '\0';
+
+	/* Now check for the type */
+	for (i = 0; i < 28; i++)
 	{
-		*type = POLYGONTYPE;
-		if(rx_matchptr[2].rm_so != -1) /* MULTI */
-			*type = MULTIPOLYGONTYPE;
-			
-		if(rx_matchptr[3].rm_so != -1) /* Z */
-			*z = 1;
-			
-		if(rx_matchptr[4].rm_so != -1) /* M */
-			*m = 1;
+		if (!strcmp(tmpstr, geomtype_struct_array[i].typename))
+		{
+			*type = geomtype_struct_array[i].type;
+			*z = geomtype_struct_array[i].z;
+			*m = geomtype_struct_array[i].m;
 
-		return G_SUCCESS;
-	}
-	if( ! regexec(&rx_geometrycollection, str, rx_nmatch, rx_matchptr, 0) )
-	{
-		*type = COLLECTIONTYPE;
+			lwfree(tmpstr);
 
-		if(rx_matchptr[2].rm_so != -1) /* Z */
-			*z = 1;
-			
-		if(rx_matchptr[3].rm_so != -1) /* M */
-			*m = 1;
+			return G_SUCCESS;
+		}
+ 
+	} 
 
-		return G_SUCCESS;
-	}
-	if( ! regexec(&rx_geometry, str, rx_nmatch, rx_matchptr, 0) )
-	{
-		*type = 0; /* Generic geometry type. */
+	lwfree(tmpstr);
 
-		if(rx_matchptr[2].rm_so != -1) /* Z */
-			*z = 1;
-			
-		if(rx_matchptr[3].rm_so != -1) /* M */
-			*m = 1;
-
-		return G_SUCCESS;
-	}
-	
 	return G_FAILURE;
-
 }
 
 
