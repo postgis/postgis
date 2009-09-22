@@ -27,7 +27,7 @@ struct geomtype_struct
    before it. Otherwise if we search for "POINT" at the top of the
    list we would also match MULTIPOINT, for example. */
 
-struct geomtype_struct geomtype_struct_array[28] = 
+struct geomtype_struct geomtype_struct_array[32] = 
 {
 	{ "GEOMETRYCOLLECTIONZM", COLLECTIONTYPE, 1, 1 },
 	{ "GEOMETRYCOLLECTIONZ", COLLECTIONTYPE, 1, 0 },
@@ -128,7 +128,7 @@ int geometry_type_from_string(char *str, int *type, int *z, int *m)
 	tmpstr[i - tmpstartpos] = '\0';
 
 	/* Now check for the type */
-	for (i = 0; i < 28; i++)
+	for (i = 0; i < 32; i++)
 	{
 		if (!strcmp(tmpstr, geomtype_struct_array[i].typename))
 		{
