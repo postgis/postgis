@@ -7042,7 +7042,7 @@ CREATE INDEX idx_the_geom_26986_parcels
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 			  </funcprototype>
 			  <funcprototype>
-				<funcdef>text <function>ST_AsBinary</function></funcdef>
+				<funcdef>bytea <function>ST_AsBinary</function></funcdef>
 				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
 			  </funcprototype>
 			  <funcprototype>
