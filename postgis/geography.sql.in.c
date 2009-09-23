@@ -36,6 +36,12 @@ CREATE OR REPLACE FUNCTION geography_out(geography)
 	LANGUAGE 'C' IMMUTABLE STRICT; 
 
 -- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION geography_analyze(internal)
+	RETURNS bool
+	AS 'MODULE_PATHNAME','geography_analyze'
+	LANGUAGE 'C' VOLATILE STRICT; 
+
+-- Availability: 1.5.0
 CREATE TYPE geography (
 	internallength = variable,
 	input = geography_in,
