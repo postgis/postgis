@@ -15,7 +15,6 @@
 #include "liblwgeom.h"
 #include <string.h>
 #include <assert.h>
-#include <regex.h>
 
 /**
 * PI
