@@ -28,6 +28,7 @@
 #include "libgeom.h"         /* For standard geometry types. */
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "geography.h"	     /* For utility functions. */
+#include "lwgeom_export.h"   /* For exports functions. */
 
 Datum geography_in(PG_FUNCTION_ARGS);
 Datum geography_out(PG_FUNCTION_ARGS);
@@ -40,6 +41,10 @@ Datum geography_typmod_type(PG_FUNCTION_ARGS);
 Datum geography_enforce_typmod(PG_FUNCTION_ARGS);
 Datum geography_as_text(PG_FUNCTION_ARGS); 
 Datum geography_from_text(PG_FUNCTION_ARGS);
+Datum geography_as_geojson(PG_FUNCTION_ARGS); 
+Datum geography_as_gml(PG_FUNCTION_ARGS); 
+Datum geography_as_kml(PG_FUNCTION_ARGS); 
+Datum geography_as_svg(PG_FUNCTION_ARGS); 
 Datum geography_as_binary(PG_FUNCTION_ARGS);
 Datum geography_from_binary(PG_FUNCTION_ARGS);
 Datum geography_from_geometry(PG_FUNCTION_ARGS);
@@ -477,6 +482,263 @@ Datum geography_as_text(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(wkt);
 }
+
+
+/*
+** geography_as_gml(*GSERIALIZED) returns cstring
+*/
+PG_FUNCTION_INFO_V1(geography_as_gml);
+Datum geography_as_gml(PG_FUNCTION_ARGS)
+{
+	LWGEOM *lwgeom = NULL;
+	GSERIALIZED *g = NULL;
+	char *gml;
+	text *result;
+	int len;
+	int version;
+	char *srs;
+	int SRID=4326;
+	int precision = MAX_DOUBLE_PRECISION;
+	int option=0;
+
+	/* Get the version */
+	version = PG_GETARG_INT32(0);
+	if ( version != 2 && version != 3 )
+	{
+		elog(ERROR, "Only GML 2 and GML 3 are supported");
+		PG_RETURN_NULL();
+	}
+
+	/* Get the geography */
+	if ( PG_ARGISNULL(1) ) PG_RETURN_NULL();
+	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	/* Convert to lwgeom so we can run the old functions */
+	lwgeom = lwgeom_from_gserialized(g);
+
+	/* Retrieve precision if any (default is max) */
+	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
+	{
+		precision = PG_GETARG_INT32(2);
+		if ( precision > MAX_DOUBLE_PRECISION )
+			precision = MAX_DOUBLE_PRECISION;
+		else if ( precision < 0 ) precision = 0;
+	}
+
+	/* retrieve option */
+	if (PG_NARGS() >3 && !PG_ARGISNULL(3))
+		option = PG_GETARG_INT32(3);
+
+	if (option & 1) srs = getSRSbySRID(SRID, false);
+	else srs = getSRSbySRID(SRID, true);
+        if (!srs)
+	{
+                elog(ERROR, "SRID 4326 unknown in spatial_ref_sys table");
+                PG_RETURN_NULL();
+        }
+
+	if (version == 2)
+		gml = geometry_to_gml2(lwgeom_serialize(lwgeom), srs, precision);
+	else
+		gml = geometry_to_gml3(lwgeom_serialize(lwgeom), srs, precision, true);
+
+	PG_FREE_IF_COPY(lwgeom, 1);
+
+	len = strlen(gml) + VARHDRSZ;
+
+	result = palloc(len);
+	SET_VARSIZE(result, len);
+
+	memcpy(VARDATA(result), gml, len-VARHDRSZ);
+
+	pfree(gml);
+
+	PG_RETURN_POINTER(result);
+}
+
+
+/*
+** geography_as_kml(*GSERIALIZED) returns cstring
+*/
+PG_FUNCTION_INFO_V1(geography_as_kml);
+Datum geography_as_kml(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *g = NULL;
+	LWGEOM *lwgeom = NULL;
+	char *kml;
+	text *result;
+	int len;
+	int version;
+	int precision = MAX_DOUBLE_PRECISION;
+
+
+	/* Get the version */
+	version = PG_GETARG_INT32(0);
+	if ( version != 2)
+	{
+		elog(ERROR, "Only KML 2 is supported");
+		PG_RETURN_NULL();
+	}
+
+	/* Get the geometry */
+	if ( PG_ARGISNULL(1) ) PG_RETURN_NULL();
+	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	/* Convert to lwgeom so we can run the old functions */
+	lwgeom = lwgeom_from_gserialized(g);
+
+	/* Retrieve precision if any (default is max) */
+	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
+	{
+		precision = PG_GETARG_INT32(2);
+		if ( precision > MAX_DOUBLE_PRECISION )
+			precision = MAX_DOUBLE_PRECISION;
+		else if ( precision < 0 ) precision = 0;
+	}
+
+	kml = geometry_to_kml2(lwgeom_serialize(lwgeom), precision);
+
+	PG_FREE_IF_COPY(lwgeom, 1);
+
+	len = strlen(kml) + VARHDRSZ;
+
+	result = palloc(len);
+	SET_VARSIZE(result, len);
+
+	memcpy(VARDATA(result), kml, len-VARHDRSZ);
+
+	pfree(kml);
+
+	PG_RETURN_POINTER(result);
+}
+
+
+/*
+** geography_as_svg(*GSERIALIZED) returns cstring
+*/
+PG_FUNCTION_INFO_V1(geography_as_svg);
+Datum geography_as_svg(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *g = NULL;
+	LWGEOM *lwgeom = NULL;
+	char *svg;
+	text *result;
+	int len;
+	bool relative = false;
+	int precision=MAX_DOUBLE_PRECISION;
+
+	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
+
+	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	/* Convert to lwgeom so we can run the old functions */
+	lwgeom = lwgeom_from_gserialized(g);
+
+	/* check for relative path notation */
+	if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) )
+		relative = PG_GETARG_INT32(1) ? true:false;
+
+	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
+	{
+		precision = PG_GETARG_INT32(2);
+		if ( precision > MAX_DOUBLE_PRECISION )
+			precision = MAX_DOUBLE_PRECISION;
+		else if ( precision < 0 ) precision = 0;
+	}
+
+	svg = geometry_to_svg(lwgeom_serialize(lwgeom), relative, precision);
+	PG_FREE_IF_COPY(lwgeom, 0);
+
+	len = strlen(svg) + VARHDRSZ;
+	result = palloc(len);
+	SET_VARSIZE(result, len);
+	memcpy(VARDATA(result), svg, len-VARHDRSZ);
+
+	pfree(svg);
+
+	PG_RETURN_POINTER(result);
+}
+
+
+/*
+** geography_as_geojson(*GSERIALIZED) returns cstring
+*/
+PG_FUNCTION_INFO_V1(geography_as_geojson);
+Datum geography_as_geojson(PG_FUNCTION_ARGS)
+{
+	LWGEOM *lwgeom = NULL;
+	GSERIALIZED *g = NULL;
+        char *geojson;
+        text *result;
+        int len;
+        int version;
+        int option = 0;
+        bool has_bbox = 0;
+        int precision = MAX_DOUBLE_PRECISION;
+        char * srs = NULL;
+
+        /* Get the version */
+        version = PG_GETARG_INT32(0);
+        if ( version != 1)
+        {
+                elog(ERROR, "Only GeoJSON 1 is supported");
+                PG_RETURN_NULL();
+        }
+
+        /* Get the geography */
+        if (PG_ARGISNULL(1) ) PG_RETURN_NULL();
+	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	/* Convert to lwgeom so we can run the old functions */
+	lwgeom = lwgeom_from_gserialized(g);
+
+       /* Retrieve precision if any (default is max) */
+        if (PG_NARGS() >2 && !PG_ARGISNULL(2))
+        {
+                precision = PG_GETARG_INT32(2);
+                if ( precision > MAX_DOUBLE_PRECISION )
+                        precision = MAX_DOUBLE_PRECISION;
+                else if ( precision < 0 ) precision = 0;
+        }
+
+        /* Retrieve output option
+         * 0 = without option (default)
+         * 1 = bbox
+         * 2 = short crs
+         * 4 = long crs
+         */
+        if (PG_NARGS() >3 && !PG_ARGISNULL(3))
+                option = PG_GETARG_INT32(3);
+
+        if (option & 2 || option & 4)
+        {
+		/* Geography only handle srid 4326 */
+                if (option & 2) srs = getSRSbySRID(4326, true);
+                if (option & 4) srs = getSRSbySRID(4326, false);
+
+                if (!srs)
+		{
+                     elog(ERROR, "SRID 4326 unknown in spatial_ref_sys table");
+                     PG_RETURN_NULL();
+                }
+        }
+
+        if (option & 1) has_bbox = 1;
+
+        geojson = geometry_to_geojson(lwgeom_serialize(lwgeom), srs, has_bbox, precision);
+        PG_FREE_IF_COPY(lwgeom, 1);
+        if (srs) pfree(srs);
+
+        len = strlen(geojson) + VARHDRSZ;
+        result = palloc(len);
+        SET_VARSIZE(result, len);
+        memcpy(VARDATA(result), geojson, len-VARHDRSZ);
+
+        pfree(geojson);
+
+        PG_RETURN_POINTER(result);
+}
+
 
 /*
 ** geography_from_text(*char) returns *GSERIALIZED

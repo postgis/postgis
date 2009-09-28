@@ -38,6 +38,7 @@ PG_OBJS=lwgeom_pg.o \
 	lwgeom_chip.o \
 	lwgeom_geos.o \
 	lwgeom_geos_prepared.o \
+	lwgeom_export.o \
 	lwgeom_svg.o \
 	lwgeom_gml.o \
 	lwgeom_kml.o \

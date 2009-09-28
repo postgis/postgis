@@ -17,14 +17,13 @@
 
 
 #include "postgres.h"
-#include "executor/spi.h"
 
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
+#include "lwgeom_export.h"
+
 
 Datum LWGEOM_asGML(PG_FUNCTION_ARGS);
-
-char *geometry_to_gml2(uchar *srl, char *srs, int precision);
 
 static size_t asgml2_point_size(LWPOINT *point, char *srs, int precision);
 static char *asgml2_point(LWPOINT *point, char *srs, int precision);
@@ -35,8 +34,6 @@ static char *asgml2_poly(LWPOLY *poly, char *srs, int precision);
 static size_t asgml2_inspected_size(LWGEOM_INSPECTED *geom, char *srs, int precision);
 static char *asgml2_inspected(LWGEOM_INSPECTED *geom, char *srs, int precision);
 static size_t pointArray_toGML2(POINTARRAY *pa, char *buf, int precision);
-
-char *geometry_to_gml3(uchar *srl, char *srs, int precision, bool is_deegree);
 
 static size_t asgml3_point_size(LWPOINT *point, char *srs, int precision);
 static char *asgml3_point(LWPOINT *point, char *srs, int precision, bool is_deegree);
@@ -49,12 +46,6 @@ static char *asgml3_inspected(LWGEOM_INSPECTED *geom, char *srs, int precision, 
 static size_t pointArray_toGML3(POINTARRAY *pa, char *buf, int precision, bool is_deegree);
 
 static size_t pointArray_GMLsize(POINTARRAY *pa, int precision);
-static char *getSRSbySRID(int SRID, bool short_crs);
-
-
-#define SHOW_DIGS_DOUBLE 15
-#define MAX_DOUBLE_PRECISION 15
-#define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 2) /* +2 mean add dot and sign */
 
 
 /**
@@ -883,72 +874,6 @@ pointArray_toGML3(POINTARRAY *pa, char *output, int precision, bool is_deegree)
 }
 
 
-
-/*
- * Common GML routines
- */
-
-static char *
-getSRSbySRID(int SRID, bool short_crs)
-{
-	char query[128];
-	char *srs, *srscopy;
-	int size, err;
-
-	/* connect to SPI */
-	if (SPI_OK_CONNECT != SPI_connect ())
-	{
-		elog(NOTICE, "getSRSbySRID: could not connect to SPI manager");
-		SPI_finish();
-		return NULL;
-	}
-
-	if (short_crs)
-		sprintf(query, "SELECT auth_name||':'||auth_srid \
-		        FROM spatial_ref_sys WHERE srid='%d'", SRID);
-	else
-		sprintf(query, "SELECT 'urn:ogc:def:crs:'||auth_name||':'||auth_srid \
-		        FROM spatial_ref_sys WHERE srid='%d'", SRID);
-
-	/* execute query */
-	err = SPI_exec(query, 1);
-	if ( err < 0 )
-	{
-		elog(NOTICE, "getSRSbySRID: error executing query %d", err);
-		SPI_finish();
-		return NULL;
-	}
-
-	/* no entry in spatial_ref_sys */
-	if (SPI_processed <= 0)
-	{
-		/*elog(NOTICE, "getSRSbySRID: no record for SRID %d", SRID); */
-		SPI_finish();
-		return NULL;
-	}
-
-	/* get result  */
-	srs = SPI_getvalue(SPI_tuptable->vals[0],
-	                   SPI_tuptable->tupdesc, 1);
-
-	/* NULL result */
-	if ( ! srs )
-	{
-		/*elog(NOTICE, "getSRSbySRID: null result"); */
-		SPI_finish();
-		return NULL;
-	}
-
-	/* copy result to upper executor context */
-	size = strlen(srs)+1;
-	srscopy = SPI_palloc(size);
-	memcpy(srscopy, srs, size);
-
-	/* disconnect from SPI */
-	SPI_finish();
-
-	return srscopy;
-}
 
 /*
  * Returns maximum size of rendered pointarray in bytes.

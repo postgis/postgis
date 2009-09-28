@@ -23,9 +23,9 @@
 #include "postgres.h"
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
+#include "lwgeom_export.h"
 
 Datum assvg_geometry(PG_FUNCTION_ARGS);
-char *geometry_to_svg(uchar *srl, bool relative, int precision);
 static char * assvg_point(LWPOINT *point, bool relative, int precision);
 static char * assvg_line(LWLINE *line, bool relative, int precision);
 static char * assvg_polygon(LWPOLY *poly, bool relative, int precision);
@@ -40,9 +40,6 @@ static size_t pointArray_svg_size(POINTARRAY *pa, int precision);
 static size_t pointArray_svg_rel(POINTARRAY *pa, char * output, bool close_ring, int precision);
 static size_t pointArray_svg_abs(POINTARRAY *pa, char * output, bool close_ring, int precision);
 
-#define SHOW_DIGS_DOUBLE 15
-#define MAX_DOUBLE_PRECISION 15
-#define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 2) /* +2 mean add dot and sign */
 
 /**
  * SVG features
@@ -87,7 +84,9 @@ Datum assvg_geometry(PG_FUNCTION_ARGS)
 }
 
 
-/** takes a GEOMETRY and returns a SVG representation */
+/** 
+ * Takes a GEOMETRY and returns a SVG representation
+ */
 char *
 geometry_to_svg(uchar *geom, bool relative, int precision)
 {

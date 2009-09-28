@@ -24,6 +24,7 @@
 
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
+#include "lwgeom_export.h"
 
 Datum LWGEOM_asKML(PG_FUNCTION_ARGS);
 
@@ -40,10 +41,6 @@ static char *askml2_inspected(LWGEOM_INSPECTED *geom, int precision);
 static size_t pointArray_toKML2(POINTARRAY *pa, char *buf, int precision);
 
 static size_t pointArray_KMLsize(POINTARRAY *pa, int precision);
-
-#define SHOW_DIGS_DOUBLE 15
-#define MAX_DOUBLE_PRECISION 15
-#define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 2) /* +2 mean add dot and sign */
 
 
 /**

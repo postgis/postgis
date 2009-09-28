@@ -16,14 +16,12 @@
 **********************************************************************/
 
 #include "postgres.h"
-#include "executor/spi.h"
 
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
+#include "lwgeom_export.h"
 
 Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS);
-
-char *geometry_to_geojson(uchar *srl, char *srs, bool has_bbox, int precision);
 
 static char *asgeojson_point(LWPOINT *point, char *srs, BOX3D *bbox, int precision);
 static char *asgeojson_line(LWLINE *line, char *srs, BOX3D *bbox, int precision);
@@ -37,11 +35,6 @@ static size_t asgeojson_inspected_buf(LWGEOM_INSPECTED *insp, char *output, BOX3
 
 static size_t pointArray_to_geojson(POINTARRAY *pa, char *buf, int precision);
 static size_t pointArray_geojson_size(POINTARRAY *pa, int precision);
-static char *getSRSbySRID(int SRID, bool short_crs);
-
-#define SHOW_DIGS_DOUBLE 15
-#define MAX_DOUBLE_PRECISION 15
-#define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 2) /* +2 mean add dot and sign */
 
 
 /**
@@ -123,8 +116,7 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 }
 
 
-
-/*
+/**
  * Takes a GEOMETRY and returns a GeoJson representation
  */
 char *
@@ -199,6 +191,7 @@ geometry_to_geojson(uchar *geom, char *srs, bool has_bbox, int precision)
 }
 
 
+
 /**
  * Handle SRS
  */
@@ -226,13 +219,13 @@ asgeojson_srs_buf(char *output, char *srs)
 }
 
 
+
 /**
  * Handle Bbox
  */
 static size_t
 asgeojson_bbox_size(bool hasz, int precision)
 {
-
 	int size;
 
 	if (!hasz)
@@ -868,67 +861,6 @@ pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 	return (ptr-output);
 }
 
-
-/*
- * Common geojson routines
- */
-
-static char *
-getSRSbySRID(int SRID, bool short_crs)
-{
-	char query[256];
-	char *srs, *srscopy;
-	int size, err;
-
-	if (SPI_OK_CONNECT != SPI_connect ())
-	{
-		elog(NOTICE, "getSRSbySRID: could not connect to SPI manager");
-		SPI_finish();
-		return NULL;
-	}
-
-	if (short_crs)
-		sprintf(query, "SELECT auth_name||':'||auth_srid \
-		        FROM spatial_ref_sys WHERE srid='%d'", SRID);
-	else
-		sprintf(query, "SELECT 'urn:ogc:def:crs:'||auth_name||':'||auth_srid \
-		        FROM spatial_ref_sys WHERE srid='%d'", SRID);
-
-	err = SPI_exec(query, 1);
-	if ( err < 0 )
-	{
-		elog(NOTICE, "getSRSbySRID: error executing query %d", err);
-		SPI_finish();
-		return NULL;
-	}
-
-	/* no entry in spatial_ref_sys */
-	if (SPI_processed <= 0)
-	{
-		SPI_finish();
-		return NULL;
-	}
-
-	/* get result  */
-	srs = SPI_getvalue(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1);
-
-	/* NULL result */
-	if ( ! srs )
-	{
-		SPI_finish();
-		return NULL;
-	}
-
-	/* copy result to upper executor context */
-	size = strlen(srs)+1;
-	srscopy = SPI_palloc(size);
-	memcpy(srscopy, srs, size);
-
-	/* disconnect from SPI */
-	SPI_finish();
-
-	return srscopy;
-}
 
 
 /**

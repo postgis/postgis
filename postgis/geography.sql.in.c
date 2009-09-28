@@ -238,4 +238,157 @@ CREATE OPERATOR CLASS gist_geography_ops
 	FUNCTION        6        geography_gist_picksplit (internal, internal),
 	FUNCTION        7        geography_gist_same (box2d, box2d, internal);
 
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-- Export Functions
+-- Availability: 1.5.0
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+
+--
+-- SVG OUTPUT
+--
+
+-- ST_AsSVG(geography, precision, rel)
+CREATE OR REPLACE FUNCTION ST_AsSVG(geography,int4,int4)
+	RETURNS TEXT
+	AS 'MODULE_PATHNAME','geography_as_svg'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- ST_AsSVG(geography, precision) / rel=0
+CREATE OR REPLACE FUNCTION ST_AsSVG(geography,int4)
+	RETURNS TEXT
+	AS 'MODULE_PATHNAME','geography_as_svg'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- ST_AsSVG(geography) / precision=15, rel=0
+CREATE OR REPLACE FUNCTION ST_AsSVG(geography)
+	RETURNS TEXT
+	AS 'MODULE_PATHNAME','geography_as_svg'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+
+--
+-- GML OUTPUT
+--
+
+-- _ST_AsGML(version, geography, precision, option)
+CREATE OR REPLACE FUNCTION _ST_AsGML(int4, geography, int4, int4)
+	RETURNS TEXT
+	AS 'MODULE_PATHNAME','geography_as_gml'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- ST_AsGML(geography, precision) / version=2 options=0
+CREATE OR REPLACE FUNCTION ST_AsGML(geography, int4)
+	RETURNS TEXT
+	AS 'SELECT _ST_AsGML(2, $1, $2, 0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- ST_AsGML(geography) / precision=15 version=2 options=0
+CREATE OR REPLACE FUNCTION ST_AsGML(geography)
+	RETURNS TEXT
+	AS 'SELECT _ST_AsGML(2, $1, 15, 0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- ST_AsGML(version, geography) / precision=15 version=2 options=0
+CREATE OR REPLACE FUNCTION ST_AsGML(int4, geography)
+	RETURNS TEXT
+	AS 'SELECT _ST_AsGML($1, $2, 15, 0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- ST_AsGML(version, geography, precision) / options = 0
+CREATE OR REPLACE FUNCTION ST_AsGML(int4, geography, int4)
+	RETURNS TEXT
+	AS 'SELECT _ST_AsGML($1, $2, $3, 0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- ST_AsGML (geography, precision, option) / version=2
+CREATE OR REPLACE FUNCTION ST_AsGML(geography, int4, int4)
+	RETURNS TEXT
+	AS 'SELECT _ST_AsGML(2, $1, $2, $3)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- ST_AsGML(version, geography, precision, option)
+CREATE OR REPLACE FUNCTION ST_AsGML(int4, geography, int4, int4)
+	RETURNS TEXT
+	AS 'SELECT _ST_AsGML($1, $2, $3, $4)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+
+
+--
+-- KML OUTPUT
+--
+
+-- _ST_AsKML(version, geography, precision)
+CREATE OR REPLACE FUNCTION _ST_AsKML(int4, geography, int4)
+	RETURNS TEXT
+	AS 'MODULE_PATHNAME','geography_as_kml'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- AsKML(geography,precision) / version=2
+CREATE OR REPLACE FUNCTION ST_AsKML(geography, int4)
+	RETURNS TEXT
+	AS 'SELECT _ST_AsKML(2, $1, $2)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- AsKML(geography) / precision=15 version=2
+CREATE OR REPLACE FUNCTION ST_AsKML(geography)
+	RETURNS TEXT
+	AS 'SELECT _ST_AsKML(2, $1, 15)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- ST_AsKML(version, geography) / precision=15 
+CREATE OR REPLACE FUNCTION ST_AsKML(int4, geography)
+	RETURNS TEXT
+	AS 'SELECT _ST_AsKML($1, $2, 15)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- ST_AsKML(version, geography, precision)
+CREATE OR REPLACE FUNCTION ST_AsKML(int4, geography, int4)
+	RETURNS TEXT
+	AS 'SELECT _ST_AsKML($1, $2, $3)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+
+
+--
+-- GeoJson Output
+--
+
+CREATE OR REPLACE FUNCTION _ST_AsGeoJson(int4, geography, int4, int4)
+        RETURNS text
+	AS 'MODULE_PATHNAME','geography_as_geojson'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- ST_AsGeoJson(geography) / precision=15 version=1 options=0
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(geography)
+        RETURNS TEXT
+        AS 'SELECT _ST_AsGeoJson(1, $1, 15, 0)'
+        LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- ST_AsGeoJson(version, geography) / precision=15 options=0
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(int4, geography)
+        RETURNS TEXT
+        AS 'SELECT _ST_AsGeoJson($1, $2, 15, 0)'
+        LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- ST_AsGeoJson(version, geography, precision) / options=0
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(int4, geography, int4)
+        RETURNS TEXT
+        AS 'SELECT _ST_AsGeoJson($1, $2, $3, 0)'
+        LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- ST_AsGeoJson(geography, precision, options) / version=1
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(geography, int4, int4)
+        RETURNS TEXT
+        AS 'SELECT _ST_AsGeoJson(1, $1, $2, $3)'
+        LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- ST_AsGeoJson(version, geography, precision,options)
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(int4, geography, int4, int4)
+        RETURNS TEXT
+        AS 'SELECT _ST_AsGeoJson($1, $2, $3, $4)'
+        LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+
+
 COMMIT;
