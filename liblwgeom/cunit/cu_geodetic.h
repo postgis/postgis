@@ -28,3 +28,4 @@ void test_signum(void);
 void test_gbox_from_spherical_coordinates(void);
 void test_gserialized_get_gbox_geocentric(void);
 void test_gbox_calculation(void);
+void test_edge_intersection(void);

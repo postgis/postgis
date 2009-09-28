@@ -55,4 +55,8 @@ double sphere_distance(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e);
 double sphere_direction(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e);
 int sphere_project(GEOGRAPHIC_POINT r, double distance, double azimuth, GEOGRAPHIC_POINT *n);
 int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox);
-
+int edge_intersection(GEOGRAPHIC_EDGE e1, GEOGRAPHIC_EDGE e2, GEOGRAPHIC_POINT *g);
+void edge_deg2rad(GEOGRAPHIC_EDGE *e);
+void edge_rad2deg(GEOGRAPHIC_EDGE *e);
+void point_deg2rad(GEOGRAPHIC_POINT *p);
+void point_rad2deg(GEOGRAPHIC_POINT *p);

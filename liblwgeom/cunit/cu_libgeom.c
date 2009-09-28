@@ -36,7 +36,9 @@ CU_pSuite register_libgeom_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_geometry_type_from_string()", test_geometry_type_from_string)) || 
 	    (NULL == CU_add_test(pSuite, "test_lwgeom_check_geodetic()", test_lwgeom_check_geodetic)) || 
 	    (NULL == CU_add_test(pSuite, "test_lwgeom_count_vertices()", test_lwgeom_count_vertices))  || 
-	    (NULL == CU_add_test(pSuite, "test_on_gser_lwgeom_count_vertices()", test_on_gser_lwgeom_count_vertices))  
+	    (NULL == CU_add_test(pSuite, "test_on_gser_lwgeom_count_vertices()", test_on_gser_lwgeom_count_vertices))  ||
+	    (NULL == CU_add_test(pSuite, "test_gbox_calculation()", test_gbox_calculation))  
+
 	)
 	{
 		CU_cleanup_registry();
@@ -416,4 +418,42 @@ void test_on_gser_lwgeom_count_vertices(void)
 
 	lwfree(g_ser1);
 	
+}
+
+void test_gbox_calculation(void)
+{
+
+	LWGEOM *geom;
+	int i = 0;
+	GBOX *gbox = gbox_new(gflags(0,0,0));
+	BOX3D *box3d;
+	
+	char ewkt[][512] = { 
+		"POINT(0 0.2)",
+		"LINESTRING(-1 -1,-1 2.5,2 2,2 -1)",
+		"SRID=1;MULTILINESTRING((-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1))",
+		"POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0))",
+		"SRID=4326;MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)),((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)))",
+		"SRID=4326;GEOMETRYCOLLECTION(POINT(0 1),POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0)),MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))))",
+		"POINT(0 220.2)",
+		"LINESTRING(-1 -1,-1231 2.5,2 2,2 -1)",
+		"SRID=1;MULTILINESTRING((-1 -131,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1))",
+		"POLYGON((-1 -1,-1 2.5,2 2,2 -133,-1 -1),(0 0,0 1,1 1,1 0,0 0))",
+		"SRID=4326;MULTIPOLYGON(((-1 -1,-1 2.5,211 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)),((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)))",
+		"SRID=4326;GEOMETRYCOLLECTION(POINT(0 1),POLYGON((-1 -1,-1111 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0)),MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))))",
+	};
+		
+	for( i = 0; i < 6; i++ )
+	{
+		geom = lwgeom_over_gserialized(ewkt[i]);
+		lwgeom_calculate_gbox(geom, gbox);
+		box3d = lwgeom_compute_box3d(geom);
+		//printf("%g %g\n", gbox->xmin, box3d->xmin);
+		CU_ASSERT_EQUAL(gbox->xmin, box3d->xmin);
+		CU_ASSERT_EQUAL(gbox->xmax, box3d->xmax);
+		CU_ASSERT_EQUAL(gbox->ymin, box3d->ymin);
+		CU_ASSERT_EQUAL(gbox->ymax, box3d->ymax);
+		lwfree(box3d);
+	}
+	lwfree(gbox);
 }

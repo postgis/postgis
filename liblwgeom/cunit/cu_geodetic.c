@@ -28,9 +28,9 @@ CU_pSuite register_geodetic_suite(void)
 	if (
 		(NULL == CU_add_test(pSuite, "test_signum()", test_signum))  ||
 		(NULL == CU_add_test(pSuite, "test_gbox_from_spherical_coordinates()", test_gbox_from_spherical_coordinates))  ||
-		(NULL == CU_add_test(pSuite, "test_gserialized_get_gbox_geocentric()", test_gserialized_get_gbox_geocentric))  /*||
-		(NULL == CU_add_test(pSuite, "test_gbox_calculation()", test_gbox_calculation)) 
-*/	)
+		(NULL == CU_add_test(pSuite, "test_gserialized_get_gbox_geocentric()", test_gserialized_get_gbox_geocentric))  ||
+		(NULL == CU_add_test(pSuite, "test_edge_intersection()", test_edge_intersection)) 
+	)
 	{
 		CU_cleanup_registry();
 		return NULL;
@@ -172,7 +172,6 @@ void test_gserialized_get_gbox_geocentric(void)
 /* 
 * Build LWGEOM on top of *aligned* structure so we can use the read-only 
 * point access methods on them. 
-*/
 static LWGEOM* lwgeom_over_gserialized(char *wkt)
 {
 	LWGEOM *lwg;
@@ -183,48 +182,41 @@ static LWGEOM* lwgeom_over_gserialized(char *wkt)
 	lwgeom_free(lwg);
 	return lwgeom_from_gserialized(g);
 }
+*/
 
-void test_gbox_calculation(void)
+
+void test_edge_intersection(void)
 {
-
-	LWGEOM *geom;
-	int i = 0;
-	GBOX *gbox = gbox_new(gflags(0,0,0));
-	BOX3D *box3d;
+	GEOGRAPHIC_EDGE e1, e2;
+	GEOGRAPHIC_POINT g;
+	int rv;
 	
-	char ewkt[][512] = { 
-		"POINT(0 0.2)",
-		"LINESTRING(-1 -1,-1 2.5,2 2,2 -1)",
-		"SRID=1;MULTILINESTRING((-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1))",
-		"POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0))",
-		"SRID=4326;MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)),((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)))",
-		"SRID=4326;GEOMETRYCOLLECTION(POINT(0 1),POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0)),MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))))",
-		"POINT(0 220.2)",
-		"LINESTRING(-1 -1,-1231 2.5,2 2,2 -1)",
-		"SRID=1;MULTILINESTRING((-1 -131,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1))",
-		"POLYGON((-1 -1,-1 2.5,2 2,2 -133,-1 -1),(0 0,0 1,1 1,1 0,0 0))",
-		"SRID=4326;MULTIPOLYGON(((-1 -1,-1 2.5,211 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)),((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)))",
-		"SRID=4326;GEOMETRYCOLLECTION(POINT(0 1),POLYGON((-1 -1,-1111 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0)),MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))))",
-	};
-		
-	for( i = 0; i < 6; i++ )
-	{
-		geom = lwgeom_over_gserialized(ewkt[i]);
-		lwgeom_calculate_gbox(geom, gbox);
-		box3d = lwgeom_compute_box3d(geom);
-		//printf("%g %g\n", gbox->xmin, box3d->xmin);
-		CU_ASSERT_EQUAL(gbox->xmin, box3d->xmin);
-		CU_ASSERT_EQUAL(gbox->xmax, box3d->xmax);
-		CU_ASSERT_EQUAL(gbox->ymin, box3d->ymin);
-		CU_ASSERT_EQUAL(gbox->ymax, box3d->ymax);
-		lwfree(box3d);
-	}
+	e1.start.lon = -1.0;
+	e1.start.lat = 45.0;
+	e1.end.lon = 1.0;
+	e1.end.lat = 45.0;
 	
-	lwfree(gbox);
+	e2.start.lon = 0.0;
+	e2.start.lat = 44.0;
+	e2.end.lon = 0.0;
+	e2.end.lat = 46.0;
 
-
+	edge_deg2rad(&e1);
+	edge_deg2rad(&e2);
+	
+	rv = edge_intersection(e1, e2, &g);
+	point_rad2deg(&g);
+//	printf("g = (%.9g %.9g)\n", g.lon, g.lat);
+//	printf("rv = %d\n", rv);
+//	CU_ASSERT_DOUBLE_EQUAL(g.lat, 45.0, 0.00001);
+//	CU_ASSERT_DOUBLE_EQUAL(g.lon, 0.0, 0.00001);
+//	CU_ASSERT_EQUAL(rv, LW_TRUE);
+	
+	e2.end.lat = 42.0;
+	rv = edge_intersection(e1, e2, &g);
+	CU_ASSERT_EQUAL(rv, LW_FALSE);
+	
 }
-
 
 
 

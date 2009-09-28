@@ -11,6 +11,34 @@
 
 #include "lwgeodetic.h"
 
+
+void edge_deg2rad(GEOGRAPHIC_EDGE *e)
+{
+	(e->start).lat = deg2rad((e->start).lat);
+	(e->end).lat = deg2rad((e->end).lat);
+	(e->start).lon = deg2rad((e->start).lon);
+	(e->end).lon = deg2rad((e->end).lon);
+}
+
+void edge_rad2deg(GEOGRAPHIC_EDGE *e)
+{
+	(e->start).lat = rad2deg((e->start).lat);
+	(e->end).lat = rad2deg((e->end).lat);
+	(e->start).lon = rad2deg((e->start).lon);
+	(e->end).lon = rad2deg((e->end).lon);
+}
+
+void point_deg2rad(GEOGRAPHIC_POINT *p)
+{
+	p->lat = deg2rad(p->lat);
+	p->lon = deg2rad(p->lon);
+}
+void point_rad2deg(GEOGRAPHIC_POINT *p)
+{
+	p->lat = rad2deg(p->lat);
+	p->lon = rad2deg(p->lon);
+}
+
 /**
 * Check to see if this geocentric gbox is wrapped around the north pole.
 * Only makes sense if this gbox originated from a polygon, as it's assuming
@@ -74,6 +102,17 @@ static double inline dot_product(POINT3D p1, POINT3D p2)
 }
 
 /**
+* Calculate the cross product of two vectors
+*/
+static void inline cross_product(POINT3D a, POINT3D b, POINT3D *n)
+{
+    n->x = a.y * b.z - a.z * b.y;
+	n->y = a.z * b.x - a.x * b.z;
+	n->z = a.x * b.y - a.y * b.x;
+	return;
+}
+
+/**
 * Normalize to a unit vector.
 */
 static void inline normalize(POINT3D *p)
@@ -92,16 +131,14 @@ static void inline normalize(POINT3D *p)
 
 static void inline unit_normal(POINT3D a, POINT3D b, POINT3D *n)
 {
-    n->x = a.y * b.z - a.z * b.y;
-	n->y = a.z * b.x - a.x * b.z;
-	n->z = a.x * b.y - a.y * b.x;
+	cross_product(a, b, n);
     normalize(n);
 	return;
 }
 
 /**
-* Computes the cross product of two unit vectors using their lat, lng representations.
-* Good for small distances between p and q.
+* Computes the cross product of two vectors using their lat, lng representations.
+* Good even for small distances between p and q.
 */
 void robust_cross_product(GEOGRAPHIC_POINT p, GEOGRAPHIC_POINT q, POINT3D *a)
 {
@@ -152,10 +189,20 @@ int edge_point_on_plane(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 */
 int edge_contains_longitude(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 {
+    LWDEBUGF(4, "e.start == GPOINT(%.6g %.6g) ", e.start.lat, e.start.lon);
+    LWDEBUGF(4, "e.end == GPOINT(%.6g %.6g) ", e.end.lat, e.end.lon);
+    LWDEBUGF(4, "p == GPOINT(%.6g %.6g) ", p.lat, p.lon);
 	if( e.start.lon < p.lon && p.lon < e.end.lon )
+	{
+	    LWDEBUG(4, "returning TRUE");
 		return LW_TRUE;
+	}
 	if( e.end.lon < p.lon && p.lon < e.start.lon )
+	{
+	    LWDEBUG(4, "returning TRUE");
 		return LW_TRUE;
+	}
+    LWDEBUG(4, "returning FALSE");
 	return LW_FALSE;
 }
 
@@ -195,8 +242,15 @@ double sphere_direction(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e)
 */
 int edge_contains_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 {
-	if( edge_point_on_plane(e, p) && edge_contains_longitude(e, p) )
-		return LW_TRUE;
+	if( edge_point_on_plane(e, p) )
+	{
+		LWDEBUG(4, "point is on plane");
+		if( edge_contains_longitude(e, p) )
+		{
+			LWDEBUG(4, "point is on edge");
+			return LW_TRUE;
+		}
+	}
 	return LW_FALSE;
 }
 
@@ -280,6 +334,37 @@ int clairaut_geographic(GEOGRAPHIC_POINT start, GEOGRAPHIC_POINT end, int top, G
     return G_SUCCESS;
 }
 
+/**
+* Returns true if an intersection can be calculated, and places it in *g. 
+* Returns false otherwise.
+*/
+int edge_intersection(GEOGRAPHIC_EDGE e1, GEOGRAPHIC_EDGE e2, GEOGRAPHIC_POINT *g)
+{
+	POINT3D ea, eb, v;
+	robust_cross_product(e1.start, e1.end, &ea);
+	robust_cross_product(e2.start, e2.end, &eb);
+	cross_product(ea, eb, &v);
+	g->lat = atan2(v.z, sqrt(v.x * v.x + v.y * v.y));
+	g->lon = atan2(v.y, v.x);
+	if( edge_contains_point(e1, *g) && edge_contains_point(e2, *g) )
+	{
+		return LW_TRUE;
+	}
+	else
+	{
+		g->lat = -1.0 * g->lat;
+		g->lon = g->lon + M_PI;
+		if( g->lon > M_PI )
+		{
+			g->lon = -1.0 * (2.0 * M_PI - g->lon);
+		}
+		if( edge_contains_point(e1, *g) && edge_contains_point(e2, *g) )
+		{
+			return LW_TRUE;
+		}		
+	}
+	return LW_FALSE;	  
+}
 
 /**
 * Given a starting location r, a distance and an azimuth
