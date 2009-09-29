@@ -49,7 +49,6 @@ void x_to_z(POINT3D *p);
 void y_to_z(POINT3D *p);
 int edge_point_on_plane(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p);
 int edge_point_in_cone(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p);
-int edge_point_in_cones(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p);
 int edge_contains_longitude(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p);
 int edge_contains_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p);
 double z_to_latitude(double z);

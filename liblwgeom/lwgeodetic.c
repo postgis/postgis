@@ -243,32 +243,6 @@ int edge_point_in_cone(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 }
 
 /**
-* Returns true if the point p is inside both the cones defined by the 
-* two ends of the edge e.
-(*/
-int edge_point_in_cones(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
-{
-	POINT3D vp, vs, ve;
-	double vs_dot_ve, vp_dot_ve, vp_dot_vs;
-	geog2cart(e.start, &vs);
-	geog2cart(e.end, &ve);
-	geog2cart(p, &vp);
-	vs_dot_ve = dot_product(vs, ve);
-	vp_dot_ve = dot_product(vs, vp);
-	vp_dot_vs = dot_product(ve, vp);
-	LWDEBUGF(4, "vs_dot_ve = %.9g",vs_dot_ve);
-	LWDEBUGF(4, "vp_dot_ve = %.9g",vp_dot_ve);
-	LWDEBUGF(4, "vp_dot_vs = %.9g",vp_dot_vs);
-	if( vp_dot_vs > vs_dot_ve && vp_dot_ve > vs_dot_ve )
-	{
-		LWDEBUG(4, "point is in both cones");
-		return LW_TRUE;
-	}
-	LWDEBUG(4, "point is not in cones");
-	return LW_FALSE;
-}
-
-/**
 * True if the longitude of p is within the range of the longitude of the ends of e
 */
 int edge_contains_longitude(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
