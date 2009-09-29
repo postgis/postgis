@@ -67,71 +67,74 @@ void test_signum(void)
 
 void test_gbox_from_spherical_coordinates(void)
 {
+    const double gtolerance = 0.000001;
+    const int loops = 0;
+//    const int loops = 0;
+    int i;
 	double ll[64];
-	GBOX *box = gbox_new(gflags(0, 0, 1));
-	GBOX *good;
-	int rv;
+	GBOX *gbox;
+	GBOX *gbox_slow;
+    int rndlat;
+    int rndlon;
+    
 	POINTARRAY *pa;
+    LWLINE *lwline;
+    GSERIALIZED *g;
+    
 	ll[0] = -3.083333333333333333333333333333333;
 	ll[1] = 9.83333333333333333333333333333333;
 	ll[2] = 15.5;
 	ll[3] = -5.25;
 
 	pa = pointArray_construct((uchar*)ll, 0, 0, 2);
-	rv = ptarray_calculate_gbox_geodetic(pa, box);
-	good = gbox_from_string("GBOX((0.95958795,-0.05299812,-0.09150161),(0.99495869,0.26611729,0.17078275))");
-//	printf("\n%s\n", gbox_to_string(box));
-//  printf("%s\n", "(0.95958795, -0.05299812, -0.09150161)  (0.99495869, 0.26611729, 0.17078275)");
-	CU_ASSERT_DOUBLE_EQUAL(box->xmin, good->xmin, 0.0001);
-	CU_ASSERT_DOUBLE_EQUAL(box->xmax, good->xmax, 0.0001);
-	CU_ASSERT_DOUBLE_EQUAL(box->ymin, good->ymin, 0.0001);
-	CU_ASSERT_DOUBLE_EQUAL(box->ymax, good->ymax, 0.0001);
-	CU_ASSERT_DOUBLE_EQUAL(box->zmin, good->zmin, 0.0001);
-	CU_ASSERT_DOUBLE_EQUAL(box->zmax, good->zmax, 0.0001);
-	lwfree(pa);
-	lwfree(good);
+    lwline = lwline_construct(-1, 0, pa);
 
+    srandomdev();
+    
+    for( i = 0; i < loops; i++ )
+    {
+        rndlat = (int)(90.0 - 180.0 * (double)random() / pow(2.0, 31.0));
+        rndlon = (int)(180.0 - 360.0 * (double)random() / pow(2.0, 31.0));
+        ll[0] = (double)rndlon;
+        ll[1] = (double)rndlat;
 
-	ll[0] = -35.0;
-	ll[1] = 52.5;
-	ll[2] = 50.0;
-	ll[3] = 60.0;
+        rndlat = (int)(90.0 - 180.0 * (double)random() / pow(2.0, 31.0));
+        rndlon = (int)(180.0 - 360.0 * (double)random() / pow(2.0, 31.0));
+        ll[2] = (double)rndlon;
+        ll[3] = (double)rndlat;
+        
+	    g = gserialized_from_lwgeom((LWGEOM*)lwline, 1, 0);
+    	g->flags = FLAGS_SET_GEODETIC(g->flags, 1);
+    	gbox_geocentric_slow = LW_FALSE;
+    	gbox = gserialized_calculate_gbox_geocentric(g);
+    	gbox_geocentric_slow = LW_TRUE;
+    	gbox_slow = gserialized_calculate_gbox_geocentric(g);
+    	gbox_geocentric_slow = LW_FALSE;
+        lwfree(g);
 
-	pa = pointArray_construct((uchar*)ll, 0, 0, 2);
-	rv = ptarray_calculate_gbox_geodetic(pa, box);
-	good = gbox_from_string("GBOX((0.32139380,-0.34917121,0.79335334),(0.49866816,0.38302222,0.90147645))");
-//	printf("\n%s\n", gbox_to_string(box));
-//  printf("%s\n", "(0.32139380, -0.34917121, 0.79335334)  (0.49866816, 0.38302222, 0.90147645)");
-	CU_ASSERT_DOUBLE_EQUAL(box->xmin, good->xmin, 0.0001);
-	CU_ASSERT_DOUBLE_EQUAL(box->xmax, good->xmax, 0.0001);
-	CU_ASSERT_DOUBLE_EQUAL(box->ymin, good->ymin, 0.0001);
-	CU_ASSERT_DOUBLE_EQUAL(box->ymax, good->ymax, 0.0001);
-	CU_ASSERT_DOUBLE_EQUAL(box->zmin, good->zmin, 0.0001);
-	CU_ASSERT_DOUBLE_EQUAL(box->zmax, good->zmax, 0.0001);
-	lwfree(pa);
-	lwfree(good);
+        if( 
+            ( fabs( gbox->xmin - gbox_slow->xmin ) > gtolerance ) ||
+            ( fabs( gbox->xmax - gbox_slow->xmax ) > gtolerance ) ||
+            ( fabs( gbox->ymin - gbox_slow->ymin ) > gtolerance ) ||
+            ( fabs( gbox->ymax - gbox_slow->ymax ) > gtolerance ) ||
+            ( fabs( gbox->zmin - gbox_slow->zmin ) > gtolerance ) ||
+            ( fabs( gbox->zmax - gbox_slow->zmax ) > gtolerance ) )
+        {
+            printf("\n-------\n");
+            printf("LOOP: %d\n", i);
+            printf("SEGMENT (Lon Lat): (%.9g %.9g) (%.9g %.9g)\n", ll[0], ll[1], ll[2], ll[3]);
+            printf("CALC: %s\n", gbox_to_string(gbox));
+            printf("SLOW: %s\n", gbox_to_string(gbox_slow));
+            printf("-------\n\n");
+            CU_FAIL_FATAL(Slow (GOOD) and fast (CALC) box calculations returned different values!!);
+        }
+	
+        lwfree(gbox);
+        lwfree(gbox_slow);
+    }
 
-
-	ll[0] = -122.5;
-	ll[1] = 56.25;
-	ll[2] = -123.5;
-	ll[3] = 69.166666;
-
-	pa = pointArray_construct((uchar*)ll, 0, 0, 2);
-	rv = ptarray_calculate_gbox_geodetic(pa, box);
-	good = gbox_from_string("GBOX((-0.29850766,-0.46856318,0.83146961),(-0.19629681,-0.29657213,0.93461892))");
-	//printf("\n%s\n", gbox_to_string(box));
-	//printf("%s\n", "(-0.29850766, -0.46856318, 0.83146961)  (-0.19629681, -0.29657213, 0.93461892)");
-	CU_ASSERT_DOUBLE_EQUAL(box->xmin, good->xmin, 0.000001);
-	CU_ASSERT_DOUBLE_EQUAL(box->xmax, good->xmax, 0.000001);
-	CU_ASSERT_DOUBLE_EQUAL(box->ymin, good->ymin, 0.000001);
-	CU_ASSERT_DOUBLE_EQUAL(box->ymax, good->ymax, 0.000001);
-	CU_ASSERT_DOUBLE_EQUAL(box->zmin, good->zmin, 0.000001);
-	CU_ASSERT_DOUBLE_EQUAL(box->zmax, good->zmax, 0.000001);
-	lwfree(pa);
-	lwfree(good);
-
-	lwfree(box);
+    lwfree(lwline);
+    lwfree(pa);
 	
 }
 
