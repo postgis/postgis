@@ -169,7 +169,7 @@ geometry
 (1 row)</programlisting>
 	</sect2>
 
-	<sect2>
+	<sect2 id="PostGIS_Geography">
 	  <title>PostGIS Geography Type</title>
 
 	  <para>The geography type provides native support for spatial features represented on "geographic" coordinates (sometimes called "geodetic" coordinates, or "lat/lon", or "lon/lat"). Geographic coordinates are spherical coordinates expressed in angular units (degrees). </para>
@@ -187,9 +187,9 @@ geometry
 
 	  <para>The new geography type uses the PostgreSQL 8.3+ typmod definition format so that a table with a geography field
 			can be added in a single step.  All the standard OGC formats except for curves are supported.</para>
-			
+
 	<para>Geography Basics</para>
- 
+
 
 
 	 <para>The geography type only supports the simplest of simple features. Standard geometry type data will autocast to geography if it is of SRID 4326.  You can also use the EWKT and EWKB
@@ -222,17 +222,17 @@ geometry
 		</listitem>
 		<!-- TODO: Add other examples -->
 		</itemizedlist>
-	  	<para>The new geography fields don't get registered in the geometry_columns.  They get registered in a new view called
-				geography_columns which is a view against the system catalogs so is always automatically kept up to date without need 
+		<para>The new geography fields don't get registered in the geometry_columns.  They get registered in a new view called
+				geography_columns which is a view against the system catalogs so is always automatically kept up to date without need
 					for an AddGeom... like function.</para>
-				
+
 		<para>Now, check the "geography_columns" view and see that your table is listed:</para>
 
 		<para><programlisting>SELECT * FROM geography_columns;</programlisting></para>
 
 		<para>Using Input/Output Functions</para>
 
-		<para>There are only four intput/output functions at this time supporting the OGC well-known text (WKT) and well-known binary (WKB) formats. 
+		<para>There are only four intput/output functions at this time supporting the OGC well-known text (WKT) and well-known binary (WKB) formats.
 		Adding further output formats (GML, GeoJSON) should be straight-forward, borrowing code from the geometry implementations.</para>
 
 		<itemizedlist>
