@@ -217,6 +217,7 @@ int edge_point_on_plane(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 	robust_cross_product(e.start, e.end, &normal);
 	geog2cart(p, &pt);
 	w = dot_product(normal, pt);
+    LWDEBUGF(4,"dot product %.9g",w);
 	if( FP_IS_ZERO(w) )
 	{
 		LWDEBUG(4, "point is on plane");
@@ -240,8 +241,11 @@ int edge_point_in_cone(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 	vector_sum(vs, ve, &vcp);
 	normalize(&vcp);
 	vs_dot_vcp = dot_product(vs, vcp);
+    LWDEBUGF(4,"vs_dot_vcp %.9g",vs_dot_vcp);
 	ve_dot_vcp = dot_product(ve, vcp);
+    LWDEBUGF(4,"ve_dot_vcp %.9g",ve_dot_vcp);
 	vp_dot_vcp = dot_product(vp, vcp);
+    LWDEBUGF(4,"vp_dot_vcp %.9g",vp_dot_vcp);
 
 	if( vp_dot_vcp > ve_dot_vcp && vp_dot_vcp > ve_dot_vcp )
 	{
@@ -362,7 +366,7 @@ double z_to_latitude(double z, int top)
 * the great circle with the line of maximum/minimum gradiant that lies on
 * the great circle plane.
 */
-int clairaut_cartesian(POINT3D start, POINT3D end, int top, GEOGRAPHIC_POINT *g)
+int clairaut_cartesian(POINT3D start, POINT3D end, GEOGRAPHIC_POINT *g_top, GEOGRAPHIC_POINT *g_bottom)
 {
 	POINT3D t1, t2;
 	GEOGRAPHIC_POINT vN1, vN2;
@@ -373,17 +377,12 @@ int clairaut_cartesian(POINT3D start, POINT3D end, int top, GEOGRAPHIC_POINT *g)
     LWDEBUGF(4, "unit normal t2 == POINT(%.8g %.8g %.8g)", t2.x, t2.y, t2.z);
 	cart2geog(t1, &vN1);
 	cart2geog(t2, &vN2);
-	if( top )
-	{
-		g->lat = z_to_latitude(t1.z,top);
-		g->lon = vN2.lon;
-	}
-	else
-	{
-		g->lat = z_to_latitude(t2.z,top);
-		g->lon = vN1.lon;
-	}
-    LWDEBUGF(4, "clairaut == GPOINT(%.6g %.6g)", g->lat, g->lon);
+	g_top->lat = z_to_latitude(t1.z,LW_TRUE);
+	g_top->lon = vN2.lon;
+	g_bottom->lat = z_to_latitude(t2.z,LW_FALSE);
+	g_bottom->lon = vN1.lon;
+    LWDEBUGF(4, "clairaut top == GPOINT(%.6g %.6g)", g_top->lat, g_top->lon);
+    LWDEBUGF(4, "clairaut bottom == GPOINT(%.6g %.6g)", g_bottom->lat, g_bottom->lon);
 	return G_SUCCESS;
 }
 
@@ -392,29 +391,23 @@ int clairaut_cartesian(POINT3D start, POINT3D end, int top, GEOGRAPHIC_POINT *g)
 * the great circle with the line of maximum/minimum gradiant that lies on
 * the great circle plane.
 */
-int clairaut_geographic(GEOGRAPHIC_POINT start, GEOGRAPHIC_POINT end, int top, GEOGRAPHIC_POINT *g)
+int clairaut_geographic(GEOGRAPHIC_POINT start, GEOGRAPHIC_POINT end, GEOGRAPHIC_POINT *g_top, GEOGRAPHIC_POINT *g_bottom)
 {
 	POINT3D t1, t2;
 	GEOGRAPHIC_POINT vN1, vN2;
     LWDEBUG(4,"entering function");
     robust_cross_product(start, end, &t1);
     robust_cross_product(end, start, &t2);
-    LWDEBUGF(4, "t1 == POINT(%.8g %.8g %.8g)", t1.x, t1.y, t1.z);
-    LWDEBUGF(4, "t2 == POINT(%.8g %.8g %.8g)", t2.x, t2.y, t2.z);
+    LWDEBUGF(4, "unit normal t1 == POINT(%.8g %.8g %.8g)", t1.x, t1.y, t1.z);
+    LWDEBUGF(4, "unit normal t2 == POINT(%.8g %.8g %.8g)", t2.x, t2.y, t2.z);
     cart2geog(t1, &vN1);
     cart2geog(t2, &vN2);
-        LWDEBUGF(4, "vN1 == GPOINT(%.6g %.6g) ", vN1.lat, vN1.lon);
-        LWDEBUGF(4, "vN2 == GPOINT(%.6g %.6g) ", vN2.lat, vN2.lon);
-    if( top )
-    {
-        g->lat = z_to_latitude(t1.z,top);
-        g->lon = vN2.lon;
-    }
-    else
-    {
-        g->lat = z_to_latitude(t2.z,top);
-        g->lon = vN1.lon;
-    }
+    g_top->lat = z_to_latitude(t1.z,LW_TRUE);
+    g_top->lon = vN2.lon;
+    g_bottom->lat = z_to_latitude(t2.z,LW_FALSE);
+    g_bottom->lon = vN1.lon;
+    LWDEBUGF(4, "clairaut top == GPOINT(%.6g %.6g)", g_top->lat, g_top->lon);
+    LWDEBUGF(4, "clairaut bottom == GPOINT(%.6g %.6g)", g_bottom->lat, g_bottom->lon);
     return G_SUCCESS;
 }
 
@@ -469,7 +462,7 @@ int sphere_project(GEOGRAPHIC_POINT r, double distance, double azimuth, GEOGRAPH
 
 int edge_calculate_gbox_slow(GEOGRAPHIC_EDGE e, GBOX *gbox)
 {
-	int steps = 10000;
+	int steps = 1000000;
 	int i;
 	double dx, dy, dz;
 	double distance = sphere_distance(e.start, e.end);
@@ -543,10 +536,8 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 	/* We're testing, do this the slow way. */
 	if(gbox_geocentric_slow) 
 	{
-		//printf("\n--- using SLOW calc! ---\n");
 		return edge_calculate_gbox_slow(e, gbox);
 	}
-	//printf("\n=== using FAST calc! ===\n");
 
 	/* Initialize our working copy of the edge */
 	g = e;
@@ -554,7 +545,6 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
     LWDEBUG(4, "entered function");
 	LWDEBUGF(4, "edge length: %.8g", distance);
     LWDEBUGF(4, "edge values: (%.6g %.6g, %.6g %.6g)", g.start.lon, g.start.lat, g.end.lon, g.end.lat);
-
 
 	/* Edge is zero length, just return the naive box */
 	if( FP_IS_ZERO(distance) )
@@ -662,8 +652,7 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 	else
 	{
         LWDEBUG(4, "not a pole crossing, calculating clairaut points");
-		clairaut_cartesian(start, end, LW_TRUE, &vT1);
-		clairaut_cartesian(start, end, LW_FALSE, &vT2);
+		clairaut_cartesian(start, end, &vT1, &vT2);
         LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
         LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
 		if( edge_contains_point(g, vT1) )
@@ -690,8 +679,7 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
     endXZ = end;
     x_to_z(&startXZ);
     x_to_z(&endXZ);
-	clairaut_cartesian(startXZ, endXZ, LW_TRUE, &vT1);
-	clairaut_cartesian(startXZ, endXZ, LW_FALSE, &vT2);
+	clairaut_cartesian(startXZ, endXZ, &vT1, &vT2);
     gimbal_lock = LW_FALSE;
     LWDEBUG(4, "vT1/vT2 before flipping back z to x");
     LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
@@ -717,6 +705,12 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
         LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
         LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
     }
+/* For extra logging if needed
+    geog2cart(vT1, &nT1); 
+    geog2cart(vT2, &nT2);
+    LWDEBUGF(4, "p1 == POINT(%.8g %.8g %.8g)", nT1.x, nT1.y, nT1.z);
+    LWDEBUGF(4, "p2 == POINT(%.8g %.8g %.8g)", nT2.x, nT2.y, nT2.z);
+*/
     if( edge_contains_point(g, vT1) )
     {
 		geog2cart(vT1, &p);
@@ -740,8 +734,7 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
     endYZ = end;
     y_to_z(&startYZ);
     y_to_z(&endYZ);
-	clairaut_cartesian(startYZ, endYZ, LW_TRUE, &vT1);
-	clairaut_cartesian(startYZ, endYZ, LW_FALSE, &vT2);
+	clairaut_cartesian(startYZ, endYZ, &vT1, &vT2);
     gimbal_lock = LW_FALSE;
     LWDEBUG(4, "vT1/vT2 before flipping back z to y");
     LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
@@ -767,6 +760,12 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
         LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
         LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
     }
+/* For extra logging if needed
+    geog2cart(vT1, &nT1);
+    geog2cart(vT2, &nT2);
+    LWDEBUGF(4, "p1 == POINT(%.8g %.8g %.8g)", nT1.x, nT1.y, nT1.z);
+    LWDEBUGF(4, "p2 == POINT(%.8g %.8g %.8g)", nT2.x, nT2.y, nT2.z);
+*/
     if( edge_contains_point(g, vT1) )
     {
 		geog2cart(vT1, &p);
