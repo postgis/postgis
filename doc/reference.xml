@@ -7295,12 +7295,27 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>max_decimal_digits</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>max_decimal_digits</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>max_decimal_digits</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>options</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>max_decimal_digits</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>options</parameter></paramdef>
 			</funcprototype>
@@ -7312,13 +7327,31 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 			<funcprototype>
 				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
 				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
+				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>max_decimal_digits</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
 				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>max_decimal_digits</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
+				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>max_decimal_digits</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>options</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
+				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>max_decimal_digits</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>options</parameter></paramdef>
 			</funcprototype>
@@ -7413,7 +7446,16 @@ st_asgeojson
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGML</function></funcdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGML</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGML</function></funcdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
@@ -7424,13 +7466,31 @@ st_asgeojson
 			<funcprototype>
 				<funcdef>text <function>ST_AsGML</function></funcdef>
 				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGML</function></funcdef>
+				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGML</function></funcdef>
 				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGML</function></funcdef>
+				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>options</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGML</function></funcdef>
+				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>options</parameter></paramdef>
 			</funcprototype>
@@ -7573,7 +7633,16 @@ st_asgeojson
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsKML</function></funcdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsKML</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsKML</function></funcdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
@@ -7584,7 +7653,18 @@ st_asgeojson
 			<funcprototype>
 				<funcdef>text <function>ST_AsKML</function></funcdef>
 				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>geography </type> <parameter>geom1</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsKML</function></funcdef>
+				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>geom1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsKML</function></funcdef>
+				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>geography </type> <parameter>geom1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
@@ -7646,7 +7726,7 @@ st_asgeojson
 	  <refnamediv>
 		<refname>ST_AsSVG</refname>
 
-		<refpurpose>Returns a Geometry in SVG path data.</refpurpose>
+		<refpurpose>Returns a Geometry in SVG path data given a geometry or geography object.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -7657,12 +7737,27 @@ st_asgeojson
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsSVG</function></funcdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsSVG</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>rel</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsSVG</function></funcdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>rel</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsSVG</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>rel</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>maxdecimaldigits</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsSVG</function></funcdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>rel</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>maxdecimaldigits</parameter></paramdef>
 			</funcprototype>

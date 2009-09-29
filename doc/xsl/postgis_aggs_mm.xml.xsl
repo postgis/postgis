@@ -87,14 +87,12 @@
 						<xsl:value-of select="refnamediv/refname" />
 					</xsl:variable>
 
-			<!-- For each proto function accepts or returns a geography -->
-					<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
-						<xsl:choose>
-							<xsl:when test="contains(paramdef/type,'geography') or contains(funcdef,'geography')">
-								<listitem><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></listitem>
-							</xsl:when>
-						</xsl:choose>
-					</xsl:for-each>
+			<!-- If at least one proto function accepts or returns a geography -->
+					<xsl:choose>
+						<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'geography') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geography')">
+							<listitem><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></listitem>
+						</xsl:when>
+					</xsl:choose>
 				</xsl:for-each>
 				</itemizedlist>
 		</sect1>
