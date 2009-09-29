@@ -93,6 +93,12 @@ CREATE OR REPLACE FUNCTION ST_AsText(geography)
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_text'
 	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
+CREATE OR REPLACE FUNCTION ST_AsText(text)
+  RETURNS text AS
+$$ SELECT ST_AsText($1::geometry);  $$
+  LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_GeographyFromText(text)
@@ -105,6 +111,12 @@ CREATE OR REPLACE FUNCTION ST_AsBinary(geography)
 	RETURNS bytea
 	AS 'MODULE_PATHNAME','geography_as_binary'
 	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
+CREATE OR REPLACE FUNCTION ST_AsBinary(text)
+  RETURNS bytea AS
+$$ SELECT ST_AsBinary($1::geometry);  $$
+  LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_GeographyFromBinary(bytea)
