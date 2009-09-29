@@ -11,6 +11,11 @@
 
 #include "lwgeodetic.h"
 
+/**
+* If this is true, use the slow algorithm.
+*/
+int gbox_geocentric_slow = LW_FALSE;
+
 
 void edge_deg2rad(GEOGRAPHIC_EDGE *e)
 {
@@ -113,6 +118,29 @@ static void inline cross_product(POINT3D a, POINT3D b, POINT3D *n)
 }
 
 /**
+* Calculate the sum of two vectors
+*/
+static void inline vector_sum(POINT3D a, POINT3D b, POINT3D *n)
+{
+	n->x = a.x + b.x;
+	n->y = a.y + b.y;
+	n->z = a.z + b.z;
+	return;
+}
+
+/**
+* Calculate the difference of two vectors
+*/
+static void inline vector_difference(POINT3D a, POINT3D b, POINT3D *n)
+{
+	n->x = a.x - b.x;
+	n->y = a.y - b.y;
+	n->z = a.z - b.z;
+	return;
+}
+
+
+/**
 * Normalize to a unit vector.
 */
 static void inline normalize(POINT3D *p)
@@ -180,7 +208,63 @@ int edge_point_on_plane(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 	geog2cart(p, &pt);
 	w = dot_product(normal, pt);
 	if( FP_IS_ZERO(w) )
+	{
+		LWDEBUG(4, "point is on plane");
 		return LW_TRUE;
+	}
+	LWDEBUG(4, "point is not on plane");
+	return LW_FALSE;
+}
+
+/**
+* Returns true if the point p is inside the cone defined by the 
+* two ends of the edge e.
+(*/
+int edge_point_in_cone(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
+{
+	POINT3D vcp, vs, ve, vp;
+	double vs_dot_vcp, vp_dot_vcp, ve_dot_vcp;
+	geog2cart(e.start, &vs);
+	geog2cart(e.end, &ve);
+	geog2cart(p, &vp);
+	vector_sum(vs, ve, &vcp);
+	normalize(&vcp);
+	vs_dot_vcp = dot_product(vs, vcp);
+	ve_dot_vcp = dot_product(ve, vcp);
+	vp_dot_vcp = dot_product(vp, vcp);
+
+	if( vp_dot_vcp > ve_dot_vcp && vp_dot_vcp > ve_dot_vcp )
+	{
+		LWDEBUG(4, "point is in cone");
+		return LW_TRUE;
+	}
+	LWDEBUG(4, "point is not in cone");
+	return LW_FALSE;
+}
+
+/**
+* Returns true if the point p is inside both the cones defined by the 
+* two ends of the edge e.
+(*/
+int edge_point_in_cones(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
+{
+	POINT3D vp, vs, ve;
+	double vs_dot_ve, vp_dot_ve, vp_dot_vs;
+	geog2cart(e.start, &vs);
+	geog2cart(e.end, &ve);
+	geog2cart(p, &vp);
+	vs_dot_ve = dot_product(vs, ve);
+	vp_dot_ve = dot_product(vs, vp);
+	vp_dot_vs = dot_product(ve, vp);
+	LWDEBUGF(4, "vs_dot_ve = %.9g",vs_dot_ve);
+	LWDEBUGF(4, "vp_dot_ve = %.9g",vp_dot_ve);
+	LWDEBUGF(4, "vp_dot_vs = %.9g",vp_dot_vs);
+	if( vp_dot_vs > vs_dot_ve && vp_dot_ve > vs_dot_ve )
+	{
+		LWDEBUG(4, "point is in both cones");
+		return LW_TRUE;
+	}
+	LWDEBUG(4, "point is not in cones");
 	return LW_FALSE;
 }
 
@@ -242,6 +326,8 @@ double sphere_direction(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e)
 */
 int edge_contains_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 {
+#if 0
+/*	Old implementation */
 	if( edge_point_on_plane(e, p) )
 	{
 		LWDEBUG(4, "point is on plane");
@@ -251,6 +337,14 @@ int edge_contains_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 			return LW_TRUE;
 		}
 	}
+	return LW_FALSE;
+#endif
+	if ( edge_point_in_cone(e, p) && edge_point_on_plane(e, p) )
+	{
+		LWDEBUG(4, "point is on edge");
+		return LW_TRUE;
+	}
+	LWDEBUG(4, "point is not on edge");
 	return LW_FALSE;
 }
 
@@ -382,6 +476,63 @@ int sphere_project(GEOGRAPHIC_POINT r, double distance, double azimuth, GEOGRAPH
 	return G_SUCCESS;
 }
 
+
+int edge_calculate_gbox_slow(GEOGRAPHIC_EDGE e, GBOX *gbox)
+{
+	int steps = 10000;
+	int i;
+	double dx, dy, dz;
+	double distance = sphere_distance(e.start, e.end);
+	POINT3D pn, p, start, end;
+
+	/* Edge is zero length, just return the naive box */
+	if( FP_IS_ZERO(distance) )
+	{
+        LWDEBUG(4, "edge is zero length. returning");
+		geog2cart(e.start, &start);
+		geog2cart(e.end, &end);
+		gbox->xmin = FP_MIN(start.x, end.x);
+		gbox->ymin = FP_MIN(start.y, end.y);
+		gbox->zmin = FP_MIN(start.z, end.z);
+		gbox->xmax = FP_MAX(start.x, end.x);
+		gbox->ymax = FP_MAX(start.y, end.y);
+		gbox->zmax = FP_MAX(start.z, end.z);
+		return G_SUCCESS;
+	}
+
+	/* Edge is antipodal (one point on each side of the globe), 
+	   set the box to contain the whole world and return */
+	if( FP_EQUALS(distance, M_PI) )
+	{
+        LWDEBUG(4, "edge is antipodal. setting to maximum size box, and returning");
+		gbox->xmin = gbox->ymin = gbox->zmin = -1.0;
+		gbox->xmax = gbox->ymax = gbox->zmax = 1.0;
+		return G_SUCCESS;
+	}
+	
+	geog2cart(e.start, &start);
+	geog2cart(e.end, &end);
+	dx = (end.x - start.x)/steps;
+	dy = (end.y - start.y)/steps;
+	dz = (end.z - start.z)/steps;
+	p = start;
+	gbox->xmin = gbox->xmax = p.x;
+	gbox->ymin = gbox->ymax = p.y;
+	gbox->zmin = gbox->zmax = p.z;
+	for( i = 0; i < steps; i++ )
+	{
+		p.x += dx;
+		p.y += dy;
+		p.z += dz;
+		pn = p;
+		normalize(&pn);
+		gbox_merge_point3d(pn, gbox);
+	}
+	return G_SUCCESS;
+}
+
+
+
 /**
 * The magic function, given an edge in spherical coordinates, calculate a
 * 3D bounding box that fully contains it, taking into account the curvature
@@ -398,6 +549,14 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 	POINT3D p, start, end, startXZ, endXZ, startYZ, endYZ, nT1, nT2;
 	GEOGRAPHIC_EDGE g;
 	GEOGRAPHIC_POINT vT1, vT2;
+
+	/* We're testing, do this the slow way. */
+	if(gbox_geocentric_slow) 
+	{
+		//printf("\n--- using SLOW calc! ---\n");
+		return edge_calculate_gbox_slow(e, gbox);
+	}
+	//printf("\n=== using FAST calc! ===\n");
 
 	/* Initialize our working copy of the edge */
 	g = e;
@@ -538,8 +697,8 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
     /* Flip the X axis to Z and check for maximal latitudes again. */
     LWDEBUG(4, "flipping x to z and calculating clairaut points");
     startXZ = start;
-    x_to_z(&startXZ);
     endXZ = end;
+    x_to_z(&startXZ);
     x_to_z(&endXZ);
 	clairaut_cartesian(startXZ, endXZ, LW_TRUE, &vT1);
 	clairaut_cartesian(startXZ, endXZ, LW_FALSE, &vT2);
@@ -584,8 +743,8 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
     /* Flip the Y axis to Z and check for maximal latitudes again. */
     LWDEBUG(4, "flipping y to z and calculating clairaut points");
     startYZ = start;
-    y_to_z(&startYZ);
     endYZ = end;
+    y_to_z(&startYZ);
     y_to_z(&endYZ);
 	clairaut_cartesian(startYZ, endYZ, LW_TRUE, &vT1);
 	clairaut_cartesian(startYZ, endYZ, LW_FALSE, &vT2);

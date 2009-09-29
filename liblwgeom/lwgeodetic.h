@@ -12,6 +12,8 @@
 #include <math.h>
 #include "libgeom.h"
 
+extern int gbox_geocentric_slow;
+
 /**
 * Point in spherical coordinates on the world. Units of radians.
 */
@@ -46,6 +48,8 @@ void robust_cross_product(GEOGRAPHIC_POINT p, GEOGRAPHIC_POINT q, POINT3D *a);
 void x_to_z(POINT3D *p);
 void y_to_z(POINT3D *p);
 int edge_point_on_plane(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p);
+int edge_point_in_cone(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p);
+int edge_point_in_cones(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p);
 int edge_contains_longitude(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p);
 int edge_contains_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p);
 double z_to_latitude(double z);
@@ -55,6 +59,7 @@ double sphere_distance(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e);
 double sphere_direction(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e);
 int sphere_project(GEOGRAPHIC_POINT r, double distance, double azimuth, GEOGRAPHIC_POINT *n);
 int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox);
+int edge_calculate_gbox_slow(GEOGRAPHIC_EDGE e, GBOX *gbox);
 int edge_intersection(GEOGRAPHIC_EDGE e1, GEOGRAPHIC_EDGE e2, GEOGRAPHIC_POINT *g);
 void edge_deg2rad(GEOGRAPHIC_EDGE *e);
 void edge_rad2deg(GEOGRAPHIC_EDGE *e);
