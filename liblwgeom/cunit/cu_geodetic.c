@@ -193,7 +193,7 @@ void test_gserialized_get_gbox_geocentric(void)
 {
 	LWGEOM *lwg;
 	GSERIALIZED *g;
-	GBOX *gbox, *gbox_good, *gbox_good_calc;
+	GBOX *gbox, *gbox_slow;
 	int i;
 	
 	for ( i = 0; i < gbox_data_length; i++ )
@@ -202,30 +202,28 @@ void test_gserialized_get_gbox_geocentric(void)
 //		printf("\n------------\n");
 //		printf("%s\n", gbox_data[2*i]);
 //		printf("%s\n", gbox_data[2*i+1]);
-		lwg = lwgeom_from_ewkt(gbox_data[2*i], PARSER_CHECK_NONE);
-		gbox_good = gbox_from_string(gbox_data[2*i+1]);
+		lwg = lwgeom_from_ewkt(gbox_data[i], PARSER_CHECK_NONE);
 		g = gserialized_from_lwgeom(lwg, 1, 0);
 		g->flags = FLAGS_SET_GEODETIC(g->flags, 1);
 		lwgeom_free(lwg);
 		gbox_geocentric_slow = LW_FALSE;
 		gbox = gserialized_calculate_gbox_geocentric(g);
 		gbox_geocentric_slow = LW_TRUE;
-		gbox_good_calc = gserialized_calculate_gbox_geocentric(g);
+		gbox_slow = gserialized_calculate_gbox_geocentric(g);
 		gbox_geocentric_slow = LW_FALSE;
 //		printf("\nCALC: %s\n", gbox_to_string(gbox));
 //		printf("GOOD: %s\n", gbox_to_string(gbox_good));
 //		printf("GOOD CALC: %s\n", gbox_to_string(gbox_good_calc));
 //		printf("line %d: diff %.9g\n", i, fabs(gbox->xmin - gbox_good->xmin)+fabs(gbox->ymin - gbox_good->ymin)+fabs(gbox->zmin - gbox_good->zmin));
-		CU_ASSERT_DOUBLE_EQUAL(gbox->xmin, gbox_good_calc->xmin, 0.000001);
-		CU_ASSERT_DOUBLE_EQUAL(gbox->ymin, gbox_good_calc->ymin, 0.000001);
-		CU_ASSERT_DOUBLE_EQUAL(gbox->zmin, gbox_good_calc->zmin, 0.000001);
-		CU_ASSERT_DOUBLE_EQUAL_FATAL(gbox->xmax, gbox_good_calc->xmax, 0.000001);
-		CU_ASSERT_DOUBLE_EQUAL(gbox->ymax, gbox_good_calc->ymax, 0.000001);
-		CU_ASSERT_DOUBLE_EQUAL(gbox->zmax, gbox_good_calc->zmax, 0.000001);
+		CU_ASSERT_DOUBLE_EQUAL(gbox->xmin, gbox_slow->xmin, 0.000001);
+		CU_ASSERT_DOUBLE_EQUAL(gbox->ymin, gbox_slow->ymin, 0.000001);
+		CU_ASSERT_DOUBLE_EQUAL(gbox->zmin, gbox_slow->zmin, 0.000001);
+		CU_ASSERT_DOUBLE_EQUAL(gbox->xmax, gbox_slow->xmax, 0.000001);
+		CU_ASSERT_DOUBLE_EQUAL(gbox->ymax, gbox_slow->ymax, 0.000001);
+		CU_ASSERT_DOUBLE_EQUAL(gbox->zmax, gbox_slow->zmax, 0.000001);
 		lwfree(g);
 		lwfree(gbox);
-		lwfree(gbox_good);
-		lwfree(gbox_good_calc);
+		lwfree(gbox_slow);
 	}
 
 }
