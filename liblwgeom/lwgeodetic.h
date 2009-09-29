@@ -44,6 +44,8 @@ typedef struct {
 /* 
 ** Prototypes for internal functions.
 */
+void geog2cart(GEOGRAPHIC_POINT g, POINT3D *p);
+void cart2geog(POINT3D p, GEOGRAPHIC_POINT *g);
 void robust_cross_product(GEOGRAPHIC_POINT p, GEOGRAPHIC_POINT q, POINT3D *a);
 void x_to_z(POINT3D *p);
 void y_to_z(POINT3D *p);
@@ -51,7 +53,7 @@ int edge_point_on_plane(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p);
 int edge_point_in_cone(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p);
 int edge_contains_longitude(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p);
 int edge_contains_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p);
-double z_to_latitude(double z);
+double z_to_latitude(double z, int top);
 int clairaut_cartesian(POINT3D start, POINT3D end, int top, GEOGRAPHIC_POINT *g);
 int clairaut_geographic(GEOGRAPHIC_POINT start, GEOGRAPHIC_POINT end, int top, GEOGRAPHIC_POINT *g);
 double sphere_distance(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e);

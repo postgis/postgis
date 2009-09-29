@@ -28,8 +28,10 @@ CU_pSuite register_geodetic_suite(void)
 	if (
 		(NULL == CU_add_test(pSuite, "test_signum()", test_signum))  ||
 		(NULL == CU_add_test(pSuite, "test_gbox_from_spherical_coordinates()", test_gbox_from_spherical_coordinates))  ||
+		(NULL == CU_add_test(pSuite, "test_edge_intersection()", test_edge_intersection)) || 
 		(NULL == CU_add_test(pSuite, "test_gserialized_get_gbox_geocentric()", test_gserialized_get_gbox_geocentric))  ||
-		(NULL == CU_add_test(pSuite, "test_edge_intersection()", test_edge_intersection)) 
+		(NULL == CU_add_test(pSuite, "test_clairaut()", test_clairaut)) 
+
 	)
 	{
 		CU_cleanup_registry();
@@ -133,6 +135,55 @@ void test_gbox_from_spherical_coordinates(void)
 	
 }
 
+void test_clairaut(void)
+{
+  
+    GEOGRAPHIC_POINT gs, ge;
+    POINT3D vs, ve;
+    GEOGRAPHIC_POINT g_out, v_out;  
+
+    gs.lat = deg2rad(60.0);
+    gs.lon = deg2rad(-45.0);
+    ge.lat = deg2rad(60.0);
+    ge.lon = deg2rad(135.0);
+
+    geog2cart(gs, &vs);
+    geog2cart(ge, &ve);
+    
+    clairaut_cartesian(vs, ve, LW_TRUE, &v_out);
+    clairaut_geographic(gs, ge, LW_TRUE, &g_out);    
+
+	CU_ASSERT_DOUBLE_EQUAL(v_out.lat, g_out.lat, 0.000001);
+	CU_ASSERT_DOUBLE_EQUAL(v_out.lon, g_out.lon, 0.000001);
+
+    clairaut_cartesian(vs, ve, LW_FALSE, &v_out);
+    clairaut_geographic(gs, ge, LW_FALSE, &g_out);    
+
+	CU_ASSERT_DOUBLE_EQUAL(v_out.lat, g_out.lat, 0.000001);
+	CU_ASSERT_DOUBLE_EQUAL(v_out.lon, g_out.lon, 0.000001);
+
+    gs.lat = 1.3021240033804449;
+    ge.lat = 1.3021240033804449;
+    gs.lon = -1.3387392931438733;
+    ge.lon = 1.80285336044592;
+
+    geog2cart(gs, &vs);
+    geog2cart(ge, &ve);
+
+    clairaut_cartesian(vs, ve, LW_TRUE, &v_out);
+    clairaut_geographic(gs, ge, LW_TRUE, &g_out);    
+
+	CU_ASSERT_DOUBLE_EQUAL(v_out.lat, g_out.lat, 0.000001);
+	CU_ASSERT_DOUBLE_EQUAL(v_out.lon, g_out.lon, 0.000001);
+
+    clairaut_cartesian(vs, ve, LW_FALSE, &v_out);
+    clairaut_geographic(gs, ge, LW_FALSE, &g_out);    
+
+	CU_ASSERT_DOUBLE_EQUAL(v_out.lat, g_out.lat, 0.000001);
+	CU_ASSERT_DOUBLE_EQUAL(v_out.lon, g_out.lon, 0.000001);
+}
+    
+
 #include "cu_geodetic_data.h"
 
 void test_gserialized_get_gbox_geocentric(void)
@@ -144,7 +195,7 @@ void test_gserialized_get_gbox_geocentric(void)
 	
 	for ( i = 0; i < gbox_data_length; i++ )
 	{
-		if( i == 25 || i == 35 ) continue; /* skip our one bad case */
+//		if( i != 25 && i != 35 ) continue; /* skip our one bad case */
 //		printf("\n------------\n");
 //		printf("%s\n", gbox_data[2*i]);
 //		printf("%s\n", gbox_data[2*i+1]);

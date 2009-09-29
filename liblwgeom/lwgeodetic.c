@@ -82,7 +82,7 @@ static int gbox_contains_south_pole(GBOX gbox)
 /**
 * Convert spherical coordinates to cartesion coordinates on unit sphere
 */
-static void inline geog2cart(GEOGRAPHIC_POINT g, POINT3D *p)
+void inline geog2cart(GEOGRAPHIC_POINT g, POINT3D *p)
 {
 	p->x = cos(g.lat) * cos(g.lon);
 	p->y = cos(g.lat) * sin(g.lon);
@@ -92,7 +92,7 @@ static void inline geog2cart(GEOGRAPHIC_POINT g, POINT3D *p)
 /**
 * Convert cartesion coordinates to spherical coordinates on unit sphere
 */
-static void inline cart2geog(POINT3D p, GEOGRAPHIC_POINT *g)
+void inline cart2geog(POINT3D p, GEOGRAPHIC_POINT *g)
 {
 	g->lon = atan2(p.y, p.x);
 	g->lat = asin(p.z);
@@ -325,11 +325,16 @@ int edge_contains_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 /**
 * Used in great circle to compute the pole of the great circle.
 */
-double z_to_latitude(double z)
+double z_to_latitude(double z, int top)
 {
 	double sign = signum(z);
 	double tlat = acos(z);
-    LWDEBUGF(4, "inputs: sign(%.8g) tlat(%.8g)", sign, tlat);
+    LWDEBUGF(4, "inputs: z(%.8g) sign(%.8g) tlat(%.8g)", z, sign, tlat);
+    if(FP_IS_ZERO(z))
+    {
+        if(top) return M_PI_2;
+        else return -1.0 * M_PI_2;
+    }
 	if(fabs(tlat) > M_PI_2 )
 	{
 		tlat = sign * (M_PI - fabs(tlat));
@@ -354,20 +359,21 @@ int clairaut_cartesian(POINT3D start, POINT3D end, int top, GEOGRAPHIC_POINT *g)
     LWDEBUG(4,"entering function");
 	unit_normal(start, end, &t1);
 	unit_normal(end, start, &t2);
-    LWDEBUGF(4, "t1 == POINT(%.8g %.8g %.8g)", t1.x, t1.y, t1.z);
-    LWDEBUGF(4, "t2 == POINT(%.8g %.8g %.8g)", t2.x, t2.y, t2.z);
+    LWDEBUGF(4, "unit normal t1 == POINT(%.8g %.8g %.8g)", t1.x, t1.y, t1.z);
+    LWDEBUGF(4, "unit normal t2 == POINT(%.8g %.8g %.8g)", t2.x, t2.y, t2.z);
 	cart2geog(t1, &vN1);
 	cart2geog(t2, &vN2);
 	if( top )
 	{
-		g->lat = z_to_latitude(t1.z);
+		g->lat = z_to_latitude(t1.z,top);
 		g->lon = vN2.lon;
 	}
 	else
 	{
-		g->lat = z_to_latitude(t2.z);
+		g->lat = z_to_latitude(t2.z,top);
 		g->lon = vN1.lon;
 	}
+    LWDEBUGF(4, "clairaut == GPOINT(%.6g %.6g)", g->lat, g->lon);
 	return G_SUCCESS;
 }
 
@@ -391,12 +397,12 @@ int clairaut_geographic(GEOGRAPHIC_POINT start, GEOGRAPHIC_POINT end, int top, G
         LWDEBUGF(4, "vN2 == GPOINT(%.6g %.6g) ", vN2.lat, vN2.lon);
     if( top )
     {
-        g->lat = z_to_latitude(t1.z);
+        g->lat = z_to_latitude(t1.z,top);
         g->lon = vN2.lon;
     }
     else
     {
-        g->lat = z_to_latitude(t2.z);
+        g->lat = z_to_latitude(t2.z,top);
         g->lon = vN1.lon;
     }
     return G_SUCCESS;
@@ -677,6 +683,7 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 	clairaut_cartesian(startXZ, endXZ, LW_TRUE, &vT1);
 	clairaut_cartesian(startXZ, endXZ, LW_FALSE, &vT2);
     gimbal_lock = LW_FALSE;
+    LWDEBUG(4, "vT1/vT2 before flipping back z to x");
     LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
     LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
     if ( FP_IS_ZERO(vT1.lat) ) 
@@ -689,13 +696,16 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
     x_to_z(&nT2);
     cart2geog(nT1, &vT1);
     cart2geog(nT2, &vT2);
+    LWDEBUG(4, "vT1/vT2 after flipping back z to x");
     LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
     LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
     if( gimbal_lock )
     {
         LWDEBUG(4, "gimbal lock");
-        vT1.lon = M_PI;
-        vT2.lon = -1.0 * M_PI;
+        vT1.lon = 0.0;
+        vT2.lon = M_PI;
+        LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
+        LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
     }
     if( edge_contains_point(g, vT1) )
     {
@@ -723,6 +733,9 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 	clairaut_cartesian(startYZ, endYZ, LW_TRUE, &vT1);
 	clairaut_cartesian(startYZ, endYZ, LW_FALSE, &vT2);
     gimbal_lock = LW_FALSE;
+    LWDEBUG(4, "vT1/vT2 before flipping back z to y");
+    LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
+    LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
     if ( FP_IS_ZERO(vT1.lat) ) 
     {
         gimbal_lock = LW_TRUE;
@@ -733,13 +746,16 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
     y_to_z(&nT2);
     cart2geog(nT1, &vT1);
     cart2geog(nT2, &vT2);
+    LWDEBUG(4, "vT1/vT2 after flipping back z to y");
     LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
     LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
     if( gimbal_lock )
     {
         LWDEBUG(4, "gimbal lock");
-        vT1.lon = M_PI;
-        vT2.lon = -1.0 * M_PI;
+        vT1.lon = M_PI_2;
+        vT2.lon = -1.0 * M_PI_2;
+        LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
+        LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
     }
     if( edge_contains_point(g, vT1) )
     {
