@@ -111,7 +111,7 @@
 			)</pgis:gset>
 
 		<pgis:gset ID='MultiPolySet3D' GeometryType='MULTIPOLYGONZ'>(SELECT ST_Multi(ST_Union(s.the_geom)) As the_geom
-		FROM (SELECT ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_SetSRID(ST_MakePointM(i+m,j,m),4326),ST_SetSRID(ST_MakePointM(j+m,i-m,m),4326)),ST_SetSRID(ST_MakePointM(i,j,m),4326)),ST_SetSRID(ST_MakePointM(i+m,j,m),4326)))  As the_geom
+		FROM (SELECT ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_SetSRID(ST_MakePoint(i+m,j,m),4326),ST_SetSRID(ST_MakePoint(j+m,i-m,m),4326)),ST_SetSRID(ST_MakePoint(i,j,m),4326)),ST_SetSRID(ST_MakePoint(i+m,j,m),4326)))  As the_geom
 		FROM generate_series(-10,50,20) As i
 			CROSS JOIN generate_series(50,70, 25) As j
 			CROSS JOIN generate_series(1,2) As m
@@ -131,10 +131,8 @@
 			CROSS JOIN generate_series(1,2) As m
 			WHERE NOT(i = j)) As s)</pgis:gset>
 
-		<pgis:gset ID='MultiPolygonMSet' GeometryType='MULTIPOLYGONM'>(SELECT ST_Multi(ST_Union(ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_SetSRID(ST_MakePointM(i+m,j,m),4326),ST_SetSRID(ST_MakePointM(j+m,i-m,m),4326)),ST_SetSRID(ST_MakePointM(i,j,m),4326)),ST_SetSRID(ST_MakePointM(i+m,j,m),4326)))))  As the_geom
-		FROM generate_series(-10,50,20) As i
-			CROSS JOIN generate_series(50,70, 25) As j
-			CROSS JOIN generate_series(1,2) As m
+		<pgis:gset ID='MultiPolygonMSet' GeometryType='MULTIPOLYGONM'>(
+			SELECT ST_GeomFromEWKT('SRID=4326;MULTIPOLYGONM(((0 0 2,10 0 1,10 10 -2,0 10 -5,0 0 -5),(5 5 6,7 5 6,7 7 6,5 7 10,5 5 -2)))')  As the_geom
 			)</pgis:gset>
 
 		<!--These are special case geometries -->
@@ -142,9 +140,6 @@
 			UNION ALL SELECT ST_GeomFromText('POLYGON EMPTY',4326) As the_geom
 		)
 		</pgis:gset>
-
-		<pgis:gset ID="NULL" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom)</pgis:gset>
-
 
 	<!-- TODO: Finish off MULTI list -->
 	</pgis:gardens>
@@ -159,6 +154,8 @@
 				FROM generate_series(-10,50,10) As i
 					CROSS JOIN generate_series(40,70, 20) As j
 					ORDER BY i, j, i*j)</pgis:gset>
+		<pgis:gset ID="NULL" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom)</pgis:gset>
+
 	</pgis:gardencrashers>
 
 	<xsl:template match='/chapter'>
