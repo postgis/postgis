@@ -232,14 +232,17 @@ geometry
 
 		<para>Using Input/Output Functions</para>
 
-		<para>There are only four intput/output functions at this time supporting the OGC well-known text (WKT) and well-known binary (WKB) formats.
-		Adding further output formats (GML, GeoJSON) should be straight-forward, borrowing code from the geometry implementations.</para>
+		<para>There are only height intput/output functions at this time:</para>
 
 		<itemizedlist>
 			<listitem>ST_AsText(geography) returns text</listitem>
 			<listitem>ST_AsBinary(geography) returns bytea</listitem>
 			<listitem>ST_GeographyFromText(text) returns geography</listitem>
 			<listitem>ST_GeographyFromBinary(bytea) returns geography</listitem>
+			<listitem>ST_AsGML(geography) returns text</listitem>
+			<listitem>ST_AsKML(geography) returns text</listitem>
+			<listitem>ST_AsGeojson(geography) returns text</listitem>
+			<listitem>ST_AsSVG(geography) returns text</listitem>
 		</itemizedlist>
 	</sect2>
 	<sect2>
