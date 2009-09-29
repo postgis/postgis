@@ -45,36 +45,46 @@ void point_rad2deg(GEOGRAPHIC_POINT *p)
 }
 
 /**
-* Check to see if this geocentric gbox is wrapped around the north pole.
+* Check to see if this geocentric gbox is wrapped around a pole.
 * Only makes sense if this gbox originated from a polygon, as it's assuming
 * the box is generated from external edges and there's an "interior" which
 * contains the pole.
 */
-static int gbox_contains_north_pole(GBOX gbox)
+static int gbox_check_poles(GBOX *gbox)
 {
-    if( gbox.zmin > 0.0 &&
-        gbox.xmin < 0.0 && gbox.xmax > 0.0 &&
-        gbox.ymin < 0.0 && gbox.ymax > 0.0 )
+    /* Z axis */
+    if( gbox->xmin < 0.0 && gbox->xmax > 0.0 &&
+        gbox->ymin < 0.0 && gbox->ymax > 0.0 )
     {
+        if( (gbox->zmin+gbox->zmin)/2 > 0.0 )
+            gbox->zmax = 1.0;
+        else 
+            gbox->zmin = -1.0;
         return LW_TRUE;
     }
-    return LW_FALSE;
-}
 
-/**
-* Check to see if this geocentric gbox is wrapped around the south pole.
-* Only makes sense if this gbox originated from a polygon, as it's assuming
-* the box is generated from external edges and there's an "interior" which
-* contains the pole.
-*/
-static int gbox_contains_south_pole(GBOX gbox)
-{
-    if( gbox.zmax < 0.0 &&
-        gbox.xmin < 0.0 && gbox.xmax > 0.0 &&
-        gbox.ymin < 0.0 && gbox.ymax > 0.0 )
+    /* Y axis */
+    if( gbox->xmin < 0.0 && gbox->xmax > 0.0 &&
+        gbox->zmin < 0.0 && gbox->zmax > 0.0 )
     {
+        if( (gbox->ymin+gbox->ymin)/2 > 0.0 )
+            gbox->ymax = 1.0;
+        else 
+            gbox->ymin = -1.0;
         return LW_TRUE;
     }
+
+    /* X axis */
+    if( gbox->ymin < 0.0 && gbox->ymax > 0.0 &&
+        gbox->zmin < 0.0 && gbox->zmax > 0.0 )
+    {
+        if( (gbox->xmin+gbox->xmin)/2 > 0.0 )
+            gbox->xmax = 1.0;
+        else 
+            gbox->xmin = -1.0;
+        return LW_TRUE;
+    }
+
     return LW_FALSE;
 }
 
@@ -917,12 +927,8 @@ static int lwpolygon_calculate_gbox_geodetic(LWPOLY *poly, GBOX *gbox)
 		}
 	}
 	
-	/* If the box wraps the south pole, set zmin to the absolute min. */
-	if( gbox_contains_south_pole(*gbox) )
-        gbox->zmin = -1.0;
-	/* If the box wraps the north pole, set zmax to the absolute max. */
-	if( gbox_contains_north_pole(*gbox) )
-        gbox->zmax = 1.0;
+	/* If the box wraps a poly, push that axis to the absolute min/max as appropriate */
+    gbox_check_poles(gbox);
         
 	return G_SUCCESS;
 }
