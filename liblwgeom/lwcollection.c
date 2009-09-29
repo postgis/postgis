@@ -321,7 +321,7 @@ lwcollection_segmentize2d(LWCOLLECTION *col, double dist)
 	unsigned int i;
 	LWGEOM **newgeoms;
 
-	if ( ! col->ngeoms ) return col;
+	if ( ! col->ngeoms ) return lwcollection_clone(col);
 
 	newgeoms = lwalloc(sizeof(LWGEOM *)*col->ngeoms);
 	for (i=0; i<col->ngeoms; i++)
