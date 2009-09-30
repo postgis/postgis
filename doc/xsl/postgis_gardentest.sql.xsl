@@ -94,7 +94,7 @@
 			CROSS JOIN generate_series(40,70, 15) As j
 			WHERE NOT(i = j)) As s)</pgis:gset>
 
-		<pgis:gset ID='MultiPolySet' GeometryType='POLYGON'>(SELECT ST_Multi(ST_Union(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j*0.05)))  As the_geom
+		<pgis:gset ID='MultiPolySet' GeometryType='MULTIPOLYGON'>(SELECT ST_Multi(ST_Union(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j*0.05)))  As the_geom
 		FROM generate_series(-10,50,10) As i
 			CROSS JOIN generate_series(40,70, 25) As j)</pgis:gset>
 
@@ -203,18 +203,24 @@ SELECT 'create,insert,drop Test: End Testing Geography <xsl:value-of select="@Ge
 		<xsl:sort select="@id"/>
 		<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
 			<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>
+			<xsl:variable name='fndef'><xsl:value-of select="funcdef"/></xsl:variable>
 			<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 			<!--Store first garden sql geometry from -->
 					<xsl:variable name="from1"><xsl:value-of select="." /></xsl:variable>
 					<xsl:variable name='geom1type'><xsl:value-of select="@ID"/></xsl:variable>
 		SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" /> : Start Testing <xsl:value-of select="$geom1type" /> against other types';
 						<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
-			SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
+			<xsl:choose>
+			  <xsl:when test="contains($fndef, 'geography ')">
+			SELECT 'Geography <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
 			BEGIN;
-			SELECT foo1.the_geom <xsl:value-of select="$fnname" /> foo2.the_geom
+			SELECT geography(foo1.the_geom) <xsl:value-of select="$fnname" /> geography(foo2.the_geom)
 					FROM (<xsl:value-of select="$from1" />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2
 					;
 			COMMIT;
+			</xsl:when>
+			<xsl:otherwise>
+			</xsl:otherwise>
 					</xsl:for-each>
 		SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: End Testing <xsl:value-of select="@GeometryType" /> against other types';
 				</xsl:for-each>
@@ -232,7 +238,7 @@ SELECT 'create,insert,drop Test: End Testing Geography <xsl:value-of select="@Ge
 				<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>
 				<xsl:variable name='fndef'><xsl:value-of select="funcdef"/></xsl:variable>
 				<xsl:variable name='numparams'><xsl:value-of select="count(paramdef/parameter)" /></xsl:variable>
-				<xsl:variable name='numparamgeoms'><xsl:value-of select="count(paramdef/type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'bytea')]) + count(paramdef/parameter[contains(text(),'WKT')])" /></xsl:variable>
+				<xsl:variable name='numparamgeoms'><xsl:value-of select="count(paramdef/type[contains(text(),'geometry') or contains(text(),'geography') or contains(text(),'box') or contains(text(), 'bytea')]) + count(paramdef/parameter[contains(text(),'WKT')])" /></xsl:variable>
 				<!-- For each function prototype generate a test sql statement -->
 				<xsl:choose>
 <!--Test functions that take no arguments or take no geometries -->
@@ -245,13 +251,20 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 <!-- put functions that take only one geometry no need to cross with another geom collection, these are unary geom, aggregates, and so forth -->
 	<xsl:when test="$numparamgeoms = '1' and not(contains($fnexclude,funcdef/function))" >
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
-	SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@GeometryType" />';
-	BEGIN; <!-- If output is geometry show ewkt rep -->
 			<xsl:choose>
 			  <xsl:when test="contains($fndef, 'geometry ')">
+	SELECT 'Geometry <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@GeometryType" />';
+	BEGIN; <!-- If output is geometry show ewkt rep -->
 	SELECT ST_AsEWKT(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />))
 			  </xsl:when>
+			  <xsl:when test="contains($fndef, 'geography ')">
+	SELECT 'Geography <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@GeometryType" />';
+	BEGIN; <!-- If output is geometry show astext rep -->
+	SELECT ST_AsText(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />))
+			  </xsl:when>
 			  <xsl:otherwise>
+	SELECT 'Other <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@GeometryType" />';
+	BEGIN; <!-- If output is geometry show ewkt rep -->
 	SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)
 			  </xsl:otherwise>
 			</xsl:choose>
@@ -273,13 +286,20 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 			<xsl:variable name='geom1type'><xsl:value-of select="@ID"/></xsl:variable>
 SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" /> against other types';
 				<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
-	SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
-	BEGIN; <!-- If output is geometry show ewkt rep -->
 			<xsl:choose>
 			  <xsl:when test="contains($fndef, 'geometry ')">
+				SELECT 'Geometry <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
+	BEGIN; <!-- If output is geometry show ewkt rep -->
 	SELECT ST_AsEWKT(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)), ST_AsEWKT(foo1.the_geom) As ref1_geom, ST_AsEWKT(foo2.the_geom) As ref2_geom
 			  </xsl:when>
+			  <xsl:when test="contains($fndef, 'geography ')">
+				SELECT 'Geography <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
+	BEGIN; <!-- If output is geography show wkt rep -->
+	SELECT ST_AsText(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)), ST_AsText(foo1.the_geom) As ref1_geom, ST_AsText(foo2.the_geom) As ref2_geom
+			  </xsl:when>
 			  <xsl:otherwise>
+				SELECT 'Other <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
+	BEGIN; <!-- If output is geography show wkt rep -->
 	SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)
 			  </xsl:otherwise>
 			</xsl:choose>
@@ -327,7 +347,7 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="(contains(type,'box') or type = 'geometry' or type = 'geometry ' or contains(type,'geometry set')) and (position() = 1 or count($func/paramdef/type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1')">
 						<xsl:text>foo1.the_geom</xsl:text>
 					</xsl:when>
-					<xsl:when test="(type = 'geography' or type = 'geography ' or contains(type,'geography set')) and (position() = 1 )">
+					<xsl:when test="(type = 'geography' or type = 'geography ' or contains(type,'geography set')) and (position() = 1 or count($func/paramdef/type[contains(text(),'geography')]) )">
 						<xsl:text>geography(foo1.the_geom)</xsl:text>
 					</xsl:when>
 					<xsl:when test="contains(type,'box') or type = 'geometry' or type = 'geometry '">
