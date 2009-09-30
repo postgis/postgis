@@ -371,6 +371,12 @@ extern int lwgeom_calculate_gbox_geodetic(const LWGEOM *geom, GBOX *gbox);
 extern int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox);
 
 /**
+* Calculate the geodetic distance from lwgeom1 to lwgeom2 on the unit sphere. 
+* Pass in a tolerance in radians.
+*/
+extern int lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, double tolerance, double *result);
+
+/**
 * New function to read doubles directly from the double* coordinate array
 * of an aligned lwgeom #POINTARRAY (built by de-serializing a #GSERIALIZED).
 */

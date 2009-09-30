@@ -1132,3 +1132,48 @@ int lwgeom_is_empty(LWGEOM *geom)
 	}
 	return result;
 }
+
+static int lwcollection_dimensionality(LWCOLLECTION *col)
+{
+	int i;
+	int dimensionality = 0;
+	for( i = 0; i < col->ngeoms; i++ )
+	{
+		int d = lwgeom_dimensionality(col->geoms[i]);
+		if( d > dimensionality )
+			dimensionality = d;
+	}
+	return dimensionality;
+}
+
+extern int lwgeom_dimensionality(LWGEOM *geom)
+{
+	LWDEBUGF(4, "got type %d", TYPE_GETTYPE(geom->type));
+	switch (TYPE_GETTYPE(geom->type))
+	{
+		case POINTTYPE:
+		case MULTIPOINTTYPE:
+			return 0;
+			break;
+		case LINETYPE:
+		case CIRCSTRINGTYPE:
+		case MULTILINETYPE:
+		case COMPOUNDTYPE:
+		case MULTICURVETYPE:
+			return 1;
+			break;
+		case POLYGONTYPE:
+		case CURVEPOLYTYPE:
+		case MULTIPOLYGONTYPE:
+		case MULTISURFACETYPE:
+			return 2;
+			break;
+		case COLLECTIONTYPE:
+			return lwcollection_dimensionality((LWCOLLECTION *)geom);
+			break;
+		default:
+			lwerror("unsupported input geometry type: %d", TYPE_GETTYPE(geom->type));
+			break;
+	}
+	return 0;
+}

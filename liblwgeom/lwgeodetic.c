@@ -167,6 +167,12 @@ static inline int point_equal(GEOGRAPHIC_POINT g1, GEOGRAPHIC_POINT g2)
 	return FP_EQUALS(g1.lat, g2.lat) && FP_EQUALS(g1.lon, g2.lon);
 }
 
+void geographic_point_init(double lon, double lat, GEOGRAPHIC_POINT *g)
+{
+	g->lat = latitude_radians_normalize(deg2rad(lat));
+	g->lon = longitude_radians_normalize(deg2rad(lon));	
+}
+
 /**
 * Check to see if this geocentric gbox is wrapped around a pole.
 * Only makes sense if this gbox originated from a polygon, as it's assuming
@@ -279,11 +285,11 @@ static void inline vector_difference(POINT3D a, POINT3D b, POINT3D *n)
 /**
 * Scale a vector out by a factor
 */
-static void inline vector_scale(POINT3D a, double scale, POINT3D *n)
+static void inline vector_scale(POINT3D *n, double scale)
 {
-	n->x = a.x * scale;
-	n->y = a.y * scale;
-	n->z = a.z * scale;
+	n->x *= scale;
+	n->y *= scale;
+	n->z *= scale;
 	return;
 }
 
@@ -433,15 +439,28 @@ int edge_contains_longitude(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 */
 double sphere_distance(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e)
 {
-	double latS = s.lat;
-	double latE = e.lat;
-	double dlng = e.lon - s.lon;
-	double a1 = pow(cos(latE) * sin(dlng), 2.0);
-	double a2 = pow(cos(latS) * sin(latE) - sin(latS) * cos(latE) * cos(dlng), 2.0);
+	double d_lon = e.lon - s.lon;
+	double cos_d_lon = cos(d_lon);
+	double cos_lat_e = cos(e.lat);
+	double sin_lat_e = sin(e.lat);
+	double cos_lat_s = cos(s.lat);
+	double sin_lat_s = sin(s.lat);
+	
+	double a1 = pow(cos_lat_e * sin(d_lon), 2.0);
+	double a2 = pow(cos_lat_s * sin_lat_e - sin_lat_s * cos_lat_e * cos_d_lon, 2.0);
 	double a = sqrt(a1 + a2);
-	double b = sin(latS) * sin(latE) + cos(latS) * cos(latE) * cos(dlng);
+	double b = sin_lat_s * sin_lat_e + cos_lat_s * cos_lat_e * cos_d_lon;
 	return atan2(a, b);
 }
+
+/**
+* Given two unit vectors, calculate their distance apart in radians.
+*/
+double sphere_distance_cartesian(POINT3D s, POINT3D e)
+{
+	return acos(dot_product(s, e));
+}
+
 
 /**
 * Given two points on a unit sphere, calculate the direction from s to e.
@@ -615,7 +634,7 @@ int edge_intersection(GEOGRAPHIC_EDGE e1, GEOGRAPHIC_EDGE e2, GEOGRAPHIC_POINT *
 double edge_distance_to_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT gp, GEOGRAPHIC_POINT *closest)
 {
 	double d1 = 1000000000.0, d2, d3, d_nearest;
-	POINT3D n, p, k, v1;
+	POINT3D n, p, k;
 	GEOGRAPHIC_POINT gk, g_nearest;
 
 	/* Zero length edge, */
@@ -625,8 +644,8 @@ double edge_distance_to_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT gp, GEOGRAPHIC
 	robust_cross_product(e.start, e.end, &n);
 	normalize(&n);
 	geog2cart(gp, &p);
-	vector_scale(n, dot_product(p, n), &v1);
-	vector_difference(p, v1, &k);
+	vector_scale(&n, dot_product(p, n));
+	vector_difference(p, n, &k);
 	normalize(&k);
 	cart2geog(k, &gk);
 	if( edge_contains_point(e, gk) )
@@ -653,6 +672,46 @@ double edge_distance_to_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT gp, GEOGRAPHIC
 		*closest = g_nearest;
 	
 	return d_nearest;	
+}
+
+double edge_distance_to_edge(GEOGRAPHIC_EDGE e1, GEOGRAPHIC_EDGE e2, GEOGRAPHIC_POINT *closest1, GEOGRAPHIC_POINT *closest2)
+{
+	double d;
+	GEOGRAPHIC_POINT gcp1s, gcp1e, gcp2s, gcp2e, c1, c2;
+	double d1s = edge_distance_to_point(e1, e2.start, &gcp1s);
+	double d1e = edge_distance_to_point(e1, e2.end, &gcp1e);
+	double d2s = edge_distance_to_point(e2, e1.start, &gcp2s);
+	double d2e = edge_distance_to_point(e2, e1.end, &gcp2e);
+
+	d = d1s;
+	c1 = gcp1s;
+	c2 = e2.start;
+	
+	if( d1e < d ) 
+	{
+		d = d1e;
+		c1 = gcp1e;
+		c2 = e2.end;
+	}
+
+	if( d2s < d ) 
+	{
+		d = d2s;
+		c1 = e1.start;
+		c2 = gcp2s;
+	}
+	
+	if( d2e < d ) 
+	{
+		d = d2e;
+		c1 = e1.end;
+		c2 = gcp2e;
+	}
+	
+	if( closest1 ) *closest1 = c1;
+	if( closest2 ) *closest2 = c2;
+		
+	return d;
 }
 
 /**
@@ -1018,6 +1077,100 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 	return G_SUCCESS;
 }
 
+static int lw_line_point_distance_sphere(LWLINE *lwline, LWPOINT *lwpt, double tolerance, double *result)
+{
+	GEOGRAPHIC_POINT g;
+	GEOGRAPHIC_EDGE e;
+	POINT2D p;
+	int i;
+	
+	/* Initialize our point */
+	getPoint2d_p(lwpt->point, 0, &p);
+	geographic_point_init(p.x, p.y, &g);
+	
+	/* Degenerate one-point line! We handle gracefully. */
+	if ( lwline->points->npoints == 1 )
+	{
+		GEOGRAPHIC_POINT f;
+		getPoint2d_p(lwline->points, 0, &p);
+		geographic_point_init(p.x, p.y, &f);
+		*result = sphere_distance(g, f);
+		return LW_TRUE;	
+	}
+	
+	/* Iterate through the edges in our line */
+	for( i = 1; i < lwline->points->npoints; i++ )
+	{
+		getPoint2d_p(lwline->points, i - 1, &p);
+		geographic_point_init(p.x, p.y, &(e.start));
+		getPoint2d_p(lwline->points, i, &p);
+		geographic_point_init(p.x, p.y, &(e.end));
+		*result = edge_distance_to_point(e, g, 0);
+		if( *result < tolerance ) 
+			break;
+	}
+	return LW_TRUE;			
+}
+
+static int lw_point_point_distance_sphere(LWPOINT *lwpt1, LWPOINT *lwpt2, double *result)
+{
+	GEOGRAPHIC_POINT g1, g2;
+	POINT2D p;
+	getPoint2d_p(lwpt1->point, 0, &p);
+	geographic_point_init(p.x, p.y, &g1);
+	getPoint2d_p(lwpt2->point, 0, &p);
+	geographic_point_init(p.x, p.y, &g2);
+	*result = sphere_distance(g1, g2);
+	return LW_TRUE;	
+}
+
+/**
+* Calculate the distance between two LWGEOMs, using the coordinates are 
+* longitude and latitude. Return immediately when the calulated distance drops
+* below the tolerance (useful for dwithin calculations).
+*/
+int lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, double tolerance, double *result)
+{
+	int type1, type2;
+	
+	assert(lwgeom1);
+	assert(lwgeom2);
+	
+	if( lwgeom_is_empty(lwgeom1) || lwgeom_is_empty(lwgeom2) )
+	{
+		*result = -1.0;
+		return LW_FALSE;
+	}
+		
+	/* Ensure that for LINE/POINT, POLY/POINT, POLY/LINE cases
+	   the lower dimensioned object is always type2 */
+	if ( lwgeom_dimensionality(lwgeom1) < lwgeom_dimensionality(lwgeom2) )
+	{
+		LWGEOM *tmp = lwgeom2;
+		lwgeom2 = lwgeom1;
+		lwgeom1 = tmp;
+	}
+
+	type1 = TYPE_GETTYPE(lwgeom1->type);
+	type2 = TYPE_GETTYPE(lwgeom2->type);
+	
+	if( type1 == POINTTYPE && type2 == POINTTYPE )
+	{
+		return lw_point_point_distance_sphere(
+		         lwgeom_as_lwpoint(lwgeom1), 
+		         lwgeom_as_lwpoint(lwgeom2), result);
+	}
+	if( type1 == LINETYPE && type2 == POINTTYPE )
+	{
+		return lw_line_point_distance_sphere(
+		         lwgeom_as_lwline(lwgeom1),
+		         lwgeom_as_lwpoint(lwgeom2),
+		         tolerance, result);
+
+	}
+	return LW_FALSE;
+	
+}
 
 /**
 * This function can only be used on LWGEOM that is built on top of

@@ -20,7 +20,7 @@ extern int gbox_geocentric_slow;
 typedef struct
 {
 	double lon;
-	double lat;
+	double lat; 
 } GEOGRAPHIC_POINT;
 
 /**
@@ -59,13 +59,16 @@ double z_to_latitude(double z, int top);
 int clairaut_cartesian(POINT3D start, POINT3D end, GEOGRAPHIC_POINT *g_top, GEOGRAPHIC_POINT *g_bottom);
 int clairaut_geographic(GEOGRAPHIC_POINT start, GEOGRAPHIC_POINT end, GEOGRAPHIC_POINT *g_top, GEOGRAPHIC_POINT *g_bottom);
 double sphere_distance(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e);
+double sphere_distance_cartesian(POINT3D s, POINT3D e);
 double sphere_direction(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e);
 int sphere_project(GEOGRAPHIC_POINT r, double distance, double azimuth, GEOGRAPHIC_POINT *n);
 int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox);
 int edge_calculate_gbox_slow(GEOGRAPHIC_EDGE e, GBOX *gbox);
 int edge_intersection(GEOGRAPHIC_EDGE e1, GEOGRAPHIC_EDGE e2, GEOGRAPHIC_POINT *g);
 double edge_distance_to_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT gp, GEOGRAPHIC_POINT *closest);
+double edge_distance_to_edge(GEOGRAPHIC_EDGE e1, GEOGRAPHIC_EDGE e2, GEOGRAPHIC_POINT *closest1, GEOGRAPHIC_POINT *closest2);
 void edge_deg2rad(GEOGRAPHIC_EDGE *e);
 void edge_rad2deg(GEOGRAPHIC_EDGE *e);
 void point_deg2rad(GEOGRAPHIC_POINT *p);
 void point_rad2deg(GEOGRAPHIC_POINT *p);
+void geographic_point_init(double lon, double lat, GEOGRAPHIC_POINT *g);

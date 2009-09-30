@@ -1266,6 +1266,11 @@ extern int32 lwgeom_npoints(uchar *serialized);
 */
 extern int lwgeom_is_empty(LWGEOM *geom);
 
+/**
+* Return the dimensionality (relating to point/line/poly) of an lwgeom
+*/
+extern int lwgeom_dimensionality(LWGEOM *geom);
+
 /* Is lwgeom1 geometrically equal to lwgeom2 ? */
 char lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2);
 char ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2);
