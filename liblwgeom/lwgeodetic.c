@@ -12,11 +12,15 @@
 #include "lwgeodetic.h"
 
 /**
-* If this is true, use the slow algorithm.
+* For testing geodetic bounding box, we have a magic global variable.
+* When this is true (when the cunit tests set it), use the slow, but
+* guaranteed correct, algorithm. Otherwise use the regular one.
 */
 int gbox_geocentric_slow = LW_FALSE;
 
-
+/**
+* Convert an edge from degrees to radians. 
+*/
 void edge_deg2rad(GEOGRAPHIC_EDGE *e)
 {
 	(e->start).lat = deg2rad((e->start).lat);
@@ -25,6 +29,9 @@ void edge_deg2rad(GEOGRAPHIC_EDGE *e)
 	(e->end).lon = deg2rad((e->end).lon);
 }
 
+/**
+* Convert an edge from radians to degrees.
+*/
 void edge_rad2deg(GEOGRAPHIC_EDGE *e)
 {
 	(e->start).lat = rad2deg((e->start).lat);
@@ -33,11 +40,18 @@ void edge_rad2deg(GEOGRAPHIC_EDGE *e)
 	(e->end).lon = rad2deg((e->end).lon);
 }
 
+/** 
+* Convert a point from degrees to radians.
+*/
 void point_deg2rad(GEOGRAPHIC_POINT *p)
 {
 	p->lat = deg2rad(p->lat);
 	p->lon = deg2rad(p->lon);
 }
+
+/** 
+* Convert a point from radians to degrees.
+*/
 void point_rad2deg(GEOGRAPHIC_POINT *p)
 {
 	p->lat = rad2deg(p->lat);
@@ -49,6 +63,9 @@ void point_rad2deg(GEOGRAPHIC_POINT *p)
 * Only makes sense if this gbox originated from a polygon, as it's assuming
 * the box is generated from external edges and there's an "interior" which
 * contains the pole.
+*
+* WARNING: There might be degenerate cases that contain multiple poles but are not
+* caught, this is not a 100% function.
 */
 static int gbox_check_poles(GBOX *gbox)
 {
@@ -109,7 +126,8 @@ void inline cart2geog(POINT3D p, GEOGRAPHIC_POINT *g)
 }
 
 /**
-* Calculate the dot product of two unit vectors
+* Calculate the dot product of two unit vectors 
+* (-1 == opposite, 0 == orthogonal, 1 == identical)
 */
 static double inline dot_product(POINT3D p1, POINT3D p2)
 {
@@ -149,7 +167,6 @@ static void inline vector_difference(POINT3D a, POINT3D b, POINT3D *n)
 	return;
 }
 
-
 /**
 * Normalize to a unit vector.
 */
@@ -182,10 +199,16 @@ void robust_cross_product(GEOGRAPHIC_POINT p, GEOGRAPHIC_POINT q, POINT3D *a)
 {
 	double lon_qpp = (q.lon + p.lon) / -2.0;
 	double lon_qmp = (q.lon - p.lon) / 2.0;
-	a->x = sin(p.lat-q.lat) * sin(lon_qpp) * cos(lon_qmp) -
-	       sin(p.lat+q.lat) * cos(lon_qpp) * sin(lon_qmp);
-	a->y = sin(p.lat-q.lat) * cos(lon_qpp) * cos(lon_qmp) +
-	       sin(p.lat+q.lat) * sin(lon_qpp) * sin(lon_qmp);
+	double sin_p_lat_minus_q_lat = sin(p.lat-q.lat);
+	double sin_p_lat_plus_q_lat = sin(p.lat+q.lat);
+	double sin_lon_qpp = sin(lon_qpp);
+	double sin_lon_qmp = sin(lon_qmp);
+	double cos_lon_qpp = cos(lon_qpp);
+	double cos_lon_qmp = cos(lon_qmp);
+	a->x = sin_p_lat_minus_q_lat * sin_lon_qpp * cos_lon_qmp -
+	        sin_p_lat_plus_q_lat * cos_lon_qpp * sin_lon_qmp;
+	a->y = sin_p_lat_minus_q_lat * cos_lon_qpp * cos_lon_qmp +
+	        sin_p_lat_plus_q_lat * sin_lon_qpp * sin_lon_qmp;
 	a->z = cos(p.lat) * cos(q.lat) * sin(q.lon-p.lon);
 	normalize(a);
 }
@@ -214,8 +237,10 @@ int edge_point_on_plane(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 {
 	POINT3D normal, pt;
 	double w;
+	/* Normal to the plane defined by e */
 	robust_cross_product(e.start, e.end, &normal);
 	geog2cart(p, &pt);
+	/* We expect the dot product of with normal with any vector in the plane to be zero */
 	w = dot_product(normal, pt);
 	LWDEBUGF(4,"dot product %.9g",w);
 	if ( FP_IS_ZERO(w) )
@@ -230,24 +255,28 @@ int edge_point_on_plane(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 /**
 * Returns true if the point p is inside the cone defined by the
 * two ends of the edge e.
-(*/
+*/
 int edge_point_in_cone(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 {
 	POINT3D vcp, vs, ve, vp;
-	double vs_dot_vcp, vp_dot_vcp, ve_dot_vcp;
+	double vs_dot_vcp, vp_dot_vcp;
 	geog2cart(e.start, &vs);
 	geog2cart(e.end, &ve);
+	/* Antipodal case, everything is inside. */
+	if( vs.x == -1.0 * ve.x && vs.y == -1.0 * ve.y && vs.z == -1.0 * ve.z )
+		return LW_TRUE;
 	geog2cart(p, &vp);
+	/* The normalized sum bisects the angle between start and end. */
 	vector_sum(vs, ve, &vcp);
 	normalize(&vcp);
+	/* The projection of start onto the center defines the minimum similarity */
 	vs_dot_vcp = dot_product(vs, vcp);
 	LWDEBUGF(4,"vs_dot_vcp %.9g",vs_dot_vcp);
-	ve_dot_vcp = dot_product(ve, vcp);
-	LWDEBUGF(4,"ve_dot_vcp %.9g",ve_dot_vcp);
+	/* The projection of candidate p onto the center */
 	vp_dot_vcp = dot_product(vp, vcp);
 	LWDEBUGF(4,"vp_dot_vcp %.9g",vp_dot_vcp);
-
-	if ( vp_dot_vcp > ve_dot_vcp && vp_dot_vcp > ve_dot_vcp )
+	/* If p is more similar than start then p is inside the cone */
+	if ( vp_dot_vcp > vs_dot_vcp )
 	{
 		LWDEBUG(4, "point is in cone");
 		return LW_TRUE;
@@ -280,7 +309,7 @@ int edge_contains_longitude(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 
 
 /**
-* Given two points on a unit sphere, calculate their distance apart.
+* Given two points on a unit sphere, calculate their distance apart in radians.
 */
 double sphere_distance(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e)
 {
@@ -314,19 +343,6 @@ double sphere_direction(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e)
 */
 int edge_contains_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 {
-#if 0
-	/*	Old implementation */
-	if ( edge_point_on_plane(e, p) )
-	{
-		LWDEBUG(4, "point is on plane");
-		if ( edge_contains_longitude(e, p) )
-		{
-			LWDEBUG(4, "point is on edge");
-			return LW_TRUE;
-		}
-	}
-	return LW_FALSE;
-#endif
 	if ( edge_point_in_cone(e, p) && edge_point_on_plane(e, p) )
 	{
 		LWDEBUG(4, "point is on edge");
@@ -493,6 +509,10 @@ int edge_calculate_gbox_slow(GEOGRAPHIC_EDGE e, GBOX *gbox)
 		return G_SUCCESS;
 	}
 
+	/* Walk along the chord between start and end incrementally, 
+	   normalizing at each step. Only corner case occurs if path
+	   passes through 0,0,0 (as the normalization will return zero)
+	   but the box should always have extrema beyond that. */
 	geog2cart(e.start, &start);
 	geog2cart(e.end, &end);
 	dx = (end.x - start.x)/steps;
@@ -513,8 +533,6 @@ int edge_calculate_gbox_slow(GEOGRAPHIC_EDGE e, GBOX *gbox)
 	}
 	return G_SUCCESS;
 }
-
-
 
 /**
 * The magic function, given an edge in spherical coordinates, calculate a
@@ -784,7 +802,8 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 	}
 
 	/* Our cartesian gbox is complete!
-	   If we flipped our longitudes, now we have to flip our cartesian box. */
+	   If we flipped our longitudes at the start, n
+	   now we have to flip our cartesian box. */
 	if ( flipped_longitude )
 	{
 		double tmp;
@@ -804,7 +823,7 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 }
 
 
-/*
+/**
 * This function can only be used on LWGEOM that is built on top of
 * GSERIALIZED, otherwise alignment errors will ensue.
 */
