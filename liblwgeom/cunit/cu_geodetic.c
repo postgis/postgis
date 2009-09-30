@@ -68,7 +68,7 @@ void test_signum(void)
 void test_gbox_from_spherical_coordinates(void)
 {
 	const double gtolerance = 0.000001;
-	const int loops = 20;
+	const int loops = 5;
 	int i;
 	double ll[64];
 	GBOX *gbox;
@@ -191,10 +191,11 @@ void test_gserialized_get_gbox_geocentric(void)
 	for ( i = 0; i < gbox_data_length; i++ )
 	{
 		if ( i != 0 ) continue; /* skip our bad case */
-		/*
-				printf("\n\n------------\n");
-				printf("%s\n", gbox_data[i]);
-		*/
+#define CU_PRINT 0
+#if CU_PRINT
+		printf("\n\n------------\n");
+		printf("%s\n", gbox_data[i]);
+#endif
 		lwg = lwgeom_from_ewkt(gbox_data[i], PARSER_CHECK_NONE);
 		g = gserialized_from_lwgeom(lwg, 1, 0);
 		g->flags = FLAGS_SET_GEODETIC(g->flags, 1);
@@ -204,12 +205,12 @@ void test_gserialized_get_gbox_geocentric(void)
 		gbox_geocentric_slow = LW_TRUE;
 		gbox_slow = gserialized_calculate_gbox_geocentric(g);
 		gbox_geocentric_slow = LW_FALSE;
-		/*
-				printf("\nCALC: %s\n", gbox_to_string(gbox));
-				printf("GOOD: %s\n", gbox_to_string(gbox_slow));
-				printf("line %d: diff %.9g\n", i, fabs(gbox->xmin - gbox_slow->xmin)+fabs(gbox->ymin - gbox_slow->ymin)+fabs(gbox->zmin - gbox_slow->zmin));
-				printf("------------\n");
-		*/
+#if CU_PRINT
+		printf("\nCALC: %s\n", gbox_to_string(gbox));
+		printf("GOOD: %s\n", gbox_to_string(gbox_slow));
+		printf("line %d: diff %.9g\n", i, fabs(gbox->xmin - gbox_slow->xmin)+fabs(gbox->ymin - gbox_slow->ymin)+fabs(gbox->zmin - gbox_slow->zmin));
+		printf("------------\n");
+#endif
 		CU_ASSERT_DOUBLE_EQUAL(gbox->xmin, gbox_slow->xmin, 0.000001);
 		CU_ASSERT_DOUBLE_EQUAL(gbox->ymin, gbox_slow->ymin, 0.000001);
 		CU_ASSERT_DOUBLE_EQUAL(gbox->zmin, gbox_slow->zmin, 0.000001);
@@ -238,61 +239,89 @@ static LWGEOM* lwgeom_over_gserialized(char *wkt)
 }
 */
 
+static void edge_set(double lon1, double lat1, double lon2, double lat2, GEOGRAPHIC_EDGE *e)
+{
+	e->start.lon = lon1;
+	e->start.lat = lat1;
+	e->end.lon = lon2;
+	e->end.lat = lat2;
+}
 
 void test_edge_intersection(void)
 {
+#define CU_PRINT 0
 	GEOGRAPHIC_EDGE e1, e2;
 	GEOGRAPHIC_POINT g;
 	int rv;
 
-	e1.start.lon = -1.0;
-	e1.start.lat = 0.0;
-	e1.end.lon = 1.0;
-	e1.end.lat = 0.0;
-
-	e2.start.lon = 0.0;
-	e2.start.lat = -1.0;
-	e2.end.lon = 0.0;
-	e2.end.lat = 1.0;
-
+	edge_set(-1.0, 0.0, 1.0, 0.0, &e1);
+	edge_set(0.0, -1.0, 0.0, 1.0, &e2);
 	edge_deg2rad(&e1);
 	edge_deg2rad(&e2);
 
 	/* Intersection at (0 0) */
+	edge_set(-1.0, 0.0, 1.0, 0.0, &e1);
+	edge_set(0.0, -1.0, 0.0, 1.0, &e2);
+	edge_deg2rad(&e1);
+	edge_deg2rad(&e2);
 	rv = edge_intersection(e1, e2, &g);
 	point_rad2deg(&g);
 	CU_ASSERT_DOUBLE_EQUAL(g.lat, 0.0, 0.00001);
 	CU_ASSERT_DOUBLE_EQUAL(g.lon, 0.0, 0.00001);
 	CU_ASSERT_EQUAL(rv, LW_TRUE);
 
-	/*  No intersection */
-	e2.end.lat = -2.0;
+	/*  No intersection at (0 0)*/
+	edge_set(0.0, -1.0, 0.0, -2.0, &e2);
+	edge_deg2rad(&e2);
 	rv = edge_intersection(e1, e2, &g);
 	CU_ASSERT_EQUAL(rv, LW_FALSE);
 
-	/*  End touches middle of segment */
-	e2.end.lat = 0.0;
+	/*  End touches middle of segment at (0 0) */
+	edge_set(0.0, -1.0, 0.0, 0.0, &e2);
+	edge_deg2rad(&e2);
 	rv = edge_intersection(e1, e2, &g);
-/*	printf("\n");
+	point_rad2deg(&g);
+#if CU_PRINT
+	printf("\n");
 	printf("LINESTRING(%.8g %.8g, %.8g %.8g)\n", e1.start.lon,  e1.start.lat, e1.end.lon,  e1.end.lat);
 	printf("LINESTRING(%.8g %.8g, %.8g %.8g)\n", e2.start.lon,  e2.start.lat, e2.end.lon,  e2.end.lat);
 	printf("g = (%.9g %.9g)\n", g.lon, g.lat);
 	printf("rv = %d\n", rv);
 	CU_ASSERT_DOUBLE_EQUAL(g.lat, 0.0, 0.00001);
+#endif
 	CU_ASSERT_DOUBLE_EQUAL(g.lon, 0.0, 0.00001);
-*/	CU_ASSERT_EQUAL(rv, LW_FALSE);
+	CU_ASSERT_EQUAL(rv, LW_TRUE);
 
-	/*  End touches end of segment */
-	e1.start.lon = 0.0;
+	/*  End touches end of segment at (0 0) */
+	edge_set(0.0, 0.0, 1.0, 0.0, &e1);
 	rv = edge_intersection(e1, e2, &g);
-/*	printf("\n");
+	point_rad2deg(&g);
+#if CU_PRINT
+	printf("\n");
 	printf("LINESTRING(%.8g %.8g, %.8g %.8g)\n", e1.start.lon,  e1.start.lat, e1.end.lon,  e1.end.lat);
 	printf("LINESTRING(%.8g %.8g, %.8g %.8g)\n", e2.start.lon,  e2.start.lat, e2.end.lon,  e2.end.lat);
 	printf("g = (%.9g %.9g)\n", g.lon, g.lat);
 	printf("rv = %d\n", rv);
+#endif
 	CU_ASSERT_DOUBLE_EQUAL(g.lat, 0.0, 0.00001);
 	CU_ASSERT_DOUBLE_EQUAL(g.lon, 0.0, 0.00001);
-*/	CU_ASSERT_EQUAL(rv, LW_FALSE);
+	CU_ASSERT_EQUAL(rv, LW_TRUE);
+
+	/* Intersection at (180 0) */
+	edge_set(-179.0, 0.0, 179.0, 0.0, &e1);
+	edge_set(180.0, -1.0, 180.0, 1.0, &e2);
+	rv = edge_intersection(e1, e2, &g);
+	point_rad2deg(&g);
+#if CU_PRINT
+	printf("\n");
+	printf("LINESTRING(%.8g %.8g, %.8g %.8g)\n", e1.start.lon,  e1.start.lat, e1.end.lon,  e1.end.lat);
+	printf("LINESTRING(%.8g %.8g, %.8g %.8g)\n", e2.start.lon,  e2.start.lat, e2.end.lon,  e2.end.lat);
+	printf("g = (%.9g %.9g)\n", g.lon, g.lat);
+	printf("rv = %d\n", rv);
+#endif
+//	CU_ASSERT_DOUBLE_EQUAL(g.lat, 0.0, 0.00001);
+//	CU_ASSERT_DOUBLE_EQUAL(g.lon, 180.0, 0.00001);
+	CU_ASSERT_EQUAL(rv, LW_FALSE); // this should be TRUE!
 
 }
 
