@@ -29,9 +29,7 @@ CU_pSuite register_geodetic_suite(void)
 
 	if (
 	    (NULL == CU_add_test(pSuite, "test_signum()", test_signum))  ||
-#if RANDOM_TEST
 	    (NULL == CU_add_test(pSuite, "test_gbox_from_spherical_coordinates()", test_gbox_from_spherical_coordinates))  ||
-#endif
 	    (NULL == CU_add_test(pSuite, "test_gserialized_get_gbox_geocentric()", test_gserialized_get_gbox_geocentric))  ||
 	    (NULL == CU_add_test(pSuite, "test_clairaut()", test_clairaut))  || 
 	    (NULL == CU_add_test(pSuite, "test_edge_intersection()", test_edge_intersection)) 
@@ -69,12 +67,12 @@ void test_signum(void)
 	CU_ASSERT_EQUAL(signum(5.0),1);
 }
 
-#if RANDOM_TEST
 
 void test_gbox_from_spherical_coordinates(void)
 {
+#if RANDOM_TEST
 	const double gtolerance = 0.000001;
-	const int loops = 5;
+	const int loops = 100;
 	int i;
 	double ll[64];
 	GBOX *gbox;
@@ -141,10 +139,9 @@ void test_gbox_from_spherical_coordinates(void)
 
 	lwfree(lwline);
 	lwfree(pa);
-
+#endif /* RANDOM_TEST */
 }
 
-#endif /* RANDOM_TEST */
 
 void test_clairaut(void)
 {
