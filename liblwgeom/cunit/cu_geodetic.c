@@ -12,7 +12,7 @@
 
 #include "cu_geodetic.h"
 
-#define RANDOM_TEST 0
+#define RANDOM_TEST 1000
 
 /*
 ** Called from test harness to register the tests in this file.
@@ -72,7 +72,7 @@ void test_gbox_from_spherical_coordinates(void)
 {
 #if RANDOM_TEST
 	const double gtolerance = 0.000001;
-	const int loops = 100;
+	const int loops = RANDOM_TEST;
 	int i;
 	double ll[64];
 	GBOX *gbox;

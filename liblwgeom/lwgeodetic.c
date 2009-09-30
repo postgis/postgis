@@ -276,7 +276,7 @@ int edge_point_in_cone(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 	vp_dot_vcp = dot_product(vp, vcp);
 	LWDEBUGF(4,"vp_dot_vcp %.9g",vp_dot_vcp);
 	/* If p is more similar than start then p is inside the cone */
-	if ( vp_dot_vcp >= vs_dot_vcp )
+	if ( FP_GTEQ(vp_dot_vcp, vs_dot_vcp) )
 	{
 		LWDEBUG(4, "point is in cone");
 		return LW_TRUE;
