@@ -1793,7 +1793,7 @@ utf8 (const char *fromcode, char *inputbuf)
 
 	if (-1==iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft))
 	{
-		fprintf(stderr, "utf8: %s", strerror (errno));
+		fprintf(stderr, "utf8: iconv: %s\n", strerror (errno));
 		return NULL;
 	}
 
