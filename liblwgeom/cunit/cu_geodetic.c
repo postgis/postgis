@@ -198,7 +198,7 @@ void test_gserialized_get_gbox_geocentric(void)
 
 	for ( i = 0; i < gbox_data_length; i++ )
 	{
-		if ( i != 0 ) continue; /* skip our bad case */
+//		if ( i != 0 ) continue; /* skip our bad case */
 #define CU_PRINT 0
 #if CU_PRINT
 		printf("\n\n------------\n");
