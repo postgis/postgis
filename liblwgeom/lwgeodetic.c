@@ -210,7 +210,6 @@ void robust_cross_product(GEOGRAPHIC_POINT p, GEOGRAPHIC_POINT q, POINT3D *a)
 	a->y = sin_p_lat_minus_q_lat * cos_lon_qpp * cos_lon_qmp +
 	        sin_p_lat_plus_q_lat * sin_lon_qpp * sin_lon_qmp;
 	a->z = cos(p.lat) * cos(q.lat) * sin(q.lon-p.lon);
-	normalize(a);
 }
 
 void x_to_z(POINT3D *p)
@@ -239,6 +238,7 @@ int edge_point_on_plane(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 	double w;
 	/* Normal to the plane defined by e */
 	robust_cross_product(e.start, e.end, &normal);
+	normalize(&normal);
 	geog2cart(p, &pt);
 	/* We expect the dot product of with normal with any vector in the plane to be zero */
 	w = dot_product(normal, pt);
@@ -413,7 +413,9 @@ int clairaut_geographic(GEOGRAPHIC_POINT start, GEOGRAPHIC_POINT end, GEOGRAPHIC
 	GEOGRAPHIC_POINT vN1, vN2;
 	LWDEBUG(4,"entering function");
 	robust_cross_product(start, end, &t1);
+	normalize(&t1);
 	robust_cross_product(end, start, &t2);
+	normalize(&t2);
 	LWDEBUGF(4, "unit normal t1 == POINT(%.8g %.8g %.8g)", t1.x, t1.y, t1.z);
 	LWDEBUGF(4, "unit normal t2 == POINT(%.8g %.8g %.8g)", t2.x, t2.y, t2.z);
 	cart2geog(t1, &vN1);
@@ -435,10 +437,41 @@ int edge_intersection(GEOGRAPHIC_EDGE e1, GEOGRAPHIC_EDGE e2, GEOGRAPHIC_POINT *
 {
 	POINT3D ea, eb, v;
 	robust_cross_product(e1.start, e1.end, &ea);
+	normalize(&ea);
 	robust_cross_product(e2.start, e2.end, &eb);
-	cross_product(ea, eb, &v);
+	normalize(&eb);
+	if( FP_EQUALS(fabs(dot_product(ea, eb)), 1.0) )
+	{
+		/* Parallel (maybe equal) edges! */
+		/* Hack alert, only returning ONE end of the edge right now, most do better later. */
+		if ( edge_contains_point(e1, e2.start) )
+		{
+			*g = e2.start;
+			return LW_TRUE;
+		}
+		if ( edge_contains_point(e1, e2.end) )
+		{
+			*g = e2.end;
+			return LW_TRUE;
+		}
+		if ( edge_contains_point(e2, e1.start) )
+		{
+			*g = e2.start;
+			return LW_TRUE;
+		}
+		if ( edge_contains_point(e2, e1.end) )
+		{
+			*g = e2.end;
+			return LW_TRUE;
+		}
+	}
+	LWDEBUGF(4, "e1 cross product == POINT(%.8g %.8g %.8g)", ea.x, ea.y, ea.z);
+	LWDEBUGF(4, "e2 cross product == POINT(%.8g %.8g %.8g)", eb.x, eb.y, eb.z);
+	unit_normal(ea, eb, &v);
+	LWDEBUGF(4, "v == POINT(%.8g %.8g %.8g)", v.x, v.y, v.z);
 	g->lat = atan2(v.z, sqrt(v.x * v.x + v.y * v.y));
 	g->lon = atan2(v.y, v.x);
+	LWDEBUGF(4, "g == GPOINT(%.6g %.6g)", g->lat, g->lon);
 	if ( edge_contains_point(e1, *g) && edge_contains_point(e2, *g) )
 	{
 		return LW_TRUE;

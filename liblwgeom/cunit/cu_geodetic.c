@@ -198,9 +198,8 @@ void test_gserialized_get_gbox_geocentric(void)
 
 	for ( i = 0; i < gbox_data_length; i++ )
 	{
+#if 0
 //		if ( i != 0 ) continue; /* skip our bad case */
-#define CU_PRINT 0
-#if CU_PRINT
 		printf("\n\n------------\n");
 		printf("%s\n", gbox_data[i]);
 #endif
@@ -213,7 +212,7 @@ void test_gserialized_get_gbox_geocentric(void)
 		gbox_geocentric_slow = LW_TRUE;
 		gbox_slow = gserialized_calculate_gbox_geocentric(g);
 		gbox_geocentric_slow = LW_FALSE;
-#if CU_PRINT
+#if 0
 		printf("\nCALC: %s\n", gbox_to_string(gbox));
 		printf("GOOD: %s\n", gbox_to_string(gbox_slow));
 		printf("line %d: diff %.9g\n", i, fabs(gbox->xmin - gbox_slow->xmin)+fabs(gbox->ymin - gbox_slow->ymin)+fabs(gbox->zmin - gbox_slow->zmin));
@@ -253,50 +252,36 @@ static void edge_set(double lon1, double lat1, double lon2, double lat2, GEOGRAP
 	e->start.lat = lat1;
 	e->end.lon = lon2;
 	e->end.lat = lat2;
+	edge_deg2rad(e);
 }
 
 void test_edge_intersection(void)
 {
-#define CU_PRINT 0
 	GEOGRAPHIC_EDGE e1, e2;
 	GEOGRAPHIC_POINT g;
 	int rv;
 
 	edge_set(-1.0, 0.0, 1.0, 0.0, &e1);
 	edge_set(0.0, -1.0, 0.0, 1.0, &e2);
-	edge_deg2rad(&e1);
-	edge_deg2rad(&e2);
 
 	/* Intersection at (0 0) */
 	edge_set(-1.0, 0.0, 1.0, 0.0, &e1);
 	edge_set(0.0, -1.0, 0.0, 1.0, &e2);
-	edge_deg2rad(&e1);
-	edge_deg2rad(&e2);
 	rv = edge_intersection(e1, e2, &g);
 	point_rad2deg(&g);
 	CU_ASSERT_DOUBLE_EQUAL(g.lat, 0.0, 0.00001);
 	CU_ASSERT_DOUBLE_EQUAL(g.lon, 0.0, 0.00001);
 	CU_ASSERT_EQUAL(rv, LW_TRUE);
 
-	/*  No intersection at (0 0)*/
+	/*  No intersection at (0 0) */
 	edge_set(0.0, -1.0, 0.0, -2.0, &e2);
-	edge_deg2rad(&e2);
 	rv = edge_intersection(e1, e2, &g);
 	CU_ASSERT_EQUAL(rv, LW_FALSE);
 
 	/*  End touches middle of segment at (0 0) */
 	edge_set(0.0, -1.0, 0.0, 0.0, &e2);
-	edge_deg2rad(&e2);
 	rv = edge_intersection(e1, e2, &g);
 	point_rad2deg(&g);
-#if CU_PRINT
-	printf("\n");
-	printf("LINESTRING(%.8g %.8g, %.8g %.8g)\n", e1.start.lon,  e1.start.lat, e1.end.lon,  e1.end.lat);
-	printf("LINESTRING(%.8g %.8g, %.8g %.8g)\n", e2.start.lon,  e2.start.lat, e2.end.lon,  e2.end.lat);
-	printf("g = (%.9g %.9g)\n", g.lon, g.lat);
-	printf("rv = %d\n", rv);
-	CU_ASSERT_DOUBLE_EQUAL(g.lat, 0.0, 0.00001);
-#endif
 	CU_ASSERT_DOUBLE_EQUAL(g.lon, 0.0, 0.00001);
 	CU_ASSERT_EQUAL(rv, LW_TRUE);
 
@@ -304,32 +289,65 @@ void test_edge_intersection(void)
 	edge_set(0.0, 0.0, 1.0, 0.0, &e1);
 	rv = edge_intersection(e1, e2, &g);
 	point_rad2deg(&g);
-#if CU_PRINT
-	printf("\n");
-	printf("LINESTRING(%.8g %.8g, %.8g %.8g)\n", e1.start.lon,  e1.start.lat, e1.end.lon,  e1.end.lat);
-	printf("LINESTRING(%.8g %.8g, %.8g %.8g)\n", e2.start.lon,  e2.start.lat, e2.end.lon,  e2.end.lat);
-	printf("g = (%.9g %.9g)\n", g.lon, g.lat);
-	printf("rv = %d\n", rv);
-#endif
 	CU_ASSERT_DOUBLE_EQUAL(g.lat, 0.0, 0.00001);
 	CU_ASSERT_DOUBLE_EQUAL(g.lon, 0.0, 0.00001);
 	CU_ASSERT_EQUAL(rv, LW_TRUE);
 
 	/* Intersection at (180 0) */
-	edge_set(-179.0, 0.0, 179.0, 0.0, &e1);
-	edge_set(180.0, -1.0, 180.0, 1.0, &e2);
+	edge_set(-179.0, -1.0, 179.0, 1.0, &e1);
+	edge_set(-179.0, 1.0, 179.0, -1.0, &e2);
 	rv = edge_intersection(e1, e2, &g);
 	point_rad2deg(&g);
-#if CU_PRINT
-	printf("\n");
-	printf("LINESTRING(%.8g %.8g, %.8g %.8g)\n", e1.start.lon,  e1.start.lat, e1.end.lon,  e1.end.lat);
-	printf("LINESTRING(%.8g %.8g, %.8g %.8g)\n", e2.start.lon,  e2.start.lat, e2.end.lon,  e2.end.lat);
-	printf("g = (%.9g %.9g)\n", g.lon, g.lat);
-	printf("rv = %d\n", rv);
-#endif
-//	CU_ASSERT_DOUBLE_EQUAL(g.lat, 0.0, 0.00001);
-//	CU_ASSERT_DOUBLE_EQUAL(g.lon, 180.0, 0.00001);
-	CU_ASSERT_EQUAL(rv, LW_FALSE); // this should be TRUE!
+	CU_ASSERT_DOUBLE_EQUAL(g.lat, 0.0, 0.00001);
+	CU_ASSERT_DOUBLE_EQUAL(fabs(g.lon), 180.0, 0.00001);
+	CU_ASSERT_EQUAL(rv, LW_TRUE); 
+
+	/* Intersection at (180 0) */
+	edge_set(-170.0, 0.0, 170.0, 0.0, &e1);
+	edge_set(180.0, -10.0, 180.0, 10.0, &e2);
+	rv = edge_intersection(e1, e2, &g);
+	point_rad2deg(&g);
+	CU_ASSERT_DOUBLE_EQUAL(g.lat, 0.0, 0.00001);
+	CU_ASSERT_DOUBLE_EQUAL(fabs(g.lon), 180.0, 0.00001);
+	CU_ASSERT_EQUAL(rv, LW_TRUE); 
+	
+	/* Intersection at north pole */
+	edge_set(-180.0, 80.0, 0.0, 80.0, &e1);
+	edge_set(90.0, 80.0, -90.0, 80.0, &e2);
+	rv = edge_intersection(e1, e2, &g);
+	point_rad2deg(&g);
+	CU_ASSERT_DOUBLE_EQUAL(g.lat, 90.0, 0.00001);
+	CU_ASSERT_EQUAL(rv, LW_TRUE); 
+
+	/* End touches arc at north pole */
+	edge_set(-180.0, 80.0, 0.0, 80.0, &e1);
+	edge_set(90.0, 80.0, -90.0, 90.0, &e2);
+	rv = edge_intersection(e1, e2, &g);
+	point_rad2deg(&g);
+	CU_ASSERT_DOUBLE_EQUAL(g.lat, 90.0, 0.00001);
+	CU_ASSERT_EQUAL(rv, LW_TRUE); 	
+
+	/* End touches end at north pole */
+	edge_set(-180.0, 80.0, 0.0, 90.0, &e1);
+	edge_set(90.0, 80.0, -90.0, 90.0, &e2);
+	rv = edge_intersection(e1, e2, &g);
+	point_rad2deg(&g);
+	CU_ASSERT_DOUBLE_EQUAL(g.lat, 90.0, 0.00001);
+	CU_ASSERT_EQUAL(rv, LW_TRUE); 	
+
+	/* Equal edges return true */
+	edge_set(45.0, 10.0, 50.0, 20.0, &e1);
+	edge_set(45.0, 10.0, 50.0, 20.0, &e2);
+	rv = edge_intersection(e1, e2, &g);
+	point_rad2deg(&g);
+	CU_ASSERT_EQUAL(rv, LW_TRUE); 	
+
+	/* Parallel edges (same great circle, different end points) return true  */
+	edge_set(40.0, 0.0, 70.0, 0.0, &e1);
+	edge_set(60.0, 0.0, 50.0, 0.0, &e2);
+	rv = edge_intersection(e1, e2, &g);
+	point_rad2deg(&g);
+	CU_ASSERT_EQUAL(rv, LW_TRUE); 	
 
 }
 
