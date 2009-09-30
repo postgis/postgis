@@ -26,10 +26,10 @@ CU_pSuite register_geodetic_suite(void)
 	}
 
 	if (
-/*	    (NULL == CU_add_test(pSuite, "test_signum()", test_signum))  ||
+	    (NULL == CU_add_test(pSuite, "test_signum()", test_signum))  ||
 	    (NULL == CU_add_test(pSuite, "test_gbox_from_spherical_coordinates()", test_gbox_from_spherical_coordinates))  ||
 	    (NULL == CU_add_test(pSuite, "test_gserialized_get_gbox_geocentric()", test_gserialized_get_gbox_geocentric))  ||
-	    (NULL == CU_add_test(pSuite, "test_clairaut()", test_clairaut))  || */
+	    (NULL == CU_add_test(pSuite, "test_clairaut()", test_clairaut))  || 
 	    (NULL == CU_add_test(pSuite, "test_edge_intersection()", test_edge_intersection)) 
 
 	)
