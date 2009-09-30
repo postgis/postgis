@@ -53,7 +53,7 @@ if test ${LIBTOOLIZE_MAJOR_VER} -ge 2; then
 fi
 
 echo "* Running ${LIBTOOLIZE} (${LIBTOOLIZE_VER})"
-echo "\tOPTIONS = ${LTOPTS}"
+echo "   OPTIONS = ${LTOPTS}"
 ${LIBTOOLIZE} ${LTOPTS} || giveup
 
 echo "* Running $ACLOCAL (${ACLOCAL_VER})"
