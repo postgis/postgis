@@ -59,6 +59,59 @@ void point_rad2deg(GEOGRAPHIC_POINT *p)
 }
 
 /**
+* Convert a longitude to the range of -180,180
+*/
+static double longitude_degrees_normalize(double lon)
+{
+	if( lon == -180.0 )
+		return 180.0;
+	if( lon == -360.0 )
+		return 0.0;
+
+	if( lon > 360.0 )
+		lon = remainder(lon, 360.0);
+
+	if( lon < -360.0 )
+		lon = remainder(lon, -360.0);
+		
+	if( lon > 180.0 )
+		lon = -360.0 + lon;
+
+	if( lon < -180.0 )
+		lon = 360 + lon;
+	
+	return lon;
+}
+
+/**
+* Convert a longitude to the range of -180,180
+*/
+static double latitude_degrees_normalize(double lat)
+{
+
+	if( lat > 360.0 )
+		lat = remainder(lat, 360.0);
+
+	if( lat < -360.0 )
+		lat = remainder(lat, -360.0);
+		
+	if( lat > 180.0 )
+		lat = 180.0 - lat;
+
+	if( lat < -180.0 )
+		lat = -180.0 - lat;
+
+	if( lat > 90.0 )
+		lat = 180.0 - lat;
+
+	if( lat < -90.0 )
+		lat = -180.0 - lat;
+	
+	return lat;
+}
+
+
+/**
 * Check to see if this geocentric gbox is wrapped around a pole.
 * Only makes sense if this gbox originated from a polygon, as it's assuming
 * the box is generated from external edges and there's an "interior" which
