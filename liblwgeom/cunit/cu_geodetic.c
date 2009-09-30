@@ -33,7 +33,8 @@ CU_pSuite register_geodetic_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_gserialized_get_gbox_geocentric()", test_gserialized_get_gbox_geocentric))  ||
 	    (NULL == CU_add_test(pSuite, "test_clairaut()", test_clairaut))  || 
 	    (NULL == CU_add_test(pSuite, "test_edge_intersection()", test_edge_intersection)) ||
-	    (NULL == CU_add_test(pSuite, "test_edge_distance_to_point()", test_edge_distance_to_point)) 
+	    (NULL == CU_add_test(pSuite, "test_edge_distance_to_point()", test_edge_distance_to_point)) ||
+	    (NULL == CU_add_test(pSuite, "test_edge_distance_to_edge()", test_edge_distance_to_edge)) 
 	)
 	{
 		CU_cleanup_registry();
@@ -385,6 +386,30 @@ void test_edge_distance_to_point(void)
 	CU_ASSERT_DOUBLE_EQUAL(closest.lon, 0.0, 0.00001);
 
 }
+
+void test_edge_distance_to_edge(void)
+{
+	GEOGRAPHIC_EDGE e1, e2;
+	GEOGRAPHIC_POINT c1, c2;
+	double d;
+
+	/* closest point at origin, one degree away */
+	edge_set(-50.0, 0.0, 50.0, 0.0, &e1);
+	edge_set(-5.0, 20.0, 0.0, 1.0, &e2);
+	d = edge_distance_to_edge(e1, e2, &c1, &c2);
+#if 0
+	printf("LINESTRING(%.8g %.8g, %.8g %.8g)\n", e1.start.lon,  e1.start.lat, e1.end.lon,  e1.end.lat);
+	printf("LINESTRING(%.8g %.8g, %.8g %.8g)\n", e2.start.lon,  e2.start.lat, e2.end.lon,  e2.end.lat);
+	printf("\nDISTANCE == %.8g\n", d);
+#endif
+	CU_ASSERT_DOUBLE_EQUAL(d, M_PI / 180.0, 0.00001);
+	CU_ASSERT_DOUBLE_EQUAL(c1.lat, 0.0, 0.00001);
+	CU_ASSERT_DOUBLE_EQUAL(c2.lat, M_PI / 180.0, 0.00001);
+	CU_ASSERT_DOUBLE_EQUAL(c1.lon, 0.0, 0.00001);
+	CU_ASSERT_DOUBLE_EQUAL(c2.lon, 0.0, 0.00001);
+}
+
+
 
 
 
