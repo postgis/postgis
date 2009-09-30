@@ -19,43 +19,55 @@
 int gbox_geocentric_slow = LW_FALSE;
 
 /**
-* Convert an edge from degrees to radians. 
+* Convert a longitude to the range of -PI,PI
 */
-void edge_deg2rad(GEOGRAPHIC_EDGE *e)
+static double longitude_radians_normalize(double lon)
 {
-	(e->start).lat = deg2rad((e->start).lat);
-	(e->end).lat = deg2rad((e->end).lat);
-	(e->start).lon = deg2rad((e->start).lon);
-	(e->end).lon = deg2rad((e->end).lon);
+	if( lon == -1.0 * M_PI )
+		return M_PI;
+	if( lon == -2.0 * M_PI )
+		return 0.0;
+
+	if( lon > 2.0 * M_PI )
+		lon = remainder(lon, 2.0 * M_PI);
+
+	if( lon < -2.0 * M_PI )
+		lon = remainder(lon, -2.0 * M_PI);
+		
+	if( lon > M_PI )
+		lon = -2.0 * M_PI + lon;
+
+	if( lon < -1.0 * M_PI )
+		lon = 2.0 * M_PI + lon;
+	
+	return lon;
 }
 
 /**
-* Convert an edge from radians to degrees.
+* Convert a latitude to the range of -PI/2,PI/2
 */
-void edge_rad2deg(GEOGRAPHIC_EDGE *e)
+static double latitude_radians_normalize(double lat)
 {
-	(e->start).lat = rad2deg((e->start).lat);
-	(e->end).lat = rad2deg((e->end).lat);
-	(e->start).lon = rad2deg((e->start).lon);
-	(e->end).lon = rad2deg((e->end).lon);
-}
 
-/** 
-* Convert a point from degrees to radians.
-*/
-void point_deg2rad(GEOGRAPHIC_POINT *p)
-{
-	p->lat = deg2rad(p->lat);
-	p->lon = deg2rad(p->lon);
-}
+	if( lat > 2.0 * M_PI )
+		lat = remainder(lat, 2.0 * M_PI);
 
-/** 
-* Convert a point from radians to degrees.
-*/
-void point_rad2deg(GEOGRAPHIC_POINT *p)
-{
-	p->lat = rad2deg(p->lat);
-	p->lon = rad2deg(p->lon);
+	if( lat < -2.0 * M_PI )
+		lat = remainder(lat, -2.0 * M_PI);
+		
+	if( lat > M_PI )
+		lat = M_PI - lat;
+
+	if( lat < -1.0 * M_PI )
+		lat = -1.0 * M_PI - lat;
+
+	if( lat > M_PI_2 )
+		lat = M_PI - lat;
+
+	if( lat < -1.0 * M_PI_2 )
+		lat = -1.0 * M_PI - lat;
+	
+	return lat;
 }
 
 /**
@@ -84,7 +96,7 @@ static double longitude_degrees_normalize(double lon)
 }
 
 /**
-* Convert a longitude to the range of -180,180
+* Convert a latitude to the range of -90,90
 */
 static double latitude_degrees_normalize(double lat)
 {
@@ -110,6 +122,50 @@ static double latitude_degrees_normalize(double lat)
 	return lat;
 }
 
+/**
+* Convert an edge from degrees to radians. 
+*/
+void edge_deg2rad(GEOGRAPHIC_EDGE *e)
+{
+	(e->start).lat = deg2rad((e->start).lat);
+	(e->end).lat = deg2rad((e->end).lat);
+	(e->start).lon = deg2rad((e->start).lon);
+	(e->end).lon = deg2rad((e->end).lon);
+}
+
+/**
+* Convert an edge from radians to degrees.
+*/
+void edge_rad2deg(GEOGRAPHIC_EDGE *e)
+{
+	(e->start).lat = rad2deg((e->start).lat);
+	(e->end).lat = rad2deg((e->end).lat);
+	(e->start).lon = rad2deg((e->start).lon);
+	(e->end).lon = rad2deg((e->end).lon);
+}
+
+/** 
+* Convert a point from degrees to radians.
+*/
+void point_deg2rad(GEOGRAPHIC_POINT *p)
+{
+	p->lat = latitude_radians_normalize(deg2rad(p->lat));
+	p->lon = longitude_radians_normalize(deg2rad(p->lon));
+}
+
+/** 
+* Convert a point from radians to degrees.
+*/
+void point_rad2deg(GEOGRAPHIC_POINT *p)
+{
+	p->lat = rad2deg(p->lat);
+	p->lon = rad2deg(p->lon);
+}
+
+static inline int point_equal(GEOGRAPHIC_POINT g1, GEOGRAPHIC_POINT g2)
+{
+	return FP_EQUALS(g1.lat, g2.lat) && FP_EQUALS(g1.lon, g2.lon);
+}
 
 /**
 * Check to see if this geocentric gbox is wrapped around a pole.
@@ -217,6 +273,17 @@ static void inline vector_difference(POINT3D a, POINT3D b, POINT3D *n)
 	n->x = a.x - b.x;
 	n->y = a.y - b.y;
 	n->z = a.z - b.z;
+	return;
+}
+
+/**
+* Scale a vector out by a factor
+*/
+static void inline vector_scale(POINT3D a, double scale, POINT3D *n)
+{
+	n->x = a.x * scale;
+	n->y = a.y * scale;
+	n->z = a.z * scale;
 	return;
 }
 
@@ -543,6 +610,33 @@ int edge_intersection(GEOGRAPHIC_EDGE e1, GEOGRAPHIC_EDGE e2, GEOGRAPHIC_POINT *
 		}
 	}
 	return LW_FALSE;
+}
+
+double edge_distance_to_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT gp)
+{
+	double d1 = 1000000000.0, d2, d3;
+	POINT3D n, p, k, v1;
+	GEOGRAPHIC_POINT gk;
+
+	/* Zero length edge, */
+	if( point_equal(e.start,e.end) ) 
+		return sphere_distance(e.start, gp);
+	
+	robust_cross_product(e.start, e.end, &n);
+	normalize(&n);
+	geog2cart(gp, &p);
+	vector_scale(n, dot_product(p, n), &v1);
+	vector_difference(p, v1, &k);
+	normalize(&k);
+	cart2geog(k, &gk);
+	if( edge_contains_point(e, gk) )
+	{
+		d1 = sphere_distance(gp, gk);
+	}
+	d2 = sphere_distance(gp, e.start);
+	d3 = sphere_distance(gp, e.end);
+	
+	return FP_MIN(FP_MIN(d1,d2),d3);	
 }
 
 /**

@@ -64,6 +64,7 @@ int sphere_project(GEOGRAPHIC_POINT r, double distance, double azimuth, GEOGRAPH
 int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox);
 int edge_calculate_gbox_slow(GEOGRAPHIC_EDGE e, GBOX *gbox);
 int edge_intersection(GEOGRAPHIC_EDGE e1, GEOGRAPHIC_EDGE e2, GEOGRAPHIC_POINT *g);
+double edge_distance_to_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT gp);
 void edge_deg2rad(GEOGRAPHIC_EDGE *e);
 void edge_rad2deg(GEOGRAPHIC_EDGE *e);
 void point_deg2rad(GEOGRAPHIC_POINT *p);

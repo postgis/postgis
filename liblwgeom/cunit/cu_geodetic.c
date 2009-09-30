@@ -32,8 +32,8 @@ CU_pSuite register_geodetic_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_gbox_from_spherical_coordinates()", test_gbox_from_spherical_coordinates))  ||
 	    (NULL == CU_add_test(pSuite, "test_gserialized_get_gbox_geocentric()", test_gserialized_get_gbox_geocentric))  ||
 	    (NULL == CU_add_test(pSuite, "test_clairaut()", test_clairaut))  || 
-	    (NULL == CU_add_test(pSuite, "test_edge_intersection()", test_edge_intersection)) 
-
+	    (NULL == CU_add_test(pSuite, "test_edge_intersection()", test_edge_intersection)) ||
+	    (NULL == CU_add_test(pSuite, "test_edge_distance_to_point()", test_edge_distance_to_point)) 
 	)
 	{
 		CU_cleanup_registry();
@@ -252,6 +252,14 @@ static void edge_set(double lon1, double lat1, double lon2, double lat2, GEOGRAP
 	edge_deg2rad(e);
 }
 
+static void point_set(double lon, double lat, GEOGRAPHIC_POINT *p)
+{
+	p->lon = lon;
+	p->lat = lat;
+	point_deg2rad(p);
+}
+
+
 void test_edge_intersection(void)
 {
 	GEOGRAPHIC_EDGE e1, e2;
@@ -279,13 +287,6 @@ void test_edge_intersection(void)
 	edge_set(0.0, -1.0, 0.0, 0.0, &e2);
 	rv = edge_intersection(e1, e2, &g);
 	point_rad2deg(&g);
-#if 0
-	printf("\n");
-	printf("LINESTRING(%.8g %.8g, %.8g %.8g)\n", e1.start.lon,  e1.start.lat, e1.end.lon,  e1.end.lat);
-	printf("LINESTRING(%.8g %.8g, %.8g %.8g)\n", e2.start.lon,  e2.start.lat, e2.end.lon,  e2.end.lat);
-	printf("g = (%.9g %.9g)\n", g.lon, g.lat);
-	printf("rv = %d\n", rv);
-#endif
 	CU_ASSERT_DOUBLE_EQUAL(g.lon, 0.0, 0.00001);
 	CU_ASSERT_EQUAL(rv, LW_TRUE);
 
@@ -362,7 +363,28 @@ void test_edge_intersection(void)
 
 }
 
+void test_edge_distance_to_point(void)
+{
+	GEOGRAPHIC_EDGE e;
+	GEOGRAPHIC_POINT g;
+	double d;
+	
+	edge_set(-50.0, 0.0, 50.0, 0.0, &e);
+	point_set(0.0, 1.0, &g);
+	d = edge_distance_to_point(e, g);
+	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, M_PI / 180.0);
+	
+	edge_set(-50.0, 0.0, 50.0, 0.0, &e);
+	point_set(0.0, 2.0, &g);
+	d = edge_distance_to_point(e, g);
+#if 0
+	printf("LINESTRING(%.8g %.8g, %.8g %.8g)\n", e.start.lon,  e.start.lat, e.end.lon,  e.end.lat);
+	printf("POINT(%.9g %.9g)\n", g.lon, g.lat);
+	printf("\nDISTANCE == %.8g\n", d);
+#endif
+	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, M_PI / 90.0);
 
+}
 
 
 
