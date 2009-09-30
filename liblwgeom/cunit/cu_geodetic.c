@@ -142,48 +142,6 @@ void test_gbox_from_spherical_coordinates(void)
 #endif /* RANDOM_TEST */
 }
 
-
-void test_clairaut(void)
-{
-
-	GEOGRAPHIC_POINT gs, ge;
-	POINT3D vs, ve;
-	GEOGRAPHIC_POINT g_out_top, g_out_bottom, v_out_top, v_out_bottom;
-
-	gs.lat = deg2rad(60.0);
-	gs.lon = deg2rad(-45.0);
-	ge.lat = deg2rad(60.0);
-	ge.lon = deg2rad(135.0);
-
-	geog2cart(gs, &vs);
-	geog2cart(ge, &ve);
-
-	clairaut_cartesian(vs, ve, &v_out_top, &v_out_bottom);
-	clairaut_geographic(gs, ge, &g_out_top, &g_out_bottom);
-
-	CU_ASSERT_DOUBLE_EQUAL(v_out_top.lat, g_out_top.lat, 0.000001);
-	CU_ASSERT_DOUBLE_EQUAL(v_out_top.lon, g_out_top.lon, 0.000001);
-	CU_ASSERT_DOUBLE_EQUAL(v_out_bottom.lat, g_out_bottom.lat, 0.000001);
-	CU_ASSERT_DOUBLE_EQUAL(v_out_bottom.lon, g_out_bottom.lon, 0.000001);
-
-	gs.lat = 1.3021240033804449;
-	ge.lat = 1.3021240033804449;
-	gs.lon = -1.3387392931438733;
-	ge.lon = 1.80285336044592;
-
-	geog2cart(gs, &vs);
-	geog2cart(ge, &ve);
-
-	clairaut_cartesian(vs, ve, &v_out_top, &v_out_bottom);
-	clairaut_geographic(gs, ge, &g_out_top, &g_out_bottom);
-
-	CU_ASSERT_DOUBLE_EQUAL(v_out_top.lat, g_out_top.lat, 0.000001);
-	CU_ASSERT_DOUBLE_EQUAL(v_out_top.lon, g_out_top.lon, 0.000001);
-	CU_ASSERT_DOUBLE_EQUAL(v_out_bottom.lat, g_out_bottom.lat, 0.000001);
-	CU_ASSERT_DOUBLE_EQUAL(v_out_bottom.lon, g_out_bottom.lon, 0.000001);
-}
-
-
 #include "cu_geodetic_data.h"
 
 void test_gserialized_get_gbox_geocentric(void)
@@ -259,6 +217,43 @@ static void point_set(double lon, double lat, GEOGRAPHIC_POINT *p)
 	point_deg2rad(p);
 }
 
+void test_clairaut(void)
+{
+
+	GEOGRAPHIC_POINT gs, ge;
+	POINT3D vs, ve;
+	GEOGRAPHIC_POINT g_out_top, g_out_bottom, v_out_top, v_out_bottom;
+
+	point_set(-45.0, 60.0, &gs);
+	point_set(135.0, 60.0, &gs);
+
+	geog2cart(gs, &vs);
+	geog2cart(ge, &ve);
+
+	clairaut_cartesian(vs, ve, &v_out_top, &v_out_bottom);
+	clairaut_geographic(gs, ge, &g_out_top, &g_out_bottom);
+
+	CU_ASSERT_DOUBLE_EQUAL(v_out_top.lat, g_out_top.lat, 0.000001);
+	CU_ASSERT_DOUBLE_EQUAL(v_out_top.lon, g_out_top.lon, 0.000001);
+	CU_ASSERT_DOUBLE_EQUAL(v_out_bottom.lat, g_out_bottom.lat, 0.000001);
+	CU_ASSERT_DOUBLE_EQUAL(v_out_bottom.lon, g_out_bottom.lon, 0.000001);
+
+	gs.lat = 1.3021240033804449;
+	ge.lat = 1.3021240033804449;
+	gs.lon = -1.3387392931438733;
+	ge.lon = 1.80285336044592;
+
+	geog2cart(gs, &vs);
+	geog2cart(ge, &ve);
+
+	clairaut_cartesian(vs, ve, &v_out_top, &v_out_bottom);
+	clairaut_geographic(gs, ge, &g_out_top, &g_out_bottom);
+
+	CU_ASSERT_DOUBLE_EQUAL(v_out_top.lat, g_out_top.lat, 0.000001);
+	CU_ASSERT_DOUBLE_EQUAL(v_out_top.lon, g_out_top.lon, 0.000001);
+	CU_ASSERT_DOUBLE_EQUAL(v_out_bottom.lat, g_out_bottom.lat, 0.000001);
+	CU_ASSERT_DOUBLE_EQUAL(v_out_bottom.lon, g_out_bottom.lon, 0.000001);
+}
 
 void test_edge_intersection(void)
 {
@@ -367,22 +362,27 @@ void test_edge_distance_to_point(void)
 {
 	GEOGRAPHIC_EDGE e;
 	GEOGRAPHIC_POINT g;
+	GEOGRAPHIC_POINT closest;
 	double d;
 	
+	/* closest point at origin, one degree away */
 	edge_set(-50.0, 0.0, 50.0, 0.0, &e);
 	point_set(0.0, 1.0, &g);
-	d = edge_distance_to_point(e, g);
-	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, M_PI / 180.0);
+	d = edge_distance_to_point(e, g, 0);
+	CU_ASSERT_DOUBLE_EQUAL(d, M_PI / 180.0, 0.00001);
 	
+	/* closest point at origin, one degree away */
 	edge_set(-50.0, 0.0, 50.0, 0.0, &e);
 	point_set(0.0, 2.0, &g);
-	d = edge_distance_to_point(e, g);
+	d = edge_distance_to_point(e, g, &closest);
 #if 0
 	printf("LINESTRING(%.8g %.8g, %.8g %.8g)\n", e.start.lon,  e.start.lat, e.end.lon,  e.end.lat);
 	printf("POINT(%.9g %.9g)\n", g.lon, g.lat);
 	printf("\nDISTANCE == %.8g\n", d);
 #endif
-	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, M_PI / 90.0);
+	CU_ASSERT_DOUBLE_EQUAL(d, M_PI / 90.0, 0.00001);
+	CU_ASSERT_DOUBLE_EQUAL(closest.lat, 0.0, 0.00001);
+	CU_ASSERT_DOUBLE_EQUAL(closest.lon, 0.0, 0.00001);
 
 }
 

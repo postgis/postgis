@@ -612,11 +612,11 @@ int edge_intersection(GEOGRAPHIC_EDGE e1, GEOGRAPHIC_EDGE e2, GEOGRAPHIC_POINT *
 	return LW_FALSE;
 }
 
-double edge_distance_to_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT gp)
+double edge_distance_to_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT gp, GEOGRAPHIC_POINT *closest)
 {
-	double d1 = 1000000000.0, d2, d3;
+	double d1 = 1000000000.0, d2, d3, d_nearest;
 	POINT3D n, p, k, v1;
-	GEOGRAPHIC_POINT gk;
+	GEOGRAPHIC_POINT gk, g_nearest;
 
 	/* Zero length edge, */
 	if( point_equal(e.start,e.end) ) 
@@ -636,7 +636,23 @@ double edge_distance_to_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT gp)
 	d2 = sphere_distance(gp, e.start);
 	d3 = sphere_distance(gp, e.end);
 	
-	return FP_MIN(FP_MIN(d1,d2),d3);	
+	d_nearest = d1;
+	g_nearest = gk;
+	
+	if( d2 < d_nearest ) 
+	{
+		d_nearest = d2;
+		g_nearest = e.start;
+	}
+	if( d3 < d_nearest ) 
+	{
+		d_nearest = d3;
+		g_nearest = e.end;
+	}
+	if(closest)
+		*closest = g_nearest;
+	
+	return d_nearest;	
 }
 
 /**
