@@ -210,7 +210,7 @@ SELECT 'create,insert,drop Test: End Testing Geography <xsl:value-of select="@Ge
 					<xsl:variable name='geom1type'><xsl:value-of select="@ID"/></xsl:variable>
 		SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" /> : Start Testing <xsl:value-of select="$geom1type" /> against other types';
 						<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
-			<xsl:choose>
+		<xsl:choose>
 			  <xsl:when test="contains($fndef, 'geography ')">
 			SELECT 'Geography <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
 			BEGIN;
@@ -220,7 +220,14 @@ SELECT 'create,insert,drop Test: End Testing Geography <xsl:value-of select="@Ge
 			COMMIT;
 			</xsl:when>
 			<xsl:otherwise>
+			SELECT 'Geometry <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
+			BEGIN;
+			SELECT foo1.the_geom <xsl:value-of select="$fnname" /> foo2.the_geom
+					FROM (<xsl:value-of select="$from1" />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2
+					;
+			COMMIT;
 			</xsl:otherwise>
+		</xsl:choose>
 					</xsl:for-each>
 		SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: End Testing <xsl:value-of select="@GeometryType" /> against other types';
 				</xsl:for-each>
