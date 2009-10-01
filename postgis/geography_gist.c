@@ -33,32 +33,7 @@
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "geography.h"	     /* For utility functions. */
 
-/*********************************************************************************
-**  GIDX structure. 
-**
-**  This is an n-dimensional (practically, the 
-**  implementation is 2-4 dimensions) box used for index keys. The 
-**  coordinates are anonymous, so we can have any number of dimensions.
-**  The sizeof a GIDX is 1 + 2 * ndims * sizeof(float).
-**  The order of values in a GIDX is
-**  xmin,xmax,ymin,ymax,zmin,zmax...
-*/
-typedef struct
-{
-	int32 varsize;
-	float c[1];
-} GIDX;
 
-
-/*
-** For some GiST support functions, it is more efficient to allocate
-** memory for our GIDX off the stack and cast that memory into a GIDX.
-** But, GIDX is variable length, what to do? We'll bake in the assumption
-** that no GIDX is more than 4-dimensional for now, and ensure that much
-** space is available.
-** 4 bytes varsize + 4 dimensions * 2 ordinates * 4 bytes float size = 36 bytes
-*/
-#define GIDX_MAX_SIZE 36
 
 /*
 ** When is a node split not so good? If more than 90% of the entries 
@@ -117,7 +92,7 @@ Datum geography_overlaps(PG_FUNCTION_ARGS);
 
 
 /* Allocates a new GIDX on the heap of the requested dimensionality */
-static GIDX* gidx_new(int ndims)
+GIDX* gidx_new(int ndims)
 {
 	size_t size = GIDX_SIZE(ndims);
 	GIDX *g = (GIDX*)palloc(size);
@@ -381,6 +356,17 @@ static GIDX* gidx_from_gbox(GBOX box)
 }
 
 
+void gbox_from_gidx(GIDX *a, GBOX *gbox)
+{
+	gbox->xmin = (double)GIDX_GET_MIN(a,0); 
+	gbox->ymin = (double)GIDX_GET_MIN(a,1); 
+	gbox->zmin = (double)GIDX_GET_MIN(a,2); 
+	gbox->xmax = (double)GIDX_GET_MAX(a,0); 
+	gbox->ymax = (double)GIDX_GET_MAX(a,1); 
+	gbox->zmax = (double)GIDX_GET_MAX(a,2); 
+}
+
+
 /*
 ** Overlapping GIDX box test.
 ** 
@@ -502,7 +488,7 @@ static bool gidx_equals(GIDX *a, GIDX *b)
 ** full geography and return the box based on that. If no box is available,
 ** return G_FAILURE, otherwise G_SUCCESS.
 */
-static int geography_datum_gidx(Datum geography_datum, GIDX *gidx)
+int geography_datum_gidx(Datum geography_datum, GIDX *gidx)
 {
 	GSERIALIZED *gpart;
 	int result = G_SUCCESS;

@@ -1348,14 +1348,117 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX *gbox1, GBO
 	if( ( type1 == POLYGONTYPE && type2 == LINETYPE ) || 
 	    ( type2 == POLYGONTYPE && type1 == LINETYPE ) )
 	{
+		POINT2D p;
+		LWPOLY *lwpoly;
+		LWLINE *lwline;
+		GBOX *gbox;
+		double distance = MAXFLOAT;
+		int i;
+		
+		if( type1 == LINETYPE )
+		{
+			lwline = (LWLINE*)lwgeom1;
+			lwpoly = (LWPOLY*)lwgeom2;
+			gbox = gbox2;
+		}
+		else
+		{
+			lwline = (LWLINE*)lwgeom2;
+			lwpoly = (LWPOLY*)lwgeom1;
+			gbox = gbox1;
+		}
+		getPoint2d_p(lwline->points, 0, &p);
+
+		/* Point in polygon implies zero distance */
+		if( lwpoly_covers_point2d(lwpoly, gbox, p) )
+			return 0.0;
+		
+		/* Not contained, so what's the actual distance? */
+		for( i = 0; i < lwpoly->nrings; i++ )
+		{
+			double ring_distance = ptarray_distance_sphere(lwpoly->rings[i], lwline->points, tolerance);
+			if( ring_distance < distance )
+				distance = ring_distance;
+			if( distance < tolerance )
+				return distance;
+		}
+		return distance;
+
 	}
 
 	/* Polygon/polygon case, if start point-in-poly, return zero, else return distance. */
 	if( ( type1 == POLYGONTYPE && type2 == LINETYPE ) || 
 	    ( type2 == POLYGONTYPE && type1 == LINETYPE ) )
 	{
-	}
+		POINT2D p;
+		LWPOLY *lwpoly1 = (LWPOLY*)lwgeom1;
+		LWPOLY *lwpoly2 = (LWPOLY*)lwgeom2;
+		double distance = MAXFLOAT;
+		int i, j;
 		
+		/* Point of 2 in polygon 1 implies zero distance */
+		getPoint2d_p(lwpoly1->rings[0], 0, &p);
+		if( lwpoly_covers_point2d(lwpoly2, gbox2, p) )
+			return 0.0;
+
+		/* Point of 1 in polygon 2 implies zero distance */
+		getPoint2d_p(lwpoly2->rings[0], 0, &p);
+		if( lwpoly_covers_point2d(lwpoly1, gbox1, p) )
+			return 0.0;
+		
+		/* Not contained, so what's the actual distance? */
+		for( i = 0; i < lwpoly1->nrings; i++ )
+		{
+			for( j = 0; j < lwpoly2->nrings; j++ )
+			{
+				double ring_distance = ptarray_distance_sphere(lwpoly1->rings[i], lwpoly2->rings[j], tolerance);
+				if( ring_distance < distance )
+					distance = ring_distance;
+				if( distance < tolerance )
+					return distance;
+			}
+		}
+		return distance;		
+	}
+
+	/* Recurse into collections */
+	if( lwgeom_contains_subgeoms(type1) )
+	{
+		int i;
+		double distance = MAXFLOAT;
+		LWCOLLECTION *col = (LWCOLLECTION*)lwgeom1;
+
+		for( i = 0; i < col->ngeoms; i++ )
+		{
+			double geom_distance = lwgeom_distance_sphere(col->geoms[i], lwgeom2, gbox1, gbox2, tolerance);
+			if( geom_distance < distance )
+				distance = geom_distance;
+			if( distance < tolerance )
+				return distance;
+		}
+		return distance;
+	}
+
+	/* Recurse into collections */
+	if( lwgeom_contains_subgeoms(type2) )
+	{
+		int i;
+		double distance = MAXFLOAT;
+		LWCOLLECTION *col = (LWCOLLECTION*)lwgeom2;
+
+		for( i = 0; i < col->ngeoms; i++ )
+		{
+			double geom_distance = lwgeom_distance_sphere(lwgeom1, col->geoms[i], gbox1, gbox2, tolerance);
+			if( geom_distance < distance )
+				distance = geom_distance;
+			if( distance < tolerance )
+				return distance;
+		}
+		return distance;
+	}
+
+
+	lwerror("arguments include unsupported geometry type (%s, %s)", lwgeom_typename(type1), lwgeom_typename(type1));
 	return -1.0;
 	
 }

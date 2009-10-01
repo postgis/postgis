@@ -367,46 +367,63 @@ CREATE OR REPLACE FUNCTION ST_AsKML(int4, geography, int4)
 --
 
 CREATE OR REPLACE FUNCTION _ST_AsGeoJson(int4, geography, int4, int4)
-        RETURNS text
+	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_geojson'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- ST_AsGeoJson(geography, precision) / version=1 options=0
 CREATE OR REPLACE FUNCTION ST_AsGeoJson(geography, int4)
-        RETURNS TEXT
-        AS 'SELECT _ST_AsGeoJson(1, $1, $2, 0)'
-        LANGUAGE 'SQL' IMMUTABLE STRICT;
+	RETURNS TEXT
+	AS 'SELECT _ST_AsGeoJson(1, $1, $2, 0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- ST_AsGeoJson(geography) / precision=15 version=1 options=0
 CREATE OR REPLACE FUNCTION ST_AsGeoJson(geography)
-        RETURNS TEXT
-        AS 'SELECT _ST_AsGeoJson(1, $1, 15, 0)'
-        LANGUAGE 'SQL' IMMUTABLE STRICT;
+	RETURNS TEXT
+	AS 'SELECT _ST_AsGeoJson(1, $1, 15, 0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- ST_AsGeoJson(version, geography) / precision=15 options=0
 CREATE OR REPLACE FUNCTION ST_AsGeoJson(int4, geography)
-        RETURNS TEXT
-        AS 'SELECT _ST_AsGeoJson($1, $2, 15, 0)'
-        LANGUAGE 'SQL' IMMUTABLE STRICT;
+	RETURNS TEXT
+	AS 'SELECT _ST_AsGeoJson($1, $2, 15, 0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- ST_AsGeoJson(version, geography, precision) / options=0
 CREATE OR REPLACE FUNCTION ST_AsGeoJson(int4, geography, int4)
-        RETURNS TEXT
-        AS 'SELECT _ST_AsGeoJson($1, $2, $3, 0)'
-        LANGUAGE 'SQL' IMMUTABLE STRICT;
+	RETURNS TEXT
+	AS 'SELECT _ST_AsGeoJson($1, $2, $3, 0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- ST_AsGeoJson(geography, precision, options) / version=1
 CREATE OR REPLACE FUNCTION ST_AsGeoJson(geography, int4, int4)
-        RETURNS TEXT
-        AS 'SELECT _ST_AsGeoJson(1, $1, $2, $3)'
-        LANGUAGE 'SQL' IMMUTABLE STRICT;
+	RETURNS TEXT
+	AS 'SELECT _ST_AsGeoJson(1, $1, $2, $3)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- ST_AsGeoJson(version, geography, precision,options)
 CREATE OR REPLACE FUNCTION ST_AsGeoJson(int4, geography, int4, int4)
-        RETURNS TEXT
-        AS 'SELECT _ST_AsGeoJson($1, $2, $3, $4)'
-        LANGUAGE 'SQL' IMMUTABLE STRICT;
+	RETURNS TEXT
+	AS 'SELECT _ST_AsGeoJson($1, $2, $3, $4)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-- Measurement Functions
+-- Availability: 1.5.0
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+
+-- Stop calculation and return once distance is less than tolerance
+CREATE OR REPLACE FUNCTION _ST_Distance(geography, geography, float8)
+	RETURNS float8
+	AS 'MODULE_PATHNAME','geography_distance_sphere'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION ST_Distance(geography, geography)
+	RETURNS float8
+	AS 'SELECT _ST_Distance($1, $2, 0.0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
 COMMIT;
