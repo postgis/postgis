@@ -1077,98 +1077,163 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 	return G_SUCCESS;
 }
 
-static int lw_line_point_distance_sphere(LWLINE *lwline, LWPOINT *lwpt, double tolerance, double *result)
+static double ptarray_distance_sphere(POINTARRAY *pa1, POINTARRAY *pa2, double tolerance)
 {
-	GEOGRAPHIC_POINT g;
-	GEOGRAPHIC_EDGE e;
-	POINT2D p;
-	int i;
-	
-	/* Initialize our point */
-	getPoint2d_p(lwpt->point, 0, &p);
-	geographic_point_init(p.x, p.y, &g);
-	
-	/* Degenerate one-point line! We handle gracefully. */
-	if ( lwline->points->npoints == 1 )
-	{
-		GEOGRAPHIC_POINT f;
-		getPoint2d_p(lwline->points, 0, &p);
-		geographic_point_init(p.x, p.y, &f);
-		*result = sphere_distance(g, f);
-		return LW_TRUE;	
-	}
-	
-	/* Iterate through the edges in our line */
-	for( i = 1; i < lwline->points->npoints; i++ )
-	{
-		getPoint2d_p(lwline->points, i - 1, &p);
-		geographic_point_init(p.x, p.y, &(e.start));
-		getPoint2d_p(lwline->points, i, &p);
-		geographic_point_init(p.x, p.y, &(e.end));
-		*result = edge_distance_to_point(e, g, 0);
-		if( *result < tolerance ) 
-			break;
-	}
-	return LW_TRUE;			
-}
-
-static int lw_point_point_distance_sphere(LWPOINT *lwpt1, LWPOINT *lwpt2, double *result)
-{
+	GEOGRAPHIC_EDGE e1, e2;
 	GEOGRAPHIC_POINT g1, g2;
 	POINT2D p;
-	getPoint2d_p(lwpt1->point, 0, &p);
-	geographic_point_init(p.x, p.y, &g1);
-	getPoint2d_p(lwpt2->point, 0, &p);
-	geographic_point_init(p.x, p.y, &g2);
-	*result = sphere_distance(g1, g2);
-	return LW_TRUE;	
+	double distance;
+	int i, j;
+	
+	/* Make result really big, so that everything will be smaller than it */
+	distance = MAXFLOAT;
+	
+	/* Empty point arrays? Return negative */
+	if ( pa1->npoints == 0 || pa1->npoints == 0 )
+		return -1.0;
+	
+	/* Handle point/point case here */
+	if ( pa1->npoints == 1 && pa2->npoints == 1 )
+	{
+		getPoint2d_p(pa1, 0, &p);
+		geographic_point_init(p.x, p.y, &g1);
+		getPoint2d_p(pa2, 0, &p);
+		geographic_point_init(p.x, p.y, &g2);
+		return sphere_distance(g1, g2);
+	}
+
+	/* Handle point/line case here */
+	if ( pa1->npoints == 1 || pa2->npoints == 1 )
+	{
+		/* Handle one/many case here */
+		int i;
+		POINTARRAY *pa_one, *pa_many;
+		
+		if( pa1->npoints == 1 )
+		{
+			pa_one = pa1;
+			pa_many = pa2;
+		}
+		else
+		{
+			pa_one = pa2;
+			pa_many = pa1;
+		}
+		
+		/* Initialize our point */
+		getPoint2d_p(pa_one, 0, &p);
+		geographic_point_init(p.x, p.y, &g1);
+
+		/* Iterate through the edges in our line */
+		for( i = 1; i < pa_many->npoints; i++ )
+		{
+			double d;
+			getPoint2d_p(pa_many, i - 1, &p);
+			geographic_point_init(p.x, p.y, &(e1.start));
+			getPoint2d_p(pa_many, i, &p);
+			geographic_point_init(p.x, p.y, &(e1.end));
+			d = edge_distance_to_point(e1, g1, 0);
+			if( d < distance )
+				distance = d;
+			if( d < tolerance ) 
+				return distance;
+		}
+		return distance;			
+	}
+	
+	/* Handle line/line case */
+	for( i = 1; i < pa1->npoints; i++ )
+	{
+		getPoint2d_p(pa1, i - 1, &p);
+		geographic_point_init(p.x, p.y, &(e1.start));
+		getPoint2d_p(pa1, i, &p);
+		geographic_point_init(p.x, p.y, &(e1.end));
+
+		for( j = 1; j < pa2->npoints; j++ )
+		{
+			double d;
+			GEOGRAPHIC_POINT g;
+
+			getPoint2d_p(pa2, j - 1, &p);
+			geographic_point_init(p.x, p.y, &(e2.start));
+			getPoint2d_p(pa2, j, &p);
+			geographic_point_init(p.x, p.y, &(e2.end));
+
+			if ( edge_intersection(e1, e2, &g) )
+			{
+				return 0.0;
+			}
+			d = edge_distance_to_edge(e1, e2, 0, 0);
+			if( d < distance )
+				distance = d;
+			if( d < tolerance )
+				return distance;
+		}
+	}
+	return distance;
 }
+
 
 /**
 * Calculate the distance between two LWGEOMs, using the coordinates are 
 * longitude and latitude. Return immediately when the calulated distance drops
 * below the tolerance (useful for dwithin calculations).
 */
-int lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, double tolerance, double *result)
+double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, double tolerance)
 {
 	int type1, type2;
 	
 	assert(lwgeom1);
 	assert(lwgeom2);
 	
+	/* What's the distance to an empty geometry? We don't know. */
 	if( lwgeom_is_empty(lwgeom1) || lwgeom_is_empty(lwgeom2) )
 	{
-		*result = -1.0;
-		return LW_FALSE;
+		return -1.0;
 	}
 		
-	/* Ensure that for LINE/POINT, POLY/POINT, POLY/LINE cases
-	   the lower dimensioned object is always type2 */
-	if ( lwgeom_dimensionality(lwgeom1) < lwgeom_dimensionality(lwgeom2) )
-	{
-		LWGEOM *tmp = lwgeom2;
-		lwgeom2 = lwgeom1;
-		lwgeom1 = tmp;
-	}
-
 	type1 = TYPE_GETTYPE(lwgeom1->type);
 	type2 = TYPE_GETTYPE(lwgeom2->type);
 	
-	if( type1 == POINTTYPE && type2 == POINTTYPE )
+	/* Point/line combinations can all be handled with simple point array iterations */
+	if( ( type1 == POINTTYPE || type1 == LINETYPE ) && 
+	    ( type2 == POINTTYPE || type2 == LINETYPE ) )
 	{
-		return lw_point_point_distance_sphere(
-		         lwgeom_as_lwpoint(lwgeom1), 
-		         lwgeom_as_lwpoint(lwgeom2), result);
+		POINTARRAY *pa1, *pa2;
+		
+		if( type1 == POINTTYPE ) 
+			pa1 = ((LWPOINT*)lwgeom1)->point;
+		else 
+			pa1 = ((LWLINE*)lwgeom1)->points;
+		
+		if( type2 == POINTTYPE )
+			pa2 = ((LWPOINT*)lwgeom2)->point;
+		else
+			pa2 = ((LWLINE*)lwgeom2)->points;
+		
+		return ptarray_distance_sphere(pa1, pa2, tolerance);
 	}
-	if( type1 == LINETYPE && type2 == POINTTYPE )
+	
+	/* Point/Polygon cases, if point-in-poly, return zero, else return distance. */
+	if( ( type1 == POLYGONTYPE && type2 == POINTTYPE ) || 
+	    ( type2 == POLYGONTYPE && type1 == POINTTYPE ) )
 	{
-		return lw_line_point_distance_sphere(
-		         lwgeom_as_lwline(lwgeom1),
-		         lwgeom_as_lwpoint(lwgeom2),
-		         tolerance, result);
+	}
 
+	/* Line/polygon case, if start point-in-poly, return zero, else return distance. */
+	if( ( type1 == POLYGONTYPE && type2 == LINETYPE ) || 
+	    ( type2 == POLYGONTYPE && type1 == LINETYPE ) )
+	{
 	}
-	return LW_FALSE;
+
+	/* Polygon/polygon case, if start point-in-poly, return zero, else return distance. */
+	if( ( type1 == POLYGONTYPE && type2 == LINETYPE ) || 
+	    ( type2 == POLYGONTYPE && type1 == LINETYPE ) )
+	{
+	}
+
+		
+	return -1.0;
 	
 }
 
@@ -1212,8 +1277,7 @@ int ptarray_calculate_gbox_geodetic(POINTARRAY *pa, GBOX *gbox)
 		POINT3D out_pt;
 		GEOGRAPHIC_POINT gp;
 		getPoint2d_p(pa, 0, &in_pt);
-		gp.lon = deg2rad(in_pt.x);
-		gp.lat = deg2rad(in_pt.y);
+		geographic_point_init(in_pt.x, in_pt.y, &gp);
 		geog2cart(gp, &out_pt);
 		gbox->xmin = gbox->xmax = out_pt.x;
 		gbox->ymin = gbox->ymax = out_pt.y;
@@ -1224,11 +1288,10 @@ int ptarray_calculate_gbox_geodetic(POINTARRAY *pa, GBOX *gbox)
 	for ( i = 1; i < pa->npoints; i++ )
 	{
 		getPoint2d_p(pa, i-1, &start_pt);
+		geographic_point_init(start_pt.x, start_pt.y, &(edge.start));
+
 		getPoint2d_p(pa, i, &end_pt);
-		edge.start.lon = deg2rad(start_pt.x);
-		edge.start.lat = deg2rad(start_pt.y);
-		edge.end.lon = deg2rad(end_pt.x);
-		edge.end.lat = deg2rad(end_pt.y);
+		geographic_point_init(end_pt.x, end_pt.y, &(edge.end));
 
 		edge_calculate_gbox(edge, &edge_gbox);
 

@@ -34,7 +34,10 @@ CU_pSuite register_geodetic_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_clairaut()", test_clairaut))  || 
 	    (NULL == CU_add_test(pSuite, "test_edge_intersection()", test_edge_intersection)) ||
 	    (NULL == CU_add_test(pSuite, "test_edge_distance_to_point()", test_edge_distance_to_point)) ||
-	    (NULL == CU_add_test(pSuite, "test_edge_distance_to_edge()", test_edge_distance_to_edge)) 
+	    (NULL == CU_add_test(pSuite, "test_edge_distance_to_edge()", test_edge_distance_to_edge)) ||
+	    (NULL == CU_add_test(pSuite, "test_lwgeom_distance_sphere()", test_lwgeom_distance_sphere)) 
+
+
 	)
 	{
 		CU_cleanup_registry();
@@ -409,7 +412,33 @@ void test_edge_distance_to_edge(void)
 	CU_ASSERT_DOUBLE_EQUAL(c2.lon, 0.0, 0.00001);
 }
 
+void test_lwgeom_distance_sphere(void)
+{
+	LWGEOM *lwg1, *lwg2;
+	double d;
+	
+	lwg1 = lwgeom_from_ewkt("LINESTRING(-30 10, -20 5, -10 3, 0 1)", PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_ewkt("LINESTRING(-10 -5, -5 0, 5 0, 10 -5)", PARSER_CHECK_NONE);
+	d = lwgeom_distance_sphere(lwg1, lwg2, 0.0);	
+	CU_ASSERT_DOUBLE_EQUAL(d, M_PI / 180.0, 0.00001);
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
+	
+	lwg1 = lwgeom_from_ewkt("POINT(-4 1)", PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_ewkt("LINESTRING(-10 -5, -5 0, 5 0, 10 -5)", PARSER_CHECK_NONE);
+	d = lwgeom_distance_sphere(lwg1, lwg2, 0.0);	
+	CU_ASSERT_DOUBLE_EQUAL(d, M_PI / 180.0, 0.00001);
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
 
+	lwg1 = lwgeom_from_ewkt("POINT(-4 1)", PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_ewkt("POINT(-4 -1)", PARSER_CHECK_NONE);
+	d = lwgeom_distance_sphere(lwg1, lwg2, 0.0);	
+	CU_ASSERT_DOUBLE_EQUAL(d, M_PI / 90.0, 0.00001);
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
+	
 
+}
 
 
