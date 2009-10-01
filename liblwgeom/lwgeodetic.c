@@ -1387,8 +1387,8 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX *gbox1, GBO
 	}
 
 	/* Polygon/polygon case, if start point-in-poly, return zero, else return distance. */
-	if( ( type1 == POLYGONTYPE && type2 == LINETYPE ) || 
-	    ( type2 == POLYGONTYPE && type1 == LINETYPE ) )
+	if( ( type1 == POLYGONTYPE && type2 == POLYGONTYPE ) || 
+	    ( type2 == POLYGONTYPE && type1 == POLYGONTYPE ) )
 	{
 		POINT2D p;
 		LWPOLY *lwpoly1 = (LWPOLY*)lwgeom1;
