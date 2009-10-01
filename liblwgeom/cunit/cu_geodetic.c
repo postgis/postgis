@@ -415,29 +415,72 @@ void test_edge_distance_to_edge(void)
 void test_lwgeom_distance_sphere(void)
 {
 	LWGEOM *lwg1, *lwg2;
+	GBOX gbox1, gbox2;
 	double d;
 	
+	gbox1.flags = gflags(0, 0, 1);
+	gbox2.flags = gflags(0, 0, 1);
+	
+	/* Line/line distance, 1 degree apart */
 	lwg1 = lwgeom_from_ewkt("LINESTRING(-30 10, -20 5, -10 3, 0 1)", PARSER_CHECK_NONE);
 	lwg2 = lwgeom_from_ewkt("LINESTRING(-10 -5, -5 0, 5 0, 10 -5)", PARSER_CHECK_NONE);
-	d = lwgeom_distance_sphere(lwg1, lwg2, 0.0);	
+	d = lwgeom_distance_sphere(lwg1, lwg2, NULL, NULL, 0.0);	
 	CU_ASSERT_DOUBLE_EQUAL(d, M_PI / 180.0, 0.00001);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
-	
+
+	/* Line/line distance, crossing, 0.0 apart */
+	lwg1 = lwgeom_from_ewkt("LINESTRING(-30 10, -20 5, -10 3, 0 1)", PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_ewkt("LINESTRING(-10 -5, -5 20, 5 0, 10 -5)", PARSER_CHECK_NONE);
+	d = lwgeom_distance_sphere(lwg1, lwg2, NULL, NULL, 0.0);	
+	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, 0.00001);
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
+
+	/* Line/point distance, 1 degree apart */
 	lwg1 = lwgeom_from_ewkt("POINT(-4 1)", PARSER_CHECK_NONE);
 	lwg2 = lwgeom_from_ewkt("LINESTRING(-10 -5, -5 0, 5 0, 10 -5)", PARSER_CHECK_NONE);
-	d = lwgeom_distance_sphere(lwg1, lwg2, 0.0);	
+	d = lwgeom_distance_sphere(lwg1, lwg2, NULL, NULL, 0.0);	
 	CU_ASSERT_DOUBLE_EQUAL(d, M_PI / 180.0, 0.00001);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
 
 	lwg1 = lwgeom_from_ewkt("POINT(-4 1)", PARSER_CHECK_NONE);
 	lwg2 = lwgeom_from_ewkt("POINT(-4 -1)", PARSER_CHECK_NONE);
-	d = lwgeom_distance_sphere(lwg1, lwg2, 0.0);	
+	d = lwgeom_distance_sphere(lwg1, lwg2, NULL, NULL, 0.0);	
 	CU_ASSERT_DOUBLE_EQUAL(d, M_PI / 90.0, 0.00001);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
+
+	/* Poly/point distance, point inside polygon, 0.0 apart */
+	lwg1 = lwgeom_from_ewkt("POLYGON((-4 1, -3 5, 1 2, 1.5 -5, -4 1))", PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_ewkt("POINT(-1 -1)", PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_geodetic(lwg1, &gbox1);
+	lwgeom_calculate_gbox_geodetic(lwg2, &gbox2);
+	d = lwgeom_distance_sphere(lwg1, lwg2, &gbox1, &gbox2, 0.0);	
+	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, 0.00001);
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
+
+	/* Poly/point distance, point inside polygon hole, 1 degree apart */
+	lwg1 = lwgeom_from_ewkt("POLYGON((-4 -4, -4 4, 4 4, 4 -4, -4 -4), (-2 -2, -2 2, 2 2, 2 -2, -2 -2))", PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_ewkt("POINT(-1 -1)", PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_geodetic(lwg1, &gbox1);
+	lwgeom_calculate_gbox_geodetic(lwg2, &gbox2);
+	d = lwgeom_distance_sphere(lwg1, lwg2, &gbox1, &gbox2, 0.0);	
+	CU_ASSERT_DOUBLE_EQUAL(d, M_PI / 180.0, 0.00001);
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
 	
+	/* Poly/point distance, point on hole boundary, 0.0 apart */
+	lwg1 = lwgeom_from_ewkt("POLYGON((-4 -4, -4 4, 4 4, 4 -4, -4 -4), (-2 -2, -2 2, 2 2, 2 -2, -2 -2))", PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_ewkt("POINT(2 2)", PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_geodetic(lwg1, &gbox1);
+	lwgeom_calculate_gbox_geodetic(lwg2, &gbox2);
+	d = lwgeom_distance_sphere(lwg1, lwg2, &gbox1, &gbox2, 0.0);	
+	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, 0.00001);
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
 
 }
 

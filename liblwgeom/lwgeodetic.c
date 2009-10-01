@@ -162,7 +162,7 @@ void point_rad2deg(GEOGRAPHIC_POINT *p)
 	p->lon = rad2deg(p->lon);
 }
 
-static inline int point_equal(GEOGRAPHIC_POINT g1, GEOGRAPHIC_POINT g2)
+static int geographic_point_equals(GEOGRAPHIC_POINT g1, GEOGRAPHIC_POINT g2)
 {
 	return FP_EQUALS(g1.lat, g2.lat) && FP_EQUALS(g1.lon, g2.lon);
 }
@@ -224,7 +224,7 @@ static int gbox_check_poles(GBOX *gbox)
 /**
 * Convert spherical coordinates to cartesion coordinates on unit sphere
 */
-void inline geog2cart(GEOGRAPHIC_POINT g, POINT3D *p)
+void geog2cart(GEOGRAPHIC_POINT g, POINT3D *p)
 {
 	p->x = cos(g.lat) * cos(g.lon);
 	p->y = cos(g.lat) * sin(g.lon);
@@ -234,7 +234,7 @@ void inline geog2cart(GEOGRAPHIC_POINT g, POINT3D *p)
 /**
 * Convert cartesion coordinates to spherical coordinates on unit sphere
 */
-void inline cart2geog(POINT3D p, GEOGRAPHIC_POINT *g)
+void cart2geog(POINT3D p, GEOGRAPHIC_POINT *g)
 {
 	g->lon = atan2(p.y, p.x);
 	g->lat = asin(p.z);
@@ -244,7 +244,7 @@ void inline cart2geog(POINT3D p, GEOGRAPHIC_POINT *g)
 * Calculate the dot product of two unit vectors 
 * (-1 == opposite, 0 == orthogonal, 1 == identical)
 */
-static double inline dot_product(POINT3D p1, POINT3D p2)
+static double dot_product(POINT3D p1, POINT3D p2)
 {
 	return (p1.x*p2.x) + (p1.y*p2.y) + (p1.z*p2.z);
 }
@@ -252,7 +252,7 @@ static double inline dot_product(POINT3D p1, POINT3D p2)
 /**
 * Calculate the cross product of two vectors
 */
-static void inline cross_product(POINT3D a, POINT3D b, POINT3D *n)
+static void cross_product(POINT3D a, POINT3D b, POINT3D *n)
 {
 	n->x = a.y * b.z - a.z * b.y;
 	n->y = a.z * b.x - a.x * b.z;
@@ -263,7 +263,7 @@ static void inline cross_product(POINT3D a, POINT3D b, POINT3D *n)
 /**
 * Calculate the sum of two vectors
 */
-static void inline vector_sum(POINT3D a, POINT3D b, POINT3D *n)
+static void vector_sum(POINT3D a, POINT3D b, POINT3D *n)
 {
 	n->x = a.x + b.x;
 	n->y = a.y + b.y;
@@ -274,7 +274,7 @@ static void inline vector_sum(POINT3D a, POINT3D b, POINT3D *n)
 /**
 * Calculate the difference of two vectors
 */
-static void inline vector_difference(POINT3D a, POINT3D b, POINT3D *n)
+static void vector_difference(POINT3D a, POINT3D b, POINT3D *n)
 {
 	n->x = a.x - b.x;
 	n->y = a.y - b.y;
@@ -285,7 +285,7 @@ static void inline vector_difference(POINT3D a, POINT3D b, POINT3D *n)
 /**
 * Scale a vector out by a factor
 */
-static void inline vector_scale(POINT3D *n, double scale)
+static void vector_scale(POINT3D *n, double scale)
 {
 	n->x *= scale;
 	n->y *= scale;
@@ -296,7 +296,7 @@ static void inline vector_scale(POINT3D *n, double scale)
 /**
 * Normalize to a unit vector.
 */
-static void inline normalize(POINT3D *p)
+static void normalize(POINT3D *p)
 {
 	double d = sqrt(p->x*p->x + p->y*p->y + p->z*p->z);
 	if (FP_IS_ZERO(d))
@@ -310,7 +310,7 @@ static void inline normalize(POINT3D *p)
 	return;
 }
 
-static void inline unit_normal(POINT3D a, POINT3D b, POINT3D *n)
+static void unit_normal(POINT3D a, POINT3D b, POINT3D *n)
 {
 	cross_product(a, b, n);
 	normalize(n);
@@ -595,12 +595,12 @@ int edge_intersection(GEOGRAPHIC_EDGE e1, GEOGRAPHIC_EDGE e2, GEOGRAPHIC_POINT *
 		}
 		if ( edge_contains_point(e2, e1.start) )
 		{
-			*g = e2.start;
+			*g = e1.start;
 			return LW_TRUE;
 		}
 		if ( edge_contains_point(e2, e1.end) )
 		{
-			*g = e2.end;
+			*g = e1.end;
 			return LW_TRUE;
 		}
 	}
@@ -638,7 +638,7 @@ double edge_distance_to_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT gp, GEOGRAPHIC
 	GEOGRAPHIC_POINT gk, g_nearest;
 
 	/* Zero length edge, */
-	if( point_equal(e.start,e.end) ) 
+	if( geographic_point_equals(e.start,e.end) ) 
 		return sphere_distance(e.start, gp);
 	
 	robust_cross_product(e.start, e.end, &n);
@@ -1077,6 +1077,89 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 	return G_SUCCESS;
 }
 
+/**
+* Given a gbox, return a cartesian unit vector to a point that is 
+* guaranteed to be outside the box (and therefore anything it contains).
+*/
+static void gbox_pt_outside(GBOX gbox, POINT3D *pt)
+{
+	double d;
+	pt->x = 1.0;
+	pt->y = 0.0;
+	pt->z = 0.0;
+	
+	if((1.0 - gbox.xmax) > 0.1) 
+	{
+		pt->x = gbox.xmax + (1.0 - gbox.xmax) * 0.01;
+		d = sqrt((1.0 - pow(pt->x, 2.0))/2.0);
+		pt->y = d;
+		pt->z = d;
+	} 
+	else if((1.0 - gbox.ymax) > 0.1) 
+	{
+		pt->y = gbox.ymax + (1.0 - gbox.ymax) * 0.01;
+		d = sqrt((1.0 - pow(pt->y, 2.0))/2.0);
+		pt->x = d;
+		pt->z = d;
+	} 
+	else if((1.0 - gbox.zmax) > 0.1) 
+	{
+		pt->z = gbox.zmax + (1.0 - gbox.zmax) * 0.01;
+		d = sqrt((1.0 - pow(pt->z, 2.0))/2.0);
+		pt->x = d;
+		pt->y = d;
+	}
+	normalize(pt);
+	return;
+}
+
+
+/**
+* This routine returns LW_TRUE if the point is inside the ring or on the boundary, LW_FALSE otherwise.
+* The pt_outside must be guaranteed to be outside the ring (use the geography_pt_outside() function
+* to derive one in postgis, or the gbox_pt_outside() function if you don't mind burning CPU cycles
+* building a gbox first).
+*/
+static int ptarray_point_in_ring(POINTARRAY *pa, POINT2D pt_outside, POINT2D pt_to_test) 
+{
+	GEOGRAPHIC_EDGE crossing_edge, edge;
+	POINT2D p;
+	int count = 0;
+	int i;
+	
+	/* Null input, not enough points for a ring? You ain't closed! */
+	if( ! pa || pa->npoints < 4 ) 
+		return LW_FALSE;
+
+	/* Set up our stab line */
+	geographic_point_init(pt_to_test.x, pt_to_test.y, &(crossing_edge.start));
+	geographic_point_init(pt_outside.x, pt_outside.y, &(crossing_edge.end));
+
+	/* Walk every edge and see if the stab line hits it */
+	for( i = 1; i < pa->npoints; i++ )
+	{
+		GEOGRAPHIC_POINT g;
+		getPoint2d_p(pa, i-1, &p);
+		geographic_point_init(p.x, p.y, &(edge.start));
+		getPoint2d_p(pa, i, &p);
+		geographic_point_init(p.x, p.y, &(edge.end));
+
+		/* Does stab line cross, and if so, not on the first point. We except the
+		   first point to avoid double counting crossings at vertices. */
+		if( edge_intersection(edge, crossing_edge, &g) && ! geographic_point_equals(g, edge.start) )
+		{
+			count++;
+		}
+	}
+	/* An odd number of crossings implies containment! */
+	if( count % 2 )
+	{
+		return LW_TRUE;
+	}
+	
+	return LW_FALSE;
+}
+
 static double ptarray_distance_sphere(POINTARRAY *pa1, POINTARRAY *pa2, double tolerance)
 {
 	GEOGRAPHIC_EDGE e1, e2;
@@ -1179,7 +1262,7 @@ static double ptarray_distance_sphere(POINTARRAY *pa1, POINTARRAY *pa2, double t
 * longitude and latitude. Return immediately when the calulated distance drops
 * below the tolerance (useful for dwithin calculations).
 */
-double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, double tolerance)
+double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX *gbox1, GBOX *gbox2, double tolerance)
 {
 	int type1, type2;
 	
@@ -1214,10 +1297,51 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, double tolerance
 		return ptarray_distance_sphere(pa1, pa2, tolerance);
 	}
 	
+	if( ! gbox1 || ! gbox2 ) 
+	{
+		lwerror("gboxes are required to calculate distances from spherical lwgeoms");
+		return -1.0;
+	}
+	
 	/* Point/Polygon cases, if point-in-poly, return zero, else return distance. */
 	if( ( type1 == POLYGONTYPE && type2 == POINTTYPE ) || 
 	    ( type2 == POLYGONTYPE && type1 == POINTTYPE ) )
 	{
+		POINT2D p;
+		LWPOLY *lwpoly;
+		LWPOINT *lwpt;
+		GBOX *gbox;
+		double distance = MAXFLOAT;
+		int i;
+		
+		if( type1 == POINTTYPE )
+		{
+			lwpt = (LWPOINT*)lwgeom1;
+			lwpoly = (LWPOLY*)lwgeom2;
+			gbox = gbox2;
+		}
+		else
+		{
+			lwpt = (LWPOINT*)lwgeom2;
+			lwpoly = (LWPOLY*)lwgeom1;
+			gbox = gbox1;
+		}
+		getPoint2d_p(lwpt->point, 0, &p);
+
+		/* Point in polygon implies zero distance */
+		if( lwpoly_covers_point2d(lwpoly, gbox, p) )
+			return 0.0;
+		
+		/* Not inside, so what's the actual distance? */
+		for( i = 0; i < lwpoly->nrings; i++ )
+		{
+			double ring_distance = ptarray_distance_sphere(lwpoly->rings[i], lwpt->point, tolerance);
+			if( ring_distance < distance )
+				distance = ring_distance;
+			if( distance < tolerance )
+				return distance;
+		}
+		return distance;
 	}
 
 	/* Line/polygon case, if start point-in-poly, return zero, else return distance. */
@@ -1231,11 +1355,62 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, double tolerance
 	    ( type2 == POLYGONTYPE && type1 == LINETYPE ) )
 	{
 	}
-
 		
 	return -1.0;
 	
 }
+
+/**
+* Given a polygon (lon/lat decimal degrees) and point (lon/lat decimal degrees) and
+* a guaranteed outside point (lon/lat decimal degrees) (calculate with gbox_pt_outside()) 
+* return LW_TRUE if point is inside or on edge of polygon.
+*/
+int lwpoly_covers_point2d(const LWPOLY *poly, GBOX *gbox, POINT2D pt_to_test)
+{
+	int i;
+	int in_hole_count = 0;
+	POINT3D p;
+	GEOGRAPHIC_POINT g;
+	POINT2D pt_outside;
+
+	if( ! gbox )
+	{
+		lwerror("gbox is required to calculate spherical point-in-poly with lwgeom");
+		return LW_FALSE;
+	}
+	
+	/* Nulls and empties don't contain anything! */
+	if( ! poly || lwgeom_is_empty((LWGEOM*)poly) )
+	{
+		return LW_FALSE;
+	}
+
+	/* Calculate our outside point from the gbox */
+	gbox_pt_outside(*gbox, &p);
+	cart2geog(p, &g);
+	pt_outside.x = rad2deg(g.lon);
+	pt_outside.y = rad2deg(g.lat);
+
+	/* Not in outer ring? We're done! */
+	if( ! ptarray_point_in_ring(poly->rings[0], pt_outside, pt_to_test) )
+	{
+		return LW_FALSE;
+	}
+	
+	/* But maybe point is in a hole... */
+	for( i = 1; i < poly->nrings; i++ )
+	{
+		/* Count up hole containment. Odd => outside boundary. */
+		if( ptarray_point_in_ring(poly->rings[i], pt_outside, pt_to_test) )
+			in_hole_count++;
+	}
+	
+	if( in_hole_count % 2 )
+		return LW_FALSE;
+		
+	return LW_TRUE;
+}
+
 
 /**
 * This function can only be used on LWGEOM that is built on top of

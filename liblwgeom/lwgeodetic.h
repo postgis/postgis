@@ -72,3 +72,4 @@ void edge_rad2deg(GEOGRAPHIC_EDGE *e);
 void point_deg2rad(GEOGRAPHIC_POINT *p);
 void point_rad2deg(GEOGRAPHIC_POINT *p);
 void geographic_point_init(double lon, double lat, GEOGRAPHIC_POINT *g);
+int lwpoly_covers_point2d(const LWPOLY *poly, GBOX *gbox, POINT2D pt_to_test);
