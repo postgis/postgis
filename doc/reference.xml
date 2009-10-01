@@ -10049,10 +10049,10 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 	  <refnamediv>
 		<refname>ST_Distance</refname>
 
-		<refpurpose>Returns the 2-dimensional cartesian minimum distance between two geometries in
-		projected units.</refpurpose>
+		<refpurpose>For geometry type Returns the 2-dimensional cartesian minimum distance between two geometries in
+		projected units.  For geography type returns the spherical minimum distance between two geographies (in eventually meters).</refpurpose>
 	  </refnamediv>
-
+ <!-- TODO: Take out the eventually meters once Paul has it returning really in meters -->
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
@@ -10064,6 +10064,15 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 			<paramdef><type>geometry </type>
 			<parameter>g2</parameter></paramdef>
 		  </funcprototype>
+		  <funcprototype>
+			<funcdef>float <function>ST_Distance</function></funcdef>
+
+			<paramdef><type>geography </type>
+			<parameter>gg1</parameter></paramdef>
+
+			<paramdef><type>geography </type>
+			<parameter>gg2</parameter></paramdef>
+		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
@@ -10071,7 +10080,7 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 		<title>Description</title>
 
 		<para>Returns the 2-dimensional minimum cartesian distance between two geometries in
-		projected units.</para>
+		projected units. For geography type returns the minimum distance around spheroid between two geographies (in eventually meters).</para>
 
 		<para>
 		  <inlinegraphic fileref="images/check.png" />
