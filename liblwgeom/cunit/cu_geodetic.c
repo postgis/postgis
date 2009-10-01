@@ -229,7 +229,7 @@ void test_clairaut(void)
 	GEOGRAPHIC_POINT g_out_top, g_out_bottom, v_out_top, v_out_bottom;
 
 	point_set(-45.0, 60.0, &gs);
-	point_set(135.0, 60.0, &gs);
+	point_set(135.0, 60.0, &ge);
 
 	geog2cart(gs, &vs);
 	geog2cart(ge, &ve);
