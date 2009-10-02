@@ -60,6 +60,7 @@ Datum geography_distance_sphere(PG_FUNCTION_ARGS)
 	
 	/* Read our tolerance value. */
 	tolerance = PG_GETARG_FLOAT8(2);
+	tolerance = tolerance / WGS84_RADIUS;
 
 	/* Calculate the distance */
 	distance = lwgeom_distance_sphere(lwgeom1, lwgeom2, &gbox1, &gbox2, tolerance);
@@ -70,6 +71,8 @@ Datum geography_distance_sphere(PG_FUNCTION_ARGS)
 		elog(ERROR, "Error in geography_distance_sphere calculation.");
 		PG_RETURN_NULL();
 	}
+	
+	distance = distance * WGS84_RADIUS;
 
 	/* Clean up, but not all the way to the point arrays */
 	lwgeom_release(lwgeom1);

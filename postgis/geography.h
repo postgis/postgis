@@ -9,6 +9,13 @@
  *
  **********************************************************************/
 
+/*
+** Spherical radius.
+** Moritz, H. (1980). Geodetic Reference System 1980, by resolution of the XVII General Assembly of the IUGG in Canberra.
+** http://en.wikipedia.org/wiki/Earth_radius
+*/
+
+#define WGS84_RADIUS 6371009.0
 
 /**********************************************************************
 **  GIDX structure. 
