@@ -800,7 +800,7 @@ usage(char *me, int exitcode, FILE* out)
 	fprintf(out, "      -p  Prepare mode, only creates the table.\n");
 	fprintf(out, "  -g <geometry_column> Specify the name of the geometry column\n");
 	fprintf(out, "     (mostly useful in append mode).\n");
-	fprintf(out, "  -D  Use postgresql dump format (defaults to sql insert statments.\n");
+	fprintf(out, "  -D  Use postgresql dump format (defaults to sql insert statments).\n");
 	fprintf(out, "  -k  Keep postgresql identifiers case.\n");
 	fprintf(out, "  -i  Use int4 type for all integer dbf fields.\n");
 	fprintf(out, "  -I  Create a GiST index on the geometry column.\n");
