@@ -198,9 +198,9 @@ geometry
 		<itemizedlist>
 		<listitem>
 		  <para>POINT: Creating a table with 2d point geometry:</para>
-		  <para>CREATE TABLE testgeog(gid serial PRIMARY KEY, the_geog geography(POINT,4326) );</para>
+		  <para><programlisting>CREATE TABLE testgeog(gid serial PRIMARY KEY, the_geog geography(POINT,4326) );</programlisting></para>
 		  <para>Creating a table with z coordinate point</para>
-		  <para>CREATE TABLE testgeog(gid serial PRIMARY KEY, the_geog geography(POINTZ,4326) );</para>
+		  <para><programlisting>CREATE TABLE testgeog(gid serial PRIMARY KEY, the_geog geography(POINTZ,4326) );</programlisting></para>
 		</listitem>
 		<listitem>
 			<para>LINESTRING</para>
