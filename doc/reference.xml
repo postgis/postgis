@@ -10367,7 +10367,7 @@ FROM
 			<parameter>g2</parameter></paramdef>
 
 			<paramdef><type>double precision </type>
-			<parameter>distance</parameter></paramdef>
+			<parameter>distance_of_srid</parameter></paramdef>
 		  </funcprototype>
 		  
 		   <funcprototype>
@@ -10380,7 +10380,7 @@ FROM
 			<parameter>gg2</parameter></paramdef>
 
 			<paramdef><type>double precision </type>
-			<parameter>distance</parameter></paramdef>
+			<parameter>distance_meters</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
