@@ -246,6 +246,7 @@ SELECT 'create,insert,drop Test: End Testing Geography <xsl:value-of select="@Ge
 				<xsl:variable name='fndef'><xsl:value-of select="funcdef"/></xsl:variable>
 				<xsl:variable name='numparams'><xsl:value-of select="count(paramdef/parameter)" /></xsl:variable>
 				<xsl:variable name='numparamgeoms'><xsl:value-of select="count(paramdef/type[contains(text(),'geometry') or contains(text(),'geography') or contains(text(),'box') or contains(text(), 'bytea')]) + count(paramdef/parameter[contains(text(),'WKT')])" /></xsl:variable>
+				<xsl:variable name='numparamgeogs'><xsl:value-of select="count(paramdef/type[contains(text(),'geography')] )" /></xsl:variable>
 				<!-- For each function prototype generate a test sql statement -->
 				<xsl:choose>
 <!--Test functions that take no arguments or take no geometries -->
@@ -259,12 +260,13 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 	<xsl:when test="$numparamgeoms = '1' and not(contains($fnexclude,funcdef/function))" >
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 			<xsl:choose>
-			  <xsl:when test="contains($fndef, 'geometry ')">
+			  <xsl:when test="contains(paramdef, 'geometry ')">
+			  
 	SELECT 'Geometry <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@GeometryType" />';
 	BEGIN; <!-- If output is geometry show ewkt rep -->
 	SELECT ST_AsEWKT(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />))
 			  </xsl:when>
-			  <xsl:when test="contains($fndef, 'geography ')">
+			  <xsl:when test="contains(paramdef, 'geography ')">
 	SELECT 'Geography <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@GeometryType" />';
 	BEGIN; <!-- If output is geometry show astext rep -->
 	SELECT ST_AsText(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />))
@@ -287,22 +289,23 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 
 <!--Functions more than 1 args not already covered this will cross every geometry type with every other -->
 	<xsl:when test="not(contains($fnexclude,funcdef/function))">
+		SELECT '<xsl:value-of select="$fnargs" />'
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 	<!--Store first garden sql geometry from -->
 			<xsl:variable name="from1"><xsl:value-of select="." /></xsl:variable>
 			<xsl:variable name='geom1type'><xsl:value-of select="@ID"/></xsl:variable>
-SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" /> against other types';
+SELECT '<xsl:value-of select="$fnname" /> <xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" /> against other types';
 				<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 			<xsl:choose>
-			  <xsl:when test="contains($fndef, 'geometry ')">
-				SELECT 'Geometry <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
-	BEGIN; <!-- If output is geometry show ewkt rep -->
-	SELECT ST_AsEWKT(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)), ST_AsEWKT(foo1.the_geom) As ref1_geom, ST_AsEWKT(foo2.the_geom) As ref2_geom
-			  </xsl:when>
-			  <xsl:when test="contains($fndef, 'geography ')">
+			  <xsl:when test="$numparamgeogs > '0'">
 				SELECT 'Geography <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
 	BEGIN; <!-- If output is geography show wkt rep -->
 	SELECT ST_AsText(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)), ST_AsText(foo1.the_geom) As ref1_geom, ST_AsText(foo2.the_geom) As ref2_geom
+			  </xsl:when>
+			  <xsl:when test="$numparamgeoms > '0'">
+				SELECT 'Geometry <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
+	BEGIN; <!-- If output is geometry show ewkt rep -->
+	SELECT ST_AsEWKT(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)), ST_AsEWKT(foo1.the_geom) As ref1_geom, ST_AsEWKT(foo2.the_geom) As ref2_geom
 			  </xsl:when>
 			  <xsl:otherwise>
 				SELECT 'Other <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';

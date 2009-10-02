@@ -10,8 +10,8 @@
 			test more geometries but only against one function.  Useful for intro of new functions or comparing major changes from function of one version of PostGIS to the other
 	 ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='testversion'>1.5.0</xsl:variable>
-	<xsl:variable name='fninclude'>ST_Distance ST_DWithin ST_MaxDistance ST_ShortestLine ST_LongestLine</xsl:variable>
+<xsl:variable name='testversion'>1.5.0</xsl:variable>
+	<xsl:variable name='fninclude'>ST_Distance ST_DWithin ST_AsBinary</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 or tested separately -->
 
 	<xsl:variable name='var_srid'>3395</xsl:variable>
@@ -38,7 +38,7 @@
 			CROSS JOIN generate_series(40,70, 15) As j
 			WHERE NOT(i = j)
 			ORDER BY i, i*j)</pgis:gset>
-		<pgis:gset ID='PolySet' GeometryType='POLYGON'>(SELECT ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j)  As the_geom
+		<pgis:gset ID='PolySet' GeometryType='POLYGON'>(SELECT ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j*0.05)  As the_geom
 		FROM generate_series(-10,50,10) As i
 			CROSS JOIN generate_series(40,70, 20) As j
 			ORDER BY i, i*j, j)</pgis:gset>
@@ -59,23 +59,23 @@
 			CROSS JOIN generate_series(1,2) As m
 			ORDER BY i, j, m, i*j*m
 			)</pgis:gset>
-		<pgis:gset ID='PointSet3D' GeometryType='POINT'>(SELECT ST_SetSRID(ST_MakePoint(i,j,k),4326) As the_geom
+		<pgis:gset ID='PointSet3D' GeometryType='POINTZ'>(SELECT ST_SetSRID(ST_MakePoint(i,j,k),4326) As the_geom
 		FROM generate_series(-10,50,20) As i
 			CROSS JOIN generate_series(40,70, 20) j
 			CROSS JOIN generate_series(1,2) k
 			ORDER BY i,i*j, j*k, i + j + k)</pgis:gset>
-		<pgis:gset ID='LineSet3D' GeometryType='LINESTRING'>(SELECT ST_SetSRID(ST_MakeLine(ST_MakePoint(i,j,k), ST_MakePoint(i+k,j+k,k)),4326) As the_geom
+		<pgis:gset ID='LineSet3D' GeometryType='LINESTRINGZ'>(SELECT ST_SetSRID(ST_MakeLine(ST_MakePoint(i,j,k), ST_MakePoint(i+k,j+k,k)),4326) As the_geom
 		FROM generate_series(-10,50,20) As i
 			CROSS JOIN generate_series(40,70, 20) j
 			CROSS JOIN generate_series(1,2) k
 			ORDER BY i, j, i+j+k, k, i*j*k)</pgis:gset>
-		<pgis:gset ID='PolygonSet3D' GeometryType='POLYGON'>(SELECT ST_SetSRID(ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_MakePoint(i+m,j,m),ST_MakePoint(j+m,i-m,m)),ST_MakePoint(i,j,m)),ST_MakePointM(i+m,j,m))),4326)  As the_geom
+		<pgis:gset ID='PolygonSet3D' GeometryType='POLYGONZ'>(SELECT ST_SetSRID(ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_MakePoint(i+m,j,m),ST_MakePoint(j+m,i-m,m)),ST_MakePoint(i,j,m)),ST_MakePointM(i+m,j,m))),4326)  As the_geom
 		FROM generate_series(-10,50,20) As i
 			CROSS JOIN generate_series(50,70, 20) As j
 			CROSS JOIN generate_series(1,2) As m
 			ORDER BY i, j, i+j+m, m, i*j*m)</pgis:gset>
 
-		<pgis:gset ID='GCSet3D' GeometryType='GEOMETRYCOLLECTION' SkipUnary='1'>(SELECT ST_Collect(ST_Collect(ST_SetSRID(ST_MakePoint(i,j,m),4326),ST_SetSRID(ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_MakePoint(i+m,j,m),ST_MakePoint(j+m,i-m,m)),ST_MakePoint(i,j,m)),ST_MakePointM(i+m,j,m))),4326)))  As the_geom
+		<pgis:gset ID='GCSet3D' GeometryType='GEOMETRYCOLLECTIONZ' SkipUnary='1'>(SELECT ST_Collect(ST_Collect(ST_SetSRID(ST_MakePoint(i,j,m),4326),ST_SetSRID(ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_MakePoint(i+m,j,m),ST_MakePoint(j+m,i-m,m)),ST_MakePoint(i,j,m)),ST_MakePointM(i+m,j,m))),4326)))  As the_geom
 		FROM generate_series(-10,50,20) As i
 			CROSS JOIN generate_series(50,70, 20) As j
 			CROSS JOIN generate_series(1,2) As m
@@ -94,24 +94,24 @@
 			CROSS JOIN generate_series(40,70, 15) As j
 			WHERE NOT(i = j)) As s)</pgis:gset>
 
-		<pgis:gset ID='MultiPolySet' GeometryType='POLYGON'>(SELECT ST_Multi(ST_Union(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j)))  As the_geom
+		<pgis:gset ID='MultiPolySet' GeometryType='MULTIPOLYGON'>(SELECT ST_Multi(ST_Union(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j*0.05)))  As the_geom
 		FROM generate_series(-10,50,10) As i
 			CROSS JOIN generate_series(40,70, 25) As j)</pgis:gset>
 
-		<pgis:gset ID='MultiPointSet3D' GeometryType='MULTIPOINT'>(SELECT ST_Collect(ST_SetSRID(ST_MakePoint(i,j,k),4326)) As the_geom
+		<pgis:gset ID='MultiPointSet3D' GeometryType='MULTIPOINTZ'>(SELECT ST_Collect(ST_SetSRID(ST_MakePoint(i,j,k),4326)) As the_geom
 		FROM generate_series(-10,50,20) As i
 			CROSS JOIN generate_series(40,70, 25) j
 			CROSS JOIN generate_series(1,3) k
 			)</pgis:gset>
 
-		<pgis:gset ID='MultiLineSet3D' GeometryType='MULTILINESTRING'>(SELECT ST_Multi(ST_Union(ST_SetSRID(ST_MakeLine(ST_MakePoint(i,j,k), ST_MakePoint(i+k,j+k,k)),4326))) As the_geom
+		<pgis:gset ID='MultiLineSet3D' GeometryType='MULTILINESTRINGZ'>(SELECT ST_Multi(ST_Union(ST_SetSRID(ST_MakeLine(ST_MakePoint(i,j,k), ST_MakePoint(i+k,j+k,k)),4326))) As the_geom
 		FROM generate_series(-10,50,20) As i
 			CROSS JOIN generate_series(40,70, 25) j
 			CROSS JOIN generate_series(1,2) k
 			)</pgis:gset>
 
-		<pgis:gset ID='MultiPolySet3D' GeometryType='MULTIPOLYGON'>(SELECT ST_Multi(ST_Union(s.the_geom)) As the_geom
-		FROM (SELECT ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_SetSRID(ST_MakePointM(i+m,j,m),4326),ST_SetSRID(ST_MakePointM(j+m,i-m,m),4326)),ST_SetSRID(ST_MakePointM(i,j,m),4326)),ST_SetSRID(ST_MakePointM(i+m,j,m),4326)))  As the_geom
+		<pgis:gset ID='MultiPolySet3D' GeometryType='MULTIPOLYGONZ'>(SELECT ST_Multi(ST_Union(s.the_geom)) As the_geom
+		FROM (SELECT ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_SetSRID(ST_MakePoint(i+m,j,m),4326),ST_SetSRID(ST_MakePoint(j+m,i-m,m),4326)),ST_SetSRID(ST_MakePoint(i,j,m),4326)),ST_SetSRID(ST_MakePoint(i+m,j,m),4326)))  As the_geom
 		FROM generate_series(-10,50,20) As i
 			CROSS JOIN generate_series(50,70, 25) As j
 			CROSS JOIN generate_series(1,2) As m
@@ -131,20 +131,21 @@
 			CROSS JOIN generate_series(1,2) As m
 			WHERE NOT(i = j)) As s)</pgis:gset>
 
-		<pgis:gset ID='MultiPolygonMSet' GeometryType='MULTIPOLYGONM'>(SELECT ST_Multi(ST_Union(ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_SetSRID(ST_MakePointM(i+m,j,m),4326),ST_SetSRID(ST_MakePointM(j+m,i-m,m),4326)),ST_SetSRID(ST_MakePointM(i,j,m),4326)),ST_SetSRID(ST_MakePointM(i+m,j,m),4326)))))  As the_geom
-		FROM generate_series(-10,50,20) As i
-			CROSS JOIN generate_series(50,70, 25) As j
-			CROSS JOIN generate_series(1,2) As m
+		<pgis:gset ID='MultiPolygonMSet' GeometryType='MULTIPOLYGONM'>(
+			SELECT ST_GeomFromEWKT('SRID=4326;MULTIPOLYGONM(((0 0 2,10 0 1,10 10 -2,0 10 -5,0 0 -5),(5 5 6,7 5 6,7 7 6,5 7 10,5 5 -2)))')  As the_geom
 			)</pgis:gset>
 
-		<pgis:gset ID="Empty" GeometryType="GEOMETRY">(SELECT ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326) As the_geom
+		<!--These are special case geometries -->
+		<pgis:gset ID="Empty" GeometryType="GEOMETRY" createtable="false">(SELECT ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326) As the_geom
 			UNION ALL SELECT ST_GeomFromText('POLYGON EMPTY',4326) As the_geom
 		)
 		</pgis:gset>
 
-		<pgis:gset ID="NULL" GeometryType="GEOMETRY">(SELECT CAST(Null As geometry) As the_geom)
-		</pgis:gset>
-
+	<!-- TODO: Finish off MULTI list -->
+	</pgis:gardens>
+	<!--This is just a placeholder to hold geometries that will crash server when hitting against some functions
+		We'll fix these crashers in 1.4 -->
+	<pgis:gardencrashers>
 		<pgis:gset ID='CurvePolySet' GeometryType='CURVEPOLYGON'>(SELECT ST_LineToCurve(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j))  As the_geom
 				FROM generate_series(-10,50,10) As i
 					CROSS JOIN generate_series(40,70, 20) As j
@@ -153,13 +154,7 @@
 				FROM generate_series(-10,50,10) As i
 					CROSS JOIN generate_series(40,70, 20) As j
 					ORDER BY i, j, i*j)</pgis:gset>
-
-
-	<!-- TODO: Finish off MULTI list -->
-	</pgis:gardens>
-	<!--This is just a placeholder to hold geometries that will crash server when hitting against some functions
-		We'll fix these crashers in 1.4 -->
-	<pgis:gardencrashers>
+		<pgis:gset ID="NULL" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom)</pgis:gset>
 
 	</pgis:gardencrashers>
 
@@ -177,6 +172,8 @@
 				<xsl:variable name='fndef'><xsl:value-of select="funcdef"/></xsl:variable>
 				<xsl:variable name='numparams'><xsl:value-of select="count(paramdef/parameter)" /></xsl:variable>
 				<xsl:variable name='numparamgeoms'><xsl:value-of select="count(paramdef/type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'bytea')]) + count(paramdef/parameter[contains(text(),'WKT')])" /></xsl:variable>
+				<xsl:variable name='numparamgeogs'><xsl:value-of select="count(paramdef/type[contains(text(),'geography')] )" /></xsl:variable>
+
 				<!-- For each function prototype generate a test sql statement -->
 				<xsl:choose>
 <!--Test functions that take no arguments or take no geometries -->
@@ -189,13 +186,21 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 <!-- put functions that take only one geometry no need to cross with another geom collection, these are unary geom, aggregates, and so forth -->
 	<xsl:when test="$numparamgeoms = '1' and contains($fninclude,funcdef/function)" >
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
-	SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@GeometryType" />';
-	BEGIN; <!-- If output is geometry show ewkt rep -->
 			<xsl:choose>
-			  <xsl:when test="contains($fndef, 'geometry ')">
+			  <xsl:when test="contains(paramdef, 'geometry ')">
+			  
+	SELECT 'Geometry <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@GeometryType" />';
+	BEGIN; <!-- If output is geometry show ewkt rep -->
 	SELECT ST_AsEWKT(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />))
 			  </xsl:when>
+			  <xsl:when test="contains(paramdef, 'geography ')">
+	SELECT 'Geography <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@GeometryType" />';
+	BEGIN; <!-- If output is geometry show astext rep -->
+	SELECT ST_AsText(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />))
+			  </xsl:when>
 			  <xsl:otherwise>
+	SELECT 'Other <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@GeometryType" />';
+	BEGIN; <!-- If output is geometry show ewkt rep -->
 	SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)
 			  </xsl:otherwise>
 			</xsl:choose>
@@ -211,19 +216,27 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 
 <!--Functions more than 1 args not already covered this will cross every geometry type with every other -->
 	<xsl:when test="contains($fninclude,funcdef/function)">
+	SELECT '<xsl:value-of select="$fnargs" />'
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 	<!--Store first garden sql geometry from -->
 			<xsl:variable name="from1"><xsl:value-of select="." /></xsl:variable>
 			<xsl:variable name='geom1type'><xsl:value-of select="@ID"/></xsl:variable>
-SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" /> against other types';
+SELECT '<xsl:value-of select="$fnname" /> <xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" /> against other types';
 				<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
-	SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
-	BEGIN; <!-- If output is geometry show ewkt rep -->
 			<xsl:choose>
-			  <xsl:when test="contains($fndef, 'geometry ')">
+			  <xsl:when test="$numparamgeogs > '0'">
+				SELECT 'Geography <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
+	BEGIN; <!-- If output is geography show wkt rep -->
+	SELECT ST_AsText(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)), ST_AsText(foo1.the_geom) As ref1_geom, ST_AsText(foo2.the_geom) As ref2_geom
+			  </xsl:when>
+			  <xsl:when test="$numparamgeoms > '0'">
+				SELECT 'Geometry <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
+	BEGIN; <!-- If output is geometry show ewkt rep -->
 	SELECT ST_AsEWKT(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)), ST_AsEWKT(foo1.the_geom) As ref1_geom, ST_AsEWKT(foo2.the_geom) As ref2_geom
 			  </xsl:when>
 			  <xsl:otherwise>
+				SELECT 'Other <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
+	BEGIN; <!-- If output is geography show wkt rep -->
 	SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)
 			  </xsl:otherwise>
 			</xsl:choose>
