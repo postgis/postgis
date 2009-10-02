@@ -7069,7 +7069,7 @@ CREATE INDEX idx_the_geom_26986_parcels
 			  <para>ST_AsBinary is the reverse of <xref linkend="ST_GeomFromWKB" /> for geometry.  Use <xref linkend="ST_GeomFromWKB" /> to convert to a postgis geometry from ST_AsBinary representation.</para>
 			</note>
 
-			<para>Availability: 1.5 geography support was introduced.</para>
+			<para>Availability: 1.5.0 geography support was introduced.</para>
 
 			<para><inlinemediaobject>
 				<imageobject>
@@ -7400,6 +7400,7 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 			<para>Version 6: ST_AsGeoJSON(version, geom, precision,options)</para>
 
 			<para>Availability: 1.3.4</para>
+			<para>Availability: 1.5.0 geography support was introduced.</para>
 			<!-- Optionally mention 3d support -->
 			<para><inlinemediaobject>
 			<imageobject>
@@ -7527,6 +7528,7 @@ st_asgeojson
 
 		<note>
 		  <para>Availability: 1.3.2</para>
+		  <para>Availability: 1.5.0 geography support was introduced.</para>
 		</note>
 
 		<!-- Optionally mention 3d support -->
@@ -10092,6 +10094,8 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 		  <inlinegraphic fileref="images/check.png" />
 		  This method implements the SQL/MM specification: SQL-MM 3: 5.1.23
 		</para>
+		
+		<para>Availability: 1.5.0 geography support was introduced in 1.5.</para>
 	  </refsection>
 
 	  <refsection>
@@ -10107,7 +10111,7 @@ st_distance
 -----------------
 0.00150567726382282
 
--- Geometry example - units in meters (SRID: 26986 Massachusetts state plane meters)
+-- Geometry example - units in meters (SRID: 26986 Massachusetts state plane meters) (most accurate for Massachusetts)
 SELECT ST_Distance(
 			ST_Transform(ST_GeomFromText('POINT(-72.1235 42.3521)',4326),26986), 
 			ST_Transform(ST_GeomFromText('LINESTRING(-72.1260 42.45, -72.123 42.1546)', 4326),26986)
@@ -10116,7 +10120,7 @@ st_distance
 -----------------
 123.797937878454
 
--- Geometry example - units in meters (SRID: 2163 US National Atlas Equal area)
+-- Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (least accurate)
 SELECT ST_Distance(
 			ST_Transform(ST_GeomFromText('POINT(-72.1235 42.3521)',4326),2163), 
 			ST_Transform(ST_GeomFromText('LINESTRING(-72.1260 42.45, -72.123 42.1546)', 4326),2163)
@@ -10126,7 +10130,7 @@ st_distance
 ------------------
 126.664256056812
 
--- Geography example -- same but note units in meters
+-- Geography example -- same but note units in meters 
 SELECT ST_Distance(
 	ST_GeographyFromText('SRID=4326;POINT(-72.1235 42.3521)'), 
 	ST_GeographyFromText('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)')
@@ -10348,7 +10352,7 @@ FROM
 		<refname>ST_DWithin</refname>
 
 		<refpurpose>Returns true if the geometries are within the specified
-		distance of one another</refpurpose>
+		distance of one another. For geometry units are in those of spatial reference and For geography units are in meters.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -10361,6 +10365,19 @@ FROM
 
 			<paramdef><type>geometry </type>
 			<parameter>g2</parameter></paramdef>
+
+			<paramdef><type>double precision </type>
+			<parameter>distance</parameter></paramdef>
+		  </funcprototype>
+		  
+		   <funcprototype>
+			<funcdef>boolean <function>ST_DWithin</function></funcdef>
+
+			<paramdef><type>geography </type>
+			<parameter>gg1</parameter></paramdef>
+
+			<paramdef><type>geography </type>
+			<parameter>gg2</parameter></paramdef>
 
 			<paramdef><type>double precision </type>
 			<parameter>distance</parameter></paramdef>
@@ -10396,6 +10413,8 @@ FROM
 		  <ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
 		  Features Implementation Specification for SQL.</ulink>
 		</para>
+		
+		<para>Availability: 1.5.0 support for geography was introduced</para>
 	  </refsection>
 
 	  <refsection>
