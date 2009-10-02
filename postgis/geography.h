@@ -9,13 +9,29 @@
  *
  **********************************************************************/
 
-/*
+
+/**********************************************************************
 ** Spherical radius.
 ** Moritz, H. (1980). Geodetic Reference System 1980, by resolution of the XVII General Assembly of the IUGG in Canberra.
 ** http://en.wikipedia.org/wiki/Earth_radius
 */
 
 #define WGS84_RADIUS 6371009.0
+/* For reference, the old value used in distance_sphere was 6370986.884258304 */
+
+
+/**********************************************************************
+**  Useful functions for all GEOGRAPHY handlers. 
+*/
+
+/* Convert lwgeom to newly allocated gserialized */
+GSERIALIZED* geography_serialize(LWGEOM *lwgeom);
+/* Check that the typmod matches the flags on the lwgeom */
+void geography_valid_typmod(LWGEOM *lwgeom, int32 typmod);
+/* Check that the type is legal in geography (no curves please!) */
+void geography_valid_type(uchar type);
+
+
 
 /**********************************************************************
 **  GIDX structure. 
@@ -43,11 +59,37 @@ typedef struct
 */
 #define GIDX_MAX_SIZE 36
 
+/*********************************************************************************
+** GIDX support functions.
+**
+** We put the GIDX support here rather than libgeom because it is a specialized 
+** type only used for indexing purposes. It also makes use of some PgSQL
+** infrastructure like the VARSIZE() macros.
+*/
 
-/* Useful functions for all GEOGRAPHY handlers. */
-GSERIALIZED* geography_serialize(LWGEOM *lwgeom);
-void geography_valid_typmod(LWGEOM *lwgeom, int32 typmod);
-void geography_valid_type(uchar type);
-int geography_datum_gidx(Datum geography_datum, GIDX *gidx);
+/* Returns number of dimensions for this GIDX */
+#define GIDX_NDIMS(gidx) ((VARSIZE((gidx)) - VARHDRSZ) / (2 * sizeof(float)))
+/* Minimum accessor. */
+#define GIDX_GET_MIN(gidx, dimension) ((gidx)->c[2*(dimension)])
+/* Maximum accessor. */
+#define GIDX_GET_MAX(gidx, dimension) ((gidx)->c[2*(dimension)+1])
+/* Minimum setter. */
+#define GIDX_SET_MIN(gidx, dimension, value) ((gidx)->c[2*(dimension)] = (value))
+/* Maximum setter. */
+#define GIDX_SET_MAX(gidx, dimension, value) ((gidx)->c[2*(dimension)+1] = (value))
+/* Returns the size required to store a GIDX of requested dimension */
+#define GIDX_SIZE(dimensions) (sizeof(int32) + 2*(dimensions)*sizeof(float))
+/* Allocate a new gidx */
 GIDX* gidx_new(int ndims);
+/* Pull out the gidx bounding box with a absolute minimum system overhead */
+int geography_datum_gidx(Datum geography_datum, GIDX *gidx);
+/* Convert a gidx to a gbox */
 void gbox_from_gidx(GIDX *gidx, GBOX *gbox);
+/* Convert a gbox to a new gidx */
+GIDX* gidx_from_gbox(GBOX box);
+/* Copy a new bounding box into an existing gserialized */
+GSERIALIZED* gidx_insert_into_gserialized(GSERIALIZED *g, GIDX *gidx);
+
+
+
+

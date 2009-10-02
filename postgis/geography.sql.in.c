@@ -412,18 +412,32 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(int4, geography, int4, int4)
 -- Availability: 1.5.0
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
--- Stop calculation and return once distance is less than tolerance
+-- Stop calculation and return immediately once distance is less than tolerance
+-- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION _ST_Distance(geography, geography, float8)
 	RETURNS float8
 	AS 'MODULE_PATHNAME','geography_distance_sphere'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
+-- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Distance(geography, geography)
 	RETURNS float8
 	AS 'SELECT _ST_Distance($1, $2, 0.0)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
+-- Only expands the bounding box, the actual geometry will remain unchanged, use with care.
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION _ST_Expand(geography, float8)
+	RETURNS geography
+	AS 'MODULE_PATHNAME','geography_expand'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_DWithin(geography, geography, float8)
+	RETURNS boolean
+	AS 'SELECT $1 && _ST_Expand($2,$3) AND $2 && _ST_Expand($1,$3) AND _ST_Distance($1, $2, $3) < $3'
+	LANGUAGE 'SQL' IMMUTABLE;
+	
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
 COMMIT;

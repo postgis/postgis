@@ -344,7 +344,7 @@ static int gidx_from_gbox_p(GBOX box, GIDX *a)
 	return G_SUCCESS;
 }
 
-static GIDX* gidx_from_gbox(GBOX box)
+GIDX* gidx_from_gbox(GBOX box)
 {
 	int	ndims;
 	GIDX *a;
@@ -364,6 +364,54 @@ void gbox_from_gidx(GIDX *a, GBOX *gbox)
 	gbox->xmax = (double)GIDX_GET_MAX(a,0); 
 	gbox->ymax = (double)GIDX_GET_MAX(a,1); 
 	gbox->zmax = (double)GIDX_GET_MAX(a,2); 
+}
+
+/*
+** Make a copy of a GSERIALIZED, with a new bounding box value embedded. 
+*/
+GSERIALIZED* gidx_insert_into_gserialized(GSERIALIZED *g, GIDX *gidx)
+{
+	int g_ndims = (FLAGS_GET_GEODETIC(g->flags) ? 3 : FLAGS_NDIMS(g->flags));
+	int box_ndims = GIDX_NDIMS(gidx);
+	GSERIALIZED *g_out = NULL;
+	size_t box_size = 2 * g_ndims * sizeof(float);
+	
+	/* The dimensionality of the inputs has to match or we are SOL. */
+	if( g_ndims != box_ndims )
+	{
+		return NULL;
+	}
+	
+	/* Serialized already has room for a box. We just need to copy it and
+	   write the new values into place. */
+	if ( FLAGS_GET_BBOX(g->flags) )
+	{
+		g_out = palloc(VARSIZE(g));
+		memcpy(g_out, g, VARSIZE(g));
+	}
+	/* Serialized has no box. We need to allocate enough space for the old
+	   data plus the box, and leave a gap in the memory segment to write
+	   the new values into.
+	*/
+	else
+	{
+		size_t varsize_new = VARSIZE(g) + box_size;
+		uchar *ptr;
+		g_out = palloc(varsize_new);
+		/* Copy the head of g into place */
+		memcpy(g_out, g, 8);
+		/* Copy the body of g into place after leaving space for the box */
+		ptr = g_out->data;
+		ptr += box_size;
+		memcpy(ptr, g->data, VARSIZE(g) - 8);
+		g_out->flags = FLAGS_SET_BBOX(g_out->flags, 1);
+		SET_VARSIZE(g_out, varsize_new);
+	}
+	
+	/* Now write the gidx values into the memory segement */
+	memcpy(g_out->data, gidx->c, box_size);
+	
+	return g_out;
 }
 
 

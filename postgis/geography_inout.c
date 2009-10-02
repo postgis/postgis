@@ -438,7 +438,7 @@ Datum geography_typmod_out(PG_FUNCTION_ARGS)
 }
 
 /*
-** geography_as_text(*GSERIALIZED) returns cstring
+** geography_as_text(*GSERIALIZED) returns text
 */
 PG_FUNCTION_INFO_V1(geography_as_text);
 Datum geography_as_text(PG_FUNCTION_ARGS)
@@ -485,7 +485,7 @@ Datum geography_as_text(PG_FUNCTION_ARGS)
 
 
 /*
-** geography_as_gml(*GSERIALIZED) returns cstring
+** geography_as_gml(*GSERIALIZED) returns text
 */
 PG_FUNCTION_INFO_V1(geography_as_gml);
 Datum geography_as_gml(PG_FUNCTION_ARGS)
@@ -558,7 +558,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 
 
 /*
-** geography_as_kml(*GSERIALIZED) returns cstring
+** geography_as_kml(*GSERIALIZED) returns text
 */
 PG_FUNCTION_INFO_V1(geography_as_kml);
 Datum geography_as_kml(PG_FUNCTION_ARGS)
@@ -614,7 +614,7 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 
 
 /*
-** geography_as_svg(*GSERIALIZED) returns cstring
+** geography_as_svg(*GSERIALIZED) returns text
 */
 PG_FUNCTION_INFO_V1(geography_as_svg);
 Datum geography_as_svg(PG_FUNCTION_ARGS)
@@ -661,7 +661,7 @@ Datum geography_as_svg(PG_FUNCTION_ARGS)
 
 
 /*
-** geography_as_geojson(*GSERIALIZED) returns cstring
+** geography_as_geojson(*GSERIALIZED) returns text
 */
 PG_FUNCTION_INFO_V1(geography_as_geojson);
 Datum geography_as_geojson(PG_FUNCTION_ARGS)
@@ -767,7 +767,7 @@ Datum geography_from_text(PG_FUNCTION_ARGS)
 }
 
 /*
-** geography_as_binary(*GSERIALIZED) returns *char
+** geography_as_binary(*GSERIALIZED) returns bytea
 */
 PG_FUNCTION_INFO_V1(geography_as_binary);
 Datum geography_as_binary(PG_FUNCTION_ARGS)

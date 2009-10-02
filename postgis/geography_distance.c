@@ -24,10 +24,12 @@
 #include "geography.h"	     /* For utility functions. */
 
 Datum geography_distance_sphere(PG_FUNCTION_ARGS);
+Datum geography_expand(PG_FUNCTION_ARGS);
 
 
 /*
-** geography_in(cstring) returns *GSERIALIZED
+** geography_distance_sphere(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance) 
+** returns double distance in meters
 */
 PG_FUNCTION_INFO_V1(geography_distance_sphere);
 Datum geography_distance_sphere(PG_FUNCTION_ARGS)
@@ -72,6 +74,8 @@ Datum geography_distance_sphere(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 	
+	/* Currently normalizing with a fixed WGS84 radius, in future this
+	   should be the average radius of the SRID in play */
 	distance = distance * WGS84_RADIUS;
 
 	/* Clean up, but not all the way to the point arrays */
@@ -79,6 +83,51 @@ Datum geography_distance_sphere(PG_FUNCTION_ARGS)
 	lwgeom_release(lwgeom2);
 	
 	PG_RETURN_FLOAT8(distance);
+
+}
+
+
+/*
+** geography_expand(GSERIALIZED *g) returns *GSERIALIZED
+**
+** warning, this tricky little function does not expand the 
+** geometry at all, just re-writes bounding box value to be 
+** a bit bigger. only useful when passing the result along to
+** an index operator (&&)
+*/
+PG_FUNCTION_INFO_V1(geography_expand);
+Datum geography_expand(PG_FUNCTION_ARGS)
+{
+	GIDX *gidx = gidx_new(3);
+	GSERIALIZED *g = NULL;
+	GSERIALIZED *g_out = NULL;
+	double distance;
+	float fdistance;
+	int i;
+	
+	/* Get our bounding box out of the geography */
+	geography_datum_gidx(PG_GETARG_DATUM(0), gidx);
+
+	/* Get a pointer to the geography */
+	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	/* Read our distance value and normalize to unit-sphere. */
+	distance = PG_GETARG_FLOAT8(1) / WGS84_RADIUS;
+	fdistance = (float)distance;
+
+	for( i = 0; i < 3; i++ ) 
+	{
+		GIDX_SET_MIN(gidx, i, GIDX_GET_MIN(gidx, i) - fdistance);
+		GIDX_SET_MAX(gidx, i, GIDX_GET_MAX(gidx, i) + fdistance);
+	}
+	
+	g_out = gidx_insert_into_gserialized(g, gidx);
+	pfree(gidx);
+
+	if( g_out == NULL )
+		PG_RETURN_NULL();
+	
+	PG_RETURN_POINTER(g_out);
 
 }
 
