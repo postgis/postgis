@@ -10049,10 +10049,9 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 	  <refnamediv>
 		<refname>ST_Distance</refname>
 
-		<refpurpose>For geometry type Returns the 2-dimensional cartesian minimum distance between two geometries in
-		projected units.  For geography type returns the spherical minimum distance between two geographies (in eventually meters).</refpurpose>
+		<refpurpose>For geometry type Returns the 2-dimensional cartesian minimum distance (based on spatial ref) between two geometries in
+		projected units.  For geography type returns the spherical minimum distance between two geographies in meters.</refpurpose>
 	  </refnamediv>
- <!-- TODO: Take out the eventually meters once Paul has it returning really in meters -->
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
@@ -10079,8 +10078,8 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the 2-dimensional minimum cartesian distance between two geometries in
-		projected units. For geography type returns the minimum distance around spheroid between two geographies (in eventually meters).</para>
+		<para>For geometry type returns the 2-dimensional minimum cartesian distance between two geometries in
+		projected units (spatial ref units). For geography type returns the minimum distance around spheroid between two geographies in meters.</para>
 
 		<para>
 		  <inlinegraphic fileref="images/check.png" />
@@ -10098,17 +10097,52 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>postgis=# SELECT ST_Distance('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry);
-   st_distance
+		<programlisting>
+--Geometry example - units in planar degrees 4326 is WGS 84 long lat unit=degrees
+SELECT ST_Distance(
+		ST_GeomFromText('POINT(-72.1235 42.3521)',4326), 
+		ST_GeomFromText('LINESTRING(-72.1260 42.45, -72.123 42.1546)', 4326)
+	);
+st_distance
 -----------------
- 1.4142135623731
-(1 row)</programlisting>
+0.00150567726382282
+
+-- Geometry example - units in meters (SRID: 26986 Massachusetts state plane meters)
+SELECT ST_Distance(
+			ST_Transform(ST_GeomFromText('POINT(-72.1235 42.3521)',4326),26986), 
+			ST_Transform(ST_GeomFromText('LINESTRING(-72.1260 42.45, -72.123 42.1546)', 4326),26986)
+		);
+st_distance
+-----------------
+123.797937878454
+
+-- Geometry example - units in meters (SRID: 2163 US National Atlas Equal area)
+SELECT ST_Distance(
+			ST_Transform(ST_GeomFromText('POINT(-72.1235 42.3521)',4326),2163), 
+			ST_Transform(ST_GeomFromText('LINESTRING(-72.1260 42.45, -72.123 42.1546)', 4326),2163)
+		);
+	
+st_distance
+------------------
+126.664256056812
+
+-- Geography example -- same but note units in meters
+SELECT ST_Distance(
+	ST_GeographyFromText('SRID=4326;POINT(-72.1235 42.3521)'), 
+	ST_GeographyFromText('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)')
+	);
+		
+st_distance
+------------------
+123.475741346574
+
+</programlisting>
 	  </refsection>
 
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_DWithin"/>, <xref linkend="ST_Distance_Sphere"/>, <xref linkend="ST_Distance_Spheroid"/>, <xref linkend="ST_Max_Distance" /></para>
+		<para><xref linkend="ST_DWithin"/>, <xref linkend="ST_Distance_Sphere"/>, <xref linkend="ST_Distance_Spheroid"/>, <xref linkend="ST_Max_Distance" />, <xref linkend="ST_Transform" /></para>
 	  </refsection>
 	</refentry>
 
