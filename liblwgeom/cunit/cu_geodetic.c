@@ -32,9 +32,9 @@ CU_pSuite register_geodetic_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_gbox_from_spherical_coordinates()", test_gbox_from_spherical_coordinates))  ||
 	    (NULL == CU_add_test(pSuite, "test_gserialized_get_gbox_geocentric()", test_gserialized_get_gbox_geocentric))  ||
 	    (NULL == CU_add_test(pSuite, "test_clairaut()", test_clairaut))  || 
-	    (NULL == CU_add_test(pSuite, "test_edge_intersection()", test_edge_intersection)) ||
+	    (NULL == CU_add_test(pSuite, "test_edge_intersection()", test_edge_intersection))  ||
 	    (NULL == CU_add_test(pSuite, "test_edge_distance_to_point()", test_edge_distance_to_point)) ||
-	    (NULL == CU_add_test(pSuite, "test_edge_distance_to_edge()", test_edge_distance_to_edge)) ||
+	    (NULL == CU_add_test(pSuite, "test_edge_distance_to_edge()", test_edge_distance_to_edge)) || 
 	    (NULL == CU_add_test(pSuite, "test_lwgeom_distance_sphere()", test_lwgeom_distance_sphere)) 
 
 
@@ -265,8 +265,22 @@ void test_edge_intersection(void)
 	GEOGRAPHIC_POINT g;
 	int rv;
 
-	edge_set(-1.0, 0.0, 1.0, 0.0, &e1);
-	edge_set(0.0, -1.0, 0.0, 1.0, &e2);
+	/* Medford case, very short segment vs very long one */
+	e1.start.lat = 0.74123572595649878103;
+	e1.start.lon = -2.1496353191142714145;
+	e1.end.lat = 0.74123631950116664058;
+	e1.end.lon = -2.1496353248304860273;
+	e2.start.lat = 0.73856343764436815924;
+	e2.start.lon = -2.1461493501950630325;
+	e2.end.lat = 0.70971354024834598651;
+	e2.end.lon = 2.1082194552519770703;
+	rv = edge_intersection(e1, e2, &g);
+	CU_ASSERT_EQUAL(rv, LW_FALSE);
+
+	/* Again, this time with a less exact input edge. */
+	edge_set(-123.165031277506, 42.4696787216231, -123.165031605021, 42.4697127292275, &e1);
+	rv = edge_intersection(e1, e2, &g);
+	CU_ASSERT_EQUAL(rv, LW_FALSE);	
 
 	/* Intersection at (0 0) */
 	edge_set(-1.0, 0.0, 1.0, 0.0, &e1);
@@ -479,6 +493,16 @@ void test_lwgeom_distance_sphere(void)
 	lwgeom_calculate_gbox_geodetic(lwg2, &gbox2);
 	d = lwgeom_distance_sphere(lwg1, lwg2, &gbox1, &gbox2, 0.0);	
 	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, 0.00001);
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
+
+	/* Medford test case #1 */
+	lwg1 = lwgeom_from_ewkt("0105000020E610000001000000010200000002000000EF7B8779C7BD5EC0FD20D94B852845400E539C62B9BD5EC0F0A5BE767C284540", PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_ewkt("0106000020E61000000100000001030000000100000007000000280EC3FB8CCA5EC0A5CDC747233C45402787C8F58CCA5EC0659EA2761E3C45400CED58DF8FCA5EC0C37FAE6E1E3C4540AE97B8E08FCA5EC00346F58B1F3C4540250359FD8ECA5EC05460628E1F3C45403738F4018FCA5EC05DC84042233C4540280EC3FB8CCA5EC0A5CDC747233C4540", PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_geodetic(lwg1, &gbox1);
+	lwgeom_calculate_gbox_geodetic(lwg2, &gbox2);
+	d = lwgeom_distance_sphere(lwg1, lwg2, &gbox1, &gbox2, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(d * 6371009.0, 23630.8003, 0.1);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
 

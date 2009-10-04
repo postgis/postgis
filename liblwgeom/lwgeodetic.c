@@ -397,12 +397,12 @@ int edge_point_in_cone(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 	normalize(&vcp);
 	/* The projection of start onto the center defines the minimum similarity */
 	vs_dot_vcp = dot_product(vs, vcp);
-	LWDEBUGF(4,"vs_dot_vcp %.9g",vs_dot_vcp);
+	LWDEBUGF(4,"vs_dot_vcp %.19g",vs_dot_vcp);
 	/* The projection of candidate p onto the center */
 	vp_dot_vcp = dot_product(vp, vcp);
-	LWDEBUGF(4,"vp_dot_vcp %.9g",vp_dot_vcp);
+	LWDEBUGF(4,"vp_dot_vcp %.19g",vp_dot_vcp);
 	/* If p is more similar than start then p is inside the cone */
-	if ( FP_GTEQ(vp_dot_vcp, vs_dot_vcp) )
+	if ( vp_dot_vcp >= vs_dot_vcp )
 	{
 		LWDEBUG(4, "point is in cone");
 		return LW_TRUE;
@@ -575,12 +575,21 @@ int clairaut_geographic(GEOGRAPHIC_POINT start, GEOGRAPHIC_POINT end, GEOGRAPHIC
 int edge_intersection(GEOGRAPHIC_EDGE e1, GEOGRAPHIC_EDGE e2, GEOGRAPHIC_POINT *g)
 {
 	POINT3D ea, eb, v;
+	LWDEBUGF(4, "e1 start(%.20g %.20g) end(%.20g %.20g)", e1.start.lat, e1.start.lon, e1.end.lat, e1.end.lon);
+	LWDEBUGF(4, "e2 start(%.20g %.20g) end(%.20g %.20g)", e2.start.lat, e2.start.lon, e2.end.lat, e2.end.lon);
+	
+	LWDEBUGF(4, "e1 start(%.20g %.20g) end(%.20g %.20g)", rad2deg(e1.start.lon), rad2deg(e1.start.lat), rad2deg(e1.end.lon), rad2deg(e1.end.lat));
+	LWDEBUGF(4, "e2 start(%.20g %.20g) end(%.20g %.20g)", rad2deg(e2.start.lon), rad2deg(e2.start.lat), rad2deg(e2.end.lon), rad2deg(e2.end.lat));
+
 	robust_cross_product(e1.start, e1.end, &ea);
 	normalize(&ea);
 	robust_cross_product(e2.start, e2.end, &eb);
 	normalize(&eb);
+	LWDEBUGF(4, "e1 cross product == POINT(%.8g %.8g %.8g)", ea.x, ea.y, ea.z);
+	LWDEBUGF(4, "e2 cross product == POINT(%.8g %.8g %.8g)", eb.x, eb.y, eb.z);
 	if( FP_EQUALS(fabs(dot_product(ea, eb)), 1.0) )
 	{
+		LWDEBUGF(4, "parallel edges found! dot_product = %.12g", dot_product(ea, eb));
 		/* Parallel (maybe equal) edges! */
 		/* Hack alert, only returning ONE end of the edge right now, most do better later. */
 		if ( edge_contains_point(e1, e2.start) )
@@ -604,13 +613,12 @@ int edge_intersection(GEOGRAPHIC_EDGE e1, GEOGRAPHIC_EDGE e2, GEOGRAPHIC_POINT *
 			return LW_TRUE;
 		}
 	}
-	LWDEBUGF(4, "e1 cross product == POINT(%.8g %.8g %.8g)", ea.x, ea.y, ea.z);
-	LWDEBUGF(4, "e2 cross product == POINT(%.8g %.8g %.8g)", eb.x, eb.y, eb.z);
 	unit_normal(ea, eb, &v);
 	LWDEBUGF(4, "v == POINT(%.8g %.8g %.8g)", v.x, v.y, v.z);
 	g->lat = atan2(v.z, sqrt(v.x * v.x + v.y * v.y));
 	g->lon = atan2(v.y, v.x);
 	LWDEBUGF(4, "g == GPOINT(%.6g %.6g)", g->lat, g->lon);
+	LWDEBUGF(4, "g == POINT(%.12g %.12g)", rad2deg(g->lon), rad2deg(g->lat));
 	if ( edge_contains_point(e1, *g) && edge_contains_point(e2, *g) )
 	{
 		return LW_TRUE;
@@ -1146,8 +1154,10 @@ static int ptarray_point_in_ring(POINTARRAY *pa, POINT2D pt_outside, POINT2D pt_
 
 		/* Does stab line cross, and if so, not on the first point. We except the
 		   first point to avoid double counting crossings at vertices. */
+		LWDEBUG(4,"testing edge crossing");
 		if( edge_intersection(edge, crossing_edge, &g) && ! geographic_point_equals(g, edge.start) )
 		{
+			LWDEBUG(4,"edge crossing found!");
 			count++;
 		}
 	}
@@ -1242,17 +1252,26 @@ static double ptarray_distance_sphere(POINTARRAY *pa1, POINTARRAY *pa2, double t
 			getPoint2d_p(pa2, j, &p);
 			geographic_point_init(p.x, p.y, &(e2.end));
 
+			LWDEBUGF(4, "e1.start == GPOINT(%.6g %.6g) ", e1.start.lat, e1.start.lon);
+			LWDEBUGF(4, "e1.end == GPOINT(%.6g %.6g) ", e1.end.lat, e1.end.lon);
+			LWDEBUGF(4, "e2.start == GPOINT(%.6g %.6g) ", e2.start.lat, e2.start.lon);
+			LWDEBUGF(4, "e2.end == GPOINT(%.6g %.6g) ", e2.end.lat, e2.end.lon);
+
 			if ( edge_intersection(e1, e2, &g) )
 			{
+				LWDEBUG(4,"edge intersection! returning 0.0");
 				return 0.0;
 			}
 			d = edge_distance_to_edge(e1, e2, 0, 0);
+			LWDEBUGF(4,"got edge_distance_to_edge %.8g", d);
 			if( d < distance )
 				distance = d;
 			if( d < tolerance )
 				return distance;
 		}
 	}
+	LWDEBUGF(4,"finished all loops, returning %.8g", distance);
+	
 	return distance;
 }
 
@@ -1269,6 +1288,8 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX *gbox1, GBO
 	assert(lwgeom1);
 	assert(lwgeom2);
 	
+	LWDEBUGF(4, "entered function, tolerance %.8g", tolerance);
+
 	/* What's the distance to an empty geometry? We don't know. */
 	if( lwgeom_is_empty(lwgeom1) || lwgeom_is_empty(lwgeom2) )
 	{
@@ -1369,19 +1390,25 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX *gbox1, GBO
 		}
 		getPoint2d_p(lwline->points, 0, &p);
 
+		LWDEBUG(4, "checking if a point of line is in polygon");
+
 		/* Point in polygon implies zero distance */
 		if( lwpoly_covers_point2d(lwpoly, gbox, p) )
 			return 0.0;
-		
+
+		LWDEBUG(4, "checking ring distances");
+
 		/* Not contained, so what's the actual distance? */
 		for( i = 0; i < lwpoly->nrings; i++ )
 		{
 			double ring_distance = ptarray_distance_sphere(lwpoly->rings[i], lwline->points, tolerance);
+			LWDEBUGF(4, "ring[%d] ring_distance = %.8g", i, ring_distance);
 			if( ring_distance < distance )
 				distance = ring_distance;
 			if( distance < tolerance )
 				return distance;
 		}
+		LWDEBUGF(4, "all rings checked, returning distance = %.8g", distance);
 		return distance;
 
 	}
@@ -1485,6 +1512,7 @@ int lwpoly_covers_point2d(const LWPOLY *poly, GBOX *gbox, POINT2D pt_to_test)
 	/* Nulls and empties don't contain anything! */
 	if( ! poly || lwgeom_is_empty((LWGEOM*)poly) )
 	{
+		LWDEBUG(4,"returning false, geometry is empty or null");
 		return LW_FALSE;
 	}
 
@@ -1494,23 +1522,38 @@ int lwpoly_covers_point2d(const LWPOLY *poly, GBOX *gbox, POINT2D pt_to_test)
 	pt_outside.x = rad2deg(g.lon);
 	pt_outside.y = rad2deg(g.lat);
 
+	LWDEBUGF(4, "pt_outside POINT(%.8g %.8g)", pt_outside.x, pt_outside.y);
+	LWDEBUGF(4, "pt_to_test POINT(%.8g %.8g)", pt_to_test.x, pt_to_test.y);
+	LWDEBUGF(4, "polygon %s", lwgeom_to_ewkt((LWGEOM*)poly, PARSER_CHECK_NONE));
+	LWDEBUGF(4, "gbox %s", gbox_to_string(gbox));
+
 	/* Not in outer ring? We're done! */
 	if( ! ptarray_point_in_ring(poly->rings[0], pt_outside, pt_to_test) )
 	{
+		LWDEBUG(4,"returning false, point is outside ring");
 		return LW_FALSE;
 	}
+
+	LWDEBUGF(4, "testing %d rings", poly->nrings);
 	
 	/* But maybe point is in a hole... */
 	for( i = 1; i < poly->nrings; i++ )
 	{
+		LWDEBUGF(4, "ring test loop %d", i);
 		/* Count up hole containment. Odd => outside boundary. */
 		if( ptarray_point_in_ring(poly->rings[i], pt_outside, pt_to_test) )
 			in_hole_count++;
 	}
+
+	LWDEBUGF(4, "in_hole_count == %d", in_hole_count);
 	
-	if( in_hole_count % 2 )
+	if( in_hole_count % 2 ) 
+	{
+		LWDEBUG(4,"returning false, inner ring containment count is odd");
 		return LW_FALSE;
-		
+	}
+
+	LWDEBUG(4,"returning true, inner ring containment count is even");
 	return LW_TRUE;
 }
 

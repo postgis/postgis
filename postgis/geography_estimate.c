@@ -16,6 +16,31 @@
 
 #include "lwgeom_pg.h"
 
+/* Prototypes */
+Datum geography_gist_selectivity(PG_FUNCTION_ARGS);
+Datum geography_gist_join_selectivity(PG_FUNCTION_ARGS);
+Datum geography_analyze(PG_FUNCTION_ARGS);
+
+
+/**
+* Place holder selectivity calculations to make the index work in
+* the absence of real selectivity calculations.
+*/
+
+#define DEFAULT_GEOGRAPHY_SEL 0.000005
+
+PG_FUNCTION_INFO_V1(geography_gist_selectivity);
+Datum geography_gist_selectivity(PG_FUNCTION_ARGS)
+{
+	PG_RETURN_FLOAT8(DEFAULT_GEOGRAPHY_SEL);
+}
+
+PG_FUNCTION_INFO_V1(geography_gist_join_selectivity);
+Datum geography_gist_join_selectivity(PG_FUNCTION_ARGS)
+{
+	PG_RETURN_FLOAT8(DEFAULT_GEOGRAPHY_SEL);
+}
+
 
 /**
  * This function is called by the analyze function iff

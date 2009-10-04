@@ -228,9 +228,9 @@ CREATE OR REPLACE FUNCTION geography_overlaps(geography, geography)
 -- Availability: 1.5.0
 CREATE OPERATOR && (
 	LEFTARG = geography, RIGHTARG = geography, PROCEDURE = geography_overlaps,
-	COMMUTATOR = '&&'
---	,RESTRICT = geography_gist_selectivity, 
---	JOIN = geography_gist_join_selectivity
+	COMMUTATOR = '&&',
+	RESTRICT = geography_gist_selectivity, 
+	JOIN = geography_gist_join_selectivity
 );
 
 

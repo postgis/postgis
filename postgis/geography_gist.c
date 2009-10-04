@@ -196,7 +196,7 @@ static float gidx_volume(GIDX *a)
 	int i;
 	if ( a == NULL ) 
 	{
-		elog(ERROR, "gidx_volume received a null argument");
+/*		elog(ERROR, "gidx_volume received a null argument"); */
 		return 0.0;
 	}
 	result = GIDX_GET_MAX(a,0) - GIDX_GET_MIN(a,0);
