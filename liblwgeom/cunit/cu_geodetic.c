@@ -282,6 +282,19 @@ void test_edge_intersection(void)
 	rv = edge_intersection(e1, e2, &g);
 	CU_ASSERT_EQUAL(rv, LW_FALSE);	
 
+	/* Second Medford case, very short segment vs very long one 
+	e1.start.lat = 0.73826546728290887156;
+	e1.start.lon = -2.14426380171833042;
+	e1.end.lat = 0.73826545883786642843;
+	e1.end.lon = -2.1442638997530165668;
+	e2.start.lat = 0.73775469118192538165;
+	e2.start.lon = -2.1436035534281718817;
+	e2.end.lat = 0.71021099548296817705;
+	e2.end.lon = 2.1065275171200439353;
+	rv = edge_intersection(e1, e2, &g);
+	CU_ASSERT_EQUAL(rv, LW_FALSE);
+	*/
+
 	/* Intersection at (0 0) */
 	edge_set(-1.0, 0.0, 1.0, 0.0, &e1);
 	edge_set(0.0, -1.0, 0.0, 1.0, &e2);
