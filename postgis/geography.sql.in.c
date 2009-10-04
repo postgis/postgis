@@ -220,6 +220,18 @@ CREATE OR REPLACE FUNCTION geography_gist_decompress(internal)
 	LANGUAGE 'C';
 
 -- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION geography_gist_selectivity (internal, oid, internal, int4)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'geography_gist_selectivity'
+	LANGUAGE 'C';
+
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION geography_gist_join_selectivity(internal, oid, internal, smallint)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'geography_gist_join_selectivity'
+	LANGUAGE 'C';
+
+-- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_overlaps(geography, geography) 
 	RETURNS boolean 
 	AS 'MODULE_PATHNAME' ,'geography_overlaps'
