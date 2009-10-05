@@ -236,7 +236,7 @@ SELECT '<xsl:value-of select="$fnname" /> <xsl:text> </xsl:text><xsl:value-of se
 			  </xsl:when>
 			  <xsl:otherwise>
 				SELECT 'Other <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
-	BEGIN; <!-- If output is geography show wkt rep -->
+	BEGIN; 
 	SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)
 			  </xsl:otherwise>
 			</xsl:choose>
@@ -256,7 +256,6 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 		</xsl:for-each>
 	</xsl:template>
 
-	<!--macro to replace func args with dummy var args -->
 	<!--macro to replace func args with dummy var args -->
 	<xsl:template name="replaceparams">
 		<xsl:param name="func" />
@@ -284,8 +283,14 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="(contains(type,'box') or type = 'geometry' or type = 'geometry ' or contains(type,'geometry set')) and (position() = 1 or count($func/paramdef/type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1')">
 						<xsl:text>foo1.the_geom</xsl:text>
 					</xsl:when>
+					<xsl:when test="(type = 'geography' or type = 'geography ' or contains(type,'geography set')) and (position() = 1 or count($func/paramdef/type[contains(text(),'geography')]) )">
+						<xsl:text>geography(foo1.the_geom)</xsl:text>
+					</xsl:when>
 					<xsl:when test="contains(type,'box') or type = 'geometry' or type = 'geometry '">
 						<xsl:text>foo2.the_geom</xsl:text>
+					</xsl:when>
+					<xsl:when test="type = 'geography' or type = 'geography '">
+						<xsl:text>geography(foo2.the_geom)</xsl:text>
 					</xsl:when>
 					<xsl:when test="contains(type, 'geometry[]') and count($func/paramdef/type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1'">
 						ARRAY[foo1.the_geom]

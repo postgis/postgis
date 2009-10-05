@@ -330,7 +330,6 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 	</xsl:template>
 
 	<!--macro to replace func args with dummy var args -->
-	<!--macro to replace func args with dummy var args -->
 	<xsl:template name="replaceparams">
 		<xsl:param name="func" />
 		<xsl:for-each select="$func">
