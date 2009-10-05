@@ -317,9 +317,9 @@ void test_edge_intersection(void)
 	point_rad2deg(&g);
 #if 0
 	printf("\n");
-	printf("LINESTRING(%.8g %.8g, %.8g %.8g)\n", e1.start.lon,  e1.start.lat, e1.end.lon,  e1.end.lat);
-	printf("LINESTRING(%.8g %.8g, %.8g %.8g)\n", e2.start.lon,  e2.start.lat, e2.end.lon,  e2.end.lat);
-	printf("g = (%.9g %.9g)\n", g.lon, g.lat);
+	printf("LINESTRING(%.15g %.15g, %.15g %.15g)\n", e1.start.lon,  e1.start.lat, e1.end.lon,  e1.end.lat);
+	printf("LINESTRING(%.15g %.15g, %.15g %.15g)\n", e2.start.lon,  e2.start.lat, e2.end.lon,  e2.end.lat);
+	printf("g = (%.15g %.15g)\n", g.lon, g.lat);
 	printf("rv = %d\n", rv);
 #endif
 	CU_ASSERT_DOUBLE_EQUAL(g.lon, 0.0, 0.00001);
@@ -332,9 +332,9 @@ void test_edge_intersection(void)
 	point_rad2deg(&g);
 #if 0
 	printf("\n");
-	printf("LINESTRING(%.8g %.8g, %.8g %.8g)\n", e1.start.lon,  e1.start.lat, e1.end.lon,  e1.end.lat);
-	printf("LINESTRING(%.8g %.8g, %.8g %.8g)\n", e2.start.lon,  e2.start.lat, e2.end.lon,  e2.end.lat);
-	printf("g = (%.9g %.9g)\n", g.lon, g.lat);
+	printf("LINESTRING(%.15g %.15g, %.15g %.15g)\n", e1.start.lon,  e1.start.lat, e1.end.lon,  e1.end.lat);
+	printf("LINESTRING(%.15g %.15g, %.15g %.15g)\n", e2.start.lon,  e2.start.lat, e2.end.lon,  e2.end.lat);
+	printf("g = (%.15g %.15g)\n", g.lon, g.lat);
 	printf("rv = %d\n", rv);
 #endif
 	CU_ASSERT_DOUBLE_EQUAL(g.lat, 0.0, 0.00001);
