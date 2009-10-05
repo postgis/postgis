@@ -4168,7 +4168,7 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
 			<imageobject>
 			  <imagedata fileref="images/check.png" />
 			</imageobject>
-		  </inlinemediaobject> This method implements the <ulink
+		  </inlinemediaobject> This method implements the concept of validity expressed in the <ulink
 		url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
 		Implementation Specification for SQL.</ulink></para>
 
