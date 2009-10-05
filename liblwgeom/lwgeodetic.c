@@ -352,6 +352,7 @@ void y_to_z(POINT3D *p)
 	p->y = tmp;
 }
 
+
 /**
 * Returns true if the point p is on the great circle plane.
 * Forms the scalar triple product of A,B,p and if the volume of the
@@ -371,7 +372,7 @@ int edge_point_on_plane(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 	LWDEBUGF(4,"dot product %.9g",w);
 	if ( FP_IS_ZERO(w) )
 	{
-		LWDEBUG(4, "point is on plane");
+		LWDEBUG(4, "point is on plane (dot product is zero)");
 		return LW_TRUE;
 	}
 	LWDEBUG(4, "point is not on plane");
@@ -414,22 +415,112 @@ int edge_point_in_cone(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 /**
 * True if the longitude of p is within the range of the longitude of the ends of e
 */
-int edge_contains_longitude(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
+int edge_contains_coplanar_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 {
+	GEOGRAPHIC_EDGE g;
+	GEOGRAPHIC_POINT q;
+	double slon = fabs(e.start.lon) + fabs(e.end.lon);
+	double dlon = fabs(fabs(e.start.lon) - fabs(e.end.lon));
+	double slat = e.start.lat + e.end.lat;
+
 	LWDEBUGF(4, "e.start == GPOINT(%.6g %.6g) ", e.start.lat, e.start.lon);
 	LWDEBUGF(4, "e.end == GPOINT(%.6g %.6g) ", e.end.lat, e.end.lon);
 	LWDEBUGF(4, "p == GPOINT(%.6g %.6g) ", p.lat, p.lon);
-	if ( e.start.lon < p.lon && p.lon < e.end.lon )
+	
+	/* Copy values into working registers */
+	g = e;
+	q = p;
+
+	/* Vertical plane, we need to do this calculation in latitude */
+	if( FP_EQUALS( g.start.lon, g.end.lon ) )
 	{
-		LWDEBUG(4, "returning TRUE");
+		LWDEBUG(4, "vertical plane, we need to do this calculation in latitude");
+		/* Supposed to be co-planar... */
+		if ( ! FP_EQUALS( q.lon, g.start.lon ) )
+			return LW_FALSE;
+
+		if ( ( g.start.lat <= q.lat && q.lat <= g.end.lat ) || 
+		     ( g.end.lat <= q.lat && q.lat <= g.start.lat ) )
+		{
+			return LW_TRUE;
+		}
+		else
+		{
+			return LW_FALSE;
+		}
+	}
+
+	/* Over the pole, we need normalize latitude and do this calculation in latitude */
+	if ( FP_EQUALS( slon, M_PI ) && ( signum(g.start.lon) != signum(g.end.lon) || FP_EQUALS(dlon, M_PI) ) )
+	{
+		LWDEBUG(4, "over the pole...");
+		/* Antipodal, everything (or nothing?) is inside */
+		if ( FP_EQUALS( slat, 0.0 ) )
+			return LW_TRUE;
+
+		/* Point *is* the north pole */
+		if ( slat > 0.0 && FP_EQUALS(q.lat, M_PI_2 ) )
+			return LW_TRUE;
+		
+		/* Point *is* the south pole */
+		if ( slat < 0.0 && FP_EQUALS(q.lat, -1.0 * M_PI_2) )
+			return LW_TRUE;
+
+		LWDEBUG(4, "coplanar?...");
+
+		/* Supposed to be co-planar... */
+		if ( ! FP_EQUALS( q.lon, g.start.lon ) )
+			return LW_FALSE;
+
+		LWDEBUG(4, "north or south?...");
+				
+		/* Over north pole, test based on south pole */
+		if ( slat > 0.0 )
+		{
+			LWDEBUG(4, "over the north pole...");
+			if( q.lat > FP_MIN(g.start.lat, g.end.lat) )
+				return LW_TRUE;
+			else 
+				return LW_FALSE;
+		}
+		else
+		/* Over south pole, test based on north pole */
+		{
+			LWDEBUG(4, "over the south pole...");
+			if( q.lat < FP_MAX(g.start.lat, g.end.lat) )
+				return LW_TRUE;
+			else 
+				return LW_FALSE;
+		}			
+	}
+
+	/* Dateline crossing, flip everything to the opposite hemisphere */
+	else if( slon > M_PI && ( signum(g.start.lon) != signum(g.end.lon) ) )
+	{
+		LWDEBUG(4, "crosses dateline, flip longitudes...");
+		if ( g.start.lon > 0.0 )
+			g.start.lon -= M_PI;
+		else
+			g.start.lon += M_PI;
+		if ( g.end.lon > 0.0 )
+			g.end.lon -= M_PI;
+		else
+			g.end.lon += M_PI;
+
+		if ( q.lon > 0.0 )
+			q.lon -= M_PI;
+		else
+			q.lon += M_PI;			
+	}
+
+	if ( ( g.start.lon <= q.lon && q.lon <= g.end.lon ) || 
+	     ( g.end.lon <= q.lon && q.lon <= g.start.lon ) )
+	{
+		LWDEBUG(4, "true, this edge contains point");
 		return LW_TRUE;
 	}
-	if ( e.end.lon < p.lon && p.lon < e.start.lon )
-	{
-		LWDEBUG(4, "returning TRUE");
-		return LW_TRUE;
-	}
-	LWDEBUG(4, "returning FALSE");
+
+	LWDEBUG(4, "false, this edge does not contain point");
 	return LW_FALSE;
 }
 
@@ -483,6 +574,7 @@ double sphere_direction(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e)
 int edge_contains_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 {
 	if ( edge_point_in_cone(e, p) && edge_point_on_plane(e, p) )
+/*	if ( edge_contains_coplanar_point(e, p) && edge_point_on_plane(e, p) ) */
 	{
 		LWDEBUG(4, "point is on edge");
 		return LW_TRUE;
@@ -773,9 +865,7 @@ int edge_calculate_gbox_slow(GEOGRAPHIC_EDGE e, GBOX *gbox)
 	}
 
 	/* Walk along the chord between start and end incrementally, 
-	   normalizing at each step. Only corner case occurs if path
-	   passes through 0,0,0 (as the normalization will return zero)
-	   but the box should always have extrema beyond that. */
+	   normalizing at each step. */
 	geog2cart(e.start, &start);
 	geog2cart(e.end, &end);
 	dx = (end.x - start.x)/steps;

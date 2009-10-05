@@ -282,7 +282,7 @@ void test_edge_intersection(void)
 	rv = edge_intersection(e1, e2, &g);
 	CU_ASSERT_EQUAL(rv, LW_FALSE);	
 
-	/* Second Medford case, very short segment vs very long one 
+	/* Second Medford case, very short segment vs very long one 	
 	e1.start.lat = 0.73826546728290887156;
 	e1.start.lon = -2.14426380171833042;
 	e1.end.lat = 0.73826545883786642843;
@@ -294,7 +294,7 @@ void test_edge_intersection(void)
 	rv = edge_intersection(e1, e2, &g);
 	CU_ASSERT_EQUAL(rv, LW_FALSE);
 	*/
-
+	
 	/* Intersection at (0 0) */
 	edge_set(-1.0, 0.0, 1.0, 0.0, &e1);
 	edge_set(0.0, -1.0, 0.0, 1.0, &e2);
@@ -305,11 +305,13 @@ void test_edge_intersection(void)
 	CU_ASSERT_EQUAL(rv, LW_TRUE);
 
 	/*  No intersection at (0 0) */
+	edge_set(-1.0, 0.0, 1.0, 0.0, &e1);
 	edge_set(0.0, -1.0, 0.0, -2.0, &e2);
 	rv = edge_intersection(e1, e2, &g);
 	CU_ASSERT_EQUAL(rv, LW_FALSE);
 
 	/*  End touches middle of segment at (0 0) */
+	edge_set(-1.0, 0.0, 1.0, 0.0, &e1);
 	edge_set(0.0, -1.0, 0.0, 0.0, &e2);
 	rv = edge_intersection(e1, e2, &g);
 	point_rad2deg(&g);
@@ -318,6 +320,7 @@ void test_edge_intersection(void)
 
 	/*  End touches end of segment at (0 0) */
 	edge_set(0.0, 0.0, 1.0, 0.0, &e1);
+	edge_set(0.0, -1.0, 0.0, 0.0, &e2);
 	rv = edge_intersection(e1, e2, &g);
 	point_rad2deg(&g);
 #if 0
