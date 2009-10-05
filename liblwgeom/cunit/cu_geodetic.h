@@ -34,3 +34,4 @@ void test_edge_distance_to_point(void);
 void test_edge_distance_to_edge(void);
 void test_ptarray_point_in_ring_winding(void);
 void test_lwgeom_distance_sphere(void);
+void test_ptarray_point_in_ring(void);

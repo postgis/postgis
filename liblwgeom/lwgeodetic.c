@@ -677,8 +677,9 @@ int edge_intersection(GEOGRAPHIC_EDGE e1, GEOGRAPHIC_EDGE e2, GEOGRAPHIC_POINT *
 	normalize(&ea);
 	robust_cross_product(e2.start, e2.end, &eb);
 	normalize(&eb);
-	LWDEBUGF(4, "e1 cross product == POINT(%.8g %.8g %.8g)", ea.x, ea.y, ea.z);
-	LWDEBUGF(4, "e2 cross product == POINT(%.8g %.8g %.8g)", eb.x, eb.y, eb.z);
+	LWDEBUGF(4, "e1 cross product == POINT(%.12g %.12g %.12g)", ea.x, ea.y, ea.z);
+	LWDEBUGF(4, "e2 cross product == POINT(%.12g %.12g %.12g)", eb.x, eb.y, eb.z);
+	LWDEBUGF(4, "fabs(dot_product(ea, eb)) == %.14g", fabs(dot_product(ea, eb)));
 	if( FP_EQUALS(fabs(dot_product(ea, eb)), 1.0) )
 	{
 		LWDEBUGF(4, "parallel edges found! dot_product = %.12g", dot_product(ea, eb));
@@ -1218,7 +1219,7 @@ static void gbox_pt_outside(GBOX gbox, POINT3D *pt)
 * to derive one in postgis, or the gbox_pt_outside() function if you don't mind burning CPU cycles
 * building a gbox first).
 */
-static int ptarray_point_in_ring(POINTARRAY *pa, POINT2D pt_outside, POINT2D pt_to_test) 
+int ptarray_point_in_ring(POINTARRAY *pa, POINT2D pt_outside, POINT2D pt_to_test) 
 {
 	GEOGRAPHIC_EDGE crossing_edge, edge;
 	POINT2D p;
@@ -1245,10 +1246,21 @@ static int ptarray_point_in_ring(POINTARRAY *pa, POINT2D pt_outside, POINT2D pt_
 		/* Does stab line cross, and if so, not on the first point. We except the
 		   first point to avoid double counting crossings at vertices. */
 		LWDEBUG(4,"testing edge crossing");
-		if( edge_intersection(edge, crossing_edge, &g) && ! geographic_point_equals(g, edge.start) )
+		if( edge_intersection(edge, crossing_edge, &g) )
 		{
-			LWDEBUG(4,"edge crossing found!");
-			count++;
+			if( ! geographic_point_equals(g, edge.start) )
+			{
+				LWDEBUG(4,"edge crossing found!");
+				count++;
+				if ( geographic_point_equals(g, edge.end) )
+				{
+					LWDEBUG(4,"got end point cross");
+				}
+			}
+			else
+			{
+				LWDEBUG(4,"got start point cross");
+			}
 		}
 	}
 	/* An odd number of crossings implies containment! */
@@ -1664,8 +1676,8 @@ int lwpoly_covers_point2d(const LWPOLY *poly, GBOX *gbox, POINT2D pt_to_test)
 	pt_outside.x = rad2deg(g.lon);
 	pt_outside.y = rad2deg(g.lat);
 
-	LWDEBUGF(4, "pt_outside POINT(%.8g %.8g)", pt_outside.x, pt_outside.y);
-	LWDEBUGF(4, "pt_to_test POINT(%.8g %.8g)", pt_to_test.x, pt_to_test.y);
+	LWDEBUGF(4, "pt_outside POINT(%.18g %.18g)", pt_outside.x, pt_outside.y);
+	LWDEBUGF(4, "pt_to_test POINT(%.18g %.18g)", pt_to_test.x, pt_to_test.y);
 	LWDEBUGF(4, "polygon %s", lwgeom_to_ewkt((LWGEOM*)poly, PARSER_CHECK_NONE));
 	LWDEBUGF(4, "gbox %s", gbox_to_string(gbox));
 
