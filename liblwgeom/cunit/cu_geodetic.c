@@ -34,10 +34,9 @@ CU_pSuite register_geodetic_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_clairaut()", test_clairaut))  || 
 	    (NULL == CU_add_test(pSuite, "test_edge_intersection()", test_edge_intersection))  ||
 	    (NULL == CU_add_test(pSuite, "test_edge_distance_to_point()", test_edge_distance_to_point)) ||
+	    (NULL == CU_add_test(pSuite, "test_ptarray_point_in_ring_winding()", test_ptarray_point_in_ring_winding)) ||
 	    (NULL == CU_add_test(pSuite, "test_edge_distance_to_edge()", test_edge_distance_to_edge)) || 
 	    (NULL == CU_add_test(pSuite, "test_lwgeom_distance_sphere()", test_lwgeom_distance_sphere)) 
-
-
 	)
 	{
 		CU_cleanup_registry();
@@ -531,4 +530,6 @@ void test_lwgeom_distance_sphere(void)
 
 }
 
-
+void test_ptarray_point_in_ring_winding(void)
+{
+}

@@ -1260,6 +1260,58 @@ static int ptarray_point_in_ring(POINTARRAY *pa, POINT2D pt_outside, POINT2D pt_
 	return LW_FALSE;
 }
 
+/**
+* This routine returns LW_TRUE if the point is inside the ring or on the boundary, LW_FALSE otherwise.
+* The pt_outside must be guaranteed to be outside the ring (use the geography_pt_outside() function
+* to derive one in postgis, or the gbox_pt_outside() function if you don't mind burning CPU cycles
+* building a gbox first).
+*/
+int ptarray_point_in_ring_winding(POINTARRAY *pa, POINT2D pt_to_test) 
+{
+	GEOGRAPHIC_POINT gpt;
+	GEOGRAPHIC_EDGE edge1, edge2;
+	POINT3D norm1, norm2;
+	POINT2D p;
+	double wind_number = 0;
+	int i;
+	
+	/* Null input, not enough points for a ring? You ain't closed! */
+	if( ! pa || pa->npoints < 4 ) 
+		return LW_FALSE;
+
+	/* Set up our test point */
+	geographic_point_init(pt_to_test.x, pt_to_test.y, &gpt);
+	edge1.start = gpt;
+	edge2.start = gpt;
+
+	/* Walk every edge and see if the stab line hits it */
+	for( i = 1; i < pa->npoints; i++ )
+	{
+		getPoint2d_p(pa, i-1, &p);
+		geographic_point_init(p.x, p.y, &(edge1.end));
+		getPoint2d_p(pa, i, &p);
+		geographic_point_init(p.x, p.y, &(edge2.end));
+
+		/* Calculate normals to the great circle planes */
+		robust_cross_product(edge1.start, edge1.end, &norm1);
+		robust_cross_product(edge2.start, edge2.end, &norm2);
+		normalize(&norm1);
+		normalize(&norm2);
+		
+		/* Add the wind */
+		wind_number += acos(dot_product(norm1, norm2));
+		
+	}
+
+	if( wind_number > M_PI )
+	{
+		return LW_TRUE;
+	}
+	
+	return LW_FALSE;
+}
+
+
 static double ptarray_distance_sphere(POINTARRAY *pa1, POINTARRAY *pa2, double tolerance)
 {
 	GEOGRAPHIC_EDGE e1, e2;
