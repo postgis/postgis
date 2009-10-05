@@ -10,9 +10,8 @@
 			test more geometries but only against one function.  Useful for intro of new functions or comparing major changes from function of one version of PostGIS to the other
 	 ******************************************************************** -->
 	<xsl:output method="text" />
-<xsl:variable name='testversion'>1.5.0</xsl:variable>
+	<xsl:variable name='testversion'>1.5.0</xsl:variable>
 	<xsl:variable name='fninclude'>ST_Distance ST_DWithin ST_AsBinary</xsl:variable>
-	<!--This is just a place holder to state functions not supported in 1.3 or tested separately -->
 
 	<xsl:variable name='var_srid'>3395</xsl:variable>
 	<xsl:variable name='var_position'>1</xsl:variable>
@@ -20,6 +19,7 @@
 	<xsl:variable name='var_integer2'>5</xsl:variable>
 	<xsl:variable name='var_float1'>0.5</xsl:variable>
 	<xsl:variable name='var_float2'>0.75</xsl:variable>
+	<xsl:variable name='var_distance'>100</xsl:variable>
 	<xsl:variable name='var_version1'>1</xsl:variable>
 	<xsl:variable name='var_version2'>2</xsl:variable>
 	<xsl:variable name='var_NDRXDR'>XDR</xsl:variable>
@@ -159,7 +159,6 @@
 	</pgis:gardencrashers>
 
 	<xsl:template match='/chapter'>
-
 <!-- Start regular function checks excluding operators -->
 		<xsl:for-each select="sect1[not(contains(@id,'Operator'))]/refentry">
 		<xsl:sort select="@id"/>
@@ -171,9 +170,8 @@
 				<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>
 				<xsl:variable name='fndef'><xsl:value-of select="funcdef"/></xsl:variable>
 				<xsl:variable name='numparams'><xsl:value-of select="count(paramdef/parameter)" /></xsl:variable>
-				<xsl:variable name='numparamgeoms'><xsl:value-of select="count(paramdef/type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'bytea')]) + count(paramdef/parameter[contains(text(),'WKT')])" /></xsl:variable>
+				<xsl:variable name='numparamgeoms'><xsl:value-of select="count(paramdef/type[contains(text(),'geometry') or contains(text(),'geography') or contains(text(),'box') or contains(text(), 'bytea')]) + count(paramdef/parameter[contains(text(),'WKT')])" /></xsl:variable>
 				<xsl:variable name='numparamgeogs'><xsl:value-of select="count(paramdef/type[contains(text(),'geography')] )" /></xsl:variable>
-
 				<!-- For each function prototype generate a test sql statement -->
 				<xsl:choose>
 <!--Test functions that take no arguments or take no geometries -->
@@ -216,7 +214,6 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 
 <!--Functions more than 1 args not already covered this will cross every geometry type with every other -->
 	<xsl:when test="contains($fninclude,funcdef/function)">
-	SELECT '<xsl:value-of select="$fnargs" />'
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 	<!--Store first garden sql geometry from -->
 			<xsl:variable name="from1"><xsl:value-of select="." /></xsl:variable>
@@ -227,16 +224,16 @@ SELECT '<xsl:value-of select="$fnname" /> <xsl:text> </xsl:text><xsl:value-of se
 			  <xsl:when test="$numparamgeogs > '0'">
 				SELECT 'Geography <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
 	BEGIN; <!-- If output is geography show wkt rep -->
-	SELECT ST_AsText(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)), ST_AsText(foo1.the_geom) As ref1_geom, ST_AsText(foo2.the_geom) As ref2_geom
+	SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />), ST_AsText(foo1.the_geom) As ref1_geom, ST_AsText(foo2.the_geom) As ref2_geom
 			  </xsl:when>
 			  <xsl:when test="$numparamgeoms > '0'">
 				SELECT 'Geometry <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
 	BEGIN; <!-- If output is geometry show ewkt rep -->
-	SELECT ST_AsEWKT(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)), ST_AsEWKT(foo1.the_geom) As ref1_geom, ST_AsEWKT(foo2.the_geom) As ref2_geom
+	SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />), ST_AsEWKT(foo1.the_geom) As ref1_geom, ST_AsEWKT(foo2.the_geom) As ref2_geom
 			  </xsl:when>
 			  <xsl:otherwise>
 				SELECT 'Other <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
-	BEGIN; 
+	BEGIN; <!-- If output is geography show wkt rep -->
 	SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)
 			  </xsl:otherwise>
 			</xsl:choose>
@@ -265,6 +262,9 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(parameter, 'matrix') or contains(parameter, 'Matrix')">
 						<xsl:value-of select="$var_matrix" />
 					</xsl:when>
+					<xsl:when test="contains(parameter, 'distance')">
+						<xsl:value-of select="$var_distance" />
+					</xsl:when>
 					<xsl:when test="contains(parameter, 'srid')">
 						<xsl:value-of select="$var_srid" />
 					</xsl:when>
@@ -283,7 +283,7 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="(contains(type,'box') or type = 'geometry' or type = 'geometry ' or contains(type,'geometry set')) and (position() = 1 or count($func/paramdef/type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1')">
 						<xsl:text>foo1.the_geom</xsl:text>
 					</xsl:when>
-					<xsl:when test="(type = 'geography' or type = 'geography ' or contains(type,'geography set')) and (position() = 1 or count($func/paramdef/type[contains(text(),'geography')]) )">
+					<xsl:when test="(type = 'geography' or type = 'geography ' or contains(type,'geography set')) and (position() = 1 or count($func/paramdef/type[contains(text(),'geography')]) = '1' )">
 						<xsl:text>geography(foo1.the_geom)</xsl:text>
 					</xsl:when>
 					<xsl:when test="contains(type,'box') or type = 'geometry' or type = 'geometry '">
