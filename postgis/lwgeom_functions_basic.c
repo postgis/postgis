@@ -1944,10 +1944,12 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	PG_LWGEOM *result=NULL;
 	LWGEOM **lwgeoms, *outlwg;
 	unsigned int outtype;
-	int i;
+	int i, count;
 	int SRID=-1;
 	size_t offset;
 	BOX2DFLOAT4 *box=NULL;
+	bits8 *bitmap; 
+	int bitmask;
 
 	POSTGIS_DEBUG(2, "LWGEOM_collect_garray called.");
 
@@ -1985,89 +1987,115 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	 * array. Check input types to form output type.
 	 */
 	lwgeoms = palloc(sizeof(LWGEOM *)*nelems);
+	count = 0;
 	outtype = 0;
 	offset = 0;
+	bitmap = ARR_NULLBITMAP(array);
+	bitmask = 1;
 	for (i=0; i<nelems; i++)
 	{
-		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
-		unsigned int intype = TYPE_GETTYPE(geom->type);
-
-		offset += INTALIGN(VARSIZE(geom));
-
-		lwgeoms[i] = lwgeom_deserialize(SERIALIZED_FORM(geom));
-
-		POSTGIS_DEBUGF(3, "LWGEOM_collect_garray: geom %d deserialized", i);
-
-		if ( ! i )
+		/* Don't do anything for NULL values */ 
+ 		if ((bitmap && (*bitmap & bitmask) != 0) || !bitmap)
 		{
-			/* Get first geometry SRID */
-			SRID = lwgeoms[i]->SRID;
-
-			/* COMPUTE_BBOX WHEN_SIMPLE */
-			if ( lwgeoms[i]->bbox )
+			PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
+			unsigned int intype = TYPE_GETTYPE(geom->type);
+	
+			offset += INTALIGN(VARSIZE(geom));
+	
+			lwgeoms[count] = lwgeom_deserialize(SERIALIZED_FORM(geom));
+	
+			POSTGIS_DEBUGF(3, "LWGEOM_collect_garray: geom %d deserialized", i);
+	
+			if ( ! count )
 			{
-				box = box2d_clone(lwgeoms[i]->bbox);
-			}
-		}
-		else
-		{
-			/* Check SRID homogeneity */
-			if ( lwgeoms[i]->SRID != SRID )
-			{
-				elog(ERROR,
-				     "Operation on mixed SRID geometries");
-				PG_RETURN_NULL();
-			}
-
-			/* COMPUTE_BBOX WHEN_SIMPLE */
-			if ( box )
-			{
-				if ( lwgeoms[i]->bbox )
+				/* Get first geometry SRID */
+				SRID = lwgeoms[count]->SRID;
+	
+				/* COMPUTE_BBOX WHEN_SIMPLE */
+				if ( lwgeoms[count]->bbox )
 				{
-					box->xmin = LW_MIN(box->xmin, lwgeoms[i]->bbox->xmin);
-					box->ymin = LW_MIN(box->ymin, lwgeoms[i]->bbox->ymin);
-					box->xmax = LW_MAX(box->xmax, lwgeoms[i]->bbox->xmax);
-					box->ymax = LW_MAX(box->ymax, lwgeoms[i]->bbox->ymax);
-				}
-				else
-				{
-					pfree(box);
-					box = NULL;
+					box = box2d_clone(lwgeoms[count]->bbox);
 				}
 			}
+			else
+			{
+				/* Check SRID homogeneity */
+				if ( lwgeoms[count]->SRID != SRID )
+				{
+					elog(ERROR,
+					"Operation on mixed SRID geometries");
+					PG_RETURN_NULL();
+				}
+	
+				/* COMPUTE_BBOX WHEN_SIMPLE */
+				if ( box )
+				{
+					if ( lwgeoms[count]->bbox )
+					{
+						box->xmin = LW_MIN(box->xmin, lwgeoms[count]->bbox->xmin);
+						box->ymin = LW_MIN(box->ymin, lwgeoms[count]->bbox->ymin);
+						box->xmax = LW_MAX(box->xmax, lwgeoms[count]->bbox->xmax);
+						box->ymax = LW_MAX(box->ymax, lwgeoms[count]->bbox->ymax);
+					}
+					else
+					{
+						pfree(box);
+						box = NULL;
+					}
+				}
+			}
+
+			lwgeom_dropSRID(lwgeoms[count]);
+			lwgeom_drop_bbox(lwgeoms[count]);
+	
+			/* Output type not initialized */
+			if ( ! outtype )
+			{
+				/* Input is single, make multi */
+				if ( intype < 4 ) outtype = intype+3;
+				/* Input is multi, make collection */
+				else outtype = COLLECTIONTYPE;
+			}
+	
+			/* Input type not compatible with output */
+			/* make output type a collection */
+			else if ( outtype != COLLECTIONTYPE && intype != outtype-3 )
+			{
+				outtype = COLLECTIONTYPE;
+			}
+
+			/* Advance NULL bitmap */
+			if (bitmap)
+			{
+				bitmask <<= 1;
+				if (bitmask == 0x100)
+				{
+					bitmap++;
+					bitmask = 1;
+				}
+			}
+
+			count++;
 		}
-
-
-		lwgeom_dropSRID(lwgeoms[i]);
-		lwgeom_drop_bbox(lwgeoms[i]);
-
-		/* Output type not initialized */
-		if ( ! outtype )
-		{
-			/* Input is single, make multi */
-			if ( intype < 4 ) outtype = intype+3;
-			/* Input is multi, make collection */
-			else outtype = COLLECTIONTYPE;
-		}
-
-		/* Input type not compatible with output */
-		/* make output type a collection */
-		else if ( outtype != COLLECTIONTYPE && intype != outtype-3 )
-		{
-			outtype = COLLECTIONTYPE;
-		}
-
 	}
 
 	POSTGIS_DEBUGF(3, "LWGEOM_collect_garray: outtype = %d", outtype);
 
-	outlwg = (LWGEOM *)lwcollection_construct(
-	             outtype, SRID,
-	             box, nelems, lwgeoms);
-
-	result = pglwgeom_serialize(outlwg);
-
-	PG_RETURN_POINTER(result);
+	/* If we have been passed a complete set of NULLs then return NULL */
+	if (!outtype)
+	{
+		PG_RETURN_NULL();
+	}
+	else
+	{
+		outlwg = (LWGEOM *)lwcollection_construct(
+			outtype, SRID,
+			box, count, lwgeoms);
+	
+		result = pglwgeom_serialize(outlwg);
+	
+		PG_RETURN_POINTER(result);
+	}
 }
 
 /**
