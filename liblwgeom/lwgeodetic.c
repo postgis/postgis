@@ -1182,7 +1182,64 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 */
 static void gbox_pt_outside(GBOX gbox, POINT3D *pt)
 {
+	static double grow = M_PI / 180.0 / 60.0; /* one arc-minute */
 	double d;
+	int i;
+	GBOX ge;
+	POINT3D corners[8];
+	
+	/* Assign our box and expand it slightly. */
+	ge = gbox;
+	ge.xmin -= grow;
+	ge.ymin -= grow;
+	ge.zmin -= grow;
+	ge.xmax += grow;
+	ge.ymax += grow;
+	ge.zmax += grow;
+	
+	/* Build our eight corner points */
+	corners[0].x = ge.xmin;
+	corners[0].y = ge.ymin;
+	corners[0].z = ge.zmin;
+
+	corners[1].x = ge.xmin;
+	corners[1].y = ge.ymax;
+	corners[1].z = ge.zmin;
+
+	corners[2].x = ge.xmin;
+	corners[2].y = ge.ymin;
+	corners[2].z = ge.zmax;
+
+	corners[3].x = ge.xmax;
+	corners[3].y = ge.ymin;
+	corners[3].z = ge.zmin;
+
+	corners[4].x = ge.xmax;
+	corners[4].y = ge.ymax;
+	corners[4].z = ge.zmin;
+
+	corners[5].x = ge.xmax;
+	corners[5].y = ge.ymin;
+	corners[5].z = ge.zmax;
+
+	corners[6].x = ge.xmin;
+	corners[6].y = ge.ymax;
+	corners[6].z = ge.zmax;
+
+	corners[7].x = ge.xmax;
+	corners[7].y = ge.ymax;
+	corners[7].z = ge.zmax;
+
+	for( i = 0; i < 8; i++ )
+	{
+		normalize(&(corners[i]));
+		if( ! gbox_contains_point3d(gbox, corners[i]) )
+		{
+			*pt = corners[i];
+			return;
+		}	
+	}
+
 	pt->x = 1.0;
 	pt->y = 0.0;
 	pt->z = 0.0;
@@ -1265,57 +1322,6 @@ int ptarray_point_in_ring(POINTARRAY *pa, POINT2D pt_outside, POINT2D pt_to_test
 	}
 	/* An odd number of crossings implies containment! */
 	if( count % 2 )
-	{
-		return LW_TRUE;
-	}
-	
-	return LW_FALSE;
-}
-
-/**
-* This routine returns LW_TRUE if the point is inside the ring or on the boundary, LW_FALSE otherwise.
-* The pt_outside must be guaranteed to be outside the ring (use the geography_pt_outside() function
-* to derive one in postgis, or the gbox_pt_outside() function if you don't mind burning CPU cycles
-* building a gbox first).
-*/
-int ptarray_point_in_ring_winding(POINTARRAY *pa, POINT2D pt_to_test) 
-{
-	GEOGRAPHIC_POINT gpt;
-	GEOGRAPHIC_EDGE edge1, edge2;
-	POINT3D norm1, norm2;
-	POINT2D p;
-	double wind_number = 0;
-	int i;
-	
-	/* Null input, not enough points for a ring? You ain't closed! */
-	if( ! pa || pa->npoints < 4 ) 
-		return LW_FALSE;
-
-	/* Set up our test point */
-	geographic_point_init(pt_to_test.x, pt_to_test.y, &gpt);
-	edge1.start = gpt;
-	edge2.start = gpt;
-
-	/* Walk every edge and see if the stab line hits it */
-	for( i = 1; i < pa->npoints; i++ )
-	{
-		getPoint2d_p(pa, i-1, &p);
-		geographic_point_init(p.x, p.y, &(edge1.end));
-		getPoint2d_p(pa, i, &p);
-		geographic_point_init(p.x, p.y, &(edge2.end));
-
-		/* Calculate normals to the great circle planes */
-		robust_cross_product(edge1.start, edge1.end, &norm1);
-		robust_cross_product(edge2.start, edge2.end, &norm2);
-		normalize(&norm1);
-		normalize(&norm2);
-		
-		/* Add the wind */
-		wind_number += acos(dot_product(norm1, norm2));
-		
-	}
-
-	if( wind_number > M_PI )
 	{
 		return LW_TRUE;
 	}
@@ -1447,7 +1453,7 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX *gbox1, GBO
 	/* What's the distance to an empty geometry? We don't know. */
 	if( lwgeom_is_empty(lwgeom1) || lwgeom_is_empty(lwgeom2) )
 	{
-		return -1.0;
+		return 0.0;
 	}
 		
 	type1 = TYPE_GETTYPE(lwgeom1->type);

@@ -31,6 +31,15 @@ int gbox_merge_point3d(POINT3D p, GBOX *gbox)
 	return G_SUCCESS;
 }
 
+int gbox_contains_point3d(GBOX gbox, POINT3D pt)
+{
+	if( gbox.xmin > pt.x || gbox.ymin > pt.y || gbox.zmin > pt.z ||
+	    gbox.xmax < pt.x || gbox.ymax < pt.y || gbox.zmax < pt.z )
+	{
+		return LW_FALSE;
+	}
+	return LW_TRUE;
+}
 
 int gbox_merge(GBOX new_box, GBOX *merge_box)
 {

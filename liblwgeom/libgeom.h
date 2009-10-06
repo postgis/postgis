@@ -406,6 +406,11 @@ extern int gbox_merge(GBOX new_box, GBOX *merged_box);
 extern int gbox_merge_point3d(POINT3D p, GBOX *gbox);
 
 /**
+* Return true if the point is inside the gbox
+*/
+extern int gbox_contains_point3d(GBOX gbox, POINT3D pt);
+
+/**
 * Allocate a string representation of the #GBOX, based on dimensionality of flags.
 */
 extern char* gbox_to_string(GBOX *gbox);

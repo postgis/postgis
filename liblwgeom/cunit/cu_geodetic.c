@@ -556,7 +556,3 @@ void test_lwgeom_distance_sphere(void)
 	lwgeom_free(lwg2);
 
 }
-
-void test_ptarray_point_in_ring_winding(void)
-{
-}
