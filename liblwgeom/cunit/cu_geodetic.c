@@ -34,7 +34,6 @@ CU_pSuite register_geodetic_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_clairaut()", test_clairaut))  || 
 	    (NULL == CU_add_test(pSuite, "test_edge_intersection()", test_edge_intersection))  ||
 	    (NULL == CU_add_test(pSuite, "test_edge_distance_to_point()", test_edge_distance_to_point)) ||
-	    (NULL == CU_add_test(pSuite, "test_ptarray_point_in_ring_winding()", test_ptarray_point_in_ring_winding)) ||
 	    (NULL == CU_add_test(pSuite, "test_edge_distance_to_edge()", test_edge_distance_to_edge)) || 
 	    (NULL == CU_add_test(pSuite, "test_lwgeom_distance_sphere()", test_lwgeom_distance_sphere)) ||
 	    (NULL == CU_add_test(pSuite, "test_ptarray_point_in_ring()", test_ptarray_point_in_ring)) 
@@ -487,7 +486,9 @@ void test_lwgeom_distance_sphere(void)
 	/* Line/line distance, 1 degree apart */
 	lwg1 = lwgeom_from_ewkt("LINESTRING(-30 10, -20 5, -10 3, 0 1)", PARSER_CHECK_NONE);
 	lwg2 = lwgeom_from_ewkt("LINESTRING(-10 -5, -5 0, 5 0, 10 -5)", PARSER_CHECK_NONE);
-	d = lwgeom_distance_sphere(lwg1, lwg2, NULL, NULL, 0.0);	
+	lwgeom_calculate_gbox_geodetic(lwg1, &gbox1);
+	lwgeom_calculate_gbox_geodetic(lwg2, &gbox2);
+	d = lwgeom_distance_sphere(lwg1, lwg2, gbox1, gbox2, 0.0);	
 	CU_ASSERT_DOUBLE_EQUAL(d, M_PI / 180.0, 0.00001);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
@@ -495,7 +496,9 @@ void test_lwgeom_distance_sphere(void)
 	/* Line/line distance, crossing, 0.0 apart */
 	lwg1 = lwgeom_from_ewkt("LINESTRING(-30 10, -20 5, -10 3, 0 1)", PARSER_CHECK_NONE);
 	lwg2 = lwgeom_from_ewkt("LINESTRING(-10 -5, -5 20, 5 0, 10 -5)", PARSER_CHECK_NONE);
-	d = lwgeom_distance_sphere(lwg1, lwg2, NULL, NULL, 0.0);	
+	lwgeom_calculate_gbox_geodetic(lwg1, &gbox1);
+	lwgeom_calculate_gbox_geodetic(lwg2, &gbox2);
+	d = lwgeom_distance_sphere(lwg1, lwg2, gbox1, gbox2, 0.0);	
 	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, 0.00001);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
@@ -503,14 +506,18 @@ void test_lwgeom_distance_sphere(void)
 	/* Line/point distance, 1 degree apart */
 	lwg1 = lwgeom_from_ewkt("POINT(-4 1)", PARSER_CHECK_NONE);
 	lwg2 = lwgeom_from_ewkt("LINESTRING(-10 -5, -5 0, 5 0, 10 -5)", PARSER_CHECK_NONE);
-	d = lwgeom_distance_sphere(lwg1, lwg2, NULL, NULL, 0.0);	
+	lwgeom_calculate_gbox_geodetic(lwg1, &gbox1);
+	lwgeom_calculate_gbox_geodetic(lwg2, &gbox2);
+	d = lwgeom_distance_sphere(lwg1, lwg2, gbox1, gbox2, 0.0);	
 	CU_ASSERT_DOUBLE_EQUAL(d, M_PI / 180.0, 0.00001);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
 
 	lwg1 = lwgeom_from_ewkt("POINT(-4 1)", PARSER_CHECK_NONE);
 	lwg2 = lwgeom_from_ewkt("POINT(-4 -1)", PARSER_CHECK_NONE);
-	d = lwgeom_distance_sphere(lwg1, lwg2, NULL, NULL, 0.0);	
+	lwgeom_calculate_gbox_geodetic(lwg1, &gbox1);
+	lwgeom_calculate_gbox_geodetic(lwg2, &gbox2);
+	d = lwgeom_distance_sphere(lwg1, lwg2, gbox1, gbox2, 0.0);	
 	CU_ASSERT_DOUBLE_EQUAL(d, M_PI / 90.0, 0.00001);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
@@ -520,7 +527,7 @@ void test_lwgeom_distance_sphere(void)
 	lwg2 = lwgeom_from_ewkt("POINT(-1 -1)", PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg1, &gbox1);
 	lwgeom_calculate_gbox_geodetic(lwg2, &gbox2);
-	d = lwgeom_distance_sphere(lwg1, lwg2, &gbox1, &gbox2, 0.0);	
+	d = lwgeom_distance_sphere(lwg1, lwg2, gbox1, gbox2, 0.0);	
 	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, 0.00001);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
@@ -530,7 +537,7 @@ void test_lwgeom_distance_sphere(void)
 	lwg2 = lwgeom_from_ewkt("POINT(-1 -1)", PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg1, &gbox1);
 	lwgeom_calculate_gbox_geodetic(lwg2, &gbox2);
-	d = lwgeom_distance_sphere(lwg1, lwg2, &gbox1, &gbox2, 0.0);	
+	d = lwgeom_distance_sphere(lwg1, lwg2, gbox1, gbox2, 0.0);	
 	CU_ASSERT_DOUBLE_EQUAL(d, M_PI / 180.0, 0.00001);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
@@ -540,7 +547,7 @@ void test_lwgeom_distance_sphere(void)
 	lwg2 = lwgeom_from_ewkt("POINT(2 2)", PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg1, &gbox1);
 	lwgeom_calculate_gbox_geodetic(lwg2, &gbox2);
-	d = lwgeom_distance_sphere(lwg1, lwg2, &gbox1, &gbox2, 0.0);	
+	d = lwgeom_distance_sphere(lwg1, lwg2, gbox1, gbox2, 0.0);	
 	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, 0.00001);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
@@ -550,7 +557,7 @@ void test_lwgeom_distance_sphere(void)
 	lwg2 = lwgeom_from_ewkt("0106000020E61000000100000001030000000100000007000000280EC3FB8CCA5EC0A5CDC747233C45402787C8F58CCA5EC0659EA2761E3C45400CED58DF8FCA5EC0C37FAE6E1E3C4540AE97B8E08FCA5EC00346F58B1F3C4540250359FD8ECA5EC05460628E1F3C45403738F4018FCA5EC05DC84042233C4540280EC3FB8CCA5EC0A5CDC747233C4540", PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg1, &gbox1);
 	lwgeom_calculate_gbox_geodetic(lwg2, &gbox2);
-	d = lwgeom_distance_sphere(lwg1, lwg2, &gbox1, &gbox2, 0.0);
+	d = lwgeom_distance_sphere(lwg1, lwg2, gbox1, gbox2, 0.0);
 	CU_ASSERT_DOUBLE_EQUAL(d * 6371009.0, 23630.8003, 0.1);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);

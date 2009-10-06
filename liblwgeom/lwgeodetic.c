@@ -1441,7 +1441,7 @@ static double ptarray_distance_sphere(POINTARRAY *pa1, POINTARRAY *pa2, double t
 * longitude and latitude. Return immediately when the calulated distance drops
 * below the tolerance (useful for dwithin calculations).
 */
-double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX *gbox1, GBOX *gbox2, double tolerance)
+double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX gbox2, double tolerance)
 {
 	int type1, type2;
 	
@@ -1478,12 +1478,6 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX *gbox1, GBO
 		return ptarray_distance_sphere(pa1, pa2, tolerance);
 	}
 	
-	if( ! gbox1 || ! gbox2 ) 
-	{
-		lwerror("gboxes are required to calculate distances from spherical lwgeoms");
-		return -1.0;
-	}
-	
 	/* Point/Polygon cases, if point-in-poly, return zero, else return distance. */
 	if( ( type1 == POLYGONTYPE && type2 == POINTTYPE ) || 
 	    ( type2 == POLYGONTYPE && type1 == POINTTYPE ) )
@@ -1491,7 +1485,7 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX *gbox1, GBO
 		POINT2D p;
 		LWPOLY *lwpoly;
 		LWPOINT *lwpt;
-		GBOX *gbox;
+		GBOX gbox;
 		double distance = MAXFLOAT;
 		int i;
 		
@@ -1532,7 +1526,7 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX *gbox1, GBO
 		POINT2D p;
 		LWPOLY *lwpoly;
 		LWLINE *lwline;
-		GBOX *gbox;
+		GBOX gbox;
 		double distance = MAXFLOAT;
 		int i;
 		
@@ -1655,19 +1649,13 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX *gbox1, GBO
 * a guaranteed outside point (lon/lat decimal degrees) (calculate with gbox_pt_outside()) 
 * return LW_TRUE if point is inside or on edge of polygon.
 */
-int lwpoly_covers_point2d(const LWPOLY *poly, GBOX *gbox, POINT2D pt_to_test)
+int lwpoly_covers_point2d(const LWPOLY *poly, GBOX gbox, POINT2D pt_to_test)
 {
 	int i;
 	int in_hole_count = 0;
-	POINT3D p;
-	GEOGRAPHIC_POINT g;
+	POINT3D p, q;
+	GEOGRAPHIC_POINT g, gpt_to_test;
 	POINT2D pt_outside;
-
-	if( ! gbox )
-	{
-		lwerror("gbox is required to calculate spherical point-in-poly with lwgeom");
-		return LW_FALSE;
-	}
 	
 	/* Nulls and empties don't contain anything! */
 	if( ! poly || lwgeom_is_empty((LWGEOM*)poly) )
@@ -1676,8 +1664,14 @@ int lwpoly_covers_point2d(const LWPOLY *poly, GBOX *gbox, POINT2D pt_to_test)
 		return LW_FALSE;
 	}
 
+	/* Point not in box? Done! */
+	geographic_point_init(pt_to_test.x, pt_to_test.y, &gpt_to_test);
+	geog2cart(gpt_to_test, &q);
+	if( ! gbox_contains_point3d(gbox, q) )
+		return LW_FALSE;
+	
 	/* Calculate our outside point from the gbox */
-	gbox_pt_outside(*gbox, &p);
+	gbox_pt_outside(gbox, &p);
 	cart2geog(p, &g);
 	pt_outside.x = rad2deg(g.lon);
 	pt_outside.y = rad2deg(g.lat);
