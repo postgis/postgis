@@ -1679,7 +1679,7 @@ int lwpoly_covers_point2d(const LWPOLY *poly, GBOX gbox, POINT2D pt_to_test)
 	LWDEBUGF(4, "pt_outside POINT(%.18g %.18g)", pt_outside.x, pt_outside.y);
 	LWDEBUGF(4, "pt_to_test POINT(%.18g %.18g)", pt_to_test.x, pt_to_test.y);
 	LWDEBUGF(4, "polygon %s", lwgeom_to_ewkt((LWGEOM*)poly, PARSER_CHECK_NONE));
-	LWDEBUGF(4, "gbox %s", gbox_to_string(gbox));
+	LWDEBUGF(4, "gbox %s", gbox_to_string(&gbox));
 
 	/* Not in outer ring? We're done! */
 	if( ! ptarray_point_in_ring(poly->rings[0], pt_outside, pt_to_test) )
