@@ -10,6 +10,18 @@
 # *
 # **********************************************************************
 
+# PGXS information
+#
+# Note that PGXS currently doesn't handle building FE executables, but we need
+# the INSTALL and DESTDIR variables so we can get the correct install paths. 
+# Hence we include the PGXS Makefile here, but ensure that we override the
+# 'all' and 'install' targets with the ones we really want to use below.
+PG_CONFIG = @PGCONFIG@
+PGXS := @PGXS@
+include $(PGXS)
+
+# Set CFLAGS afer PGXS, otherwise it will get overwritten with the PGXS
+# version which is not what we want. 
 CC=@CC@
 CFLAGS=@CFLAGS@ @PICFLAGS@ @WARNFLAGS@
 
@@ -32,16 +44,6 @@ LIBLWGEOM=../liblwgeom/liblwgeom.a
 # GTK includes and libraries
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_LIBS = @GTK_LIBS@
-
-# PGXS information
-#
-# Note that PGXS currently doesn't handle building FE executables, but we need
-# the INSTALL and DESTDIR variables so we can get the correct install paths. 
-# Hence we include the PGXS Makefile here, but ensure that we override the
-# 'all' and 'install' targets with the ones we really want to use below.
-PG_CONFIG = @PGCONFIG@
-PGXS := @PGXS@
-include $(PGXS)
 
 
 # The real parts of the Makefile
