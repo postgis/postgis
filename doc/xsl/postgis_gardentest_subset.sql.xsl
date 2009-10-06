@@ -140,6 +140,9 @@
 			UNION ALL SELECT ST_GeomFromText('POLYGON EMPTY',4326) As the_geom
 		)
 		</pgis:gset>
+		
+		<pgis:gset ID="NULL" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom)</pgis:gset>
+
 
 	<!-- TODO: Finish off MULTI list -->
 	</pgis:gardens>
@@ -154,8 +157,7 @@
 				FROM generate_series(-10,50,10) As i
 					CROSS JOIN generate_series(40,70, 20) As j
 					ORDER BY i, j, i*j)</pgis:gset>
-		<pgis:gset ID="NULL" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom)</pgis:gset>
-
+	
 	</pgis:gardencrashers>
 
 	<xsl:template match='/chapter'>
