@@ -67,7 +67,7 @@ Datum geography_distance_sphere(PG_FUNCTION_ARGS)
 	tolerance = tolerance / WGS84_RADIUS;
 
 	/* Calculate the distance */
-	distance = lwgeom_distance_sphere(lwgeom1, lwgeom2, &gbox1, &gbox2, tolerance);
+	distance = lwgeom_distance_sphere(lwgeom1, lwgeom2, gbox1, gbox2, tolerance);
 
 	/* Something went wrong... should already be eloged */
 	if( distance < 0.0 )

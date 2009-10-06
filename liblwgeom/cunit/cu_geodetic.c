@@ -12,7 +12,7 @@
 
 #include "cu_geodetic.h"
 
-#define RANDOM_TEST 0
+#define RANDOM_TEST 1000
 
 /*
 ** Called from test harness to register the tests in this file.
