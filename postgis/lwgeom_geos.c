@@ -132,7 +132,7 @@ Datum hausdorffdistance(PG_FUNCTION_ARGS)
 	}
 
 	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 0);
+	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_FLOAT8(result);
 }
@@ -175,7 +175,7 @@ Datum hausdorffdistancedensify(PG_FUNCTION_ARGS)
 	}
 
 	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 0);
+	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_FLOAT8(result);
 }
