@@ -991,7 +991,7 @@ Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS)
 	rv = lwline_crossing_direction(l1, l2);
 
 	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 0);
+	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_INT32(rv);
 
