@@ -109,6 +109,327 @@ GEOG_STATS;
 
 
 /**
+ * This function returns an estimate of the selectivity
+ * of a search_box looking at data in the GEOG_STATS
+ * structure.
+ * */
+ /**
+ * TODO: handle box dimension collapses (probably should be handled
+ * by the statistic generator, avoiding GEOG_STATS with collapsed
+ * dimensions)
+ */
+static float8
+estimate_selectivity(GBOX *box, GEOG_STATS *geogstats)
+{
+	int x, y, z;
+	int x_idx_min, x_idx_max, y_idx_min, y_idx_max, z_idx_min, z_idx_max;
+	double intersect_x, intersect_y, intersect_z, AOI;
+	double cell_coverage;
+	double sizex, sizey, sizez;	/* dimensions of histogram */
+	int unitsx, unitsy, unitsz; /* histogram grid size */
+	double value;
+	float overlapping_cells;
+	float avg_feat_cells;
+	double gain;
+	float8 selectivity;
+
+
+	/*
+	 * Search box completely miss histogram extent
+	 */
+	if ( box->xmax < geogstats->xmin || box->xmin > geogstats->xmax ||
+		box->ymax < geogstats->ymin || box->ymin > geogstats->ymax ||
+		box->zmax < geogstats->zmin || box->zmin > geogstats->zmax)
+	{
+		POSTGIS_DEBUG(3, " search_box does not overlaps histogram, returning 0");
+
+		return 0.0;
+	}
+
+	/*
+	 * Search box completely contains histogram extent
+	 */
+	if ( box->xmax >= geogstats->xmax && box->xmin <= geogstats->xmin &&
+		box->ymax >= geogstats->ymax && box->ymin <= geogstats->ymin &&
+		box->zmax >= geogstats->zmax && box->zmin <= geogstats->zmin)
+	{
+		POSTGIS_DEBUG(3, " search_box contains histogram, returning 1");
+
+		return 1.0;
+	}
+
+	sizex = geogstats->xmax - geogstats->xmin;
+	sizey = geogstats->ymax - geogstats->ymin;
+	sizez = geogstats->zmax - geogstats->zmin;
+
+	unitsx = geogstats->unitsx;
+	unitsy = geogstats->unitsy;
+	unitsz = geogstats->unitsz;
+
+	POSTGIS_DEBUGF(3, " histogram has %d unitsx, %d unitsy, %d unitsz", unitsx, unitsy, unitsz);
+	POSTGIS_DEBUGF(3, " histogram geosize is %fx%fx%f", sizex, sizey, sizez);
+
+	/* Work out the coverage depending upon the number of dimensions */
+	switch ((int)geogstats->dims)
+	{
+		case 0:
+		case 1:
+			/* Non-existent or multiple single points */
+			cell_coverage = 1;
+			break;
+
+		case 2:
+			/* Work in areas for 2 dimensions: we have to work slightly
+			   harder here to work out which 2 dimensions are valid */
+			
+			if (sizez == 0)
+				/* X and Y */
+				cell_coverage = (sizex * sizey) / (unitsx * unitsy);
+			else if (sizey == 0)
+				/* X and Z */
+				cell_coverage = (sizex * sizez) / (unitsx * unitsz);
+			else if (sizex == 0)
+				/* Y and Z */
+				cell_coverage = (sizey * sizez) / (unitsy * unitsz);
+			break;
+
+		case 3:
+			/* Work in volumes for 3 dimensions */
+			cell_coverage = (sizex * sizey * sizey) / (unitsx * unitsy * unitsz);
+			break;
+	}
+
+	value = 0;
+
+	/* Find first overlapping x unit */
+	x_idx_min = (box->xmin-geogstats->xmin) / sizex * unitsx;
+	if (x_idx_min < 0)
+	{
+		POSTGIS_DEBUGF(3, " search_box overlaps %d x units outside (low) of histogram grid", -x_idx_min);
+
+		/* should increment the value somehow */
+		x_idx_min = 0;
+	}
+	if (x_idx_min >= unitsx)
+	{
+		POSTGIS_DEBUGF(3, " search_box overlaps %d x units outside (high) of histogram grid", x_idx_min-unitsx+1);
+
+		/* should increment the value somehow */
+		x_idx_min = unitsx-1;
+	}
+
+	/* Find first overlapping y unit */
+	y_idx_min = (box->ymin-geogstats->ymin) / sizey * unitsy;
+	if (y_idx_min <0)
+	{
+		POSTGIS_DEBUGF(3, " search_box overlaps %d y units outside (low) of histogram grid", -y_idx_min);
+
+		/* should increment the value somehow */
+		y_idx_min = 0;
+	}
+	if (y_idx_min >= unitsy)
+	{
+		POSTGIS_DEBUGF(3, " search_box overlaps %d y units outside (high) of histogram grid", y_idx_min-unitsy+1);
+
+		/* should increment the value somehow */
+		y_idx_min = unitsy-1;
+	}
+
+	/* Find first overlapping z unit */
+	z_idx_min = (box->zmin-geogstats->zmin) / sizez * unitsz;
+	if (z_idx_min <0)
+	{
+		POSTGIS_DEBUGF(3, " search_box overlaps %d z units outside (low) of histogram grid", -z_idx_min);
+
+		/* should increment the value somehow */
+		z_idx_min = 0;
+	}
+	if (z_idx_min >= unitsz)
+	{
+		POSTGIS_DEBUGF(3, " search_box overlaps %d z units outside (high) of histogram grid", z_idx_min-unitsz+1);
+
+		/* should increment the value somehow */
+		z_idx_min = unitsz-1;
+	}
+
+	/* Find last overlapping x unit */
+	x_idx_max = (box->xmax-geogstats->xmin) / sizex * unitsx;
+	if (x_idx_max <0)
+	{
+		/* should increment the value somehow */
+		x_idx_max = 0;
+	}
+	if (x_idx_max >= unitsx )
+	{
+		/* should increment the value somehow */
+		x_idx_max = unitsx-1;
+	}
+
+	/* Find last overlapping y unit */
+	y_idx_max = (box->ymax-geogstats->ymin) / sizey * unitsy;
+	if (y_idx_max <0)
+	{
+		/* should increment the value somehow */
+		y_idx_max = 0;
+	}
+	if (y_idx_max >= unitsy)
+	{
+		/* should increment the value somehow */
+		y_idx_max = unitsy-1;
+	}
+
+	/* Find last overlapping z unit */
+	z_idx_max = (box->zmax-geogstats->zmin) / sizez * unitsz;
+	if (z_idx_max <0)
+	{
+		/* should increment the value somehow */
+		z_idx_max = 0;
+	}
+	if (z_idx_max >= unitsz)
+	{
+		/* should increment the value somehow */
+		z_idx_max = unitsz-1;
+	}
+
+	/*
+	 * the {x,y,z}_idx_{min,max}
+	 * define the grid squares that the box intersects
+	 */
+	for (z=z_idx_min; z<=z_idx_max; z++)
+	{
+		for (y=y_idx_min; y<=y_idx_max; y++)
+		{
+			for (x=x_idx_min; x<=x_idx_max; x++)
+			{
+				double val;
+				double gain;
+	
+				val = geogstats->value[x + y * unitsx + z * unitsx * unitsy];
+	
+				/*
+				* Of the cell value we get
+				* only the overlap fraction.
+				*/
+	
+				intersect_x = LW_MIN(box->xmax, geogstats->xmin + (x+1) * sizex / unitsx) - LW_MAX(box->xmin, geogstats->xmin + x * sizex / unitsx);
+				intersect_y = LW_MIN(box->ymax, geogstats->ymin + (y+1) * sizey / unitsy) - LW_MAX(box->ymin, geogstats->ymin + y * sizey / unitsy);
+				intersect_z = LW_MIN(box->zmax, geogstats->zmin + (z+1) * sizez / unitsz) - LW_MAX(box->zmin, geogstats->zmin + z * sizez / unitsz);
+
+
+				switch((int)geogstats->dims)
+				{
+					case 0:
+						AOI = 1;
+					case 1:
+						/* Working in 1 dimension: work out the value we need
+						   for AOI */
+						if (sizex == 0 && sizey == 0)
+							AOI = intersect_z;
+						else if (sizex == 0 && sizez == 0)
+							AOI = intersect_y;
+						else if (sizey == 0 && sizez == 0)
+							AOI = intersect_x;
+						break;
+
+					case 2:
+						/* Working in 2 dimensions: work out which 2 values we
+						   need for AOI */
+						if (sizex == 0)
+							AOI = intersect_y * intersect_z;
+						else if (sizey == 0)
+							AOI = intersect_x * intersect_z;
+						else if (sizez == 0)
+							AOI = intersect_x * intersect_y;
+						break;
+
+					case 3:
+						/* Working in 3 dimensions: use all 3 values */
+						AOI = intersect_x * intersect_y * intersect_z;
+						break;
+				}
+
+				gain = AOI/cell_coverage;
+	
+				POSTGIS_DEBUGF(4, " [%d,%d,%d] cell val %.15f",
+							x, y, z, val);
+				POSTGIS_DEBUGF(4, " [%d,%d,%d] AOI %.15f",
+							x, y, z, AOI);
+				POSTGIS_DEBUGF(4, " [%d,%d,%d] gain %.15f",
+							x, y, z, gain);
+	
+				val *= gain;
+	
+				POSTGIS_DEBUGF(4, " [%d,%d,%d] adding %.15f to value",
+							x, y, z, val);
+	
+				value += val;
+			}
+		}
+	}
+
+
+	/*
+	 * If the search_box is a point, it will
+	 * overlap a single cell and thus get
+	 * it's value, which is the fraction of
+	 * samples (we can presume of row set also)
+	 * which bumped to that cell.
+	 *
+	 * If the table features are points, each
+	 * of them will overlap a single histogram cell.
+	 * Our search_box value would then be correctly
+	 * computed as the sum of the bumped cells values.
+	 *
+	 * If both our search_box AND the sample features
+	 * overlap more then a single histogram cell we
+	 * need to consider the fact that our sum computation
+	 * will have many duplicated included. E.g. each
+	 * single sample feature would have contributed to
+	 * raise the search_box value by as many times as
+	 * many cells in the histogram are commonly overlapped
+	 * by both searc_box and feature. We should then
+	 * divide our value by the number of cells in the virtual
+	 * 'intersection' between average feature cell occupation
+	 * and occupation of the search_box. This is as
+	 * fuzzy as you understand it :)
+	 *
+	 * Consistency check: whenever the number of cells is
+	 * one of whichever part (search_box_occupation,
+	 * avg_feature_occupation) the 'intersection' must be 1.
+	 * If sounds that our 'intersaction' is actually the
+	 * minimun number between search_box_occupation and
+	 * avg_feat_occupation.
+	 *
+	 */
+	overlapping_cells = (x_idx_max-x_idx_min+1) * (y_idx_max-y_idx_min+1) * (z_idx_max-z_idx_min+1);
+	avg_feat_cells = geogstats->avgFeatureCells;
+
+	POSTGIS_DEBUGF(3, " search_box overlaps %f cells", overlapping_cells);
+	POSTGIS_DEBUGF(3, " avg feat overlaps %f cells", avg_feat_cells);
+
+	if ( ! overlapping_cells )
+	{
+		POSTGIS_DEBUG(3, " no overlapping cells, returning 0.0");
+
+		return 0.0;
+	}
+
+	gain = 1 / LW_MIN(overlapping_cells, avg_feat_cells);
+	selectivity = value * gain;
+
+	POSTGIS_DEBUGF(3, " SUM(ov_histo_cells)=%f", value);
+	POSTGIS_DEBUGF(3, " gain=%f", gain);
+	POSTGIS_DEBUGF(3, " selectivity=%f", selectivity);
+
+	/* prevent rounding overflows */
+	if (selectivity > 1.0) selectivity = 1.0;
+	else if (selectivity < 0) selectivity = 0.0;
+
+	return selectivity;
+}
+
+
+/**
  * This function is called by the analyze function iff
  * the geography_analyze() function give it its pointer
  * (this is always the case so far).
