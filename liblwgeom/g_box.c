@@ -67,22 +67,22 @@ int gbox_merge(GBOX new_box, GBOX *merge_box)
 	return G_SUCCESS;
 }
 
-int gbox_overlaps(GBOX *g1, GBOX *g2)
+int gbox_overlaps(GBOX g1, GBOX g2)
 {
-	if( g1->flags != g2->flags )
+	if( g1.flags != g2.flags )
 		lwerror("gbox_overlaps: geometries have mismatched dimensionality");
 		
-	if( g1->xmax < g2->xmin || g1->ymax < g2->ymin ||
-	    g1->xmin > g2->xmax || g1->ymin > g2->ymax )
+	if( g1.xmax < g2.xmin || g1.ymax < g2.ymin ||
+	    g1.xmin > g2.xmax || g1.ymin > g2.ymax )
 		return LW_FALSE;
-	if( FLAGS_GET_Z(g1->flags) || FLAGS_GET_GEODETIC(g1->flags) )
+	if( FLAGS_GET_Z(g1.flags) || FLAGS_GET_GEODETIC(g1.flags) )
 	{
-		if( g1->zmax < g2->zmin || g1->zmin > g2->zmax )
+		if( g1.zmax < g2.zmin || g1.zmin > g2.zmax )
 			return LW_FALSE;
 	}
-	if( FLAGS_GET_M(g1->flags) )
+	if( FLAGS_GET_M(g1.flags) )
 	{
-		if( g1->mmax < g2->mmin || g1->mmin > g2->mmax )
+		if( g1.mmax < g2.mmin || g1.mmin > g2.mmax )
 			return LW_FALSE;
 	}
 	return LW_TRUE;

@@ -428,7 +428,7 @@ extern GBOX* gbox_from_string(char *str);
 /**
 * Return #LW_TRUE if the #GBOX overlaps, #LW_FALSE otherwise. 
 */
-extern int gbox_overlaps(GBOX *g1, GBOX *g2);
+extern int gbox_overlaps(GBOX g1, GBOX g2);
 
 /**
 * Copy the values of original #GBOX into duplicate.

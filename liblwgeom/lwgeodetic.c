@@ -1462,7 +1462,7 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX
 	
 	
 	/* If the boxes aren't disjoint, we have to check for edge intersections */
-	if( gbox_overlaps(&gbox1, &gbox2) )
+	if( gbox_overlaps(gbox1, gbox2) )
 		check_intersection = LW_TRUE;
 	
 	/* Point/line combinations can all be handled with simple point array iterations */
