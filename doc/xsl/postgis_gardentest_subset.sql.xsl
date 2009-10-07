@@ -11,7 +11,7 @@
 	 ******************************************************************** -->
 	<xsl:output method="text" />
 	<xsl:variable name='testversion'>1.5.0</xsl:variable>
-	<xsl:variable name='fninclude'>ST_Distance ST_DWithin ST_AsBinary</xsl:variable>
+	<xsl:variable name='fninclude'>ST_Distance ST_DWithin ST_AsBinary ST_Union ST_Collect ST_MakeLine</xsl:variable>
 
 	<xsl:variable name='var_srid'>3395</xsl:variable>
 	<xsl:variable name='var_position'>1</xsl:variable>
@@ -141,7 +141,8 @@
 		)
 		</pgis:gset>
 		
-		<pgis:gset ID="NULL" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom)</pgis:gset>
+		<pgis:gset ID="SingleNULL" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom)</pgis:gset>
+		<pgis:gset ID="MultipleNULLs" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom FROM generate_series(1,4) As foo)</pgis:gset>
 
 
 	<!-- TODO: Finish off MULTI list -->

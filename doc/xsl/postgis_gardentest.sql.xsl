@@ -141,7 +141,8 @@
 			UNION ALL SELECT ST_GeomFromText('POLYGON EMPTY',4326) As the_geom
 		)
 		</pgis:gset>
-		<pgis:gset ID="NULL" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom)</pgis:gset>
+		<pgis:gset ID="SingleNULL" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom)</pgis:gset>
+		<pgis:gset ID="MultipleNULLs" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom FROM generate_series(1,4) As foo)</pgis:gset>
 
 
 	<!-- TODO: Finish off MULTI list -->
