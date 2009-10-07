@@ -73,7 +73,7 @@ static double latitude_radians_normalize(double lat)
 /**
 * Convert a longitude to the range of -180,180
 */
-static double longitude_degrees_normalize(double lon)
+double longitude_degrees_normalize(double lon)
 {
 	if( lon == -180.0 )
 		return 180.0;
@@ -98,7 +98,7 @@ static double longitude_degrees_normalize(double lon)
 /**
 * Convert a latitude to the range of -90,90
 */
-static double latitude_degrees_normalize(double lat)
+double latitude_degrees_normalize(double lat)
 {
 
 	if( lat > 360.0 )
