@@ -426,6 +426,11 @@ extern GBOX* gbox_copy(GBOX *gbox);
 extern GBOX* gbox_from_string(char *str);
 
 /**
+* Given a serialized form, extract the box if it exists, calculate it if it does not.
+*/
+extern int gbox_from_gserialized(GSERIALIZED *g, GBOX *gbox);
+
+/**
 * Return #LW_TRUE if the #GBOX overlaps, #LW_FALSE otherwise. 
 */
 extern int gbox_overlaps(GBOX g1, GBOX g2);

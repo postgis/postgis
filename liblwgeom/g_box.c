@@ -195,6 +195,51 @@ size_t gbox_serialized_size(uchar flags)
         return 2 * FLAGS_NDIMS(flags) * sizeof(float);
 }
 
+int gbox_from_gserialized(GSERIALIZED *g, GBOX *gbox)
+{
+	
+	/* Null input! */
+	if( ! g ) return G_FAILURE;
+	
+	/* Initialize the flags on the box */
+	gbox->flags = g->flags;
+	
+	if ( FLAGS_GET_BBOX(g->flags) )
+	{
+		int i = 0;
+		float *fbox = (float*)(g->data);
+		gbox->xmin = fbox[i]; i++;	
+		gbox->xmax = fbox[i]; i++;
+		gbox->ymin = fbox[i]; i++;
+		gbox->ymax = fbox[i]; i++;
+		if ( FLAGS_GET_GEODETIC(g->flags) )
+		{
+			gbox->zmin = fbox[i]; i++;
+			gbox->zmax = fbox[i]; i++;
+			return G_SUCCESS;
+		}
+		if ( FLAGS_GET_Z(g->flags) )
+		{
+			gbox->zmin = fbox[i]; i++;
+			gbox->zmax = fbox[i]; i++;
+		}
+		if ( FLAGS_GET_M(g->flags) )
+		{
+			gbox->mmin = fbox[i]; i++;
+			gbox->mmax = fbox[i]; i++;
+		}
+		return G_SUCCESS;
+	}
+
+	LWDEBUG(4, "calculating new box from scratch"); 
+	if( gserialized_calculate_gbox_geocentric_p(g, gbox) == G_FAILURE )
+	{
+		LWDEBUG(4, "calculated null bbox, returning failure");
+		return G_FAILURE;
+	}
+	return G_SUCCESS;
+}
+
 
 /* ********************************************************************************
 ** Compute cartesian bounding GBOX boxes from LWGEOM.

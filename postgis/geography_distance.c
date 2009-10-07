@@ -45,20 +45,19 @@ Datum geography_distance_sphere(PG_FUNCTION_ARGS)
 	double tolerance;
 	double distance;
 	
-	/* We need the bounding boxes in case of polygon calculations,
-	   which requires them to generate a stab-line to test point-in-polygon. */
-	geography_datum_gidx(PG_GETARG_DATUM(0), gidx1);
-	geography_datum_gidx(PG_GETARG_DATUM(0), gidx2);
-	gbox_from_gidx(gidx1, &gbox1);
-	gbox_from_gidx(gidx2, &gbox2);
-	gbox1.flags = FLAGS_SET_GEODETIC(gbox1.flags,1);
-	gbox2.flags = FLAGS_SET_GEODETIC(gbox2.flags,1);
-	pfree(gidx1);
-	pfree(gidx2);
-	
 	/* Get our geometry objects loaded into memory. */
 	g1 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	g2 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	
+	/* We need the bounding boxes in case of polygon calculations,
+	   which requires them to generate a stab-line to test point-in-polygon. */
+	if( ! gbox_from_gserialized(g1, &gbox1) ||
+	    ! gbox_from_gserialized(g2, &gbox2) )
+	{
+		elog(ERROR, "Error in gbox_from_gserialized calculation.");
+		PG_RETURN_NULL();
+	}
+	
 	lwgeom1 = lwgeom_from_gserialized(g1);
 	lwgeom2 = lwgeom_from_gserialized(g2);
 	
