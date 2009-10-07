@@ -284,7 +284,9 @@ pgis_geometry_makeline_finalfn(PG_FUNCTION_ARGS)
 	p = (pgis_abs*) PG_GETARG_POINTER(0);
 
 	geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
-	result = DirectFunctionCall1( LWGEOM_makeline_garray, geometry_array );
+	result = PGISDirectFunctionCall1( LWGEOM_makeline_garray, geometry_array );
+	if (!result)
+		PG_RETURN_NULL();
 
 	PG_RETURN_DATUM(result);
 }
