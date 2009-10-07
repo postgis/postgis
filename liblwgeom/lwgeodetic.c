@@ -1330,7 +1330,7 @@ int ptarray_point_in_ring(POINTARRAY *pa, POINT2D pt_outside, POINT2D pt_to_test
 }
 
 
-static double ptarray_distance_sphere(POINTARRAY *pa1, POINTARRAY *pa2, double tolerance)
+static double ptarray_distance_sphere(POINTARRAY *pa1, POINTARRAY *pa2, double tolerance, int check_intersection)
 {
 	GEOGRAPHIC_EDGE e1, e2;
 	GEOGRAPHIC_POINT g1, g2;
@@ -1417,7 +1417,7 @@ static double ptarray_distance_sphere(POINTARRAY *pa1, POINTARRAY *pa2, double t
 			LWDEBUGF(4, "e2.start == GPOINT(%.6g %.6g) ", e2.start.lat, e2.start.lon);
 			LWDEBUGF(4, "e2.end == GPOINT(%.6g %.6g) ", e2.end.lat, e2.end.lon);
 
-			if ( edge_intersection(e1, e2, &g) )
+			if ( check_intersection && edge_intersection(e1, e2, &g) )
 			{
 				LWDEBUG(4,"edge intersection! returning 0.0");
 				return 0.0;
@@ -1444,6 +1444,7 @@ static double ptarray_distance_sphere(POINTARRAY *pa1, POINTARRAY *pa2, double t
 double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX gbox2, double tolerance)
 {
 	int type1, type2;
+	int check_intersection = LW_FALSE;
 	
 	assert(lwgeom1);
 	assert(lwgeom2);
@@ -1458,6 +1459,11 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX
 		
 	type1 = TYPE_GETTYPE(lwgeom1->type);
 	type2 = TYPE_GETTYPE(lwgeom2->type);
+	
+	
+	/* If the boxes aren't disjoint, we have to check for edge intersections */
+	if( gbox_overlaps(&gbox1, &gbox2) )
+		check_intersection = LW_TRUE;
 	
 	/* Point/line combinations can all be handled with simple point array iterations */
 	if( ( type1 == POINTTYPE || type1 == LINETYPE ) && 
@@ -1475,7 +1481,7 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX
 		else
 			pa2 = ((LWLINE*)lwgeom2)->points;
 		
-		return ptarray_distance_sphere(pa1, pa2, tolerance);
+		return ptarray_distance_sphere(pa1, pa2, tolerance, check_intersection);
 	}
 	
 	/* Point/Polygon cases, if point-in-poly, return zero, else return distance. */
@@ -1510,7 +1516,7 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX
 		/* Not inside, so what's the actual distance? */
 		for( i = 0; i < lwpoly->nrings; i++ )
 		{
-			double ring_distance = ptarray_distance_sphere(lwpoly->rings[i], lwpt->point, tolerance);
+			double ring_distance = ptarray_distance_sphere(lwpoly->rings[i], lwpt->point, tolerance, check_intersection);
 			if( ring_distance < distance )
 				distance = ring_distance;
 			if( distance < tolerance )
@@ -1555,7 +1561,7 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX
 		/* Not contained, so what's the actual distance? */
 		for( i = 0; i < lwpoly->nrings; i++ )
 		{
-			double ring_distance = ptarray_distance_sphere(lwpoly->rings[i], lwline->points, tolerance);
+			double ring_distance = ptarray_distance_sphere(lwpoly->rings[i], lwline->points, tolerance, check_intersection);
 			LWDEBUGF(4, "ring[%d] ring_distance = %.8g", i, ring_distance);
 			if( ring_distance < distance )
 				distance = ring_distance;
@@ -1592,7 +1598,7 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX
 		{
 			for( j = 0; j < lwpoly2->nrings; j++ )
 			{
-				double ring_distance = ptarray_distance_sphere(lwpoly1->rings[i], lwpoly2->rings[j], tolerance);
+				double ring_distance = ptarray_distance_sphere(lwpoly1->rings[i], lwpoly2->rings[j], tolerance, check_intersection);
 				if( ring_distance < distance )
 					distance = ring_distance;
 				if( distance < tolerance )
