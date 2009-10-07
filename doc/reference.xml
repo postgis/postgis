@@ -11085,16 +11085,16 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>text <function>ST_Relate</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
-			<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
-		  </funcprototype>
-
-		  <funcprototype>
 			<funcdef>boolean <function>ST_Relate</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 			<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
 			<paramdef><type>text </type> <parameter>intersectionMatrixPattern</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>text <function>ST_Relate</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
