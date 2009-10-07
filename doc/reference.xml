@@ -10094,7 +10094,7 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 		  <inlinegraphic fileref="images/check.png" />
 		  This method implements the SQL/MM specification: SQL-MM 3: 5.1.23
 		</para>
-		
+
 		<para>Availability: 1.5.0 geography support was introduced in 1.5.</para>
 	  </refsection>
 
@@ -10104,7 +10104,7 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 		<programlisting>
 --Geometry example - units in planar degrees 4326 is WGS 84 long lat unit=degrees
 SELECT ST_Distance(
-		ST_GeomFromText('POINT(-72.1235 42.3521)',4326), 
+		ST_GeomFromText('POINT(-72.1235 42.3521)',4326),
 		ST_GeomFromText('LINESTRING(-72.1260 42.45, -72.123 42.1546)', 4326)
 	);
 st_distance
@@ -10113,7 +10113,7 @@ st_distance
 
 -- Geometry example - units in meters (SRID: 26986 Massachusetts state plane meters) (most accurate for Massachusetts)
 SELECT ST_Distance(
-			ST_Transform(ST_GeomFromText('POINT(-72.1235 42.3521)',4326),26986), 
+			ST_Transform(ST_GeomFromText('POINT(-72.1235 42.3521)',4326),26986),
 			ST_Transform(ST_GeomFromText('LINESTRING(-72.1260 42.45, -72.123 42.1546)', 4326),26986)
 		);
 st_distance
@@ -10122,20 +10122,20 @@ st_distance
 
 -- Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (least accurate)
 SELECT ST_Distance(
-			ST_Transform(ST_GeomFromText('POINT(-72.1235 42.3521)',4326),2163), 
+			ST_Transform(ST_GeomFromText('POINT(-72.1235 42.3521)',4326),2163),
 			ST_Transform(ST_GeomFromText('LINESTRING(-72.1260 42.45, -72.123 42.1546)', 4326),2163)
 		);
-	
+
 st_distance
 ------------------
 126.664256056812
 
--- Geography example -- same but note units in meters 
+-- Geography example -- same but note units in meters
 SELECT ST_Distance(
-	ST_GeographyFromText('SRID=4326;POINT(-72.1235 42.3521)'), 
+	ST_GeographyFromText('SRID=4326;POINT(-72.1235 42.3521)'),
 	ST_GeographyFromText('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)')
 	);
-		
+
 st_distance
 ------------------
 123.475741346574
@@ -10369,7 +10369,7 @@ FROM
 			<paramdef><type>double precision </type>
 			<parameter>distance_of_srid</parameter></paramdef>
 		  </funcprototype>
-		  
+
 		   <funcprototype>
 			<funcdef>boolean <function>ST_DWithin</function></funcdef>
 
@@ -10413,7 +10413,7 @@ FROM
 		  <ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
 		  Features Implementation Specification for SQL.</ulink>
 		</para>
-		
+
 		<para>Availability: 1.5.0 support for geography was introduced</para>
 	  </refsection>
 
@@ -11496,17 +11496,18 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>text <function>ST_Relate</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
-			<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
-		  </funcprototype>
-
-		  <funcprototype>
 			<funcdef>boolean <function>ST_Relate</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 			<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
 			<paramdef><type>text </type> <parameter>intersectionMatrixPattern</parameter></paramdef>
 		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>text <function>ST_Relate</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
+		  </funcprototype>
+
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
