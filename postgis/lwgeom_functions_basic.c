@@ -2156,6 +2156,9 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 	size_t offset;
 	int SRID=-1;
 
+	bits8 *bitmap;
+	int bitmask;
+
 	POSTGIS_DEBUG(2, "LWGEOM_makeline_garray called.");
 
 	/* Get input datum */
@@ -2195,34 +2198,51 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 	lwpoints = palloc(sizeof(LWGEOM *)*nelems);
 	npoints = 0;
 	offset = 0;
+	bitmap = ARR_NULLBITMAP(array);
+	bitmask = 1;
 	for (i=0; i<nelems; i++)
 	{
-		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
-		offset += INTALIGN(VARSIZE(geom));
-
-		if ( TYPE_GETTYPE(geom->type) != POINTTYPE ) continue;
-
-		lwpoints[npoints++] =
-		    lwpoint_deserialize(SERIALIZED_FORM(geom));
-
-		/* Check SRID homogeneity */
-		if ( npoints == 1 )
-		{
-			/* Get first geometry SRID */
-			SRID = lwpoints[npoints-1]->SRID;
-		}
-		else
-		{
-			if ( lwpoints[npoints-1]->SRID != SRID )
+		/* Don't do anything for NULL values */  
+		if ((bitmap && (*bitmap & bitmask) != 0) || !bitmap) 
+ 		{ 
+			PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
+			offset += INTALIGN(VARSIZE(geom));
+	
+			if ( TYPE_GETTYPE(geom->type) != POINTTYPE ) continue;
+	
+			lwpoints[npoints++] =
+			lwpoint_deserialize(SERIALIZED_FORM(geom));
+	
+			/* Check SRID homogeneity */
+			if ( npoints == 1 )
 			{
-				elog(ERROR,
-				     "Operation on mixed SRID geometries");
-				PG_RETURN_NULL();
+				/* Get first geometry SRID */
+				SRID = lwpoints[npoints-1]->SRID;
+			}
+			else
+			{
+				if ( lwpoints[npoints-1]->SRID != SRID )
+				{
+					elog(ERROR,
+					"Operation on mixed SRID geometries");
+					PG_RETURN_NULL();
+				}
+			}
+	
+			POSTGIS_DEBUGF(3, "LWGEOM_makeline_garray: element %d deserialized",
+				i);
+		}
+
+		/* Advance NULL bitmap */
+		if (bitmap)
+		{
+			bitmask <<= 1;
+			if (bitmask == 0x100)
+			{
+				bitmap++;
+				bitmask = 1;
 			}
 		}
-
-		POSTGIS_DEBUGF(3, "LWGEOM_makeline_garray: element %d deserialized",
-		               i);
 	}
 
 	/* Return null on 0-points input array */
