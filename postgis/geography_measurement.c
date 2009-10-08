@@ -70,7 +70,7 @@ Datum geography_distance_sphere(PG_FUNCTION_ARGS)
 	/* Something went wrong... should already be eloged */
 	if( distance < 0.0 )
 	{
-		elog(ERROR, "Error in geography_distance_sphere calculation.");
+		elog(ERROR, "lwgeom_distance_sphere returned < 0.0");
 		PG_RETURN_NULL();
 	}
 	
@@ -161,7 +161,7 @@ Datum geography_area_sphere(PG_FUNCTION_ARGS)
 	/* Something went wrong... */
 	if( area < 0.0 )
 	{
-		elog(ERROR, "Error in geography_distance_sphere calculation.");
+		elog(ERROR, "lwgeom_area_sphere returned area < 0.0");
 		PG_RETURN_NULL();
 	}
 
