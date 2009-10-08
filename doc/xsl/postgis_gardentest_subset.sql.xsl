@@ -11,8 +11,7 @@
 	 ******************************************************************** -->
 	<xsl:output method="text" />
 	<xsl:variable name='testversion'>1.5.0</xsl:variable>
-	<xsl:variable name='fninclude'>ST_Distance ST_DWithin ST_AsBinary ST_Union ST_Collect ST_MakeLine</xsl:variable>
-
+	<xsl:variable name="fninclude"><xsl:value-of select="$inputfninclude"/></xsl:variable>
 	<xsl:variable name='var_srid'>3395</xsl:variable>
 	<xsl:variable name='var_position'>1</xsl:variable>
 	<xsl:variable name='var_integer1'>3</xsl:variable>
