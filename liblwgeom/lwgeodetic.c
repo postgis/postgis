@@ -552,6 +552,27 @@ double sphere_distance_cartesian(POINT3D s, POINT3D e)
 	return acos(dot_product(s, e));
 }
 
+/**
+* Computes the spherical excess of a spherical triangle defined by
+* the three vectices A, B, C. Computes on the unit sphere (i.e., divides
+* edge lengths by the radius, even if the radius is 1.0). The excess is
+* signed based on the sign of the delta longitude of A and B.
+*
+* @param a The first triangle vertex.
+* @param b The second triangle vertex.
+* @param c The last triangle vertex.
+* @return the signed spherical excess.
+*/
+static double sphere_excess(GEOGRAPHIC_POINT a, GEOGRAPHIC_POINT b, GEOGRAPHIC_POINT c)
+{
+	double a_dist = sphere_distance(b, c);
+	double b_dist = sphere_distance(c, a);
+	double c_dist = sphere_distance(a, b);
+	double sign = (a.lon - b.lon) / fabs(a.lon - b.lon);
+	double ss = (a_dist + b_dist + c_dist) / 2.0;
+	double E = tan(ss/2.0) * tan((ss-a_dist)/2.0) * tan((ss-b_dist)/2.0) * tan((ss-c_dist)/2.0);
+	return 4.0 * atan(sqrt(E)) * sign;
+}
 
 /**
 * Given two points on a unit sphere, calculate the direction from s to e.
@@ -1269,6 +1290,34 @@ static void gbox_pt_outside(GBOX gbox, POINT3D *pt)
 	return;
 }
 
+/**
+* Returns the area of the ring (ring must be closed) in square radians (surface of
+* the sphere is 4*PI).
+*/
+double ptarray_area_sphere(POINTARRAY *pa, POINT2D pt_outside)
+{
+	GEOGRAPHIC_POINT a, b, c;
+	POINT2D p;
+	int i;
+	double area = 0.0;
+	
+	/* Return zero on non-sensical inputs */
+	if( ! pa || pa->npoints < 4 )
+		return 0.0;
+	
+	geographic_point_init(pt_outside.x, pt_outside.y, &c);
+
+	for( i = 1; i < pa->npoints; i++ )
+	{
+		getPoint2d_p(pa, i-1, &p);
+		geographic_point_init(p.x, p.y, &a);
+		getPoint2d_p(pa, i, &p);
+		geographic_point_init(p.x, p.y, &b);
+		area += sphere_excess(a, b, c);
+	}
+	return fabs(area);
+}
+
 
 /**
 * This routine returns LW_TRUE if the point is inside the ring or on the boundary, LW_FALSE otherwise.
@@ -1433,6 +1482,78 @@ static double ptarray_distance_sphere(POINTARRAY *pa1, POINTARRAY *pa2, double t
 	LWDEBUGF(4,"finished all loops, returning %.8g", distance);
 	
 	return distance;
+}
+
+
+/**
+* Calculate the area of an LWGEOM. Anything except POLYGON, MULTIPOLYGON
+* and GEOMETRYCOLLECTION return zero immediately. Multi's recurse, polygons
+* calculate external ring area and subtract internal ring area. A GBOX is 
+* required to calculate an outside point.
+*/
+double lwgeom_area_sphere(LWGEOM *lwgeom, GBOX gbox)
+{
+	int type;
+	POINT3D p;
+	GEOGRAPHIC_POINT g;
+	POINT2D pt_outside;
+	
+	assert(lwgeom);
+	
+	/* No area in nothing */
+	if( lwgeom_is_empty(lwgeom) )
+		return 0.0;
+
+	/* Read the geometry type number */
+	type = TYPE_GETTYPE(lwgeom->type);
+	
+	/* Anything but polygons and collections returns zero */
+	if( ! ( type == POLYGONTYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE ) )
+		return 0.0;
+
+	gbox_pt_outside(gbox, &p);
+	cart2geog(p, &g);
+	pt_outside.x = rad2deg(g.lon);
+	pt_outside.y = rad2deg(g.lat);
+	
+	/* Actually calculate area */
+	if( type == POLYGONTYPE )
+	{
+		LWPOLY *poly = (LWPOLY*)lwgeom;
+		int i;
+		double area = 0.0;
+		
+		/* Just in case there's no rings */
+		if( poly->nrings < 1 )
+			return 0.0;
+		
+		/* First, the area of the outer ring */
+		area += ptarray_area_sphere(poly->rings[0], pt_outside);
+		
+		/* Subtract areas of inner rings */
+		for( i = 1; i < poly->nrings; i++ )
+		{
+			area -= ptarray_area_sphere(poly->rings[i], pt_outside);
+		}
+		return area;
+	}
+	
+	/* Recurse into sub-geometries to get area */
+	if( type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE )
+	{
+		LWCOLLECTION *col = (LWCOLLECTION*)lwgeom;
+		int i;
+		double area = 0.0;
+
+		for( i = 0; i < col->ngeoms; i++ )
+		{
+			area += lwgeom_area_sphere(col->geoms[i], gbox);
+		}
+		return area;
+	}
+	
+	/* Shouldn't get here. */
+	return 0.0;
 }
 
 

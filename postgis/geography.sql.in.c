@@ -449,7 +449,13 @@ CREATE OR REPLACE FUNCTION ST_DWithin(geography, geography, float8)
 	RETURNS boolean
 	AS 'SELECT $1 && _ST_Expand($2,$3) AND $2 && _ST_Expand($1,$3) AND _ST_Distance($1, $2, $3) < $3'
 	LANGUAGE 'SQL' IMMUTABLE;
-	
+
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_Area(geography)
+	RETURNS float8
+	AS 'MODULE_PATHNAME','geography_area_sphere'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
 COMMIT;

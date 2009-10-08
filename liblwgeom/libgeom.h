@@ -377,12 +377,16 @@ extern int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox);
 extern double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX gbox2, double tolerance);
 
 /**
+* Calculate the geodetic area of a lwgeom on the unit sphere. The result
+* will have to by multiplied by the real radius^2 to get the real area.
+*/
+extern double lwgeom_area_sphere(LWGEOM *lwgeom, GBOX gbox);
+
+/**
 * New function to read doubles directly from the double* coordinate array
 * of an aligned lwgeom #POINTARRAY (built by de-serializing a #GSERIALIZED).
 */
 extern int getPoint2d_p_ro(const POINTARRAY *pa, int n, POINT2D **point);
-
-
 
 /**
 * Calculate box and add values to gbox. Return #G_SUCCESS on success.

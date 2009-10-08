@@ -24,6 +24,7 @@
 #include "geography.h"	     /* For utility functions. */
 
 Datum geography_distance_sphere(PG_FUNCTION_ARGS);
+Datum geography_area_sphere(PG_FUNCTION_ARGS);
 Datum geography_expand(PG_FUNCTION_ARGS);
 
 
@@ -38,8 +39,6 @@ Datum geography_distance_sphere(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom2 = NULL;
 	GBOX gbox1;
 	GBOX gbox2;
-	GIDX *gidx1 = gidx_new(3);
-	GIDX *gidx2 = gidx_new(3);
 	GSERIALIZED *g1 = NULL;
 	GSERIALIZED *g2 = NULL;
 	double tolerance;
@@ -132,3 +131,47 @@ Datum geography_expand(PG_FUNCTION_ARGS)
 
 }
 
+/*
+** geography_area_sphere(GSERIALIZED *g) 
+** returns double area in meters square
+*/
+PG_FUNCTION_INFO_V1(geography_area_sphere);
+Datum geography_area_sphere(PG_FUNCTION_ARGS)
+{
+	LWGEOM *lwgeom = NULL;
+	GBOX gbox;
+	GSERIALIZED *g = NULL;
+	double area;
+	
+	/* Get our geometry object loaded into memory. */
+	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	
+	/* We need the bounding box to get an outside point for area algorithm */
+	if( ! gbox_from_gserialized(g, &gbox) )
+	{
+		elog(ERROR, "Error in gbox_from_gserialized calculation.");
+		PG_RETURN_NULL();
+	}
+	
+	lwgeom = lwgeom_from_gserialized(g);
+	
+	/* Calculate the area */
+	area = lwgeom_area_sphere(lwgeom, gbox);
+
+	/* Something went wrong... */
+	if( area < 0.0 )
+	{
+		elog(ERROR, "Error in geography_distance_sphere calculation.");
+		PG_RETURN_NULL();
+	}
+
+	/* Currently normalizing with a fixed WGS84 radius, in future this
+	   should be the average radius of the SRID in play */
+	area = area * WGS84_RADIUS * WGS84_RADIUS;
+
+	/* Clean up, but not all the way to the point arrays */
+	lwgeom_release(lwgeom);
+	
+	PG_RETURN_FLOAT8(area);
+
+}
