@@ -13,6 +13,10 @@
 
 #include "postgres.h"
 #include "commands/vacuum.h"
+#include "nodes/relation.h"
+#include "parser/parsetree.h"
+#include "utils/lsyscache.h"
+#include "utils/syscache.h"
 
 #include "libgeom.h"
 #include "lwgeom_pg.h"
@@ -29,19 +33,6 @@ Datum geography_analyze(PG_FUNCTION_ARGS);
 */
 
 #define DEFAULT_GEOGRAPHY_SEL 0.000005
-
-PG_FUNCTION_INFO_V1(geography_gist_selectivity);
-Datum geography_gist_selectivity(PG_FUNCTION_ARGS)
-{
-	PG_RETURN_FLOAT8(DEFAULT_GEOGRAPHY_SEL);
-}
-
-PG_FUNCTION_INFO_V1(geography_gist_join_selectivity);
-Datum geography_gist_join_selectivity(PG_FUNCTION_ARGS)
-{
-	PG_RETURN_FLOAT8(DEFAULT_GEOGRAPHY_SEL);
-}
-
 
 /**
  * 	Assign a number to the postgis statistics kind
@@ -107,17 +98,11 @@ typedef struct GEOG_STATS_T
 GEOG_STATS;
 
 
-
 /**
  * This function returns an estimate of the selectivity
  * of a search_box looking at data in the GEOG_STATS
  * structure.
  * */
- /**
- * TODO: handle box dimension collapses (probably should be handled
- * by the statistic generator, avoiding GEOG_STATS with collapsed
- * dimensions)
- */
 static float8
 estimate_selectivity(GBOX *box, GEOG_STATS *geogstats)
 {
@@ -430,6 +415,355 @@ estimate_selectivity(GBOX *box, GEOG_STATS *geogstats)
 
 
 /**
+ * This function should return an estimation of the number of
+ * rows returned by a query involving an overlap check
+ * ( it's the restrict function for the && operator )
+ *
+ * It can make use (if available) of the statistics collected
+ * by the geometry analyzer function.
+ *
+ * Note that the good work is done by estimate_selectivity() above.
+ * This function just tries to find the search_box, loads the statistics
+ * and invoke the work-horse.
+ *
+ */
+PG_FUNCTION_INFO_V1(geography_gist_selectivity);
+Datum geography_gist_selectivity(PG_FUNCTION_ARGS)
+{
+	PlannerInfo *root = (PlannerInfo *) PG_GETARG_POINTER(0);
+
+	/* Oid operator = PG_GETARG_OID(1); */
+	List *args = (List *) PG_GETARG_POINTER(2);
+	/* int varRelid = PG_GETARG_INT32(3); */
+	Oid relid;
+	HeapTuple stats_tuple;
+	GEOG_STATS *geogstats;
+	/*
+	 * This is to avoid casting the corresponding
+	 * "type-punned" pointer, which would break
+	 * "strict-aliasing rules".
+	 */
+	GEOG_STATS **gsptr=&geogstats;
+	int geogstats_nvalues = 0;
+	Node *other;
+	Var *self;
+	GSERIALIZED *serialized;
+	LWGEOM *geometry;
+	GBOX search_box;
+	float8 selectivity = 0;
+
+	POSTGIS_DEBUG(2, "geography_gist_selectivity called");
+
+	/* Fail if not a binary opclause (probably shouldn't happen) */
+	if (list_length(args) != 2)
+	{
+		POSTGIS_DEBUG(3, "geography_gist_selectivity: not a binary opclause");
+
+		PG_RETURN_FLOAT8(DEFAULT_GEOGRAPHY_SEL);
+	}
+
+	/*
+	 * This selectivity function is invoked by a clause of the form <arg> && <arg>
+	 *
+	 * In typical usage, one argument will be a column reference, while the other will 
+	 * be a geography constant; set self to point to the column argument and other 
+	 * to point to the constant argument.
+	 */
+	other = (Node *) linitial(args);
+	if ( ! IsA(other, Const) )
+	{
+		self = (Var *)other;
+		other = (Node *) lsecond(args);
+	}
+	else
+	{
+		self = (Var *) lsecond(args);
+	}
+
+	if ( ! IsA(other, Const) )
+	{
+		POSTGIS_DEBUG(3, " no constant arguments - returning default selectivity");
+
+		PG_RETURN_FLOAT8(DEFAULT_GEOGRAPHY_SEL);
+	}
+
+	/*
+	 * We are working on two constants..
+	 * TODO: check if expression is true,
+	 *       returned set would be either
+	 *       the whole or none.
+	 */
+	if ( ! IsA(self, Var) )
+	{
+		POSTGIS_DEBUG(3, " no variable argument ? - returning default selectivity");
+
+		PG_RETURN_FLOAT8(DEFAULT_GEOGRAPHY_SEL);
+	}
+
+	/*
+	 * Convert the constant to a GBOX
+	 */
+	serialized = (GSERIALIZED *)PG_DETOAST_DATUM( ((Const*)other)->constvalue );
+	geometry = lwgeom_from_gserialized(serialized);
+
+	/* Convert coordinates to 3D geodesic */
+	if (!lwgeom_calculate_gbox_geodetic(geometry, &search_box))
+	{
+		POSTGIS_DEBUG(3, " search box cannot be calculated");
+
+		PG_RETURN_FLOAT8(0.0);
+	}
+
+	POSTGIS_DEBUGF(4, " requested search box is : %.15g %.15g %.15g, %.15g %.15g %.15g", 
+		search_box.xmin, search_box.ymin, search_box.zmin,
+		search_box.xmax, search_box.ymax, search_box.zmax);
+
+	/*
+	 * Get pg_statistic row
+	 */
+	relid = getrelid(self->varno, root->parse->rtable);
+
+	stats_tuple = SearchSysCache(STATRELATT, ObjectIdGetDatum(relid), Int16GetDatum(self->varattno), 0, 0);
+	if ( ! stats_tuple )
+	{
+		POSTGIS_DEBUG(3, " No statistics, returning default estimate");
+
+		PG_RETURN_FLOAT8(DEFAULT_GEOGRAPHY_SEL);
+	}
+
+
+	if ( ! get_attstatsslot(stats_tuple, 0, 0, STATISTIC_KIND_GEOGRAPHY, InvalidOid, NULL, NULL,
+							(float4 **)gsptr, &geogstats_nvalues) )
+	{
+		POSTGIS_DEBUG(3, " STATISTIC_KIND_GEOGRAPHY stats not found - returning default geography selectivity");
+
+		ReleaseSysCache(stats_tuple);
+		PG_RETURN_FLOAT8(DEFAULT_GEOGRAPHY_SEL);
+	}
+
+	POSTGIS_DEBUGF(4, " %d read from stats", geogstats_nvalues);
+
+	POSTGIS_DEBUGF(4, " histo: xmin,ymin,zmin: %f,%f,%f", geogstats->xmin, geogstats->ymin, geogstats->zmin);
+	POSTGIS_DEBUGF(4, " histo: xmax,ymax: %f,%f,%f", geogstats->xmax, geogstats->ymax, geogstats->zmax);
+	POSTGIS_DEBUGF(4, " histo: unitsx: %f", geogstats->unitsx);
+	POSTGIS_DEBUGF(4, " histo: unitsy: %f", geogstats->unitsy);
+	POSTGIS_DEBUGF(4, " histo: unitsz: %f", geogstats->unitsz);
+	POSTGIS_DEBUGF(4, " histo: avgFeatureCoverage: %f", geogstats->avgFeatureCoverage);
+	POSTGIS_DEBUGF(4, " histo: avgFeatureCells: %f", geogstats->avgFeatureCells);
+
+	/*
+	 * Do the estimation
+	 */
+	selectivity = estimate_selectivity(&search_box, geogstats);
+
+	POSTGIS_DEBUGF(3, " returning computed value: %f", selectivity);
+
+	free_attstatsslot(0, NULL, 0, (float *)geogstats, geogstats_nvalues);
+	ReleaseSysCache(stats_tuple);
+	PG_RETURN_FLOAT8(selectivity);
+}
+
+
+/**
+* JOIN selectivity in the GiST && operator
+* for all PG versions
+*/
+PG_FUNCTION_INFO_V1(geography_gist_join_selectivity);
+Datum geography_gist_join_selectivity(PG_FUNCTION_ARGS)
+{
+	PlannerInfo *root = (PlannerInfo *) PG_GETARG_POINTER(0);
+
+	/* Oid operator = PG_GETARG_OID(1); */
+	List *args = (List *) PG_GETARG_POINTER(2);
+	JoinType jointype = (JoinType) PG_GETARG_INT16(3);
+
+	Node *arg1, *arg2;
+	Var *var1, *var2;
+	Oid relid1, relid2;
+
+	HeapTuple stats1_tuple, stats2_tuple;
+	GEOG_STATS *geogstats1, *geogstats2;
+	/*
+	* These are to avoid casting the corresponding
+	* "type-punned" pointers, which would break
+	* "strict-aliasing rules".
+	*/
+	GEOG_STATS **gs1ptr=&geogstats1, **gs2ptr=&geogstats2;
+	int geogstats1_nvalues = 0, geogstats2_nvalues = 0;
+	float8 selectivity1 = 0.0, selectivity2 = 0.0;
+	float4 num1_tuples = 0.0, num2_tuples = 0.0;
+	float4 total_tuples = 0.0, rows_returned = 0.0;
+	GBOX search_box;
+
+
+	/**
+	* Join selectivity algorithm. To calculation the selectivity we
+	* calculate the intersection of the two column sample extents,
+	* sum the results, and then multiply by two since for each
+	* geometry in col 1 that intersects a geometry in col 2, the same
+	* will also be true.
+	*/
+
+	POSTGIS_DEBUGF(3, "geography_gist_join_selectivity called with jointype %d", jointype);
+
+	/*
+	* We'll only respond to an inner join/unknown context join
+	*/
+	if (jointype != JOIN_INNER)
+	{
+		elog(NOTICE, "geography_gist_join_selectivity called with incorrect join type");
+		PG_RETURN_FLOAT8(DEFAULT_GEOGRAPHY_SEL);
+	}
+
+	/*
+	* Determine the oids of the geometry columns we are working with
+	*/
+	arg1 = (Node *) linitial(args);
+	arg2 = (Node *) lsecond(args);
+
+	if (!IsA(arg1, Var) || !IsA(arg2, Var))
+	{
+		elog(DEBUG1, "geography_gist_join_selectivity called with arguments that are not column references");
+		PG_RETURN_FLOAT8(DEFAULT_GEOGRAPHY_SEL);
+	}
+
+	var1 = (Var *)arg1;
+	var2 = (Var *)arg2;
+
+	relid1 = getrelid(var1->varno, root->parse->rtable);
+	relid2 = getrelid(var2->varno, root->parse->rtable);
+
+	POSTGIS_DEBUGF(3, "Working with relations oids: %d %d", relid1, relid2);
+
+	/* Read the stats tuple from the first column */
+	stats1_tuple = SearchSysCache(STATRELATT, ObjectIdGetDatum(relid1), Int16GetDatum(var1->varattno), 0, 0);
+	if ( ! stats1_tuple )
+	{
+		POSTGIS_DEBUG(3, " No statistics, returning default geometry join selectivity");
+
+		PG_RETURN_FLOAT8(DEFAULT_GEOGRAPHY_SEL);
+	}
+
+	if ( ! get_attstatsslot(stats1_tuple, 0, 0, STATISTIC_KIND_GEOGRAPHY, InvalidOid, NULL, NULL,
+		(float4 **)gs1ptr, &geogstats1_nvalues) )
+	{
+		POSTGIS_DEBUG(3, " STATISTIC_KIND_GEOGRAPHY stats not found - returning default geometry join selectivity");
+
+		ReleaseSysCache(stats1_tuple);
+		PG_RETURN_FLOAT8(DEFAULT_GEOGRAPHY_SEL);
+	}
+
+
+	/* Read the stats tuple from the second column */
+	stats2_tuple = SearchSysCache(STATRELATT, ObjectIdGetDatum(relid2), Int16GetDatum(var2->varattno), 0, 0);
+	if ( ! stats2_tuple )
+	{
+		POSTGIS_DEBUG(3, " No statistics, returning default geometry join selectivity");
+
+		free_attstatsslot(0, NULL, 0, (float *)geogstats1, geogstats1_nvalues);
+		ReleaseSysCache(stats1_tuple);
+		PG_RETURN_FLOAT8(DEFAULT_GEOGRAPHY_SEL);
+	}
+
+	if ( ! get_attstatsslot(stats2_tuple, 0, 0, STATISTIC_KIND_GEOGRAPHY, InvalidOid, NULL, NULL,
+		(float4 **)gs2ptr, &geogstats2_nvalues) )
+	{
+		POSTGIS_DEBUG(3, " STATISTIC_KIND_GEOGRAPHY stats not found - returning default geometry join selectivity");
+
+		free_attstatsslot(0, NULL, 0, (float *)geogstats1, geogstats1_nvalues);
+		ReleaseSysCache(stats2_tuple);
+		ReleaseSysCache(stats1_tuple);
+		PG_RETURN_FLOAT8(DEFAULT_GEOGRAPHY_SEL);
+	}
+
+
+	/**
+	* Setup the search box - this is the intersection of the two column
+	* extents.
+	*/
+	search_box.xmin = LW_MAX(geogstats1->xmin, geogstats2->xmin);
+	search_box.ymin = LW_MAX(geogstats1->ymin, geogstats2->ymin);
+	search_box.zmin = LW_MAX(geogstats1->zmin, geogstats2->zmin);
+	search_box.xmax = LW_MIN(geogstats1->xmax, geogstats2->xmax);
+	search_box.ymax = LW_MIN(geogstats1->ymax, geogstats2->ymax);
+	search_box.zmax = LW_MIN(geogstats1->zmax, geogstats2->zmax);
+
+	/* If the extents of the two columns don't intersect, return zero */
+	if (search_box.xmin > search_box.xmax || search_box.ymin > search_box.ymax ||
+		search_box.zmin > search_box.zmax)
+		PG_RETURN_FLOAT8(0.0);
+
+	POSTGIS_DEBUGF(3, " -- geomstats1 box: %.15g %.15g %.15g, %.15g %.15g %.15g", geogstats1->xmin, geogstats1->ymin, geogstats1->zmin, geogstats1->xmax, geogstats1->ymax, geogstats1->zmax);
+	POSTGIS_DEBUGF(3, " -- geomstats2 box: %.15g %.15g %.15g, %.15g %.15g %.15g", geogstats2->xmin, geogstats2->ymin, geogstats2->zmin, geogstats2->xmax, geogstats2->ymax, geogstats2->zmax);
+	POSTGIS_DEBUGF(3, " -- calculated intersection box is : %.15g %.15g %.15g, %.15g %.15g %.15g", search_box.xmin, search_box.ymin, search_box.zmin, search_box.xmax, search_box.ymax, search_box.zmax);
+
+
+	/* Do the selectivity */
+	selectivity1 = estimate_selectivity(&search_box, geogstats1);
+	selectivity2 = estimate_selectivity(&search_box, geogstats2);
+
+	POSTGIS_DEBUGF(3, "selectivity1: %.15g   selectivity2: %.15g", selectivity1, selectivity2);
+
+	/* Free the statistic tuples */
+	free_attstatsslot(0, NULL, 0, (float *)geogstats1, geogstats1_nvalues);
+	ReleaseSysCache(stats1_tuple);
+
+	free_attstatsslot(0, NULL, 0, (float *)geogstats2, geogstats2_nvalues);
+	ReleaseSysCache(stats2_tuple);
+
+	/*
+	* OK, so before we calculate the join selectivity we also need to
+	* know the number of tuples in each of the columns since
+	* estimate_selectivity returns the number of estimated tuples
+	* divided by the total number of tuples. Fortunately we can work
+	* this out by multiplying the average features per cell by the
+	* number of cells.
+	*/
+	num1_tuples = geogstats1->avgFeatureCells * geogstats1->unitsx * geogstats1->unitsy *
+			geogstats1->unitsz;
+
+	num2_tuples = geogstats2->avgFeatureCells * geogstats2->unitsx * geogstats2->unitsy *
+			geogstats2->unitsz;
+
+	/*
+	* Finally calculate the estimate of the number of rows returned
+	*
+	*    = 2 * (nrows from col1 + nrows from col2) /
+	*	total nrows in col1 x total nrows in col2
+	*
+	* The factor of 2 accounts for the fact that for each tuple in
+	* col 1 matching col 2,
+	* there will be another match in col 2 matching col 1
+	*/
+	total_tuples = num1_tuples * num2_tuples;
+	rows_returned = 2 * ((num1_tuples * selectivity1) + (num2_tuples * selectivity2));
+
+	POSTGIS_DEBUGF(3, "Rows from rel1: %f", num1_tuples * selectivity1);
+	POSTGIS_DEBUGF(3, "Rows from rel2: %f", num2_tuples * selectivity2);
+	POSTGIS_DEBUGF(3, "Estimated rows returned: %f", rows_returned);
+
+	/*
+	* One (or both) tuple count is zero...
+	* We return default selectivity estimate.
+	* We could probably attempt at an estimate
+	* w/out looking at tables tuple count, with
+	* a function of selectivity1, selectivity2.
+	*/
+	if ( ! total_tuples )
+	{
+		POSTGIS_DEBUG(3, "Total tuples == 0, returning default join selectivity");
+
+		PG_RETURN_FLOAT8(DEFAULT_GEOGRAPHY_SEL);
+	}
+
+	if ( rows_returned > total_tuples )
+		PG_RETURN_FLOAT8(1.0);
+
+	PG_RETURN_FLOAT8(rows_returned / total_tuples);
+}
+
+
+/**
  * This function is called by the analyze function iff
  * the geography_analyze() function give it its pointer
  * (this is always the case so far).
@@ -453,6 +787,8 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 {
 	MemoryContext old_context;
 	GEOG_STATS *geogstats;
+
+	GBOX gbox;
 
 	GBOX *sample_extent = NULL;
 	GBOX **sampleboxes;
@@ -492,6 +828,9 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	 */
 	sampleboxes = palloc(sizeof(GBOX *) * samplerows);
 
+	/* Mark the GBOX as being geodetic */
+	gbox.flags = FLAGS_SET_GEODETIC(gbox.flags, 1);
+
 	/*
 	 * First scan:
 	 *  o find extent of the sample rows
@@ -502,7 +841,6 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	 */
 	for (i = 0; i < samplerows; i++)
 	{
-		GBOX gbox;
 		Datum datum;
 		GSERIALIZED *serialized;
 		LWGEOM *geometry;
