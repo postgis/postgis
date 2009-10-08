@@ -53,3 +53,6 @@ How To
 
 To generate images used in the documentation, follow these instructions on the PostGIS wiki:
 	http://trac.osgeo.org/postgis/wiki/DevWikiDocNewFeature
+	
+To run garden tests against functions, follow these instructions on the PostGIS dev wiki:
+	http://trac.osgeo.org/postgis/wiki/DevWikiGardenTest
