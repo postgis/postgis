@@ -1307,13 +1307,17 @@ double ptarray_area_sphere(POINTARRAY *pa, POINT2D pt_outside)
 	
 	geographic_point_init(pt_outside.x, pt_outside.y, &c);
 
+	/* Initialize first point */
+	getPoint2d_p(pa, 0, &p);
+	geographic_point_init(p.x, p.y, &a);
+
 	for( i = 1; i < pa->npoints; i++ )
 	{
-		getPoint2d_p(pa, i-1, &p);
-		geographic_point_init(p.x, p.y, &a);
 		getPoint2d_p(pa, i, &p);
 		geographic_point_init(p.x, p.y, &b);
 		area += sphere_excess(a, b, c);
+		/* B gets incremented in the next loop, so we save the value here */
+		a = b;
 	}
 	return fabs(area);
 }
@@ -1426,12 +1430,14 @@ static double ptarray_distance_sphere(POINTARRAY *pa1, POINTARRAY *pa2, double t
 		getPoint2d_p(pa_one, 0, &p);
 		geographic_point_init(p.x, p.y, &g1);
 
+		/* Initialize start of line */
+		getPoint2d_p(pa_many, 0, &p);
+		geographic_point_init(p.x, p.y, &(e1.start));
+
 		/* Iterate through the edges in our line */
 		for( i = 1; i < pa_many->npoints; i++ )
 		{
 			double d;
-			getPoint2d_p(pa_many, i - 1, &p);
-			geographic_point_init(p.x, p.y, &(e1.start));
 			getPoint2d_p(pa_many, i, &p);
 			geographic_point_init(p.x, p.y, &(e1.end));
 			d = edge_distance_to_point(e1, g1, 0);
@@ -1439,25 +1445,31 @@ static double ptarray_distance_sphere(POINTARRAY *pa1, POINTARRAY *pa2, double t
 				distance = d;
 			if( d < tolerance ) 
 				return distance;
+			e1.start = e1.end;
 		}
 		return distance;			
 	}
+
+	/* Initialize start of line 1 */
+	getPoint2d_p(pa1, 0, &p);
+	geographic_point_init(p.x, p.y, &(e1.start));
+
 	
 	/* Handle line/line case */
 	for( i = 1; i < pa1->npoints; i++ )
 	{
-		getPoint2d_p(pa1, i - 1, &p);
-		geographic_point_init(p.x, p.y, &(e1.start));
 		getPoint2d_p(pa1, i, &p);
 		geographic_point_init(p.x, p.y, &(e1.end));
+
+		/* Initialize start of line 2 */
+		getPoint2d_p(pa2, 0, &p);
+		geographic_point_init(p.x, p.y, &(e2.start));
 
 		for( j = 1; j < pa2->npoints; j++ )
 		{
 			double d;
 			GEOGRAPHIC_POINT g;
 
-			getPoint2d_p(pa2, j - 1, &p);
-			geographic_point_init(p.x, p.y, &(e2.start));
 			getPoint2d_p(pa2, j, &p);
 			geographic_point_init(p.x, p.y, &(e2.end));
 
@@ -1473,11 +1485,19 @@ static double ptarray_distance_sphere(POINTARRAY *pa1, POINTARRAY *pa2, double t
 			}
 			d = edge_distance_to_edge(e1, e2, 0, 0);
 			LWDEBUGF(4,"got edge_distance_to_edge %.8g", d);
+			
 			if( d < distance )
 				distance = d;
 			if( d < tolerance )
 				return distance;
+				
+			/* Copy end to start to allow a new end value in next iteration */
+			e2.start = e2.end;
 		}
+		
+		/* Copy end to start to allow a new end value in next iteration */
+		e1.start = e1.end;
+		
 	}
 	LWDEBUGF(4,"finished all loops, returning %.8g", distance);
 	
