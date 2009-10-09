@@ -383,6 +383,12 @@ extern double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox
 extern double lwgeom_area_sphere(LWGEOM *lwgeom, GBOX gbox);
 
 /**
+* Calculate covers predicate for two lwgeoms on the sphere. Currently
+* only handles point-in-polygon.
+*/
+extern int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, GBOX gbox1, GBOX gbox2);
+
+/**
 * New function to read doubles directly from the double* coordinate array
 * of an aligned lwgeom #POINTARRAY (built by de-serializing a #GSERIALIZED).
 */

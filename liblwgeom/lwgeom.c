@@ -404,7 +404,7 @@ lwgeom_as_multi(LWGEOM *lwgeom)
 	** This funx is a no-op only if a bbox cache is already present
 	** in input.
 	*/
-	if ( lwgeom_contains_subgeoms(TYPE_GETTYPE(lwgeom->type)) )
+	if ( lwgeom_is_collection(TYPE_GETTYPE(lwgeom->type)) )
 	{
 		return lwgeom_clone(lwgeom);
 	}
@@ -928,7 +928,7 @@ lwgeom_longitude_shift(LWGEOM *lwgeom)
 
 /** Return TRUE if the geometry may contain sub-geometries, i.e. it is a MULTI* or COMPOUNDCURVE */
 int
-lwgeom_contains_subgeoms(int type)
+lwgeom_is_collection(int type)
 {
 
 	switch (type)

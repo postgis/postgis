@@ -1758,7 +1758,7 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX
 	}
 
 	/* Recurse into collections */
-	if( lwgeom_contains_subgeoms(type1) )
+	if( lwgeom_is_collection(type1) )
 	{
 		int i;
 		double distance = MAXFLOAT;
@@ -1776,7 +1776,7 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX
 	}
 
 	/* Recurse into collections */
-	if( lwgeom_contains_subgeoms(type2) )
+	if( lwgeom_is_collection(type2) )
 	{
 		int i;
 		double distance = MAXFLOAT;
@@ -1796,6 +1796,71 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX
 
 	lwerror("arguments include unsupported geometry type (%s, %s)", lwgeom_typename(type1), lwgeom_typename(type1));
 	return -1.0;
+	
+}
+
+
+int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, GBOX gbox1, GBOX gbox2)
+{
+	int type1, type2;
+	
+	assert(lwgeom1);
+	assert(lwgeom2);
+	
+	type1 = TYPE_GETTYPE(lwgeom1->type);
+	type2 = TYPE_GETTYPE(lwgeom2->type);
+	
+	/* Currently a restricted implementation */
+	if( ! ( (type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE || type1 == COLLECTIONTYPE) &&
+	        (type2 == POINTTYPE || type2 == MULTIPOINTTYPE || type2 == COLLECTIONTYPE) ) )
+	{
+		lwerror("lwgeom_covers_lwgeom_sphere: only POLYGON and POINT types are currently supported");
+		return LW_FALSE;
+	}
+
+	/* Handle the polygon/point case */
+	if( type1 == POLYGONTYPE && type2 == POINTTYPE )
+	{
+		POINT2D pt_to_test;
+		getPoint2d_p(((LWPOINT*)lwgeom2)->point, 0, &pt_to_test);
+		return lwpoly_covers_point2d((LWPOLY*)lwgeom1, gbox1, pt_to_test);
+	}
+	
+	/* If any of the first argument parts covers the second argument, it's true */
+	if( lwgeom_is_collection( type1 ) )
+	{
+		int i;
+		LWCOLLECTION *col = (LWCOLLECTION*)lwgeom1;
+		
+		for( i = 0; i < col->ngeoms; i++ )
+		{
+			if( lwgeom_covers_lwgeom_sphere(col->geoms[i], lwgeom2, gbox1, gbox2) )
+			{
+				return LW_TRUE;
+			}
+		}
+		return LW_FALSE;
+	}
+
+	/* Only if all of the second arguments are covered by the first argument is the condition true */
+	if( lwgeom_is_collection( type2 ) )
+	{
+		int i;
+		LWCOLLECTION *col = (LWCOLLECTION*)lwgeom2;
+		
+		for( i = 0; i < col->ngeoms; i++ )
+		{
+			if( ! lwgeom_covers_lwgeom_sphere(lwgeom1, col->geoms[i], gbox1, gbox2) )
+			{
+				return LW_FALSE;
+			}
+		}
+		return LW_TRUE;
+	}
+	
+	/* Don't get here */
+	lwerror("lwgeom_covers_lwgeom_sphere: reached end of function without resolution");
+	return LW_FALSE;
 	
 }
 

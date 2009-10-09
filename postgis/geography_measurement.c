@@ -26,6 +26,8 @@
 Datum geography_distance_sphere(PG_FUNCTION_ARGS);
 Datum geography_area_sphere(PG_FUNCTION_ARGS);
 Datum geography_expand(PG_FUNCTION_ARGS);
+Datum geography_point_outside(PG_FUNCTION_ARGS);
+Datum geography_covers(PG_FUNCTION_ARGS);
 
 
 /*
@@ -210,4 +212,54 @@ Datum geography_point_outside(PG_FUNCTION_ARGS)
 	
 	PG_RETURN_POINTER(g_out);
 
+}
+
+PG_FUNCTION_INFO_V1(geography_covers);
+Datum geography_covers(PG_FUNCTION_ARGS)
+{
+	LWGEOM *lwgeom1 = NULL;
+	LWGEOM *lwgeom2 = NULL;
+	GBOX gbox1;
+	GBOX gbox2;
+	GSERIALIZED *g1 = NULL;
+	GSERIALIZED *g2 = NULL;
+	int type1, type2;
+	int result = LW_FALSE;
+	
+	/* Get our geometry objects loaded into memory. */
+	g1 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	g2 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	
+	type1 = gserialized_get_type(g1);
+	type2 = gserialized_get_type(g2);
+
+	/* Right now we only handle points and polygons */
+	if( ! ( (type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE || type1 == COLLECTIONTYPE) &&
+	        (type2 == POINTTYPE || type2 == MULTIPOINTTYPE || type2 == COLLECTIONTYPE) ) )
+	{
+		elog(ERROR, "geography_covers: only POLYGON and POINT types are currently supported");
+		PG_RETURN_NULL();
+	}
+	
+	/* We need the bounding boxes in case of polygon calculations,
+	   which requires them to generate a stab-line to test point-in-polygon. */
+	if( ! gbox_from_gserialized(g1, &gbox1) ||
+	    ! gbox_from_gserialized(g2, &gbox2) )
+	{
+		elog(ERROR, "geography_covers: error in gbox_from_gserialized calculation.");
+		PG_RETURN_NULL();
+	}
+	
+	/* Construct our working geometries */
+	lwgeom1 = lwgeom_from_gserialized(g1);
+	lwgeom2 = lwgeom_from_gserialized(g2);
+	
+	/* Calculate answer */
+	result = lwgeom_covers_lwgeom_sphere(lwgeom1, lwgeom2, gbox1, gbox2);
+
+	/* Clean up, but not all the way to the point arrays */
+	lwgeom_release(lwgeom1);
+	lwgeom_release(lwgeom2);
+	
+	PG_RETURN_BOOL(result);
 }

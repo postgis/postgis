@@ -462,6 +462,27 @@ CREATE OR REPLACE FUNCTION ST_PointOutside(geography)
 	AS 'MODULE_PATHNAME','geography_point_outside'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
+-- Only implemented for polygon-over-point
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION _ST_Covers(geography, geography)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME','geography_covers'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Only implemented for polygon-over-point
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_Covers(geography, geography)
+	RETURNS boolean
+	AS 'SELECT $1 && $2 AND _ST_Covers($1, $2)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Only implemented for polygon-over-point
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_CoveredBy(geography, geography)
+	RETURNS boolean
+	AS 'SELECT $1 && $2 AND _ST_Covers($2, $1)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
 COMMIT;

@@ -667,7 +667,7 @@ lwgeom_mindistance2d_recursive_tolerance(uchar *lw1, uchar *lw2, double toleranc
 		double dist=tolerance;
 
 		/* Argument 1 is a multitype... recurse */
-		if ( lwgeom_contains_subgeoms(t1) )
+		if ( lwgeom_is_collection(t1) )
 		{
 			dist = lwgeom_mindistance2d_recursive_tolerance(g1, lw2, tolerance);
 			if ( dist <= tolerance ) return tolerance; /* can't be closer */
@@ -682,7 +682,7 @@ lwgeom_mindistance2d_recursive_tolerance(uchar *lw1, uchar *lw2, double toleranc
 			int t2 = lwgeom_getType(g2[0]);
 
 			/* Argument 2 is a multitype... recurse */
-			if ( lwgeom_contains_subgeoms(t2) )
+			if ( lwgeom_is_collection(t2) )
 			{
 				dist = lwgeom_mindistance2d_recursive_tolerance(g1, g2, tolerance);
 				if ( dist <= tolerance ) return tolerance; /* can't be closer */
@@ -775,7 +775,7 @@ lwgeom_mindistance2d_recursive_tolerance(uchar *lw1, uchar *lw2, double toleranc
 					lwerror("Unsupported geometry type: %s", lwgeom_typename(t2));
 				}
 			}
-//			else if (lwgeom_contains_subgeoms(t1)) /* it's a multitype... recurse */
+//			else if (lwgeom_is_collection(t1)) /* it's a multitype... recurse */
 //			{
 //				dist = lwgeom_mindistance2d_recursive_tolerance(g1, g2, tolerance);
 //			}
