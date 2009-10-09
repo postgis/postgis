@@ -8915,13 +8915,18 @@ FROM
 		  <refname>ST_Area</refname>
 
 		  <refpurpose>Returns the area of the geometry if it is a polygon or
-				multi-polygon.</refpurpose>
+				multi-polygon. For geometry type area is in SRID units.  For geography area is in square meters.</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
 		  <funcsynopsis>
 			<funcprototype>
 			  <funcdef>float <function>ST_Area</function></funcdef>
 				<paramdef><type>geometry </type><parameter>g1</parameter></paramdef>
+			</funcprototype>
+
+			<funcprototype>
+			  <funcdef>float <function>ST_Area</function></funcdef>
+				<paramdef><type>geography </type><parameter>g1</parameter></paramdef>
 			</funcprototype>
 		  </funcsynopsis>
 		</refsynopsisdiv>
@@ -8930,7 +8935,7 @@ FROM
 
 			<para>Returns the area of the geometry if it is a polygon or
 				multi-polygon. Return the area measurement of an ST_Surface or
-		  ST_MultiSurface value. Area is in the units of the spatial reference system.</para>
+		  ST_MultiSurface value. For geometry Area is in the units of the spatial reference system.  For geography area is in square meters.</para>
 
 			<para><inlinemediaobject>
 				<imageobject>
@@ -8951,7 +8956,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 			<para>Return area in square feet for a plot of Massachusetts land. Note this is in square feet because 2249 is
-				Mass State Plane Feet</para>
+				Mass State Plane Feet and the section is in US Mass state plane meters (26986)</para>
 			<programlisting>
 SELECT ST_Area(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
 	743265 2967450,743265.625 2967416,743238 2967416))',2249));
@@ -8960,7 +8965,7 @@ st_area
  928.625
 (1 row)
 
---this returns in square meters
+--this returns in square meters - geometry in US State plane meters
 SELECT ST_Area(ST_Transform(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
 	743265 2967450,743265.625 2967416,743238 2967416))',2249), 26986));
 st_area
@@ -8970,7 +8975,7 @@ st_area
 		  </refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_SetSRID" />,<xref linkend="ST_Transform" /></para>
+			<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_GeographyFromText" />, <xref linkend="ST_SetSRID" />,<xref linkend="ST_Transform" /></para>
 		</refsection>
 
 	</refentry>
