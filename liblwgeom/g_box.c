@@ -71,8 +71,8 @@ int gbox_overlaps(GBOX g1, GBOX g2)
 {
 	
 	/* Make sure our boxes have the same dimensionality */ 
-	if( ! (FLAGS_HAS_Z(g1.flags) == FLAGS_HAS_Z(g2.flags) && 
-	       FLAGS_HAS_M(g1.flags) == FLAGS_HAS_M(g2.flags) && 
+	if( ! (FLAGS_GET_Z(g1.flags) == FLAGS_GET_Z(g2.flags) && 
+	       FLAGS_GET_M(g1.flags) == FLAGS_GET_M(g2.flags) && 
 	       FLAGS_GET_GEODETIC(g1.flags) == FLAGS_GET_GEODETIC(g2.flags) ) )
 	{
 		lwerror("gbox_overlaps: geometries have mismatched dimensionality");
