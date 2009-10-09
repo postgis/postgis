@@ -1198,16 +1198,18 @@ int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox)
 }
 
 /**
-* Given a gbox, return a cartesian unit vector to a point that is 
+* Given a unit geocentric gbox, return a lon/lat (degrees) coordinate point point that is 
 * guaranteed to be outside the box (and therefore anything it contains).
 */
-static void gbox_pt_outside(GBOX gbox, POINT3D *pt)
+void gbox_pt_outside(GBOX gbox, POINT2D *pt_outside)
 {
 	static double grow = M_PI / 180.0 / 60.0; /* one arc-minute */
 	double d;
 	int i;
 	GBOX ge;
 	POINT3D corners[8];
+	POINT3D pt;
+	GEOGRAPHIC_POINT g;
 	
 	/* Assign our box and expand it slightly. */
 	ge = gbox;
@@ -1256,39 +1258,48 @@ static void gbox_pt_outside(GBOX gbox, POINT3D *pt)
 		normalize(&(corners[i]));
 		if( ! gbox_contains_point3d(gbox, corners[i]) )
 		{
-			*pt = corners[i];
+			pt = corners[i];
+			normalize(&pt);
+			cart2geog(pt, &g);
+			pt_outside->x = rad2deg(g.lon);
+			pt_outside->y = rad2deg(g.lat);
 			return;
 		}	
 	}
 
-	pt->x = 1.0;
-	pt->y = 0.0;
-	pt->z = 0.0;
+	pt.x = 1.0;
+	pt.y = 0.0;
+	pt.z = 0.0;
 	
 	if((1.0 - gbox.xmax) > 0.1) 
 	{
-		pt->x = gbox.xmax + (1.0 - gbox.xmax) * 0.01;
-		d = sqrt((1.0 - pow(pt->x, 2.0))/2.0);
-		pt->y = d;
-		pt->z = d;
+		pt.x = gbox.xmax + (1.0 - gbox.xmax) * 0.01;
+		d = sqrt((1.0 - pow(pt.x, 2.0))/2.0);
+		pt.y = d;
+		pt.z = d;
 	} 
 	else if((1.0 - gbox.ymax) > 0.1) 
 	{
-		pt->y = gbox.ymax + (1.0 - gbox.ymax) * 0.01;
-		d = sqrt((1.0 - pow(pt->y, 2.0))/2.0);
-		pt->x = d;
-		pt->z = d;
+		pt.y = gbox.ymax + (1.0 - gbox.ymax) * 0.01;
+		d = sqrt((1.0 - pow(pt.y, 2.0))/2.0);
+		pt.x = d;
+		pt.z = d;
 	} 
 	else if((1.0 - gbox.zmax) > 0.1) 
 	{
-		pt->z = gbox.zmax + (1.0 - gbox.zmax) * 0.01;
-		d = sqrt((1.0 - pow(pt->z, 2.0))/2.0);
-		pt->x = d;
-		pt->y = d;
+		pt.z = gbox.zmax + (1.0 - gbox.zmax) * 0.01;
+		d = sqrt((1.0 - pow(pt.z, 2.0))/2.0);
+		pt.x = d;
+		pt.y = d;
 	}
-	normalize(pt);
+	normalize(&pt);
+	cart2geog(pt, &g);
+	pt_outside->x = rad2deg(g.lon);
+	pt_outside->y = rad2deg(g.lat);
 	return;
 }
+
+
 
 /**
 * Returns the area of the ring (ring must be closed) in square radians (surface of
@@ -1514,8 +1525,6 @@ static double ptarray_distance_sphere(POINTARRAY *pa1, POINTARRAY *pa2, double t
 double lwgeom_area_sphere(LWGEOM *lwgeom, GBOX gbox)
 {
 	int type;
-	POINT3D p;
-	GEOGRAPHIC_POINT g;
 	POINT2D pt_outside;
 	
 	assert(lwgeom);
@@ -1531,10 +1540,9 @@ double lwgeom_area_sphere(LWGEOM *lwgeom, GBOX gbox)
 	if( ! ( type == POLYGONTYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE ) )
 		return 0.0;
 
-	gbox_pt_outside(gbox, &p);
-	cart2geog(p, &g);
-	pt_outside.x = rad2deg(g.lon);
-	pt_outside.y = rad2deg(g.lat);
+	gbox_pt_outside(gbox, &pt_outside);
+	
+	LWDEBUGF(2, "pt_outside = POINT(%.20g %.20g)", pt_outside.x, pt_outside.y);
 	
 	/* Actually calculate area */
 	if( type == POLYGONTYPE )
@@ -1800,8 +1808,8 @@ int lwpoly_covers_point2d(const LWPOLY *poly, GBOX gbox, POINT2D pt_to_test)
 {
 	int i;
 	int in_hole_count = 0;
-	POINT3D p, q;
-	GEOGRAPHIC_POINT g, gpt_to_test;
+	POINT3D p;
+	GEOGRAPHIC_POINT gpt_to_test;
 	POINT2D pt_outside;
 	
 	/* Nulls and empties don't contain anything! */
@@ -1813,15 +1821,12 @@ int lwpoly_covers_point2d(const LWPOLY *poly, GBOX gbox, POINT2D pt_to_test)
 
 	/* Point not in box? Done! */
 	geographic_point_init(pt_to_test.x, pt_to_test.y, &gpt_to_test);
-	geog2cart(gpt_to_test, &q);
-	if( ! gbox_contains_point3d(gbox, q) )
+	geog2cart(gpt_to_test, &p);
+	if( ! gbox_contains_point3d(gbox, p) )
 		return LW_FALSE;
 	
 	/* Calculate our outside point from the gbox */
-	gbox_pt_outside(gbox, &p);
-	cart2geog(p, &g);
-	pt_outside.x = rad2deg(g.lon);
-	pt_outside.y = rad2deg(g.lat);
+	gbox_pt_outside(gbox, &pt_outside);
 
 	LWDEBUGF(4, "pt_outside POINT(%.18g %.18g)", pt_outside.x, pt_outside.y);
 	LWDEBUGF(4, "pt_to_test POINT(%.18g %.18g)", pt_to_test.x, pt_to_test.y);

@@ -456,6 +456,12 @@ CREATE OR REPLACE FUNCTION ST_Area(geography)
 	AS 'MODULE_PATHNAME','geography_area_sphere'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_PointOutside(geography)
+	RETURNS geography
+	AS 'MODULE_PATHNAME','geography_point_outside'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
 COMMIT;

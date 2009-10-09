@@ -159,11 +159,11 @@ Datum geography_area_sphere(PG_FUNCTION_ARGS)
 	area = lwgeom_area_sphere(lwgeom, gbox);
 
 	/* Something went wrong... */
-	if( area < 0.0 )
-	{
-		elog(ERROR, "lwgeom_area_sphere returned area < 0.0");
-		PG_RETURN_NULL();
-	}
+//	if( area < 0.0 )
+//	{
+//		elog(ERROR, "lwgeom_area_sphere returned area < 0.0");
+//		PG_RETURN_NULL();
+//	}
 
 	/* Currently normalizing with a fixed WGS84 radius, in future this
 	   should be the average radius of the SRID in play */
@@ -173,5 +173,41 @@ Datum geography_area_sphere(PG_FUNCTION_ARGS)
 	lwgeom_release(lwgeom);
 	
 	PG_RETURN_FLOAT8(area);
+
+}
+
+/*
+** geography_point_outside(GSERIALIZED *g) 
+** returns point outside the object
+*/
+PG_FUNCTION_INFO_V1(geography_point_outside);
+Datum geography_point_outside(PG_FUNCTION_ARGS)
+{
+	GBOX gbox;
+	GSERIALIZED *g = NULL;
+	GSERIALIZED *g_out = NULL;
+	size_t g_out_size;
+	LWPOINT *lwpoint = NULL;
+	POINT2D pt;
+	
+	/* Get our geometry object loaded into memory. */
+	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	
+	/* We need the bounding box to get an outside point for area algorithm */
+	if( ! gbox_from_gserialized(g, &gbox) )
+	{
+		elog(ERROR, "Error in gbox_from_gserialized calculation.");
+		PG_RETURN_NULL();
+	}
+	
+	/* Get an exterior point, based on this gbox */
+	gbox_pt_outside(gbox, &pt);
+	
+	lwpoint = make_lwpoint2d(4326, pt.x, pt.y);
+	
+	g_out = gserialized_from_lwgeom((LWGEOM*)lwpoint, 1, &g_out_size);
+	SET_VARSIZE(g_out, g_out_size);
+	
+	PG_RETURN_POINTER(g_out);
 
 }

@@ -394,6 +394,11 @@ extern int getPoint2d_p_ro(const POINTARRAY *pa, int n, POINT2D **point);
 extern int ptarray_calculate_gbox_geodetic(POINTARRAY *pa, GBOX *gbox);
 
 /**
+* Calculate a spherical point that falls outside the geocentric gbox
+*/
+void gbox_pt_outside(GBOX gbox, POINT2D *pt_outside);
+
+/**
 * Create a new gbox with the dimensionality indicated by the flags. Caller
 * is responsible for freeing.
 */
