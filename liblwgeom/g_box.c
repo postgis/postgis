@@ -69,8 +69,13 @@ int gbox_merge(GBOX new_box, GBOX *merge_box)
 
 int gbox_overlaps(GBOX g1, GBOX g2)
 {
-	if( g1.flags != g2.flags )
+	
+	/* Make sure our boxes have the same dimensionality */ 
+	if( ! (FLAGS_NDIMS(g1.flags) == FLAGS_NDIMS(g2.flags) && 
+	       FLAGS_GET_GEODETIC(g1.flags) == FLAGS_GET_GEODETIC(g2.flags) ) )
+	{
 		lwerror("gbox_overlaps: geometries have mismatched dimensionality");
+	}
 		
 	if( g1.xmax < g2.xmin || g1.ymax < g2.ymin ||
 	    g1.xmin > g2.xmax || g1.ymin > g2.ymax )
