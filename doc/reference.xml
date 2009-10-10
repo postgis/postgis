@@ -9506,19 +9506,32 @@ ST_Point      | t          | t              | f           | f
 			<paramdef><type>geometry </type>
 			<parameter>geomB</parameter></paramdef>
 		  </funcprototype>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_Covers</function></funcdef>
+
+			<paramdef><type>geography </type>
+			<parameter>geogpolyA</parameter></paramdef>
+
+			<paramdef><type>geography </type>
+			<parameter>geogpointB</parameter></paramdef>
+		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
 	  <refsection>
 		<title>Description</title>
 
-		  <para>Returns 1 (TRUE) if no point in Geometry B is outside
-			Geometry A</para>
+		  <para>Returns 1 (TRUE) if no point in Geometry/Geography B is outside
+			Geometry/Geography A</para>
 
 		<para>Performed by the GEOS module</para>
 
 		<important>
 		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+		</important>
+
+		<important>
+		  <para>For geography only Polygon covers point is supported.</para>
 		</important>
 
 		<important>
@@ -9531,6 +9544,7 @@ ST_Point      | t          | t              | f           | f
 			_ST_Covers.</para>
 
 		<para>Availability: 1.2.2 - requires GEOS &gt;= 3.0</para>
+		<para>Availability: 1.5 - support for geography was introduced. </para>
 
 		<para>NOTE: this is the "allowable" version that returns a
 			boolean, not an integer.</para>
@@ -9542,6 +9556,7 @@ ST_Point      | t          | t              | f           | f
 
 	  <refsection>
 		<title>Examples</title>
+			<para> Geometry example </para>
 		  <programlisting>
 	--a circle covering a circle
 SELECT ST_Covers(smallc,smallc) As smallinsmall,
@@ -9555,6 +9570,10 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
 --------------+----------------+-------------------+---------------------
  t            | f              | t                 | f
 (1 row)	</programlisting>
+		<para>Geeography Example</para>
+		<programlisting>
+
+		</programlisting>
 	  </refsection>
 
 	  <refsection>
