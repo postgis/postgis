@@ -60,7 +60,6 @@ int clairaut_cartesian(POINT3D start, POINT3D end, GEOGRAPHIC_POINT *g_top, GEOG
 int clairaut_geographic(GEOGRAPHIC_POINT start, GEOGRAPHIC_POINT end, GEOGRAPHIC_POINT *g_top, GEOGRAPHIC_POINT *g_bottom);
 double sphere_distance(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e);
 double sphere_distance_cartesian(POINT3D s, POINT3D e);
-double sphere_direction(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e);
 int sphere_project(GEOGRAPHIC_POINT r, double distance, double azimuth, GEOGRAPHIC_POINT *n);
 int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox);
 int edge_calculate_gbox_slow(GEOGRAPHIC_EDGE e, GBOX *gbox);

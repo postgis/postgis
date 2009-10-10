@@ -162,6 +162,18 @@ void point_rad2deg(GEOGRAPHIC_POINT *p)
 	p->lon = rad2deg(p->lon);
 }
 
+/** 
+* Shift a point around by a number of radians
+*/
+static void point_shift(GEOGRAPHIC_POINT *p, double shift)
+{
+	double lon = p->lon + shift;
+	if( lon > M_PI )
+		p->lon = -1.0 * M_PI + (lon - M_PI);
+	return;
+}
+
+
 static int geographic_point_equals(GEOGRAPHIC_POINT g1, GEOGRAPHIC_POINT g2)
 {
 	return FP_EQUALS(g1.lat, g2.lat) && FP_EQUALS(g1.lon, g2.lon);
@@ -352,6 +364,28 @@ void y_to_z(POINT3D *p)
 	p->y = tmp;
 }
 
+
+static inline int crosses_dateline(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e)
+{
+	double sign_s = signum(s.lon);
+	double sign_e = signum(e.lon);
+	double ss = fabs(s.lon);
+	double ee = fabs(e.lon);
+	if( sign_s == sign_e )
+	{
+		return LW_FALSE;
+	}
+	else
+	{
+		double dl = ss + ee;
+		if( dl < M_PI )
+			return LW_FALSE;
+		else if ( FP_EQUALS(dl, M_PI) )
+			return LW_FALSE;
+		else
+			return LW_TRUE;
+	}
+}
 
 /**
 * Returns true if the point p is on the great circle plane.
@@ -553,6 +587,27 @@ double sphere_distance_cartesian(POINT3D s, POINT3D e)
 }
 
 /**
+* Given two points on a unit sphere, calculate the direction from s to e.
+*/
+static double sphere_direction(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e, double d)
+{
+	double heading = 0.0;
+	
+	if( FP_IS_ZERO(cos(s.lat)) )
+		return (s.lat > 0.0) ? M_PI : 0.0;
+
+	if( sin(e.lon - s.lon) < 0.0 )
+	{
+		heading = acos((sin(e.lat) - sin(s.lat) * cos(d)) / (sin(d) * cos(s.lat)));
+	}
+	else
+	{
+		heading = -1.0 * acos((sin(e.lat) - sin(s.lat) * cos(d)) / (sin(d) * cos(s.lat)));
+	}
+	return heading;
+}
+
+/**
 * Computes the spherical excess of a spherical triangle defined by
 * the three vectices A, B, C. Computes on the unit sphere (i.e., divides
 * edge lengths by the radius, even if the radius is 1.0). The excess is
@@ -568,25 +623,15 @@ static double sphere_excess(GEOGRAPHIC_POINT a, GEOGRAPHIC_POINT b, GEOGRAPHIC_P
 	double a_dist = sphere_distance(b, c);
 	double b_dist = sphere_distance(c, a);
 	double c_dist = sphere_distance(a, b);
-	double sign = (a.lon - b.lon) / fabs(a.lon - b.lon);
+	double hca = sphere_direction(c, a, b_dist);
+	double hcb = sphere_direction(c, b, a_dist);
+	double sign = signum(hcb-hca);
 	double ss = (a_dist + b_dist + c_dist) / 2.0;
-	double E = tan(ss/2.0) * tan((ss-a_dist)/2.0) * tan((ss-b_dist)/2.0) * tan((ss-c_dist)/2.0);
+	double E = tan(ss/2.0)*tan((ss-a_dist)/2.0)*tan((ss-b_dist)/2.0)*tan((ss-c_dist)/2.0);
 	return 4.0 * atan(sqrt(E)) * sign;
 }
 
-/**
-* Given two points on a unit sphere, calculate the direction from s to e.
-*/
-double sphere_direction(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e)
-{
-	double latS = s.lat;
-	double latE = e.lon;
-	double dlng = e.lat - s.lon;
-	double heading = atan2(sin(dlng) * cos(latE),
-	                       cos(latS) * sin(latE) -
-	                       sin(latS) * cos(latE) * cos(dlng)) / M_PI;
-	return heading;
-}
+
 
 /**
 * Returns true if the point p is on the minor edge defined by the
@@ -1324,9 +1369,33 @@ double ptarray_area_sphere(POINTARRAY *pa, POINT2D pt_outside)
 
 	for( i = 1; i < pa->npoints; i++ )
 	{
+		double excess = 0.0;
+		
 		getPoint2d_p(pa, i, &p);
 		geographic_point_init(p.x, p.y, &b);
-		area += sphere_excess(a, b, c);
+		
+		if( crosses_dateline(a, b) )
+		{
+			GEOGRAPHIC_POINT a1 = a, b1 = b, c1 = c;
+			double shift;
+
+			if( a.lon > 0.0 )
+				shift = (M_PI - a.lon) + 0.088; /* About 5deg more */
+			else
+				shift = (M_PI - b.lon) + 0.088; /* About 5deg more */
+
+			point_shift(&a1, shift);
+			point_shift(&b1, shift);
+			point_shift(&c1, shift);
+			excess = sphere_excess(a1, b1, c1);
+		}
+		else
+		{
+			excess = sphere_excess(a, b, c);
+		}
+		
+		area += excess;
+		
 		/* B gets incremented in the next loop, so we save the value here */
 		a = b;
 	}
