@@ -8955,22 +8955,53 @@ FROM
 
 		  <refsection>
 			<title>Examples</title>
-			<para>Return area in square feet for a plot of Massachusetts land. Note this is in square feet because 2249 is
-				Mass State Plane Feet and the section is in US Mass state plane meters (26986)</para>
+			<para>Return area in square feet for a plot of Massachusetts land and multiply by conversion to get square meters.
+				Note this is in square feet because 2249 is
+				Mass State Plane Feet </para>
 			<programlisting>
-SELECT ST_Area(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
-	743265 2967450,743265.625 2967416,743238 2967416))',2249));
-st_area
----------
- 928.625
-(1 row)
+SELECT ST_Area(the_geom) As sqft, ST_Area(the_geom)*POWER(0.3048,2) As sqm
+		FROM (SELECT
+		ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
+			743265 2967450,743265.625 2967416,743238 2967416))',2249) ) As foo(the_geom);
+  sqft   |     sqm
+---------+-------------
+ 928.625 | 86.27208552
+</programlisting>
+<para>Return area square feet and transform to Massachusetts state plane meters (26986) to get square meters.
+				Note this is in square feet because 2249 is
+				Mass State Plane Feet and transformed area is in square meters since 26986 is state plane mass meters </para>
+<programlisting>
 
---this returns in square meters - geometry in US State plane meters
-SELECT ST_Area(ST_Transform(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
-	743265 2967450,743265.625 2967416,743238 2967416))',2249), 26986));
-st_area
-------------------
- 86.2724306061864
+SELECT ST_Area(the_geom) As sqft, ST_Area(ST_Transform(the_geom,26986)) As sqm
+		FROM (SELECT
+		ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
+			743265 2967450,743265.625 2967416,743238 2967416))',2249) ) As foo(the_geom);
+  sqft   |       sqm
+---------+------------------
+ 928.625 | 86.2724304199219
+			</programlisting>
+
+<para>Return area square feet and square meters using Geography data type.  Note that we transform to our geometry to geography
+	(before you can do that make sure your geometry is in WGS 84 long lat 4326).  Geography always measures in meters. </para>
+<programlisting>
+
+SELECT ST_Area(the_geog)/POWER(0.3048,2) As sqft, ST_Area(the_geog) As sqm
+		FROM (SELECT
+		geography(
+		ST_Transform(
+			ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,743265 2967450,743265.625 2967416,743238 2967416))',
+				2249
+				) ,4326
+			)
+		)
+	) As foo(the_geog);
+	   sqft       |       sqm
+------------------+------------------
+ 927.186481558707 | 86.1384427837078
+
+ --if your data is in geography already
+ SELECT ST_Area(the_geog)/POWER(0.3048,2) As  sqft, ST_Area(the_geog) As sqm
+	FROM somegeogtable;
 			</programlisting>
 		  </refsection>
 		<refsection>
