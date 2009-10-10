@@ -173,6 +173,15 @@ CREATE OR REPLACE FUNCTION geography(geometry)
 -- Availability: 1.5.0
 CREATE CAST (geometry AS geography) WITH FUNCTION geography(geometry) AS IMPLICIT;
 
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION geometry(geography)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','geometry_from_geography'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.5.0
+CREATE CAST (geography AS geometry) WITH FUNCTION geometry(geography) AS IMPLICIT;
+
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 -- GiST Support Functions
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------

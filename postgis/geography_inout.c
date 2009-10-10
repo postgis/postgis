@@ -48,6 +48,7 @@ Datum geography_as_svg(PG_FUNCTION_ARGS);
 Datum geography_as_binary(PG_FUNCTION_ARGS);
 Datum geography_from_binary(PG_FUNCTION_ARGS);
 Datum geography_from_geometry(PG_FUNCTION_ARGS);
+Datum geometry_from_geography(PG_FUNCTION_ARGS);
 
 /* Datum geography_gist_selectivity(PG_FUNCTION_ARGS); TBD */
 /* Datum geography_gist_join_selectivity(PG_FUNCTION_ARGS); TBD */
@@ -930,5 +931,24 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 	
 	PG_RETURN_POINTER(g_ser);
 	
+}
+
+PG_FUNCTION_INFO_V1(geometry_from_geography);
+Datum geometry_from_geography(PG_FUNCTION_ARGS)
+{
+	LWGEOM *lwgeom = NULL;
+	PG_LWGEOM *ret = NULL;
+	GSERIALIZED *g_ser = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	lwgeom = lwgeom_from_gserialized(g_ser);
+	ret = pglwgeom_serialize(lwgeom);
+	lwgeom_release(lwgeom);
+	
+	if ( is_worth_caching_pglwgeom_bbox(ret) )
+	{
+		ret = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(LWGEOM_addBBOX, PointerGetDatum(ret)));
+	}
+
+	PG_RETURN_POINTER(ret);	
 }
 
