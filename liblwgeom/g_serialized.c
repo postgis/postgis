@@ -863,7 +863,7 @@ LWGEOM* lwgeom_from_gserialized(GSERIALIZED *g)
 
 	lwgeom->type = lwgeom_makeType_full(FLAGS_GET_Z(g_flags), FLAGS_GET_M(g_flags), has_srid, g_type, FLAGS_GET_BBOX(g_flags));
 
-	if( FLAGS_GET_BBOX(g_flags) )
+	if( FLAGS_GET_BBOX(g_flags) && ! FLAGS_GET_GEODETIC(g_flags) )
 	{
 		float *fptr = (float*)g->data;
 		BOX2DFLOAT4 *bbox = lwalloc(sizeof(BOX2DFLOAT4));
