@@ -628,14 +628,7 @@ static double sphere_excess(GEOGRAPHIC_POINT a, GEOGRAPHIC_POINT b, GEOGRAPHIC_P
 	double sign = signum(hcb-hca);
 	double ss = (a_dist + b_dist + c_dist) / 2.0;
 	double E = tan(ss/2.0)*tan((ss-a_dist)/2.0)*tan((ss-b_dist)/2.0)*tan((ss-c_dist)/2.0);
-	/* This is a worrying hack, the number had to be tuned a lot to find 
-	   the dividing line between things so small they caused a NaN and 
-	   things large enough to effect the final output areas. Probably we
-	   will have platform difficulties with this.
-	*/
-	if( fabs(E) < 1.0e-30 )
-		E = 0.0;
-	return 4.0 * atan(sqrt(E)) * sign;
+	return 4.0 * atan(sqrt(fabs(E))) * sign;
 }
 
 
