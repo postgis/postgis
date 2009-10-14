@@ -48,7 +48,7 @@ CREATE TYPE geography (
 	output = geography_out,
 	typmod_in = geography_typmod_in,
 	typmod_out = geography_typmod_out,
---	analyze = geography_analyze,
+	analyze = geography_analyze,
 	storage = main,
 	alignment = double
 );
