@@ -1162,8 +1162,8 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 			/* Sample data lies within 2D space: divide the total area by the total
 			   number of cells, and thus work out the edge size of the unit block */
 			edgelength = sqrt(
-					abs(histodims[0].max - histodims[0].min) *
-					abs(histodims[1].max - histodims[1].min) / (double)histocells
+					LW_ABS(histodims[0].max - histodims[0].min) *
+					LW_ABS(histodims[1].max - histodims[1].min) / (double)histocells
 				);
 
 			/* The calculation is easy; the harder part is to work out which dimensions
@@ -1171,44 +1171,44 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 			if (histodims[0].axis == 'X' && histodims[1].axis == 'Y')
 			{
 				/* X and Y */
-				unitsx = abs(histodims[0].max - histodims[0].min) / edgelength;
-				unitsy = abs(histodims[1].max - histodims[1].min) / edgelength;
+				unitsx = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
+				unitsy = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
 				unitsz = 1;
 			}
 			else if (histodims[0].axis == 'Y' && histodims[1].axis == 'X')
 			{
 				/* Y and X */
-				unitsx = abs(histodims[1].max - histodims[1].min) / edgelength;
-				unitsy = abs(histodims[0].max - histodims[0].min) / edgelength;
+				unitsx = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
+				unitsy = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
 				unitsz = 1;
 			}
 			else if (histodims[0].axis == 'X' && histodims[1].axis == 'Z')
 			{
 				/* X and Z */
-				unitsx = abs(histodims[0].max - histodims[0].min) / edgelength;
+				unitsx = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
 				unitsy = 1;
-				unitsz = abs(histodims[1].max - histodims[1].min) / edgelength;
+				unitsz = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
 			}
 			else if (histodims[0].axis == 'Z' && histodims[1].axis == 'X')
 			{
 				/* Z and X */
-				unitsx = abs(histodims[0].max - histodims[0].min) / edgelength;
+				unitsx = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
 				unitsy = 1;
-				unitsz = abs(histodims[1].max - histodims[1].min) / edgelength;
+				unitsz = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
 			}
 			else if (histodims[0].axis == 'Y' && histodims[1].axis == 'Z')
 			{
 				/* Y and Z */
 				unitsx = 1;
-				unitsy = abs(histodims[0].max - histodims[0].min) / edgelength;
-				unitsz = (histodims[1].max - histodims[1].min) / edgelength;
+				unitsy = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
+				unitsz = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
 			}
 			else if (histodims[0].axis == 'Z' && histodims[1].axis == 'Y')
 			{
 				/* Z and X */
 				unitsx = 1;
-				unitsy = abs(histodims[1].max - histodims[1].min) / edgelength;
-				unitsz = abs(histodims[0].max - histodims[0].min) / edgelength;
+				unitsy = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
+				unitsz = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
 			}
 
 			break;
@@ -1217,15 +1217,15 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 			/* Sample data lies within 3D space: divide the total volume by the total
 			   number of cells, and thus work out the edge size of the unit block */
 			edgelength = pow(
-				abs(histodims[0].max - histodims[0].min) *
-				abs(histodims[1].max - histodims[1].min) *
-				abs(histodims[2].max - histodims[2].min) / (double)histocells,
+				LW_ABS(histodims[0].max - histodims[0].min) *
+				LW_ABS(histodims[1].max - histodims[1].min) *
+				LW_ABS(histodims[2].max - histodims[2].min) / (double)histocells,
 				(double)1/3);
 
 			/* Units are simple in 3 dimensions */
-			unitsx = abs(histodims[0].max - histodims[0].min) / edgelength;
-			unitsy = abs(histodims[1].max - histodims[1].min) / edgelength;
-			unitsz = abs(histodims[2].max - histodims[2].min) / edgelength;
+			unitsx = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
+			unitsy = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
+			unitsz = LW_ABS(histodims[2].max - histodims[2].min) / edgelength;
 
 			break;
 	}
