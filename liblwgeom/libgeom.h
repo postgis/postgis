@@ -70,13 +70,13 @@
 * ZM Flags = Bottom 2 bits.
 */
 #define TYPMOD_GET_SRID(typmod) ((typmod & 0x0FFFFF00)>>8)
-#define TYPMOD_SET_SRID(typmod, srid) ((typmod & 0x000000FF) | ((srid & 0x000FFFFF)<<8))
+#define TYPMOD_SET_SRID(typmod, srid) ((typmod) = (typmod & 0x000000FF) | ((srid & 0x000FFFFF)<<8))
 #define TYPMOD_GET_TYPE(typmod) ((typmod & 0x000000FC)>>2)
-#define TYPMOD_SET_TYPE(typmod, type) ((typmod & 0xFFFFFF03) | ((type & 0x0000003F)<<2))
+#define TYPMOD_SET_TYPE(typmod, type) ((typmod) = (typmod & 0xFFFFFF03) | ((type & 0x0000003F)<<2))
 #define TYPMOD_GET_Z(typmod) ((typmod & 0x00000002)>>1)
-#define TYPMOD_SET_Z(typmod) (typmod | 0x00000002)
+#define TYPMOD_SET_Z(typmod) ((typmod) = typmod | 0x00000002)
 #define TYPMOD_GET_M(typmod) (typmod & 0x00000001)
-#define TYPMOD_SET_M(typmod) (typmod | 0x00000001)
+#define TYPMOD_SET_M(typmod) ((typmod) = typmod | 0x00000001)
 #define TYPMOD_GET_NDIMS(typmod) (2+TYPMOD_GET_Z(typmod)+TYPMOD_GET_M(typmod))
 
 

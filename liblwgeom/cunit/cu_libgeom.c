@@ -73,15 +73,15 @@ void test_typmod_macros(void)
 	int z = 1;
 	int rv;
 	
-	typmod = TYPMOD_SET_SRID(typmod,srid);
+	TYPMOD_SET_SRID(typmod,srid);
 	rv = TYPMOD_GET_SRID(typmod);
 	CU_ASSERT_EQUAL(rv, srid);
 	
-	typmod = TYPMOD_SET_TYPE(typmod,type);
+	TYPMOD_SET_TYPE(typmod,type);
 	rv = TYPMOD_GET_TYPE(typmod);
 	CU_ASSERT_EQUAL(rv,type);
 	
-	typmod = TYPMOD_SET_Z(typmod);
+	TYPMOD_SET_Z(typmod);
 	rv = TYPMOD_GET_Z(typmod);
 	CU_ASSERT_EQUAL(rv,z);
 	

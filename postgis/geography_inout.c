@@ -341,13 +341,13 @@ Datum geography_typmod_in(PG_FUNCTION_ARGS)
 					}
 					else 
 					{
-						typmod = TYPMOD_SET_SRID(typmod, srid);
+						TYPMOD_SET_SRID(typmod, srid);
 					}
 				}
 			}
 			else
 			{
-				typmod = TYPMOD_SET_SRID(typmod, 0);
+				TYPMOD_SET_SRID(typmod, 0);
 			}
 		}
 		if( i == 0 ) /* TYPE */
@@ -365,11 +365,11 @@ Datum geography_typmod_in(PG_FUNCTION_ARGS)
 			}
 			else 
 			{
-				typmod = TYPMOD_SET_TYPE(typmod, type);
+				TYPMOD_SET_TYPE(typmod, type);
 				if ( z )
-					typmod = TYPMOD_SET_Z(typmod);
+					TYPMOD_SET_Z(typmod);
 				if ( m )
-					typmod = TYPMOD_SET_M(typmod);
+					TYPMOD_SET_M(typmod);
 			}			
 		}
 	}
