@@ -46,11 +46,11 @@
 #define FLAGS_GET_BBOX(flags) (((flags) & 0x4)>>2)
 #define FLAGS_GET_GEODETIC(flags) (((flags) & 0x08)>>3)
 #define FLAGS_GET_READONLY(flags) (((flags) & 0x10)>>4)
-#define FLAGS_SET_Z(flags, value) ((value) ? ((flags) | 0x01) : ((flags) & 0xFE))
-#define FLAGS_SET_M(flags, value) ((value) ? ((flags) | 0x02) : ((flags) & 0xFD))
-#define FLAGS_SET_BBOX(flags, value) ((value) ? ((flags) | 0x04) : ((flags) & 0xFB))
-#define FLAGS_SET_GEODETIC(flags, value) ((value) ? ((flags) | 0x08) : ((flags) & 0xF7))
-#define FLAGS_SET_READONLY(flags, value) ((value) ? ((flags) | 0x10) : ((flags) & 0xEF))
+#define FLAGS_SET_Z(flags, value) ((flags) = (value) ? ((flags) | 0x01) : ((flags) & 0xFE))
+#define FLAGS_SET_M(flags, value) ((flags) = (value) ? ((flags) | 0x02) : ((flags) & 0xFD))
+#define FLAGS_SET_BBOX(flags, value) ((flags) = (value) ? ((flags) | 0x04) : ((flags) & 0xFB))
+#define FLAGS_SET_GEODETIC(flags, value) ((flags) = (value) ? ((flags) | 0x08) : ((flags) & 0xF7))
+#define FLAGS_SET_READONLY(flags, value) ((flags) = (value) ? ((flags) | 0x10) : ((flags) & 0xEF))
 #define FLAGS_NDIMS(flags) (2 + FLAGS_GET_Z(flags) + FLAGS_GET_M(flags))
 
 /**

@@ -68,11 +68,11 @@ uchar gflags(int hasz, int hasm, int geodetic)
 {
 	unsigned char flags = 0;
 	if ( hasz ) 
-		flags = FLAGS_SET_Z(flags, 1);
+		FLAGS_SET_Z(flags, 1);
 	if ( hasm ) 
-		flags = FLAGS_SET_M(flags, 1);
+		FLAGS_SET_M(flags, 1);
 	if ( geodetic ) 
-		flags = FLAGS_SET_GEODETIC(flags, 1);
+		FLAGS_SET_GEODETIC(flags, 1);
 	return flags;
 }
 

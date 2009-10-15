@@ -515,7 +515,7 @@ GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, int is_geodetic, size_t *size
 		 	result = lwgeom_calculate_gbox(geom, &gbox);
 		if( result == G_SUCCESS )
 		{
-			gbox.flags = FLAGS_SET_BBOX(gbox.flags, 1);
+			FLAGS_SET_BBOX(gbox.flags, 1);
 			expected_box_size = gbox_serialized_size(gbox.flags);
 		}
 	}

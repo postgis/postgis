@@ -95,22 +95,22 @@ void test_flags_macros(void)
 	uchar flags = 0;
 
 	CU_ASSERT_EQUAL(0, FLAGS_GET_Z(flags));
-	flags = FLAGS_SET_Z(flags, 1);
+	FLAGS_SET_Z(flags, 1);
 	CU_ASSERT_EQUAL(1, FLAGS_GET_Z(flags));
-	flags = FLAGS_SET_Z(flags, 0);
+	FLAGS_SET_Z(flags, 0);
 	CU_ASSERT_EQUAL(0, FLAGS_GET_Z(flags));
 	CU_ASSERT_EQUAL(0, FLAGS_GET_BBOX(flags));
 
 	CU_ASSERT_EQUAL(0, FLAGS_GET_M(flags));
-	flags = FLAGS_SET_M(flags, 1);
+	FLAGS_SET_M(flags, 1);
 	CU_ASSERT_EQUAL(1, FLAGS_GET_M(flags));
 
 	CU_ASSERT_EQUAL(0, FLAGS_GET_BBOX(flags));
-	flags = FLAGS_SET_BBOX(flags, 1);
+	FLAGS_SET_BBOX(flags, 1);
 	CU_ASSERT_EQUAL(1, FLAGS_GET_BBOX(flags));
 
 	CU_ASSERT_EQUAL(0, FLAGS_GET_GEODETIC(flags));
-	flags = FLAGS_SET_GEODETIC(flags, 1);
+	FLAGS_SET_GEODETIC(flags, 1);
 	CU_ASSERT_EQUAL(1, FLAGS_GET_GEODETIC(flags));
 
 	flags = 0;
@@ -188,13 +188,13 @@ void test_gbox_serialized_size(void)
 {
 	uchar flags = gflags(0, 0, 0);
 	CU_ASSERT_EQUAL(gbox_serialized_size(flags),0);
-	flags = FLAGS_SET_BBOX(flags, 1);
+	FLAGS_SET_BBOX(flags, 1);
 	CU_ASSERT_EQUAL(gbox_serialized_size(flags),16);
-	flags = FLAGS_SET_Z(flags, 1);
+	FLAGS_SET_Z(flags, 1);
 	CU_ASSERT_EQUAL(gbox_serialized_size(flags),24);
-	flags = FLAGS_SET_M(flags, 1);
+	FLAGS_SET_M(flags, 1);
 	CU_ASSERT_EQUAL(gbox_serialized_size(flags),32);
-	flags = FLAGS_SET_GEODETIC(flags, 1);
+	FLAGS_SET_GEODETIC(flags, 1);
 	CU_ASSERT_EQUAL(gbox_serialized_size(flags),24);
 	
 }
@@ -404,7 +404,7 @@ void test_on_gser_lwgeom_count_vertices(void)
 	lwgeom = lwgeom_from_ewkt("MULTIPOINT(-1 -1,-1 2.5,2 2,2 -1,1 1,2 2,4 5)", PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(lwgeom_count_vertices(lwgeom),7);
 	g_ser1 = gserialized_from_lwgeom(lwgeom, 1, &ret_size);
-    g_ser1->flags = FLAGS_SET_GEODETIC(g_ser1->flags, 1);
+	FLAGS_SET_GEODETIC(g_ser1->flags, 1);
 	lwgeom_free(lwgeom);
 
 	lwgeom = lwgeom_from_gserialized(g_ser1);

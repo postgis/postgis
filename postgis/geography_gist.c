@@ -404,7 +404,7 @@ GSERIALIZED* gidx_insert_into_gserialized(GSERIALIZED *g, GIDX *gidx)
 		ptr = g_out->data;
 		ptr += box_size;
 		memcpy(ptr, g->data, VARSIZE(g) - 8);
-		g_out->flags = FLAGS_SET_BBOX(g_out->flags, 1);
+		FLAGS_SET_BBOX(g_out->flags, 1);
 		SET_VARSIZE(g_out, varsize_new);
 	}
 	

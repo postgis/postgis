@@ -72,7 +72,8 @@ GCOORDINATE* gcoord_new_with_flags_and_ordinates(uchar flags, double *ordinates)
 		lwerror("Out of memory!");
 		return NULL;
 	}
-	coord->flags = FLAGS_SET_READONLY(flags, 1);
+	coord->flags = flags;
+	FLAGS_SET_READONLY(coord->flags, 1);
 	return coord;
 }
 
@@ -85,7 +86,8 @@ GCOORDINATE* gcoord_copy(GCOORDINATE *coord)
 	
 	copy = (GCOORDINATE*)lwalloc(sizeof(GCOORDINATE));
 	if( ! copy ) return NULL;
-	copy->flags = FLAGS_SET_READONLY(coord->flags, 1);
+	copy->flags = coord->flags;
+	FLAGS_SET_READONLY(copy->flags, 1);
 	copy->ordinates = (double*)lwalloc(sizeof(double) * FLAGS_NDIMS(copy->flags));
 	if( ! copy->ordinates ) return NULL;
 	memcpy(copy->ordinates, coord->ordinates, FLAGS_NDIMS(copy->flags) * sizeof(double));

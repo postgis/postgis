@@ -110,7 +110,7 @@ void test_gbox_from_spherical_coordinates(void)
 		ll[3] = (double)rndlat;
 
 		g = gserialized_from_lwgeom((LWGEOM*)lwline, 1, 0);
-		g->flags = FLAGS_SET_GEODETIC(g->flags, 1);
+		FLAGS_SET_GEODETIC(g->flags, 1);
 		gbox_geocentric_slow = LW_FALSE;
 		gbox = gserialized_calculate_gbox_geocentric(g);
 		gbox_geocentric_slow = LW_TRUE;
@@ -163,7 +163,7 @@ void test_gserialized_get_gbox_geocentric(void)
 #endif
 		lwg = lwgeom_from_ewkt(gbox_data[i], PARSER_CHECK_NONE);
 		g = gserialized_from_lwgeom(lwg, 1, 0);
-		g->flags = FLAGS_SET_GEODETIC(g->flags, 1);
+		FLAGS_SET_GEODETIC(g->flags, 1);
 		lwgeom_free(lwg);
 		gbox_geocentric_slow = LW_FALSE;
 		gbox = gserialized_calculate_gbox_geocentric(g);

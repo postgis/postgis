@@ -220,7 +220,7 @@ Datum geography_in(PG_FUNCTION_ARGS)
 	** functions do the right thing. 
 	*/
 	g_ser = geography_serialize(lwgeom);
-	g_ser->flags = FLAGS_SET_GEODETIC(g_ser->flags, 1);
+	FLAGS_SET_GEODETIC(g_ser->flags, 1);
     
 	/* 
 	** Replace the unaligned lwgeom with a new aligned one based on GSERIALIZED. 
@@ -913,7 +913,7 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
     ** functions do the right thing. 
     */
 	g_ser = geography_serialize(lwgeom);
-    g_ser->flags = FLAGS_SET_GEODETIC(g_ser->flags, 1);
+	FLAGS_SET_GEODETIC(g_ser->flags, 1);
     
 	/* 
 	** Replace the unaligned lwgeom with a new aligned one based on GSERIALIZED. 
