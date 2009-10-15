@@ -263,7 +263,7 @@ sub test_extent
 	local($ext) = shift;
 
 	# Test whole extent query
-	$query = 'explain analyze select oid from "'.
+	$query = 'explain analyze select 1 from "'.
 		$SCHEMA.'"."'.$TABLE.'" WHERE "'.$COLUMN.'" && '.
 		"setSRID('BOX3D(".$ext->{'xmin'}." ".
 		$ext->{'ymin'}.", ".$ext->{'xmax'}." ".
