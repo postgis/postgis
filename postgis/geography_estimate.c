@@ -507,6 +507,7 @@ Datum geography_gist_selectivity(PG_FUNCTION_ARGS)
 	geometry = lwgeom_from_gserialized(serialized);
 
 	/* Convert coordinates to 3D geodesic */
+	search_box.flags = FLAGS_SET_GEODETIC(search_box.flags, 1);
 	if (!lwgeom_calculate_gbox_geodetic(geometry, &search_box))
 	{
 		POSTGIS_DEBUG(3, " search box cannot be calculated");
