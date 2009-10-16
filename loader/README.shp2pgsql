@@ -87,6 +87,7 @@ OPTIONS
 
        -N <policy>
               Specify NULL geometries handling policy (insert,skip,abort).
+              Default: insert.
 
        -?     Display version and usage information.
 

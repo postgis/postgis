@@ -810,7 +810,8 @@ usage(char *me, int exitcode, FILE* out)
 	fprintf(out, "  -W <encoding> Specify the character encoding of Shape's\n");
 	fprintf(out, "     attribute column. (default : \"ASCII\")\n");
 #endif
-	fprintf(out, "  -N <policy> Specify NULL geometries handling policy (insert,skip,abort)\n");
+	fprintf(out, "  -N <policy> Specify NULL geometries handling policy (insert,skip,abort).\n");
+	fprintf(out, "     Default: insert.\n");
 	fprintf(out, "  -n  Only import DBF file.\n");
 	fprintf(out, "  -? Display this help screen\n");
 	exit (exitcode);
