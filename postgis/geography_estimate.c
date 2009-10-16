@@ -90,6 +90,9 @@ typedef struct GEOG_STATS_T
 	/* histogram extent */
 	float4 xmin, ymin, zmin, xmax, ymax, zmax;
 
+	/* No. of geometries within this column (approx) */
+	float4 totalrows;
+
 	/*
 	 * variable length # of floats for histogram
 	 */
@@ -705,26 +708,21 @@ Datum geography_gist_join_selectivity(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "selectivity1: %.15g   selectivity2: %.15g", selectivity1, selectivity2);
 
+	/*
+	* OK, so before we calculate the join selectivity we also need to
+	* know the number of tuples in each of the columns since
+	* estimate_selectivity returns the number of estimated tuples
+	* divided by the total number of tuples.
+	*/
+	num1_tuples = geogstats1->totalrows;
+	num2_tuples = geogstats2->totalrows;
+
 	/* Free the statistic tuples */
 	free_attstatsslot(0, NULL, 0, (float *)geogstats1, geogstats1_nvalues);
 	ReleaseSysCache(stats1_tuple);
 
 	free_attstatsslot(0, NULL, 0, (float *)geogstats2, geogstats2_nvalues);
 	ReleaseSysCache(stats2_tuple);
-
-	/*
-	* OK, so before we calculate the join selectivity we also need to
-	* know the number of tuples in each of the columns since
-	* estimate_selectivity returns the number of estimated tuples
-	* divided by the total number of tuples. Fortunately we can work
-	* this out by multiplying the average features per cell by the
-	* number of cells.
-	*/
-	num1_tuples = geogstats1->avgFeatureCells * geogstats1->unitsx * geogstats1->unitsy *
-			geogstats1->unitsz;
-
-	num2_tuples = geogstats2->avgFeatureCells * geogstats2->unitsx * geogstats2->unitsy *
-			geogstats2->unitsz;
 
 	/*
 	* Finally calculate the estimate of the number of rows returned
@@ -1251,6 +1249,7 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	geogstats->unitsx = unitsx;
 	geogstats->unitsy = unitsy;
 	geogstats->unitsz = unitsz;
+	geogstats->totalrows = totalrows;
 
 	/* Initialize all values to 0 */
 	for (i = 0; i < histocells; i++)
