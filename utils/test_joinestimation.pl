@@ -221,8 +221,7 @@ sub get_geometry_type
 		exit(1);
 	}
 	if ( $res->ntuples() > 1 ) {
-		print STDERR "Mixed geometry types in \"$SCHEMA1\".\"$TABLE1\".\"$COLUMN1\"\n";
-		exit(1);
+		print STDERR "WARNING: Mixed geometry types in \"$SCHEMA1\".\"$TABLE1\".\"$COLUMN1\"\n";
 	}
 	return $res->getvalue(0, 0);
 }
