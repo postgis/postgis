@@ -180,7 +180,7 @@ CREATE OR REPLACE FUNCTION geometry(geography)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
-CREATE CAST (geography AS geometry) WITH FUNCTION geometry(geography) AS IMPLICIT;
+CREATE CAST (geography AS geometry) WITH FUNCTION geometry(geography) ;
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 -- GiST Support Functions
