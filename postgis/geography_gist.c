@@ -41,6 +41,13 @@
 */
 #define LIMIT_RATIO 0.1
 
+/*
+** For debugging
+*/ 
+#if POSTGIS_DEBUG_LEVEL > 0
+	static int geog_counter_leaf = 0;
+	static int geog_counter_internal = 0;
+#endif
 
 /*
 ** GiST prototypes 
@@ -704,8 +711,11 @@ static inline bool geography_gist_consistent_leaf(GIDX *key, GIDX *query, Strate
 {
 	bool		retval;
 
-	POSTGIS_DEBUGF(4, "[GIST] leaf consistent, strategy: %d", strategy);
-	
+	POSTGIS_DEBUGF(4, "[GIST] leaf consistent, strategy [%d], count[%i], bounds[%.12g %.12g %.12g, %.12g %.12g %.12g]",
+	               strategy, geog_counter_leaf++,
+	               GIDX_GET_MIN(query, 0), GIDX_GET_MIN(query, 1), GIDX_GET_MIN(query, 2),
+	               GIDX_GET_MAX(query, 0), GIDX_GET_MAX(query, 1), GIDX_GET_MAX(query, 2) );
+
 	switch (strategy)
 	{
 		case RTOverlapStrategyNumber:
@@ -735,7 +745,10 @@ static inline bool geography_gist_consistent_internal(GIDX *key, GIDX *query, St
 {
 	bool		retval;
 
-	POSTGIS_DEBUGF(4, "[GIST] internal consistent, strategy: %d", strategy);
+	POSTGIS_DEBUGF(4, "[GIST] internal consistent, strategy [%d], count[%i], bounds[%.12g %.12g %.12g, %.12g %.12g %.12g]",
+	               strategy, geog_counter_internal++,
+	               GIDX_GET_MIN(query, 0), GIDX_GET_MIN(query, 1), GIDX_GET_MIN(query, 2),
+	               GIDX_GET_MAX(query, 0), GIDX_GET_MAX(query, 1), GIDX_GET_MAX(query, 2) );
 
 	switch (strategy)
 	{

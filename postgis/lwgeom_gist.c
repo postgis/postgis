@@ -648,21 +648,8 @@ lwgeom_rtree_internal_consistent(BOX2DFLOAT4 *key, BOX2DFLOAT4 *query,
 				   (query->ymin<= key->ymax)));
 
 
-#if POSTGIS_DEBUG_LEVEL >=4
-		/*keep track and report info about how many times this is called */
-		if (counter_intern == 0)
-		{
-			POSTGIS_DEBUGF(4, "search bounding box is: <%.16g %.16g,%.16g %.16g> - size box2d= %ld",
-						   query->xmin,query->ymin,query->xmax,query->ymax,sizeof(BOX2DFLOAT4));
-
-		}
-
-
-		POSTGIS_DEBUGF(4, "%i:(int)<%.8g %.8g,%.8g %.8g>&&<%.8g %.8g,%.8g %.8g> %i",counter_intern,key->xmin,key->ymin,key->xmax,key->ymax,
+		POSTGIS_DEBUGF(4, "%i:(int)<%.8g %.8g,%.8g %.8g>&&<%.8g %.8g,%.8g %.8g> %i",counter_intern++,key->xmin,key->ymin,key->xmax,key->ymax,
 					   query->xmin,query->ymin,query->xmax,query->ymax,   (int) retval);
-
-		counter_intern++;
-#endif
 
 		return(retval);
 		break;
@@ -726,13 +713,11 @@ lwgeom_rtree_leaf_consistent(BOX2DFLOAT4 *key,
 				  ((query->ymax>= key->ymax) &&
 				   (query->ymin<= key->ymax)));
 
-#if POSTGIS_DEBUG_LEVEL >= 4
 		/*keep track and report info about how many times this is called */
 		POSTGIS_DEBUGF(4, "%i:gist test (leaf) <%.6g %.6g,%.6g %.6g> &&  <%.6g %.6g,%.6g %.6g> --> %i",
-					   counter_leaf,key->xmin,key->ymin,key->xmax,key->ymax,
+					   counter_leaf++,key->xmin,key->ymin,key->xmax,key->ymax,
 					   query->xmin,query->ymin,query->xmax,query->ymax,   (int) retval);
-		counter_leaf++;
-#endif
+
 		return(retval);
 
 		break;
