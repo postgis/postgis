@@ -27,55 +27,55 @@
 	<xsl:variable name='var_spheroid'>'SPHEROID["GRS_1980",6378137,298.257222101]'</xsl:variable>
 	<xsl:variable name='var_matrix'>'FF1FF0102'</xsl:variable>
 	<pgis:gardens>
-		<pgis:gset ID='PointSet' GeometryType='POINT'>(SELECT ST_SetSRID(ST_Point(i,j),4326) As the_geom
-		FROM generate_series(-10,50,15) As i
+	<pgis:gset ID='PointSet' GeometryType='POINT'>(SELECT ST_SetSRID(ST_Point(i,j),4326) As the_geom
+		FROM (SELECT a*1.01234567890 FROM generate_series(-10,50,10) As a) As i(i)
 			CROSS JOIN generate_series(40,70, 15) j
 			ORDER BY i,j
 			)</pgis:gset>
 		<pgis:gset ID='LineSet' GeometryType='LINESTRING'>(SELECT ST_MakeLine(ST_SetSRID(ST_Point(i,j),4326),ST_SetSRID(ST_Point(j,i),4326))  As the_geom
-		FROM generate_series(-10,50,10) As i
+		FROM (SELECT a*1.01234567890 FROM generate_series(-10,50,10) As a) As i(i)
 			CROSS JOIN generate_series(40,70, 15) As j
 			WHERE NOT(i = j)
 			ORDER BY i, i*j)</pgis:gset>
 		<pgis:gset ID='PolySet' GeometryType='POLYGON'>(SELECT ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j*0.05)  As the_geom
-		FROM generate_series(-10,50,10) As i
+		FROM (SELECT a*1.01234567890 FROM generate_series(-10,50,10) As a) As i(i)
 			CROSS JOIN generate_series(40,70, 20) As j
 			ORDER BY i, i*j, j)</pgis:gset>
 		<pgis:gset ID='PointMSet' GeometryType='POINTM'>(SELECT ST_SetSRID(ST_MakePointM(i,j,m),4326) As the_geom
-		FROM generate_series(-10,50,10) As i
+		FROM (SELECT a*1.01234567890 FROM generate_series(-10,50,10) As a) As i(i)
 			CROSS JOIN generate_series(50,70, 20) AS j
 			CROSS JOIN generate_series(1,2) As m
 			ORDER BY i, j, i*j*m)</pgis:gset>
 		<pgis:gset ID='LineMSet' GeometryType='LINESTRINGM'>(SELECT ST_MakeLine(ST_SetSRID(ST_MakePointM(i,j,m),4326),ST_SetSRID(ST_MakePointM(j,i,m),4326))  As the_geom
-		FROM generate_series(-10,50,10) As i
+		FROM (SELECT a*1.01234567890 FROM generate_series(-10,50,10) As a) As i(i)
 			CROSS JOIN generate_series(50,70, 20) As j
 			CROSS JOIN generate_series(1,2) As m
 			WHERE NOT(i = j)
 			ORDER BY i, j, m, i*j*m)</pgis:gset>
 		<pgis:gset ID='PolygonMSet' GeometryType='POLYGONM'>(SELECT ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_SetSRID(ST_MakePointM(i+m,j,m),4326),ST_SetSRID(ST_MakePointM(j+m,i-m,m),4326)),ST_SetSRID(ST_MakePointM(i,j,m),4326)),ST_SetSRID(ST_MakePointM(i+m,j,m),4326)))  As the_geom
-		FROM generate_series(-10,50,20) As i
+		FROM (SELECT a*1.01234567890 FROM generate_series(-10,50,10) As a) As i(i)
 			CROSS JOIN generate_series(50,70, 20) As j
 			CROSS JOIN generate_series(1,2) As m
 			ORDER BY i, j, m, i*j*m
 			)</pgis:gset>
 		<pgis:gset ID='PointSet3D' GeometryType='POINTZ'>(SELECT ST_SetSRID(ST_MakePoint(i,j,k),4326) As the_geom
-		FROM generate_series(-10,50,20) As i
+		FROM (SELECT a*1.01234567890 FROM generate_series(-10,50,10) As a) As i(i)
 			CROSS JOIN generate_series(40,70, 20) j
 			CROSS JOIN generate_series(1,2) k
 			ORDER BY i,i*j, j*k, i + j + k)</pgis:gset>
 		<pgis:gset ID='LineSet3D' GeometryType='LINESTRINGZ'>(SELECT ST_SetSRID(ST_MakeLine(ST_MakePoint(i,j,k), ST_MakePoint(i+k,j+k,k)),4326) As the_geom
-		FROM generate_series(-10,50,20) As i
+		FROM (SELECT a*1.01234567890 FROM generate_series(-10,50,10) As a) As i(i)
 			CROSS JOIN generate_series(40,70, 20) j
 			CROSS JOIN generate_series(1,2) k
 			ORDER BY i, j, i+j+k, k, i*j*k)</pgis:gset>
 		<pgis:gset ID='PolygonSet3D' GeometryType='POLYGONZ'>(SELECT ST_SetSRID(ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_MakePoint(i+m,j,m),ST_MakePoint(j+m,i-m,m)),ST_MakePoint(i,j,m)),ST_MakePointM(i+m,j,m))),4326)  As the_geom
-		FROM generate_series(-10,50,20) As i
+		FROM (SELECT a*1.01234567890 FROM generate_series(-10,50,10) As a) As i(i)
 			CROSS JOIN generate_series(50,70, 20) As j
 			CROSS JOIN generate_series(1,2) As m
 			ORDER BY i, j, i+j+m, m, i*j*m)</pgis:gset>
 
 		<pgis:gset ID='GCSet3D' GeometryType='GEOMETRYCOLLECTIONZ' SkipUnary='1'>(SELECT ST_Collect(ST_Collect(ST_SetSRID(ST_MakePoint(i,j,m),4326),ST_SetSRID(ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_MakePoint(i+m,j,m),ST_MakePoint(j+m,i-m,m)),ST_MakePoint(i,j,m)),ST_MakePointM(i+m,j,m))),4326)))  As the_geom
-		FROM generate_series(-10,50,20) As i
+		FROM (SELECT a*1.01234567890 FROM generate_series(-10,50,10) As a) As i(i)
 			CROSS JOIN generate_series(50,70, 20) As j
 			CROSS JOIN generate_series(1,2) As m
 			)</pgis:gset>
@@ -83,49 +83,49 @@
 <!-- MULTIs start here -->
 		<pgis:gset ID='MultiPointSet' GeometryType='MULTIPOINT'>(SELECT ST_Collect(s.the_geom) As the_geom
 		FROM (SELECT ST_SetSRID(ST_Point(i,j),4326) As the_geom
-		FROM generate_series(-10,50,15) As i
+		FROM (SELECT a*1.01234567890 FROM generate_series(-10,50,10) As a) As i(i)
 			CROSS JOIN generate_series(40,70, 15) j
 			) As s)</pgis:gset>
 
 		<pgis:gset ID='MultiLineSet' GeometryType='MULTILINESTRING'>(SELECT ST_Collect(s.the_geom) As the_geom
 		FROM (SELECT ST_MakeLine(ST_SetSRID(ST_Point(i,j),4326),ST_SetSRID(ST_Point(j,i),4326))  As the_geom
-		FROM generate_series(-10,50,10) As i
+		FROM (SELECT a*1.01234567890 FROM generate_series(-10,50,10) As a) As i(i)
 			CROSS JOIN generate_series(40,70, 15) As j
 			WHERE NOT(i = j)) As s)</pgis:gset>
 
 		<pgis:gset ID='MultiPolySet' GeometryType='MULTIPOLYGON'>(SELECT ST_Multi(ST_Union(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j*0.05)))  As the_geom
-		FROM generate_series(-10,50,10) As i
+		FROM (SELECT a*1.01234567890 FROM generate_series(-10,50,10) As a) As i(i)
 			CROSS JOIN generate_series(40,70, 25) As j)</pgis:gset>
 
 		<pgis:gset ID='MultiPointSet3D' GeometryType='MULTIPOINTZ'>(SELECT ST_Collect(ST_SetSRID(ST_MakePoint(i,j,k),4326)) As the_geom
-		FROM generate_series(-10,50,20) As i
+		FROM (SELECT a*1.01234567890 FROM generate_series(-10,50,10) As a) As i(i)
 			CROSS JOIN generate_series(40,70, 25) j
 			CROSS JOIN generate_series(1,3) k
 			)</pgis:gset>
 
 		<pgis:gset ID='MultiLineSet3D' GeometryType='MULTILINESTRINGZ'>(SELECT ST_Multi(ST_Union(ST_SetSRID(ST_MakeLine(ST_MakePoint(i,j,k), ST_MakePoint(i+k,j+k,k)),4326))) As the_geom
-		FROM generate_series(-10,50,20) As i
+		FROM (SELECT a*1.01234567890 FROM generate_series(-10,50,10) As a) As i(i)
 			CROSS JOIN generate_series(40,70, 25) j
 			CROSS JOIN generate_series(1,2) k
 			)</pgis:gset>
 
 		<pgis:gset ID='MultiPolySet3D' GeometryType='MULTIPOLYGONZ'>(SELECT ST_Multi(ST_Union(s.the_geom)) As the_geom
 		FROM (SELECT ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_SetSRID(ST_MakePoint(i+m,j,m),4326),ST_SetSRID(ST_MakePoint(j+m,i-m,m),4326)),ST_SetSRID(ST_MakePoint(i,j,m),4326)),ST_SetSRID(ST_MakePoint(i+m,j,m),4326)))  As the_geom
-		FROM generate_series(-10,50,20) As i
+		FROM (SELECT a*1.01234567890 FROM generate_series(-10,50,10) As a) As i(i)
 			CROSS JOIN generate_series(50,70, 25) As j
 			CROSS JOIN generate_series(1,2) As m
 			) As s)</pgis:gset>
 
 		<pgis:gset ID='MultiPointMSet' GeometryType='MULTIPOINTM'>(SELECT ST_Collect(s.the_geom) As the_geom
 		FROM (SELECT ST_SetSRID(ST_MakePointM(i,j,m),4326) As the_geom
-		FROM generate_series(-10,50,10) As i
+		FROM (SELECT a*1.01234567890 FROM generate_series(-10,50,10) As a) As i(i)
 			CROSS JOIN generate_series(50,70, 25) AS j
 			CROSS JOIN generate_series(1,2) As m
 			) As s)</pgis:gset>
 
 		<pgis:gset ID='MultiLineMSet' GeometryType='MULTILINESTRINGM'>(SELECT ST_Collect(s.the_geom) As the_geom
 		FROM (SELECT ST_MakeLine(ST_SetSRID(ST_MakePointM(i,j,m),4326),ST_SetSRID(ST_MakePointM(j,i,m),4326))  As the_geom
-		FROM generate_series(-10,50,20) As i
+		FROM (SELECT a*1.01234567890 FROM generate_series(-10,50,10) As a) As i(i)
 			CROSS JOIN generate_series(50,70, 25) As j
 			CROSS JOIN generate_series(1,2) As m
 			WHERE NOT(i = j)) As s)</pgis:gset>

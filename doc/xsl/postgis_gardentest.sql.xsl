@@ -30,17 +30,17 @@
 	<xsl:variable name='var_matrix'>'FF1FF0102'</xsl:variable>
 	<pgis:gardens>
 		<pgis:gset ID='PointSet' GeometryType='POINT'>(SELECT ST_SetSRID(ST_Point(i,j),4326) As the_geom
-		FROM generate_series(-10,50,15) As i
+		FROM (SELECT a*1.11111111 FROM generate_series(-10,50,10) As a) As i(i)
 			CROSS JOIN generate_series(40,70, 15) j
 			ORDER BY i,j
 			)</pgis:gset>
 		<pgis:gset ID='LineSet' GeometryType='LINESTRING'>(SELECT ST_MakeLine(ST_SetSRID(ST_Point(i,j),4326),ST_SetSRID(ST_Point(j,i),4326))  As the_geom
-		FROM generate_series(-10,50,10) As i
+		FROM (SELECT a*1.11111111 FROM generate_series(-10,50,10) As a) As i(i)
 			CROSS JOIN generate_series(40,70, 15) As j
 			WHERE NOT(i = j)
 			ORDER BY i, i*j)</pgis:gset>
 		<pgis:gset ID='PolySet' GeometryType='POLYGON'>(SELECT ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j*0.05)  As the_geom
-		FROM generate_series(-10,50,10) As i
+		FROM (SELECT a*1.11111111 FROM generate_series(-10,50,10) As a) As i(i)
 			CROSS JOIN generate_series(40,70, 20) As j
 			ORDER BY i, i*j, j)</pgis:gset>
 		<pgis:gset ID='PointMSet' GeometryType='POINTM'>(SELECT ST_SetSRID(ST_MakePointM(i,j,m),4326) As the_geom
@@ -190,6 +190,16 @@ BEGIN;
 	INSERT INTO pgis_geoggarden(the_geog)
 	SELECT the_geom
 	FROM (<xsl:value-of select="." />) As foo;
+COMMIT;
+	-- test operators
+	SELECT 'start overlap test';
+BEGIN;
+	SELECT ST_AsText(a.the_geog) As a_geog, ST_AsText(b.the_geog) As b_geog, a.the_geog &amp;&amp; b.the_geog
+		FROM pgis_geoggarden As a CROSS JOIN pgis_geoggarden As b
+		WHERE a.the_geog &amp;&amp; b.the_geog OR ST_DWithin(a.the_geog, b.the_geog,1000);
+COMMIT;
+	SELECT 'end overlap test';
+BEGIN;	
 	SELECT 'BEFORE DROP' As look_at, * FROM geography_columns;
 	DROP TABLE pgis_geoggarden;
 	SELECT 'AFTER DROP' As look_at, * FROM geography_columns;
