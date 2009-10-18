@@ -77,3 +77,4 @@ int ptarray_point_in_ring(POINTARRAY *pa, POINT2D pt_outside, POINT2D pt_to_test
 double ptarray_area_sphere(POINTARRAY *pa, POINT2D pt_outside);
 double latitude_degrees_normalize(double lat);
 double longitude_degrees_normalize(double lon);
+double ptarray_length_sphere(POINTARRAY *pa);

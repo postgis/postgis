@@ -383,6 +383,12 @@ extern double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox
 extern double lwgeom_area_sphere(LWGEOM *lwgeom, GBOX gbox);
 
 /**
+* Calculate the geodetic length of a lwgeom on the unit sphere. The result
+* will have to by multiplied by the real radius to get the real length.
+*/
+extern double lwgeom_length_sphere(LWGEOM *geom);
+
+/**
 * Calculate covers predicate for two lwgeoms on the sphere. Currently
 * only handles point-in-polygon.
 */

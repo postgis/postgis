@@ -466,6 +466,12 @@ CREATE OR REPLACE FUNCTION ST_Area(geography)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_Length(geography)
+	RETURNS float8
+	AS 'MODULE_PATHNAME','geography_length_sphere'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_PointOutside(geography)
 	RETURNS geography
 	AS 'MODULE_PATHNAME','geography_point_outside'

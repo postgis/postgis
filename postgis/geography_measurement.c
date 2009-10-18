@@ -25,10 +25,10 @@
 
 Datum geography_distance_sphere(PG_FUNCTION_ARGS);
 Datum geography_area_sphere(PG_FUNCTION_ARGS);
+Datum geography_length_sphere(PG_FUNCTION_ARGS);
 Datum geography_expand(PG_FUNCTION_ARGS);
 Datum geography_point_outside(PG_FUNCTION_ARGS);
 Datum geography_covers(PG_FUNCTION_ARGS);
-
 
 /*
 ** geography_distance_sphere(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance) 
@@ -161,11 +161,11 @@ Datum geography_area_sphere(PG_FUNCTION_ARGS)
 	area = lwgeom_area_sphere(lwgeom, gbox);
 
 	/* Something went wrong... */
-//	if( area < 0.0 )
-//	{
-//		elog(ERROR, "lwgeom_area_sphere returned area < 0.0");
-//		PG_RETURN_NULL();
-//	}
+	if( area < 0.0 )
+	{
+		elog(ERROR, "lwgeom_area_sphere returned area < 0.0");
+		PG_RETURN_NULL();
+	}
 
 	/* Currently normalizing with a fixed WGS84 radius, in future this
 	   should be the average radius of the SRID in play */
@@ -176,6 +176,42 @@ Datum geography_area_sphere(PG_FUNCTION_ARGS)
 	
 	PG_RETURN_FLOAT8(area);
 
+}
+
+/*
+** geography_length_sphere(GSERIALIZED *g) 
+** returns double length in meters
+*/
+PG_FUNCTION_INFO_V1(geography_length_sphere);
+Datum geography_length_sphere(PG_FUNCTION_ARGS)
+{
+	LWGEOM *lwgeom = NULL;
+	GSERIALIZED *g = NULL;
+	double length;
+	
+	/* Get our geometry object loaded into memory. */
+	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		
+	lwgeom = lwgeom_from_gserialized(g);
+	
+	/* Calculate the length */
+	length = lwgeom_length_sphere(lwgeom);
+
+	/* Something went wrong... */
+	if( length < 0.0 )
+	{
+		elog(ERROR, "geography_length_sphere returned length < 0.0");
+		PG_RETURN_NULL();
+	}
+
+	/* Currently normalizing with a fixed WGS84 radius, in future this
+	   should be the average radius of the SRID in play */
+	length = length * WGS84_RADIUS;
+
+	/* Clean up, but not all the way to the point arrays */
+	lwgeom_release(lwgeom);
+	
+	PG_RETURN_FLOAT8(length);
 }
 
 /*

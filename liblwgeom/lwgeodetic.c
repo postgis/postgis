@@ -2270,10 +2270,75 @@ int lwgeom_check_geodetic(const LWGEOM *geom)
 	return LW_FALSE;
 }
 
+double ptarray_length_sphere(POINTARRAY *pa)
+{
+	GEOGRAPHIC_POINT a, b;
+	POINT2D p;
+	int i;
+	double length = 0.0;
+	
+	/* Return zero on non-sensical inputs */
+	if( ! pa || pa->npoints < 2 )
+		return 0.0;
+	
+	/* Initialize first point */
+	getPoint2d_p(pa, 0, &p);
+	geographic_point_init(p.x, p.y, &a);
 
+	for( i = 1; i < pa->npoints; i++ )
+	{		
+		getPoint2d_p(pa, i, &p);
+		geographic_point_init(p.x, p.y, &b);
+		
+		length += sphere_distance(a, b);
+				
+		/* B gets incremented in the next loop, so we save the value here */
+		a = b;
+	}
+	return length;
+}
 
+double lwgeom_length_sphere(LWGEOM *geom)
+{
+	int type;
+	int i = 0;
+	double length = 0.0;
+	
+	assert(geom);
+	
+	/* No area in nothing */
+	if( lwgeom_is_empty(geom) )
+		return 0.0;
 
+	type = TYPE_GETTYPE(geom->type);
 
+	if ( type == POINTTYPE || type == MULTIPOINTTYPE )
+		return 0.0;
+		
+	if ( type == LINETYPE )
+		return ptarray_length_sphere(((LWLINE*)geom)->points);
+		
+	if ( type == POLYGONTYPE )
+	{
+		LWPOLY *poly = (LWPOLY*)geom;
+		for( i = 0; i < poly->nrings; i++ )
+		{
+			length += ptarray_length_sphere(poly->rings[i]);
+		}
+		return length;
+	}
 
-
-
+	if( lwgeom_is_collection( type ) )
+	{
+		LWCOLLECTION *col = (LWCOLLECTION*)geom;
+		
+		for( i = 0; i < col->ngeoms; i++ )
+		{
+			length += lwgeom_length_sphere(col->geoms[i]);
+		}
+		return length;
+	}
+	
+	lwerror("unsupported type passed to lwgeom_length_sphere");
+	return 0.0;
+}	
