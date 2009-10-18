@@ -75,7 +75,6 @@ typedef struct struct_PROJ4PortalCache
 }
 PROJ4PortalCache;
 
-
 /**
  * Backend projPJ hash table
  *
@@ -345,27 +344,18 @@ GetProjectionFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 	return NULL;
 }
 
-
-/**
- * Add an entry to the local PROJ4 SRS cache. If we need to wrap around then
- * we must make sure the entry we choose to delete does not contain other_srid
- * which is the definition for the other half of the transformation.
- */
-void
-AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
+static char* GetProj4StringSPI(int srid)
 {
-	MemoryContext PJMemoryContext;
+	static int maxproj4len = 512;
 	int spi_result;
-	projPJ projection = NULL;
-	char *proj_str;
+	char *proj_str = palloc(maxproj4len);
 	char proj4_spi_buffer[256];
-	int* pj_errno_ref;
 
 	/* Connect */
 	spi_result = SPI_connect();
 	if (spi_result != SPI_OK_CONNECT)
 	{
-		elog(ERROR, "AddToPROJ4SRSCache: Could not connect to database using SPI");
+		elog(ERROR, "GetProj4StringSPI: Could not connect to database using SPI");
 	}
 
 	/* Execute the lookup query */
@@ -379,86 +369,159 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 		TupleDesc tupdesc = SPI_tuptable->tupdesc;
 		SPITupleTable *tuptable = SPI_tuptable;
 		HeapTuple tuple = tuptable->vals[0];
-
+	
 		/* Make a projection object out of it */
-		proj_str = palloc(strlen(SPI_getvalue(tuple, tupdesc, 1)) + 1);
-		strcpy(proj_str, SPI_getvalue(tuple, tupdesc, 1));
-		projection = make_project(proj_str);
-
-		pj_errno_ref = pj_get_errno_ref();
-		if ( (projection == NULL) || (*pj_errno_ref))
-		{
-			/* we need this for error reporting */
-			/*pfree(projection); */
-			elog(ERROR, "AddToPROJ4SRSCache: couldn't parse proj4 string: '%s': %s", proj_str, pj_strerrno(*pj_errno_ref));
-		}
-
-		/*
-		 * If the cache is already full then find the first entry
-		 * that doesn't contain other_srid and use this as the
-		 * subsequent value of PROJ4SRSCacheCount
-		 */
-		if (PROJ4Cache->PROJ4SRSCacheCount == PROJ4_CACHE_ITEMS)
-		{
-			bool found = false;
-			int i;
-
-			for (i = 0; i < PROJ4_CACHE_ITEMS; i++)
-			{
-				if (PROJ4Cache->PROJ4SRSCache[i].srid != other_srid && found == false)
-				{
-					LWDEBUGF(3, "choosing to remove item from query cache with SRID %d and index %d", PROJ4Cache->PROJ4SRSCache[i].srid, i);
-
-					DeleteFromPROJ4SRSCache(PROJ4Cache, PROJ4Cache->PROJ4SRSCache[i].srid);
-					PROJ4Cache->PROJ4SRSCacheCount = i;
-
-					found = true;
-				}
-			}
-		}
-
-		/*
-		 * Now create a memory context for this projection and
-		 * store it in the backend hash
-		 */
-		LWDEBUGF(3, "adding SRID %d with proj4text \"%s\" to query cache at index %d", srid, proj_str, PROJ4Cache->PROJ4SRSCacheCount);
-
-		PJMemoryContext = MemoryContextCreate(T_AllocSetContext, 8192,
-		                                      &PROJ4SRSCacheContextMethods,
-		                                      PROJ4Cache->PROJ4SRSCacheContext,
-		                                      "PostGIS PROJ4 PJ Memory Context");
-
-		/* Create the backend hash if it doesn't already exist */
-		if (!PJHash)
-			PJHash = CreatePJHash();
-
-		/*
-		 * Add the MemoryContext to the backend hash so we can
-		 * clean up upon portal shutdown
-		 */
-		LWDEBUGF(3, "adding projection object (%p) to hash table with MemoryContext key (%p)", projection, PJMemoryContext);
-
-		AddPJHashEntry(PJMemoryContext, projection);
-
-		PROJ4Cache->PROJ4SRSCache[PROJ4Cache->PROJ4SRSCacheCount].srid = srid;
-		PROJ4Cache->PROJ4SRSCache[PROJ4Cache->PROJ4SRSCacheCount].projection = projection;
-		PROJ4Cache->PROJ4SRSCache[PROJ4Cache->PROJ4SRSCacheCount].projection_mcxt = PJMemoryContext;
-		PROJ4Cache->PROJ4SRSCacheCount++;
-
-		/* Free the projection string */
-		pfree(proj_str);
+		strncpy(proj_str, SPI_getvalue(tuple, tupdesc, 1), maxproj4len - 1);
 	}
 	else
 	{
-		elog(ERROR, "AddToPROJ4SRSCache: Cannot find SRID (%d) in spatial_ref_sys", srid);
+		elog(ERROR, "GetProj4StringSPI: Cannot find SRID (%d) in spatial_ref_sys", srid);
 	}
 
-	/* Close the connection */
 	spi_result = SPI_finish();
 	if (spi_result != SPI_OK_FINISH)
 	{
-		elog(ERROR, "AddToPROJ4SRSCache: Could not disconnect from database using SPI");
+		elog(ERROR, "GetProj4StringSPI: Could not disconnect from database using SPI");
 	}
+	
+	return proj_str;	
+}
+
+
+/**
+*  Given an SRID, return the proj4 text. If the integer is less than zero, 
+*  and one of the "well known" projections we support 
+*  (WGS84 UTM N/S, Polar Stereographic N/S), return the proj4text
+*  for those.
+*/
+static char* GetProj4String(int srid) 
+{
+	static int maxproj4len = 512;
+
+	/* SRIDs in SPATIAL_REF_SYS */
+	if( srid > 0 )
+	{
+		return GetProj4StringSPI(srid);
+	}
+	/* Automagic SRIDs ( < 0, using abs(srid) = epsg# ) */
+	else
+	{
+		char *proj_str = palloc(maxproj4len);
+		int id = abs(srid);
+		/* UTM North */
+		if( id >= 32601 && id <= 32660 )
+		{
+			snprintf(proj_str, maxproj4len, "+proj=utm +zone=%d +ellps=WGS84 +datum=WGS84 +units=m +no_defs", id - 32600);
+		}
+		/* UTM South */
+		if( id >= 32701 && id <= 32760 )
+		{
+			snprintf(proj_str, maxproj4len, "+proj=utm +zone=%d +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs", id - 32700);
+		}
+		/* Polar Sterographic South */
+		if( id == 3031 )
+		{
+			strncpy(proj_str, "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxproj4len);
+		}
+		/* Polar Stereographic North */
+		if( id == 3995 )
+		{
+			strncpy(proj_str, "+proj=stere +lat_0=90 +lat_ts=71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxproj4len );
+		}		
+
+		POSTGIS_DEBUGF(3, "returning on SRID=%d: %s", srid, proj_str);
+		return proj_str;
+	}
+}
+
+
+/**
+ * Add an entry to the local PROJ4 SRS cache. If we need to wrap around then
+ * we must make sure the entry we choose to delete does not contain other_srid
+ * which is the definition for the other half of the transformation.
+ */
+void
+AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
+{
+	MemoryContext PJMemoryContext;
+	projPJ projection = NULL;
+	char *proj_str;
+	int* pj_errno_ref;
+
+	/* 
+	** Turn the SRID number into a proj4 string, by reading from spatial_ref_sys
+	** or instantiating a magical value from a negative srid. 
+	*/
+	proj_str = GetProj4String(srid);
+	if( ! proj_str )
+	{
+		elog(ERROR, "GetProj4String returned NULL for SRID (%d)", srid);
+	}
+
+	projection = make_project(proj_str);
+
+	pj_errno_ref = pj_get_errno_ref();
+	if ( (projection == NULL) || (*pj_errno_ref))
+	{
+		/* we need this for error reporting */
+		/*pfree(projection); */
+		elog(ERROR, "AddToPROJ4SRSCache: couldn't parse proj4 string: '%s': %s", proj_str, pj_strerrno(*pj_errno_ref));
+	}
+
+	/*
+	 * If the cache is already full then find the first entry
+	 * that doesn't contain other_srid and use this as the
+	 * subsequent value of PROJ4SRSCacheCount
+	 */
+	if (PROJ4Cache->PROJ4SRSCacheCount == PROJ4_CACHE_ITEMS)
+	{
+		bool found = false;
+		int i;
+
+		for (i = 0; i < PROJ4_CACHE_ITEMS; i++)
+		{
+			if (PROJ4Cache->PROJ4SRSCache[i].srid != other_srid && found == false)
+			{
+				LWDEBUGF(3, "choosing to remove item from query cache with SRID %d and index %d", PROJ4Cache->PROJ4SRSCache[i].srid, i);
+
+				DeleteFromPROJ4SRSCache(PROJ4Cache, PROJ4Cache->PROJ4SRSCache[i].srid);
+				PROJ4Cache->PROJ4SRSCacheCount = i;
+
+				found = true;
+			}
+		}
+	}
+
+	/*
+	 * Now create a memory context for this projection and
+	 * store it in the backend hash
+	 */
+	LWDEBUGF(3, "adding SRID %d with proj4text \"%s\" to query cache at index %d", srid, proj_str, PROJ4Cache->PROJ4SRSCacheCount);
+
+	PJMemoryContext = MemoryContextCreate(T_AllocSetContext, 8192,
+	                                      &PROJ4SRSCacheContextMethods,
+	                                      PROJ4Cache->PROJ4SRSCacheContext,
+	                                      "PostGIS PROJ4 PJ Memory Context");
+
+	/* Create the backend hash if it doesn't already exist */
+	if (!PJHash)
+		PJHash = CreatePJHash();
+
+	/*
+	 * Add the MemoryContext to the backend hash so we can
+	 * clean up upon portal shutdown
+	 */
+	LWDEBUGF(3, "adding projection object (%p) to hash table with MemoryContext key (%p)", projection, PJMemoryContext);
+
+	AddPJHashEntry(PJMemoryContext, projection);
+
+	PROJ4Cache->PROJ4SRSCache[PROJ4Cache->PROJ4SRSCacheCount].srid = srid;
+	PROJ4Cache->PROJ4SRSCache[PROJ4Cache->PROJ4SRSCacheCount].projection = projection;
+	PROJ4Cache->PROJ4SRSCache[PROJ4Cache->PROJ4SRSCacheCount].projection_mcxt = PJMemoryContext;
+	PROJ4Cache->PROJ4SRSCacheCount++;
+
+	/* Free the projection string */
+	pfree(proj_str);
 
 }
 
