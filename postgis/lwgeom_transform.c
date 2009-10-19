@@ -428,7 +428,12 @@ static char* GetProj4String(int srid)
 		{
 			strncpy(proj_str, "+proj=stere +lat_0=90 +lat_ts=71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxproj4len );
 		}		
-
+		/* World Mercator */
+		if( id == 3395 )
+		{
+			strncpy(proj_str, "+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxproj4len );
+		}		
+		
 		POSTGIS_DEBUGF(3, "returning on SRID=%d: %s", srid, proj_str);
 		return proj_str;
 	}

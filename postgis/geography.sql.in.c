@@ -498,6 +498,26 @@ CREATE OR REPLACE FUNCTION ST_CoveredBy(geography, geography)
 	AS 'SELECT $1 && $2 AND _ST_Covers($2, $1)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION _ST_BestSRID(geography, geography)
+	RETURNS integer
+	AS 'MODULE_PATHNAME','geography_bestsrid'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION _ST_BestSRID(geography)
+	RETURNS integer
+	AS 'SELECT _ST_BestSRID($1,$1)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8)
+	RETURNS geography
+	AS 'SELECT geography(ST_Transform(ST_Buffer(ST_Transform(geometry($1), _ST_BestSRID($1)), $2), 4326))'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+
+
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
 COMMIT;

@@ -29,6 +29,7 @@ Datum geography_length_sphere(PG_FUNCTION_ARGS);
 Datum geography_expand(PG_FUNCTION_ARGS);
 Datum geography_point_outside(PG_FUNCTION_ARGS);
 Datum geography_covers(PG_FUNCTION_ARGS);
+Datum geography_bestsrid(PG_FUNCTION_ARGS);
 
 /*
 ** geography_distance_sphere(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance) 
@@ -250,6 +251,13 @@ Datum geography_point_outside(PG_FUNCTION_ARGS)
 
 }
 
+/*
+** geography_covers(GSERIALIZED *g, GSERIALIZED *g) returns boolean
+** Only works for (multi)points and (multi)polygons currently. 
+** Attempts a simple point-in-polygon test on the polygon and point. 
+** Current algorithm does not distinguish between points on edge 
+** and points within.
+*/
 PG_FUNCTION_INFO_V1(geography_covers);
 Datum geography_covers(PG_FUNCTION_ARGS)
 {
@@ -299,3 +307,118 @@ Datum geography_covers(PG_FUNCTION_ARGS)
 	
 	PG_RETURN_BOOL(result);
 }
+
+/*
+** geography_bestsrid(GSERIALIZED *g, GSERIALIZED *g) returns int
+** Utility function. Returns negative SRID numbers that match to the
+** numbers handled in code by the transform(lwgeom, srid) function.
+** UTM, polar stereographic and mercator as fallback. To be used
+** in wrapping existing geometry functions in SQL to provide access
+** to them in the geography module.
+*/
+PG_FUNCTION_INFO_V1(geography_bestsrid);
+Datum geography_bestsrid(PG_FUNCTION_ARGS)
+{
+	LWGEOM *lwgeom1 = NULL;
+	LWGEOM *lwgeom2 = NULL;
+	GBOX gbox1;
+	GBOX gbox2;
+	GSERIALIZED *g1 = NULL;
+	GSERIALIZED *g2 = NULL;
+	int type1, type2;
+	int empty1 = LW_FALSE;
+	int empty2 = LW_FALSE;
+	int twoargs = LW_FALSE;
+	
+	Datum d1 = PG_GETARG_DATUM(0);
+	Datum d2 = PG_GETARG_DATUM(1);
+	
+	/* Get our geometry objects loaded into memory. */
+	g1 = (GSERIALIZED*)PG_DETOAST_DATUM(d1);
+	/* Synchronize our box types */
+	gbox1.flags = g1->flags;
+	/* Read our types */
+	type1 = gserialized_get_type(g1);
+	/* Construct our working geometries */
+	lwgeom1 = lwgeom_from_gserialized(g1);
+	/* Calculate if the geometry is empty. */
+	empty1 = lwgeom_is_empty(lwgeom1);
+	/* Calculate a naive cartesian bounds for the objects */
+	if( ! empty1 && lwgeom_calculate_gbox(lwgeom1, &gbox1) == G_FAILURE )
+		elog(ERROR, "Error in geography_bestsrid calling lwgeom_calculate_gbox(lwgeom1, &gbox1)");
+	
+	/* If we have a unique second argument, fill in all the necessarily variables. */
+	if( d1 != d2 )
+	{
+		g2 = (GSERIALIZED*)PG_DETOAST_DATUM(d2);
+		type2 = gserialized_get_type(g2);
+		gbox2.flags = g2->flags;
+		lwgeom2 = lwgeom_from_gserialized(g2);
+		empty2 = lwgeom_is_empty(lwgeom2);
+		if( ! empty2 && lwgeom_calculate_gbox(lwgeom2, &gbox2) == G_FAILURE )
+			elog(ERROR, "Error in geography_bestsrid calling lwgeom_calculate_gbox(lwgeom2, &gbox2)");
+	}
+	/* 
+	** If no unique second argument, copying the box for the first 
+	** argument will give us the right answer for all subsequent tests.
+	*/
+	else
+	{
+		gbox2 = gbox1;
+	}
+	
+	/* Both empty? We don't have an answer. */
+	if ( empty1 && empty2 )
+		PG_RETURN_NULL(); 
+
+	/* One empty? We can use the other argument values as infill. */
+	if ( empty1 )
+		gbox1 = gbox2; 
+
+	if ( empty2 )
+		gbox2 = gbox1;
+
+	
+	/* Are these data arctic? Polar stereographic north. */
+	if( gbox1.ymin > 60.0 && gbox2.ymin > 60.0 )
+	{
+		PG_RETURN_INT32(-3995);
+	}
+
+	/* Are these data antarctic? Polar stereographic south. */
+	if( gbox1.ymin < -60.0 && gbox2.ymin < -60.0 )
+	{
+		PG_RETURN_INT32(-3995);
+	}
+	
+	/*
+	** Can we fit these data into one UTM zone? We will assume we can push things as
+	** far as a half zone past a zone boundary. Note we have no handling for the 
+	** date line in here.
+	*/
+	if( fabs(FP_MAX(gbox1.xmax, gbox2.xmax) - FP_MIN(gbox1.xmin, gbox2.xmin)) < 6.0 )
+	{
+		/* Cheap hack to pick a zone. Average of the box center points. */
+		double dzone = (gbox1.xmin + gbox1.xmax + gbox2.xmin + gbox2.xmax) / 4.0;
+		int zone = floor(1.0 + ((dzone + 180.0) / 6.0));
+	
+		/* Are these data below the equator? UTM South. */
+		if( gbox1.ymax < 0.0 && gbox2.ymax < 0.0 )
+		{
+			PG_RETURN_INT32( -32700 - zone );
+		}
+		/* Are these data above the equator? UTM North. */
+		else
+		{
+			PG_RETURN_INT32( -32600 - zone );
+		}
+	}
+	
+	/*
+	** Running out of options... fall-back to Mercator and hope for the best.
+	*/
+	PG_RETURN_INT32(-3395);
+		
+}
+
+
