@@ -10717,7 +10717,7 @@ SELECT ST_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry
 		<refnamediv>
 		  <refname>ST_Length</refname>
 
-		  <refpurpose>Returns the 2d length of the geometry if it is a linestring or multilinestring.</refpurpose>
+		  <refpurpose>Returns the 2d length of the geometry if it is a linestring or multilinestring. geometry are in units of spatial reference and geography are in meters</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
 		  <funcsynopsis>
@@ -10725,17 +10725,22 @@ SELECT ST_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry
 			  <funcdef>float <function>ST_Length</function></funcdef>
 				<paramdef><type>geometry </type><parameter>a_2dlinestring</parameter></paramdef>
 			</funcprototype>
+			<funcprototype>
+			  <funcdef>float <function>ST_Length</function></funcdef>
+				<paramdef><type>geography </type><parameter>gg</parameter></paramdef>
+			</funcprototype>
 		  </funcsynopsis>
 		</refsynopsisdiv>
 		<refsection>
 			<title>Description</title>
 
-			<para>Returns the 2D length of the geometry if it is a linestring, multilinestring, ST_Curve, ST_MultiCurve.  0 is returned for
-				areal geometries.  For areal geometries use ST_Perimeter.  Measurements are in the units of the
-				spatial reference system of the geometry.</para>
+			<para>For geometry: Returns the 2D length of the geometry if it is a linestring, multilinestring, ST_Curve, ST_MultiCurve.  0 is returned for
+				areal geometries.  For areal geometries use ST_Perimeter. Geometry: Measurements are in the units of the
+				spatial reference system of the geometry. Geography: Units are in meters and also acts as a Perimeter function for areal geogs.</para>
 
-			<para>Currently this is an alias for ST_Length2D, but this may change to support higher dimensions.</para>
-
+			<para>Currently for geometry this is an alias for ST_Length2D, but this may change to support higher dimensions.</para>
+			<note><para>Currently applying this to a MULTI/POLYGON of type geography will give you the perimeter of the POLYGON/MULTIPOLYGON.  This is not the 
+			case with the geometry implementation.</para></note>
 			<para><inlinemediaobject>
 				<imageobject>
 				  <imagedata fileref="images/check.png" />
@@ -10750,24 +10755,50 @@ SELECT ST_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry
 				</imageobject>
 			  </inlinemediaobject> This method implements the SQL/MM specification:
 			SQL-MM 3: 7.1.2, 9.3.4</para>
+			
+			<para>Availability: 1.5.0 geography support was introduced in 1.5.</para>
 		</refsection>
 
 		  <refsection>
-			<title>Examples</title>
+			<title>Geometry Examples</title>
 			<para>Return length in feet for line string. Note this is in feet because 2249 is
 				Mass State Plane Feet</para>
 			<programlisting>
-SELECT SELECT ST_Length(ST_GeomFromText('LINESTRING(743238 2967416,743238 2967450,743265 2967450,
+SELECT ST_Length(ST_GeomFromText('LINESTRING(743238 2967416,743238 2967450,743265 2967450,
 743265.625 2967416,743238 2967416)',2249));
 st_length
 ---------
  122.630744000095
+
+
+--Transforming WGS 84 linestring to Massachusetts state plane meters
+SELECT ST_Length(
+	ST_Transform(
+		ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45, -72.1240 42.45666, -72.123 42.1546)'),
+		26986
+	)
+);
+st_length
+---------
+34309.4563576191
+			</programlisting>
+		  </refsection>
+		  <refsection>
+			<title>Geography Examples</title>
+			<para>Return length of WGS 84 geography line</para>
+			<programlisting>
+			-- default calculation is using a sphere rather than spheroid
+SELECT ST_Length(ST_GeographyFromText(
+'SRID=4326;LINESTRING(-72.1260 42.45, -72.1240 42.45666, -72.123 42.1546)'));
+st_length
+---------
+34346.2060960738
 (1 row)
 			</programlisting>
 		  </refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Perimeter" /></para>
+			<para><xref linkend="ST_GeographyFromText" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_Length_Spheroid" />, <xref linkend="ST_Perimeter" />, <xref linkend="ST_Transform" /></para>
 		</refsection>
 	</refentry>
 
