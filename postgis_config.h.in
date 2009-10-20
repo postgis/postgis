@@ -61,6 +61,9 @@
 /* GEOS library version */
 #undef POSTGIS_GEOS_VERSION
 
+/* libxml/tree.h libxml/parser.h header */
+#undef HAVE_LIBXML2
+
 /* PostGIS library version */
 #undef POSTGIS_LIB_VERSION
 
