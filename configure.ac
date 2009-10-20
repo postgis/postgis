@@ -330,6 +330,67 @@ AC_DEFINE_UNQUOTED([POSTGIS_PGSQL_VERSION], [$POSTGIS_PGSQL_VERSION], [PostgreSQ
 AC_SUBST([POSTGIS_PGSQL_VERSION])
 
 
+dnl ===========================================================================
+dnl Detect libxml2 if it is installed
+dnl (needed to GeomFromGML function, but not required to PostGIS build)
+dnl ===========================================================================
+
+AC_ARG_WITH([xml2config], 
+	[AS_HELP_STRING([--with-xml2config=FILE], [specify an alternative xml2-config file])], 
+	[XML2CONFIG="$withval"], [XML2CONFIG=""])
+
+if test "x$XML2CONFIG" = "x"; then
+	dnl XML2CONFIG was not specified, so search within the current path
+	AC_PATH_PROG([XML2CONFIG], [xml2-config])
+
+	dnl If we couldn't find xml2-config, display a warning
+	if test "x$XML2CONFIG" = "x"; then
+		AC_MSG_WARN([could not find xml2-config from libxml2, some imports functions will be desactivated])
+	else
+		FOUND_LIBXML2=1
+	fi
+else
+	dnl XML2CONFIG was specified; display a message to the user
+	if test "x$XML2CONFIG" = "xyes"; then
+		AC_MSG_ERROR([you must specify a parameter to --with-xml2config, e.g. --with-xml2config=/path/to/xml2-config])
+	else
+		if test -f $XML2CONFIG; then
+			AC_MSG_RESULT([Using user-specified xml2-config file: $XML2CONFIG])
+			FOUND_LIBXML2=1
+		else
+			AC_MSG_ERROR([the user-specified xml2-config file $XML2CONFIG does not exist])
+		fi	
+	fi
+fi
+
+dnl xml2-config founded, retrieve flags and version
+if test "$FOUND_LIBXML2" = "1"; then
+
+	dnl Extract the linker and include flags 
+	XML2_LDFLAGS=`$XML2CONFIG --libs`
+	XML2_CPPFLAGS=`$XML2CONFIG --cflags`
+
+	dnl Extract the version
+	XML2_VERSION=`$XML2CONFIG --version`
+
+	dnl Check headers file
+	CPPFLAGS_SAVE="$CPPFLAGS"
+	CPPFLAGS="$XML2_CPPFLAGS"
+	AC_CHECK_HEADERS([libxml/tree.h libxml/parser.h], [HAVE_LIBXML2=1], [AC_MSG_ERROR([could not find libxml/tree.h and/or libxml/parser.h related to libxml2])])
+
+	dnl Ensure we can link against libxml2
+	LIBS_SAVE="$LIBS"
+	LIBS="$XML2_LDFLAGS"
+	AC_CHECK_LIB([xml2], [xmlInitParser], [], [AC_MSG_ERROR([could not find libxml2])], [])
+
+	AC_DEFINE_UNQUOTED([HAVE_LIBXML2], [$HAVE_LIBXML2], [libxml/tree.h libxml/parser.h header])
+	AC_SUBST([HAVE_LIBXML2])
+fi
+
+
+
+
+
 
 dnl ===========================================================================
 dnl Detect the version of GEOS installed on the system
@@ -532,10 +593,10 @@ dnl Always enable use of ANALYZE statistics by default
 AC_DEFINE_UNQUOTED([POSTGIS_USE_STATS], [1], [Enable use of ANALYZE statistics])
 
 
-CPPFLAGS="$PGSQL_CPPFLAGS $GEOS_CPPFLAGS $PROJ_CPPFLAGS"
+CPPFLAGS="$PGSQL_CPPFLAGS $GEOS_CPPFLAGS $PROJ_CPPFLAGS $XML2_CPPFLAGS"
 dnl AC_MSG_RESULT([CPPFLAGS: $CPPFLAGS])
 
-SHLIB_LINK="$PGSQL_LDFLAGS $GEOS_LDFLAGS $PROJ_LDFLAGS -lgeos_c -lproj"
+SHLIB_LINK="$PGSQL_LDFLAGS $GEOS_LDFLAGS $PROJ_LDFLAGS -lgeos_c -lproj $XML2_LDFLAGS"
 AC_SUBST([SHLIB_LINK])
 dnl AC_MSG_RESULT([SHLIB_LINK: $SHLIB_LINK])
 
@@ -559,6 +620,8 @@ AC_MSG_RESULT([  GEOS version:         ${GEOS_MAJOR_VERSION}.${GEOS_MINOR_VERSIO
 AC_MSG_RESULT([  PostgreSQL config:    ${PGCONFIG}])
 AC_MSG_RESULT([  PostgreSQL version:   ${PGSQL_MAJOR_VERSION}.${PGSQL_MINOR_VERSION}])
 AC_MSG_RESULT([  PROJ4 version:        ${POSTGIS_PROJ_VERSION}])
+AC_MSG_RESULT([  Libxml2 config:       ${XML2CONFIG}])
+AC_MSG_RESULT([  Libxml2 version:      ${XML2_VERSION}])
 AC_MSG_RESULT([  PostGIS debug level:  ${POSTGIS_DEBUG_LEVEL}])
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------- Documentation Generation -------- ])
