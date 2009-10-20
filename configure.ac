@@ -345,7 +345,7 @@ if test "x$XML2CONFIG" = "x"; then
 
 	dnl If we couldn't find xml2-config, display a warning
 	if test "x$XML2CONFIG" = "x"; then
-		AC_MSG_WARN([could not find xml2-config from libxml2, some imports functions will be desactivated])
+		AC_MSG_WARN([could not find xml2-config from libxml2, some imports functions will be deactivated])
 	else
 		FOUND_LIBXML2=1
 	fi
