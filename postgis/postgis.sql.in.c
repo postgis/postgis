@@ -4532,6 +4532,23 @@ CREATE OR REPLACE FUNCTION ST_Equals(geometry,geometry)
 	AS 'MODULE_PATHNAME','geomequals'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
+
+#if HAVE_LIBXML2
+-----------------------------------------------------------------------
+-- GML INPUT
+-- Availability: 1.5.0
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION ST_GeomFromGML(text)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','geom_from_gml'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION ST_GMLToSQL(text)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','geom_from_gml'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+#endif
 -----------------------------------------------------------------------
 -- SVG OUTPUT
 -----------------------------------------------------------------------
