@@ -744,8 +744,9 @@ static LWGEOM* parse_gml_polygon(xmlNodePtr xnode, bool *hasz)
 			ppa = (POINTARRAY**) lwalloc(sizeof(POINTARRAY*));
 			ppa[0] = parse_gml_data(xb->children, hasz);
 
-						/* FIXME: And what about the 3D ? */
-			if (ppa[0]->npoints < 4 || !ptarray_isclosed2d(ppa[0]))
+			if (ppa[0]->npoints < 4
+				|| (!*hasz && !ptarray_isclosed2d(ppa[0]))
+				||  (*hasz && !ptarray_isclosed3d(ppa[0])))
 				lwerror("invalid GML representation");
 		}
 	}
@@ -767,8 +768,9 @@ static LWGEOM* parse_gml_polygon(xmlNodePtr xnode, bool *hasz)
 				sizeof(POINTARRAY*) * (ring + 1));
 			ppa[ring] = parse_gml_data(xb->children, hasz);
 
-						/* FIXME: And what about the 3D ? */
-			if (ppa[ring]->npoints < 4 || !ptarray_isclosed2d(ppa[ring]))
+			if (ppa[ring]->npoints < 4
+				|| (!*hasz && !ptarray_isclosed2d(ppa[ring]))
+				||  (*hasz && !ptarray_isclosed3d(ppa[ring])))
 				lwerror("invalid GML representation");
 			ring++;
 		}
@@ -836,8 +838,9 @@ static LWGEOM* parse_gml_surface(xmlNodePtr xnode, bool *hasz)
 				ppa = (POINTARRAY**) lwalloc(sizeof(POINTARRAY*));
 				ppa[0] = parse_gml_data(xc->children, hasz);
 
-						/* FIXME: And what about the 3D ? */
-				if (ppa[0]->npoints < 4 || !ptarray_isclosed2d(ppa[0]))
+				if (ppa[0]->npoints < 4
+					|| (!*hasz && !ptarray_isclosed2d(ppa[0]))
+					||  (*hasz && !ptarray_isclosed3d(ppa[0])))
 					lwerror("invalid GML representation");
 			}
 		}
@@ -859,8 +862,9 @@ static LWGEOM* parse_gml_surface(xmlNodePtr xnode, bool *hasz)
 					sizeof(POINTARRAY*) * (ring + 1));
 				ppa[ring] = parse_gml_data(xc->children, hasz);
 
-						/* FIXME: And what about the 3D ? */
-				if (ppa[ring]->npoints < 4 || !ptarray_isclosed2d(ppa[ring]))
+				if (ppa[ring]->npoints < 4
+					|| (!*hasz && !ptarray_isclosed2d(ppa[ring]))
+					|| ( *hasz && !ptarray_isclosed3d(ppa[ring])))
 					lwerror("invalid GML representation");
 			}
 			ring++;

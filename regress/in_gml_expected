@@ -36,15 +36,17 @@ ERROR:  invalid GML representation
 ERROR:  invalid GML representation
 ERROR:  invalid GML representation
 ERROR:  invalid GML representation
-polygon_9|POLYGON((1 2,3 4,5 6,1 2),(7 8,9 10,11 12,7 8))
+ERROR:  invalid GML representation
 polygon_10|POLYGON((1 2,3 4,5 6,1 2),(7 8,9 10,11 12,7 8))
-polygon_11|POLYGON((1 2,3 4,5 6,1 2))
+polygon_11|POLYGON((1 2,3 4,5 6,1 2),(7 8,9 10,11 12,7 8))
+polygon_12|POLYGON((1 2,3 4,5 6,1 2))
 ERROR:  invalid GML representation
 ERROR:  invalid GML representation
-polygon_14|POLYGON((1 2,3 4,5 6,1 2),(7 8,9 10,11 12,7 8),(13 14,15 16,17 18,13 14))
-polygon_15|POLYGON((1 2,3 4,5 6,1 2),(7 8,9 10,11 12,7 8))
-polygon_16|POLYGON((1 2,4 5,7 8,1 2),(10 11,12 13,14 15,10 11))
-polygon_17|POLYGON((1 2,3 4,5 6,1 2),(7 8,10 11,13 14,7 8))
+ERROR:  invalid GML representation
+polygon_16|POLYGON((1 2,3 4,5 6,1 2),(7 8,9 10,11 12,7 8),(13 14,15 16,17 18,13 14))
+polygon_17|POLYGON((1 2,3 4,5 6,1 2),(7 8,9 10,11 12,7 8))
+polygon_18|POLYGON((1 2,4 5,7 8,1 2),(10 11,12 13,14 15,10 11))
+polygon_19|POLYGON((1 2,3 4,5 6,1 2),(7 8,10 11,13 14,7 8))
 surface_1|POLYGON((1 2,3 4,5 6,1 2))
 surface_2|SRID=4326;POLYGON((1 2,3 4,5 6,1 2))
 ERROR:  invalid GML representation
@@ -54,16 +56,18 @@ ERROR:  invalid GML representation
 ERROR:  invalid GML representation
 ERROR:  invalid GML representation
 ERROR:  invalid GML representation
-surface_10|POLYGON((1 2,3 4,5 6,1 2),(7 8,9 10,11 12,7 8))
+ERROR:  invalid GML representation
 surface_11|POLYGON((1 2,3 4,5 6,1 2),(7 8,9 10,11 12,7 8))
-surface_12|POLYGON((1 2,3 4,5 6,1 2))
+surface_12|POLYGON((1 2,3 4,5 6,1 2),(7 8,9 10,11 12,7 8))
+surface_13|POLYGON((1 2,3 4,5 6,1 2))
 ERROR:  invalid GML representation
 ERROR:  invalid GML representation
-surface_15|POLYGON((1 2,3 4,5 6,1 2),(7 8,9 10,11 12,7 8),(13 14,15 16,17 18,13 14))
-surface_16|POLYGON((1 2,4 5,7 8,1 2),(10 11,12 13,14 15,10 11))
-surface_17|POLYGON((1 2,3 4,5 6,1 2),(7 8,10 11,13 14,7 8))
 ERROR:  invalid GML representation
-surface_19|POLYGON((1 2,3 4,5 6,1 2))
+surface_17|POLYGON((1 2,3 4,5 6,1 2),(7 8,9 10,11 12,7 8),(13 14,15 16,17 18,13 14))
+surface_18|POLYGON((1 2,4 5,7 8,1 2),(10 11,12 13,14 15,10 11))
+surface_19|POLYGON((1 2,3 4,5 6,1 2),(7 8,10 11,13 14,7 8))
+ERROR:  invalid GML representation
+surface_21|POLYGON((1 2,3 4,5 6,1 2))
 ERROR:  invalid GML representation
 mpoint_1|MULTIPOINT(1 2)
 mpoint_2|MULTIPOINT(1 2,3 4)
