@@ -378,6 +378,13 @@ ptarray_isclosed2d(const POINTARRAY *in)
 	return 1;
 }
 
+int
+ptarray_isclosed3d(const POINTARRAY *in)
+{
+	if ( memcmp(getPoint_internal(in, 0), getPoint_internal(in, in->npoints-1), sizeof(POINT3D)) ) return 0;
+	return 1;
+}
+
 /**
  * @brief calculate the #BOX3D bounding box of a set of points
  * @return  a lwalloced #BOX3D, or NULL on empty array.

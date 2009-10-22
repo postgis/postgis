@@ -1372,6 +1372,7 @@ extern POINTARRAY *ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims,
 extern POINTARRAY *ptarray_removePoint(POINTARRAY *pa, unsigned int where);
 
 extern int ptarray_isclosed2d(const POINTARRAY *pa);
+extern int ptarray_isclosed3d(const POINTARRAY *pa);
 
 extern void ptarray_longitude_shift(POINTARRAY *pa);
 
