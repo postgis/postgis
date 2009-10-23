@@ -258,7 +258,7 @@ SELECT 'create,insert,drop Test: End Testing Geography <xsl:value-of select="@Ge
 				<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>
 				<xsl:variable name='fndef'><xsl:value-of select="funcdef"/></xsl:variable>
 				<xsl:variable name='numparams'><xsl:value-of select="count(paramdef/parameter)" /></xsl:variable>
-				<xsl:variable name='numparamgeoms'><xsl:value-of select="count(paramdef/type[contains(text(),'geometry') or contains(text(),'geography') or contains(text(),'box') or contains(text(), 'bytea')]) + count(paramdef/parameter[contains(text(),'WKT')])" /></xsl:variable>
+				<xsl:variable name='numparamgeoms'><xsl:value-of select="count(paramdef/type[contains(text(),'geometry') or contains(text(),'geography') or contains(text(),'box') or contains(text(), 'bytea')]) + count(paramdef/parameter[contains(text(),'WKT')]) + count(paramdef/parameter[contains(text(),'geomgml')])" /></xsl:variable>
 				<xsl:variable name='numparamgeogs'><xsl:value-of select="count(paramdef/type[contains(text(),'geography')] )" /></xsl:variable>
 				<!-- For each function prototype generate a test sql statement -->
 				<xsl:choose>
@@ -367,6 +367,9 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					</xsl:when>
 					<xsl:when test="(contains(parameter, 'version'))">
 						<xsl:value-of select="$var_version2" />
+					</xsl:when>
+					<xsl:when test="(contains(parameter,'geomgml'))">
+						<xsl:text>ST_AsGML(foo1.the_geom)</xsl:text>
 					</xsl:when>
 					<xsl:when test="(contains(type,'box') or type = 'geometry' or type = 'geometry ' or contains(type,'geometry set')) and (position() = 1 or count($func/paramdef/type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1')">
 						<xsl:text>foo1.the_geom</xsl:text>

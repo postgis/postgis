@@ -1399,6 +1399,52 @@ SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 15
 			<para><xref linkend="ST_GeomFromText" /></para>
 		  </refsection>
 	</refentry>
+	
+	<refentry id="ST_GeomFromGML">
+	  <refnamediv>
+		<refname>ST_GeomFromGML</refname>
+		<refpurpose>Takes as input GML representation of geometry and outputs a PostGIS geometry object</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomFromGML</function></funcdef>
+			<paramdef><type>text </type> <parameter>geomgml</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>Constructs a PostGIS ST_Geometry object from the OGC GML representation.</para>
+		<note>
+			<para>The EWKB format is not an OGC standard, but a PostGIS specific format that includes the spatial reference system (SRID)
+			identifier</para>
+		</note>
+		<!-- Optionally mention 3d support -->
+		<para><inlinemediaobject>
+		<imageobject>
+		  <imagedata fileref="images/check.png" />
+		</imageobject>
+	  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+	<programlisting>SELECT ST_GeomFromGML('<![CDATA[
+		<gml:LineString srsName="EPSG:4269">
+		<gml:coordinates>-71.16028,42.258729 -71.160837,42.259112 -71.161143,42.25932
+		</gml:coordinates>
+		</gml:LineString>");']]>);
+		</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_AsGML" /></para>
+	  </refsection>
+	</refentry>
 
 	<refentry id="ST_GeomFromText">
 		  <refnamediv>
