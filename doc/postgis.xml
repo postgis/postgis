@@ -31,12 +31,11 @@
       <surname>Ramsey</surname>
 
       <affiliation>
-        <orgname><ulink url="http://www.refractions.net">Refractions Research
-        Inc</ulink></orgname>
+        <orgname><ulink url="http://www.cleverelephant.ca">clever elephant</ulink></orgname>
 
-        <address><street>Suite 300, 1207 Douglas Street</street> <city>Victoria</city>
+        <address><city>Victoria</city>
         <state>British Columbia</state> <country>Canada</country>
-        <email>pramsey@refractions.net</email></address>
+        <email>pramsey@cleverelephant.ca</email></address>
       </affiliation>
     </editor>
 
@@ -46,7 +45,6 @@
       objects to be stored in the database. PostGIS includes support for
       GiST-based R-Tree spatial indexes, and functions for analysis and
       processing of GIS objects.</para>
-
       <para>This is the manual for version &last_release_version;</para>
     </abstract>
   </bookinfo>
