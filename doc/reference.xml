@@ -1437,7 +1437,7 @@ SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 15
 		<gml:LineString srsName="EPSG:4269">
 		<gml:coordinates>-71.16028,42.258729 -71.160837,42.259112 -71.161143,42.25932
 		</gml:coordinates>
-		</gml:LineString>");']]>);
+		</gml:LineString>']]>);
 		</programlisting>
 	  </refsection>
 	  <refsection>
