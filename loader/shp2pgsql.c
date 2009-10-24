@@ -185,6 +185,7 @@ make_good_string(char *str)
 
 	while (*ptr) {
 		if ( *ptr == '\t' || *ptr == '\\' ) toescape++;
+		if ( *ptr == '\r' || *ptr == '\n') toescape+=2;
 		ptr++;
 	}
 
@@ -197,8 +198,29 @@ make_good_string(char *str)
 	optr=result;
 	ptr=str;
 	while (*ptr) {
-		if ( *ptr == '\t' || *ptr == '\\' ) *optr++='\\';
-		*optr++=*ptr++;
+	  switch(*ptr) {
+	     case('\t'):
+	       *optr++='\\';
+	       *optr++=*ptr++;
+	       break;
+	     case('\\'):
+	       *optr++='\\';
+	       *optr++=*ptr++;
+	       break;
+	     case('\r'):
+	       *optr++='\\';
+	       *optr++='r';
+	       *optr=*ptr++;
+	       break;
+	     case('\n'):
+	        *optr++='\\';
+	        *optr++='n';
+	        *optr=*ptr++;
+	        break;
+	     default:
+	       *optr++=*ptr++;
+	       continue;
+	   }
 	}
 	*optr='\0';
 
