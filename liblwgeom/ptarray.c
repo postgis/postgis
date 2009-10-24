@@ -304,6 +304,7 @@ ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims, unsigned int where)
 	return ret;
 }
 
+
 /**
  * @brief Remove a point from a pointarray.
  * 	@param which -  is the offset (starting at 0)
@@ -349,6 +350,41 @@ ptarray_removePoint(POINTARRAY *pa, unsigned int which)
 
 	return ret;
 }
+
+
+/**
+ * @brief Merge two given POINTARRAY and returns a pointer 
+ * on the new aggregate one.
+ * Warning: this function free the two inputs POINTARRAY
+ * @return #POINTARRAY is newly allocated
+ */
+POINTARRAY *
+ptarray_merge(POINTARRAY *pa1, POINTARRAY *pa2)
+{
+        POINTARRAY *pa;
+        size_t ptsize = pointArray_ptsize(pa1);
+
+        if (TYPE_GETZM(pa1->dims) != TYPE_GETZM(pa2->dims))
+                lwerror("ptarray_cat: Mixed dimension");
+
+        pa = ptarray_construct( TYPE_HASZ(pa1->dims),
+                                TYPE_HASM(pa1->dims),
+                                pa1->npoints + pa2->npoints);
+
+        memcpy(         getPoint_internal(pa, 0),
+                        getPoint_internal(pa1, 0),
+                        ptsize*(pa1->npoints));
+
+        memcpy(         getPoint_internal(pa, pa1->npoints),
+                        getPoint_internal(pa2, 0),
+                        ptsize*(pa2->npoints));
+
+        lwfree(pa1);
+        lwfree(pa2);
+
+        return pa;
+}
+
 
 /**
  * @brief Clone a pointarray

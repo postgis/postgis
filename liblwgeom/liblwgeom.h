@@ -1370,6 +1370,7 @@ extern POINTARRAY *ptarray_construct(char hasz, char hasm, unsigned int npoints)
 extern POINTARRAY *ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims,
 	                                    unsigned int where);
 extern POINTARRAY *ptarray_removePoint(POINTARRAY *pa, unsigned int where);
+extern POINTARRAY *ptarray_merge(POINTARRAY *pa1, POINTARRAY *pa2);
 
 extern int ptarray_isclosed2d(const POINTARRAY *pa);
 extern int ptarray_isclosed3d(const POINTARRAY *pa);
