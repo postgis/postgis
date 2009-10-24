@@ -17,13 +17,13 @@ SELECT 'empty_geom', ST_AsEWKT(ST_GeomFromGML(NULL));
 -- XML
 --
 
--- Empty String
+-- ERROR: Empty String
 SELECT 'xml_1', ST_AsEWKT(ST_GeomFromGML(''));
 
--- Not well formed XML
+-- ERROR: Not well formed XML
 SELECT 'xml_2', ST_AsEWKT(ST_GeomFromGML('<foo>'));
 
--- Not a GML Geometry
+-- ERROR: Not a GML Geometry
 SELECT 'xml_3', ST_AsEWKT(ST_GeomFromGML('<foo/>'));
 
 
@@ -512,7 +512,6 @@ SELECT 'coordinates_17', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordina
 
 
 
-
 --
 -- Coordinates (cs,ts,decimal)
 --
@@ -668,6 +667,13 @@ SELECT 'poslist_17', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:posList> 1  
 SELECT 'poslist_18', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:posList>!@#$%^*()"</gml:posList></gml:LineString>'));
 
 
+
+--
+-- Generic data
+--
+
+-- Mixed Pos, PosList, Coordinates, coord
+SELECT 'data_1', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:pos>1 2</gml:pos><gml:posList>3 4 5 6</gml:posList><gml:coordinates>7,8 9,10</gml:coordinates><gml:coord><gml:X>11</gml:X><gml:Y>12</gml:Y></gml:coord></gml:LineString>'));
 
 
 

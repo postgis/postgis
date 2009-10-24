@@ -264,9 +264,10 @@ static POINTARRAY* parse_gml_coordinates(xmlNodePtr xnode, bool *hasz)
 			if (gml_dims < 2 || gml_dims > 3)
 				lwerror("invalid GML representation");
 
-			if (gml_dims == 3) pt.z = parse_gml_double(q, 0, 1);
+			if (gml_dims == 3)
+				pt.z = parse_gml_double(q, 0, 1);
 			else {
-				pt.y = atof(q);
+				pt.y = parse_gml_double(q, 0, 1);
 				*hasz = false;
 			}
 
@@ -293,7 +294,7 @@ static POINTARRAY* parse_gml_coordinates(xmlNodePtr xnode, bool *hasz)
  */
 static POINTARRAY* parse_gml_coord(xmlNodePtr xnode, bool *hasz)
 {
-	xmlNodePtr coord, xyz;
+	xmlNodePtr xyz;
 	DYNPTARRAY *dpa;
 	POINTARRAY *pa;
 	bool x,y,z;
@@ -304,45 +305,37 @@ static POINTARRAY* parse_gml_coord(xmlNodePtr xnode, bool *hasz)
 	TYPE_SETZM(dims, 1, 0);
 	dpa = dynptarray_create(1, dims);
 
-	for (coord = xnode ; coord != NULL ; coord = coord->next) {
+	x = y = z = false;
+	for (xyz = xnode->children ; xyz != NULL ; xyz = xyz->next) {
 
-		/* Looking for gml:coord element */
-		if (coord->type != XML_ELEMENT_NODE) continue;
-		if (strcmp((char *) coord->name, "coord")) continue;
+		if (xyz->type != XML_ELEMENT_NODE) continue;
 
-		x = y = z = false;
-		for (xyz = coord->children ; xyz != NULL ; xyz = xyz->next) {
-
-			if (xyz->type != XML_ELEMENT_NODE) continue;
-
-			if (!strcmp((char *) xyz->name, "X")) {
-				if (x) lwerror("invalid GML representation");
-				c = xmlNodeGetContent(xyz);
-				p.x = parse_gml_double((char *) c, 1, 1);
-				x = true;
-				xmlFree(c);
-			} else  if (!strcmp((char *) xyz->name, "Y")) {
-				if (y) lwerror("invalid GML representation");
-				c = xmlNodeGetContent(xyz);
-				p.y = parse_gml_double((char *) c, 1, 1);
-				y = true;
-				xmlFree(c);
-			} else if (!strcmp((char *) xyz->name, "Z")) {
-				if (z) lwerror("invalid GML representation");
-				c = xmlNodeGetContent(xyz);
-				p.z = parse_gml_double((char *) c, 1, 1);
-				z = true;
-				xmlFree(c);
-			}
+		if (!strcmp((char *) xyz->name, "X")) {
+			if (x) lwerror("invalid GML representation");
+			c = xmlNodeGetContent(xyz);
+			p.x = parse_gml_double((char *) c, 1, 1);
+			x = true;
+			xmlFree(c);
+		} else  if (!strcmp((char *) xyz->name, "Y")) {
+			if (y) lwerror("invalid GML representation");
+			c = xmlNodeGetContent(xyz);
+			p.y = parse_gml_double((char *) c, 1, 1);
+			y = true;
+			xmlFree(c);
+		} else if (!strcmp((char *) xyz->name, "Z")) {
+			if (z) lwerror("invalid GML representation");
+			c = xmlNodeGetContent(xyz);
+			p.z = parse_gml_double((char *) c, 1, 1);
+			z = true;
+			xmlFree(c);
 		}
-
-		/* Check dimension consistancy */
-		if (!x || !y) lwerror("invalid GML representation");
-		if (!z) *hasz = false;
-
-		dynptarray_addPoint4d(dpa, &p, 0);
-		x = y = z = false;
 	}
+	/* Check dimension consistancy */
+	if (!x || !y) lwerror("invalid GML representation");
+	if (!z) *hasz = false;
+
+	dynptarray_addPoint4d(dpa, &p, 0);
+	x = y = z = false;
 
 	pa = ptarray_clone(dpa->pa);
 	lwfree(dpa);
@@ -496,7 +489,8 @@ static POINTARRAY* parse_gml_poslist(xmlNodePtr xnode, bool *hasz)
 /**
  * Parse data coordinates
  *
- * There's four ways to encode coordinates:
+ * There's four ways to encode coordinates, who could be mixed inside a 
+ * single geometrie:
  *  - gml:pos element
  *  - gml:posList element 
  *  - gml:coord elements with X,Y(,Z) nested elements (deprecated in 3.0.0)
@@ -507,39 +501,41 @@ static POINTARRAY* parse_gml_poslist(xmlNodePtr xnode, bool *hasz)
  *
  *  NOTA: we don't support pointRep references !
  */
-static POINTARRAY * parse_gml_data(xmlNodePtr xnode, bool *hasz)
+static POINTARRAY* parse_gml_data(xmlNodePtr xnode, bool *hasz)
 {
-	bool coordinates, coord, pos, poslist;
 	xmlNodePtr node;
+	POINTARRAY *pa, *tmp_pa;
 
-	coordinates = coord = pos = poslist = false;
+	pa = NULL;
 
 	for (node = xnode ; node != NULL ; node = node->next) {
 
 		if (node->type != XML_ELEMENT_NODE) continue;
 		if (!strcmp((char *) node->name, "pos")) {
-			pos=true;
-			break;
+	  		tmp_pa = parse_gml_pos(node, hasz);
+			if (pa == NULL) pa = tmp_pa;
+			else pa = ptarray_merge(pa, tmp_pa);
+
 		} else if (!strcmp((char *) node->name, "posList")) {
-			poslist=true;
-			break;
+	  		tmp_pa = parse_gml_poslist(node, hasz);
+			if (pa == NULL) pa = tmp_pa;
+			else pa = ptarray_merge(pa, tmp_pa);
+
 		} else if (!strcmp((char *) node->name, "coordinates")) {
-			coordinates=true;
-			break;
+	  		tmp_pa = parse_gml_coordinates(node, hasz);
+			if (pa == NULL) pa = tmp_pa;
+			else pa = ptarray_merge(pa, tmp_pa);
+
 		} else if (!strcmp((char *) node->name, "coord")) {
-			coord=true;
-			break;
+	  		tmp_pa = parse_gml_coord(node, hasz);
+			if (pa == NULL) pa = tmp_pa;
+			else pa = ptarray_merge(pa, tmp_pa);
 		}
 	}
 
-	if (pos) 	 return parse_gml_pos(node, hasz);
-	if (poslist) 	 return parse_gml_poslist(node, hasz);
-	if (coordinates) return parse_gml_coordinates(node, hasz);
-	if (coord) 	 return parse_gml_coord(node, hasz);
+	if (pa == NULL) lwerror("invalid GML representation");
 
-	lwerror("invalid GML representation");
-
-	return NULL;
+	return pa;
 }
 
 
@@ -672,7 +668,7 @@ static LWGEOM* parse_gml_curve(xmlNodePtr xnode, bool *hasz)
 			xmlFree(interpolation);
 		}
 
-		if (lss > 0) ppa = (POINTARRAY**) lwrealloc((LWLINE *) ppa, 
+		if (lss > 0) ppa = (POINTARRAY**) lwrealloc((POINTARRAY *) ppa,
 				sizeof(POINTARRAY*) * (lss + 1));
 
 		ppa[lss] = parse_gml_data(xa->children, hasz);
