@@ -13,7 +13,8 @@
  * Commons define and prototype function for all export functions 
  */
 
-#define SHOW_DIGS_DOUBLE 15
+#define MAX_DOUBLE 1E15
+#define SHOW_DIGS_DOUBLE 20
 #define MAX_DOUBLE_PRECISION 15
 #define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 2) /* +2 mean add dot and sign */
 

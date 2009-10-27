@@ -833,10 +833,19 @@ pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 		{
 			POINT2D pt;
 			getPoint2d_p(pa, i, &pt);
-			sprintf(x, "%.*f", precision, pt.x);
+
+			if (fabs(pt.x) < MAX_DOUBLE)
+				sprintf(x, "%.*f", precision, pt.x);
+			else
+				sprintf(x, "%g", pt.x);
 			trim_trailing_zeros(x);
-			sprintf(y, "%.*f", precision, pt.y);
+
+			if (fabs(pt.y) < MAX_DOUBLE)
+				sprintf(y, "%.*f", precision, pt.y);
+			else
+				sprintf(y, "%g", pt.y);
 			trim_trailing_zeros(y);
+
 			if ( i ) ptr += sprintf(ptr, ",");
 			ptr += sprintf(ptr, "[%s,%s]", x, y);
 		}
@@ -847,12 +856,25 @@ pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 		{
 			POINT4D pt;
 			getPoint4d_p(pa, i, &pt);
-			sprintf(x, "%.*f", precision, pt.x);
+
+			if (fabs(pt.x) < MAX_DOUBLE)
+				sprintf(x, "%.*f", precision, pt.x);
+			else
+				sprintf(x, "%g", pt.x);
 			trim_trailing_zeros(x);
-			sprintf(y, "%.*f", precision, pt.y);
+
+			if (fabs(pt.y) < MAX_DOUBLE)
+				sprintf(y, "%.*f", precision, pt.y);
+			else
+				sprintf(y, "%g", pt.y);
 			trim_trailing_zeros(y);
-			sprintf(z, "%.*f", precision, pt.z);
+
+			if (fabs(pt.z) < MAX_DOUBLE)
+				sprintf(z, "%.*f", precision, pt.z);
+			else
+				sprintf(z, "%g", pt.z);
 			trim_trailing_zeros(z);
+
 			if ( i ) ptr += sprintf(ptr, ",");
 			ptr += sprintf(ptr, "[%s,%s,%s]", x, y, z);
 		}
