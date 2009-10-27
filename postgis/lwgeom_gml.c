@@ -52,7 +52,8 @@ static size_t pointArray_GMLsize(POINTARRAY *pa, int precision);
 static char *getSRSbySRID(int SRID, bool short_crs);
 
 
-#define SHOW_DIGS_DOUBLE 15
+#define MAX_DOUBLE 1E15
+#define SHOW_DIGS_DOUBLE 20
 #define MAX_DOUBLE_PRECISION 15
 #define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 2) /* +2 mean add dot and sign */
 
@@ -467,13 +468,22 @@ pointArray_toGML2(POINTARRAY *pa, char *output, int precision)
 		for (i=0; i<pa->npoints; i++)
 		{
 			POINT2D pt;
-			getPoint2d_p(pa, i, &pt);
-			sprintf(x, "%.*f", precision, pt.x);
-			trim_trailing_zeros(x);
-			sprintf(y, "%.*f", precision, pt.y);
-			trim_trailing_zeros(y);
-			if ( i ) ptr += sprintf(ptr, " ");
-			ptr += sprintf(ptr, "%s,%s", x, y);
+                        getPoint2d_p(pa, i, &pt);
+
+                        if (fabs(pt.x) < MAX_DOUBLE)
+                                sprintf(x, "%.*f", precision, pt.x);
+                        else
+                                sprintf(x, "%g", pt.x);
+                        trim_trailing_zeros(x);
+
+                        if (fabs(pt.y) < MAX_DOUBLE)
+                                sprintf(y, "%.*f", precision, pt.y);
+                        else
+                                sprintf(y, "%g", pt.y);
+                        trim_trailing_zeros(y);
+
+                        if ( i ) ptr += sprintf(ptr, " ");
+                        ptr += sprintf(ptr, "%s,%s", x, y);
 		}
 	}
 	else
@@ -481,15 +491,28 @@ pointArray_toGML2(POINTARRAY *pa, char *output, int precision)
 		for (i=0; i<pa->npoints; i++)
 		{
 			POINT4D pt;
-			getPoint4d_p(pa, i, &pt);
-			sprintf(x, "%.*f", precision, pt.x);
-			trim_trailing_zeros(x);
-			sprintf(y, "%.*f", precision, pt.y);
-			trim_trailing_zeros(y);
-			sprintf(z, "%.*f", precision, pt.z);
-			trim_trailing_zeros(z);
-			if ( i ) ptr += sprintf(ptr, " ");
-			ptr += sprintf(ptr, "%s,%s,%s", x, y, z);
+                        getPoint4d_p(pa, i, &pt);
+
+                        if (fabs(pt.x) < MAX_DOUBLE)
+                                sprintf(x, "%.*f", precision, pt.x);
+                        else
+                                sprintf(x, "%g", pt.x);
+                        trim_trailing_zeros(x);
+
+                        if (fabs(pt.y) < MAX_DOUBLE)
+                                sprintf(y, "%.*f", precision, pt.y);
+                        else
+                                sprintf(y, "%g", pt.y);
+                        trim_trailing_zeros(y);
+
+                        if (fabs(pt.z) < MAX_DOUBLE)
+                                sprintf(z, "%.*f", precision, pt.z);
+                        else
+                                sprintf(z, "%g", pt.z);
+                        trim_trailing_zeros(z);
+
+                        if ( i ) ptr += sprintf(ptr, " ");
+                        ptr += sprintf(ptr, "%s,%s,%s", x, y, z);
 		}
 	}
 
@@ -846,36 +869,58 @@ pointArray_toGML3(POINTARRAY *pa, char *output, int precision, bool is_deegree)
 	{
 		for (i=0; i<pa->npoints; i++)
 		{
-			POINT2D pt;
-			getPoint2d_p(pa, i, &pt);
-			sprintf(x, "%.*f", precision, pt.x);
-			trim_trailing_zeros(x);
-			sprintf(y, "%.*f", precision, pt.y);
-			trim_trailing_zeros(y);
-			if ( i ) ptr += sprintf(ptr, " ");
-			if (is_deegree)
-				ptr += sprintf(ptr, "%s %s", y, x);
-			else
-				ptr += sprintf(ptr, "%s %s", x, y);
+                        POINT2D pt;
+                        getPoint2d_p(pa, i, &pt);
+
+                        if (fabs(pt.x) < MAX_DOUBLE)
+                                sprintf(x, "%.*f", precision, pt.x);
+                        else
+                                sprintf(x, "%g", pt.x);
+                        trim_trailing_zeros(x);
+
+                        if (fabs(pt.y) < MAX_DOUBLE)
+                                sprintf(y, "%.*f", precision, pt.y);
+                        else
+                                sprintf(y, "%g", pt.y);
+                        trim_trailing_zeros(y);
+
+                        if ( i ) ptr += sprintf(ptr, " ");
+                        if (is_deegree)
+                                ptr += sprintf(ptr, "%s %s", y, x);
+                        else
+                                ptr += sprintf(ptr, "%s %s", x, y);
 		}
 	}
 	else
 	{
 		for (i=0; i<pa->npoints; i++)
 		{
-			POINT4D pt;
-			getPoint4d_p(pa, i, &pt);
-			sprintf(x, "%.*f", precision, pt.x);
-			trim_trailing_zeros(x);
-			sprintf(y, "%.*f", precision, pt.y);
-			trim_trailing_zeros(y);
-			sprintf(z, "%.*f", precision, pt.z);
-			trim_trailing_zeros(z);
-			if ( i ) ptr += sprintf(ptr, " ");
-			if (is_deegree)
-				ptr += sprintf(ptr, "%s %s %s", y, x, z);
-			else
-				ptr += sprintf(ptr, "%s %s %s", x, y, z);
+                        POINT4D pt;
+                        getPoint4d_p(pa, i, &pt);
+
+                        if (fabs(pt.x) < MAX_DOUBLE)
+                                sprintf(x, "%.*f", precision, pt.x);
+                        else
+                                sprintf(x, "%g", pt.x);
+                        trim_trailing_zeros(x);
+
+                        if (fabs(pt.y) < MAX_DOUBLE)
+                                sprintf(y, "%.*f", precision, pt.y);
+                        else
+                                sprintf(y, "%g", pt.y);
+                        trim_trailing_zeros(y);
+
+                        if (fabs(pt.z) < MAX_DOUBLE)
+                                sprintf(z, "%.*f", precision, pt.z);
+                        else
+                                sprintf(z, "%g", pt.z);
+                        trim_trailing_zeros(z);
+
+                        if ( i ) ptr += sprintf(ptr, " ");
+                        if (is_deegree)
+                                ptr += sprintf(ptr, "%s %s %s", y, x, z);
+                        else
+                                ptr += sprintf(ptr, "%s %s %s", x, y, z);
 		}
 	}
 
