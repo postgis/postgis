@@ -868,6 +868,9 @@ Datum geography_gist_penalty(PG_FUNCTION_ARGS)
 	*result = size_union - size_orig;
 
 	/* All things being equal, we prefer to expand small boxes rather than large boxes. 
+	   NOTE: This code seemed to be causing badly balanced trees to be built
+	   and therefore has been commented out. Not sure why it didn't work,
+	   but it didn't.
 	if( FP_IS_ZERO(*result) )
 		if( FP_IS_ZERO(size_orig) )
 			*result = 0.0;
