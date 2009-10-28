@@ -11,63 +11,63 @@
   surfaces, networks), desktop user interface tools for viewing and editing
   GIS data, and web-based access tools.</para>
 
-  <sect1 id="credits">
-	<title>Credits</title>
-
+  <sect1 id="psc">
+	<title>Project Steering Committee</title>
+	<para>
+		The PostGIS Project Steering Committee (PSC) coordinates the general direction,
+			release cycles, documentation, and outreach efforts for the PostGIS project.  In addition
+			the PSC provides general user support, accepts and approves patches from the general PostGIS community
+			and votes on miscellaneous issues involving PostGIS such as developer commit access, new PSC members
+			or significant API changes.
+	</para>
 	<variablelist>
 	  <varlistentry>
 		<term>Mark Cave-Ayland</term>
-
 		<listitem>
 		  <para>Coordinates bug fixing and maintenance effort, alignment of
-		  PostGIS with PostgreSQL releases, windows build, integration of new
+		  PostGIS with PostgreSQL releases, spatial index selectivity and binding, windows production builds, integration of new
 		  GEOS functionality, and new function enhancements.</para>
 		</listitem>
 	  </varlistentry>
 
 	  <varlistentry>
 		<term>Paul Ramsey</term>
-
 		<listitem>
-		  <para>Release Manager, coordinates general direction of the project,
-		  often gets his hands dirty doing real coding.</para>
-		</listitem>
-	  </varlistentry>
-
-	  <varlistentry>
-		<term>Mark Leslie</term>
-
-		<listitem>
-		  <para>Ongoing maintenance and development of core functions.</para>
+		  <para>General bug fixing, geography support, GEOS functionality integration and alignment with 
+		  GEOS releases.</para>
 		</listitem>
 	  </varlistentry>
 
 	  <varlistentry>
 		<term>Kevin Neufeld</term>
-
 		<listitem>
 		  <para>Documentation, Hudson automated build, advanced user support
-		  on PostGIS newsgroup.</para>
+		  on PostGIS newsgroup, and postgis maintenance function enhancements.</para>
 		</listitem>
 	  </varlistentry>
+	  
+	  <varlistentry>
+		<term>Regina Obe</term>
+		<listitem>
+		  <para>Documentation, general user support on PostGIS newsgroup, windows production and experimental builds, and 
+		  smoke testing new functionality or major code changes.</para>
+		</listitem>
+	  </varlistentry>
+	</variablelist>
+  </sect1>
+  <sect1 id="other_contributors">
+	<title>Contributors Past and Present</title>
 
+	<variablelist>	  
 	  <varlistentry>
 		<term>Sandro Santilli</term>
 
 		<listitem>
 		  <para>Bug fixes and maintenance and integration of new GEOS
-		  functionality</para>
+		  functionality. WKT Raster support.</para>
 		</listitem>
 	  </varlistentry>
-
-	  <varlistentry>
-		<term>Chris Hodgson</term>
-
-		<listitem>
-		  <para>General development</para>
-		</listitem>
-	  </varlistentry>
-
+	  
 	  <varlistentry>
 		<term>Dave Blasby</term>
 
@@ -77,12 +77,55 @@
 		  functions.</para>
 		</listitem>
 	  </varlistentry>
-
-	  <varlistentry>
+	  
+	 <varlistentry>
 		<term>Jeff Lounsbury</term>
+		<listitem>
+		  <para>Original development of the Shape file loader/dumper. Current PostGIS Project Owner representative.</para>
+		</listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+		<term>Mark Leslie</term>
+		<listitem>
+		  <para>Ongoing maintenance and development of core functions.  Enhanced curve support.</para>
+		</listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+		<term>Olivier Courtin</term>
+		<listitem>
+		  <para>Input output XML (KML,GML)/GeoJSON functions and bug fixes.</para>
+		</listitem>
+	  </varlistentry>
+	  
+	 <varlistentry>
+		<term>Pierre Racine</term>
+		<listitem>
+		  <para>WKT Raster overall architecture and programming support</para>
+		</listitem>
+	 </varlistentry>
+	  
+	 <varlistentry>
+		<term>Mateusz Loskot</term>
+		<listitem>
+		  <para>WKT Raster support</para>
+		</listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+		<term>Chris Hodgson</term>
 
 		<listitem>
-		  <para>Original development of the Shape file loader/dumper.</para>
+		  <para>General development</para>
+		</listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+		<term>Stephen Frost</term>
+
+		<listitem>
+		  <para>Tiger geocoder development</para>
 		</listitem>
 	  </varlistentry>
 
@@ -96,8 +139,7 @@
 		  David Techer, Eduin Carrillo, IIDA Tetsushi, Geographic Data BC,
 		  Gerald Fenoy, Gino Lucrezi, Klaus Foerster, Kris Jurka, Mark
 		  Sondheim, Markus Schaber, Michael Fuhr, Nikita Shulga, Nicklas Avén, Norman Vine,
-		  Olivier Courtin, Ralph Mason, Regina Obe, Steffen Macke, Stephen
-		  Frost.</para>
+		  Ralph Mason,  Steffen Macke</para>
 		</listitem>
 	  </varlistentry>
 
