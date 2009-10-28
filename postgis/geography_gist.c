@@ -1171,7 +1171,7 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 		gidx_merge( &box_pageunion, box_current );
 	}
 	
-	POSTGIS_DEBUGF(4, "[GIST] box_pageunion (%s)", gidx_to_string(box_pageunion));
+	POSTGIS_DEBUGF(3, "[GIST] box_pageunion (%s)", gidx_to_string(box_pageunion));
 
 	/* Every box in the page is the same! So, we split and just put half the boxes in each child. */
 	if ( all_entries_equal )
@@ -1311,6 +1311,7 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 	if( direction == -1 || posmax == -1 )
 	{
 		/* ERROR OUT HERE */
+		elog(ERROR, "Error in building split, unable to determine split direction.");
 	}
 
 	POSTGIS_DEBUGF(3, "[GIST] 'picksplit' splitting on axis %d", direction);
