@@ -867,16 +867,18 @@ Datum geography_gist_penalty(PG_FUNCTION_ARGS)
 	size_orig = gidx_volume(gbox_index_orig);
 	*result = size_union - size_orig;
 
-	/* All things being equal, we prefer to expand small boxes rather than large boxes. */
+	/* All things being equal, we prefer to expand small boxes rather than large boxes. 
 	if( FP_IS_ZERO(*result) )
 		if( FP_IS_ZERO(size_orig) )
 			*result = 0.0;
 		else
 			*result = 1.0 - (1.0/(1.0 + size_orig));
 	else
-		*result += 1;
+		*result += 1.0;
+	*/
+	
+	POSTGIS_DEBUGF(4, "[GIST] union size (%.12f), original size (%.12f), penalty (%.12f)", size_union, size_orig, *result);
 
-	POSTGIS_DEBUGF(4, "[GIST] union size (%f), original size (%f), penalty (%f)", size_union, size_orig, *result);
 	PG_RETURN_POINTER(result);
 }
 
@@ -1061,6 +1063,8 @@ static void geography_gist_picksplit_constructsplit(GIST_SPLITVEC *v, OffsetNumb
 			sizeLR = gidx_inter_volume(LRl,LRr);
 			sizeRL = gidx_inter_volume(RLl,RLr);
 
+			POSTGIS_DEBUGF(4, "[GIST] sizeLR / sizeRL == %.12g / %.12g", sizeLR, sizeRL);
+
 			if (sizeLR > sizeRL)
 				firstToLeft = false;
 
@@ -1078,11 +1082,15 @@ static void geography_gist_picksplit_constructsplit(GIST_SPLITVEC *v, OffsetNumb
 			gistentryinit(addon, PointerGetDatum(*union2), NULL, NULL, InvalidOffsetNumber, FALSE);
 			DirectFunctionCall3(geography_gist_penalty, PointerGetDatum(&oldUnion), PointerGetDatum(&addon), PointerGetDatum(&p2));
 
+			POSTGIS_DEBUGF(4, "[GIST] p1 / p2 == %.12g / %.12g", p1, p2);
+
 			if ((v->spl_ldatum_exists && p1 > p2) || (v->spl_rdatum_exists && p1 < p2))
 				firstToLeft = false;
 		}
 	}
 
+	POSTGIS_DEBUGF(4, "[GIST] firstToLeft == %d", firstToLeft);
+	
 	if (firstToLeft)
 	{
 		v->spl_left = list1;
@@ -1154,12 +1162,8 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 
 	max_offset = entryvec->n - 1;
 	box_current = (GIDX*) DatumGetPointer(entryvec->vector[FirstOffsetNumber].key);
-	POSTGIS_DEBUGF(5, "gidx minx %f", box_current->c[0]);
-	POSTGIS_DEBUGF(5, "gidx maxx %f", box_current->c[1]);
 	box_pageunion = gidx_copy(box_current);
 	
-	POSTGIS_DEBUGF(4, "[GIST] box_current (%s)", gidx_to_string(box_current));
-
 	/* Calculate the containing box (box_pageunion) for the whole page we are going to split. */
 	for ( i = OffsetNumberNext(FirstOffsetNumber); i <= max_offset; i = OffsetNumberNext(i) )
 	{
@@ -1171,7 +1175,7 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 		gidx_merge( &box_pageunion, box_current );
 	}
 	
-	POSTGIS_DEBUGF(3, "[GIST] box_pageunion (%s)", gidx_to_string(box_pageunion));
+	POSTGIS_DEBUGF(3, "[GIST] box_pageunion: %s", gidx_to_string(box_pageunion));
 
 	/* Every box in the page is the same! So, we split and just put half the boxes in each child. */
 	if ( all_entries_equal )
@@ -1315,12 +1319,22 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 	}
 
 	POSTGIS_DEBUGF(3, "[GIST] 'picksplit' splitting on axis %d", direction);
+	
 	geography_gist_picksplit_constructsplit(v, list[BELOW(direction)], 
 	                                           pos[BELOW(direction)], 
 	                                           &(box_union[BELOW(direction)]),
 	                                           list[ABOVE(direction)], 
 	                                           pos[ABOVE(direction)], 
 	                                           &(box_union[ABOVE(direction)]) );
+
+	POSTGIS_DEBUGF(4, "[GIST] spl_ldatum: %s", gidx_to_string((GIDX*)v->spl_ldatum));
+	POSTGIS_DEBUGF(4, "[GIST] spl_rdatum: %s", gidx_to_string((GIDX*)v->spl_rdatum));
+
+	POSTGIS_DEBUGF(4, "[GIST] axis %d: parent range (%.12g, %.12g) left range (%.12g, %.12g), right range (%.12g, %.12g)", 
+	                  direction,
+	                  GIDX_GET_MIN(box_pageunion, direction), GIDX_GET_MAX(box_pageunion, direction), 
+	                  GIDX_GET_MIN((GIDX*)v->spl_ldatum, direction), GIDX_GET_MAX((GIDX*)v->spl_ldatum, direction), 
+	                  GIDX_GET_MIN((GIDX*)v->spl_rdatum, direction), GIDX_GET_MAX((GIDX*)v->spl_rdatum, direction) );
 
 	PG_RETURN_POINTER(v);
 
