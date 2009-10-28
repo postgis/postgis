@@ -14,12 +14,12 @@
     version()</code> [for postgresql].</para>
 
     <para>If you aren't using the latest release, it's worth taking a look at
-    its <ulink url="http://svn.refractions.net/postgis/trunk/NEWS">release
+    its <ulink url="http://svn.osgeo.org/postgis/trunk/NEWS">release
     changelog</ulink> first, to find out if your bug has already been
     fixed.</para>
 
     <para>Using the <ulink
-    url="http://code.google.com/p/postgis/issues/list">PostGIS bug
+    url="http://trac.osgeo.org/postgis/">PostGIS bug
     tracker</ulink> will ensure your reports are not discarded, and will keep
     you informed on its handling process. Before reporting a new bug please
     query the database to see if it is a known one, and if it is please add
@@ -38,7 +38,7 @@
     bug or because the documentation is in error or deficient.</para>
 
     <para>Documentation issues can also be reported to the <ulink
-    url="http://code.google.com/p/postgis/issues/list">PostGIS bug
+    url="http://trac.osgeo.org/postgis">PostGIS bug
     tracker</ulink>.</para>
 
     <para>If your revision is trivial, just describe it in a new bug tracker
@@ -55,7 +55,7 @@
         type:</para>
 
         <para><command>svn checkout
-        http://svn.refractions.net/postgis/trunk/</command></para>
+        http://svn.osgeo.org/postgis/trunk/</command></para>
 
         <para>This will be stored in the directory ./trunk</para>
       </listitem>
@@ -64,7 +64,7 @@
         <para>Make your changes to the documentation with your favorite text
         editor. On Unix, type (for example):</para>
 
-        <para><command>vi trunk/doc/postgis.xml</command></para>
+        <para><command>vim trunk/doc/postgis.xml</command></para>
 
         <para>Note that the documentation is written in SGML rather than HTML,
         so if you are not familiar with it please follow the example of the

@@ -3,6 +3,21 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
 
+	  <sect1>
+        <title>Release 1.4.0</title>
+        <para>Release date: 2009/7/24</para>
+        <para>This is a significant release including many performance enhancements and bug fixes. 
+		 Major cleanup to underlying codebase. Populate_geometry_columns maintenance function. Faster unioning operations.  
+		 Expanded curved geometry support.</para>
+      </sect1>
+	  
+      <sect1>
+        <title>Release 1.3.6</title>
+        <para>Release date: 2009/5/6</para>
+        <para>This release is a bug fix release to address issues with shp2pgsql memory issues on windows,
+		logical error importing dbf only files, improved error handling of AddGeometryColumns</para>
+      </sect1>
+	  
       <sect1>
         <title>Release 1.3.5</title>
         <para>Release date: 2008/12/15</para>
