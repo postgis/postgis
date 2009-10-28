@@ -33,7 +33,7 @@
 	  <varlistentry>
 		<term>Paul Ramsey</term>
 		<listitem>
-		  <para>General bug fixing, geography support, GEOS functionality integration and alignment with 
+		  <para>Co-founder of PostGIS project.  General bug fixing, geography support, GEOS functionality integration and alignment with 
 		  GEOS releases.</para>
 		</listitem>
 	  </varlistentry>
@@ -72,7 +72,7 @@
 		<term>Dave Blasby</term>
 
 		<listitem>
-		  <para>The original developer of PostGIS. Dave wrote the server side
+		  <para>The original developer/Co-founder of PostGIS. Dave wrote the server side
 		  objects, index bindings, and many of the server side analytical
 		  functions.</para>
 		</listitem>
