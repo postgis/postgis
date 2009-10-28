@@ -3,12 +3,68 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
 
-	  <sect1>
+      <sect1>
         <title>Release 1.4.0</title>
-        <para>Release date: 2009/7/24</para>
-        <para>This is a significant release including many performance enhancements and bug fixes. 
-		 Major cleanup to underlying codebase. Populate_geometry_columns maintenance function. Faster unioning operations.  
-		 Expanded curved geometry support.</para>
+        <para>Release date: 2009/07/24</para>
+        <para>This release provides performance enhancements, improved internal structures and testing, new features, and upgraded documentation.</para>
+  
+        <simplesect>
+          <title>API Stability</title>
+          <para>As of the 1.4 release series, the public API of PostGIS will not change during minor releases.</para>
+        </simplesect>
+
+        <simplesect>
+          <title>Compatibility</title>
+          <para>The versions below are the *minimum* requirements for PostGIS 1.4</para>
+          <para>PostgreSQL 8.2 and higher on all platforms</para>
+          <para>GEOS 3.0 and higher only</para>
+          <para>PROJ4 4.5 and higher only</para>
+        </simplesect>
+
+        <simplesect>
+          <title>New Features</title>
+          <para>ST_Union() uses high-speed cascaded union when compiled against
+         GEOS 3.1+ (Paul Ramsey)</para>
+          <para>ST_ContainsProperly() requires GEOS 3.1+</para>
+          <para>ST_Intersects(), ST_Contains(), ST_Within() use high-speed cached prepared geometry against GEOS 3.1+ (Paul Ramsey)</para>
+          <para>Vastly improved documentation and reference manual (Regina Obe &amp; Kevin Neufeld)</para>
+          <para>Figures and diagram examples in the reference manual (Kevin Neufeld)</para>
+          <para>ST_IsValidReason() returns readable explanations for validity failures (Paul Ramsey)</para>
+          <para>ST_GeoHash() returns a geohash.org signature for geometries (Paul Ramsey)</para>
+          <para>GTK+ multi-platform GUI for shape file loading (Paul Ramsey)</para>
+          <para>ST_LineCrossingDirection() returns crossing directions (Paul Ramsey)</para>
+          <para>ST_LocateBetweenElevations() returns sub-string based on Z-ordinate. (Paul Ramsey)</para>
+          <para>Geometry parser returns explicit error message about location of syntax errors (Mark Cave-Ayland)</para>
+          <para>ST_AsGeoJSON() return JSON formatted geometry (Olivier Courtin)</para>
+          <para>Populate_Geometry_Columns() -- automatically add records to geometry_columns for TABLES and VIEWS (Kevin Neufeld)</para>
+          <para>ST_MinimumBoundingCircle() -- returns the smallest circle polygon that can encompass a geometry (Bruce Rindahl)</para>
+        </simplesect>
+
+        <simplesect>
+          <title>Enhancements</title>
+          <para>Core geometry system moved into independent library, liblwgeom. (Mark Cave-Ayland)</para>
+          <para>New build system uses PostgreSQL "pgxs" build bootstrapper. (Mark Cave-Ayland)</para>
+          <para>Debugging framework formalized and simplified. (Mark Cave-Ayland)</para>
+          <para>All build-time #defines generated at configure time and placed in headers for easier cross-platform support (Mark Cave-Ayland)</para>
+          <para>Logging framework formalized and simplified (Mark Cave-Ayland)</para>
+          <para>Expanded and more stable support for CIRCULARSTRING, COMPOUNDCURVE and CURVEPOLYGON, better parsing, wider support in functions (Mark Leslie &amp; Mark Cave-Ayland)</para>
+          <para>Improved support for OpenSolaris builds (Paul Ramsey)</para>
+          <para>Improved support for MSVC builds (Mateusz Loskot)</para>
+          <para>Updated KML support (Olivier Courtin)</para>
+          <para>Unit testing framework for liblwgeom (Paul Ramsey)</para>
+          <para>New testing framework to comprehensively exercise every PostGIS function (Regine Obe)</para>
+          <para>Performance improvements to all geometry aggregate functions (Paul Ramsey)</para>
+          <para>Support for the upcoming PostgreSQL 8.4 (Mark Cave-Ayland, Talha Bin Rizwan)</para>
+          <para>Shp2pgsql and pgsql2shp re-worked to depend on the common parsing/unparsing code in liblwgeom (Mark Cave-Ayland)</para>
+          <para>Use of PDF DbLatex to build PDF docs and preliminary instructions for build (Jean David Techer)</para>
+          <para>Automated User documentation build (PDF and HTML) and Developer Doxygen Documentation (Kevin Neufeld)</para>
+          <para>Automated build of document images using ImageMagick from WKT geometry text files (Kevin Neufeld)</para>
+          <para>More attractive CSS for HTML documentation (Dane Springmeyer)</para>
+        </simplesect>
+        <simplesect>
+          <title>Bug fixes</title>
+          <para>http://trac.osgeo.org/postgis/query?status=closed&amp;milestone=postgis+1.4.0&amp;order=priority</para>
+        </simplesect>
       </sect1>
 	  
       <sect1>
