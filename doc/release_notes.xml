@@ -66,12 +66,13 @@
           <para>http://trac.osgeo.org/postgis/query?status=closed&amp;milestone=postgis+1.4.0&amp;order=priority</para>
         </simplesect>
       </sect1>
-	  
-      <sect1>
+
+	  <sect1>
         <title>Release 1.3.6</title>
-        <para>Release date: 2009/5/6</para>
-        <para>This release is a bug fix release to address issues with shp2pgsql memory issues on windows,
-		logical error importing dbf only files, improved error handling of AddGeometryColumns</para>
+        <para>Release date: 2009/05/04</para>
+        <para>This release adds support for PostgreSQL 8.4, exporting
+        prj files from the database with shape data, some crash fixes for shp2pgsql, and several small
+        bug fixes in the handling of "curve" types, logical error importing dbf only files, improved error handling of AddGeometryColumns.</para>
       </sect1>
 	  
       <sect1>
