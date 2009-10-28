@@ -959,6 +959,18 @@ static int geography_gist_picksplit_badratio(int x, int y)
 	return FALSE;
 }
 
+static bool geography_gist_picksplit_badratios(int *pos, int dims) 
+{
+	int i;
+	for ( i = 0; i < dims; i++ )
+	{
+		if( geography_gist_picksplit_badratio(pos[2*i],pos[2*i+1]) == FALSE )
+			return FALSE;
+	}
+	return TRUE;
+}
+
+
 /*
 ** Where the picksplit algorithm cannot find any basis for splitting one way 
 ** or another, we simply split the overflowing node in half.
@@ -1101,16 +1113,6 @@ static void geography_gist_picksplit_constructsplit(GIST_SPLITVEC *v, OffsetNumb
 	v->spl_ldatum_exists = v->spl_rdatum_exists = false;
 }
 
-static bool geography_gist_picksplit_badratios(int *pos, int dims) 
-{
-	int i;
-	for ( i = 0; i < dims; i++ )
-	{
-		if( geography_gist_picksplit_badratio(pos[2*i],pos[2*i+1]) == FALSE )
-			return FALSE;
-	}
-	return TRUE;
-}
 
 #define BELOW(d) (2*(d))		
 #define ABOVE(d) ((2*(d))+1)		
@@ -1182,6 +1184,7 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 	/* Initialize memory structures. */
 	nbytes = (max_offset + 2) * sizeof(OffsetNumber);
 	ndims_pageunion = GIDX_NDIMS(box_pageunion);
+	POSTGIS_DEBUGF(4, "[GIST] ndims_pageunion == %d", ndims_pageunion);
 	pos = palloc(2*ndims_pageunion * sizeof(int));
 	list = palloc(2*ndims_pageunion * sizeof(OffsetNumber*));
 	box_union = palloc(2*ndims_pageunion * sizeof(GIDX*));
@@ -1227,7 +1230,7 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 	** sides of the page union box can occasionally all end up in one place, leading
 	** to this condition.
 	*/
-	if ( geography_gist_picksplit_badratios(pos,ndims_pageunion) == TRUE )
+	if ( geography_gist_picksplit_badratios(pos,ndims_pageunion) == TRUE ) 
 	{
 		/*
 		** Instead we split on center points and see if we do better.
@@ -1300,20 +1303,23 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 	{
 		int posd = Max(pos[ABOVE(d)],pos[BELOW(d)]);
 		if( posd > posmax )
+		{
 			direction = d;
+			posmax = posd;
+		}
 	}
 	if( direction == -1 || posmax == -1 )
 	{
 		/* ERROR OUT HERE */
 	}
 
-	POSTGIS_DEBUGF(4, "[GIST] 'picksplit' splitting on axis %d",direction);
+	POSTGIS_DEBUGF(3, "[GIST] 'picksplit' splitting on axis %d", direction);
 	geography_gist_picksplit_constructsplit(v, list[BELOW(direction)], 
-	                                            pos[BELOW(direction)], 
-	                                            &(box_union[BELOW(direction)]),
-		                                        list[ABOVE(direction)], 
-		                                        pos[ABOVE(direction)], 
-	                                            &(box_union[ABOVE(direction)]) );
+	                                           pos[BELOW(direction)], 
+	                                           &(box_union[BELOW(direction)]),
+	                                           list[ABOVE(direction)], 
+	                                           pos[ABOVE(direction)], 
+	                                           &(box_union[ABOVE(direction)]) );
 
 	PG_RETURN_POINTER(v);
 

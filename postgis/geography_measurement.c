@@ -328,7 +328,6 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	int type1, type2;
 	int empty1 = LW_FALSE;
 	int empty2 = LW_FALSE;
-	int twoargs = LW_FALSE;
 	
 	Datum d1 = PG_GETARG_DATUM(0);
 	Datum d2 = PG_GETARG_DATUM(1);
