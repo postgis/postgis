@@ -15,7 +15,7 @@
 #include <string.h>
 #include "CUnit/Basic.h"
 
-#include "lwgeodetic.h"
+#include "lwspheroid.h"
 #include "cu_tester.h"
 
 /***********************************************************************
@@ -35,3 +35,4 @@ void test_edge_distance_to_edge(void);
 void test_ptarray_point_in_ring_winding(void);
 void test_lwgeom_distance_sphere(void);
 void test_ptarray_point_in_ring(void);
+void test_spheroid_distance(void);

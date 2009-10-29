@@ -36,7 +36,8 @@ CU_pSuite register_geodetic_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_edge_distance_to_point()", test_edge_distance_to_point)) ||
 	    (NULL == CU_add_test(pSuite, "test_edge_distance_to_edge()", test_edge_distance_to_edge)) || 
 	    (NULL == CU_add_test(pSuite, "test_lwgeom_distance_sphere()", test_lwgeom_distance_sphere)) ||
-	    (NULL == CU_add_test(pSuite, "test_ptarray_point_in_ring()", test_ptarray_point_in_ring)) 
+	    (NULL == CU_add_test(pSuite, "test_ptarray_point_in_ring()", test_ptarray_point_in_ring)) ||
+	    (NULL == CU_add_test(pSuite, "test_spheroid_distance()", test_spheroid_distance)) 
 	)
 	{
 		CU_cleanup_registry();
@@ -562,4 +563,44 @@ void test_lwgeom_distance_sphere(void)
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
 
+}
+
+void test_spheroid_distance(void)
+{
+	/* WGS 84 values */
+	static double a = 6378137.0;
+	static double b = 6356752.314245179498;
+	GEOGRAPHIC_POINT g1, g2;
+	double d;
+	
+	/* One vertical degree */
+	point_set(0.0, 0.0, &g1);
+	point_set(0.0, 1.0, &g2);
+	d = spheroid_distance(g1, g2, a, b);
+	CU_ASSERT_DOUBLE_EQUAL(d, 110574.388615329, 0.001);
+	
+	/* Ten horizontal degrees */
+	point_set(-10.0, 0.0, &g1);
+	point_set(0.0, 0.0, &g2);
+	d = spheroid_distance(g1, g2, a, b);
+	CU_ASSERT_DOUBLE_EQUAL(d, 1113194.90793274, 0.001);
+	
+	/* One horizonal degree */
+	point_set(-1.0, 0.0, &g1);
+	point_set(0.0, 0.0, &g2);
+	d = spheroid_distance(g1, g2, a, b);
+	CU_ASSERT_DOUBLE_EQUAL(d, 111319.490779, 0.001);
+	
+	/* Around world w/ slight bend */
+	point_set(-180.0, 0.0, &g1);
+	point_set(0.0, 1.0, &g2);
+	d = spheroid_distance(g1, g2, a, b);
+	CU_ASSERT_DOUBLE_EQUAL(d, 19893357.0704483, 0.001);
+	
+	/* Up to pole */
+	point_set(-180.0, 0.0, &g1);
+	point_set(0.0, 90.0, &g2);
+	d = spheroid_distance(g1, g2, a, b);
+	CU_ASSERT_DOUBLE_EQUAL(d, 10001965.7295318, 0.001);
+	
 }

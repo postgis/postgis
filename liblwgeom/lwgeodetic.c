@@ -174,7 +174,7 @@ static void point_shift(GEOGRAPHIC_POINT *p, double shift)
 }
 
 
-static int geographic_point_equals(GEOGRAPHIC_POINT g1, GEOGRAPHIC_POINT g2)
+int geographic_point_equals(GEOGRAPHIC_POINT g1, GEOGRAPHIC_POINT g2)
 {
 	return FP_EQUALS(g1.lat, g2.lat) && FP_EQUALS(g1.lon, g2.lon);
 }
