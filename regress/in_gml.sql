@@ -5,9 +5,19 @@
 
 
 --
--- spatial_ref_sys data
+-- spatial_ref_sys datas
 --
+
+-- EPSG 4326 : WGS 84
 INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","srtext","proj4text") VALUES (4326,'EPSG',4326,'GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]','+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ');
+
+--- EPSG 27562 : NTF (Paris) / Lambert Centre France
+INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","srtext","proj4text") VALUES (27562,'EPSG',27562,'PROJCS["NTF (Paris) / Lambert Centre France",GEOGCS["NTF (Paris)",DATUM["Nouvelle_Triangulation_Francaise_Paris",SPHEROID["Clarke 1880 (IGN)",6378249.2,293.4660212936265,AUTHORITY["EPSG","7011"]],TOWGS84[-168,-60,320,0,0,0,0],AUTHORITY["EPSG","6807"]],PRIMEM["Paris",2.33722917,AUTHORITY["EPSG","8903"]],UNIT["grad",0.01570796326794897,AUTHORITY["EPSG","9105"]],AUTHORITY["EPSG","4807"]],UNIT["metre",1,AUTHORITY["EPSG","9001"]],PROJECTION["Lambert_Conformal_Conic_1SP"],PARAMETER["latitude_of_origin",52],PARAMETER["central_meridian",0],PARAMETER["scale_factor",0.99987742],PARAMETER["false_easting",600000],PARAMETER["false_northing",200000],AUTHORITY["EPSG","27562"],AXIS["X",EAST],AXIS["Y",NORTH]]','+proj=lcc +lat_1=46.8 +lat_0=46.8 +lon_0=0 +k_0=0.99987742 +x_0=600000 +y_0=200000 +a=6378249.2 +b=6356515 +towgs84=-168,-60,320,0,0,0,0 +pm=paris +units=m +no_defs ');
+
+--- EPSG 27582 : NTF (Paris) / France II (deprecated)
+INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","srtext","proj4text") VALUES (27582,'EPSG',27582,'PROJCS["NTF (Paris) / France II (deprecated)",GEOGCS["NTF (Paris)",DATUM["Nouvelle_Triangulation_Francaise_Paris",SPHEROID["Clarke 1880 (IGN)",6378249.2,293.4660212936265,AUTHORITY["EPSG","7011"]],TOWGS84[-168,-60,320,0,0,0,0],AUTHORITY["EPSG","6807"]],PRIMEM["Paris",2.33722917,AUTHORITY["EPSG","8903"]],UNIT["grad",0.01570796326794897,AUTHORITY["EPSG","9105"]],AUTHORITY["EPSG","4807"]],UNIT["metre",1,AUTHORITY["EPSG","9001"]],PROJECTION["Lambert_Conformal_Conic_1SP"],PARAMETER["latitude_of_origin",52],PARAMETER["central_meridian",0],PARAMETER["scale_factor",0.99987742],PARAMETER["false_easting",600000],PARAMETER["false_northing",2200000],AUTHORITY["EPSG","27582"],AXIS["X",EAST],AXIS["Y",NORTH]]','+proj=lcc +lat_1=46.8 +lat_0=46.8 +lon_0=0 +k_0=0.99987742 +x_0=600000 +y_0=2200000 +a=6378249.2 +b=6356515 +towgs84=-168,-60,320,0,0,0,0 +pm=paris +units=m +no_defs ');
+
+
 
 
 -- Empty Geometry
@@ -253,7 +263,8 @@ SELECT 'mpoint_5', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPoint></gml:MultiPoint>')
 -- XML not elements handle
 SELECT 'mpoint_6', ST_AsEWKT(ST_GeomFromGML(' <!-- --> <gml:MultiPoint> <!-- --> <gml:pointMember> <!-- --> <gml:Point> <!-- --> <gml:coordinates>1,2</gml:coordinates></gml:Point></gml:pointMember> <!-- --> <gml:pointMember> <!-- --> <gml:Point> <!-- --> <gml:coordinates>3,4</gml:coordinates></gml:Point></gml:pointMember></gml:MultiPoint>'));
 
--- TODO Mixed srsName
+-- Mixed srsName
+SELECT 'mpoint_7', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPoint srsName="EPSG:27582"><gml:pointMember><gml:Point><gml:coordinates>1,2</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point srsName="EPSG:27562"><gml:coordinates>400000,5000000</gml:coordinates></gml:Point></gml:pointMember></gml:MultiPoint>'));
 
 
 
@@ -282,7 +293,8 @@ SELECT 'mline_6', ST_AsEWKT(ST_GeomFromGML(' <!-- --> <gml:MultiLineString> <!--
 SELECT 'mline_7', ST_AsEWKT(ST_GeomFromGML('<gml:MultiLineString><gml:lineStringMember><gml:LineString><gml:posList dimension="3">1 2 3 4 5 6</gml:posList></gml:LineString></gml:lineStringMember><gml:lineStringMember><gml:LineString><gml:posList dimension="2">7 8 9 10</gml:posList></gml:LineString></gml:lineStringMember></gml:MultiLineString>'));
 SELECT 'mline_8', ST_AsEWKT(ST_GeomFromGML('<gml:MultiLineString><gml:lineStringMember><gml:LineString><gml:posList dimension="2">1 2 3 4</gml:posList></gml:LineString></gml:lineStringMember><gml:lineStringMember><gml:LineString><gml:posList dimension="3">5 6 7 8 9 10</gml:posList></gml:LineString></gml:lineStringMember></gml:MultiLineString>'));
 
--- TODO Mixed srsName
+-- Mixed srsName
+SELECT 'mline_9', ST_AsEWKT(ST_GeomFromGML('<gml:MultiLineString srsName="EPSG:27582"><gml:lineStringMember><gml:LineString><gml:coordinates>1,2 3,4</gml:coordinates></gml:LineString></gml:lineStringMember><gml:lineStringMember><gml:LineString srsName="EPSG:27562"><gml:coordinates>400000,5000000 400010,5000010</gml:coordinates></gml:LineString></gml:lineStringMember></gml:MultiLineString>'));
 
 
 
@@ -311,7 +323,8 @@ SELECT 'mcurve_6', ST_AsEWKT(ST_GeomFromGML(' <!-- --> <gml:MultiCurve> <!-- -->
 SELECT 'mcurve_7', ST_AsEWKT(ST_GeomFromGML('<gml:MultiCurve><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList dimension="3">1 2 3 4 5 6</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList dimension="2">7 8 9 10</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve>'));
 SELECT 'mcurve_8', ST_AsEWKT(ST_GeomFromGML('<gml:MultiCurve><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList dimension="2">1 2 3 4</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList dimension="3">5 6 7 8 9 10</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve>'));
 
--- TODO Mixed srsName
+-- Mixed srsName
+SELECT 'mcurve_9', ST_AsEWKT(ST_GeomFromGML('<gml:MultiCurve srsName="EPSG:27582"><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:coordinates>1,2 3,4</gml:coordinates></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:Curve srsName="EPSG:27562"><gml:segments><gml:LineStringSegment><gml:coordinates>400000,5000000 400010,5000010</gml:coordinates></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve>'));
 
 
 
@@ -340,7 +353,8 @@ SELECT 'mpoly_6', ST_AsEWKT(ST_GeomFromGML(' <!-- --> <gml:MultiPolygon> <!-- --
 SELECT 'mpoly_7', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPolygon><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:posList dimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:posList dimension="2">10 11 12 13 14 15 10 11</gml:posList></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon>'));
 SELECT 'mpoly_8', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPolygon><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:posList dimension="2">1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:posList dimension="3">7 8 9 10 11 12 13 14 15 7 8 9</gml:posList></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon>'));
 
--- TODO Mixed srsName
+-- Mixed srsName
+SELECT 'mpoly_9', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPolygon srsName="EPSG:27582"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember><gml:polygonMember><gml:Polygon srsName="EPSG:27562"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>400000,5000000 400010,5000010 400020,5000020 400000,5000000</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs><gml:innerBoundaryIs><gml:LinearRing><gml:coordinates>400100,5000100 400110,5000110 400120,5000120 400100,5000100</gml:coordinates></gml:LinearRing></gml:innerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon>'));
 
 
 
@@ -369,7 +383,8 @@ SELECT 'msurface_6', ST_AsEWKT(ST_GeomFromGML(' <!-- --> <gml:MultiSurface> <!--
 SELECT 'msurface_7', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface><gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList dimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember><gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList dimension="2">10 11 12 13 14 15 10 11</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember></gml:MultiSurface>'));
 SELECT 'msurface_8', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface><gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList dimension="2">1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember><gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList dimension="3">7 8 9 10 11 12 13 14 15 7 8 9</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember></gml:MultiSurface>'));
 
--- TODO Mixed srsName
+-- Mixed srsName
+SELECT 'msurface_9', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface srsName="EPSG:27582"><gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember><gml:surfaceMember><gml:Polygon srsName="EPSG:27562"><gml:exterior><gml:LinearRing><gml:coordinates>400000,5000000 400010,5000010 400020,5000020 400000,5000000</gml:coordinates></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:coordinates>400100,5000100 400110,5000110 400120,5000120 400100,5000100</gml:coordinates></gml:LinearRing></gml:interior></gml:Polygon></gml:surfaceMember></gml:MultiSurface>'));
 
 
 
@@ -378,42 +393,42 @@ SELECT 'msurface_8', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface><gml:surfaceMem
 --
 
 -- 1 simple geom 
-SELECT 'collection_1', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:pointMember><gml:Point><gml:coordinates>1,2</gml:coordinates></gml:Point></gml:pointMember></gml:MultiGeometry>'));
+SELECT 'collection_1', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:geometryMember><gml:Point><gml:coordinates>1,2</gml:coordinates></gml:Point></gml:geometryMember></gml:MultiGeometry>'));
 
 -- 2 simples geom
-SELECT 'collection_2', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:pointMember><gml:Point><gml:pos>1 2</gml:pos></gml:Point></gml:pointMember><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>3 4 5 6</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember></gml:MultiGeometry>'));
+SELECT 'collection_2', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:geometryMember><gml:Point><gml:pos>1 2</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>3 4 5 6</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:geometryMember></gml:MultiGeometry>'));
 
 -- 1 multi geom 
-SELECT 'collection_3', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:MultiPoint><gml:pointMember><gml:Point><gml:pos>1 2</gml:pos></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:pos>3 4</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint></gml:MultiGeometry>'));
+SELECT 'collection_3', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:geometryMember><gml:MultiPoint><gml:pointMember><gml:Point><gml:pos>1 2</gml:pos></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:pos>3 4</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint></gml:geometryMember></gml:MultiGeometry>'));
 
 -- 2 multi geom 
-SELECT 'collection_4', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:MultiPoint><gml:pointMember><gml:Point><gml:pos>1 2</gml:pos></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:pos>3 4</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint><gml:MultiCurve><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>5 6 7 8</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>9 10 11 12</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve></gml:MultiGeometry>'));
+SELECT 'collection_4', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:geometryMember><gml:MultiPoint><gml:pointMember><gml:Point><gml:pos>1 2</gml:pos></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:pos>3 4</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint></gml:geometryMember><gml:geometryMember><gml:MultiCurve><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>5 6 7 8</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>9 10 11 12</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve></gml:geometryMember></gml:MultiGeometry>'));
 
 -- 2 multi geom and 2 simples
-SELECT 'collection_5', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:MultiPoint><gml:pointMember><gml:Point><gml:pos>1 2</gml:pos></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:pos>3 4</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint><gml:pointMember><gml:Point><gml:pos>5 6</gml:pos></gml:Point></gml:pointMember><gml:MultiCurve><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>7 8 9 10</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>11 12 13 14</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve><gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>15 16 17 18 19 20 15 16</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember></gml:MultiGeometry>'));
+SELECT 'collection_5', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:geometryMember><gml:MultiPoint><gml:pointMember><gml:Point><gml:pos>1 2</gml:pos></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:pos>3 4</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint></gml:geometryMember><gml:geometryMember><gml:Point><gml:pos>5 6</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:MultiCurve><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>7 8 9 10</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>11 12 13 14</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve></gml:geometryMember><gml:geometryMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>15 16 17 18 19 20 15 16</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:geometryMember></gml:MultiGeometry>'));
 
 -- Empty collection
-SELECT 'collection_6', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:pointMember></gml:pointMember></gml:MultiGeometry>'));
+SELECT 'collection_6', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:geometryMember></gml:geometryMember></gml:MultiGeometry>'));
 SELECT 'collection_7', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry></gml:MultiGeometry>'));
 
 -- Collection of collection
-SELECT 'collection_8', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:pointMember><gml:Point><gml:coordinates>1,2</gml:coordinates></gml:Point></gml:pointMember><gml:MultiGeometry><gml:pointMember><gml:Point><gml:coordinates>3,4</gml:coordinates></gml:Point></gml:pointMember></gml:MultiGeometry></gml:MultiGeometry>'));
+SELECT 'collection_8', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:pointMember><gml:Point><gml:coordinates>1,2</gml:coordinates></gml:Point></gml:pointMember><gml:geometryMember><gml:MultiGeometry><gml:pointMember><gml:Point><gml:coordinates>3,4</gml:coordinates></gml:Point></gml:pointMember></gml:MultiGeometry></gml:geometryMember></gml:MultiGeometry>'));
 
 -- Collection of collection of collection
-SELECT 'collection_9', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:pointMember><gml:Point><gml:coordinates>1,2</gml:coordinates></gml:Point></gml:pointMember><gml:MultiGeometry><gml:MultiGeometry><gml:pointMember><gml:Point><gml:coordinates>3,4</gml:coordinates></gml:Point></gml:pointMember></gml:MultiGeometry></gml:MultiGeometry></gml:MultiGeometry>'));
+SELECT 'collection_9', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:geometryMember><gml:Point><gml:coordinates>1,2</gml:coordinates></gml:Point></gml:geometryMember><gml:geometryMember><gml:MultiGeometry><gml:geometryMember><gml:MultiGeometry><gml:geometryMember><gml:Point><gml:coordinates>3,4</gml:coordinates></gml:Point></gml:geometryMember></gml:MultiGeometry></gml:geometryMember></gml:MultiGeometry></gml:geometryMember></gml:MultiGeometry>'));
 
 -- srsName handle
-SELECT 'collection_10', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry srsName="EPSG:4326"><gml:pointMember><gml:Point><gml:coordinates>1,2</gml:coordinates></gml:Point></gml:pointMember></gml:MultiGeometry>'));
+SELECT 'collection_10', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry srsName="EPSG:4326"><gml:geometryMember><gml:Point><gml:coordinates>1,2</gml:coordinates></gml:Point></gml:geometryMember></gml:MultiGeometry>'));
 
 -- XML not elements handle
-SELECT 'collection_11', ST_AsEWKT(ST_GeomFromGML(' <!-- --> <gml:MultiGeometry> <!-- --> <gml:pointMember> <!-- --> <gml:Point> <!-- --> <gml:coordinates>1,2</gml:coordinates></gml:Point></gml:pointMember> <!-- --> <gml:MultiGeometry> <!-- --> <gml:MultiGeometry> <!-- --> <gml:pointMember> <!-- --> <gml:Point> <!-- --> <gml:coordinates>3,4</gml:coordinates></gml:Point></gml:pointMember></gml:MultiGeometry></gml:MultiGeometry></gml:MultiGeometry>'));
+SELECT 'collection_11', ST_AsEWKT(ST_GeomFromGML(' <!-- --> <gml:MultiGeometry> <!-- --> <gml:geometryMember> <!-- --> <gml:Point> <!-- --> <gml:pos dimension="2">1 2</gml:pos></gml:Point></gml:geometryMember> <!-- --> <gml:geometryMember> <!-- --> <gml:MultiGeometry> <!-- --> <gml:geometryMember> <!-- --> <gml:MultiGeometry> <!-- --> <gml:geometryMember><gml:Point><gml:pos dimension="3">3 4 5</gml:pos></gml:Point></gml:geometryMember></gml:MultiGeometry></gml:geometryMember></gml:MultiGeometry></gml:geometryMember></gml:MultiGeometry>'));
 
 -- Mixed dimension
-SELECT 'collection_12', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:pointMember><gml:Point><gml:pos dimension="3">1 2 3</gml:pos></gml:Point></gml:pointMember><gml:MultiGeometry><gml:MultiGeometry><gml:pointMember><gml:Point><gml:pos dimension="2">4 5</gml:pos></gml:Point></gml:pointMember></gml:MultiGeometry></gml:MultiGeometry></gml:MultiGeometry>'));
-SELECT 'collection_13', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:pointMember><gml:Point><gml:pos dimension="2">1 2</gml:pos></gml:Point></gml:pointMember><gml:MultiGeometry><gml:MultiGeometry><gml:pointMember><gml:Point><gml:pos dimension="3">3 4 5</gml:pos></gml:Point></gml:pointMember></gml:MultiGeometry></gml:MultiGeometry></gml:MultiGeometry>'));
+SELECT 'collection_12', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:geometryMember><gml:Point><gml:pos dimension="3">1 2 3</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:MultiGeometry><gml:geometryMember><gml:MultiGeometry><gml:geometryMember><gml:Point><gml:pos dimension="2">4 5</gml:pos></gml:Point></gml:geometryMember></gml:MultiGeometry></gml:geometryMember></gml:MultiGeometry></gml:geometryMember></gml:MultiGeometry>'));
+SELECT 'collection_13', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:geometryMember><gml:Point><gml:pos dimension="2">1 2</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:MultiGeometry><gml:geometryMember><gml:MultiGeometry><gml:geometryMember><gml:Point><gml:pos dimension="3">3 4 5</gml:pos></gml:Point></gml:geometryMember></gml:MultiGeometry></gml:geometryMember></gml:MultiGeometry></gml:geometryMember></gml:MultiGeometry>'));
 
--- TODO Mixed srsName
-
+-- Mixed srsName
+SELECT 'collection_14', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry srsName="EPSG:27582"><gml:geometryMember><gml:Point><gml:coordinates>1,2</gml:coordinates></gml:Point></gml:geometryMember><gml:geometryMember><gml:MultiGeometry><gml:geometryMember><gml:MultiGeometry srsName="EPSG:27562"><gml:geometryMember><gml:Point><gml:coordinates>400000,5000000</gml:coordinates></gml:Point></gml:geometryMember></gml:MultiGeometry></gml:geometryMember></gml:MultiGeometry></gml:geometryMember></gml:MultiGeometry>'));
 
 
 
@@ -426,33 +441,39 @@ SELECT 'collection_13', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:pointM
 SELECT 'srs_1', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:4326"><gml:pos>1 2</gml:pos></gml:Point>'));
 SELECT 'srs_2', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:EPSG:geographicCRS:4326"><gml:pos>1 2</gml:pos></gml:Point>'));
 SELECT 'srs_3', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:ogc:def:crs:EPSG:4326"><gml:pos>1 2</gml:pos></gml:Point>'));
-SELECT 'srs_4', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:ogc:def:crs:EPSG:4326"><gml:pos>1 2</gml:pos></gml:Point>'));
-SELECT 'srs_5', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>1 2</gml:pos></gml:Point>'));
-SELECT 'srs_6', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:ogc:def:crs:EPSG:6.6:4326"><gml:pos>1 2</gml:pos></gml:Point>'));
-SELECT 'srs_7', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:x-ogc:def:crs:EPSG:6.6:4326"><gml:pos>1 2</gml:pos></gml:Point>'));
-SELECT 'srs_8', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="http://www.opengis.net/gml/srs/epsg.xml#4326"><gml:pos>1 2</gml:pos></gml:Point>'));
+SELECT 'srs_4', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>1 2</gml:pos></gml:Point>'));
+SELECT 'srs_5', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:ogc:def:crs:EPSG:6.6:4326"><gml:pos>1 2</gml:pos></gml:Point>'));
+SELECT 'srs_6', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:x-ogc:def:crs:EPSG:6.6:4326"><gml:pos>1 2</gml:pos></gml:Point>'));
+SELECT 'srs_7', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="http://www.opengis.net/gml/srs/epsg.xml#4326"><gml:pos>1 2</gml:pos></gml:Point>'));
 
 -- ERROR not a valid pattern
-SELECT 'srs_9', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="a:wrong:pattern:4326"><gml:pos>1 2</gml:pos></gml:Point>'));
+SELECT 'srs_8', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="a:wrong:pattern:4326"><gml:pos>1 2</gml:pos></gml:Point>'));
 
 -- ERROR: not a defined SRID
-SELECT 'srs_10', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:01"><gml:pos>1 2</gml:pos></gml:Point>'));
+SELECT 'srs_9', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:01"><gml:pos>1 2</gml:pos></gml:Point>'));
 
 -- ERROR: SRID is not an int
-SELECT 'srs_11', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:abc"><gml:pos>1 2</gml:pos></gml:Point>'));
+SELECT 'srs_10', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:abc"><gml:pos>1 2</gml:pos></gml:Point>'));
 
 -- ERROR: SRID is not only int
-SELECT 'srs_12', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:4326abc"><gml:pos>1 2</gml:pos></gml:Point>'));
-SELECT 'srs_13', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:abc4326"><gml:pos>1 2</gml:pos></gml:Point>'));
+SELECT 'srs_11', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:4326abc"><gml:pos>1 2</gml:pos></gml:Point>'));
+SELECT 'srs_12', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:abc4326"><gml:pos>1 2</gml:pos></gml:Point>'));
 
 -- ERROR: srsName empty
-SELECT 'srs_14', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:"><gml:pos>1 2</gml:pos></gml:Point>'));
-SELECT 'srs_15', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName=""><gml:pos>1 2</gml:pos></gml:Point>'));
+SELECT 'srs_13', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:"><gml:pos>1 2</gml:pos></gml:Point>'));
+SELECT 'srs_14', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName=""><gml:pos>1 2</gml:pos></gml:Point>'));
 
 -- ERROR: srsName is defined as -1
-SELECT 'srs_16', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:-1"><gml:pos>1 2</gml:pos></gml:Point>'));
+SELECT 'srs_15', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:-1"><gml:pos>1 2</gml:pos></gml:Point>'));
+
+-- Reverse axis with all kind of simples geometry types 
+SELECT 'srs_16', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::4326"><gml:geometryMember><gml:Point><gml:pos dimension="2">1 2</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:LineString><gml:posList dimension="2">3 4 5 6</gml:posList></gml:LineString></gml:geometryMember><gml:geometryMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList dimension="2">7 8 9 10</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:geometryMember><gml:geometryMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList dimension="2">11 12 13 14 15 16 11 12</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList dimension="2">17 18 19 20 21 22 17 18</gml:posList></gml:LinearRing></gml:interior></gml:Polygon></gml:geometryMember><gml:geometryMember><gml:Surface><gml:patches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList dimension="2">23 24 25 26 27 28 23 24</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList dimension="2">25 26 27 28 29 30 25 26</gml:posList></gml:LinearRing></gml:interior></gml:PolygonPatch></gml:patches></gml:Surface></gml:geometryMember></gml:MultiGeometry>'));
 
 
+
+
+
+-- Reverse axis with severals multi geometry types 
 
 --
 -- TODO GML Namespace
@@ -791,3 +812,5 @@ SELECT 'double_31', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 $0%@#$^%#</g
 -- Delete inserted spatial data
 --
 DELETE FROM spatial_ref_sys WHERE srid = 4326;
+DELETE FROM spatial_ref_sys WHERE srid = 27562;
+DELETE FROM spatial_ref_sys WHERE srid = 27582;
