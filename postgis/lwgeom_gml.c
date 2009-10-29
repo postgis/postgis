@@ -687,7 +687,7 @@ asgml3_point_size(LWPOINT *point, char *srs, int precision)
 {
 	int size;
 	size = pointArray_GMLsize(point->point, precision);
-	size += sizeof("<gml:point><gml:pos dimension='x'>/") * 2;
+	size += sizeof("<gml:point><gml:pos srsDimension='x'>/") * 2;
 	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
 	return size;
 }
@@ -707,7 +707,7 @@ asgml3_point_buf(LWPOINT *point, char *srs, char *output, int precision, bool is
 	{
 		ptr += sprintf(ptr, "<gml:Point>");
 	}
-	ptr += sprintf(ptr, "<gml:pos dimension=\"%d\">", dimension);
+	ptr += sprintf(ptr, "<gml:pos srsDimension=\"%d\">", dimension);
 	ptr += pointArray_toGML3(point->point, ptr, precision, is_deegree);
 	ptr += sprintf(ptr, "</gml:pos></gml:Point>");
 
@@ -733,7 +733,7 @@ asgml3_line_size(LWLINE *line, char *srs, int precision)
 	int size;
 	size = pointArray_GMLsize(line->points, precision);
 	size += sizeof("<gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>/") * 2;
-	size += sizeof(" dimension='x'");
+	size += sizeof(" srsDimension='x'");
 	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
 	return size;
 }
@@ -755,7 +755,7 @@ asgml3_line_buf(LWLINE *line, char *srs, char *output, int precision, bool is_de
 	}
 	ptr += sprintf(ptr, "<gml:segments>");
 	ptr += sprintf(ptr, "<gml:LineStringSegment>");
-	ptr += sprintf(ptr, "<gml:posList dimension=\"%d\">", dimension);
+	ptr += sprintf(ptr, "<gml:posList srsDimension=\"%d\">", dimension);
 	ptr += pointArray_toGML3(line->points, ptr, precision, is_deegree);
 	ptr += sprintf(ptr, "</gml:posList></gml:LineStringSegment>");
 	ptr += sprintf(ptr, "</gml:segments>");
@@ -785,7 +785,7 @@ asgml3_poly_size(LWPOLY *poly, char *srs, int precision)
 
 	size = sizeof("<gml:Polygon>");
 
-	size += sizeof("<gml:exterior><gml:LinearRing><gml:posList dimension='x'>");
+	size += sizeof("<gml:exterior><gml:LinearRing><gml:posList srsDimension='x'>");
 	size += sizeof("</gml:posList></gml:LinearRing></gml:exterior>");
 
 	size += sizeof("<gml:interior><gml:LinearRing><gml:posList>") * (poly->nrings - 1);
@@ -818,13 +818,13 @@ asgml3_poly_buf(LWPOLY *poly, char *srs, char *output, int precision, bool is_de
 		ptr += sprintf(ptr, "<gml:Polygon>");
 	}
 	ptr += sprintf(ptr, "<gml:exterior><gml:LinearRing>");
-	ptr += sprintf(ptr, "<gml:posList dimension=\"%d\">", dimension);
+	ptr += sprintf(ptr, "<gml:posList srsDimension=\"%d\">", dimension);
 	ptr += pointArray_toGML3(poly->rings[0], ptr, precision, is_deegree);
 	ptr += sprintf(ptr, "</gml:posList></gml:LinearRing></gml:exterior>");
 	for (i=1; i<poly->nrings; i++)
 	{
 		ptr += sprintf(ptr, "<gml:interior><gml:LinearRing>");
-		ptr += sprintf(ptr, "<gml:posList dimension=\"%d\">", dimension);
+		ptr += sprintf(ptr, "<gml:posList srsDimension=\"%d\">", dimension);
 		ptr += pointArray_toGML3(poly->rings[i], ptr, precision, is_deegree);
 		ptr += sprintf(ptr, "</gml:posList></gml:LinearRing></gml:interior>");
 	}
