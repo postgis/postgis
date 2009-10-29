@@ -1,4 +1,4 @@
-ERROR:  AddToPROJ4SRSCache: Cannot find SRID (4326) in spatial_ref_sys
+ERROR:  GetProj4StringSPI: Cannot find SRID (4326) in spatial_ref_sys
 ERROR:  Input geometry has unknown (-1) SRID
 ERROR:  geometry_to_kml: 'CircularString' geometry type not supported by Google Earth
 ERROR:  geometry_to_kml: 'CompoundString' geometry type not supported by Google Earth
