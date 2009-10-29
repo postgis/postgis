@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id:$
+ * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
@@ -379,7 +379,7 @@ static POINTARRAY* parse_gml_pos(xmlNodePtr xnode, bool *hasz)
 		if (posnode->type != XML_ELEMENT_NODE) continue;
 		if (strcmp((char *) posnode->name, "pos")) continue;
 
-		dimension = xmlGetProp(xnode, (xmlChar *) "dimension");
+		dimension = xmlGetProp(xnode, (xmlChar *) "srsDimension");
 		if (dimension == NULL) dim = 2;	/* We assume that we are in 2D */
 		else {
 			dim = atoi((char *) dimension);
@@ -445,7 +445,7 @@ static POINTARRAY* parse_gml_poslist(xmlNodePtr xnode, bool *hasz)
 	uchar dims=0;
 
 	/* Retrieve gml:dimension attribute if any */
-	dimension = xmlGetProp(xnode, (xmlChar *) "dimension");
+	dimension = xmlGetProp(xnode, (xmlChar *) "srsDimension");
 	if (dimension == NULL) dim = 2;	/* We assume that we are in common 2D */
 	else {
 		dim = atoi((char *) dimension);
