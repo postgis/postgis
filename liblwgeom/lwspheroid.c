@@ -29,6 +29,7 @@ double spheroid_distance(GEOGRAPHIC_POINT r, GEOGRAPHIC_POINT s, double a, doubl
 	double big_a, big_b, delta_sigma;
 	double alpha, sin_alpha, cos_alphasq, c;
 	double sigma, sin_sigma, cos_sigma, cos2_sigma_m, sqrsin_sigma, last_lambda, omega;
+	double cos_lambda, sin_lambda;
 	double distance;
 	int i = 0;
 
@@ -48,39 +49,36 @@ double spheroid_distance(GEOGRAPHIC_POINT r, GEOGRAPHIC_POINT s, double a, doubl
 	omega = lambda;
 	do
 	{
-		sqrsin_sigma = POW2(cos_u2 * sin(lambda)) +
-		               POW2((cos_u1 * sin_u2 - sin_u1 * cos_u2 * cos(lambda)));
-//		printf("\ni %d\n", i);
-//		printf("sqrsin_sigma %.12g\n", sqrsin_sigma);
+		cos_lambda = cos(lambda);
+		sin_lambda = sin(lambda);
+		sqrsin_sigma = POW2(cos_u2 * sin_lambda) +
+		               POW2((cos_u1 * sin_u2 - sin_u1 * cos_u2 * cos_lambda));
 		sin_sigma = sqrt(sqrsin_sigma);
-//		printf("sin_sigma %.12g\n", sin_sigma);
-		cos_sigma = sin_u1 * sin_u2 + cos_u1 * cos_u2 * cos(lambda);
-//		printf("cos_sigma %.12g\n", cos_sigma);
+		cos_sigma = sin_u1 * sin_u2 + cos_u1 * cos_u2 * cos_lambda;
 		sigma = atan2(sin_sigma, cos_sigma);
-//		printf("sigma %.12g\n", sigma);
-		sin_alpha = cos_u1 * cos_u2 * sin(lambda) / sin(sigma);
-//		printf("sin_alpha %.12g\n", sin_alpha);
-		if( FP_EQUALS(sin_alpha, 1.0) )
+		sin_alpha = cos_u1 * cos_u2 * sin_lambda / sin(sigma);
+
+		/* Numerical stability issue, ensure asin is not NaN */
+		if( sin_alpha > 1.0 )
 			alpha = M_PI_2;
+		else if( sin_alpha < -1.0 )
+			alpha = -1.0 * M_PI_2;
 		else
 			alpha = asin(sin_alpha);
-//		printf("alpha %.12g\n", alpha);
+
 		cos_alphasq = POW2(cos(alpha));
-//		printf("cos_alphasq %.12g\n", cos_alphasq);
 		cos2_sigma_m = cos(sigma) - (2.0 * sin_u1 * sin_u2 / cos_alphasq);
-//		printf("cos2_sigma_m %.12g\n", cos2_sigma_m);
-		if( cos2_sigma_m > 1.0 ) cos2_sigma_m = 1.0;
-//		printf("cos2_sigma_m %.12g\n", cos2_sigma_m);
-		if( cos2_sigma_m < -1.0 ) cos2_sigma_m = -1.0;
-//		printf("cos2_sigma_m %.12g\n", cos2_sigma_m);
+
+		/* Numerical stability issue, cos2 is in range */
+		if( cos2_sigma_m > 1.0 ) 
+			cos2_sigma_m = 1.0;
+		if( cos2_sigma_m < -1.0 ) 
+			cos2_sigma_m = -1.0;
+
 		c = (f / 16.0) * cos_alphasq * (4.0 + f * (4.0 - 3.0 * cos_alphasq));
-//		printf("c %.12g\n", c);
 		last_lambda = lambda;
-//		printf("last_lambda %.12g\n", last_lambda);
 		lambda = omega + (1.0 - c) * f * sin(alpha) * (sigma + c * sin(sigma) *
 		         (cos2_sigma_m + c * cos(sigma) * (-1.0 + 2.0 * POW2(cos2_sigma_m))));
-//		printf("lambda %.12g\n", lambda);
-//		printf("i %d\n\n", i);
 		i++;
 	} 
 	while ( i < 999 && lambda != 0.0 && fabs((last_lambda - lambda)/lambda) > 1.0e-9 );
@@ -96,9 +94,8 @@ double spheroid_distance(GEOGRAPHIC_POINT r, GEOGRAPHIC_POINT s, double a, doubl
 	/* Algorithm failure, distance == NaN, fallback to sphere */
 	if( distance != distance )
 	{
-//		return (2.0 * a + b) * sphere_distance(r, s) / 3.0;
 		lwerror("spheroid_distance returned NaN: (%.20g %.20g) (%.20g %.20g) a = %.20g b = %.20g",r.lat, r.lon, s.lat, s.lon, a, b);
-		return -1.0;
+		return (2.0 * a + b) * sphere_distance(r, s) / 3.0;
 	}
 
 	return distance;
