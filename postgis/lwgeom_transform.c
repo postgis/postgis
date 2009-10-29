@@ -34,6 +34,7 @@ Datum postgis_proj_version(PG_FUNCTION_ARGS);
 #include "executor/spi.h"
 #include "access/hash.h"
 #include "utils/hsearch.h"
+#include "lwgeom_transform.h"
 
 projPJ make_project(char *str1);
 void to_rad(POINT4D *pt);
@@ -344,7 +345,7 @@ GetProjectionFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 	return NULL;
 }
 
-static char* GetProj4StringSPI(int srid)
+char* GetProj4StringSPI(int srid)
 {
 	static int maxproj4len = 512;
 	int spi_result;
