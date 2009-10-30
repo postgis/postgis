@@ -46,6 +46,7 @@ Datum geography_distance_sphere(PG_FUNCTION_ARGS)
 	GSERIALIZED *g2 = NULL;
 	double tolerance;
 	double distance;
+	bool use_spheroid;
 	
 	/* Get our geometry objects loaded into memory. */
 	g1 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -65,21 +66,32 @@ Datum geography_distance_sphere(PG_FUNCTION_ARGS)
 	
 	/* Read our tolerance value. */
 	tolerance = PG_GETARG_FLOAT8(2);
-	tolerance = tolerance / WGS84_RADIUS;
+
+	/* Read our calculation type. */
+	use_spheroid = PG_GETARG_BOOL(3);
+
+	/* Sphere returns in radians, spheroid returns in meters. 
+	   Convert to radians for sphere. */
+	if( ! use_spheroid )
+		tolerance = tolerance / WGS84_RADIUS;
 
 	/* Calculate the distance */
-	distance = lwgeom_distance_sphere(lwgeom1, lwgeom2, gbox1, gbox2, tolerance);
+	if( use_spheroid )
+		distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, gbox1, gbox2, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS, tolerance);
+	else
+		distance = lwgeom_distance_sphere(lwgeom1, lwgeom2, gbox1, gbox2, tolerance);
 
 	/* Something went wrong... should already be eloged */
 	if( distance < 0.0 )
 	{
-		elog(ERROR, "lwgeom_distance_sphere returned < 0.0");
+		elog(ERROR, "lwgeom_distance_sphere(oid) returned < 0.0");
 		PG_RETURN_NULL();
 	}
 	
-	/* Currently normalizing with a fixed WGS84 radius, in future this
-	   should be the average radius of the SRID in play */
-	distance = distance * WGS84_RADIUS;
+	/* Sphere returns in radians, spheroid returns in meters. 
+	   Convert from radians for sphere. */
+	if( ! use_spheroid )
+		distance = distance * WGS84_RADIUS;
 
 	/* Clean up, but not all the way to the point arrays */
 	lwgeom_release(lwgeom1);

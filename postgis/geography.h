@@ -21,6 +21,7 @@
 #define WGS84_MINOR_AXIS 6356752.314245179498
 #define WGS84_RADIUS ((2.0 * WGS84_MAJOR_AXIS + WGS84_MINOR_AXIS ) / 3.0)
 
+
 /**********************************************************************
 **  Useful functions for all GEOGRAPHY handlers. 
 */

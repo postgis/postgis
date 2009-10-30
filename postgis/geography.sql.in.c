@@ -435,15 +435,22 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(int4, geography, int4, int4)
 
 -- Stop calculation and return immediately once distance is less than tolerance
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION _ST_Distance(geography, geography, float8)
+CREATE OR REPLACE FUNCTION _ST_Distance(geography, geography, float8, boolean)
 	RETURNS float8
 	AS 'MODULE_PATHNAME','geography_distance_sphere'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_Distance(geography, geography, boolean)
+	RETURNS float8
+	AS 'SELECT _ST_Distance($1, $2, 0.0, $3)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Currently defaulting to spheroid calculations
+-- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Distance(geography, geography)
 	RETURNS float8
-	AS 'SELECT _ST_Distance($1, $2, 0.0)'
+	AS 'SELECT _ST_Distance($1, $2, 0.0, true)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Only expands the bounding box, the actual geometry will remain unchanged, use with care.
@@ -453,10 +460,11 @@ CREATE OR REPLACE FUNCTION _ST_Expand(geography, float8)
 	AS 'MODULE_PATHNAME','geography_expand'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
+-- Currently defaulting to spheroid calculations
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_DWithin(geography, geography, float8)
 	RETURNS boolean
-	AS 'SELECT $1 && _ST_Expand($2,$3) AND $2 && _ST_Expand($1,$3) AND _ST_Distance($1, $2, $3) < $3'
+	AS 'SELECT $1 && _ST_Expand($2,$3) AND $2 && _ST_Expand($1,$3) AND _ST_Distance($1, $2, $3, true) < $3'
 	LANGUAGE 'SQL' IMMUTABLE;
 
 -- Availability: 1.5.0

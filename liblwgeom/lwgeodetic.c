@@ -1350,7 +1350,7 @@ void gbox_pt_outside(GBOX gbox, POINT2D *pt_outside)
 * Returns the area of the ring (ring must be closed) in square radians (surface of
 * the sphere is 4*PI).
 */
-double ptarray_area_sphere(POINTARRAY *pa, POINT2D pt_outside)
+double ptarray_area_sphere(POINTARRAY *pa, POINT2D pt_outside) 
 {
 	GEOGRAPHIC_POINT a, b, c;
 	POINT2D p;

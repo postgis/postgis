@@ -12,5 +12,6 @@
 */
 
 double spheroid_distance(GEOGRAPHIC_POINT r, GEOGRAPHIC_POINT s, double a, double b);
+double ptarray_distance_spheroid(POINTARRAY *pa1, POINTARRAY *pa2, double a, double b, double tolerance, int check_intersection);
 
 

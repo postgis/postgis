@@ -377,6 +377,12 @@ extern int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox);
 extern double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX gbox2, double tolerance);
 
 /**
+* Calculate the geodetic distance from lwgeom1 to lwgeom2 on the spheroid. 
+* Pass in a major axis, minor axis and tolerance using the same units for each (meters, generally).
+*/
+extern double lwgeom_distance_spheroid(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX gbox2, double a, double b, double tolerance);
+
+/**
 * Calculate the geodetic area of a lwgeom on the unit sphere. The result
 * will have to by multiplied by the real radius^2 to get the real area.
 */
