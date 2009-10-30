@@ -48,6 +48,9 @@ psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
 		  </ulink>
 		  .
 		</para>
+		<para>For a full PostgreSQL / PostGIS support matrix and PostGIS/GEOS support matrix refer to 
+			<ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS">http://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS</ulink>
+		</para>
 	  </listitem>
 
 	  <listitem>
