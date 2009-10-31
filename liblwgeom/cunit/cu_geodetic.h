@@ -15,7 +15,7 @@
 #include <string.h>
 #include "CUnit/Basic.h"
 
-#include "lwspheroid.h"
+#include "lwgeodetic.h"
 #include "cu_tester.h"
 
 /***********************************************************************

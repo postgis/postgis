@@ -251,6 +251,7 @@ typedef struct
 	double	f;	/* flattening     */
 	double	e;	/* eccentricity (first) */
 	double	e_sq;	/* eccentricity (first), squared */
+	double  radius; /* (2*a+b)/3 spherical average radius */
 	char	name[20]; /* name of ellipse */
 }
 SPHEROID;

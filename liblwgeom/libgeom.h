@@ -371,28 +371,28 @@ extern int lwgeom_calculate_gbox_geodetic(const LWGEOM *geom, GBOX *gbox);
 extern int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox);
 
 /**
-* Calculate the geodetic distance from lwgeom1 to lwgeom2 on the unit sphere. 
-* Pass in a tolerance in radians.
+* Initialize a spheroid object for use in geodetic functions.
 */
-extern double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX gbox2, double tolerance);
+extern void spheroid_init(SPHEROID *s, double a, double b);
 
 /**
 * Calculate the geodetic distance from lwgeom1 to lwgeom2 on the spheroid. 
-* Pass in a major axis, minor axis and tolerance using the same units for each (meters, generally).
+* A spheroid with major axis == minor axis will be treated as a sphere.
+* Pass in a tolerance in spheroid units.
 */
-extern double lwgeom_distance_spheroid(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX gbox2, double a, double b, double tolerance);
+extern double lwgeom_distance_spheroid(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX gbox2, SPHEROID spheroid, double tolerance);
 
 /**
 * Calculate the geodetic area of a lwgeom on the unit sphere. The result
 * will have to by multiplied by the real radius^2 to get the real area.
 */
-extern double lwgeom_area_sphere(LWGEOM *lwgeom, GBOX gbox);
+extern double lwgeom_area_spheroid(LWGEOM *lwgeom, GBOX gbox, SPHEROID s);
 
 /**
 * Calculate the geodetic length of a lwgeom on the unit sphere. The result
 * will have to by multiplied by the real radius to get the real length.
 */
-extern double lwgeom_length_sphere(LWGEOM *geom);
+extern double lwgeom_length_spheroid(LWGEOM *geom, SPHEROID s);
 
 /**
 * Calculate covers predicate for two lwgeoms on the sphere. Currently

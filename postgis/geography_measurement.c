@@ -23,9 +23,9 @@
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "geography.h"	     /* For utility functions. */
 
-Datum geography_distance_sphere(PG_FUNCTION_ARGS);
-Datum geography_area_sphere(PG_FUNCTION_ARGS);
-Datum geography_length_sphere(PG_FUNCTION_ARGS);
+Datum geography_distance(PG_FUNCTION_ARGS);
+Datum geography_area(PG_FUNCTION_ARGS);
+Datum geography_length(PG_FUNCTION_ARGS);
 Datum geography_expand(PG_FUNCTION_ARGS);
 Datum geography_point_outside(PG_FUNCTION_ARGS);
 Datum geography_covers(PG_FUNCTION_ARGS);
@@ -35,8 +35,8 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS);
 ** geography_distance_sphere(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance) 
 ** returns double distance in meters
 */
-PG_FUNCTION_INFO_V1(geography_distance_sphere);
-Datum geography_distance_sphere(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geography_distance);
+Datum geography_distance(PG_FUNCTION_ARGS)
 {
 	LWGEOM *lwgeom1 = NULL;
 	LWGEOM *lwgeom2 = NULL;
@@ -47,11 +47,25 @@ Datum geography_distance_sphere(PG_FUNCTION_ARGS)
 	double tolerance;
 	double distance;
 	bool use_spheroid;
+	SPHEROID s;
 	
 	/* Get our geometry objects loaded into memory. */
 	g1 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	g2 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	
+	/* Read our tolerance value. */
+	tolerance = PG_GETARG_FLOAT8(2);
+
+	/* Read our calculation type. */
+	use_spheroid = PG_GETARG_BOOL(3);
+	
+	/* Initialize spheroid */
+	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
+	
+	/* Set to sphere if requested */
+	if( ! use_spheroid )
+		s.a = s.b = s.radius;
+
 	/* We need the bounding boxes in case of polygon calculations,
 	   which requires them to generate a stab-line to test point-in-polygon. */
 	if( ! gbox_from_gserialized(g1, &gbox1) ||
@@ -64,34 +78,14 @@ Datum geography_distance_sphere(PG_FUNCTION_ARGS)
 	lwgeom1 = lwgeom_from_gserialized(g1);
 	lwgeom2 = lwgeom_from_gserialized(g2);
 	
-	/* Read our tolerance value. */
-	tolerance = PG_GETARG_FLOAT8(2);
-
-	/* Read our calculation type. */
-	use_spheroid = PG_GETARG_BOOL(3);
-
-	/* Sphere returns in radians, spheroid returns in meters. 
-	   Convert to radians for sphere. */
-	if( ! use_spheroid )
-		tolerance = tolerance / WGS84_RADIUS;
-
-	/* Calculate the distance */
-	if( use_spheroid )
-		distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, gbox1, gbox2, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS, tolerance);
-	else
-		distance = lwgeom_distance_sphere(lwgeom1, lwgeom2, gbox1, gbox2, tolerance);
+	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, gbox1, gbox2, s, tolerance);
 
 	/* Something went wrong... should already be eloged */
 	if( distance < 0.0 )
 	{
-		elog(ERROR, "lwgeom_distance_sphere(oid) returned < 0.0");
+		elog(ERROR, "lwgeom_distance_spheroid returned < 0.0");
 		PG_RETURN_NULL();
 	}
-	
-	/* Sphere returns in radians, spheroid returns in meters. 
-	   Convert from radians for sphere. */
-	if( ! use_spheroid )
-		distance = distance * WGS84_RADIUS;
 
 	/* Clean up, but not all the way to the point arrays */
 	lwgeom_release(lwgeom1);
@@ -147,19 +141,31 @@ Datum geography_expand(PG_FUNCTION_ARGS)
 }
 
 /*
-** geography_area_sphere(GSERIALIZED *g) 
+** geography_area(GSERIALIZED *g) 
 ** returns double area in meters square
 */
-PG_FUNCTION_INFO_V1(geography_area_sphere);
-Datum geography_area_sphere(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geography_area);
+Datum geography_area(PG_FUNCTION_ARGS)
 {
 	LWGEOM *lwgeom = NULL;
 	GBOX gbox;
 	GSERIALIZED *g = NULL;
 	double area;
-	
+	bool use_spheroid = LW_TRUE;
+	SPHEROID s;
+
 	/* Get our geometry object loaded into memory. */
 	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	/* Read our calculation type */
+	use_spheroid = PG_GETARG_BOOL(1);
+	
+	/* Initialize spheroid */
+	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
+
+	/* User requests spherical calculation, turn our spheroid into a sphere */
+	if( ! use_spheroid )
+		s.a = s.b = s.radius;	
 	
 	/* We need the bounding box to get an outside point for area algorithm */
 	if( ! gbox_from_gserialized(g, &gbox) )
@@ -171,7 +177,7 @@ Datum geography_area_sphere(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_from_gserialized(g);
 	
 	/* Calculate the area */
-	area = lwgeom_area_sphere(lwgeom, gbox);
+	area = lwgeom_area_spheroid(lwgeom, gbox, s);
 
 	/* Something went wrong... */
 	if( area < 0.0 )
@@ -179,10 +185,6 @@ Datum geography_area_sphere(PG_FUNCTION_ARGS)
 		elog(ERROR, "lwgeom_area_sphere returned area < 0.0");
 		PG_RETURN_NULL();
 	}
-
-	/* Currently normalizing with a fixed WGS84 radius, in future this
-	   should be the average radius of the SRID in play */
-	area = area * WGS84_RADIUS * WGS84_RADIUS;
 
 	/* Clean up, but not all the way to the point arrays */
 	lwgeom_release(lwgeom);
@@ -195,20 +197,31 @@ Datum geography_area_sphere(PG_FUNCTION_ARGS)
 ** geography_length_sphere(GSERIALIZED *g) 
 ** returns double length in meters
 */
-PG_FUNCTION_INFO_V1(geography_length_sphere);
-Datum geography_length_sphere(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geography_length);
+Datum geography_length(PG_FUNCTION_ARGS)
 {
 	LWGEOM *lwgeom = NULL;
 	GSERIALIZED *g = NULL;
 	double length;
+	bool use_spheroid = LW_TRUE;
+	SPHEROID s;
 	
 	/* Get our geometry object loaded into memory. */
 	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-		
 	lwgeom = lwgeom_from_gserialized(g);
+
+	/* Read our calculation type */
+	use_spheroid = PG_GETARG_BOOL(1);
+		
+	/* Initialize spheroid */
+	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
+
+	/* User requests spherical calculation, turn our spheroid into a sphere */
+	if( ! use_spheroid )
+		s.a = s.b = s.radius;
 	
 	/* Calculate the length */
-	length = lwgeom_length_sphere(lwgeom);
+	length = lwgeom_length_spheroid(lwgeom, s);
 
 	/* Something went wrong... */
 	if( length < 0.0 )
@@ -216,10 +229,6 @@ Datum geography_length_sphere(PG_FUNCTION_ARGS)
 		elog(ERROR, "geography_length_sphere returned length < 0.0");
 		PG_RETURN_NULL();
 	}
-
-	/* Currently normalizing with a fixed WGS84 radius, in future this
-	   should be the average radius of the SRID in play */
-	length = length * WGS84_RADIUS;
 
 	/* Clean up, but not all the way to the point arrays */
 	lwgeom_release(lwgeom);

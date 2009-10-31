@@ -1463,10 +1463,11 @@ int ptarray_point_in_ring(POINTARRAY *pa, POINT2D pt_outside, POINT2D pt_to_test
 }
 
 
-static double ptarray_distance_sphere(POINTARRAY *pa1, POINTARRAY *pa2, double tolerance, int check_intersection)
+static double ptarray_distance_spheroid(POINTARRAY *pa1, POINTARRAY *pa2, SPHEROID s, double tolerance, int check_intersection)
 {
 	GEOGRAPHIC_EDGE e1, e2;
 	GEOGRAPHIC_POINT g1, g2;
+	GEOGRAPHIC_POINT nearest1, nearest2;
 	POINT2D p;
 	double distance;
 	int i, j;
@@ -1485,7 +1486,12 @@ static double ptarray_distance_sphere(POINTARRAY *pa1, POINTARRAY *pa2, double t
 		geographic_point_init(p.x, p.y, &g1);
 		getPoint2d_p(pa2, 0, &p);
 		geographic_point_init(p.x, p.y, &g2);
-		return sphere_distance(g1, g2);
+		/* Sphere special case, axes equal */
+		if( s.a == s.b )
+			distance = s.radius * sphere_distance(g1, g2);
+		else
+			distance = spheroid_distance(g1, g2, s);
+		return distance;		
 	}
 
 	/* Handle point/line case here */
@@ -1520,14 +1526,39 @@ static double ptarray_distance_sphere(POINTARRAY *pa1, POINTARRAY *pa2, double t
 			double d;
 			getPoint2d_p(pa_many, i, &p);
 			geographic_point_init(p.x, p.y, &(e1.end));
-			d = edge_distance_to_point(e1, g1, 0);
+			/* Get the spherical distance between point and edge */
+			d = s.radius * edge_distance_to_point(e1, g1, &g2);
+			/* New shortest distance! Record this distance / location */
 			if( d < distance )
+			{
 				distance = d;
+				nearest2 = g2;
+			}
+			/* We've gotten closer than the tolerance... */
 			if( d < tolerance ) 
-				return distance;
+			{
+				/* Working on a sphere? The answer is correct, return */
+				if( s.a == s.b )
+				{
+					return distance;
+				}
+				/* On a spheroid? Confirm that we are *actually* closer than tolerance */
+				else
+				{
+					d = spheroid_distance(g1, nearest2, s);
+					/* Yes, closer than tolerance, return! */
+					if( d < tolerance )
+						return d;
+				}
+			}
 			e1.start = e1.end;
 		}
-		return distance;			
+		/* On sphere, return answer */
+		if( s.a == s.b )
+			return distance;			
+		/* On spheroid, calculate final answer based on closest approach */
+		else
+			return spheroid_distance(g1, nearest2, s);
 	}
 
 	/* Initialize start of line 1 */
@@ -1548,7 +1579,6 @@ static double ptarray_distance_sphere(POINTARRAY *pa1, POINTARRAY *pa2, double t
 		for( j = 1; j < pa2->npoints; j++ )
 		{
 			double d;
-			GEOGRAPHIC_POINT g;
 
 			getPoint2d_p(pa2, j, &p);
 			geographic_point_init(p.x, p.y, &(e2.end));
@@ -1558,18 +1588,33 @@ static double ptarray_distance_sphere(POINTARRAY *pa1, POINTARRAY *pa2, double t
 			LWDEBUGF(4, "e2.start == GPOINT(%.6g %.6g) ", e2.start.lat, e2.start.lon);
 			LWDEBUGF(4, "e2.end == GPOINT(%.6g %.6g) ", e2.end.lat, e2.end.lon);
 
-			if ( check_intersection && edge_intersection(e1, e2, &g) )
+			if ( check_intersection && edge_intersection(e1, e2, &g1) )
 			{
 				LWDEBUG(4,"edge intersection! returning 0.0");
 				return 0.0;
 			}
-			d = edge_distance_to_edge(e1, e2, 0, 0);
+			d = s.radius * edge_distance_to_edge(e1, e2, &g1, &g2);
 			LWDEBUGF(4,"got edge_distance_to_edge %.8g", d);
 			
 			if( d < distance )
+			{
 				distance = d;
+				nearest1 = g1;
+				nearest2 = g2;
+			}
 			if( d < tolerance )
-				return distance;
+			{
+				if( s.a == s.b )
+				{
+					return d;
+				}
+				else
+				{
+					d = spheroid_distance(nearest1, nearest2, s);
+					if( d < tolerance )
+						return d;
+				}
+			}
 				
 			/* Copy end to start to allow a new end value in next iteration */
 			e2.start = e2.end;
@@ -1581,7 +1626,10 @@ static double ptarray_distance_sphere(POINTARRAY *pa1, POINTARRAY *pa2, double t
 	}
 	LWDEBUGF(4,"finished all loops, returning %.8g", distance);
 	
-	return distance;
+	if( s.a == s.b )
+		return distance;
+	else
+		return spheroid_distance(nearest1, nearest2, s);
 }
 
 
@@ -1591,10 +1639,11 @@ static double ptarray_distance_sphere(POINTARRAY *pa1, POINTARRAY *pa2, double t
 * calculate external ring area and subtract internal ring area. A GBOX is 
 * required to calculate an outside point.
 */
-double lwgeom_area_sphere(LWGEOM *lwgeom, GBOX gbox)
+double lwgeom_area_spheroid(LWGEOM *lwgeom, GBOX gbox, SPHEROID spheroid)
 {
 	int type;
 	POINT2D pt_outside;
+	double radius2 = spheroid.radius * spheroid.radius;
 	
 	assert(lwgeom);
 	
@@ -1625,12 +1674,12 @@ double lwgeom_area_sphere(LWGEOM *lwgeom, GBOX gbox)
 			return 0.0;
 		
 		/* First, the area of the outer ring */
-		area += ptarray_area_sphere(poly->rings[0], pt_outside);
+		area += radius2 * ptarray_area_sphere(poly->rings[0], pt_outside);
 		
 		/* Subtract areas of inner rings */
 		for( i = 1; i < poly->nrings; i++ )
 		{
-			area -= ptarray_area_sphere(poly->rings[i], pt_outside);
+			area -= radius2 * ptarray_area_sphere(poly->rings[i], pt_outside);
 		}
 		return area;
 	}
@@ -1644,7 +1693,7 @@ double lwgeom_area_sphere(LWGEOM *lwgeom, GBOX gbox)
 
 		for( i = 0; i < col->ngeoms; i++ )
 		{
-			area += lwgeom_area_sphere(col->geoms[i], gbox);
+			area += lwgeom_area_spheroid(col->geoms[i], gbox, spheroid);
 		}
 		return area;
 	}
@@ -1659,7 +1708,7 @@ double lwgeom_area_sphere(LWGEOM *lwgeom, GBOX gbox)
 * longitude and latitude. Return immediately when the calulated distance drops
 * below the tolerance (useful for dwithin calculations).
 */
-double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX gbox2, double tolerance)
+double lwgeom_distance_spheroid(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX gbox2, SPHEROID spheroid, double tolerance)
 {
 	int type1, type2;
 	int check_intersection = LW_FALSE;
@@ -1699,7 +1748,7 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX
 		else
 			pa2 = ((LWLINE*)lwgeom2)->points;
 		
-		return ptarray_distance_sphere(pa1, pa2, tolerance, check_intersection);
+		return ptarray_distance_spheroid(pa1, pa2, spheroid, tolerance, check_intersection);
 	}
 	
 	/* Point/Polygon cases, if point-in-poly, return zero, else return distance. */
@@ -1734,7 +1783,7 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX
 		/* Not inside, so what's the actual distance? */
 		for( i = 0; i < lwpoly->nrings; i++ )
 		{
-			double ring_distance = ptarray_distance_sphere(lwpoly->rings[i], lwpt->point, tolerance, check_intersection);
+			double ring_distance = ptarray_distance_spheroid(lwpoly->rings[i], lwpt->point, spheroid, tolerance, check_intersection);
 			if( ring_distance < distance )
 				distance = ring_distance;
 			if( distance < tolerance )
@@ -1779,7 +1828,7 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX
 		/* Not contained, so what's the actual distance? */
 		for( i = 0; i < lwpoly->nrings; i++ )
 		{
-			double ring_distance = ptarray_distance_sphere(lwpoly->rings[i], lwline->points, tolerance, check_intersection);
+			double ring_distance = ptarray_distance_spheroid(lwpoly->rings[i], lwline->points, spheroid, tolerance, check_intersection);
 			LWDEBUGF(4, "ring[%d] ring_distance = %.8g", i, ring_distance);
 			if( ring_distance < distance )
 				distance = ring_distance;
@@ -1816,7 +1865,7 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX
 		{
 			for( j = 0; j < lwpoly2->nrings; j++ )
 			{
-				double ring_distance = ptarray_distance_sphere(lwpoly1->rings[i], lwpoly2->rings[j], tolerance, check_intersection);
+				double ring_distance = ptarray_distance_spheroid(lwpoly1->rings[i], lwpoly2->rings[j], spheroid, tolerance, check_intersection);
 				if( ring_distance < distance )
 					distance = ring_distance;
 				if( distance < tolerance )
@@ -1835,7 +1884,7 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX
 
 		for( i = 0; i < col->ngeoms; i++ )
 		{
-			double geom_distance = lwgeom_distance_sphere(col->geoms[i], lwgeom2, gbox1, gbox2, tolerance);
+			double geom_distance = lwgeom_distance_spheroid(col->geoms[i], lwgeom2, gbox1, gbox2, spheroid, tolerance);
 			if( geom_distance < distance )
 				distance = geom_distance;
 			if( distance < tolerance )
@@ -1853,7 +1902,7 @@ double lwgeom_distance_sphere(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX
 
 		for( i = 0; i < col->ngeoms; i++ )
 		{
-			double geom_distance = lwgeom_distance_sphere(lwgeom1, col->geoms[i], gbox1, gbox2, tolerance);
+			double geom_distance = lwgeom_distance_spheroid(lwgeom1, col->geoms[i], gbox1, gbox2, spheroid, tolerance);
 			if( geom_distance < distance )
 				distance = geom_distance;
 			if( distance < tolerance )
@@ -2270,7 +2319,7 @@ int lwgeom_check_geodetic(const LWGEOM *geom)
 	return LW_FALSE;
 }
 
-double ptarray_length_sphere(POINTARRAY *pa)
+double ptarray_length_spheroid(POINTARRAY *pa, SPHEROID s)
 {
 	GEOGRAPHIC_POINT a, b;
 	POINT2D p;
@@ -2290,7 +2339,12 @@ double ptarray_length_sphere(POINTARRAY *pa)
 		getPoint2d_p(pa, i, &p);
 		geographic_point_init(p.x, p.y, &b);
 		
-		length += sphere_distance(a, b);
+		/* Special sphere case */
+		if( s.a == s.b )
+			length += s.radius * sphere_distance(a, b);
+		/* Spheroid case */
+		else
+			length += spheroid_distance(a, b, s);
 				
 		/* B gets incremented in the next loop, so we save the value here */
 		a = b;
@@ -2298,7 +2352,7 @@ double ptarray_length_sphere(POINTARRAY *pa)
 	return length;
 }
 
-double lwgeom_length_sphere(LWGEOM *geom)
+double lwgeom_length_spheroid(LWGEOM *geom, SPHEROID s)
 {
 	int type;
 	int i = 0;
@@ -2316,14 +2370,14 @@ double lwgeom_length_sphere(LWGEOM *geom)
 		return 0.0;
 		
 	if ( type == LINETYPE )
-		return ptarray_length_sphere(((LWLINE*)geom)->points);
+		return ptarray_length_spheroid(((LWLINE*)geom)->points, s);
 		
 	if ( type == POLYGONTYPE )
 	{
 		LWPOLY *poly = (LWPOLY*)geom;
 		for( i = 0; i < poly->nrings; i++ )
 		{
-			length += ptarray_length_sphere(poly->rings[i]);
+			length += ptarray_length_spheroid(poly->rings[i], s);
 		}
 		return length;
 	}
@@ -2334,7 +2388,7 @@ double lwgeom_length_sphere(LWGEOM *geom)
 		
 		for( i = 0; i < col->ngeoms; i++ )
 		{
-			length += lwgeom_length_sphere(col->geoms[i]);
+			length += lwgeom_length_spheroid(col->geoms[i], s);
 		}
 		return length;
 	}

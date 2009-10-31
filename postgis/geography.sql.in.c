@@ -437,7 +437,7 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(int4, geography, int4, int4)
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION _ST_Distance(geography, geography, float8, boolean)
 	RETURNS float8
-	AS 'MODULE_PATHNAME','geography_distance_sphere'
+	AS 'MODULE_PATHNAME','geography_distance'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
@@ -460,6 +460,12 @@ CREATE OR REPLACE FUNCTION _ST_Expand(geography, float8)
 	AS 'MODULE_PATHNAME','geography_expand'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_DWithin(geography, geography, float8, boolean)
+	RETURNS boolean
+	AS 'SELECT $1 && _ST_Expand($2,$3) AND $2 && _ST_Expand($1,$3) AND _ST_Distance($1, $2, $3, $4) < $3'
+	LANGUAGE 'SQL' IMMUTABLE;
+
 -- Currently defaulting to spheroid calculations
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_DWithin(geography, geography, float8)
@@ -468,16 +474,29 @@ CREATE OR REPLACE FUNCTION ST_DWithin(geography, geography, float8)
 	LANGUAGE 'SQL' IMMUTABLE;
 
 -- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_Area(geography, boolean)
+	RETURNS float8
+	AS 'MODULE_PATHNAME','geography_area'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Currently defaulting to spheroid calculations
+-- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Area(geography)
 	RETURNS float8
-	AS 'MODULE_PATHNAME','geography_area_sphere'
+	AS 'SELECT ST_Area($1, true)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_Length(geography, boolean)
+	RETURNS float8
+	AS 'MODULE_PATHNAME','geography_length'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Length(geography)
 	RETURNS float8
-	AS 'MODULE_PATHNAME','geography_length_sphere'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	AS 'SELECT ST_Length($1, true)'
+	LANGUAGE 'SQL' IMMUTABLE;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_PointOutside(geography)
