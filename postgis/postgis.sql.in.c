@@ -1322,13 +1322,13 @@ CREATE OR REPLACE FUNCTION ST_length_spheroid(geometry, spheroid)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION length2d_spheroid(geometry, spheroid)
 	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','LWGEOM_length2d_ellipsoid_linestring'
+	AS 'MODULE_PATHNAME','LWGEOM_length2d_ellipsoid'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_length2d_spheroid(geometry, spheroid)
 	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','LWGEOM_length2d_ellipsoid_linestring'
+	AS 'MODULE_PATHNAME','LWGEOM_length2d_ellipsoid'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- this is a fake (for back-compatibility)
@@ -1399,13 +1399,13 @@ CREATE OR REPLACE FUNCTION ST_Area(geometry)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION distance_spheroid(geometry,geometry,spheroid)
 	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','LWGEOM_distance_ellipsoid_point'
+	AS 'MODULE_PATHNAME','LWGEOM_distance_ellipsoid'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_distance_spheroid(geometry,geometry,spheroid)
 	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','LWGEOM_distance_ellipsoid_point'
+	AS 'MODULE_PATHNAME','LWGEOM_distance_ellipsoid'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3

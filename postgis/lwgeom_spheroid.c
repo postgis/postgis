@@ -25,7 +25,7 @@
 #include "fmgr.h"
 #include "utils/elog.h"
 
-#include "liblwgeom.h"
+#include "libgeom.h"
 #include "lwgeom_pg.h"
 
 #define SHOW_DIGS_DOUBLE 15
@@ -41,10 +41,11 @@
 /* PG-exposed  */
 Datum ellipsoid_in(PG_FUNCTION_ARGS);
 Datum ellipsoid_out(PG_FUNCTION_ARGS);
-Datum LWGEOM_length2d_ellipsoid_linestring(PG_FUNCTION_ARGS);
+Datum LWGEOM_length2d_ellipsoid(PG_FUNCTION_ARGS);
 Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS);
-Datum LWGEOM_distance_ellipsoid_point(PG_FUNCTION_ARGS);
+Datum LWGEOM_distance_ellipsoid(PG_FUNCTION_ARGS);
 Datum LWGEOM_distance_sphere(PG_FUNCTION_ARGS);
+Datum geometry_distance_spheroid(PG_FUNCTION_ARGS);
 
 /* internal */
 double distance_sphere_method(double lat1, double long1,double lat2,double long2, SPHEROID *sphere);
@@ -381,33 +382,17 @@ lwgeom_pointarray_length2d_ellipse(POINTARRAY *pts, SPHEROID *sphere)
  * uses ellipsoidal math to find the distance
  * x's are longitude, and y's are latitude - both in decimal degrees
  */
-PG_FUNCTION_INFO_V1(LWGEOM_length2d_ellipsoid_linestring);
-Datum LWGEOM_length2d_ellipsoid_linestring(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(LWGEOM_length2d_ellipsoid);
+Datum LWGEOM_length2d_ellipsoid(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	SPHEROID *sphere = (SPHEROID *) PG_GETARG_POINTER(1);
-	LWGEOM_INSPECTED *inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
-	LWLINE *line;
-	double dist = 0.0;
-	int i;
-
-	POSTGIS_DEBUG(2, "in LWGEOM_length2d_ellipsoid_linestring");
-
-	for (i=0; i<inspected->ngeometries; i++)
-	{
-		line = lwgeom_getline_inspected(inspected, i);
-		if ( line == NULL ) continue;
-		dist += lwgeom_pointarray_length2d_ellipse(line->points,
-		        sphere);
-
-		POSTGIS_DEBUGF(3, " LWGEOM_length2d_ellipsoid_linestring found a line (%f)",
-		               dist);
-	}
-
-	lwinspected_release(inspected);
-
+	LWGEOM *lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
+	double dist = lwgeom_length_spheroid(lwgeom, *sphere);
+	lwgeom_release(lwgeom);
 	PG_RETURN_FLOAT8(dist);
 }
+
 
 /*
  * Find the "length of a geometry"
@@ -539,122 +524,74 @@ double distance_sphere_method(double lat1, double long1,double lat2,double long2
 
 /*
  * distance (geometry,geometry, sphere)
- * -geometrys MUST be points
  */
-PG_FUNCTION_INFO_V1(LWGEOM_distance_ellipsoid_point);
-Datum LWGEOM_distance_ellipsoid_point(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geometry_distance_spheroid);
+Datum geometry_distance_spheroid(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_LWGEOM *geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	SPHEROID *sphere = (SPHEROID *)PG_GETARG_POINTER(2);
-	LWPOINT *point1, *point2;
-	POINT2D p1, p2;
+	bool use_spheroid = PG_GETARG_BOOL(3);
+	LWGEOM *lwgeom1, *lwgeom2;
+	GBOX gbox1, gbox2;
+	double distance;
+	
+	/* Calculate some other parameters on the spheroid */
+	spheroid_init(sphere, sphere->a, sphere->b);
+
+	/* Catch sphere special case and re-jig spheroid appropriately */
+	if( ! use_spheroid )
+	{
+		sphere->a = sphere->b = sphere->radius;
+	}
+	
+	gbox1.flags = gflags(0, 0, 1);
+	gbox2.flags = gflags(0, 0, 1);
 
 	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
 		elog(ERROR, "LWGEOM_distance_ellipsoid_point: Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
+	
+	lwgeom1 = lwgeom_deserialize(SERIALIZED_FORM(geom1));
+	lwgeom2 = lwgeom_deserialize(SERIALIZED_FORM(geom2));
 
-	point1 = lwpoint_deserialize(SERIALIZED_FORM(geom1));
-	if (point1 == NULL)
+	if( lwgeom_calculate_gbox_geodetic(lwgeom1, &gbox1) != G_SUCCESS )
 	{
-		elog(ERROR, "LWGEOM_distance_ellipsoid_point: first arg isnt a point\n");
+		elog(ERROR, "LWGEOM_distance_ellipsoid_point: unable to calculate gbox1\n");
 		PG_RETURN_NULL();
-	}
+	};
 
-	point2 = lwpoint_deserialize(SERIALIZED_FORM(geom2));
-	if (point2 == NULL)
+	if( lwgeom_calculate_gbox_geodetic(lwgeom2, &gbox2) != G_SUCCESS )
 	{
-		elog(ERROR, "LWGEOM_distance_ellipsoid_point: second arg isnt a point\n");
+		elog(ERROR, "LWGEOM_distance_ellipsoid_point: unable to calculate gbox2\n");
 		PG_RETURN_NULL();
-	}
+	};
 
-	getPoint2d_p(point1->point, 0, &p1);
-	getPoint2d_p(point2->point, 0, &p2);
-	PG_RETURN_FLOAT8(distance_ellipse(p1.y*M_PI/180.0,
-	                                  p1.x*M_PI/180.0, p2.y*M_PI/180.0,
-	                                  p2.x*M_PI/180.0, sphere));
+	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, gbox1, gbox2, *sphere, 0.0);
+
+	PG_RETURN_FLOAT8(distance);
 
 }
 
-/*
- * This algorithm was taken from the geo_distance function of the
- * earthdistance package contributed by Bruno Wolff III.
- * It was altered to accept GEOMETRY objects and return results in
- * meters.
- */
+PG_FUNCTION_INFO_V1(LWGEOM_distance_ellipsoid);
+Datum LWGEOM_distance_ellipsoid(PG_FUNCTION_ARGS)
+{
+	PG_RETURN_DATUM(DirectFunctionCall4(geometry_distance_spheroid,
+	   PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), PG_GETARG_DATUM(2), BoolGetDatum(TRUE)));
+}
+
 PG_FUNCTION_INFO_V1(LWGEOM_distance_sphere);
 Datum LWGEOM_distance_sphere(PG_FUNCTION_ARGS)
 {
-	const double EARTH_RADIUS = 6370986.884258304;
-	/*const double TWO_PI = 2.0 * M_PI; */
-	PG_LWGEOM *geom1 = (PG_LWGEOM *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	PG_LWGEOM *geom2 = (PG_LWGEOM *) PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	LWPOINT *lwpt1, *lwpt2;
-	POINT2D *pt1, *pt2;
+	SPHEROID s;
 
-	double long1, lat1, long2, lat2;
-	double longdiff;
-	double sino;
-	double result;
-
-	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
-	{
-		elog(ERROR, "LWGEOM_distance_sphere Operation on two GEOMETRIES with differenc SRIDs\n");
-		PG_RETURN_NULL();
-	}
-
-	lwpt1 = lwpoint_deserialize(SERIALIZED_FORM(geom1));
-	if (lwpt1 == NULL)
-	{
-		elog(ERROR, "LWGEOM_distance_sphere first arg isnt a point\n");
-		PG_RETURN_NULL();
-	}
-
-	lwpt2 = lwpoint_deserialize(SERIALIZED_FORM(geom2));
-	if (lwpt2 == NULL)
-	{
-		elog(ERROR, "optimistic_overlap: second arg isnt a point\n");
-		PG_RETURN_NULL();
-	}
-
-	pt1 = palloc(sizeof(POINT2D));
-	pt2 = palloc(sizeof(POINT2D));
-
-	lwpoint_getPoint2d_p(lwpt1, pt1);
-	lwpoint_getPoint2d_p(lwpt2, pt2);
-
-	/*
-	 * Start geo_distance code.  Longitude is degrees west of
-	 * Greenwich, and thus is negative from what normal things
-	 * will supply the function.
-	 */
-	long1 = -2 * (pt1->x / 360.0) * M_PI;
-	lat1 = 2 * (pt1->y / 360.0) * M_PI;
-
-	long2 = -2 * (pt2->x / 360.0) * M_PI;
-	lat2 = 2 * (pt2->y / 360.0) * M_PI;
-
-	/* compute difference in longitudes - want < 180 degrees */
-	longdiff = fabs(long1 - long2);
-	if (longdiff > M_PI)
-	{
-		longdiff = (2 * M_PI) - longdiff;
-	}
-
-	sino = sqrt(sin(fabs(lat1 - lat2) / 2.) * sin(fabs(lat1 - lat2) / 2.) +
-	            cos(lat1) * cos(lat2) * sin(longdiff / 2.) * sin(longdiff / 2.));
-	if (sino > 1.)
-	{
-		sino = 1.;
-	}
-
-	result = 2. * EARTH_RADIUS * asin(sino);
-
-	pfree(pt1);
-	pfree(pt2);
-
-	PG_RETURN_FLOAT8(result);
+	/* Init to WGS84 */
+	spheroid_init(&s, 6378137.0, 6356752.314245179498);
+	s.a = s.b = s.radius;
+	
+	PG_RETURN_DATUM(DirectFunctionCall4(geometry_distance_spheroid,
+	   PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), PointerGetDatum(&s), BoolGetDatum(FALSE)));
 }
 
