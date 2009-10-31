@@ -908,10 +908,17 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 
 	lwgeom = lwgeom_deserialize(lwgeom_serialized);
 
+	if( ! ( lwgeom->SRID == 4326 || lwgeom->SRID == -1 ) )
+	{
+		ereport(ERROR, (
+	  		errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+	  		errmsg("Only SRID 4326 or unknown (-1) are currently supported in geography." )));
+	}
+
 	/*
     ** Serialize our lwgeom and set the geodetic flag so subsequent
     ** functions do the right thing. 
-    */
+    */ 
 	g_ser = geography_serialize(lwgeom);
 	FLAGS_SET_GEODETIC(g_ser->flags, 1);
     
