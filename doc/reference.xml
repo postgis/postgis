@@ -10342,7 +10342,7 @@ The current implementation supports only vertices as the discrete locations. Thi
 		<refname>ST_Distance_Sphere</refname>
 
 		<refpurpose>Returns linear distance in meters between two lon/lat
-				points. Uses a spherical earth and radius of 6370986 meters.
+				geometries. Uses a spherical earth and radius of 6370986 meters.
 				Faster than <xref linkend="ST_Distance_Spheroid"/>, but less
 				accurate. Only implemented for points.</refpurpose>
 	  </refnamediv>
@@ -10351,8 +10351,8 @@ The current implementation supports only vertices as the discrete locations. Thi
 		<funcsynopsis>
 		  <funcprototype>
 			<funcdef>float <function>ST_Distance_Sphere</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>pointlonlatA</parameter></paramdef>
-			<paramdef><type>geometry </type> <parameter>pointlonlatB</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>geomlonlatA</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>geomlonlatB</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -10360,13 +10360,15 @@ The current implementation supports only vertices as the discrete locations. Thi
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns linear distance in meters between two lon/lat
+		<para>Returns minimum distance in meters between two lon/lat
 				points. Uses a spherical earth and radius of 6370986 meters.
 				Faster than <xref linkend="ST_Distance_Spheroid"/>, but less
 				accurate. Only implemented for points.</para>
 		<note>
-			<para>This function currently does not look at the SRID of a point geometry and will always assume its in WGS 80 long lat.</para>
+			<para>This function currently does not look at the SRID of a point geometry and will always assume its in WGS 80 long lat. Prior versions of this function only support points.</para>
 		</note>
+		
+		<para>Availability: 1.5 - support for other geometry types besides points was introduced. Prior versions only work with points.</para>
 	  </refsection>
 
 
@@ -10400,17 +10402,17 @@ FROM
 	  <refnamediv>
 		<refname>ST_Distance_Spheroid</refname>
 
-		<refpurpose>Returns linear distance between two lon/lat points given a
+		<refpurpose>Returns linear distance between two lon/lat geometries given a
 			particular spheroid.
-			Currently only implemented for points.</refpurpose>
+			Prior versions of PostGIS only support points.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
 			<funcdef>float <function>ST_Distance_Spheroid</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>pointlonlatA</parameter></paramdef>
-			<paramdef><type>geometry </type> <parameter>pointlonlatB</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>geomlonlatA</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>geomlonlatB</parameter></paramdef>
 			<paramdef><type>spheroid </type> <parameter>measurement_spheroid</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -10420,11 +10422,13 @@ FROM
 		<title>Description</title>
 
 		<para>Returns linear distance in meters between two lon/lat
-				points given a particular spheroid. See the explanation of spheroids given for
+				geometries given a particular spheroid. See the explanation of spheroids given for
 			<xref linkend="ST_Length_Spheroid" />.</para>
 		<note>
-			<para>This function currently does not look at the SRID of a point geometry to determine spheroid and will always assume points are along the spheroid given.</para>
+			<para>This function currently does not look at the SRID of a point geometry and will always assume its in WGS 80 long lat. Prior versions of this function only support points.</para>
 		</note>
+		
+		<para>Availability: 1.5 - support for other geometry types besides points was introduced. Prior versions only work with points.</para>
 	  </refsection>
 
 
