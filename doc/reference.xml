@@ -10341,10 +10341,10 @@ The current implementation supports only vertices as the discrete locations. Thi
 	  <refnamediv>
 		<refname>ST_Distance_Sphere</refname>
 
-		<refpurpose>Returns linear distance in meters between two lon/lat
+		<refpurpose>Returns minimum distance in meters between two lon/lat
 				geometries. Uses a spherical earth and radius of 6370986 meters.
-				Faster than <xref linkend="ST_Distance_Spheroid"/>, but less
-				accurate. Only implemented for points.</refpurpose>
+				Faster than <xref linkend="ST_Distance_Spheroid">ST_Distance_Spheroid</xref>, but less
+				accurate. PostGIS versions prior to 1.5 only implemented for points.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -10363,9 +10363,9 @@ The current implementation supports only vertices as the discrete locations. Thi
 		<para>Returns minimum distance in meters between two lon/lat
 				points. Uses a spherical earth and radius of 6370986 meters.
 				Faster than <xref linkend="ST_Distance_Spheroid"/>, but less
-				accurate. Only implemented for points.</para>
+				accurate. PostGIS Versions prior to 1.5 only implemented for points.</para>
 		<note>
-			<para>This function currently does not look at the SRID of a point geometry and will always assume its in WGS 80 long lat. Prior versions of this function only support points.</para>
+			<para>This function currently does not look at the SRID of a geometry and will always assume its in WGS 84 long lat. Prior versions of this function only support points.</para>
 		</note>
 		
 		<para>Availability: 1.5 - support for other geometry types besides points was introduced. Prior versions only work with points.</para>
@@ -10402,9 +10402,9 @@ FROM
 	  <refnamediv>
 		<refname>ST_Distance_Spheroid</refname>
 
-		<refpurpose>Returns linear distance between two lon/lat geometries given a
+		<refpurpose>Returns the minimum distance between two lon/lat geometries given a
 			particular spheroid.
-			Prior versions of PostGIS only support points.</refpurpose>
+			PostGIS  versions prior to 1.5 only support points.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -10421,11 +10421,11 @@ FROM
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns linear distance in meters between two lon/lat
+		<para>Returns minimum distance in meters between two lon/lat
 				geometries given a particular spheroid. See the explanation of spheroids given for
-			<xref linkend="ST_Length_Spheroid" />.</para>
+			<xref linkend="ST_Length_Spheroid" />. PostGIS version prior to 1.5 only support points.</para>
 		<note>
-			<para>This function currently does not look at the SRID of a point geometry and will always assume its in WGS 80 long lat. Prior versions of this function only support points.</para>
+			<para>This function currently does not look at the SRID of a geometry and will always assume its in WGS 80 long lat. Prior versions of this function only support points.</para>
 		</note>
 		
 		<para>Availability: 1.5 - support for other geometry types besides points was introduced. Prior versions only work with points.</para>
