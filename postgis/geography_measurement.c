@@ -176,6 +176,17 @@ Datum geography_area(PG_FUNCTION_ARGS)
 	
 	lwgeom = lwgeom_from_gserialized(g);
 	
+	/* Test for cases that are currently not handled by spheroid code */
+	if ( use_spheroid )
+	{
+		/* We don't handle the poles right now */
+		if( FP_GTEQ(gbox.zmax,1.0) || FP_LTEQ(gbox.zmin,-1.0) )
+			use_spheroid = LW_FALSE;
+		/* We can't cross the equator right now */
+		if( gbox.zmax > 0.0 && gbox.zmin < 0.0 )
+			use_spheroid = LW_FALSE;
+	}
+	
 	/* Calculate the area */
 	if( use_spheroid )
 		area = lwgeom_area_spheroid(lwgeom, gbox, s);
