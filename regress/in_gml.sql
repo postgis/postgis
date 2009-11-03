@@ -476,12 +476,42 @@ SELECT 'srs_16', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry srsName="urn:ogc:d
 -- Reverse axis with severals multi geometry types 
 
 --
--- TODO GML Namespace
+-- GML Namespace
 -- 
 
---
--- TODO xlink/Reference 
--- 
+-- GML namespace
+SELECT 'ns_1', ST_AsEWKT(ST_GeomFromGML('<gml:Point xmlns:gml="http://www.opengis.net/gml"><gml:coordinates>1,2</gml:coordinates></gml:Point>'));
+
+-- GML namespace without explicit prefix 
+SELECT 'ns_2', ST_AsEWKT(ST_GeomFromGML('<gml:Point xmlns="http://www.opengis.net/gml"><gml:coordinates>1,2</gml:coordinates></gml:Point>'));
+
+-- GML 3.2 namespace
+SELECT 'ns_3', ST_AsEWKT(ST_GeomFromGML('<gml:Point xmlns:gml="http://www.opengis.net/gml/3.2"><gml:coordinates>1,2</gml:coordinates></gml:Point>'));
+
+-- ERROR wrong namespace
+SELECT 'ns_4', ST_AsEWKT(ST_GeomFromGML('<gml:Point xmlns:gml="http://foo.net"><gml:coordinates>1,2</gml:coordinates></gml:Point>'));
+
+-- Several namespaces
+SELECT 'ns_5', ST_AsEWKT(ST_GeomFromGML('<gml:Point xmlns:foo="http://bar.net" xmlns:gml="http://www.opengis.net/gml"><gml:coordinates>1,2</gml:coordinates></gml:Point>'));
+
+-- Ignore other namespace element
+SELECT 'ns_6', ST_AsEWKT(ST_GeomFromGML('<gml:Point xmlns:foo="http://foo.net" xmlns:gml="http://www.opengis.net/gml"><gml:coordinates>1,2</gml:coordinates><foo:coordinates>3,4</foo:coordinates></gml:Point>'));
+
+-- Attribute without explicit namespace
+SELECT 'ns_7', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:4326" xmlns:gml="http://www.opengis.net/gml"><gml:coordinates>1,2</gml:coordinates></gml:Point>'));
+
+-- Attribute with explicit GML namespace
+SELECT 'ns_8', ST_AsEWKT(ST_GeomFromGML('<gml:Point gml:srsName="EPSG:4326" xmlns:gml="http://www.opengis.net/gml"><gml:coordinates>1,2</gml:coordinates></gml:Point>'));
+
+-- Attribute with explicit GML 3.2 namespace
+SELECT 'ns_9', ST_AsEWKT(ST_GeomFromGML('<gml:Point gml:srsName="EPSG:4326" xmlns:gml="http://www.opengis.net/gml/3.2"><gml:coordinates>1,2</gml:coordinates></gml:Point>'));
+
+-- Attribute with explicit prefix but unqualified namespace
+SELECT 'ns_10', ST_AsEWKT(ST_GeomFromGML('<gml:Point foo:srsName="EPSG:4326" xmlns:gml="http://www.opengis.net/gml"><gml:coordinates>1,2</gml:coordinates></gml:Point>'));
+
+-- Ignore other namespace attribute
+SELECT 'ns_11', ST_AsEWKT(ST_GeomFromGML('<gml:Point foo:srsName="EPSG:4326" xmlns:foo="http://foo.net" xmlns:gml="http://www.opengis.net/gml"><gml:coordinates>1,2</gml:coordinates><foo:coordinates>3,4</foo:coordinates></gml:Point>'));
+
 
 
 --
@@ -621,7 +651,7 @@ SELECT 'pos_9', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>  1 2  </gml:pos><
 SELECT 'pos_10', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos> 
 		 			         1 2
 				           </gml:pos></gml:Point>'));
--- ERROR: Several Spaces insides 
+-- Several Spaces insides 
 SELECT 'pos_11', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1  2</gml:pos></gml:Point>'));
 
 -- ERROR: Junk
@@ -680,7 +710,7 @@ SELECT 'poslist_13', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:posList></gm
 SELECT 'poslist_14', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:posList> </gml:posList></gml:LineString>'));
 SELECT 'poslist_15', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:posList>  </gml:posList></gml:LineString>'));
 
--- ERROR: spaces insides posList
+-- Several spaces insides posList
 SELECT 'poslist_16', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:posList>1 2  3 4</gml:posList></gml:LineString>'));
 SELECT 'poslist_17', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:posList> 1  2  3 4 </gml:posList></gml:LineString>'));
 
@@ -693,8 +723,14 @@ SELECT 'poslist_18', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:posList>!@#$
 -- Generic data
 --
 
--- Mixed Pos, PosList, Coordinates, coord
+-- Mixed pos, posList, coordinates, coord
 SELECT 'data_1', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:pos>1 2</gml:pos><gml:posList>3 4 5 6</gml:posList><gml:coordinates>7,8 9,10</gml:coordinates><gml:coord><gml:X>11</gml:X><gml:Y>12</gml:Y></gml:coord></gml:LineString>'));
+
+-- Mixed pos, posList, pointProperty, pointRep
+SELECT 'data_2', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:pos>1 2</gml:pos><gml:posList>3 4 5 6</gml:posList><gml:pointProperty><gml:point><gml:pos>7 8</gml:pos></gml:point></gml:pointProperty><gml:pointRep><gml:point><gml:coordinates>9,10</gml:coordinates></gml:point></gml:pointRep></gml:LineString>'));
+
+-- TODO xlink pointProperty
+--SELECT 'data_3', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:xlink = "http://www.w3.org/1999/xlink"><gml:pointProperty><gml:point gml:id="p1"><gml:pos>1 2</gml:pos></gml:point></gml:pointProperty><gml:pointProperty><gml:point xlink:type="Simple" xlink:href="#p1"/></gml:pointProperty></gml:LineString>'));
 
 
 
