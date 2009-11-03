@@ -12067,10 +12067,10 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
 				<title>Description</title>
 
 				<para>Returns a geometry/geography that represents all points whose distance
-			from this Geometry/geography is less than or equal to distance. </para>para>
+			from this Geometry/geography is less than or equal to distance. </para>
 			<para>Geometry: Calculations
 			are in the Spatial Reference System of the geometry. Introduced in 1.5 support for
-			different end cap and mitre settings to control shape.
+			different end cap and mitre settings to control shape.</para>
 				</para>
 				<note><para>Geography: For geography this is really a thin wrapper around the geometry implementation. It first determines the best SRID that
 					fits the bounding box of the geography object (favoring UTM and falling back on mercator in worst case scenario) and then buffers in that planar spatial ref and retransforms back to WGS84 geography.</para></note>
