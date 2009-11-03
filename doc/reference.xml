@@ -10159,7 +10159,7 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 		<refname>ST_Distance</refname>
 
 		<refpurpose>For geometry type Returns the 2-dimensional cartesian minimum distance (based on spatial ref) between two geometries in
-		projected units.  For geography type returns the spherical minimum distance between two geographies in meters.</refpurpose>
+		projected units.  For geography type defaults to return spheroidal minimum distance between two geographies in meters.</refpurpose>
 	  </refnamediv>
 	  <refsynopsisdiv>
 		<funcsynopsis>
@@ -10181,6 +10181,19 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 			<paramdef><type>geography </type>
 			<parameter>gg2</parameter></paramdef>
 		  </funcprototype>
+		  
+		  <funcprototype>
+			<funcdef>float <function>ST_Distance</function></funcdef>
+
+			<paramdef><type>geography </type>
+			<parameter>gg1</parameter></paramdef>
+
+			<paramdef><type>geography </type>
+			<parameter>gg2</parameter></paramdef>
+			
+			<paramdef><type>boolean </type>
+			<parameter>use_spheroid</parameter></paramdef>
+		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
@@ -10188,7 +10201,8 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 		<title>Description</title>
 
 		<para>For geometry type returns the 2-dimensional minimum cartesian distance between two geometries in
-		projected units (spatial ref units). For geography type returns the minimum distance around spheroid between two geographies in meters.</para>
+		projected units (spatial ref units). For geography type defaults to return the minimum distance around WGS 84 spheroid between two geographies in meters.  Pass in
+		false to return answer in sphere instead of spheroid.</para>
 
 		<para>
 		  <inlinegraphic fileref="images/check.png" />
@@ -10237,15 +10251,16 @@ st_distance
 ------------------
 126.664256056812
 
--- Geography example -- same but note units in meters
-SELECT ST_Distance(
-	ST_GeographyFromText('SRID=4326;POINT(-72.1235 42.3521)'),
-	ST_GeographyFromText('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)')
-	);
+-- Geography example -- same but note units in meters - use sphere for slightly faster less accurate
+SELECT ST_Distance(gg1, gg2) As spheroid_dist, ST_Distance(gg1, gg2, false) As sphere_dist 
+FROM (SELECT
+	ST_GeographyFromText('SRID=4326;POINT(-72.1235 42.3521)') As gg1,
+	ST_GeographyFromText('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)') As gg2
+	) As foo  ;
 
-st_distance
-------------------
-123.475741346574
+  spheroid_dist   |   sphere_dist
+------------------+------------------
+ 123.802076746848 | 123.475736916397
 
 </programlisting>
 	  </refsection>
