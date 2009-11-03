@@ -8966,8 +8966,8 @@ FROM
 		<refnamediv>
 		  <refname>ST_Area</refname>
 
-		  <refpurpose>Returns the area of the geometry if it is a polygon or
-				multi-polygon. For geometry type area is in SRID units.  For geography area is in square meters.</refpurpose>
+		  <refpurpose>Returns the area of the surface if it is a polygon or
+				multi-polygon. For "geometry" type area is in SRID units.  For "geography" area is in square meters.</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
 		  <funcsynopsis>
