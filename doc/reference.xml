@@ -12025,9 +12025,9 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
 			<refnamediv>
 				<refname>ST_Buffer</refname>
 
-				<refpurpose>Returns a geometry that represents all points whose distance
+				<refpurpose>For geometry: Returns a geometry that represents all points whose distance
 			from this Geometry is less than or equal to distance. Calculations
-			are in the Spatial Reference System of this Geometry. Introduced in 1.5 support for
+			are in the Spatial Reference System of this Geometry. For geography: Uses a planar transform wrapper.  Introduced in 1.5 support for
 			different end cap and mitre settings to control shape. buffer_style options: quad_segs=#,endcap=round|flat|square,join=round|mitre|bevel,mitre_limit=#.#
 			</refpurpose>
 			</refnamediv>
@@ -12053,6 +12053,12 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
 					<paramdef><type>float </type> <parameter>radius_of_buffer</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>buffer_style_parameters</parameter></paramdef>
 				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>geography <function>ST_Buffer</function></funcdef>
+					<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+					<paramdef><type>float </type> <parameter>radius_of_buffer_in_meters</parameter></paramdef>
+				  </funcprototype>
 
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -12060,17 +12066,22 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
 			  <refsection>
 				<title>Description</title>
 
-				<para>Returns a geometry that represents all points whose distance
-			from this Geometry is less than or equal to distance. Calculations
-			are in the Spatial Reference System of this Geometry. Introduced in 1.5 support for
+				<para>Returns a geometry/geography that represents all points whose distance
+			from this Geometry/geography is less than or equal to distance. </para>para>
+			<para>Geometry: Calculations
+			are in the Spatial Reference System of the geometry. Introduced in 1.5 support for
 			different end cap and mitre settings to control shape.
 				</para>
+				<note><para>Geography: For geography this is really a thin wrapper around the geometry implementation. It first determines the best SRID that
+					fits the bounding box of the geography object (favoring UTM and falling back on mercator in worst case scenario) and then buffers in that planar spatial ref and retransforms back to WGS84 geography.</para></note>
+							<para><inlinegraphic fileref="images/warning.png" />
+			For geography this may not behave as expected if object is sufficiently large that it falls between two UTM zones and crosses the dateline
+		</para>
 				<para>Availability: 1.5 - ST_Buffer was enhanced to support different endcaps and join types. These are useful for example to convert road linestrings
-					into polygon roads with flat or square edges instead of rounded edges.  - requires GEOS &gt;= 3.2 to take advantage of advanced functionality.
+					into polygon roads with flat or square edges instead of rounded edges. Thin wrapper for geography was added. - requires GEOS &gt;= 3.2 to take advantage of advanced functionality.
 				</para>
-
 				<para>
-The optional third parameter can either specify number of segments used to approximate a quarter circle (integer case, defaults to 8) or a list of blank-separated key=value pairs (string case) to tweak operations as follows:
+The optional third parameter (currently only applies to geometry) can either specify number of segments used to approximate a quarter circle (integer case, defaults to 8) or a list of blank-separated key=value pairs (string case) to tweak operations as follows:
 <itemizedlist>
 <listitem>
 'quad_segs=#' : number of segments used to approximate a quarter circle (defaults to 8).
