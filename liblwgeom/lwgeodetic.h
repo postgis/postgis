@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id: lwgeodetic.c 4494 2009-09-14 10:54:33Z mcayland $
+ * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>
