@@ -437,7 +437,7 @@ static int lwcircle_calculate_gbox(POINT4D p1, POINT4D p2, POINT4D p3, GBOX *gbo
 	return G_SUCCESS;
 }
 
-static int ptarray_calculate_gbox( POINTARRAY *pa, GBOX *gbox )
+int ptarray_calculate_gbox( POINTARRAY *pa, GBOX *gbox )
 {
 	int i;
 	POINT4D p;

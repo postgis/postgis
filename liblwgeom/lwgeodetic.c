@@ -165,7 +165,7 @@ void point_rad2deg(GEOGRAPHIC_POINT *p)
 /** 
 * Shift a point around by a number of radians
 */
-static void point_shift(GEOGRAPHIC_POINT *p, double shift)
+void point_shift(GEOGRAPHIC_POINT *p, double shift)
 {
 	double lon = p->lon + shift;
 	if( lon > M_PI )
@@ -365,7 +365,7 @@ void y_to_z(POINT3D *p)
 }
 
 
-static inline int crosses_dateline(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e)
+int crosses_dateline(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e)
 {
 	double sign_s = signum(s.lon);
 	double sign_e = signum(e.lon);
@@ -1639,7 +1639,7 @@ static double ptarray_distance_spheroid(POINTARRAY *pa1, POINTARRAY *pa2, SPHERO
 * calculate external ring area and subtract internal ring area. A GBOX is 
 * required to calculate an outside point.
 */
-double lwgeom_area_spheroid(LWGEOM *lwgeom, GBOX gbox, SPHEROID spheroid)
+double lwgeom_area_sphere(LWGEOM *lwgeom, GBOX gbox, SPHEROID spheroid)
 {
 	int type;
 	POINT2D pt_outside;
@@ -1693,7 +1693,7 @@ double lwgeom_area_spheroid(LWGEOM *lwgeom, GBOX gbox, SPHEROID spheroid)
 
 		for( i = 0; i < col->ngeoms; i++ )
 		{
-			area += lwgeom_area_spheroid(col->geoms[i], gbox, spheroid);
+			area += lwgeom_area_sphere(col->geoms[i], gbox, spheroid);
 		}
 		return area;
 	}

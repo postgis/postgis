@@ -165,7 +165,7 @@ Datum geography_area(PG_FUNCTION_ARGS)
 
 	/* User requests spherical calculation, turn our spheroid into a sphere */
 	if( ! use_spheroid )
-		s.a = s.b = s.radius;	
+		s.a = s.b = s.radius;
 	
 	/* We need the bounding box to get an outside point for area algorithm */
 	if( ! gbox_from_gserialized(g, &gbox) )
@@ -177,12 +177,15 @@ Datum geography_area(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_from_gserialized(g);
 	
 	/* Calculate the area */
-	area = lwgeom_area_spheroid(lwgeom, gbox, s);
+	if( use_spheroid )
+		area = lwgeom_area_spheroid(lwgeom, gbox, s);
+	else
+		area = lwgeom_area_sphere(lwgeom, gbox, s);
 
 	/* Something went wrong... */
 	if( area < 0.0 )
 	{
-		elog(ERROR, "lwgeom_area_sphere returned area < 0.0");
+		elog(ERROR, "lwgeom_area_spher(oid) returned area < 0.0");
 		PG_RETURN_NULL();
 	}
 
@@ -192,6 +195,7 @@ Datum geography_area(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(area);
 
 }
+
 
 /*
 ** geography_length_sphere(GSERIALIZED *g) 

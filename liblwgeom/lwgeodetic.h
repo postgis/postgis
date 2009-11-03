@@ -79,7 +79,11 @@ double latitude_degrees_normalize(double lat);
 double longitude_degrees_normalize(double lon);
 double ptarray_length_spheroid(POINTARRAY *pa, SPHEROID s);
 int geographic_point_equals(GEOGRAPHIC_POINT g1, GEOGRAPHIC_POINT g2);
+int crosses_dateline(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e);
+void point_shift(GEOGRAPHIC_POINT *p, double shift);
 /*
 ** Prototypes for spheroid functions.
 */
 double spheroid_distance(GEOGRAPHIC_POINT a, GEOGRAPHIC_POINT b, SPHEROID spheroid);
+double spheroid_direction(GEOGRAPHIC_POINT r, GEOGRAPHIC_POINT s, SPHEROID spheroid);
+int spheroid_project(GEOGRAPHIC_POINT r, SPHEROID spheroid, double distance, double azimuth, GEOGRAPHIC_POINT *g);

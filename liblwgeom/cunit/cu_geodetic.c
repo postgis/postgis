@@ -28,7 +28,7 @@ CU_pSuite register_geodetic_suite(void)
 	}
 
 	if (
-	    (NULL == CU_add_test(pSuite, "test_signum()", test_signum))  ||
+/*	    (NULL == CU_add_test(pSuite, "test_signum()", test_signum))  ||
 	    (NULL == CU_add_test(pSuite, "test_gbox_from_spherical_coordinates()", test_gbox_from_spherical_coordinates))  ||
 	    (NULL == CU_add_test(pSuite, "test_gserialized_get_gbox_geocentric()", test_gserialized_get_gbox_geocentric))  ||
 	    (NULL == CU_add_test(pSuite, "test_clairaut()", test_clairaut))  || 
@@ -37,7 +37,8 @@ CU_pSuite register_geodetic_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_edge_distance_to_edge()", test_edge_distance_to_edge)) || 
 	    (NULL == CU_add_test(pSuite, "test_lwgeom_distance_sphere()", test_lwgeom_distance_sphere)) ||
 	    (NULL == CU_add_test(pSuite, "test_ptarray_point_in_ring()", test_ptarray_point_in_ring)) ||
-	    (NULL == CU_add_test(pSuite, "test_spheroid_distance()", test_spheroid_distance)) 
+	    (NULL == CU_add_test(pSuite, "test_spheroid_distance()", test_spheroid_distance)) || */
+	    (NULL == CU_add_test(pSuite, "test_spheroid_area()", test_spheroid_area)) 
 	)
 	{
 		CU_cleanup_registry();
@@ -609,4 +610,34 @@ void test_spheroid_distance(void)
 	d = spheroid_distance(g1, g2, s);
 	CU_ASSERT_DOUBLE_EQUAL(d, 10001965.7295318, 0.001);
 	
+}
+
+void test_spheroid_area(void)
+{
+	LWGEOM *lwg;
+	GBOX gbox;
+	double a1, a2;
+	SPHEROID s;
+	
+	/* Init to WGS84 */
+	spheroid_init(&s, 6378137.0, 6356752.314245179498);
+	
+	gbox.flags = gflags(0, 0, 1);
+
+	/* Medford lot test polygon */
+	lwg = lwgeom_from_ewkt("POLYGON((-122.848227067007 42.5007249610493,-122.848309475585 42.5007179884263,-122.848327688675 42.500835880696,-122.848245279942 42.5008428533324,-122.848227067007 42.5007249610493))", PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
+	a1 = lwgeom_area_sphere(lwg, gbox, s);
+	a2 = lwgeom_area_spheroid(lwg, gbox, s);
+	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
+	CU_ASSERT_DOUBLE_EQUAL(a1, a2, 0.2);
+
+	/* Big-ass polygon */
+	lwg = lwgeom_from_ewkt("POLYGON((-2 3, -2 4, -1 4, -1 3, -2 3))", PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
+	a1 = lwgeom_area_sphere(lwg, gbox, s);
+	a2 = lwgeom_area_spheroid(lwg, gbox, s);
+	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
+	CU_ASSERT_DOUBLE_EQUAL(a1, a2, 100000000.0);
+
 }

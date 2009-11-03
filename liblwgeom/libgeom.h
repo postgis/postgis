@@ -383,10 +383,16 @@ extern void spheroid_init(SPHEROID *s, double a, double b);
 extern double lwgeom_distance_spheroid(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX gbox2, SPHEROID spheroid, double tolerance);
 
 /**
-* Calculate the geodetic area of a lwgeom on the unit sphere. The result
-* will have to by multiplied by the real radius^2 to get the real area.
+* Calculate the geodetic area of a lwgeom on the sphere. The result
+* will be multiplied by the average radius of the supplied spheroid.
 */
-extern double lwgeom_area_spheroid(LWGEOM *lwgeom, GBOX gbox, SPHEROID s);
+extern double lwgeom_area_sphere(LWGEOM *lwgeom, GBOX gbox, SPHEROID spheroid);
+
+/**
+* Calculate the geodetic area of a lwgeom on the spheroid. The result
+* will have the squared units of the spheroid axes.
+*/
+extern double lwgeom_area_spheroid(LWGEOM *lwgeom, GBOX gbox, SPHEROID spheroid);
 
 /**
 * Calculate the geodetic length of a lwgeom on the unit sphere. The result
@@ -407,9 +413,14 @@ extern int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwge
 extern int getPoint2d_p_ro(const POINTARRAY *pa, int n, POINT2D **point);
 
 /**
-* Calculate box and add values to gbox. Return #G_SUCCESS on success.
+* Calculate geodetic (x/y/z) box and add values to gbox. Return #G_SUCCESS on success.
 */
 extern int ptarray_calculate_gbox_geodetic(POINTARRAY *pa, GBOX *gbox);
+
+/**
+* Calculate box (x/y) and add values to gbox. Return #G_SUCCESS on success.
+*/
+extern int ptarray_calculate_gbox( POINTARRAY *pa, GBOX *gbox );
 
 /**
 * Calculate a spherical point that falls outside the geocentric gbox
