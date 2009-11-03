@@ -226,6 +226,15 @@ poslist_17|LINESTRING(1 2,3 4)
 ERROR:  invalid GML representation
 data_1|LINESTRING(1 2,3 4,5 6,7 8,9 10,11 12)
 data_2|LINESTRING(1 2,3 4,5 6,7 8,9 10)
+xlink_1|LINESTRING(1 2,1 2,3 4)
+ERROR:  invalid GML representation
+ERROR:  invalid GML representation
+ERROR:  invalid GML representation
+ERROR:  invalid GML representation
+ERROR:  invalid GML representation
+ERROR:  invalid GML representation
+ERROR:  invalid GML representation
+ERROR:  invalid GML representation
 coord_1|POINT(1 2)
 coord_2|POINT(1 2 3)
 ERROR:  invalid GML representation

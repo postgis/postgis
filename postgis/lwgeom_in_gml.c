@@ -19,13 +19,13 @@
 * Cf: ISO 13249-3 -> 5.1.50 (p 134) 
 *
 * GML versions supported:
+*  - GML 3.2.1 Namespace
+*  - GML 3.1.1 Simple Features profile
+*  - GML 3.1.0 and 3.0.0 SF elements and attributes
 *  - GML 2.1.2
-*  - GML 3.1.1 Simple Features profile (1.0.0)
 * Cf: <http://www.opengeospatial.org/standards/gml>
 *
-* Current known limitations:
-*  - Support only GML SF profile geometries (i.e no PostGIS curves support)
-*  - Don't handle Xlink
+* NOTA: this code doesn't (yet ?) support SQL/MM curves
 *
 * Written by Olivier Courtin - Oslandia
 *
@@ -42,6 +42,9 @@
 #if HAVE_LIBXML2
 #include <libxml/tree.h> 
 #include <libxml/parser.h> 
+#include <libxml/xpath.h> 
+#include <libxml/xpathInternals.h>
+
 
 
 Datum geom_from_gml(PG_FUNCTION_ARGS);
@@ -53,6 +56,10 @@ typedef struct struct_gmlSrs
        bool reverse_axis;
 }
 gmlSrs;
+
+#define XLINK_NS	((char *) "http://www.w3.org/1999/xlink")
+#define GML_NS		((char *) "http://www.opengis.net/gml")
+#define GML32_NS	((char *) "http://www.opengis.net/gml/3.2")
 
 
 /**
@@ -127,6 +134,85 @@ Datum geom_from_gml(PG_FUNCTION_ARGS)
 			
 
 /**
+ * Return true if current node contains a simple xlink 
+ * Return false otherwise.
+ */
+static bool is_xlink(xmlNodePtr node)
+{
+	xmlChar *prop;
+
+	prop = xmlGetNsProp(node, (xmlChar *)"type", (xmlChar *) XLINK_NS);
+	if (prop == NULL) return false;
+	if (strcmp((char *) prop, "simple")) {
+		xmlFree(prop);
+		return false;
+	}
+
+	prop = xmlGetNsProp(node, (xmlChar *)"href", (xmlChar *) XLINK_NS);
+	if (prop == NULL) return false;
+	if (prop[0] != '#') {
+		xmlFree(prop);
+		return false;
+	}
+	xmlFree(prop);
+
+	return true;
+}
+
+
+/**
+ * Return a xmlNodePtr on a node referenced by a xlink or NULL otherwise 
+ */
+static xmlNodePtr get_xlink_node(xmlNodePtr xnode)
+{
+	char *id;
+        xmlNodePtr node;
+	xmlNsPtr *ns, *n;
+	xmlChar *href, *p;
+        xmlXPathContext *ctx;
+        xmlXPathObject *xpath;
+
+	href = xmlGetNsProp(xnode, (xmlChar *)"href", (xmlChar *) XLINK_NS);
+	id = lwalloc((xmlStrlen(xnode->ns->prefix) * 2 + xmlStrlen(xnode->name)
+			       	+ xmlStrlen(href) + sizeof("//:[@:id='']") + 1));
+	p = href;
+	p++; /* ignore '#' first char */
+
+	/* Xpath pattern look like:		//gml:point[@gml:id='p1']   */
+	sprintf(id, "//%s:%s[@%s:id='%s']", 	(char *) xnode->ns->prefix,
+						(char *) xnode->name,
+						(char *) xnode->ns->prefix,
+						(char *) p);
+	xmlFree(href);
+
+        ctx = xmlXPathNewContext(xnode->doc);
+	if (ctx == NULL) {
+		lwfree(id);
+		return NULL;
+	}
+
+	/* Handle namespaces */
+	ns = xmlGetNsList(xnode->doc, xnode);
+	for (n=ns ; *n; n++) xmlXPathRegisterNs(ctx, (*n)->prefix, (*n)->href);
+	xmlFree(ns);
+
+	/* Execute Xpath expression */
+        xpath = xmlXPathEvalExpression((xmlChar *) id, ctx);
+	lwfree(id);
+        if (xpath == NULL || xpath->nodesetval == NULL || xpath->nodesetval->nodeNr != 1) {
+ 		xmlXPathFreeObject(xpath);
+  		xmlXPathFreeContext(ctx);
+		return NULL;
+	}
+        node = xpath->nodesetval->nodeTab[0];
+ 	xmlXPathFreeObject(xpath);
+  	xmlXPathFreeContext(ctx);
+
+	return node;
+}
+
+
+/**
  * Return false if current element namespace is not a GML one
  * Return true otherwise.
  */
@@ -149,10 +235,11 @@ static bool is_gml_namespace(xmlNodePtr xnode, bool is_strict)
 	 */
 	for (p=ns ; *p ; p++) {
 		if ((*p)->href == NULL) continue;
-		if (!strcmp((char *) (*p)->href, "http://www.opengis.net/gml") ||
-		    !strcmp((char *) (*p)->href, "http://www.opengis.net/gml/3.2")) {
-			if ((*p)->prefix == NULL ||
-					!xmlStrcmp(xnode->ns->prefix, (*p)->prefix)) {
+		if (!strcmp((char *) (*p)->href, GML_NS) ||
+		    !strcmp((char *) (*p)->href, GML32_NS)) {
+			if (	(*p)->prefix == NULL ||
+				!xmlStrcmp(xnode->ns->prefix, (*p)->prefix)) {
+
 				xmlFree(ns);
 				return true;
 			}
@@ -171,8 +258,6 @@ static bool is_gml_namespace(xmlNodePtr xnode, bool is_strict)
 static xmlChar *gmlGetProp(xmlNodePtr xnode, xmlChar *prop)
 {
 	xmlChar *value;
-	xmlChar gmlns[]="http://www.opengis.net/gml"; 
-	xmlChar gmlns32[]="http://www.opengis.net/gml/3.2"; 
 
 	if (!is_gml_namespace(xnode, true))
 		return xmlGetProp(xnode, prop);
@@ -180,16 +265,16 @@ static xmlChar *gmlGetProp(xmlNodePtr xnode, xmlChar *prop)
 	/* We begin to try without explicit namespace */
 	value = xmlGetNoNsProp(xnode, prop);
 	if (value != NULL && xnode->ns->href != NULL &&
-		   (!xmlStrcmp(xnode->ns->href, gmlns) ||
-		    !xmlStrcmp(xnode->ns->href, gmlns32))) return value;
+		   (!strcmp((char *) xnode->ns->href, GML_NS) ||
+		    !strcmp((char *) xnode->ns->href, GML32_NS))) return value;
 
 	/*
 	 * Handle namespaces:
 	 *  - http://www.opengis.net/gml      (GML 3.1.1 and priors)
 	 *  - http://www.opengis.net/gml/3.2  (GML 3.2.1)
 	 */
-	value = xmlGetNsProp(xnode, prop, gmlns);
-	if (value == NULL) value = xmlGetNsProp(xnode, prop, gmlns32);
+	value = xmlGetNsProp(xnode, prop, (xmlChar *) GML_NS);
+	if (value == NULL)value = xmlGetNsProp(xnode, prop, (xmlChar *) GML32_NS);
 
 	return value;
 }
@@ -794,14 +879,12 @@ static POINTARRAY* parse_gml_data(xmlNodePtr xnode, bool *hasz, int *root_srid)
 					break;
 				}
 			}
-			if (!found)
-				lwerror("A invalid GML representation");
 
-			if (xb == NULL)
-				lwerror("B invalid GML representation");
+			if (!found || xb == NULL) lwerror("invalid GML representation");
 
-			if (!found || xb == NULL || xb->children == NULL)
-				lwerror("C invalid GML representation");
+			if (is_xlink(xb)) xb = get_xlink_node(xb);
+			if (xb == NULL || xb->children == NULL)
+				lwerror("invalid GML representation");
 
 			tmp_pa = parse_gml_data(xb->children, hasz, root_srid);
 			if (tmp_pa->npoints != 1) lwerror("invalid GML representation");

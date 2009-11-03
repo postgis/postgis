@@ -729,8 +729,38 @@ SELECT 'data_1', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:pos>1 2</gml:pos
 -- Mixed pos, posList, pointProperty, pointRep
 SELECT 'data_2', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:pos>1 2</gml:pos><gml:posList>3 4 5 6</gml:posList><gml:pointProperty><gml:point><gml:pos>7 8</gml:pos></gml:point></gml:pointProperty><gml:pointRep><gml:point><gml:coordinates>9,10</gml:coordinates></gml:point></gml:pointRep></gml:LineString>'));
 
--- TODO xlink pointProperty
---SELECT 'data_3', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:xlink = "http://www.w3.org/1999/xlink"><gml:pointProperty><gml:point gml:id="p1"><gml:pos>1 2</gml:pos></gml:point></gml:pointProperty><gml:pointProperty><gml:point xlink:type="Simple" xlink:href="#p1"/></gml:pointProperty></gml:LineString>'));
+
+
+--
+-- Xlink
+--
+
+-- Xlink on a point
+SELECT 'xlink_1', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:point gml:id="p1"><gml:pos>1 2</gml:pos></gml:point></gml:pointProperty><gml:pointProperty><gml:point xlink:type="simple" xlink:href="#p1"/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
+
+-- ERROR: xlink:href destination is not defined
+SELECT 'xlink_2', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:point gml:id="p1"><gml:pos>1 2</gml:pos></gml:point></gml:pointProperty><gml:pointProperty><gml:point xlink:type="simple" xlink:href="#p2"/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
+
+-- ERROR: no href 
+SELECT 'xlink_3', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:point gml:id="p1"><gml:pos>1 2</gml:pos></gml:point></gml:pointProperty><gml:pointProperty><gml:point xlink:type="simple" /></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
+
+-- ERROR: empty href 
+SELECT 'xlink_4', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:point gml:id="p1"><gml:pos>1 2</gml:pos></gml:point></gml:pointProperty><gml:pointProperty><gml:point xlink:type="simple" xlink:href=""/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
+
+-- ERROR: no sharp char in href
+SELECT 'xlink_5', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:point gml:id="p1"><gml:pos>1 2</gml:pos></gml:point></gml:pointProperty><gml:pointProperty><gml:point xlink:type="simple" xlink:href="p2"/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
+
+-- ERROR: no xlink namespace
+SELECT 'xlink_6', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml"><gml:pointProperty><gml:point gml:id="p1"><gml:pos>1 2</gml:pos></gml:point></gml:pointProperty><gml:pointProperty><gml:point xlink:type="simple" xlink:href="#p1"/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
+
+-- ERROR: wrong xlink namespace
+SELECT 'xlink_7', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://foo.net"><gml:pointProperty><gml:point gml:id="p1"><gml:pos>1 2</gml:pos></gml:point></gml:pointProperty><gml:pointProperty><gml:point xlink:type="simple" xlink:href="#p1"/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
+
+-- ERROR: no xlink:type 
+SELECT 'xlink_8', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:point gml:id="p1"><gml:pos>1 2</gml:pos></gml:point></gml:pointProperty><gml:pointProperty><gml:point xlink:href="#p1"/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
+
+-- ERROR: xlink:type not simple
+SELECT 'xlink_9', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:point gml:id="p1"><gml:pos>1 2</gml:pos></gml:point></gml:pointProperty><gml:pointProperty><gml:point xlink:type="extended" xlink:href="#p1"/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
 
 
 
