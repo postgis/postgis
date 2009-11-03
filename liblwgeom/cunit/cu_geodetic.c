@@ -28,7 +28,7 @@ CU_pSuite register_geodetic_suite(void)
 	}
 
 	if (
-/*	    (NULL == CU_add_test(pSuite, "test_signum()", test_signum))  ||
+	    (NULL == CU_add_test(pSuite, "test_signum()", test_signum))  ||
 	    (NULL == CU_add_test(pSuite, "test_gbox_from_spherical_coordinates()", test_gbox_from_spherical_coordinates))  ||
 	    (NULL == CU_add_test(pSuite, "test_gserialized_get_gbox_geocentric()", test_gserialized_get_gbox_geocentric))  ||
 	    (NULL == CU_add_test(pSuite, "test_clairaut()", test_clairaut))  || 
@@ -37,7 +37,7 @@ CU_pSuite register_geodetic_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_edge_distance_to_edge()", test_edge_distance_to_edge)) || 
 	    (NULL == CU_add_test(pSuite, "test_lwgeom_distance_sphere()", test_lwgeom_distance_sphere)) ||
 	    (NULL == CU_add_test(pSuite, "test_ptarray_point_in_ring()", test_ptarray_point_in_ring)) ||
-	    (NULL == CU_add_test(pSuite, "test_spheroid_distance()", test_spheroid_distance)) || */
+	    (NULL == CU_add_test(pSuite, "test_spheroid_distance()", test_spheroid_distance)) || 
 	    (NULL == CU_add_test(pSuite, "test_spheroid_area()", test_spheroid_area)) 
 	)
 	{
