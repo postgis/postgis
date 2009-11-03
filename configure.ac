@@ -376,14 +376,17 @@ if test "$FOUND_LIBXML2" = "1"; then
 	dnl Check headers file
 	CPPFLAGS_SAVE="$CPPFLAGS"
 	CPPFLAGS="$XML2_CPPFLAGS"
-	AC_CHECK_HEADERS([libxml/tree.h libxml/parser.h], [HAVE_LIBXML2=1], [AC_MSG_ERROR([could not find libxml/tree.h and/or libxml/parser.h related to libxml2])])
+	AC_CHECK_HEADERS([libxml/tree.h libxml/parser.h libxml/xpath.h libxml/xpathInternals.h],
+			 [HAVE_LIBXML2=1],
+			 [AC_MSG_ERROR([could not find headers include related to libxml2])])
 
 	dnl Ensure we can link against libxml2
 	LIBS_SAVE="$LIBS"
 	LIBS="$XML2_LDFLAGS"
 	AC_CHECK_LIB([xml2], [xmlInitParser], [], [AC_MSG_ERROR([could not find libxml2])], [])
 
-	AC_DEFINE_UNQUOTED([HAVE_LIBXML2], [$HAVE_LIBXML2], [libxml/tree.h libxml/parser.h header])
+	AC_DEFINE_UNQUOTED([HAVE_LIBXML2], [$HAVE_LIBXML2],
+			   [libxml/tree.h libxml/parser.h libxml/xpath.h libxml/xpathInternals.h header])
 	AC_SUBST([HAVE_LIBXML2])
 fi
 
