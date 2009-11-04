@@ -158,7 +158,7 @@ Datum hausdorffdistancedensify(PG_FUNCTION_ARGS)
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-    	densifyFrac = *(double *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(2));
+    	densifyFrac = PG_GETARG_FLOAT8(2);
 
 	initGEOS(lwnotice, lwnotice);
 
