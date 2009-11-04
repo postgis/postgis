@@ -261,20 +261,16 @@ static xmlChar *gmlGetProp(xmlNodePtr xnode, xmlChar *prop)
 
 	if (!is_gml_namespace(xnode, true))
 		return xmlGetProp(xnode, prop);
-
-	/* We begin to try without explicit namespace */
-	value = xmlGetNoNsProp(xnode, prop);
-	if (value != NULL && xnode->ns->href != NULL &&
-		   (!strcmp((char *) xnode->ns->href, GML_NS) ||
-		    !strcmp((char *) xnode->ns->href, GML32_NS))) return value;
-
 	/*
 	 * Handle namespaces:
 	 *  - http://www.opengis.net/gml      (GML 3.1.1 and priors)
 	 *  - http://www.opengis.net/gml/3.2  (GML 3.2.1)
 	 */
 	value = xmlGetNsProp(xnode, prop, (xmlChar *) GML_NS);
-	if (value == NULL)value = xmlGetNsProp(xnode, prop, (xmlChar *) GML32_NS);
+	if (value == NULL) value = xmlGetNsProp(xnode, prop, (xmlChar *) GML32_NS);
+
+	/* In last case try without explicit namespace */
+	if (value == NULL) value = xmlGetNoNsProp(xnode, prop);
 
 	return value;
 }
@@ -1233,11 +1229,9 @@ static LWGEOM* parse_gml_surface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 			if (xb->type != XML_ELEMENT_NODE) continue;
 			if (!is_gml_namespace(xb, false)) continue;
 			if (strcmp((char *) xb->name, "interior")) continue;
-			if (xb->children == NULL) break;	/* FIXME Why this is needed ??? */
 
 			/* PolygonPatch/interior/LinearRing */
 			for (xc = xb->children ; xc != NULL ; xc = xc->next) {
-
 				if (xc->type != XML_ELEMENT_NODE) continue;
 				if (strcmp((char *) xc->name, "LinearRing")) continue;
 
@@ -1251,8 +1245,8 @@ static LWGEOM* parse_gml_surface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 					lwerror("invalid GML representation");
 
 				if (srs->reverse_axis) ppa[ring] = gml_reverse_axis_pa(ppa[ring]);
+				ring++;
 			}
-			ring++;
 		}
 	}
 
