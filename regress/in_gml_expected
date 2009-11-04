@@ -258,7 +258,7 @@ ERROR:  invalid GML representation
 ERROR:  invalid GML representation
 double_6|POINT(1 1.2)
 double_7|POINT(1 1.23)
-ERROR:  invalid GML representation
+double_8|POINT(1 1)
 ERROR:  invalid GML representation
 ERROR:  invalid GML representation
 ERROR:  invalid GML representation

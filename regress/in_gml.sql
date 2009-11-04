@@ -826,7 +826,7 @@ SELECT 'double_5', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 1-1</gml:pos>
 SELECT 'double_6', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 1.2</gml:pos></gml:Point>'));
 SELECT 'double_7', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 1.23</gml:pos></gml:Point>'));
 
--- ERROR: no digit after dot
+-- no digit after dot
 SELECT 'double_8', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 1.</gml:pos></gml:Point>'));
 
 -- ERROR: several dots

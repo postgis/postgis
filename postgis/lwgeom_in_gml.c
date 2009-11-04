@@ -463,8 +463,7 @@ static double parse_gml_double(char *d, bool space_before, bool space_after)
 
 	/*
 	 * Double pattern
-	 * [-|\+]?[0-9]+(\.[0-9]+)?([Ee](\+|-)?[0-9]+)
-	 *
+	 * [-|\+]?[0-9]+(\.)?([0-9]+)?([Ee](\+|-)?[0-9]+)?
 	 * We could also meet spaces before or after
 	 * this pattern upon parameters
 	 */
@@ -491,12 +490,13 @@ static double parse_gml_double(char *d, bool space_before, bool space_after)
 		} else if (isspace(*p)) {
 			if (!space_after) lwerror("invalid GML representation");  
 			if (st == DIG || st == DIG_DEC || st == DIG_EXP)st = END;
+			else if (st == NEED_DIG_DEC)			st = END;
 			else if (st == END);
 			else    lwerror("invalid GML representation");
 		} else  lwerror("invalid GML representation");
      	}	       
 
-	if (st != DIG && st != DIG_DEC && st != DIG_EXP && st != END)
+	if (st != DIG && st != NEED_DIG_DEC && st != DIG_DEC && st != DIG_EXP && st != END)
 		lwerror("invalid GML representation");
 
 	return atof(d);
