@@ -1159,12 +1159,12 @@ static LWGEOM* parse_gml_polygon(xmlNodePtr xnode, bool *hasz, int *root_srid)
  */
 static LWGEOM* parse_gml_surface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 {
-	xmlChar *interpolation;
+	xmlChar *interpolation = 0;
 	xmlNodePtr xa, xb, xc;
-	int i, patch, ring;
-	POINTARRAY **ppa;
-	LWGEOM *geom;
-	gmlSrs *srs;
+	int i, patch, ring = 1;
+	POINTARRAY **ppa = 0;
+	LWGEOM *geom = 0;
+	gmlSrs *srs = 0;
 	bool found=false;
 
 	srs = parse_gml_srs(xnode);
