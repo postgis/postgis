@@ -283,7 +283,7 @@ void test_edge_intersection(void)
 	rv = edge_intersection(e1, e2, &g);
 	CU_ASSERT_EQUAL(rv, LW_FALSE);	
 
-	/* Second Medford case, very short segment vs very long one 	
+	/* Second Medford case, very short segment vs very long one 
 	e1.start.lat = 0.73826546728290887156;
 	e1.start.lon = -2.14426380171833042;
 	e1.end.lat = 0.73826545883786642843;
@@ -368,22 +368,6 @@ void test_edge_intersection(void)
 	CU_ASSERT_DOUBLE_EQUAL(g.lat, 90.0, 0.00001);
 	CU_ASSERT_EQUAL(rv, LW_TRUE); 
 
-	/* End touches arc at north pole */
-	edge_set(-180.0, 80.0, 0.0, 80.0, &e1);
-	edge_set(90.0, 80.0, -90.0, 90.0, &e2);
-	rv = edge_intersection(e1, e2, &g);
-	point_rad2deg(&g);
-	CU_ASSERT_DOUBLE_EQUAL(g.lat, 90.0, 0.00001);
-	CU_ASSERT_EQUAL(rv, LW_TRUE); 	
-
-	/* End touches end at north pole */
-	edge_set(-180.0, 80.0, 0.0, 90.0, &e1);
-	edge_set(90.0, 80.0, -90.0, 90.0, &e2);
-	rv = edge_intersection(e1, e2, &g);
-	point_rad2deg(&g);
-	CU_ASSERT_DOUBLE_EQUAL(g.lat, 90.0, 0.00001);
-	CU_ASSERT_EQUAL(rv, LW_TRUE); 	
-
 	/* Equal edges return true */
 	edge_set(45.0, 10.0, 50.0, 20.0, &e1);
 	edge_set(45.0, 10.0, 50.0, 20.0, &e2);
@@ -396,6 +380,36 @@ void test_edge_intersection(void)
 	edge_set(60.0, 0.0, 50.0, 0.0, &e2);
 	rv = edge_intersection(e1, e2, &g);
 	point_rad2deg(&g);
+	CU_ASSERT_EQUAL(rv, LW_TRUE); 	
+
+	/* End touches arc at north pole */
+	edge_set(-180.0, 80.0, 0.0, 80.0, &e1);
+	edge_set(90.0, 80.0, -90.0, 90.0, &e2);
+	rv = edge_intersection(e1, e2, &g);
+	point_rad2deg(&g);
+#if 0
+	printf("\n");
+	printf("LINESTRING(%.15g %.15g, %.15g %.15g)\n", e1.start.lon,  e1.start.lat, e1.end.lon,  e1.end.lat);
+	printf("LINESTRING(%.15g %.15g, %.15g %.15g)\n", e2.start.lon,  e2.start.lat, e2.end.lon,  e2.end.lat);
+	printf("g = (%.15g %.15g)\n", g.lon, g.lat);
+	printf("rv = %d\n", rv);
+#endif
+	CU_ASSERT_DOUBLE_EQUAL(g.lat, 90.0, 0.00001);
+	CU_ASSERT_EQUAL(rv, LW_TRUE); 	
+
+	/* End touches end at north pole */
+	edge_set(-180.0, 80.0, 0.0, 90.0, &e1);
+	edge_set(90.0, 80.0, -90.0, 90.0, &e2);
+	rv = edge_intersection(e1, e2, &g);
+	point_rad2deg(&g);
+#if 0
+	printf("\n");
+	printf("LINESTRING(%.15g %.15g, %.15g %.15g)\n", e1.start.lon,  e1.start.lat, e1.end.lon,  e1.end.lat);
+	printf("LINESTRING(%.15g %.15g, %.15g %.15g)\n", e2.start.lon,  e2.start.lat, e2.end.lon,  e2.end.lat);
+	printf("g = (%.15g %.15g)\n", g.lon, g.lat);
+	printf("rv = %d\n", rv);
+#endif
+	CU_ASSERT_DOUBLE_EQUAL(g.lat, 90.0, 0.00001);
 	CU_ASSERT_EQUAL(rv, LW_TRUE); 	
 
 }

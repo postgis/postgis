@@ -438,7 +438,19 @@ int edge_point_in_cone(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 	vp_dot_vcp = dot_product(vp, vcp);
 	LWDEBUGF(4,"vp_dot_vcp %.19g",vp_dot_vcp);
 	/* If p is more similar than start then p is inside the cone */
-	if ( vp_dot_vcp >= vs_dot_vcp )
+	LWDEBUGF(4,"fabs(vp_dot_vcp - vs_dot_vcp) %.39g",fabs(vp_dot_vcp - vs_dot_vcp));
+	
+	/* 
+	** We want to test that vp_dot_vcp is >= vs_dot_vcp but there are 
+	** numerical stability issues for values that are very very nearly 
+	** equal. Unfortunately there are also values of vp_dot_vcp that are legitimately
+	** very close to but still less than vs_dot_vcp which we also need to catch.
+	** The tolerance of 10-17 seems to do the trick on 32-bit and 64-bit architectures,
+	** for the test cases here.
+	** However, tuning the tolerance value feels like a dangerous hack. 
+	** Fundamentally, the problem is that this test is so sensitive.
+	*/
+	if ( vp_dot_vcp > vs_dot_vcp || fabs(vp_dot_vcp - vs_dot_vcp) < 1e-17 )
 	{
 		LWDEBUG(4, "point is in cone");
 		return LW_TRUE;
@@ -774,10 +786,10 @@ int edge_intersection(GEOGRAPHIC_EDGE e1, GEOGRAPHIC_EDGE e2, GEOGRAPHIC_POINT *
 		}
 	}
 	unit_normal(ea, eb, &v);
-	LWDEBUGF(4, "v == POINT(%.8g %.8g %.8g)", v.x, v.y, v.z);
+	LWDEBUGF(4, "v == POINT(%.12g %.12g %.12g)", v.x, v.y, v.z);
 	g->lat = atan2(v.z, sqrt(v.x * v.x + v.y * v.y));
 	g->lon = atan2(v.y, v.x);
-	LWDEBUGF(4, "g == GPOINT(%.6g %.6g)", g->lat, g->lon);
+	LWDEBUGF(4, "g == GPOINT(%.12g %.12g)", g->lat, g->lon);
 	LWDEBUGF(4, "g == POINT(%.12g %.12g)", rad2deg(g->lon), rad2deg(g->lat));
 	if ( edge_contains_point(e1, *g) && edge_contains_point(e2, *g) )
 	{
@@ -785,6 +797,7 @@ int edge_intersection(GEOGRAPHIC_EDGE e1, GEOGRAPHIC_EDGE e2, GEOGRAPHIC_POINT *
 	}
 	else
 	{
+		LWDEBUG(4, "flipping point to other side of sphere");
 		g->lat = -1.0 * g->lat;
 		g->lon = g->lon + M_PI;
 		if ( g->lon > M_PI )
