@@ -562,6 +562,13 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 	   out during index scans. For cases when the geometries are large, doing this
 	   can make things twice as slow. */
 	*recheck = false;
+	
+	/* Our ~= operator (strategy 6) requires a re-check in order to 
+	   function according to the documentation and past behavior. 
+	   We will temporarily enable that behavior here. */
+	if ( strategy == 6 )
+		*recheck = true;
+
 #endif
 
 	POSTGIS_DEBUG(2, "GIST: LWGEOM_gist_consistent called");
