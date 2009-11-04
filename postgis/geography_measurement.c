@@ -179,7 +179,7 @@ Datum geography_area(PG_FUNCTION_ARGS)
 	/* Test for cases that are currently not handled by spheroid code */
 	if ( use_spheroid )
 	{
-		/* We don't handle the poles right now */
+		/* We can't circle the poles right now */
 		if( FP_GTEQ(gbox.zmax,1.0) || FP_LTEQ(gbox.zmin,-1.0) )
 			use_spheroid = LW_FALSE;
 		/* We can't cross the equator right now */
