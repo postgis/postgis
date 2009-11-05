@@ -44,7 +44,7 @@ eval "exec perl -w $0 $@"
 
 use strict;
 
-(@ARGV >= 3) || die "Usage: postgis_restore.pl <postgis.sql> <db> <dump> [<createdb_options>]\nRestore a custom dump (pg_dump -Fc) of a postgis enabled database.\n";
+(@ARGV >= 3) || die "Usage: postgis_restore.pl <postgis.sql> <db> <dump> ["<createdb_options>]\nRestore a custom dump (pg_dump -Fc) of a postgis enabled database.\n";
 
 my $DEBUG=1;
 
@@ -712,12 +712,12 @@ print "Creating db ($dbname)\n";
 `createdb $createdb_opt $dbname`;
 die "Database creation failed\n" if ($?);
 print "Adding plpgsql\n";
-`createlang $createdb_opt plpgsql $dbname`;
+`createlang plpgsql $dbname`;
 
 #
 # Open a pipe to the SQL monitor
 #
-open( PSQL, "| psql $createdb_opt -a $dbname") || die "Can't run psql\n";
+open( PSQL, "| psql -a $dbname") || die "Can't run psql\n";
 
 #
 # Source new postgis.sql
