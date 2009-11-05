@@ -34,6 +34,7 @@ Datum LWGEOM_getSRID(PG_FUNCTION_ARGS);
 Datum LWGEOM_setSRID(PG_FUNCTION_ARGS);
 /* ---- GeometryType(geometry) */
 Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS);
+Datum geometry_geometrytype(PG_FUNCTION_ARGS);
 /* ---- NumPoints(geometry) */
 Datum LWGEOM_numpoints_linestring(PG_FUNCTION_ARGS);
 /* ---- NumGeometries(geometry) */
@@ -163,6 +164,36 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(text_ob);
 }
+
+
+/* returns a string representation of this geometry's type */
+PG_FUNCTION_INFO_V1(geometry_geometrytype);
+Datum geometry_geometrytype(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *lwgeom;
+	char *type_text;
+	char *type_str = palloc(32);
+	size_t size;
+
+	lwgeom = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	
+	/* Make it empty string to start */
+	*type_str = 0;
+
+	/* Build up the output string */
+	strncat(type_str, "ST_", 32);
+	strncat(type_str, lwgeom_typename(lwgeom_getType(lwgeom->type)), 32);
+	size = strlen(type_str) + VARHDRSZ;
+	
+	/* Build a text type to store things in */
+	type_text = lwalloc(size);
+	memcpy(VARDATA(type_text),type_str, size - VARHDRSZ);
+	pfree(type_str);
+	SET_VARSIZE(type_text, size);
+	PG_FREE_IF_COPY(lwgeom, 0);
+	PG_RETURN_POINTER(type_text);
+}
+	
 
 /**
  * Find first linestring in serialized geometry and return
