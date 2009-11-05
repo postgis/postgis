@@ -831,9 +831,9 @@ static POINTARRAY* parse_gml_poslist(xmlNodePtr xnode, bool *hasz)
  */
 static POINTARRAY* parse_gml_data(xmlNodePtr xnode, bool *hasz, int *root_srid)
 {
-	POINTARRAY *pa, *tmp_pa;
+	POINTARRAY *pa = 0, *tmp_pa = 0;
 	xmlNodePtr xa, xb;
-	gmlSrs *srs;
+	gmlSrs *srs = 0;
 	bool found;
 
 	pa = NULL;
@@ -842,6 +842,7 @@ static POINTARRAY* parse_gml_data(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
+		if (!xa->name) continue;
 
 		if (!strcmp((char *) xa->name, "pos")) {
 	  		tmp_pa = parse_gml_pos(xa, hasz);
@@ -967,13 +968,13 @@ static LWGEOM* parse_gml_line(xmlNodePtr xnode, bool *hasz, int *root_srid)
  */
 static LWGEOM* parse_gml_curve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 {
-	xmlChar *interpolation;
+	xmlChar *interpolation = 0;
 	int lss, last, i;
-	POINTARRAY **ppa;
-	POINTARRAY *pa;
+	POINTARRAY **ppa = 0;
+	POINTARRAY *pa = 0;
 	xmlNodePtr xa;
-	LWGEOM *geom;
-	gmlSrs *srs;
+	LWGEOM *geom = 0;
+	gmlSrs *srs = 0;
 	bool found=false;
 	unsigned int npoints=0;
 
