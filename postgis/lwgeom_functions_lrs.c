@@ -495,10 +495,11 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 	}
 
 	/*
-	 * Return NULL if input doesn't have a measure
+	 * Return error if input doesn't have a measure
 	 */
 	if ( ! lwgeom_hasM(gin->type) )
 	{
+		lwerror("Geometry argument does not have an 'M' ordinate");
 		PG_RETURN_NULL();
 	}
 
@@ -507,6 +508,7 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 	 * or a collection
 	 */
 	type=lwgeom_getType(gin->type);
+		
 	if ( type == POLYGONTYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE )
 	{
 		lwerror("Areal or Collection types are not supported");
