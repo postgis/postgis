@@ -4825,29 +4825,8 @@ CREATE OR REPLACE FUNCTION GeometryType(geometry)
 -- Not quite equivalent to GeometryType
 CREATE OR REPLACE FUNCTION ST_GeometryType(geometry)
 	RETURNS text
-	AS $$ 
-	DECLARE
-	gtype text := geometrytype($1);
-	BEGIN
-	IF (gtype IN ('POINT', 'POINTM')) THEN
-	    gtype := 'Point';
-	ELSIF (gtype IN ('LINESTRING', 'LINESTRINGM')) THEN
-	    gtype := 'LineString';
-	ELSIF (gtype IN ('POLYGON', 'POLYGONM')) THEN
-	    gtype := 'Polygon';
-	ELSIF (gtype IN ('MULTIPOINT', 'MULTIPOINTM')) THEN
-	    gtype := 'MultiPoint';
-	ELSIF (gtype IN ('MULTILINESTRING', 'MULTILINESTRINGM')) THEN
-	    gtype := 'MultiLineString';
-	ELSIF (gtype IN ('MULTIPOLYGON', 'MULTIPOLYGONM')) THEN
-	    gtype := 'MultiPolygon';
-	ELSE
-	    gtype := 'Geometry';
-	END IF;
-	RETURN 'ST_' || gtype;
-	END
-$$
-LANGUAGE 'plpgsql' IMMUTABLE STRICT; 
+	AS 'MODULE_PATHNAME', 'geometry_geometrytype'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION PointN(geometry,integer)
