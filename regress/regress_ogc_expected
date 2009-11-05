@@ -2,7 +2,6 @@ buffer|POLYGON((1 0,0.707107 -0.707107,0 -1,-0.707107 -0.707107,-1 0,-0.707107 0
 buffer|POLYGON((1 0,0.707107 -0.707107,0 -1,-0.707107 -0.707107,-1 0,-0.707107 0.707107,0 1,0.707107 0.707107,1 0))
 buffer|POLYGON((1 0,0.866025 -0.5,0.5 -0.866025,0 -1,-0.5 -0.866025,-0.866025 -0.5,-1 0,-0.866025 0.5,-0.5 0.866025,0 1,0.5 0.866025,0.866025 0.5,1 0))
 geomunion|MULTIPOINT(0 0,1 1)
-unite_garray|t
 convexhull|POLYGON((0 0,0 10,10 10,10 0,0 0))
 relate|F0FFFF102
 relate|t
@@ -74,11 +73,8 @@ polygonize_garray|GEOMETRYCOLLECTION EMPTY
 polygonize_garray|POLYGON((10 0,0 0,0 10,10 10,10 0))
 linemerge149|LINESTRING(-5 -5,0 0,1 1,4 4)
 intersects|f
-ERROR:  geometry requires more points
-HINT:  "POLYGON((0 0, 1 1, 0 0)" <-- parse error at position 23 within geometry
 buffer|POLYGON((1 0,0.707107 -0.707107,0 -1,-0.707107 -0.707107,-1 0,-0.707107 0.707107,0 1,0.707107 0.707107,1 0))
 geomunion|MULTIPOINT(0 0,1 1)
-unite_garray|t
 convexhull|POLYGON((0 0,0 10,10 10,10 0,0 0))
 relate|F0FFFF102
 relate|t

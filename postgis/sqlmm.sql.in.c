@@ -156,37 +156,17 @@ CREATE OR REPLACE FUNCTION ST_OrderingEquals(geometry, geometry)
 	$$	
 	LANGUAGE 'SQL' IMMUTABLE STRICT; 
 
--- PostGIS equivalent function: zmflag(geometry)
+-- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION SE_Is3D(geometry)
-	RETURNS boolean
-	AS $$ 
-	SELECT CASE ST_zmflag($1)
-	       WHEN 0 THEN false
-	       WHEN 1 THEN false
-	       WHEN 2 THEN true
-	       WHEN 3 THEN true
-	       ELSE false
-	   END
-	$$	
-	LANGUAGE 'SQL' IMMUTABLE STRICT; 
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_hasz'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- PostGIS equivalent function: zmflag(geometry)
+-- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION SE_IsMeasured(geometry)
-	RETURNS boolean
-	AS $$ 
-	SELECT CASE ST_zmflag($1)
-	       WHEN 0 THEN false
-	       WHEN 1 THEN true
-	       WHEN 2 THEN false
-	       WHEN 3 THEN true
-	       ELSE false
-	   END
-	$$	
-	LANGUAGE 'SQL' IMMUTABLE STRICT; 
-
-
-
-
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_hasm'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -------------------------------------------------------------------------------
 -- SQL/MM (ArcSDE subset) - SQL Functions on type ST_Point

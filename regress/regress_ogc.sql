@@ -10,7 +10,6 @@ SELECT 'buffer', astext(SnapToGrid(buffer('POINT(0 0)', 1, '2'), 1.0e-6));
 SELECT 'buffer', astext(SnapToGrid(buffer('POINT(0 0)', 1, '3'), 1.0e-6));
 
 SELECT 'geomunion', astext(geomunion('POINT(0 0)', 'POINT(1 1)'));
-SELECT 'unite_garray', equals(unite_garray(geom_accum('{POINT(0 0)}', 'POINT(2 3)')), 'MULTIPOINT(2 3,0 0)');
 SELECT 'convexhull', asewkt(convexhull('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0),(2 2, 2 4, 4 4, 4 2, 2 2))'));
 SELECT 'relate', relate('POINT(0 0)', 'LINESTRING(0 0, 1 1)');
 SELECT 'relate', relate('POINT(0 0)', 'LINESTRING(0 0, 1 1)', 'F0FFFF*02');
@@ -132,13 +131,10 @@ select 'intersects', intersects(
       polygonfromtext('POLYGON((0.0 2.0,1.0 2.0,1.0 3.0,0.0 3.0,0.0 2.0))')
       );
 
-select '130', geosnoop('POLYGON((0 0, 1 1, 0 0))');
-
 -- Repeat all tests with new function names.
 SELECT 'buffer', ST_astext(ST_SnapToGrid(ST_buffer('POINT(0 0)', 1, 2), 1.0e-6));
 
 SELECT 'geomunion', ST_astext(ST_union('POINT(0 0)', 'POINT(1 1)'));
-SELECT 'unite_garray', ST_equals(ST_unite_garray(ST_geom_accum('{POINT(0 0)}', 'POINT(2 3)')), 'MULTIPOINT(2 3,0 0)');
 SELECT 'convexhull', ST_asewkt(ST_convexhull('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0),(2 2, 2 4, 4 4, 4 2, 2 2))'));
 SELECT 'relate', ST_relate('POINT(0 0)', 'LINESTRING(0 0, 1 1)');
 SELECT 'relate', ST_relate('POINT(0 0)', 'LINESTRING(0 0, 1 1)', 'F0FFFF*02');
