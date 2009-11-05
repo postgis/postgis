@@ -1,5 +1,5 @@
-2d|
-3dz|
+ERROR:  Geometry argument does not have an 'M' ordinate
+ERROR:  Geometry argument does not have an 'M' ordinate
 PNTM_1|GEOMETRYCOLLECTIONM EMPTY
 PNTM_2|POINTM(1 2 3)
 PNTM_3|POINTM(1 2 3)
@@ -41,8 +41,8 @@ line_substring|POINT(0 0)
 line_substring|POINT(0.5 0.5 7.5)
 line_interpolate_point|POINT(0 0)
 line_interpolate_point|POINT(0.5 0.5 7.5)
-2d|
-3dz|
+ERROR:  Geometry argument does not have an 'M' ordinate
+ERROR:  Geometry argument does not have an 'M' ordinate
 PNTM_1|GEOMETRYCOLLECTIONM EMPTY
 PNTM_2|POINTM(1 2 3)
 PNTM_3|POINTM(1 2 3)
