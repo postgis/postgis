@@ -14817,9 +14817,9 @@ all_em|grabone   | grab_rest
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Box2D">
+	<refentry id="Box2D">
 	  <refnamediv>
-		<refname>ST_Box2D</refname>
+		<refname>Box2D</refname>
 
 		<refpurpose>Returns a BOX2D representing the maximum extents of the geometry.</refpurpose>
 	  </refnamediv>
@@ -14827,7 +14827,7 @@ all_em|grabone   | grab_rest
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>box2d <function>ST_Box2D</function></funcdef>
+			<funcdef>box2d <function>Box2D</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -14850,13 +14850,13 @@ all_em|grabone   | grab_rest
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_Box2D(ST_GeomFromText('LINESTRING(1 2, 3 4, 5 6)'));
-	st_box2d
+		<programlisting>SELECT Box2D(ST_GeomFromText('LINESTRING(1 2, 3 4, 5 6)'));
+	box2d
 	---------
 	BOX(1 2,5 6)
 
-	SELECT ST_Box2D(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'));
-	st_box2d
+	SELECT Box2D(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'));
+	box2d
 	--------
 	BOX(220186.984375 150406,220288.25 150506.140625)
 	</programlisting>
@@ -14866,13 +14866,13 @@ all_em|grabone   | grab_rest
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Box3D" />, <xref linkend="ST_GeomFromText" /></para>
+		<para><xref linkend="Box3D" />, <xref linkend="ST_GeomFromText" /></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Box3D">
+	<refentry id="Box3D">
 	  <refnamediv>
-		<refname>ST_Box3D</refname>
+		<refname>Box3D</refname>
 
 		<refpurpose>Returns a BOX3D representing the maximum extents of the geometry.</refpurpose>
 	  </refnamediv>
@@ -14880,7 +14880,7 @@ all_em|grabone   | grab_rest
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>box3d <function>ST_Box3D</function></funcdef>
+			<funcdef>box3d <function>Box3D</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -14910,13 +14910,13 @@ all_em|grabone   | grab_rest
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_Box3D(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 5, 5 6 5)'));
-	st_box3d
+		<programlisting>SELECT Box3D(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 5, 5 6 5)'));
+	box3d
 	---------
 	BOX3D(1 2 3,5 6 5)
 
-	SELECT ST_Box3D(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 1,220227 150406 1)'));
-	st_box3d
+	SELECT Box3D(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 1,220227 150406 1)'));
+	box3d
 	--------
 	BOX3D(220227 150406 1,220268 150415 1)
 	</programlisting>
@@ -14926,7 +14926,7 @@ all_em|grabone   | grab_rest
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Box2D" />, <xref linkend="ST_GeomFromEWKT" /></para>
+		<para><xref linkend="Box2D" />, <xref linkend="ST_GeomFromEWKT" /></para>
 	  </refsection>
 	</refentry>
 
@@ -15885,9 +15885,9 @@ st_zmin
 	<para>These functions are rarely used functions that should only be used if your data is corrupted in someway.  They are used for troubleshooting corruption
 		and also fixing things that should under normal circumstances, never happen.</para>
 
-	<refentry id="ST_AddBBox">
+	<refentry id="PostGIS_AddBBox">
 		  <refnamediv>
-			<refname>ST_AddBBox</refname>
+			<refname>PostGIS_AddBBox</refname>
 
 			<refpurpose>Add bounding box to the geometry.</refpurpose>
 		  </refnamediv>
@@ -15895,7 +15895,7 @@ st_zmin
 		  <refsynopsisdiv>
 			<funcsynopsis>
 			  <funcprototype>
-				<funcdef>geometry <function>ST_AddBBox</function></funcdef>
+				<funcdef>geometry <function>PostGIS_AddBBox</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
@@ -15934,13 +15934,13 @@ st_zmin
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_DropBBox" />, <xref linkend="ST_HasBBox" /></para>
+			<para><xref linkend="PostGIS_DropBBox" />, <xref linkend="PostGIS_HasBBox" /></para>
 		  </refsection>
 	</refentry>
 
-	<refentry id="ST_DropBBox">
+	<refentry id="PostGIS_DropBBox">
 		  <refnamediv>
-			<refname>ST_DropBBox</refname>
+			<refname>PostGIS_DropBBox</refname>
 
 			<refpurpose>Drop the bounding box cache from the geometry.</refpurpose>
 		  </refnamediv>
@@ -15948,7 +15948,7 @@ st_zmin
 		  <refsynopsisdiv>
 			<funcsynopsis>
 			  <funcprototype>
-				<funcdef>geometry <function>ST_DropBBox</function></funcdef>
+				<funcdef>geometry <function>PostGIS_DropBBox</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
@@ -15981,15 +15981,15 @@ st_zmin
 			<title>Examples</title>
 
 			<programlisting>--This example drops bounding boxes where the cached box is not correct
-			--The force to ST_AsBinary before applying ST_box2D forces a recalculation of the box, and ST_Box2D applied to the table geometry always
+			--The force to ST_AsBinary before applying Box2D forces a recalculation of the box, and Box2D applied to the table geometry always
 			-- returns the cached bounding box.
 			UPDATE sometable
- SET the_geom =  ST_DropBBox(the_geom)
- WHERE Not (ST_Box2D(ST_AsBinary(the_geom)) = ST_Box2D(the_geom));
+ SET the_geom =  PostGIS_DropBBox(the_geom)
+ WHERE Not (Box2D(ST_AsBinary(the_geom)) = Box2D(the_geom));
 
 	UPDATE sometable
- SET the_geom =  ST_AddBBox(the_geom)
- WHERE Not ST_HasBBOX(the_geom);
+ SET the_geom =  PostGIS_AddBBox(the_geom)
+ WHERE Not PostGIS_HasBBOX(the_geom);
 
 
  </programlisting>
@@ -15999,14 +15999,14 @@ st_zmin
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_AddBBox" />, <xref linkend="ST_HasBBox" />, <xref linkend="ST_Box2D" /></para>
+			<para><xref linkend="PostGIS_AddBBox" />, <xref linkend="PostGIS_HasBBox" />, <xref linkend="Box2D" /></para>
 		  </refsection>
 	</refentry>
 
 
-	<refentry id="ST_HasBBox">
+	<refentry id="PostGIS_HasBBox">
 	  <refnamediv>
-		<refname>ST_HasBBox</refname>
+		<refname>PostGIS_HasBBox</refname>
 
 		<refpurpose>Returns TRUE if the bbox of this geometry is cached, FALSE otherwise.</refpurpose>
 	  </refnamediv>
@@ -16014,7 +16014,7 @@ st_zmin
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>boolean <function>ST_HasBBox</function></funcdef>
+			<funcdef>boolean <function>PostGIS_HasBBox</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -16024,7 +16024,7 @@ st_zmin
 		<title>Description</title>
 
 		<para>Returns TRUE if the bbox of this geometry is cached, FALSE
-				otherwise. Use <xref linkend="ST_AddBBox" /> and <xref linkend="ST_DropBBox" /> to control caching.</para>
+				otherwise. Use <xref linkend="PostGIS_AddBBox" /> and <xref linkend="PostGIS_DropBBox" /> to control caching.</para>
 
 
 	<!-- Optionally mention Circular String Support -->
@@ -16040,14 +16040,14 @@ st_zmin
 		<title>Examples</title>
 
 		<programlisting>SELECT the_geom
-FROM sometable WHERE ST_HasBBox(the_geom) = false;</programlisting>
+FROM sometable WHERE PostGIS_HasBBox(the_geom) = false;</programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_AddBBox" />, <xref linkend="ST_DropBBox" /></para>
+		<para><xref linkend="PostGIS_AddBBox" />, <xref linkend="PostGIS_DropBBox" /></para>
 	  </refsection>
 	</refentry>
 
