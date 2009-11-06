@@ -727,40 +727,239 @@ SELECT 'poslist_18', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:posList>!@#$
 SELECT 'data_1', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:pos>1 2</gml:pos><gml:posList>3 4 5 6</gml:posList><gml:coordinates>7,8 9,10</gml:coordinates><gml:coord><gml:X>11</gml:X><gml:Y>12</gml:Y></gml:coord></gml:LineString>'));
 
 -- Mixed pos, posList, pointProperty, pointRep
-SELECT 'data_2', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:pos>1 2</gml:pos><gml:posList>3 4 5 6</gml:posList><gml:pointProperty><gml:point><gml:pos>7 8</gml:pos></gml:point></gml:pointProperty><gml:pointRep><gml:point><gml:coordinates>9,10</gml:coordinates></gml:point></gml:pointRep></gml:LineString>'));
+SELECT 'data_2', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:pos>1 2</gml:pos><gml:posList>3 4 5 6</gml:posList><gml:pointProperty><gml:Point><gml:pos>7 8</gml:pos></gml:Point></gml:pointProperty><gml:pointRep><gml:Point><gml:coordinates>9,10</gml:coordinates></gml:Point></gml:pointRep></gml:LineString>'));
+
 
 
 
 --
--- Xlink
+-- XLink
 --
 
--- Xlink on a point
-SELECT 'xlink_1', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:point gml:id="p1"><gml:pos>1 2</gml:pos></gml:point></gml:pointProperty><gml:pointProperty><gml:point xlink:type="simple" xlink:href="#p1"/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
+-- xlink with pointProperty
+SELECT 'xlink_1', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:Point gml:id="p1"><gml:pos>1 2</gml:pos></gml:Point></gml:pointProperty><gml:pointProperty><gml:Point xlink:type="simple" xlink:href="#p1"/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
 
 -- ERROR: xlink:href destination is not defined
-SELECT 'xlink_2', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:point gml:id="p1"><gml:pos>1 2</gml:pos></gml:point></gml:pointProperty><gml:pointProperty><gml:point xlink:type="simple" xlink:href="#p2"/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
+SELECT 'xlink_2', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:Point gml:id="p1"><gml:pos>1 2</gml:pos></gml:Point></gml:pointProperty><gml:pointProperty><gml:Point xlink:type="simple" xlink:href="#p2"/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
 
 -- ERROR: no href 
-SELECT 'xlink_3', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:point gml:id="p1"><gml:pos>1 2</gml:pos></gml:point></gml:pointProperty><gml:pointProperty><gml:point xlink:type="simple" /></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
+SELECT 'xlink_3', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:Point gml:id="p1"><gml:pos>1 2</gml:pos></gml:Point></gml:pointProperty><gml:pointProperty><gml:Point xlink:type="simple" /></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
 
 -- ERROR: empty href 
-SELECT 'xlink_4', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:point gml:id="p1"><gml:pos>1 2</gml:pos></gml:point></gml:pointProperty><gml:pointProperty><gml:point xlink:type="simple" xlink:href=""/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
+SELECT 'xlink_4', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:Point gml:id="p1"><gml:pos>1 2</gml:pos></gml:Point></gml:pointProperty><gml:pointProperty><gml:Point xlink:type="simple" xlink:href=""/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
 
 -- ERROR: no sharp char in href
-SELECT 'xlink_5', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:point gml:id="p1"><gml:pos>1 2</gml:pos></gml:point></gml:pointProperty><gml:pointProperty><gml:point xlink:type="simple" xlink:href="p2"/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
+SELECT 'xlink_5', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:Point gml:id="p1"><gml:pos>1 2</gml:pos></gml:Point></gml:pointProperty><gml:pointProperty><gml:Point xlink:type="simple" xlink:href="p2"/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
 
 -- ERROR: no xlink namespace
-SELECT 'xlink_6', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml"><gml:pointProperty><gml:point gml:id="p1"><gml:pos>1 2</gml:pos></gml:point></gml:pointProperty><gml:pointProperty><gml:point xlink:type="simple" xlink:href="#p1"/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
+SELECT 'xlink_6', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml"><gml:pointProperty><gml:Point gml:id="p1"><gml:pos>1 2</gml:pos></gml:Point></gml:pointProperty><gml:pointProperty><gml:Point xlink:type="simple" xlink:href="#p1"/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
 
 -- ERROR: wrong xlink namespace
-SELECT 'xlink_7', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://foo.net"><gml:pointProperty><gml:point gml:id="p1"><gml:pos>1 2</gml:pos></gml:point></gml:pointProperty><gml:pointProperty><gml:point xlink:type="simple" xlink:href="#p1"/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
+SELECT 'xlink_7', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://foo.net"><gml:pointProperty><gml:Point gml:id="p1"><gml:pos>1 2</gml:pos></gml:Point></gml:pointProperty><gml:pointProperty><gml:Point xlink:type="simple" xlink:href="#p1"/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
 
 -- ERROR: no xlink:type 
-SELECT 'xlink_8', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:point gml:id="p1"><gml:pos>1 2</gml:pos></gml:point></gml:pointProperty><gml:pointProperty><gml:point xlink:href="#p1"/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
+SELECT 'xlink_8', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:Point gml:id="p1"><gml:pos>1 2</gml:pos></gml:Point></gml:pointProperty><gml:pointProperty><gml:Point xlink:href="#p1"/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
 
 -- ERROR: xlink:type not simple
-SELECT 'xlink_9', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:point gml:id="p1"><gml:pos>1 2</gml:pos></gml:point></gml:pointProperty><gml:pointProperty><gml:point xlink:type="extended" xlink:href="#p1"/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
+SELECT 'xlink_9', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:Point gml:id="p1"><gml:pos>1 2</gml:pos></gml:Point></gml:pointProperty><gml:pointProperty><gml:Point xlink:type="extended" xlink:href="#p1"/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
+
+-- ERROR: more than one destination is defined
+SELECT 'xlink_10', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:Point gml:id="p1"><gml:pos>1 2</gml:pos></gml:Point></gml:pointProperty><gml:pointProperty><gml:Point xlink:type="simple" xlink:href="#p1"/></gml:pointProperty><gml:pointProperty><gml:Point gml:id="p1"><gml:pos>3 4</gml:pos></gml:Point></gml:pointProperty></gml:LineString>'));
+
+-- xlink with pointRep
+SELECT 'xlink_11', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointRep><gml:Point gml:id="p1"><gml:pos>1 2</gml:pos></gml:Point></gml:pointRep><gml:pointRep><gml:Point xlink:type="simple" xlink:href="#p1"/></gml:pointRep><gml:pos>3 4</gml:pos></gml:LineString>'));
+
+-- xlink on a point 
+SELECT 'xlink_12', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:Point gml:id="p1"><gml:pos>1 2</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:Point xlink:type="simple" xlink:href="#p1"/></gml:geometryMember></gml:MultiGeometry>'));
+
+-- xlink on a linestring
+SELECT 'xlink_13', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:LineString gml:id="l1"><gml:posList>1 2 3 4</gml:posList></gml:LineString></gml:geometryMember><gml:geometryMember><gml:LineString xlink:type="simple" xlink:href="#l1"/></gml:geometryMember></gml:MultiGeometry>'));
+
+-- xlink on a curve 
+SELECT 'xlink_14', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:Curve gml:id="c1"><gml:segments><gml:LineStringSegment><gml:posList>1 2 3 4</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:geometryMember><gml:geometryMember><gml:Curve xlink:type="simple" xlink:href="#c1"/></gml:geometryMember></gml:MultiGeometry>'));
+
+-- xlink on a polygon 
+SELECT 'xlink_15', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:Polygon gml:id="p1"><gml:exterior><gml:LinearRing><gml:posList>1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:geometryMember><gml:geometryMember><gml:Polygon xlink:type="simple" xlink:href="#p1"/></gml:geometryMember></gml:MultiGeometry>'));
+
+-- xlink on a surface 
+SELECT 'xlink_16', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:Surface gml:id="s1"><gml:patches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList>1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:patches></gml:Surface></gml:geometryMember><gml:geometryMember><gml:Surface xlink:type="simple" xlink:href="#s1"/></gml:geometryMember></gml:MultiGeometry>'));
+
+-- xlink on a multipoint 
+SELECT 'xlink_17', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:MultiPoint gml:id="mp1"><gml:pointMember><gml:Point><gml:pos>1 2</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint></gml:geometryMember><gml:geometryMember><gml:MultiPoint xlink:type="simple" xlink:href="#mp1"/></gml:geometryMember></gml:MultiGeometry>'));
+
+-- xlink on a multiline 
+SELECT 'xlink_18', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:MultiLineString gml:id="ml1"><gml:lineStringMember><gml:LineString><gml:posList>1 2 3 4</gml:posList></gml:LineString></gml:lineStringMember></gml:MultiLineString></gml:geometryMember><gml:geometryMember><gml:MultiLineString xlink:type="simple" xlink:href="#ml1"/></gml:geometryMember></gml:MultiGeometry>'));
+
+-- xlink on a multicurve 
+SELECT 'xlink_19', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:MultiCurve gml:id="mc1"><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>1 2 3 4</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve></gml:geometryMember><gml:geometryMember><gml:MultiCurve xlink:type="simple" xlink:href="#mc1"/></gml:geometryMember></gml:MultiGeometry>'));
+
+-- xlink on a multipolygon 
+SELECT 'xlink_20', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:MultiPolygon gml:id="mp1"><gml:polygonMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:polygonMember></gml:MultiPolygon></gml:geometryMember><gml:geometryMember><gml:MultiPolygon xlink:type="simple" xlink:href="#mp1"/></gml:geometryMember></gml:MultiGeometry>'));
+
+-- xlink on a multisurface 
+SELECT 'xlink_21', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:MultiSurface gml:id="ms1"><gml:surfaceMember><gml:Surface><gml:patches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList>1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:patches></gml:Surface></gml:surfaceMember></gml:MultiSurface></gml:geometryMember><gml:geometryMember><gml:MultiSurface xlink:type="simple" xlink:href="#ms1"/></gml:geometryMember></gml:MultiGeometry>'));
+
+-- xlink on a multigeometry 
+SELECT 'xlink_22', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:MultiGeometry gml:id="mg1"><gml:geometryMember><gml:Point><gml:pos>1 2</gml:pos></gml:Point></gml:geometryMember></gml:MultiGeometry></gml:geometryMember><gml:geometryMember><gml:MultiGeometry xlink:type="simple" xlink:href="#mg1"/></gml:geometryMember></gml:MultiGeometry>'));
+
+-- ERROR circular ref
+SELECT 'xlink_23', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry gml:id="mg1" xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:Point><gml:pos>1 2</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:MultiGeometry xlink:type="simple" xlink:href="#mg1"/></gml:geometryMember></gml:MultiGeometry>'));
+
+
+
+--
+-- Bijective PostGIS GML test
+--
+
+-- Point GML 2
+SELECT 'gml_1', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('POINT(1 2)'))));
+
+-- Point GML 2 - 3D
+SELECT 'gml_2', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('POINT(1 2 3)'))));
+
+-- Point GML 2 & SRID planar
+SELECT 'gml_3', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('SRID=27582;POINT(1 2)'))));
+
+-- Point GML 3
+SELECT 'gml_4', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('POINT(1 2)'))));
+
+-- Point GML 3 & SRID lat/lon
+SELECT 'gml_5', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;POINT(1 2)'), 16)));
+
+-- Point GML 3 - 3D
+SELECT 'gml_6', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('POINT(1 2 3)'))));
+
+-- Point GML 3 - 3D & SRID lat/lon
+SELECT 'gml_7', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;POINT(1 2 3)'), 16)));
+
+-- Linestring GML 2
+SELECT 'gml_8', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('LINESTRING(1 2,3 4)'))));
+
+-- Linestring GML 2 - 3D
+SELECT 'gml_9', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('LINESTRING(1 2 3,4 5 6)'))));
+
+-- Linestring GML 2 & SRID planar
+SELECT 'gml_10', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('SRID=27582;LINESTRING(1 2,3 4)'))));
+
+-- Linestring GML 3
+SELECT 'gml_11', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('LINESTRING(1 2,3 4)'))));
+
+-- Linestring GML 3 & SRID lat/lon
+SELECT 'gml_12', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;LINESTRING(1 2,3 4)'), 16)));
+
+-- Linestring GML 3 - 3D
+SELECT 'gml_13', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('LINESTRING(1 2 3,4 5 6)'))));
+
+-- Linestring GML 3 - 3D & SRID lat/lon
+SELECT 'gml_14', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;LINESTRING(1 2 3,4 5 6)'), 16)));
+
+-- Polygon GML 2
+SELECT 'gml_15', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('POLYGON((1 2,3 4,5 6,1 2))'))));
+
+-- Polygon GML 2 - 3D
+SELECT 'gml_16', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('POLYGON((1 2 3,4 5 6,7 8 9,1 2 3))'))));
+
+-- Polygon GML 2 & SRID planar
+SELECT 'gml_17', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('SRID=27582;POLYGON((1 2,3 4,5 6,1 2))'))));
+
+-- Polygon GML 3
+SELECT 'gml_18', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('POLYGON((1 2,3 4,5 6,1 2))'))));
+
+-- Polygon GML 3 & SRID lat/lon
+SELECT 'gml_19', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;POLYGON((1 2,3 4,5 6,1 2))'))));
+
+-- Polygon GML 3 - 3D
+SELECT 'gml_20', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('POLYGON((1 2 3,4 5 6,7 8 9,1 2 3))'))));
+
+-- Polygon GML 3 - 3D & SRID lat/lon
+SELECT 'gml_21', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;POLYGON((1 2 3,4 5 6,7 8 9,1 2 3))'))));
+
+-- Multipoint GML 2
+SELECT 'gml_22', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('MULTIPOINT(1 2)'))));
+
+-- Multipoint GML 2 - 3D
+SELECT 'gml_23', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('MULTIPOINT(1 2 3)'))));
+
+-- Multipoint GML 2 & SRID planar
+SELECT 'gml_24', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('SRID=27582;MULTIPOINT(1 2)'))));
+
+-- Multipoint GML 3
+SELECT 'gml_25', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('MULTIPOINT(1 2)'))));
+
+-- Multipoint GML 3 & SRID lat/lon
+SELECT 'gml_26', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;MULTIPOINT(1 2)'), 16)));
+
+-- Multipoint GML 3 - 3D
+SELECT 'gml_27', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('MULTIPOINT(1 2 3)'))));
+
+-- Multipoint GML 3 - 3D & SRID lat/lon
+SELECT 'gml_28', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;MULTIPOINT(1 2 3)'), 16)));
+
+-- Multilinestring GML 2
+SELECT 'gml_29', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('MULTILINESTRING((1 2,3 4))'))));
+
+-- Multilinestring GML 2 - 3D
+SELECT 'gml_30', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('MULTILINESTRING((1 2 3,4 5 6))'))));
+
+-- Multilinestring GML 2 & SRID planar
+SELECT 'gml_31', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('SRID=27582;MULTILINESTRING((1 2,3 4))'))));
+
+-- Multilinestring GML 3
+SELECT 'gml_32', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('MULTILINESTRING((1 2,3 4))'))));
+
+-- Multilinestring GML 3 & SRID lat/lon
+SELECT 'gml_33', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;MULTILINESTRING((1 2,3 4))'), 16)));
+
+-- Multilinestring GML 3 - 3D
+SELECT 'gml_34', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('MULTILINESTRING((1 2 3,4 5 6))'))));
+
+-- Multilinestring GML 3 - 3D & SRID lat/lon
+SELECT 'gml_35', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;MULTILINESTRING((1 2 3,4 5 6))'), 16)));
+
+-- Multipolygon GML 2
+SELECT 'gml_36', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('MULTIPOLYGON(((1 2,3 4,5 6,1 2)))'))));
+
+-- Multipolygon GML 2 - 3D
+SELECT 'gml_37', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('MULTIPOLYGON(((1 2 3,4 5 6,7 8 9,1 2 3)))'))));
+
+-- Multipolygon GML 2 & SRID planar
+SELECT 'gml_38', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('SRID=27582;MULTIPOLYGON(((1 2,3 4,5 6,1 2)))'))));
+
+-- Multipolygon GML 3
+SELECT 'gml_39', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('MULTIPOLYGON(((1 2,3 4,5 6,1 2)))'))));
+
+-- Multipolygon GML 3 & SRID lat/lon
+SELECT 'gml_40', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;MULTIPOLYGON(((1 2,3 4,5 6,1 2)))'))));
+
+-- Multipolygon GML 3 - 3D
+SELECT 'gml_41', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('MULTIPOLYGON(((1 2 3,4 5 6,7 8 9,1 2 3)))'))));
+
+-- Multipolygon GML 3 - 3D & SRID lat/lon
+SELECT 'gml_42', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;MULTIPOLYGON(((1 2 3,4 5 6,7 8 9,1 2 3)))'))));
+
+-- Collection GML 2
+SELECT 'gml_43', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('GEOMETRYCOLLECTION(POINT(1 2))'))));
+
+-- Collection GML 2 - 3D
+SELECT 'gml_44', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('GEOMETRYCOLLECTION(POINT(1 2 3))'))));
+
+-- Collection GML 2 & SRID planar
+SELECT 'gml_45', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('SRID=27582;GEOMETRYCOLLECTION(POINT(1 2))'))));
+
+-- Collection GML 3
+SELECT 'gml_46', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('GEOMETRYCOLLECTION(POINT(1 2))'))));
+
+-- Collection GML 3 & SRID lat/lon
+SELECT 'gml_47', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;GEOMETRYCOLLECTION(POINT(1 2))'), 16)));
+
+-- Collection GML 3 - 3D
+SELECT 'gml_48', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('GEOMETRYCOLLECTION(POINT(1 2 3))'))));
+
+-- Collection GML 3 - 3D & SRID lat/lon
+SELECT 'gml_49', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;GEOMETRYCOLLECTION(POINT(1 2 3))'), 16)));
+
+
+
 
 
 

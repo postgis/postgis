@@ -20,7 +20,7 @@
 *
 * GML versions supported:
 *  - GML 3.2.1 Namespace
-*  - GML 3.1.1 Simple Features profile
+*  - GML 3.1.1 Simple Features profile SF-2
 *  - GML 3.1.0 and 3.0.0 SF elements and attributes
 *  - GML 2.1.2
 * Cf: <http://www.opengeospatial.org/standards/gml>
@@ -113,10 +113,10 @@ Datum geom_from_gml(PG_FUNCTION_ARGS)
 	xmlFreeDoc(xmldoc);
 	xmlCleanupParser();
 
-	/* GML geometry could be either 2 or 3D and can be nested mixed.
+	/* GML geometries could be either 2 or 3D and can be nested mixed.
 	 * Missing Z dimension is even tolerated inside some GML coords
 	 *
-	 * So we deal with 3D in all structure allocation, and flag hasz
+	 * So we deal with 3D in all structures allocation, and flag hasz
 	 * to false if we met once a missing Z dimension
 	 * In this case, we force recursive 2D.
 	 */
@@ -132,85 +132,6 @@ Datum geom_from_gml(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(geom);
 }
 			
-
-/**
- * Return true if current node contains a simple xlink 
- * Return false otherwise.
- */
-static bool is_xlink(xmlNodePtr node)
-{
-	xmlChar *prop;
-
-	prop = xmlGetNsProp(node, (xmlChar *)"type", (xmlChar *) XLINK_NS);
-	if (prop == NULL) return false;
-	if (strcmp((char *) prop, "simple")) {
-		xmlFree(prop);
-		return false;
-	}
-
-	prop = xmlGetNsProp(node, (xmlChar *)"href", (xmlChar *) XLINK_NS);
-	if (prop == NULL) return false;
-	if (prop[0] != '#') {
-		xmlFree(prop);
-		return false;
-	}
-	xmlFree(prop);
-
-	return true;
-}
-
-
-/**
- * Return a xmlNodePtr on a node referenced by a xlink or NULL otherwise 
- */
-static xmlNodePtr get_xlink_node(xmlNodePtr xnode)
-{
-	char *id;
-        xmlNodePtr node;
-	xmlNsPtr *ns, *n;
-	xmlChar *href, *p;
-        xmlXPathContext *ctx;
-        xmlXPathObject *xpath;
-
-	href = xmlGetNsProp(xnode, (xmlChar *)"href", (xmlChar *) XLINK_NS);
-	id = lwalloc((xmlStrlen(xnode->ns->prefix) * 2 + xmlStrlen(xnode->name)
-			       	+ xmlStrlen(href) + sizeof("//:[@:id='']") + 1));
-	p = href;
-	p++; /* ignore '#' first char */
-
-	/* Xpath pattern look like:		//gml:point[@gml:id='p1']   */
-	sprintf(id, "//%s:%s[@%s:id='%s']", 	(char *) xnode->ns->prefix,
-						(char *) xnode->name,
-						(char *) xnode->ns->prefix,
-						(char *) p);
-	xmlFree(href);
-
-        ctx = xmlXPathNewContext(xnode->doc);
-	if (ctx == NULL) {
-		lwfree(id);
-		return NULL;
-	}
-
-	/* Handle namespaces */
-	ns = xmlGetNsList(xnode->doc, xnode);
-	for (n=ns ; *n; n++) xmlXPathRegisterNs(ctx, (*n)->prefix, (*n)->href);
-	xmlFree(ns);
-
-	/* Execute Xpath expression */
-        xpath = xmlXPathEvalExpression((xmlChar *) id, ctx);
-	lwfree(id);
-        if (xpath == NULL || xpath->nodesetval == NULL || xpath->nodesetval->nodeNr != 1) {
- 		xmlXPathFreeObject(xpath);
-  		xmlXPathFreeContext(ctx);
-		return NULL;
-	}
-        node = xpath->nodesetval->nodeTab[0];
- 	xmlXPathFreeObject(xpath);
-  	xmlXPathFreeContext(ctx);
-
-	return node;
-}
-
 
 /**
  * Return false if current element namespace is not a GML one
@@ -252,7 +173,7 @@ static bool is_gml_namespace(xmlNodePtr xnode, bool is_strict)
 
 
 /**
- * Retrieve a GML propertie from a node
+ * Retrieve a GML propertie from a node or NULL otherwise
  * Respect namespaces if presents in the node element
  */
 static xmlChar *gmlGetProp(xmlNodePtr xnode, xmlChar *prop)
@@ -273,6 +194,98 @@ static xmlChar *gmlGetProp(xmlNodePtr xnode, xmlChar *prop)
 	if (value == NULL) value = xmlGetNoNsProp(xnode, prop);
 
 	return value;
+}
+
+
+/**
+ * Return true if current node contains a simple XLink
+ * Return false otherwise.
+ */
+static bool is_xlink(xmlNodePtr node)
+{
+	xmlChar *prop;
+
+	prop = xmlGetNsProp(node, (xmlChar *)"type", (xmlChar *) XLINK_NS);
+	if (prop == NULL) return false;
+	if (strcmp((char *) prop, "simple")) {
+		xmlFree(prop);
+		return false;
+	}
+
+	prop = xmlGetNsProp(node, (xmlChar *)"href", (xmlChar *) XLINK_NS);
+	if (prop == NULL) return false;
+	if (prop[0] != '#') {
+		xmlFree(prop);
+		return false;
+	}
+	xmlFree(prop);
+
+	return true;
+}
+
+
+/**
+ * Return a xmlNodePtr on a node referenced by a XLink or NULL otherwise 
+ */
+static xmlNodePtr get_xlink_node(xmlNodePtr xnode)
+{
+	char *id;
+	xmlNsPtr *ns, *n;
+        xmlXPathContext *ctx;
+        xmlXPathObject *xpath;
+        xmlNodePtr node, ret_node;
+	xmlChar *href, *p, *node_id;
+
+	href = xmlGetNsProp(xnode, (xmlChar *)"href", (xmlChar *) XLINK_NS);
+	id = lwalloc((xmlStrlen(xnode->ns->prefix) * 2 + xmlStrlen(xnode->name)
+			       	+ xmlStrlen(href) + sizeof("//:[@:id='']") + 1));
+	p = href;
+	p++; /* ignore '#' first char */
+
+	/* XPath pattern look like: //gml:point[@gml:id='p1'] */
+	sprintf(id, "//%s:%s[@%s:id='%s']", 	(char *) xnode->ns->prefix,
+						(char *) xnode->name,
+						(char *) xnode->ns->prefix,
+						(char *) p);
+
+        ctx = xmlXPathNewContext(xnode->doc);
+	if (ctx == NULL) {
+		xmlFree(href);
+		lwfree(id);
+		return NULL;
+	}
+
+	/* Handle namespaces */
+	ns = xmlGetNsList(xnode->doc, xnode);
+	for (n=ns ; *n; n++) xmlXPathRegisterNs(ctx, (*n)->prefix, (*n)->href);
+	xmlFree(ns);
+
+	/* Execute XPath expression */
+        xpath = xmlXPathEvalExpression((xmlChar *) id, ctx);
+	lwfree(id);
+        if (xpath == NULL || xpath->nodesetval == NULL || xpath->nodesetval->nodeNr != 1) {
+		xmlFree(href);
+ 		xmlXPathFreeObject(xpath);
+  		xmlXPathFreeContext(ctx);
+		return NULL;
+	}
+        ret_node = xpath->nodesetval->nodeTab[0];
+ 	xmlXPathFreeObject(xpath);
+  	xmlXPathFreeContext(ctx);
+
+	/* Protection against circular calls */
+	for (node = xnode ; node != NULL ; node = node->parent) {
+		if (node->type != XML_ELEMENT_NODE) continue;
+		node_id = gmlGetProp(node, (xmlChar *) "id");
+		if (node_id != NULL) {
+			if (!xmlStrcmp(node_id, p))
+				lwerror("invalid GML representation");
+			xmlFree(node_id);
+		}
+	}
+
+	xmlFree(href);
+	return ret_node;
 }
 
 
@@ -343,14 +356,14 @@ static int gml_is_srid_planar(int srid)
         int is_planar, err;
 
         if (SPI_OK_CONNECT != SPI_connect ())
-                lwerror("gml_is_srid_lat_lon: could not connect to SPI manager");
+                lwerror("gml_is_srid_planar: could not connect to SPI manager");
 
 	/* A way to find if this projection is planar or geocentric */
         sprintf(query, "SELECT position('+units=m ' in proj4text) \
                         FROM spatial_ref_sys WHERE srid='%d'", srid);
 
         err = SPI_exec(query, 1);
-        if (err < 0) lwerror("gml_is_srid_lat_lon: error executing query %d", err);
+        if (err < 0) lwerror("gml_is_srid_planar: error executing query %d", err);
 
 	/* No entry in spatial_ref_sys */
         if (SPI_processed <= 0) {
@@ -464,7 +477,7 @@ static double parse_gml_double(char *d, bool space_before, bool space_after)
 	/*
 	 * Double pattern
 	 * [-|\+]?[0-9]+(\.)?([0-9]+)?([Ee](\+|-)?[0-9]+)?
-	 * We could also meet spaces before or after
+	 * We could also meet spaces before and/or after
 	 * this pattern upon parameters
 	 */
 
@@ -690,7 +703,7 @@ static POINTARRAY* parse_gml_pos(xmlNodePtr xnode, bool *hasz)
 
 	for (posnode = xnode ; posnode != NULL ; posnode = posnode->next) {
 
-		/* We only care about pos element */
+		/* We only care about gml:pos element */
 		if (posnode->type != XML_ELEMENT_NODE) continue;
 		if (strcmp((char *) posnode->name, "pos")) continue;
 
@@ -871,20 +884,21 @@ static POINTARRAY* parse_gml_data(xmlNodePtr xnode, bool *hasz, int *root_srid)
 			for (xb = xa->children ; xb != NULL ; xb = xb->next) {
 				if (xb->type != XML_ELEMENT_NODE) continue;
 				if (!is_gml_namespace(xb, false)) continue;
-				if (!strcmp((char *) xb->name, "point")) {
+				if (!strcmp((char *) xb->name, "Point")) {
 					found = true;
 					break;
 				}
 			}
-
-			if (!found || xb == NULL) lwerror("invalid GML representation");
+			if (!found || xb == NULL)
+				lwerror("invalid GML representation");
 
 			if (is_xlink(xb)) xb = get_xlink_node(xb);
 			if (xb == NULL || xb->children == NULL)
 				lwerror("invalid GML representation");
 
 			tmp_pa = parse_gml_data(xb->children, hasz, root_srid);
-			if (tmp_pa->npoints != 1) lwerror("invalid GML representation");
+			if (tmp_pa->npoints != 1)
+				lwerror("invalid GML representation");
 
 			srs = parse_gml_srs(xb);
 			if (srs->reverse_axis) tmp_pa = gml_reverse_axis_pa(tmp_pa);
@@ -913,6 +927,8 @@ static LWGEOM* parse_gml_point(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	gmlSrs *srs;
 	LWGEOM *geom;
 	POINTARRAY *pa;
+
+	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
 
 	if (xnode->children == NULL) lwerror("invalid GML representation");
 	pa = parse_gml_data(xnode->children, hasz, root_srid);
@@ -943,6 +959,8 @@ static LWGEOM* parse_gml_line(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	LWGEOM *geom;
 	POINTARRAY *pa;
 
+	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+
 	if (xnode->children == NULL) lwerror("invalid GML representation");
 	pa = parse_gml_data(xnode->children, hasz, root_srid);
 	if (pa->npoints < 2) lwerror("invalid GML representation");
@@ -968,15 +986,17 @@ static LWGEOM* parse_gml_line(xmlNodePtr xnode, bool *hasz, int *root_srid)
  */
 static LWGEOM* parse_gml_curve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 {
-	xmlChar *interpolation = 0;
-	int lss, last, i;
-	POINTARRAY **ppa = 0;
-	POINTARRAY *pa = 0;
 	xmlNodePtr xa;
-	LWGEOM *geom = 0;
-	gmlSrs *srs = 0;
+	int lss, last, i;
 	bool found=false;
+	gmlSrs *srs=NULL;
+	LWGEOM *geom=NULL;
+	POINTARRAY *pa=NULL;
+	POINTARRAY **ppa=NULL;
 	unsigned int npoints=0;
+	xmlChar *interpolation=NULL;
+
+	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
 
 	/* Looking for gml:segments */
 	for (xa = xnode->children ; xa != NULL ; xa = xa->next) {
@@ -1079,6 +1099,8 @@ static LWGEOM* parse_gml_polygon(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	xmlNodePtr xa, xb;
 	POINTARRAY **ppa = NULL;
 
+	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+
 	srs = parse_gml_srs(xnode);
 	for (xa = xnode->children ; xa != NULL ; xa = xa->next) {
 
@@ -1160,13 +1182,15 @@ static LWGEOM* parse_gml_polygon(xmlNodePtr xnode, bool *hasz, int *root_srid)
  */
 static LWGEOM* parse_gml_surface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 {
-	xmlChar *interpolation = 0;
 	xmlNodePtr xa, xb, xc;
-	int i, patch, ring = 1;
-	POINTARRAY **ppa = 0;
-	LWGEOM *geom = 0;
-	gmlSrs *srs = 0;
+	xmlChar *interpolation=NULL;
+	POINTARRAY **ppa=NULL;
+	int i, patch, ring=0;
+	LWGEOM *geom=NULL;
+	gmlSrs *srs=NULL;
 	bool found=false;
+
+	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
 
 	srs = parse_gml_srs(xnode);
 	/* Looking for gml:patches */
@@ -1245,7 +1269,9 @@ static LWGEOM* parse_gml_surface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 					|| ( *hasz && !ptarray_isclosed3d(ppa[ring])))
 					lwerror("invalid GML representation");
 
-				if (srs->reverse_axis) ppa[ring] = gml_reverse_axis_pa(ppa[ring]);
+				if (srs->reverse_axis)
+					ppa[ring] = gml_reverse_axis_pa(ppa[ring]);
+
 				ring++;
 			}
 		}
@@ -1278,6 +1304,8 @@ static LWGEOM* parse_gml_mpoint(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	gmlSrs *srs;
 	xmlNodePtr xa;
 	LWGEOM *geom = NULL;
+
+	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
 
 	srs = parse_gml_srs(xnode);
 	if (!*root_srid) {
@@ -1314,6 +1342,8 @@ static LWGEOM* parse_gml_mline(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	xmlNodePtr xa;
 	LWGEOM *geom = NULL;
 
+	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+
 	srs = parse_gml_srs(xnode);
 	if (!*root_srid) {
 		*root_srid = srs->srid;
@@ -1348,6 +1378,8 @@ static LWGEOM* parse_gml_mcurve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	gmlSrs *srs;
 	xmlNodePtr xa;
 	LWGEOM *geom = NULL;
+
+	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
 
 	srs = parse_gml_srs(xnode);
 	if (!*root_srid) {
@@ -1384,6 +1416,8 @@ static LWGEOM* parse_gml_mpoly(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	xmlNodePtr xa;
 	LWGEOM *geom = NULL;
 
+	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+
 	srs = parse_gml_srs(xnode);
 	if (!*root_srid) {
 		*root_srid = srs->srid;
@@ -1419,6 +1453,8 @@ static LWGEOM* parse_gml_msurface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	xmlNodePtr xa;
 	LWGEOM *geom = NULL;
 
+	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+
 	srs = parse_gml_srs(xnode);
 	if (!*root_srid) {
 		*root_srid = srs->srid;
@@ -1453,6 +1489,8 @@ static LWGEOM* parse_gml_coll(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	gmlSrs *srs;
 	xmlNodePtr xa;
 	LWGEOM *geom = NULL;
+
+	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
 
 	srs = parse_gml_srs(xnode);
 	if (!*root_srid) {
