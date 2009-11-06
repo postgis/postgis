@@ -438,7 +438,8 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(int4, geography, int4, int4)
 CREATE OR REPLACE FUNCTION _ST_Distance(geography, geography, float8, boolean)
 	RETURNS float8
 	AS 'MODULE_PATHNAME','geography_distance'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Distance(geography, geography, boolean)
@@ -477,7 +478,8 @@ CREATE OR REPLACE FUNCTION ST_DWithin(geography, geography, float8)
 CREATE OR REPLACE FUNCTION ST_Area(geography, boolean)
 	RETURNS float8
 	AS 'MODULE_PATHNAME','geography_area'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Currently defaulting to spheroid calculations
 -- Availability: 1.5.0
@@ -490,7 +492,8 @@ CREATE OR REPLACE FUNCTION ST_Area(geography)
 CREATE OR REPLACE FUNCTION ST_Length(geography, boolean)
 	RETURNS float8
 	AS 'MODULE_PATHNAME','geography_length'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Length(geography)
@@ -509,7 +512,8 @@ CREATE OR REPLACE FUNCTION ST_PointOutside(geography)
 CREATE OR REPLACE FUNCTION _ST_Covers(geography, geography)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','geography_covers'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Only implemented for polygon-over-point
 -- Availability: 1.5.0

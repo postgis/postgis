@@ -32,7 +32,7 @@ Directory structure:
 REQUIREMENTS
 ------------
 
-PostGIS is compatible with PostgreSQL 8.2 and above.
+PostGIS is compatible with PostgreSQL 8.3 and above.
 
 You *must* have full PostgreSQL - including server headers - installed
 for this to work. 

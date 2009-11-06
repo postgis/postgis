@@ -205,7 +205,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 	  The PostGIS module is an extension to the PostgreSQL backend server. As
 	  such, PostGIS &last_release_version; <emphasis>requires</emphasis> full
 	  PostgreSQL server headers access in order to compile. It can be built
-	  against PostgreSQL versions 8.2.0 or higher. Earlier versions of
+	  against PostgreSQL versions 8.3 or higher. Earlier versions of
 	  PostgreSQL are <emphasis>not</emphasis> supported.
 	</para>
 

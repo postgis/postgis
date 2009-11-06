@@ -4,6 +4,39 @@
     <subtitle>Release Notes</subtitle>
 
       <sect1>
+        <title>Release 1.5.0</title>
+        <para>Release date: 2009/12/25</para>
+        <para>This release provides support for geographic coordinates (lat/lon) via a new GEOGRAPHY type. Also performance enhancements, new input format support (GLM) and general upkeep.</para>
+  
+        <simplesect>
+          <title>API Stability</title>
+          <para>The public API of PostGIS will not change during minor (0.0.X) releases.</para>
+        </simplesect>
+
+        <simplesect>
+          <title>Compatibility</title>
+          <para>The versions below are the *minimum* requirements for PostGIS 1.5</para>
+          <para>PostgreSQL 8.3 and higher on all platforms</para>
+          <para>GEOS 3.0 and higher only</para>
+          <para>PROJ4 4.5 and higher only</para>
+        </simplesect>
+
+        <simplesect>
+          <title>New Features</title>
+          <para></para>
+        </simplesect>
+
+        <simplesect>
+          <title>Enhancements</title>
+          <para></para>
+        </simplesect>
+        <simplesect>
+          <title>Bug fixes</title>
+          <para>http://trac.osgeo.org/postgis/query?status=closed&amp;milestone=postgis+1.5.0&amp;order=priority</para>
+        </simplesect>
+      </sect1>
+      
+      <sect1>
         <title>Release 1.4.0</title>
         <para>Release date: 2009/07/24</para>
         <para>This release provides performance enhancements, improved internal structures and testing, new features, and upgraded documentation.</para>

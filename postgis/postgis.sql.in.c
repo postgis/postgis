@@ -1044,31 +1044,36 @@ CREATE OR REPLACE FUNCTION length3d_spheroid(geometry, spheroid)
 CREATE OR REPLACE FUNCTION ST_length3d_spheroid(geometry, spheroid)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','LWGEOM_length_ellipsoid_linestring'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION length_spheroid(geometry, spheroid)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','LWGEOM_length_ellipsoid_linestring'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_length_spheroid(geometry, spheroid)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','LWGEOM_length_ellipsoid_linestring'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION length2d_spheroid(geometry, spheroid)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','LWGEOM_length2d_ellipsoid'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_length2d_spheroid(geometry, spheroid)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','LWGEOM_length2d_ellipsoid'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- this is a fake (for back-compatibility)
 -- uses 3d if 3d is available, 2d otherwise
@@ -1139,38 +1144,44 @@ CREATE OR REPLACE FUNCTION ST_Area(geometry)
 CREATE OR REPLACE FUNCTION distance_spheroid(geometry,geometry,spheroid)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','LWGEOM_distance_ellipsoid'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_distance_spheroid(geometry,geometry,spheroid)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','LWGEOM_distance_ellipsoid'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION distance_sphere(geometry,geometry)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','LWGEOM_distance_sphere'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_distance_sphere(geometry,geometry)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','LWGEOM_distance_sphere'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Minimum distance. 2d only.
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION distance(geometry,geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'LWGEOM_mindistance2d'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- PostGIS equivalent function: distance(geometry,geometry)
 CREATE OR REPLACE FUNCTION ST_Distance(geometry,geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'LWGEOM_mindistance2d'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Maximum distance between linestrings. 2d only. Very bogus.
 -- Deprecation in 1.2.3
@@ -1692,43 +1703,50 @@ CREATE OR REPLACE FUNCTION ST_MakePolygon(geometry)
 CREATE OR REPLACE FUNCTION BuildArea(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_buildarea'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_BuildArea(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_buildarea'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Polygonize_GArray (geometry[])
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'polygonize_garray'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
--- Availability: 1.2.2
+-- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION ST_Polygonize_GArray (geometry[])
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'polygonize_garray'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION ST_Polygonize (geometry[])
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'polygonize_garray'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION LineMerge(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'linemerge'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_LineMerge(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'linemerge'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 
 CREATE TYPE geometry_dump AS (path integer[], geom geometry);
@@ -3529,28 +3547,32 @@ CREATE OR REPLACE FUNCTION intersection(geometry,geometry)
 CREATE OR REPLACE FUNCTION ST_Intersection(geometry,geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','intersection'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION buffer(geometry,float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','buffer'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- PostGIS equivalent function: buffer(geometry,float8)
 CREATE OR REPLACE FUNCTION ST_Buffer(geometry,float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','buffer'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Availability: 1.5.0 - requires GEOS-3.2 or higher
-CREATE OR REPLACE FUNCTION _ST_buffer(geometry,float8,cstring)
+CREATE OR REPLACE FUNCTION _ST_Buffer(geometry,float8,cstring)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','buffer'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_buffer(geometry,float8,integer)
+CREATE OR REPLACE FUNCTION ST_Buffer(geometry,float8,integer)
 	RETURNS geometry
 	AS $$ SELECT _ST_Buffer($1, $2,
 		CAST('quad_segs='||CAST($3 AS text) as cstring))
@@ -3577,20 +3599,23 @@ CREATE OR REPLACE FUNCTION buffer(geometry,float8,integer)
 CREATE OR REPLACE FUNCTION convexhull(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','convexhull'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- PostGIS equivalent function: convexhull(geometry)
 CREATE OR REPLACE FUNCTION ST_ConvexHull(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','convexhull'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Only accepts LINESTRING as parameters.
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION _ST_LineCrossingDirection(geometry, geometry)
 	RETURNS integer
 	AS 'MODULE_PATHNAME', 'ST_LineCrossingDirection'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION ST_LineCrossingDirection(geometry, geometry)
@@ -3612,7 +3637,8 @@ CREATE OR REPLACE FUNCTION ST_LocateBetweenElevations(geometry, float8, float8)
 CREATE OR REPLACE FUNCTION ST_SimplifyPreserveTopology(geometry, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','topologypreservesimplify'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 #endif
 
 #if POSTGIS_GEOS_VERSION >= 31
@@ -3621,7 +3647,8 @@ CREATE OR REPLACE FUNCTION ST_SimplifyPreserveTopology(geometry, float8)
 CREATE OR REPLACE FUNCTION ST_IsValidReason(geometry)
 	RETURNS text
 	AS 'MODULE_PATHNAME', 'isvalidreason'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 #endif
 
 #if POSTGIS_GEOS_VERSION >= 32
@@ -3630,7 +3657,8 @@ CREATE OR REPLACE FUNCTION ST_IsValidReason(geometry)
 CREATE OR REPLACE FUNCTION ST_HausdorffDistance(geometry, geometry)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME', 'hausdorffdistance'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 #endif
 
 #if POSTGIS_GEOS_VERSION >= 32
@@ -3639,7 +3667,8 @@ CREATE OR REPLACE FUNCTION ST_HausdorffDistance(geometry, geometry)
 CREATE OR REPLACE FUNCTION ST_HausdorffDistance(geometry, geometry, float8)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME', 'hausdorffdistancedensify'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 #endif
 
 -- Deprecation in 1.2.3
@@ -3950,7 +3979,8 @@ CREATE OR REPLACE FUNCTION touches(geometry,geometry)
 CREATE OR REPLACE FUNCTION _ST_Touches(geometry,geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','touches'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Availability: 1.2.2
 -- Inlines index magic
@@ -3963,7 +3993,8 @@ CREATE OR REPLACE FUNCTION ST_Touches(geometry,geometry)
 CREATE OR REPLACE FUNCTION _ST_DWithin(geometry,geometry,float8)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'LWGEOM_dwithin'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_DWithin(geometry, geometry, float8)
@@ -3981,7 +4012,8 @@ CREATE OR REPLACE FUNCTION intersects(geometry,geometry)
 CREATE OR REPLACE FUNCTION _ST_Intersects(geometry,geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','intersects'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Availability: 1.2.2
 -- Inlines index magic
@@ -4000,7 +4032,8 @@ CREATE OR REPLACE FUNCTION crosses(geometry,geometry)
 CREATE OR REPLACE FUNCTION _ST_Crosses(geometry,geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','crosses'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Availability: 1.2.2
 -- Inlines index magic
@@ -4019,7 +4052,8 @@ CREATE OR REPLACE FUNCTION within(geometry,geometry)
 CREATE OR REPLACE FUNCTION _ST_Within(geometry,geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','within'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Availability: 1.2.2
 -- Inlines index magic
@@ -4038,7 +4072,8 @@ CREATE OR REPLACE FUNCTION Contains(geometry,geometry)
 CREATE OR REPLACE FUNCTION _ST_Contains(geometry,geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','contains'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Availability: 1.2.2
 -- Inlines index magic
@@ -4052,7 +4087,8 @@ CREATE OR REPLACE FUNCTION ST_Contains(geometry,geometry)
 CREATE OR REPLACE FUNCTION _ST_CoveredBy(geometry,geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'coveredby'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_CoveredBy(geometry,geometry)
@@ -4064,7 +4100,8 @@ CREATE OR REPLACE FUNCTION ST_CoveredBy(geometry,geometry)
 CREATE OR REPLACE FUNCTION _ST_Covers(geometry,geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'covers'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Availability: 1.2.2
 -- Inlines index magic
@@ -4079,7 +4116,8 @@ CREATE OR REPLACE FUNCTION ST_Covers(geometry,geometry)
 CREATE OR REPLACE FUNCTION _ST_ContainsProperly(geometry,geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','containsproperly'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Availability: 1.4.0
 -- Inlines index magic
@@ -4099,7 +4137,8 @@ CREATE OR REPLACE FUNCTION overlaps(geometry,geometry)
 CREATE OR REPLACE FUNCTION _ST_Overlaps(geometry,geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','overlaps'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Availability: 1.2.2
 -- Inlines index magic
@@ -4112,27 +4151,29 @@ CREATE OR REPLACE FUNCTION ST_Overlaps(geometry,geometry)
 CREATE OR REPLACE FUNCTION IsValid(geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'isvalid'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- PostGIS equivalent function: IsValid(geometry)
 -- TODO: change null returns to true
 CREATE OR REPLACE FUNCTION ST_IsValid(geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'isvalid'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- This is also available w/out GEOS
 CREATE OR REPLACE FUNCTION Centroid(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'C' IMMUTABLE STRICT;
-
+	
 -- PostGIS equivalent function: Centroid(geometry)
 CREATE OR REPLACE FUNCTION ST_Centroid(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'centroid'
 	LANGUAGE 'C' IMMUTABLE STRICT;
-
+	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION IsRing(geometry)
 	RETURNS boolean
@@ -4155,7 +4196,8 @@ CREATE OR REPLACE FUNCTION PointOnSurface(geometry)
 CREATE OR REPLACE FUNCTION ST_PointOnSurface(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'pointonsurface'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION IsSimple(geometry)
@@ -4179,7 +4221,8 @@ CREATE OR REPLACE FUNCTION Equals(geometry,geometry)
 CREATE OR REPLACE FUNCTION ST_Equals(geometry,geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','geomequals'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 
 #if HAVE_LIBXML2
