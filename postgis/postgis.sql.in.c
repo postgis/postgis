@@ -1039,7 +1039,11 @@ CREATE OPERATOR CLASS gist_geometry_ops
 	OPERATOR        3        &&	,
 	OPERATOR        4        &>	,
 	OPERATOR        5        >>	,
-	OPERATOR        6        ~=	,
+	OPERATOR        6        ~=	
+#if POSTGIS_PGSQL_VERSION < 84
+   RECHECK
+#endif	
+	,
 	OPERATOR        7        ~	,
 	OPERATOR        8        @	,
 	OPERATOR	9	 &<|	,
