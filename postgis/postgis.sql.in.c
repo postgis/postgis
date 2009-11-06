@@ -5830,6 +5830,7 @@ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
 #include "long_xact.sql.in.c"
 #include "sqlmm.sql.in.c"
+#include "geography.sql.in.c"
 
 ---------------------------------------------------------------
 -- SQL-MM
