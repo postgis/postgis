@@ -76,17 +76,29 @@ HINT:  "LINESTRING(1 1)" <-- parse error at position 15 within geometry
 ERROR:  parse error - invalid geometry
 HINT:  "MULTIPOINT(1 1, 2 2" <-- parse error at position 19 within geometry
 65|t
-66|f
+65a|t
+66|t
+66a|f
 67|t
+67a|t
 68|t
+68a|t
 69|t
+69a|t
 70|t
-71|f
-72|f
-73|f
+70a|t
+71|t
+71a|f
+72|t
+72a|f
+73|t
+73a|f
 74|f
-75|f
+74a|f
+75|t
+75a|f
 76|f
+76a|f
 77|t
 78|t
 79|f

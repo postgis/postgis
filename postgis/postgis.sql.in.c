@@ -644,9 +644,9 @@ CREATE OR REPLACE FUNCTION geometry_overlap(geometry, geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_overlap'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION geometry_same(geometry, geometry)
+CREATE OR REPLACE FUNCTION geometry_samebox(geometry, geometry)
 	RETURNS bool
-	AS 'MODULE_PATHNAME', 'LWGEOM_same'
+	AS 'MODULE_PATHNAME', 'LWGEOM_samebox'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 
@@ -705,7 +705,7 @@ CREATE OPERATOR |>> (
 );
 
 CREATE OPERATOR ~= (
-	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_same,
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_samebox,
 	COMMUTATOR = '~=',
 	RESTRICT = eqsel, JOIN = eqjoinsel
 );
@@ -4217,12 +4217,18 @@ CREATE OR REPLACE FUNCTION Equals(geometry,geometry)
 	AS 'MODULE_PATHNAME','geomequals'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- PostGIS equivalent function: Equals(geometry,geometry)
-CREATE OR REPLACE FUNCTION ST_Equals(geometry,geometry)
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION _ST_Equals(geometry,geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','geomequals'
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
+
+-- Availability: 1.2.1
+CREATE OR REPLACE FUNCTION ST_Equals(geometry,geometry)
+	RETURNS boolean
+	AS 'SELECT $1 ~= $2 AND _ST_Equals($1,$2)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 
 #if HAVE_LIBXML2

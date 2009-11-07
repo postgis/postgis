@@ -148,11 +148,18 @@ CREATE OR REPLACE FUNCTION ST_CoordDim(geometry)
 -- ST_X(geometry) - already defined.
 -- ST_Y(geometry) - already defined.
 
--- PostGIS equivalent function: ~= 
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION _ST_OrderingEquals(geometry, geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'LWGEOM_same'
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
+
+-- Availability: 1.3.0
 CREATE OR REPLACE FUNCTION ST_OrderingEquals(geometry, geometry)
 	RETURNS boolean
 	AS $$ 
-	SELECT $1 && $2 AND $1 ~= $2
+	SELECT $1 ~= $2 AND _ST_OrderingEquals($1, $2)
 	$$	
 	LANGUAGE 'SQL' IMMUTABLE STRICT; 
 

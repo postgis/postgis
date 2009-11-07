@@ -95,21 +95,33 @@ select '64',ST_asewkt('MULTIPOINT(1 1, 2 2'::GEOMETRY);
 --- is_same() testing
 
 select '65','POINT(1 1)'::GEOMETRY ~= 'POINT(1 1)'::GEOMETRY as bool;
+select '65a',st_orderingequals('POINT(1 1)'::GEOMETRY,'POINT(1 1)'::GEOMETRY) as bool;
 select '66','POINT(1 1 0)'::GEOMETRY ~= 'POINT(1 1)'::GEOMETRY as bool;
+select '66a',st_orderingequals('POINT(1 1 0)'::GEOMETRY,'POINT(1 1)'::GEOMETRY) as bool;
 select '67','POINT(1 1 0)'::GEOMETRY ~= 'POINT(1 1 0)'::GEOMETRY as bool;
+select '67a',st_orderingequals('POINT(1 1 0)'::GEOMETRY,'POINT(1 1 0)'::GEOMETRY) as bool;
 
 select '68','MULTIPOINT(1 1,2 2)'::GEOMETRY ~= 'MULTIPOINT(1 1,2 2)'::GEOMETRY as bool;
+select '68a',st_orderingequals('MULTIPOINT(1 1,2 2)'::GEOMETRY,'MULTIPOINT(1 1,2 2)'::GEOMETRY) as bool;
 select '69','MULTIPOINT(2 2, 1 1)'::GEOMETRY ~= 'MULTIPOINT(1 1,2 2)'::GEOMETRY as bool;
+select '69a',st_orderingequals('MULTIPOINT(2 2, 1 1)'::GEOMETRY,'MULTIPOINT(1 1,2 2)'::GEOMETRY) as bool;
 
 select '70','GEOMETRYCOLLECTION(POINT( 1 2 3),POINT(4 5 6))'::GEOMETRY ~= 'GEOMETRYCOLLECTION(POINT( 4 5 6),POINT(1 2 3))'::GEOMETRY as bool;
+select '70a',st_orderingequals('GEOMETRYCOLLECTION(POINT( 1 2 3),POINT(4 5 6))'::GEOMETRY,'GEOMETRYCOLLECTION(POINT( 4 5 6),POINT(1 2 3))'::GEOMETRY) as bool;
 select '71','MULTIPOINT(4 5 6, 1 2 3)'::GEOMETRY ~= 'GEOMETRYCOLLECTION(POINT( 4 5 6),POINT(1 2 3))'::GEOMETRY as bool;
+select '71a',st_orderingequals('MULTIPOINT(4 5 6, 1 2 3)'::GEOMETRY,'GEOMETRYCOLLECTION(POINT( 4 5 6),POINT(1 2 3))'::GEOMETRY) as bool;
 select '72','MULTIPOINT(1 2 3, 4 5 6)'::GEOMETRY ~= 'GEOMETRYCOLLECTION(POINT( 4 5 6),POINT(1 2 3))'::GEOMETRY as bool;
+select '72a',st_orderingequals('MULTIPOINT(1 2 3, 4 5 6)'::GEOMETRY,'GEOMETRYCOLLECTION(POINT( 4 5 6),POINT(1 2 3))'::GEOMETRY) as bool;
 select '73','MULTIPOINT(1 2 3, 4 5 6)'::GEOMETRY ~= 'GEOMETRYCOLLECTION(MULTIPOINT(1 2 3, 4 5 6))'::GEOMETRY as bool;
+select '73a',st_orderingequals('MULTIPOINT(1 2 3, 4 5 6)'::GEOMETRY,'GEOMETRYCOLLECTION(MULTIPOINT(1 2 3, 4 5 6))'::GEOMETRY) as bool;
 
 
 select '74','LINESTRING(1 1,2 2)'::GEOMETRY ~= 'POINT(1 1)'::GEOMETRY as bool;
+select '74a',st_orderingequals('LINESTRING(1 1,2 2)'::GEOMETRY,'POINT(1 1)'::GEOMETRY) as bool;
 select '75','LINESTRING(1 1, 2 2)'::GEOMETRY ~= 'LINESTRING(2 2, 1 1)'::GEOMETRY as bool;
+select '75a',st_orderingequals('LINESTRING(1 1, 2 2)'::GEOMETRY,'LINESTRING(2 2, 1 1)'::GEOMETRY) as bool;
 select '76','LINESTRING(1 1, 2 2)'::GEOMETRY ~= 'LINESTRING(1 1, 2 2, 3 3)'::GEOMETRY as bool;
+select '76a',st_orderingequals('LINESTRING(1 1, 2 2)'::GEOMETRY,'LINESTRING(1 1, 2 2, 3 3)'::GEOMETRY) as bool;
 
 --- operator testing (testing is on the BOUNDING BOX (2d), not the actual geometries)
 

@@ -37,6 +37,7 @@ Datum LWGEOM_below(PG_FUNCTION_ARGS);
 Datum LWGEOM_above(PG_FUNCTION_ARGS);
 Datum LWGEOM_overabove(PG_FUNCTION_ARGS);
 Datum LWGEOM_contained(PG_FUNCTION_ARGS);
+Datum LWGEOM_samebox(PG_FUNCTION_ARGS);
 Datum LWGEOM_contain(PG_FUNCTION_ARGS);
 Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS);
 Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS);
@@ -374,6 +375,34 @@ Datum LWGEOM_overabove(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
+PG_FUNCTION_INFO_V1(LWGEOM_samebox);
+Datum LWGEOM_samebox(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *lwgeom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *lwgeom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	bool result;
+	BOX2DFLOAT4 box1;
+	BOX2DFLOAT4 box2;
+
+	POSTGIS_DEBUG(2, "GIST: LWGEOM_samebox --entry");
+
+	errorIfSRIDMismatch(pglwgeom_getSRID(lwgeom1), pglwgeom_getSRID(lwgeom2));
+
+	if ( ! (getbox2d_p(SERIALIZED_FORM(lwgeom1), &box1) && getbox2d_p(SERIALIZED_FORM(lwgeom2), &box2)) )
+	{
+		PG_FREE_IF_COPY(lwgeom1, 0);
+		PG_FREE_IF_COPY(lwgeom2, 1);
+		PG_RETURN_BOOL(FALSE);
+	}
+
+	result = DatumGetBool(DirectFunctionCall2(BOX2D_same,
+						  PointerGetDatum(&box1), PointerGetDatum(&box2)));
+
+	PG_FREE_IF_COPY(lwgeom1, 0);
+	PG_FREE_IF_COPY(lwgeom2, 1);
+
+	PG_RETURN_BOOL(result);
+}
 
 PG_FUNCTION_INFO_V1(LWGEOM_contained);
 Datum LWGEOM_contained(PG_FUNCTION_ARGS)
@@ -563,11 +592,6 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 	   can make things twice as slow. */
 	*recheck = false;
 	
-	/* Our ~= operator (strategy 6) requires a re-check in order to 
-	   function according to the documentation and past behavior. 
-	   We will temporarily enable that behavior here. */
-	if ( strategy == 6 )
-		*recheck = true;
 #endif
 
 	POSTGIS_DEBUG(2, "GIST: LWGEOM_gist_consistent called");
