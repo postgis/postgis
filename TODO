@@ -2,24 +2,17 @@ $Id$
 
 == Simple Projects ==
 
-* ST_IsMeasured(geometry)
-  TRUE or FALSE depending on existence of M
-* ST_LocateAlong(reference geometry, measure float)
-* ST_LocateBetween(reference geometry, start float, end float)
 * ST_CleanGeometry(geometry)
   Attempt to make invalid geometry valid
 * ST_SplitGeometry(polygon, line) returns components of polygon
 * ST_SplitGeometry(lineA, lineB) returns components of lineA
 * ST_SplitGeometry(line, point) returns components of line 
-* ST_Hausdorf(g1 geometry, g2 geometry) returns double.  
-  Need to get def'n from JTS.
 * ST_AverageDistance(g1 geometry, g2 geometry, nsamples integer) returns double
   Sum of minimum distances at regular intervals up two geometries, 
   divided by the number of samples.  
 * ST_MaxDistance(g1 geometry, g2 geometry) returns double.  
   What is the maximum distance between these two geometries.
 * ST_GeomFromKML(string) returns geometry. Ingests KML geometry parts only.
-* ST_GeomFromGML(string) returns geometry. Ingests GML geometry parts only.
 * ST_GeomFromGeoJSON(string) returns geometry. Ingests JSON geometry parts only.
 * ST_LatitudeFromText(string) returns float, 
   LongitudeFromText(string) returns float 
@@ -66,14 +59,6 @@ the TOAST tables, for yet more performance pain.
 
 The solution is to cut up the large features into smaller features. 
 Some standard utilities for doing so are required.
-
--- Geodetic support --
-
-A new "geography" type which is indexed in cartesian 3-space, possibly
-using direction cosines as the ordinates, and supports some basic functions,
-most importantly, distance on all types, area on all types and an 
-intersects predicate.  Casts back to "geometry" could allow use with
-standard functionality.
 
 -- Topology --
 
