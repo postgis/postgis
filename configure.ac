@@ -274,13 +274,13 @@ PGSQL_MAJOR_VERSION=`$PGCONFIG --version | sed 's/[[A-Za-z ]]*//' | cut -d. -f1 
 PGSQL_MINOR_VERSION=`$PGCONFIG --version | sed 's/[[A-Za-z ]]*//' | cut -d. -f2 | sed 's/[[^0-9]]//g'`	
 POSTGIS_PGSQL_VERSION="$PGSQL_MAJOR_VERSION$PGSQL_MINOR_VERSION"
 
-dnl Ensure that we are using PostgreSQL >= 8.1
+dnl Ensure that we are using PostgreSQL >= 8.3
 if test ! "$PGSQL_MAJOR_VERSION" -ge 8; then
-	AC_MSG_ERROR([PostGIS requires PostgreSQL >= 8.1])
+	AC_MSG_ERROR([PostGIS requires PostgreSQL >= 8.3])
 else
 	if test "$PGSQL_MAJOR_VERSION" -eq 8; then
-		if test ! "$PGSQL_MINOR_VERSION" -ge 1; then
-			AC_MSG_ERROR([PostGIS requires PostgreSQL >= 8.1])
+		if test ! "$PGSQL_MINOR_VERSION" -ge 3; then
+			AC_MSG_ERROR([PostGIS requires PostgreSQL >= 8.3])
 		fi	
 	fi
 fi	
