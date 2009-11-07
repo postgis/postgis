@@ -37,3 +37,4 @@ void test_lwgeom_distance_sphere(void);
 void test_ptarray_point_in_ring(void);
 void test_spheroid_distance(void);
 void test_spheroid_area(void);
+void test_lwpoly_covers_point2d(void);

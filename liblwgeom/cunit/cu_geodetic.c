@@ -36,7 +36,8 @@ CU_pSuite register_geodetic_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_edge_distance_to_point()", test_edge_distance_to_point)) ||
 	    (NULL == CU_add_test(pSuite, "test_edge_distance_to_edge()", test_edge_distance_to_edge)) || 
 	    (NULL == CU_add_test(pSuite, "test_lwgeom_distance_sphere()", test_lwgeom_distance_sphere)) ||
-	    (NULL == CU_add_test(pSuite, "test_ptarray_point_in_ring()", test_ptarray_point_in_ring)) ||
+	    (NULL == CU_add_test(pSuite, "test_ptarray_point_in_ring()", test_ptarray_point_in_ring)) || 
+	    (NULL == CU_add_test(pSuite, "test_lwpoly_covers_point2d()", test_lwpoly_covers_point2d)) ||
 	    (NULL == CU_add_test(pSuite, "test_spheroid_distance()", test_spheroid_distance)) || 
 	    (NULL == CU_add_test(pSuite, "test_spheroid_area()", test_spheroid_area)) 
 	)
@@ -266,6 +267,12 @@ void test_edge_intersection(void)
 	GEOGRAPHIC_POINT g;
 	int rv;
 
+	/* Covers case, end-to-end intersection */
+	edge_set(50, -10.999999999999998224, -10.0, 50.0, &e1);
+	edge_set(-10.0, 50.0, -10.272779983831613393, -16.937003313332997578, &e2);
+	rv = edge_intersection(e1, e2, &g);
+	CU_ASSERT_EQUAL(rv, LW_TRUE);	
+		
 	/* Medford case, very short segment vs very long one */
 	e1.start.lat = 0.74123572595649878103;
 	e1.start.lon = -2.1496353191142714145;
@@ -488,6 +495,26 @@ void test_ptarray_point_in_ring(void)
 	
 }
 
+void test_lwpoly_covers_point2d(void)
+{
+	LWPOLY *poly;
+	LWGEOM *lwg;
+	POINT2D pt_to_test;
+	GBOX gbox;
+	int result;
+
+	gbox.flags = gflags(0, 0, 1);
+		
+	lwg = lwgeom_from_ewkt("POLYGON((-9 50,51 -11,-10 50,-9 50))", PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
+	poly = (LWPOLY*)lwg;
+	pt_to_test.x = -10.0;
+	pt_to_test.y = 50.0;
+	result = lwpoly_covers_point2d(poly, gbox, pt_to_test);
+	CU_ASSERT_EQUAL(result, LW_TRUE);
+	lwgeom_free(lwg);
+	
+}
 
 
 void test_lwgeom_distance_sphere(void)

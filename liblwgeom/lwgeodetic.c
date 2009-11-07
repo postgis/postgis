@@ -752,6 +752,27 @@ int edge_intersection(GEOGRAPHIC_EDGE e1, GEOGRAPHIC_EDGE e2, GEOGRAPHIC_POINT *
 	LWDEBUGF(4, "e1 start(%.20g %.20g) end(%.20g %.20g)", rad2deg(e1.start.lon), rad2deg(e1.start.lat), rad2deg(e1.end.lon), rad2deg(e1.end.lat));
 	LWDEBUGF(4, "e2 start(%.20g %.20g) end(%.20g %.20g)", rad2deg(e2.start.lon), rad2deg(e2.start.lat), rad2deg(e2.end.lon), rad2deg(e2.end.lat));
 
+	if( geographic_point_equals(e1.start, e2.start) )
+	{
+		*g = e1.start;
+		return LW_TRUE;
+	}
+	if( geographic_point_equals(e1.end, e2.end) )
+	{
+		*g = e1.end;
+		return LW_TRUE;
+	}
+	if( geographic_point_equals(e1.end, e2.start) )
+	{
+		*g = e1.end;
+		return LW_TRUE;
+	}
+	if( geographic_point_equals(e1.start, e2.end) )
+	{
+		*g = e1.start;
+		return LW_TRUE;
+	}
+	
 	robust_cross_product(e1.start, e1.end, &ea);
 	normalize(&ea);
 	robust_cross_product(e2.start, e2.end, &eb);
