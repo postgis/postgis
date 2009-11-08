@@ -1421,6 +1421,23 @@ SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 15
 		<note>
 			<para>Requires compilation with libxml2 2.5+</para>
 		</note>
+		<para>ST_GeomFromGML work only for GML Geometries fragments. It throw an error if you try to use it on a whole GML document.</para>
+		<para>
+			OGC GML versions supported:
+			<itemizedlist>
+				<listitem>
+				  <para>GML 3.2.1 Namespace</para>
+				</listitem>
+				<listitem>
+				  <para>GML 3.1.1 Simple Features profile SF-2 (with GML 3.1.0 and 3.0.0 backward compatibility)</para>
+				</listitem>
+				<listitem>
+				  <para>GML 2.1.2</para>
+				</listitem>
+			</itemizedlist>
+			OGC GML standards, cf: <ulink url="http://www.opengeospatial.org/standards/gml">http://www.opengeospatial.org/standards/gml</ulink>:
+		</para>
+
 		<para>Availability: 1.5 - requires libxml2 &gt;= 2.5+</para>
 		<!-- Optionally mention 3d support -->
 		<para><inlinemediaobject>
@@ -1428,22 +1445,78 @@ SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 15
 		  <imagedata fileref="images/check.png" />
 		</imageobject>
 	  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
-
+		<para>GML allow mixed dimensions (2D and 3D inside the same MultiGeometry for instance). As PostGIS geometries don't, ST_GeomFromGML convert the whole geometry to 2D if a missing Z dimension is found once.</para>
+		
+		<para>GML support mixed SRS inside the same MultiGeometry. As PostGIS geometries don't, ST_GeomFromGML, in this case, reproject all subgeometries to the SRS root node. If no srsName attribute available for the GML root node, the function throw an error.</para>
+		
+		<para>ST_GeomFromGML function is not pedantic about an explicit GML namespace. You could avoid to mention it explicitly for common usages. But you need it if you want to use XLink feature inside GML.</para>
+		<note>
+			<para>ST_GeomFromGML function not support SQL/MM curves geometries.</para>
+		</note>
+		
 	  </refsection>
 
 	  <refsection>
-		<title>Examples</title>
-	<programlisting>SELECT ST_GeomFromGML('<![CDATA[
+		<title>Examples - A single geometry with srsName</title>
+		<programlisting>SELECT ST_GeomFromGML('<![CDATA[
 		<gml:LineString srsName="EPSG:4269">
-		<gml:coordinates>-71.16028,42.258729 -71.160837,42.259112 -71.161143,42.25932
-		</gml:coordinates>
+			<gml:coordinates>
+				-71.16028,42.258729 -71.160837,42.259112 -71.161143,42.25932
+			</gml:coordinates>
 		</gml:LineString>']]>);
 		</programlisting>
 	  </refsection>
+
+	  <refsection>
+		<title>Examples - XLink usage</title>
+		<programlisting><![CDATA[ST_GeomFromGML('
+		<gml:LineString xmlns:gml="http://www.opengis.net/gml" 
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				srsName="urn:ogc:def:crs:EPSG::4269">
+			<gml:pointProperty>
+				<gml:Point gml:id="p1"><gml:pos>42.258729 -71.16028</gml:pos></gml:Point>
+			</gml:pointProperty>
+			<gml:pos>42.259112 -71.160837</gml:pos>
+			<gml:pointProperty>
+				<gml:Point xlink:type="simple" xlink:href="#p1"/>
+			</gml:pointProperty>
+		</gml:LineString>');]]>);
+		</programlisting>
+	  </refsection>
+
 	  <refsection>
 		<title>See Also</title>
 		<para><xref linkend="ST_AsGML" /></para>
+		<para><xref linkend="ST_GMLToSQL" /></para>
 	  </refsection>
+	</refentry>
+
+	<refentry id="ST_GMLToSQL">
+		  <refnamediv>
+			<refname>ST_GMLToSQL</refname>
+			<refpurpose>Return a specified ST_Geometry value from GML representation.  This is an alias name for ST_GeomFromGML</refpurpose>
+		  </refnamediv>
+	  	<refsynopsisdiv>
+			<funcsynopsis>
+		  	<funcprototype>
+				<funcdef>geometry <function>ST_GMLToSQL</function></funcdef>
+				<paramdef><type>text </type> <parameter>geomgml</parameter></paramdef>
+		  	</funcprototype>
+			</funcsynopsis>
+	  	</refsynopsisdiv>
+		  <refsection>
+			<title>Description</title>
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 5.1.50 (except for curves support).</para>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_GeomFromGML" /></para>
+			<para><xref linkend="ST_AsGML" /></para>
+		  </refsection>
 	</refentry>
 
 	<refentry id="ST_GeomFromText">
