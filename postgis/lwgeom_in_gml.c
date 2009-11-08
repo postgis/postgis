@@ -21,7 +21,7 @@
 * GML versions supported:
 *  - GML 3.2.1 Namespace
 *  - GML 3.1.1 Simple Features profile SF-2
-*  - GML 3.1.0 and 3.0.0 SF elements and attributes
+*    (with backward compatibility to GML 3.1.0 and 3.0.0)
 *  - GML 2.1.2
 * Cf: <http://www.opengeospatial.org/standards/gml>
 *
@@ -522,18 +522,18 @@ static double parse_gml_double(char *d, bool space_before, bool space_after)
 static POINTARRAY* parse_gml_coordinates(xmlNodePtr xnode, bool *hasz)
 {
 	xmlChar *gml_coord, *gml_ts, *gml_cs, *gml_dec;
-	char *coord, *p, *q;
 	char cs, ts, dec;
 	DYNPTARRAY *dpa;
 	POINTARRAY *pa;
 	int gml_dims;
+	char *p, *q;
 	bool digit;
 	POINT4D pt;
 	uchar dims=0;
 
 	/* We begin to retrieve coordinates string */
 	gml_coord = xmlNodeGetContent(xnode);
-	p = coord = (char *) gml_coord;
+	p = (char *) gml_coord;
 
 	/* Default GML coordinates pattern: 	x1,y1 x2,y2 
 	 * 					x1,y1,z1 x2,y2,z2
