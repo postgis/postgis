@@ -4233,7 +4233,7 @@ CREATE OR REPLACE FUNCTION ST_Equals(geometry,geometry)
 
 #if HAVE_LIBXML2
 -----------------------------------------------------------------------
--- GML INPUT
+-- GML & KML INPUT
 -- Availability: 1.5.0
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION ST_GeomFromGML(text)
@@ -4244,6 +4244,11 @@ CREATE OR REPLACE FUNCTION ST_GeomFromGML(text)
 CREATE OR REPLACE FUNCTION ST_GMLToSQL(text)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','geom_from_gml'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION ST_GeomFromKML(text)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','geom_from_kml'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 #endif

@@ -82,9 +82,10 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 32),1)
 	TESTS += hausdorff
 endif
 
-# GeomFromGML need libxml2
+# Some import functions need libxml2
 ifeq ($(shell expr $(HAVE_LIBXML2) "=" 1),1)
 	TESTS += in_gml
+	TESTS += in_kml
 endif
 
 
