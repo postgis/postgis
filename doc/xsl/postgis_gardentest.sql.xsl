@@ -11,7 +11,7 @@
 	<xsl:output method="text" />
 	<xsl:variable name='testversion'>1.5.0</xsl:variable>
 	<xsl:variable name='fnexclude14'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
-	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable Populate_Geometry_Columns ST_CurveToLine ST_GeoHash ST_LineCrossingDirection ST_LineToCurve ST_IsValidReason ST_ContainsProperly ST_MinimumBoundingCircle</xsl:variable>
+	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable Populate_Geometry_Columns ST_CurveToLine ST_GeomFromGML ST_GeomFromKML ST_GMLToSQL ST_LineToCurve</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 or tested separately -->
 
 	<xsl:variable name='var_srid'>3395</xsl:variable>
@@ -28,6 +28,7 @@
 	<xsl:variable name='var_varchar'>'test'</xsl:variable>
 	<xsl:variable name='var_spheroid'>'SPHEROID["GRS_1980",6378137,298.257222101]'</xsl:variable>
 	<xsl:variable name='var_matrix'>'FF1FF0102'</xsl:variable>
+	<xsl:variable name='var_boolean'>false</xsl:variable>
 	<pgis:gardens>
 		<pgis:gset ID='PointSet' GeometryType='POINT'>(SELECT ST_SetSRID(ST_Point(i,j),4326) As the_geom
 		FROM (SELECT a*1.11111111 FROM generate_series(-10,50,10) As a) As i(i)
@@ -371,6 +372,9 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="(contains(parameter,'geomgml'))">
 						<xsl:text>ST_AsGML(foo1.the_geom)</xsl:text>
 					</xsl:when>
+					<xsl:when test="(contains(parameter,'geomkml'))">
+						<xsl:text>ST_AsKML(foo1.the_geom)</xsl:text>
+					</xsl:when>
 					<xsl:when test="(contains(type,'box') or type = 'geometry' or type = 'geometry ' or contains(type,'geometry set')) and (position() = 1 or count($func/paramdef/type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1')">
 						<xsl:text>foo1.the_geom</xsl:text>
 					</xsl:when>
@@ -421,6 +425,9 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					</xsl:when>
 					<xsl:when test="contains(type,'timestamp') or type = 'date'">
 						<xsl:text>'2009-01-01'</xsl:text>
+					</xsl:when>
+					<xsl:when test="contains(type,'boolean')">
+						<xsl:value-of select="$var_boolean" />
 					</xsl:when>
 				</xsl:choose>
 				<xsl:if test="position()&lt;last()"><xsl:text>, </xsl:text></xsl:if>
