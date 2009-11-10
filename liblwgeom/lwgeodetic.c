@@ -1742,6 +1742,7 @@ double lwgeom_area_sphere(LWGEOM *lwgeom, GBOX gbox, SPHEROID spheroid)
 * Calculate the distance between two LWGEOMs, using the coordinates are 
 * longitude and latitude. Return immediately when the calulated distance drops
 * below the tolerance (useful for dwithin calculations).
+* Return a negative distance for incalculable cases.
 */
 double lwgeom_distance_spheroid(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GBOX gbox2, SPHEROID spheroid, double tolerance)
 {
@@ -1753,10 +1754,11 @@ double lwgeom_distance_spheroid(LWGEOM *lwgeom1, LWGEOM *lwgeom2, GBOX gbox1, GB
 	
 	LWDEBUGF(4, "entered function, tolerance %.8g", tolerance);
 
-	/* What's the distance to an empty geometry? We don't know. */
+	/* What's the distance to an empty geometry? We don't know. 
+	   Return a negative number so the caller can catch this case. */
 	if( lwgeom_is_empty(lwgeom1) || lwgeom_is_empty(lwgeom2) )
 	{
-		return 0.0;
+		return -1.0;
 	}
 		
 	type1 = TYPE_GETTYPE(lwgeom1->type);

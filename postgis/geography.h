@@ -86,6 +86,8 @@ typedef struct
 GIDX* gidx_new(int ndims);
 /* Pull out the gidx bounding box with a absolute minimum system overhead */
 int geography_datum_gidx(Datum geography_datum, GIDX *gidx);
+/* Pull out the gidx bounding box from an already de-toasted geography */
+int geography_gidx(GSERIALIZED *g, GIDX *gidx);
 /* Convert a gidx to a gbox */
 void gbox_from_gidx(GIDX *gidx, GBOX *gbox);
 /* Convert a gbox to a new gidx */

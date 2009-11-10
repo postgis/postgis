@@ -586,6 +586,46 @@ int geography_datum_gidx(Datum geography_datum, GIDX *gidx)
 	return result;
 }
 
+/*
+** Peak into a geography to find the bounding box. If the 
+** box is there, copy it out and return it. If not, calculate the box from the 
+** full geography and return the box based on that. If no box is available,
+** return G_FAILURE, otherwise G_SUCCESS.
+*/
+int geography_gidx(GSERIALIZED *g, GIDX *gidx)
+{
+	int result = G_SUCCESS;
+	
+	POSTGIS_DEBUG(4, "entered function");
+	
+	POSTGIS_DEBUGF(4, "got flags %d", gpart->flags); 
+	
+	if ( FLAGS_GET_BBOX(g->flags) && FLAGS_GET_GEODETIC(g->flags) )
+	{
+		const size_t size = 2 * 3 * sizeof(float);
+		POSTGIS_DEBUG(4, "copying box out of serialization"); 
+		memcpy(gidx->c, g->data, size);
+		SET_VARSIZE(gidx, VARHDRSZ + size);
+	}
+	else
+	{
+		GBOX gbox;
+		POSTGIS_DEBUG(4, "calculating new box from scratch"); 
+		if( gserialized_calculate_gbox_geocentric_p(g, &gbox) == G_FAILURE )
+		{
+			POSTGIS_DEBUG(4, "calculated null bbox, returning null");
+			return G_FAILURE;
+		}
+		result = gidx_from_gbox_p(gbox, gidx);
+	}
+	if( result == G_SUCCESS )
+	{
+		POSTGIS_DEBUGF(4, "got gidx %s", gidx_to_string(gidx));
+	}
+	
+	return result;
+}
+
 /***********************************************************************
 * GiST Support Functions
 */
@@ -603,11 +643,14 @@ Datum geography_overlaps(PG_FUNCTION_ARGS)
 	GIDX *gbox1 = (GIDX*)gboxmem1;
 	GIDX *gbox2 = (GIDX*)gboxmem2;
 
-	geography_datum_gidx(PG_GETARG_DATUM(0), gbox1);
-	geography_datum_gidx(PG_GETARG_DATUM(1), gbox2);
-	
-	if ( gidx_overlaps(gbox1, gbox2) == LW_TRUE )
+	/* Must be able to build box for each arguement (ie, not empty geometry)
+	   and overlap boxes to return true. */
+	if( geography_datum_gidx(PG_GETARG_DATUM(0), gbox1) &&
+	    geography_datum_gidx(PG_GETARG_DATUM(1), gbox2) && 
+	    gidx_overlaps(gbox1, gbox2) )
+	{
 		PG_RETURN_BOOL(TRUE);
+	}
 	
 	PG_RETURN_BOOL(FALSE);	
 }

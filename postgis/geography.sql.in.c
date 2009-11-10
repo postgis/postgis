@@ -471,6 +471,14 @@ CREATE OR REPLACE FUNCTION _ST_Distance(geography, geography, float8, boolean)
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
 
+-- Stop calculation and return immediately once distance is less than tolerance
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION _ST_DWithin(geography, geography, float8, boolean)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME','geography_dwithin'
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
+
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Distance(geography, geography, boolean)
 	RETURNS float8
@@ -501,14 +509,14 @@ CREATE OR REPLACE FUNCTION _ST_Expand(geography, float8)
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_DWithin(geography, geography, float8, boolean)
 	RETURNS boolean
-	AS 'SELECT $1 && _ST_Expand($2,$3) AND $2 && _ST_Expand($1,$3) AND _ST_Distance($1, $2, $3, $4) < $3'
+	AS 'SELECT $1 && _ST_Expand($2,$3) AND $2 && _ST_Expand($1,$3) AND _ST_DWithin($1, $2, $3, $4)'
 	LANGUAGE 'SQL' IMMUTABLE;
 
 -- Currently defaulting to spheroid calculations
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_DWithin(geography, geography, float8)
 	RETURNS boolean
-	AS 'SELECT $1 && _ST_Expand($2,$3) AND $2 && _ST_Expand($1,$3) AND _ST_Distance($1, $2, $3, true) < $3'
+	AS 'SELECT $1 && _ST_Expand($2,$3) AND $2 && _ST_Expand($1,$3) AND _ST_DWithin($1, $2, $3, true)'
 	LANGUAGE 'SQL' IMMUTABLE;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
