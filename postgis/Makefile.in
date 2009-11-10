@@ -53,6 +53,7 @@ PG_OBJS=lwgeom_pg.o \
 	lwgeom_rtree.o \
 	geography_inout.o \
 	geography_gist.o \
+	geography_btree.o \
 	geography_estimate.o \
 	geography_measurement.o 
 
