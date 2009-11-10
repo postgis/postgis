@@ -26,6 +26,7 @@
 #include "access/gist.h"    /* For GiST */
 #include "access/itup.h"
 #include "access/skey.h"
+#include "access/hash.h"
 
 #include "../postgis_config.h"
 
@@ -39,6 +40,15 @@ Datum geography_eq(PG_FUNCTION_ARGS);
 Datum geography_ge(PG_FUNCTION_ARGS);
 Datum geography_gt(PG_FUNCTION_ARGS);
 Datum geography_cmp(PG_FUNCTION_ARGS);
+
+
+/*
+** Calculate a hash code based on the geometry data alone
+*/
+static uint32 geography_hash(GSERIALIZED *g)
+{
+	return DatumGetUInt32(hash_any(g, VARSIZE(g)));
+}
 
 /*
 ** Utility function to return the center point of a 
@@ -180,23 +190,15 @@ PG_FUNCTION_INFO_V1(geography_eq);
 Datum geography_eq(PG_FUNCTION_ARGS)
 {
 	/* Put aside some stack memory and use it for GIDX pointers. */
-	char gboxmem1[GIDX_MAX_SIZE];
-	char gboxmem2[GIDX_MAX_SIZE];
-	GIDX *gbox1 = (GIDX*)gboxmem1;
-	GIDX *gbox2 = (GIDX*)gboxmem2;
-	POINT3D p1, p2;
+	GSERIALIZED *g1 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *g2 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	uint32 h1 = geography_hash(g1);
+	uint32 h2 = geography_hash(g2);
 
-	/* Must be able to build box for each argument (ie, not empty geometry) */
-	if( ! geography_datum_gidx(PG_GETARG_DATUM(0), gbox1) ||
-	    ! geography_datum_gidx(PG_GETARG_DATUM(1), gbox2) )
-	{
-		PG_RETURN_BOOL(FALSE);
-	}
-	
-	geography_gidx_center(gbox1, &p1);
-	geography_gidx_center(gbox2, &p2);
-	
-	if( FP_EQUALS(p1.x, p2.x) && FP_EQUALS(p1.y, p2.y) && FP_EQUALS(p1.z, p2.z) ) 
+	PG_FREE_IF_COPY(g1,0);
+	PG_FREE_IF_COPY(g2,0);
+
+	if( h1 == h2 )
 		PG_RETURN_BOOL(TRUE);	
 		
 	PG_RETURN_BOOL(FALSE);	
