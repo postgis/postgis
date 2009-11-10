@@ -1421,7 +1421,7 @@ SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 15
 		<note>
 			<para>Requires compilation with libxml2 2.5+</para>
 		</note>
-		<para>ST_GeomFromGML work only for GML Geometries fragments. It throw an error if you try to use it on a whole GML document.</para>
+		<para>ST_GeomFromGML works only for GML Geometry fragments. It throws an error if you try to use it on a whole GML document.</para>
 		<para>
 			OGC GML versions supported:
 			<itemizedlist>
@@ -1488,6 +1488,67 @@ SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 15
 		<title>See Also</title>
 		<para><xref linkend="ST_AsGML" /></para>
 		<para><xref linkend="ST_GMLToSQL" /></para>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="ST_GeomFromKML">
+	  <refnamediv>
+		<refname>ST_GeomFromKML</refname>
+		<refpurpose>Takes as input KML representation of geometry and outputs a PostGIS geometry object</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomFromKML</function></funcdef>
+			<paramdef><type>text </type> <parameter>geomkml</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>Constructs a PostGIS ST_Geometry object from the OGC KML representation.</para>
+		<note>
+			<para>Requires compilation with libxml2 2.5+</para>
+		</note>
+		<para>ST_GeomFromKML works only for KML Geometry fragments. It throws an error if you try to use it on a whole KML document.</para>
+		<para>
+			OGC KML versions supported:
+			<itemizedlist>
+				<listitem>
+				  <para>KML 2.2.0 Namespace</para>
+				</listitem>
+			</itemizedlist>
+			OGC KML standards, cf: <ulink url="http://www.opengeospatial.org/standards/kml">http://www.opengeospatial.org/standards/kml</ulink>:
+		</para>
+
+		<para>Availability: 1.5 - requires libxml2 &gt;= 2.5+</para>
+		<!-- Optionally mention 3d support -->
+		<para><inlinemediaobject>
+		<imageobject>
+		  <imagedata fileref="images/check.png" />
+		</imageobject>
+	  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+		<note>
+			<para>ST_GeomFromKML function not support SQL/MM curves geometries.</para>
+		</note>
+		
+	  </refsection>
+
+	  <refsection>
+		<title>Examples - A single geometry with srsName</title>
+		<programlisting>SELECT ST_GeomFromKML('<![CDATA[
+		<LineString>
+			<coordinates>-71.1663,42.2614 
+				-71.1667,42.2616</coordinates>
+		</LineString>']]>);
+		</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_AsKML" /></para>
 	  </refsection>
 	</refentry>
 
