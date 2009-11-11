@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id: geography_gist.c 4778 2009-11-10 19:30:43Z pramsey $
+ * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>
@@ -9,23 +9,7 @@
  *
  **********************************************************************/
 
-/*
-** R-Tree Bibliography
-**
-** [1] A. Guttman. R-tree: a dynamic index structure for spatial searching.
-**     Proceedings of the ACM SIGMOD Conference, pp 47-57, June 1984.
-** [2] C.-H. Ang and T. C. Tan. New linear node splitting algorithm for
-**     R-Trees. Advances in Spatial Databases - 5th International Symposium,
-**     1997
-** [3] N. Beckmann, H.-P. Kriegel, R. Schneider, B. Seeger. The R*tree: an
-**     efficient and robust access method for points and rectangles. 
-**     Proceedings of the ACM SIGMOD Conference. June 1990.
-*/
- 
 #include "postgres.h"
-#include "access/gist.h"    /* For GiST */
-#include "access/itup.h"
-#include "access/skey.h"
 #include "access/hash.h"
 
 #include "../postgis_config.h"
@@ -47,7 +31,7 @@ Datum geography_cmp(PG_FUNCTION_ARGS);
 */
 static uint32 geography_hash(GSERIALIZED *g)
 {
-	return DatumGetUInt32(hash_any(g, VARSIZE(g)));
+	return DatumGetUInt32(hash_any((void*)g, VARSIZE(g)));
 }
 
 /*
