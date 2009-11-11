@@ -53,6 +53,7 @@
 #define FP_CONTAINS_INCL(A, X, B) (FP_LTEQ(A, X) && FP_LTEQ(X, B))
 #define FP_CONTAINS_EXCL(A, X, B) (FP_LT(A, X) && FP_LT(X, B))
 #define FP_CONTAINS(A, X, B) FP_CONTAINS_EXCL(A, X, B)
+#define FP_IS_ZERO(A) (fabs(A) <= PGIS_EPSILON)
 #define LW_TRUE 1
 #define LW_FALSE 0
 
