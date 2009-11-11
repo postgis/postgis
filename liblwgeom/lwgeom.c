@@ -781,14 +781,14 @@ lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 	{
 		LWDEBUG(3, " type differ");
 
-		return 0;
+		return LW_FALSE;
 	}
 
 	if ( TYPE_GETZM(lwgeom1->type) != TYPE_GETZM(lwgeom2->type) )
 	{
 		LWDEBUG(3, " ZM flags differ");
 
-		return 0;
+		return LW_FALSE;
 	}
 
 	/* Check boxes if both already computed  */
@@ -799,7 +799,7 @@ lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 		{
 			LWDEBUG(3, " bounding boxes differ");
 
-			return 0;
+			return LW_FALSE;
 		}
 	}
 
@@ -824,7 +824,7 @@ lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 	default:
 		lwerror("lwgeom_same: unsupported geometry type: %s",
 		        lwgeom_typename(TYPE_GETTYPE(lwgeom1->type)));
-		return 0;
+		return LW_FALSE;
 	}
 
 }

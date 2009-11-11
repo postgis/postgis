@@ -84,9 +84,9 @@ HINT:  "MULTIPOINT(1 1, 2 2" <-- parse error at position 19 within geometry
 68|t
 68a|t
 69|t
-69a|t
+69a|f
 70|t
-70a|t
+70a|f
 71|t
 71a|f
 72|t
