@@ -450,7 +450,7 @@ int edge_point_in_cone(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 	** However, tuning the tolerance value feels like a dangerous hack. 
 	** Fundamentally, the problem is that this test is so sensitive.
 	*/
-	if ( vp_dot_vcp > vs_dot_vcp || fabs(vp_dot_vcp - vs_dot_vcp) < 1e-17 )
+	if ( vp_dot_vcp > vs_dot_vcp || fabs(vp_dot_vcp - vs_dot_vcp) < 1e-16 )
 	{
 		LWDEBUG(4, "point is in cone");
 		return LW_TRUE;
