@@ -13,6 +13,7 @@
 #include "lwalgorithm.h"
 
 
+
 /**
 ** lw_segment_side()
 **
@@ -20,10 +21,11 @@
 ** Return > 0.0 if point Q is right of segment P
 ** Return = 0.0 if point Q in on segment P
 */
-double lw_segment_side(POINT2D *p1, POINT2D *p2, POINT2D *q)
+double lw_segment_side(POINT2D p1, POINT2D p2, POINT2D q)
 {
-	return ( (q->x - p1->x) * (p2->y - p1->y) - (p2->x - p1->x) * (q->y - p1->y) );
+	return ( (q.x - p1.x) * (p2.y - p1.y) - (p2.x - p1.x) * (q.y - p1.y) );
 }
+
 
 int lw_segment_envelope_intersects(POINT2D p1, POINT2D p2, POINT2D q1, POINT2D q2)
 {
@@ -32,7 +34,7 @@ int lw_segment_envelope_intersects(POINT2D p1, POINT2D p2, POINT2D q1, POINT2D q
 	double minp=LW_MIN(p1.x,p2.x);
 	double maxp=LW_MAX(p1.x,p2.x);
 
-	if (minp>maxq || maxp<minq)
+	if (FP_GT(minp,maxq) || FP_LT(maxp,minq))
 		return LW_FALSE;
 
 	minq=LW_MIN(q1.y,q2.y);
@@ -40,7 +42,7 @@ int lw_segment_envelope_intersects(POINT2D p1, POINT2D p2, POINT2D q1, POINT2D q
 	minp=LW_MIN(p1.y,p2.y);
 	maxp=LW_MAX(p1.y,p2.y);
 
-	if (minp>maxq || maxp<minq)
+	if (FP_GT(minp,maxq) || FP_LT(maxp,minq))
 		return LW_FALSE;
 
 	return LW_TRUE;
@@ -59,16 +61,14 @@ int lw_segment_envelope_intersects(POINT2D p1, POINT2D p2, POINT2D q1, POINT2D q
 **		SEG_COLINEAR = 1,
 **		SEG_CROSS_LEFT = 2,
 **		SEG_CROSS_RIGHT = 3,
-**		SEG_TOUCH_LEFT = 4,
-**		SEG_TOUCH_RIGHT = 5
 */
-int lw_segment_intersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2)
+int lw_segment_intersects(POINT2D p1, POINT2D p2, POINT2D q1, POINT2D q2)
 {
 
 	double pq1, pq2, qp1, qp2;
 
 	/* No envelope interaction => we are done. */
-	if (!lw_segment_envelope_intersects(*p1, *p2, *q1, *p2))
+	if (!lw_segment_envelope_intersects(p1, p2, q1, p2))
 	{
 		return SEG_NO_INTERSECTION;
 	}
@@ -90,32 +90,45 @@ int lw_segment_intersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2)
 	}
 
 	/* Nobody is on one side or another? Must be colinear. */
-	if (pq1 == 0.0 && pq2 == 0.0 && qp1 == 0.0 && qp2 == 0.0)
+	if (FP_IS_ZERO(pq1) && FP_IS_ZERO(pq2) && FP_IS_ZERO(qp1) && FP_IS_ZERO(qp2))
 	{
 		return SEG_COLINEAR;
 	}
 
 	/*
 	** When one end-point touches, the sidedness is determined by the
-	** location of the other end-point.
+	** location of the other end-point. Only touches by the first point
+	** will be considered "real" to avoid double counting.
 	*/
-	if ( pq2 == 0.0 )
+	LWDEBUGF(4, "pq1=%.15g pq2=%.15g", pq1, pq2);
+	LWDEBUGF(4, "qp1=%.15g qp2=%.15g", qp1, qp2);
+
+	/* Second point of p or q touches, it's not a crossing. */
+	if ( FP_IS_ZERO(pq2) || FP_IS_ZERO(qp2) )
 	{
-		if ( pq1 < 0.0 )
-			return SEG_TOUCH_LEFT;
-		else
-			return SEG_TOUCH_RIGHT;
-	}
-	if ( pq1 == 0.0 )
-	{
-		if ( pq2 < 0.0 )
-			return SEG_TOUCH_LEFT;
-		else
-			return SEG_TOUCH_RIGHT;
+		return SEG_NO_INTERSECTION;
 	}
 
+	/* First point of p touches, it's a "crossing". */
+	if ( FP_IS_ZERO(pq1) )
+	{
+		if ( FP_GT(pq2,0.0) )
+			return SEG_CROSS_RIGHT;
+		else
+			return SEG_CROSS_LEFT;
+	}
+
+	/* First point of q touches, it's a crossing. */
+	if ( FP_IS_ZERO(qp1) )
+	{
+		if ( FP_LT(pq1,pq2) )
+			return SEG_CROSS_RIGHT;
+		else
+			return SEG_CROSS_LEFT;
+	}
+	
 	/* The segments cross, what direction is the crossing? */
-	if ( pq1 < pq2 )
+	if ( FP_LT(pq1,pq2) )
 		return SEG_CROSS_RIGHT;
 	else
 		return SEG_CROSS_LEFT;
@@ -141,133 +154,88 @@ int lw_segment_intersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2)
 */
 int lwline_crossing_direction(LWLINE *l1, LWLINE *l2)
 {
-
 	int i = 0, j = 0, rv = 0;
-	POINT2D *p1;
-	POINT2D *p2;
-	POINT2D *q1;
-	POINT2D *q2;
-	POINTARRAY *pa1;
-	POINTARRAY *pa2;
+	POINT2D p1, p2, q1, q2;
+	POINTARRAY *pa1 = NULL, *pa2 = NULL;
 	int cross_left = 0;
 	int cross_right = 0;
 	int first_cross = 0;
-	int final_cross = 0;
 	int this_cross = 0;
-	int vertex_touch = -1;
-	int vertex_touch_type = 0;
 
 	pa1 = (POINTARRAY*)l1->points;
 	pa2 = (POINTARRAY*)l2->points;
-
-	p1 = lwalloc(sizeof(POINT2D));
-	p2 = lwalloc(sizeof(POINT2D));
-	q1 = lwalloc(sizeof(POINT2D));
-	q2 = lwalloc(sizeof(POINT2D));
 
 	/* One-point lines can't intersect (and shouldn't exist). */
 	if ( pa1->npoints < 2 || pa2->npoints < 2 )
 		return LINE_NO_CROSS;
 
-	LWDEBUGF(4, "lineCrossingDirection: l1 = %s", lwgeom_to_ewkt((LWGEOM*)l1,0));
-	LWDEBUGF(4, "lineCrossingDirection: l2 = %s", lwgeom_to_ewkt((LWGEOM*)l2,0));
+	LWDEBUGF(4, "l1 = %s", lwgeom_to_ewkt((LWGEOM*)l1,0));
+	LWDEBUGF(4, "l2 = %s", lwgeom_to_ewkt((LWGEOM*)l2,0));
+
+	/* Initialize first point of q */
+	rv = getPoint2d_p(pa2, 0, &q1);
 
 	for ( i = 1; i < pa2->npoints; i++ )
 	{
 
-		rv = getPoint2d_p(pa2, i-1, q1);
-		rv = getPoint2d_p(pa2, i, q2);
+		/* Update second point of q to next value */
+		rv = getPoint2d_p(pa2, i, &q2);
 
+		/* Initialize first point of p */
+		rv = getPoint2d_p(pa1, 0, &p1);
+		
 		for ( j = 1; j < pa1->npoints; j++ )
 		{
 
-			rv = getPoint2d_p(pa1, j-1, p1);
-			rv = getPoint2d_p(pa1, j, p2);
-
-			LWDEBUGF(4, "lineCrossingDirection: i=%d, j=%d", i, j);
-
+			/* Update second point of p to next value */
+			rv = getPoint2d_p(pa1, j, &p2);
+			
 			this_cross = lw_segment_intersects(p1, p2, q1, q2);
 
-			if ( ! first_cross && this_cross )
-				first_cross = this_cross;
-			if ( this_cross )
-				final_cross = this_cross;
+			LWDEBUGF(4, "i=%d, j=%d (%.8g %.8g, %.8g %.8g)", this_cross, i, j, p1.x, p1.y, p2.x, p2.y);
 
 			if ( this_cross == SEG_CROSS_LEFT )
 			{
+				LWDEBUG(4,"this_cross == SEG_CROSS_LEFT");
 				cross_left++;
-				break;
+				if ( ! first_cross ) 
+					first_cross = SEG_CROSS_LEFT;
 			}
 
 			if ( this_cross == SEG_CROSS_RIGHT )
 			{
+				LWDEBUG(4,"this_cross == SEG_CROSS_RIGHT");
 				cross_right++;
-				break;
+				if ( ! first_cross ) 
+					first_cross = SEG_CROSS_LEFT;
 			}
 
 			/*
-			** Crossing at a co-linearity can be turned into crossing at
-			** a vertex by pulling the original touch point forward along
-			** the co-linearity.
+			** Crossing at a co-linearity can be turned handled by extending
+			** segment to next vertext and seeing if the end points straddle
+			** the co-linear segment.
 			*/
-			if ( this_cross == SEG_COLINEAR && vertex_touch == (i-1) )
+			if ( this_cross == SEG_COLINEAR )
 			{
-				vertex_touch = i;
-				break;
+				LWDEBUG(4,"this_cross == SEG_COLINEAR");
+				/* TODO: Add logic here and in segment_intersects() 
+				continue; 
+				*/
 			}
-
-			/*
-			** Crossing-at-vertex will cause four segment touch interactions, two at
-			** j-1 and two at j. We avoid incrementing our cross count by ignoring the
-			** second pair.
-			*/
-			if ( this_cross == SEG_TOUCH_LEFT )
-			{
-				if ( vertex_touch == (i-1) && vertex_touch_type == SEG_TOUCH_RIGHT )
-				{
-					cross_left++;
-					vertex_touch = -1;
-					vertex_touch_type = 0;
-				}
-				else
-				{
-					vertex_touch = i;
-					vertex_touch_type = this_cross;
-				}
-				break;
-			}
-			if ( this_cross == SEG_TOUCH_RIGHT )
-			{
-				if ( vertex_touch == (i-1) && vertex_touch_type == SEG_TOUCH_LEFT )
-				{
-					cross_right++;
-					vertex_touch = -1;
-					vertex_touch_type = 0;
-				}
-				else
-				{
-					vertex_touch = i;
-					vertex_touch_type = this_cross;
-				}
-				break;
-			}
-
-			/*
-			** TODO Handle co-linear cases.
-			*/
-
-			LWDEBUGF(4, "lineCrossingDirection: this_cross=%d, vertex_touch=%d, vertex_touch_type=%d", this_cross, vertex_touch, vertex_touch_type);
+			
+			LWDEBUG(4,"this_cross == SEG_NO_INTERSECTION");
+			
+			/* Turn second point of p into first point */
+			p1 = p2;
 
 		}
+		
+		/* Turn second point of q into first point */
+		q1 = q2;
 
 	}
 
-	LWDEBUGF(4, "first_cross=%d, final_cross=%d, cross_left=%d, cross_right=%d", first_cross, final_cross, cross_left, cross_right);
-
-	lwfree(p1);
-	lwfree(p2);
-	lwfree(q1);
-	lwfree(q2);
+	LWDEBUGF(4, "first_cross=%d, cross_left=%d, cross_right=%d", first_cross, cross_left, cross_right);
 
 	if ( !cross_left && !cross_right )
 		return LINE_NO_CROSS;
@@ -290,15 +258,11 @@ int lwline_crossing_direction(LWLINE *l1, LWLINE *l2)
 	if ( cross_left - cross_right == 0 && first_cross == SEG_CROSS_RIGHT )
 		return LINE_MULTICROSS_END_SAME_FIRST_RIGHT;
 
-	if ( cross_left - cross_right == 0 && first_cross == SEG_TOUCH_LEFT )
-		return LINE_MULTICROSS_END_SAME_FIRST_RIGHT;
-
-	if ( cross_left - cross_right == 0 && first_cross == SEG_TOUCH_RIGHT )
-		return LINE_MULTICROSS_END_SAME_FIRST_LEFT;
-
 	return LINE_NO_CROSS;
 
 }
+
+
 
 /*
 ** lwpoint_get_ordinate(point, ordinate) => double
