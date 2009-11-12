@@ -27,6 +27,18 @@ BEGIN;
 --  SPHEROID TYPE
 -------------------------------------------------------------------
 
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_spheroid_in(cstring)
+	RETURNS spheroid
+	AS 'MODULE_PATHNAME','ellipsoid_in'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_spheroid_out(spheroid)
+	RETURNS cstring
+	AS 'MODULE_PATHNAME','ellipsoid_out'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
 CREATE OR REPLACE FUNCTION spheroid_in(cstring)
 	RETURNS spheroid
 	AS 'MODULE_PATHNAME','ellipsoid_in'
@@ -47,6 +59,36 @@ CREATE TYPE spheroid (
 -------------------------------------------------------------------
 --  GEOMETRY TYPE (lwgeom)
 -------------------------------------------------------------------
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_in(cstring)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','LWGEOM_in'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_out(geometry)
+	RETURNS cstring
+	AS 'MODULE_PATHNAME','LWGEOM_out'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_analyze(internal)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_analyze'
+	LANGUAGE 'C' VOLATILE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_recv(internal)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','LWGEOM_recv'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_send(geometry)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME','LWGEOM_send'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION geometry_in(cstring)
 	RETURNS geometry
@@ -248,13 +290,23 @@ CREATE OR REPLACE FUNCTION ST_shift_longitude(geometry)
 --  BOX3D TYPE
 -------------------------------------------------------------------
 
--- Deprecation in 1.2.3
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_box3d_in(cstring)
+	RETURNS box3d
+	AS 'MODULE_PATHNAME', 'BOX3D_in'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_box3d_out(box3d)
+	RETURNS cstring
+	AS 'MODULE_PATHNAME', 'BOX3D_out'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
 CREATE OR REPLACE FUNCTION box3d_in(cstring)
 	RETURNS box3d
 	AS 'MODULE_PATHNAME', 'BOX3D_in'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION box3d_out(box3d)
 	RETURNS cstring
 	AS 'MODULE_PATHNAME', 'BOX3D_out'
@@ -380,25 +432,23 @@ CREATE OR REPLACE FUNCTION ST_ZMax(box3d)
 --  CHIP TYPE
 -------------------------------------------------------------------
 
--- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION chip_in(cstring)
 	RETURNS chip
 	AS 'MODULE_PATHNAME','CHIP_in'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_chip_in(cstring)
-	RETURNS chip
-	AS 'MODULE_PATHNAME','CHIP_in'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION chip_out(chip)
 	RETURNS cstring
 	AS 'MODULE_PATHNAME','CHIP_out'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Availability: 1.2.2
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION ST_chip_in(cstring)
+	RETURNS chip
+	AS 'MODULE_PATHNAME','CHIP_in'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION ST_chip_out(chip)
 	RETURNS cstring
 	AS 'MODULE_PATHNAME','CHIP_out'
@@ -407,8 +457,8 @@ CREATE OR REPLACE FUNCTION ST_chip_out(chip)
 CREATE TYPE chip (
 	alignment = double,
 	internallength = variable,
-	input = ST_chip_in,
-	output = ST_chip_out,
+	input = chip_in,
+	output = chip_out,
 	storage = extended
 );
 
@@ -416,13 +466,24 @@ CREATE TYPE chip (
 -- BOX2D
 -----------------------------------------------------------------------
 
--- Deprecation in 1.2.3
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_box2d_in(cstring)
+	RETURNS box2d
+	AS 'MODULE_PATHNAME','BOX2DFLOAT4_in'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_box2d_out(box2d)
+	RETURNS cstring
+	AS 'MODULE_PATHNAME','BOX2DFLOAT4_out'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
 CREATE OR REPLACE FUNCTION box2d_in(cstring)
 	RETURNS box2d
 	AS 'MODULE_PATHNAME','BOX2DFLOAT4_in'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION box2d_out(box2d)
 	RETURNS cstring
 	AS 'MODULE_PATHNAME','BOX2DFLOAT4_out'
@@ -497,6 +558,42 @@ CREATE OR REPLACE FUNCTION box2d_intersects(box2d, box2d)
 -------------------------------------------------------------------
 -- BTREE indexes
 -------------------------------------------------------------------
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_lt(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'lwgeom_lt'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_le(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'lwgeom_le'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_gt(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'lwgeom_gt'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_ge(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'lwgeom_ge'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_eq(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'lwgeom_eq'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_cmp(geometry, geometry)
+	RETURNS integer
+	AS 'MODULE_PATHNAME', 'lwgeom_cmp'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION geometry_lt(geometry, geometry)
 	RETURNS bool
@@ -577,17 +674,99 @@ CREATE OPERATOR CLASS btree_geometry_ops
 -- GiST indexes
 -------------------------------------------------------------------
 
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_postgis_gist_sel (internal, oid, internal, int4)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'LWGEOM_gist_sel'
+	LANGUAGE 'C';
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_postgis_gist_joinsel(internal, oid, internal, smallint)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'LWGEOM_gist_joinsel'
+	LANGUAGE 'C';
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_overleft(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_overleft'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_overright(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_overright'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_overabove(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_overabove'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_overbelow(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_overbelow'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_left(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_left'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_right(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_right'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_above(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_above'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_below(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_below'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_contain(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_contain'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_contained(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_contained'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_overlap(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_overlap'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_same(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_samebox'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
 CREATE OR REPLACE FUNCTION geometry_gist_sel (internal, oid, internal, int4)
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'LWGEOM_gist_sel'
 	LANGUAGE 'C';
 
-
 CREATE OR REPLACE FUNCTION geometry_gist_joinsel(internal, oid, internal, smallint)
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'LWGEOM_gist_joinsel'
 	LANGUAGE 'C';
-
 
 CREATE OR REPLACE FUNCTION geometry_overleft(geometry, geometry)
 	RETURNS bool
@@ -648,7 +827,6 @@ CREATE OR REPLACE FUNCTION geometry_samebox(geometry, geometry)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'LWGEOM_samebox'
 	LANGUAGE 'C' IMMUTABLE STRICT;
-
 
 CREATE OPERATOR << (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_left,
@@ -724,37 +902,37 @@ CREATE OPERATOR ~ (
 
 -- gist support functions
 
-CREATE OR REPLACE FUNCTION postgis_gist_consistent(internal,geometry,int4)
+CREATE OR REPLACE FUNCTION LWGEOM_gist_consistent(internal,geometry,int4)
 	RETURNS bool
 	AS 'MODULE_PATHNAME' ,'LWGEOM_gist_consistent'
 	LANGUAGE 'C';
 
-CREATE OR REPLACE FUNCTION postgis_gist_compress(internal)
+CREATE OR REPLACE FUNCTION LWGEOM_gist_compress(internal)
 	RETURNS internal
 	AS 'MODULE_PATHNAME','LWGEOM_gist_compress'
 	LANGUAGE 'C';
 
-CREATE OR REPLACE FUNCTION postgis_gist_penalty(internal,internal,internal)
+CREATE OR REPLACE FUNCTION LWGEOM_gist_penalty(internal,internal,internal)
 	RETURNS internal
 	AS 'MODULE_PATHNAME' ,'LWGEOM_gist_penalty'
 	LANGUAGE 'C';
 
-CREATE OR REPLACE FUNCTION postgis_gist_picksplit(internal, internal)
+CREATE OR REPLACE FUNCTION LWGEOM_gist_picksplit(internal, internal)
 	RETURNS internal
 	AS 'MODULE_PATHNAME' ,'LWGEOM_gist_picksplit'
 	LANGUAGE 'C';
 
-CREATE OR REPLACE FUNCTION postgis_gist_union(bytea, internal)
+CREATE OR REPLACE FUNCTION LWGEOM_gist_union(bytea, internal)
 	RETURNS internal
 	AS 'MODULE_PATHNAME' ,'LWGEOM_gist_union'
 	LANGUAGE 'C';
 
-CREATE OR REPLACE FUNCTION postgis_gist_same(box2d, box2d, internal)
+CREATE OR REPLACE FUNCTION LWGEOM_gist_same(box2d, box2d, internal)
 	RETURNS internal
 	AS 'MODULE_PATHNAME' ,'LWGEOM_gist_same'
 	LANGUAGE 'C';
 
-CREATE OR REPLACE FUNCTION postgis_gist_decompress(internal)
+CREATE OR REPLACE FUNCTION LWGEOM_gist_decompress(internal)
 	RETURNS internal
 	AS 'MODULE_PATHNAME' ,'LWGEOM_gist_decompress'
 	LANGUAGE 'C';
@@ -781,13 +959,13 @@ CREATE OPERATOR CLASS gist_geometry_ops
 	OPERATOR	10	 <<|	,
 	OPERATOR	11	 |>>	,
 	OPERATOR	12	 |&>	,
-	FUNCTION        1        postgis_gist_consistent (internal, geometry, int4),
-	FUNCTION        2        postgis_gist_union (bytea, internal),
-	FUNCTION        3        postgis_gist_compress (internal),
-	FUNCTION        4        postgis_gist_decompress (internal),
-	FUNCTION        5        postgis_gist_penalty (internal, internal, internal),
-	FUNCTION        6        postgis_gist_picksplit (internal, internal),
-	FUNCTION        7        postgis_gist_same (box2d, box2d, internal);
+	FUNCTION        1        LWGEOM_gist_consistent (internal, geometry, int4),
+	FUNCTION        2        LWGEOM_gist_union (bytea, internal),
+	FUNCTION        3        LWGEOM_gist_compress (internal),
+	FUNCTION        4        LWGEOM_gist_decompress (internal),
+	FUNCTION        5        LWGEOM_gist_penalty (internal, internal, internal),
+	FUNCTION        6        LWGEOM_gist_picksplit (internal, internal),
+	FUNCTION        7        LWGEOM_gist_same (box2d, box2d, internal);
 
 -------------------------------------------
 -- other lwgeom functions
