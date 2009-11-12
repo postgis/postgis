@@ -1880,10 +1880,8 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 		SET_VARSIZE(result, nbytes);
 		result->ndim = 1;
 		result->elemtype = oid;
-
-#if POSTGIS_PGSQL_VERSION > 81
 		result->dataoffset = 0;
-#endif
+
 		memcpy(ARR_DIMS(result), &nelems, sizeof(int));
 		memcpy(ARR_LBOUND(result), &lbs, sizeof(int));
 		memcpy(ARR_DATA_PTR(result), geom, VARSIZE(geom));

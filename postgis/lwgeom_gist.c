@@ -532,17 +532,10 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 			if (in != (PG_LWGEOM*)DatumGetPointer(entry->key))
 				pfree(in);  /* PG_FREE_IF_COPY */
 
-#if POSTGIS_PGSQL_VERSION >= 82
 			gistentryinit(*retval, PointerGetDatum(rr),
 						  entry->rel, entry->page,
 						  entry->offset,
 						  FALSE);
-#else
-			gistentryinit(*retval, PointerGetDatum(rr),
-						  entry->rel, entry->page,
-						  entry->offset, sizeof(BOX2DFLOAT4),
-						  FALSE);
-#endif
 
 
 		}
@@ -550,13 +543,8 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 		{
 			POSTGIS_DEBUG(4, "GIST: LWGEOM_gist_compress got a NULL key");
 
-#if POSTGIS_PGSQL_VERSION >= 82
 			gistentryinit(*retval, (Datum) 0, entry->rel,
 						  entry->page, entry->offset, FALSE);
-#else
-			gistentryinit(*retval, (Datum) 0, entry->rel,
-						  entry->page, entry->offset, 0, FALSE);
-#endif
 
 		}
 
