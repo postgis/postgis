@@ -275,7 +275,7 @@ flattenLayers(char* filename)
 {
 	char *str;
 	str = malloc( (48 + strlen(filename) + 1) * sizeof(char) );
-	sprintf(str, "convert tmp[0-9].png -background none -flatten %s", filename);
+	sprintf(str, "convert tmp[0-9].png -background white -flatten %s", filename);
 
 	LWDEBUGF(4, "%s", str);
 	system(str);
