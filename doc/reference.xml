@@ -10118,7 +10118,7 @@ SELECT
 
  l1_cross_l2 | l2_cross_l1
 -------------+-------------
-		   3 |          -3
+           3 |          -3
 				</programlisting>
 			</para>
 		</entry>
@@ -10144,7 +10144,7 @@ FROM (
 
  l1_cross_l2 | l2_cross_l1
 -------------+-------------
-		   2 |          -3
+           2 |          -2
 				</programlisting>
 			</para>
 		</entry>
@@ -10171,7 +10171,7 @@ FROM (
 
  l1_cross_l2 | l2_cross_l1
 -------------+-------------
-		  -1 |          1
+          -1 |          1
 				</programlisting>
 			</para>
 		</entry>
@@ -10196,7 +10196,7 @@ FROM (SELECT
 
  l1_cross_l2 | l2_cross_l1
 -------------+-------------
-		  -2 |          0
+          -2 |          2
 				</programlisting>
 			</para>
 		</entry>
