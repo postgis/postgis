@@ -6,7 +6,7 @@
       <sect1>
         <title>Release 1.5.0</title>
         <para>Release date: 2009/12/25</para>
-        <para>This release provides support for geographic coordinates (lat/lon) via a new GEOGRAPHY type. Also performance enhancements, new input format support (GLM) and general upkeep.</para>
+        <para>This release provides support for geographic coordinates (lat/lon) via a new GEOGRAPHY type. Also performance enhancements, new input format support (GML,KML) and general upkeep.</para>
   
         <simplesect>
           <title>API Stability</title>
@@ -17,13 +17,13 @@
           <title>Compatibility</title>
           <para>The versions below are the *minimum* requirements for PostGIS 1.5</para>
           <para>PostgreSQL 8.3 and higher on all platforms</para>
-          <para>GEOS 3.0 and higher only</para>
+          <para>GEOS 3.0 and higher only (GEOS 3.2+ to take advantage of all features)</para>
           <para>PROJ4 4.5 and higher only</para>
         </simplesect>
 
         <simplesect>
           <title>New Features</title>
-          <para></para>
+          <para><xref linkend="NewFunctions_1_5"/></para>
         </simplesect>
 
         <simplesect>
