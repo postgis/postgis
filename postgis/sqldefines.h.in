@@ -7,7 +7,7 @@
 #define POSTGIS_PGSQL_VERSION @POSTGIS_PGSQL_VERSION@
 #define POSTGIS_GEOS_VERSION @POSTGIS_GEOS_VERSION@
 #define POSTGIS_PROJ_VERSION @POSTGIS_PROJ_VERSION@
-
+#define POSTGIS_LIB_VERSION  @POSTGIS_LIB_VERSION@
 /*
  * Define the build date and the version number
  * (these substitiutions are done with extra quotes sinces CPP

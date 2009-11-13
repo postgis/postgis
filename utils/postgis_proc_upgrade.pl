@@ -3,7 +3,7 @@
 #
 # This script produces an .sql file containing
 # CREATE OR REPLACE calls for each function
-# in lwpostgis.sql
+# in postgis.sql
 #
 # In addition, the transaction contains
 # a check for Major postgis_lib_version() 
@@ -20,99 +20,235 @@ eval "exec perl -w $0 $@"
 
 use strict;
 
+#
+# Conditionally upgraded types and operators. Only include these
+# if the major numbers in version_from are less than the version_to
+# number.
+#
+my $objs = {
+ 	"104" => { 
+		"types" => {
+			"box3d_extent" => 1,
+			"pgis_abs" => 1
+		}
+	},
+ 	"105" => { 
+		"operators" => {
+			"geography >" => 1,
+			"geography >=" => 1,
+			"geography =" => 1,
+			"geography <=" => 1,
+			"geography <" => 1,
+			"geography &&" => 1 
+		},
+		"opclasses" => {
+			"gist_geography_ops" => 1,
+			"btree_geography_ops" => 1
+		},
+		"types" => {
+			"geography" => 1,
+			"gidx" => 1
+		}
+	}
+};
+
+#
+# Commandline argument handling
+#
 ($#ARGV == 0) ||
-die "Usage: perl postgis_proc_upgrade.pl <postgis.sql> [<schema>]\nCreates a new SQL script to upgrade all of the PostGIS functions.\n"
-	if ( @ARGV < 1 || @ARGV > 2 );
+die "Usage: perl postgis_proc_upgrade.pl <postgis.sql> <version_from> [<schema>]\nCreates a new SQL script to upgrade all of the PostGIS functions.\n"
+	if ( @ARGV < 1 || @ARGV > 3 );
 
-my $NEWVERSION = "UNDEF";
-my %newtypes = ( "box3d_extent", 1, "pgis_abs", 1 );
+my $sql_file = $ARGV[0];
+my $version_to = "";
+my $version_to_num = 0;
+my $version_from = $ARGV[1];
+my $version_from_num = 0;
+my $schema = "";
+$schema = $ARGV[2] if @ARGV > 2;
 
-print "BEGIN;\n";
+if ( $version_from =~ /^(\d+)\.(\d+)/ )
+{
+	$version_from_num = 100 * $1 + $2; 
+}
+else
+{
+	die "Version from number invalid, must be of form X.X\n";
+}
 
-print "SET search_path TO $ARGV[1];\n" if @ARGV>1;
+die "Unable to open input SQL file $sql_file\n"
+	if ( ! -f $sql_file );
 
-open( INPUT, $ARGV[0] ) || die "Couldn't open file: $ARGV[0]\n";
-
-FUNC:
+#
+# Search the SQL file for the target version number (the 
+# version we are upgrading *to*.
+#
+open( INPUT, $sql_file ) || die "Couldn't open file: $sql_file\n";
 while(<INPUT>)
 {
 	#
 	# Since 1.1.0 scripts/lib/release versions are the same
 	#
-	if (m/^create or replace function postgis_scripts_installed()/i)
+	if (/INSTALL VERSION: (.*)/)
 	{
-		while(<INPUT>)
-		{
-			if ( m/SELECT .'(\d\.\d\..*).'::text/i )
-			{
-				$NEWVERSION = $1;
-				last FUNC;
-			}
-		}
+				$version_to = $1;
+				last;
 	}
 }
+close(INPUT); 
 
-print "-- $NEWVERSION\n";
+die "Unable to locate target new version number in $sql_file\n"
+ 	if( ! $version_to );
 
+if ( $version_to =~ /(\d+)\.(\d+)\..*/ )
+{
+	$version_to = $1 . "." . $2;
+	$version_to_num = 100 * $1 + $2; 
+}
+else
+{
+	die "Version to number invalid, must be of form X.X.X\n";
+}
+
+print qq{
+--
+-- UPGRADE SCRIPT FROM PostGIS $version_from TO PostGIS $version_to
+--
+
+};
+
+print "BEGIN;\n";
+print "SET search_path TO $schema;\n" if $schema;
+
+#
+# Add in the conditional check function to ensure this script is
+# not being applied to a major version update.
+#
 while(<DATA>)
 {
-	s/NEWVERSION/$NEWVERSION/g;
+	s/NEWVERSION/$version_to/g;
 	print;
 }
 
-close(INPUT); 
-
-open( INPUT, $ARGV[0] ) || die "Couldn't open file: $ARGV[0]\n";
+#
+# Go through the SQL file and strip out objects that cannot be 
+# applied to an existing, loaded database: types and operators
+# and operator classes that have already been defined.
+#
+open( INPUT, $sql_file ) || die "Couldn't open file: $sql_file\n";
 while(<INPUT>)
 {
-	my $checkit = 0;
+
 	if (m/^create or replace function/i)
 	{
-		$checkit = 1 if m/postgis_scripts_installed()/i;
 		print $_;
 		while(<INPUT>)
 		{
-			if ( $checkit && m/SELECT .'(\d\.\d\.\d).'::text/i )
-			{
-				$NEWVERSION = $1;
-			}
 			print $_;
 			last if m/^\s*LANGUAGE '/;
 		}
 	}
 
-	if (m/^create type (\S+)/i)
+
+	if ( m/^create type (\w+)/i )
 	{
 		my $newtype = $1;
-		print $_ if $newtypes{$newtype};
+		my $def .= $_;
 		while(<INPUT>)
 		{
-			print $_ if $newtypes{$newtype};
+			$def .= $_;
 			last if m/\)/;
+		}
+		my $ver = $version_from_num + 1;
+		while( $version_from_num < $version_to_num && $ver <= $version_to_num )
+		{
+			if( $objs->{$ver}->{"types"}->{$newtype} )
+			{
+				print $def;
+				last;
+			}
+			$ver++;
 		}
 	}
 
+	# This code handles casts by dropping and recreating them.
+	if ( /^create cast\s+\(\s*(\w+)\s+as\s+(\w+)\)/i )
+	{
+		my $type1 = $1;
+		my $type2 = $2;
+		my $def = $_;
+		print "DROP CAST IF EXISTS ($type1 AS $type2);\n";
+		print $def;
+	}
 
 	# This code handles aggregates by dropping and recreating them.
-	# The DROP would fail on aggregates as they would not exist
-	# in old postgis installations, thus we avoid this until we
-	# find a better strategy.
-
-	if (/^create aggregate\s+(\S+)\s*\(/i)
+	if ( /^create aggregate\s+(\S+)\s*\(/i )
 	{
 		my $aggname = $1;
-		my $basetype = 'unknown';
+		my $aggtype = 'unknown';
 		my $def = $_;
 		while(<INPUT>)
 		{
 			$def .= $_;
-			$basetype = $1 if (m/basetype\s*=\s*([^,]*)\s*,/i);
+			$aggtype = $1 if (m/basetype\s*=\s*([^,]*)\s*,/i);
 			last if m/\);/;
 		}
-		print "DROP AGGREGATE IF EXISTS $aggname($basetype);\n";
-		print "$def";
+		print "DROP AGGREGATE IF EXISTS $aggname($aggtype);\n";
+		print $def;
+	}
+	
+	# This code handles operators by creating them if we are doing a major upgrade
+	if ( /^create operator\s+(\S+)\s*\(/i )
+	{
+		my $opname = $1;
+		my $optype = 'unknown';
+		my $def = $_;
+		while(<INPUT>)
+		{
+			$def .= $_;
+			$optype = $1 if ( m/leftarg\s*=\s*(\w+)\s*,/i );
+			last if m/\);/;
+		}
+		my $opsig = $optype . " " . $opname;
+		my $ver = $version_from_num + 1;
+		while( $version_from_num < $version_to_num && $ver <= $version_to_num )
+		{
+			if( $objs->{$ver}->{"operators"}->{$opsig} )
+			{
+				print $def;
+				last;
+			}
+			$ver++;
+		}
 	}
 
+	# This code handles operator classes by creating them if we are doing a major upgrade
+	if ( /^create operator class\s+(\w+)\s*/i )
+	{
+		my $opclassname = $1;
+		my $opctype = 'unknown';
+		my $opcidx = 'unknown';
+		my $def = $_;
+		while(<INPUT>)
+		{
+			$def .= $_;
+			$opctype = $1 if ( m/for type (\w+) /i );
+			$opcidx = $1 if ( m/using (\w+) /i );
+			last if m/\);/;
+		}
+		$opctype =~ tr/A-Z/a-z/;
+		$opcidx =~ tr/A-Z/a-z/;
+		my $ver = $version_from_num + 1;
+		while( $version_from_num < $version_to_num && $ver <= $version_to_num )
+		{
+			if( $objs->{$ver}->{"opclasses"}->{$opclassname} )
+			{
+				print $def;
+				last;
+			}
+			$ver++;
+		}
+	}
 }
 
 close( INPUT );
@@ -150,7 +286,7 @@ BEGIN
 	SELECT into new_maj substring(new_scripts from 1 for 2);
 
 	IF old_maj != new_maj THEN
-		RAISE EXCEPTION ''Scripts upgrade from version % to version % requires a dump/reload. See postgis manual for instructions'', old_scripts, new_scripts;
+		RAISE EXCEPTION ''Upgrade from version % to version % requires a dump/reload. See PostGIS manual for instructions'', old_scripts, new_scripts;
 	ELSE
 		RETURN ''Scripts versions checked for upgrade: ok'';
 	END IF;

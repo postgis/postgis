@@ -21,7 +21,10 @@
 
 #include "sqldefines.h"
 
+-- INSTALL VERSION: POSTGIS_LIB_VERSION
+
 BEGIN;
+
 
 -------------------------------------------------------------------
 --  SPHEROID TYPE
@@ -6250,5 +6253,41 @@ CREATE OR REPLACE FUNCTION ST_MinimumBoundingCircle(geometry)
  RETURNS geometry AS
 'SELECT ST_MinimumBoundingCircle($1, 48)'
  LANGUAGE 'sql' IMMUTABLE STRICT;
-COMMIT;
 
+
+-------------------------------------------------------------------
+--  DROPPED FUNCTIONS FROM OLD VERSIONS
+-------------------------------------------------------------------
+
+DROP FUNCTION IF EXISTS asgml(geometry, integer, integer); 
+DROP FUNCTION IF EXISTS asukml(geometry, integer, integer); 
+DROP FUNCTION IF EXISTS asukml(geometry, integer); 
+DROP FUNCTION IF EXISTS asukml(geometry); 
+DROP FUNCTION IF EXISTS create_histogram2d(box2d, integer); 
+DROP FUNCTION IF EXISTS dump(geometry); 
+DROP FUNCTION IF EXISTS jtsnoop(geometry);
+DROP FUNCTION IF EXISTS postgis_jts_version();
+DROP FUNCTION IF EXISTS st_pointn(geometry);
+DROP FUNCTION IF EXISTS st_create_histogram2d(box2d,integer);
+
+--
+-- Problem: can't conditionally drop functions that have arguments
+-- with types that don't exist. Makes cleaning up old databases harder.
+--
+-- DROP TYPE IF EXISTS histogram2d CASCADE;
+-- DROP FUNCTION IF EXISTS estimate_histogram2d(histogram2d, box2d);
+-- DROP FUNCTION IF EXISTS explode_histogram2d(histogram2d, text);
+-- DROP FUNCTION IF EXISTS build_histogram2d(histogram2d, text, text); 
+-- DROP FUNCTION IF EXISTS build_histogram2d(histogram2d, text, text, text); 
+-- DROP FUNCTION IF EXISTS st_build_histogram2d(histogram2d, text, text, text);
+-- DROP FUNCTION IF EXISTS st_estimate_histogram2d(histogram2d,box2d);
+-- DROP FUNCTION IF EXISTS st_explode_histogram2d(histogram2d,text);
+-- DROP FUNCTION IF EXISTS st_build_histogram2d(histogram2d,text,text);
+-- DROP FUNCTION IF EXISTS st_histogram2d_out(histogram2d);
+-- DROP FUNCTION IF EXISTS st_histogram2d_in(cstring);
+-- DROP FUNCTION IF EXISTS histogram2d_out(histogram2d);
+-- DROP FUNCTION IF EXISTS histogram2d_in(cstring);
+
+-------------------------------------------------------------------
+
+COMMIT;
