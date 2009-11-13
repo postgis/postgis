@@ -21,6 +21,8 @@
 
 #include "sqldefines.h"
 
+-- INSTALL VERSION: POSTGIS_LIB_VERSION
+
 BEGIN;
 
 -------------------------------------------------------------------

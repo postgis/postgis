@@ -3,7 +3,7 @@
 #
 # This script produces an .sql file containing
 # CREATE OR REPLACE calls for each function
-# in lwpostgis.sql
+# in postgis.sql
 #
 # In addition, the transaction contains
 # a check for Major postgis_lib_version() 
@@ -32,25 +32,18 @@ print "BEGIN;\n";
 print "SET search_path TO $ARGV[1];\n" if @ARGV>1;
 
 open( INPUT, $ARGV[0] ) || die "Couldn't open file: $ARGV[0]\n";
-
-FUNC:
 while(<INPUT>)
 {
 	#
 	# Since 1.1.0 scripts/lib/release versions are the same
 	#
-	if (m/^create or replace function postgis_scripts_installed()/i)
+	if (/INSTALL VERSION: (.*)/)
 	{
-		while(<INPUT>)
-		{
-			if ( m/SELECT .'(\d\.\d\..*).'::text/i )
-			{
 				$NEWVERSION = $1;
-				last FUNC;
-			}
-		}
+				last;
 	}
 }
+close(INPUT); 
 
 print "-- $NEWVERSION\n";
 
@@ -60,7 +53,6 @@ while(<DATA>)
 	print;
 }
 
-close(INPUT); 
 
 open( INPUT, $ARGV[0] ) || die "Couldn't open file: $ARGV[0]\n";
 while(<INPUT>)
@@ -81,24 +73,30 @@ while(<INPUT>)
 		}
 	}
 
-	if (m/^create type (\S+)/i)
+	if ( m/^create type (\S+)/i )
 	{
 		my $newtype = $1;
-		print $_ if $newtypes{$newtype};
+		my $def .= $_;
 		while(<INPUT>)
 		{
-			print $_ if $newtypes{$newtype};
+			$def .= $_;
 			last if m/\)/;
 		}
+		print $def if $newtypes{$newtype};
 	}
 
+	# This code handles casts by dropping and recreating them.
+	if ( /^create cast\s+\(\s*(\w+)\s+as\s+(\w+)\)/i )
+	{
+		my $type1 = $1;
+		my $type2 = $2;
+		my $def = $_;
+		print "DROP CAST IF EXISTS ($type1 AS $type2);\n";
+		print $def;
+	}
 
 	# This code handles aggregates by dropping and recreating them.
-	# The DROP would fail on aggregates as they would not exist
-	# in old postgis installations, thus we avoid this until we
-	# find a better strategy.
-
-	if (/^create aggregate\s+(\S+)\s*\(/i)
+	if ( /^create aggregate\s+(\S+)\s*\(/i )
 	{
 		my $aggname = $1;
 		my $basetype = 'unknown';
@@ -110,9 +108,42 @@ while(<INPUT>)
 			last if m/\);/;
 		}
 		print "DROP AGGREGATE IF EXISTS $aggname($basetype);\n";
-		print "$def";
+		print $def;
+	}
+	
+	# This code handles operators by creating them if we are doing a major upgrade
+	if ( /^create operator\s+(\S+)\s*\(/i )
+	{
+		my $opname = $1;
+		my $basetype = 'unknown';
+		my $def = $_;
+		while(<INPUT>)
+		{
+			$def .= $_;
+			$basetype = $1 if ( m/leftarg\s*=\s*(\w+)\s*,/i );
+			last if m/\);/;
+		}
+		print $def;
 	}
 
+	# This code handles operator classes by creating them if we are doing a major upgrade
+	if ( /^create operator class\s+(\w+)\s*/i )
+	{
+		my $opclassname = $1;
+		my $opctype = 'unknown';
+		my $opcidx = 'unknown';
+		my $def = $_;
+		while(<INPUT>)
+		{
+			$def .= $_;
+			$opctype = $1 if ( m/for type (\w+) /i );
+			$opcidx = $1 if ( m/using (\w+) /i );
+			last if m/\);/;
+		}
+		$opctype =~ tr/A-Z/a-z/;
+		$opcidx =~ tr/A-Z/a-z/;
+		print $def;
+	}
 }
 
 close( INPUT );
