@@ -13,7 +13,7 @@
 MODULE_big=postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 
 # Files to be copied to the contrib/ directory
-DATA_built=postgis.sql uninstall_postgis.sql postgis_upgrade.sql
+DATA_built=postgis.sql uninstall_postgis.sql postgis_upgrade_15_minor.sql postgis_upgrade_14_to_15.sql postgis_upgrade_13_to_15.sql
 DATA=../spatial_ref_sys.sql
 
 # SQL objects (files requiring C pre-processing)
@@ -83,8 +83,14 @@ include $(PGXS)
 %.sql: %.sql.in
 	sed 's,MODULE_PATHNAME,$$libdir/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@,g' $< >$@
 
-postgis_upgrade.sql: postgis.sql
-	$(PERL) ../utils/postgis_proc_upgrade.pl $< > $@
+postgis_upgrade_15_minor.sql: postgis.sql
+	$(PERL) ../utils/postgis_proc_upgrade.pl $< 1.5 > $@
+
+postgis_upgrade_14_to_15.sql: postgis.sql
+	$(PERL) ../utils/postgis_proc_upgrade.pl $< 1.4 > $@
+
+postgis_upgrade_13_to_15.sql: postgis.sql
+	$(PERL) ../utils/postgis_proc_upgrade.pl $< 1.3 > $@
 
 # Generate any .sql.in files from .sql.in.c files by running them through the C pre-processor 
 $(SQL_OBJS): %.in: %.in.c
