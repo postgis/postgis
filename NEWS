@@ -1,3 +1,19 @@
+PostGIS 1.4.1
+2009/11/13
+
+ - This is a bug fix release, addressing issues that have been
+   filed since the 1.4.0 release.
+
+ - Bug Fixes
+   - #241, crash in ST_LineCrossingDirection
+   - #210, segmentation faults in ST_Union with NULLs
+   - #277, crash on very large numeric inputs
+   - #179, ST_MakeLine crash server with NULLs
+   - #253, inconsistent results when using the ~= operator
+   - #276, ST_AsGML producing non-compliant GML
+   - #239, memory issues with ST_As* functions
+   - #272, ST_LineCrossingDirection should be negatively symmetric
+
 PostGIS 1.4.0
 2009/07/24
 

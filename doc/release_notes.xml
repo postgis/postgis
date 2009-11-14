@@ -4,6 +4,23 @@
     <subtitle>Release Notes</subtitle>
 
       <sect1>
+        <title>Release 1.4.1</title>
+        <para>Release date: 2009/11/10</para>
+        <para>This is a bug fix release, addressing issues that have been filed since the 1.4.0 release.</para>
+        <simplesect>
+          <title>Bug Fixes</title>
+          <para>#241, crash in ST_LineCrossingDirection</para>
+          <para>#210, segmentation faults in ST_Union with NULLs</para>
+          <para>#277, crash on very large numeric inputs</para>
+          <para>#179, ST_MakeLine crash server with NULLs</para>
+          <para>#253, inconsistent results when using the ~= operator</para>
+          <para>#276, ST_AsGML producing non-compliant GML</para>
+          <para>#239, memory issues with ST_As* functions</para>
+          <para>#272, ST_LineCrossingDirection should be negatively symmetric</para>
+        </simplesect>
+      </sect1>
+
+      <sect1>
         <title>Release 1.4.0</title>
         <para>Release date: 2009/07/24</para>
         <para>This release provides performance enhancements, improved internal structures and testing, new features, and upgraded documentation.</para>
