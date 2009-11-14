@@ -522,13 +522,13 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 
 	
 	/* Are these data arctic? Polar stereographic north. */
-	if( gbox1.ymin > 60.0 && gbox2.ymin > 60.0 )
+	if( gbox1.ymin > 65.0 && gbox2.ymin > 65.0 )
 	{
 		PG_RETURN_INT32(-3995);
 	}
 
 	/* Are these data antarctic? Polar stereographic south. */
-	if( gbox1.ymin < -60.0 && gbox2.ymin < -60.0 )
+	if( gbox1.ymin < -65.0 && gbox2.ymin < -65.0 )
 	{
 		PG_RETURN_INT32(-3995);
 	}
