@@ -139,25 +139,35 @@ open( INPUT, $sql_file ) || die "Couldn't open file: $sql_file\n";
 while(<INPUT>)
 {
 
-	if (m/^create or replace function/i)
+	next if ( /^\-\-/ );
+
+	#
+	# Allow through deprecations from postgis_drop.sql
+	#
+	print if ( /^drop function if exists/i );
+	print if ( /^drop aggregate if exists/i );
+
+	if ( /^create or replace function/i )
 	{
 		print $_;
+		my $endfunc = 0;
 		while(<INPUT>)
 		{
 			print $_;
-			last if m/^\s*LANGUAGE '/;
+			$endfunc = 1 if /^\s*LANGUAGE /;
+			last if ( $endfunc && /\;/ );
 		}
 	}
 
 
-	if ( m/^create type (\w+)/i )
+	if ( /^create type (\w+)/i )
 	{
 		my $newtype = $1;
 		my $def .= $_;
 		while(<INPUT>)
 		{
 			$def .= $_;
-			last if m/\)/;
+			last if /\)/;
 		}
 		my $ver = $version_from_num + 1;
 		while( $version_from_num < $version_to_num && $ver <= $version_to_num )
@@ -190,8 +200,8 @@ while(<INPUT>)
 		while(<INPUT>)
 		{
 			$def .= $_;
-			$aggtype = $1 if (m/basetype\s*=\s*([^,]*)\s*,/i);
-			last if m/\);/;
+			$aggtype = $1 if ( /basetype\s*=\s*([^,]*)\s*,/i );
+			last if /\);/;
 		}
 		print "DROP AGGREGATE IF EXISTS $aggname($aggtype);\n";
 		print $def;
@@ -206,8 +216,8 @@ while(<INPUT>)
 		while(<INPUT>)
 		{
 			$def .= $_;
-			$optype = $1 if ( m/leftarg\s*=\s*(\w+)\s*,/i );
-			last if m/\);/;
+			$optype = $1 if ( /leftarg\s*=\s*(\w+)\s*,/i );
+			last if /\);/;
 		}
 		my $opsig = $optype . " " . $opname;
 		my $ver = $version_from_num + 1;
@@ -232,9 +242,9 @@ while(<INPUT>)
 		while(<INPUT>)
 		{
 			$def .= $_;
-			$opctype = $1 if ( m/for type (\w+) /i );
-			$opcidx = $1 if ( m/using (\w+) /i );
-			last if m/\);/;
+			$opctype = $1 if ( /for type (\w+) /i );
+			$opcidx = $1 if ( /using (\w+) /i );
+			last if /\);/;
 		}
 		$opctype =~ tr/A-Z/a-z/;
 		$opcidx =~ tr/A-Z/a-z/;
