@@ -1,0 +1,1885 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <sect1 id="Geometry_Constructors">
+	  <title>Geometry Constructors</title>
+		<refentry id="ST_BdPolyFromText">
+		  <refnamediv>
+			<refname>ST_BdPolyFromText</refname>
+
+			<refpurpose>Construct a Polygon given an arbitrary collection of closed
+			linestrings as a MultiLineString Well-Known text representation.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_BdPolyFromText</function></funcdef>
+				<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>Construct a Polygon given an arbitrary collection of closed
+			linestrings as a MultiLineString Well-Known text representation.</para>
+
+			<!-- optionally mention that this function uses indexes if appropriate -->
+			<note>
+				<para>Throws an error if WKT is not a MULTILINESTRING. Throws an
+			error if output is a MULTIPOLYGON; use ST_BdMPolyFromText in that case, or
+			see ST_BuildArea() for a
+			postgis-specific approach.</para>
+			</note>
+
+			 <para>&sfs_compliant; s3.2.6.2</para>
+
+			 <para>Availability: 1.1.0 - requires GEOS &gt;= 2.1.0.</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>Forthcoming</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_BuildArea" />, <xref linkend="ST_BdMPolyFromText" /></para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="ST_BdMPolyFromText">
+			<refnamediv>
+				<refname>ST_BdMPolyFromText</refname>
+				<refpurpose>Construct a MultiPolygon given an arbitrary collection of
+					closed linestrings as a MultiLineString text
+					representation Well-Known text representation.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>geometry <function>ST_BdMPolyFromText</function></funcdef>
+					<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>Construct a Polygon given an arbitrary collection of closed
+				linestrings, polygons, MultiLineStrings as  Well-Known text representation.</para>
+
+				<!-- optionally mention that this function uses indexes if appropriate -->
+				<note>
+					 <para>Throws an error if WKT is not a MULTILINESTRING. Forces
+					MULTIPOLYGON output even when result is really only composed by a
+					single POLYGON; use <link
+					linkend="ST_BdPolyFromText">ST_BdPolyFromText</link> if you're sure a
+					single POLYGON will result from operation, or see <link
+					linkend="ST_BuildArea">ST_BuildArea()</link> for a postgis-specific
+					approach.</para>
+				</note>
+
+				 <para>&sfs_compliant; s3.2.6.2</para>
+
+				 <para>Availability: 1.1.0 - requires GEOS &gt;= 2.1.0.</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+
+				<programlisting>Forthcoming</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="ST_BuildArea" />, <xref linkend="ST_BdPolyFromText" /></para>
+			</refsection>
+	</refentry>
+
+	<refentry id="ST_GeographyFromText">
+		  <refnamediv>
+			<refname>ST_GeographyFromText</refname>
+			<refpurpose>Return a specified geography value from Well-Known Text representation or extended (WKT). </refpurpose>
+		  </refnamediv>
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geography <function>ST_GeographyFromText</function></funcdef>
+				<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+		  <refsection>
+			<title>Description</title>
+			<para>Returns a geography object from the  well-known text representation.  SRID 4326 is assumed.</para>
+			<!-- TODO: put in example -->
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_AsText" /></para>
+		  </refsection>
+	</refentry>
+
+
+	<refentry id="ST_GeomCollFromText">
+	  <refnamediv>
+		<refname>ST_GeomCollFromText</refname>
+
+		<refpurpose>Makes a collection Geometry from collection WKT with the given SRID. If SRID is
+			not give, it defaults to -1.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomCollFromText</function></funcdef>
+			<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomCollFromText</function></funcdef>
+			<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+		  </funcprototype>
+
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		  <para>Makes a collection Geometry from the Well-Known-Text (WKT) representation with the given SRID. If SRID is
+			not give, it defaults to -1.</para>
+
+		  <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance suite</para>
+
+		  <para>Returns null if the WKT is not a GEOMETRYCOLLECTION</para>
+		 <note>
+			<para>If you are absolutely sure all your WKT geometries are collections, don't use this function.
+				It is slower than ST_GeomFromText since it adds an additional validation step.
+			</para>
+		</note>
+
+		<para>&sfs_compliant; s3.2.6.2</para>
+		<para>&sqlmm_compliant;</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_GeomCollFromText('GEOMETRYCOLLECTION(POINT(1 2),LINESTRING(1 2, 3 4))');
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_SRID" /></para>
+	  </refsection>
+	</refentry>
+
+
+	<refentry id="ST_GeomFromEWKB">
+	  <refnamediv>
+		<refname>ST_GeomFromEWKB</refname>
+		<refpurpose>Return a specified ST_Geometry value from Extended Well-Known Binary representation (EWKB).</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomFromEWKB</function></funcdef>
+			<paramdef><type>bytea </type> <parameter>EWKB</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>Constructs a PostGIS ST_Geometry object from the OGC Extended Well-Known binary (EWKT) representation.</para>
+		<note>
+			<para>The EWKB format is not an OGC standard, but a PostGIS specific format that includes the spatial reference system (SRID)
+			identifier</para>
+		</note>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<para>line string binary rep 0f
+		LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932) in NAD 83 long lat (4269).</para>
+		<note><para>NOTE: Even though byte arrays are delimited with \ and may have ', we need to escape both out with \ and ''.  So it does not
+			look exactly like its AsEWKB representation.</para></note>
+	<programlisting>SELECT ST_GeomFromEWKB(E'\\001\\002\\000\\000 \\255\\020\\000\\000\\003\\000\\000\\000\\344J=
+\\013B\\312Q\\300n\\303(\\010\\036!E@''\\277E''K
+\\312Q\\300\\366{b\\235*!E@\\225|\\354.P\\312Q
+\\300p\\231\\323e1!E@');</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_AsBinary" />, <xref linkend="ST_AsEWKB" />, <xref linkend="ST_GeomFromWKB" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_GeomFromEWKT">
+	  <refnamediv>
+		<refname>ST_GeomFromEWKT</refname>
+		<refpurpose>Return a specified ST_Geometry value from Extended Well-Known Text representation (EWKT).</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomFromEWKT</function></funcdef>
+			<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>Constructs a PostGIS ST_Geometry object from the OGC Extended Well-Known text (EWKT) representation.</para>
+		<note>
+			<para>The EWKT format is not an OGC standard, but an PostGIS specific format that includes the spatial reference system (SRID)
+			identifier</para>
+		</note>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+	<programlisting>SELECT ST_GeomFromEWKT('SRID=4269;LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932)');
+SELECT ST_GeomFromEWKT('SRID=4269;MULTILINESTRING((-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932))');
+
+SELECT ST_GeomFromEWKT('SRID=4269;POINT(-71.064544 42.28787)');
+
+SELECT ST_GeomFromEWKT('SRID=4269;POLYGON((-71.1776585052917 42.3902909739571,-71.1776820268866 42.3903701743239,
+-71.1776063012595 42.3903825660754,-71.1775826583081 42.3903033653531,-71.1776585052917 42.3902909739571))');
+
+SELECT ST_GeomFromEWKT('SRID=4269;MULTIPOLYGON(((-71.1031880899493 42.3152774590236,
+-71.1031627617667 42.3152960829043,-71.102923838298 42.3149156848307,
+-71.1023097974109 42.3151969047397,-71.1019285062273 42.3147384934248,
+-71.102505233663 42.3144722937587,-71.10277487471 42.3141658254797,
+-71.103113945163 42.3142739188902,-71.10324876416 42.31402489987,
+-71.1033002961013 42.3140393340215,-71.1033488797549 42.3139495090772,
+-71.103396240451 42.3138632439557,-71.1041521907712 42.3141153348029,
+-71.1041411411543 42.3141545014533,-71.1041287795912 42.3142114839058,
+-71.1041188134329 42.3142693656241,-71.1041112482575 42.3143272556118,
+-71.1041072845732 42.3143851580048,-71.1041057218871 42.3144430686681,
+-71.1041065602059 42.3145009876017,-71.1041097995362 42.3145589148055,
+-71.1041166403905 42.3146168544148,-71.1041258822717 42.3146748022936,
+-71.1041375307579 42.3147318674446,-71.1041492906949 42.3147711126569,
+-71.1041598612795 42.314808571739,-71.1042515013869 42.3151287620809,
+-71.1041173835118 42.3150739481917,-71.1040809891419 42.3151344119048,
+-71.1040438678912 42.3151191367447,-71.1040194562988 42.3151832057859,
+-71.1038734225584 42.3151140942995,-71.1038446938243 42.3151006300338,
+-71.1038315271889 42.315094347535,-71.1037393329282 42.315054824985,
+-71.1035447555574 42.3152608696313,-71.1033436658644 42.3151648370544,
+-71.1032580383161 42.3152269126061,-71.103223066939 42.3152517403219,
+-71.1031880899493 42.3152774590236)),
+((-71.1043632495873 42.315113108546,-71.1043583974082 42.3151211109857,
+-71.1043443253471 42.3150676015829,-71.1043850704575 42.3150793250568,-71.1043632495873 42.315113108546)))');
+
+--3d circular string
+SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)');
+	</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_GeomFromEWKT" /></para>
+	  </refsection>
+	</refentry>
+	<refentry id="ST_GeometryFromText">
+		  <refnamediv>
+			<refname>ST_GeometryFromText</refname>
+			<refpurpose>Return a specified ST_Geometry value from Well-Known Text representation (WKT).  This is an alias name for ST_GeomFromText</refpurpose>
+		  </refnamediv>
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_GeometryFromText</function></funcdef>
+				<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+			  </funcprototype>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_GeometryFromText</function></funcdef>
+				<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+		  <refsection>
+			<title>Description</title>
+			<para>&sfs_compliant;</para>
+			<para>&sqlmm_compliant; SQL-MM 3: 5.1.40</para>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_GeomFromText" /></para>
+		  </refsection>
+	</refentry>
+	
+	<refentry id="ST_GeomFromGML">
+	  <refnamediv>
+		<refname>ST_GeomFromGML</refname>
+		<refpurpose>Takes as input GML representation of geometry and outputs a PostGIS geometry object</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomFromGML</function></funcdef>
+			<paramdef><type>text </type> <parameter>geomgml</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>Constructs a PostGIS ST_Geometry object from the OGC GML representation.</para>
+		<note>
+			<para>Requires compilation with libxml2 2.5+</para>
+		</note>
+		<para>ST_GeomFromGML works only for GML Geometry fragments. It throws an error if you try to use it on a whole GML document.</para>
+		<para>
+			OGC GML versions supported:
+			<itemizedlist>
+				<listitem>
+				  <para>GML 3.2.1 Namespace</para>
+				</listitem>
+				<listitem>
+				  <para>GML 3.1.1 Simple Features profile SF-2 (with GML 3.1.0 and 3.0.0 backward compatibility)</para>
+				</listitem>
+				<listitem>
+				  <para>GML 2.1.2</para>
+				</listitem>
+			</itemizedlist>
+			OGC GML standards, cf: <ulink url="http://www.opengeospatial.org/standards/gml">http://www.opengeospatial.org/standards/gml</ulink>:
+		</para>
+
+		<para>Availability: 1.5 - requires libxml2 &gt;= 2.5+</para>
+		<para>&Z_support;</para>
+		<para>GML allow mixed dimensions (2D and 3D inside the same MultiGeometry for instance). As PostGIS geometries don't, ST_GeomFromGML convert the whole geometry to 2D if a missing Z dimension is found once.</para>
+		
+		<para>GML support mixed SRS inside the same MultiGeometry. As PostGIS geometries don't, ST_GeomFromGML, in this case, reproject all subgeometries to the SRS root node. If no srsName attribute available for the GML root node, the function throw an error.</para>
+		
+		<para>ST_GeomFromGML function is not pedantic about an explicit GML namespace. You could avoid to mention it explicitly for common usages. But you need it if you want to use XLink feature inside GML.</para>
+		<note>
+			<para>ST_GeomFromGML function not support SQL/MM curves geometries.</para>
+		</note>
+		
+	  </refsection>
+
+	  <refsection>
+		<title>Examples - A single geometry with srsName</title>
+		<programlisting>SELECT ST_GeomFromGML('<![CDATA[
+		<gml:LineString srsName="EPSG:4269">
+			<gml:coordinates>
+				-71.16028,42.258729 -71.160837,42.259112 -71.161143,42.25932
+			</gml:coordinates>
+		</gml:LineString>']]>);
+		</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples - XLink usage</title>
+		<programlisting><![CDATA[ST_GeomFromGML('
+		<gml:LineString xmlns:gml="http://www.opengis.net/gml" 
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				srsName="urn:ogc:def:crs:EPSG::4269">
+			<gml:pointProperty>
+				<gml:Point gml:id="p1"><gml:pos>42.258729 -71.16028</gml:pos></gml:Point>
+			</gml:pointProperty>
+			<gml:pos>42.259112 -71.160837</gml:pos>
+			<gml:pointProperty>
+				<gml:Point xlink:type="simple" xlink:href="#p1"/>
+			</gml:pointProperty>
+		</gml:LineString>');]]>);
+		</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_AsGML" /></para>
+		<para><xref linkend="ST_GMLToSQL" /></para>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="ST_GeomFromKML">
+	  <refnamediv>
+		<refname>ST_GeomFromKML</refname>
+		<refpurpose>Takes as input KML representation of geometry and outputs a PostGIS geometry object</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomFromKML</function></funcdef>
+			<paramdef><type>text </type> <parameter>geomkml</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>Constructs a PostGIS ST_Geometry object from the OGC KML representation.</para>
+		<note>
+			<para>Requires compilation with libxml2 2.5+</para>
+		</note>
+		<para>ST_GeomFromKML works only for KML Geometry fragments. It throws an error if you try to use it on a whole KML document.</para>
+		<para>
+			OGC KML versions supported:
+			<itemizedlist>
+				<listitem>
+				  <para>KML 2.2.0 Namespace</para>
+				</listitem>
+			</itemizedlist>
+			OGC KML standards, cf: <ulink url="http://www.opengeospatial.org/standards/kml">http://www.opengeospatial.org/standards/kml</ulink>:
+		</para>
+
+		<para>Availability: 1.5 - requires libxml2 &gt;= 2.5+</para>
+		<para>&Z_support;</para>
+		<note>
+			<para>ST_GeomFromKML function not support SQL/MM curves geometries.</para>
+		</note>
+		
+	  </refsection>
+
+	  <refsection>
+		<title>Examples - A single geometry with srsName</title>
+		<programlisting>SELECT ST_GeomFromKML('<![CDATA[
+		<LineString>
+			<coordinates>-71.1663,42.2614 
+				-71.1667,42.2616</coordinates>
+		</LineString>']]>);
+		</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_AsKML" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_GMLToSQL">
+		  <refnamediv>
+			<refname>ST_GMLToSQL</refname>
+			<refpurpose>Return a specified ST_Geometry value from GML representation.  This is an alias name for ST_GeomFromGML</refpurpose>
+		  </refnamediv>
+	  	<refsynopsisdiv>
+			<funcsynopsis>
+		  	<funcprototype>
+				<funcdef>geometry <function>ST_GMLToSQL</function></funcdef>
+				<paramdef><type>text </type> <parameter>geomgml</parameter></paramdef>
+		  	</funcprototype>
+			</funcsynopsis>
+	  	</refsynopsisdiv>
+		  <refsection>
+			<title>Description</title>
+			<para>&sqlmm_compliant; SQL-MM 3: 5.1.50 (except for curves support).</para>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_GeomFromGML" /></para>
+			<para><xref linkend="ST_AsGML" /></para>
+		  </refsection>
+	</refentry>
+
+	<refentry id="ST_GeomFromText">
+		  <refnamediv>
+			<refname>ST_GeomFromText</refname>
+			<refpurpose>Return a specified ST_Geometry value from Well-Known Text representation (WKT).</refpurpose>
+		  </refnamediv>
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_GeomFromText</function></funcdef>
+				<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+			  </funcprototype>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_GeomFromText</function></funcdef>
+				<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>Constructs a PostGIS ST_Geometry object from the OGC Well-Known text representation.</para>
+
+			<!-- optionally mention that this function uses indexes if appropriate -->
+			<note>
+				<para>There are 2 variants of ST_GeomFromText function, the first takes no SRID and returns a geometry
+					with no defined spatial reference system.  The second takes a spatial reference id as the second argument
+					and returns an ST_Geometry that includes this srid as part of its meta-data.  The srid must be defined
+					in the spatial_ref_sys table.</para>
+			</note>
+
+			<para>&sfs_compliant; s3.2.6.2 - option SRID is from the conformance suite.</para>
+			<para>&sqlmm_compliant; SQL-MM 3: 5.1.40</para>
+			<para>&curve_support;</para>
+
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+	<programlisting>SELECT ST_GeomFromText('LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932)');
+SELECT ST_GeomFromText('LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932)',4269);
+
+SELECT ST_GeomFromText('MULTILINESTRING((-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932))');
+
+SELECT ST_GeomFromText('POINT(-71.064544 42.28787)');
+
+SELECT ST_GeomFromText('POLYGON((-71.1776585052917 42.3902909739571,-71.1776820268866 42.3903701743239,
+-71.1776063012595 42.3903825660754,-71.1775826583081 42.3903033653531,-71.1776585052917 42.3902909739571))');
+
+SELECT ST_GeomFromText('MULTIPOLYGON(((-71.1031880899493 42.3152774590236,
+-71.1031627617667 42.3152960829043,-71.102923838298 42.3149156848307,
+-71.1023097974109 42.3151969047397,-71.1019285062273 42.3147384934248,
+-71.102505233663 42.3144722937587,-71.10277487471 42.3141658254797,
+-71.103113945163 42.3142739188902,-71.10324876416 42.31402489987,
+-71.1033002961013 42.3140393340215,-71.1033488797549 42.3139495090772,
+-71.103396240451 42.3138632439557,-71.1041521907712 42.3141153348029,
+-71.1041411411543 42.3141545014533,-71.1041287795912 42.3142114839058,
+-71.1041188134329 42.3142693656241,-71.1041112482575 42.3143272556118,
+-71.1041072845732 42.3143851580048,-71.1041057218871 42.3144430686681,
+-71.1041065602059 42.3145009876017,-71.1041097995362 42.3145589148055,
+-71.1041166403905 42.3146168544148,-71.1041258822717 42.3146748022936,
+-71.1041375307579 42.3147318674446,-71.1041492906949 42.3147711126569,
+-71.1041598612795 42.314808571739,-71.1042515013869 42.3151287620809,
+-71.1041173835118 42.3150739481917,-71.1040809891419 42.3151344119048,
+-71.1040438678912 42.3151191367447,-71.1040194562988 42.3151832057859,
+-71.1038734225584 42.3151140942995,-71.1038446938243 42.3151006300338,
+-71.1038315271889 42.315094347535,-71.1037393329282 42.315054824985,
+-71.1035447555574 42.3152608696313,-71.1033436658644 42.3151648370544,
+-71.1032580383161 42.3152269126061,-71.103223066939 42.3152517403219,
+-71.1031880899493 42.3152774590236)),
+((-71.1043632495873 42.315113108546,-71.1043583974082 42.3151211109857,
+-71.1043443253471 42.3150676015829,-71.1043850704575 42.3150793250568,-71.1043632495873 42.315113108546)))',4326);
+
+SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)');
+	</programlisting>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_GeomFromWKB" />, <xref linkend="ST_SRID" /></para>
+		  </refsection>
+	</refentry>
+
+	<refentry id="ST_GeomFromWKB">
+	  <refnamediv>
+		<refname>ST_GeomFromWKB</refname>
+		<refpurpose>Creates a geometry instance from a Well-Known Binary geometry
+		representation (WKB) and optional SRID.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomFromWKB</function></funcdef>
+			<paramdef><type>bytea </type> <parameter>geom</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomFromWKB</function></funcdef>
+			<paramdef><type>bytea </type> <parameter>geom</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>The <varname>ST_GeomFromWKB</varname> function, takes a well-known
+		binary representation of a geometry and a Spatial Reference System ID
+		(<varname>SRID</varname>) and creates an instance of the appropriate
+		geometry type. This function plays the role of the Geometry Factory in
+		SQL. This is an alternate name for ST_WKBToSQL.</para>
+
+		<para>If SRID is not specified, it defaults to -1 (Unknown).</para>
+
+		<para>&sfs_compliant; s3.2.7.2 - the optional SRID is from the conformance suite</para>
+
+		<para>&sqlmm_compliant; SQL-MM 3: 5.1.41</para>
+		<para>&curve_support;</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>--Although bytea rep contains single \, these need to be escaped when inserting into a table
+SELECT ST_AsEWKT(
+ST_GeomFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\270~\\\\\\300\\323Mb\\020X\\231C@\\020X9\\264\\310~\\\\\\300)\\\\\\217\\302\\365\\230C@',4326)
+);
+					  st_asewkt
+------------------------------------------------------
+ SRID=4326;LINESTRING(-113.98 39.198,-113.981 39.195)
+(1 row)
+
+SELECT
+  ST_AsText(
+	ST_GeomFromWKB(
+	  ST_AsEWKB('POINT(2 5)'::geometry)
+	)
+  );
+ st_astext
+------------
+ POINT(2 5)
+(1 row)</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_WKBToSQL" />, <xref linkend="ST_AsBinary" />, <xref linkend="ST_GeomFromEWKB" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_LineFromMultiPoint">
+	  <refnamediv>
+		<refname>ST_LineFromMultiPoint</refname>
+
+		<refpurpose>Creates a LineString from a MultiPoint geometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_LineFromMultiPoint</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>aMultiPoint</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Creates a LineString from a MultiPoint geometry.</para>
+		<para>&Z_support;</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+--Create a 3d line string from a 3d multipoint
+SELECT ST_AsEWKT(ST_LineFromMultiPoint(ST_GeomFromEWKT('MULTIPOINT(1 2 3, 4 5 6, 7 8 9)')));
+--result--
+LINESTRING(1 2 3,4 5 6,7 8 9)
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_Collect" />,<xref linkend="ST_MakeLine" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_LineFromText">
+	  <refnamediv>
+		<refname>ST_LineFromText</refname>
+
+		<refpurpose>Makes a Geometry from WKT representation with the given SRID. If SRID is
+				not given, it defaults to -1.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_LineFromText</function></funcdef>
+			<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>geometry <function>ST_LineFromText</function></funcdef>
+			<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Makes a Geometry from WKT with the given SRID. If SRID is
+				not give, it defaults to -1.  If WKT passed in is not a LINESTRING, then null is returned.  </para>
+
+		<note>
+		  <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
+				suite.</para>
+		</note>
+
+		<note>
+		  <para>If you know all your geometries are LINESTRINGS, its more efficient to just use ST_GeomFromText.
+			This just calls ST_GeomFromText and adds additional validation that it returns a linestring.</para>
+		</note>
+
+
+		<para>&sfs_compliant; s3.2.6.2</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 7.2.8</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_LineFromText('LINESTRING(1 2, 3 4)') AS aline, ST_LineFromText('POINT(1 2)') AS null_return;
+aline                            | null_return
+------------------------------------------------
+010200000002000000000000000000F ... | t
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeomFromText" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_LineFromWKB">
+	  <refnamediv>
+		<refname>ST_LineFromWKB</refname>
+
+		<refpurpose>Makes a <varname>LINESTRING</varname> from WKB with the given SRID</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_LineFromWKB</function></funcdef>
+			<paramdef><type>bytea </type> <parameter>WKB</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>geometry <function>ST_LineFromWKB</function></funcdef>
+			<paramdef><type>bytea </type> <parameter>WKB</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+	  <para>The <varname>ST_LineFromWKB</varname> function, takes a well-known binary
+		representation of geometry and a Spatial Reference System ID (<varname>SRID</varname>)
+		and creates an instance of the appropriate geometry type - in this case, a
+		<varname>LINESTRING</varname> geometry. This function plays the role of the Geometry
+		Factory in SQL.</para>
+
+	  <para>If an SRID is not specified, it defaults to -1. <varname>NULL</varname> is
+		returned if the input <varname>bytea</varname>
+		does not represent a <varname>LINESTRING</varname>.</para>
+
+		<note>
+		  <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
+				suite.</para>
+		</note>
+
+		<note>
+		  <para>If you know all your geometries are <varname>LINESTRING</varname>s, its more
+		  efficient to just use <xref linkend="ST_GeomFromWKB" />.  This function just
+		  calls <xref linkend="ST_GeomFromWKB" /> and adds additional validation that
+		  it returns a linestring.</para>
+		</note>
+
+
+		<para>&sfs_compliant; s3.2.6.2</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 7.2.9</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_LineFromWKB(ST_AsBinary(ST_GeomFromText('LINESTRING(1 2, 3 4)'))) AS aline,
+		ST_LineFromWKB(ST_AsBinary(ST_GeomFromText('POINT(1 2)'))) IS NULL AS null_return;
+aline                            | null_return
+------------------------------------------------
+010200000002000000000000000000F ... | t
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeomFromWKB" />, <xref linkend="ST_LinestringFromWKB" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_LinestringFromWKB">
+	  <refnamediv>
+		<refname>ST_LinestringFromWKB</refname>
+
+		<refpurpose>Makes a geometry from WKB with the given SRID.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_LinestringFromWKB</function></funcdef>
+			<paramdef><type>bytea </type> <parameter>WKB</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>geometry <function>ST_LinestringFromWKB</function></funcdef>
+			<paramdef><type>bytea </type> <parameter>WKB</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+	  <para>The <varname>ST_LinestringFromWKB</varname> function, takes a well-known binary
+		representation of geometry and a Spatial Reference System ID (<varname>SRID</varname>)
+		and creates an instance of the appropriate geometry type - in this case, a
+		<varname>LINESTRING</varname> geometry. This function plays the role of the Geometry
+		Factory in SQL.</para>
+
+	  <para>If an SRID is not specified, it defaults to -1.  <varname>NULL</varname> is
+		returned if the input <varname>bytea</varname> does not represent a
+		<varname>LINESTRING</varname> geometry. This an alias for <xref linkend="ST_LineFromWKB" />.</para>
+
+		<note>
+		  <para>OGC SPEC 3.2.6.2 - optional SRID is from the conformance suite.</para>
+		</note>
+
+		<note>
+		  <para>If you know all your geometries are <varname>LINESTRING</varname>s, it's more
+		  efficient to just use <xref linkend="ST_GeomFromWKB" />.  This function just calls
+		  <xref linkend="ST_GeomFromWKB" /> and adds additional validation that it returns a
+		  <varname>LINESTRING</varname>.</para>
+		</note>
+
+		<para>&sfs_compliant; s3.2.6.2</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 7.2.9</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT
+  ST_LineStringFromWKB(
+	ST_AsBinary(ST_GeomFromText('LINESTRING(1 2, 3 4)'))
+  ) AS aline,
+  ST_LinestringFromWKB(
+	ST_AsBinary(ST_GeomFromText('POINT(1 2)'))
+  ) IS NULL AS null_return;
+   aline                            | null_return
+------------------------------------------------
+010200000002000000000000000000F ... | t</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeomFromWKB" />, <xref linkend="ST_LineFromWKB" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_MakeBox2D">
+	  <refnamediv>
+		<refname>ST_MakeBox2D</refname>
+
+		<refpurpose>Creates a BOX2D defined by the given point
+			geometries.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>box2d <function>ST_MakeBox2D</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>pointLowLeft</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>pointUpRight</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Creates a BOX2D defined by the given point
+			geometries.  This is useful for doing range queries</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+--Return all features that fall reside or partly reside in a US national atlas coordinate bounding box
+--It is assumed here that the geometries are stored with SRID = 2163 (US National atlas equal area)
+SELECT feature_id, feature_name, the_geom
+FROM features
+WHERE the_geom &amp;&amp; ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.5625),
+	ST_Point(-987121.375 ,529933.1875)),2163)</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_MakePoint" />, <xref linkend="ST_Point" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_MakeBox3D">
+	  <refnamediv>
+		<refname>ST_MakeBox3D</refname>
+
+		<refpurpose>Creates a BOX3D defined by the given 3d point
+			geometries.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>box3d <function>ST_MakeBox3D</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>point3DLowLeftBottom</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>point3DUpRightTop</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Creates a BOX3D defined by the given 2 3D point
+			geometries. </para>
+
+		<!-- Optionally mention 3d support -->
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+SELECT ST_MakeBox3D(ST_MakePoint(-989502.1875, 528439.5625, 10),
+	ST_MakePoint(-987121.375 ,529933.1875, 10)) As abb3d
+
+--bb3d--
+--------
+BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)
+	</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_MakePoint" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_MakeLine">
+		<refnamediv>
+		<refname>ST_MakeLine</refname>
+
+		<refpurpose>Creates a Linestring from point geometries.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>geometry <function>ST_MakeLine</function></funcdef>
+				<paramdef><type>geometry set</type> <parameter>pointfield</parameter></paramdef>
+			</funcprototype>
+
+			<funcprototype>
+				<funcdef>geometry <function>ST_MakeLine</function></funcdef>
+				<paramdef><type>geometry</type> <parameter>point1</parameter></paramdef>
+				<paramdef><type>geometry</type> <parameter>point2</parameter></paramdef>
+			</funcprototype>
+
+			<funcprototype>
+				<funcdef>geometry <function>ST_MakeLine</function></funcdef>
+				<paramdef><type>geometry[]</type> <parameter>point_array</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+		<title>Description</title>
+
+		<para>ST_MakeLine comes in 3 forms: a spatial aggregate that takes
+			rows of point geometries and returns a line string, a function that takes an array of points, and a regular function that takes two point geometries. You
+			might want to use a subselect to order points before feeding them
+			to  the aggregate version of this function.</para>
+
+		<para>&Z_support;</para>
+		<para>Availability: 1.4.0 -  ST_MakeLine(geomarray) was introduced. ST_MakeLine aggregate functions was enhanced to handle more points faster.</para>
+		</refsection>
+
+		<refsection>
+		<title>Examples: Spatial Aggregate version</title>
+		<para>This example takes a sequence of GPS points and creates one record for each
+			gps travel where the geometry field is a line string composed of the gps points
+			in the order of the travel.</para>
+
+		<programlisting>
+SELECT gps.gps_track, ST_MakeLine(gps.the_geom) As newgeom
+	FROM (SELECT gps_track,gps_time, the_geom
+			FROM gps_points ORDER BY gps_track, gps_time) As gps
+	GROUP BY gps.gps_track</programlisting>
+		</refsection>
+		<refsection>
+			<title>Examples: Non-Spatial Aggregate version</title>
+
+			<para>First example is a simple one off line string composed of 2 points.  The second formulates
+				line strings from 2 points a user draws.  The third is a one-off that joins 2 3d points to create a line in 3d space.</para>
+			<programlisting>
+SELECT ST_AsText(ST_MakeLine(ST_MakePoint(1,2), ST_MakePoint(3,4)));
+	  st_astext
+---------------------
+ LINESTRING(1 2,3 4)
+
+SELECT userpoints.id, ST_MakeLine(startpoint, endpoint) As drawn_line
+	FROM userpoints ;
+
+SELECT ST_AsEWKT(ST_MakeLine(ST_MakePoint(1,2,3), ST_MakePoint(3,4,5)));
+		st_asewkt
+-------------------------
+ LINESTRING(1 2 3,3 4 5)
+			</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>Examples: Using Array version</title>
+
+			<programlisting>
+SELECT ST_MakeLine(ARRAY(SELECT ST_Centroid(the_geom) FROM visit_locations ORDER BY visit_time));
+
+--Making a 3d line with 3 3-d points
+SELECT ST_AsEWKT(ST_MakeLine(ARRAY[ST_MakePoint(1,2,3),
+				ST_MakePoint(3,4,5), ST_MakePoint(6,6,6)]));
+		st_asewkt
+-------------------------
+LINESTRING(1 2 3,3 4 5,6 6 6)
+			</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_MakePoint" /></para>
+		</refsection>
+	</refentry>
+
+	<refentry id="ST_MakePolygon">
+		<refnamediv>
+		<refname>ST_MakePolygon</refname>
+
+		<refpurpose>Creates a Polygon formed by the given shell. Input
+			geometries must be closed LINESTRINGS.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_MakePolygon</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_MakePolygon</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>outerlinestring</parameter></paramdef>
+			<paramdef><type>geometry[]</type> <parameter>interiorlinestrings</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>Creates a Polygon formed by the given shell. Input
+				geometries must be closed LINESTRINGS. Comes in 2 variants.</para>
+			<para>Variant 1: takes one closed linestring.</para>
+			<para>Variant 2:  Creates a Polygon formed by the given shell and array of
+			holes. You can construct a geometry array using ST_Accum or the PostgreSQL ARRAY[] and
+			ARRAY() constructs. Input geometries must be closed LINESTRINGS.</para>
+			<note>
+				<para>This function will not accept a MULTILINESTRING.  Use <xref linkend="ST_LineMerge" /> or <xref linkend="ST_Dump" /> to generate line strings.</para>
+			</note>
+
+			<para>&Z_support;</para>
+		</refsection>
+
+		<refsection>
+		<title>Examples: Single closed LINESTRING</title>
+		 <programlisting>
+--2d line
+SELECT ST_MakePolygon(ST_GeomFromText('LINESTRING(75.15 29.53,77 29,77.6 29.5, 75.15 29.53)'));
+--If linestring is not closed
+--you can add the start point to close it
+SELECT ST_MakePolygon(ST_AddPoint(foo.open_line, ST_StartPoint(foo.open_line)))
+FROM (
+SELECT ST_GeomFromText('LINESTRING(75.15 29.53,77 29,77.6 29.5)') As open_line) As foo;
+
+--3d closed line
+SELECT ST_MakePolygon(ST_GeomFromText('LINESTRING(75.15 29.53 1,77 29 1,77.6 29.5 1, 75.15 29.53 1)'));
+
+st_asewkt
+-----------
+POLYGON((75.15 29.53 1,77 29 1,77.6 29.5 1,75.15 29.53 1))
+
+--measured line --
+SELECT ST_MakePolygon(ST_GeomFromText('LINESTRINGM(75.15 29.53 1,77 29 1,77.6 29.5 2, 75.15 29.53 2)'));
+
+st_asewkt
+----------
+POLYGONM((75.15 29.53 1,77 29 1,77.6 29.5 2,75.15 29.53 2))
+			  </programlisting>
+		</refsection>
+		<refsection>
+			<title>Examples: Outter shell with inner shells</title>
+
+			<para>Build a donut with an ant hole</para>
+		   <programlisting>
+SELECT ST_MakePolygon(
+		ST_ExteriorRing(ST_Buffer(foo.line,10)),
+	ARRAY[ST_Translate(foo.line,1,1),
+		ST_ExteriorRing(ST_Buffer(ST_MakePoint(20,20),1)) ]
+	)
+FROM
+	(SELECT ST_ExteriorRing(ST_Buffer(ST_MakePoint(10,10),10,10))
+		As line )
+		As foo;
+		</programlisting>
+		<para>Build province boundaries with holes
+		representing lakes in the province from a set of
+		province polygons/multipolygons and water line strings
+		this is an example of using PostGIS ST_Accum
+		<note><para>The use of CASE because feeding a null array into
+		ST_MakePolygon results in NULL</para></note>
+		<note><para>the use of left join to guarantee we get all provinces back even if they have no lakes</para></note></para>
+		<programlisting>
+	SELECT p.gid, p.province_name,
+		CASE WHEN
+			ST_Accum(w.the_geom) IS NULL THEN p.the_geom
+		ELSE  ST_MakePolygon(ST_LineMerge(ST_Boundary(p.the_geom)), ST_Accum(w.the_geom)) END
+	FROM
+		provinces p LEFT JOIN waterlines w
+			ON (ST_Within(w.the_geom, p.the_geom) AND ST_IsClosed(w.the_geom))
+	GROUP BY p.gid, p.province_name, p.the_geom;
+
+	--Same example above but utilizing a correlated subquery
+	--and PostgreSQL built-in ARRAY() function that converts a row set to an array
+
+	SELECT p.gid,  p.province_name, CASE WHEN
+		EXISTS(SELECT w.the_geom
+			FROM waterlines w
+			WHERE ST_Within(w.the_geom, p.the_geom)
+			AND ST_IsClosed(w.the_geom))
+		THEN
+		ST_MakePolygon(ST_LineMerge(ST_Boundary(p.the_geom)),
+			ARRAY(SELECT w.the_geom
+				FROM waterlines w
+				WHERE ST_Within(w.the_geom, p.the_geom)
+				AND ST_IsClosed(w.the_geom)))
+		ELSE p.the_geom END As the_geom
+	FROM
+		provinces p;
+			  </programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Accum" />, <xref linkend="ST_AddPoint" />, <xref linkend="ST_GeometryType" />, <xref linkend="ST_IsClosed" />, <xref linkend="ST_LineMerge" /></para>
+		</refsection>
+	</refentry>
+
+	<refentry id="ST_MakePoint">
+		<refnamediv>
+		<refname>ST_MakePoint</refname>
+
+		<refpurpose>Creates a 2D,3DZ or 4D point geometry.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_MakePoint</function></funcdef>
+			<paramdef><type>double precision</type> <parameter>x</parameter></paramdef>
+			<paramdef><type>double precision</type> <parameter>y</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_MakePoint</function></funcdef>
+			<paramdef><type>double precision</type> <parameter>x</parameter></paramdef>
+			<paramdef><type>double precision</type> <parameter>y</parameter></paramdef>
+			<paramdef><type>double precision</type> <parameter>z</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_MakePoint</function></funcdef>
+			<paramdef><type>double precision</type> <parameter>x</parameter></paramdef>
+			<paramdef><type>double precision</type> <parameter>y</parameter></paramdef>
+			<paramdef><type>double precision</type> <parameter>z</parameter></paramdef>
+			<paramdef><type>double precision</type> <parameter>m</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>Creates a 2D,3DZ or 4D point geometry (geometry with measure).
+			<varname>ST_MakePoint</varname> while not being OGC compliant is
+			generally faster and more precise than <xref linkend="ST_GeomFromText" />
+			and <xref linkend="ST_PointFromText" />.  It is also easier to use if
+			you have raw coordinates rather than WKT.</para>
+
+			<note><para>Note x is longitude and y is latitude</para></note>
+			<para>&Z_support;</para>
+
+		</refsection>
+
+		<refsection>
+		<title>Examples</title>
+		 <programlisting>--Return point with unknown SRID
+SELECT ST_MakePoint(-71.1043443253471, 42.3150676015829);
+
+--Return point marked as WGS 84 long lat
+SELECT ST_SetSRID(ST_MakePoint(-71.1043443253471, 42.3150676015829),4326);
+
+--Return a 3D point (e.g. has altitude)
+SELECT ST_MakePoint(1, 2,1.5);
+
+--Get z of point
+SELECT ST_Z(ST_MakePoint(1, 2,1.5));
+result
+-------
+1.5</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_PointFromText" />, <xref linkend="ST_SetSRID" /></para>
+		</refsection>
+	</refentry>
+
+	<refentry id="ST_MakePointM">
+		<refnamediv>
+		<refname>ST_MakePointM</refname>
+
+		<refpurpose>Creates a point geometry with an x y and m coordinate.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_MakePointM</function></funcdef>
+				<paramdef><type>float</type> <parameter>x</parameter></paramdef>
+				<paramdef><type>float</type> <parameter>y</parameter></paramdef>
+				<paramdef><type>float</type> <parameter>m</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>Creates a point with x, y and measure coordinates. </para>
+			<note><para>Note x is longitude and y is latitude.</para></note>
+		</refsection>
+
+		<refsection>
+		<title>Examples</title>
+			<para>We use ST_AsEWKT in these examples to show the text representation instead of ST_AsText because ST_AsText does not
+			support returning M.</para>
+		 <programlisting>
+--Return EWKT representation of point with unknown SRID
+SELECT ST_AsEWKT(ST_MakePointM(-71.1043443253471, 42.3150676015829, 10));
+
+--result
+				   st_asewkt
+-----------------------------------------------
+ POINTM(-71.1043443253471 42.3150676015829 10)
+
+--Return EWKT representation of point with measure marked as WGS 84 long lat
+SELECT ST_AsEWKT(ST_SetSRID(ST_MakePointM(-71.1043443253471, 42.3150676015829,10),4326));
+
+						st_asewkt
+---------------------------------------------------------
+SRID=4326;POINTM(-71.1043443253471 42.3150676015829 10)
+
+--Return a 3d point (e.g. has altitude)
+SELECT ST_MakePoint(1, 2,1.5);
+
+--Get m of point
+SELECT ST_M(ST_MakePointM(-71.1043443253471, 42.3150676015829,10));
+result
+-------
+10
+			  </programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_MakePoint" />, <xref linkend="ST_SetSRID" /></para>
+		</refsection>
+	</refentry>
+
+	<refentry id="ST_MLineFromText">
+	  <refnamediv>
+		<refname>ST_MLineFromText</refname>
+
+		<refpurpose>Return a specified ST_MultiLineString value from WKT representation.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_MLineFromText</function></funcdef>
+			<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>geometry <function>ST_MLineFromText</function></funcdef>
+			<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+		  </funcprototype>
+
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		 <para>Makes a Geometry from  Well-Known-Text (WKT) with the given SRID. If SRID is
+			not give, it defaults to -1.</para>
+
+		 <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
+			suite</para>
+
+		 <para>Returns null if the WKT is not a MULTILINESTRING</para>
+
+		 <note>
+			<para>If you are absolutely sure all your WKT geometries are points, don't use this function.
+				It is slower than ST_GeomFromText since it adds an additional validation step.
+			</para>
+		</note>
+
+		<para>&sfs_compliant; s3.2.6.2</para>
+		<para>&sqlmm_compliant;SQL-MM 3: 9.4.4</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_MLineFromText('MULTILINESTRING((1 2, 3 4), (4 5, 6 7))');</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeomFromText" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_MPointFromText">
+	  <refnamediv>
+		<refname>ST_MPointFromText</refname>
+
+		<refpurpose>Makes a Geometry from WKT with the given SRID. If SRID is
+			not give, it defaults to -1.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_MPointFromText</function></funcdef>
+			<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>geometry <function>ST_MPointFromText</function></funcdef>
+			<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+		  </funcprototype>
+
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		 <para>Makes a Geometry from WKT with the given SRID. If SRID is
+			not give, it defaults to -1.</para>
+
+		 <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
+			suite</para>
+
+		 <para>Returns null if the WKT is not a MULTIPOINT</para>
+
+		 <note>
+			<para>If you are absolutely sure all your WKT geometries are points, don't use this function.
+				It is slower than ST_GeomFromText since it adds an additional validation step.
+			</para>
+		</note>
+
+		<para>&sfs_compliant; 3.2.6.2</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 9.2.4</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_MPointFromText('MULTIPOINT(1 2, 3 4)');
+SELECT ST_MPointFromText('MULTIPOINT(-70.9590 42.1180, -70.9611 42.1223)', 4326);</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeomFromText" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_MPolyFromText">
+	  <refnamediv>
+		<refname>ST_MPolyFromText</refname>
+
+		<refpurpose>Makes a MultiPolygon Geometry from WKT with the given SRID. If SRID is
+			not give, it defaults to -1.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_MPolyFromText</function></funcdef>
+			<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>geometry <function>ST_MPolyFromText</function></funcdef>
+			<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+		  </funcprototype>
+
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		 <para>Makes a MultiPolygon from WKT with the given SRID. If SRID is
+			not give, it defaults to -1.</para>
+
+		 <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance suite</para>
+
+
+		 <para>Throws an error if the WKT is not a MULTIPOLYGON</para>
+
+		 <note>
+			<para>If you are absolutely sure all your WKT geometries are multipolygons, don't use this function.
+				It is slower than ST_GeomFromText since it adds an additional validation step.
+			</para>
+		</note>
+
+		<para>&sfs_compliant; s3.2.6.2</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 9.6.4</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_MPolyFromText('MULTIPOLYGON(((0 0 1,20 0 1,20 20 1,0 20 1,0 0 1),(5 5 3,5 7 3,7 7 3,7 5 3,5 5 3)))');
+SELECt ST_MPolyFromText('MULTIPOLYGON(((-70.916 42.1002,-70.9468 42.0946,-70.9765 42.0872,-70.9754 42.0875,-70.9749 42.0879,-70.9752 42.0881,-70.9754 42.0891,-70.9758 42.0894,-70.9759 42.0897,-70.9759 42.0899,-70.9754 42.0902,-70.9756 42.0906,-70.9753 42.0907,-70.9753 42.0917,-70.9757 42.0924,-70.9755 42.0928,-70.9755 42.0942,-70.9751 42.0948,-70.9755 42.0953,-70.9751 42.0958,-70.9751 42.0962,-70.9759 42.0983,-70.9767 42.0987,-70.9768 42.0991,-70.9771 42.0997,-70.9771 42.1003,-70.9768 42.1005,-70.977 42.1011,-70.9766 42.1019,-70.9768 42.1026,-70.9769 42.1033,-70.9775 42.1042,-70.9773 42.1043,-70.9776 42.1043,-70.9778 42.1048,-70.9773 42.1058,-70.9774 42.1061,-70.9779 42.1065,-70.9782 42.1078,-70.9788 42.1085,-70.9798 42.1087,-70.9806 42.109,-70.9807 42.1093,-70.9806 42.1099,-70.9809 42.1109,-70.9808 42.1112,-70.9798 42.1116,-70.9792 42.1127,-70.979 42.1129,-70.9787 42.1134,-70.979 42.1139,-70.9791 42.1141,-70.9987 42.1116,-71.0022 42.1273,
+	-70.9408 42.1513,-70.9315 42.1165,-70.916 42.1002)))',4326);
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_SRID" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Point">
+	  <refnamediv>
+		<refname>ST_Point</refname>
+
+		<refpurpose>Returns an ST_Point with the given coordinate values. OGC alias for ST_MakePoint.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Point</function></funcdef>
+			<paramdef><type>float </type> <parameter>x_lon</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>y_lat</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns an ST_Point with the given coordinate values. MM compliant alias for ST_MakePoint that takes just an x and y.</para>
+
+
+		<para>&sqlmm_compliant; SQL-MM 3: 6.1.2</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_SetSRID(ST_Point(-71.1043443253471, 42.3150676015829),4326)</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_MakePoint" />, <xref linkend="ST_SetSRID" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_PointFromText">
+		  <refnamediv>
+			<refname>ST_PointFromText</refname>
+			<refpurpose>Makes a point Geometry from WKT with the given SRID. If SRID is
+			not given, it defaults to unknown.</refpurpose>
+		  </refnamediv>
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_PointFromText</function></funcdef>
+				<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+			  </funcprototype>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_PointFromText</function></funcdef>
+				<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>Constructs a PostGIS ST_Geometry point object from the OGC Well-Known text representation. If SRID is
+			not give, it defaults to unknown (currently -1).  If geometry is not a WKT point representation, returns null.
+			If completely invalid WKT, then throws an error.</para>
+
+			<!-- optionally mention that this function uses indexes if appropriate -->
+			<note>
+				<para>There are 2 variants of ST_PointFromText function, the first takes no SRID and returns a geometry
+					with no defined spatial reference system.  The second takes a spatial reference id as the second argument
+					and returns an ST_Geometry that includes this srid as part of its meta-data.  The srid must be defined
+					in the spatial_ref_sys table.</para>
+			</note>
+
+			<note>
+				<para>If you are absolutely sure all your WKT geometries are points, don't use this function.
+					It is slower than ST_GeomFromText since it adds an additional validation step.  If you are building points from long lat coordinates and care more about performance and accuracy than OGC compliance, use <xref linkend="ST_MakePoint" /> or OGC compliant alias <xref linkend="ST_Point" />.   </para>
+			</note>
+
+			<para>&sfs_compliant; s3.2.6.2 - option SRID is from the conformance suite.</para>
+			<para>&sqlmm_compliant; SQL-MM 3: 6.1.8</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+	<programlisting>
+SELECT ST_PointFromText('POINT(-71.064544 42.28787)');
+SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
+	</programlisting>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_MakePoint" />, <xref linkend="ST_Point" />, <xref linkend="ST_SRID" /></para>
+		  </refsection>
+	</refentry>
+
+	<refentry id="ST_PointFromWKB">
+	  <refnamediv>
+		<refname>ST_PointFromWKB</refname>
+
+		<refpurpose>Makes a geometry from WKB with the given SRID</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomFromWKB</function></funcdef>
+			<paramdef><type>bytea </type> <parameter>geom</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomFromWKB</function></funcdef>
+			<paramdef><type>bytea </type> <parameter>geom</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>The <varname>ST_PointFromWKB</varname> function, takes a well-known binary
+			representation of geometry and a Spatial Reference System ID (<varname>SRID</varname>)
+			and creates an instance of the appropriate geometry type - in this case, a
+			<varname>POINT</varname> geometry. This function plays the role of the Geometry
+			Factory in SQL.</para>
+
+		<para>If an SRID is not specified, it defaults to -1.  <varname>NULL</varname> is
+		returned if the input <varname>bytea</varname> does not represent a
+		<varname>POINT</varname> geometry.</para>
+
+		<para>&sfs_compliant; s3.2.7.2</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 6.1.9</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT
+  ST_AsText(
+	ST_PointFromWKB(
+	  ST_AsEWKB('POINT(2 5)'::geometry)
+	)
+  );
+ st_astext
+------------
+ POINT(2 5)
+(1 row)
+
+SELECT
+  ST_AsText(
+	ST_PointFromWKB(
+	  ST_AsEWKB('LINESTRING(2 5, 2 6)'::geometry)
+	)
+  );
+ st_astext
+-----------
+
+(1 row)</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeomFromWKB" />, <xref linkend="ST_LineFromWKB" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Polygon">
+	  <refnamediv>
+		<refname>ST_Polygon</refname>
+
+		<refpurpose>Returns a polygon built from the specified linestring and SRID.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Polygon</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>aLineString</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns a polygon built from the specified linestring and SRID.</para>
+
+		<!-- optionally mention that this function uses indexes if appropriate -->
+		<note>
+		  <para>ST_Polygon is similar to first version oST_MakePolygon except it also sets the spatial ref sys (SRID) of the polygon. Will not work with MULTILINESTRINGS
+			so use LineMerge to merge multilines.  Also does not create polygons with holes.  Use ST_MakePolygon for that.</para>
+		</note>
+
+		<para>&sfs_compliant;</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 8.3.2</para>
+		<para>&Z_support;</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+--a 2d polygon
+SELECT ST_Polygon(ST_GeomFromText('LINESTRING(75.15 29.53,77 29,77.6 29.5, 75.15 29.53)'), 4326);
+
+--result--
+POLYGON((75.15 29.53,77 29,77.6 29.5,75.15 29.53))
+--a 3d polygon
+SELECT ST_AsEWKT(ST_Polygon(ST_GeomFromEWKT('LINESTRING(75.15 29.53 1,77 29 1,77.6 29.5 1, 75.15 29.53 1)'), 4326));
+
+result
+------
+SRID=4326;POLYGON((75.15 29.53 1,77 29 1,77.6 29.5 1,75.15 29.53 1))
+			</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para> <xref linkend="ST_AsEWKT" />, <xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_LineMerge" />, <xref linkend="ST_MakePolygon" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_PolygonFromText">
+	  <refnamediv>
+		<refname>ST_PolygonFromText</refname>
+
+		<refpurpose>Makes a Geometry from WKT with the given SRID. If SRID is
+			not give, it defaults to -1.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_PolygonFromText</function></funcdef>
+			<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+		  </funcprototype>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_PolygonFromText</function></funcdef>
+			<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Makes a Geometry from WKT with the given SRID. If SRID is
+			not give, it defaults to -1.  Returns null if WKT is not a polygon.</para>
+
+
+		<para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
+			suite</para>
+
+		<note><para>If you are absolutely sure all your WKT geometries are polygons, don't use this function.
+					It is slower than ST_GeomFromText since it adds an additional validation step. </para></note>
+		<para>&sfs_compliant; s3.2.6.2</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 8.3.6</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_PolygonFromText('POLYGON((-71.1776585052917 42.3902909739571,-71.1776820268866 42.3903701743239,
+-71.1776063012595 42.3903825660754,-71.1775826583081 42.3903033653531,-71.1776585052917 42.3902909739571))');
+st_polygonfromtext
+------------------
+010300000001000000050000006...
+
+
+SELECT ST_PolygonFromText('POINT(1 2)') IS NULL as point_is_notpoly;
+
+point_is_not_poly
+----------
+t
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeomFromText" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_WKBToSQL">
+		  <refnamediv>
+			<refname>ST_WKBToSQL</refname>
+			<refpurpose>Return a specified ST_Geometry value from Well-Known Binary representation (WKB).  This is an alias name for ST_GeomFromWKB that takes no srid</refpurpose>
+		  </refnamediv>
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_WKBToSQL</function></funcdef>
+				<paramdef><type>bytea </type> <parameter>WKB</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+		  <refsection>
+			<title>Description</title>
+			<para>&sqlmm_compliant; SQL-MM 3: 5.1.36</para>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_GeomFromWKB" /></para>
+		  </refsection>
+	</refentry>
+
+	<refentry id="ST_WKTToSQL">
+		  <refnamediv>
+			<refname>ST_WKTToSQL</refname>
+			<refpurpose>Return a specified ST_Geometry value from Well-Known Text representation (WKT).  This is an alias name for ST_GeomFromText</refpurpose>
+		  </refnamediv>
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_WKTToSQL</function></funcdef>
+				<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+		  <refsection>
+			<title>Description</title>
+			<para>&sqlmm_compliant; SQL-MM 3: 5.1.34</para>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_GeomFromText" /></para>
+		  </refsection>
+	</refentry>
+  </sect1>

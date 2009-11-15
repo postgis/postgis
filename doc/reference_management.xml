@@ -1,0 +1,950 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <sect1 id="Management_Functions">
+	<title>Management Functions</title>
+
+	<refentry id="AddGeometryColumn">
+	  <refnamediv>
+		<refname>AddGeometryColumn</refname>
+
+		<refpurpose>Adds a geometry column to an existing table of
+		attributes.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>AddGeometryColumn</function></funcdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>column_name</parameter></paramdef>
+
+			<paramdef><type>integer </type>
+			<parameter>srid</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>type</parameter></paramdef>
+
+			<paramdef><type>integer </type>
+			<parameter>dimension</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>text <function>AddGeometryColumn</function></funcdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>schema_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>column_name</parameter></paramdef>
+
+			<paramdef><type>integer </type>
+			<parameter>srid</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>type</parameter></paramdef>
+
+			<paramdef><type>integer </type>
+			<parameter>dimension</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>text <function>AddGeometryColumn</function></funcdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>catalog_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>schema_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>column_name</parameter></paramdef>
+
+			<paramdef><type>integer </type>
+			<parameter>srid</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>type</parameter></paramdef>
+
+			<paramdef><type>integer </type>
+			<parameter>dimension</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Adds a geometry column to an existing table of attributes. The
+		<varname>schema_name</varname> is the name of the table schema (unused
+		for pre-schema PostgreSQL installations). The <varname>srid</varname>
+		must be an integer value reference to an entry in the SPATIAL_REF_SYS
+		table. The <varname>type</varname> must be an uppercase string
+		corresponding to the geometry type, eg, 'POLYGON' or
+		'MULTILINESTRING'.  An error is thrown if the schemaname doesn't exist
+		(or not visible in the current search_path) or the specified SRID,
+		geometry type, or dimension is invalid.</para>
+
+		<note>
+			<para>Views and derivatively created spatial tables will need to be registered in geometry_columns manually,
+				since AddGeometryColumn also adds a spatial column which is not needed when you already have a spatial column.  Refer to <xref linkend="Manual_Register_Spatial_Column"/>.
+			</para>
+		</note>
+		<para>&sfs_compliant;</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+-- Create a new simple PostgreSQL table
+postgis=# CREATE TABLE my_schema.my_spatial_table (id serial);
+
+-- Describing the table shows a simple table with a single "id" column.
+postgis=# \d my_schema.my_spatial_table
+							 Table "my_schema.my_spatial_table"
+ Column |  Type   |                                Modifiers
+--------+---------+-------------------------------------------------------------------------
+ id     | integer | not null default nextval('my_schema.my_spatial_table_id_seq'::regclass)
+
+-- Add a spatial column to the table
+postgis=# SELECT AddGeometryColumn ('my_schema','my_spatial_table','the_geom',4326,'POINT',2);
+
+--Add a curvepolygon
+SELECT AddGeometryColumn ('my_schema','my_spatial_table','the_geomcp',4326,'CURVEPOLYGON',2);
+
+-- Describe the table again reveals the addition of a new "the_geom" column.
+postgis=# \d my_schema.my_spatial_table
+   Column   |   Type   |                                Modifiers
+
+------------+----------+-------------------------------------------------------------------------
+ id         | integer  | not null default nextval('my_schema.my_spatial_table_id_seq'::regclass)
+ the_geom   | geometry |
+ the_geomcp | geometry |
+Check constraints:
+	"enforce_dims_the_geom" CHECK (ndims(the_geom) = 2)
+	"enforce_dims_the_geomcp" CHECK (ndims(the_geomcp) = 2)
+	"enforce_geotype_the_geom" CHECK (geometrytype(the_geom) = 'POINT'::text OR
+the_geom IS NULL)
+	"enforce_geotype_the_geomcp" CHECK (geometrytype(the_geomcp) = 'CURVEPOLYGON
+'::text OR the_geomcp IS NULL)
+	"enforce_srid_the_geom" CHECK (srid(the_geom) = 4326)
+	"enforce_srid_the_geomcp" CHECK (srid(the_geomcp) = 4326)</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="DropGeometryColumn"/>, <xref linkend="DropGeometryTable"/>, <xref linkend="Manual_Register_Spatial_Column"/></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="DropGeometryColumn">
+	  <refnamediv>
+		<refname>DropGeometryColumn</refname>
+
+		<refpurpose>Removes a geometry column from a spatial
+		table.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>DropGeometryColumn</function></funcdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>column_name</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>text <function>DropGeometryColumn</function></funcdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>schema_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>column_name</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>text <function>DropGeometryColumn</function></funcdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>catalog_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>schema_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>column_name</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Removes a geometry column from a spatial table. Note that
+		schema_name will need to match the f_table_schema field of the table's
+		row in the geometry_columns table.</para>
+
+		<para>&sfs_compliant;</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+			SELECT DropGeometryColumn ('my_schema','my_spatial_table','the_geomcp');
+			----RESULT output ---
+			my_schema.my_spatial_table.the_geomcp effectively removed.
+		</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="AddGeometryColumn"/>, <xref linkend="DropGeometryTable"/></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="DropGeometryTable">
+	  <refnamediv>
+		<refname>DropGeometryTable</refname>
+
+		<refpurpose>Drops a table and all its references in
+		geometry_columns.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>DropGeometryTable</function></funcdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>boolean <function>DropGeometryTable</function></funcdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>schema_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>boolean <function>DropGeometryTable</function></funcdef>
+			<paramdef><type>varchar </type>
+			<parameter>catalog_name</parameter></paramdef>
+			<paramdef><type>varchar </type>
+			<parameter>schema_name</parameter></paramdef>
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Drops a table and all its references in geometry_columns. Note:
+		uses current_schema() on schema-aware pgsql installations if schema is
+		not provided.</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+			SELECT DropGeometryTable ('my_schema','my_spatial_table');
+			----RESULT output ---
+			my_schema.my_spatial_table dropped.
+		</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="AddGeometryColumn"/>, <xref linkend="DropGeometryColumn"/></para>
+	  </refsection>
+	</refentry>
+
+
+	<refentry id="PostGIS_Full_Version">
+	  <refnamediv>
+		<refname>PostGIS_Full_Version</refname>
+
+		<refpurpose>Reports full postgis version and build configuration
+		infos.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>PostGIS_Full_Version</function></funcdef>
+
+			<paramdef></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Reports full postgis version and build configuration
+		infos.</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT PostGIS_Full_Version();
+							   postgis_full_version
+----------------------------------------------------------------------------------
+ POSTGIS="1.3.3" GEOS="3.1.0-CAPI-1.5.0" PROJ="Rel. 4.4.9, 29 Oct 2004" USE_STATS
+(1 row)</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="PostGIS_GEOS_Version" />, <xref
+		linkend="PostGIS_Lib_Version" />, <xref
+		linkend="PostGIS_PROJ_Version" />, <xref
+		linkend="PostGIS_Version" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="PostGIS_GEOS_Version">
+	  <refnamediv>
+		<refname>PostGIS_GEOS_Version</refname>
+
+		<refpurpose>Returns the version number of the GEOS
+		library.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>PostGIS_GEOS_Version</function></funcdef>
+
+			<paramdef></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the version number of the GEOS library, or
+		<varname>NULL</varname> if GEOS support is not enabled.</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT PostGIS_GEOS_Version();
+ postgis_geos_version
+----------------------
+ 3.1.0-CAPI-1.5.0
+(1 row)</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="PostGIS_Full_Version" />, <xref
+		linkend="PostGIS_Lib_Version" />, <xref
+		linkend="PostGIS_PROJ_Version" />, <xref
+		linkend="PostGIS_Version" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="PostGIS_Lib_Build_Date">
+	  <refnamediv>
+		<refname>PostGIS_Lib_Build_Date</refname>
+
+		<refpurpose>Returns build date of the PostGIS library.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>PostGIS_Lib_Build_Date</function></funcdef>
+
+			<paramdef></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns build date of the PostGIS library.</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT PostGIS_Lib_Build_Date();
+ postgis_lib_build_date
+------------------------
+ 2008-06-21 17:53:21
+(1 row)</programlisting>
+	  </refsection>
+	</refentry>
+
+	<refentry id="PostGIS_Lib_Version">
+	  <refnamediv>
+		<refname>PostGIS_Lib_Version</refname>
+
+		<refpurpose>Returns the version number of the PostGIS
+		library.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>PostGIS_Lib_Version</function></funcdef>
+
+			<paramdef></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the version number of the PostGIS library.</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT PostGIS_Lib_Version();
+ postgis_lib_version
+---------------------
+ 1.3.3
+(1 row)</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="PostGIS_Full_Version" />, <xref
+		linkend="PostGIS_GEOS_Version" />,  <xref
+		linkend="PostGIS_PROJ_Version" />, <xref
+		linkend="PostGIS_Version" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="PostGIS_PROJ_Version">
+	  <refnamediv>
+		<refname>PostGIS_PROJ_Version</refname>
+
+		<refpurpose>Returns the version number of the PROJ4
+		library.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>PostGIS_PROJ_Version</function></funcdef>
+
+			<paramdef></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the version number of the PROJ4 library, or
+		<varname>NULL</varname> if PROJ4 support is not enabled.</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT PostGIS_PROJ_Version();
+  postgis_proj_version
+-------------------------
+ Rel. 4.4.9, 29 Oct 2004
+(1 row)</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="PostGIS_Full_Version" />, <xref
+		linkend="PostGIS_GEOS_Version" />,  <xref
+		linkend="PostGIS_Lib_Version" />, <xref
+		linkend="PostGIS_Version" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="PostGIS_Scripts_Build_Date">
+	  <refnamediv>
+		<refname>PostGIS_Scripts_Build_Date</refname>
+
+		<refpurpose>Returns build date of the PostGIS scripts.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>PostGIS_Scripts_Build_Date</function></funcdef>
+
+			<paramdef></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns build date of the PostGIS scripts.</para>
+
+		<para>Availability: 1.0.0RC1</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT PostGIS_Scripts_Build_Date();
+  postgis_scripts_build_date
+-------------------------
+ 2007-08-18 09:09:26
+(1 row)</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="PostGIS_Full_Version" />, <xref
+		linkend="PostGIS_GEOS_Version" />, <xref
+		linkend="PostGIS_Lib_Version" />, <xref
+		linkend="PostGIS_Version" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="PostGIS_Scripts_Installed">
+	  <refnamediv>
+		<refname>PostGIS_Scripts_Installed</refname>
+
+		<refpurpose>Returns version of the postgis scripts installed in this
+			database.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>PostGIS_Scripts_Installed</function></funcdef>
+
+			<paramdef></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns version of the postgis scripts installed in this
+			database.</para>
+
+		<note>
+			  <para>If the output of this function doesn't match the output of
+			  <xref linkend="PostGIS_Scripts_Released" />
+			  you probably missed to properly upgrade an existing database.
+			  See the <link linkend="upgrading">Upgrading</link> section for
+			  more info.</para>
+		</note>
+
+		<para>Availability: 0.9.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT PostGIS_Scripts_Installed();
+  postgis_scripts_installed
+-------------------------
+ 1.5.0SVN
+(1 row)</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="PostGIS_Full_Version" />, <xref linkend="PostGIS_Scripts_Released" />, <xref linkend="PostGIS_Version" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="PostGIS_Scripts_Released">
+	  <refnamediv>
+		<refname>PostGIS_Scripts_Released</refname>
+
+		<refpurpose>Returns the version number of the postgis.sql script
+		released with the installed postgis lib.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>PostGIS_Scripts_Released</function></funcdef>
+
+			<paramdef></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the version number of the postgis.sql script
+		released with the installed postgis lib.</para>
+
+		<note>
+		  <para>Starting with version 1.1.0 this function returns the same
+		  value of <xref linkend="PostGIS_Lib_Version" />. Kept
+		  for backward compatibility.</para>
+		</note>
+
+		<para>Availability: 0.9.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT PostGIS_Scripts_Released();
+  postgis_scripts_released
+-------------------------
+ 1.3.4SVN
+(1 row)</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="PostGIS_Full_Version" />, <xref linkend="PostGIS_Scripts_Installed" />, <xref linkend="PostGIS_Lib_Version" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="PostGIS_Uses_Stats">
+	  <refnamediv>
+		<refname>PostGIS_Uses_Stats</refname>
+
+		<refpurpose>Returns <varname>TRUE</varname> if STATS usage has been
+		enabled.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>PostGIS_Uses_Stats</function></funcdef>
+
+			<paramdef></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns <varname>TRUE</varname> if STATS usage has been enabled,
+		<varname>FALSE</varname> otherwise.</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT PostGIS_Uses_Stats();
+ postgis_uses_stats
+--------------------
+ t
+(1 row)</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="PostGIS_Version" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="PostGIS_Version">
+	  <refnamediv>
+		<refname>PostGIS_Version</refname>
+
+		<refpurpose>Returns PostGIS version number and compile-time
+		options.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>PostGIS_Version</function></funcdef>
+
+			<paramdef></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns PostGIS version number and compile-time options.</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT PostGIS_Version();
+			postgis_version
+---------------------------------------
+ 1.3 USE_GEOS=1 USE_PROJ=1 USE_STATS=1
+(1 row)</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="PostGIS_Full_Version" />, <xref
+		linkend="PostGIS_GEOS_Version" />,<xref
+		linkend="PostGIS_Lib_Version" />, <xref
+		linkend="PostGIS_PROJ_Version" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="Populate_Geometry_Columns">
+	  <refnamediv>
+		<refname>Populate_Geometry_Columns</refname>
+
+		<refpurpose>Ensures geometry columns have appropriate spatial constraints
+		and exist in the <varname>geometry_columns</varname> table.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>Populate_Geometry_Columns</function></funcdef>
+
+			<paramdef></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>int <function>Populate_Geometry_Columns</function></funcdef>
+
+			<paramdef><type>oid</type> <parameter>relation_oid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Ensures geometry columns have appropriate spatial constraints and
+		exist in the <varname>geometry_columns</varname> table.  In particular,
+		this means that every geometry column belonging to a table has at least
+		three constraints:</para>
+
+		<itemizedlist>
+		  <listitem>
+			<para><varname>enforce_dims_the_geom</varname> - ensures every
+			geometry has the same dimension (see <xref
+			linkend="ST_NDims" />)</para>
+		  </listitem>
+
+		  <listitem>
+			<para><varname>enforce_geotype_the_geom</varname> - ensures every
+			geometry is of the same type (see <xref
+			linkend="GeometryType" />)</para>
+		  </listitem>
+
+		  <listitem>
+			<para><varname>enforce_srid_the_geom</varname> - ensures every
+			geometry is in the same projection (see <xref
+			linkend="ST_SRID" />)</para>
+		  </listitem>
+		</itemizedlist>
+
+		<para>If a table <varname>oid</varname> is provided, this function
+		tries to determine the srid, dimension, and geometry type of all
+		geometry columns in the table, adding contraints as necessary. If
+		successful, an appropriate row is inserted into the geometry_columns
+		table, otherwise, the exception is caught and an error notice is raised
+		describing the problem.</para>
+
+		<para>If the <varname>oid</varname> of a view is provided, as with a
+		table oid, this function tries to determine the srid, dimension, and
+		type of all the geometries in the view, inserting appropriate entries
+		into the <varname>geometry_columns</varname> table, but nothing is done
+		to enforce contraints.</para>
+
+		<para>The parameterless variant is a simple wrapper for the parameterized
+		variant that first truncates and repopulates the geometry_columns table
+		for every spatial table and view in the database, adding spatial
+		contraints to tables where appropriate.  It returns a summary of the
+		number of geometry columns detected in the database and the number that
+		were inserted into the <varname>geometry_columns</varname> table.  The
+		parameterized version simply returns the number of rows inserted into
+		the <varname>geometry_columns</varname> table.</para>
+		<para>Availability: 1.4.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT Populate_Geometry_Columns('public.myspatial_table'::regclass);</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="Probe_Geometry_Columns" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="Probe_Geometry_Columns">
+	  <refnamediv>
+		<refname>Probe_Geometry_Columns</refname>
+
+		<refpurpose>Scans all tables with PostGIS geometry constraints and adds them to the <varname>geometry_columns</varname>
+			table if they are not there.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>Probe_Geometry_Columns</function></funcdef>
+			<paramdef></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Scans all tables with PostGIS geometry constraints and adds them to the <varname>geometry_columns</varname>
+			table if they are not there.  Also give stats on number of inserts and already present or possibly obsolete.</para>
+		<note><para>This will usually only pick up records added by AddGeometryColumn() function.  It will not scan views so views
+			will need to be manually added to geometry_columns table.</para></note>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT Probe_Geometry_Columns();
+			probe_geometry_columns
+---------------------------------------
+probed:6 inserted:0 conflicts:6 stale:0
+(1 row)</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="AddGeometryColumn" /></para>
+	  </refsection>
+	</refentry>
+
+
+	<refentry id="UpdateGeometrySRID">
+	  <refnamediv>
+		<refname>UpdateGeometrySRID</refname>
+
+		<refpurpose>Updates the SRID of all features in a geometry
+		column, geometry_columns metadata and srid table constraint</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>UpdateGeometrySRID</function></funcdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>column_name</parameter></paramdef>
+
+			<paramdef><type>integer </type>
+			<parameter>srid</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>text <function>UpdateGeometrySRID</function></funcdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>schema_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>column_name</parameter></paramdef>
+
+			<paramdef><type>integer </type>
+			<parameter>srid</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>text <function>UpdateGeometrySRID</function></funcdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>catalog_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>schema_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>column_name</parameter></paramdef>
+
+			<paramdef><type>integer </type>
+			<parameter>srid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Updates the SRID of all features in a geometry column, updating
+		constraints and reference in geometry_columns. Note: uses
+		current_schema() on schema-aware pgsql installations if schema is not
+		provided.</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_SetSRID"/></para>
+	  </refsection>
+	</refentry>
+  </sect1>

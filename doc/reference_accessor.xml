@@ -1,0 +1,1865 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+  <sect1 id="Geometry_Accessors">
+	<title>Geometry Accessors</title>
+
+	<refentry id="GeometryType">
+	  <refnamediv>
+		<refname>GeometryType</refname>
+
+		<refpurpose>Returns the type of the geometry as a string. Eg:
+			'LINESTRING', 'POLYGON', 'MULTIPOINT', etc.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>GeometryType</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the type of the geometry as a string. Eg:
+		'LINESTRING', 'POLYGON', 'MULTIPOINT', etc.</para>
+
+		<para>OGC SPEC s2.1.1.1 - Returns the name of the instantiable
+		subtype of Geometry of which this Geometry instance is a member.
+		The name of the instantiable subtype of Geometry is returned as a
+		string.</para>
+
+		<note>
+		  <para>This function also indicates if the geometry is measured,
+		  by returning a string of the form 'POINTM'.</para>
+		</note>
+
+		<para>&sfs_compliant;</para>
+		<para>&curve_support;</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT GeometryType(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));
+ geometrytype
+--------------
+ LINESTRING
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_GeometryType" /></para>
+	  </refsection>
+	</refentry>
+	<refentry id="ST_Boundary">
+	  <refnamediv>
+		<refname>ST_Boundary</refname>
+
+		<refpurpose>Returns the closure of the combinatorial boundary of this
+			Geometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Boundary</function></funcdef>
+
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the closure of the combinatorial boundary of this
+			Geometry. The combinatorial boundary is defined as described in
+			section 3.12.3.2 of the OGC SPEC. Because the result of this
+			function is a closure, and hence topologically closed, the
+			resulting boundary can be represented using representational
+			geometry primitives as discussed in the OGC SPEC, section
+			3.12.2.</para>
+		<para>Performed by the GEOS module</para>
+		<important>
+		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+		</important>
+
+		<para>&sfs_compliant; OGC SPEC s2.1.1.1</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 5.1.14</para>
+		<para>&Z_support;</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		 <programlisting>SELECT ST_AsText(ST_Boundary(ST_GeomFromText('LINESTRING(1 1,0 0, -1 1)')));
+st_astext
+-----------
+MULTIPOINT(1 1,-1 1)
+
+SELECT ST_AsText(ST_Boundary(ST_GeomFromText('POLYGON((1 1,0 0, -1 1, 1 1))')));
+st_astext
+----------
+LINESTRING(1 1,0 0,-1 1,1 1)
+
+--Using a 3d polygon
+SELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('POLYGON((1 1 1,0 0 1, -1 1 1, 1 1 1))')));
+
+st_asewkt
+-----------------------------------
+LINESTRING(1 1 1,0 0 1,-1 1 1,1 1 1)
+
+--Using a 3d multilinestring
+SELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('MULTILINESTRING((1 1 1,0 0 0.5, -1 1 1),(1 1 0.5,0 0 0.5, -1 1 0.5, 1 1 0.5) )')));
+
+st_asewkt
+----------
+MULTIPOINT(-1 1 1,1 1 0.75)
+</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="ST_ExteriorRing" />, <xref linkend="ST_MakePolygon" /></para>
+		</refsection>
+	</refentry>
+
+	<refentry id="ST_CoordDim">
+	  <refnamediv>
+		<refname>ST_CoordDim</refname>
+
+		<refpurpose><para>Return the coordinate dimension of the ST_Geometry value.</para></refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>ST_CoordDim</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Return the coordinate dimension of the ST_Geometry value.</para>
+
+		<para>This is the MM compliant alias name for <xref linkend="ST_NDims" /></para>
+
+		<para>&sfs_compliant;</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 5.1.3</para>
+		<para>&curve_support;</para>
+		<para>&Z_support;</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_CoordDim('CIRCULARSTRING(1 2 3, 1 3 4, 5 6 7, 8 9 10, 11 12 13)');
+			---result--
+				3
+
+				SELECT ST_CoordDim(ST_Point(1,2));
+			--result--
+				2
+
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_NDims" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Dimension">
+	  <refnamediv>
+		<refname>ST_Dimension</refname>
+
+		<refpurpose>The inherent dimension of this Geometry object, which must
+			be less than or equal to the coordinate dimension. </refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>ST_Dimension</function></funcdef>
+
+			<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>The inherent dimension of this Geometry object, which must
+			be less than or equal to the coordinate dimension. OGC SPEC
+			s2.1.1.1 - returns 0 for <varname>POINT</varname>, 1 for <varname>LINESTRING</varname>, 2 for <varname>POLYGON</varname>, and
+			the largest dimension of the components of a
+			<varname>GEOMETRYCOLLECTION</varname>.</para>
+
+		<para>&sqlmm_compliant; SQL-MM 3: 5.1.2</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		 <programlisting>SELECT ST_Dimension('GEOMETRYCOLLECTION(LINESTRING(1 1,0 0),POINT(0 0))');
+ST_Dimension
+-----------
+1
+</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="ST_NDims" /></para>
+		</refsection>
+	</refentry>
+
+	<refentry id="ST_EndPoint">
+	  <refnamediv>
+		<refname>ST_EndPoint</refname>
+
+		<refpurpose>Returns the last point of a <varname>LINESTRING</varname>
+		geometry as a <varname>POINT</varname>.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_EndPoint</function></funcdef>
+
+			<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the last point of a <varname>LINESTRING</varname> geometry
+		as a <varname>POINT</varname> or <varname>NULL</varname> if the input
+		parameter is not a <varname>LINESTRING</varname>.</para>
+
+		<para>&sqlmm_compliant; SQL-MM 3: 7.1.4</para>
+		<para>&Z_support;</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>postgis=# SELECT ST_AsText(ST_EndPoint('LINESTRING(1 1, 2 2, 3 3)'::geometry));
+ st_astext
+------------
+ POINT(3 3)
+(1 row)
+
+postgis=# SELECT ST_EndPoint('POINT(1 1)'::geometry) IS NULL AS is_null;
+  is_null
+----------
+ t
+(1 row)
+
+--3d endpoint
+SELECT ST_AsEWKT(ST_EndPoint('LINESTRING(1 1 2, 1 2 3, 0 0 5)'));
+  st_asewkt
+--------------
+ POINT(0 0 5)
+(1 row)
+</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_PointN" />, <xref
+		linkend="ST_StartPoint" /></para>
+	  </refsection>
+	</refentry>
+
+		<refentry id="ST_Envelope">
+		  <refnamediv>
+			<refname>ST_Envelope</refname>
+
+			<refpurpose>Returns a geometry representing the bounding box of the
+			supplied geometry.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>ST_Envelope</function></funcdef>
+
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>Returns the minimum bounding box for the supplied geometry, as a geometry.
+			The polygon is defined by the corner points of the bounding box
+			((<varname>MINX</varname>, <varname>MINY</varname>),
+			(<varname>MINX</varname>, <varname>MAXY</varname>),
+			(<varname>MAXX</varname>, <varname>MAXY</varname>),
+			(<varname>MAXX</varname>, <varname>MINY</varname>),
+			(<varname>MINX</varname>, <varname>MINY</varname>)). (PostGIS will add a
+			<varname>ZMIN</varname>/<varname>ZMAX</varname> coordinate as
+			well).</para>
+
+			<para>Degenerate cases (vertical lines, points) will return a geometry of
+			lower dimension than <varname>POLYGON</varname>, ie.
+			<varname>POINT</varname> or <varname>LINESTRING</varname>.</para>
+
+			<caution>
+			  <para>In PostGIS, the bounding box of a geometry is represented internally using
+			  <varname>float4</varname>s instead of <varname>float8</varname>s that are used
+			  to store geometries.  The bounding box coordinates are floored, guarenteeing
+			  that the geometry is contained entirely within its bounds.  This has the
+			  advantage that a geometry's bounding box is half the size as the minimum
+			  bounding rectangle, which means significantly faster indexes and general performance.
+			  But it also means that the bounding box is NOT the same as the minimum bounding
+			  rectangle that bounds the geometry.</para>
+			</caution>
+
+			<para>&sfs_compliant; s2.1.1.1</para>
+			<para>&sqlmm_compliant; SQL-MM 3: 5.1.15</para>
+		</refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+	SELECT ST_AsText(ST_Envelope('POINT(1 3)'::geometry));
+	 st_astext
+	------------
+	 POINT(1 3)
+	(1 row)
+
+
+	SELECT ST_AsText(ST_Envelope('LINESTRING(0 0, 1 3)'::geometry));
+			   st_astext
+	--------------------------------
+	 POLYGON((0 0,0 3,1 3,1 0,0 0))
+	(1 row)
+
+
+	SELECT ST_AsText(ST_Envelope('POLYGON((0 0, 0 1, 1.0000001 1, 1.0000001 0, 0 0))'::geometry));
+							  st_astext
+	--------------------------------------------------------------
+	 POLYGON((0 0,0 1,1.00000011920929 1,1.00000011920929 0,0 0))
+	(1 row)
+	SELECT ST_AsText(ST_Envelope('POLYGON((0 0, 0 1, 1.0000000001 1, 1.0000000001 0, 0 0))'::geometry));
+							  st_astext
+	--------------------------------------------------------------
+	 POLYGON((0 0,0 1,1.00000011920929 1,1.00000011920929 0,0 0))
+	(1 row)</programlisting>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_ExteriorRing">
+	  <refnamediv>
+		<refname>ST_ExteriorRing</refname>
+
+		<refpurpose>Returns a line string representing the exterior ring of the <varname>POLYGON</varname> geometry. Return
+				NULL if the geometry is not a polygon.  Will not work with MULTIPOLYGON</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_ExteriorRing</function></funcdef>
+
+			<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns a line string representing the exterior ring of the <varname>POLYGON</varname> geometry. Return
+				NULL if the geometry is not a polygon.</para>
+
+		<note><para>Only works with POLYGON geometry types</para></note>
+
+		<para>&sfs_compliant; 2.1.5.1</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 8.2.3, 8.3.3</para>
+                <para>&Z_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+<programlisting>
+--If you have a table of polygons
+SELECT gid, ST_ExteriorRing(the_geom) AS ering
+FROM sometable;
+
+--If you have a table of MULTIPOLYGONs
+--and want to return a MULTILINESTRING composed of the exterior rings of each polygon
+SELECT gid, ST_Collect(ST_ExteriorRing(the_geom)) AS erings
+	FROM (SELECT gid, (ST_Dump(the_geom)).geom As the_geom
+			FROM sometable) As foo
+GROUP BY gid;
+
+--3d Example
+SELECT ST_AsEWKT(
+	ST_ExteriorRing(
+	ST_GeomFromEWKT('POLYGON((0 0 1, 1 1 1, 1 2 1, 1 1 1, 0 0 1))')
+	)
+);
+
+st_asewkt
+---------
+LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
+</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Boundary" />, <xref linkend="ST_NumInteriorRings" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_GeometryN">
+	  <refnamediv>
+		<refname>ST_GeometryN</refname>
+
+		<refpurpose>Return the 1-based Nth geometry if the geometry is a
+			GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE or MULTIPOLYGON.
+			Otherwise, return NULL.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeometryN</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>n</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Return the 1-based Nth geometry if the geometry is a
+			GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE or MULTIPOLYGON.
+			Otherwise, return NULL.</para>
+
+		<note>
+		  <para>Index is 1-based as for OGC specs since version 0.8.0.
+		  Previous versions implemented this as 0-based instead.</para>
+		</note>
+
+		<note>
+		  <para>If you want to extract all geometries, of a geometry, ST_Dump is more efficient and will also work for singular geoms.</para>
+		</note>
+
+		<para>&sfs_compliant;</para>
+                <para>&sqlmm_compliant; SQL-MM 3: 9.1.5</para>
+                <para>&Z_support;</para>
+                <para>&curve_support;</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+--Extracting a subset of points from a 3d multipoint
+SELECT n, ST_AsEWKT(ST_GeometryN(the_geom, n)) As geomewkt
+FROM (
+VALUES (ST_GeomFromEWKT('MULTIPOINT(1 2 7, 3 4 7, 5 6 7, 8 9 10)') ),
+( ST_GeomFromEWKT('MULTICURVE(CIRCULARSTRING(2.5 2.5,4.5 2.5, 3.5 3.5), (10 11, 12 11))') )
+	)As foo(the_geom)
+	CROSS JOIN generate_series(1,100) n
+WHERE n &lt;= ST_NumGeometries(the_geom);
+
+ n |               geomewkt
+---+-----------------------------------------
+ 1 | POINT(1 2 7)
+ 2 | POINT(3 4 7)
+ 3 | POINT(5 6 7)
+ 4 | POINT(8 9 10)
+ 1 | CIRCULARSTRING(2.5 2.5,4.5 2.5,3.5 3.5)
+ 2 | LINESTRING(10 11,12 11)
+
+
+--Extracting all geometries (useful when you want to assign an id)
+SELECT gid, n, ST_GeometryN(the_geom, n)
+FROM sometable CROSS JOIN generate_series(1,100) n
+WHERE n &lt;= ST_NumGeometries(the_geom);
+
+
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Dump" />, <xref linkend="ST_NumGeometries" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_GeometryType">
+		<refnamediv>
+			<refname>ST_GeometryType</refname>
+			<refpurpose>Return the geometry type of the ST_Geometry value.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>ST_GeometryType</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+		</refsynopsisdiv>
+		<refsection>
+			<title>Description</title>
+
+			<para>Returns the type of the geometry as a string. EG: 'ST_Linestring', 'ST_Polygon','ST_MultiPolygon' etc. This function differs from GeometryType(geometry) in the case of the string and ST in front that is returned, as well as the fact that it will not indicate whether the geometry is measured.</para>
+
+		 	<para>&sqlmm_compliant;	SQL-MM 3: 5.1.4</para>
+
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_GeometryType(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));
+			--result
+			ST_LineString
+			</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="GeometryType" /></para>
+		</refsection>
+	</refentry>
+
+
+
+	<refentry id="ST_InteriorRingN">
+	  <refnamediv>
+		<refname>ST_InteriorRingN</refname>
+
+		<refpurpose>Return the Nth interior linestring ring of the polygon geometry.
+			Return NULL if the geometry is not a polygon or the given N is out
+			of range.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_InteriorRingN</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>n</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Return the Nth interior linestring ring of the polygon geometry.
+			Return NULL if the geometry is not a polygon or the given N is out
+			of range.  index starts at 1.</para>
+
+		<!-- optionally mention that this function uses indexes if appropriate -->
+		<note>
+		  <para>This will not work for MULTIPOLYGONs.  Use in conjunction with ST_Dump for MULTIPOLYGONS</para>
+		</note>
+
+		<para>&sfs_compliant;</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 8.2.6, 8.3.5</para>
+		<para>&Z_support;</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+SELECT ST_AsText(ST_InteriorRingN(the_geom, 1)) As the_geom
+FROM (SELECT ST_BuildArea(
+		ST_Collect(ST_Buffer(ST_Point(1,2), 20,3),
+			ST_Buffer(ST_Point(1, 2), 10,3))) As the_geom
+		)  as foo
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_BuildArea" />, <xref linkend="ST_Collect" />, <xref linkend="ST_Dump" />, <xref linkend="ST_NumInteriorRing" />, <xref linkend="ST_NumInteriorRings" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_IsClosed">
+	  <refnamediv>
+		<refname>ST_IsClosed</refname>
+
+		<refpurpose>Returns <varname>TRUE</varname> if the
+		<varname>LINESTRING</varname>'s start and end points are coincident.
+		</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_IsClosed</function></funcdef>
+
+			<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns <varname>TRUE</varname> if the <varname>LINESTRING</varname>'s
+		start and end points are coincident.</para>
+
+		<para>&sfs_compliant;</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 7.1.5, 9.3.3</para>
+		<note>
+		  <para>SQL-MM defines the result of
+		  <function>ST_IsClosed(<varname>NULL</varname>)</function> to be 0, while
+		  PostGIS returns <varname>NULL</varname>.</para>
+		</note>
+		
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>postgis=# SELECT ST_IsClosed('LINESTRING(0 0, 1 1)'::geometry);
+ st_isclosed
+-------------
+ f
+(1 row)
+
+postgis=# SELECT ST_IsClosed('LINESTRING(0 0, 0 1, 1 1, 0 0)'::geometry);
+ st_isclosed
+-------------
+ t
+(1 row)
+
+postgis=# SELECT ST_IsClosed('MULTILINESTRING((0 0, 0 1, 1 1, 0 0),(0 0, 1 1))'::geometry);
+ st_isclosed
+-------------
+ f
+(1 row)
+
+postgis=# SELECT ST_IsClosed('POINT(0 0)'::geometry);
+ st_isclosed
+-------------
+ t
+(1 row)
+
+postgis=# SELECT ST_IsClosed('MULTIPOINT((0 0), (1 1))'::geometry);
+ st_isclosed
+-------------
+ t
+(1 row)</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_IsRing" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_IsEmpty">
+	  <refnamediv>
+		<refname>ST_IsEmpty</refname>
+
+		<refpurpose>Returns true if this Geometry is an empty geometry . If
+				true, then this Geometry represents the empty point set - i.e.
+				GEOMETRYCOLLECTION(EMPTY).</refpurpose>
+
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_IsEmpty</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns true if this Geometry is an empty geometry . If
+				true, then this Geometry represents an empty geometry collection, polygon, point etc.</para>
+		<note>
+			<para>SQL-MM defines the result of ST_IsEmpty(NULL) to be 0, while
+			PostGIS returns NULL.</para>
+		</note>
+
+		<para>&sfs_compliant; s2.1.1.1</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 5.1.7</para>
+		<para>&curve_support;</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+SELECT ST_IsEmpty('GEOMETRYCOLLECTION(EMPTY)');
+ st_isempty
+------------
+ t
+(1 row)
+
+ SELECT ST_IsEmpty(ST_GeomFromText('POLYGON EMPTY'));
+ st_isempty
+------------
+ t
+(1 row)
+
+SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));
+
+ st_isempty
+------------
+ f
+(1 row)
+
+ SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))')) = false;
+ ?column?
+----------
+ t
+(1 row)
+
+ SELECT ST_IsEmpty(ST_GeomFromText('CIRCULARSTRING EMPTY'));
+  st_isempty
+------------
+ t
+(1 row)
+
+
+		</programlisting>
+	  </refsection>
+
+	</refentry>
+
+  <refentry id="ST_IsRing">
+	<refnamediv>
+	  <refname>ST_IsRing</refname>
+
+	  <refpurpose>Returns <varname>TRUE</varname> if this
+	  <varname>LINESTRING</varname> is both closed and simple.</refpurpose>
+	</refnamediv>
+
+	<refsynopsisdiv>
+	  <funcsynopsis>
+		<funcprototype>
+		  <funcdef>boolean <function>ST_IsRing</function></funcdef>
+
+		  <paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+		</funcprototype>
+	  </funcsynopsis>
+	</refsynopsisdiv>
+
+	<refsection>
+	  <title>Description</title>
+
+	  <para>Returns <varname>TRUE</varname> if this
+	  <varname>LINESTRING</varname> is both <xref linkend="ST_IsClosed" />
+	  (<function>ST_StartPoint(<parameter>g</parameter>)</function>
+	  <function>~=</function>
+	  <function>ST_Endpoint(<parameter>g</parameter>)</function>) and <xref
+	  linkend="ST_IsSimple" /> (does not self intersect).</para>
+
+	  <para>&sfs_compliant; 2.1.5.1</para>
+	  <para>&sqlmm_compliant; SQL-MM 3: 7.1.6</para>
+	  <note>
+		<para>SQL-MM defines the result of
+		<function>ST_IsRing(<varname>NULL</varname>)</function> to be 0, while
+		PostGIS returns <varname>NULL</varname>.</para>
+	  </note>
+	</refsection>
+
+	<refsection>
+	  <title>Examples</title>
+
+	  <programlisting>SELECT ST_IsRing(the_geom), ST_IsClosed(the_geom), ST_IsSimple(the_geom)
+FROM (SELECT 'LINESTRING(0 0, 0 1, 1 1, 1 0, 0 0)'::geometry AS the_geom) AS foo;
+ st_isring | st_isclosed | st_issimple
+-----------+-------------+-------------
+ t         | t           | t
+(1 row)
+
+SELECT ST_IsRing(the_geom), ST_IsClosed(the_geom), ST_IsSimple(the_geom)
+FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo;
+ st_isring | st_isclosed | st_issimple
+-----------+-------------+-------------
+ f         | t           | f
+(1 row)</programlisting>
+	</refsection>
+
+	<refsection>
+	  <title>See Also</title>
+
+	  <para><xref linkend="ST_IsClosed" />, <xref linkend="ST_IsSimple" />, <xref linkend="ST_StartPoint" />,
+	  <xref linkend="ST_EndPoint" /></para>
+	</refsection>
+  </refentry>
+
+
+  <refentry id="ST_IsSimple">
+	  <refnamediv>
+		<refname>ST_IsSimple</refname>
+
+		<refpurpose>Returns (TRUE) if this Geometry has no anomalous geometric
+				points, such as self intersection or self tangency.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_IsSimple</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns true if this Geometry has no anomalous geometric
+				points, such as self intersection or self tangency. For more
+			information on the OGC's definition of geometry simplicity and validity, refer
+			to <link linkend="OGC_Validity">"Ensuring OpenGIS compliancy of geometries"</link></para>
+
+		<note>
+			<para>SQL-MM defines the result of ST_IsSimple(NULL) to be 0,
+			while PostGIS returns NULL.</para>
+		</note>
+
+		<para>&sfs_compliant; s2.1.1.1</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 5.1.8</para>
+		<para>&Z_support;</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting> SELECT ST_IsSimple(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));
+ st_issimple
+-------------
+ t
+(1 row)
+
+ SELECT ST_IsSimple(ST_GeomFromText('LINESTRING(1 1,2 2,2 3.5,1 3,1 2,2 1)'));
+ st_issimple
+-------------
+ f
+(1 row)</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="ST_IsValid" /></para>
+		</refsection>
+	</refentry>
+
+	<refentry id="ST_IsValid">
+	  <refnamediv>
+		<refname>ST_IsValid</refname>
+
+		<refpurpose>Returns <varname>true</varname> if the
+		<varname>ST_Geometry</varname> is well formed.
+		</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_IsValid</function></funcdef>
+
+			<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Test if an ST_Geometry value is well formed.  For geometries that are invalid,
+			the PostgreSQL NOTICE will provide details of why it is not valid.  For more
+			information on the OGC's definition of geometry simplicity and validity, refer
+			to <link linkend="OGC_Validity">"Ensuring OpenGIS compliancy of geometries"</link></para>
+		<note>
+			<para>SQL-MM defines the result of ST_IsValid(NULL) to be 0, while
+			PostGIS returns NULL.</para>
+		</note>
+
+		<para>&sfs_compliant;</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 5.1.9</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_IsValid(ST_GeomFromText('LINESTRING(0 0, 1 1)')) As good_line,
+	ST_IsValid(ST_GeomFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) As bad_poly
+--results
+NOTICE:  Self-intersection at or near point 0 0
+ good_line | bad_poly
+-----------+----------
+ t         | f
+</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_IsSimple" />, <xref linkend="ST_IsValidReason" />, <xref linkend="ST_Summary" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_IsValidReason">
+	  <refnamediv>
+		<refname>ST_IsValidReason</refname>
+
+		<refpurpose>Returns text stating if a geometry is valid or not and if not valid, a reason why.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>ST_IsValidReason</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns text stating if a geometry is valid or not an if not valid, a reason why.</para>
+
+		<para>Useful in combination with ST_IsValid to generate a detailed report of invalid geometries and reasons.</para>
+		<para>Availability: 1.4 - requires GEOS &gt;= 3.1.0.</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+--First 3 Rejects from a successful quintuplet experiment
+SELECT gid, ST_IsValidReason(the_geom) as validity_info
+FROM
+(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), ST_Accum(f.line)) As the_geom, gid
+FROM (SELECT ST_Buffer(ST_MakePoint(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000 As gid
+	FROM generate_series(-4,6) x1
+	CROSS JOIN generate_series(2,5) y1
+	CROSS JOIN generate_series(1,8) z1
+	WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e
+	INNER JOIN (SELECT ST_Translate(ST_ExteriorRing(ST_Buffer(ST_MakePoint(x1*10,y1), z1)),y1*1, z1*2) As line
+	FROM generate_series(-3,6) x1
+	CROSS JOIN generate_series(2,5) y1
+	CROSS JOIN generate_series(1,10) z1
+	WHERE x1 &gt; y1*0.75 AND z1 &lt; x1*y1) As f
+ON (ST_Area(e.buff) &gt; 78 AND ST_Contains(e.buff, f.line))
+GROUP BY gid, e.buff) As quintuplet_experiment
+WHERE ST_IsValid(the_geom) = false
+ORDER BY gid
+LIMIT 3;
+
+ gid  |      validity_info
+------+--------------------------
+ 5330 | Self-intersection [32 5]
+ 5340 | Self-intersection [42 5]
+ 5350 | Self-intersection [52 5]
+
+ --simple example
+SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)');
+
+ st_isvalidreason
+------------------
+ Valid Geometry
+
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_IsValid" />, <xref linkend="ST_Summary" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_M">
+	  <refnamediv>
+		<refname>ST_M</refname>
+
+		<refpurpose>Return the M coordinate of the point, or NULL if not
+			available. Input must be a point.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_M</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Return the M coordinate of the point, or NULL if not
+			available. Input must be a point.</para>
+
+		<note>
+			  <para>This is not (yet) part of the OGC spec, but is listed here
+			  to complete the point coordinate extractor function list.</para>
+		</note>
+		<para>&sfs_compliant;</para>
+		<para>&sqlmm_compliant;</para>
+		<para>&Z_support;</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>SELECT ST_M(ST_GeomFromEWKT('POINT(1 2 3 4)'));
+ st_m
+------
+	4
+(1 row)
+
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_X" />, <xref linkend="ST_Y" />, <xref linkend="ST_Z" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_NDims">
+		<refnamediv>
+			<refname>ST_NDims</refname>
+			<refpurpose>Returns coordinate dimension of the geometry as a small int.
+			Values are: 2,3 or 4.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>ST_NDims</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>Returns the coordinate dimension of the geometry.  PostGIS supports 2 -  (x,y) ,
+			3 -  (x,y,z) or 2D with measure - x,y,m, and 4 - 3D with measure space x,y,z,m</para>
+
+			<para>&Z_support;</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_NDims(ST_GeomFromText('POINT(1 1)')) As d2point,
+	ST_NDims(ST_GeomFromEWKT('POINT(1 1 2)')) As d3point,
+	ST_NDims(ST_GeomFromEWKT('POINTM(1 1 0.5)')) As d2pointm;
+
+	 d2point | d3point | d2pointm
+---------+---------+----------
+	   2 |       3 |        3
+			</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_CoordDim" />, <xref linkend="ST_Dimension" />, <xref linkend="ST_GeomFromEWKT" /></para>
+		</refsection>
+	</refentry>
+
+	<refentry id="ST_NPoints">
+		<refnamediv>
+			<refname>ST_NPoints</refname>
+			<refpurpose>Return the number of points (vertexes) in a geometry.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>ST_NPoints</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>Return the number of points in a geometry.  Works for all geometries.</para>
+			<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
+			<para>&Z_support;</para>
+			<para>&curve_support;</para>
+
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+
+<programlisting>SELECT ST_NPoints(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));
+--result
+4
+
+--Polygon in 3D space
+SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 29.31 -1,77.29 29.07 3)'))
+--result
+4</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="ST_NumPoints" /></para>
+		</refsection>
+	</refentry>
+
+	<refentry id="ST_NRings">
+	  <refnamediv>
+		<refname>ST_NRings</refname>
+		<refpurpose>If the geometry is a polygon or multi-polygon returns the number of rings.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>ST_NRings</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>If the geometry is a polygon or multi-polygon returns the number of rings.  Unlike NumInteriorRings, it counts
+		the outer rings as well.</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_NRings(the_geom) As Nrings, ST_NumInteriorRings(the_geom) As ninterrings
+					FROM (SELECT ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))') As the_geom) As foo;
+	 nrings | ninterrings
+--------+-------------
+	  1 |           0
+(1 row)
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_NumInteriorRings" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_NumGeometries">
+		<refnamediv>
+			<refname>ST_NumGeometries</refname>
+			<refpurpose>If geometry is a GEOMETRYCOLLECTION (or MULTI*) return the
+			number of geometries, otherwise return NULL.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>ST_NumGeometries</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_multi_or_geomcollection</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>Returns the number of Geometries. If geometry is a GEOMETRYCOLLECTION (or MULTI*) return the
+			number of geometries, otherwise return NULL.</para>
+
+			<para>&sqlmm_compliant; SQL-MM 3: 9.1.4</para>
+
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+
+<programlisting>
+--Although ST_NumGeometries will return null when passed a single, you can wrap in ST_Multi to force 1 or more for all geoms
+SELECT ST_NumGeometries(ST_Multi(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)')));
+--result
+1
+
+--Geometry Collection Example - multis count as one geom in a collection
+SELECT ST_NumGeometries(ST_GeomFromEWKT('GEOMETRYCOLLECTION(MULTIPOINT(-2 3 , -2 2),
+LINESTRING(5 5 ,10 10),
+POLYGON((-7 4.2,-7.1 5,-7.1 4.3,-7 4.2)))'));
+--result
+3
+</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="ST_GeometryN" />, <xref linkend="ST_Multi" /></para>
+		</refsection>
+	</refentry>
+
+	<refentry id="ST_NumInteriorRings">
+	  <refnamediv>
+		<refname>ST_NumInteriorRings</refname>
+		<refpurpose>Return the number of interior rings of the first polygon in
+			the geometry. This will work with both POLYGON and MULTIPOLYGON types but only looks at the first polygon.
+			Return NULL if there is no polygon in the
+			geometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>ST_NumInteriorRings</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Return the number of interior rings of the first polygon in
+			the geometry. This will work with both POLYGON and MULTIPOLYGON types but only looks at the first polygon.
+			Return NULL if there is no polygon in the
+			geometry.</para>
+
+		<para>&sqlmm_compliant; SQL-MM 3: 8.2.5</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+			<programlisting>
+--If you have a regular polygon
+SELECT gid, field1, field2, ST_NumInteriorRings(the_geom) AS numholes
+FROM sometable;
+
+--If you have multipolygons
+--And you want to know the total number of interior rings in the MULTIPOLYGON
+SELECT gid, field1, field2, SUM(ST_NumInteriorRings(the_geom)) AS numholes
+FROM (SELECT gid, field1, field2, (ST_Dump(the_geom)).geom As the_geom
+	FROM sometable) As foo
+GROUP BY gid, field1,field2;
+			</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_NumInteriorRing" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_NumInteriorRing">
+	  <refnamediv>
+		<refname>ST_NumInteriorRing</refname>
+		<refpurpose>Return the number of interior rings of the first polygon in
+			the geometry. Synonym to ST_NumInteriorRings. </refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>ST_NumInteriorRing</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Return the number of interior rings of the first polygon in
+			the geometry. Synonym to ST_NumInteriorRings. The OpenGIS specs are
+			ambiguous about the exact function naming, so we provide both
+			spellings.</para>
+
+		<para>&sqlmm_compliant; SQL-MM 3: 8.2.5</para>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_NumInteriorRings" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_NumPoints">
+	  <refnamediv>
+		<refname>ST_NumPoints</refname>
+		<refpurpose>Return the number of points in an ST_LineString or
+		  ST_CircularString value.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>ST_NumPoints</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Return the number of points in an ST_LineString or
+		  ST_CircularString value. Prior to 1.4 only works with Linestrings as the specs state.  From 1.4 forward this is an alias for ST_NPoints which returns number of vertexes for
+		  not just line strings.
+		  Consider using ST_NPoints instead which is multi-purpose
+		  and works with many geometry types.</para>
+
+		<para>&sfs_compliant;</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 7.2.4</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_NumPoints(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));
+		--result
+		4
+		</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_NPoints" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_PointN">
+	  <refnamediv>
+		<refname>ST_PointN</refname>
+
+		<refpurpose>Return the Nth point in the first linestring or circular linestring in the
+			geometry. Return NULL if there is no linestring in the
+			geometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_PointN</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>n</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Return the Nth point in the first linestring or circular linestring in the
+			geometry. Return NULL if there is no linestring in the
+			geometry.</para>
+
+		<note>
+			  <para>Index is 1-based as for OGC specs since version 0.8.0.
+			  Previous versions implemented this as 0-based instead.</para>
+		</note>
+
+		<note>
+			  <para>If you want to get the nth point of each line string in a multilinestring, use in conjunction
+			  with ST_Dump</para>
+		</note>
+
+		<para>&sfs_compliant;</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 7.2.5, 7.3.5</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>-- Extract all POINTs from a LINESTRING
+SELECT ST_AsText(
+   ST_PointN(
+	  column1,
+	  generate_series(1, ST_NPoints(column1))
+   ))
+FROM ( VALUES ('LINESTRING(0 0, 1 1, 2 2)'::geometry) ) AS foo;
+
+ st_astext
+------------
+ POINT(0 0)
+ POINT(1 1)
+ POINT(2 2)
+(3 rows)
+
+--Example circular string
+SELECT ST_AsText(ST_PointN(ST_GeomFromText('CIRCULARSTRING(1 2, 3 2, 1 2)'),2));
+
+st_astext
+----------
+POINT(3 2)
+</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_NPoints" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_SRID">
+	  <refnamediv>
+		<refname>ST_SRID</refname>
+		<refpurpose>Returns the spatial reference identifier for the ST_Geometry as defined in spatial_ref_sys table.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>ST_SRID</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the spatial reference identifier for the ST_Geometry as defined in <xref linkend="spatial_ref_sys">spatial_ref_sys</xref> table. </para>
+		<para><note><para>spatial_ref_sys
+		table is a table that catalogs all spatial reference systems known to PostGIS and is used for transformations from one spatial
+			reference system to another.  So verifying you have the right spatial reference system identifier is important if you plan to ever transform your geometries.</para></note></para>
+		<para>&sfs_compliant; s2.1.1.1</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 5.1.5</para>
+		<para>&curve_support;</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));
+		--result
+		4326
+		</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="spatial_ref_sys" />,<xref linkend="ST_GeomFromText" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_StartPoint">
+	<refnamediv>
+	  <refname>ST_StartPoint</refname>
+
+	  <refpurpose>Returns the first point of a <varname>LINESTRING</varname>
+	  geometry as a <varname>POINT</varname>.</refpurpose>
+	</refnamediv>
+
+	<refsynopsisdiv>
+	  <funcsynopsis>
+		<funcprototype>
+		  <funcdef>geometry <function>ST_StartPoint</function></funcdef>
+
+		  <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		</funcprototype>
+	  </funcsynopsis>
+	</refsynopsisdiv>
+
+	<refsection>
+	  <title>Description</title>
+
+	  <para>Returns the first point of a <varname>LINESTRING</varname> geometry
+	  as a <varname>POINT</varname> or <varname>NULL</varname> if the input
+	  parameter is not a <varname>LINESTRING</varname>.</para>
+
+	  <para>&sqlmm_compliant; SQL-MM 3: 7.1.3</para>
+	  <para>&Z_support;</para>
+
+	</refsection>
+
+	<refsection>
+	  <title>Examples</title>
+
+	  <programlisting>SELECT ST_AsText(ST_StartPoint('LINESTRING(0 1, 0 2)'::geometry));
+ st_astext
+------------
+ POINT(0 1)
+(1 row)
+
+SELECT ST_StartPoint('POINT(0 1)'::geometry) IS NULL AS is_null;
+  is_null
+----------
+ t
+(1 row)
+
+--3d line
+SELECT ST_AsEWKT(ST_StartPoint('LINESTRING(0 1 1, 0 2 2)'::geometry));
+ st_asewkt
+------------
+ POINT(0 1 1)
+(1 row)
+
+</programlisting>
+	</refsection>
+
+	<refsection>
+	  <title>See Also</title>
+
+	  <para><xref linkend="ST_EndPoint" />, <xref linkend="ST_PointN" /></para>
+	</refsection>
+  </refentry>
+	<refentry id="ST_Summary">
+	  <refnamediv>
+		<refname>ST_Summary</refname>
+
+		<refpurpose>Returns a text summary of the contents of the
+		<varname>ST_Geometry</varname>.
+		</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>ST_Summary</function></funcdef>
+
+			<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns a text summary of the contents of the geometry.</para>
+		<para>&Z_support;</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_Summary(ST_GeomFromText('LINESTRING(0 0, 1 1)')) As good_line,
+	ST_Summary(ST_GeomFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) As bad_poly
+--results
+	  good_line       |        bad_poly
+----------------------+-------------------------
+					  |
+Line[B] with 2 points : Polygon[B] with 1 rings
+					  :    ring 0 has 5 points
+					  :
+
+--3d polygon
+SELECT ST_Summary(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)')) As good_line,
+	ST_Summary(ST_GeomFromEWKT('POLYGON((0 0 1, 1 1 2, 1 2 3, 1 1 1, 0 0 1))')) As poly
+
+--results
+	  good_line       |        poly
+----------------------+-------------------------
+					  |
+Line[ZB] with 2 points : Polygon[ZB] with 1 rings
+					  :    ring 0 has 5 points
+					  :
+
+</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_IsValid" />, <xref linkend="ST_IsValidReason" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_X">
+	  <refnamediv>
+		<refname>ST_X</refname>
+
+		<refpurpose>Return the X coordinate of the point, or NULL if not
+			available. Input must be a point.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_X</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Return the X coordinate of the point, or NULL if not
+			available. Input must be a point.</para>
+
+		<note><para>If you want to get the max min x values of any geometry look at ST_XMin, ST_XMax functions.</para></note>
+
+		<para>&sqlmm_compliant; SQL-MM 3: 6.1.3</para>
+		<para>&Z_support;</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>SELECT ST_X(ST_GeomFromEWKT('POINT(1 2 3 4)'));
+ st_x
+------
+	1
+(1 row)
+
+SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
+ st_y
+------
+  1.5
+(1 row)
+
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Centroid" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_M" />, <xref linkend="ST_XMax" />, <xref linkend="ST_XMin" />, <xref linkend="ST_Y" />, <xref linkend="ST_Z" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Y">
+	  <refnamediv>
+		<refname>ST_Y</refname>
+
+		<refpurpose>Return the Y coordinate of the point, or NULL if not
+			available. Input must be a point.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_Y</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Return the Y coordinate of the point, or NULL if not
+			available. Input must be a point.</para>
+
+		<para>&sfs_compliant;</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 6.1.4</para>
+		<para>&Z_support;</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>SELECT ST_Y(ST_GeomFromEWKT('POINT(1 2 3 4)'));
+ st_y
+------
+	2
+(1 row)
+
+SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
+ st_y
+------
+  1.5
+(1 row)
+
+
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Centroid" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_M" />, <xref linkend="ST_X" />, <xref linkend="ST_YMax" />, <xref linkend="ST_YMin" />, <xref linkend="ST_Z" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Z">
+	  <refnamediv>
+		<refname>ST_Z</refname>
+
+		<refpurpose>Return the Z coordinate of the point, or NULL if not
+			available. Input must be a point.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_Z</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Return the Z coordinate of the point, or NULL if not
+			available. Input must be a point.</para>
+
+
+
+		<para>&sqlmm_compliant;</para>
+		<para>&Z_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>SELECT ST_Z(ST_GeomFromEWKT('POINT(1 2 3 4)'));
+ st_z
+------
+	3
+(1 row)
+
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_M" />, <xref linkend="ST_X" />, <xref linkend="ST_Y" />, <xref linkend="ST_ZMax" />, <xref linkend="ST_ZMin" /> </para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Zmflag">
+	  <refnamediv>
+		<refname>ST_Zmflag</refname>
+
+		<refpurpose>Returns ZM (dimension semantic) flag of the geometries as a
+			small int. Values are: 0=2d, 1=3dm, 2=3dz, 3=4d.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>smallint <function>ST_Zmflag</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns ZM (dimension semantic) flag of the geometries as a
+			small int. Values are: 0=2d, 1=3dm, 2=3dz, 3=4d.</para>
+
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_Zmflag(ST_GeomFromEWKT('LINESTRING(1 2, 3 4)'));
+ st_zmflag
+-----------
+		 0
+
+SELECT ST_Zmflag(ST_GeomFromEWKT('LINESTRINGM(1 2 3, 3 4 3)'));
+ st_zmflag
+-----------
+		 1
+
+SELECT ST_Zmflag(ST_GeomFromEWKT('CIRCULARSTRING(1 2 3, 3 4 3, 5 6 3)'));
+ st_zmflag
+-----------
+		 2
+SELECT ST_Zmflag(ST_GeomFromEWKT('POINT(1 2 3 4)'));
+ st_zmflag
+-----------
+		 3
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_CoordDim" />, <xref linkend="ST_NDims" />, <xref linkend="ST_Dimension" /></para>
+	  </refsection>
+	</refentry>
+
+
+  </sect1>

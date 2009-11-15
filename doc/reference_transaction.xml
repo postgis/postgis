@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <sect1 id="Long_Transactions_Support">
+	  <title>Long Transactions Support</title>
+
+	   <para>This module and associated pl/pgsql functions have been
+	  implemented to provide long locking support required by <ulink
+	  url="http://portal.opengeospatial.org/files/index.php?artifact_id=7176">Web Feature Service</ulink> specification.</para>
+
+	  <note>
+		<para>Users must use <ulink
+		url="http://www.postgresql.org/docs/8.3/static/transaction-iso.html">serializable
+		transaction level</ulink> otherwise locking mechanism would
+		break.</para>
+	  </note>
+
+	<refentry id="AddAuth">
+	  <refnamediv>
+		<refname>AddAuth</refname>
+
+		<refpurpose>Add an authorization token to be used in current transaction.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>AddAuth</function></funcdef>
+			<paramdef><type>text </type> <parameter>auth_token</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Add an authorization token to be used in current transaction.</para>
+
+		<para>Creates/adds to a temp table called temp_lock_have_table the current transaction identifier
+			and authorization token key.</para>
+
+		<para>Availability: 1.1.3</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+		SELECT LockRow('towns', '353', 'priscilla');
+		BEGIN TRANSACTION;
+			SELECT AddAuth('joey');
+			UPDATE towns SET the_geom = ST_Translate(the_geom,2,2) WHERE gid = 353;
+		COMMIT;
+
+
+		---Error--
+		ERROR:  UPDATE where "gid" = '353' requires authorization 'priscilla'
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="LockRow" /></para>
+	  </refsection>
+	</refentry>
+
+	  <refentry id="CheckAuth">
+		  <refnamediv>
+			<refname>CheckAuth</refname>
+
+			<refpurpose>Creates trigger on a table to prevent/allow updates and deletes of rows based on authorization token.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>integer <function>CheckAuth</function></funcdef>
+				<paramdef><type>text </type> <parameter>a_schema_name</parameter></paramdef>
+				<paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef>
+				<paramdef><type>text </type> <parameter>a_key_column_name</parameter></paramdef>
+			  </funcprototype>
+
+			  <funcprototype>
+				<funcdef>integer <function>CheckAuth</function></funcdef>
+				<paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef>
+				<paramdef><type>text </type> <parameter>a_key_column_name</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>Creates trigger on a table to prevent/allow updates and deletes of rows based on authorization token. Identify rows using &lt;rowid_col&gt; column.</para>
+
+			<para>If a_schema_name is not passed in, then searches for table in current schema.</para>
+			<note><para>If an authorization trigger already exists on this table function errors.</para>
+				<para>If Transaction support is not enabled, function throws an exception.</para>
+			</note>
+
+			<para>Availability: 1.1.3</para>
+
+		  </refsection>
+
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>
+			SELECT CheckAuth('public', 'towns', 'gid');
+			result
+			------
+			0
+			</programlisting>
+		  </refsection>
+
+		  <!-- Optionally add a "See Also" section -->
+		  <refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="EnableLongTransactions" /></para>
+		  </refsection>
+		</refentry>
+
+	  <refentry id="DisableLongTransactions">
+		<refnamediv>
+		  <refname>DisableLongTransactions</refname>
+
+		  <refpurpose>Disable long transaction support. This function removes the
+			long transaction support metadata tables, and drops all triggers
+			attached to lock-checked tables.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+		  <funcsynopsis>
+			<funcprototype>
+			  <funcdef>text <function>DisableLongTransactions</function></funcdef>
+			</funcprototype>
+		  </funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+		  <title>Description</title>
+
+			<para>Disable long transaction support. This function removes the
+			long transaction support metadata tables, and drops all triggers
+			attached to lock-checked tables.</para>
+			<para>Drops meta table called <varname>authorization_table</varname> and a view called <varname>authorized_tables</varname>
+				and all triggers called <varname>checkauthtrigger</varname></para>
+
+			<para>Availability: 1.1.3</para>
+
+		</refsection>
+
+
+		<refsection>
+		  <title>Examples</title>
+
+		  <programlisting>SELECT DisableLongTransactions();
+--result--
+Long transactions support disabled
+		  </programlisting>
+		</refsection>
+
+		<!-- Optionally add a "See Also" section -->
+		<refsection>
+		  <title>See Also</title>
+
+		  <para><xref linkend="EnableLongTransactions" /></para>
+		</refsection>
+	  </refentry>
+
+	  <refentry id="EnableLongTransactions">
+		<refnamediv>
+		  <refname>EnableLongTransactions</refname>
+
+		  <refpurpose>Enable long transaction support. This function creates the
+			required metadata tables, needs to be called once before using the
+			other functions in this section. Calling it twice is
+			harmless.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+		  <funcsynopsis>
+			<funcprototype>
+			  <funcdef>text <function>EnableLongTransactions</function></funcdef>
+			</funcprototype>
+		  </funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+		  <title>Description</title>
+
+			<para>Enable long transaction support. This function creates the
+			required metadata tables, needs to be called once before using the
+			other functions in this section. Calling it twice is
+			harmless.</para>
+			<para>Creates a meta table called <varname>authorization_table</varname> and a view called <varname>authorized_tables</varname></para>
+
+			<para>Availability: 1.1.3</para>
+
+		</refsection>
+
+
+		<refsection>
+		  <title>Examples</title>
+
+		  <programlisting>SELECT EnableLongTransactions();
+--result--
+Long transactions support enabled
+		  </programlisting>
+		</refsection>
+
+		<!-- Optionally add a "See Also" section -->
+		<refsection>
+		  <title>See Also</title>
+
+		  <para><xref linkend="DisableLongTransactions" /></para>
+		</refsection>
+	  </refentry>
+
+	<refentry id="LockRow">
+	  <refnamediv>
+		<refname>LockRow</refname>
+
+		<refpurpose>Set lock/authorization for specific row in table</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>LockRow</function></funcdef>
+			<paramdef><type>text </type> <parameter>a_schema_name</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>a_row_key</parameter></paramdef>
+			<paramdef><type>text</type> <parameter>an_auth_token</parameter></paramdef>
+			<paramdef><type>timestamp</type> <parameter>expire_dt</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>integer <function>LockRow</function></funcdef>
+			<paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>a_row_key</parameter></paramdef>
+			<paramdef><type>text</type> <parameter>an_auth_token</parameter></paramdef>
+			<paramdef><type>timestamp</type> <parameter>expire_dt</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>integer <function>LockRow</function></funcdef>
+			<paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>a_row_key</parameter></paramdef>
+			<paramdef><type>text</type> <parameter>an_auth_token</parameter></paramdef>
+		  </funcprototype>
+
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Set lock/authorization for specific row in table
+		&lt;authid&gt; is a text value, &lt;expires&gt; is a timestamp
+		defaulting to now()+1hour. Returns 1 if lock has been assigned, 0
+		otherwise (already locked by other auth)</para>
+
+		<para>Availability: 1.1.3</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT LockRow('public', 'towns', '2', 'joey');
+LockRow
+-------
+1
+
+--Joey has already locked the record and Priscilla is out of luck
+SELECT LockRow('public', 'towns', '2', 'priscilla');
+LockRow
+-------
+0
+
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="UnlockRows" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="UnlockRows">
+	  <refnamediv>
+		<refname>UnlockRows</refname>
+
+		<refpurpose>Remove all locks held by specified authorization id. Returns
+			the number of locks released.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>UnlockRows</function></funcdef>
+			<paramdef><type>text </type> <parameter>auth_token</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Remove all locks held by specified authorization id. Returns
+			the number of locks released.</para>
+
+		<para>Availability: 1.1.3</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+		SELECT LockRow('towns', '353', 'priscilla');
+		SELECT LockRow('towns', '2', 'priscilla');
+		SELECT UnLockRows('priscilla');
+		UnLockRows
+		------------
+		2
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="LockRow" /></para>
+	  </refsection>
+	</refentry>
+  </sect1>

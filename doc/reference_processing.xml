@@ -1,0 +1,1685 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<sect1 id="Geometry_Processing">
+		<title>Geometry Processing Functions</title>
+		<refentry id="ST_Buffer">
+			<refnamediv>
+				<refname>ST_Buffer</refname>
+
+				<refpurpose>(T) For geometry: Returns a geometry that represents all points whose distance
+			from this Geometry is less than or equal to distance. Calculations
+			are in the Spatial Reference System of this Geometry. For geography: Uses a planar transform wrapper.  Introduced in 1.5 support for
+			different end cap and mitre settings to control shape. buffer_style options: quad_segs=#,endcap=round|flat|square,join=round|mitre|bevel,mitre_limit=#.#
+			</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>geometry <function>ST_Buffer</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+					<paramdef><type>float </type> <parameter>radius_of_buffer</parameter></paramdef>
+				  </funcprototype>
+
+				  <funcprototype>
+					<funcdef>geometry <function>ST_Buffer</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+					<paramdef><type>float </type> <parameter>radius_of_buffer</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>num_seg_quarter_circle</parameter></paramdef>
+				  </funcprototype>
+
+				  <funcprototype>
+					<funcdef>geometry <function>ST_Buffer</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+					<paramdef><type>float </type> <parameter>radius_of_buffer</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>buffer_style_parameters</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>geography <function>ST_Buffer</function></funcdef>
+					<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+					<paramdef><type>float </type> <parameter>radius_of_buffer_in_meters</parameter></paramdef>
+				  </funcprototype>
+
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			  <refsection>
+				<title>Description</title>
+
+				<para>Returns a geometry/geography that represents all points whose distance
+			from this Geometry/geography is less than or equal to distance. </para>
+			<para>Geometry: Calculations
+			are in the Spatial Reference System of the geometry. Introduced in 1.5 support for
+			different end cap and mitre settings to control shape.</para>
+				<note><para>Geography: For geography this is really a thin wrapper around the geometry implementation. It first determines the best SRID that
+					fits the bounding box of the geography object (favoring UTM, polar stereographic and falling back on mercator in worst case scenario) and then buffers in that planar spatial ref and retransforms back to WGS84 geography.</para></note>
+			<para><inlinegraphic fileref="images/warning.png" />
+			For geography this may not behave as expected if object is sufficiently large that it falls between two UTM zones or crosses the dateline</para>
+				<para>Availability: 1.5 - ST_Buffer was enhanced to support different endcaps and join types. These are useful for example to convert road linestrings
+					into polygon roads with flat or square edges instead of rounded edges. Thin wrapper for geography was added. - requires GEOS &gt;= 3.2 to take advantage of advanced geometry functionality.
+				</para>
+				<para>
+The optional third parameter (currently only applies to geometry) can either specify number of segments used to approximate a quarter circle (integer case, defaults to 8) or a list of blank-separated key=value pairs (string case) to tweak operations as follows:
+<itemizedlist>
+<listitem>
+'quad_segs=#' : number of segments used to approximate a quarter circle (defaults to 8).
+</listitem>
+<listitem>
+'endcap=round|flat|square' : endcap style (defaults to "round", needs GEOS-3.2 or higher for a different value). 'butt' is also accepted as a synonym for 'flat'.
+</listitem>
+<listitem>
+'join=round|mitre|bevel' : join style (defaults to "round", needs GEOS-3.2 or higher for a different value). 'miter' is also accepted as a synonym for 'mitre'.
+</listitem>
+<listitem>
+'mitre_limit=#.#' : mitre ratio limit (only affects mitred join style). 'miter_limit' is also accepted as a synonym for 'mitre_limit'.
+</listitem>
+</itemizedlist>
+				</para>
+
+				<para>Units of radius are measured in units of the spatial reference system.</para>
+				<para>The inputs can be POINTS, MULTIPOINTS, LINESTRINGS, MULTILINESTRINGS, POLYGONS, MULTIPOLYGONS, and GeometryCollections.</para>
+				<note><para>This function ignores the third dimension (z) and will always give a 2-d buffer even when presented with a 3d-geometry.</para></note>
+
+				<para>Performed by the GEOS module.</para>
+				<para>&sfs_compliant; s2.1.1.3</para>
+				<para>&sqlmm_compliant; SQL-MM 3: 5.1.17</para>
+
+				<note><para>People often make the mistake of using this function to try to do radius searches.  Creating a
+					buffer to to a radius search is slow and pointless.  Use <xref linkend="ST_DWithin" /> instead.</para></note>
+			</refsection>
+
+			  <refsection>
+				<title>Examples</title>
+
+				<informaltable>
+				  <tgroup cols="2">
+					<tbody>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_buffer01.png" />
+							  </imageobject>
+							  <caption><para>quad_segs=8 (default)</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText('POINT(100 90)'),
+ 50, 'quad_segs=8');
+				</programlisting>
+						  </para></entry>
+
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_buffer02.png" />
+							  </imageobject>
+							  <caption><para>quad_segs=2 (lame)</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText('POINT(100 90)'),
+ 50, 'quad_segs=2');
+				</programlisting>
+						</para></entry>
+					  </row>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_buffer03.png" />
+							  </imageobject>
+							  <caption><para>endcap=round join=round (default)</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText(
+  'LINESTRING(50 50,150 150,150 50)'
+ ), 10, 'endcap=round join=round');
+				</programlisting>
+						 </para></entry>
+
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_buffer04.png" />
+							  </imageobject>
+							  <caption><para>endcap=square</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText(
+  'LINESTRING(50 50,150 150,150 50)'
+ ), 10, 'endcap=square join=round');
+				</programlisting>
+						  </para></entry>
+
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_buffer05.png" />
+							  </imageobject>
+							  <caption><para>endcap=flat</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText(
+  'LINESTRING(50 50,150 150,150 50)'
+ ), 10, 'endcap=flat join=round');
+				</programlisting>
+						  </para></entry>
+					  </row>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_buffer07.png" />
+							  </imageobject>
+							  <caption><para>join=bevel</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText(
+  'LINESTRING(50 50,150 150,150 50)'
+ ), 10, 'join=bevel');
+				</programlisting>
+						  </para></entry>
+
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_buffer06.png" />
+							  </imageobject>
+							  <caption><para>join=mitre mitre_limit=5.0 (default mitre limit)</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText(
+  'LINESTRING(50 50,150 150,150 50)'
+ ), 10, 'join=mitre mitre_limit=5.0');
+				</programlisting>
+						  </para></entry>
+
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_buffer08.png" />
+							  </imageobject>
+							  <caption><para>join=mitre mitre_limit=1</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText(
+  'LINESTRING(50 50,150 150,150 50)'
+ ), 10, 'join=mitre mitre_limit=1.0');
+				</programlisting>
+						  </para></entry>
+					  </row>
+					</tbody>
+				  </tgroup>
+			</informaltable>
+
+<programlisting>--A buffered point approximates a circle
+-- A buffered point forcing approximation of (see diagram)
+-- 2 points per circle is poly with 8 sides (see diagram)
+SELECT ST_NPoints(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50)) As promisingcircle_pcount,
+ST_NPoints(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 2)) As lamecircle_pcount;
+
+promisingcircle_pcount | lamecircle_pcount
+------------------------+-------------------
+			 33 |                9
+
+--A lighter but lamer circle
+-- only 2 points per quarter circle is an octagon
+--Below is a 100 meter octagon
+-- Note coordinates are in NAD 83 long lat which we transform
+to Mass state plane meter and then buffer to get measurements in meters;
+SELECT ST_AsText(ST_Buffer(
+ST_Transform(
+ST_SetSRID(ST_MakePoint(-71.063526, 42.35785),4269), 26986)
+,100,2)) As octagon;
+----------------------
+POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
+957.59057465 900808.759918696,235886.879896532 900838.049240578,235857.59057465
+900908.759918696,235886.879896532 900979.470596815,235957.59057465 901008.759918
+696,236028.301252769 900979.470596815,236057.59057465 900908.759918696))
+
+--Buffer is often also used as a poor man's polygon fixer or a sometimes speedier unioner
+--Sometimes able to fix invalid polygons - using below
+-- using below on anything but a polygon will result in empty geometry
+-- and for geometry collections kill anything in the collection that is not a polygon
+--Poor man's bad poly fixer
+SELECT ST_IsValid(foo.invalidpoly)  as isvalid, ST_IsValid(ST_Buffer(foo.invalidpoly,0.0)) as bufferisvalid,
+ST_AsText(ST_Buffer(foo.invalidpoly,0.0)) As newpolytextrep
+FROM (SELECT ST_GeomFromText('POLYGON((-1 2, 3 4, 5 6, -1 2, 5 6, -1 2))') as invalidpoly) As foo
+NOTICE:  Self-intersection at or near point -1 2
+isvalid | bufferisvalid |        newpolytextrep
+---------+---------------+------------------------------
+f       | t             | POLYGON((-1 2,5 6,3 4,-1 2))
+
+--Poor man's polygon unioner
+SELECT ST_AsText(the_geom) as textorig, ST_AsText(ST_Buffer(foo.the_geom,0.0)) As textbuffer
+FROM (SELECT ST_Collect('POLYGON((-1 2, 3 4, 5 6, -1 2))', 'POLYGON((-1 2, 2 3, 5 6, -1 2))') As the_geom) as foo;
+				 textorig                          |            textbuffer
+-----------------------------------------------------------+--------------------
+MULTIPOLYGON(((-1 2,3 4,5 6,-1 2)),((-1 2,2 3,5 6,-1 2))) | POLYGON((-1 2,5 6,3 4,2 3,-1 2))
+
+
+		</programlisting>
+			  </refsection>
+
+			  <refsection>
+				<title>See Also</title>
+
+				<para><xref linkend="ST_Collect" />, <xref linkend="ST_DWithin" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" />, <xref linkend="ST_Union" /></para>
+			  </refsection>
+		</refentry>
+
+		<refentry id="ST_BuildArea">
+		  <refnamediv>
+			<refname>ST_BuildArea</refname>
+
+			<refpurpose>Creates an areal geometry formed by the constituent linework
+			of given geometry</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_BuildArea</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>A</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>Creates an areal geometry formed by the constituent linework
+			of given geometry. The return type can be a Polygon or
+			MultiPolygon, depending on input. If the input lineworks do not
+			form polygons NULL is returned.  The inputs can be LINESTRINGS, MULTILINESTRINGS, POLYGONS, MULTIPOLYGONS, and GeometryCollections.
+			</para>
+			<para>This function will assume all inner geometries represent holes</para>
+			<para>Availability: 1.1.0 - requires GEOS &gt;= 2.1.0.</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+			<informaltable>
+				  <tgroup cols="1">
+					<tbody>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_buildarea01.png" />
+							  </imageobject>
+							  <caption><para>This will create a donut</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_BuildArea(ST_Collect(smallc,bigc))
+FROM (SELECT
+	ST_Buffer(
+	  ST_GeomFromText('POINT(100 90)'), 25) As smallc,
+	ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As bigc) As foo;
+				</programlisting>
+						  </para></entry>
+					</row>
+					<row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_buildarea02.png" />
+							  </imageobject>
+							  <caption><para>This will create a gaping hole inside the circle with prongs sticking out</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_BuildArea(ST_Collect(line,circle))
+FROM (SELECT
+	ST_Buffer(
+		ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)),
+				5)  As line,
+	ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
+
+--this creates the same gaping hole
+--but using linestrings instead of polygons
+SELECT ST_BuildArea(
+	ST_Collect(ST_ExteriorRing(line),ST_ExteriorRing(circle))
+	)
+FROM (SELECT ST_Buffer(
+	ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190))
+		,5)  As line,
+	ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
+
+				</programlisting>
+						</para></entry>
+					  </row>
+					</tbody>
+				  </tgroup>
+			</informaltable>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+			<xref linkend="ST_BdPolyFromText" />,
+			<xref linkend="ST_BdMPolyFromText" />wrappers to
+			this function with standard OGC interface</para>
+		  </refsection>
+	</refentry>
+	<refentry id="ST_Collect">
+	  <refnamediv>
+		<refname>ST_Collect</refname>
+		<refpurpose>Return a specified ST_Geometry value from a collection of other geometries.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>geometry <function>ST_Collect</function></funcdef>
+				<paramdef><type>geometry set</type> <parameter>g1field</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+			<funcdef>geometry <function>ST_Collect</function></funcdef>
+				<paramdef><type>geometry</type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>geometry</type> <parameter>g2</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>geometry <function>ST_Collect</function></funcdef>
+				<paramdef><type>geometry[]</type> <parameter>g1_array</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para> Output type can be a MULTI* or a
+			GEOMETRYCOLLECTION. Comes in 2 variants.  Variant 1 collects 2 geometries. Variant 2 is an aggregate function that takes a set of geometries and collects
+			them into a single ST_Geometry.</para>
+
+		<para>Aggregate version: This function returns a GEOMETRYCOLLECTION or a MULTI object
+			from a set of geometries. The ST_Collect() function is an "aggregate"
+			function in the terminology of PostgreSQL. That means that it
+			operates on rows of data, in the same way the SUM() and AVG()
+			functions do. For example, "SELECT ST_Collect(GEOM) FROM GEOMTABLE
+			GROUP BY ATTRCOLUMN" will return a separate GEOMETRYCOLLECTION for
+			each distinct value of ATTRCOLUMN.</para>
+
+		<para>Non-Aggregate version: This function returns a geometry being a collection of two
+			input geometries. Output type can be a MULTI* or a
+			GEOMETRYCOLLECTION.</para>
+
+		<note><para>ST_Collect and ST_Union are often interchangeable.
+			ST_Collect is in general orders of magnitude faster than ST_Union
+			because it does not try to dissolve boundaries or validate that a constructed MultiPolgon doesn't
+			have overlapping regions. It merely rolls up
+			single geometries into MULTI and MULTI or mixed geometry types
+			into Geometry Collections. Unfortunately geometry collections are
+			not well-supported by GIS tools. To prevent ST_Collect from
+			returning a Geometry Collection when collecting MULTI geometries,
+			one can use the below trick that utilizes <xref linkend="ST_Dump" /> to expand the
+			MULTIs out to singles and then regroup them.</para></note>
+
+		<para>Availability: 1.4.0 -  ST_Collect(geomarray) was introduced. ST_Collect was enhanced to handle more geometries faster.</para>
+		  <para>&Z_support;</para>
+		  <para>&curve_support; This method supports Circular Strings
+		    and Curves, but will never return a MULTICURVE or MULTI as one 
+		    would expect and PostGIS does not currently support those.</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<para>Aggregate example</para>
+			<programlisting>Thread ref: http://postgis.refractions.net/pipermail/postgis-users/2008-June/020331.html
+SELECT stusps,
+	   ST_Multi(ST_Collect(f.the_geom)) as singlegeom
+	 FROM (SELECT stusps, (ST_Dump(the_geom)).geom As the_geom
+				FROM
+				somestatetable ) As f
+GROUP BY stusps</programlisting>
+		<para>Non-Aggregate example</para>
+			<programlisting>Thread ref: http://postgis.refractions.net/pipermail/postgis-users/2008-June/020331.html
+SELECT ST_AsText(ST_Collect(ST_GeomFromText('POINT(1 2)'),
+	ST_GeomFromText('POINT(-2 3)') ));
+
+st_astext
+----------
+MULTIPOINT(1 2,-2 3)
+
+--Collect 2 d points
+SELECT ST_AsText(ST_Collect(ST_GeomFromText('POINT(1 2)'),
+		ST_GeomFromText('POINT(1 2)') ) );
+
+st_astext
+----------
+MULTIPOINT(1 2,1 2)
+
+--Collect 3d points
+SELECT ST_AsEWKT(ST_Collect(ST_GeomFromEWKT('POINT(1 2 3)'),
+		ST_GeomFromEWKT('POINT(1 2 4)') ) );
+
+		st_asewkt
+-------------------------
+ MULTIPOINT(1 2 3,1 2 4)
+
+ --Example with curves
+SELECT ST_AsText(ST_Collect(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'),
+ST_GeomFromText('CIRCULARSTRING(220227 150406,2220227 150407,220227 150406)')));
+																st_astext
+------------------------------------------------------------------------------------
+ GEOMETRYCOLLECTION(CIRCULARSTRING(220268 150415,220227 150505,220227 150406),
+ CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))
+
+--New ST_Collect array construct
+SELECT ST_Collect(ARRAY(SELECT the_geom FROM sometable));
+
+SELECT ST_AsText(ST_Collect(ARRAY[ST_GeomFromText('LINESTRING(1 2, 3 4)'),
+			ST_GeomFromText('LINESTRING(3 4, 4 5)')])) As wktcollect;
+
+--wkt collect --
+MULTILINESTRING((1 2,3 4),(3 4,4 5))
+
+</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Dump" />, <xref linkend="ST_Union" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_ConvexHull">
+	  <refnamediv>
+		<refname>ST_ConvexHull</refname>
+		<refpurpose>The convex hull of a geometry represents the minimum convex
+		geometry that encloses all geometries within the set.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_ConvexHull</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+			<para>The convex hull of a geometry represents the minimum convex
+		geometry that encloses all geometries within the set.</para>
+
+		<para>One can think of the convex hull as the geometry you get by wrapping an elastic
+			band around a set of geometries.  This is different from a concave hull (not currently supported)
+				which is analogous to shrink-wrapping your geometries.</para>
+
+			<para>It is usually used with MULTI and Geometry Collections.
+		Although it is not an aggregate - you can use it in conjunction
+		with ST_Collect to get the convex hull of a set of points.
+		ST_ConvexHull(ST_Collect(somepointfield)).</para>
+
+		<para>It is often used to
+		determine an affected area based on a set of point
+		observations.</para>
+
+		<para>Performed by the GEOS module</para>
+
+		<para>&sfs_compliant; s2.1.1.3</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 5.1.16</para>
+		<para>&Z_support;</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+<programlisting>
+--Get estimate of infected area based on point observations
+SELECT d.disease_type,
+	ST_ConvexHull(ST_Collect(d.the_geom)) As the_geom
+	FROM disease_obs As d
+	GROUP BY d.disease_type;
+</programlisting>
+
+<para>
+	<informalfigure>
+	  <mediaobject>
+		<imageobject>
+		  <imagedata fileref="images/st_convexhull01.png" />
+		</imageobject>
+		<caption><para>Convex Hull of a MultiLinestring and a MultiPoint seen together with the MultiLinestring and MultiPoint</para></caption>
+	  </mediaobject>
+	</informalfigure>
+	<programlisting>
+SELECT ST_AsText(ST_ConvexHull(
+	ST_Collect(
+		ST_GeomFromText('MULTILINESTRING((100 190,10 8),(150 10, 20 30))'),
+			ST_GeomFromText('MULTIPOINT(50 5, 150 30, 50 10, 10 10)')
+			)) );
+---st_astext--
+POLYGON((50 5,10 8,10 10,100 190,150 30,150 10,50 5))
+	</programlisting>
+</para>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Collect" />, <xref linkend="ST_MinimumBoundingCircle" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_CurveToLine">
+	  <refnamediv>
+		<refname>ST_CurveToLine</refname>
+
+		<refpurpose>Converts a CIRCULARSTRING/CURVEDPOLYGON to a LINESTRING/POLYGON</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_CurveToLine</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>curveGeom</parameter></paramdef>
+		  </funcprototype>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_CurveToLine</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>curveGeom</parameter></paramdef>
+			<paramdef><type>integer</type> <parameter>segments_per_qtr_circle</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Converst a CIRCULAR STRING to regular LINESTRING or CURVEPOLYGON to POLYGON. Useful for outputting to devices that can't support CIRCULARSTRING geometry types</para>
+		<para>Converts a given geometry to a linear geometry.
+		Each curved geometry or segment is converted into a linear approximation using the default value of 32 segments per quarter circle</para>
+		<para>Availability: 1.2.2?</para>
+		<para>&sfs_compliant;</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 7.1.7</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_AsText(ST_CurveToLine(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)')));
+
+--Result --
+ LINESTRING(220268 150415,220269.95064912 150416.539364228,220271.823415575 150418.17258804,220273.613787707 150419.895736857,
+ 220275.317452352 150421.704659462,220276.930305234 150423.594998003,220278.448460847 150425.562198489,
+ 220279.868261823 150427.60152176,220281.186287736 150429.708054909,220282.399363347 150431.876723113,
+ 220283.50456625 150434.10230186,220284.499233914 150436.379429536,220285.380970099 150438.702620341,220286.147650624 150441.066277505,
+ 220286.797428488 150443.464706771,220287.328738321 150445.892130112,220287.740300149 150448.342699654,
+ 220288.031122486 150450.810511759,220288.200504713 150453.289621251,220288.248038775 150455.77405574,
+ 220288.173610157 150458.257830005,220287.977398166 150460.734960415,220287.659875492 150463.199479347,
+ 220287.221807076 150465.64544956,220286.664248262 150468.066978495,220285.988542259 150470.458232479,220285.196316903 150472.81345077,
+ 220284.289480732 150475.126959442,220283.270218395 150477.39318505,220282.140985384 150479.606668057,
+ 220280.90450212 150481.762075989,220279.5637474 150483.85421628,220278.12195122 150485.87804878,
+ 220276.582586992 150487.828697901,220274.949363179 150489.701464356,220273.226214362 150491.491836488,
+ 220271.417291757 150493.195501133,220269.526953216 150494.808354014,220267.559752731 150496.326509628,
+ 220265.520429459 150497.746310603,220263.41389631 150499.064336517,220261.245228106 150500.277412127,
+ 220259.019649359 150501.38261503,220256.742521683 150502.377282695,220254.419330878 150503.259018879,
+ 220252.055673714 150504.025699404,220249.657244448 150504.675477269,220247.229821107 150505.206787101,
+ 220244.779251566 150505.61834893,220242.311439461 150505.909171266,220239.832329968 150506.078553494,
+ 220237.347895479 150506.126087555,220234.864121215 150506.051658938,220232.386990804 150505.855446946,
+ 220229.922471872 150505.537924272,220227.47650166 150505.099855856,220225.054972724 150504.542297043,
+ 220222.663718741 150503.86659104,220220.308500449 150503.074365683,
+ 220217.994991777 150502.167529512,220215.72876617 150501.148267175,
+ 220213.515283163 150500.019034164,220211.35987523 150498.7825509,
+ 220209.267734939 150497.441796181,220207.243902439 150496,
+ 220205.293253319 150494.460635772,220203.420486864 150492.82741196,220201.630114732 150491.104263143,
+ 220199.926450087 150489.295340538,220198.313597205 150487.405001997,220196.795441592 150485.437801511,
+ 220195.375640616 150483.39847824,220194.057614703 150481.291945091,220192.844539092 150479.123276887,220191.739336189 150476.89769814,
+ 220190.744668525 150474.620570464,220189.86293234 150472.297379659,220189.096251815 150469.933722495,
+ 220188.446473951 150467.535293229,220187.915164118 150465.107869888,220187.50360229 150462.657300346,
+ 220187.212779953 150460.189488241,220187.043397726 150457.710378749,220186.995863664 150455.22594426,
+ 220187.070292282 150452.742169995,220187.266504273 150450.265039585,220187.584026947 150447.800520653,
+ 220188.022095363 150445.35455044,220188.579654177 150442.933021505,220189.25536018 150440.541767521,
+ 220190.047585536 150438.18654923,220190.954421707 150435.873040558,220191.973684044 150433.60681495,
+ 220193.102917055 150431.393331943,220194.339400319 150429.237924011,220195.680155039 150427.14578372,220197.12195122 150425.12195122,
+ 220198.661315447 150423.171302099,220200.29453926 150421.298535644,220202.017688077 150419.508163512,220203.826610682 150417.804498867,
+ 220205.716949223 150416.191645986,220207.684149708 150414.673490372,220209.72347298 150413.253689397,220211.830006129 150411.935663483,
+ 220213.998674333 150410.722587873,220216.22425308 150409.61738497,220218.501380756 150408.622717305,220220.824571561 150407.740981121,
+ 220223.188228725 150406.974300596,220225.586657991 150406.324522731,220227 150406)
+
+--3d example
+SELECT ST_AsEWKT(ST_CurveToLine(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)')));
+Output
+------
+ LINESTRING(220268 150415 1,220269.95064912 150416.539364228 1.0181172856673,
+ 220271.823415575 150418.17258804 1.03623457133459,220273.613787707 150419.895736857 1.05435185700189,....AD INFINITUM ....
+	220225.586657991 150406.324522731 1.32611114201132,220227 150406 3)
+
+--use only 2 segments to approximate quarter circle
+SELECT ST_AsText(ST_CurveToLine(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'),2));
+st_astext
+------------------------------
+ LINESTRING(220268 150415,220287.740300149 150448.342699654,220278.12195122 150485.87804878,
+ 220244.779251566 150505.61834893,220207.243902439 150496,220187.50360229 150462.657300346,
+ 220197.12195122 150425.12195122,220227 150406)
+
+
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_LineToCurve" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Difference">
+	  <refnamediv>
+		<refname>ST_Difference</refname>
+
+		<refpurpose>Returns a geometry that represents that part of geometry A
+			that does not intersect with geometry B.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Difference</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns a geometry that represents that part of geometry A
+			that does not intersect with geometry B.  One can think of this as GeometryA - ST_Intersection(A,B).  If A is completely contained in B
+			then an empty geometry collection is returned.</para>
+		<note><para>Note - order matters. B - A will always return a portion of B</para></note>
+
+		<para>Performed by the GEOS module</para>
+
+		<note><para>Do not call with a GeometryCollection as an argument</para></note>
+
+		<para>&sfs_compliant; s2.1.1.3</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 5.1.20</para>
+		<para>&Z_support; However it seems to only consider x y when 
+		  doing the difference and tacks back on the Z-Index</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+			<informaltable>
+			  <tgroup cols="2">
+				<tbody>
+				  <row>
+					<entry>
+						<para>
+							<informalfigure>
+								<mediaobject>
+								  <imageobject>
+									<imagedata fileref="images/st_symdifference01.png" />
+								  </imageobject>
+								  <caption><para>The original linestrings shown together. </para></caption>
+								</mediaobject>
+							</informalfigure>
+						</para>
+					</entry>
+
+					<entry>
+						<para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_difference01.png" />
+							  </imageobject>
+							  <caption><para>The difference of the two linestrings</para></caption>
+							</mediaobject>
+						  </informalfigure>
+					</para>
+				</entry>
+				  </row>
+		</tbody>
+	</tgroup>
+</informaltable>
+<programlisting>
+--Safe for 2d. This is same geometries as what is shown for st_symdifference
+SELECT ST_AsText(
+	ST_Difference(
+			ST_GeomFromText('LINESTRING(50 100, 50 200)'),
+			ST_GeomFromText('LINESTRING(50 50, 50 150)')
+		)
+	);
+
+st_astext
+---------
+LINESTRING(50 150,50 200)
+</programlisting>
+
+<programlisting>
+
+--When used in 3d doesn't quite do the right thing
+SELECT ST_AsEWKT(ST_Difference(ST_GeomFromEWKT('MULTIPOINT(-118.58 38.38 5,-118.60 38.329 6,-118.614 38.281 7)'), ST_GeomFromEWKT('POINT(-118.614 38.281 5)')));
+st_asewkt
+---------
+MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_SymDifference" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Dump">
+	  <refnamediv>
+		<refname>ST_Dump</refname>
+		<refpurpose>Returns a set of geometry_dump (geom,path) rows, that make up a geometry g1.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry_dump[]<function>ST_Dump</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+			<para>This is a set-returning function (SRF). It returns a set of
+			geometry_dump rows, formed by a geometry (geom) and an array of
+			integers (path). When the input geometry is a simple type
+			(POINT,LINESTRING,POLYGON) a single record will be returned with
+			an empty path array and the input geometry as geom. When the input
+			geometry is a collection or multi it will return a record for each
+			of the collection components, and the path will express the
+			position of the component inside the collection.</para>
+
+			<para>ST_Dump is useful for expanding geometries. It is the
+			reverse of a GROUP BY in that it creates new rows. For example it
+			can be use to expand MULTIPOLYGONS into POLYGONS.</para>
+
+			<para>Availability: PostGIS 1.0.0RC1. Requires PostgreSQL 7.3 or higher.</para>
+			<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
+
+			<para>Z_support;</para>
+			<para>curve_support;</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+	<programlisting>SELECT sometable.field1, sometable.field1,
+	  (ST_Dump(sometable.the_geom)).geom As the_geom
+FROM sometable;
+
+--Break a compound curve into its constituent linestrings and circularstrings
+SELECT ST_AsEWKT(a.geom), ST_HasArc(a.geom)
+  FROM ( SELECT (ST_Dump(p_geom)).geom as geom
+		   FROM (SELECT ST_GeomFromEWKT('COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 1, 1 0),(1 0, 0 1))') as p_geom) as b
+	   ) as a;
+		  st_asewkt          | st_hasarc
+-----------------------------+----------
+ CIRCULARSTRING(0 0,1 1,1 0) | t
+ LINESTRING(1 0,0 1)         | f
+(2 rows)
+
+
+</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Collect" />, <xref linkend="ST_GeometryN" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_DumpRings">
+	  <refnamediv>
+		<refname>ST_DumpRings</refname>
+
+		<refpurpose>Returns a set of <varname>geometry_dump</varname> rows, representing
+			the exterior and interior rings of a polygon.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry_dump[] <function>ST_DumpRings</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>This is a set-returning function (SRF). It returns a set of
+			<varname>geometry_dump</varname> rows, defined as an <varname>integer[]</varname>
+			and a <varname>geometry</varname>, aliased "path" and "geom" respectively.
+			The "path" field holds the polygon ring index containing a single integer: 0 for the shell, >0 for holes.
+			The "geom" field contains the corresponding ring as a polygon.</para>
+
+		<para>Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or higher.</para>
+		<note><para>This only works for POLYGON geometries. It will not work for MULTIPOLYGONS</para></note>
+		<para>&Z_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT sometable.field1, sometable.field1,
+	  (ST_DumpRings(sometable.the_geom)).geom As the_geom
+FROM sometableOfpolys;
+
+SELECT ST_AsEWKT(geom) As the_geom, path
+	FROM ST_DumpRings(
+		ST_GeomFromEWKT('POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 1,-8148941 5132466 1,-8148924 5132394 1,
+		-8148903 5132210 1,-8148930 5131967 1,-8148992 5131978 1,-8149237 5132093 1,-8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 1,
+		-8150305 5132788 1,-8149064 5133092 1),
+		(-8149362 5132394 1,-8149446 5132501 1,-8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 1))')
+		)  as foo;
+ path |                                            the_geom
+----------------------------------------------------------------------------------------------------------------
+  {0} | POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 1,
+	  |          -8148941 5132466 1,-8148924 5132394 1,
+	  |          -8148903 5132210 1,-8148930 5131967 1,
+	  |          -8148992 5131978 1,-8149237 5132093 1,
+	  |          -8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 1,-8150305 5132788 1,-8149064 5133092 1))
+  {1} | POLYGON((-8149362 5132394 1,-8149446 5132501 1,
+	  |          -8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 1))</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Dump" />, <xref linkend="ST_ExteriorRing" />, <xref linkend="ST_InteriorRingN" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Intersection">
+		<refnamediv>
+			<refname>ST_Intersection</refname>
+
+			<refpurpose>(T) Returns a geometry that represents the shared portion of geomA and geomB.  The geography implementation
+					does a transform to geometry to do the intersection and then transform back to WGS84.
+			</refpurpose>
+		</refnamediv>
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>geometry <function>ST_Intersection</function></funcdef>
+					<paramdef>
+						<type>geometry</type>
+						<parameter>geomA</parameter>
+					</paramdef>
+					<paramdef>
+						<type>geometry</type>
+						<parameter>geomB</parameter>
+					</paramdef>
+				</funcprototype>
+				<funcprototype>
+					<funcdef>geography <function>ST_Intersection</function></funcdef>
+					<paramdef>
+						<type>geography</type>
+						<parameter>geogA</parameter>
+					</paramdef>
+					<paramdef>
+						<type>geography</type>
+						<parameter>geogB</parameter>
+					</paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+		<refsection>
+			<title>Description</title>
+			<para>Returns a geometry that represents the point set
+				intersection of the Geometries.</para>
+
+			<para>In other words - that portion of geometry A and geometry B
+			that is shared between the two geometries.</para>
+
+			<para>If the geometries do not share any space (are disjoint), then an empty geometry collection
+			is returned.</para>
+			<para>ST_Intersection in conjunction with ST_Intersects is very useful for clipping geometries such as in bounding box, buffer, region
+				queries where you only want to return that portion of a geometry that sits in a country or region of interest.</para>
+
+				
+			<note><para>Geography: For geography this is really a thin wrapper around the geometry implementation. It first determines the best SRID that
+					fits the bounding box of the geography object (favoring UTM, polar stereographic and falling back on mercator in worst case scenario) and then buffers in that planar spatial ref and retransforms back to WGS84 geography.</para></note>
+		  <important>
+			<para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+		  </important>
+
+		  <para>Performed by the GEOS module</para>
+		  
+		  <para>Availability: 1.5 support for geography data type was introduced.</para>
+
+		  <para>&sfs_compliant; s2.1.1.3</para>
+		  <para>&sqlmm_compliant; SQL-MM 3: 5.1.18</para>
+		</refsection>
+		<refsection>
+		<title>Examples</title>
+<programlisting>SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry));
+ st_astext
+---------------
+GEOMETRYCOLLECTION EMPTY
+(1 row)
+SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry));
+ st_astext
+---------------
+POINT(0 0)
+(1 row)
+
+---Clip all lines (trails) by country (here we assume country geom are POLYGON or MULTIPOLYGONS)
+-- NOTE: we are only keeping intersections that result in a LINESTRING or MULTILINESTRING because we don't
+-- care about trails that just share a point
+-- the dump is needed to expand a geometry collection into individual single MULT* parts
+-- the below is fairly generic and will work for polys, etc. by just changing the where clause
+SELECT clipped.gid, clipped.f_name, clipped_geom
+FROM (SELECT trails.gid, trails.f_name, (ST_Dump(ST_Intersection(country.the_geom, trails.the_geom))).geom As clipped_geom
+FROM country
+	INNER JOIN trails
+	ON ST_Intersects(country.the_geom, trails.the_geom))  As clipped
+	WHERE ST_Dimension(clipped.clipped_geom) = 1 ;
+
+--For polys e.g. polygon landmarks, you can also use the sometimes faster hack that buffering anything by 0.0
+-- except a polygon results in an empty geometry collection
+--(so a geometry collection containing polys, lines and points)
+-- buffered by 0.0 would only leave the polygons and dissolve the collection shell
+SELECT poly.gid,  ST_Multi(ST_Buffer(
+				ST_Intersection(country.the_geom, poly.the_geom),
+				0.0)
+				) As clipped_geom
+FROM country
+	INNER JOIN poly
+	ON ST_Intersects(country.the_geom, poly.the_geom)
+	WHERE Not ST_IsEmpty(ST_Buffer(ST_Intersection(country.the_geom, poly.the_geom),0.0));
+		</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Dimension"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_Intersects"/>, <xref linkend="ST_Multi"/></para>
+		</refsection>
+	</refentry>
+
+	<refentry id="ST_LineToCurve">
+	  <refnamediv>
+		<refname>ST_LineToCurve</refname>
+
+		<refpurpose>Converts a LINESTRING/POLYGON to a CIRCULARSTRING, CURVED POLYGON</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_LineToCurve</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomANoncircular</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Converts plain LINESTRING/POLYGONS to CIRCULAR STRINGs and Curved Polygons.  Note much fewer points are needed to describe the curved equivalent.</para>
+
+		<para>Availability: 1.2.2?</para>
+		<para>Z_support;</para>
+		<para>curve_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+SELECT ST_AsText(ST_LineToCurve(foo.the_geom)) As curvedastext,ST_AsText(foo.the_geom) As non_curvedastext
+	FROM (SELECT ST_Buffer('POINT(1 3)'::geometry, 3) As the_geom) As foo;
+
+curvedatext															non_curvedastext
+------------------------------------------------------------------|	-----------------------------------------------------------------
+CURVEPOLYGON(CIRCULARSTRING(4 3,3.12132034355964 0.878679656440359,	 |	POLYGON((4 3,3.94235584120969 2.41472903395162,3.77163859753386 1.85194970290473
+1 0,-1.12132034355965 5.12132034355963,4 3))						 | ,3.49440883690764 1.33328930094119,3.12132034355964 0.878679656440359,
+																	|				2.66671069905881 0.505591163092366,2.14805029709527 0.228361402466141,
+																	|				1.58527096604839 0.0576441587903094,1 0,
+																	|				0.414729033951621 0.0576441587903077,-0.148050297095264 0.228361402466137,
+																	|				-0.666710699058802 0.505591163092361,-1.12132034355964 0.878679656440353,
+																	|				-1.49440883690763 1.33328930094119,-1.77163859753386 1.85194970290472
+																	|				--ETC-- ,3.94235584120969 3.58527096604839,4 3))
+--3D example
+SELECT ST_AsEWKT(ST_LineToCurve(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 8, 5 6 4, 7 8 4, 9 10 4)')));
+
+			 st_asewkt
+------------------------------------
+ CIRCULARSTRING(1 2 3,5 6 4,9 10 4)
+
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_CurveToLine" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_MemUnion">
+	  <refnamediv>
+		<refname>ST_MemUnion</refname>
+
+		<refpurpose>Same as ST_Union, only memory-friendly (uses less memory
+			and more processor time).</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_MemUnion</function></funcdef>
+			<paramdef><type>geometry set</type> <parameter>geomfield</parameter></paramdef>
+		  </funcprototype>
+
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Some useful description here.</para>
+
+		<!-- optionally mention that this function uses indexes if appropriate -->
+		<note>
+		  <para>Same as ST_Union, only memory-friendly (uses less memory
+			and more processor time).  This aggregate function works by unioning the geometries one at a time to previous result as opposed to
+			ST_Union aggregate which first creates an array and then unions</para>
+		</note>
+
+		<para>&Z_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>See ST_Union</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Union" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_MinimumBoundingCircle">
+	  <refnamediv>
+		<refname>ST_MinimumBoundingCircle</refname>
+		<refpurpose>Returns the smallest circle polygon that can fully contain a geometry. Default
+		uses 48 segments per quarter circle.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_MinimumBoundingCircle</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_MinimumBoundingCircle</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>num_segs_per_qt_circ</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+			<para>Returns the smallest circle polygon that can fully contain a geometry. </para>
+			<note><para>The circle is approximated by a polygon with a default of 48 segments per quarter circle.  This number can be increased with little performance penalty to obtain a more accurate result.</para></note>
+
+			<para>It is often used with MULTI and Geometry Collections.
+		Although it is not an aggregate - you can use it in conjunction
+		with ST_Collect to get the minimum bounding cirlce of a set of geometries.
+		ST_MinimumBoundingCircle(ST_Collect(somepointfield)).</para>
+
+		<para>The ratio of the area of a polygon divided by the area of its Minimum Bounding Circle is often referred to as the Roeck test.</para>
+
+		<para>Availability: 1.4.0 - requires GEOS</para>
+
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+<programlisting>SELECT d.disease_type,
+	ST_MinimumBoundingCircle(ST_Collect(d.the_geom)) As the_geom
+	FROM disease_obs As d
+	GROUP BY d.disease_type;
+</programlisting>
+	<informalfigure>
+	  <mediaobject>
+		<imageobject>
+		  <imagedata fileref="images/st_minimumboundingcircle01.png" />
+		</imageobject>
+		<caption><para>Minimum bounding circle of a point and linestring.  Using 8 segs to approximate a quarter circle</para></caption>
+	  </mediaobject>
+	</informalfigure>
+<programlisting>
+SELECT ST_AsText(ST_MinimumBoundingCircle(
+		ST_Collect(
+			ST_GeomFromEWKT('LINESTRING(55 75,125 150)'),
+				ST_Point(20, 80)), 8
+				)) As wktmbc;
+wktmbc
+-----------
+POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 90.8537670908995,124.963360620072 79.9451031602111,117.116420743937 70.3835792560632,107.554896839789 62.5366393799277,96.6462329091006 56.70583703063,84.8096427890789 53.115246672502,72.5000000000001 51.9028526793802,60.1903572109213 53.1152466725019,48.3537670908996 56.7058370306299,37.4451031602112 62.5366393799276,27.8835792560632 70.383579256063,20.0366393799278 79.9451031602109,14.20583703063 90.8537670908993,10.615246672502 102.690357210921,9.40285267938019 115,10.6152466725019 127.309642789079,14.2058370306299 139.1462329091,20.0366393799275 150.054896839789,27.883579256063 159.616420743937,
+37.4451031602108 167.463360620072,48.3537670908992 173.29416296937,60.190357210921 176.884753327498,
+72.4999999999998 178.09714732062,84.8096427890786 176.884753327498,96.6462329091003 173.29416296937,107.554896839789 167.463360620072,
+117.116420743937 159.616420743937,124.963360620072 150.054896839789,130.79416296937 139.146232909101,134.384753327498 127.309642789079,135.59714732062 115))
+				</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Collect" />, <xref linkend="ST_ConvexHull" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Polygonize">
+		<refnamediv>
+			<refname>ST_Polygonize</refname>
+
+			<refpurpose>Aggregate. Creates a GeometryCollection containing possible
+			polygons formed from the constituent linework of a set of
+			geometries.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Polygonize</function></funcdef>
+			<paramdef><type>geometry set</type> <parameter>geomfield</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>Creates a GeometryCollection containing possible
+			polygons formed from the constituent linework of a set of
+			geometries.</para>
+
+			<note>
+				<para>Geometry Collections are often difficult to deal with with third party tools, so use ST_Polygonize in conjunction with  <xref linkend="ST_Dump" /> to dump the polygons
+				out into individual polygons.</para>
+			</note>
+			<para>Availability: 1.0.0RC1 - requires GEOS &gt;= 2.1.0.</para>
+		</refsection>
+
+		<refsection>
+		<title>Examples: Polygonizing single linestrings</title>
+		 <programlisting>
+SELECT ST_AsEWKT(ST_Polygonize(the_geom_4269)) As geomtextrep
+FROM (SELECT the_geom_4269 FROM ma.suffolk_edges ORDER BY tlid LIMIT 45) As foo;
+
+geomtextrep
+-------------------------------------
+ SRID=4269;GEOMETRYCOLLECTION(POLYGON((-71.040878 42.285678,-71.040943 42.2856,-71.04096 42.285752,-71.040878 42.285678)),
+ POLYGON((-71.17166 42.353675,-71.172026 42.354044,-71.17239 42.354358,-71.171794 42.354971,-71.170511 42.354855,
+ -71.17112 42.354238,-71.17166 42.353675)))
+(1 row)
+
+--Use ST_Dump to dump out the polygonize geoms into individual polygons
+SELECT ST_AsEWKT((ST_Dump(foofoo.polycoll)).geom) As geomtextrep
+FROM (SELECT ST_Polygonize(the_geom_4269) As polycoll
+	FROM (SELECT the_geom_4269 FROM ma.suffolk_edges
+		ORDER BY tlid LIMIT 45) As foo) As foofoo;
+
+geomtextrep
+------------------------
+ SRID=4269;POLYGON((-71.040878 42.285678,-71.040943 42.2856,-71.04096 42.285752,
+-71.040878 42.285678))
+ SRID=4269;POLYGON((-71.17166 42.353675,-71.172026 42.354044,-71.17239 42.354358
+,-71.171794 42.354971,-71.170511 42.354855,-71.17112 42.354238,-71.17166 42.353675))
+(2 rows)
+
+			  </programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Dump" /></para>
+		</refsection>
+	</refentry>
+
+	<refentry id="ST_Shift_Longitude">
+	  <refnamediv>
+		<refname>ST_Shift_Longitude</refname>
+
+		<refpurpose>Reads every point/vertex in every component of every feature
+			in a geometry, and if the longitude coordinate is &lt;0, adds 360
+			to it. The result would be a 0-360 version of the data to be
+			plotted in a 180 centric map</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Shift_Longitude</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Reads every point/vertex in every component of every feature
+			in a geometry, and if the longitude coordinate is &lt;0, adds 360
+			to it. The result would be a 0-360 version of the data to be
+			plotted in a 180 centric map</para>
+		<note><para>This is only useful for data in long lat e.g. 4326 (WGS 84 long lat)</para></note>
+
+		<para><inlinegraphic fileref="images/warning.png" />
+			Pre-1.3.4 bug prevented this from working for MULTIPOINT. 1.3.4+ works with MULTIPOINT as well.
+		</para>
+
+		<para>&Z_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>--3d points
+SELECT ST_AsEWKT(ST_Shift_Longitude(ST_GeomFromEWKT('SRID=4326;POINT(-118.58 38.38 10)'))) As geomA,
+	ST_AsEWKT(ST_Shift_Longitude(ST_GeomFromEWKT('SRID=4326;POINT(241.42 38.38 10)'))) As geomb
+geomA							  geomB
+----------						  -----------
+SRID=4326;POINT(241.42 38.38 10) SRID=4326;POINT(-118.58 38.38 10)
+
+--regular line string
+SELECT ST_AsText(ST_Shift_Longitude(ST_GeomFromText('LINESTRING(-118.58 38.38, -118.20 38.45)')))
+
+st_astext
+----------
+LINESTRING(241.42 38.38,241.8 38.45)
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_AsEWKT" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Simplify">
+	  <refnamediv>
+		<refname>ST_Simplify</refname>
+		<refpurpose>Returns a "simplified" version of the given geometry using
+				the Douglas-Peuker algorithm.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Simplify</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>Returns a "simplified" version of the given geometry using
+				the Douglas-Peuker algorithm. Will actually do something only with
+				(multi)lines and (multi)polygons but you can safely call it with
+				any kind of geometry. Since simplification occurs on a
+				object-by-object basis you can also feed a GeometryCollection to
+				this function.</para>
+
+		<note><para>Note that returned geometry might loose its
+				simplicity (see <xref linkend="ST_IsSimple" />)</para></note>
+		<note><para>Note topology may not be preserved and may result in invalid geometries.  Use  (see <xref linkend="ST_SimplifyPreserveTopology" />) to preserve topology.</para></note>
+
+		<para>Performed by the GEOS module.</para>
+		<para>Availability: 1.2.2</para>
+	  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+			<para>A circle simplified too much becomes a triangle, medium an octagon, </para>
+				<programlisting>
+SELECT ST_Npoints(the_geom) As np_before, ST_NPoints(ST_Simplify(the_geom,0.1)) As np01_notbadcircle, ST_NPoints(ST_Simplify(the_geom,0.5)) As np05_notquitecircle,
+ST_NPoints(ST_Simplify(the_geom,1)) As np1_octagon, ST_NPoints(ST_Simplify(the_geom,10)) As np10_triangle,
+(ST_Simplify(the_geom,100) is null) As  np100_geometrygoesaway
+FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
+-result
+ np_before | np01_notbadcircle | np05_notquitecircle | np1_octagon | np10_triangle | np100_geometrygoesaway
+-----------+-------------------+---------------------+-------------+---------------+------------------------
+		49 |                33 |                  17 |           9 |             4 | t
+
+				</programlisting>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_IsSimple" />, <xref linkend="ST_SimplifyPreserveTopology" /></para>
+		  </refsection>
+	</refentry>
+
+	<refentry id="ST_SimplifyPreserveTopology">
+	  <refnamediv>
+		<refname>ST_SimplifyPreserveTopology</refname>
+		<refpurpose>Returns a "simplified" version of the given geometry using
+			the Douglas-Peuker algorithm. Will avoid creating derived
+			geometries (polygons in particular) that are invalid.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_SimplifyPreserveTopology</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>Returns a "simplified" version of the given geometry using
+			the Douglas-Peuker algorithm. Will avoid creating derived
+			geometries (polygons in particular) that are invalid. Will actually do something only with
+				(multi)lines and (multi)polygons but you can safely call it with
+				any kind of geometry. Since simplification occurs on a
+				object-by-object basis you can also feed a GeometryCollection to
+				this function.</para>
+
+		<para>Performed by the GEOS module.</para>
+		<note><para>Requires GEOS 3.0.0+</para></note>
+		<para>Availability: 1.3.3</para>
+	  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+			<para>Same example as Simplify, but we see Preserve Topology prevents oversimplification.  The circle can at most become a square.</para>
+				<programlisting>
+SELECT ST_Npoints(the_geom) As np_before, ST_NPoints(ST_SimplifyPreserveTopology(the_geom,0.1)) As np01_notbadcircle, ST_NPoints(ST_SimplifyPreserveTopology(the_geom,0.5)) As np05_notquitecircle,
+ST_NPoints(ST_SimplifyPreserveTopology(the_geom,1)) As np1_octagon, ST_NPoints(ST_SimplifyPreserveTopology(the_geom,10)) As np10_square,
+ST_NPoints(ST_SimplifyPreserveTopology(the_geom,100)) As  np100_stillsquare
+FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
+
+--result--
+ np_before | np01_notbadcircle | np05_notquitecircle | np1_octagon | np10_square | np100_stillsquare
+-----------+-------------------+---------------------+-------------+---------------+-------------------
+		49 |                33 |                  17 |           9 |             5 |                 5
+				</programlisting>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Simplify" /></para>
+		  </refsection>
+	</refentry>
+
+	<refentry id="ST_SymDifference">
+	  <refnamediv>
+		<refname>ST_SymDifference</refname>
+
+		<refpurpose>Returns a geometry that represents the portions of A and B
+			that do not intersect. It is called a symmetric difference because
+			ST_SymDifference(A,B) = ST_SymDifference(B,A).</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_SymDifference</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns a geometry that represents the portions of A and B
+			that do not intersect. It is called a symmetric difference because
+			ST_SymDifference(A,B) = ST_SymDifference(B,A). One can think of this as ST_Union(geomA,geomB) - ST_Intersection(A,B).
+			</para>
+
+		<para>Performed by the GEOS module</para>
+
+		<note><para>Do not call with a GeometryCollection as an argument</para></note>
+
+		<para>&sfs_compliant; s2.1.1.3</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 5.1.21</para>
+		<para>&Z_support; However it seems to only consider x y when 
+		  doing the difference and tacks back on the Z-Index</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<informaltable>
+			  <tgroup cols="2">
+				<tbody>
+				  <row>
+					<entry>
+						<para>
+							<informalfigure>
+								<mediaobject>
+								  <imageobject>
+									<imagedata fileref="images/st_symdifference01.png" />
+								  </imageobject>
+								  <caption><para>The original linestrings shown together</para></caption>
+								</mediaobject>
+							</informalfigure>
+						</para>
+					</entry>
+
+					<entry>
+						<para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_symdifference02.png" />
+							  </imageobject>
+							  <caption><para>The symmetric difference of the two linestrings</para></caption>
+							</mediaobject>
+						  </informalfigure>
+					</para>
+				</entry>
+				  </row>
+		</tbody>
+	</tgroup>
+</informaltable>
+<programlisting>
+--Safe for 2d - symmetric difference of 2 linestrings
+SELECT ST_AsText(
+	ST_SymDifference(
+		ST_GeomFromText('LINESTRING(50 100, 50 200)'),
+		ST_GeomFromText('LINESTRING(50 50, 50 150)')
+	)
+);
+
+st_astext
+---------
+MULTILINESTRING((50 150,50 200),(50 50,50 100))
+</programlisting>
+
+<programlisting>
+
+--When used in 3d doesn't quite do the right thing
+SELECT ST_AsEWKT(ST_SymDifference(ST_GeomFromEWKT('LINESTRING(1 2 1, 1 4 2)'),
+	ST_GeomFromEWKT('LINESTRING(1 1 3, 1 3 4)')))
+
+st_astext
+------------
+MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Difference" />, <xref linkend="ST_Intersection" />, <xref linkend="ST_Union" /></para>
+	  </refsection>
+</refentry>
+
+
+<refentry id="ST_Union">
+  <refnamediv>
+	<refname>ST_Union</refname>
+	<refpurpose>Returns a geometry that represents the point set union of
+		the Geometries.</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+	<funcsynopsis>
+	  <funcprototype>
+		<funcdef>geometry <function>ST_Union</function></funcdef>
+		<paramdef><type>geometry set</type> <parameter>g1field</parameter></paramdef>
+	  </funcprototype>
+	  <funcprototype>
+		<funcdef>geometry <function>ST_Union</function></funcdef>
+		<paramdef><type>geometry</type> <parameter>g1</parameter></paramdef>
+		<paramdef><type>geometry</type> <parameter>g2</parameter></paramdef>
+	  </funcprototype>
+	  <funcprototype>
+		<funcdef>geometry <function>ST_Union</function></funcdef>
+		<paramdef><type>geometry[]</type> <parameter>g1_array</parameter></paramdef>
+	  </funcprototype>
+	</funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsection>
+	<title>Description</title>
+	<para> Output type can be a MULTI* , single geometry, or Geometry Collection. Comes in 2 variants.  Variant 1 unions 2 geometries resulting in a new geomety with no intersecting regions.
+		Variant 2 is an aggregate function that takes a set of geometries and unions
+		them into a single ST_Geometry resulting in no intersecting regions.</para>
+
+	<para>Aggregate version: This function returns a MULTI geometry or NON-MULTI geometry
+		from a set of geometries. The ST_Union() function is an "aggregate"
+		function in the terminology of PostgreSQL. That means that it
+		operates on rows of data, in the same way the SUM() and AVG()
+		functions do.</para>
+
+	<para>Non-Aggregate version: This function returns a geometry being a union of two
+		input geometries. Output type can be a MULTI* ,NON-MULTI or
+		GEOMETRYCOLLECTION.</para>
+
+	<note><para>ST_Collect and ST_Union are often interchangeable.
+		ST_Union is in general orders of magnitude slower than ST_Collect
+		because it tries to dissolve boundaries and reorder geometries to ensure that a constructed Multi* doesn't
+		have intersecting regions.</para></note>
+
+	<para>Performed by the GEOS module.</para>
+	<para>NOTE: this function was formerly called GeomUnion(), which
+		was renamed from "Union" because UNION is an SQL reserved
+		word.</para>
+	<para>Availability: 1.4.0 - ST_Union was enhanced. ST_Union(geomarray) was introduced and also faster aggregate collection in PostgreSQL.  If you are using GEOS 3.1.0+
+		ST_Union will use the faster Cascaded Union algorithm described in
+		<ulink
+		url="http://blog.cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html">http://blog.cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html</ulink></para>
+
+	<para>&sfs_compliant; s2.1.1.3</para>
+	<note><para>Aggregate version is not explicitly defined in OGC SPEC.</para></note>
+	<para>&sqlmm_compliant; SQL-MM 3: 5.1.19
+		the z-index (elevation) when polygons are involved.</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<para>Aggregate example</para>
+			<programlisting>
+SELECT stusps,
+	   ST_Multi(ST_Union(f.the_geom)) as singlegeom
+	 FROM sometable As f
+GROUP BY stusps
+			  </programlisting>
+		<para>Non-Aggregate example</para>
+			<programlisting>
+SELECT ST_AsText(ST_Union(ST_GeomFromText('POINT(1 2)'),
+	ST_GeomFromText('POINT(-2 3)') ) )
+
+st_astext
+----------
+MULTIPOINT(-2 3,1 2)
+
+
+SELECT ST_AsText(ST_Union(ST_GeomFromText('POINT(1 2)'),
+		ST_GeomFromText('POINT(1 2)') ) );
+st_astext
+----------
+POINT(1 2)
+
+--3d example - sort of supports 3d (and with mixed dimensions!)
+SELECT ST_AsEWKT(st_union(the_geom))
+FROM
+(SELECT ST_GeomFromEWKT('POLYGON((-7 4.2,-7.1 4.2,-7.1 4.3,
+-7 4.2))') as the_geom
+UNION ALL
+SELECT ST_GeomFromEWKT('POINT(5 5 5)') as the_geom
+UNION ALL
+	SELECT ST_GeomFromEWKT('POINT(-2 3 1)') as the_geom
+UNION ALL
+SELECT ST_GeomFromEWKT('LINESTRING(5 5 5, 10 10 10)') as the_geom ) as foo;
+
+st_asewkt
+---------
+GEOMETRYCOLLECTION(POINT(-2 3 1),LINESTRING(5 5 5,10 10 10),POLYGON((-7 4.2 5,-7.1 4.2 5,-7.1 4.3 5,-7 4.2 5)));
+
+--3d example not mixing dimensions
+SELECT ST_AsEWKT(st_union(the_geom))
+FROM
+(SELECT ST_GeomFromEWKT('POLYGON((-7 4.2 2,-7.1 4.2 3,-7.1 4.3 2,
+-7 4.2 2))') as the_geom
+UNION ALL
+SELECT ST_GeomFromEWKT('POINT(5 5 5)') as the_geom
+UNION ALL
+	SELECT ST_GeomFromEWKT('POINT(-2 3 1)') as the_geom
+UNION ALL
+SELECT ST_GeomFromEWKT('LINESTRING(5 5 5, 10 10 10)') as the_geom ) as foo;
+
+st_asewkt
+---------
+GEOMETRYCOLLECTION(POINT(-2 3 1),LINESTRING(5 5 5,10 10 10),POLYGON((-7 4.2 2,-7.1 4.2 3,-7.1 4.3 2,-7 4.2 2)))
+
+--Examples using new Array construct
+SELECT ST_Union(ARRAY(SELECT the_geom FROM sometable));
+
+SELECT ST_AsText(ST_Union(ARRAY[ST_GeomFromText('LINESTRING(1 2, 3 4)'),
+			ST_GeomFromText('LINESTRING(3 4, 4 5)')])) As wktunion;
+
+--wktunion---
+MULTILINESTRING((3 4,4 5),(1 2,3 4))
+
+			  </programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Collect" /></para>
+	  </refsection>
+	</refentry>
+</sect1>

@@ -1,0 +1,1018 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <sect1 id="Miscellaneous_Functions">
+	<title>Miscellaneous Functions</title>
+
+	<refentry id="ST_Accum">
+	  <refnamediv>
+		<refname>ST_Accum</refname>
+
+		<refpurpose>Aggregate. Constructs an array of geometries.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry[] <function>ST_Accum</function></funcdef>
+			<paramdef><type>geometry set</type> <parameter>geomfield</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Aggregate. Constructs an array of geometries.</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT (ST_Accum(the_geom)) As all_em, ST_AsText((ST_Accum(the_geom))[1]) As grabone,
+(ST_Accum(the_geom))[2:4] as grab_rest
+			FROM (SELECT ST_MakePoint(a*CAST(random()*10 As integer), a*CAST(random()*10 As integer), a*CAST(random()*10 As integer)) As the_geom
+				FROM generate_series(1,4) a) As foo;
+
+all_em|grabone   | grab_rest
+
+-------------------------------------------------------------------------------+
+
+ {0101000080000000000000144000000000000024400000000000001040:
+ 0101000080000000000
+00018400000000000002C400000000000003040:
+0101000080000000000000354000000000000038400000000000001840:
+010100008000000000000040400000000000003C400000000000003040} |
+ POINT(5 10) | {010100008000000000000018400000000000002C400000000000003040:
+ 0101000080000000000000354000000000000038400000000000001840:
+ 010100008000000000000040400000000000003C400000000000003040}
+(1 row)
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Collect" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="Box2D">
+	  <refnamediv>
+		<refname>Box2D</refname>
+
+		<refpurpose>Returns a BOX2D representing the maximum extents of the geometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>box2d <function>Box2D</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns a BOX2D representing the maximum extents of the geometry.</para>
+		<para>&curve_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT Box2D(ST_GeomFromText('LINESTRING(1 2, 3 4, 5 6)'));
+	box2d
+	---------
+	BOX(1 2,5 6)
+
+	SELECT Box2D(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'));
+	box2d
+	--------
+	BOX(220186.984375 150406,220288.25 150506.140625)
+	</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="Box3D" />, <xref linkend="ST_GeomFromText" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="Box3D">
+	  <refnamediv>
+		<refname>Box3D</refname>
+
+		<refpurpose>Returns a BOX3D representing the maximum extents of the geometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>box3d <function>Box3D</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns a BOX3D representing the maximum extents of the geometry.</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT Box3D(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 5, 5 6 5)'));
+	box3d
+	---------
+	BOX3D(1 2 3,5 6 5)
+
+	SELECT Box3D(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 1,220227 150406 1)'));
+	box3d
+	--------
+	BOX3D(220227 150406 1,220268 150415 1)
+	</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="Box2D" />, <xref linkend="ST_GeomFromEWKT" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Estimated_Extent">
+	  <refnamediv>
+		<refname>ST_Estimated_Extent</refname>
+
+		<refpurpose>Return the 'estimated' extent of the given spatial table.
+			The estimated is taken from the geometry column's statistics. The
+			current schema will be used if not specified.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>box2d <function>ST_Estimated_Extent</function></funcdef>
+			<paramdef><type>text </type> <parameter>schema_name</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>table_name</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>geocolumn_name</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>box2d <function>ST_Estimated_Extent</function></funcdef>
+			<paramdef><type>text </type> <parameter>table_name</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>geocolumn_name</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Return the 'estimated' extent of the given spatial table.
+			The estimated is taken from the geometry column's statistics. The
+			current schema will be used if not specified.</para>
+
+		<para>For PostgreSQL&gt;=8.0.0 statistics are gathered by VACUUM
+		ANALYZE and resulting extent will be about 95% of the real
+		one.</para>
+
+		<para>For PostgreSQL&lt;8.0.0 statistics are gathered by
+		update_geometry_stats() and resulting extent will be exact.</para>
+
+		<para>&curve_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_Estimated_extent('ny', 'edges', 'the_geom');
+--result--
+BOX(-8877653 4912316,-8010225.5 5589284)
+
+SELECT ST_Estimated_Extent('feature_poly', 'the_geom');
+--result--
+BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Extent" /></para>
+	  </refsection>
+	</refentry>
+	<refentry id="ST_Expand">
+	  <refnamediv>
+		<refname>ST_Expand</refname>
+		<refpurpose>Returns bounding box expanded in all directions from the bounding box of the input geometry</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Expand</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>units_to_expand</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>box2d <function>ST_Expand</function></funcdef>
+			<paramdef><type>box2d </type> <parameter>g1</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>units_to_expand</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>box3d <function>ST_Expand</function></funcdef>
+			<paramdef><type>box3d </type> <parameter>g1</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>units_to_expand</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>This function returns a bounding box expanded in all
+		directions from the bounding box of the input geometry, by an
+		amount specified in the second argument. Very useful for
+		distance() queries, or bounding box queries to add an index filter to the query.</para>
+		<para>There are 3 variants of this.  The one that takes a geometry will return a POLYGON geometry representation
+			of the bounding box and is the most commonly used variant.</para>
+		<para>ST_Expand is similar in concept to ST_Buffer except while buffer expands the geometry in all directions,
+			ST_Expand expands the bounding box an x,y,z unit amount.</para>
+		<para>Units are in the units of the spatial reference system in use denoted by the SRID</para>
+
+		<note>
+		  <para>Pre 1.3, ST_Expand was used in conjunction with distance to do indexable queries.  Something of the form
+			<code>the_geom &amp;&amp; ST_Expand('POINT(10 20)', 10) AND ST_Distance(the_geom, 'POINT(10 20)') &lt; 10</code>
+			Post 1.2, this was replaced with the easier ST_DWithin construct.</para>
+		</note>
+
+		<note>
+		  <para>Bounding boxes of all geometries are currently 2-d even if they are 3-dimensional geometries.</para>
+		</note>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<note><para>Examples below use US National Atlas Equal Area (SRID=2163) which is a meter projection</para></note>
+		<programlisting>
+--10 meter expanded box around bbox of a linestring
+SELECT CAST(ST_Expand(ST_GeomFromText('LINESTRING(2312980 110676,2312923 110701,2312892 110714)', 2163),10) As box2d);
+					 st_expand
+------------------------------------
+ BOX(2312882 110666,2312990 110724)
+
+--10 meter expanded 3d box of a 3d box
+SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' As box3d),10)
+							  st_expand
+-----------------------------------------------------
+ BOX3D(778773 2951731 -9,794885 2970052.61545891 20)
+
+ --10 meter geometry astext rep of a expand box around a point geometry
+ SELECT ST_AsEWKT(ST_Expand(ST_GeomFromEWKT('SRID=2163;POINT(2312980 110676)'),10));
+											st_asewkt
+-------------------------------------------------------------------------------------------------
+ SRID=2163;POLYGON((2312970 110666,2312970 110686,2312990 110686,2312990 110666,2312970 110666))
+
+		</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_Buffer" />, <xref linkend="ST_DWithin" />, <xref linkend="ST_GeomFromEWKT" />,<xref linkend="ST_GeomFromText" />, <xref linkend="ST_SRID" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Extent">
+	  <refnamediv>
+		<refname>ST_Extent</refname>
+		<refpurpose>an aggregate function that returns the bounding box that bounds rows of geometries.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>box2d <function>ST_Extent</function></funcdef>
+			<paramdef><type>geometry set</type> <parameter>geomfield</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>ST_Extent returns a bounding box that encloses a set of geometries. The ST_Extent function is an "aggregate" function in the
+			terminology of SQL. That means that it operates on lists
+			of data, in the same way the SUM() and AVG() functions do.</para>
+		<para>Since it returns a bounding box, the spatial Units are in the units of the spatial reference system in use denoted by the SRID</para>
+		<para>ST_Extent is similar in concept to Oracle Spatial/Locator's SDO_AGGR_MBR</para>
+		<note>
+		  <para>Since ST_Extent returns a bounding box, the SRID meta-data is lost.  Use ST_SetSRID to force it back into
+			a geometry with SRID meta data.  The coordinates are in the units of the spatial ref of the orginal geometries.</para>
+		</note>
+
+		<note>
+		  <para>Bounding boxes of all geometries are currently 2-d even if they are 3-dimensional geometries.</para>
+		</note>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<note><para>Examples below use Massachusetts State Plane ft (SRID=2249)</para></note>
+		<programlisting>
+
+SELECT ST_Extent(the_geom) as bextent FROM sometable;
+					 st_bextent
+------------------------------------
+BOX(739651.875 2908247.25,794875.8125 2970042.75)
+
+
+--Return extent of each category of geometries
+SELECT ST_Extent(the_geom) as bextent
+FROM sometable
+GROUP BY category ORDER BY category;
+
+					  bextent                       |         name
+----------------------------------------------------+----------------
+ BOX(778783.5625 2951741.25,794875.8125 2970042.75) | A
+ BOX(751315.8125 2919164.75,765202.6875 2935417.25) | B
+ BOX(739651.875 2917394.75,756688.375 2935866)      | C
+
+ --Force back into a geometry
+ -- and render the extended text representation of that geometry
+SELECT ST_SetSRID(ST_Extent(the_geom),2249) as bextent FROM sometable;
+
+				bextent
+--------------------------------------------------------------------------------
+ SRID=2249;POLYGON((739651.875 2908247.25,739651.875 2970042.75,794875.8125 2970042.75,
+ 794875.8125 2908247.25,739651.875 2908247.25))
+		</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Extent3D">
+	  <refnamediv>
+		<refname>ST_Extent3D</refname>
+		<refpurpose>an aggregate function that returns the box3D bounding box that bounds rows of geometries.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>box3d <function>ST_Extent3D</function></funcdef>
+			<paramdef><type>geometry set</type> <parameter>geomfield</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>ST_Extent3D returns a box3d (includes Z coordinate) bounding box that encloses a set of geometries. The ST_Extent3D function is an "aggregate" function in the
+			terminology of SQL. That means that it operates on lists
+			of data, in the same way the SUM() and AVG() functions do.</para>
+		<para>Since it returns a bounding box, the spatial Units are in the units of the spatial reference system in use denoted by the SRID</para>
+
+		<note>
+		  <para>Since ST_Extent3D returns a bounding box, the SRID meta-data is lost.  Use ST_SetSRID to force it back into
+			a geometry with SRID meta data.  The coordinates are in the units of the spatial ref of the orginal geometries.</para>
+		</note>
+
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>
+SELECT ST_Extent3D(foo.the_geom) As b3extent
+FROM (SELECT ST_MakePoint(x,y,z) As the_geom
+	FROM generate_series(1,3) As x
+		CROSS JOIN generate_series(1,2) As y
+		CROSS JOIN generate_series(0,2) As Z) As foo;
+	  b3extent
+--------------------
+ BOX3D(1 1 0,3 2 2)
+
+--Get the extent of various elevated circular strings
+SELECT ST_Extent3D(foo.the_geom) As b3extent
+FROM (SELECT ST_Translate(ST_Force_3DZ(ST_LineToCurve(ST_Buffer(ST_MakePoint(x,y),1))),0,0,z) As the_geom
+	FROM generate_series(1,3) As x
+		CROSS JOIN generate_series(1,2) As y
+		CROSS JOIN generate_series(0,2) As Z) As foo;
+
+	b3extent
+--------------------
+ BOX3D(1 0 0,4 2 2)
+		</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Extent" />, <xref linkend="ST_Force_3DZ" /></para>
+	  </refsection>
+	</refentry>
+
+
+	<refentry id="Find_SRID">
+	  <refnamediv>
+		<refname>Find_SRID</refname>
+
+		<refpurpose>The syntax is find_srid(&lt;db/schema&gt;, &lt;table&gt;,
+			&lt;column&gt;) and the function returns the integer SRID of the
+			specified column by searching through the GEOMETRY_COLUMNS table.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>Find_SRID</function></funcdef>
+			<paramdef><type>varchar </type> <parameter>a_schema_name</parameter></paramdef>
+			<paramdef><type>varchar </type> <parameter>a_table_name</parameter></paramdef>
+			 <paramdef><type>varchar </type> <parameter>a_geomfield_name</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>The syntax is find_srid(&lt;db/schema&gt;, &lt;table&gt;,
+			&lt;column&gt;) and the function returns the integer SRID of the
+			specified column by searching through the GEOMETRY_COLUMNS table.
+			If the geometry column has not been properly added with the
+			AddGeometryColumns() function, this function will not work
+			either.</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting> SELECT Find_SRID('public', 'tiger_us_state_2007', 'the_geom_4269');
+find_srid
+----------
+4269
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_SRID" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Mem_Size">
+	  <refnamediv>
+		<refname>ST_Mem_Size</refname>
+
+		<refpurpose>Returns the amount of space (in bytes) the geometry takes.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>ST_Mem_Size</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the amount of space (in bytes) the geometry takes. </para>
+		<para>This is a nice compliment to PostgreSQL built in functions pg_size_pretty, pg_relation_size, pg_total_relation_size.</para>
+		<note><para>pg_relation_size which gives the byte size of a table may return byte size lower than ST_Mem_Size. This is because
+		pg_relation_size does not add toasted table contribution and large geometries are stored in TOAST tables.</para>
+		<para>pg_total_relation_size - includes, the table, the toasted tables, and the indexes.</para>
+		</note>
+
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+--Return how much byte space Boston takes up  in our Mass data set
+SELECT pg_size_pretty(SUM(ST_Mem_Size(the_geom))) as totgeomsum,
+pg_size_pretty(SUM(CASE WHEN town = 'BOSTON' THEN st_mem_size(the_geom) ELSE 0 END)) As bossum,
+CAST(SUM(CASE WHEN town = 'BOSTON' THEN st_mem_size(the_geom) ELSE 0 END)*1.00 /
+		SUM(st_mem_size(the_geom))*100 As numeric(10,2)) As perbos
+FROM towns;
+
+totgeomsum	bossum	perbos
+----------	------	------
+1522 kB		30 kB	1.99
+
+
+SELECT ST_Mem_Size(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'));
+
+---
+73
+
+--What percentage of our table is taken up by just the geometry
+SELECT pg_total_relation_size('public.neighborhoods') As fulltable_size, sum(ST_Mem_Size(the_geom)) As geomsize,
+sum(ST_Mem_Size(the_geom))*1.00/pg_total_relation_size('public.neighborhoods')*100 As pergeom
+FROM neighborhoods;
+fulltable_size geomsize  pergeom
+------------------------------------------------
+262144         96238	 36.71188354492187500000
+	</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Point_Inside_Circle">
+	  <refnamediv>
+		<refname>ST_Point_Inside_Circle</refname>
+
+		<refpurpose>Is the point geometry insert circle defined by center_x, center_y , radius</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_Point_Inside_Circle</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>center_x</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>center_y</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>radius</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>The syntax for this functions is
+			point_inside_circle(&lt;geometry&gt;,&lt;circle_center_x&gt;,&lt;circle_center_y&gt;,&lt;radius&gt;).
+			Returns the true if the geometry is a point and is inside the
+			circle. Returns false otherwise.</para>
+		<para><note>This only works for points as the name suggests</note></para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_Point_Inside_Circle(ST_Point(1,2), 0.5, 2, 3);
+ st_point_inside_circle
+------------------------
+ t
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_DWithin" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_XMax">
+	  <refnamediv>
+		<refname>ST_XMax</refname>
+
+		<refpurpose>Returns X maxima of a bounding box 2d or 3d or a geometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_XMax</function></funcdef>
+			<paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns X maxima of a bounding box 2d or 3d or a geometry.</para>
+
+		<note>
+		  <para>Although this function is only defined for box3d, it will work for box2d and geometry because of the auto-casting behavior
+			defined for geometries and box2d.  However you can not feed it a geometry or box2d text represenation, since that will not auto-cast.</para>
+		</note>
+
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_XMax('BOX3D(1 2 3, 4 5 6)');
+st_xmax
+-------
+4
+
+SELECT ST_XMax(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));
+st_xmax
+-------
+5
+
+SELECT ST_XMax(CAST('BOX(-3 2, 3 4)' As box2d));
+st_xmax
+-------
+3
+--Observe THIS DOES NOT WORK because it will try to autocast the string representation to a BOX3D
+SELECT ST_XMax('LINESTRING(1 3, 5 6)');
+
+--ERROR:  BOX3D parser - doesnt start with BOX3D(
+
+SELECT ST_XMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));
+st_xmax
+--------
+220288.248780547
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_XMin" />, <xref linkend="ST_YMax" />, <xref linkend="ST_YMin" />, <xref linkend="ST_ZMax" />, <xref linkend="ST_ZMin" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_XMin">
+	  <refnamediv>
+		<refname>ST_XMin</refname>
+
+		<refpurpose>Returns X minima of a bounding box 2d or 3d or a geometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_XMin</function></funcdef>
+			<paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns X minima of a bounding box 2d or 3d or a geometry.</para>
+
+		<note>
+		  <para>Although this function is only defined for box3d, it will work for box2d and geometry because of the auto-casting behavior
+			defined for geometries and box2d.  However you can not feed it a geometry or box2d text represenation, since that will not auto-cast.</para>
+		</note>
+
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_XMin('BOX3D(1 2 3, 4 5 6)');
+st_xmin
+-------
+1
+
+SELECT ST_XMin(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));
+st_xmin
+-------
+1
+
+SELECT ST_XMin(CAST('BOX(-3 2, 3 4)' As box2d));
+st_xmin
+-------
+-3
+--Observe THIS DOES NOT WORK because it will try to autocast the string representation to a BOX3D
+SELECT ST_XMin('LINESTRING(1 3, 5 6)');
+
+--ERROR:  BOX3D parser - doesnt start with BOX3D(
+
+SELECT ST_XMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));
+st_xmin
+--------
+220186.995121892
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_XMax" />, <xref linkend="ST_YMax" />, <xref linkend="ST_YMin" />, <xref linkend="ST_ZMax" />, <xref linkend="ST_ZMin" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_YMax">
+	  <refnamediv>
+		<refname>ST_YMax</refname>
+
+		<refpurpose>Returns Y maxima of a bounding box 2d or 3d or a geometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_YMax</function></funcdef>
+			<paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns Y maxima of a bounding box 2d or 3d or a geometry.</para>
+
+		<note>
+		  <para>Although this function is only defined for box3d, it will work for box2d and geometry because of the auto-casting behavior
+			defined for geometries and box2d.  However you can not feed it a geometry or box2d text represenation, since that will not auto-cast.</para>
+		</note>
+
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_YMax('BOX3D(1 2 3, 4 5 6)');
+st_ymax
+-------
+5
+
+SELECT ST_YMax(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));
+st_ymax
+-------
+6
+
+SELECT ST_YMax(CAST('BOX(-3 2, 3 4)' As box2d));
+st_ymax
+-------
+4
+--Observe THIS DOES NOT WORK because it will try to autocast the string representation to a BOX3D
+SELECT ST_YMax('LINESTRING(1 3, 5 6)');
+
+--ERROR:  BOX3D parser - doesnt start with BOX3D(
+
+SELECT ST_YMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));
+st_ymax
+--------
+150506.126829327
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_XMin" />, <xref linkend="ST_XMax" />, <xref linkend="ST_YMin" />, <xref linkend="ST_ZMax" />, <xref linkend="ST_ZMin" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_YMin">
+	  <refnamediv>
+		<refname>ST_YMin</refname>
+
+		<refpurpose>Returns Y minima of a bounding box 2d or 3d or a geometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_YMin</function></funcdef>
+			<paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns Y minima of a bounding box 2d or 3d or a geometry.</para>
+
+		<note>
+		  <para>Although this function is only defined for box3d, it will work for box2d and geometry because of the auto-casting behavior
+			defined for geometries and box2d.  However you can not feed it a geometry or box2d text represenation, since that will not auto-cast.</para>
+		</note>
+
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_YMin('BOX3D(1 2 3, 4 5 6)');
+st_ymin
+-------
+2
+
+SELECT ST_YMin(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));
+st_ymin
+-------
+3
+
+SELECT ST_YMin(CAST('BOX(-3 2, 3 4)' As box2d));
+st_ymin
+-------
+2
+--Observe THIS DOES NOT WORK because it will try to autocast the string representation to a BOX3D
+SELECT ST_YMin('LINESTRING(1 3, 5 6)');
+
+--ERROR:  BOX3D parser - doesnt start with BOX3D(
+
+SELECT ST_YMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));
+st_ymin
+--------
+150406
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_XMin" />, <xref linkend="ST_XMax" />, <xref linkend="ST_YMax" />, <xref linkend="ST_ZMax" />, <xref linkend="ST_ZMin" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_ZMax">
+	  <refnamediv>
+		<refname>ST_ZMax</refname>
+
+		<refpurpose>Returns Z minima of a bounding box 2d or 3d or a geometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_ZMax</function></funcdef>
+			<paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns Z maxima of a bounding box 2d or 3d or a geometry.</para>
+
+		<note>
+		  <para>Although this function is only defined for box3d, it will work for box2d and geometry because of the auto-casting behavior
+			defined for geometries and box2d.  However you can not feed it a geometry or box2d text represenation, since that will not auto-cast.</para>
+		</note>
+
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_ZMax('BOX3D(1 2 3, 4 5 6)');
+st_zmax
+-------
+6
+
+SELECT ST_ZMax(ST_GeomFromEWKT('LINESTRING(1 3 4, 5 6 7)'));
+st_zmax
+-------
+7
+
+SELECT ST_ZMax('BOX3D(-3 2 1, 3 4 1)' );
+st_zmax
+-------
+1
+--Observe THIS DOES NOT WORK because it will try to autocast the string representation to a BOX3D
+SELECT ST_ZMax('LINESTRING(1 3 4, 5 6 7)');
+
+--ERROR:  BOX3D parser - doesnt start with BOX3D(
+
+SELECT ST_ZMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));
+st_zmax
+--------
+3
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_XMin" />, <xref linkend="ST_XMax" />, <xref linkend="ST_YMax" />, <xref linkend="ST_YMin" />, <xref linkend="ST_ZMax" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_ZMin">
+	  <refnamediv>
+		<refname>ST_ZMin</refname>
+
+		<refpurpose>Returns Z minima of a bounding box 2d or 3d or a geometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_ZMin</function></funcdef>
+			<paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns Z minima of a bounding box 2d or 3d or a geometry.</para>
+
+		<note>
+		  <para>Although this function is only defined for box3d, it will work for box2d and geometry because of the auto-casting behavior
+			defined for geometries and box2d.  However you can not feed it a geometry or box2d text represenation, since that will not auto-cast.</para>
+		</note>
+
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_ZMin('BOX3D(1 2 3, 4 5 6)');
+st_zmin
+-------
+3
+
+SELECT ST_ZMin(ST_GeomFromEWKT('LINESTRING(1 3 4, 5 6 7)'));
+st_zmin
+-------
+4
+
+SELECT ST_ZMin('BOX3D(-3 2 1, 3 4 1)' );
+st_zmin
+-------
+1
+--Observe THIS DOES NOT WORK because it will try to autocast the string representation to a BOX3D
+SELECT ST_ZMin('LINESTRING(1 3 4, 5 6 7)');
+
+--ERROR:  BOX3D parser - doesnt start with BOX3D(
+
+SELECT ST_ZMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));
+st_zmin
+--------
+1
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_XMin" />, <xref linkend="ST_XMax" />, <xref linkend="ST_YMax" />, <xref linkend="ST_YMin" />, <xref linkend="ST_ZMax" /></para>
+	  </refsection>
+	</refentry>
+
+ </sect1>

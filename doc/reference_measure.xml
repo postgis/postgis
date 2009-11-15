@@ -1,0 +1,2912 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <sect1 id="Spatial_Relationships_Measurements">
+	<title>Spatial Relationships and Measurements</title>
+	<refentry id="ST_Area">
+		<refnamediv>
+		  <refname>ST_Area</refname>
+
+		  <refpurpose>Returns the area of the surface if it is a polygon or
+				multi-polygon. For "geometry" type area is in SRID units.  For "geography" area is in square meters.</refpurpose>
+		</refnamediv>
+		<refsynopsisdiv>
+		  <funcsynopsis>
+			<funcprototype>
+			  <funcdef>float <function>ST_Area</function></funcdef>
+				<paramdef><type>geometry </type><parameter>g1</parameter></paramdef>
+			</funcprototype>
+
+			<funcprototype>
+			  <funcdef>float <function>ST_Area</function></funcdef>
+				<paramdef><type>geography </type><parameter>g1</parameter></paramdef>
+			</funcprototype>
+			
+			<funcprototype>
+			  <funcdef>float <function>ST_Area</function></funcdef>
+				<paramdef><type>geography </type><parameter>g1</parameter></paramdef>
+				<paramdef><type>boolean </type><parameter>use_spheroid</parameter></paramdef>
+			</funcprototype>
+		  </funcsynopsis>
+		</refsynopsisdiv>
+		<refsection>
+			<title>Description</title>
+
+			<para>Returns the area of the geometry if it is a polygon or
+				multi-polygon. Return the area measurement of an ST_Surface or
+		  ST_MultiSurface value. For geometry Area is in the units of the srid.  For geography area is in square meters  and defaults to measuring about the spheroid of the geography (currently only WGS84).
+		  To measure around the faster but less accurate sphere -- ST_Area(geog,false).
+		  </para>
+		 	<para>&sfs_compliant;</para>
+		 	<para>&sqlmm_compliant; SQL-MM 3: 8.1.2, 9.5.3</para>
+		</refsection>
+
+		  <refsection>
+			<title>Examples</title>
+			<para>Return area in square feet for a plot of Massachusetts land and multiply by conversion to get square meters.
+				Note this is in square feet because 2249 is
+				Mass State Plane Feet </para>
+			<programlisting>
+SELECT ST_Area(the_geom) As sqft, ST_Area(the_geom)*POWER(0.3048,2) As sqm
+		FROM (SELECT
+		ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
+			743265 2967450,743265.625 2967416,743238 2967416))',2249) ) As foo(the_geom);
+  sqft   |     sqm
+---------+-------------
+ 928.625 | 86.27208552
+</programlisting>
+<para>Return area square feet and transform to Massachusetts state plane meters (26986) to get square meters.
+				Note this is in square feet because 2249 is
+				Mass State Plane Feet and transformed area is in square meters since 26986 is state plane mass meters </para>
+<programlisting>
+
+SELECT ST_Area(the_geom) As sqft, ST_Area(ST_Transform(the_geom,26986)) As sqm
+		FROM (SELECT
+		ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
+			743265 2967450,743265.625 2967416,743238 2967416))',2249) ) As foo(the_geom);
+  sqft   |       sqm
+---------+------------------
+ 928.625 | 86.2724304199219
+			</programlisting>
+
+<para>Return area square feet and square meters using Geography data type.  Note that we transform to our geometry to geography
+	(before you can do that make sure your geometry is in WGS 84 long lat 4326).  Geography always measures in meters. 
+	This is just for demonstration to compare.  Normally your table will be stored in geography data type already.</para>
+<programlisting>
+
+SELECT ST_Area(the_geog)/POWER(0.3048,2) As sqft_spheroid,  ST_Area(the_geog,false)/POWER(0.3048,2) As sqft_sphere, ST_Area(the_geog) As sqm_spheroid
+		FROM (SELECT
+		geography(
+		ST_Transform(
+			ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,743265 2967450,743265.625 2967416,743238 2967416))',
+				2249
+				) ,4326
+			)
+		)
+	) As foo(the_geog);
+ sqft_spheroid   |   sqft_sphere    |   sqm_spheroid
+-----------------+------------------+------------------
+928.684405217197 | 927.186481558724 | 86.2776044452694
+
+ --if your data is in geography already
+ SELECT ST_Area(the_geog)/POWER(0.3048,2) As  sqft, ST_Area(the_geog) As sqm
+	FROM somegeogtable;
+			</programlisting>
+		  </refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_GeographyFromText" />, <xref linkend="ST_SetSRID" />,<xref linkend="ST_Transform" /></para>
+		</refsection>
+
+	</refentry>
+
+	<refentry id="ST_Azimuth">
+		<refnamediv>
+		  <refname>ST_Azimuth</refname>
+
+		  <refpurpose>Returns the angle in radians from the horizontal of the vector defined by pointA and pointB</refpurpose>
+		</refnamediv>
+		<refsynopsisdiv>
+		  <funcsynopsis>
+			<funcprototype>
+			  <funcdef>float <function>ST_Azimuth</function></funcdef>
+			  <paramdef><type>geometry </type><parameter>pointA</parameter></paramdef>
+			  <paramdef><type>geometry </type><parameter>pointB</parameter></paramdef>
+			</funcprototype>
+		  </funcsynopsis>
+		</refsynopsisdiv>
+		<refsection>
+			<title>Description</title>
+
+			<para>Returns the azimuth of the segment defined by the given
+			Point geometries, or NULL if the two points are coincident. Return
+			value is in radians.</para>
+
+			<para>The Azimuth is mathematical concept defined as the angle, in this case measured in radian, between a reference plane
+				and a point</para>
+
+			<para>Availability: 1.1.0</para>
+			<para>Azimuth is especially useful in conjunction with ST_Translate for shifting an object along its perpendicular axis. See
+				 upgis_lineshift <ulink url="http://postgis.refractions.net/support/wiki/index.php?plpgsqlfunctions">Plpgsqlfunctions PostGIS wiki section</ulink> for example of this.</para>
+		</refsection>
+
+		<refsection>
+		<title>Examples</title>
+		<para>--Azimuth in degrees </para>
+<programlisting>
+SELECT ST_Azimuth(ST_MakePoint(1,2), ST_MakePoint(3,4))/(2*pi())*360 as degAz,
+	ST_Azimuth(ST_MakePoint(3,4), ST_MakePoint(1,2))/(2*pi())*360 As degAzrev
+
+degaz	degazrev
+------	---------
+45		225
+</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_MakePoint" />, <xref linkend="ST_Translate" /></para>
+		</refsection>
+
+  </refentry>
+
+  <refentry id="ST_Centroid">
+	<refnamediv>
+	  <refname>ST_Centroid</refname>
+
+	  <refpurpose>Returns the geometric center of a geometry.</refpurpose>
+	</refnamediv>
+
+	<refsynopsisdiv>
+	  <funcsynopsis>
+		<funcprototype>
+		  <funcdef>geometry <function>ST_Centroid</function></funcdef>
+
+		  <paramdef><type>geometry </type>
+		  <parameter>g1</parameter></paramdef>
+		</funcprototype>
+	  </funcsynopsis>
+	</refsynopsisdiv>
+
+	<refsection>
+	  <title>Description</title>
+
+	  <para>Computes the geometric center of a geometry, or equivalently,
+	  the center of mass of the geometry as a <varname>POINT</varname>. For
+	  [<varname>MULTI</varname>]<varname>POINT</varname>s, this is computed
+	  as the arithmetric mean of the input coordinates. For
+	  [<varname>MULTI</varname>]<varname>LINESTRING</varname>s, this is
+	  computed as the weighted length of each line segment. For
+	  [<varname>MULTI</varname>]<varname>POLYGON</varname>s, "weight" is
+	  thought in terms of area. If an empty geometry is supplied, an empty
+	  <varname>GEOMETRYCOLLECTION</varname> is returned. If
+	  <varname>NULL</varname> is supplied, <varname>NULL</varname> is
+	  returned.</para>
+
+	  <para>The centroid is equal to the centroid of the set of component
+	  Geometries of highest dimension (since the lower-dimension geometries
+	  contribute zero "weight" to the centroid).</para>
+
+	  <note><para>Computation will be more accurate if performed by the GEOS
+	  module (enabled at compile time).</para></note>
+
+	  <para>&sfs_compliant;</para>
+ 	  <para>&sqlmm_compliant; SQL-MM 3: 8.1.4, 9.5.5</para>
+	</refsection>
+
+	<refsection>
+	  <title>Examples</title>
+
+	  <para>In each of the following illustrations, the blue dot represents
+	  the centroid of the source geometry.</para>
+
+	  <informaltable>
+		<tgroup cols="2">
+		  <tbody>
+			<row>
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_centroid01.png" />
+					</imageobject>
+
+					<caption><para>Centroid of a
+					<varname>MULTIPOINT</varname></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_centroid02.png" />
+					</imageobject>
+
+					<caption><para>Centroid of a
+					<varname>LINESTRING</varname></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+			</row>
+
+			<row>
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_centroid03.png" />
+					</imageobject>
+
+					<caption><para>Centroid of a
+					<varname>POLYGON</varname></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_centroid04.png" />
+					</imageobject>
+
+					<caption><para>Centroid of a
+					<varname>GEOMETRYCOLLECTION</varname></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+			</row>
+		  </tbody>
+		</tgroup>
+	  </informaltable>
+
+	  <programlisting>SELECT ST_AsText(ST_Centroid('MULTIPOINT ( -1 0, -1 2, -1 3, -1 4, -1 7, 0 1, 0 3, 1 1, 2 0, 6 0, 7 8, 9 8, 10 6 )'));
+				st_astext
+------------------------------------------
+ POINT(2.30769230769231 3.30769230769231)
+(1 row)</programlisting>
+	</refsection>
+
+	<refsection>
+	  <title>See Also</title>
+
+	  <para><xref linkend="ST_PointOnSurface" /></para>
+	</refsection>
+  </refentry>
+
+  <refentry id="ST_Contains">
+	  <refnamediv>
+		<refname>ST_Contains</refname>
+
+		<refpurpose>Returns true if and only if no points of B lie in the exterior of A, and at least one point of the interior of B lies in the interior of A. </refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_Contains</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>geomA</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>geomB</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Geometry A contains Geometry B if and only if no points of B lie in the exterior of A, and at least one point of the interior of B lies in the interior of A.
+		An important subtlety of this definition is that A does not contain its boundary, but A does contain itself. Contrast that to <xref linkend="ST_ContainsProperly" /> where geometry
+		A does not Contain Properly itself.</para>
+
+		<para>Returns TRUE if geometry B is completely inside geometry A. For this function to make
+		sense, the source geometries must both be of the same coordinate projection,
+		having the same SRID.  ST_Contains is the inverse of ST_Within.  So ST_Contains(A,B) implies ST_Within(B,A) except in the case of
+		invalid geometries where the result is always false regardless or not defined.</para>
+
+		<para>Performed by the GEOS module</para>
+
+		<important>
+		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+		</important>
+
+		<important>
+		  <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
+		</important>
+
+		<para>This function call will automatically include a bounding box
+			comparison that will make use of any indexes that are available on
+			the geometries. To avoid index use, use the function
+			_ST_Contains.</para>
+
+		<para>NOTE: this is the "allowable" version that returns a
+			boolean, not an integer.</para>
+
+	  	<para>&sfs_compliant; s2.1.1.2 // s2.1.13.3 
+		- same as within(geometry B, geometry A)</para>
+	 	<para>&sqlmm_compliant;	SQL-MM 3: 5.1.31</para>
+
+		<para>There are certain subtleties to ST_Contains and ST_Within that are not intuitively obvious.
+			For details check out <ulink url="http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html">Subtleties of OGC Covers, Contains, Within</ulink></para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<para>The <function>ST_Contains</function> predicate returns <varname>TRUE</varname> in all the following illustrations.</para>
+
+		<informaltable>
+		  <tgroup cols="2">
+			<tbody>
+			  <row>
+				<entry><para><informalfigure>
+					<mediaobject>
+					  <imageobject>
+						<imagedata fileref="images/st_contains01.png" />
+					  </imageobject>
+
+					  <caption><para><varname>LINESTRING</varname> / <varname>MULTIPOINT</varname></para></caption>
+					</mediaobject>
+				  </informalfigure></para></entry>
+
+				<entry><para><informalfigure>
+					<mediaobject>
+					  <imageobject>
+						<imagedata fileref="images/st_contains02.png" />
+					  </imageobject>
+
+					  <caption><para><varname>POLYGON</varname> / <varname>POINT</varname></para></caption>
+					</mediaobject>
+				  </informalfigure></para></entry>
+			  </row>
+			  <row>
+				<entry><para><informalfigure>
+					<mediaobject>
+					  <imageobject>
+						<imagedata fileref="images/st_contains03.png" />
+					  </imageobject>
+
+					  <caption><para><varname>POLYGON</varname> / <varname>LINESTRING</varname></para></caption>
+					</mediaobject>
+				  </informalfigure></para></entry>
+
+				<entry><para><informalfigure>
+					<mediaobject>
+					  <imageobject>
+						<imagedata fileref="images/st_contains04.png" />
+					  </imageobject>
+
+					  <caption><para><varname>POLYGON</varname> / <varname>POLYGON</varname></para></caption>
+					</mediaobject>
+				  </informalfigure></para></entry>
+			  </row>
+			</tbody>
+		  </tgroup>
+		</informaltable>
+
+		<para>The <function>ST_Contains</function> predicate returns <varname>FALSE</varname> in all the following illustrations.</para>
+
+		<informaltable>
+		  <tgroup cols="2">
+			<tbody>
+			  <row>
+				<entry><para><informalfigure>
+					<mediaobject>
+					  <imageobject>
+						<imagedata fileref="images/st_contains05.png" />
+					  </imageobject>
+
+					  <caption><para><varname>POLYGON</varname> / <varname>MULTIPOINT</varname></para></caption>
+					</mediaobject>
+				  </informalfigure></para></entry>
+
+				<entry><para><informalfigure>
+					<mediaobject>
+					  <imageobject>
+						<imagedata fileref="images/st_contains06.png" />
+					  </imageobject>
+
+					  <caption><para><varname>POLYGON</varname> / <varname>LINESTRING</varname></para></caption>
+					</mediaobject>
+				  </informalfigure></para></entry>
+			  </row>
+			</tbody>
+		  </tgroup>
+		</informaltable>
+
+		  <programlisting>
+-- A circle within a circle
+SELECT ST_Contains(smallc, bigc) As smallcontainsbig,
+	   ST_Contains(bigc,smallc) As bigcontainssmall,
+	   ST_Contains(bigc, ST_Union(smallc, bigc)) as bigcontainsunion,
+	   ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion,
+	   ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,
+	   ST_Contains(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior
+FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
+			 ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;
+
+-- Result
+  smallcontainsbig | bigcontainssmall | bigcontainsunion | bigisunion | bigcoversexterior | bigcontainsexterior
+------------------+------------------+------------------+------------+-------------------+---------------------
+ f                | t                | t                | t          | t        | f
+
+-- Example demonstrating difference between contains and contains properly
+SELECT ST_GeometryType(geomA) As geomtype, ST_Contains(geomA,geomA) AS acontainsa, ST_ContainsProperly(geomA, geomA) AS acontainspropa,
+   ST_Contains(geomA, ST_Boundary(geomA)) As acontainsba, ST_ContainsProperly(geomA, ST_Boundary(geomA)) As acontainspropba
+FROM (VALUES ( ST_Buffer(ST_Point(1,1), 5,1) ),
+			 ( ST_MakeLine(ST_Point(1,1), ST_Point(-1,-1) ) ),
+			 ( ST_Point(1,1) )
+	  ) As foo(geomA);
+
+  geomtype    | acontainsa | acontainspropa | acontainsba | acontainspropba
+--------------+------------+----------------+-------------+-----------------
+ST_Polygon    | t          | f              | f           | f
+ST_LineString | t          | f              | f           | f
+ST_Point      | t          | t              | f           | f
+
+ </programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Boundary" />, <xref linkend="ST_ContainsProperly" />, <xref linkend="ST_Covers" />,<xref linkend="ST_CoveredBy" />, <xref linkend="ST_Equals"/>,<xref linkend="ST_Within"/></para>
+	  </refsection>
+ </refentry>
+
+ <refentry id="ST_ContainsProperly">
+	  <refnamediv>
+		<refname>ST_ContainsProperly</refname>
+
+		<refpurpose>Returns true if B intersects the interior of A but not the boundary (or exterior). A does not contain properly itself, but does contain itself.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_ContainsProperly</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>geomA</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>geomB</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns true if B intersects the interior of A but not the boundary (or exterior).</para>
+
+		<para>A does not contain properly itself, but does contain itself.</para>
+		<para>Every point of the other geometry is a point of this geometry's interior. The DE-9IM Intersection Matrix for the two geometries matches
+   [T**FF*FF*] used in <xref linkend="ST_Relate" /></para>
+
+		<note>
+		  <para>From JTS docs slightly reworded: The advantage to using this predicate over <xref linkend="ST_Contains" /> and <xref linkend="ST_Intersects" /> is that it can be computed
+	  efficiently, with no need to compute topology at individual points.</para>
+		<para>
+			 An example use case for this predicate is computing the intersections
+	 of a set of geometries with a large polygonal geometry.
+	Since intersection is a fairly slow operation, it can be more efficient
+	 to use containsProperly to filter out test geometries which lie
+	wholly inside the area.  In these cases the intersection is
+	known a priori to be exactly the original test geometry.
+	 </para>
+		</note>
+
+		<para>Availability: 1.4.0 - requires GEOS &gt;= 3.1.0.</para>
+
+		<important>
+		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+		</important>
+
+		<important>
+		  <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
+		</important>
+
+		<para>This function call will automatically include a bounding box
+			comparison that will make use of any indexes that are available on
+			the geometries. To avoid index use, use the function
+			_ST_ContainsProperly.</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		  <programlisting>
+	--a circle within a circle
+	SELECT ST_ContainsProperly(smallc, bigc) As smallcontainspropbig,
+	ST_ContainsProperly(bigc,smallc) As bigcontainspropsmall,
+	ST_ContainsProperly(bigc, ST_Union(smallc, bigc)) as bigcontainspropunion,
+	ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion,
+	ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,
+	ST_ContainsProperly(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior
+	FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
+	ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;
+	--Result
+  smallcontainspropbig | bigcontainspropsmall | bigcontainspropunion | bigisunion | bigcoversexterior | bigcontainsexterior
+------------------+------------------+------------------+------------+-------------------+---------------------
+ f                     | t                    | f                    | t          | t                 | f
+
+ --example demonstrating difference between contains and contains properly
+ SELECT ST_GeometryType(geomA) As geomtype, ST_Contains(geomA,geomA) AS acontainsa, ST_ContainsProperly(geomA, geomA) AS acontainspropa,
+ ST_Contains(geomA, ST_Boundary(geomA)) As acontainsba, ST_ContainsProperly(geomA, ST_Boundary(geomA)) As acontainspropba
+ FROM (VALUES ( ST_Buffer(ST_Point(1,1), 5,1) ),
+		  ( ST_MakeLine(ST_Point(1,1), ST_Point(-1,-1) ) ),
+		  ( ST_Point(1,1) )
+	) As foo(geomA);
+
+  geomtype    | acontainsa | acontainspropa | acontainsba | acontainspropba
+--------------+------------+----------------+-------------+-----------------
+ST_Polygon    | t          | f              | f           | f
+ST_LineString | t          | f              | f           | f
+ST_Point      | t          | t              | f           | f
+ </programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_GeometryType" />, <xref linkend="ST_Boundary" />, <xref linkend="ST_Contains" />, <xref linkend="ST_Covers" />,<xref linkend="ST_CoveredBy" />, <xref linkend="ST_Equals"/>,<xref linkend="ST_Relate" />,<xref linkend="ST_Within"/></para>
+	  </refsection>
+ </refentry>
+
+  <refentry id="ST_Covers">
+	  <refnamediv>
+		<refname>ST_Covers</refname>
+
+		<refpurpose>Returns 1 (TRUE) if no point in Geometry B is outside
+			Geometry A</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_Covers</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>geomA</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>geomB</parameter></paramdef>
+		  </funcprototype>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_Covers</function></funcdef>
+
+			<paramdef><type>geography </type>
+			<parameter>geogpolyA</parameter></paramdef>
+
+			<paramdef><type>geography </type>
+			<parameter>geogpointB</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		  <para>Returns 1 (TRUE) if no point in Geometry/Geography B is outside
+			Geometry/Geography A</para>
+
+		<para>Performed by the GEOS module</para>
+
+		<important>
+		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+		</important>
+
+		<important>
+		  <para>For geography only Polygon covers point is supported.</para>
+		</important>
+
+		<important>
+		  <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
+		</important>
+
+		<para>This function call will automatically include a bounding box
+			comparison that will make use of any indexes that are available on
+			the geometries. To avoid index use, use the function
+			_ST_Covers.</para>
+
+		<para>Availability: 1.2.2 - requires GEOS &gt;= 3.0</para>
+		<para>Availability: 1.5 - support for geography was introduced. </para>
+
+		<para>NOTE: this is the "allowable" version that returns a
+			boolean, not an integer.</para>
+
+		<para>Not an OGC standard, but Oracle has it too.</para>
+		<para>There are certain subtleties to ST_Contains and ST_Within that are not intuitively obvious.
+			For details check out <ulink url="http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html">Subtleties of OGC Covers, Contains, Within</ulink></para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+			<para> Geometry example </para>
+		  <programlisting>
+	--a circle covering a circle
+SELECT ST_Covers(smallc,smallc) As smallinsmall,
+	ST_Covers(smallc, bigc) As smallcoversbig,
+	ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,
+	ST_Contains(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior
+FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
+	ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;
+	--Result
+ smallinsmall | smallcoversbig | bigcoversexterior | bigcontainsexterior
+--------------+----------------+-------------------+---------------------
+ t            | f              | t                 | f
+(1 row)	</programlisting>
+		<para>Geeography Example</para>
+		<programlisting>
+
+		</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Contains"/>, <xref linkend="ST_CoveredBy" />, <xref linkend="ST_Within"/></para>
+	  </refsection>
+ </refentry>
+
+  <refentry id="ST_CoveredBy">
+	  <refnamediv>
+		<refname>ST_CoveredBy</refname>
+
+		<refpurpose>Returns 1 (TRUE) if no point in Geometry A is outside
+			Geometry B</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_CoveredBy</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>geomA</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>geomB</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		  <para>Returns 1 (TRUE) if no point in Geometry A is outside
+			Geometry B</para>
+
+		<para>Performed by the GEOS module</para>
+
+		<important>
+		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+		</important>
+
+		<important>
+		  <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
+		</important>
+		<para>Availability: 1.2.2 - requires GEOS &gt;= 3.0</para>
+		<para>This function call will automatically include a bounding box
+			comparison that will make use of any indexes that are available on
+			the geometries. To avoid index use, use the function
+			_ST_CoveredBy.</para>
+
+		<para>NOTE: this is the "allowable" version that returns a
+			boolean, not an integer.</para>
+
+		<para>Not an OGC standard, but Oracle has it too.</para>
+		<para>There are certain subtleties to ST_Contains and ST_Within that are not intuitively obvious.
+			For details check out <ulink url="http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html">Subtleties of OGC Covers, Contains, Within</ulink></para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		  <programlisting>
+	--a circle coveredby a circle
+SELECT ST_CoveredBy(smallc,smallc) As smallinsmall,
+	ST_CoveredBy(smallc, bigc) As smallcoveredbybig,
+	ST_CoveredBy(ST_ExteriorRing(bigc), bigc) As exteriorcoveredbybig,
+	ST_Within(ST_ExteriorRing(bigc),bigc) As exeriorwithinbig
+FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
+	ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;
+	--Result
+ smallinsmall | smallcoveredbybig | exteriorcoveredbybig | exeriorwithinbig
+--------------+-------------------+----------------------+------------------
+ t            | t                 | t                    | f
+(1 row)	</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Contains"/>, <xref linkend="ST_Covers" />, <xref linkend="ST_ExteriorRing"/>, <xref linkend="ST_Within"/></para>
+	  </refsection>
+ </refentry>
+
+  <refentry id="ST_Crosses">
+	<refnamediv>
+	  <refname>ST_Crosses</refname>
+
+	  <refpurpose>Returns <varname>TRUE</varname> if the supplied geometries have some, but not all,
+	  interior points in common.</refpurpose>
+	</refnamediv>
+
+	<refsynopsisdiv>
+	  <funcsynopsis>
+		<funcprototype>
+		  <funcdef>boolean <function>ST_Crosses</function></funcdef>
+
+		  <paramdef><type>geometry </type><parameter>g1</parameter></paramdef>
+
+		  <paramdef><type>geometry </type><parameter>g2</parameter></paramdef>
+		</funcprototype>
+	  </funcsynopsis>
+	</refsynopsisdiv>
+
+	<refsection>
+	  <title>Description</title>
+
+	  <para><function>ST_Crosses</function> takes two geometry objects and
+	  returns <varname>TRUE</varname> if their intersection "spatially cross", that is, the
+	  geometries have some, but not all interior points in common. The
+	  intersection of the interiors of the geometries must not be the empty
+	  set and must have a dimensionality less than the the maximum dimension
+	  of the two input geometries. Additionally, the intersection of the two
+	  geometries must not equal either of the source geometries. Otherwise, it
+	  returns <varname>FALSE</varname>.</para>
+
+	  <para>In mathematical terms, this is expressed as:</para>
+
+	  <remark>TODO: Insert appropriate MathML markup here or use a gif.
+	  Simple HTML markup does not work well in both IE and Firefox.</remark>
+
+	  <informalfigure>
+		<mediaobject>
+		  <imageobject>
+			<imagedata fileref="images/st_crosses-math.gif" />
+		  </imageobject>
+		</mediaobject>
+	  </informalfigure>
+
+	  <para>The DE-9IM Intersection Matrix for the two geometries is:</para>
+
+	  <itemizedlist>
+		<listitem>
+		  <para><markup>T*T******</markup> (for Point/Line, Point/Area, and
+		  Line/Area situations)</para>
+		</listitem>
+
+		<listitem>
+		  <para><markup>T*****T**</markup> (for Line/Point, Area/Point, and
+		  Area/Line situations)</para>
+		</listitem>
+
+		<listitem>
+		  <para><markup>0********</markup> (for Line/Line situations)</para>
+		</listitem>
+	  </itemizedlist>
+
+	  <para>For any other combination of dimensions this predicate returns
+	  false.</para>
+
+	  <para>The OpenGIS Simple Features Specification defines this predicate
+		only for Point/Line, Point/Area, Line/Line, and Line/Area situations.
+		JTS / GEOS extends the definition to apply to Line/Point, Area/Point and
+		Area/Line situations as well. This makes the relation
+		symmetric.</para>
+
+	  <important>
+		<para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+	  </important>
+
+	<note>
+	  <para>This function call will automatically include a bounding box
+	  comparison that will make use of any indexes that are available on the
+	  geometries.</para>
+	</note>
+
+	<para>&sfs_compliant; s2.1.13.3</para>
+	<para>&sqlmm_compliant; SQL-MM 3: 5.1.29</para>
+	</refsection>
+
+	<refsection>
+	  <title>Examples</title>
+
+	  <para>The following illustrations all return <varname>TRUE</varname>.</para>
+
+	  <informaltable>
+		<tgroup cols="2">
+		  <tbody>
+			<row>
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_crosses01.png" />
+					</imageobject>
+
+					<caption><para><varname>MULTIPOINT</varname> / <varname>LINESTRING</varname></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_crosses02.png" />
+					</imageobject>
+
+					<caption><para><varname>MULTIPOINT</varname> / <varname>POLYGON</varname></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+			</row>
+
+			<row>
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_crosses03.png" />
+					</imageobject>
+
+					<caption><para><varname>LINESTRING</varname> / <varname>POLYGON</varname></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_crosses04.png" />
+					</imageobject>
+
+					<caption><para><varname>LINESTRING</varname> / <varname>LINESTRING</varname></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+			</row>
+		  </tbody>
+		</tgroup>
+	  </informaltable>
+
+	  <para>Consider a situation where a user has two tables: a table of roads
+	  and a table of highways.</para>
+
+	  <informaltable>
+		<tgroup cols="2">
+		  <tbody>
+			<row>
+			  <entry><para> <informalexample>
+				  <programlisting>CREATE TABLE roads (
+  id serial NOT NULL,
+  the_geom geometry,
+  CONSTRAINT roads_pkey PRIMARY KEY (road_id)
+);</programlisting>
+				</informalexample> </para></entry>
+
+			  <entry><para> <informalexample>
+				  <programlisting>CREATE TABLE highways (
+  id serial NOT NULL,
+  the_gem geometry,
+  CONSTRAINT roads_pkey PRIMARY KEY (road_id)
+);</programlisting>
+				</informalexample> </para></entry>
+			</row>
+		  </tbody>
+		</tgroup>
+	  </informaltable>
+
+	  <para>To determine a list of roads that cross a highway, use a query
+	  similiar to:</para>
+
+	  <para><informalexample>
+		  <programlisting>SELECT roads.id
+FROM roads, highways
+WHERE ST_Crosses(roads.the_geom, highways.the_geom);</programlisting>
+		</informalexample></para>
+	</refsection>
+  </refentry>
+
+  <refentry id="ST_LineCrossingDirection">
+	<refnamediv>
+	  <refname>ST_LineCrossingDirection</refname>
+
+	  <refpurpose>Given 2 linestrings, returns a number between -3 and 3 denoting what kind of crossing behavior. 0 is no crossing.</refpurpose>
+	</refnamediv>
+
+	<refsynopsisdiv>
+	  <funcsynopsis>
+		<funcprototype>
+		  <funcdef>integer <function>ST_LineCrossingDirection</function></funcdef>
+		  <paramdef><type>geometry </type> <parameter>linestringA</parameter></paramdef>
+		  <paramdef><type>geometry </type> <parameter>linestringB</parameter></paramdef>
+		</funcprototype>
+	  </funcsynopsis>
+	</refsynopsisdiv>
+
+	<refsection>
+	  <title>Description</title>
+
+	  <para>Given 2 linestrings, returns a number between -3 and 3 denoting what kind of crossing behavior. 0 is no crossing.  This is only supported for <varname>LINESTRING</varname></para>
+	  <para>Definition of integer constants is as follows:
+		   <itemizedlist>
+				<listitem>
+				  <para> 0: LINE NO CROSS</para>
+				</listitem>
+				<listitem>
+				  <para>-1: LINE CROSS LEFT</para>
+				</listitem>
+				<listitem>
+				  <para> 1: LINE CROSS RIGHT</para>
+				</listitem>
+				<listitem>
+				  <para>-2: LINE MULTICROSS END LEFT</para>
+				</listitem>
+				<listitem>
+					<para> 2: LINE MULTICROSS END RIGHT</para>
+				</listitem>
+				<listitem>
+				  <para>-3: LINE MULTICROSS END SAME FIRST LEFT</para>
+				</listitem>
+				<listitem>
+				  <para> 3: LINE MULTICROSS END SAME FIRST RIGHT</para>
+				</listitem>
+			</itemizedlist>
+	  </para>
+	  <para>Availability: 1.4</para>
+	  <!-- optionally mention that this function uses indexes if appropriate -->
+
+	</refsection>
+
+
+	<refsection>
+	  <title>Examples</title>
+  <!-- TODO: We really badly need diagrams here and more examples -->
+		<informaltable>
+		  <tgroup cols="2">
+			<tbody>
+			  <row>
+				<entry><para><informalfigure>
+					<mediaobject>
+					  <imageobject>
+						<imagedata fileref="images/st_linecrossingdirection01.png" />
+					  </imageobject>
+					  <caption><para>Line 1 (green), Line 2 ball is start point,
+					triangle are end points. Query below. </para></caption>
+					</mediaobject>
+				  </informalfigure>
+				  <programlisting>
+SELECT ST_LineCrossingDirection(foo.line1, foo.line2) As l1_cross_l2 ,
+	  ST_LineCrossingDirection(foo.line2, foo.line1) As l2_cross_l1
+FROM (
+SELECT
+ ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As line1,
+ ST_GeomFromText('LINESTRING(171 154,20 140,71 74,161 53)') As line2
+	) As foo;
+
+ l1_cross_l2 | l2_cross_l1
+-------------+-------------
+           3 |          -3
+				</programlisting>
+			</para>
+		</entry>
+
+		<entry>
+			<para><informalfigure>
+				<mediaobject>
+				  <imageobject>
+					<imagedata fileref="images/st_linecrossingdirection02.png" />
+				  </imageobject>
+				  <caption><para>Line 1 (green), Line 2 (blue) ball is start point,
+						triangle are end points. Query below.</para></caption>
+				</mediaobject>
+			  </informalfigure>
+			  <programlisting>
+SELECT ST_LineCrossingDirection(foo.line1, foo.line2) As l1_cross_l2 ,
+	  ST_LineCrossingDirection(foo.line2, foo.line1) As l2_cross_l1
+FROM (
+ SELECT
+  ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As line1,
+  ST_GeomFromText('LINESTRING (171 154, 20 140, 71 74, 2.99 90.16)') As line2
+) As foo;
+
+ l1_cross_l2 | l2_cross_l1
+-------------+-------------
+           2 |          -2
+				</programlisting>
+			</para>
+		</entry>
+	  </row>
+	  <row>
+				<entry><para><informalfigure>
+					<mediaobject>
+					  <imageobject>
+						<imagedata fileref="images/st_linecrossingdirection03.png" />
+					  </imageobject>
+					  <caption><para>Line 1 (green), Line 2 (blue) ball is start point,
+					triangle are end points. Query below. </para></caption>
+					</mediaobject>
+				  </informalfigure>
+				  <programlisting>
+SELECT
+	ST_LineCrossingDirection(foo.line1, foo.line2) As l1_cross_l2 ,
+	ST_LineCrossingDirection(foo.line2, foo.line1) As l2_cross_l1
+FROM (
+ SELECT
+  ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As line1,
+  ST_GeomFromText('LINESTRING (20 140, 71 74, 161 53)') As line2
+  ) As foo;
+
+ l1_cross_l2 | l2_cross_l1
+-------------+-------------
+          -1 |          1
+				</programlisting>
+			</para>
+		</entry>
+
+		<entry>
+			<para><informalfigure>
+				<mediaobject>
+				  <imageobject>
+					<imagedata fileref="images/st_linecrossingdirection04.png" />
+				  </imageobject>
+				  <caption><para>Line 1 (green), Line 2 (blue) ball is start point,
+						triangle are end points. Query below.</para></caption>
+				</mediaobject>
+			  </informalfigure>
+			  <programlisting>
+SELECT ST_LineCrossingDirection(foo.line1, foo.line2) As l1_cross_l2 ,
+	  ST_LineCrossingDirection(foo.line2, foo.line1) As l2_cross_l1
+FROM (SELECT
+	ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As line1,
+	ST_GeomFromText('LINESTRING(2.99 90.16,71 74,20 140,171 154)') As line2
+	) As foo;
+
+ l1_cross_l2 | l2_cross_l1
+-------------+-------------
+          -2 |          2
+				</programlisting>
+			</para>
+		</entry>
+	  </row>
+	  </tbody>
+	</tgroup>
+</informaltable>
+
+<programlisting>
+SELECT s1.gid, s2.gid, ST_LineCrossingDirection(s1.the_geom, s2.the_geom)
+	FROM streets s1 CROSS JOIN streets s2 ON (s1.gid != s2.gid AND s1.the_geom &amp;&amp; s2.the_geom )
+WHERE ST_CrossingDirection(s1.the_geom, s2.the_geom) > 0;
+</programlisting>
+	</refsection>
+
+	<!-- Optionally add a "See Also" section -->
+	<refsection>
+	  <title>See Also</title>
+
+	  <para><xref linkend="ST_Crosses" /></para>
+	</refsection>
+  </refentry>
+
+  <refentry id="ST_Disjoint">
+		<refnamediv>
+			<refname>ST_Disjoint</refname>
+
+			<refpurpose>Returns TRUE if the Geometries do not "spatially
+			intersect" - if they do not share any space together.
+			</refpurpose>
+		</refnamediv>
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>boolean <function>ST_Disjoint</function></funcdef>
+					<paramdef>
+						<type>geometry</type>
+						<parameter>A</parameter>
+					</paramdef>
+					<paramdef>
+						<type>geometry</type>
+						<parameter>B</parameter>
+					</paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+		<refsection>
+			<title>Description</title>
+			<para>Overlaps, Touches, Within all imply geometries are not spatially disjoint.  If any of the aforementioned
+				returns true, then the geometries are not spatially disjoint.
+				Disjoint implies false for spatial intersection.</para>
+
+			<important>
+				<para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+			</important>
+
+			<para>Performed by the GEOS module</para>
+			<note>
+			  <para>This function call does not use indexes</para>
+
+			</note>
+			<note>
+			  <para>NOTE: this is the "allowable" version that returns a
+			boolean, not an integer.</para>
+			</note>
+			<para>&sfs_compliant; s2.1.1.2 //s2.1.13.3
+			- a.Relate(b, 'FF*FF****')</para>
+			<para>&sqlmm_compliant; SQL-MM 3: 5.1.26</para>
+		</refsection>
+		<refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry);
+ st_disjoint
+---------------
+ t
+(1 row)
+SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
+ st_disjoint
+---------------
+ f
+(1 row)
+		</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Intersects"/>ST_Intersects</para>
+		</refsection>
+	</refentry>
+
+	<refentry id="ST_Distance">
+	  <refnamediv>
+		<refname>ST_Distance</refname>
+
+		<refpurpose>For geometry type Returns the 2-dimensional cartesian minimum distance (based on spatial ref) between two geometries in
+		projected units.  For geography type defaults to return spheroidal minimum distance between two geographies in meters.</refpurpose>
+	  </refnamediv>
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_Distance</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+		  </funcprototype>
+		  <funcprototype>
+			<funcdef>float <function>ST_Distance</function></funcdef>
+
+			<paramdef><type>geography </type>
+			<parameter>gg1</parameter></paramdef>
+
+			<paramdef><type>geography </type>
+			<parameter>gg2</parameter></paramdef>
+		  </funcprototype>
+		  
+		  <funcprototype>
+			<funcdef>float <function>ST_Distance</function></funcdef>
+
+			<paramdef><type>geography </type>
+			<parameter>gg1</parameter></paramdef>
+
+			<paramdef><type>geography </type>
+			<parameter>gg2</parameter></paramdef>
+			
+			<paramdef><type>boolean </type>
+			<parameter>use_spheroid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>For geometry type returns the 2-dimensional minimum cartesian distance between two geometries in
+		projected units (spatial ref units). For geography type defaults to return the minimum distance around WGS 84 spheroid between two geographies in meters.  Pass in
+		false to return answer in sphere instead of spheroid.</para>
+
+		<para>&sfs_compliant;</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 5.1.23</para>
+
+		<para>Availability: 1.5.0 geography support was introduced in 1.5.</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+--Geometry example - units in planar degrees 4326 is WGS 84 long lat unit=degrees
+SELECT ST_Distance(
+		ST_GeomFromText('POINT(-72.1235 42.3521)',4326),
+		ST_GeomFromText('LINESTRING(-72.1260 42.45, -72.123 42.1546)', 4326)
+	);
+st_distance
+-----------------
+0.00150567726382282
+
+-- Geometry example - units in meters (SRID: 26986 Massachusetts state plane meters) (most accurate for Massachusetts)
+SELECT ST_Distance(
+			ST_Transform(ST_GeomFromText('POINT(-72.1235 42.3521)',4326),26986),
+			ST_Transform(ST_GeomFromText('LINESTRING(-72.1260 42.45, -72.123 42.1546)', 4326),26986)
+		);
+st_distance
+-----------------
+123.797937878454
+
+-- Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (least accurate)
+SELECT ST_Distance(
+			ST_Transform(ST_GeomFromText('POINT(-72.1235 42.3521)',4326),2163),
+			ST_Transform(ST_GeomFromText('LINESTRING(-72.1260 42.45, -72.123 42.1546)', 4326),2163)
+		);
+
+st_distance
+------------------
+126.664256056812
+
+-- Geography example -- same but note units in meters - use sphere for slightly faster less accurate
+SELECT ST_Distance(gg1, gg2) As spheroid_dist, ST_Distance(gg1, gg2, false) As sphere_dist 
+FROM (SELECT
+	ST_GeographyFromText('SRID=4326;POINT(-72.1235 42.3521)') As gg1,
+	ST_GeographyFromText('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)') As gg2
+	) As foo  ;
+
+  spheroid_dist   |   sphere_dist
+------------------+------------------
+ 123.802076746848 | 123.475736916397
+
+</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_DWithin"/>, <xref linkend="ST_Distance_Sphere"/>, <xref linkend="ST_Distance_Spheroid"/>, <xref linkend="ST_Max_Distance" />, <xref linkend="ST_Transform" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_HausdorffDistance">
+	  <refnamediv>
+		<refname>ST_HausdorffDistance</refname>
+
+		<refpurpose>Returns the Hausdorff distance between two geometries.  Basically a measure of how similar or dissimilar 2 geometries are. Units are in the units of the spatial
+		reference system of the geometries.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_HausdorffDistance</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+		  </funcprototype>
+		  <funcprototype>
+			<funcdef>float <function>ST_HausdorffDistance</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+
+			<paramdef><type>float</type>
+			<parameter>densifyFrac</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Implements algorithm for computing a distance metric which can be thought of as the "Discrete Hausdorff Distance".
+This is the Hausdorff distance restricted to discrete points for one of the geometries. <ulink url="http://en.wikipedia.org/wiki/Hausdorff_distance">Wikipedia article on Hausdorff distance</ulink>
+	<ulink url="http://lin-ear-th-inking.blogspot.com/2009/01/computing-geometric-similarity.html">Martin Davis note on how Hausdorff Distance calculation was used to prove correctness of the CascadePolygonUnion approach.</ulink></para>
+		<para>
+When densifyFrac is specified, this function performs a segment densification before computing the discrete hausdorff distance. The densifyFrac parameter sets the fraction by which to densify each segment. Each segment will be split into a number of equal-length subsegments, whose fraction of the total length is closest to the given fraction.
+		</para>
+
+		<note>
+			<para>
+The current implementation supports only vertices as the discrete locations. This could be extended to allow an arbitrary density of points to be used.
+			</para>
+		</note>
+		<note>
+			<para>
+				This algorithm is NOT equivalent to the standard Hausdorff distance. However, it computes an approximation that is correct for a large subset of useful cases.
+			One important part of this subset is Linestrings that are roughly parallel to each other, and roughly equal in length.  This is a useful metric for line matching.
+			</para>
+		</note>
+		<para>Availability: 1.5 - requires GEOS &gt;= 3.2.0</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+				<programlisting>postgis=# SELECT st_HausdorffDistance(
+				'LINESTRING (0 0, 2 0)'::geometry,
+				'MULTIPOINT (0 1, 1 0, 2 1)'::geometry);
+ st_hausdorffdistance
+ ----------------------
+					 1
+(1 row)
+			</programlisting>
+			<programlisting>postgis=# SELECT st_hausdorffdistance('LINESTRING (130 0, 0 0, 0 150)'::geometry, 'LINESTRING (10 10, 10 150, 130 10)'::geometry, 0.5);
+ st_hausdorffdistance
+ ----------------------
+					70
+(1 row)
+			</programlisting>
+
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Distance_Sphere">
+	  <refnamediv>
+		<refname>ST_Distance_Sphere</refname>
+
+		<refpurpose>Returns minimum distance in meters between two lon/lat
+				geometries. Uses a spherical earth and radius of 6370986 meters.
+				Faster than <xref linkend="ST_Distance_Spheroid">ST_Distance_Spheroid</xref>, but less
+				accurate. PostGIS versions prior to 1.5 only implemented for points.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_Distance_Sphere</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomlonlatA</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>geomlonlatB</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns minimum distance in meters between two lon/lat
+				points. Uses a spherical earth and radius of 6370986 meters.
+				Faster than <xref linkend="ST_Distance_Spheroid"/>, but less
+				accurate. PostGIS Versions prior to 1.5 only implemented for points.</para>
+		<note>
+			<para>This function currently does not look at the SRID of a geometry and will always assume its in WGS 84 long lat. Prior versions of this function only support points.</para>
+		</note>
+		
+		<para>Availability: 1.5 - support for other geometry types besides points was introduced. Prior versions only work with points.</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT round(CAST(ST_Distance_Sphere(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)',4326)) As numeric),2) As dist_meters,
+round(CAST(ST_Distance(ST_Transform(ST_Centroid(the_geom),32611),
+		ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326),32611)) As numeric),2) As dist_utm11_meters,
+round(CAST(ST_Distance(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)', 4326)) As numeric),5) As dist_degrees,
+round(CAST(ST_Distance(ST_Transform(the_geom,32611),
+		ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326),32611)) As numeric),2) As min_dist_line_point_meters
+FROM
+	(SELECT ST_GeomFromText('LINESTRING(-118.584 38.374,-118.583 38.5)', 4326) As the_geom) as foo;
+	 dist_meters | dist_utm11_meters | dist_degrees | min_dist_line_point_meters
+	-------------+-------------------+--------------+----------------------------
+		70424.47 |          70438.00 |      0.72900 |                   65871.18
+
+	</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Distance" />, <xref linkend="ST_Distance_Spheroid" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Distance_Spheroid">
+	  <refnamediv>
+		<refname>ST_Distance_Spheroid</refname>
+
+		<refpurpose>Returns the minimum distance between two lon/lat geometries given a
+			particular spheroid.
+			PostGIS  versions prior to 1.5 only support points.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_Distance_Spheroid</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomlonlatA</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>geomlonlatB</parameter></paramdef>
+			<paramdef><type>spheroid </type> <parameter>measurement_spheroid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns minimum distance in meters between two lon/lat
+				geometries given a particular spheroid. See the explanation of spheroids given for
+			<xref linkend="ST_Length_Spheroid" />. PostGIS version prior to 1.5 only support points.</para>
+		<note>
+			<para>This function currently does not look at the SRID of a geometry and will always assume its in WGS 80 long lat. Prior versions of this function only support points.</para>
+		</note>
+		
+		<para>Availability: 1.5 - support for other geometry types besides points was introduced. Prior versions only work with points.</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT round(CAST(
+		ST_Distance_Spheroid(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)',4326), 'SPHEROID["WGS 84",6378137,298.257223563]')
+			As numeric),2) As dist_meters_spheroid,
+		round(CAST(ST_Distance_Sphere(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)',4326)) As numeric),2) As dist_meters_sphere,
+round(CAST(ST_Distance(ST_Transform(ST_Centroid(the_geom),32611),
+		ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326),32611)) As numeric),2) As dist_utm11_meters
+FROM
+	(SELECT ST_GeomFromText('LINESTRING(-118.584 38.374,-118.583 38.5)', 4326) As the_geom) as foo;
+ dist_meters_spheroid | dist_meters_sphere | dist_utm11_meters
+----------------------+--------------------+-------------------
+			 70454.92 |           70424.47 |          70438.00
+
+	</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Distance" />, <xref linkend="ST_Distance_Sphere" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_DWithin">
+	  <refnamediv>
+		<refname>ST_DWithin</refname>
+
+		<refpurpose>Returns true if the geometries are within the specified
+		distance of one another. For geometry units are in those of spatial reference and For geography units are in meters and measurement is
+		defaulted to use_spheroid=true (measure around spheroid), for faster check, use_spheroid=false to measure along sphere.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+				<funcdef>boolean <function>ST_DWithin</function></funcdef>
+				<paramdef><type>geometry </type>
+				<parameter>g1</parameter></paramdef>
+	
+				<paramdef><type>geometry </type>
+				<parameter>g2</parameter></paramdef>
+	
+				<paramdef><type>double precision </type>
+				<parameter>distance_of_srid</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+				<funcdef>boolean <function>ST_DWithin</function></funcdef>
+				<paramdef><type>geography </type>
+				<parameter>gg1</parameter></paramdef>
+	
+				<paramdef><type>geography </type>
+				<parameter>gg2</parameter></paramdef>
+	
+				<paramdef><type>double precision </type>
+				<parameter>distance_meters</parameter></paramdef>
+		  </funcprototype>
+		  
+		  <funcprototype>
+				<funcdef>boolean <function>ST_DWithin</function></funcdef>
+				<paramdef><type>geography </type>
+				<parameter>gg1</parameter></paramdef>
+	
+				<paramdef><type>geography </type>
+				<parameter>gg2</parameter></paramdef>
+	
+				<paramdef><type>double precision </type>
+				<parameter>distance_meters</parameter></paramdef>
+				
+				<paramdef><type>boolean </type>
+				<parameter>use_spheroid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns true if the geometries are within the specified distance
+		of one another.</para>
+		<para>For Geometries: The distance is specified in units defined by the
+		spatial reference system of the geometries.  For this function to make
+		sense, the source geometries must both be of the same coorindate projection,
+		having the same SRID.</para>
+		
+		<para>For geography units are in meters and measurement is
+		defaulted to use_spheroid=true (measure around WGS 84 spheroid), for faster check, use_spheroid=false to measure along sphere.
+		</para>
+		<note>
+		  <para>This function call will automatically include a bounding box
+		  comparison that will make use of any indexes that are available on
+		  the geometries.</para>
+		</note>
+
+		<note>
+		  <para>Prior to 1.3, ST_Expand was commonly used in conjunction with &amp;&amp; and ST_Distance to
+		  achieve the same effect and in pre-1.3.4 this function was basically short-hand for that construct.
+		  From 1.3.4, ST_DWithin uses a more short-circuit distance function which should make it more efficient
+		  than prior versions for larger buffer regions.</para>
+		</note>
+
+		<para>&sfs_compliant;</para>
+		<para>Availability: 1.5.0 support for geography was introduced</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		  <programlisting>
+--Find the nearest hospital to each school
+--that is within 3000 units of the school.
+-- We do an ST_DWithin search to utilize indexes to limit our search list
+-- that the non-indexable ST_Distance needs to process
+--If the units of the spatial reference is meters then units would be meters
+SELECT DISTINCT ON (s.gid) s.gid, s.school_name, s.the_geom, h.hospital_name
+	FROM schools s
+		LEFT JOIN hospitals h ON ST_DWithin(s.the_geom, h.the_geom, 3000)
+	ORDER BY s.gid, ST_Distance(s.the_geom, h.the_geom);
+
+--The schools with no close hospitals
+--Find all schools with no hospital within 3000 units
+--away from the school.  Units is in units of spatial ref (e.g. meters, feet, degrees)
+SELECT s.gid, s.school_name
+	FROM schools s
+		LEFT JOIN hospitals h ON ST_DWithin(s.the_geom, h.the_geom, 3000)
+	WHERE h.gid IS NULL;
+			  </programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Distance"/>, <xref linkend="ST_Expand"/></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Equals">
+	  <refnamediv>
+		<refname>ST_Equals</refname>
+
+		<refpurpose>Returns true if the given geometries represent the same geometry. Directionality
+			is ignored.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_Equals</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>A</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>B</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns TRUE if the given Geometries are "spatially
+			equal". Use this for a 'better' answer than '='.
+			Note by spatially equal we mean ST_Within(A,B) = true and ST_Within(B,A) = true and
+			also mean ordering of points can be different but
+			represent the same geometry structure.  To verify the order of points is consistent, use
+			ST_OrderingEquals (it must be noted ST_OrderingEquals is a little more stringent than simply verifying order of
+			points are the same).</para>
+
+		<important>
+		  <para>This function will return false if either geometry is invalid even if they are binary equal.</para>
+		</important>
+
+		<para>&sfs_compliant; s2.1.1.2</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 5.1.24</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_Equals(ST_GeomFromText('LINESTRING(0 0, 10 10)'),
+		ST_GeomFromText('LINESTRING(0 0, 5 5, 10 10)'));
+ st_equals
+-----------
+ t
+(1 row)
+
+SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
+		ST_GeomFromText('LINESTRING(0 0, 5 5, 10 10)'));
+ st_equals
+-----------
+ t
+(1 row)
+</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_IsValid"/>, <xref linkend="ST_OrderingEquals"/>, <xref linkend="ST_Reverse"/>, <xref linkend="ST_Within" /></para>
+	  </refsection>
+
+	</refentry>
+
+	<refentry id="ST_HasArc">
+	  <refnamediv>
+		<refname>ST_HasArc</refname>
+
+		<refpurpose>Returns true if a geometry or geometry collection contains a circular string</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_HasArc</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns true if a geometry or geometry collection contains a circular string</para>
+
+		<para>Availability: 1.2.3?</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_HasArc(ST_Collect('LINESTRING(1 2, 3 4, 5 6)', 'CIRCULARSTRING(1 1, 2 3, 4 5, 6 7, 5 6)'));
+		st_hasarc
+		--------
+		t
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_CurveToLine" />,<xref linkend="ST_LineToCurve" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Intersects">
+		<refnamediv>
+			<refname>ST_Intersects</refname>
+
+			<refpurpose>Returns TRUE if the Geometries/Geography "spatially
+			intersect" - (share any portion of space) and FALSE if they don't (they are Disjoint).
+			For geography -- tolerance is 0.00001 meters (so any points that close are considered to intersect)
+			</refpurpose>
+		</refnamediv>
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>boolean <function>ST_Intersects</function></funcdef>
+					<paramdef>
+						<type>geometry</type>
+						<parameter>geomA</parameter>
+					</paramdef>
+					<paramdef>
+						<type>geometry</type>
+						<parameter>geomB</parameter>
+					</paramdef>
+				</funcprototype>
+				<funcprototype>
+					<funcdef>boolean <function>ST_Intersects</function></funcdef>
+					<paramdef>
+						<type>geography</type>
+						<parameter>geogA</parameter>
+					</paramdef>
+					<paramdef>
+						<type>geography</type>
+						<parameter>geogB</parameter>
+					</paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+		<refsection>
+			<title>Description</title>
+			<para>Overlaps, Touches, Within all imply spatial intersection.  If any of the aforementioned
+				returns true, then the geometries also spatially intersect.
+				Disjoint implies false for spatial intersection.</para>
+
+	  <important>
+		<para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument for geometry version.  The geography
+			version supports GEOMETRYCOLLECTION since its a thin wrapper around distance implementation.</para>
+	  </important>
+
+			<para>Performed by the GEOS module (for geometry), geography is native</para>
+			<para>Availability: 1.5 support for geography was introduced.</para>
+			<note>
+			  <para>This function call will automatically include a bounding box
+			  comparison that will make use of any indexes that are available on the
+			  geometries.</para>
+			</note>
+			<note>
+			  <para>For geography, this function has a distance tolerance of about 0.00001 meters and uses the sphere rather
+			  	than spheroid calculation.</para>
+			</note>
+			<note>
+			  <para>NOTE: this is the "allowable" version that returns a
+			boolean, not an integer.</para>
+			</note>
+			<para>&sfs_compliant; s2.1.1.2 //s2.1.13.3 
+			  - ST_Intersects(g1, g2 ) --&gt; Not (ST_Disjoint(g1, g2 ))
+			</para>
+			<para>&sqlmm_compliant; SQL-MM 3: 5.1.27</para>
+		</refsection>
+		<refsection>
+		<title>Geometry Examples</title>
+<programlisting>SELECT ST_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry);
+ st_intersects
+---------------
+ f
+(1 row)
+SELECT ST_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
+ st_intersects
+---------------
+ t
+(1 row)
+		</programlisting>
+		</refsection>
+		<refsection>
+		<title>Geography Examples</title>
+<programlisting>SELECT ST_Intersects(
+		ST_GeographyFromText('SRID=4326;LINESTRING(-43.23456 72.4567,-43.23456 72.4568)'),
+		ST_GeographyFromText('SRID=4326;POINT(-43.23456 72.4567772)')
+		);
+
+ st_intersects
+---------------
+t
+</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Disjoint"/></para>
+		</refsection>
+	</refentry>
+	<refentry id="ST_Length">
+		<refnamediv>
+		  <refname>ST_Length</refname>
+
+		  <refpurpose>Returns the 2d length of the geometry if it is a linestring or multilinestring. geometry are in units of spatial reference and geography are in meters (default spheroid)</refpurpose>
+		</refnamediv>
+		<refsynopsisdiv>
+		  <funcsynopsis>
+			<funcprototype>
+			  <funcdef>float <function>ST_Length</function></funcdef>
+				<paramdef><type>geometry </type><parameter>a_2dlinestring</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+			  <funcdef>float <function>ST_Length</function></funcdef>
+				<paramdef><type>geography </type><parameter>gg</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+			  <funcdef>float <function>ST_Length</function></funcdef>
+				<paramdef><type>geography </type><parameter>gg</parameter></paramdef>
+				<paramdef><type>boolean </type><parameter>use_spheroid</parameter></paramdef>
+			</funcprototype>
+		  </funcsynopsis>
+		</refsynopsisdiv>
+		<refsection>
+			<title>Description</title>
+
+			<para>For geometry: Returns the cartesian 2D length of the geometry if it is a linestring, multilinestring, ST_Curve, ST_MultiCurve.  0 is returned for
+				areal geometries.  For areal geometries use ST_Perimeter. Geometry: Measurements are in the units of the
+				spatial reference system of the geometry. Geography: Units are in meters and also acts as a Perimeter function for areal geogs.</para>
+
+			<para>Currently for geometry this is an alias for ST_Length2D, but this may change to support higher dimensions.</para>
+			<note><para>Currently applying this to a MULTI/POLYGON of type geography will give you the perimeter of the POLYGON/MULTIPOLYGON.  This is not the 
+			case with the geometry implementation.</para></note>
+			<note><para>For geography measurement defaults spheroid measurement.  To use the faster less accurate sphere use ST_Length(gg,false);</para></note>
+			<para>&sfs_compliant; s2.1.5.1</para>
+			<para>&sqlmm_compliant; SQL-MM 3: 7.1.2, 9.3.4</para>
+			<para>Availability: 1.5.0 geography support was introduced in 1.5.</para>
+		</refsection>
+
+		  <refsection>
+			<title>Geometry Examples</title>
+			<para>Return length in feet for line string. Note this is in feet because 2249 is
+				Mass State Plane Feet</para>
+			<programlisting>
+SELECT ST_Length(ST_GeomFromText('LINESTRING(743238 2967416,743238 2967450,743265 2967450,
+743265.625 2967416,743238 2967416)',2249));
+st_length
+---------
+ 122.630744000095
+
+
+--Transforming WGS 84 linestring to Massachusetts state plane meters
+SELECT ST_Length(
+	ST_Transform(
+		ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45, -72.1240 42.45666, -72.123 42.1546)'),
+		26986
+	)
+);
+st_length
+---------
+34309.4563576191
+			</programlisting>
+		  </refsection>
+		  <refsection>
+			<title>Geography Examples</title>
+			<para>Return length of WGS 84 geography line</para>
+			<programlisting>
+			-- default calculation is using a sphere rather than spheroid
+SELECT ST_Length(the_geog) As length_spheroid,  ST_Length(the_geog,false) As length_sphere
+FROM (SELECT ST_GeographyFromText(
+'SRID=4326;LINESTRING(-72.1260 42.45, -72.1240 42.45666, -72.123 42.1546)') As the_geog)
+ As foo;
+ length_spheroid  |  length_sphere
+------------------+------------------
+ 34310.5703627305 | 34346.2060960742
+(1 row)
+			</programlisting>
+		  </refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_GeographyFromText" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_Length_Spheroid" />, <xref linkend="ST_Perimeter" />, <xref linkend="ST_Transform" /></para>
+		</refsection>
+	</refentry>
+
+	<refentry id="ST_Length2D">
+	  <refnamediv>
+		<refname>ST_Length2D</refname>
+
+		<refpurpose>Returns the 2-dimensional length of the geometry if it is a
+				linestring or multi-linestring. This is an alias for <varname>ST_Length</varname></refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_Length2D</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_2dlinestring</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the 2-dimensional length of the geometry if it is a
+				linestring or multi-linestring. This is an alias for <varname>ST_Length</varname></para>
+
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Length" />, <xref linkend="ST_Length3D" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Length3D">
+	  <refnamediv>
+		<refname>ST_Length3D</refname>
+
+		<refpurpose>Returns the 3-dimensional or 2-dimensional length of the geometry if it is a
+			linestring or multi-linestring. </refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_Length3D</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_3dlinestring</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the 3-dimensional or 2-dimensional length of the geometry if it is a
+			linestring or multi-linestring. For 2-d lines it will just return the 2-d length (same as ST_Length and ST_Length2D)</para>
+
+		<para>&Z_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<para>Return length in feet for a 3D cable. Note this is in feet because 2249 is
+				Mass State Plane Feet</para>
+		<programlisting>
+SELECT ST_Length3D(ST_GeomFromText('LINESTRING(743238 2967416 1,743238 2967450 1,743265 2967450 3,
+743265.625 2967416 3,743238 2967416 3)',2249));
+st_length3d
+-----------
+122.704716741457
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Length" />, <xref linkend="ST_Length2D" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Length_Spheroid">
+	  <refnamediv>
+		<refname>ST_Length_Spheroid</refname>
+
+		<refpurpose>Calculates the 2D or 3D length of a linestring/multilinestring on an ellipsoid. This
+			is useful if the coordinates of the geometry are in
+			longitude/latitude and a length is desired without reprojection.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_Length_Spheroid</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
+			<paramdef><type>spheroid </type> <parameter>a_spheroid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Calculates the length of a geometry on an ellipsoid. This
+			is useful if the coordinates of the geometry are in
+			longitude/latitude and a length is desired without reprojection.
+			The ellipsoid is a separate database type and can be constructed
+			as follows:</para>
+
+		<literallayout>SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR
+		  AXIS&gt;,&lt;INVERSE FLATTENING&gt;]</literallayout>
+
+
+		<literallayout>SPHEROID["GRS_1980",6378137,298.257222101]</literallayout>
+		<note><para>Will return 0 for anything that is not a MULTILINESTRING or LINESTRING</para></note>
+
+		<para>&Z_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_Length_Spheroid( geometry_column,
+			  'SPHEROID["GRS_1980",6378137,298.257222101]' )
+			  FROM geometry_table;
+
+SELECT ST_Length_Spheroid( the_geom, sph_m ) As tot_len,
+ST_Length_Spheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1,
+ST_Length_Spheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2
+			  FROM (SELECT ST_GeomFromText('MULTILINESTRING((-118.584 38.374,-118.583 38.5),
+	(-71.05957 42.3589 , -71.061 43))') As the_geom,
+CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;
+	tot_len      |    len_line1     |    len_line2
+------------------+------------------+------------------
+ 85204.5207562955 | 13986.8725229309 | 71217.6482333646
+
+ --3D
+SELECT ST_Length_Spheroid( the_geom, sph_m ) As tot_len,
+ST_Length_Spheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1,
+ST_Length_Spheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2
+			  FROM (SELECT ST_GeomFromEWKT('MULTILINESTRING((-118.584 38.374 20,-118.583 38.5 30),
+	(-71.05957 42.3589 75, -71.061 43 90))') As the_geom,
+CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;
+
+	 tot_len      |    len_line1    |    len_line2
+------------------+-----------------+------------------
+ 85204.5259107402 | 13986.876097711 | 71217.6498130292
+
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeometryN" />, <xref linkend="ST_Length" />, <xref linkend="ST_Length3D_Spheroid" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Length2D_Spheroid">
+	  <refnamediv>
+		<refname>ST_Length2D_Spheroid</refname>
+
+		<refpurpose>Calculates the 2D length of a linestring/multilinestring on an ellipsoid. This
+			is useful if the coordinates of the geometry are in
+			longitude/latitude and a length is desired without reprojection.  </refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_Length2D_Spheroid</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
+			<paramdef><type>spheroid </type> <parameter>a_spheroid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Calculates the 2D length of a geometry on an ellipsoid. This
+			is useful if the coordinates of the geometry are in
+			longitude/latitude and a length is desired without reprojection.
+			The ellipsoid is a separate database type and can be constructed
+			as follows:</para>
+
+		<literallayout>SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR
+		  AXIS&gt;,&lt;INVERSE FLATTENING&gt;]</literallayout>
+
+
+		<literallayout>SPHEROID["GRS_1980",6378137,298.257222101]</literallayout>
+		<note><para>Will return 0 for anything that is not a MULTILINESTRING or LINESTRING</para></note>
+		<note><para>This is much like <xref linkend="ST_Length_Spheroid" /> and <xref linkend="ST_Length3D_Spheroid" /> except it will throw away the Z coordinate in calculations.</para></note>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_Length2D_Spheroid( geometry_column,
+			  'SPHEROID["GRS_1980",6378137,298.257222101]' )
+			  FROM geometry_table;
+
+SELECT ST_Length2D_Spheroid( the_geom, sph_m ) As tot_len,
+ST_Length2D_Spheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1,
+ST_Length2D_Spheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2
+			  FROM (SELECT ST_GeomFromText('MULTILINESTRING((-118.584 38.374,-118.583 38.5),
+	(-71.05957 42.3589 , -71.061 43))') As the_geom,
+CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;
+	tot_len      |    len_line1     |    len_line2
+------------------+------------------+------------------
+ 85204.5207562955 | 13986.8725229309 | 71217.6482333646
+
+ --3D Observe same answer
+SELECT ST_Length2D_Spheroid( the_geom, sph_m ) As tot_len,
+ST_Length2D_Spheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1,
+ST_Length2D_Spheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2
+			  FROM (SELECT ST_GeomFromEWKT('MULTILINESTRING((-118.584 38.374 20,-118.583 38.5 30),
+	(-71.05957 42.3589 75, -71.061 43 90))') As the_geom,
+CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;
+
+	tot_len      |    len_line1     |    len_line2
+------------------+------------------+------------------
+ 85204.5207562955 | 13986.8725229309 | 71217.6482333646
+
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeometryN" />, <xref linkend="ST_Length_Spheroid" />, <xref linkend="ST_Length3D_Spheroid" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Length3D_Spheroid">
+	  <refnamediv>
+		<refname>ST_Length3D_Spheroid</refname>
+
+		<refpurpose>Calculates the length of a geometry on an ellipsoid,
+			taking the elevation into account. This is just an alias for ST_Length_Spheroid. </refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_Length3D_Spheroid</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
+			<paramdef><type>spheroid </type> <parameter>a_spheroid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Calculates the length of a geometry on an ellipsoid,
+			taking the elevation into account. This is just an alias
+			for ST_Length_Spheroid. </para>
+
+		<note><para>Will return 0 for anything that is not a MULTILINESTRING or LINESTRING</para></note>
+		<note><para>This functionis just an alias for ST_Length_Spheroid. </para></note>
+
+		<para>&Z_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>See ST_Length_Spheroid</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeometryN" />, <xref linkend="ST_Length" />, <xref linkend="ST_Length_Spheroid" /></para>
+	  </refsection>
+	</refentry>
+
+
+
+
+	<refentry id="ST_Max_Distance">
+	  <refnamediv>
+		<refname>ST_Max_Distance</refname>
+
+		<refpurpose>Returns the 2-dimensional largest distance between two geometries in
+		projected units.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_Max_Distance</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the 2-dimensional maximum cartesian distance between two linestrings in
+		projected units.</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>--ALL EXAMPLES current throw NOT YET IMPLEMENTED</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Distance"/></para>
+	  </refsection>
+	</refentry>
+
+
+	<refentry id="ST_OrderingEquals">
+	  <refnamediv>
+		<refname>ST_OrderingEquals</refname>
+
+		<refpurpose>Returns true if the given geometries represent the same geometry
+		and points are in the same directional order.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_OrderingEquals</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>A</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>B</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>ST_OrderingEquals compares two geometries and t (TRUE) if the
+		  geometries are equal and the coordinates are in the same order;
+		  otherwise it returns f (FALSE).</para>
+
+		<note>
+			<para>This function is implemented as per the ArcSDE SQL
+		specification rather than SQL-MM.
+		http://edndoc.esri.com/arcsde/9.1/sql_api/sqlapi3.htm#ST_OrderingEquals</para>
+		</note>
+		<para>&sqlmm_compliant; SQL-MM 3: 5.1.43</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_OrderingEquals(ST_GeomFromText('LINESTRING(0 0, 10 10)'),
+		ST_GeomFromText('LINESTRING(0 0, 5 5, 10 10)'));
+ st_orderingequals
+-----------
+ f
+(1 row)
+
+SELECT ST_OrderingEquals(ST_GeomFromText('LINESTRING(0 0, 10 10)'),
+		ST_GeomFromText('LINESTRING(0 0, 0 0, 10 10)'));
+ st_orderingequals
+-----------
+ t
+(1 row)
+
+SELECT ST_OrderingEquals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
+		ST_GeomFromText('LINESTRING(0 0, 0 0, 10 10)'));
+ st_orderingequals
+-----------
+ f
+(1 row)
+</programlisting>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Equals"/>, <xref linkend="ST_Reverse"/></para>
+		  </refsection>
+	</refentry>
+
+	<refentry id="ST_Overlaps">
+	  <refnamediv>
+		<refname>ST_Overlaps</refname>
+
+		<refpurpose>Returns TRUE if the Geometries share space, are of the same dimension, but are not completely contained by each other.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_Overlaps</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>A</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>B</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns TRUE if the Geometries "spatially
+			overlap".  By that we mean they intersect, but one does not completely contain another. </para>
+
+		 <para>Performed by the GEOS module</para>
+
+		<note><para>Do not call with a GeometryCollection as an argument</para></note>
+
+		<para>This function call will automatically include a bounding box
+		comparison that will make use of any indexes that are available on
+		the geometries. To avoid index use, use the function
+		_ST_Overlaps.</para>
+
+		<para>NOTE: this is the "allowable" version that returns a
+			boolean, not an integer.</para>
+
+		<para>&sfs_compliant; s2.1.1.2 // s2.1.13.3</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 5.1.32</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>--a point on a line is contained by the line and is of a lower dimension, and therefore does not overlap the line
+			nor crosses
+
+SELECT ST_Overlaps(a,b) As a_overlap_b,
+	ST_Crosses(a,b) As a_crosses_b,
+		ST_Intersects(a, b) As a_intersects_b, ST_Contains(b,a) As b_contains_a
+FROM (SELECT ST_GeomFromText('POINT(1 0.5)') As a, ST_GeomFromText('LINESTRING(1 0, 1 1, 3 5)')  As b)
+	As foo
+
+a_overlap_b | a_crosses_b | a_intersects_b | b_contains_a
+------------+-------------+----------------+--------------
+f           | f           | t              | t
+
+--a line that is partly contained by circle, but not fully is defined as intersecting and crossing,
+-- but since of different dimension it does not overlap
+SELECT ST_Overlaps(a,b) As a_overlap_b, ST_Crosses(a,b) As a_crosses_b,
+	ST_Intersects(a, b) As a_intersects_b,
+	ST_Contains(a,b) As a_contains_b
+FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a, ST_GeomFromText('LINESTRING(1 0, 1 1, 3 5)')  As b)
+	As foo;
+
+ a_overlap_b | a_crosses_b | a_intersects_b | a_contains_b
+-------------+-------------+----------------+--------------
+ f           | t           | t              | f
+
+ -- a 2-dimensional bent hot dog (aka puffered line string) that intersects a circle,
+ --	but is not fully contained by the circle is defined as overlapping since they are of the same dimension,
+--	but it does not cross, because the intersection of the 2 is of the same dimension
+--	as the maximum dimension of the 2
+
+SELECT ST_Overlaps(a,b) As a_overlap_b, ST_Crosses(a,b) As a_crosses_b, ST_Intersects(a, b) As a_intersects_b,
+ST_Contains(b,a) As b_contains_a,
+ST_Dimension(a) As dim_a, ST_Dimension(b) as dim_b, ST_Dimension(ST_Intersection(a,b)) As dima_intersection_b
+FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a,
+	ST_Buffer(ST_GeomFromText('LINESTRING(1 0, 1 1, 3 5)'),0.5)  As b)
+	As foo;
+
+ a_overlap_b | a_crosses_b | a_intersects_b | b_contains_a | dim_a | dim_b | dima_intersection_b
+-------------+-------------+----------------+--------------+-------+-------+---------------------
+ t           | f           | t              | f            |     2 |     2 |              2
+</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Contains"/>, <xref linkend="ST_Crosses"/>, <xref linkend="ST_Dimension"/>, <xref linkend="ST_Intersects"/></para>
+	  </refsection>
+	</refentry>
+	<refentry id="ST_Perimeter">
+		<refnamediv>
+		  <refname>ST_Perimeter</refname>
+
+		  <refpurpose>Return the length measurement of the boundary of an ST_Surface
+		  or ST_MultiSurface value. (Polygon, Multipolygon)</refpurpose>
+		</refnamediv>
+		<refsynopsisdiv>
+		  <funcsynopsis>
+			<funcprototype>
+			  <funcdef>float <function>ST_Perimeter</function></funcdef>
+				<paramdef><type>geometry </type><parameter>g1</parameter></paramdef>
+			</funcprototype>
+		  </funcsynopsis>
+		</refsynopsisdiv>
+		<refsection>
+			<title>Description</title>
+
+			<para>Returns the 2D perimeter of the geometry if it is a ST_Surface, ST_MultiSurface (Polygon, Multipolygon).  0 is returned for
+				non-areal geometries.  For linestrings use ST_Length.  Measurements are in the units of the
+				spatial reference system of the geometry.</para>
+
+			<para>Currently this is an alias for ST_Perimeter2D, but this may change to support higher dimensions.</para>
+
+			<para>&sfs_compliant; s2.1.5.1</para>
+			<para>&sqlmm_compliant; SQL-MM 3: 8.1.3, 9.5.4</para>
+		</refsection>
+
+		  <refsection>
+			<title>Examples</title>
+			<para>Return perimeter in feet for polygon and multipolygon. Note this is in feet because 2249 is
+				Mass State Plane Feet</para>
+			<programlisting>
+SELECT ST_Perimeter(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,743265 2967450,
+743265.625 2967416,743238 2967416))', 2249));
+st_perimeter
+---------
+ 122.630744000095
+(1 row)
+
+SELECT ST_Perimeter(ST_GeomFromText('MULTIPOLYGON(((763104.471273676 2949418.44119003,
+763104.477769673 2949418.42538203,
+763104.189609677 2949418.22343004,763104.471273676 2949418.44119003)),
+((763104.471273676 2949418.44119003,763095.804579742 2949436.33850239,
+763086.132105649 2949451.46730207,763078.452329651 2949462.11549407,
+763075.354136904 2949466.17407812,763064.362142565 2949477.64291974,
+763059.953961626 2949481.28983009,762994.637609571 2949532.04103014,
+762990.568508415 2949535.06640477,762986.710889563 2949539.61421415,
+763117.237897679 2949709.50493431,763235.236617789 2949617.95619822,
+763287.718121842 2949562.20592617,763111.553321674 2949423.91664605,
+763104.471273676 2949418.44119003)))', 2249));
+st_perimeter
+---------
+ 845.227713366825
+(1 row)
+			</programlisting>
+		  </refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Length" /></para>
+		</refsection>
+	</refentry>
+
+	<refentry id="ST_Perimeter2D">
+	  <refnamediv>
+		<refname>ST_Perimeter2D</refname>
+
+		<refpurpose>Returns the 2-dimensional perimeter of the geometry, if it
+			is a polygon or multi-polygon.  This is currently an alias for ST_Perimeter.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_Perimeter2D</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the 2-dimensional perimeter of the geometry, if it
+			is a polygon or multi-polygon. </para>
+
+		<!-- optionally mention that this function uses indexes if appropriate -->
+		<note>
+		  <para> This is currently an alias for ST_Perimeter. In future versions ST_Perimeter may return the highest dimension perimeter for a geometry.  This is still under consideration</para>
+		</note>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Perimeter" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Perimeter3D">
+	  <refnamediv>
+		<refname>ST_Perimeter3D</refname>
+
+		<refpurpose>Returns the 3-dimensional perimeter of the geometry, if it
+			is a polygon or multi-polygon.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_Perimeter3D</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the 3-dimensional perimeter of the geometry, if it
+			is a polygon or multi-polygon. If the geometry is 2-dimensional, then the 2-dimensional perimeter is returned.  </para>
+
+		<para>&Z_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+		<para>Perimeter of a slightly elevated polygon in the air in Massachusetts state plane feet</para>
+		<programlisting>SELECT ST_Perimeter3D(the_geom), ST_Perimeter2d(the_geom), ST_Perimeter(the_geom) FROM
+			(SELECT ST_GeomFromEWKT('SRID=2249;POLYGON((743238 2967416 2,743238 2967450 1,
+743265.625 2967416 1,743238 2967416 2))') As the_geom) As foo;
+
+  st_perimeter3d  |  st_perimeter2d  |   st_perimeter
+------------------+------------------+------------------
+ 105.465793597674 | 105.432997272188 | 105.432997272188
+
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_Perimeter" />, <xref linkend="ST_Perimeter2D" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_PointOnSurface">
+	  <refnamediv>
+		<refname>ST_PointOnSurface</refname>
+
+		<refpurpose>Returns a <varname>POINT</varname> guaranteed to lie on the surface.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_PointOnSurface</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns a <varname>POINT</varname> guaranteed to intersect a surface.</para>
+
+		<para>&sfs_compliant; s3.2.14.2 // s3.2.18.2</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 8.1.5, 9.5.6.
+		 According to the specs, ST_PointOnSurface works for surface geometries (POLYGONs, MULTIPOLYGONS, CURVED POLYGONS).  So PostGIS seems to be extending what
+		 the spec allows here.  Most databases Oracle,DB II, ESRI SDE seem to only support this function for surfaces.  SQL Server 2008 like PostGIS supports for all common geometries.</para>
+		<para>&Z_support;</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_AsText(ST_PointOnSurface('POINT(0 5)'::geometry));
+ st_astext
+------------
+ POINT(0 5)
+(1 row)
+
+SELECT ST_AsText(ST_PointOnSurface('LINESTRING(0 5, 0 10)'::geometry));
+ st_astext
+------------
+ POINT(0 5)
+(1 row)
+
+SELECT ST_AsText(ST_PointOnSurface('POLYGON((0 0, 0 5, 5 5, 5 0, 0 0))'::geometry));
+   st_astext
+----------------
+ POINT(2.5 2.5)
+(1 row)
+
+SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 10 2)')));
+   st_asewkt
+----------------
+ POINT(0 0 1)
+(1 row)
+</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Centroid" />, <xref linkend="ST_Point_Inside_Circle" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Relate">
+	  <refnamediv>
+		<refname>ST_Relate</refname>
+
+		<refpurpose>Returns true if this Geometry is spatially related to
+				anotherGeometry, by testing for intersections between the
+				Interior, Boundary and Exterior of the two geometries as specified
+				by the values in the intersectionMatrixPattern.  If no intersectionMatrixPattern
+				is passed in, then returns the maximum intersectionMatrixPattern that relates the 2 geometries.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_Relate</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>intersectionMatrixPattern</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>text <function>ST_Relate</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
+		  </funcprototype>
+
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Version 1: Takes geomA, geomB, intersectionMatrix and Returns 1 (TRUE) if this Geometry is spatially related to
+				anotherGeometry, by testing for intersections between the
+				Interior, Boundary and Exterior of the two geometries as specified
+				by the values in the <ulink url="http://docs.codehaus.org/display/GEOTDOC/Point+Set+Theory+and+the+DE-9IM+Matrix#PointSetTheoryandtheDE-9IMMatrix-9IntersectionMatrix">intersectionMatrixPattern</ulink>.</para>
+
+		<para>This is especially useful for testing compound checks of intersection, crosses, etc in one step.</para>
+		<para>Do not call with a GeometryCollection as an argument</para>
+
+		<note><para>This is the "allowable" version that returns a
+		boolean, not an integer.  This is defined in OGC spec</para></note>
+
+		<note><para>This DOES NOT automagically include an index call.  The reason for that
+			is some relationships are anti e.g. Disjoint.  If you are
+			using a relationship pattern that requires intersection, then include the &amp;&amp;
+			index call.</para></note>
+
+		<para>Version 2: Takes geomA and geomB and returns the <ulink url="http://docs.codehaus.org/display/GEOTDOC/Point+Set+Theory+and+the+DE-9IM+Matrix#PointSetTheoryandtheDE-9IMMatrix-9IntersectionMatrix">DE-9IM (dimensionally extended nine-intersection
+		matrix)</ulink></para>
+
+		<note><para>Do not call with a GeometryCollection as an argument</para></note>
+
+		<para>not in OGC spec, but implied. see s2.1.13.2</para>
+
+		<para>Both Performed by the GEOS module</para>
+
+		<para>&sfs_compliant; s2.1.1.2 // s2.1.13.3</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 5.1.25</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>
+--Find all compounds that intersect and not touch a poly (interior intersects)
+SELECT l.* , b.name As poly_name
+FROM polys As b
+	INNER JOIN compounds As l
+	ON (p.the_geom &amp;&amp; b.the_geom
+	AND ST_Relate(l.the_geom, b.the_geom,'T********'));
+
+SELECT ST_Relate(ST_GeometryFromText('POINT(1 2)'), ST_Buffer(ST_GeometryFromText('POINT(1 2)'),2));
+ st_relate
+-----------
+ 0FFFFF212
+
+SELECT ST_Relate(ST_GeometryFromText('LINESTRING(1 2, 3 4)'), ST_GeometryFromText('LINESTRING(5 6, 7 8)'));
+ st_relate
+-----------
+ FF1FF0102
+
+
+SELECT ST_Relate(ST_GeometryFromText('POINT(1 2)'), ST_Buffer(ST_GeometryFromText('POINT(1 2)'),2), '0FFFFF212');
+ st_relate
+-----------
+ t
+
+SELECT ST_Relate(ST_GeometryFromText('POINT(1 2)'), ST_Buffer(ST_GeometryFromText('POINT(1 2)'),2), '*FF*FF212');
+ st_relate
+-----------
+ t
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Crosses" />, <xref linkend="ST_Disjoint" />, <xref linkend="ST_Intersects" />, <xref linkend="ST_Touches" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Touches">
+	  <refnamediv>
+		<refname>ST_Touches</refname>
+
+		<refpurpose>Returns <varname>TRUE</varname> if the geometries have at least one point in common,
+		but their interiors do not intersect.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_Touches</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns <varname>TRUE</varname> if the only points in common between
+		<parameter>g1</parameter> and <parameter>g2</parameter> lie in the union of the
+		boundaries of <parameter>g1</parameter> and <parameter>g2</parameter>.
+		The <function>ST_Touches</function> relation applies
+		to all Area/Area, Line/Line, Line/Area, Point/Area and Point/Line pairs of relationships,
+		but <emphasis>not</emphasis> to the Point/Point pair.</para>
+
+		<para>In mathematical terms, this predicate is expressed as:</para>
+
+		<remark>TODO: Insert appropriate MathML markup here or use a gif.
+		Simple HTML markup does not work well in both IE and Firefox.</remark>
+
+		<informalfigure>
+		  <mediaobject>
+			<imageobject>
+			  <imagedata fileref="images/st_touches-math.gif" />
+			</imageobject>
+		  </mediaobject>
+		</informalfigure>
+
+		<para>The allowable DE-9IM Intersection Matrices for the two geometries are:</para>
+
+		<itemizedlist>
+		  <listitem>
+			<para><markup>FT*******</markup></para>
+		  </listitem>
+
+		  <listitem>
+			<para><markup>F**T*****</markup></para>
+		  </listitem>
+
+		  <listitem>
+			<para><markup>F***T****</markup></para>
+		  </listitem>
+		</itemizedlist>
+
+		<important>
+		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+		</important>
+
+		<note>
+		  <para>This function call will automatically include a bounding box
+		  comparison that will make use of any indexes that are available on
+		  the geometries.  To avoid using an index, use <function>_ST_Touches</function> instead.</para>
+		</note>
+
+		<para>&sfs_compliant; s2.1.1.2 // s2.1.13.3</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 5.1.28</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<para>The <function>ST_Touches</function> predicate returns <varname>TRUE</varname> in all the following illustrations.</para>
+		<informaltable>
+		  <tgroup cols="3">
+			<tbody>
+			  <row>
+				<entry><para><informalfigure>
+					<mediaobject>
+					  <imageobject>
+						<imagedata fileref="images/st_touches01.png" />
+					  </imageobject>
+
+					  <caption><para><varname>POLYGON</varname> / <varname>POLYGON</varname></para></caption>
+					</mediaobject>
+				  </informalfigure></para></entry>
+
+				<entry><para><informalfigure>
+					<mediaobject>
+					  <imageobject>
+						<imagedata fileref="images/st_touches02.png" />
+					  </imageobject>
+
+					  <caption><para><varname>POLYGON</varname> / <varname>POLYGON</varname></para></caption>
+					</mediaobject>
+				  </informalfigure></para></entry>
+
+				<entry><para><informalfigure>
+					<mediaobject>
+					  <imageobject>
+						<imagedata fileref="images/st_touches03.png" />
+					  </imageobject>
+
+					  <caption><para><varname>POLYGON</varname> / <varname>LINESTRING</varname></para></caption>
+					</mediaobject>
+				  </informalfigure></para></entry>
+			  </row>
+			  <row>
+				<entry><para><informalfigure>
+					<mediaobject>
+					  <imageobject>
+						<imagedata fileref="images/st_touches04.png" />
+					  </imageobject>
+
+					  <caption><para><varname>LINESTRING</varname> / <varname>LINESTRING</varname></para></caption>
+					</mediaobject>
+				  </informalfigure></para></entry>
+
+				<entry><para><informalfigure>
+					<mediaobject>
+					  <imageobject>
+						<imagedata fileref="images/st_touches05.png" />
+					  </imageobject>
+
+					  <caption><para><varname>LINESTRING</varname> / <varname>LINESTRING</varname></para></caption>
+					</mediaobject>
+				  </informalfigure></para></entry>
+
+				<entry><para><informalfigure>
+					<mediaobject>
+					  <imageobject>
+						<imagedata fileref="images/st_touches06.png" />
+					  </imageobject>
+
+					  <caption><para><varname>POLYGON</varname> / <varname>POINT</varname></para></caption>
+					</mediaobject>
+				  </informalfigure></para></entry>
+			  </row>
+			</tbody>
+		  </tgroup>
+		</informaltable>
+
+		<programlisting>SELECT ST_Touches('LINESTRING(0 0, 1 1, 0 2)'::geometry, 'POINT(1 1)'::geometry);
+ st_touches
+------------
+ f
+(1 row)
+
+SELECT ST_Touches('LINESTRING(0 0, 1 1, 0 2)'::geometry, 'POINT(0 2)'::geometry);
+ st_touches
+------------
+ t
+(1 row)</programlisting>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Within">
+	  <refnamediv>
+		<refname>ST_Within</refname>
+
+		<refpurpose>Returns true if the geometry A is completely inside geometry B</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_Within</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>A</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>B</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns TRUE if geometry A is completely inside geometry B. For this function to make
+		sense, the source geometries must both be of the same coordinate projection,
+		having the same SRID.  It is a given that if ST_Within(A,B) is true and ST_Within(B,A) is true, then
+		the two geometries are considered spatially equal.</para>
+
+		<para>Performed by the GEOS module</para>
+
+		<important>
+		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+		</important>
+
+		<important>
+		  <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
+		</important>
+
+		<para>This function call will automatically include a bounding box
+			comparison that will make use of any indexes that are available on
+			the geometries. To avoid index use, use the function
+			_ST_Within.</para>
+
+		<para>NOTE: this is the "allowable" version that returns a
+			boolean, not an integer.</para>
+
+		<para>&sfs_compliant; s2.1.1.2 // s2.1.13.3 
+		  - a.Relate(b, 'T*F**F***')
+		</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 5.1.30</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		  <programlisting>
+--a circle within a circle
+SELECT ST_Within(smallc,smallc) As smallinsmall,
+	ST_Within(smallc, bigc) As smallinbig,
+	ST_Within(bigc,smallc) As biginsmall,
+	ST_Within(ST_Union(smallc, bigc), bigc) as unioninbig,
+	ST_Within(bigc, ST_Union(smallc, bigc)) as biginunion,
+	ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion
+FROM
+(
+SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
+	ST_Buffer(ST_GeomFromText('POINT(50 50)'), 40) As bigc) As foo;
+--Result
+ smallinsmall | smallinbig | biginsmall | unioninbig | biginunion | bigisunion
+--------------+------------+------------+------------+------------+------------
+ t            | t          | f          | t          | t          | t
+(1 row)
+		</programlisting>
+
+		<para><inlinemediaobject>
+		<imageobject>
+		  <imagedata fileref="images/st_within01.png" />
+		</imageobject>
+	  </inlinemediaobject> </para>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Contains"/>, <xref linkend="ST_Equals"/>,<xref linkend="ST_IsValid"/></para>
+	  </refsection>
+	</refentry>
+  </sect1>
