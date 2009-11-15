@@ -666,10 +666,6 @@ CreateTable(void)
 			{
 				stringbuffer_append (sb_row, "int4");
 			}
-			else if  ( field_width < 19 )
-			{
-				stringbuffer_append (sb_row, "int8");
-			}
 			else
 			{
 				stringbuffer_aprintf (sb_row, "numeric(%d,0)", field_width);

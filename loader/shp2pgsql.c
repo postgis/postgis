@@ -582,10 +582,6 @@ CreateTable(void)
 			{
 				printf ("int4");
 			}
-			else if  ( field_width < 19 )
-			{
-				printf ("int8");
-			}
 			else
 			{
 				printf("numeric(%d,0)",
