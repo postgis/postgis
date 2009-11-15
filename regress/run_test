@@ -18,6 +18,11 @@ PGSQL2SHP=../loader/pgsql2shp
 #
 ###################################################
 
+# Set the locale to "C" so error messages match
+# Save original locale to set back
+ORIG_LC_ALL=$LC_ALL
+export LC_ALL=C
+
 if [ -n "$USE_VERSION" ]; then
 	if [ "$USE_VERSION" -gt 74 ]; then
 		PGOPTIONS="${PGOPTIONS} -c lc_messages=C"
@@ -507,3 +512,5 @@ else
 	: echo "Drop database ${DB} manually"
 fi
 
+# Set the locale back to the original
+export LC_ALL=$ORIG_LC_ALL
