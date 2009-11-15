@@ -90,7 +90,7 @@ postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSIO
 	   echo "       try installing dblatex and then re-run configure"; \
 	   false; \
 	else \
-		cat reference_management.xml reference_constructor.xml reference_accessor.xml reference_editor.xml reference_output.xml reference_operator.xml reference_measure.xml reference_processing.xml reference_lrs.xml reference_transaction.xml reference_misc.xml reference_exception.xml > reference.xml \
+		cat reference_management.xml reference_constructor.xml reference_accessor.xml reference_editor.xml reference_output.xml reference_operator.xml reference_measure.xml reference_processing.xml reference_lrs.xml reference_transaction.xml reference_misc.xml reference_exception.xml > reference.xml; \
 		cp reference.xml reference.xml.orig; \
 		cat reference.xml.orig | sed -e "s:term:listitem:g" > reference.xml; \
 		dblatex -T native -t pdf \
@@ -103,7 +103,6 @@ postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSIO
 		   -P figure.caution="${PWD}/html/images/caution" \
 		   -P latex.output.revhistory=0 \
 		   -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf $<; \
-		cp reference.xml.orig reference.xml; \
 		rm -rf reference.xml.orig reference.xml; \
 	fi
 
