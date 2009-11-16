@@ -948,6 +948,12 @@ Datum geometry_from_geography(PG_FUNCTION_ARGS)
 	GSERIALIZED *g_ser = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	lwgeom = lwgeom_from_gserialized(g_ser);
+	
+	/* We want "geometry" to think all our "geography" has an SRID, and the 
+	   implied SRID is 4326, so we fill that in if our SRID is actually unknown. */
+	if( lwgeom->SRID == -1 )
+		lwgeom->SRID = 4326;
+		
 	ret = pglwgeom_serialize(lwgeom);
 	lwgeom_release(lwgeom);
 	
