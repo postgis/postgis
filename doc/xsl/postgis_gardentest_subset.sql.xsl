@@ -26,6 +26,7 @@
 	<xsl:variable name='var_varchar'>'test'</xsl:variable>
 	<xsl:variable name='var_spheroid'>'SPHEROID["GRS_1980",6378137,298.257222101]'</xsl:variable>
 	<xsl:variable name='var_matrix'>'FF1FF0102'</xsl:variable>
+	<xsl:variable name='var_boolean'>false</xsl:variable>
 	<pgis:gardens>
 	<pgis:gset ID='PointSet' GeometryType='POINT'>(SELECT ST_SetSRID(ST_Point(i,j),4326) As the_geom
 		FROM (SELECT a*1.01234567890 FROM generate_series(-10,50,10) As a) As i(i)
@@ -335,6 +336,9 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					</xsl:when>
 					<xsl:when test="contains(type,'timestamp') or type = 'date'">
 						<xsl:text>'2009-01-01'</xsl:text>
+					</xsl:when>
+					<xsl:when test="contains(type,'boolean')">
+						<xsl:value-of select="$var_boolean" />
 					</xsl:when>
 				</xsl:choose>
 				<xsl:if test="position()&lt;last()"><xsl:text>, </xsl:text></xsl:if>
