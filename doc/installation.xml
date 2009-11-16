@@ -16,7 +16,8 @@ make
 make install
 createdb yourdatabase
 createlang plpgsql yourdatabase
-psql -d yourdatabase -f lwpostgis.sql
+psql -d yourdatabase -f postgis.sql
+psql -d yourdatabase -f postgis_comments.sql
 psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
 
     <para>
