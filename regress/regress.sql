@@ -274,5 +274,9 @@ select '149', ST_astext(segmentize('GEOMETRYCOLLECTION EMPTY', 0.5));
 select '150', ST_asewkt(ST_force_collection(ST_setsrid('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'::geometry, 6)));
 select '150_', asewkt(force_collection(setsrid('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'::geometry, 6)));
 
+select '151', ST_MakeEnvelope(0, 0, 1, 1, 4326);
+select '152', ST_SRID(ST_MakeEnvelope(0, 0, 1, 1, 4326));
+
+
 -- Drop test table
 DROP table test;

@@ -1096,6 +1096,52 @@ LINESTRING(1 2 3,3 4 5,6 6 6)
 		</refsection>
 	</refentry>
 
+
+	<refentry id="ST_MakeEnvelope">
+		<refnamediv>
+		<refname>ST_MakeEnvelope</refname>
+
+		<refpurpose>Creates a rectangular Polygon formed from the given minimums and maximums. Input
+			values must be in SRS specified by the SRID.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_MakeEnvelope</function></funcdef>
+			<paramdef><type>double precision</type> <parameter>xmin</parameter></paramdef>
+			<paramdef><type>double precision</type> <parameter>ymin</parameter></paramdef>
+			<paramdef><type>double precision</type> <parameter>xmax</parameter></paramdef>
+			<paramdef><type>double precision</type> <parameter>ymax</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>Creates a rectangular Polygon formed from the minima and maxima. by the given shell. Input
+				values must be in SRS specified by the SRID.</para>
+
+		</refsection>
+
+		<refsection>
+		<title>Example: Building an bounding box polygon</title>
+		 <programlisting>
+SELECT ST_AsText(ST_MakePolygon(10, 10, 11, 11, 4326));
+
+st_asewkt
+-----------
+POLYGON((10 10, 10 11, 11 11, 11 10, 10 10))
+			  </programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_MakePoint" />, <xref linkend="ST_MakeLine" />, <xref linkend="ST_MakePolygon" /></para>
+		</refsection>
+	</refentry>
+
 	<refentry id="ST_MakePolygon">
 		<refnamediv>
 		<refname>ST_MakePolygon</refname>
