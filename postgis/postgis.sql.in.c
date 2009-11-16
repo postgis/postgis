@@ -1921,6 +1921,100 @@ CREATE OR REPLACE FUNCTION ST_DumpRings(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_dump_rings'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
+-----------------------------------------------------------------------
+-- ST_DumpPoints()
+-----------------------------------------------------------------------
+-- This function mimicks that of ST_Dump for collections, but this function 
+-- that returns a path and all the points that make up a particular geometry.
+-- This current implementation in plpgsql does not scale very well at all.
+-- and should be ported to C at some point.
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_DumpPoints(the_geom geometry, cur_path integer[]) RETURNS SETOF geometry_dump AS $$
+DECLARE
+  tmp geometry_dump;
+  tmp2 geometry_dump;
+  nb_points integer;
+  nb_geom integer;
+  i integer;
+  j integer;
+  g geometry;
+  
+BEGIN
+  
+  RAISE DEBUG '%,%', cur_path, ST_GeometryType(the_geom);
+
+  -- Special case (MULTI* OR GEOMETRYCOLLECTION) : iterate and return the DumpPoints of the geometries
+  SELECT ST_NumGeometries(the_geom) INTO nb_geom;
+
+  IF (nb_geom IS NOT NULL) THEN
+    
+    i = 1;
+    FOR tmp2 IN SELECT (ST_Dump(the_geom)).* LOOP
+
+      FOR tmp IN SELECT * FROM ST_DumpPoints(tmp2.geom, cur_path || tmp2.path) LOOP
+	    RETURN NEXT tmp;
+      END LOOP;
+      i = i + 1;
+      
+    END LOOP;
+
+    RETURN;
+  END IF;
+  
+
+  -- Special case (POLYGON) : return the points of the rings of a polygon
+  IF (ST_GeometryType(the_geom) = 'ST_Polygon') THEN
+
+    FOR tmp IN SELECT * FROM ST_DumpPoints(ST_ExteriorRing(the_geom), cur_path || ARRAY[1]) LOOP
+      RETURN NEXT tmp;
+    END LOOP;
+    
+    j := ST_NumInteriorRings(the_geom);
+    FOR i IN 1..j LOOP
+        FOR tmp IN SELECT * FROM ST_DumpPoints(ST_InteriorRingN(the_geom, i), cur_path || ARRAY[i+1]) LOOP
+          RETURN NEXT tmp;
+        END LOOP;
+    END LOOP;
+    
+    RETURN;
+  END IF;
+
+    
+  -- Special case (POINT) : return the point
+  IF (ST_GeometryType(the_geom) = 'ST_Point') THEN
+
+    tmp.path = cur_path || ARRAY[1];
+    tmp.geom = the_geom;
+
+    RETURN NEXT tmp;
+    RETURN;
+
+  END IF;
+
+
+  -- Use ST_NumPoints rather than ST_NPoints to have a NULL value if the_geom isn't
+  -- a LINESTRING or CIRCULARSTRING.
+  SELECT ST_NumPoints(the_geom) INTO nb_points;
+
+  -- This should never happen
+  IF (nb_points IS NULL) THEN
+    RAISE EXCEPTION 'Unexpected error while dumping geometry %', ST_AsText(the_geom);
+  END IF;
+
+  FOR i IN 1..nb_points LOOP
+    tmp.path = cur_path || ARRAY[i];
+    tmp.geom := ST_PointN(the_geom, i);
+    RETURN NEXT tmp;
+  END LOOP;
+   
+END
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION ST_DumpPoints(geometry) RETURNS SETOF geometry_dump AS $$
+  SELECT * FROM ST_DumpPoints($1, NULL);
+$$ LANGUAGE SQL;
+
+
 ------------------------------------------------------------------------
 
 --
