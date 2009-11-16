@@ -1123,6 +1123,8 @@ LINESTRING(1 2 3,3 4 5,6 6 6)
 
 			<para>Creates a rectangular Polygon formed from the minima and maxima. by the given shell. Input
 				values must be in SRS specified by the SRID.</para>
+				
+			<para>Availability: 1.5</para>
 
 		</refsection>
 
