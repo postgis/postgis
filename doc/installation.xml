@@ -85,9 +85,9 @@ psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
 	  <listitem>
 		<para>
 		  GEOS geometry library, version 3.1.1 or greater, but GEOS 3.2 is recommended.  Without GEOS 3.2,
-			you will be missing some major enhancements with handling of topological exceptions and improvements to ST_Buffer that allow beveling and mitre. The GEOS library is
+			you will be missing some major enhancements with handling of topological exceptions and improvements to ST_Buffer that allow beveling and mitre and much faster buffering. The GEOS library is
 		  used to provide geometry tests (ST_Touches(), ST_Contains(),
-		  ST_Intersects()) and operations (ST_Buffer(), ST_Union(),
+		  ST_Intersects()) and operations (ST_Buffer(), ST_Union(),ST_Intersection()
 		  ST_Difference()) within PostGIS. GEOS is available for download from
 		  <ulink url="http://trac.osgeo.org/geos/">
 			http://trac.osgeo.org/geos/
