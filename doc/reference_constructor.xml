@@ -1127,9 +1127,9 @@ LINESTRING(1 2 3,3 4 5,6 6 6)
 		</refsection>
 
 		<refsection>
-		<title>Example: Building an bounding box polygon</title>
+		<title>Example: Building a bounding box polygon</title>
 		 <programlisting>
-SELECT ST_AsText(ST_MakePolygon(10, 10, 11, 11, 4326));
+SELECT ST_AsText(ST_MakeEnvelope(10, 10, 11, 11, 4326));
 
 st_asewkt
 -----------
