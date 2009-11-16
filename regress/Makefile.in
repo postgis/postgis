@@ -16,7 +16,7 @@ PGSQL_BINDIR=$(shell pushd "@PGSQL_BINDIR@" > /dev/null && pwd && popd > /dev/nu
 # and allow in-place regression testing still. (#219)
 LIBNAME = postgis
 ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) "<" 84),1)
-	LIBNAME = libpostgis 
+	LIBNAME = libpostgis
 endif
 
 srcdir=$(shell pwd)
