@@ -1815,6 +1815,11 @@ CREATE OR REPLACE FUNCTION ST_SetPoint(geometry, integer, geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_setpoint_linestring'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_MakeEnvelope(float8, float8, float8, float8, integer)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_MakeEnvelope'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION MakePolygon(geometry, geometry[])

@@ -77,6 +77,7 @@ Datum LWGEOM_affine(PG_FUNCTION_ARGS);
 Datum LWGEOM_longitude_shift(PG_FUNCTION_ARGS);
 Datum optimistic_overlap(PG_FUNCTION_ARGS);
 Datum ST_GeoHash(PG_FUNCTION_ARGS);
+Datum ST_MakeEnvelope(PG_FUNCTION_ARGS);
 
 void lwgeom_affine_ptarray(POINTARRAY *pa, double afac, double bfac, double cfac,
                            double dfac, double efac, double ffac, double gfac, double hfac, double ifac, double xoff, double yoff, double zoff);
@@ -2764,6 +2765,56 @@ Datum LWGEOM_same(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(g2, 1);
 
 	PG_RETURN_BOOL(result);
+}
+
+PG_FUNCTION_INFO_V1(ST_MakeEnvelope);
+Datum ST_MakeEnvelope(PG_FUNCTION_ARGS)
+{
+	LWPOLY *poly;
+	PG_LWGEOM *result;
+	POINTARRAY **pa;
+	double *pts;
+	double x1, y1, x2, y2;
+	int srid;
+
+	POSTGIS_DEBUG(2, "ST_MakeEnvelope called");
+
+	x1 = PG_GETARG_FLOAT8(0);
+	y1 = PG_GETARG_FLOAT8(1);
+	x2 = PG_GETARG_FLOAT8(2);
+	y2 = PG_GETARG_FLOAT8(3);
+	srid = PG_GETARG_INT32(4);
+
+	pa = (POINTARRAY**)palloc(sizeof(POINTARRAY*));
+	pa[0] = ptarray_construct(0, 0, 5);
+	pts = (double*)(pa[0]->serialized_pointlist); 
+
+	/* 1st point */
+	pts[0] = x1;
+	pts[1] = y1;
+
+	/* 2nd point */
+	pts[2] = x1;
+	pts[3] = y2;
+
+	/* 3rd point */
+	pts[4] = x2;
+	pts[5] = y2;
+
+	/* 4th point */
+	pts[6] = x2;
+	pts[7] = y1;
+
+	/* 5th point */
+	pts[8] = x1;
+	pts[9] = y1;
+
+	poly = lwpoly_construct(srid, ptarray_compute_box2d(pa[0]), 1, pa);
+
+	result = pglwgeom_serialize((LWGEOM*)poly);
+	lwpoly_free(poly);
+	
+	PG_RETURN_POINTER(result);
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_makepoint);
