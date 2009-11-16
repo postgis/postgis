@@ -1,36 +1,38 @@
 #!/usr/bin/perl
 
-$url = "http://svn.osgeo.org/postgis/";
+my $debug = 0;
 
-if ( $ARGV[1] ) 
-{
-  $url .= "branches/" . $ARGV[1] . "/postgis/";
-  print "Reading scripts version from branch $ARGV[1] ...\n";
-}
-else
-{
-  $url .= "trunk/postgis/";
-  print "Reading scripts version from trunk ...\n";
-}
+my @files = ( 
+	"postgis.sql.in.c",
+	"geography.sql.in.c",
+	"sqlmm.sql.in.c",
+	"long_xact.sql.in.c" 
+	);
 
-@files = ( 
-  "postgis.sql.in.c",
-  "geography.sql.in.c",
-  "sqlmm.sql.in.c",
-  "long_xact.sql.in.c" 
-  );
-
-$rev = 0;
+my $rev = 0;
 
 foreach $f (@files)
 {
-  $uf = $url . $f;
-  $s = `svn info $uf`;
-  ($r) = ($s =~ /Last Changed Rev: (\d+)/);
-  print $uf," (Revision $r)\n";
-  $rev = $r if $r > $rev; 
+	my $file = "./postgis/$f";
+	if( -f $file )
+	{
+		my $r = 0;
+		open(F, $file);
+		while(<F>)
+		{
+			$r = $1 if /\$Id: \S+ (\d+) /;
+		}
+		print "$f got revision $r\n" if $debug && $r;
+  		$rev = $r if $r > $rev; 
+	}
+	else 
+	{
+		die "Could not open input file $f\n";
+	}
 }
 
-print "\nScripts revision: $rev\n\n";
+print "\nMaximum scripts revision: $rev\n\n" if $debug;
+
+print $rev if ! $debug;
 
 
