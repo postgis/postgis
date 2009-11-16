@@ -9,62 +9,13 @@
 <!ENTITY last_proj_release_version "4.6.1">
 <!ENTITY last_geos_release_version "3.0.3">
 
-<!ENTITY sfs_compliant 
-"<inlinemediaobject>
-   <imageobject><imagedata fileref='images/check.png' /></imageobject>
- </inlinemediaobject>
- This method implements the <ulink 
- url='http://www.opengeospatial.org/standards/sfs'>OpenGIS Simple Features
- Implementation Specification for SQL 1.1.</ulink>">
-
-<!ENTITY sqlmm_compliant 
-"<inlinemediaobject>
-   <imageobject>
-     <imagedata fileref='images/check.png' />
-   </imageobject>
- </inlinemediaobject> This method implements the SQL/MM specification.">
-
-<!ENTITY curve_support 
-"<inlinemediaobject>
-   <imageobject><imagedata fileref='images/check.png' /></imageobject>
- </inlinemediaobject>
- This method supports Circular Strings and Curves">
-
-<!ENTITY Z_support
-"<inlinemediaobject>
-   <imageobject>
-     <imagedata fileref='images/check.png' />
-   </imageobject>
- </inlinemediaobject>
- This function supports 3d and will not drop the z-index.">
-
-<!ENTITY M_support
-"<inlinemediaobject>
-   <imageobject>
-     <imagedata fileref='images/check.png' />
-   </imageobject>
- </inlinemediaobject>
- This function supports M coordinates.">
-
-<!ENTITY introduction SYSTEM "introduction.xml">
 <!ENTITY introduction SYSTEM "introduction.xml">
 <!ENTITY installation SYSTEM "installation.xml">
 <!ENTITY faq SYSTEM "faq.xml">
 <!ENTITY using_postgis_dataman SYSTEM "using_postgis_dataman.xml">
 <!ENTITY using_postgis_app SYSTEM "using_postgis_app.xml">
 <!ENTITY performance_tips SYSTEM "performance_tips.xml">
-<!ENTITY reference_management SYSTEM "reference_management.xml">
-<!ENTITY reference_constructor SYSTEM "reference_constructor.xml">
-<!ENTITY reference_accessor SYSTEM "reference_accessor.xml">
-<!ENTITY reference_editor SYSTEM "reference_editor.xml">
-<!ENTITY reference_output SYSTEM "reference_output.xml">
-<!ENTITY reference_operator SYSTEM "reference_operator.xml">
-<!ENTITY reference_measure SYSTEM "reference_measure.xml">
-<!ENTITY reference_processing SYSTEM "reference_processing.xml">
-<!ENTITY reference_lrs SYSTEM "reference_lrs.xml">
-<!ENTITY reference_transaction SYSTEM "reference_transaction.xml">
-<!ENTITY reference_misc SYSTEM "reference_misc.xml">
-<!ENTITY reference_exception SYSTEM "reference_exception.xml">
+<!ENTITY reference SYSTEM "reference.xml">
 <!ENTITY postgis_aggs_mm SYSTEM "postgis_aggs_mm.xml">
 <!ENTITY reporting SYSTEM "reporting.xml">
 <!ENTITY release_notes SYSTEM "release_notes.xml">
@@ -104,39 +55,9 @@
   &using_postgis_dataman;
   &using_postgis_app;
   &performance_tips;
-
-
-  <chapter>
-    <title>PostGIS Reference</title>
-    <para>The functions given below are the ones which a user of PostGIS is
-    likely to need. There are other functions which are required support
-    functions to the PostGIS objects which are not of use to a general
-    user.</para>
-
-    <note>
-      <para>PostGIS has begun a transition from the existing naming convention
-      to an SQL-MM-centric convention. As a result, most of the functions that
-      you know and love have been renamed using the standard spatial type (ST)
-      prefix. Previous functions are still available, though are not listed in
-      this document where updated functions are equivalent. These will be
-      deprecated in a future release.</para>
-    </note>
-
-    &reference_management;
-    &reference_constructor;
-    &reference_accessor;
-    &reference_editor;
-    &reference_output;
-    &reference_operator;
-    &reference_measure;
-    &reference_processing;
-    &reference_lrs;
-    &reference_transaction;
-    &reference_misc;
-    &reference_exception;
-  </chapter>
-
+  &reference;
   &postgis_aggs_mm;
   &reporting;
   &release_notes;
+
 </book>

@@ -61,13 +61,13 @@ endif
 endif
 endif
 
-postgis_aggs_mm.xml: ./xsl/postgis_aggs_mm.xml.xsl postgis.xml
-	$(XSLTPROC) ./xsl/postgis_aggs_mm.xml.xsl postgis.xml > $@
+postgis_aggs_mm.xml: ./xsl/postgis_aggs_mm.xml.xsl reference.xml
+	$(XSLTPROC) ./xsl/postgis_aggs_mm.xml.xsl reference.xml > $@
 
-postgis_comments.sql: ./xsl/postgis_comments.sql.xsl postgis.xml
-	$(XSLTPROC) ./xsl/postgis_comments.sql.xsl postgis.xml > $@
+postgis_comments.sql: ./xsl/postgis_comments.sql.xsl reference.xml
+	$(XSLTPROC) ./xsl/postgis_comments.sql.xsl reference.xml > $@
 
-postgis-out.xml: postgis.xml introduction.xml installation.xml faq.xml using_postgis_dataman.xml  using_postgis_app.xml performance_tips.xml reference_management.xml reference_constructor.xml reference_accessor.xml reference_editor.xml reference_output.xml reference_operator.xml reference_measure.xml reference_processing.xml reference_lrs.xml reference_transaction.xml reference_misc.xml reference_exception.xml postgis_aggs_mm.xml reporting.xml release_notes.xml ../Version.config
+postgis-out.xml: postgis.xml introduction.xml installation.xml faq.xml using_postgis_dataman.xml  using_postgis_app.xml performance_tips.xml reference.xml postgis_aggs_mm.xml reporting.xml release_notes.xml ../Version.config
 	cat $< | sed "s/@@LAST_RELEASE_VERSION@@/${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}/g" > $@
 
 chunked-html: postgis-out.xml images
@@ -90,7 +90,6 @@ postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSIO
 	   echo "       try installing dblatex and then re-run configure"; \
 	   false; \
 	else \
-		cat reference_management.xml reference_constructor.xml reference_accessor.xml reference_editor.xml reference_output.xml reference_operator.xml reference_measure.xml reference_processing.xml reference_lrs.xml reference_transaction.xml reference_misc.xml reference_exception.xml > reference.xml; \
 		cp reference.xml reference.xml.orig; \
 		cat reference.xml.orig | sed -e "s:term:listitem:g" > reference.xml; \
 		dblatex -T native -t pdf \
@@ -103,7 +102,8 @@ postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSIO
 		   -P figure.caution="${PWD}/html/images/caution" \
 		   -P latex.output.revhistory=0 \
 		   -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf $<; \
-		rm -rf reference.xml.orig reference.xml; \
+		cp reference.xml.orig reference.xml; \
+		rm -rf reference.xml.orig; \
 	fi
 
 pdf: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
