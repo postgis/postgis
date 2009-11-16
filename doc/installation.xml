@@ -17,7 +17,6 @@ make install
 createdb yourdatabase
 createlang plpgsql yourdatabase
 psql -d yourdatabase -f postgis.sql
-psql -d yourdatabase -f geography.sql
 psql -d yourdatabase -f postgis_comments.sql
 psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
 
@@ -616,17 +615,6 @@ Failed: 0</programlisting>
 
 	<para>
 	  <command>psql -d [yourdatabase] -f postgis.sql</command>
-	</para>
-
-	<para>
-	  Now load the PostGIS geography object type and related function definitions into your database by
-	  loading the <filename>geography.sql</filename> definitions file (located in
-	  <filename>[prefix]/share/contrib</filename> as specified during the
-	  configuration step).
-	</para>
-
-	<para>
-	  <command>psql -d [yourdatabase] -f geography.sql</command>
 	</para>
 
 	<para>
