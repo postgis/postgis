@@ -521,16 +521,16 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 		gbox2 = gbox1;
 
 	
-	/* Are these data arctic? Polar stereographic north. */
+	/* Are these data arctic? Lambert Azimuthal Equal Area North. */
 	if( gbox1.ymin > 65.0 && gbox2.ymin > 65.0 )
 	{
-		PG_RETURN_INT32(-3995);
+		PG_RETURN_INT32(-3574);
 	}
 
-	/* Are these data antarctic? Polar stereographic south. */
+	/* Are these data antarctic? Lambert Azimuthal Equal Area South. */
 	if( gbox1.ymin < -65.0 && gbox2.ymin < -65.0 )
 	{
-		PG_RETURN_INT32(-3031);
+		PG_RETURN_INT32(-3409);
 	}
 	
 	/*

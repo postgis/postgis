@@ -415,24 +415,39 @@ static char* GetProj4String(int srid)
 			snprintf(proj_str, maxproj4len, "+proj=utm +zone=%d +ellps=WGS84 +datum=WGS84 +units=m +no_defs", id - 32600);
 		}
 		/* UTM South */
-		if( id >= 32701 && id <= 32760 )
+		else if( id >= 32701 && id <= 32760 )
 		{
 			snprintf(proj_str, maxproj4len, "+proj=utm +zone=%d +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs", id - 32700);
 		}
+		/* Lambert Azimuthal Equal Area South Pole */
+		else if( id == 3409 )
+		{
+			strncpy(proj_str, "+proj=laea +lat_0=-90 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxproj4len );
+		}		
 		/* Polar Sterographic South */
-		if( id == 3031 )
+		else if( id == 3031 )
 		{
 			strncpy(proj_str, "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxproj4len);
 		}
+		/* Lambert Azimuthal Equal Area North Pole */
+		else if( id == 3574 )
+		{
+			strncpy(proj_str, "+proj=laea +lat_0=90 +lon_0=-40 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxproj4len );
+		}		
 		/* Polar Stereographic North */
-		if( id == 3995 )
+		else if( id == 3995 )
 		{
 			strncpy(proj_str, "+proj=stere +lat_0=90 +lat_ts=71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxproj4len );
 		}		
 		/* World Mercator */
-		if( id == 3395 )
+		else if( id == 3395 )
 		{
 			strncpy(proj_str, "+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxproj4len );
+		}
+		else
+		{
+			elog(ERROR, "Cannot find SRID (%d) in spatial_ref_sys", srid);
+			return NULL;
 		}		
 		
 		POSTGIS_DEBUGF(3, "returning on SRID=%d: %s", srid, proj_str);
