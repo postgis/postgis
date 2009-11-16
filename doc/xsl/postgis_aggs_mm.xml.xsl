@@ -74,7 +74,7 @@
 			<title>PostGIS Geography Support Functions</title>
 			<para>The functions and operators given below are PostGIS functions/operators that take as input or return as output a <link linkend="PostGIS_Geography">geography</link> data type object.</para>
 			<note><para>Functions with a (T) are not native geodetic functions, and use a ST_Transform call to and from geometry to do the operation.  As a result, they may not behave as expected when going over dateline, poles, 
-				and for large geometries or geometry pairs that cover more than one UTM zone. Basic tranform - (favoring UTM, polar stereographic and falling back on mercator in worst case scenario)</para></note>
+				and for large geometries or geometry pairs that cover more than one UTM zone. Basic tranform - (favoring UTM, Lambert Azimuthal (North/South), and falling back on mercator in worst case scenario)</para></note>
 				<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
 				<xsl:for-each select='sect1/refentry'>
