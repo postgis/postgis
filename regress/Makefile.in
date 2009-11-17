@@ -11,15 +11,9 @@ HAVE_LIBXML2=@HAVE_LIBXML2@
 # colons in drive letters will break PATH.
 PGSQL_BINDIR=$(shell pushd "@PGSQL_BINDIR@" > /dev/null && pwd && popd > /dev/null)
 
-
-# Hack to support the change in .so name from PgSQL 8.3 to 8.4
-# and allow in-place regression testing still. (#219)
-LIBNAME = postgis
-ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) "<" 84),1)
-	LIBNAME = libpostgis
-endif
-
+# Where we put our regression installation 
 srcdir=$(shell pwd)
+REGRESS_INSTALLDIR=$(srcdir)/00-regress-install
 
 # 
 # Put path from pg_config into front of search path
@@ -103,20 +97,16 @@ endif
 
 all: test 
 
-test check: ../postgis/postgis.sql ../loader/pgsql2shp ../loader/shp2pgsql 
-	sed 's,$$libdir/postgis,$(srcdir)/../postgis/$(LIBNAME),g' ../postgis/postgis.sql > postgis.sql
+test check:
+	$(MAKE) -C ../postgis REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
+	$(MAKE) -C ../loader REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
+	sed 's,$$libdir,$(REGRESS_INSTALLDIR)/lib,g' ../postgis/postgis.sql > postgis.sql
 	@USE_VERSION=$(POSTGIS_PGSQL_VERSION) ./run_test $(TESTS)
-
-
-../postgis/postgis.sql:
-	$(MAKE) -C ../postgis
-
-../loader/pgsql2shp ../loader/shp2pgsql:
-	$(MAKE) -C ../loader
 
 cleanup:
 	@sleep 1
 	@dropdb postgis_reg > /dev/null
 
 clean:
+	rm -rf $(REGRESS_INSTALLDIR)
 	rm -f postgis.sql 
