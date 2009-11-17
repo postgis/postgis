@@ -1438,6 +1438,12 @@ CREATE OR REPLACE FUNCTION ST_force_collection(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_collection'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_CollectionExtract(geometry, integer)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_CollectionExtract'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION multi(geometry)
 	RETURNS geometry

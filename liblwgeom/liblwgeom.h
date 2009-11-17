@@ -916,7 +916,7 @@ LWMSURFACE *lwmsurface_deserialize(uchar *serialized_form);
 
 LWGEOM *lwcollection_getsubgeom(LWCOLLECTION *col, int gnum);
 BOX3D *lwcollection_compute_box3d(LWCOLLECTION *col);
-
+LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type);
 
 /******************************************************************
  * SERIALIZED FORM functions

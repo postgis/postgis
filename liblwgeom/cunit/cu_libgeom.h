@@ -37,3 +37,4 @@ void test_lwgeom_count_vertices(void);
 void test_on_gser_lwgeom_count_vertices(void);
 void test_gbox_serialized_size(void);
 void test_gbox_calculation(void);
+void test_lwcollection_extract(void);

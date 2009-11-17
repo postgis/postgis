@@ -78,6 +78,7 @@ Datum LWGEOM_longitude_shift(PG_FUNCTION_ARGS);
 Datum optimistic_overlap(PG_FUNCTION_ARGS);
 Datum ST_GeoHash(PG_FUNCTION_ARGS);
 Datum ST_MakeEnvelope(PG_FUNCTION_ARGS);
+Datum ST_CollectionExtract(PG_FUNCTION_ARGS);
 
 void lwgeom_affine_ptarray(POINTARRAY *pa, double afac, double bfac, double cfac,
                            double dfac, double efac, double ffac, double gfac, double hfac, double ifac, double xoff, double yoff, double zoff);
@@ -3434,4 +3435,39 @@ Datum ST_GeoHash(PG_FUNCTION_ARGS)
 	pfree(geohash);
 	PG_RETURN_POINTER(result);
 
+}
+
+PG_FUNCTION_INFO_V1(ST_CollectionExtract);
+Datum ST_CollectionExtract(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *input = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *output;
+	LWGEOM *lwgeom = pglwgeom_deserialize(input);
+	LWCOLLECTION *lwcol = NULL;
+	int type = PG_GETARG_INT32(1);
+	int lwgeom_type = TYPE_GETTYPE(lwgeom->type);
+	
+	/* Ensure the right type was input */
+	if ( ! ( type == POINTTYPE || type == LINETYPE || type == POLYGONTYPE ) )
+	{
+		lwgeom_free(lwgeom);
+		elog(ERROR, "ST_CollectionExtract: only point, linestring and polygon may be extracted");
+		PG_RETURN_NULL();
+	}
+	
+	/* Mirror non-collections right back */
+	if ( ! lwgeom_is_collection(lwgeom_type) )
+	{
+		output = palloc(VARSIZE(input));
+		memcpy(VARDATA(output), VARDATA(input), VARSIZE(input) - VARHDRSZ);
+		SET_VARSIZE(output, VARSIZE(input));
+		lwgeom_free(lwgeom);
+		PG_RETURN_POINTER(output);
+	}
+
+	lwcol = lwcollection_extract((LWCOLLECTION*)lwgeom, type);
+	output = pglwgeom_serialize((LWGEOM*)lwcol);
+	lwgeom_free(lwgeom); 
+
+	PG_RETURN_POINTER(output);
 }

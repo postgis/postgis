@@ -37,7 +37,8 @@ CU_pSuite register_libgeom_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_lwgeom_check_geodetic()", test_lwgeom_check_geodetic)) || 
 	    (NULL == CU_add_test(pSuite, "test_lwgeom_count_vertices()", test_lwgeom_count_vertices))  || 
 	    (NULL == CU_add_test(pSuite, "test_on_gser_lwgeom_count_vertices()", test_on_gser_lwgeom_count_vertices))  ||
-	    (NULL == CU_add_test(pSuite, "test_gbox_calculation()", test_gbox_calculation))  
+	    (NULL == CU_add_test(pSuite, "test_gbox_calculation()", test_gbox_calculation)) ||
+	    (NULL == CU_add_test(pSuite, "test_lwcollection_extract()", test_lwcollection_extract))  
 
 	)
 	{
@@ -456,4 +457,19 @@ void test_gbox_calculation(void)
 		lwfree(box3d);
 	}
 	lwfree(gbox);
+}
+
+void test_lwcollection_extract(void)
+{
+
+	LWGEOM *geom;
+	LWCOLLECTION *col;
+	
+	geom = lwgeom_from_ewkt("GEOMETRYCOLLECTION(POINT(0 0))", PARSER_CHECK_NONE);
+	col = lwcollection_extract((LWCOLLECTION*)geom, 1);
+	CU_ASSERT_EQUAL(TYPE_GETTYPE(col->type), MULTIPOINTTYPE);
+
+	lwcollection_release(col);
+	lwgeom_free(geom);
+	
 }

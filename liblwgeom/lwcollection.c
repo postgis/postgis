@@ -557,3 +557,87 @@ BOX3D *lwcollection_compute_box3d(LWCOLLECTION *col)
 	}
 	return boxfinal;
 }
+
+/**
+* Takes a potentially heterogeneous collection and returns a homogeneous
+* collection consisting only of the specified type.
+*/
+LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type)
+{
+	int i = 0;
+	LWGEOM **geomlist;
+	BOX3D *b3d;
+	LWCOLLECTION *outcol;
+	int geomlistsize = 16;
+	int geomlistlen = 0;
+	uchar outtype;
+
+	if( ! col ) return NULL;
+
+	switch (type)
+	{
+		case POINTTYPE:
+ 			outtype = MULTIPOINTTYPE;
+			break;
+		case LINETYPE:
+			outtype = MULTILINETYPE;
+			break;
+		case POLYGONTYPE:
+			outtype = MULTIPOLYGONTYPE;
+			break;
+		default:
+			lwerror("Only POLYGON, LINESTRING and POINT are supported by lwcollection_extract. %s requested.", lwgeom_typename(type));
+			return NULL;
+	}
+	
+	geomlist = lwalloc(sizeof(LWGEOM*) * geomlistsize);
+
+	/* Process each sub-geometry */
+	for( i = 0; i < col->ngeoms; i++ )
+	{
+		int subtype = TYPE_GETTYPE(col->geoms[i]->type);
+		/* Copy our sub-types into the output list */
+		if( subtype == type )
+		{
+			/* We've over-run our buffer, double the memory segment */
+			if( geomlistlen == geomlistsize )
+			{
+				geomlistsize *= 2;
+				geomlist = lwrealloc(geomlist, sizeof(LWGEOM*) * geomlistsize);
+			}
+			geomlist[geomlistlen] = col->geoms[i];
+			geomlistlen++;
+		}
+		if( lwgeom_is_collection( subtype ) )
+		{
+			int j = 0;
+			LWCOLLECTION *tmpcol = lwcollection_extract((LWCOLLECTION*)col->geoms[i], type);
+			for( j = 0; j < tmpcol->ngeoms; j++ )
+			{
+				/* We've over-run our buffer, double the memory segment */
+				if( geomlistlen == geomlistsize )
+				{
+					geomlistsize *= 2;
+					geomlist = lwrealloc(geomlist, sizeof(LWGEOM*) * geomlistsize);
+				}
+				geomlist[geomlistlen] = tmpcol->geoms[j];
+				geomlistlen++;
+			}
+			lwfree(tmpcol);
+		}
+	}
+	
+	if( geomlistlen > 0 )
+	{
+		outcol = lwcollection_construct(outtype, col->SRID, NULL, geomlistlen, geomlist);	
+		b3d = lwcollection_compute_box3d(outcol);
+		outcol->bbox = box3d_to_box2df(b3d);
+	}
+	else
+	{
+		outcol = lwcollection_construct_empty(col->SRID, TYPE_HASZ(col->type), TYPE_HASM(col->type));
+	}
+	
+	return outcol;
+}
+

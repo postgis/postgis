@@ -605,6 +605,49 @@ MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))
 		</refsection>
 	</refentry>
 
+	<refentry id="ST_CollectionExtract">
+		<refnamediv>
+			<refname>ST_CollectionExtract</refname>
+
+			<refpurpose>Given a GEOMETRYCOLLECTION, returns the a MULTI* geometry consisting only the specified type. Sub-geometries that are not
+			    the specified type are ignored.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_CollectionExtract</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>type</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>Given a GEOMETRYCOLLECTION, returns the a MULTI* geometry consisting only the specified type. Sub-geometries that are not
+			    the specified type are ignored. If there are no sub-geometries of the right type, an EMPTY collection will be returned. Only
+			    points, lines and polygons are supported.</para>
+
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 0)))'),1));
+			st_astext
+			---------------
+			MULTIPOINT(0 0)
+			(1 row)
+			</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Multi" /></para>
+		</refsection>
+	</refentry>
+	
 	<refentry id="ST_Multi">
 		<refnamediv>
 			<refname>ST_Multi</refname>
