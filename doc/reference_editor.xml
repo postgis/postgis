@@ -610,7 +610,8 @@ MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))
 			<refname>ST_CollectionExtract</refname>
 
 			<refpurpose>Given a GEOMETRYCOLLECTION, returns the a MULTI* geometry consisting only the specified type. Sub-geometries that are not
-			    the specified type are ignored.</refpurpose>
+			    the specified type are ignored. If there are no sub-geometries of the right type, an EMPTY collection will be returned. Only
+			    points, lines and polygons are supported. Type numbers are 1 == POINT, 2 == LINESTRING, 3 == POLYGON.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -628,7 +629,7 @@ MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))
 
 			<para>Given a GEOMETRYCOLLECTION, returns the a MULTI* geometry consisting only the specified type. Sub-geometries that are not
 			    the specified type are ignored. If there are no sub-geometries of the right type, an EMPTY collection will be returned. Only
-			    points, lines and polygons are supported.</para>
+			    points, lines and polygons are supported. Type numbers are 1 == POINT, 2 == LINESTRING, 3 == POLYGON.</para>
 
 		</refsection>
 
