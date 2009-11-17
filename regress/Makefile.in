@@ -70,7 +70,8 @@ TESTS = \
 	regress_bdpoly \
 	regress_proj \
 	dumppoints \
-	wmsservers
+	wmsservers \
+	tickets
 
 # Covers/CoveredBy only if GEOS >= 3.0
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 30),1)
