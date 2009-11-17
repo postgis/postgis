@@ -134,6 +134,10 @@ SELECT '#179b', ST_MakeLine(ARRAY[NULL,NULL,NULL,NULL]);
 -- #183 --
 SELECT '#183', ST_AsText(ST_LineToCurve(ST_LineMerge(ST_Collect(ST_CurveToLine(ST_GeomFromEWKT('CIRCULARSTRING(0 0, 1 1, 1 0)')),ST_GeomFromEWKT('LINESTRING(1 0, 0 1)') ))));
 
+-- #210 --
+SELECT '#210a', ST_Union(ARRAY[NULL,NULL,NULL,NULL]) ;
+SELECT '#210b', ST_MakeLine(ARRAY[NULL,NULL,NULL,NULL]) ;
+
 -- #213 --
 SELECT '#213', round(ST_Perimeter(ST_CurveToLine(ST_GeomFromEWKT('CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0,2 0, 2 1, 2 3, 4 3),(4 3, 4 5, 1 4, 0 0)))'))));
 

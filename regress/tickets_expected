@@ -40,6 +40,9 @@ NOTICE:  No points in input array
 NOTICE:  No points in input array
 #179b|
 #183|COMPOUNDCURVE(CIRCULARSTRING(0 0,0.500000000000184 1.20710678118655,1 0),(1 0,0 1))
+#210a|
+NOTICE:  No points in input array
+#210b|
 #213|17
 #234|COMPOUNDCURVE((0 0,1 1))
 SELECT
