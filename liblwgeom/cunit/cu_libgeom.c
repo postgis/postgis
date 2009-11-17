@@ -469,7 +469,7 @@ void test_lwcollection_extract(void)
 	col = lwcollection_extract((LWCOLLECTION*)geom, 1);
 	CU_ASSERT_EQUAL(TYPE_GETTYPE(col->type), MULTIPOINTTYPE);
 
-	lwcollection_release(col);
+	lwfree(col);
 	lwgeom_free(geom);
 	
 }
