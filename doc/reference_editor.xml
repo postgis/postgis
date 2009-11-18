@@ -644,6 +644,12 @@ st_astext
 ---------------
 MULTIPOINT(0 0)
 (1 row)
+
+SELECT ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1)),LINESTRING(2 2, 3 3))'),2));
+st_astext
+---------------
+MULTILINESTRING((0 0, 1 1), (2 2, 3 3))
+(1 row)
 			</programlisting>
 		</refsection>
 		<refsection>
