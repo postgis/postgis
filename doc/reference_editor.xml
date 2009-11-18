@@ -638,11 +638,12 @@ MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))
 		<refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 0)))'),1));
-			st_astext
-			---------------
-			MULTIPOINT(0 0)
-			(1 row)
+			<programlisting>-- Constants: 1 == POINT, 2 == LINESTRING, 3 == POLYGON
+SELECT ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 0)))'),1));
+st_astext
+---------------
+MULTIPOINT(0 0)
+(1 row)
 			</programlisting>
 		</refsection>
 		<refsection>
