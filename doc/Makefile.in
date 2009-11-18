@@ -67,7 +67,7 @@ postgis_aggs_mm.xml: ./xsl/postgis_aggs_mm.xml.xsl reference.xml
 postgis_comments.sql: ./xsl/postgis_comments.sql.xsl reference.xml
 	$(XSLTPROC) ./xsl/postgis_comments.sql.xsl reference.xml > $@
 
-postgis-out.xml: postgis.xml introduction.xml installation.xml faq.xml using_postgis_dataman.xml  using_postgis_app.xml performance_tips.xml reference.xml postgis_aggs_mm.xml reporting.xml release_notes.xml ../Version.config
+postgis-out.xml: postgis.xml
 	cat $< | sed "s/@@LAST_RELEASE_VERSION@@/${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}/g" > $@
 
 chunked-html: postgis-out.xml images
