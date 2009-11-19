@@ -45,6 +45,15 @@ LIBLWGEOM=../liblwgeom/liblwgeom.a
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_LIBS = @GTK_LIBS@
 
+# If REGRESS=1 passed as a parameter, change the default install paths
+# so that no prefix is included. This allows us to relocate to a temporary
+# directory for regression testing.
+ifeq ($(REGRESS),1)
+	bindir=/bin
+	pkglibdir=/lib
+	datadir=/share
+endif
+
 
 # The real parts of the Makefile
 all: $(SHP2PGSQL) $(PGSQL2SHP) @GTK_BUILD@
