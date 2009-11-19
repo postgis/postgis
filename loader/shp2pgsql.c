@@ -1185,6 +1185,7 @@ InsertPolygon(void)
 		serialized_lwgeom = lwgeom_serialize(lwpolygons[0]);
 	}
 
+/*
 	for(pi = 0; pi < polygon_total; pi++)
 	{
 		Ring *polyring = Outer[pi];
@@ -1198,6 +1199,7 @@ InsertPolygon(void)
 			ring_index++;
 		}
 	}
+*/
 
 	ReleasePolygons(Outer, polygon_total);
 
