@@ -62,6 +62,15 @@ AC_SUBST([POSTGIS_MINOR_VERSION])
 AC_SUBST([POSTGIS_MICRO_VERSION])
 
 dnl
+dnl Search for perl (required for building upgrade scripts)
+dnl
+
+AC_PATH_PROG([PERL], [perl], []) 
+if test "x$PERL" = "x"; then
+	AC_MSG_ERROR([could not find perl])
+fi
+
+dnl
 dnl Search for flex/bison to build the parser
 dnl
 
