@@ -461,6 +461,7 @@ main (int ARGC, char **ARGV)
 
 	printf("END;\n"); /* End the last transaction */
 
+	Cleanup();
 
 	return 0;
 }/*end main() */
@@ -1173,8 +1174,6 @@ InsertPolygon(void)
 		lwpolygons[pi] = lwpoly_as_lwgeom(lwpoly);
 	}
 
-	ReleasePolygons(Outer, polygon_total);
-
 	/* If using MULTIPOLYGONS then generate the serialized collection, otherwise just a single POLYGON */
 	if (simple_geometries == 0)
 	{
@@ -1185,6 +1184,22 @@ InsertPolygon(void)
 	{
 		serialized_lwgeom = lwgeom_serialize(lwpolygons[0]);
 	}
+
+	for(pi = 0; pi < polygon_total; pi++)
+	{
+		Ring *polyring = Outer[pi];
+		int ring_index = 0;
+		while (polyring)
+		{
+			lwfree(pas[pi][ring_index]->serialized_pointlist);
+			lwfree(pas[pi][ring_index]);
+
+			polyring = polyring->next;
+			ring_index++;
+		}
+	}
+
+	ReleasePolygons(Outer, polygon_total);
 
 	if (!hwgeom)
 		result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_NONE, -1);
