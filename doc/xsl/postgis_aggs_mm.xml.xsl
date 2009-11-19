@@ -9,7 +9,13 @@
 	 be processed by doc book
 	 ******************************************************************** -->
 	<xsl:output method="xml" indent="yes" encoding="utf-8"/>
-	<xsl:template match='/chapter'>
+
+	<!-- We deal only with the reference chapter -->
+	<xsl:template match="/">
+		<xsl:apply-templates select="/book/chapter[@id='reference']" />
+	</xsl:template>
+
+	<xsl:template match="chapter">
 	<chapter>
 		<title>PostGIS Special Functions Index</title>
 		<sect1 id="PostGIS_Aggregate_Functions">

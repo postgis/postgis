@@ -162,7 +162,12 @@
 
 	</pgis:gardencrashers>
 
-	<xsl:template match='/chapter'>
+        <!-- We deal only with the reference chapter -->
+        <xsl:template match="/">
+                <xsl:apply-templates select="/book/chapter[@id='reference']" />
+        </xsl:template>
+
+	<xsl:template match='chapter'>
 <!--Start Test table creation, insert, drop -->
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset[not(contains(@createtable,'false'))]">
 SELECT 'create,insert,drop Test: Start Testing Multi/<xsl:value-of select="@GeometryType" />';

@@ -9,7 +9,13 @@
 	 statements from postgis xml doc reference
      ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:template match='/chapter'>
+
+	<!-- We deal only with the reference chapter -->
+        <xsl:template match="/">
+                <xsl:apply-templates select="/book/chapter[@id='reference']" />
+        </xsl:template>
+
+        <xsl:template match="chapter">
 		<xsl:variable name="ap"><xsl:text>'</xsl:text></xsl:variable>
 <!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
 		<xsl:for-each select="sect1[not(contains(@id,'Operator'))]/refentry">

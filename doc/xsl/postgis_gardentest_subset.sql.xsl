@@ -161,7 +161,12 @@
 	
 	</pgis:gardencrashers>
 
-	<xsl:template match='/chapter'>
+        <!-- We deal only with the reference chapter -->
+        <xsl:template match="/">
+                <xsl:apply-templates select="/book/chapter[@id='reference']" />
+        </xsl:template>
+
+	<xsl:template match='chapter'>
 <!-- Start regular function checks excluding operators -->
 		<xsl:for-each select="sect1[not(contains(@id,'Operator'))]/refentry">
 		<xsl:sort select="@id"/>

@@ -19,7 +19,55 @@
 <!ENTITY postgis_aggs_mm SYSTEM "postgis_aggs_mm.xml">
 <!ENTITY reporting SYSTEM "reporting.xml">
 <!ENTITY release_notes SYSTEM "release_notes.xml">
+<!ENTITY reference_management SYSTEM "reference_management.xml">
+<!ENTITY reference_constructor SYSTEM "reference_constructor.xml">
+<!ENTITY reference_accessor SYSTEM "reference_accessor.xml">
+<!ENTITY reference_editor SYSTEM "reference_editor.xml">
+<!ENTITY reference_output SYSTEM "reference_output.xml">
+<!ENTITY reference_operator SYSTEM "reference_operator.xml">
+<!ENTITY reference_measure SYSTEM "reference_measure.xml">
+<!ENTITY reference_processing SYSTEM "reference_processing.xml">
+<!ENTITY reference_lrs SYSTEM "reference_lrs.xml">
+<!ENTITY reference_transaction SYSTEM "reference_transaction.xml">
+<!ENTITY reference_misc SYSTEM "reference_misc.xml">
+<!ENTITY reference_exception SYSTEM "reference_exception.xml">
 
+<!ENTITY sfs_compliant 
+"<inlinemediaobject>
+   <imageobject><imagedata fileref='images/check.png' /></imageobject>
+ </inlinemediaobject>
+ This method implements the <ulink 
+ url='http://www.opengeospatial.org/standards/sfs'>OpenGIS Simple Features
+ Implementation Specification for SQL 1.1.</ulink>">
+
+<!ENTITY sqlmm_compliant 
+"<inlinemediaobject>
+   <imageobject>
+     <imagedata fileref='images/check.png' />
+   </imageobject>
+ </inlinemediaobject> This method implements the SQL/MM specification.">
+
+<!ENTITY curve_support 
+"<inlinemediaobject>
+   <imageobject><imagedata fileref='images/check.png' /></imageobject>
+ </inlinemediaobject>
+ This method supports Circular Strings and Curves">
+
+<!ENTITY Z_support
+"<inlinemediaobject>
+   <imageobject>
+     <imagedata fileref='images/check.png' />
+   </imageobject>
+ </inlinemediaobject>
+ This function supports 3d and will not drop the z-index.">
+
+<!ENTITY M_support
+"<inlinemediaobject>
+   <imageobject>
+     <imagedata fileref='images/check.png' />
+   </imageobject>
+ </inlinemediaobject>
+ This function supports M coordinates.">
 ]>
 <book>
   <title>PostGIS &last_release_version; Manual</title>
