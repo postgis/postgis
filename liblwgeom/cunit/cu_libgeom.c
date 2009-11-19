@@ -31,13 +31,10 @@ CU_pSuite register_libgeom_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_serialized_srid()", test_serialized_srid)) ||
 	    (NULL == CU_add_test(pSuite, "test_gserialized_from_lwgeom_size()", test_gserialized_from_lwgeom_size)) || 
 	    (NULL == CU_add_test(pSuite, "test_gbox_serialized_size()", test_gbox_serialized_size)) || 
-	    (NULL == CU_add_test(pSuite, "test_gserialized_from_lwgeom()", test_gserialized_from_lwgeom)) || 
 	    (NULL == CU_add_test(pSuite, "test_lwgeom_from_gserialized()", test_lwgeom_from_gserialized))  ||
-	    (NULL == CU_add_test(pSuite, "test_geometry_type_from_string()", test_geometry_type_from_string)) || 
-	    (NULL == CU_add_test(pSuite, "test_lwgeom_check_geodetic()", test_lwgeom_check_geodetic)) || 
 	    (NULL == CU_add_test(pSuite, "test_lwgeom_count_vertices()", test_lwgeom_count_vertices))  || 
 	    (NULL == CU_add_test(pSuite, "test_on_gser_lwgeom_count_vertices()", test_on_gser_lwgeom_count_vertices))  ||
-	    (NULL == CU_add_test(pSuite, "test_gbox_calculation()", test_gbox_calculation)) ||
+	    (NULL == CU_add_test(pSuite, "test_geometry_type_from_string()", test_geometry_type_from_string)) || 
 	    (NULL == CU_add_test(pSuite, "test_lwcollection_extract()", test_lwcollection_extract))  
 
 	)
@@ -200,41 +197,7 @@ void test_gbox_serialized_size(void)
 	
 }
 
-void test_gserialized_from_lwgeom(void)
-{
-	LWGEOM *geom;
-	GSERIALIZED *g;
-	uint32 type;
-	double *inspect; /* To poke right into the blob. */
-	
-	geom = lwgeom_from_ewkt("POINT(0 0.2)", PARSER_CHECK_NONE);
-	g = gserialized_from_lwgeom(geom, 1, 0);
-	type = gserialized_get_type(g);
-	CU_ASSERT_EQUAL( type, POINTTYPE );
-	inspect = (double*)g;
-	CU_ASSERT_EQUAL(inspect[3], 0.2);
-	lwgeom_free(geom);
-	lwfree(g);
-	
-	geom = lwgeom_from_ewkt("POLYGON((-1 -1, -1 2.5, 2 2, 2 -1, -1 -1), (0 0, 0 1, 1 1, 1 0, 0 0))", PARSER_CHECK_NONE);
-	g = gserialized_from_lwgeom(geom, 1, 0);
-	type = gserialized_get_type(g);
-	CU_ASSERT_EQUAL( type, POLYGONTYPE );
-	inspect = (double*)g;
-	CU_ASSERT_EQUAL(inspect[9], 2.5);
-	lwgeom_free(geom);
-	lwfree(g);
 
-	geom = lwgeom_from_ewkt("MULTILINESTRING((0 0, 1 1),(0 0.1, 1 1))", PARSER_CHECK_NONE);
-	g = gserialized_from_lwgeom(geom, 1, 0);
-	type = gserialized_get_type(g);
-	CU_ASSERT_EQUAL( type, MULTILINETYPE );
-	inspect = (double*)g;
-	CU_ASSERT_EQUAL(inspect[12], 0.1);
-	lwgeom_free(geom);
-	lwfree(g);
-	
-}
 
 
 void test_lwgeom_from_gserialized(void)
@@ -323,60 +286,6 @@ void test_geometry_type_from_string(void)
 
 }
 
-/* 
-* Build LWGEOM on top of *aligned* structure so we can use the read-only 
-* point access methods on them. 
-*/
-static LWGEOM* lwgeom_over_gserialized(char *wkt)
-{
-	LWGEOM *lwg;
-	GSERIALIZED *g;
-	
-	lwg = lwgeom_from_ewkt(wkt, PARSER_CHECK_NONE);
-	g = gserialized_from_lwgeom(lwg, 1, 0);
-	lwgeom_free(lwg);
-	return lwgeom_from_gserialized(g);
-}
-
-void test_lwgeom_check_geodetic(void)
-{
-	LWGEOM *geom;
-	int i = 0;
-	
-	char ewkt[][512] = { 
-		"POINT(0 0.2)",
-		"LINESTRING(-1 -1,-1 2.5,2 2,2 -1)",
-		"SRID=1;MULTILINESTRING((-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1))",
-		"POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0))",
-		"SRID=4326;MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)),((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)))",
-		"SRID=4326;GEOMETRYCOLLECTION(POINT(0 1),POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0)),MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))))",
-		"POINT(0 220.2)",
-		"LINESTRING(-1 -1,-1231 2.5,2 2,2 -1)",
-		"SRID=1;MULTILINESTRING((-1 -131,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1))",
-		"POLYGON((-1 -1,-1 2.5,2 2,2 -133,-1 -1),(0 0,0 1,1 1,1 0,0 0))",
-		"SRID=4326;MULTIPOLYGON(((-1 -1,-1 2.5,211 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)),((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)))",
-		"SRID=4326;GEOMETRYCOLLECTION(POINT(0 1),POLYGON((-1 -1,-1111 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0)),MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))))",
-	};
-		
-	for( i = 0; i < 6; i++ )
-	{
-		geom = lwgeom_over_gserialized(ewkt[i]);
-		CU_ASSERT_EQUAL(lwgeom_check_geodetic(geom), LW_TRUE);
-		lwgeom_free(geom);
-	}
-
-	for( i = 6; i < 12; i++ )
-	{
-		//char *out_ewkt;
-		geom = lwgeom_over_gserialized(ewkt[i]);
-		CU_ASSERT_EQUAL(lwgeom_check_geodetic(geom), LW_FALSE);
-		//out_ewkt = lwgeom_to_ewkt(geom, PARSER_CHECK_NONE);
-		//printf("%s\n", out_ewkt);
-		lwgeom_free(geom);
-	}
-
-}
-
 void test_lwgeom_count_vertices(void)
 {
 	LWGEOM *geom;
@@ -394,7 +303,6 @@ void test_lwgeom_count_vertices(void)
 	lwgeom_free(geom);
 
 }
-
 
 void test_on_gser_lwgeom_count_vertices(void)
 {
@@ -419,44 +327,6 @@ void test_on_gser_lwgeom_count_vertices(void)
 
 	lwfree(g_ser1);
 	
-}
-
-void test_gbox_calculation(void)
-{
-
-	LWGEOM *geom;
-	int i = 0;
-	GBOX *gbox = gbox_new(gflags(0,0,0));
-	BOX3D *box3d;
-	
-	char ewkt[][512] = { 
-		"POINT(0 0.2)",
-		"LINESTRING(-1 -1,-1 2.5,2 2,2 -1)",
-		"SRID=1;MULTILINESTRING((-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1))",
-		"POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0))",
-		"SRID=4326;MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)),((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)))",
-		"SRID=4326;GEOMETRYCOLLECTION(POINT(0 1),POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0)),MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))))",
-		"POINT(0 220.2)",
-		"LINESTRING(-1 -1,-1231 2.5,2 2,2 -1)",
-		"SRID=1;MULTILINESTRING((-1 -131,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1))",
-		"POLYGON((-1 -1,-1 2.5,2 2,2 -133,-1 -1),(0 0,0 1,1 1,1 0,0 0))",
-		"SRID=4326;MULTIPOLYGON(((-1 -1,-1 2.5,211 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)),((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)))",
-		"SRID=4326;GEOMETRYCOLLECTION(POINT(0 1),POLYGON((-1 -1,-1111 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0)),MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))))",
-	};
-		
-	for( i = 0; i < 6; i++ )
-	{
-		geom = lwgeom_over_gserialized(ewkt[i]);
-		lwgeom_calculate_gbox(geom, gbox);
-		box3d = lwgeom_compute_box3d(geom);
-		//printf("%g %g\n", gbox->xmin, box3d->xmin);
-		CU_ASSERT_EQUAL(gbox->xmin, box3d->xmin);
-		CU_ASSERT_EQUAL(gbox->xmax, box3d->xmax);
-		CU_ASSERT_EQUAL(gbox->ymin, box3d->ymin);
-		CU_ASSERT_EQUAL(gbox->ymax, box3d->ymax);
-		lwfree(box3d);
-	}
-	lwfree(gbox);
 }
 
 void test_lwcollection_extract(void)

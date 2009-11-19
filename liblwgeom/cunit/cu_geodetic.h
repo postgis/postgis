@@ -38,3 +38,6 @@ void test_ptarray_point_in_ring(void);
 void test_spheroid_distance(void);
 void test_spheroid_area(void);
 void test_lwpoly_covers_point2d(void);
+void test_gbox_calculation(void);
+void test_lwgeom_check_geodetic(void);
+void test_gserialized_from_lwgeom(void);

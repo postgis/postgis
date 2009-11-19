@@ -450,7 +450,10 @@ int edge_point_in_cone(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p)
 	** However, tuning the tolerance value feels like a dangerous hack. 
 	** Fundamentally, the problem is that this test is so sensitive.
 	*/
-	if ( vp_dot_vcp > vs_dot_vcp || fabs(vp_dot_vcp - vs_dot_vcp) < 1e-16 )
+
+	/* 1.1102230246251565404236316680908203125e-16 */
+
+	if ( vp_dot_vcp > vs_dot_vcp || fabs(vp_dot_vcp - vs_dot_vcp) < 2e-16 )
 	{
 		LWDEBUG(4, "point is in cone");
 		return LW_TRUE;
@@ -785,25 +788,26 @@ int edge_intersection(GEOGRAPHIC_EDGE e1, GEOGRAPHIC_EDGE e2, GEOGRAPHIC_POINT *
 		LWDEBUGF(4, "parallel edges found! dot_product = %.12g", dot_product(ea, eb));
 		/* Parallel (maybe equal) edges! */
 		/* Hack alert, only returning ONE end of the edge right now, most do better later. */
+		/* Hack alart #2, returning a value of 2 to indicate a co-linear crossing event. */
 		if ( edge_contains_point(e1, e2.start) )
 		{
 			*g = e2.start;
-			return LW_TRUE;
+			return 2;
 		}
 		if ( edge_contains_point(e1, e2.end) )
 		{
 			*g = e2.end;
-			return LW_TRUE;
+			return 2;
 		}
 		if ( edge_contains_point(e2, e1.start) )
 		{
 			*g = e1.start;
-			return LW_TRUE;
+			return 2;
 		}
 		if ( edge_contains_point(e2, e1.end) )
 		{
 			*g = e1.end;
-			return LW_TRUE;
+			return 2;
 		}
 	}
 	unit_normal(ea, eb, &v);
@@ -1463,6 +1467,7 @@ int ptarray_point_in_ring(POINTARRAY *pa, POINT2D pt_outside, POINT2D pt_to_test
 	for( i = 1; i < pa->npoints; i++ )
 	{
 		GEOGRAPHIC_POINT g;
+		int cross_type;
 		getPoint2d_p(pa, i-1, &p);
 		geographic_point_init(p.x, p.y, &(edge.start));
 		getPoint2d_p(pa, i, &p);
@@ -1471,20 +1476,21 @@ int ptarray_point_in_ring(POINTARRAY *pa, POINT2D pt_outside, POINT2D pt_to_test
 		/* Does stab line cross, and if so, not on the first point. We except the
 		   first point to avoid double counting crossings at vertices. */
 		LWDEBUG(4,"testing edge crossing");
-		if( edge_intersection(edge, crossing_edge, &g) )
+		cross_type = edge_intersection(edge, crossing_edge, &g);
+		LWDEBUGF(4,"edge(%d), edge_intersection == %d", i, cross_type);
+		if( cross_type != LW_FALSE )
 		{
-			if( ! geographic_point_equals(g, edge.start) )
+			/* Don't count crossings at start points or co-linear crossings.
+			   Start point crossings will get counted by the pre- or succeeding end points crossings.
+			   Co-linear crossings will also get counted by the crossings of the edges pre- or succeeding them. */
+			if( ! ( geographic_point_equals(g, edge.start) || cross_type == 2 ) )
 			{
-				LWDEBUG(4,"edge crossing found!");
 				count++;
-				if ( geographic_point_equals(g, edge.end) )
-				{
-					LWDEBUG(4,"got end point cross");
-				}
+				LWDEBUGF(4,"edge crossing is not start point or co-linear, count == %d, end_point == %d", count, geographic_point_equals(g, edge.end) );
 			}
 			else
 			{
-				LWDEBUG(4,"got start point cross");
+				LWDEBUG(4,"edge crossing is start point, disregarding");
 			}
 		}
 	}

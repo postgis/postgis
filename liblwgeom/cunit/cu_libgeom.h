@@ -29,12 +29,10 @@ void test_typmod_macros(void);
 void test_flags_macros(void);
 void test_serialized_srid(void);
 void test_gserialized_from_lwgeom_size(void);
-void test_gserialized_from_lwgeom(void);
 void test_lwgeom_from_gserialized(void);
 void test_geometry_type_from_string(void);
-void test_lwgeom_check_geodetic(void);
+void test_gbox_serialized_size(void);
+void test_lwcollection_extract(void);
 void test_lwgeom_count_vertices(void);
 void test_on_gser_lwgeom_count_vertices(void);
-void test_gbox_serialized_size(void);
-void test_gbox_calculation(void);
-void test_lwcollection_extract(void);
+
