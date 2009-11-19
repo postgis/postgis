@@ -13779,10 +13779,10 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
 		<para>Returns a "simplified" version of the given geometry using
 			the Douglas-Peuker algorithm. Will avoid creating derived
 			geometries (polygons in particular) that are invalid. Will actually do something only with
-				(multi)lines and (multi)polygons but you can safely call it with
-				any kind of geometry. Since simplification occurs on a
-				object-by-object basis you can also feed a GeometryCollection to
-				this function.</para>
+			(multi)lines and (multi)polygons but you can safely call it with
+			any kind of geometry. Output polygons and multipolygons will be no more
+			invalid than the inputs (that is, if the inputs have self-intersections, 
+			this routine won't remove them, but neither will it introduce new ones).</para>
 
 		<para>Performed by the GEOS module.</para>
 		<note><para>Requires GEOS 3.0.0+</para></note>
