@@ -64,7 +64,7 @@ endif
 postgis_aggs_mm.xml: ./xsl/postgis_aggs_mm.xml.xsl postgis.xml
 	$(XSLTPROC) ./xsl/postgis_aggs_mm.xml.xsl postgis.xml > $@
 
-postgis_comments.sql: ./xsl/postgis_comments.sql.xsl postgis.xml
+postgis_comments.sql: ./xsl/postgis_comments.sql.xsl postgis.xml postgis_aggs_mm.xml
 	$(XSLTPROC) ./xsl/postgis_comments.sql.xsl postgis.xml > $@
 
 postgis-out.xml: postgis.xml introduction.xml installation.xml faq.xml using_postgis_dataman.xml  using_postgis_app.xml performance_tips.xml reference.xml reference_management.xml reference_constructor.xml reference_accessor.xml reference_editor.xml reference_output.xml reference_operator.xml reference_measure.xml reference_processing.xml reference_lrs.xml reference_transaction.xml reference_misc.xml reference_exception.xml postgis_aggs_mm.xml reporting.xml release_notes.xml ../Version.config
