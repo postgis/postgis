@@ -39,9 +39,9 @@ CU_pSuite register_geodetic_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_lwgeom_check_geodetic()", test_lwgeom_check_geodetic)) || 
 	    (NULL == CU_add_test(pSuite, "test_gbox_calculation()", test_gbox_calculation)) ||
 	    (NULL == CU_add_test(pSuite, "test_gserialized_from_lwgeom()", test_gserialized_from_lwgeom)) || 
-	    (NULL == CU_add_test(pSuite, "test_lwpoly_covers_point2d()", test_lwpoly_covers_point2d)) ||
 	    (NULL == CU_add_test(pSuite, "test_spheroid_distance()", test_spheroid_distance)) || 
 	    (NULL == CU_add_test(pSuite, "test_spheroid_area()", test_spheroid_area)) || 
+	    (NULL == CU_add_test(pSuite, "test_lwpoly_covers_point2d()", test_lwpoly_covers_point2d)) ||
 	    (NULL == CU_add_test(pSuite, "test_ptarray_point_in_ring()", test_ptarray_point_in_ring)) 
 	)
 	{
@@ -613,6 +613,83 @@ void test_ptarray_point_in_ring(void)
 	POINT2D pt_outside;
 	int result;
 
+	/* Simple containment case */
+	lwg = lwgeom_from_ewkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.0, 1.0 1.0))", PARSER_CHECK_NONE);
+	poly = (LWPOLY*)lwg;
+	pt_to_test.x = 1.05;
+	pt_to_test.y = 1.05;
+	pt_outside.x = 1.2;
+	pt_outside.y = 1.15;
+	result = ptarray_point_in_ring(poly->rings[0], pt_outside, pt_to_test);
+	CU_ASSERT_EQUAL(result, LW_TRUE);
+	lwgeom_free(lwg);
+
+	/* Simple noncontainment case */
+	lwg = lwgeom_from_ewkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.0, 1.0 1.0))", PARSER_CHECK_NONE);
+	poly = (LWPOLY*)lwg;
+	pt_to_test.x = 1.05;
+	pt_to_test.y = 1.15;
+	pt_outside.x = 1.2;
+	pt_outside.y = 1.2;
+	result = ptarray_point_in_ring(poly->rings[0], pt_outside, pt_to_test);
+	CU_ASSERT_EQUAL(result, LW_FALSE);
+	lwgeom_free(lwg);
+
+	/* Harder noncontainment case */
+	lwg = lwgeom_from_ewkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.0, 1.0 1.0))", PARSER_CHECK_NONE);
+	poly = (LWPOLY*)lwg;
+	pt_to_test.x = 1.05;
+	pt_to_test.y = 0.9;
+	pt_outside.x = 1.2;
+	pt_outside.y = 1.05;
+	result = ptarray_point_in_ring(poly->rings[0], pt_outside, pt_to_test);
+	CU_ASSERT_EQUAL(result, LW_FALSE);
+	lwgeom_free(lwg);
+
+	/* Harder containment case */
+	lwg = lwgeom_from_ewkt("POLYGON((0 0, 0 2, 1 2, 0 3, 2 3, 0 4, 3 5, 0 6, 6 10, 6 1, 0 0))", PARSER_CHECK_NONE);
+	poly = (LWPOLY*)lwg;
+	pt_to_test.x = 1.0;
+	pt_to_test.y = 1.0;
+	pt_outside.x = 1.0;
+	pt_outside.y = 10.0;
+	result = ptarray_point_in_ring(poly->rings[0], pt_outside, pt_to_test);
+	CU_ASSERT_EQUAL(result, LW_TRUE);
+	lwgeom_free(lwg);
+
+	/* Point on ring at vertex case */
+	lwg = lwgeom_from_ewkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.0, 1.0 1.0))", PARSER_CHECK_NONE);
+	poly = (LWPOLY*)lwg;
+	pt_to_test.x = 1.1;
+	pt_to_test.y = 1.05;
+	pt_outside.x = 1.2;
+	pt_outside.y = 1.05;
+	result = ptarray_point_in_ring(poly->rings[0], pt_outside, pt_to_test);
+	CU_ASSERT_EQUAL(result, LW_TRUE);
+	lwgeom_free(lwg);
+
+	/* Point on ring at first vertex case */
+	lwg = lwgeom_from_ewkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.0, 1.0 1.0))", PARSER_CHECK_NONE);
+	poly = (LWPOLY*)lwg;
+	pt_to_test.x = 1.0;
+	pt_to_test.y = 1.0;
+	pt_outside.x = 1.2;
+	pt_outside.y = 1.05;
+	result = ptarray_point_in_ring(poly->rings[0], pt_outside, pt_to_test);
+	CU_ASSERT_EQUAL(result, LW_TRUE);
+	lwgeom_free(lwg);
+
+	/* Point on ring between vertexes case */
+	lwg = lwgeom_from_ewkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.0, 1.0 1.0))", PARSER_CHECK_NONE);
+	poly = (LWPOLY*)lwg;
+	pt_to_test.x = 1.0;
+	pt_to_test.y = 1.1;
+	pt_outside.x = 1.2;
+	pt_outside.y = 1.05;
+	result = ptarray_point_in_ring(poly->rings[0], pt_outside, pt_to_test);
+	CU_ASSERT_EQUAL(result, LW_TRUE);
+	lwgeom_free(lwg);
+
 	/* Co-linear crossing case for point-in-polygon test, should return LW_TRUE */
 	lwg = lwgeom_from_ewkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.2, 1.2 1.2, 1.2 1.0, 1.0 1.0))", PARSER_CHECK_NONE);
 	poly = (LWPOLY*)lwg;
@@ -624,8 +701,8 @@ void test_ptarray_point_in_ring(void)
 	CU_ASSERT_EQUAL(result, LW_TRUE);
 	lwgeom_free(lwg);
 
-#if 0
 	/* Grazing case for point-in-polygon test, should return LW_FALSE */
+	lwg = lwgeom_from_ewkt("POLYGON((2.0 3.0, 2.0 0.0, 1.0 1.0, 2.0 3.0))", PARSER_CHECK_NONE);
 	lwg = lwgeom_from_ewkt("POLYGON((1.0 1.0, 1.0 2.0, 1.5 1.5, 1.0 1.0))", PARSER_CHECK_NONE);
 	poly = (LWPOLY*)lwg;
 	pt_to_test.x = 1.5;
@@ -635,8 +712,28 @@ void test_ptarray_point_in_ring(void)
 	result = ptarray_point_in_ring(poly->rings[0], pt_outside, pt_to_test);
 	CU_ASSERT_EQUAL(result, LW_FALSE);
 	lwgeom_free(lwg);
-#endif
 
+	/* Grazing case at first point for point-in-polygon test, should return LW_FALSE */
+	lwg = lwgeom_from_ewkt("POLYGON((1.0 1.0, 2.0 3.0, 2.0 0.0, 1.0 1.0))", PARSER_CHECK_NONE);
+	poly = (LWPOLY*)lwg;
+	pt_to_test.x = 1.0;
+	pt_to_test.y = 0.0;
+	pt_outside.x = 1.0;
+	pt_outside.y = 2.0;
+	result = ptarray_point_in_ring(poly->rings[0], pt_outside, pt_to_test);
+	CU_ASSERT_EQUAL(result, LW_FALSE);
+	lwgeom_free(lwg);
+	
+	/* Point on vertex of ring */
+	lwg = lwgeom_from_ewkt("POLYGON((-9 50,51 -11,-10 50,-9 50))", PARSER_CHECK_NONE);
+	poly = (LWPOLY*)lwg;
+	pt_to_test.x = -10.0;
+	pt_to_test.y = 50.0;
+	pt_outside.x = -10.2727799838316134;
+	pt_outside.y = -16.9370033133329976;
+	result = ptarray_point_in_ring(poly->rings[0], pt_outside, pt_to_test);
+	CU_ASSERT_EQUAL(result, LW_TRUE);
+	lwgeom_free(lwg);
 
 #if 0
 	/* Small polygon and huge distance between outside point and close-but-not-quite-inside point. Should return LW_FALSE. Pretty degenerate case. */
@@ -671,7 +768,6 @@ void test_lwpoly_covers_point2d(void)
 	result = lwpoly_covers_point2d(poly, gbox, pt_to_test);
 	CU_ASSERT_EQUAL(result, LW_TRUE);
 	lwgeom_free(lwg);
-	
 }
 
 

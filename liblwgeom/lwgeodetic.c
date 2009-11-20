@@ -1453,6 +1453,7 @@ int ptarray_point_in_ring(POINTARRAY *pa, POINT2D pt_outside, POINT2D pt_to_test
 	GEOGRAPHIC_EDGE crossing_edge, edge;
 	POINT2D p;
 	int count = 0;
+	int first_point = 0;
 	int i;
 	
 	/* Null input, not enough points for a ring? You ain't closed! */
@@ -1463,37 +1464,69 @@ int ptarray_point_in_ring(POINTARRAY *pa, POINT2D pt_outside, POINT2D pt_to_test
 	geographic_point_init(pt_to_test.x, pt_to_test.y, &(crossing_edge.start));
 	geographic_point_init(pt_outside.x, pt_outside.y, &(crossing_edge.end));
 
+	/* Initialize first point */
+	getPoint2d_p(pa, first_point, &p);
+	LWDEBUGF(4, "start point == POINT(%.12g %.12g)", p.x, p.y);
+	geographic_point_init(p.x, p.y, &(edge.start));
+
+	/* If the start point is on the stab line, back up until it isn't */
+	while(edge_contains_point(crossing_edge, edge.start) && ! geographic_point_equals(crossing_edge.start, edge.start) )
+	{
+		first_point--;
+		LWDEBUGF(4,"first point was on stab line, reversing %d points", first_point);
+		getPoint2d_p(pa, pa->npoints + first_point, &p);
+		LWDEBUGF(4, "start point == POINT(%.12g %.12g)", p.x, p.y);
+		geographic_point_init(p.x, p.y, &(edge.start));
+	}
+
 	/* Walk every edge and see if the stab line hits it */
 	for( i = 1; i < pa->npoints; i++ )
 	{
 		GEOGRAPHIC_POINT g;
-		int cross_type;
-		getPoint2d_p(pa, i-1, &p);
-		geographic_point_init(p.x, p.y, &(edge.start));
+
+		LWDEBUGF(4, "start point == POINT(%.12g %.12g)", p.x, p.y);
+		
 		getPoint2d_p(pa, i, &p);
 		geographic_point_init(p.x, p.y, &(edge.end));
 
-		/* Does stab line cross, and if so, not on the first point. We except the
-		   first point to avoid double counting crossings at vertices. */
-		LWDEBUG(4,"testing edge crossing");
-		cross_type = edge_intersection(edge, crossing_edge, &g);
-		LWDEBUGF(4,"edge(%d), edge_intersection == %d", i, cross_type);
-		if( cross_type != LW_FALSE )
+		LWDEBUGF(4,"testing edge (%d)", i);
+
+		/* Our test point is on an edge! Point is "in ring" by our definition */
+		if( geographic_point_equals(crossing_edge.start, edge.start) || 
+		    geographic_point_equals(crossing_edge.start, edge.end) ||
+		    edge_contains_point(edge, crossing_edge.start) )
 		{
-			/* Don't count crossings at start points or co-linear crossings.
-			   Start point crossings will get counted by the pre- or succeeding end points crossings.
-			   Co-linear crossings will also get counted by the crossings of the edges pre- or succeeding them. */
-			if( ! ( geographic_point_equals(g, edge.start) || cross_type == 2 ) )
-			{
-				count++;
-				LWDEBUGF(4,"edge crossing is not start point or co-linear, count == %d, end_point == %d", count, geographic_point_equals(g, edge.end) );
-			}
-			else
-			{
-				LWDEBUG(4,"edge crossing is start point, disregarding");
-			}
+			LWDEBUGF(4,"edge (%d) contains the test point, returning true", i);
+			return LW_TRUE;
+		}  
+
+		/* If the end of our edge is on the stab line, extend the edge to the
+		   next end point, by skipping the start->end assignment step at the
+		   end of this loop */
+		if(edge_contains_point(crossing_edge, edge.end))
+		{
+			LWDEBUGF(4,"edge (%d) end point is on the stab line, continuing", i);
+			continue;
 		}
+		
+		LWDEBUG(4,"testing edge crossing");
+
+		if( edge_intersection(edge, crossing_edge, &g) )
+		{
+			count++;
+			LWDEBUGF(4,"edge (%d) crossed, count == %d", i, count);
+		} 
+		else
+		{
+			LWDEBUGF(4,"edge (%d) did not cross", i);
+		}
+		
+		/* Increment to next edge */
+		edge.start = edge.end;
 	}
+
+	LWDEBUGF(4,"final count == %d", count);
+
 	/* An odd number of crossings implies containment! */
 	if( count % 2 )
 	{
