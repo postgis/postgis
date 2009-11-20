@@ -1337,7 +1337,7 @@ initialize(void)
 
 	if ( schema )
 	{
-		sprintf(query, "SELECT a.attname, a.atttypid, a.attlen, "
+		sprintf(query, "SELECT a.attname, a.atttypid, "
 			"a.atttypmod FROM "
 			"pg_attribute a, pg_class c, pg_namespace n WHERE "
 			"n.nspname = '%s' AND a.attrelid = c.oid AND "
@@ -1347,7 +1347,7 @@ initialize(void)
 	}
 	else
 	{
-		sprintf(query, "SELECT a.attname, a.atttypid, a.attlen, "
+		sprintf(query, "SELECT a.attname, a.atttypid, "
 			"a.atttypmod FROM "
 			"pg_attribute a, pg_class c WHERE "
 			"a.attrelid = c.oid and a.attnum > 0 AND "
@@ -1401,8 +1401,8 @@ initialize(void)
 
 		fname = PQgetvalue(res, i, 0);
 		type = atoi(PQgetvalue(res, i, 1));
-		size = atoi(PQgetvalue(res, i, 2));
-		mod = atoi(PQgetvalue(res, i, 3));
+		mod = atoi(PQgetvalue(res, i, 2));
+		size = 0;
 
 		/*
 		 * This is a geometry column
@@ -1615,38 +1615,82 @@ initialize(void)
 		}
 
 		/*
-		 * timestamp field, which we store as a string so we need
-		 * more width in the column
+		 * time, timetz, timestamp, or timestamptz field.
 		 */
-		else if(type == 1114)
+		else if(type == 1083 || type == 1266 || type == 1114 || type == 1184)
 		{
-			size = 19;
+			int secondsize;
+			switch (mod) {
+				case -1:
+					secondsize = 6 + 1;
+					break;
+				case 0:
+					secondsize = 0;
+					break;
+				default:
+					secondsize = mod + 1;
+					break;
+			}
+
+			/* We assume the worst case scenario for all of these:
+			 * date = '5874897-12-31' = 13
+			 * date = '294276-11-20' = 12 (with --enable-interger-datetimes)
+			 * time = '00:00:00' = 8
+			 * zone = '+01:39:52' = 9 (see Europe/Helsinki around 1915)
+			 */
+
+			/* time */
+			if (type == 1083) {
+				size = 8 + secondsize;
+			}
+			/* timetz */
+			else if (type == 1266) {
+				size = 8 + secondsize + 9;
+			}
+			/* timestamp */
+			else if (type == 1114) {
+				size = 13 + 1 + 8 + secondsize;
+			}
+			/* timestamptz */
+			else if (type == 1184) {
+				size = 13 + 1 + 8 + secondsize + 9;
+			}
 		}
 
 		/*
-		 * For variable-sized fields we'll use either
-		 * maximum allowed size (atttypmod) or max actual
-		 * attribute value in table.
+		 * uuid type 36 bytes (12345678-9012-3456-7890-123456789012)
 		 */
-		else if(size == -1)
+		else if (type == 2950)
+		{
+			size = 36;
+		}
+
+		/*
+		 * For variable-sized fields we know about, we use
+		 * the maximum allowed size.
+	 	 * 1042 is bpchar,  1043 is varchar
+		 */
+		else if( (type == 1042 || type == 1043) && mod != -1 )
 		{
 			/*
-			 * 1042 is bpchar,  1043 is varchar
 			 * mod is maximum allowed size, including
 			 * header which contains *real* size.
 			 */
-			if ( (type == 1042 || type == 1043) && mod != -1 )
-			{
-				size = mod-4; /* 4 is header size */
-			}
-			else
-			{
-				size = getMaxFieldSize(conn, schema,
-					table, fname);
-				if ( size == -1 ) return 0;
-				if ( ! size ) size = 32;
-				/* might 0 be a good size ? */
-			}
+			size = mod-4; /* 4 is header size */
+		}
+
+		/*
+		 * For types we don't know anything about, all
+		 * we can do is query the table for the maximum field
+		 * size.
+		 */
+		else
+		{
+			size = getMaxFieldSize(conn, schema,
+				table, fname);
+			if ( size == -1 ) return 0;
+			if ( ! size ) size = 32;
+			/* might 0 be a good size ? */
 		}
 
 		if ( size > MAX_DBF_FIELD_SIZE )
@@ -1837,16 +1881,16 @@ getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname)
 	if ( schema )
 	{
 		query = (char *)malloc(strlen(fname)+strlen(table)+
-			strlen(schema)+40);
+			strlen(schema)+46);
 		sprintf(query,
-			"select max(octet_length(\"%s\")) from \"%s\".\"%s\"",
+			"select max(octet_length(\"%s\"::text)) from \"%s\".\"%s\"",
 			fname, schema, table);
 	}
 	else
 	{
-		query = (char *)malloc(strlen(fname)+strlen(table)+40);
+		query = (char *)malloc(strlen(fname)+strlen(table)+46);
 		sprintf(query,
-			"select max(octet_length(\"%s\")) from \"%s\"",
+			"select max(octet_length(\"%s\"::text)) from \"%s\"",
 			fname, table);
 	}
 #if VERBOSE > 2
