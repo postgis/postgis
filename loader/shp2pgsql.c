@@ -820,7 +820,7 @@ usage(char *me, int exitcode, FILE* out)
 void
 InsertLineString()
 {
-	LWCOLLECTION *lwcollection;
+	LWCOLLECTION *lwcollection = NULL;
 
 	LWGEOM **lwmultilinestrings;
 	uchar *serialized_lwgeom;
@@ -908,13 +908,32 @@ InsertLineString()
 	OutputGeometry(lwg_unparser_result.wkoutput);
 
 	/* Free all of the allocated items */
-		lwfree(lwg_unparser_result.wkoutput);
-		lwfree(serialized_lwgeom);
+	lwfree(lwg_unparser_result.wkoutput);
+	lwfree(serialized_lwgeom);
 
-	for (u = 0; u < obj->nParts; u++)
+	/* Free the collection or linestring as required */
+	if (simple_geometries == 0)
 	{
+		for (u = 0; u < obj->nParts; u++)
+		{
+			if (dpas[u]->pa->serialized_pointlist)
+				lwfree(dpas[u]->pa->serialized_pointlist);
+
+			lwfree(dpas[u]->pa);
+			lwfree(dpas[u]);
+
+			lwfree(lwmultilinestrings[u]);
+		}
+
+		lwfree(lwcollection);
+	}
+	else
+	{
+		for (u = 0; u < obj->nParts; u++)
+		{
 			lwline_free(lwgeom_as_lwline(lwmultilinestrings[u]));
 			lwfree(dpas[u]);
+		}
 	}
 
 	lwfree(dpas);
@@ -1185,21 +1204,20 @@ InsertPolygon(void)
 		serialized_lwgeom = lwgeom_serialize(lwpolygons[0]);
 	}
 
-/*
+	/* Note: lwpoly_free() currently doesn't free its serialized pointlist, so do it manually */
 	for(pi = 0; pi < polygon_total; pi++)
 	{
 		Ring *polyring = Outer[pi];
 		int ring_index = 0;
 		while (polyring)
 		{
-			lwfree(pas[pi][ring_index]->serialized_pointlist);
-			lwfree(pas[pi][ring_index]);
+			if (pas[pi][ring_index]->serialized_pointlist)
+				lwfree(pas[pi][ring_index]->serialized_pointlist);
 
 			polyring = polyring->next;
 			ring_index++;
 		}
 	}
-*/
 
 	ReleasePolygons(Outer, polygon_total);
 
@@ -1217,8 +1235,8 @@ InsertPolygon(void)
 	OutputGeometry(lwg_unparser_result.wkoutput);
 
 	/* Free all of the allocated items */
-		lwfree(lwg_unparser_result.wkoutput);
-		lwfree(serialized_lwgeom);
+	lwfree(lwg_unparser_result.wkoutput);
+	lwfree(serialized_lwgeom);
 
 	/* Cycle through each polygon, freeing everything we need... */
 	for (u = 0; u < polygon_total; u++)
@@ -1307,13 +1325,17 @@ InsertPoint(void)
 	OutputGeometry(lwg_unparser_result.wkoutput);
 
 	/* Free all of the allocated items */
-		lwfree(lwg_unparser_result.wkoutput);
-		lwfree(serialized_lwgeom);
+	lwfree(lwg_unparser_result.wkoutput);
+	lwfree(serialized_lwgeom);
 
 	for (u = 0; u < obj->nVertices; u++)
 	{
-			lwpoint_free(lwgeom_as_lwpoint(lwmultipoints[u]));
-			lwfree(dpas[u]);
+		if (dpas[u]->pa->serialized_pointlist)
+			lwfree(dpas[u]->pa->serialized_pointlist);
+
+		lwpoint_free(lwgeom_as_lwpoint(lwmultipoints[u]));
+
+		lwfree(dpas[u]);
 	}
 
 	lwfree(dpas);
