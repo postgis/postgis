@@ -598,7 +598,7 @@ int geography_gidx(GSERIALIZED *g, GIDX *gidx)
 	
 	POSTGIS_DEBUG(4, "entered function");
 	
-	POSTGIS_DEBUGF(4, "got flags %d", gpart->flags); 
+	POSTGIS_DEBUGF(4, "got flags %d", g->flags); 
 	
 	if ( FLAGS_GET_BBOX(g->flags) && FLAGS_GET_GEODETIC(g->flags) )
 	{
