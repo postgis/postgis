@@ -52,7 +52,7 @@
 			are in the Spatial Reference System of the geometry. Introduced in 1.5 support for
 			different end cap and mitre settings to control shape.</para>
 				<note><para>Geography: For geography this is really a thin wrapper around the geometry implementation. It first determines the best SRID that
-					fits the bounding box of the geography object (favoring UTM, polar stereographic and falling back on mercator in worst case scenario) and then buffers in that planar spatial ref and retransforms back to WGS84 geography.</para></note>
+					fits the bounding box of the geography object (favoring UTM, Lambert Azimuthal Equal Area (LAEA) north/south pole, and falling back on mercator in worst case scenario) and then buffers in that planar spatial ref and retransforms back to WGS84 geography.</para></note>
 			<para><inlinegraphic fileref="images/warning.png" />
 			For geography this may not behave as expected if object is sufficiently large that it falls between two UTM zones or crosses the dateline</para>
 				<para>Availability: 1.5 - ST_Buffer was enhanced to support different endcaps and join types. These are useful for example to convert road linestrings
@@ -959,9 +959,8 @@ SELECT ST_AsEWKT(geom) As the_geom, path
 			<para>ST_Intersection in conjunction with ST_Intersects is very useful for clipping geometries such as in bounding box, buffer, region
 				queries where you only want to return that portion of a geometry that sits in a country or region of interest.</para>
 
-				
 			<note><para>Geography: For geography this is really a thin wrapper around the geometry implementation. It first determines the best SRID that
-					fits the bounding box of the geography object (favoring UTM, polar stereographic and falling back on mercator in worst case scenario) and then buffers in that planar spatial ref and retransforms back to WGS84 geography.</para></note>
+					fits the bounding box of the 2 geography objects (if geography objects are within one half zone UTM but not same UTM will pick one of those) (favoring UTM or Lambert Azimuthal Equal Area (LAEA) north/south pole, and falling back on mercator in worst case scenario)  and then intersection in that best fit planar spatial ref and retransforms back to WGS84 geography.</para></note>
 		  <important>
 			<para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
 		  </important>
