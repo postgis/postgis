@@ -980,7 +980,7 @@ void lwgeom_free(LWGEOM *lwgeom)
 };
 
 
-int lwgeom_needs_bbox(LWGEOM *geom)
+int lwgeom_needs_bbox(const LWGEOM *geom)
 {
 	assert(geom);
 	if( TYPE_GETTYPE(geom->type) == POINTTYPE )
@@ -1064,42 +1064,42 @@ int lwgeom_count_vertices(LWGEOM *geom)
 	return result;
 }
 
-static int lwpoint_is_empty(LWPOINT *point)
+static int lwpoint_is_empty(const LWPOINT *point)
 {
 	if( ! point->point || point->point->npoints == 0 )
 		return LW_TRUE;
 	return LW_FALSE;
 }
 
-static int lwline_is_empty(LWLINE *line)
+static int lwline_is_empty(const LWLINE *line)
 {
 	if( !line->points || line->points->npoints == 0 )
 		return LW_TRUE;
 	return LW_FALSE;
 }
 
-static int lwpoly_is_empty(LWPOLY *poly)
+static int lwpoly_is_empty(const LWPOLY *poly)
 {
 	if( !poly->rings || poly->nrings == 0 )
 		return LW_TRUE;
 	return LW_FALSE;
 }
 
-static int lwcircstring_is_empty(LWCIRCSTRING *circ)
+static int lwcircstring_is_empty(const LWCIRCSTRING *circ)
 {
 	if( !circ->points || circ->points->npoints == 0 )
 		return LW_TRUE;
 	return LW_FALSE;
 }
 
-static int lwcollection_is_empty(LWCOLLECTION *col)
+static int lwcollection_is_empty(const LWCOLLECTION *col)
 {
 	if( !col->geoms || col->ngeoms == 0 )
 		return LW_TRUE;
 	return LW_FALSE;
 }
 
-int lwgeom_is_empty(LWGEOM *geom)
+int lwgeom_is_empty(const LWGEOM *geom)
 {
 	int result = LW_FALSE;
 	LWDEBUGF(4, "got type %d", TYPE_GETTYPE(geom->type));

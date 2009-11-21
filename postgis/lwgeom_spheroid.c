@@ -388,7 +388,7 @@ Datum LWGEOM_length2d_ellipsoid(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	SPHEROID *sphere = (SPHEROID *) PG_GETARG_POINTER(1);
 	LWGEOM *lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
-	double dist = lwgeom_length_spheroid(lwgeom, *sphere);
+	double dist = lwgeom_length_spheroid(lwgeom, sphere);
 	lwgeom_release(lwgeom);
 	PG_RETURN_FLOAT8(dist);
 }
@@ -586,7 +586,7 @@ Datum geometry_distance_spheroid(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	};
 
-	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, gbox1, gbox2, *sphere, 0.0);
+	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &gbox1, &gbox2, sphere, 0.0);
 
 	PG_RETURN_FLOAT8(distance);
 

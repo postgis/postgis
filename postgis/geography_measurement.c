@@ -85,7 +85,7 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 	
-	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, gbox1, gbox2, s, 0.0);
+	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &gbox1, &gbox2, &s, 0.0);
 
 	/* Something went wrong, negative return... should already be eloged, return NULL */
 	if( distance < 0.0 )
@@ -154,7 +154,7 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(FALSE);
 	}
 	
-	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, gbox1, gbox2, s, tolerance);
+	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &gbox1, &gbox2, &s, tolerance);
 
 	/* Something went wrong... should already be eloged, return FALSE */
 	if( distance < 0.0 )
@@ -281,9 +281,9 @@ Datum geography_area(PG_FUNCTION_ARGS)
 	
 	/* Calculate the area */
 	if( use_spheroid )
-		area = lwgeom_area_spheroid(lwgeom, gbox, s);
+		area = lwgeom_area_spheroid(lwgeom, &gbox, &s);
 	else
-		area = lwgeom_area_sphere(lwgeom, gbox, s);
+		area = lwgeom_area_sphere(lwgeom, &gbox, &s);
 
 	/* Something went wrong... */
 	if( area < 0.0 )
@@ -335,7 +335,7 @@ Datum geography_length(PG_FUNCTION_ARGS)
 		s.a = s.b = s.radius;
 	
 	/* Calculate the length */
-	length = lwgeom_length_spheroid(lwgeom, s);
+	length = lwgeom_length_spheroid(lwgeom, &s);
 
 	/* Something went wrong... */
 	if( length < 0.0 )
@@ -375,7 +375,7 @@ Datum geography_point_outside(PG_FUNCTION_ARGS)
 	}
 	
 	/* Get an exterior point, based on this gbox */
-	gbox_pt_outside(gbox, &pt);
+	gbox_pt_outside(&gbox, &pt);
 	
 	lwpoint = make_lwpoint2d(4326, pt.x, pt.y);
 	
@@ -442,7 +442,7 @@ Datum geography_covers(PG_FUNCTION_ARGS)
 	}
 	
 	/* Calculate answer */
-	result = lwgeom_covers_lwgeom_sphere(lwgeom1, lwgeom2, gbox1, gbox2);
+	result = lwgeom_covers_lwgeom_sphere(lwgeom1, lwgeom2, &gbox1, &gbox2);
 
 	/* Clean up, but not all the way to the point arrays */
 	lwgeom_release(lwgeom1);

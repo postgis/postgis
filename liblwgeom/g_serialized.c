@@ -15,7 +15,7 @@
 * GSERIALIZED metadata utility functions.
 */
 
-uint32 gserialized_get_type(GSERIALIZED *s)
+uint32 gserialized_get_type(const GSERIALIZED *s)
 {
 	uint32 *ptr;
 	assert(s);
@@ -24,7 +24,7 @@ uint32 gserialized_get_type(GSERIALIZED *s)
 	return *ptr;
 }
 
-uint32 gserialized_get_srid(GSERIALIZED *s)
+uint32 gserialized_get_srid(const GSERIALIZED *s)
 {
 	uint32 srid = 0;
 	srid = srid | (s->srid[0] << 16);
@@ -48,9 +48,9 @@ void gserialized_set_srid(GSERIALIZED *s, uint32 srid)
 
 /* Private functions */
 
-static size_t gserialized_from_any_size(LWGEOM *geom); /* Local prototype */
+static size_t gserialized_from_any_size(const LWGEOM *geom); /* Local prototype */
 
-static size_t gserialized_from_lwpoint_size(LWPOINT *point)
+static size_t gserialized_from_lwpoint_size(const LWPOINT *point)
 {
 	size_t size = 4; /* Type number. */
 	
@@ -64,7 +64,7 @@ static size_t gserialized_from_lwpoint_size(LWPOINT *point)
 	return size;
 }
 
-static size_t gserialized_from_lwline_size(LWLINE *line)
+static size_t gserialized_from_lwline_size(const LWLINE *line)
 {
 	size_t size = 4; /* Type number. */
 	
@@ -78,7 +78,7 @@ static size_t gserialized_from_lwline_size(LWLINE *line)
 	return size;
 }
 
-static size_t gserialized_from_lwpoly_size(LWPOLY *poly)
+static size_t gserialized_from_lwpoly_size(const LWPOLY *poly)
 {
 	size_t size = 4; /* Type number. */
 	int i = 0;
@@ -100,7 +100,7 @@ static size_t gserialized_from_lwpoly_size(LWPOLY *poly)
 	return size;
 }
 
-static size_t gserialized_from_lwcircstring_size(LWCIRCSTRING *curve)
+static size_t gserialized_from_lwcircstring_size(const LWCIRCSTRING *curve)
 {
 	size_t size = 4; /* Type number. */
 	
@@ -114,7 +114,7 @@ static size_t gserialized_from_lwcircstring_size(LWCIRCSTRING *curve)
 	return size;
 }
 
-static size_t gserialized_from_lwcollection_size(LWCOLLECTION *col)
+static size_t gserialized_from_lwcollection_size(const LWCOLLECTION *col)
 {
 	size_t size = 4; /* Type number. */
 	int i = 0;
@@ -135,7 +135,7 @@ static size_t gserialized_from_lwcollection_size(LWCOLLECTION *col)
 	return size;
 }
 
-static size_t gserialized_from_any_size(LWGEOM *geom)
+static size_t gserialized_from_any_size(const LWGEOM *geom)
 {
 	int type = TYPE_GETTYPE(geom->type);
 
@@ -168,7 +168,7 @@ static size_t gserialized_from_any_size(LWGEOM *geom)
 
 /* Public function */
 
-size_t gserialized_from_lwgeom_size(LWGEOM *geom)
+size_t gserialized_from_lwgeom_size(const LWGEOM *geom)
 {
 	size_t size = 8; /* Header overhead. */
 	assert(geom);
@@ -183,9 +183,9 @@ size_t gserialized_from_lwgeom_size(LWGEOM *geom)
 
 /* Private functions */
 
-static size_t gserialized_from_lwgeom_any(LWGEOM *geom, uchar *buf);
+static size_t gserialized_from_lwgeom_any(const LWGEOM *geom, uchar *buf);
 
-static size_t gserialized_from_lwpoint(LWPOINT *point, uchar *buf)
+static size_t gserialized_from_lwpoint(const LWPOINT *point, uchar *buf)
 {
 	uchar *loc;
 	int ptsize = pointArray_ptsize(point->point);
@@ -218,7 +218,7 @@ static size_t gserialized_from_lwpoint(LWPOINT *point, uchar *buf)
 	return (size_t)(loc - buf);
 }
 
-static size_t gserialized_from_lwline(LWLINE *line, uchar *buf)
+static size_t gserialized_from_lwline(const LWLINE *line, uchar *buf)
 {
 	uchar *loc;
 	int ptsize;
@@ -259,7 +259,7 @@ static size_t gserialized_from_lwline(LWLINE *line, uchar *buf)
 	return (size_t)(loc - buf);
 }
 
-static size_t gserialized_from_lwpoly(LWPOLY *poly, uchar *buf)
+static size_t gserialized_from_lwpoly(const LWPOLY *poly, uchar *buf)
 {
 	int i;
 	uchar *loc;
@@ -311,7 +311,7 @@ static size_t gserialized_from_lwpoly(LWPOLY *poly, uchar *buf)
 	return (size_t)(loc - buf);
 }
 
-static size_t gserialized_from_lwcircstring(LWCIRCSTRING *curve, uchar *buf)
+static size_t gserialized_from_lwcircstring(const LWCIRCSTRING *curve, uchar *buf)
 {
 	uchar *loc;
 	int ptsize;
@@ -347,7 +347,7 @@ static size_t gserialized_from_lwcircstring(LWCIRCSTRING *curve, uchar *buf)
 	return (size_t)(loc - buf);
 }
 
-static size_t gserialized_from_lwcollection(LWCOLLECTION *coll, uchar *buf)
+static size_t gserialized_from_lwcollection(const LWCOLLECTION *coll, uchar *buf)
 {
 	size_t subsize = 0;
 	uchar *loc;
@@ -380,7 +380,7 @@ static size_t gserialized_from_lwcollection(LWCOLLECTION *coll, uchar *buf)
 	return (size_t)(loc - buf);
 }
 
-static size_t gserialized_from_lwgeom_any(LWGEOM *geom, uchar *buf)
+static size_t gserialized_from_lwgeom_any(const LWGEOM *geom, uchar *buf)
 {
 	int type = 0;
 	
@@ -418,7 +418,7 @@ static size_t gserialized_from_lwgeom_any(LWGEOM *geom, uchar *buf)
 	return 0;
 }
 
-static size_t gserialized_from_gbox(GBOX gbox, uchar *buf)
+static size_t gserialized_from_gbox(const GBOX *gbox, uchar *buf)
 {
 	uchar *loc;
 	float f;
@@ -428,29 +428,29 @@ static size_t gserialized_from_gbox(GBOX gbox, uchar *buf)
 	
 	loc = buf;
 
-	f = nextDown_f(gbox.xmin);
+	f = nextDown_f(gbox->xmin);
 	memcpy(loc, &f, sizeof(float));
 	loc += sizeof(float);
 
-	f = nextUp_f(gbox.xmax);
+	f = nextUp_f(gbox->xmax);
 	memcpy(loc, &f, sizeof(float));
 	loc += sizeof(float);
 
-	f = nextDown_f(gbox.ymin);
+	f = nextDown_f(gbox->ymin);
 	memcpy(loc, &f, sizeof(float));
 	loc += sizeof(float);
 
-	f = nextUp_f(gbox.ymax);
+	f = nextUp_f(gbox->ymax);
 	memcpy(loc, &f, sizeof(float));
 	loc += sizeof(float);
 	
-	if( FLAGS_GET_GEODETIC(gbox.flags) )
+	if( FLAGS_GET_GEODETIC(gbox->flags) )
 	{
-		f = nextDown_f(gbox.zmin);
+		f = nextDown_f(gbox->zmin);
 		memcpy(loc, &f, sizeof(float));
 		loc += sizeof(float);
 
-		f = nextUp_f(gbox.zmax);
+		f = nextUp_f(gbox->zmax);
 		memcpy(loc, &f, sizeof(float));
 		loc += sizeof(float);
 		
@@ -459,25 +459,25 @@ static size_t gserialized_from_gbox(GBOX gbox, uchar *buf)
 		return return_size;	
 	}
 	
-	if( FLAGS_GET_Z(gbox.flags) )
+	if( FLAGS_GET_Z(gbox->flags) )
 	{
-		f = nextDown_f(gbox.zmin);
+		f = nextDown_f(gbox->zmin);
 		memcpy(loc, &f, sizeof(float));
 		loc += sizeof(float);
 
-		f = nextUp_f(gbox.zmax);
+		f = nextUp_f(gbox->zmax);
 		memcpy(loc, &f, sizeof(float));
 		loc += sizeof(float);
 		
 	}
 	
-	if( FLAGS_GET_M(gbox.flags) )
+	if( FLAGS_GET_M(gbox->flags) )
 	{
-		f = nextDown_f(gbox.mmin);
+		f = nextDown_f(gbox->mmin);
 		memcpy(loc, &f, sizeof(float));
 		loc += sizeof(float);
 
-		f = nextUp_f(gbox.mmax);
+		f = nextUp_f(gbox->mmax);
 		memcpy(loc, &f, sizeof(float));
 		loc += sizeof(float);
 	}
@@ -488,7 +488,7 @@ static size_t gserialized_from_gbox(GBOX gbox, uchar *buf)
 
 /* Public function */
 
-GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, int is_geodetic, size_t *size)
+GSERIALIZED* gserialized_from_lwgeom(const LWGEOM *geom, int is_geodetic, size_t *size)
 {
 	size_t expected_box_size = 0;
 	size_t expected_size = 0;
@@ -530,7 +530,7 @@ GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, int is_geodetic, size_t *size
 	
 	/* Write in the serialized form of the gbox, if necessary. */
 	if( FLAGS_GET_BBOX(gbox.flags) ) 
-		ptr += gserialized_from_gbox(gbox, ptr);
+		ptr += gserialized_from_gbox(&gbox, ptr);
 
 	/* Write in the serialized form of the geometry. */
 	ptr += gserialized_from_lwgeom_any(geom, ptr);
@@ -833,7 +833,7 @@ LWGEOM* lwgeom_from_gserialized_buffer(uchar *data_ptr, uchar g_flags, size_t *g
 }
 
 
-LWGEOM* lwgeom_from_gserialized(GSERIALIZED *g)
+LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g)
 {
 	uchar g_flags = 0;
 	uchar has_srid = 0;
@@ -1038,12 +1038,12 @@ static int gserialized_calculate_gbox_geocentric_from_collection(uchar *data_ptr
 		{
 			if ( first ) 
 			{
-				gbox_duplicate(subbox, gbox);
+				gbox_duplicate(&subbox, gbox);
 				first = LW_FALSE;
 			}
 			else
 			{
-				gbox_merge(subbox, gbox);
+				gbox_merge(&subbox, gbox);
 			}
 			result = G_SUCCESS;
 		}
@@ -1091,7 +1091,7 @@ static int gserialized_calculate_gbox_geocentric_from_any(uchar *data_ptr, size_
 	}
 }
 
-int gserialized_calculate_gbox_geocentric_p(GSERIALIZED *g, GBOX *g_box)
+int gserialized_calculate_gbox_geocentric_p(const GSERIALIZED *g, GBOX *g_box)
 {
 	uchar *data_ptr = NULL;
 	size_t g_size = 0;
@@ -1133,7 +1133,7 @@ int gserialized_calculate_gbox_geocentric_p(GSERIALIZED *g, GBOX *g_box)
 	return result;
 }
 
-GBOX* gserialized_calculate_gbox_geocentric(GSERIALIZED *g)
+GBOX* gserialized_calculate_gbox_geocentric(const GSERIALIZED *g)
 {
 	GBOX g_box;
 	int result = G_SUCCESS;
@@ -1148,7 +1148,7 @@ GBOX* gserialized_calculate_gbox_geocentric(GSERIALIZED *g)
 }
 
 
-GSERIALIZED* gserialized_copy(GSERIALIZED *g)
+GSERIALIZED* gserialized_copy(const GSERIALIZED *g)
 {
     GSERIALIZED *g_out = NULL;
     assert(g);
@@ -1157,7 +1157,7 @@ GSERIALIZED* gserialized_copy(GSERIALIZED *g)
     return g_out;
 }
 
-char* gserialized_to_string(GSERIALIZED *g)
+char* gserialized_to_string(const GSERIALIZED *g)
 {
 	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
 	LWGEOM *lwgeom = lwgeom_from_gserialized(g);

@@ -1253,7 +1253,7 @@ void lwgeom_longitude_shift(LWGEOM *lwgeom);
 * index operations can generate a large number of box-retrieval operations
 * when scanning keys.
 */
-extern int lwgeom_needs_bbox(LWGEOM *geom);
+extern int lwgeom_needs_bbox(const LWGEOM *geom);
 
 /**
 * Count the total number of vertices in any #LWGEOM.
@@ -1265,7 +1265,7 @@ extern int32 lwgeom_npoints(uchar *serialized);
 * Return true of false depending on whether a geometry is an "empty" 
 * geometry (no vertices members)
 */
-extern int lwgeom_is_empty(LWGEOM *geom);
+extern int lwgeom_is_empty(const LWGEOM *geom);
 
 /**
 * Return the dimensionality (relating to point/line/poly) of an lwgeom

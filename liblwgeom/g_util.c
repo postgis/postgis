@@ -82,7 +82,7 @@ uchar gflags(int hasz, int hasm, int geodetic)
 * Type == 0 in the case of the string "GEOMETRY" or "GEOGRAPHY".
 * Return G_SUCCESS for success.
 */
-int geometry_type_from_string(char *str, int *type, int *z, int *m)
+int geometry_type_from_string(const char *str, int *type, int *z, int *m)
 {
 	char *tmpstr;
 	int tmpstartpos, tmpendpos;

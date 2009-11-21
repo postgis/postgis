@@ -46,44 +46,45 @@ typedef struct
 /*
 ** Prototypes for internal functions.
 */
-void geog2cart(GEOGRAPHIC_POINT g, POINT3D *p);
-void cart2geog(POINT3D p, GEOGRAPHIC_POINT *g);
-void robust_cross_product(GEOGRAPHIC_POINT p, GEOGRAPHIC_POINT q, POINT3D *a);
+
+void geog2cart(const GEOGRAPHIC_POINT *g, POINT3D *p);
+void cart2geog(const POINT3D *p, GEOGRAPHIC_POINT *g);
+void robust_cross_product(const GEOGRAPHIC_POINT *p, const GEOGRAPHIC_POINT *q, POINT3D *a);
 void x_to_z(POINT3D *p);
 void y_to_z(POINT3D *p);
-int edge_point_on_plane(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p);
-int edge_point_in_cone(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p);
-int edge_contains_coplanar_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p);
-int edge_contains_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT p);
+int edge_point_on_plane(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *p);
+int edge_point_in_cone(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *p);
+int edge_contains_coplanar_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *p);
+int edge_contains_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *p);
 double z_to_latitude(double z, int top);
-int clairaut_cartesian(POINT3D start, POINT3D end, GEOGRAPHIC_POINT *g_top, GEOGRAPHIC_POINT *g_bottom);
-int clairaut_geographic(GEOGRAPHIC_POINT start, GEOGRAPHIC_POINT end, GEOGRAPHIC_POINT *g_top, GEOGRAPHIC_POINT *g_bottom);
-double sphere_distance(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e);
-double sphere_distance_cartesian(POINT3D s, POINT3D e);
-int sphere_project(GEOGRAPHIC_POINT r, double distance, double azimuth, GEOGRAPHIC_POINT *n);
-int edge_calculate_gbox(GEOGRAPHIC_EDGE e, GBOX *gbox);
-int edge_calculate_gbox_slow(GEOGRAPHIC_EDGE e, GBOX *gbox);
-int edge_intersection(GEOGRAPHIC_EDGE e1, GEOGRAPHIC_EDGE e2, GEOGRAPHIC_POINT *g);
-double edge_distance_to_point(GEOGRAPHIC_EDGE e, GEOGRAPHIC_POINT gp, GEOGRAPHIC_POINT *closest);
-double edge_distance_to_edge(GEOGRAPHIC_EDGE e1, GEOGRAPHIC_EDGE e2, GEOGRAPHIC_POINT *closest1, GEOGRAPHIC_POINT *closest2);
+int clairaut_cartesian(const POINT3D *start, const POINT3D *end, GEOGRAPHIC_POINT *g_top, GEOGRAPHIC_POINT *g_bottom);
+int clairaut_geographic(const GEOGRAPHIC_POINT *start, const GEOGRAPHIC_POINT *end, GEOGRAPHIC_POINT *g_top, GEOGRAPHIC_POINT *g_bottom);
+double sphere_distance(const GEOGRAPHIC_POINT *s, const GEOGRAPHIC_POINT *e);
+double sphere_distance_cartesian(const POINT3D *s, const POINT3D *e);
+int sphere_project(const GEOGRAPHIC_POINT *r, double distance, double azimuth, GEOGRAPHIC_POINT *n);
+int edge_calculate_gbox(const GEOGRAPHIC_EDGE *e, GBOX *gbox);
+int edge_calculate_gbox_slow(const GEOGRAPHIC_EDGE *e, GBOX *gbox);
+int edge_intersection(const GEOGRAPHIC_EDGE *e1, const GEOGRAPHIC_EDGE *e2, GEOGRAPHIC_POINT *g);
+double edge_distance_to_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *gp, GEOGRAPHIC_POINT *closest);
+double edge_distance_to_edge(const GEOGRAPHIC_EDGE *e1, const GEOGRAPHIC_EDGE *e2, GEOGRAPHIC_POINT *closest1, GEOGRAPHIC_POINT *closest2);
 void edge_deg2rad(GEOGRAPHIC_EDGE *e);
 void edge_rad2deg(GEOGRAPHIC_EDGE *e);
 void point_deg2rad(GEOGRAPHIC_POINT *p);
 void point_rad2deg(GEOGRAPHIC_POINT *p);
 void geographic_point_init(double lon, double lat, GEOGRAPHIC_POINT *g);
-int ptarray_point_in_ring_winding(POINTARRAY *pa, POINT2D pt_to_test);
-int lwpoly_covers_point2d(const LWPOLY *poly, GBOX gbox, POINT2D pt_to_test);
-int ptarray_point_in_ring(POINTARRAY *pa, POINT2D pt_outside, POINT2D pt_to_test);
-double ptarray_area_sphere(POINTARRAY *pa, POINT2D pt_outside);
+int ptarray_point_in_ring_winding(const POINTARRAY *pa, const POINT2D *pt_to_test);
+int lwpoly_covers_point2d(const LWPOLY *poly, const GBOX *gbox, const POINT2D *pt_to_test);
+int ptarray_point_in_ring(const POINTARRAY *pa, const POINT2D *pt_outside, const POINT2D *pt_to_test);
+double ptarray_area_sphere(const POINTARRAY *pa, const POINT2D *pt_outside);
 double latitude_degrees_normalize(double lat);
 double longitude_degrees_normalize(double lon);
-double ptarray_length_spheroid(POINTARRAY *pa, SPHEROID s);
-int geographic_point_equals(GEOGRAPHIC_POINT g1, GEOGRAPHIC_POINT g2);
-int crosses_dateline(GEOGRAPHIC_POINT s, GEOGRAPHIC_POINT e);
+double ptarray_length_spheroid(const POINTARRAY *pa, const SPHEROID *s);
+int geographic_point_equals(const GEOGRAPHIC_POINT *g1, const GEOGRAPHIC_POINT *g2);
+int crosses_dateline(const GEOGRAPHIC_POINT *s, const GEOGRAPHIC_POINT *e);
 void point_shift(GEOGRAPHIC_POINT *p, double shift);
 /*
 ** Prototypes for spheroid functions.
 */
-double spheroid_distance(GEOGRAPHIC_POINT a, GEOGRAPHIC_POINT b, SPHEROID spheroid);
-double spheroid_direction(GEOGRAPHIC_POINT r, GEOGRAPHIC_POINT s, SPHEROID spheroid);
-int spheroid_project(GEOGRAPHIC_POINT r, SPHEROID spheroid, double distance, double azimuth, GEOGRAPHIC_POINT *g);
+double spheroid_distance(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, const SPHEROID *spheroid);
+double spheroid_direction(const GEOGRAPHIC_POINT *r, const GEOGRAPHIC_POINT *s, const SPHEROID *spheroid);
+int spheroid_project(const GEOGRAPHIC_POINT *r, const SPHEROID *spheroid, double distance, double azimuth, GEOGRAPHIC_POINT *g);

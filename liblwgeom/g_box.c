@@ -20,75 +20,75 @@ GBOX* gbox_new(uchar flags)
 	return g;
 }
 
-int gbox_merge_point3d(POINT3D p, GBOX *gbox)
+int gbox_merge_point3d(const POINT3D *p, GBOX *gbox)
 {
-	if( gbox->xmin > p.x ) gbox->xmin = p.x;
-	if( gbox->ymin > p.y ) gbox->ymin = p.y;
-	if( gbox->zmin > p.z ) gbox->zmin = p.z;
-	if( gbox->xmax < p.x ) gbox->xmax = p.x;
-	if( gbox->ymax < p.y ) gbox->ymax = p.y;
-	if( gbox->zmax < p.z ) gbox->zmax = p.z;
+	if( gbox->xmin > p->x ) gbox->xmin = p->x;
+	if( gbox->ymin > p->y ) gbox->ymin = p->y;
+	if( gbox->zmin > p->z ) gbox->zmin = p->z;
+	if( gbox->xmax < p->x ) gbox->xmax = p->x;
+	if( gbox->ymax < p->y ) gbox->ymax = p->y;
+	if( gbox->zmax < p->z ) gbox->zmax = p->z;
 	return G_SUCCESS;
 }
 
-int gbox_contains_point3d(GBOX gbox, POINT3D pt)
+int gbox_contains_point3d(const GBOX *gbox, const POINT3D *pt)
 {
-	if( gbox.xmin > pt.x || gbox.ymin > pt.y || gbox.zmin > pt.z ||
-	    gbox.xmax < pt.x || gbox.ymax < pt.y || gbox.zmax < pt.z )
+	if( gbox->xmin > pt->x || gbox->ymin > pt->y || gbox->zmin > pt->z ||
+	    gbox->xmax < pt->x || gbox->ymax < pt->y || gbox->zmax < pt->z )
 	{
 		return LW_FALSE;
 	}
 	return LW_TRUE;
 }
 
-int gbox_merge(GBOX new_box, GBOX *merge_box)
+int gbox_merge(const GBOX *new_box, GBOX *merge_box)
 {
 	assert(merge_box);
 	
-	if( merge_box->flags != new_box.flags ) 
+	if( merge_box->flags != new_box->flags ) 
 		return G_FAILURE;
 	
-	if( new_box.xmin < merge_box->xmin) merge_box->xmin = new_box.xmin;
-	if( new_box.ymin < merge_box->ymin) merge_box->ymin = new_box.ymin;
-	if( new_box.xmax > merge_box->xmax) merge_box->xmax = new_box.xmax;
-	if( new_box.ymax > merge_box->ymax) merge_box->ymax = new_box.ymax;
+	if( new_box->xmin < merge_box->xmin) merge_box->xmin = new_box->xmin;
+	if( new_box->ymin < merge_box->ymin) merge_box->ymin = new_box->ymin;
+	if( new_box->xmax > merge_box->xmax) merge_box->xmax = new_box->xmax;
+	if( new_box->ymax > merge_box->ymax) merge_box->ymax = new_box->ymax;
 	
 	if( FLAGS_GET_Z(merge_box->flags) || FLAGS_GET_GEODETIC(merge_box->flags) )
 	{
-		if( new_box.zmin < merge_box->zmin) merge_box->zmin = new_box.zmin;
-		if( new_box.zmax > merge_box->zmax) merge_box->zmax = new_box.zmax;
+		if( new_box->zmin < merge_box->zmin) merge_box->zmin = new_box->zmin;
+		if( new_box->zmax > merge_box->zmax) merge_box->zmax = new_box->zmax;
 	}
 	if( FLAGS_GET_M(merge_box->flags) )
 	{
-		if( new_box.mmin < merge_box->mmin) merge_box->mmin = new_box.mmin;
-		if( new_box.mmax > merge_box->mmax) merge_box->mmax = new_box.mmax;
+		if( new_box->mmin < merge_box->mmin) merge_box->mmin = new_box->mmin;
+		if( new_box->mmax > merge_box->mmax) merge_box->mmax = new_box->mmax;
 	}
 
 	return G_SUCCESS;
 }
 
-int gbox_overlaps(GBOX g1, GBOX g2)
+int gbox_overlaps(const GBOX *g1, const GBOX *g2)
 {
 	
 	/* Make sure our boxes have the same dimensionality */ 
-	if( ! (FLAGS_GET_Z(g1.flags) == FLAGS_GET_Z(g2.flags) && 
-	       FLAGS_GET_M(g1.flags) == FLAGS_GET_M(g2.flags) && 
-	       FLAGS_GET_GEODETIC(g1.flags) == FLAGS_GET_GEODETIC(g2.flags) ) )
+	if( ! (FLAGS_GET_Z(g1->flags) == FLAGS_GET_Z(g2->flags) && 
+	       FLAGS_GET_M(g1->flags) == FLAGS_GET_M(g2->flags) && 
+	       FLAGS_GET_GEODETIC(g1->flags) == FLAGS_GET_GEODETIC(g2->flags) ) )
 	{
 		lwerror("gbox_overlaps: geometries have mismatched dimensionality");
 	}
 		
-	if( g1.xmax < g2.xmin || g1.ymax < g2.ymin ||
-	    g1.xmin > g2.xmax || g1.ymin > g2.ymax )
+	if( g1->xmax < g2->xmin || g1->ymax < g2->ymin ||
+	    g1->xmin > g2->xmax || g1->ymin > g2->ymax )
 		return LW_FALSE;
-	if( FLAGS_GET_Z(g1.flags) || FLAGS_GET_GEODETIC(g1.flags) )
+	if( FLAGS_GET_Z(g1->flags) || FLAGS_GET_GEODETIC(g1->flags) )
 	{
-		if( g1.zmax < g2.zmin || g1.zmin > g2.zmax )
+		if( g1->zmax < g2->zmin || g1->zmin > g2->zmax )
 			return LW_FALSE;
 	}
-	if( FLAGS_GET_M(g1.flags) )
+	if( FLAGS_GET_M(g1->flags) )
 	{
-		if( g1.mmax < g2.mmin || g1.mmin > g2.mmax )
+		if( g1->mmax < g2->mmin || g1->mmin > g2->mmax )
 			return LW_FALSE;
 	}
 	return LW_TRUE;
@@ -98,9 +98,9 @@ int gbox_overlaps(GBOX g1, GBOX g2)
 * Warning, this function is only good for x/y/z boxes, used 
 * in unit testing of geodetic box generation.
 */
-GBOX* gbox_from_string(char *str)
+GBOX* gbox_from_string(const char *str)
 {
-    char *ptr = str;
+    const char *ptr = str;
     char *nextptr;
     char *gbox_start = strstr(str, "GBOX((");
     GBOX *gbox = gbox_new(gflags(0,0,1));
@@ -126,7 +126,7 @@ GBOX* gbox_from_string(char *str)
     return gbox;
 }
 
-char* gbox_to_string(GBOX *gbox)
+char* gbox_to_string(const GBOX *gbox)
 {
 	static int sz = 128;
 	char *str = NULL;
@@ -160,34 +160,34 @@ char* gbox_to_string(GBOX *gbox)
 	return str;
 }
 
-GBOX* gbox_copy(GBOX *box)
+GBOX* gbox_copy(const GBOX *box)
 {
 	GBOX *copy = (GBOX*)lwalloc(sizeof(GBOX));
 	memcpy(copy, box, sizeof(GBOX));
 	return copy;
 }
 
-void gbox_duplicate(GBOX original, GBOX *duplicate)
+void gbox_duplicate(const GBOX *original, GBOX *duplicate)
 {
     assert(duplicate);
 
-	if( original.flags != duplicate->flags )
+	if( original->flags != duplicate->flags )
 		lwerror("gbox_duplicate: geometries have inconsistent dimensionality");
 		
-    duplicate->xmin = original.xmin;
-    duplicate->ymin = original.ymin;
-    duplicate->xmax = original.xmax;
-    duplicate->ymax = original.ymax;
+    duplicate->xmin = original->xmin;
+    duplicate->ymin = original->ymin;
+    duplicate->xmax = original->xmax;
+    duplicate->ymax = original->ymax;
 
-    if( FLAGS_GET_GEODETIC(original.flags) || FLAGS_GET_Z(original.flags) )
+    if( FLAGS_GET_GEODETIC(original->flags) || FLAGS_GET_Z(original->flags) )
 	{
-        duplicate->zmin = original.zmin;
-        duplicate->zmax = original.zmax;
+        duplicate->zmin = original->zmin;
+        duplicate->zmax = original->zmax;
 	}
-	if( FLAGS_GET_M(original.flags) )
+	if( FLAGS_GET_M(original->flags) )
 	{
-        duplicate->mmin = original.mmin;
-        duplicate->mmax = original.mmax;
+        duplicate->mmin = original->mmin;
+        duplicate->mmax = original->mmax;
 	}
     return;
 }
@@ -201,7 +201,7 @@ size_t gbox_serialized_size(uchar flags)
         return 2 * FLAGS_NDIMS(flags) * sizeof(float);
 }
 
-int gbox_from_gserialized(GSERIALIZED *g, GBOX *gbox)
+int gbox_from_gserialized(const GSERIALIZED *g, GBOX *gbox)
 {
 	
 	/* Null input! */
@@ -437,7 +437,7 @@ static int lwcircle_calculate_gbox(POINT4D p1, POINT4D p2, POINT4D p3, GBOX *gbo
 	return G_SUCCESS;
 }
 
-int ptarray_calculate_gbox( POINTARRAY *pa, GBOX *gbox )
+int ptarray_calculate_gbox(const POINTARRAY *pa, GBOX *gbox )
 {
 	int i;
 	POINT4D p;
@@ -501,7 +501,7 @@ static int lwcircstring_calculate_gbox(LWCIRCSTRING *curve, GBOX *gbox)
 		if (lwcircle_calculate_gbox(p1, p2, p3, &tmp) == G_FAILURE) 
 			continue;
 
-		gbox_merge(tmp, gbox);
+		gbox_merge(&tmp, gbox);
 	}
 	
 	return G_SUCCESS;
@@ -549,12 +549,12 @@ static int lwcollection_calculate_gbox(LWCOLLECTION *coll, GBOX *gbox)
 		{
 			if( first )
 			{
-				gbox_duplicate(subbox, gbox);
+				gbox_duplicate(&subbox, gbox);
 				first = LW_FALSE;
 			}
 			else
 			{
-				gbox_merge(subbox, gbox);
+				gbox_merge(&subbox, gbox);
 			}
 			result = G_SUCCESS;
 		}
