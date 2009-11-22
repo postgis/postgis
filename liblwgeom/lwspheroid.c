@@ -12,8 +12,6 @@
 
 #include "lwgeodetic.h"
 
-#define POW2(x) ((x)*(x))
-
 /**
 * Initialize spheroid object based on major and minor axis
 */

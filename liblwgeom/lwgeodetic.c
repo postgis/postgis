@@ -587,8 +587,8 @@ double sphere_distance(const GEOGRAPHIC_POINT *s, const GEOGRAPHIC_POINT *e)
 	double cos_lat_s = cos(s->lat);
 	double sin_lat_s = sin(s->lat);
 	
-	double a1 = pow(cos_lat_e * sin(d_lon), 2.0);
-	double a2 = pow(cos_lat_s * sin_lat_e - sin_lat_s * cos_lat_e * cos_d_lon, 2.0);
+	double a1 = POW2(cos_lat_e * sin(d_lon));
+	double a2 = POW2(cos_lat_s * sin_lat_e - sin_lat_s * cos_lat_e * cos_d_lon);
 	double a = sqrt(a1 + a2);
 	double b = sin_lat_s * sin_lat_e + cos_lat_s * cos_lat_e * cos_d_lon;
 	return atan2(a, b);
@@ -1358,21 +1358,21 @@ void gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside)
 	if((1.0 - gbox->xmax) > 0.1) 
 	{
 		pt.x = gbox->xmax + (1.0 - gbox->xmax) * 0.01;
-		d = sqrt((1.0 - pow(pt.x, 2.0))/2.0);
+		d = sqrt((1.0 - POW2(pt.x))/2.0);
 		pt.y = d;
 		pt.z = d;
 	} 
 	else if((1.0 - gbox->ymax) > 0.1) 
 	{
 		pt.y = gbox->ymax + (1.0 - gbox->ymax) * 0.01;
-		d = sqrt((1.0 - pow(pt.y, 2.0))/2.0);
+		d = sqrt((1.0 - POW2(pt.y))/2.0);
 		pt.x = d;
 		pt.z = d;
 	} 
 	else if((1.0 - gbox->zmax) > 0.1) 
 	{
 		pt.z = gbox->zmax + (1.0 - gbox->zmax) * 0.01;
-		d = sqrt((1.0 - pow(pt.z, 2.0))/2.0);
+		d = sqrt((1.0 - POW2(pt.z))/2.0);
 		pt.x = d;
 		pt.y = d;
 	}

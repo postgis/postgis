@@ -14,6 +14,8 @@
 
 extern int gbox_geocentric_slow;
 
+#define POW2(x) ((x)*(x))
+
 /**
 * Point in spherical coordinates on the world. Units of radians.
 */
