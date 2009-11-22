@@ -22,7 +22,7 @@ int gbox_geocentric_slow = LW_FALSE;
 /**
 * Convert a longitude to the range of -PI,PI
 */
-static double longitude_radians_normalize(double lon)
+double longitude_radians_normalize(double lon)
 {
 	if( lon == -1.0 * M_PI )
 		return M_PI;
@@ -47,7 +47,7 @@ static double longitude_radians_normalize(double lon)
 /**
 * Convert a latitude to the range of -PI/2,PI/2
 */
-static double latitude_radians_normalize(double lat)
+double latitude_radians_normalize(double lat)
 {
 
 	if( lat > 2.0 * M_PI )
@@ -123,46 +123,6 @@ double latitude_degrees_normalize(double lat)
 	return lat;
 }
 
-/**
-* Convert an edge from degrees to radians. 
-*/
-void edge_deg2rad(GEOGRAPHIC_EDGE *e)
-{
-	(e->start).lat = deg2rad((e->start).lat);
-	(e->end).lat = deg2rad((e->end).lat);
-	(e->start).lon = deg2rad((e->start).lon);
-	(e->end).lon = deg2rad((e->end).lon);
-}
-
-/**
-* Convert an edge from radians to degrees.
-*/
-void edge_rad2deg(GEOGRAPHIC_EDGE *e)
-{
-	(e->start).lat = rad2deg((e->start).lat);
-	(e->end).lat = rad2deg((e->end).lat);
-	(e->start).lon = rad2deg((e->start).lon);
-	(e->end).lon = rad2deg((e->end).lon);
-}
-
-/** 
-* Convert a point from degrees to radians.
-*/
-void point_deg2rad(GEOGRAPHIC_POINT *p)
-{
-	p->lat = latitude_radians_normalize(deg2rad(p->lat));
-	p->lon = longitude_radians_normalize(deg2rad(p->lon));
-}
-
-/** 
-* Convert a point from radians to degrees.
-*/
-void point_rad2deg(GEOGRAPHIC_POINT *p)
-{
-	p->lat = rad2deg(p->lat);
-	p->lon = rad2deg(p->lon);
-}
-
 /** 
 * Shift a point around by a number of radians
 */
@@ -174,7 +134,6 @@ void point_shift(GEOGRAPHIC_POINT *p, double shift)
 	return;
 }
 
-
 int geographic_point_equals(const GEOGRAPHIC_POINT *g1, const GEOGRAPHIC_POINT *g2)
 {
 	return FP_EQUALS(g1->lat, g2->lat) && FP_EQUALS(g1->lon, g2->lon);
@@ -183,7 +142,7 @@ int geographic_point_equals(const GEOGRAPHIC_POINT *g1, const GEOGRAPHIC_POINT *
 void geographic_point_init(double lon, double lat, GEOGRAPHIC_POINT *g)
 {
 	g->lat = latitude_radians_normalize(deg2rad(lat));
-	g->lon = longitude_radians_normalize(deg2rad(lon));	
+	g->lon = longitude_radians_normalize(deg2rad(lon));
 }
 
 /**

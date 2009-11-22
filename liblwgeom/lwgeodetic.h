@@ -69,10 +69,6 @@ int edge_calculate_gbox_slow(const GEOGRAPHIC_EDGE *e, GBOX *gbox);
 int edge_intersection(const GEOGRAPHIC_EDGE *e1, const GEOGRAPHIC_EDGE *e2, GEOGRAPHIC_POINT *g);
 double edge_distance_to_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *gp, GEOGRAPHIC_POINT *closest);
 double edge_distance_to_edge(const GEOGRAPHIC_EDGE *e1, const GEOGRAPHIC_EDGE *e2, GEOGRAPHIC_POINT *closest1, GEOGRAPHIC_POINT *closest2);
-void edge_deg2rad(GEOGRAPHIC_EDGE *e);
-void edge_rad2deg(GEOGRAPHIC_EDGE *e);
-void point_deg2rad(GEOGRAPHIC_POINT *p);
-void point_rad2deg(GEOGRAPHIC_POINT *p);
 void geographic_point_init(double lon, double lat, GEOGRAPHIC_POINT *g);
 int ptarray_point_in_ring_winding(const POINTARRAY *pa, const POINT2D *pt_to_test);
 int lwpoly_covers_point2d(const LWPOLY *poly, const GBOX *gbox, const POINT2D *pt_to_test);
@@ -84,6 +80,9 @@ double ptarray_length_spheroid(const POINTARRAY *pa, const SPHEROID *s);
 int geographic_point_equals(const GEOGRAPHIC_POINT *g1, const GEOGRAPHIC_POINT *g2);
 int crosses_dateline(const GEOGRAPHIC_POINT *s, const GEOGRAPHIC_POINT *e);
 void point_shift(GEOGRAPHIC_POINT *p, double shift);
+double longitude_radians_normalize(double lon);
+double latitude_radians_normalize(double lat);
+
 /*
 ** Prototypes for spheroid functions.
 */

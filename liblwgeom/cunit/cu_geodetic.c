@@ -70,6 +70,46 @@ int clean_geodetic_suite(void)
 }
 
 
+/**
+* Convert an edge from degrees to radians. 
+*/
+static void edge_deg2rad(GEOGRAPHIC_EDGE *e)
+{
+	(e->start).lat = deg2rad((e->start).lat);
+	(e->end).lat = deg2rad((e->end).lat);
+	(e->start).lon = deg2rad((e->start).lon);
+	(e->end).lon = deg2rad((e->end).lon);
+}
+
+/**
+* Convert an edge from radians to degrees.
+*/
+static void edge_rad2deg(GEOGRAPHIC_EDGE *e)
+{
+	(e->start).lat = rad2deg((e->start).lat);
+	(e->end).lat = rad2deg((e->end).lat);
+	(e->start).lon = rad2deg((e->start).lon);
+	(e->end).lon = rad2deg((e->end).lon);
+}
+
+/** 
+* Convert a point from degrees to radians.
+*/
+static void point_deg2rad(GEOGRAPHIC_POINT *p)
+{
+	p->lat = latitude_radians_normalize(deg2rad(p->lat));
+	p->lon = longitude_radians_normalize(deg2rad(p->lon));
+}
+
+/** 
+* Convert a point from radians to degrees.
+*/
+static void point_rad2deg(GEOGRAPHIC_POINT *p)
+{
+	p->lat = rad2deg(p->lat);
+	p->lon = rad2deg(p->lon);
+}
+
 void test_signum(void)
 {
 	CU_ASSERT_EQUAL(signum(-5.0),-1);
