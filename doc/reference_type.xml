@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <sect1 id="PostGIS_Types">
+    <title>PostgreSQL PostGIS Types</title>
+
+	<refentry id="box2d">
+      <refnamediv>
+        <refname>box2d</refname>
+        <refpurpose>A box composed of x min, ymin,  xmax, ymax.  Often used to return the 2d enclosing box of a geometry. </refpurpose>
+      </refnamediv>
+
+      <refsection>
+        <title>Description</title>
+        <para>box2d is a spatial data type used to represent the enclosing box of a geometry or set of geometries. ST_Extent in earlier versions prior to PostGIS 1.4 would return a box2d.</para>
+      </refsection>
+    </refentry>
+	<refentry id="box3d">
+      <refnamediv>
+        <refname>box3d</refname>
+        <refpurpose>A box composed of x min, ymin, zmin, xmax, ymax, zmax.  Often used to return the 3d extent of a geometry or collection of geometries. </refpurpose>
+      </refnamediv>
+
+      <refsection>
+        <title>Description</title>
+        <para>box3d is a postgis spatial data type used to represent the enclosing box of a geometry or set of geometries. ST_Extent3D returns a box3d object.</para>
+      </refsection>
+    </refentry>
+	
+	<refentry id="box3d_extent">
+      <refnamediv>
+        <refname>box3d_extent</refname>
+        <refpurpose>A box composed of x min, ymin, zmin, xmax, ymax, zmax.  Often used to return the extent of a geometry.</refpurpose>
+      </refnamediv>
+
+      <refsection>
+        <title>Description</title>
+        <para>box3d_extent is a data type returned by ST_Extent. In versions prior to PostGIS 1.4, ST_Extent would return a box2d.</para>
+      </refsection>
+	  <refsection>
+	  	<title>Casting Behavor</title>
+		<para>This section lists the automatic as well as explicit casts allowed for this data type</para>
+		<informaltable>
+			<tgroup cols="2">
+				<tbody>
+				  <row>
+					<entry>Cast To</entry>
+					<entry>Behavior</entry>
+				  </row>
+				  <row>
+					<entry>box2d</entry>
+					<entry>automatic</entry>
+				  </row>
+				  <row>
+					<entry>box3d</entry>
+					<entry>automatic</entry>
+				  </row>
+				  <row>
+					<entry>geometry</entry>
+					<entry>automatic</entry>
+				  </row>
+				</tbody>
+			</tgroup>
+		</informaltable>
+	  </refsection>
+    </refentry>
+	
+	<refentry id="geometry">
+		<refnamediv>
+			<refname>GEOMETRY</refname>
+			<refpurpose>Planar spatial data type.</refpurpose>
+		</refnamediv>
+		
+		<refsection>
+			<title>Description</title>
+			<para>GEOMETRY is a fundamental postgis spatial data type used to represent a feature in the Euclidean coordinate system.</para>
+		</refsection>
+		
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="RefObject" /></para>
+		</refsection>
+	</refentry>
+
+	<refentry id="geography">
+		<refnamediv>
+			<refname>GEOGRAPHY</refname>
+			<refpurpose>Ellipsoidal spatial data type.</refpurpose>
+		</refnamediv>
+		
+		<refsection>
+		<title>Description</title>
+		<para>GEOGRAPHY is a spatial data type used to represent a feature in the round-earth coordinate system.</para>
+		</refsection>
+		
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="PostGIS_GeographyFunctions" />,<xref linkend="PostGIS_Geography" /></para>
+		</refsection>
+	</refentry>
+  </sect1>

@@ -19,6 +19,7 @@
 <!ENTITY postgis_aggs_mm SYSTEM "postgis_aggs_mm.xml">
 <!ENTITY reporting SYSTEM "reporting.xml">
 <!ENTITY release_notes SYSTEM "release_notes.xml">
+<!ENTITY reference_type SYSTEM "reference_type.xml">
 <!ENTITY reference_management SYSTEM "reference_management.xml">
 <!ENTITY reference_constructor SYSTEM "reference_constructor.xml">
 <!ENTITY reference_accessor SYSTEM "reference_accessor.xml">

@@ -16,6 +16,7 @@
 	deprecated in a future release.</para>
   </note>
 
+  &reference_type;
   &reference_management;
   &reference_constructor;
   &reference_accessor;
