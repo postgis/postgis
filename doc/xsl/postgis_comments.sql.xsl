@@ -30,6 +30,12 @@
 				<xsl:with-param name="replacement" select="''"/>
 			</xsl:call-template>
 		</xsl:variable>
+		<xsl:choose>
+<!-- If this is a postgis type grab the ref entry summary and refname to make type comment -->
+<xsl:when test="parent::sect1[@id='PostGIS_Types']">
+	COMMENT ON TYPE <xsl:value-of select="refnamediv/refname" /> IS 'postgis type: <xsl:value-of select='$comment' />';
+</xsl:when>
+		</xsl:choose>
 <!-- For each function prototype generate the DDL comment statement
 	If its input is a geometry set - we know it is an aggregate function rather than a regular function -->
 		<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">

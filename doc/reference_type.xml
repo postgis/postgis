@@ -38,7 +38,7 @@
 	  <refsection>
 	  	<title>Casting Behavor</title>
 		<para>This section lists the automatic as well as explicit casts allowed for this data type</para>
-		<informaltable>
+		<informaltable rowsep="1" frame="all">
 			<tgroup cols="2">
 				<tbody>
 				  <row>
@@ -65,7 +65,7 @@
 	
 	<refentry id="geometry">
 		<refnamediv>
-			<refname>GEOMETRY</refname>
+			<refname>geometry</refname>
 			<refpurpose>Planar spatial data type.</refpurpose>
 		</refnamediv>
 		
@@ -82,7 +82,7 @@
 
 	<refentry id="geography">
 		<refnamediv>
-			<refname>GEOGRAPHY</refname>
+			<refname>geography</refname>
 			<refpurpose>Ellipsoidal spatial data type.</refpurpose>
 		</refnamediv>
 		
