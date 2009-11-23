@@ -331,6 +331,7 @@ the_geom IS NULL)
 
 		<para><xref linkend="PostGIS_GEOS_Version" />, <xref
 		linkend="PostGIS_Lib_Version" />, <xref
+		linkend="PostGIS_LibXML_Version" />, <xref
 		linkend="PostGIS_PROJ_Version" />, <xref
 		linkend="PostGIS_Version" /></para>
 	  </refsection>
@@ -376,7 +377,54 @@ the_geom IS NULL)
 
 		<para><xref linkend="PostGIS_Full_Version" />, <xref
 		linkend="PostGIS_Lib_Version" />, <xref
+		linkend="PostGIS_LibXML_Version" />, <xref
 		linkend="PostGIS_PROJ_Version" />, <xref
+		linkend="PostGIS_Version" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="PostGIS_LibXML_Version">
+	  <refnamediv>
+		<refname>PostGIS_LibXML_Version</refname>
+
+		<refpurpose>Returns the version number of the libxml2
+		library.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>PostGIS_LibXML_Version</function></funcdef>
+
+			<paramdef></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the version number of the LibXML2 library, or
+		<varname>NULL</varname> if LibXML2 support is not enabled.</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT PostGIS_LibXML_Version();
+ postgis_libxml_version
+----------------------
+ 2.7.6
+(1 row)</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="PostGIS_Full_Version" />, <xref
+		linkend="PostGIS_Lib_Version" />, <xref
+		linkend="PostGIS_PROJ_Version" />, <xref
+		linkend="PostGIS_GEOS_Version" />, <xref
 		linkend="PostGIS_Version" /></para>
 	  </refsection>
 	</refentry>
@@ -454,6 +502,7 @@ the_geom IS NULL)
 
 		<para><xref linkend="PostGIS_Full_Version" />, <xref
 		linkend="PostGIS_GEOS_Version" />,  <xref
+		linkend="PostGIS_LibXML_Version" />, <xref
 		linkend="PostGIS_PROJ_Version" />, <xref
 		linkend="PostGIS_Version" /></para>
 	  </refsection>
@@ -500,6 +549,7 @@ the_geom IS NULL)
 		<para><xref linkend="PostGIS_Full_Version" />, <xref
 		linkend="PostGIS_GEOS_Version" />,  <xref
 		linkend="PostGIS_Lib_Version" />, <xref
+		linkend="PostGIS_LibXML_Version" />, <xref
 		linkend="PostGIS_Version" /></para>
 	  </refsection>
 	</refentry>
@@ -545,6 +595,7 @@ the_geom IS NULL)
 		<para><xref linkend="PostGIS_Full_Version" />, <xref
 		linkend="PostGIS_GEOS_Version" />, <xref
 		linkend="PostGIS_Lib_Version" />, <xref
+		linkend="PostGIS_LibXML_Version" />, <xref
 		linkend="PostGIS_Version" /></para>
 	  </refsection>
 	</refentry>
@@ -733,6 +784,7 @@ the_geom IS NULL)
 		<para><xref linkend="PostGIS_Full_Version" />, <xref
 		linkend="PostGIS_GEOS_Version" />,<xref
 		linkend="PostGIS_Lib_Version" />, <xref
+		linkend="PostGIS_LibXML_Version" />, <xref
 		linkend="PostGIS_PROJ_Version" /></para>
 	  </refsection>
 	</refentry>

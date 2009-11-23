@@ -371,7 +371,7 @@ if test "$FOUND_LIBXML2" = "1"; then
 	XML2_CPPFLAGS=`$XML2CONFIG --cflags`
 
 	dnl Extract the version
-	XML2_VERSION=`$XML2CONFIG --version`
+	POSTGIS_LIBXML2_VERSION=`$XML2CONFIG --version`
 
 	dnl Check headers file
 	CPPFLAGS_SAVE="$CPPFLAGS"
@@ -388,6 +388,9 @@ if test "$FOUND_LIBXML2" = "1"; then
 	AC_DEFINE_UNQUOTED([HAVE_LIBXML2], [$HAVE_LIBXML2],
 			   [libxml/tree.h libxml/parser.h libxml/xpath.h libxml/xpathInternals.h header])
 	AC_SUBST([HAVE_LIBXML2])
+
+	AC_DEFINE_UNQUOTED([POSTGIS_LIBXML2_VERSION], ["$POSTGIS_LIBXML2_VERSION"], [PostGIS libxml2 version])
+	AC_SUBST([POSTGIS_LIBXML2_VERSION])
 fi
 
 
@@ -570,6 +573,10 @@ dnl Define version macros
 dnl
 
 POSTGIS_VERSION="$POSTGIS_MAJOR_VERSION.$POSTGIS_MINOR_VERSION USE_GEOS=1 USE_PROJ=1 USE_STATS=1"
+if test "$HAVE_LIBXML2" = "1"; then
+	POSTGIS_VERSION="$POSTGIS_VERSION USE_LIBXML2=1"
+fi
+
 POSTGIS_LIB_VERSION="$POSTGIS_MAJOR_VERSION.$POSTGIS_MINOR_VERSION.$POSTGIS_MICRO_VERSION"
 POSTGIS_BUILD_DATE=`date -u "+%Y-%m-%d %H:%M:%S"`
 POSTGIS_SCRIPTS_SVNREV=`perl utils/read_scripts_version.pl`
@@ -625,7 +632,7 @@ AC_MSG_RESULT([  PostgreSQL config:    ${PGCONFIG}])
 AC_MSG_RESULT([  PostgreSQL version:   ${PGSQL_MAJOR_VERSION}.${PGSQL_MINOR_VERSION}])
 AC_MSG_RESULT([  PROJ4 version:        ${POSTGIS_PROJ_VERSION}])
 AC_MSG_RESULT([  Libxml2 config:       ${XML2CONFIG}])
-AC_MSG_RESULT([  Libxml2 version:      ${XML2_VERSION}])
+AC_MSG_RESULT([  Libxml2 version:      ${POSTGIS_LIBXML2_VERSION}])
 AC_MSG_RESULT([  PostGIS debug level:  ${POSTGIS_DEBUG_LEVEL}])
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------- Documentation Generation -------- ])

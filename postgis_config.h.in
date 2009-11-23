@@ -64,6 +64,9 @@
 /* libxml/tree.h libxml/parser.h header */
 #undef HAVE_LIBXML2
 
+/* PostGIS libxml2 version */
+#undef POSTGIS_LIBXML2_VERSION
+
 /* PostGIS library version */
 #undef POSTGIS_LIB_VERSION
 

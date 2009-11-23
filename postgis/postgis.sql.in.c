@@ -3407,6 +3407,10 @@ CREATE OR REPLACE FUNCTION postgis_geos_version() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'C' IMMUTABLE;
 
+CREATE OR REPLACE FUNCTION postgis_libxml_version() RETURNS text
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'C' IMMUTABLE;
+
 CREATE OR REPLACE FUNCTION postgis_scripts_build_date() RETURNS text
 	AS _POSTGIS_SQL_SELECT_POSTGIS_BUILD_DATE
 	LANGUAGE 'sql' IMMUTABLE;
@@ -3423,6 +3427,7 @@ DECLARE
 	libver text;
 	projver text;
 	geosver text;
+	libxmlver text;
 	usestats bool;
 	dbproc text;
 	relproc text;
@@ -3431,6 +3436,9 @@ BEGIN
 	SELECT postgis_lib_version() INTO libver;
 	SELECT postgis_proj_version() INTO projver;
 	SELECT postgis_geos_version() INTO geosver;
+#if HAVE_LIBXML2
+	SELECT postgis_libxml_version() INTO libxmlver;
+#endif
 	SELECT postgis_uses_stats() INTO usestats;
 	SELECT postgis_scripts_installed() INTO dbproc;
 	SELECT postgis_scripts_released() INTO relproc;
@@ -3443,6 +3451,10 @@ BEGIN
 
 	IF  projver IS NOT NULL THEN
 		fullver = fullver || ' PROJ="' || projver || '"';
+	END IF;
+
+	IF  libxmlver IS NOT NULL THEN
+		fullver = fullver || ' LIBXML="' || libxmlver || '"';
 	END IF;
 
 	IF usestats THEN
