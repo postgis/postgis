@@ -912,6 +912,114 @@ SELECT ST_AsEWKT(geom) As the_geom, path
 	  </refsection>
 	</refentry>
 
+	<refentry id="ST_DumpPoints">
+		<refnamediv>
+			<refname>ST_DumpPoints</refname>
+			<refpurpose>Returns a set of geometry_dump (geom,path) rows of all points that make up a geometry.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+				<funcdef>geometry_dump[]<function>ST_DumpPoints</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+				<para>This set-returning function (SRF) returns a set of <varname>geometry_dump</varname> rows formed 
+				    by a geometry (<varname>geom</varname>) and an array of integers (<varname>path</varname>).</para>
+				    
+				<para>The <parameter>geom</parameter> component of <varname>geometry_dump</varname> are 
+				    all the <varname>POINT</varname>s that make up the supplied geometry</para>
+				    
+				<para>The <parameter>path</parameter> component of <varname>geometry_dump</varname> (an <varname>integer[]</varname>) 
+				    is an index reference enumerating the <varname>POINT</varname>s of the supplied geometry.
+					For example, if a <varname>LINESTRING</varname> is supplied, a path of <varname>{i}</varname> is 
+					returned where <varname>i</varname> is the <varname>nth</varname> coordinate in the <varname>LINESTRING</varname>.
+					If a <varname>POLYGON</varname> is supplied, a path of <varname>{i,j}</varname> is returned where 
+					<varname>i</varname> is the outer ring followed by the inner rings and <varname>j</varname> 
+					enumerates the <varname>POINT</varname>s.
+				</para>
+				
+				<para>Availability: PostGIS 1.5.0.</para>
+
+				<para>&Z_support;</para>
+				<para>&curve_support;</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+
+			<informalfigure>
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="images/st_dumppoints01.png" />
+					</imageobject>
+				</mediaobject>
+			</informalfigure>
+
+			<programlisting>SELECT path, ST_AsText(geom) 
+FROM (
+  SELECT (ST_DumpPoints(g.geom)).* 
+  FROM
+    (SELECT 
+       'GEOMETRYCOLLECTION(
+          POINT ( 0 1 ), 
+          LINESTRING ( 0 3, 3 4 ),
+          POLYGON (( 2 0, 2 3, 0 2, 2 0 )),
+          POLYGON (( 3 0, 3 3, 6 3, 6 0, 3 0 ), 
+                   ( 5 1, 4 2, 5 2, 5 1 )),
+          MULTIPOLYGON (
+                  (( 0 5, 0 8, 4 8, 4 5, 0 5 ), 
+                   ( 1 6, 3 6, 2 7, 1 6 )), 
+                  (( 5 4, 5 8, 6 7, 5 4 ))
+          )
+        )'::geometry AS geom
+    ) AS g
+  ) j;
+  
+   path    | st_astext  
+-----------+------------
+ {1,1}     | POINT(0 1)
+ {2,1}     | POINT(0 3)
+ {2,2}     | POINT(3 4)
+ {3,1,1}   | POINT(2 0)
+ {3,1,2}   | POINT(2 3)
+ {3,1,3}   | POINT(0 2)
+ {3,1,4}   | POINT(2 0)
+ {4,1,1}   | POINT(3 0)
+ {4,1,2}   | POINT(3 3)
+ {4,1,3}   | POINT(6 3)
+ {4,1,4}   | POINT(6 0)
+ {4,1,5}   | POINT(3 0)
+ {4,2,1}   | POINT(5 1)
+ {4,2,2}   | POINT(4 2)
+ {4,2,3}   | POINT(5 2)
+ {4,2,4}   | POINT(5 1)
+ {5,1,1,1} | POINT(0 5)
+ {5,1,1,2} | POINT(0 8)
+ {5,1,1,3} | POINT(4 8)
+ {5,1,1,4} | POINT(4 5)
+ {5,1,1,5} | POINT(0 5)
+ {5,1,2,1} | POINT(1 6)
+ {5,1,2,2} | POINT(3 6)
+ {5,1,2,3} | POINT(2 7)
+ {5,1,2,4} | POINT(1 6)
+ {5,2,1,1} | POINT(5 4)
+ {5,2,1,2} | POINT(5 8)
+ {5,2,1,3} | POINT(6 7)
+ {5,2,1,4} | POINT(5 4)
+(29 rows)</programlisting>
+		</refsection>
+			<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Dump" />, <xref linkend="ST_DumpRings" /></para>
+		</refsection>
+	</refentry>
+
 	<refentry id="ST_Intersection">
 		<refnamediv>
 			<refname>ST_Intersection</refname>
