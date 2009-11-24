@@ -43,6 +43,7 @@ IMAGES= \
 	../images/st_crosses03.png \
 	../images/st_crosses04.png \
 	../images/st_difference01.png \
+	../images/st_dumppoints01.png \
 	../images/st_issimple01.png \
 	../images/st_issimple02.png \
 	../images/st_issimple03.png \
