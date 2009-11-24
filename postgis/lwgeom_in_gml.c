@@ -855,7 +855,7 @@ static POINTARRAY* parse_gml_data(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
-		if (!xa->name) continue;
+		if (xa->name == NULL) continue;
 
 		if (!strcmp((char *) xa->name, "pos")) {
 	  		tmp_pa = parse_gml_pos(xa, hasz);
