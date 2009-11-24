@@ -487,6 +487,7 @@ SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 15
 		  <refsection>
 			<title>Description</title>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.50 (except for curves support).</para>
+			<para>Availability: 1.5 - requires libxml2 &gt;= 2.5+</para>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
