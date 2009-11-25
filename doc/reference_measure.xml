@@ -1461,12 +1461,12 @@ LINESTRING(100 50,28.3145411257356 104.21589326625)
 				<programlisting>
 SELECT ST_AsText(
 		ST_ShortestLine(
-			ST_GeomFromText('POLYGON((100 150, 20 40, 50 60, 80 100, 100 150))'),
-			ST_Buffer(ST_GeomFromText('POINT(110 170)'), 10)
+			ST_GeomFromText('POLYGON((175 150, 20 40, 50 60, 125 100, 175 150))'),
+			ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
 			) 
 		) As slinewkt;
 		
- LINESTRING(100 150,105.845576631004 160.93630466764)
+ LINESTRING(140.752120669087 125.695053378061,121.111404660392 153.370607753949)
 				</programlisting>
 						</para></entry>
 					  </row>
@@ -1519,12 +1519,55 @@ SELECT ST_AsText(
 
 	  <refsection>
 		<title>Examples</title>
-
-		<programlisting>postgis=# SELECT astext(st_longestline('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry)) as st_longestline;
-   st_longestline
+			<informaltable>
+				  <tgroup cols="2">
+					<tbody>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_longestline01.png" />
+							  </imageobject>
+							  <caption><para>Longest line between point and line</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(
+	ST_LongestLine('POINT(100 50)'::geometry, 
+		'LINESTRING (10 80, 100 199 )'::geometry)
+	) As lline;
+	
+   lline
 -----------------
- LINESTRING(0 0,2 0)
-(1 row)</programlisting>
+LINESTRING(100 50,100 199)
+				</programlisting>
+						  </para></entry>
+
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_longestline02.png" />
+							  </imageobject>
+							  <caption><para>longest line between polygon and polygon</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(
+	ST_LongestLine(
+		ST_GeomFromText('POLYGON((175 150, 20 40, 50 60, 125 100, 175 150))'),
+		ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
+		) 
+	) As llinewkt;
+		
+   lline
+-----------------
+LINESTRING(20 40,121.111404660392 186.629392246051)
+				</programlisting>
+						</para></entry>
+					  </row>
+		</tbody>
+	</tgroup>
+</informaltable>
 	  </refsection>
 
 	  <refsection>

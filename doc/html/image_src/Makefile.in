@@ -65,6 +65,8 @@ IMAGES= \
 	../images/st_linecrossingdirection04.png \
 	../images/st_line_interpolate_point01.png \
 	../images/st_line_substring01.png \
+	../images/st_longestline01.png \
+	../images/st_longestline02.png \
 	../images/st_minimumboundingcircle01.png \
 	../images/st_shortestline01.png \
 	../images/st_shortestline02.png \
