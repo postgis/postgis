@@ -66,6 +66,8 @@ IMAGES= \
 	../images/st_line_interpolate_point01.png \
 	../images/st_line_substring01.png \
 	../images/st_minimumboundingcircle01.png \
+	../images/st_shortestline01.png \
+	../images/st_shortestline02.png \
 	../images/st_symdifference01.png \
 	../images/st_symdifference02.png \
 	../images/st_touches01.png \
