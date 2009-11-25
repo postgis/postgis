@@ -1196,7 +1196,7 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.23</para>
 
-		<para>Availability: 1.5.0 geography support was introduced in 1.5.</para>
+		<para>Availability: 1.5.0 geography support was introduced in 1.5.  Speed improvements for planar to better handle large or many vertex geometries</para>
 	  </refsection>
 
 	  <refsection>
@@ -1307,7 +1307,7 @@ The current implementation supports only vertices as the discrete locations. Thi
 			One important part of this subset is Linestrings that are roughly parallel to each other, and roughly equal in length.  This is a useful metric for line matching.
 			</para>
 		</note>
-		<para>Availability: 1.5 - requires GEOS &gt;= 3.2.0</para>
+		<para>Availability: 1.5.0 - requires GEOS &gt;= 3.2.0</para>
 
 	  </refsection>
 
@@ -1362,7 +1362,7 @@ The current implementation supports only vertices as the discrete locations. Thi
 		the two vertices most far from each other in that geometry.</para>
     </note>
 
-	<para>Availability: Postgis 1.5</para>
+	<para>Availability: 1.5.0</para>
   </refsection>
   <refsection>
     <title>Examples</title>
@@ -1421,6 +1421,7 @@ postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 )
 		The length of the line this function returns will always be the same as st_distance returns for g1 and g2.	
 		</para>
 
+		<para>Availability: 1.5.0</para>
 	  </refsection>
 
 	  <refsection>
@@ -1469,6 +1470,8 @@ postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 )
 
 		<para>Returns the 2-dimensional longest line between the points of two geometries. 
 		</para>
+		
+		<para>Availability: 1.5.0</para>
 
 	  </refsection>
 
