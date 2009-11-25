@@ -1324,19 +1324,6 @@ CREATE OR REPLACE FUNCTION ST_Distance(geometry,geometry)
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
 
--- Maximum distance between linestrings. 2d only. Very bogus.
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION max_distance(geometry,geometry)
-	RETURNS float8
-	AS 'MODULE_PATHNAME', 'LWGEOM_maxdistance2d_linestring'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_max_distance(geometry,geometry)
-	RETURNS float8
-	AS 'MODULE_PATHNAME', 'LWGEOM_maxdistance2d_linestring'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION point_inside_circle(geometry,float8,float8,float8)
 	RETURNS bool
@@ -5987,6 +5974,58 @@ CREATE OR REPLACE FUNCTION ST_GeomCollFromWKB(bytea)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
+--New functions
+
+-- Maximum distance between linestrings.
+
+CREATE OR REPLACE FUNCTION max_distance(geometry,geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'LWGEOM_maxdistance2d_linestring'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
+
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION _ST_MaxDistance(geometry,geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'LWGEOM_maxdistance2d_linestring'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
+	
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_MaxDistance(geometry,geometry)
+	RETURNS float8
+	AS 'SELECT _ST_MaxDistance(ST_ConvexHull($1), ST_ConvexHull($2))'
+	LANGUAGE 'SQL' IMMUTABLE STRICT; 
+
+CREATE OR REPLACE FUNCTION ST_ClosestPoint(geometry,geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_closestpoint'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION ST_ShortestLine(geometry,geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_shortestline2d'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION _ST_LongestLine(geometry,geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_longestline2d'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION ST_LongestLine(geometry,geometry)
+	RETURNS geometry
+	AS 'SELECT _ST_LongestLine(ST_ConvexHull($1), ST_ConvexHull($2))'
+	LANGUAGE 'SQL' IMMUTABLE STRICT; 
+
+CREATE OR REPLACE FUNCTION _ST_DFullyWithin(geometry,geometry,float8)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'LWGEOM_dfullywithin'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
+
+CREATE OR REPLACE FUNCTION ST_DFullyWithin(geometry, geometry, float8)
+	RETURNS boolean
+	AS 'SELECT $1 && ST_Expand($2,$3) AND $2 && ST_Expand($1,$3) AND _ST_DFullyWithin(ST_ConvexHull($1), ST_ConvexHull($2), $3)'
+	LANGUAGE 'SQL' IMMUTABLE; 
+	
+	
 --
 -- SFSQL 1.1
 --

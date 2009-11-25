@@ -1248,7 +1248,7 @@ FROM (SELECT
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_DWithin"/>, <xref linkend="ST_Distance_Sphere"/>, <xref linkend="ST_Distance_Spheroid"/>, <xref linkend="ST_Max_Distance" />, <xref linkend="ST_Transform" /></para>
+		<para><xref linkend="ST_DWithin"/>, <xref linkend="ST_Distance_Sphere"/>, <xref linkend="ST_Distance_Spheroid"/>, <xref linkend="ST_MaxDistance" />, <xref linkend="ST_Transform" /></para>
 	  </refsection>
 	</refentry>
 
@@ -1329,6 +1329,163 @@ The current implementation supports only vertices as the discrete locations. Thi
 (1 row)
 			</programlisting>
 
+	  </refsection>
+	</refentry>
+
+<refentry id="ST_MaxDistance">
+  <refnamediv>
+    <refname>ST_MaxDistance</refname>
+
+    <refpurpose>Returns the 2-dimensional largest distance between two geometries in
+		projected units.</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+        <funcdef>float <function>ST_MaxDistance</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+        <paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsection>
+    <title>Description</title>
+
+    <para>Some useful description here.</para>
+
+    <!-- optionally mention that this function uses indexes if appropriate -->
+    <note>
+      <para>Returns the 2-dimensional maximum distance between two linestrings in
+		projected units. If g1 and g2 is the same geometry the function will return the distance between
+		the two vertices most far from each other in that geometry.</para>
+    </note>
+
+	<para>Availability: Postgis 1.5</para>
+  </refsection>
+  <refsection>
+    <title>Examples</title>
+
+		<programlisting>postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry);
+   st_maxdistance
+-----------------
+ 2
+(1 row)
+
+postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 )'::geometry);
+  st_maxdistance  
+------------------
+ 2.82842712474619
+(1 row)</programlisting>
+  </refsection>
+
+  <!-- Optionally add a "See Also" section -->
+  <refsection>
+    <title>See Also</title>
+<para><xref linkend="ST_Distance"/><xref linkend="ST_LongestLine"/></para>
+  </refsection>
+</refentry>
+
+	<refentry id="ST_ShortestLine">
+	  <refnamediv>
+		<refname>ST_ShortestLine</refname>
+
+		<refpurpose>Returns the 2-dimensional shortest line between two geometries</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_ShortestLine</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the 2-dimensional shortest line between two geometries. The function will
+		only return the first shortest line if more than one, that the function finds.
+		If g1 and g2 intersects in just one point the function will return a line with both start
+		and end in that intersection-point.
+		If g1 and g2 are intersecting with more than one point the function will return a line with start
+		and end in the same point but it can be any of the intersecting points.
+		The line returned will always start in g1 and end in g2.
+		The length of the line this function returns will always be the same as st_distance returns for g1 and g2.	
+		</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>postgis=# SELECT astext(st_shortestline('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry)) as st_shortestline;
+   st_shortestline
+-----------------
+ LINESTRING(0 0,1 1)
+(1 row)</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Distance"/><xref linkend="ST_LongestLine"/></para>
+	  </refsection>
+	</refentry>
+	
+		<refentry id="ST_LongestLine">
+	  <refnamediv>
+		<refname>ST_LongestLine</refname>
+
+		<refpurpose>Returns the 2-dimensional longest line points of two geometries.
+		The function will only return the first longest line if more than one, that the function finds.
+		The line returned will always start in g1 and end in g2.
+		The length of the line this function returns will always be the same as st_maxdistance returns for g1 and g2.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_LongestLine</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the 2-dimensional longest line between the points of two geometries. 
+		</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>postgis=# SELECT astext(st_longestline('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry)) as st_longestline;
+   st_longestline
+-----------------
+ LINESTRING(0 0,2 0)
+(1 row)</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_MaxDistance"/><xref linkend="ST_ShortestLine"/></para>
 	  </refsection>
 	</refentry>
 
@@ -1565,6 +1722,127 @@ SELECT s.gid, s.school_name
 	  </refsection>
 	</refentry>
 
+	<refentry id="ST_DFullyWithin">
+	  <refnamediv>
+		<refname>ST_DFullyWithin</refname>
+
+		<refpurpose>Returns true if all of the geometries are within the specified
+		distance of one another</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_DFullyWithin</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+
+			<paramdef><type>double precision </type>
+			<parameter>distance</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns true if the geometries is fully within the specified distance
+		of one another. The distance is specified in units defined by the
+		spatial reference system of the geometries.  For this function to make
+		sense, the source geometries must both be of the same coordinate projection,
+		having the same SRID.</para>
+
+		<note>
+		  <para>This function call will automatically include a bounding box
+		  comparison that will make use of any indexes that are available on
+		  the geometries.</para>
+		</note>
+
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>postgis=# SELECT ST_DFullyWithin(geom_a, geom_b, 10) as DFullyWithin10, ST_DWithin(geom_a, geom_b, 10) as DWithin10, ST_DFullyWithin(geom_a, geom_b, 20) as DFullyWithin20 from 
+		(select ST_GeomFromText('POINT(1 1)') as geom_a,ST_GeomFromText('LINESTRING(1 5, 2 7, 1 9, 14 12)') as geom_b) t1;
+   
+-----------------
+ DFullyWithin10 | DWithin10 | DFullyWithin20 |
+---------------+----------+---------------+
+ f             | t        | t             |  </programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_MaxDistance"/>, <xref linkend="ST_DWithin"/></para>
+	  </refsection>
+	</refentry>
+	<refentry id="ST_DFullyWithin">
+	  <refnamediv>
+		<refname>ST_DFullyWithin</refname>
+
+		<refpurpose>Returns true if all of the geometries are within the specified
+		distance of one another</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_DFullyWithin</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+
+			<paramdef><type>double precision </type>
+			<parameter>distance</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns true if the geometries is fully within the specified distance
+		of one another. The distance is specified in units defined by the
+		spatial reference system of the geometries.  For this function to make
+		sense, the source geometries must both be of the same coordinate projection,
+		having the same SRID.</para>
+
+		<note>
+		  <para>This function call will automatically include a bounding box
+		  comparison that will make use of any indexes that are available on
+		  the geometries.</para>
+		</note>
+
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>postgis=# SELECT ST_DFullyWithin(geom_a, geom_b, 10) as DFullyWithin10, ST_DWithin(geom_a, geom_b, 10) as DWithin10, ST_DFullyWithin(geom_a, geom_b, 20) as DFullyWithin20 from 
+		(select ST_GeomFromText('POINT(1 1)') as geom_a,ST_GeomFromText('LINESTRING(1 5, 2 7, 1 9, 14 12)') as geom_b) t1;
+   
+-----------------
+ DFullyWithin10 | DWithin10 | DFullyWithin20 |
+---------------+----------+---------------+
+ f             | t        | t             |  </programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_MaxDistance"/>, <xref linkend="ST_DWithin"/></para>
+	  </refsection>
+	</refentry>
+	
 	<refentry id="ST_Equals">
 	  <refnamediv>
 		<refname>ST_Equals</refname>
@@ -2140,53 +2418,6 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 		<para><xref linkend="ST_GeometryN" />, <xref linkend="ST_Length" />, <xref linkend="ST_Length_Spheroid" /></para>
 	  </refsection>
 	</refentry>
-
-
-
-
-	<refentry id="ST_Max_Distance">
-	  <refnamediv>
-		<refname>ST_Max_Distance</refname>
-
-		<refpurpose>Returns the 2-dimensional largest distance between two geometries in
-		projected units.</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>float <function>ST_Max_Distance</function></funcdef>
-
-			<paramdef><type>geometry </type>
-			<parameter>g1</parameter></paramdef>
-
-			<paramdef><type>geometry </type>
-			<parameter>g2</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Returns the 2-dimensional maximum cartesian distance between two linestrings in
-		projected units.</para>
-
-	  </refsection>
-
-	  <refsection>
-		<title>Examples</title>
-
-		<programlisting>--ALL EXAMPLES current throw NOT YET IMPLEMENTED</programlisting>
-	  </refsection>
-
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_Distance"/></para>
-	  </refsection>
-	</refentry>
-
 
 	<refentry id="ST_OrderingEquals">
 	  <refnamediv>

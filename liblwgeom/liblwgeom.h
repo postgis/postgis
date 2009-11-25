@@ -641,7 +641,6 @@ extern int ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *out);
  */
 extern int pointArray_ptsize(const POINTARRAY *pa);
 
-
 #define	POINTTYPE	1
 #define	LINETYPE	2
 #define	POLYGONTYPE	3
@@ -1187,8 +1186,19 @@ extern float nextafterf_custom(float x, float y);
 #define LW_MIN(a,b) ((a) <= (b) ? (a) : (b))
 #define LW_ABS(a)   ((a) <	(0) ? -(a) : (a))
 
-
+/* for the measure functions*/
+#define DIST2D_MAX		-1
+#define DIST2D_MIN		1
+ 
 /* general utilities */
+extern double distance2d_pt_pt(POINT2D *p1, POINT2D *p2);
+extern double distance2d_pt_seg(POINT2D *p, POINT2D *A, POINT2D *B);
+extern LWGEOM *lw_dist2d_distancepoint(uchar *lw1, uchar *lw2,int srid,int mode);
+extern LWGEOM *lw_dist2d_distanceline(uchar *lw1, uchar *lw2,int srid,int mode);
+extern double lwgeom_mindistance2d(uchar *lw1, uchar *lw2);
+extern double lwgeom_mindistance2d_tolerance(uchar *lw1, uchar *lw2, double tolerance);
+extern double lwgeom_maxdistance2d(uchar *lw1, uchar *lw2);
+extern double lwgeom_maxdistance2d_tolerance(uchar *lw1, uchar *lw2, double tolerance);
 extern double lwgeom_polygon_area(LWPOLY *poly);
 extern double lwgeom_polygon_perimeter(LWPOLY *poly);
 extern double lwgeom_polygon_perimeter2d(LWPOLY *poly);
@@ -1198,23 +1208,9 @@ extern void lwgeom_force2d_recursive(uchar *serialized, uchar *optr, size_t *ret
 extern void lwgeom_force3dz_recursive(uchar *serialized, uchar *optr, size_t *retsize);
 extern void lwgeom_force3dm_recursive(uchar *serialized, uchar *optr, size_t *retsize);
 extern void lwgeom_force4d_recursive(uchar *serialized, uchar *optr, size_t *retsize);
-extern double distance2d_pt_pt(POINT2D *p1, POINT2D *p2);
-extern double distance2d_pt_seg(POINT2D *p, POINT2D *A, POINT2D *B);
-extern double distance2d_seg_seg(POINT2D *A, POINT2D *B, POINT2D *C, POINT2D *D);
-extern double distance2d_pt_ptarray(POINT2D *p, POINTARRAY *pa);
-extern double distance2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2);
 extern int pt_in_ring_2d(POINT2D *p, POINTARRAY *ring);
 extern int pt_in_poly_2d(POINT2D *p, LWPOLY *poly);
-extern double distance2d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly);
-extern double distance2d_point_point(LWPOINT *point1, LWPOINT *point2);
-extern double distance2d_point_line(LWPOINT *point, LWLINE *line);
-extern double distance2d_line_line(LWLINE *line1, LWLINE *line2);
-extern double distance2d_point_poly(LWPOINT *point, LWPOLY *poly);
-extern double distance2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2);
-extern double distance2d_line_poly(LWLINE *line, LWPOLY *poly);
 extern int azimuth_pt_pt(POINT2D *p1, POINT2D *p2, double *ret);
-extern double lwgeom_mindistance2d_recursive(uchar *lw1, uchar *lw2);
-extern double lwgeom_mindistance2d_recursive_tolerance(uchar *lw1, uchar *lw2, double tolerance);
 extern int lwgeom_pt_inside_circle(POINT2D *p, double cx, double cy, double rad);
 extern char ptarray_isccw(const POINTARRAY *pa);
 extern void lwgeom_reverse(LWGEOM *lwgeom);

@@ -26,7 +26,9 @@ BEGIN;
 
 DROP FUNCTION ST_MinimumBoundingCircle(geometry);
 DROP FUNCTION ST_MinimumBoundingCircle(inputgeom geometry, segs_per_quarter integer);
-
+DROP FUNCTION ST_ShortestLine(geometry, geometry);
+DROP FUNCTION ST_LongestLine(geometry, geometry);
+DROP FUNCTION ST_DFullyWithin(geometry, geometry, float8);
 ---------------------------------------------------------------
 -- SQL-MM
 ---------------------------------------------------------------

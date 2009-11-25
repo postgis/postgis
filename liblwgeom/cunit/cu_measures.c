@@ -26,7 +26,7 @@ CU_pSuite register_measures_suite(void)
 	}
 
 	if (
-	    (NULL == CU_add_test(pSuite, "test_mindistance2d_recursive_tolerance()", test_mindistance2d_recursive_tolerance))
+	    (NULL == CU_add_test(pSuite, "test_mindistance2d_tolerance()", test_mindistance2d_tolerance))
 	)
 	{
 		CU_cleanup_registry();
@@ -53,7 +53,7 @@ int clean_measures_suite(void)
 	return 0;
 }
 
-void test_mindistance2d_recursive_tolerance(void)
+void test_mindistance2d_tolerance(void)
 {
 	LWGEOM_PARSER_RESULT gp1;
 	LWGEOM_PARSER_RESULT gp2;
@@ -65,7 +65,7 @@ void test_mindistance2d_recursive_tolerance(void)
 	*/
 	result1 = serialized_lwgeom_from_ewkt(&gp1, "POINT(0 0)", PARSER_CHECK_NONE);
 	result2 = serialized_lwgeom_from_ewkt(&gp2, "MULTIPOINT(0 1.5,0 2,0 2.5)", PARSER_CHECK_NONE);
-	distance = lwgeom_mindistance2d_recursive_tolerance(gp1.serialized_lwgeom, gp2.serialized_lwgeom, 0.0);
+	distance = lwgeom_mindistance2d_tolerance(gp1.serialized_lwgeom, gp2.serialized_lwgeom, 0.0);
 	//printf("\ndistance #1 = %g\n",distance);
 	CU_ASSERT_EQUAL(distance, 1.5);
 	free(gp1.serialized_lwgeom);
@@ -76,7 +76,7 @@ void test_mindistance2d_recursive_tolerance(void)
 	*/
 	result1 = serialized_lwgeom_from_ewkt(&gp1, "POINT(0 0)", PARSER_CHECK_NONE);
 	result2 = serialized_lwgeom_from_ewkt(&gp2, "GEOMETRYCOLLECTION(POINT(3 4))", PARSER_CHECK_NONE);
-	distance = lwgeom_mindistance2d_recursive_tolerance(gp1.serialized_lwgeom, gp2.serialized_lwgeom, 0.0);
+	distance = lwgeom_mindistance2d_tolerance(gp1.serialized_lwgeom, gp2.serialized_lwgeom, 0.0);
 	//printf("distance #2 = %g\n",distance);
 	CU_ASSERT_EQUAL(distance, 5.0);
 	free(gp1.serialized_lwgeom);
@@ -87,7 +87,7 @@ void test_mindistance2d_recursive_tolerance(void)
 	*/
 	result1 = serialized_lwgeom_from_ewkt(&gp1, "POINT(0 0)", PARSER_CHECK_NONE);
 	result2 = serialized_lwgeom_from_ewkt(&gp2, "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(3 4)))", PARSER_CHECK_NONE);
-	distance = lwgeom_mindistance2d_recursive_tolerance(gp1.serialized_lwgeom, gp2.serialized_lwgeom, 0.0);
+	distance = lwgeom_mindistance2d_tolerance(gp1.serialized_lwgeom, gp2.serialized_lwgeom, 0.0);
 	//printf("distance #3 = %g\n",distance);
 	CU_ASSERT_EQUAL(distance, 5.0);
 	free(gp1.serialized_lwgeom);
@@ -98,7 +98,7 @@ void test_mindistance2d_recursive_tolerance(void)
 	*/
 	result1 = serialized_lwgeom_from_ewkt(&gp1, "POINT(0 0)", PARSER_CHECK_NONE);
 	result2 = serialized_lwgeom_from_ewkt(&gp2, "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(3 4))))", PARSER_CHECK_NONE);
-	distance = lwgeom_mindistance2d_recursive_tolerance(gp1.serialized_lwgeom, gp2.serialized_lwgeom, 0.0);
+	distance = lwgeom_mindistance2d_tolerance(gp1.serialized_lwgeom, gp2.serialized_lwgeom, 0.0);
 	//printf("distance #4 = %g\n",distance);
 	CU_ASSERT_EQUAL(distance, 5.0);
 	free(gp1.serialized_lwgeom);
@@ -109,7 +109,7 @@ void test_mindistance2d_recursive_tolerance(void)
 	*/
 	result1 = serialized_lwgeom_from_ewkt(&gp1, "POINT(0 0)", PARSER_CHECK_NONE);
 	result2 = serialized_lwgeom_from_ewkt(&gp2, "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(MULTIPOINT(3 4))))", PARSER_CHECK_NONE);
-	distance = lwgeom_mindistance2d_recursive_tolerance(gp1.serialized_lwgeom, gp2.serialized_lwgeom, 0.0);
+	distance = lwgeom_mindistance2d_tolerance(gp1.serialized_lwgeom, gp2.serialized_lwgeom, 0.0);
 	//printf("distance #5 = %g\n",distance);
 	CU_ASSERT_EQUAL(distance, 5.0);
 	free(gp1.serialized_lwgeom);
@@ -120,7 +120,7 @@ void test_mindistance2d_recursive_tolerance(void)
 	*/
 	result1 = serialized_lwgeom_from_ewkt(&gp1, "GEOMETRYCOLLECTION(POINT(0 0))", PARSER_CHECK_NONE);
 	result2 = serialized_lwgeom_from_ewkt(&gp2, "GEOMETRYCOLLECTION(POINT(3 4))", PARSER_CHECK_NONE);
-	distance = lwgeom_mindistance2d_recursive_tolerance(gp1.serialized_lwgeom, gp2.serialized_lwgeom, 0.0);
+	distance = lwgeom_mindistance2d_tolerance(gp1.serialized_lwgeom, gp2.serialized_lwgeom, 0.0);
 	//printf("distance #6 = %g\n",distance);
 	CU_ASSERT_EQUAL(distance, 5.0);
 	free(gp1.serialized_lwgeom);
@@ -131,7 +131,7 @@ void test_mindistance2d_recursive_tolerance(void)
 	*/
 	result1 = serialized_lwgeom_from_ewkt(&gp1, "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 0)))", PARSER_CHECK_NONE);
 	result2 = serialized_lwgeom_from_ewkt(&gp2, "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(3 4)))", PARSER_CHECK_NONE);
-	distance = lwgeom_mindistance2d_recursive_tolerance(gp1.serialized_lwgeom, gp2.serialized_lwgeom, 0.0);
+	distance = lwgeom_mindistance2d_tolerance(gp1.serialized_lwgeom, gp2.serialized_lwgeom, 0.0);
 	//printf("distance #7 = %g\n",distance);
 	CU_ASSERT_EQUAL(distance, 5.0);
 	free(gp1.serialized_lwgeom);
@@ -142,7 +142,7 @@ void test_mindistance2d_recursive_tolerance(void)
 	*/
 	result1 = serialized_lwgeom_from_ewkt(&gp1, "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(MULTIPOINT(0 0)))", PARSER_CHECK_NONE);
 	result2 = serialized_lwgeom_from_ewkt(&gp2, "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(MULTIPOINT(3 4)))", PARSER_CHECK_NONE);
-	distance = lwgeom_mindistance2d_recursive_tolerance(gp1.serialized_lwgeom, gp2.serialized_lwgeom, 0.0);
+	distance = lwgeom_mindistance2d_tolerance(gp1.serialized_lwgeom, gp2.serialized_lwgeom, 0.0);
 	//printf("distance #8 = %g\n",distance);
 	CU_ASSERT_EQUAL(distance, 5.0);
 	free(gp1.serialized_lwgeom);

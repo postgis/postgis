@@ -17,6 +17,7 @@
 
 #include "liblwgeom.h"
 #include "cu_tester.h"
+#include "measures.h"
 
 /***********************************************************************
 ** for Computational Geometry Suite
@@ -25,4 +26,4 @@
 
 
 /* Test functions */
-void test_mindistance2d_recursive_tolerance(void);
+void test_mindistance2d_tolerance(void);
