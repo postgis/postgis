@@ -1479,7 +1479,7 @@ SELECT ST_AsText(
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Distance"/><xref linkend="ST_LongestLine"/></para>
+		<para><xref linkend="ST_Distance"/>, <xref linkend="ST_LongestLine"/>, <xref linkend="ST_ShortestLine"/>, <xref linkend="ST_MaxDistance"/></para>
 	  </refsection>
 	</refentry>
 	
@@ -1530,7 +1530,7 @@ SELECT ST_AsText(
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_MaxDistance"/><xref linkend="ST_ShortestLine"/></para>
+		<para><xref linkend="ST_MaxDistance"/>, <xref linkend="ST_ShortestLine"/>, <xref linkend="ST_LongestLine"/></para>
 	  </refsection>
 	</refentry>
 
