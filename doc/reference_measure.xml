@@ -1383,7 +1383,7 @@ postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 )
   <!-- Optionally add a "See Also" section -->
   <refsection>
     <title>See Also</title>
-<para><xref linkend="ST_Distance"/><xref linkend="ST_LongestLine"/></para>
+<para><xref linkend="ST_Distance"/>, <xref linkend="ST_LongestLine"/></para>
   </refsection>
 </refentry>
 
@@ -1435,18 +1435,18 @@ postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 )
 							  <imageobject>
 								<imagedata fileref="images/st_shortestline01.png" />
 							  </imageobject>
-							  <caption><para>Shortest line between point and line</para></caption>
+							  <caption><para>Shortest line between point and linestring</para></caption>
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
 SELECT ST_AsText(
-	ST_ShortestLine('POINT(100 50)'::geometry, 
-		'LINESTRING (10 80, 100 199 )'::geometry)
+	ST_ShortestLine('POINT(100 150)'::geometry, 
+		'LINESTRING (20 80, 98 190, 110 180, 50 75 )'::geometry)
 	) As sline;
 	
    sline
 -----------------
-LINESTRING(100 50,28.3145411257356 104.21589326625)
+LINESTRING(100 150,94.6153846153846 153.076923076923)
 				</programlisting>
 						  </para></entry>
 
@@ -1533,13 +1533,13 @@ SELECT ST_AsText(
 						  </informalfigure>
 				<programlisting>
 SELECT ST_AsText(
-	ST_LongestLine('POINT(100 50)'::geometry, 
-		'LINESTRING (10 80, 100 199 )'::geometry)
+	ST_LongestLine('POINT(100 150)'::geometry, 
+		'LINESTRING (20 80, 98 190, 110 180, 50 75 )'::geometry)
 	) As lline;
 	
    lline
 -----------------
-LINESTRING(100 50,100 199)
+LINESTRING(100 150,20 80)
 				</programlisting>
 						  </para></entry>
 
