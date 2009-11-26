@@ -537,24 +537,24 @@ check_compoundcurve_continuity(void)
 			if (first->uu.points[0] != last->uu.points[0])
 			{
 				LWDEBUG(5, "x value mismatch");
-				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_INCONTINUOUS, the_geom.stack->next->next->next->uu.nn.parse_location);
+				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_INCONTINUOUS, last->uu.nn.parse_location);
 			}
 			else if (first->uu.points[1] != last->uu.points[1])
 			{
 				LWDEBUG(5, "y value mismatch");
-				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_INCONTINUOUS, the_geom.stack->next->next->next->uu.nn.parse_location);
+				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_INCONTINUOUS, last->uu.nn.parse_location);
 			}
 			else if (the_geom.ndims > 2 &&
 			         first->uu.points[2] != last->uu.points[2])
 			{
 				LWDEBUG(5, "z/m value mismatch");
-				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_INCONTINUOUS, the_geom.stack->next->next->next->uu.nn.parse_location);
+				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_INCONTINUOUS, last->uu.nn.parse_location);
 			}
 			else if (the_geom.ndims > 3 &&
 			         first->uu.points[3] != last->uu.points[3])
 			{
 				LWDEBUG(5, "m value mismatch");
-				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_INCONTINUOUS, the_geom.stack->next->next->next->uu.nn.parse_location);
+				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_INCONTINUOUS, last->uu.nn.parse_location);
 			}
 		}
 		for (j = 0; j < mum; j++)
