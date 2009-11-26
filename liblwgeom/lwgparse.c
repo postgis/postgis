@@ -311,6 +311,7 @@ alloc_tuple(output_func of,size_t size)
 
 	LWDEBUGF(5, "alloc_tuple %p: parse_location = %d",
 	         ret, lwg_parse_yylloc.last_column);
+
 	ret->uu.nn.parse_location = lwg_parse_yylloc.last_column;
 
 	the_geom.alloc_size += size;
@@ -434,6 +435,7 @@ alloc_stack_tuple(int type,output_func of,size_t size)
 	p->uu.nn.type = type;
 	p->uu.nn.size_here = the_geom.alloc_size;
 	p->uu.nn.num = 0;
+	p->uu.nn.parse_location = lwg_parse_yylloc.last_column;
 
 	the_geom.stack = p;
 
@@ -535,24 +537,24 @@ check_compoundcurve_continuity(void)
 			if (first->uu.points[0] != last->uu.points[0])
 			{
 				LWDEBUG(5, "x value mismatch");
-				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_INCONTINUOUS,last->uu.nn.parse_location);
+				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_INCONTINUOUS, the_geom.stack->next->next->next->uu.nn.parse_location);
 			}
 			else if (first->uu.points[1] != last->uu.points[1])
 			{
 				LWDEBUG(5, "y value mismatch");
-				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_INCONTINUOUS,last->uu.nn.parse_location);
+				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_INCONTINUOUS, the_geom.stack->next->next->next->uu.nn.parse_location);
 			}
 			else if (the_geom.ndims > 2 &&
 			         first->uu.points[2] != last->uu.points[2])
 			{
 				LWDEBUG(5, "z/m value mismatch");
-				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_INCONTINUOUS,last->uu.nn.parse_location);
+				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_INCONTINUOUS, the_geom.stack->next->next->next->uu.nn.parse_location);
 			}
 			else if (the_geom.ndims > 3 &&
 			         first->uu.points[3] != last->uu.points[3])
 			{
 				LWDEBUG(5, "m value mismatch");
-				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_INCONTINUOUS,last->uu.nn.parse_location);
+				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_INCONTINUOUS, the_geom.stack->next->next->next->uu.nn.parse_location);
 			}
 		}
 		for (j = 0; j < mum; j++)
@@ -578,7 +580,7 @@ void check_circularstring_isodd(void)
 		{
 			tp = tp->next;
 		}
-		LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_ODDPOINTS, tp->uu.nn.parse_location);
+		LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_ODDPOINTS, the_geom.stack->next->uu.nn.parse_location);
 	}
 }
 
@@ -625,7 +627,7 @@ check_compoundcurve_closed(void)
 		         first->uu.points[0], first->uu.points[1],
 		         last->uu.points[0], last->uu.points[1]);
 		LWDEBUGF(5, "First %p, last %p", first, last);
-		LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_UNCLOSED, last->uu.nn.parse_location);
+		LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_UNCLOSED, the_geom.stack->next->uu.nn.parse_location);
 	}
 	else
 	{
@@ -665,7 +667,7 @@ check_linestring_closed(void)
 			         first->uu.points[0], first->uu.points[1],
 			         last->uu.points[0], last->uu.points[1]);
 			LWDEBUGF(5, "First %p, last %p", first, last);
-			LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_UNCLOSED, last->uu.nn.parse_location);
+			LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_UNCLOSED, the_geom.stack->next->uu.nn.parse_location);
 		}
 		else
 		{
@@ -709,7 +711,7 @@ check_polygon_closed(void)
 			         first->uu.points[0], first->uu.points[1],
 			         last->uu.points[0], last->uu.points[1]);
 			LWDEBUGF(5, "First %p, last %p", first, last);
-			LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_UNCLOSED, last->uu.nn.parse_location);
+			LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_UNCLOSED, the_geom.stack->next->uu.nn.parse_location);
 		}
 		else
 		{
@@ -754,7 +756,7 @@ check_polygon_minpoints(void)
 			         minpoints, mum);
 			LWDEBUGF(5, "tuple = %p; parse_location = %d; parser reported column = %d",
 			         tp, tp->uu.nn.parse_location, lwg_parse_yylloc.last_column);
-			LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_MOREPOINTS, tp->uu.nn.parse_location);
+			LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_MOREPOINTS, the_geom.stack->next->uu.nn.parse_location);
 		}
 
 	}
@@ -805,7 +807,7 @@ check_curvepolygon_minpoints()
 			{
 				LWDEBUGF(5, "Minpoint check failed: needed %d, got %d",
 				         minpoints, count);
-				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_MOREPOINTS, tp->uu.nn.parse_location);
+				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_MOREPOINTS, the_geom.stack->next->uu.nn.parse_location);
 			}
 			break;
 		case LINETYPE:
@@ -821,7 +823,7 @@ check_curvepolygon_minpoints()
 			{
 				LWDEBUGF(5, "Minpoint check failed: needed %d, got %d",
 				         minpoints, mum);
-				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_MOREPOINTS, tp->uu.nn.parse_location);
+				LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_MOREPOINTS, the_geom.stack->next->uu.nn.parse_location);
 			}
 			break;
 		}
@@ -872,7 +874,7 @@ check_compoundcurve_minpoints()
 	{
 		LWDEBUGF(5, "Minpoint check failed: needed %d, got %d",
 		         minpoints, count);
-		LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_MOREPOINTS, tp->uu.nn.parse_location);
+		LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_MOREPOINTS, the_geom.stack->next->uu.nn.parse_location);
 	}
 	LWDEBUG(4, "check_compoundcurve_minpoints complete");
 }
@@ -894,7 +896,7 @@ check_linestring_minpoints()
 		}
 		LWDEBUGF(5, "Minpoint check failed: needed %d, got %d",
 		         minpoints, tp->uu.nn.num);
-		LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_MOREPOINTS, tp->uu.nn.parse_location);
+		LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_MOREPOINTS, the_geom.stack->next->uu.nn.parse_location);
 	}
 }
 
@@ -908,6 +910,12 @@ pop(void)
 {
 	LWDEBUGF(3, "pop: type= %d, tuple= %p", the_geom.stack->uu.nn.type,
 	         the_geom.stack);
+
+	/* If popping a counting tuple or an empty tuple, update the parse_location to give
+	   give better location context */
+	if (the_geom.stack->uu.nn.type == 0 || the_geom.stack->uu.nn.type == 0xff)
+		the_geom.stack->uu.nn.parse_location = lwg_parse_yylloc.last_column;
+
 	the_geom.stack = the_geom.stack->uu.nn.stack_next;
 }
 
