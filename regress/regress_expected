@@ -60,9 +60,9 @@ HINT:  "POINT(" <-- parse error at position 6 within geometry
 ERROR:  parse error - invalid geometry
 HINT:  "MULTIPOINT()" <-- parse error at position 12 within geometry
 ERROR:  geometry contains non-closed rings
-HINT:  "POLYGON( (0 0, 10 0, 10 10, 0 10)" <-- parse error at position 33 within geometry
+HINT:  "POLYGON( (0 0, 10 0, 10 10, 0 10) )" <-- parse error at position 35 within geometry
 ERROR:  geometry contains non-closed rings
-HINT:  "... 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7)" <-- parse error at position 60 within geometry
+HINT:  "...0, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7) )" <-- parse error at position 62 within geometry
 ERROR:  parse error - invalid geometry
 HINT:  "...INESTRING((0 0, 1 1),(0 0, 1 1, 2 2,)" <-- parse error at position 43 within geometry
 ERROR:  parse error - invalid geometry
