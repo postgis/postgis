@@ -1521,7 +1521,7 @@ SELECT ST_AsText(
 	  <refsection>
 		<title>Examples</title>
 			<informaltable>
-				  <tgroup cols="3">
+				  <tgroup cols="2">
 					<tbody>
 					  <row>
 						<entry><para><informalfigure>
@@ -1567,32 +1567,44 @@ SELECT ST_AsText(
 LINESTRING(20 40,121.111404660392 186.629392246051)
 				</programlisting>
 						</para></entry>
-						
-						<entry><para><informalfigure>
+					  </row>
+		</tbody>
+	</tgroup>
+</informaltable>
+
+<informaltable>
+	  <tgroup cols="1">
+		<tbody>
+		  <row>						
+			<entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
 								<imagedata fileref="images/st_longestline03.png" />
 							  </imageobject>
-							  <caption><para>longest straight distance to travel within an area</para></caption>
+							  <caption><para>longest straight distance to travel from one part of city to the other.  Note the max distance = to the length of the line.</para></caption>
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
-SELECT ST_AsText(
-	ST_LongestLine(
-		ST_GeomFromText('POLYGON((175 150, 20 40, 
-			50 60, 125 100, 175 150))'),
-		ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
-		) 
-	) As llinewkt;
+SELECT ST_AsText(ST_LongestLine(c.the_geom, c.the_geom)) As llinewkt
+FROM (SELECT ST_GeomFromText(
+	'POLYGON ((6107065 2328604, 6091208 2323033, 
+6092928 2305612, 6074587 2305837, 6074751 2268328, 6042817 2267620, 
+6045939 2248058, 6013411 2248863, 6029972 2264283, 5991220 2358173,
+ 6071023 2376046, 6015131 2464887, 6022024 2506800, 6051618 2497264,
+ 6085637 2429709, 6107065 2328604),
+	 (6024704 2346266, 6018637 2338372, 6022701 2330499, 
+	6031544 2337484, 6024704 2346266))') As the_geom
+) As c;
 		
-   lline
------------------
-LINESTRING(20 40,121.111404660392 186.629392246051)
+                 llinewkt                   |     max_dist     |    len_lline
+
+--------------------------------------------+------------------+---------------
+LINESTRING(6045939 2248058,6022024 2506800) | 259844.857153264 | 259844.857153264
 				</programlisting>
 						</para></entry>
-					  </row>
-		</tbody>
-	</tgroup>
+		</row>
+	</tbody>
+</tgroup>
 </informaltable>
 	  </refsection>
 
