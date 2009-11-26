@@ -1440,13 +1440,14 @@ postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 )
 						  </informalfigure>
 				<programlisting>
 SELECT ST_AsText(
-	ST_ShortestLine('POINT(100 150)'::geometry, 
+	ST_ShortestLine('POINT(100 100)'::geometry, 
 		'LINESTRING (20 80, 98 190, 110 180, 50 75 )'::geometry)
 	) As sline;
+
 	
    sline
 -----------------
-LINESTRING(100 150,94.6153846153846 153.076923076923)
+LINESTRING(100 100,73.0769230769231 115.384615384615)
 				</programlisting>
 						  </para></entry>
 
@@ -1520,7 +1521,7 @@ SELECT ST_AsText(
 	  <refsection>
 		<title>Examples</title>
 			<informaltable>
-				  <tgroup cols="2">
+				  <tgroup cols="3">
 					<tbody>
 					  <row>
 						<entry><para><informalfigure>
@@ -1533,13 +1534,14 @@ SELECT ST_AsText(
 						  </informalfigure>
 				<programlisting>
 SELECT ST_AsText(
-	ST_LongestLine('POINT(100 150)'::geometry, 
+	ST_LongestLine('POINT(100 100)'::geometry, 
 		'LINESTRING (20 80, 98 190, 110 180, 50 75 )'::geometry)
 	) As lline;
+
 	
    lline
 -----------------
-LINESTRING(100 150,20 80)
+LINESTRING(100 100,98 190)
 				</programlisting>
 						  </para></entry>
 
@@ -1554,7 +1556,31 @@ LINESTRING(100 150,20 80)
 				<programlisting>
 SELECT ST_AsText(
 	ST_LongestLine(
-		ST_GeomFromText('POLYGON((175 150, 20 40, 50 60, 125 100, 175 150))'),
+		ST_GeomFromText('POLYGON((175 150, 20 40, 
+			50 60, 125 100, 175 150))'),
+		ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
+		) 
+	) As llinewkt;
+		
+   lline
+-----------------
+LINESTRING(20 40,121.111404660392 186.629392246051)
+				</programlisting>
+						</para></entry>
+						
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_longestline03.png" />
+							  </imageobject>
+							  <caption><para>longest straight distance to travel within an area</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(
+	ST_LongestLine(
+		ST_GeomFromText('POLYGON((175 150, 20 40, 
+			50 60, 125 100, 175 150))'),
 		ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
 		) 
 	) As llinewkt;
