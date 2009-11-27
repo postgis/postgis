@@ -2038,8 +2038,9 @@ nullDBFValue(char fieldType)
 			return "****************";
 
 		case FTDate:
-			/* NULL date fields have value "00000000" */
-			return "00000000";
+			/* NULL date fields have value "        " */
+			/* Formerly were "00000000" */
+			return "        ";
 
 		case FTLogical:
 			/* NULL boolean fields have value "?" */
