@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter>
   <title id="using_postgis_applications">Using PostGIS: Building Applications</title>
-  <sect1 id="Using_Mapserver">
-    <title>Using Mapserver</title>
+  <sect1 id="Using_MapServer">
+    <title>Using MapServer</title>
 
-    <para>The Minnesota Mapserver is an internet web-mapping server which
+    <para>The Minnesota MapServer is an internet web-mapping server which
     conforms to the OpenGIS Web Mapping Server specification.</para>
 
     <itemizedlist>
       <listitem>
-        <para>The Mapserver homepage is at <ulink
-        url="http://mapserver.gis.umn.edu">http://mapserver.gis.umn.edu</ulink>.</para>
+        <para>The MapServer homepage is at <ulink
+        url="http://mapserver.org">http://mapserver.org</ulink>.</para>
       </listitem>
 
       <listitem>
         <para>The OpenGIS Web Map Specification is at <ulink
-        url="http://www.opengeospatial.org/standards">http://www.opengeospatial.org/standards</ulink>.</para>
+        url="http://www.opengeospatial.org/standards/wms">http://www.opengeospatial.org/standards/wms</ulink>.</para>
       </listitem>
     </itemizedlist>
 
     <sect2>
       <title>Basic Usage</title>
 
-      <para>To use PostGIS with Mapserver, you will need to know about how to
-      configure Mapserver, which is beyond the scope of this documentation.
+      <para>To use PostGIS with MapServer, you will need to know about how to
+      configure MapServer, which is beyond the scope of this documentation.
       This section will cover specific PostGIS issues and configuration
       details.</para>
 
-      <para>To use PostGIS with Mapserver, you will need:</para>
+      <para>To use PostGIS with MapServer, you will need:</para>
 
       <itemizedlist>
         <listitem>
@@ -35,24 +35,24 @@
         </listitem>
 
         <listitem>
-          <para>Version 3.5 or newer of Mapserver.</para>
+          <para>Version 3.5 or newer of MapServer.</para>
         </listitem>
       </itemizedlist>
 
-      <para>Mapserver accesses PostGIS/PostgreSQL data like any other
-      PostgreSQL client -- using <filename>libpq</filename>. This means that
-      Mapserver can be installed on any machine with network access to the
-      PostGIS server, as long as the system has the <filename>libpq</filename>
-      PostgreSQL client libraries.</para>
+      <para>MapServer accesses PostGIS/PostgreSQL data like any other
+      PostgreSQL client -- using the <filename>libpq</filename> interface. This means that
+      MapServer can be installed on any machine with network access to the
+      PostGIS server, and use PostGIS as a source of data. The faster the connection
+      between the systems, the better.</para>
 
       <orderedlist>
         <listitem>
-          <para>Compile and install Mapserver, with whatever options you
+          <para>Compile and install MapServer, with whatever options you
           desire, including the "--with-postgis" configuration option.</para>
         </listitem>
 
         <listitem>
-          <para>In your Mapserver map file, add a PostGIS layer. For
+          <para>In your MapServer map file, add a PostGIS layer. For
           example:</para>
 
           <programlisting>LAYER 
@@ -62,7 +62,7 @@
   CONNECTION "user=dbuser dbname=gisdatabase host=bigserver"
   PROCESSING "CLOSE_CONNECTION=DEFER"
   # Get the lines from the 'geom' column of the 'roads' table 
-  DATA "geom from roads" 
+  DATA "geom from roads using srid=4326 using unique gid" 
   STATUS ON
   TYPE LINE 
   # Of the lines in the extents, only render the wide highways 
@@ -119,9 +119,13 @@ END</programlisting>
               <term>DATA</term>
 
               <listitem>
-                <para>The form of this parameter is "&lt;column&gt; from
-                &lt;tablename&gt;" where the column is the spatial column to
-                be rendered to the map.</para>
+                <para>The form of this parameter is "&lt;geocolumn&gt; from
+                &lt;tablename&gt; using srid=&lt;srid&gt; using unique &lt;primary key&gt;" where the column is the spatial column to
+                be rendered to the map, the SRID is SRID used by the column and the primary key is the table primary key (or any
+                other uniquely-valued column with an index).</para>
+                <para>You can omit the "using srid" and "using unique" clauses and MapServer will automatically determine the
+                correct values if possible, but at the cost of running a few extra queries on the server for each map 
+                draw.</para>
               </listitem>
             </varlistentry>
 			
@@ -130,7 +134,7 @@ END</programlisting>
 
               <listitem>
                 <para>Putting in a CLOSE_CONNECTION=DEFER if you have multiple layers reuses existing connections instead of closing them.  This improves 
-					speed.  Refer to for <ulink url="http://blog.cleverelephant.ca/2008/10/mapserverpostgis-performance-tips.html">Paul's Mapserver PostGIS Performance Tips</ulink> for more detailed explanation.  </para>
+					speed.  Refer to for <ulink url="http://blog.cleverelephant.ca/2008/10/mapserverpostgis-performance-tips.html">MapServer PostGIS Performance Tips</ulink> for a more detailed explanation.  </para>
               </listitem>
             </varlistentry>
 
@@ -155,19 +159,13 @@ END</programlisting>
         </listitem>
 
         <listitem>
-          <para>If you will be querying your layers using Mapserver you will
-          also need an "oid index".</para>
+          <para>If you will be querying your layers using MapServer you will
+          also need to use the "using unique" clause in your DATA statement.</para>
 
-          <para>Mapserver requires unique identifiers for each spatial record
-          when doing queries, and the PostGIS module of Mapserver uses the
-          PostgreSQL <varname>oid</varname> value to provide these unique
-          identifiers. A side-effect of this is that in order to do fast
-          random access of records during queries, an index on the
-          <varname>oid</varname> is needed.</para>
-
-          <para>To build an "oid index", use the following SQL:</para>
-
-          <programlisting>CREATE INDEX [indexname] ON [tablename] ( oid );</programlisting>
+          <para>MapServer requires unique identifiers for each spatial record
+          when doing queries, and the PostGIS module of MapServer uses the
+          unique value you specify in order to provide these unique
+          identifiers. Using the table primary key is the best practice.</para>
         </listitem>
       </orderedlist>
     </sect2>
@@ -201,7 +199,7 @@ END</programlisting>
           <answer>
             <para>Unlike shape files, filters for PostGIS layers use SQL
             syntax (they are appended to the SQL statement the PostGIS
-            connector generates for drawing layers in Mapserver).</para>
+            connector generates for drawing layers in MapServer).</para>
 
             <programlisting>FILTER "type = 'highway' and numlanes &gt;= 4"</programlisting>
           </answer>
@@ -214,18 +212,18 @@ END</programlisting>
           </question>
 
           <answer>
-            <para>In general, expect PostGIS layers to be 10% slower than
-            equivalent Shape files layers, due to the extra overhead involved
-            in database connections, data transformations and data transit
-            between the database and Mapserver.</para>
-
+            <para>In general, the more features you are drawing into a given map, 
+            the more likely it is that PostGIS will be slower than Shape files.
+            For maps with relatively few features (100s), PostGIS will often be faster.
+            For maps with high feature density (1000s), PostGIS will always be slower.
+            </para>
+            
             <para>If you are finding substantial draw performance problems, it
-            is likely that you have not build a spatial index on your
+            is possible that you have not built a spatial index on your
             table.</para>
 
             <programlisting>postgis# CREATE INDEX geotable_gix ON geotable USING GIST ( geocolumn ); 
-postgis# SELECT update_geometry_stats(); -- For PGSQL &lt; 8.0 
-postgis# VACUUM ANALYZE; -- For PGSQL &gt;= 8.0</programlisting>
+postgis# VACUUM ANALYZE;</programlisting>
           </answer>
         </qandaentry>
 
@@ -246,15 +244,31 @@ postgis# VACUUM ANALYZE; -- For PGSQL &gt;= 8.0</programlisting>
 
             <programlisting>DATA "the_geom FROM geotable USING UNIQUE gid"</programlisting>
 
-            <para>If your table does not have an explicit unique column, you
-            can "fake" a unique column by using the PostgreSQL row "oid" for
-            your unique column. "oid" is the default unique column if you do
-            not declare one, so enhancing your query speed is a matter of
-            building an index on your spatial table oid value.</para>
-
-            <programlisting>postgis# CREATE INDEX geotable_oid_idx ON geotable (oid);</programlisting>
           </answer>
         </qandaentry>
+
+        <qandaentry>
+          <question>
+            <para>Can I use "geography" columns (new in PostGIS 1.5) as a source for
+            MapServer layers?</para>
+          </question>
+
+          <answer>
+            <para>Yes! MapServer understands geography columns as being the same as 
+            geometry columns, but always using an SRID of 4326. Just make sure to include
+            a "using srid=4326" clause in your <varname>DATA</varname> statement and. Everything else 
+            works exactly the same as for geometry.</para>
+
+            <para>You can specify what unique key for mapserver to use with
+            the <varname>USING UNIQUE</varname> clause in your
+            <varname>DATA</varname> line:</para>
+
+            <programlisting>DATA "the_geom FROM geotable USING UNIQUE gid"</programlisting>
+
+          </answer>
+        </qandaentry>
+
+
       </qandaset>
     </sect2>
 
@@ -285,10 +299,10 @@ postgis# VACUUM ANALYZE; -- For PGSQL &gt;= 8.0</programlisting>
           <term>USING UNIQUE &lt;uniqueid&gt;</term>
 
           <listitem>
-            <para>Mapserver requires a unique id for each row in order to
+            <para>MapServer requires a unique id for each row in order to
             identify the row when doing map queries. Normally, it would use
             the oid as the unique identifier, but views and subselects don't
-            automatically have an oid column. If you want to use Mapserver's
+            automatically have an oid column. If you want to use MapServer's
             query functionality, you need to add a unique column to your view
             or subselect, and declare it with <varname>USING UNIQUE</varname>.
             For example, you could explicitly select one of the table's oid
@@ -331,7 +345,7 @@ postgis# VACUUM ANALYZE; -- For PGSQL &gt;= 8.0</programlisting>
       </variablelist>
 
       <warning>
-        <para>The parser for Mapserver PostGIS layers is fairly primitive, and
+        <para>The parser for MapServer PostGIS layers is fairly primitive, and
         is case sensitive in a few areas. Be careful to ensure that all SQL
         keywords and all your <varname>USING</varname> clauses are in upper
         case, and that your <varname>USING UNIQUE</varname> clause precedes
@@ -343,7 +357,7 @@ postgis# VACUUM ANALYZE; -- For PGSQL &gt;= 8.0</programlisting>
       <title>Examples</title>
 
       <para>Lets start with a simple example and work our way up. Consider the
-      following Mapserver layer definition:</para>
+      following MapServer layer definition:</para>
 
       <programlisting>LAYER 
   CONNECTIONTYPE postgis 
