@@ -71,12 +71,32 @@
 		
 		<refsection>
 			<title>Description</title>
-			<para>GEOMETRY is a fundamental postgis spatial data type used to represent a feature in the Euclidean coordinate system.</para>
+			<para>geometry is a fundamental postgis spatial data type used to represent a feature in the Euclidean coordinate system.</para>
 		</refsection>
 		
 		<refsection>
 			<title>See Also</title>
 			<para><xref linkend="RefObject" /></para>
+		</refsection>
+	</refentry>
+	
+	<refentry id="geometry_dump">
+		<refnamediv>
+			<refname>geometry_dump</refname>
+			<refpurpose>A spatial datatype with two fields - geom (holding a geometry object) 
+				and path[] (a 1-d array holding the position of the geometry within the dumped object.)</refpurpose>
+		</refnamediv>
+		
+		<refsection>
+		<title>Description</title>
+		<para>geometry_dump is a compound data type consisting of a geometry object referenced by the .geom field 
+			and path[] a 1-dimensional integer array (starting at 1 e.g. path[1] to get first element) array that defines the navigation path within the dumped geometry to find this element.
+			It is used by the ST_Dump* family of functions as an output type to explode a more complex geometry into its 
+				constituent parts and location of parts.</para>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="PostGIS_Geometry_DumpFunctions" /></para>
 		</refsection>
 	</refentry>
 

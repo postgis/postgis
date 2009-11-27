@@ -104,6 +104,33 @@
 				</xsl:for-each>
 				</itemizedlist>
 		</sect1>
+		
+		<sect1 id="PostGIS_Geometry_DumpFunctions">
+			<title>PostGIS Geometry Dump Functions</title>
+			<para>The functions given below are PostGIS functions that take as input or return as output a set of or single <link linkend="PostGIS_Geometry_Dump">geometry_dump</link> data type object.</para>
+				<itemizedlist>
+			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
+				<xsl:for-each select='sect1/refentry'>
+					<xsl:sort select="@id"/>
+					<xsl:variable name='comment'>
+						<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
+					</xsl:variable>
+					<xsl:variable name="refid">
+						<xsl:value-of select="@id" />
+					</xsl:variable>
+					<xsl:variable name="refname">
+						<xsl:value-of select="refnamediv/refname" />
+					</xsl:variable>
+
+			<!-- If at least one proto function accepts or returns a geography -->
+					<xsl:choose>
+						<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'geometry_dump') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geometry_dump')">
+							<listitem><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></listitem>
+						</xsl:when>
+					</xsl:choose>
+				</xsl:for-each>
+				</itemizedlist>
+		</sect1>
 
 		<sect1 id="PostGIS_3D_Functions">
 			<title>PostGIS Functions that support 3D</title>
