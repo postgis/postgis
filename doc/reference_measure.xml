@@ -2450,26 +2450,23 @@ LINESTRING(20 40,121.111404660392 186.629392246051)
 							  <imageobject>
 								<imagedata fileref="images/st_longestline03.png" />
 							  </imageobject>
-							  <caption><para>longest straight distance to travel from one part of city to the other.  Note the max distance = to the length of the line.</para></caption>
+							  <caption><para>longest straight distance to travel from one part of an elegant city to the other
+								Note the max distance = to the length of the line.</para></caption>
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
 SELECT ST_AsText(ST_LongestLine(c.the_geom, c.the_geom)) As llinewkt, 
 	ST_MaxDistance(c.the_geom,c.the_geom) As max_dist, 
-	ST_Length(ST_LongestLine(c.the_geom, c.the_geom)) As lenll
-FROM (SELECT ST_GeomFromText(
-	'POLYGON((122.1413 46.57208,121.82416 46.46066,121.85856 46.11224,121.49174 46.11674,
-	121.49502 45.36656,120.85634 45.3524,120.91878 44.96116,
-	120.26822 44.97726,120.59944 45.28566,119.8244 47.16346,
-	121.42046 47.52092,120.30262 49.29774,120.44048 50.136,
-	121.03236 49.94528,121.71274 48.59418,122.1413 46.57208),
-	(120.49408 46.92532,120.37274 46.76744,120.45402 46.60998,
-	120.63088 46.74968,120.49408 46.92532))') As the_geom
+	ST_Length(ST_LongestLine(c.the_geom, c.the_geom)) As lenll 
+FROM (SELECT ST_BuildArea(ST_Collect(the_geom)) As the_geom
+	FROM (SELECT ST_Translate(ST_SnapToGrid(ST_Buffer(ST_Point(50 ,generate_series(50,190, 50) 
+			),40, 'quad_segs=2'),1), x, 0)  As the_geom 
+			FROM generate_series(1,100,50) As x)  AS foo
 ) As c;
 		
-                 llinewkt                        |     max_dist     |    len_lline
------------------------------------------------- +------------------+---------------
- LINESTRING(120.91878 44.96116,120.44048 50.136) | 5.19689714306528 | 5.19689714306528
+          llinewkt          |     max_dist     |      lenll
+---------------------------+------------------+------------------
+ LINESTRING(23 22,129 178) | 188.605408193933 | 188.605408193933
 				</programlisting>
 						</para></entry>
 		</row>
