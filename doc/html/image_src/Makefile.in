@@ -27,6 +27,8 @@ IMAGES= \
 	../images/st_buffer08.png \
 	../images/st_buildarea01.png \
 	../images/st_buildarea02.png \
+	../images/st_closestpoint01.png \
+	../images/st_closestpoint02.png \
 	../images/st_centroid01.png \
 	../images/st_centroid02.png \
 	../images/st_centroid03.png \

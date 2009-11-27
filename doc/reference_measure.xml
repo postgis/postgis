@@ -264,6 +264,102 @@ degaz	degazrev
 	  <para><xref linkend="ST_PointOnSurface" /></para>
 	</refsection>
   </refentry>
+  
+<refentry id="ST_ClosestPoint">
+	  <refnamediv>
+		<refname>ST_ClosestPoint</refname>
+
+		<refpurpose>Returns the 2-dimensional point on g1 that is closest to g2.  This is the first point of 
+			the shortest line.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_ClosestPoint</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the 2-dimensional point on g1 that is closest to g2.  This is the first point of 
+			the shortest line. 	
+		</para>
+
+		<para>Availability: 1.5.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+			<informaltable>
+				  <tgroup cols="2">
+					<tbody>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_closestpoint01.png" />
+							  </imageobject>
+							  <caption><para>Closest between point and linestring is the point itself, but closest
+							  				point between a linestring and point is the point on line string that is closest.</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(ST_ClosestPoint(pt,line)) AS cp_pt_line, 
+	ST_AsText(ST_ClosestPoint(line,pt)) As cp_line_pt
+FROM (SELECT 'POINT(100 100)'::geometry As pt, 
+		'LINESTRING (20 80, 98 190, 110 180, 50 75 )'::geometry As line
+	) As foo;
+
+	
+   cp_pt_line   |                cp_line_pt
+----------------+------------------------------------------
+ POINT(100 100) | POINT(73.0769230769231 115.384615384615)
+				</programlisting>
+						  </para></entry>
+
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_closestpoint02.png" />
+							  </imageobject>
+							  <caption><para>closest point on polygon A to polygon B</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(
+		ST_ClosestPoint(
+			ST_GeomFromText('POLYGON((175 150, 20 40, 50 60, 125 100, 175 150))'),
+			ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
+			) 
+		) As ptwkt;
+		
+                  ptwkt
+------------------------------------------
+ POINT(140.752120669087 125.695053378061)
+				</programlisting>
+						</para></entry>
+					  </row>
+		</tbody>
+	</tgroup>
+</informaltable>
+
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Distance"/>, <xref linkend="ST_LongestLine"/>, <xref linkend="ST_ShortestLine"/>, <xref linkend="ST_MaxDistance"/></para>
+	  </refsection>
+</refentry>
 
   <refentry id="ST_Contains">
 	  <refnamediv>
@@ -1387,235 +1483,7 @@ postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 )
   </refsection>
 </refentry>
 
-	<refentry id="ST_ShortestLine">
-	  <refnamediv>
-		<refname>ST_ShortestLine</refname>
-
-		<refpurpose>Returns the 2-dimensional shortest line between two geometries</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_ShortestLine</function></funcdef>
-
-			<paramdef><type>geometry </type>
-			<parameter>g1</parameter></paramdef>
-
-			<paramdef><type>geometry </type>
-			<parameter>g2</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Returns the 2-dimensional shortest line between two geometries. The function will
-		only return the first shortest line if more than one, that the function finds.
-		If g1 and g2 intersects in just one point the function will return a line with both start
-		and end in that intersection-point.
-		If g1 and g2 are intersecting with more than one point the function will return a line with start
-		and end in the same point but it can be any of the intersecting points.
-		The line returned will always start in g1 and end in g2.
-		The length of the line this function returns will always be the same as st_distance returns for g1 and g2.	
-		</para>
-
-		<para>Availability: 1.5.0</para>
-	  </refsection>
-
-	  <refsection>
-		<title>Examples</title>
-			<informaltable>
-				  <tgroup cols="2">
-					<tbody>
-					  <row>
-						<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_shortestline01.png" />
-							  </imageobject>
-							  <caption><para>Shortest line between point and linestring</para></caption>
-							</mediaobject>
-						  </informalfigure>
-				<programlisting>
-SELECT ST_AsText(
-	ST_ShortestLine('POINT(100 100)'::geometry, 
-		'LINESTRING (20 80, 98 190, 110 180, 50 75 )'::geometry)
-	) As sline;
-
-	
-   sline
------------------
-LINESTRING(100 100,73.0769230769231 115.384615384615)
-				</programlisting>
-						  </para></entry>
-
-						<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_shortestline02.png" />
-							  </imageobject>
-							  <caption><para>shortest line between polygon and polygon</para></caption>
-							</mediaobject>
-						  </informalfigure>
-				<programlisting>
-SELECT ST_AsText(
-		ST_ShortestLine(
-			ST_GeomFromText('POLYGON((175 150, 20 40, 50 60, 125 100, 175 150))'),
-			ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
-			) 
-		) As slinewkt;
-		
- LINESTRING(140.752120669087 125.695053378061,121.111404660392 153.370607753949)
-				</programlisting>
-						</para></entry>
-					  </row>
-		</tbody>
-	</tgroup>
-</informaltable>
-
-	  </refsection>
-
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_Distance"/>, <xref linkend="ST_LongestLine"/>, <xref linkend="ST_ShortestLine"/>, <xref linkend="ST_MaxDistance"/></para>
-	  </refsection>
-	</refentry>
-	
-		<refentry id="ST_LongestLine">
-	  <refnamediv>
-		<refname>ST_LongestLine</refname>
-
-		<refpurpose>Returns the 2-dimensional longest line points of two geometries.
-		The function will only return the first longest line if more than one, that the function finds.
-		The line returned will always start in g1 and end in g2.
-		The length of the line this function returns will always be the same as st_maxdistance returns for g1 and g2.</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_LongestLine</function></funcdef>
-
-			<paramdef><type>geometry </type>
-			<parameter>g1</parameter></paramdef>
-
-			<paramdef><type>geometry </type>
-			<parameter>g2</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Returns the 2-dimensional longest line between the points of two geometries. 
-		</para>
-		
-		<para>Availability: 1.5.0</para>
-
-	  </refsection>
-
-	  <refsection>
-		<title>Examples</title>
-			<informaltable>
-				  <tgroup cols="2">
-					<tbody>
-					  <row>
-						<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_longestline01.png" />
-							  </imageobject>
-							  <caption><para>Longest line between point and line</para></caption>
-							</mediaobject>
-						  </informalfigure>
-				<programlisting>
-SELECT ST_AsText(
-	ST_LongestLine('POINT(100 100)'::geometry, 
-		'LINESTRING (20 80, 98 190, 110 180, 50 75 )'::geometry)
-	) As lline;
-
-	
-   lline
------------------
-LINESTRING(100 100,98 190)
-				</programlisting>
-						  </para></entry>
-
-						<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_longestline02.png" />
-							  </imageobject>
-							  <caption><para>longest line between polygon and polygon</para></caption>
-							</mediaobject>
-						  </informalfigure>
-				<programlisting>
-SELECT ST_AsText(
-	ST_LongestLine(
-		ST_GeomFromText('POLYGON((175 150, 20 40, 
-			50 60, 125 100, 175 150))'),
-		ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
-		) 
-	) As llinewkt;
-		
-   lline
------------------
-LINESTRING(20 40,121.111404660392 186.629392246051)
-				</programlisting>
-						</para></entry>
-					  </row>
-		</tbody>
-	</tgroup>
-</informaltable>
-
-<informaltable>
-	  <tgroup cols="1">
-		<tbody>
-		  <row>						
-			<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_longestline03.png" />
-							  </imageobject>
-							  <caption><para>longest straight distance to travel from one part of city to the other.  Note the max distance = to the length of the line.</para></caption>
-							</mediaobject>
-						  </informalfigure>
-				<programlisting>
-SELECT ST_AsText(ST_LongestLine(c.the_geom, c.the_geom)) As llinewkt
-FROM (SELECT ST_GeomFromText(
-	'POLYGON ((6107065 2328604, 6091208 2323033, 
-6092928 2305612, 6074587 2305837, 6074751 2268328, 6042817 2267620, 
-6045939 2248058, 6013411 2248863, 6029972 2264283, 5991220 2358173,
- 6071023 2376046, 6015131 2464887, 6022024 2506800, 6051618 2497264,
- 6085637 2429709, 6107065 2328604),
-	 (6024704 2346266, 6018637 2338372, 6022701 2330499, 
-	6031544 2337484, 6024704 2346266))') As the_geom
-) As c;
-		
-                 llinewkt                   |     max_dist     |    len_lline
-
---------------------------------------------+------------------+---------------
-LINESTRING(6045939 2248058,6022024 2506800) | 259844.857153264 | 259844.857153264
-				</programlisting>
-						</para></entry>
-		</row>
-	</tbody>
-</tgroup>
-</informaltable>
-	  </refsection>
-
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_MaxDistance"/>, <xref linkend="ST_ShortestLine"/>, <xref linkend="ST_LongestLine"/></para>
-	  </refsection>
-	</refentry>
-
-	<refentry id="ST_Distance_Sphere">
+<refentry id="ST_Distance_Sphere">
 	  <refnamediv>
 		<refname>ST_Distance_Sphere</refname>
 
@@ -1736,6 +1604,67 @@ FROM
 	  </refsection>
 	</refentry>
 
+	<refentry id="ST_DFullyWithin">
+	  <refnamediv>
+		<refname>ST_DFullyWithin</refname>
+
+		<refpurpose>Returns true if all of the geometries are within the specified
+		distance of one another</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_DFullyWithin</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+
+			<paramdef><type>double precision </type>
+			<parameter>distance</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns true if the geometries is fully within the specified distance
+		of one another. The distance is specified in units defined by the
+		spatial reference system of the geometries.  For this function to make
+		sense, the source geometries must both be of the same coordinate projection,
+		having the same SRID.</para>
+
+		<note>
+		  <para>This function call will automatically include a bounding box
+		  comparison that will make use of any indexes that are available on
+		  the geometries.</para>
+		</note>
+
+		<para>Availability: 1.5.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>postgis=# SELECT ST_DFullyWithin(geom_a, geom_b, 10) as DFullyWithin10, ST_DWithin(geom_a, geom_b, 10) as DWithin10, ST_DFullyWithin(geom_a, geom_b, 20) as DFullyWithin20 from 
+		(select ST_GeomFromText('POINT(1 1)') as geom_a,ST_GeomFromText('LINESTRING(1 5, 2 7, 1 9, 14 12)') as geom_b) t1;
+   
+-----------------
+ DFullyWithin10 | DWithin10 | DFullyWithin20 |
+---------------+----------+---------------+
+ f             | t        | t             |  </programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_MaxDistance"/>, <xref linkend="ST_DWithin"/></para>
+	  </refsection>
+	</refentry>
+	
 	<refentry id="ST_DWithin">
 	  <refnamediv>
 		<refname>ST_DWithin</refname>
@@ -1845,127 +1774,6 @@ SELECT s.gid, s.school_name
 		<title>See Also</title>
 
 		<para><xref linkend="ST_Distance"/>, <xref linkend="ST_Expand"/></para>
-	  </refsection>
-	</refentry>
-
-	<refentry id="ST_DFullyWithin">
-	  <refnamediv>
-		<refname>ST_DFullyWithin</refname>
-
-		<refpurpose>Returns true if all of the geometries are within the specified
-		distance of one another</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>boolean <function>ST_DFullyWithin</function></funcdef>
-
-			<paramdef><type>geometry </type>
-			<parameter>g1</parameter></paramdef>
-
-			<paramdef><type>geometry </type>
-			<parameter>g2</parameter></paramdef>
-
-			<paramdef><type>double precision </type>
-			<parameter>distance</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Returns true if the geometries is fully within the specified distance
-		of one another. The distance is specified in units defined by the
-		spatial reference system of the geometries.  For this function to make
-		sense, the source geometries must both be of the same coordinate projection,
-		having the same SRID.</para>
-
-		<note>
-		  <para>This function call will automatically include a bounding box
-		  comparison that will make use of any indexes that are available on
-		  the geometries.</para>
-		</note>
-
-
-	  </refsection>
-
-	  <refsection>
-		<title>Examples</title>
-		<programlisting>postgis=# SELECT ST_DFullyWithin(geom_a, geom_b, 10) as DFullyWithin10, ST_DWithin(geom_a, geom_b, 10) as DWithin10, ST_DFullyWithin(geom_a, geom_b, 20) as DFullyWithin20 from 
-		(select ST_GeomFromText('POINT(1 1)') as geom_a,ST_GeomFromText('LINESTRING(1 5, 2 7, 1 9, 14 12)') as geom_b) t1;
-   
------------------
- DFullyWithin10 | DWithin10 | DFullyWithin20 |
----------------+----------+---------------+
- f             | t        | t             |  </programlisting>
-	  </refsection>
-
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_MaxDistance"/>, <xref linkend="ST_DWithin"/></para>
-	  </refsection>
-	</refentry>
-	<refentry id="ST_DFullyWithin">
-	  <refnamediv>
-		<refname>ST_DFullyWithin</refname>
-
-		<refpurpose>Returns true if all of the geometries are within the specified
-		distance of one another</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>boolean <function>ST_DFullyWithin</function></funcdef>
-
-			<paramdef><type>geometry </type>
-			<parameter>g1</parameter></paramdef>
-
-			<paramdef><type>geometry </type>
-			<parameter>g2</parameter></paramdef>
-
-			<paramdef><type>double precision </type>
-			<parameter>distance</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Returns true if the geometries is fully within the specified distance
-		of one another. The distance is specified in units defined by the
-		spatial reference system of the geometries.  For this function to make
-		sense, the source geometries must both be of the same coordinate projection,
-		having the same SRID.</para>
-
-		<note>
-		  <para>This function call will automatically include a bounding box
-		  comparison that will make use of any indexes that are available on
-		  the geometries.</para>
-		</note>
-
-
-	  </refsection>
-
-	  <refsection>
-		<title>Examples</title>
-		<programlisting>postgis=# SELECT ST_DFullyWithin(geom_a, geom_b, 10) as DFullyWithin10, ST_DWithin(geom_a, geom_b, 10) as DWithin10, ST_DFullyWithin(geom_a, geom_b, 20) as DFullyWithin20 from 
-		(select ST_GeomFromText('POINT(1 1)') as geom_a,ST_GeomFromText('LINESTRING(1 5, 2 7, 1 9, 14 12)') as geom_b) t1;
-   
------------------
- DFullyWithin10 | DWithin10 | DFullyWithin20 |
----------------+----------+---------------+
- f             | t        | t             |  </programlisting>
-	  </refsection>
-
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_MaxDistance"/>, <xref linkend="ST_DWithin"/></para>
 	  </refsection>
 	</refentry>
 	
@@ -2545,6 +2353,138 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 	  </refsection>
 	</refentry>
 
+<refentry id="ST_LongestLine">
+	  <refnamediv>
+		<refname>ST_LongestLine</refname>
+
+		<refpurpose>Returns the 2-dimensional longest line points of two geometries.
+		The function will only return the first longest line if more than one, that the function finds.
+		The line returned will always start in g1 and end in g2.
+		The length of the line this function returns will always be the same as st_maxdistance returns for g1 and g2.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_LongestLine</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the 2-dimensional longest line between the points of two geometries. 
+		</para>
+		
+		<para>Availability: 1.5.0</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+			<informaltable>
+				  <tgroup cols="2">
+					<tbody>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_longestline01.png" />
+							  </imageobject>
+							  <caption><para>Longest line between point and line</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(
+	ST_LongestLine('POINT(100 100)'::geometry, 
+		'LINESTRING (20 80, 98 190, 110 180, 50 75 )'::geometry)
+	) As lline;
+
+	
+   lline
+-----------------
+LINESTRING(100 100,98 190)
+				</programlisting>
+						  </para></entry>
+
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_longestline02.png" />
+							  </imageobject>
+							  <caption><para>longest line between polygon and polygon</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(
+	ST_LongestLine(
+		ST_GeomFromText('POLYGON((175 150, 20 40, 
+			50 60, 125 100, 175 150))'),
+		ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
+		) 
+	) As llinewkt;
+		
+   lline
+-----------------
+LINESTRING(20 40,121.111404660392 186.629392246051)
+				</programlisting>
+						</para></entry>
+					  </row>
+		</tbody>
+	</tgroup>
+</informaltable>
+
+<informaltable>
+	  <tgroup cols="1">
+		<tbody>
+		  <row>						
+			<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_longestline03.png" />
+							  </imageobject>
+							  <caption><para>longest straight distance to travel from one part of city to the other.  Note the max distance = to the length of the line.</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(ST_LongestLine(c.the_geom, c.the_geom)) As llinewkt, 
+	ST_MaxDistance(c.the_geom,c.the_geom) As max_dist, 
+	ST_Length(ST_LongestLine(c.the_geom, c.the_geom)) As lenll
+FROM (SELECT ST_GeomFromText(
+	'POLYGON((122.1413 46.57208,121.82416 46.46066,121.85856 46.11224,121.49174 46.11674,
+	121.49502 45.36656,120.85634 45.3524,120.91878 44.96116,
+	120.26822 44.97726,120.59944 45.28566,119.8244 47.16346,
+	121.42046 47.52092,120.30262 49.29774,120.44048 50.136,
+	121.03236 49.94528,121.71274 48.59418,122.1413 46.57208),
+	(120.49408 46.92532,120.37274 46.76744,120.45402 46.60998,
+	120.63088 46.74968,120.49408 46.92532))') As the_geom
+) As c;
+		
+                 llinewkt                        |     max_dist     |    len_lline
+------------------------------------------------ +------------------+---------------
+ LINESTRING(120.91878 44.96116,120.44048 50.136) | 5.19689714306528 | 5.19689714306528
+				</programlisting>
+						</para></entry>
+		</row>
+	</tbody>
+</tgroup>
+</informaltable>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_MaxDistance"/>, <xref linkend="ST_ShortestLine"/>, <xref linkend="ST_LongestLine"/></para>
+	  </refsection>
+	</refentry>
+	
 	<refentry id="ST_OrderingEquals">
 	  <refnamediv>
 		<refname>ST_OrderingEquals</refname>
@@ -3018,6 +2958,103 @@ SELECT ST_Relate(ST_GeometryFromText('POINT(1 2)'), ST_Buffer(ST_GeometryFromTex
 	  </refsection>
 	</refentry>
 
+<refentry id="ST_ShortestLine">
+	  <refnamediv>
+		<refname>ST_ShortestLine</refname>
+
+		<refpurpose>Returns the 2-dimensional shortest line between two geometries</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_ShortestLine</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the 2-dimensional shortest line between two geometries. The function will
+		only return the first shortest line if more than one, that the function finds.
+		If g1 and g2 intersects in just one point the function will return a line with both start
+		and end in that intersection-point.
+		If g1 and g2 are intersecting with more than one point the function will return a line with start
+		and end in the same point but it can be any of the intersecting points.
+		The line returned will always start in g1 and end in g2.
+		The length of the line this function returns will always be the same as st_distance returns for g1 and g2.	
+		</para>
+
+		<para>Availability: 1.5.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+			<informaltable>
+				  <tgroup cols="2">
+					<tbody>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_shortestline01.png" />
+							  </imageobject>
+							  <caption><para>Shortest line between point and linestring</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(
+	ST_ShortestLine('POINT(100 100)'::geometry, 
+		'LINESTRING (20 80, 98 190, 110 180, 50 75 )'::geometry)
+	) As sline;
+
+	
+   sline
+-----------------
+LINESTRING(100 100,73.0769230769231 115.384615384615)
+				</programlisting>
+						  </para></entry>
+
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_shortestline02.png" />
+							  </imageobject>
+							  <caption><para>shortest line between polygon and polygon</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(
+		ST_ShortestLine(
+			ST_GeomFromText('POLYGON((175 150, 20 40, 50 60, 125 100, 175 150))'),
+			ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
+			) 
+		) As slinewkt;
+		
+ LINESTRING(140.752120669087 125.695053378061,121.111404660392 153.370607753949)
+				</programlisting>
+						</para></entry>
+					  </row>
+		</tbody>
+	</tgroup>
+</informaltable>
+
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_ClosestPoint"/>, <xref linkend="ST_Distance"/>, <xref linkend="ST_LongestLine"/>, <xref linkend="ST_ShortestLine"/>, <xref linkend="ST_MaxDistance"/></para>
+	  </refsection>
+	</refentry>
+	
 	<refentry id="ST_Touches">
 	  <refnamediv>
 		<refname>ST_Touches</refname>
