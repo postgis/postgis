@@ -292,7 +292,7 @@ postgis# VACUUM ANALYZE;</programlisting>
   FROM table1 
   LEFT JOIN table2 
   ON table1.id = table2.id
-) AS new_table USING UNIQUE oid USING SRID=-1"</programlisting>
+) AS new_table USING UNIQUE gid USING SRID=-1"</programlisting>
 
       <variablelist>
         <varlistentry>
@@ -300,24 +300,14 @@ postgis# VACUUM ANALYZE;</programlisting>
 
           <listitem>
             <para>MapServer requires a unique id for each row in order to
-            identify the row when doing map queries. Normally, it would use
-            the oid as the unique identifier, but views and subselects don't
-            automatically have an oid column. If you want to use MapServer's
-            query functionality, you need to add a unique column to your view
-            or subselect, and declare it with <varname>USING UNIQUE</varname>.
-            For example, you could explicitly select one of the table's oid
+            identify the row when doing map queries. Normally it identifies
+            the primary key from the system tables. However, views and subselects don't
+            automatically have an known unique column. If you want to use MapServer's
+            query functionality, you need to ensure your view
+            or subselect includes a uniquely valued column, and declare it with <varname>USING UNIQUE</varname>.
+            For example, you could explicitly select nee of the table's primary key
             values for this purpose, or any other column which is guaranteed
             to be unique for the result set.</para>
-
-            <para>The <varname>USING</varname> statement can also be useful
-            even for simple <varname>DATA</varname> statements, if you are
-            doing map queries. It was previously recommended to add an index
-            on the oid column of tables used in query-able layers, in order to
-            speed up the performance of map queries. However, with the
-            <varname>USING</varname> clause, it is possible to tell mapserver
-            to use your table's primary key as the identifier for map queries,
-            and then it is no longer necessary to have an additional
-            index.</para>
 
             <note>
               <para>"Querying a Map" is the action of clicking on a map to ask
@@ -334,7 +324,7 @@ postgis# VACUUM ANALYZE;</programlisting>
           <listitem>
             <para>PostGIS needs to know which spatial referencing system is
             being used by the geometries in order to return the correct data
-            back to mapserver. Normally it is possible to find this
+            back to MapServer. Normally it is possible to find this
             information in the "geometry_columns" table in the PostGIS
             database, however, this is not possible for tables which are
             created on the fly such as subselects and views. So the
@@ -344,13 +334,6 @@ postgis# VACUUM ANALYZE;</programlisting>
         </varlistentry>
       </variablelist>
 
-      <warning>
-        <para>The parser for MapServer PostGIS layers is fairly primitive, and
-        is case sensitive in a few areas. Be careful to ensure that all SQL
-        keywords and all your <varname>USING</varname> clauses are in upper
-        case, and that your <varname>USING UNIQUE</varname> clause precedes
-        your <varname>USING SRID</varname> clause.</para>
-      </warning>
     </sect2>
 
     <sect2>
@@ -363,7 +346,7 @@ postgis# VACUUM ANALYZE;</programlisting>
   CONNECTIONTYPE postgis 
   NAME "roads"
   CONNECTION "user=theuser password=thepass dbname=thedb host=theserver" 
-  DATA "the_geom FROM roads" 
+  DATA "the_geom from roads" 
   STATUS ON 
   TYPE LINE 
   CLASS 
@@ -384,7 +367,7 @@ END</programlisting>
   CONNECTIONTYPE postgis 
   CONNECTION "user=theuser password=thepass dbname=thedb host=theserver" 
   PROCESSING "CLOSE_CONNECTION=DEFER"
-  DATA "the_geom FROM roads"
+  DATA "the_geom from roads"
   MINSCALE 100000 
   STATUS ON 
   TYPE LINE 
@@ -397,7 +380,7 @@ LAYER
   CONNECTIONTYPE postgis 
   CONNECTION "user=theuser password=thepass dbname=thedb host=theserver"
   PROCESSING "CLOSE_CONNECTION=DEFER"
-  DATA "the_geom FROM roads" 
+  DATA "the_geom from roads" 
   MAXSCALE 100000 
   STATUS ON 
   TYPE LINE
@@ -426,7 +409,7 @@ END</programlisting>
       regular black lines.</para>
 
       <para>So, we have done a couple of interesting things using only
-      mapserver functionality, but our <varname>DATA</varname> SQL statement
+      MapServer functionality, but our <varname>DATA</varname> SQL statement
       has remained simple. Suppose that the name of the road is stored in
       another table (for whatever reason) and we need to do a join to get it
       and label our roads.</para>
