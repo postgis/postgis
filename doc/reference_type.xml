@@ -96,7 +96,7 @@
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="PostGIS_Geometry_DumpFunctions" /></para>
+			<para><xref linkend="PostGIS_Geometry_DumpFunctions" /> </para>
 		</refsection>
 	</refentry>
 
