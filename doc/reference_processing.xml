@@ -840,72 +840,7 @@ SELECT ST_AsEWKT(a.geom), ST_HasArc(a.geom)
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_Collect" />, <xref linkend="ST_GeometryN" /></para>
-	  </refsection>
-	</refentry>
-
-	<refentry id="ST_DumpRings">
-	  <refnamediv>
-		<refname>ST_DumpRings</refname>
-
-		<refpurpose>Returns a set of <varname>geometry_dump</varname> rows, representing
-			the exterior and interior rings of a polygon.</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry_dump[] <function>ST_DumpRings</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>This is a set-returning function (SRF). It returns a set of
-			<varname>geometry_dump</varname> rows, defined as an <varname>integer[]</varname>
-			and a <varname>geometry</varname>, aliased "path" and "geom" respectively.
-			The "path" field holds the polygon ring index containing a single integer: 0 for the shell, >0 for holes.
-			The "geom" field contains the corresponding ring as a polygon.</para>
-
-		<para>Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or higher.</para>
-		<note><para>This only works for POLYGON geometries. It will not work for MULTIPOLYGONS</para></note>
-		<para>&Z_support;</para>
-	  </refsection>
-
-
-	  <refsection>
-		<title>Examples</title>
-
-		<programlisting>SELECT sometable.field1, sometable.field1,
-	  (ST_DumpRings(sometable.the_geom)).geom As the_geom
-FROM sometableOfpolys;
-
-SELECT ST_AsEWKT(geom) As the_geom, path
-	FROM ST_DumpRings(
-		ST_GeomFromEWKT('POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 1,-8148941 5132466 1,-8148924 5132394 1,
-		-8148903 5132210 1,-8148930 5131967 1,-8148992 5131978 1,-8149237 5132093 1,-8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 1,
-		-8150305 5132788 1,-8149064 5133092 1),
-		(-8149362 5132394 1,-8149446 5132501 1,-8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 1))')
-		)  as foo;
- path |                                            the_geom
-----------------------------------------------------------------------------------------------------------------
-  {0} | POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 1,
-	  |          -8148941 5132466 1,-8148924 5132394 1,
-	  |          -8148903 5132210 1,-8148930 5131967 1,
-	  |          -8148992 5131978 1,-8149237 5132093 1,
-	  |          -8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 1,-8150305 5132788 1,-8149064 5133092 1))
-  {1} | POLYGON((-8149362 5132394 1,-8149446 5132501 1,
-	  |          -8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 1))</programlisting>
-	  </refsection>
-
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_Dump" />, <xref linkend="ST_ExteriorRing" />, <xref linkend="ST_InteriorRingN" /></para>
+		<para><xref linkend="geometry_dump" />, <xref linkend="PostGIS_Geometry_DumpFunctions" />, <xref linkend="ST_Collect" />, <xref linkend="ST_Collect" />, <xref linkend="ST_GeometryN" /></para>
 	  </refsection>
 	</refentry>
 
@@ -1013,8 +948,72 @@ FROM (
 		</refsection>
 			<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Dump" />, <xref linkend="ST_DumpRings" /></para>
+			<para><xref linkend="geometry_dump" />, <xref linkend="PostGIS_Geometry_DumpFunctions" />, <xref linkend="ST_Dump" />, <xref linkend="ST_DumpRings" /></para>
 		</refsection>
+	</refentry>
+	<refentry id="ST_DumpRings">
+	  <refnamediv>
+		<refname>ST_DumpRings</refname>
+
+		<refpurpose>Returns a set of <varname>geometry_dump</varname> rows, representing
+			the exterior and interior rings of a polygon.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry_dump[] <function>ST_DumpRings</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>This is a set-returning function (SRF). It returns a set of
+			<varname>geometry_dump</varname> rows, defined as an <varname>integer[]</varname>
+			and a <varname>geometry</varname>, aliased "path" and "geom" respectively.
+			The "path" field holds the polygon ring index containing a single integer: 0 for the shell, >0 for holes.
+			The "geom" field contains the corresponding ring as a polygon.</para>
+
+		<para>Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or higher.</para>
+		<note><para>This only works for POLYGON geometries. It will not work for MULTIPOLYGONS</para></note>
+		<para>&Z_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT sometable.field1, sometable.field1,
+	  (ST_DumpRings(sometable.the_geom)).geom As the_geom
+FROM sometableOfpolys;
+
+SELECT ST_AsEWKT(geom) As the_geom, path
+	FROM ST_DumpRings(
+		ST_GeomFromEWKT('POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 1,-8148941 5132466 1,-8148924 5132394 1,
+		-8148903 5132210 1,-8148930 5131967 1,-8148992 5131978 1,-8149237 5132093 1,-8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 1,
+		-8150305 5132788 1,-8149064 5133092 1),
+		(-8149362 5132394 1,-8149446 5132501 1,-8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 1))')
+		)  as foo;
+ path |                                            the_geom
+----------------------------------------------------------------------------------------------------------------
+  {0} | POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 1,
+	  |          -8148941 5132466 1,-8148924 5132394 1,
+	  |          -8148903 5132210 1,-8148930 5131967 1,
+	  |          -8148992 5131978 1,-8149237 5132093 1,
+	  |          -8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 1,-8150305 5132788 1,-8149064 5133092 1))
+  {1} | POLYGON((-8149362 5132394 1,-8149446 5132501 1,
+	  |          -8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 1))</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="geometry_dump" />, <xref linkend="PostGIS_Geometry_DumpFunctions" />, <xref linkend="ST_Dump" />, <xref linkend="ST_ExteriorRing" />, <xref linkend="ST_InteriorRingN" /></para>
+	  </refsection>
 	</refentry>
 
 	<refentry id="ST_Intersection">
