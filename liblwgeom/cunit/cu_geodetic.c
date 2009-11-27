@@ -976,3 +976,4 @@ void test_spheroid_area(void)
 	CU_ASSERT_DOUBLE_EQUAL(a1, a2, 100000000.0);
 
 }
+
