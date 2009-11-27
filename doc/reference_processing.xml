@@ -817,29 +817,26 @@ MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)
 			<para>Availability: PostGIS 1.0.0RC1. Requires PostgreSQL 7.3 or higher.</para>
 			<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 
-			<para>Z_support;</para>
-			<para>curve_support;</para>
+			<para>&Z_support;</para>
+			<para>&curve_support;</para>
 	  </refsection>
 
 	  <refsection>
 		<title>Examples</title>
 	<programlisting>SELECT sometable.field1, sometable.field1,
-	  (ST_Dump(sometable.the_geom)).geom As the_geom
+      (ST_Dump(sometable.the_geom)).geom AS the_geom
 FROM sometable;
 
 --Break a compound curve into its constituent linestrings and circularstrings
 SELECT ST_AsEWKT(a.geom), ST_HasArc(a.geom)
-  FROM ( SELECT (ST_Dump(p_geom)).geom as geom
-		   FROM (SELECT ST_GeomFromEWKT('COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 1, 1 0),(1 0, 0 1))') as p_geom) as b
-	   ) as a;
-		  st_asewkt          | st_hasarc
+  FROM ( SELECT (ST_Dump(p_geom)).geom AS geom
+         FROM (SELECT ST_GeomFromEWKT('COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 1, 1 0),(1 0, 0 1))') AS p_geom) AS b
+        ) AS a;
+          st_asewkt          | st_hasarc
 -----------------------------+----------
  CIRCULARSTRING(0 0,1 1,1 0) | t
  LINESTRING(1 0,0 1)         | f
-(2 rows)
-
-
-</programlisting>
+(2 rows)</programlisting>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
@@ -1147,8 +1144,8 @@ FROM country
 		<para>Converts plain LINESTRING/POLYGONS to CIRCULAR STRINGs and Curved Polygons.  Note much fewer points are needed to describe the curved equivalent.</para>
 
 		<para>Availability: 1.2.2?</para>
-		<para>Z_support;</para>
-		<para>curve_support;</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
 	  </refsection>
 
 

@@ -942,12 +942,12 @@ FROM public.myschema.myspecialpois LIMIT 1;
 -- by returning false if a LinearRing (start and end points are the same)
 -- has less than 2 vertices.
 gisdb=# SELECT
-   st_isvalid('LINESTRING(0 0, 1 1)'),
-   st_isvalid('LINESTRING(0 0, 0 0)');
+   ST_IsValid('LINESTRING(0 0, 1 1)'),
+   ST_IsValid('LINESTRING(0 0, 0 0)');
 
  st_isvalid | st_isvalid
-------------+---------
-	  t     |     f</programlisting>
+------------+-----------
+      t     |     f</programlisting>
 
 	  <para>By default, PostGIS does not apply this validity check on geometry
 	  input, because testing for validity needs lots of CPU time for complex
@@ -957,7 +957,7 @@ gisdb=# SELECT
 
 	  <programlisting>ALTER TABLE mytable
   ADD CONSTRAINT geometry_valid_check
-	CHECK (isvalid(the_geom));</programlisting>
+	CHECK (ST_IsValid(the_geom));</programlisting>
 
 	  <para>If you encounter any strange error messages such as "GEOS
 	  Intersection() threw an error!" or "JTS Intersection() threw an error!"
