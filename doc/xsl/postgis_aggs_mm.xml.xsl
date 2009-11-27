@@ -107,7 +107,7 @@
 		
 		<sect1 id="PostGIS_Geometry_DumpFunctions">
 			<title>PostGIS Geometry Dump Functions</title>
-			<para>The functions given below are PostGIS functions that take as input or return as output a set of or single <link linkend="PostGIS_Geometry_Dump">geometry_dump</link> data type object.</para>
+			<para>The functions given below are PostGIS functions that take as input or return as output a set of or single <link linkend="geometry_dump">geometry_dump</link> data type object.</para>
 				<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
 				<xsl:for-each select='sect1/refentry'>
