@@ -1,5 +1,5 @@
 PostGIS 1.4.1
-2009/11/13
+2009/11/28
 
  - This is a bug fix release, addressing issues that have been
    filed since the 1.4.0 release.
@@ -13,6 +13,7 @@ PostGIS 1.4.1
    - #276, ST_AsGML producing non-compliant GML
    - #239, memory issues with ST_As* functions
    - #272, ST_LineCrossingDirection should be negatively symmetric
+   - #316, parsing problem for invalid higher dimensional geometries
 
 PostGIS 1.4.0
 2009/07/24

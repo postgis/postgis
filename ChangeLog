@@ -1,3 +1,313 @@
+2009-11-28 23:29  pramsey
+
+	* make_dist.sh: Try and retain postgis_comments.sql during
+	  packaging.
+
+2009-11-27 18:42  pramsey
+
+	* regress/regress_expected, regress/regress_ogc_expected,
+	  regress/sql-mm-curvepoly_expected: Bring error messages into line
+	  with fix for invalid polygons in parser (#316)
+
+2009-11-27 18:12  pramsey
+
+	* loader/pgsql2shp.c: Fix for null date fields (#321)
+
+2009-11-26 17:40  mcayland
+
+	* liblwgeom/lwgparse.c: Alter parser location when reporting
+	  incontinuous curves so that the location is more relevant.
+
+2009-11-26 10:40  mcayland
+
+	* liblwgeom/lwgparse.c, regress/regress_expected,
+	  regress/regress_ogc_expected, regress/sql-mm-curvepoly_expected:
+	  Fix #316: IsValid called on invalid 3d object leads to crash.
+	  Because of the way the parser works, not all tuples can hold a
+	  valid parse position; hence when trying to display the error
+	  message, the parser would crash. The solution I went for here was
+	  to alter pop() so that "counting tuples" always hold a valid
+	  parse position, and then re-write the various check functions to
+	  ensure that they only display parse errors with details from the
+	  next "counting tuple" higher up in the stack.
+
+2009-11-20 14:01  mcayland
+
+	* loader/pgsql2shp.c: Apply Kris Jurka's pgsql2shp patches, as
+	  detail in the postgis-devel archives on 12th Nov. Thanks Kris!
+
+2009-11-20 12:02  mcayland
+
+	* loader/shp2pgsql.c: Finish working on Dave Fuhry's memory-leak
+	  patch, and also fix several other leaks found by running
+	  shp2pgsql through valgrind.
+
+2009-11-19 17:45  mcayland
+
+	* loader/shp2pgsql.c: Temporarily remove part of Dave Fuhry's fix
+	  as it causes a double-free during regression. Will fix this
+	  tomorrow.
+
+2009-11-19 16:47  mcayland
+
+	* configure.ac: Add check for perl to configure.ac, since now we
+	  require it to build the PostGIS upgrade scripts.
+
+2009-11-19 15:15  mcayland
+
+	* loader/shp2pgsql.c: Apply a slightly modified version of Dave
+	  Fuhry's patch for a memory leak in shp2pgsql. Thanks Dave!
+
+2009-11-16 05:51  robe
+
+	* doc/installation.xml: thought we had fixed this get rid of ref
+	  tolwpostgis and relate with postgis.sql
+
+2009-11-14 01:31  pramsey
+
+	* NEWS, README.postgis, doc/release_notes.xml: Update document
+	  files for the 1.4.1 release cycle.
+
+2009-11-13 22:26  pramsey
+
+	* macros, postgis, postgis/Makefile.in, postgis/postgis.sql.in.c,
+	  postgis/sqldefines.h.in, utils/postgis_proc_upgrade.pl: Create
+	  version-specific upgrade scripts, untested so far (#202)
+
+2009-11-13 15:10  robe
+
+	* doc/html/image_src/generator.c: backport Kevin's change make
+	  background white so doesn't look surreal in pdf
+
+2009-11-13 15:05  robe
+
+	* doc/introduction.xml: update to include psc and more up to date
+	  credits
+
+2009-11-13 13:00  robe
+
+	* doc/html/image_src/styles.conf: forgot to update new styles
+
+2009-11-13 11:52  robe
+
+	* doc/html/image_src/Makefile.in: update make file with
+	  linecrossingdirection. I should really learn to follow my own
+	  directions.
+
+2009-11-13 03:43  robe
+
+	* doc/html/image_src/st_linecrossingdirection01.wkt,
+	  doc/html/image_src/st_linecrossingdirection02.wkt,
+	  doc/html/image_src/st_linecrossingdirection03.wkt,
+	  doc/html/image_src/st_linecrossingdirection04.wkt,
+	  doc/reference.xml: copy over line crossing direction examples and
+	  note bugginess fixed in 1.4.1
+
+2009-11-11 19:02  pramsey
+
+	* liblwgeom/cunit/cu_algorithm.c, liblwgeom/cunit/cu_algorithm.h,
+	  liblwgeom/liblwgeom.h, liblwgeom/lwalgorithm.c,
+	  liblwgeom/lwalgorithm.h: Simplify code and improve consistency of
+	  linecrossing results (#272)
+
+2009-11-06 18:35  pramsey
+
+	* postgis/postgis.sql.in.c: Restore re-check for PgSQL < 8.4 also
+	  on the ~= operator only.
+
+2009-11-05 20:25  pramsey
+
+	* postgis/lwgeom_ogc.c, postgis/postgis.sql.in.c: Fix for #157,
+	  ST_GeometryType output doesn't correctly identify curved
+	  geometries
+
+2009-11-05 00:45  pramsey
+
+	* utils/postgis_restore.pl: "Fix" for #100.
+
+2009-11-04 20:36  pramsey
+
+	* liblwgeom/lex.yy.c, liblwgeom/wktparse.lex: Fix for #175.
+
+2009-11-04 20:22  pramsey
+
+	* postgis/lwgeom_gist.c: 8.4 fix for recheck issue around ~= (#253)
+
+2009-10-30 18:59  robe
+
+	* doc/installation.xml: correct postgresql minimum version
+
+2009-10-29 20:20  colivier
+
+	* postgis/lwgeom_gml.c, regress/gml_expected: Change attribute
+	  dimension into srsDimension (GML 3.1.1), cf #276
+
+2009-10-29 14:07  colivier
+
+	* postgis/lwgeom_gml.c, regress/gml.sql, regress/gml_expected: Add
+	  attribute dimension in gml:pos and gml:posList. Fix
+	  geometrycollection invalid GML output. Update units test. Cf #276
+
+2009-10-28 11:06  robe
+
+	* doc/release_notes.xml, doc/reporting.xml: copy 1.3.6 notes from
+	  trunk. Also correct links to svn and postgis bug tracker.
+
+2009-10-27 21:37  colivier
+
+	* postgis/lwgeom_geojson.c, postgis/lwgeom_gml.c,
+	  postgis/lwgeom_kml.c, postgis/lwgeom_svg.c: Fix huge number
+	  overflow in export functions, cf #277
+
+2009-10-07 12:17  mcayland
+
+	* postgis/lwgeom_accum.c, postgis/lwgeom_functions_basic.c: Fix
+	  #179: ST_MakeLine and ST_MakeLine_Garry crash server with null
+	  arrays again. There was another non-NULL safe array iterator
+	  within LWGEOM_makeline_garray.
+
+2009-10-07 04:39  robe
+
+	* doc/reference.xml: flip order of protos in ST_Relate so matches
+	  description order
+
+2009-10-06 13:45  mcayland
+
+	* postgis/lwgeom_functions_analytic.c: Fix #241:
+	  ST_LineCrossingDirection Server Crash (Segfault) caused by a typo
+	  freeing the wrong parameter.
+
+2009-10-06 10:15  mcayland
+
+	* postgis/lwgeom_accum.c, postgis/lwgeom_functions_basic.c: Fix
+	  another non-NULL safe array iteration within
+	  LWGEOM_collect_garray, as discovered by Regina's torture tests.
+
+2009-10-06 08:51  mcayland
+
+	* loader/Makefile.in: Move CFLAGS after the PGXS include directive,
+	  so that the autotools configuration doesn't getting overwritten
+	  by the PGXS version. Required when passing custom compiler flags
+	  into PostGIS as reported by William Kyngesburye.
+
+2009-10-05 21:15  kneufeld
+
+	* doc/reference.xml: updated ST_IsValid's reference to the OGC
+	  specs.
+
+2009-09-29 15:13  robe
+
+	* liblwgeom/lwcollection.c: Backport fix for #254 (leaving out the
+	  regress test since I'm bound to screw that up with my windows
+	  line breaks)
+
+2009-09-10 04:21  robe
+
+	* doc/html/image_src/Makefile.in,
+	  doc/html/image_src/st_line_interpolate_point01.wkt,
+	  doc/html/image_src/st_line_substring01.wkt, doc/reference.xml:
+	  copy over line interpolate and line_substring figures from trunk
+
+2009-09-08 06:56  robe
+
+	* doc/html/image_src/Makefile.in,
+	  doc/html/image_src/st_minimumboundingcircle01.wkt,
+	  doc/reference.xml: copy over st_minimumboundingcirlce /
+	  st_convexhull changes from trunk
+
+2009-09-05 18:19  robe
+
+	* doc/html/image_src/Makefile.in,
+	  doc/html/image_src/st_difference01.wkt,
+	  doc/html/image_src/st_symdifference01.wkt,
+	  doc/html/image_src/st_symdifference02.wkt, doc/reference.xml:
+	  backport changes to st_convexhull, st_difference, st_difference
+
+2009-09-02 13:54  robe
+
+	* doc/html/image_src/Makefile.in,
+	  doc/html/image_src/st_convexhull01.wkt, doc/reference.xml: Copy
+	  over convexhull changes
+
+2009-08-28 17:43  robe
+
+	* doc/html/image_src/Makefile.in,
+	  doc/html/image_src/st_buildarea01.wkt,
+	  doc/html/image_src/st_buildarea02.wkt, doc/reference.xml: cut in
+	  images for st_buildarea
+
+2009-08-28 17:14  robe
+
+	* doc/xsl/postgis_aggs_mm.xml.xsl: take out 1.5 section this should
+	  only go up to 1.4 anyway
+
+2009-08-28 11:40  robe
+
+	* doc/performance_tips.xml: performance tips patch from jlivni.
+	  Same as was applied to trunk
+
+2009-08-17 13:21  pramsey
+
+	* postgis/lwgeom_svg.c: Extra comments on fix for #239
+
+2009-08-17 11:47  robe
+
+	* doc/xsl/postgis_aggs_mm.xml.xsl: backport pick up availability
+	  flag in note tags as well.
+
+2009-08-17 02:58  pramsey
+
+	* postgis/lwgeom_svg.c: Fix for handling of empty
+	  geometrycollection in asssvg (#239)
+
+2009-08-16 15:02  robe
+
+	* doc/reference.xml: revise svg comment to be picked up in the New
+	  section
+
+2009-08-16 14:51  robe
+
+	* doc/reference.xml: Correct ST_AsSVG to reflect introduction of L
+	  command
+
+2009-08-12 06:40  robe
+
+	* HOWTO_RELEASE: typo
+
+2009-08-12 06:10  robe
+
+	* HOWTO_RELEASE: Update how to release to include step to bump
+	  stable branch minor number.
+
+2009-08-12 06:02  robe
+
+	* Version.config: bump from 1.4.0SVN to 1.4.1SVN
+
+2009-08-07 02:33  mleslie
+
+	* liblwgeom/lwgparse.c, regress/sql-mm-compoundcurve.sql,
+	  regress/sql-mm-compoundcurve_expected: Fix for ticket #234
+
+2009-08-05 18:08  pramsey
+
+	* postgis/lwgeom_functions_basic.c: Remove printfs from code.
+
+2009-08-01 18:35  robe
+
+	* doc/reference.xml: update ST_Line_Locate ... with example of
+	  closest point. Asked way too many times on postgis news groups
+
+2009-07-30 16:03  mcayland
+
+	* regress/Makefile.in: Remove quotes from PATH in regression
+	  Makefile, as it seems that the last MingW hack doesn't need this
+	  any more.
+
+2009-07-24 16:35  pramsey
+
+	* ChangeLog, NEWS, README.postgis, doc, doc/release_notes.xml,
+	  regress: Preparation for 1.4.0 release.
+
 2009-07-18 20:02  mcayland
 
 	* regress/Makefile.in: Fix for Windows combining stdout/stderr when
