@@ -741,8 +741,8 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
 	  <refnamediv>
 		<refname>ST_CoveredBy</refname>
 
-		<refpurpose>Returns 1 (TRUE) if no point in Geometry A is outside
-			Geometry B</refpurpose>
+		<refpurpose>Returns 1 (TRUE) if no point in Geometry/Geography A is outside
+			Geometry/Geography B</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -756,14 +756,24 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
 			<paramdef><type>geometry </type>
 			<parameter>geomB</parameter></paramdef>
 		  </funcprototype>
+		  
+		  <funcprototype>
+			<funcdef>boolean <function>ST_CoveredBy</function></funcdef>
+
+			<paramdef><type>geography </type>
+			<parameter>geogA</parameter></paramdef>
+
+			<paramdef><type>geography </type>
+			<parameter>geogB</parameter></paramdef>
+		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
 	  <refsection>
 		<title>Description</title>
 
-		  <para>Returns 1 (TRUE) if no point in Geometry A is outside
-			Geometry B</para>
+		  <para>Returns 1 (TRUE) if no point in Geometry/Geography A is outside
+			Geometry/Geography B</para>
 
 		<para>Performed by the GEOS module</para>
 
