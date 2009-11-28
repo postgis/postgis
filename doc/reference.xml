@@ -12,8 +12,8 @@
 	to an SQL-MM-centric convention. As a result, most of the functions that
 	you know and love have been renamed using the standard spatial type (ST)
 	prefix. Previous functions are still available, though are not listed in
-	this document where updated functions are equivalent. These will be
-	deprecated in a future release.</para>
+	this document where updated functions are equivalent. The non ST_ functions not listed in this documentation are
+	deprecated and will be removed in a future release so STOP USING THEM.</para>
   </note>
 
   &reference_type;
