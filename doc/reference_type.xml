@@ -12,6 +12,8 @@
     <para>The danger of relying on automatic cast behavior is when you have an overloaded function say one that takes a box2d and one that takes a box3d
     	but no geometry.  What happens is that both functions are equally good to use with geometry since geometry has an autocast for both 
     	-- so you end up with an ambiguous function error. To force PostgreSQL to choose, you do a CAST(mygeom As box3d)  or mygeom::box3d.</para>
+    	
+    <para><note>At least asof PostgreSQL 8.3 - Everything can be CAST to text (presumably because of the magical unknown type), so no defined CASTS for that need to be present for you to CAST an object to text.</note></para>
     
 	<refentry id="box2d">
       <refnamediv>
