@@ -72,7 +72,11 @@ make
 if [ $? -gt 0 ]; then
 	exit 1
 fi
+# move the comments down a level for safe keeping
+cp postgis_comments.sql ..
 make clean # won't drop the html dir
+# move them back up afterwards
+cp ../postgis_comments.sql .
 cd "$owd"
 
 # Run make distclean
