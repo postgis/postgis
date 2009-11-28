@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
   <sect1 id="PostGIS_Types">
     <title>PostgreSQL PostGIS Types</title>
-
+    <para>This section lists the PostgreSQL data types installed by PostGIS.  Note we describe the casting behavior of these which is very 
+    	important especially when designing your own functions.  
+    </para>
+    <para>A Cast is when one type is coerced into another type.  PostgreSQL
+    	is unique from most databases in that it allows you to define casting behavior for custom types and the functions used for casting.
+    	A cast can be specified as automatic in which case, you do not have to do a CAST(myfoo As otherfootype) or myfoo::otherfootype
+    	if you are feeding it to a function that only works with otherfootype and there is an automatic cast in place for it. 
+    </para>
+    <para>The danger of relying on automatic cast behavior is when you have an overloaded function say one that takes a box2d and one that takes a box3d
+    	but no geometry.  What happens is that both functions are equally good to use with geometry since geometry has an autocast for both 
+    	-- so you end up with an ambiguous function error. To force PostgreSQL to choose, you do a CAST(mygeom As box3d)  or mygeom::box3d.</para>
+    
 	<refentry id="box2d">
       <refnamediv>
         <refname>box2d</refname>
@@ -23,6 +34,33 @@
         <title>Description</title>
         <para>box3d is a postgis spatial data type used to represent the enclosing box of a geometry or set of geometries. ST_Extent3D returns a box3d object.</para>
       </refsection>
+      
+      <refsection>
+		<title>Casting Behavor</title>
+		<para>This section lists the automatic as well as explicit casts allowed for this data type</para>
+		<informaltable rowsep="1" frame="all">
+		<tgroup cols="2">
+			<tbody>
+			  <row>
+				<entry>Cast To</entry>
+				<entry>Behavior</entry>
+			  </row>
+			  <row>
+				<entry>box</entry>
+				<entry>automatic</entry>
+			  </row>
+			  <row>
+				<entry>box2d</entry>
+				<entry>automatic</entry>
+			  </row>
+			  <row>
+				<entry>geometry</entry>
+				<entry>automatic</entry>
+			  </row>
+			</tbody>
+		</tgroup>
+		</informaltable>
+		</refsection>
     </refentry>
 	
 	<refentry id="box3d_extent">
@@ -35,32 +73,38 @@
         <title>Description</title>
         <para>box3d_extent is a data type returned by ST_Extent. In versions prior to PostGIS 1.4, ST_Extent would return a box2d.</para>
       </refsection>
+      
 	  <refsection>
-	  	<title>Casting Behavor</title>
+		<title>Casting Behavor</title>
 		<para>This section lists the automatic as well as explicit casts allowed for this data type</para>
 		<informaltable rowsep="1" frame="all">
-			<tgroup cols="2">
-				<tbody>
-				  <row>
-					<entry>Cast To</entry>
-					<entry>Behavior</entry>
-				  </row>
-				  <row>
-					<entry>box2d</entry>
-					<entry>automatic</entry>
-				  </row>
-				  <row>
-					<entry>box3d</entry>
-					<entry>automatic</entry>
-				  </row>
-				  <row>
-					<entry>geometry</entry>
-					<entry>automatic</entry>
-				  </row>
-				</tbody>
-			</tgroup>
+		<tgroup cols="2">
+			<tbody>
+			  <row>
+				<entry>Cast To</entry>
+				<entry>Behavior</entry>
+			  </row>
+			  <row>
+				<entry>box2d</entry>
+				<entry>automatic</entry>
+			  </row>
+			  <row>
+				<entry>box3d</entry>
+				<entry>automatic</entry>
+			  </row>
+			  <row>
+				<entry>geometry</entry>
+				<entry>automatic</entry>
+			  </row>
+			</tbody>
+		</tgroup>
 		</informaltable>
-	  </refsection>
+		</refsection>
+		
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="PostGIS_BoxFunctions" /> </para>
+		</refsection>
     </refentry>
 	
 	<refentry id="geometry">
@@ -72,6 +116,45 @@
 		<refsection>
 			<title>Description</title>
 			<para>geometry is a fundamental postgis spatial data type used to represent a feature in the Euclidean coordinate system.</para>
+		</refsection>
+		
+		<refsection>
+		<title>Casting Behavor</title>
+		<para>This section lists the automatic as well as explicit casts allowed for this data type</para>
+		<informaltable rowsep="1" frame="all">
+		<tgroup cols="2">
+			<tbody>
+			  <row>
+				<entry>Cast To</entry>
+				<entry>Behavior</entry>
+			  </row>
+			  <row>
+				<entry>box</entry>
+				<entry>automatic</entry>
+			  </row>
+			  <row>
+				<entry>box2d</entry>
+				<entry>automatic</entry>
+			  </row>
+			  <row>
+				<entry>box3d</entry>
+				<entry>automatic</entry>
+			  </row>
+			  <row>
+				<entry>bytea</entry>
+				<entry>automatic</entry>
+			  </row>
+			  <row>
+				<entry>geography</entry>
+				<entry>automatic</entry>
+			  </row>
+			  <row>
+				<entry>text</entry>
+				<entry>automatic</entry>
+			  </row>
+			</tbody>
+		</tgroup>
+		</informaltable>
 		</refsection>
 		
 		<refsection>
@@ -108,7 +191,26 @@
 		
 		<refsection>
 		<title>Description</title>
-		<para>GEOGRAPHY is a spatial data type used to represent a feature in the round-earth coordinate system.</para>
+		<para>geography is a spatial data type used to represent a feature in the round-earth coordinate system.</para>
+		</refsection>
+		
+		<refsection>
+		<title>Casting Behavor</title>
+		<para>This section lists the automatic as well as explicit casts allowed for this data type</para>
+		<informaltable rowsep="1" frame="all">
+		<tgroup cols="2">
+			<tbody>
+			  <row>
+				<entry>Cast To</entry>
+				<entry>Behavior</entry>
+			  </row>
+			  <row>
+				<entry>geometry</entry>
+				<entry>explicit</entry>
+			  </row>
+			</tbody>
+		</tgroup>
+		</informaltable>
 		</refsection>
 		
 		<refsection>

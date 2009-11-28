@@ -131,6 +131,34 @@
 				</xsl:for-each>
 				</itemizedlist>
 		</sect1>
+		
+		<sect1 id="PostGIS_BoxFunctions">
+			<title>PostGIS Box Functions</title>
+			<para>The functions given below are PostGIS functions that take as input or return as output the box* family of PostGIS spatial types.
+				The box family of types consists of <link linkend="box2d">box2d</link>, <link linkend="box3d">box3d</link>, <link linkend="box3d_extent">box3d_extent</link> </para>
+				<itemizedlist>
+			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
+				<xsl:for-each select='sect1/refentry'>
+					<xsl:sort select="@id"/>
+					<xsl:variable name='comment'>
+						<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
+					</xsl:variable>
+					<xsl:variable name="refid">
+						<xsl:value-of select="@id" />
+					</xsl:variable>
+					<xsl:variable name="refname">
+						<xsl:value-of select="refnamediv/refname" />
+					</xsl:variable>
+
+			<!-- If at least one proto function accepts or returns a geography -->
+					<xsl:choose>
+						<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'box') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'box')">
+							<listitem><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></listitem>
+						</xsl:when>
+					</xsl:choose>
+				</xsl:for-each>
+				</itemizedlist>
+		</sect1>
 
 		<sect1 id="PostGIS_3D_Functions">
 			<title>PostGIS Functions that support 3D</title>
