@@ -1319,6 +1319,11 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
 			<funcdef>geometry <function>ST_Polygonize</function></funcdef>
 			<paramdef><type>geometry set</type> <parameter>geomfield</parameter></paramdef>
 		  </funcprototype>
+		  
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Polygonize</function></funcdef>
+			<paramdef><type>geometry[]</type> <parameter>geom_array</parameter></paramdef>
+		  </funcprototype>
 		</funcsynopsis>
 		</refsynopsisdiv>
 
