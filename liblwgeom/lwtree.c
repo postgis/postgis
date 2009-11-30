@@ -53,12 +53,15 @@ int rect_tree_contains_point(const RECT_NODE *node, const POINT2D *pt, int *on_b
 
 int rect_tree_intersects_tree(const RECT_NODE *n1, const RECT_NODE *n2)
 {
+	LWDEBUGF(4,"n1 (%.9g %.9g,%.9g %.9g) vs n2 (%.9g %.9g,%.9g %.9g)",n1->xmin,n1->ymin,n1->xmax,n1->ymax,n2->xmin,n2->ymin,n2->xmax,n2->ymax);
 	/* There can only be an edge intersection if the rectangles overlap */
-	if( ! ( FP_GTEQ(n1->xmin, n2->xmax) || FP_GTEQ(n2->xmin, n1->xmax) || FP_GTEQ(n1->ymin, n2->ymax) || FP_GTEQ(n2->ymin, n1->ymax) ) )
+	if( ! ( FP_GT(n1->xmin, n2->xmax) || FP_GT(n2->xmin, n1->xmax) || FP_GT(n1->ymin, n2->ymax) || FP_GT(n2->ymin, n1->ymax) ) )
 	{
+		LWDEBUG(4," interaction found");
 		/* We can only test for a true intersection if the nodes are both leaf nodes */
 		if( rect_node_is_leaf(n1) && rect_node_is_leaf(n2) )
 		{
+			LWDEBUG(4,"  leaf node test");
 			/* Check for true intersection */
 			if( lw_segment_intersects(n1->p1, n1->p2, n2->p1, n2->p2) )
 				return LW_TRUE;
@@ -67,6 +70,7 @@ int rect_tree_intersects_tree(const RECT_NODE *n1, const RECT_NODE *n2)
 		}
 		else 
 		{
+			LWDEBUG(4,"  internal node found, recursing");
 			/* Recurse to children */
 			if( rect_node_is_leaf(n1) ) 
 			{
@@ -86,6 +90,7 @@ int rect_tree_intersects_tree(const RECT_NODE *n1, const RECT_NODE *n2)
 	}
 	else
 	{
+		LWDEBUG(4," no interaction found");
 		return LW_FALSE;
 	}
 }

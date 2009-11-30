@@ -159,7 +159,7 @@ void test_rect_tree_contains_point(void)
 	RECT_NODE* tree;
 	int result;
 	int boundary = 0;
-	
+
 	/* square */
 	poly = (LWPOLY*)lwgeom_from_ewkt("POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))", PARSER_CHECK_NONE);
 	tree = rect_tree_new(poly->rings[0]);
@@ -308,6 +308,7 @@ void test_rect_tree_intersects_tree(void)
 	RECT_NODE *tree1, *tree2;
 	int result;
 
+	/* total overlap, A == B */
 	poly1 = (LWPOLY*)lwgeom_from_ewkt("POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))", PARSER_CHECK_NONE);
 	poly2 = (LWPOLY*)lwgeom_from_ewkt("POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))", PARSER_CHECK_NONE);
 	tree1 = rect_tree_new(poly1->rings[0]);
@@ -319,6 +320,7 @@ void test_rect_tree_intersects_tree(void)
 	rect_tree_free(tree1);
 	rect_tree_free(tree2);
 	
+	/* hiding between the tines of the comb */
 	poly1 = (LWPOLY*)lwgeom_from_ewkt("POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))", PARSER_CHECK_NONE);
 	poly2 = (LWPOLY*)lwgeom_from_ewkt("POLYGON((0.3 0.7, 0.3 0.8, 0.4 0.8, 0.4 0.7, 0.3 0.7))", PARSER_CHECK_NONE);
 	tree1 = rect_tree_new(poly1->rings[0]);
@@ -330,6 +332,7 @@ void test_rect_tree_intersects_tree(void)
 	rect_tree_free(tree1);
 	rect_tree_free(tree2);
 
+	/* between the tines, but with a corner overlapping */
 	poly1 = (LWPOLY*)lwgeom_from_ewkt("POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))", PARSER_CHECK_NONE);
 	poly2 = (LWPOLY*)lwgeom_from_ewkt("POLYGON((0.3 0.7, 0.3 0.8, 0.4 0.8, 1.3 0.3, 0.3 0.7))", PARSER_CHECK_NONE);
 	tree1 = rect_tree_new(poly1->rings[0]);
@@ -340,7 +343,8 @@ void test_rect_tree_intersects_tree(void)
 	lwpoly_free(poly2);
 	rect_tree_free(tree1);
 	rect_tree_free(tree2);
-/*	
+
+	/* Just touching the top left corner of the comb */
 	poly1 = (LWPOLY*)lwgeom_from_ewkt("POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))", PARSER_CHECK_NONE);
 	poly2 = (LWPOLY*)lwgeom_from_ewkt("POLYGON((-1 5, 0 5, 0 7, -1 7, -1 5))", PARSER_CHECK_NONE);
 	tree1 = rect_tree_new(poly1->rings[0]);
@@ -351,7 +355,7 @@ void test_rect_tree_intersects_tree(void)
 	lwpoly_free(poly2);
 	rect_tree_free(tree1);
 	rect_tree_free(tree2);
-*/
+
 
 }
 
