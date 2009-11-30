@@ -1023,7 +1023,7 @@ lw_dist2d_fast_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl, BOX2D
 			thevalue = theP.x-(k*theP.y);
 			list1[t].themeasure=thevalue;
 			list1[t].pnr=t;
-			/*lwnotice("1pnr=%d, pnr=%d, themeasure=%f, themeasure=%f",t,list1[t].pnr,thevalue,list1[t].themeasure  );*/
+			//lwnotice("l1 %d, measure=%f",t,thevalue );
 		}
 		for (t=0; t<n2; t++) /*for each segment in L2*/
 		{
@@ -1032,6 +1032,7 @@ lw_dist2d_fast_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl, BOX2D
 			thevalue = theP.x-(k*theP.y);
 			list2[t].themeasure=thevalue;
 			list2[t].pnr=t;
+			//lwnotice("l2 %d, measure=%f",t,thevalue );
 		}
 		c1m = c1.x-(k*c1.y);
 		c2m = c2.x-(k*c2.y);

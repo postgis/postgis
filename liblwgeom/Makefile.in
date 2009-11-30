@@ -50,7 +50,8 @@ SA_OBJS = \
 	g_serialized.o \
 	g_util.o \
 	lwgeodetic.o \
-	lwspheroid.o
+	lwspheroid.o \
+	lwtree.o
 
 SA_HEADERS = \
 	liblwgeom.h \

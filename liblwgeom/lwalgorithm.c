@@ -21,26 +21,30 @@
 ** Return > 0.0 if point Q is right of segment P
 ** Return = 0.0 if point Q in on segment P
 */
-double lw_segment_side(POINT2D p1, POINT2D p2, POINT2D q)
+double lw_segment_side(const POINT2D *p1, const POINT2D *p2, const POINT2D *q)
 {
-	return ( (q.x - p1.x) * (p2.y - p1.y) - (p2.x - p1.x) * (q.y - p1.y) );
+	double side = ( (q->x - p1->x) * (p2->y - p1->y) - (p2->x - p1->x) * (q->y - p1->y) );
+	if( FP_IS_ZERO(side) )
+		return 0.0;
+	else
+		return side;
 }
 
 
-int lw_segment_envelope_intersects(POINT2D p1, POINT2D p2, POINT2D q1, POINT2D q2)
+int lw_segment_envelope_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q1, const POINT2D *q2)
 {
-	double minq=LW_MIN(q1.x,q2.x);
-	double maxq=LW_MAX(q1.x,q2.x);
-	double minp=LW_MIN(p1.x,p2.x);
-	double maxp=LW_MAX(p1.x,p2.x);
+	double minq=LW_MIN(q1->x,q2->x);
+	double maxq=LW_MAX(q1->x,q2->x);
+	double minp=LW_MIN(p1->x,p2->x);
+	double maxp=LW_MAX(p1->x,p2->x);
 
 	if (FP_GT(minp,maxq) || FP_LT(maxp,minq))
 		return LW_FALSE;
 
-	minq=LW_MIN(q1.y,q2.y);
-	maxq=LW_MAX(q1.y,q2.y);
-	minp=LW_MIN(p1.y,p2.y);
-	maxp=LW_MAX(p1.y,p2.y);
+	minq=LW_MIN(q1->y,q2->y);
+	maxq=LW_MAX(q1->y,q2->y);
+	minp=LW_MIN(p1->y,p2->y);
+	maxp=LW_MAX(p1->y,p2->y);
 
 	if (FP_GT(minp,maxq) || FP_LT(maxp,minq))
 		return LW_FALSE;
@@ -62,7 +66,7 @@ int lw_segment_envelope_intersects(POINT2D p1, POINT2D p2, POINT2D q1, POINT2D q
 **		SEG_CROSS_LEFT = 2,
 **		SEG_CROSS_RIGHT = 3,
 */
-int lw_segment_intersects(POINT2D p1, POINT2D p2, POINT2D q1, POINT2D q2)
+int lw_segment_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q1, const POINT2D *q2)
 {
 
 	double pq1, pq2, qp1, qp2;
@@ -84,13 +88,13 @@ int lw_segment_intersects(POINT2D p1, POINT2D p2, POINT2D q1, POINT2D q2)
 	/* Are the start and end points of p on the same side of q? */
 	qp1=lw_segment_side(q1,q2,p1);
 	qp2=lw_segment_side(q1,q2,p2);
-	if ((qp1>0 && qp2>0) || (qp1<0 && qp2<0))
+	if ( (qp1 > 0.0 && qp2 > 0.0) || (qp1 < 0.0 && qp2 < 0.0) )
 	{
 		return SEG_NO_INTERSECTION;
 	}
 
 	/* Nobody is on one side or another? Must be colinear. */
-	if (FP_IS_ZERO(pq1) && FP_IS_ZERO(pq2) && FP_IS_ZERO(qp1) && FP_IS_ZERO(qp2))
+	if ( pq1 == 0.0 && pq2 == 0.0 && qp1 == 0.0 && qp2 == 0.0 )
 	{
 		return SEG_COLINEAR;
 	}
@@ -104,13 +108,13 @@ int lw_segment_intersects(POINT2D p1, POINT2D p2, POINT2D q1, POINT2D q2)
 	LWDEBUGF(4, "qp1=%.15g qp2=%.15g", qp1, qp2);
 
 	/* Second point of p or q touches, it's not a crossing. */
-	if ( FP_IS_ZERO(pq2) || FP_IS_ZERO(qp2) )
+	if ( pq2 == 0.0 || qp2 == 0.0 )
 	{
 		return SEG_NO_INTERSECTION;
 	}
 
 	/* First point of p touches, it's a "crossing". */
-	if ( FP_IS_ZERO(pq1) )
+	if ( pq1 == 0.0 )
 	{
 		if ( FP_GT(pq2,0.0) )
 			return SEG_CROSS_RIGHT;
@@ -119,7 +123,7 @@ int lw_segment_intersects(POINT2D p1, POINT2D p2, POINT2D q1, POINT2D q2)
 	}
 
 	/* First point of q touches, it's a crossing. */
-	if ( FP_IS_ZERO(qp1) )
+	if ( qp1 == 0.0 )
 	{
 		if ( FP_LT(pq1,pq2) )
 			return SEG_CROSS_RIGHT;
@@ -135,7 +139,6 @@ int lw_segment_intersects(POINT2D p1, POINT2D p2, POINT2D q1, POINT2D q2)
 
 	/* This should never happen! */
 	return SEG_ERROR;
-
 }
 
 /**
@@ -190,7 +193,7 @@ int lwline_crossing_direction(LWLINE *l1, LWLINE *l2)
 			/* Update second point of p to next value */
 			rv = getPoint2d_p(pa1, j, &p2);
 			
-			this_cross = lw_segment_intersects(p1, p2, q1, q2);
+			this_cross = lw_segment_intersects(&p1, &p2, &q1, &q2);
 
 			LWDEBUGF(4, "i=%d, j=%d (%.8g %.8g, %.8g %.8g)", this_cross, i, j, p1.x, p1.y, p2.x, p2.y);
 

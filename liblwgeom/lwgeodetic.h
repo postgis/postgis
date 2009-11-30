@@ -35,6 +35,15 @@ typedef struct
 } GEOGRAPHIC_EDGE;
 
 /**
+* Holder for sorting points in distance algorithm
+*/
+typedef struct
+{
+	double measure;
+	uint32 index;
+} DISTANCE_ORDER;
+
+/**
 * Conversion functions
 */
 #define deg2rad(d) (PI * (d) / 180.0)
