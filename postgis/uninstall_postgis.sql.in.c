@@ -322,11 +322,6 @@ DROP AGGREGATE ST_Collect(geometry);
 DROP AGGREGATE collect(geometry);
 DROP AGGREGATE ST_Union(geometry);
 
--- TO BE REMOVED BEFORE RELEASE
-DROP AGGREGATE ST_Union_Old(geometry);
--- TO BE REMOVED BEFORE RELEASE
-DROP AGGREGATE GeomUnion_Old(geometry);
-
 DROP FUNCTION ST_Union (geometry[]);
 DROP FUNCTION ST_unite_garray (geometry[]);
 DROP FUNCTION unite_garray (geometry[]);
@@ -575,7 +570,6 @@ DROP FUNCTION combine_bbox(box2d,geometry);
 DROP FUNCTION ST_DumpRings(geometry);
 DROP FUNCTION DumpRings(geometry);
 DROP FUNCTION ST_Dump(geometry);
-DROP FUNCTION Dump(geometry);
 DROP TYPE geometry_dump;
 DROP FUNCTION ST_LineMerge(geometry);
 DROP FUNCTION LineMerge(geometry);
@@ -673,7 +667,7 @@ DROP FUNCTION ST_force_2d(geometry);
 DROP FUNCTION force_2d(geometry);
 
 ------------------------------------------------------------------------
--- Misures
+-- Measures
 ------------------------------------------------------------------------
 
 DROP FUNCTION ST_azimuth(geometry,geometry);
