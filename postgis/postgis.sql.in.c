@@ -1915,14 +1915,11 @@ CREATE OR REPLACE FUNCTION ST_DumpRings(geometry)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
--- ST_DumpPoints()
+-- _ST_DumpPoints()
 -----------------------------------------------------------------------
--- This function mimicks that of ST_Dump for collections, but this function 
--- that returns a path and all the points that make up a particular geometry.
--- This current implementation in plpgsql does not scale very well at all.
--- and should be ported to C at some point.
+-- A helper function for ST_DumpPoints(geom)
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_DumpPoints(the_geom geometry, cur_path integer[]) RETURNS SETOF geometry_dump AS $$
+CREATE OR REPLACE FUNCTION _ST_DumpPoints(the_geom geometry, cur_path integer[]) RETURNS SETOF geometry_dump AS $$
 DECLARE
   tmp geometry_dump;
   tmp2 geometry_dump;
@@ -1944,7 +1941,7 @@ BEGIN
     i = 1;
     FOR tmp2 IN SELECT (ST_Dump(the_geom)).* LOOP
 
-      FOR tmp IN SELECT * FROM ST_DumpPoints(tmp2.geom, cur_path || tmp2.path) LOOP
+      FOR tmp IN SELECT * FROM _ST_DumpPoints(tmp2.geom, cur_path || tmp2.path) LOOP
 	    RETURN NEXT tmp;
       END LOOP;
       i = i + 1;
@@ -1958,13 +1955,13 @@ BEGIN
   -- Special case (POLYGON) : return the points of the rings of a polygon
   IF (ST_GeometryType(the_geom) = 'ST_Polygon') THEN
 
-    FOR tmp IN SELECT * FROM ST_DumpPoints(ST_ExteriorRing(the_geom), cur_path || ARRAY[1]) LOOP
+    FOR tmp IN SELECT * FROM _ST_DumpPoints(ST_ExteriorRing(the_geom), cur_path || ARRAY[1]) LOOP
       RETURN NEXT tmp;
     END LOOP;
     
     j := ST_NumInteriorRings(the_geom);
     FOR i IN 1..j LOOP
-        FOR tmp IN SELECT * FROM ST_DumpPoints(ST_InteriorRingN(the_geom, i), cur_path || ARRAY[i+1]) LOOP
+        FOR tmp IN SELECT * FROM _ST_DumpPoints(ST_InteriorRingN(the_geom, i), cur_path || ARRAY[i+1]) LOOP
           RETURN NEXT tmp;
         END LOOP;
     END LOOP;
@@ -2003,8 +2000,16 @@ BEGIN
 END
 $$ LANGUAGE plpgsql;
 
+-----------------------------------------------------------------------
+-- ST_DumpPoints()
+-----------------------------------------------------------------------
+-- This function mimicks that of ST_Dump for collections, but this function 
+-- that returns a path and all the points that make up a particular geometry.
+-- This current implementation in plpgsql does not scale very well at all.
+-- and should be ported to C at some point.
+-- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_DumpPoints(geometry) RETURNS SETOF geometry_dump AS $$
-  SELECT * FROM ST_DumpPoints($1, NULL);
+  SELECT * FROM _ST_DumpPoints($1, NULL);
 $$ LANGUAGE SQL;
 
 
