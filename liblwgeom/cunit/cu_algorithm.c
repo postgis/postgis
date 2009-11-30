@@ -104,19 +104,19 @@ void test_lw_segment_side(void)
 	/* On the left */
 	q.x = -2.0;
 	q.y = 1.5;
-	rv = lw_segment_side(p1, p2, q);
+	rv = lw_segment_side(&p1, &p2, &q);
 	//printf("left %g\n",rv);
 	CU_ASSERT(rv < 0.0);
 
 	/* On the right */
 	q.x = 2.0;
-	rv = lw_segment_side(p1, p2, q);
+	rv = lw_segment_side(&p1, &p2, &q);
 	//printf("right %g\n",rv);
 	CU_ASSERT(rv > 0.0);
 
 	/* On the line */
 	q.x = 0.0;
-	rv = lw_segment_side(p1, p2, q);
+	rv = lw_segment_side(&p1, &p2, &q);
 	//printf("on line %g\n",rv);
 	CU_ASSERT_EQUAL(rv, 0.0);
 
@@ -144,126 +144,126 @@ void test_lw_segment_intersects(void)
 	q1.y = 0.5;
 	q2.x = 0.5;
 	q2.y = 0.5;
-	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_CROSS_RIGHT );
+	CU_ASSERT( lw_segment_intersects(&p1, &p2, &q1, &q2) == SEG_CROSS_RIGHT );
 
 	/* Q: Horizontal line crossing right to left */
 	q1.x = 0.5;
 	q1.y = 0.5;
 	q2.x = -0.5;
 	q2.y = 0.5;
-	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_CROSS_LEFT );
+	CU_ASSERT( lw_segment_intersects(&p1, &p2, &q1, &q2) == SEG_CROSS_LEFT );
 
 	/* Q: Horizontal line not crossing right to left */
 	q1.x = 0.5;
 	q1.y = 1.5;
 	q2.x = -0.5;
 	q2.y = 1.5;
-	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_NO_INTERSECTION );
+	CU_ASSERT( lw_segment_intersects(&p1, &p2, &q1, &q2) == SEG_NO_INTERSECTION );
 
 	/* Q: Horizontal line crossing at second vertex right to left */
 	q1.x = 0.5;
 	q1.y = 1.0;
 	q2.x = -0.5;
 	q2.y = 1.0;
-	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_NO_INTERSECTION );
+	CU_ASSERT( lw_segment_intersects(&p1, &p2, &q1, &q2) == SEG_NO_INTERSECTION );
 
 	/* Q: Horizontal line crossing at first vertex right to left */
 	q1.x = 0.5;
 	q1.y = 0.0;
 	q2.x = -0.5;
 	q2.y = 0.0;
-	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_CROSS_LEFT );
+	CU_ASSERT( lw_segment_intersects(&p1, &p2, &q1, &q2) == SEG_CROSS_LEFT );
 
 	/* Q: Diagonal line with large range crossing at first vertex right to left */
 	q1.x = 0.5;
 	q1.y = 10.0;
 	q2.x = -0.5;
 	q2.y = -10.0;
-	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_CROSS_LEFT );
+	CU_ASSERT( lw_segment_intersects(&p1, &p2, &q1, &q2) == SEG_CROSS_LEFT );
 
 	/* Q: Diagonal line with large range crossing at second vertex right to left */
 	q1.x = 0.5;
 	q1.y = 11.0;
 	q2.x = -0.5;
 	q2.y = -9.0;
-	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_NO_INTERSECTION );
+	CU_ASSERT( lw_segment_intersects(&p1, &p2, &q1, &q2) == SEG_NO_INTERSECTION );
 
 	/* Q: Horizontal touching from left at second vertex*/
 	q1.x = -0.5;
 	q1.y = 0.5;
 	q2.x = 0.0;
 	q2.y = 0.5;
-	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_NO_INTERSECTION );
+	CU_ASSERT( lw_segment_intersects(&p1, &p2, &q1, &q2) == SEG_NO_INTERSECTION );
 
 	/* Q: Horizontal touching from right at first vertex */
 	q1.x = 0.0;
 	q1.y = 0.5;
 	q2.x = 0.5;
 	q2.y = 0.5;
-	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_CROSS_RIGHT );
+	CU_ASSERT( lw_segment_intersects(&p1, &p2, &q1, &q2) == SEG_CROSS_RIGHT );
 
 	/* Q: Horizontal touching from left and far below on second vertex */
 	q1.x = -0.5;
 	q1.y = -10.5;
 	q2.x = 0.0;
 	q2.y = 0.5;
-	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_NO_INTERSECTION );
+	CU_ASSERT( lw_segment_intersects(&p1, &p2, &q1, &q2) == SEG_NO_INTERSECTION );
 
 	/* Q: Horizontal touching from right and far above on second vertex */
 	q1.x = 0.5;
 	q1.y = 10.5;
 	q2.x = 0.0;
 	q2.y = 0.5;
-	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_NO_INTERSECTION );
+	CU_ASSERT( lw_segment_intersects(&p1, &p2, &q1, &q2) == SEG_NO_INTERSECTION );
 
 	/* Q: Co-linear from top */
 	q1.x = 0.0;
 	q1.y = 10.0;
 	q2.x = 0.0;
 	q2.y = 0.5;
-	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_COLINEAR );
+	CU_ASSERT( lw_segment_intersects(&p1, &p2, &q1, &q2) == SEG_COLINEAR );
 
 	/* Q: Co-linear from bottom */
 	q1.x = 0.0;
 	q1.y = -10.0;
 	q2.x = 0.0;
 	q2.y = 0.5;
-	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_COLINEAR );
+	CU_ASSERT( lw_segment_intersects(&p1, &p2, &q1, &q2) == SEG_COLINEAR );
 
 	/* Q: Co-linear contained */
 	q1.x = 0.0;
 	q1.y = 0.4;
 	q2.x = 0.0;
 	q2.y = 0.5;
-	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_COLINEAR );
+	CU_ASSERT( lw_segment_intersects(&p1, &p2, &q1, &q2) == SEG_COLINEAR );
 
 	/* Q: Horizontal touching at end point from left */
 	q1.x = -0.5;
 	q1.y = 1.0;
 	q2.x = 0.0;
 	q2.y = 1.0;
-	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_NO_INTERSECTION );
+	CU_ASSERT( lw_segment_intersects(&p1, &p2, &q1, &q2) == SEG_NO_INTERSECTION );
 
 	/* Q: Horizontal touching at end point from right */
 	q1.x = 0.0;
 	q1.y = 1.0;
 	q2.x = 0.0;
 	q2.y = 0.5;
-	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_COLINEAR );
+	CU_ASSERT( lw_segment_intersects(&p1, &p2, &q1, &q2) == SEG_COLINEAR );
 
 	/* Q: Horizontal touching at start point from left */
 	q1.x = 0.0;
 	q1.y = 0.0;
 	q2.x = -0.5;
 	q2.y = 0.0;
-	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_CROSS_LEFT );
+	CU_ASSERT( lw_segment_intersects(&p1, &p2, &q1, &q2) == SEG_CROSS_LEFT );
 
 	/* Q: Horizontal touching at start point from right */
 	q1.x = 0.0;
 	q1.y = 0.0;
 	q2.x = 0.5;
 	q2.y = 0.0;
-	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_CROSS_RIGHT );
+	CU_ASSERT( lw_segment_intersects(&p1, &p2, &q1, &q2) == SEG_CROSS_RIGHT );
 
 }
 

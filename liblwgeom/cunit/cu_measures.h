@@ -18,6 +18,7 @@
 #include "liblwgeom.h"
 #include "cu_tester.h"
 #include "measures.h"
+#include "lwtree.h"
 
 /***********************************************************************
 ** for Computational Geometry Suite
@@ -27,3 +28,6 @@
 
 /* Test functions */
 void test_mindistance2d_tolerance(void);
+void test_rect_tree_contains_point(void);
+void test_rect_tree_intersects_tree(void);
+
