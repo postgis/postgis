@@ -5,6 +5,7 @@
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.refractions.net
 -- Copyright 2001-2003 Refractions Research Inc.
+-- Copyright 2009 Open Source Geospatial Foundation <http://osgeo.org>
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
@@ -29,6 +30,8 @@ DROP FUNCTION ST_MinimumBoundingCircle(inputgeom geometry, segs_per_quarter inte
 DROP FUNCTION ST_ShortestLine(geometry, geometry);
 DROP FUNCTION ST_LongestLine(geometry, geometry);
 DROP FUNCTION ST_DFullyWithin(geometry, geometry, float8);
+DROP FUNCTION _ST_DumpPoints(geometry, integer[]);
+
 ---------------------------------------------------------------
 -- SQL-MM
 ---------------------------------------------------------------
@@ -44,6 +47,7 @@ DROP FUNCTION ST_CurveToLine(geometry, integer);
 
 #include "uninstall_sqlmm.sql.in.c"
 #include "uninstall_long_xact.sql.in.c"
+#include "uninstall_geography.sql.in.c"
 
 DROP FUNCTION ST_BdMPolyFromText(text, integer);
 DROP FUNCTION BdMPolyFromText(text, integer);
@@ -269,7 +273,6 @@ DROP FUNCTION ST_IsRing(geometry);
 DROP FUNCTION IsRing(geometry);
 DROP FUNCTION ST_Centroid(geometry);
 DROP FUNCTION Centroid(geometry);
-DROP FUNCTION GEOSnoop(geometry);
 DROP FUNCTION ST_IsValid(geometry);
 DROP FUNCTION IsValid(geometry);
 DROP FUNCTION ST_Overlaps(geometry,geometry);
@@ -324,19 +327,9 @@ DROP AGGREGATE ST_Collect(geometry);
 DROP AGGREGATE collect(geometry);
 DROP AGGREGATE ST_Union(geometry);
 
--- TO BE REMOVED BEFORE RELEASE
-DROP AGGREGATE ST_Union_Old(geometry);
--- TO BE REMOVED BEFORE RELEASE
-DROP AGGREGATE GeomUnion_Old(geometry);
-
 DROP FUNCTION ST_Union (geometry[]);
 DROP FUNCTION ST_unite_garray (geometry[]);
 DROP FUNCTION unite_garray (geometry[]);
-
--- TO BE REMOVED BEFORE RELEASE
-DROP AGGREGATE ST_accum_old(geometry);
--- TO BE REMOVED BEFORE RELEASE
-DROP AGGREGATE accum_old(geometry);
 
 DROP AGGREGATE ST_Accum(geometry);
 DROP AGGREGATE accum(geometry);
@@ -353,16 +346,10 @@ DROP TYPE pgis_abs CASCADE;
 DROP AGGREGATE ST_MemUnion(geometry);
 DROP AGGREGATE MemGeomUnion(geometry);
 DROP FUNCTION ST_collect(geometry[]);
-DROP FUNCTION ST_collect_garray(geometry[]);
-DROP FUNCTION collect_garray(geometry[]);
-DROP FUNCTION ST_geom_accum(geometry[],geometry);
-DROP FUNCTION geom_accum (geometry[],geometry);
 DROP AGGREGATE ST_memcollect(geometry);
 DROP AGGREGATE memcollect(geometry);
 DROP FUNCTION ST_collect(geometry, geometry);
 DROP FUNCTION collect(geometry, geometry);
-DROP FUNCTION ST_collector(geometry, geometry);
-DROP FUNCTION collector(geometry, geometry);
 
 
 ---------------------------------------------------------------
@@ -402,10 +389,10 @@ DROP FUNCTION _ST_buffer(geometry,float8,cstring);
 DROP FUNCTION ST_Intersection(geometry,geometry);
 DROP FUNCTION intersection(geometry,geometry);
 #if POSTGIS_GEOS_VERSION >= 32
-DROP FUNCTION ST_HausdorffDistance(geometry, geometry)
+DROP FUNCTION ST_HausdorffDistance(geometry, geometry);
 #endif
 #if POSTGIS_GEOS_VERSION >= 32
-DROP FUNCTION ST_HausdorffDistance(geometry, geometry, float8)
+DROP FUNCTION ST_HausdorffDistance(geometry, geometry, float8);
 #endif
 
 
@@ -499,16 +486,16 @@ DROP FUNCTION box2d(geometry);
 -----------------------------------------------------------------------
 
 DROP FUNCTION postgis_full_version();
+DROP FUNCTION postgis_lib_version();
+DROP FUNCTION postgis_version();
 DROP FUNCTION postgis_lib_build_date();
 DROP FUNCTION postgis_scripts_build_date();
 DROP FUNCTION postgis_geos_version();
+DROP FUNCTION postgis_libxml_version();
 DROP FUNCTION postgis_uses_stats();
 DROP FUNCTION postgis_scripts_released();
-DROP FUNCTION postgis_lib_version();
 DROP FUNCTION postgis_scripts_installed();
 DROP FUNCTION postgis_proj_version();
-DROP FUNCTION postgis_version();
-
 
 ---------------------------------------------------------------
 -- PROJ support
@@ -516,7 +503,6 @@ DROP FUNCTION postgis_version();
 
 DROP FUNCTION ST_Transform(geometry,integer);
 DROP FUNCTION transform(geometry,integer);
-DROP FUNCTION transform_geometry(geometry,text,text,int);
 DROP FUNCTION get_proj4_from_srid(integer);
 
 
@@ -586,7 +572,6 @@ DROP FUNCTION ST_DumpRings(geometry);
 DROP FUNCTION DumpRings(geometry);
 DROP FUNCTION ST_Dump(geometry);
 DROP FUNCTION Dump(geometry);
-DROP TYPE geometry_dump;
 DROP FUNCTION ST_LineMerge(geometry);
 DROP FUNCTION LineMerge(geometry);
 DROP FUNCTION ST_Polygonize (geometry[]);
@@ -631,8 +616,6 @@ DROP FUNCTION MakePoint(float8, float8);
 -- MISC
 ------------------------------------------------------------------------
 
-DROP FUNCTION ST_Cache_BBox();
-DROP FUNCTION cache_bbox();
 DROP FUNCTION ST_GeomFromEWKT(text);
 DROP FUNCTION GeomFromEWKT(text);
 DROP FUNCTION ST_GeomFromEWKB(bytea);
@@ -649,11 +632,10 @@ DROP FUNCTION ST_AsEWKT(geometry);
 DROP FUNCTION AsEWKT(geometry);
 DROP FUNCTION ST_NDims(geometry);
 DROP FUNCTION ndims(geometry);
-DROP FUNCTION ST_HasBBOX(geometry);
 DROP FUNCTION hasBBOX(geometry);
+DROP FUNCTION postgis_cache_bbox();
 DROP FUNCTION ST_zmflag(geometry);
 DROP FUNCTION zmflag(geometry);
-DROP FUNCTION ST_noop(geometry);
 DROP FUNCTION noop(geometry);
 DROP FUNCTION ST_ForceRHR(geometry);
 DROP FUNCTION ForceRHR(geometry);
@@ -690,7 +672,8 @@ DROP FUNCTION ST_azimuth(geometry,geometry);
 DROP FUNCTION azimuth(geometry,geometry);
 DROP FUNCTION ST_point_inside_circle(geometry,float8,float8,float8);
 DROP FUNCTION point_inside_circle(geometry,float8,float8,float8);
-DROP FUNCTION ST_max_distance(geometry,geometry);
+DROP FUNCTION _ST_MaxDistance(geometry,geometry);
+DROP FUNCTION ST_maxdistance(geometry,geometry);
 DROP FUNCTION max_distance(geometry,geometry);
 DROP FUNCTION ST_Distance(geometry,geometry);
 DROP FUNCTION distance(geometry,geometry);
@@ -763,9 +746,7 @@ DROP FUNCTION srid(chip);
 
 DROP FUNCTION getBBOX(geometry);
 DROP FUNCTION getSRID(geometry);
-DROP FUNCTION ST_dropBBOX(geometry);
 DROP FUNCTION dropBBOX(geometry);
-DROP FUNCTION ST_addBBOX(geometry);
 DROP FUNCTION addBBOX(geometry);
 
 
@@ -865,27 +846,6 @@ DROP FUNCTION ST_geometry_lt(geometry, geometry);
 DROP FUNCTION geometry_lt(geometry, geometry);
 
 
----- BOX2D  support functions
-
-DROP FUNCTION ST_box2d_intersects(box2d, box2d);
-DROP FUNCTION box2d_intersects(box2d, box2d);
-DROP FUNCTION ST_box2d_same(box2d, box2d);
-DROP FUNCTION box2d_same(box2d, box2d);
-DROP FUNCTION ST_box2d_overlap(box2d, box2d);
-DROP FUNCTION box2d_overlap(box2d, box2d);
-DROP FUNCTION ST_box2d_contained(box2d, box2d);
-DROP FUNCTION box2d_contained(box2d, box2d);
-DROP FUNCTION ST_box2d_contain(box2d, box2d);
-DROP FUNCTION box2d_contain(box2d, box2d);
-DROP FUNCTION ST_box2d_right(box2d, box2d);
-DROP FUNCTION box2d_right(box2d, box2d);
-DROP FUNCTION ST_box2d_left(box2d, box2d);
-DROP FUNCTION box2d_left(box2d, box2d);
-DROP FUNCTION ST_box2d_overright(box2d, box2d);
-DROP FUNCTION box2d_overright(box2d, box2d);
-DROP FUNCTION ST_box2d_overleft(box2d, box2d);
-DROP FUNCTION box2d_overleft(box2d, box2d);
-
 
 -----------------------------------------------------------------------
 -- BOX2D
@@ -964,6 +924,11 @@ DROP FUNCTION Affine(geometry,float8,float8,float8,float8,float8,float8,float8,f
 
 
 -------------------------------------------------------------------
+--  GEOMETRY TYPE (geometry_dump)
+-------------------------------------------------------------------
+DROP TYPE geometry_dump CASCADE;
+
+-------------------------------------------------------------------
 --  GEOMETRY TYPE (lwgeom)
 -------------------------------------------------------------------
 
@@ -974,6 +939,8 @@ DROP TYPE geometry CASCADE;
 
 DROP FUNCTION ST_geometry_analyze(internal);
 DROP FUNCTION geometry_analyze(internal);
+DROP FUNCTION geometry_gist_sel (internal, oid, internal, int4);
+DROP FUNCTION geometry_gist_joinsel(internal, oid, internal, smallint);
 
 -------------------------------------------------------------------
 --  SPHEROID TYPE
