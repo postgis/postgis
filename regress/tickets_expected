@@ -61,7 +61,6 @@ SELECT
 #263|SRID=4326;POINT(-119.5438 34.9443)|t|t|t
 #271|t
 #272|-2|2
-#273|POINT(1 2)
 #277|<gml:Point><gml:coordinates>1,1e+308</gml:coordinates></gml:Point>
 #299|2
 #304

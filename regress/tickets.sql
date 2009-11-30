@@ -220,9 +220,6 @@ SELECT '#272', ST_LineCrossingDirection(foo.line1, foo.line2) As l1_cross_l2 ,
 FROM (SELECT
     ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As line1, ST_GeomFromText('LINESTRING(2.99 90.16,71 74,20 140,171 154)') As line2 ) As foo;
 
--- #273 --
-SELECT '#273', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:coordinates>1,2</gml:coordinates></gml:Point>'));
-
 -- #277 --
 SELECT '#277', ST_AsGML(2, GeomFromText('POINT(1 1e308)'));
 
