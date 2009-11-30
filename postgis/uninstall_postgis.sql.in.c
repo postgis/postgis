@@ -250,6 +250,12 @@ DROP FUNCTION ST_AsGML(geometry, int4);
 DROP FUNCTION AsGML(geometry, int4);
 DROP FUNCTION _ST_AsGML(int4, geometry, int4, int4);
 
+#if HAVE_LIBXML2
+DROP FUNCTION ST_GeomFromGML(text);
+DROP FUNCTION ST_GMLToSQL(text);
+DROP FUNCTION ST_GeomFromKML(text);
+#endif
+
 -----------------------------------------------------------------------
 -- SVG OUTPUT
 -----------------------------------------------------------------------

@@ -22,6 +22,6 @@
 /* 
  * libxml2 support
  */
-#define HAVE_LIBXML2 @HAVE_LIBXML2@
+#define HAVE_LIBXML2 @POSTGIS_HAVE_LIBXML2@
 
 #endif /* _LWPGIS_DEFINES */

@@ -393,9 +393,12 @@ if test "$FOUND_LIBXML2" = "1"; then
 	AC_SUBST([POSTGIS_LIBXML2_VERSION])
 fi
 
-
-
-
+POSTGIS_HAVE_LIBXML2=0
+if test "x$HAVE_LIBXML2" = "x1"; then
+	POSTGIS_HAVE_LIBXML2=1
+fi
+AC_DEFINE([POSTGIS_HAVE_LIBXML2])
+AC_SUBST([POSTGIS_HAVE_LIBXML2])
 
 
 dnl ===========================================================================
