@@ -876,7 +876,7 @@ SELECT ST_AsEWKT(a.geom), ST_HasArc(a.geom)
 					enumerates the <varname>POINT</varname>s.
 				</para>
 				
-				<para>Availability: PostGIS 1.5.0.</para>
+				<para>Availability: 1.5.0</para>
 
 				<para>&Z_support;</para>
 				<para>&curve_support;</para>
