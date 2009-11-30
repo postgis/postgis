@@ -648,7 +648,7 @@ CREATE OR REPLACE FUNCTION ST_Length(text)
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_PointOutside(geography)
+CREATE OR REPLACE FUNCTION _ST_PointOutside(geography)
 	RETURNS geography
 	AS 'MODULE_PATHNAME','geography_point_outside'
 	LANGUAGE 'C' IMMUTABLE STRICT;
