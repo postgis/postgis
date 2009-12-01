@@ -216,7 +216,131 @@
 				</itemizedlist>
 		</sect1>
 
+		<sect1 id="PostGIS_TypeFunctionMatrix">
+			<title>PostGIS Type Function Matrix</title>
+			<sect1info>
+				<abstract>
+					<para>Below is an alphabetical listing of all functions in PostGIS and the kinds of spatial
+						types they work with.</para>
+					<para>An + means the function works with it natively.  A T means it does but has a transform cast built-in to 
+						do the work so not native. A * means the function works with it, but only does because of auto-casting
+							behavior.</para>
+				</abstract>
+			</sect1info>
+			<table frame='all'><title>Function Type Support Matrix</title>
+			<tgroup cols='5' align='left' colsep='1' rowsep='1'>
+				<colspec colname='function'/>
+				<colspec colname='geometry'/>
+				<colspec colname='geography'/>
+				<colspec colname='3D'/>
+				<colspec colname='Curves'/>
+			<thead>
+				<row>
+				  <entry>Function</entry>
+				  <entry>geometry</entry>
+				  <entry>geography</entry>
+				  <entry>3D (2.5D)</entry>
+				  <entry>Curves</entry>
+				</row>
+			</thead>
+			<tbody>
+			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
+			<xsl:for-each select='sect1/refentry'>
+				<xsl:sort select="@id"/>
+				<xsl:variable name='comment'>
+					<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
+				</xsl:variable>
+				<xsl:variable name="refid">
+					<xsl:value-of select="@id" />
+				</xsl:variable>
+				<xsl:variable name="refname">
+					<xsl:value-of select="refnamediv/refname" />
+				</xsl:variable>
 
+				<row>
+					<!-- Display name of function and link to it -->
+					<entry><link linkend="{$refid}"><xsl:value-of select="$refname" /></link></entry>
+					<!-- If at least one proto function accepts or returns a geometry -->
+					<xsl:choose>
+						<!-- direct support -->
+						<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'geometry') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geometry')">
+							<entry>+</entry>
+						</xsl:when>
+						<!-- support via autocast -->
+						<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'box') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'box')">
+							<entry>*</entry>
+						</xsl:when>
+						<!-- no support -->
+						<xsl:otherwise>
+							<entry></entry>
+						</xsl:otherwise>
+					</xsl:choose>
+					<!-- If at least one proto function accepts or returns a geography -->
+					<xsl:choose>
+						<!-- Support via geometry transform hack -->
+						<xsl:when test="(contains(refsynopsisdiv/funcsynopsis,'geography') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geography')) and contains($comment,'(T)')">
+							<entry>T</entry>
+						</xsl:when>
+						<!-- direct support -->
+						<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'geography') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geography')">
+							<entry>+</entry>
+						</xsl:when>
+						<!-- no support -->
+						<xsl:otherwise>
+							<entry></entry>
+						</xsl:otherwise>
+					</xsl:choose>
+					
+					<!-- If at least one paragraph contains support 3d -->
+					<xsl:choose>
+						<!-- supports -->
+						<xsl:when test="contains(refsection/para,'This function supports 3d') ">
+							<entry>+</entry>
+						</xsl:when>
+						<!-- no support -->
+						<xsl:otherwise>
+							<entry></entry>
+						</xsl:otherwise>
+					</xsl:choose>
+					<!-- Support for Curve -->
+					<xsl:choose>
+						<!-- supports -->
+						<xsl:when test="contains(refsection/para,'supports Circular Strings') ">
+							<entry>+</entry>
+						</xsl:when>
+						<!-- no support -->
+						<xsl:otherwise>
+							<entry></entry>
+						</xsl:otherwise>
+					</xsl:choose>	
+				</row>
+			</xsl:for-each>
+			</tbody>
+		</tgroup>
+		</table>
+				
+			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
+				<xsl:for-each select='sect1/refentry'>
+					<xsl:sort select="@id"/>
+					<xsl:variable name='comment'>
+						<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
+					</xsl:variable>
+					<xsl:variable name="refid">
+						<xsl:value-of select="@id" />
+					</xsl:variable>
+					<xsl:variable name="refname">
+						<xsl:value-of select="refnamediv/refname" />
+					</xsl:variable>
+
+			<!-- If at least one proto function accepts or returns a geography -->
+					<xsl:choose>
+						<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'geometry_dump') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geometry_dump')">
+							<listitem><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></listitem>
+						</xsl:when>
+					</xsl:choose>
+				</xsl:for-each>
+				
+		</sect1>
 
 		<sect1 id="NewFunctions">
 			<title>New PostGIS Functions</title>
