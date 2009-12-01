@@ -227,17 +227,15 @@
 				
 			<informaltable frame='all' cellpadding='0'>
 			<tgroup cols='6' align='left' colsep='1' rowsep='1'>
-				<thead>
-					<row>
-					  <entry>Function</entry>
-					  <entry>geomerowy</entry>
-					  <entry>geography</entry>
-					  <entry>3D (2.5D)</entry>
-					  <entry>Curves</entry>
-					  <entry>SQL MM</entry>
-					</row>
-				</thead>
 				<tbody>
+				  <row>
+					<entry>Function</entry>
+					<entry>geomerowy</entry>
+					<entry>geography</entry>
+					<entry>3D (2.5D)</entry>
+					<entry>Curves</entry>
+					<entry>SQL MM</entry>
+				  </row>
 				<!-- Exclude PostGIS types ,management functions, long transaction support, or exceptional functions from consideration  -->
 				<!-- leaving out operators in an effor to try to fit on one page -->
 				<xsl:for-each select="sect1[not(@id='PostGIS_Types' or @id='Management_Functions' or @id='Long_Transactions_Support' or @id='Exceptional_Functions' or @id='Operators')]/refentry">
