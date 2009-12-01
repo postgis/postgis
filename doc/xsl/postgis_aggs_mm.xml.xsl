@@ -218,15 +218,13 @@
 
 		<sect1 id="PostGIS_TypeFunctionMatrix">
 			<title>PostGIS Type Function Matrix</title>
-			<sect1info>
-				<abstract>
-					<para>Below is an alphabetical listing of all spatial functions in PostGIS and the kinds of spatial
-						types they work with.</para>
-					<para>A + means the function works with it natively.  A T means it does but has a transform cast built-in to 
-						cast to geometry, transform and then cast back. A * means the function works with it, but only does because of auto-casting
-							behavior.</para>
-				</abstract>
-			</sect1info>
+
+			<para>Below is an alphabetical listing of spatial specific functions in PostGIS and the kinds of spatial
+				types they work with.</para>
+			<para>A + means the function works with the type or subtype natively.  A T means it works but has a transform cast built-in to 
+				cast to geometry, transform and then cast back. A * means the function works with it, but only does because of auto-casting
+					behavior.</para>
+				
 			<table frame='all'><title>Function Support Matrix</title>
 			<tgroup cols='5' align='left' colsep='1' rowsep='1'>
 				<colspec colname='function' />
@@ -244,8 +242,9 @@
 				</row>
 			</thead>
 			<tbody>
-			<!-- Exclude PostGIS types ,management functions, and long transaction support from consideration  -->
-			<xsl:for-each select="sect1[not(@id='PostGIS_Types' or @id='Management_Functions' or @id='Long_Transactions_Support')]/refentry">
+			<!-- Exclude PostGIS types ,management functions, long transaction support, or exceptional functions from consideration  -->
+			<!-- leaving out operators in an effor to try to fit on one page -->
+			<xsl:for-each select="sect1[not(@id='PostGIS_Types' or @id='Management_Functions' or @id='Long_Transactions_Support' or @id='Exceptional_Functions' or @id='Operators')]/refentry">
 				<xsl:sort select="@id"/>
 				<xsl:variable name='comment'>
 					<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
