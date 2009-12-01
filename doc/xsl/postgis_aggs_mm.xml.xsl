@@ -225,7 +225,7 @@
 				cast to geometry, transform and then cast back. A * means the function works with it, but only does because of auto-casting
 					behavior.</para>
 				
-			<informaltable frame='all' cellpadding='0'>
+			<para><informaltable frame='all' cellpadding='0'>
 			<tgroup cols='6' align='left' colsep='1' rowsep='1'>
 				<tbody>
 				  <row>
@@ -321,7 +321,8 @@
 				</xsl:for-each>
 				</tbody>
 			</tgroup>
-		</informaltable>		
+		</informaltable>	
+		</para>
 	   </sect1>
 
 		<sect1 id="NewFunctions">
