@@ -222,8 +222,8 @@
 				<abstract>
 					<para>Below is an alphabetical listing of all functions in PostGIS and the kinds of spatial
 						types they work with.</para>
-					<para>An + means the function works with it natively.  A T means it does but has a transform cast built-in to 
-						do the work so not native. A * means the function works with it, but only does because of auto-casting
+					<para>A + means the function works with it natively.  A T means it does but has a transform cast built-in to 
+						cast to geometry, transform and then cast back. A * means the function works with it, but only does because of auto-casting
 							behavior.</para>
 				</abstract>
 			</sect1info>
@@ -244,8 +244,8 @@
 				</row>
 			</thead>
 			<tbody>
-			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-			<xsl:for-each select='sect1/refentry'>
+			<!-- Exclude PostGIS types ,management functions, and long transaction support from consideration  -->
+			<xsl:for-each select="sect1[not(@id='PostGIS_Types' or @id='Management_Functions' or @id='Long_Transactions_Support')]/refentry">
 				<xsl:sort select="@id"/>
 				<xsl:variable name='comment'>
 					<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
@@ -294,7 +294,7 @@
 					<!-- If at least one paragraph contains support 3d -->
 					<xsl:choose>
 						<!-- supports -->
-						<xsl:when test="contains(refsection/para,'This function supports 3d') ">
+						<xsl:when test="contains(refsection/para/text(),'This function supports 3d')">
 							<entry>+</entry>
 						</xsl:when>
 						<!-- no support -->
@@ -305,7 +305,7 @@
 					<!-- Support for Curve -->
 					<xsl:choose>
 						<!-- supports -->
-						<xsl:when test="contains(refsection/para,'supports Circular Strings') ">
+						<xsl:when test="contains(refsection/para/text(),'supports Circular Strings')">
 							<entry>+</entry>
 						</xsl:when>
 						<!-- no support -->

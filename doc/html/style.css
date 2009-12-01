@@ -20,7 +20,7 @@ h2 { font-size: 22px; line-height: 22px; margin-bottom: 21px;}
 h3 { font-size: 16px; line-height: 18px; margin-bottom: 16px;}
 h4 { font-size: 14px; line-height: 16px; margin-bottom: 14px;}
 h5 { font-size: 13px; line-height: 10px; margin-bottom: 13px;}
-table, td { border: 0; }
+/*table, td { border: 0; }*/
 .table table, td {border: 1;}
 
 
