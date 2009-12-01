@@ -237,7 +237,7 @@
 						<thead>
 						  <row>
 							<entry>Function</entry>
-							<entry>geomerowy</entry>
+							<entry>geometry</entry>
 							<entry>geography</entry>
 							<entry>3D (2.5D)</entry>
 							<entry>Curves</entry>
