@@ -225,13 +225,14 @@
 				cast to geometry, transform and then cast back. A * means the function works with it, but only does because of auto-casting
 					behavior.</para>
 				
-			<table frame='all'><title>Function Support Matrix</title>
+			<table frame='all' cellpadding='0'><title>Function Support Matrix</title>
 			<tgroup cols='5' align='left' colsep='1' rowsep='1'>
 				<colspec colname='function' />
 				<colspec colname='geometry' align='center'/>
 				<colspec colname='geography' align='center'/>
 				<colspec colname='3D' align='center'/>
 				<colspec colname='Curves' align='center'/>
+				<colspec colname='SQLMM' align='center' />
 			<thead>
 				<row>
 				  <entry>Function</entry>
@@ -239,6 +240,7 @@
 				  <entry>geography</entry>
 				  <entry>3D (2.5D)</entry>
 				  <entry>Curves</entry>
+				  <entry>SQL MM</entry>
 				</row>
 			</thead>
 			<tbody>
@@ -312,6 +314,17 @@
 							<entry></entry>
 						</xsl:otherwise>
 					</xsl:choose>	
+					<!-- SQL MM compliance -->
+					<xsl:choose>
+						<!-- supports -->
+						<xsl:when test="contains(.,'implements the SQL/MM')">
+							<entry>+</entry>
+						</xsl:when>
+						<!-- no support -->
+						<xsl:otherwise>
+							<entry></entry>
+						</xsl:otherwise>
+					</xsl:choose>
 				</row>
 			</xsl:for-each>
 			</tbody>
