@@ -225,8 +225,8 @@
 				cast to geometry, transform and then cast back. A * means the function works with it, but only does because of auto-casting
 					behavior.</para>
 				
-			<table frame='all' cellpadding='0'><title>Function Support Matrix</title>
-			<tgroup cols='5' align='left' colsep='1' rowsep='1'>
+			<table frame='all'><title>Function Support Matrix</title>
+			<tgroup cols='6' align='left' colsep='1' rowsep='1'>
 				<colspec colname='function' />
 				<colspec colname='geometry' align='center'/>
 				<colspec colname='geography' align='center'/>
