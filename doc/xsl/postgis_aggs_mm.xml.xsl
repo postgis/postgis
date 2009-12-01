@@ -218,15 +218,13 @@
 
 		<sect1 id="PostGIS_TypeFunctionMatrix">
 			<title>PostGIS Type Function Matrix</title>
-			<sect1info>
-				<abstract>
-					<para>Below is an alphabetical listing of all functions in PostGIS and the kinds of spatial
-						types they work with.</para>
-					<para>An + means the function works with it natively.  A T means it does but has a transform cast built-in to 
-						do the work so not native. A * means the function works with it, but only does because of auto-casting
-							behavior.</para>
-				</abstract>
-			</sect1info>
+
+			<para>Below is an alphabetical listing of all functions in PostGIS and the kinds of spatial
+				types they work with.</para>
+			<para>An + means the function works with it natively.  A T means it does but has a transform cast built-in to 
+				do the work so not native. A * means the function works with it, but only does because of auto-casting
+					behavior.</para>
+
 			<table frame='all'><title>Function Type Support Matrix</title>
 			<tgroup cols='5' align='left' colsep='1' rowsep='1'>
 				<colspec colname='function'/>
