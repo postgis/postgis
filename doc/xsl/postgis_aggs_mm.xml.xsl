@@ -217,7 +217,7 @@
 		</sect1>
 
 		<sect1 id="PostGIS_TypeFunctionMatrix">
-			<title>PostGIS Type Function Matrix</title>
+			<title>PostGIS Function Support Matrix</title>
 
 			<para>Below is an alphabetical listing of spatial specific functions in PostGIS and the kinds of spatial
 				types they work with.</para>
