@@ -225,7 +225,7 @@
 				cast to geometry, transform and then cast back. A * means the function works with it, but only does because of auto-casting
 					behavior.</para>
 				
-			<informaltable frame='all' cellpadding='0'><title>Function Support Matrix</title>
+			<informaltable frame='all' cellpadding='0'>
 			<tgroup cols='6' align='left' colsep='1' rowsep='1'>
 				<colspec colname='function' />
 				<colspec colname='geometry' align='center'/>
@@ -233,102 +233,102 @@
 				<colspec colname='3D' align='center'/>
 				<colspec colname='Curves' align='center'/>
 				<colspec colname='SQLMM' align='center' />
-			<thead>
-				<row>
-				  <entry>Function</entry>
-				  <entry>geometry</entry>
-				  <entry>geography</entry>
-				  <entry>3D (2.5D)</entry>
-				  <entry>Curves</entry>
-				  <entry>SQL MM</entry>
-				</row>
-			</thead>
-			<tbody>
-			<!-- Exclude PostGIS types ,management functions, long transaction support, or exceptional functions from consideration  -->
-			<!-- leaving out operators in an effor to try to fit on one page -->
-			<xsl:for-each select="sect1[not(@id='PostGIS_Types' or @id='Management_Functions' or @id='Long_Transactions_Support' or @id='Exceptional_Functions' or @id='Operators')]/refentry">
-				<xsl:sort select="@id"/>
-				<xsl:variable name='comment'>
-					<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
-				</xsl:variable>
-				<xsl:variable name="refid">
-					<xsl:value-of select="@id" />
-				</xsl:variable>
-				<xsl:variable name="refname">
-					<xsl:value-of select="refnamediv/refname" />
-				</xsl:variable>
-
-				<row>
-					<!-- Display name of function and link to it -->
-					<entry><link linkend="{$refid}"><xsl:value-of select="$refname" /></link></entry>
-					<!-- If at least one proto function accepts or returns a geometry -->
-					<xsl:choose>
-						<!-- direct support -->
-						<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'geometry') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geometry')">
-							<entry>+</entry>
-						</xsl:when>
-						<!-- support via autocast -->
-						<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'box') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'box')">
-							<entry>*</entry>
-						</xsl:when>
-						<!-- no support -->
-						<xsl:otherwise>
-							<entry></entry>
-						</xsl:otherwise>
-					</xsl:choose>
-					<!-- If at least one proto function accepts or returns a geography -->
-					<xsl:choose>
-						<!-- Support via geometry transform hack -->
-						<xsl:when test="(contains(refsynopsisdiv/funcsynopsis,'geography') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geography')) and contains($comment,'(T)')">
-							<entry>T</entry>
-						</xsl:when>
-						<!-- direct support -->
-						<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'geography') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geography')">
-							<entry>+</entry>
-						</xsl:when>
-						<!-- no support -->
-						<xsl:otherwise>
-							<entry></entry>
-						</xsl:otherwise>
-					</xsl:choose>
-					
-					<!-- If at least one paragraph contains support 3d -->
-					<xsl:choose>
-						<!-- supports -->
-						<xsl:when test="contains(.,'This function supports 3d')">
-							<entry>+</entry>
-						</xsl:when>
-						<!-- no support -->
-						<xsl:otherwise>
-							<entry></entry>
-						</xsl:otherwise>
-					</xsl:choose>
-					<!-- Support for Curve -->
-					<xsl:choose>
-						<!-- supports -->
-						<xsl:when test="contains(.,'supports Circular Strings')">
-							<entry>+</entry>
-						</xsl:when>
-						<!-- no support -->
-						<xsl:otherwise>
-							<entry></entry>
-						</xsl:otherwise>
-					</xsl:choose>	
-					<!-- SQL MM compliance -->
-					<xsl:choose>
-						<!-- supports -->
-						<xsl:when test="contains(.,'implements the SQL/MM')">
-							<entry>+</entry>
-						</xsl:when>
-						<!-- no support -->
-						<xsl:otherwise>
-							<entry></entry>
-						</xsl:otherwise>
-					</xsl:choose>
-				</row>
-			</xsl:for-each>
-			</tbody>
-		</tgroup>
+				<thead>
+					<tr>
+					  <td>Function</td>
+					  <td>geometry</td>
+					  <td>geography</td>
+					  <td>3D (2.5D)</td>
+					  <td>Curves</td>
+					  <td>SQL MM</td>
+					</tr>
+				</thead>
+				<tbody>
+				<!-- Exclude PostGIS types ,management functions, long transaction support, or exceptional functions from consideration  -->
+				<!-- leaving out operators in an effor to try to fit on one page -->
+				<xsl:for-each select="sect1[not(@id='PostGIS_Types' or @id='Management_Functions' or @id='Long_Transactions_Support' or @id='Exceptional_Functions' or @id='Operators')]/refentry">
+					<xsl:sort select="@id"/>
+					<xsl:variable name='comment'>
+						<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
+					</xsl:variable>
+					<xsl:variable name="refid">
+						<xsl:value-of select="@id" />
+					</xsl:variable>
+					<xsl:variable name="refname">
+						<xsl:value-of select="refnamediv/refname" />
+					</xsl:variable>
+	
+					<row>
+						<!-- Display name of function and link to it -->
+						<entry><link linkend="{$refid}"><xsl:value-of select="$refname" /></link></entry>
+						<!-- If at least one proto function accepts or returns a geometry -->
+						<xsl:choose>
+							<!-- direct support -->
+							<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'geometry') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geometry')">
+								<entry>+</entry>
+							</xsl:when>
+							<!-- support via autocast -->
+							<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'box') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'box')">
+								<entry>*</entry>
+							</xsl:when>
+							<!-- no support -->
+							<xsl:otherwise>
+								<entry></entry>
+							</xsl:otherwise>
+						</xsl:choose>
+						<!-- If at least one proto function accepts or returns a geography -->
+						<xsl:choose>
+							<!-- Support via geometry transform hack -->
+							<xsl:when test="(contains(refsynopsisdiv/funcsynopsis,'geography') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geography')) and contains($comment,'(T)')">
+								<entry>T</entry>
+							</xsl:when>
+							<!-- direct support -->
+							<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'geography') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geography')">
+								<entry>+</entry>
+							</xsl:when>
+							<!-- no support -->
+							<xsl:otherwise>
+								<entry></entry>
+							</xsl:otherwise>
+						</xsl:choose>
+						
+						<!-- If at least one paragraph contains support 3d -->
+						<xsl:choose>
+							<!-- supports -->
+							<xsl:when test="contains(.,'This function supports 3d')">
+								<entry>+</entry>
+							</xsl:when>
+							<!-- no support -->
+							<xsl:otherwise>
+								<entry></entry>
+							</xsl:otherwise>
+						</xsl:choose>
+						<!-- Support for Curve -->
+						<xsl:choose>
+							<!-- supports -->
+							<xsl:when test="contains(.,'supports Circular Strings')">
+								<entry>+</entry>
+							</xsl:when>
+							<!-- no support -->
+							<xsl:otherwise>
+								<entry></entry>
+							</xsl:otherwise>
+						</xsl:choose>	
+						<!-- SQL MM compliance -->
+						<xsl:choose>
+							<!-- supports -->
+							<xsl:when test="contains(.,'implements the SQL/MM')">
+								<entry>+</entry>
+							</xsl:when>
+							<!-- no support -->
+							<xsl:otherwise>
+								<entry></entry>
+							</xsl:otherwise>
+						</xsl:choose>
+					</row>
+				</xsl:for-each>
+				</tbody>
+			</tgroup>
 		</informaltable>		
 	   </sect1>
 
