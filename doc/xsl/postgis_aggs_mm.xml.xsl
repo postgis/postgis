@@ -225,7 +225,7 @@
 				cast to geometry, transform and then cast back. A * means the function works with it, but only does because of auto-casting
 					behavior.</para>
 				
-			<table frame='all'><title>Function Support Matrix</title>
+			<informaltable frame='all' cellpadding='0'><title>Function Support Matrix</title>
 			<tgroup cols='6' align='left' colsep='1' rowsep='1'>
 				<colspec colname='function' />
 				<colspec colname='geometry' align='center'/>
@@ -329,7 +329,7 @@
 			</xsl:for-each>
 			</tbody>
 		</tgroup>
-		</table>		
+		</informaltable>		
 	   </sect1>
 
 		<sect1 id="NewFunctions">
