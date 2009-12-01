@@ -220,28 +220,22 @@
 			<title>PostGIS Function Support Matrix</title>
 
 			<para>Below is an alphabetical listing of spatial specific functions in PostGIS and the kinds of spatial
-				types they work with.</para>
+				types they work with or OGC/SQL compliance they try to conform to.</para>
 			<para>A + means the function works with the type or subtype natively.  A T means it works but has a transform cast built-in to 
 				cast to geometry, transform and then cast back. A * means the function works with it, but only does because of auto-casting
 					behavior.</para>
 				
 			<informaltable frame='all' cellpadding='0'>
 			<tgroup cols='6' align='left' colsep='1' rowsep='1'>
-				<colspec colname='function' />
-				<colspec colname='geometry' align='center'/>
-				<colspec colname='geography' align='center'/>
-				<colspec colname='3D' align='center'/>
-				<colspec colname='Curves' align='center'/>
-				<colspec colname='SQLMM' align='center' />
 				<thead>
-					<tr>
-					  <td>Function</td>
-					  <td>geometry</td>
-					  <td>geography</td>
-					  <td>3D (2.5D)</td>
-					  <td>Curves</td>
-					  <td>SQL MM</td>
-					</tr>
+					<row>
+					  <entry>Function</entry>
+					  <entry>geomerowy</entry>
+					  <entry>geography</entry>
+					  <entry>3D (2.5D)</entry>
+					  <entry>Curves</entry>
+					  <entry>SQL MM</entry>
+					</row>
 				</thead>
 				<tbody>
 				<!-- Exclude PostGIS types ,management functions, long transaction support, or exceptional functions from consideration  -->
