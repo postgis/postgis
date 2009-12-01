@@ -220,20 +220,20 @@
 			<title>PostGIS Type Function Matrix</title>
 			<sect1info>
 				<abstract>
-					<para>Below is an alphabetical listing of all functions in PostGIS and the kinds of spatial
+					<para>Below is an alphabetical listing of all spatial functions in PostGIS and the kinds of spatial
 						types they work with.</para>
 					<para>A + means the function works with it natively.  A T means it does but has a transform cast built-in to 
 						cast to geometry, transform and then cast back. A * means the function works with it, but only does because of auto-casting
 							behavior.</para>
 				</abstract>
 			</sect1info>
-			<table frame='all'><title>Function Type Support Matrix</title>
+			<table frame='all'><title>Function Support Matrix</title>
 			<tgroup cols='5' align='left' colsep='1' rowsep='1'>
-				<colspec colname='function'/>
-				<colspec colname='geometry'/>
-				<colspec colname='geography'/>
-				<colspec colname='3D'/>
-				<colspec colname='Curves'/>
+				<colspec colname='function' />
+				<colspec colname='geometry' align='center'/>
+				<colspec colname='geography' align='center'/>
+				<colspec colname='3D' align='center'/>
+				<colspec colname='Curves' align='center'/>
 			<thead>
 				<row>
 				  <entry>Function</entry>
@@ -294,7 +294,7 @@
 					<!-- If at least one paragraph contains support 3d -->
 					<xsl:choose>
 						<!-- supports -->
-						<xsl:when test="contains(refsection/para/text(),'This function supports 3d')">
+						<xsl:when test="contains(.,'This function supports 3d')">
 							<entry>+</entry>
 						</xsl:when>
 						<!-- no support -->
@@ -305,7 +305,7 @@
 					<!-- Support for Curve -->
 					<xsl:choose>
 						<!-- supports -->
-						<xsl:when test="contains(refsection/para/text(),'supports Circular Strings')">
+						<xsl:when test="contains(.,'supports Circular Strings')">
 							<entry>+</entry>
 						</xsl:when>
 						<!-- no support -->
