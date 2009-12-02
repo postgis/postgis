@@ -682,7 +682,7 @@ FROM public.myschema.myspecialpois LIMIT 1;
 	  for the endpoints, in which case it is referred to as a linear ring and
 	  additionally considered closed).</para>
 
-	  <informaltable>
+	  <informaltable border="0" frame="none">
 		<tgroup cols="2" align="center">
 		  <tbody>
 			<row>
@@ -748,7 +748,7 @@ FROM public.myschema.myspecialpois LIMIT 1;
 	  any two elements occurs at <varname>POINT</varname>s that are on the
 	  boundaries of both elements.  </para>
 
-	  <informaltable>
+	  <informaltable border="0" frame="none">
 		<tgroup cols="3" align="center">
 		  <tbody>
 			<row>
@@ -805,7 +805,7 @@ FROM public.myschema.myspecialpois LIMIT 1;
 	  A <varname>POLYGON</varname> may not have cut lines or spikes and the
 	  interior rings must be contained entirely within the exterior ring.</para>
 
-	  <informaltable>
+	  <informaltable border="0" frame="none">
 		<tgroup cols="3" align="center">
 		  <tbody>
 			<row>
@@ -893,7 +893,7 @@ FROM public.myschema.myspecialpois LIMIT 1;
 	  elements intersect.  The boundaries of any two elements may touch, but
 	  only at a finite number of <varname>POINT</varname>s.</para>
 
-	  <informaltable>
+	  <informaltable border="0" frame="none">
 		<tgroup cols="2" align="center">
 		  <tbody>
 			<row>
