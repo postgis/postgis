@@ -221,9 +221,12 @@
 
 			<para>Below is an alphabetical listing of spatial specific functions in PostGIS and the kinds of spatial
 				types they work with or OGC/SQL compliance they try to conform to.</para>
-			<para>A &#x2713; means the function works with the type or subtype natively.  A T means it works but has a transform cast built-in to 
-				cast to geometry, transform and then cast back. A * means the function works with it, but only does because of auto-casting
-					behavior.</para>
+			<para><itemizedlist>
+				<listitem>A &#x2713; means the function works with the type or subtype natively.</listitem>
+				<listitem>A &#x263A; means it works but with a transform cast built-in to cast to geometry, transform and then cast back.</listitem>
+				<listitem>A &#x2611; means the function works with the type, but because of a auto-cast rather than direct support.</listitem>
+				</itemizedlist>
+			</para>
 				
 			<para>
 				<informaltable frame='all'>
@@ -270,7 +273,7 @@
 									</xsl:when>
 									<!-- support via autocast -->
 									<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'box') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'box')">
-										<entry>*</entry>
+										<entry>&#x2611;</entry>
 									</xsl:when>
 									<!-- no support -->
 									<xsl:otherwise>
@@ -281,11 +284,11 @@
 								<xsl:choose>
 									<!-- Support via geometry transform hack -->
 									<xsl:when test="(contains(refsynopsisdiv/funcsynopsis,'geography') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geography')) and contains($comment,'(T)')">
-										<entry>T</entry>
+										<entry>&#x263A;</entry>
 									</xsl:when>
 									<!-- direct support -->
 									<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'geography') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geography')">
-										<entry>+</entry>
+										<entry>&#x2713;</entry>
 									</xsl:when>
 									<!-- no support -->
 									<xsl:otherwise>
@@ -297,7 +300,7 @@
 								<xsl:choose>
 									<!-- supports -->
 									<xsl:when test="contains(.,'This function supports 3d')">
-										<entry>+</entry>
+										<entry>&#x2713;</entry>
 									</xsl:when>
 									<!-- no support -->
 									<xsl:otherwise>
@@ -308,7 +311,7 @@
 								<xsl:choose>
 									<!-- supports -->
 									<xsl:when test="contains(.,'supports Circular Strings')">
-										<entry>+</entry>
+										<entry>&#x2713;</entry>
 									</xsl:when>
 									<!-- no support -->
 									<xsl:otherwise>
@@ -319,7 +322,7 @@
 								<xsl:choose>
 									<!-- supports -->
 									<xsl:when test="contains(.,'implements the SQL/MM')">
-										<entry>+</entry>
+										<entry>&#x2713;</entry>
 									</xsl:when>
 									<!-- no support -->
 									<xsl:otherwise>
