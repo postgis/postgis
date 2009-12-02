@@ -19,17 +19,6 @@ CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I../../../liblwgeom
 IMAGES= \
 	../images/de9im01.png \
 	../images/de9im02.png \
-	../images/de9im03.png \
-	../images/de9im04.png \
-	../images/de9im05.png \
-	../images/de9im06.png \
-	../images/de9im07.png \
-	../images/de9im08.png \
-	../images/de9im09.png \
-	../images/de9im10.png \
-	../images/de9im11.png \
-	../images/de9im12.png \
-	../images/de9im13.png \
 	../images/st_buffer01.png \
 	../images/st_buffer02.png \
 	../images/st_buffer03.png \
@@ -96,13 +85,27 @@ IMAGES= \
 	../images/st_touches06.png \
 	../images/st_within01.png
 
+# Images that are created with dimensions 100x100
+IMAGES_RESIZED= \
+	../images/de9im03.png \
+	../images/de9im04.png \
+	../images/de9im05.png \
+	../images/de9im06.png \
+	../images/de9im07.png \
+	../images/de9im08.png \
+	../images/de9im09.png \
+	../images/de9im10.png \
+	../images/de9im11.png \
+	../images/de9im12.png \
+	../images/de9im13.png 
+
 OBJS=styles.o generator.o
 
 # Build the generator
 all: generator
 
 # generate the images
-images: $(IMAGES)
+images: $(IMAGES) $(IMAGES_RESIZED)
 
 # Command to build each of the .o files
 $(OBJS): %.o: %.c
@@ -111,6 +114,11 @@ $(OBJS): %.o: %.c
 # Command to build each of the .wkt files
 $(IMAGES): ../images/%.png: %.wkt generator styles.conf
 	@./generator $<
+
+# Command to resize each of the images
+$(IMAGES_RESIZED): ../images/%.png: %.wkt generator styles.conf
+	@./generator $<
+	convert $@ -resize 100x100 $@
 
 # Build the main executable
 generator: ../../../liblwgeom/liblwgeom.a $(OBJS)
