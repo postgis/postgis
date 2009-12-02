@@ -221,7 +221,7 @@
 
 			<para>Below is an alphabetical listing of spatial specific functions in PostGIS and the kinds of spatial
 				types they work with or OGC/SQL compliance they try to conform to.</para>
-			<para>A + means the function works with the type or subtype natively.  A T means it works but has a transform cast built-in to 
+			<para>A &#x2713; means the function works with the type or subtype natively.  A T means it works but has a transform cast built-in to 
 				cast to geometry, transform and then cast back. A * means the function works with it, but only does because of auto-casting
 					behavior.</para>
 				
@@ -266,7 +266,7 @@
 								<xsl:choose>
 									<!-- direct support -->
 									<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'geometry') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geometry')">
-										<entry>+</entry>
+										<entry>&#x2713;</entry>
 									</xsl:when>
 									<!-- support via autocast -->
 									<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'box') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'box')">
