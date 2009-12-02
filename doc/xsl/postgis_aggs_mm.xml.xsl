@@ -226,7 +226,7 @@
 					behavior.</para>
 				
 			<para>
-				<table frame='all'>
+				<informaltable frame='all'>
 					<tgroup cols='6' align='left' colsep='1' rowsep='1'>
 						<colspec colname='function' />
 						<colspec colname='geometry' align='center'/>
@@ -330,7 +330,7 @@
 						</xsl:for-each>
 						</tbody>
 					</tgroup>
-		</table>	
+		</informaltable>	
 		</para>
 	   </sect1>
 
