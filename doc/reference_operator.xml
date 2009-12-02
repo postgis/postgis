@@ -55,6 +55,7 @@
 				geometries.</para></note>
 
 			<para>Availability: 1.5.0 support for geography was introduced.</para>
+			<para>&curve_support;</para>
 		  </refsection>
 
 		  <refsection>
@@ -196,6 +197,8 @@ FROM
 			<para>The <varname>&amp;&lt;|</varname> operator returns <varname>TRUE</varname> if the bounding box of geometry A
 			overlaps or is below of the bounding box of geometry B, or more accurately, overlaps or is NOT above the bounding
 			box of geometry B.</para>
+			
+			<para>&curve_support;</para>
 
 			<note><para>This operand will make use of any indexes that may be available on the
 				geometries.</para></note>
@@ -485,6 +488,8 @@ FROM
 
 			<caution><para>This operand will NOT make use of any indexes that may be available on the
 				geometries.</para></caution>
+				
+			<para>&curve_support;</para>
 
 		  </refsection>
 
