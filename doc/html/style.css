@@ -44,3 +44,6 @@ pre, .literallayout { border-right-width: 0px; border-left-width: 0px; border-bo
 .remark { background: #ffff00; }
 .equation {font-style: italic; font-size: 90%;}
 .command, .code {font-weight: normal; font-family: "Courier New", Courier, Monaco, monospace; color: #000000;}
+.styledtable table thead th { border-right-width: 0px; border-left-width: 0px; border-bottom-width: 1px; border-top-width: 0px; border-color: #f7931e; border-style: solid;  }
+.styledtable > table { border-right-width: 0px; border-left-width: 0px; border-bottom-width: 2px; border-top-width: 2px; border-color: #f7931e; border-style: solid;  }
+.styledtable table td,th { color: #000000; font-style: italic; padding-right:10px; padding-left:10px; border-right-width: 0px; border-left-width: 0px; border-bottom-width: 2px; border-top-width: 2px; border-width: 0px;}

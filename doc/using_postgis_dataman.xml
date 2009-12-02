@@ -975,6 +975,478 @@ gisdb=# SELECT
 		there.</para>
 	  </note>
 	</sect2>
+	
+      <sect2 id="DE-9IM">
+        <title>Dimensionally Extended 9 Intersection Model (DE-9IM)</title>
+
+        <para>It is sometimes the case that the typical spatial predicates
+        (ST_Contains, ST_Crosses, ST_Intersects, ST_Touches, ...) are
+        insufficient in and of themselves to adequately provide that desired
+        spatial filter.</para>
+
+        <informaltable frame="none" border="0">
+          <tgroup cols="1">
+            <tbody>
+              <row>
+                <entry><para><informalfigure float="1" floatstyle="left">
+                    <graphic align="left" fileref="images/de9im01.png" />
+                  </informalfigure></para><para>For example, consider a linear
+                dataset representing a road network. It may be the task of a
+                GIS analyst to identify all road segments that cross
+                eachother, not at a point, but on a line, perhaps invalidating
+                some business rule. In this case, ST_Crosses does not
+                adequately provide the necessary spatial filter since, for
+                linear features, it returns <varname>true</varname> only where
+                they cross at a point.</para> <para>One two-step solution
+                might be to first perform the actual intersection
+                (ST_Intersection) of pairs of road segments that spatially
+                intersect (ST_Intersects), and then compare the intersection's
+                ST_GeometryType with '<varname>LINESTRING</varname>' (properly
+                dealing with cases that return
+                <varname>GEOMETRYCOLLECTION</varname>s of
+                <varname>[MULTI]POINT</varname>s,
+                <varname>[MULTI]LINESTRING</varname>s, etc.).</para> <para>A
+                more elegant / faster solution may indeed be
+                desireable.</para></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>
+
+        <informaltable frame="none" border="0">
+          <tgroup cols="1">
+            <tbody>
+              <row>
+                <entry><para> <informalfigure float="1" floatstyle="right">
+                    <graphic align="right" fileref="images/de9im02.png" />
+                  </informalfigure></para> <para>A second [theoretical]
+                example may be that of a GIS analyst trying to locate all
+                wharfs or docks that intersect a lake's boundary on a line and
+                where only one end of the wharf is up on shore. In other
+                words, where a wharf is within, but not completely within a
+                lake, intersecting the boundary of a lake on a line, and where
+                the wharf's endpoints are both completely within and on the
+                boundary of the lake. The analyst may need to use a
+                combination of spatial predicates to isolate the sought after
+                features:</para> <itemizedlist>
+                    <listitem>
+                      <para>ST_Contains(lake, wharf) = TRUE</para>
+                    </listitem>
+
+                    <listitem>
+                      <para>ST_ContainsProperly(lake, wharf) = FALSE</para>
+                    </listitem>
+
+                    <listitem>
+                      <para>ST_GeometryType(ST_Intersection(wharf, lake)) =
+                      'LINESTRING'</para>
+                    </listitem>
+
+                    <listitem>
+                      <para>ST_NumGeometries(ST_Multi(ST_Intersection(ST_Boundary(wharf),
+                      ST_Boundary(lake)))) = 1</para>
+
+                      <para>... (needless to say, this could get quite
+                      complicated)</para>
+                    </listitem>
+                  </itemizedlist></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>
+
+        <para>So enters the Dimensionally Extended 9 Intersection Model, or
+        DE-9IM for short.</para>
+
+        <sect3>
+          <title>Theory</title>
+
+          <para>According to the <ulink
+          url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
+          Features Implementation Specification for SQL</ulink>, "the basic
+          approach to comparing two geometries is to make pair-wise tests of
+          the intersections between the Interiors, Boundaries and Exteriors of
+          the two geometries and to classify the relationship between the two
+          geometries based on the entries in the resulting 'intersection'
+          matrix."</para>
+
+          <glosslist>
+            <glossentry>
+              <glossterm>Boundary</glossterm>
+
+              <glossdef>
+                <para>The boundary of a geometry is the set of geometries of
+                the next lower dimension. For <varname>POINT</varname>s, which
+                have a dimension of 0, the boundary is the empty set. The
+                boundary of a <varname>LINESTRING</varname> are the two
+                endpoints. For <varname>POLYGON</varname>s, the boundary is
+                the linework that make up the exterior and interior
+                rings.</para>
+              </glossdef>
+            </glossentry>
+
+            <glossentry>
+              <glossterm>Interior</glossterm>
+
+              <glossdef>
+                <para>The interior of a geometry are those points of a
+                geometry that are left when the boundary is removed. For
+                <varname>POINT</varname>s, the interior is the
+                <varname>POINT</varname> itself. The interior of a
+                <varname>LINESTRING</varname> are the set of real points
+                between the endpoints. For <varname>POLYGON</varname>s, the
+                interior is the areal surface inside the polygon.</para>
+              </glossdef>
+            </glossentry>
+
+            <glossentry>
+              <glossterm>Exterior</glossterm>
+
+              <glossdef>
+                <para>The exterior of a geometry is the universe, an areal
+                surface, not on the interior or boundary of the
+                geometry.</para>
+              </glossdef>
+            </glossentry>
+          </glosslist>
+
+          <para>Given geometry <emphasis>a</emphasis>, where the
+          <emphasis>I(a)</emphasis>, <emphasis>B(a)</emphasis>, and
+          <emphasis>E(a)</emphasis> are the <emphasis>Interior</emphasis>,
+          <emphasis>Boundary</emphasis>, and <emphasis>Exterior</emphasis> of
+          a, the mathematical representation of the matrix is:</para>
+
+          <informaltable tabstyle="styledtable">
+            <tgroup align="center" cols="4">
+              <thead>
+                <row>
+                  <entry></entry>
+
+                  <entry><emphasis role="bold">Interior</emphasis></entry>
+
+                  <entry><emphasis role="bold">Boundary</emphasis></entry>
+
+                  <entry><emphasis role="bold">Exterior</emphasis></entry>
+                </row>
+              </thead>
+
+              <tbody>
+                <row>
+                  <entry><emphasis role="bold">Interior</emphasis></entry>
+
+                  <entry><emphasis><inlineequation>
+                      <mml:math display="block"
+                                xmlns:mml="http://www.w3.org/1998/Math/MathML">
+                        <mml:mrow>
+                          <mml:mtext mathvariant="italic">dim(
+                          I(a)</mml:mtext>
+
+                          <mml:mo>∩</mml:mo>
+
+                          <mml:mtext mathvariant="italic">I(b) )</mml:mtext>
+                        </mml:mrow>
+                      </mml:math>
+                    </inlineequation></emphasis></entry>
+
+                  <entry><emphasis><inlineequation>
+                      <mml:math display="block"
+                                xmlns:mml="http://www.w3.org/1998/Math/MathML">
+                        <mml:mrow>
+                          <mml:mtext mathvariant="italic">dim(
+                          I(a)</mml:mtext>
+
+                          <mml:mo>∩</mml:mo>
+
+                          <mml:mtext mathvariant="italic">B(b) )</mml:mtext>
+                        </mml:mrow>
+                      </mml:math>
+                    </inlineequation></emphasis></entry>
+
+                  <entry><emphasis><inlineequation>
+                      <mml:math display="block"
+                                xmlns:mml="http://www.w3.org/1998/Math/MathML">
+                        <mml:mrow>
+                          <mml:mtext mathvariant="italic">dim(
+                          I(a)</mml:mtext>
+
+                          <mml:mo>∩</mml:mo>
+
+                          <mml:mtext mathvariant="italic">E(b) )</mml:mtext>
+                        </mml:mrow>
+                      </mml:math>
+                    </inlineequation></emphasis></entry>
+                </row>
+
+                <row>
+                  <entry><emphasis role="bold">Boundary</emphasis></entry>
+
+                  <entry><emphasis><inlineequation>
+                      <mml:math display="block"
+                                xmlns:mml="http://www.w3.org/1998/Math/MathML">
+                        <mml:mrow>
+                          <mml:mtext mathvariant="italic">dim(
+                          B(a)</mml:mtext>
+
+                          <mml:mo>∩</mml:mo>
+
+                          <mml:mtext mathvariant="italic">I(b) )</mml:mtext>
+                        </mml:mrow>
+                      </mml:math>
+                    </inlineequation></emphasis></entry>
+
+                  <entry><emphasis><inlineequation>
+                      <mml:math display="block"
+                                xmlns:mml="http://www.w3.org/1998/Math/MathML">
+                        <mml:mrow>
+                          <mml:mtext mathvariant="italic">dim(
+                          B(a)</mml:mtext>
+
+                          <mml:mo>∩</mml:mo>
+
+                          <mml:mtext mathvariant="italic">B(b) )</mml:mtext>
+                        </mml:mrow>
+                      </mml:math>
+                    </inlineequation></emphasis></entry>
+
+                  <entry><emphasis><inlineequation>
+                      <mml:math display="block"
+                                xmlns:mml="http://www.w3.org/1998/Math/MathML">
+                        <mml:mrow>
+                          <mml:mtext mathvariant="italic">dim(
+                          B(a)</mml:mtext>
+
+                          <mml:mo>∩</mml:mo>
+
+                          <mml:mtext mathvariant="italic">E(b) )</mml:mtext>
+                        </mml:mrow>
+                      </mml:math>
+                    </inlineequation></emphasis></entry>
+                </row>
+
+                <row>
+                  <entry><emphasis role="bold">Exterior</emphasis></entry>
+
+                  <entry><emphasis><inlineequation>
+                      <mml:math display="block"
+                                xmlns:mml="http://www.w3.org/1998/Math/MathML">
+                        <mml:mrow>
+                          <mml:mtext mathvariant="italic">dim(
+                          E(a)</mml:mtext>
+
+                          <mml:mo>∩</mml:mo>
+
+                          <mml:mtext mathvariant="italic">I(b) )</mml:mtext>
+                        </mml:mrow>
+                      </mml:math>
+                    </inlineequation></emphasis></entry>
+
+                  <entry><emphasis><inlineequation>
+                      <mml:math display="block"
+                                xmlns:mml="http://www.w3.org/1998/Math/MathML">
+                        <mml:mrow>
+                          <mml:mtext mathvariant="italic">dim(
+                          E(a)</mml:mtext>
+
+                          <mml:mo>∩</mml:mo>
+
+                          <mml:mtext mathvariant="italic">B(b) )</mml:mtext>
+                        </mml:mrow>
+                      </mml:math>
+                    </inlineequation></emphasis></entry>
+
+                  <entry><emphasis><inlineequation>
+                      <mml:math display="block"
+                                xmlns:mml="http://www.w3.org/1998/Math/MathML">
+                        <mml:mrow>
+                          <mml:mtext mathvariant="italic">dim(
+                          E(a)</mml:mtext>
+
+                          <mml:mo>∩</mml:mo>
+
+                          <mml:mtext mathvariant="italic">E(b) )</mml:mtext>
+                        </mml:mrow>
+                      </mml:math>
+                    </inlineequation></emphasis></entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </informaltable>
+
+          <para>Where <emphasis>dim(a)</emphasis> is the dimension of
+          <emphasis>a</emphasis> as specified by
+          <literal>ST_Dimension()</literal> but has the domain of
+          <literal>{0,1,2,T,F,*}</literal></para>
+
+          <itemizedlist spacing="compact">
+            <listitem>
+              <para><literal>0</literal> =&gt; point</para>
+            </listitem>
+
+            <listitem>
+              <para><literal>1</literal> =&gt; line</para>
+            </listitem>
+
+            <listitem>
+              <para><literal>2</literal> =&gt; area</para>
+            </listitem>
+
+            <listitem>
+              <para><literal>T</literal> =&gt;
+              <literal>{0,1,2}</literal></para>
+            </listitem>
+
+            <listitem>
+              <para><literal>F</literal> =&gt; empty set</para>
+            </listitem>
+
+            <listitem>
+              <para><literal>*</literal> =&gt; don't care</para>
+            </listitem>
+          </itemizedlist>
+
+          <para>Visually, for two overlapping polygonal geometries, this looks
+          like:</para>
+
+          <informaltable frame="none" border="0">
+            <tgroup cols="2">
+              <colspec colwidth="80pt" />
+
+              <tbody>
+                <row>
+                  <entry></entry>
+
+                  <entry align="center"><para><informalfigure>
+                      <graphic align="center" fileref="images/de9im04.png"
+                               valign="middle" />
+                    </informalfigure></para></entry>
+                </row>
+
+                <row>
+                  <entry align="center" valign="middle"><para><informalfigure>
+                      <graphic align="center" fileref="images/de9im03.png"
+                               valign="middle" />
+                    </informalfigure></para></entry>
+
+                  <entry><para> <informaltable tabstyle="styledtable">
+                      <tgroup align="center" cols="4">
+                        <thead valign="middle">
+                          <row>
+                            <entry></entry>
+
+                            <entry><emphasis
+                            role="bold">Interior</emphasis></entry>
+
+                            <entry><emphasis
+                            role="bold">Boundary</emphasis></entry>
+
+                            <entry><emphasis
+                            role="bold">Exterior</emphasis></entry>
+                          </row>
+                        </thead>
+
+                        <tbody valign="middle">
+                          <row>
+                            <entry spanname="de9im_a" style=""><emphasis
+                            role="bold">Interior</emphasis></entry>
+
+                            <entry><para><informalfigure>
+                                <graphic fileref="images/de9im05.png" />
+                              </informalfigure></para><para><emphasis>dim(...) =
+                            </emphasis><emphasis
+                            role="bold">2</emphasis></para></entry>
+
+                            <entry><para><informalfigure>
+                                <graphic fileref="images/de9im06.png" />
+                              </informalfigure></para><para><emphasis>dim(...) =
+                            </emphasis><emphasis
+                            role="bold">1</emphasis></para></entry>
+
+                            <entry><para><informalfigure>
+                                <graphic fileref="images/de9im07.png" />
+                              </informalfigure></para><para><emphasis>dim(...) =
+                            </emphasis><emphasis
+                            role="bold">2</emphasis></para></entry>
+                          </row>
+
+                          <row>
+                            <entry><emphasis
+                            role="bold">Boundary</emphasis></entry>
+
+                            <entry><para><informalfigure>
+                                <graphic fileref="images/de9im08.png" />
+                              </informalfigure></para><para><emphasis>dim(...) =
+                            </emphasis><emphasis
+                            role="bold">1</emphasis></para></entry>
+
+                            <entry><para><informalfigure>
+                                <graphic fileref="images/de9im09.png" />
+                              </informalfigure></para><para><emphasis>dim(...) =
+                            </emphasis><emphasis
+                            role="bold">0</emphasis></para></entry>
+
+                            <entry><para><informalfigure>
+                                <graphic fileref="images/de9im10.png" />
+                              </informalfigure></para><para><emphasis>dim(...) =
+                            </emphasis><emphasis
+                            role="bold">1</emphasis></para></entry>
+                          </row>
+
+                          <row>
+                            <entry><emphasis
+                            role="bold">Exterior</emphasis></entry>
+
+                            <entry><para><informalfigure>
+                                <graphic fileref="images/de9im11.png" />
+                              </informalfigure></para><para><emphasis>dim(...) =
+                            </emphasis><emphasis
+                            role="bold">2</emphasis></para></entry>
+
+                            <entry><para><informalfigure>
+                                <graphic fileref="images/de9im12.png" />
+                              </informalfigure></para><para><emphasis>dim(...) =
+                            </emphasis><emphasis
+                            role="bold">1</emphasis></para></entry>
+
+                            <entry><para><informalfigure>
+                                <graphic fileref="images/de9im13.png" />
+                              </informalfigure></para><para><emphasis>dim(...) =
+                            </emphasis><emphasis
+                            role="bold">2</emphasis></para></entry>
+                          </row>
+                        </tbody>
+                      </tgroup>
+                    </informaltable></para></entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </informaltable>
+
+          <para>Read from left to right, the dimensional matrix is
+          represented, '<emphasis role="bold">212010212</emphasis>'.</para>
+
+          <para>A relate matrix that would therefore represent our first
+          example of two lines that intersect on a line would be: '<emphasis
+          role="bold">1*1***1**</emphasis>'</para>
+
+          <programlisting>-- Identify road segments that cross on a line
+SELECT a.id
+FROM roads a, roads b
+WHERE a.id != b.id 
+AND a.geom &amp;&amp; b.geom
+AND ST_Relate(a.geom, b.geom, '1*1***1**');</programlisting>
+
+          <para>A relate matrix that represents the second example of wharfs
+          partly on the lake's shoreline would be '<emphasis
+          role="bold">102101FF2</emphasis>'</para>
+
+          <programlisting>-- Identify wharfs partly on a lake's shoreline
+SELECT a.lake_id, b.wharf_id
+FROM lakes a, wharfs b
+WHERE a.geom &amp;&amp; b.geom
+AND ST_Relate(a.geom, b.geom, '102101FF2');</programlisting>
+        </sect3>
+      </sect2>
+	
   </sect1>
 
   <sect1>
