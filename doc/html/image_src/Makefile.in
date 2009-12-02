@@ -17,6 +17,19 @@ CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
 CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I../../../liblwgeom
 
 IMAGES= \
+	../images/de9im01.png \
+	../images/de9im02.png \
+	../images/de9im03.png \
+	../images/de9im04.png \
+	../images/de9im05.png \
+	../images/de9im06.png \
+	../images/de9im07.png \
+	../images/de9im08.png \
+	../images/de9im09.png \
+	../images/de9im10.png \
+	../images/de9im11.png \
+	../images/de9im12.png \
+	../images/de9im13.png \
 	../images/st_buffer01.png \
 	../images/st_buffer02.png \
 	../images/st_buffer03.png \
