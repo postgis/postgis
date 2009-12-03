@@ -995,14 +995,14 @@ gisdb=# SELECT
                 dataset representing a road network. It may be the task of a
                 GIS analyst to identify all road segments that cross
                 eachother, not at a point, but on a line, perhaps invalidating
-                some business rule. In this case, ST_Crosses does not
+                some business rule. In this case, <xref linkend="ST_Crosses" /> does not
                 adequately provide the necessary spatial filter since, for
                 linear features, it returns <varname>true</varname> only where
                 they cross at a point.</para> <para>One two-step solution
                 might be to first perform the actual intersection
-                (ST_Intersection) of pairs of road segments that spatially
-                intersect (ST_Intersects), and then compare the intersection's
-                ST_GeometryType with '<varname>LINESTRING</varname>' (properly
+                (<xref linkend="ST_Intersection" />) of pairs of road segments that spatially
+                intersect (<xref linkend="ST_Intersects" />), and then compare the intersection's
+                <xref linkend="ST_GeometryType" /> with '<varname>LINESTRING</varname>' (properly
                 dealing with cases that return
                 <varname>GEOMETRYCOLLECTION</varname>s of
                 <varname>[MULTI]POINT</varname>s,
@@ -1031,21 +1031,21 @@ gisdb=# SELECT
                 combination of spatial predicates to isolate the sought after
                 features:</para> <itemizedlist>
                     <listitem>
-                      <para>ST_Contains(lake, wharf) = TRUE</para>
+                      <para><xref linkend="ST_Contains" />(lake, wharf) = TRUE</para>
                     </listitem>
 
                     <listitem>
-                      <para>ST_ContainsProperly(lake, wharf) = FALSE</para>
+                      <para><xref linkend="ST_ContainsProperly" />(lake, wharf) = FALSE</para>
                     </listitem>
 
                     <listitem>
-                      <para>ST_GeometryType(ST_Intersection(wharf, lake)) =
+                      <para><xref linkend="ST_GeometryType" />(<xref linkend="ST_Intersection" />(wharf, lake)) =
                       'LINESTRING'</para>
                     </listitem>
 
                     <listitem>
-                      <para>ST_NumGeometries(ST_Multi(ST_Intersection(ST_Boundary(wharf),
-                      ST_Boundary(lake)))) = 1</para>
+                      <para><xref linkend="ST_NumGeometries" />(<xref linkend="ST_Multi" />(<xref linkend="ST_Intersection" />(<xref linkend="ST_Boundary" />(wharf),
+                      <xref linkend="ST_Boundary" />(lake)))) = 1</para>
 
                       <para>... (needless to say, this could get quite
                       complicated)</para>
@@ -1275,7 +1275,7 @@ gisdb=# SELECT
 
           <para>Where <emphasis>dim(a)</emphasis> is the dimension of
           <emphasis>a</emphasis> as specified by
-          <literal>ST_Dimension()</literal> but has the domain of
+          <xref linkend="ST_Dimension" /> but has the domain of
           <literal>{0,1,2,T,F,*}</literal></para>
 
           <itemizedlist spacing="compact">
@@ -1423,7 +1423,7 @@ gisdb=# SELECT
           </informaltable>
 
           <para>Read from left to right, the dimensional matrix is
-          represented, '<emphasis role="bold">212010212</emphasis>'.</para>
+          represented, '<emphasis role="bold">212101212</emphasis>'.</para>
 
           <para>A relate matrix that would therefore represent our first
           example of two lines that intersect on a line would be: '<emphasis
