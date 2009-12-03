@@ -8,7 +8,7 @@
 	 Purpose: This is an xsl transform that generates index listing of aggregate functions and mm /sql compliant functions xml section from reference_new.xml to then
 	 be processed by doc book
 	 ******************************************************************** -->
-	<xsl:output method="xml" indent="yes" encoding="utf-8"/>
+	<xsl:output method="xml" indent="yes" encoding="utf-8" />
 
 	<!-- We deal only with the reference chapter -->
 	<xsl:template match="/">
@@ -217,14 +217,18 @@
 		</sect1>
 
 		<sect1 id="PostGIS_TypeFunctionMatrix">
+			<xsl:variable name='matrix_checkmark'><![CDATA[<inlinemediaobject><imageobject><imagedata fileref='images/matrix_checkmark.png' /></imageobject></inlinemediaobject>]]></xsl:variable>
+			<xsl:variable name='matrix_transform'><![CDATA[<inlinemediaobject><imageobject><imagedata fileref='images/matrix_transform.png' /></imageobject></inlinemediaobject>]]></xsl:variable>
+			<xsl:variable name='matrix_autocast'><![CDATA[<inlinemediaobject><imageobject><imagedata fileref='images/matrix_autocast.png' /></imageobject></inlinemediaobject>]]></xsl:variable>
 			<title>PostGIS Function Support Matrix</title>
 
 			<para>Below is an alphabetical listing of spatial specific functions in PostGIS and the kinds of spatial
 				types they work with or OGC/SQL compliance they try to conform to.</para>
 			<para><itemizedlist>
-				<listitem>A &#x2713; means the function works with the type or subtype natively.</listitem>
-				<listitem>A &#x263A; means it works but with a transform cast built-in to cast to geometry, transform and then cast back.</listitem>
-				<listitem>A &#x2611; means the function works with the type, but because of a auto-cast rather than direct support.</listitem>
+				<listitem>A <xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/> means the function works with the type or subtype natively.</listitem>
+				<listitem>A <xsl:value-of select="$matrix_transform" disable-output-escaping="yes"/> means it works but with a transform cast built-in using cast to geometry, transform to a "best srid" spatial ref and then cast back. Results may not be as expected for large areas or areas at poles 
+						and may accumulate floating point junk.</listitem>
+				<listitem>A <xsl:value-of select="$matrix_autocast" disable-output-escaping="yes"/> means the function works with the type because of a auto-cast to another such as to box3d rather than direct type support.</listitem>
 				</itemizedlist>
 			</para>
 				
@@ -269,11 +273,11 @@
 								<xsl:choose>
 									<!-- direct support -->
 									<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'geometry') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geometry')">
-										<entry>&#x2713;</entry>
+										<entry><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></entry>
 									</xsl:when>
 									<!-- support via autocast -->
 									<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'box') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'box')">
-										<entry>&#x2611;</entry>
+										<entry><xsl:value-of select="$matrix_autocast" disable-output-escaping="yes"/></entry>
 									</xsl:when>
 									<!-- no support -->
 									<xsl:otherwise>
@@ -284,11 +288,11 @@
 								<xsl:choose>
 									<!-- Support via geometry transform hack -->
 									<xsl:when test="(contains(refsynopsisdiv/funcsynopsis,'geography') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geography')) and contains($comment,'(T)')">
-										<entry>&#x263A;</entry>
+										<entry><xsl:value-of select="$matrix_transform" disable-output-escaping="yes"/></entry>
 									</xsl:when>
 									<!-- direct support -->
 									<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'geography') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geography')">
-										<entry>&#x2713;</entry>
+										<entry><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></entry>
 									</xsl:when>
 									<!-- no support -->
 									<xsl:otherwise>
@@ -300,7 +304,7 @@
 								<xsl:choose>
 									<!-- supports -->
 									<xsl:when test="contains(.,'This function supports 3d')">
-										<entry>&#x2713;</entry>
+										<entry><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></entry>
 									</xsl:when>
 									<!-- no support -->
 									<xsl:otherwise>
@@ -311,7 +315,7 @@
 								<xsl:choose>
 									<!-- supports -->
 									<xsl:when test="contains(.,'supports Circular Strings')">
-										<entry>&#x2713;</entry>
+										<entry><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></entry>
 									</xsl:when>
 									<!-- no support -->
 									<xsl:otherwise>
@@ -322,7 +326,7 @@
 								<xsl:choose>
 									<!-- supports -->
 									<xsl:when test="contains(.,'implements the SQL/MM')">
-										<entry>&#x2713;</entry>
+										<entry><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></entry>
 									</xsl:when>
 									<!-- no support -->
 									<xsl:otherwise>
