@@ -980,7 +980,8 @@ gisdb=# SELECT
         <title>Dimensionally Extended 9 Intersection Model (DE-9IM)</title>
 
         <para>It is sometimes the case that the typical spatial predicates
-        (ST_Contains, ST_Crosses, ST_Intersects, ST_Touches, ...) are
+        (<xref linkend="ST_Contains" />, <xref linkend="ST_Crosses" />, 
+         <xref linkend="ST_Intersects" />, <xref linkend="ST_Touches" />, ...) are
         insufficient in and of themselves to adequately provide that desired
         spatial filter.</para>
 
