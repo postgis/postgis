@@ -45,6 +45,7 @@
 			<para>Availability: 1.5.0 geography support was introduced.</para>
 			<para>&sfs_compliant; s2.1.1.1</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.37</para>
+			<para>&curve_support;</para>
 		  </refsection>
 
 
