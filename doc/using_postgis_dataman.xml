@@ -994,7 +994,7 @@ gisdb=# SELECT
                   </informalfigure></para><para>For example, consider a linear
                 dataset representing a road network. It may be the task of a
                 GIS analyst to identify all road segments that cross
-                eachother, not at a point, but on a line, perhaps invalidating
+                each other, not at a point, but on a line, perhaps invalidating
                 some business rule. In this case, <xref linkend="ST_Crosses" /> does not
                 adequately provide the necessary spatial filter since, for
                 linear features, it returns <varname>true</varname> only where
@@ -1008,7 +1008,7 @@ gisdb=# SELECT
                 <varname>[MULTI]POINT</varname>s,
                 <varname>[MULTI]LINESTRING</varname>s, etc.).</para> <para>A
                 more elegant / faster solution may indeed be
-                desireable.</para></entry>
+                desirable.</para></entry>
               </row>
             </tbody>
           </tgroup>
@@ -1422,7 +1422,7 @@ gisdb=# SELECT
             </tgroup>
           </informaltable>
 
-          <para>Read from left to right, the dimensional matrix is
+          <para>Read from left to right and from top to bottom, the dimensional matrix is
           represented, '<emphasis role="bold">212101212</emphasis>'.</para>
 
           <para>A relate matrix that would therefore represent our first
@@ -1445,6 +1445,25 @@ SELECT a.lake_id, b.wharf_id
 FROM lakes a, wharfs b
 WHERE a.geom &amp;&amp; b.geom
 AND ST_Relate(a.geom, b.geom, '102101FF2');</programlisting>
+
+          <para>For more information or reading, see:</para>
+          
+          <itemizedlist spacing="compact">
+            <listitem>
+              <para><ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
+          Features Implementation Specification for SQL</ulink> (version 1.1, section 2.1.13.2)</para>
+            </listitem>
+
+            <listitem>
+              <para><ulink url="http://gis.hsr.ch/wiki/images/3/3d/9dem_springer.pdf">Dimensionally 
+              Extended Nine-Intersection Model (DE-9IM) by Christian Strobl</ulink></para>
+            </listitem>
+
+            <listitem>
+              <para><ulink url="http://www.google.ca/url?sa=t&source=web&ct=res&cd=1&ved=0CAkQFDAA&url=http%3A%2F%2Fbooks.google.ca%2Fbooks%3Fid%3D6q2lOfLnwkAC%26dq%3D%2522Encyclopedia%2Bof%2BGIS%2522%2BBy%2BHui%2BXiong%26printsec%3Dfrontcover%26source%3Dbl%26ots%3D-0Xeu8l91l%26sig%3DEc5hKl01KkrfG8YkQbyWo9FC-8s%26hl%3Den%26ei%3DhwUYS_3qOJDWtQPSreyzBA%26sa%3DX%26oi%3Dbook_result%26ct%3Dresult%26resnum%3D1%26ved%3D0CAoQ6AEwAA&ei=hwUYS_3qOJDWtQPSreyzBA&usg=AFQjCNELBiBb7h4nr40k9UW7nxLiMWYmkQ&sig2=zTQ37S--6l61-wnYJwfpQw"><emphasis>Encyclopedia of GIS</emphasis> By Hui Xiong</ulink></para>
+            </listitem>
+          </itemizedlist>
+
         </sect3>
       </sect2>
 	
