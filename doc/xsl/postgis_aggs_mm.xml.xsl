@@ -201,13 +201,16 @@
 					<xsl:variable name="refid">
 						<xsl:value-of select="@id" />
 					</xsl:variable>
+					<xsl:variable name="refname">
+						<xsl:value-of select="refnamediv/refname" />
+					</xsl:variable>
 
 			<!-- For each section if there is note that it implements Circular String catalog it -->
 						<xsl:for-each select="refsection">
 							<xsl:for-each select="para">
 								<xsl:choose>
 									<xsl:when test="contains(.,'supports Circular Strings')">
-										<listitem><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /></listitem>
+										<listitem><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></listitem>
 									</xsl:when>
 								</xsl:choose>
 							</xsl:for-each>
@@ -356,13 +359,18 @@
 						<xsl:variable name="refid">
 							<xsl:value-of select="@id" />
 						</xsl:variable>
+						
+						<xsl:variable name="refname">
+							<xsl:value-of select="refnamediv/refname" />
+						</xsl:variable>
+
 
 				<!-- For each section if there is note about availability in this version -->
 							<xsl:for-each select="refsection">
 								<xsl:for-each select="para">
 									<xsl:choose>
 										<xsl:when test="contains(.,'Availability: 1.5')">
-											<listitem><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="." /><xsl:text> </xsl:text> <xsl:value-of select="$comment" /> </listitem>
+											<listitem><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /><xsl:text> </xsl:text> <xsl:value-of select="$comment" /> </listitem>
 										</xsl:when>
 									</xsl:choose>
 								</xsl:for-each>
