@@ -9,8 +9,6 @@
 --
 ---------------------------------------------------------------------------
 
-BEGIN;
-
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_typmod_in(cstring[])
 	RETURNS integer
@@ -741,5 +739,3 @@ CREATE OR REPLACE FUNCTION ST_Intersection(text, text)
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
-
-COMMIT;
