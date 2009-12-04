@@ -1715,9 +1715,6 @@ INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","srtext","proj4tex
 --- EPSG 4904 : Lisbon 1890 (Lisbon)
 ---
 INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","srtext","proj4text") VALUES (4904,'EPSG',4904,'GEOGCS["Lisbon 1890 (Lisbon)",DATUM["Lisbon_1890_Lisbon",SPHEROID["Bessel 1841",6377397.155,299.1528128,AUTHORITY["EPSG","7004"]],AUTHORITY["EPSG","6904"]],PRIMEM["Lisbon",-9.131906111111112,AUTHORITY["EPSG","8902"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4904"]]','+proj=longlat +ellps=bessel +pm=lisbon +no_defs ');
-COMMIT;
-VACUUM ANALYZE spatial_ref_sys;
-BEGIN;
 ---
 --- EPSG 2000 : Anguilla 1957 / British West Indies Grid
 ---
@@ -15139,4 +15136,4 @@ INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","srtext","proj4tex
 ---
 INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","srtext","proj4text") VALUES (900913,'spatialreferencing.org',900913,'PROJCS["Popular Visualisation CRS / Mercator (deprecated)",GEOGCS["Popular Visualisation CRS",DATUM["Popular_Visualisation_Datum",SPHEROID["Popular Visualisation Sphere",6378137,0,AUTHORITY["EPSG","7059"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6055"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4055"]],UNIT["metre",1,AUTHORITY["EPSG","9001"]],PROJECTION["Mercator_1SP"],PARAMETER["central_meridian",0],PARAMETER["scale_factor",1],PARAMETER["false_easting",0],PARAMETER["false_northing",0],AUTHORITY["EPSG","3785"],AXIS["X",EAST],AXIS["Y",NORTH]]','+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +units=m +k=1.0 +nadgrids=@null +no_defs' );
 COMMIT;
-VACUUM ANALYZE spatial_ref_sys;
+ANALYZE spatial_ref_sys;
