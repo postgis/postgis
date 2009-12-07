@@ -256,14 +256,10 @@ postgis# VACUUM ANALYZE;</programlisting>
           <answer>
             <para>Yes! MapServer understands geography columns as being the same as 
             geometry columns, but always using an SRID of 4326. Just make sure to include
-            a "using srid=4326" clause in your <varname>DATA</varname> statement and. Everything else 
-            works exactly the same as for geometry.</para>
+            a "using srid=4326" clause in your <varname>DATA</varname> statement. Everything else 
+            works exactly the same as with geometry.</para>
 
-            <para>You can specify what unique key for mapserver to use with
-            the <varname>USING UNIQUE</varname> clause in your
-            <varname>DATA</varname> line:</para>
-
-            <programlisting>DATA "the_geom FROM geotable USING UNIQUE gid"</programlisting>
+            <programlisting>DATA "the_geog FROM geogtable USING SRID=4326 USING UNIQUE gid"</programlisting>
 
           </answer>
         </qandaentry>
