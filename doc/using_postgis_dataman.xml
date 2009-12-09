@@ -1510,137 +1510,153 @@ COMMIT;</programlisting>
 	  <programlisting>psql -d [database] -f roads.sql</programlisting>
 	</sect2>
 
-	<sect2>
-	  <title>Using the Loader</title>
+<sect2>
+  <title>Using the Loader</title>
 
-	  <para>The <filename>shp2pgsql</filename> data loader converts ESRI Shape
-	  files into SQL suitable for insertion into a PostGIS/PostgreSQL
-	  database. The loader has several operating modes distinguished by
-	  command line flags:</para>
+  <para>
+    The <filename>shp2pgsql</filename> data loader converts ESRI Shape files into SQL suitable for
+    insertion into a PostGIS/PostgreSQL database. The loader has several operating modes
+    distinguished by command line flags:
+  </para>
 
-	  <variablelist>
-		<varlistentry>
-		  <term>-d</term>
+  <variablelist>
+    <varlistentry>
+      <term>(c|a|d|p) These are mutually exclusive options:</term>
+      <listitem>
+        <para>
+          <variablelist>
+            <varlistentry>
+              <term>-c</term>
+              <listitem>
+                <para>
+                  Creates a new table and populates it from the shapefile. <emphasis>This is the
+                  default mode.</emphasis>
+                </para>
+              </listitem>
+            </varlistentry>
 
-		  <listitem>
-			<para>Drops the database table before creating a new table with
-			the data in the Shape file.</para>
-		  </listitem>
-		</varlistentry>
+            <varlistentry>
+              <term>-a</term>
+              <listitem>
+                <para>
+                  Appends data from the Shape file into the database table. Note that to use this
+                  option to load multiple files, the files must have the same attributes and same
+                  data types.
+                </para>
+              </listitem>
+            </varlistentry>
 
-		<varlistentry>
-		  <term>-a</term>
+            <varlistentry>
+              <term>-d</term>
+              <listitem>
+                <para>
+                  Drops the database table before creating a new table with the data in the Shape
+                  file.
+                </para>
+              </listitem>
+            </varlistentry>
 
-		  <listitem>
-			<para>Appends data from the Shape file into the database table.
-			Note that to use this option to load multiple files, the files
-			must have the same attributes and same data types.</para>
-		  </listitem>
-		</varlistentry>
+            <varlistentry>
+              <term>-p</term>
+              <listitem>
+                <para>
+                  Only produces the table creation SQL code, without adding any actual data. This
+                  can be used if you need to completely separate the table creation and data loading
+                  steps.
+                </para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+        </para>
+      </listitem>
+    </varlistentry>
 
-		<varlistentry>
-		  <term>-c</term>
+    <varlistentry>
+      <term>-D</term>
+      <listitem>
+        <para>
+          Use the PostgreSQL "dump" format for the output data. This can be combined with -a, -c and
+          -d. It is much faster to load than the default "insert" SQL format. Use this for very
+          large data sets.
+        </para>
+      </listitem>
+    </varlistentry>
 
-		  <listitem>
-			<para>Creates a new table and populates it from the Shape file.
-			<emphasis>This is the default mode.</emphasis></para>
-		  </listitem>
-		</varlistentry>
+    <varlistentry>
+      <term>-s &lt;SRID&gt;</term>
+      <listitem>
+        <para>
+          Creates and populates the geometry tables with the specified SRID.
+        </para>
+      </listitem>
+    </varlistentry>
 
-		<varlistentry>
-		  <term>-p</term>
+    <varlistentry>
+      <term>-k</term>
+      <listitem>
+        <para>
+          Keep identifiers' case (column, schema and attributes). Note that attributes in Shapefile
+          are all UPPERCASE.
+        </para>
+      </listitem>
+    </varlistentry>
 
-		  <listitem>
-			<para>Only produces the table creation SQL code, without adding
-			any actual data. This can be used if you need to completely
-			separate the table creation and data loading steps.</para>
-		  </listitem>
-		</varlistentry>
+    <varlistentry>
+      <term>-i</term>
+      <listitem>
+        <para>
+          Coerce all integers to standard 32-bit integers, do not create 64-bit bigints, even if the
+          DBF header signature appears to warrant it.
+        </para>
+      </listitem>
+    </varlistentry>
 
-		<varlistentry>
-		  <term>-D</term>
+    <varlistentry>
+      <term>-I</term>
+      <listitem>
+        <para>
+          Create a GiST index on the geometry column.
+        </para>
+      </listitem>
+    </varlistentry>
 
-		  <listitem>
-			<para>Use the PostgreSQL "dump" format for the output data. This
-			can be combined with -a, -c and -d. It is much faster to load than
-			the default "insert" SQL format. Use this for very large data
-			sets.</para>
-		  </listitem>
-		</varlistentry>
+    <varlistentry>
+      <term>-w</term>
+      <listitem>
+        <para>
+          Output WKT format, for use with older (0.x) versions of PostGIS. Note that this will
+          introduce coordinate drifts and will drop M values from shapefiles.
+        </para>
+      </listitem>
+    </varlistentry>
 
-		<varlistentry>
-		  <term>-s &lt;SRID&gt;</term>
+    <varlistentry>
+      <term>-W &lt;encoding&gt;</term>
+      <listitem>
+        <para>
+          Specify encoding of the input data (dbf file). When used, all attributes of the dbf are
+          converted from the specified encoding to UTF8. The resulting SQL output will contain a
+          <code>SET CLIENT_ENCODING to UTF8</code> command, so that the backend will be able to
+          reconvert from UTF8 to whatever encoding the database is configured to use internally.
+        </para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
 
-		  <listitem>
-			<para>Creates and populates the geometry tables with the specified
-			SRID.</para>
-		  </listitem>
-		</varlistentry>
+  <para>
+    An example session using the loader to create an input file and uploading it might look like
+    this:
+  </para>
 
-		<varlistentry>
-		  <term>-k</term>
-
-		  <listitem>
-			<para>Keep identifiers' case (column, schema and attributes). Note
-			that attributes in Shapefile are all UPPERCASE.</para>
-		  </listitem>
-		</varlistentry>
-
-		<varlistentry>
-		  <term>-i</term>
-
-		  <listitem>
-			<para>Coerce all integers to standard 32-bit integers, do not
-			create 64-bit bigints, even if the DBF header signature appears to
-			warrant it.</para>
-		  </listitem>
-		</varlistentry>
-
-		<varlistentry>
-		  <term>-I</term>
-
-		  <listitem>
-			<para>Create a GiST index on the geometry column.</para>
-		  </listitem>
-		</varlistentry>
-
-		<varlistentry>
-		  <term>-w</term>
-
-		  <listitem>
-			<para>Output WKT format, for use with older (0.x) versions of
-			PostGIS. Note that this will introduce coordinate drifts and will
-			drop M values from shapefiles.</para>
-		  </listitem>
-		</varlistentry>
-
-		<varlistentry>
-		  <term>-W &lt;encoding&gt;</term>
-
-		  <listitem>
-			<para>Specify encoding of the input data (dbf file). When used,
-			all attributes of the dbf are converted from the specified
-			encoding to UTF8. The resulting SQL output will contain a
-			<code>SET CLIENT_ENCODING to UTF8</code> command, so that the
-			backend will be able to reconvert from UTF8 to whatever encoding
-			the database is configured to use internally.</para>
-		  </listitem>
-		</varlistentry>
-	  </variablelist>
-
-	  <para>Note that -a, -c, -d and -p are mutually exclusive.</para>
-
-	  <para>An example session using the loader to create an input file and
-	  uploading it might look like this:</para>
-
-	  <programlisting># shp2pgsql shaperoads myschema.roadstable &gt; roads.sql
+  <programlisting># shp2pgsql -c -D -s 4269 -i -I shaperoads.shp myschema.roadstable &gt; roads.sql
 # psql -d roadsdb -f roads.sql</programlisting>
 
-	  <para>A conversion and upload can be done all in one step using UNIX
-	  pipes:</para>
+  <para>
+    A conversion and upload can be done all in one step using UNIX pipes:
+  </para>
 
-	  <programlisting># shp2pgsql shaperoads myschema.roadstable | psql -d roadsdb</programlisting>
-	</sect2>
+  <programlisting># shp2pgsql shaperoads.shp myschema.roadstable | psql -d roadsdb</programlisting>
+</sect2>
   </sect1>
 
   <sect1>
