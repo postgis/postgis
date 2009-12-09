@@ -1510,7 +1510,7 @@ COMMIT;</programlisting>
 	  <programlisting>psql -d [database] -f roads.sql</programlisting>
 	</sect2>
 
-<sect2>
+<sect2 id="shp2pgsql_usage">
   <title>Using the Loader</title>
 
   <para>
