@@ -52,7 +52,31 @@ static GtkWidget *checkbutton_options_dbfonly;
 /* Other */
 static char *pgui_errmsg = NULL;
 static PGconn *pg_connection;
+static SHPLOADERCONFIG *config;
+static SHPLOADERSTATE *state;
 
+
+/*
+** Write a message to the Import Log text area.
+*/
+static void
+pgui_log_va(const char *fmt, va_list ap)
+{
+	char *msg;
+
+	if (!lw_vasprintf (&msg, fmt, ap)) return;
+
+	gtk_text_buffer_insert_at_cursor(textbuffer_log, msg, -1);
+	gtk_text_buffer_insert_at_cursor(textbuffer_log, "\n", -1);
+	gtk_text_view_scroll_mark_onscreen(GTK_TEXT_VIEW(textview_log), gtk_text_buffer_get_insert(textbuffer_log) );
+
+	/* Allow GTK to process events */
+	while (gtk_events_pending())
+		gtk_main_iteration();
+
+	free(msg);
+	return;
+}
 
 /*
 ** Write a message to the Import Log text area.
@@ -69,24 +93,6 @@ pgui_logf(const char *fmt, ...)
 	return;
 }
 
-/*
-** Write a message to the Import Log text area.
-*/
-void
-pgui_log_va(const char *fmt, va_list ap)
-{
-	char *msg;
-
-	if (!lw_vasprintf (&msg, fmt, ap)) return;
-
-	gtk_text_buffer_insert_at_cursor(textbuffer_log, msg, -1);
-	gtk_text_buffer_insert_at_cursor(textbuffer_log, "\n", -1);
-	gtk_text_view_scroll_mark_onscreen(GTK_TEXT_VIEW(textview_log), gtk_text_buffer_get_insert(textbuffer_log) );
-
-	free(msg);
-	return;
-}
-
 static void
 pgui_seterr(const char *errmsg)
 {
@@ -98,12 +104,173 @@ pgui_seterr(const char *errmsg)
 	return;
 }
 
+static void
+pgui_raise_error_dialogue(void)
+{
+	GtkWidget *dialog, *label;
+	gint result;
 
+	label = gtk_label_new(pgui_errmsg);
+	dialog = gtk_dialog_new_with_buttons("Error", GTK_WINDOW(window_main), 
+	                GTK_DIALOG_MODAL & GTK_DIALOG_NO_SEPARATOR & GTK_DIALOG_DESTROY_WITH_PARENT, 
+	                GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
+	gtk_dialog_set_has_separator ( GTK_DIALOG(dialog), FALSE );
+	gtk_container_set_border_width (GTK_CONTAINER(dialog), 5);
+	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), 15);
+	gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), label);
+	gtk_widget_show_all (dialog);
+	result = gtk_dialog_run(GTK_DIALOG(dialog));
+	gtk_widget_destroy(dialog);
+	return;
+}
+
+/* Terminate the main loop and exit the application. */
+static void
+pgui_quit (GtkWidget *widget, gpointer data)
+{
+	if ( pg_connection) PQfinish(pg_connection);
+	pg_connection = NULL;
+	gtk_main_quit ();
+}
+
+/* Set the global configuration based upon the current UI */
+static void
+pgui_set_config_from_ui()
+{
+	const char *pg_table = gtk_entry_get_text(GTK_ENTRY(entry_config_table));
+	const char *pg_schema = gtk_entry_get_text(GTK_ENTRY(entry_config_schema));
+	const char *pg_geom = gtk_entry_get_text(GTK_ENTRY(entry_config_geocolumn));
+
+	const char *source_file = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_chooser_button_shape));
+
+	const char *entry_srid = gtk_entry_get_text(GTK_ENTRY(entry_config_srid));
+	const char *entry_encoding = gtk_entry_get_text(GTK_ENTRY(entry_options_encoding));
+
+	gboolean preservecase = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_preservecase));
+	gboolean forceint = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_forceint));
+	gboolean createindex = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_autoindex));
+	gboolean dbfonly = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_dbfonly));
+
+	char *c;
+
+
+	/* Set the destination schema, table and column parameters */
+	if (config->table)
+		free(config->table);
+
+	config->table = strdup(pg_table);
+
+	if (config->schema)
+		free(config->schema);
+
+	if (strlen(pg_schema) == 0)
+		config->schema = strdup("public");
+	else
+		config->schema = strdup(pg_schema);
+
+	if (strlen(pg_geom) == 0)
+		config->geom = strdup("the_geom");
+	else
+		config->geom = strdup(pg_geom);
+
+	/* Set the destination filename: note the shp2pgsql core engine simply wants the file
+	   without the .shp extension */
+	if (config->shp_file)
+		free(config->shp_file);
+
+	/* Handle empty selection */
+	if (source_file == NULL)
+		config->shp_file = strdup("");
+	else
+		config->shp_file = strdup(source_file);
+
+	for (c = config->shp_file + strlen(config->shp_file); c >= config->shp_file; c--)
+	{
+		if (*c == '.')
+		{
+			*c = '\0';
+			break;
+		}
+	}
+
+	/* Encoding */
+	if( entry_encoding && strlen(entry_encoding) > 0 ) 
+	{
+		if (config->encoding)
+			free(config->encoding);
+
+		config->encoding = strdup(entry_encoding);
+	}
+	
+	/* SRID */
+	if ( ! ( config->sr_id = atoi(entry_srid) ) ) 
+	{
+		config->sr_id = -1;
+	}
+
+	/* Preserve case */
+	if ( preservecase )
+		config->quoteidentifiers = 1;
+	else
+		config->quoteidentifiers = 0;
+
+	/* No long integers in table */
+	if ( forceint )
+		config->forceint4 = 1;
+	else
+		config->forceint4 = 0;
+	
+	/* Create spatial index after load */
+	if ( createindex )
+		config->createindex = 1;
+	else
+		config->createindex = 0;
+	
+	/* Read the .shp file, don't ignore it */
+	if ( dbfonly )
+		config->readshape = 0;
+	else
+		config->readshape = 1;
+
+	return;
+}
+
+/* Validate the configuration, returning true or false */
+static int
+pgui_validate_config()
+{
+	/* Validate table parameters */
+	if ( ! config->table || strlen(config->table) == 0 )
+	{
+		pgui_seterr("Fill in the destination table.");
+		return 0;
+	}
+
+	if ( ! config->schema || strlen(config->schema) == 0 )
+	{
+		pgui_seterr("Fill in the destination schema.");
+		return 0;
+	}
+
+	if ( ! config->geom || strlen(config->geom) == 0 )
+	{
+		pgui_seterr("Fill in the destination column.");
+		return 0;
+	}
+
+	if ( ! config->shp_file || strlen(config->shp_file) == 0 )
+	{
+		pgui_seterr("Select a shape file to import.");
+		return 0;
+	}
+
+	return 1;
+}
 
 /*
 ** Run a SQL command against the current connection.
 */
-int
+static int
 pgui_exec(const char *sql)
 {
 	PGresult *res = NULL;
@@ -128,7 +295,6 @@ pgui_exec(const char *sql)
 		}
 
 		/* Log errors and return failure. */
-		pgui_logf("Failed record number #%d", cur_entity);
 		pgui_logf("Failed SQL was: %s", sql);
 		pgui_logf("Failed in pgui_exec(): %s", PQerrorMessage(pg_connection));
 		return 0;
@@ -140,7 +306,7 @@ pgui_exec(const char *sql)
 /*
 ** Start the COPY process.
 */
-int
+static int
 pgui_copy_start(const char *sql)
 {
 	PGresult *res = NULL;
@@ -169,7 +335,7 @@ pgui_copy_start(const char *sql)
 /*
 ** Send a line (row) of data into the COPY procedure.
 */
-int
+static int
 pgui_copy_write(const char *line)
 {
 
@@ -181,7 +347,6 @@ pgui_copy_write(const char *line)
 	if ( PQputCopyData(pg_connection, line, strlen(line)) < 0 )
 	{
 		/* Log errors and return failure. */
-		pgui_logf("Failed record number #%d", cur_entity);
 		pgui_logf("Failed row was: %s", line);
 		pgui_logf("Failed in pgui_copy_write(): %s", PQerrorMessage(pg_connection));
 		return 0;
@@ -194,7 +359,7 @@ pgui_copy_write(const char *line)
 /*
 ** Finish the COPY process.
 */
-int
+static int
 pgui_copy_end(const int rollback)
 {
 	char *errmsg = NULL;
@@ -213,58 +378,6 @@ pgui_copy_end(const int rollback)
 	}
 
 	return 1;
-}
-
-static gboolean
-check_translation_stage (gpointer data)
-{
-	int rv = 0;
-	if ( translation_stage == TRANSLATION_IDLE ) return FALSE;
-	if ( translation_stage == TRANSLATION_DONE )
-	{
-		pgui_logf("Import complete.");
-		return FALSE;
-	}
-	if ( translation_stage == TRANSLATION_CREATE )
-	{
-		rv = translation_start();
-		if ( ! rv )
-		{
-			pgui_logf("Import failed.");
-			translation_stage = TRANSLATION_IDLE;
-		}
-		return TRUE;
-	}
-	if ( translation_stage == TRANSLATION_LOAD )
-	{
-		rv = translation_middle();
-		if ( ! rv )
-		{
-			pgui_logf("Import failed.");
-			translation_stage = TRANSLATION_IDLE;
-		}
-		return TRUE;
-	}
-	if ( translation_stage == TRANSLATION_CLEANUP )
-	{
-		rv = translation_end();
-		if ( ! rv )
-		{
-			pgui_logf("Import failed.");
-			translation_stage = TRANSLATION_IDLE;
-		}
-		return TRUE;
-	}
-	return FALSE;
-}
-
-/* Terminate the main loop and exit the application. */
-static void
-pgui_quit (GtkWidget *widget, gpointer data)
-{
-	if ( pg_connection) PQfinish(pg_connection);
-	pg_connection = NULL;
-	gtk_main_quit ();
 }
 
 static char *
@@ -313,225 +426,16 @@ pgui_read_connection(void)
 	return NULL;
 }
 
-static char *
-pgui_read_destination(void)
-{
-	const char *pg_table = gtk_entry_get_text(GTK_ENTRY(entry_config_table));
-	const char *pg_schema = gtk_entry_get_text(GTK_ENTRY(entry_config_schema));
-	const char *pg_geom = gtk_entry_get_text(GTK_ENTRY(entry_config_geocolumn));
-	
-	char *dest_string = NULL;
-
-	if ( ! pg_table || strlen(pg_table) == 0 )
-	{
-		pgui_seterr("Fill in the destination table.");
-		return NULL;
-	}
-	if ( ! pg_schema || strlen(pg_schema) == 0 )
-	{
-		pg_schema = "public";
-	}
-	if ( ! pg_geom || strlen(pg_geom) == 0 )
-	{
-		pg_geom = "the_geom";
-	}
-
-	if ( ! lw_asprintf(&dest_string, "%s.%s", pg_schema, pg_table) )
-	{
-		return NULL;
-	}
-
-	if ( dest_string )
-	{
-		/* Set the schema and table into the globals. */
-		/* TODO change the core code to use dest_string instead */
-		/* and move the global set into the import function. */
-		table = strdup(pg_table);
-		schema = strdup(pg_schema);
-		geom = strdup(pg_geom);
-		return dest_string;
-	}
-	return NULL;
-}
-
-static void
-pgui_raise_error_dialogue(void)
-{
-	GtkWidget *dialog, *label;
-	gint result;
-
-	label = gtk_label_new(pgui_errmsg);
-	dialog = gtk_dialog_new_with_buttons("Error", GTK_WINDOW(window_main), 
-	                GTK_DIALOG_MODAL & GTK_DIALOG_NO_SEPARATOR & GTK_DIALOG_DESTROY_WITH_PARENT, 
-	                GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
-	gtk_dialog_set_has_separator ( GTK_DIALOG(dialog), FALSE );
-	gtk_container_set_border_width (GTK_CONTAINER(dialog), 5);
-	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), 15);
-	gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), label);
-	gtk_widget_show_all (dialog);
-	result = gtk_dialog_run(GTK_DIALOG(dialog));
-	gtk_widget_destroy(dialog);
-	return;
-}
-
-static void
-pgui_action_import(GtkWidget *widget, gpointer data)
-{
-	char *connection_string = NULL;
-	char *dest_string = NULL;
-	char *source_file = NULL;
-	
-	const char *entry_srid = gtk_entry_get_text(GTK_ENTRY(entry_config_srid));
-	const char *entry_encoding = gtk_entry_get_text(GTK_ENTRY(entry_options_encoding));
-
-	/* Do nothing if we're busy */
-	if ( translation_stage > TRANSLATION_IDLE && translation_stage < TRANSLATION_DONE )
-	{
-		return;
-	}
-
-	if ( ! (connection_string = pgui_read_connection() ) )
-	{
-		pgui_raise_error_dialogue();
-		return;
-	}
-
-	if ( ! (dest_string = pgui_read_destination() ) )
-	{
-		pgui_raise_error_dialogue();
-		return;
-	}
-
-	if ( ! (source_file = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_chooser_button_shape))) )
-	{
-		pgui_seterr("Select a shape file to import.");
-		pgui_raise_error_dialogue();
-		return;
-	}
-
-	/* Log what we know so far */
-	pgui_logf("Connection: %s", connection_string);
-	pgui_logf("Destination: %s", dest_string);
-	pgui_logf("Source File: %s", source_file);
-
-	/* Set the shape file into the global. */
-	shp_file = strdup(source_file);
-	g_free(source_file);
-
-	/* Set the mode to "create" in the global. */
-	opt = 'c';
-
-	/* Set the output mode to inserts. */
-	dump_format = 0;
-
-	/* 
-	** Read the options from the options dialogue... 
-	*/
-	
-	/* Encoding */
-	if( entry_encoding && strlen(entry_encoding) > 0 ) 
-	{
-		encoding = strdup(entry_encoding);
-	}
-	
-	/* SRID */
-	if ( ! ( sr_id = atoi(entry_srid) ) ) 
-	{
-		sr_id = -1;
-	}
-
-	/* Preserve case */
-	if( gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_preservecase)) )
-		quoteidentifiers = 1;
-	else
-		quoteidentifiers = 0;
-
-	/* No long integers in table */
-	if( gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_forceint)) )
-		forceint4 = 1;
-	else
-		forceint4 = 0;
-	
-	/* Create spatial index after load */
-	if( gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_autoindex)) )
-		createindex = 1;
-	else
-		createindex = 0;
-	
-	/* Read the .shp file, don't ignore it */
-	if( gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_dbfonly)) )
-		readshape = 0;
-	else
-		readshape = 1;
-
-	/* Connect to the database. */
-	if ( pg_connection ) PQfinish(pg_connection);
-	pg_connection = PQconnectdb(connection_string);
-
-	if (PQstatus(pg_connection) == CONNECTION_BAD)
-	{
-		pgui_logf( "Connection failed: %s", PQerrorMessage(pg_connection));
-		gtk_label_set_text(GTK_LABEL(label_pg_connection_test), "Connection failed.");
-		free(connection_string);
-		free(dest_string);
-		PQfinish(pg_connection);
-		pg_connection = NULL;
-		return;
-	}
-
-	/* add the idle action */
-	cur_entity = -1;
-	translation_stage = TRANSLATION_CREATE;
-	g_idle_add(check_translation_stage, NULL);
-
-	free(connection_string);
-	free(dest_string);
-
-	return;
-
-}
-
-static void
-pgui_action_options(GtkWidget *widget, gpointer data)
-{
-	/* Do nothing if we're busy */
-	if ( translation_stage > TRANSLATION_IDLE && translation_stage < TRANSLATION_DONE )
-	{
-		return;
-	}
-	/* TODO Open the options dialog window here... */
-	pgui_logf("Open the options dialog...");
-	gtk_widget_show_all (window_options);
-	return;
-}
-
 static void
 pgui_action_cancel(GtkWidget *widget, gpointer data)
 {
-	if ( translation_stage > TRANSLATION_IDLE && translation_stage < TRANSLATION_DONE )
-	{
-		pgui_logf("Import stopped.");
-
-		translation_stage = TRANSLATION_IDLE; /* return to idle if we are running */
-	}
-	else
-	{
-		pgui_quit(widget, data); /* quit if we're not running */
-	}
-	return;
+	pgui_quit(widget, data); /* quit if we're not running */
 }
 
 static void
 pgui_action_connection_test(GtkWidget *widget, gpointer data)
 {
 	char *connection_string = NULL;
-
-	/* Do nothing if we're busy */
-	if ( translation_stage > TRANSLATION_IDLE && translation_stage < TRANSLATION_DONE )
-	{
-		return;
-	}
-
 
 	if ( ! (connection_string = pgui_read_connection()) )
 	{
@@ -564,6 +468,15 @@ pgui_action_connection_test(GtkWidget *widget, gpointer data)
 }
 
 static void
+pgui_action_options(GtkWidget *widget, gpointer data)
+{
+	/* TODO Open the options dialog window here... */
+	pgui_logf("Open the options dialog...");
+	gtk_widget_show_all (window_options);
+	return;
+}
+
+static void
 pgui_action_close_options(GtkWidget *widget, gpointer data)
 {
 	gtk_widget_hide_all (window_options);
@@ -592,26 +505,233 @@ pgui_action_shape_file_set(GtkWidget *widget, gpointer data)
 
 	/* Roll back from end to first slash character. */
 	table_start = shp_file + shp_file_len;
-	while( *table_start != '/' && *table_start != '\\' && table_start > shp_file) {
+	while ( *table_start != '/' && *table_start != '\\' && table_start > shp_file) {
 		table_start--;
 	}
 	table_start++; /* Forward one to start of actual characters. */
 
 	/* Roll back from end to first . character. */
 	table_end = shp_file + shp_file_len;
-	while( *table_end != '.' && table_end > shp_file && table_end > table_start ) {
+	while ( *table_end != '.' && table_end > shp_file && table_end > table_start ) {
 		table_end--;
 	}
 	
 	/* Copy the table name into a fresh memory slot. */
-	table = lwalloc(table_end - table_start + 1);
+	table = malloc(table_end - table_start + 1);
 	memcpy(table, table_start, table_end - table_start);
 	table[table_end - table_start + 1] = '\0';
 
-	/* Set the table name into the entry. */
+	/* Set the table name into the configuration */
+	config->table = table;
+
 	gtk_entry_set_text(GTK_ENTRY(entry_config_table), table);
 	
-	lwfree(shp_file);
+	free(shp_file);
+}
+
+static void
+pgui_action_import(GtkWidget *widget, gpointer data)
+{
+	char *connection_string = NULL;
+	char *dest_string = NULL;
+	int ret, i;
+	char *header, *footer, *record;	
+
+
+	if ( ! (connection_string = pgui_read_connection() ) )
+	{
+		pgui_raise_error_dialogue();
+		return;
+	}
+
+	/* 
+	** Set the configuration from the UI and validate
+	*/
+	pgui_set_config_from_ui();
+	if (! pgui_validate_config() )
+	{
+		pgui_raise_error_dialogue();
+		free(connection_string);
+
+		return;
+	}
+
+	/* Log what we know so far */
+	pgui_logf("Connection: %s", connection_string);
+	pgui_logf("Destination: %s.%s", config->schema, config->table);
+	pgui_logf("Source File: %s", config->shp_file);
+
+	/* Connect to the database. */
+	if ( pg_connection ) PQfinish(pg_connection);
+	pg_connection = PQconnectdb(connection_string);
+
+	if (PQstatus(pg_connection) == CONNECTION_BAD)
+	{
+		pgui_logf( "Connection failed: %s", PQerrorMessage(pg_connection));
+		gtk_label_set_text(GTK_LABEL(label_pg_connection_test), "Connection failed.");
+		free(connection_string);
+		free(dest_string);
+		PQfinish(pg_connection);
+		pg_connection = NULL;
+		return;
+	}
+
+	/*
+	 * Loop through the items in the shapefile
+	 */
+
+	/* Create the shapefile state object */
+	state = ShpLoaderCreate(config);
+
+	/* Open the shapefile */
+	ret = ShpLoaderOpenShape(state);
+	if (ret != SHPLOADEROK)
+	{
+		pgui_logf("%s", state->message);
+
+		if (ret == SHPLOADERERR)
+			return;
+	}
+
+	/* If reading the whole shapefile, display its type */
+	if (state->config->readshape)
+	{
+		pgui_logf("Shapefile type: %s", SHPTypeName(state->shpfiletype));
+		pgui_logf("Postgis type: %s[%d]", state->pgtype, state->pgdims);
+	}
+
+	/* Get the header */
+	ret = ShpLoaderGetSQLHeader(state, &header);
+	if (ret != SHPLOADEROK)
+	{
+		pgui_logf("%s", state->message);
+
+		if (ret == SHPLOADERERR)
+			return;
+	}
+
+	/* Send the header to the remote server: if we are in COPY mode then the last
+	   statement will be a COPY and so will change connection mode */
+	ret = pgui_exec(header);
+	free(header);
+
+	if (!ret)
+		return;
+
+	/* If we are in COPY (dump format) mode, output the COPY statement and enter COPY mode */
+	if (state->config->dump_format)
+	{
+		ret = ShpLoaderGetSQLCopyStatement(state, &header);
+		if (ret != SHPLOADEROK)
+		{
+			pgui_logf("%s", state->message);
+	
+			if (ret == SHPLOADERERR)
+				return;
+		}
+
+		/* Send the result to the remote server: this should put us in COPY mode */
+		ret = pgui_copy_start(header);
+		free(header);
+
+		if (!ret)
+			return;
+	}
+
+	/* Main loop: iterate through all of the records and send them to stdout */
+	for (i = 0; i < ShpLoaderGetRecordCount(state); i++)
+	{
+		ret = ShpLoaderGenerateSQLRowStatement(state, i, &record);
+
+		switch(ret)
+		{
+			case SHPLOADEROK:
+				/* Simply send the statement */
+				if (state->config->dump_format)
+					ret = pgui_copy_write(record);
+				else
+					ret = pgui_exec(record);
+
+				/* Display a record number if we failed */
+				if (!ret)
+					pgui_logf("Failed record number #%d", i);
+
+				free(record);
+				break;
+
+			case SHPLOADERERR:
+				/* Display the error message then stop */
+				pgui_logf("%s\n", state->message);
+				return;
+				break;
+
+			case SHPLOADERWARN:
+				/* Display the warning, but continue */
+				pgui_logf("%s\n", state->message);
+
+				if (state->config->dump_format)
+					ret = pgui_copy_write(record);
+				else
+					ret = pgui_exec(record);
+
+				/* Display a record number if we failed */
+				if (!ret)
+					pgui_logf("Failed record number #%d", i);
+
+				free(record);
+				break;
+
+			case SHPLOADERRECDELETED:
+				/* Record is marked as deleted - ignore */
+				break;
+
+			case SHPLOADERRECISNULL:
+				/* Record is NULL and should be ignored according to NULL policy */
+				break;
+		}
+
+		/* Allow GTK events to get a look in */
+		while (gtk_events_pending())
+			gtk_main_iteration();
+	}
+
+	/* If we are in COPY (dump format) mode, leave COPY mode */
+	if (state->config->dump_format)
+	{
+		if (! pgui_copy_end(0) )
+			return;
+	}
+
+	/* Get the footer */
+	ret = ShpLoaderGetSQLFooter(state, &footer);
+	if (ret != SHPLOADEROK)
+	{
+		pgui_logf("%s\n", state->message);
+
+		if (ret == SHPLOADERERR)
+			return;
+	}
+
+	/* Send the footer to the server */
+	ret = pgui_exec(footer);
+	free(footer);
+
+	if (!ret)
+		return;
+
+	/* Free the state object */
+	ShpLoaderDestroy(state);
+
+
+	/* Tidy up */
+	free(connection_string);
+	free(dest_string);
+
+	/* Disconnect from the database */
+	PQfinish(pg_connection);
+	pg_connection = NULL;
+
+	return;
 }
 
 static void
@@ -888,6 +1008,9 @@ pgui_create_main_window(void)
 int
 main(int argc, char *argv[])
 {
+	/* Setup the configuration */
+	config = malloc(sizeof(SHPLOADERCONFIG));
+	set_config_defaults(config);
 
 	/* initialize the GTK stack */
 	gtk_init(&argc, &argv);
@@ -896,16 +1019,11 @@ main(int argc, char *argv[])
 	pgui_create_main_window();
 	pgui_create_options_dialogue();
 	
-	/* set up and global variables we want before running */
-	gui_mode = 1;
-
 	/* start the main loop */
 	gtk_main();
 
+	/* Free the configuration */
+	free(config);
+
 	return 0;
 }
-
-/**********************************************************************
- * $Log$
- *
- **********************************************************************/

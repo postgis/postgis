@@ -4,6 +4,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
  * Copyright 2008 OpenGeo.org
+ * Copyright 2009 Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -15,210 +16,297 @@
 #include <unistd.h>
 #include "shp2pgsql-core.h"
 
+
 static void
-pcli_usage(char *me, int exitcode, FILE* out)
+usage()
 {
-    fprintf(out, "RCSID: %s RELEASE: %s\n", RCSID, POSTGIS_VERSION);
-	fprintf(out, "USAGE: %s [<options>] <shapefile> [<schema>.]<table>\n", me);
-	fprintf(out, "OPTIONS:\n");
-	fprintf(out, "  -s <srid>  Set the SRID field. If not specified it defaults to -1.\n");
-	fprintf(out, "  (-d|a|c|p) These are mutually exclusive options:\n");
-	fprintf(out, "      -d  Drops the table, then recreates it and populates\n");
-	fprintf(out, "          it with current shape file data.\n");
-	fprintf(out, "      -a  Appends shape file into current table, must be\n");
-	fprintf(out, "          exactly the same table schema.\n");
-	fprintf(out, "      -c  Creates a new table and populates it, this is the\n");
-	fprintf(out, "          default if you do not specify any options.\n");
- 	fprintf(out, "      -p  Prepare mode, only creates the table.\n");
-	fprintf(out, "  -g <geometry_column> Specify the name of the geometry column\n");
-	fprintf(out, "     (mostly useful in append mode).\n");
-	fprintf(out, "  -D  Use postgresql dump format (defaults to sql insert statments.\n");
-	fprintf(out, "  -k  Keep postgresql identifiers case.\n");
-	fprintf(out, "  -i  Use int4 type for all integer dbf fields.\n");
-	fprintf(out, "  -I  Create a GiST index on the geometry column.\n");
-	fprintf(out, "  -S  Generate simple geometries instead of MULTI geometries.\n");
+	printf("RCSID: %s RELEASE: %s\n", RCSID, POSTGIS_VERSION);
+	printf("USAGE: shp2pgsql [<options>] <shapefile> [<schema>.]<table>\n");
+	printf("OPTIONS:\n");
+	printf("  -s <srid>  Set the SRID field. If not specified it defaults to -1.\n");
+	printf("  (-d|a|c|p) These are mutually exclusive options:\n");
+	printf("      -d  Drops the table, then recreates it and populates\n");
+	printf("          it with current shape file data.\n");
+	printf("      -a  Appends shape file into current table, must be\n");
+	printf("          exactly the same table schema.\n");
+	printf("      -c  Creates a new table and populates it, this is the\n");
+	printf("          default if you do not specify any options.\n");
+ 	printf("      -p  Prepare mode, only creates the table.\n");
+	printf("  -g <geometry_column> Specify the name of the geometry column\n");
+	printf("     (mostly useful in append mode).\n");
+	printf("  -D  Use postgresql dump format (defaults to sql insert statments.\n");
+	printf("  -k  Keep postgresql identifiers case.\n");
+	printf("  -i  Use int4 type for all integer dbf fields.\n");
+	printf("  -I  Create a GiST index on the geometry column.\n");
+	printf("  -S  Generate simple geometries instead of MULTI geometries.\n");
 #ifdef HAVE_ICONV
-	fprintf(out, "  -W <encoding> Specify the character encoding of Shape's\n");
-	fprintf(out, "     attribute column. (default : \"ASCII\")\n");
+	printf("  -W <encoding> Specify the character encoding of Shape's\n");
+	printf("     attribute column. (default : \"ASCII\")\n");
 #endif
-	fprintf(out, "  -N <policy> Specify NULL geometries handling policy (insert,skip,abort)\n");
-	fprintf(out, "  -n  Only import DBF file.\n");
-    fprintf(out, "  -? Display this help screen\n");
-	exit (exitcode);
+	printf("  -N <policy> Specify NULL geometries handling policy (insert,skip,abort)\n");
+	printf("  -n  Only import DBF file.\n");
+	printf("  -? Display this help screen\n");
 }
 
 
-static int
-pcli_cmdline(int ARGC, char **ARGV)
+int
+main (int argc, char **argv)
 {
-	int c;
-	int curindex=0;
-	char  *ptr;
-	extern char *optarg;
-	extern int optind;
+	SHPLOADERCONFIG *config;
+	SHPLOADERSTATE *state;
+	char *header, *footer, *record;
+	char c;
+	int ret, i;
 
-	if ( ARGC == 1 ) {
-		pcli_usage(ARGV[0], 0, stdout);
+
+	/* If no options are specified, display usage */
+	if (argc == 1) {
+		usage();
+		exit(0);
 	}
 
-	while ((c = pgis_getopt(ARGC, ARGV, "kcdapDs:Sg:iW:wIN:n")) != EOF){
-		switch (c) {
+	/* Parse command line options and set configuration */
+	config = malloc(sizeof(SHPLOADERCONFIG));
+	set_config_defaults(config);
+
+	while ((c = pgis_getopt(argc, argv, "kcdapDs:Sg:iW:wIN:n")) != EOF)
+	{
+		switch (c)
+		{
 			case 'c':
-				if (opt == ' ')
-					 opt ='c';
-				else
-					 return 0;
-				break;
 			case 'd':
-				if (opt == ' ')
-					 opt ='d';
-				else
-					 return 0;
-				break;
 			case 'a':
-				if (opt == ' ')
-					 opt ='a';
-				else
-					 return 0;
-				break;
 			case 'p':
-				if (opt == ' ')
-					 opt ='p';
+				if (config->opt == ' ')
+					config->opt = c;
 				else
-					 return 0;
+					/* Only one of these options can be chosen */
+					usage();
+					exit(0);
 				break;
+
 			case 'D':
-				dump_format =1;
+				config->dump_format = 1;
 				break;
+
 			case 'S':
-				simple_geometries =1;
+				config->simple_geometries = 1;
 				break;
+
 			case 's':
-				if( optarg ) 
-					(void)sscanf(optarg, "%d", &sr_id);
+				if (optarg) 
+					sscanf(optarg, "%d", &(config->sr_id));
 				else 
-					pcli_usage(ARGV[0], 0, stdout); 
+					/* With -s, user must specify SRID */
+					usage();
+					exit(0);
 				break;
+
 			case 'g':
-				geom = optarg;
+				config->geom = optarg;
 				break;
+
 			case 'k':
-				quoteidentifiers = 1;
+				config->quoteidentifiers = 1;
 				break;
+
 			case 'i':
-				forceint4 = 1;
+				config->forceint4 = 1;
 				break;
+
 			case 'I':
-				createindex = 1;
+				config->createindex = 1;
 				break;
+
+			case 'w':
+				config->hwgeom = 1;
+				break;
+
 			case 'n':
-				readshape = 0;
+				config->readshape = 0;
 				break;
+
 			case 'W':
 #ifdef HAVE_ICONV
-				encoding = optarg;
+				config->encoding = optarg;
 #else
 				fprintf(stderr, "WARNING: the -W switch will have no effect. UTF8 disabled at compile time\n");
 #endif
 				break;
+
 			case 'N':
 				switch (optarg[0])
 				{	
 					case 'a':
-						null_policy = abort_on_null;
+						config->null_policy = POLICY_NULL_ABORT;
 						break;
 					case 'i':
-						null_policy = insert_null;
+						config->null_policy = POLICY_NULL_INSERT;
 						break;
 					case 's':
-						null_policy = skip_null;
+						config->null_policy = POLICY_NULL_SKIP;
 						break;
 					default:
 						fprintf(stderr, "Unsupported NULL geometry handling policy.\nValid policies: insert, skip, abort\n");
 						exit(1);
 				}
 				break;
+
 			case '?':
-				pcli_usage(ARGV[0], 0, stdout); 
-			default:              
-				return 0;
+				usage();
+				exit(0);
+
+			default:
+				usage();
+				exit(0);
 		}
 	}
 
-	if ( !sr_id ) sr_id = -1;
+	/* Determine the shapefile name from the next argument */
+	if (optind < argc)
+	{
+		config->shp_file = argv[optind];
+		optind++;
+	}	
 
-	if ( !geom ) geom = "the_geom";
+	/* Determine the table and schema names from the next argument */
+	if (optind < argc)
+	{
+		char *ptr;
 
-	if ( opt==' ' ) opt = 'c';
+		ptr = strchr(argv[optind], '.');
 
-	for (; optind < ARGC; optind++){
-		if(curindex ==0){
-			shp_file = ARGV[optind];
-		}else if(curindex == 1){
-			table = ARGV[optind];
-			if ( (ptr=strchr(table, '.')) )
-			{
-				*ptr = '\0';
-				schema = table;
-				table = ptr+1;
-			}
+		/* Schema qualified table name */
+		if (ptr)
+		{
+			config->schema = malloc(strlen(argv[optind]) + 1);
+			snprintf(config->schema, ptr - argv[optind] + 1, "%s", argv[optind]);
+
+			config->table = malloc(strlen(argv[optind]));
+			snprintf(config->table, strlen(argv[optind]) - strlen(config->schema), "%s", ptr + 1);
 		}
-		curindex++;
+		else
+		{
+			config->table = malloc(strlen(argv[optind]) + 1);
+			strcpy(config->table, argv[optind]);
+		}
 	}
 	
-	/*
-	 * Third argument (if present) is supported for compatibility
-	 * with old shp2pgsql versions taking also database name.
-	 */
-	if(curindex < 2 || curindex > 3){
-		return 0;
-	}
-
-	/* 
-	 * Transform table name to lower case unless asked
-	 * to keep original case (we'll quote it later on)
-	 */
-	if ( ! quoteidentifiers )
+	/* Transform table name to lower case if no quoting specified */
+	if (!config->quoteidentifiers)
 	{
-		LowerCase(table);
-		if ( schema ) LowerCase(schema);
+		strtolower(config->table);
+		if (config->schema)
+			strtolower(config->schema);
 	}
 
-	return 1;
-}
+	/* Create the shapefile state object */
+	state = ShpLoaderCreate(config);
 
-int
-main (int ARGC, char **ARGV)
-{
+	/* Open the shapefile */
+	ret = ShpLoaderOpenShape(state);
+	if (ret != SHPLOADEROK)
+	{
+		fprintf(stderr, "%s\n", state->message);
 
-	int rv = 0;
+		if (ret == SHPLOADERERR)
+			exit(1);
+	}
 
-	/* Emit output to stdout/stderr, not a GUI */
-	gui_mode = 0;
+	/* If reading the whole shapefile, display its type */
+	if (state->config->readshape)
+	{
+		fprintf(stderr, "Shapefile type: %s\n", SHPTypeName(state->shpfiletype));
+		fprintf(stderr, "Postgis type: %s[%d]\n", state->pgtype, state->pgdims);
+	}
 
-	/* Parse command line options and set globals */
-	if ( ! pcli_cmdline(ARGC, ARGV) ) pcli_usage(ARGV[0], 2, stderr);
+	/* Print the header to stdout */
+	ret = ShpLoaderGetSQLHeader(state, &header);
+	if (ret != SHPLOADEROK)
+	{
+		fprintf(stderr, "%s\n", state->message);
 
-	/* Set record number to beginning of file, and translation stage to first one */
-	cur_entity = -1;
-	translation_stage = 1;
+		if (ret == SHPLOADERERR)
+			exit(1);
+	}
+
+	printf("%s", header);
+	free(header);
+
+	/* If in COPY mode, output the COPY statement */
+	if (state->config->dump_format)
+	{
+		ret = ShpLoaderGetSQLCopyStatement(state, &header);
+		if (ret != SHPLOADEROK)
+		{
+			fprintf(stderr, "%s\n", state->message);
 	
-	rv = translation_start();
-	if( ! rv ) return 1;
-	while( translation_stage == 2 ) 
-	{
-		rv = translation_middle();
-		if( ! rv ) return 1;
+			if (ret == SHPLOADERERR)
+				exit(1);
+		}
+
+		printf("%s", header);
+		free(header);
 	}
-	rv = translation_end();
-	if( ! rv ) return 1;
+
+	/* Main loop: iterate through all of the records and send them to stdout */
+	for (i = 0; i < ShpLoaderGetRecordCount(state); i++)
+	{
+		ret = ShpLoaderGenerateSQLRowStatement(state, i, &record);
+
+		switch(ret)
+		{
+			case SHPLOADEROK:
+				/* Simply display the geometry */
+				printf("%s\n", record);
+				free(record);
+				break;
+
+			case SHPLOADERERR:
+				/* Display the error message then stop */
+				fprintf(stderr, "%s\n", state->message);
+				exit(1);
+				break;
+
+			case SHPLOADERWARN:
+				/* Display the warning, but continue */
+				fprintf(stderr, "%s\n", state->message);
+				printf("%s\n", record);
+				free(record);
+				break;
+
+			case SHPLOADERRECDELETED:
+				/* Record is marked as deleted - ignore */
+				break;
+
+			case SHPLOADERRECISNULL:
+				/* Record is NULL and should be ignored according to NULL policy */
+				break;
+		}
+	}
+
+	/* Print the footer to stdout */
+	ret = ShpLoaderGetSQLFooter(state, &footer);
+	if (ret != SHPLOADEROK)
+	{
+		fprintf(stderr, "%s\n", state->message);
+
+		if (ret == SHPLOADERERR)
+			exit(1);
+	}
+
+	printf("%s", footer);
+	free(footer);
+
+
+	/* Free the state object */
+	ShpLoaderDestroy(state);
+
+	/* Free configuration variables */
+	if (config->schema)
+		free(config->schema);
+	free(config->table);
+	free(config);
 
 	return 0;
-
 }
-
-
-/**********************************************************************
- * $Log$
- *
- **********************************************************************/

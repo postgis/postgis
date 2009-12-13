@@ -4,6 +4,8 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
  * Copyright 2001-2003 Refractions Research Inc.
+ * Copyright 2009 Paul Ramsey
+ * Copyright 2009 Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.

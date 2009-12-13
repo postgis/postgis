@@ -3,206 +3,126 @@
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
- * Copyright 2001-2003 Refractions Research Inc.
  * Copyright 2008 OpenGeo.org
- *
+ * Copyright 2009 Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
  *
- **********************************************************************
- * Using shapelib 1.2.8, this program reads in shape files and
- * processes it's contents into a Insert statements which can be
- * easily piped into a database frontend.
- * Specifically designed to insert type 'geometry' (a custom
- * written PostgreSQL type) for the shape files and PostgreSQL
- * standard types for all attributes of the entity.
- *
  * Maintainer: Paul Ramsey <pramsey@opengeo.org>
- * Original Author: Jeff Lounsbury <jeffloun@refractions.net>
  *
  **********************************************************************/
 
-#include "../postgis_config.h"
 #include "shp2pgsql-core.h"
 
-#define	POINTTYPE	1
-#define	LINETYPE	2
-#define	POLYGONTYPE	3
-#define	MULTIPOINTTYPE	4
-#define	MULTILINETYPE	5
-#define	MULTIPOLYGONTYPE	6
-#define	COLLECTIONTYPE	7
 
-#define WKBZOFFSET 0x80000000
-#define WKBMOFFSET 0x40000000
-
-
-typedef struct
+/* Internal ring/point structures */
+typedef struct struct_point
 {
 	double x, y, z, m;
-}
-Point;
+} Point;
 
-typedef struct Ring
+typedef struct struct_ring
 {
 	Point *list;		/* list of points */
-	struct Ring  *next;
+	struct struct_ring *next;
 	int n;			/* number of points in list */
 	unsigned int linked; 	/* number of "next" rings */
-}
-Ring;
+} Ring;
 
 
-/* Public globals */
-int dump_format = 0; /* 0 = SQL inserts, 1 = dump */
-int simple_geometries = 0; /* 0 = MULTIPOLYGON/MULTILINESTRING, 1 = force to POLYGON/LINESTRING */
-int quoteidentifiers = 0; /* 0 = columnname, 1 = "columnName" */
-int forceint4 = 0; /* 0 = allow int8 fields, 1 = no int8 fields */
-int createindex = 0; /* 0 = no index, 1 = create index after load */
-int readshape = 1; /* 0 = load DBF file only, 1 = load everything */
-char opt = ' '; /* load mode: c = create, d = delete, a = append, p = prepare */
-char *table = NULL; /* table to load into */
-char *schema = NULL; /* schema to load into */
-char *geom = NULL; /* geometry column name to use */
-#ifdef HAVE_ICONV
-char *encoding = NULL; /* iconv encoding name */
-#endif
-int null_policy = insert_null; /* how to handle nulls */
-int sr_id = 0; /* SRID specified */
-char *shp_file = NULL; /* the shape file (without the .shp extension) */
-int gui_mode = 0; /* 1 = GUI, 0 = commandline */
-int translation_stage = TRANSLATION_IDLE;
-
-/* Private globals */
-stringbuffer_t *sb_row; /* stringbuffer to append results to */
-char    *col_names = NULL;
-char	*pgtype;
-int	istypeM = 0;
-int	pgdims;
-unsigned int wkbtype;
-DBFFieldType *types;	/* Fields type, width and precision */
-SHPHandle  hSHPHandle;
-DBFHandle  hDBFHandle;
-int shpfiletype;
-SHPObject  *obj=NULL;
-int 	*widths;
-int 	*precisions;
-int     num_fields,num_records,num_entities;
-int cur_entity = -1;
-char    **field_names;
-
-
-/* Prototypes */
-int Insert_attributes(DBFHandle hDBFHandle, int row);
-char *escape_copy_string(char *str);
-char *escape_insert_string(char *str);
-int PIP( Point P, Point* V, int n );
-int CreateTable(void);
-int CreateIndex(void);
-void usage(char *me, int exitcode, FILE* out);
-int InsertPoint(void);
-int InsertPolygon(void);
-int InsertLineString(void);
-int OutputGeometry(char *geometry);
-void SetPgType(void);
-#ifdef HAVE_ICONV
-char *utf8(const char *fromcode, char *inputbuf);
-#endif
-int FindPolygons(SHPObject *obj, Ring ***Out);
-void ReleasePolygons(Ring **polys, int npolys);
-int DropTable(char *schema, char *table, char *geom);
-void GetFieldsSpec(void);
-int LoadData(void);
-int OpenShape(void);
-void LowerCase(char *s);
-void Cleanup(void);
-
-static int
-pgis_exec(const char *sql)
-{
-#ifdef PGUI
-	return pgui_exec(sql);
-#else
-	printf("%s;\n", sql);
-	return 1;
-#endif
-}
-
-static int
-pgis_copy_write(const char *line)
-{
-#ifdef PGUI
-	return pgui_copy_write(line);
-#else
-	printf("%s", line);
-	return 1;
-#endif
-}
-
-static int
-pgis_copy_start(const char *sql)
-{
-#ifdef PGUI
-	return pgui_copy_start(sql);
-#else
-	printf("%s;\n", sql);
-	return 1;
-#endif
-}
-
-static int
-pgis_copy_end(const int rollback)
-{
-#ifdef PGUI
-	return pgui_copy_end(rollback);
-#else
-	printf("\\.\n");
-	return 1;
-#endif
-}
-
-static void
-pgis_logf(const char *fmt, ... )
-{
-#ifndef PGUI
-	char *msg;
-#endif
-	va_list ap;
-
-	va_start(ap, fmt);
-
-#ifdef PGUI
-	pgui_log_va(fmt, ap);
-#else
-	if (!lw_vasprintf (&msg, fmt, ap))
-	{
-		va_end (ap);
-		return;
-	}
-	fprintf(stderr, "%s\n", msg);
-	free(msg);
-#endif
-	va_end(ap);
-}
-
-/** liblwgeom allocator callback - install the defaults (malloc/free/stdout/stderr) */
-/**
-	TODO: hook lwnotice/lwerr up to the GUI
-	*/
+/* liblwgeom allocator callback - install the defaults (malloc/free/stdout/stderr) */
 void lwgeom_init_allocators()
 {
 	lwgeom_install_default_allocators();
 }
 
 
-/**
- * Escape input string suitable for COPY
+/*
+ * Internal functions
  */
 
+#ifdef HAVE_ICONV
+char *utf8(const char *fromcode, char *inputbuf);
+#endif
+void vasbappend(stringbuffer_t *sb, char *fmt, ... );
+char *escape_copy_string(char *str);
+char *escape_insert_string(char *str);
+
+int GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry);
+int GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry);
+int PIP(Point P, Point *V, int n);
+int FindPolygons(SHPObject *obj, Ring ***Out);
+void ReleasePolygons(Ring **polys, int npolys);
+int GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry);
+
+
+/* Append variadic formatted string to a stringbuffer */
+void
+vasbappend(stringbuffer_t *sb, char *fmt, ... )
+{
+	va_list ap;
+	char *msg;
+
+	va_start(ap, fmt);
+
+	if (!lw_vasprintf (&msg, fmt, ap))
+	{
+		va_end (ap);
+		return;
+	}
+
+	/* Append to the stringbuffer */
+	stringbuffer_append(sb, msg);
+	free(msg);
+
+	va_end(ap);
+}
+
+
+#ifdef HAVE_ICONV
+/* Return allocated string containing UTF8 string converted from encoding fromcode */
+char *
+utf8(const char *fromcode, char *inputbuf)
+{
+	iconv_t cd;
+	char *outputptr;
+	char *outputbuf;
+	size_t outbytesleft;
+	size_t inbytesleft;
+
+	inbytesleft = strlen(inputbuf);
+
+	cd = iconv_open("UTF-8", fromcode);
+	if (cd == (iconv_t) - 1)
+		return NULL;
+
+	outbytesleft = inbytesleft * 3 + 1; /* UTF8 string can be 3 times larger */
+					/* then local string */
+	outputbuf = (char *)malloc(outbytesleft);
+	if (!outputbuf)
+		return NULL;
+	
+	memset(outputbuf, 0, outbytesleft);
+	outputptr = outputbuf;
+
+	if (-1 == iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft))
+		return NULL;
+
+	iconv_close (cd);
+
+	return outputbuf;
+}
+#endif
+
+
+/**
+ * Escape input string suitable for COPY. If no characters require escaping, simply return
+ * the input pointer. Otherwise return a new allocated string.
+ */
 char *
 escape_copy_string(char *str)
 {
-	/**
+	/*
 	 * Escape the following characters by adding a preceding backslash
 	 *      tab, backslash, cr, lf
 	 *
@@ -215,57 +135,45 @@ escape_copy_string(char *str)
 	char *ptr, *optr;
 	int toescape = 0;
 	size_t size;
-#ifdef HAVE_ICONV
-	char *utf8str=NULL;
 
-	if ( encoding )
+	ptr = str;
+
+	/* Count how many characters we need to escape so we know the size of the string we need to return */
+	while (*ptr)
 	{
-		utf8str=utf8(encoding, str);
-		if ( ! utf8str ) exit(1);
-		str = utf8str;
-	}
-#endif
+		if (*ptr == '\t' || *ptr == '\\' || *ptr == '\n' || *ptr == '\r')
+			toescape++;
 
+		ptr++;
+	}
+
+	/* If we don't have to escape anything, simply return the input pointer */
+	if (toescape == 0)
+		return str;
+
+	size = ptr - str + toescape + 1;
+	result = calloc(1, size);
+	optr = result;
 	ptr = str;
 
 	while (*ptr)
 	{
-		if ( *ptr == '\t' || *ptr == '\\' ||
-			*ptr == '\n' || *ptr == '\r' )
-				toescape++;
-		ptr++;
+		if ( *ptr == '\t' || *ptr == '\\' || *ptr == '\n' || *ptr == '\r' )
+			*optr++ = '\\';
+
+		*optr++ = *ptr++;
 	}
 
-	if (toescape == 0) return str;
-
-	size = ptr-str+toescape+1;
-
-	result = calloc(1, size);
-
-	optr=result;
-	ptr=str;
-	while (*ptr)
-	{
-		if ( *ptr == '\t' || *ptr == '\\' ||
-			*ptr == '\n' || *ptr == '\r' )
-				*optr++='\\';
-				*optr++=*ptr++;
-	}
-	*optr='\0';
-
-#ifdef HAVE_ICONV
-	if ( encoding ) free(str);
-#endif
+	*optr = '\0';
 
 	return result;
-
 }
 
 
 /**
- * Escape input string suitable for INSERT
+ * Escape input string suitable for INSERT. If no characters require escaping, simply return
+ * the input pointer. Otherwise return a new allocated string.
  */
-
 char *
 escape_insert_string(char *str)
 {
@@ -276,646 +184,161 @@ escape_insert_string(char *str)
 	 * 2. make new string
 	 */
 
-	char	*result;
-	char	*ptr, *optr;
-	int	toescape = 0;
+	char *result;
+	char *ptr, *optr;
+	int toescape = 0;
 	size_t size;
-#ifdef HAVE_ICONV
-	char *utf8str=NULL;
 
-	if ( encoding )
+	ptr = str;
+
+	/* Count how many characters we need to escape so we know the size of the string we need to return */
+	while (*ptr)
 	{
-		utf8str=utf8(encoding, str);
-		if ( ! utf8str ) exit(1);
-		str = utf8str;
-	}
-#endif
+		if (*ptr == '\'')
+			toescape++;
 
+		ptr++;
+	}
+
+	/* If we don't have to escape anything, simply return the input pointer */
+	if (toescape == 0)
+		return str;
+
+	size = ptr - str + toescape + 1;
+	result = calloc(1, size);
+	optr = result;
 	ptr = str;
 
 	while (*ptr)
 	{
-		if ( *ptr == '\'' ) toescape++;
-		ptr++;
+		if (*ptr == '\'')
+			*optr++='\'';
+
+		*optr++ = *ptr++;
 	}
 
-	if (toescape == 0) return str;
-
-	size = ptr-str+toescape+1;
-
-	result = calloc(1, size);
-
-	optr=result;
-	ptr=str;
-	while (*ptr)
-	{
-		if ( *ptr == '\'') *optr++='\'';
-		*optr++=*ptr++;
-	}
 	*optr='\0';
-
-#ifdef HAVE_ICONV
-	if ( encoding ) free(str);
-#endif
 
 	return result;
 }
 
 
-
 /**
- * PIP(): crossing number test for a point in a polygon
- *      input:   P = a point,
- *               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
- *      returns: 0 = outside, 1 = inside
+ * @brief Generate an allocated geometry string for shapefile object obj using the state parameters
  */
 int
-PIP( Point P, Point* V, int n )
-{
-	int cn = 0;    /* the crossing number counter */
-	int i;
-
-	/* loop through all edges of the polygon */
-	for (i=0; i<n-1; i++)
-	{    /* edge from V[i] to V[i+1] */
-		if (((V[i].y <= P.y) && (V[i+1].y > P.y))    /* an upward crossing */
-				|| ((V[i].y > P.y) && (V[i+1].y <= P.y)))
-		{ /* a downward crossing */
-			double vt = (float)(P.y - V[i].y) / (V[i+1].y - V[i].y);
-			if (P.x < V[i].x + vt * (V[i+1].x - V[i].x)) /* P.x < intersect */
-				++cn;   /* a valid crossing of y=P.y right of P.x */
-		}
-	}
-	return (cn&1);    /* 0 if even (out), and 1 if odd (in) */
-
-}
-
-
-
-
-
-int
-Insert_attributes(DBFHandle hDBFHandle, int row)
-{
-	int i,num_fields;
-	char val[1024];
-	char *escval;
-
-	num_fields = DBFGetFieldCount( hDBFHandle );
-	for ( i = 0; i < num_fields; i++ )
-	{
-		if (DBFIsAttributeNULL( hDBFHandle, row, i))
-		{
-			if (dump_format)
-			{
-				stringbuffer_append(sb_row, "\\N");
-			}
-			else
-			{
-				stringbuffer_append(sb_row, "NULL");
-			}
-		}
-		else /* Attribute NOT NULL */
-		{
-			switch (types[i])
-			{
-			case FTInteger:
-			case FTDouble:
-				if ( -1 == snprintf(val, 1024, "%s", DBFReadStringAttribute(hDBFHandle, row, i)) )
-				{
-					pgis_logf("Warning: field %d name truncated", i);
-					val[1023] = '\0';
-				}
-				/* pg_atoi() does not do this */
-				if ( val[0] == '\0' )
-				{
-					val[0] = '0';
-					val[1] = '\0';
-				}
-				if ( val[strlen(val)-1] == '.' ) val[strlen(val)-1] = '\0';
-				break;
-
-			case FTString:
-			case FTLogical:
-			case FTDate:
-				if ( -1 == snprintf(val, 1024, "%s", DBFReadStringAttribute(hDBFHandle, row, i)) )
-				{
-					pgis_logf("Warning: field %d name truncated", i);
-					val[1023] = '\0';
-				}
-				break;
-
-			default:
-				pgis_logf(
-					"Error: field %d has invalid or unknown field type (%d)",
-					i, types[i]);
-				return 0;
-			}
-
-			if (dump_format)
-			{
-				escval = escape_copy_string(val);
-				stringbuffer_aprintf(sb_row, "%s", escval);
-				//printf("\t");
-			}
-			else
-			{
-				escval = escape_insert_string(val);
-				stringbuffer_aprintf(sb_row, "'%s'", escval);
-				//printf(",");
-			}
-			if ( val != escval ) free(escval);
-		}
-		//only put in delimeter if not last field or a shape will follow
-		if (readshape == 1 || i < (num_fields - 1))
-		{
-			if (dump_format)
-			{
-				stringbuffer_append_c(sb_row, '\t');
-			}
-			else
-			{
-				stringbuffer_append_c(sb_row, ',');
-			}
-		}
-	}
-	return 1;
-}
-
-
-
-
-/**
- * formerly main()
- */
-int
-translation_start ()
-{
-
-	sb_row = stringbuffer_create();
-
-	/*
-	 * Open shapefile and initialize globals
-	 */
-	if ( ! OpenShape() )
-		return 0;
-
-	if (readshape == 1)
-	{
-		/*
-		 * Compute output geometry type
-		 */
-
-		SetPgType();
-
-		pgis_logf("Shapefile type: %s", SHPTypeName(shpfiletype));
-		pgis_logf("PostGIS type: %s [%dD]", pgtype, pgdims);
-	}
-
-#ifdef HAVE_ICONV
-	if ( encoding )
-	{
-		if ( ! pgis_exec("SET CLIENT_ENCODING TO UTF8") ) return 0;
-	}
-#endif /* defined HAVE_ICONV */
-
-	/*
-	 * Use SQL-standard string escaping rather than PostgreSQL standard
-	 */
-	if ( ! pgis_exec("SET STANDARD_CONFORMING_STRINGS TO ON") ) return 0;
-
-	/*
-	 * Drop table if requested
-	 */
-	if (opt == 'd')
-		if ( ! DropTable(schema, table, geom) )
-			return 0;
-
-	/*
-	 * Get col names and types for table creation
-	 * and data load.
-	 */
-	GetFieldsSpec();
-
-	if ( ! pgis_exec("BEGIN") ) return 0;
-
-	/*
-	 * If not in 'append' mode create the spatial table
-	 */
-	if (opt != 'a')
-		if ( ! CreateTable() )
-			return 0;
-
-	translation_stage = TRANSLATION_LOAD; /* done start */
-	return 1;
-}
-
-int
-translation_middle()
-{
-	/*
-	 * Generate INSERT or COPY lines
-	 */
-	if (opt != 'p')
-	{
-		if ( ! LoadData() )
-			return 0;
-	}
-	else
-	{
-		translation_stage = TRANSLATION_CLEANUP; /* done middle */
-	}
-	return 1;
-}
-
-int
-translation_end()
-{
-	/*
-	 * Create GiST index if requested
-	 */
-	if (createindex)
-		if ( ! CreateIndex() )
-			return 0;
-
-	if ( ! pgis_exec("END") ) return 0; /* End the last transaction */
-
-	translation_stage = TRANSLATION_DONE;
-
-	return 1;
-}
-
-void
-LowerCase(char *s)
-{
-	int j;
-	for (j=0; j<strlen(s); j++) s[j] = tolower(s[j]);
-}
-
-void
-Cleanup(void)
-{
-	if ( col_names ) free(col_names);
-}
-
-int
-OpenShape(void)
-{
-	int j;
-	SHPObject *obj=NULL;
-
-	if (readshape == 1)
-	{
-		hSHPHandle = SHPOpen( shp_file, "rb" );
-		if (hSHPHandle == NULL)
-		{
-			pgis_logf("%s: shape (.shp) or index files (.shx) can not be opened, will just import attribute data.", shp_file);
-			readshape = 0;
-		}
-	}
-
-	hDBFHandle = DBFOpen( shp_file, "rb" );
-	if ((hSHPHandle == NULL && readshape == 1) || hDBFHandle == NULL)
-	{
-		pgis_logf("%s: dbf file (.dbf) can not be opened.",shp_file);
-		return 0;
-	}
-
-	if (readshape == 1)
-	{
-		SHPGetInfo(hSHPHandle, &num_entities, &shpfiletype, NULL, NULL);
-
-		if ( null_policy == abort_on_null )
-		{
-			for (j=0; j<num_entities; j++)
-			{
-				obj = SHPReadObject(hSHPHandle,j);
-				if ( ! obj )
-				{
-					pgis_logf("Error reading shape object %d", j);
-					return 0;
-				}
-				if ( obj->nVertices == 0 )
-				{
-					pgis_logf("Empty geometries found, aborted.");
-					return 0;
-				}
-				SHPDestroyObject(obj);
-			}
-		}
-	}
-	else
-	{
-		num_entities = DBFGetRecordCount(hDBFHandle);
-	}
-
-	return 1;
-}
-
-int
-CreateTable(void)
-{
-	int j;
-	int field_precision, field_width;
-	DBFFieldType type = -1;
-
-	/*
-	 * Create a table for inserting the shapes into with appropriate
-	 * columns and types
-	 */
-
-	stringbuffer_clear(sb_row);
-
-	if ( schema )
-	{
-		stringbuffer_aprintf(sb_row, "CREATE TABLE \"%s\".\"%s\" (gid serial PRIMARY KEY", schema, table);
-	}
-	else
-	{
-		stringbuffer_aprintf(sb_row, "CREATE TABLE \"%s\" (gid serial PRIMARY KEY", table);
-	}
-
-	for (j=0;j<num_fields;j++)
-	{
-		type = types[j];
-		field_width = widths[j];
-		field_precision = precisions[j];
-
-		stringbuffer_aprintf(sb_row, ",\n\"%s\" ", field_names[j]);
-
-		if (type == FTString)
-		{
-			/* use DBF attribute size as maximum width */
-			stringbuffer_aprintf (sb_row, "varchar(%d)", field_width);
-		}
-		else if (type == FTDate)
-		{
-			stringbuffer_append (sb_row, "date");
-		}
-		else if (type == FTInteger)
-		{
-			if ( forceint4 )
-			{
-				stringbuffer_append (sb_row, "int4");
-			}
-			else if  ( field_width < 5 )
-			{
-				stringbuffer_append (sb_row, "int2");
-			}
-			else if  ( field_width < 10 )
-			{
-				stringbuffer_append (sb_row, "int4");
-			}
-			else
-			{
-				stringbuffer_aprintf (sb_row, "numeric(%d,0)", field_width);
-			}
-		}
-		else if (type == FTDouble)
-		{
-			if ( field_width > 18 )
-			{
-				stringbuffer_append (sb_row, "numeric");
-			}
-			else
-			{
-				stringbuffer_append (sb_row, "float8");
-			}
-		}
-		else if (type == FTLogical)
-		{
-			stringbuffer_append (sb_row, "boolean");
-		}
-		else
-		{
-			pgis_logf ("Invalid type in DBF file");
-		}
-	}
-	/* Run the CREATE TABLE statement in the buffer and clear. */
-	stringbuffer_append_c(sb_row, ')');
-	if ( ! pgis_exec(stringbuffer_getstring(sb_row)) ) return 0;
-	stringbuffer_clear(sb_row);
-
-	/* Create the geometry column with an addgeometry call */
-	if ( schema && readshape == 1 )
-	{
-		stringbuffer_aprintf(sb_row, "SELECT AddGeometryColumn('%s','%s','%s','%d',",
-							 schema, table, geom, sr_id);
-	}
-	else if (readshape == 1)
-	{
-		stringbuffer_aprintf(sb_row, "SELECT AddGeometryColumn('','%s','%s','%d',",
-							 table, geom, sr_id);
-	}
-	if (pgtype)
-	{ //pgtype will only be set if we are loading geometries
-		stringbuffer_aprintf(sb_row, "'%s',%d)", pgtype, pgdims);
-	}
-
-	/* Run the AddGeometryColumn() statement in the buffer and clear. */
-	if ( ! pgis_exec(stringbuffer_getstring(sb_row)) ) return 0;
-	stringbuffer_clear(sb_row);
-
-	return 1;
-}
-
-int
-CreateIndex(void)
-{
-
-	stringbuffer_clear(sb_row);
-
-	if ( schema )
-	{
-		stringbuffer_aprintf(sb_row, "CREATE INDEX \"%s_%s_gist\" ON \"%s\".\"%s\" using gist (\"%s\" gist_geometry_ops)", table, geom, schema, table, geom);
-	}
-	else
-	{
-		stringbuffer_aprintf(sb_row, "CREATE INDEX \"%s_%s_gist\" ON \"%s\" using gist (\"%s\" gist_geometry_ops)", table, geom, table, geom);
-	}
-
-	/* Run the CREATE INDEX statement in the buffer and clear. */
-	if ( ! pgis_exec(stringbuffer_getstring(sb_row)) ) return 0;
-	stringbuffer_clear(sb_row);
-
-	return 1;
-}
-
-int
-LoadData(void)
-{
-	int trans=0;
-
-	if (cur_entity == -1 && dump_format)
-	{
-		char *copysql;
-		if ( schema )
-		{
-			lw_asprintf(&copysql, "COPY \"%s\".\"%s\" %s FROM stdin",
-					 schema, table, col_names);
-		}
-		else
-		{
-			lw_asprintf(&copysql, "COPY \"%s\" %s FROM stdin",
-					 table, col_names);
-		}
-		pgis_copy_start(copysql);
-		free(copysql);
-	}
-
-	/**************************************************************
-	 *
-	 *   MAIN SHAPE OBJECTS SCAN
-	 *
-	 **************************************************************/
-	while (cur_entity <  num_entities - 1)
-	{
-
-		cur_entity++;
-
-		/*wrap a transaction block around each 250 inserts... */
-		if ( ! dump_format )
-		{
-			if (trans == 250)
-			{
-				trans=0;
-				if ( ! pgis_exec("END") ) return 0;
-				if ( ! pgis_exec("BEGIN") ) return 0;
-			}
-		}
-		trans++;
-		/* transaction stuff done */
-
-		if ( gui_mode && ( cur_entity % 200 == 0 ) )
-		{
-			pgis_logf("Feature #%d", cur_entity);
-		}
-
-		/* skip the record if it has been deleted */
-		if (readshape != 1 && DBFReadDeleted(hDBFHandle, cur_entity))
-		{
-			continue;
-		}
-
-		/* open the next object */
-		if (readshape == 1)
-		{
-			obj = SHPReadObject(hSHPHandle,cur_entity);
-			if ( ! obj )
-			{
-				pgis_logf("Error reading shape object %d", cur_entity);
-				return 0;
-			}
-
-			if ( null_policy == skip_null && obj->nVertices == 0 )
-			{
-				SHPDestroyObject(obj);
-				continue;
-			}
-		}
-
-		/* New row, clear the stringbuffer. */
-		stringbuffer_clear(sb_row);
-
-		if (!dump_format)
-		{
-			if ( schema )
-			{
-				stringbuffer_aprintf(sb_row, "INSERT INTO \"%s\".\"%s\" %s VALUES (",
-									 schema, table, col_names);
-			}
-			else
-			{
-				stringbuffer_aprintf(sb_row, "INSERT INTO \"%s\" %s VALUES (",
-									 table, col_names);
-			}
-		}
-		if ( ! Insert_attributes(hDBFHandle,cur_entity) ) return 0;
-
-		if (readshape == 1)
-		{
-			/* ---------- NULL SHAPE ----------------- */
-			if (obj->nVertices == 0)
-			{
-				if (dump_format)
-				{
-					stringbuffer_append(sb_row, "\\N\n");
-					pgis_copy_write(stringbuffer_getstring(sb_row));
-				}
-				else
-				{
-					stringbuffer_append(sb_row, "NULL)");
-					if ( ! pgis_exec(stringbuffer_getstring(sb_row)) ) return 0;
-				}
-				SHPDestroyObject(obj);
-				continue;
-			}
-
-			switch (obj->nSHPType)
-			{
-			case SHPT_POLYGON:
-			case SHPT_POLYGONM:
-			case SHPT_POLYGONZ:
-				if ( ! InsertPolygon() ) return 0;
-				break;
-
-			case SHPT_POINT:
-			case SHPT_POINTM:
-			case SHPT_POINTZ:
-			case SHPT_MULTIPOINT:
-			case SHPT_MULTIPOINTM:
-			case SHPT_MULTIPOINTZ:
-				if ( ! InsertPoint() ) return 0;
-				break;
-
-			case SHPT_ARC:
-			case SHPT_ARCM:
-			case SHPT_ARCZ:
-				if ( ! InsertLineString() ) return 0;
-				break;
-
-			default:
-				pgis_logf ("**** Type is NOT SUPPORTED, type id = %d ****",
-						   obj->nSHPType);
-				break;
-
-			}
-
-			SHPDestroyObject(obj);
-		}
-		else
-		{
-			if ( dump_format )
-			{   /* close for dbf only dump format */
-				stringbuffer_append_c(sb_row, '\n');
-				pgis_copy_write(stringbuffer_getstring(sb_row));
-			}
-			else
-			{   /* close for dbf only sql insert format */
-				if ( ! pgis_exec(stringbuffer_getstring(sb_row)) ) return 0;
-			}
-		}
-
-		/* Just do 100 entries at a time, then return to the idle loop. */
-		if ( cur_entity % 100 == 0 ) return 1;
-
-	} /* END of MAIN SHAPE OBJECT LOOP */
-
-	if ( dump_format )
-	{
-		pgis_copy_end(0);
-	}
-
-	translation_stage = TRANSLATION_CLEANUP; /* done middle */
-
-	return 1;
-}
-
-
-int
-InsertLineString()
+GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 {
 	LWCOLLECTION *lwcollection;
+
+	LWGEOM **lwmultipoints;
+	uchar *serialized_lwgeom;
+	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
+
+	DYNPTARRAY **dpas;
+	POINT4D point4d;
+
+	int dims = 0, hasz = 0, hasm = 0;
+	int result;
+	int u;
+
+	char *mem;
+
+
+	/* Determine the correct dimensions: note that in hwgeom-compatible mode we cannot use
+	   the M coordinate */
+	if (state->wkbtype & WKBZOFFSET)
+		hasz = 1;
+
+	if (!state->config->hwgeom)
+		if (state->wkbtype & WKBMOFFSET)
+			hasm = 1;
+
+	TYPE_SETZM(dims, hasz, hasm);
+
+	/* Allocate memory for our array of LWPOINTs and our dynptarrays */
+	lwmultipoints = malloc(sizeof(LWPOINT *) * obj->nVertices);
+	dpas = malloc(sizeof(DYNPTARRAY *) * obj->nVertices);
+
+	/* We need an array of pointers to each of our sub-geometries */
+	for (u = 0; u < obj->nVertices; u++)
+	{
+		/* Generate the point */
+		point4d.x = obj->padfX[u];
+		point4d.y = obj->padfY[u];
+
+		if (state->wkbtype & WKBZOFFSET)
+			point4d.z = obj->padfZ[u];
+		if (state->wkbtype & WKBMOFFSET)
+			point4d.m = obj->padfM[u];
+
+		/* Create a dynptarray containing a single point */
+		dpas[u] = dynptarray_create(1, dims);
+		dynptarray_addPoint4d(dpas[u], &point4d, 0);
+
+		/* Generate the LWPOINT */
+		lwmultipoints[u] = lwpoint_as_lwgeom(lwpoint_construct(state->config->sr_id, NULL, dpas[u]->pa));
+	}
+
+	/* If we have more than 1 vertex then we are working on a MULTIPOINT and so generate a MULTIPOINT
+	rather than a POINT */
+	if (obj->nVertices > 1)
+	{
+		lwcollection = lwcollection_construct(MULTIPOINTTYPE, state->config->sr_id, NULL, obj->nVertices, lwmultipoints);
+		serialized_lwgeom = lwgeom_serialize(lwcollection_as_lwgeom(lwcollection));
+	}
+	else
+	{
+		serialized_lwgeom = lwgeom_serialize(lwmultipoints[0]);
+	}
+
+	if (!state->config->hwgeom)
+		result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_NONE, -1);
+	else
+		result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_NONE);
+
+	if (result)
+	{
+		snprintf(state->message, SHPLOADERMSGLEN, "%s", lwg_unparser_result.message);
+
+		return SHPLOADERERR;
+	}
+
+	/* Allocate a string containing the resulting geometry */
+	mem = malloc(strlen(lwg_unparser_result.wkoutput) + 1);
+	strcpy(mem, lwg_unparser_result.wkoutput);
+
+	/* Free all of the allocated items */
+	lwfree(lwg_unparser_result.wkoutput);
+	lwfree(serialized_lwgeom);
+
+	for (u = 0; u < obj->nVertices; u++)
+	{
+		if (dpas[u]->pa->serialized_pointlist)
+			lwfree(dpas[u]->pa->serialized_pointlist);
+
+		lwpoint_free(lwgeom_as_lwpoint(lwmultipoints[u]));
+
+		lwfree(dpas[u]);
+	}
+
+	lwfree(dpas);
+	lwfree(lwmultipoints);
+
+	/* Return the string - everything ok */
+	*geometry = mem;
+
+	return SHPLOADEROK;
+}
+
+
+/**
+ * @brief Generate an allocated geometry string for shapefile object obj using the state parameters
+ */
+int
+GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
+{
+	LWCOLLECTION *lwcollection = NULL;
 
 	LWGEOM **lwmultilinestrings;
 	uchar *serialized_lwgeom;
@@ -928,14 +351,25 @@ InsertLineString()
 	int result;
 	int u, v, start_vertex, end_vertex;
 
-	if (wkbtype & WKBZOFFSET) hasz = 1;
-	if (wkbtype & WKBMOFFSET) hasm = 1;
+	char *mem;
+
+
+	/* Determine the correct dimensions: note that in hwgeom-compatible mode we cannot use
+	   the M coordinate */
+	if (state->wkbtype & WKBZOFFSET)
+		hasz = 1;
+
+	if (!state->config->hwgeom)
+		if (state->wkbtype & WKBMOFFSET)
+			hasm = 1;
+
 	TYPE_SETZM(dims, hasz, hasm);
 
-	if (simple_geometries == 1 && obj->nParts > 1)
+	if (state->config->simple_geometries == 1 && obj->nParts > 1)
 	{
-		pgis_logf("We have a Multilinestring with %d parts, can't use -S switch!", obj->nParts);
-		return 0;
+		snprintf(state->message, SHPLOADERMSGLEN, "We have a Multilinestring with %d parts, can't use -S switch!", obj->nParts);
+
+		return SHPLOADERERR;
 	}
 
 	/* Allocate memory for our array of LWLINEs and our dynptarrays */
@@ -963,22 +397,22 @@ InsertLineString()
 			point4d.x = obj->padfX[v];
 			point4d.y = obj->padfY[v];
 
-			if (wkbtype & WKBZOFFSET)
+			if (state->wkbtype & WKBZOFFSET)
 				point4d.z = obj->padfZ[v];
-			if (wkbtype & WKBMOFFSET)
+			if (state->wkbtype & WKBMOFFSET)
 				point4d.m = obj->padfM[v];
 
 			dynptarray_addPoint4d(dpas[u], &point4d, 0);
 		}
 
 		/* Generate the LWLINE */
-		lwmultilinestrings[u] = lwline_as_lwgeom(lwline_construct(sr_id, NULL, dpas[u]->pa));
+		lwmultilinestrings[u] = lwline_as_lwgeom(lwline_construct(state->config->sr_id, NULL, dpas[u]->pa));
 	}
 
 	/* If using MULTILINESTRINGs then generate the serialized collection, otherwise just a single LINESTRING */
-	if (simple_geometries == 0)
+	if (state->config->simple_geometries == 0)
 	{
-		lwcollection = lwcollection_construct(MULTILINETYPE, sr_id, NULL, obj->nParts, lwmultilinestrings);
+		lwcollection = lwcollection_construct(MULTILINETYPE, state->config->sr_id, NULL, obj->nParts, lwmultilinestrings);
 		serialized_lwgeom = lwgeom_serialize(lwcollection_as_lwgeom(lwcollection));
 	}
 	else
@@ -986,15 +420,22 @@ InsertLineString()
 		serialized_lwgeom = lwgeom_serialize(lwmultilinestrings[0]);
 	}
 
-	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_NONE, -1);
+	if (!state->config->hwgeom)
+		result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_NONE, -1);
+	else
+		result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_NONE);
 
+	/* Return the error message if we failed */
 	if (result)
 	{
-		pgis_logf("ERROR: %s", lwg_unparser_result.message);
-		return 0;
+		snprintf(state->message, SHPLOADERMSGLEN, "%s", lwg_unparser_result.message);
+
+		return SHPLOADERERR;
 	}
 
-	if ( ! OutputGeometry(lwg_unparser_result.wkoutput) ) return 0;
+	/* Allocate a string containing the resulting geometry */
+	mem = malloc(strlen(lwg_unparser_result.wkoutput) + 1);
+	strcpy(mem, lwg_unparser_result.wkoutput);
 
 	/* Free all of the allocated items */
 	lwfree(lwg_unparser_result.wkoutput);
@@ -1002,15 +443,48 @@ InsertLineString()
 
 	for (u = 0; u < obj->nParts; u++)
 	{
+		lwfree(dpas[u]->pa->serialized_pointlist);
 		lwline_free(lwgeom_as_lwline(lwmultilinestrings[u]));
 		lwfree(dpas[u]);
 	}
 
 	lwfree(dpas);
 	lwfree(lwmultilinestrings);
+	if (lwcollection)
+		lwfree(lwcollection);
 
-	return 1;
+	/* Return the string - everything ok */
+	*geometry = mem;
+
+	return SHPLOADEROK;
 }
+
+
+/**
+ * @brief PIP(): crossing number test for a point in a polygon
+ *      input:   P = a point,
+ *               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
+ * @return   0 = outside, 1 = inside
+ */
+int
+PIP(Point P, Point *V, int n)
+{
+	int cn = 0;    /* the crossing number counter */
+	int i;
+
+	/* loop through all edges of the polygon */
+	for (i = 0; i < n-1; i++) {    /* edge from V[i] to V[i+1] */
+	   if (((V[i].y <= P.y) && (V[i + 1].y > P.y))    /* an upward crossing */
+		|| ((V[i].y > P.y) && (V[i + 1].y <= P.y))) { /* a downward crossing */
+			double vt = (float)(P.y - V[i].y) / (V[i + 1].y - V[i].y);
+			if (P.x < V[i].x + vt * (V[i + 1].x - V[i].x)) /* P.x < intersect */
+				++cn;   /* a valid crossing of y=P.y right of P.x */
+		}
+	}
+
+	return (cn&1);    /* 0 if even (out), and 1 if odd (in) */
+}
+
 
 int
 FindPolygons(SHPObject *obj, Ring ***Out)
@@ -1029,11 +503,11 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 	LWDEBUGF(4, "FindPolygons[%d]: allocated space for %d rings\n", call, obj->nParts);
 
 	/* Allocate initial memory */
-	Outer = (Ring**)malloc(sizeof(Ring*)*obj->nParts);
-	Inner = (Ring**)malloc(sizeof(Ring*)*obj->nParts);
+	Outer = (Ring **)malloc(sizeof(Ring *) * obj->nParts);
+	Inner = (Ring **)malloc(sizeof(Ring *) * obj->nParts);
 
 	/* Iterate over rings dividing in Outers and Inners */
-	for (pi=0; pi<obj->nParts; pi++)
+	for (pi=0; pi < obj->nParts; pi++)
 	{
 		int vi; /* vertex index */
 		int vs; /* start index */
@@ -1043,33 +517,37 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 		Ring *ring;
 
 		/* Set start and end vertexes */
-		if ( pi==obj->nParts-1 ) ve = obj->nVertices;
-		else ve = obj->panPartStart[pi+1];
+		if (pi == obj->nParts - 1)
+			ve = obj->nVertices;
+		else
+			ve = obj->panPartStart[pi + 1];
+
 		vs = obj->panPartStart[pi];
 
 		/* Compute number of vertexes */
-		nv = ve-vs;
+		nv = ve - vs;
 
 		/* Allocate memory for a ring */
-		ring = (Ring*)malloc(sizeof(Ring));
-		ring->list = (Point*)malloc(sizeof(Point)*nv);
+		ring = (Ring *)malloc(sizeof(Ring));
+		ring->list = (Point *)malloc(sizeof(Point) * nv);
 		ring->n = nv;
 		ring->next = NULL;
 		ring->linked = 0;
 
 		/* Iterate over ring vertexes */
-		for ( vi=vs; vi<ve; vi++)
+		for (vi = vs; vi < ve; vi++)
 		{
 			int vn = vi+1; /* next vertex for area */
-			if ( vn==ve ) vn = vs;
+			if (vn == ve)
+				vn = vs;
 
-			ring->list[vi-vs].x = obj->padfX[vi];
-			ring->list[vi-vs].y = obj->padfY[vi];
-			ring->list[vi-vs].z = obj->padfZ[vi];
-			ring->list[vi-vs].m = obj->padfM[vi];
+			ring->list[vi - vs].x = obj->padfX[vi];
+			ring->list[vi - vs].y = obj->padfY[vi];
+			ring->list[vi - vs].z = obj->padfZ[vi];
+			ring->list[vi - vs].m = obj->padfM[vi];
 
 			area += (obj->padfX[vi] * obj->padfY[vn]) -
-					(obj->padfY[vi] * obj->padfX[vn]);
+				(obj->padfY[vi] * obj->padfX[vn]);
 		}
 
 		/* Close the ring with first vertex  */
@@ -1079,15 +557,14 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 		/*ring->list[vi].m = obj->padfM[vs]; */
 
 		/* Clockwise (or single-part). It's an Outer Ring ! */
-		if (area < 0.0 || obj->nParts ==1)
+		if (area < 0.0 || obj->nParts == 1)
 		{
 			Outer[out_index] = ring;
 			out_index++;
 		}
-
-		/* Counterclockwise. It's an Inner Ring ! */
 		else
 		{
+			/* Counterclockwise. It's an Inner Ring ! */
 			Inner[in_index] = ring;
 			in_index++;
 		}
@@ -1097,11 +574,11 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 
 	/* Put the inner rings into the list of the outer rings */
 	/* of which they are within */
-	for (pi=0; pi<in_index; pi++)
+	for (pi = 0; pi < in_index; pi++)
 	{
-		Point pt,pt2;
+		Point pt, pt2;
 		int i;
-		Ring *inner=Inner[pi], *outer=NULL;
+		Ring *inner = Inner[pi], *outer = NULL;
 
 		pt.x = inner->list[0].x;
 		pt.y = inner->list[0].y;
@@ -1109,22 +586,25 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 		pt2.x = inner->list[1].x;
 		pt2.y = inner->list[1].y;
 
-		for (i=0; i<out_index; i++)
+		for(i = 0; i < out_index; i++)
 		{
 			int in;
 
 			in = PIP(pt, Outer[i]->list, Outer[i]->n);
-			if ( in || PIP(pt2, Outer[i]->list, Outer[i]->n) )
+			if( in || PIP(pt2, Outer[i]->list, Outer[i]->n) )
 			{
 				outer = Outer[i];
 				break;
 			}
+			/*fprintf(stderr, "!PIP %s\nOUTE %s\n", dump_ring(inner), dump_ring(Outer[i])); */
 		}
 
-		if ( outer )
+		if (outer)
 		{
 			outer->linked++;
-			while (outer->next) outer = outer->next;
+			while (outer->next)
+				outer = outer->next;
+
 			outer->next = inner;
 		}
 		else
@@ -1144,31 +624,38 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 	return out_index;
 }
 
+
 void
 ReleasePolygons(Ring **polys, int npolys)
 {
 	int pi;
+
 	/* Release all memory */
-	for (pi=0; pi<npolys; pi++)
+	for (pi = 0; pi < npolys; pi++)
 	{
 		Ring *Poly, *temp;
 		Poly = polys[pi];
-		while (Poly != NULL)
-		{
+		while (Poly != NULL){
 			temp = Poly;
 			Poly = Poly->next;
 			free(temp->list);
 			free(temp);
 		}
 	}
+
 	free(polys);
 }
 
-/*This function basically deals with the polygon case. */
-/*it sorts the polys in order of outer,inner,inner, so that inners */
-/*always come after outers they are within  */
+
+/**
+ * @brief Generate an allocated geometry string for shapefile object obj using the state parameters
+ *
+ * This function basically deals with the polygon case. It sorts the polys in order of outer,
+ * inner,inner, so that inners always come after outers they are within.
+ * 
+ */
 int
-InsertPolygon(void)
+GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 {
 	Ring **Outer;
 	int polygon_total, ring_total;
@@ -1189,17 +676,27 @@ InsertPolygon(void)
 	int dims = 0, hasz = 0, hasm = 0;
 	int result;
 
-	/* Determine the correct dimensions: */
-	if (wkbtype & WKBZOFFSET) hasz = 1;
-	if (wkbtype & WKBMOFFSET) hasm = 1;
+	char *mem;
+
+
+	/* Determine the correct dimensions: note that in hwgeom-compatible mode we cannot use
+	   the M coordinate */
+	if (state->wkbtype & WKBZOFFSET)
+		hasz = 1;
+
+	if (!state->config->hwgeom)
+		if (state->wkbtype & WKBMOFFSET)
+			hasm = 1;
+
 	TYPE_SETZM(dims, hasz, hasm);
 
 	polygon_total = FindPolygons(obj, &Outer);
 
-	if (simple_geometries == 1 && polygon_total != 1) /* We write Non-MULTI geometries, but have several parts: */
+	if (state->config->simple_geometries == 1 && polygon_total != 1) /* We write Non-MULTI geometries, but have several parts: */
 	{
-		pgis_logf("We have a Multipolygon with %d parts, can't use -S switch!", polygon_total);
-		return 0;
+		snprintf(state->message, SHPLOADERMSGLEN, "We have a Multipolygon with %d parts, can't use -S switch!", polygon_total);
+
+		return SHPLOADERERR;
 	}
 
 	/* Allocate memory for our array of LWPOLYs */
@@ -1234,15 +731,15 @@ InsertPolygon(void)
 			/* Create a DYNPTARRAY containing the points making up the ring */
 			dpas = dynptarray_create(polyring->n, dims);
 
-			for (vi = 0; vi < polyring->n; vi++)
+			for(vi = 0; vi < polyring->n; vi++)
 			{
 				/* Build up a point array of all the points in this ring */
 				point4d.x = polyring->list[vi].x;
 				point4d.y = polyring->list[vi].y;
 
-				if (wkbtype & WKBZOFFSET)
+				if (state->wkbtype & WKBZOFFSET)
 					point4d.z = polyring->list[vi].z;
-				if (wkbtype & WKBMOFFSET)
+				if (state->wkbtype & WKBMOFFSET)
 					point4d.m = polyring->list[vi].m;
 
 				dynptarray_addPoint4d(dpas, &point4d, 0);
@@ -1261,16 +758,14 @@ InsertPolygon(void)
 		}
 
 		/* Generate the LWGEOM */
-		lwpoly = lwpoly_construct(sr_id, NULL, ring_total, pas[pi]);
+		lwpoly = lwpoly_construct(state->config->sr_id, NULL, ring_total, pas[pi]);
 		lwpolygons[pi] = lwpoly_as_lwgeom(lwpoly);
 	}
 
-	ReleasePolygons(Outer, polygon_total);
-
 	/* If using MULTIPOLYGONS then generate the serialized collection, otherwise just a single POLYGON */
-	if (simple_geometries == 0)
+	if (state->config->simple_geometries == 0)
 	{
-		lwcollection = lwcollection_construct(MULTIPOLYGONTYPE, sr_id, NULL, polygon_total, lwpolygons);
+		lwcollection = lwcollection_construct(MULTIPOLYGONTYPE, state->config->sr_id, NULL, polygon_total, lwpolygons);
 		serialized_lwgeom = lwgeom_serialize(lwcollection_as_lwgeom(lwcollection));
 	}
 	else
@@ -1278,15 +773,38 @@ InsertPolygon(void)
 		serialized_lwgeom = lwgeom_serialize(lwpolygons[0]);
 	}
 
-	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_NONE, -1);
+	/* Note: lwpoly_free() currently doesn't free its serialized pointlist, so do it manually */
+	for (pi = 0; pi < polygon_total; pi++)
+	{
+		Ring *polyring = Outer[pi];
+		int ring_index = 0;
+		while (polyring)
+		{
+			if (pas[pi][ring_index]->serialized_pointlist)
+				lwfree(pas[pi][ring_index]->serialized_pointlist);
+
+			polyring = polyring->next;
+			ring_index++;
+		}
+	}
+
+	ReleasePolygons(Outer, polygon_total);
+
+	if (!state->config->hwgeom)
+		result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_NONE, -1);
+	else
+		result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_NONE);
 
 	if (result)
 	{
-		pgis_logf( "ERROR: %s", lwg_unparser_result.message);
-		return 0;
+		snprintf(state->message, SHPLOADERMSGLEN, "%s", lwg_unparser_result.message);
+
+		return SHPLOADERERR;
 	}
 
-	if ( ! OutputGeometry(lwg_unparser_result.wkoutput) ) return 0;
+	/* Allocate a string containing the resulting geometry */
+	mem = malloc(strlen(lwg_unparser_result.wkoutput) + 1);
+	strcpy(mem, lwg_unparser_result.wkoutput);
 
 	/* Free all of the allocated items */
 	lwfree(lwg_unparser_result.wkoutput);
@@ -1299,580 +817,1010 @@ InsertPolygon(void)
 	/* Free the pointer arrays */
 	lwfree(pas);
 	lwfree(lwpolygons);
-	if (simple_geometries == 0)
+	if (lwcollection)
 		lwfree(lwcollection);
 
-	return 1;
+	/* Return the string - everything ok */
+	*geometry = mem;
+
+	return SHPLOADEROK;
 }
+
 
 /*
- * Insert either a POINT or MULTIPOINT into the output stream
+ * External functions (defined in shp2pgsql-core.h)
  */
-int
-InsertPoint(void)
-{
-	LWCOLLECTION *lwcollection;
-
-	LWGEOM **lwmultipoints;
-	uchar *serialized_lwgeom;
-	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
-
-	DYNPTARRAY **dpas;
-	POINT4D point4d;
-
-	int dims = 0, hasz = 0, hasm = 0;
-	int result;
-	int u;
-
-	/* Determine the correct dimensions:  */
-	if (wkbtype & WKBZOFFSET) hasz = 1;
-	if (wkbtype & WKBMOFFSET) hasm = 1;
-	TYPE_SETZM(dims, hasz, hasm);
-
-	/* Allocate memory for our array of LWPOINTs and our dynptarrays */
-	lwmultipoints = malloc(sizeof(LWPOINT *) * obj->nVertices);
-	dpas = malloc(sizeof(DYNPTARRAY *) * obj->nVertices);
-
-	/* We need an array of pointers to each of our sub-geometries */
-	for (u = 0; u < obj->nVertices; u++)
-	{
-		/* Generate the point */
-		point4d.x = obj->padfX[u];
-		point4d.y = obj->padfY[u];
-
-		if (wkbtype & WKBZOFFSET)
-			point4d.z = obj->padfZ[u];
-		if (wkbtype & WKBMOFFSET)
-			point4d.m = obj->padfM[u];
-
-		/* Create a dynptarray containing a single point */
-		dpas[u] = dynptarray_create(1, dims);
-		dynptarray_addPoint4d(dpas[u], &point4d, 0);
-
-		/* Generate the LWPOINT */
-		lwmultipoints[u] = lwpoint_as_lwgeom(lwpoint_construct(sr_id, NULL, dpas[u]->pa));
-	}
-
-	/* If we have more than 1 vertex then we are working on a MULTIPOINT and so generate a MULTIPOINT
-	rather than a POINT */
-	if (obj->nVertices > 1)
-	{
-		lwcollection = lwcollection_construct(MULTIPOINTTYPE, sr_id, NULL, obj->nVertices, lwmultipoints);
-		serialized_lwgeom = lwgeom_serialize(lwcollection_as_lwgeom(lwcollection));
-	}
-	else
-	{
-		serialized_lwgeom = lwgeom_serialize(lwmultipoints[0]);
-	}
-
-	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_NONE, -1);
-
-	if (result)
-	{
-		pgis_logf("ERROR: %s", lwg_unparser_result.message);
-		return 0;
-	}
-
-	if ( ! OutputGeometry(lwg_unparser_result.wkoutput) ) return 0;
-
-	/* Free all of the allocated items */
-	lwfree(lwg_unparser_result.wkoutput);
-	lwfree(serialized_lwgeom);
-
-	for (u = 0; u < obj->nVertices; u++)
-	{
-		lwpoint_free(lwgeom_as_lwpoint(lwmultipoints[u]));
-		lwfree(dpas[u]);
-	}
-
-	lwfree(dpas);
-	lwfree(lwmultipoints);
-
-	return 1;
-}
-
-int
-OutputGeometry(char *geometry)
-{
-	if (!dump_format)
-		stringbuffer_append(sb_row, "'");
-
-	stringbuffer_aprintf(sb_row, "%s", geometry);
-
-	if (!dump_format)
-	{
-		stringbuffer_append(sb_row, "')");
-		if ( ! pgis_exec(stringbuffer_getstring(sb_row)) ) return 0;
-	}
-	else
-	{
-		stringbuffer_append_c(sb_row, '\n');
-		pgis_copy_write(stringbuffer_getstring(sb_row));
-	}
-	stringbuffer_clear(sb_row);
-	return 1;
-
-}
 
 
-
+/* Convert the string to lower case */
 void
-SetPgType(void)
+strtolower(char *s)
 {
-	switch (shpfiletype)
-	{
-	case SHPT_POINT: /* Point */
-		pgtype = "POINT";
-		wkbtype = POINTTYPE;
-		pgdims = 2;
-		break;
-	case SHPT_ARC: /* PolyLine */
-		pgtype = "MULTILINESTRING";
-		wkbtype = MULTILINETYPE ;
-		pgdims = 2;
-		break;
-	case SHPT_POLYGON: /* Polygon */
-		pgtype = "MULTIPOLYGON";
-		wkbtype = MULTIPOLYGONTYPE;
-		pgdims = 2;
-		break;
-	case SHPT_MULTIPOINT: /* MultiPoint */
-		pgtype = "MULTIPOINT";
-		wkbtype = MULTIPOINTTYPE;
-		pgdims = 2;
-		break;
-	case SHPT_POINTM: /* PointM */
-		wkbtype = POINTTYPE | WKBMOFFSET;
-		pgtype = "POINTM";
-		pgdims = 3;
-		istypeM = 1;
-		break;
-	case SHPT_ARCM: /* PolyLineM */
-		wkbtype = MULTILINETYPE | WKBMOFFSET;
-		pgtype = "MULTILINESTRINGM";
-		pgdims = 3;
-		istypeM = 1;
-		break;
-	case SHPT_POLYGONM: /* PolygonM */
-		wkbtype = MULTIPOLYGONTYPE | WKBMOFFSET;
-		pgtype = "MULTIPOLYGONM";
-		pgdims = 3;
-		istypeM = 1;
-		break;
-	case SHPT_MULTIPOINTM: /* MultiPointM */
-		wkbtype = MULTIPOINTTYPE | WKBMOFFSET;
-		pgtype = "MULTIPOINTM";
-		pgdims = 3;
-		istypeM = 1;
-		break;
-	case SHPT_POINTZ: /* PointZ */
-		wkbtype = POINTTYPE | WKBMOFFSET | WKBZOFFSET;
-		pgtype = "POINT";
-		pgdims = 4;
-		break;
-	case SHPT_ARCZ: /* PolyLineZ */
-		pgtype = "MULTILINESTRING";
-		wkbtype = MULTILINETYPE | WKBZOFFSET | WKBMOFFSET;
-		pgdims = 4;
-		break;
-	case SHPT_POLYGONZ: /* MultiPolygonZ */
-		pgtype = "MULTIPOLYGON";
-		wkbtype = MULTIPOLYGONTYPE | WKBZOFFSET | WKBMOFFSET;
-		pgdims = 4;
-		break;
-	case SHPT_MULTIPOINTZ: /* MultiPointZ */
-		pgtype = "MULTIPOINT";
-		wkbtype = MULTIPOINTTYPE | WKBZOFFSET | WKBMOFFSET;
-		pgdims = 4;
-		break;
-	default:
-		pgtype = "GEOMETRY";
-		wkbtype = COLLECTIONTYPE | WKBZOFFSET | WKBMOFFSET;
-		pgdims = 4;
-		pgis_logf("Unknown geometry type: %d", shpfiletype);
-		break;
-	}
+	int j;
 
-	if (simple_geometries)
-	{
-		// adjust geometry name for CREATE TABLE by skipping MULTI
-		if ((wkbtype & 0x7) == MULTIPOLYGONTYPE) pgtype += 5;
-		if ((wkbtype & 0x7) == MULTILINETYPE) pgtype += 5;
-	}
+	for (j = 0; j < strlen(s); j++)
+		s[j] = tolower(s[j]);
 }
 
-int
-DropTable(char *schema, char *table, char *geom)
-{
-	/*---------------Drop the table--------------------------
-	 * TODO: if the table has more then one geometry column
-	 * the DROP TABLE call will leave spurious records in
-	 * geometry_columns.
-	 *
-	 * If the geometry column in the table being dropped
-	 * does not match 'the_geom' or the name specified with
-	 * -g an error is returned by DropGeometryColumn.
-	 *
-	 * The table to be dropped might not exist.
-	 *
-	 */
-	char *sql;
 
-	if ( schema )
-	{
-		if (readshape == 1)
-		{
-			lw_asprintf(&sql, "SELECT DropGeometryColumn('%s','%s','%s')",	schema, table, geom);
-			if ( ! pgis_exec(sql) )
-			{
-				free(sql);
-				return 0;
-			}
-			free(sql);
-		}
-		lw_asprintf(&sql, "DROP TABLE \"%s\".\"%s\"", schema, table);
-		if ( ! pgis_exec(sql) )
-		{
-			free(sql);
-			return 0;
-		}
-		free(sql);
-	}
-	else
-	{
-		if (readshape == 1)
-		{
-			lw_asprintf(&sql, "SELECT DropGeometryColumn('','%s','%s')", table, geom);
-			if  ( ! pgis_exec(sql) )
-			{
-				free(sql);
-				return 0;
-			}
-			free(sql);
-		}
-		lw_asprintf(&sql, "DROP TABLE \"%s\"", table);
-		if ( ! pgis_exec(sql) )
-		{
-			free(sql);
-			return 0;
-		}
-		free(sql);
-	}
-	return 1;
-}
-
+/* Default configuration settings */
 void
-GetFieldsSpec(void)
+set_config_defaults(SHPLOADERCONFIG *config)
 {
-	/*
-	 * Shapefile (dbf) field name are at most 10chars + 1 NULL.
-	 * Postgresql field names are at most 63 bytes + 1 NULL.
-	 */
-#define MAXFIELDNAMELEN 64
-	int field_precision, field_width;
+	config->opt = 'c';
+	config->schema = NULL;
+	config->table = NULL;
+	config->geom = strdup("the_geom");
+	config->readshape = 1;
+	config->sr_id = -1;
+	config->hwgeom = 0;
+	config->dump_format = 0;
+}
+
+
+/* Create a new shapefile state object */
+SHPLOADERSTATE *
+ShpLoaderCreate(SHPLOADERCONFIG *config)
+{
+	SHPLOADERSTATE *state;
+
+	/* Create a new state object and assign the config to it */
+	state = malloc(sizeof(SHPLOADERSTATE));
+	state->config = config;
+
+	/* Set any state defaults */
+	state->hSHPHandle = NULL;
+	state->hDBFHandle = NULL;
+	state->wkbtype = 0;
+
+	return state;
+}
+
+
+/* Open the shapefile and extract the relevant field information */
+int
+ShpLoaderOpenShape(SHPLOADERSTATE *state)
+{
+	SHPObject *obj = NULL;
 	int j, z;
-	char  name[MAXFIELDNAMELEN];
-	char  name2[MAXFIELDNAMELEN];
+	int ret = SHPLOADEROK;
+
+	int field_precision, field_width;
+	char name[MAXFIELDNAMELEN];
+	char name2[MAXFIELDNAMELEN];
 	DBFFieldType type = -1;
 #ifdef HAVE_ICONV
 	char *utf8str;
 #endif
 
-	num_fields = DBFGetFieldCount( hDBFHandle );
-	num_records = DBFGetRecordCount(hDBFHandle);
-	field_names = malloc(num_fields*sizeof(char*));
-	types = (DBFFieldType *)malloc(num_fields*sizeof(int));
-	widths = malloc(num_fields*sizeof(int));
-	precisions = malloc(num_fields*sizeof(int));
-	if (readshape == 1)
+	/* If we are reading the entire shapefile, open it */
+	if (state->config->readshape == 1)
 	{
-		col_names = malloc((num_fields+2) * sizeof(char) * MAXFIELDNAMELEN);
-	}
-	{	//for dbf only, we do not need to allocate slot for the_geom
-		col_names = malloc((num_fields+1) * sizeof(char) * MAXFIELDNAMELEN);
-	}
-	strcpy(col_names, "(" );
+		state->hSHPHandle = SHPOpen(state->config->shp_file, "rb");
 
-	/*fprintf(stderr, "Number of fields from DBF: %d\n", num_fields); */
-	for (j=0;j<num_fields;j++)
+		if (state->hSHPHandle == NULL)
+		{
+			snprintf(state->message, SHPLOADERMSGLEN, "%s: shape (.shp) or index files (.shx) can not be opened, will just import attribute data.", state->config->shp_file);
+			state->config->readshape = 0;
+
+			ret = SHPLOADERWARN;
+		}
+	}
+
+	/* Open the DBF (attributes) file */
+	state->hDBFHandle = DBFOpen(state->config->shp_file, "rb");
+	if ((state->hSHPHandle == NULL && state->config->readshape == 1) || state->hDBFHandle == NULL)
 	{
-		type = DBFGetFieldInfo(hDBFHandle, j, name, &field_width, &field_precision);
+		snprintf(state->message, SHPLOADERMSGLEN, "%s: dbf file (.dbf) can not be opened.", state->config->shp_file);
 
-		/*fprintf(stderr, "Field %d (%s) width/decimals: %d/%d\n", j, name, field_width, field_precision); */
-		types[j] = type;
-		widths[j] = field_width;
-		precisions[j] = field_precision;
+		return SHPLOADERERR;
+	}
+
+	/* If reading the whole shapefile (not just attributes)... */
+	if (state->config->readshape == 1)
+	{
+		SHPGetInfo(state->hSHPHandle, &state->num_entities, &state->shpfiletype, NULL, NULL);
+
+ 		/* If null_policy is set to abort, check for NULLs */
+		if (state->config->null_policy == POLICY_NULL_ABORT)
+		{
+			/* If we abort on null items, scan the entire file for NULLs */
+			for (j = 0; j < state->num_entities; j++)
+			{
+				obj = SHPReadObject(state->hSHPHandle, j);
+
+				if (!obj)
+				{
+					snprintf(state->message, SHPLOADERMSGLEN, "Error reading shape object %d", j);
+					return SHPLOADERERR;
+				}
+
+				if (obj->nVertices == 0)
+				{
+					snprintf(state->message, SHPLOADERMSGLEN, "Empty geometries found, aborted.");
+					return SHPLOADERERR;
+				}
+
+				SHPDestroyObject(obj);
+			}
+		}
+
+		/* Check the shapefile type */
+		switch (state->shpfiletype)
+		{
+			case SHPT_POINT:
+				/* Point */
+				state->pgtype = "POINT";
+				state->wkbtype = POINTTYPE;
+				state->pgdims = 2;
+				break;
+	
+			case SHPT_ARC:
+				/* PolyLine */
+				state->pgtype = "MULTILINESTRING";
+				state->wkbtype = MULTILINETYPE ;
+				state->pgdims = 2;
+				break;
+	
+			case SHPT_POLYGON:
+				/* Polygon */
+				state->pgtype = "MULTIPOLYGON";
+				state->wkbtype = MULTIPOLYGONTYPE;
+				state->pgdims = 2;
+				break;
+	
+			case SHPT_MULTIPOINT:
+				/* MultiPoint */
+				state->pgtype = "MULTIPOINT";
+				state->wkbtype = MULTIPOINTTYPE;
+				state->pgdims = 2;
+				break;
+	
+			case SHPT_POINTM:
+				/* PointM */
+				state->wkbtype = POINTTYPE | WKBMOFFSET;
+	
+				if (!state->config->hwgeom)
+				{
+					state->pgtype = "POINTM";
+					state->pgdims = 3;
+					state->istypeM = 1;
+				} 
+				else 
+				{
+					state->pgtype = "POINT";
+					state->pgdims = 2;
+				}
+				break;
+	
+			case SHPT_ARCM:
+				/* PolyLineM */
+				state->wkbtype = MULTILINETYPE | WKBMOFFSET;
+	
+				if (!state->config->hwgeom)
+				{
+					state->pgtype = "MULTILINESTRINGM";
+					state->pgdims = 3;
+					state->istypeM = 1;
+				} 
+				else 
+				{
+					state->pgtype = "MULTILINESTRING";
+					state->pgdims = 2;
+				}
+				break;
+	
+			case SHPT_POLYGONM:
+				/* PolygonM */
+				state->wkbtype = MULTIPOLYGONTYPE | WKBMOFFSET;
+	
+				if (!state->config->hwgeom)
+				{
+					state->pgtype = "MULTIPOLYGONM";
+					state->pgdims = 3;
+					state->istypeM = 1;
+				}
+				else 
+				{
+					state->pgtype = "MULTIPOLYGON";
+					state->pgdims = 2;
+				}
+				break;
+	
+			case SHPT_MULTIPOINTM:
+				/* MultiPointM */
+				state->wkbtype = MULTIPOINTTYPE | WKBMOFFSET;
+	
+				if (!state->config->hwgeom)
+				{
+					state->pgtype = "MULTIPOINTM";
+					state->pgdims = 3;
+					state->istypeM = 1;
+				} 
+				else
+				{
+					state->pgtype = "MULTIPOINT";
+					state->pgdims = 2;
+				}
+				break;
+	
+			case SHPT_POINTZ: 
+				/* PointZ */
+				state->wkbtype = POINTTYPE | WKBMOFFSET | WKBZOFFSET;
+				state->pgtype = "POINT";
+	
+				if (!state->config->hwgeom)
+					state->pgdims = 4;
+				else 
+					state->pgdims = 3;
+	
+				break;
+	
+			case SHPT_ARCZ:
+				/* PolyLineZ */
+				state->pgtype = "MULTILINESTRING";
+				state->wkbtype = MULTILINETYPE | WKBZOFFSET | WKBMOFFSET;
+	
+				if (!state->config->hwgeom)
+					state->pgdims = 4;
+				else
+					state->pgdims = 3;
+	
+				break;
+	
+			case SHPT_POLYGONZ:
+				/* MultiPolygonZ */
+				state->pgtype = "MULTIPOLYGON";
+				state->wkbtype = MULTIPOLYGONTYPE | WKBZOFFSET | WKBMOFFSET;
+	
+				if (!state->config->hwgeom)
+					state->pgdims = 4;
+				else
+					state->pgdims = 3;
+	
+				break;
+	
+			case SHPT_MULTIPOINTZ:
+				/* MultiPointZ */
+				state->pgtype = "MULTIPOINT";
+				state->wkbtype = MULTIPOINTTYPE | WKBZOFFSET | WKBMOFFSET;
+	
+				if (!state->config->hwgeom)
+					state->pgdims = 4;
+				else
+					state->pgdims = 3;
+	
+				break;
+	
+			default:
+				state->pgtype = "GEOMETRY";
+				state->wkbtype = COLLECTIONTYPE | WKBZOFFSET | WKBMOFFSET;
+				state->pgdims = 4;
+	
+				snprintf(state->message, SHPLOADERMSGLEN, "Unknown geometry type: %d\n", state->shpfiletype);
+				return SHPLOADERERR;
+	
+				break;
+		}
+	
+		/* If in simple geometry mode, alter names for CREATE TABLE by skipping MULTI */
+		if (state->config->simple_geometries)
+		{
+			if ((state->wkbtype & 0x7) == MULTIPOLYGONTYPE)
+				state->pgtype += 5;
+	
+			if ((state->wkbtype & 0x7) == MULTILINETYPE)
+				state->pgtype += 5;
+		}
+
+	}
+	else
+	{
+		/* Otherwise just count the number of records in the DBF */
+		state->num_entities = DBFGetRecordCount(state->hDBFHandle);
+	}
+
+
+	/* Get the field information from the DBF */
+	state->num_fields = DBFGetFieldCount(state->hDBFHandle);
+	state->num_records = DBFGetRecordCount(state->hDBFHandle);
+
+	/* Allocate storage for field information */
+	state->field_names = malloc(state->num_fields * sizeof(char*));
+	state->types = (DBFFieldType *)malloc(state->num_fields * sizeof(int));
+	state->widths = malloc(state->num_fields * sizeof(int));
+	state->precisions = malloc(state->num_fields * sizeof(int));
+	state->col_names = malloc((state->num_fields + 2) * sizeof(char) * MAXFIELDNAMELEN);
+
+	/* Generate a string of comma separated column names of the form "(col1, col2 ... colN)" for the SQL
+	   insertion string */
+	strcpy(state->col_names, "(" );
+
+	for(j = 0; j < state->num_fields; j++)
+	{
+		type = DBFGetFieldInfo(state->hDBFHandle, j, name, &field_width, &field_precision);
+
+		state->types[j] = type;
+		state->widths[j] = field_width;
+		state->precisions[j] = field_precision;
 
 #ifdef HAVE_ICONV
-		if ( encoding )
+		if (state->config->encoding)
 		{
-			utf8str = utf8(encoding, name);
-			if ( ! utf8str ) exit(1);
-			strcpy(name, utf8str);
+			/* If we are converting from another encoding to UTF8, convert the field name to UTF8 */
+			utf8str = utf8(state->config->encoding, name);
+			if (!utf8str)
+			{
+				snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert field name \"%s\" to UTF8: iconv reports \"%s\"", name, strerror(errno));
+				return SHPLOADERERR;
+			}
+
+			strncpy(name, utf8str, MAXFIELDNAMELEN);
 			free(utf8str);
 		}
 #endif
-
 
 		/*
 		 * Make field names lowercase unless asked to
 		 * keep identifiers case.
 		 */
-		if ( ! quoteidentifiers ) LowerCase(name);
+		if (!state->config->quoteidentifiers)
+			strtolower(name);
 
 		/*
 		 * Escape names starting with the
 		 * escape char (_), those named 'gid'
 		 * or after pgsql reserved attribute names
 		 */
-		if ( name[0]=='_' ||
-				! strcmp(name,"gid") ||
-				! strcmp(name, "tableoid") ||
-				! strcmp(name, "cmax") ||
-				! strcmp(name, "xmax") ||
-				! strcmp(name, "cmin") ||
-				! strcmp(name, "primary") ||
-				! strcmp(name, "oid") ||
-				! strcmp(name, "ctid") )
+		if(name[0] == '_' ||
+			! strcmp(name, "gid") || ! strcmp(name, "tableoid") ||
+			! strcmp(name, "cmax") || ! strcmp(name, "xmax") ||
+			! strcmp(name, "cmin") || ! strcmp(name, "primary") ||
+			! strcmp(name, "oid") || ! strcmp(name, "ctid"))
 		{
-			strcpy(name2+2, name);
+			strncpy(name2 + 2, name, MAXFIELDNAMELEN);
 			name2[0] = '_';
 			name2[1] = '_';
 			strcpy(name, name2);
 		}
 
 		/* Avoid duplicating field names */
-		for (z=0; z < j ; z++)
+		for(z = 0; z < j ; z++)
 		{
-			if (strcmp(field_names[z],name)==0)
+			if (strcmp(state->field_names[z], name) == 0)
 			{
-				strcat(name,"__");
-				sprintf(name+strlen(name),"%i",j);
+				strncat(name, "__", MAXFIELDNAMELEN);
+				snprintf(name + strlen(name), MAXFIELDNAMELEN, "%i", j);
 				break;
 			}
 		}
 
-		field_names[j] = malloc (strlen(name)+1);
-		strcpy(field_names[j], name);
+		state->field_names[j] = malloc(strlen(name) + 1);
+		strcpy(state->field_names[j], name);
 
-		/*sprintf(col_names, "%s\"%s\",", col_names, name);*/
-		strcat(col_names, "\"");
-		strcat(col_names, name);
-		if (readshape == 1 || j < (num_fields - 1))
+		strcat(state->col_names, "\"");
+		strcat(state->col_names, name);
+
+		if (state->config->readshape == 1 || j < (state->num_fields - 1))
 		{
-			//don't include last comma if its the last field and no geometry field will follow
-			strcat(col_names, "\",");
+			/* Don't include last comma if its the last field and no geometry field will follow */
+			strcat(state->col_names, "\",");
 		}
 		else
 		{
-			strcat(col_names, "\"");
+			strcat(state->col_names, "\"");
 		}
 	}
-	/*sprintf(col_names, "%s\"%s\")", col_names, geom);*/
-	if (readshape == 1)
-	{
-		strcat(col_names, geom);
-	}
-	strcat(col_names, ")");
+
+	/* Append the geometry column if required */
+	if (state->config->readshape == 1)
+		strcat(state->col_names, state->config->geom);
+
+	strcat(state->col_names, ")");
+
+
+	/* Return status */
+	return ret;
 }
+
+
+/* Return a pointer to an allocated string containing the header for the specified loader state */
+int
+ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
+{
+	stringbuffer_t *sb;
+	char *ret;
+	int j;
+
+	/* Create the stringbuffer containing the header; we use this API as it's easier
+	   for handling string resizing during append */
+	sb = stringbuffer_create();
+	stringbuffer_clear(sb);
 
 #ifdef HAVE_ICONV
-
-char *
-utf8 (const char *fromcode, char *inputbuf)
-{
-	iconv_t cd;
-	char *outputptr;
-	char *outputbuf;
-	size_t outbytesleft;
-	size_t inbytesleft;
-
-	inbytesleft = strlen (inputbuf);
-
-	cd = iconv_open ("UTF-8", fromcode);
-	if (cd == (iconv_t) - 1)
+	/* Set the client encoding if required */
+	if (state->config->encoding)
 	{
-		pgis_logf("utf8: iconv_open: %s", strerror (errno));
-		return NULL;
+		vasbappend(sb, "SET CLIENT_ENCODING TO UTF8;\n");
+	}
+#endif
+
+	/* Use SQL-standard string escaping rather than PostgreSQL standard */
+	vasbappend(sb, "SET STANDARD_CONFORMING_STRINGS TO ON;\n");
+
+	/* Drop table if requested */
+	if (state->config->opt == 'd')
+	{
+		/**
+		 * TODO: if the table has more then one geometry column
+		 * 	the DROP TABLE call will leave spurious records in
+		 * 	geometry_columns.
+		 *
+		 * If the geometry column in the table being dropped
+		 * does not match 'the_geom' or the name specified with
+		 * -g an error is returned by DropGeometryColumn.
+		 *
+		 * The table to be dropped might not exist.
+		 */
+		if (state->config->schema)
+		{
+			if (state->config->readshape == 1)
+			{
+				vasbappend(sb, "SELECT DropGeometryColumn('%s','%s','%s');\n",
+					state->config->schema, state->config->table, state->config->geom);
+			}
+
+			vasbappend(sb, "DROP TABLE \"%s\".\"%s\";\n", state->config->schema, 
+				state->config->table);
+		}
+		else
+		{
+			if (state->config->readshape == 1)
+			{
+				vasbappend(sb, "SELECT DropGeometryColumn('','%s','%s');\n",
+					state->config->table, state->config->geom);
+			}
+
+			vasbappend(sb, "DROP TABLE \"%s\";\n", state->config->table);
+		}
 	}
 
-	outbytesleft = inbytesleft*3+1; /* UTF8 string can be 3 times larger */
-	/* then local string */
-	outputbuf = (char *) malloc (outbytesleft);
-	if (!outputbuf)
+	/* Start of transaction */
+	vasbappend(sb, "BEGIN;\n");
+
+	/* If not in 'append' mode create the spatial table */
+	if (state->config->opt != 'a')
 	{
-		pgis_logf("utf8: malloc: %s", strerror (errno));
-		return NULL;
+		/*
+		* Create a table for inserting the shapes into with appropriate
+		* columns and types
+		*/
+		if (state->config->schema)
+		{
+			vasbappend(sb, "CREATE TABLE \"%s\".\"%s\" (gid serial PRIMARY KEY",
+				state->config->schema, state->config->table);
+		}
+		else
+		{
+			vasbappend(sb, "CREATE TABLE \"%s\" (gid serial PRIMARY KEY", state->config->table);
+		}
+	
+		/* Generate the field types based upon the shapefile information */ 
+		for(j = 0; j < state->num_fields; j++)
+		{
+			vasbappend(sb, ",\n\"%s\" ", state->field_names[j]);
+	
+			switch(state->types[j])
+			{
+				case FTString:
+					/* use DBF attribute size as maximum width */
+					vasbappend(sb, "varchar(%d)", state->widths[j]);
+					break;
+
+				case FTDate:
+					vasbappend(sb, "date");
+					break;
+
+				case FTInteger:
+					/* Determine exact type based upon field width */
+					if (state->config->forceint4)
+					{
+						vasbappend(sb, "int4");
+					}
+					else if (state->widths[j] < 5)
+					{
+						vasbappend(sb, "int2");
+					}
+					else if (state->widths[j] < 10)
+					{
+						vasbappend(sb, "int4");
+					}
+					else
+					{
+						vasbappend(sb, "numeric(%d,0)", state->widths[j]);
+					}
+					break;
+
+				case FTDouble:
+					/* Determine exact type based upon field width */
+					if(state->widths[j] > 18)
+					{
+						vasbappend(sb, "numeric");
+					}
+					else
+					{
+						vasbappend(sb, "float8");
+					}
+					break;
+
+				case FTLogical:
+					vasbappend(sb, "boolean");
+					break;
+
+				default:
+					snprintf(state->message, SHPLOADERMSGLEN, "Invalid type %x in DBF file", state->types[j]);
+					stringbuffer_destroy(sb);
+					return SHPLOADERERR;
+			}
+		}
+		vasbappend(sb, ");\n");
+	
+		/* Create the geometry column with an addgeometry call */
+		if (state->config->readshape == 1)
+		{
+			if (state->config->schema) 
+			{
+				vasbappend(sb, "SELECT AddGeometryColumn('%s','%s','%s','%d',",
+					state->config->schema, state->config->table, state->config->geom, state->config->sr_id);
+			}
+			else
+			{
+				vasbappend(sb, "SELECT AddGeometryColumn('','%s','%s','%d',",
+					state->config->table, state->config->geom, state->config->sr_id);
+			}
+
+			vasbappend(sb, "'%s',%d);\n", state->pgtype, state->pgdims);
+		}
 	}
-	memset (outputbuf, 0, outbytesleft);
-	outputptr = outputbuf;
 
-	if (-1==iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft))
-	{
-		pgis_logf("utf8: %s", strerror (errno));
-		return NULL;
-	}
+	/* Copy the string buffer into a new string, destroying the string buffer */
+	ret = (char *)malloc(strlen((char *)stringbuffer_getstring(sb)) + 1);
+	strcpy(ret, (char *)stringbuffer_getstring(sb));
+	stringbuffer_destroy(sb);
 
-	iconv_close (cd);
+	*strheader = ret;
 
-	return outputbuf;
+	return SHPLOADEROK;
 }
 
-#endif /* defined HAVE_ICONV */
 
-/**********************************************************************
- * $Log$
- * Revision 1.109  2008/04/09 14:12:17  robe
- *         - Added support to load dbf-only files
- *
- * Revision 1.108  2006/06/16 14:12:17  strk
- *         - BUGFIX in pgsql2shp successful return code.
- *         - BUGFIX in shp2pgsql handling of MultiLine WKT.
- *
- * Revision 1.107  2006/04/18 09:16:26  strk
- * Substituted bzero() use with memset()
- *
- * Revision 1.106  2006/01/16 10:42:58  strk
- * Added support for Bool and Date DBF<=>PGIS mapping
- *
- * Revision 1.105  2006/01/09 16:40:16  strk
- * ISO C90 comments, signedness mismatch fixes
- *
- * Revision 1.104  2005/11/01 09:25:47  strk
- * Reworked NULL geometries handling code letting user specify policy (insert,skip,abort). Insert is the default.
- *
- * Revision 1.103  2005/10/24 15:54:22  strk
- * fixed wrong assumption about maximum size of integer attributes (width is maximum size of text representation)
- *
- * Revision 1.102  2005/10/24 11:30:59  strk
- *
- * Fixed a bug in string attributes handling truncating values of maximum
- * allowed length, curtesy of Lars Roessiger.
- * Reworked integer attributes handling to be stricter in dbf->sql mapping
- * and to allow for big int8 values in sql->dbf conversion
- *
- * Revision 1.101  2005/10/21 11:33:55  strk
- * Applied patch by Lars Roessiger handling numerical values with a trailing decima
- * l dot
- *
- * Revision 1.100  2005/10/13 13:40:20  strk
- * Fixed return code from shp2pgsql
- *
- * Revision 1.99  2005/10/03 18:08:55  strk
- * Stricter string attributes lenght handling. DBF header will be used
- * to set varchar maxlenght, (var)char typmod will be used to set DBF header
- * len.
- *
- * Revision 1.98  2005/10/03 07:45:58  strk
- * Issued a warning when -W is specified and no UTF8 support has been compiled in.
- *
- * Revision 1.97  2005/09/30 08:59:29  strk
- * Fixed release of stack memory occurring when shp2pgsql is compiled with USE_ICONV defined, an attribute value needs to be escaped and no -W is used
- *
- * Revision 1.96  2005/08/29 22:36:25  strk
- * Removed premature object destruction in InsertLineString{WKT,} causing segfault
- *
- * Revision 1.95  2005/08/29 11:48:33  strk
- * Fixed sprintf() calls to avoid overlapping memory,
- * reworked not-null objects existance check to reduce startup costs.
- *
- * Revision 1.94  2005/07/27 02:47:14  strk
- * Support for multibyte field names in loader
- *
- * Revision 1.93  2005/07/27 02:35:50  strk
- * Minor cleanups in loader
- *
- * Revision 1.92  2005/07/27 02:07:01  strk
- * Fixed handling of POINT types as WKT (-w) in loader
- *
- * Revision 1.91  2005/07/04 09:47:03  strk
- * Added conservative iconv detection code
- *
- * Revision 1.90  2005/06/16 17:55:58  strk
- * Added -I switch for GiST index creation in loader
- *
- * Revision 1.89  2005/04/21 09:08:34  strk
- * Applied patch from Ron Mayer fixing a segfault in string escaper funx
- *
- * Revision 1.88  2005/04/14 12:58:59  strk
- * Applied patch by Gino Lucrezi fixing bug in string escaping code.
- *
- * Revision 1.87  2005/04/06 14:16:43  strk
- * Removed manual update of gid field.
- *
- * Revision 1.86  2005/04/06 14:02:08  mschaber
- * added -p option (prepare mode) that spits out the table schema without
- * inserting any data.
- *
- * Revision 1.85  2005/04/06 10:46:10  strk
- * Bugfix in -w (hwgeom) handling of ZM shapefiles.
- * Big reorganizzation of code to easy maintainance.
- *
- * Revision 1.84  2005/04/04 20:51:26  strk
- * Added -w flag to output old (WKT/HWGEOM) sql.
- *
- * Revision 1.83  2005/03/15 12:24:40  strk
- * hole-in-ring detector made more readable
- *
- * Revision 1.82  2005/03/14 22:02:31  strk
- * Fixed holes handling.
- *
- * Revision 1.81  2005/03/08 11:06:33  strk
- * modernized old-style parameter declarations
- *
- * Revision 1.80  2005/03/04 14:48:22  strk
- * Applied patch from Jonne Savolainen fixing multilines handling
- *
- * Revision 1.79  2005/01/31 22:15:22  strk
- * Added maintainer notice, to reduce Jeff-strk mail bounces
- *
- * Revision 1.78  2005/01/17 09:21:13  strk
- * Added one more bytes for terminating NULL in utf8 encoder
- *
- * Revision 1.77  2005/01/16 16:50:01  strk
- * String escaping algorithm made simpler and more robust.
- * Removed escaped strings leaking.
- * Fixed UTF8 encoder to allocate enough space for 3bytes chars strings.
- *
- * Revision 1.76  2005/01/12 17:03:20  strk
- * Added optional UTF8 output support as suggested by IIDA Tetsushi
- *
- * Revision 1.75  2004/11/15 10:51:35  strk
- * Fixed a bug in PIP invocation, added some debugging lines.
- *
- * Revision 1.74  2004/10/17 13:25:44  strk
- * removed USE_WKB partially-used define
- *
- * Revision 1.73  2004/10/17 13:24:44  strk
- * HEXWKB polygon
- *
- * Revision 1.72  2004/10/17 12:59:12  strk
- * HEXWKB multiline output
- *
- * Revision 1.71  2004/10/17 12:26:02  strk
- * Point and MultiPoint loaded using HEXWKB.
- *
- * Revision 1.70  2004/10/15 22:01:35  strk
- * Initial WKB functionalities
- *
- * Revision 1.69  2004/10/07 21:52:28  strk
- * Lots of rewriting/cleanup. TypeM/TypeZ supports.
- *
- * Revision 1.68  2004/10/07 06:54:24  strk
- * cleanups
- *
- * Revision 1.67  2004/10/06 10:11:16  strk
- * Other separator fixes
- *
- * Revision 1.66  2004/10/06 09:40:27  strk
- * Handled 0-DBF-attributes corner case.
- *
- * Revision 1.65  2004/09/20 17:13:31  strk
- * changed comments to better show shape type handling
- *
- * Revision 1.64  2004/08/20 08:14:37  strk
- * Whole output wrapped in transaction blocks.
- * Drops are out of transaction, and multiple transactions are used
- * for INSERT mode.
- *
- **********************************************************************/
+/* Return an allocated string containing the copy statement for this state */
+int
+ShpLoaderGetSQLCopyStatement(SHPLOADERSTATE *state, char **strheader)
+{
+	char *copystr;
+
+	/* Allocate the string for the COPY statement */
+	if (state->config->dump_format)
+	{
+		if (state->config->schema)
+		{
+			copystr = malloc(strlen(state->config->schema) + strlen(state->config->table) +
+				strlen(state->col_names) + 40);
+
+			sprintf(copystr, "COPY \"%s\".\"%s\" %s FROM stdin;\n",
+				state->config->schema, state->config->table, state->col_names);
+		}
+		else
+		{
+			copystr = malloc(strlen(state->config->table) + strlen(state->col_names) + 40);
+
+			sprintf(copystr, "COPY \"%s\" %s FROM stdin;\n", state->config->table, state->col_names);
+		}
+
+		*strheader = copystr;
+		return SHPLOADEROK;
+	}
+	else
+	{
+		/* Flag an error as something has gone horribly wrong */
+		snprintf(state->message, SHPLOADERMSGLEN, "Internal error: attempt to generate a COPY statement for data that hasn't been requested in COPY format");
+
+		return SHPLOADERERR;
+	}
+}
+
+
+/* Return a count of the number of entities in this shapefile */
+int
+ShpLoaderGetRecordCount(SHPLOADERSTATE *state)
+{
+	return state->num_entities;
+}
+
+
+/* Return an allocated string representation of a specified record item */
+int
+ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strrecord)
+{
+	SHPObject *obj = NULL;
+	stringbuffer_t *sb;
+	stringbuffer_t *sbwarn;
+	char val[MAXVALUELEN];
+	char *escval;
+	char *geometry, *ret;
+#ifdef HAVE_ICONV
+	char *utf8str;
+#endif
+	int res, i;
+
+	/* Clear the stringbuffers */
+	sbwarn = stringbuffer_create();
+	stringbuffer_clear(sbwarn);
+	sb = stringbuffer_create();
+	stringbuffer_clear(sb);
+
+	/* If we are reading the DBF only and the record has been marked deleted, return deleted record status */
+	if (state->config->readshape == 0 && DBFReadDeleted(state->hDBFHandle, item))
+	{
+		*strrecord = NULL;
+		return SHPLOADERRECDELETED;
+	}
+
+	/* If we are reading the shapefile, open the specified record */
+	if (state->config->readshape == 1)
+	{
+		obj = SHPReadObject(state->hSHPHandle, item);
+		if (!obj)
+		{
+			snprintf(state->message, SHPLOADERMSGLEN, "Error reading shape object %d", item);
+			return SHPLOADERERR;
+		}
+
+		/* If we are set to skip NULLs, return a NULL record status */
+		if (state->config->null_policy == POLICY_NULL_SKIP && obj->nVertices == 0 )
+		{
+			SHPDestroyObject(obj);
+
+			*strrecord = NULL;
+			return SHPLOADERRECISNULL;
+		}
+	}
+
+	/* If not in dump format, generate the INSERT string */
+	if (!state->config->dump_format)
+	{
+		if (state->config->schema)
+		{
+			vasbappend(sb, "INSERT INTO \"%s\".\"%s\" %s VALUES (", state->config->schema, 
+				state->config->table, state->col_names);
+		}
+		else
+		{
+			vasbappend(sb, "INSERT INTO \"%s\" %s VALUES (", state->config->table, 
+				state->col_names);
+		}
+	}
+
+
+	/* Read all of the attributes from the DBF file for this item */
+	for (i = 0; i < DBFGetFieldCount(state->hDBFHandle); i++)
+	{
+		/* Special case for NULL attributes */
+		if (DBFIsAttributeNULL(state->hDBFHandle, item, i))
+		{
+			if (state->config->dump_format)
+				vasbappend(sb, "\\N");
+			else
+				vasbappend(sb, "NULL");
+	  	}
+	  	else
+	  	{
+			/* Attribute NOT NULL */
+			switch (state->types[i])
+			{
+				case FTInteger:
+				case FTDouble:
+					if (-1 == snprintf(val, MAXVALUELEN, "%s", DBFReadStringAttribute(state->hDBFHandle, item, i)))
+					{
+						vasbappend(sbwarn, "Warning: field %d name truncated\n", i);
+						val[MAXVALUELEN - 1] = '\0';
+					}
+
+					/* If the value is an empty string, change to 0 */
+					if (val[0] == '\0')
+					{
+						val[0] = '0';
+						val[1] = '\0';
+					}
+
+					/* If the value ends with just ".", remove the dot */
+					if (val[strlen(val) - 1] == '.')
+						val[strlen(val) - 1] = '\0';
+			   		break;
+
+				case FTString:
+				case FTLogical:
+				case FTDate:
+					if (-1 == snprintf(val, MAXVALUELEN, "%s", DBFReadStringAttribute(state->hDBFHandle, item, i)))
+					{
+						vasbappend(sbwarn, "Warning: field %d name truncated\n", i);
+						val[MAXVALUELEN - 1] = '\0';
+					}
+					break;
+
+				default:
+					snprintf(state->message, SHPLOADERMSGLEN, "Error: field %d has invalid or unknown field type (%d)", i, state->types[i]);
+
+					SHPDestroyObject(obj);
+					stringbuffer_destroy(sbwarn);
+					stringbuffer_destroy(sb);
+
+					return SHPLOADERERR;
+			}
+
+#ifdef HAVE_ICONV
+			if (state->config->encoding)
+			{
+				/* If we are converting from another encoding to UTF8, convert the field value to UTF8 */
+				utf8str = utf8(state->config->encoding, val);
+				if (!utf8str)
+				{
+					snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert field value \"%s\" to UTF8: iconv reports \"%s\"", val, strerror(errno));
+					return SHPLOADERERR;
+				}
+	
+				strncpy(val, utf8str, MAXVALUELEN);
+				free(utf8str);
+			}
+#endif
+
+			/* Escape attribute correctly according to dump format */
+			if (state->config->dump_format)
+				escval = escape_copy_string(val);
+			else
+				escval = escape_insert_string(val);
+			
+			vasbappend(sb, "'%s'", escval);
+
+			/* Free the escaped version if required */
+			if (val != escval)
+				free(escval);
+		}
+
+		/* Only put in delimeter if not last field or a shape will follow */
+		if (state->config->readshape == 1 || i < DBFGetFieldCount(state->hDBFHandle) - 1)
+		{
+			if (state->config->dump_format)
+				vasbappend(sb, "\t");
+			else
+				vasbappend(sb, ",");
+		}
+
+		/* End of DBF attribute loop */
+	}
+
+
+	/* Add the shape attribute if we are reading it */
+	if (state->config->readshape == 1)
+	{
+		/* Handle the case of a NULL shape */
+		if (obj->nVertices == 0)
+		{
+			if (state->config->dump_format)
+				vasbappend(sb, "\\N");
+			else
+				vasbappend(sb, "NULL");
+		}
+		else
+		{
+			/* Handle all other shape attributes */
+			switch (obj->nSHPType)
+			{
+				case SHPT_POLYGON:
+				case SHPT_POLYGONM:
+				case SHPT_POLYGONZ:
+					res = GeneratePolygonGeometry(state, obj, &geometry);
+					if (res != SHPLOADEROK)
+					{
+						/* Error message has already been set */
+						SHPDestroyObject(obj);
+						stringbuffer_destroy(sbwarn);
+						stringbuffer_destroy(sb);
+	
+						return SHPLOADERERR;
+					}
+					break;
+	
+				case SHPT_POINT:
+				case SHPT_POINTM:
+				case SHPT_POINTZ:
+				case SHPT_MULTIPOINT:
+				case SHPT_MULTIPOINTM:
+				case SHPT_MULTIPOINTZ:
+					res = GeneratePointGeometry(state, obj, &geometry);
+					if (res != SHPLOADEROK)
+					{
+						/* Error message has already been set */
+						SHPDestroyObject(obj);
+						stringbuffer_destroy(sbwarn);
+						stringbuffer_destroy(sb);
+	
+						return SHPLOADERERR;
+					}
+					break;
+	
+				case SHPT_ARC:
+				case SHPT_ARCM:
+				case SHPT_ARCZ:
+					res = GenerateLineStringGeometry(state, obj, &geometry);
+					if (res != SHPLOADEROK)
+					{
+						/* Error message has already been set */
+						SHPDestroyObject(obj);
+						stringbuffer_destroy(sbwarn);
+						stringbuffer_destroy(sb);
+	
+						return SHPLOADERERR;
+					}
+					break;
+	
+				default:
+					snprintf(state->message, SHPLOADERMSGLEN, "Shape type is NOT SUPPORTED, type id = %d", obj->nSHPType);
+
+					SHPDestroyObject(obj);
+					stringbuffer_destroy(sbwarn);
+					stringbuffer_destroy(sb);
+
+					return SHPLOADERERR;
+			}
+		}
+
+
+		/* Now generate the geometry string according to the current configuration */
+		if (state->config->hwgeom)
+		{
+			/* Old-style hwgeom (WKT) */
+			if (!state->config->dump_format)
+				vasbappend(sb, "GeomFromText('");
+			else
+			{
+				/* Output SRID if relevant */
+				if (state->config->sr_id != 0)
+					vasbappend(sb, "SRID=%d;", state->config->sr_id);
+			}
+	
+			vasbappend(sb, "%s", geometry);
+	
+			if (!state->config->dump_format)
+			{
+				vasbappend(sb, "'");
+	
+				/* Output SRID if relevant */
+				if (state->config->sr_id != 0)
+					vasbappend(sb, ", %d)", state->config->sr_id);
+	
+				vasbappend(sb, ");");
+			}
+		}
+		else
+		{
+			/* New style lwgeom (HEXEWKB) */
+			if (!state->config->dump_format)
+				vasbappend(sb, "'");
+	
+			vasbappend(sb, "%s", geometry);
+	
+			if (!state->config->dump_format)
+				vasbappend(sb, "');");
+		}
+
+		/* Tidy up everything */
+		SHPDestroyObject(obj);
+		free(geometry);
+	}
+	else
+	{
+		/* Close the line correctly for dump/insert format */
+		if (!state->config->dump_format)
+			vasbappend(sb, ");");
+	}
+
+
+	/* Copy the string buffer into a new string, destroying the string buffer */
+	ret = (char *)malloc(strlen((char *)stringbuffer_getstring(sb)) + 1);
+	strcpy(ret, (char *)stringbuffer_getstring(sb));
+	stringbuffer_destroy(sb);
+
+	*strrecord = ret;
+
+	/* If any warnings occurred, set the returned message string and warning status */
+	if (strlen((char *)stringbuffer_getstring(sbwarn)) > 0)
+	{
+		snprintf(state->message, SHPLOADERMSGLEN, "%s", stringbuffer_getstring(sbwarn));
+		stringbuffer_destroy(sbwarn);
+		
+		return SHPLOADERWARN;
+	}
+	else
+	{
+		/* Everything went okay */
+		stringbuffer_destroy(sbwarn);
+
+		return SHPLOADEROK;
+	}
+}
+
+
+/* Return a pointer to an allocated string containing the header for the specified loader state */
+int
+ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
+{
+	stringbuffer_t *sb;
+	char *ret;
+
+	/* Create the stringbuffer containing the header; we use this API as it's easier
+	   for handling string resizing during append */
+	sb = stringbuffer_create();
+	stringbuffer_clear(sb);
+
+	/* Create gist index if specified */
+	if (state->config->createindex)
+	{
+		if (state->config->schema)
+		{
+			vasbappend(sb, "CREATE INDEX \"%s_%s_gist\" ON \"%s\".\"%s\" using gist (\"%s\" gist_geometry_ops);\n", state->config->table, state->config->geom, 
+			state->config->schema, state->config->table, state->config->geom);
+		}
+		else
+		{
+			vasbappend(sb, "CREATE INDEX \"%s_%s_gist\" ON \"%s\" using gist (\"%s\" gist_geometry_ops);\n", state->config->table, state->config->geom, state->config->table, state->config->geom);
+		}
+	}
+
+	/* End the transaction */
+	vasbappend(sb, "COMMIT;\n"); 
+
+	/* Copy the string buffer into a new string, destroying the string buffer */
+	ret = (char *)malloc(strlen((char *)stringbuffer_getstring(sb)) + 1);
+	strcpy(ret, (char *)stringbuffer_getstring(sb));
+	stringbuffer_destroy(sb);
+
+	*strfooter = ret;
+
+	return SHPLOADEROK;
+}
+
+
+void
+ShpLoaderDestroy(SHPLOADERSTATE *state)
+{
+	/* Destroy a state object created with ShpLoaderOpenShape */
+	int i;
+
+	if (state != NULL)
+	{
+		if (state->hSHPHandle)
+			SHPClose(state->hSHPHandle);
+		if (state->hDBFHandle)
+			DBFClose(state->hDBFHandle);
+		if (state->field_names)
+		{
+			for (i = 0; i < state->num_fields; i++)
+				free(state->field_names[i]);
+	
+			free(state->field_names);
+		}
+		if (state->types)
+			free(state->types);
+		if (state->widths)
+			free(state->widths);
+		if (state->precisions)
+			free(state->precisions);
+		if (state->col_names)
+			free(state->col_names);
+
+		/* Free the state itself */	
+		free(state);
+	}
+}

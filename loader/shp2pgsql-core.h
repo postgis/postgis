@@ -1,3 +1,15 @@
+/**********************************************************************
+ * $Id$
+ *
+ * PostGIS - Spatial Types for PostgreSQL
+ * http://postgis.refractions.net
+ * Copyright 2001-2003 Refractions Research Inc.
+ * Copyright 2009 Paul Ramsey
+ * Copyright 2009 Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
+ *
+ * This is free software; you can redistribute and/or modify it under
+ * the terms of the GNU General Public Licence. See the COPYING file.
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -11,65 +23,168 @@
 #include "shapefil.h"
 #include "getopt.h"
 
+#include "../liblwgeom/liblwgeom.h"
+
 #ifdef HAVE_ICONV
 #include <iconv.h>
 #endif
 
-#include "../liblwgeom/liblwgeom.h"
 #include "stringbuffer.h"
 
 #define RCSID "$Id$"
 
-#define TRANSLATION_IDLE 0
-#define TRANSLATION_CREATE 1
-#define TRANSLATION_LOAD 2
-#define TRANSLATION_CLEANUP 3
-#define TRANSLATION_DONE 4
-
-enum {
-	insert_null,
-	skip_null,
-	abort_on_null
-};
 
 /*
-** Global variables for Core
-*/
-extern char opt; /* load mode: c = create, d = delete, a = append, p = prepare */
-extern char *table; /* table to load into */
-extern char *schema; /* schema to load into */
-extern char *geom; /* geometry column name to use */
-extern char *shp_file; /* the shape file (without the .shp extension) */
-extern int dump_format; /* 0 = SQL inserts, 1 = dump */
-extern int simple_geometries; /* 0 = MULTIPOLYGON/MULTILINESTRING, 1 = force to POLYGON/LINESTRING */
-extern int quoteidentifiers; /* 0 = columnname, 1 = "columnName" */
-extern int forceint4; /* 0 = allow int8 fields, 1 = no int8 fields */
-extern int createindex; /* 0 = no index, 1 = create index after load */
-extern int readshape; /* 0 = load DBF file only, 1 = load everything */
-#ifdef HAVE_ICONV
-extern char *encoding; /* iconv encoding name */
-#endif
-extern int null_policy; /* how to handle nulls */
-extern int sr_id; /* SRID specified */
-extern int gui_mode; /* 1 = GUI, 0 = commandline */
-extern int translation_stage; /* 1 = ready, 2 = done start, 3 = done middle, 4 = done end */
-extern int cur_entity; /* what record are we working on? */
+ * Loader policy constants
+ */
+
+#define POLICY_NULL_ABORT 	0x0
+#define POLICY_NULL_INSERT 	0x1
+#define POLICY_NULL_SKIP	0x2
 
 
 /*
-** Global variables used only by GUI
-*/
+ * Error message handling
+ */
+
+#define SHPLOADERMSGLEN		1024
+
+#define SHPLOADEROK		-1
+#define SHPLOADERERR		0
+#define SHPLOADERWARN		1
+
+#define SHPLOADERRECDELETED	2
+#define SHPLOADERRECISNULL	3
 
 /*
-** Prototypes across modules
-*/
-extern int translation_start(void); 
-extern int translation_middle(void); 
-extern int translation_end(void); 
-extern void pgui_log_va(const char *fmt, va_list ap);
-extern int pgui_exec(const char *sql);
-extern int pgui_copy_write(const char *line);
-extern int pgui_copy_start(const char *sql);
-extern int pgui_copy_end(const int rollback);
-extern void LowerCase(char *s);
+ * Shapefile (dbf) field name are at most 10chars + 1 NULL.
+ * Postgresql field names are at most 63 bytes + 1 NULL.
+ */
+#define MAXFIELDNAMELEN 64
+#define MAXVALUELEN 1024
 
+
+/*
+ * Structure to hold the loader configuration options 
+ */
+
+typedef struct shp_loader_config
+{
+	/* load mode: c = create, d = delete, a = append, p = prepare */
+	char opt;
+
+	/* table to load into */
+	char *table;
+
+	/* schema to load into */
+	char *schema;
+
+	/* geometry column name to use */
+	char *geom; 
+
+	/* the shape file (without the .shp extension) */
+	char *shp_file;
+
+	/* 0 = SQL inserts, 1 = dump */
+	int dump_format;
+
+	/* 0 = MULTIPOLYGON/MULTILINESTRING, 1 = force to POLYGON/LINESTRING */
+	int simple_geometries;
+
+	/* 0 = columnname, 1 = "columnName" */
+	int quoteidentifiers;
+
+	/* 0 = allow int8 fields, 1 = no int8 fields */
+	int forceint4;
+
+	/* 0 = no index, 1 = create index after load */
+	int createindex;
+
+	/* 0 = load DBF file only, 1 = load everything */
+	int readshape;
+
+	/* iconv encoding name */
+	char *encoding;
+
+	/* how to handle nulls */
+	int null_policy;
+
+	/* SRID specified */
+	int sr_id;
+
+	/* 0 = new style (PostGIS 1.x) geometries, 1 = old style (PostGIS 0.9.x) geometries */
+	int hwgeom;
+
+} SHPLOADERCONFIG;
+
+
+/*
+ * Structure to holder the current loader state 
+ */
+
+typedef struct shp_loader_state
+{
+	/* Configuration for this state */
+	SHPLOADERCONFIG *config;
+
+	/* Shapefile handle */
+	SHPHandle hSHPHandle;
+	
+	/* Shapefile type */
+	int shpfiletype;
+
+	/* Data file handle */
+	DBFHandle hDBFHandle;
+
+	/* Number of rows in the shapefile */
+	int num_entities;
+
+	/* Number of fields in the shapefile */
+	int num_fields;
+
+	/* Number of rows in the DBF file */
+	int num_records;
+
+	/* Pointer to an array of field names */
+	char **field_names;
+
+	/* Field type */
+	DBFFieldType *types;
+
+	/* Arrays of field widths and precisions */
+	int *widths;
+	int *precisions;
+
+	/* String containing colume name list in the form "(col1, col2, col3 ... , colN)" */
+	char *col_names;
+
+	/* String containing the PostGIS geometry type, e.g. POINT, POLYGON etc. */
+	char *pgtype;
+
+	/* PostGIS geometry type (numeric version) */
+	unsigned int wkbtype;
+
+	/* Number of dimensions to output */
+	int pgdims;
+
+	/* 0 = simple geometry, 1 = multi geometry */
+	int istypeM;
+
+	/* Last (error) message */
+	char message[SHPLOADERMSGLEN];
+
+} SHPLOADERSTATE;
+
+
+/* Externally accessible functions */
+void strtolower(char *s);
+void set_config_defaults(SHPLOADERCONFIG *config);
+
+SHPLOADERSTATE *ShpLoaderCreate(SHPLOADERCONFIG *config);
+int ShpLoaderOpenShape(SHPLOADERSTATE *state);
+int ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader);
+int ShpLoaderGetSQLCopyStatement(SHPLOADERSTATE *state, char **strheader);
+int ShpLoaderGetRecordCount(SHPLOADERSTATE *state);
+int ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strrecord);
+int ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter);
+void ShpLoaderDestroy(SHPLOADERSTATE *state);
