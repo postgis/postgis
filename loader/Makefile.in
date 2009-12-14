@@ -71,13 +71,13 @@ $(PGSQL2SHP): shpopen.o dbfopen.o getopt.o pgsql2shp.o $(LIBLWGEOM)
 	$(CC) $(CFLAGS) $^ $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) -lm -o $@ 
 
 $(SHP2PGSQL-CLI): stringbuffer.o shpopen.o dbfopen.o getopt.o shp2pgsql-core.o shp2pgsql-cli.o $(LIBLWGEOM) 
-	$(CC) $(CFLAGS) $(ICONV_LDFLAGS) -lm $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@ $(ICONV_LDFLAGS) -lm 
 
 shp2pgsql-gui.o: shp2pgsql-gui.c
 	$(CC) $(PGSQL_FE_CPPFLAGS) $(CFLAGS) $(GTK_CFLAGS) -o $@ -c shp2pgsql-gui.c
 
 $(SHP2PGSQL-GUI): stringbuffer.o shpopen.o dbfopen.o shp2pgsql-core.o shp2pgsql-gui.o $(LIBLWGEOM) 
-	$(CC) $(CFLAGS) $(GTK_LIBS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) -lm $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@ $(GTK_LIBS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) -lm 
 
 install: all
 	@mkdir -p $(DESTDIR)$(bindir)
