@@ -1577,11 +1577,15 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 
 			/* Escape attribute correctly according to dump format */
 			if (state->config->dump_format)
+			{
 				escval = escape_copy_string(val);
+				vasbappend(sb, "%s", escval);
+			}
 			else
+			{
 				escval = escape_insert_string(val);
-			
-			vasbappend(sb, "'%s'", escval);
+				vasbappend(sb, "'%s'", escval);
+			}
 
 			/* Free the escaped version if required */
 			if (val != escval)
