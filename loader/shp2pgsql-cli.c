@@ -285,6 +285,10 @@ main (int argc, char **argv)
 		}
 	}
 
+	/* If in COPY mode, terminate the COPY statement */
+	if (state->config->dump_format)
+		printf("\\.\n");
+
 	/* Print the footer to stdout */
 	ret = ShpLoaderGetSQLFooter(state, &footer);
 	if (ret != SHPLOADEROK)
