@@ -180,6 +180,25 @@ typedef struct shp_loader_state
 } SHPLOADERSTATE;
 
 
+typedef struct shp_connection_state
+{
+	/* PgSQL username to log in with */
+	char *username;
+
+	/* PgSQL password to log in with */
+	char *password;
+
+	/* PgSQL database to connect to */
+	char *database;
+
+	/* PgSQL port to connect to */
+	char *port;
+
+	/* PgSQL server to connect to */
+	char *host;
+
+} SHPCONNECTIONCONFIG;
+
 /* Externally accessible functions */
 void strtolower(char *s);
 void set_config_defaults(SHPLOADERCONFIG *config);

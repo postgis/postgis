@@ -1799,7 +1799,6 @@ void
 ShpLoaderDestroy(SHPLOADERSTATE *state)
 {
 	/* Destroy a state object created with ShpLoaderOpenShape */
-	int i;
 
 	if (state != NULL)
 	{
@@ -1809,6 +1808,7 @@ ShpLoaderDestroy(SHPLOADERSTATE *state)
 			DBFClose(state->hDBFHandle);
 		if (state->field_names)
 		{
+			int i;
 			for (i = 0; i < state->num_fields; i++)
 				free(state->field_names[i]);
 	
@@ -1827,3 +1827,6 @@ ShpLoaderDestroy(SHPLOADERSTATE *state)
 		free(state);
 	}
 }
+
+
+

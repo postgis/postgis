@@ -814,7 +814,7 @@ pgui_create_options_dialogue()
 }
 
 static void
-pgui_create_main_window(void)
+pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 {
 	static int text_width = 12;
 	/* Reusable label handle */
@@ -877,28 +877,40 @@ pgui_create_main_window(void)
 	/* User name row */
 	label = gtk_label_new("Username:");
 	entry_pg_user = gtk_entry_new();
+	if( conn->username )
+		gtk_entry_set_text(GTK_ENTRY(entry_pg_user), conn->username);
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), label, 0, 1, 0, 1 );
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), entry_pg_user, 1, 3, 0, 1 );
 	/* Password row */
 	label = gtk_label_new("Password:");
 	entry_pg_pass = gtk_entry_new();
+	if( conn->password )
+		gtk_entry_set_text(GTK_ENTRY(entry_pg_pass), conn->password);
 	gtk_entry_set_visibility( GTK_ENTRY(entry_pg_pass), FALSE);
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), label, 0, 1, 1, 2 );
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), entry_pg_pass, 1, 3, 1, 2 );
 	/* Host and port row */
 	label = gtk_label_new("Server Host:");
 	entry_pg_host = gtk_entry_new();
-	gtk_entry_set_text(GTK_ENTRY(entry_pg_host), "localhost");
+	if( conn->host )
+		gtk_entry_set_text(GTK_ENTRY(entry_pg_host), conn->host);
+	else
+		gtk_entry_set_text(GTK_ENTRY(entry_pg_host), "localhost");
 	gtk_entry_set_width_chars(GTK_ENTRY(entry_pg_host), text_width);
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), label, 0, 1, 2, 3 );
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), entry_pg_host, 1, 2, 2, 3 );
 	entry_pg_port = gtk_entry_new();
-	gtk_entry_set_text(GTK_ENTRY(entry_pg_port), "5432");
+	if( conn->port )
+		gtk_entry_set_text(GTK_ENTRY(entry_pg_port), conn->port);
+	else
+		gtk_entry_set_text(GTK_ENTRY(entry_pg_port), "5432");
 	gtk_entry_set_width_chars(GTK_ENTRY(entry_pg_port), 8);
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), entry_pg_port, 2, 3, 2, 3 );
 	/* Database row */
 	label = gtk_label_new("Database:");
 	entry_pg_db   = gtk_entry_new();
+	if( conn->database )
+		gtk_entry_set_text(GTK_ENTRY(entry_pg_db), conn->database);
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), label, 0, 1, 3, 4 );
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), entry_pg_db, 1, 3, 3, 4 );
 	/* Test button row */
@@ -1004,9 +1016,61 @@ pgui_create_main_window(void)
 	return;
 }
 
+static void
+usage()
+{
+	printf("RCSID: %s RELEASE: %s\n", RCSID, POSTGIS_VERSION);
+	printf("USAGE: shp2pgsql-gui [options]\n");
+	printf("OPTIONS:\n");
+	printf("  -U <username>\n");
+	printf("  -W <password>\n");
+	printf("  -h <host>\n");
+	printf("  -p <port>\n");
+	printf("  -d <database>\n");
+	printf("  -? Display this help screen\n");
+}
+
 int
 main(int argc, char *argv[])
 {
+	SHPLOADERCONFIG *config;
+	SHPCONNECTIONCONFIG *conn;
+	char c;
+
+	/* Parse command line options and set configuration */
+	config = malloc(sizeof(SHPLOADERCONFIG));
+	set_config_defaults(config);
+	
+	conn = malloc(sizeof(SHPCONNECTIONCONFIG));
+	memset(conn, 0, sizeof(SHPCONNECTIONCONFIG));
+
+	while ((c = getopt(argc, argv, "U:p:W:d:h:")) != -1)
+	{
+		switch (c)
+		{
+			case 'U':
+				conn->username = optarg;
+				break;
+			case 'p':
+				conn->port = optarg;
+				break;
+			case 'W':
+				conn->password = optarg;
+				break;
+			case 'd':
+				conn->database = optarg;
+				break;
+			case 'h':
+				conn->host = optarg;
+				break;
+			default:
+				usage();
+				free(conn);
+				free(config);
+				exit(0);
+		}
+	}
+	
 	/* Setup the configuration */
 	config = malloc(sizeof(SHPLOADERCONFIG));
 	set_config_defaults(config);
@@ -1015,13 +1079,14 @@ main(int argc, char *argv[])
 	gtk_init(&argc, &argv);
 
 	/* set up the user interface */
-	pgui_create_main_window();
+	pgui_create_main_window(conn);
 	pgui_create_options_dialogue();
 	
 	/* start the main loop */
 	gtk_main();
 
 	/* Free the configuration */
+	free(conn);
 	free(config);
 
 	return 0;
