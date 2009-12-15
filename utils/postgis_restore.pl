@@ -44,7 +44,7 @@ eval "exec perl -w $0 $@"
 
 use strict;
 
-(@ARGV >= 3) || die "Usage: postgis_restore.pl <postgis.sql> <db> <dump> ["<createdb_options>]\nRestore a custom dump (pg_dump -Fc) of a postgis enabled database.\n";
+(@ARGV >= 3) || die "Usage: postgis_restore.pl <postgis.sql> <db> <dump> [<createdb_options>]\nRestore a custom dump (pg_dump -Fc) of a postgis enabled database.\n";
 
 my $DEBUG=1;
 
