@@ -1036,18 +1036,6 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 
 	fc=*(VARDATA(wkttext));
 
-	/*
-	 * 'S' is accepted for backward compatibility, a WARNING
-	 * is issued later.
-	 *
-	 * TODO: reject 'SRID=x;..' form...
-	 */
-	if ( fc!='P' && fc!='L' && fc!='M' && fc!='G' && fc!='S' && fc!='C' )
-	{
-		lwerror("Invalid OGC WKT (does not start with P,L,M,C or G)");
-		PG_RETURN_NULL();
-	}
-
 	wkt = lwalloc(size+1);
 	memcpy(wkt, VARDATA(wkttext), size);
 	wkt[size]='\0';
