@@ -14,7 +14,6 @@
 
 #include "shp2pgsql-core.h"
 
-
 /* Internal ring/point structures */
 typedef struct struct_point
 {
@@ -1178,7 +1177,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 			! strcmp(name, "cmin") || ! strcmp(name, "primary") ||
 			! strcmp(name, "oid") || ! strcmp(name, "ctid"))
 		{
-			strncpy(name2 + 2, name, MAXFIELDNAMELEN);
+			strncpy(name2 + 2, name, MAXFIELDNAMELEN - 2);
 			name2[0] = '_';
 			name2[1] = '_';
 			strcpy(name, name2);
