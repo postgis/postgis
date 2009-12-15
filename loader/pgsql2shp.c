@@ -52,7 +52,7 @@ static char rcsid[] =
 #define VERBOSE 1
 
 /* Maximum DBF field width (according to ARCGIS) */
-#define MAX_DBF_FIELD_SIZE 255
+#define MAX_DBF_FIELD_SIZE 254
 
 typedef unsigned char byte;
 
