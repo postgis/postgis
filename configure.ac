@@ -189,19 +189,37 @@ dnl Detect iconv if it is installed (used for shp2pgsql encoding conversion
 dnl if available)
 dnl ===========================================================================
 
+ICONV_CFLAGS=""
+ICONV_LDFLAGS=""
+
+AC_ARG_WITH([libiconv], 
+	[AS_HELP_STRING([--with-libiconv=PATH], [specify a path to non-default libiconv installation])], 
+	[LIBICONV_PATH="$withval"], [LIBICONV_PATH=""])
+
+LDFLAGS_SAVE="$LDFLAGS"
+CFLAGS_SAVE="$CFLAGS"
+
+if test "x$LIBICONV_PATH" != "x"; then
+	AC_MSG_RESULT([checking user-specified libiconv location: $LIBICONV_PATH])
+	ICONV_CFLAGS="-I$LIBICONV_PATH/include"
+	ICONV_LDFLAGS="-L$LIBICONV_PATH/lib"
+	LDFLAGS="$ICONV_LDFLAGS $LDFLAGS"
+	CFLAGS="$ICONV_CFLAGS $CFLAGS"
+fi
+
 HAVE_ICONV_H=0
 AC_CHECK_HEADER([iconv.h], [HAVE_ICONV_H=1], [])
 
 dnl If we find the header file, try and link against the library
-if test "x$HAVE_ICONV_H" != "x0"; then
+if test "x$HAVE_ICONV_H" = "x1"; then
 	dnl libconv defines iconv_open to libiconv_open, so we'll check that directly
-	AC_CHECK_LIB([iconv], [libiconv_open], [ICONV_LDFLAGS=-liconv HAVE_ICONV=1], [])
+	AC_CHECK_LIB([iconv], [libiconv_open], [ICONV_LDFLAGS="$ICONV_LDFLAGS -liconv" HAVE_ICONV=1], [])
 	if test "x$HAVE_ICONV" = "x"; then
 	        dnl Check for iconv included as part of libc, using iconv_open
-	        AC_CHECK_LIB([c], [iconv_open], [ICONV_LDFLAGS=-lc HAVE_ICONV=1], [])
+	        AC_CHECK_LIB([c], [iconv_open], [ICONV_LDFLAGS="$ICONV_LDFLAGS -lc" HAVE_ICONV=1], [])
 		if test "x$HAVE_ICONV" = "x"; then
 			dnl But it's possible this implementation of libiconv doesn't have a libiconv_* define
-			AC_CHECK_LIB([iconv], [iconv_open], [ICONV_LDFLAGS=-liconv HAVE_ICONV=1], [])
+			AC_CHECK_LIB([iconv], [iconv_open], [ICONV_LDFLAGS="$ICONV_LDFLAGS -liconv" HAVE_ICONV=1], [])
 			if test "x$HAVE_ICONV" = "x"; then
 				dnl No iconv library was found; issue a warning to the console
 				AC_MSG_WARN([could not find iconv library: no support for encoding conversion will be included])
@@ -213,6 +231,8 @@ else
 	AC_MSG_WARN([could not find iconv.h header: no support for encoding conversion will be included])
 fi
 
+LDFLAGS="$LDFLAGS_SAVE"
+CFLAGS="$CFLAGS_SAVE"
 
 dnl Only define HAVE_ICONV in postgis_config.h if we detect iconv sucessfully
 if test "x$HAVE_ICONV" != "x"; then
@@ -220,6 +240,7 @@ if test "x$HAVE_ICONV" != "x"; then
 fi
 
 AC_SUBST([ICONV_LDFLAGS])
+AC_SUBST([ICONV_CFLAGS])
 
 
 dnl ===========================================================================
@@ -528,7 +549,7 @@ AC_ARG_WITH([gui],
 if test "x$GUI" = "xyes"; then
 	AC_MSG_RESULT([GUI: Build requested, checking for dependencies (GKT+2.0)])
 	case $host in
-		*apple*)
+		*darwin10.1*)
 			for frmwrk [ in Cairo GLib Gtk ]; do
 				if test -d /Library/Frameworks/${frmwrk}.framework; then
 					GTK_CFLAGS="$GTK_CFLAGS -I/Library/Frameworks/${frmwrk}.framework/Headers" 

@@ -353,7 +353,6 @@ pgui_copy_write(const char *line)
 	}
 
 	return 1;
-
 }
 
 /*
