@@ -21,7 +21,6 @@
 #include <sys/stat.h>
 
 #include "shapefil.h"
-#include "getopt.h"
 
 #include "../liblwgeom/liblwgeom.h"
 
@@ -63,6 +62,11 @@
 #define MAXFIELDNAMELEN 64
 #define MAXVALUELEN 1024
 
+/*
+ * Default geometry column name
+ */
+#define GEOMETRY_DEFAULT "geom"
+#define GEOGRAPHY_DEFAULT "geog"
 
 /*
  * Structure to hold the loader configuration options 

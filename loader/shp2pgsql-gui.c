@@ -469,8 +469,7 @@ pgui_action_connection_test(GtkWidget *widget, gpointer data)
 static void
 pgui_action_options(GtkWidget *widget, gpointer data)
 {
-	/* TODO Open the options dialog window here... */
-	pgui_logf("Open the options dialog...");
+	pgui_logf("Opening the options dialog...");
 	gtk_widget_show_all (window_options);
 	return;
 }
@@ -478,6 +477,7 @@ pgui_action_options(GtkWidget *widget, gpointer data)
 static void
 pgui_action_close_options(GtkWidget *widget, gpointer data)
 {
+	pgui_logf("Closing the options dialog.");
 	gtk_widget_hide_all (window_options);
 	return;
 }
@@ -518,7 +518,7 @@ pgui_action_shape_file_set(GtkWidget *widget, gpointer data)
 	/* Copy the table name into a fresh memory slot. */
 	table = malloc(table_end - table_start + 1);
 	memcpy(table, table_start, table_end - table_start);
-	table[table_end - table_start + 1] = '\0';
+	table[table_end - table_start] = '\0';
 
 	/* Set the table name into the configuration */
 	config->table = table;
@@ -942,7 +942,7 @@ pgui_create_main_window(void)
 	label = gtk_label_new("Geometry Column:");
 	entry_config_geocolumn = gtk_entry_new();
 	gtk_entry_set_width_chars(GTK_ENTRY(entry_config_geocolumn), text_width);
-	gtk_entry_set_text(GTK_ENTRY(entry_config_geocolumn), "the_geom");
+	gtk_entry_set_text(GTK_ENTRY(entry_config_geocolumn), GEOMETRY_DEFAULT);
 	gtk_table_attach_defaults(GTK_TABLE(table_config), label, 2, 3, 1, 2 );
 	gtk_table_attach_defaults(GTK_TABLE(table_config), entry_config_geocolumn, 3, 4, 1, 2 );
 

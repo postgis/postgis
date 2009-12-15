@@ -71,10 +71,10 @@ shp2pgsql-core.o: shp2pgsql-core.c
 pgsql2shp.o: pgsql2shp.c
 	$(CC) $(CFLAGS) $(ICONV_CFLAGS) $(PGSQL_FE_CPPFLAGS) -c $<
 
-$(PGSQL2SHP): shpopen.o dbfopen.o getopt.o pgsql2shp.o $(LIBLWGEOM) 
+$(PGSQL2SHP): shpopen.o dbfopen.o pgsql2shp.o $(LIBLWGEOM) 
 	$(CC) $(CFLAGS) $^ $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) -lm -o $@ 
 
-$(SHP2PGSQL-CLI): stringbuffer.o shpopen.o dbfopen.o getopt.o shp2pgsql-core.o shp2pgsql-cli.o $(LIBLWGEOM) 
+$(SHP2PGSQL-CLI): stringbuffer.o shpopen.o dbfopen.o shp2pgsql-core.o shp2pgsql-cli.o $(LIBLWGEOM) 
 	$(CC) $(CFLAGS) $^ -o $@ $(ICONV_LDFLAGS) -lm 
 
 shp2pgsql-gui.o: shp2pgsql-gui.c
