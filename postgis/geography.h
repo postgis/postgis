@@ -12,7 +12,8 @@
 
 /**********************************************************************
 ** Spherical radius.
-** Moritz, H. (1980). Geodetic Reference System 1980, by resolution of the XVII General Assembly of the IUGG in Canberra.
+** Moritz, H. (1980). Geodetic Reference System 1980, by resolution of 
+** the XVII General Assembly of the IUGG in Canberra.
 ** http://en.wikipedia.org/wiki/Earth_radius
 ** http://en.wikipedia.org/wiki/World_Geodetic_System
 */
@@ -22,6 +23,11 @@
 #define WGS84_MINOR_AXIS (WGS84_MAJOR_AXIS - WGS84_MAJOR_AXIS / WGS84_INVERSE_FLATTENING)
 #define WGS84_RADIUS ((2.0 * WGS84_MAJOR_AXIS + WGS84_MINOR_AXIS ) / 3.0)
 
+/* 
+** EPSG WGS84 geographics, OGC standard default SRS, better be in 
+** the SPATIAL_REF_SYS table!
+*/
+#define SRID_DEFAULT 4326
 
 /**********************************************************************
 **  Useful functions for all GEOGRAPHY handlers. 

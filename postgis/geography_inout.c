@@ -126,8 +126,8 @@ void geography_valid_typmod(LWGEOM *lwgeom, int32 typmod)
 	POSTGIS_DEBUGF(3, "Got lwgeom(type = %d, srid = %d, hasz = %d, hasm = %d)", lwgeom_type, lwgeom_srid, lwgeom_z, lwgeom_m);
 	POSTGIS_DEBUGF(3, "Got typmod(type = %d, srid = %d, hasz = %d, hasm = %d)", typmod_type, typmod_srid, typmod_z, typmod_m);	
 	
-	/* Typmod has a preference for SRID. */
-	if( typmod_srid > 0 && typmod_srid != lwgeom_srid)
+	/* Typmod has a preference for SRID and lwgeom has a non-default SRID? They had better match. */
+	if( typmod_srid > 0 && typmod_srid != lwgeom_srid )
 	{
 		ereport(ERROR, (
 	  		errcode(ERRCODE_INVALID_PARAMETER_VALUE),
@@ -204,6 +204,12 @@ Datum geography_in(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_deserialize(lwg_parser_result.serialized_lwgeom);
 
     geography_valid_type(TYPE_GETTYPE(lwgeom->type));
+
+	/* Force default SRID to the default */
+	if( (int)lwgeom->SRID <= 0 )
+	{
+		lwgeom->SRID = SRID_DEFAULT;
+	}
 
 	if( geog_typmod >= 0 )
 	{
@@ -290,7 +296,7 @@ Datum geography_typmod_in(PG_FUNCTION_ARGS)
 {
 	
 	ArrayType *arr = (ArrayType *) DatumGetPointer(PG_GETARG_DATUM(0));
-	uint32 typmod = 0;
+	uint32 typmod = 0; 
 	Datum *elem_values;
 	int n = 0;
 	int	i = 0;
@@ -314,6 +320,9 @@ Datum geography_typmod_in(PG_FUNCTION_ARGS)
 	                  CSTRINGOID, -2, false, 'c', /* hardwire cstring representation details */
 					  &elem_values, NULL, &n);
 
+	/* Set the SRID to the default value first */
+	TYPMOD_SET_SRID(typmod, SRID_DEFAULT);
+
 	for (i = 0; i < n; i++) 
 	{
 		if( i == 1 ) /* SRID */
@@ -332,12 +341,12 @@ Datum geography_typmod_in(PG_FUNCTION_ARGS)
 				else
 				{
 					/* TODO: Check that the value provided is in fact a lonlat entry in spatial_ref_sys. */
-					/* For now, we only accept 4326. */
-					if( srid != 4326 )
+					/* For now, we only accept SRID_DEFAULT. */
+					if( srid != SRID_DEFAULT )
 					{
 						ereport(ERROR,
                       		(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-                       		errmsg("Currently, only 4326 is accepted as an SRID for GEOGRAPHY")));
+                       		errmsg("Currently, only %d is accepted as an SRID for GEOGRAPHY", SRID_DEFAULT)));
 					}
 					else 
 					{
@@ -347,7 +356,6 @@ Datum geography_typmod_in(PG_FUNCTION_ARGS)
 			}
 			else
 			{
-				TYPMOD_SET_SRID(typmod, 0);
 			}
 		}
 		if( i == 0 ) /* TYPE */
@@ -498,7 +506,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	int len;
 	int version;
 	char *srs;
-	int SRID=4326;
+	int SRID = SRID_DEFAULT;
 	int precision = MAX_DOUBLE_PRECISION;
 	int option=0;
 
@@ -534,7 +542,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	else srs = getSRSbySRID(SRID, true);
         if (!srs)
 	{
-                elog(ERROR, "SRID 4326 unknown in spatial_ref_sys table");
+                elog(ERROR, "SRID %d unknown in spatial_ref_sys table", SRID_DEFAULT);
                 PG_RETURN_NULL();
         }
 
@@ -713,13 +721,13 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 
         if (option & 2 || option & 4)
         {
-		/* Geography only handle srid 4326 */
-                if (option & 2) srs = getSRSbySRID(4326, true);
-                if (option & 4) srs = getSRSbySRID(4326, false);
+		/* Geography only handle srid SRID_DEFAULT */
+                if (option & 2) srs = getSRSbySRID(SRID_DEFAULT, true);
+                if (option & 4) srs = getSRSbySRID(SRID_DEFAULT, false);
 
                 if (!srs)
 		{
-                     elog(ERROR, "SRID 4326 unknown in spatial_ref_sys table");
+                     elog(ERROR, "SRID SRID_DEFAULT unknown in spatial_ref_sys table");
                      PG_RETURN_NULL();
                 }
         }
@@ -907,12 +915,19 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
     geography_valid_type(TYPE_GETTYPE(lwgeom_serialized[0]));
 
 	lwgeom = lwgeom_deserialize(lwgeom_serialized);
+	
+	/* Force default SRID */
+	if( (int)lwgeom->SRID <= 0 )
+	{
+		lwgeom->SRID = SRID_DEFAULT;
+	}
 
-	if( ! ( lwgeom->SRID == 4326 || lwgeom->SRID == -1 ) )
+	/* Error on any SRID != default */
+	if( lwgeom->SRID != SRID_DEFAULT )
 	{
 		ereport(ERROR, (
 	  		errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-	  		errmsg("Only SRID 4326 or unknown (-1) are currently supported in geography." )));
+	  		errmsg("Only SRID SRID_DEFAULT is currently supported in geography." )));
 	}
 
 	/*
@@ -950,9 +965,9 @@ Datum geometry_from_geography(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_from_gserialized(g_ser);
 	
 	/* We want "geometry" to think all our "geography" has an SRID, and the 
-	   implied SRID is 4326, so we fill that in if our SRID is actually unknown. */
-	if( lwgeom->SRID == -1 )
-		lwgeom->SRID = 4326;
+	   implied SRID is the default, so we fill that in if our SRID is actually unknown. */
+	if( (int)lwgeom->SRID <= 0 )
+		lwgeom->SRID = SRID_DEFAULT;
 		
 	ret = pglwgeom_serialize(lwgeom);
 	lwgeom_release(lwgeom);
