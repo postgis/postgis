@@ -172,7 +172,7 @@ Datum CHIP_in(PG_FUNCTION_ARGS)
 	{
 		if (result->size != (sizeof(CHIP) - sizeof(void*) + datum_size * result->width*result->height) )
 		{
-			elog(ERROR,"CHIP_in parser - bad data (actual size [%d] != computed size [%ld])!", result->size, (sizeof(CHIP)-sizeof(void*) + datum_size * result->width*result->height) );
+			elog(ERROR,"CHIP_in parser - bad data (actual size [%d] != computed size [%ld])!", result->size, (long int)(sizeof(CHIP)-sizeof(void*) + datum_size * result->width*result->height) );
 			PG_RETURN_NULL();
 		}
 	}
