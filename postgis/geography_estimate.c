@@ -111,8 +111,9 @@ estimate_selectivity(GBOX *box, GEOG_STATS *geogstats)
 {
 	int x, y, z;
 	int x_idx_min, x_idx_max, y_idx_min, y_idx_max, z_idx_min, z_idx_max;
-	double intersect_x, intersect_y, intersect_z, AOI;
-	double cell_coverage;
+	double intersect_x, intersect_y, intersect_z;
+	double AOI = 1.0;
+	double cell_coverage = 1.0;
 	double sizex, sizey, sizez;	/* dimensions of histogram */
 	int unitsx, unitsy, unitsz; /* histogram grid size */
 	double value;
