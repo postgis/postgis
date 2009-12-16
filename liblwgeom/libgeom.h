@@ -14,7 +14,12 @@
 
 #include "liblwgeom.h"
 #include <string.h>
+#include <math.h>
 #include <assert.h>
+#if HAVE_IEEEFP_H
+#include <ieeefp.h>
+#endif
+
 
 /**
 * PI
