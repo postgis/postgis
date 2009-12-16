@@ -65,8 +65,8 @@
 /*
  * Default geometry column name
  */
-#define GEOMETRY_DEFAULT "geom"
-#define GEOGRAPHY_DEFAULT "geog"
+#define GEOMETRY_DEFAULT "the_geom"
+#define GEOGRAPHY_DEFAULT "the_geog"
 
 /*
  * Structure to hold the loader configuration options 
