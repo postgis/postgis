@@ -1,3 +1,34 @@
+2009-12-09 05:12  robe
+
+	* doc/reference.xml: correct output type of ST_Extent and flag
+	  change happening in 1.4 from box2d to box3d_extent. Also ref to
+	  ST_Extent3D to deal with 3d geometries.
+
+2009-12-04 20:39  kneufeld
+
+	* spatial_ref_sys.sql: back-ported patch for ticket #333
+	  - removed unnecessary VACUUM from spatial_ref_sys.sql that breaks
+	  running the file in PgAdminIII
+
+2009-11-30 19:11  pramsey
+
+	* README.postgis: Update the README to reflect new upgrade scripts
+
+2009-11-30 18:07  pramsey
+
+	* postgis/uninstall_postgis.sql.in.c: Clean up uninstall function
+	  to work. (#327)
+
+2009-11-29 09:50  robe
+
+	* doc/xsl/postgis_gardentest_subset.sql.xsl: partial test script
+	  (copied form 1.5 with slight modification)
+
+2009-11-28 23:58  pramsey
+
+	* ChangeLog, NEWS, README.postgis, doc/release_notes.xml: Update
+	  things for 1.4.1rc2
+
 2009-11-28 23:29  pramsey
 
 	* make_dist.sh: Try and retain postgis_comments.sql during
