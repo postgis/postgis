@@ -48,6 +48,7 @@ static GtkWidget *checkbutton_options_preservecase;
 static GtkWidget *checkbutton_options_forceint;
 static GtkWidget *checkbutton_options_autoindex;
 static GtkWidget *checkbutton_options_dbfonly;
+static GtkWidget *checkbutton_options_dumpformat;
 
 /* Other */
 static char *pgui_errmsg = NULL;
@@ -151,6 +152,7 @@ pgui_set_config_from_ui()
 	gboolean forceint = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_forceint));
 	gboolean createindex = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_autoindex));
 	gboolean dbfonly = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_dbfonly));
+	gboolean dumpformat = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_dumpformat));
 
 	char *c;
 
@@ -232,6 +234,12 @@ pgui_set_config_from_ui()
 		config->readshape = 0;
 	else
 		config->readshape = 1;
+
+	/* Use COPY rather than INSERT format */
+	if ( dumpformat )
+		config->dump_format = 1;
+	else
+		config->dump_format = 0;
 
 	return;
 }
@@ -793,19 +801,26 @@ pgui_create_options_dialogue()
 	pgui_create_options_dialogue_add_label(table_options, "Load only attribute (dbf) data", 0.0, 4);
 	checkbutton_options_dbfonly = gtk_check_button_new();
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON	(checkbutton_options_dbfonly), FALSE);
-	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 0.0 );
+	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 1.0 );
 	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 4, 5 );
 	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_options_dbfonly);
 
-	pgui_create_options_dialogue_add_label(table_options, "Policy for records with empty (null) shapes", 0.0, 5);
+	pgui_create_options_dialogue_add_label(table_options, "Load data using COPY rather than INSERT", 0.0, 5);
+	checkbutton_options_dumpformat = gtk_check_button_new();
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON	(checkbutton_options_dumpformat), FALSE);
+	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 0.0 );
+	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 5, 6 );
+	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_options_dumpformat);
+
+	pgui_create_options_dialogue_add_label(table_options, "Policy for records with empty (null) shapes", 0.0, 6);
 	entry_options_nullpolicy = gtk_entry_new();
 	gtk_entry_set_width_chars(GTK_ENTRY(entry_options_nullpolicy), text_width);
 	gtk_entry_set_text(GTK_ENTRY(entry_options_nullpolicy), "0");
-	gtk_table_attach_defaults(GTK_TABLE(table_options), entry_options_nullpolicy, 0, 1, 5, 6 );
+	gtk_table_attach_defaults(GTK_TABLE(table_options), entry_options_nullpolicy, 0, 1, 6, 7 );
 	
 	button_options_ok = gtk_button_new_with_label("OK");
 	g_signal_connect (G_OBJECT (button_options_ok), "clicked", G_CALLBACK (pgui_action_close_options), NULL);
-	gtk_table_attach_defaults(GTK_TABLE(table_options), button_options_ok, 1, 2, 6, 7 );
+	gtk_table_attach_defaults(GTK_TABLE(table_options), button_options_ok, 1, 2, 7, 8 );
 
 	vbox_options = gtk_vbox_new(FALSE, 10);
 	gtk_box_pack_start(GTK_BOX(vbox_options), table_options, FALSE, FALSE, 0);
