@@ -588,6 +588,13 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	 * Loop through the items in the shapefile
 	 */
 
+	/* Disable the button to prevent multiple imports running at the same time */
+	gtk_widget_set_sensitive(widget, FALSE); 
+
+	/* Allow GTK events to get a look in */
+	while (gtk_events_pending())
+		gtk_main_iteration();
+
 	/* Create the shapefile state object */
 	state = ShpLoaderCreate(config);
 
@@ -598,7 +605,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		pgui_logf("%s", state->message);
 
 		if (ret == SHPLOADERERR)
-			return;
+			goto import_cleanup;
 	}
 
 	/* If reading the whole shapefile, display its type */
@@ -615,7 +622,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		pgui_logf("%s", state->message);
 
 		if (ret == SHPLOADERERR)
-			return;
+			goto import_cleanup;
 	}
 
 	/* Send the header to the remote server: if we are in COPY mode then the last
@@ -624,7 +631,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	free(header);
 
 	if (!ret)
-		return;
+		goto import_cleanup;
 
 	/* If we are in COPY (dump format) mode, output the COPY statement and enter COPY mode */
 	if (state->config->dump_format)
@@ -635,7 +642,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 			pgui_logf("%s", state->message);
 	
 			if (ret == SHPLOADERERR)
-				return;
+				goto import_cleanup;
 		}
 
 		/* Send the result to the remote server: this should put us in COPY mode */
@@ -643,7 +650,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		free(header);
 
 		if (!ret)
-			return;
+			goto import_cleanup;
 	}
 
 	/* Main loop: iterate through all of the records and send them to stdout */
@@ -707,7 +714,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	if (state->config->dump_format)
 	{
 		if (! pgui_copy_end(0) )
-			return;
+			goto import_cleanup;
 	}
 
 	/* Get the footer */
@@ -717,7 +724,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		pgui_logf("%s\n", state->message);
 
 		if (ret == SHPLOADERERR)
-			return;
+			goto import_cleanup;
 	}
 
 	/* Send the footer to the server */
@@ -730,6 +737,18 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	/* Free the state object */
 	ShpLoaderDestroy(state);
 
+
+import_cleanup:
+	/* Enable the button once again */
+	gtk_widget_set_sensitive(widget, TRUE);
+
+	/* Silly GTK bug means we have to hide and show the button for it to work again! */
+	gtk_widget_hide(widget);
+	gtk_widget_show(widget);
+
+	/* Allow GTK events to get a look in */
+	while (gtk_events_pending())
+		gtk_main_iteration();
 
 	/* Tidy up */
 	free(connection_string);
