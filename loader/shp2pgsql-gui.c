@@ -54,6 +54,7 @@ static char *pgui_errmsg = NULL;
 static PGconn *pg_connection;
 static SHPLOADERCONFIG *config;
 static SHPLOADERSTATE *state;
+static SHPCONNECTIONCONFIG *conn;
 
 
 /*
@@ -1033,8 +1034,6 @@ usage()
 int
 main(int argc, char *argv[])
 {
-	SHPLOADERCONFIG *config;
-	SHPCONNECTIONCONFIG *conn;
 	char c;
 
 	/* Parse command line options and set configuration */
@@ -1070,10 +1069,6 @@ main(int argc, char *argv[])
 				exit(0);
 		}
 	}
-	
-	/* Setup the configuration */
-	config = malloc(sizeof(SHPLOADERCONFIG));
-	set_config_defaults(config);
 
 	/* initialize the GTK stack */
 	gtk_init(&argc, &argv);
