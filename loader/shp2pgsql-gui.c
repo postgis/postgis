@@ -527,7 +527,7 @@ pgui_action_shape_file_set(GtkWidget *widget, gpointer data)
 	/* Copy the table name into a fresh memory slot. */
 	table = malloc(table_end - table_start + 1);
 	memcpy(table, table_start, table_end - table_start);
-	table[table_end - table_start + 1] = '\0';
+	table[table_end - table_start] = '\0';
 
 	/* Set the table name into the configuration */
 	config->table = table;
@@ -544,6 +544,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	char *dest_string = NULL;
 	int ret, i;
 	char *header, *footer, *record;	
+	int log_frequency = 500;
 
 
 	if ( ! (connection_string = pgui_read_connection() ) )
@@ -636,6 +637,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	/* If we are in COPY (dump format) mode, output the COPY statement and enter COPY mode */
 	if (state->config->dump_format)
 	{
+		log_frequency = 5000; /* log less often so we run faster */
 		ret = ShpLoaderGetSQLCopyStatement(state, &header);
 		if (ret != SHPLOADEROK)
 		{
@@ -666,6 +668,10 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 					ret = pgui_copy_write(record);
 				else
 					ret = pgui_exec(record);
+
+				/* Display a record number as we load */
+				if ((i % log_frequency) == 0)
+					pgui_logf("Loaded record number #%d", i);
 
 				/* Display a record number if we failed */
 				if (!ret)
