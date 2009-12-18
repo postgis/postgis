@@ -34,6 +34,7 @@ static char rcsid[] =
 #include <inttypes.h>
 #include "libpq-fe.h"
 #include "shapefil.h"
+#include "getopt.h"
 #include <sys/types.h> // for getpid()
 #include <unistd.h> // for getpid() and getopt
 
@@ -1216,7 +1217,7 @@ parse_commandline(int ARGC, char **ARGV)
 	memset(buf, 0, 2048); /* just in case... */
 
 	/* Parse command line */
-		while ((c = getopt(ARGC, ARGV, "bf:h:du:p:P:g:rk")) != EOF){
+		while ((c = pgis_getopt(ARGC, ARGV, "bf:h:du:p:P:g:rk")) != EOF){
 		switch (c) {
 			case 'b':
 				binary = 1;

@@ -21,6 +21,7 @@
 #include <sys/stat.h>
 
 #include "shapefil.h"
+#include "getopt.h"
 
 #include "../liblwgeom/liblwgeom.h"
 
