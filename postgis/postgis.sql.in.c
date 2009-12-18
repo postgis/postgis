@@ -3428,9 +3428,7 @@ BEGIN
 	SELECT postgis_lib_version() INTO libver;
 	SELECT postgis_proj_version() INTO projver;
 	SELECT postgis_geos_version() INTO geosver;
-#if HAVE_LIBXML2
 	SELECT postgis_libxml_version() INTO libxmlver;
-#endif
 	SELECT postgis_uses_stats() INTO usestats;
 	SELECT postgis_scripts_installed() INTO dbproc;
 	SELECT postgis_scripts_released() INTO relproc;
@@ -4503,7 +4501,6 @@ CREATE OR REPLACE FUNCTION ST_Equals(geometry,geometry)
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 
-#if HAVE_LIBXML2
 -----------------------------------------------------------------------
 -- GML & KML INPUT
 -- Availability: 1.5.0
@@ -4523,7 +4520,6 @@ CREATE OR REPLACE FUNCTION ST_GeomFromKML(text)
 	AS 'MODULE_PATHNAME','geom_from_kml'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
-#endif
 -----------------------------------------------------------------------
 -- SVG OUTPUT
 -----------------------------------------------------------------------

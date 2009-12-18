@@ -39,7 +39,6 @@
 #include "executor/spi.h"
 
 
-#if HAVE_LIBXML2
 #include <libxml/tree.h> 
 #include <libxml/parser.h> 
 #include <libxml/xpath.h> 
@@ -1576,5 +1575,3 @@ static LWGEOM* parse_gml(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	lwerror("invalid GML representation");
 	return NULL; /* Never reach */
 }
-
-#endif /* if HAVE_LIBXML2 */

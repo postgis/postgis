@@ -404,8 +404,7 @@ the_geom IS NULL)
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the version number of the LibXML2 library, or
-		<varname>NULL</varname> if LibXML2 support is not enabled.</para>
+		<para>Returns the version number of the LibXML2 library.</para>
 		<para>Availability: 1.5</para>
 	  </refsection>
 

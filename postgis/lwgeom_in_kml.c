@@ -32,7 +32,6 @@
 #include "liblwgeom.h"
 
 
-#if HAVE_LIBXML2
 #include <libxml/tree.h> 
 #include <libxml/parser.h> 
 
@@ -466,5 +465,3 @@ static LWGEOM* parse_kml(xmlNodePtr xnode, bool *hasz)
 	lwerror("invalid KML representation");
 	return NULL; /* Never reach */
 }
-
-#endif /* if HAVE_LIBXML2 */

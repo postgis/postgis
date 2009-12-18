@@ -201,16 +201,12 @@ Datum postgis_autocache_bbox(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(postgis_libxml_version);
 Datum postgis_libxml_version(PG_FUNCTION_ARGS)
 {
-#if HAVE_LIBXML2
 	char *ver = POSTGIS_LIBXML2_VERSION;
 	text *result;
 	result = lwalloc(VARHDRSZ  + strlen(ver));
 	SET_VARSIZE(result, VARHDRSZ + strlen(ver));
 	memcpy(VARDATA(result), ver, strlen(ver));
 	PG_RETURN_POINTER(result);
-#else
-	PG_RETURN_NULL();
-#endif
 }
 
 

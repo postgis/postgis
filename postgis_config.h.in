@@ -21,9 +21,6 @@
 /* Define to 1 if you have the `proj' library (-lproj). */
 #undef HAVE_LIBPROJ
 
-/* libxml/tree.h libxml/parser.h header */
-#undef HAVE_LIBXML2
-
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 

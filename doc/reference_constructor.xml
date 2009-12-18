@@ -347,9 +347,6 @@ SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 15
 	  <refsection>
 		<title>Description</title>
 		<para>Constructs a PostGIS ST_Geometry object from the OGC GML representation.</para>
-		<note>
-			<para>Requires compilation with libxml2 2.5+</para>
-		</note>
 		<para>ST_GeomFromGML works only for GML Geometry fragments. It throws an error if you try to use it on a whole GML document.</para>
 		<para>
 			OGC GML versions supported:
@@ -367,7 +364,7 @@ SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 15
 			OGC GML standards, cf: <ulink url="http://www.opengeospatial.org/standards/gml">http://www.opengeospatial.org/standards/gml</ulink>:
 		</para>
 
-		<para>Availability: 1.5 - requires libxml2 &gt;= 2.5+</para>
+		<para>Availability: 1.5</para>
 		<para>&Z_support;</para>
 		<para>GML allow mixed dimensions (2D and 3D inside the same MultiGeometry for instance). As PostGIS geometries don't, ST_GeomFromGML convert the whole geometry to 2D if a missing Z dimension is found once.</para>
 		
@@ -433,9 +430,6 @@ SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 15
 	  <refsection>
 		<title>Description</title>
 		<para>Constructs a PostGIS ST_Geometry object from the OGC KML representation.</para>
-		<note>
-			<para>Requires compilation with libxml2 2.5+</para>
-		</note>
 		<para>ST_GeomFromKML works only for KML Geometry fragments. It throws an error if you try to use it on a whole KML document.</para>
 		<para>
 			OGC KML versions supported:
@@ -447,7 +441,7 @@ SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 15
 			OGC KML standards, cf: <ulink url="http://www.opengeospatial.org/standards/kml">http://www.opengeospatial.org/standards/kml</ulink>:
 		</para>
 
-		<para>Availability: 1.5 - requires libxml2 &gt;= 2.5+</para>
+		<para>Availability: 1.5</para>
 		<para>&Z_support;</para>
 		<note>
 			<para>ST_GeomFromKML function not support SQL/MM curves geometries.</para>
@@ -487,7 +481,7 @@ SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 15
 		  <refsection>
 			<title>Description</title>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.50 (except for curves support).</para>
-			<para>Availability: 1.5 - requires libxml2 &gt;= 2.5+</para>
+			<para>Availability: 1.5</para>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>

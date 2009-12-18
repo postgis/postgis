@@ -353,7 +353,7 @@ AC_SUBST([POSTGIS_PGSQL_VERSION])
 
 dnl ===========================================================================
 dnl Detect libxml2 if it is installed
-dnl (needed to GeomFromGML function, but not required to PostGIS build)
+dnl (needed to GeomFromGML and GeomFromKML functions)
 dnl ===========================================================================
 
 AC_ARG_WITH([xml2config], 
@@ -366,9 +366,7 @@ if test "x$XML2CONFIG" = "x"; then
 
 	dnl If we couldn't find xml2-config, display a warning
 	if test "x$XML2CONFIG" = "x"; then
-		AC_MSG_WARN([could not find xml2-config from libxml2, some imports functions will be deactivated])
-	else
-		FOUND_LIBXML2=1
+		AC_MSG_ERROR([could not find xml2-config from libxml2 within the current path. You may need to try re-running configure with a --with-xml2config parameter.])
 	fi
 else
 	dnl XML2CONFIG was specified; display a message to the user
@@ -377,49 +375,34 @@ else
 	else
 		if test -f $XML2CONFIG; then
 			AC_MSG_RESULT([Using user-specified xml2-config file: $XML2CONFIG])
-			FOUND_LIBXML2=1
 		else
 			AC_MSG_ERROR([the user-specified xml2-config file $XML2CONFIG does not exist])
 		fi	
 	fi
 fi
 
-dnl xml2-config founded, retrieve flags and version
-if test "$FOUND_LIBXML2" = "1"; then
 
-	dnl Extract the linker and include flags 
-	XML2_LDFLAGS=`$XML2CONFIG --libs`
-	XML2_CPPFLAGS=`$XML2CONFIG --cflags`
+dnl Extract the linker and include flags 
+XML2_LDFLAGS=`$XML2CONFIG --libs`
+XML2_CPPFLAGS=`$XML2CONFIG --cflags`
 
-	dnl Extract the version
-	POSTGIS_LIBXML2_VERSION=`$XML2CONFIG --version`
+dnl Extract the version
+POSTGIS_LIBXML2_VERSION=`$XML2CONFIG --version`
 
-	dnl Check headers file
-	CPPFLAGS_SAVE="$CPPFLAGS"
-	CPPFLAGS="$XML2_CPPFLAGS"
-	AC_CHECK_HEADERS([libxml/tree.h libxml/parser.h libxml/xpath.h libxml/xpathInternals.h],
-			 [HAVE_LIBXML2=1],
-			 [AC_MSG_ERROR([could not find headers include related to libxml2])])
+dnl Check headers file
+CPPFLAGS_SAVE="$CPPFLAGS"
+CPPFLAGS="$XML2_CPPFLAGS"
+AC_CHECK_HEADERS([libxml/tree.h libxml/parser.h libxml/xpath.h libxml/xpathInternals.h],
+		 [], [AC_MSG_ERROR([could not find headers include related to libxml2])])
 
-	dnl Ensure we can link against libxml2
-	LIBS_SAVE="$LIBS"
-	LIBS="$XML2_LDFLAGS"
-	AC_CHECK_LIB([xml2], [xmlInitParser], [], [AC_MSG_ERROR([could not find libxml2])], [])
+dnl Ensure we can link against libxml2
+LIBS_SAVE="$LIBS"
+LIBS="$XML2_LDFLAGS"
+AC_CHECK_LIB([xml2], [xmlInitParser], [], [AC_MSG_ERROR([could not find libxml2])], [])
 
-	AC_DEFINE_UNQUOTED([HAVE_LIBXML2], [$HAVE_LIBXML2],
-			   [libxml/tree.h libxml/parser.h libxml/xpath.h libxml/xpathInternals.h header])
-	AC_SUBST([HAVE_LIBXML2])
+AC_DEFINE_UNQUOTED([POSTGIS_LIBXML2_VERSION], ["$POSTGIS_LIBXML2_VERSION"], [PostGIS libxml2 version])
+AC_SUBST([POSTGIS_LIBXML2_VERSION])
 
-	AC_DEFINE_UNQUOTED([POSTGIS_LIBXML2_VERSION], ["$POSTGIS_LIBXML2_VERSION"], [PostGIS libxml2 version])
-	AC_SUBST([POSTGIS_LIBXML2_VERSION])
-fi
-
-POSTGIS_HAVE_LIBXML2=0
-if test "x$HAVE_LIBXML2" = "x1"; then
-	POSTGIS_HAVE_LIBXML2=1
-fi
-AC_DEFINE([POSTGIS_HAVE_LIBXML2])
-AC_SUBST([POSTGIS_HAVE_LIBXML2])
 
 
 dnl ===========================================================================
