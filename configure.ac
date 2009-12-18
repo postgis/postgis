@@ -565,9 +565,20 @@ if test "x$GUI" = "xyes"; then
 			dnl Try to find the GTK libs with pkgconfig 
 			AM_PATH_GTK_2_0([2.8.0], [GTK_BUILD="gui"], [GTK_BUILD=""])
 	esac
+
+	dnl Add -mwindows to MinGW GUI build
+	case $host in
+		*mingw32*)
+			GTK_WIN32="-mwindows"
+			;;
+	esac
 fi
+
+
+
 AC_SUBST([GTK_CFLAGS])
 AC_SUBST([GTK_LIBS])
+AC_SUBST([GTK_WIN32])
 AC_SUBST([GTK_BUILD])
 
 

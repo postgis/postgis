@@ -44,6 +44,7 @@ LIBLWGEOM=../liblwgeom/liblwgeom.a
 # GTK includes and libraries
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_LIBS = @GTK_LIBS@
+GTK_WIN32 = @GTK_WIN32@
 
 # If REGRESS=1 passed as a parameter, change the default install paths
 # so that no prefix is included. This allows us to relocate to a temporary
@@ -81,7 +82,7 @@ shp2pgsql-gui.o: shp2pgsql-gui.c
 	$(CC) $(CFLAGS) $(PGSQL_FE_CPPFLAGS) $(GTK_CFLAGS) -o $@ -c shp2pgsql-gui.c
 
 $(SHP2PGSQL-GUI): stringbuffer.o shpopen.o dbfopen.o shp2pgsql-core.o shp2pgsql-gui.o $(LIBLWGEOM) 
-	$(CC) $(CFLAGS) $^ -o $@ $(GTK_LIBS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) -lm 
+	$(CC) $(CFLAGS) $(GTK_WIN32) $^ -o $@ $(GTK_LIBS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) -lm 
 
 install: all
 	@mkdir -p $(DESTDIR)$(bindir)
