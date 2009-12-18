@@ -1069,11 +1069,6 @@ SELECT 'double_30', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 -1.23E 2</gm
 -- ERROR: Junk 
 SELECT 'double_31', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 $0%@#$^%#</gml:pos></gml:Point>'));
 
--- Ticket #273 --
-SELECT '#273', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:coordinates>1,2</gml:coordinates></gml:Point>'));
-
-
-
 
 
 
