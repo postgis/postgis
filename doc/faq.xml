@@ -29,8 +29,8 @@
 		 if all you care about is measuring distances and lengths and you have data from all over the world.
 		 Geometry datatype is an older data type that has many functions supporting it and enjoys great support from third party tools.
 		 Its best if you are pretty comfortable with spatial reference systems or you are dealing with localized data
-		  where all your data fits in a since spatial reference system (SRID), or you need to do a lot of spatial processing.
-		  Refer to our <link linkend="PostGIS_TypeFunctionMatrix">function type matrix</link> to see what is currently supported and what is not.
+		  where all your data fits in a single <link linkend="spatial_ref_sys">spatial reference system (SRID)</link>, or you need to do a lot of spatial processing.
+		  Refer to <xref linkend="PostGIS_TypeFunctionMatrix" /> to see what is currently supported and what is not.
 		 </para>
 		 <para>
 		 	Long Answer: Refer to our more lengthy discussion in the <xref linkend="PostGIS_GeographyVSGeometry" /> and <link linkend="PostGIS_TypeFunctionMatrix">function type matrix</link>.
@@ -56,7 +56,11 @@
 
       <answer>
         <para>First, you need to create a table with a column of type
-        "geometry" to hold your GIS data. Connect to your database with
+        "geometry" or "geography" to hold your GIS data. 
+		Storing geography type data is a little different than storing geometry.  Refer
+		to <xref linkend="Geography_Basics" /> for details on storing geography. </para>
+		<para>
+		For geometry: Connect to your database with
         <filename>psql</filename> and try the following SQL:</para>
 
         <programlisting>CREATE TABLE gtest ( ID int4, NAME varchar(20) );
@@ -64,7 +68,7 @@ SELECT AddGeometryColumn('', 'gtest','geom',-1,'LINESTRING',2);</programlisting>
 
         <para>If the geometry column addition fails, you probably have not
         loaded the PostGIS functions and objects into this database. See the
-        <link linkend="PGInstall">installation instructions</link>.</para>
+        <xref linkend="PGInstall" />.</para>
 
         <para>Then, you can insert a geometry into the table using a SQL
         insert statement. The GIS object itself is formatted using the OpenGIS
