@@ -13,7 +13,7 @@
 	<para>PostGIS extends the standard with support for 3DZ,3DM and 4D
 	coordinates.</para>
 
-	<sect2>
+	<sect2 id="OpenGISWKBWKT">
 	  <title>OpenGIS WKB and WKT</title>
 
 	  <para>The OpenGIS specification defines two standard ways of expressing
@@ -75,7 +75,7 @@ geometry = ST_GeometryFromText(text WKT, SRID);</programlisting>
   VALUES ( ST_GeomFromText('POINT(-126.4 45.32)', 312), 'A Place');</programlisting>
 	</sect2>
 
-	<sect2>
+	<sect2 id="EWKB_EWKT">
 	  <title>PostGIS EWKB, EWKT and Canonical Forms</title>
 
 	  <para>OGC formats only support 2d geometries, and the associated SRID is
@@ -168,84 +168,7 @@ geometry
 01010000200400000000000000000000000000000000000000
 (1 row)</programlisting>
 	</sect2>
-
-	<sect2 id="PostGIS_Geography">
-	  <title>PostGIS Geography Type</title>
-
-	  <para>The geography type provides native support for spatial features represented on "geographic" coordinates (sometimes called "geodetic" coordinates, or "lat/lon", or "lon/lat"). Geographic coordinates are spherical coordinates expressed in angular units (degrees). </para>
-
-	  <para>The basis for the PostGIS geometry type is a plane. The shortest path between two points on the plane is a straight line. That means calculations on geometries (areas, distances, lengths, intersections, etc) can be calculated using cartesian mathematics and straight line vectors.</para>
-
-	  <para>The basis for the PostGIS geographic type is a sphere. The shortest path between two points on the sphere is a great circle arc. That means that calculations on geographies (areas, distances, lengths, intersections, etc) must be calculated on the sphere, using more complicated mathematics. For more accurate measurements, the calculations must take the actual spheroidal shape of the world into account, and the mathematics becomes very complicated indeed.</para>
-
-	  <para>Because the underlying mathematics is much more complicated, there are fewer functions defined for the geography type than for the geometry type. Over time, as new algorithms are added, the capabilities of the geography type will expand.</para>
-	 <!-- TODO: Fill in more information -->
-
-	  <para>One restriction is that it only supports WGS 84 long lat (SRID:4326).  It uses a new data type called
-	  geography.  I None of the GEOS functions support this new
-	  type. As a workaround one can convert back and forth between geometry and geography types.</para>
-
-	  <para>The new geography type uses the PostgreSQL 8.3+ typmod definition format so that a table with a geography field
-			can be added in a single step.  All the standard OGC formats except for curves are supported.</para>
-
-	<para>Geography Basics</para>
-
-
-
-	 <para>The geography type only supports the simplest of simple features. Standard geometry type data will autocast to geography if it is of SRID 4326.  You can also use the EWKT and EWKB
-			conventions to insert data.</para>
-
-		<itemizedlist>
-		<listitem>
-		  <para>POINT: Creating a table with 2d point geometry:</para>
-		  <para><programlisting>CREATE TABLE testgeog(gid serial PRIMARY KEY, the_geog geography(POINT,4326) );</programlisting></para>
-		  <para>Creating a table with z coordinate point</para>
-		  <para><programlisting>CREATE TABLE testgeog(gid serial PRIMARY KEY, the_geog geography(POINTZ,4326) );</programlisting></para>
-		</listitem>
-		<listitem>
-			<para>LINESTRING</para>
-		</listitem>
-		<listitem>
-			<para>POLYGON</para>
-		</listitem>
-		<listitem>
-			<para>MULTIPOINT</para>
-		</listitem>
-		<listitem>
-			<para>MULTILINESTRING</para>
-		</listitem>
-		<listitem>
-			<para>MULTIPOLYGON</para>
-		</listitem>
-		<listitem>
-			<para>GEOMETRYCOLLECTION</para>
-		</listitem>
-		<!-- TODO: Add other examples -->
-		</itemizedlist>
-		<para>The new geography fields don't get registered in the geometry_columns.  They get registered in a new view called
-				geography_columns which is a view against the system catalogs so is always automatically kept up to date without need
-					for an AddGeom... like function.</para>
-
-		<para>Now, check the "geography_columns" view and see that your table is listed:</para>
-
-		<para><programlisting>SELECT * FROM geography_columns;</programlisting></para>
-
-		<para>Using Input/Output Functions</para>
-
-		<para>There are only height intput/output functions at this time:</para>
-
-		<itemizedlist>
-			<listitem>ST_AsText(geography) returns text</listitem>
-			<listitem>ST_AsBinary(geography) returns bytea</listitem>
-			<listitem>ST_GeographyFromText(text) returns geography</listitem>
-			<listitem>ST_GeographyFromBinary(bytea) returns geography</listitem>
-			<listitem>ST_AsGML(geography) returns text</listitem>
-			<listitem>ST_AsKML(geography) returns text</listitem>
-			<listitem>ST_AsGeojson(geography) returns text</listitem>
-			<listitem>ST_AsSVG(geography) returns text</listitem>
-		</itemizedlist>
-	</sect2>
-	<sect2>
+	<sect2 id="SQL_MM_Part3">
 	  <title>SQL-MM Part 3</title>
 
 	  <para>The SQL Multimedia Applications Spatial specification extends the
@@ -324,6 +247,101 @@ geometry
 	  </note>
 	</sect2>
   </sect1>
+  <sect1 id="PostGIS_Geography">
+	  <title>PostGIS Geography Type</title>
+
+	  <para>The geography type provides native support for spatial features represented on "geographic" coordinates (sometimes called "geodetic" coordinates, or "lat/lon", or "lon/lat"). Geographic coordinates are spherical coordinates expressed in angular units (degrees). </para>
+
+	  <para>The basis for the PostGIS geometry type is a plane. The shortest path between two points on the plane is a straight line. That means calculations on geometries (areas, distances, lengths, intersections, etc) can be calculated using cartesian mathematics and straight line vectors.</para>
+
+	  <para>The basis for the PostGIS geographic type is a sphere. The shortest path between two points on the sphere is a great circle arc. That means that calculations on geographies (areas, distances, lengths, intersections, etc) must be calculated on the sphere, using more complicated mathematics. For more accurate measurements, the calculations must take the actual spheroidal shape of the world into account, and the mathematics becomes very complicated indeed.</para>
+
+	  <para>Because the underlying mathematics is much more complicated, there are fewer functions defined for the geography type than for the geometry type. Over time, as new algorithms are added, the capabilities of the geography type will expand.</para>
+	 <!-- TODO: Fill in more information -->
+
+	  <para>One restriction is that it only supports WGS 84 long lat (SRID:4326).  It uses a new data type called
+	  geography.  I None of the GEOS functions support this new
+	  type. As a workaround one can convert back and forth between geometry and geography types.</para>
+
+	  <para>The new geography type uses the PostgreSQL 8.3+ typmod definition format so that a table with a geography field
+			can be added in a single step.  All the standard OGC formats except for curves are supported.</para>
+
+	<sect2 id="Geography_Basics">
+		<title>Geography Basics</title>
+		<para>The geography type only supports the simplest of simple features. Standard geometry type data will autocast to geography if it is of SRID 4326.  You can also use the EWKT and EWKB
+			conventions to insert data.</para>
+
+		<itemizedlist>
+		<listitem>
+		  <para>POINT: Creating a table with 2d point geometry:</para>
+		  <para><programlisting>CREATE TABLE testgeog(gid serial PRIMARY KEY, the_geog geography(POINT,4326) );</programlisting></para>
+		  <para>Creating a table with z coordinate point</para>
+		  <para><programlisting>CREATE TABLE testgeog(gid serial PRIMARY KEY, the_geog geography(POINTZ,4326) );</programlisting></para>
+		</listitem>
+		<listitem>
+			<para>LINESTRING</para>
+		</listitem>
+		<listitem>
+			<para>POLYGON</para>
+		</listitem>
+		<listitem>
+			<para>MULTIPOINT</para>
+		</listitem>
+		<listitem>
+			<para>MULTILINESTRING</para>
+		</listitem>
+		<listitem>
+			<para>MULTIPOLYGON</para>
+		</listitem>
+		<listitem>
+			<para>GEOMETRYCOLLECTION</para>
+		</listitem>
+		<!-- TODO: Add other examples -->
+		</itemizedlist>
+		<para>The new geography fields don't get registered in the geometry_columns.  They get registered in a new view called
+				geography_columns which is a view against the system catalogs so is always automatically kept up to date without need
+					for an AddGeom... like function.</para>
+
+		<para>Now, check the "geography_columns" view and see that your table is listed.</para>
+
+		<para>You can create a new table with a GEOGRAPHY column using the CREATE TABLE syntax. 
+			Unlike GEOMETRY, there is no need to run a separate AddGeometryColumns() process to register the column in metadata.</para>
+
+		<para>
+<programlisting>CREATE TABLE global_points ( 
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(64),
+    location GEOGRAPHY(POINT,4326)
+  );</programlisting>
+  		</para>
+		
+		<para>Note that the location column has type GEOGRAPHY and that geography type supports two optional modifier: a type modifier that restricts the kind of shapes and dimensions allowed in the column; an SRID modifier that restricts the coordinate reference identifier to a particular number.</para>
+		<para>Allowable values for the type modifier are: POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, MULTIPOLYGON. The modifier also supports dimensionality restrictions through suffixes: Z, M and ZM. So, for example a modifier of 'LINESTRINGM' would only allow line strings with three dimensions in, and would treat the third dimension as a measure. 
+		Similarly, 'POINTZM' would expect four dimensional data.</para>
+		<para>The SRID modifier is currently of limited use: only 4326 (WGS84) is allowed as a value. If you do not specify an SRID, the a value 0 (undefined spheroid) will be used, and all calculations will proceed using WGS84 anyways.</para> 
+		<para>In the future, alternate SRIDs will allow calculations on spheroids other than WGS84.</para>
+		<para>Once you have created your table, you can see it in the GEOGRAPHY_COLUMNS table:</para>
+		<para><programlisting>
+-- See the contents of the metadata view
+SELECT * FROM geography_columns;</programlisting></para>
+	</sect2>
+	<sect2 id="PostGIS_GeographyVSGeometry">
+	  <title>When to use Geography Data type over Geometry data type</title>
+	  <para>The new GEOGRAPHY type allows you to store data in longitude/latitude coordinates, but at a cost: there are fewer functions defined on GEOGRAPHY than there are on GEOMETRY; those functions that are defined take more CPU time to execute.</para>
+	  <para>The type you choose should be conditioned on the expected working area of the application you are building. Will your data span the globe or a large continental area, or is it local to a state, county or municipality? </para>
+	  <itemizedlist>
+		<listitem>If your data is contained in a small area, you might find that choosing an appropriate projection and using GEOMETRY is the best solution, in terms of performance and functionality available.</listitem>
+		<listitem>If your data is global or covers a continental region, you may find that GEOGRAPHY allows you to build a system without having to worry about projection details. 
+				You store your data in longitude/latitude, and use the functions that have been defined on GEOGRAPHY.</listitem>
+		<listitem>If you don't understand projections, and you don't want to learn about them, and you're prepared to accept the limitations in functionality available in GEOGRAPHY, then it might be easier for you to use GEOGRAPHY than GEOMETRY. 
+		Simply load your data up as longitude/latitude and go from there.</listitem>
+	</itemizedlist>
+	<para>Refer to <xref linkend="PostGIS_TypeFunctionMatrix" /> for compare between
+			what is supported for Geography vs. Geometry.  For a brief listing and description of Geography functions, refer to
+				<xref linkend="PostGIS_GeographyFunctions" />
+		</para>
+	</sect2>
+</sect1>
 
   <sect1>
 	<title>Using OpenGIS Standards</title>
