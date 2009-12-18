@@ -37,6 +37,17 @@
 		 </para>
       </answer>
     </qandaentry>
+	
+    <qandaentry>
+      <question>
+        <para>I have more intense questions about geography, such as how big of a geographic region can I stuff in a geography column and
+			still get reasonable answers.  Are there limitations such as poles, everything in the field must fit in a hemisphere (like SQL Server 2008 has), speed etc?</para>
+      </question>
+      <answer>
+        <para>Your questions are too deep and complex to be adequately answered in this section. Please refer to our
+			<xref linkend="PostGIS_Geography_AdvancedFAQ" /> .</para>
+      </answer>
+    </qandaentry>
 
     <qandaentry>
       <question>

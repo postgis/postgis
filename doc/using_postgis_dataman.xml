@@ -265,7 +265,7 @@ geometry
 
 	  <para>The new geography type uses the PostgreSQL 8.3+ typmod definition format so that a table with a geography field
 			can be added in a single step.  All the standard OGC formats except for curves are supported.</para>
-
+			
 	<sect2 id="Geography_Basics">
 		<title>Geography Basics</title>
 		<para>The geography type only supports the simplest of simple features. Standard geometry type data will autocast to geography if it is of SRID 4326.  You can also use the EWKT and EWKB
@@ -324,6 +324,41 @@ geometry
 		<para><programlisting>
 -- See the contents of the metadata view
 SELECT * FROM geography_columns;</programlisting></para>
+
+<para>You can insert data into the table the same as you would if it was using a GEOMETRY column:</para>
+
+<para><programlisting>-- Add some data into the test table
+INSERT INTO global_points (name, location) VALUES ('Town', ST_GeographyFromText('SRID=4326;POINT(-110 30)') );
+INSERT INTO global_points (name, location) VALUES ('Forest', ST_GeographyFromText('SRID=4326;POINT(-109 29)') );
+INSERT INTO global_points (name, location) VALUES ('London', ST_GeographyFromText('SRID=4326;POINT(0 49)') );</programlisting></para>
+
+<para>Creating an index works the same as GEOMETRY. 
+	PostGIS will note that the column type is GEOGRAPHY and create an appropriate sphere-based index instead of the usual planar index used for GEOMETRY.</para>
+
+<para><programlisting>-- Index the test table with a spherical index
+  CREATE INDEX global_points_gix ON global_points USING GIST ( location );</programlisting>
+</para>
+
+<para>Query and measurement functions use units of meters. So distance parameters should be expressed in meters, and return values should be expected in meters (or square meters for areas).</para>
+
+<para><programlisting>-- Show a distance query and note, London is outside the 1000km tolerance
+  SELECT name FROM global_points WHERE ST_DWithin(location, ST_GeographyFromText('SRID=4326;POINT(-110 29)'), 1000000);</programlisting>
+</para>
+
+<para>You can see the power of GEOGRAPHY in action by calculating the how close a plane flying from Seattle to London (LINESTRING(-122.33 47.606, 0.0 51.5)) comes to Reykjavik (POINT(-21.96 64.15)).</para>
+
+<para><programlisting>-- Distance calculation using GEOGRAPHY (122.2km)
+  SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geography, 'POINT(-21.96 64.15)':: geography);</programlisting>
+</para>
+
+<para><programlisting>-- Distance calculation using GEOMETRY (13.3 "degrees")
+  SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.96 64.15)':: geometry);</programlisting>
+</para>
+
+<para>The GEOGRAPHY type calculates the true shortest distance over the sphere between Reykjavik and the great circle flight path between Seattle and London.</para>
+
+<para> <ulink url="http://gc.kls2.com/cgi-bin/gc?PATH=SEA-LHR">Great Circle mapper</ulink>
+The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik and the straight line path from Seattle to London plotted on a flat map of the world. The nominal units of the result might be called "degrees", but the result doesn't correspond to any true angular difference between the points, so even calling them "degrees" is inaccurate.</para>
 	</sect2>
 	<sect2 id="PostGIS_GeographyVSGeometry">
 	  <title>When to use Geography Data type over Geometry data type</title>
@@ -340,6 +375,62 @@ SELECT * FROM geography_columns;</programlisting></para>
 			what is supported for Geography vs. Geometry.  For a brief listing and description of Geography functions, refer to
 				<xref linkend="PostGIS_GeographyFunctions" />
 		</para>
+	</sect2>
+	<sect2 id="PostGIS_Geography_AdvancedFAQ">
+			<title>Geography Advanced FAQ</title>
+			<qandaset>
+				<qandaentry>
+				  <question>
+					<para>Do you calculate on the sphere or the spheroid?</para>
+				  </question>
+			
+				  <answer>
+					<para> By default, all distance and area calculations are done on the spheroid. You should find that the results of calculations in local areas match up will with local planar results in good local projections. 
+					Over larger areas, the spheroidal calculations will be more accurate than any calculation done on a projected plane.
+					</para>
+					<para>All the geography functions have the option of using a sphere calculation, by setting a final boolean parameter to 'FALSE'. This will somewhat speed up calculations, particularly for cases where the geometries are very simple.</para>
+				  </answer>
+				</qandaentry>
+				
+				<qandaentry>
+				  <question>
+					<para>What about the date-line and the poles?</para>
+				  </question>
+			
+				  <answer>
+					<para> All the calculations have no conception of date-line or poles, the coordinates are spherical (longitude/latitude) 
+					so a shape that crosses the dateline is, from a calculation point of view, no different from any other shape.
+					</para>
+				  </answer>
+				</qandaentry>
+				
+				<qandaentry>
+				  <question>
+					<para>What is the longest arc you can process?</para>
+				  </question>
+			
+				  <answer>
+					<para>We use great circle arcs as the "interpolation line" between two points. That means any two points are actually joined up two ways, depending on which direction you travel along the great circle. All our code assumes that the points are joined by the *shorter* of the two paths along the great circle. 
+					As a consequence, shapes that have arcs of more than 180 degrees will not be correctly modelled.</para>
+				  </answer>
+				</qandaentry>
+				
+				<qandaentry>
+				  <question>
+					<para>Why is it so slow to calculate the area of Europe / Russia / insert big geographic region here ?</para>
+				  </question>
+			
+				  <answer>
+					<para>Because the polygon is so darned huge! Big areas are bad for two reasons: their bounds are huge, 
+						so the index tends to pull the feature no matter what query you run; the number of vertices is huge, 
+						and tests (distance, containment) have to traverse the vertex list at least once and sometimes N times 
+						(with N being the number of vertices in the other candidate feature). 
+					</para>
+					<para>As with GEOMETRY, we recommend that when you have very large polygons, but are doing queries in small areas, you "denormalize" your geometric data into smaller chunks so that the index can effectively subquery parts of the object and so queries don't have to pull out the whole object every time. 
+					Just because you *can* store all of Europe in one polygon doesn't mean you *should*.</para>
+				  </answer>
+				</qandaentry>
+			</qandaset>
 	</sect2>
 </sect1>
 
