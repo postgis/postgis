@@ -1547,7 +1547,7 @@ initialize(void)
 			 * (-9223372036854775808)
 			 */
 			if ( DBFAddField(dbf, field_name, FTInteger,
-				20, 0) == -1 )
+				19, 0) == -1 )
 			{
 				printf( "Error - Integer field could not "
 					"be created.\n");
