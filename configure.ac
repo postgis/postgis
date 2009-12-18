@@ -569,7 +569,9 @@ if test "x$GUI" = "xyes"; then
 	dnl Add -mwindows to MinGW GUI build
 	case $host in
 		*mingw32*)
-			GTK_WIN32="-mwindows"
+			GTK_WIN32_FLAGS=-mwindows
+			GTK_WIN32_RES=shp2pgsql-gui.res
+                        GTK_WIN32_BUILD=gui-win32
 			;;
 	esac
 fi
@@ -578,7 +580,8 @@ fi
 
 AC_SUBST([GTK_CFLAGS])
 AC_SUBST([GTK_LIBS])
-AC_SUBST([GTK_WIN32])
+AC_SUBST([GTK_WIN32_FLAGS])
+AC_SUBST([GTK_WIN32_RES])
 AC_SUBST([GTK_BUILD])
 
 

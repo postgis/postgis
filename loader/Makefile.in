@@ -44,7 +44,8 @@ LIBLWGEOM=../liblwgeom/liblwgeom.a
 # GTK includes and libraries
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_LIBS = @GTK_LIBS@
-GTK_WIN32 = @GTK_WIN32@
+GTK_WIN32_FLAGS = @GTK_WIN32_FLAGS@
+GTK_WIN32_RES = @GTK_WIN32_RES@
 
 # If REGRESS=1 passed as a parameter, change the default install paths
 # so that no prefix is included. This allows us to relocate to a temporary
@@ -59,7 +60,10 @@ endif
 # The real parts of the Makefile
 all: $(SHP2PGSQL-CLI) $(PGSQL2SHP) @GTK_BUILD@
 
-gui: $(SHP2PGSQL-GUI) $(SHP2PGSQL-CLI)
+gui: $(SHP2PGSQL-GUI) $(SHP2PGSQL-CLI) @GTK_WIN32_RES@
+
+shp2pgsql-gui.res: shp2pgsql-gui.rc shp2pgsql-gui.ico
+	windres $< -O coff -o $@
 
 # liblwgeom.a dependency to allow "make install" in 
 # the loader/ subdirectory to work  
@@ -81,8 +85,8 @@ $(SHP2PGSQL-CLI): stringbuffer.o shpopen.o dbfopen.o shp2pgsql-core.o shp2pgsql-
 shp2pgsql-gui.o: shp2pgsql-gui.c
 	$(CC) $(CFLAGS) $(PGSQL_FE_CPPFLAGS) $(GTK_CFLAGS) -o $@ -c shp2pgsql-gui.c
 
-$(SHP2PGSQL-GUI): stringbuffer.o shpopen.o dbfopen.o shp2pgsql-core.o shp2pgsql-gui.o $(LIBLWGEOM) 
-	$(CC) $(CFLAGS) $(GTK_WIN32) $^ -o $@ $(GTK_LIBS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) -lm 
+$(SHP2PGSQL-GUI): stringbuffer.o shpopen.o dbfopen.o shp2pgsql-core.o shp2pgsql-gui.o $(LIBLWGEOM) $(GTK_WIN32_RES)
+	$(CC) $(CFLAGS) $(GTK_WIN32_FLAGS) $^ -o $@ $(GTK_LIBS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) -lm 
 
 install: all
 	@mkdir -p $(DESTDIR)$(bindir)
@@ -94,5 +98,5 @@ uninstall:
 	@rm -f $(DESTDIR)$(bindir)/$(SHP2PGSQL-CLI)
 
 clean:
-	@rm -f *.o $(SHP2PGSQL-CLI) $(PGSQL2SHP) 
+	@rm -f *.o $(SHP2PGSQL-CLI) $(PGSQL2SHP) $(GTK_WIN32_RES)
 
