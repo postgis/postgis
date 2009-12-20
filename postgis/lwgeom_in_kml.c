@@ -148,6 +148,8 @@ static bool is_kml_namespace(xmlNodePtr xnode, bool is_strict)
 }
 
 
+/* Temporarily disabling unused function. */
+#if 0
 /**
  * Retrieve a KML propertie from a node or NULL otherwise
  * Respect namespaces if presents in the node element
@@ -166,6 +168,7 @@ static xmlChar *kmlGetProp(xmlNodePtr xnode, xmlChar *prop)
 
 	return value;
 }
+#endif
 
 
 /**
