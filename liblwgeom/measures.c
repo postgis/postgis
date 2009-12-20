@@ -29,17 +29,18 @@ Function initializing shortestline and longestline calculations.
 LWGEOM *
 lw_dist2d_distanceline(uchar *lw1, uchar *lw2,int srid,int mode)
 {
-	LWDEBUG(2, "lw_dist2d_distanceline is called");
 	double x1,x2,y1,y2;
 	LWPOINT *point1, *point2;
 	double initdistance = ( mode == DIST2D_MIN ? MAXFLOAT : -1.0);
 	DISTPTS thedl;
+	LWPOINT *lwpoints[2];
+	LWGEOM *result;
+
 	thedl.mode = mode;
 	thedl.distance = initdistance;
 	thedl.tolerance = 0.0;
 
-	LWPOINT *lwpoints[2];
-	LWGEOM *result;
+	LWDEBUG(2, "lw_dist2d_distanceline is called");
 
 	if (!lw_dist2d_comp( lw1,lw2,&thedl))
 	{
@@ -78,16 +79,16 @@ Function initializing closestpoint calculations.
 LWGEOM *
 lw_dist2d_distancepoint(uchar *lw1, uchar *lw2,int srid,int mode)
 {
-	LWDEBUG(2, "lw_dist2d_distancepoint is called");
 	double x,y;
 	DISTPTS thedl;
 	double initdistance = MAXFLOAT;
+	LWGEOM *result;
 
 	thedl.mode = mode;
 	thedl.distance= initdistance;
 	thedl.tolerance = 0;
 
-	LWGEOM *result;
+	LWDEBUG(2, "lw_dist2d_distancepoint is called");
 
 	if (!lw_dist2d_comp( lw1,lw2,&thedl))
 	{
@@ -128,9 +129,9 @@ The difference is just the tolerance.
 double
 lwgeom_maxdistance2d_tolerance(uchar *lw1, uchar *lw2, double tolerance)
 {
-	LWDEBUG(2, "lwgeom_maxdistance2d_tolerance is called");
 	/*double thedist;*/
 	DISTPTS thedl;
+	LWDEBUG(2, "lwgeom_maxdistance2d_tolerance is called");
 	thedl.mode = DIST2D_MAX;
 	thedl.distance= -1;
 	thedl.tolerance = tolerance;
@@ -160,8 +161,8 @@ lwgeom_mindistance2d(uchar *lw1, uchar *lw2)
 double
 lwgeom_mindistance2d_tolerance(uchar *lw1, uchar *lw2, double tolerance)
 {
-	LWDEBUG(2, "lwgeom_mindistance2d_tolerance is called");
 	DISTPTS thedl;
+	LWDEBUG(2, "lwgeom_mindistance2d_tolerance is called");
 	thedl.mode = DIST2D_MIN;
 	thedl.distance= MAXFLOAT;
 	thedl.tolerance = tolerance;
@@ -192,10 +193,10 @@ Functions preparing geometries for distance-calculations
 int
 lw_dist2d_comp(uchar *lw1, uchar *lw2, DISTPTS *dl)
 {
-	LWDEBUG(2, "lw_dist2d_comp is called");
 
 	LWGEOM *lwg1 = lwgeom_deserialize(lw1);
 	LWGEOM *lwg2 = lwgeom_deserialize(lw2);
+	LWDEBUG(2, "lw_dist2d_comp is called");
 
 	return lw_dist2d_recursive	((LWCOLLECTION*) lwg1,(LWCOLLECTION*) lwg2, dl);
 }
@@ -205,14 +206,12 @@ This is a recursive function delivering every possible combinatin of subgeometri
 */
 int lw_dist2d_recursive(const LWCOLLECTION * lwg1,const LWCOLLECTION * lwg2,DISTPTS *dl)
 {
-	LWDEBUGF(2, "lw_dist2d_comp is called with type1=%d, type2=%d", TYPE_GETTYPE(lwg1->type), TYPE_GETTYPE(lwg2->type));
-	/*If empty gemetry, return. True here only means continue searching. False would have stoped the process
-	if (lwgeom_is_empty(lwg1)||lwgeom_is_empty(lwg2)) return LW_TRUE;		moved down*/
-
 	int i, j;
 	int n1=1;
-	int n2=1;;
+	int n2=1;
 	LWGEOM *g1, *g2;
+
+	LWDEBUGF(2, "lw_dist2d_comp is called with type1=%d, type2=%d", TYPE_GETTYPE(lwg1->type), TYPE_GETTYPE(lwg2->type));
 
 	if (lwgeom_is_collection(TYPE_GETTYPE(lwg1->type)))
 	{
@@ -296,11 +295,11 @@ This function distributes the "old-type" brut-force tasks depending on type
 int
 lw_dist2d_distribute_bruteforce(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl)
 {
-	LWDEBUGF(2, "lw_dist2d_distribute_bruteforce is called with typ1=%d, type2=%d", TYPE_GETTYPE(lwg1->type), TYPE_GETTYPE(lwg2->type));
 
 	int	t1 = TYPE_GETTYPE(lwg1->type);
 	int	t2 = TYPE_GETTYPE(lwg2->type);
 
+	LWDEBUGF(2, "lw_dist2d_distribute_bruteforce is called with typ1=%d, type2=%d", TYPE_GETTYPE(lwg1->type), TYPE_GETTYPE(lwg2->type));
 
 	if  ( t1 == POINTTYPE )
 	{
@@ -413,11 +412,11 @@ Here the geometries are distributed for the new faster distance-calculations
 int
 lw_dist2d_distribute_fast(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl)
 {
-	LWDEBUGF(2, "lw_dist2d_distribute_fast is called with typ1=%d, type2=%d", TYPE_GETTYPE(lwg1->type), TYPE_GETTYPE(lwg2->type));
-
 	POINTARRAY *pa1, *pa2;
 	int	type1 = TYPE_GETTYPE(lwg1->type);
 	int	type2 = TYPE_GETTYPE(lwg2->type);
+
+	LWDEBUGF(2, "lw_dist2d_distribute_fast is called with typ1=%d, type2=%d", TYPE_GETTYPE(lwg1->type), TYPE_GETTYPE(lwg2->type));
 
 	switch (type1)
 	{
@@ -481,9 +480,9 @@ point to line calculation
 int
 lw_dist2d_point_line(LWPOINT *point, LWLINE *line, DISTPTS *dl)
 {
-	LWDEBUG(2, "lw_dist2d_point_line is called");
 	POINT2D p;
 	POINTARRAY *pa = line->points;
+	LWDEBUG(2, "lw_dist2d_point_line is called");
 	getPoint2d_p(point->point, 0, &p);
 	return lw_dist2d_pt_ptarray(&p, pa, dl);
 }
@@ -495,15 +494,12 @@ lw_dist2d_point_line(LWPOINT *point, LWLINE *line, DISTPTS *dl)
 int
 lw_dist2d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS *dl)
 {
-	LWDEBUG(2, "lw_dist2d_point_poly called");
-
 	POINT2D p;
 	int i;
 
+	LWDEBUG(2, "lw_dist2d_point_poly called");
+
 	getPoint2d_p(point->point, 0, &p);
-
-
-
 
 	if (dl->mode == DIST2D_MAX)
 	{
@@ -551,9 +547,9 @@ line to line calculation
 int
 lw_dist2d_line_line(LWLINE *line1, LWLINE *line2, DISTPTS *dl)
 {
-	LWDEBUG(2, "lw_dist2d_line_line is called");
 	POINTARRAY *pa1 = line1->points;
 	POINTARRAY *pa2 = line2->points;
+	LWDEBUG(2, "lw_dist2d_line_line is called");
 	return lw_dist2d_ptarray_ptarray(pa1, pa2, dl);
 }
 /**
@@ -580,11 +576,10 @@ int
 lw_dist2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS *dl)
 {
 
-	LWDEBUG(2, "lw_dist2d_poly_poly called");
-
 	POINT2D pt;
 	int i;
 
+	LWDEBUG(2, "lw_dist2d_poly_poly called");
 
 	/*1	if we are looking for maxdistance, just check the outer rings.*/
 	if (dl->mode == DIST2D_MAX)
@@ -664,11 +659,12 @@ lw_dist2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS *dl)
 int
 lw_dist2d_pt_ptarray(POINT2D *p, POINTARRAY *pa,DISTPTS *dl)
 {
-	LWDEBUG(2, "lw_dist2d_pt_ptarray is called");
-
 	int t;
 	POINT2D	start, end;
 	int twist = dl->twisted;
+
+	LWDEBUG(2, "lw_dist2d_pt_ptarray is called");
+
 	getPoint2d_p(pa, 0, &start);
 
 	for (t=1; t<pa->npoints; t++)
@@ -698,12 +694,10 @@ lw_dist2d_pt_ptarray(POINT2D *p, POINTARRAY *pa,DISTPTS *dl)
 int
 lw_dist2d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly, DISTPTS *dl)
 {
-	LWDEBUGF(2, "lw_dist2d_ptarray_poly called (%d rings)", poly->nrings);
-
 	POINT2D pt;
 	int i;
 
-
+	LWDEBUGF(2, "lw_dist2d_ptarray_poly called (%d rings)", poly->nrings);
 
 	getPoint2d_p(pa, 0, &pt);
 	if ( !pt_in_ring_2d(&pt, poly->rings[0]))
@@ -770,13 +764,13 @@ test each segment of l1 against each segment of l2.
 int
 lw_dist2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl)
 {
-	LWDEBUG(2, "lw_dist2d_ptarray_ptarray is called");
-
 	int t,u;
 	POINT2D	start, end;
 	POINT2D	start2, end2;
 	int twist = dl->twisted;
+
 	LWDEBUGF(2, "lw_dist2d_ptarray_ptarray called (points: %d-%d)",l1->npoints, l2->npoints);
+
 	if (dl->mode == DIST2D_MAX)/*If we are searching for maxdistance we go straight to point-point calculation since the maxdistance have to be between two vertexes*/
 	{
 		for (t=0; t<l1->npoints; t++) /*for each segment in L1 */
@@ -825,14 +819,11 @@ but just sending every possible combination further to lw_dist2d_pt_seg
 int
 lw_dist2d_seg_seg(POINT2D *A, POINT2D *B, POINT2D *C, POINT2D *D, DISTPTS *dl)
 {
-	LWDEBUGF(2, "lw_dist2d_seg_seg [%g,%g]->[%g,%g] by [%g,%g]->[%g,%g]",
-	         A->x,A->y,B->x,B->y, C->x,C->y, D->x, D->y);
-
 	double	s_top, s_bot,s;
 	double	r_top, r_bot,r;
 
-
-
+	LWDEBUGF(2, "lw_dist2d_seg_seg [%g,%g]->[%g,%g] by [%g,%g]->[%g,%g]",
+	         A->x,A->y,B->x,B->y, C->x,C->y, D->x, D->y);
 
 	/*A and B are the same point */
 	if (  ( A->x == B->x) && (A->y == B->y) )
@@ -954,19 +945,19 @@ chosen selection of the points not all of them
 int
 lw_dist2d_fast_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl, BOX2DFLOAT4 *box1, BOX2DFLOAT4 *box2)
 {
-	LWDEBUG(2, "lw_dist2d_fast_ptarray_ptarray is called");
 	/*here we define two lists to hold our calculated "z"-values and the order number in the geometry*/
 
 	double k, thevalue;
 	float	deltaX, deltaY, c1m, c2m;
 	POINT2D	theP,c1, c2;
 	float min1X, max1X, max1Y, min1Y,min2X, max2X, max2Y, min2Y;
-	int t,  n1, n2;
-	n1 = l1->npoints;
-	n2 = l2->npoints;
+	int t;
+	int n1 = l1->npoints;
+	int n2 = l2->npoints;
+	LISTSTRUCT list1[n1]; /* This could be a problem, var-size array not legal in C90 */
+	LISTSTRUCT list2[n2]; /* This could be a problem, var-size array not legal in C90 */
 
-	LISTSTRUCT list1[n1];
-	LISTSTRUCT list2[n2];
+	LWDEBUG(2, "lw_dist2d_fast_ptarray_ptarray is called");
 
 	max1X = box1->xmax;
 	min1X = box1->xmin;
@@ -1023,7 +1014,7 @@ lw_dist2d_fast_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl, BOX2D
 			thevalue = theP.x-(k*theP.y);
 			list1[t].themeasure=thevalue;
 			list1[t].pnr=t;
-			//lwnotice("l1 %d, measure=%f",t,thevalue );
+			/* lwnotice("l1 %d, measure=%f",t,thevalue ); */
 		}
 		for (t=0; t<n2; t++) /*for each segment in L2*/
 		{
@@ -1032,7 +1023,7 @@ lw_dist2d_fast_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl, BOX2D
 			thevalue = theP.x-(k*theP.y);
 			list2[t].themeasure=thevalue;
 			list2[t].pnr=t;
-			//lwnotice("l2 %d, measure=%f",t,thevalue );
+			/* lwnotice("l2 %d, measure=%f",t,thevalue ); */
 		}
 		c1m = c1.x-(k*c1.y);
 		c2m = c2.x-(k*c2.y);
@@ -1068,16 +1059,13 @@ struct_cmp_by_measure(const void *a, const void *b)
 int
 lw_dist2d_pre_seg_seg(POINTARRAY *l1, POINTARRAY *l2,LISTSTRUCT *list1, LISTSTRUCT *list2,double k, DISTPTS *dl)
 {
-	LWDEBUG(2, "lw_dist2d_pre_seg_seg is called");
-
-
 	POINT2D p1, p2, p3, p4, p01, p02;
 	int pnr1,pnr2,pnr3,pnr4, n1, n2, i, u, r, twist;
-
 	double maxmeasure;
 	n1=	l1->npoints;
 	n2 = l2->npoints;
 
+	LWDEBUG(2, "lw_dist2d_pre_seg_seg is called");
 
 	getPoint2d_p(l1, list1[0].pnr, &p1);
 	getPoint2d_p(l2, list2[0].pnr, &p3);
@@ -1273,6 +1261,7 @@ To get this points it was nessecary to change and it also showed to be about 10%
 int
 lw_dist2d_pt_seg(POINT2D *p, POINT2D *A, POINT2D *B, DISTPTS *dl)
 {
+	POINT2D c;
 	double	r;
 	/*if start==end, then use pt distance */
 	if (  ( A->x == B->x) && (A->y == B->y) )
@@ -1321,10 +1310,8 @@ lw_dist2d_pt_seg(POINT2D *p, POINT2D *A, POINT2D *B, DISTPTS *dl)
 		return lw_dist2d_pt_pt(p,B,dl);
 	}
 
-
 	/*else if the point p is closer to some point between a and b
 	then we find that point and send it to lw_dist2d_pt_pt*/
-	POINT2D c;
 	c.x=A->x + r * (B->x-A->x);
 	c.y=A->y + r * (B->y-A->y);
 

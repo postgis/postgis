@@ -135,4 +135,4 @@ void lwmline_free(LWMLINE *mline)
 	}
 	lwfree(mline);
 
-};
+}

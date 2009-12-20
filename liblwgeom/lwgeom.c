@@ -977,7 +977,7 @@ void lwgeom_free(LWGEOM *lwgeom)
 	}
 	return;
 
-};
+}
 
 
 int lwgeom_needs_bbox(const LWGEOM *geom)

@@ -47,7 +47,7 @@ int rect_tree_contains_point(const RECT_NODE *node, const POINT2D *pt, int *on_b
 			       rect_tree_contains_point(node->right_node, pt, on_boundary);
 		}
 	}
-	//printf("NOT in measure range\n");
+	/* printf("NOT in measure range\n"); */
 	return 0;
 }
 

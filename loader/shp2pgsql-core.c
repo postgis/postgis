@@ -658,7 +658,7 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 {
 	Ring **Outer;
 	int polygon_total, ring_total;
-	int pi, vi; // part index and vertex index
+	int pi, vi; /* part index and vertex index */
 	int u;
 
 	LWCOLLECTION *lwcollection = NULL;

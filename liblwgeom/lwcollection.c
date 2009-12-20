@@ -337,7 +337,6 @@ char
 lwcollection_same(const LWCOLLECTION *c1, const LWCOLLECTION *c2)
 {
 	unsigned int i;
-//	unsigned int *hit;
 
 	LWDEBUG(2, "lwcollection_same called");
 
@@ -503,7 +502,7 @@ void lwcollection_free(LWCOLLECTION *col)
 	}
 	lwfree(col);
 
-};
+}
 
 BOX3D *lwcollection_compute_box3d(LWCOLLECTION *col)
 {

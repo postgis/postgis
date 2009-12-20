@@ -137,5 +137,5 @@ void lwmpoly_free(LWMPOLY *mpoly)
 	}
 	lwfree(mpoly);
 
-};
+}
 

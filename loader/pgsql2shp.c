@@ -30,9 +30,9 @@ static char rcsid[] = "$Id$";
 /* Solaris9 does not provide stdint.h */
 /* #include <stdint.h> */
 #include <inttypes.h>
-#include <sys/types.h> // for getpid()
+#include <sys/types.h> /* for getpid() */
 
-#ifdef HAVE_UNISTD_H // for getpid() and getopt
+#ifdef HAVE_UNISTD_H /* for getpid() and getopt */
 #include <unistd.h> 
 #endif
 

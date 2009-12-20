@@ -19,7 +19,7 @@ GPTARRAY* gptarray_new(uchar flags)
 	ptarr->npoints = 0;
 	ptarr->ordinates = (double*)lwalloc(ptarr->capacity);
 	return ptarr;
-};
+}
 
 GPTARRAY* gptarray_copy(GPTARRAY *ptarray)
 {
@@ -33,7 +33,7 @@ GPTARRAY* gptarray_copy(GPTARRAY *ptarray)
 	if( ! copy->ordinates ) return NULL;
 	memcpy(copy->ordinates, ptarray->ordinates, copy->capacity);
 	return copy;
-};
+}
 
 GPTARRAY* gptarray_new_with_size(uchar flags, int npoints)
 {
@@ -43,18 +43,18 @@ GPTARRAY* gptarray_new_with_size(uchar flags, int npoints)
 	ptarray->npoints = npoints;
 	ptarray->ordinates = (double*)lwalloc(ptarray->capacity);
 	return ptarray;
-};
+}
 
 GPTARRAY* gptarray_new_with_ordinates(uchar flags, int npoints, double *ordinates)
 {
-	assert(ordinates);
 	GPTARRAY *ptarray = (GPTARRAY*)lwalloc(sizeof(GPTARRAY));
+	assert(ordinates);
 	ptarray->flags = flags;
 	ptarray->capacity = 0; /* We aren't managing this memory, watch out. */
 	ptarray->npoints = npoints;
 	ptarray->ordinates = ordinates;
 	return ptarray;
-};
+}
 
 void gptarray_free(GPTARRAY *ptarray)
 {
@@ -63,7 +63,7 @@ void gptarray_free(GPTARRAY *ptarray)
 	if( ptarray->capacity > 0 ) /* Only free the ordinates if we are managing them. */
 		lwfree(ptarray->ordinates);
 	lwfree(ptarray);
-};
+}
 
 void gptarray_add_coord(GPTARRAY *ptarray, GCOORDINATE *coord)
 {
@@ -88,9 +88,9 @@ void gptarray_add_coord(GPTARRAY *ptarray, GCOORDINATE *coord)
 
 GCOORDINATE* gptarray_get_coord_ro(GPTARRAY *ptarray, int i)
 {
+	GCOORDINATE *coord;
 	assert(ptarray);
-	
-	GCOORDINATE *coord = gcoord_new(ptarray->flags);
+	coord = gcoord_new(ptarray->flags);
 	
 	coord->ordinates = ptarray->ordinates + FLAGS_NDIMS(ptarray->flags) * i;
 	
@@ -99,9 +99,9 @@ GCOORDINATE* gptarray_get_coord_ro(GPTARRAY *ptarray, int i)
 
 GCOORDINATE* gptarray_get_coord_new(GPTARRAY *ptarray, int i)
 {
+	GCOORDINATE *coord;
 	assert(ptarray);
-	
-	GCOORDINATE *coord = gcoord_new(ptarray->flags);
+	coord = gcoord_new(ptarray->flags);
 	
 	memcpy(coord->ordinates,
 	       ptarray->ordinates + FLAGS_NDIMS(ptarray->flags) * i,

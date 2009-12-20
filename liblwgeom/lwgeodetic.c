@@ -2096,7 +2096,7 @@ int getPoint2d_p_ro(const POINTARRAY *pa, int n, POINT2D **point)
 	assert(n < pa->npoints);
 
 	pa_ptr = getPoint_internal(pa, n);
-	//printf( "pa_ptr[0]: %g\n", *((double*)pa_ptr));
+	/* printf( "pa_ptr[0]: %g\n", *((double*)pa_ptr)); */
 	*point = (POINT2D*)pa_ptr;
 
 	return G_SUCCESS;
@@ -2289,7 +2289,7 @@ static int ptarray_check_geodetic(const POINTARRAY *pa)
 	for (t=0; t<pa->npoints; t++)
 	{
 		getPoint2d_p(pa, t, &pt);
-		//printf( "%d (%g, %g)\n", t, pt.x, pt.y);
+		/* printf( "%d (%g, %g)\n", t, pt.x, pt.y); */
 		if ( pt.x < -180.0 || pt.y < -90.0 || pt.x > 180.0 || pt.y > 90.0 )
 			return LW_FALSE;
 	}
