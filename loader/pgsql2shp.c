@@ -12,14 +12,12 @@
  *
  * PostGIS to Shapefile converter
  *
- * Original Author: Jeff Lounsbury, jeffloun@refractions.net
- *
- * Maintainer: Sandro Santilli, strk@refractions.net
+ * Original Author: Jeff Lounsbury <jeffloun@refractions.net>
+ * Maintainer: Sandro Santilli <strk@keybit.bet>
  *
  **********************************************************************/
 
-static char rcsid[] =
-  "$Id$";
+static char rcsid[] = "$Id$";
 
 #include "../postgis_config.h"
 
@@ -32,15 +30,19 @@ static char rcsid[] =
 /* Solaris9 does not provide stdint.h */
 /* #include <stdint.h> */
 #include <inttypes.h>
-#include "libpq-fe.h"
-#include "shapefil.h"
-#include "getopt.h"
 #include <sys/types.h> // for getpid()
-#include <unistd.h> // for getpid() and getopt
+
+#ifdef HAVE_UNISTD_H // for getpid() and getopt
+#include <unistd.h> 
+#endif
 
 #ifdef __CYGWIN__
 #include <sys/param.h>
 #endif
+
+#include "libpq-fe.h"
+#include "shapefil.h"
+#include "getopt.h"
 
 #include "../liblwgeom/liblwgeom.h"
 

@@ -2,9 +2,12 @@
 **      @(#)getopt.c    2.5 (smail) 9/15/87
 */
 
+#include "../postgis_config.h"
 #include <stdio.h>
 #include <string.h>
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include "getopt.h"
 
 /*
