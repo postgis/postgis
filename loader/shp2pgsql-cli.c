@@ -77,11 +77,15 @@ main (int argc, char **argv)
 			case 'a':
 			case 'p':
 				if (config->opt == ' ')
+				{
 					config->opt = c;
+				}
 				else
+				{
 					/* Only one of these options can be chosen */
 					usage();
 					exit(0);
+				}
 				break;
 
 			case 'D':
@@ -94,11 +98,15 @@ main (int argc, char **argv)
 
 			case 's':
 				if (optarg) 
+				{
 					sscanf(optarg, "%d", &(config->sr_id));
+				}
 				else 
+				{
 					/* With -s, user must specify SRID */
 					usage();
 					exit(0);
+				}
 				break;
 
 			case 'g':
