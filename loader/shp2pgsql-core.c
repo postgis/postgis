@@ -849,7 +849,7 @@ set_config_defaults(SHPLOADERCONFIG *config)
 	config->opt = 'c';
 	config->schema = NULL;
 	config->table = NULL;
-	config->geom = strdup("the_geom");
+	config->geom = strdup(GEOMETRY_DEFAULT);
 	config->readshape = 1;
 	config->sr_id = -1;
 	config->hwgeom = 0;
@@ -1222,7 +1222,6 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	return ret;
 }
 
-
 /* Return a pointer to an allocated string containing the header for the specified loader state */
 int
 ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
@@ -1263,7 +1262,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		 */
 		if (state->config->schema)
 		{
-			if (state->config->readshape == 1)
+			if (state->config->readshape == 1 && (! state->config->geography) )
 			{
 				vasbappend(sb, "SELECT DropGeometryColumn('%s','%s','%s');\n",
 					state->config->schema, state->config->table, state->config->geom);
@@ -1274,7 +1273,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		}
 		else
 		{
-			if (state->config->readshape == 1)
+			if (state->config->readshape == 1  && (! state->config->geography) )
 			{
 				vasbappend(sb, "SELECT DropGeometryColumn('','%s','%s');\n",
 					state->config->table, state->config->geom);
@@ -1362,10 +1361,29 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 					return SHPLOADERERR;
 			}
 		}
+		
+		/* Add the geography column directly to the table definition, we don't 
+		   need to do an AddGeometryColumn() call. */
+		if(state->config->readshape == 1 && state->config->geography)
+		{
+			char *dimschar;
+			if( state->pgdims == 4 )
+				dimschar = "ZM";
+			else
+				dimschar = "";
+			if(state->config->sr_id != -1 && state->config->sr_id != 4326)
+			{
+				snprintf(state->message, SHPLOADERMSGLEN, "Invalid SRID for geography type: %x", state->config->sr_id);
+				stringbuffer_destroy(sb);
+				return SHPLOADERERR;
+			}
+			vasbappend(sb, ",\n\"%s\" geography(%s%s,%d)", state->config->geom, state->pgtype, dimschar, 4326);
+		}
+		
 		vasbappend(sb, ");\n");
 	
 		/* Create the geometry column with an addgeometry call */
-		if (state->config->readshape == 1)
+		if (state->config->readshape == 1 && (!state->config->geography))
 		{
 			if (state->config->schema) 
 			{

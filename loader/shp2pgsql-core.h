@@ -68,7 +68,7 @@
  * Default geometry column name
  */
 #define GEOMETRY_DEFAULT "the_geom"
-#define GEOGRAPHY_DEFAULT "the_geog"
+#define GEOGRAPHY_DEFAULT "geog"
 
 /*
  * Structure to hold the loader configuration options 
@@ -96,6 +96,9 @@ typedef struct shp_loader_config
 
 	/* 0 = MULTIPOLYGON/MULTILINESTRING, 1 = force to POLYGON/LINESTRING */
 	int simple_geometries;
+	
+	/* 0 = geometry, 1 = geography */
+	int geography;
 
 	/* 0 = columnname, 1 = "columnName" */
 	int quoteidentifiers;

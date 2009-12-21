@@ -172,7 +172,7 @@ pgui_set_config_from_ui()
 		config->schema = strdup(pg_schema);
 
 	if (strlen(pg_geom) == 0)
-		config->geom = strdup("the_geom");
+		config->geom = strdup(GEOMETRY_DEFAULT);
 	else
 		config->geom = strdup(pg_geom);
 

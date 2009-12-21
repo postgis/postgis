@@ -22,7 +22,7 @@ usage()
 	printf("RCSID: %s RELEASE: %s\n", RCSID, POSTGIS_VERSION);
 	printf("USAGE: shp2pgsql [<options>] <shapefile> [<schema>.]<table>\n");
 	printf("OPTIONS:\n");
-	printf("  -s <srid>  Set the SRID field. If not specified it defaults to -1.\n");
+	printf("  -s <srid>  Set the SRID field. Defaults to -1.\n");
 	printf("  (-d|a|c|p) These are mutually exclusive options:\n");
 	printf("      -d  Drops the table, then recreates it and populates\n");
 	printf("          it with current shape file data.\n");
@@ -31,20 +31,21 @@ usage()
 	printf("      -c  Creates a new table and populates it, this is the\n");
 	printf("          default if you do not specify any options.\n");
  	printf("      -p  Prepare mode, only creates the table.\n");
-	printf("  -g <geometry_column> Specify the name of the geometry column\n");
+	printf("  -g <geocolumn> Specify the name of the geometry/geography column\n");
 	printf("     (mostly useful in append mode).\n");
-	printf("  -D  Use postgresql dump format (defaults to sql insert statments.\n");
+	printf("  -D  Use postgresql dump format (defaults to SQL insert statments.\n");
+	printf("  -G  Use geography type (requires lon/lat data).\n");
 	printf("  -k  Keep postgresql identifiers case.\n");
 	printf("  -i  Use int4 type for all integer dbf fields.\n");
-	printf("  -I  Create a GiST index on the geometry column.\n");
+	printf("  -I  Create a spatial index on the geocolumn.\n");
 	printf("  -S  Generate simple geometries instead of MULTI geometries.\n");
 #ifdef HAVE_ICONV
 	printf("  -W <encoding> Specify the character encoding of Shape's\n");
 	printf("     attribute column. (default : \"ASCII\")\n");
 #endif
-	printf("  -N <policy> Specify NULL geometries handling policy (insert,skip,abort)\n");
+	printf("  -N <policy> NULL geometries handling policy (insert*,skip,abort)\n");
 	printf("  -n  Only import DBF file.\n");
-	printf("  -? Display this help screen\n");
+	printf("  -?  Display this help screen.\n");
 }
 
 
@@ -68,7 +69,7 @@ main (int argc, char **argv)
 	config = malloc(sizeof(SHPLOADERCONFIG));
 	set_config_defaults(config);
 
-	while ((c = pgis_getopt(argc, argv, "kcdapDs:Sg:iW:wIN:n")) != EOF)
+	while ((c = pgis_getopt(argc, argv, "kcdapGDs:Sg:iW:wIN:n")) != EOF)
 	{
 		switch (c)
 		{
@@ -90,6 +91,10 @@ main (int argc, char **argv)
 
 			case 'D':
 				config->dump_format = 1;
+				break;
+
+			case 'G':
+				config->geography = 1;
 				break;
 
 			case 'S':
@@ -206,6 +211,14 @@ main (int argc, char **argv)
 		if (config->schema)
 			strtolower(config->schema);
 	}
+
+	/* Make the geocolumn name consistent with the load type (geometry or geography) */
+	if( config->geography )
+	{
+		if(config->geom) free(config->geom);
+		config->geom = strdup(GEOGRAPHY_DEFAULT);
+	}
+
 
 	/* Create the shapefile state object */
 	state = ShpLoaderCreate(config);
