@@ -38,6 +38,7 @@ static GtkWidget *entry_config_geocolumn;
 static GtkWidget *label_pg_connection_test;
 static GtkWidget *textview_log;
 static GtkWidget *file_chooser_button_shape;
+static GtkWidget *progress;
 static GtkTextBuffer *textbuffer_log;
 
 /* Options window */
@@ -57,6 +58,8 @@ static PGconn *pg_connection;
 static SHPLOADERCONFIG *config;
 static SHPLOADERSTATE *state;
 static SHPCONNECTIONCONFIG *conn;
+
+static volatile int import_running = 0;
 
 
 /*
@@ -351,7 +354,6 @@ pgui_copy_start(const char *sql)
 static int
 pgui_copy_write(const char *line)
 {
-
 	/* We need a connection to do anything. */
 	if ( ! pg_connection ) return 0;
 	if ( ! line ) return 0;
@@ -364,6 +366,9 @@ pgui_copy_write(const char *line)
 		pgui_logf("Failed in pgui_copy_write(): %s", PQerrorMessage(pg_connection));
 		return 0;
 	}
+
+	/* Send linefeed to signify end of line */
+	PQputCopyData(pg_connection, "\n", 1);
 
 	return 1;
 }
@@ -441,7 +446,10 @@ pgui_read_connection(void)
 static void
 pgui_action_cancel(GtkWidget *widget, gpointer data)
 {
-	pgui_quit(widget, data); /* quit if we're not running */
+	if (!import_running)
+		pgui_quit(widget, data); /* quit if we're not running */
+	else
+		import_running = FALSE;
 }
 
 static void
@@ -562,9 +570,9 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 {
 	char *connection_string = NULL;
 	char *dest_string = NULL;
-	int ret, i;
+	int ret, i = 0;
 	char *header, *footer, *record;	
-	int log_frequency = 500;
+	PGresult *result;
 
 
 	if ( ! (connection_string = pgui_read_connection() ) )
@@ -657,8 +665,8 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	/* If we are in COPY (dump format) mode, output the COPY statement and enter COPY mode */
 	if (state->config->dump_format)
 	{
-		log_frequency = 5000; /* log less often so we run faster */
 		ret = ShpLoaderGetSQLCopyStatement(state, &header);
+
 		if (ret != SHPLOADEROK)
 		{
 			pgui_logf("%s", state->message);
@@ -676,7 +684,10 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	}
 
 	/* Main loop: iterate through all of the records and send them to stdout */
-	for (i = 0; i < ShpLoaderGetRecordCount(state); i++)
+	pgui_logf("Importing shapefile (%d records)...", ShpLoaderGetRecordCount(state));
+
+	import_running = TRUE;
+	for (i = 0; i < ShpLoaderGetRecordCount(state) && import_running; i++)
 	{
 		ret = ShpLoaderGenerateSQLRowStatement(state, i, &record);
 
@@ -689,10 +700,6 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 				else
 					ret = pgui_exec(record);
 
-				/* Display a record number as we load */
-				if ((i % log_frequency) == 0)
-					pgui_logf("Loaded record number #%d", i);
-
 				/* Display a record number if we failed */
 				if (!ret)
 					pgui_logf("Failed record number #%d", i);
@@ -703,7 +710,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 			case SHPLOADERERR:
 				/* Display the error message then stop */
 				pgui_logf("%s\n", state->message);
-				return;
+				goto import_cleanup;
 				break;
 
 			case SHPLOADERWARN:
@@ -731,6 +738,9 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 				break;
 		}
 
+		/* Update the progress bar */
+		gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), (float)i / ShpLoaderGetRecordCount(state));
+
 		/* Allow GTK events to get a look in */
 		while (gtk_events_pending())
 			gtk_main_iteration();
@@ -741,36 +751,60 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	{
 		if (! pgui_copy_end(0) )
 			goto import_cleanup;
+
+		result = PQgetResult(pg_connection);
+		if (PQresultStatus(result) != PGRES_COMMAND_OK)
+		{
+			pgui_logf("COPY failed with the following error: %s", PQerrorMessage(pg_connection));
+			ret = SHPLOADERERR;
+			goto import_cleanup;
+		}
 	}
 
-	/* Get the footer */
-	ret = ShpLoaderGetSQLFooter(state, &footer);
-	if (ret != SHPLOADEROK)
+	/* Only continue if we didn't abort part way through */
+	if (import_running)
 	{
-		pgui_logf("%s\n", state->message);
-
-		if (ret == SHPLOADERERR)
+		/* Get the footer */
+		ret = ShpLoaderGetSQLFooter(state, &footer);
+		if (ret != SHPLOADEROK)
+		{
+			pgui_logf("%s\n", state->message);
+	
+			if (ret == SHPLOADERERR)
+				goto import_cleanup;
+		}
+	
+		/* Send the footer to the server */
+		ret = pgui_exec(footer);
+		free(footer);
+	
+		if (!ret)
 			goto import_cleanup;
 	}
 
-	/* Send the footer to the server */
-	ret = pgui_exec(footer);
-	free(footer);
 
-	if (!ret)
-		return;
+import_cleanup:
+	/* If we didn't finish inserting all of the items, an error occurred */
+	if (i != ShpLoaderGetRecordCount(state) || !ret)
+		pgui_logf("Shapefile import failed");
+	else
+		pgui_logf("Shapefile import completed");
 
 	/* Free the state object */
 	ShpLoaderDestroy(state);
 
+	/* Import has definitely finished */
+	import_running = FALSE;
 
-import_cleanup:
 	/* Enable the button once again */
 	gtk_widget_set_sensitive(widget, TRUE);
 
 	/* Silly GTK bug means we have to hide and show the button for it to work again! */
 	gtk_widget_hide(widget);
 	gtk_widget_show(widget);
+
+	/* Reset the progress bar */
+	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), 0.0);
 
 	/* Allow GTK events to get a look in */
 	while (gtk_events_pending())
@@ -1028,6 +1062,10 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	/* Add table into containing frame */
 	gtk_container_add (GTK_CONTAINER (frame_config), table_config);
 
+	/* Progress bar for the import */
+	progress = gtk_progress_bar_new();
+	gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR(progress), GTK_PROGRESS_LEFT_TO_RIGHT);
+	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), 0.0);
 
 	/*
 	** Row of action buttons
@@ -1074,6 +1112,7 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	gtk_box_pack_start(GTK_BOX(vbox_main), frame_pg, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_main), frame_config, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_main), hbox_buttons, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_main), progress, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_main), frame_log, TRUE, TRUE, 0);
 	/* and insert the vbox into the main window  */
 	gtk_container_add (GTK_CONTAINER (window_main), vbox_main);

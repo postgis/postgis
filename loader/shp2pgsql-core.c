@@ -1720,8 +1720,8 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 				/* Output SRID if relevant */
 				if (state->config->sr_id != 0)
 					vasbappend(sb, ", %d)", state->config->sr_id);
-	
-				vasbappend(sb, ");");
+				else
+					vasbappend(sb, ")");
 			}
 		}
 		else
@@ -1733,19 +1733,17 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 			vasbappend(sb, "%s", geometry);
 	
 			if (!state->config->dump_format)
-				vasbappend(sb, "');");
+				vasbappend(sb, "'");
 		}
 
 		/* Tidy up everything */
 		SHPDestroyObject(obj);
 		free(geometry);
 	}
-	else
-	{
-		/* Close the line correctly for dump/insert format */
-		if (!state->config->dump_format)
-			vasbappend(sb, ");");
-	}
+
+	/* Close the line correctly for dump/insert format */
+	if (!state->config->dump_format)
+		vasbappend(sb, ");");
 
 
 	/* Copy the string buffer into a new string, destroying the string buffer */
