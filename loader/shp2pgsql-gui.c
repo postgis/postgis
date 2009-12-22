@@ -773,6 +773,11 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 			if (ret == SHPLOADERERR)
 				goto import_cleanup;
 		}
+
+		if( state->config->createindex )
+		{
+			pgui_logf("Creating spatial index...\n");
+		}
 	
 		/* Send the footer to the server */
 		ret = pgui_exec(footer);
@@ -786,9 +791,9 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 import_cleanup:
 	/* If we didn't finish inserting all of the items, an error occurred */
 	if (i != ShpLoaderGetRecordCount(state) || !ret)
-		pgui_logf("Shapefile import failed");
+		pgui_logf("Shapefile import failed.");
 	else
-		pgui_logf("Shapefile import completed");
+		pgui_logf("Shapefile import completed.");
 
 	/* Free the state object */
 	ShpLoaderDestroy(state);
