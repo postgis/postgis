@@ -1799,7 +1799,7 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 		}
 		else
 		{
-			vasbappend(sb, "CREATE INDEX \"%s_%s_gist\" ON \"%s\" using gist (\"%s\" gist_geometry_ops);\n", state->config->table, state->config->geom, state->config->table, state->config->geom, ops);
+			vasbappend(sb, "CREATE INDEX \"%s_%s_gist\" ON \"%s\" using gist (\"%s\" %s);\n", state->config->table, state->config->geom, state->config->table, state->config->geom, ops);
 		}
 	}
 
