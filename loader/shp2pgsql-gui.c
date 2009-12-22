@@ -49,6 +49,7 @@ static GtkWidget *checkbutton_options_forceint;
 static GtkWidget *checkbutton_options_autoindex;
 static GtkWidget *checkbutton_options_dbfonly;
 static GtkWidget *checkbutton_options_dumpformat;
+static GtkWidget *checkbutton_options_geography;
 
 /* Other */
 static char *pgui_errmsg = NULL;
@@ -153,9 +154,9 @@ pgui_set_config_from_ui()
 	gboolean createindex = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_autoindex));
 	gboolean dbfonly = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_dbfonly));
 	gboolean dumpformat = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_dumpformat));
+	gboolean geography = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_geography));
 
 	char *c;
-
 
 	/* Set the destination schema, table and column parameters */
 	if (config->table)
@@ -175,6 +176,9 @@ pgui_set_config_from_ui()
 		config->geom = strdup(GEOMETRY_DEFAULT);
 	else
 		config->geom = strdup(pg_geom);
+
+	if ( geography )
+		config->geography = 1;
 
 	/* Set the destination filename: note the shp2pgsql core engine simply wants the file
 	   without the .shp extension */
@@ -487,6 +491,22 @@ pgui_action_options(GtkWidget *widget, gpointer data)
 static void
 pgui_action_close_options(GtkWidget *widget, gpointer data)
 {
+	/* Make the geocolumn field consistent with the load type by setting to the 
+	   default geography field name if the load type is geography. */
+	if( gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_geography)) )
+	{
+		if( ! strcmp( gtk_entry_get_text(GTK_ENTRY(entry_config_geocolumn)), GEOMETRY_DEFAULT ) )
+		{
+			gtk_entry_set_text(GTK_ENTRY(entry_config_geocolumn), GEOGRAPHY_DEFAULT );
+		}
+	}
+	else
+	{
+		if( ! strcmp( gtk_entry_get_text(GTK_ENTRY(entry_config_geocolumn)), GEOGRAPHY_DEFAULT ) )
+		{
+			gtk_entry_set_text(GTK_ENTRY(entry_config_geocolumn), GEOMETRY_DEFAULT );
+		}
+	}
 	gtk_widget_hide_all (window_options);
 	return;
 }
@@ -837,20 +857,26 @@ pgui_create_options_dialogue()
 	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 5, 6 );
 	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_options_dumpformat);
 
-	pgui_create_options_dialogue_add_label(table_options, "Policy for records with empty (null) shapes", 0.0, 6);
+	pgui_create_options_dialogue_add_label(table_options, "Load into GEOGRAPHY column", 0.0, 6);
+	checkbutton_options_geography = gtk_check_button_new();
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_options_geography), FALSE);
+	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 1.0 );
+	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 6, 7 );
+	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_options_geography);
+	
+	pgui_create_options_dialogue_add_label(table_options, "Policy for records with empty (null) shapes", 0.0, 7);
 	entry_options_nullpolicy = gtk_entry_new();
 	gtk_entry_set_width_chars(GTK_ENTRY(entry_options_nullpolicy), text_width);
 	gtk_entry_set_text(GTK_ENTRY(entry_options_nullpolicy), "0");
-	gtk_table_attach_defaults(GTK_TABLE(table_options), entry_options_nullpolicy, 0, 1, 6, 7 );
+	gtk_table_attach_defaults(GTK_TABLE(table_options), entry_options_nullpolicy, 0, 1, 7, 8 );
 	
 	button_options_ok = gtk_button_new_with_label("OK");
 	g_signal_connect (G_OBJECT (button_options_ok), "clicked", G_CALLBACK (pgui_action_close_options), NULL);
-	gtk_table_attach_defaults(GTK_TABLE(table_options), button_options_ok, 1, 2, 7, 8 );
+	gtk_table_attach_defaults(GTK_TABLE(table_options), button_options_ok, 1, 2, 8, 9 );
 
 	vbox_options = gtk_vbox_new(FALSE, 10);
 	gtk_box_pack_start(GTK_BOX(vbox_options), table_options, FALSE, FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (window_options), vbox_options);
-
 
 }
 
