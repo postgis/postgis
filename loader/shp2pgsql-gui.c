@@ -888,6 +888,36 @@ pgui_create_main_window(void)
 int
 main(int argc, char *argv[])
 {
+	char c;
+	char *username = 0;
+	char *port = 0;
+	char *password = 0;
+	char *database = 0;
+	char *host = 0;
+
+	while ((c = getopt(argc, argv, "U:p:W:d:h:")) != -1)
+	{
+		switch (c)
+		{
+			case 'U':
+				username = optarg;
+				break;
+			case 'p':
+				port = optarg;
+				break;
+			case 'W':
+				password = optarg;
+				break;
+			case 'd':
+				database = optarg;
+				break;
+			case 'h':
+				host = optarg;
+				break;
+			default:
+				exit(0);
+		}
+	}
 
 	/* initialize the GTK stack */
 	gtk_init(&argc, &argv);
@@ -898,6 +928,13 @@ main(int argc, char *argv[])
 	
 	/* set up and global variables we want before running */
 	gui_mode = 1;
+
+	/* apply any commandline defaults that are passed in */
+	if( username ) gtk_entry_set_text(GTK_ENTRY(entry_pg_user), username);
+	if( password ) gtk_entry_set_text(GTK_ENTRY(entry_pg_pass), password);
+	if( host ) gtk_entry_set_text(GTK_ENTRY(entry_pg_host), host);
+	if( port ) gtk_entry_set_text(GTK_ENTRY(entry_pg_port), port);
+	if( database ) gtk_entry_set_text(GTK_ENTRY(entry_pg_db), database);
 
 	/* start the main loop */
 	gtk_main();
