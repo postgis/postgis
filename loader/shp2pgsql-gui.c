@@ -456,13 +456,26 @@ static void
 pgui_action_connection_test(GtkWidget *widget, gpointer data)
 {
 	char *connection_string = NULL;
+	char *connection_sanitized = NULL;
+	char *ptr = NULL;
 
 	if ( ! (connection_string = pgui_read_connection()) )
 	{
 		pgui_raise_error_dialogue();
 		return;
 	}
-	pgui_logf("Connecting: %s", connection_string);
+	
+	/* Clean the password out of the string before we display it. */
+	connection_sanitized = strdup(connection_string);
+	ptr = strstr(connection_sanitized, "password");
+	ptr += 9;
+	while( *ptr != ' ' && *ptr != '\0' )
+	{
+		*ptr = '*';
+		ptr++;
+	}
+	pgui_logf("Connecting: %s", connection_sanitized);
+	free(connection_sanitized);
 
 	if ( pg_connection )
 		PQfinish(pg_connection);
