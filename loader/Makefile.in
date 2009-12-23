@@ -29,7 +29,6 @@ CFLAGS=@CFLAGS@ @PICFLAGS@ @WARNFLAGS@
 PGSQL2SHP=pgsql2shp@EXESUFFIX@
 SHP2PGSQL-CLI=shp2pgsql@EXESUFFIX@
 SHP2PGSQL-GUI=shp2pgsql-gui@EXESUFFIX@
-SHP2PGSQL-PGA=shp2pgsql-pgadmin@EXESUFFIX@
 
 # PostgreSQL frontend CPPFLAGS and LDFLAGS (for compiling and linking with libpq)
 PGSQL_FE_CPPFLAGS=@PGSQL_FE_CPPFLAGS@
@@ -88,9 +87,6 @@ shp2pgsql-gui.o: shp2pgsql-gui.c
 
 $(SHP2PGSQL-GUI): stringbuffer.o shpopen.o dbfopen.o shp2pgsql-core.o shp2pgsql-gui.o $(LIBLWGEOM) $(GTK_WIN32_RES)
 	$(CC) $(CFLAGS) $(GTK_WIN32_FLAGS) $^ -o $@ $(GTK_LIBS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) -lm 
-
-$(SHP2PGSQL-PGA): stringbuffer.o shpopen.o dbfopen.o shp2pgsql-core.o shp2pgsql-gui.o $(LIBLWGEOM) 
-	$(CC) $^ -o $@ $(GTK_LIBS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) -lm 
 
 install: all
 	@mkdir -p $(DESTDIR)$(bindir)
