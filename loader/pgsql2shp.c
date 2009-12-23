@@ -89,6 +89,7 @@ int addRecord(PGresult *res, int residx, int row);
 int initShapefile(char *shp_file, PGresult *res);
 int initialize(void);
 int getGeometryOID(PGconn *conn);
+int getGeographyOID(PGconn *conn);
 int getGeometryType(char *schema, char *table, char *geo_col_name);
 int getGeometryMaxDims(char *schema, char *table, char *geo_col_name);
 char *shapetypename(int num);
@@ -814,6 +815,32 @@ getGeometryOID(PGconn *conn)
 	return OID;
 }
 
+int
+getGeographyOID(PGconn *conn)
+{
+	PGresult *res1;
+	char *temp_int;
+	int OID;
+
+	res1=PQexec(conn, "select OID from pg_type where typname = 'geography'");
+	if ( ! res1 || PQresultStatus(res1) != PGRES_TUPLES_OK )
+	{
+		printf( "OIDQuery: %s", PQerrorMessage(conn));
+		return -1;
+	}
+
+	if(PQntuples(res1) <= 0 )
+	{
+		printf( "Geometry type unknown "
+				"(have you enabled postgis?)\n");
+		return 0;
+	}
+
+	temp_int = (char *)PQgetvalue(res1, 0, 0);
+	OID = atoi(temp_int);
+	PQclear(res1);
+	return OID;
+}
 
 
 
@@ -1012,14 +1039,14 @@ getGeometryType(char *schema, char *table, char *geo_col_name)
 
 	if ( schema )
 	{
-		sprintf(query, "SELECT DISTINCT geometrytype(\"%s\") "
-			"FROM \"%s\".\"%s\" WHERE NOT geometrytype(\"%s\") "
+		sprintf(query, "SELECT DISTINCT geometrytype(\"%s\"::geometry) "
+			"FROM \"%s\".\"%s\" WHERE NOT geometrytype(\"%s\"::geometry) "
 			"IS NULL", geo_col_name, schema, table, geo_col_name);
 	}
 	else
 	{
-		sprintf(query, "SELECT DISTINCT geometrytype(\"%s\") "
-			"FROM \"%s\" WHERE NOT geometrytype(\"%s\") IS NULL",
+		sprintf(query, "SELECT DISTINCT geometrytype(\"%s\"::geometry) "
+			"FROM \"%s\" WHERE NOT geometrytype(\"%s\"::geometry) IS NULL",
 			geo_col_name, table, geo_col_name);
 	}
 
@@ -1131,13 +1158,13 @@ getGeometryMaxDims(char *schema, char *table, char *geo_col_name)
 
 	if ( schema )
 	{
-		sprintf(query, "SELECT max(zmflag(\"%s\")) "
+		sprintf(query, "SELECT max(zmflag(\"%s\"::geometry)) "
 			"FROM \"%s\".\"%s\"",
 			 geo_col_name, schema, table);
 	}
 	else
 	{
-		sprintf(query, "SELECT max(zmflag(\"%s\")) "
+		sprintf(query, "SELECT max(zmflag(\"%s\"::geometry)) "
 			"FROM \"%s\"",
 			geo_col_name, table);
 	}
@@ -1312,7 +1339,8 @@ initialize(void)
 	int i;
 	char buf[256];
 	int tmpint;
-	int geo_oid; /* geometry oid */
+	int geom_oid; /* geometry oid */
+	int geog_oid; /* geography oid */
 	int geom_fld = -1;
 	char *mainscan_flds[256];
 	int mainscan_nflds=0;
@@ -1382,8 +1410,15 @@ initialize(void)
 	}
 
 	/* Get geometry oid */
-	geo_oid = getGeometryOID(conn);
-	if ( geo_oid == -1 )
+	geom_oid = getGeometryOID(conn);
+	if ( geom_oid == -1 )
+	{
+		PQclear(res);
+		return 0;
+	}
+	/* Get geography oid */
+	geog_oid = getGeographyOID(conn);
+	if( geog_oid == -1 )
 	{
 		PQclear(res);
 		return 0;
@@ -1409,7 +1444,7 @@ initialize(void)
 		/*
 		 * This is a geometry column
 		 */
-		if(type == geo_oid)
+		if(type == geom_oid)
 		{
 			/* We've already found our geometry column */
 			if ( geom_fld != -1 ) continue;
@@ -1427,7 +1462,7 @@ initialize(void)
 			}
 
 			/*
-			 * This is exactly the geometry privided
+			 * This is exactly the geo_col_name provided
 			 * by the user.
 			 */
 			else if (!strcmp(geo_col_name, fname))
@@ -1439,7 +1474,39 @@ initialize(void)
 
 			continue;
 		}
+		/*
+		 * This is a geography column
+		 */
+		if(type == geog_oid)
+		{
+			/* We've already found our geography column */
+			if ( geom_fld != -1 ) continue;
 
+			/*
+			 * A geography attribute name has not been
+			 * provided: we'll use this one (the first).
+			 */
+			if ( ! geo_col_name )
+			{
+				geom_fld = mainscan_nflds;
+				type_ary[mainscan_nflds]=9;
+				geo_col_name = fname;
+				mainscan_flds[mainscan_nflds++] = fname;
+			}
+
+			/*
+			 * This is exactly the geo_col_name provided
+			 * by the user.
+			 */
+			else if (!strcmp(geo_col_name, fname))
+			{
+				geom_fld = mainscan_nflds;
+				type_ary[mainscan_nflds]=9;
+				mainscan_flds[mainscan_nflds++] = fname;
+			}
+
+			continue;
+		}
 
 		/*
 		 * Everything else (non geometries) will be
@@ -1811,11 +1878,11 @@ initialize(void)
 			{
 				if ( pgis_major_version > 0 )
 				{
-					sprintf(buf, "asEWKB(setSRID(\"%s\", -1), 'XDR')", mainscan_flds[i]);
+					sprintf(buf, "asEWKB(setSRID(\"%s\"::geometry, -1), 'XDR')", mainscan_flds[i]);
 				}
 				else
 				{
-					sprintf(buf, "asbinary(\"%s\", 'XDR')",
+					sprintf(buf, "asbinary(\"%s\"::geometry, 'XDR')",
 						mainscan_flds[i]);
 				}
 			}
@@ -1823,11 +1890,11 @@ initialize(void)
 			{
 				if ( pgis_major_version > 0 )
 				{
-					sprintf(buf, "asEWKB(setSRID(\"%s\", -1), 'NDR')", mainscan_flds[i]);
+					sprintf(buf, "asEWKB(setSRID(\"%s\"::geometry, -1), 'NDR')", mainscan_flds[i]);
 				}
 				else
 				{
-					sprintf(buf, "asbinary(\"%s\", 'NDR')",
+					sprintf(buf, "asbinary(\"%s\"::geometry, 'NDR')",
 						mainscan_flds[i]);
 				}
 			}
@@ -2156,7 +2223,7 @@ int projFileCreate(const char * pszFilename, char *schema, char *table, char *ge
 				" FROM  geometry_columns As gc INNER JOIN spatial_ref_sys sr ON sr.srid = gc.srid "
 				" WHERE gc.f_table_schema = '%s' AND gc.f_table_name = '%s' AND gc.f_geometry_column = '%s' LIMIT 1),  "
 				" (SELECT CASE WHEN COUNT(DISTINCT sr.srid) > 1 THEN 'm' ELSE MAX(sr.srtext) END As srtext "
-			" FROM \"%s\".\"%s\" As g INNER JOIN spatial_ref_sys sr ON sr.srid = ST_SRID(g.\"%s\")) , ' ') As srtext ",
+			" FROM \"%s\".\"%s\" As g INNER JOIN spatial_ref_sys sr ON sr.srid = ST_SRID((g.\"%s\")::geometry)) , ' ') As srtext ",
 				esc_schema, esc_table,esc_geo_col_name, schema, table, geo_col_name);
 		free(esc_schema);
 	}
@@ -2166,7 +2233,7 @@ int projFileCreate(const char * pszFilename, char *schema, char *table, char *ge
 				" FROM  geometry_columns As gc INNER JOIN spatial_ref_sys sr ON sr.srid = gc.srid "
 				" WHERE gc.f_table_name = '%s' AND gc.f_geometry_column = '%s' AND pg_table_is_visible((gc.f_table_schema || '.' || gc.f_table_name)::regclass) LIMIT 1),  "
 				" (SELECT CASE WHEN COUNT(DISTINCT sr.srid) > 1 THEN 'm' ELSE MAX(sr.srtext) END as srtext "
-			" FROM \"%s\" As g INNER JOIN spatial_ref_sys sr ON sr.srid = ST_SRID(g.\"%s\")), ' ') As srtext ",
+			" FROM \"%s\" As g INNER JOIN spatial_ref_sys sr ON sr.srid = ST_SRID((g.\"%s\")::geometry)), ' ') As srtext ",
 				esc_table, esc_geo_col_name, table, geo_col_name);
 	}
 
