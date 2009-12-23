@@ -133,6 +133,7 @@ srs_4|SRID=4326;POINT(2 1)
 srs_5|SRID=4326;POINT(2 1)
 srs_6|SRID=4326;POINT(2 1)
 srs_7|SRID=4326;POINT(1 2)
+srs_8|SRID=4326;POINT(1 2)
 ERROR:  unknown spatial reference system
 ERROR:  unknown spatial reference system
 ERROR:  unknown spatial reference system
@@ -141,7 +142,7 @@ ERROR:  unknown spatial reference system
 ERROR:  unknown spatial reference system
 ERROR:  unknown spatial reference system
 ERROR:  unknown spatial reference system
-srs_16|SRID=4326;GEOMETRYCOLLECTION(POINT(2 1),LINESTRING(4 3,6 5),LINESTRING(8 7,10 9),POLYGON((12 11,14 13,16 15,12 11),(18 17,20 19,22 21,18 17)),POLYGON((24 23,26 25,28 27,24 23),(26 25,28 27,30 29,26 25)))
+srs_17|SRID=4326;GEOMETRYCOLLECTION(POINT(2 1),LINESTRING(4 3,6 5),LINESTRING(8 7,10 9),POLYGON((12 11,14 13,16 15,12 11),(18 17,20 19,22 21,18 17)),POLYGON((24 23,26 25,28 27,24 23),(26 25,28 27,30 29,26 25)))
 ns_1|POINT(1 2)
 ns_2|POINT(1 2)
 ns_3|POINT(1 2)

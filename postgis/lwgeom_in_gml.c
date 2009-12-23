@@ -409,6 +409,7 @@ static gmlSrs* parse_gml_srs(xmlNodePtr xnode)
 	 *  cf WFS 1.1.0 -> 9.2 (p36)
 	 *  cf ISO 19142 -> 7.9.2.4.4 (p34)
 	 *  cf RFC 5165 <http://tools.ietf.org/html/rfc5165>
+	 *  cf CITE WFS-1.1 (GetFeature-tc17.2)
 	 */
 
 	/* SRS pattern like:   	EPSG:4326 					
@@ -418,6 +419,7 @@ static gmlSrs* parse_gml_srs(xmlNodePtr xnode)
 	  			urn:ogc:def:crs:EPSG:6.6:4326
 	   			urn:x-ogc:def:crs:EPSG:6.6:4326
 				http://www.opengis.net/gml/srs/epsg.xml#4326
+				http://www.epsg.org/6.11.2/4326
 	*/
 
 	if (!strncmp((char *) srsname, "EPSG:", 5)) {
@@ -431,6 +433,9 @@ static gmlSrs* parse_gml_srs(xmlNodePtr xnode)
 	}  else if (!strncmp((char *) srsname, 
 				"http://www.opengis.net/gml/srs/epsg.xml#", 40)) {
 		sep = '#';
+		latlon = false;
+	} else if (!strncmp((char *) srsname, "http://www.epsg.org/", 20)) {
+		sep = '/';
 		latlon = false;
 	} else lwerror("unknown spatial reference system");
 

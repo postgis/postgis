@@ -445,35 +445,35 @@ SELECT 'srs_4', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:ogc:def:crs:EP
 SELECT 'srs_5', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:ogc:def:crs:EPSG:6.6:4326"><gml:pos>1 2</gml:pos></gml:Point>'));
 SELECT 'srs_6', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:x-ogc:def:crs:EPSG:6.6:4326"><gml:pos>1 2</gml:pos></gml:Point>'));
 SELECT 'srs_7', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="http://www.opengis.net/gml/srs/epsg.xml#4326"><gml:pos>1 2</gml:pos></gml:Point>'));
+SELECT 'srs_8', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="http://www.epsg.org/6.11.2/4326"><gml:pos>1 2</gml:pos></gml:Point>'));
 
 -- ERROR not a valid pattern
-SELECT 'srs_8', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="a:wrong:pattern:4326"><gml:pos>1 2</gml:pos></gml:Point>'));
+SELECT 'srs_9', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="a:wrong:pattern:4326"><gml:pos>1 2</gml:pos></gml:Point>'));
 
 -- ERROR: not a defined SRID
-SELECT 'srs_9', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:01"><gml:pos>1 2</gml:pos></gml:Point>'));
+SELECT 'srs_10', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:01"><gml:pos>1 2</gml:pos></gml:Point>'));
 
 -- ERROR: SRID is not an int
-SELECT 'srs_10', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:abc"><gml:pos>1 2</gml:pos></gml:Point>'));
+SELECT 'srs_11', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:abc"><gml:pos>1 2</gml:pos></gml:Point>'));
 
 -- ERROR: SRID is not only int
-SELECT 'srs_11', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:4326abc"><gml:pos>1 2</gml:pos></gml:Point>'));
-SELECT 'srs_12', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:abc4326"><gml:pos>1 2</gml:pos></gml:Point>'));
+SELECT 'srs_12', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:4326abc"><gml:pos>1 2</gml:pos></gml:Point>'));
+SELECT 'srs_13', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:abc4326"><gml:pos>1 2</gml:pos></gml:Point>'));
 
 -- ERROR: srsName empty
-SELECT 'srs_13', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:"><gml:pos>1 2</gml:pos></gml:Point>'));
-SELECT 'srs_14', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName=""><gml:pos>1 2</gml:pos></gml:Point>'));
+SELECT 'srs_14', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:"><gml:pos>1 2</gml:pos></gml:Point>'));
+SELECT 'srs_15', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName=""><gml:pos>1 2</gml:pos></gml:Point>'));
 
 -- ERROR: srsName is defined as -1
-SELECT 'srs_15', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:-1"><gml:pos>1 2</gml:pos></gml:Point>'));
+SELECT 'srs_16', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:-1"><gml:pos>1 2</gml:pos></gml:Point>'));
 
 -- Reverse axis with all kind of simples geometry types 
-SELECT 'srs_16', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::4326"><gml:geometryMember><gml:Point><gml:pos srsDimension="2">1 2</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:LineString><gml:posList srsDimension="2">3 4 5 6</gml:posList></gml:LineString></gml:geometryMember><gml:geometryMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension="2">7 8 9 10</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:geometryMember><gml:geometryMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">11 12 13 14 15 16 11 12</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension="2">17 18 19 20 21 22 17 18</gml:posList></gml:LinearRing></gml:interior></gml:Polygon></gml:geometryMember><gml:geometryMember><gml:Surface><gml:patches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">23 24 25 26 27 28 23 24</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension="2">25 26 27 28 29 30 25 26</gml:posList></gml:LinearRing></gml:interior></gml:PolygonPatch></gml:patches></gml:Surface></gml:geometryMember></gml:MultiGeometry>'));
-
-
-
-
+SELECT 'srs_17', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::4326"><gml:geometryMember><gml:Point><gml:pos srsDimension="2">1 2</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:LineString><gml:posList srsDimension="2">3 4 5 6</gml:posList></gml:LineString></gml:geometryMember><gml:geometryMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension="2">7 8 9 10</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:geometryMember><gml:geometryMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">11 12 13 14 15 16 11 12</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension="2">17 18 19 20 21 22 17 18</gml:posList></gml:LinearRing></gml:interior></gml:Polygon></gml:geometryMember><gml:geometryMember><gml:Surface><gml:patches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">23 24 25 26 27 28 23 24</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension="2">25 26 27 28 29 30 25 26</gml:posList></gml:LinearRing></gml:interior></gml:PolygonPatch></gml:patches></gml:Surface></gml:geometryMember></gml:MultiGeometry>'));
 
 -- Reverse axis with severals multi geometry types 
+-- TODO
+
+
 
 --
 -- GML Namespace
