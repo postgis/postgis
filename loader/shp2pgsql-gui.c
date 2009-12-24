@@ -468,11 +468,14 @@ pgui_action_connection_test(GtkWidget *widget, gpointer data)
 	/* Clean the password out of the string before we display it. */
 	connection_sanitized = strdup(connection_string);
 	ptr = strstr(connection_sanitized, "password");
-	ptr += 9;
-	while( *ptr != ' ' && *ptr != '\0' )
+	if ( ptr ) 
 	{
-		*ptr = '*';
-		ptr++;
+		ptr += 9;
+		while( *ptr != ' ' && *ptr != '\0' )
+		{
+			*ptr = '*';
+			ptr++;
+		}
 	}
 	pgui_logf("Connecting: %s", connection_sanitized);
 	free(connection_sanitized);
