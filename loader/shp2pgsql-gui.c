@@ -453,21 +453,9 @@ pgui_action_cancel(GtkWidget *widget, gpointer data)
 }
 
 static void
-pgui_action_connection_test(GtkWidget *widget, gpointer data)
+pgui_sanitize_connection_string(char *connection_string)
 {
-	char *connection_string = NULL;
-	char *connection_sanitized = NULL;
-	char *ptr = NULL;
-
-	if ( ! (connection_string = pgui_read_connection()) )
-	{
-		pgui_raise_error_dialogue();
-		return;
-	}
-	
-	/* Clean the password out of the string before we display it. */
-	connection_sanitized = strdup(connection_string);
-	ptr = strstr(connection_sanitized, "password");
+	char *ptr = strstr(connection_string, "password");
 	if ( ptr ) 
 	{
 		ptr += 9;
@@ -477,6 +465,23 @@ pgui_action_connection_test(GtkWidget *widget, gpointer data)
 			ptr++;
 		}
 	}
+	return;
+}
+
+static void
+pgui_action_connection_test(GtkWidget *widget, gpointer data)
+{
+	char *connection_string = NULL;
+	char *connection_sanitized = NULL;
+
+	if ( ! (connection_string = pgui_read_connection()) )
+	{
+		pgui_raise_error_dialogue();
+		return;
+	}
+	
+	connection_sanitized = strdup(connection_string);
+	pgui_sanitize_connection_string(connection_string);
 	pgui_logf("Connecting: %s", connection_sanitized);
 	free(connection_sanitized);
 
@@ -585,6 +590,7 @@ static void
 pgui_action_import(GtkWidget *widget, gpointer data)
 {
 	char *connection_string = NULL;
+	char *connection_sanitized = NULL;
 	char *dest_string = NULL;
 	int ret, i = 0;
 	char *header, *footer, *record;	
@@ -610,9 +616,12 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	}
 
 	/* Log what we know so far */
-	pgui_logf("Connection: %s", connection_string);
+	connection_sanitized = strdup(connection_string);
+	pgui_sanitize_connection_string(connection_sanitized);
+	pgui_logf("Connection: %s", connection_sanitized);
 	pgui_logf("Destination: %s.%s", config->schema, config->table);
 	pgui_logf("Source File: %s", config->shp_file);
+	free(connection_sanitized);
 
 	/* Connect to the database. */
 	if ( pg_connection ) PQfinish(pg_connection);
