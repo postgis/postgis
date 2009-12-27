@@ -868,6 +868,7 @@ pgui_create_options_dialogue()
 	GtkWidget *vbox_options;
 	GtkWidget *align_options_center;
 	static int text_width = 12;
+	char *str;
 	
 	window_options = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_modal (GTK_WINDOW(window_options), TRUE);
@@ -883,47 +884,47 @@ pgui_create_options_dialogue()
 	pgui_create_options_dialogue_add_label(table_options, "DBF file character encoding", 0.0, 0);
 	entry_options_encoding = gtk_entry_new();
 	gtk_entry_set_width_chars(GTK_ENTRY(entry_options_encoding), text_width);
-	gtk_entry_set_text(GTK_ENTRY(entry_options_encoding), "LATIN1");
+	gtk_entry_set_text(GTK_ENTRY(entry_options_encoding), config->encoding);
 	gtk_table_attach_defaults(GTK_TABLE(table_options), entry_options_encoding, 0, 1, 0, 1 );
 	
 	pgui_create_options_dialogue_add_label(table_options, "Preserve case of column names", 0.0, 1);
 	checkbutton_options_preservecase = gtk_check_button_new();
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_options_preservecase), FALSE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_options_preservecase), config->quoteidentifiers ? TRUE : FALSE);
 	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 1.0 );
 	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 1, 2 );
 	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_options_preservecase);
 	
 	pgui_create_options_dialogue_add_label(table_options, "Do not create 'bigint' columns", 0.0, 2);
 	checkbutton_options_forceint = gtk_check_button_new();
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_options_forceint), TRUE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_options_forceint), config->forceint4 ? TRUE : FALSE);
 	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 1.0 );
 	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 2, 3 );
 	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_options_forceint);
 
 	pgui_create_options_dialogue_add_label(table_options, "Create spatial index automatically after load", 0.0, 3);
 	checkbutton_options_autoindex = gtk_check_button_new();
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_options_autoindex), TRUE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_options_autoindex), config->createindex ? TRUE : FALSE);
 	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 1.0 );
 	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 3, 4 );
 	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_options_autoindex);
 
 	pgui_create_options_dialogue_add_label(table_options, "Load only attribute (dbf) data", 0.0, 4);
 	checkbutton_options_dbfonly = gtk_check_button_new();
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON	(checkbutton_options_dbfonly), FALSE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON	(checkbutton_options_dbfonly), config->readshape ? FALSE : TRUE);
 	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 1.0 );
 	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 4, 5 );
 	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_options_dbfonly);
 
 	pgui_create_options_dialogue_add_label(table_options, "Load data using COPY rather than INSERT", 0.0, 5);
 	checkbutton_options_dumpformat = gtk_check_button_new();
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON	(checkbutton_options_dumpformat), FALSE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON	(checkbutton_options_dumpformat), config->dump_format ? TRUE : FALSE);
 	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 0.0 );
 	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 5, 6 );
 	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_options_dumpformat);
 
 	pgui_create_options_dialogue_add_label(table_options, "Load into GEOGRAPHY column", 0.0, 6);
 	checkbutton_options_geography = gtk_check_button_new();
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_options_geography), FALSE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_options_geography), config->geography ? TRUE : FALSE);
 	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 1.0 );
 	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 6, 7 );
 	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_options_geography);
@@ -931,7 +932,9 @@ pgui_create_options_dialogue()
 	pgui_create_options_dialogue_add_label(table_options, "Policy for records with empty (null) shapes", 0.0, 7);
 	entry_options_nullpolicy = gtk_entry_new();
 	gtk_entry_set_width_chars(GTK_ENTRY(entry_options_nullpolicy), text_width);
-	gtk_entry_set_text(GTK_ENTRY(entry_options_nullpolicy), "0");
+	str = g_strdup_printf ("%d", config->null_policy);
+	gtk_entry_set_text(GTK_ENTRY(entry_options_nullpolicy), str);
+	g_free(str);
 	gtk_table_attach_defaults(GTK_TABLE(table_options), entry_options_nullpolicy, 0, 1, 7, 8 );
 	
 	button_options_ok = gtk_button_new_with_label("OK");
@@ -1174,6 +1177,10 @@ main(int argc, char *argv[])
 	/* Parse command line options and set configuration */
 	config = malloc(sizeof(SHPLOADERCONFIG));
 	set_config_defaults(config);
+
+	/* Here we override any defaults for the GUI */
+	config->createindex = 1;
+	config->encoding = strdup("LATIN1");
 	
 	conn = malloc(sizeof(SHPCONNECTIONCONFIG));
 	memset(conn, 0, sizeof(SHPCONNECTIONCONFIG));

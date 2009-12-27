@@ -854,6 +854,8 @@ set_config_defaults(SHPLOADERCONFIG *config)
 	config->sr_id = -1;
 	config->hwgeom = 0;
 	config->dump_format = 0;
+	config->forceint4 = 0;
+	config->geography = 0;
 }
 
 
