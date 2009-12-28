@@ -56,6 +56,8 @@ ifeq ($(REGRESS),1)
 	datadir=/share
 endif
 
+# We test this variable later to see if we're building the GUI
+gtk_build = @GTK_BUILD@
 
 # The real parts of the Makefile
 all: $(SHP2PGSQL-CLI) $(PGSQL2SHP) @GTK_BUILD@
@@ -88,8 +90,13 @@ shp2pgsql-gui.o: shp2pgsql-gui.c
 $(SHP2PGSQL-GUI): stringbuffer.o shpopen.o dbfopen.o shp2pgsql-core.o shp2pgsql-gui.o $(LIBLWGEOM) $(GTK_WIN32_RES)
 	$(CC) $(CFLAGS) $(GTK_WIN32_FLAGS) $^ -o $@ $(GTK_LIBS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) -lm 
 
-install: all
+installdir:
 	@mkdir -p $(DESTDIR)$(bindir)
+
+install: installdir 
+ifdef gtk_build
+	$(INSTALL) $(SHP2PGSQL-GUI) $(DESTDIR)$(bindir)
+endif
 	$(INSTALL) $(PGSQL2SHP) $(DESTDIR)$(bindir)
 	$(INSTALL) $(SHP2PGSQL-CLI) $(DESTDIR)$(bindir)
 
