@@ -856,6 +856,8 @@ set_config_defaults(SHPLOADERCONFIG *config)
 	config->dump_format = 0;
 	config->forceint4 = 0;
 	config->geography = 0;
+	config->quoteidentifiers = 0;
+	config->null_policy = POLICY_NULL_INSERT;
 }
 
 
