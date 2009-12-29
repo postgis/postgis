@@ -25,41 +25,43 @@
 */
 
 /* Main window */
-static GtkWidget *window_main;
-static GtkWidget *entry_pg_user;
-static GtkWidget *entry_pg_pass;
-static GtkWidget *entry_pg_host;
-static GtkWidget *entry_pg_port;
-static GtkWidget *entry_pg_db;
-static GtkWidget *entry_config_table;
-static GtkWidget *entry_config_schema;
-static GtkWidget *entry_config_srid;
-static GtkWidget *entry_config_geocolumn;
-static GtkWidget *label_pg_connection_test;
-static GtkWidget *textview_log;
-static GtkWidget *file_chooser_button_shape;
-static GtkWidget *progress;
-static GtkTextBuffer *textbuffer_log;
+static GtkWidget *window_main = NULL;
+static GtkWidget *entry_pg_user = NULL;
+static GtkWidget *entry_pg_pass = NULL;
+static GtkWidget *entry_pg_host = NULL;
+static GtkWidget *entry_pg_port = NULL;
+static GtkWidget *entry_pg_db = NULL;
+static GtkWidget *entry_config_table = NULL;
+static GtkWidget *entry_config_schema = NULL;
+static GtkWidget *entry_config_srid = NULL;
+static GtkWidget *entry_config_geocolumn = NULL;
+static GtkWidget *label_pg_connection_test = NULL;
+static GtkWidget *textview_log = NULL;
+static GtkWidget *file_chooser_button_shape = NULL;
+static GtkWidget *progress = NULL;
+static GtkTextBuffer *textbuffer_log = NULL;
 
 /* Options window */
-static GtkWidget *window_options;
-static GtkWidget *entry_options_encoding;	
-static GtkWidget *entry_options_nullpolicy;	
-static GtkWidget *checkbutton_options_preservecase;
-static GtkWidget *checkbutton_options_forceint;
-static GtkWidget *checkbutton_options_autoindex;
-static GtkWidget *checkbutton_options_dbfonly;
-static GtkWidget *checkbutton_options_dumpformat;
-static GtkWidget *checkbutton_options_geography;
+static GtkWidget *entry_options_encoding = NULL;	
+static GtkWidget *entry_options_nullpolicy = NULL;
+static GtkWidget *checkbutton_options_preservecase = NULL;
+static GtkWidget *checkbutton_options_forceint = NULL;
+static GtkWidget *checkbutton_options_autoindex = NULL;
+static GtkWidget *checkbutton_options_dbfonly = NULL;
+static GtkWidget *checkbutton_options_dumpformat = NULL;
+static GtkWidget *checkbutton_options_geography = NULL;
 
 /* Other */
 static char *pgui_errmsg = NULL;
-static PGconn *pg_connection;
-static SHPLOADERCONFIG *config;
-static SHPLOADERSTATE *state;
-static SHPCONNECTIONCONFIG *conn;
+static PGconn *pg_connection = NULL;
+static SHPLOADERCONFIG *config = NULL;
+static SHPLOADERSTATE *state = NULL;
+static SHPCONNECTIONCONFIG *conn = NULL;
 
 static volatile int import_running = 0;
+
+/* Local prototypes */
+static void pgui_create_options_dialogue(void);
 
 
 /*
@@ -160,6 +162,23 @@ pgui_set_config_from_ui()
 	gboolean geography = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_geography));
 
 	char *c;
+
+	/* Make the geocolumn field consistent with the load type by setting to the 
+	   default geography field name if the load type is geography. */
+	if( gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_geography)) )
+	{
+		if( ! strcmp( gtk_entry_get_text(GTK_ENTRY(entry_config_geocolumn)), GEOMETRY_DEFAULT ) )
+		{
+			gtk_entry_set_text(GTK_ENTRY(entry_config_geocolumn), GEOGRAPHY_DEFAULT );
+		}
+	}
+	else
+	{
+		if( ! strcmp( gtk_entry_get_text(GTK_ENTRY(entry_config_geocolumn)), GEOGRAPHY_DEFAULT ) )
+		{
+			gtk_entry_set_text(GTK_ENTRY(entry_config_geocolumn), GEOMETRY_DEFAULT );
+		}
+	}
 
 	/* Set the destination schema, table and column parameters */
 	if (config->table)
@@ -516,34 +535,17 @@ pgui_action_connection_test(GtkWidget *widget, gpointer data)
 }
 
 static void
-pgui_action_options(GtkWidget *widget, gpointer data)
+pgui_action_options_open(GtkWidget *widget, gpointer data)
 {
-	/* TODO Open the options dialog window here... */
-	pgui_logf("Open the options dialog...");
-	gtk_widget_show_all (window_options);
+	pgui_create_options_dialogue();
 	return;
 }
 
 static void
-pgui_action_close_options(GtkWidget *widget, gpointer data)
+pgui_action_options_close(GtkWidget *widget, gpointer data)
 {
-	/* Make the geocolumn field consistent with the load type by setting to the 
-	   default geography field name if the load type is geography. */
-	if( gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_geography)) )
-	{
-		if( ! strcmp( gtk_entry_get_text(GTK_ENTRY(entry_config_geocolumn)), GEOMETRY_DEFAULT ) )
-		{
-			gtk_entry_set_text(GTK_ENTRY(entry_config_geocolumn), GEOGRAPHY_DEFAULT );
-		}
-	}
-	else
-	{
-		if( ! strcmp( gtk_entry_get_text(GTK_ENTRY(entry_config_geocolumn)), GEOGRAPHY_DEFAULT ) )
-		{
-			gtk_entry_set_text(GTK_ENTRY(entry_config_geocolumn), GEOMETRY_DEFAULT );
-		}
-	}
-	gtk_widget_hide_all (window_options);
+	pgui_set_config_from_ui();
+	gtk_widget_destroy(widget);
 	return;
 }
 
@@ -874,14 +876,15 @@ pgui_create_options_dialogue()
 	GtkWidget *button_options_ok;
 	GtkWidget *vbox_options;
 	GtkWidget *align_options_center;
+	GtkWidget *dialog_options;
 	static int text_width = 12;
 	char *str;
+
+	dialog_options = gtk_dialog_new_with_buttons ("Import Options", GTK_WINDOW(window_main), GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_OK, GTK_RESPONSE_NONE, NULL);
 	
-	window_options = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_modal (GTK_WINDOW(window_options), TRUE);
-	gtk_window_set_keep_above (GTK_WINDOW(window_options), TRUE);
-	gtk_window_set_title (GTK_WINDOW(window_options), "Import Options");
-	gtk_window_set_default_size (GTK_WINDOW(window_options), 180, 200);
+	gtk_window_set_modal (GTK_WINDOW(dialog_options), TRUE);
+	gtk_window_set_keep_above (GTK_WINDOW(dialog_options), TRUE);
+	gtk_window_set_default_size (GTK_WINDOW(dialog_options), 180, 200);
 
 	table_options = gtk_table_new(7, 3, TRUE);
 	gtk_container_set_border_width (GTK_CONTAINER (table_options), 12);
@@ -944,14 +947,10 @@ pgui_create_options_dialogue()
 	g_free(str);
 	gtk_table_attach_defaults(GTK_TABLE(table_options), entry_options_nullpolicy, 0, 1, 7, 8 );
 	
-	button_options_ok = gtk_button_new_with_label("OK");
-	g_signal_connect (G_OBJECT (button_options_ok), "clicked", G_CALLBACK (pgui_action_close_options), NULL);
-	gtk_table_attach_defaults(GTK_TABLE(table_options), button_options_ok, 1, 2, 8, 9 );
+	g_signal_connect(dialog_options, "response", G_CALLBACK(pgui_action_options_close), dialog_options);
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog_options)->vbox), table_options, FALSE, FALSE, 0);
 
-	vbox_options = gtk_vbox_new(FALSE, 10);
-	gtk_box_pack_start(GTK_BOX(vbox_options), table_options, FALSE, FALSE, 0);
-	gtk_container_add (GTK_CONTAINER (window_options), vbox_options);
-
+	gtk_widget_show_all (dialog_options);
 }
 
 static void
@@ -1119,7 +1118,7 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	button_cancel = gtk_button_new_with_label("Cancel");
 	/* Add actions to the buttons */
 	g_signal_connect (G_OBJECT (button_import), "clicked", G_CALLBACK (pgui_action_import), NULL);
-	g_signal_connect (G_OBJECT (button_options), "clicked", G_CALLBACK (pgui_action_options), NULL);
+	g_signal_connect (G_OBJECT (button_options), "clicked", G_CALLBACK (pgui_action_options_open), NULL);
 	g_signal_connect (G_OBJECT (button_cancel), "clicked", G_CALLBACK (pgui_action_cancel), NULL);
 	/* And insert the buttons into the hbox */
 	gtk_box_pack_start(GTK_BOX(hbox_buttons), button_options, TRUE, TRUE, 0);
@@ -1225,7 +1224,6 @@ main(int argc, char *argv[])
 
 	/* set up the user interface */
 	pgui_create_main_window(conn);
-	pgui_create_options_dialogue();
 	
 	/* start the main loop */
 	gtk_main();
