@@ -1002,6 +1002,7 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	gtk_container_set_border_width (GTK_CONTAINER (file_chooser_button_shape), 8);
 	file_filter_shape = gtk_file_filter_new();
 	gtk_file_filter_add_pattern(GTK_FILE_FILTER(file_filter_shape), "*.shp");
+	gtk_file_filter_set_name(GTK_FILE_FILTER(file_filter_shape), "Shapefiles (*.shp)");
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(file_chooser_button_shape), file_filter_shape);
 	gtk_container_add (GTK_CONTAINER (frame_shape), file_chooser_button_shape);
 	g_signal_connect (G_OBJECT (file_chooser_button_shape), "file-set", G_CALLBACK (pgui_action_shape_file_set), NULL);
