@@ -291,6 +291,7 @@ pgui_exec(const char *sql)
 {
 	PGresult *res = NULL;
 	ExecStatusType status;
+	char sql_trunc[256];
 
 	/* We need a connection to do anything. */
 	if ( ! pg_connection ) return 0;
@@ -311,7 +312,8 @@ pgui_exec(const char *sql)
 		}
 
 		/* Log errors and return failure. */
-		pgui_logf("Failed SQL was: %s", sql);
+		snprintf(sql_trunc, 255, "%s", sql);
+		pgui_logf("Failed SQL begins: \"%s\"", sql_trunc);
 		pgui_logf("Failed in pgui_exec(): %s", PQerrorMessage(pg_connection));
 		return 0;
 	}
@@ -327,6 +329,7 @@ pgui_copy_start(const char *sql)
 {
 	PGresult *res = NULL;
 	ExecStatusType status;
+	char sql_trunc[256];
 
 	/* We need a connection to do anything. */
 	if ( ! pg_connection ) return 0;
@@ -340,7 +343,8 @@ pgui_copy_start(const char *sql)
 	if ( status != PGRES_COPY_IN )
 	{
 		/* Log errors and return failure. */
-		pgui_logf("Failed SQL was: %s", sql);
+		snprintf(sql_trunc, 255, "%s", sql);
+		pgui_logf("Failed SQL begins: \"%s\"", sql_trunc);
 		pgui_logf("Failed in pgui_copy_start(): %s", PQerrorMessage(pg_connection));
 		return 0;
 	}
@@ -354,6 +358,8 @@ pgui_copy_start(const char *sql)
 static int
 pgui_copy_write(const char *line)
 {
+	char line_trunc[256];
+
 	/* We need a connection to do anything. */
 	if ( ! pg_connection ) return 0;
 	if ( ! line ) return 0;
@@ -362,7 +368,8 @@ pgui_copy_write(const char *line)
 	if ( PQputCopyData(pg_connection, line, strlen(line)) < 0 )
 	{
 		/* Log errors and return failure. */
-		pgui_logf("Failed row was: %s", line);
+		snprintf(line_trunc, 255, "%s", line);
+		pgui_logf("Failed row begins: \"%s\"", line_trunc);
 		pgui_logf("Failed in pgui_copy_write(): %s", PQerrorMessage(pg_connection));
 		return 0;
 	}
