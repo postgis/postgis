@@ -1134,7 +1134,7 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	textview_log = gtk_text_view_new();
 	textbuffer_log = gtk_text_buffer_new(NULL);
 	scrolledwindow_log = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy( GTK_SCROLLED_WINDOW(scrolledwindow_log), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+	gtk_scrolled_window_set_policy( GTK_SCROLLED_WINDOW(scrolledwindow_log), GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
 	gtk_text_view_set_buffer(GTK_TEXT_VIEW(textview_log), textbuffer_log);
 	gtk_container_set_border_width (GTK_CONTAINER (textview_log), 5);
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(textview_log), FALSE);
