@@ -873,8 +873,6 @@ static void
 pgui_create_options_dialogue()
 {
 	GtkWidget *table_options;
-	GtkWidget *button_options_ok;
-	GtkWidget *vbox_options;
 	GtkWidget *align_options_center;
 	GtkWidget *dialog_options;
 	static int text_width = 12;
