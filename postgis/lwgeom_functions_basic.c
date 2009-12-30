@@ -2536,7 +2536,7 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	double d = PG_GETARG_FLOAT8(1);
-	BOX2DFLOAT4 box;
+	BOX3D box3d;
 	POINT2D *pts = lwalloc(sizeof(POINT2D)*5);
 	POINTARRAY *pa[1];
 	LWPOLY *poly;
@@ -2546,7 +2546,7 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUG(2, "LWGEOM_expand called.");
 
 	/* get geometry box  */
-	if ( ! getbox2d_p(SERIALIZED_FORM(geom), &box) )
+	if ( ! compute_serialized_box3d_p(SERIALIZED_FORM(geom), &box3d) )
 	{
 		/* must be an EMPTY geometry */
 		PG_RETURN_POINTER(geom);
@@ -2556,19 +2556,19 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 	SRID = lwgeom_getsrid(SERIALIZED_FORM(geom));
 
 	/* expand it */
-	expand_box2d(&box, d);
+	expand_box3d(&box3d, d);
 
 	/* Assign coordinates to POINT2D array */
-	pts[0].x = box.xmin;
-	pts[0].y = box.ymin;
-	pts[1].x = box.xmin;
-	pts[1].y = box.ymax;
-	pts[2].x = box.xmax;
-	pts[2].y = box.ymax;
-	pts[3].x = box.xmax;
-	pts[3].y = box.ymin;
-	pts[4].x = box.xmin;
-	pts[4].y = box.ymin;
+	pts[0].x = box3d.xmin;
+	pts[0].y = box3d.ymin;
+	pts[1].x = box3d.xmin;
+	pts[1].y = box3d.ymax;
+	pts[2].x = box3d.xmax;
+	pts[2].y = box3d.ymax;
+	pts[3].x = box3d.xmax;
+	pts[3].y = box3d.ymin;
+	pts[4].x = box3d.xmin;
+	pts[4].y = box3d.ymin;
 
 	/* Construct point array */
 	pa[0] = lwalloc(sizeof(POINTARRAY));
@@ -2577,7 +2577,7 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 	pa[0]->npoints = 5;
 
 	/* Construct polygon  */
-	poly = lwpoly_construct(SRID, box2d_clone(&box), 1, pa);
+	poly = lwpoly_construct(SRID, ptarray_compute_box2d(pa[0]), 1, pa);
 
 	/* Construct PG_LWGEOM  */
 	result = pglwgeom_serialize((LWGEOM *)poly);
@@ -2676,26 +2676,24 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 	{
 		LWPOLY *poly;
 		POINT2D *pts = lwalloc(sizeof(POINT2D)*5);
-		BOX2DFLOAT4 box2d;
-		getbox2d_p(SERIALIZED_FORM(geom), &box2d);
 
 		/* Assign coordinates to POINT2D array */
-		pts[0].x = box2d.xmin;
-		pts[0].y = box2d.ymin;
-		pts[1].x = box2d.xmin;
-		pts[1].y = box2d.ymax;
-		pts[2].x = box2d.xmax;
-		pts[2].y = box2d.ymax;
-		pts[3].x = box2d.xmax;
-		pts[3].y = box2d.ymin;
-		pts[4].x = box2d.xmin;
-		pts[4].y = box2d.ymin;
+		pts[0].x = box.xmin;
+		pts[0].y = box.ymin;
+		pts[1].x = box.xmin;
+		pts[1].y = box.ymax;
+		pts[2].x = box.xmax;
+		pts[2].y = box.ymax;
+		pts[3].x = box.xmax;
+		pts[3].y = box.ymin;
+		pts[4].x = box.xmin;
+		pts[4].y = box.ymin;
 
 		/* Construct point array */
 		pa = pointArray_construct((uchar *)pts, 0, 0, 5);
 
 		/* Construct polygon  */
-		poly = lwpoly_construct(SRID, box2d_clone(&box2d), 1, &pa);
+		poly = lwpoly_construct(SRID, ptarray_compute_box2d(pa), 1, &pa);
 
 		/* Serialize polygon */
 		ser = lwpoly_serialize(poly);
