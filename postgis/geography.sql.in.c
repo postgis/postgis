@@ -106,6 +106,12 @@ CREATE OR REPLACE FUNCTION ST_GeographyFromText(text)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_GeogFromText(text)
+	RETURNS geography
+	AS 'MODULE_PATHNAME','geography_from_text'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_AsBinary(geography)
 	RETURNS bytea
 	AS 'MODULE_PATHNAME','geography_as_binary'
@@ -119,7 +125,7 @@ CREATE OR REPLACE FUNCTION ST_AsBinary(text)
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_GeographyFromBinary(bytea)
+CREATE OR REPLACE FUNCTION ST_GeogFromWKB(bytea)
 	RETURNS geography
 	AS 'MODULE_PATHNAME','geography_from_binary'
 	LANGUAGE 'C' IMMUTABLE STRICT;
