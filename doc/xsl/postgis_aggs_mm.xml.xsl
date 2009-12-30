@@ -347,7 +347,7 @@
 		<sect1 id="NewFunctions">
 			<title>New PostGIS Functions</title>
 			<sect2 id="NewFunctions_1_5">
-				<title>PostGIS Functions new in 1.5</title>
+				<title>PostGIS Functions new, behavior changed, or enhanced in 1.5</title>
 				<para>The functions given below are PostGIS functions that were introduced or enhanced in this major release.</para>
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
@@ -379,7 +379,7 @@
 				</itemizedlist>
 			</sect2>
 			<sect2 id="NewFunctions_1_4">
-				<title>PostGIS Functions new in 1.4</title>
+				<title>PostGIS Functions new, behavior changed, or enhanced in 1.4</title>
 				<para>The functions given below are PostGIS functions that were introduced or enhanced in the 1.4 release.</para>
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
