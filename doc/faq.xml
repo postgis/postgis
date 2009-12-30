@@ -233,5 +233,32 @@ WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);</programlisting>
         <programlisting>SELECT ST_Transform(the_geom,4269) FROM geotable;</programlisting>
       </answer>
     </qandaentry>
+	
+		<qandaentry>
+      <question>
+        <para>I did an ST_AsEWKT and ST_AsText on my rather large geometry and it returned blank field.  What gives?</para>
+      </question>
+
+      <answer>
+        <para>You are probably using PgAdmin or some other tool that doesn't output large text.  If your geometry is big
+			enough, it will appear blank in these tools. Use PSQL if you really need to see it or output it in WKT.</para>
+
+        <programlisting>
+				--To check number of geometries are really blank
+				SELECT count(gid) FROM geotable WHERE the_geom IS NULL;</programlisting>
+      </answer>
+    </qandaentry>
+	
+	<qandaentry>
+      <question>
+        <para>When I do an ST_Intersects, it says my two geometries don't intersect when I KNOW THEY DO. What gives?</para>
+      </question>
+
+      <answer>
+        <para>This generally happens in two common cases.  Your geometry is invalid -- check <xref linkend="ST_IsValid" />
+			or you are assuming they intersect because ST_AsText truncates the numbers and you have lots of decimals after 
+				it is not showing you.</para>
+      </answer>
+    </qandaentry>
   </qandaset>
 </chapter>
