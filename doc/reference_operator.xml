@@ -490,8 +490,8 @@ FROM
 		  <refsection>
 			<title>Description</title>
 
-			<para>The <varname>&#61;</varname> operator returns <varname>TRUE</varname> if the bounding box of geometry A
-			is the same as the bounding box of geometry B.  PostgreSQL uses the =, &lt;, and &gt; operators defined for geometries to
+			<para>The <varname>&#61;</varname> operator returns <varname>TRUE</varname> if the bounding box of geometry/geography A
+			is the same as the bounding box of geometry/geography B.  PostgreSQL uses the =, &lt;, and &gt; operators defined for geometries to
 			perform internal orderings and comparison of geometries (ie. in a GROUP BY or ORDER BY clause).</para>
 
 			<warning>
