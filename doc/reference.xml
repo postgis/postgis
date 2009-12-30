@@ -3352,7 +3352,7 @@ SELECT ST_AsEWKT(ST_EndPoint('LINESTRING(1 1 2, 1 2 3, 0 0 5)'));
 	  </refsection>
 	</refentry>
 
-		<refentry id="ST_Envelope">
+	<refentry id="ST_Envelope">
 		  <refnamediv>
 			<refname>ST_Envelope</refname>
 
@@ -3373,7 +3373,7 @@ SELECT ST_AsEWKT(ST_EndPoint('LINESTRING(1 1 2, 1 2 3, 0 0 5)'));
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns the minimum bounding box for the supplied geometry, as a geometry.
+			<para>Returns the float4 minimum bounding box for the supplied geometry, as a geometry.
 			The polygon is defined by the corner points of the bounding box
 			((<varname>MINX</varname>, <varname>MINY</varname>),
 			(<varname>MINX</varname>, <varname>MAXY</varname>),
@@ -3404,46 +3404,66 @@ SELECT ST_AsEWKT(ST_EndPoint('LINESTRING(1 1 2, 1 2 3, 0 0 5)'));
 				</imageobject>
 			  </inlinemediaobject> This method implements the <ulink
 			url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
-			Implementation Specification for SQL: v1.1: s2.1.1.1</ulink></para>
-
-			<para><inlinemediaobject>
-				<imageobject>
-				  <imagedata fileref="images/check.png" />
-				</imageobject>
-			  </inlinemediaobject> This method implements the SQL/MM specification:
-			SQL-MM 3: 5.1.15</para>
-		</refsection>
+			Implementation Specification for SQL.</ulink></para>
+			    <para><inlinemediaobject>
+        <imageobject>
+          <imagedata fileref="images/check.png" />
+        </imageobject>
+      </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 5.1.15</para>>
+	</refsection>
 
 	  <refsection>
 		<title>Examples</title>
 
 		<programlisting>
-	SELECT ST_AsText(ST_Envelope('POINT(1 3)'::geometry));
-	 st_astext
-	------------
-	 POINT(1 3)
-	(1 row)
+SELECT ST_AsText(ST_Envelope('POINT(1 3)'::geometry));
+ st_astext
+------------
+ POINT(1 3)
+(1 row)
 
 
-	SELECT ST_AsText(ST_Envelope('LINESTRING(0 0, 1 3)'::geometry));
-			   st_astext
-	--------------------------------
-	 POLYGON((0 0,0 3,1 3,1 0,0 0))
-	(1 row)
+SELECT ST_AsText(ST_Envelope('LINESTRING(0 0, 1 3)'::geometry));
+		   st_astext
+--------------------------------
+ POLYGON((0 0,0 3,1 3,1 0,0 0))
+(1 row)
 
 
-	SELECT ST_AsText(ST_Envelope('POLYGON((0 0, 0 1, 1.0000001 1, 1.0000001 0, 0 0))'::geometry));
-							  st_astext
-	--------------------------------------------------------------
-	 POLYGON((0 0,0 1,1.00000011920929 1,1.00000011920929 0,0 0))
-	(1 row)
-	SELECT ST_AsText(ST_Envelope('POLYGON((0 0, 0 1, 1.0000000001 1, 1.0000000001 0, 0 0))'::geometry));
-							  st_astext
-	--------------------------------------------------------------
-	 POLYGON((0 0,0 1,1.00000011920929 1,1.00000011920929 0,0 0))
-	(1 row)</programlisting>
+SELECT ST_AsText(ST_Envelope('POLYGON((0 0, 0 1, 1.0000001 1, 1.0000001 0, 0 0))'::geometry));
+						  st_astext
+--------------------------------------------------------------
+ POLYGON((0 0,0 1,1.00000011920929 1,1.00000011920929 0,0 0))
+(1 row)
+SELECT ST_AsText(ST_Envelope('POLYGON((0 0, 0 1, 1.0000000001 1, 1.0000000001 0, 0 0))'::geometry));
+						  st_astext
+--------------------------------------------------------------
+ POLYGON((0 0,0 1,1.00000011920929 1,1.00000011920929 0,0 0))
+(1 row)
+	
+SELECT ST_Box3D(geom), ST_Box2D(geom), ST_AsText(ST_Envelope(geom)) As envelopewkt
+	FROM (SELECT 'POLYGON((0 0, 0 1000012333334.34545678, 1.0000001 1, 1.0000001 0, 0 0))'::geometry As geom) As foo;
+
+box3d
+-----------------------------------------
+BOX3D(0 0 0,1.0000001 1000012333334.35 0)
+
+box2d
+------------------------------------------
+BOX(0 0,1.00000011920929 1000012382208)
+
+envelopewkt
+-------------------------------------------------------------------
+POLYGON((0 0,0 1000012382208,1.00000011920929 1000012382208,1.00000011920929 0,0 0))
+	</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Box2D" />, <xref linkend="ST_Box3D" /></para>
 	  </refsection>
 	</refentry>
+
 
 	<refentry id="ST_ExteriorRing">
 	  <refnamediv>
