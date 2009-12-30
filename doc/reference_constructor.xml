@@ -118,7 +118,7 @@
 		  <refsection>
 			<title>Description</title>
 			<para>Returns a geography object from the  well-known text or extended well-known representation.  SRID 4326 is assumed. This
-				is an alia for ST_GeographyFromText</para>
+				is an alias for ST_GeographyFromText</para>
 			<!-- TODO: put in example -->
 		  </refsection>
 		  <refsection>
