@@ -71,6 +71,11 @@
 #define GEOGRAPHY_DEFAULT "geog"
 
 /*
+ * Default character encoding
+ */
+#define ENCODING_DEFAULT "WINDOWS-1252"
+
+/*
  * Structure to hold the loader configuration options 
  */
 

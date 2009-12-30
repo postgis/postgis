@@ -852,6 +852,7 @@ import_cleanup:
 	/* Tidy up */
 	free(connection_string);
 	free(dest_string);
+	connection_string = dest_string = NULL;
 
 	/* Disconnect from the database */
 	PQfinish(pg_connection);
@@ -1185,7 +1186,6 @@ main(int argc, char *argv[])
 
 	/* Here we override any defaults for the GUI */
 	config->createindex = 1;
-	config->encoding = strdup("LATIN1");
 	
 	conn = malloc(sizeof(SHPCONNECTIONCONFIG));
 	memset(conn, 0, sizeof(SHPCONNECTIONCONFIG));
