@@ -297,7 +297,7 @@ SELECT ST_AsEWKT(ST_EndPoint('LINESTRING(1 1 2, 1 2 3, 0 0 5)'));
 		  <refnamediv>
 			<refname>ST_Envelope</refname>
 
-			<refpurpose>Returns a geometry representing the bounding box of the
+			<refpurpose>Returns a geometry representing the double precision (float8) bounding box of the
 			supplied geometry.</refpurpose>
 		  </refnamediv>
 
@@ -314,7 +314,7 @@ SELECT ST_AsEWKT(ST_EndPoint('LINESTRING(1 1 2, 1 2 3, 0 0 5)'));
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns the float4 minimum bounding box for the supplied geometry, as a geometry.
+			<para>Returns the float8 minimum bounding box for the supplied geometry, as a geometry.
 			The polygon is defined by the corner points of the bounding box
 			((<varname>MINX</varname>, <varname>MINY</varname>),
 			(<varname>MINX</varname>, <varname>MAXY</varname>),
@@ -328,17 +328,7 @@ SELECT ST_AsEWKT(ST_EndPoint('LINESTRING(1 1 2, 1 2 3, 0 0 5)'));
 			lower dimension than <varname>POLYGON</varname>, ie.
 			<varname>POINT</varname> or <varname>LINESTRING</varname>.</para>
 
-			<caution>
-			  <para>In PostGIS, the bounding box of a geometry is represented internally using
-			  <varname>float4</varname>s instead of <varname>float8</varname>s that are used
-			  to store geometries.  The bounding box coordinates are floored, guarenteeing
-			  that the geometry is contained entirely within its bounds.  This has the
-			  advantage that a geometry's bounding box is half the size as the minimum
-			  bounding rectangle, which means significantly faster indexes and general performance.
-			  But it also means that the bounding box is NOT the same as the minimum bounding
-			  rectangle that bounds the geometry.</para>
-			</caution>
-
+			<para>Availability: 1.5.0 behavior changed to output double precision instead of float4</para>
 			<para>&sfs_compliant; s2.1.1.1</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.15</para>
 		</refsection>
@@ -375,17 +365,7 @@ SELECT ST_AsText(ST_Envelope('POLYGON((0 0, 0 1, 1.0000000001 1, 1.0000000001 0,
 SELECT Box3D(geom), Box2D(geom), ST_AsText(ST_Envelope(geom)) As envelopewkt
 	FROM (SELECT 'POLYGON((0 0, 0 1000012333334.34545678, 1.0000001 1, 1.0000001 0, 0 0))'::geometry As geom) As foo;
 
-box3d
------------------------------------------
-BOX3D(0 0 0,1.0000001 1000012333334.35 0)
-
-box2d
-------------------------------------------
-BOX(0 0,1.00000011920929 1000012382208)
-
-envelopewkt
--------------------------------------------------------------------
-POLYGON((0 0,0 1000012382208,1.00000011920929 1000012382208,1.00000011920929 0,0 0))
+<!-- TODO: Fix examples to reflect new behavior -->
 	</programlisting>
 	  </refsection>
 	  <refsection>

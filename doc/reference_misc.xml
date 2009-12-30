@@ -221,7 +221,7 @@ BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
 	<refentry id="ST_Expand">
 	  <refnamediv>
 		<refname>ST_Expand</refname>
-		<refpurpose>Returns bounding box expanded in all directions from the bounding box of the input geometry</refpurpose>
+		<refpurpose>Returns bounding box expanded in all directions from the bounding box of the input geometry. Uses double-precision</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -251,7 +251,7 @@ BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
 
 		<para>This function returns a bounding box expanded in all
 		directions from the bounding box of the input geometry, by an
-		amount specified in the second argument. Very useful for
+		amount specified in the second argument. Uses double-precision. Very useful for
 		distance() queries, or bounding box queries to add an index filter to the query.</para>
 		<para>There are 3 variants of this.  The one that takes a geometry will return a POLYGON geometry representation
 			of the bounding box and is the most commonly used variant.</para>
@@ -268,6 +268,10 @@ BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
 		<note>
 		  <para>Bounding boxes of all geometries are currently 2-d even if they are 3-dimensional geometries.</para>
 		</note>
+		
+		<note>
+			<para>Availability: 1.5.0 behavior changed to output double precision instead of float4 coordinates.</para>
+		</note>
 
 	  </refsection>
 
@@ -275,6 +279,7 @@ BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
 		<title>Examples</title>
 		<note><para>Examples below use US National Atlas Equal Area (SRID=2163) which is a meter projection</para></note>
 		<programlisting>
+		<!-- TODO: fix results of documentation to reflect new behavior -->
 --10 meter expanded box around bbox of a linestring
 SELECT CAST(ST_Expand(ST_GeomFromText('LINESTRING(2312980 110676,2312923 110701,2312892 110714)', 2163),10) As box2d);
 					 st_expand
