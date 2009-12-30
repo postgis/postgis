@@ -3405,11 +3405,11 @@ SELECT ST_AsEWKT(ST_EndPoint('LINESTRING(1 1 2, 1 2 3, 0 0 5)'));
 			  </inlinemediaobject> This method implements the <ulink
 			url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
 			Implementation Specification for SQL.</ulink></para>
-			    <para><inlinemediaobject>
+			<para><inlinemediaobject>
         <imageobject>
           <imagedata fileref="images/check.png" />
         </imageobject>
-      </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 5.1.15</para>>
+      </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 5.1.15</para>
 	</refsection>
 
 	  <refsection>
