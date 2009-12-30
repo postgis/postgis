@@ -304,7 +304,7 @@ SELECT ST_AsEWKT(ST_EndPoint('LINESTRING(1 1 2, 1 2 3, 0 0 5)'));
 		  <refsynopsisdiv>
 			<funcsynopsis>
 			  <funcprototype>
-				<funcdef>boolean <function>ST_Envelope</function></funcdef>
+				<funcdef>geometry <function>ST_Envelope</function></funcdef>
 
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 			  </funcprototype>
