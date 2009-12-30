@@ -43,7 +43,6 @@ static GtkTextBuffer *textbuffer_log = NULL;
 
 /* Options window */
 static GtkWidget *entry_options_encoding = NULL;	
-static GtkWidget *entry_options_nullpolicy = NULL;
 static GtkWidget *checkbutton_options_preservecase = NULL;
 static GtkWidget *checkbutton_options_forceint = NULL;
 static GtkWidget *checkbutton_options_autoindex = NULL;
@@ -877,7 +876,6 @@ pgui_create_options_dialogue()
 	GtkWidget *align_options_center;
 	GtkWidget *dialog_options;
 	static int text_width = 12;
-	char *str;
 
 	dialog_options = gtk_dialog_new_with_buttons ("Import Options", GTK_WINDOW(window_main), GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_OK, GTK_RESPONSE_NONE, NULL);
 	
@@ -937,14 +935,6 @@ pgui_create_options_dialogue()
 	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 1.0 );
 	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 6, 7 );
 	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_options_geography);
-	
-	pgui_create_options_dialogue_add_label(table_options, "Policy for records with empty (null) shapes", 0.0, 7);
-	entry_options_nullpolicy = gtk_entry_new();
-	gtk_entry_set_width_chars(GTK_ENTRY(entry_options_nullpolicy), text_width);
-	str = g_strdup_printf ("%d", config->null_policy);
-	gtk_entry_set_text(GTK_ENTRY(entry_options_nullpolicy), str);
-	g_free(str);
-	gtk_table_attach_defaults(GTK_TABLE(table_options), entry_options_nullpolicy, 0, 1, 7, 8 );
 	
 	g_signal_connect(dialog_options, "response", G_CALLBACK(pgui_action_options_close), dialog_options);
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog_options)->vbox), table_options, FALSE, FALSE, 0);
