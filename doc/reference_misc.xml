@@ -59,9 +59,9 @@ all_em|grabone   | grab_rest
 	  </refsection>
 	</refentry>
 
-	<refentry id="Box2D">
+	<refentry id="ST_Box2D">
 	  <refnamediv>
-		<refname>Box2D</refname>
+		<refname>ST_Box2D</refname>
 
 		<refpurpose>Returns a BOX2D representing the maximum extents of the geometry.</refpurpose>
 	  </refnamediv>
@@ -86,12 +86,12 @@ all_em|grabone   | grab_rest
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT Box2D(ST_GeomFromText('LINESTRING(1 2, 3 4, 5 6)'));
+		<programlisting>SELECT ST_Box2D(ST_GeomFromText('LINESTRING(1 2, 3 4, 5 6)'));
 	box2d
 	---------
 	BOX(1 2,5 6)
 
-	SELECT Box2D(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'));
+	SELECT ST_Box2D(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'));
 	box2d
 	--------
 	BOX(220186.984375 150406,220288.25 150506.140625)
@@ -102,13 +102,13 @@ all_em|grabone   | grab_rest
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="Box3D" />, <xref linkend="ST_GeomFromText" /></para>
+		<para><xref linkend="ST_Box3D" />, <xref linkend="ST_GeomFromText" /></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="Box3D">
+	<refentry id="ST_Box3D">
 	  <refnamediv>
-		<refname>Box3D</refname>
+		<refname>ST_Box3D</refname>
 
 		<refpurpose>Returns a BOX3D representing the maximum extents of the geometry.</refpurpose>
 	  </refnamediv>
@@ -116,7 +116,7 @@ all_em|grabone   | grab_rest
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>box3d <function>Box3D</function></funcdef>
+			<funcdef>box3d <function>ST_Box3D</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -134,13 +134,13 @@ all_em|grabone   | grab_rest
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT Box3D(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 5, 5 6 5)'));
-	box3d
+		<programlisting>SELECT ST_Box3D(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 5, 5 6 5)'));
+	st_box3d
 	---------
 	BOX3D(1 2 3,5 6 5)
 
-	SELECT Box3D(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 1,220227 150406 1)'));
-	box3d
+	SELECT ST_Box3D(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 1,220227 150406 1)'));
+	st_box3d
 	--------
 	BOX3D(220227 150406 1,220268 150415 1)
 	</programlisting>
@@ -150,7 +150,7 @@ all_em|grabone   | grab_rest
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="Box2D" />, <xref linkend="ST_GeomFromEWKT" /></para>
+		<para><xref linkend="ST_Box2D" />, <xref linkend="ST_GeomFromEWKT" /></para>
 	  </refsection>
 	</refentry>
 
