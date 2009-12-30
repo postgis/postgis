@@ -468,6 +468,22 @@ FROM
 				  <parameter>B</parameter>
 				</paramdef>
 			  </funcprototype>
+			  
+			  <funcprototype>
+				<funcdef>boolean <function>&#61;</function></funcdef>
+	
+					<paramdef>
+					  <type>geography </type>
+	
+					  <parameter>A</parameter>
+					</paramdef>
+	
+					<paramdef>
+					  <type>geography </type>
+	
+					  <parameter>B</parameter>
+					</paramdef>
+				 </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
 
