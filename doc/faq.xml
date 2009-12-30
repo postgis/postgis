@@ -289,7 +289,7 @@ WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);</programlisting>
 	
 	<qandaentry>
       <question>
-        <para>When I do an ST_Intersects, it says my two geometries don't intersect when I KNOW THEY DO</para>
+        <para>When I do an ST_Intersects, it says my two geometries don't intersect when I KNOW THEY DO. What gives?</para>
       </question>
 
       <answer>
