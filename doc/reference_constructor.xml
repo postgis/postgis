@@ -101,6 +101,31 @@
 				<para><xref linkend="ST_BuildArea" />, <xref linkend="ST_BdPolyFromText" /></para>
 			</refsection>
 	</refentry>
+	
+	<refentry id="ST_GeogFromText">
+		  <refnamediv>
+			<refname>ST_GeogFromText</refname>
+			<refpurpose>Return a specified geography value from Well-Known Text representation or extended (WKT). </refpurpose>
+		  </refnamediv>
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geography <function>ST_GeogFromText</function></funcdef>
+				<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+		  <refsection>
+			<title>Description</title>
+			<para>Returns a geography object from the  well-known text or extended well-known representation.  SRID 4326 is assumed. This
+				is an alia for ST_GeographyFromText</para>
+			<!-- TODO: put in example -->
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_AsText" />,<xref linkend="ST_GeographyFromText" /></para>
+		  </refsection>
+	</refentry>
 
 	<refentry id="ST_GeographyFromText">
 		  <refnamediv>
@@ -125,6 +150,58 @@
 			<para><xref linkend="ST_AsText" /></para>
 		  </refsection>
 	</refentry>
+	
+	<refentry id="ST_GeogFromWKB">
+	  <refnamediv>
+		<refname>ST_GeogFromWKB</refname>
+		<refpurpose>Creates a geography instance from a Well-Known Binary geometry
+		representation (WKB) or extended Well Known Binary (EWKB).</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geography <function>ST_GeogFromWKB</function></funcdef>
+			<paramdef><type>bytea </type> <parameter>geom</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>The <varname>ST_GeogFromWKB</varname> function, takes a well-known
+		binary representation (WKB) of a geometry or PostGIS Extended WKB and creates an instance of the appropriate
+		geography type. This function plays the role of the Geometry Factory in
+		SQL. </para>
+
+		<para>If SRID is not specified, it defaults to 4326 (WGS 84 long lat).</para>
+
+		<para>&curve_support;</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>--Although bytea rep contains single \, these need to be escaped when inserting into a table
+SELECT ST_AsText(
+ST_GeogFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\270~\\\\\\300\\323Mb\\020X\\231C@\\020X9\\264\\310~\\\\\\300)\\\\\\217\\302\\365\\230C@',4326)
+);
+					  st_astext
+------------------------------------------------------
+ LINESTRING(-113.98 39.198,-113.981 39.195)
+(1 row)
+
+</programlisting>
+	  </refsection>
+	   <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeogFromText" />, <xref linkend="ST_AsBinary" /></para>
+	  </refsection>
+</refentry>
 
 
 	<refentry id="ST_GeomCollFromText">
