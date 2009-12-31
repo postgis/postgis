@@ -1624,9 +1624,12 @@ COMMIT;</programlisting>
 
   <para>
     The <filename>shp2pgsql</filename> data loader converts ESRI Shape files into SQL suitable for
-    insertion into a PostGIS/PostgreSQL database. The loader has several operating modes
+    insertion into a PostGIS/PostgreSQL database either in geometry or geography format. The loader has several operating modes
     distinguished by command line flags:
   </para>
+  <para>In addition to the shp2pgsql command-line loader, there is an shp2pgsql-gui graphical interface with the same
+  	options as the command-line loader, but may be easier to use for one-off non-scripted loading or if you are new to PostGIS
+	</para>
 
   <variablelist>
     <varlistentry>
@@ -1750,6 +1753,15 @@ COMMIT;</programlisting>
         </para>
       </listitem>
     </varlistentry>
+	
+	<varlistentry>
+	  <term>-G</term>
+	  <listitem>
+		<para>
+			Use geography type instead of geometry (requires lon/lat data) in WGS84 long lat (SRID=4326)
+		</para>
+	  </listitem>
+	</varlistentry>
   </variablelist>
 
   <para>
