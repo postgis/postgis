@@ -1683,6 +1683,15 @@ COMMIT;</programlisting>
         </para>
       </listitem>
     </varlistentry>
+    
+    <varlistentry>
+      <term>-?</term>
+      <listitem>
+        <para>
+          Display help screen.
+        </para>
+      </listitem>
+    </varlistentry>
 
     <varlistentry>
       <term>-D</term>
@@ -1751,6 +1760,24 @@ COMMIT;</programlisting>
           converted from the specified encoding to UTF8. The resulting SQL output will contain a
           <code>SET CLIENT_ENCODING to UTF8</code> command, so that the backend will be able to
           reconvert from UTF8 to whatever encoding the database is configured to use internally.
+        </para>
+      </listitem>
+    </varlistentry>
+    
+    <varlistentry>
+      <term>-N &lt;policy&gt;</term>
+      <listitem>
+        <para>
+           NULL geometries handling policy (insert*,skip,abort)
+        </para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term>-n</term>
+      <listitem>
+        <para>
+          -n  Only import DBF file.  If your data has no corresponding shapefile, it will automatically switch to this mode 
+          	and load just the dbf.  So setting this flag is only needed if you have a full shapefile set, and you only want the attribute data and no geometry.
         </para>
       </listitem>
     </varlistentry>
