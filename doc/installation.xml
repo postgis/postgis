@@ -385,7 +385,9 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 	  <para>
 		As of PostGIS v1.4.0, all the functions have comments generated from the
 		documentation. If you wish to install these comments into your spatial
-		databases later, run the command
+		databases later, run the command which requires docbook.  The postgis_comments.sql
+			is also packaged in the tar.gz distribution in the doc folder so no need to make comments
+			if installing from the tar ball.
 	  </para>
 
 	  <para>
@@ -695,11 +697,12 @@ Failed: 0</programlisting>
 	  <title>Soft upgrade</title>
 
 	  <para>
-		Soft upgrade consists of sourcing the postgis_upgrade.sql script in your
-		spatial database:
+		After compiling you should find several <filename>postgis_upgrade*.sql</filename> files.  Install the one
+		for your version of PostGIS.  For example <filename>postgis_upgrade_13_to_15.sql</filename> should be used if you are upgrading 
+		from postgis 1.3 to 1.5.
 	  </para>
 
-	  <programlisting>$ psql -f postgis_upgrade.sql -d your_spatial_database</programlisting>
+	  <programlisting>$ psql -f postgis_upgrade_13_to_15.sql -d your_spatial_database</programlisting>
 
 	  <para>
 		If a soft upgrade is not possible the script will abort and you will be
@@ -709,7 +712,7 @@ Failed: 0</programlisting>
 
 	  <note>
 		<para>
-		  If you can't find the <filename>postgis_upgrade.sql</filename> file
+		  If you can't find the <filename>postgis_upgrade*.sql</filename> files
 		  you are probably using a version prior to 1.1 and must generate that
 		  file by yourself. This is done with the following command:
 		</para>
