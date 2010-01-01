@@ -1155,7 +1155,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 			utf8str = utf8(state->config->encoding, name);
 			if (!utf8str)
 			{
-				snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert field name \"%s\" to UTF8: iconv reports \"%s\"", name, strerror(errno));
+				snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert field name \"%s\" to UTF-8: iconv reports \"%s\"", name, strerror(errno));
 				return SHPLOADERERR;
 			}
 
@@ -1588,7 +1588,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 				utf8str = utf8(state->config->encoding, val);
 				if (!utf8str)
 				{
-					snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert field value \"%s\" to UTF8: iconv reports \"%s\"", val, strerror(errno));
+					snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert field value \"%s\" to UTF-8: iconv reports \"%s\"", val, strerror(errno));
 					return SHPLOADERERR;
 				}
 	
