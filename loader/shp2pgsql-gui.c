@@ -1180,7 +1180,7 @@ main(int argc, char *argv[])
 	conn = malloc(sizeof(SHPCONNECTIONCONFIG));
 	memset(conn, 0, sizeof(SHPCONNECTIONCONFIG));
 
-	while ((c = getopt(argc, argv, "U:p:W:d:h:")) != -1)
+	while ((c = pgis_getopt(argc, argv, "U:p:W:d:h:")) != -1)
 	{
 		switch (c)
 		{
