@@ -850,6 +850,7 @@ set_config_defaults(SHPLOADERCONFIG *config)
 	config->schema = NULL;
 	config->table = NULL;
 	config->geom = strdup(GEOMETRY_DEFAULT);
+	config->shp_file = NULL;
 	config->readshape = 1;
 	config->sr_id = -1;
 	config->hwgeom = 0;
