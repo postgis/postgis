@@ -140,19 +140,11 @@ pgui_quit (GtkWidget *widget, gpointer data)
 	gtk_main_quit ();
 }
 
-/* Set the global configuration based upon the current UI */
+/* Set the global config variables controlled by the options dialogue */
 static void
-pgui_set_config_from_ui()
+pgui_set_config_from_options_ui()
 {
-	const char *pg_table = gtk_entry_get_text(GTK_ENTRY(entry_config_table));
-	const char *pg_schema = gtk_entry_get_text(GTK_ENTRY(entry_config_schema));
-	const char *pg_geom = gtk_entry_get_text(GTK_ENTRY(entry_config_geocolumn));
-
-	const char *source_file = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_chooser_button_shape));
-
-	const char *entry_srid = gtk_entry_get_text(GTK_ENTRY(entry_config_srid));
 	const char *entry_encoding = gtk_entry_get_text(GTK_ENTRY(entry_options_encoding));
-
 	gboolean preservecase = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_preservecase));
 	gboolean forceint = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_forceint));
 	gboolean createindex = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_autoindex));
@@ -160,64 +152,15 @@ pgui_set_config_from_ui()
 	gboolean dumpformat = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_dumpformat));
 	gboolean geography = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_geography));
 
-	char *c;
-
-	/* Make the geocolumn field consistent with the load type by setting to the 
-	   default geography field name if the load type is geography. */
-	if( gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_geography)) )
+	if ( geography )
 	{
-		if( ! strcmp( gtk_entry_get_text(GTK_ENTRY(entry_config_geocolumn)), GEOMETRY_DEFAULT ) )
+		config->geography = 1;
+		/* Flip the geometry column name to match the load type */
+		if( ! strcmp(gtk_entry_get_text(GTK_ENTRY(entry_config_geocolumn)), GEOMETRY_DEFAULT) )
 		{
 			gtk_entry_set_text(GTK_ENTRY(entry_config_geocolumn), GEOGRAPHY_DEFAULT );
-		}
-	}
-	else
-	{
-		if( ! strcmp( gtk_entry_get_text(GTK_ENTRY(entry_config_geocolumn)), GEOGRAPHY_DEFAULT ) )
-		{
-			gtk_entry_set_text(GTK_ENTRY(entry_config_geocolumn), GEOMETRY_DEFAULT );
-		}
-	}
-
-	/* Set the destination schema, table and column parameters */
-	if (config->table)
-		free(config->table);
-
-	config->table = strdup(pg_table);
-
-	if (config->schema)
-		free(config->schema);
-
-	if (strlen(pg_schema) == 0)
-		config->schema = strdup("public");
-	else
-		config->schema = strdup(pg_schema);
-
-	if (strlen(pg_geom) == 0)
-		config->geom = strdup(GEOMETRY_DEFAULT);
-	else
-		config->geom = strdup(pg_geom);
-
-	if ( geography )
-		config->geography = 1;
-
-	/* Set the destination filename: note the shp2pgsql core engine simply wants the file
-	   without the .shp extension */
-	if (config->shp_file)
-		free(config->shp_file);
-
-	/* Handle empty selection */
-	if (source_file == NULL)
-		config->shp_file = strdup("");
-	else
-		config->shp_file = strdup(source_file);
-
-	for (c = config->shp_file + strlen(config->shp_file); c >= config->shp_file; c--)
-	{
-		if (*c == '.')
-		{
-			*c = '\0';
-			break;
+			free(config->geom);
+			config->geom = strdup(GEOGRAPHY_DEFAULT);
 		}
 	}
 
@@ -230,12 +173,6 @@ pgui_set_config_from_ui()
 		config->encoding = strdup(entry_encoding);
 	}
 	
-	/* SRID */
-	if ( ! ( config->sr_id = atoi(entry_srid) ) ) 
-	{
-		config->sr_id = -1;
-	}
-
 	/* Preserve case */
 	if ( preservecase )
 		config->quoteidentifiers = 1;
@@ -265,6 +202,68 @@ pgui_set_config_from_ui()
 		config->dump_format = 1;
 	else
 		config->dump_format = 0;
+	
+	return;
+}
+
+/* Set the global configuration based upon the current UI */
+static void
+pgui_set_config_from_ui()
+{
+	const char *pg_table = gtk_entry_get_text(GTK_ENTRY(entry_config_table));
+	const char *pg_schema = gtk_entry_get_text(GTK_ENTRY(entry_config_schema));
+	const char *pg_geom = gtk_entry_get_text(GTK_ENTRY(entry_config_geocolumn));
+	const char *source_file = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_chooser_button_shape));
+	const char *entry_srid = gtk_entry_get_text(GTK_ENTRY(entry_config_srid));
+
+	char *c;
+
+	/* Set the destination schema, table and column parameters */
+	if (config->table)
+		free(config->table);
+
+	config->table = strdup(pg_table);
+
+	if (config->schema)
+		free(config->schema);
+
+	if (strlen(pg_schema) == 0)
+		config->schema = strdup("public");
+	else
+		config->schema = strdup(pg_schema);
+
+	if (strlen(pg_geom) == 0)
+		config->geom = strdup(GEOMETRY_DEFAULT);
+	else
+		config->geom = strdup(pg_geom);
+
+	/* Set the destination filename: note the shp2pgsql core engine simply wants the file
+	   without the .shp extension */
+	if (config->shp_file)
+		free(config->shp_file);
+
+	/* Handle empty selection */
+	if (source_file == NULL)
+		config->shp_file = strdup("");
+	else
+		config->shp_file = strdup(source_file);
+
+	/*  NULL-terminate the file name before the .shp extension */
+	for (c = config->shp_file + strlen(config->shp_file); c >= config->shp_file; c--)
+	{
+		if (*c == '.')
+		{
+			*c = '\0';
+			break;
+		}
+	}
+
+	/* SRID */
+	if ( ! ( config->sr_id = atoi(entry_srid) ) ) 
+	{
+		config->sr_id = -1;
+	}
+
 
 	return;
 }
@@ -543,7 +542,7 @@ pgui_action_options_open(GtkWidget *widget, gpointer data)
 static void
 pgui_action_options_close(GtkWidget *widget, gpointer data)
 {
-	pgui_set_config_from_ui();
+	pgui_set_config_from_options_ui();
 	gtk_widget_destroy(widget);
 	return;
 }
