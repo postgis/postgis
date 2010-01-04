@@ -128,7 +128,14 @@ lwpoly_deserialize(uchar *serialized_form)
 	nrings = lw_get_uint32(loc);
 	result->nrings = nrings;
 	loc +=4;
-	result->rings = (POINTARRAY**) lwalloc(nrings* sizeof(POINTARRAY*));
+	if( nrings )
+	{
+		result->rings = (POINTARRAY**) lwalloc(nrings* sizeof(POINTARRAY*));
+	}
+	else
+	{
+		result->rings = NULL;
+	}
 
 	for (t =0;t<nrings;t++)
 	{

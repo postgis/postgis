@@ -23,7 +23,6 @@
 */
 
 
-
 /* Test functions */
 void test_typmod_macros(void);
 void test_flags_macros(void);
@@ -35,4 +34,4 @@ void test_gbox_serialized_size(void);
 void test_lwcollection_extract(void);
 void test_lwgeom_count_vertices(void);
 void test_on_gser_lwgeom_count_vertices(void);
-
+void test_lwgeom_free(void);

@@ -115,7 +115,10 @@ lwcollection_deserialize(uchar *srl)
 		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
 		memcpy(result->bbox, srl+1, sizeof(BOX2DFLOAT4));
 	}
-	else result->bbox = NULL;
+	else 
+	{
+		result->bbox = NULL;
+	}
 
 
 	if ( insp->ngeometries )
@@ -125,6 +128,10 @@ lwcollection_deserialize(uchar *srl)
 		{
 			result->geoms[i] = lwgeom_deserialize(insp->sub_geoms[i]);
 		}
+	}
+	else
+	{
+		result->geoms = NULL;
 	}
 
 	return result;

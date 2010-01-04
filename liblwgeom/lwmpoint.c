@@ -43,14 +43,25 @@ lwmpoint_deserialize(uchar *srl)
 	result->type = insp->type;
 	result->SRID = insp->SRID;
 	result->ngeoms = insp->ngeometries;
-	result->geoms = lwalloc(sizeof(LWPOINT *)*result->ngeoms);
+	
+	if ( insp->ngeometries )
+	{
+		result->geoms = lwalloc(sizeof(LWPOINT *)*insp->ngeometries);
+	}
+	else
+	{
+		result->geoms = NULL;
+	}
 
 	if (lwgeom_hasBBOX(srl[0]))
 	{
 		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
 		memcpy(result->bbox, srl+1, sizeof(BOX2DFLOAT4));
 	}
-	else result->bbox = NULL;
+	else 
+	{
+		result->bbox = NULL;
+	}
 
 	for (i=0; i<insp->ngeometries; i++)
 	{

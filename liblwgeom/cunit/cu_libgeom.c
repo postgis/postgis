@@ -35,7 +35,8 @@ CU_pSuite register_libgeom_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_lwgeom_count_vertices()", test_lwgeom_count_vertices))  || 
 	    (NULL == CU_add_test(pSuite, "test_on_gser_lwgeom_count_vertices()", test_on_gser_lwgeom_count_vertices))  ||
 	    (NULL == CU_add_test(pSuite, "test_geometry_type_from_string()", test_geometry_type_from_string)) || 
-	    (NULL == CU_add_test(pSuite, "test_lwcollection_extract()", test_lwcollection_extract))  
+	    (NULL == CU_add_test(pSuite, "test_lwcollection_extract()", test_lwcollection_extract)) ||
+	    (NULL == CU_add_test(pSuite, "test_lwgeom_free()", test_lwgeom_free))  
 
 	)
 	{
@@ -342,4 +343,30 @@ void test_lwcollection_extract(void)
 	lwfree(col);
 	lwgeom_free(geom);
 	
+}
+
+void test_lwgeom_free(void)
+{
+	LWGEOM *geom;
+	
+	/* Empty geometries don't seem to free properly (#370) */
+	geom = lwgeom_from_ewkt("GEOMETRYCOLLECTION EMPTY", PARSER_CHECK_NONE);
+	CU_ASSERT_EQUAL(TYPE_GETTYPE(geom->type), COLLECTIONTYPE);
+	lwgeom_free(geom);	
+
+	/* Empty geometries don't seem to free properly (#370) */
+	geom = lwgeom_from_ewkt("POLYGON EMPTY", PARSER_CHECK_NONE);
+	CU_ASSERT_EQUAL(TYPE_GETTYPE(geom->type), COLLECTIONTYPE);
+	lwgeom_free(geom);	
+
+	/* Empty geometries don't seem to free properly (#370) */
+	geom = lwgeom_from_ewkt("LINESTRING EMPTY", PARSER_CHECK_NONE);
+	CU_ASSERT_EQUAL(TYPE_GETTYPE(geom->type), COLLECTIONTYPE);
+	lwgeom_free(geom);	
+
+	/* Empty geometries don't seem to free properly (#370) */
+	geom = lwgeom_from_ewkt("POINT EMPTY", PARSER_CHECK_NONE);
+	CU_ASSERT_EQUAL(TYPE_GETTYPE(geom->type), COLLECTIONTYPE);
+	lwgeom_free(geom);	
+
 }

@@ -39,7 +39,15 @@ lwmsurface_deserialize(uchar *srl)
 	result->type = insp->type;
 	result->SRID = insp->SRID;
 	result->ngeoms = insp->ngeometries;
-	result->geoms = lwalloc(sizeof(LWPOLY *)*insp->ngeometries);
+	
+	if( insp->ngeometries )
+	{
+		result->geoms = lwalloc(sizeof(LWPOLY *)*insp->ngeometries);
+	}
+	else 
+	{
+		result->geoms = NULL;
+	}
 
 	if (lwgeom_hasBBOX(srl[0]))
 	{
