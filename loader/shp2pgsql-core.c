@@ -854,6 +854,7 @@ set_config_defaults(SHPLOADERCONFIG *config)
 	config->quoteidentifiers = 0;
 	config->null_policy = POLICY_NULL_INSERT;
 	config->encoding = strdup(ENCODING_DEFAULT);
+	config->simple_geometries = 0;
 }
 
 /* Create a new shapefile state object */
