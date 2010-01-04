@@ -20,6 +20,8 @@
 #include "libpq-fe.h"
 #include "shp2pgsql-core.h"
 
+#define GUI_RCSID "$Revision$"
+
 /*
 ** Global variables for GUI only
 */
@@ -869,6 +871,27 @@ pgui_create_options_dialogue_add_label(GtkWidget *table, const char *str, gfloat
 }
 
 static void
+pgui_action_about_open()
+{
+	GtkWidget *dlg;
+	const char *authors[] =
+	  {
+	    "Paul Ramsey <pramsey@opengeo.org>",
+	    "Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>",
+	    NULL
+	  };
+
+	dlg = gtk_about_dialog_new ();
+	gtk_about_dialog_set_name (GTK_ABOUT_DIALOG(dlg), "Shape to PostGIS");
+	gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG(dlg), "A utility for loading shape files\nGUI_RCSID");
+/*	gtk_about_dialog_set_version (GTK_ABOUT_DIALOG(dlg), GUI_RCSID); */
+	gtk_about_dialog_set_website (GTK_ABOUT_DIALOG(dlg), "http://postgis.org/");
+	gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG(dlg), authors);
+	gtk_widget_show (dlg);
+	g_signal_connect_swapped(dlg, "response", G_CALLBACK(gtk_widget_destroy), dlg);	
+}
+
+static void
 pgui_create_options_dialogue()
 {
 	GtkWidget *table_options;
@@ -957,7 +980,7 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	GtkWidget *table_pg, *table_config;
 	GtkWidget *button_pg_test;
 	/* Button section */
-	GtkWidget *hbox_buttons, *button_options, *button_import, *button_cancel;
+	GtkWidget *hbox_buttons, *button_options, *button_import, *button_cancel, *button_about;
 	/* Log section */
 	GtkWidget *scrolledwindow_log;
 
@@ -1104,13 +1127,16 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	button_options = gtk_button_new_with_label("Options...");
 	button_import = gtk_button_new_with_label("Import");
 	button_cancel = gtk_button_new_with_label("Cancel");
+	button_about = gtk_button_new_with_label("About");
 	/* Add actions to the buttons */
 	g_signal_connect (G_OBJECT (button_import), "clicked", G_CALLBACK (pgui_action_import), NULL);
 	g_signal_connect (G_OBJECT (button_options), "clicked", G_CALLBACK (pgui_action_options_open), NULL);
 	g_signal_connect (G_OBJECT (button_cancel), "clicked", G_CALLBACK (pgui_action_cancel), NULL);
+	g_signal_connect (G_OBJECT (button_about), "clicked", G_CALLBACK (pgui_action_about_open), NULL);
 	/* And insert the buttons into the hbox */
 	gtk_box_pack_start(GTK_BOX(hbox_buttons), button_options, TRUE, TRUE, 0);
 	gtk_box_pack_end(GTK_BOX(hbox_buttons), button_cancel, TRUE, TRUE, 0);
+	gtk_box_pack_end(GTK_BOX(hbox_buttons), button_about, TRUE, TRUE, 0);
 	gtk_box_pack_end(GTK_BOX(hbox_buttons), button_import, TRUE, TRUE, 0);
 
 	/*
