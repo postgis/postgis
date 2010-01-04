@@ -20,7 +20,7 @@
 #include "libpq-fe.h"
 #include "shp2pgsql-core.h"
 
-#define GUI_RCSID "$Revision$"
+#define GUI_RCSID "shp2pgsql-gui $Revision$"
 
 /*
 ** Global variables for GUI only
@@ -883,7 +883,7 @@ pgui_action_about_open()
 
 	dlg = gtk_about_dialog_new ();
 	gtk_about_dialog_set_name (GTK_ABOUT_DIALOG(dlg), "Shape to PostGIS");
-	gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG(dlg), "A utility for loading shape files\nGUI_RCSID");
+	gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG(dlg), GUI_RCSID);
 /*	gtk_about_dialog_set_version (GTK_ABOUT_DIALOG(dlg), GUI_RCSID); */
 	gtk_about_dialog_set_website (GTK_ABOUT_DIALOG(dlg), "http://postgis.org/");
 	gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG(dlg), authors);
