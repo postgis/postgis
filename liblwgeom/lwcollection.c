@@ -501,7 +501,6 @@ void lwcollection_free(LWCOLLECTION *col)
 		lwfree(col->geoms);
 	}
 	lwfree(col);
-
 }
 
 BOX3D *lwcollection_compute_box3d(LWCOLLECTION *col)
@@ -595,6 +594,11 @@ LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type)
 	for( i = 0; i < col->ngeoms; i++ )
 	{
 		int subtype = TYPE_GETTYPE(col->geoms[i]->type);
+		/* Don't bother adding empty sub-geometries */
+		if( lwgeom_is_empty(col->geoms[i]) ) 
+		{
+			continue;
+		}
 		/* Copy our sub-types into the output list */
 		if( subtype == type )
 		{
@@ -607,6 +611,7 @@ LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type)
 			geomlist[geomlistlen] = col->geoms[i];
 			geomlistlen++;
 		}
+		/* Recurse into sub-collections */
 		if( lwgeom_is_collection( subtype ) )
 		{
 			int j = 0;
