@@ -507,7 +507,7 @@ pgui_action_connection_test(GtkWidget *widget, gpointer data)
 	}
 	
 	connection_sanitized = strdup(connection_string);
-	pgui_sanitize_connection_string(connection_string);
+	pgui_sanitize_connection_string(connection_sanitized);
 	pgui_logf("Connecting: %s", connection_sanitized);
 	free(connection_sanitized);
 
