@@ -222,13 +222,13 @@ if test "x$HAVE_ICONV_H" = "x1"; then
 			AC_CHECK_LIB([iconv], [iconv_open], [ICONV_LDFLAGS="$ICONV_LDFLAGS -liconv" HAVE_ICONV=1], [])
 			if test "x$HAVE_ICONV" = "x"; then
 				dnl No iconv library was found; issue a warning to the console
-				AC_MSG_WARN([could not find iconv library: no support for encoding conversion will be included])
+				AC_MSG_ERROR([Could not find libiconv. Please install libiconv and libiconv-devel.])
 			fi
 		fi	
 	fi
 else
 	dnl No iconv header was found; issue a warning to the console
-	AC_MSG_WARN([could not find iconv.h header: no support for encoding conversion will be included])
+	AC_MSG_ERROR([Could not find iconv.h header. Please install libiconv and libiconv-devel.])
 fi
 
 LDFLAGS="$LDFLAGS_SAVE"
