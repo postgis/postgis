@@ -887,8 +887,8 @@ pgui_action_about_open()
 /*	gtk_about_dialog_set_version (GTK_ABOUT_DIALOG(dlg), GUI_RCSID); */
 	gtk_about_dialog_set_website (GTK_ABOUT_DIALOG(dlg), "http://postgis.org/");
 	gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG(dlg), authors);
-	gtk_widget_show (dlg);
 	g_signal_connect_swapped(dlg, "response", G_CALLBACK(gtk_widget_destroy), dlg);	
+	gtk_widget_show (dlg);
 }
 
 static void
