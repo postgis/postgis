@@ -40,9 +40,7 @@ void lwgeom_init_allocators()
  * Internal functions
  */
 
-#ifdef HAVE_ICONV
 char *utf8(const char *fromcode, char *inputbuf);
-#endif
 void vasbappend(stringbuffer_t *sb, char *fmt, ... );
 char *escape_copy_string(char *str);
 char *escape_insert_string(char *str);
@@ -77,8 +75,6 @@ vasbappend(stringbuffer_t *sb, char *fmt, ... )
 	va_end(ap);
 }
 
-
-#ifdef HAVE_ICONV
 /* Return allocated string containing UTF8 string converted from encoding fromcode */
 char *
 utf8(const char *fromcode, char *inputbuf)
@@ -111,8 +107,6 @@ utf8(const char *fromcode, char *inputbuf)
 
 	return outputbuf;
 }
-#endif
-
 
 /**
  * Escape input string suitable for COPY. If no characters require escaping, simply return
@@ -894,9 +888,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	char name[MAXFIELDNAMELEN];
 	char name2[MAXFIELDNAMELEN];
 	DBFFieldType type = -1;
-#ifdef HAVE_ICONV
 	char *utf8str;
-#endif
 
 	/* If we are reading the entire shapefile, open it */
 	if (state->config->readshape == 1)
@@ -1149,7 +1141,6 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		state->widths[j] = field_width;
 		state->precisions[j] = field_precision;
 
-#ifdef HAVE_ICONV
 		if (state->config->encoding)
 		{
 			/* If we are converting from another encoding to UTF8, convert the field name to UTF8 */
@@ -1163,7 +1154,6 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 			strncpy(name, utf8str, MAXFIELDNAMELEN);
 			free(utf8str);
 		}
-#endif
 
 		/*
 		 * Make field names lowercase unless asked to
@@ -1241,13 +1231,11 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 	sb = stringbuffer_create();
 	stringbuffer_clear(sb);
 
-#ifdef HAVE_ICONV
 	/* Set the client encoding if required */
 	if (state->config->encoding)
 	{
 		vasbappend(sb, "SET CLIENT_ENCODING TO UTF8;\n");
 	}
-#endif
 
 	/* Use SQL-standard string escaping rather than PostgreSQL standard */
 	vasbappend(sb, "SET STANDARD_CONFORMING_STRINGS TO ON;\n");
@@ -1472,9 +1460,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 	char val[MAXVALUELEN];
 	char *escval;
 	char *geometry, *ret;
-#ifdef HAVE_ICONV
 	char *utf8str;
-#endif
 	int res, i;
 
 	/* Clear the stringbuffers */
@@ -1582,7 +1568,6 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 					return SHPLOADERERR;
 			}
 
-#ifdef HAVE_ICONV
 			if (state->config->encoding)
 			{
 				/* If we are converting from another encoding to UTF8, convert the field value to UTF8 */
@@ -1596,7 +1581,6 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 				strncpy(val, utf8str, MAXVALUELEN);
 				free(utf8str);
 			}
-#endif
 
 			/* Escape attribute correctly according to dump format */
 			if (state->config->dump_format)

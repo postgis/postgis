@@ -39,10 +39,8 @@ usage()
 	printf("  -i  Use int4 type for all integer dbf fields.\n");
 	printf("  -I  Create a spatial index on the geocolumn.\n");
 	printf("  -S  Generate simple geometries instead of MULTI geometries.\n");
-#ifdef HAVE_ICONV
 	printf("  -W <encoding> Specify the character encoding of Shape's\n");
 	printf("     attribute column. (default : \"ASCII\")\n");
-#endif
 	printf("  -N <policy> NULL geometries handling policy (insert*,skip,abort)\n");
 	printf("  -n  Only import DBF file.\n");
 	printf("  -?  Display this help screen.\n");
@@ -139,11 +137,7 @@ main (int argc, char **argv)
 				break;
 
 			case 'W':
-#ifdef HAVE_ICONV
 				config->encoding = optarg;
-#else
-				fprintf(stderr, "WARNING: the -W switch will have no effect. UTF8 disabled at compile time\n");
-#endif
 				break;
 
 			case 'N':

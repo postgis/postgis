@@ -20,15 +20,12 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <iconv.h>
 
 #include "shapefil.h"
 #include "getopt.h"
 
 #include "../liblwgeom/liblwgeom.h"
-
-#ifdef HAVE_ICONV
-#include <iconv.h>
-#endif
 
 #include "stringbuffer.h"
 
