@@ -88,7 +88,7 @@ utf8(const char *fromcode, char *inputbuf)
 	inbytesleft = strlen(inputbuf);
 
 	cd = iconv_open("UTF-8", fromcode);
-	if (cd == (iconv_t) - 1)
+	if ( cd == ((iconv_t)(-1)) )
 		return NULL;
 
 	outbytesleft = inbytesleft * 3 + 1; /* UTF8 string can be 3 times larger */
@@ -855,7 +855,6 @@ set_config_defaults(SHPLOADERCONFIG *config)
 	config->null_policy = POLICY_NULL_INSERT;
 	config->encoding = strdup(ENCODING_DEFAULT);
 }
-
 
 /* Create a new shapefile state object */
 SHPLOADERSTATE *
