@@ -91,6 +91,14 @@ extern Oid getGeometryOID(void);
  */
 #define SERIALIZED_FORM(x) ((uchar *)VARDATA((x)))
 
+/* 
+ * For PostgreSQL >= 8.5 redefine the STATRELATT macro to its
+ * new value of STATRELATTINH 
+ */
+#if POSTGIS_PGSQL_VERSION >= 85
+	#define STATRELATT STATRELATTINH
+#endif
+
 /* BOX is postgresql standard type */
 extern void box_to_box3d_p(BOX *box, BOX3D *out);
 extern void box3d_to_box_p(BOX3D *box, BOX *out);

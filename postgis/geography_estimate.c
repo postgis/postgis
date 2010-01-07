@@ -539,7 +539,10 @@ Datum geography_gist_selectivity(PG_FUNCTION_ARGS)
 
 
 	if ( ! get_attstatsslot(stats_tuple, 0, 0, STATISTIC_KIND_GEOGRAPHY, InvalidOid, NULL, NULL,
-							(float4 **)gsptr, &geogstats_nvalues) )
+#if POSTGIS_PGSQL_VERSION >= 85
+					NULL,
+#endif
+					(float4 **)gsptr, &geogstats_nvalues) )
 	{
 		POSTGIS_DEBUG(3, " STATISTIC_KIND_GEOGRAPHY stats not found - returning default geography selectivity");
 
@@ -651,6 +654,9 @@ Datum geography_gist_join_selectivity(PG_FUNCTION_ARGS)
 	}
 
 	if ( ! get_attstatsslot(stats1_tuple, 0, 0, STATISTIC_KIND_GEOGRAPHY, InvalidOid, NULL, NULL,
+#if POSTGIS_PGSQL_VERSION >= 85
+		NULL,
+#endif
 		(float4 **)gs1ptr, &geogstats1_nvalues) )
 	{
 		POSTGIS_DEBUG(3, " STATISTIC_KIND_GEOGRAPHY stats not found - returning default geometry join selectivity");
@@ -672,6 +678,9 @@ Datum geography_gist_join_selectivity(PG_FUNCTION_ARGS)
 	}
 
 	if ( ! get_attstatsslot(stats2_tuple, 0, 0, STATISTIC_KIND_GEOGRAPHY, InvalidOid, NULL, NULL,
+#if POSTGIS_PGSQL_VERSION >= 85
+		NULL,
+#endif
 		(float4 **)gs2ptr, &geogstats2_nvalues) )
 	{
 		POSTGIS_DEBUG(3, " STATISTIC_KIND_GEOGRAPHY stats not found - returning default geometry join selectivity");
