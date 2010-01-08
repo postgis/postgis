@@ -38,5 +38,6 @@ DROP FUNCTION IF EXISTS st_collect_garray (geometry[]);
 DROP FUNCTION IF EXISTS geosnoop(geometry);
 DROP FUNCTION IF EXISTS jtsnoop(geometry);
 DROP FUNCTION IF EXISTS st_noop(geometry);
+DROP FUNCTION IF EXISTS st_max_distance(geometry, geometry);
 
 
