@@ -11,6 +11,7 @@
 # **********************************************************************
 
 MODULE_big=postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
+MODULEDIR=contrib/$(MODULE_big)
 
 # Files to be copied to the contrib/ directory
 DATA_built=postgis.sql uninstall_postgis.sql postgis_upgrade_15_minor.sql postgis_upgrade_14_to_15.sql postgis_upgrade_13_to_15.sql
@@ -77,6 +78,18 @@ EXTRA_CLEAN=$(SQL_OBJS)
 PG_CONFIG = @PGCONFIG@ 
 PGXS := @PGXS@
 include $(PGXS)
+
+# PGXS override feature. The ability to allow PostGIS to install itself
+# in a versioned directory is only available in PostgreSQL >= 8.5. To
+# do this by default on older PostgreSQL versions, we need to override
+# the existing PGXS targets.
+#
+# Once PostgreSQL 8.5 becomes the minimum supported version, this entire
+# section and its associated Makefile.pgxs should be removed.
+PGXSOVERRIDE = @PGXSOVERRIDE@
+ifeq ($(PGXSOVERRIDE),1)
+	include Makefile.pgxs
+endif
 
 # If REGRESS=1 passed as a parameter, change the default install paths
 # so that no prefix is included. This allows us to relocate to a temporary

@@ -306,6 +306,15 @@ else
 	fi
 fi	
 
+dnl Temporary hack until minimum PostgreSQL version is 8.5:
+dnl If PostgreSQL < 8.5 is detected, trigger the inclusion of the new versioned PGXS targets
+PGXSOVERRIDE=0
+if test ! "$PGSQL_MINOR_VERSION" -ge 5; then
+	PGXSOVERRIDE=1
+fi
+
+AC_SUBST([PGXSOVERRIDE])
+
 dnl Note: We don't need the server-side LDFLAGS or CPPFLAGS because we get these from PGXS 
 
 dnl Extract the linker and include flags for the frontend (for programs that use libpq)
