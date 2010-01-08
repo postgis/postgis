@@ -2,6 +2,41 @@ PostGIS 1.5.0
 
   - Add Hausdorff distance calculations (#209) (Vincent Picavet)
   - Add parameters argument to ST_Buffer operation (Sandro Santilli)
+  - Performance improvements to ST_Distance (Nicklas Aven)
+  - GML input via ST_GeomFromGML (Olivier Courtin)
+  - Extract homogeneous collection with ST_CollectionExtract (Paul Ramsey)
+  - History table implemntation in utils (George)
+  - Win32 support and improvement of core shp2pgsql-gui (Mark Cave-Ayland)
+  - In place 'make check' support (Paul Ramsey)
+  - Geography type and supporting functions
+    - Spherical algorithms from Dave Skea
+    - Object/index implementation from Paul Ramsey
+    - Selectivitiy implementation from Mark Cave-Ayland
+    - Serializations (KML, GML, JSON) from Olivier Courtin
+    - ST_Area, ST_Distance, ST_DWithin, ST_GeogFromText, ST_GeogFromWKB,
+      ST_Intersects, ST_Covers, ST_Buffer
+  - Documentationn updates and improvements (Regina Obe, Kevin Neufeld)
+  - Testing and quality control (Regina Obe)
+  - Many many other changes:
+    http://trac.osgeo.org/postgis/query?status=closed&milestone=PostGIS+1.5.0&order=priority
+
+
+PostGIS 1.4.1
+2009/11/28
+
+ - This is a bug fix release, addressing issues that have been
+   filed since the 1.4.0 release.
+
+ - Bug Fixes
+   - #241, crash in ST_LineCrossingDirection
+   - #210, segmentation faults in ST_Union with NULLs
+   - #277, crash on very large numeric inputs
+   - #179, ST_MakeLine crash server with NULLs
+   - #253, inconsistent results when using the ~= operator
+   - #276, ST_AsGML producing non-compliant GML
+   - #239, memory issues with ST_As* functions
+   - #272, ST_LineCrossingDirection should be negatively symmetric
+   - #316, parsing problem for invalid higher dimensional geometries
 
 
 PostGIS 1.4.0
