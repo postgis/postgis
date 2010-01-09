@@ -1106,7 +1106,7 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	label = gtk_label_new("Geometry Column:");
 	entry_config_geocolumn = gtk_entry_new();
 	gtk_entry_set_width_chars(GTK_ENTRY(entry_config_geocolumn), text_width);
-	gtk_entry_set_text(GTK_ENTRY(entry_config_geocolumn), "the_geom");
+	gtk_entry_set_text(GTK_ENTRY(entry_config_geocolumn), GEOMETRY_DEFAULT);
 	gtk_table_attach_defaults(GTK_TABLE(table_config), label, 2, 3, 1, 2 );
 	gtk_table_attach_defaults(GTK_TABLE(table_config), entry_config_geocolumn, 3, 4, 1, 2 );
 
