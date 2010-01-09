@@ -10,7 +10,7 @@ PostGIS 1.5.0
   	- ST_ShortestLine
   - KML, GML input via ST_GeomFromGML and ST_GeomFromKML (Olivier Courtin)
   - Extract homogeneous collection with ST_CollectionExtract (Paul Ramsey)
-  - History table implemntation in utils (George Silva)
+  - History table implementation in utils (George Silva)
   - Win32 support and improvement of core shp2pgsql-gui (Mark Cave-Ayland)
   - In place 'make check' support (Paul Ramsey)
   - Geography type and supporting functions
