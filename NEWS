@@ -1,11 +1,16 @@
 PostGIS 1.5.0
 
   - Add Hausdorff distance calculations (#209) (Vincent Picavet)
-  - Add parameters argument to ST_Buffer operation (Sandro Santilli)
+  - Add parameters argument to ST_Buffer operation to support one-sided buffering and other buffering styles (Sandro Santilli)
   - Performance improvements to ST_Distance (Nicklas Aven)
-  - GML input via ST_GeomFromGML (Olivier Courtin)
+  - Addition of other Distance related and visualization functions (Nicklas Aven)
+  	- ST_ClosestPoint
+  	- ST_LongestLine
+  	- ST_MaxDistance
+  	- ST_ShortestLine
+  - KML, GML input via ST_GeomFromGML and ST_GeomFromKML (Olivier Courtin)
   - Extract homogeneous collection with ST_CollectionExtract (Paul Ramsey)
-  - History table implemntation in utils (George)
+  - History table implemntation in utils (George Silva)
   - Win32 support and improvement of core shp2pgsql-gui (Mark Cave-Ayland)
   - In place 'make check' support (Paul Ramsey)
   - Geography type and supporting functions
