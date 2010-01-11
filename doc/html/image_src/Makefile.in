@@ -124,6 +124,10 @@ $(IMAGES_RESIZED): ../images/%.png: %.wkt generator styles.conf
 generator: ../../../liblwgeom/liblwgeom.a $(OBJS)
 	$(CC) -o $@ $(OBJS) ../../../liblwgeom/liblwgeom.a -lm $(CUNIT_LDFLAGS)
 
+# Build liblwgeom
+../../../liblwgeom/liblwgeom.a:
+	make -C ../../../liblwgeom liblwgeom.a
+
 # Clean target
 clean:
 	@rm -f $(OBJS)
