@@ -3,8 +3,9 @@ PostGIS 1.5.0
   - Add Hausdorff distance calculations (#209) (Vincent Picavet)
   - Add parameters argument to ST_Buffer operation to support one-sided buffering and other buffering styles (Sandro Santilli)
   - Performance improvements to ST_Distance (Nicklas Aven)
-  - Addition of other Distance related and visualization functions (Nicklas Aven)
+  - Addition of other Distance related and visualization and analysis functions (Nicklas Aven)
   	- ST_ClosestPoint
+  	- ST_DFullyWithin
   	- ST_LongestLine
   	- ST_MaxDistance
   	- ST_ShortestLine
