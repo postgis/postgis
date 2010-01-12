@@ -72,7 +72,7 @@ make
 if [ $? -gt 0 ]; then
 	exit 1
 fi
-make clean # won't drop the html dir
+make clean # won't drop the html dir, or postgis_comments.sql
 cd "$owd"
 
 # Run make distclean
