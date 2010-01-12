@@ -23,7 +23,7 @@ PostGIS 1.5.0
   - Documentationn updates and improvements (Regina Obe, Kevin Neufeld)
   - Testing and quality control (Regina Obe)
   - Many many other changes:
-    http://trac.osgeo.org/postgis/query?status=closed&milestone=PostGIS+1.5.0&order=priority
+    http://trac.osgeo.org/postgis/query?status=closed&milestone=PostGIS+1.5.0
 
 
 PostGIS 1.4.1
