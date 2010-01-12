@@ -85,7 +85,7 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 	
-	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &gbox1, &gbox2, &s, 0.0);
+	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &gbox1, &gbox2, &s, FP_TOLERANCE);
 
 	/* Something went wrong, negative return... should already be eloged, return NULL */
 	if( distance < 0.0 )
