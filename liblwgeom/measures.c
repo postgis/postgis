@@ -708,9 +708,9 @@ lw_dist2d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly, DISTPTS *dl)
 	for (i=1; i<poly->nrings; i++)
 	{
 		if (!lw_dist2d_ptarray_ptarray(pa, poly->rings[i], dl)) return LW_FALSE;
-
+		
 		LWDEBUGF(3, " distance from ring %d: %f, mindist: %f",
-		         i, dist, mindist);
+			         i, dl->distance, dl->tolerance);
 		if (dl->distance<=dl->tolerance && dl->mode == DIST2D_MIN) return LW_TRUE; /*just a check if  the answer is already given*/
 	}
 
@@ -780,9 +780,9 @@ lw_dist2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl)
 			{
 				getPoint2d_p(l2, u, &start2);
 				lw_dist2d_pt_pt(&start,&start2,dl);
-				LWDEBUGF(4, "maxdist_ptarray_ptarray; seg %i * seg %i, dist = %g\n",t,u,dist);
+				LWDEBUGF(4, "maxdist_ptarray_ptarray; seg %i * seg %i, dist = %g\n",t,u,dl->distance);
 				LWDEBUGF(3, " seg%d-seg%d dist: %f, mindist: %f",
-				         t, u, dl->distance, result);
+				         t, u, dl->distance, dl->tolerance);
 			}
 		}
 	}
@@ -798,9 +798,9 @@ lw_dist2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl)
 				getPoint2d_p(l2, u, &end2);
 				dl->twisted=twist;
 				lw_dist2d_seg_seg(&start, &end, &start2, &end2,dl);
-				LWDEBUGF(4, "mindist_ptarray_ptarray; seg %i * seg %i, dist = %g\n",t,u,dist);
+				LWDEBUGF(4, "mindist_ptarray_ptarray; seg %i * seg %i, dist = %g\n",t,u,dl->distance);
 				LWDEBUGF(3, " seg%d-seg%d dist: %f, mindist: %f",
-				         t, u, dl->distance, result);
+				         t, u, dl->distance, dl->tolerance);
 				if (dl->distance<=dl->tolerance && dl->mode == DIST2D_MIN) return LW_TRUE; /*just a check if  the answer is already given*/
 				start2 = end2;
 			}
