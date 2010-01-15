@@ -3901,7 +3901,6 @@ CREATE OR REPLACE FUNCTION ST_LocateBetweenElevations(geometry, float8, float8)
 	AS 'MODULE_PATHNAME', 'ST_LocateBetweenElevations'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
-#if POSTGIS_GEOS_VERSION >= 30
 -- Requires GEOS >= 3.0.0
 -- Availability: 1.3.3
 CREATE OR REPLACE FUNCTION ST_SimplifyPreserveTopology(geometry, float8)
@@ -3909,9 +3908,7 @@ CREATE OR REPLACE FUNCTION ST_SimplifyPreserveTopology(geometry, float8)
 	AS 'MODULE_PATHNAME','topologypreservesimplify'
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
-#endif
 
-#if POSTGIS_GEOS_VERSION >= 31
 -- Requires GEOS >= 3.1.0
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION ST_IsValidReason(geometry)
@@ -3919,7 +3916,6 @@ CREATE OR REPLACE FUNCTION ST_IsValidReason(geometry)
 	AS 'MODULE_PATHNAME', 'isvalidreason'
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
-#endif
 
 #if POSTGIS_GEOS_VERSION >= 32
 -- Requires GEOS >= 3.2.0
@@ -4352,7 +4348,6 @@ CREATE OR REPLACE FUNCTION ST_Contains(geometry,geometry)
 	AS 'SELECT $1 && $2 AND _ST_Contains($1,$2)'
 	LANGUAGE 'SQL' IMMUTABLE;
 
-#if POSTGIS_GEOS_VERSION >= 30
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION _ST_CoveredBy(geometry,geometry)
 	RETURNS boolean
@@ -4379,9 +4374,7 @@ CREATE OR REPLACE FUNCTION ST_Covers(geometry,geometry)
 	RETURNS boolean
 	AS 'SELECT $1 && $2 AND _ST_Covers($1,$2)'
 	LANGUAGE 'SQL' IMMUTABLE;
-#endif
 
-#if POSTGIS_GEOS_VERSION >= 31
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION _ST_ContainsProperly(geometry,geometry)
 	RETURNS boolean
@@ -4395,7 +4388,6 @@ CREATE OR REPLACE FUNCTION ST_ContainsProperly(geometry,geometry)
 	RETURNS boolean
 	AS 'SELECT $1 && $2 AND _ST_ContainsProperly($1,$2)'
 	LANGUAGE 'SQL' IMMUTABLE;
-#endif
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION overlaps(geometry,geometry)

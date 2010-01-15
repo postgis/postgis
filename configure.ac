@@ -293,8 +293,10 @@ dnl Note: we extract the major & minor separately, ensure they are numeric, and 
 dnl the final version. This is to guard against user error... 
 PGSQL_MAJOR_VERSION=`$PGCONFIG --version | sed 's/[[A-Za-z ]]*//' | cut -d. -f1 | sed 's/[[^0-9]]//g'`	
 PGSQL_MINOR_VERSION=`$PGCONFIG --version | sed 's/[[A-Za-z ]]*//' | cut -d. -f2 | sed 's/[[^0-9]]//g'`	
+PGSQL_FULL_VERSION=`$PGCONFIG --version`
 POSTGIS_PGSQL_VERSION="$PGSQL_MAJOR_VERSION$PGSQL_MINOR_VERSION"
 
+AC_MSG_RESULT([checking PostgreSQL version... $PGSQL_FULL_VERSION])
 dnl Ensure that we are using PostgreSQL >= 8.3
 if test ! "$PGSQL_MAJOR_VERSION" -ge 8; then
 	AC_MSG_ERROR([PostGIS requires PostgreSQL >= 8.3])
@@ -449,11 +451,13 @@ dnl and then combine to give the final version.
 dnl This is to guard against user error... 
 GEOS_MAJOR_VERSION=`$GEOSCONFIG --version | cut -d. -f1 | sed 's/[[^0-9]]//g'`
 GEOS_MINOR_VERSION=`$GEOSCONFIG --version | cut -d. -f2 | sed 's/[[^0-9]]//g'`
+GEOS_FULL_VERSION=`$GEOSCONFIG --version`
 POSTGIS_GEOS_VERSION="$GEOS_MAJOR_VERSION$GEOS_MINOR_VERSION"
 
-dnl Ensure that we are using GEOS >= 3.0.0
-if test ! "$GEOS_MAJOR_VERSION" -ge 3; then
-	AC_MSG_ERROR([PostGIS requires GEOS >= 3.0])
+dnl Ensure that we are using GEOS >= 3.1.0
+AC_MSG_RESULT([checking GEOS version... $GEOS_FULL_VERSION])
+if test ! "$POSTGIS_GEOS_VERSION" -ge 31; then
+	AC_MSG_ERROR([PostGIS requires GEOS >= 3.1])
 fi
 
 dnl Extract the linker and include flags 
@@ -657,9 +661,9 @@ AC_MSG_RESULT([  C++ compiler:         ${CXX} ${CXXFLAGS}])
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------------- Dependencies -------------- ])
 AC_MSG_RESULT([  GEOS config:          ${GEOSCONFIG}])
-AC_MSG_RESULT([  GEOS version:         ${GEOS_MAJOR_VERSION}.${GEOS_MINOR_VERSION}])
+AC_MSG_RESULT([  GEOS version:         ${GEOS_FULL_VERSION}])
 AC_MSG_RESULT([  PostgreSQL config:    ${PGCONFIG}])
-AC_MSG_RESULT([  PostgreSQL version:   ${PGSQL_MAJOR_VERSION}.${PGSQL_MINOR_VERSION}])
+AC_MSG_RESULT([  PostgreSQL version:   ${PGSQL_FULL_VERSION}])
 AC_MSG_RESULT([  PROJ4 version:        ${POSTGIS_PROJ_VERSION}])
 AC_MSG_RESULT([  Libxml2 config:       ${XML2CONFIG}])
 AC_MSG_RESULT([  Libxml2 version:      ${POSTGIS_LIBXML2_VERSION}])

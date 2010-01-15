@@ -209,10 +209,8 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 #if POSTGIS_DEBUG_LEVEL > 0
 	static int call=1;
 #endif
-#if POSTGIS_GEOS_VERSION >= 31
 	int gotsrid = 0;
 	int allpolys=1;
-#endif
 
 #if POSTGIS_DEBUG_LEVEL > 0
 	call++;
@@ -246,8 +244,6 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 
 	/* Ok, we really need geos now ;) */
 	initGEOS(lwnotice, lwnotice);
-
-#if POSTGIS_GEOS_VERSION >= 31
 
 	/*
 	** First, see if all our elements are POLYGON/MULTIPOLYGON
@@ -388,7 +384,6 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	}
 	else
 	{
-#endif /* POSTGIS_GEOS_VERSION >= 31 */
 		/*
 		** Heterogeneous result, let's slog through this one union at a time.
 		*/
@@ -465,9 +460,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 
-#if POSTGIS_GEOS_VERSION >= 31
 	}
-#endif
 
 	if ( result == NULL )
 	{
@@ -787,8 +780,6 @@ Datum convexhull(PG_FUNCTION_ARGS)
 
 }
 
-#if POSTGIS_GEOS_VERSION >= 30
-
 PG_FUNCTION_INFO_V1(topologypreservesimplify);
 Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 {
@@ -832,7 +823,6 @@ Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_RETURN_POINTER(result);
 }
-#endif /* POSTGIS_GEOS_VERSION >= 30 */
 
 PG_FUNCTION_INFO_V1(buffer);
 Datum buffer(PG_FUNCTION_ARGS)
@@ -1413,7 +1403,6 @@ Datum isvalid(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
-#if POSTGIS_GEOS_VERSION >= 31
 /*
 ** IsValidReason is only available in the GEOS
 ** C API > version 3.0
@@ -1455,7 +1444,6 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 
 }
-#endif
 
 /**
  * overlaps(PG_LWGEOM g1,PG_LWGEOM g2)

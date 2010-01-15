@@ -63,21 +63,13 @@ TESTS = \
 	in_gml \
 	in_kml \
 	regress_ogc \
+	regress_ogc_cover \
+	regress_ogc_prep \
 	regress_bdpoly \
 	regress_proj \
 	dumppoints \
 	wmsservers \
 	tickets
-
-# Covers/CoveredBy only if GEOS >= 3.0
-ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 30),1)
-	TESTS += regress_ogc_cover 
-endif
-
-# PreparedGeometry only if GEOS >= 3.1
-ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 31),1)
-	TESTS += regress_ogc_prep
-endif
 
 # Styled buffer only if GEOS >= 3.2
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 32),1)

@@ -33,9 +33,7 @@
 /*
 ** GEOS prepared geometry is only available from GEOS 3.1 onwards
 */
-#if POSTGIS_GEOS_VERSION >= 31
 #define PREPARED_GEOM
-#endif
 
 /*
 ** Cache structure. We use PG_LWGEOM as keys so no transformations

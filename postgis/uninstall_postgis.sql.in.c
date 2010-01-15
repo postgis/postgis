@@ -281,18 +281,12 @@ DROP FUNCTION IsValid(geometry);
 DROP FUNCTION ST_Overlaps(geometry,geometry);
 DROP FUNCTION _ST_Overlaps(geometry,geometry);
 DROP FUNCTION overlaps(geometry,geometry);
-
-#if POSTGIS_GEOS_VERSION >= 31
 DROP FUNCTION ST_ContainsProperly(geometry,geometry);
 DROP FUNCTION _ST_ContainsProperly(geometry,geometry);
-#endif
-
-#if POSTGIS_GEOS_VERSION >= 30
 DROP FUNCTION ST_Covers(geometry,geometry);
 DROP FUNCTION _ST_Covers(geometry,geometry);
 DROP FUNCTION ST_CoveredBy(geometry,geometry);
 DROP FUNCTION _ST_CoveredBy(geometry,geometry);
-#endif
 
 DROP FUNCTION ST_Contains(geometry,geometry);
 DROP FUNCTION _ST_Contains(geometry,geometry);
@@ -369,15 +363,8 @@ DROP FUNCTION ST_Boundary(geometry);
 DROP FUNCTION boundary(geometry);
 DROP FUNCTION ST_Difference(geometry,geometry);
 DROP FUNCTION difference(geometry,geometry);
-
-#if POSTGIS_GEOS_VERSION >= 31
 DROP FUNCTION ST_IsValidReason(geometry);
-#endif
-
-#if POSTGIS_GEOS_VERSION >= 30
 DROP FUNCTION ST_SimplifyPreserveTopology(geometry, float8);
-#endif
-
 DROP FUNCTION ST_LocateBetweenElevations(geometry, float8, float8);
 DROP FUNCTION ST_LineCrossingDirection(geometry, geometry);
 DROP FUNCTION _ST_LineCrossingDirection(geometry, geometry);
@@ -393,8 +380,6 @@ DROP FUNCTION ST_Intersection(geometry,geometry);
 DROP FUNCTION intersection(geometry,geometry);
 #if POSTGIS_GEOS_VERSION >= 32
 DROP FUNCTION ST_HausdorffDistance(geometry, geometry);
-#endif
-#if POSTGIS_GEOS_VERSION >= 32
 DROP FUNCTION ST_HausdorffDistance(geometry, geometry, float8);
 #endif
 
