@@ -1521,11 +1521,15 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 		getPoint2d_p(pa2, 0, &p);
 		geographic_point_init(p.x, p.y, &g2);
 		/* Sphere special case, axes equal */
+		distance = s->radius * sphere_distance(&g1, &g2);
 		if( use_sphere )
-			distance = s->radius * sphere_distance(&g1, &g2);
+            return distance;
+        /* Below tolerance, actual distance isn't of interest */
+        else if( distance < 0.95 * tolerance )
+            return distance; 
+        /* Close or greater than tolerance, get the real answer to be sure */
 		else
-			distance = spheroid_distance(&g1, &g2, s);
-		return distance;		
+		    return spheroid_distance(&g1, &g2, s);
 	}
 
 	/* Handle point/line case here */
@@ -1575,9 +1579,14 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 				/* Working on a sphere? The answer is correct, return */
 				if( use_sphere )
 				{
-					return distance;
+					return d;
 				}
-				/* On a spheroid? Confirm that we are *actually* closer than tolerance */
+				/* Far enough past the tolerance that the spheroid calculation won't change things */
+				else if( d < tolerance * 0.95 )
+				{
+                    return d;
+			    }
+				/* On a spheroid and near the tolerance? Confirm that we are *actually* closer than tolerance */
 				else
 				{
 					d = spheroid_distance(&g1, &nearest2, s);
