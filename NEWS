@@ -1,14 +1,22 @@
 PostGIS 1.5.0
 
+  * Important Changes *
+
+  - =~ operator now indicate bounding box equality, not feature equality
+  - GEOS 3.1 is now the minimum accepted version of GEOS
+  - GEOS, LibXML2, and Proj4 are now mandatory dependencies
+
+  * New Features *
+
   - Add Hausdorff distance calculations (#209) (Vincent Picavet)
   - Add parameters argument to ST_Buffer operation to support one-sided buffering and other buffering styles (Sandro Santilli)
   - Performance improvements to ST_Distance (Nicklas Aven)
   - Addition of other Distance related visualization and analysis functions (Nicklas Aven)
-  	- ST_ClosestPoint
-  	- ST_DFullyWithin
-  	- ST_LongestLine
-  	- ST_MaxDistance
-  	- ST_ShortestLine
+    - ST_ClosestPoint
+    - ST_DFullyWithin
+    - ST_LongestLine
+    - ST_MaxDistance
+    - ST_ShortestLine
   - KML, GML input via ST_GeomFromGML and ST_GeomFromKML (Olivier Courtin)
   - Extract homogeneous collection with ST_CollectionExtract (Paul Ramsey)
   - History table implementation in utils (George Silva)
@@ -21,7 +29,7 @@ PostGIS 1.5.0
     - Serializations (KML, GML, JSON) from Olivier Courtin
     - ST_Area, ST_Distance, ST_DWithin, ST_GeogFromText, ST_GeogFromWKB,
       ST_Intersects, ST_Covers, ST_Buffer
-  - Documentationn updates and improvements (Regina Obe, Kevin Neufeld)
+  - Documentation updates and improvements (Regina Obe, Kevin Neufeld)
   - Testing and quality control (Regina Obe)
   - Many many other changes:
     http://trac.osgeo.org/postgis/query?status=closed&milestone=PostGIS+1.5.0
