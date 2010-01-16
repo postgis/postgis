@@ -35,6 +35,7 @@ PostGIS 1.5.0
       ST_Intersects, ST_Covers, ST_Buffer
   - Documentation updates and improvements (Regina Obe, Kevin Neufeld)
   - Testing and quality control (Regina Obe)
+  - PostGIS 1.5 support PostgreSQL 8.5 trunk (Guillaume Lelarge)
   - Many many other changes:
     http://trac.osgeo.org/postgis/query?status=closed&milestone=PostGIS+1.5.0
 
