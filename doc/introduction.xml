@@ -122,6 +122,14 @@
 	  </varlistentry>
 	  
 	  <varlistentry>
+		<term>Nicklas Avén</term>
+
+		<listitem>
+		  <para>Distance function enhancements and additions, Windows testing, and general user support</para>
+		</listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
 		<term>Stephen Frost</term>
 
 		<listitem>
@@ -138,8 +146,8 @@
 		  III, Carl Anderson, Charlie Savage, Dane Springmeyer, David Skea,
 		  David Techer, Eduin Carrillo, IIDA Tetsushi, Geographic Data BC,
 		  Gerald Fenoy, Gino Lucrezi, Klaus Foerster, Kris Jurka, Mark
-		  Sondheim, Markus Schaber, Michael Fuhr, Nikita Shulga, Nicklas Avén, Norman Vine,
-		  Ralph Mason,  Steffen Macke</para>
+		  Sondheim, Markus Schaber, Michael Fuhr, Nikita Shulga, Norman Vine,
+		  Ralph Mason, Steffen Macke</para>
 		</listitem>
 	  </varlistentry>
 
