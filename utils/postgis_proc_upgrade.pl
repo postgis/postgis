@@ -1,4 +1,4 @@
-#/bin/sh
+#!/usr/bin/perl
 
 #
 # This script produces an .sql file containing
