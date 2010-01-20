@@ -1,3 +1,5 @@
+#!/usr/bin/perl
+
 eval "exec perl -w $0 $@"
 	if (0);
 

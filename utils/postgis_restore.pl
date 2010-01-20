@@ -1,4 +1,5 @@
-#/bin/sh
+#!/usr/bin/perl
+
 #
 # This script is aimed at restoring postgis data
 # from a dumpfile produced by pg_dump -Fc
