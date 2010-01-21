@@ -76,6 +76,10 @@ dnl
 AC_CHECK_HEADER([ieeefp.h], [HAVE_IEEEFP_H=1], [HAVE_IEEEFP_H=0])
 AC_DEFINE_UNQUOTED([HAVE_IEEEFP_H], [$HAVE_IEEEFP_H], [ieeefp.h header])
 
+dnl 
+dnl MingW requires use of pwd -W to give proper Windows (not MingW) paths 
+dnl for in-place regression tests 
+dnl 
 case $host_os in
          *mingw*)
                  PWDREGRESS="pwd -W"
@@ -86,6 +90,7 @@ case $host_os in
 esac
 AC_DEFINE_UNQUOTED([PWDREGRESS])
 AC_SUBST([PWDREGRESS])
+
 
 dnl ===========================================================================
 dnl Find components needed to build documentation
