@@ -1,3 +1,78 @@
+2010-01-21 13:08  nicklas
+
+	* configure.ac: add missing comment
+
+2010-01-21 07:19  nicklas
+
+	* configure.ac, regress/Makefile.in: Fix for make check on MingW
+	  #389
+
+2010-01-21 00:06  pramsey
+
+	* NEWS, doc/release_notes.xml: Updated XML release notes (#374)
+
+2010-01-20 20:17  pramsey
+
+	* utils/create_undef.pl, utils/postgis_proc_upgrade.pl,
+	  utils/postgis_restore.pl: Make proper #! calls to perl in perl
+	  scripts
+
+2010-01-20 18:55  robe
+
+	* doc/introduction.xml: Add Jorge Arevalo to list since he's
+	  contributing a lot of work to WKT Raster
+
+2010-01-19 12:40  robe
+
+	* doc/introduction.xml: Add George, Guillaume, and Vincent to
+	  contributors list
+
+2010-01-19 12:37  robe
+
+	* doc/introduction.xml: Bump Nicklas up since he's added a lot to
+	  this release and now has commit access
+
+2010-01-18 19:40  pramsey
+
+	* spatial_ref_sys.sql: Add towgs84 line into proj4text for srid =
+	  28992 (#387)
+
+2010-01-16 04:26  robe
+
+	* NEWS: Add Guillaume's PostgreSQL 8.5 contribution
+
+2010-01-15 19:48  pramsey
+
+	* NEWS: 80col wrap NEWS
+
+2010-01-15 18:49  robe
+
+	* NEWS: add note about GEOS 3.2
+
+2010-01-15 18:41  pramsey
+
+	* liblwgeom/lwgeodetic.c: Short circuit on distance tests: only do
+	  full spheroidal calculation where the distance is near or greater
+	  than the tolerance. This will make large st_dwithin() radius
+	  searches much faster since points that are well within the radius
+	  will not have their full geodetic calculation run, only those
+	  that are close to the radius boundary.
+
+2010-01-15 18:06  pramsey
+
+	* ChangeLog, NEWS: Prepare for 1.5.0b2
+
+2010-01-15 17:54  pramsey
+
+	* configure.ac, postgis/lwgeom_geos.c,
+	  postgis/lwgeom_geos_prepared.h, postgis/postgis.sql.in.c,
+	  postgis/uninstall_postgis.sql.in.c, regress/Makefile.in: Make
+	  GEOS 3.1 the mandatory minimum (#385)
+
+2010-01-15 17:47  pramsey
+
+	* doc/html/images: Ignore all PNG files.
+
 2010-01-15 08:13  colivier
 
 	* regress/tickets.sql, regress/tickets_expected: Round decimal part

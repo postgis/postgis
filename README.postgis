@@ -54,14 +54,6 @@ SEE THE NOTE ON GEOS SUPPORT BELOW FOR SPECIAL COMPILATION INSTRUCTIONS
 
     http://trac.osgeo.org/geos/
 
-  OLD NOTE: In order to use the GEOS support, you *may* need to 
-  specially compile your version of PostgreSQL to link the C++ runtime library.
-  To do this, invoke the PgSQL configuration script this way:
- 
-  LDFLAGS=-lstdc++ ./configure --your-options-go-here
-
-  The initial LDFLAGS variable is passed through to the Makefile and
-  adds the C++ library to the linking stage. 
 
 CONFIGURATION
 -------------
