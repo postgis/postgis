@@ -12,7 +12,7 @@ HAVE_LIBXML2=@HAVE_LIBXML2@
 PGSQL_BINDIR=$(shell pushd "@PGSQL_BINDIR@" > /dev/null && pwd && popd > /dev/null)
 
 # Where we put our regression installation 
-srcdir=$(shell pwd)
+srcdir=$(shell @PWDREGRESS@)
 REGRESS_INSTALLDIR=$(srcdir)/00-regress-install
 
 # 

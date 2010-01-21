@@ -76,7 +76,16 @@ dnl
 AC_CHECK_HEADER([ieeefp.h], [HAVE_IEEEFP_H=1], [HAVE_IEEEFP_H=0])
 AC_DEFINE_UNQUOTED([HAVE_IEEEFP_H], [$HAVE_IEEEFP_H], [ieeefp.h header])
 
-
+case $host_os in
+         *mingw*)
+                 PWDREGRESS="pwd -W"
+                 ;;
+         *)
+                 PWDREGRESS="pwd"
+                 ;;
+esac
+AC_DEFINE_UNQUOTED([PWDREGRESS])
+AC_SUBST([PWDREGRESS])
 
 dnl ===========================================================================
 dnl Find components needed to build documentation
