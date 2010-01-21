@@ -5,32 +5,61 @@
 
       <sect1>
         <title>Release 1.5.0</title>
-        <para>Release date: 2009/12/25</para>
+        <para>Release date: 2010/01/20</para>
         <para>This release provides support for geographic coordinates (lat/lon) via a new GEOGRAPHY type. Also performance enhancements, new input format support (GML,KML) and general upkeep.</para>
   
         <simplesect>
           <title>API Stability</title>
           <para>The public API of PostGIS will not change during minor (0.0.X) releases.</para>
+          <para>The definition of the =~ operator has changed from an exact geometric equality check to a bounding box equality check.</para>
         </simplesect>
 
         <simplesect>
           <title>Compatibility</title>
-          <para>The versions below are the *minimum* requirements for PostGIS 1.5</para>
+          <para>GEOS, Proj4, and LibXML2 are now mandatory dependencies</para>
+          <para>The library versions below are the minimum requirements for PostGIS 1.5</para>
           <para>PostgreSQL 8.3 and higher on all platforms</para>
-          <para>GEOS 3.0 and higher only (GEOS 3.2+ to take advantage of all features)</para>
-	  <para>libxml2 2.5+ related to new ST_GeomFromGML/KML functionality</para>
-          <para>PROJ4 4.5 and higher only</para>
+          <para>GEOS 3.1 and higher only (GEOS 3.2+ to take advantage of all features)</para>
+          <para>LibXML2 2.5+ related to new ST_GeomFromGML/KML functionality</para>
+          <para>Proj4 4.5 and higher only</para>
         </simplesect>
 
         <simplesect>
           <title>New Features</title>
           <para><xref linkend="NewFunctions_1_5"/></para>
+          <para>Added Hausdorff distance calculations (#209) (Vincent Picavet)</para>
+          <para>Added parameters argument to ST_Buffer operation to support one-sided buffering and other buffering styles (Sandro Santilli)</para>
+          <para>Addition of other Distance related visualization and analysis functions (Nicklas Aven)</para>
+      	  <itemizedlist>
+        		<listitem><para>ST_ClosestPoint</para></listitem>
+        		<listitem><para>ST_DFullyWithin</para></listitem>
+        		<listitem><para>ST_LongestLine</para></listitem>
+        		<listitem><para>ST_MaxDistance</para></listitem>
+        		<listitem><para>ST_ShortestLine</para></listitem>
+      	  </itemizedlist>      	  
+          <para>KML, GML input via ST_GeomFromGML and ST_GeomFromKML (Olivier Courtin)</para>
+          <para>Extract homogeneous collection with ST_CollectionExtract (Paul Ramsey)</para>
+          <para>History table implementation in utils (George Silva)</para>
+          <para>Geography type and supporting functions</para>
+          <itemizedlist>
+            <listitem><para>Spherical algorithms (Dave Skea)</para></listitem>
+            <listitem><para>Object/index implementation (Paul Ramsey)</para></listitem>
+            <listitem><para>Selectivity implementation (Mark Cave-Ayland)</para></listitem>
+            <listitem><para>Serializations to KML, GML and JSON (Olivier Courtin)</para></listitem>
+            <listitem><para>ST_Area, ST_Distance, ST_DWithin, ST_GeogFromText, ST_GeogFromWKB, ST_Intersects, ST_Covers, ST_Buffer (Paul Ramsey)</para></listitem>
+          </itemizedlist>
         </simplesect>
 
         <simplesect>
           <title>Enhancements</title>
-          <para></para>
+          <para>Performance improvements to ST_Distance (Nicklas Aven)</para>
+          <para>Documentation updates and improvements (Regina Obe, Kevin Neufeld)</para>
+          <para>Testing and quality control (Regina Obe)</para>
+          <para>PostGIS 1.5 support PostgreSQL 8.5 trunk (Guillaume Lelarge)</para>
+          <para>Win32 support and improvement of core shp2pgsql-gui (Mark Cave-Ayland)</para>
+          <para>In place 'make check' support (Paul Ramsey)</para>
         </simplesect>
+        
         <simplesect>
           <title>Bug fixes</title>
           <para>http://trac.osgeo.org/postgis/query?status=closed&amp;milestone=postgis+1.5.0&amp;order=priority</para>

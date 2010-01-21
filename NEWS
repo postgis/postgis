@@ -2,16 +2,16 @@ PostGIS 1.5.0
 
   * Important Changes *
 
-  - =~ operator now indicate bounding box equality, not feature equality
+  - =~ operator now indicates bounding box equality, not feature equality
   - GEOS 3.1 is now the minimum accepted version of GEOS
-  - GEOS 3.2 is needed if you want to use enhanced buffer features 
+  - GEOS 3.2 is needed if you want to use enhanced buffering features 
     and ST_HausdorffDistance
   - GEOS, LibXML2, and Proj4 are now mandatory dependencies
 
   * New Features *
 
-  - Add Hausdorff distance calculations (#209) (Vincent Picavet)
-  - Add parameters argument to ST_Buffer operation to support one-sided 
+  - Added Hausdorff distance calculations (#209) (Vincent Picavet)
+  - Added parameters argument to ST_Buffer operation to support one-sided 
     buffering and other buffering styles (Sandro Santilli)
   - Performance improvements to ST_Distance (Nicklas Aven)
   - Addition of other Distance related visualization and analysis 
