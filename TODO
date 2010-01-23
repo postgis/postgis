@@ -10,8 +10,6 @@ $Id$
 * ST_AverageDistance(g1 geometry, g2 geometry, nsamples integer) returns double
   Sum of minimum distances at regular intervals up two geometries, 
   divided by the number of samples.  
-* ST_MaxDistance(g1 geometry, g2 geometry) returns double.  
-  What is the maximum distance between these two geometries.
 * ST_GeomFromGeoJSON(string) returns geometry. Ingests JSON geometry parts only.
 * ST_LatitudeFromText(string) returns float, 
   LongitudeFromText(string) returns float 
@@ -24,7 +22,7 @@ $Id$
   Similar in concept to ST_Dump and ST_DumpRings will output a 
   geometry_dump array for any geometry where each geometry is a point 
   and path info to denote the locaiton/subgeometry it is located in.
-
+  (C-version TODO)
 
 == Larger projects ==
 
