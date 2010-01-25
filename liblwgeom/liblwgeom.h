@@ -1379,6 +1379,7 @@ extern void ptarray_reverse(POINTARRAY *pa);
 extern POINTARRAY *ptarray_substring(POINTARRAY *, double, double);
 extern double ptarray_locate_point(POINTARRAY *, POINT2D *);
 extern void closest_point_on_segment(POINT2D *p, POINT2D *A, POINT2D *B, POINT2D *ret);
+extern LWLINE *lwline_measured_from_lwline(const LWLINE *lwline, double m_start, double m_end);
 
 /*
  * Ensure every segment is at most 'dist' long.

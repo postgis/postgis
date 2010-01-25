@@ -524,3 +524,59 @@ lwline_setPoint4d(LWLINE *line, unsigned int index, POINT4D *newpoint)
 {
 	setPoint4d(line->points, index, newpoint);
 }
+
+/**
+* Re-write the measure ordinate (or add one, if it isn't already there) interpolating
+* the measure between the supplied start and end values. 
+*/
+LWLINE* 
+lwline_measured_from_lwline(const LWLINE *lwline, double m_start, double m_end)
+{
+	int i = 0;
+	int hasm = 0, hasz = 0;
+	int npoints = 0;
+	double length = 0.0;
+	double length_so_far = 0.0;
+	double m_range = m_end - m_start;
+	double m;
+	POINTARRAY *pa = NULL;
+	POINT3DZ p1, p2;
+	
+	if( TYPE_GETTYPE(lwline->type) != LINETYPE )
+	{
+		lwerror("lwmline_construct_from_lwline: only line types supported");
+		return NULL;
+	}
+	
+	hasz = TYPE_HASZ(lwline->type);
+	hasm = 1;
+	
+	/* Null points or npoints == 0 will result in empty return geometry */
+	if( lwline->points )
+	{
+		npoints = lwline->points->npoints;
+		length = lwgeom_pointarray_length2d(lwline->points);
+		getPoint3dz_p(lwline->points, 0, &p1);
+	}
+	
+	pa = ptarray_construct(hasz, hasm, npoints);
+	
+	for( i = 0; i < npoints; i++ )
+	{		
+		POINT4D q;
+	 	getPoint3dz_p(lwline->points, i, &p2);
+		length_so_far += distance2d_pt_pt((POINT2D*)&p1, (POINT2D*)&p2);
+		if ( length > 0.0 )
+			m = m_start + m_range * length_so_far / length;
+		else
+			m = 0.0;
+		q.x = p2.x;
+		q.y = p2.y;
+		q.z = p2.z;
+		q.m = m;
+		setPoint4d(pa, i, &q);
+		p1 = p2;
+	}
+	
+	return lwline_construct(lwline->SRID, NULL, pa);
+}

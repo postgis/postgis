@@ -18,6 +18,7 @@
 
 
 Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS);
+Datum ST_AddMeasure(PG_FUNCTION_ARGS);
 
 typedef struct
 {
@@ -528,6 +529,42 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 		            pglwgeom_getSRID(gin), lwgeom_hasZ(gin->type),
 		            lwgeom_hasM(gin->type));
 	}
+
+	gout = pglwgeom_serialize(lwout);
+	lwgeom_release(lwout);
+
+	PG_RETURN_POINTER(gout);
+}
+
+
+/*
+* CREATE OR REPLACE FUNCTION ST_AddMeasure(geometry, float8, float8) 
+* RETURNS geometry 
+* AS '$libdir/postgis-1.5', 'ST_AddMeasure' 
+* LANGUAGE 'C' IMMUTABLE STRICT;
+*/
+PG_FUNCTION_INFO_V1(ST_AddMeasure);
+Datum ST_AddMeasure(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *gin = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *gout;
+	double start_measure = PG_GETARG_FLOAT8(1);
+	double end_measure = PG_GETARG_FLOAT8(2);
+	LWGEOM *lwin, *lwout;
+
+	/* Raise an error if input is not a linestring */
+	if ( TYPE_GETTYPE(gin->type) != LINETYPE )
+	{
+		lwerror("Only LINESTRING is supported");
+		PG_RETURN_NULL();
+	}
+
+	lwin = pglwgeom_deserialize(gin);
+	lwout = (LWGEOM*)lwline_measured_from_lwline((LWLINE*)lwin, start_measure, end_measure);
+	lwgeom_release(lwin);
+
+	if ( lwout == NULL )
+		PG_RETURN_NULL();
 
 	gout = pglwgeom_serialize(lwout);
 	lwgeom_release(lwout);
