@@ -23,6 +23,7 @@ PostGIS 1.5.0
     - ST_ShortestLine
   - KML, GML input via ST_GeomFromGML and ST_GeomFromKML (Olivier Courtin)
   - Extract homogeneous collection with ST_CollectionExtract (Paul Ramsey)
+  - Add measure values to existing linestring with ST_AddMeasure (Paul Ramsey)
   - History table implementation in utils (George Silva)
   - Win32 support and improvement of core shp2pgsql-gui (Mark Cave-Ayland)
   - In place 'make check' support (Paul Ramsey)

@@ -399,8 +399,6 @@ DROP FUNCTION line_substring(geometry, float8, float8);
 DROP FUNCTION ST_line_interpolate_point(geometry, float8);
 DROP FUNCTION line_interpolate_point(geometry, float8);
 DROP FUNCTION ST_AddMeasure(geometry, float8, float8);
-DROP FUNCTION ST_StartMeasure(geometry);
-DROP FUNCTION ST_EndMeasure(geometry);
 
 ---------------------------------------------------------------
 -- Algorithms

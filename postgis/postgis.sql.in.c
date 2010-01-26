@@ -3809,18 +3809,6 @@ CREATE OR REPLACE FUNCTION ST_AddMeasure(geometry, float8, float8)
 	AS 'MODULE_PATHNAME', 'ST_AddMeasure' 
 	LANGUAGE 'C' IMMUTABLE STRICT;
     
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_StartMeasure(geometry)
-	RETURNS float8 
-	AS $$ SELECT ST_M(ST_StartPoint($1)) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_EndMeasure(geometry)
-	RETURNS float8 
-	AS $$ SELECT ST_M(ST_EndPoint($1)) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 ---------------------------------------------------------------
 -- GEOS
 ---------------------------------------------------------------

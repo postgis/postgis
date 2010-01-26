@@ -39,6 +39,7 @@
       	  </itemizedlist>      	  
           <para>KML, GML input via ST_GeomFromGML and ST_GeomFromKML (Olivier Courtin)</para>
           <para>Extract homogeneous collection with ST_CollectionExtract (Paul Ramsey)</para>
+          <para>Add measure values to an existing linestring with ST_AddMeasure (Paul Ramsey)</para>
           <para>History table implementation in utils (George Silva)</para>
           <para>Geography type and supporting functions</para>
           <itemizedlist>
