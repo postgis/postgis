@@ -528,6 +528,12 @@ ST_GeomFromEWKT('LINESTRINGM(1 0 4, 2 0 4, 4 0 4)'),10,40)) As ewelev;
                  ewelev                 
 ----------------------------------------
  LINESTRINGM(1 0 10,2 0 20,4 0 40)
+ 
+SELECT ST_AsEWKT(ST_AddMeasure(
+ST_GeomFromEWKT('MULTILINESTRINGM((1 0 4, 2 0 4, 4 0 4),(1 0 4, 2 0 4, 4 0 4))'),10,70)) As ewelev;
+                             ewelev                              
+-----------------------------------------------------------------
+ MULTILINESTRINGM((1 0 10,2 0 20,4 0 40),(1 0 40,2 0 50,4 0 70))
 </programlisting>
 	  </refsection>
 
