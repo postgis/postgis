@@ -551,16 +551,21 @@ Datum ST_AddMeasure(PG_FUNCTION_ARGS)
 	double start_measure = PG_GETARG_FLOAT8(1);
 	double end_measure = PG_GETARG_FLOAT8(2);
 	LWGEOM *lwin, *lwout;
+	int type = TYPE_GETTYPE(gin->type);
 
-	/* Raise an error if input is not a linestring */
-	if ( TYPE_GETTYPE(gin->type) != LINETYPE )
+	/* Raise an error if input is not a linestring or multilinestring */
+	if ( type != LINETYPE && type != MULTILINETYPE )
 	{
-		lwerror("Only LINESTRING is supported");
+		lwerror("Only LINESTRING and MULTILINESTRING are supported");
 		PG_RETURN_NULL();
 	}
 
 	lwin = pglwgeom_deserialize(gin);
-	lwout = (LWGEOM*)lwline_measured_from_lwline((LWLINE*)lwin, start_measure, end_measure);
+	if( type == LINETYPE )
+		lwout = (LWGEOM*)lwline_measured_from_lwline((LWLINE*)lwin, start_measure, end_measure);
+	else
+		lwout = (LWGEOM*)lwmline_measured_from_lwmline((LWMLINE*)lwin, start_measure, end_measure);
+
 	lwgeom_release(lwin);
 
 	if ( lwout == NULL )

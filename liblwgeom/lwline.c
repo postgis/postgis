@@ -544,7 +544,7 @@ lwline_measured_from_lwline(const LWLINE *lwline, double m_start, double m_end)
 	
 	if( TYPE_GETTYPE(lwline->type) != LINETYPE )
 	{
-		lwerror("lwmline_construct_from_lwline: only line types supported");
+		lwerror("lwline_construct_from_lwline: only line types supported");
 		return NULL;
 	}
 	

@@ -123,6 +123,67 @@ lwmline_add(const LWMLINE *to, uint32 where, const LWGEOM *what)
 
 }
 
+/**
+* Re-write the measure ordinate (or add one, if it isn't already there) interpolating
+* the measure between the supplied start and end values. 
+*/
+LWMLINE* 
+lwmline_measured_from_lwmline(const LWMLINE *lwmline, double m_start, double m_end)
+{
+	int i = 0;
+	int hasm = 0, hasz = 0;
+	double length = 0.0, length_so_far = 0.0;
+	double m_range = m_end - m_start;
+	LWGEOM **geoms = NULL;
+	
+	if( TYPE_GETTYPE(lwmline->type) != MULTILINETYPE )
+	{
+		lwerror("lwmline_measured_from_lmwline: only multiline types supported");
+		return NULL;
+	}
+	
+	hasz = TYPE_HASZ(lwmline->type);
+	hasm = 1;
+	
+	/* Calculate the total length of the mline */
+	for( i = 0; i < lwmline->ngeoms; i++ )
+	{
+		LWLINE *lwline = (LWLINE*)lwmline->geoms[i];
+		if( lwline->points && lwline->points->npoints > 1 )
+		{
+			length += lwgeom_pointarray_length2d(lwline->points);
+		}
+	}
+		
+	if( lwgeom_is_empty((LWGEOM*)lwmline) )
+	{
+		return (LWMLINE*)lwcollection_construct_empty(lwmline->SRID, hasz, hasm);
+	}
+	
+	geoms = lwalloc(sizeof(LWGEOM*) * lwmline->ngeoms);
+	
+	for( i = 0; i < lwmline->ngeoms; i++ )
+	{		
+		double sub_m_start, sub_m_end;
+		double sub_length = 0.0;
+		LWLINE *lwline = (LWLINE*)lwmline->geoms[i];
+		
+		if( lwline->points && lwline->points->npoints > 1 )
+		{
+			sub_length = lwgeom_pointarray_length2d(lwline->points);
+		}
+		
+		sub_m_start = (m_start + m_range * length_so_far / length);
+		sub_m_end = (m_start + m_range * (length_so_far + sub_length) / length);
+		
+		geoms[i] = (LWGEOM*)lwline_measured_from_lwline(lwline, sub_m_start, sub_m_end);
+		
+		length_so_far += sub_length;
+	}
+
+	return (LWMLINE*)lwcollection_construct(lwmline->type, lwmline->SRID, NULL, lwmline->ngeoms, geoms);
+}
+
 void lwmline_free(LWMLINE *mline)
 {
 	int i;
