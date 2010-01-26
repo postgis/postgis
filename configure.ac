@@ -465,13 +465,15 @@ dnl and then combine to give the final version.
 dnl This is to guard against user error... 
 GEOS_MAJOR_VERSION=`$GEOSCONFIG --version | cut -d. -f1 | sed 's/[[^0-9]]//g'`
 GEOS_MINOR_VERSION=`$GEOSCONFIG --version | cut -d. -f2 | sed 's/[[^0-9]]//g'`
+GEOS_PATCH_VERSION=`$GEOSCONFIG --version | cut -d. -f3 | sed 's/[[^0-9]]//g'`
 GEOS_FULL_VERSION=`$GEOSCONFIG --version`
 POSTGIS_GEOS_VERSION="$GEOS_MAJOR_VERSION$GEOS_MINOR_VERSION"
+GEOS_NUMERIC_VERSION="$GEOS_MAJOR_VERSION$GEOS_MINOR_VERSION$GEOS_PATCH_VERSION"
 
 dnl Ensure that we are using GEOS >= 3.1.0
 AC_MSG_RESULT([checking GEOS version... $GEOS_FULL_VERSION])
-if test ! "$POSTGIS_GEOS_VERSION" -ge 31; then
-	AC_MSG_ERROR([PostGIS requires GEOS >= 3.1])
+if test ! "$GEOS_NUMERIC_VERSION" -ge 311; then
+	AC_MSG_ERROR([PostGIS requires GEOS >= 3.1.1])
 fi
 
 dnl Extract the linker and include flags 
