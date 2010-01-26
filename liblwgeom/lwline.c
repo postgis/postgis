@@ -564,8 +564,13 @@ lwline_measured_from_lwline(const LWLINE *lwline, double m_start, double m_end)
 	for( i = 0; i < npoints; i++ )
 	{		
 		POINT4D q;
+		POINT2D a, b;
 	 	getPoint3dz_p(lwline->points, i, &p2);
-		length_so_far += distance2d_pt_pt((POINT2D*)&p1, (POINT2D*)&p2);
+		a.x = p1.x;
+		a.y = p1.y;
+		b.x = p2.x;
+		b.y = p2.y;
+		length_so_far += distance2d_pt_pt(&a, &b);
 		if ( length > 0.0 )
 			m = m_start + m_range * length_so_far / length;
 		else
