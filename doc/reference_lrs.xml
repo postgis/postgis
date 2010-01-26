@@ -531,12 +531,6 @@ ST_GeomFromEWKT('LINESTRINGM(1 0 4, 2 0 4, 4 0 4)'),10,40)) As ewelev;
 </programlisting>
 	  </refsection>
 
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_StartMeasure" />, <xref linkend="ST_EndMeasure" /></para>
-	  </refsection>
 	</refentry>
 
 	
