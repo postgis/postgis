@@ -6,6 +6,8 @@
 DELETE FROM spatial_ref_sys;
 INSERT INTO spatial_ref_sys ( srid, proj4text ) VALUES ( 32611, '+proj=utm +zone=11 +ellps=WGS84 +datum=WGS84 +units=m +no_defs' );
 INSERT INTO spatial_ref_sys ( srid, proj4text ) VALUES ( 4326, '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' );
+INSERT INTO spatial_ref_sys ( srid, proj4text ) VALUES ( 32602, '+proj=utm +zone=2 +ellps=WGS84 +datum=WGS84 +units=m +no_defs ' );
+INSERT INTO spatial_ref_sys ( srid, proj4text ) VALUES ( 32702, '+proj=utm +zone=2 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs ' );
 
 
 -- #2 --
