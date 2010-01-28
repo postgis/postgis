@@ -2,6 +2,14 @@
 
 # Run astyle on the code base ready for release
 
+# If astyle doesn't exist, exit the script and do nothing
+echo "FOO" | astyle > /dev/null
+RET=$?
+if [ $RET -ne 0 ]; then
+	echo "Could not find astyle - aborting." 
+	exit
+fi
+
 # Find all "pure" C files in the codebase
 #   - not .in.c used for .sql generation
 #   - not lex.yy.c or wktparse.tab.c as these are generated files
