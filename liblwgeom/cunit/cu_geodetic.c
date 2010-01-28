@@ -965,7 +965,9 @@ void test_spheroid_area(void)
 	a1 = lwgeom_area_sphere(lwg, &gbox, &s);
 	a2 = lwgeom_area_spheroid(lwg, &gbox, &s);
 	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
-	CU_ASSERT_DOUBLE_EQUAL(a1, a2, 0.2);
+	CU_ASSERT_DOUBLE_EQUAL(a1, 89.7211470368, 0.0001); /* sphere */
+	CU_ASSERT_DOUBLE_EQUAL(a2, 89.8684316032, 0.0001); /* spheroid */
+	
 
 	/* Big-ass polygon */
 	lwg = lwgeom_from_ewkt("POLYGON((-2 3, -2 4, -1 4, -1 3, -2 3))", PARSER_CHECK_NONE);
@@ -973,7 +975,8 @@ void test_spheroid_area(void)
 	a1 = lwgeom_area_sphere(lwg, &gbox, &s);
 	a2 = lwgeom_area_spheroid(lwg, &gbox, &s);
 	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
-	CU_ASSERT_DOUBLE_EQUAL(a1, a2, 100000000.0);
+	CU_ASSERT_DOUBLE_EQUAL(a1, 12341436880.1, 10.0); /* sphere */
+	CU_ASSERT_DOUBLE_EQUAL(a2, 12286574431.9, 10.0); /* spheroid */
 
 }
 
