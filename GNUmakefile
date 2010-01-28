@@ -26,7 +26,7 @@ maintainer-clean:
 	@echo '------------------------------------------------------'
 	$(MAKE) -C doc maintainer-clean
 	$(MAKE) -C postgis maintainer-clean
-	$(MAKE) -C jdbc2 maintainer-clean
+	$(MAKE) -C java/jdbc maintainer-clean
 	$(MAKE) distclean
 	rm -f configure
 
