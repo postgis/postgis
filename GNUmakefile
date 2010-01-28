@@ -112,4 +112,7 @@ config.status: configure
 ChangeLog.svn:
 	svn2cl --authors=authors.svn -i -o ChangeLog.svn
 
+astyle:
+	./astyle.sh
+
 .PHONY: utils liblwgeom ChangeLog.svn
