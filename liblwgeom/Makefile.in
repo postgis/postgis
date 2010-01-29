@@ -12,6 +12,7 @@
 
 CC=@CC@
 CFLAGS=@CFLAGS@ @PICFLAGS@ @WARNFLAGS@ 
+NUMERICFLAGS=@NUMERICFLAGS@
 
 YACC=@YACC@
 LEX=@LEX@
@@ -50,8 +51,10 @@ SA_OBJS = \
 	g_serialized.o \
 	g_util.o \
 	lwgeodetic.o \
-	lwspheroid.o \
 	lwtree.o
+
+NM_OBJS = \
+	lwspheroid.o 
 
 SA_HEADERS = \
 	liblwgeom.h \
@@ -59,11 +62,12 @@ SA_HEADERS = \
 
 all: liblwgeom.a
 
-liblwgeom.a: $(SA_OBJS) $(SA_HEADERS) 
-	ar rs liblwgeom.a $(SA_OBJS) 	
+liblwgeom.a: $(SA_OBJS) $(NM_OBJS) $(SA_HEADERS) 
+	ar rs liblwgeom.a $(SA_OBJS) $(NM_OBJS) 	
 
 clean:
 	rm -f $(SA_OBJS) 
+	rm -f $(NM_OBJS) 
 	rm -f liblwgeom.a 
 
 check: liblwgeom.a
@@ -72,6 +76,11 @@ check: liblwgeom.a
 # Command to build each of the .o files
 $(SA_OBJS): %.o: %.c 
 	$(CC) $(CFLAGS) -c -o $@ $<
+
+# Command to build each of the .o files
+$(NM_OBJS): %.o: %.c 
+	$(CC) $(CFLAGS) $(NUMERICFLAGS) -c -o $@ $<
+
 
 # Commands to generate the lexer and parser from input files
 wktparse.tab.c: wktparse.y
