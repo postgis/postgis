@@ -324,27 +324,38 @@ static double spheroid_boundingbox_area(const GEOGRAPHIC_POINT *southWestCorner,
 */
 static double spheroid_striparea(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, double latitude_min, const SPHEROID *spheroid) 
 {
-	GEOGRAPHIC_POINT A = *a;
-	GEOGRAPHIC_POINT B = *b;
-	GEOGRAPHIC_POINT mL, nR;
+	GEOGRAPHIC_POINT A, B, mL, nR;
 	double deltaLng, baseArea, topArea;
 	double bE, tE, ratio, sign;
+	
+	A = *a;
+	B = *b;
 	
 	mL.lat = latitude_min;
 	mL.lon = FP_MIN(A.lon, B.lon);
 	nR.lat = FP_MIN(A.lat, B.lat);
 	nR.lon = FP_MAX(A.lon, B.lon);
+	LWDEBUGF(4, "mL (%.12g %.12g)", mL.lat, mL.lon);
+	LWDEBUGF(4, "nR (%.12g %.12g)", nR.lat, nR.lon);
 	baseArea = spheroid_boundingbox_area(&mL, &nR, spheroid);
+	LWDEBUGF(4, "baseArea %.12g", baseArea);
 
 	mL.lat = FP_MIN(A.lat, B.lat);
 	mL.lon = FP_MIN(A.lon, B.lon);
 	nR.lat = FP_MAX(A.lat, B.lat);
 	nR.lon = FP_MAX(A.lon, B.lon);
+	LWDEBUGF(4, "mL (%.12g %.12g)", mL.lat, mL.lon);
+	LWDEBUGF(4, "nR (%.12g %.12g)", nR.lat, nR.lon);
 	topArea = spheroid_boundingbox_area(&mL, &nR, spheroid);
+	LWDEBUGF(4, "topArea %.12g", topArea);
 	
 	deltaLng = B.lon - A.lon;
+	LWDEBUGF(4, "deltaLng %.12g", deltaLng);
 	bE = spheroid_parallel_arc_length(A.lat, deltaLng, spheroid);
 	tE = spheroid_parallel_arc_length(B.lat, deltaLng, spheroid);
+	LWDEBUGF(4, "bE %.12g", bE);
+	LWDEBUGF(4, "tE %.12g", tE);
+
 	ratio = (bE + tE)/tE;
 	sign = signum(B.lon - A.lon);
 	return (baseArea + topArea / ratio) * sign;
