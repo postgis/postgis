@@ -40,8 +40,8 @@
 			<title>Examples</title>
 
 			<programlisting>UPDATE sometable
- SET the_geom =  ST_AddBBox(the_geom)
- WHERE ST_HasBBox(the_geom) = false;</programlisting>
+ SET the_geom =  PostGIS_AddBBox(the_geom)
+ WHERE PostGIS_HasBBox(the_geom) = false;</programlisting>
 		  </refsection>
 
 		  <!-- Optionally add a "See Also" section -->
