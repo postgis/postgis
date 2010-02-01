@@ -1572,7 +1572,7 @@ Datum LWGEOM_closestpoint(PG_FUNCTION_ARGS)
 	srid = pglwgeom_getSRID(geom1);
 
 	point = lw_dist2d_distancepoint( SERIALIZED_FORM(geom1),SERIALIZED_FORM(geom2), srid, DIST2D_MIN);
-	if(lwgeom_is_empty(point))
+	if (lwgeom_is_empty(point))
 	{
 		PG_RETURN_NULL();
 	}
@@ -1605,7 +1605,7 @@ Datum LWGEOM_shortestline2d(PG_FUNCTION_ARGS)
 	srid = pglwgeom_getSRID(geom1);
 
 	theline = lw_dist2d_distanceline( SERIALIZED_FORM(geom1),SERIALIZED_FORM(geom2), srid, DIST2D_MIN);
-	if(lwgeom_is_empty(theline))
+	if (lwgeom_is_empty(theline))
 	{
 		PG_RETURN_NULL();
 	}
@@ -1638,7 +1638,7 @@ Datum LWGEOM_longestline2d(PG_FUNCTION_ARGS)
 	srid = pglwgeom_getSRID(geom1);
 
 	theline = lw_dist2d_distanceline( SERIALIZED_FORM(geom1),SERIALIZED_FORM(geom2), srid, DIST2D_MAX);
-	if(lwgeom_is_empty(theline))
+	if (lwgeom_is_empty(theline))
 	{
 		PG_RETURN_NULL();
 	}
@@ -1646,7 +1646,7 @@ Datum LWGEOM_longestline2d(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 /**
- Minimum 2d distance between objects in geom1 and geom2. 
+ Minimum 2d distance between objects in geom1 and geom2.
  */
 PG_FUNCTION_INFO_V1(LWGEOM_mindistance2d);
 Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS)
@@ -1667,7 +1667,7 @@ Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS)
 	}
 
 	mindist = lwgeom_mindistance2d(SERIALIZED_FORM(geom1),
-	          SERIALIZED_FORM(geom2));
+	                               SERIALIZED_FORM(geom2));
 
 	PROFSTOP(PROF_QRUN);
 	PROFREPORT("dist",geom1, geom2, NULL);
@@ -1677,14 +1677,14 @@ Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS)
 	/*if called with empty geometries the ingoing mindistance is untouched, and makes us return NULL*/
 	if (mindist<MAXFLOAT)
 	{
-	PG_RETURN_FLOAT8(mindist);		
+		PG_RETURN_FLOAT8(mindist);
 	}
 	PG_RETURN_NULL();
 }
 
 /**
 Returns boolean describing if
-mininimum 2d distance between objects in 
+mininimum 2d distance between objects in
 geom1 and geom2 is shorter than tolerance
 */
 PG_FUNCTION_INFO_V1(LWGEOM_dwithin);
@@ -1723,14 +1723,14 @@ Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
-/*empty geometries cases should be right handled since return from underlying
- functions should be MAXFLOAT which causes false as answer*/
+	/*empty geometries cases should be right handled since return from underlying
+	 functions should be MAXFLOAT which causes false as answer*/
 	PG_RETURN_BOOL(tolerance >= mindist);
 }
 
 /**
 Returns boolean describing if
-maximum 2d distance between objects in 
+maximum 2d distance between objects in
 geom1 and geom2 is shorter than tolerance
 */
 PG_FUNCTION_INFO_V1(LWGEOM_dfullywithin);
@@ -1758,10 +1758,10 @@ Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 	maxdist = lwgeom_maxdistance2d_tolerance(
-				  SERIALIZED_FORM(geom1),
-				  SERIALIZED_FORM(geom2),
-				  tolerance
-			  );
+	              SERIALIZED_FORM(geom1),
+	              SERIALIZED_FORM(geom2),
+	              tolerance
+	          );
 	PROFSTOP(PROF_QRUN);
 	PROFREPORT("dist",geom1, geom2, NULL);
 
@@ -1772,11 +1772,11 @@ Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS)
 	{
 		PG_RETURN_BOOL(tolerance >= maxdist);
 	}
-	PG_RETURN_BOOL(LW_FALSE);	
+	PG_RETURN_BOOL(LW_FALSE);
 }
 
 /**
- Maximum 2d distance between objects in geom1 and geom2. 
+ Maximum 2d distance between objects in geom1 and geom2.
  */
 PG_FUNCTION_INFO_V1(LWGEOM_maxdistance2d_linestring);
 Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS)
@@ -1798,7 +1798,7 @@ Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS)
 
 
 	maxdist = lwgeom_maxdistance2d(SERIALIZED_FORM(geom1),
-	          SERIALIZED_FORM(geom2));
+	                               SERIALIZED_FORM(geom2));
 
 	PROFSTOP(PROF_QRUN);
 	PROFREPORT("maxdist",geom1, geom2, NULL);
@@ -1808,7 +1808,7 @@ Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS)
 	/*if called with empty geometries the ingoing mindistance is untouched, and makes us return NULL*/
 	if (maxdist>-1)
 	{
-		PG_RETURN_FLOAT8(maxdist);	
+		PG_RETURN_FLOAT8(maxdist);
 	}
 	PG_RETURN_NULL();
 }
@@ -2111,7 +2111,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	int SRID=-1;
 	size_t offset;
 	BOX2DFLOAT4 *box=NULL;
-	bits8 *bitmap; 
+	bits8 *bitmap;
 	int bitmask;
 
 	POSTGIS_DEBUG(2, "LWGEOM_collect_garray called.");
@@ -2157,23 +2157,23 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	bitmask = 1;
 	for (i=0; i<nelems; i++)
 	{
-		/* Don't do anything for NULL values */ 
- 		if ((bitmap && (*bitmap & bitmask) != 0) || !bitmap)
+		/* Don't do anything for NULL values */
+		if ((bitmap && (*bitmap & bitmask) != 0) || !bitmap)
 		{
 			PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
 			unsigned int intype = TYPE_GETTYPE(geom->type);
-	
+
 			offset += INTALIGN(VARSIZE(geom));
-	
+
 			lwgeoms[count] = lwgeom_deserialize(SERIALIZED_FORM(geom));
-	
+
 			POSTGIS_DEBUGF(3, "LWGEOM_collect_garray: geom %d deserialized", i);
-	
+
 			if ( ! count )
 			{
 				/* Get first geometry SRID */
 				SRID = lwgeoms[count]->SRID;
-	
+
 				/* COMPUTE_BBOX WHEN_SIMPLE */
 				if ( lwgeoms[count]->bbox )
 				{
@@ -2186,10 +2186,10 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 				if ( lwgeoms[count]->SRID != SRID )
 				{
 					elog(ERROR,
-					"Operation on mixed SRID geometries");
+					     "Operation on mixed SRID geometries");
 					PG_RETURN_NULL();
 				}
-	
+
 				/* COMPUTE_BBOX WHEN_SIMPLE */
 				if ( box )
 				{
@@ -2210,7 +2210,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 
 			lwgeom_dropSRID(lwgeoms[count]);
 			lwgeom_drop_bbox(lwgeoms[count]);
-	
+
 			/* Output type not initialized */
 			if ( ! outtype )
 			{
@@ -2219,7 +2219,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 				/* Input is multi, make collection */
 				else outtype = COLLECTIONTYPE;
 			}
-	
+
 			/* Input type not compatible with output */
 			/* make output type a collection */
 			else if ( outtype != COLLECTIONTYPE && intype != outtype-3 )
@@ -2252,11 +2252,11 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	else
 	{
 		outlwg = (LWGEOM *)lwcollection_construct(
-			outtype, SRID,
-			box, count, lwgeoms);
-	
+		             outtype, SRID,
+		             box, count, lwgeoms);
+
 		result = pglwgeom_serialize(outlwg);
-	
+
 		PG_RETURN_POINTER(result);
 	}
 }
@@ -2365,17 +2365,17 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 	bitmask = 1;
 	for (i=0; i<nelems; i++)
 	{
-		/* Don't do anything for NULL values */  
-		if ((bitmap && (*bitmap & bitmask) != 0) || !bitmap) 
- 		{ 
+		/* Don't do anything for NULL values */
+		if ((bitmap && (*bitmap & bitmask) != 0) || !bitmap)
+		{
 			PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
 			offset += INTALIGN(VARSIZE(geom));
-	
+
 			if ( TYPE_GETTYPE(geom->type) != POINTTYPE ) continue;
-	
+
 			lwpoints[npoints++] =
-			lwpoint_deserialize(SERIALIZED_FORM(geom));
-	
+			    lwpoint_deserialize(SERIALIZED_FORM(geom));
+
 			/* Check SRID homogeneity */
 			if ( npoints == 1 )
 			{
@@ -2387,13 +2387,13 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 				if ( lwpoints[npoints-1]->SRID != SRID )
 				{
 					elog(ERROR,
-					"Operation on mixed SRID geometries");
+					     "Operation on mixed SRID geometries");
 					PG_RETURN_NULL();
 				}
 			}
-	
+
 			POSTGIS_DEBUGF(3, "LWGEOM_makeline_garray: element %d deserialized",
-				i);
+			               i);
 		}
 
 		/* Advance NULL bitmap */
@@ -2947,7 +2947,7 @@ Datum ST_MakeEnvelope(PG_FUNCTION_ARGS)
 
 	pa = (POINTARRAY**)palloc(sizeof(POINTARRAY*));
 	pa[0] = ptarray_construct(0, 0, 5);
-	pts = (double*)(pa[0]->serialized_pointlist); 
+	pts = (double*)(pa[0]->serialized_pointlist);
 
 	/* 1st point */
 	pts[0] = x1;
@@ -2973,7 +2973,7 @@ Datum ST_MakeEnvelope(PG_FUNCTION_ARGS)
 
 	result = pglwgeom_serialize((LWGEOM*)poly);
 	lwpoly_free(poly);
-	
+
 	PG_RETURN_POINTER(result);
 }
 
@@ -3605,7 +3605,7 @@ Datum ST_CollectionExtract(PG_FUNCTION_ARGS)
 	LWCOLLECTION *lwcol = NULL;
 	int type = PG_GETARG_INT32(1);
 	int lwgeom_type = TYPE_GETTYPE(lwgeom->type);
-	
+
 	/* Ensure the right type was input */
 	if ( ! ( type == POINTTYPE || type == LINETYPE || type == POLYGONTYPE ) )
 	{
@@ -3613,7 +3613,7 @@ Datum ST_CollectionExtract(PG_FUNCTION_ARGS)
 		elog(ERROR, "ST_CollectionExtract: only point, linestring and polygon may be extracted");
 		PG_RETURN_NULL();
 	}
-	
+
 	/* Mirror non-collections right back */
 	if ( ! lwgeom_is_collection(lwgeom_type) )
 	{
@@ -3626,7 +3626,7 @@ Datum ST_CollectionExtract(PG_FUNCTION_ARGS)
 
 	lwcol = lwcollection_extract((LWCOLLECTION*)lwgeom, type);
 	output = pglwgeom_serialize((LWGEOM*)lwcol);
-	lwgeom_free(lwgeom); 
+	lwgeom_free(lwgeom);
 
 	PG_RETURN_POINTER(output);
 }

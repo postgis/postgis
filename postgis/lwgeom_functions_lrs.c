@@ -116,7 +116,7 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 	 * if p1 and p2 have the same measure
 	 * this should never be reached (either
 	 * both inside or both outside)
-	 * 
+	 *
 	 */
 	dM0=(m0-p1->m)/(p2->m-p1->m); /* delta-M0 */
 	dM1=(m1-p2->m)/(p2->m-p1->m); /* delta-M1 */
@@ -129,13 +129,13 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 	LWDEBUGF(3, "swapped: %d", swapped);
 
 	/*
-	 * First point out of range, project 
+	 * First point out of range, project
 	 * it on the range
 	 */
 	if ( p1->m < m0 )
 	{
 		/*
-		 * To prevent rounding errors, then if m0==m1 and p2 lies within the range, copy 
+		 * To prevent rounding errors, then if m0==m1 and p2 lies within the range, copy
 		 * p1 as a direct copy of p2
 		 */
 		if (m0 == m1 && p2->m <= m1)
@@ -160,13 +160,13 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 	}
 
 	/*
-	 * Second point out of range, project 
+	 * Second point out of range, project
 	 * it on the range
 	 */
 	if ( p2->m > m1 )
 	{
 		/*
-		 * To prevent rounding errors, then if m0==m1 and p1 lies within the range, copy 
+		 * To prevent rounding errors, then if m0==m1 and p1 lies within the range, copy
 		 * p2 as a direct copy of p1
 		 */
 		if (m0 == m1 && p1->m >= m0)
@@ -208,7 +208,7 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 	 * We allocate space for as many pointarray as
 	 * segments in the input POINTARRAY, as worst
 	 * case is for each segment to cross the M range
-	 * window. 
+	 * window.
 	 * TODO: rework this to reduce used memory
 	 */
 	ret.ptarrays=lwalloc(sizeof(POINTARRAY *)*ipa->npoints-1);
@@ -509,7 +509,7 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 	 * or a collection
 	 */
 	type=lwgeom_getType(gin->type);
-		
+
 	if ( type == POLYGONTYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE )
 	{
 		lwerror("Areal or Collection types are not supported");
@@ -538,9 +538,9 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 
 
 /*
-* CREATE OR REPLACE FUNCTION ST_AddMeasure(geometry, float8, float8) 
-* RETURNS geometry 
-* AS '$libdir/postgis-1.5', 'ST_AddMeasure' 
+* CREATE OR REPLACE FUNCTION ST_AddMeasure(geometry, float8, float8)
+* RETURNS geometry
+* AS '$libdir/postgis-1.5', 'ST_AddMeasure'
 * LANGUAGE 'C' IMMUTABLE STRICT;
 */
 PG_FUNCTION_INFO_V1(ST_AddMeasure);
@@ -561,7 +561,7 @@ Datum ST_AddMeasure(PG_FUNCTION_ARGS)
 	}
 
 	lwin = pglwgeom_deserialize(gin);
-	if( type == LINETYPE )
+	if ( type == LINETYPE )
 		lwout = (LWGEOM*)lwline_measured_from_lwline((LWLINE*)lwin, start_measure, end_measure);
 	else
 		lwout = (LWGEOM*)lwmline_measured_from_lwmline((LWMLINE*)lwin, start_measure, end_measure);

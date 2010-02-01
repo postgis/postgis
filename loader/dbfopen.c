@@ -386,7 +386,7 @@ DBFOpen( const char * pszFilename, const char * pszAccess )
 	        i > 0 && pszBasename[i] != '.' && pszBasename[i] != '/'
 	        && pszBasename[i] != '\\';
 	        i-- )
-	{}
+		{}
 
 	if ( pszBasename[i] == '.' )
 		pszBasename[i] = '\0';
@@ -575,7 +575,7 @@ DBFCreate( const char * pszFilename )
 	        i > 0 && pszBasename[i] != '.' && pszBasename[i] != '/'
 	        && pszBasename[i] != '\\';
 	        i-- )
-	{}
+		{}
 
 	if ( pszBasename[i] == '.' )
 		pszBasename[i] = '\0';

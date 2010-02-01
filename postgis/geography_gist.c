@@ -18,10 +18,10 @@
 **     R-Trees. Advances in Spatial Databases - 5th International Symposium,
 **     1997
 ** [3] N. Beckmann, H.-P. Kriegel, R. Schneider, B. Seeger. The R*tree: an
-**     efficient and robust access method for points and rectangles. 
+**     efficient and robust access method for points and rectangles.
 **     Proceedings of the ACM SIGMOD Conference. June 1990.
 */
- 
+
 #include "postgres.h"
 #include "access/gist.h"    /* For GiST */
 #include "access/itup.h"
@@ -36,21 +36,21 @@
 
 
 /*
-** When is a node split not so good? If more than 90% of the entries 
+** When is a node split not so good? If more than 90% of the entries
 ** end up in one of the children.
 */
 #define LIMIT_RATIO 0.1
 
 /*
 ** For debugging
-*/ 
+*/
 #if POSTGIS_DEBUG_LEVEL > 0
-	static int geog_counter_leaf = 0;
-	static int geog_counter_internal = 0;
+static int geog_counter_leaf = 0;
+static int geog_counter_internal = 0;
 #endif
 
 /*
-** GiST prototypes 
+** GiST prototypes
 */
 Datum geography_gist_consistent(PG_FUNCTION_ARGS);
 Datum geography_gist_compress(PG_FUNCTION_ARGS);
@@ -75,7 +75,7 @@ Datum geography_overlaps(PG_FUNCTION_ARGS);
 /*********************************************************************************
 ** GIDX support functions.
 **
-** We put the GIDX support here rather than libgeom because it is a specialized 
+** We put the GIDX support here rather than libgeom because it is a specialized
 ** type only used for indexing purposes. It also makes use of some PgSQL
 ** infrastructure like the VARSIZE() macros.
 */
@@ -114,14 +114,14 @@ static char* gidx_to_string(GIDX *a)
 {
 	char *str, *rv;
 	int i, ndims;
-	
-	if( a == NULL ) 
+
+	if ( a == NULL )
 		return pstrdup("<NULLPTR>");
-	
+
 	str = (char*)palloc(128);
 	rv = str;
 	ndims = GIDX_NDIMS(a);
-	
+
 	str += sprintf(str, "GIDX(");
 	for ( i = 0; i < ndims; i++ )
 		str += sprintf(str, " %.12g", GIDX_GET_MIN(a,i));
@@ -129,10 +129,10 @@ static char* gidx_to_string(GIDX *a)
 	for ( i = 0; i < ndims; i++ )
 		str += sprintf(str, " %.12g", GIDX_GET_MAX(a,i));
 	str += sprintf(str, " )");
-	
+
 	return rv;
 }
-#endif 
+#endif
 
 /* Allocate a new copy of GIDX */
 static GIDX* gidx_copy(GIDX *b)
@@ -149,9 +149,9 @@ static inline void gidx_validate(GIDX *b)
 	int i;
 	Assert(b);
 	POSTGIS_DEBUGF(5,"validating gidx (%s)", gidx_to_string(b));
-	for( i = 0; i < GIDX_NDIMS(b); i++ )
+	for ( i = 0; i < GIDX_NDIMS(b); i++ )
 	{
-		if( GIDX_GET_MIN(b,i) > GIDX_GET_MAX(b,i) )
+		if ( GIDX_GET_MIN(b,i) > GIDX_GET_MAX(b,i) )
 		{
 			float tmp;
 			tmp = GIDX_GET_MIN(b,i);
@@ -176,22 +176,22 @@ static void gidx_merge(GIDX **b_union, GIDX *b_new)
 
 	POSTGIS_DEBUGF(4, "merging gidx (%s) into gidx (%s)", gidx_to_string(b_new), gidx_to_string(*b_union));
 
-	if( dims_new > dims_union )
+	if ( dims_new > dims_union )
 	{
 		POSTGIS_DEBUGF(5, "reallocating b_union from %d dims to %d dims", dims_union, dims_new);
 		*b_union = (GIDX*)repalloc(*b_union, GIDX_SIZE(dims_new));
 		SET_VARSIZE(*b_union, VARSIZE(b_new));
 		dims_union = dims_new;
 	}
-	
-	for( i = 0; i < dims_new; i++ )
+
+	for ( i = 0; i < dims_new; i++ )
 	{
 		/* Adjust minimums */
 		GIDX_SET_MIN(*b_union, i, Min(GIDX_GET_MIN(*b_union,i),GIDX_GET_MIN(b_new,i)));
 		/* Adjust maximums */
 		GIDX_SET_MAX(*b_union, i, Max(GIDX_GET_MAX(*b_union,i),GIDX_GET_MAX(b_new,i)));
 	}
-	
+
 	POSTGIS_DEBUGF(5, "merge complete (%s)", gidx_to_string(*b_union));
 	return;
 }
@@ -201,13 +201,13 @@ static float gidx_volume(GIDX *a)
 {
 	float result;
 	int i;
-	if ( a == NULL ) 
+	if ( a == NULL )
 	{
-/*		elog(ERROR, "gidx_volume received a null argument"); */
+		/*		elog(ERROR, "gidx_volume received a null argument"); */
 		return 0.0;
 	}
 	result = GIDX_GET_MAX(a,0) - GIDX_GET_MIN(a,0);
-	for( i = 1; i < GIDX_NDIMS(a); i++ )
+	for ( i = 1; i < GIDX_NDIMS(a); i++ )
 		result *= (GIDX_GET_MAX(a,i) - GIDX_GET_MIN(a,i));
 	POSTGIS_DEBUGF(5, "calculated volume of %s as %.12g", gidx_to_string(a), result);
 	return result;
@@ -216,7 +216,7 @@ static float gidx_volume(GIDX *a)
 /* Ensure the first argument has the higher dimensionality. */
 static void gidx_dimensionality_check(GIDX **a, GIDX **b)
 {
-	if( GIDX_NDIMS(*a) < GIDX_NDIMS(*b) )
+	if ( GIDX_NDIMS(*a) < GIDX_NDIMS(*b) )
 	{
 		GIDX *tmp = *b;
 		*b = *a;
@@ -232,8 +232,8 @@ static float gidx_union_volume(GIDX *a, GIDX *b)
 	int ndims_a, ndims_b;
 
 	POSTGIS_DEBUG(5,"entered function");
-	
-	if ( a == NULL && b == NULL ) 
+
+	if ( a == NULL && b == NULL )
 	{
 		elog(ERROR, "gidx_union_volume received two null arguments");
 		return 0.0;
@@ -246,7 +246,7 @@ static float gidx_union_volume(GIDX *a, GIDX *b)
 
 	/* Ensure 'a' has the most dimensions. */
 	gidx_dimensionality_check(&a, &b);
-	
+
 	ndims_a = GIDX_NDIMS(a);
 	ndims_b = GIDX_NDIMS(b);
 
@@ -254,16 +254,16 @@ static float gidx_union_volume(GIDX *a, GIDX *b)
 	result = Max(GIDX_GET_MAX(a,0),GIDX_GET_MAX(b,0)) - Min(GIDX_GET_MIN(a,0),GIDX_GET_MIN(b,0));
 
 	/* Multiply by maximal length of remaining dimensions. */
-	for( i = 1; i < ndims_b; i++ )
+	for ( i = 1; i < ndims_b; i++ )
 	{
 		result *= (Max(GIDX_GET_MAX(a,i),GIDX_GET_MAX(b,i)) - Min(GIDX_GET_MIN(a,i),GIDX_GET_MIN(b,i)));
-	} 
-	
+	}
+
 	/* Add in dimensions of higher dimensional box. */
-	for( i = ndims_b; i < ndims_a; i++ )
+	for ( i = ndims_b; i < ndims_a; i++ )
 	{
 		result *= (GIDX_GET_MAX(a,i) - GIDX_GET_MIN(a,i));
-	} 
+	}
 
 	POSTGIS_DEBUGF(5, "volume( %s union %s ) = %.12g", gidx_to_string(a), gidx_to_string(b), result);
 
@@ -277,8 +277,8 @@ static float gidx_inter_volume(GIDX *a, GIDX *b)
 	float result;
 
 	POSTGIS_DEBUG(5,"entered function");
-	
-	if ( a == NULL || b == NULL ) 
+
+	if ( a == NULL || b == NULL )
 	{
 		elog(ERROR, "gidx_inter_volume received a null argument");
 		return 0.0;
@@ -286,15 +286,15 @@ static float gidx_inter_volume(GIDX *a, GIDX *b)
 
 	/* Ensure 'a' has the most dimensions. */
 	gidx_dimensionality_check(&a, &b);
-		
+
 	/* Initialize with minimal length of first dimension. */
 	result = Min(GIDX_GET_MAX(a,0),GIDX_GET_MAX(b,0)) - Max(GIDX_GET_MIN(a,0),GIDX_GET_MIN(b,0));
-	
+
 	/* If they are disjoint (max < min) then return zero. */
 	if ( result < 0.0 ) return 0.0;
-	
+
 	/* Continue for remaining dimensions. */
-	for( i = 1; i < GIDX_NDIMS(b); i++ )
+	for ( i = 1; i < GIDX_NDIMS(b); i++ )
 	{
 		float width = Min(GIDX_GET_MAX(a,i),GIDX_GET_MAX(b,i)) - Max(GIDX_GET_MIN(a,i),GIDX_GET_MIN(b,i));
 		if ( width < 0.0 ) return 0.0;
@@ -305,12 +305,12 @@ static float gidx_inter_volume(GIDX *a, GIDX *b)
 	return result;
 }
 
-/* Convert a double-based GBOX into a float-based GIDX, 
+/* Convert a double-based GBOX into a float-based GIDX,
    ensuring the float box is larger than the double box */
 static int gidx_from_gbox_p(GBOX box, GIDX *a)
 {
 	int ndims;
-	
+
 	ndims = (FLAGS_GET_GEODETIC(box.flags) ? 3 : FLAGS_NDIMS(box.flags));
 	SET_VARSIZE(a, VARHDRSZ + ndims * 2 * sizeof(float));
 
@@ -318,7 +318,7 @@ static int gidx_from_gbox_p(GBOX box, GIDX *a)
 	GIDX_SET_MAX(a,0,nextUp_f(box.xmax));
 	GIDX_SET_MIN(a,1,nextDown_f(box.ymin));
 	GIDX_SET_MAX(a,1,nextUp_f(box.ymax));
-	
+
 	/* Geodetic indexes are always 3d, geocentric x/y/z */
 	if ( FLAGS_GET_GEODETIC(box.flags) )
 	{
@@ -347,7 +347,7 @@ static int gidx_from_gbox_p(GBOX box, GIDX *a)
 	}
 
 	POSTGIS_DEBUGF(5, "converted %s to %s", gbox_to_string(&box), gidx_to_string(a));
-	
+
 	return G_SUCCESS;
 }
 
@@ -365,16 +365,16 @@ GIDX* gidx_from_gbox(GBOX box)
 
 void gbox_from_gidx(GIDX *a, GBOX *gbox)
 {
-	gbox->xmin = (double)GIDX_GET_MIN(a,0); 
-	gbox->ymin = (double)GIDX_GET_MIN(a,1); 
-	gbox->zmin = (double)GIDX_GET_MIN(a,2); 
-	gbox->xmax = (double)GIDX_GET_MAX(a,0); 
-	gbox->ymax = (double)GIDX_GET_MAX(a,1); 
-	gbox->zmax = (double)GIDX_GET_MAX(a,2); 
+	gbox->xmin = (double)GIDX_GET_MIN(a,0);
+	gbox->ymin = (double)GIDX_GET_MIN(a,1);
+	gbox->zmin = (double)GIDX_GET_MIN(a,2);
+	gbox->xmax = (double)GIDX_GET_MAX(a,0);
+	gbox->ymax = (double)GIDX_GET_MAX(a,1);
+	gbox->zmax = (double)GIDX_GET_MAX(a,2);
 }
 
 /*
-** Make a copy of a GSERIALIZED, with a new bounding box value embedded. 
+** Make a copy of a GSERIALIZED, with a new bounding box value embedded.
 */
 GSERIALIZED* gidx_insert_into_gserialized(GSERIALIZED *g, GIDX *gidx)
 {
@@ -382,13 +382,13 @@ GSERIALIZED* gidx_insert_into_gserialized(GSERIALIZED *g, GIDX *gidx)
 	int box_ndims = GIDX_NDIMS(gidx);
 	GSERIALIZED *g_out = NULL;
 	size_t box_size = 2 * g_ndims * sizeof(float);
-	
+
 	/* The dimensionality of the inputs has to match or we are SOL. */
-	if( g_ndims != box_ndims )
+	if ( g_ndims != box_ndims )
 	{
 		return NULL;
 	}
-	
+
 	/* Serialized already has room for a box. We just need to copy it and
 	   write the new values into place. */
 	if ( FLAGS_GET_BBOX(g->flags) )
@@ -414,48 +414,48 @@ GSERIALIZED* gidx_insert_into_gserialized(GSERIALIZED *g, GIDX *gidx)
 		FLAGS_SET_BBOX(g_out->flags, 1);
 		SET_VARSIZE(g_out, varsize_new);
 	}
-	
+
 	/* Now write the gidx values into the memory segement */
 	memcpy(g_out->data, gidx->c, box_size);
-	
+
 	return g_out;
 }
 
 
 /*
 ** Overlapping GIDX box test.
-** 
-** Box(A) Overlap Box(B) IFF (pt(a)LL < pt(B)UR) && (pt(b)LL < pt(a)UR) 
+**
+** Box(A) Overlap Box(B) IFF (pt(a)LL < pt(B)UR) && (pt(b)LL < pt(a)UR)
 */
 static bool gidx_overlaps(GIDX *a, GIDX *b)
 {
 	int i;
 	int ndims_b;
 	POSTGIS_DEBUG(5, "entered function");
-	if( (a == NULL) || (b == NULL) ) return FALSE;
+	if ( (a == NULL) || (b == NULL) ) return FALSE;
 
 	/* Ensure 'a' has the most dimensions. */
 	gidx_dimensionality_check(&a, &b);
-	
+
 	ndims_b = GIDX_NDIMS(b);
-	
+
 	/* compare within the dimensions of (b) */
-	for( i = 0; i < ndims_b; i++ )
+	for ( i = 0; i < ndims_b; i++ )
 	{
-		if( GIDX_GET_MIN(a,i) > GIDX_GET_MAX(b,i) )
+		if ( GIDX_GET_MIN(a,i) > GIDX_GET_MAX(b,i) )
 			return FALSE;
-		if( GIDX_GET_MIN(b,i) > GIDX_GET_MAX(a,i) )
+		if ( GIDX_GET_MIN(b,i) > GIDX_GET_MAX(a,i) )
 			return FALSE;
 	}
-	
+
 	/* compare to zero those dimensions in (a) absent in (b) */
-	for( i = ndims_b; i < GIDX_NDIMS(a); i++ )
+	for ( i = ndims_b; i < GIDX_NDIMS(a); i++ )
 	{
-		if( GIDX_GET_MIN(a,i) > 0.0 )
+		if ( GIDX_GET_MIN(a,i) > 0.0 )
 			return FALSE;
-		if( GIDX_GET_MAX(a,i) < 0.0 )
+		if ( GIDX_GET_MAX(a,i) < 0.0 )
 			return FALSE;
-	}		
+	}
 	return TRUE;
 }
 
@@ -470,22 +470,22 @@ static bool gidx_contains(GIDX *a, GIDX *b)
 
 	POSTGIS_DEBUG(5, "entered function");
 
-	if( (a == NULL) || (b == NULL) ) return FALSE;
+	if ( (a == NULL) || (b == NULL) ) return FALSE;
 
 	dims_a = GIDX_NDIMS(a);
 	dims_b = GIDX_NDIMS(b);
 
-	if( dims_a < dims_b )
+	if ( dims_a < dims_b )
 	{
-		/* 
-		** If (b) is of higher dimensionality than (a) it can only be contained 
-		** if those higher dimensions are zeroes. 
+		/*
+		** If (b) is of higher dimensionality than (a) it can only be contained
+		** if those higher dimensions are zeroes.
 		*/
 		for (i = dims_a; i < dims_b; i++)
 		{
-			if( GIDX_GET_MIN(b,i) != 0 )
+			if ( GIDX_GET_MIN(b,i) != 0 )
 				return FALSE;
-			if( GIDX_GET_MAX(b,i) != 0 )
+			if ( GIDX_GET_MAX(b,i) != 0 )
 				return FALSE;
 		}
 	}
@@ -498,7 +498,7 @@ static bool gidx_contains(GIDX *a, GIDX *b)
 		if ( GIDX_GET_MAX(a,i) < GIDX_GET_MAX(b,i) )
 			return FALSE;
 	}
-	
+
 	return TRUE;
 }
 /*
@@ -512,12 +512,12 @@ static bool gidx_equals(GIDX *a, GIDX *b)
 
 	POSTGIS_DEBUG(5, "entered function");
 
-	if( (a == NULL) && (b == NULL) ) return TRUE;
-	if( (a == NULL) || (b == NULL) ) return FALSE;
-	
+	if ( (a == NULL) && (b == NULL) ) return TRUE;
+	if ( (a == NULL) || (b == NULL) ) return FALSE;
+
 	/* Ensure 'a' has the most dimensions. */
 	gidx_dimensionality_check(&a, &b);
-	
+
 	/* For all shared dimensions min(a) == min(b), max(a) == max(b) */
 	for (i = 0; i < GIDX_NDIMS(b); i++)
 	{
@@ -538,8 +538,8 @@ static bool gidx_equals(GIDX *a, GIDX *b)
 }
 
 /*
-** Peak into a geography (gserialized) datum to find the bounding box. If the 
-** box is there, copy it out and return it. If not, calculate the box from the 
+** Peak into a geography (gserialized) datum to find the bounding box. If the
+** box is there, copy it out and return it. If not, calculate the box from the
 ** full geography and return the box based on that. If no box is available,
 ** return G_FAILURE, otherwise G_SUCCESS.
 */
@@ -547,82 +547,82 @@ int geography_datum_gidx(Datum geography_datum, GIDX *gidx)
 {
 	GSERIALIZED *gpart;
 	int result = G_SUCCESS;
-	
+
 	POSTGIS_DEBUG(4, "entered function");
-	
+
 	/*
 	** The most info we need is the 8 bytes of serialized header plus the 24 bytes
 	** of floats necessary to hold the 6 floats of the geocentric index
-	** bounding box, so 32 bytes. 
+	** bounding box, so 32 bytes.
 	*/
 	gpart = (GSERIALIZED*)PG_DETOAST_DATUM_SLICE(geography_datum, 0, 32);
-	
-	POSTGIS_DEBUGF(4, "got flags %d", gpart->flags); 
-	
+
+	POSTGIS_DEBUGF(4, "got flags %d", gpart->flags);
+
 	if ( FLAGS_GET_BBOX(gpart->flags) && FLAGS_GET_GEODETIC(gpart->flags) )
 	{
 		const size_t size = 2 * 3 * sizeof(float);
-		POSTGIS_DEBUG(4, "copying box out of serialization"); 
+		POSTGIS_DEBUG(4, "copying box out of serialization");
 		memcpy(gidx->c, gpart->data, size);
 		SET_VARSIZE(gidx, VARHDRSZ + size);
 	}
 	else
 	{
-		GSERIALIZED *g = (GSERIALIZED*)PG_DETOAST_DATUM(geography_datum); 
+		GSERIALIZED *g = (GSERIALIZED*)PG_DETOAST_DATUM(geography_datum);
 		GBOX gbox;
-		POSTGIS_DEBUG(4, "calculating new box from scratch"); 
-		if( gserialized_calculate_gbox_geocentric_p(g, &gbox) == G_FAILURE )
+		POSTGIS_DEBUG(4, "calculating new box from scratch");
+		if ( gserialized_calculate_gbox_geocentric_p(g, &gbox) == G_FAILURE )
 		{
 			POSTGIS_DEBUG(4, "calculated null bbox, returning null");
 			return G_FAILURE;
 		}
 		result = gidx_from_gbox_p(gbox, gidx);
 	}
-	if( result == G_SUCCESS )
+	if ( result == G_SUCCESS )
 	{
 		POSTGIS_DEBUGF(4, "got gidx %s", gidx_to_string(gidx));
 	}
-	
+
 	return result;
 }
 
 /*
-** Peak into a geography to find the bounding box. If the 
-** box is there, copy it out and return it. If not, calculate the box from the 
+** Peak into a geography to find the bounding box. If the
+** box is there, copy it out and return it. If not, calculate the box from the
 ** full geography and return the box based on that. If no box is available,
 ** return G_FAILURE, otherwise G_SUCCESS.
 */
 int geography_gidx(GSERIALIZED *g, GIDX *gidx)
 {
 	int result = G_SUCCESS;
-	
+
 	POSTGIS_DEBUG(4, "entered function");
-	
-	POSTGIS_DEBUGF(4, "got flags %d", g->flags); 
-	
+
+	POSTGIS_DEBUGF(4, "got flags %d", g->flags);
+
 	if ( FLAGS_GET_BBOX(g->flags) && FLAGS_GET_GEODETIC(g->flags) )
 	{
 		const size_t size = 2 * 3 * sizeof(float);
-		POSTGIS_DEBUG(4, "copying box out of serialization"); 
+		POSTGIS_DEBUG(4, "copying box out of serialization");
 		memcpy(gidx->c, g->data, size);
 		SET_VARSIZE(gidx, VARHDRSZ + size);
 	}
 	else
 	{
 		GBOX gbox;
-		POSTGIS_DEBUG(4, "calculating new box from scratch"); 
-		if( gserialized_calculate_gbox_geocentric_p(g, &gbox) == G_FAILURE )
+		POSTGIS_DEBUG(4, "calculating new box from scratch");
+		if ( gserialized_calculate_gbox_geocentric_p(g, &gbox) == G_FAILURE )
 		{
 			POSTGIS_DEBUG(4, "calculated null bbox, returning null");
 			return G_FAILURE;
 		}
 		result = gidx_from_gbox_p(gbox, gidx);
 	}
-	if( result == G_SUCCESS )
+	if ( result == G_SUCCESS )
 	{
 		POSTGIS_DEBUGF(4, "got gidx %s", gidx_to_string(gidx));
 	}
-	
+
 	return result;
 }
 
@@ -645,18 +645,18 @@ Datum geography_overlaps(PG_FUNCTION_ARGS)
 
 	/* Must be able to build box for each arguement (ie, not empty geometry)
 	   and overlap boxes to return true. */
-	if( geography_datum_gidx(PG_GETARG_DATUM(0), gbox1) &&
-	    geography_datum_gidx(PG_GETARG_DATUM(1), gbox2) && 
-	    gidx_overlaps(gbox1, gbox2) )
+	if ( geography_datum_gidx(PG_GETARG_DATUM(0), gbox1) &&
+	        geography_datum_gidx(PG_GETARG_DATUM(1), gbox2) &&
+	        gidx_overlaps(gbox1, gbox2) )
 	{
 		PG_RETURN_BOOL(TRUE);
 	}
-	
-	PG_RETURN_BOOL(FALSE);	
+
+	PG_RETURN_BOOL(FALSE);
 }
 
 /*
-** GiST support function. Given a geography, return a "compressed" 
+** GiST support function. Given a geography, return a "compressed"
 ** version. In this case, we convert the geography into a geocentric
 ** bounding box. If the geography already has the box embedded in it
 ** we pull that out and hand it back.
@@ -669,21 +669,21 @@ Datum geography_gist_compress(PG_FUNCTION_ARGS)
 	char gidxmem[GIDX_MAX_SIZE];
 	GIDX *bbox_out = (GIDX*)gidxmem;
 	int result = G_SUCCESS;
-	
+
 	int i;
-	
+
 	POSTGIS_DEBUG(4, "[GIST] 'compress' function called");
-	
-	/* 
+
+	/*
 	** Not a leaf key? There's nothing to do.
-	** Return the input unchanged. 
+	** Return the input unchanged.
 	*/
-	if( ! entry_in->leafkey )
+	if ( ! entry_in->leafkey )
 	{
 		POSTGIS_DEBUG(4, "[GIST] non-leafkey entry, returning input unaltered");
 		PG_RETURN_POINTER(entry_in);
 	}
-	
+
 	POSTGIS_DEBUG(4, "[GIST] processing leafkey input");
 	entry_out = palloc(sizeof(GISTENTRY));
 
@@ -702,7 +702,7 @@ Datum geography_gist_compress(PG_FUNCTION_ARGS)
 
 	/* Extract our index key from the GiST entry. */
 	result = geography_datum_gidx(entry_in->key, bbox_out);
-	
+
 	/* Is the bounding box valid (non-empty, non-infinite)? If not, return input uncompressed. */
 	if ( result == G_FAILURE )
 	{
@@ -713,9 +713,9 @@ Datum geography_gist_compress(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(4, "[GIST] got entry_in->key: %s", gidx_to_string(bbox_out));
 
 	/* Check all the dimensions for finite values */
-	for( i = 0; i < GIDX_NDIMS(bbox_out); i++ )
+	for ( i = 0; i < GIDX_NDIMS(bbox_out); i++ )
 	{
-		if( ! finite(GIDX_GET_MAX(bbox_out, i)) || ! finite(GIDX_GET_MIN(bbox_out, i)) )
+		if ( ! finite(GIDX_GET_MAX(bbox_out, i)) || ! finite(GIDX_GET_MIN(bbox_out, i)) )
 		{
 			POSTGIS_DEBUG(4, "[GIST] infinite geometry!");
 			PG_RETURN_POINTER(entry_in);
@@ -727,7 +727,7 @@ Datum geography_gist_compress(PG_FUNCTION_ARGS)
 
 	/* Prepare GISTENTRY for return. */
 	gistentryinit(*entry_out, PointerGetDatum(gidx_copy(bbox_out)),
-                  entry_in->rel, entry_in->page, entry_in->offset, FALSE);
+	              entry_in->rel, entry_in->page, entry_in->offset, FALSE);
 
 	/* Return GISTENTRY. */
 	POSTGIS_DEBUG(4, "[GIST] 'compress' function complete");
@@ -761,22 +761,22 @@ static inline bool geography_gist_consistent_leaf(GIDX *key, GIDX *query, Strate
 
 	switch (strategy)
 	{
-		case RTOverlapStrategyNumber:
-			retval = (bool) gidx_overlaps(key, query);
-			break;
-		case RTSameStrategyNumber:
-			retval = (bool) gidx_equals(key, query);
-			break;
-		case RTContainsStrategyNumber:
-		case RTOldContainsStrategyNumber:
-			retval = (bool) gidx_contains(key, query);
-			break;
-		case RTContainedByStrategyNumber:
-		case RTOldContainedByStrategyNumber:
-			retval = (bool) gidx_contains(query, key);
-			break;
-		default:
-			retval = FALSE;
+	case RTOverlapStrategyNumber:
+		retval = (bool) gidx_overlaps(key, query);
+		break;
+	case RTSameStrategyNumber:
+		retval = (bool) gidx_equals(key, query);
+		break;
+	case RTContainsStrategyNumber:
+	case RTOldContainsStrategyNumber:
+		retval = (bool) gidx_contains(key, query);
+		break;
+	case RTContainedByStrategyNumber:
+	case RTOldContainedByStrategyNumber:
+		retval = (bool) gidx_contains(query, key);
+		break;
+	default:
+		retval = FALSE;
 	}
 	return (retval);
 }
@@ -795,26 +795,26 @@ static inline bool geography_gist_consistent_internal(GIDX *key, GIDX *query, St
 
 	switch (strategy)
 	{
-		case RTOverlapStrategyNumber:
-			retval = (bool) gidx_overlaps(key, query);
-			break;
-		case RTSameStrategyNumber:
-		case RTContainsStrategyNumber:
-		case RTOldContainsStrategyNumber:
-			retval = (bool) gidx_contains(key, query);
-			break;
-		case RTContainedByStrategyNumber:
-		case RTOldContainedByStrategyNumber:
-			retval = (bool) gidx_overlaps(key, query);
-			break;
-		default:
-			retval = FALSE;
+	case RTOverlapStrategyNumber:
+		retval = (bool) gidx_overlaps(key, query);
+		break;
+	case RTSameStrategyNumber:
+	case RTContainsStrategyNumber:
+	case RTOldContainsStrategyNumber:
+		retval = (bool) gidx_contains(key, query);
+		break;
+	case RTContainedByStrategyNumber:
+	case RTOldContainedByStrategyNumber:
+		retval = (bool) gidx_overlaps(key, query);
+		break;
+	default:
+		retval = FALSE;
 	}
 	return (retval);
 }
 
 /*
-** GiST support function. Take in a query and an entry and see what the 
+** GiST support function. Take in a query and an entry and see what the
 ** relationship is, based on the query strategy.
 */
 PG_FUNCTION_INFO_V1(geography_gist_consistent);
@@ -854,26 +854,26 @@ Datum geography_gist_consistent(PG_FUNCTION_ARGS)
 	}
 
 	/* Null box should never make this far. */
-	if ( geography_datum_gidx(PG_GETARG_DATUM(1), query_gbox_index) == G_FAILURE ) 
+	if ( geography_datum_gidx(PG_GETARG_DATUM(1), query_gbox_index) == G_FAILURE )
 	{
 		POSTGIS_DEBUG(4, "[GIST] null query_gbox_index!");
-		PG_RETURN_BOOL(FALSE); 
+		PG_RETURN_BOOL(FALSE);
 	}
-	
+
 	/* Treat leaf node tests different from internal nodes */
 	if (GIST_LEAF(entry))
 	{
 		result = geography_gist_consistent_leaf(
-		           (GIDX*)DatumGetPointer(entry->key), 
-		           query_gbox_index, strategy);
+		             (GIDX*)DatumGetPointer(entry->key),
+		             query_gbox_index, strategy);
 	}
 	else
 	{
 		result = geography_gist_consistent_internal(
-		           (GIDX*)DatumGetPointer(entry->key), 
-		           query_gbox_index, strategy);
+		             (GIDX*)DatumGetPointer(entry->key),
+		             query_gbox_index, strategy);
 	}
-	
+
 	PG_RETURN_BOOL(result);
 }
 
@@ -889,7 +889,7 @@ Datum geography_gist_penalty(PG_FUNCTION_ARGS)
 	GISTENTRY *origentry = (GISTENTRY*) PG_GETARG_POINTER(0);
 	GISTENTRY *newentry = (GISTENTRY*) PG_GETARG_POINTER(1);
 	float *result = (float*) PG_GETARG_POINTER(2);
- 	GIDX *gbox_index_orig, *gbox_index_new;
+	GIDX *gbox_index_orig, *gbox_index_new;
 	float size_union, size_orig;
 
 	POSTGIS_DEBUG(4, "[GIST] 'penalty' function called");
@@ -904,13 +904,13 @@ Datum geography_gist_penalty(PG_FUNCTION_ARGS)
 		*result = 0.0;
 		PG_RETURN_FLOAT8(*result);
 	}
-	
+
 	/* Calculate the size difference of the boxes (volume difference in this case). */
 	size_union = gidx_union_volume(gbox_index_orig, gbox_index_new);
 	size_orig = gidx_volume(gbox_index_orig);
 	*result = size_union - size_orig;
 
-	/* All things being equal, we prefer to expand small boxes rather than large boxes. 
+	/* All things being equal, we prefer to expand small boxes rather than large boxes.
 	   NOTE: This code seemed to be causing badly balanced trees to be built
 	   and therefore has been commented out. Not sure why it didn't work,
 	   but it didn't.
@@ -922,14 +922,14 @@ Datum geography_gist_penalty(PG_FUNCTION_ARGS)
 	else
 		*result += 1.0;
 	*/
-	
+
 	POSTGIS_DEBUGF(4, "[GIST] union size (%.12f), original size (%.12f), penalty (%.12f)", size_union, size_orig, *result);
 
 	PG_RETURN_POINTER(result);
 }
 
 /*
-** GiST support function. Merge all the boxes in a page into one master box. 
+** GiST support function. Merge all the boxes in a page into one master box.
 */
 PG_FUNCTION_INFO_V1(geography_gist_union);
 Datum geography_gist_union(PG_FUNCTION_ARGS)
@@ -938,11 +938,11 @@ Datum geography_gist_union(PG_FUNCTION_ARGS)
 	int *sizep = (int *) PG_GETARG_POINTER(1); /* Size of the return value */
 	int	numranges, i;
 	GIDX *box_cur, *box_union;
-	
+
 	POSTGIS_DEBUG(4, "[GIST] 'union' function called");
 
 	numranges = entryvec->n;
-	
+
 	box_cur = (GIDX*) DatumGetPointer(entryvec->vector[0].key);
 
 	box_union = gidx_copy(box_cur);
@@ -958,11 +958,11 @@ Datum geography_gist_union(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(4, "[GIST] union called, numranges(%i), pageunion %s", numranges, gidx_to_string(box_union));
 
 	PG_RETURN_POINTER(box_union);
-	
+
 }
 
 /*
-** GiST support function. Test equality of keys. 
+** GiST support function. Test equality of keys.
 */
 PG_FUNCTION_INFO_V1(geography_gist_same);
 Datum geography_gist_same(PG_FUNCTION_ARGS)
@@ -980,12 +980,12 @@ Datum geography_gist_same(PG_FUNCTION_ARGS)
 
 
 /*
-** Utility function to add entries to the axis partition lists in the 
+** Utility function to add entries to the axis partition lists in the
 ** picksplit function.
 */
 static void geography_gist_picksplit_addlist(OffsetNumber *list, GIDX **box_union, GIDX *box_current, int *pos, int num)
 {
-	if( *pos ) 
+	if ( *pos )
 		gidx_merge(box_union,  box_current);
 	else
 		memcpy((void*)(*box_union), (void*)box_current, VARSIZE(box_current));
@@ -1000,19 +1000,19 @@ static void geography_gist_picksplit_addlist(OffsetNumber *list, GIDX **box_unio
 static int geography_gist_picksplit_badratio(int x, int y)
 {
 	POSTGIS_DEBUGF(4, "[GIST] checking split ratio (%d, %d)", x, y);
-	if( (y == 0) || (((float)x / (float)y) < LIMIT_RATIO) ||
-	    (x == 0) || (((float)y / (float)x) < LIMIT_RATIO) )
+	if ( (y == 0) || (((float)x / (float)y) < LIMIT_RATIO) ||
+	        (x == 0) || (((float)y / (float)x) < LIMIT_RATIO) )
 		return TRUE;
-	
+
 	return FALSE;
 }
 
-static bool geography_gist_picksplit_badratios(int *pos, int dims) 
+static bool geography_gist_picksplit_badratios(int *pos, int dims)
 {
 	int i;
 	for ( i = 0; i < dims; i++ )
 	{
-		if( geography_gist_picksplit_badratio(pos[2*i],pos[2*i+1]) == FALSE )
+		if ( geography_gist_picksplit_badratio(pos[2*i],pos[2*i+1]) == FALSE )
 			return FALSE;
 	}
 	return TRUE;
@@ -1020,7 +1020,7 @@ static bool geography_gist_picksplit_badratios(int *pos, int dims)
 
 
 /*
-** Where the picksplit algorithm cannot find any basis for splitting one way 
+** Where the picksplit algorithm cannot find any basis for splitting one way
 ** or another, we simply split the overflowing node in half.
 */
 static void geography_gist_picksplit_fallback(GistEntryVector *entryvec, GIST_SPLITVEC *v)
@@ -1078,7 +1078,7 @@ static void geography_gist_picksplit_fallback(GistEntryVector *entryvec, GIST_SP
 
 	if (v->spl_rdatum_exists)
 		gidx_merge(&unionR, (GIDX*)DatumGetPointer(v->spl_rdatum));
-		
+
 	v->spl_rdatum = PointerGetDatum(unionR);
 	v->spl_ldatum_exists = v->spl_rdatum_exists = false;
 }
@@ -1121,7 +1121,7 @@ static void geography_gist_picksplit_constructsplit(GIST_SPLITVEC *v, OffsetNumb
 			GISTENTRY oldUnion,	addon;
 
 			gistentryinit(oldUnion, (v->spl_ldatum_exists) ? v->spl_ldatum : v->spl_rdatum,
-						  NULL, NULL, InvalidOffsetNumber, FALSE);
+			              NULL, NULL, InvalidOffsetNumber, FALSE);
 
 			gistentryinit(addon, PointerGetDatum(*union1), NULL, NULL, InvalidOffsetNumber, FALSE);
 			DirectFunctionCall3(geography_gist_penalty, PointerGetDatum(&oldUnion), PointerGetDatum(&addon), PointerGetDatum(&p1));
@@ -1136,7 +1136,7 @@ static void geography_gist_picksplit_constructsplit(GIST_SPLITVEC *v, OffsetNumb
 	}
 
 	POSTGIS_DEBUGF(4, "[GIST] firstToLeft == %d", firstToLeft);
-	
+
 	if (firstToLeft)
 	{
 		v->spl_left = list1;
@@ -1168,11 +1168,11 @@ static void geography_gist_picksplit_constructsplit(GIST_SPLITVEC *v, OffsetNumb
 }
 
 
-#define BELOW(d) (2*(d))		
-#define ABOVE(d) ((2*(d))+1)		
+#define BELOW(d) (2*(d))
+#define ABOVE(d) ((2*(d))+1)
 
 /*
-** GiST support function. Split an overflowing node into two new nodes. 
+** GiST support function. Split an overflowing node into two new nodes.
 ** Uses linear algorithm from Ang & Tan [2], dividing node extent into
 ** four quadrants, and splitting along the axis that most evenly distributes
 ** entries between the new nodes.
@@ -1181,7 +1181,7 @@ static void geography_gist_picksplit_constructsplit(GIST_SPLITVEC *v, OffsetNumb
 PG_FUNCTION_INFO_V1(geography_gist_picksplit);
 Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 {
-	
+
 	GistEntryVector	*entryvec = (GistEntryVector*) PG_GETARG_POINTER(0);
 
 	GIST_SPLITVEC *v = (GIST_SPLITVEC*) PG_GETARG_POINTER(1);
@@ -1198,18 +1198,18 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 	bool all_entries_equal = true;
 	OffsetNumber max_offset;
 	int nbytes, ndims_pageunion, d;
-	int posmax = -1;	
+	int posmax = -1;
 
 	POSTGIS_DEBUG(4, "[GIST] 'picksplit' function called");
-	
-	/* 
-	** First calculate the bounding box and maximum number of dimensions in this page. 
+
+	/*
+	** First calculate the bounding box and maximum number of dimensions in this page.
 	*/
 
 	max_offset = entryvec->n - 1;
 	box_current = (GIDX*) DatumGetPointer(entryvec->vector[FirstOffsetNumber].key);
 	box_pageunion = gidx_copy(box_current);
-	
+
 	/* Calculate the containing box (box_pageunion) for the whole page we are going to split. */
 	for ( i = OffsetNumberNext(FirstOffsetNumber); i <= max_offset; i = OffsetNumberNext(i) )
 	{
@@ -1220,7 +1220,7 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 
 		gidx_merge( &box_pageunion, box_current );
 	}
-	
+
 	POSTGIS_DEBUGF(3, "[GIST] box_pageunion: %s", gidx_to_string(box_pageunion));
 
 	/* Every box in the page is the same! So, we split and just put half the boxes in each child. */
@@ -1238,7 +1238,7 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 	pos = palloc(2*ndims_pageunion * sizeof(int));
 	list = palloc(2*ndims_pageunion * sizeof(OffsetNumber*));
 	box_union = palloc(2*ndims_pageunion * sizeof(GIDX*));
-	for( d = 0; d < ndims_pageunion; d++ )
+	for ( d = 0; d < ndims_pageunion; d++ )
 	{
 		list[BELOW(d)] = (OffsetNumber*) palloc(nbytes);
 		list[ABOVE(d)] = (OffsetNumber*) palloc(nbytes);
@@ -1247,12 +1247,12 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 		pos[BELOW(d)] = 0;
 		pos[ABOVE(d)] = 0;
 	}
-	
-	/* 
+
+	/*
 	** Assign each entry in the node to the volume partitions it belongs to,
 	** such as "above the x/y plane, left of the y/z plane, below the x/z plane".
 	** Each entry thereby ends up in three of the six partitions.
-	*/ 
+	*/
 	POSTGIS_DEBUG(4, "[GIST] 'picksplit' calculating best split axis");
 	for ( i = FirstOffsetNumber; i <= max_offset; i = OffsetNumberNext(i) )
 	{
@@ -1260,7 +1260,7 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 
 		for ( d = 0; d < ndims_pageunion; d++ )
 		{
-			if( GIDX_GET_MIN(box_current,d)-GIDX_GET_MIN(box_pageunion,d) < GIDX_GET_MAX(box_pageunion,d)-GIDX_GET_MAX(box_current,d) )
+			if ( GIDX_GET_MIN(box_current,d)-GIDX_GET_MIN(box_pageunion,d) < GIDX_GET_MAX(box_pageunion,d)-GIDX_GET_MAX(box_current,d) )
 			{
 				geography_gist_picksplit_addlist(list[BELOW(d)], &(box_union[BELOW(d)]), box_current, &(pos[BELOW(d)]), i);
 			}
@@ -1268,42 +1268,42 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 			{
 				geography_gist_picksplit_addlist(list[ABOVE(d)], &(box_union[ABOVE(d)]), box_current, &(pos[ABOVE(d)]), i);
 			}
-			
+
 		}
 
 	}
 
-	/* 
+	/*
 	** "Bad disposition", too many entries fell into one octant of the space, so no matter which
 	** plane we choose to split on, we're going to end up with a mostly full node. Where the
 	** data is pretty homogeneous (lots of duplicates) entries that are equidistant from the
 	** sides of the page union box can occasionally all end up in one place, leading
 	** to this condition.
 	*/
-	if ( geography_gist_picksplit_badratios(pos,ndims_pageunion) == TRUE ) 
+	if ( geography_gist_picksplit_badratios(pos,ndims_pageunion) == TRUE )
 	{
 		/*
 		** Instead we split on center points and see if we do better.
 		** First calculate the average center point for each axis.
 		*/
 		double *avgCenter = palloc(ndims_pageunion * sizeof(double));
-		
-		for( d = 0; d < ndims_pageunion; d++ )
+
+		for ( d = 0; d < ndims_pageunion; d++ )
 		{
 			avgCenter[d] = 0.0;
 		}
 
 		POSTGIS_DEBUG(4, "[GIST] picksplit can't find good split axis, trying center point method");
-		
-		for( i = FirstOffsetNumber; i <= max_offset; i = OffsetNumberNext(i) )
+
+		for ( i = FirstOffsetNumber; i <= max_offset; i = OffsetNumberNext(i) )
 		{
 			box_current = (GIDX*) DatumGetPointer(entryvec->vector[i].key);
-			for( d = 0; d < ndims_pageunion; d++ )
+			for ( d = 0; d < ndims_pageunion; d++ )
 			{
 				avgCenter[d] += (GIDX_GET_MAX(box_current,d) + GIDX_GET_MIN(box_current,d)) / 2.0;
 			}
 		}
-		for( d = 0; d < ndims_pageunion; d++ )
+		for ( d = 0; d < ndims_pageunion; d++ )
 		{
 			avgCenter[d] /= max_offset;
 			pos[BELOW(d)] = pos[ABOVE(d)] = 0; /* Re-initialize our counters. */
@@ -1311,27 +1311,27 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 		}
 
 		/* For each of our entries... */
-		for( i = FirstOffsetNumber; i <= max_offset; i = OffsetNumberNext(i) )
+		for ( i = FirstOffsetNumber; i <= max_offset; i = OffsetNumberNext(i) )
 		{
 			double center;
 			box_current = (GIDX*) DatumGetPointer(entryvec->vector[i].key);
 
-			for( d = 0; d < ndims_pageunion; d++ )
+			for ( d = 0; d < ndims_pageunion; d++ )
 			{
 				center = (GIDX_GET_MIN(box_current,d)+GIDX_GET_MAX(box_current,d))/2.0;
-				if( center < avgCenter[d] )
+				if ( center < avgCenter[d] )
 					geography_gist_picksplit_addlist(list[BELOW(d)], &(box_union[BELOW(d)]), box_current, &(pos[BELOW(d)]), i);
-				else if( FPeq(center, avgCenter[d]) )
-					if( pos[BELOW(d)] > pos[ABOVE(d)] )
+				else if ( FPeq(center, avgCenter[d]) )
+					if ( pos[BELOW(d)] > pos[ABOVE(d)] )
 						geography_gist_picksplit_addlist(list[ABOVE(d)], &(box_union[ABOVE(d)]), box_current, &(pos[ABOVE(d)]), i);
 					else
 						geography_gist_picksplit_addlist(list[BELOW(d)], &(box_union[BELOW(d)]), box_current, &(pos[BELOW(d)]), i);
 				else
 					geography_gist_picksplit_addlist(list[ABOVE(d)], &(box_union[ABOVE(d)]), box_current, &(pos[ABOVE(d)]), i);
-			}	
-				
+			}
+
 		}
-				
+
 		/* Do we have a good disposition now? If not, screw it, just cut the node in half. */
 		if ( geography_gist_picksplit_badratios(pos,ndims_pageunion) == TRUE )
 		{
@@ -1341,46 +1341,46 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 		}
 
 	}
-	
+
 	/*
-	** Now, what splitting plane gives us the most even ratio of 
+	** Now, what splitting plane gives us the most even ratio of
 	** entries in our child pages? Since each split region has been apportioned entries
 	** against the same number of total entries, the axis that has the smallest maximum
 	** number of entries in its regions is the most evenly distributed.
 	** TODO: what if the distributions are equal in two or more axes?
 	*/
-	for( d = 0; d < ndims_pageunion; d++ )
+	for ( d = 0; d < ndims_pageunion; d++ )
 	{
 		int posd = Max(pos[ABOVE(d)],pos[BELOW(d)]);
-		if( posd > posmax )
+		if ( posd > posmax )
 		{
 			direction = d;
 			posmax = posd;
 		}
 	}
-	if( direction == -1 || posmax == -1 )
+	if ( direction == -1 || posmax == -1 )
 	{
 		/* ERROR OUT HERE */
 		elog(ERROR, "Error in building split, unable to determine split direction.");
 	}
 
 	POSTGIS_DEBUGF(3, "[GIST] 'picksplit' splitting on axis %d", direction);
-	
-	geography_gist_picksplit_constructsplit(v, list[BELOW(direction)], 
-	                                           pos[BELOW(direction)], 
-	                                           &(box_union[BELOW(direction)]),
-	                                           list[ABOVE(direction)], 
-	                                           pos[ABOVE(direction)], 
-	                                           &(box_union[ABOVE(direction)]) );
+
+	geography_gist_picksplit_constructsplit(v, list[BELOW(direction)],
+	                                        pos[BELOW(direction)],
+	                                        &(box_union[BELOW(direction)]),
+	                                        list[ABOVE(direction)],
+	                                        pos[ABOVE(direction)],
+	                                        &(box_union[ABOVE(direction)]) );
 
 	POSTGIS_DEBUGF(4, "[GIST] spl_ldatum: %s", gidx_to_string((GIDX*)v->spl_ldatum));
 	POSTGIS_DEBUGF(4, "[GIST] spl_rdatum: %s", gidx_to_string((GIDX*)v->spl_rdatum));
 
-	POSTGIS_DEBUGF(4, "[GIST] axis %d: parent range (%.12g, %.12g) left range (%.12g, %.12g), right range (%.12g, %.12g)", 
-	                  direction,
-	                  GIDX_GET_MIN(box_pageunion, direction), GIDX_GET_MAX(box_pageunion, direction), 
-	                  GIDX_GET_MIN((GIDX*)v->spl_ldatum, direction), GIDX_GET_MAX((GIDX*)v->spl_ldatum, direction), 
-	                  GIDX_GET_MIN((GIDX*)v->spl_rdatum, direction), GIDX_GET_MAX((GIDX*)v->spl_rdatum, direction) );
+	POSTGIS_DEBUGF(4, "[GIST] axis %d: parent range (%.12g, %.12g) left range (%.12g, %.12g), right range (%.12g, %.12g)",
+	               direction,
+	               GIDX_GET_MIN(box_pageunion, direction), GIDX_GET_MAX(box_pageunion, direction),
+	               GIDX_GET_MIN((GIDX*)v->spl_ldatum, direction), GIDX_GET_MAX((GIDX*)v->spl_ldatum, direction),
+	               GIDX_GET_MIN((GIDX*)v->spl_rdatum, direction), GIDX_GET_MAX((GIDX*)v->spl_rdatum, direction) );
 
 	PG_RETURN_POINTER(v);
 

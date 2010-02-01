@@ -374,18 +374,18 @@ LWGEOM *lwpoint_as_lwgeom(LWPOINT *obj)
 ** Look-up for the correct MULTI* type promotion for singleton types.
 */
 static unsigned char MULTITYPE[16] =
-    {
-        0,
-        MULTIPOINTTYPE,
-        MULTILINETYPE,
-        MULTIPOLYGONTYPE,
-        0,0,0,0,
-        MULTICURVETYPE,
-        MULTICURVETYPE,
-        0,0,0,
-        MULTISURFACETYPE,
-        0,0
-    };
+{
+	0,
+	MULTIPOINTTYPE,
+	MULTILINETYPE,
+	MULTIPOLYGONTYPE,
+	0,0,0,0,
+	MULTICURVETYPE,
+	MULTICURVETYPE,
+	0,0,0,
+	MULTISURFACETYPE,
+	0,0
+};
 
 /**
 * Create a new LWGEOM of the appropriate MULTI* type.
@@ -983,7 +983,7 @@ void lwgeom_free(LWGEOM *lwgeom)
 int lwgeom_needs_bbox(const LWGEOM *geom)
 {
 	assert(geom);
-	if( TYPE_GETTYPE(geom->type) == POINTTYPE )
+	if ( TYPE_GETTYPE(geom->type) == POINTTYPE )
 	{
 		return LW_FALSE;
 	}
@@ -992,7 +992,7 @@ int lwgeom_needs_bbox(const LWGEOM *geom)
 
 
 /*
-** Count points in an LWGEOM. 
+** Count points in an LWGEOM.
 */
 
 static int lwcollection_count_vertices(LWCOLLECTION *col)
@@ -1041,24 +1041,24 @@ int lwgeom_count_vertices(LWGEOM *geom)
 	LWDEBUGF(4, "got type %d", TYPE_GETTYPE(geom->type));
 	switch (TYPE_GETTYPE(geom->type))
 	{
-		case POINTTYPE:
-			result = lwpoint_count_vertices((LWPOINT *)geom);;
-			break;
-		case LINETYPE:
-			result = lwline_count_vertices((LWLINE *)geom);
-			break;
-		case POLYGONTYPE:
-			result = lwpolygon_count_vertices((LWPOLY *)geom);
-			break;
-		case MULTIPOINTTYPE:
-		case MULTILINETYPE:
-		case MULTIPOLYGONTYPE:
-		case COLLECTIONTYPE:
-			result = lwcollection_count_vertices((LWCOLLECTION *)geom);
-			break;
-		default:
-			lwerror("unsupported input geometry type: %d", TYPE_GETTYPE(geom->type));
-			break;
+	case POINTTYPE:
+		result = lwpoint_count_vertices((LWPOINT *)geom);;
+		break;
+	case LINETYPE:
+		result = lwline_count_vertices((LWLINE *)geom);
+		break;
+	case POLYGONTYPE:
+		result = lwpolygon_count_vertices((LWPOLY *)geom);
+		break;
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+	case COLLECTIONTYPE:
+		result = lwcollection_count_vertices((LWCOLLECTION *)geom);
+		break;
+	default:
+		lwerror("unsupported input geometry type: %d", TYPE_GETTYPE(geom->type));
+		break;
 	}
 	LWDEBUGF(3, "counted %d vertices", result);
 	return result;
@@ -1066,35 +1066,35 @@ int lwgeom_count_vertices(LWGEOM *geom)
 
 static int lwpoint_is_empty(const LWPOINT *point)
 {
-	if( ! point->point || point->point->npoints == 0 )
+	if ( ! point->point || point->point->npoints == 0 )
 		return LW_TRUE;
 	return LW_FALSE;
 }
 
 static int lwline_is_empty(const LWLINE *line)
 {
-	if( !line->points || line->points->npoints == 0 )
+	if ( !line->points || line->points->npoints == 0 )
 		return LW_TRUE;
 	return LW_FALSE;
 }
 
 static int lwpoly_is_empty(const LWPOLY *poly)
 {
-	if( !poly->rings || poly->nrings == 0 )
+	if ( !poly->rings || poly->nrings == 0 )
 		return LW_TRUE;
 	return LW_FALSE;
 }
 
 static int lwcircstring_is_empty(const LWCIRCSTRING *circ)
 {
-	if( !circ->points || circ->points->npoints == 0 )
+	if ( !circ->points || circ->points->npoints == 0 )
 		return LW_TRUE;
 	return LW_FALSE;
 }
 
 static int lwcollection_is_empty(const LWCOLLECTION *col)
 {
-	if( !col->geoms || col->ngeoms == 0 )
+	if ( !col->geoms || col->ngeoms == 0 )
 		return LW_TRUE;
 	return LW_FALSE;
 }
@@ -1105,30 +1105,30 @@ int lwgeom_is_empty(const LWGEOM *geom)
 	LWDEBUGF(4, "got type %d", TYPE_GETTYPE(geom->type));
 	switch (TYPE_GETTYPE(geom->type))
 	{
-		case POINTTYPE:
-			return lwpoint_is_empty((LWPOINT*)geom);
-			break;
-		case LINETYPE:
-			return lwline_is_empty((LWLINE*)geom);
-			break;
-		case CIRCSTRINGTYPE:
-			return lwcircstring_is_empty((LWCIRCSTRING*)geom);
-			break;
-		case POLYGONTYPE:
-			return lwpoly_is_empty((LWPOLY*)geom);
-			break;
-		case MULTIPOINTTYPE:
-		case MULTILINETYPE:
-		case MULTIPOLYGONTYPE:
-		case COMPOUNDTYPE:
-		case MULTICURVETYPE:
-		case MULTISURFACETYPE:
-		case COLLECTIONTYPE:
-			return lwcollection_is_empty((LWCOLLECTION *)geom);
-			break;
-		default:
-			lwerror("unsupported input geometry type: %d", TYPE_GETTYPE(geom->type));
-			break;
+	case POINTTYPE:
+		return lwpoint_is_empty((LWPOINT*)geom);
+		break;
+	case LINETYPE:
+		return lwline_is_empty((LWLINE*)geom);
+		break;
+	case CIRCSTRINGTYPE:
+		return lwcircstring_is_empty((LWCIRCSTRING*)geom);
+		break;
+	case POLYGONTYPE:
+		return lwpoly_is_empty((LWPOLY*)geom);
+		break;
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+	case COMPOUNDTYPE:
+	case MULTICURVETYPE:
+	case MULTISURFACETYPE:
+	case COLLECTIONTYPE:
+		return lwcollection_is_empty((LWCOLLECTION *)geom);
+		break;
+	default:
+		lwerror("unsupported input geometry type: %d", TYPE_GETTYPE(geom->type));
+		break;
 	}
 	return result;
 }
@@ -1137,10 +1137,10 @@ static int lwcollection_dimensionality(LWCOLLECTION *col)
 {
 	int i;
 	int dimensionality = 0;
-	for( i = 0; i < col->ngeoms; i++ )
+	for ( i = 0; i < col->ngeoms; i++ )
 	{
 		int d = lwgeom_dimensionality(col->geoms[i]);
-		if( d > dimensionality )
+		if ( d > dimensionality )
 			dimensionality = d;
 	}
 	return dimensionality;
@@ -1151,29 +1151,29 @@ extern int lwgeom_dimensionality(LWGEOM *geom)
 	LWDEBUGF(4, "got type %d", TYPE_GETTYPE(geom->type));
 	switch (TYPE_GETTYPE(geom->type))
 	{
-		case POINTTYPE:
-		case MULTIPOINTTYPE:
-			return 0;
-			break;
-		case LINETYPE:
-		case CIRCSTRINGTYPE:
-		case MULTILINETYPE:
-		case COMPOUNDTYPE:
-		case MULTICURVETYPE:
-			return 1;
-			break;
-		case POLYGONTYPE:
-		case CURVEPOLYTYPE:
-		case MULTIPOLYGONTYPE:
-		case MULTISURFACETYPE:
-			return 2;
-			break;
-		case COLLECTIONTYPE:
-			return lwcollection_dimensionality((LWCOLLECTION *)geom);
-			break;
-		default:
-			lwerror("unsupported input geometry type: %d", TYPE_GETTYPE(geom->type));
-			break;
+	case POINTTYPE:
+	case MULTIPOINTTYPE:
+		return 0;
+		break;
+	case LINETYPE:
+	case CIRCSTRINGTYPE:
+	case MULTILINETYPE:
+	case COMPOUNDTYPE:
+	case MULTICURVETYPE:
+		return 1;
+		break;
+	case POLYGONTYPE:
+	case CURVEPOLYTYPE:
+	case MULTIPOLYGONTYPE:
+	case MULTISURFACETYPE:
+		return 2;
+		break;
+	case COLLECTIONTYPE:
+		return lwcollection_dimensionality((LWCOLLECTION *)geom);
+		break;
+	default:
+		lwerror("unsupported input geometry type: %d", TYPE_GETTYPE(geom->type));
+		break;
 	}
 	return 0;
 }

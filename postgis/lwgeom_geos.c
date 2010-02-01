@@ -151,14 +151,14 @@ Datum hausdorffdistancedensify(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom2;
 	GEOSGeometry *g1;
 	GEOSGeometry *g2;
-    	double densifyFrac;
-    	double result;
+	double densifyFrac;
+	double result;
 	int retcode;
 
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-    	densifyFrac = PG_GETARG_FLOAT8(2);
+	densifyFrac = PG_GETARG_FLOAT8(2);
 
 	initGEOS(lwnotice, lwnotice);
 
@@ -280,7 +280,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 
 		/* Advance NULL bitmap */
 		if (bitmap)
-                {
+		{
 			bitmask <<= 1;
 			if (bitmask == 0x100)
 			{
@@ -397,14 +397,14 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 			{
 				PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
 				offset += INTALIGN(VARSIZE(geom));
-	
+
 				pgis_geom = geom;
-	
+
 				POSTGIS_DEBUGF(3, "geom %d @ %p", i, geom);
-	
+
 				/* Check is3d flag */
 				if ( TYPE_HASZ(geom->type) ) is3d = 1;
-	
+
 				/* Check SRID homogeneity and initialize geos result */
 				if ( ! geos_result )
 				{
@@ -415,12 +415,12 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 				else
 				{
 					errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom));
-	
+
 					g1 = POSTGIS2GEOS(pgis_geom);
-	
+
 					POSTGIS_DEBUGF(3, "unite_garray(%d): adding geom %d to union (%s)",
-						call, i, lwgeom_typename(TYPE_GETTYPE(geom->type)));
-	
+					               call, i, lwgeom_typename(TYPE_GETTYPE(geom->type)));
+
 					g2 = GEOSUnion(g1, geos_result);
 					if ( g2 == NULL )
 					{
@@ -444,7 +444,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 					bitmask = 1;
 				}
 			}
-			
+
 		}
 
 		/* If geos_result is set then we found at least one non-NULL geometry */
@@ -833,12 +833,14 @@ Datum buffer(PG_FUNCTION_ARGS)
 	PG_LWGEOM *result;
 	int quadsegs = 8; /* the default */
 	int nargs;
-	enum {
+	enum
+	{
 		ENDCAP_ROUND = 1,
 		ENDCAP_FLAT = 2,
 		ENDCAP_SQUARE = 3
 	};
-	enum {
+	enum
+	{
 		JOIN_ROUND = 1,
 		JOIN_MITRE = 2,
 		JOIN_BEVEL = 3
@@ -883,12 +885,14 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 			key = param;
 			val = strchr(key, '=');
-			if ( val == NULL || *(val+1) == '\0' ) {
+			if ( val == NULL || *(val+1) == '\0' )
+			{
 				lwerror("Missing value for buffer "
 				        "parameter %s", key);
 				break;
 			}
-			*val = '\0'; ++val;
+			*val = '\0';
+			++val;
 
 			POSTGIS_DEBUGF(3, "Param: %s : %s", key, val);
 
@@ -910,7 +914,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 				{
 					endCapStyle = ENDCAP_SQUARE;
 				}
-				else 
+				else
 				{
 					lwerror("Invalid buffer end cap "
 					        "style: %s (accept: "
@@ -936,7 +940,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 				{
 					joinStyle = JOIN_BEVEL;
 				}
-				else 
+				else
 				{
 					lwerror("Invalid buffer end cap "
 					        "style: %s (accept: "
@@ -947,7 +951,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 				}
 			}
 			else if ( !strcmp(key, "mitre_limit") ||
-			          !strcmp(key, "miter_limit")    ) 
+			          !strcmp(key, "miter_limit")    )
 			{
 				/* mitreLimit is a float */
 				mitreLimit = atof(val);
@@ -970,7 +974,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 		pfree(params); /* was pstrduped */
 
 		POSTGIS_DEBUGF(3, "endCap:%d joinStyle:%d mitreLimit:%g",
-			endCapStyle, joinStyle, mitreLimit);
+		               endCapStyle, joinStyle, mitreLimit);
 
 	}
 
@@ -984,14 +988,14 @@ Datum buffer(PG_FUNCTION_ARGS)
 #else /* POSTGIS_GEOS_VERSION < 32 */
 
 	if ( mitreLimit != DEFAULT_MITRE_LIMIT ||
-		endCapStyle != DEFAULT_ENDCAP_STYLE ||
-		joinStyle != DEFAULT_JOIN_STYLE )
+	        endCapStyle != DEFAULT_ENDCAP_STYLE ||
+	        joinStyle != DEFAULT_JOIN_STYLE )
 	{
 		lwerror("The GEOS version this postgis binary "
-			"was compiled against (%d) doesn't support "
-			"specifying a mitre limit != %d or styles different "
-			"from 'round' (needs 3.2 or higher)",
-			DEFAULT_MITRE_LIMIT, POSTGIS_GEOS_VERSION);
+		        "was compiled against (%d) doesn't support "
+		        "specifying a mitre limit != %d or styles different "
+		        "from 'round' (needs 3.2 or higher)",
+		        DEFAULT_MITRE_LIMIT, POSTGIS_GEOS_VERSION);
 	}
 
 	PROFSTART(PROF_GRUN);
@@ -1604,7 +1608,8 @@ Datum contains(PG_FUNCTION_ARGS)
 		if ( result == 1 ) /* completely inside */
 		{
 			PG_RETURN_BOOL(TRUE);
-		} else
+		}
+		else
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -1804,7 +1809,8 @@ Datum covers(PG_FUNCTION_ARGS)
 		if ( result != -1 ) /* not outside */
 		{
 			PG_RETURN_BOOL(TRUE);
-		} else
+		}
+		else
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -1935,7 +1941,8 @@ Datum within(PG_FUNCTION_ARGS)
 		if ( result == 1 ) /* completely inside */
 		{
 			PG_RETURN_BOOL(TRUE);
-		} else
+		}
+		else
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -2066,7 +2073,8 @@ Datum coveredby(PG_FUNCTION_ARGS)
 		if ( result != -1 ) /* not outside */
 		{
 			PG_RETURN_BOOL(TRUE);
-		} else
+		}
+		else
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -2216,7 +2224,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 	type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
 	type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
 	if ( (type1 == POINTTYPE && (type2 == POLYGONTYPE || type2 == MULTIPOLYGONTYPE)) ||
-	     (type2 == POINTTYPE && (type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE)))
+	        (type2 == POINTTYPE && (type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE)))
 	{
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
 
@@ -2270,7 +2278,8 @@ Datum intersects(PG_FUNCTION_ARGS)
 		if ( result != -1 ) /* not outside */
 		{
 			PG_RETURN_BOOL(TRUE);
-		} else
+		}
+		else
 		{
 			PG_RETURN_BOOL(FALSE);
 		}

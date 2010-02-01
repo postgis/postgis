@@ -963,7 +963,7 @@ Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS)
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
 	/*
-	** If the bounding boxes don't interact, then there can't be any 
+	** If the bounding boxes don't interact, then there can't be any
 	** crossing, return right away.
 	*/
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
@@ -1262,7 +1262,7 @@ int point_in_ring_rtree(RTREE_NODE *root, POINT2D *point)
 		}
 		/*
 		 * If the point is to the left of the line, and it's rising,
-		 * then the line is to the right of the point and 
+		 * then the line is to the right of the point and
 		 * circling counter-clockwise, so incremement.
 		 */
 		else if (FP_CONTAINS_BOTTOM(seg1.y,point->y,seg2.y) && side>0)
@@ -1340,7 +1340,7 @@ int point_in_ring(POINTARRAY *pts, POINT2D *point)
 		}
 		/*
 		 * If the point is to the left of the line, and it's rising,
-		 * then the line is to the right of the point and 
+		 * then the line is to the right of the point and
 		 * circling counter-clockwise, so incremement.
 		 */
 		else if (FP_CONTAINS_BOTTOM(seg1.y,point->y,seg2.y) && side>0)

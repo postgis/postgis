@@ -26,7 +26,7 @@
  * Retrieve an SRS from a given SRID
  * Require valid spatial_ref_sys table entry
  *
- * Could return SRS as short one (i.e EPSG:4326) 
+ * Could return SRS as short one (i.e EPSG:4326)
  * or as long one: (i.e urn:ogc:def:crs:EPSG:4326)
  */
 char * getSRSbySRID(int SRID, bool short_crs)

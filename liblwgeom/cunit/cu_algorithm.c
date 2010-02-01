@@ -29,7 +29,7 @@ CU_pSuite register_cg_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_lw_segment_side()", test_lw_segment_side)) ||
 	    (NULL == CU_add_test(pSuite, "test_lw_segment_intersects()", test_lw_segment_intersects)) ||
 	    (NULL == CU_add_test(pSuite, "test_lwline_crossing_short_lines()", test_lwline_crossing_short_lines)) ||
-	    (NULL == CU_add_test(pSuite, "test_lwline_crossing_long_lines()", test_lwline_crossing_long_lines)) || 
+	    (NULL == CU_add_test(pSuite, "test_lwline_crossing_long_lines()", test_lwline_crossing_long_lines)) ||
 	    (NULL == CU_add_test(pSuite, "test_lwline_crossing_bugs()", test_lwline_crossing_bugs)) ||
 	    (NULL == CU_add_test(pSuite, "test_lwpoint_set_ordinate()", test_lwpoint_set_ordinate)) ||
 	    (NULL == CU_add_test(pSuite, "test_lwpoint_get_ordinate()", test_lwpoint_get_ordinate)) ||
@@ -39,7 +39,7 @@ CU_pSuite register_cg_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_lwmline_clip()", test_lwmline_clip)) ||
 	    (NULL == CU_add_test(pSuite, "test_geohash_point()", test_geohash_point)) ||
 	    (NULL == CU_add_test(pSuite, "test_geohash_precision()", test_geohash_precision)) ||
-	    (NULL == CU_add_test(pSuite, "test_geohash()", test_geohash)) 
+	    (NULL == CU_add_test(pSuite, "test_geohash()", test_geohash))
 	)
 	{
 		CU_cleanup_registry();
@@ -131,7 +131,7 @@ void test_lw_segment_intersects(void)
 #define setpoint(p, x1, y1) {(p).x = (x1); (p).y = (y1);}
 
 	POINT2D p1, p2, q1, q2;
-	
+
 	/* P: Vertical line at x=0 */
 	setpoint(p1, 0.0, 0.0);
 	p1.x = 0.0;
@@ -271,9 +271,9 @@ void test_lwline_crossing_short_lines(void)
 {
 
 	POINT4D p;
-	
+
 	/*
-	** Simple test, two two-point lines 
+	** Simple test, two two-point lines
 	*/
 
 	/* Vertical line from 0,0 to 1,1 */
@@ -335,7 +335,7 @@ void test_lwline_crossing_long_lines(void)
 	LWLINE *l51;
 	LWLINE *l52;
 	/*
-	** More complex test, longer lines and multiple crossings 
+	** More complex test, longer lines and multiple crossings
 	*/
 	/* Vertical line with vertices at y integers */
 	l51 = (LWLINE*)lwgeom_from_ewkt("LINESTRING(0 0, 0 1, 0 2, 0 3, 0 4)", PARSER_CHECK_NONE);
@@ -394,14 +394,14 @@ void test_lwline_crossing_bugs(void)
 {
 	LWLINE *l1;
 	LWLINE *l2;
-	
+
 	l1 = (LWLINE*)lwgeom_from_ewkt("LINESTRING(2.99 90.16,71 74,20 140,171 154)", PARSER_CHECK_NONE);
 	l2 = (LWLINE*)lwgeom_from_ewkt("LINESTRING(25 169,89 114,40 70,86 43)", PARSER_CHECK_NONE);
 
 	CU_ASSERT( lwline_crossing_direction(l1, l2) == LINE_MULTICROSS_END_RIGHT );
 	lwline_free(l1);
 	lwline_free(l2);
-	
+
 }
 
 void test_lwpoint_set_ordinate(void)
@@ -449,7 +449,7 @@ void test_lwpoint_interpolate(void)
 	p.y = 20.0;
 	p.z = 30.0;
 	p.m = 40.0;
-	
+
 	q.x = 20.0;
 	q.y = 30.0;
 	q.z = 40.0;
@@ -587,7 +587,7 @@ void test_lwmline_clip(void)
 	LWLINE *line = NULL;
 
 	/*
-	** Set up the input line. Trivial one-member case. 
+	** Set up the input line. Trivial one-member case.
 	*/
 	mline = (LWMLINE*)lwgeom_from_ewkt("MULTILINESTRING((0 0,0 1,0 2,0 3,0 4))", PARSER_CHECK_NONE);
 
@@ -602,7 +602,7 @@ void test_lwmline_clip(void)
 	lwmline_free(mline);
 
 	/*
-	** Set up the input line. Two-member case. 
+	** Set up the input line. Two-member case.
 	*/
 	mline = (LWMLINE*)lwgeom_from_ewkt("MULTILINESTRING((1 0,1 1,1 2,1 3,1 4), (0 0,0 1,0 2,0 3,0 4))", PARSER_CHECK_NONE);
 
@@ -617,7 +617,7 @@ void test_lwmline_clip(void)
 	lwmline_free(mline);
 
 	/*
-	** Set up staggered input line to create multi-type output. 
+	** Set up staggered input line to create multi-type output.
 	*/
 	mline = (LWMLINE*)lwgeom_from_ewkt("MULTILINESTRING((1 0,1 -1,1 -2,1 -3,1 -4), (0 0,0 1,0 2,0 3,0 4))", PARSER_CHECK_NONE);
 

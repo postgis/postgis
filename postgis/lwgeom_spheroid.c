@@ -330,7 +330,7 @@ double lwgeom_pointarray_length_ellipse(POINTARRAY *pts, SPHEROID *sphere)
 		return lwgeom_pointarray_length2d_ellipse(pts, sphere);
 	}
 
-	for (i=0; i<pts->npoints-1;i++)
+	for (i=0; i<pts->npoints-1; i++)
 	{
 		POINT3DZ frm;
 		POINT3DZ to;
@@ -362,7 +362,7 @@ lwgeom_pointarray_length2d_ellipse(POINTARRAY *pts, SPHEROID *sphere)
 	LWDEBUG(2, "lwgeom_pointarray_length2d_ellipse called");
 
 	if ( pts->npoints < 2 ) return 0.0;
-	for (i=0; i<pts->npoints-1;i++)
+	for (i=0; i<pts->npoints-1; i++)
 	{
 		getPoint2d_p(pts, i, &frm);
 		getPoint2d_p(pts, i+1, &to);
@@ -537,28 +537,28 @@ Datum geometry_distance_spheroid(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom1, *lwgeom2;
 	GBOX gbox1, gbox2;
 	double distance;
-	
+
 	/* Calculate some other parameters on the spheroid */
 	spheroid_init(sphere, sphere->a, sphere->b);
 
 	/* Catch sphere special case and re-jig spheroid appropriately */
-	if( ! use_spheroid )
+	if ( ! use_spheroid )
 	{
 		sphere->a = sphere->b = sphere->radius;
 	}
-	
+
 	gbox1.flags = gflags(0, 0, 1);
 	gbox2.flags = gflags(0, 0, 1);
 
-	if( ! ( type1 == POINTTYPE || type1 == LINETYPE || type1 == POLYGONTYPE ||
-	        type1 == MULTIPOINTTYPE || type1 == MULTILINETYPE || type1 == MULTIPOLYGONTYPE ))
+	if ( ! ( type1 == POINTTYPE || type1 == LINETYPE || type1 == POLYGONTYPE ||
+	         type1 == MULTIPOINTTYPE || type1 == MULTILINETYPE || type1 == MULTIPOLYGONTYPE ))
 	{
 		elog(ERROR, "geometry_distance_spheroid: Only point/line/polygon supported.\n");
 		PG_RETURN_NULL();
 	}
 
-	if( ! ( type2 == POINTTYPE || type2 == LINETYPE || type2 == POLYGONTYPE ||
-	        type2 == MULTIPOINTTYPE || type2 == MULTILINETYPE || type2 == MULTIPOLYGONTYPE ))
+	if ( ! ( type2 == POINTTYPE || type2 == LINETYPE || type2 == POLYGONTYPE ||
+	         type2 == MULTIPOINTTYPE || type2 == MULTILINETYPE || type2 == MULTIPOLYGONTYPE ))
 	{
 		elog(ERROR, "geometry_distance_spheroid: Only point/line/polygon supported.\n");
 		PG_RETURN_NULL();
@@ -570,17 +570,17 @@ Datum geometry_distance_spheroid(PG_FUNCTION_ARGS)
 		elog(ERROR, "geometry_distance_spheroid: Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
-	
+
 	lwgeom1 = lwgeom_deserialize(SERIALIZED_FORM(geom1));
 	lwgeom2 = lwgeom_deserialize(SERIALIZED_FORM(geom2));
 
-	if( lwgeom_calculate_gbox_geodetic(lwgeom1, &gbox1) != G_SUCCESS )
+	if ( lwgeom_calculate_gbox_geodetic(lwgeom1, &gbox1) != G_SUCCESS )
 	{
 		elog(ERROR, "geometry_distance_spheroid: unable to calculate gbox1\n");
 		PG_RETURN_NULL();
 	};
 
-	if( lwgeom_calculate_gbox_geodetic(lwgeom2, &gbox2) != G_SUCCESS )
+	if ( lwgeom_calculate_gbox_geodetic(lwgeom2, &gbox2) != G_SUCCESS )
 	{
 		elog(ERROR, "geometry_distance_spheroid: unable to calculate gbox2\n");
 		PG_RETURN_NULL();
@@ -596,7 +596,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_distance_ellipsoid);
 Datum LWGEOM_distance_ellipsoid(PG_FUNCTION_ARGS)
 {
 	PG_RETURN_DATUM(DirectFunctionCall4(geometry_distance_spheroid,
-	   PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), PG_GETARG_DATUM(2), BoolGetDatum(TRUE)));
+	                                    PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), PG_GETARG_DATUM(2), BoolGetDatum(TRUE)));
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_distance_sphere);
@@ -607,8 +607,8 @@ Datum LWGEOM_distance_sphere(PG_FUNCTION_ARGS)
 	/* Init to WGS84 */
 	spheroid_init(&s, 6378137.0, 6356752.314245179498);
 	s.a = s.b = s.radius;
-	
+
 	PG_RETURN_DATUM(DirectFunctionCall4(geometry_distance_spheroid,
-	   PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), PointerGetDatum(&s), BoolGetDatum(FALSE)));
+	                                    PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), PointerGetDatum(&s), BoolGetDatum(FALSE)));
 }
 

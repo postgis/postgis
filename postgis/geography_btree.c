@@ -27,8 +27,8 @@ Datum geography_cmp(PG_FUNCTION_ARGS);
 
 
 /*
-** Utility function to return the center point of a 
-** geocentric bounding box. We don't divide by two 
+** Utility function to return the center point of a
+** geocentric bounding box. We don't divide by two
 ** because we're only using the values for comparison.
 */
 static void geography_gidx_center(GIDX *gidx, POINT3D *p)
@@ -53,19 +53,19 @@ Datum geography_lt(PG_FUNCTION_ARGS)
 	POINT3D p1, p2;
 
 	/* Must be able to build box for each argument (ie, not empty geometry) */
-	if( ! geography_datum_gidx(PG_GETARG_DATUM(0), gbox1) ||
-	    ! geography_datum_gidx(PG_GETARG_DATUM(1), gbox2) )
+	if ( ! geography_datum_gidx(PG_GETARG_DATUM(0), gbox1) ||
+	        ! geography_datum_gidx(PG_GETARG_DATUM(1), gbox2) )
 	{
 		PG_RETURN_BOOL(FALSE);
 	}
-	
+
 	geography_gidx_center(gbox1, &p1);
 	geography_gidx_center(gbox2, &p2);
-	
-	if( p1.x < p2.x || p1.y < p2.y || p1.z < p2.z ) 
-		PG_RETURN_BOOL(TRUE);	
-		
-	PG_RETURN_BOOL(FALSE);	
+
+	if ( p1.x < p2.x || p1.y < p2.y || p1.z < p2.z )
+		PG_RETURN_BOOL(TRUE);
+
+	PG_RETURN_BOOL(FALSE);
 }
 
 /*
@@ -83,19 +83,19 @@ Datum geography_le(PG_FUNCTION_ARGS)
 	POINT3D p1, p2;
 
 	/* Must be able to build box for each argument (ie, not empty geometry) */
-	if( ! geography_datum_gidx(PG_GETARG_DATUM(0), gbox1) ||
-	    ! geography_datum_gidx(PG_GETARG_DATUM(1), gbox2) )
+	if ( ! geography_datum_gidx(PG_GETARG_DATUM(0), gbox1) ||
+	        ! geography_datum_gidx(PG_GETARG_DATUM(1), gbox2) )
 	{
 		PG_RETURN_BOOL(FALSE);
 	}
-	
+
 	geography_gidx_center(gbox1, &p1);
 	geography_gidx_center(gbox2, &p2);
-	
-	if( p1.x <= p2.x || p1.y <= p2.y || p1.z <= p2.z ) 
-		PG_RETURN_BOOL(TRUE);	
-		
-	PG_RETURN_BOOL(FALSE);	
+
+	if ( p1.x <= p2.x || p1.y <= p2.y || p1.z <= p2.z )
+		PG_RETURN_BOOL(TRUE);
+
+	PG_RETURN_BOOL(FALSE);
 }
 
 /*
@@ -113,19 +113,19 @@ Datum geography_gt(PG_FUNCTION_ARGS)
 	POINT3D p1, p2;
 
 	/* Must be able to build box for each argument (ie, not empty geometry) */
-	if( ! geography_datum_gidx(PG_GETARG_DATUM(0), gbox1) ||
-	    ! geography_datum_gidx(PG_GETARG_DATUM(1), gbox2) )
+	if ( ! geography_datum_gidx(PG_GETARG_DATUM(0), gbox1) ||
+	        ! geography_datum_gidx(PG_GETARG_DATUM(1), gbox2) )
 	{
 		PG_RETURN_BOOL(FALSE);
 	}
-	
+
 	geography_gidx_center(gbox1, &p1);
 	geography_gidx_center(gbox2, &p2);
-	
-	if( p1.x > p2.x && p1.y > p2.y && p1.z > p2.z ) 
-		PG_RETURN_BOOL(TRUE);	
-		
-	PG_RETURN_BOOL(FALSE);	
+
+	if ( p1.x > p2.x && p1.y > p2.y && p1.z > p2.z )
+		PG_RETURN_BOOL(TRUE);
+
+	PG_RETURN_BOOL(FALSE);
 }
 
 /*
@@ -143,19 +143,19 @@ Datum geography_ge(PG_FUNCTION_ARGS)
 	POINT3D p1, p2;
 
 	/* Must be able to build box for each argument (ie, not empty geometry) */
-	if( ! geography_datum_gidx(PG_GETARG_DATUM(0), gbox1) ||
-	    ! geography_datum_gidx(PG_GETARG_DATUM(1), gbox2) )
+	if ( ! geography_datum_gidx(PG_GETARG_DATUM(0), gbox1) ||
+	        ! geography_datum_gidx(PG_GETARG_DATUM(1), gbox2) )
 	{
 		PG_RETURN_BOOL(FALSE);
 	}
-	
+
 	geography_gidx_center(gbox1, &p1);
 	geography_gidx_center(gbox2, &p2);
-	
-	if( p1.x >= p2.x && p1.y >= p2.y && p1.z >= p2.z ) 
-		PG_RETURN_BOOL(TRUE);	
-		
-	PG_RETURN_BOOL(FALSE);	
+
+	if ( p1.x >= p2.x && p1.y >= p2.y && p1.z >= p2.z )
+		PG_RETURN_BOOL(TRUE);
+
+	PG_RETURN_BOOL(FALSE);
 }
 
 
@@ -185,10 +185,10 @@ Datum geography_eq(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(g1,0);
 	PG_FREE_IF_COPY(g2,0);
 
-	if( h1 == h2 )
-		PG_RETURN_BOOL(TRUE);	
-		
-	PG_RETURN_BOOL(FALSE); 
+	if ( h1 == h2 )
+		PG_RETURN_BOOL(TRUE);
+
+	PG_RETURN_BOOL(FALSE);
 }
 #endif
 
@@ -207,19 +207,19 @@ Datum geography_eq(PG_FUNCTION_ARGS)
 	POINT3D p1, p2;
 
 	/* Must be able to build box for each argument (ie, not empty geometry) */
-	if( ! geography_datum_gidx(PG_GETARG_DATUM(0), gbox1) ||
-	    ! geography_datum_gidx(PG_GETARG_DATUM(1), gbox2) )
+	if ( ! geography_datum_gidx(PG_GETARG_DATUM(0), gbox1) ||
+	        ! geography_datum_gidx(PG_GETARG_DATUM(1), gbox2) )
 	{
 		PG_RETURN_BOOL(FALSE);
 	}
-	
+
 	geography_gidx_center(gbox1, &p1);
 	geography_gidx_center(gbox2, &p2);
-	
-	if( FP_EQUALS(p1.x, p2.x) && FP_EQUALS(p1.y, p2.y) && FP_EQUALS(p1.z, p2.z) ) 
-		PG_RETURN_BOOL(TRUE);	
-	
-	PG_RETURN_BOOL(FALSE);	
+
+	if ( FP_EQUALS(p1.x, p2.x) && FP_EQUALS(p1.y, p2.y) && FP_EQUALS(p1.z, p2.z) )
+		PG_RETURN_BOOL(TRUE);
+
+	PG_RETURN_BOOL(FALSE);
 
 }
 
@@ -238,21 +238,21 @@ Datum geography_cmp(PG_FUNCTION_ARGS)
 	POINT3D p1, p2;
 
 	/* Must be able to build box for each argument (ie, not empty geometry) */
-	if( ! geography_datum_gidx(PG_GETARG_DATUM(0), gbox1) ||
-	    ! geography_datum_gidx(PG_GETARG_DATUM(1), gbox2) )
+	if ( ! geography_datum_gidx(PG_GETARG_DATUM(0), gbox1) ||
+	        ! geography_datum_gidx(PG_GETARG_DATUM(1), gbox2) )
 	{
 		PG_RETURN_BOOL(FALSE);
 	}
-	
+
 	geography_gidx_center(gbox1, &p1);
 	geography_gidx_center(gbox2, &p2);
-	
-	if( p1.x > p2.x && p1.y > p2.y && p1.z > p2.z ) 
-		PG_RETURN_INT32(1);	
 
-	if( FP_EQUALS(p1.x, p2.x) && FP_EQUALS(p1.y, p2.y) && FP_EQUALS(p1.z, p2.z) ) 
-		PG_RETURN_INT32(0);	
-	
-	PG_RETURN_INT32(-1);	
+	if ( p1.x > p2.x && p1.y > p2.y && p1.z > p2.z )
+		PG_RETURN_INT32(1);
+
+	if ( FP_EQUALS(p1.x, p2.x) && FP_EQUALS(p1.y, p2.y) && FP_EQUALS(p1.z, p2.z) )
+		PG_RETURN_INT32(0);
+
+	PG_RETURN_INT32(-1);
 
 }

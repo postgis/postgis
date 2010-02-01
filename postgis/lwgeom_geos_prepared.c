@@ -90,20 +90,20 @@ static void PreparedCacheCheck(MemoryContext context);
 
 /* Memory context definition must match the current version of PostgreSQL */
 static MemoryContextMethods PreparedCacheContextMethods =
-    {
-        NULL,
-        NULL,
-        NULL,
-        PreparedCacheInit,
-        PreparedCacheReset,
-        PreparedCacheDelete,
-        NULL,
-        PreparedCacheIsEmpty,
-        PreparedCacheStats
+{
+	NULL,
+	NULL,
+	NULL,
+	PreparedCacheInit,
+	PreparedCacheReset,
+	PreparedCacheDelete,
+	NULL,
+	PreparedCacheIsEmpty,
+	PreparedCacheStats
 #ifdef MEMORY_CONTEXT_CHECKING
-        , PreparedCacheCheck
+	, PreparedCacheCheck
 #endif
-    };
+};
 
 static void
 PreparedCacheInit(MemoryContext context)

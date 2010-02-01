@@ -119,7 +119,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_gist_joinsel);
 Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 {
 	POSTGIS_DEBUGF(2, "LWGEOM_gist_joinsel called (returning %f)",
-				   DEFAULT_GEOMETRY_JOINSEL);
+	               DEFAULT_GEOMETRY_JOINSEL);
 
 	PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_JOINSEL);
 }
@@ -238,10 +238,10 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 
 
 	if ( ! get_attstatsslot(stats1_tuple, 0, 0, STATISTIC_KIND_GEOMETRY, InvalidOid, NULL, NULL,
-#if POSTGIS_PGSQL_VERSION >= 85 
-					NULL,
+#if POSTGIS_PGSQL_VERSION >= 85
+	                        NULL,
 #endif
-					(float4 **)gs1ptr, &geomstats1_nvalues) )
+	                        (float4 **)gs1ptr, &geomstats1_nvalues) )
 	{
 		POSTGIS_DEBUG(3, " STATISTIC_KIND_GEOMETRY stats not found - returning default geometry join selectivity");
 
@@ -257,7 +257,7 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 		POSTGIS_DEBUG(3, " No statistics, returning default geometry join selectivity");
 
 		free_attstatsslot(0, NULL, 0, (float *)geomstats1,
-						  geomstats1_nvalues);
+		                  geomstats1_nvalues);
 		ReleaseSysCache(stats1_tuple);
 		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_JOINSEL);
 	}
@@ -265,14 +265,14 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 
 	if ( ! get_attstatsslot(stats2_tuple, 0, 0, STATISTIC_KIND_GEOMETRY, InvalidOid, NULL, NULL,
 #if POSTGIS_PGSQL_VERSION >= 85
-					NULL,
+	                        NULL,
 #endif
-					(float4 **)gs2ptr, &geomstats2_nvalues) )
+	                        (float4 **)gs2ptr, &geomstats2_nvalues) )
 	{
 		POSTGIS_DEBUG(3, " STATISTIC_KIND_GEOMETRY stats not found - returning default geometry join selectivity");
 
 		free_attstatsslot(0, NULL, 0, (float *)geomstats1,
-						  geomstats1_nvalues);
+		                  geomstats1_nvalues);
 		ReleaseSysCache(stats2_tuple);
 		ReleaseSysCache(stats1_tuple);
 		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_JOINSEL);
@@ -311,7 +311,7 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 	* multiply out the returned selectivity by the total number of rows.
 	*/
 	class_tuple = SearchSysCache(RELOID, ObjectIdGetDatum(relid1),
-								 0, 0, 0);
+	                             0, 0, 0);
 
 	if (HeapTupleIsValid(class_tuple))
 	{
@@ -323,7 +323,7 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 
 
 	class_tuple = SearchSysCache(RELOID, ObjectIdGetDatum(relid2),
-								 0, 0, 0);
+	                             0, 0, 0);
 
 	if (HeapTupleIsValid(class_tuple))
 	{
@@ -347,7 +347,7 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 
 	total_tuples = num1_tuples * num2_tuples;
 	rows_returned = 2 * ((num1_tuples * selectivity1) +
-						 (num2_tuples * selectivity2));
+	                     (num2_tuples * selectivity2));
 
 	POSTGIS_DEBUGF(3, "Rows from rel1: %f", num1_tuples * selectivity1);
 	POSTGIS_DEBUGF(3, "Rows from rel2: %f", num2_tuples * selectivity2);
@@ -383,11 +383,11 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
  * of a search_box looking at data in the GEOM_STATS
  * structure.
  * */
- /**
- * TODO: handle box dimension collapses (probably should be handled
- * by the statistic generator, avoiding GEOM_STATS with collapsed
- * dimensions)
- */
+/**
+* TODO: handle box dimension collapses (probably should be handled
+* by the statistic generator, avoiding GEOM_STATS with collapsed
+* dimensions)
+*/
 static float8
 estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats)
 {
@@ -408,9 +408,9 @@ estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats)
 	 * Search box completely miss histogram extent
 	 */
 	if ( box->xmax < geomstats->xmin ||
-			box->xmin > geomstats->xmax ||
-			box->ymax < geomstats->ymin ||
-			box->ymin > geomstats->ymax )
+	        box->xmin > geomstats->xmax ||
+	        box->ymax < geomstats->ymin ||
+	        box->ymin > geomstats->ymax )
 	{
 		POSTGIS_DEBUG(3, " search_box does not overlaps histogram, returning 0");
 
@@ -421,9 +421,9 @@ estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats)
 	 * Search box completely contains histogram extent
 	 */
 	if ( box->xmax >= geomstats->xmax &&
-			box->xmin <= geomstats->xmin &&
-			box->ymax >= geomstats->ymax &&
-			box->ymin <= geomstats->ymin )
+	        box->xmin <= geomstats->xmin &&
+	        box->ymax >= geomstats->ymax &&
+	        box->ymin <= geomstats->ymin )
 	{
 		POSTGIS_DEBUG(3, " search_box contains histogram, returning 1");
 
@@ -528,16 +528,16 @@ estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats)
 			gain = AOI/cell_area;
 
 			POSTGIS_DEBUGF(4, " [%d,%d] cell val %.15f",
-						   x, y, val);
+			               x, y, val);
 			POSTGIS_DEBUGF(4, " [%d,%d] AOI %.15f",
-						   x, y, AOI);
+			               x, y, AOI);
 			POSTGIS_DEBUGF(4, " [%d,%d] gain %.15f",
-						   x, y, gain);
+			               x, y, gain);
 
 			val *= gain;
 
 			POSTGIS_DEBUGF(4, " [%d,%d] adding %.15f to value",
-						   x, y, val);
+			               x, y, val);
 
 			value += val;
 		}
@@ -578,7 +578,7 @@ estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats)
 	 *
 	 */
 	overlapping_cells = (x_idx_max-x_idx_min+1) *
-						(y_idx_max-y_idx_min+1);
+	                    (y_idx_max-y_idx_min+1);
 	avg_feat_cells = geomstats->avgFeatureCells;
 
 	POSTGIS_DEBUGF(3, " search_box overlaps %f cells", overlapping_cells);
@@ -720,9 +720,9 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 
 	if ( ! get_attstatsslot(stats_tuple, 0, 0, STATISTIC_KIND_GEOMETRY, InvalidOid, NULL, NULL,
 #if POSTGIS_PGSQL_VERSION >= 85
-					NULL,
+	                        NULL,
 #endif
-					(float4 **)gsptr, &geomstats_nvalues) )
+	                        (float4 **)gsptr, &geomstats_nvalues) )
 	{
 		POSTGIS_DEBUG(3, " STATISTIC_KIND_GEOMETRY stats not found - returning default geometry selectivity");
 
@@ -733,9 +733,9 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(4, " %d read from stats", geomstats_nvalues);
 
 	POSTGIS_DEBUGF(4, " histo: xmin,ymin: %f,%f",
-				   geomstats->xmin, geomstats->ymin);
+	               geomstats->xmin, geomstats->ymin);
 	POSTGIS_DEBUGF(4, " histo: xmax,ymax: %f,%f",
-				   geomstats->xmax, geomstats->ymax);
+	               geomstats->xmax, geomstats->ymax);
 	POSTGIS_DEBUGF(4, " histo: cols: %f", geomstats->rows);
 	POSTGIS_DEBUGF(4, " histo: rows: %f", geomstats->cols);
 	POSTGIS_DEBUGF(4, " histo: avgFeatureArea: %f", geomstats->avgFeatureArea);
@@ -775,7 +775,7 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
  */
 static void
 compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
-					   int samplerows, double totalrows)
+                       int samplerows, double totalrows)
 {
 	MemoryContext old_context;
 	int i;
@@ -866,9 +866,9 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		 * Skip infinite geoms
 		 */
 		if ( ! finite(box.xmin) ||
-				! finite(box.xmax) ||
-				! finite(box.ymin) ||
-				! finite(box.ymax) )
+		        ! finite(box.xmax) ||
+		        ! finite(box.ymin) ||
+		        ! finite(box.ymax) )
 		{
 			POSTGIS_DEBUGF(3, " skipped infinite geometry %d", i);
 
@@ -893,13 +893,13 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		else
 		{
 			sample_extent->xmax = LWGEOM_Maxf(sample_extent->xmax,
-											  box.xmax);
+			                                  box.xmax);
 			sample_extent->ymax = LWGEOM_Maxf(sample_extent->ymax,
-											  box.ymax);
+			                                  box.ymax);
 			sample_extent->xmin = LWGEOM_Minf(sample_extent->xmin,
-											  box.xmin);
+			                                  box.xmin);
 			sample_extent->ymin = LWGEOM_Minf(sample_extent->ymin,
-											  box.ymin);
+			                                  box.ymin);
 		}
 
 		/** TODO: ask if we need geom or bvol size for stawidth */
@@ -934,9 +934,9 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 #if USE_STANDARD_DEVIATION
 
 	POSTGIS_DEBUGF(3, " sample_extent: xmin,ymin: %f,%f",
-				   sample_extent->xmin, sample_extent->ymin);
+	               sample_extent->xmin, sample_extent->ymin);
 	POSTGIS_DEBUGF(3, " sample_extent: xmax,ymax: %f,%f",
-				   sample_extent->xmax, sample_extent->ymax);
+	               sample_extent->xmax, sample_extent->ymax);
 
 	/*
 	 * Second scan:
@@ -968,18 +968,18 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	POSTGIS_DEBUGF(3, "  HIGy - avg:%f sd:%f", avgHIGy, sdHIGy);
 
 	histobox.xmin = LW_MAX((avgLOWx - SDFACTOR * sdLOWx),
-						   sample_extent->xmin);
+	                       sample_extent->xmin);
 	histobox.ymin = LW_MAX((avgLOWy - SDFACTOR * sdLOWy),
-						   sample_extent->ymin);
+	                       sample_extent->ymin);
 	histobox.xmax = LW_MIN((avgHIGx + SDFACTOR * sdHIGx),
-						   sample_extent->xmax);
+	                       sample_extent->xmax);
 	histobox.ymax = LW_MIN((avgHIGy + SDFACTOR * sdHIGy),
-						   sample_extent->ymax);
+	                       sample_extent->ymax);
 
 	POSTGIS_DEBUGF(3, " sd_extent: xmin,ymin: %f,%f",
-				   histobox.xmin, histobox.ymin);
+	               histobox.xmin, histobox.ymin);
 	POSTGIS_DEBUGF(3, " sd_extent: xmax,ymax: %f,%f",
-				   histobox.xmin, histobox.ymax);
+	               histobox.xmin, histobox.ymax);
 
 	/*
 	 * Third scan:
@@ -992,9 +992,9 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		box = (BOX2DFLOAT4 *)sampleboxes[i];
 
 		if ( box->xmin > histobox.xmax ||
-				box->xmax < histobox.xmin ||
-				box->ymin > histobox.ymax ||
-				box->ymax < histobox.ymin )
+		        box->xmax < histobox.xmin ||
+		        box->ymin > histobox.ymax ||
+		        box->ymax < histobox.ymin )
 		{
 			POSTGIS_DEBUGF(4, " feat %d is an hard deviant, skipped", i);
 
@@ -1048,9 +1048,9 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 
 
 	POSTGIS_DEBUGF(3, " histogram_extent: xmin,ymin: %f,%f",
-				   histobox.xmin, histobox.ymin);
+	               histobox.xmin, histobox.ymin);
 	POSTGIS_DEBUGF(3, " histogram_extent: xmax,ymax: %f,%f",
-				   histobox.xmax, histobox.ymax);
+	               histobox.xmax, histobox.ymax);
 
 
 	geow = histobox.xmax - histobox.xmin;
@@ -1111,7 +1111,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	geomstats->rows = rows;
 
 	/* Initialize all values to 0 */
-	for (i=0;i<histocells; i++) geomstats->value[i] = 0;
+	for (i=0; i<histocells; i++) geomstats->value[i] = 0;
 
 	cell_width = geow/cols;
 	cell_height = geoh/rows;
@@ -1145,8 +1145,8 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		vacuum_delay_point();
 
 		POSTGIS_DEBUGF(4, " feat %d box is %f %f, %f %f",
-					   i, box->xmax, box->ymax,
-					   box->xmin, box->ymin);
+		               i, box->xmax, box->ymax,
+		               box->xmin, box->ymin);
 
 		/* Find first overlapping column */
 		x_idx_min = (box->xmin-geomstats->xmin) / geow * cols;
@@ -1169,7 +1169,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		if (y_idx_max >= rows) y_idx_max = rows-1;
 
 		POSTGIS_DEBUGF(4, " feat %d overlaps columns %d-%d, rows %d-%d",
-					   i, x_idx_min, x_idx_max, y_idx_min, y_idx_max);
+		               i, x_idx_min, x_idx_max, y_idx_min, y_idx_max);
 
 		/*
 		 * the {x,y}_idx_{min,max}
@@ -1249,7 +1249,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	stats->stadistinct = -1.0;
 
 	POSTGIS_DEBUGF(3, " out: slot 0: kind %d (STATISTIC_KIND_GEOMETRY)",
-				   stats->stakind[0]);
+	               stats->stakind[0]);
 	POSTGIS_DEBUGF(3, " out: slot 0: op %d (InvalidOid)", stats->staop[0]);
 	POSTGIS_DEBUGF(3, " out: slot 0: numnumbers %d", stats->numnumbers[0]);
 	POSTGIS_DEBUGF(3, " out: null fraction: %d/%d=%g", null_cnt, samplerows, stats->stanullfrac);
@@ -1401,7 +1401,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 	else
 	{
 		POSTGIS_DEBUGF(3, " schema:current_schema() table:%s column:%s",
-					   tbl, col);
+		               tbl, col);
 	}
 #endif
 
@@ -1504,7 +1504,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 	memcpy(box, ARR_DATA_PTR(array), sizeof(BOX2DFLOAT4));
 
 	POSTGIS_DEBUGF(3, " histogram extent = %g %g, %g %g", box->xmin,
-				   box->ymin, box->xmax, box->ymax);
+	               box->ymin, box->xmax, box->ymax);
 
 	SPIcode = SPI_finish();
 	if (SPIcode != SPI_OK_FINISH )

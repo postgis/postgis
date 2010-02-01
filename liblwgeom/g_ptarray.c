@@ -24,13 +24,13 @@ GPTARRAY* gptarray_new(uchar flags)
 GPTARRAY* gptarray_copy(GPTARRAY *ptarray)
 {
 	GPTARRAY *copy = NULL;
-	assert(ptarray);	
+	assert(ptarray);
 	copy = (GPTARRAY*)lwalloc(sizeof(GPTARRAY));
 	copy->flags = ptarray->flags;
 	copy->capacity = ptarray->npoints * FLAGS_NDIMS(ptarray->flags) * sizeof(double);
 	copy->npoints = ptarray->npoints;
 	copy->ordinates = (double*)lwalloc(copy->capacity);
-	if( ! copy->ordinates ) return NULL;
+	if ( ! copy->ordinates ) return NULL;
 	memcpy(copy->ordinates, ptarray->ordinates, copy->capacity);
 	return copy;
 }
@@ -60,7 +60,7 @@ void gptarray_free(GPTARRAY *ptarray)
 {
 	assert(ptarray);
 	assert(ptarray->ordinates);
-	if( ptarray->capacity > 0 ) /* Only free the ordinates if we are managing them. */
+	if ( ptarray->capacity > 0 ) /* Only free the ordinates if we are managing them. */
 		lwfree(ptarray->ordinates);
 	lwfree(ptarray);
 }
@@ -69,20 +69,20 @@ void gptarray_add_coord(GPTARRAY *ptarray, GCOORDINATE *coord)
 {
 	assert(ptarray);
 	assert(ptarray->flags == coord->flags);
-	if( FLAGS_NDIMS(ptarray->flags) * (ptarray->npoints + 1) * sizeof(double) > ptarray->capacity )
+	if ( FLAGS_NDIMS(ptarray->flags) * (ptarray->npoints + 1) * sizeof(double) > ptarray->capacity )
 	{
 		ptarray->capacity *= 2;
 		ptarray->ordinates = lwrealloc(ptarray->ordinates, ptarray->capacity);
-		if ( ! ptarray->ordinates ) 
+		if ( ! ptarray->ordinates )
 		{
 			lwerror("Out of memory!");
-			return; 
+			return;
 		}
 	}
-	memcpy(ptarray->ordinates + FLAGS_NDIMS(ptarray->flags) * ptarray->npoints * sizeof(double), 
+	memcpy(ptarray->ordinates + FLAGS_NDIMS(ptarray->flags) * ptarray->npoints * sizeof(double),
 	       coord->ordinates,
 	       FLAGS_NDIMS(coord->flags) * sizeof(double));
-	
+
 	ptarray->npoints++;
 }
 
@@ -91,9 +91,9 @@ GCOORDINATE* gptarray_get_coord_ro(GPTARRAY *ptarray, int i)
 	GCOORDINATE *coord;
 	assert(ptarray);
 	coord = gcoord_new(ptarray->flags);
-	
+
 	coord->ordinates = ptarray->ordinates + FLAGS_NDIMS(ptarray->flags) * i;
-	
+
 	return coord;
 }
 
@@ -102,11 +102,11 @@ GCOORDINATE* gptarray_get_coord_new(GPTARRAY *ptarray, int i)
 	GCOORDINATE *coord;
 	assert(ptarray);
 	coord = gcoord_new(ptarray->flags);
-	
+
 	memcpy(coord->ordinates,
 	       ptarray->ordinates + FLAGS_NDIMS(ptarray->flags) * i,
 	       FLAGS_NDIMS(ptarray->flags) * sizeof(double));
-	
+
 	return coord;
 }
 
@@ -121,11 +121,11 @@ void gptarray_set_coord(GPTARRAY *ptarray, int i, GCOORDINATE *coord)
 
 	ndims = FLAGS_NDIMS(ptarray->flags);
 
-	for( dim = 0; dim < ndims; dim++ )
+	for ( dim = 0; dim < ndims; dim++ )
 	{
 		*(ptarray->ordinates + i * ndims + dim) = *(coord->ordinates + dim);
 	}
-	
+
 }
 
 void gptarray_set_x(GPTARRAY *ptarray, int i, double x)
@@ -155,7 +155,7 @@ void gptarray_set_m(GPTARRAY *ptarray, int i, double m)
 	assert(ptarray);
 	assert(FLAGS_GET_M(ptarray->flags));
 
-	if( FLAGS_GET_Z(ptarray->flags))
+	if ( FLAGS_GET_Z(ptarray->flags))
 	{	/* Four coordinates */
 		*(ptarray->ordinates + i * FLAGS_NDIMS(ptarray->flags) + 3) = m;
 	}
@@ -189,7 +189,7 @@ double gptarray_get_m(GPTARRAY *ptarray, int i)
 	assert(ptarray);
 	assert(FLAGS_GET_M(ptarray->flags));
 
-	if( FLAGS_GET_Z(ptarray->flags))
+	if ( FLAGS_GET_Z(ptarray->flags))
 	{	/* Four coordinates */
 		return *(ptarray->ordinates + i * FLAGS_NDIMS(ptarray->flags) + 3);
 	}

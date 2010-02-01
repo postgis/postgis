@@ -39,12 +39,12 @@ lwmsurface_deserialize(uchar *srl)
 	result->type = insp->type;
 	result->SRID = insp->SRID;
 	result->ngeoms = insp->ngeometries;
-	
-	if( insp->ngeometries )
+
+	if ( insp->ngeometries )
 	{
 		result->geoms = lwalloc(sizeof(LWPOLY *)*insp->ngeometries);
 	}
-	else 
+	else
 	{
 		result->geoms = NULL;
 	}
@@ -125,7 +125,7 @@ lwmsurface_add(const LWMSURFACE *to, uint32 where, const LWGEOM *what)
 	}
 
 	if (TYPE_GETTYPE(what->type) == POLYGONTYPE ||
-	    TYPE_GETTYPE(what->type) == CURVEPOLYTYPE)
+	        TYPE_GETTYPE(what->type) == CURVEPOLYTYPE)
 		newtype = MULTISURFACETYPE;
 	else newtype = COLLECTIONTYPE;
 

@@ -24,7 +24,7 @@
 double lw_segment_side(const POINT2D *p1, const POINT2D *p2, const POINT2D *q)
 {
 	double side = ( (q->x - p1->x) * (p2->y - p1->y) - (p2->x - p1->x) * (q->y - p1->y) );
-	if( FP_IS_ZERO(side) )
+	if ( FP_IS_ZERO(side) )
 		return 0.0;
 	else
 		return side;
@@ -130,7 +130,7 @@ int lw_segment_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q
 		else
 			return SEG_CROSS_LEFT;
 	}
-	
+
 	/* The segments cross, what direction is the crossing? */
 	if ( FP_LT(pq1,pq2) )
 		return SEG_CROSS_RIGHT;
@@ -186,13 +186,13 @@ int lwline_crossing_direction(LWLINE *l1, LWLINE *l2)
 
 		/* Initialize first point of p */
 		rv = getPoint2d_p(pa1, 0, &p1);
-		
+
 		for ( j = 1; j < pa1->npoints; j++ )
 		{
 
 			/* Update second point of p to next value */
 			rv = getPoint2d_p(pa1, j, &p2);
-			
+
 			this_cross = lw_segment_intersects(&p1, &p2, &q1, &q2);
 
 			LWDEBUGF(4, "i=%d, j=%d (%.8g %.8g, %.8g %.8g)", this_cross, i, j, p1.x, p1.y, p2.x, p2.y);
@@ -201,7 +201,7 @@ int lwline_crossing_direction(LWLINE *l1, LWLINE *l2)
 			{
 				LWDEBUG(4,"this_cross == SEG_CROSS_LEFT");
 				cross_left++;
-				if ( ! first_cross ) 
+				if ( ! first_cross )
 					first_cross = SEG_CROSS_LEFT;
 			}
 
@@ -209,7 +209,7 @@ int lwline_crossing_direction(LWLINE *l1, LWLINE *l2)
 			{
 				LWDEBUG(4,"this_cross == SEG_CROSS_RIGHT");
 				cross_right++;
-				if ( ! first_cross ) 
+				if ( ! first_cross )
 					first_cross = SEG_CROSS_LEFT;
 			}
 
@@ -221,18 +221,18 @@ int lwline_crossing_direction(LWLINE *l1, LWLINE *l2)
 			if ( this_cross == SEG_COLINEAR )
 			{
 				LWDEBUG(4,"this_cross == SEG_COLINEAR");
-				/* TODO: Add logic here and in segment_intersects() 
-				continue; 
+				/* TODO: Add logic here and in segment_intersects()
+				continue;
 				*/
 			}
-			
+
 			LWDEBUG(4,"this_cross == SEG_NO_INTERSECTION");
-			
+
 			/* Turn second point of p into first point */
 			p1 = p2;
 
 		}
-		
+
 		/* Turn second point of q into first point */
 		q1 = q2;
 
@@ -342,7 +342,7 @@ int lwpoint_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int nd
 	}
 
 	if ( FP_MIN(p1_value, p2_value) > interpolation_value ||
-			FP_MAX(p1_value, p2_value) < interpolation_value )
+	        FP_MAX(p1_value, p2_value) < interpolation_value )
 	{
 		lwerror("Cannot interpolate to a value (%g) not between the input points (%g, %g).", interpolation_value, p1_value, p2_value);
 		return 0;
@@ -538,9 +538,9 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				*  If we're on a boundary and crossing from the far side,
 				*  we also need an interpolated point. */
 				if ( i > 0 && ( /* Don't try to interpolate if this is the first point */
-							( ordinate_value_p > from && ordinate_value_p < to ) || /* Inside */
-							( ordinate_value_p == from && ordinate_value_q > to ) || /* Hopping from above */
-							( ordinate_value_p == to && ordinate_value_q < from ) ) ) /* Hopping from below */
+				            ( ordinate_value_p > from && ordinate_value_p < to ) || /* Inside */
+				            ( ordinate_value_p == from && ordinate_value_q > to ) || /* Hopping from above */
+				            ( ordinate_value_p == to && ordinate_value_q < from ) ) ) /* Hopping from below */
 				{
 					double interpolation_value;
 					(ordinate_value_q > to) ? (interpolation_value = to) : (interpolation_value = from);
@@ -580,8 +580,8 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				*  If the last point was the near boundary, nothing to do.
 				*  If it was the far boundary, we need an interpolated point. */
 				if ( from != to && (
-							(ordinate_value_q == from && ordinate_value_p > from) ||
-							(ordinate_value_q == to && ordinate_value_p < to) ) )
+				            (ordinate_value_q == from && ordinate_value_p > from) ||
+				            (ordinate_value_q == to && ordinate_value_p < to) ) )
 				{
 					double interpolation_value;
 					(ordinate_value_p > to) ? (interpolation_value = to) : (interpolation_value = from);

@@ -214,7 +214,7 @@ stringbuffer_t *stringbuffer_trim_whitespace(stringbuffer_t *sb)
 	{
 
 		/* we do have whitespace in the beginning so find the end. */
-		for (j = (sb->len -1);(sb->buf[j] == ' ' || sb->buf[j] == '\t'); j--);
+		for (j = (sb->len -1); (sb->buf[j] == ' ' || sb->buf[j] == '\t'); j--);
 
 		/* increment j since it's on the non whitespace character. */
 		j++;
@@ -255,7 +255,7 @@ char *stringbuffer_get_last_occurance(stringbuffer_t *sb, char c)
 	int i;
 
 	ptr = sb->buf;
-	for (i = 0;i < sb->len;i++)
+	for (i = 0; i < sb->len; i++)
 	{
 
 		if (ptr[i] == c)
@@ -309,7 +309,7 @@ void stringbuffer_replace_c(stringbuffer_t *sb, char c, char replace)
 {
 	int i;
 
-	for (i = 0;i < sb->len;i++)
+	for (i = 0; i < sb->len; i++)
 	{
 		if (sb->buf[i] == c)
 			sb->buf[i] = replace;

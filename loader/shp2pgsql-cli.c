@@ -30,7 +30,7 @@ usage()
 	printf("          exactly the same table schema.\n");
 	printf("      -c  Creates a new table and populates it, this is the\n");
 	printf("          default if you do not specify any options.\n");
- 	printf("      -p  Prepare mode, only creates the table.\n");
+	printf("      -p  Prepare mode, only creates the table.\n");
 	printf("  -g <geocolumn> Specify the name of the geometry/geography column\n");
 	printf("     (mostly useful in append mode).\n");
 	printf("  -D  Use postgresql dump format (defaults to SQL insert statments.\n");
@@ -58,7 +58,8 @@ main (int argc, char **argv)
 
 
 	/* If no options are specified, display usage */
-	if (argc == 1) {
+	if (argc == 1)
+	{
 		usage();
 		exit(0);
 	}
@@ -71,100 +72,100 @@ main (int argc, char **argv)
 	{
 		switch (c)
 		{
-			case 'c':
-			case 'd':
+		case 'c':
+		case 'd':
+		case 'a':
+		case 'p':
+			if (config->opt == ' ')
+			{
+				config->opt = c;
+			}
+			else
+			{
+				/* Only one of these options can be chosen */
+				usage();
+				exit(0);
+			}
+			break;
+
+		case 'D':
+			config->dump_format = 1;
+			break;
+
+		case 'G':
+			config->geography = 1;
+			break;
+
+		case 'S':
+			config->simple_geometries = 1;
+			break;
+
+		case 's':
+			if (optarg)
+			{
+				sscanf(optarg, "%d", &(config->sr_id));
+			}
+			else
+			{
+				/* With -s, user must specify SRID */
+				usage();
+				exit(0);
+			}
+			break;
+
+		case 'g':
+			config->geom = optarg;
+			break;
+
+		case 'k':
+			config->quoteidentifiers = 1;
+			break;
+
+		case 'i':
+			config->forceint4 = 1;
+			break;
+
+		case 'I':
+			config->createindex = 1;
+			break;
+
+		case 'w':
+			config->hwgeom = 1;
+			break;
+
+		case 'n':
+			config->readshape = 0;
+			break;
+
+		case 'W':
+			config->encoding = optarg;
+			break;
+
+		case 'N':
+			switch (optarg[0])
+			{
 			case 'a':
-			case 'p':
-				if (config->opt == ' ')
-				{
-					config->opt = c;
-				}
-				else
-				{
-					/* Only one of these options can be chosen */
-					usage();
-					exit(0);
-				}
+				config->null_policy = POLICY_NULL_ABORT;
 				break;
-
-			case 'D':
-				config->dump_format = 1;
-				break;
-
-			case 'G':
-				config->geography = 1;
-				break;
-
-			case 'S':
-				config->simple_geometries = 1;
-				break;
-
-			case 's':
-				if (optarg) 
-				{
-					sscanf(optarg, "%d", &(config->sr_id));
-				}
-				else 
-				{
-					/* With -s, user must specify SRID */
-					usage();
-					exit(0);
-				}
-				break;
-
-			case 'g':
-				config->geom = optarg;
-				break;
-
-			case 'k':
-				config->quoteidentifiers = 1;
-				break;
-
 			case 'i':
-				config->forceint4 = 1;
+				config->null_policy = POLICY_NULL_INSERT;
 				break;
-
-			case 'I':
-				config->createindex = 1;
+			case 's':
+				config->null_policy = POLICY_NULL_SKIP;
 				break;
-
-			case 'w':
-				config->hwgeom = 1;
-				break;
-
-			case 'n':
-				config->readshape = 0;
-				break;
-
-			case 'W':
-				config->encoding = optarg;
-				break;
-
-			case 'N':
-				switch (optarg[0])
-				{	
-					case 'a':
-						config->null_policy = POLICY_NULL_ABORT;
-						break;
-					case 'i':
-						config->null_policy = POLICY_NULL_INSERT;
-						break;
-					case 's':
-						config->null_policy = POLICY_NULL_SKIP;
-						break;
-					default:
-						fprintf(stderr, "Unsupported NULL geometry handling policy.\nValid policies: insert, skip, abort\n");
-						exit(1);
-				}
-				break;
-
-			case '?':
-				usage();
-				exit(0);
-
 			default:
-				usage();
-				exit(0);
+				fprintf(stderr, "Unsupported NULL geometry handling policy.\nValid policies: insert, skip, abort\n");
+				exit(1);
+			}
+			break;
+
+		case '?':
+			usage();
+			exit(0);
+
+		default:
+			usage();
+			exit(0);
 		}
 	}
 
@@ -173,7 +174,7 @@ main (int argc, char **argv)
 	{
 		config->shp_file = argv[optind];
 		optind++;
-	}	
+	}
 
 	/* Determine the table and schema names from the next argument */
 	if (optind < argc)
@@ -197,7 +198,7 @@ main (int argc, char **argv)
 			strcpy(config->table, argv[optind]);
 		}
 	}
-	
+
 	/* Transform table name to lower case if no quoting specified */
 	if (!config->quoteidentifiers)
 	{
@@ -207,9 +208,9 @@ main (int argc, char **argv)
 	}
 
 	/* Make the geocolumn name consistent with the load type (geometry or geography) */
-	if( config->geography )
+	if ( config->geography )
 	{
-		if(config->geom) free(config->geom);
+		if (config->geom) free(config->geom);
 		config->geom = strdup(GEOGRAPHY_DEFAULT);
 	}
 
@@ -254,7 +255,7 @@ main (int argc, char **argv)
 		if (ret != SHPLOADEROK)
 		{
 			fprintf(stderr, "%s\n", state->message);
-	
+
 			if (ret == SHPLOADERERR)
 				exit(1);
 		}
@@ -268,34 +269,34 @@ main (int argc, char **argv)
 	{
 		ret = ShpLoaderGenerateSQLRowStatement(state, i, &record);
 
-		switch(ret)
+		switch (ret)
 		{
-			case SHPLOADEROK:
-				/* Simply display the geometry */
-				printf("%s\n", record);
-				free(record);
-				break;
+		case SHPLOADEROK:
+			/* Simply display the geometry */
+			printf("%s\n", record);
+			free(record);
+			break;
 
-			case SHPLOADERERR:
-				/* Display the error message then stop */
-				fprintf(stderr, "%s\n", state->message);
-				exit(1);
-				break;
+		case SHPLOADERERR:
+			/* Display the error message then stop */
+			fprintf(stderr, "%s\n", state->message);
+			exit(1);
+			break;
 
-			case SHPLOADERWARN:
-				/* Display the warning, but continue */
-				fprintf(stderr, "%s\n", state->message);
-				printf("%s\n", record);
-				free(record);
-				break;
+		case SHPLOADERWARN:
+			/* Display the warning, but continue */
+			fprintf(stderr, "%s\n", state->message);
+			printf("%s\n", record);
+			free(record);
+			break;
 
-			case SHPLOADERRECDELETED:
-				/* Record is marked as deleted - ignore */
-				break;
+		case SHPLOADERRECDELETED:
+			/* Record is marked as deleted - ignore */
+			break;
 
-			case SHPLOADERRECISNULL:
-				/* Record is NULL and should be ignored according to NULL policy */
-				break;
+		case SHPLOADERRECISNULL:
+			/* Record is NULL and should be ignored according to NULL policy */
+			break;
 		}
 	}
 

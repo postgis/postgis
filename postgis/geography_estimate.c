@@ -128,8 +128,8 @@ estimate_selectivity(GBOX *box, GEOG_STATS *geogstats)
 	 * Search box completely miss histogram extent
 	 */
 	if ( box->xmax < geogstats->xmin || box->xmin > geogstats->xmax ||
-		box->ymax < geogstats->ymin || box->ymin > geogstats->ymax ||
-		box->zmax < geogstats->zmin || box->zmin > geogstats->zmax)
+	        box->ymax < geogstats->ymin || box->ymin > geogstats->ymax ||
+	        box->zmax < geogstats->zmin || box->zmin > geogstats->zmax)
 	{
 		POSTGIS_DEBUG(3, " search_box does not overlaps histogram, returning 0");
 
@@ -140,8 +140,8 @@ estimate_selectivity(GBOX *box, GEOG_STATS *geogstats)
 	 * Search box completely contains histogram extent
 	 */
 	if ( box->xmax >= geogstats->xmax && box->xmin <= geogstats->xmin &&
-		box->ymax >= geogstats->ymax && box->ymin <= geogstats->ymin &&
-		box->zmax >= geogstats->zmax && box->zmin <= geogstats->zmin)
+	        box->ymax >= geogstats->ymax && box->ymin <= geogstats->ymin &&
+	        box->zmax >= geogstats->zmax && box->zmin <= geogstats->zmin)
 	{
 		POSTGIS_DEBUG(3, " search_box contains histogram, returning 1");
 
@@ -162,31 +162,31 @@ estimate_selectivity(GBOX *box, GEOG_STATS *geogstats)
 	/* Work out the coverage depending upon the number of dimensions */
 	switch ((int)geogstats->dims)
 	{
-		case 0:
-		case 1:
-			/* Non-existent or multiple single points */
-			cell_coverage = 1;
-			break;
+	case 0:
+	case 1:
+		/* Non-existent or multiple single points */
+		cell_coverage = 1;
+		break;
 
-		case 2:
-			/* Work in areas for 2 dimensions: we have to work slightly
-			   harder here to work out which 2 dimensions are valid */
-			
-			if (sizez == 0)
-				/* X and Y */
-				cell_coverage = (sizex * sizey) / (unitsx * unitsy);
-			else if (sizey == 0)
-				/* X and Z */
-				cell_coverage = (sizex * sizez) / (unitsx * unitsz);
-			else if (sizex == 0)
-				/* Y and Z */
-				cell_coverage = (sizey * sizez) / (unitsy * unitsz);
-			break;
+	case 2:
+		/* Work in areas for 2 dimensions: we have to work slightly
+		   harder here to work out which 2 dimensions are valid */
 
-		case 3:
-			/* Work in volumes for 3 dimensions */
-			cell_coverage = (sizex * sizey * sizey) / (unitsx * unitsy * unitsz);
-			break;
+		if (sizez == 0)
+			/* X and Y */
+			cell_coverage = (sizex * sizey) / (unitsx * unitsy);
+		else if (sizey == 0)
+			/* X and Z */
+			cell_coverage = (sizex * sizez) / (unitsx * unitsz);
+		else if (sizex == 0)
+			/* Y and Z */
+			cell_coverage = (sizey * sizez) / (unitsy * unitsz);
+		break;
+
+	case 3:
+		/* Work in volumes for 3 dimensions */
+		cell_coverage = (sizex * sizey * sizey) / (unitsx * unitsy * unitsz);
+		break;
 	}
 
 	value = 0;
@@ -293,65 +293,65 @@ estimate_selectivity(GBOX *box, GEOG_STATS *geogstats)
 			{
 				double val;
 				double gain;
-	
+
 				val = geogstats->value[x + y * unitsx + z * unitsx * unitsy];
-	
+
 				/*
 				* Of the cell value we get
 				* only the overlap fraction.
 				*/
-	
+
 				intersect_x = LW_MIN(box->xmax, geogstats->xmin + (x+1) * sizex / unitsx) - LW_MAX(box->xmin, geogstats->xmin + x * sizex / unitsx);
 				intersect_y = LW_MIN(box->ymax, geogstats->ymin + (y+1) * sizey / unitsy) - LW_MAX(box->ymin, geogstats->ymin + y * sizey / unitsy);
 				intersect_z = LW_MIN(box->zmax, geogstats->zmin + (z+1) * sizez / unitsz) - LW_MAX(box->zmin, geogstats->zmin + z * sizez / unitsz);
 
 
-				switch((int)geogstats->dims)
+				switch ((int)geogstats->dims)
 				{
-					case 0:
-						AOI = 1;
-					case 1:
-						/* Working in 1 dimension: work out the value we need
-						   for AOI */
-						if (sizex == 0 && sizey == 0)
-							AOI = intersect_z;
-						else if (sizex == 0 && sizez == 0)
-							AOI = intersect_y;
-						else if (sizey == 0 && sizez == 0)
-							AOI = intersect_x;
-						break;
+				case 0:
+					AOI = 1;
+				case 1:
+					/* Working in 1 dimension: work out the value we need
+					   for AOI */
+					if (sizex == 0 && sizey == 0)
+						AOI = intersect_z;
+					else if (sizex == 0 && sizez == 0)
+						AOI = intersect_y;
+					else if (sizey == 0 && sizez == 0)
+						AOI = intersect_x;
+					break;
 
-					case 2:
-						/* Working in 2 dimensions: work out which 2 values we
-						   need for AOI */
-						if (sizex == 0)
-							AOI = intersect_y * intersect_z;
-						else if (sizey == 0)
-							AOI = intersect_x * intersect_z;
-						else if (sizez == 0)
-							AOI = intersect_x * intersect_y;
-						break;
+				case 2:
+					/* Working in 2 dimensions: work out which 2 values we
+					   need for AOI */
+					if (sizex == 0)
+						AOI = intersect_y * intersect_z;
+					else if (sizey == 0)
+						AOI = intersect_x * intersect_z;
+					else if (sizez == 0)
+						AOI = intersect_x * intersect_y;
+					break;
 
-					case 3:
-						/* Working in 3 dimensions: use all 3 values */
-						AOI = intersect_x * intersect_y * intersect_z;
-						break;
+				case 3:
+					/* Working in 3 dimensions: use all 3 values */
+					AOI = intersect_x * intersect_y * intersect_z;
+					break;
 				}
 
 				gain = AOI/cell_coverage;
-	
+
 				POSTGIS_DEBUGF(4, " [%d,%d,%d] cell val %.15f",
-							x, y, z, val);
+				               x, y, z, val);
 				POSTGIS_DEBUGF(4, " [%d,%d,%d] AOI %.15f",
-							x, y, z, AOI);
+				               x, y, z, AOI);
 				POSTGIS_DEBUGF(4, " [%d,%d,%d] gain %.15f",
-							x, y, z, gain);
-	
+				               x, y, z, gain);
+
 				val *= gain;
-	
+
 				POSTGIS_DEBUGF(4, " [%d,%d,%d] adding %.15f to value",
-							x, y, z, val);
-	
+				               x, y, z, val);
+
 				value += val;
 			}
 		}
@@ -470,8 +470,8 @@ Datum geography_gist_selectivity(PG_FUNCTION_ARGS)
 	/*
 	 * This selectivity function is invoked by a clause of the form <arg> && <arg>
 	 *
-	 * In typical usage, one argument will be a column reference, while the other will 
-	 * be a geography constant; set self to point to the column argument and other 
+	 * In typical usage, one argument will be a column reference, while the other will
+	 * be a geography constant; set self to point to the column argument and other
 	 * to point to the constant argument.
 	 */
 	other = (Node *) linitial(args);
@@ -520,9 +520,9 @@ Datum geography_gist_selectivity(PG_FUNCTION_ARGS)
 		PG_RETURN_FLOAT8(0.0);
 	}
 
-	POSTGIS_DEBUGF(4, " requested search box is : %.15g %.15g %.15g, %.15g %.15g %.15g", 
-		search_box.xmin, search_box.ymin, search_box.zmin,
-		search_box.xmax, search_box.ymax, search_box.zmax);
+	POSTGIS_DEBUGF(4, " requested search box is : %.15g %.15g %.15g, %.15g %.15g %.15g",
+	               search_box.xmin, search_box.ymin, search_box.zmin,
+	               search_box.xmax, search_box.ymax, search_box.zmax);
 
 	/*
 	 * Get pg_statistic row
@@ -540,9 +540,9 @@ Datum geography_gist_selectivity(PG_FUNCTION_ARGS)
 
 	if ( ! get_attstatsslot(stats_tuple, 0, 0, STATISTIC_KIND_GEOGRAPHY, InvalidOid, NULL, NULL,
 #if POSTGIS_PGSQL_VERSION >= 85
-					NULL,
+	                        NULL,
 #endif
-					(float4 **)gsptr, &geogstats_nvalues) )
+	                        (float4 **)gsptr, &geogstats_nvalues) )
 	{
 		POSTGIS_DEBUG(3, " STATISTIC_KIND_GEOGRAPHY stats not found - returning default geography selectivity");
 
@@ -655,9 +655,9 @@ Datum geography_gist_join_selectivity(PG_FUNCTION_ARGS)
 
 	if ( ! get_attstatsslot(stats1_tuple, 0, 0, STATISTIC_KIND_GEOGRAPHY, InvalidOid, NULL, NULL,
 #if POSTGIS_PGSQL_VERSION >= 85
-		NULL,
+	                        NULL,
 #endif
-		(float4 **)gs1ptr, &geogstats1_nvalues) )
+	                        (float4 **)gs1ptr, &geogstats1_nvalues) )
 	{
 		POSTGIS_DEBUG(3, " STATISTIC_KIND_GEOGRAPHY stats not found - returning default geometry join selectivity");
 
@@ -679,9 +679,9 @@ Datum geography_gist_join_selectivity(PG_FUNCTION_ARGS)
 
 	if ( ! get_attstatsslot(stats2_tuple, 0, 0, STATISTIC_KIND_GEOGRAPHY, InvalidOid, NULL, NULL,
 #if POSTGIS_PGSQL_VERSION >= 85
-		NULL,
+	                        NULL,
 #endif
-		(float4 **)gs2ptr, &geogstats2_nvalues) )
+	                        (float4 **)gs2ptr, &geogstats2_nvalues) )
 	{
 		POSTGIS_DEBUG(3, " STATISTIC_KIND_GEOGRAPHY stats not found - returning default geometry join selectivity");
 
@@ -705,7 +705,7 @@ Datum geography_gist_join_selectivity(PG_FUNCTION_ARGS)
 
 	/* If the extents of the two columns don't intersect, return zero */
 	if (search_box.xmin > search_box.xmax || search_box.ymin > search_box.ymax ||
-		search_box.zmin > search_box.zmax)
+	        search_box.zmin > search_box.zmax)
 		PG_RETURN_FLOAT8(0.0);
 
 	POSTGIS_DEBUGF(3, " -- geomstats1 box: %.15g %.15g %.15g, %.15g %.15g %.15g", geogstats1->xmin, geogstats1->ymin, geogstats1->zmin, geogstats1->xmax, geogstats1->ymax, geogstats1->zmax);
@@ -793,7 +793,7 @@ Datum geography_gist_join_selectivity(PG_FUNCTION_ARGS)
 
 static void
 compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
-					   int samplerows, double totalrows)
+                        int samplerows, double totalrows)
 {
 	MemoryContext old_context;
 	GEOG_STATS *geogstats;
@@ -809,7 +809,7 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	int geog_stats_size;
 	struct dimensions histodims[3];
 	int ndims;
-	
+
 	double total_width = 0;
 	int notnull_cnt = 0, examinedsamples = 0, total_count_cells=0, total_cells_coverage = 0;
 
@@ -872,14 +872,14 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 			POSTGIS_DEBUGF(3, "skipping geometry at position %d", i);
 
 			continue;
-                }
+		}
 
 		/*
 		 * Skip infinite geoms
 		 */
 		if ( ! finite(gbox.xmin) || ! finite(gbox.xmax) ||
-			! finite(gbox.ymin) || ! finite(gbox.ymax) ||
-			! finite(gbox.zmin) || ! finite(gbox.zmax) )
+		        ! finite(gbox.ymin) || ! finite(gbox.ymax) ||
+		        ! finite(gbox.zmin) || ! finite(gbox.zmax) )
 		{
 			POSTGIS_DEBUGF(3, " skipped infinite geometry at position %d", i);
 
@@ -934,7 +934,7 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 
 	POSTGIS_DEBUG(3, "End of 1st scan:");
 	POSTGIS_DEBUGF(3, " Sample extent (min, max): (%g %g %g), (%g %g %g)", sample_extent->xmin, sample_extent->ymin,
-		sample_extent->zmin, sample_extent->xmax, sample_extent->ymax, sample_extent->zmax);
+	               sample_extent->zmin, sample_extent->xmax, sample_extent->ymax, sample_extent->zmax);
 	POSTGIS_DEBUGF(3, " No. of geometries sampled: %d", samplerows);
 	POSTGIS_DEBUGF(3, " No. of non-null geometries sampled: %d", notnull_cnt);
 
@@ -995,9 +995,9 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	histobox.zmax = LW_MIN((avgHIGz + SDFACTOR * sdHIGz), sample_extent->zmax);
 
 	POSTGIS_DEBUGF(3, " sd_extent: xmin, ymin, zmin: %f, %f, %f",
-				   histobox.xmin, histobox.ymin, histobox.zmin);
+	               histobox.xmin, histobox.ymin, histobox.zmin);
 	POSTGIS_DEBUGF(3, " sd_extent: xmax, ymax, zmax: %f, %f, %f",
-				   histobox.xmax, histobox.ymax, histobox.zmax);
+	               histobox.xmax, histobox.ymax, histobox.zmax);
 
 	/*
 	 * Third scan:
@@ -1010,8 +1010,8 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		box = (GBOX *)sampleboxes[i];
 
 		if ( box->xmin > histobox.xmax || box->xmax < histobox.xmin ||
-			box->ymin > histobox.ymax || box->ymax < histobox.ymin ||
-			box->zmin > histobox.zmax || box->zmax < histobox.zmin)
+		        box->ymin > histobox.ymax || box->ymax < histobox.ymin ||
+		        box->zmin > histobox.zmax || box->zmax < histobox.zmin)
 		{
 			POSTGIS_DEBUGF(4, " feat %d is an hard deviant, skipped", i);
 
@@ -1076,9 +1076,9 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 
 
 	POSTGIS_DEBUGF(3, " histogram_extent: xmin, ymin, zmin: %f, %f, %f",
-				   histobox.xmin, histobox.ymin, histobox.zmin);
+	               histobox.xmin, histobox.ymin, histobox.zmin);
 	POSTGIS_DEBUGF(3, " histogram_extent: xmax, ymax, zmax: %f, %f, %f",
-				   histobox.xmax, histobox.ymax, histobox.zmax);
+	               histobox.xmax, histobox.ymax, histobox.zmax);
 
 	/* Calculate the size of each dimension */
 	sizex = histobox.xmax - histobox.xmin;
@@ -1086,7 +1086,7 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	sizez = histobox.zmax - histobox.zmin;
 
 	/* In order to calculate a suitable aspect ratio for the histogram, we need
-	   to work out how many dimensions exist within our sample data (which we 
+	   to work out how many dimensions exist within our sample data (which we
 	   assume is representative of the whole data) */
 	ndims = 0;
 	if (sizex != 0)
@@ -1096,7 +1096,7 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		histodims[ndims].max = histobox.xmax;
 		ndims++;
 	}
-		
+
 	if (sizey != 0)
 	{
 		histodims[ndims].axis = 'Y';
@@ -1126,118 +1126,118 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 
 	switch (ndims)
 	{
-		case 0:
-			/* An empty column, or multiple points in exactly the same
-			   position in space */
-			unitsx = 1;
-			unitsy = 1;
-			unitsz = 1;
-			histocells = 1;
-			break;
+	case 0:
+		/* An empty column, or multiple points in exactly the same
+		   position in space */
+		unitsx = 1;
+		unitsy = 1;
+		unitsz = 1;
+		histocells = 1;
+		break;
 
-		case 1: 
-			/* Sample data all lies on a single line, so set the correct
-			   units variables depending upon which axis is in use */
-			for (i = 0; i < ndims; i++)
+	case 1:
+		/* Sample data all lies on a single line, so set the correct
+		   units variables depending upon which axis is in use */
+		for (i = 0; i < ndims; i++)
+		{
+			if ( (histodims[i].max - histodims[i].min) != 0)
 			{
-				if ( (histodims[i].max - histodims[i].min) != 0)
+				/* We've found the non-zero dimension, so set the
+				   units variables accordingly */
+				switch (histodims[i].axis)
 				{
-					/* We've found the non-zero dimension, so set the
-					   units variables accordingly */
-					switch(histodims[i].axis)
-					{
-						case 'X':
-							unitsx = histocells;
-							unitsy = 1;
-							unitsz = 1;
-							break;
+				case 'X':
+					unitsx = histocells;
+					unitsy = 1;
+					unitsz = 1;
+					break;
 
-						case 'Y':
-							unitsx = 1;
-							unitsy = histocells;
-							unitsz = 1;
-							break;
+				case 'Y':
+					unitsx = 1;
+					unitsy = histocells;
+					unitsz = 1;
+					break;
 
-						case 'Z':
-							unitsx = 1;
-							unitsy = 1;
-							unitsz = histocells;
-							break;
-					}
+				case 'Z':
+					unitsx = 1;
+					unitsy = 1;
+					unitsz = histocells;
+					break;
 				}
 			}
-			break;
+		}
+		break;
 
-		case 2:
-			/* Sample data lies within 2D space: divide the total area by the total
-			   number of cells, and thus work out the edge size of the unit block */
-			edgelength = sqrt(
-					LW_ABS(histodims[0].max - histodims[0].min) *
-					LW_ABS(histodims[1].max - histodims[1].min) / (double)histocells
-				);
+	case 2:
+		/* Sample data lies within 2D space: divide the total area by the total
+		   number of cells, and thus work out the edge size of the unit block */
+		edgelength = sqrt(
+		                 LW_ABS(histodims[0].max - histodims[0].min) *
+		                 LW_ABS(histodims[1].max - histodims[1].min) / (double)histocells
+		             );
 
-			/* The calculation is easy; the harder part is to work out which dimensions
-			   we actually have to set the units variables appropriately */
-			if (histodims[0].axis == 'X' && histodims[1].axis == 'Y')
-			{
-				/* X and Y */
-				unitsx = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
-				unitsy = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
-				unitsz = 1;
-			}
-			else if (histodims[0].axis == 'Y' && histodims[1].axis == 'X')
-			{
-				/* Y and X */
-				unitsx = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
-				unitsy = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
-				unitsz = 1;
-			}
-			else if (histodims[0].axis == 'X' && histodims[1].axis == 'Z')
-			{
-				/* X and Z */
-				unitsx = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
-				unitsy = 1;
-				unitsz = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
-			}
-			else if (histodims[0].axis == 'Z' && histodims[1].axis == 'X')
-			{
-				/* Z and X */
-				unitsx = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
-				unitsy = 1;
-				unitsz = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
-			}
-			else if (histodims[0].axis == 'Y' && histodims[1].axis == 'Z')
-			{
-				/* Y and Z */
-				unitsx = 1;
-				unitsy = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
-				unitsz = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
-			}
-			else if (histodims[0].axis == 'Z' && histodims[1].axis == 'Y')
-			{
-				/* Z and X */
-				unitsx = 1;
-				unitsy = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
-				unitsz = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
-			}
-
-			break;
-
-		case 3:
-			/* Sample data lies within 3D space: divide the total volume by the total
-			   number of cells, and thus work out the edge size of the unit block */
-			edgelength = pow(
-				LW_ABS(histodims[0].max - histodims[0].min) *
-				LW_ABS(histodims[1].max - histodims[1].min) *
-				LW_ABS(histodims[2].max - histodims[2].min) / (double)histocells,
-				(double)1/3);
-
-			/* Units are simple in 3 dimensions */
+		/* The calculation is easy; the harder part is to work out which dimensions
+		   we actually have to set the units variables appropriately */
+		if (histodims[0].axis == 'X' && histodims[1].axis == 'Y')
+		{
+			/* X and Y */
 			unitsx = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
 			unitsy = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
-			unitsz = LW_ABS(histodims[2].max - histodims[2].min) / edgelength;
+			unitsz = 1;
+		}
+		else if (histodims[0].axis == 'Y' && histodims[1].axis == 'X')
+		{
+			/* Y and X */
+			unitsx = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
+			unitsy = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
+			unitsz = 1;
+		}
+		else if (histodims[0].axis == 'X' && histodims[1].axis == 'Z')
+		{
+			/* X and Z */
+			unitsx = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
+			unitsy = 1;
+			unitsz = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
+		}
+		else if (histodims[0].axis == 'Z' && histodims[1].axis == 'X')
+		{
+			/* Z and X */
+			unitsx = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
+			unitsy = 1;
+			unitsz = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
+		}
+		else if (histodims[0].axis == 'Y' && histodims[1].axis == 'Z')
+		{
+			/* Y and Z */
+			unitsx = 1;
+			unitsy = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
+			unitsz = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
+		}
+		else if (histodims[0].axis == 'Z' && histodims[1].axis == 'Y')
+		{
+			/* Z and X */
+			unitsx = 1;
+			unitsy = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
+			unitsz = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
+		}
 
-			break;
+		break;
+
+	case 3:
+		/* Sample data lies within 3D space: divide the total volume by the total
+		   number of cells, and thus work out the edge size of the unit block */
+		edgelength = pow(
+		                 LW_ABS(histodims[0].max - histodims[0].min) *
+		                 LW_ABS(histodims[1].max - histodims[1].min) *
+		                 LW_ABS(histodims[2].max - histodims[2].min) / (double)histocells,
+		                 (double)1/3);
+
+		/* Units are simple in 3 dimensions */
+		unitsx = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
+		unitsy = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
+		unitsz = LW_ABS(histodims[2].max - histodims[2].min) / edgelength;
+
+		break;
 	}
 
 	POSTGIS_DEBUGF(3, " computed histogram grid size (X,Y,Z): %d x %d x %d (%d out of %d cells)", unitsx, unitsy, unitsz, unitsx * unitsy * unitsz, histocells);
@@ -1297,7 +1297,7 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		vacuum_delay_point();
 
 		POSTGIS_DEBUGF(4, " feat %d box is %f %f %f, %f %f %f",
-			i, box->xmax, box->ymax, box->zmax, box->xmin, box->ymin, box->zmin);
+		               i, box->xmax, box->ymax, box->zmax, box->xmin, box->ymin, box->zmin);
 
 		/* Find first overlapping unitsx cell */
 		x_idx_min = (box->xmin - geogstats->xmin) / sizex * unitsx;
@@ -1330,23 +1330,23 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		if (z_idx_max >= unitsz) z_idx_max = unitsz - 1;
 
 		POSTGIS_DEBUGF(4, " feat %d overlaps unitsx %d-%d, unitsy %d-%d, unitsz %d-%d",
-			i, x_idx_min, x_idx_max, y_idx_min, y_idx_max, z_idx_min, z_idx_max);
+		               i, x_idx_min, x_idx_max, y_idx_min, y_idx_max, z_idx_min, z_idx_max);
 
 		/* Calculate the feature coverage - this of course depends upon the number of dims */
 		switch (ndims)
 		{
-			case 1:
-				total_cells_coverage++;
-				break;
+		case 1:
+			total_cells_coverage++;
+			break;
 
-			case 2:
-				total_cells_coverage += (box->xmax - box->xmin) * (box->ymax - box->ymin);
-				break;
-			
-			case 3:
-				total_cells_coverage += (box->xmax - box->xmin) * (box->ymax - box->ymin) *
-					(box->zmax - box->zmin);
-				break;
+		case 2:
+			total_cells_coverage += (box->xmax - box->xmin) * (box->ymax - box->ymin);
+			break;
+
+		case 3:
+			total_cells_coverage += (box->xmax - box->xmin) * (box->ymax - box->ymin) *
+			                        (box->zmax - box->zmin);
+			break;
 		}
 
 		/*
@@ -1394,8 +1394,8 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 
 	POSTGIS_DEBUGF(3, " histo: total_boxes_cells: %d", total_count_cells);
 	POSTGIS_DEBUGF(3, " histo: avgFeatureCells: %f", geogstats->avgFeatureCells);
-	POSTGIS_DEBUGF(3, " histo: avgFeatureCoverage: %f", geogstats->avgFeatureCoverage);	
-	
+	POSTGIS_DEBUGF(3, " histo: avgFeatureCoverage: %f", geogstats->avgFeatureCoverage);
+
 	/*
 	 * Normalize histogram
 	 *
@@ -1417,7 +1417,7 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 				for (z = 0; z < unitsz; z++)
 				{
 					POSTGIS_DEBUGF(4, " histo[%d,%d,%d] = %.15f", x, y, z,
-						geogstats->value[x + y * unitsx + z * unitsx * unitsy]);
+					               geogstats->value[x + y * unitsx + z * unitsx * unitsy]);
 				}
 			}
 		}
@@ -1437,7 +1437,7 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	stats->stadistinct = -1.0;
 
 	POSTGIS_DEBUGF(3, " out: slot 0: kind %d (STATISTIC_KIND_GEOGRAPHY)",
-				   stats->stakind[0]);
+	               stats->stakind[0]);
 	POSTGIS_DEBUGF(3, " out: slot 0: op %d (InvalidOid)", stats->staop[0]);
 	POSTGIS_DEBUGF(3, " out: slot 0: numnumbers %d", stats->numnumbers[0]);
 	POSTGIS_DEBUGF(3, " out: null fraction: %d/%d=%g", (samplerows - notnull_cnt), samplerows, stats->stanullfrac);

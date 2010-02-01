@@ -578,13 +578,13 @@ pointArray_toGML2(POINTARRAY *pa, char *output, int precision)
 
 			if (fabs(pt.x) < MAX_DOUBLE)
 				sprintf(x, "%.*f", precision, pt.x);
-			else 
+			else
 				sprintf(x, "%g", pt.x);
 			trim_trailing_zeros(x);
 
 			if (fabs(pt.y) < MAX_DOUBLE)
 				sprintf(y, "%.*f", precision, pt.y);
-			else 
+			else
 				sprintf(y, "%g", pt.y);
 			trim_trailing_zeros(y);
 
@@ -601,7 +601,7 @@ pointArray_toGML2(POINTARRAY *pa, char *output, int precision)
 
 			if (fabs(pt.x) < MAX_DOUBLE)
 				sprintf(x, "%.*f", precision, pt.x);
-			else 
+			else
 				sprintf(x, "%g", pt.x);
 			trim_trailing_zeros(x);
 
@@ -876,7 +876,7 @@ asgml3_multi_size(LWGEOM_INSPECTED *insp, char *srs, int precision)
 			size += sizeof("<gml:surfaceMember>/") * 2;
 			size += asgml3_poly_size(poly, 0, precision);
 			lwpoly_release(poly);
-		} 
+		}
 	}
 
 	return size;
@@ -1106,13 +1106,13 @@ pointArray_toGML3(POINTARRAY *pa, char *output, int precision, bool is_deegree)
 
 			if (fabs(pt.x) < MAX_DOUBLE)
 				sprintf(x, "%.*f", precision, pt.x);
-			else 
+			else
 				sprintf(x, "%g", pt.x);
 			trim_trailing_zeros(x);
 
 			if (fabs(pt.y) < MAX_DOUBLE)
 				sprintf(y, "%.*f", precision, pt.y);
-			else 
+			else
 				sprintf(y, "%g", pt.y);
 			trim_trailing_zeros(y);
 
@@ -1132,19 +1132,19 @@ pointArray_toGML3(POINTARRAY *pa, char *output, int precision, bool is_deegree)
 
 			if (fabs(pt.x) < MAX_DOUBLE)
 				sprintf(x, "%.*f", precision, pt.x);
-			else 
+			else
 				sprintf(x, "%g", pt.x);
 			trim_trailing_zeros(x);
 
 			if (fabs(pt.y) < MAX_DOUBLE)
 				sprintf(y, "%.*f", precision, pt.y);
-			else 
+			else
 				sprintf(y, "%g", pt.y);
 			trim_trailing_zeros(y);
 
 			if (fabs(pt.z) < MAX_DOUBLE)
 				sprintf(z, "%.*f", precision, pt.z);
-			else 
+			else
 				sprintf(z, "%g", pt.z);
 			trim_trailing_zeros(z);
 

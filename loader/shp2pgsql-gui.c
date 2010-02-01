@@ -44,7 +44,7 @@ static GtkWidget *progress = NULL;
 static GtkTextBuffer *textbuffer_log = NULL;
 
 /* Options window */
-static GtkWidget *entry_options_encoding = NULL;	
+static GtkWidget *entry_options_encoding = NULL;
 static GtkWidget *checkbutton_options_preservecase = NULL;
 static GtkWidget *checkbutton_options_forceint = NULL;
 static GtkWidget *checkbutton_options_autoindex = NULL;
@@ -120,9 +120,9 @@ pgui_raise_error_dialogue(void)
 	gint result;
 
 	label = gtk_label_new(pgui_errmsg);
-	dialog = gtk_dialog_new_with_buttons("Error", GTK_WINDOW(window_main), 
-	                GTK_DIALOG_MODAL & GTK_DIALOG_NO_SEPARATOR & GTK_DIALOG_DESTROY_WITH_PARENT, 
-	                GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
+	dialog = gtk_dialog_new_with_buttons("Error", GTK_WINDOW(window_main),
+	                                     GTK_DIALOG_MODAL & GTK_DIALOG_NO_SEPARATOR & GTK_DIALOG_DESTROY_WITH_PARENT,
+	                                     GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
 	gtk_dialog_set_has_separator ( GTK_DIALOG(dialog), FALSE );
 	gtk_container_set_border_width (GTK_CONTAINER(dialog), 5);
 	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), 15);
@@ -158,7 +158,7 @@ pgui_set_config_from_options_ui()
 	{
 		config->geography = 1;
 		/* Flip the geometry column name to match the load type */
-		if( ! strcmp(gtk_entry_get_text(GTK_ENTRY(entry_config_geocolumn)), GEOMETRY_DEFAULT) )
+		if ( ! strcmp(gtk_entry_get_text(GTK_ENTRY(entry_config_geocolumn)), GEOMETRY_DEFAULT) )
 		{
 			gtk_entry_set_text(GTK_ENTRY(entry_config_geocolumn), GEOGRAPHY_DEFAULT );
 			free(config->geom);
@@ -167,14 +167,14 @@ pgui_set_config_from_options_ui()
 	}
 
 	/* Encoding */
-	if( entry_encoding && strlen(entry_encoding) > 0 ) 
+	if ( entry_encoding && strlen(entry_encoding) > 0 )
 	{
 		if (config->encoding)
 			free(config->encoding);
 
 		config->encoding = strdup(entry_encoding);
 	}
-	
+
 	/* Preserve case */
 	if ( preservecase )
 		config->quoteidentifiers = 1;
@@ -186,13 +186,13 @@ pgui_set_config_from_options_ui()
 		config->forceint4 = 1;
 	else
 		config->forceint4 = 0;
-	
+
 	/* Create spatial index after load */
 	if ( createindex )
 		config->createindex = 1;
 	else
 		config->createindex = 0;
-	
+
 	/* Read the .shp file, don't ignore it */
 	if ( dbfonly )
 		config->readshape = 0;
@@ -204,7 +204,7 @@ pgui_set_config_from_options_ui()
 		config->dump_format = 1;
 	else
 		config->dump_format = 0;
-	
+
 	return;
 }
 
@@ -261,7 +261,7 @@ pgui_set_config_from_ui()
 	}
 
 	/* SRID */
-	if ( ! ( config->sr_id = atoi(entry_srid) ) ) 
+	if ( ! ( config->sr_id = atoi(entry_srid) ) )
 	{
 		config->sr_id = -1;
 	}
@@ -482,10 +482,10 @@ static void
 pgui_sanitize_connection_string(char *connection_string)
 {
 	char *ptr = strstr(connection_string, "password");
-	if ( ptr ) 
+	if ( ptr )
 	{
 		ptr += 9;
-		while( *ptr != ' ' && *ptr != '\0' )
+		while ( *ptr != ' ' && *ptr != '\0' )
 		{
 			*ptr = '*';
 			ptr++;
@@ -505,7 +505,7 @@ pgui_action_connection_test(GtkWidget *widget, gpointer data)
 		pgui_raise_error_dialogue();
 		return;
 	}
-	
+
 	connection_sanitized = strdup(connection_string);
 	pgui_sanitize_connection_string(connection_sanitized);
 	pgui_logf("Connecting: %s", connection_sanitized);
@@ -558,30 +558,32 @@ pgui_action_shape_file_set(GtkWidget *widget, gpointer data)
 	char *table_end;
 	char *table;
 	const char *gtk_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widget));
-	
-	if( gtk_filename ) 
+
+	if ( gtk_filename )
 	{
 		shp_file = strdup(gtk_filename);
 		shp_file_len = strlen(shp_file);
 	}
-	else 
+	else
 	{
 		return;
 	}
 
 	/* Roll back from end to first slash character. */
 	table_start = shp_file + shp_file_len;
-	while ( *table_start != '/' && *table_start != '\\' && table_start > shp_file) {
+	while ( *table_start != '/' && *table_start != '\\' && table_start > shp_file)
+	{
 		table_start--;
 	}
 	table_start++; /* Forward one to start of actual characters. */
 
 	/* Roll back from end to first . character. */
 	table_end = shp_file + shp_file_len;
-	while ( *table_end != '.' && table_end > shp_file && table_end > table_start ) {
+	while ( *table_end != '.' && table_end > shp_file && table_end > table_start )
+	{
 		table_end--;
 	}
-	
+
 	/* Copy the table name into a fresh memory slot. */
 	table = malloc(table_end - table_start + 1);
 	memcpy(table, table_start, table_end - table_start);
@@ -591,7 +593,7 @@ pgui_action_shape_file_set(GtkWidget *widget, gpointer data)
 	config->table = table;
 
 	gtk_entry_set_text(GTK_ENTRY(entry_config_table), table);
-	
+
 	free(shp_file);
 }
 
@@ -602,7 +604,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	char *connection_sanitized = NULL;
 	char *dest_string = NULL;
 	int ret, i = 0;
-	char *header, *footer, *record;	
+	char *header, *footer, *record;
 	PGresult *result;
 
 
@@ -612,7 +614,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		return;
 	}
 
-	/* 
+	/*
 	** Set the configuration from the UI and validate
 	*/
 	pgui_set_config_from_ui();
@@ -652,7 +654,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	 */
 
 	/* Disable the button to prevent multiple imports running at the same time */
-	gtk_widget_set_sensitive(widget, FALSE); 
+	gtk_widget_set_sensitive(widget, FALSE);
 
 	/* Allow GTK events to get a look in */
 	while (gtk_events_pending())
@@ -704,7 +706,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		if (ret != SHPLOADEROK)
 		{
 			pgui_logf("%s", state->message);
-	
+
 			if (ret == SHPLOADERERR)
 				goto import_cleanup;
 		}
@@ -725,51 +727,51 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	{
 		ret = ShpLoaderGenerateSQLRowStatement(state, i, &record);
 
-		switch(ret)
+		switch (ret)
 		{
-			case SHPLOADEROK:
-				/* Simply send the statement */
-				if (state->config->dump_format)
-					ret = pgui_copy_write(record);
-				else
-					ret = pgui_exec(record);
+		case SHPLOADEROK:
+			/* Simply send the statement */
+			if (state->config->dump_format)
+				ret = pgui_copy_write(record);
+			else
+				ret = pgui_exec(record);
 
-				/* Display a record number if we failed */
-				if (!ret)
-					pgui_logf("Failed record number #%d", i);
+			/* Display a record number if we failed */
+			if (!ret)
+				pgui_logf("Failed record number #%d", i);
 
-				free(record);
-				break;
+			free(record);
+			break;
 
-			case SHPLOADERERR:
-				/* Display the error message then stop */
-				pgui_logf("%s\n", state->message);
-				goto import_cleanup;
-				break;
+		case SHPLOADERERR:
+			/* Display the error message then stop */
+			pgui_logf("%s\n", state->message);
+			goto import_cleanup;
+			break;
 
-			case SHPLOADERWARN:
-				/* Display the warning, but continue */
-				pgui_logf("%s\n", state->message);
+		case SHPLOADERWARN:
+			/* Display the warning, but continue */
+			pgui_logf("%s\n", state->message);
 
-				if (state->config->dump_format)
-					ret = pgui_copy_write(record);
-				else
-					ret = pgui_exec(record);
+			if (state->config->dump_format)
+				ret = pgui_copy_write(record);
+			else
+				ret = pgui_exec(record);
 
-				/* Display a record number if we failed */
-				if (!ret)
-					pgui_logf("Failed record number #%d", i);
+			/* Display a record number if we failed */
+			if (!ret)
+				pgui_logf("Failed record number #%d", i);
 
-				free(record);
-				break;
+			free(record);
+			break;
 
-			case SHPLOADERRECDELETED:
-				/* Record is marked as deleted - ignore */
-				break;
+		case SHPLOADERRECDELETED:
+			/* Record is marked as deleted - ignore */
+			break;
 
-			case SHPLOADERRECISNULL:
-				/* Record is NULL and should be ignored according to NULL policy */
-				break;
+		case SHPLOADERRECISNULL:
+			/* Record is NULL and should be ignored according to NULL policy */
+			break;
 		}
 
 		/* Update the progress bar */
@@ -803,20 +805,20 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		if (ret != SHPLOADEROK)
 		{
 			pgui_logf("%s\n", state->message);
-	
+
 			if (ret == SHPLOADERERR)
 				goto import_cleanup;
 		}
 
-		if( state->config->createindex )
+		if ( state->config->createindex )
 		{
 			pgui_logf("Creating spatial index...\n");
 		}
-	
+
 		/* Send the footer to the server */
 		ret = pgui_exec(footer);
 		free(footer);
-	
+
 		if (!ret)
 			goto import_cleanup;
 	}
@@ -875,19 +877,19 @@ pgui_action_about_open()
 {
 	GtkWidget *dlg;
 	const char *authors[] =
-	  {
-	    "Paul Ramsey <pramsey@opengeo.org>",
-	    "Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>",
-	    NULL
-	  };
+	{
+		"Paul Ramsey <pramsey@opengeo.org>",
+		"Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>",
+		NULL
+	};
 
 	dlg = gtk_about_dialog_new ();
 	gtk_about_dialog_set_name (GTK_ABOUT_DIALOG(dlg), "Shape to PostGIS");
 	gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG(dlg), GUI_RCSID);
-/*	gtk_about_dialog_set_version (GTK_ABOUT_DIALOG(dlg), GUI_RCSID); */
+	/*	gtk_about_dialog_set_version (GTK_ABOUT_DIALOG(dlg), GUI_RCSID); */
 	gtk_about_dialog_set_website (GTK_ABOUT_DIALOG(dlg), "http://postgis.org/");
 	gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG(dlg), authors);
-	g_signal_connect_swapped(dlg, "response", G_CALLBACK(gtk_widget_destroy), dlg);	
+	g_signal_connect_swapped(dlg, "response", G_CALLBACK(gtk_widget_destroy), dlg);
 	gtk_widget_show (dlg);
 }
 
@@ -900,7 +902,7 @@ pgui_create_options_dialogue()
 	static int text_width = 12;
 
 	dialog_options = gtk_dialog_new_with_buttons ("Import Options", GTK_WINDOW(window_main), GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_OK, GTK_RESPONSE_NONE, NULL);
-	
+
 	gtk_window_set_modal (GTK_WINDOW(dialog_options), TRUE);
 	gtk_window_set_keep_above (GTK_WINDOW(dialog_options), TRUE);
 	gtk_window_set_default_size (GTK_WINDOW(dialog_options), 180, 200);
@@ -915,14 +917,14 @@ pgui_create_options_dialogue()
 	gtk_entry_set_width_chars(GTK_ENTRY(entry_options_encoding), text_width);
 	gtk_entry_set_text(GTK_ENTRY(entry_options_encoding), config->encoding);
 	gtk_table_attach_defaults(GTK_TABLE(table_options), entry_options_encoding, 0, 1, 0, 1 );
-	
+
 	pgui_create_options_dialogue_add_label(table_options, "Preserve case of column names", 0.0, 1);
 	checkbutton_options_preservecase = gtk_check_button_new();
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_options_preservecase), config->quoteidentifiers ? TRUE : FALSE);
 	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 1.0 );
 	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 1, 2 );
 	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_options_preservecase);
-	
+
 	pgui_create_options_dialogue_add_label(table_options, "Do not create 'bigint' columns", 0.0, 2);
 	checkbutton_options_forceint = gtk_check_button_new();
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_options_forceint), config->forceint4 ? TRUE : FALSE);
@@ -957,7 +959,7 @@ pgui_create_options_dialogue()
 	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 1.0 );
 	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 6, 7 );
 	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_options_geography);
-	
+
 	g_signal_connect(dialog_options, "response", G_CALLBACK(pgui_action_options_close), dialog_options);
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog_options)->vbox), table_options, FALSE, FALSE, 0);
 
@@ -1003,7 +1005,7 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	g_signal_connect (G_OBJECT (window_main), "destroy", G_CALLBACK (pgui_quit), NULL);
 
 	/*
-	** Shape file selector 
+	** Shape file selector
 	*/
 	frame_shape = gtk_frame_new("Shape File");
 	gtk_container_set_border_width (GTK_CONTAINER (frame_shape), 0);
@@ -1029,14 +1031,14 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	/* User name row */
 	label = gtk_label_new("Username:");
 	entry_pg_user = gtk_entry_new();
-	if( conn->username )
+	if ( conn->username )
 		gtk_entry_set_text(GTK_ENTRY(entry_pg_user), conn->username);
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), label, 0, 1, 0, 1 );
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), entry_pg_user, 1, 3, 0, 1 );
 	/* Password row */
 	label = gtk_label_new("Password:");
 	entry_pg_pass = gtk_entry_new();
-	if( conn->password )
+	if ( conn->password )
 		gtk_entry_set_text(GTK_ENTRY(entry_pg_pass), conn->password);
 	gtk_entry_set_visibility( GTK_ENTRY(entry_pg_pass), FALSE);
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), label, 0, 1, 1, 2 );
@@ -1044,7 +1046,7 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	/* Host and port row */
 	label = gtk_label_new("Server Host:");
 	entry_pg_host = gtk_entry_new();
-	if( conn->host )
+	if ( conn->host )
 		gtk_entry_set_text(GTK_ENTRY(entry_pg_host), conn->host);
 	else
 		gtk_entry_set_text(GTK_ENTRY(entry_pg_host), "localhost");
@@ -1052,7 +1054,7 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), label, 0, 1, 2, 3 );
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), entry_pg_host, 1, 2, 2, 3 );
 	entry_pg_port = gtk_entry_new();
-	if( conn->port )
+	if ( conn->port )
 		gtk_entry_set_text(GTK_ENTRY(entry_pg_port), conn->port);
 	else
 		gtk_entry_set_text(GTK_ENTRY(entry_pg_port), "5432");
@@ -1061,7 +1063,7 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	/* Database row */
 	label = gtk_label_new("Database:");
 	entry_pg_db   = gtk_entry_new();
-	if( conn->database )
+	if ( conn->database )
 		gtk_entry_set_text(GTK_ENTRY(entry_pg_db), conn->database);
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), label, 0, 1, 3, 4 );
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), entry_pg_db, 1, 3, 3, 4 );
@@ -1157,7 +1159,7 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	gtk_container_add (GTK_CONTAINER (frame_log), scrolledwindow_log);
 
 	/*
-	** Main window 
+	** Main window
 	*/
 	vbox_main = gtk_vbox_new(FALSE, 10);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_main), 0);
@@ -1201,7 +1203,7 @@ main(int argc, char *argv[])
 
 	/* Here we override any defaults for the GUI */
 	config->createindex = 1;
-	
+
 	conn = malloc(sizeof(SHPCONNECTIONCONFIG));
 	memset(conn, 0, sizeof(SHPCONNECTIONCONFIG));
 
@@ -1209,26 +1211,26 @@ main(int argc, char *argv[])
 	{
 		switch (c)
 		{
-			case 'U':
-				conn->username = optarg;
-				break;
-			case 'p':
-				conn->port = optarg;
-				break;
-			case 'W':
-				conn->password = optarg;
-				break;
-			case 'd':
-				conn->database = optarg;
-				break;
-			case 'h':
-				conn->host = optarg;
-				break;
-			default:
-				usage();
-				free(conn);
-				free(config);
-				exit(0);
+		case 'U':
+			conn->username = optarg;
+			break;
+		case 'p':
+			conn->port = optarg;
+			break;
+		case 'W':
+			conn->password = optarg;
+			break;
+		case 'd':
+			conn->database = optarg;
+			break;
+		case 'h':
+			conn->host = optarg;
+			break;
+		default:
+			usage();
+			free(conn);
+			free(config);
+			exit(0);
 		}
 	}
 
@@ -1237,7 +1239,7 @@ main(int argc, char *argv[])
 
 	/* set up the user interface */
 	pgui_create_main_window(conn);
-	
+
 	/* start the main loop */
 	gtk_main();
 

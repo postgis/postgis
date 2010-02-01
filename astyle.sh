@@ -15,17 +15,6 @@ fi
 #   - not lex.yy.c or wktparse.tab.c as these are generated files
 CFILES=`find . -name '*.c' -not \( -name '*.in.c' -o -name 'wktparse.tab.c' -o -name 'lex.yy.c' \)`
 
-for THISFILE in $CFILES;
-do
-	echo "Running astyle on $THISFILE..."
-
-	# Rename the old version temporarily...
-	mv $THISFILE $THISFILE.astyle
-
-	# Run astyle
-	astyle --style=ansi --indent=tab < $THISFILE.astyle > $THISFILE
-
-	# Remove backup copy
-	rm $THISFILE.astyle 
-done
-
+# Run the standard format on the files, and do not 
+# leave .orig files around for altered files.
+astyle --style=ansi --indent=tab --suffix=none $CFILES

@@ -212,14 +212,14 @@ void test_rect_tree_contains_point(void)
 	p.y = 1.0;
 	result = rect_tree_contains_point(tree, &p, &boundary);
 	CU_ASSERT_EQUAL(boundary, 1);
-	
+
 	/* on right border */
 	boundary = 0;
 	p.x = 4.0;
 	p.y = 0.0;
 	result = rect_tree_contains_point(tree, &p, &boundary);
 	CU_ASSERT_EQUAL(boundary, 1);
-	
+
 	/* on tooth concave */
 	boundary = 0;
 	p.x = 3.0;
@@ -268,14 +268,14 @@ void test_rect_tree_contains_point(void)
 	p.y = 0.0;
 	result = rect_tree_contains_point(tree, &p, &boundary);
 	CU_ASSERT_EQUAL(boundary, 1);
-	
+
 	/* on top border */
 	boundary = 0;
 	p.x = 3.0;
 	p.y = 6.0;
 	result = rect_tree_contains_point(tree, &p, &boundary);
 	CU_ASSERT_EQUAL(boundary, 1);
-	
+
 	/* on tooth concave */
 	boundary = 0;
 	p.x = 3.0;
@@ -319,7 +319,7 @@ void test_rect_tree_intersects_tree(void)
 	lwpoly_free(poly2);
 	rect_tree_free(tree1);
 	rect_tree_free(tree2);
-	
+
 	/* hiding between the tines of the comb */
 	poly1 = (LWPOLY*)lwgeom_from_ewkt("POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))", PARSER_CHECK_NONE);
 	poly2 = (LWPOLY*)lwgeom_from_ewkt("POLYGON((0.3 0.7, 0.3 0.8, 0.4 0.8, 0.4 0.7, 0.3 0.7))", PARSER_CHECK_NONE);

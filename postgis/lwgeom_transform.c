@@ -128,20 +128,20 @@ static void PROJ4SRSCacheCheck(MemoryContext context);
 
 /* Memory context definition must match the current version of PostgreSQL */
 static MemoryContextMethods PROJ4SRSCacheContextMethods =
-    {
-        NULL,
-        NULL,
-        NULL,
-        PROJ4SRSCacheInit,
-        PROJ4SRSCacheReset,
-        PROJ4SRSCacheDelete,
-        NULL,
-        PROJ4SRSCacheIsEmpty,
-        PROJ4SRSCacheStats
+{
+	NULL,
+	NULL,
+	NULL,
+	PROJ4SRSCacheInit,
+	PROJ4SRSCacheReset,
+	PROJ4SRSCacheDelete,
+	NULL,
+	PROJ4SRSCacheIsEmpty,
+	PROJ4SRSCacheStats
 #ifdef MEMORY_CONTEXT_CHECKING
-        ,PROJ4SRSCacheCheck
+	,PROJ4SRSCacheCheck
 #endif
-    };
+};
 
 
 static void
@@ -370,7 +370,7 @@ char* GetProj4StringSPI(int srid)
 		TupleDesc tupdesc = SPI_tuptable->tupdesc;
 		SPITupleTable *tuptable = SPI_tuptable;
 		HeapTuple tuple = tuptable->vals[0];
-	
+
 		/* Make a projection object out of it */
 		strncpy(proj_str, SPI_getvalue(tuple, tupdesc, 1), maxproj4len - 1);
 	}
@@ -384,23 +384,23 @@ char* GetProj4StringSPI(int srid)
 	{
 		elog(ERROR, "GetProj4StringSPI: Could not disconnect from database using SPI");
 	}
-	
-	return proj_str;	
+
+	return proj_str;
 }
 
 
 /**
-*  Given an SRID, return the proj4 text. If the integer is less than zero, 
-*  and one of the "well known" projections we support 
+*  Given an SRID, return the proj4 text. If the integer is less than zero,
+*  and one of the "well known" projections we support
 *  (WGS84 UTM N/S, Polar Stereographic N/S), return the proj4text
 *  for those.
 */
-static char* GetProj4String(int srid) 
+static char* GetProj4String(int srid)
 {
 	static int maxproj4len = 512;
 
 	/* SRIDs in SPATIAL_REF_SYS */
-	if( srid > 0 )
+	if ( srid > 0 )
 	{
 		return GetProj4StringSPI(srid);
 	}
@@ -410,37 +410,37 @@ static char* GetProj4String(int srid)
 		char *proj_str = palloc(maxproj4len);
 		int id = abs(srid);
 		/* UTM North */
-		if( id >= 32601 && id <= 32660 )
+		if ( id >= 32601 && id <= 32660 )
 		{
 			snprintf(proj_str, maxproj4len, "+proj=utm +zone=%d +ellps=WGS84 +datum=WGS84 +units=m +no_defs", id - 32600);
 		}
 		/* UTM South */
-		else if( id >= 32701 && id <= 32760 )
+		else if ( id >= 32701 && id <= 32760 )
 		{
 			snprintf(proj_str, maxproj4len, "+proj=utm +zone=%d +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs", id - 32700);
 		}
 		/* Lambert Azimuthal Equal Area South Pole */
-		else if( id == 3409 )
+		else if ( id == 3409 )
 		{
 			strncpy(proj_str, "+proj=laea +lat_0=-90 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxproj4len );
-		}		
+		}
 		/* Polar Sterographic South */
-		else if( id == 3031 )
+		else if ( id == 3031 )
 		{
 			strncpy(proj_str, "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxproj4len);
 		}
 		/* Lambert Azimuthal Equal Area North Pole */
-		else if( id == 3574 )
+		else if ( id == 3574 )
 		{
 			strncpy(proj_str, "+proj=laea +lat_0=90 +lon_0=-40 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxproj4len );
-		}		
+		}
 		/* Polar Stereographic North */
-		else if( id == 3995 )
+		else if ( id == 3995 )
 		{
 			strncpy(proj_str, "+proj=stere +lat_0=90 +lat_ts=71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxproj4len );
-		}		
+		}
 		/* World Mercator */
-		else if( id == 3395 )
+		else if ( id == 3395 )
 		{
 			strncpy(proj_str, "+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxproj4len );
 		}
@@ -448,8 +448,8 @@ static char* GetProj4String(int srid)
 		{
 			elog(ERROR, "Cannot find SRID (%d) in spatial_ref_sys", srid);
 			return NULL;
-		}		
-		
+		}
+
 		POSTGIS_DEBUGF(3, "returning on SRID=%d: %s", srid, proj_str);
 		return proj_str;
 	}
@@ -469,12 +469,12 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 	char *proj_str;
 	int* pj_errno_ref;
 
-	/* 
+	/*
 	** Turn the SRID number into a proj4 string, by reading from spatial_ref_sys
-	** or instantiating a magical value from a negative srid. 
+	** or instantiating a magical value from a negative srid.
 	*/
 	proj_str = GetProj4String(srid);
-	if( ! proj_str )
+	if ( ! proj_str )
 	{
 		elog(ERROR, "GetProj4String returned NULL for SRID (%d)", srid);
 	}
@@ -719,7 +719,7 @@ lwgeom_transform_recursive(uchar *geom, projPJ inpj, projPJ outpj)
 		poly = lwgeom_getpoly_inspected(inspected, j);
 		if (poly !=NULL)
 		{
-			for (i=0; i<poly->nrings;i++)
+			for (i=0; i<poly->nrings; i++)
 			{
 				int pi;
 				POINTARRAY *pts = poly->rings[i];

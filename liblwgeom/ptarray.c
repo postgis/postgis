@@ -27,11 +27,11 @@ ptarray_construct(char hasz, char hasm, unsigned int npoints)
 	TYPE_SETZM(dims, hasz?1:0, hasm?1:0);
 	size = TYPE_NDIMS(dims)*npoints*sizeof(double);
 
-	if( size ) 
+	if ( size )
 		ptlist = (uchar *)lwalloc(size);
-	else 
+	else
 		ptlist = NULL;
-	
+
 	pa = lwalloc(sizeof(POINTARRAY));
 	pa->dims = dims;
 	pa->serialized_pointlist = ptlist;
@@ -130,7 +130,7 @@ ptarray_compute_box2d(const POINTARRAY *pa)
 	result->ymin = pt.y;
 	result->ymax = pt.y;
 
-	for (t=1;t<pa->npoints;t++)
+	for (t=1; t<pa->npoints; t++)
 	{
 		getPoint2d_p(pa, t, &pt);
 		if (pt.x < result->xmin) result->xmin = pt.x;
@@ -353,7 +353,7 @@ ptarray_removePoint(POINTARRAY *pa, unsigned int which)
 
 
 /**
- * @brief Merge two given POINTARRAY and returns a pointer 
+ * @brief Merge two given POINTARRAY and returns a pointer
  * on the new aggregate one.
  * Warning: this function free the two inputs POINTARRAY
  * @return #POINTARRAY is newly allocated
@@ -361,28 +361,28 @@ ptarray_removePoint(POINTARRAY *pa, unsigned int which)
 POINTARRAY *
 ptarray_merge(POINTARRAY *pa1, POINTARRAY *pa2)
 {
-        POINTARRAY *pa;
-        size_t ptsize = pointArray_ptsize(pa1);
+	POINTARRAY *pa;
+	size_t ptsize = pointArray_ptsize(pa1);
 
-        if (TYPE_GETZM(pa1->dims) != TYPE_GETZM(pa2->dims))
-                lwerror("ptarray_cat: Mixed dimension");
+	if (TYPE_GETZM(pa1->dims) != TYPE_GETZM(pa2->dims))
+		lwerror("ptarray_cat: Mixed dimension");
 
-        pa = ptarray_construct( TYPE_HASZ(pa1->dims),
-                                TYPE_HASM(pa1->dims),
-                                pa1->npoints + pa2->npoints);
+	pa = ptarray_construct( TYPE_HASZ(pa1->dims),
+	                        TYPE_HASM(pa1->dims),
+	                        pa1->npoints + pa2->npoints);
 
-        memcpy(         getPoint_internal(pa, 0),
-                        getPoint_internal(pa1, 0),
-                        ptsize*(pa1->npoints));
+	memcpy(         getPoint_internal(pa, 0),
+	                getPoint_internal(pa1, 0),
+	                ptsize*(pa1->npoints));
 
-        memcpy(         getPoint_internal(pa, pa1->npoints),
-                        getPoint_internal(pa2, 0),
-                        ptsize*(pa2->npoints));
+	memcpy(         getPoint_internal(pa, pa1->npoints),
+	                getPoint_internal(pa2, 0),
+	                ptsize*(pa2->npoints));
 
-        lwfree(pa1);
-        lwfree(pa2);
+	lwfree(pa1);
+	lwfree(pa2);
 
-        return pa;
+	return pa;
 }
 
 

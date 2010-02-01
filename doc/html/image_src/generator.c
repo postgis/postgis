@@ -23,7 +23,7 @@
  * pictures used in PostGIS's documentation pages.
  *
  * Note: the coordinates of the supplied geometries should be within and scaled
- * to the x-y range of [0,200], otherwise the rendered geometries may be 
+ * to the x-y range of [0,200], otherwise the rendered geometries may be
  * rendered outside of the generated image's extents, or may be rendered too
  * small to be recognizable as anything other than a single point.
  *
@@ -108,7 +108,7 @@ drawPoint(char *output, LWPOINT *lwp, LAYERSTYLE *styles)
 	POINTARRAY *pa = lwp->point;
 	POINT2D p;
 	getPoint2d_p(pa, 0, &p);
-	
+
 	LWDEBUGF(4, "%s", "drawPoint called");
 	LWDEBUGF( 4, "point = %s", lwgeom_to_ewkt((LWGEOM*)lwp,0) );
 
@@ -142,7 +142,7 @@ drawLineString(char *output, LWLINE *lwl, LAYERSTYLE *style)
 
 	LWDEBUGF(4, "%s", "drawLineString called");
 	LWDEBUGF( 4, "line = %s", lwgeom_to_ewkt((LWGEOM*)lwl,0) );
-	
+
 	ptr += sprintf(ptr, "-fill none -stroke %s -strokewidth %d ", style->lineColor, style->lineWidth);
 	ptr += sprintf(ptr, "-draw \"stroke-linecap round stroke-linejoin round path 'M ");
 	ptr += pointarrayToString(ptr, lwl->points );
@@ -168,7 +168,7 @@ drawPolygon(char *output, LWPOLY *lwp, LAYERSTYLE *style)
 
 	LWDEBUGF(4, "%s", "drawPolygon called");
 	LWDEBUGF( 4, "poly = %s", lwgeom_to_ewkt((LWGEOM*)lwp,0) );
-	
+
 	ptr += sprintf(ptr, "-fill %s -stroke %s -strokewidth %d ", style->polygonFillColor, style->polygonStrokeColor, style->polygonStrokeWidth );
 	ptr += sprintf(ptr, "-draw \"path '");
 	for (i=0; i<lwp->nrings; i++)

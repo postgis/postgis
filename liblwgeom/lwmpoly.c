@@ -46,8 +46,8 @@ lwmpoly_deserialize(uchar *srl)
 	result->type = insp->type;
 	result->SRID = insp->SRID;
 	result->ngeoms = insp->ngeometries;
-	
-	if( insp->ngeometries )
+
+	if ( insp->ngeometries )
 	{
 		result->geoms = lwalloc(sizeof(LWPOLY *)*insp->ngeometries);
 	}

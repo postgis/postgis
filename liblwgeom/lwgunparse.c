@@ -92,12 +92,12 @@ LWGEOM_UNPARSER_RESULT *current_lwg_unparser_result;
  */
 
 const char *unparser_error_messages[] =
-    {
-        "",
-        "geometry requires more points",
-        "geometry must have an odd number of points",
-        "geometry contains non-closed rings"
-    };
+{
+	"",
+	"geometry requires more points",
+	"geometry must have an odd number of points",
+	"geometry contains non-closed rings"
+};
 
 /* Macro to return the error message and the current position within WKT */
 #define LWGEOM_WKT_UNPARSER_ERROR(errcode) \

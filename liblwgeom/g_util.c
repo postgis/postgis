@@ -27,7 +27,7 @@ struct geomtype_struct
    before it. Otherwise if we search for "POINT" at the top of the
    list we would also match MULTIPOINT, for example. */
 
-struct geomtype_struct geomtype_struct_array[32] = 
+struct geomtype_struct geomtype_struct_array[32] =
 {
 	{ "GEOMETRYCOLLECTIONZM", COLLECTIONTYPE, 1, 1 },
 	{ "GEOMETRYCOLLECTIONZ", COLLECTIONTYPE, 1, 0 },
@@ -67,11 +67,11 @@ struct geomtype_struct geomtype_struct_array[32] =
 uchar gflags(int hasz, int hasm, int geodetic)
 {
 	unsigned char flags = 0;
-	if ( hasz ) 
+	if ( hasz )
 		FLAGS_SET_Z(flags, 1);
-	if ( hasm ) 
+	if ( hasm )
 		FLAGS_SET_M(flags, 1);
-	if ( geodetic ) 
+	if ( geodetic )
 		FLAGS_SET_GEODETIC(flags, 1);
 	return flags;
 }
@@ -105,9 +105,9 @@ int geometry_type_from_string(const char *str, int *type, int *z, int *m)
 		if (str[i] != ' ')
 		{
 			tmpstartpos = i;
-			break;		
+			break;
 		}
-	}	
+	}
 
 	tmpendpos = strlen(str) - 1;
 	for (i = strlen(str) - 1; i >= 0; i--)
@@ -115,9 +115,9 @@ int geometry_type_from_string(const char *str, int *type, int *z, int *m)
 		if (str[i] != ' ')
 		{
 			tmpendpos = i;
-			break;		
+			break;
 		}
-	}	
+	}
 
 	/* Copy and convert to upper case for comparison */
 	tmpstr = lwalloc(tmpendpos - tmpstartpos + 2);
@@ -140,8 +140,8 @@ int geometry_type_from_string(const char *str, int *type, int *z, int *m)
 
 			return G_SUCCESS;
 		}
- 
-	} 
+
+	}
 
 	lwfree(tmpstr);
 

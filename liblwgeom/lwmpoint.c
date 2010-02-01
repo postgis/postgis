@@ -43,7 +43,7 @@ lwmpoint_deserialize(uchar *srl)
 	result->type = insp->type;
 	result->SRID = insp->SRID;
 	result->ngeoms = insp->ngeometries;
-	
+
 	if ( insp->ngeometries )
 	{
 		result->geoms = lwalloc(sizeof(LWPOINT *)*insp->ngeometries);
@@ -58,7 +58,7 @@ lwmpoint_deserialize(uchar *srl)
 		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
 		memcpy(result->bbox, srl+1, sizeof(BOX2DFLOAT4));
 	}
-	else 
+	else
 	{
 		result->bbox = NULL;
 	}

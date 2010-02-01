@@ -21,24 +21,24 @@ lwreporter lwnotice_var = init_noticereporter;
 lwreporter lwerror_var = init_errorreporter;
 
 static char *lwgeomTypeName[] =
-    {
-        "Unknown",
-        "Point",
-        "LineString",
-        "Polygon",
-        "MultiPoint",
-        "MultiLineString",
-        "MultiPolygon",
-        "GeometryCollection",
-        "CircularString",
-        "CompoundString",
-        "Invalid Type",  /* POINTTYPEI */
-        "Invalid Type",  /* LINETYPEI */
-        "Invalid Type",  /* POLYTYPEI */
-        "CurvePolygon",
-        "MultiCurve",
-        "MultiSurface"
-    };
+{
+	"Unknown",
+	"Point",
+	"LineString",
+	"Polygon",
+	"MultiPoint",
+	"MultiLineString",
+	"MultiPolygon",
+	"GeometryCollection",
+	"CircularString",
+	"CompoundString",
+	"Invalid Type",  /* POINTTYPEI */
+	"Invalid Type",  /* LINETYPEI */
+	"Invalid Type",  /* POLYTYPEI */
+	"CurvePolygon",
+	"MultiCurve",
+	"MultiSurface"
+};
 
 
 /*

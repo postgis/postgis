@@ -69,12 +69,12 @@ Datum BOX3D_in(PG_FUNCTION_ARGS)
 	}
 
 	nitems = sscanf(str,"BOX3D(%le %le %le ,%le %le %le)",
-					&box->xmin, &box->ymin, &box->zmin,
-					&box->xmax, &box->ymax, &box->zmax);
+	                &box->xmin, &box->ymin, &box->zmin,
+	                &box->xmax, &box->ymax, &box->zmax);
 	if (nitems != 6 )
 	{
 		nitems = sscanf(str,"BOX3D(%le %le ,%le %le)",
-						&box->xmin, &box->ymin, &box->xmax, &box->ymax);
+		                &box->xmin, &box->ymin, &box->xmax, &box->ymax);
 		if (nitems != 4)
 		{
 			pfree(box);
@@ -132,8 +132,8 @@ Datum BOX3D_out(PG_FUNCTION_ARGS)
 	result = (char *) palloc(size);
 
 	sprintf(result, "BOX3D(%.15g %.15g %.15g,%.15g %.15g %.15g)",
-			bbox->xmin, bbox->ymin, bbox->zmin,
-			bbox->xmax,bbox->ymax,bbox->zmax);
+	        bbox->xmin, bbox->ymin, bbox->zmin,
+	        bbox->xmax,bbox->ymax,bbox->zmax);
 
 	PG_RETURN_CSTRING(result);
 }
@@ -169,8 +169,8 @@ Datum BOX3D_extent_out(PG_FUNCTION_ARGS)
 	result = (char *) palloc(size);
 
 	sprintf(result, "BOX(%.15g %.15g,%.15g %.15g)",
-			bbox->xmin, bbox->ymin,
-			bbox->xmax,bbox->ymax);
+	        bbox->xmin, bbox->ymin,
+	        bbox->xmax,bbox->ymax);
 
 	PG_RETURN_CSTRING(result);
 }
@@ -228,14 +228,14 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 	 */
 
 	if (box->xmin == box->xmax &&
-			box->ymin == box->ymax)
+	        box->ymin == box->ymax)
 	{
 		/* Construct and serialize point */
 		LWPOINT *point = make_lwpoint2d(-1, box->xmin, box->ymin);
 		ser = lwpoint_serialize(point);
 	}
 	else if (box->xmin == box->xmax ||
-			 box->ymin == box->ymax)
+	         box->ymin == box->ymax)
 	{
 		LWLINE *line;
 		POINT2D *pts = palloc(sizeof(POINT2D)*2);
@@ -445,7 +445,7 @@ Datum BOX3D_construct(PG_FUNCTION_ARGS)
 	maxpoint = lwgeom_deserialize(SERIALIZED_FORM(max));
 
 	if ( TYPE_GETTYPE(minpoint->type) != POINTTYPE ||
-			TYPE_GETTYPE(maxpoint->type) != POINTTYPE )
+	        TYPE_GETTYPE(maxpoint->type) != POINTTYPE )
 	{
 		elog(ERROR, "BOX3D_construct: args must be points");
 		PG_RETURN_NULL();

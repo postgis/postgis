@@ -80,7 +80,7 @@ void decode_wkb_collection(char *wkb,int	*size)
 
 	printf("GEOMETRYCOLLECTION(\n");
 	offset = 9;
-	for (t=0;t<numb_sub;t++)
+	for (t=0; t<numb_sub; t++)
 	{
 		if (first_one)
 		{
@@ -471,7 +471,7 @@ void decode_wkb(char *wkb, int *size)
 		*size += 9*n3;
 		offset1 =9;//where polygon starts
 		first_one3= TRUE;
-		for (t=0;t<n3; t++)  //for each polygon
+		for (t=0; t<n3; t++) //for each polygon
 		{
 			if (first_one3)
 			{

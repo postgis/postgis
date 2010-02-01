@@ -84,7 +84,7 @@ Datum assvg_geometry(PG_FUNCTION_ARGS)
 }
 
 
-/** 
+/**
  * Takes a GEOMETRY and returns a SVG representation
  */
 char *
@@ -468,7 +468,7 @@ assvg_collection_size(LWGEOM_INSPECTED *insp, bool relative, int precision)
 		size += assvg_inspected_size(subinsp, relative, precision);
 		lwinspected_release(subinsp);
 	}
-	
+
 	if ( i ) /* We have some geometries, so add space for delimiters. */
 		size += sizeof(";") * --i;
 
@@ -654,10 +654,10 @@ pointArray_svg_rel(POINTARRAY *pa, char *output, bool close_ring, int precision)
 		/* SVG Y axis is reversed, an no need to transform 0 into -0 */
 		if (fabs(pt.y -lpt.y) < MAX_DOUBLE)
 			sprintf(y, "%.*f", precision,
-		        	fabs(pt.y -lpt.y) ? (pt.y - lpt.y) * -1: (pt.y - lpt.y));
-		else 
+			        fabs(pt.y -lpt.y) ? (pt.y - lpt.y) * -1: (pt.y - lpt.y));
+		else
 			sprintf(y, "%g",
-				fabs(pt.y -lpt.y) ? (pt.y - lpt.y) * -1: (pt.y - lpt.y));
+			        fabs(pt.y -lpt.y) ? (pt.y - lpt.y) * -1: (pt.y - lpt.y));
 		trim_trailing_zeros(y);
 
 		ptr += sprintf(ptr," %s %s", x, y);

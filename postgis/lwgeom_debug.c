@@ -128,7 +128,7 @@ lwpoly_summary(LWPOLY *poly, int offset)
 	        lwgeom_typeflags(poly->type),
 	        poly->nrings);
 
-	for (i=0; i<poly->nrings;i++)
+	for (i=0; i<poly->nrings; i++)
 	{
 		sprintf(tmp,"%s   ring %i has %i points\n",
 		        pad, i, poly->rings[i]->npoints);

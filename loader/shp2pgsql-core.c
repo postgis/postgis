@@ -92,11 +92,11 @@ utf8(const char *fromcode, char *inputbuf)
 		return NULL;
 
 	outbytesleft = inbytesleft * 3 + 1; /* UTF8 string can be 3 times larger */
-					/* then local string */
+	/* then local string */
 	outputbuf = (char *)malloc(outbytesleft);
 	if (!outputbuf)
 		return NULL;
-	
+
 	memset(outputbuf, 0, outbytesleft);
 	outputptr = outputbuf;
 
@@ -466,9 +466,11 @@ PIP(Point P, Point *V, int n)
 	int i;
 
 	/* loop through all edges of the polygon */
-	for (i = 0; i < n-1; i++) {    /* edge from V[i] to V[i+1] */
-	   if (((V[i].y <= P.y) && (V[i + 1].y > P.y))    /* an upward crossing */
-		|| ((V[i].y > P.y) && (V[i + 1].y <= P.y))) { /* a downward crossing */
+	for (i = 0; i < n-1; i++)      /* edge from V[i] to V[i+1] */
+	{
+		if (((V[i].y <= P.y) && (V[i + 1].y > P.y))    /* an upward crossing */
+		        || ((V[i].y > P.y) && (V[i + 1].y <= P.y)))   /* a downward crossing */
+		{
 			double vt = (float)(P.y - V[i].y) / (V[i + 1].y - V[i].y);
 			if (P.x < V[i].x + vt * (V[i + 1].x - V[i].x)) /* P.x < intersect */
 				++cn;   /* a valid crossing of y=P.y right of P.x */
@@ -540,7 +542,7 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 			ring->list[vi - vs].m = obj->padfM[vi];
 
 			area += (obj->padfX[vi] * obj->padfY[vn]) -
-				(obj->padfY[vi] * obj->padfX[vn]);
+			        (obj->padfY[vi] * obj->padfX[vn]);
 		}
 
 		/* Close the ring with first vertex  */
@@ -579,12 +581,12 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 		pt2.x = inner->list[1].x;
 		pt2.y = inner->list[1].y;
 
-		for(i = 0; i < out_index; i++)
+		for (i = 0; i < out_index; i++)
 		{
 			int in;
 
 			in = PIP(pt, Outer[i]->list, Outer[i]->n);
-			if( in || PIP(pt2, Outer[i]->list, Outer[i]->n) )
+			if ( in || PIP(pt2, Outer[i]->list, Outer[i]->n) )
 			{
 				outer = Outer[i];
 				break;
@@ -628,7 +630,8 @@ ReleasePolygons(Ring **polys, int npolys)
 	{
 		Ring *Poly, *temp;
 		Poly = polys[pi];
-		while (Poly != NULL){
+		while (Poly != NULL)
+		{
 			temp = Poly;
 			Poly = Poly->next;
 			free(temp->list);
@@ -645,7 +648,7 @@ ReleasePolygons(Ring **polys, int npolys)
  *
  * This function basically deals with the polygon case. It sorts the polys in order of outer,
  * inner,inner, so that inners always come after outers they are within.
- * 
+ *
  */
 int
 GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
@@ -724,7 +727,7 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 			/* Create a DYNPTARRAY containing the points making up the ring */
 			dpas = dynptarray_create(polyring->n, dims);
 
-			for(vi = 0; vi < polyring->n; vi++)
+			for (vi = 0; vi < polyring->n; vi++)
 			{
 				/* Build up a point array of all the points in this ring */
 				point4d.x = polyring->list[vi].x;
@@ -918,7 +921,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	{
 		SHPGetInfo(state->hSHPHandle, &state->num_entities, &state->shpfiletype, NULL, NULL);
 
- 		/* If null_policy is set to abort, check for NULLs */
+		/* If null_policy is set to abort, check for NULLs */
 		if (state->config->null_policy == POLICY_NULL_ABORT)
 		{
 			/* If we abort on null items, scan the entire file for NULLs */
@@ -945,167 +948,167 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		/* Check the shapefile type */
 		switch (state->shpfiletype)
 		{
-			case SHPT_POINT:
-				/* Point */
+		case SHPT_POINT:
+			/* Point */
+			state->pgtype = "POINT";
+			state->wkbtype = POINTTYPE;
+			state->pgdims = 2;
+			break;
+
+		case SHPT_ARC:
+			/* PolyLine */
+			state->pgtype = "MULTILINESTRING";
+			state->wkbtype = MULTILINETYPE ;
+			state->pgdims = 2;
+			break;
+
+		case SHPT_POLYGON:
+			/* Polygon */
+			state->pgtype = "MULTIPOLYGON";
+			state->wkbtype = MULTIPOLYGONTYPE;
+			state->pgdims = 2;
+			break;
+
+		case SHPT_MULTIPOINT:
+			/* MultiPoint */
+			state->pgtype = "MULTIPOINT";
+			state->wkbtype = MULTIPOINTTYPE;
+			state->pgdims = 2;
+			break;
+
+		case SHPT_POINTM:
+			/* PointM */
+			state->wkbtype = POINTTYPE | WKBMOFFSET;
+
+			if (!state->config->hwgeom)
+			{
+				state->pgtype = "POINTM";
+				state->pgdims = 3;
+				state->istypeM = 1;
+			}
+			else
+			{
 				state->pgtype = "POINT";
-				state->wkbtype = POINTTYPE;
 				state->pgdims = 2;
-				break;
-	
-			case SHPT_ARC:
-				/* PolyLine */
+			}
+			break;
+
+		case SHPT_ARCM:
+			/* PolyLineM */
+			state->wkbtype = MULTILINETYPE | WKBMOFFSET;
+
+			if (!state->config->hwgeom)
+			{
+				state->pgtype = "MULTILINESTRINGM";
+				state->pgdims = 3;
+				state->istypeM = 1;
+			}
+			else
+			{
 				state->pgtype = "MULTILINESTRING";
-				state->wkbtype = MULTILINETYPE ;
 				state->pgdims = 2;
-				break;
-	
-			case SHPT_POLYGON:
-				/* Polygon */
+			}
+			break;
+
+		case SHPT_POLYGONM:
+			/* PolygonM */
+			state->wkbtype = MULTIPOLYGONTYPE | WKBMOFFSET;
+
+			if (!state->config->hwgeom)
+			{
+				state->pgtype = "MULTIPOLYGONM";
+				state->pgdims = 3;
+				state->istypeM = 1;
+			}
+			else
+			{
 				state->pgtype = "MULTIPOLYGON";
-				state->wkbtype = MULTIPOLYGONTYPE;
 				state->pgdims = 2;
-				break;
-	
-			case SHPT_MULTIPOINT:
-				/* MultiPoint */
+			}
+			break;
+
+		case SHPT_MULTIPOINTM:
+			/* MultiPointM */
+			state->wkbtype = MULTIPOINTTYPE | WKBMOFFSET;
+
+			if (!state->config->hwgeom)
+			{
+				state->pgtype = "MULTIPOINTM";
+				state->pgdims = 3;
+				state->istypeM = 1;
+			}
+			else
+			{
 				state->pgtype = "MULTIPOINT";
-				state->wkbtype = MULTIPOINTTYPE;
 				state->pgdims = 2;
-				break;
-	
-			case SHPT_POINTM:
-				/* PointM */
-				state->wkbtype = POINTTYPE | WKBMOFFSET;
-	
-				if (!state->config->hwgeom)
-				{
-					state->pgtype = "POINTM";
-					state->pgdims = 3;
-					state->istypeM = 1;
-				} 
-				else 
-				{
-					state->pgtype = "POINT";
-					state->pgdims = 2;
-				}
-				break;
-	
-			case SHPT_ARCM:
-				/* PolyLineM */
-				state->wkbtype = MULTILINETYPE | WKBMOFFSET;
-	
-				if (!state->config->hwgeom)
-				{
-					state->pgtype = "MULTILINESTRINGM";
-					state->pgdims = 3;
-					state->istypeM = 1;
-				} 
-				else 
-				{
-					state->pgtype = "MULTILINESTRING";
-					state->pgdims = 2;
-				}
-				break;
-	
-			case SHPT_POLYGONM:
-				/* PolygonM */
-				state->wkbtype = MULTIPOLYGONTYPE | WKBMOFFSET;
-	
-				if (!state->config->hwgeom)
-				{
-					state->pgtype = "MULTIPOLYGONM";
-					state->pgdims = 3;
-					state->istypeM = 1;
-				}
-				else 
-				{
-					state->pgtype = "MULTIPOLYGON";
-					state->pgdims = 2;
-				}
-				break;
-	
-			case SHPT_MULTIPOINTM:
-				/* MultiPointM */
-				state->wkbtype = MULTIPOINTTYPE | WKBMOFFSET;
-	
-				if (!state->config->hwgeom)
-				{
-					state->pgtype = "MULTIPOINTM";
-					state->pgdims = 3;
-					state->istypeM = 1;
-				} 
-				else
-				{
-					state->pgtype = "MULTIPOINT";
-					state->pgdims = 2;
-				}
-				break;
-	
-			case SHPT_POINTZ: 
-				/* PointZ */
-				state->wkbtype = POINTTYPE | WKBMOFFSET | WKBZOFFSET;
-				state->pgtype = "POINT";
-	
-				if (!state->config->hwgeom)
-					state->pgdims = 4;
-				else 
-					state->pgdims = 3;
-	
-				break;
-	
-			case SHPT_ARCZ:
-				/* PolyLineZ */
-				state->pgtype = "MULTILINESTRING";
-				state->wkbtype = MULTILINETYPE | WKBZOFFSET | WKBMOFFSET;
-	
-				if (!state->config->hwgeom)
-					state->pgdims = 4;
-				else
-					state->pgdims = 3;
-	
-				break;
-	
-			case SHPT_POLYGONZ:
-				/* MultiPolygonZ */
-				state->pgtype = "MULTIPOLYGON";
-				state->wkbtype = MULTIPOLYGONTYPE | WKBZOFFSET | WKBMOFFSET;
-	
-				if (!state->config->hwgeom)
-					state->pgdims = 4;
-				else
-					state->pgdims = 3;
-	
-				break;
-	
-			case SHPT_MULTIPOINTZ:
-				/* MultiPointZ */
-				state->pgtype = "MULTIPOINT";
-				state->wkbtype = MULTIPOINTTYPE | WKBZOFFSET | WKBMOFFSET;
-	
-				if (!state->config->hwgeom)
-					state->pgdims = 4;
-				else
-					state->pgdims = 3;
-	
-				break;
-	
-			default:
-				state->pgtype = "GEOMETRY";
-				state->wkbtype = COLLECTIONTYPE | WKBZOFFSET | WKBMOFFSET;
+			}
+			break;
+
+		case SHPT_POINTZ:
+			/* PointZ */
+			state->wkbtype = POINTTYPE | WKBMOFFSET | WKBZOFFSET;
+			state->pgtype = "POINT";
+
+			if (!state->config->hwgeom)
 				state->pgdims = 4;
-	
-				snprintf(state->message, SHPLOADERMSGLEN, "Unknown geometry type: %d\n", state->shpfiletype);
-				return SHPLOADERERR;
-	
-				break;
+			else
+				state->pgdims = 3;
+
+			break;
+
+		case SHPT_ARCZ:
+			/* PolyLineZ */
+			state->pgtype = "MULTILINESTRING";
+			state->wkbtype = MULTILINETYPE | WKBZOFFSET | WKBMOFFSET;
+
+			if (!state->config->hwgeom)
+				state->pgdims = 4;
+			else
+				state->pgdims = 3;
+
+			break;
+
+		case SHPT_POLYGONZ:
+			/* MultiPolygonZ */
+			state->pgtype = "MULTIPOLYGON";
+			state->wkbtype = MULTIPOLYGONTYPE | WKBZOFFSET | WKBMOFFSET;
+
+			if (!state->config->hwgeom)
+				state->pgdims = 4;
+			else
+				state->pgdims = 3;
+
+			break;
+
+		case SHPT_MULTIPOINTZ:
+			/* MultiPointZ */
+			state->pgtype = "MULTIPOINT";
+			state->wkbtype = MULTIPOINTTYPE | WKBZOFFSET | WKBMOFFSET;
+
+			if (!state->config->hwgeom)
+				state->pgdims = 4;
+			else
+				state->pgdims = 3;
+
+			break;
+
+		default:
+			state->pgtype = "GEOMETRY";
+			state->wkbtype = COLLECTIONTYPE | WKBZOFFSET | WKBMOFFSET;
+			state->pgdims = 4;
+
+			snprintf(state->message, SHPLOADERMSGLEN, "Unknown geometry type: %d\n", state->shpfiletype);
+			return SHPLOADERERR;
+
+			break;
 		}
-	
+
 		/* If in simple geometry mode, alter names for CREATE TABLE by skipping MULTI */
 		if (state->config->simple_geometries)
 		{
 			if ((state->wkbtype & 0x7) == MULTIPOLYGONTYPE)
 				state->pgtype += 5;
-	
+
 			if ((state->wkbtype & 0x7) == MULTILINETYPE)
 				state->pgtype += 5;
 		}
@@ -1133,7 +1136,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	   insertion string */
 	strcpy(state->col_names, "(" );
 
-	for(j = 0; j < state->num_fields; j++)
+	for (j = 0; j < state->num_fields; j++)
 	{
 		type = DBFGetFieldInfo(state->hDBFHandle, j, name, &field_width, &field_precision);
 
@@ -1167,11 +1170,11 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		 * escape char (_), those named 'gid'
 		 * or after pgsql reserved attribute names
 		 */
-		if(name[0] == '_' ||
-			! strcmp(name, "gid") || ! strcmp(name, "tableoid") ||
-			! strcmp(name, "cmax") || ! strcmp(name, "xmax") ||
-			! strcmp(name, "cmin") || ! strcmp(name, "primary") ||
-			! strcmp(name, "oid") || ! strcmp(name, "ctid"))
+		if (name[0] == '_' ||
+		        ! strcmp(name, "gid") || ! strcmp(name, "tableoid") ||
+		        ! strcmp(name, "cmax") || ! strcmp(name, "xmax") ||
+		        ! strcmp(name, "cmin") || ! strcmp(name, "primary") ||
+		        ! strcmp(name, "oid") || ! strcmp(name, "ctid"))
 		{
 			strncpy(name2 + 2, name, MAXFIELDNAMELEN - 2);
 			name2[0] = '_';
@@ -1180,7 +1183,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		}
 
 		/* Avoid duplicating field names */
-		for(z = 0; z < j ; z++)
+		for (z = 0; z < j ; z++)
 		{
 			if (strcmp(state->field_names[z], name) == 0)
 			{
@@ -1259,18 +1262,18 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 			if (state->config->readshape == 1 && (! state->config->geography) )
 			{
 				vasbappend(sb, "SELECT DropGeometryColumn('%s','%s','%s');\n",
-					state->config->schema, state->config->table, state->config->geom);
+				           state->config->schema, state->config->table, state->config->geom);
 			}
 
-			vasbappend(sb, "DROP TABLE \"%s\".\"%s\";\n", state->config->schema, 
-				state->config->table);
+			vasbappend(sb, "DROP TABLE \"%s\".\"%s\";\n", state->config->schema,
+			           state->config->table);
 		}
 		else
 		{
 			if (state->config->readshape == 1  && (! state->config->geography) )
 			{
 				vasbappend(sb, "SELECT DropGeometryColumn('','%s','%s');\n",
-					state->config->table, state->config->geom);
+				           state->config->table, state->config->geom);
 			}
 
 			vasbappend(sb, "DROP TABLE \"%s\";\n", state->config->table);
@@ -1290,82 +1293,82 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		if (state->config->schema)
 		{
 			vasbappend(sb, "CREATE TABLE \"%s\".\"%s\" (gid serial PRIMARY KEY",
-				state->config->schema, state->config->table);
+			           state->config->schema, state->config->table);
 		}
 		else
 		{
 			vasbappend(sb, "CREATE TABLE \"%s\" (gid serial PRIMARY KEY", state->config->table);
 		}
-	
-		/* Generate the field types based upon the shapefile information */ 
-		for(j = 0; j < state->num_fields; j++)
+
+		/* Generate the field types based upon the shapefile information */
+		for (j = 0; j < state->num_fields; j++)
 		{
 			vasbappend(sb, ",\n\"%s\" ", state->field_names[j]);
-	
-			switch(state->types[j])
+
+			switch (state->types[j])
 			{
-				case FTString:
-					/* use DBF attribute size as maximum width */
-					vasbappend(sb, "varchar(%d)", state->widths[j]);
-					break;
+			case FTString:
+				/* use DBF attribute size as maximum width */
+				vasbappend(sb, "varchar(%d)", state->widths[j]);
+				break;
 
-				case FTDate:
-					vasbappend(sb, "date");
-					break;
+			case FTDate:
+				vasbappend(sb, "date");
+				break;
 
-				case FTInteger:
-					/* Determine exact type based upon field width */
-					if (state->config->forceint4)
-					{
-						vasbappend(sb, "int4");
-					}
-					else if (state->widths[j] < 5)
-					{
-						vasbappend(sb, "int2");
-					}
-					else if (state->widths[j] < 10)
-					{
-						vasbappend(sb, "int4");
-					}
-					else
-					{
-						vasbappend(sb, "numeric(%d,0)", state->widths[j]);
-					}
-					break;
+			case FTInteger:
+				/* Determine exact type based upon field width */
+				if (state->config->forceint4)
+				{
+					vasbappend(sb, "int4");
+				}
+				else if (state->widths[j] < 5)
+				{
+					vasbappend(sb, "int2");
+				}
+				else if (state->widths[j] < 10)
+				{
+					vasbappend(sb, "int4");
+				}
+				else
+				{
+					vasbappend(sb, "numeric(%d,0)", state->widths[j]);
+				}
+				break;
 
-				case FTDouble:
-					/* Determine exact type based upon field width */
-					if(state->widths[j] > 18)
-					{
-						vasbappend(sb, "numeric");
-					}
-					else
-					{
-						vasbappend(sb, "float8");
-					}
-					break;
+			case FTDouble:
+				/* Determine exact type based upon field width */
+				if (state->widths[j] > 18)
+				{
+					vasbappend(sb, "numeric");
+				}
+				else
+				{
+					vasbappend(sb, "float8");
+				}
+				break;
 
-				case FTLogical:
-					vasbappend(sb, "boolean");
-					break;
+			case FTLogical:
+				vasbappend(sb, "boolean");
+				break;
 
-				default:
-					snprintf(state->message, SHPLOADERMSGLEN, "Invalid type %x in DBF file", state->types[j]);
-					stringbuffer_destroy(sb);
-					return SHPLOADERERR;
+			default:
+				snprintf(state->message, SHPLOADERMSGLEN, "Invalid type %x in DBF file", state->types[j]);
+				stringbuffer_destroy(sb);
+				return SHPLOADERERR;
 			}
 		}
-		
-		/* Add the geography column directly to the table definition, we don't 
+
+		/* Add the geography column directly to the table definition, we don't
 		   need to do an AddGeometryColumn() call. */
-		if(state->config->readshape == 1 && state->config->geography)
+		if (state->config->readshape == 1 && state->config->geography)
 		{
 			char *dimschar;
-			if( state->pgdims == 4 )
+			if ( state->pgdims == 4 )
 				dimschar = "ZM";
 			else
 				dimschar = "";
-			if(state->config->sr_id != -1 && state->config->sr_id != 4326)
+			if (state->config->sr_id != -1 && state->config->sr_id != 4326)
 			{
 				snprintf(state->message, SHPLOADERMSGLEN, "Invalid SRID for geography type: %x", state->config->sr_id);
 				stringbuffer_destroy(sb);
@@ -1373,21 +1376,21 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 			}
 			vasbappend(sb, ",\n\"%s\" geography(%s%s,%d)", state->config->geom, state->pgtype, dimschar, 4326);
 		}
-		
+
 		vasbappend(sb, ");\n");
-	
+
 		/* Create the geometry column with an addgeometry call */
 		if (state->config->readshape == 1 && (!state->config->geography))
 		{
-			if (state->config->schema) 
+			if (state->config->schema)
 			{
 				vasbappend(sb, "SELECT AddGeometryColumn('%s','%s','%s','%d',",
-					state->config->schema, state->config->table, state->config->geom, state->config->sr_id);
+				           state->config->schema, state->config->table, state->config->geom, state->config->sr_id);
 			}
 			else
 			{
 				vasbappend(sb, "SELECT AddGeometryColumn('','%s','%s','%d',",
-					state->config->table, state->config->geom, state->config->sr_id);
+				           state->config->table, state->config->geom, state->config->sr_id);
 			}
 
 			vasbappend(sb, "'%s',%d);\n", state->pgtype, state->pgdims);
@@ -1417,10 +1420,10 @@ ShpLoaderGetSQLCopyStatement(SHPLOADERSTATE *state, char **strheader)
 		if (state->config->schema)
 		{
 			copystr = malloc(strlen(state->config->schema) + strlen(state->config->table) +
-				strlen(state->col_names) + 40);
+			                 strlen(state->col_names) + 40);
 
 			sprintf(copystr, "COPY \"%s\".\"%s\" %s FROM stdin;\n",
-				state->config->schema, state->config->table, state->col_names);
+			        state->config->schema, state->config->table, state->col_names);
 		}
 		else
 		{
@@ -1501,13 +1504,13 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 	{
 		if (state->config->schema)
 		{
-			vasbappend(sb, "INSERT INTO \"%s\".\"%s\" %s VALUES (", state->config->schema, 
-				state->config->table, state->col_names);
+			vasbappend(sb, "INSERT INTO \"%s\".\"%s\" %s VALUES (", state->config->schema,
+			           state->config->table, state->col_names);
 		}
 		else
 		{
-			vasbappend(sb, "INSERT INTO \"%s\" %s VALUES (", state->config->table, 
-				state->col_names);
+			vasbappend(sb, "INSERT INTO \"%s\" %s VALUES (", state->config->table,
+			           state->col_names);
 		}
 	}
 
@@ -1522,50 +1525,50 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 				vasbappend(sb, "\\N");
 			else
 				vasbappend(sb, "NULL");
-	  	}
-	  	else
-	  	{
+		}
+		else
+		{
 			/* Attribute NOT NULL */
 			switch (state->types[i])
 			{
-				case FTInteger:
-				case FTDouble:
-					if (-1 == snprintf(val, MAXVALUELEN, "%s", DBFReadStringAttribute(state->hDBFHandle, item, i)))
-					{
-						vasbappend(sbwarn, "Warning: field %d name truncated\n", i);
-						val[MAXVALUELEN - 1] = '\0';
-					}
+			case FTInteger:
+			case FTDouble:
+				if (-1 == snprintf(val, MAXVALUELEN, "%s", DBFReadStringAttribute(state->hDBFHandle, item, i)))
+				{
+					vasbappend(sbwarn, "Warning: field %d name truncated\n", i);
+					val[MAXVALUELEN - 1] = '\0';
+				}
 
-					/* If the value is an empty string, change to 0 */
-					if (val[0] == '\0')
-					{
-						val[0] = '0';
-						val[1] = '\0';
-					}
+				/* If the value is an empty string, change to 0 */
+				if (val[0] == '\0')
+				{
+					val[0] = '0';
+					val[1] = '\0';
+				}
 
-					/* If the value ends with just ".", remove the dot */
-					if (val[strlen(val) - 1] == '.')
-						val[strlen(val) - 1] = '\0';
-			   		break;
+				/* If the value ends with just ".", remove the dot */
+				if (val[strlen(val) - 1] == '.')
+					val[strlen(val) - 1] = '\0';
+				break;
 
-				case FTString:
-				case FTLogical:
-				case FTDate:
-					if (-1 == snprintf(val, MAXVALUELEN, "%s", DBFReadStringAttribute(state->hDBFHandle, item, i)))
-					{
-						vasbappend(sbwarn, "Warning: field %d name truncated\n", i);
-						val[MAXVALUELEN - 1] = '\0';
-					}
-					break;
+			case FTString:
+			case FTLogical:
+			case FTDate:
+				if (-1 == snprintf(val, MAXVALUELEN, "%s", DBFReadStringAttribute(state->hDBFHandle, item, i)))
+				{
+					vasbappend(sbwarn, "Warning: field %d name truncated\n", i);
+					val[MAXVALUELEN - 1] = '\0';
+				}
+				break;
 
-				default:
-					snprintf(state->message, SHPLOADERMSGLEN, "Error: field %d has invalid or unknown field type (%d)", i, state->types[i]);
+			default:
+				snprintf(state->message, SHPLOADERMSGLEN, "Error: field %d has invalid or unknown field type (%d)", i, state->types[i]);
 
-					SHPDestroyObject(obj);
-					stringbuffer_destroy(sbwarn);
-					stringbuffer_destroy(sb);
+				SHPDestroyObject(obj);
+				stringbuffer_destroy(sbwarn);
+				stringbuffer_destroy(sb);
 
-					return SHPLOADERERR;
+				return SHPLOADERERR;
 			}
 
 			if (state->config->encoding)
@@ -1577,7 +1580,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 					snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert field value \"%s\" to UTF-8: iconv reports \"%s\"", val, strerror(errno));
 					return SHPLOADERERR;
 				}
-	
+
 				strncpy(val, utf8str, MAXVALUELEN);
 				free(utf8str);
 			}
@@ -1628,62 +1631,62 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 			/* Handle all other shape attributes */
 			switch (obj->nSHPType)
 			{
-				case SHPT_POLYGON:
-				case SHPT_POLYGONM:
-				case SHPT_POLYGONZ:
-					res = GeneratePolygonGeometry(state, obj, &geometry);
-					if (res != SHPLOADEROK)
-					{
-						/* Error message has already been set */
-						SHPDestroyObject(obj);
-						stringbuffer_destroy(sbwarn);
-						stringbuffer_destroy(sb);
-	
-						return SHPLOADERERR;
-					}
-					break;
-	
-				case SHPT_POINT:
-				case SHPT_POINTM:
-				case SHPT_POINTZ:
-				case SHPT_MULTIPOINT:
-				case SHPT_MULTIPOINTM:
-				case SHPT_MULTIPOINTZ:
-					res = GeneratePointGeometry(state, obj, &geometry);
-					if (res != SHPLOADEROK)
-					{
-						/* Error message has already been set */
-						SHPDestroyObject(obj);
-						stringbuffer_destroy(sbwarn);
-						stringbuffer_destroy(sb);
-	
-						return SHPLOADERERR;
-					}
-					break;
-	
-				case SHPT_ARC:
-				case SHPT_ARCM:
-				case SHPT_ARCZ:
-					res = GenerateLineStringGeometry(state, obj, &geometry);
-					if (res != SHPLOADEROK)
-					{
-						/* Error message has already been set */
-						SHPDestroyObject(obj);
-						stringbuffer_destroy(sbwarn);
-						stringbuffer_destroy(sb);
-	
-						return SHPLOADERERR;
-					}
-					break;
-	
-				default:
-					snprintf(state->message, SHPLOADERMSGLEN, "Shape type is NOT SUPPORTED, type id = %d", obj->nSHPType);
-
+			case SHPT_POLYGON:
+			case SHPT_POLYGONM:
+			case SHPT_POLYGONZ:
+				res = GeneratePolygonGeometry(state, obj, &geometry);
+				if (res != SHPLOADEROK)
+				{
+					/* Error message has already been set */
 					SHPDestroyObject(obj);
 					stringbuffer_destroy(sbwarn);
 					stringbuffer_destroy(sb);
 
 					return SHPLOADERERR;
+				}
+				break;
+
+			case SHPT_POINT:
+			case SHPT_POINTM:
+			case SHPT_POINTZ:
+			case SHPT_MULTIPOINT:
+			case SHPT_MULTIPOINTM:
+			case SHPT_MULTIPOINTZ:
+				res = GeneratePointGeometry(state, obj, &geometry);
+				if (res != SHPLOADEROK)
+				{
+					/* Error message has already been set */
+					SHPDestroyObject(obj);
+					stringbuffer_destroy(sbwarn);
+					stringbuffer_destroy(sb);
+
+					return SHPLOADERERR;
+				}
+				break;
+
+			case SHPT_ARC:
+			case SHPT_ARCM:
+			case SHPT_ARCZ:
+				res = GenerateLineStringGeometry(state, obj, &geometry);
+				if (res != SHPLOADEROK)
+				{
+					/* Error message has already been set */
+					SHPDestroyObject(obj);
+					stringbuffer_destroy(sbwarn);
+					stringbuffer_destroy(sb);
+
+					return SHPLOADERERR;
+				}
+				break;
+
+			default:
+				snprintf(state->message, SHPLOADERMSGLEN, "Shape type is NOT SUPPORTED, type id = %d", obj->nSHPType);
+
+				SHPDestroyObject(obj);
+				stringbuffer_destroy(sbwarn);
+				stringbuffer_destroy(sb);
+
+				return SHPLOADERERR;
 			}
 		}
 
@@ -1700,13 +1703,13 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 				if (state->config->sr_id != 0)
 					vasbappend(sb, "SRID=%d;", state->config->sr_id);
 			}
-	
+
 			vasbappend(sb, "%s", geometry);
-	
+
 			if (!state->config->dump_format)
 			{
 				vasbappend(sb, "'");
-	
+
 				/* Output SRID if relevant */
 				if (state->config->sr_id != 0)
 					vasbappend(sb, ", %d)", state->config->sr_id);
@@ -1719,9 +1722,9 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 			/* New style lwgeom (HEXEWKB) */
 			if (!state->config->dump_format)
 				vasbappend(sb, "'");
-	
+
 			vasbappend(sb, "%s", geometry);
-	
+
 			if (!state->config->dump_format)
 				vasbappend(sb, "'");
 		}
@@ -1748,7 +1751,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 	{
 		snprintf(state->message, SHPLOADERMSGLEN, "%s", stringbuffer_getstring(sbwarn));
 		stringbuffer_destroy(sbwarn);
-		
+
 		return SHPLOADERWARN;
 	}
 	else
@@ -1768,8 +1771,8 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 	stringbuffer_t *sb;
 	char *ret;
 	char *ops;
-	
-	if( state->config->geography )
+
+	if ( state->config->geography )
 		ops = "gist_geography_ops";
 	else
 		ops = "gist_geometry_ops";
@@ -1784,8 +1787,8 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 	{
 		if (state->config->schema)
 		{
-			vasbappend(sb, "CREATE INDEX \"%s_%s_gist\" ON \"%s\".\"%s\" using gist (\"%s\" %s);\n", state->config->table, state->config->geom, 
-			state->config->schema, state->config->table, state->config->geom, ops);
+			vasbappend(sb, "CREATE INDEX \"%s_%s_gist\" ON \"%s\".\"%s\" using gist (\"%s\" %s);\n", state->config->table, state->config->geom,
+			           state->config->schema, state->config->table, state->config->geom, ops);
 		}
 		else
 		{
@@ -1794,7 +1797,7 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 	}
 
 	/* End the transaction */
-	vasbappend(sb, "COMMIT;\n"); 
+	vasbappend(sb, "COMMIT;\n");
 
 	/* Copy the string buffer into a new string, destroying the string buffer */
 	ret = (char *)malloc(strlen((char *)stringbuffer_getstring(sb)) + 1);
@@ -1823,7 +1826,7 @@ ShpLoaderDestroy(SHPLOADERSTATE *state)
 			int i;
 			for (i = 0; i < state->num_fields; i++)
 				free(state->field_names[i]);
-	
+
 			free(state->field_names);
 		}
 		if (state->types)
@@ -1835,7 +1838,7 @@ ShpLoaderDestroy(SHPLOADERSTATE *state)
 		if (state->col_names)
 			free(state->col_names);
 
-		/* Free the state itself */	
+		/* Free the state itself */
 		free(state);
 	}
 }

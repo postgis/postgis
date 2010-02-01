@@ -27,7 +27,7 @@ void lwgeom_init_allocators()
 	 *
 	 * Since using the standard malloc/free is likely to be a common option, liblwgeom contains a
 	 * function called lwgeom_install_default_allocators() which sets this up for you. Hence most
-	 * people will only ever need this line within their lwgeom_init_allocations() function. 
+	 * people will only ever need this line within their lwgeom_init_allocations() function.
 	 */
 
 	lwgeom_install_default_allocators();

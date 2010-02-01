@@ -423,7 +423,7 @@ lwcurvepoly_segmentize(LWCURVEPOLY *curvepoly, uint32 perQuad)
 			line = (LWLINE *)tmp;
 			ptarray[i] = ptarray_clone(line->points);
 		}
-		else if(lwgeom_getType(tmp->type) == COMPOUNDTYPE)
+		else if (lwgeom_getType(tmp->type) == COMPOUNDTYPE)
 		{
 			line = lwcompound_segmentize((LWCOMPOUND *)tmp, perQuad);
 			ptarray[i] = ptarray_clone(line->points);
@@ -663,7 +663,7 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
 
 			setPoint4d(newPoints, i, &pt);
 		}
-		for (i=1; i<pts->npoints;i++)
+		for (i=1; i<pts->npoints; i++)
 		{
 			getPoint4d_p(pts, i, &pt);
 
@@ -817,7 +817,7 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
 			last_angle = theta;
 			/* We are tracking a line, keep going */
 			if (isline > 0)
-			{}
+				{}
 			/* We were tracking a circularstring, commit it and start line*/
 			else if (isline == 0)
 			{
@@ -841,8 +841,8 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
 				isline = -1;
 
 				/*
-				 * We now need to move ahead one point to 
-				 * determine if it's a potential new curve, 
+				 * We now need to move ahead one point to
+				 * determine if it's a potential new curve,
 				 * since the last_angle value is corrupt.
 				 *
 				 * Note we can only look ahead one point if
@@ -904,7 +904,7 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
 				          TYPE_HASZ(type),
 				          TYPE_HASM(type),
 				          count);
-				for (j=commit;j<i-2;j++)
+				for (j=commit; j<i-2; j++)
 				{
 					getPoint4d_p(points, j, &tmp);
 					setPoint4d(pts, j-commit, &tmp);
@@ -953,7 +953,7 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
 		          TYPE_HASZ(type),
 		          TYPE_HASM(type),
 		          count);
-		for (j=commit;j<i;j++)
+		for (j=commit; j<i; j++)
 		{
 			getPoint4d_p(points, j, &tmp);
 			setPoint4d(pts, j-commit, &tmp);

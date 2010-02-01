@@ -128,7 +128,7 @@ lwpoly_deserialize(uchar *serialized_form)
 	nrings = lw_get_uint32(loc);
 	result->nrings = nrings;
 	loc +=4;
-	if( nrings )
+	if ( nrings )
 	{
 		result->rings = (POINTARRAY**) lwalloc(nrings* sizeof(POINTARRAY*));
 	}
@@ -137,7 +137,7 @@ lwpoly_deserialize(uchar *serialized_form)
 		result->rings = NULL;
 	}
 
-	for (t =0;t<nrings;t++)
+	for (t =0; t<nrings; t++)
 	{
 		/* read in a single ring and make a PA */
 		npoints = lw_get_uint32(loc);
@@ -220,7 +220,7 @@ lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *retsize)
 	memcpy(loc, &poly->nrings, sizeof(int32));  /* nrings */
 	loc+=4;
 
-	for (t=0;t<poly->nrings;t++)
+	for (t=0; t<poly->nrings; t++)
 	{
 		POINTARRAY *pa = poly->rings[t];
 		size_t pasize;
@@ -313,7 +313,7 @@ lwgeom_size_poly(const uchar *serialized_poly)
 
 	LWDEBUGF(3, "lwgeom_size_poly contains %d rings", nrings);
 
-	for (t =0;t<nrings;t++)
+	for (t =0; t<nrings; t++)
 	{
 		/* read in a single ring and make a PA */
 		npoints = lw_get_uint32(loc);
@@ -375,7 +375,7 @@ void lwpoly_free  (LWPOLY  *poly)
 	if ( poly->bbox )
 		lwfree(poly->bbox);
 
-	for (t=0;t<poly->nrings;t++)
+	for (t=0; t<poly->nrings; t++)
 	{
 		if ( poly->rings[t] )
 			ptarray_free(poly->rings[t]);
@@ -394,7 +394,7 @@ void printLWPOLY(LWPOLY *poly)
 	lwnotice("    ndims = %i", (int)TYPE_NDIMS(poly->type));
 	lwnotice("    SRID = %i", (int)poly->SRID);
 	lwnotice("    nrings = %i", (int)poly->nrings);
-	for (t=0;t<poly->nrings;t++)
+	for (t=0; t<poly->nrings; t++)
 	{
 		lwnotice("    RING # %i :",t);
 		printPA(poly->rings[t]);

@@ -117,7 +117,7 @@ Datum CHIP_in(PG_FUNCTION_ARGS)
 	size = (input_str_len/2) ;
 	result = (CHIP *) palloc(size);
 
-	for (t=0;t<size;t++)
+	for (t=0; t<size; t++)
 	{
 		((uchar *)result)[t] = parse_hex( &str[t*2]) ;
 	}
@@ -390,12 +390,13 @@ size_t chip_pixel_value_size(int datatype);
 #define PIXELOP_ADD 2
 #define PIXELOP_MULTIPLY 3
 
-char *pixelop_name[] = {
-                           "Unknown",
-                           "Overwrite",
-                           "Add",
-                           "Multiply"
-                       };
+char *pixelop_name[] =
+{
+	"Unknown",
+	"Overwrite",
+	"Add",
+	"Multiply"
+};
 
 const char*
 pixelOpName(int op)

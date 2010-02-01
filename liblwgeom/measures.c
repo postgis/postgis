@@ -44,7 +44,7 @@ lw_dist2d_distanceline(uchar *lw1, uchar *lw2,int srid,int mode)
 
 	if (!lw_dist2d_comp( lw1,lw2,&thedl))
 	{
-	/*should never get here. all cases ought to be error handled earlier*/
+		/*should never get here. all cases ought to be error handled earlier*/
 		lwerror("Some unspecified error.");
 		result =(LWGEOM *)lwcollection_construct_empty(srid, 0, 0);
 	}
@@ -92,9 +92,9 @@ lw_dist2d_distancepoint(uchar *lw1, uchar *lw2,int srid,int mode)
 
 	if (!lw_dist2d_comp( lw1,lw2,&thedl))
 	{
-	/*should never get here. all cases ought to be error handled earlier*/
-	lwerror("Some unspecified error.");
-	result =(LWGEOM *)lwcollection_construct_empty(srid, 0, 0);
+		/*should never get here. all cases ought to be error handled earlier*/
+		lwerror("Some unspecified error.");
+		result =(LWGEOM *)lwcollection_construct_empty(srid, 0, 0);
 	}
 	if (thedl.distance == initdistance)
 	{
@@ -708,9 +708,9 @@ lw_dist2d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly, DISTPTS *dl)
 	for (i=1; i<poly->nrings; i++)
 	{
 		if (!lw_dist2d_ptarray_ptarray(pa, poly->rings[i], dl)) return LW_FALSE;
-		
+
 		LWDEBUGF(3, " distance from ring %d: %f, mindist: %f",
-			         i, dl->distance, dl->tolerance);
+		         i, dl->distance, dl->tolerance);
 		if (dl->distance<=dl->tolerance && dl->mode == DIST2D_MIN) return LW_TRUE; /*just a check if  the answer is already given*/
 	}
 

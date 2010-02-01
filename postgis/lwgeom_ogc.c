@@ -176,7 +176,7 @@ Datum geometry_geometrytype(PG_FUNCTION_ARGS)
 	size_t size;
 
 	lwgeom = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	
+
 	/* Make it empty string to start */
 	*type_str = 0;
 
@@ -184,7 +184,7 @@ Datum geometry_geometrytype(PG_FUNCTION_ARGS)
 	strncat(type_str, "ST_", 32);
 	strncat(type_str, lwgeom_typename(lwgeom_getType(lwgeom->type)), 32);
 	size = strlen(type_str) + VARHDRSZ;
-	
+
 	/* Build a text type to store things in */
 	type_text = lwalloc(size);
 	memcpy(VARDATA(type_text),type_str, size - VARHDRSZ);
@@ -193,7 +193,7 @@ Datum geometry_geometrytype(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(lwgeom, 0);
 	PG_RETURN_POINTER(type_text);
 }
-	
+
 
 /**
  * Find first linestring in serialized geometry and return
@@ -208,12 +208,12 @@ lwgeom_numpoints_linestring_recursive(const uchar *serialized)
 
 	LWDEBUG(2, "lwgeom_numpoints_linestring_recursive called.");
 
-	/* 
+	/*
 	 * CURVEPOLY and COMPOUND have no concept of numpoints but look like
 	 * collections once inspected.  Fast-fail on these here.
 	 */
 	if (lwgeom_getType(inspected->type) == COMPOUNDTYPE ||
-			lwgeom_getType(inspected->type) == CURVEPOLYTYPE)
+	        lwgeom_getType(inspected->type) == CURVEPOLYTYPE)
 	{
 		return -1;
 	}

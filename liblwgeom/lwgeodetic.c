@@ -4,7 +4,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>
  * Copyright 2009 David Skea <David.Skea@gov.bc.ca>
- * 
+ *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
  *
@@ -24,23 +24,23 @@ int gbox_geocentric_slow = LW_FALSE;
 */
 double longitude_radians_normalize(double lon)
 {
-	if( lon == -1.0 * M_PI )
+	if ( lon == -1.0 * M_PI )
 		return M_PI;
-	if( lon == -2.0 * M_PI )
+	if ( lon == -2.0 * M_PI )
 		return 0.0;
 
-	if( lon > 2.0 * M_PI )
+	if ( lon > 2.0 * M_PI )
 		lon = remainder(lon, 2.0 * M_PI);
 
-	if( lon < -2.0 * M_PI )
+	if ( lon < -2.0 * M_PI )
 		lon = remainder(lon, -2.0 * M_PI);
-		
-	if( lon > M_PI )
+
+	if ( lon > M_PI )
 		lon = -2.0 * M_PI + lon;
 
-	if( lon < -1.0 * M_PI )
+	if ( lon < -1.0 * M_PI )
 		lon = 2.0 * M_PI + lon;
-	
+
 	return lon;
 }
 
@@ -50,24 +50,24 @@ double longitude_radians_normalize(double lon)
 double latitude_radians_normalize(double lat)
 {
 
-	if( lat > 2.0 * M_PI )
+	if ( lat > 2.0 * M_PI )
 		lat = remainder(lat, 2.0 * M_PI);
 
-	if( lat < -2.0 * M_PI )
+	if ( lat < -2.0 * M_PI )
 		lat = remainder(lat, -2.0 * M_PI);
-		
-	if( lat > M_PI )
+
+	if ( lat > M_PI )
 		lat = M_PI - lat;
 
-	if( lat < -1.0 * M_PI )
+	if ( lat < -1.0 * M_PI )
 		lat = -1.0 * M_PI - lat;
 
-	if( lat > M_PI_2 )
+	if ( lat > M_PI_2 )
 		lat = M_PI - lat;
 
-	if( lat < -1.0 * M_PI_2 )
+	if ( lat < -1.0 * M_PI_2 )
 		lat = -1.0 * M_PI - lat;
-	
+
 	return lat;
 }
 
@@ -76,23 +76,23 @@ double latitude_radians_normalize(double lat)
 */
 double longitude_degrees_normalize(double lon)
 {
-	if( lon == -180.0 )
+	if ( lon == -180.0 )
 		return 180.0;
-	if( lon == -360.0 )
+	if ( lon == -360.0 )
 		return 0.0;
 
-	if( lon > 360.0 )
+	if ( lon > 360.0 )
 		lon = remainder(lon, 360.0);
 
-	if( lon < -360.0 )
+	if ( lon < -360.0 )
 		lon = remainder(lon, -360.0);
-		
-	if( lon > 180.0 )
+
+	if ( lon > 180.0 )
 		lon = -360.0 + lon;
 
-	if( lon < -180.0 )
+	if ( lon < -180.0 )
 		lon = 360 + lon;
-	
+
 	return lon;
 }
 
@@ -102,34 +102,34 @@ double longitude_degrees_normalize(double lon)
 double latitude_degrees_normalize(double lat)
 {
 
-	if( lat > 360.0 )
+	if ( lat > 360.0 )
 		lat = remainder(lat, 360.0);
 
-	if( lat < -360.0 )
+	if ( lat < -360.0 )
 		lat = remainder(lat, -360.0);
-		
-	if( lat > 180.0 )
+
+	if ( lat > 180.0 )
 		lat = 180.0 - lat;
 
-	if( lat < -180.0 )
+	if ( lat < -180.0 )
 		lat = -180.0 - lat;
 
-	if( lat > 90.0 )
+	if ( lat > 90.0 )
 		lat = 180.0 - lat;
 
-	if( lat < -90.0 )
+	if ( lat < -90.0 )
 		lat = -180.0 - lat;
-	
+
 	return lat;
 }
 
-/** 
+/**
 * Shift a point around by a number of radians
 */
 void point_shift(GEOGRAPHIC_POINT *p, double shift)
 {
 	double lon = p->lon + shift;
-	if( lon > M_PI )
+	if ( lon > M_PI )
 		p->lon = -1.0 * M_PI + (lon - M_PI);
 	return;
 }
@@ -213,7 +213,7 @@ void cart2geog(const POINT3D *p, GEOGRAPHIC_POINT *g)
 }
 
 /**
-* Calculate the dot product of two unit vectors 
+* Calculate the dot product of two unit vectors
 * (-1 == opposite, 0 == orthogonal, 1 == identical)
 */
 static double dot_product(const POINT3D *p1, const POINT3D *p2)
@@ -304,9 +304,9 @@ void robust_cross_product(const GEOGRAPHIC_POINT *p, const GEOGRAPHIC_POINT *q, 
 	double cos_lon_qpp = cos(lon_qpp);
 	double cos_lon_qmp = cos(lon_qmp);
 	a->x = sin_p_lat_minus_q_lat * sin_lon_qpp * cos_lon_qmp -
-	        sin_p_lat_plus_q_lat * cos_lon_qpp * sin_lon_qmp;
+	       sin_p_lat_plus_q_lat * cos_lon_qpp * sin_lon_qmp;
 	a->y = sin_p_lat_minus_q_lat * cos_lon_qpp * cos_lon_qmp +
-	        sin_p_lat_plus_q_lat * sin_lon_qpp * sin_lon_qmp;
+	       sin_p_lat_plus_q_lat * sin_lon_qpp * sin_lon_qmp;
 	a->z = cos(p->lat) * cos(q->lat) * sin(q->lon-p->lon);
 }
 
@@ -331,14 +331,14 @@ int crosses_dateline(const GEOGRAPHIC_POINT *s, const GEOGRAPHIC_POINT *e)
 	double sign_e = signum(e->lon);
 	double ss = fabs(s->lon);
 	double ee = fabs(e->lon);
-	if( sign_s == sign_e )
+	if ( sign_s == sign_e )
 	{
 		return LW_FALSE;
 	}
 	else
 	{
 		double dl = ss + ee;
-		if( dl < M_PI )
+		if ( dl < M_PI )
 			return LW_FALSE;
 		else if ( FP_EQUALS(dl, M_PI) )
 			return LW_FALSE;
@@ -384,7 +384,7 @@ int edge_point_in_cone(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *p)
 	geog2cart(&(e->start), &vs);
 	geog2cart(&(e->end), &ve);
 	/* Antipodal case, everything is inside. */
-	if( vs.x == -1.0 * ve.x && vs.y == -1.0 * ve.y && vs.z == -1.0 * ve.z )
+	if ( vs.x == -1.0 * ve.x && vs.y == -1.0 * ve.y && vs.z == -1.0 * ve.z )
 		return LW_TRUE;
 	geog2cart(p, &vp);
 	/* The normalized sum bisects the angle between start and end. */
@@ -398,15 +398,15 @@ int edge_point_in_cone(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *p)
 	LWDEBUGF(4,"vp_dot_vcp %.19g",vp_dot_vcp);
 	/* If p is more similar than start then p is inside the cone */
 	LWDEBUGF(4,"fabs(vp_dot_vcp - vs_dot_vcp) %.39g",fabs(vp_dot_vcp - vs_dot_vcp));
-	
-	/* 
-	** We want to test that vp_dot_vcp is >= vs_dot_vcp but there are 
-	** numerical stability issues for values that are very very nearly 
+
+	/*
+	** We want to test that vp_dot_vcp is >= vs_dot_vcp but there are
+	** numerical stability issues for values that are very very nearly
 	** equal. Unfortunately there are also values of vp_dot_vcp that are legitimately
 	** very close to but still less than vs_dot_vcp which we also need to catch.
 	** The tolerance of 10-17 seems to do the trick on 32-bit and 64-bit architectures,
 	** for the test cases here.
-	** However, tuning the tolerance value feels like a dangerous hack. 
+	** However, tuning the tolerance value feels like a dangerous hack.
 	** Fundamentally, the problem is that this test is so sensitive.
 	*/
 
@@ -435,21 +435,21 @@ int edge_contains_coplanar_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POIN
 	LWDEBUGF(4, "e.start == GPOINT(%.6g %.6g) ", (e->start).lat, (e->start).lon);
 	LWDEBUGF(4, "e.end == GPOINT(%.6g %.6g) ", (e->end).lat, (e->end).lon);
 	LWDEBUGF(4, "p == GPOINT(%.6g %.6g) ", p->lat, p->lon);
-	
+
 	/* Copy values into working registers */
 	g = *e;
 	q = *p;
 
 	/* Vertical plane, we need to do this calculation in latitude */
-	if( FP_EQUALS( g.start.lon, g.end.lon ) )
+	if ( FP_EQUALS( g.start.lon, g.end.lon ) )
 	{
 		LWDEBUG(4, "vertical plane, we need to do this calculation in latitude");
 		/* Supposed to be co-planar... */
 		if ( ! FP_EQUALS( q.lon, g.start.lon ) )
 			return LW_FALSE;
 
-		if ( ( g.start.lat <= q.lat && q.lat <= g.end.lat ) || 
-		     ( g.end.lat <= q.lat && q.lat <= g.start.lat ) )
+		if ( ( g.start.lat <= q.lat && q.lat <= g.end.lat ) ||
+		        ( g.end.lat <= q.lat && q.lat <= g.start.lat ) )
 		{
 			return LW_TRUE;
 		}
@@ -470,7 +470,7 @@ int edge_contains_coplanar_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POIN
 		/* Point *is* the north pole */
 		if ( slat > 0.0 && FP_EQUALS(q.lat, M_PI_2 ) )
 			return LW_TRUE;
-		
+
 		/* Point *is* the south pole */
 		if ( slat < 0.0 && FP_EQUALS(q.lat, -1.0 * M_PI_2) )
 			return LW_TRUE;
@@ -482,29 +482,29 @@ int edge_contains_coplanar_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POIN
 			return LW_FALSE;
 
 		LWDEBUG(4, "north or south?...");
-				
+
 		/* Over north pole, test based on south pole */
 		if ( slat > 0.0 )
 		{
 			LWDEBUG(4, "over the north pole...");
-			if( q.lat > FP_MIN(g.start.lat, g.end.lat) )
+			if ( q.lat > FP_MIN(g.start.lat, g.end.lat) )
 				return LW_TRUE;
-			else 
+			else
 				return LW_FALSE;
 		}
 		else
-		/* Over south pole, test based on north pole */
+			/* Over south pole, test based on north pole */
 		{
 			LWDEBUG(4, "over the south pole...");
-			if( q.lat < FP_MAX(g.start.lat, g.end.lat) )
+			if ( q.lat < FP_MAX(g.start.lat, g.end.lat) )
 				return LW_TRUE;
-			else 
+			else
 				return LW_FALSE;
-		}			
+		}
 	}
 
 	/* Dateline crossing, flip everything to the opposite hemisphere */
-	else if( slon > M_PI && ( signum(g.start.lon) != signum(g.end.lon) ) )
+	else if ( slon > M_PI && ( signum(g.start.lon) != signum(g.end.lon) ) )
 	{
 		LWDEBUG(4, "crosses dateline, flip longitudes...");
 		if ( g.start.lon > 0.0 )
@@ -519,11 +519,11 @@ int edge_contains_coplanar_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POIN
 		if ( q.lon > 0.0 )
 			q.lon -= M_PI;
 		else
-			q.lon += M_PI;			
+			q.lon += M_PI;
 	}
 
-	if ( ( g.start.lon <= q.lon && q.lon <= g.end.lon ) || 
-	     ( g.end.lon <= q.lon && q.lon <= g.start.lon ) )
+	if ( ( g.start.lon <= q.lon && q.lon <= g.end.lon ) ||
+	        ( g.end.lon <= q.lon && q.lon <= g.start.lon ) )
 	{
 		LWDEBUG(4, "true, this edge contains point");
 		return LW_TRUE;
@@ -545,7 +545,7 @@ double sphere_distance(const GEOGRAPHIC_POINT *s, const GEOGRAPHIC_POINT *e)
 	double sin_lat_e = sin(e->lat);
 	double cos_lat_s = cos(s->lat);
 	double sin_lat_s = sin(s->lat);
-	
+
 	double a1 = POW2(cos_lat_e * sin(d_lon));
 	double a2 = POW2(cos_lat_s * sin_lat_e - sin_lat_s * cos_lat_e * cos_d_lon);
 	double a = sqrt(a1 + a2);
@@ -567,11 +567,11 @@ double sphere_distance_cartesian(const POINT3D *s, const POINT3D *e)
 static double sphere_direction(const GEOGRAPHIC_POINT *s, const GEOGRAPHIC_POINT *e, double d)
 {
 	double heading = 0.0;
-	
-	if( FP_IS_ZERO(cos(s->lat)) )
+
+	if ( FP_IS_ZERO(cos(s->lat)) )
 		return (s->lat > 0.0) ? M_PI : 0.0;
 
-	if( sin(e->lon - s->lon) < 0.0 )
+	if ( sin(e->lon - s->lon) < 0.0 )
 	{
 		heading = acos((sin(e->lat) - sin(s->lat) * cos(d)) / (sin(d) * cos(s->lat)));
 	}
@@ -615,7 +615,7 @@ static double sphere_excess(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b
 int edge_contains_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *p)
 {
 	if ( edge_point_in_cone(e, p) && edge_point_on_plane(e, p) )
-/*	if ( edge_contains_coplanar_point(e, p) && edge_point_on_plane(e, p) ) */
+		/*	if ( edge_contains_coplanar_point(e, p) && edge_point_on_plane(e, p) ) */
 	{
 		LWDEBUG(4, "point is on edge");
 		return LW_TRUE;
@@ -710,31 +710,31 @@ int edge_intersection(const GEOGRAPHIC_EDGE *e1, const GEOGRAPHIC_EDGE *e2, GEOG
 	POINT3D ea, eb, v;
 	LWDEBUGF(4, "e1 start(%.20g %.20g) end(%.20g %.20g)", e1->start.lat, e1->start.lon, e1->end.lat, e1->end.lon);
 	LWDEBUGF(4, "e2 start(%.20g %.20g) end(%.20g %.20g)", e2->start.lat, e2->start.lon, e2->end.lat, e2->end.lon);
-	
+
 	LWDEBUGF(4, "e1 start(%.20g %.20g) end(%.20g %.20g)", rad2deg(e1->start.lon), rad2deg(e1->start.lat), rad2deg(e1->end.lon), rad2deg(e1->end.lat));
 	LWDEBUGF(4, "e2 start(%.20g %.20g) end(%.20g %.20g)", rad2deg(e2->start.lon), rad2deg(e2->start.lat), rad2deg(e2->end.lon), rad2deg(e2->end.lat));
 
-	if( geographic_point_equals(&(e1->start), &(e2->start)) )
+	if ( geographic_point_equals(&(e1->start), &(e2->start)) )
 	{
 		*g = e1->start;
 		return LW_TRUE;
 	}
-	if( geographic_point_equals(&(e1->end), &(e2->end)) )
+	if ( geographic_point_equals(&(e1->end), &(e2->end)) )
 	{
 		*g = e1->end;
 		return LW_TRUE;
 	}
-	if( geographic_point_equals(&(e1->end), &(e2->start)) )
+	if ( geographic_point_equals(&(e1->end), &(e2->start)) )
 	{
 		*g = e1->end;
 		return LW_TRUE;
 	}
-	if( geographic_point_equals(&(e1->start), &(e2->end)) )
+	if ( geographic_point_equals(&(e1->start), &(e2->end)) )
 	{
 		*g = e1->start;
 		return LW_TRUE;
 	}
-	
+
 	robust_cross_product(&(e1->start), &(e1->end), &ea);
 	normalize(&ea);
 	robust_cross_product(&(e2->start), &(e2->end), &eb);
@@ -742,7 +742,7 @@ int edge_intersection(const GEOGRAPHIC_EDGE *e1, const GEOGRAPHIC_EDGE *e2, GEOG
 	LWDEBUGF(4, "e1 cross product == POINT(%.12g %.12g %.12g)", ea.x, ea.y, ea.z);
 	LWDEBUGF(4, "e2 cross product == POINT(%.12g %.12g %.12g)", eb.x, eb.y, eb.z);
 	LWDEBUGF(4, "fabs(dot_product(ea, eb)) == %.14g", fabs(dot_product(&ea, &eb)));
-	if( FP_EQUALS(fabs(dot_product(&ea, &eb)), 1.0) )
+	if ( FP_EQUALS(fabs(dot_product(&ea, &eb)), 1.0) )
 	{
 		LWDEBUGF(4, "parallel edges found! dot_product = %.12g", dot_product(&ea, &eb));
 		/* Parallel (maybe equal) edges! */
@@ -803,9 +803,9 @@ double edge_distance_to_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *
 	GEOGRAPHIC_POINT gk, g_nearest;
 
 	/* Zero length edge, */
-	if( geographic_point_equals(&(e->start), &(e->end)) ) 
+	if ( geographic_point_equals(&(e->start), &(e->end)) )
 		return sphere_distance(&(e->start), gp);
-	
+
 	robust_cross_product(&(e->start), &(e->end), &n);
 	normalize(&n);
 	geog2cart(gp, &p);
@@ -813,30 +813,30 @@ double edge_distance_to_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *
 	vector_difference(&p, &n, &k);
 	normalize(&k);
 	cart2geog(&k, &gk);
-	if( edge_contains_point(e, &gk) )
+	if ( edge_contains_point(e, &gk) )
 	{
 		d1 = sphere_distance(gp, &gk);
 	}
 	d2 = sphere_distance(gp, &(e->start));
 	d3 = sphere_distance(gp, &(e->end));
-	
+
 	d_nearest = d1;
 	g_nearest = gk;
-	
-	if( d2 < d_nearest ) 
+
+	if ( d2 < d_nearest )
 	{
 		d_nearest = d2;
 		g_nearest = e->start;
 	}
-	if( d3 < d_nearest ) 
+	if ( d3 < d_nearest )
 	{
 		d_nearest = d3;
 		g_nearest = e->end;
 	}
-	if(closest)
+	if (closest)
 		*closest = g_nearest;
-	
-	return d_nearest;	
+
+	return d_nearest;
 }
 
 double edge_distance_to_edge(const GEOGRAPHIC_EDGE *e1, const GEOGRAPHIC_EDGE *e2, GEOGRAPHIC_POINT *closest1, GEOGRAPHIC_POINT *closest2)
@@ -851,31 +851,31 @@ double edge_distance_to_edge(const GEOGRAPHIC_EDGE *e1, const GEOGRAPHIC_EDGE *e
 	d = d1s;
 	c1 = gcp1s;
 	c2 = e2->start;
-	
-	if( d1e < d ) 
+
+	if ( d1e < d )
 	{
 		d = d1e;
 		c1 = gcp1e;
 		c2 = e2->end;
 	}
 
-	if( d2s < d ) 
+	if ( d2s < d )
 	{
 		d = d2s;
 		c1 = e1->start;
 		c2 = gcp2s;
 	}
-	
-	if( d2e < d ) 
+
+	if ( d2e < d )
 	{
 		d = d2e;
 		c1 = e1->end;
 		c2 = gcp2e;
 	}
-	
-	if( closest1 ) *closest1 = c1;
-	if( closest2 ) *closest2 = c2;
-		
+
+	if ( closest1 ) *closest1 = c1;
+	if ( closest2 ) *closest2 = c2;
+
 	return d;
 }
 
@@ -929,7 +929,7 @@ int edge_calculate_gbox_slow(const GEOGRAPHIC_EDGE *e, GBOX *gbox)
 		return G_SUCCESS;
 	}
 
-	/* Walk along the chord between start and end incrementally, 
+	/* Walk along the chord between start and end incrementally,
 	   normalizing at each step. */
 	geog2cart(&(e->start), &start);
 	geog2cart(&(e->end), &end);
@@ -1241,7 +1241,7 @@ int edge_calculate_gbox(const GEOGRAPHIC_EDGE *e, GBOX *gbox)
 }
 
 /**
-* Given a unit geocentric gbox, return a lon/lat (degrees) coordinate point point that is 
+* Given a unit geocentric gbox, return a lon/lat (degrees) coordinate point point that is
 * guaranteed to be outside the box (and therefore anything it contains).
 */
 void gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside)
@@ -1253,7 +1253,7 @@ void gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside)
 	POINT3D corners[8];
 	POINT3D pt;
 	GEOGRAPHIC_POINT g;
-	
+
 	/* Assign our box and expand it slightly. */
 	ge = *gbox;
 	ge.xmin -= grow;
@@ -1262,7 +1262,7 @@ void gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside)
 	ge.xmax += grow;
 	ge.ymax += grow;
 	ge.zmax += grow;
-	
+
 	/* Build our eight corner points */
 	corners[0].x = ge.xmin;
 	corners[0].y = ge.ymin;
@@ -1296,10 +1296,10 @@ void gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside)
 	corners[7].y = ge.ymax;
 	corners[7].z = ge.zmax;
 
-	for( i = 0; i < 8; i++ )
+	for ( i = 0; i < 8; i++ )
 	{
 		normalize(&(corners[i]));
-		if( ! gbox_contains_point3d(gbox, &(corners[i])) )
+		if ( ! gbox_contains_point3d(gbox, &(corners[i])) )
 		{
 			pt = corners[i];
 			normalize(&pt);
@@ -1307,28 +1307,28 @@ void gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside)
 			pt_outside->x = rad2deg(g.lon);
 			pt_outside->y = rad2deg(g.lat);
 			return;
-		}	
+		}
 	}
 
 	pt.x = 1.0;
 	pt.y = 0.0;
 	pt.z = 0.0;
-	
-	if((1.0 - gbox->xmax) > 0.1) 
+
+	if ((1.0 - gbox->xmax) > 0.1)
 	{
 		pt.x = gbox->xmax + (1.0 - gbox->xmax) * 0.01;
 		d = sqrt((1.0 - POW2(pt.x))/2.0);
 		pt.y = d;
 		pt.z = d;
-	} 
-	else if((1.0 - gbox->ymax) > 0.1) 
+	}
+	else if ((1.0 - gbox->ymax) > 0.1)
 	{
 		pt.y = gbox->ymax + (1.0 - gbox->ymax) * 0.01;
 		d = sqrt((1.0 - POW2(pt.y))/2.0);
 		pt.x = d;
 		pt.z = d;
-	} 
-	else if((1.0 - gbox->zmax) > 0.1) 
+	}
+	else if ((1.0 - gbox->zmax) > 0.1)
 	{
 		pt.z = gbox->zmax + (1.0 - gbox->zmax) * 0.01;
 		d = sqrt((1.0 - POW2(pt.z))/2.0);
@@ -1348,36 +1348,36 @@ void gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside)
 * Returns the area of the ring (ring must be closed) in square radians (surface of
 * the sphere is 4*PI).
 */
-double ptarray_area_sphere(const POINTARRAY *pa, const POINT2D *pt_outside) 
+double ptarray_area_sphere(const POINTARRAY *pa, const POINT2D *pt_outside)
 {
 	GEOGRAPHIC_POINT a, b, c;
 	POINT2D p;
 	int i;
 	double area = 0.0;
-	
+
 	/* Return zero on non-sensical inputs */
-	if( ! pa || pa->npoints < 4 )
+	if ( ! pa || pa->npoints < 4 )
 		return 0.0;
-	
+
 	geographic_point_init(pt_outside->x, pt_outside->y, &c);
 
 	/* Initialize first point */
 	getPoint2d_p(pa, 0, &p);
 	geographic_point_init(p.x, p.y, &a);
 
-	for( i = 1; i < pa->npoints; i++ )
+	for ( i = 1; i < pa->npoints; i++ )
 	{
 		double excess = 0.0;
-		
+
 		getPoint2d_p(pa, i, &p);
 		geographic_point_init(p.x, p.y, &b);
-		
-		if( crosses_dateline(&a, &b) )
+
+		if ( crosses_dateline(&a, &b) )
 		{
 			GEOGRAPHIC_POINT a1 = a, b1 = b, c1 = c;
 			double shift;
 
-			if( a.lon > 0.0 )
+			if ( a.lon > 0.0 )
 				shift = (M_PI - a.lon) + 0.088; /* About 5deg more */
 			else
 				shift = (M_PI - b.lon) + 0.088; /* About 5deg more */
@@ -1391,9 +1391,9 @@ double ptarray_area_sphere(const POINTARRAY *pa, const POINT2D *pt_outside)
 		{
 			excess = sphere_excess(&a, &b, &c);
 		}
-		
+
 		area += excess;
-		
+
 		/* B gets incremented in the next loop, so we save the value here */
 		a = b;
 	}
@@ -1407,16 +1407,16 @@ double ptarray_area_sphere(const POINTARRAY *pa, const POINT2D *pt_outside)
 * to derive one in postgis, or the gbox_pt_outside() function if you don't mind burning CPU cycles
 * building a gbox first).
 */
-int ptarray_point_in_ring(const POINTARRAY *pa, const POINT2D *pt_outside, const POINT2D *pt_to_test) 
+int ptarray_point_in_ring(const POINTARRAY *pa, const POINT2D *pt_outside, const POINT2D *pt_to_test)
 {
 	GEOGRAPHIC_EDGE crossing_edge, edge;
 	POINT2D p;
 	int count = 0;
 	int first_point = 0;
 	int i;
-	
+
 	/* Null input, not enough points for a ring? You ain't closed! */
-	if( ! pa || pa->npoints < 4 ) 
+	if ( ! pa || pa->npoints < 4 )
 		return LW_FALSE;
 
 	/* Set up our stab line */
@@ -1429,7 +1429,7 @@ int ptarray_point_in_ring(const POINTARRAY *pa, const POINT2D *pt_outside, const
 	geographic_point_init(p.x, p.y, &(edge.start));
 
 	/* If the start point is on the stab line, back up until it isn't */
-	while(edge_contains_point(&crossing_edge, &(edge.start)) && ! geographic_point_equals(&(crossing_edge.start), &(edge.start)) )
+	while (edge_contains_point(&crossing_edge, &(edge.start)) && ! geographic_point_equals(&(crossing_edge.start), &(edge.start)) )
 	{
 		first_point--;
 		LWDEBUGF(4,"first point was on stab line, reversing %d points", first_point);
@@ -1439,47 +1439,47 @@ int ptarray_point_in_ring(const POINTARRAY *pa, const POINT2D *pt_outside, const
 	}
 
 	/* Walk every edge and see if the stab line hits it */
-	for( i = 1; i < pa->npoints; i++ )
+	for ( i = 1; i < pa->npoints; i++ )
 	{
 		GEOGRAPHIC_POINT g;
 
 		LWDEBUGF(4, "start point == POINT(%.12g %.12g)", p.x, p.y);
-		
+
 		getPoint2d_p(pa, i, &p);
 		geographic_point_init(p.x, p.y, &(edge.end));
 
 		LWDEBUGF(4,"testing edge (%d)", i);
 
 		/* Our test point is on an edge! Point is "in ring" by our definition */
-		if( geographic_point_equals(&(crossing_edge.start), &(edge.start)) || 
-		    geographic_point_equals(&(crossing_edge.start), &(edge.end)) ||
-		    edge_contains_point(&edge, &(crossing_edge.start)) )
+		if ( geographic_point_equals(&(crossing_edge.start), &(edge.start)) ||
+		        geographic_point_equals(&(crossing_edge.start), &(edge.end)) ||
+		        edge_contains_point(&edge, &(crossing_edge.start)) )
 		{
 			LWDEBUGF(4,"edge (%d) contains the test point, returning true", i);
 			return LW_TRUE;
-		}  
+		}
 
 		/* If the end of our edge is on the stab line, extend the edge to the
 		   next end point, by skipping the start->end assignment step at the
 		   end of this loop */
-		if(edge_contains_point(&crossing_edge, &(edge.end)))
+		if (edge_contains_point(&crossing_edge, &(edge.end)))
 		{
 			LWDEBUGF(4,"edge (%d) end point is on the stab line, continuing", i);
 			continue;
 		}
-		
+
 		LWDEBUG(4,"testing edge crossing");
 
-		if( edge_intersection(&edge, &crossing_edge, &g) )
+		if ( edge_intersection(&edge, &crossing_edge, &g) )
 		{
 			count++;
 			LWDEBUGF(4,"edge (%d) crossed, count == %d", i, count);
-		} 
+		}
 		else
 		{
 			LWDEBUGF(4,"edge (%d) did not cross", i);
 		}
-		
+
 		/* Increment to next edge */
 		edge.start = edge.end;
 	}
@@ -1487,11 +1487,11 @@ int ptarray_point_in_ring(const POINTARRAY *pa, const POINT2D *pt_outside, const
 	LWDEBUGF(4,"final count == %d", count);
 
 	/* An odd number of crossings implies containment! */
-	if( count % 2 )
+	if ( count % 2 )
 	{
 		return LW_TRUE;
 	}
-	
+
 	return LW_FALSE;
 }
 
@@ -1505,14 +1505,14 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 	double distance;
 	int i, j;
 	int use_sphere = (s->a == s->b ? 1 : 0);
-	
+
 	/* Make result really big, so that everything will be smaller than it */
 	distance = MAXFLOAT;
-	
+
 	/* Empty point arrays? Return negative */
 	if ( pa1->npoints == 0 || pa1->npoints == 0 )
 		return -1.0;
-	
+
 	/* Handle point/point case here */
 	if ( pa1->npoints == 1 && pa2->npoints == 1 )
 	{
@@ -1522,14 +1522,14 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 		geographic_point_init(p.x, p.y, &g2);
 		/* Sphere special case, axes equal */
 		distance = s->radius * sphere_distance(&g1, &g2);
-		if( use_sphere )
-            return distance;
-        /* Below tolerance, actual distance isn't of interest */
-        else if( distance < 0.95 * tolerance )
-            return distance; 
-        /* Close or greater than tolerance, get the real answer to be sure */
+		if ( use_sphere )
+			return distance;
+		/* Below tolerance, actual distance isn't of interest */
+		else if ( distance < 0.95 * tolerance )
+			return distance;
+		/* Close or greater than tolerance, get the real answer to be sure */
 		else
-		    return spheroid_distance(&g1, &g2, s);
+			return spheroid_distance(&g1, &g2, s);
 	}
 
 	/* Handle point/line case here */
@@ -1539,8 +1539,8 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 		int i;
 		const POINTARRAY *pa_one;
 		const POINTARRAY *pa_many;
-		
-		if( pa1->npoints == 1 )
+
+		if ( pa1->npoints == 1 )
 		{
 			pa_one = pa1;
 			pa_many = pa2;
@@ -1550,7 +1550,7 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 			pa_one = pa2;
 			pa_many = pa1;
 		}
-		
+
 		/* Initialize our point */
 		getPoint2d_p(pa_one, 0, &p);
 		geographic_point_init(p.x, p.y, &g1);
@@ -1560,7 +1560,7 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 		geographic_point_init(p.x, p.y, &(e1.start));
 
 		/* Iterate through the edges in our line */
-		for( i = 1; i < pa_many->npoints; i++ )
+		for ( i = 1; i < pa_many->npoints; i++ )
 		{
 			double d;
 			getPoint2d_p(pa_many, i, &p);
@@ -1568,38 +1568,38 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 			/* Get the spherical distance between point and edge */
 			d = s->radius * edge_distance_to_point(&e1, &g1, &g2);
 			/* New shortest distance! Record this distance / location */
-			if( d < distance )
+			if ( d < distance )
 			{
 				distance = d;
 				nearest2 = g2;
 			}
 			/* We've gotten closer than the tolerance... */
-			if( d < tolerance ) 
+			if ( d < tolerance )
 			{
 				/* Working on a sphere? The answer is correct, return */
-				if( use_sphere )
+				if ( use_sphere )
 				{
 					return d;
 				}
 				/* Far enough past the tolerance that the spheroid calculation won't change things */
-				else if( d < tolerance * 0.95 )
+				else if ( d < tolerance * 0.95 )
 				{
-                    return d;
-			    }
+					return d;
+				}
 				/* On a spheroid and near the tolerance? Confirm that we are *actually* closer than tolerance */
 				else
 				{
 					d = spheroid_distance(&g1, &nearest2, s);
 					/* Yes, closer than tolerance, return! */
-					if( d < tolerance )
+					if ( d < tolerance )
 						return d;
 				}
 			}
 			e1.start = e1.end;
 		}
 		/* On sphere, return answer */
-		if( use_sphere )
-			return distance;			
+		if ( use_sphere )
+			return distance;
 		/* On spheroid, calculate final answer based on closest approach */
 		else
 			return spheroid_distance(&g1, &nearest2, s);
@@ -1609,9 +1609,9 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 	getPoint2d_p(pa1, 0, &p);
 	geographic_point_init(p.x, p.y, &(e1.start));
 
-	
+
 	/* Handle line/line case */
-	for( i = 1; i < pa1->npoints; i++ )
+	for ( i = 1; i < pa1->npoints; i++ )
 	{
 		getPoint2d_p(pa1, i, &p);
 		geographic_point_init(p.x, p.y, &(e1.end));
@@ -1620,7 +1620,7 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 		getPoint2d_p(pa2, 0, &p);
 		geographic_point_init(p.x, p.y, &(e2.start));
 
-		for( j = 1; j < pa2->npoints; j++ )
+		for ( j = 1; j < pa2->npoints; j++ )
 		{
 			double d;
 
@@ -1639,38 +1639,38 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 			}
 			d = s->radius * edge_distance_to_edge(&e1, &e2, &g1, &g2);
 			LWDEBUGF(4,"got edge_distance_to_edge %.8g", d);
-			
-			if( d < distance )
+
+			if ( d < distance )
 			{
 				distance = d;
 				nearest1 = g1;
 				nearest2 = g2;
 			}
-			if( d < tolerance )
+			if ( d < tolerance )
 			{
-				if( use_sphere )
+				if ( use_sphere )
 				{
 					return d;
 				}
 				else
 				{
 					d = spheroid_distance(&nearest1, &nearest2, s);
-					if( d < tolerance )
+					if ( d < tolerance )
 						return d;
 				}
 			}
-				
+
 			/* Copy end to start to allow a new end value in next iteration */
 			e2.start = e2.end;
 		}
-		
+
 		/* Copy end to start to allow a new end value in next iteration */
 		e1.start = e1.end;
-		
+
 	}
 	LWDEBUGF(4,"finished all loops, returning %.8g", distance);
-	
-	if( use_sphere )
+
+	if ( use_sphere )
 		return distance;
 	else
 		return spheroid_distance(&nearest1, &nearest2, s);
@@ -1680,7 +1680,7 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 /**
 * Calculate the area of an LWGEOM. Anything except POLYGON, MULTIPOLYGON
 * and GEOMETRYCOLLECTION return zero immediately. Multi's recurse, polygons
-* calculate external ring area and subtract internal ring area. A GBOX is 
+* calculate external ring area and subtract internal ring area. A GBOX is
 * required to calculate an outside point.
 */
 double lwgeom_area_sphere(const LWGEOM *lwgeom, const GBOX *gbox, const SPHEROID *spheroid)
@@ -1688,67 +1688,67 @@ double lwgeom_area_sphere(const LWGEOM *lwgeom, const GBOX *gbox, const SPHEROID
 	int type;
 	POINT2D pt_outside;
 	double radius2 = spheroid->radius * spheroid->radius;
-	
+
 	assert(lwgeom);
-	
+
 	/* No area in nothing */
-	if( lwgeom_is_empty(lwgeom) )
+	if ( lwgeom_is_empty(lwgeom) )
 		return 0.0;
 
 	/* Read the geometry type number */
 	type = TYPE_GETTYPE(lwgeom->type);
-	
+
 	/* Anything but polygons and collections returns zero */
-	if( ! ( type == POLYGONTYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE ) )
+	if ( ! ( type == POLYGONTYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE ) )
 		return 0.0;
 
 	gbox_pt_outside(gbox, &pt_outside);
-	
+
 	LWDEBUGF(2, "pt_outside = POINT(%.20g %.20g)", pt_outside.x, pt_outside.y);
-	
+
 	/* Actually calculate area */
-	if( type == POLYGONTYPE )
+	if ( type == POLYGONTYPE )
 	{
 		LWPOLY *poly = (LWPOLY*)lwgeom;
 		int i;
 		double area = 0.0;
-		
+
 		/* Just in case there's no rings */
-		if( poly->nrings < 1 )
+		if ( poly->nrings < 1 )
 			return 0.0;
-		
+
 		/* First, the area of the outer ring */
 		area += radius2 * ptarray_area_sphere(poly->rings[0], &pt_outside);
-		
+
 		/* Subtract areas of inner rings */
-		for( i = 1; i < poly->nrings; i++ )
+		for ( i = 1; i < poly->nrings; i++ )
 		{
 			area -= radius2 * ptarray_area_sphere(poly->rings[i], &pt_outside);
 		}
 		return area;
 	}
-	
+
 	/* Recurse into sub-geometries to get area */
-	if( type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE )
+	if ( type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE )
 	{
 		LWCOLLECTION *col = (LWCOLLECTION*)lwgeom;
 		int i;
 		double area = 0.0;
 
-		for( i = 0; i < col->ngeoms; i++ )
+		for ( i = 0; i < col->ngeoms; i++ )
 		{
 			area += lwgeom_area_sphere(col->geoms[i], gbox, spheroid);
 		}
 		return area;
 	}
-	
+
 	/* Shouldn't get here. */
 	return 0.0;
 }
 
 
 /**
-* Calculate the distance between two LWGEOMs, using the coordinates are 
+* Calculate the distance between two LWGEOMs, using the coordinates are
 * longitude and latitude. Return immediately when the calulated distance drops
 * below the tolerance (useful for dwithin calculations).
 * Return a negative distance for incalculable cases.
@@ -1757,49 +1757,49 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 {
 	int type1, type2;
 	int check_intersection = LW_FALSE;
-	
+
 	assert(lwgeom1);
 	assert(lwgeom2);
-	
+
 	LWDEBUGF(4, "entered function, tolerance %.8g", tolerance);
 
-	/* What's the distance to an empty geometry? We don't know. 
+	/* What's the distance to an empty geometry? We don't know.
 	   Return a negative number so the caller can catch this case. */
-	if( lwgeom_is_empty(lwgeom1) || lwgeom_is_empty(lwgeom2) )
+	if ( lwgeom_is_empty(lwgeom1) || lwgeom_is_empty(lwgeom2) )
 	{
 		return -1.0;
 	}
-		
+
 	type1 = TYPE_GETTYPE(lwgeom1->type);
 	type2 = TYPE_GETTYPE(lwgeom2->type);
-	
-	
+
+
 	/* If the boxes aren't disjoint, we have to check for edge intersections */
-	if( gbox_overlaps(gbox1, gbox2) )
+	if ( gbox_overlaps(gbox1, gbox2) )
 		check_intersection = LW_TRUE;
-	
+
 	/* Point/line combinations can all be handled with simple point array iterations */
-	if( ( type1 == POINTTYPE || type1 == LINETYPE ) && 
-	    ( type2 == POINTTYPE || type2 == LINETYPE ) )
+	if ( ( type1 == POINTTYPE || type1 == LINETYPE ) &&
+	        ( type2 == POINTTYPE || type2 == LINETYPE ) )
 	{
 		POINTARRAY *pa1, *pa2;
-		
-		if( type1 == POINTTYPE ) 
+
+		if ( type1 == POINTTYPE )
 			pa1 = ((LWPOINT*)lwgeom1)->point;
-		else 
+		else
 			pa1 = ((LWLINE*)lwgeom1)->points;
-		
-		if( type2 == POINTTYPE )
+
+		if ( type2 == POINTTYPE )
 			pa2 = ((LWPOINT*)lwgeom2)->point;
 		else
 			pa2 = ((LWLINE*)lwgeom2)->points;
-		
+
 		return ptarray_distance_spheroid(pa1, pa2, spheroid, tolerance, check_intersection);
 	}
-	
+
 	/* Point/Polygon cases, if point-in-poly, return zero, else return distance. */
-	if( ( type1 == POLYGONTYPE && type2 == POINTTYPE ) || 
-	    ( type2 == POLYGONTYPE && type1 == POINTTYPE ) )
+	if ( ( type1 == POLYGONTYPE && type2 == POINTTYPE ) ||
+	        ( type2 == POLYGONTYPE && type1 == POINTTYPE ) )
 	{
 		POINT2D p;
 		LWPOLY *lwpoly;
@@ -1807,8 +1807,8 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 		const GBOX *gbox;
 		double distance = MAXFLOAT;
 		int i;
-		
-		if( type1 == POINTTYPE )
+
+		if ( type1 == POINTTYPE )
 		{
 			lwpt = (LWPOINT*)lwgeom1;
 			lwpoly = (LWPOLY*)lwgeom2;
@@ -1823,24 +1823,24 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 		getPoint2d_p(lwpt->point, 0, &p);
 
 		/* Point in polygon implies zero distance */
-		if( lwpoly_covers_point2d(lwpoly, gbox, &p) )
+		if ( lwpoly_covers_point2d(lwpoly, gbox, &p) )
 			return 0.0;
-		
+
 		/* Not inside, so what's the actual distance? */
-		for( i = 0; i < lwpoly->nrings; i++ )
+		for ( i = 0; i < lwpoly->nrings; i++ )
 		{
 			double ring_distance = ptarray_distance_spheroid(lwpoly->rings[i], lwpt->point, spheroid, tolerance, check_intersection);
-			if( ring_distance < distance )
+			if ( ring_distance < distance )
 				distance = ring_distance;
-			if( distance < tolerance )
+			if ( distance < tolerance )
 				return distance;
 		}
 		return distance;
 	}
 
 	/* Line/polygon case, if start point-in-poly, return zero, else return distance. */
-	if( ( type1 == POLYGONTYPE && type2 == LINETYPE ) || 
-	    ( type2 == POLYGONTYPE && type1 == LINETYPE ) )
+	if ( ( type1 == POLYGONTYPE && type2 == LINETYPE ) ||
+	        ( type2 == POLYGONTYPE && type1 == LINETYPE ) )
 	{
 		POINT2D p;
 		LWPOLY *lwpoly;
@@ -1848,8 +1848,8 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 		const GBOX *gbox;
 		double distance = MAXFLOAT;
 		int i;
-		
-		if( type1 == LINETYPE )
+
+		if ( type1 == LINETYPE )
 		{
 			lwline = (LWLINE*)lwgeom1;
 			lwpoly = (LWPOLY*)lwgeom2;
@@ -1866,19 +1866,19 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 		LWDEBUG(4, "checking if a point of line is in polygon");
 
 		/* Point in polygon implies zero distance */
-		if( lwpoly_covers_point2d(lwpoly, gbox, &p) )
+		if ( lwpoly_covers_point2d(lwpoly, gbox, &p) )
 			return 0.0;
 
 		LWDEBUG(4, "checking ring distances");
 
 		/* Not contained, so what's the actual distance? */
-		for( i = 0; i < lwpoly->nrings; i++ )
+		for ( i = 0; i < lwpoly->nrings; i++ )
 		{
 			double ring_distance = ptarray_distance_spheroid(lwpoly->rings[i], lwline->points, spheroid, tolerance, check_intersection);
 			LWDEBUGF(4, "ring[%d] ring_distance = %.8g", i, ring_distance);
-			if( ring_distance < distance )
+			if ( ring_distance < distance )
 				distance = ring_distance;
-			if( distance < tolerance )
+			if ( distance < tolerance )
 				return distance;
 		}
 		LWDEBUGF(4, "all rings checked, returning distance = %.8g", distance);
@@ -1887,71 +1887,71 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 	}
 
 	/* Polygon/polygon case, if start point-in-poly, return zero, else return distance. */
-	if( ( type1 == POLYGONTYPE && type2 == POLYGONTYPE ) || 
-	    ( type2 == POLYGONTYPE && type1 == POLYGONTYPE ) )
+	if ( ( type1 == POLYGONTYPE && type2 == POLYGONTYPE ) ||
+	        ( type2 == POLYGONTYPE && type1 == POLYGONTYPE ) )
 	{
 		POINT2D p;
 		LWPOLY *lwpoly1 = (LWPOLY*)lwgeom1;
 		LWPOLY *lwpoly2 = (LWPOLY*)lwgeom2;
 		double distance = MAXFLOAT;
 		int i, j;
-		
+
 		/* Point of 2 in polygon 1 implies zero distance */
 		getPoint2d_p(lwpoly1->rings[0], 0, &p);
-		if( lwpoly_covers_point2d(lwpoly2, gbox2, &p) )
+		if ( lwpoly_covers_point2d(lwpoly2, gbox2, &p) )
 			return 0.0;
 
 		/* Point of 1 in polygon 2 implies zero distance */
 		getPoint2d_p(lwpoly2->rings[0], 0, &p);
-		if( lwpoly_covers_point2d(lwpoly1, gbox1, &p) )
+		if ( lwpoly_covers_point2d(lwpoly1, gbox1, &p) )
 			return 0.0;
-		
+
 		/* Not contained, so what's the actual distance? */
-		for( i = 0; i < lwpoly1->nrings; i++ )
+		for ( i = 0; i < lwpoly1->nrings; i++ )
 		{
-			for( j = 0; j < lwpoly2->nrings; j++ )
+			for ( j = 0; j < lwpoly2->nrings; j++ )
 			{
 				double ring_distance = ptarray_distance_spheroid(lwpoly1->rings[i], lwpoly2->rings[j], spheroid, tolerance, check_intersection);
-				if( ring_distance < distance )
+				if ( ring_distance < distance )
 					distance = ring_distance;
-				if( distance < tolerance )
+				if ( distance < tolerance )
 					return distance;
 			}
 		}
-		return distance;		
+		return distance;
 	}
 
 	/* Recurse into collections */
-	if( lwgeom_is_collection(type1) )
+	if ( lwgeom_is_collection(type1) )
 	{
 		int i;
 		double distance = MAXFLOAT;
 		LWCOLLECTION *col = (LWCOLLECTION*)lwgeom1;
 
-		for( i = 0; i < col->ngeoms; i++ )
+		for ( i = 0; i < col->ngeoms; i++ )
 		{
 			double geom_distance = lwgeom_distance_spheroid(col->geoms[i], lwgeom2, gbox1, gbox2, spheroid, tolerance);
-			if( geom_distance < distance )
+			if ( geom_distance < distance )
 				distance = geom_distance;
-			if( distance < tolerance )
+			if ( distance < tolerance )
 				return distance;
 		}
 		return distance;
 	}
 
 	/* Recurse into collections */
-	if( lwgeom_is_collection(type2) )
+	if ( lwgeom_is_collection(type2) )
 	{
 		int i;
 		double distance = MAXFLOAT;
 		LWCOLLECTION *col = (LWCOLLECTION*)lwgeom2;
 
-		for( i = 0; i < col->ngeoms; i++ )
+		for ( i = 0; i < col->ngeoms; i++ )
 		{
 			double geom_distance = lwgeom_distance_spheroid(lwgeom1, col->geoms[i], gbox1, gbox2, spheroid, tolerance);
-			if( geom_distance < distance )
+			if ( geom_distance < distance )
 				distance = geom_distance;
-			if( distance < tolerance )
+			if ( distance < tolerance )
 				return distance;
 		}
 		return distance;
@@ -1960,45 +1960,45 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 
 	lwerror("arguments include unsupported geometry type (%s, %s)", lwgeom_typename(type1), lwgeom_typename(type1));
 	return -1.0;
-	
+
 }
 
 
 int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, const GBOX *gbox1, const GBOX *gbox2)
 {
 	int type1, type2;
-	
+
 	assert(lwgeom1);
 	assert(lwgeom2);
-	
+
 	type1 = TYPE_GETTYPE(lwgeom1->type);
 	type2 = TYPE_GETTYPE(lwgeom2->type);
-	
+
 	/* Currently a restricted implementation */
-	if( ! ( (type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE || type1 == COLLECTIONTYPE) &&
-	        (type2 == POINTTYPE || type2 == MULTIPOINTTYPE || type2 == COLLECTIONTYPE) ) )
+	if ( ! ( (type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE || type1 == COLLECTIONTYPE) &&
+	         (type2 == POINTTYPE || type2 == MULTIPOINTTYPE || type2 == COLLECTIONTYPE) ) )
 	{
 		lwerror("lwgeom_covers_lwgeom_sphere: only POLYGON and POINT types are currently supported");
 		return LW_FALSE;
 	}
 
 	/* Handle the polygon/point case */
-	if( type1 == POLYGONTYPE && type2 == POINTTYPE )
+	if ( type1 == POLYGONTYPE && type2 == POINTTYPE )
 	{
 		POINT2D pt_to_test;
 		getPoint2d_p(((LWPOINT*)lwgeom2)->point, 0, &pt_to_test);
 		return lwpoly_covers_point2d((LWPOLY*)lwgeom1, gbox1, &pt_to_test);
 	}
-	
+
 	/* If any of the first argument parts covers the second argument, it's true */
-	if( lwgeom_is_collection( type1 ) )
+	if ( lwgeom_is_collection( type1 ) )
 	{
 		int i;
 		LWCOLLECTION *col = (LWCOLLECTION*)lwgeom1;
-		
-		for( i = 0; i < col->ngeoms; i++ )
+
+		for ( i = 0; i < col->ngeoms; i++ )
 		{
-			if( lwgeom_covers_lwgeom_sphere(col->geoms[i], lwgeom2, gbox1, gbox2) )
+			if ( lwgeom_covers_lwgeom_sphere(col->geoms[i], lwgeom2, gbox1, gbox2) )
 			{
 				return LW_TRUE;
 			}
@@ -2007,30 +2007,30 @@ int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 	}
 
 	/* Only if all of the second arguments are covered by the first argument is the condition true */
-	if( lwgeom_is_collection( type2 ) )
+	if ( lwgeom_is_collection( type2 ) )
 	{
 		int i;
 		LWCOLLECTION *col = (LWCOLLECTION*)lwgeom2;
-		
-		for( i = 0; i < col->ngeoms; i++ )
+
+		for ( i = 0; i < col->ngeoms; i++ )
 		{
-			if( ! lwgeom_covers_lwgeom_sphere(lwgeom1, col->geoms[i], gbox1, gbox2) )
+			if ( ! lwgeom_covers_lwgeom_sphere(lwgeom1, col->geoms[i], gbox1, gbox2) )
 			{
 				return LW_FALSE;
 			}
 		}
 		return LW_TRUE;
 	}
-	
+
 	/* Don't get here */
 	lwerror("lwgeom_covers_lwgeom_sphere: reached end of function without resolution");
 	return LW_FALSE;
-	
+
 }
 
 /**
 * Given a polygon (lon/lat decimal degrees) and point (lon/lat decimal degrees) and
-* a guaranteed outside point (lon/lat decimal degrees) (calculate with gbox_pt_outside()) 
+* a guaranteed outside point (lon/lat decimal degrees) (calculate with gbox_pt_outside())
 * return LW_TRUE if point is inside or on edge of polygon.
 */
 int lwpoly_covers_point2d(const LWPOLY *poly, const GBOX *gbox, const POINT2D *pt_to_test)
@@ -2040,9 +2040,9 @@ int lwpoly_covers_point2d(const LWPOLY *poly, const GBOX *gbox, const POINT2D *p
 	POINT3D p;
 	GEOGRAPHIC_POINT gpt_to_test;
 	POINT2D pt_outside;
-	
+
 	/* Nulls and empties don't contain anything! */
-	if( ! poly || lwgeom_is_empty((LWGEOM*)poly) )
+	if ( ! poly || lwgeom_is_empty((LWGEOM*)poly) )
 	{
 		LWDEBUG(4,"returning false, geometry is empty or null");
 		return LW_FALSE;
@@ -2051,9 +2051,9 @@ int lwpoly_covers_point2d(const LWPOLY *poly, const GBOX *gbox, const POINT2D *p
 	/* Point not in box? Done! */
 	geographic_point_init(pt_to_test->x, pt_to_test->y, &gpt_to_test);
 	geog2cart(&gpt_to_test, &p);
-	if( ! gbox_contains_point3d(gbox, &p) )
+	if ( ! gbox_contains_point3d(gbox, &p) )
 		return LW_FALSE;
-	
+
 	/* Calculate our outside point from the gbox */
 	gbox_pt_outside(gbox, &pt_outside);
 
@@ -2063,26 +2063,26 @@ int lwpoly_covers_point2d(const LWPOLY *poly, const GBOX *gbox, const POINT2D *p
 	LWDEBUGF(4, "gbox %s", gbox_to_string(gbox));
 
 	/* Not in outer ring? We're done! */
-	if( ! ptarray_point_in_ring(poly->rings[0], &pt_outside, pt_to_test) )
+	if ( ! ptarray_point_in_ring(poly->rings[0], &pt_outside, pt_to_test) )
 	{
 		LWDEBUG(4,"returning false, point is outside ring");
 		return LW_FALSE;
 	}
 
 	LWDEBUGF(4, "testing %d rings", poly->nrings);
-	
+
 	/* But maybe point is in a hole... */
-	for( i = 1; i < poly->nrings; i++ )
+	for ( i = 1; i < poly->nrings; i++ )
 	{
 		LWDEBUGF(4, "ring test loop %d", i);
 		/* Count up hole containment. Odd => outside boundary. */
-		if( ptarray_point_in_ring(poly->rings[i], &pt_outside, pt_to_test) )
+		if ( ptarray_point_in_ring(poly->rings[i], &pt_outside, pt_to_test) )
 			in_hole_count++;
 	}
 
 	LWDEBUGF(4, "in_hole_count == %d", in_hole_count);
-	
-	if( in_hole_count % 2 ) 
+
+	if ( in_hole_count % 2 )
 	{
 		LWDEBUG(4,"returning false, inner ring containment count is odd");
 		return LW_FALSE;
@@ -2371,27 +2371,27 @@ double ptarray_length_spheroid(const POINTARRAY *pa, const SPHEROID *s)
 	POINT2D p;
 	int i;
 	double length = 0.0;
-	
+
 	/* Return zero on non-sensical inputs */
-	if( ! pa || pa->npoints < 2 )
+	if ( ! pa || pa->npoints < 2 )
 		return 0.0;
-	
+
 	/* Initialize first point */
 	getPoint2d_p(pa, 0, &p);
 	geographic_point_init(p.x, p.y, &a);
 
-	for( i = 1; i < pa->npoints; i++ )
-	{		
+	for ( i = 1; i < pa->npoints; i++ )
+	{
 		getPoint2d_p(pa, i, &p);
 		geographic_point_init(p.x, p.y, &b);
-		
+
 		/* Special sphere case */
-		if( s->a == s->b )
+		if ( s->a == s->b )
 			length += s->radius * sphere_distance(&a, &b);
 		/* Spheroid case */
 		else
 			length += spheroid_distance(&a, &b, s);
-				
+
 		/* B gets incremented in the next loop, so we save the value here */
 		a = b;
 	}
@@ -2403,42 +2403,42 @@ double lwgeom_length_spheroid(const LWGEOM *geom, const SPHEROID *s)
 	int type;
 	int i = 0;
 	double length = 0.0;
-	
+
 	assert(geom);
-	
+
 	/* No area in nothing */
-	if( lwgeom_is_empty(geom) )
+	if ( lwgeom_is_empty(geom) )
 		return 0.0;
 
 	type = TYPE_GETTYPE(geom->type);
 
 	if ( type == POINTTYPE || type == MULTIPOINTTYPE )
 		return 0.0;
-		
+
 	if ( type == LINETYPE )
 		return ptarray_length_spheroid(((LWLINE*)geom)->points, s);
-		
+
 	if ( type == POLYGONTYPE )
 	{
 		LWPOLY *poly = (LWPOLY*)geom;
-		for( i = 0; i < poly->nrings; i++ )
+		for ( i = 0; i < poly->nrings; i++ )
 		{
 			length += ptarray_length_spheroid(poly->rings[i], s);
 		}
 		return length;
 	}
 
-	if( lwgeom_is_collection( type ) )
+	if ( lwgeom_is_collection( type ) )
 	{
 		LWCOLLECTION *col = (LWCOLLECTION*)geom;
-		
-		for( i = 0; i < col->ngeoms; i++ )
+
+		for ( i = 0; i < col->ngeoms; i++ )
 		{
 			length += lwgeom_length_spheroid(col->geoms[i], s);
 		}
 		return length;
 	}
-	
+
 	lwerror("unsupported type passed to lwgeom_length_sphere");
 	return 0.0;
-}	
+}

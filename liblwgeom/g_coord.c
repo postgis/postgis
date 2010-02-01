@@ -16,23 +16,23 @@ GCOORDINATE* gcoord_new(int ndims)
 	GCOORDINATE *coord = (GCOORDINATE*)lwalloc(sizeof(GCOORDINATE));
 	assert(ndims >= 2);
 	assert(ndims <= 4);
-	if( ! coord ) 
+	if ( ! coord )
 	{
 		lwerror("Out of memory!");
 		return NULL;
 	}
 	coord->ordinates = (double*)lwalloc(sizeof(double) * ndims);
-	if( ! coord->ordinates ) 
+	if ( ! coord->ordinates )
 	{
 		lwerror("Out of memory!");
 		return NULL;
 	}
 	/* We'll determine extra dimension is Z or M later. */
-	if( ndims == 3 ) 
+	if ( ndims == 3 )
 	{
 		coord->flags = gflags(1, 0, 0);
 	}
-	if( ndims == 4 ) 
+	if ( ndims == 4 )
 	{
 		coord->flags = gflags(1, 1, 0);
 	}
@@ -42,13 +42,13 @@ GCOORDINATE* gcoord_new(int ndims)
 GCOORDINATE* gcoord_new_with_flags(uchar flags)
 {
 	GCOORDINATE *coord = (GCOORDINATE*)lwalloc(sizeof(GCOORDINATE));
-	if( ! coord ) 
+	if ( ! coord )
 	{
 		lwerror("Out of memory!");
 		return NULL;
 	}
 	coord->ordinates = (double*)lwalloc(sizeof(double) * FLAGS_NDIMS(flags));
-	if( ! coord->ordinates ) 
+	if ( ! coord->ordinates )
 	{
 		lwerror("Out of memory!");
 		return NULL;
@@ -61,13 +61,13 @@ GCOORDINATE* gcoord_new_with_flags_and_ordinates(uchar flags, double *ordinates)
 {
 	GCOORDINATE *coord = (GCOORDINATE*)lwalloc(sizeof(GCOORDINATE));
 	assert(ordinates);
-	if( ! coord ) 
+	if ( ! coord )
 	{
 		lwerror("Out of memory!");
 		return NULL;
 	}
 	coord->ordinates = ordinates;
-	if( ! coord->ordinates ) 
+	if ( ! coord->ordinates )
 	{
 		lwerror("Out of memory!");
 		return NULL;
@@ -80,16 +80,16 @@ GCOORDINATE* gcoord_new_with_flags_and_ordinates(uchar flags, double *ordinates)
 GCOORDINATE* gcoord_copy(GCOORDINATE *coord)
 {
 	GCOORDINATE *copy = NULL;
-	
+
 	assert(coord);
 	assert(coord->ordinates);
-	
+
 	copy = (GCOORDINATE*)lwalloc(sizeof(GCOORDINATE));
-	if( ! copy ) return NULL;
+	if ( ! copy ) return NULL;
 	copy->flags = coord->flags;
 	FLAGS_SET_READONLY(copy->flags, 1);
 	copy->ordinates = (double*)lwalloc(sizeof(double) * FLAGS_NDIMS(copy->flags));
-	if( ! copy->ordinates ) return NULL;
+	if ( ! copy->ordinates ) return NULL;
 	memcpy(copy->ordinates, coord->ordinates, FLAGS_NDIMS(copy->flags) * sizeof(double));
 	return copy;
 }
@@ -125,11 +125,12 @@ void gcoord_set_m(GCOORDINATE *coord, double m)
 {
 	assert(coord);
 	assert(FLAGS_GET_M(coord->flags));
-	if(FLAGS_GET_Z(coord->flags))
+	if (FLAGS_GET_Z(coord->flags))
 	{
 		*(coord->ordinates + 3) = m;
 	}
-	else {
+	else
+	{
 		*(coord->ordinates + 2) = m;
 	}
 }
@@ -172,11 +173,11 @@ double gcoord_get_m(GCOORDINATE *coord)
 {
 	assert(coord);
 	assert(FLAGS_GET_M(coord->flags));
-	if(FLAGS_GET_Z(coord->flags))
+	if (FLAGS_GET_Z(coord->flags))
 	{
 		return *(coord->ordinates + 3);
 	}
-	else 
+	else
 	{
 		return *(coord->ordinates + 2);
 	}

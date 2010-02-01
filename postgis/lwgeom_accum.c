@@ -298,19 +298,19 @@ pgis_geometry_makeline_finalfn(PG_FUNCTION_ARGS)
 Datum
 PGISDirectFunctionCall1(PGFunction func, Datum arg1)
 {
-        FunctionCallInfoData fcinfo;
-        Datum           result;
+	FunctionCallInfoData fcinfo;
+	Datum           result;
 
-        InitFunctionCallInfoData(fcinfo, NULL, 1, NULL, NULL);
+	InitFunctionCallInfoData(fcinfo, NULL, 1, NULL, NULL);
 
-        fcinfo.arg[0] = arg1;
-        fcinfo.argnull[0] = false;
+	fcinfo.arg[0] = arg1;
+	fcinfo.argnull[0] = false;
 
-        result = (*func) (&fcinfo);
+	result = (*func) (&fcinfo);
 
-        /* Check for null result, returning a "NULL" Datum if indicated */
-        if (fcinfo.isnull)
-                return (Datum) 0;
+	/* Check for null result, returning a "NULL" Datum if indicated */
+	if (fcinfo.isnull)
+		return (Datum) 0;
 
-        return result;
+	return result;
 }

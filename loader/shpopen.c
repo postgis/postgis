@@ -403,7 +403,7 @@ SHPOpen( const char * pszLayer, const char * pszAccess )
 	        i > 0 && pszBasename[i] != '.' && pszBasename[i] != '/'
 	        && pszBasename[i] != '\\';
 	        i-- )
-	{}
+		{}
 
 	if ( pszBasename[i] == '.' )
 		pszBasename[i] = '\0';
@@ -660,7 +660,7 @@ SHPCreate( const char * pszLayer, int nShapeType )
 	        i > 0 && pszBasename[i] != '.' && pszBasename[i] != '/'
 	        && pszBasename[i] != '\\';
 	        i-- )
-	{}
+		{}
 
 	if ( pszBasename[i] == '.' )
 		pszBasename[i] = '\0';
