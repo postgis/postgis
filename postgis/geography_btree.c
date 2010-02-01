@@ -256,3 +256,4 @@ Datum geography_cmp(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(-1);
 
 }
+
