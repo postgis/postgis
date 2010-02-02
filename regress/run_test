@@ -124,7 +124,7 @@ run_simple_test ()
 	DIFFILE="${TMPDIR}/test_${RUN}_diff"
 
 	# Use intermediate file to prevent MingW buffering problems
-	${PSQL} -tA < "${_sql}" ${DB} > ${TMPFILE} 2>&1
+	${PSQL} -tXA < "${_sql}" ${DB} > ${TMPFILE} 2>&1
 	cat ${TMPFILE} \
 		| grep -v "^$" \
 		| grep -v "^INSERT" \
@@ -167,7 +167,7 @@ run_loader_test ()
 	_tblname=loadedshp
 
 	# ON_ERROR_STOP is used by psql to return non-0 on an error
-	_psql_opts="--variable ON_ERROR_STOP=true"
+	_psql_opts="--no-psqlrc --variable ON_ERROR_STOP=true"
 
 	#echo "SELECT * from ${_tblname}" > ${TEST}.sql
 
