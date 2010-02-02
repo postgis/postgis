@@ -194,20 +194,20 @@ main (int argc, char **argv)
 			strcpy(config->table, argv[optind]);
 		}
 	}
-	
+
 	/* If the table parameter is not provided, use the shape file name as a proxy value.
 	   Strip out the .shp and the leading path information first. */
-	if( config->shp_file && config->table == NULL)
+	if ( config->shp_file && config->table == NULL)
 	{
 		char *shp_file = strdup(config->shp_file);
 		char *ptr;
-		for( ptr = shp_file + strlen(shp_file); ptr >= shp_file; ptr-- )
+		for ( ptr = shp_file + strlen(shp_file); ptr >= shp_file; ptr-- )
 		{
-			if( *ptr == '.' )
+			if ( *ptr == '.' )
 			{
 				*ptr = '\0';
 			}
-			if( *ptr == '/' || *ptr == '\\' )
+			if ( *ptr == '/' || *ptr == '\\' )
 			{
 				ptr++;
 				break;
@@ -221,7 +221,7 @@ main (int argc, char **argv)
 	/* Transform table name to lower case if no quoting specified */
 	if (!config->quoteidentifiers)
 	{
-		if( config->table )
+		if ( config->table )
 			strtolower(config->table);
 		if ( config->schema )
 			strtolower(config->schema);
@@ -269,7 +269,7 @@ main (int argc, char **argv)
 	free(header);
 
 	/* If we are not in "prepare" mode, go ahead and write out the data. */
-	if( state->config->opt != 'p' )
+	if ( state->config->opt != 'p' )
 	{
 
 		/* If in COPY mode, output the COPY statement */
@@ -329,7 +329,7 @@ main (int argc, char **argv)
 			printf("\\.\n");
 
 	}
-	
+
 	/* Print the footer to stdout */
 	ret = ShpLoaderGetSQLFooter(state, &footer);
 	if (ret != SHPLOADEROK)
