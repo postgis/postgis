@@ -76,16 +76,7 @@ main (int argc, char **argv)
 		case 'd':
 		case 'a':
 		case 'p':
-			if (config->opt == ' ')
-			{
-				config->opt = c;
-			}
-			else
-			{
-				/* Only one of these options can be chosen */
-				usage();
-				exit(0);
-			}
+			config->opt = c;
 			break;
 
 		case 'D':
@@ -248,62 +239,68 @@ main (int argc, char **argv)
 	printf("%s", header);
 	free(header);
 
-	/* If in COPY mode, output the COPY statement */
-	if (state->config->dump_format)
+	/* If we are not in "prepare" mode, go ahead and write out the data. */
+	if( state->config->opt != 'p' )
 	{
-		ret = ShpLoaderGetSQLCopyStatement(state, &header);
-		if (ret != SHPLOADEROK)
-		{
-			fprintf(stderr, "%s\n", state->message);
 
-			if (ret == SHPLOADERERR)
+		/* If in COPY mode, output the COPY statement */
+		if (state->config->dump_format)
+		{
+			ret = ShpLoaderGetSQLCopyStatement(state, &header);
+			if (ret != SHPLOADEROK)
+			{
+				fprintf(stderr, "%s\n", state->message);
+
+				if (ret == SHPLOADERERR)
+					exit(1);
+			}
+
+			printf("%s", header);
+			free(header);
+		}
+
+		/* Main loop: iterate through all of the records and send them to stdout */
+		for (i = 0; i < ShpLoaderGetRecordCount(state); i++)
+		{
+			ret = ShpLoaderGenerateSQLRowStatement(state, i, &record);
+
+			switch (ret)
+			{
+			case SHPLOADEROK:
+				/* Simply display the geometry */
+				printf("%s\n", record);
+				free(record);
+				break;
+
+			case SHPLOADERERR:
+				/* Display the error message then stop */
+				fprintf(stderr, "%s\n", state->message);
 				exit(1);
+				break;
+
+			case SHPLOADERWARN:
+				/* Display the warning, but continue */
+				fprintf(stderr, "%s\n", state->message);
+				printf("%s\n", record);
+				free(record);
+				break;
+
+			case SHPLOADERRECDELETED:
+				/* Record is marked as deleted - ignore */
+				break;
+
+			case SHPLOADERRECISNULL:
+				/* Record is NULL and should be ignored according to NULL policy */
+				break;
+			}
 		}
 
-		printf("%s", header);
-		free(header);
+		/* If in COPY mode, terminate the COPY statement */
+		if (state->config->dump_format)
+			printf("\\.\n");
+
 	}
-
-	/* Main loop: iterate through all of the records and send them to stdout */
-	for (i = 0; i < ShpLoaderGetRecordCount(state); i++)
-	{
-		ret = ShpLoaderGenerateSQLRowStatement(state, i, &record);
-
-		switch (ret)
-		{
-		case SHPLOADEROK:
-			/* Simply display the geometry */
-			printf("%s\n", record);
-			free(record);
-			break;
-
-		case SHPLOADERERR:
-			/* Display the error message then stop */
-			fprintf(stderr, "%s\n", state->message);
-			exit(1);
-			break;
-
-		case SHPLOADERWARN:
-			/* Display the warning, but continue */
-			fprintf(stderr, "%s\n", state->message);
-			printf("%s\n", record);
-			free(record);
-			break;
-
-		case SHPLOADERRECDELETED:
-			/* Record is marked as deleted - ignore */
-			break;
-
-		case SHPLOADERRECISNULL:
-			/* Record is NULL and should be ignored according to NULL policy */
-			break;
-		}
-	}
-
-	/* If in COPY mode, terminate the COPY statement */
-	if (state->config->dump_format)
-		printf("\\.\n");
-
+	
 	/* Print the footer to stdout */
 	ret = ShpLoaderGetSQLFooter(state, &footer);
 	if (ret != SHPLOADEROK)

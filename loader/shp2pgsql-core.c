@@ -1782,7 +1782,7 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 	sb = stringbuffer_create();
 	stringbuffer_clear(sb);
 
-	/* Create gist index if specified */
+	/* Create gist index if specified and not in "prepare" mode */
 	if (state->config->createindex)
 	{
 		if (state->config->schema)
