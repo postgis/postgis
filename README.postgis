@@ -25,7 +25,7 @@ Directory structure:
                 Shape files.
   ./utils       Utility scripts for PostGIS (upgrade, profiling, ...)
   ./extras      Various pieces that didn't belong to mainstream
-	        (package management specfiles, WFS_locks, sample wkb parser)
+	            (package management specfiles, WFS_locks, sample wkb parser)
   ./regress     Regression tests
 	        
 
@@ -34,10 +34,8 @@ REQUIREMENTS
 
 PostGIS is compatible with PostgreSQL 8.3 and above.
 
-You *must* have full PostgreSQL - including server headers - installed
+You *must* have the full PostgreSQL - including server headers - installed
 for this to work. 
-
-SEE THE NOTE ON GEOS SUPPORT BELOW FOR SPECIAL COMPILATION INSTRUCTIONS
 
 * PROJ4 SUPPORT (Required): 
 
@@ -53,6 +51,13 @@ SEE THE NOTE ON GEOS SUPPORT BELOW FOR SPECIAL COMPILATION INSTRUCTIONS
   such as Intersection(), Union() and Buffer().  
 
     http://trac.osgeo.org/geos/
+
+* XML SUPPORT (Required): 
+
+  The LibXML2 library is required to use the ST_GeomFromGML() and 
+  ST_GeomFromKML() functionality.
+
+    http://xmlsoft.org/
 
 
 CONFIGURATION
@@ -83,6 +88,7 @@ See ./configure --help for more options.
 BUILD
 -----
 
+PostGIS uses the GNU make (aka gmake) for building. 
 To build PostGIS library and utilities, as postgres run:
 
   make
