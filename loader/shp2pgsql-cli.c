@@ -160,11 +160,16 @@ main (int argc, char **argv)
 		}
 	}
 
-	/* Determine the shapefile name from the next argument */
+	/* Determine the shapefile name from the next argument, if no shape file, exit. */
 	if (optind < argc)
 	{
 		config->shp_file = argv[optind];
 		optind++;
+	}
+	else
+	{
+		usage();
+		exit(0);
 	}
 
 	/* Determine the table and schema names from the next argument */
@@ -189,12 +194,36 @@ main (int argc, char **argv)
 			strcpy(config->table, argv[optind]);
 		}
 	}
+	
+	/* If the table parameter is not provided, use the shape file name as a proxy value.
+	   Strip out the .shp and the leading path information first. */
+	if( config->shp_file && config->table == NULL)
+	{
+		char *shp_file = strdup(config->shp_file);
+		char *ptr;
+		for( ptr = shp_file + strlen(shp_file); ptr >= shp_file; ptr-- )
+		{
+			if( *ptr == '.' )
+			{
+				*ptr = '\0';
+			}
+			if( *ptr == '/' || *ptr == '\\' )
+			{
+				ptr++;
+				break;
+			}
+		}
+		config->table = strdup(ptr);
+		free(shp_file);
+	}
+
 
 	/* Transform table name to lower case if no quoting specified */
 	if (!config->quoteidentifiers)
 	{
-		strtolower(config->table);
-		if (config->schema)
+		if( config->table )
+			strtolower(config->table);
+		if ( config->schema )
 			strtolower(config->schema);
 	}
 
@@ -321,7 +350,8 @@ main (int argc, char **argv)
 	/* Free configuration variables */
 	if (config->schema)
 		free(config->schema);
-	free(config->table);
+	if (config->table)
+		free(config->table);
 	free(config);
 
 	return 0;
