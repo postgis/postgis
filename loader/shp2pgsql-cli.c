@@ -40,7 +40,7 @@ usage()
 	printf("  -I  Create a spatial index on the geocolumn.\n");
 	printf("  -S  Generate simple geometries instead of MULTI geometries.\n");
 	printf("  -W <encoding> Specify the character encoding of Shape's\n");
-	printf("     attribute column. (default : \"ASCII\")\n");
+	printf("     attribute column. (default : \"WINDOWS-1252\")\n");
 	printf("  -N <policy> NULL geometries handling policy (insert*,skip,abort)\n");
 	printf("  -n  Only import DBF file.\n");
 	printf("  -?  Display this help screen.\n");
