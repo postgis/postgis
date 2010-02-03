@@ -201,7 +201,7 @@ main (int argc, char **argv)
 	{
 		char *shp_file = strdup(config->shp_file);
 		char *ptr;
-		for ( ptr = shp_file + strlen(shp_file); ptr >= shp_file; ptr-- )
+		for ( ptr = shp_file + strlen(shp_file); ptr > shp_file; ptr-- )
 		{
 			if ( *ptr == '.' )
 			{
