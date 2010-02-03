@@ -844,20 +844,21 @@ void
 set_config_defaults(SHPLOADERCONFIG *config)
 {
 	config->opt = 'c';
-	config->schema = NULL;
 	config->table = NULL;
+	config->schema = NULL;
 	config->geom = strdup(GEOMETRY_DEFAULT);
 	config->shp_file = NULL;
-	config->readshape = 1;
-	config->sr_id = -1;
-	config->hwgeom = 0;
 	config->dump_format = 0;
-	config->forceint4 = 0;
+	config->simple_geometries = 0;
 	config->geography = 0;
 	config->quoteidentifiers = 0;
-	config->null_policy = POLICY_NULL_INSERT;
+	config->forceint4 = 0;
+	config->createindex = 0;
+	config->readshape = 1;
 	config->encoding = strdup(ENCODING_DEFAULT);
-	config->simple_geometries = 0;
+	config->null_policy = POLICY_NULL_INSERT;
+	config->sr_id = -1;
+	config->hwgeom = 0;
 }
 
 /* Create a new shapefile state object */
