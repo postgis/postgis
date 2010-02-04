@@ -646,8 +646,8 @@ Datum geography_overlaps(PG_FUNCTION_ARGS)
 	/* Must be able to build box for each arguement (ie, not empty geometry)
 	   and overlap boxes to return true. */
 	if ( geography_datum_gidx(PG_GETARG_DATUM(0), gbox1) &&
-	     geography_datum_gidx(PG_GETARG_DATUM(1), gbox2) &&
-	     gidx_overlaps(gbox1, gbox2) )
+	        geography_datum_gidx(PG_GETARG_DATUM(1), gbox2) &&
+	        gidx_overlaps(gbox1, gbox2) )
 	{
 		PG_RETURN_BOOL(TRUE);
 	}
