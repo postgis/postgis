@@ -1,3 +1,199 @@
+2010-02-03 22:42  pramsey
+
+	* loader/shp2pgsql-core.c: Initialize config->createindex value to
+	  0
+
+2010-02-03 21:42  pramsey
+
+	* loader/shp2pgsql-cli.c: Fix handling of "missing table argument"
+	  case to use file name properly.
+
+2010-02-02 23:47  pramsey
+
+	* regress/run_test: Add --no-psqlrc to run_test (#405)
+
+2010-02-02 22:44  pramsey
+
+	* postgis/geography_gist.c: Tiny re-format
+
+2010-02-02 17:44  pramsey
+
+	* README.postgis: Extra information per Greg Troxel
+
+2010-02-02 16:13  pramsey
+
+	* loader/shp2pgsql-cli.c: Update usage string to show correct
+	  default encoding.
+
+2010-02-02 04:14  pramsey
+
+	* loader/shp2pgsql-cli.c: astyle recent change
+
+2010-02-02 02:41  pramsey
+
+	* loader/shp2pgsql-cli.c: Fix segfault on cases where not enough
+	  arguments are provided. (#402)
+
+2010-02-02 00:15  pramsey
+
+	* loader/shp2pgsql-cli.c, loader/shp2pgsql-core.c: Fix mis-handling
+	  of the commandline operations modes (#401)
+
+2010-02-01 18:24  pramsey
+
+	* postgis/geography_btree.c: Silence 'no-eol' compiler warning.
+
+2010-02-01 17:35  pramsey
+
+	* astyle.sh, doc/html/image_src/generator.c,
+	  extras/wkb_reader/printwkb.c, liblwgeom/cunit/cu_algorithm.c,
+	  liblwgeom/cunit/cu_geodetic.c, liblwgeom/cunit/cu_libgeom.c,
+	  liblwgeom/cunit/cu_measures.c, liblwgeom/examples/unparser.c,
+	  liblwgeom/g_box.c, liblwgeom/g_coord.c, liblwgeom/g_ptarray.c,
+	  liblwgeom/g_serialized.c, liblwgeom/g_util.c,
+	  liblwgeom/lwalgorithm.c, liblwgeom/lwcollection.c,
+	  liblwgeom/lwgeodetic.c, liblwgeom/lwgeom.c,
+	  liblwgeom/lwgeom_api.c, liblwgeom/lwgparse.c,
+	  liblwgeom/lwgunparse.c, liblwgeom/lwline.c, liblwgeom/lwmcurve.c,
+	  liblwgeom/lwmline.c, liblwgeom/lwmpoint.c, liblwgeom/lwmpoly.c,
+	  liblwgeom/lwmsurface.c, liblwgeom/lwpoly.c,
+	  liblwgeom/lwsegmentize.c, liblwgeom/lwspheroid.c,
+	  liblwgeom/lwtree.c, liblwgeom/lwutil.c, liblwgeom/measures.c,
+	  liblwgeom/ptarray.c, loader/dbfopen.c, loader/getopt.c,
+	  loader/pgsql2shp.c, loader/shp2pgsql-cli.c,
+	  loader/shp2pgsql-core.c, loader/shp2pgsql-gui.c,
+	  loader/shpopen.c, loader/stringbuffer.c,
+	  postgis/geography_btree.c, postgis/geography_estimate.c,
+	  postgis/geography_gist.c, postgis/geography_inout.c,
+	  postgis/geography_measurement.c, postgis/lwgeom_accum.c,
+	  postgis/lwgeom_box3d.c, postgis/lwgeom_chip.c,
+	  postgis/lwgeom_debug.c, postgis/lwgeom_estimate.c,
+	  postgis/lwgeom_export.c, postgis/lwgeom_functions_analytic.c,
+	  postgis/lwgeom_functions_basic.c, postgis/lwgeom_functions_lrs.c,
+	  postgis/lwgeom_geos.c, postgis/lwgeom_geos_prepared.c,
+	  postgis/lwgeom_gist.c, postgis/lwgeom_gml.c,
+	  postgis/lwgeom_in_gml.c, postgis/lwgeom_in_kml.c,
+	  postgis/lwgeom_ogc.c, postgis/lwgeom_spheroid.c,
+	  postgis/lwgeom_sqlmm.c, postgis/lwgeom_svg.c,
+	  postgis/lwgeom_transform.c: 1.5 astyle pass
+
+2010-01-29 21:24  pramsey
+
+	* configure.ac, liblwgeom/Makefile.in: Keep floats out of registers
+	  for spheroid calculation. Fixes odd bug in OS/X gcc 4.1. Could
+	  probably be narrowed to only use flag on affected platform.
+	  (#395)
+
+2010-01-29 18:22  robe
+
+	* doc/reference_exception.xml: fix example
+
+2010-01-29 18:00  pramsey
+
+	* liblwgeom/lwspheroid.c: Extra debugging information in spheroid
+	  area calculation.
+
+2010-01-28 17:42  pramsey
+
+	* liblwgeom/cunit/cu_geodetic.c: Make area unit tests actually test
+	  against known good values
+
+2010-01-28 15:51  colivier
+
+	* regress/tickets_expected: revert r5175 commit about points
+	  results on #304. Related to #395
+
+2010-01-28 15:28  colivier
+
+	* regress/tickets.sql, regress/tickets_expected: In
+	  regress/tickets* Add missing srid 32702 and 32602. Add results
+	  from #304 tests. Related to #395
+
+2010-01-28 15:09  strk
+
+	* GNUmakefile: Fix 'maintainer-clean' rule
+
+2010-01-28 14:23  mcayland
+
+	* astyle.sh: Fix astyle.sh script so that if astyle cannot be found
+	  then it immediately aborts with an error. Per report from
+	  Nicklas.
+
+2010-01-28 12:19  mcayland
+
+	* GNUmakefile, astyle.sh: Add "make astyle" target to clean up
+	  source tree formatting as per the style guidelines.
+
+2010-01-26 21:10  pramsey
+
+	* configure.ac: Make GEOS test insist on >= 3.1.1
+
+2010-01-26 20:20  pramsey
+
+	* liblwgeom/lwline.c: Remove warning from lwline
+
+2010-01-26 19:08  pramsey
+
+	* doc/reference_lrs.xml: Add example for ST_AddMeasure on
+	  multilinestring
+
+2010-01-26 18:56  pramsey
+
+	* liblwgeom/cunit/cu_geodetic.c, liblwgeom/liblwgeom.h,
+	  liblwgeom/lwline.c, liblwgeom/lwmline.c,
+	  postgis/lwgeom_functions_lrs.c: Make ST_AddMeasure handle
+	  multilinestrings as well as linestrings.
+
+2010-01-26 17:24  pramsey
+
+	* doc/reference_lrs.xml: Remove unneeded See Also section.
+
+2010-01-26 17:09  pramsey
+
+	* NEWS, doc/reference_lrs.xml, doc/release_notes.xml,
+	  postgis/postgis.sql.in.c, postgis/uninstall_postgis.sql.in.c:
+	  Remove ST_StartMeasure ST_EndMeasure
+
+2010-01-26 01:13  pramsey
+
+	* doc: Ignore postgis_comments.sql
+
+2010-01-25 21:08  pramsey
+
+	* postgis/postgis.sql.in.c: Replace soft tabs with hard.
+
+2010-01-25 21:06  pramsey
+
+	* postgis/uninstall_postgis.sql.in.c: Add uninstall recipe for
+	  AddMeasure (#390)
+
+2010-01-25 21:03  pramsey
+
+	* doc/reference_lrs.xml, liblwgeom/liblwgeom.h, liblwgeom/lwline.c,
+	  postgis/lwgeom_functions_lrs.c, postgis/postgis.sql.in.c: Add
+	  ST_AddMeasure and associated documentations (#390)
+
+2010-01-24 09:10  nicklas
+
+	* doc/reference_operator.xml:
+
+2010-01-23 23:31  nicklas
+
+	* NEWS: Tiny Typo
+
+2010-01-23 23:29  nicklas
+
+	* TODO: remove ST_Maxdistance from TODO and note that C-version is
+	  still TODO for ST_DumpPoints
+
+2010-01-22 06:05  pramsey
+
+	* HOWTO_RELEASE: Add note on removing milestone from trac
+
+2010-01-21 16:44  pramsey
+
+	* ChangeLog, README.postgis: Updates for 1.5.0rc1
+
 2010-01-21 13:08  nicklas
 
 	* configure.ac: add missing comment

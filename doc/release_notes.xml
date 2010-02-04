@@ -5,7 +5,7 @@
 
       <sect1>
         <title>Release 1.5.0</title>
-        <para>Release date: 2010/01/20</para>
+        <para>Release date: 2010/02/04</para>
         <para>This release provides support for geographic coordinates (lat/lon) via a new GEOGRAPHY type. Also performance enhancements, new input format support (GML,KML) and general upkeep.</para>
   
         <simplesect>
