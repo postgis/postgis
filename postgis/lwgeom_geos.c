@@ -82,6 +82,20 @@ int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *pont);
 ** Prototypes end
 */
 
+#define BUFSIZE 256
+static char loggederror[BUFSIZE];
+
+static void
+errorlogger(const char *fmt, va_list ap)
+{
+	/* Call the supplied function */
+	if ( BUFSIZE-1 < vsnprintf(loggederror, BUFSIZE-1, fmt, ap) )
+	{
+		loggederror[BUFSIZE-1] = '\0';
+	}
+}
+
+
 
 PG_FUNCTION_INFO_V1(postgis_geos_version);
 Datum postgis_geos_version(PG_FUNCTION_ARGS)
@@ -1421,19 +1435,28 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 	int len = 0;
 	char *result = NULL;
 	const GEOSGeometry *g1 = NULL;
+	lwreporter lwerror_var_bak;
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	initGEOS(lwnotice, lwnotice);
+	initGEOS(lwnotice, lwerror);
 
+	lwerror_var_bak = lwerror_var;
+	lwerror_var = errorlogger;
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom);
-	if ( ! g1 )
+	lwerror_var = lwerror_var_bak;
+
+	if ( g1 )
 	{
-		PG_RETURN_NULL();
+		reason_str = GEOSisValidReason(g1);
+		GEOSGeom_destroy((GEOSGeometry *)g1);
+	}
+	else
+	{
+		/* we don't use pstrdup here as we free later */
+		reason_str = strdup(loggederror);
 	}
 
-	reason_str = GEOSisValidReason(g1);
-	GEOSGeom_destroy((GEOSGeometry *)g1);
 
 	if (reason_str == NULL)
 	{
@@ -1473,11 +1496,12 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 	char *reason = NULL;
 	const GEOSGeometry *geos_location = NULL;
 	LWGEOM *location = NULL;
-	char valid;
+	char valid = 0;
 	Datum result;
 	TupleDesc tupdesc;
 	HeapTuple tuple;
 	AttInMetadata *attinmeta;
+	lwreporter lwerror_var_bak;
 
 	/*
 	 * Build a tuple description for a
@@ -1498,32 +1522,39 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	initGEOS(lwnotice, lwnotice);
+	initGEOS(lwnotice, lwerror);
 
+	lwerror_var_bak = lwerror_var;
+	lwerror_var = errorlogger;
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom);
-	if ( ! g1 )
-	{	/* TODO: take as invalid */
-		PG_RETURN_NULL();
-	}
+	lwerror_var = lwerror_var_bak;
 
-	valid = GEOSisValidDetail(g1, &geos_reason, &geos_location);
-	GEOSGeom_destroy((GEOSGeometry *)g1);
-	if ( geos_reason )
+	if ( g1 )
 	{
-		reason = pstrdup(geos_reason);
-		GEOSFree(geos_reason);
-	}
-	if ( geos_location )
-	{
-		location = GEOS2LWGEOM(geos_location, GEOSHasZ(geos_location));
-		GEOSGeom_destroy((GEOSGeometry *)geos_location);
-	}
+		valid = GEOSisValidDetail(g1, &geos_reason, &geos_location);
+		GEOSGeom_destroy((GEOSGeometry *)g1);
+		if ( geos_reason )
+		{
+			reason = pstrdup(geos_reason);
+			GEOSFree(geos_reason);
+		}
+		if ( geos_location )
+		{
+			location = GEOS2LWGEOM(geos_location, GEOSHasZ(geos_location));
+			GEOSGeom_destroy((GEOSGeometry *)geos_location);
+		}
 
-	if (valid == 2)
+		if (valid == 2)
+		{
+			/* NOTE: should only happen on OOM or similar */
+			lwerror("GEOS isvaliddetail() threw an exception!");
+			PG_RETURN_NULL(); /* never gets here */
+		}
+	}
+	else
 	{
-		/* NOTE: should only happen on OOM or similar */
-		lwerror("GEOS isvaliddetail() threw an exception!");
-		PG_RETURN_NULL(); /* never gets here */
+		/* TODO: check loggederror for validity error */
+		reason = pstrdup(loggederror);
 	}
 
 	/* the boolean validity */
@@ -3029,6 +3060,7 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 		POSTGIS_DEBUG(3, "LWGEOM2GEOS_c: arced geometry found.");
 
 		lwerror("Exception in LWGEOM2GEOS: curved geometry not supported.");
+		return NULL;
 		/*
 		tmp = lwgeom;
 		lwgeom = lwgeom_segmentize(tmp, 32);
@@ -3047,13 +3079,21 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 		lwp = (LWPOINT *)lwgeom;
 		sq = ptarray_to_GEOSCoordSeq(lwp->point);
 		g = GEOSGeom_createPoint(sq);
-		if ( ! g ) lwerror("Exception in LWGEOM2GEOS");
+		if ( ! g )
+		{
+			/* lwnotice("Exception in LWGEOM2GEOS"); */
+			return NULL;
+		}
 		break;
 	case LINETYPE:
 		lwl = (LWLINE *)lwgeom;
 		sq = ptarray_to_GEOSCoordSeq(lwl->points);
 		g = GEOSGeom_createLineString(sq);
-		if ( ! g ) lwerror("Exception in LWGEOM2GEOS");
+		if ( ! g )
+		{
+			/* lwnotice("Exception in LWGEOM2GEOS"); */
+			return NULL;
+		}
 		break;
 
 	case POLYGONTYPE:
@@ -3104,7 +3144,6 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 
 	default:
 		lwerror("Unknown geometry type: %d", type);
-
 		return NULL;
 	}
 
@@ -3136,7 +3175,7 @@ POSTGIS2GEOS(PG_LWGEOM *pglwgeom)
 	lwgeom_release(lwgeom);
 	if ( ! ret )
 	{
-		lwerror("POSTGIS2GEOS conversion failed");
+		/* lwerror("POSTGIS2GEOS conversion failed"); */
 		return NULL;
 	}
 	return ret;

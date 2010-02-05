@@ -64,3 +64,4 @@ SELECT
 #277|<gml:Point><gml:coordinates>1,1e+308</gml:coordinates></gml:Point>
 #299|2
 #304
+#408|IllegalArgumentException: point array must contain 0 or >1 elements
