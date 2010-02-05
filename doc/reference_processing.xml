@@ -793,7 +793,7 @@ MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>geometry_dump[]<function>ST_Dump</function></funcdef>
+			<funcdef>geometry_dump[] <function>ST_Dump</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
