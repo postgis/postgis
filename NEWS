@@ -4,6 +4,8 @@ YYYY/MM/DD
   * Important Changes *
   * New Features *
 
+  - ST_isValidDetail
+
 PostGIS 1.5.0
 2010/02/04
 
