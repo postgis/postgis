@@ -16,6 +16,7 @@
 #include "lwgeom_geos.h"
 #include "lwgeom_rtree.h"
 #include "lwgeom_geos_prepared.h"
+#include "funcapi.h"
 
 #include <string.h>
 
@@ -42,6 +43,7 @@ Datum covers(PG_FUNCTION_ARGS);
 Datum overlaps(PG_FUNCTION_ARGS);
 Datum isvalid(PG_FUNCTION_ARGS);
 Datum isvalidreason(PG_FUNCTION_ARGS);
+Datum isvaliddetail(PG_FUNCTION_ARGS);
 Datum buffer(PG_FUNCTION_ARGS);
 Datum intersection(PG_FUNCTION_ARGS);
 Datum convexhull(PG_FUNCTION_ARGS);
@@ -1447,6 +1449,99 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(result);
 
+}
+
+/*
+** IsValidDetail is only available in the GEOS
+** C API >= version 3.3
+*/
+PG_FUNCTION_INFO_V1(isvaliddetail);
+Datum isvaliddetail(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 33
+	lwerror("The GEOS version this postgis binary "
+	        "was compiled against (%d) doesn't support "
+	        "'isValidDetail' function (3.3.0+ required)",
+	        POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_GEOS_VERSION >= 33 */
+
+	PG_LWGEOM *geom = NULL;
+	const GEOSGeometry *g1 = NULL;
+	char *values[3]; /* valid bool, reason text, location geometry */
+	char *geos_reason = NULL;
+	char *reason = NULL;
+	const GEOSGeometry *geos_location = NULL;
+	LWGEOM *location = NULL;
+	char valid;
+	Datum result;
+	TupleDesc tupdesc;
+	HeapTuple tuple;
+	AttInMetadata *attinmeta;
+
+	/*
+	 * Build a tuple description for a
+	 * valid_detail tuple
+	 */
+	tupdesc = RelationNameGetTupleDesc("valid_detail");
+	if ( ! tupdesc )
+	{
+		lwerror("TYPE valid_detail not found");
+		PG_RETURN_NULL();
+	}
+
+	/*
+	 * generate attribute metadata needed later to produce
+	 * tuples from raw C strings
+	 */
+	attinmeta = TupleDescGetAttInMetadata(tupdesc);
+
+	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	initGEOS(lwnotice, lwnotice);
+
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom);
+	if ( ! g1 )
+	{	/* TODO: take as invalid */
+		PG_RETURN_NULL();
+	}
+
+	valid = GEOSisValidDetail(g1, &geos_reason, &geos_location);
+	GEOSGeom_destroy((GEOSGeometry *)g1);
+	if ( geos_reason )
+	{
+		reason = pstrdup(geos_reason);
+		GEOSFree(geos_reason);
+	}
+	if ( geos_location )
+	{
+		location = GEOS2LWGEOM(geos_location, GEOSHasZ(geos_location));
+		GEOSGeom_destroy((GEOSGeometry *)geos_location);
+	}
+
+	if (valid == 2)
+	{
+		/* NOTE: should only happen on OOM or similar */
+		lwerror("GEOS isvaliddetail() threw an exception!");
+		PG_RETURN_NULL(); /* never gets here */
+	}
+
+	/* the boolean validity */
+	values[0] =  valid ? "t" : "f";
+
+	/* the reason */
+	values[1] =  reason;
+
+	/* the location */
+	values[2] =  location ?
+	             lwgeom_to_hexwkb(location, PARSER_CHECK_NONE, -1) : 0;
+
+	tuple = BuildTupleFromCStrings(attinmeta, values);
+	result = HeapTupleGetDatum(tuple);
+
+	PG_RETURN_HEAPTUPLEHEADER(result);
+
+#endif /* POSTGIS_GEOS_VERSION >= 33 */
 }
 
 /**

@@ -3923,6 +3923,17 @@ CREATE OR REPLACE FUNCTION ST_IsValidReason(geometry)
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
 
+-- Availability: 2.0.0
+CREATE TYPE valid_detail AS (valid bool, reason varchar, location geometry);
+
+-- Requires GEOS >= 3.3.0
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_IsValidDetail(geometry)
+	RETURNS valid_detail
+	AS 'MODULE_PATHNAME', 'isvaliddetail'
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
+
 #if POSTGIS_GEOS_VERSION >= 32
 -- Requires GEOS >= 3.2.0
 -- Availability: 1.5.0
