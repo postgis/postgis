@@ -475,6 +475,8 @@ assvg_collection_size(LWGEOM_INSPECTED *insp, bool relative, int precision)
 	if ( i ) /* We have some geometries, so add space for delimiters. */ 
 		size += sizeof(";") * --i;
 
+	if (size == 0) size++; /* EMPTY GEOMETRYCOLLECTION */
+
 	return size;
 }
 
@@ -485,6 +487,9 @@ assvg_collection_buf(LWGEOM_INSPECTED *insp, char *output, bool relative, int pr
 	char *ptr=output;
 	LWGEOM_INSPECTED *subinsp;
 	uchar *subgeom;
+
+	/* EMPTY GEOMETRYCOLLECTION */
+	if (insp->ngeometries == 0) *ptr = '\0';
 
 	for (i=0; i<insp->ngeometries; i++)
 	{
