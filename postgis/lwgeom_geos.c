@@ -86,13 +86,19 @@ int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *pont);
 static char loggederror[BUFSIZE];
 
 static void
-errorlogger(const char *fmt, va_list ap)
+errorlogger(const char *fmt, ...)
 {
+	va_list ap;
+
+	va_start(ap, fmt);
+
 	/* Call the supplied function */
 	if ( BUFSIZE-1 < vsnprintf(loggederror, BUFSIZE-1, fmt, ap) )
 	{
 		loggederror[BUFSIZE-1] = '\0';
 	}
+
+	va_end(ap);
 }
 
 
@@ -1435,17 +1441,12 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 	int len = 0;
 	char *result = NULL;
 	const GEOSGeometry *g1 = NULL;
-	lwreporter lwerror_var_bak;
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, errorlogger);
 
-	lwerror_var_bak = lwerror_var;
-	lwerror_var = errorlogger;
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom);
-	lwerror_var = lwerror_var_bak;
-
 	if ( g1 )
 	{
 		reason_str = GEOSisValidReason(g1);
@@ -1501,7 +1502,6 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 	TupleDesc tupdesc;
 	HeapTuple tuple;
 	AttInMetadata *attinmeta;
-	lwreporter lwerror_var_bak;
 
 	/*
 	 * Build a tuple description for a
@@ -1522,12 +1522,9 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, errorlogger);
 
-	lwerror_var_bak = lwerror_var;
-	lwerror_var = errorlogger;
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom);
-	lwerror_var = lwerror_var_bak;
 
 	if ( g1 )
 	{
