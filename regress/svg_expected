@@ -41,3 +41,4 @@ ERROR:  ST_AsSVG: 'MultiSurface' geometry type not supported.
 3D_02|cx="1" cy="-1"
 3D_03|M 1 -1 L 2 -2 3 -3 4 -4
 3D_04|M 1 -1 L 2 -2 3 -3 4 -4 5 -5 5 0 Z
+#409|
