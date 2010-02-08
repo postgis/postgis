@@ -1,10 +1,12 @@
 PostGIS 1.5.1
+YYYY/MM/DD
 
  - This is a bug fix release, addressing issues that have been
    filed since the 1.5.0 release.
 
  - Bug Fixes
-
+   - #411, allow dumping tables with invalid geometries
+     (Sandro Santilli for Regione Toscana)
 
 
 PostGIS 1.5.0
