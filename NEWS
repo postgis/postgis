@@ -2,9 +2,10 @@ PostGIS 2.0.0
 YYYY/MM/DD
 
   * Important Changes *
+
   * New Features *
 
-  - ST_isValidDetail
+  - ST_isValidDetail (Sandro Santilli for Regione Toscana)
 
 PostGIS 1.5.0
 2010/02/04
