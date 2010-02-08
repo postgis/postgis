@@ -6,7 +6,7 @@ YYYY/MM/DD
 
  - Bug fixes
    - #411, allow dumping tables with invalid geometries
-     (Sandro Santilli for Regione Toscana)
+     (Sandro Santilli - work done for Regione Toscana-SIGTA)
 
 PostGIS 1.4.1
 2009/11/28
