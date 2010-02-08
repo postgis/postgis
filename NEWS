@@ -1,3 +1,13 @@
+PostGIS 1.4.2
+YYYY/MM/DD
+
+ - This is a bug fix release, addressing issues that have been
+   filed since the 1.4.1 release.
+
+ - Bug fixes
+   - #411, allow dumping tables with invalid geometries
+     (Sandro Santilli for Regione Toscana)
+
 PostGIS 1.4.1
 2009/11/28
 
