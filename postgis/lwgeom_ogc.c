@@ -1136,7 +1136,7 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 	ogclwgeom = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
 	                LWGEOM_force_2d, PointerGetDatum(lwgeom)));
 
-	result =  serialized_lwgeom_to_ewkt(&lwg_unparser_result, SERIALIZED_FORM(ogclwgeom), PARSER_CHECK_ALL);
+	result =  serialized_lwgeom_to_ewkt(&lwg_unparser_result, SERIALIZED_FORM(ogclwgeom), PARSER_CHECK_NONE);
 	if (result)
 		PG_UNPARSER_ERROR(lwg_unparser_result);
 

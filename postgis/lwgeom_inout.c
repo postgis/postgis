@@ -101,7 +101,7 @@ Datum LWGEOM_out(PG_FUNCTION_ARGS)
 	int result;
 
 	lwgeom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, SERIALIZED_FORM(lwgeom), PARSER_CHECK_ALL, -1);
+	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, SERIALIZED_FORM(lwgeom), PARSER_CHECK_NONE, -1);
 	if (result)
 		PG_UNPARSER_ERROR(lwg_unparser_result);
 
@@ -143,7 +143,7 @@ Datum LWGEOM_asHEXEWKB(PG_FUNCTION_ARGS)
 		}
 	}
 
-	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, SERIALIZED_FORM(lwgeom), PARSER_CHECK_ALL, byteorder);
+	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, SERIALIZED_FORM(lwgeom), PARSER_CHECK_NONE, byteorder);
 	if (result)
 		PG_UNPARSER_ERROR(lwg_unparser_result);
 
@@ -172,7 +172,7 @@ Datum LWGEOM_to_text(PG_FUNCTION_ARGS)
 	text *text_result;
 
 	lwgeom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, SERIALIZED_FORM(lwgeom), PARSER_CHECK_ALL, -1);
+	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, SERIALIZED_FORM(lwgeom), PARSER_CHECK_NONE, -1);
 	if (result)
 		PG_UNPARSER_ERROR(lwg_unparser_result);
 
