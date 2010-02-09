@@ -249,10 +249,10 @@ ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2)
 /**
  * @brief Add a point in a pointarray.
  * 		'where' is the offset (starting at 0)
- * 		if 'where' == -1 append is required.
+ * 		if 'where' == pa->npoints,  append is performed.
  */
 POINTARRAY *
-ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims, unsigned int where)
+ptarray_addPoint(const POINTARRAY *pa, uchar *p, size_t pdims, unsigned int where)
 {
 	POINTARRAY *ret;
 	POINT4D pbuf;
