@@ -194,7 +194,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 			starting and ending at the given fractions of total 2d length.
 			Second and third arguments are float8 values between 0 and
 			1. This only works with LINESTRINGs.
-			To use with contiguous MULTILINESTRINGs use in conjunction with ST_LineMerge.</para>
+			To use with contiguous MULTILINESTRINGs use in conjunction with <xref linkend="ST_LineMerge" />.</para>
 
 			<para>If 'start' and 'end' have the same value this is equivalent
 			to <xref linkend="ST_Line_Interpolate_Point" />.</para>
