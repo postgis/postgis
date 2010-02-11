@@ -2513,7 +2513,7 @@ FROM (SELECT ST_BuildArea(ST_Collect(the_geom)) As the_geom
 	  <refsection>
 		<title>Description</title>
 
-		<para>ST_OrderingEquals compares two geometries and t (TRUE) if the
+		<para>ST_OrderingEquals compares two geometries and returns t (TRUE) if the
 		  geometries are equal and the coordinates are in the same order;
 		  otherwise it returns f (FALSE).</para>
 
