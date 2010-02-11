@@ -43,7 +43,7 @@
 */
 
 PG_LWGEOM *GEOS2POSTGIS(GEOSGeom geom, char want3d);
-const GEOSGeometry * POSTGIS2GEOS(PG_LWGEOM *g);
+GEOSGeometry * POSTGIS2GEOS(PG_LWGEOM *g);
 
 LWGEOM *GEOS2LWGEOM(const GEOSGeometry *geom, char want3d);
 GEOSGeometry * LWGEOM2GEOS(LWGEOM *g);

@@ -102,6 +102,111 @@ errorlogger(const char *fmt, ...)
 }
 
 
+/*
+ * This function would better be moved to the GEOS C-API,
+ * but isn't available up to 3.2.0
+ */
+GEOSGeometry* LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in);
+GEOSGeometry*
+LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
+{
+	GEOSGeometry *tmp;
+	GEOSGeometry *geos_result, *shp;
+	GEOSGeometry const *vgeoms[1];
+	unsigned int i, ngeoms;
+
+	vgeoms[0] = geom_in;
+	geos_result = GEOSPolygonize(vgeoms, 1);
+
+	POSTGIS_DEBUGF(3, "GEOSpolygonize returned @ %p", geos_result);
+
+	/* Null return from GEOSpolygonize (an exception) */
+	if ( ! geos_result ) return 0;
+
+	/*
+	 * We should now have a collection
+	 */
+#if PARANOIA_LEVEL > 0
+	if ( GEOSGeometryTypeId(geos_result) != COLLECTIONTYPE )
+	{
+		GEOSGeom_destroy(geos_result);
+		lwerror("Unexpected return from GEOSpolygonize");
+		return 0;
+	}
+#endif
+
+	ngeoms = GEOSGetNumGeometries(geos_result);
+
+	POSTGIS_DEBUGF(3, "GEOSpolygonize: ngeoms in polygonize output: %d", ngeoms);
+
+	/*
+	 * No geometries in collection, early out
+	 */
+	if ( ngeoms == 0 )
+	{
+		return geos_result;
+	}
+
+	/*
+	 * Return first geometry if we only have one in collection,
+	 * to avoid the unnecessary Geometry clone below.
+	 */
+	if ( ngeoms == 1 )
+	{
+		tmp = (GEOSGeometry *)GEOSGetGeometryN(geos_result, 0);
+		if ( ! tmp ) return 0; /* exception */
+		shp = GEOSGeom_clone(tmp);
+		GEOSGeom_destroy(geos_result); /* only safe after the clone above */
+		return shp;
+	}
+
+	/*
+	 * Iteratively invoke symdifference on outer rings
+	 * as suggested by Carl Anderson:
+	 * postgis-devel/2005-December/001805.html
+	 */
+	shp = NULL;
+	for (i=0; i<ngeoms; ++i)
+	{
+		GEOSGeom extring;
+		GEOSCoordSeq sq;
+
+		/*
+		 * Construct a Polygon from geometry i exterior ring
+		 * We don't use GEOSGeom_clone on the ExteriorRing
+		 * due to a bug in CAPI contained in GEOS 2.2 branch
+		 * failing to properly return a LinearRing from
+		 * a LinearRing clone.
+		 */
+		sq=GEOSCoordSeq_clone(GEOSGeom_getCoordSeq(
+		                          GEOSGetExteriorRing(GEOSGetGeometryN( geos_result, i))
+		                      ));
+		extring = GEOSGeom_createPolygon(
+		              GEOSGeom_createLinearRing(sq),
+		              NULL, 0
+		          );
+
+		if ( extring == NULL ) /* exception */
+		{
+			lwerror("GEOSCreatePolygon threw an exception");
+			return 0;
+		}
+
+		if ( shp == NULL )
+		{
+			shp = extring;
+		}
+		else
+		{
+			tmp = GEOSSymDifference(shp, extring);
+			GEOSGeom_destroy(shp);
+			GEOSGeom_destroy(extring);
+			shp = tmp;
+		}
+	}
+
+	return shp;
+}
 
 PG_FUNCTION_INFO_V1(postgis_geos_version);
 Datum postgis_geos_version(PG_FUNCTION_ARGS)
@@ -3158,10 +3263,10 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 	return g;
 }
 
-const GEOSGeometry *
+GEOSGeometry *
 POSTGIS2GEOS(PG_LWGEOM *pglwgeom)
 {
-	const GEOSGeometry *ret;
+	GEOSGeometry *ret;
 	LWGEOM *lwgeom = lwgeom_deserialize(SERIALIZED_FORM(pglwgeom));
 	if ( ! lwgeom )
 	{
@@ -3371,11 +3476,9 @@ PG_FUNCTION_INFO_V1(LWGEOM_buildarea);
 Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 {
 	int is3d = 0;
-	unsigned int i, ngeoms;
 	PG_LWGEOM *result;
-	LWGEOM *lwg;
-	GEOSGeometry *geos_result, *shp;
-	GEOSGeometry const *vgeoms[1];
+	GEOSGeometry* geos_in;
+	GEOSGeometry* geos_out;
 	int SRID=-1;
 #if POSTGIS_DEBUG_LEVEL >= 3
 	static int call=1;
@@ -3395,105 +3498,25 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwerror);
 
-	vgeoms[0] = (const GEOSGeometry *)POSTGIS2GEOS(geom);
-	geos_result = GEOSPolygonize(vgeoms, 1);
-	GEOSGeom_destroy((GEOSGeometry *)vgeoms[0]);
+	geos_in = POSTGIS2GEOS(geom);
+	geos_out = LWGEOM_GEOS_buildArea(geos_in);
+	GEOSGeom_destroy(geos_in);
 
-	POSTGIS_DEBUGF(3, "GEOSpolygonize returned @ %p", geos_result);
-
-	/* Null return from GEOSpolygonize */
-	if ( ! geos_result ) PG_RETURN_NULL();
-
-	/*
-	 * We should now have a collection
-	 */
-#if PARANOIA_LEVEL > 0
-	if ( GEOSGeometryTypeId(geos_result) != COLLECTIONTYPE )
+	if ( ! geos_out ) /* exception thrown.. */
 	{
-		GEOSGeom_destroy(geos_result);
-		lwerror("Unexpected return from GEOSpolygonize");
-		PG_RETURN_NULL();
-	}
-#endif
-
-	ngeoms = GEOSGetNumGeometries(geos_result);
-
-	POSTGIS_DEBUGF(3, "GEOSpolygonize: ngeoms in polygonize output: %d", ngeoms);
-
-	/*
-	 * No geometries in collection, return NULL
-	 */
-	if ( ngeoms == 0 )
-	{
-		GEOSGeom_destroy(geos_result);
 		PG_RETURN_NULL();
 	}
 
-	/*
-	 * Return first geometry if we only have one in collection,
-	 * to avoid the unnecessary Geometry clone below.
-	 */
-	if ( ngeoms == 1 )
+	/* If no geometries are in result collection, return NULL */
+	if ( GEOSGetNumGeometries(geos_out) == 0 )
 	{
-		shp = (GEOSGeometry *)GEOSGetGeometryN(geos_result, 0);
-		lwg = GEOS2LWGEOM(shp, is3d);
-		lwg->SRID = SRID;
-		result = pglwgeom_serialize(lwg);
-		lwgeom_release(lwg);
-		GEOSGeom_destroy(geos_result);
-		PG_RETURN_POINTER(result);
+		GEOSGeom_destroy(geos_out);
+		PG_RETURN_NULL();
 	}
 
-	/*
-	 * Iteratively invoke symdifference on outer rings
-	 * as suggested by Carl Anderson:
-	 * postgis-devel/2005-December/001805.html
-	 */
-	shp = NULL;
-	for (i=0; i<ngeoms; ++i)
-	{
-		GEOSGeom extring, tmp;
-		GEOSCoordSeq sq;
-
-		/*
-		 * Construct a Polygon from geometry i exterior ring
-		 * We don't use GEOSGeom_clone on the ExteriorRing
-		 * due to a bug in CAPI contained in GEOS 2.2 branch
-		 * failing to properly return a LinearRing from
-		 * a LinearRing clone.
-		 */
-		sq=GEOSCoordSeq_clone(GEOSGeom_getCoordSeq(
-		                          GEOSGetExteriorRing(GEOSGetGeometryN( geos_result, i))
-		                      ));
-		extring = GEOSGeom_createPolygon(
-		              GEOSGeom_createLinearRing(sq),
-		              NULL, 0
-		          );
-
-		if ( extring == NULL ) /* exception */
-		{
-			lwerror("GEOSCreatePolygon threw an exception");
-			PG_RETURN_NULL();
-		}
-
-		if ( shp == NULL )
-		{
-			shp = extring;
-		}
-		else
-		{
-			tmp = GEOSSymDifference(shp, extring);
-			GEOSGeom_destroy(shp);
-			GEOSGeom_destroy(extring);
-			shp = tmp;
-		}
-	}
-
-	GEOSGeom_destroy(geos_result);
-
-	GEOSSetSRID(shp, SRID);
-	result = GEOS2POSTGIS(shp, is3d);
-	GEOSGeom_destroy(shp);
+	GEOSSetSRID(geos_out, SRID);
+	result = GEOS2POSTGIS(geos_out, is3d);
+	GEOSGeom_destroy(geos_out);
 
 #if PARANOIA_LEVEL > 0
 	if ( result == NULL )
