@@ -244,7 +244,7 @@ Datum hausdorffdistance(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
@@ -287,7 +287,7 @@ Datum hausdorffdistancedensify(PG_FUNCTION_ARGS)
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	densifyFrac = PG_GETARG_FLOAT8(2);
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
@@ -370,7 +370,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	}
 
 	/* Ok, we really need geos now ;) */
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	/*
 	** First, see if all our elements are POLYGON/MULTIPOLYGON
@@ -630,7 +630,7 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	SRID = pglwgeom_getSRID(geom1);
 	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
@@ -711,7 +711,7 @@ Datum symdifference(PG_FUNCTION_ARGS)
 	SRID = pglwgeom_getSRID(geom1);
 	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
@@ -780,7 +780,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 
 	SRID = pglwgeom_getSRID(geom1);
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1 );
@@ -843,7 +843,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	SRID = pglwgeom_getSRID(geom1);
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
@@ -918,7 +918,7 @@ Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	tolerance = PG_GETARG_FLOAT8(1);
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	g3 = GEOSTopologyPreserveSimplify(g1,tolerance);
@@ -990,7 +990,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 	nargs = PG_NARGS();
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
@@ -1188,7 +1188,7 @@ Datum intersection(PG_FUNCTION_ARGS)
 	SRID = pglwgeom_getSRID(geom1);
 	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	POSTGIS_DEBUG(3, "intersection() START");
 
@@ -1276,7 +1276,7 @@ Datum difference(PG_FUNCTION_ARGS)
 	SRID = pglwgeom_getSRID(geom1);
 	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
@@ -1345,7 +1345,7 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
@@ -1401,7 +1401,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
 	geosgeom = (GEOSGeometry *)POSTGIS2GEOS(geom);
@@ -1715,7 +1715,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 		if ( box2.ymin > box2.ymax ) PG_RETURN_BOOL(FALSE);
 	}
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
@@ -1847,7 +1847,7 @@ Datum contains(PG_FUNCTION_ARGS)
 		POSTGIS_DEBUGF(3, "Contains: type1: %d, type2: %d", type1, type2);
 	}
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 #ifdef PREPARED_GEOM
 	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0 );
@@ -1913,7 +1913,7 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 			PG_RETURN_BOOL(FALSE);
 	}
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 #ifdef PREPARED_GEOM
 	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0 );
@@ -2048,7 +2048,7 @@ Datum covers(PG_FUNCTION_ARGS)
 		POSTGIS_DEBUGF(3, "Covers: type1: %d, type2: %d", type1, type2);
 	}
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 #ifdef PREPARED_GEOM
 	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0 );
@@ -2176,7 +2176,7 @@ Datum within(PG_FUNCTION_ARGS)
 		}
 	}
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
@@ -2308,7 +2308,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 		}
 	}
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
@@ -2374,7 +2374,7 @@ Datum crosses(PG_FUNCTION_ARGS)
 		}
 	}
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
@@ -2513,7 +2513,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 		}
 	}
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 #ifdef PREPARED_GEOM
 	prep_cache = GetPrepGeomCache( fcinfo, geom1, geom2 );
 
@@ -2587,7 +2587,7 @@ Datum touches(PG_FUNCTION_ARGS)
 		}
 	}
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1 );
@@ -2652,7 +2652,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 		}
 	}
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
@@ -2701,7 +2701,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
@@ -2755,7 +2755,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1 );
 	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2 );
@@ -2833,7 +2833,7 @@ Datum geomequals(PG_FUNCTION_ARGS)
 		if ( box2.ymin != box2.ymin ) PG_RETURN_BOOL(FALSE);
 	}
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
@@ -2879,7 +2879,7 @@ Datum issimple(PG_FUNCTION_ARGS)
 	if (lwgeom_getnumgeometries(SERIALIZED_FORM(geom)) == 0)
 		PG_RETURN_BOOL(true);
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom);
 	result = GEOSisSimple(g1);
@@ -2913,7 +2913,7 @@ Datum isring(PG_FUNCTION_ARGS)
 	if (lwgeom_getnumgeometries(SERIALIZED_FORM(geom)) == 0)
 		PG_RETURN_BOOL(false);
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom );
 	result = GEOSisRing(g1);
@@ -3357,7 +3357,7 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	if ( nelems == 0 ) PG_RETURN_NULL();
 
 	/* Ok, we really need geos now ;) */
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	vgeoms = palloc(sizeof(GEOSGeometry *)*nelems);
 	offset = 0;
@@ -3418,7 +3418,7 @@ Datum linemerge(PG_FUNCTION_ARGS)
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
@@ -3496,7 +3496,7 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "LWGEOM_buildarea got geom @ %p", geom);
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	geos_in = POSTGIS2GEOS(geom);
 	geos_out = LWGEOM_GEOS_buildArea(geos_in);
