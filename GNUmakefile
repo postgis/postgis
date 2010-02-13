@@ -115,4 +115,7 @@ ChangeLog.svn:
 astyle:
 	./astyle.sh
 
+commit:
+	$(MAKE) astyle && $(MAKE) clean && $(MAKE) check && svn commit
+
 .PHONY: utils liblwgeom ChangeLog.svn
