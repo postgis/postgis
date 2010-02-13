@@ -67,3 +67,4 @@ SELECT
 #408|IllegalArgumentException: point array must contain 0 or >1 elements
 NOTICE:  IllegalArgumentException: point array must contain 0 or >1 elements
 #408.1|f
+#408.2|IllegalArgumentException: point array must contain 0 or >1 elements
