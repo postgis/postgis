@@ -36,7 +36,7 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS);
 typedef struct GEOMDUMPNODE_T
 {
 	int idx;
-	LWCOLLECTION *geom;
+	LWGEOM *geom;
 }
 GEOMDUMPNODE;
 
@@ -46,7 +46,6 @@ typedef struct GEOMDUMPSTATE
 	int stacklen;
 	GEOMDUMPNODE *stack[MAXDEPTH];
 	LWGEOM *root;
-	LWGEOM *geom;
 }
 GEOMDUMPSTATE;
 
@@ -96,7 +95,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 			 */
 			node = lwalloc(sizeof(GEOMDUMPNODE));
 			node->idx=0;
-			node->geom = (LWCOLLECTION *)lwgeom;
+			node->geom = lwgeom;
 			PUSH(state, node);
 		}
 
@@ -141,7 +140,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 	while (1)
 	{
 		node = LAST(state);
-		lwcoll = node->geom;
+		lwcoll = (LWCOLLECTION*)node->geom;
 
 		if ( node->idx < lwcoll->ngeoms )
 		{
@@ -172,7 +171,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 
 			node = lwalloc(sizeof(GEOMDUMPNODE));
 			node->idx=0;
-			node->geom = (LWCOLLECTION *)lwgeom;
+			node->geom = lwgeom;
 			PUSH(state, node);
 
 			MemoryContextSwitchTo(oldcontext);
