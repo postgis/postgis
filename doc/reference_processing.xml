@@ -872,8 +872,8 @@ SELECT ST_AsEWKT(a.geom), ST_HasArc(a.geom)
 					For example, if a <varname>LINESTRING</varname> is supplied, a path of <varname>{i}</varname> is 
 					returned where <varname>i</varname> is the <varname>nth</varname> coordinate in the <varname>LINESTRING</varname>.
 					If a <varname>POLYGON</varname> is supplied, a path of <varname>{i,j}</varname> is returned where 
-					<varname>i</varname> is the outer ring followed by the inner rings and <varname>j</varname> 
-					enumerates the <varname>POINT</varname>s.
+					<varname>i</varname> is the ring number (1 is outer; inner rings follow) and <varname>j</varname> 
+					enumerates the <varname>POINT</varname>s (again 1-based index).
 				</para>
 				
 				<para>Availability: 1.5.0</para>
