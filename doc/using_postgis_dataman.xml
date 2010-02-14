@@ -1048,11 +1048,10 @@ FROM public.myschema.myspecialpois LIMIT 1;
 	  <programlisting>-- Typically, it doesn't make sense to check
 -- for validity on linear features since it will always return TRUE.
 -- But in this example, PostGIS extends the definition of the OGC IsValid
--- by returning false if a LinearRing (start and end points are the same)
--- has less than 2 vertices.
+-- by returning false if a LineString has less than 2 *distinct* vertices.
 gisdb=# SELECT
    ST_IsValid('LINESTRING(0 0, 1 1)'),
-   ST_IsValid('LINESTRING(0 0, 0 0)');
+   ST_IsValid('LINESTRING(0 0, 0 0, 0 0)');
 
  st_isvalid | st_isvalid
 ------------+-----------
