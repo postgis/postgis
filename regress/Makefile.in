@@ -69,7 +69,8 @@ TESTS = \
 	regress_proj \
 	dumppoints \
 	wmsservers \
-	tickets
+	tickets \
+	clean
 
 # Styled buffer only if GEOS >= 3.2
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 32),1)

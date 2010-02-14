@@ -4,7 +4,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
  *
- * Copyright 2009 Sandro Santilli <strk@keybit.net>
+ * Copyright 2009-2010 Sandro Santilli <strk@keybit.net>
  * Copyright 2008 Paul Ramsey <pramsey@cleverelephant.ca>
  * Copyright 2001-2003 Refractions Research Inc.
  *
@@ -19,7 +19,6 @@
 #include "funcapi.h"
 
 #include <string.h>
-
 
 /**
 ** NOTE: Buffer-based GeomUnion has been disabled due to
@@ -3872,3 +3871,523 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 
 }
 
+/*-------------------------------------------------------------
+ *
+ * ST_MakeValid
+ *
+ * Attempts to make an invalid geometries valid w/out loosing
+ * point sets.
+ *
+ * Polygons may become collection of polygons and lines.
+ * Collapsed rings (or portions of rings) may be dissolved in
+ * polygon area or transformed to linestring if outside any other
+ * ring.
+ *
+ * Author: Sandro Santilli <strk@keybit.net>
+ *
+ * Work done for Regione Toscana - Sistema Informativo per il Governo
+ * del Territorio e dell'Ambiente (RT-SIGTA).
+ *
+ * Thanks to Dr. Horst Duester for previous work on a plpgsql version
+ * of the cleanup logic [1]
+ *
+ * Thanks to Andrea Peri for recommandations on constraints.
+ *
+ * [1] http://www.sogis1.so.ch/sogis/dl/postgis/cleanGeometry.sql
+ *
+ *
+ *------------------------------------------------------------*/
+
+LWGEOM * lwcollection_make_valid(LWCOLLECTION *g);
+LWGEOM * lwline_make_valid(LWLINE *line);
+LWGEOM * lwpoly_make_valid(LWPOLY *poly);
+POINTARRAY* ring_make_valid(POINTARRAY* ring);
+
+/*
+ * Ensure the geometry is "valid"
+ * May return the input untouched (if already valid).
+ * May return geometries of lower dimension (on collapses)
+ */
+static LWGEOM *
+lwgeom_make_valid(LWGEOM *geom)
+{
+	LWDEBUGF(2, "lwgeom_make_valid enter (type %d)", TYPE_GETTYPE(geom->type));
+	switch (TYPE_GETTYPE(geom->type))
+	{
+	case POINTTYPE:
+	case MULTIPOINTTYPE:
+		/* a point is always valid */
+		return geom;
+		break;
+
+	case LINETYPE:
+		/* lines need at least 2 points */
+		return lwline_make_valid((LWLINE *)geom);
+		break;
+
+	case POLYGONTYPE:
+		/* polygons need all rings closed */
+		return lwpoly_make_valid((LWPOLY *)geom);
+		break;
+
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+	case COLLECTIONTYPE:
+		return lwcollection_make_valid((LWCOLLECTION *)geom);
+		break;
+
+	case CIRCSTRINGTYPE:
+	case COMPOUNDTYPE:
+	case CURVEPOLYTYPE:
+	case MULTISURFACETYPE:
+	case MULTICURVETYPE:
+	default:
+		lwerror("unsupported input geometry type: %d", TYPE_GETTYPE(geom->type));
+		break;
+	}
+	return 0;
+}
+
+/*
+ * Close the point array, if not already closed in 2d.
+ * Returns the input if already closed in 2d, or a newly
+ * constructed POINTARRAY.
+ */
+POINTARRAY* ptarray_close2d(POINTARRAY* ring);
+POINTARRAY*
+ptarray_close2d(POINTARRAY* ring)
+{
+	POINTARRAY* newring;
+
+	/* close the ring if not already closed (2d only) */
+	if ( ! ptarray_isclosed2d(ring) )
+	{
+		/* close it up */
+		newring = ptarray_addPoint(ring,
+		                           getPoint_internal(ring, 0),
+		                           TYPE_NDIMS(ring->dims),
+		                           ring->npoints);
+		ring = newring;
+	}
+	return ring;
+}
+
+/* May return the same input or a new one (never zero) */
+POINTARRAY*
+ring_make_valid(POINTARRAY* ring)
+{
+	POINTARRAY* closedring;
+
+	/* close the ring if not already closed (2d only) */
+	closedring = ptarray_close2d(ring);
+	if (closedring != ring )
+	{
+		ptarray_free(ring); /* should we do this ? */
+		ring = closedring;
+	}
+
+	/* return 0 for collapsed ring (after closeup) */
+
+	if ( ring->npoints < 4 )
+	{
+		LWDEBUGF(4, "ring has %d points, adding another", ring->npoints);
+		/* let's add another... */
+		closedring = ptarray_addPoint(closedring,
+		                              getPoint_internal(closedring, 0),
+		                              TYPE_NDIMS(closedring->dims),
+		                              closedring->npoints);
+		return closedring;
+	}
+
+
+	return ring;
+}
+
+/* Return 0 if poly was collapsed, or the input with updated rings */
+LWGEOM *
+lwpoly_make_valid(LWPOLY *poly)
+{
+	LWGEOM* ret;
+	POINTARRAY **new_rings;
+	int new_nrings=0, i;
+
+	/* Allocate enough pointers for all rings */
+	new_rings = lwalloc(sizeof(POINTARRAY*)*poly->nrings);
+
+	/* All rings must be closed and have > 3 points */
+	for (i=0; i<poly->nrings; i++)
+	{
+		POINTARRAY* ring_in = poly->rings[i];
+		POINTARRAY* ring_out = ring_make_valid(ring_in);
+
+		if ( ring_in != ring_out )
+		{
+			LWDEBUGF(3, "lwpoly_make_valid: ring %d cleaned", i);
+			/* this may come right from
+			 * the binary representation lands
+			 */
+			/*ptarray_free(ring_in); */
+		}
+		else
+		{
+			LWDEBUGF(3, "lwpoly_make_valid: ring %d untouched", i);
+		}
+
+		if ( ring_out )
+		{
+			new_rings[new_nrings++] = ring_out;
+		}
+	}
+
+	if ( new_nrings )
+	{
+		lwfree(poly->rings);
+		poly->rings = new_rings;
+		poly->nrings = new_nrings;
+		ret = (LWGEOM*)poly;
+	}
+	else
+	{
+		/* was collapsed, will return zero */
+		LWDEBUG(3, "lwpoly_make_valid: all polygon rings collapsed");
+		lwpoly_release(poly);
+
+		/* Make a POLYGON EMPTY or  COLLECTION EMPTY ? */
+		/* COLLECTION EMPTY */
+#if 0
+		ret = (LWGEOM*)lwcollection_construct_empty(poly->SRID,
+		        TYPE_HASZ(poly->type), TYPE_HASM(poly->type));
+#else
+		/* POLYGON EMPTY */
+		lwfree(poly->rings);
+		poly->rings = new_rings;
+		poly->nrings = new_nrings;
+		ret = (LWGEOM*)poly;
+#endif
+	}
+
+	return ret;
+}
+
+LWGEOM *
+lwline_make_valid(LWLINE *line)
+{
+	LWGEOM *ret;
+
+	if (line->points->npoints == 1) /* 0 is fine, 2 is fine */
+	{
+		/* Turn into a point (dropping bbox, as we don't
+		 * need it for points)
+		 */
+		ret = (LWGEOM*)lwpoint_construct(line->SRID, 0, line->points);
+		return ret;
+	}
+	else
+	{
+		return (LWGEOM*)line;
+		/* return lwline_clone(line); */
+	}
+}
+
+LWGEOM *
+lwcollection_make_valid(LWCOLLECTION *g)
+{
+	LWGEOM **new_geoms;
+	uint32 i, new_ngeoms=0;
+	LWCOLLECTION *ret;
+
+	/* enough space for all components */
+	new_geoms = lwalloc(sizeof(LWGEOM *)*g->ngeoms);
+
+	ret = lwalloc(sizeof(LWCOLLECTION));
+	memcpy(ret, g, sizeof(LWCOLLECTION));
+
+	for (i=0; i<g->ngeoms; i++)
+	{
+		LWGEOM* newg = lwgeom_make_valid(g->geoms[i]);
+		if ( newg ) new_geoms[new_ngeoms++] = newg;
+	}
+
+	ret->bbox = 0; /* recompute later... */
+
+	ret->ngeoms = new_ngeoms;
+	if ( new_ngeoms )
+	{
+		ret->geoms = new_geoms;
+	}
+	else
+	{
+		free(new_geoms);
+		ret->geoms = 0;
+	}
+
+	return (LWGEOM*)ret;
+}
+
+Datum st_makevalid(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(st_makevalid);
+Datum st_makevalid(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *in, *out;
+	GEOSGeom geosgeom, geos_bound, geos_bound_noded, geos_tmp_point;
+	GEOSGeom geos_cut_edges, geos_area;
+	LWGEOM *lwgeom_in, *lwgeom_out;
+	/* LWGEOM *lwgeom_pointset; */
+	char ret_char;
+	int is3d;
+	int nargs;
+	int collect_collapses = false;
+
+	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	lwgeom_in = lwgeom_deserialize(SERIALIZED_FORM(in));
+
+	is3d = TYPE_HASZ(lwgeom_in->type);
+
+	nargs = PG_NARGS();
+	if (nargs > 1)
+	{
+		collect_collapses = PG_GETARG_BOOL(1);
+	}
+
+	/*
+	 * Step 1 : try to convert to GEOS, if impossible, clean that up first
+	 *          otherwise (adding only duplicates of existing points)
+	 */
+
+	initGEOS(errorlogger, errorlogger);
+
+
+	lwgeom_out = lwgeom_in;
+	geosgeom = LWGEOM2GEOS(lwgeom_out);
+	if ( ! geosgeom )
+	{
+		POSTGIS_DEBUGF(4,
+		               "Original geom can't be converted to GEOS (%s)"
+		               " - will try cleaning that up first",
+		               loggederror);
+
+
+		lwgeom_out = lwgeom_make_valid(lwgeom_out);
+		if ( ! lwgeom_out )
+		{
+			lwerror("Could not make a valid geometry out of input");
+		}
+
+		/* try again as we did cleanup now */
+		geosgeom = LWGEOM2GEOS(lwgeom_out);
+		if ( ! geosgeom )
+		{
+			lwerror("Couldn't convert POSTGIS geom to GEOS: %s",
+			        loggederror);
+			PG_RETURN_NULL();
+		}
+
+	}
+	else
+	{
+		POSTGIS_DEBUG(4, "original geom converted to GEOS");
+		lwgeom_out = lwgeom_in;
+	}
+
+
+	/*
+	 * Step 2 : return the resulting geometry if it's now valid
+	 */
+
+	ret_char = GEOSisValid(geosgeom);
+	if ( ret_char == 2 )
+	{
+		lwerror("GEOSisValid() threw an error: %s", loggederror);
+		PG_RETURN_NULL(); /* I don't think should ever happen */
+	}
+	else if ( ret_char )
+	{
+		/* It's valid at this step, return what we have */
+
+		GEOSGeom_destroy(geosgeom);
+		geosgeom=0;
+
+		out = pglwgeom_serialize(lwgeom_out);
+		lwgeom_release(lwgeom_out);
+		lwgeom_out=0;
+
+		PG_FREE_IF_COPY(in, 0);
+
+		PG_RETURN_POINTER(out);
+	}
+
+	POSTGIS_DEBUGF(3,
+	               "Geometry [%s] is still not valid:",
+	               lwgeom_to_ewkt(lwgeom_out, PARSER_CHECK_NONE));
+	POSTGIS_DEBUGF(3, " %s", loggederror);
+	POSTGIS_DEBUG(3, " will try to clean up further");
+
+	/*
+	 * Step 3 : make what we got now (geosgeom) valid
+	 */
+
+	switch (GEOSGeomTypeId(geosgeom))
+	{
+	case GEOS_MULTIPOINT:
+	case GEOS_POINT:
+		/* points are always valid, but we might have invalid ordinate values */
+		lwerror("PUNTUAL geometry resulted invalid to GEOS -- dunno how to clean that up");
+		break;
+
+	case GEOS_LINESTRING:
+	case GEOS_MULTILINESTRING:
+		lwerror("ST_MakeValid: doesn't support linear types");
+		break;
+
+	case GEOS_POLYGON:
+	case GEOS_MULTIPOLYGON:
+		geos_bound = GEOSBoundary(geosgeom);
+		if ( NULL == geos_bound )
+		{
+			GEOSGeom_destroy(geosgeom);
+			geosgeom=0;
+			lwgeom_release(lwgeom_in);
+			lwgeom_in=0;
+			lwgeom_release(lwgeom_out);
+			lwgeom_out=0;
+			PG_FREE_IF_COPY(in, 0);
+			lwerror("GEOSboundary() threw an error: %s", loggederror);
+			PG_RETURN_NULL(); /* never get here */
+		}
+
+		POSTGIS_DEBUGF(3,
+		               "Boundaries: %s",
+		               lwgeom_to_ewkt(GEOS2LWGEOM(geos_bound, is3d),
+		                              PARSER_CHECK_NONE));
+
+		/*
+		 * Union with an empty point, obtaining full noding
+		 * and dissolving of duplicated repeated points
+		 *
+		 * TODO: substitute this with UnaryUnion?
+		 *
+		 * need a point on the line here rather
+		 * than an arbitrary one ?
+		 */
+		geos_tmp_point = GEOSGeom_createPoint(0);
+		// GEOSPointOnSurface(geos_bound);
+		if ( ! geos_tmp_point )
+		{
+			lwerror("GEOSGeom_createPoint(0): %s", loggederror);
+			PG_RETURN_NULL(); /* never get here */
+		}
+
+		geos_bound_noded = GEOSUnion(geos_bound, geos_tmp_point);
+		if ( NULL == geos_bound_noded )
+		{
+			GEOSGeom_destroy(geosgeom);
+			geosgeom=0;
+			GEOSGeom_destroy(geos_tmp_point);
+			geos_tmp_point=0;
+			geos_tmp_point=0;
+			GEOSGeom_destroy(geos_bound);
+			geos_bound=0;
+			lwgeom_release(lwgeom_in);
+			lwgeom_in=0;
+			lwgeom_release(lwgeom_out);
+			lwgeom_out=0;
+			PG_FREE_IF_COPY(in, 0);
+			lwerror("GEOSUnion() threw an error: %s", loggederror);
+			PG_RETURN_NULL(); /* never get here */
+		}
+
+		POSTGIS_DEBUGF(3,
+		               "Noded: %s",
+		               lwgeom_to_ewkt(GEOS2LWGEOM(geos_bound_noded, is3d),
+		                              PARSER_CHECK_NONE));
+
+		GEOSGeom_destroy(geos_tmp_point);
+		geos_tmp_point=0;
+		GEOSGeom_destroy(geosgeom);
+		geosgeom=0;
+
+		geos_area = LWGEOM_GEOS_buildArea(geos_bound_noded);
+		if ( ! geos_area ) /* must be an exception ... */
+		{
+			/* cleanup and throw */
+			GEOSGeom_destroy(geos_bound);
+			geos_bound=0;
+			GEOSGeom_destroy(geos_bound_noded);
+			geos_bound_noded=0;
+			PG_FREE_IF_COPY(in, 0);
+			lwerror("LWGEOM_GEOS_buildArea() threw an error: %s",
+			        loggederror);
+			PG_RETURN_NULL(); /* never get here */
+		}
+
+		if ( ! collect_collapses )
+		{
+			geosgeom = geos_area;
+		}
+		else /* collect_collapses */
+		{
+			/* Compute what's left out from original boundary
+			 * (this would be the so called 'cut lines' */
+			geos_cut_edges = GEOSDifference(geos_bound_noded, geos_area);
+			if ( ! geos_cut_edges )   /* an exception again */
+			{
+				/* cleanup and throw */
+				GEOSGeom_destroy(geos_bound);
+				geos_bound=0;
+				GEOSGeom_destroy(geos_area);
+				geos_area=0;
+				GEOSGeom_destroy(geos_bound_noded);
+				geos_bound_noded=0;
+				PG_FREE_IF_COPY(in, 0);
+				lwerror("GEOSDifference() threw an error: %s",
+				        loggederror);
+				PG_RETURN_NULL(); /* never get here */
+			}
+
+			GEOSGeom_destroy(geos_bound);
+			geos_bound=0;
+			GEOSGeom_destroy(geos_bound_noded);
+			geos_bound_noded=0;
+
+			/* Finally put togheter cut edges and area
+			 * (could become a collection) */
+			geosgeom = GEOSUnion(geos_area, geos_cut_edges);
+			if ( ! geosgeom )   /* an exception again */
+			{
+				/* cleanup and throw */
+				GEOSGeom_destroy(geos_area);
+				geos_area=0;
+				GEOSGeom_destroy(geos_cut_edges);
+				geos_cut_edges=0;
+				PG_FREE_IF_COPY(in, 0);
+				lwerror("GEOSUnion() threw an error: %s",
+				        loggederror);
+				PG_RETURN_NULL(); /* never get here */
+			}
+		}
+
+		break; /* we've done */
+
+	default:
+	{
+		char* tmp = GEOSGeomType(geosgeom);
+		char* typname = pstrdup(tmp);
+		GEOSFree(tmp);
+		lwerror("ST_MakeValid: doesn't support geometry type: %d",
+		        typname);
+		break;
+	}
+	}
+
+
+	if ( ! geosgeom ) PG_RETURN_NULL();
+
+	/* Now check if every point of input is also found
+	 * in output, or abort by returning NULL
+	 *
+	 * Input geometry was lwgeom_in
+	 */
+
+	out = GEOS2POSTGIS(geosgeom, is3d);
+	PG_RETURN_POINTER(out);
+}
