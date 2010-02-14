@@ -911,3 +911,50 @@ dynptarray_addPoint4d(DYNPTARRAY *dpa, POINT4D *p4d, int allow_duplicates)
 	return 1;
 }
 
+/*
+ * Returns a POINTARRAY with consecutive equal points
+ * removed. Equality test on all dimensions of input.
+ *
+ * May return the input untouched, or a newly allocated
+ * POINTARRAY (and point list)
+ *
+ */
+POINTARRAY *
+ptarray_remove_repeated_points(POINTARRAY *in)
+{
+	POINTARRAY* out;
+	size_t ptsize;
+	size_t ipn, opn;
+
+	LWDEBUG(3, "ptarray_remove_repeated_points called.");
+
+	/* Single or zero point arrays can't have duplicates */
+	if ( in->npoints < 2 ) return in;
+
+	ptsize = pointArray_ptsize(in);
+
+	/* Allocate enough space for all points */
+	out = ptarray_construct(TYPE_HASZ(in->dims),
+	                        TYPE_HASM(in->dims), in->npoints);
+
+	/* Now fill up the actual points (NOTE: could be optimized) */
+
+	opn=1;
+	memcpy(getPoint_internal(in, 0), getPoint_internal(out, 0), ptsize);
+	for (ipn=1; ipn<in->npoints; ++ipn)
+	{
+		if ( memcmp(getPoint_internal(in, ipn-1),
+		            getPoint_internal(in, ipn), ptsize) )
+		{
+			/* The point is different from the previous,
+			 * we add it to output */
+			memcpy(getPoint_internal(in, ipn),
+			       getPoint_internal(out, opn++), ptsize);
+		}
+	}
+
+	out->npoints = opn;
+
+	return out;
+}
+
