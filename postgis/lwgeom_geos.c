@@ -19,6 +19,7 @@
 #include "funcapi.h"
 
 #include <string.h>
+#include <assert.h>
 
 /**
 ** NOTE: Buffer-based GeomUnion has been disabled due to
@@ -4016,13 +4017,18 @@ ring_make_valid(POINTARRAY* ring)
 	return ring;
 }
 
-/* Return 0 if poly was collapsed, or the input with updated rings */
+/* Make sure all rings are closed and have > 3 points.
+ * May return the input untouched.
+ */
 LWGEOM *
 lwpoly_make_valid(LWPOLY *poly)
 {
 	LWGEOM* ret;
 	POINTARRAY **new_rings;
-	int new_nrings=0, i;
+	int i;
+
+	/* If the polygon has no rings there's nothing to do */
+	if ( ! poly->nrings ) return (LWGEOM*)poly;
 
 	/* Allocate enough pointers for all rings */
 	new_rings = lwalloc(sizeof(POINTARRAY*)*poly->nrings);
@@ -4046,38 +4052,13 @@ lwpoly_make_valid(LWPOLY *poly)
 			LWDEBUGF(3, "lwpoly_make_valid: ring %d untouched", i);
 		}
 
-		if ( ring_out )
-		{
-			new_rings[new_nrings++] = ring_out;
-		}
+		assert ( ring_out );
+		new_rings[i] = ring_out;
 	}
 
-	if ( new_nrings )
-	{
-		lwfree(poly->rings);
-		poly->rings = new_rings;
-		poly->nrings = new_nrings;
-		ret = (LWGEOM*)poly;
-	}
-	else
-	{
-		/* was collapsed, will return zero */
-		LWDEBUG(3, "lwpoly_make_valid: all polygon rings collapsed");
-		lwpoly_release(poly);
-
-		/* Make a POLYGON EMPTY or  COLLECTION EMPTY ? */
-#if 0
-		/* COLLECTION EMPTY */
-		ret = (LWGEOM*)lwcollection_construct_empty(poly->SRID,
-		        TYPE_HASZ(poly->type), TYPE_HASM(poly->type));
-#else
-		/* POLYGON EMPTY */
-		lwfree(poly->rings);
-		poly->rings = new_rings;
-		poly->nrings = new_nrings;
-		ret = (LWGEOM*)poly;
-#endif
-	}
+	lwfree(poly->rings);
+	poly->rings = new_rings;
+	ret = (LWGEOM*)poly;
 
 	return ret;
 }
