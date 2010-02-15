@@ -4066,8 +4066,8 @@ lwpoly_make_valid(LWPOLY *poly)
 		lwpoly_release(poly);
 
 		/* Make a POLYGON EMPTY or  COLLECTION EMPTY ? */
-		/* COLLECTION EMPTY */
 #if 0
+		/* COLLECTION EMPTY */
 		ret = (LWGEOM*)lwcollection_construct_empty(poly->SRID,
 		        TYPE_HASZ(poly->type), TYPE_HASM(poly->type));
 #else
@@ -4386,7 +4386,7 @@ Datum st_makevalid(PG_FUNCTION_ARGS)
 		char* tmp = GEOSGeomType(geosgeom);
 		char* typname = pstrdup(tmp);
 		GEOSFree(tmp);
-		lwerror("ST_MakeValid: doesn't support geometry type: %d",
+		lwerror("ST_MakeValid: doesn't support geometry type: %s",
 		        typname);
 		break;
 	}
