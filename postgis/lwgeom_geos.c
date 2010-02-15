@@ -153,7 +153,11 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 	if ( ngeoms == 1 )
 	{
 		tmp = (GEOSGeometry *)GEOSGetGeometryN(geos_result, 0);
-		if ( ! tmp ) return 0; /* exception */
+		if ( ! tmp )
+		{
+			GEOSGeom_destroy(geos_result);
+			return 0; /* exception */
+		}
 		shp = GEOSGeom_clone(tmp);
 		GEOSGeom_destroy(geos_result); /* only safe after the clone above */
 		return shp;
@@ -203,6 +207,8 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 			shp = tmp;
 		}
 	}
+
+	GEOSGeom_destroy(geos_result);
 
 	return shp;
 }
@@ -3532,10 +3538,12 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 		{
 			sq = ptarray_to_GEOSCoordSeq(lwpoly->rings[i]);
 			geoms[i-1] = GEOSGeom_createLinearRing(sq);
-			if ( ! geoms[i-1] ) {
+			if ( ! geoms[i-1] )
+			{
 				--i;
 				while (i) GEOSGeom_destroy(geoms[i-1]);
 				free(geoms);
+				GEOSGeom_destroy(shell);
 				return NULL;
 			}
 			/*lwerror("LWGEOM2GEOS: exception during polygon hole conversion"); */
@@ -4202,6 +4210,11 @@ Datum st_makevalid(PG_FUNCTION_ARGS)
 	ret_char = GEOSisValid(geosgeom);
 	if ( ret_char == 2 )
 	{
+		GEOSGeom_destroy(geosgeom);
+		geosgeom=0;
+
+		PG_FREE_IF_COPY(in, 0);
+
 		lwerror("GEOSisValid() threw an error: %s", loggederror);
 		PG_RETURN_NULL(); /* I don't think should ever happen */
 	}
@@ -4247,10 +4260,10 @@ Datum st_makevalid(PG_FUNCTION_ARGS)
 	case GEOS_POLYGON:
 	case GEOS_MULTIPOLYGON:
 		geos_bound = GEOSBoundary(geosgeom);
+		GEOSGeom_destroy(geosgeom);
+		geosgeom=0;
 		if ( NULL == geos_bound )
 		{
-			GEOSGeom_destroy(geosgeom);
-			geosgeom=0;
 			lwgeom_release(lwgeom_in);
 			lwgeom_in=0;
 			lwgeom_release(lwgeom_out);
@@ -4285,8 +4298,6 @@ Datum st_makevalid(PG_FUNCTION_ARGS)
 		geos_bound_noded = GEOSUnion(geos_bound, geos_tmp_point);
 		if ( NULL == geos_bound_noded )
 		{
-			GEOSGeom_destroy(geosgeom);
-			geosgeom=0;
 			GEOSGeom_destroy(geos_tmp_point);
 			geos_tmp_point=0;
 			geos_tmp_point=0;
@@ -4301,6 +4312,9 @@ Datum st_makevalid(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL(); /* never get here */
 		}
 
+		GEOSGeom_destroy(geos_bound);
+		geos_bound=0;
+
 		POSTGIS_DEBUGF(3,
 		               "Noded: %s",
 		               lwgeom_to_ewkt(GEOS2LWGEOM(geos_bound_noded, is3d),
@@ -4308,15 +4322,11 @@ Datum st_makevalid(PG_FUNCTION_ARGS)
 
 		GEOSGeom_destroy(geos_tmp_point);
 		geos_tmp_point=0;
-		GEOSGeom_destroy(geosgeom);
-		geosgeom=0;
 
 		geos_area = LWGEOM_GEOS_buildArea(geos_bound_noded);
 		if ( ! geos_area ) /* must be an exception ... */
 		{
 			/* cleanup and throw */
-			GEOSGeom_destroy(geos_bound);
-			geos_bound=0;
 			GEOSGeom_destroy(geos_bound_noded);
 			geos_bound_noded=0;
 			PG_FREE_IF_COPY(in, 0);
@@ -4328,6 +4338,8 @@ Datum st_makevalid(PG_FUNCTION_ARGS)
 		if ( ! collect_collapses )
 		{
 			geosgeom = geos_area;
+			GEOSGeom_destroy(geos_bound_noded);
+			geos_bound_noded=0;
 		}
 		else /* collect_collapses */
 		{
@@ -4337,8 +4349,6 @@ Datum st_makevalid(PG_FUNCTION_ARGS)
 			if ( ! geos_cut_edges )   /* an exception again */
 			{
 				/* cleanup and throw */
-				GEOSGeom_destroy(geos_bound);
-				geos_bound=0;
 				GEOSGeom_destroy(geos_area);
 				geos_area=0;
 				GEOSGeom_destroy(geos_bound_noded);
@@ -4349,21 +4359,19 @@ Datum st_makevalid(PG_FUNCTION_ARGS)
 				PG_RETURN_NULL(); /* never get here */
 			}
 
-			GEOSGeom_destroy(geos_bound);
-			geos_bound=0;
 			GEOSGeom_destroy(geos_bound_noded);
 			geos_bound_noded=0;
 
 			/* Finally put togheter cut edges and area
 			 * (could become a collection) */
 			geosgeom = GEOSUnion(geos_area, geos_cut_edges);
+			GEOSGeom_destroy(geos_cut_edges);
+			geos_cut_edges=0;
+			GEOSGeom_destroy(geos_area);
+			geos_area=0;
 			if ( ! geosgeom )   /* an exception again */
 			{
 				/* cleanup and throw */
-				GEOSGeom_destroy(geos_area);
-				geos_area=0;
-				GEOSGeom_destroy(geos_cut_edges);
-				geos_cut_edges=0;
 				PG_FREE_IF_COPY(in, 0);
 				lwerror("GEOSUnion() threw an error: %s",
 				        loggederror);
@@ -4394,5 +4402,8 @@ Datum st_makevalid(PG_FUNCTION_ARGS)
 	 */
 
 	out = GEOS2POSTGIS(geosgeom, is3d);
+	GEOSGeom_destroy(geosgeom);
+	geosgeom=0;
+
 	PG_RETURN_POINTER(out);
 }
