@@ -3532,7 +3532,12 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 		{
 			sq = ptarray_to_GEOSCoordSeq(lwpoly->rings[i]);
 			geoms[i-1] = GEOSGeom_createLinearRing(sq);
-			if ( ! geoms[i-1] ) return NULL;
+			if ( ! geoms[i-1] ) {
+				--i;
+				while (i) GEOSGeom_destroy(geoms[i-1]);
+				free(geoms);
+				return NULL;
+			}
 			/*lwerror("LWGEOM2GEOS: exception during polygon hole conversion"); */
 		}
 		g = GEOSGeom_createPolygon(shell, geoms, ngeoms);
