@@ -4020,7 +4020,10 @@ CREATE OR REPLACE FUNCTION ST_Union(geometry,geometry)
 
 -- ST_MakeValid(in geometry)
 --
--- Makes the input valid discarding dimensional collapses
+-- Try to make the input valid maintaining the boundary profile.
+-- May return a collection.
+-- May return a geometry with inferior dimensions (dimensional collapses).
+-- May return NULL if can't handle input.
 --
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_MakeValid(geometry)
@@ -4029,33 +4032,20 @@ CREATE OR REPLACE FUNCTION ST_MakeValid(geometry)
        LANGUAGE 'C' IMMUTABLE STRICT
        COST 100;
 
--- ST_MakeValid(in geometry, collect_collapses bool)
---
--- Makes the input valid, optionally collecting dimensional collapses.
---
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_MakeValid(geometry, bool)
-       RETURNS geometry
-       AS 'MODULE_PATHNAME', 'st_makevalid'
-       LANGUAGE 'C' IMMUTABLE STRICT
-       COST 100;
-
 -- ST_CleanGeometry(in geometry)
 --
 -- Make input:
--- 	- Simple (if lineal)
---	- Valid (if polygonal)
+-- 	- Simple (lineal components)
+--	- Valid (polygonal components)
 --	- Obeying the RHR (if polygonal)
 --	- Simplified of consecutive duplicated points 
 -- Ensuring:
---	- No input vertexes are discarded
+--	- No input vertexes are discarded (except consecutive repeated ones)
 --	- Output geometry type matches input
 --
--- Failing any constraint makes this function
--- return NULL.
+-- Returns NULL on failure.
 -- 
 -- Availability: 2.0.0
---
 CREATE OR REPLACE FUNCTION ST_CleanGeometry(geometry)
        RETURNS geometry
        AS $$
@@ -4069,17 +4059,13 @@ BEGIN
 
   RAISE DEBUG 'ST_CleanGeometry: in: %', ST_GeometryType(gin);
 
+  -- Collect all distinct input points
   SELECT INTO pin ST_Union(geom)
     FROM (select (ST_DumpPoints(gin)).geom) as foo;
 
   RAISE DEBUG 'ST_CleanGeometry: in points: %', ST_asText(pin);
 
-  gout := _ST_CleanGeometry(gin);
-
-  SELECT INTO pout ST_Union(geom)
-    FROM (select (ST_DumpPoints(gout)).geom) as foo;
-
-  RAISE DEBUG 'ST_CleanGeometry: out points: %', ST_asText(pout);
+  gout := ST_MakeValid(gin);
 
   -- Check dimensionality is the same as input
   IF ST_Dimension(gin) != ST_Dimension(gout) THEN
@@ -4088,8 +4074,14 @@ BEGIN
     RETURN NULL;
   END IF;
 
-  -- Now make sure all input points are also in output and if they 
-  -- are not, return null
+  -- Collect all distinct output points and check they contain
+  -- all points from the input set
+
+  SELECT INTO pout ST_Union(geom)
+    FROM (select (ST_DumpPoints(gout)).geom) as foo;
+
+  RAISE DEBUG 'ST_CleanGeometry: out points: %', ST_asText(pout);
+
   pdif := ST_Difference(pin, pout);
   IF NOT ST_isEmpty(pdif) THEN
     RAISE NOTICE 'ST_CleanGeometry: dropped vertices: %', ST_asText(pdif);
@@ -4097,6 +4089,7 @@ BEGIN
   END IF;
 
   -- Force right-hand-rule (will only affect polygons)
+
   gout := ST_ForceRHR(gout);
 
   -- Remove repeated duplicated points 
@@ -4105,7 +4098,6 @@ BEGIN
   RETURN gout;
 
 END
-
 $$ LANGUAGE plpgsql;
 
 --------------------------------------------------------------------------------
