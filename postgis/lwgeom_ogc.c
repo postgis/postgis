@@ -437,7 +437,7 @@ Datum LWGEOM_dimension(PG_FUNCTION_ARGS)
 	if ( dimension == -1 )
 	{
 		PG_FREE_IF_COPY(geom, 0);
-		elog(ERROR, "Something went wrong in dimension computation");
+		elog(NOTICE, "Could not compute geoemtry dimensions");
 		PG_RETURN_NULL();
 	}
 
