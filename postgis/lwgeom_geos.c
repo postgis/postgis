@@ -3940,7 +3940,7 @@ lwgeom_make_valid(LWGEOM *geom)
 		break;
 
 	case POLYGONTYPE:
-		/* polygons need all rings closed */
+		/* polygons need all rings closed and with npoints > 3 */
 		return lwpoly_make_valid((LWPOLY *)geom);
 		break;
 
@@ -4063,6 +4063,7 @@ lwpoly_make_valid(LWPOLY *poly)
 	return ret;
 }
 
+/* Need NO or >1 points. Duplicate first if only one. */
 LWGEOM *
 lwline_make_valid(LWLINE *line)
 {
@@ -4070,10 +4071,17 @@ lwline_make_valid(LWLINE *line)
 
 	if (line->points->npoints == 1) /* 0 is fine, 2 is fine */
 	{
-		/* Turn into a point (dropping bbox, as we don't
-		 * need it for points)
-		 */
+#if 0
+		/* Duplicate point */
+		line->points = ptarray_addPoint(line->points,
+		                                getPoint_internal(line->points, 0),
+		                                TYPE_NDIMS(line->points->dims),
+		                                line->points->npoints);
+		ret = (LWGEOM*)line;
+#else
+		/* Turn into a point */
 		ret = (LWGEOM*)lwpoint_construct(line->SRID, 0, line->points);
+#endif
 		return ret;
 	}
 	else
@@ -4118,13 +4126,111 @@ lwcollection_make_valid(LWCOLLECTION *g)
 	return (LWGEOM*)ret;
 }
 
+/* We expect initGEOS being called already */
+GEOSGeometry* LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* geom_in);
+GEOSGeometry*
+LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
+{
+	GEOSGeom gout;
+	GEOSGeom geos_bound, geos_bound_noded, geos_tmp_point;
+	GEOSGeom geos_cut_edges, geos_area;
+
+	assert (GEOSGeomTypeId(gin) == GEOS_POLYGON ||
+	        GEOSGeomTypeId(gin) == GEOS_MULTIPOLYGON);
+
+	geos_bound = GEOSBoundary(gin);
+	if ( NULL == geos_bound )
+	{
+		return NULL;
+	}
+
+	POSTGIS_DEBUGF(3,
+	               "Boundaries: %s",
+	               lwgeom_to_ewkt(GEOS2LWGEOM(geos_bound, is3d),
+	                              PARSER_CHECK_NONE));
+
+	/*
+	 * Union with an empty point, obtaining full noding
+	 * and dissolving of duplicated repeated points
+	 *
+	 * TODO: substitute this with UnaryUnion?
+	 *
+	 * need a point on the line here rather
+	 * than an arbitrary one ?
+	 */
+	geos_tmp_point = GEOSGeom_createPoint(0);
+	// GEOSPointOnSurface(geos_bound);
+	if ( ! geos_tmp_point )
+	{
+		lwnotice("GEOSGeom_createPoint(0): %s", loggederror);
+		GEOSGeom_destroy(geos_bound);
+		return NULL;
+	}
+
+	geos_bound_noded = GEOSUnion(geos_bound, geos_tmp_point);
+	if ( NULL == geos_bound_noded )
+	{
+		lwnotice("GEOSUnion(): %s", loggederror);
+		GEOSGeom_destroy(geos_bound);
+		GEOSGeom_destroy(geos_tmp_point);
+		return NULL;
+	}
+
+	GEOSGeom_destroy(geos_bound);
+	GEOSGeom_destroy(geos_tmp_point);
+
+	POSTGIS_DEBUGF(3,
+	               "Noded: %s",
+	               lwgeom_to_ewkt(GEOS2LWGEOM(geos_bound_noded, is3d),
+	                              PARSER_CHECK_NONE));
+
+	geos_area = LWGEOM_GEOS_buildArea(geos_bound_noded);
+	if ( ! geos_area ) /* must be an exception ... */
+	{
+		/* cleanup */
+		GEOSGeom_destroy(geos_bound_noded);
+		lwnotice("LWGEOM_GEOS_buildArea() threw an error: %s",
+		         loggederror);
+		return NULL;
+	}
+
+	/* Compute what's left out from original boundary
+	 * (this would be the so called 'cut lines' */
+	geos_cut_edges = GEOSDifference(geos_bound_noded, geos_area);
+	if ( ! geos_cut_edges )   /* an exception again */
+	{
+		/* cleanup and throw */
+		GEOSGeom_destroy(geos_bound_noded);
+		GEOSGeom_destroy(geos_area);
+		lwnotice("GEOSDifference() threw an error: %s",
+		         loggederror);
+		return NULL;
+	}
+
+	GEOSGeom_destroy(geos_bound_noded);
+
+	/* Finally put togheter cut edges and area
+	 * (could become a collection) */
+	gout = GEOSUnion(geos_area, geos_cut_edges);
+	GEOSGeom_destroy(geos_cut_edges);
+	GEOSGeom_destroy(geos_area);
+	if ( ! gout )   /* an exception again */
+	{
+		/* cleanup and throw */
+		lwnotice("GEOSUnion() threw an error: %s",
+		         loggederror);
+		return NULL;
+	}
+
+	return gout;
+}
+
 Datum st_makevalid(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(st_makevalid);
 Datum st_makevalid(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *in, *out;
-	GEOSGeom geosgeom, geos_bound, geos_bound_noded, geos_tmp_point;
-	GEOSGeom geos_cut_edges, geos_area;
+	GEOSGeom geosgeom;
 	LWGEOM *lwgeom_in, *lwgeom_out;
 	/* LWGEOM *lwgeom_pointset; */
 	char ret_char;
@@ -4222,136 +4328,43 @@ Datum st_makevalid(PG_FUNCTION_ARGS)
 	case GEOS_MULTIPOINT:
 	case GEOS_POINT:
 		/* points are always valid, but we might have invalid ordinate values */
-		lwerror("PUNTUAL geometry resulted invalid to GEOS -- dunno how to clean that up");
+		lwnotice("PUNTUAL geometry resulted invalid to GEOS -- dunno how to clean that up");
+		PG_RETURN_NULL();
 		break;
 
 	case GEOS_LINESTRING:
 	case GEOS_MULTILINESTRING:
-		lwerror("ST_MakeValid: doesn't support linear types");
+		lwnotice("LINEAL geometries resulted invalid to GEOS -- dunno how to clean that up");
+		PG_RETURN_NULL();
 		break;
 
 	case GEOS_POLYGON:
 	case GEOS_MULTIPOLYGON:
-		geos_bound = GEOSBoundary(geosgeom);
-		GEOSGeom_destroy(geosgeom);
-		geosgeom=0;
-		if ( NULL == geos_bound )
+	{
+		GEOSGeom tmp = LWGEOM_GEOS_makeValidPolygon(geosgeom);
+		if ( ! tmp )  /* an exception or something */
 		{
+			/* cleanup and throw */
+			GEOSGeom_destroy(geosgeom);
 			lwgeom_release(lwgeom_in);
-			lwgeom_in=0;
 			lwgeom_release(lwgeom_out);
-			lwgeom_out=0;
 			PG_FREE_IF_COPY(in, 0);
-			lwerror("GEOSboundary() threw an error: %s", loggederror);
+			lwerror("%s", loggederror);
 			PG_RETURN_NULL(); /* never get here */
 		}
-
-		POSTGIS_DEBUGF(3,
-		               "Boundaries: %s",
-		               lwgeom_to_ewkt(GEOS2LWGEOM(geos_bound, is3d),
-		                              PARSER_CHECK_NONE));
-
-		/*
-		 * Union with an empty point, obtaining full noding
-		 * and dissolving of duplicated repeated points
-		 *
-		 * TODO: substitute this with UnaryUnion?
-		 *
-		 * need a point on the line here rather
-		 * than an arbitrary one ?
-		 */
-		geos_tmp_point = GEOSGeom_createPoint(0);
-		// GEOSPointOnSurface(geos_bound);
-		if ( ! geos_tmp_point )
-		{
-			lwerror("GEOSGeom_createPoint(0): %s", loggederror);
-			PG_RETURN_NULL(); /* never get here */
-		}
-
-		geos_bound_noded = GEOSUnion(geos_bound, geos_tmp_point);
-		if ( NULL == geos_bound_noded )
-		{
-			GEOSGeom_destroy(geos_tmp_point);
-			geos_tmp_point=0;
-			geos_tmp_point=0;
-			GEOSGeom_destroy(geos_bound);
-			geos_bound=0;
-			lwgeom_release(lwgeom_in);
-			lwgeom_in=0;
-			lwgeom_release(lwgeom_out);
-			lwgeom_out=0;
-			PG_FREE_IF_COPY(in, 0);
-			lwerror("GEOSUnion() threw an error: %s", loggederror);
-			PG_RETURN_NULL(); /* never get here */
-		}
-
-		GEOSGeom_destroy(geos_bound);
-		geos_bound=0;
-
-		POSTGIS_DEBUGF(3,
-		               "Noded: %s",
-		               lwgeom_to_ewkt(GEOS2LWGEOM(geos_bound_noded, is3d),
-		                              PARSER_CHECK_NONE));
-
-		GEOSGeom_destroy(geos_tmp_point);
-		geos_tmp_point=0;
-
-		geos_area = LWGEOM_GEOS_buildArea(geos_bound_noded);
-		if ( ! geos_area ) /* must be an exception ... */
-		{
-			/* cleanup and throw */
-			GEOSGeom_destroy(geos_bound_noded);
-			geos_bound_noded=0;
-			PG_FREE_IF_COPY(in, 0);
-			lwerror("LWGEOM_GEOS_buildArea() threw an error: %s",
-			        loggederror);
-			PG_RETURN_NULL(); /* never get here */
-		}
-
-		/* Compute what's left out from original boundary
-		 * (this would be the so called 'cut lines' */
-		geos_cut_edges = GEOSDifference(geos_bound_noded, geos_area);
-		if ( ! geos_cut_edges )   /* an exception again */
-		{
-			/* cleanup and throw */
-			GEOSGeom_destroy(geos_area);
-			geos_area=0;
-			GEOSGeom_destroy(geos_bound_noded);
-			geos_bound_noded=0;
-			PG_FREE_IF_COPY(in, 0);
-			lwerror("GEOSDifference() threw an error: %s",
-			        loggederror);
-			PG_RETURN_NULL(); /* never get here */
-		}
-
-		GEOSGeom_destroy(geos_bound_noded);
-		geos_bound_noded=0;
-
-		/* Finally put togheter cut edges and area
-		 * (could become a collection) */
-		geosgeom = GEOSUnion(geos_area, geos_cut_edges);
-		GEOSGeom_destroy(geos_cut_edges);
-		geos_cut_edges=0;
-		GEOSGeom_destroy(geos_area);
-		geos_area=0;
-		if ( ! geosgeom )   /* an exception again */
-		{
-			/* cleanup and throw */
-			PG_FREE_IF_COPY(in, 0);
-			lwerror("GEOSUnion() threw an error: %s",
-			        loggederror);
-			PG_RETURN_NULL(); /* never get here */
-		}
-
-		break; /* we've done */
+		GEOSGeom_destroy(geosgeom); /* input one */
+		geosgeom = tmp;
+		break; /* we've done (geosgeom is the output) */
+	}
 
 	default:
 	{
 		char* tmp = GEOSGeomType(geosgeom);
 		char* typname = pstrdup(tmp);
 		GEOSFree(tmp);
-		lwerror("ST_MakeValid: doesn't support geometry type: %s",
-		        typname);
+		lwnotice("ST_MakeValid: doesn't support geometry type: %s",
+		         typname);
+		PG_RETURN_NULL();
 		break;
 	}
 	}
