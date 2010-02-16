@@ -4146,7 +4146,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 
 	POSTGIS_DEBUGF(3,
 	               "Boundaries: %s",
-	               lwgeom_to_ewkt(GEOS2LWGEOM(geos_bound, is3d),
+	               lwgeom_to_ewkt(GEOS2LWGEOM(geos_bound, 0),
 	                              PARSER_CHECK_NONE));
 
 	/*
@@ -4181,7 +4181,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 
 	POSTGIS_DEBUGF(3,
 	               "Noded: %s",
-	               lwgeom_to_ewkt(GEOS2LWGEOM(geos_bound_noded, is3d),
+	               lwgeom_to_ewkt(GEOS2LWGEOM(geos_bound_noded, 0),
 	                              PARSER_CHECK_NONE));
 
 	geos_area = LWGEOM_GEOS_buildArea(geos_bound_noded);
