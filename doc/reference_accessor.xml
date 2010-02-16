@@ -209,9 +209,13 @@ MULTIPOINT(-1 1 1,1 1 0.75)
 			be less than or equal to the coordinate dimension. OGC SPEC
 			s2.1.1.1 - returns 0 for <varname>POINT</varname>, 1 for <varname>LINESTRING</varname>, 2 for <varname>POLYGON</varname>, and
 			the largest dimension of the components of a
-			<varname>GEOMETRYCOLLECTION</varname>.</para>
+			<varname>GEOMETRYCOLLECTION</varname>.
+			If unknown (empty geometry) null is returned.
+		</para>
 
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.2</para>
+
+		<note> <para>Prior to 2.0.0, this function throws an exception if used with empty geometry. </para></note>
 
 	  </refsection>
 
