@@ -22,5 +22,6 @@ COPY clean_cases FROM stdin;
 
 SELECT caseno,
        st_astext(st_makevalid(orig)) = st_astext(valid),
-       st_isvalid(st_makevalid(orig)) -- paranoia
+       st_isvalid(st_makevalid(orig)), -- paranoia
+       (st_isvaliddetail(orig)).valid
 FROM clean_cases;
