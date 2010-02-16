@@ -4059,6 +4059,11 @@ BEGIN
 
   RAISE DEBUG 'ST_CleanGeometry: in: %', ST_GeometryType(gin);
 
+  -- Short-circuit: empty geometry are the cleanest !
+  IF ST_isEmpty(gin) THEN
+    RETURN gin;
+  END IF;
+
   -- Collect all distinct input points
   SELECT INTO pin ST_Union(geom)
     FROM (select (ST_DumpPoints(gin)).geom) as foo;
