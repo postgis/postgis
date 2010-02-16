@@ -87,9 +87,8 @@
 			geometry primitives as discussed in the OGC SPEC, section
 			3.12.2.</para>
 		<para>Performed by the GEOS module</para>
-		<important>
-		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
-		</important>
+
+		<note> <para>Prior to 2.0.0, this function throws an exception if used with <varname>GEOMETRYCOLLECTION</varname>. From 2.0.0 up it will return NULL instead (unsupported input).</para></note>
 
 		<para>&sfs_compliant; OGC SPEC s2.1.1.1</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.14</para>

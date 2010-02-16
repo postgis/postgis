@@ -883,7 +883,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 
 	if (g3 == NULL)
 	{
-		elog(ERROR,"GEOS boundary() threw an error!");
+		elog(NOTICE,"GEOSBoundary(): %s", loggederror);
 		GEOSGeom_destroy(g1);
 		PG_RETURN_NULL(); /* never get here */
 	}
@@ -902,7 +902,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g1);
 
 		GEOSGeom_destroy(g3);
-		elog(ERROR,"GEOS boundary() threw an error (result postgis geometry formation)!");
+		elog(NOTICE,"GEOS2POSTGIS threw an error (result postgis geometry formation)!");
 		PG_RETURN_NULL(); /* never get here */
 	}
 
