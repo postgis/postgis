@@ -4129,19 +4129,11 @@ Datum st_makevalid(PG_FUNCTION_ARGS)
 	/* LWGEOM *lwgeom_pointset; */
 	char ret_char;
 	int is3d;
-	int nargs;
-	int collect_collapses = false;
 
 	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	lwgeom_in = lwgeom_deserialize(SERIALIZED_FORM(in));
 
 	is3d = TYPE_HASZ(lwgeom_in->type);
-
-	nargs = PG_NARGS();
-	if (nargs > 1)
-	{
-		collect_collapses = PG_GETARG_BOOL(1);
-	}
 
 	/*
 	 * Step 1 : try to convert to GEOS, if impossible, clean that up first
@@ -4316,48 +4308,39 @@ Datum st_makevalid(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL(); /* never get here */
 		}
 
-		if ( ! collect_collapses )
+		/* Compute what's left out from original boundary
+		 * (this would be the so called 'cut lines' */
+		geos_cut_edges = GEOSDifference(geos_bound_noded, geos_area);
+		if ( ! geos_cut_edges )   /* an exception again */
 		{
-			geosgeom = geos_area;
-			GEOSGeom_destroy(geos_bound_noded);
-			geos_bound_noded=0;
-		}
-		else /* collect_collapses */
-		{
-			/* Compute what's left out from original boundary
-			 * (this would be the so called 'cut lines' */
-			geos_cut_edges = GEOSDifference(geos_bound_noded, geos_area);
-			if ( ! geos_cut_edges )   /* an exception again */
-			{
-				/* cleanup and throw */
-				GEOSGeom_destroy(geos_area);
-				geos_area=0;
-				GEOSGeom_destroy(geos_bound_noded);
-				geos_bound_noded=0;
-				PG_FREE_IF_COPY(in, 0);
-				lwerror("GEOSDifference() threw an error: %s",
-				        loggederror);
-				PG_RETURN_NULL(); /* never get here */
-			}
-
-			GEOSGeom_destroy(geos_bound_noded);
-			geos_bound_noded=0;
-
-			/* Finally put togheter cut edges and area
-			 * (could become a collection) */
-			geosgeom = GEOSUnion(geos_area, geos_cut_edges);
-			GEOSGeom_destroy(geos_cut_edges);
-			geos_cut_edges=0;
+			/* cleanup and throw */
 			GEOSGeom_destroy(geos_area);
 			geos_area=0;
-			if ( ! geosgeom )   /* an exception again */
-			{
-				/* cleanup and throw */
-				PG_FREE_IF_COPY(in, 0);
-				lwerror("GEOSUnion() threw an error: %s",
-				        loggederror);
-				PG_RETURN_NULL(); /* never get here */
-			}
+			GEOSGeom_destroy(geos_bound_noded);
+			geos_bound_noded=0;
+			PG_FREE_IF_COPY(in, 0);
+			lwerror("GEOSDifference() threw an error: %s",
+			        loggederror);
+			PG_RETURN_NULL(); /* never get here */
+		}
+
+		GEOSGeom_destroy(geos_bound_noded);
+		geos_bound_noded=0;
+
+		/* Finally put togheter cut edges and area
+		 * (could become a collection) */
+		geosgeom = GEOSUnion(geos_area, geos_cut_edges);
+		GEOSGeom_destroy(geos_cut_edges);
+		geos_cut_edges=0;
+		GEOSGeom_destroy(geos_area);
+		geos_area=0;
+		if ( ! geosgeom )   /* an exception again */
+		{
+			/* cleanup and throw */
+			PG_FREE_IF_COPY(in, 0);
+			lwerror("GEOSUnion() threw an error: %s",
+			        loggederror);
+			PG_RETURN_NULL(); /* never get here */
 		}
 
 		break; /* we've done */
