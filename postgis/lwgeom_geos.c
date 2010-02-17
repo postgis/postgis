@@ -214,6 +214,81 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 	return shp;
 }
 
+/*
+ * Return Nth vertex in GEOSGeometry as a POINT.
+ * May return NULL if the geometry has NO vertexex.
+ */
+GEOSGeometry* LWGEOM_GEOS_getPointN(const GEOSGeometry*, unsigned int);
+GEOSGeometry*
+LWGEOM_GEOS_getPointN(const GEOSGeometry* g_in, unsigned int n)
+{
+	unsigned int dims;
+	const GEOSCoordSequence* seq_in;
+	GEOSCoordSeq seq_out;
+	double val;
+	unsigned int sz;
+	int gn;
+	GEOSGeometry* ret;
+
+	switch ( GEOSGeomTypeId(g_in) )
+	{
+	case GEOS_MULTIPOINT:
+	case GEOS_MULTILINESTRING:
+	case GEOS_MULTIPOLYGON:
+	case GEOS_GEOMETRYCOLLECTION:
+	{
+		for (gn=0; gn<GEOSGetNumGeometries(g_in); ++gn)
+		{
+			const GEOSGeometry* g = GEOSGetGeometryN(g_in, gn);
+			ret = LWGEOM_GEOS_getPointN(g,n);
+			if ( ret ) return ret;
+		}
+		break;
+	}
+
+	case GEOS_POLYGON:
+	{
+		ret = LWGEOM_GEOS_getPointN(GEOSGetExteriorRing(g_in), n);
+		if ( ret ) return ret;
+		for (gn=0; gn<GEOSGetNumInteriorRings(g_in); ++gn)
+		{
+			const GEOSGeometry* g = GEOSGetInteriorRingN(g_in, gn);
+			ret = LWGEOM_GEOS_getPointN(g, n);
+			if ( ret ) return ret;
+		}
+		break;
+	}
+
+	case GEOS_POINT:
+	case GEOS_LINESTRING:
+	case GEOS_LINEARRING:
+		break;
+
+	}
+
+	seq_in = GEOSGeom_getCoordSeq(g_in);
+	if ( ! seq_in ) return NULL;
+	if ( ! GEOSCoordSeq_getSize(seq_in, &sz) ) return NULL;
+	if ( ! sz ) return NULL;
+
+	if ( ! GEOSCoordSeq_getDimensions(seq_in, &dims) ) return NULL;
+
+	seq_out = GEOSCoordSeq_create(1, dims);
+	if ( ! seq_out ) return NULL;
+
+	if ( ! GEOSCoordSeq_getX(seq_in, n, &val) ) return NULL;
+	if ( ! GEOSCoordSeq_setX(seq_out, n, val) ) return NULL;
+	if ( ! GEOSCoordSeq_getY(seq_in, n, &val) ) return NULL;
+	if ( ! GEOSCoordSeq_setY(seq_out, n, val) ) return NULL;
+	if ( dims > 2 )
+	{
+		if ( ! GEOSCoordSeq_getZ(seq_in, n, &val) ) return NULL;
+		if ( ! GEOSCoordSeq_setZ(seq_out, n, val) ) return NULL;
+	}
+
+	return GEOSGeom_createPoint(seq_out);
+}
+
 PG_FUNCTION_INFO_V1(postgis_geos_version);
 Datum postgis_geos_version(PG_FUNCTION_ARGS)
 {
@@ -4002,15 +4077,14 @@ ring_make_valid(POINTARRAY* ring)
 
 	/* return 0 for collapsed ring (after closeup) */
 
-	if ( ring->npoints < 4 )
+	while ( ring->npoints < 4 )
 	{
 		LWDEBUGF(4, "ring has %d points, adding another", ring->npoints);
 		/* let's add another... */
-		closedring = ptarray_addPoint(closedring,
-		                              getPoint_internal(closedring, 0),
-		                              TYPE_NDIMS(closedring->dims),
-		                              closedring->npoints);
-		return closedring;
+		ring = ptarray_addPoint(ring,
+		                        getPoint_internal(ring, 0),
+		                        TYPE_NDIMS(ring->dims),
+		                        ring->npoints);
 	}
 
 
@@ -4041,7 +4115,7 @@ lwpoly_make_valid(LWPOLY *poly)
 
 		if ( ring_in != ring_out )
 		{
-			LWDEBUGF(3, "lwpoly_make_valid: ring %d cleaned", i);
+			LWDEBUGF(3, "lwpoly_make_valid: ring %d cleaned, now has %d points", i, ring_out->npoints);
 			/* this may come right from
 			 * the binary representation lands
 			 */
@@ -4126,7 +4200,11 @@ lwcollection_make_valid(LWCOLLECTION *g)
 	return (LWGEOM*)ret;
 }
 
-/* We expect initGEOS being called already */
+/*
+ * We expect initGEOS being called already.
+ * Will return NULL on error (expect error handler being called by then)
+ *
+ */
 GEOSGeometry* LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* geom_in);
 GEOSGeometry*
 LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
@@ -4150,22 +4228,24 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 	                              PARSER_CHECK_NONE));
 
 	/*
-	 * Union with an empty point, obtaining full noding
+	 * Union with first geometry point, obtaining full noding
 	 * and dissolving of duplicated repeated points
 	 *
 	 * TODO: substitute this with UnaryUnion?
 	 *
-	 * need a point on the line here rather
-	 * than an arbitrary one ?
 	 */
-	geos_tmp_point = GEOSGeom_createPoint(0);
-	// GEOSPointOnSurface(geos_bound);
+	geos_tmp_point = LWGEOM_GEOS_getPointN(geos_bound, 0);
 	if ( ! geos_tmp_point )
 	{
-		lwnotice("GEOSGeom_createPoint(0): %s", loggederror);
+		lwnotice("GEOSGeom_createPoint(): %s", loggederror);
 		GEOSGeom_destroy(geos_bound);
 		return NULL;
 	}
+
+	POSTGIS_DEBUGF(3,
+	               "Boundary point: %s",
+	               lwgeom_to_ewkt(GEOS2LWGEOM(geos_tmp_point, 0),
+	                              PARSER_CHECK_NONE));
 
 	geos_bound_noded = GEOSUnion(geos_bound, geos_tmp_point);
 	if ( NULL == geos_bound_noded )
@@ -4347,7 +4427,10 @@ Datum st_makevalid(PG_FUNCTION_ARGS)
 			/* cleanup and throw */
 			GEOSGeom_destroy(geosgeom);
 			lwgeom_release(lwgeom_in);
-			lwgeom_release(lwgeom_out);
+			if ( lwgeom_in != lwgeom_out )
+			{
+				lwgeom_release(lwgeom_out);
+			}
 			PG_FREE_IF_COPY(in, 0);
 			lwerror("%s", loggederror);
 			PG_RETURN_NULL(); /* never get here */
