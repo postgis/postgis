@@ -1055,10 +1055,10 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	double from = PG_GETARG_FLOAT8(1);
 	double to = PG_GETARG_FLOAT8(2);
-	LWLINE *iline;
 	LWGEOM *olwgeom;
 	POINTARRAY *ipa, *opa;
 	PG_LWGEOM *ret;
+	uchar type = geom->type;
 
 	if ( from < 0 || from > 1 )
 	{
@@ -1078,26 +1078,123 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if ( lwgeom_getType(geom->type) != LINETYPE )
+	if ( TYPE_GETTYPE(type) == LINETYPE )
+	{
+  		LWLINE *iline;
+
+		iline = lwline_deserialize(SERIALIZED_FORM(geom));
+
+		if( lwgeom_is_empty((LWGEOM*)iline) )
+		{
+			/* TODO return empty line */
+			lwline_release(iline);
+			PG_FREE_IF_COPY(geom, 0);
+			PG_RETURN_NULL();
+		}
+
+		ipa = iline->points;
+
+		opa = ptarray_substring(ipa, from, to);
+
+		if ( opa->npoints == 1 ) /* Point returned */
+			olwgeom = (LWGEOM *)lwpoint_construct(iline->SRID, NULL, opa);
+		else
+			olwgeom = (LWGEOM *)lwline_construct(iline->SRID, NULL, opa);
+
+	}
+	else if ( TYPE_GETTYPE(type) == MULTILINETYPE )
+	{
+  		LWMLINE *iline;
+		int i = 0, g = 0;
+		int homogeneous = LW_TRUE;
+		LWGEOM **geoms = NULL;
+		double length = 0.0, sublength = 0.0, minprop = 0.0, maxprop = 0.0;
+		
+		iline = lwmline_deserialize(SERIALIZED_FORM(geom));
+		
+		if( lwgeom_is_empty((LWGEOM*)iline) )
+		{
+			/* TODO return empty collection */
+			lwmline_release(iline);
+			PG_FREE_IF_COPY(geom, 0);
+			PG_RETURN_NULL();
+		}
+
+		/* Calculate the total length of the mline */
+		for ( i = 0; i < iline->ngeoms; i++ )
+		{
+			LWLINE *subline = (LWLINE*)iline->geoms[i];
+			if ( subline->points && subline->points->npoints > 1 )
+				length += lwgeom_pointarray_length2d(subline->points);
+		}
+			
+		geoms = lwalloc(sizeof(LWGEOM*) * iline->ngeoms);
+			
+		/* Slice each sub-geometry of the multiline */
+		for( i = 0; i < iline->ngeoms; i++ )
+		{
+			LWLINE *subline = (LWLINE*)iline->geoms[i];
+			double subfrom = 0.0, subto = 0.0;
+			
+			if ( subline->points && subline->points->npoints > 1 )
+				sublength += lwgeom_pointarray_length2d(subline->points);
+			
+			/* Calculate proportions for this subline */
+			minprop = maxprop;
+			maxprop = sublength / length;
+			
+			/* This subline doesn't reach the lowest proportion requested 
+			   or is beyond the highest proporton */
+			if( from > maxprop || to < minprop )
+				continue;
+			
+			if( from <= minprop )
+				subfrom = 0.0;
+			if( to >= maxprop )
+				subto = 1.0;
+				
+			if( from > minprop && from <= maxprop )
+				subfrom = (from - minprop) / (maxprop - minprop);
+
+			if( to < maxprop && to >= minprop )
+				subto = (to - minprop) / (maxprop - minprop);
+				
+			
+			opa = ptarray_substring(subline->points, subfrom, subto);
+			if( opa && opa->npoints > 0 )
+			{
+				if ( opa->npoints == 1 ) /* Point returned */
+				{
+					geoms[g] = (LWGEOM *)lwpoint_construct(iline->SRID, NULL, opa);
+					homogeneous = LW_FALSE;
+				}
+				else
+				{
+					geoms[g] = (LWGEOM *)lwline_construct(iline->SRID, NULL, opa);
+				}
+				g++;
+			}
+			
+			
+			
+		}
+		/* If we got any points, we need to return a GEOMETRYCOLLECTION */
+		if( ! homogeneous )
+			TYPE_SETTYPE(type,COLLECTIONTYPE);
+			
+		olwgeom = (LWGEOM*)lwcollection_construct(type, iline->SRID, NULL, g, geoms);
+	}
+	else
 	{
 		elog(ERROR,"line_interpolate_point: 1st arg isnt a line");
 		PG_RETURN_NULL();
 	}
 
-	iline = lwline_deserialize(SERIALIZED_FORM(geom));
-	ipa = iline->points;
-
-	opa = ptarray_substring(ipa, from, to);
-
-	if ( opa->npoints == 1 ) /* Point returned */
-		olwgeom = (LWGEOM *)lwpoint_construct(iline->SRID, NULL, opa);
-	else
-		olwgeom = (LWGEOM *)lwline_construct(iline->SRID, NULL, opa);
-
 	ret = pglwgeom_serialize(olwgeom);
 	PG_FREE_IF_COPY(geom, 0);
 	lwgeom_release(olwgeom);
 	PG_RETURN_POINTER(ret);
+
 }
 
 Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS);
