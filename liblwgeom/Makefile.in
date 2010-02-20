@@ -37,6 +37,7 @@ SA_OBJS = \
 	lwmcurve.o \
 	lwmsurface.o \
 	lwutil.o \
+	lwhomogenize.o \
 	lwalgorithm.o \
 	lwgunparse.o \
 	lwgparse.o \

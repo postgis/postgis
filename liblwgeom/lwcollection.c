@@ -419,53 +419,6 @@ int lwcollection_ngeoms(const LWCOLLECTION *col)
 	return ngeoms;
 }
 
-/*
-** Given a generic collection, return the "simplest" form.
-** eg: GEOMETRYCOLLECTION(MULTILINESTRING()) => MULTELINESTRING()
-**     GEOMETRYCOLLECTION(MULTILINESTRING(), MULTILINESTRING(), POINT()) => GEOMETRYCOLLECTION(MULTILINESTRING(), MULTIPOINT())
-**
-** In general, if the subcomponents are homogeneous, return a properly typed collection.
-** Otherwise, return a generic collection, with the subtypes in minimal typed collections.
-LWCOLLECTION *lwcollection_homogenize(const LWCOLLECTION *c1)
-{
-TODO: pramsey
-}
-*/
-
-/*
-** Given a generic collection, extract and return just the desired types.
-LWGEOM *lwcollection_extract(const LWCOLLECTION *col, char type)
-{
-	LWGEOM **extracted_geoms;
-	extracted_geoms = lwalloc(sizeof(void*)*col->ngeoms);
-	extracted_curgeom = 0;
-	char reqtype = TYPE_GETTYPE(type);
-	for ( i = 0; i < col->ngeoms; i++ )
-	{
-	if( col->geoms[i] )
-		char geomtype = TYPE_GETTYPE(col->geoms[i]->type);
-		if ( geomtype == reqtype )  {
-			extracted_geoms[extracted_curgeom] = col->geoms[i];
-			extracted_curgeom++;
-			continue;
-		}
-		else {
-			if ( geomtype == COLLECTIONTYPE ) {
-				LWGEOM *colgeom;
-				colgeom = lwcollection_extract(col->geoms[i], type);
-				extracted_geoms[extracted_curgeom] = colgeom->geoms;
-				extracted_curgeom++;
-				if( colgeom->bbox ) lwfree(colgeom->bbox);
-				lwfree(colgeom);
-				continue;
-			}
-		}
-TODO: pramsey
-}
-*/
-
-
-
 void lwcollection_free(LWCOLLECTION *col)
 {
 	int i;

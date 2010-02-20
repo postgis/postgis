@@ -891,6 +891,10 @@ extern uchar *lwgeom_serialize(LWGEOM *geom);
 extern void lwcollection_serialize_buf(LWCOLLECTION *mcoll, uchar *buf, size_t *size);
 extern int lwcollection_ngeoms(const LWCOLLECTION *col);
 
+/* Given a generic geometry/collection, return the "simplest" form. */
+extern LWGEOM *lwgeom_homogenize(const LWGEOM *geom);
+extern LWGEOM *lwcollection_homogenize(const LWCOLLECTION *col);
+
 /*
  * Deserialize an lwgeom serialized form.
  * The deserialized (recursive) structure will store
