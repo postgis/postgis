@@ -17,14 +17,47 @@
 #include "cu_tester.h"
 
 
+/**
+ * CUnit error handler 
+ * Log message in a global var instead of printing in stderr
+ *
+ * CAUTION: Not stop execution on lwerror case !!!
+ */
+static void
+cu_errorreporter(const char *fmt, va_list ap)
+{
+        char *msg;
+
+        /** This is a GNU extension.
+	 * Dunno how to handle errors here.
+         */
+        if (!lw_vasprintf (&msg, fmt, ap))
+        {
+                va_end (ap);
+                return;
+        }
+
+	strncpy(cu_error_msg, msg, MAX_CUNIT_ERROR_LENGTH);
+}
+
+void
+cu_error_msg_reset()
+{
+	memset(cu_error_msg, '\0', MAX_CUNIT_ERROR_LENGTH);
+}
+
 /*
 ** Set up liblwgeom to run in stand-alone mode using the
 ** usual system memory handling functions.
 */
 void lwgeom_init_allocators(void)
 {
-	/* liblwgeom callback - install default handlers */
-	lwgeom_install_default_allocators();
+        lwalloc_var = default_allocator;
+        lwrealloc_var = default_reallocator;
+        lwfree_var = default_freeor;
+        lwnotice_var = default_noticereporter;
+        lwerror_var = cu_errorreporter;
+
 }
 
 /*

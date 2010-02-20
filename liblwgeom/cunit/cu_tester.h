@@ -1,3 +1,6 @@
+#define MAX_CUNIT_ERROR_LENGTH 512
+char cu_error_msg[MAX_CUNIT_ERROR_LENGTH+1];
+void cu_error_msg_reset();
 
 CU_pSuite register_measures_suite(void);
 CU_pSuite register_geodetic_suite(void);
