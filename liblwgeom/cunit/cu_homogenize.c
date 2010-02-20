@@ -18,7 +18,7 @@
 CU_pSuite register_homogenize_suite(void)
 {
 	CU_pSuite pSuite;
-	pSuite = CU_add_suite("Homogenize Suite", init_libgeom_suite, clean_libgeom_suite);
+	pSuite = CU_add_suite("Homogenize Suite", init_homogenize_suite, clean_homogenize_suite);
 	if (NULL == pSuite)
 	{
 		CU_cleanup_registry();
