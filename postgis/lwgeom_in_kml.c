@@ -2,7 +2,7 @@
  * $Id:$
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+
  * Copyright 2009 Oslandia
  *
  * This is free software; you can redistribute and/or modify it under
@@ -39,7 +39,6 @@
 /*
 TODO:
 	- OGC:LonLat84_5773 explicit support (rather than EPSG:4326)
-	- Don't return a GEOMETRYCOLLECTION if a MULTI one is enough
 	- altitudeModeGroup relativeToGround Z Altitude
 	  computation upon Geoid
 */
@@ -59,9 +58,9 @@ PG_FUNCTION_INFO_V1(geom_from_kml);
 Datum geom_from_kml(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom, *geom2d;
+	LWGEOM *lwgeom, *hlwgeom;
 	xmlDocPtr xmldoc;
 	text *xml_input;
-	LWGEOM *lwgeom;
 	int xml_size;
 	uchar *srl;
 	char *xml;
@@ -90,6 +89,14 @@ Datum geom_from_kml(PG_FUNCTION_ARGS)
 	}
 
 	lwgeom = parse_kml(xmlroot, &hasz);
+
+	/* Homogenize geometry result if needed */
+	if (TYPE_GETTYPE(lwgeom->type) == COLLECTIONTYPE) {
+		hlwgeom = lwgeom_homogenize(lwgeom);
+		lwgeom_release(lwgeom);
+		lwgeom = hlwgeom;
+	}
+
 	lwgeom->bbox = lwgeom_compute_box2d(lwgeom);
 	geom = pglwgeom_serialize(lwgeom);
 	lwgeom_release(lwgeom);
