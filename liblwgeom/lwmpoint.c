@@ -148,3 +148,35 @@ void lwmpoint_free(LWMPOINT *mpt)
 
 }
 
+LWGEOM*
+lwmpoint_remove_repeated_points(LWMPOINT *mpoint)
+{
+	unsigned int nnewgeoms;
+	unsigned int i, j;
+	LWGEOM **newgeoms;
+
+	newgeoms = lwalloc(sizeof(LWGEOM *)*mpoint->ngeoms);
+	nnewgeoms = 0;
+	for (i=0; i<mpoint->ngeoms; ++i)
+	{
+		/* Brute force, may be optimized by building an index */
+		int seen=0;
+		for (j=0; j<nnewgeoms; ++j)
+		{
+			if ( lwpoint_same((LWPOINT*)newgeoms[j],
+			                  (LWPOINT*)mpoint->geoms[i]) )
+			{
+				seen=1;
+				break;
+			}
+		}
+		if ( seen ) continue;
+		newgeoms[nnewgeoms++] = (LWGEOM*)lwpoint_clone(mpoint->geoms[i]);
+	}
+
+	return (LWGEOM*)lwcollection_construct(mpoint->type,
+	                                       mpoint->SRID, mpoint->bbox ? box2d_clone(mpoint->bbox) : NULL,
+	                                       nnewgeoms, newgeoms);
+
+}
+

@@ -1177,3 +1177,44 @@ extern int lwgeom_dimensionality(LWGEOM *geom)
 	}
 	return 0;
 }
+
+extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in)
+{
+	LWDEBUGF(3, "lwgeom_remove_repeated_points got type %d", TYPE_GETTYPE(in->type));
+	switch (TYPE_GETTYPE(in->type))
+	{
+	case MULTIPOINTTYPE:
+		return lwmpoint_remove_repeated_points((LWMPOINT*)in);
+		break;
+	case LINETYPE:
+		return lwline_remove_repeated_points((LWLINE*)in);
+
+	case MULTILINETYPE:
+	case COLLECTIONTYPE:
+	case MULTIPOLYGONTYPE:
+		return lwcollection_remove_repeated_points((LWCOLLECTION *)in);
+
+	case POLYGONTYPE:
+		return lwpoly_remove_repeated_points((LWPOLY *)in);
+		break;
+
+	case POINTTYPE:
+		/* No point is repeated for a single point */
+		return in;
+
+	case CIRCSTRINGTYPE:
+	case COMPOUNDTYPE:
+	case MULTICURVETYPE:
+	case CURVEPOLYTYPE:
+	case MULTISURFACETYPE:
+		/* Dunno how to handle these, will return untouched */
+		return in;
+
+	default:
+		lwnotice("unsupported input geometry type: %d",
+		         TYPE_GETTYPE(in->type));
+		return in;
+		break;
+	}
+	return 0;
+}

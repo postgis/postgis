@@ -915,8 +915,7 @@ dynptarray_addPoint4d(DYNPTARRAY *dpa, POINT4D *p4d, int allow_duplicates)
  * Returns a POINTARRAY with consecutive equal points
  * removed. Equality test on all dimensions of input.
  *
- * May return the input untouched, or a newly allocated
- * POINTARRAY (and point list)
+ * Always returns a newly allocated object.
  *
  */
 POINTARRAY *
@@ -929,9 +928,11 @@ ptarray_remove_repeated_points(POINTARRAY *in)
 	LWDEBUG(3, "ptarray_remove_repeated_points called.");
 
 	/* Single or zero point arrays can't have duplicates */
-	if ( in->npoints < 2 ) return in;
+	if ( in->npoints < 2 ) return ptarray_clone(in);
 
 	ptsize = pointArray_ptsize(in);
+
+	LWDEBUGF(3, "ptsize: %d", ptsize);
 
 	/* Allocate enough space for all points */
 	out = ptarray_construct(TYPE_HASZ(in->dims),
@@ -940,7 +941,8 @@ ptarray_remove_repeated_points(POINTARRAY *in)
 	/* Now fill up the actual points (NOTE: could be optimized) */
 
 	opn=1;
-	memcpy(getPoint_internal(in, 0), getPoint_internal(out, 0), ptsize);
+	memcpy(getPoint_internal(out, 0), getPoint_internal(in, 0), ptsize);
+	LWDEBUGF(3, " first point copied, out points: %d", opn);
 	for (ipn=1; ipn<in->npoints; ++ipn)
 	{
 		if ( memcmp(getPoint_internal(in, ipn-1),
@@ -948,11 +950,14 @@ ptarray_remove_repeated_points(POINTARRAY *in)
 		{
 			/* The point is different from the previous,
 			 * we add it to output */
-			memcpy(getPoint_internal(in, ipn),
-			       getPoint_internal(out, opn++), ptsize);
+			memcpy(getPoint_internal(out, opn++),
+			       getPoint_internal(in, ipn), ptsize);
+			LWDEBUGF(3, " Point %d differs from point %d. Out points: %d",
+			         ipn, ipn-1, opn);
 		}
 	}
 
+	LWDEBUGF(3, " in:%d out:%d", out->npoints, opn);
 	out->npoints = opn;
 
 	return out;

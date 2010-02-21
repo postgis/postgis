@@ -4014,6 +4014,19 @@ CREATE OR REPLACE FUNCTION ST_Union(geometry,geometry)
 	AS 'MODULE_PATHNAME','geomunion'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
+-- ST_RemoveRepeatedPoint(in geometry)
+--
+-- Removes duplicate vertices in input.
+-- Only checks consecutive points for lineal and polygonal geoms.
+-- Checks all points for multipoint geoms.
+--
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_RemoveRepeatedPoints(geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME', 'ST_RemoveRepeatedPoints'
+       LANGUAGE 'C' IMMUTABLE STRICT
+       COST 100;
+
 --------------------------------------------------------------------------------
 -- ST_CleanGeometry / ST_MakeValid
 --------------------------------------------------------------------------------

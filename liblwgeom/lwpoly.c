@@ -591,3 +591,21 @@ lwpoly_from_lwlines(const LWLINE *shell,
 	ret = lwpoly_construct(SRID, NULL, nrings, rings);
 	return ret;
 }
+
+LWGEOM*
+lwpoly_remove_repeated_points(LWPOLY *poly)
+{
+	unsigned int i;
+	POINTARRAY **newrings;
+
+	newrings = lwalloc(sizeof(POINTARRAY *)*poly->nrings);
+	for (i=0; i<poly->nrings; i++)
+	{
+		newrings[i] = ptarray_remove_repeated_points(poly->rings[i]);
+	}
+
+	return (LWGEOM*)lwpoly_construct(poly->SRID,
+	                                 poly->bbox ? box2d_clone(poly->bbox) : NULL,
+	                                 poly->nrings, newrings);
+
+}

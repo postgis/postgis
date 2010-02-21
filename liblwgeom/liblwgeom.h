@@ -3,9 +3,10 @@
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
- * Copyright 2001-2006 Refractions Research Inc.
- * Copyright 2007-2008 Mark Cave-Ayland
+ * Copyright 2010 Sandro Santilli <strk@keybit.net>
  * Copyright 2008 Paul Ramsey <pramsey@cleverelephant.ca>
+ * Copyright 2007-2008 Mark Cave-Ayland
+ * Copyright 2001-2006 Refractions Research Inc.
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -1372,7 +1373,6 @@ extern POINTARRAY *ptarray_addPoint(const POINTARRAY *pa, uchar *p, size_t pdims
 	                                    unsigned int where);
 extern POINTARRAY *ptarray_removePoint(POINTARRAY *pa, unsigned int where);
 extern POINTARRAY *ptarray_merge(POINTARRAY *pa1, POINTARRAY *pa2);
-extern POINTARRAY *ptarray_remove_repeated_points(POINTARRAY *in);
 
 extern int ptarray_isclosed2d(const POINTARRAY *pa);
 extern int ptarray_isclosed3d(const POINTARRAY *pa);
@@ -1386,6 +1386,18 @@ extern double ptarray_locate_point(POINTARRAY *, POINT2D *);
 extern void closest_point_on_segment(POINT2D *p, POINT2D *A, POINT2D *B, POINT2D *ret);
 extern LWLINE *lwline_measured_from_lwline(const LWLINE *lwline, double m_start, double m_end);
 extern LWMLINE* lwmline_measured_from_lwmline(const LWMLINE *lwmline, double m_start, double m_end);
+
+/*
+ * Remove adjacent duplicated points from given argument.
+ *
+ * Always return a newly allocated object.
+ */
+extern POINTARRAY *ptarray_remove_repeated_points(POINTARRAY *in);
+extern LWGEOM *lwmpoint_remove_repeated_points(LWMPOINT *in);
+extern LWGEOM *lwline_remove_repeated_points(LWLINE *in);
+extern LWGEOM *lwpoly_remove_repeated_points(LWPOLY *in);
+extern LWGEOM *lwcollection_remove_repeated_points(LWCOLLECTION *in);
+extern LWGEOM *lwgeom_remove_repeated_points(LWGEOM *in);
 
 /*
  * Ensure every segment is at most 'dist' long.

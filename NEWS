@@ -6,6 +6,7 @@ YYYY/MM/DD
   * New Features *
 
   - ST_isValidDetail (Sandro Santilli - work done for Regione Toscana-SIGTA)
+  - ST_RemoveRepeatedPoints (Sandro Santilli for RT-SIGTA)
 
 PostGIS 1.5.0
 2010/02/04

@@ -3630,3 +3630,23 @@ Datum ST_CollectionExtract(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(output);
 }
+
+Datum ST_RemoveRepeatedPoints(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_RemoveRepeatedPoints);
+Datum ST_RemoveRepeatedPoints(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *input = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *output;
+	LWGEOM *lwgeom_in = pglwgeom_deserialize(input);
+	LWGEOM *lwgeom_out;
+
+	/* lwnotice("ST_RemoveRepeatedPoints got %p", lwgeom_in); */
+
+	lwgeom_out = lwgeom_remove_repeated_points(lwgeom_in);
+	output = pglwgeom_serialize(lwgeom_out);
+
+	lwgeom_free(lwgeom_in);
+	PG_FREE_IF_COPY(input, 0);
+
+	PG_RETURN_POINTER(output);
+}

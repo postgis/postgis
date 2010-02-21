@@ -605,3 +605,20 @@ LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type)
 	return outcol;
 }
 
+LWGEOM*
+lwcollection_remove_repeated_points(LWCOLLECTION *coll)
+{
+	unsigned int i;
+	LWGEOM **newgeoms;
+
+	newgeoms = lwalloc(sizeof(LWGEOM *)*coll->ngeoms);
+	for (i=0; i<coll->ngeoms; i++)
+	{
+		newgeoms[i] = lwgeom_remove_repeated_points(coll->geoms[i]);
+	}
+
+	return (LWGEOM*)lwcollection_construct(coll->type,
+	                                       coll->SRID, coll->bbox ? box2d_clone(coll->bbox) : NULL,
+	                                       coll->ngeoms, newgeoms);
+
+}

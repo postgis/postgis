@@ -1548,6 +1548,40 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
 		  </refsection>
 	</refentry>
 
+	<refentry id="ST_RemoveRepeatedPoints">
+	  <refnamediv>
+		<refname>ST_RemoveRepeatedPoints</refname>
+		<refpurpose>Returns a version of the given geometry with
+				duplicated points removed.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_RemoveRepeatedPoints</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>Returns a version of the given geometry with
+				duplicated points emoved. Will actually do something only with
+				(multi)lines, (multi)polygons and multipoints but you can safely call it with
+				any kind of geometry. Since simplification occurs on a
+				object-by-object basis you can also feed a GeometryCollection to
+				this function.</para>
+
+		<para>Availability: 2.0.0</para>
+	  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Simplify" /></para>
+		  </refsection>
+	</refentry>
+
 	<refentry id="ST_SymDifference">
 	  <refnamediv>
 		<refname>ST_SymDifference</refname>
