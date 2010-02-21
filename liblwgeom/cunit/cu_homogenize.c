@@ -57,7 +57,7 @@ int clean_homogenize_suite(void)
 }
 
 
-static do_geom_test(char * in, char * out)
+static void do_geom_test(char * in, char * out)
 {
 	LWGEOM *g, *h;
 
@@ -72,7 +72,7 @@ static do_geom_test(char * in, char * out)
 }
 
 
-static do_coll_test(char * in, char * out)
+static void do_coll_test(char * in, char * out)
 {
 	LWGEOM *g, *h;
 
