@@ -10,7 +10,7 @@
  **********************************************************************/
 
 /**
- * Commons define and prototype function for all export functions 
+ * Commons define and prototype function for all export functions
  */
 
 #define MAX_DOUBLE 1E15
@@ -21,7 +21,5 @@
 char * getSRSbySRID(int SRID, bool short_crs);
 
 char *geometry_to_geojson(uchar *srl, char *srs, bool has_bbox, int precision);
-char *geometry_to_gml2(uchar *srl, char *srs, int precision);
-char *geometry_to_gml3(uchar *srl, char *srs, int precision, bool is_deegree);
 char *geometry_to_kml2(uchar *srl, int precision);
 char *geometry_to_svg(uchar *srl, bool relative, int precision);

@@ -107,6 +107,13 @@ int main()
 		return CU_get_error();
 	}
 
+	/* Add the homogenize suite to the registry */
+	if (NULL == register_out_gml_suite())
+	{
+		CU_cleanup_registry();
+		return CU_get_error();
+	}
+
 	/* Run all tests using the CUnit Basic interface */
 	CU_basic_set_mode(CU_BRM_VERBOSE);
 	CU_basic_run_tests();

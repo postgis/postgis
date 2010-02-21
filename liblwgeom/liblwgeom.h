@@ -3,10 +3,9 @@
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
- * Copyright 2010 Sandro Santilli <strk@keybit.net>
- * Copyright 2008 Paul Ramsey <pramsey@cleverelephant.ca>
- * Copyright 2007-2008 Mark Cave-Ayland
  * Copyright 2001-2006 Refractions Research Inc.
+ * Copyright 2007-2008 Mark Cave-Ayland
+ * Copyright 2008 Paul Ramsey <pramsey@cleverelephant.ca>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -353,7 +352,7 @@ extern DYNPTARRAY *dynptarray_create(size_t initial_capacity, int dims);
  * respectively.
  */
 extern int dynptarray_addPoint4d(DYNPTARRAY *dpa, POINT4D *p4d,
-	                                 int allow_duplicates);
+                                 int allow_duplicates);
 
 /******************************************************************
  *
@@ -623,7 +622,7 @@ extern uchar *getPoint_internal(const POINTARRAY *pa, int n);
  *	 'points' points to.  No data conversion is done.
  */
 extern POINTARRAY *pointArray_construct(uchar *points, char hasz, char hasm,
-	                                        uint32 npoints);
+                                        uint32 npoints);
 
 /*
  * Calculate the (BOX3D) bounding box of a set of points.
@@ -714,7 +713,7 @@ PG_LWGEOM;
  * from the serialized form.
  */
 extern PG_LWGEOM *PG_LWGEOM_construct(uchar *serialized, int SRID,
-	                                      int wantbbox);
+                                      int wantbbox);
 
 /*
  * Compute bbox of serialized geom
@@ -1194,7 +1193,7 @@ extern float nextafterf_custom(float x, float y);
 /* for the measure functions*/
 #define DIST2D_MAX		-1
 #define DIST2D_MIN		1
- 
+
 /* general utilities */
 extern double distance2d_pt_pt(POINT2D *p1, POINT2D *p2);
 extern double distance2d_pt_seg(POINT2D *p, POINT2D *A, POINT2D *B);
@@ -1247,10 +1246,10 @@ void lwgeom_longitude_shift(LWGEOM *lwgeom);
 
 /**
 * @brief Check whether or not a lwgeom is big enough to warrant a bounding box.
-* 
+*
 * Check whether or not a lwgeom is big enough to warrant a bounding box
-* when stored in the serialized form on disk. Currently only points are 
-* considered small enough to not require a bounding box, because the 
+* when stored in the serialized form on disk. Currently only points are
+* considered small enough to not require a bounding box, because the
 * index operations can generate a large number of box-retrieval operations
 * when scanning keys.
 */
@@ -1263,7 +1262,7 @@ extern int lwgeom_count_vertices(LWGEOM *geom);
 extern int32 lwgeom_npoints(uchar *serialized);
 
 /**
-* Return true of false depending on whether a geometry is an "empty" 
+* Return true of false depending on whether a geometry is an "empty"
 * geometry (no vertices members)
 */
 extern int lwgeom_is_empty(const LWGEOM *geom);
@@ -1322,21 +1321,21 @@ extern POINTARRAY *ptarray_clone(const POINTARRAY *ptarray);
  * Take ownership of arguments
  */
 extern LWPOINT  *lwpoint_construct(int SRID, BOX2DFLOAT4 *bbox,
-	                                   POINTARRAY *point);
+                                   POINTARRAY *point);
 extern LWLINE *lwline_construct(int SRID, BOX2DFLOAT4 *bbox,
-	                                POINTARRAY *points);
+                                POINTARRAY *points);
 
 /*
  * Construct a new LWPOLY.  arrays (points/points per ring) will NOT be copied
  * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
  */
 extern LWPOLY *lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox,
-	                                unsigned int nrings, POINTARRAY **points);
+                                unsigned int nrings, POINTARRAY **points);
 
 extern LWCOLLECTION *lwcollection_construct(unsigned int type, int SRID,
-	        BOX2DFLOAT4 *bbox, unsigned int ngeoms, LWGEOM **geoms);
+        BOX2DFLOAT4 *bbox, unsigned int ngeoms, LWGEOM **geoms);
 extern LWCOLLECTION *lwcollection_construct_empty(int SRID,
-	        char hasZ, char hasM);
+        char hasZ, char hasM);
 
 /*
  * Construct a new LWCIRCSTRING.  arrays (points/points per ring) will NOT be copied
@@ -1370,9 +1369,10 @@ extern POINTARRAY *ptarray_construct(char hasz, char hasm, unsigned int npoints)
  */
 
 extern POINTARRAY *ptarray_addPoint(const POINTARRAY *pa, uchar *p, size_t pdims,
-	                                    unsigned int where);
+                                    unsigned int where);
 extern POINTARRAY *ptarray_removePoint(POINTARRAY *pa, unsigned int where);
 extern POINTARRAY *ptarray_merge(POINTARRAY *pa1, POINTARRAY *pa2);
+extern POINTARRAY *ptarray_remove_repeated_points(POINTARRAY *in);
 
 extern int ptarray_isclosed2d(const POINTARRAY *pa);
 extern int ptarray_isclosed3d(const POINTARRAY *pa);
@@ -1388,18 +1388,6 @@ extern LWLINE *lwline_measured_from_lwline(const LWLINE *lwline, double m_start,
 extern LWMLINE* lwmline_measured_from_lwmline(const LWMLINE *lwmline, double m_start, double m_end);
 
 /*
- * Remove adjacent duplicated points from given argument.
- *
- * Always return a newly allocated object.
- */
-extern POINTARRAY *ptarray_remove_repeated_points(POINTARRAY *in);
-extern LWGEOM *lwmpoint_remove_repeated_points(LWMPOINT *in);
-extern LWGEOM *lwline_remove_repeated_points(LWLINE *in);
-extern LWGEOM *lwpoly_remove_repeated_points(LWPOLY *in);
-extern LWGEOM *lwcollection_remove_repeated_points(LWCOLLECTION *in);
-extern LWGEOM *lwgeom_remove_repeated_points(LWGEOM *in);
-
-/*
  * Ensure every segment is at most 'dist' long.
  * Returned LWGEOM might is unchanged if a POINT.
  */
@@ -1408,6 +1396,19 @@ extern POINTARRAY *ptarray_segmentize2d(POINTARRAY *ipa, double dist);
 extern LWLINE *lwline_segmentize2d(LWLINE *line, double dist);
 extern LWPOLY *lwpoly_segmentize2d(LWPOLY *line, double dist);
 extern LWCOLLECTION *lwcollection_segmentize2d(LWCOLLECTION *coll, double dist);
+
+
+/*
+ * Export functions
+ */
+#define OUT_MAX_DOUBLE 1E15
+#define OUT_SHOW_DIGS_DOUBLE 20
+#define OUT_MAX_DOUBLE_PRECISION 15
+#define OUT_MAX_DIGS_DOUBLE (OUT_SHOW_DIGS_DOUBLE + 2) /* +2 mean add dot and sign */
+
+extern char * lwgeom_to_gml2(uchar *geom, char *srs, int precision);
+extern char * lwgeom_to_gml3(uchar *geom, char *srs, int precision, int is_deegree);
+
 
 extern uchar parse_hex(char *str);
 extern void deparse_hex(uchar str, char *result);

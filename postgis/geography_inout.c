@@ -138,9 +138,9 @@ void geography_valid_typmod(LWGEOM *lwgeom, int32 typmod)
 	if ( typmod_type > 0 &&
 	        /* GEOMETRYCOLLECTION column can hold any kind of collection */
 	        ((typmod_type == COLLECTIONTYPE && ! (lwgeom_type == COLLECTIONTYPE ||
-	                lwgeom_type == MULTIPOLYGONTYPE ||
-	                lwgeom_type == MULTIPOINTTYPE ||
-	                lwgeom_type == MULTILINETYPE )) ||
+	                                              lwgeom_type == MULTIPOLYGONTYPE ||
+	                                              lwgeom_type == MULTIPOINTTYPE ||
+	                                              lwgeom_type == MULTILINETYPE )) ||
 	         /* Other types must be strictly equal. */
 	         (typmod_type != lwgeom_type)) )
 	{
@@ -547,9 +547,9 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	}
 
 	if (version == 2)
-		gml = geometry_to_gml2(lwgeom_serialize(lwgeom), srs, precision);
+		gml = lwgeom_to_gml2(lwgeom_serialize(lwgeom), srs, precision);
 	else
-		gml = geometry_to_gml3(lwgeom_serialize(lwgeom), srs, precision, true);
+		gml = lwgeom_to_gml3(lwgeom_serialize(lwgeom), srs, precision, 1);
 
 	PG_FREE_IF_COPY(lwgeom, 1);
 

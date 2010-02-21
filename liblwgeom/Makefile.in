@@ -52,7 +52,8 @@ SA_OBJS = \
 	g_serialized.o \
 	g_util.o \
 	lwgeodetic.o \
-	lwtree.o
+	lwtree.o \
+	lwout_gml.o
 
 NM_OBJS = \
 	lwspheroid.o 
