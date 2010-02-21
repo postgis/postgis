@@ -1080,11 +1080,11 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 
 	if ( TYPE_GETTYPE(type) == LINETYPE )
 	{
-  		LWLINE *iline;
+		LWLINE *iline;
 
 		iline = lwline_deserialize(SERIALIZED_FORM(geom));
 
-		if( lwgeom_is_empty((LWGEOM*)iline) )
+		if ( lwgeom_is_empty((LWGEOM*)iline) )
 		{
 			/* TODO return empty line */
 			lwline_release(iline);
@@ -1104,15 +1104,15 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 	}
 	else if ( TYPE_GETTYPE(type) == MULTILINETYPE )
 	{
-  		LWMLINE *iline;
+		LWMLINE *iline;
 		int i = 0, g = 0;
 		int homogeneous = LW_TRUE;
 		LWGEOM **geoms = NULL;
 		double length = 0.0, sublength = 0.0, minprop = 0.0, maxprop = 0.0;
-		
+
 		iline = lwmline_deserialize(SERIALIZED_FORM(geom));
-		
-		if( lwgeom_is_empty((LWGEOM*)iline) )
+
+		if ( lwgeom_is_empty((LWGEOM*)iline) )
 		{
 			/* TODO return empty collection */
 			lwmline_release(iline);
@@ -1127,41 +1127,41 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 			if ( subline->points && subline->points->npoints > 1 )
 				length += lwgeom_pointarray_length2d(subline->points);
 		}
-			
+
 		geoms = lwalloc(sizeof(LWGEOM*) * iline->ngeoms);
-			
+
 		/* Slice each sub-geometry of the multiline */
-		for( i = 0; i < iline->ngeoms; i++ )
+		for ( i = 0; i < iline->ngeoms; i++ )
 		{
 			LWLINE *subline = (LWLINE*)iline->geoms[i];
 			double subfrom = 0.0, subto = 0.0;
-			
+
 			if ( subline->points && subline->points->npoints > 1 )
 				sublength += lwgeom_pointarray_length2d(subline->points);
-			
+
 			/* Calculate proportions for this subline */
 			minprop = maxprop;
 			maxprop = sublength / length;
-			
-			/* This subline doesn't reach the lowest proportion requested 
+
+			/* This subline doesn't reach the lowest proportion requested
 			   or is beyond the highest proporton */
-			if( from > maxprop || to < minprop )
+			if ( from > maxprop || to < minprop )
 				continue;
-			
-			if( from <= minprop )
+
+			if ( from <= minprop )
 				subfrom = 0.0;
-			if( to >= maxprop )
+			if ( to >= maxprop )
 				subto = 1.0;
-				
-			if( from > minprop && from <= maxprop )
+
+			if ( from > minprop && from <= maxprop )
 				subfrom = (from - minprop) / (maxprop - minprop);
 
-			if( to < maxprop && to >= minprop )
+			if ( to < maxprop && to >= minprop )
 				subto = (to - minprop) / (maxprop - minprop);
-				
-			
+
+
 			opa = ptarray_substring(subline->points, subfrom, subto);
-			if( opa && opa->npoints > 0 )
+			if ( opa && opa->npoints > 0 )
 			{
 				if ( opa->npoints == 1 ) /* Point returned */
 				{
@@ -1174,14 +1174,14 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 				}
 				g++;
 			}
-			
-			
-			
+
+
+
 		}
 		/* If we got any points, we need to return a GEOMETRYCOLLECTION */
-		if( ! homogeneous )
+		if ( ! homogeneous )
 			TYPE_SETTYPE(type,COLLECTIONTYPE);
-			
+
 		olwgeom = (LWGEOM*)lwcollection_construct(type, iline->SRID, NULL, g, geoms);
 	}
 	else
