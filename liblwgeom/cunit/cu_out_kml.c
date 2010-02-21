@@ -82,7 +82,7 @@ static void do_kml_unsupported(char * in, char * out)
 	h = lwgeom_to_kml2(lwgeom_serialize(g), 0);
 
 	if (strcmp(cu_error_msg, out))
-		fprintf(stderr, "\nGML 2 - In:   %s\nOut:  %s\nTheo: %s\n",
+		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n",
 		        in, cu_error_msg, out);
 
 	CU_ASSERT_STRING_EQUAL(out, cu_error_msg);
@@ -163,7 +163,13 @@ void out_kml_test_geoms(void)
 	    "<Polygon><outerBoundaryIs><LinearRing><coordinates>0,1 2,3 4,5 0,1</coordinates></LinearRing></outerBoundaryIs><innerBoundaryIs><LinearRing><coordinates>6,7 8,9 10,11 6,7</coordinates></LinearRing></innerBoundaryIs></Polygon>",
 	    0);
 
-	/* Multiline */
+	/* MultiPoint */
+	do_kml_test(
+	    "MULTIPOINT(0 1,2 3)",
+	    "<MultiGeometry><Point><coordinates>0,1</coordinates></Point><Point><coordinates>2,3</coordinates></Point></MultiGeometry>",
+	    0);
+
+	/* MultiLine */
 	do_kml_test(
 	    "MULTILINESTRING((0 1,2 3,4 5),(6 7,8 9,10 11))",
 	    "<MultiGeometry><LineString><coordinates>0,1 2,3 4,5</coordinates></LineString><LineString><coordinates>6,7 8,9 10,11</coordinates></LineString></MultiGeometry>",

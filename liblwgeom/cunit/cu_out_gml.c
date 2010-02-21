@@ -59,16 +59,14 @@ int clean_out_gml_suite(void)
 
 static void do_gml2_test(char * in, char * out, char * srs, int precision)
 {
-	LWGEOM *g, *h;
+	LWGEOM *g;
+	char *h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
 	h = lwgeom_to_gml2(lwgeom_serialize(g), srs, precision);
 
-	if (strcmp(lwgeom_to_gml2(lwgeom_serialize(g), srs, precision), out))
-		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n",
-		        in,
-		        lwgeom_to_gml2(lwgeom_serialize(g), srs, precision),
-		        out);
+	if (strcmp(h, out))
+		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
 
 	CU_ASSERT_STRING_EQUAL(h, out);
 
@@ -79,19 +77,14 @@ static void do_gml2_test(char * in, char * out, char * srs, int precision)
 
 static void do_gml3_test(char * in, char * out, char * srs, int precision, int is_geodetic)
 {
-	LWGEOM *g, *h;
+	LWGEOM *g;
+	char *h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
 	h = lwgeom_to_gml3(lwgeom_serialize(g), srs, precision, is_geodetic);
 
-	if (strcmp(
-	            lwgeom_to_gml3(lwgeom_serialize(g), srs, precision, is_geodetic),
-	            out))
-		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n",
-		        in,
-		        lwgeom_to_gml3(lwgeom_serialize(g),
-		                       srs, precision, is_geodetic),
-		        out);
+	if (strcmp(h, out))
+		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
 
 	CU_ASSERT_STRING_EQUAL(h, out);
 
@@ -101,10 +94,10 @@ static void do_gml3_test(char * in, char * out, char * srs, int precision, int i
 
 static void do_gml2_unsupported(char * in, char * out)
 {
-	LWGEOM *g, *h;
+	LWGEOM *g;
+	char *h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-
 	h = lwgeom_to_gml2(lwgeom_serialize(g), NULL, 0);
 
 	if (strcmp(cu_error_msg, out))
@@ -119,7 +112,8 @@ static void do_gml2_unsupported(char * in, char * out)
 
 static void do_gml3_unsupported(char * in, char * out)
 {
-	LWGEOM *g, *h;
+	LWGEOM *g;
+	char *h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
 	h = lwgeom_to_gml3(lwgeom_serialize(g), NULL, 0, 0);
@@ -228,6 +222,19 @@ void out_gml_test_srid(void)
 	do_gml3_test(
 	    "POLYGON((0 1,2 3,4 5,0 1))",
 	    "<gml:Polygon srsName=\"EPSG:4326\"><gml:exterior><gml:LinearRing><gml:posList srsDimension=\"2\">0 1 2 3 4 5 0 1</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>",
+	    "EPSG:4326", 0, 0);
+
+
+	/* GML2 MultiPoint with SRID */
+	do_gml2_test(
+	    "MULTIPOINT(0 1,2 3)",
+	    "<gml:MultiPoint srsName=\"EPSG:4326\"><gml:pointMember><gml:Point><gml:coordinates>0,1</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>2,3</gml:coordinates></gml:Point></gml:pointMember></gml:MultiPoint>",
+	    "EPSG:4326", 0);
+
+	/* GML3 MultiPoint with SRID */
+	do_gml3_test(
+	    "MULTIPOINT(0 1,2 3)",
+	    "<gml:MultiPoint srsName=\"EPSG:4326\"><gml:pointMember><gml:Point><gml:pos srsDimension=\"2\">0 1</gml:pos></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:pos srsDimension=\"2\">2 3</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint>",
 	    "EPSG:4326", 0, 0);
 
 
@@ -367,6 +374,19 @@ void out_gml_test_geoms(void)
 	do_gml3_test(
 	    "POLYGON((0 1,2 3,4 5,0 1),(6 7,8 9,10 11,6 7))",
 	    "<gml:Polygon><gml:exterior><gml:LinearRing><gml:posList srsDimension=\"2\">0 1 2 3 4 5 0 1</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension=\"2\">6 7 8 9 10 11 6 7</gml:posList></gml:LinearRing></gml:interior></gml:Polygon>",
+	    NULL, 0, 0);
+
+
+	/* GML2 MultiPoint */
+	do_gml2_test(
+	    "MULTIPOINT(0 1,2 3)",
+	    "<gml:MultiPoint><gml:pointMember><gml:Point><gml:coordinates>0,1</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>2,3</gml:coordinates></gml:Point></gml:pointMember></gml:MultiPoint>",
+	    NULL, 0);
+
+	/* GML3 MultiPoint */
+	do_gml3_test(
+	    "MULTIPOINT(0 1,2 3)",
+	    "<gml:MultiPoint><gml:pointMember><gml:Point><gml:pos srsDimension=\"2\">0 1</gml:pos></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:pos srsDimension=\"2\">2 3</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint>",
 	    NULL, 0, 0);
 
 
