@@ -57,7 +57,6 @@ void lwgeom_init_allocators(void)
 	lwfree_var = default_freeor;
 	lwnotice_var = default_noticereporter;
 	lwerror_var = cu_errorreporter;
-
 }
 
 /*
@@ -107,8 +106,15 @@ int main()
 		return CU_get_error();
 	}
 
-	/* Add the homogenize suite to the registry */
+	/* Add the gml suite to the registry */
 	if (NULL == register_out_gml_suite())
+	{
+		CU_cleanup_registry();
+		return CU_get_error();
+	}
+
+	/* Add the kml suite to the registry */
+	if (NULL == register_out_kml_suite())
 	{
 		CU_cleanup_registry();
 		return CU_get_error();
@@ -120,5 +126,4 @@ int main()
 	CU_cleanup_registry();
 
 	return CU_get_error();
-
 }

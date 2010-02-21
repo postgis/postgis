@@ -507,7 +507,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	int version;
 	char *srs;
 	int SRID = SRID_DEFAULT;
-	int precision = MAX_DOUBLE_PRECISION;
+	int precision = OUT_MAX_DOUBLE_PRECISION;
 	int option=0;
 
 	/* Get the version */
@@ -529,8 +529,8 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
 	{
 		precision = PG_GETARG_INT32(2);
-		if ( precision > MAX_DOUBLE_PRECISION )
-			precision = MAX_DOUBLE_PRECISION;
+		if ( precision > OUT_MAX_DOUBLE_PRECISION )
+			precision = OUT_MAX_DOUBLE_PRECISION;
 		else if ( precision < 0 ) precision = 0;
 	}
 
@@ -560,7 +560,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 
 	memcpy(VARDATA(result), gml, len-VARHDRSZ);
 
-	pfree(gml);
+	lwfree(gml);
 
 	PG_RETURN_POINTER(result);
 }
@@ -578,7 +578,7 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 	text *result;
 	int len;
 	int version;
-	int precision = MAX_DOUBLE_PRECISION;
+	int precision = OUT_MAX_DOUBLE_PRECISION;
 
 
 	/* Get the version */
@@ -600,12 +600,12 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
 	{
 		precision = PG_GETARG_INT32(2);
-		if ( precision > MAX_DOUBLE_PRECISION )
-			precision = MAX_DOUBLE_PRECISION;
+		if ( precision > OUT_MAX_DOUBLE_PRECISION )
+			precision = OUT_MAX_DOUBLE_PRECISION;
 		else if ( precision < 0 ) precision = 0;
 	}
 
-	kml = geometry_to_kml2(lwgeom_serialize(lwgeom), precision);
+	kml = lwgeom_to_kml2(lwgeom_serialize(lwgeom), precision);
 
 	PG_FREE_IF_COPY(lwgeom, 1);
 
@@ -616,7 +616,7 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 
 	memcpy(VARDATA(result), kml, len-VARHDRSZ);
 
-	pfree(kml);
+	lwfree(kml);
 
 	PG_RETURN_POINTER(result);
 }

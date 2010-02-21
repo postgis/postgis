@@ -1,41 +1,9 @@
-ERROR:  GetProj4StringSPI: Cannot find SRID (4326) in spatial_ref_sys
+ERROR:  GetProj4StringSPI: Cannot find SRID (10) in spatial_ref_sys
 ERROR:  Input geometry has unknown (-1) SRID
-ERROR:  geometry_to_kml: 'CircularString' geometry type not supported by Google Earth
-ERROR:  geometry_to_kml: 'CompoundString' geometry type not supported by Google Earth
-ERROR:  geometry_to_kml: 'CurvePolygon' geometry type not supported by Google Earth
-ERROR:  geometry_to_kml: 'MultiCurve' geometry type not supported by Google Earth
-ERROR:  geometry_to_kml: 'MultiSurface' geometry type not supported by Google Earth
-parameter_01|<Point><coordinates>1,1</coordinates></Point>
-parameter_02|<Point><coordinates>1.111111111111111,1.111111111111111</coordinates></Point>
+empty_geom|
+precision_01|<Point><coordinates>1,1</coordinates></Point>
+precision_02|<Point><coordinates>1.1111111,1.1111111</coordinates></Point>
+version_01|<Point><coordinates>1,1</coordinates></Point>
 ERROR:  Only KML 2 is supported
-point_01|<Point><coordinates>-75.552,10.42</coordinates></Point>
-point_02|<Point><coordinates>-75.55217298,10.42033663</coordinates></Point>
-linestring_01|<LineString><coordinates>-75.588,6.231 -75.593,6.209</coordinates></LineString>
-linestring_02|<LineString><coordinates>-75.58845169,6.23081171 -75.59257647,6.20903425</coordinates></LineString>
-polygon_01|<Polygon><outerBoundaryIs><LinearRing><coordinates>-74.042,4.701 -74.042,4.701 -74.042,4.701 -74.042,4.701 -74.041,4.701 -74.041,4.701 -74.041,4.701 -74.041,4.701 -74.041,4.702 -74.041,4.702 -74.041,4.703 -74.041,4.703 -74.041,4.703 -74.041,4.703 -74.041,4.703 -74.041,4.703 -74.042,4.704 -74.042,4.704 -74.042,4.704 -74.042,4.703 -74.042,4.703 -74.042,4.703 -74.042,4.703 -74.042,4.703 -74.042,4.702 -74.042,4.702 -74.042,4.702 -74.042,4.702 -74.042,4.702 -74.042,4.702 -74.042,4.701</coordinates></LinearRing></outerBoundaryIs></Polygon>
-polygon_02|<Polygon><outerBoundaryIs><LinearRing><coordinates>-74.04239911,4.70128819 -74.04209926,4.70095099 -74.0420183,4.70101152 -74.04183483,4.70083145 -74.04148629,4.70114015 -74.04132847,4.70097698 -74.04101991,4.70124476 -74.04117774,4.70142555 -74.04087245,4.70169713 -74.04094064,4.70177368 -74.04089953,4.70260566 -74.04082413,4.70267767 -74.04106565,4.70294983 -74.04087265,4.70312109 -74.04118885,4.70346833 -74.04138265,4.70330898 -74.04173931,4.70368885 -74.0419237,4.70352824 -74.04195356,4.70355486 -74.04230658,4.70323948 -74.04207492,4.70297824 -74.0421547,4.70290782 -74.04195033,4.70267513 -74.04209558,4.70253358 -74.04203505,4.7024668 -74.04205318,4.70203808 -74.04212336,4.70197434 -74.04198589,4.7018169 -74.04222168,4.70160442 -74.04214902,4.70152 -74.04239911,4.70128819</coordinates></LinearRing></outerBoundaryIs></Polygon>
-multipoint_01|<MultiGeometry><Point><coordinates>-74.046,4.755</coordinates></Point><Point><coordinates>-74.096,4.746</coordinates></Point><Point><coordinates>-74.11,4.71</coordinates></Point><Point><coordinates>-74.12,4.534</coordinates></Point></MultiGeometry>
-multipoint_02|<MultiGeometry><Point><coordinates>-74.04603458,4.75468701</coordinates></Point><Point><coordinates>-74.095833,4.746435</coordinates></Point><Point><coordinates>-74.11037547,4.70987542</coordinates></Point><Point><coordinates>-74.120148,4.533696</coordinates></Point></MultiGeometry>
-projection_01|<Point><coordinates>-73,7</coordinates></Point>
-projection_02|<Point><coordinates>-73,7</coordinates></Point>
-projection_03|<Point><coordinates>-74,5</coordinates></Point>
-ERROR:  Input geometry has unknown (-1) SRID
-ERROR:  geometry_to_kml: 'CircularString' geometry type not supported by Google Earth
-ERROR:  geometry_to_kml: 'CompoundString' geometry type not supported by Google Earth
-ERROR:  geometry_to_kml: 'CurvePolygon' geometry type not supported by Google Earth
-ERROR:  geometry_to_kml: 'MultiCurve' geometry type not supported by Google Earth
-ERROR:  geometry_to_kml: 'MultiSurface' geometry type not supported by Google Earth
-parameter_04|<Point><coordinates>1,1</coordinates></Point>
-parameter_05|<Point><coordinates>1.111111111111111,1.111111111111111</coordinates></Point>
 ERROR:  Only KML 2 is supported
-point_03|<Point><coordinates>-75.552172977574884,10.420336634530541</coordinates></Point>
-point_04|<Point><coordinates>-75.55217298,10.42033663</coordinates></Point>
-linestring_03|<LineString><coordinates>-75.588,6.231 -75.593,6.209</coordinates></LineString>
-linestring_04|<LineString><coordinates>-75.58845169,6.23081171 -75.59257647,6.20903425</coordinates></LineString>
-polygon_03|<Polygon><outerBoundaryIs><LinearRing><coordinates>-74.042,4.701 -74.042,4.701 -74.042,4.701 -74.042,4.701 -74.041,4.701 -74.041,4.701 -74.041,4.701 -74.041,4.701 -74.041,4.702 -74.041,4.702 -74.041,4.703 -74.041,4.703 -74.041,4.703 -74.041,4.703 -74.041,4.703 -74.041,4.703 -74.042,4.704 -74.042,4.704 -74.042,4.704 -74.042,4.703 -74.042,4.703 -74.042,4.703 -74.042,4.703 -74.042,4.703 -74.042,4.702 -74.042,4.702 -74.042,4.702 -74.042,4.702 -74.042,4.702 -74.042,4.702 -74.042,4.701</coordinates></LinearRing></outerBoundaryIs></Polygon>
-polygon_04|<Polygon><outerBoundaryIs><LinearRing><coordinates>-74.04239911,4.70128819 -74.04209926,4.70095099 -74.0420183,4.70101152 -74.04183483,4.70083145 -74.04148629,4.70114015 -74.04132847,4.70097698 -74.04101991,4.70124476 -74.04117774,4.70142555 -74.04087245,4.70169713 -74.04094064,4.70177368 -74.04089953,4.70260566 -74.04082413,4.70267767 -74.04106565,4.70294983 -74.04087265,4.70312109 -74.04118885,4.70346833 -74.04138265,4.70330898 -74.04173931,4.70368885 -74.0419237,4.70352824 -74.04195356,4.70355486 -74.04230658,4.70323948 -74.04207492,4.70297824 -74.0421547,4.70290782 -74.04195033,4.70267513 -74.04209558,4.70253358 -74.04203505,4.7024668 -74.04205318,4.70203808 -74.04212336,4.70197434 -74.04198589,4.7018169 -74.04222168,4.70160442 -74.04214902,4.70152 -74.04239911,4.70128819</coordinates></LinearRing></outerBoundaryIs></Polygon>
-multipoint_03|<MultiGeometry><Point><coordinates>-74.046,4.755</coordinates></Point><Point><coordinates>-74.096,4.746</coordinates></Point><Point><coordinates>-74.11,4.71</coordinates></Point><Point><coordinates>-74.12,4.534</coordinates></Point></MultiGeometry>
-multipoint_04|<MultiGeometry><Point><coordinates>-74.04603458,4.75468701</coordinates></Point><Point><coordinates>-74.095833,4.746435</coordinates></Point><Point><coordinates>-74.11037547,4.70987542</coordinates></Point><Point><coordinates>-74.120148,4.533696</coordinates></Point></MultiGeometry>
-projection_04|<Point><coordinates>-73.114,7.106</coordinates></Point>
-projection_05|<Point><coordinates>-73.1978481,6.76797716</coordinates></Point>
-projection_06|<Point><coordinates>-74.078,4.596</coordinates></Point>
+projection_01|<Point><coordinates>-74.078,4.596</coordinates></Point>
