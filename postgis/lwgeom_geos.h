@@ -51,3 +51,8 @@ GEOSGeometry * LWGEOM2GEOS(LWGEOM *g);
 POINTARRAY *ptarray_from_GEOSCoordSeq(const GEOSCoordSequence *cs, char want3d);
 void errorIfGeometryCollection(PG_LWGEOM *g1, PG_LWGEOM *g2);
 
+/*
+ * This function would better be moved to the GEOS C-API
+ */
+GEOSGeometry* LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in);
+
