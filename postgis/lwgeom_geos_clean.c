@@ -637,7 +637,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 			/* cleanup and throw */
 			lwnotice("GEOSGeom_createCollection() threw an error: %s",
 			         loggederror);
-			return NULL;
+			return 0;
 		}
 
 	}
@@ -810,7 +810,13 @@ Datum st_makevalid(PG_FUNCTION_ARGS)
 	 * Input geometry was lwgeom_in
 	 */
 
-	out = GEOS2POSTGIS(geosgeom, is3d);
+	lwgeom_out = GEOS2LWGEOM(geosgeom, is3d);
+	if ( lwgeom_is_collection(TYPE_GETTYPE(lwgeom_in->type))
+		&& ! lwgeom_is_collection(TYPE_GETTYPE(lwgeom_out->type)) )
+	{
+		lwgeom_out = lwgeom_as_multi(lwgeom_out);
+	}
+	out = pglwgeom_serialize(lwgeom_out);
 	GEOSGeom_destroy(geosgeom);
 	geosgeom=0;
 
