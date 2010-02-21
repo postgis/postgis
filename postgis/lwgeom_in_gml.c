@@ -1146,8 +1146,8 @@ static LWGEOM* parse_gml_curve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 			if (i + 1 == lss) last = 1;
 			/* Check if segments are not disjoints */
 			if (i > 0 && memcmp(	getPoint_internal(pa, npoints),
-			                     getPoint_internal(ppa[i], 0),
-			                     *hasz?sizeof(POINT3D):sizeof(POINT2D)))
+			                        getPoint_internal(ppa[i], 0),
+			                        *hasz?sizeof(POINT3D):sizeof(POINT2D)))
 				lwerror("invalid GML representation");
 
 			/* Aggregate stuff */
@@ -1650,9 +1650,9 @@ static LWGEOM* parse_gml_coll(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		 * substitution group
 		 */
 		if (	   !strcmp((char *) xa->name, "pointMember")
-		        || !strcmp((char *) xa->name, "lineStringMember")
-		        || !strcmp((char *) xa->name, "polygonMember")
-		        || !strcmp((char *) xa->name, "geometryMember"))
+		           || !strcmp((char *) xa->name, "lineStringMember")
+		           || !strcmp((char *) xa->name, "polygonMember")
+		           || !strcmp((char *) xa->name, "geometryMember"))
 		{
 
 			if (xa->children == NULL) break;

@@ -734,8 +734,9 @@ unparse_WKT(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar* serialized, allo
 }
 
 static char outchr[]=
-    {"0123456789ABCDEF"
-    };
+{
+	"0123456789ABCDEF"
+};
 
 /* Write HEX bytes flipping */
 void

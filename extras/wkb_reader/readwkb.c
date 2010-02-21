@@ -75,13 +75,13 @@ int	find_WKB_typeid(PGconn 	*conn)
 main()
 {
 	char       *pghost,
-	*pgport,
-	*pgoptions,
-	*pgtty;
+	   *pgport,
+	   *pgoptions,
+	   *pgtty;
 	char       *dbName;
 	int         nFields;
 	int         row,
-	field;
+	  field;
 	PGconn     *conn;
 	PGresult   *res;
 	int	junk;

@@ -799,9 +799,9 @@ Datum LWGEOM_gist_union(PG_FUNCTION_ARGS)
 
 	int		   *sizep = (int *) PG_GETARG_POINTER(1);
 	int			numranges,
-	i;
+	        i;
 	BOX2DFLOAT4 *cur,
-	*pageunion;
+	            *pageunion;
 
 	POSTGIS_DEBUG(2, "GIST: LWGEOM_gist_union called\n");
 

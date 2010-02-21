@@ -392,7 +392,8 @@ LWCOLLECTION *lwmline_clip_to_ordinate_range(LWMLINE *mline, int ordinate, doubl
 		{
 			col = lwline_clip_to_ordinate_range(mline->geoms[i], ordinate, from, to);
 			if ( col )
-			{ /* Something was left after the clip. */
+			{
+				/* Something was left after the clip. */
 				if ( lwgeom_out->ngeoms + col->ngeoms > geoms_size )
 				{
 					geoms_size += 16;

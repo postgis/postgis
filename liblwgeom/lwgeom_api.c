@@ -72,41 +72,50 @@ nextafterf_custom(float x, float y)
 		return x+y;
 	if (x==y) return y;              /* x=y, return y */
 	if (ix==0)
-	{                             /* x == 0 */
+	{
+		/* x == 0 */
 		SET_FLOAT_WORD(x,(hy&0x80000000)|1);/* return +-minsubnormal */
 		y = x*x;
 		if (y==x) return y;
 		else return x;   /* raise underflow flag */
 	}
 	if (hx>=0)
-	{                             /* x > 0 */
+	{
+		/* x > 0 */
 		if (hx>hy)
-		{                         /* x > y, x -= ulp */
+		{
+			/* x > y, x -= ulp */
 			hx -= 1;
 		}
 		else
-		{                            /* x < y, x += ulp */
+		{
+			/* x < y, x += ulp */
 			hx += 1;
 		}
 	}
 	else
-	{                                /* x < 0 */
+	{
+		/* x < 0 */
 		if (hy>=0||hx>hy)
-		{                   /* x < y, x -= ulp */
+		{
+			/* x < y, x -= ulp */
 			hx -= 1;
 		}
 		else
-		{                            /* x > y, x += ulp */
+		{
+			/* x > y, x += ulp */
 			hx += 1;
 		}
 	}
 	hy = hx&0x7f800000;
 	if (hy>=0x7f800000) return x+x;  /* overflow  */
 	if (hy<0x00800000)
-	{             /* underflow */
+	{
+		/* underflow */
 		y = x*x;
 		if (y!=x)
-		{          /* raise underflow flag */
+		{
+			/* raise underflow flag */
 			SET_FLOAT_WORD(y,hx);
 			return y;
 		}
@@ -2177,8 +2186,9 @@ deparse_hex(uchar str, char *result)
 	int	input_high;
 	int  input_low;
 	static char outchr[]=
-	    {"0123456789ABCDEF"
-	    };
+	{
+		"0123456789ABCDEF"
+	};
 
 	input_high = (str>>4);
 	input_low = (str & 0x0F);

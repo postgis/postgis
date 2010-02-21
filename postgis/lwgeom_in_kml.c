@@ -463,9 +463,9 @@ static LWGEOM* parse_kml_multi(xmlNodePtr xnode, bool *hasz)
 		if (!is_kml_namespace(xa, false)) continue;
 
 		if (	   !strcmp((char *) xa->name, "Point")
-		        || !strcmp((char *) xa->name, "LineString")
-		        || !strcmp((char *) xa->name, "Polygon")
-		        || !strcmp((char *) xa->name, "MultiGeometry"))
+		           || !strcmp((char *) xa->name, "LineString")
+		           || !strcmp((char *) xa->name, "Polygon")
+		           || !strcmp((char *) xa->name, "MultiGeometry"))
 		{
 
 			if (xa->children == NULL) break;

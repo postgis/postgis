@@ -408,7 +408,8 @@ lwgeom_dimension_recursive(const uchar *serialized)
 		}
 
 		if ( dims == 2 )
-		{ /* nothing can be higher */
+		{
+			/* nothing can be higher */
 			lwinspected_release(inspected);
 			return 2;
 		}

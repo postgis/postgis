@@ -270,8 +270,8 @@ int spheroid_project(const GEOGRAPHIC_POINT *r, const SPHEROID *spheroid, double
 
 	lat2 = atan2((sin(u1) * cos(sigma) + cos(u1) * sin(sigma) *
 	              cos(azimuth)), (omf * sqrt(POW2(sin_alpha) +
-	                                         POW2(sin(u1) * sin(sigma) - cos(u1) * cos(sigma) *
-	                                              cos(azimuth)))));
+	                              POW2(sin(u1) * sin(sigma) - cos(u1) * cos(sigma) *
+	                                   cos(azimuth)))));
 	lambda = atan2((sin(sigma) * sin(azimuth)), (cos(u1) * cos(sigma) -
 	               sin(u1) * sin(sigma) * cos(azimuth)));
 	C = (spheroid->f / 16.0) * cos_alphasq * (4.0 + spheroid->f * (4.0 - 3.0 * cos_alphasq));

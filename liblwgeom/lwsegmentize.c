@@ -157,9 +157,9 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad)
 
 	POINT4D *center;
 	double radius = 0.0,
-	                sweep = 0.0,
-	                        angle = 0.0,
-	                                increment = 0.0;
+	       sweep = 0.0,
+	       angle = 0.0,
+	       increment = 0.0;
 	double a1, a2, a3, i;
 
 	LWDEBUG(2, "lwcircle_segmentize called. ");

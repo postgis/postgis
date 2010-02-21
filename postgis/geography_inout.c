@@ -138,9 +138,9 @@ void geography_valid_typmod(LWGEOM *lwgeom, int32 typmod)
 	if ( typmod_type > 0 &&
 	        /* GEOMETRYCOLLECTION column can hold any kind of collection */
 	        ((typmod_type == COLLECTIONTYPE && ! (lwgeom_type == COLLECTIONTYPE ||
-	                                              lwgeom_type == MULTIPOLYGONTYPE ||
-	                                              lwgeom_type == MULTIPOINTTYPE ||
-	                                              lwgeom_type == MULTILINETYPE )) ||
+	                lwgeom_type == MULTIPOLYGONTYPE ||
+	                lwgeom_type == MULTIPOINTTYPE ||
+	                lwgeom_type == MULTILINETYPE )) ||
 	         /* Other types must be strictly equal. */
 	         (typmod_type != lwgeom_type)) )
 	{

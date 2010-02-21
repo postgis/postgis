@@ -220,7 +220,7 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 	if ( is_worth_caching_pglwgeom_bbox(lwgeom) )
 	{
 		lwgeom = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
-		                                          LWGEOM_addBBOX, PointerGetDatum(lwgeom)));
+		        LWGEOM_addBBOX, PointerGetDatum(lwgeom)));
 	}
 
 	PG_RETURN_POINTER(lwgeom);
@@ -593,7 +593,7 @@ Datum LWGEOM_from_bytea(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUG(2, "LWGEOM_from_bytea start");
 
 	result = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
-	                                          LWGEOMFromWKB, PG_GETARG_DATUM(0)));
+	        LWGEOMFromWKB, PG_GETARG_DATUM(0)));
 
 	PG_RETURN_POINTER(result);
 }

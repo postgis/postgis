@@ -156,11 +156,13 @@ void gptarray_set_m(GPTARRAY *ptarray, int i, double m)
 	assert(FLAGS_GET_M(ptarray->flags));
 
 	if ( FLAGS_GET_Z(ptarray->flags))
-	{	/* Four coordinates */
+	{
+		/* Four coordinates */
 		*(ptarray->ordinates + i * FLAGS_NDIMS(ptarray->flags) + 3) = m;
 	}
 	else
-	{	/* Three coordinates */
+	{
+		/* Three coordinates */
 		*(ptarray->ordinates + i * FLAGS_NDIMS(ptarray->flags) + 2) = m;
 	}
 }
@@ -190,11 +192,13 @@ double gptarray_get_m(GPTARRAY *ptarray, int i)
 	assert(FLAGS_GET_M(ptarray->flags));
 
 	if ( FLAGS_GET_Z(ptarray->flags))
-	{	/* Four coordinates */
+	{
+		/* Four coordinates */
 		return *(ptarray->ordinates + i * FLAGS_NDIMS(ptarray->flags) + 3);
 	}
 	else
-	{	/* Three coordinates */
+	{
+		/* Three coordinates */
 		return *(ptarray->ordinates + i * FLAGS_NDIMS(ptarray->flags) + 2);
 	}
 }
