@@ -776,7 +776,7 @@ asgml3_poly_size(LWPOLY *poly, char *srs, int precision)
 
 	size = sizeof("<gml:Polygon><gml:exterior><gml:LinearRing>///") * 2;
 	size += sizeof("<gml:interior><gml:LinearRing>//") * 2 * (poly->nrings - 1);
-	size += sizeof("<gml:posList srsDimension='x'></gml:posList>") * poly->nrings; 
+	size += sizeof("<gml:posList srsDimension='x'></gml:posList>") * poly->nrings;
 	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
 
 	for (i=0; i<poly->nrings; i++)

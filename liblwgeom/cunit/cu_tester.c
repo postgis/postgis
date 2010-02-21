@@ -18,7 +18,7 @@
 
 
 /**
- * CUnit error handler 
+ * CUnit error handler
  * Log message in a global var instead of printing in stderr
  *
  * CAUTION: Not stop execution on lwerror case !!!
@@ -26,16 +26,16 @@
 static void
 cu_errorreporter(const char *fmt, va_list ap)
 {
-        char *msg;
+	char *msg;
 
-        /** This is a GNU extension.
-	 * Dunno how to handle errors here.
-         */
-        if (!lw_vasprintf (&msg, fmt, ap))
-        {
-                va_end (ap);
-                return;
-        }
+	/** This is a GNU extension.
+	* Dunno how to handle errors here.
+	 */
+	if (!lw_vasprintf (&msg, fmt, ap))
+	{
+		va_end (ap);
+		return;
+	}
 
 	strncpy(cu_error_msg, msg, MAX_CUNIT_ERROR_LENGTH);
 }
@@ -52,11 +52,11 @@ cu_error_msg_reset()
 */
 void lwgeom_init_allocators(void)
 {
-        lwalloc_var = default_allocator;
-        lwrealloc_var = default_reallocator;
-        lwfree_var = default_freeor;
-        lwnotice_var = default_noticereporter;
-        lwerror_var = cu_errorreporter;
+	lwalloc_var = default_allocator;
+	lwrealloc_var = default_reallocator;
+	lwfree_var = default_freeor;
+	lwnotice_var = default_noticereporter;
+	lwerror_var = cu_errorreporter;
 
 }
 

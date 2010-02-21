@@ -91,7 +91,8 @@ Datum geom_from_kml(PG_FUNCTION_ARGS)
 	lwgeom = parse_kml(xmlroot, &hasz);
 
 	/* Homogenize geometry result if needed */
-	if (TYPE_GETTYPE(lwgeom->type) == COLLECTIONTYPE) {
+	if (TYPE_GETTYPE(lwgeom->type) == COLLECTIONTYPE)
+	{
 		hlwgeom = lwgeom_homogenize(lwgeom);
 		lwgeom_release(lwgeom);
 		lwgeom = hlwgeom;
