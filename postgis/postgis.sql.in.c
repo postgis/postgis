@@ -4014,7 +4014,7 @@ CREATE OR REPLACE FUNCTION ST_Union(geometry,geometry)
 	AS 'MODULE_PATHNAME','geomunion'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- ST_RemoveRepeatedPoint(in geometry)
+-- ST_RemoveRepeatedPoints(in geometry)
 --
 -- Removes duplicate vertices in input.
 -- Only checks consecutive points for lineal and polygonal geoms.
@@ -4077,12 +4077,6 @@ BEGIN
     RETURN gin;
   END IF;
 
-  -- Collect all distinct input points
-  SELECT INTO pin ST_Union(geom)
-    FROM (select (ST_DumpPoints(gin)).geom) as foo;
-
-  RAISE DEBUG 'ST_CleanGeometry: in points: %', ST_asText(pin);
-
   gout := ST_MakeValid(gin);
 
   -- Check dimensionality is the same as input
@@ -4092,26 +4086,18 @@ BEGIN
     RETURN NULL;
   END IF;
 
-  -- Collect all distinct output points and check they contain
-  -- all points from the input set
-
-  SELECT INTO pout ST_Union(geom)
-    FROM (select (ST_DumpPoints(gout)).geom) as foo;
-
-  RAISE DEBUG 'ST_CleanGeometry: out points: %', ST_asText(pout);
-
-  pdif := ST_Difference(pin, pout);
-  IF NOT ST_isEmpty(pdif) THEN
-    RAISE NOTICE 'ST_CleanGeometry: dropped vertices: %', ST_asText(pdif);
+  -- Check that the output is not a collection if the input wasn't
+  IF ST_GeometryType(gin) != 'ST_GeometryCollection' AND ST_GeometryType(gout) = 'ST_GeometryCollection' THEN
+    RAISE NOTICE 'ST_CleanGeometry: mixed-type output (%) from single-type input (%)',
+      ST_GeometryType(gout), ST_GeometryType(gin);
     RETURN NULL;
   END IF;
 
   -- Force right-hand-rule (will only affect polygons)
-
   gout := ST_ForceRHR(gout);
 
-  -- Remove repeated duplicated points 
-  -- TODO!!
+  -- Remove repeated duplicated points ?
+  -- gout = ST_RemoveRepeatedPoints(gout);
 
   RETURN gout;
 
