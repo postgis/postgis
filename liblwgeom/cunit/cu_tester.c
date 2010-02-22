@@ -120,8 +120,15 @@ int main()
 		return CU_get_error();
 	}
 
-	/* Add the kml suite to the registry */
+	/* Add the geojson suite to the registry */
 	if (NULL == register_out_geojson_suite())
+	{
+		CU_cleanup_registry();
+		return CU_get_error();
+	}
+
+	/* Add the svg suite to the registry */
+	if (NULL == register_out_svg_suite())
 	{
 		CU_cleanup_registry();
 		return CU_get_error();

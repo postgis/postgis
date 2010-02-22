@@ -13,13 +13,4 @@
  * Commons define and prototype function for all export functions
  */
 
-#define MAX_DOUBLE 1E15
-#define SHOW_DIGS_DOUBLE 20
-#define MAX_DOUBLE_PRECISION 15
-#define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 2) /* +2 mean add dot and sign */
-
 char * getSRSbySRID(int SRID, bool short_crs);
-
-char *geometry_to_geojson(uchar *srl, char *srs, bool has_bbox, int precision);
-char *geometry_to_kml2(uchar *srl, int precision);
-char *geometry_to_svg(uchar *srl, bool relative, int precision);

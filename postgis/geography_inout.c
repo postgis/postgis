@@ -633,8 +633,8 @@ Datum geography_as_svg(PG_FUNCTION_ARGS)
 	char *svg;
 	text *result;
 	int len;
-	bool relative = false;
-	int precision=MAX_DOUBLE_PRECISION;
+	int relative = 0;
+	int precision=OUT_MAX_DOUBLE_PRECISION;
 
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
 
@@ -645,17 +645,17 @@ Datum geography_as_svg(PG_FUNCTION_ARGS)
 
 	/* check for relative path notation */
 	if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) )
-		relative = PG_GETARG_INT32(1) ? true:false;
+		relative = PG_GETARG_INT32(1) ? 0:1;
 
 	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
 	{
 		precision = PG_GETARG_INT32(2);
-		if ( precision > MAX_DOUBLE_PRECISION )
-			precision = MAX_DOUBLE_PRECISION;
+		if ( precision > OUT_MAX_DOUBLE_PRECISION )
+			precision = OUT_MAX_DOUBLE_PRECISION;
 		else if ( precision < 0 ) precision = 0;
 	}
 
-	svg = geometry_to_svg(lwgeom_serialize(lwgeom), relative, precision);
+	svg = lwgeom_to_svg(lwgeom_serialize(lwgeom), precision, relative);
 	PG_FREE_IF_COPY(lwgeom, 0);
 
 	len = strlen(svg) + VARHDRSZ;
@@ -663,7 +663,7 @@ Datum geography_as_svg(PG_FUNCTION_ARGS)
 	SET_VARSIZE(result, len);
 	memcpy(VARDATA(result), svg, len-VARHDRSZ);
 
-	pfree(svg);
+	lwfree(svg);
 
 	PG_RETURN_POINTER(result);
 }
