@@ -54,7 +54,8 @@ SA_OBJS = \
 	lwgeodetic.o \
 	lwtree.o \
 	lwout_gml.o \
-	lwout_kml.o
+	lwout_kml.o \
+	lwout_geojson.o
 
 NM_OBJS = \
 	lwspheroid.o 

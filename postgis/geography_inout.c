@@ -682,8 +682,8 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 	int len;
 	int version;
 	int option = 0;
-	bool has_bbox = 0;
-	int precision = MAX_DOUBLE_PRECISION;
+	int has_bbox = 0;
+	int precision = OUT_MAX_DOUBLE_PRECISION;
 	char * srs = NULL;
 
 	/* Get the version */
@@ -705,8 +705,8 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
 	{
 		precision = PG_GETARG_INT32(2);
-		if ( precision > MAX_DOUBLE_PRECISION )
-			precision = MAX_DOUBLE_PRECISION;
+		if ( precision > OUT_MAX_DOUBLE_PRECISION )
+			precision = OUT_MAX_DOUBLE_PRECISION;
 		else if ( precision < 0 ) precision = 0;
 	}
 
@@ -734,7 +734,7 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 
 	if (option & 1) has_bbox = 1;
 
-	geojson = geometry_to_geojson(lwgeom_serialize(lwgeom), srs, has_bbox, precision);
+	geojson = lwgeom_to_geojson(lwgeom_serialize(lwgeom), srs, precision, has_bbox);
 	PG_FREE_IF_COPY(lwgeom, 1);
 	if (srs) pfree(srs);
 
@@ -743,7 +743,7 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 	SET_VARSIZE(result, len);
 	memcpy(VARDATA(result), geojson, len-VARHDRSZ);
 
-	pfree(geojson);
+	lwfree(geojson);
 
 	PG_RETURN_POINTER(result);
 }

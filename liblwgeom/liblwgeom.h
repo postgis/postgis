@@ -1409,6 +1409,7 @@ extern LWCOLLECTION *lwcollection_segmentize2d(LWCOLLECTION *coll, double dist);
 extern char * lwgeom_to_gml2(uchar *geom, char *srs, int precision);
 extern char * lwgeom_to_gml3(uchar *geom, char *srs, int precision, int is_deegree);
 extern char * lwgeom_to_kml2(uchar *geom, int precision);
+extern char * lwgeom_to_geojson(uchar *geom, char *srs, int precision, int has_bbox);
 
 
 extern uchar parse_hex(char *str);
