@@ -4038,10 +4038,11 @@ CREATE OR REPLACE FUNCTION ST_RemoveRepeatedPoints(geometry)
 -- May return a geometry with inferior dimensions (dimensional collapses).
 -- May return NULL if can't handle input.
 --
+-- Requires: GEOS-3.3.0
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_MakeValid(geometry)
        RETURNS geometry
-       AS 'MODULE_PATHNAME', 'st_makevalid'
+       AS 'MODULE_PATHNAME', 'ST_MakeValid'
        LANGUAGE 'C' IMMUTABLE STRICT
        COST 100;
 
@@ -4058,6 +4059,7 @@ CREATE OR REPLACE FUNCTION ST_MakeValid(geometry)
 --
 -- Returns NULL on failure.
 -- 
+-- Requires: GEOS-3.3.0
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_CleanGeometry(geometry)
        RETURNS geometry

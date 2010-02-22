@@ -651,9 +651,9 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 }
 #endif /* POSTGIS_GEOS_VERSION >= 33 */
 
-Datum st_makevalid(PG_FUNCTION_ARGS);
-PG_FUNCTION_INFO_V1(st_makevalid);
-Datum st_makevalid(PG_FUNCTION_ARGS)
+Datum ST_MakeValid(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_MakeValid);
+Datum ST_MakeValid(PG_FUNCTION_ARGS)
 {
 #if POSTGIS_GEOS_VERSION < 33
 	elog(ERROR, "You need GEOS-3.3.0 or up for ST_MakeValid");
@@ -825,3 +825,4 @@ Datum st_makevalid(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(out);
 #endif /* POSTGIS_GEOS_VERSION >= 33 */
 }
+
