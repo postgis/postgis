@@ -27,8 +27,6 @@
 
 #include "../liblwgeom/liblwgeom.h"
 
-#include "stringbuffer.h"
-
 #define RCSID "$Id$"
 
 

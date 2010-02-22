@@ -19,6 +19,7 @@ LEX=@LEX@
 
 # Standalone LWGEOM objects
 SA_OBJS = \
+	stringbuffer.o \
 	measures.o \
 	box2d.o \
 	ptarray.o \

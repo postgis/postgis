@@ -16,6 +16,7 @@
 #define _LIBLWGEOM_H 1
 
 #include "../postgis_config.h"
+#include "stringbuffer.h"
 #include <stdarg.h>
 #include <stdio.h>
 
