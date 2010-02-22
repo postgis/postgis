@@ -657,7 +657,7 @@ asgeojson_collection_size(LWGEOM_INSPECTED *insp, char *srs, BOX3D *bbox, int pr
 	{
 		subgeom = lwgeom_getsubgeometry_inspected(insp, i);
 		subinsp = lwgeom_inspect(subgeom);
-		size += asgeojson_inspected_size(subinsp, bbox, precision);
+		size += asgeojson_inspected_size(subinsp, NULL, precision);
 		lwinspected_release(subinsp);
 	}
 	size += sizeof(",") * i;
@@ -684,7 +684,7 @@ asgeojson_collection_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, BOX3D 
 		if (i) ptr += sprintf(ptr, ",");
 		subgeom = lwgeom_getsubgeometry_inspected(insp, i);
 		subinsp = lwgeom_inspect(subgeom);
-		ptr += asgeojson_inspected_buf(subinsp, ptr, bbox, precision);
+		ptr += asgeojson_inspected_buf(subinsp, ptr, NULL, precision);
 		lwinspected_release(subinsp);
 	}
 
@@ -765,15 +765,6 @@ asgeojson_inspected_buf(LWGEOM_INSPECTED *insp, char *output, BOX3D *bbox, int p
 	LWPOLY *poly;
 	int type = lwgeom_getType(insp->serialized_form[0]);
 	char *ptr=output;
-
-	/* Compute 3D BBOX on the sub geometry */
-	if ( bbox )
-	{
-		lwfree(bbox);
-		bbox = NULL;
-		bbox = compute_serialized_box3d(
-		           lwgeom_getsubgeometry(insp->serialized_form, 0));
-	}
 
 	switch (type)
 	{
