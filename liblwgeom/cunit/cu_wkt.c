@@ -42,11 +42,18 @@ CU_pSuite register_wkt_suite(void)
 }
 
 /*
+** Global variable to hold WKT strings
+*/
+char *s;
+
+
+/*
 ** The suite initialization function.
 ** Create any re-used objects.
 */
 int init_wkt_suite(void)
 {
+	s = NULL;
 	return 0;
 }
 
@@ -56,63 +63,88 @@ int init_wkt_suite(void)
 */
 int clean_wkt_suite(void)
 {
+	free(s);
+	s = NULL;
 	return 0;
+}
+
+static char* cu_wkt(char *wkt, uchar variant)
+{
+	LWGEOM *g = lwgeom_from_ewkt(wkt, PARSER_CHECK_NONE);
+	if ( s ) free(s);
+	s = lwgeom_to_wkt(g, 8, variant);	
+	lwgeom_free(g);
+	return s;
 }
 
 void test_wkt_point(void)
 {
-	LWGEOM *g;
-	char *s;
+	CU_ASSERT_STRING_EQUAL(cu_wkt("POINT(0 0 0 0)",WKT_ISO), "POINTZM(0 0 0 0)");
+	CU_ASSERT_STRING_EQUAL(cu_wkt("POINT(0 0 0 0)",WKT_EXTENDED), "POINT(0 0 0 0)");
+	CU_ASSERT_STRING_EQUAL(cu_wkt("POINT(0 0 0 0)",WKT_SFSQL), "POINT(0 0)");
 
-	g = lwgeom_from_ewkt("POINT(0 0 0 0)", PARSER_CHECK_NONE);
-	s = lwgeom_to_wkt(g, 14, WKT_ISO);
-	CU_ASSERT_STRING_EQUAL(s, "POINTZM(0 0 0 0)");
-	lwfree(s);
+	CU_ASSERT_STRING_EQUAL(cu_wkt("POINTM(0 0 0)",WKT_ISO), "POINTM(0 0 0)");
+	CU_ASSERT_STRING_EQUAL(cu_wkt("POINTM(0 0 0)",WKT_EXTENDED), "POINTM(0 0 0)");
+	CU_ASSERT_STRING_EQUAL(cu_wkt("POINTM(0 0 0)",WKT_SFSQL), "POINT(0 0)");
 
-	s = lwgeom_to_wkt(g, 14, WKT_EXTENDED);
-	CU_ASSERT_STRING_EQUAL(s, "POINT(0 0 0 0)");
-	lwfree(s);
+	CU_ASSERT_STRING_EQUAL(cu_wkt("POINT(100 100)",WKT_ISO), "POINT(100 100)");
+	CU_ASSERT_STRING_EQUAL(cu_wkt("POINT(100 100)",WKT_EXTENDED), "POINT(100 100)");
+	CU_ASSERT_STRING_EQUAL(cu_wkt("POINT(100 100)",WKT_SFSQL), "POINT(100 100)");
 
-	s = lwgeom_to_wkt(g, 14, WKT_SFSQL);
-	CU_ASSERT_STRING_EQUAL(s, "POINT(0 0)");
-	lwfree(s);
-	lwgeom_free(g);
-
-	g = lwgeom_from_ewkt("POINTM(0 0 0)", PARSER_CHECK_NONE);
-	s = lwgeom_to_wkt(g, 14, WKT_ISO);
-	CU_ASSERT_STRING_EQUAL(s, "POINTM(0 0 0)");
-	lwfree(s);
-
-	s = lwgeom_to_wkt(g, 14, WKT_EXTENDED);
-	CU_ASSERT_STRING_EQUAL(s, "POINTM(0 0 0)");
-	lwfree(s);
-
-	s = lwgeom_to_wkt(g, 14, WKT_SFSQL);
-	CU_ASSERT_STRING_EQUAL(s, "POINT(0 0)");
-	lwfree(s);
-	lwgeom_free(g);
-
+	CU_ASSERT_STRING_EQUAL(cu_wkt("POINT(100.1 100 12 12)",WKT_ISO), "POINTZM(100.1 100 12 12)");
+	CU_ASSERT_STRING_EQUAL(cu_wkt("POINT(100.1 100 12 12)",WKT_EXTENDED), "POINT(100.1 100 12 12)");
+	CU_ASSERT_STRING_EQUAL(cu_wkt("POINT(100.1 100 12 12)",WKT_SFSQL), "POINT(100.1 100)");
 }
 
 void test_wkt_linestring(void) 
 {
-
+	CU_ASSERT_STRING_EQUAL(cu_wkt("LINESTRING(1 2 3 4,5 6 7 8)",WKT_ISO), "LINESTRINGZM(1 2 3 4,5 6 7 8)");
+	CU_ASSERT_STRING_EQUAL(cu_wkt("LINESTRING(1 2 3,5 6 7)",WKT_ISO), "LINESTRINGZ(1 2 3,5 6 7)");
+	CU_ASSERT_STRING_EQUAL(cu_wkt("LINESTRINGM(1 2 3,5 6 7)",WKT_ISO), "LINESTRINGM(1 2 3,5 6 7)");
 }
 
 void test_wkt_polygon(void) 
 {
-
+	CU_ASSERT_STRING_EQUAL(
+	cu_wkt("POLYGON((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2))",WKT_ISO), 
+           "POLYGONZ((100 100 2,100 200 2,200 200 2,200 100 2,100 100 2))");
+	CU_ASSERT_STRING_EQUAL(
+	cu_wkt("POLYGON((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2))",WKT_EXTENDED), 
+	       "POLYGON((100 100 2,100 200 2,200 200 2,200 100 2,100 100 2))");
 }
 void test_wkt_multipoint(void) 
 {
-		
+	CU_ASSERT_STRING_EQUAL(cu_wkt("MULTIPOINT(1 2 3 4,5 6 7 8)",WKT_ISO), "MULTIPOINTZM(1 2 3 4,5 6 7 8)");
+	CU_ASSERT_STRING_EQUAL(cu_wkt("MULTIPOINT(1 2 3,5 6 7)",WKT_ISO), "MULTIPOINTZ(1 2 3,5 6 7)");
+	CU_ASSERT_STRING_EQUAL(cu_wkt("MULTIPOINTM(1 2 3,5 6 7)",WKT_ISO), "MULTIPOINTM(1 2 3,5 6 7)");
+	
 }
 
 void test_wkt_multilinestring(void) 
 {
-	
+	CU_ASSERT_STRING_EQUAL(
+	cu_wkt("MULTILINESTRING((1 2 3 4,5 6 7 8))",WKT_ISO), 
+	       "MULTILINESTRINGZM((1 2 3 4,5 6 7 8))");
+	CU_ASSERT_STRING_EQUAL(
+	cu_wkt("MULTILINESTRING((1 2 3,5 6 7))",WKT_ISO), 
+	       "MULTILINESTRINGZ((1 2 3,5 6 7))");
+	CU_ASSERT_STRING_EQUAL(
+	cu_wkt("MULTILINESTRINGM((1 2 3,5 6 7))",WKT_ISO), 
+	       "MULTILINESTRINGM((1 2 3,5 6 7))");	
 }
 
-void test_wkt_multipolygon(void) {}
-void test_wkt_collection(void) {}
+void test_wkt_multipolygon(void) 
+{
+	CU_ASSERT_STRING_EQUAL(
+	cu_wkt("MULTIPOLYGON(((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2)))",WKT_ISO), 
+           "MULTIPOLYGONZ(((100 100 2,100 200 2,200 200 2,200 100 2,100 100 2)))");
+	CU_ASSERT_STRING_EQUAL(
+	cu_wkt("MULTIPOLYGON(((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2)))",WKT_EXTENDED), 
+	       "MULTIPOLYGON(((100 100 2,100 200 2,200 200 2,200 100 2,100 100 2)))");
+}
+
+void test_wkt_collection(void) 
+{
+	
+}
 
