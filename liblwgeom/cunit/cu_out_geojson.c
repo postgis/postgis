@@ -211,13 +211,11 @@ void out_geojson_test_bbox(void)
 	    "{\"type\":\"Polygon\",\"bbox\":[0,1,4,5],\"coordinates\":[[[0,1],[2,3],[4,5],[0,1]]]}",
 	    NULL, 0, 1);
 
-#if 0
 	/* Polygon - with internal ring */
 	do_geojson_test(
 	    "POLYGON((0 1,2 3,4 5,0 1),(6 7,8 9,10 11,6 7))",
-	    "{\"type\":\"Polygon\",\"bbox\":[0,1,10,11],\"coordinates\":[[[0,1],[2,3],[4,5],[0,1]],[[6,7],[8,9],[10,11],[6,7]]]}",
+	    "{\"type\":\"Polygon\",\"bbox\":[0,1,4,5],\"coordinates\":[[[0,1],[2,3],[4,5],[0,1]],[[6,7],[8,9],[10,11],[6,7]]]}",
 	    NULL, 0, 1);
-#endif
 
 	/* Multiline */
 	do_geojson_test(
