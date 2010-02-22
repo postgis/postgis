@@ -403,6 +403,7 @@ LWGEOM_GEOS_nodeLines(GEOSGeometry* lines)
 	return noded;
 }
 
+#if POSTGIS_GEOS_VERSION >= 33
 /*
  * We expect initGEOS being called already.
  * Will return NULL on error (expect error handler being called by then)
@@ -648,6 +649,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 
 	return gout;
 }
+#endif /* POSTGIS_GEOS_VERSION >= 33 */
 
 Datum st_makevalid(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(st_makevalid);
