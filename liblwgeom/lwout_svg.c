@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id:$
+ * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
@@ -21,6 +21,7 @@
 
 
 #include "liblwgeom.h"
+#include <math.h>  /* fabs */
 
 static char * assvg_point(LWPOINT *point, int relative, int precision);
 static char * assvg_line(LWLINE *line, int relative, int precision);

@@ -19,6 +19,7 @@
 
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
+#include "lwgeom_export.h"
 
 Datum LWGEOM_asGML(PG_FUNCTION_ARGS);
 Datum LWGEOM_asKML(PG_FUNCTION_ARGS);

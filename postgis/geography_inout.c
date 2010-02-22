@@ -28,6 +28,7 @@
 #include "libgeom.h"         /* For standard geometry types. */
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "geography.h"	     /* For utility functions. */
+#include "lwgeom_export.h"   /* For export functions. */
 
 Datum geography_in(PG_FUNCTION_ARGS);
 Datum geography_out(PG_FUNCTION_ARGS);
