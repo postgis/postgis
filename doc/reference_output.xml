@@ -840,4 +840,103 @@ F000000000000000000000000000000000000000000000000');
 		  </refsection>
 	</refentry>
 
+
+	<refentry id="ST_AsLatLonText">
+		  <refnamediv>
+			<refname>ST_AsLatLonText</refname>
+			<refpurpose>Return the Degrees, Minutes, Seconds representation of the given point.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>text <function>ST_AsLatLonText</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
+			  </funcprototype>
+			  <funcprototype>
+				<funcdef>text <function>ST_AsLatLonText</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
+				<paramdef><type>text </type> <parameter>format</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>Returns the Degrees, Minutes, Seconds representation of the point.</para>
+
+			<note>
+			  <para>It is assumed the point is in a lat/lon projection.  The X (lon) and Y (lat) coordinates are normalized in the output
+				to the "normal" range (-180 to +180 for lon, -90 to +90 for lat).</para>
+			</note>
+				<para>
+					The text parameter is a format string containing the format for the resulting text, similar to a date format string.  Valid tokens
+					are "D" for degrees, "M" for minutes, "S" for seconds, and "C" for cardinal direction (NSEW).  DMS tokens may be repeated to indicate
+					desired width and precision ("SSS.SSSS" means "  1.0023").
+				</para>
+				<para>
+					"M", "S", and "C" are optional.  If "C" is omitted, degrees are
+					shown with a "-" sign if south or west.  If "S" is omitted, minutes will be shown as decimal with as many digits of precision
+					as you specify.  If "M" is also omitted, degrees are shown as decimal with as many digits precision as you specify.
+				</para>
+				<para>
+					If the format string is omitted (or zero-length) a default format will be used.
+				</para>
+				<para>
+			</para>
+
+			<para>Availability: 2.0</para>
+		  </refsection>
+
+
+		  <refsection>
+			<title>Examples</title>
+Default format.
+<programlisting>
+SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)'));
+      st_aslatlontext       
+----------------------------
+ 2°19'29.928"S 3°14'3.243"W
+</programlisting>
+Providing a format (same as the default).
+<programlisting>
+SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS"C'));
+      st_aslatlontext       
+----------------------------
+ 2°19'29.928"S 3°14'3.243"W
+</programlisting>
+Characters other than D, M, S, C and . are just passed through.
+<programlisting>
+SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D degrees, M minutes, S seconds to the C'));
+                                   st_aslatlontext                                    
+--------------------------------------------------------------------------------------
+ 2 degrees, 19 minutes, 30 seconds to the S 3 degrees, 14 minutes, 3 seconds to the W
+</programlisting>
+Signed degrees instead of cardinal directions.
+<programlisting>
+SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS"'));
+      st_aslatlontext       
+----------------------------
+ -2°19'29.928" -3°14'3.243"
+</programlisting>
+Decimal degrees.
+<programlisting>
+SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D.DDDD degrees C'));
+          st_aslatlontext          
+-----------------------------------
+ 2.3250 degrees S 3.2342 degrees W
+</programlisting>
+Excessively large values are normalized.
+<programlisting>
+SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
+        st_aslatlontext        
+-------------------------------
+ 72°19'29.928"S 57°45'56.757"E
+</programlisting>
+		  </refsection>
+
+		  <!-- Optionally add a "See Also" section -->
+	</refentry>
+
   </sect1>

@@ -18,6 +18,7 @@ CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I..
 
 OBJS=	\
 	cu_algorithm.o \
+	cu_print.o \
 	cu_wkt.o \
 	cu_geodetic.o \
 	cu_measures.o \

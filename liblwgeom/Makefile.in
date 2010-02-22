@@ -44,6 +44,7 @@ SA_OBJS = \
 	lwgunparse.o \
 	lwgparse.o \
 	lwsegmentize.o \
+	lwprint.o \
 	wktparse.tab.o \
 	lex.yy.o \
 	vsprintf.o \

@@ -106,6 +106,13 @@ int main()
 		return CU_get_error();
 	}
 
+	/* Add the print suite to the registry */
+	if (NULL == register_print_suite())
+	{
+		CU_cleanup_registry();
+		return CU_get_error();
+	}
+
 	/* Add the homogenize suite to the registry */
 	if (NULL == register_homogenize_suite())
 	{
