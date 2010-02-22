@@ -196,7 +196,6 @@ void out_geojson_test_srid(void)
 	    "EPSG:4326", 0, 0);
 }
 
-
 void out_geojson_test_bbox(void)
 {
 	/* Linestring */
@@ -229,11 +228,10 @@ void out_geojson_test_bbox(void)
 	    "{\"type\":\"MultiPolygon\",\"bbox\":[0,1,10,11],\"coordinates\":[[[[0,1],[2,3],[4,5],[0,1]]],[[[6,7],[8,9],[10,11],[6,7]]]]}",
 	    NULL, 0, 1);
 
-#if 0
 	/* GeometryCollection */
 	do_geojson_test(
-	    "GEOMETRYCOLLECTION(POINT(0 1),LINESTRING(2 3,4 5))",
-	    "{\"type\":\"GeometryCollection\",\"geometries\":[{\"type\":\"Point\",\"coordinates\":[0,1]},{\"type\":\"LineString\",\"coordinates\":[[2,3],[4,5]]}]}",
+	    "GEOMETRYCOLLECTION(LINESTRING(0 1,-1 3),LINESTRING(2 3,4 5))",
+	    "{\"type\":\"GeometryCollection\",\"bbox\":[-1,1,4,5],\"geometries\":[{\"type\":\"LineString\",\"coordinates\":[[0,1],[-1,3]]},{\"type\":\"LineString\",\"coordinates\":[[2,3],[4,5]]}]}",
 	    NULL, 0, 1);
 
 	/* Empty GeometryCollection */
@@ -242,10 +240,11 @@ void out_geojson_test_bbox(void)
 	    "{\"type\":\"GeometryCollection\",\"geometries\":[]}",
 	    NULL, 0, 1);
 
+#if 0
 	/* Nested GeometryCollection */
 	do_geojson_test(
 	    "GEOMETRYCOLLECTION(POINT(0 1),GEOMETRYCOLLECTION(LINESTRING(2 3,4 5)))",
-	    "{\"type\":\"GeometryCollection\",\"geometries\":[{\"type\":\"Point\",\"coordinates\":[0,1]},]}",
+	    "",
 	    NULL, 0, 1);
 #endif
 }
