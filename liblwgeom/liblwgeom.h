@@ -1414,10 +1414,10 @@ extern char * lwgeom_to_svg(uchar *geom, int precision, int relative);
 
 extern POINTARRAY *ptarray_remove_repeated_points(POINTARRAY *in);
 extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in);
-extern LWGEOM* lwmpoint_remove_repeated_points(LWGEOM *in);
-extern LWGEOM* lwline_remove_repeated_points(LWGEOM *in);
-extern LWGEOM* lwcollection_remove_repeated_points(LWGEOM *in);
-extern LWGEOM* lwpoly_remove_repeated_points(LWGEOM *in);
+extern LWGEOM* lwmpoint_remove_repeated_points(LWMPOINT *in);
+extern LWGEOM* lwline_remove_repeated_points(LWLINE *in);
+extern LWGEOM* lwcollection_remove_repeated_points(LWCOLLECTION *in);
+extern LWGEOM* lwpoly_remove_repeated_points(LWPOLY *in);
 
 
 extern uchar parse_hex(char *str);
