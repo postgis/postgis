@@ -649,26 +649,16 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 
 	return gout;
 }
-#endif /* POSTGIS_GEOS_VERSION >= 33 */
 
-Datum ST_MakeValid(PG_FUNCTION_ARGS);
-PG_FUNCTION_INFO_V1(ST_MakeValid);
-Datum ST_MakeValid(PG_FUNCTION_ARGS)
+/* Uses GEOS internally */
+static LWGEOM* lwgeom_make_valid(LWGEOM* lwgeom_in);
+static LWGEOM*
+lwgeom_make_valid(LWGEOM* lwgeom_in)
 {
-#if POSTGIS_GEOS_VERSION < 33
-	elog(ERROR, "You need GEOS-3.3.0 or up for ST_MakeValid");
-	PG_RETURN_NULL();
-#else /* POSTGIS_GEOS_VERSION >= 33 */
-
-	PG_LWGEOM *in, *out;
-	GEOSGeom geosgeom;
-	LWGEOM *lwgeom_in, *lwgeom_out;
-	/* LWGEOM *lwgeom_pointset; */
 	char ret_char;
 	int is3d;
-
-	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	lwgeom_in = lwgeom_deserialize(SERIALIZED_FORM(in));
+	GEOSGeom geosgeom;
+	LWGEOM *lwgeom_out;
 
 	is3d = TYPE_HASZ(lwgeom_in->type);
 
@@ -678,7 +668,6 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 	 */
 
 	initGEOS(errorlogger, errorlogger);
-
 
 	lwgeom_out = lwgeom_in;
 	geosgeom = LWGEOM2GEOS(lwgeom_out);
@@ -702,7 +691,7 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 		{
 			lwerror("Couldn't convert POSTGIS geom to GEOS: %s",
 			        loggederror);
-			PG_RETURN_NULL();
+			return NULL;
 		}
 
 	}
@@ -721,27 +710,15 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 	if ( ret_char == 2 )
 	{
 		GEOSGeom_destroy(geosgeom);
-		geosgeom=0;
-
-		PG_FREE_IF_COPY(in, 0);
-
 		lwerror("GEOSisValid() threw an error: %s", loggederror);
-		PG_RETURN_NULL(); /* I don't think should ever happen */
+		return NULL; /* I don't think should ever happen */
 	}
 	else if ( ret_char )
 	{
 		/* It's valid at this step, return what we have */
 
 		GEOSGeom_destroy(geosgeom);
-		geosgeom=0;
-
-		out = pglwgeom_serialize(lwgeom_out);
-		lwgeom_release(lwgeom_out);
-		lwgeom_out=0;
-
-		PG_FREE_IF_COPY(in, 0);
-
-		PG_RETURN_POINTER(out);
+		return lwgeom_out;
 	}
 
 	POSTGIS_DEBUGF(3,
@@ -760,13 +737,13 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 	case GEOS_POINT:
 		/* points are always valid, but we might have invalid ordinate values */
 		lwnotice("PUNTUAL geometry resulted invalid to GEOS -- dunno how to clean that up");
-		PG_RETURN_NULL();
+		return NULL;
 		break;
 
 	case GEOS_LINESTRING:
 	case GEOS_MULTILINESTRING:
 		lwnotice("LINEAL geometries resulted invalid to GEOS -- dunno how to clean that up");
-		PG_RETURN_NULL();
+		return NULL;
 		break;
 
 	case GEOS_POLYGON:
@@ -782,9 +759,8 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 			{
 				lwgeom_release(lwgeom_out);
 			}
-			PG_FREE_IF_COPY(in, 0);
 			lwerror("%s", loggederror);
-			PG_RETURN_NULL(); /* never get here */
+			return NULL;
 		}
 		GEOSGeom_destroy(geosgeom); /* input one */
 		geosgeom = tmp;
@@ -798,13 +774,13 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 		GEOSFree(tmp);
 		lwnotice("ST_MakeValid: doesn't support geometry type: %s",
 		         typname);
-		PG_RETURN_NULL();
+		return NULL;
 		break;
 	}
 	}
 
 
-	if ( ! geosgeom ) PG_RETURN_NULL();
+	if ( ! geosgeom ) return NULL;
 
 	/* Now check if every point of input is also found
 	 * in output, or abort by returning NULL
@@ -818,11 +794,67 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 	{
 		lwgeom_out = lwgeom_as_multi(lwgeom_out);
 	}
+
+	return lwgeom_out;
+}
+
+#endif /* POSTGIS_GEOS_VERSION >= 33 */
+
+Datum ST_MakeValid(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_MakeValid);
+Datum ST_MakeValid(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 33
+	elog(ERROR, "You need GEOS-3.3.0 or up for ST_MakeValid");
+	PG_RETURN_NULL();
+#else /* POSTGIS_GEOS_VERSION >= 33 */
+
+	PG_LWGEOM *in, *out;
+	LWGEOM *lwgeom_in, *lwgeom_out;
+
+	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	lwgeom_in = lwgeom_deserialize(SERIALIZED_FORM(in));
+
+	lwgeom_out = lwgeom_make_valid(lwgeom_in);
+	if ( ! lwgeom_out ) {
+		PG_FREE_IF_COPY(in, 0);
+		PG_RETURN_NULL();
+	}
+
 	out = pglwgeom_serialize(lwgeom_out);
-	GEOSGeom_destroy(geosgeom);
-	geosgeom=0;
 
 	PG_RETURN_POINTER(out);
+#endif /* POSTGIS_GEOS_VERSION >= 33 */
+}
+
+Datum ST_CleanGeometry(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_CleanGeometry);
+Datum ST_CleanGeometry(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 33
+	elog(ERROR, "You need GEOS-3.3.0 or up for ST_CleanGeometry");
+	PG_RETURN_NULL();
+#else /* POSTGIS_GEOS_VERSION >= 33 */
+
+	PG_LWGEOM *in, *out;
+	LWGEOM *lwgeom_in;
+	int is3d;
+
+	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	lwgeom_in = lwgeom_deserialize(SERIALIZED_FORM(in));
+
+	/* Short-circuit: empty geometry are the cleanest ! */
+	if ( lwgeom_is_empty(lwgeom_in) )
+	{
+		out = pglwgeom_serialize(lwgeom_in);
+		PG_FREE_IF_COPY(in, 0);
+		PG_RETURN_POINTER(out);
+	}
+
+	is3d = TYPE_HASZ(lwgeom_in->type);
+
+
+	PG_RETURN_NULL();
 #endif /* POSTGIS_GEOS_VERSION >= 33 */
 }
 
