@@ -1373,7 +1373,6 @@ extern POINTARRAY *ptarray_addPoint(const POINTARRAY *pa, uchar *p, size_t pdims
                                     unsigned int where);
 extern POINTARRAY *ptarray_removePoint(POINTARRAY *pa, unsigned int where);
 extern POINTARRAY *ptarray_merge(POINTARRAY *pa1, POINTARRAY *pa2);
-extern POINTARRAY *ptarray_remove_repeated_points(POINTARRAY *in);
 
 extern int ptarray_isclosed2d(const POINTARRAY *pa);
 extern int ptarray_isclosed3d(const POINTARRAY *pa);
@@ -1412,6 +1411,13 @@ extern char * lwgeom_to_gml3(uchar *geom, char *srs, int precision, int is_deegr
 extern char * lwgeom_to_kml2(uchar *geom, int precision);
 extern char * lwgeom_to_geojson(uchar *geom, char *srs, int precision, int has_bbox);
 extern char * lwgeom_to_svg(uchar *geom, int precision, int relative);
+
+extern POINTARRAY *ptarray_remove_repeated_points(POINTARRAY *in);
+extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in);
+extern LWGEOM* lwmpoint_remove_repeated_points(LWGEOM *in);
+extern LWGEOM* lwline_remove_repeated_points(LWGEOM *in);
+extern LWGEOM* lwcollection_remove_repeated_points(LWGEOM *in);
+extern LWGEOM* lwpoly_remove_repeated_points(LWGEOM *in);
 
 
 extern uchar parse_hex(char *str);
