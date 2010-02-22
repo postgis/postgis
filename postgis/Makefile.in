@@ -41,10 +41,6 @@ PG_OBJS=lwgeom_pg.o \
 	lwgeom_geos_prepared.o \
 	lwgeom_geos_clean.o \
 	lwgeom_export.o \
-	lwgeom_svg.o \
-	lwgeom_gml.o \
-	lwgeom_kml.o \
-	lwgeom_geojson.o \
 	lwgeom_in_gml.o \
 	lwgeom_in_kml.o \
 	lwgeom_triggers.o \
