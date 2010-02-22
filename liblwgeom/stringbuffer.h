@@ -66,3 +66,4 @@ extern void stringbuffer_avprintf(stringbuffer_t *sb, const char *fmt, va_list a
 extern int stringbuffer_marknewlines(stringbuffer_t *sb);
 extern const char *stringbuffer_getnextline(stringbuffer_t *sb, const char *cptr);
 extern int stringbuffer_getlen(stringbuffer_t *sb);
+extern void stringbuffer_vasbappend(stringbuffer_t *sb, char *fmt, ... );

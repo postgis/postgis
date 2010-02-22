@@ -1423,6 +1423,12 @@ extern LWGEOM* lwpoly_remove_repeated_points(LWPOLY *in);
 extern uchar parse_hex(char *str);
 extern void deparse_hex(uchar str, char *result);
 
+/*
+** New parsing and unparsing functions.
+*/
+extern char *lwgeom_to_wkt(const LWGEOM *geom, int precision, uchar variant);
+
+
 /* Parser check flags */
 #define PARSER_CHECK_MINPOINTS  1
 #define PARSER_CHECK_ODD        2

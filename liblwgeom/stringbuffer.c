@@ -30,7 +30,7 @@
  * Therefore the raw string routines will always assume +1 when given length.
  */
 
-#include "stringbuffer.h"
+#include "liblwgeom.h"
 
 /* * * * * * * * * * * * *
  * raw string routines.  *
@@ -40,7 +40,7 @@
 static char *allocate_string(int len)
 {
 	char *s;
-	s = malloc(sizeof(char) * len + 1); /* add for null termination. */
+	s = lwalloc(sizeof(char) * len + 1); /* add for null termination. */
 	s[len] = 0;
 	return s;
 }
@@ -49,7 +49,7 @@ static char *allocate_string(int len)
 static char *extend_string(char *str, int cur_len, int ex_len)
 {
 
-	str = realloc(str, (cur_len * sizeof(char)) + (ex_len * sizeof(char)) + (1 * sizeof(char)));
+	str = lwrealloc(str, (cur_len * sizeof(char)) + (ex_len * sizeof(char)) + (1 * sizeof(char)));
 	str[cur_len] = 0; /* make sure it's null terminated. */
 
 	return str;
@@ -124,7 +124,7 @@ stringbuffer_t *stringbuffer_create(void)
 {
 	stringbuffer_t *sb;
 
-	sb = malloc(sizeof(stringbuffer_t));
+	sb = lwalloc(sizeof(stringbuffer_t));
 	sb->len = 0;
 	sb->capacity = 0;
 	sb->buf = allocate_string(0);
@@ -135,8 +135,8 @@ stringbuffer_t *stringbuffer_create(void)
 /* destroy the stringbuffer */
 void stringbuffer_destroy(stringbuffer_t *sb)
 {
-	free(sb->buf);
-	free(sb);
+	lwfree(sb->buf);
+	lwfree(sb);
 }
 
 /* clear a string. */
@@ -228,7 +228,7 @@ stringbuffer_t *stringbuffer_trim_whitespace(stringbuffer_t *sb)
 		newbuf[new_len] = 0;
 
 		/* free up old. */
-		free(sb->buf);
+		lwfree(sb->buf);
 
 		/* set new. */
 		sb->buf = newbuf;
@@ -409,7 +409,7 @@ void stringbuffer_align(stringbuffer_t *sb, int begin, int end)
 
 		stringbuffer_append(aligned_string, word_string);
 		stringbuffer_append(aligned_string, "\n");
-		free(word_string);
+		lwfree(word_string);
 
 	}
 
@@ -430,13 +430,13 @@ void stringbuffer_avprintf_align(stringbuffer_t *sb, int start, int end, const c
 
 	/* our first malloc is bogus. */
 	len = 1;
-	str = malloc(sizeof(char) * len);
+	str = lwalloc(sizeof(char) * len);
 	total = vsnprintf(str, len, fmt, ap);
 
 	/* total is the real length needed. */
-	free(str);
+	lwfree(str);
 	len = total + 1;
-	str = malloc(sizeof(char) * len);
+	str = lwalloc(sizeof(char) * len);
 	vsnprintf(str, len, fmt, ap);
 
 	/* now align if we want to align. */
@@ -457,7 +457,7 @@ void stringbuffer_avprintf_align(stringbuffer_t *sb, int start, int end, const c
 		stringbuffer_append(sb, str);
 	}
 
-	free(str);
+	lwfree(str);
 
 	return;
 }
@@ -565,4 +565,24 @@ const char *stringbuffer_getnextline(stringbuffer_t *sb, const char *cptr)
 int stringbuffer_getlen(stringbuffer_t *sb)
 {
 	return sb->len;
+}
+
+void stringbuffer_vasbappend(stringbuffer_t *sb, char *fmt, ... )
+{
+	va_list ap;
+	char *msg;
+
+	va_start(ap, fmt);
+
+	if (!lw_vasprintf (&msg, fmt, ap))
+	{
+		va_end (ap);
+		return;
+	}
+
+	/* Append to the stringbuffer */
+	stringbuffer_append(sb, msg);
+	lwfree(msg);
+
+	va_end(ap);
 }

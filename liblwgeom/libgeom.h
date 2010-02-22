@@ -36,6 +36,15 @@
 #define LW_FALSE 0
 
 /**
+* WKT Output Variant Types
+*/
+#define WKT_ISO 0x01
+#define WKT_SFSQL 0x02
+#define WKT_EXTENDED 0x04
+#define WKT_NOTYPE 0x08
+#define WKT_NOPARENS 0x10
+
+/**
 * Maximum allowed SRID value. 
 * Currently we are using 20 bits (1048575) of storage for SRID.
 */

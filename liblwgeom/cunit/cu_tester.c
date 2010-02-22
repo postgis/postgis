@@ -85,6 +85,13 @@ int main()
 		return CU_get_error();
 	}
 
+	/* Add the wkt suite to the registry */
+	if (NULL == register_wkt_suite())
+	{
+		CU_cleanup_registry();
+		return CU_get_error();
+	}
+
 	/* Add the libgeom suite to the registry */
 	if (NULL == register_libgeom_suite())
 	{
