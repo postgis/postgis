@@ -837,8 +837,8 @@ Datum ST_CleanGeometry(PG_FUNCTION_ARGS)
 #else /* POSTGIS_GEOS_VERSION >= 33 */
 
 	PG_LWGEOM *in, *out;
-	LWGEOM *lwgeom_in;
-	int is3d;
+	LWGEOM *lwgeom_in, *lwgeom_out;
+	/* int is3d; */
 
 	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	lwgeom_in = lwgeom_deserialize(SERIALIZED_FORM(in));
@@ -851,10 +851,44 @@ Datum ST_CleanGeometry(PG_FUNCTION_ARGS)
 		PG_RETURN_POINTER(out);
 	}
 
-	is3d = TYPE_HASZ(lwgeom_in->type);
+	/* is3d = TYPE_HASZ(lwgeom_in->type); */
 
+	lwgeom_out = lwgeom_make_valid(lwgeom_in);
+	if ( ! lwgeom_out ) {
+		PG_FREE_IF_COPY(in, 0);
+		PG_RETURN_NULL();
+	}
 
-	PG_RETURN_NULL();
+	/* Check dimensionality is the same as input */
+	if ( lwgeom_dimensionality(lwgeom_in) != lwgeom_dimensionality(lwgeom_out) )
+	{
+    		lwnotice("ST_CleanGeometry: dimensional collapse (%d to %d)",
+			lwgeom_dimensionality(lwgeom_in), lwgeom_dimensionality(lwgeom_out));
+
+		PG_FREE_IF_COPY(in, 0);
+		PG_RETURN_NULL();
+	}
+
+	/* Check that the output is not a collection if the input wasn't */
+	if ( TYPE_GETTYPE(lwgeom_out->type) == COLLECTIONTYPE &&
+	     TYPE_GETTYPE(lwgeom_in->type) != COLLECTIONTYPE )
+	{
+    		lwnotice("ST_CleanGeometry: mixed-type output (%s) from single-type input (%s)",
+			lwgeom_typename(TYPE_GETTYPE(lwgeom_out->type)),
+			lwgeom_typename(TYPE_GETTYPE(lwgeom_in->type)));
+		PG_FREE_IF_COPY(in, 0);
+		PG_RETURN_NULL();
+	}
+
+	/* Force right-hand-rule (will only affect polygons) */
+	/* gout := ST_ForceRHR(gout); */
+
+	/* Remove repeated duplicated points ? */
+	/* gout = ST_RemoveRepeatedPoints(gout); */
+
+	out = pglwgeom_serialize(lwgeom_out);
+	PG_RETURN_POINTER(out);
+
 #endif /* POSTGIS_GEOS_VERSION >= 33 */
 }
 

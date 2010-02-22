@@ -4075,48 +4075,9 @@ CREATE OR REPLACE FUNCTION ST_MakeValid(geometry)
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_CleanGeometry(geometry)
        RETURNS geometry
-       AS $$
-DECLARE
-  gin alias for $1;
-  pin geometry;
-  pout geometry;
-  pdif geometry;
-  gout geometry;
-BEGIN
-
-  RAISE DEBUG 'ST_CleanGeometry: in: %', ST_GeometryType(gin);
-
-  -- Short-circuit: empty geometry are the cleanest !
-  IF ST_isEmpty(gin) THEN
-    RETURN gin;
-  END IF;
-
-  gout := ST_MakeValid(gin);
-
-  -- Check dimensionality is the same as input
-  IF ST_Dimension(gin) != ST_Dimension(gout) THEN
-    RAISE NOTICE 'ST_CleanGeometry: dimensional collapse (% to %)',
-      ST_Dimension(gin), ST_Dimension(gout);
-    RETURN NULL;
-  END IF;
-
-  -- Check that the output is not a collection if the input wasn't
-  IF ST_GeometryType(gin) != 'ST_GeometryCollection' AND ST_GeometryType(gout) = 'ST_GeometryCollection' THEN
-    RAISE NOTICE 'ST_CleanGeometry: mixed-type output (%) from single-type input (%)',
-      ST_GeometryType(gout), ST_GeometryType(gin);
-    RETURN NULL;
-  END IF;
-
-  -- Force right-hand-rule (will only affect polygons)
-  gout := ST_ForceRHR(gout);
-
-  -- Remove repeated duplicated points ?
-  -- gout = ST_RemoveRepeatedPoints(gout);
-
-  RETURN gout;
-
-END
-$$ LANGUAGE plpgsql;
+       AS 'MODULE_PATHNAME', 'ST_CleanGeometry'
+       LANGUAGE 'C' IMMUTABLE STRICT
+       COST 100;
 
 --------------------------------------------------------------------------------
 -- Aggregates and their supporting functions
