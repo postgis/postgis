@@ -158,13 +158,13 @@ void out_gml_test_precision(void)
 	    NULL, 3, 0);
 
 
-	/* GML2 - huge digits precision, limit is in fact 15 */
+	/* GML2 - 9 digits precision */
 	do_gml2_test(
 	    "POINT(1.2345678901234 1.2345678901234)",
 	    "<gml:Point><gml:coordinates>1.23456789,1.23456789</gml:coordinates></gml:Point>",
 	    NULL, 9);
 
-	/* GML3 - huge digits precision, limit is in fact 15 */
+	/* GML3 - 9 digits precision */
 	do_gml3_test(
 	    "POINT(1.2345678901234 1.2345678901234)",
 	    "<gml:Point><gml:pos srsDimension=\"2\">1.23456789 1.23456789</gml:pos></gml:Point>",

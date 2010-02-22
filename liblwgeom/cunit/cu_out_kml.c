@@ -107,7 +107,7 @@ void out_kml_test_precision(void)
 	    "<Point><coordinates>1.111,1.111</coordinates></Point>",
 	    3);
 
-	/* huge digits precision, limit is in fact 15 */
+	/* 9 digits precision */
 	do_kml_test(
 	    "POINT(1.2345678901234 1.2345678901234)",
 	    "<Point><coordinates>1.23456789,1.23456789</coordinates></Point>",
@@ -206,7 +206,7 @@ void out_kml_test_geoms(void)
 	    "MULTICURVE((5 5,3 5,3 3,0 3),CIRCULARSTRING(0 0,2 1,2 2))",
 	    "lwgeom_to_kml2: 'MultiCurve' geometry type not supported");
 
-	/* GML2 - MultiSurface */
+	/* MultiSurface */
 	do_kml_unsupported(
 	    "MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))",
 	    "lwgeom_to_kml2: 'MultiSurface' geometry type not supported");

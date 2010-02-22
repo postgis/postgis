@@ -109,7 +109,7 @@ void out_geojson_test_precision(void)
 	    "{\"type\":\"Point\",\"coordinates\":[1.111,1.111]}",
 	    NULL, 3, 0);
 
-	/* huge digits precision, limit is in fact 15 */
+	/* 9 digits precision */
 	do_geojson_test(
 	    "POINT(1.2345678901234 1.2345678901234)",
 	    "{\"type\":\"Point\",\"coordinates\":[1.23456789,1.23456789]}",
@@ -320,7 +320,7 @@ void out_geojson_test_geoms(void)
 	    "MULTICURVE((5 5,3 5,3 3,0 3),CIRCULARSTRING(0 0,2 1,2 2))",
 	    "lwgeom_to_geojson: 'MultiCurve' geometry type not supported");
 
-	/* GML2 - MultiSurface */
+	/* MultiSurface */
 	do_geojson_unsupported(
 	    "MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))",
 	    "lwgeom_to_geojson: 'MultiSurface' geometry type not supported");
