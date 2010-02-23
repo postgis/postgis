@@ -1,9 +1,0 @@
-ERROR:  GetProj4StringSPI: Cannot find SRID (10) in spatial_ref_sys
-ERROR:  Input geometry has unknown (-1) SRID
-empty_geom|
-precision_01|<Point><coordinates>1,1</coordinates></Point>
-precision_02|<Point><coordinates>1.1111111,1.1111111</coordinates></Point>
-version_01|<Point><coordinates>1,1</coordinates></Point>
-ERROR:  Only KML 2 is supported
-ERROR:  Only KML 2 is supported
-projection_01|<Point><coordinates>-74.078,4.596</coordinates></Point>

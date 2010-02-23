@@ -56,10 +56,8 @@ TESTS = \
 	sql-mm-general \
 	sql-mm-multicurve \
 	sql-mm-multisurface \
-	geojson \
-	gml \
-	svg \
-	kml \
+	out_geometry \
+	out_geography \
 	in_gml \
 	in_kml \
 	regress_ogc \

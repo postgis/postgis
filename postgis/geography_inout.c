@@ -509,6 +509,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	int SRID = SRID_DEFAULT;
 	int precision = OUT_MAX_DOUBLE_PRECISION;
 	int option=0;
+	int is_deegree=0;
 
 	/* Get the version */
 	version = PG_GETARG_INT32(0);
@@ -545,11 +546,14 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 		elog(ERROR, "SRID %d unknown in spatial_ref_sys table", SRID_DEFAULT);
 		PG_RETURN_NULL();
 	}
+	
+	/* Revert lat/lon only with long SRS */
+	if (option & 1) is_deegree = 1;
 
 	if (version == 2)
 		gml = lwgeom_to_gml2(lwgeom_serialize(lwgeom), srs, precision);
 	else
-		gml = lwgeom_to_gml3(lwgeom_serialize(lwgeom), srs, precision, 1);
+		gml = lwgeom_to_gml3(lwgeom_serialize(lwgeom), srs, precision, is_deegree);
 
 	PG_FREE_IF_COPY(lwgeom, 1);
 
@@ -645,7 +649,7 @@ Datum geography_as_svg(PG_FUNCTION_ARGS)
 
 	/* check for relative path notation */
 	if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) )
-		relative = PG_GETARG_INT32(1) ? 0:1;
+		relative = PG_GETARG_INT32(1) ? 1:0;
 
 	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
 	{
