@@ -73,6 +73,30 @@ ptarray_reverse(POINTARRAY *pa)
 
 }
 
+
+/**
+ * Reverse X and Y axis on a given POINTARRAY
+ */
+POINTARRAY*
+ptarray_reverse_axis(POINTARRAY *pa)
+{
+        int i;
+        double d;
+        POINT4D p;
+
+        for (i=0 ; i < pa->npoints ; i++)
+        {
+                getPoint4d_p(pa, i, &p);
+                d = p.y;
+                p.y = p.x;
+                p.x = d;
+                setPoint4d(pa, i, &p);
+        }
+
+        return pa;
+}
+
+
 /**
  * @brief calculate the 2d bounding box of a set of points
  * 		write result to the provided BOX2DFLOAT4

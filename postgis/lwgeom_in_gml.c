@@ -300,28 +300,6 @@ static xmlNodePtr get_xlink_node(xmlNodePtr xnode)
 
 
 /**
- * Reverse X and Y axis on a given POINTARRAY
- */
-static POINTARRAY* gml_reverse_axis_pa(POINTARRAY *pa)
-{
-	int i;
-	double d;
-	POINT4D p;
-
-	for (i=0 ; i < pa->npoints ; i++)
-	{
-		getPoint4d_p(pa, i, &p);
-		d = p.y;
-		p.y = p.x;
-		p.x = d;
-		setPoint4d(pa, i, &p);
-	}
-
-	return pa;
-}
-
-
-/**
  * Use Proj4 to reproject a given POINTARRAY
  */
 static POINTARRAY* gml_reproject_pa(POINTARRAY *pa, int srid_in, int srid_out)
@@ -977,7 +955,7 @@ static POINTARRAY* parse_gml_data(xmlNodePtr xnode, bool *hasz, int *root_srid)
 				lwerror("invalid GML representation");
 
 			srs = parse_gml_srs(xb);
-			if (srs->reverse_axis) tmp_pa = gml_reverse_axis_pa(tmp_pa);
+			if (srs->reverse_axis) tmp_pa = ptarray_reverse_axis(tmp_pa);
 			if (!*root_srid) *root_srid = srs->srid;
 			else
 			{
@@ -1012,7 +990,7 @@ static LWGEOM* parse_gml_point(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (pa->npoints != 1) lwerror("invalid GML representation");
 
 	srs = parse_gml_srs(xnode);
-	if (srs->reverse_axis) pa = gml_reverse_axis_pa(pa);
+	if (srs->reverse_axis) pa = ptarray_reverse_axis(pa);
 	if (!*root_srid)
 	{
 		*root_srid = srs->srid;
@@ -1046,7 +1024,7 @@ static LWGEOM* parse_gml_line(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (pa->npoints < 2) lwerror("invalid GML representation");
 
 	srs = parse_gml_srs(xnode);
-	if (srs->reverse_axis) pa = gml_reverse_axis_pa(pa);
+	if (srs->reverse_axis) pa = ptarray_reverse_axis(pa);
 	if (!*root_srid)
 	{
 		*root_srid = srs->srid;
@@ -1162,7 +1140,7 @@ static LWGEOM* parse_gml_curve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	}
 
 	srs = parse_gml_srs(xnode);
-	if (srs->reverse_axis) pa = gml_reverse_axis_pa(pa);
+	if (srs->reverse_axis) pa = ptarray_reverse_axis(pa);
 	if (!*root_srid)
 	{
 		*root_srid = srs->srid;
@@ -1219,7 +1197,7 @@ static LWGEOM* parse_gml_polygon(xmlNodePtr xnode, bool *hasz, int *root_srid)
 			        ||  (*hasz && !ptarray_isclosed3d(ppa[0])))
 				lwerror("invalid GML representation");
 
-			if (srs->reverse_axis) ppa[0] = gml_reverse_axis_pa(ppa[0]);
+			if (srs->reverse_axis) ppa[0] = ptarray_reverse_axis(ppa[0]);
 		}
 	}
 
@@ -1249,7 +1227,7 @@ static LWGEOM* parse_gml_polygon(xmlNodePtr xnode, bool *hasz, int *root_srid)
 			        ||  (*hasz && !ptarray_isclosed3d(ppa[ring])))
 				lwerror("invalid GML representation");
 
-			if (srs->reverse_axis) ppa[ring] = gml_reverse_axis_pa(ppa[ring]);
+			if (srs->reverse_axis) ppa[ring] = ptarray_reverse_axis(ppa[ring]);
 			ring++;
 		}
 	}
@@ -1350,7 +1328,7 @@ static LWGEOM* parse_gml_surface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 				        ||  (*hasz && !ptarray_isclosed3d(ppa[0])))
 					lwerror("invalid GML representation");
 
-				if (srs->reverse_axis) ppa[0] = gml_reverse_axis_pa(ppa[0]);
+				if (srs->reverse_axis) ppa[0] = ptarray_reverse_axis(ppa[0]);
 			}
 		}
 
@@ -1378,7 +1356,7 @@ static LWGEOM* parse_gml_surface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 					lwerror("invalid GML representation");
 
 				if (srs->reverse_axis)
-					ppa[ring] = gml_reverse_axis_pa(ppa[ring]);
+					ppa[ring] = ptarray_reverse_axis(ppa[ring]);
 
 				ring++;
 			}
