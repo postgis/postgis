@@ -952,7 +952,7 @@ ptarray_remove_repeated_points(POINTARRAY *in)
 	LWDEBUG(3, "ptarray_remove_repeated_points called.");
 
 	/* Single or zero point arrays can't have duplicates */
-	if ( in->npoints < 2 ) return ptarray_clone(in);
+	if ( in->npoints < 3 ) return ptarray_clone(in);
 
 	ptsize = pointArray_ptsize(in);
 
@@ -969,7 +969,7 @@ ptarray_remove_repeated_points(POINTARRAY *in)
 	LWDEBUGF(3, " first point copied, out points: %d", opn);
 	for (ipn=1; ipn<in->npoints; ++ipn)
 	{
-		if ( memcmp(getPoint_internal(in, ipn-1),
+		if ( (ipn==in->npoints-1 && opn==1) || memcmp(getPoint_internal(in, ipn-1),
 		            getPoint_internal(in, ipn), ptsize) )
 		{
 			/* The point is different from the previous,
