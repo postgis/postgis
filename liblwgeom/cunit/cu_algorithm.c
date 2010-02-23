@@ -35,7 +35,7 @@ LWGEOM_PARSER_RESULT parse_result;
 ** The suite initialization function.
 ** Create any re-used objects.
 */
-int init_cg_suite(void)
+static int init_cg_suite(void)
 {
 	pa21 = ptarray_construct(0, 0, 2);
 	pa22 = ptarray_construct(0, 0, 2);
@@ -49,7 +49,7 @@ int init_cg_suite(void)
 ** The suite cleanup function.
 ** Frees any global objects.
 */
-int clean_cg_suite(void)
+static int clean_cg_suite(void)
 {
 	if ( l21 ) lwline_free(l21);
 	if ( l22 ) lwline_free(l22);
@@ -59,7 +59,7 @@ int clean_cg_suite(void)
 /*
 ** Test left/right side.
 */
-void test_lw_segment_side(void)
+static void test_lw_segment_side(void)
 {
 	double rv = 0.0;
 	POINT2D p1, p2, q;
@@ -94,7 +94,7 @@ void test_lw_segment_side(void)
 /*
 ** Test crossings side.
 */
-void test_lw_segment_intersects(void)
+static void test_lw_segment_intersects(void)
 {
 
 #define setpoint(p, x1, y1) {(p).x = (x1); (p).y = (y1);}
@@ -236,7 +236,7 @@ void test_lw_segment_intersects(void)
 
 }
 
-void test_lwline_crossing_short_lines(void)
+static void test_lwline_crossing_short_lines(void)
 {
 
 	POINT4D p;
@@ -299,7 +299,7 @@ void test_lwline_crossing_short_lines(void)
 
 }
 
-void test_lwline_crossing_long_lines(void)
+static void test_lwline_crossing_long_lines(void)
 {
 	LWLINE *l51;
 	LWLINE *l52;
@@ -359,7 +359,7 @@ void test_lwline_crossing_long_lines(void)
 }
 
 
-void test_lwline_crossing_bugs(void)
+static void test_lwline_crossing_bugs(void)
 {
 	LWLINE *l1;
 	LWLINE *l2;
@@ -373,7 +373,7 @@ void test_lwline_crossing_bugs(void)
 
 }
 
-void test_lwpoint_set_ordinate(void)
+static void test_lwpoint_set_ordinate(void)
 {
 	POINT4D p;
 
@@ -393,7 +393,7 @@ void test_lwpoint_set_ordinate(void)
 
 }
 
-void test_lwpoint_get_ordinate(void)
+static void test_lwpoint_get_ordinate(void)
 {
 	POINT4D p;
 
@@ -409,7 +409,7 @@ void test_lwpoint_get_ordinate(void)
 
 }
 
-void test_lwpoint_interpolate(void)
+static void test_lwpoint_interpolate(void)
 {
 	POINT4D p, q, r;
 	int rv = 0;
@@ -438,7 +438,7 @@ void test_lwpoint_interpolate(void)
 
 }
 
-void test_lwline_clip(void)
+static void test_lwline_clip(void)
 {
 	LWCOLLECTION *c;
 	LWLINE *line = NULL;
@@ -548,7 +548,7 @@ void test_lwline_clip(void)
 
 }
 
-void test_lwmline_clip(void)
+static void test_lwmline_clip(void)
 {
 	LWCOLLECTION *c;
 	char *ewkt;
@@ -644,7 +644,7 @@ void test_lwmline_clip(void)
 
 
 
-void test_lwline_clip_big(void)
+static void test_lwline_clip_big(void)
 {
 	POINTARRAY *pa = ptarray_construct(1, 0, 3);
 	LWLINE *line = lwline_construct(-1, NULL, pa);
@@ -677,7 +677,7 @@ void test_lwline_clip_big(void)
 	lwline_free(line);
 }
 
-void test_geohash_precision(void)
+static void test_geohash_precision(void)
 {
 	BOX3D bbox;
 	BOX3D bounds;
@@ -709,7 +709,7 @@ void test_geohash_precision(void)
 
 }
 
-void test_geohash_point(void)
+static void test_geohash_point(void)
 {
 	char *geohash;
 
@@ -730,7 +730,7 @@ void test_geohash_point(void)
 
 }
 
-void test_geohash(void)
+static void test_geohash(void)
 {
 	LWPOINT *lwpoint = NULL;
 	LWLINE *lwline = NULL;

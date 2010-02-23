@@ -20,7 +20,7 @@
 #include "measures.h"
 #include "lwtree.h"
 
-void test_mindistance2d_tolerance(void)
+static void test_mindistance2d_tolerance(void)
 {
 	LWGEOM_PARSER_RESULT gp1;
 	LWGEOM_PARSER_RESULT gp2;
@@ -117,7 +117,7 @@ void test_mindistance2d_tolerance(void)
 
 }
 
-void test_rect_tree_contains_point(void)
+static void test_rect_tree_contains_point(void)
 {
 	LWPOLY *poly;
 	POINT2D p;
@@ -267,7 +267,7 @@ void test_rect_tree_contains_point(void)
 
 }
 
-void test_rect_tree_intersects_tree(void)
+static void test_rect_tree_intersects_tree(void)
 {
 	LWPOLY *poly1, *poly2;
 	RECT_NODE *tree1, *tree2;

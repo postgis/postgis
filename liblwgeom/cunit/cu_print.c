@@ -60,7 +60,7 @@ static void test_lwprint_assert_error(char * point_wkt, const char * format)
 /*
 ** Test points around the globe using the default format.  Null and empty string both mean use the default.
 */
-void test_lwprint_default_format(void)
+static void test_lwprint_default_format(void)
 {
 	test_lwprint_assert_format("POINT(0 0)",                NULL, "0\xC2\xB0""0'0.000\"N 0\xC2\xB0""0'0.000\"E");
 	test_lwprint_assert_format("POINT(45.4545 12.34567)",   ""  , "12\xC2\xB0""20'44.412\"N 45\xC2\xB0""27'16.200\"E");
@@ -85,7 +85,7 @@ void test_lwprint_default_format(void)
 /*
  * Test all possible combinations of the orders of the parameters.
  */
-void test_lwprint_format_orders(void)
+static void test_lwprint_format_orders(void)
 {
 	test_lwprint_assert_format("POINT(-45.4545 -12.34567)", "C DD MM SS", "S 12 20 44 W 45 27 16");
 	test_lwprint_assert_format("POINT(-45.4545 -12.34567)", "C DD SS MM", "S 12 44 20 W 45 16 27");
@@ -119,7 +119,7 @@ void test_lwprint_format_orders(void)
 /*
  * Test with and without the optional parameters.
  */
-void test_lwprint_optional_format(void)
+static void test_lwprint_optional_format(void)
 {
 	test_lwprint_assert_format("POINT(-45.4545 -12.34567)", "DD.DDD", "-12.346 -45.455");
 	test_lwprint_assert_format("POINT(-45.4545 -12.34567)", "DD.DDD C", "12.346 S 45.455 W");
@@ -129,7 +129,7 @@ void test_lwprint_optional_format(void)
 	test_lwprint_assert_format("POINT(-45.4545 -12.34567)", "DD.DDD MM.MMM SS.SSS C", "12.000 20.000 44.412 S 45.000 27.000 16.200 W");
 }
 
-void test_lwprint_oddball_formats(void)
+static void test_lwprint_oddball_formats(void)
 {
 	test_lwprint_assert_format("POINT(-45.4545 -12.34567)", "DD.DDDMM.MMMSS.SSSC", "12.00020.00044.412S 45.00027.00016.200W");
 	test_lwprint_assert_format("POINT(-45.4545 -12.34567)", "DDMM.MMM", "-1220.740 -4527.270");
@@ -140,7 +140,7 @@ void test_lwprint_oddball_formats(void)
 /*
  * Test using formats that should produce errors.
  */
-void test_lwprint_bad_formats(void)
+static void test_lwprint_bad_formats(void)
 {
 	test_lwprint_assert_error("POINT(1.23456 7.89012)", "DD.DDD SS.SSS");
 	test_lwprint_assert_error("POINT(1.23456 7.89012)", "MM.MMM SS.SSS");

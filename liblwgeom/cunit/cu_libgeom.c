@@ -18,7 +18,7 @@
 #include "libgeom.h"
 #include "cu_tester.h"
 
-void test_typmod_macros(void)
+static void test_typmod_macros(void)
 {
 	uint32 typmod = 0;
 	int srid = 4326;
@@ -43,7 +43,7 @@ void test_typmod_macros(void)
 
 }
 
-void test_flags_macros(void)
+static void test_flags_macros(void)
 {
 	uchar flags = 0;
 
@@ -74,7 +74,7 @@ void test_flags_macros(void)
 	CU_ASSERT_EQUAL(0, FLAGS_GET_M(flags));
 }
 
-void test_serialized_srid(void)
+static void test_serialized_srid(void)
 {
 	GSERIALIZED s;
 	uint32 srid = 4326;
@@ -95,7 +95,7 @@ void test_serialized_srid(void)
 	CU_ASSERT_EQUAL(rv, srid);
 }
 
-void test_gserialized_from_lwgeom_size(void)
+static void test_gserialized_from_lwgeom_size(void)
 {
 	LWGEOM *g;
 	size_t size = 0;
@@ -137,7 +137,7 @@ void test_gserialized_from_lwgeom_size(void)
 
 }
 
-void test_gbox_serialized_size(void)
+static void test_gbox_serialized_size(void)
 {
 	uchar flags = gflags(0, 0, 0);
 	CU_ASSERT_EQUAL(gbox_serialized_size(flags),0);
@@ -155,7 +155,7 @@ void test_gbox_serialized_size(void)
 
 
 
-void test_lwgeom_from_gserialized(void)
+static void test_lwgeom_from_gserialized(void)
 {
 	LWGEOM *geom;
 	GSERIALIZED *g;
@@ -197,7 +197,7 @@ void test_lwgeom_from_gserialized(void)
 
 }
 
-void test_geometry_type_from_string(void)
+static void test_geometry_type_from_string(void)
 {
 	int rv;
 	int type = 0, z = 0, m = 0;
@@ -242,7 +242,7 @@ void test_geometry_type_from_string(void)
 
 }
 
-void test_lwgeom_count_vertices(void)
+static void test_lwgeom_count_vertices(void)
 {
 	LWGEOM *geom;
 
@@ -260,7 +260,7 @@ void test_lwgeom_count_vertices(void)
 
 }
 
-void test_on_gser_lwgeom_count_vertices(void)
+static void test_on_gser_lwgeom_count_vertices(void)
 {
 	LWGEOM *lwgeom;
 	GSERIALIZED *g_ser1;
@@ -285,7 +285,7 @@ void test_on_gser_lwgeom_count_vertices(void)
 
 }
 
-void test_lwcollection_extract(void)
+static void test_lwcollection_extract(void)
 {
 
 	LWGEOM *geom;
@@ -300,7 +300,7 @@ void test_lwcollection_extract(void)
 
 }
 
-void test_lwgeom_free(void)
+static void test_lwgeom_free(void)
 {
 	LWGEOM *geom;
 

@@ -60,14 +60,14 @@ static void point_rad2deg(GEOGRAPHIC_POINT *p)
 	p->lon = rad2deg(p->lon);
 }
 
-void test_signum(void)
+static void test_signum(void)
 {
 	CU_ASSERT_EQUAL(signum(-5.0),-1);
 	CU_ASSERT_EQUAL(signum(5.0),1);
 }
 
 
-void test_gbox_from_spherical_coordinates(void)
+static void test_gbox_from_spherical_coordinates(void)
 {
 #if RANDOM_TEST
 	const double gtolerance = 0.000001;
@@ -143,7 +143,7 @@ void test_gbox_from_spherical_coordinates(void)
 
 #include "cu_geodetic_data.h"
 
-void test_gserialized_get_gbox_geocentric(void)
+static void test_gserialized_get_gbox_geocentric(void)
 {
 	LWGEOM *lwg;
 	GSERIALIZED *g;
@@ -216,7 +216,7 @@ static void point_set(double lon, double lat, GEOGRAPHIC_POINT *p)
 	point_deg2rad(p);
 }
 
-void test_clairaut(void)
+static void test_clairaut(void)
 {
 
 	GEOGRAPHIC_POINT gs, ge;
@@ -254,7 +254,7 @@ void test_clairaut(void)
 	CU_ASSERT_DOUBLE_EQUAL(v_out_bottom.lon, g_out_bottom.lon, 0.000001);
 }
 
-void test_edge_intersection(void)
+static void test_edge_intersection(void)
 {
 	GEOGRAPHIC_EDGE e1, e2;
 	GEOGRAPHIC_POINT g;
@@ -414,7 +414,7 @@ void test_edge_intersection(void)
 
 }
 
-void test_edge_distance_to_point(void)
+static void test_edge_distance_to_point(void)
 {
 	GEOGRAPHIC_EDGE e;
 	GEOGRAPHIC_POINT g;
@@ -442,7 +442,7 @@ void test_edge_distance_to_point(void)
 
 }
 
-void test_edge_distance_to_edge(void)
+static void test_edge_distance_to_edge(void)
 {
 	GEOGRAPHIC_EDGE e1, e2;
 	GEOGRAPHIC_POINT c1, c2;
@@ -481,7 +481,7 @@ static LWGEOM* lwgeom_over_gserialized(char *wkt)
 	return lwgeom_from_gserialized(g);
 }
 
-void test_lwgeom_check_geodetic(void)
+static void test_lwgeom_check_geodetic(void)
 {
 	LWGEOM *geom;
 	int i = 0;
@@ -522,7 +522,7 @@ void test_lwgeom_check_geodetic(void)
 }
 
 
-void test_gbox_calculation(void)
+static void test_gbox_calculation(void)
 {
 
 	LWGEOM *geom;
@@ -561,7 +561,7 @@ void test_gbox_calculation(void)
 	lwfree(gbox);
 }
 
-void test_gserialized_from_lwgeom(void)
+static void test_gserialized_from_lwgeom(void)
 {
 	LWGEOM *geom;
 	GSERIALIZED *g;
@@ -597,7 +597,7 @@ void test_gserialized_from_lwgeom(void)
 
 }
 
-void test_ptarray_point_in_ring(void)
+static void test_ptarray_point_in_ring(void)
 {
 	LWGEOM *lwg;
 	LWPOLY *poly;
@@ -742,7 +742,7 @@ void test_ptarray_point_in_ring(void)
 
 }
 
-void test_lwpoly_covers_point2d(void)
+static void test_lwpoly_covers_point2d(void)
 {
 	LWPOLY *poly;
 	LWGEOM *lwg;
@@ -763,7 +763,7 @@ void test_lwpoly_covers_point2d(void)
 }
 
 
-void test_lwgeom_distance_sphere(void)
+static void test_lwgeom_distance_sphere(void)
 {
 	LWGEOM *lwg1, *lwg2;
 	GBOX gbox1, gbox2;
@@ -858,7 +858,7 @@ void test_lwgeom_distance_sphere(void)
 
 }
 
-void test_spheroid_distance(void)
+static void test_spheroid_distance(void)
 {
 	GEOGRAPHIC_POINT g1, g2;
 	double d;
@@ -899,7 +899,7 @@ void test_spheroid_distance(void)
 
 }
 
-void test_spheroid_area(void)
+static void test_spheroid_area(void)
 {
 	LWGEOM *lwg;
 	GBOX gbox;

@@ -48,7 +48,7 @@ static void do_coll_test(char * in, char * out)
 }
 
 
-void test_coll_point(void)
+static void test_coll_point(void)
 {
 	do_coll_test("GEOMETRYCOLLECTION(POINT(1 2))",
 	             "POINT(1 2)");
@@ -70,7 +70,7 @@ void test_coll_point(void)
 }
 
 
-void test_coll_line(void)
+static void test_coll_line(void)
 {
 	do_coll_test("GEOMETRYCOLLECTION(LINESTRING(1 2,3 4))",
 	             "LINESTRING(1 2,3 4)");
@@ -92,7 +92,7 @@ void test_coll_line(void)
 }
 
 
-void test_coll_poly(void)
+static void test_coll_poly(void)
 {
 	do_coll_test("GEOMETRYCOLLECTION(POLYGON((1 2,3 4,5 6,1 2)))",
 	             "POLYGON((1 2,3 4,5 6,1 2))");
@@ -114,7 +114,7 @@ void test_coll_poly(void)
 }
 
 
-void test_coll_coll(void)
+static void test_coll_coll(void)
 {
 	/* Two different types together must produce a Collection as output */
 	do_coll_test("GEOMETRYCOLLECTION(POINT(1 2),LINESTRING(3 4,5 6))",
@@ -154,7 +154,7 @@ void test_coll_coll(void)
 }
 
 
-void test_geom(void)
+static void test_geom(void)
 {
 	/* Already simple geometry */
 	do_geom_test("POINT(1 2)",
