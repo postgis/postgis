@@ -56,7 +56,7 @@ static void do_kml_unsupported(char * in, char * out)
 }
 
 
-void out_kml_test_precision(void)
+static void out_kml_test_precision(void)
 {
 	/* 0 precision, i.e a round */
 	do_kml_test(
@@ -84,7 +84,7 @@ void out_kml_test_precision(void)
 }
 
 
-void out_kml_test_dims(void)
+static void out_kml_test_dims(void)
 {
 	/* 3D */
 	do_kml_test(
@@ -106,7 +106,7 @@ void out_kml_test_dims(void)
 }
 
 
-void out_kml_test_geoms(void)
+static void out_kml_test_geoms(void)
 {
 	/* Linestring */
 	do_kml_test(

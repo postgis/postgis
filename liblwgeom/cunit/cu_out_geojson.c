@@ -56,7 +56,7 @@ static void do_geojson_unsupported(char * in, char * out)
 }
 
 
-void out_geojson_test_precision(void)
+static void out_geojson_test_precision(void)
 {
 	/* 0 precision, i.e a round */
 	do_geojson_test(
@@ -84,7 +84,7 @@ void out_geojson_test_precision(void)
 }
 
 
-void out_geojson_test_dims(void)
+static void out_geojson_test_dims(void)
 {
 	/* 3D */
 	do_geojson_test(
@@ -106,7 +106,7 @@ void out_geojson_test_dims(void)
 }
 
 
-void out_geojson_test_srid(void)
+static void out_geojson_test_srid(void)
 {
 	/* Linestring */
 	do_geojson_test(
@@ -151,7 +151,7 @@ void out_geojson_test_srid(void)
 	    "EPSG:4326", 0, 0);
 }
 
-void out_geojson_test_bbox(void)
+static void out_geojson_test_bbox(void)
 {
 	/* Linestring */
 	do_geojson_test(
@@ -196,7 +196,7 @@ void out_geojson_test_bbox(void)
 	    NULL, 0, 1);
 }
 
-void out_geojson_test_geoms(void)
+static void out_geojson_test_geoms(void)
 {
 	/* Linestring */
 	do_geojson_test(

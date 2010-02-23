@@ -91,7 +91,7 @@ static void do_gml3_unsupported(char * in, char * out)
 }
 
 
-void out_gml_test_precision(void)
+static void out_gml_test_precision(void)
 {
 	/* GML2 - 0 precision, i.e a round */
 	do_gml2_test(
@@ -145,7 +145,7 @@ void out_gml_test_precision(void)
 	    NULL, 0, 0);
 }
 
-void out_gml_test_srid(void)
+static void out_gml_test_srid(void)
 {
 	/* GML2 - Point with SRID */
 	do_gml2_test(
@@ -239,7 +239,7 @@ void out_gml_test_srid(void)
 }
 
 
-void out_gml_test_geodetic(void)
+static void out_gml_test_geodetic(void)
 {
 	/* GML3 - Geodetic Point */
 	do_gml3_test(
@@ -255,7 +255,7 @@ void out_gml_test_geodetic(void)
 }
 
 
-void out_gml_test_dims(void)
+static void out_gml_test_dims(void)
 {
 	/* GML2 - 3D */
 	do_gml2_test(
@@ -297,7 +297,7 @@ void out_gml_test_dims(void)
 }
 
 
-void out_gml_test_geoms(void)
+static void out_gml_test_geoms(void)
 {
 	/* GML2 - Linestring */
 	do_gml2_test(

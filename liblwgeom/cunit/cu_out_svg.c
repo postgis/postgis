@@ -56,7 +56,7 @@ static void do_svg_unsupported(char * in, char * out)
 }
 
 
-void out_svg_test_precision(void)
+static void out_svg_test_precision(void)
 {
 	/* 0 precision, i.e a round - with Circle point */
 	do_svg_test(
@@ -134,7 +134,7 @@ void out_svg_test_precision(void)
 }
 
 
-void out_svg_test_dims(void)
+static void out_svg_test_dims(void)
 {
 	/* 4D - with Circle point */
 	do_svg_test(
@@ -162,7 +162,7 @@ void out_svg_test_dims(void)
 }
 
 
-void out_svg_test_geoms(void)
+static void out_svg_test_geoms(void)
 {
 	/* Linestring */
 	do_svg_test(
@@ -243,7 +243,7 @@ void out_svg_test_geoms(void)
 	    "lwgeom_to_svg: 'MultiSurface' geometry type not supported");
 }
 
-void out_svg_test_relative(void)
+static void out_svg_test_relative(void)
 {
 	/* Linestring */
 	do_svg_test(
@@ -288,7 +288,7 @@ void out_svg_test_relative(void)
 	    0, 1);
 }
 
-void out_svg_test_srid(void)
+static void out_svg_test_srid(void)
 {
 	/* SRID - with Circle point */
 	do_svg_test(
