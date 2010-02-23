@@ -28,7 +28,7 @@ char *s;
 ** The suite initialization function.
 ** Create any re-used objects.
 */
-int init_wkt_suite(void)
+static int init_wkt_suite(void)
 {
 	s = NULL;
 	return 0;
@@ -38,7 +38,7 @@ int init_wkt_suite(void)
 ** The suite cleanup function.
 ** Frees any global objects.
 */
-int clean_wkt_suite(void)
+static int clean_wkt_suite(void)
 {
 	free(s);
 	s = NULL;
@@ -54,7 +54,7 @@ static char* cu_wkt(char *wkt, uchar variant)
 	return s;
 }
 
-void test_wkt_point(void)
+static void test_wkt_point(void)
 {
 	CU_ASSERT_STRING_EQUAL(cu_wkt("POINT(0.1111 0.1111 0.1111 0)",WKT_ISO), "POINTZM(0.1111 0.1111 0.1111 0)");
 	CU_ASSERT_STRING_EQUAL(cu_wkt("POINT(0 0 0 0)",WKT_EXTENDED), "POINT(0 0 0 0)");
@@ -75,14 +75,14 @@ void test_wkt_point(void)
 
 }
 
-void test_wkt_linestring(void) 
+static void test_wkt_linestring(void) 
 {
 	CU_ASSERT_STRING_EQUAL(cu_wkt("LINESTRING(1 2 3 4,5 6 7 8)",WKT_ISO), "LINESTRINGZM(1 2 3 4,5 6 7 8)");
 	CU_ASSERT_STRING_EQUAL(cu_wkt("LINESTRING(1 2 3,5 6 7)",WKT_ISO), "LINESTRINGZ(1 2 3,5 6 7)");
 	CU_ASSERT_STRING_EQUAL(cu_wkt("LINESTRINGM(1 2 3,5 6 7)",WKT_ISO), "LINESTRINGM(1 2 3,5 6 7)");
 }
 
-void test_wkt_polygon(void) 
+static void test_wkt_polygon(void) 
 {
 	CU_ASSERT_STRING_EQUAL(
 	cu_wkt("POLYGON((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2))",WKT_ISO), 
@@ -91,7 +91,7 @@ void test_wkt_polygon(void)
 	cu_wkt("POLYGON((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2))",WKT_EXTENDED), 
 	       "POLYGON((100 100 2,100 200 2,200 200 2,200 100 2,100 100 2))");
 }
-void test_wkt_multipoint(void) 
+static void test_wkt_multipoint(void) 
 {
 	CU_ASSERT_STRING_EQUAL(cu_wkt("MULTIPOINT(1 2 3 4,5 6 7 8)",WKT_ISO), "MULTIPOINTZM(1 2 3 4,5 6 7 8)");
 	CU_ASSERT_STRING_EQUAL(cu_wkt("MULTIPOINT(1 2 3,5 6 7)",WKT_ISO), "MULTIPOINTZ(1 2 3,5 6 7)");
@@ -99,7 +99,7 @@ void test_wkt_multipoint(void)
 	
 }
 
-void test_wkt_multilinestring(void) 
+static void test_wkt_multilinestring(void) 
 {
 	CU_ASSERT_STRING_EQUAL(
 	cu_wkt("MULTILINESTRING((1 2 3 4,5 6 7 8))",WKT_ISO), 
@@ -112,7 +112,7 @@ void test_wkt_multilinestring(void)
 	       "MULTILINESTRINGM((1 2 3,5 6 7))");	
 }
 
-void test_wkt_multipolygon(void) 
+static void test_wkt_multipolygon(void) 
 {
 	CU_ASSERT_STRING_EQUAL(
 	cu_wkt("MULTIPOLYGON(((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2)))",WKT_ISO), 
@@ -122,7 +122,7 @@ void test_wkt_multipolygon(void)
 	       "MULTIPOLYGON(((100 100 2,100 200 2,200 200 2,200 100 2,100 100 2)))");
 }
 
-void test_wkt_collection(void) 
+static void test_wkt_collection(void) 
 {
 	//printf("%s\n",cu_wkt("GEOMETRYCOLLECTION(MULTIPOLYGON(((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2))),MULTIPOINT(.5 .5 .5,1 1 1),CURVEPOLYGON((.8 .8 .8,.8 .8 .8,.8 .8 .8)))",WKT_ISO));
 	CU_ASSERT_STRING_EQUAL(
@@ -133,7 +133,7 @@ void test_wkt_collection(void)
            "GEOMETRYCOLLECTIONZ(MULTIPOLYGONZ(((100 100 2,100 200 2,200 200 2,200 100 2,100 100 2))),MULTIPOINTZ(0.5 0.5 0.5,1 1 1),CURVEPOLYGONZ((0.8 0.8 0.8,0.8 0.8 0.8,0.8 0.8 0.8)))");
 }
 
-void test_wkt_circularstring(void) 
+static void test_wkt_circularstring(void) 
 {
 	CU_ASSERT_STRING_EQUAL(
 	cu_wkt("CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0)",WKT_ISO), 
@@ -144,28 +144,28 @@ void test_wkt_circularstring(void)
 	//printf("%s\n",cu_wkt("GEOMETRYCOLLECTION(MULTIPOLYGON(((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2))),MULTIPOINT(.5 .5 .5,1 1 1),CURVEPOLYGON((.8 .8 .8,.8 .8 .8,.8 .8 .8)))",WKT_ISO));
 }
 
-void test_wkt_compoundcurve(void)
+static void test_wkt_compoundcurve(void)
 {
 	CU_ASSERT_STRING_EQUAL(
 	cu_wkt("COMPOUNDCURVE((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0))",WKT_ISO), 
            "COMPOUNDCURVEZM((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRINGZM(1 2 3 4,4 5 6 7,7 8 9 0))");
 }
 
-void test_wkt_curvpolygon(void)
+static void test_wkt_curvpolygon(void)
 {
 	CU_ASSERT_STRING_EQUAL(
 	cu_wkt("CURVEPOLYGON((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0))",WKT_ISO), 
            "CURVEPOLYGONZM((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRINGZM(1 2 3 4,4 5 6 7,7 8 9 0))");
 }
 
-void test_wkt_multicurve(void)
+static void test_wkt_multicurve(void)
 {
 	CU_ASSERT_STRING_EQUAL(
 	cu_wkt("MULTICURVE((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0))",WKT_ISO), 
            "MULTICURVEZM((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRINGZM(1 2 3 4,4 5 6 7,7 8 9 0))");
 }
 
-void test_wkt_multisurface(void)
+static void test_wkt_multisurface(void)
 {
 	CU_ASSERT_STRING_EQUAL(
 	cu_wkt("MULTISURFACE(((1 2 3 4,4 5 6 7,7 8 9 0)),CURVEPOLYGON((1 2 3 4,4 5 6 7,7 8 9 0)))",WKT_ISO), 
