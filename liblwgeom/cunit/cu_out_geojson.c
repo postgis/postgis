@@ -188,12 +188,6 @@ void out_geojson_test_srid(void)
 	    "GEOMETRYCOLLECTION EMPTY",
 	    "{\"type\":\"GeometryCollection\",\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}},\"geometries\":[]}",
 	    "EPSG:4326", 0, 0);
-
-	/* Nested GeometryCollection */
-	do_geojson_test(
-	    "GEOMETRYCOLLECTION(POINT(0 1),GEOMETRYCOLLECTION(LINESTRING(2 3,4 5)))",
-	    "{\"type\":\"GeometryCollection\",\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}},\"geometries\":[{\"type\":\"Point\",\"coordinates\":[0,1]},]}",
-	    "EPSG:4326", 0, 0);
 }
 
 void out_geojson_test_bbox(void)
@@ -239,14 +233,6 @@ void out_geojson_test_bbox(void)
 	    "GEOMETRYCOLLECTION EMPTY",
 	    "{\"type\":\"GeometryCollection\",\"geometries\":[]}",
 	    NULL, 0, 1);
-
-#if 0
-	/* Nested GeometryCollection */
-	do_geojson_test(
-	    "GEOMETRYCOLLECTION(POINT(0 1),GEOMETRYCOLLECTION(LINESTRING(2 3,4 5)))",
-	    "",
-	    NULL, 0, 1);
-#endif
 }
 
 void out_geojson_test_geoms(void)
@@ -294,10 +280,9 @@ void out_geojson_test_geoms(void)
 	    NULL, 0, 0);
 
 	/* Nested GeometryCollection */
-	do_geojson_test(
+	do_geojson_unsupported(
 	    "GEOMETRYCOLLECTION(POINT(0 1),GEOMETRYCOLLECTION(LINESTRING(2 3,4 5)))",
-	    "{\"type\":\"GeometryCollection\",\"geometries\":[{\"type\":\"Point\",\"coordinates\":[0,1]},]}",
-	    NULL, 0, 0);
+	    "GeoJson: geometry not supported.");
 
 	/* CircularString */
 	do_geojson_unsupported(

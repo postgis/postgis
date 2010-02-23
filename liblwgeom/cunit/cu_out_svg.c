@@ -251,13 +251,10 @@ void out_svg_test_geoms(void)
 	    "",
 	    0, 0);
 
-#if 0
 	/* Nested GeometryCollection */
-	do_svg_test(
+	do_svg_unsupported(
 	    "GEOMETRYCOLLECTION(POINT(0 1),GEOMETRYCOLLECTION(LINESTRING(2 3,4 5)))",
-	    "cx=\"0\" cy=\"-1\";M 2 -3 L 4 -5",
-	    0, 0);
-#endif
+	    "ST_AsSVG: 'GeometryCollection' geometry type not supported.");
 
 	/* CircularString */
 	do_svg_unsupported(
