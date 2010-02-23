@@ -10,52 +10,13 @@
  *
  **********************************************************************/
 
-#include "cu_homogenize.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "CUnit/Basic.h"
 
-/*
-** Called from test harness to register the tests in this file.
-*/
-CU_pSuite register_homogenize_suite(void)
-{
-	CU_pSuite pSuite;
-	pSuite = CU_add_suite("Homogenize Suite", init_homogenize_suite, clean_homogenize_suite);
-	if (NULL == pSuite)
-	{
-		CU_cleanup_registry();
-		return NULL;
-	}
-
-	if ( 	(NULL == CU_add_test(pSuite, "test_coll_point()", test_coll_point)) ||
-	        (NULL == CU_add_test(pSuite, "test_coll_line()", test_coll_line))   ||
-	        (NULL == CU_add_test(pSuite, "test_coll_poly()", test_coll_poly))   ||
-	        (NULL == CU_add_test(pSuite, "test_coll_coll()", test_coll_coll))   ||
-	        (NULL == CU_add_test(pSuite, "test_geom()", test_geom))
-	   )
-	{
-		CU_cleanup_registry();
-		return NULL;
-	}
-	return pSuite;
-}
-
-/*
-** The suite initialization function.
-** Create any re-used objects.
-*/
-int init_homogenize_suite(void)
-{
-	return 0;
-}
-
-/*
-** The suite cleanup function.
-** Frees any global objects.
-*/
-int clean_homogenize_suite(void)
-{
-	return 0;
-}
-
+#include "libgeom.h"
+#include "cu_tester.h"
 
 static void do_geom_test(char * in, char * out)
 {
@@ -276,3 +237,16 @@ void test_geom(void)
 	do_geom_test("POINT(1 2 3 4)",
 	             "POINT(1 2 3 4)");
 }
+
+/*
+** Used by test harness to register the tests in this file.
+*/
+CU_TestInfo homogenize_tests[] = {
+	PG_TEST(test_coll_point),
+	PG_TEST(test_coll_line),
+	PG_TEST(test_coll_poly),
+	PG_TEST(test_coll_coll),
+	PG_TEST(test_geom),
+	CU_TEST_INFO_NULL
+};
+CU_SuiteInfo homogenize_suite = {"Homogenize Suite",  NULL,  NULL, homogenize_tests};

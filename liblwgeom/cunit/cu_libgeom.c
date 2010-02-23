@@ -10,59 +10,13 @@
  *
  **********************************************************************/
 
-#include "cu_libgeom.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "CUnit/Basic.h"
 
-/*
-** Called from test harness to register the tests in this file.
-*/
-CU_pSuite register_libgeom_suite(void)
-{
-	CU_pSuite pSuite;
-	pSuite = CU_add_suite("LibGeom Suite", init_libgeom_suite, clean_libgeom_suite);
-	if (NULL == pSuite)
-	{
-		CU_cleanup_registry();
-		return NULL;
-	}
-
-	if (
-	    (NULL == CU_add_test(pSuite, "test_typmod_macros()", test_typmod_macros)) ||
-	    (NULL == CU_add_test(pSuite, "test_flags_macros()", test_flags_macros)) ||
-	    (NULL == CU_add_test(pSuite, "test_serialized_srid()", test_serialized_srid)) ||
-	    (NULL == CU_add_test(pSuite, "test_gserialized_from_lwgeom_size()", test_gserialized_from_lwgeom_size)) ||
-	    (NULL == CU_add_test(pSuite, "test_gbox_serialized_size()", test_gbox_serialized_size)) ||
-	    (NULL == CU_add_test(pSuite, "test_lwgeom_from_gserialized()", test_lwgeom_from_gserialized))  ||
-	    (NULL == CU_add_test(pSuite, "test_lwgeom_count_vertices()", test_lwgeom_count_vertices))  ||
-	    (NULL == CU_add_test(pSuite, "test_on_gser_lwgeom_count_vertices()", test_on_gser_lwgeom_count_vertices))  ||
-	    (NULL == CU_add_test(pSuite, "test_geometry_type_from_string()", test_geometry_type_from_string)) ||
-	    (NULL == CU_add_test(pSuite, "test_lwcollection_extract()", test_lwcollection_extract)) ||
-	    (NULL == CU_add_test(pSuite, "test_lwgeom_free()", test_lwgeom_free))
-
-	)
-	{
-		CU_cleanup_registry();
-		return NULL;
-	}
-	return pSuite;
-}
-
-/*
-** The suite initialization function.
-** Create any re-used objects.
-*/
-int init_libgeom_suite(void)
-{
-	return 0;
-}
-
-/*
-** The suite cleanup function.
-** Frees any global objects.
-*/
-int clean_libgeom_suite(void)
-{
-	return 0;
-}
+#include "libgeom.h"
+#include "cu_tester.h"
 
 void test_typmod_macros(void)
 {
@@ -371,3 +325,22 @@ void test_lwgeom_free(void)
 	lwgeom_free(geom);
 
 }
+
+/*
+** Used by test harness to register the tests in this file.
+*/
+CU_TestInfo libgeom_tests[] = {
+	PG_TEST(test_typmod_macros),
+	PG_TEST(test_flags_macros),
+	PG_TEST(test_serialized_srid),
+	PG_TEST(test_gserialized_from_lwgeom_size),
+	PG_TEST(test_gbox_serialized_size),
+	PG_TEST(test_lwgeom_from_gserialized),
+	PG_TEST(test_lwgeom_count_vertices),
+	PG_TEST(test_on_gser_lwgeom_count_vertices),
+	PG_TEST(test_geometry_type_from_string),
+	PG_TEST(test_lwcollection_extract),
+	PG_TEST(test_lwgeom_free),
+	CU_TEST_INFO_NULL
+};
+CU_SuiteInfo libgeom_suite = {"LibGeom Suite",  NULL,  NULL, libgeom_tests};

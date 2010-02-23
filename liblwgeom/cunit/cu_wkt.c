@@ -10,41 +10,13 @@
  *
  **********************************************************************/
 
-#include "cu_wkt.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "CUnit/Basic.h"
 
-/*
-** Called from test harness to register the tests in this file.
-*/
-CU_pSuite register_wkt_suite(void)
-{
-	CU_pSuite pSuite;
-	pSuite = CU_add_suite("WKT Suite", init_wkt_suite, clean_wkt_suite);
-	if (NULL == pSuite)
-	{
-		CU_cleanup_registry();
-		return NULL;
-	}
-
-	if (
-	    (NULL == CU_add_test(pSuite, "test_wkt_point()", test_wkt_point)) ||
-	    (NULL == CU_add_test(pSuite, "test_wkt_linestring()", test_wkt_linestring)) ||
-	    (NULL == CU_add_test(pSuite, "test_wkt_polygon()", test_wkt_polygon)) ||
-	    (NULL == CU_add_test(pSuite, "test_wkt_multipoint()", test_wkt_multipoint)) ||
-	    (NULL == CU_add_test(pSuite, "test_wkt_multilinestring()", test_wkt_multilinestring)) ||
-	    (NULL == CU_add_test(pSuite, "test_wkt_multipolygon()", test_wkt_multipolygon)) ||
-	    (NULL == CU_add_test(pSuite, "test_wkt_collection()", test_wkt_collection)) ||
-	    (NULL == CU_add_test(pSuite, "test_wkt_circularstring()", test_wkt_circularstring)) ||
-	    (NULL == CU_add_test(pSuite, "test_wkt_compoundcurve()", test_wkt_compoundcurve)) ||
-	    (NULL == CU_add_test(pSuite, "test_wkt_curvpolygon()", test_wkt_curvpolygon)) || 
-	    (NULL == CU_add_test(pSuite, "test_wkt_multicurve()", test_wkt_multicurve)) ||
-	    (NULL == CU_add_test(pSuite, "test_wkt_multisurface()", test_wkt_multisurface)) 
-	)
-	{
-		CU_cleanup_registry();
-		return NULL;
-	}
-	return pSuite;
-}
+#include "libgeom.h"
+#include "cu_tester.h"
 
 /*
 ** Global variable to hold WKT strings
@@ -201,3 +173,22 @@ void test_wkt_multisurface(void)
 	
 }
 
+/*
+** Used by test harness to register the tests in this file.
+*/
+CU_TestInfo wkt_tests[] = {
+	PG_TEST(test_wkt_point),
+	PG_TEST(test_wkt_linestring),
+	PG_TEST(test_wkt_polygon),
+	PG_TEST(test_wkt_multipoint),
+	PG_TEST(test_wkt_multilinestring),
+	PG_TEST(test_wkt_multipolygon),
+	PG_TEST(test_wkt_collection),
+	PG_TEST(test_wkt_circularstring),
+	PG_TEST(test_wkt_compoundcurve),
+	PG_TEST(test_wkt_curvpolygon),
+	PG_TEST(test_wkt_multicurve),
+	PG_TEST(test_wkt_multisurface),
+	CU_TEST_INFO_NULL
+};
+CU_SuiteInfo wkt_suite = {"WKT Suite",  init_wkt_suite,  clean_wkt_suite, wkt_tests};

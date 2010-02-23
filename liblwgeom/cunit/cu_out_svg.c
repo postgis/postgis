@@ -10,52 +10,13 @@
  *
  **********************************************************************/
 
-#include "cu_out_svg.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "CUnit/Basic.h"
 
-/*
-** Called from test harness to register the tests in this file.
-*/
-CU_pSuite register_out_svg_suite(void)
-{
-	CU_pSuite pSuite;
-	pSuite = CU_add_suite("SVG Out Suite", init_out_svg_suite, clean_out_svg_suite);
-	if (NULL == pSuite)
-	{
-		CU_cleanup_registry();
-		return NULL;
-	}
-
-	if (
-	    (NULL == CU_add_test(pSuite, "test_precision()", out_svg_test_precision)) ||
-	    (NULL == CU_add_test(pSuite, "test_dims()", out_svg_test_dims)) ||
-	    (NULL == CU_add_test(pSuite, "test_relative()", out_svg_test_relative)) ||
-	    (NULL == CU_add_test(pSuite, "test_geoms()", out_svg_test_geoms)) ||
-	    (NULL == CU_add_test(pSuite, "test_srid()", out_svg_test_srid))
-	)
-	{
-		CU_cleanup_registry();
-		return NULL;
-	}
-	return pSuite;
-}
-
-/*
-** The suite initialization function.
-** Create any re-used objects.
-*/
-int init_out_svg_suite(void)
-{
-	return 0;
-}
-
-/*
-** The suite cleanup function.
-** Frees any global objects.
-*/
-int clean_out_svg_suite(void)
-{
-	return 0;
-}
+#include "libgeom.h"
+#include "cu_tester.h"
 
 static void do_svg_test(char * in, char * out, int precision, int relative)
 {
@@ -353,3 +314,16 @@ void out_svg_test_srid(void)
 	    "M 0 -1 l 2 -2",
 	    0, 1);
 }
+
+/*
+** Used by test harness to register the tests in this file.
+*/
+CU_TestInfo out_svg_tests[] = {
+	PG_TEST(out_svg_test_precision),
+	PG_TEST(out_svg_test_dims),
+	PG_TEST(out_svg_test_relative),
+	PG_TEST(out_svg_test_geoms),
+	PG_TEST(out_svg_test_srid),
+	CU_TEST_INFO_NULL
+};
+CU_SuiteInfo out_svg_suite = {"SVG Out Suite",  NULL,  NULL, out_svg_tests};

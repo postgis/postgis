@@ -10,65 +10,15 @@
  *
  **********************************************************************/
 
-#include "cu_geodetic.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "CUnit/Basic.h"
+
+#include "lwgeodetic.h"
+#include "cu_tester.h"
 
 #define RANDOM_TEST 0
-
-/*
-** Called from test harness to register the tests in this file.
-*/
-CU_pSuite register_geodetic_suite(void)
-{
-	CU_pSuite pSuite;
-	pSuite = CU_add_suite("Geodetic Suite", init_geodetic_suite, clean_geodetic_suite);
-	if (NULL == pSuite)
-	{
-		CU_cleanup_registry();
-		return NULL;
-	}
-
-	if (
-	    (NULL == CU_add_test(pSuite, "test_signum()", test_signum))  ||
-	    (NULL == CU_add_test(pSuite, "test_gbox_from_spherical_coordinates()", test_gbox_from_spherical_coordinates))  ||
-	    (NULL == CU_add_test(pSuite, "test_gserialized_get_gbox_geocentric()", test_gserialized_get_gbox_geocentric))  ||
-	    (NULL == CU_add_test(pSuite, "test_clairaut()", test_clairaut))  ||
-	    (NULL == CU_add_test(pSuite, "test_edge_intersection()", test_edge_intersection))  ||
-	    (NULL == CU_add_test(pSuite, "test_edge_distance_to_point()", test_edge_distance_to_point)) ||
-	    (NULL == CU_add_test(pSuite, "test_edge_distance_to_edge()", test_edge_distance_to_edge)) ||
-	    (NULL == CU_add_test(pSuite, "test_lwgeom_distance_sphere()", test_lwgeom_distance_sphere)) ||
-	    (NULL == CU_add_test(pSuite, "test_lwgeom_check_geodetic()", test_lwgeom_check_geodetic)) ||
-	    (NULL == CU_add_test(pSuite, "test_gbox_calculation()", test_gbox_calculation)) ||
-	    (NULL == CU_add_test(pSuite, "test_gserialized_from_lwgeom()", test_gserialized_from_lwgeom)) ||
-	    (NULL == CU_add_test(pSuite, "test_spheroid_distance()", test_spheroid_distance)) ||
-	    (NULL == CU_add_test(pSuite, "test_spheroid_area()", test_spheroid_area)) ||
-	    (NULL == CU_add_test(pSuite, "test_lwpoly_covers_point2d()", test_lwpoly_covers_point2d)) ||
-	    (NULL == CU_add_test(pSuite, "test_ptarray_point_in_ring()", test_ptarray_point_in_ring))
-	)
-	{
-		CU_cleanup_registry();
-		return NULL;
-	}
-	return pSuite;
-}
-
-/*
-** The suite initialization function.
-** Create any re-used objects.
-*/
-int init_geodetic_suite(void)
-{
-	return 0;
-}
-
-/*
-** The suite cleanup function.
-** Frees any global objects.
-*/
-int clean_geodetic_suite(void)
-{
-	return 0;
-}
-
 
 /**
 * Convert an edge from degrees to radians.
@@ -982,3 +932,26 @@ void test_spheroid_area(void)
 
 }
 
+
+/*
+** Used by test harness to register the tests in this file.
+*/
+CU_TestInfo geodetic_tests[] = {
+	PG_TEST(test_signum),
+	PG_TEST(test_gbox_from_spherical_coordinates),
+	PG_TEST(test_gserialized_get_gbox_geocentric),
+	PG_TEST(test_clairaut),
+	PG_TEST(test_edge_intersection),
+	PG_TEST(test_edge_distance_to_point),
+	PG_TEST(test_edge_distance_to_edge),
+	PG_TEST(test_lwgeom_distance_sphere),
+	PG_TEST(test_lwgeom_check_geodetic),
+	PG_TEST(test_gbox_calculation),
+	PG_TEST(test_gserialized_from_lwgeom),
+	PG_TEST(test_spheroid_distance),
+	PG_TEST(test_spheroid_area),
+	PG_TEST(test_lwpoly_covers_point2d),
+	PG_TEST(test_ptarray_point_in_ring),
+	CU_TEST_INFO_NULL
+};
+CU_SuiteInfo geodetic_suite = {"Geodetic Suite",  NULL,  NULL, geodetic_tests};

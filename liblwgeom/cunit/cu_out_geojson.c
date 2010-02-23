@@ -10,52 +10,13 @@
  *
  **********************************************************************/
 
-#include "cu_out_geojson.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "CUnit/Basic.h"
 
-/*
-** Called from test harness to register the tests in this file.
-*/
-CU_pSuite register_out_geojson_suite(void)
-{
-	CU_pSuite pSuite;
-	pSuite = CU_add_suite("GeoJson Out Suite", init_out_geojson_suite, clean_out_geojson_suite);
-	if (NULL == pSuite)
-	{
-		CU_cleanup_registry();
-		return NULL;
-	}
-
-	if (
-	    (NULL == CU_add_test(pSuite, "test_precision()", out_geojson_test_precision)) ||
-	    (NULL == CU_add_test(pSuite, "test_dims()", out_geojson_test_dims)) ||
-	    (NULL == CU_add_test(pSuite, "test_srid()", out_geojson_test_srid)) ||
-	    (NULL == CU_add_test(pSuite, "test_bbox()", out_geojson_test_bbox)) ||
-	    (NULL == CU_add_test(pSuite, "test_geoms()", out_geojson_test_geoms))
-	)
-	{
-		CU_cleanup_registry();
-		return NULL;
-	}
-	return pSuite;
-}
-
-/*
-** The suite initialization function.
-** Create any re-used objects.
-*/
-int init_out_geojson_suite(void)
-{
-	return 0;
-}
-
-/*
-** The suite cleanup function.
-** Frees any global objects.
-*/
-int clean_out_geojson_suite(void)
-{
-	return 0;
-}
+#include "libgeom.h"
+#include "cu_tester.h"
 
 static void do_geojson_test(char * in, char * out, char * srs, int precision, int has_bbox)
 {
@@ -309,3 +270,16 @@ void out_geojson_test_geoms(void)
 	    "MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))",
 	    "lwgeom_to_geojson: 'MultiSurface' geometry type not supported");
 }
+
+/*
+** Used by test harness to register the tests in this file.
+*/
+CU_TestInfo out_geojson_tests[] = {
+	PG_TEST(out_geojson_test_precision),
+	PG_TEST(out_geojson_test_dims),
+	PG_TEST(out_geojson_test_srid),
+	PG_TEST(out_geojson_test_bbox),
+	PG_TEST(out_geojson_test_geoms),
+	CU_TEST_INFO_NULL
+};
+CU_SuiteInfo out_geojson_suite = {"GeoJson Out Suite",  NULL,  NULL, out_geojson_tests};

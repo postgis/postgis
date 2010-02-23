@@ -10,44 +10,13 @@
  *
  **********************************************************************/
 
-#include "cu_algorithm.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "CUnit/Basic.h"
 
-/*
-** Called from test harness to register the tests in this file.
-*/
-CU_pSuite register_cg_suite(void)
-{
-	CU_pSuite pSuite;
-	pSuite = CU_add_suite("PostGIS Computational Geometry Suite", init_cg_suite, clean_cg_suite);
-	if (NULL == pSuite)
-	{
-		CU_cleanup_registry();
-		return NULL;
-	}
-
-	if (
-	    (NULL == CU_add_test(pSuite, "test_lw_segment_side()", test_lw_segment_side)) ||
-	    (NULL == CU_add_test(pSuite, "test_lw_segment_intersects()", test_lw_segment_intersects)) ||
-	    (NULL == CU_add_test(pSuite, "test_lwline_crossing_short_lines()", test_lwline_crossing_short_lines)) ||
-	    (NULL == CU_add_test(pSuite, "test_lwline_crossing_long_lines()", test_lwline_crossing_long_lines)) ||
-	    (NULL == CU_add_test(pSuite, "test_lwline_crossing_bugs()", test_lwline_crossing_bugs)) ||
-	    (NULL == CU_add_test(pSuite, "test_lwpoint_set_ordinate()", test_lwpoint_set_ordinate)) ||
-	    (NULL == CU_add_test(pSuite, "test_lwpoint_get_ordinate()", test_lwpoint_get_ordinate)) ||
-	    (NULL == CU_add_test(pSuite, "test_lwpoint_interpolate()", test_lwpoint_interpolate)) ||
-	    (NULL == CU_add_test(pSuite, "test_lwline_clip()", test_lwline_clip)) ||
-	    (NULL == CU_add_test(pSuite, "test_lwline_clip_big()", test_lwline_clip_big)) ||
-	    (NULL == CU_add_test(pSuite, "test_lwmline_clip()", test_lwmline_clip)) ||
-	    (NULL == CU_add_test(pSuite, "test_geohash_point()", test_geohash_point)) ||
-	    (NULL == CU_add_test(pSuite, "test_geohash_precision()", test_geohash_precision)) ||
-	    (NULL == CU_add_test(pSuite, "test_geohash()", test_geohash))
-	)
-	{
-		CU_cleanup_registry();
-		return NULL;
-	}
-	return pSuite;
-}
-
+#include "lwalgorithm.h"
+#include "cu_tester.h"
 
 /*
 ** Global variables used by tests below
@@ -805,3 +774,24 @@ void test_geohash(void)
 }
 
 
+/*
+** Used by test harness to register the tests in this file.
+*/
+CU_TestInfo algorithms_tests[] = {
+	PG_TEST(test_lw_segment_side),
+	PG_TEST(test_lw_segment_intersects),
+	PG_TEST(test_lwline_crossing_short_lines),
+	PG_TEST(test_lwline_crossing_long_lines),
+	PG_TEST(test_lwline_crossing_bugs),
+	PG_TEST(test_lwpoint_set_ordinate),
+	PG_TEST(test_lwpoint_get_ordinate),
+	PG_TEST(test_lwpoint_interpolate),
+	PG_TEST(test_lwline_clip),
+	PG_TEST(test_lwline_clip_big),
+	PG_TEST(test_lwmline_clip),
+	PG_TEST(test_geohash_point),
+	PG_TEST(test_geohash_precision),
+	PG_TEST(test_geohash),
+	CU_TEST_INFO_NULL
+};
+CU_SuiteInfo algorithms_suite = {"PostGIS Computational Geometry Suite",  init_cg_suite,  clean_cg_suite, algorithms_tests};

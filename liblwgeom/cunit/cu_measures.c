@@ -10,50 +10,15 @@
  *
  **********************************************************************/
 
-#include "cu_measures.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "CUnit/Basic.h"
 
-/*
-** Called from test harness to register the tests in this file.
-*/
-CU_pSuite register_measures_suite(void)
-{
-	CU_pSuite pSuite;
-	pSuite = CU_add_suite("PostGIS Measures Suite", init_measures_suite, clean_measures_suite);
-	if (NULL == pSuite)
-	{
-		CU_cleanup_registry();
-		return NULL;
-	}
-
-	if (
-	    (NULL == CU_add_test(pSuite, "test_mindistance2d_tolerance()", test_mindistance2d_tolerance)) ||
-	    (NULL == CU_add_test(pSuite, "test_rect_tree_contains_point()", test_rect_tree_contains_point)) ||
-	    (NULL == CU_add_test(pSuite, "test_rect_tree_intersects_tree()", test_rect_tree_intersects_tree))
-	)
-	{
-		CU_cleanup_registry();
-		return NULL;
-	}
-	return pSuite;
-}
-
-/*
-** The suite initialization function.
-** Create any re-used objects.
-*/
-int init_measures_suite(void)
-{
-	return 0;
-}
-
-/*
-** The suite cleanup function.
-** Frees any global objects.
-*/
-int clean_measures_suite(void)
-{
-	return 0;
-}
+#include "liblwgeom.h"
+#include "cu_tester.h"
+#include "measures.h"
+#include "lwtree.h"
 
 void test_mindistance2d_tolerance(void)
 {
@@ -359,3 +324,14 @@ void test_rect_tree_intersects_tree(void)
 
 }
 
+
+/*
+** Used by test harness to register the tests in this file.
+*/
+CU_TestInfo measures_tests[] = {
+	PG_TEST(test_mindistance2d_tolerance),
+	PG_TEST(test_rect_tree_contains_point),
+	PG_TEST(test_rect_tree_intersects_tree),
+	CU_TEST_INFO_NULL
+};
+CU_SuiteInfo measures_suite = {"PostGIS Measures Suite",  NULL,  NULL, measures_tests};

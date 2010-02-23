@@ -17,68 +17,18 @@
 #include "liblwgeom.h"
 #include "cu_tester.h"
 
-
-/**
- * CUnit error handler
- * Log message in a global var instead of printing in stderr
- *
- * CAUTION: Not stop execution on lwerror case !!!
- */
-static void
-cu_errorreporter(const char *fmt, va_list ap)
-{
-	char *msg;
-
-	/** This is a GNU extension.
-	* Dunno how to handle errors here.
-	 */
-	if (!lw_vasprintf (&msg, fmt, ap))
-	{
-		va_end (ap);
-		return;
-	}
-
-	strncpy(cu_error_msg, msg, MAX_CUNIT_ERROR_LENGTH);
-}
-
-void
-cu_error_msg_reset()
-{
-	memset(cu_error_msg, '\0', MAX_CUNIT_ERROR_LENGTH);
-}
-
-/*CU_named_suite *
-cu_create_suite(const char *name, CU_InitializeFunc init_func, CU_CleanupFunc clean_func) {
-	CU_pSuite pSuite = CU_add_suite(name, init_func, clean_func);
-	if (NULL == pSuite)
-	{
-		CU_cleanup_registry();
-		return NULL;
-	}
-	num_suites++;
-}
-void cu_add_named_test(CU_named_suite *nSuite, const char *name, CU_TestFunc test_func) {
-	strcpy(nSuite->tests[nSuite->num_tests].name, name);
-	nSuite->tests[nSuite->num_tests].test_func = CU_add_test(nSuite->cu_suite, name, test_func);
-	if (NULL == nSuite->tests[nSuite->num_tests].test_func) {
-		CU_cleanup_registry();
-		return NULL;
-	}
-	nSuite->num_tests++;
-}*/
-	
-/*
-** Set up liblwgeom to run in stand-alone mode using the
-** usual system memory handling functions.
-*/
-void lwgeom_init_allocators(void)
-{
-	lwalloc_var = default_allocator;
-	lwrealloc_var = default_reallocator;
-	lwfree_var = default_freeor;
-	lwnotice_var = default_noticereporter;
-	lwerror_var = cu_errorreporter;
-}
+/* ADD YOUR SUITE HERE (1 of 2) */
+extern CU_SuiteInfo print_suite;
+extern CU_SuiteInfo algorithms_suite;
+extern CU_SuiteInfo measures_suite;
+extern CU_SuiteInfo wkt_suite;
+extern CU_SuiteInfo libgeom_suite;
+extern CU_SuiteInfo geodetic_suite;
+extern CU_SuiteInfo homogenize_suite;
+extern CU_SuiteInfo out_gml_suite;
+extern CU_SuiteInfo out_kml_suite;
+extern CU_SuiteInfo out_geojson_suite;
+extern CU_SuiteInfo out_svg_suite;
 
 /*
 ** The main() function for setting up and running the tests.
@@ -87,6 +37,22 @@ void lwgeom_init_allocators(void)
 */
 int main(int argc, char *argv[])
 {
+	/* ADD YOUR SUITE HERE (2 of 2) */
+	CU_SuiteInfo suites[] = {
+		print_suite,
+		algorithms_suite,
+		measures_suite,
+		wkt_suite,
+		libgeom_suite,
+		geodetic_suite,
+		homogenize_suite,
+		out_gml_suite,
+		out_kml_suite,
+		out_geojson_suite,
+		out_svg_suite,
+		CU_SUITE_INFO_NULL
+	};
+
 	int index;
 	char *suite_name;
 	CU_pSuite suite_to_run;
@@ -99,84 +65,17 @@ int main(int argc, char *argv[])
 	int num_failed;
 
 	/* initialize the CUnit test registry */
-	if (CUE_SUCCESS != CU_initialize_registry())
-		return CU_get_error();
-
-	/* Add the algorithms suite to the registry */
-	if (NULL == register_cg_suite())
-	{
-		CU_cleanup_registry();
-		return CU_get_error();
+	if (CUE_SUCCESS != CU_initialize_registry()) {
+		errCode = CU_get_error();
+		printf("    Error attempting to initialize registry: %d.  See CUError.h for error code list.\n", errCode);
+		return errCode;
 	}
 
-	/* Add the measures suite to the registry */
-	if (NULL == register_measures_suite())
-	{
-		CU_cleanup_registry();
-		return CU_get_error();
-	}
-
-	/* Add the wkt suite to the registry */
-	if (NULL == register_wkt_suite())
-	{
-		CU_cleanup_registry();
-		return CU_get_error();
-	}
-
-	/* Add the libgeom suite to the registry */
-	if (NULL == register_libgeom_suite())
-	{
-		CU_cleanup_registry();
-		return CU_get_error();
-	}
-
-	/* Add the geodetic suite to the registry */
-	if (NULL == register_geodetic_suite())
-	{
-		CU_cleanup_registry();
-		return CU_get_error();
-	}
-
-	/* Add the print suite to the registry */
-	if (NULL == register_print_suite())
-	{
-		CU_cleanup_registry();
-		return CU_get_error();
-	}
-
-	/* Add the homogenize suite to the registry */
-	if (NULL == register_homogenize_suite())
-	{
-		CU_cleanup_registry();
-		return CU_get_error();
-	}
-
-	/* Add the gml suite to the registry */
-	if (NULL == register_out_gml_suite())
-	{
-		CU_cleanup_registry();
-		return CU_get_error();
-	}
-
-	/* Add the kml suite to the registry */
-	if (NULL == register_out_kml_suite())
-	{
-		CU_cleanup_registry();
-		return CU_get_error();
-	}
-
-	/* Add the geojson suite to the registry */
-	if (NULL == register_out_geojson_suite())
-	{
-		CU_cleanup_registry();
-		return CU_get_error();
-	}
-
-	/* Add the svg suite to the registry */
-	if (NULL == register_out_svg_suite())
-	{
-		CU_cleanup_registry();
-		return CU_get_error();
+	/* Register all the test suites. */
+	if (CUE_SUCCESS != CU_register_suites(suites)) {
+		errCode = CU_get_error();
+		printf("    Error attempting to register test suites: %d.  See CUError.h for error code list.\n", errCode);
+		return errCode;
 	}
 
 	/* Run all tests using the CUnit Basic interface */
@@ -253,3 +152,45 @@ int main(int argc, char *argv[])
 	CU_cleanup_registry();
 	return CU_get_error();
 }
+/**
+ * CUnit error handler
+ * Log message in a global var instead of printing in stderr
+ *
+ * CAUTION: Not stop execution on lwerror case !!!
+ */
+static void
+cu_errorreporter(const char *fmt, va_list ap)
+{
+	char *msg;
+
+	/** This is a GNU extension.
+	* Dunno how to handle errors here.
+	 */
+	if (!lw_vasprintf (&msg, fmt, ap))
+	{
+		va_end (ap);
+		return;
+	}
+
+	strncpy(cu_error_msg, msg, MAX_CUNIT_ERROR_LENGTH);
+}
+
+void
+cu_error_msg_reset()
+{
+	memset(cu_error_msg, '\0', MAX_CUNIT_ERROR_LENGTH);
+}
+
+/*
+** Set up liblwgeom to run in stand-alone mode using the
+** usual system memory handling functions.
+*/
+void lwgeom_init_allocators(void)
+{
+	lwalloc_var = default_allocator;
+	lwrealloc_var = default_reallocator;
+	lwfree_var = default_freeor;
+	lwnotice_var = default_noticereporter;
+	lwerror_var = cu_errorreporter;
+}
+
