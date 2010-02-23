@@ -509,6 +509,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	int SRID = SRID_DEFAULT;
 	int precision = MAX_DOUBLE_PRECISION;
 	int option=0;
+	bool is_deegree=false;
 
 	/* Get the version */
 	version = PG_GETARG_INT32(0);
@@ -538,6 +539,9 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	if (PG_NARGS() >3 && !PG_ARGISNULL(3))
 		option = PG_GETARG_INT32(3);
 
+	/* Revert lat/lon only with long SRS */
+	if (option & 1) is_deegree = true;
+
 	if (option & 1) srs = getSRSbySRID(SRID, false);
 	else srs = getSRSbySRID(SRID, true);
 	if (!srs)
@@ -549,7 +553,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	if (version == 2)
 		gml = geometry_to_gml2(lwgeom_serialize(lwgeom), srs, precision);
 	else
-		gml = geometry_to_gml3(lwgeom_serialize(lwgeom), srs, precision, true);
+		gml = geometry_to_gml3(lwgeom_serialize(lwgeom), srs, precision, is_deegree);
 
 	PG_FREE_IF_COPY(lwgeom, 1);
 
