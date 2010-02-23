@@ -33,7 +33,6 @@ static void edge_deg2rad(GEOGRAPHIC_EDGE *e)
 
 /**
 * Convert an edge from radians to degrees.
-*/
 static void edge_rad2deg(GEOGRAPHIC_EDGE *e)
 {
 	(e->start).lat = rad2deg((e->start).lat);
@@ -41,6 +40,7 @@ static void edge_rad2deg(GEOGRAPHIC_EDGE *e)
 	(e->start).lon = rad2deg((e->start).lon);
 	(e->end).lon = rad2deg((e->end).lon);
 }
+*/
 
 /**
 * Convert a point from degrees to radians.

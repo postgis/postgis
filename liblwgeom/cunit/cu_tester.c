@@ -58,7 +58,6 @@ int main(int argc, char *argv[])
 	CU_pSuite suite_to_run;
 	char *test_name;
 	CU_pTest test_to_run;
-	void *dl_handle;
 	CU_ErrorCode errCode;
 	CU_pTestRegistry registry;
 	int num_run;
