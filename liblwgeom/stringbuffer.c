@@ -88,10 +88,8 @@ static void stringbuffer_avprintf(stringbuffer_t *sb, const char *fmt, va_list a
 	int len = 0; /* Length of the output */
 	int len0 = 0; /* Length of the output with null terminator */
 	va_list ap2;
-	va_list ap3;
 	
 	va_copy(ap2, ap);
-	va_copy(ap3, ap);
 	
 	/* Print to our static buffer */
 	len = vsnprintf(sb->buffer, STRINGBUFFER_WORKSIZE, fmt, ap);
