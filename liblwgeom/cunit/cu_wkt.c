@@ -172,17 +172,30 @@ void test_wkt_circularstring(void)
 
 void test_wkt_compoundcurve(void)
 {
+	CU_ASSERT_STRING_EQUAL(
+	cu_wkt("COMPOUNDCURVE((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0))",WKT_ISO), 
+           "COMPOUNDCURVEZM((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRINGZM(1 2 3 4,4 5 6 7,7 8 9 0))");
 }
 
 void test_wkt_curvpolygon(void)
 {
+	CU_ASSERT_STRING_EQUAL(
+	cu_wkt("CURVEPOLYGON((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0))",WKT_ISO), 
+           "CURVEPOLYGONZM((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRINGZM(1 2 3 4,4 5 6 7,7 8 9 0))");
 }
 
 void test_wkt_multicurve(void)
 {
+	CU_ASSERT_STRING_EQUAL(
+	cu_wkt("MULTICURVE((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0))",WKT_ISO), 
+           "MULTICURVEZM((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRINGZM(1 2 3 4,4 5 6 7,7 8 9 0))");
 }
 
 void test_wkt_multisurface(void)
 {
+	CU_ASSERT_STRING_EQUAL(
+	cu_wkt("MULTISURFACE(((1 2 3 4,4 5 6 7,7 8 9 0)),CURVEPOLYGON((1 2 3 4,4 5 6 7,7 8 9 0)))",WKT_ISO), 
+           "MULTISURFACEZM(((1 2 3 4,4 5 6 7,7 8 9 0)),CURVEPOLYGONZM((1 2 3 4,4 5 6 7,7 8 9 0)))");
+	
 }
 
