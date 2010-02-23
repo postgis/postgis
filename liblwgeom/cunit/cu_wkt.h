@@ -29,3 +29,8 @@ void test_wkt_multipoint(void);
 void test_wkt_multilinestring(void);
 void test_wkt_multipolygon(void);
 void test_wkt_collection(void);
+void test_wkt_circularstring(void);
+void test_wkt_compoundcurve(void);
+void test_wkt_curvpolygon(void);
+void test_wkt_multicurve(void);
+void test_wkt_multisurface(void);

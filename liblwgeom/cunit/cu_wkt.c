@@ -32,7 +32,12 @@ CU_pSuite register_wkt_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_wkt_multipoint()", test_wkt_multipoint)) ||
 	    (NULL == CU_add_test(pSuite, "test_wkt_multilinestring()", test_wkt_multilinestring)) ||
 	    (NULL == CU_add_test(pSuite, "test_wkt_multipolygon()", test_wkt_multipolygon)) ||
-	    (NULL == CU_add_test(pSuite, "test_wkt_collection()", test_wkt_collection)) 
+	    (NULL == CU_add_test(pSuite, "test_wkt_collection()", test_wkt_collection)) ||
+	    (NULL == CU_add_test(pSuite, "test_wkt_circularstring()", test_wkt_circularstring)) ||
+	    (NULL == CU_add_test(pSuite, "test_wkt_compoundcurve()", test_wkt_compoundcurve)) ||
+	    (NULL == CU_add_test(pSuite, "test_wkt_curvpolygon()", test_wkt_curvpolygon)) || 
+	    (NULL == CU_add_test(pSuite, "test_wkt_multicurve()", test_wkt_multicurve)) ||
+	    (NULL == CU_add_test(pSuite, "test_wkt_multisurface()", test_wkt_multisurface)) 
 	)
 	{
 		CU_cleanup_registry();
@@ -145,6 +150,39 @@ void test_wkt_multipolygon(void)
 
 void test_wkt_collection(void) 
 {
-	
+	CU_ASSERT_STRING_EQUAL(
+	cu_wkt("GEOMETRYCOLLECTION(POLYGON((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2)),POINT(.5 .5 .5),CIRCULARSTRING(.8 .8 .8,.8 .8 .8,.8 .8 .8))",WKT_ISO), 
+           "GEOMETRYCOLLECTIONZ(POLYGONZ((100 100 2,100 200 2,200 200 2,200 100 2,100 100 2)),POINTZ(0.5 0.5 0.5),CIRCULARSTRINGZ(0.8 0.8 0.8,0.8 0.8 0.8,0.8 0.8 0.8))");
+	CU_ASSERT_STRING_EQUAL(
+	cu_wkt("GEOMETRYCOLLECTION(MULTIPOLYGON(((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2))),MULTIPOINT(.5 .5 .5,1 1 1),CURVEPOLYGON((.8 .8 .8,.8 .8 .8,.8 .8 .8)))",WKT_ISO), 
+           "GEOMETRYCOLLECTIONZ(MULTIPOLYGONZ(((100 100 2,100 200 2,200 200 2,200 100 2,100 100 2))),MULTIPOINTZ(0.5 0.5 0.5,1 1 1),CURVEPOLYGONZ((0.8 0.8 0.8,0.8 0.8 0.8,0.8 0.8 0.8)))");
+	//printf("%s\n",cu_wkt("GEOMETRYCOLLECTION(MULTIPOLYGON(((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2))),MULTIPOINT(.5 .5 .5,1 1 1),CURVEPOLYGON((.8 .8 .8,.8 .8 .8,.8 .8 .8)))",WKT_ISO));
+}
+
+void test_wkt_circularstring(void) 
+{
+	CU_ASSERT_STRING_EQUAL(
+	cu_wkt("CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0)",WKT_ISO), 
+           "CIRCULARSTRINGZM(1 2 3 4,4 5 6 7,7 8 9 0)");
+	CU_ASSERT_STRING_EQUAL(
+	cu_wkt("CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0)",WKT_EXTENDED), 
+	       "CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0)");
+	//printf("%s\n",cu_wkt("GEOMETRYCOLLECTION(MULTIPOLYGON(((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2))),MULTIPOINT(.5 .5 .5,1 1 1),CURVEPOLYGON((.8 .8 .8,.8 .8 .8,.8 .8 .8)))",WKT_ISO));
+}
+
+void test_wkt_compoundcurve(void)
+{
+}
+
+void test_wkt_curvpolygon(void)
+{
+}
+
+void test_wkt_multicurve(void)
+{
+}
+
+void test_wkt_multisurface(void)
+{
 }
 
