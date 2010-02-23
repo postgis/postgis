@@ -16,8 +16,8 @@
 #include <string.h>
 #include <stdio.h>
 
-#define STRINGBUFFER_STARTSIZE 32
-#define STRINGBUFFER_WORKSIZE 128
+#define STRINGBUFFER_STARTSIZE 128
+#define STRINGBUFFER_WORKSIZE 64
 
 typedef struct
 {
