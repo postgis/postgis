@@ -1264,7 +1264,13 @@ extern int lwgeom_count_vertices(LWGEOM *geom);
 extern int32 lwgeom_npoints(uchar *serialized);
 
 /**
-* Return true of false depending on whether a geometry is an "empty"
+* Return true or false depending on whether a geometry has
+* a valid SRID set.
+*/
+extern int lwgeom_has_srid(const LWGEOM *geom);
+
+/**
+* Return true or false depending on whether a geometry is an "empty"
 * geometry (no vertices members)
 */
 extern int lwgeom_is_empty(const LWGEOM *geom);

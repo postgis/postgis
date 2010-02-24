@@ -1133,6 +1133,15 @@ int lwgeom_is_empty(const LWGEOM *geom)
 	return result;
 }
 
+int lwgeom_has_srid(const LWGEOM *geom)
+{
+	if( (int)(geom->SRID) > 0 )
+		return LW_TRUE;
+	
+	return LW_FALSE;
+}
+
+
 static int lwcollection_dimensionality(LWCOLLECTION *col)
 {
 	int i;

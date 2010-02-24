@@ -529,6 +529,11 @@ char *lwgeom_to_wkt(const LWGEOM *geom, int precision, uchar variant)
 	if( geom == NULL )
 		return NULL;
 	sb = stringbuffer_create();
+	/* Extended mode starts with an "SRID=" section for geoms that have one */
+	if( (variant & WKT_EXTENDED) && lwgeom_has_srid(geom) )
+	{
+		stringbuffer_vasbappend(sb, "SRID=%d;", geom->SRID);
+	}
 	lwgeom_to_wkt_sb(geom, sb, precision, variant);
 	if( stringbuffer_getstring(sb) == NULL )
 	{
