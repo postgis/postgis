@@ -33,10 +33,12 @@ static void dimension_qualifiers_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *s
 	/* ISO WKT: POINT ZM (0 0 0 0) */
 	if( (variant & WKT_ISO) && (TYPE_NDIMS(geom->type) > 2) )
 	{
+		stringbuffer_append(sb, " ");
 		if( TYPE_HASZ(geom->type) )
 			stringbuffer_append(sb, "Z");
 		if( TYPE_HASM(geom->type) )
 			stringbuffer_append(sb, "M");
+		stringbuffer_append(sb, " ");
 	}	
 }
 
