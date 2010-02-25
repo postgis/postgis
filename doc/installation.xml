@@ -95,6 +95,13 @@ psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
 		  .
 		</para>
 	  </listitem>
+	  <listitem>
+		<para>
+		  LibXML2, version 2.5.x or higher. LibXML2 is currenlty used in some imports
+		  functions (ST_AsGML and ST_AsKML). LibXML2 is available for download from 
+		  <ulink url="http://xmlsoft.org/downloads.html">http://xmlsoft.org/downloads.html</ulink>.
+		</para>
+	  </listitem>
 	</itemizedlist>
 
 	<para>
