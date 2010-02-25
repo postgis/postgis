@@ -131,6 +131,8 @@ void point_shift(GEOGRAPHIC_POINT *p, double shift)
 	double lon = p->lon + shift;
 	if ( lon > M_PI )
 		p->lon = -1.0 * M_PI + (lon - M_PI);
+	else
+		p->lon = lon;
 	return;
 }
 

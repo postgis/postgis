@@ -83,7 +83,6 @@ static void edge_deg2rad(GEOGRAPHIC_EDGE *e)
 
 /**
 * Convert an edge from radians to degrees.
-*/
 static void edge_rad2deg(GEOGRAPHIC_EDGE *e)
 {
 	(e->start).lat = rad2deg((e->start).lat);
@@ -91,6 +90,7 @@ static void edge_rad2deg(GEOGRAPHIC_EDGE *e)
 	(e->start).lon = rad2deg((e->start).lon);
 	(e->end).lon = rad2deg((e->end).lon);
 }
+*/
 
 /**
 * Convert a point from degrees to radians.
@@ -970,7 +970,6 @@ void test_spheroid_area(void)
 	CU_ASSERT_DOUBLE_EQUAL(a1, 89.7211470368, 0.0001); /* sphere */
 	CU_ASSERT_DOUBLE_EQUAL(a2, 89.8684316032, 0.0001); /* spheroid */
 
-
 	/* Big-ass polygon */
 	lwg = lwgeom_from_ewkt("POLYGON((-2 3, -2 4, -1 4, -1 3, -2 3))", PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
@@ -979,6 +978,33 @@ void test_spheroid_area(void)
 	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 12341436880.1, 10.0); /* sphere */
 	CU_ASSERT_DOUBLE_EQUAL(a2, 12286574431.9, 10.0); /* spheroid */
+
+	/* One-degree square */
+	lwg = lwgeom_from_ewkt("POLYGON((8.5 2,8.5 1,9.5 1,9.5 2,8.5 2))", PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
+	//a1 = lwgeom_area_sphere(lwg, &gbox, &s);
+	a2 = lwgeom_area_spheroid(lwg, &gbox, &s);
+	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
+	CU_ASSERT_DOUBLE_EQUAL(a1, 12341436880.1, 10.0); /* sphere */
+	CU_ASSERT_DOUBLE_EQUAL(a2, 12304814950.073, 100.0); /* spheroid */
+
+	/* One-degree square *near* dateline */
+	lwg = lwgeom_from_ewkt("POLYGON((178.5 2,178.5 1,179.5 1,179.5 2,178.5 2))", PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
+	//a1 = lwgeom_area_sphere(lwg, &gbox, &s);
+	a2 = lwgeom_area_spheroid(lwg, &gbox, &s);
+	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
+	CU_ASSERT_DOUBLE_EQUAL(a1, 12341436880.1, 10.0); /* sphere */
+	CU_ASSERT_DOUBLE_EQUAL(a2, 12304814950.073, 100.0); /* spheroid */
+
+	/* One-degree square *across* dateline */
+	lwg = lwgeom_from_ewkt(" POLYGON((179.5 2,179.5 1,-179.5 1,-179.5 2,179.5 2))", PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
+	a1 = lwgeom_area_sphere(lwg, &gbox, &s);
+	a2 = lwgeom_area_spheroid(lwg, &gbox, &s);
+	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
+	//CU_ASSERT_DOUBLE_EQUAL(a1, 12341436880.1, 10.0); /* sphere */
+	CU_ASSERT_DOUBLE_EQUAL(a2, 12304814950.073, 100.0); /* spheroid */
 
 }
 
