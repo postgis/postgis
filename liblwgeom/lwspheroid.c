@@ -430,6 +430,8 @@ static double ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *sphero
 
 		LWDEBUGF(4, "in_south %d", in_south);
 
+		LWDEBUGF(4, "crosses_dateline(a, b) %d", crosses_dateline(&a, &b) );
+
 		if ( crosses_dateline(&a, &b) )
 		{
 			double shift;
@@ -439,15 +441,18 @@ static double ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *sphero
 			else
 				shift = (M_PI - b1.lon) + 0.088; /* About 5deg more */
 
+			LWDEBUGF(4, "shift: %.8g", shift);
+			LWDEBUGF(4, "before shift a1(%.8g %.8g) b1(%.8g %.8g)", a1.lat, a1.lon, b1.lat, b1.lon);
 			point_shift(&a1, shift);
 			point_shift(&b1, shift);
+			LWDEBUGF(4, "after shift a1(%.8g %.8g) b1(%.8g %.8g)", a1.lat, a1.lon, b1.lat, b1.lon);
+			
 		}
 
-		LWDEBUGF(4, "crosses_dateline(a, b) %d", crosses_dateline(&a, &b) );
 
 		delta_lon = fabs(b1.lon - a1.lon);
 
-		LWDEBUGF(4, "(%.18g %.18g) (%.18g %.18g)", a1.lat, a1.lon, b1.lat, b1.lon);
+		LWDEBUGF(4, "a1(%.18g %.18g) b1(%.18g %.18g)", a1.lat, a1.lon, b1.lat, b1.lon);
 		LWDEBUGF(4, "delta_lon %.18g", delta_lon);
 		LWDEBUGF(4, "delta_lon_tolerance %.18g", delta_lon_tolerance);
 
