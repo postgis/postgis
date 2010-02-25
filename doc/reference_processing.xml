@@ -1015,6 +1015,45 @@ SELECT ST_AsEWKT(geom) As the_geom, path
 		<para><xref linkend="geometry_dump" />, <xref linkend="PostGIS_Geometry_DumpFunctions" />, <xref linkend="ST_Dump" />, <xref linkend="ST_ExteriorRing" />, <xref linkend="ST_InteriorRingN" /></para>
 	  </refsection>
 	</refentry>
+	
+	<refentry id="ST_FlipCoordinates">
+	  <refnamediv>
+		<refname>ST_FlipCoordinates</refname>
+		<refpurpose>Returns a version of the given geometry with
+				X and Y axis flipped. Useful for people 
+				who have built latitude/longitude features
+				and need to fix them.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_FlipCoordinates</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>Returns a version of the given geometry with X and Y axis flipped.</para>
+		<para>&curve_support;</para>
+	  	<para>&Z_support;</para>
+	  	<para>&M_support;</para>
+		<para>Availability: 2.0.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Example</title>
+		<programlisting><![CDATA[
+SELECT ST_AsEWKT(ST_FlipCoordinates(GeomFromEWKT('POINT(1 2)')));
+ st_asewkt  
+------------
+POINT(2 1)
+		 ]]></programlisting>
+	  </refsection>
+
+	</refentry>
 
 	<refentry id="ST_Intersection">
 		<refnamediv>
@@ -1376,6 +1415,40 @@ geomtextrep
 			<para><xref linkend="ST_Dump" /></para>
 		</refsection>
 	</refentry>
+	
+	<refentry id="ST_RemoveRepeatedPoints">
+	  <refnamediv>
+		<refname>ST_RemoveRepeatedPoints</refname>
+		<refpurpose>Returns a version of the given geometry with
+				duplicated points removed.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_RemoveRepeatedPoints</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>Returns a version of the given geometry with
+				duplicated points removed. Will actually do something only with
+				(multi)lines, (multi)polygons and multipoints but you can safely call it with
+				any kind of geometry. Since simplification occurs on a
+				object-by-object basis you can also feed a GeometryCollection to
+				this function.</para>
+
+		<para>Availability: 2.0.0</para>
+	  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Simplify" /></para>
+		  </refsection>
+	</refentry>
 
 	<refentry id="ST_Shift_Longitude">
 	  <refnamediv>
@@ -1546,79 +1619,6 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
 			<title>See Also</title>
 			<para><xref linkend="ST_Simplify" /></para>
 		  </refsection>
-	</refentry>
-
-	<refentry id="ST_RemoveRepeatedPoints">
-	  <refnamediv>
-		<refname>ST_RemoveRepeatedPoints</refname>
-		<refpurpose>Returns a version of the given geometry with
-				duplicated points removed.</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_RemoveRepeatedPoints</function></funcdef>
-			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-		<para>Returns a version of the given geometry with
-				duplicated points removed. Will actually do something only with
-				(multi)lines, (multi)polygons and multipoints but you can safely call it with
-				any kind of geometry. Since simplification occurs on a
-				object-by-object basis you can also feed a GeometryCollection to
-				this function.</para>
-
-		<para>Availability: 2.0.0</para>
-	  </refsection>
-
-		  <refsection>
-			<title>See Also</title>
-			<para><xref linkend="ST_Simplify" /></para>
-		  </refsection>
-	</refentry>
-
-	<refentry id="ST_FlipCoordinates">
-	  <refnamediv>
-		<refname>ST_FlipCoordinates</refname>
-		<refpurpose>Returns a version of the given geometry with
-				X and Y axis flipped. Useful for people 
-				who have built latitude/longitude features
-				and need to fix them.</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_FlipCoordinates</function></funcdef>
-			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-		<para>Returns a version of the given geometry with X and Y axis flipped.</para>
-		<para>&curve_support;</para>
-	  	<para>&Z_support;</para>
-	  	<para>&M_support;</para>
-		<para>Availability: 2.0.0</para>
-	  </refsection>
-
-	  <refsection>
-		<title>Example</title>
-		<programlisting><![CDATA[
-SELECT ST_AsEWKT(ST_FlipCoordinates(GeomFromEWKT('POINT(1 2)')));
- st_asewkt  
-------------
-POINT(2 1)
-		 ]]></programlisting>
-	  </refsection>
-
 	</refentry>
 
 	<refentry id="ST_SymDifference">
