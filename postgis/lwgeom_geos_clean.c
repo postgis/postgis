@@ -416,7 +416,6 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 	GEOSGeom geos_bound, geos_bound_noded;
 	GEOSGeom geos_cut_edges, geos_area;
 	GEOSGeometry *vgeoms[2]; /* One for area, one for cut-edges */
-	int num_cut_edges;
 
 	assert (GEOSGeomTypeId(gin) == GEOS_POLYGON ||
 	        GEOSGeomTypeId(gin) == GEOS_MULTIPOLYGON);
@@ -505,25 +504,6 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 	               "Cut-edges: %s",
 	               lwgeom_to_ewkt(GEOS2LWGEOM(geos_cut_edges, 0),
 	                              PARSER_CHECK_NONE));
-
-	num_cut_edges = GEOSGetNumGeometries(geos_cut_edges);
-	if ( -1 == num_cut_edges )
-	{
-		lwnotice("GEOSGetNumGeometries() threw an error: %s",
-		         loggederror);
-		GEOSGeom_destroy(geos_cut_edges);
-		GEOSGeom_destroy(geos_bound_noded);
-		return geos_area;
-	}
-
-	/* If we have no cut edges the result is the area */
-	/* NOTE: this is a short-cut we may want to drop */
-	if ( 0 == num_cut_edges )
-	{
-		GEOSGeom_destroy(geos_cut_edges);
-		GEOSGeom_destroy(geos_bound_noded);
-		return geos_area;
-	}
 
 	/*
 	 * See if an area can be build with the remaining edges
@@ -621,111 +601,10 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		geos_cut_edges = new_cut_edges;
 	}
 
-	/*
-	 * Drop cut-edge segments for which all
-	 * vertices are already vertices of geos_bound_noded
-	 * which fall completely in the area
-	 */
-	if ( 0 ) {
-
-		GEOSGeometry** cutlines;
-		GEOSGeometry* geos_bound_noded_points;
-		int kept_edges = 0;
-		int i;
-
-		geos_bound_noded_points = GEOSGeom_extractUniquePoints(geos_area);
-		if ( ! geos_bound_noded_points )
-		{
-			/* Exception I guess ? */
-			lwnotice("GEOSGeom_extractUniquePoints: %s", loggederror);
-			return 0;
-		}
-
-		/* Allocate enough space for keeping all cut edges */
-		cutlines = (GEOSGeometry**)lwalloc(sizeof(GEOSGeometry*)*num_cut_edges);
-		for (i=0; i<num_cut_edges; ++i)
-		{
-			char ret;
-			GEOSGeometry* xset;
-			const GEOSGeometry* cutline = GEOSGetGeometryN(geos_cut_edges, i);
-			GEOSGeometry* cutline_points = GEOSGeom_extractUniquePoints(cutline);
-			if ( ! cutline_points )
-			{
-				/* Exception I guess ? */
-				lwnotice("GEOSGeom_extractUniquePoints: %s", loggederror);
-				GEOSGeom_destroy(geos_cut_edges);
-				GEOSGeom_destroy(geos_bound_noded_points);
-				lwfree(cutlines);
-				return 0;
-			}
-
-			xset = GEOSDifference(cutline_points, geos_bound_noded_points);
-			GEOSGeom_destroy(cutline_points);
-			if ( ! xset )
-			{
-				/* exception */
-				lwnotice("GEOSDifference: %s", loggederror);
-				GEOSGeom_destroy(geos_cut_edges);
-				GEOSGeom_destroy(geos_bound_noded_points);
-				lwfree(cutlines);
-				return 0;
-			}
-			ret = GEOSisEmpty(xset);
-			GEOSGeom_destroy(xset);
-			if ( 2 == ret )   /* exception */
-			{
-				lwnotice("GEOSisEmpty: %s", loggederror);
-				GEOSGeom_destroy(geos_cut_edges);
-				GEOSGeom_destroy(geos_bound_noded_points);
-				lwfree(cutlines);
-				return 0;
-			}
-			if ( 1 == ret )
-			{
-				/* all points already represented */
-				POSTGIS_DEBUGF(3,
-				               "Cut-edge: %s - vertices all found, drop",
-				               lwgeom_to_ewkt(GEOS2LWGEOM(cutline, 0),
-				                              PARSER_CHECK_NONE));
-				continue;
-			}
-
-			POSTGIS_DEBUGF(3,
-			               "Cut-edge: %s - missing vertices, keep",
-			               lwgeom_to_ewkt(GEOS2LWGEOM(cutline, 0),
-			                              PARSER_CHECK_NONE));
-
-			cutlines[kept_edges++] = GEOSGeom_clone(cutline);
-		}
-
-		GEOSGeom_destroy(geos_bound_noded_points);
-		GEOSGeom_destroy(geos_cut_edges);
-
-		if ( kept_edges )
-		{
-			geos_cut_edges = GEOSGeom_createCollection(GEOS_MULTILINESTRING, cutlines, kept_edges);
-			if ( ! geos_cut_edges )
-			{
-				lwnotice("GEOSGeom_createCollection: %s", loggederror);
-				return 0;
-			}
-
-			POSTGIS_DEBUGF(3,
-			               "Trimmed cut-edges: %s",
-			               lwgeom_to_ewkt(GEOS2LWGEOM(geos_cut_edges, 0),
-			                              PARSER_CHECK_NONE));
-		}
-		else
-		{
-			geos_cut_edges = 0;
-		}
-
-	}
-
 	GEOSGeom_destroy(geos_bound_noded); /* TODO: move up */
 
 	/* Collect areas and lines (if any line) */
-	if ( geos_cut_edges )
+	if ( ! GEOSisEmpty(geos_cut_edges) )
 	{
 		vgeoms[1] = geos_area;
 		vgeoms[0] = geos_cut_edges;
@@ -741,6 +620,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 	}
 	else
 	{
+		GEOSGeom_destroy(geos_cut_edges);
 		gout = geos_area;
 	}
 
