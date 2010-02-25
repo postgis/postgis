@@ -478,6 +478,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		         lwgeom_to_ewkt(GEOS2LWGEOM(geos_area, 0),
 		                        PARSER_CHECK_NONE),
 		         loggederror);
+		GEOSGeom_destroy(geos_area);
 		return geos_bound_noded;
 	}
 
@@ -525,11 +526,107 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 	}
 
 	/*
+	 * See if an area can be build with the remaining edges
+	 * and if it can, symdifference with the original area.
+	 * Iterate this until no more polygons can be created
+	 * with left-over edges.
+	 */
+	while (GEOSGetNumGeometries(geos_cut_edges))
+	{
+		GEOSGeometry* new_area=0;
+		GEOSGeometry* new_area_bound=0;
+		GEOSGeometry* symdif=0;
+		GEOSGeometry* new_cut_edges=0;
+
+		/*
+		 * ASSUMPTION: cut_edges should already be fully noded
+		 */
+
+		new_area = LWGEOM_GEOS_buildArea(geos_cut_edges);
+		if ( ! new_area ) { /* must be an exception */
+			GEOSGeom_destroy(geos_cut_edges);
+			GEOSGeom_destroy(geos_area);
+			lwnotice("LWGEOM_GEOS_buildArea() threw an error: %s",
+				 loggederror);
+			return NULL;
+		}
+
+		if ( GEOSisEmpty(new_area) ) {
+			/* no more rings can be build with thes edges */
+			GEOSGeom_destroy(new_area);
+			break;
+		}
+
+		/*
+		 * We succeeded in building a ring !
+		 */
+
+
+		/*
+		 * Save the new ring boundaries first (to compute
+		 * further cut edges later)
+		 */
+		new_area_bound = GEOSBoundary(new_area);
+		if ( ! new_area_bound ) { 
+			/* We did check for empty area already so
+			 * this must be some other error */
+			lwnotice("GEOSBoundary('%s') threw an error: %s",
+				 lwgeom_to_ewkt(GEOS2LWGEOM(new_area, 0),
+						PARSER_CHECK_NONE),
+				 loggederror);
+			GEOSGeom_destroy(new_area);
+			GEOSGeom_destroy(geos_area);
+			return NULL;
+		}
+
+		/*
+		 * Now symdif new and old area 
+		 */
+		symdif = GEOSSymDifference(geos_area, new_area);
+		if ( ! symdif ) { /* must be an exception */
+			GEOSGeom_destroy(geos_cut_edges);
+			GEOSGeom_destroy(new_area);
+			GEOSGeom_destroy(new_area_bound);
+			GEOSGeom_destroy(geos_area);
+			lwnotice("GEOSSymDifference() threw an error: %s",
+				 loggederror);
+			return NULL;
+		}
+
+		GEOSGeom_destroy(geos_area);
+		GEOSGeom_destroy(new_area);
+		geos_area = symdif;
+		symdif = 0;
+
+		/*
+		 * Now let's re-set geos_cut_edges with what's left
+		 * from the original boundary.
+		 * ASSUMPTION: only the previous cut-edges can be
+		 *             left, so we don't need to reconsider
+		 *             the whole original boundaries
+		 */
+
+		new_cut_edges = GEOSDifference(geos_cut_edges, new_area_bound);
+		GEOSGeom_destroy(new_area_bound);
+		if ( ! new_cut_edges )   /* an exception ? */
+		{
+			/* cleanup and throw */
+			GEOSGeom_destroy(geos_cut_edges);
+			GEOSGeom_destroy(geos_area);
+			lwnotice("GEOSDifference() threw an error: %s",
+				 loggederror);
+			return NULL;
+		}
+		GEOSGeom_destroy(geos_cut_edges);
+		geos_cut_edges = new_cut_edges;
+	}
+
+	/*
 	 * Drop cut-edge segments for which all
 	 * vertices are already vertices of geos_bound_noded
 	 * which fall completely in the area
 	 */
-	{
+	if ( 0 ) {
 
 		GEOSGeometry** cutlines;
 		GEOSGeometry* geos_bound_noded_points;
@@ -794,6 +891,8 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	{
 		lwgeom_out = lwgeom_as_multi(lwgeom_out);
 	}
+
+	GEOSGeom_destroy(geosgeom);
 
 	return lwgeom_out;
 }
