@@ -1384,12 +1384,29 @@ double ptarray_area_sphere(const POINTARRAY *pa, const POINT2D *pt_outside)
 			else
 				shift = (M_PI - b.lon) + 0.088; /* About 5deg more */
 
+			LWDEBUGF(4, "before shift a1(%.8g %.8g) b1(%.8g %.8g) c1(%.8g %.8g)", a1.lat, a1.lon, b1.lat, b1.lon, c1.lat, c1.lon);
+			point_shift(&a1, shift);
+			point_shift(&b1, shift);
+			point_shift(&c1, shift);
+			LWDEBUGF(4, "after shift a1(%.8g %.8g) b1(%.8g %.8g) c1(%.8g %.8g)", a1.lat, a1.lon, b1.lat, b1.lon, c1.lat, c1.lon);
+			excess = sphere_excess(&a1, &b1, &c1);
+		}
+		else if( crosses_dateline(&a, &c) )
+		{
+			GEOGRAPHIC_POINT a1 = a, b1 = b, c1 = c;
+			double shift;
+
+			if ( a.lon > 0.0 )
+				shift = (M_PI - a.lon) + 0.088; /* About 5deg more */
+			else
+				shift = (M_PI - c.lon) + 0.088; /* About 5deg more */
+
 			point_shift(&a1, shift);
 			point_shift(&b1, shift);
 			point_shift(&c1, shift);
 			excess = sphere_excess(&a1, &b1, &c1);
 		}
-		else
+		else 
 		{
 			excess = sphere_excess(&a, &b, &c);
 		}
