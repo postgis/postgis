@@ -982,29 +982,28 @@ void test_spheroid_area(void)
 	/* One-degree square */
 	lwg = lwgeom_from_ewkt("POLYGON((8.5 2,8.5 1,9.5 1,9.5 2,8.5 2))", PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
-	//a1 = lwgeom_area_sphere(lwg, &gbox, &s);
+	a1 = lwgeom_area_sphere(lwg, &gbox, &s);
 	a2 = lwgeom_area_spheroid(lwg, &gbox, &s);
 	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
-	CU_ASSERT_DOUBLE_EQUAL(a1, 12341436880.1, 10.0); /* sphere */
+	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.1, 10.0); /* sphere */
 	CU_ASSERT_DOUBLE_EQUAL(a2, 12304814950.073, 100.0); /* spheroid */
 
 	/* One-degree square *near* dateline */
-	lwg = lwgeom_from_ewkt("POLYGON((178.5 2,178.5 1,179.5 1,179.5 2,178.5 2))", PARSER_CHECK_NONE);
-	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
-	//a1 = lwgeom_area_sphere(lwg, &gbox, &s);
-	a2 = lwgeom_area_spheroid(lwg, &gbox, &s);
-	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
-	CU_ASSERT_DOUBLE_EQUAL(a1, 12341436880.1, 10.0); /* sphere */
-	CU_ASSERT_DOUBLE_EQUAL(a2, 12304814950.073, 100.0); /* spheroid */
-
-	/* One-degree square *across* dateline */
-	lwg = lwgeom_from_ewkt(" POLYGON((179.5 2,179.5 1,-179.5 1,-179.5 2,179.5 2))", PARSER_CHECK_NONE);
+	lwg = lwgeom_from_ewkt("POLYGON((179.5 2,179.5 1,178.5 1,178.5 2,179.5 2))", PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
 	a1 = lwgeom_area_sphere(lwg, &gbox, &s);
 	a2 = lwgeom_area_spheroid(lwg, &gbox, &s);
 	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
-	//CU_ASSERT_DOUBLE_EQUAL(a1, 12341436880.1, 10.0); /* sphere */
+	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.1, 10.0); /* sphere */
 	CU_ASSERT_DOUBLE_EQUAL(a2, 12304814950.073, 100.0); /* spheroid */
 
+	/* One-degree square *across* dateline */
+	lwg = lwgeom_from_ewkt("POLYGON((179.5 2,179.5 1,-179.5 1,-179.5 2,179.5 2))", PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
+	a1 = lwgeom_area_sphere(lwg, &gbox, &s);
+	a2 = lwgeom_area_spheroid(lwg, &gbox, &s);
+	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
+	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.3679, 10.0); /* sphere */
+	CU_ASSERT_DOUBLE_EQUAL(a2, 12304814950.073, 100.0); /* spheroid */
 }
 
