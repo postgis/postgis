@@ -346,9 +346,41 @@
 
 		<sect1 id="NewFunctions">
 			<title>New PostGIS Functions</title>
+			<sect2 id="NewFunctions_2_0">
+				<title>PostGIS Functions new, behavior changed, or enhanced in 2.0</title>
+				<para>The functions given below are PostGIS functions that were introduced or enhanced in 2.0 releases.</para>
+				<itemizedlist>
+				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
+					<xsl:for-each select='sect1/refentry'>
+						<xsl:sort select="@id"/>
+						<xsl:variable name='comment'>
+							<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
+						</xsl:variable>
+						<xsl:variable name="refid">
+							<xsl:value-of select="@id" />
+						</xsl:variable>
+						
+						<xsl:variable name="refname">
+							<xsl:value-of select="refnamediv/refname" />
+						</xsl:variable>
+
+
+				<!-- For each section if there is note about availability in this version -->
+							<xsl:for-each select="refsection">
+								<xsl:for-each select="para">
+									<xsl:choose>
+										<xsl:when test="contains(.,'Availability: 2.0')">
+											<listitem><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /><xsl:text> </xsl:text> <xsl:value-of select="$comment" /> </listitem>
+										</xsl:when>
+									</xsl:choose>
+								</xsl:for-each>
+							</xsl:for-each>
+					</xsl:for-each>
+				</itemizedlist>
+			</sect2>
 			<sect2 id="NewFunctions_1_5">
 				<title>PostGIS Functions new, behavior changed, or enhanced in 1.5</title>
-				<para>The functions given below are PostGIS functions that were introduced or enhanced in this major release.</para>
+				<para>The functions given below are PostGIS functions that were introduced or enhanced in this minor release.</para>
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
 					<xsl:for-each select='sect1/refentry'>
