@@ -564,8 +564,8 @@ lwgeom_add(const LWGEOM *to, uint32 where, const LWGEOM *what)
 		           (const LWCOLLECTION *)to, where, what);
 
 	default:
-		lwerror("lwgeom_add: unknown geometry type: %d",
-		        TYPE_GETTYPE(to->type));
+		lwerror("lwgeom_add: unknown geometry type: %s",
+		        lwgeom_typename(to->type));
 		return NULL;
 	}
 }
@@ -1038,7 +1038,9 @@ static int lwpoint_count_vertices(LWPOINT *point)
 int lwgeom_count_vertices(LWGEOM *geom)
 {
 	int result = 0;
-	LWDEBUGF(4, "got type %d", TYPE_GETTYPE(geom->type));
+	LWDEBUGF(4, "lwgeom_count_vertices got type %s",
+		lwgeom_typename(TYPE_GETTYPE(geom->type)));
+
 	switch (TYPE_GETTYPE(geom->type))
 	{
 	case POINTTYPE:
@@ -1057,7 +1059,8 @@ int lwgeom_count_vertices(LWGEOM *geom)
 		result = lwcollection_count_vertices((LWCOLLECTION *)geom);
 		break;
 	default:
-		lwerror("unsupported input geometry type: %d", TYPE_GETTYPE(geom->type));
+		lwerror("lwgeom_count_vertices: unsupported input geometry type: %s",
+			lwgeom_typename(TYPE_GETTYPE(geom->type)));
 		break;
 	}
 	LWDEBUGF(3, "counted %d vertices", result);
@@ -1102,7 +1105,9 @@ static int lwcollection_is_empty(const LWCOLLECTION *col)
 int lwgeom_is_empty(const LWGEOM *geom)
 {
 	int result = LW_FALSE;
-	LWDEBUGF(4, "got type %d", TYPE_GETTYPE(geom->type));
+	LWDEBUGF(4, "lwgeom_is_empty: got type %s",
+		lwgeom_typename(TYPE_GETTYPE(geom->type)));
+
 	switch (TYPE_GETTYPE(geom->type))
 	{
 	case POINTTYPE:
@@ -1127,7 +1132,8 @@ int lwgeom_is_empty(const LWGEOM *geom)
 		return lwcollection_is_empty((LWCOLLECTION *)geom);
 		break;
 	default:
-		lwerror("unsupported input geometry type: %d", TYPE_GETTYPE(geom->type));
+		lwerror("lwgeom_is_empty: unsupported input geometry type: %s",
+			lwgeom_typename(TYPE_GETTYPE(geom->type)));
 		break;
 	}
 	return result;
@@ -1157,7 +1163,9 @@ static int lwcollection_dimensionality(LWCOLLECTION *col)
 
 extern int lwgeom_dimensionality(LWGEOM *geom)
 {
-	LWDEBUGF(4, "got type %d", TYPE_GETTYPE(geom->type));
+	LWDEBUGF(3, "lwgeom_dimensionality got type %s",
+		lwgeom_typename(TYPE_GETTYPE(geom->type)));
+
 	switch (TYPE_GETTYPE(geom->type))
 	{
 	case POINTTYPE:
@@ -1181,7 +1189,8 @@ extern int lwgeom_dimensionality(LWGEOM *geom)
 		return lwcollection_dimensionality((LWCOLLECTION *)geom);
 		break;
 	default:
-		lwerror("unsupported input geometry type: %d", TYPE_GETTYPE(geom->type));
+		lwerror("lwgeom_dimensionality: unsupported input geometry type: %s",
+			lwgeom_typename(TYPE_GETTYPE(geom->type)));
 		break;
 	}
 	return 0;
@@ -1189,7 +1198,9 @@ extern int lwgeom_dimensionality(LWGEOM *geom)
 
 extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in)
 {
-	LWDEBUGF(3, "lwgeom_remove_repeated_points got type %d", TYPE_GETTYPE(in->type));
+	LWDEBUGF(4, "lwgeom_remove_repeated_points got type %s",
+		lwgeom_typename(TYPE_GETTYPE(in->type)));
+
 	switch (TYPE_GETTYPE(in->type))
 	{
 	case MULTIPOINTTYPE:
@@ -1220,8 +1231,8 @@ extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in)
 		return in;
 
 	default:
-		lwnotice("unsupported input geometry type: %d",
-		         TYPE_GETTYPE(in->type));
+		lwerror("lwgeom_remove_repeated_points: unsupported geometry type: %s",
+			lwgeom_typename(TYPE_GETTYPE(in->type)));
 		return in;
 		break;
 	}
@@ -1235,7 +1246,7 @@ extern LWGEOM* lwgeom_flip_coordinates(LWGEOM *in)
 	int i;
 
 	LWDEBUGF(3, "lwgeom_flip_coordinates: unsupported type: %s",
-		lwgeom_typename(in->type));
+		lwgeom_typename(TYPE_GETTYPE(in->type)));
 
 	switch (TYPE_GETTYPE(in->type))
 	{
@@ -1268,10 +1279,11 @@ extern LWGEOM* lwgeom_flip_coordinates(LWGEOM *in)
 		col = (LWCOLLECTION *) in;
 		for (i=0; i<col->ngeoms; i++)
 			lwgeom_flip_coordinates(col->geoms[i]);
+		return in;
 
 	default:
-		lwerror("unsupported input geometry type: %d",
-		         TYPE_GETTYPE(in->type));
+		lwerror("lwgeom_flip_coordinates: unsupported geometry type: %s",
+			lwgeom_typename(TYPE_GETTYPE(in->type)));
 	}
 	return NULL;
 }
