@@ -6100,7 +6100,11 @@ CREATE OR REPLACE FUNCTION ST_DFullyWithin(geometry, geometry, float8)
 	AS 'SELECT $1 && ST_Expand($2,$3) AND $2 && ST_Expand($1,$3) AND _ST_DFullyWithin(ST_ConvexHull($1), ST_ConvexHull($2), $3)'
 	LANGUAGE 'SQL' IMMUTABLE; 
 	
-	
+CREATE OR REPLACE FUNCTION ST_FlipCoordinates(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_FlipCoordinates'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
+
 --
 -- SFSQL 1.1
 --

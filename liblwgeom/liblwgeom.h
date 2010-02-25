@@ -1270,7 +1270,7 @@ extern int32 lwgeom_npoints(uchar *serialized);
 extern int lwgeom_has_srid(const LWGEOM *geom);
 
 /**
-* Return true or false depending on whether a geometry is an "empty"
+* Return true of false depending on whether a geometry is an "empty"
 * geometry (no vertices members)
 */
 extern int lwgeom_is_empty(const LWGEOM *geom);
@@ -1388,7 +1388,7 @@ extern void ptarray_longitude_shift(POINTARRAY *pa);
 
 extern int32 lwgeom_nrings_recursive(uchar *serialized);
 extern void ptarray_reverse(POINTARRAY *pa);
-extern POINTARRAY* ptarray_reverse_axis(POINTARRAY *pa);
+extern POINTARRAY* ptarray_flip_coordinates(POINTARRAY *pa);
 
 extern POINTARRAY *ptarray_substring(POINTARRAY *, double, double);
 extern double ptarray_locate_point(POINTARRAY *, POINT2D *);
@@ -1421,6 +1421,7 @@ extern char * lwgeom_to_kml2(uchar *geom, int precision);
 extern char * lwgeom_to_geojson(uchar *geom, char *srs, int precision, int has_bbox);
 extern char * lwgeom_to_svg(uchar *geom, int precision, int relative);
 
+
 extern POINTARRAY *ptarray_remove_repeated_points(POINTARRAY *in);
 extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in);
 extern LWGEOM* lwmpoint_remove_repeated_points(LWMPOINT *in);
@@ -1428,6 +1429,7 @@ extern LWGEOM* lwline_remove_repeated_points(LWLINE *in);
 extern LWGEOM* lwcollection_remove_repeated_points(LWCOLLECTION *in);
 extern LWGEOM* lwpoly_remove_repeated_points(LWPOLY *in);
 
+extern LWGEOM* lwgeom_flip_coordinates(LWGEOM *in);
 
 extern uchar parse_hex(char *str);
 extern void deparse_hex(uchar str, char *result);

@@ -1227,3 +1227,51 @@ extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in)
 	}
 	return 0;
 }
+
+extern LWGEOM* lwgeom_flip_coordinates(LWGEOM *in)
+{
+	LWCOLLECTION *col;
+	LWPOLY *poly;
+	int i;
+
+	LWDEBUGF(3, "lwgeom_flip_coordinates: unsupported type: %s",
+		lwgeom_typename(in->type));
+
+	switch (TYPE_GETTYPE(in->type))
+	{
+	case POINTTYPE:
+		ptarray_flip_coordinates(lwgeom_as_lwpoint(in)->point);
+		return in;
+
+	case LINETYPE:
+		ptarray_flip_coordinates(lwgeom_as_lwline(in)->points);
+		return in;
+
+	case CIRCSTRINGTYPE:
+		ptarray_flip_coordinates(lwgeom_as_lwcircstring(in)->points);
+		return in;
+
+	case POLYGONTYPE:
+		poly = (LWPOLY *) in;
+		for (i=0; i<poly->nrings; i++)
+			ptarray_flip_coordinates(poly->rings[i]);
+		return in;
+
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+	case COLLECTIONTYPE:
+	case COMPOUNDTYPE:
+	case CURVEPOLYTYPE:
+	case MULTISURFACETYPE:
+	case MULTICURVETYPE:
+		col = (LWCOLLECTION *) in;
+		for (i=0; i<col->ngeoms; i++)
+			lwgeom_flip_coordinates(col->geoms[i]);
+
+	default:
+		lwerror("unsupported input geometry type: %d",
+		         TYPE_GETTYPE(in->type));
+	}
+	return NULL;
+}

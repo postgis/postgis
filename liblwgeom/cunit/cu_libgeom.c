@@ -326,6 +326,141 @@ static void test_lwgeom_free(void)
 
 }
 
+static void do_lwgeom_flip_coordinates(char *in, char *out)
+{
+	LWGEOM *g,*h;
+        char * t;
+
+        g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
+        h = lwgeom_flip_coordinates(g);
+
+	t = lwgeom_to_wkt(g, 8, WKT_EXTENDED); 
+	if (t == NULL) fprintf(stderr, "In:%s", in);
+        if (strcmp(t, out))
+                fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, t, out);
+
+        CU_ASSERT_STRING_EQUAL(t, out)
+
+        lwgeom_free(g);
+        lwfree(t);
+}
+
+static void test_lwgeom_flip_coordinates(void) 
+{
+	/* 
+         * 2D geometries types 
+         */
+	do_lwgeom_flip_coordinates(
+		"POINT(1 2)",
+		"POINT(2 1)"
+		);
+
+	do_lwgeom_flip_coordinates(
+		"LINESTRING(1 2,3 4)",
+		"LINESTRING(2 1,4 3)"
+		);
+
+	do_lwgeom_flip_coordinates(
+		"POLYGON((1 2,3 4,5 6,1 2))",
+		"POLYGON((2 1,4 3,6 5,2 1))"
+		);
+
+	do_lwgeom_flip_coordinates(
+		"POLYGON((1 2,3 4,5 6,1 2),(7 8,9 10,11 12,7 8))",
+		"POLYGON((2 1,4 3,6 5,2 1),(8 7,10 9,12 11,8 7))"
+		);
+
+	do_lwgeom_flip_coordinates(
+		"MULTIPOINT(1 2,3 4)",
+		"MULTIPOINT(2 1,4 3)"
+		);
+
+	do_lwgeom_flip_coordinates(
+		"MULTILINESTRING((1 2,3 4),(5 6,7 8))",
+		"MULTILINESTRING((2 1,4 3),(6 5,8 7))"
+		);
+
+	do_lwgeom_flip_coordinates(
+		"MULTIPOLYGON(((1 2,3 4,5 6,7 8)),((9 10,11 12,13 14,10 9)))",
+		"MULTIPOLYGON(((2 1,4 3,6 5,8 7)),((10 9,12 11,14 13,9 10)))"
+		);
+
+	do_lwgeom_flip_coordinates(
+		"GEOMETRYCOLLECTION EMPTY",
+		"GEOMETRYCOLLECTION EMPTY"
+		);
+
+	do_lwgeom_flip_coordinates(
+		"GEOMETRYCOLLECTION(POINT(1 2),LINESTRING(3 4,5 6))",
+		"GEOMETRYCOLLECTION(POINT(2 1),LINESTRING(4 3,6 5))"
+		);
+
+	do_lwgeom_flip_coordinates(
+		"GEOMETRYCOLLECTION(POINT(1 2),GEOMETRYCOLLECTION(LINESTRING(3 4,5 6)))",
+		"GEOMETRYCOLLECTION(POINT(2 1),GEOMETRYCOLLECTION(LINESTRING(4 3,6 5)))"
+		);
+
+	do_lwgeom_flip_coordinates(
+		"CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)",
+		"CIRCULARSTRING(0 -2,2 0,0 2,2 0,4 2)"
+		);
+
+	do_lwgeom_flip_coordinates(
+		"COMPOUNDCURVE(CIRCULARSTRING(0 1,1 1,1 0),(1 0,0 1))",
+		"COMPOUNDCURVE(CIRCULARSTRING(1 0,1 1,0 1),(0 1,1 0))"
+	);
+
+	do_lwgeom_flip_coordinates(
+		"CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0))",
+		"CURVEPOLYGON(CIRCULARSTRING(0 -2,-1 -1,0 0,-1 1,0 2,2 0,0 -2),(0 -1,0.5 0,0 1,1 0,0 -1))"
+	);
+
+	do_lwgeom_flip_coordinates(
+		"MULTICURVE((5 5,3 5,3 3,0 3),CIRCULARSTRING(0 0,2 1,2 3))",
+		"MULTICURVE((5 5,5 3,3 3,3 0),CIRCULARSTRING(0 0,1 2,3 2))"
+	);
+
+	do_lwgeom_flip_coordinates(
+		"MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))",
+		"MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(0 -2,-1 -1,0 0,-1 1,0 2,2 0,0 -2),(0 -1,0.5 0,0 1,1 0,0 -1)),((8 7,10 10,14 6,11 4,8 7)))"
+	);
+
+
+	/* 
+         * Ndims
+         */
+
+	do_lwgeom_flip_coordinates(
+		"POINT(1 2 3)",
+		"POINT(2 1 3)"
+		);
+
+	do_lwgeom_flip_coordinates(
+		"POINTM(1 2 3)",
+		"POINTM(2 1 3)"
+		);
+
+	do_lwgeom_flip_coordinates(
+		"POINT(1 2 3 4)",
+		"POINT(2 1 3 4)"
+		);
+
+
+	/* 
+         * Srid
+         */
+
+	do_lwgeom_flip_coordinates(
+		"SRID=4326;POINT(1 2)",
+		"SRID=4326;POINT(2 1)"
+		);
+
+	do_lwgeom_flip_coordinates(
+		"SRID=-1;POINT(1 2)",
+		"POINT(2 1)"
+		);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -341,6 +476,8 @@ CU_TestInfo libgeom_tests[] = {
 	PG_TEST(test_geometry_type_from_string),
 	PG_TEST(test_lwcollection_extract),
 	PG_TEST(test_lwgeom_free),
+	PG_TEST(test_lwgeom_flip_coordinates),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo libgeom_suite = {"LibGeom Suite",  NULL,  NULL, libgeom_tests};
+

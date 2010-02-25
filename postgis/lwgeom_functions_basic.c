@@ -3650,3 +3650,21 @@ Datum ST_RemoveRepeatedPoints(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(output);
 }
+
+Datum ST_FlipCoordinates(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_FlipCoordinates);
+Datum ST_FlipCoordinates(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *input = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *output;
+	LWGEOM *lwgeom_in = pglwgeom_deserialize(input);
+	LWGEOM *lwgeom_out;
+
+	lwgeom_out = lwgeom_flip_coordinates(lwgeom_in);
+	output = pglwgeom_serialize(lwgeom_out);
+
+	lwgeom_free(lwgeom_in);
+	PG_FREE_IF_COPY(input, 0);
+
+	PG_RETURN_POINTER(output);
+}

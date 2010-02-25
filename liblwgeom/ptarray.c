@@ -78,7 +78,7 @@ ptarray_reverse(POINTARRAY *pa)
  * Reverse X and Y axis on a given POINTARRAY
  */
 POINTARRAY*
-ptarray_reverse_axis(POINTARRAY *pa)
+ptarray_flip_coordinates(POINTARRAY *pa)
 {
         int i;
         double d;
