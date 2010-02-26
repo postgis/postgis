@@ -52,7 +52,8 @@ lwgeom_deserialize(uchar *srl)
 	case MULTISURFACETYPE:
 		return (LWGEOM *)lwmsurface_deserialize(srl);
 	default:
-		lwerror("Unknown geometry type: %d", type);
+		lwerror("lwgeom_deserialize: Unknown geometry type: %s",
+			lwgeom_typename(type));
 
 		return NULL;
 	}
@@ -86,7 +87,8 @@ lwgeom_serialize_size(LWGEOM *lwgeom)
 	case COLLECTIONTYPE:
 		return lwcollection_serialize_size((LWCOLLECTION *)lwgeom);
 	default:
-		lwerror("Unknown geometry type: %d", type);
+		lwerror("lwgeom_serialize_size: Unknown geometry type: %s",
+			lwgeom_typename(type));
 
 		return 0;
 	}
@@ -126,7 +128,8 @@ lwgeom_serialize_buf(LWGEOM *lwgeom, uchar *buf, size_t *retsize)
 		                           retsize);
 		break;
 	default:
-		lwerror("Unknown geometry type: %d", type);
+		lwerror("lwgeom_serialize_buf: Unknown geometry type: %s",
+			lwgeom_typename(type));
 		return;
 	}
 	return;
@@ -231,7 +234,8 @@ BOX3D *lwgeom_compute_box3d(const LWGEOM *lwgeom)
 int
 lwgeom_compute_box2d_p(LWGEOM *lwgeom, BOX2DFLOAT4 *buf)
 {
-	LWDEBUGF(2, "lwgeom_compute_box2d_p called of %p of type %d.", lwgeom, TYPE_GETTYPE(lwgeom->type));
+	LWDEBUGF(2, "lwgeom_compute_box2d_p called of %p of type %s.",
+		lwgeom, lwgeom_typename(TYPE_GETTYPE(lwgeom->type)));
 
 	switch (TYPE_GETTYPE(lwgeom->type))
 	{
@@ -471,7 +475,8 @@ lwgeom_release(LWGEOM *lwgeom)
 LWGEOM *
 lwgeom_clone(const LWGEOM *lwgeom)
 {
-	LWDEBUGF(2, "lwgeom_clone called with %p, %d", lwgeom, TYPE_GETTYPE(lwgeom->type));
+	LWDEBUGF(2, "lwgeom_clone called with %p, %s",
+		lwgeom, lwgeom_typename(TYPE_GETTYPE(lwgeom->type)));
 
 	switch (TYPE_GETTYPE(lwgeom->type))
 	{
@@ -565,7 +570,7 @@ lwgeom_add(const LWGEOM *to, uint32 where, const LWGEOM *what)
 
 	default:
 		lwerror("lwgeom_add: unknown geometry type: %s",
-		        lwgeom_typename(to->type));
+		        lwgeom_typename(TYPE_GETTYPE(to->type)));
 		return NULL;
 	}
 }
@@ -920,8 +925,7 @@ lwgeom_longitude_shift(LWGEOM *lwgeom)
 			lwgeom_longitude_shift(coll->geoms[i]);
 		return;
 	default:
-		lwerror("%s:%d: unsupported geom type: %s",
-		        __FILE__, __LINE__,
+		lwerror("lwgeom_longitude_shift: unsupported geom type: %s",
 		        lwgeom_typename(TYPE_GETTYPE(lwgeom->type)));
 	}
 }
@@ -1231,7 +1235,7 @@ extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in)
 		return in;
 
 	default:
-		lwerror("lwgeom_remove_repeated_points: unsupported geometry type: %s",
+		lwnotice("lwgeom_remove_repeated_points: unsupported geometry type: %s",
 			lwgeom_typename(TYPE_GETTYPE(in->type)));
 		return in;
 		break;

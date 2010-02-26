@@ -8,7 +8,7 @@ ERROR:  AddGeometryColumns() - invalid SRID
 ERROR:  lwgeom_to_gml2: 'CurvePolygon' geometry type not supported
 #66|CIRCULARSTRING(0 0,1 1,2 2)
 #68a|MULTIPOINT(1 3,4 5)
-ERROR:  lwgeom.c:924: unsupported geom type: CircularString
+ERROR:  lwgeom_longitude_shift: unsupported geom type: CircularString
 #69|CIRCULARSTRING(220269 150417,220228 150507,220228 150408)
 #70|5
 #73|GEOMETRYCOLLECTION(CIRCULARSTRING(1 1,2 3,4 5,6 7,5 6))
