@@ -94,6 +94,18 @@ test check:
 	sed 's,$$libdir,$(REGRESS_INSTALLDIR)/lib,g' ../postgis/postgis.sql > postgis.sql
 	@USE_VERSION=$(POSTGIS_PGSQL_VERSION) ./run_test $(TESTS)
 
+garden:
+	createdb postgis_garden
+	createlang plpgsql postgis_garden
+	psql -d postgis_garden < ../postgis/postgis.sql
+	psql -d postgis_garden < ../spatial_ref_sys.sql
+	@echo '-------------------------------------------------'
+	@echo 'Regression tests in progress (it will take time)'
+	@echo 'Result output: ./regress/garden_result.txt'
+	@echo '-------------------------------------------------'
+	psql -d postgis_garden < ../doc/gardentest.sql > garden_result.txt 2>&1
+	dropdb postgis_garden
+
 cleanup:
 	@sleep 1
 	@dropdb postgis_reg > /dev/null

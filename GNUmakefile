@@ -30,6 +30,16 @@ maintainer-clean:
 	$(MAKE) distclean
 	rm -f configure
 
+garden:
+	@echo '------------------------------------------------------'
+	@echo 'Generating SQL file from Documentation'
+	@echo '------------------------------------------------------'
+	$(MAKE) -C doc garden
+	@echo '------------------------------------------------------'
+	@echo 'Launch regression Test'
+	@echo '------------------------------------------------------'
+	$(MAKE) -C regress garden
+
 test check: postgis
 	$(MAKE) -C liblwgeom/cunit check
 	$(MAKE) -C regress check

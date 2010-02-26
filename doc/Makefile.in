@@ -144,6 +144,13 @@ uninstall:
 	rm -f $(PGSQL_MANDIR)/man1/shp2pgsql.1
 	rm -f $(PGSQL_MANDIR)/man1/pgsql2shp.1
 
+ifeq ($(XSLTPROC),)
+garden: requirements_not_met_xsltproc
+else
+garden:	postgis_aggs_mm.xml
+	$(XSLTPROC) -o gardentest.sql xsl/postgis_gardentest.sql.xsl postgis.xml
+endif
+
 requirements_not_met_xsltproc:
 	@echo
 	@echo "configure was unable to find 'xsltproc' which is required to build the documentation."
