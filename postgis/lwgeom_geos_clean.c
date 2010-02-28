@@ -482,13 +482,6 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 	}
 
 	geos_cut_edges = GEOSDifference(geos_bound_noded, geos_bound);
-#if 0
-	{
-		GEOSGeometry const *vgeoms[1];
-		vgeoms[0] = geos_bound_noded;
-		geos_cut_edges = GEOSPolygonizer_getCutEdges(vgeoms, 1);
-	}
-#endif
 	GEOSGeom_destroy(geos_bound);
 	if ( ! geos_cut_edges )   /* an exception ? */
 	{
@@ -614,7 +607,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 			/* cleanup and throw */
 			lwnotice("GEOSGeom_createCollection() threw an error: %s",
 			         loggederror);
-			return 0;
+			return NULL;
 		}
 
 	}
@@ -759,7 +752,8 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 
 	if ( ! geosgeom ) return NULL;
 
-	/* Now check if every point of input is also found
+	/*
+	 * Now check if every point of input is also found
 	 * in output, or abort by returning NULL
 	 *
 	 * Input geometry was lwgeom_in
@@ -817,7 +811,6 @@ Datum ST_CleanGeometry(PG_FUNCTION_ARGS)
 
 	PG_LWGEOM *in, *out;
 	LWGEOM *lwgeom_in, *lwgeom_out;
-	/* int is3d; */
 
 	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	lwgeom_in = lwgeom_deserialize(SERIALIZED_FORM(in));
@@ -829,8 +822,6 @@ Datum ST_CleanGeometry(PG_FUNCTION_ARGS)
 		PG_FREE_IF_COPY(in, 0);
 		PG_RETURN_POINTER(out);
 	}
-
-	/* is3d = TYPE_HASZ(lwgeom_in->type); */
 
 	lwgeom_out = lwgeom_make_valid(lwgeom_in);
 	if ( ! lwgeom_out ) {
