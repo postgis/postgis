@@ -13,17 +13,16 @@
  *
  * ST_MakeValid
  *
- * Attempts to make an invalid geometries valid w/out loosing
- * point sets.
+ * Attempts to make an invalid geometries valid w/out losing
+ * points.
  *
- * Polygons may become collection of polygons and lines.
- * Collapsed rings (or portions of rings) may be dissolved in
- * polygon area or transformed to linestring if outside any other
- * ring.
+ * Polygons may become lines or points or a collection of
+ * polygons lines and points (collapsed ring cases).
  *
  * Author: Sandro Santilli <strk@keybit.net>
  *
- * Work done for Regione Toscana - Sistema Informativo per il Governo
+ * Work done for Faunalia (http://www.faunalia.it) with fundings
+ * from Regione Toscana - Sistema Informativo per il Governo
  * del Territorio e dell'Ambiente (RT-SIGTA).
  *
  * Thanks to Dr. Horst Duester for previous work on a plpgsql version
