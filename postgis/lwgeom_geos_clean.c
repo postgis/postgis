@@ -570,6 +570,58 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 	return gout;
 }
 
+static GEOSGeometry*
+LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
+{
+	GEOSGeometry* ret;
+
+	/*
+	 * Step 3 : make what we got valid
+	 */
+
+	switch (GEOSGeomTypeId(gin))
+	{
+	case GEOS_MULTIPOINT:
+	case GEOS_POINT:
+		/* points are always valid, but we might have invalid ordinate values */
+		lwnotice("PUNTUAL geometry resulted invalid to GEOS -- dunno how to clean that up");
+		return NULL;
+		break;
+
+	case GEOS_LINESTRING:
+	case GEOS_MULTILINESTRING:
+		lwnotice("LINEAL geometries resulted invalid to GEOS -- dunno how to clean that up");
+		return NULL;
+		break;
+
+	case GEOS_POLYGON:
+	case GEOS_MULTIPOLYGON:
+	{
+		ret = LWGEOM_GEOS_makeValidPolygon(gin);
+		if ( ! ret )  /* an exception or something */
+		{
+			/* cleanup and throw */
+			lwerror("%s", loggederror);
+			return NULL;
+		}
+		break; /* we've done (geosgeom is the output) */
+	}
+
+	default:
+	{
+		char* tmp = GEOSGeomType(gin);
+		char* typname = pstrdup(tmp);
+		GEOSFree(tmp);
+		lwnotice("ST_MakeValid: doesn't support geometry type: %s",
+		         typname);
+		return NULL;
+		break;
+	}
+	}
+
+	return ret;
+}
+
 /* Uses GEOS internally */
 static LWGEOM* lwgeom_make_valid(LWGEOM* lwgeom_in);
 static LWGEOM*
@@ -578,6 +630,7 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	char ret_char;
 	int is3d;
 	GEOSGeom geosgeom;
+	GEOSGeometry* geosout;
 	LWGEOM *lwgeom_out;
 
 	is3d = TYPE_HASZ(lwgeom_in->type);
@@ -621,86 +674,37 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 		lwgeom_out = lwgeom_in;
 	}
 
-
 	/*
-	 * Step 2 : return the resulting geometry if it's now valid
+	 * Step 2: return what we got so far if already alid
 	 */
 
 	ret_char = GEOSisValid(geosgeom);
 	if ( ret_char == 2 )
 	{
 		GEOSGeom_destroy(geosgeom);
-		lwerror("GEOSisValid() threw an error: %s", loggederror);
+		lwerror("GEOSisValid(): %s", loggederror);
 		return NULL; /* I don't think should ever happen */
 	}
 	else if ( ret_char )
 	{
-		/* It's valid at this step, return what we have */
-
+                /* It's valid at this step, return what we have */
 		GEOSGeom_destroy(geosgeom);
 		return lwgeom_out;
 	}
 
 	POSTGIS_DEBUGF(3,
-	               "Geometry [%s] is still not valid:",
-	               lwgeom_to_ewkt(lwgeom_out, PARSER_CHECK_NONE));
-	POSTGIS_DEBUGF(3, " %s", loggederror);
-	POSTGIS_DEBUG(3, " will try to clean up further");
+	               "Geometry [%s] is still not valid: %s. "
+		       "Will try to clean up further.",
+	               lwgeom_to_ewkt(GEOS2LWGEOM(lwgeom_out, 0),
+			PARSER_CHECK_NONE), loggederror);
 
-	/*
-	 * Step 3 : make what we got now (geosgeom) valid
-	 */
 
-	switch (GEOSGeomTypeId(geosgeom))
-	{
-	case GEOS_MULTIPOINT:
-	case GEOS_POINT:
-		/* points are always valid, but we might have invalid ordinate values */
-		lwnotice("PUNTUAL geometry resulted invalid to GEOS -- dunno how to clean that up");
+	geosout = LWGEOM_GEOS_makeValid(geosgeom);
+	GEOSGeom_destroy(geosgeom);
+	if ( ! geosout ) {
+		GEOSGeom_destroy(geosgeom);
 		return NULL;
-		break;
-
-	case GEOS_LINESTRING:
-	case GEOS_MULTILINESTRING:
-		lwnotice("LINEAL geometries resulted invalid to GEOS -- dunno how to clean that up");
-		return NULL;
-		break;
-
-	case GEOS_POLYGON:
-	case GEOS_MULTIPOLYGON:
-	{
-		GEOSGeom tmp = LWGEOM_GEOS_makeValidPolygon(geosgeom);
-		if ( ! tmp )  /* an exception or something */
-		{
-			/* cleanup and throw */
-			GEOSGeom_destroy(geosgeom);
-			lwgeom_release(lwgeom_in);
-			if ( lwgeom_in != lwgeom_out )
-			{
-				lwgeom_release(lwgeom_out);
-			}
-			lwerror("%s", loggederror);
-			return NULL;
-		}
-		GEOSGeom_destroy(geosgeom); /* input one */
-		geosgeom = tmp;
-		break; /* we've done (geosgeom is the output) */
 	}
-
-	default:
-	{
-		char* tmp = GEOSGeomType(geosgeom);
-		char* typname = pstrdup(tmp);
-		GEOSFree(tmp);
-		lwnotice("ST_MakeValid: doesn't support geometry type: %s",
-		         typname);
-		return NULL;
-		break;
-	}
-	}
-
-
-	if ( ! geosgeom ) return NULL;
 
 	/*
 	 * Now check if every point of input is also found
@@ -709,14 +713,14 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	 * Input geometry was lwgeom_in
 	 */
 
-	lwgeom_out = GEOS2LWGEOM(geosgeom, is3d);
+	lwgeom_out = GEOS2LWGEOM(geosout, is3d);
 	if ( lwgeom_is_collection(TYPE_GETTYPE(lwgeom_in->type))
 		&& ! lwgeom_is_collection(TYPE_GETTYPE(lwgeom_out->type)) )
 	{
 		lwgeom_out = lwgeom_as_multi(lwgeom_out);
 	}
 
-	GEOSGeom_destroy(geosgeom);
+	GEOSGeom_destroy(geosout);
 
 	return lwgeom_out;
 }
