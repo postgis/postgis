@@ -606,8 +606,8 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 	/* Collect areas and lines (if any line) */
 	if ( ! GEOSisEmpty(geos_cut_edges) )
 	{
-		vgeoms[1] = geos_area;
-		vgeoms[0] = geos_cut_edges;
+		vgeoms[0] = geos_area;
+		vgeoms[1] = geos_cut_edges;
 		gout = GEOSGeom_createCollection(GEOS_GEOMETRYCOLLECTION, vgeoms, 2);
 		if ( ! gout )   /* an exception again */
 		{
