@@ -771,6 +771,47 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	return lwgeom_out;
 }
 
+/* Uses GEOS internally */
+static LWGEOM* lwgeom_clean(LWGEOM* lwgeom_in);
+static LWGEOM*
+lwgeom_clean(LWGEOM* lwgeom_in)
+{
+	LWGEOM* lwgeom_out;
+
+	lwgeom_out = lwgeom_make_valid(lwgeom_in);
+	if ( ! lwgeom_out ) {
+		return NULL;
+	}
+
+	/* Check dimensionality is the same as input */
+	if ( lwgeom_dimensionality(lwgeom_in) != lwgeom_dimensionality(lwgeom_out) )
+	{
+    		lwnotice("lwgeom_clean: dimensional collapse (%d to %d)",
+			lwgeom_dimensionality(lwgeom_in), lwgeom_dimensionality(lwgeom_out));
+
+		return NULL;
+	}
+
+	/* Check that the output is not a collection if the input wasn't */
+	if ( TYPE_GETTYPE(lwgeom_out->type) == COLLECTIONTYPE &&
+	     TYPE_GETTYPE(lwgeom_in->type) != COLLECTIONTYPE )
+	{
+    		lwnotice("lwgeom_clean: mixed-type output (%s) "
+			"from single-type input (%s)",
+			lwgeom_typename(TYPE_GETTYPE(lwgeom_out->type)),
+			lwgeom_typename(TYPE_GETTYPE(lwgeom_in->type)));
+		return NULL;
+	}
+
+	/* Force right-hand-rule (will only affect polygons) */
+	/* gout := ST_ForceRHR(gout); */
+
+	/* Remove repeated duplicated points ? */
+	/* gout = ST_RemoveRepeatedPoints(gout); */
+
+	return lwgeom_out;
+}
+
 #endif /* POSTGIS_GEOS_VERSION >= 33 */
 
 Datum ST_MakeValid(PG_FUNCTION_ARGS);
@@ -816,45 +857,19 @@ Datum ST_CleanGeometry(PG_FUNCTION_ARGS)
 	lwgeom_in = lwgeom_deserialize(SERIALIZED_FORM(in));
 
 	/* Short-circuit: empty geometry are the cleanest ! */
-	if ( lwgeom_is_empty(lwgeom_in) )
-	{
+#if 0
+	if ( lwgeom_is_empty(lwgeom_in) ) {
 		out = pglwgeom_serialize(lwgeom_in);
 		PG_FREE_IF_COPY(in, 0);
 		PG_RETURN_POINTER(out);
 	}
+#endif
 
-	lwgeom_out = lwgeom_make_valid(lwgeom_in);
+	lwgeom_out = lwgeom_clean(lwgeom_in);
 	if ( ! lwgeom_out ) {
 		PG_FREE_IF_COPY(in, 0);
 		PG_RETURN_NULL();
 	}
-
-	/* Check dimensionality is the same as input */
-	if ( lwgeom_dimensionality(lwgeom_in) != lwgeom_dimensionality(lwgeom_out) )
-	{
-    		lwnotice("ST_CleanGeometry: dimensional collapse (%d to %d)",
-			lwgeom_dimensionality(lwgeom_in), lwgeom_dimensionality(lwgeom_out));
-
-		PG_FREE_IF_COPY(in, 0);
-		PG_RETURN_NULL();
-	}
-
-	/* Check that the output is not a collection if the input wasn't */
-	if ( TYPE_GETTYPE(lwgeom_out->type) == COLLECTIONTYPE &&
-	     TYPE_GETTYPE(lwgeom_in->type) != COLLECTIONTYPE )
-	{
-    		lwnotice("ST_CleanGeometry: mixed-type output (%s) from single-type input (%s)",
-			lwgeom_typename(TYPE_GETTYPE(lwgeom_out->type)),
-			lwgeom_typename(TYPE_GETTYPE(lwgeom_in->type)));
-		PG_FREE_IF_COPY(in, 0);
-		PG_RETURN_NULL();
-	}
-
-	/* Force right-hand-rule (will only affect polygons) */
-	/* gout := ST_ForceRHR(gout); */
-
-	/* Remove repeated duplicated points ? */
-	/* gout = ST_RemoveRepeatedPoints(gout); */
 
 	out = pglwgeom_serialize(lwgeom_out);
 	PG_RETURN_POINTER(out);
