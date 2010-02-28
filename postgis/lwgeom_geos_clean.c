@@ -413,7 +413,7 @@ static GEOSGeometry*
 LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 {
 	GEOSGeom gout;
-	GEOSGeom geos_bound, geos_bound_noded;
+	GEOSGeom geos_bound;
 	GEOSGeom geos_cut_edges, geos_area;
 	GEOSGeometry *vgeoms[2]; /* One for area, one for cut-edges */
 
@@ -431,72 +431,25 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 	               lwgeom_to_ewkt(GEOS2LWGEOM(geos_bound, 0),
 	                              PARSER_CHECK_NONE));
 
-	/* Node boundaries */
+	/* Use noded boundaries as initial "cut" edges */
 
-	geos_bound_noded = LWGEOM_GEOS_nodeLines(geos_bound);
-	if ( NULL == geos_bound_noded )
+	geos_cut_edges = LWGEOM_GEOS_nodeLines(geos_bound);
+	GEOSGeom_destroy(geos_bound); 
+	if ( NULL == geos_cut_edges )
 	{
 		lwnotice("LWGEOM_GEOS_nodeLines(): %s", loggederror);
-		GEOSGeom_destroy(geos_bound);
 		return NULL;
 	}
 
-	GEOSGeom_destroy(geos_bound);
-
-	POSTGIS_DEBUGF(3,
-	               "Noded: %s",
-	               lwgeom_to_ewkt(GEOS2LWGEOM(geos_bound_noded, 0),
-	                              PARSER_CHECK_NONE));
-
-	geos_area = LWGEOM_GEOS_buildArea(geos_bound_noded);
-	if ( ! geos_area ) /* must be an exception ... */
+	/* And use an empty geometry as initial "area" */
+	geos_area = GEOSGeom_createEmptyPolygon();
+	if ( ! geos_area )
 	{
-		/* cleanup */
-		GEOSGeom_destroy(geos_bound_noded);
-		lwnotice("LWGEOM_GEOS_buildArea() threw an error: %s",
-		         loggederror);
+		lwnotice("GEOSGeom_createEmptyPolygon(): %s", loggederror);
+		GEOSGeom_destroy(geos_cut_edges);
 		return NULL;
 	}
 
-	if ( GEOSisEmpty(geos_area) )
-	{
-		/* no area, it's all boundary */
-		POSTGIS_DEBUG(3, "No area found, returning noded bounds");
-		GEOSGeom_destroy(geos_area);
-		return geos_bound_noded;
-	}
-
-	/* Compute what's left out from original boundary
-	 * (this would be the so called 'cut lines' */
-	geos_bound = GEOSBoundary(geos_area);
-	if ( ! geos_bound )
-	{
-		/* Empty area most likely,
-		 * noded original bounds are the result */
-		lwnotice("GEOSBoundary('%s') threw an error: %s",
-		         lwgeom_to_ewkt(GEOS2LWGEOM(geos_area, 0),
-		                        PARSER_CHECK_NONE),
-		         loggederror);
-		GEOSGeom_destroy(geos_area);
-		return geos_bound_noded;
-	}
-
-	geos_cut_edges = GEOSDifference(geos_bound_noded, geos_bound);
-	GEOSGeom_destroy(geos_bound);
-	if ( ! geos_cut_edges )   /* an exception ? */
-	{
-		/* cleanup and throw */
-		GEOSGeom_destroy(geos_bound_noded);
-		GEOSGeom_destroy(geos_area);
-		lwnotice("GEOSDifference() threw an error: %s",
-		         loggederror);
-		return NULL;
-	}
-
-	POSTGIS_DEBUGF(3,
-	               "Cut-edges: %s",
-	               lwgeom_to_ewkt(GEOS2LWGEOM(geos_cut_edges, 0),
-	                              PARSER_CHECK_NONE));
 
 	/*
 	 * See if an area can be build with the remaining edges
@@ -593,8 +546,6 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		GEOSGeom_destroy(geos_cut_edges);
 		geos_cut_edges = new_cut_edges;
 	}
-
-	GEOSGeom_destroy(geos_bound_noded); /* TODO: move up */
 
 	/* Collect areas and lines (if any line) */
 	if ( ! GEOSisEmpty(geos_cut_edges) )
