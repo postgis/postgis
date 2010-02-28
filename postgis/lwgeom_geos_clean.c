@@ -543,9 +543,15 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		geos_cut_edges = new_cut_edges;
 	}
 
-	/* Collect areas and lines (if any line) */
-	if ( ! GEOSisEmpty(geos_cut_edges) )
+	if ( GEOSisEmpty(geos_area) )
 	{
+		/* Return cut edges */
+		GEOSGeom_destroy(geos_area);
+		return geos_cut_edges;
+	}
+	else if ( ! GEOSisEmpty(geos_cut_edges) )
+	{
+		/* Collect areas and lines (if any line) */
 		vgeoms[0] = geos_area;
 		vgeoms[1] = geos_cut_edges;
 		gout = GEOSGeom_createCollection(GEOS_GEOMETRYCOLLECTION, vgeoms, 2);
@@ -557,14 +563,14 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 			return NULL;
 		}
 
+		return gout;
 	}
 	else
 	{
 		GEOSGeom_destroy(geos_cut_edges);
-		gout = geos_area;
+		return geos_area;
 	}
 
-	return gout;
 }
 
 /*
