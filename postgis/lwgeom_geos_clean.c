@@ -41,10 +41,7 @@
 #include <string.h>
 #include <assert.h>
 
-#if POSTGIS_GEOS_VERSION >= 32
-#endif
-
-/* #define POSTGIS_DEBUG_LEVEL 0 */
+/* #define POSTGIS_DEBUG_LEVEL 4 */
 
 
 #define BUFSIZE 256
@@ -736,14 +733,13 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	POSTGIS_DEBUGF(3,
 	               "Geometry [%s] is still not valid: %s. "
 		       "Will try to clean up further.",
-	               lwgeom_to_ewkt(GEOS2LWGEOM(lwgeom_out, 0),
+	               lwgeom_to_ewkt(GEOS2LWGEOM(geosgeom, 0),
 			PARSER_CHECK_NONE), loggederror);
 
 
 	geosout = LWGEOM_GEOS_makeValid(geosgeom);
 	GEOSGeom_destroy(geosgeom);
 	if ( ! geosout ) {
-		GEOSGeom_destroy(geosgeom);
 		return NULL;
 	}
 
