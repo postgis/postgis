@@ -570,10 +570,21 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 	return gout;
 }
 
+/*
+ * IMPORTANT NOTE:
+ *
+ * This function assumes the caller already checked the geometry given
+ * as argument for validity and ONLY PASSES INVALID geometries.
+ *
+ * Passing a valid geometry here will likely result in a NULL return.
+ *
+ * TODO: change this behaviour (it is so just to save a geometry clone)
+ *
+ */
 static GEOSGeometry*
 LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 {
-	GEOSGeometry* ret;
+	GEOSGeometry* gout;
 
 	/*
 	 * Step 3 : make what we got valid
@@ -597,14 +608,14 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 	case GEOS_POLYGON:
 	case GEOS_MULTIPOLYGON:
 	{
-		ret = LWGEOM_GEOS_makeValidPolygon(gin);
-		if ( ! ret )  /* an exception or something */
+		gout = LWGEOM_GEOS_makeValidPolygon(gin);
+		if ( ! gout )  /* an exception or something */
 		{
 			/* cleanup and throw */
 			lwerror("%s", loggederror);
 			return NULL;
 		}
-		break; /* we've done (geosgeom is the output) */
+		break; /* we've done */
 	}
 
 	default:
@@ -619,7 +630,37 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 	}
 	}
 
-	return ret;
+	/*
+	 * Now check if every point of input is also found
+	 * in output, or abort by returning NULL
+	 *
+	 * Input geometry was lwgeom_in
+	 */
+	const int paranoia = 1;
+	if (paranoia) {
+		int loss;
+		GEOSGeometry *pi, *po, *pd;
+
+		/* TODO: handle some errors here...
+		 * Lack of exceptions is annoying indeed,
+		 * I'm getting old --strk;
+		 */
+		pi = GEOSGeom_extractUniquePoints(gin);
+		po = GEOSGeom_extractUniquePoints(gout);
+		pd = GEOSDifference(pi, po); /* input points - output points */
+		GEOSGeom_destroy(pi);
+		GEOSGeom_destroy(po);
+		loss = !GEOSisEmpty(pd);
+		GEOSGeom_destroy(pd);
+		if ( loss )
+		{
+			lwnotice("Vertices lost in LWGEOM_GEOS_makeValid");
+			/* return NULL */
+		}
+	}
+
+
+	return gout;
 }
 
 /* Uses GEOS internally */
@@ -705,13 +746,6 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 		GEOSGeom_destroy(geosgeom);
 		return NULL;
 	}
-
-	/*
-	 * Now check if every point of input is also found
-	 * in output, or abort by returning NULL
-	 *
-	 * Input geometry was lwgeom_in
-	 */
 
 	lwgeom_out = GEOS2LWGEOM(geosout, is3d);
 	if ( lwgeom_is_collection(TYPE_GETTYPE(lwgeom_in->type))
