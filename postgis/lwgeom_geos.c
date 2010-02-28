@@ -3324,15 +3324,16 @@ LWGEOM *
 GEOS2LWGEOM(const GEOSGeometry *geom, char want3d)
 {
 	int type = GEOSGeomTypeId(geom) ;
-	bool hasZ = GEOSHasZ(geom);
+	bool hasZ;
 	int SRID = GEOSGetSRID(geom);
 
 	/* GEOS's 0 is equivalent to our -1 as for SRID values */
 	if ( SRID == 0 ) SRID = -1;
 
-	if ( ! hasZ )
+	if ( want3d )
 	{
-		if ( want3d )
+		hasZ = GEOSHasZ(geom);
+		if ( ! hasZ )
 		{
 			POSTGIS_DEBUG(3, "Geometry has no Z, won't provide one");
 
