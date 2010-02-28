@@ -360,7 +360,7 @@ lwcollection_make_geos_friendly(LWCOLLECTION *g)
  * TODO: move to GEOS capi
  */
 static GEOSGeometry*
-LWGEOM_GEOS_nodeLines(GEOSGeometry* lines)
+LWGEOM_GEOS_nodeLines(const GEOSGeometry* lines)
 {
 	GEOSGeometry* noded;
 	GEOSGeometry* point;
@@ -573,21 +573,49 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 
 }
 
-/*
- * IMPORTANT NOTE:
- *
- * This function assumes the caller already checked the geometry given
- * as argument for validity and ONLY PASSES INVALID geometries.
- *
- * Passing a valid geometry here will likely result in a NULL return.
- *
- * TODO: change this behaviour (it is so just to save a geometry clone)
- *
- */
+static GEOSGeometry*
+LWGEOM_GEOS_makeValidLine(const GEOSGeometry* gin)
+{
+	GEOSGeometry* noded;
+	noded = LWGEOM_GEOS_nodeLines(gin);
+	return noded;
+}
+
 static GEOSGeometry*
 LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 {
 	GEOSGeometry* gout;
+	char ret_char;
+
+	/*
+	 * Step 2: return what we got so far if already valid
+	 */
+
+	ret_char = GEOSisValid(gin);
+	if ( ret_char == 2 )
+	{
+		/* I don't think should ever happen */
+		lwerror("GEOSisValid(): %s", loggederror);
+		return NULL;
+	}
+	else if ( ret_char )
+	{
+		POSTGIS_DEBUGF(3,
+			       "Geometry [%s] is valid. ",
+			       lwgeom_to_ewkt(GEOS2LWGEOM(gin, 0),
+				PARSER_CHECK_NONE));
+
+                /* It's valid at this step, return what we have */
+		return GEOSGeom_clone(gin);
+	}
+
+	POSTGIS_DEBUGF(3,
+	               "Geometry [%s] is still not valid: %s. "
+		       "Will try to clean up further.",
+	               lwgeom_to_ewkt(GEOS2LWGEOM(gin, 0),
+			PARSER_CHECK_NONE), loggederror);
+
+
 
 	/*
 	 * Step 3 : make what we got valid
@@ -604,8 +632,14 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 
 	case GEOS_LINESTRING:
 	case GEOS_MULTILINESTRING:
-		lwnotice("LINEAL geometries resulted invalid to GEOS -- dunno how to clean that up");
-		return NULL;
+		gout = LWGEOM_GEOS_makeValidLine(gin);
+		if ( ! gout )  /* an exception or something */
+		{
+			/* cleanup and throw */
+			lwerror("%s", loggederror);
+			return NULL;
+		}
+		break; /* we've done */
 		break;
 
 	case GEOS_POLYGON:
@@ -639,7 +673,9 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 	 *
 	 * Input geometry was lwgeom_in
 	 */
-	const int paranoia = 1;
+	{
+	const int paranoia = 2;
+	/* TODO: check if the result is valid */
 	if (paranoia) {
 		int loss;
 		GEOSGeometry *pi, *po, *pd;
@@ -661,6 +697,7 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 			/* return NULL */
 		}
 	}
+	}
 
 
 	return gout;
@@ -671,7 +708,6 @@ static LWGEOM* lwgeom_make_valid(LWGEOM* lwgeom_in);
 static LWGEOM*
 lwgeom_make_valid(LWGEOM* lwgeom_in)
 {
-	char ret_char;
 	int is3d;
 	GEOSGeom geosgeom;
 	GEOSGeometry* geosout;
@@ -717,31 +753,6 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 		POSTGIS_DEBUG(4, "original geom converted to GEOS");
 		lwgeom_out = lwgeom_in;
 	}
-
-	/*
-	 * Step 2: return what we got so far if already alid
-	 */
-
-	ret_char = GEOSisValid(geosgeom);
-	if ( ret_char == 2 )
-	{
-		GEOSGeom_destroy(geosgeom);
-		lwerror("GEOSisValid(): %s", loggederror);
-		return NULL; /* I don't think should ever happen */
-	}
-	else if ( ret_char )
-	{
-                /* It's valid at this step, return what we have */
-		GEOSGeom_destroy(geosgeom);
-		return lwgeom_out;
-	}
-
-	POSTGIS_DEBUGF(3,
-	               "Geometry [%s] is still not valid: %s. "
-		       "Will try to clean up further.",
-	               lwgeom_to_ewkt(GEOS2LWGEOM(geosgeom, 0),
-			PARSER_CHECK_NONE), loggederror);
-
 
 	geosout = LWGEOM_GEOS_makeValid(geosgeom);
 	GEOSGeom_destroy(geosgeom);

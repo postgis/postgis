@@ -81,9 +81,9 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 32),1)
 endif
 
 # ST_MakeClean if GEOS > 3.2
-#ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">" 32),1)
-#	TESTS += clean
-#endif
+ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">" 32),1)
+	TESTS += clean
+endif
 
 
 all: test 
