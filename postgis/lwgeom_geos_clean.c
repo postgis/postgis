@@ -582,6 +582,95 @@ LWGEOM_GEOS_makeValidLine(const GEOSGeometry* gin)
 }
 
 static GEOSGeometry*
+LWGEOM_GEOS_makeValidMultiLine(const GEOSGeometry* gin)
+{
+	GEOSGeometry** lines;
+	GEOSGeometry** points;
+	GEOSGeometry* mline_out=0;
+	GEOSGeometry* mpoint_out=0;
+	GEOSGeometry* gout;
+	unsigned int nlines;
+	unsigned int npoints=0;
+	unsigned int ngeoms=0;
+	unsigned int i;
+
+	ngeoms = GEOSGetNumGeometries(gin);
+
+	lines = lwalloc(sizeof(GEOSGeometry*)*ngeoms);
+	points = lwalloc(sizeof(GEOSGeometry*)*ngeoms);
+
+	for (i=0; i<ngeoms; ++i)
+	{
+		const GEOSGeometry* g = GEOSGetGeometryN(gin, i);
+		GEOSGeometry* vg;
+		vg = LWGEOM_GEOS_makeValidLine(g);
+		if ( GEOSisEmpty(vg) ) {
+			/* we don't care about this one */
+			GEOSGeom_destroy(vg);
+		}
+		if ( GEOSGeomTypeId(vg) == GEOS_POINT )
+		{
+			points[npoints++] = vg;
+		}
+		else if ( GEOSGeomTypeId(vg) == GEOS_LINESTRING )
+		{
+			lines[nlines++] = vg;
+		}
+		else
+		{
+			/* NOTE: return from GEOSGeomType will leak
+			 * but we really don't expect this to happen */
+			lwerror("unexpected geom type returned "
+				"by LWGEOM_GEOS_makeValid: %s",
+				GEOSGeomType(vg));
+		}
+	}
+
+	if ( npoints )
+	{
+		if ( npoints > 1 ) {
+			mpoint_out = GEOSGeom_createCollection(GEOS_MULTIPOINT,
+				points, npoints);
+		} else {
+			mpoint_out = points[0];
+		}
+	}
+
+	if ( nlines )
+	{
+		if ( nlines > 1 ) {
+			mline_out = GEOSGeom_createCollection(
+				GEOS_MULTILINESTRING, lines, nlines);
+		} else {
+			mline_out = lines[0];
+		}
+	}
+
+	lwfree(lines);
+
+	if ( mline_out && mpoint_out )
+	{
+		points[0] = mline_out;
+		points[1] = mpoint_out;
+		gout = GEOSGeom_createCollection(GEOS_GEOMETRYCOLLECTION,
+			points, 2);
+	}
+	else if ( mline_out )
+	{
+		gout = mline_out;
+	}
+	else if ( mpoint_out )
+	{
+		gout = mpoint_out;
+	}
+
+	lwfree(points);
+
+	return gout;
+}
+
+
+static GEOSGeometry*
 LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 {
 	GEOSGeometry* gout;
@@ -631,7 +720,6 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 		break;
 
 	case GEOS_LINESTRING:
-	case GEOS_MULTILINESTRING:
 		gout = LWGEOM_GEOS_makeValidLine(gin);
 		if ( ! gout )  /* an exception or something */
 		{
@@ -640,7 +728,16 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 			return NULL;
 		}
 		break; /* we've done */
-		break;
+
+	case GEOS_MULTILINESTRING:
+		gout = LWGEOM_GEOS_makeValidMultiLine(gin);
+		if ( ! gout )  /* an exception or something */
+		{
+			/* cleanup and throw */
+			lwerror("%s", loggederror);
+			return NULL;
+		}
+		break; /* we've done */
 
 	case GEOS_POLYGON:
 	case GEOS_MULTIPOLYGON:
@@ -764,6 +861,7 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	if ( lwgeom_is_collection(TYPE_GETTYPE(lwgeom_in->type))
 		&& ! lwgeom_is_collection(TYPE_GETTYPE(lwgeom_out->type)) )
 	{
+		POSTGIS_DEBUG(3, "lwgeom_make_valid: forcing multi");
 		lwgeom_out = lwgeom_as_multi(lwgeom_out);
 	}
 
