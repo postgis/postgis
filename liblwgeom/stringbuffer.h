@@ -36,5 +36,7 @@ void stringbuffer_copy(stringbuffer_t *sb, stringbuffer_t *src);
 extern void stringbuffer_append(stringbuffer_t *sb, const char *s);
 extern void stringbuffer_aprintf(stringbuffer_t *sb, const char *fmt, ...);
 extern const char *stringbuffer_getstring(stringbuffer_t *sb);
+extern char *stringbuffer_getstringcopy(stringbuffer_t *sb);
+extern int stringbuffer_getlength(stringbuffer_t *sb);
 extern void stringbuffer_vasbappend(stringbuffer_t *sb, const char *fmt, ... );
 

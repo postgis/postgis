@@ -13,6 +13,9 @@
 
 #include "liblwgeom.h"
 
+/**
+* Allocate a new stringbuffer_t. Use stringbuffer_destroy to free.
+*/
 stringbuffer_t *stringbuffer_create(void)
 {
 	stringbuffer_t *sb;
@@ -26,12 +29,20 @@ stringbuffer_t *stringbuffer_create(void)
 	return sb;
 }
 
+/**
+* Free the stringbuffer_t and all memory managed within it.
+*/
 void stringbuffer_destroy(stringbuffer_t *sb)
 {
-	lwfree(sb->str);
-	lwfree(sb);
+	if( sb->str ) lwfree(sb->str);
+	if( sb ) lwfree(sb);
 }
 
+/** 
+* Reset the stringbuffer_t. Useful for starting a fresh string
+* without the expense of freeing and re-allocating a new
+* stringbuffer_t.
+*/
 void stringbuffer_clear(stringbuffer_t *sb)
 {
 	sb->str[0] = '\0';
@@ -39,6 +50,10 @@ void stringbuffer_clear(stringbuffer_t *sb)
 	memset(sb->buffer,0,STRINGBUFFER_WORKSIZE);
 }
 
+/**
+* If necessary, expand the stringbuffer_t internal buffer to accomodate the 
+* specified additional size.
+*/
 static void stringbuffer_makeroom(stringbuffer_t *sb, size_t length_to_add)
 {
 	size_t reqd_capacity = sb->capacity; 
@@ -53,6 +68,9 @@ static void stringbuffer_makeroom(stringbuffer_t *sb, size_t length_to_add)
 	}
 }
 
+/**
+* Append the specified string to the stringbuffer_t.
+*/
 void stringbuffer_append(stringbuffer_t *sb, const char *s)
 {
 	int slen = strlen(s); /* Length of string to append */
@@ -67,22 +85,64 @@ void stringbuffer_append(stringbuffer_t *sb, const char *s)
 
 }
 
+/**
+* Returns a reference to the internal string being managed by
+* the stringbuffer. The current string will be null-terminated
+* within the internal string.
+*/
 const char *stringbuffer_getstring(stringbuffer_t *sb)
 {
 	return sb->str;
 }
 
+/**
+* Returns a newly allocated string large enough to contain the 
+* current state of the string. Caller is responsible for
+* freeing the return value.
+*/
+char *stringbuffer_getstringcopy(stringbuffer_t *sb)
+{
+	char *rv;
+	size_t size;
+	if( sb->length <= 0 )
+		return NULL;
+	size = sb->length + 1;
+	rv = lwalloc(size);
+	memcpy(rv, sb->str, size);
+	rv[sb->length] = '\0';
+	return rv;
+}
+
+/**
+* Returns the length of the current string, not including the 
+* null terminator (same behavior as strlen()).
+*/
+int stringbuffer_getlength(stringbuffer_t *sb)
+{
+	return sb->length;
+}
+
+/**
+* Clear the stringbuffer_t and re-start it with the specified string.
+*/
 void stringbuffer_set(stringbuffer_t *sb, const char *s)
 {
 	stringbuffer_clear(sb); 
 	stringbuffer_append(sb, s);
 }
 
-void stringbuffer_copy(stringbuffer_t *sb, stringbuffer_t *src)
+/** 
+* Copy the contents of src into dst.
+*/
+void stringbuffer_copy(stringbuffer_t *dst, stringbuffer_t *src)
 {
-	stringbuffer_set(sb, stringbuffer_getstring(src));
+	stringbuffer_set(dst, stringbuffer_getstring(src));
 }
 
+/**
+* Appends a formatted string to the current string buffer, 
+* using the format and argument list provided.
+*/
 static void stringbuffer_avprintf(stringbuffer_t *sb, const char *fmt, va_list ap)
 {
 	int len = 0; /* Length of the output */
@@ -114,6 +174,10 @@ static void stringbuffer_avprintf(stringbuffer_t *sb, const char *fmt, va_list a
 	sb->str[sb->length] = '\0';
 }
 
+/**
+* Appends a formatted string to the current string buffer, 
+* using the format and argument list provided.
+*/
 void stringbuffer_aprintf(stringbuffer_t *sb, const char *fmt, ...)
 {
 	va_list ap;
@@ -122,6 +186,10 @@ void stringbuffer_aprintf(stringbuffer_t *sb, const char *fmt, ...)
 	va_end(ap);
 }
 
+/**
+* Synonym for stringbuffer_aprintf
+* TODO: Remove this.
+*/
 void stringbuffer_vasbappend(stringbuffer_t *sb, const char *fmt, ... )
 {
 	va_list ap;
