@@ -334,7 +334,7 @@ static void do_lwgeom_flip_coordinates(char *in, char *out)
         g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
         h = lwgeom_flip_coordinates(g);
 
-	t = lwgeom_to_wkt(g, 8, WKT_EXTENDED); 
+	t = lwgeom_to_wkt(g, WKT_EXTENDED, 8, NULL); 
 	if (t == NULL) fprintf(stderr, "In:%s", in);
         if (strcmp(t, out))
                 fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, t, out);

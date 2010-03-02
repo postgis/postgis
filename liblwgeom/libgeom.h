@@ -36,13 +36,21 @@
 #define LW_FALSE 0
 
 /**
-* WKT Output Variant Types
+* Well-Known Text (WKT) Output Variant Types
 */
 #define WKT_ISO 0x01
 #define WKT_SFSQL 0x02
 #define WKT_EXTENDED 0x04
 #define WKT_NOTYPE 0x08
 #define WKT_NOPARENS 0x10
+
+/**
+* Well-Known Binary (WKB) Output Variant Types
+*/
+#define WKB_ISO 0x01
+#define WKB_SFSQL 0x02
+#define WKB_EXTENDED 0x04
+#define WKB_NDR 0x08
 
 /**
 * Maximum allowed SRID value. 

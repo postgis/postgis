@@ -48,7 +48,7 @@ static char* cu_wkt(char *wkt, uchar variant)
 {
 	LWGEOM *g = lwgeom_from_ewkt(wkt, PARSER_CHECK_NONE);
 	if ( s ) free(s);
-	s = lwgeom_to_wkt(g, 8, variant);	
+	s = lwgeom_to_wkt(g, variant, 8, NULL);	
 	lwgeom_free(g);
 	return s;
 }

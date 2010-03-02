@@ -522,9 +522,14 @@ static void lwgeom_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, int precisi
 }
 
 /**
-* Public WKT emitter function
+* WKT emitter function. Allocates a new *char and fills it with the WKT 
+* representation. If size_out is not NULL, it will be set to the size of the
+* allocated *char.
+* 
+* Accepts variants:
+* One of: WKT_ISO, WKT_SFSQL, WKT_EXTENDED
 */
-char *lwgeom_to_wkt(const LWGEOM *geom, int precision, uchar variant)
+char* lwgeom_to_wkt(const LWGEOM *geom, uchar variant, int precision, size_t *size_out)
 {
 	stringbuffer_t *sb;
 	char *str = NULL;
@@ -542,7 +547,9 @@ char *lwgeom_to_wkt(const LWGEOM *geom, int precision, uchar variant)
 		lwerror("Uh oh");
 		return NULL;
 	}
-	str = strdup(stringbuffer_getstring(sb));
+	str = stringbuffer_getstringcopy(sb);
+	if( size_out ) 
+		*size_out = stringbuffer_getlength(sb) + 1;
 	stringbuffer_destroy(sb);
 	return str;
 }

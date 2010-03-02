@@ -1437,7 +1437,8 @@ extern void deparse_hex(uchar str, char *result);
 /*
 ** New parsing and unparsing functions.
 */
-extern char *lwgeom_to_wkt(const LWGEOM *geom, int precision, uchar variant);
+extern char *lwgeom_to_wkt(const LWGEOM *geom, uchar variant, int precision, size_t *size_out);
+extern char* lwgeom_to_wkb(const LWGEOM *geom, uchar variant, size_t *size_out);
 
 
 /* Parser check flags */
