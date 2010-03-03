@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id: lwprint.c 5181 2010-02-01 17:35:55Z pramsey $
+ * $Id$
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
