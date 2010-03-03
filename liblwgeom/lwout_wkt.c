@@ -14,7 +14,7 @@
 static void lwgeom_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, int precision, uchar variant);
 
 
-/**
+/*
 * ISO format uses both Z and M qualifiers.
 * Extended format only uses an M qualifier for 3DM variants, where it is not
 * clear what the third dimension represents.
@@ -42,7 +42,7 @@ static void dimension_qualifiers_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *s
 	}	
 }
 
-/**
+/*
 * Point array is a list of coordinates. Depending on output mode,
 * we may suppress some dimensions. ISO and Extended formats include
 * all dimensions. Standard OGC output only includes X/Y coordinates.
@@ -86,7 +86,7 @@ static void ptarray_to_wkt_sb(const POINTARRAY *ptarray, stringbuffer_t *sb, int
 		stringbuffer_append(sb, ")");
 }
 
-/**
+/*
 * A four-dimensional point will have different outputs depending on variant.
 *   ISO: POINT ZM (0 0 0 0)
 *   Extended: POINT(0 0 0 0)
@@ -113,7 +113,7 @@ static void lwpoint_to_wkt_sb(const LWPOINT *pt, stringbuffer_t *sb, int precisi
 	ptarray_to_wkt_sb(pt->point, sb, precision, variant);
 }
 
-/**
+/*
 * LINESTRING(0 0 0, 1 1 1)
 */
 static void lwline_to_wkt_sb(const LWLINE *line, stringbuffer_t *sb, int precision, uchar variant) 
@@ -132,7 +132,7 @@ static void lwline_to_wkt_sb(const LWLINE *line, stringbuffer_t *sb, int precisi
 	ptarray_to_wkt_sb(line->points, sb, precision, variant);
 }
 
-/**
+/*
 * POLYGON(0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)
 */
 static void lwpoly_to_wkt_sb(const LWPOLY *poly, stringbuffer_t *sb, int precision, uchar variant) 
@@ -159,7 +159,7 @@ static void lwpoly_to_wkt_sb(const LWPOLY *poly, stringbuffer_t *sb, int precisi
 	stringbuffer_append(sb, ")");
 }
 
-/**
+/*
 * CIRCULARSTRING
 */
 static void lwcircstring_to_wkt_sb(const LWCIRCSTRING *circ, stringbuffer_t *sb, int precision, uchar variant) 
@@ -178,7 +178,7 @@ static void lwcircstring_to_wkt_sb(const LWCIRCSTRING *circ, stringbuffer_t *sb,
 }
 
 
-/**
+/*
 * Multi-points do not wrap their sub-members in parens, unlike other multi-geometries.
 *   MULTPOINT(0 0, 1 1) instead of MULTIPOINT((0 0),(1 1))
 */
@@ -206,7 +206,7 @@ static void lwmpoint_to_wkt_sb(const LWMPOINT *mpoint, stringbuffer_t *sb, int p
 	stringbuffer_append(sb, ")");
 }
 
-/**
+/*
 * MULTILINESTRING
 */
 static void lwmline_to_wkt_sb(const LWMLINE *mline, stringbuffer_t *sb, int precision, uchar variant) 
@@ -235,7 +235,7 @@ static void lwmline_to_wkt_sb(const LWMLINE *mline, stringbuffer_t *sb, int prec
 	stringbuffer_append(sb, ")");
 }
 
-/**
+/*
 * MULTIPOLYGON
 */
 static void lwmpoly_to_wkt_sb(const LWMPOLY *mpoly, stringbuffer_t *sb, int precision, uchar variant) 
@@ -264,7 +264,7 @@ static void lwmpoly_to_wkt_sb(const LWMPOLY *mpoly, stringbuffer_t *sb, int prec
 	stringbuffer_append(sb, ")");
 }
 
-/** 
+/* 
 * Compound curves provide type information for their curved sub-geometries
 * but not their linestring sub-geometries.
 *   COMPOUNDCURVE((0 0, 1 1), CURVESTRING(1 1, 2 2, 3 3))
@@ -308,7 +308,7 @@ static void lwcompound_to_wkt_sb(const LWCOMPOUND *comp, stringbuffer_t *sb, int
 	stringbuffer_append(sb, ")");	
 }
 
-/** 
+/* 
 * Curve polygons provide type information for their curved rings
 * but not their linestring rings.
 *   CURVEPOLYGON((0 0, 1 1, 0 1, 0 0), CURVESTRING(0 0, 1 1, 0 1, 0.5 1, 0 0))
@@ -355,7 +355,7 @@ static void lwcurvepoly_to_wkt_sb(const LWCURVEPOLY *cpoly, stringbuffer_t *sb, 
 }
 
 
-/** 
+/* 
 * Multi-curves provide type information for their curved sub-geometries
 * but not their linear sub-geometries.
 *   MULTICURVE((0 0, 1 1), CURVESTRING(0 0, 1 1, 2 2))
@@ -402,7 +402,7 @@ static void lwmcurve_to_wkt_sb(const LWMCURVE *mcurv, stringbuffer_t *sb, int pr
 }
 
 
-/** 
+/* 
 * Multi-surfaces provide type information for their curved sub-geometries
 * but not their linear sub-geometries.
 *   MULTISURFACE(((0 0, 1 1, 1 0, 0 0)), CURVEPOLYGON(CURVESTRING(0 0, 1 1, 2 2, 0 1, 0 0)))
@@ -444,7 +444,7 @@ static void lwmsurface_to_wkt_sb(const LWMSURFACE *msurf, stringbuffer_t *sb, in
 	stringbuffer_append(sb, ")");
 }
 
-/** 
+/* 
 * Geometry collections provide type information for all their curved sub-geometries
 * but not their linear sub-geometries.
 *   GEOMETRYCOLLECTION(POLYGON((0 0, 1 1, 1 0, 0 0)), CURVEPOLYGON(CURVESTRING(0 0, 1 1, 2 2, 0 1, 0 0)))
@@ -473,7 +473,7 @@ static void lwcollection_to_wkt_sb(const LWCOLLECTION *collection, stringbuffer_
 	stringbuffer_append(sb, ")"); 
 }
 
-/**
+/*
 * Generic GEOMETRY
 */
 static void lwgeom_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, int precision, uchar variant)

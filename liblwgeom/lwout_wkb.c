@@ -18,13 +18,13 @@ static size_t lwgeom_to_wkb_size(const LWGEOM *geom, uchar variant);
 #define WKB_INT_SIZE 4
 #define WKB_BYTE_SIZE 1
 
-/**
+/*
 * Look-up table for hex writer
 */
 static char *hexchr = "0123456789ABCDEF";
 
 
-/**
+/*
 * Optional SRID
 */
 static int lwgeom_wkb_needs_srid(const LWGEOM *geom, uchar variant)
@@ -34,7 +34,7 @@ static int lwgeom_wkb_needs_srid(const LWGEOM *geom, uchar variant)
 	return LW_FALSE;
 }
 
-/**
+/*
 * GeometryType
 */
 static unsigned int lwgeom_wkb_type(const LWGEOM *geom, uchar variant)
@@ -107,7 +107,7 @@ static unsigned int lwgeom_wkb_type(const LWGEOM *geom, uchar variant)
 	return wkb_type;
 }
 
-/**
+/*
 * Endian
 */
 static char* endian_to_wkb_buf(char *buf, uchar variant)
@@ -125,7 +125,7 @@ static char* endian_to_wkb_buf(char *buf, uchar variant)
 	}
 }
 
-/**
+/*
 * SwapBytes?
 */
 static int wkb_swap_bytes(uchar variant)
@@ -139,7 +139,7 @@ static int wkb_swap_bytes(uchar variant)
 	return LW_TRUE;
 }
 
-/**
+/*
 * Integer32
 */
 static char* int32_to_wkb_buf(const int ival, char *buf, uchar variant)
@@ -186,7 +186,7 @@ static char* int32_to_wkb_buf(const int ival, char *buf, uchar variant)
 	}
 }
 
-/**
+/*
 * Float64
 */
 static char* double_to_wkb_buf(const double d, char *buf, uchar variant)
@@ -234,7 +234,7 @@ static char* double_to_wkb_buf(const double d, char *buf, uchar variant)
 }
 
 
-/**
+/*
 * Empty
 */
 static size_t empty_to_wkb_size(const LWGEOM *geom, uchar variant)
@@ -269,7 +269,7 @@ static char* empty_to_wkb_buf(const LWGEOM *geom, char *buf, uchar variant)
 	return buf;
 }
 
-/**
+/*
 * POINTARRAY
 */
 static size_t ptarray_to_wkb_size(const POINTARRAY *pa, uchar variant)
@@ -331,7 +331,7 @@ static char* ptarray_to_wkb_buf(const POINTARRAY *pa, char *buf, uchar variant)
 	return buf;
 }
 
-/**
+/*
 * POINT
 */
 static size_t lwpoint_to_wkb_size(const LWPOINT *pt, uchar variant)
@@ -369,7 +369,7 @@ static char* lwpoint_to_wkb_buf(const LWPOINT *pt, char *buf, uchar variant)
 	return buf;
 }
 
-/**
+/*
 * LINESTRING, CIRCULARSTRING
 */
 static size_t lwline_to_wkb_size(const LWLINE *line, uchar variant)
@@ -400,7 +400,7 @@ static char* lwline_to_wkb_buf(const LWLINE *line, char *buf, uchar variant)
 	return buf;
 }
 
-/**
+/*
 * POLYGON
 */
 static size_t lwpoly_to_wkb_size(const LWPOLY *poly, uchar variant)
@@ -444,7 +444,7 @@ static char* lwpoly_to_wkb_buf(const LWPOLY *poly, char *buf, uchar variant)
 	return buf;
 }
 
-/**
+/*
 * MULTIPOINT, MULTILINESTRING, MULTIPOLYGON, GEOMETRYCOLLECTION
 * MULTICURVE, COMPOUNDCURVE, MULTISURFACE, CURVEPOLYGON
 */
@@ -489,7 +489,7 @@ static char* lwcollection_to_wkb_buf(const LWCOLLECTION *col, char *buf, uchar v
 	return buf;
 }
 
-/**
+/*
 * GEOMETRY
 */
 static size_t lwgeom_to_wkb_size(const LWGEOM *geom, uchar variant)
