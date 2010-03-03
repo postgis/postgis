@@ -297,8 +297,14 @@ static char* ptarray_to_wkb_buf(const POINTARRAY *pa, char *buf, uchar variant)
 	int i, j;
 	double *dbl_ptr;
 	
+	/* Nothing to do with a pointarray with no ordinates */
 	if( pa->npoints < 1 )
+	{
+		lwerror("Point array has < 1 ordinates!");
 		return buf;
+	}
+		
+	/* SFSQL is always 2-d. Extended and ISO use all available dimensions */
 	if( (variant & WKB_ISO) || (variant & WKB_EXTENDED) )
 		dims = TYPE_NDIMS(pa->dims);
 
@@ -579,11 +585,12 @@ static char* lwgeom_to_wkb_buf(const LWGEOM *geom, char *buf, uchar variant)
 * Convert LWGEOM to a char* in WKB format. Caller is responsible for freeing
 * the returned array.
 *
-* Accepts variants:
-* One of: WKB_ISO, WKB_EXTENDED, WKB_SFSQL
-* Any of: WKB_NDR
-* For example, a variant = ( WKT_ISO | WKT_NDR ) would return the little-endian 
-* ISO form of WKB.
+* @param variant. Unsigned bitmask value. Accepts one of: WKB_ISO, WKB_EXTENDED, WKB_SFSQL. 
+* Accepts any of: WKB_NDR, WKB_HEX. For example: Variant = ( WKB_ISO | WKB_NDR ) would 
+* return the little-endian ISO form of WKB. For Example: Variant = ( WKB_EXTENDED | WKB_HEX ) 
+* would return the big-endian extended form of WKB, as hex-encoded ASCII (the "canonical form"). 
+* @param size_out If supplied, will return the size of the returned memory segment, 
+* including the null terminator in the case of ASCII.
 */
 char* lwgeom_to_wkb(const LWGEOM *geom, uchar variant, size_t *size_out)
 {
@@ -649,6 +656,9 @@ char* lwgeom_to_wkb(const LWGEOM *geom, uchar variant, size_t *size_out)
 		lwfree(wkb_out);
 		return NULL;
 	}
+
+	/* Report output size */
+	if( size_out ) *size_out = buf_size;
 	
 	return wkb_out;
 }

@@ -526,8 +526,10 @@ static void lwgeom_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, int precisi
 * representation. If size_out is not NULL, it will be set to the size of the
 * allocated *char.
 * 
-* Accepts variants:
-* One of: WKT_ISO, WKT_SFSQL, WKT_EXTENDED
+* @param variant Bitmasked value, accepts one of WKT_ISO, WKT_SFSQL, WKT_EXTENDED.
+* @param precision Number of significant digits in the output doubles.
+* @param size_out If supplied, will return the size of the returned string, 
+* including the null terminator.
 */
 char* lwgeom_to_wkt(const LWGEOM *geom, uchar variant, int precision, size_t *size_out)
 {
