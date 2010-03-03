@@ -22,6 +22,7 @@
 ** Global variable to hold WKB strings
 */
 char *s;
+char *t;
 
 /*
 ** The suite initialization function.
@@ -30,6 +31,7 @@ char *s;
 static int init_wkb_suite(void)
 {
 	s = NULL;
+	t = NULL;
 	return 0;
 }
 
@@ -39,23 +41,42 @@ static int init_wkb_suite(void)
 */
 static int clean_wkb_suite(void)
 {
-	free(s);
+	if (s) free(s);
+	if (t) free(t);
 	s = NULL;
+	t = NULL;
 	return 0;
 }
 
-static char* cu_wkb(char *wkt, uchar variant)
+static void cu_wkb(char *wkt)
 {
 	LWGEOM *g = lwgeom_from_ewkt(wkt, PARSER_CHECK_NONE);
 	if ( s ) free(s);
-	s = lwgeom_to_wkb(g, variant | WKB_HEX, NULL);	
+	if ( t ) free(t);
+	s = lwgeom_to_wkb(g, WKB_HEX | WKB_NDR | WKB_EXTENDED, NULL);	
+	t = lwgeom_to_hexwkb(g, PARSER_CHECK_NONE, NDR);
 	lwgeom_free(g);
-	return s;
 }
 
 static void test_wkb_point(void)
 {
-	//printf("%s\n", cu_wkb("POINT(0 0 0 0)", WKB_ISO ));
+	cu_wkb("POINT(0 0 0 0)");
+	CU_ASSERT_STRING_EQUAL(s, t);
+
+	cu_wkb("LINESTRING(0 0,1 1)");
+	CU_ASSERT_STRING_EQUAL(s, t);
+
+	cu_wkb("SRID=4;POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0))");
+	CU_ASSERT_STRING_EQUAL(s, t);
+
+	cu_wkb("SRID=14;GEOMETRYCOLLECTION(POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),POINT(1 1 1))");
+	CU_ASSERT_STRING_EQUAL(s, t);
+
+	cu_wkb("SRID=14;MULTIPOLYGON(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((-1 -1 0,-1 2 0,2 2 0,2 -1 0,-1 -1 0),(0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)))");
+	CU_ASSERT_STRING_EQUAL(s, t);
+
+//	printf("new: %s\nold: %s\n",s,t);
+
 }
 
 static void test_wkb_linestring(void){}

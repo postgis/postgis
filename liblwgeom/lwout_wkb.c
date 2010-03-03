@@ -151,7 +151,7 @@ static char* int32_to_wkb_buf(const int ival, char *buf, uchar variant)
 	{
 		lwerror("Machine int size is not %d bytes!", WKB_INT_SIZE);
 	}
-	LWDEBUGF(4, "Writing value '%d'", ival);
+	LWDEBUGF(4, "Writing value '%u'", ival);
 	if( variant & WKB_HEX )
 	{
 		int swap =  wkb_swap_bytes(variant);
