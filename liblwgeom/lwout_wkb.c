@@ -19,6 +19,12 @@ static size_t lwgeom_to_wkb_size(const LWGEOM *geom, uchar variant);
 #define WKB_BYTE_SIZE 1
 
 /**
+* Look-up table for hex writer
+*/
+static char *hexchr = "0123456789ABCDEF";
+
+
+/**
 * Optional SRID
 */
 static int lwgeom_wkb_needs_srid(const LWGEOM *geom, uchar variant)
@@ -35,7 +41,7 @@ static unsigned int lwgeom_wkb_type(const LWGEOM *geom, uchar variant)
 {
 	unsigned int wkb_type = 0;
 
-	uchar type = geom->type;;
+	uchar type = geom->type;
 	
 	switch( TYPE_GETTYPE(type) )
 	{
@@ -106,36 +112,78 @@ static unsigned int lwgeom_wkb_type(const LWGEOM *geom, uchar variant)
 */
 static char* endian_to_wkb_buf(char *buf, uchar variant)
 {
-	buf[0] = ((variant & WKB_NDR) ? 1 : 0);
-	return buf + 1;
+	if( variant & WKB_HEX )
+	{
+		buf[0] = '0';
+		buf[1] = ((variant & WKB_NDR) ? '1' : '0');
+		return buf + 2;
+	}
+	else 
+	{
+		buf[0] = ((variant & WKB_NDR) ? 1 : 0);
+		return buf + 1;
+	}
 }
 
+/**
+* SwapBytes?
+*/
+static int wkb_swap_bytes(uchar variant)
+{
+	/* If requested variant matches machine arch, we don't have to swap! */
+	if( ((variant & WKB_NDR) && (BYTE_ORDER == LITTLE_ENDIAN)) ||
+	    ((! (variant & WKB_NDR)) && (BYTE_ORDER == BIG_ENDIAN)) )
+	{
+		return LW_FALSE;
+	}
+	return LW_TRUE;
+}
 
 /**
 * Integer32
 */
-static char* int32_to_wkb_buf(const int i, char *buf, uchar variant)
+static char* int32_to_wkb_buf(const int ival, char *buf, uchar variant)
 {
+	char *iptr = (char*)(&ival);
+	int i = 0;
+	
 	if( sizeof(int) != WKB_INT_SIZE )
 	{
 		lwerror("Machine int size is not %d bytes!", WKB_INT_SIZE);
 	}
-	/* If machine arch and requested arch match, don't flip byte order */
-	if( ((variant & WKB_NDR) && (BYTE_ORDER == LITTLE_ENDIAN)) ||
-	    ((! (variant & WKB_NDR)) && (BYTE_ORDER == BIG_ENDIAN)) )
+	LWDEBUGF(4, "Writing value '%d'", ival);
+	if( variant & WKB_HEX )
 	{
-		memcpy(buf, &i, WKB_INT_SIZE);
+		int swap =  wkb_swap_bytes(variant);
+		/* Machine/request arch mismatch, so flip byte order */
+		for( i = 0; i < WKB_INT_SIZE; i++ )
+		{
+			int j = (swap ? WKB_INT_SIZE - 1 - i : i);
+			uchar b = iptr[j];
+			/* Top four bits to 0-F */
+			buf[2*i] = hexchr[b >> 4];
+			/* Bottom four bits to 0-F */
+			buf[2*i+1] = hexchr[b & 0x0F];			
+		}
+		return buf + (2 * WKB_INT_SIZE);
 	}
-	/* Machine/request arch mismatch, so flip byte order */
 	else
 	{
-		int j = 0;
-		for ( j = 0; j < WKB_INT_SIZE; j++ )
+		/* Machine/request arch mismatch, so flip byte order */
+		if( wkb_swap_bytes(variant) )
 		{
-			buf[j] = (&i)[WKB_INT_SIZE - j];
+			for ( i = 0; i < WKB_INT_SIZE; i++ )
+			{
+				buf[i] = iptr[WKB_INT_SIZE - 1 - i];
+			}
 		}
+		/* If machine arch and requested arch match, don't flip byte order */
+		else
+		{
+			memcpy(buf, iptr, WKB_INT_SIZE);
+		}
+		return buf + WKB_INT_SIZE;
 	}
-	return buf + WKB_INT_SIZE;
 }
 
 /**
@@ -143,26 +191,46 @@ static char* int32_to_wkb_buf(const int i, char *buf, uchar variant)
 */
 static char* double_to_wkb_buf(const double d, char *buf, uchar variant)
 {
+	char *dptr = (char*)(&d);
+	int i = 0;
+	
 	if( sizeof(double) != WKB_DOUBLE_SIZE )
 	{
 		lwerror("Machine double size is not %d bytes!", WKB_DOUBLE_SIZE);
 	}
-	/* If machine arch and requested arch match, don't flip byte order */
-	if( ((variant & WKB_NDR) && (BYTE_ORDER == LITTLE_ENDIAN)) ||
-	    ((! (variant & WKB_NDR)) && (BYTE_ORDER == BIG_ENDIAN)) )
+	
+	if( variant & WKB_HEX )
 	{
-		memcpy(buf, &d, WKB_DOUBLE_SIZE);
+		int swap =  wkb_swap_bytes(variant);
+		/* Machine/request arch mismatch, so flip byte order */
+		for( i = 0; i < WKB_DOUBLE_SIZE; i++ )
+		{
+			int j = (swap ? WKB_DOUBLE_SIZE - 1 - i : i);
+			uchar b = dptr[j];
+			/* Top four bits to 0-F */
+			buf[2*i] = hexchr[b >> 4];
+			/* Bottom four bits to 0-F */
+			buf[2*i+1] = hexchr[b & 0x0F];			
+		}
+		return buf + (2 * WKB_DOUBLE_SIZE);
 	}
-	/* Machine/request arch mismatch, so flip byte order */
 	else
 	{
-		int j = 0;
-		for ( j = 0; j < WKB_DOUBLE_SIZE; j++ )
+		/* Machine/request arch mismatch, so flip byte order */
+		if( wkb_swap_bytes(variant) )
 		{
-			buf[j] = (&d)[WKB_DOUBLE_SIZE - j];
+			for ( i = 0; i < WKB_DOUBLE_SIZE; i++ )
+			{
+				buf[i] = dptr[WKB_DOUBLE_SIZE - 1 - i];
+			}
 		}
+		/* If machine arch and requested arch match, don't flip byte order */
+		else
+		{
+			memcpy(buf, dptr, WKB_DOUBLE_SIZE);
+		}
+		return buf + WKB_DOUBLE_SIZE;
 	}
-	return buf + WKB_DOUBLE_SIZE;
 }
 
 
@@ -207,13 +275,20 @@ static char* empty_to_wkb_buf(const LWGEOM *geom, char *buf, uchar variant)
 static size_t ptarray_to_wkb_size(const POINTARRAY *pa, uchar variant)
 {
 	int dims = 2;
+	size_t size = 0;
 	if( pa->npoints < 1 )
 		return 0;
 	if( variant & (WKB_ISO | WKB_EXTENDED) )
 		dims = TYPE_NDIMS(pa->dims);
 
+	/* Include the npoints if it's not a POINT type) */
+	if( ! ( variant & WKB_NO_NPOINTS ) )
+		size += WKB_INT_SIZE;
+
 	/* size of the double list */
-	return pa->npoints * dims * WKB_DOUBLE_SIZE;
+	size += pa->npoints * dims * WKB_DOUBLE_SIZE;
+
+	return size;
 }
 
 static char* ptarray_to_wkb_buf(const POINTARRAY *pa, char *buf, uchar variant)
@@ -227,8 +302,9 @@ static char* ptarray_to_wkb_buf(const POINTARRAY *pa, char *buf, uchar variant)
 	if( (variant & WKB_ISO) || (variant & WKB_EXTENDED) )
 		dims = TYPE_NDIMS(pa->dims);
 
-	/* Set the number of points */
-	buf = int32_to_wkb_buf(pa->npoints, buf, variant);
+	/* Set the number of points (if it's not a POINT type) */
+	if( ! ( variant & WKB_NO_NPOINTS ) )
+		buf = int32_to_wkb_buf(pa->npoints, buf, variant);
 	
 	/* Set the ordinates. */
 	/* TODO: Ensure that getPoint_internal is always aligned so 
@@ -237,12 +313,15 @@ static char* ptarray_to_wkb_buf(const POINTARRAY *pa, char *buf, uchar variant)
 	         the output endian/dims match the internal endian/dims */
 	for( i = 0; i < pa->npoints; i++ )
 	{
+		LWDEBUGF(4, "Writing point #%d", i);
 		dbl_ptr = (double*)getPoint_internal(pa, i);
 		for( j = 0; j < dims; j++ )
 		{
+			LWDEBUGF(4, "Writing dimension #%d (buf = %p)", j, buf);
 			buf = double_to_wkb_buf(dbl_ptr[j], buf, variant);
 		}
 	}
+	LWDEBUGF(4, "Done (buf = %p)", buf);	
 	return buf;
 }
 
@@ -259,21 +338,28 @@ static size_t lwpoint_to_wkb_size(const LWPOINT *pt, uchar variant)
 		size += WKB_INT_SIZE;
 
 	/* Points */
-	size += ptarray_to_wkb_size(pt->point, variant);
+	size += ptarray_to_wkb_size(pt->point, variant | WKB_NO_NPOINTS);
 	return size;
 }
 
 static char* lwpoint_to_wkb_buf(const LWPOINT *pt, char *buf, uchar variant)
 {
 	/* Set the endian flag */
+	LWDEBUGF(4, "Entering function, buf = %p", buf);
 	buf = endian_to_wkb_buf(buf, variant);
+	LWDEBUGF(4, "Endian set, buf = %p", buf);
 	/* Set the geometry type */
 	buf = int32_to_wkb_buf(lwgeom_wkb_type((LWGEOM*)pt, variant), buf, variant);
+	LWDEBUGF(4, "Type set, buf = %p", buf);
 	/* Set the optional SRID for extended variant */
 	if ( lwgeom_wkb_needs_srid((LWGEOM*)pt, variant) )
+	{
 		buf = int32_to_wkb_buf(pt->SRID, buf, variant);
+		LWDEBUGF(4, "SRID set, buf = %p", buf);
+	}
 	/* Set the coordinates */
-	buf = ptarray_to_wkb_buf(pt->point, buf, variant);
+	buf = ptarray_to_wkb_buf(pt->point, buf, variant | WKB_NO_NPOINTS);
+	LWDEBUGF(4, "Pointarray set, buf = %p", buf);
 	return buf;
 }
 
@@ -289,8 +375,8 @@ static size_t lwline_to_wkb_size(const LWLINE *line, uchar variant)
 	if ( lwgeom_wkb_needs_srid((LWGEOM*)line, variant) )
 		size += WKB_INT_SIZE;
 			
-	/* Number of points + points */
-	size +=  WKB_INT_SIZE + ptarray_to_wkb_size(line->points, variant);
+	/* Size of point array */
+	size += ptarray_to_wkb_size(line->points, variant);
 	return size;
 }
 
@@ -323,8 +409,8 @@ static size_t lwpoly_to_wkb_size(const LWPOLY *poly, uchar variant)
 			
 	for( i = 0; i < poly->nrings; i++ )
 	{
-		/* number of points + points */
-		size += WKB_INT_SIZE + ptarray_to_wkb_size(poly->rings[i], variant);
+		/* Size of ring point array */
+		size += ptarray_to_wkb_size(poly->rings[i], variant);
 	}
 	
 	return size;
@@ -446,8 +532,8 @@ static size_t lwgeom_to_wkb_size(const LWGEOM *geom, uchar variant)
 		default:
 			lwerror("Unsupported geometry type: %s [%d]", lwgeom_typename(geom->type), TYPE_GETTYPE(geom->type));
 	}
-	/* Return value to keep compiler happy. */
-	return 0;
+
+	return size;
 }
 
 static char* lwgeom_to_wkb_buf(const LWGEOM *geom, char *buf, uchar variant)
@@ -510,6 +596,7 @@ char* lwgeom_to_wkb(const LWGEOM *geom, uchar variant, size_t *size_out)
 	
 	if( geom == NULL ) 
 	{
+		LWDEBUG(4,"Cannot convert NULL into WKB.");
 		lwerror("Cannot convert NULL into WKB.");
 		return NULL;
 	}
@@ -520,14 +607,24 @@ char* lwgeom_to_wkb(const LWGEOM *geom, uchar variant, size_t *size_out)
 
 	if( buf_size == 0 )
 	{
+		LWDEBUG(4,"Error calculating output WKB buffer size.");
 		lwerror("Error calculating output WKB buffer size.");
 		return NULL;
 	}
-	
+
+	/* Hex string takes twice as much space as binary + a null character */
+	if( variant & WKB_HEX )
+	{
+		buf_size = 2 * buf_size + 1;
+		LWDEBUGF(4, "Hex WKB output size: %d", buf_size);
+	}
+
+	/* Allocate the buffer */
 	buf = lwalloc(buf_size);
 	
 	if( buf == NULL )
 	{
+		LWDEBUGF(4,"Unable to allocate %d bytes for WKB output buffer.", buf_size);
 		lwerror("Unable to allocate %d bytes for WKB output buffer.", buf_size);
 		return NULL;
 	}
@@ -538,9 +635,16 @@ char* lwgeom_to_wkb(const LWGEOM *geom, uchar variant, size_t *size_out)
 	/* Write the WKB into the output buffer */
 	buf = lwgeom_to_wkb_buf(geom, buf, variant);
 	
-	/* The buffer pointer should land at the end of the allocated buffer space. Let's check. */
+	/* Null the last byte if this is a hex output */
+	*buf = '\0';
+	buf++;
+	
+	LWDEBUGF(4,"buf (%p) - wkb_out (%p) = %d", buf, wkb_out, buf - wkb_out);
+
+	/* The buffer pointer should now land at the end of the allocated buffer space. Let's check. */
 	if( buf_size != (buf - wkb_out) )
 	{
+		LWDEBUG(4,"Output WKB is not the same size as the allocated buffer.");
 		lwerror("Output WKB is not the same size as the allocated buffer.");
 		lwfree(wkb_out);
 		return NULL;

@@ -41,8 +41,8 @@
 #define WKT_ISO 0x01
 #define WKT_SFSQL 0x02
 #define WKT_EXTENDED 0x04
-#define WKT_NOTYPE 0x08
-#define WKT_NOPARENS 0x10
+#define WKT_NO_TYPE 0x08 /* Internal use only */
+#define WKT_NO_PARENS 0x10 /* Internal use only */
 
 /**
 * Well-Known Binary (WKB) Output Variant Types
@@ -51,6 +51,8 @@
 #define WKB_SFSQL 0x02
 #define WKB_EXTENDED 0x04
 #define WKB_NDR 0x08
+#define WKB_HEX 0x10
+#define WKB_NO_NPOINTS 0x20 /* Internal use only */
 
 /**
 * Maximum allowed SRID value. 
