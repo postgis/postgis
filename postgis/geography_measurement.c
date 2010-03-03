@@ -248,10 +248,6 @@ Datum geography_area(PG_FUNCTION_ARGS)
 	/* Initialize spheroid */
 	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
 
-	/* User requests spherical calculation, turn our spheroid into a sphere */
-	if ( ! use_spheroid )
-		s.a = s.b = s.radius;
-
 	lwgeom = lwgeom_from_gserialized(g);
 
 	/* EMPTY things have no area */
@@ -278,6 +274,10 @@ Datum geography_area(PG_FUNCTION_ARGS)
 		if ( gbox.zmax > 0.0 && gbox.zmin < 0.0 )
 			use_spheroid = LW_FALSE;
 	}
+
+	/* User requests spherical calculation, turn our spheroid into a sphere */
+	if ( ! use_spheroid )
+		s.a = s.b = s.radius;
 
 	/* Calculate the area */
 	if ( use_spheroid )
