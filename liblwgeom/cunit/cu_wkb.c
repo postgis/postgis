@@ -63,33 +63,54 @@ static void test_wkb_point(void)
 	cu_wkb("POINT(0 0 0 0)");
 	CU_ASSERT_STRING_EQUAL(s, t);
 
+	cu_wkb("SRID=4;POINTM(1 1 1)");
+	CU_ASSERT_STRING_EQUAL(s, t);
+
+	//printf("new: %s\nold: %s\n",s,t);
+}
+
+static void test_wkb_linestring(void)
+{
 	cu_wkb("LINESTRING(0 0,1 1)");
 	CU_ASSERT_STRING_EQUAL(s, t);
 
+	cu_wkb("LINESTRING(0 0 1,1 1 2,2 2 3)");
+	CU_ASSERT_STRING_EQUAL(s, t);
+}
+
+static void test_wkb_polygon(void)
+{
 	cu_wkb("SRID=4;POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0))");
 	CU_ASSERT_STRING_EQUAL(s, t);
 
-	cu_wkb("SRID=14;GEOMETRYCOLLECTION(POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),POINT(1 1 1))");
+	cu_wkb("SRID=14;POLYGON((0 0 0 1,0 1 0 2,1 1 0 3,1 0 0 4,0 0 0 5))");
 	CU_ASSERT_STRING_EQUAL(s, t);
 
-	cu_wkb("SRID=14;MULTIPOLYGON(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((-1 -1 0,-1 2 0,2 2 0,2 -1 0,-1 -1 0),(0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)))");
+	cu_wkb("SRID=4;POLYGON((0 0 0 1,0 1 0 2,1 1 0 3,1 0 0 4,0 0 0 5))");
 	CU_ASSERT_STRING_EQUAL(s, t);
 
-//	printf("new: %s\nold: %s\n",s,t);
-
+	cu_wkb("POLYGON EMPTY");
+	CU_ASSERT_STRING_EQUAL(s, t);
 }
-
-static void test_wkb_linestring(void){}
-
-static void test_wkb_polygon(void){}
 
 static void test_wkb_multipoint(void){}
 
 static void test_wkb_multilinestring(void){}
 
-static void test_wkb_multipolygon(void){}
+static void test_wkb_multipolygon(void)
+{
+	cu_wkb("SRID=14;MULTIPOLYGON(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((-1 -1 0,-1 2 0,2 2 0,2 -1 0,-1 -1 0),(0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)))");
+	CU_ASSERT_STRING_EQUAL(s, t);
+}
 
-static void test_wkb_collection(void){}
+static void test_wkb_collection(void)
+{
+	cu_wkb("SRID=14;GEOMETRYCOLLECTION(POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),POINT(1 1 1))");
+	CU_ASSERT_STRING_EQUAL(s, t);
+
+	cu_wkb("GEOMETRYCOLLECTION EMPTY");
+	CU_ASSERT_STRING_EQUAL(s, t);
+}
 
 static void test_wkb_circularstring(void){}
 
