@@ -37,14 +37,14 @@ PostGIS is compatible with PostgreSQL 8.3 and above.
 You *must* have the full PostgreSQL - including server headers - installed
 for this to work. 
 
-* PROJ4 SUPPORT (Required): 
+* PROJ4 SUPPORT (Required, Version 4.5.0 or better): 
 
   The Proj4 reprojection library is required if you want to use the 
   transform() function to reproject features within the database.
 
     http://trac.osgeo.org/proj/
 
-* SPATIAL PREDICATE / GEOS SUPPORT (Required):
+* SPATIAL PREDICATE / GEOS SUPPORT (Required, Version 3.1.1 or better):
 
   The GEOS library provides support for exact topological tests
   such as Touches(), Contains(), Disjoint() and spatial operations
