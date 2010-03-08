@@ -472,7 +472,7 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 		feet based ones or ESRI created ones you will need to pull from <ulink url="http://spatialreference.org">spatialreference.org</ulink>.
 	</para>
 	<para>
-		For details on determining which UTM zone to use for your area of interest, check out the <ulink url="/support/wiki/index.php?plpgsqlfunctions">utmzone PostGIS plpgsql helper function</ulink>.
+		For details on determining which UTM zone to use for your area of interest, check out the <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctionsDistance">utmzone PostGIS plpgsql helper function</ulink>.
 	</para>
 
 	  <para>The <varname>SPATIAL_REF_SYS</varname> table definition is as
