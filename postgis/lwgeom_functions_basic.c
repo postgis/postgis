@@ -2852,11 +2852,11 @@ Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
 	result = pglwgeom_serialize((LWGEOM *)outline);
 
 	/* Release memory */
-	PG_FREE_IF_COPY(pglwg1, 0);
-	PG_FREE_IF_COPY(pglwg2, 1);
 	lwgeom_release((LWGEOM *)point);
 	lwgeom_release((LWGEOM *)line);
 	lwgeom_release((LWGEOM *)outline);
+	PG_FREE_IF_COPY(pglwg1, 0);
+	PG_FREE_IF_COPY(pglwg2, 1);
 
 	PG_RETURN_POINTER(result);
 
