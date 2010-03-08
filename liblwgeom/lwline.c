@@ -497,8 +497,10 @@ lwline_addpoint(LWLINE *line, LWPOINT *point, unsigned int where)
 	newpa = ptarray_addPoint(line->points,
 	                         getPoint_internal(point->point, 0),
 	                         TYPE_NDIMS(point->type), where);
+	
+	
 
-	ret = lwline_construct(line->SRID, NULL, newpa);
+	ret = lwline_construct(line->SRID, ptarray_compute_box2d(newpa), newpa);
 
 	return ret;
 }
@@ -511,7 +513,7 @@ lwline_removepoint(LWLINE *line, unsigned int index)
 
 	newpa = ptarray_removePoint(line->points, index);
 
-	ret = lwline_construct(line->SRID, NULL, newpa);
+	ret = lwline_construct(line->SRID, ptarray_compute_box2d(newpa), newpa);
 
 	return ret;
 }
@@ -523,6 +525,12 @@ void
 lwline_setPoint4d(LWLINE *line, unsigned int index, POINT4D *newpoint)
 {
 	setPoint4d(line->points, index, newpoint);
+	/* Update the box, if there is one to update */
+	if( line->bbox )
+	{
+		lwgeom_drop_bbox((LWGEOM*)line);
+		lwgeom_add_bbox((LWGEOM*)line);
+	}
 }
 
 /**
