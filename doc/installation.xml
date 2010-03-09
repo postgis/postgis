@@ -784,8 +784,8 @@ $ psql newdb -c "ALTER TABLE geometry_columns DROP stats"</programlisting>
 	  </para>
 
 	  <programlisting>$ psql newdb
-newdb=&gt; drop spatial_ref_sys;
-DROP
+newdb=&gt; truncate spatial_ref_sys;
+TRUNCATE
 newdb=&gt; \i spatial_ref_sys.sql</programlisting>
 	</sect2>
   </sect1>
