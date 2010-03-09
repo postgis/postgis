@@ -45,6 +45,9 @@ my $objs = {
 			"gist_geography_ops" => 1,
 			"btree_geography_ops" => 1
 		},
+		"views" => {
+			"geography_columns" => 1
+		},
 		"types" => {
 			"geography" => 1,
 			"gidx" => 1
@@ -159,7 +162,6 @@ while(<INPUT>)
 		}
 	}
 
-
 	if ( /^create type (\w+)/i )
 	{
 		my $newtype = $1;
@@ -224,6 +226,28 @@ while(<INPUT>)
 		while( $version_from_num < $version_to_num && $ver <= $version_to_num )
 		{
 			if( $objs->{$ver}->{"operators"}->{$opsig} )
+			{
+				print $def;
+				last;
+			}
+			$ver++;
+		}
+	}
+
+	# This code handles view by creating them if we are doing a major upgrade
+	if ( /^create or replace view\s+(\S+)\s*/i )
+	{
+		my $viewname = $1;
+		my $def = $_;
+		while(<INPUT>)
+		{
+			$def .= $_;
+			last if /\;\s*$/;
+		}
+		my $ver = $version_from_num + 1;
+		while( $version_from_num < $version_to_num && $ver <= $version_to_num )
+		{
+			if( $objs->{$ver}->{"views"}->{$viewname} )
 			{
 				print $def;
 				last;
