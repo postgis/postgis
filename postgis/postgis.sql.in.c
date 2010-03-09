@@ -21,6 +21,9 @@
 
 #include "sqldefines.h"
 
+SET client_min_messages TO warning;
+
+
 -- INSTALL VERSION: POSTGIS_LIB_VERSION
 
 BEGIN;
