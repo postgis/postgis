@@ -23,6 +23,8 @@
 
 -- INSTALL VERSION: POSTGIS_LIB_VERSION
 
+SET client_min_messages TO warning;
+
 BEGIN;
 
 -------------------------------------------------------------------
