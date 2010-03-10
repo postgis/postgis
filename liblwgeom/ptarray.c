@@ -778,9 +778,10 @@ closest_point_on_segment(POINT2D *p, POINT2D *A, POINT2D *B, POINT2D *ret)
 
 /*
  * Given a point, returns the location of closest point on pointarray
+ * and, optionally, it's actual distance from the point array.
  */
 double
-ptarray_locate_point(POINTARRAY *pa, POINT2D *p)
+ptarray_locate_point(POINTARRAY *pa, POINT2D *p, double* mindistout)
 {
 	double mindist=-1;
 	double tlen, plen;
@@ -843,6 +844,8 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p)
 
 	LWDEBUGF(3, "plen %g, tlen %g", plen, tlen);
 	LWDEBUGF(3, "mindist: %g", mindist);
+
+	if ( mindistout ) *mindistout = mindist;
 
 	return plen/tlen;
 }

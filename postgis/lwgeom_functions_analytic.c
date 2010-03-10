@@ -1232,7 +1232,7 @@ Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS)
 	pa = lwline->points;
 	lwpoint_getPoint2d_p(lwpoint, &p);
 
-	ret = ptarray_locate_point(pa, &p);
+	ret = ptarray_locate_point(pa, &p, NULL);
 
 	PG_RETURN_FLOAT8(ret);
 }

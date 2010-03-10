@@ -1394,9 +1394,12 @@ extern POINTARRAY *ptarray_substring(POINTARRAY *, double, double);
 
 /*
  * Given a point, returns the location of closest point on pointarray
- * as a fraction of total length (0: first point -- 1: last point)
+ * as a fraction of total length (0: first point -- 1: last point).
+ *
+ * If not-null, the third argument will be set to the actual distance
+ * of the point from the pointarray.
  */
-extern double ptarray_locate_point(POINTARRAY *, POINT2D *);
+extern double ptarray_locate_point(POINTARRAY *, POINT2D *, double *);
 
 /*
  * Write into *ret the coordinates of the closest point on
