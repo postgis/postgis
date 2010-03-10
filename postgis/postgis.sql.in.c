@@ -4083,6 +4083,26 @@ CREATE OR REPLACE FUNCTION ST_CleanGeometry(geometry)
        COST 100;
 
 --------------------------------------------------------------------------------
+-- ST_SplitGeometry 
+--------------------------------------------------------------------------------
+
+-- ST_SplitGeometry(in geometry, blade geometry)
+--
+-- Split a geometry in parts after cutting it with given blade.
+-- Returns a collection containing all parts.
+--
+-- Note that multi-part geometries will be returned exploded,
+-- no matter relation to blade.
+-- 
+-- Availability: 2.0.0
+--
+CREATE OR REPLACE FUNCTION ST_SplitGeometry(geometry, geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME', 'ST_SplitGeometry'
+       LANGUAGE 'C' IMMUTABLE STRICT
+       COST 100;
+
+--------------------------------------------------------------------------------
 -- Aggregates and their supporting functions
 --------------------------------------------------------------------------------
 
