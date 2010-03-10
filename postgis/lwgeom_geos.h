@@ -56,3 +56,7 @@ void errorIfGeometryCollection(PG_LWGEOM *g1, PG_LWGEOM *g2);
  */
 GEOSGeometry* LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in);
 
+#define LWGEOM_GEOS_ERRMSG_MAXSIZE 256
+extern char lwgeom_geos_errmsg[];
+extern void lwgeom_geos_error(const char *fmt, ...);
+

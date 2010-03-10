@@ -44,25 +44,6 @@
 /* #define POSTGIS_DEBUG_LEVEL 4 */
 
 
-#define BUFSIZE 256
-static char loggederror[BUFSIZE];
-
-static void
-errorlogger(const char *fmt, ...)
-{
-	va_list ap;
-
-	va_start(ap, fmt);
-
-	/* Call the supplied function */
-	if ( BUFSIZE-1 < vsnprintf(loggederror, BUFSIZE-1, fmt, ap) )
-	{
-		loggederror[BUFSIZE-1] = '\0';
-	}
-
-	va_end(ap);
-}
-
 /*
  * Return Nth vertex in GEOSGeometry as a POINT.
  * May return NULL if the geometry has NO vertexex.
@@ -433,7 +414,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 	GEOSGeom_destroy(geos_bound); 
 	if ( NULL == geos_cut_edges )
 	{
-		lwnotice("LWGEOM_GEOS_nodeLines(): %s", loggederror);
+		lwnotice("LWGEOM_GEOS_nodeLines(): %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
 
@@ -441,7 +422,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 	geos_area = GEOSGeom_createEmptyPolygon();
 	if ( ! geos_area )
 	{
-		lwnotice("GEOSGeom_createEmptyPolygon(): %s", loggederror);
+		lwnotice("GEOSGeom_createEmptyPolygon(): %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(geos_cut_edges);
 		return NULL;
 	}
@@ -469,7 +450,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 			GEOSGeom_destroy(geos_cut_edges);
 			GEOSGeom_destroy(geos_area);
 			lwnotice("LWGEOM_GEOS_buildArea() threw an error: %s",
-				 loggederror);
+				 lwgeom_geos_errmsg);
 			return NULL;
 		}
 
@@ -495,7 +476,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 			lwnotice("GEOSBoundary('%s') threw an error: %s",
 				 lwgeom_to_ewkt(GEOS2LWGEOM(new_area, 0),
 						PARSER_CHECK_NONE),
-				 loggederror);
+				 lwgeom_geos_errmsg);
 			GEOSGeom_destroy(new_area);
 			GEOSGeom_destroy(geos_area);
 			return NULL;
@@ -511,7 +492,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 			GEOSGeom_destroy(new_area_bound);
 			GEOSGeom_destroy(geos_area);
 			lwnotice("GEOSSymDifference() threw an error: %s",
-				 loggederror);
+				 lwgeom_geos_errmsg);
 			return NULL;
 		}
 
@@ -536,7 +517,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 			GEOSGeom_destroy(geos_cut_edges);
 			GEOSGeom_destroy(geos_area);
 			lwnotice("GEOSDifference() threw an error: %s",
-				 loggederror);
+				 lwgeom_geos_errmsg);
 			return NULL;
 		}
 		GEOSGeom_destroy(geos_cut_edges);
@@ -559,7 +540,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		{
 			/* cleanup and throw */
 			lwnotice("GEOSGeom_createCollection() threw an error: %s",
-			         loggederror);
+			         lwgeom_geos_errmsg);
 			return NULL;
 		}
 
@@ -684,7 +665,7 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 	if ( ret_char == 2 )
 	{
 		/* I don't think should ever happen */
-		lwerror("GEOSisValid(): %s", loggederror);
+		lwerror("GEOSisValid(): %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
 	else if ( ret_char )
@@ -702,7 +683,7 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 	               "Geometry [%s] is still not valid: %s. "
 		       "Will try to clean up further.",
 	               lwgeom_to_ewkt(GEOS2LWGEOM(gin, 0),
-			PARSER_CHECK_NONE), loggederror);
+			PARSER_CHECK_NONE), lwgeom_geos_errmsg);
 
 
 
@@ -724,7 +705,7 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 		if ( ! gout )  /* an exception or something */
 		{
 			/* cleanup and throw */
-			lwerror("%s", loggederror);
+			lwerror("%s", lwgeom_geos_errmsg);
 			return NULL;
 		}
 		break; /* we've done */
@@ -734,7 +715,7 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 		if ( ! gout )  /* an exception or something */
 		{
 			/* cleanup and throw */
-			lwerror("%s", loggederror);
+			lwerror("%s", lwgeom_geos_errmsg);
 			return NULL;
 		}
 		break; /* we've done */
@@ -746,7 +727,7 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 		if ( ! gout )  /* an exception or something */
 		{
 			/* cleanup and throw */
-			lwerror("%s", loggederror);
+			lwerror("%s", lwgeom_geos_errmsg);
 			return NULL;
 		}
 		break; /* we've done */
@@ -817,7 +798,7 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	 *          otherwise (adding only duplicates of existing points)
 	 */
 
-	initGEOS(errorlogger, errorlogger);
+	initGEOS(lwgeom_geos_error, lwgeom_geos_error);
 
 	lwgeom_out = lwgeom_in;
 	geosgeom = LWGEOM2GEOS(lwgeom_out);
@@ -826,7 +807,7 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 		POSTGIS_DEBUGF(4,
 		               "Original geom can't be converted to GEOS (%s)"
 		               " - will try cleaning that up first",
-		               loggederror);
+		               lwgeom_geos_errmsg);
 
 
 		lwgeom_out = lwgeom_make_geos_friendly(lwgeom_out);
@@ -840,7 +821,7 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 		if ( ! geosgeom )
 		{
 			lwerror("Couldn't convert POSTGIS geom to GEOS: %s",
-			        loggederror);
+			        lwgeom_geos_errmsg);
 			return NULL;
 		}
 

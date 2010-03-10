@@ -82,20 +82,19 @@ int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *pont);
 ** Prototypes end
 */
 
-#define BUFSIZE 256
-static char loggederror[BUFSIZE];
+char lwgeom_geos_errmsg[LWGEOM_GEOS_ERRMSG_MAXSIZE];
 
-static void
-errorlogger(const char *fmt, ...)
+extern void
+lwgeom_geos_error(const char *fmt, ...)
 {
 	va_list ap;
 
 	va_start(ap, fmt);
 
 	/* Call the supplied function */
-	if ( BUFSIZE-1 < vsnprintf(loggederror, BUFSIZE-1, fmt, ap) )
+	if ( LWGEOM_GEOS_ERRMSG_MAXSIZE-1 < vsnprintf(lwgeom_geos_errmsg, LWGEOM_GEOS_ERRMSG_MAXSIZE-1, fmt, ap) )
 	{
-		loggederror[BUFSIZE-1] = '\0';
+		lwgeom_geos_errmsg[LWGEOM_GEOS_ERRMSG_MAXSIZE-1] = '\0';
 	}
 
 	va_end(ap);
@@ -253,19 +252,19 @@ Datum hausdorffdistance(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
 	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 	if ( 0 == g2 )   /* exception thrown */
 	{
-		lwerror("Second argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
 		PG_RETURN_NULL();
 	}
@@ -309,19 +308,19 @@ Datum hausdorffdistancedensify(PG_FUNCTION_ARGS)
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	densifyFrac = PG_GETARG_FLOAT8(2);
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
 	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
-		lwerror("Second argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
 		PG_RETURN_NULL();
 	}
@@ -405,7 +404,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	}
 
 	/* Ok, we really need geos now ;) */
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	/*
 	** First, see if all our elements are POLYGON/MULTIPOLYGON
@@ -490,7 +489,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 					{
 						/* TODO: release GEOS allocated memory ! */
 						lwerror("One of the geometries in the set "
-						        "could not be converted to GEOS: %s", loggederror);
+						        "could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 						PG_RETURN_NULL();
 					}
 					geoms[curgeom] = g;
@@ -516,7 +515,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 						if ( 0 == g )   /* exception thrown at construction */
 						{
 							/* TODO: cleanup all GEOS memory */
-							lwerror("Geometry could not be converted to GEOS: %s", loggederror);
+							lwerror("Geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 							PG_RETURN_NULL();
 						}
 						geoms[curgeom] = g;
@@ -593,7 +592,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 					geos_result = (GEOSGeometry *)POSTGIS2GEOS(geom);
 					if ( 0 == geos_result )   /* exception thrown at construction */
 					{
-						lwerror("geometry could not be converted to GEOS: %s", loggederror);
+						lwerror("geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 						PG_RETURN_NULL();
 					}
 					SRID = pglwgeom_getSRID(geom);
@@ -608,7 +607,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 					{
 						/* TODO: release GEOS allocated memory ! */
 						lwerror("First argument geometry could not be converted to GEOS: %s",
-						        loggederror);
+						        lwgeom_geos_errmsg);
 						PG_RETURN_NULL();
 					}
 
@@ -697,14 +696,14 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	SRID = pglwgeom_getSRID(geom1);
 	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
@@ -713,7 +712,7 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	PROFSTOP(PROF_P2G2);
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
-		lwerror("Second argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
 		PG_RETURN_NULL();
 	}
@@ -789,14 +788,14 @@ Datum symdifference(PG_FUNCTION_ARGS)
 	SRID = pglwgeom_getSRID(geom1);
 	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
@@ -805,7 +804,7 @@ Datum symdifference(PG_FUNCTION_ARGS)
 	PROFSTOP(PROF_P2G2);
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
-		lwerror("Second argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
 		PG_RETURN_NULL();
 	}
@@ -869,14 +868,14 @@ Datum boundary(PG_FUNCTION_ARGS)
 
 	SRID = pglwgeom_getSRID(geom1);
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1 );
 	PROFSTOP(PROF_P2G1);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
@@ -886,7 +885,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 
 	if (g3 == NULL)
 	{
-		elog(NOTICE,"GEOSBoundary(): %s", loggederror);
+		elog(NOTICE,"GEOSBoundary(): %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
 		PG_RETURN_NULL(); /* never get here */
 	}
@@ -937,14 +936,14 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	SRID = pglwgeom_getSRID(geom1);
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
@@ -1017,12 +1016,12 @@ Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	tolerance = PG_GETARG_FLOAT8(1);
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
@@ -1095,14 +1094,14 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 	nargs = PG_NARGS();
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
@@ -1298,7 +1297,7 @@ Datum intersection(PG_FUNCTION_ARGS)
 	SRID = pglwgeom_getSRID(geom1);
 	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	POSTGIS_DEBUG(3, "intersection() START");
 
@@ -1307,7 +1306,7 @@ Datum intersection(PG_FUNCTION_ARGS)
 	PROFSTOP(PROF_P2G1);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
@@ -1316,7 +1315,7 @@ Datum intersection(PG_FUNCTION_ARGS)
 	PROFSTOP(PROF_P2G2);
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
-		lwerror("Second argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
 		PG_RETURN_NULL();
 	}
@@ -1397,14 +1396,14 @@ Datum difference(PG_FUNCTION_ARGS)
 	SRID = pglwgeom_getSRID(geom1);
 	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
@@ -1413,7 +1412,7 @@ Datum difference(PG_FUNCTION_ARGS)
 	PROFSTOP(PROF_P2G2);
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
-		lwerror("Second argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
 		PG_RETURN_NULL();
 	}
@@ -1477,14 +1476,14 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		elog(WARNING, "GEOSPointOnSurface(): %s", loggederror);
+		elog(WARNING, "GEOSPointOnSurface(): %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
@@ -1494,7 +1493,7 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 
 	if (g3 == NULL)
 	{
-		elog(WARNING, "GEOSPointOnSurface(): %s", loggederror);
+		elog(WARNING, "GEOSPointOnSurface(): %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
 		PG_RETURN_NULL(); /* never get here */
 	}
@@ -1538,14 +1537,14 @@ Datum centroid(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	PROFSTART(PROF_P2G1);
 	geosgeom = (GEOSGeometry *)POSTGIS2GEOS(geom);
 	PROFSTOP(PROF_P2G1);
 	if ( 0 == geosgeom )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
@@ -1638,7 +1637,7 @@ Datum isvalid(PG_FUNCTION_ARGS)
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	PROFSTART(PROF_P2G1);
 
@@ -1653,7 +1652,7 @@ Datum isvalid(PG_FUNCTION_ARGS)
 		/* should we drop the following
 		 * notice now that we have ST_isValidReason ?
 		 */
-		lwnotice("%s", loggederror);
+		lwnotice("%s", lwgeom_geos_errmsg);
 		lwgeom_release(lwgeom);
 		PG_RETURN_BOOL(FALSE);
 	}
@@ -1695,7 +1694,7 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom);
 	if ( g1 )
@@ -1706,7 +1705,7 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 	else
 	{
 		/* we don't use pstrdup here as we free later */
-		reason_str = strdup(loggederror);
+		reason_str = strdup(lwgeom_geos_errmsg);
 	}
 
 
@@ -1773,7 +1772,7 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom);
 
@@ -1801,8 +1800,8 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 	}
 	else
 	{
-		/* TODO: check loggederror for validity error */
-		reason = pstrdup(loggederror);
+		/* TODO: check lwgeom_geos_errmsg for validity error */
+		reason = pstrdup(lwgeom_geos_errmsg);
 	}
 
 	/* the boolean validity */
@@ -1861,14 +1860,14 @@ Datum overlaps(PG_FUNCTION_ARGS)
 		if ( box2.ymin > box2.ymax ) PG_RETURN_BOOL(FALSE);
 	}
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
@@ -1877,7 +1876,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	PROFSTOP(PROF_P2G2);
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
-		lwerror("Second argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
 		PG_RETURN_NULL();
 	}
@@ -2004,7 +2003,7 @@ Datum contains(PG_FUNCTION_ARGS)
 		POSTGIS_DEBUGF(3, "Contains: type1: %d, type2: %d", type1, type2);
 	}
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 #ifdef PREPARED_GEOM
 	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0 );
@@ -2014,7 +2013,7 @@ Datum contains(PG_FUNCTION_ARGS)
 		g1 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 		if ( 0 == g1 )   /* exception thrown at construction */
 		{
-			lwerror("Geometry could not be converted to GEOS: %s", loggederror);
+			lwerror("Geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 			PG_RETURN_NULL();
 		}
 		POSTGIS_DEBUG(4, "containsPrepared: cache is live, running preparedcontains");
@@ -2027,13 +2026,13 @@ Datum contains(PG_FUNCTION_ARGS)
 		g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 		if ( 0 == g1 )   /* exception thrown at construction */
 		{
-			lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+			lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 			PG_RETURN_NULL();
 		}
 		g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 		if ( 0 == g2 )   /* exception thrown at construction */
 		{
-			lwerror("Second argument geometry could not be converted to GEOS: %s", loggederror);
+			lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 			GEOSGeom_destroy(g1);
 			PG_RETURN_NULL();
 		}
@@ -2086,7 +2085,7 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 			PG_RETURN_BOOL(FALSE);
 	}
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 #ifdef PREPARED_GEOM
 	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0 );
@@ -2096,7 +2095,7 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 		GEOSGeometry *g = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 		if ( 0 == g )   /* exception thrown at construction */
 		{
-			lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+			lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 			PG_RETURN_NULL();
 		}
 		result = GEOSPreparedContainsProperly( prep_cache->prepared_geom, g);
@@ -2111,13 +2110,13 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 		g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 		if ( 0 == g1 )   /* exception thrown at construction */
 		{
-			lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+			lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 			PG_RETURN_NULL();
 		}
 		g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 		if ( 0 == g2 )   /* exception thrown at construction */
 		{
-			lwerror("Second argument geometry could not be converted to GEOS: %s", loggederror);
+			lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 			GEOSGeom_destroy(g1);
 			PG_RETURN_NULL();
 		}
@@ -2240,7 +2239,7 @@ Datum covers(PG_FUNCTION_ARGS)
 		POSTGIS_DEBUGF(3, "Covers: type1: %d, type2: %d", type1, type2);
 	}
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 #ifdef PREPARED_GEOM
 	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0 );
@@ -2250,7 +2249,7 @@ Datum covers(PG_FUNCTION_ARGS)
 		GEOSGeometry *g1 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 		if ( 0 == g1 )   /* exception thrown at construction */
 		{
-			lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+			lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 			PG_RETURN_NULL();
 		}
 		result = GEOSPreparedCovers( prep_cache->prepared_geom, g1);
@@ -2265,13 +2264,13 @@ Datum covers(PG_FUNCTION_ARGS)
 		g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 		if ( 0 == g1 )   /* exception thrown at construction */
 		{
-			lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+			lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 			PG_RETURN_NULL();
 		}
 		g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 		if ( 0 == g2 )   /* exception thrown at construction */
 		{
-			lwerror("Second argument geometry could not be converted to GEOS: %s", loggederror);
+			lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 			GEOSGeom_destroy(g1);
 			PG_RETURN_NULL();
 		}
@@ -2387,14 +2386,14 @@ Datum within(PG_FUNCTION_ARGS)
 		}
 	}
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
@@ -2403,7 +2402,7 @@ Datum within(PG_FUNCTION_ARGS)
 	PROFSTOP(PROF_P2G2);
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
-		lwerror("Second argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
 		PG_RETURN_NULL();
 	}
@@ -2530,14 +2529,14 @@ Datum coveredby(PG_FUNCTION_ARGS)
 		}
 	}
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
@@ -2546,7 +2545,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	PROFSTOP(PROF_P2G2);
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
-		lwerror("Second argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
 		PG_RETURN_NULL();
 	}
@@ -2607,14 +2606,14 @@ Datum crosses(PG_FUNCTION_ARGS)
 		}
 	}
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
@@ -2623,7 +2622,7 @@ Datum crosses(PG_FUNCTION_ARGS)
 	PROFSTOP(PROF_P2G2);
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
-		lwerror("Second argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
 		PG_RETURN_NULL();
 	}
@@ -2757,7 +2756,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 		}
 	}
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 #ifdef PREPARED_GEOM
 	prep_cache = GetPrepGeomCache( fcinfo, geom1, geom2 );
 
@@ -2768,7 +2767,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 			GEOSGeometry *g = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 			if ( 0 == g )   /* exception thrown at construction */
 			{
-				lwerror("Geometry could not be converted to GEOS: %s", loggederror);
+				lwerror("Geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 				PG_RETURN_NULL();
 			}
 			result = GEOSPreparedIntersects( prep_cache->prepared_geom, g);
@@ -2779,7 +2778,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 			GEOSGeometry *g = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 			if ( 0 == g )   /* exception thrown at construction */
 			{
-				lwerror("Geometry could not be converted to GEOS: %s", loggederror);
+				lwerror("Geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 				PG_RETURN_NULL();
 			}
 			result = GEOSPreparedIntersects( prep_cache->prepared_geom, g);
@@ -2794,13 +2793,13 @@ Datum intersects(PG_FUNCTION_ARGS)
 		g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 		if ( 0 == g1 )   /* exception thrown at construction */
 		{
-			lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+			lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 			PG_RETURN_NULL();
 		}
 		g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 		if ( 0 == g2 )   /* exception thrown at construction */
 		{
-			lwerror("Second argument geometry could not be converted to GEOS: %s", loggederror);
+			lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 			GEOSGeom_destroy(g1);
 			PG_RETURN_NULL();
 		}
@@ -2854,14 +2853,14 @@ Datum touches(PG_FUNCTION_ARGS)
 		}
 	}
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1 );
 	PROFSTOP(PROF_P2G1);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
@@ -2870,7 +2869,7 @@ Datum touches(PG_FUNCTION_ARGS)
 	PROFSTOP(PROF_P2G2);
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
-		lwerror("Second argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
 		PG_RETURN_NULL();
 	}
@@ -2930,14 +2929,14 @@ Datum disjoint(PG_FUNCTION_ARGS)
 		}
 	}
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
@@ -2946,7 +2945,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	PROFSTOP(PROF_P2G2);
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
-		lwerror("Second argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
 		PG_RETURN_NULL();
 	}
@@ -2990,18 +2989,18 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
-		lwerror("Second argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
 		PG_RETURN_NULL();
 	}
@@ -3055,18 +3054,18 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1 );
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2 );
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
-		lwerror("Second argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
 		PG_RETURN_NULL();
 	}
@@ -3144,14 +3143,14 @@ Datum geomequals(PG_FUNCTION_ARGS)
 		if ( box2.ymin != box2.ymin ) PG_RETURN_BOOL(FALSE);
 	}
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
@@ -3160,7 +3159,7 @@ Datum geomequals(PG_FUNCTION_ARGS)
 	PROFSTOP(PROF_P2G2);
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
-		lwerror("Second argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
 		PG_RETURN_NULL();
 	}
@@ -3201,12 +3200,12 @@ Datum issimple(PG_FUNCTION_ARGS)
 	if (lwgeom_getnumgeometries(SERIALIZED_FORM(geom)) == 0)
 		PG_RETURN_BOOL(true);
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 	result = GEOSisSimple(g1);
@@ -3240,12 +3239,12 @@ Datum isring(PG_FUNCTION_ARGS)
 	if (lwgeom_getnumgeometries(SERIALIZED_FORM(geom)) == 0)
 		PG_RETURN_BOOL(false);
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom );
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 	result = GEOSisRing(g1);
@@ -3636,7 +3635,7 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
 #endif
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
@@ -3698,7 +3697,7 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	if ( nelems == 0 ) PG_RETURN_NULL();
 
 	/* Ok, we really need geos now ;) */
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	vgeoms = palloc(sizeof(GEOSGeometry *)*nelems);
 	offset = 0;
@@ -3711,7 +3710,7 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 		g = (GEOSGeometry *)POSTGIS2GEOS(geom);
 		if ( 0 == g )   /* exception thrown at construction */
 		{
-			lwerror("Geometry could not be converted to GEOS: %s", loggederror);
+			lwerror("Geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 			PG_RETURN_NULL();
 		}
 		vgeoms[i] = g;
@@ -3766,14 +3765,14 @@ Datum linemerge(PG_FUNCTION_ARGS)
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
@@ -3849,12 +3848,12 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "LWGEOM_buildarea got geom @ %p", geom);
 
-	initGEOS(lwnotice, errorlogger);
+	initGEOS(lwnotice, lwgeom_geos_error);
 
 	geos_in = POSTGIS2GEOS(geom);
 	if ( 0 == geos_in )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", loggederror);
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 	geos_out = LWGEOM_GEOS_buildArea(geos_in);
