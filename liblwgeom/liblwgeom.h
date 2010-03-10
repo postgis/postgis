@@ -1398,7 +1398,12 @@ extern POINTARRAY *ptarray_substring(POINTARRAY *, double, double);
  */
 extern double ptarray_locate_point(POINTARRAY *, POINT2D *);
 
-extern void closest_point_on_segment(POINT2D *p, POINT2D *A, POINT2D *B, POINT2D *ret);
+/*
+ * Write into *ret the coordinates of the closest point on
+ * segment A-B to the reference input point R
+ */
+extern void closest_point_on_segment(POINT2D *R, POINT2D *A, POINT2D *B, POINT2D *ret);
+
 extern LWLINE *lwline_measured_from_lwline(const LWLINE *lwline, double m_start, double m_end);
 extern LWMLINE* lwmline_measured_from_lwmline(const LWMLINE *lwmline, double m_start, double m_end);
 
