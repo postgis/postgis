@@ -39,3 +39,8 @@ SELECT origin,caseno,
        st_isvalid(st_makevalid(orig)), -- paranoia
        (st_isvaliddetail(orig)).valid
 FROM clean_cases;
+
+-- Check SRID is retained
+SELECT 'SRID1', ST_SRID(ST_MakeValid('SRID=3;POINT(0 0)'));
+SELECT 'SRID2', ST_SRID(ST_MakeValid('SRID=3;LINESTRING(0 0, 0 0)'));
+SELECT 'SRID3', ST_SRID(ST_MakeValid('SRID=3;POLYGON((0 0, 10 0, 10 10, 5 -5, 0 0))'));
