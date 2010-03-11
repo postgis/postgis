@@ -848,6 +848,7 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 
 	GEOSGeom_destroy(geosout);
 
+	lwgeom_out->SRID = lwgeom_in->SRID;
 	return lwgeom_out;
 }
 
