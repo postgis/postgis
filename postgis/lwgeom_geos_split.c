@@ -42,15 +42,13 @@ static LWGEOM* lwline_split_by_point(LWLINE* lwgeom_in, LWPOINT* blade_in);
 static LWGEOM*
 lwline_split_by_point(LWLINE* lwline_in, LWPOINT* blade_in)
 {
-	GEOSGeometry* line;
-	GEOSGeometry* point;
 	double loc, dist;
-	int intersects;
 	POINT2D pt;
 	POINTARRAY* pa1;
 	POINTARRAY* pa2;
 	LWGEOM** components;
 	LWCOLLECTION* out;
+	int ncomponents;
 
 	/* Possible outcomes:
 	 *
@@ -65,30 +63,39 @@ lwline_split_by_point(LWLINE* lwline_in, LWPOINT* blade_in)
 
 	/* lwnotice("Location: %g -- Distance: %g", loc, dist); */
 
-	if ( dist > 0 ) { /* TODO: accept a tolerance ? */
-		/* No intersection */
-		return (LWGEOM*)lwline_clone(lwline_in);
-	}
-
-	/* There is an intersection, let's get two substrings */
-
-	if ( loc == 0 || loc == 1 )
+	do
 	{
-		/* Intersection is on the boundary or outside */
-		return (LWGEOM*)lwline_clone(lwline_in);
-	}
+		components = lwalloc(sizeof(LWGEOM*)*2);
+		ncomponents = 1;
 
-	pa1 = ptarray_substring(lwline_in->points, 0, loc);
-	pa2 = ptarray_substring(lwline_in->points, loc, 1);
+		if ( dist > 0 ) { /* TODO: accept a tolerance ? */
+			/* No intersection */
+			components[0] = (LWGEOM*)lwline_clone(lwline_in);
+			components[0]->SRID = -1;
+			break;
+		}
 
-	/* TODO: check if either pa1 or pa2 are empty ? */
+		/* There is an intersection, let's get two substrings */
+		if ( loc == 0 || loc == 1 )
+		{
+			/* Intersection is on the boundary or outside */
+			components[0] = (LWGEOM*)lwline_clone(lwline_in);
+			components[0]->SRID = -1;
+			break;
+		}
 
-	components = lwalloc(sizeof(LWGEOM*)*2);
-	components[0] = (LWGEOM*)lwline_construct(-1, NULL, pa1);
-	components[1] = (LWGEOM*)lwline_construct(-1, NULL, pa2);
+		pa1 = ptarray_substring(lwline_in->points, 0, loc);
+		pa2 = ptarray_substring(lwline_in->points, loc, 1);
+
+		/* TODO: check if either pa1 or pa2 are empty ? */
+
+		components[0] = (LWGEOM*)lwline_construct(-1, NULL, pa1);
+		components[1] = (LWGEOM*)lwline_construct(-1, NULL, pa2);
+		++ncomponents;
+	} while (0);
 
 	out = lwcollection_construct(COLLECTIONTYPE, lwline_in->SRID,
-		NULL, 2, components);
+		NULL, ncomponents, components);
 
 	/* That's all folks */
 
