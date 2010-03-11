@@ -44,7 +44,6 @@
 
 /* #define POSTGIS_DEBUG_LEVEL 4 */
 
-/* Initializes GEOS internally */
 static LWGEOM* lwline_split_by_point(LWLINE* lwgeom_in, LWPOINT* blade_in);
 static LWGEOM*
 lwline_split_by_point(LWLINE* lwline_in, LWPOINT* blade_in)
