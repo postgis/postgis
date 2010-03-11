@@ -84,10 +84,10 @@ lwline_split_by_point(LWLINE* lwline_in, LWPOINT* blade_in)
 	/* TODO: check if either pa1 or pa2 are empty ? */
 
 	components = lwalloc(sizeof(LWGEOM*)*2);
-	components[0] = (LWGEOM*)lwline_construct(lwline_in->SRID, NULL, pa1);
-	components[1] = (LWGEOM*)lwline_construct(lwline_in->SRID, NULL, pa2);
+	components[0] = (LWGEOM*)lwline_construct(-1, NULL, pa1);
+	components[1] = (LWGEOM*)lwline_construct(-1, NULL, pa2);
 
-	out = lwcollection_construct(MULTILINETYPE, lwline_in->SRID,
+	out = lwcollection_construct(COLLECTIONTYPE, lwline_in->SRID,
 		NULL, 2, components);
 
 	/* That's all folks */
