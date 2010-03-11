@@ -1,12 +1,30 @@
 PostGIS 1.4.2
-YYYY/MM/DD
+2010/03/11
 
  - This is a bug fix release, addressing issues that have been
    filed since the 1.4.1 release.
 
  - Bug fixes
+   - #327, fix up the uninstall functions
+     (Paul Ramsey)
+   - #333, remove unnecessary VACUUM from install file
+     (Kevin Neufeld)
+   - #355, build improvements for shp2pgsql-gui
+     (Paul Ramsey)
+   - #387, add towgs84 arguments for SRID 28992
+     (Paul Ramsey)
+   - #409, fix ST_AsSVG with empty geometrycollection input
+     (Olivier Courtin)
+   - #410, update embedded bbox when applying ST_SetPoint, ST_AddPoint
+     ST_RemovePoint to a linestring
+     (Paul Ramsey)
    - #411, allow dumping tables with invalid geometries
      (Sandro Santilli - work done for Regione Toscana-SIGTA)
+   - #421, fix computed string length in ST_AsGML()
+     (Olivier Courtin)
+   - #441, fix GML generation with heterogeneous collections
+     (Olivier Courtin)
+
 
 PostGIS 1.4.1
 2009/11/28

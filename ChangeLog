@@ -1,3 +1,108 @@
+2010-03-09 00:38  pramsey
+
+	* doc/installation.xml: Fix syntax error in spatial_ref_sys hard
+	  upgrade directions (#373)
+
+2010-03-08 23:27  pramsey
+
+	* liblwgeom/lwline.c, postgis/lwgeom_functions_basic.c: Update the
+	  bbox when you alter the underlying geometry (#410) ST_SetPoint,
+	  ST_AddPoint, ST_RemovePoint.
+
+2010-03-08 17:03  kneufeld
+
+	* doc/using_postgis_dataman.xml: updated broken link to utmzone
+	  PostGIS plpgsql helper function.
+	  bug #461
+
+2010-02-22 22:02  colivier
+
+	* postgis/lwgeom_geojson.c, regress/geojson_expected: Fix #441. And
+	  introduce a change in behaviour: if geometryCollection and bbox,
+	  not sub geoms bbox are provided anymore
+
+2010-02-20 19:08  colivier
+
+	* postgis/lwgeom_gml.c: Fix computed string length in Polygon with
+	  several rings for ST_AsGML with GML3. Related to #421
+
+2010-02-08 22:37  strk
+
+	* NEWS: tweak the sponsor name
+
+2010-02-08 19:57  strk
+
+	* NEWS: Add bugfix item
+
+2010-02-08 19:05  strk
+
+	* postgis/lwgeom_inout.c, postgis/lwgeom_ogc.c: Back-port into 1.4
+	  branch relaxing of output functions (see ticket #168)
+
+2010-02-06 10:48  colivier
+
+	* postgis/lwgeom_svg.c, regress/svg.sql, regress/svg_expected: Fix
+	  non NULL terminated string in ST_AsSVG with GEOMETRYCOLLECTION
+	  EMPTY, cf #409 reported by sdikiy. Add related unit test
+
+2010-02-02 23:46  pramsey
+
+	* regress/run_test: Add --no-psqlrc to run_test (#405)
+
+2010-01-20 20:16  pramsey
+
+	* utils/create_undef.pl, utils/postgis_proc_upgrade.pl,
+	  utils/postgis_restore.pl: Make proper #! calls to perl in perl
+	  scripts.
+
+2010-01-18 19:41  pramsey
+
+	* spatial_ref_sys.sql: Add towgs84 line into proj4text for srid =
+	  28992 (#387)
+
+2009-12-30 12:55  robe
+
+	* doc/faq.xml: Add some faqs I'm tired of answering
+
+2009-12-30 12:20  robe
+
+	* doc/reference.xml: try to fix buildbot
+
+2009-12-30 07:19  robe
+
+	* doc/reference.xml: more clarity on the float4/float8 for
+	  ST_Envelope
+
+2009-12-30 06:53  robe
+
+	* doc/reference.xml: #531 ST_Envelope has wrong return type changed
+	  from boolean to geometry
+
+2009-12-22 21:12  pramsey
+
+	* configure.ac, loader/Makefile.in, loader/shp2pgsql-gui.c: Add
+	  support for GUI commandline (#355)
+
+2009-12-22 00:07  pramsey
+
+	* loader/Makefile.in: Put the GUI makefile re-ordering in place
+	  (again?)
+
+2009-12-17 16:30  pramsey
+
+	* Version.config: Bump up to 1.4.2SVN
+
+2009-12-17 10:18  mcayland
+
+	* regress/regress_expected, regress/regress_ogc_expected,
+	  regress/sql-mm-curvepoly_expected: Fix regression test expected
+	  results, some of which have been altered by the fix for #316.
+
+2009-12-17 05:54  pramsey
+
+	* ChangeLog, README.postgis, doc/release_notes.xml: Final changes
+	  for 1.4.1 release.
+
 2009-12-09 05:12  robe
 
 	* doc/reference.xml: correct output type of ST_Extent and flag
