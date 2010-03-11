@@ -19,3 +19,4 @@ SELECT 9, ST_AsText(ST_RemoveRepeatedPoints('CURVEPOLYGON(CIRCULARSTRING(
                 1 0 3 6,                                                                        0 1 3 4,                                                                        -1 0 1 2))'));        
 SELECT 10, ST_AsText(ST_RemoveRepeatedPoints('LINESTRING(0 0, 0 0)'));
 SELECT 11, ST_AsText(ST_RemoveRepeatedPoints('LINESTRING(0 0, 0 0, 0 0, 0 0, 0 0)'));
+SELECT 12, ST_SRID(ST_RemoveRepeatedPoints('SRID=3;LINESTRING(0 0, 0 0, 0 0, 0 0, 0 0)'));
