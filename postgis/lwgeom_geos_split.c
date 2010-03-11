@@ -58,10 +58,12 @@ lwline_split_by_point(LWLINE* lwline_in, LWPOINT* blade_in)
 
 	/* Possible outcomes:
 	 *
-	 *  1. The point is not on the line
-	 *      -> Return original geometry (cloned)
+	 *  1. The point is not on the line or on the boundary
+	 *      -> Return a collection with single element
 	 *  2. The point is on the line
-	 *      -> Return a multiline with all elements
+	 *      -> Return a collection 2 elements:
+	 *         o start_point - cut_point
+	 *         o cut_point - last_point
 	 */
 
 	getPoint2d_p(blade_in->point, 0, &pt);
