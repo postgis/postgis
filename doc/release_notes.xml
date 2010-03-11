@@ -4,6 +4,24 @@
     <subtitle>Release Notes</subtitle>
 
       <sect1>
+        <title>Release 1.5.1</title>
+        <para>Release date: 2010/03/11</para>
+        <para>This is a bug fix release, addressing issues that have been filed since the 1.4.1 release.</para>
+        <simplesect>
+          <title>Bug Fixes</title>
+           <para>#410, update embedded bbox when applying ST_SetPoint, ST_AddPoint ST_RemovePoint to a linestring (Paul Ramsey)</para>
+           <para>#411, allow dumping tables with invalid geometries (Sandro Santilli, for Regione Toscana-SIGTA)</para>
+           <para>#414, include geography_columns view when running upgrade scripts (Paul Ramsey)</para>
+           <para>#419, allow support for multilinestring in ST_Line_Substring (Paul Ramsey, for Lidwala Consulting Engineers)</para>
+           <para>#421, fix computed string length in ST_AsGML() (Olivier Courtin)</para>
+           <para>#441, fix GML generation with heterogeneous collections (Olivier Courtin)</para>
+           <para>#443, incorrect coordinate reversal in GML 3 generation (Olivier Courtin)</para>
+           <para>#450, #451, wrong area calculation for geography features that  cross the date line (Paul Ramsey)</para>
+           <para>Ensure support for upcoming 9.0 PgSQL release (Paul Ramsey)</para>
+        </simplesect>
+      </sect1>
+
+      <sect1>
         <title>Release 1.5.0</title>
         <para>Release date: 2010/02/04</para>
         <para>This release provides support for geographic coordinates (lat/lon) via a new GEOGRAPHY type. Also performance enhancements, new input format support (GML,KML) and general upkeep.</para>

@@ -37,7 +37,7 @@ Release procedure
 -----------------
 
 1) Re-generate the ChangeLog using svn2cl.
-2) Edit NEWS: set release date and check all notable changes are
+2) Edit NEWS: set release date and check that all notable changes have
    been reported (extract from ChangeLog).
 3) Edit README.postgis and set release date and version.
 4) Add release notes in doc/release_notes.xml
