@@ -1,12 +1,30 @@
 PostGIS 1.5.1
-YYYY/MM/DD
+2010/03/11
 
  - This is a bug fix release, addressing issues that have been
    filed since the 1.5.0 release.
 
  - Bug Fixes
+   - #410, update embedded bbox when applying ST_SetPoint, ST_AddPoint
+     ST_RemovePoint to a linestring
+     (Paul Ramsey)
    - #411, allow dumping tables with invalid geometries
-     (Sandro Santilli - work done for Regione Toscana-SIGTA)
+     (Sandro Santilli, for Regione Toscana-SIGTA)
+   - #414, include geography_columns view when running upgrade scripts
+     (Paul Ramsey)
+   - #419, allow support for multilinestring in ST_Line_Substring
+     (Paul Ramsey, for Lidwala Consulting Engineers)
+   - #421, fix computed string length in ST_AsGML()
+     (Olivier Courtin)
+   - #441, fix GML generation with heterogeneous collections
+     (Olivier Courtin)
+   - #443, incorrect coordinate reversal in GML 3 generation
+     (Olivier Courtin)
+   - #450, #451, wrong area calculation for geography features that 
+     cross the date line
+     (Paul Ramsey)
+   - Ensure support for upcoming 9.0 PgSQL release
+     (Paul Ramsey)
 
 
 PostGIS 1.5.0
