@@ -329,10 +329,10 @@ else
 	fi
 fi	
 
-dnl Temporary hack until minimum PostgreSQL version is 8.5:
-dnl If PostgreSQL < 8.5 is detected, trigger the inclusion of the new versioned PGXS targets
+dnl Temporary hack until minimum PostgreSQL version is 9.0:
+dnl If PostgreSQL < 9.0 is detected, trigger the inclusion of the new versioned PGXS targets
 PGXSOVERRIDE=0
-if test ! "$PGSQL_MINOR_VERSION" -ge 5; then
+if test ! "$PGSQL_MAJOR_VERSION" -ge 9; then
 	PGXSOVERRIDE=1
 fi
 
