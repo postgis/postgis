@@ -528,9 +528,6 @@ ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *result)
 	return 1;
 }
 
-/**
- * TODO: \todo implement point interpolation
- */
 POINTARRAY *
 ptarray_substring(POINTARRAY *ipa, double from, double to)
 {
