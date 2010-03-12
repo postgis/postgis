@@ -5,6 +5,8 @@ YYYY/MM/DD
    filed since the 1.5.1 release.
 
  - Bug Fixes
+   - Loader: fix handling of empty (0-verticed) geometries in shapefiles.
+     (Sandro Santilli)
 
 
 
