@@ -303,7 +303,7 @@ Datum LWGEOM_numgeometries_collection(PG_FUNCTION_ARGS)
 		PG_RETURN_INT32(ret);
 	}
 	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_NULL();
+	PG_RETURN_INT32(1);
 }
 
 /** 1-based offset */
@@ -321,16 +321,16 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 
 	/* elog(NOTICE, "GeometryN called"); */
 
+	idx = PG_GETARG_INT32(1);
+	idx -= 1; /* index is 1-based */
+
 	/* call is valid on multi* geoms only */
 	if (type==POINTTYPE || type==LINETYPE || type==CIRCSTRINGTYPE ||
 	        type==COMPOUNDTYPE || type==POLYGONTYPE || type==CURVEPOLYTYPE)
 	{
-		/* elog(NOTICE, "geometryn: geom is of type %d, requires >=4", type); */
+		if ( idx == 0 ) PG_RETURN_POINTER(geom);
 		PG_RETURN_NULL();
 	}
-
-	idx = PG_GETARG_INT32(1);
-	idx -= 1; /* index is 1-based */
 
 	coll = (LWCOLLECTION *)lwgeom_deserialize(SERIALIZED_FORM(geom));
 

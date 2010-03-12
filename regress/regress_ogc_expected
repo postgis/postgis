@@ -150,3 +150,5 @@ polygonize_garray|GEOMETRYCOLLECTION EMPTY
 polygonize_garray|POLYGON((10 0,0 0,0 10,10 10,10 0))
 linemerge149|LINESTRING(-5 -5,0 0,1 1,4 4)
 intersects|f
+ST_GeometryN|LINESTRING(0 0,1 1)
+ST_NumGeometries|1
