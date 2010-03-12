@@ -1463,7 +1463,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 	stringbuffer_t *sbwarn;
 	char val[MAXVALUELEN];
 	char *escval;
-	char *geometry, *ret;
+	char *geometry=NULL, *ret;
 	char *utf8str;
 	int res, i;
 
@@ -1689,50 +1689,51 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 
 				return SHPLOADERERR;
 			}
-		}
 
 
-		/* Now generate the geometry string according to the current configuration */
-		if (state->config->hwgeom)
-		{
-			/* Old-style hwgeom (WKT) */
-			if (!state->config->dump_format)
-				vasbappend(sb, "GeomFromText('");
+			/* Now generate the geometry string according to the current configuration */
+			if (state->config->hwgeom)
+			{
+				/* Old-style hwgeom (WKT) */
+				if (!state->config->dump_format)
+					vasbappend(sb, "GeomFromText('");
+				else
+				{
+					/* Output SRID if relevant */
+					if (state->config->sr_id != 0)
+						vasbappend(sb, "SRID=%d;", state->config->sr_id);
+				}
+
+				vasbappend(sb, "%s", geometry);
+
+				if (!state->config->dump_format)
+				{
+					vasbappend(sb, "'");
+
+					/* Output SRID if relevant */
+					if (state->config->sr_id != 0)
+						vasbappend(sb, ", %d)", state->config->sr_id);
+					else
+						vasbappend(sb, ")");
+				}
+			}
 			else
 			{
-				/* Output SRID if relevant */
-				if (state->config->sr_id != 0)
-					vasbappend(sb, "SRID=%d;", state->config->sr_id);
+				/* New style lwgeom (HEXEWKB) */
+				if (!state->config->dump_format)
+					vasbappend(sb, "'");
+
+				vasbappend(sb, "%s", geometry);
+
+				if (!state->config->dump_format)
+					vasbappend(sb, "'");
 			}
 
-			vasbappend(sb, "%s", geometry);
-
-			if (!state->config->dump_format)
-			{
-				vasbappend(sb, "'");
-
-				/* Output SRID if relevant */
-				if (state->config->sr_id != 0)
-					vasbappend(sb, ", %d)", state->config->sr_id);
-				else
-					vasbappend(sb, ")");
-			}
-		}
-		else
-		{
-			/* New style lwgeom (HEXEWKB) */
-			if (!state->config->dump_format)
-				vasbappend(sb, "'");
-
-			vasbappend(sb, "%s", geometry);
-
-			if (!state->config->dump_format)
-				vasbappend(sb, "'");
+			free(geometry);
 		}
 
 		/* Tidy up everything */
 		SHPDestroyObject(obj);
-		free(geometry);
 	}
 
 	/* Close the line correctly for dump/insert format */
