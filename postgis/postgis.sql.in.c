@@ -1943,15 +1943,17 @@ DECLARE
   i integer;
   j integer;
   g geometry;
+  typ text;
   
 BEGIN
   
   RAISE DEBUG '%,%', cur_path, ST_GeometryType(the_geom);
 
   -- Special case (MULTI* OR GEOMETRYCOLLECTION) : iterate and return the DumpPoints of the geometries
-  SELECT ST_NumGeometries(the_geom) INTO nb_geom;
+  SELECT ST_GeometryType(the_geom) INTO typ;
 
-  IF (nb_geom IS NOT NULL) THEN
+  -- Dont we have an ST_isMulti ?
+  IF (typ like 'ST_Multi%' OR typ = 'ST_GeometryCollection') THEN
     
     i = 1;
     FOR tmp2 IN SELECT (ST_Dump(the_geom)).* LOOP
