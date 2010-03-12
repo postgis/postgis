@@ -117,6 +117,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 			<para>This is useful for approximating numbers of addresses</para>
 
 			<para>Availability: 1.1.0</para>
+			<para>Availability: 1.5.1 - support for MULTILINESTRINGS was introduced.</para>
 
 		  </refsection>
 
