@@ -28,5 +28,5 @@ select '7', st_asewkt(ST_SplitGeometry('SRID=10;LINESTRING(0 0, 10 0, 10 10, 0 1
 
 -- Split line by overlapping line (1)
 select '8.1', st_asewkt(ST_SplitGeometry('SRID=10;LINESTRING(0 0, 10 0)', 'SRID=10;LINESTRING(5 0, 20 0)'));
--- Split line by overlapping line (2)
+-- Split line by contained line (2)
 select '8.2', st_asewkt(ST_SplitGeometry('SRID=10;LINESTRING(0 0, 10 0)', 'SRID=10;LINESTRING(5 0, 8 0)'));

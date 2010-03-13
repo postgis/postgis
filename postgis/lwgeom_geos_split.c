@@ -56,6 +56,8 @@ lwline_split_by_line(LWLINE* lwline_in, LWLINE* blade_in)
 	GEOSGeometry* gdiff; /* difference */
 	GEOSGeometry* g1; 
 	GEOSGeometry* g2; 
+	char* i9;
+	int ret;
 
 	/* Possible outcomes:
 	 *
@@ -80,42 +82,30 @@ lwline_split_by_line(LWLINE* lwline_in, LWLINE* blade_in)
 		lwerror("LWGEOM2GEOS: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
+
+	/* If interior intersecton is linear we can't split */
+	ret = GEOSRelatePattern(g1, g2, "1********");
+	if ( 2 == ret ) {
+		lwerror("GEOSRelatePattern: %s", lwgeom_geos_errmsg);
+		GEOSGeom_destroy(g1);
+		GEOSGeom_destroy(g2);
+		return NULL;
+	}
+	if ( ret ) {
+		GEOSGeom_destroy(g1);
+		GEOSGeom_destroy(g2);
+		lwerror("Splitter line has linear intersection with input");
+		return NULL;
+	}
+
+
 	gdiff = GEOSDifference(g1,g2);
+	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
 	if (gdiff == NULL) {
-		GEOSGeom_destroy(g1);
 		lwerror("GEOSDifference: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
-
-	/* If we lost any point, raise an exception */
-	g2 = GEOSDifference(g1, gdiff);
-	if (gdiff == NULL) {
-		GEOSGeom_destroy(g1);
-		lwerror("GEOSDifference (check): %s", lwgeom_geos_errmsg);
-		return NULL;
-	}
-	if ( ! GEOSisEmpty(g2) )
-	{
-		GEOSGeom_destroy(g1);
-		GEOSGeom_destroy(g2);
-		lwerror("Splitter line overlaps input");
-		return NULL;
-	}
-
-/*
-	lwnotice("Difference between original (%s) and split (%s) is not empty (%s)", 
-                       lwgeom_to_ewkt(GEOS2LWGEOM(gdiff, 0),
-                                      PARSER_CHECK_NONE),
-                       lwgeom_to_ewkt(GEOS2LWGEOM(g1, 0),
-                                      PARSER_CHECK_NONE),
-                       lwgeom_to_ewkt(GEOS2LWGEOM(g2, 0),
-                                      PARSER_CHECK_NONE));
-*/
-
-	GEOSGeom_destroy(g1);
-	GEOSGeom_destroy(g2);
-
 
 	diff = GEOS2LWGEOM(gdiff, TYPE_HASZ(lwline_in->type));
 	GEOSGeom_destroy(gdiff);
