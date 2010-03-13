@@ -948,7 +948,7 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 ** crossingDirection(line1, line2)
 **
 ** Determines crossing direction of line2 relative to line1.
-** Only accepts LINESTRING ass parameters!
+** Only accepts LINESTRING as parameters!
 */
 PG_FUNCTION_INFO_V1(ST_LineCrossingDirection);
 Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS)
