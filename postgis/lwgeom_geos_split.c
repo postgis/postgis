@@ -37,12 +37,81 @@
  **********************************************************************/
 
 #include "lwgeom_geos.h"
+#include "lwalgorithm.h"
 #include "funcapi.h"
 
 #include <string.h>
 #include <assert.h>
 
 /* #define POSTGIS_DEBUG_LEVEL 4 */
+
+/* Initializes and uses GEOS internally */
+static LWGEOM* lwline_split_by_line(LWLINE* lwgeom_in, LWLINE* blade_in);
+static LWGEOM*
+lwline_split_by_line(LWLINE* lwline_in, LWLINE* blade_in)
+{
+	LWGEOM** components;
+	LWGEOM* diff;
+	LWCOLLECTION* out;
+	GEOSGeometry* gdiff; /* difference */
+	GEOSGeometry* g1; 
+	GEOSGeometry* g2; 
+
+	/* Possible outcomes:
+	 *
+	 *  1. The lines do not cross (touch != cross)
+	 *      -> Return a collection with single element
+	 *  2. The lines cross
+	 *      -> Return a collection 2 elements:
+	 *         o segments falling on the left of the directed blade
+	 *         o segments falling on the right of the directed blade
+	 */
+
+	initGEOS(lwgeom_geos_error, lwgeom_geos_error);
+
+	g1 = LWGEOM2GEOS((LWGEOM*)lwline_in);
+	if ( ! g1 ) {
+		lwerror("LWGEOM2GEOS: %s", lwgeom_geos_errmsg);
+		return NULL;
+	}
+	g2 = LWGEOM2GEOS((LWGEOM*)blade_in);
+	if ( ! g2 ) {
+		GEOSGeom_destroy(g1);
+		lwerror("LWGEOM2GEOS: %s", lwgeom_geos_errmsg);
+		return NULL;
+	}
+	gdiff = GEOSDifference(g1,g2);
+	GEOSGeom_destroy(g1);
+	GEOSGeom_destroy(g2);
+	if (gdiff == NULL) {
+		lwerror("GEOSDifference: %s", lwgeom_geos_errmsg);
+		return NULL;
+	}
+
+	diff = GEOS2LWGEOM(gdiff, TYPE_HASZ(lwline_in->type));
+	GEOSGeom_destroy(gdiff);
+	if (NULL == diff) {
+		lwerror("GEOS2LWGEOM: %s", lwgeom_geos_errmsg);
+		return NULL;
+	}
+
+	if ( ! lwgeom_is_collection(TYPE_GETTYPE(diff->type)) )
+	{
+		components = lwalloc(sizeof(LWGEOM*)*1);
+		components[0] = diff;
+		out = lwcollection_construct(COLLECTIONTYPE, lwline_in->SRID,
+			NULL, 1, components);
+	}
+	else
+	{
+		out = lwcollection_construct(COLLECTIONTYPE, lwline_in->SRID,
+			NULL, ((LWCOLLECTION*)diff)->ngeoms,
+			((LWCOLLECTION*)diff)->geoms);
+	}
+
+
+	return (LWGEOM*)out;
+}
 
 static LWGEOM* lwline_split_by_point(LWLINE* lwgeom_in, LWPOINT* blade_in);
 static LWGEOM*
@@ -120,6 +189,8 @@ lwline_split(LWLINE* lwline_in, LWGEOM* blade_in)
 		return lwline_split_by_point(lwline_in, (LWPOINT*)blade_in);
 
 	case LINETYPE:
+		return lwline_split_by_line(lwline_in, (LWLINE*)blade_in);
+
 	default:
 		lwerror("Splitting a Line by a %s is unsupported",
 			lwgeom_typename(TYPE_GETTYPE(blade_in->type)));
@@ -168,11 +239,6 @@ Datum ST_SplitGeometry(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_SplitGeometry);
 Datum ST_SplitGeometry(PG_FUNCTION_ARGS)
 {
-#if 0 && POSTGIS_GEOS_VERSION < 33
-	elog(ERROR, "You need GEOS-3.3.0 or up for ST_CleanGeometry");
-	PG_RETURN_NULL();
-#else /* POSTGIS_GEOS_VERSION >= 33 */
-
 	PG_LWGEOM *in, *blade_in, *out;
 	LWGEOM *lwgeom_in, *lwblade_in, *lwgeom_out;
 
@@ -181,6 +247,8 @@ Datum ST_SplitGeometry(PG_FUNCTION_ARGS)
 
 	blade_in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	lwblade_in = lwgeom_deserialize(SERIALIZED_FORM(blade_in));
+
+	errorIfSRIDMismatch(lwgeom_in->SRID, lwblade_in->SRID);
 
 	lwgeom_out = lwgeom_split(lwgeom_in, lwblade_in);
 	if ( ! lwgeom_out ) {
@@ -196,6 +264,5 @@ Datum ST_SplitGeometry(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(out);
 
-#endif /* POSTGIS_GEOS_VERSION >= 33 */
 }
 
