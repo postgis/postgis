@@ -20,8 +20,13 @@ select '4', st_asewkt(ST_SplitGeometry('SRID=10;LINESTRING(0 0, 10 0)', 'SRID=10
 -- Split line by touching line
 select '5', st_asewkt(ST_SplitGeometry('SRID=10;LINESTRING(0 0, 10 0)', 'SRID=10;LINESTRING(10 -5, 10 5)'));
 
--- Split line by intersecting line
+-- Split line by crossing line
 select '6', st_asewkt(ST_SplitGeometry('SRID=10;LINESTRING(0 0, 10 0)', 'SRID=10;LINESTRING(5 -5, 5 5)'));
 
--- Split line by multiply-intersecting line
+-- Split line by multiply-crossing line
 select '7', st_asewkt(ST_SplitGeometry('SRID=10;LINESTRING(0 0, 10 0, 10 10, 0 10, 0 20, 10 20)', 'SRID=10;LINESTRING(5 -5, 5 25)'));
+
+-- Split line by overlapping line (1)
+select '8.1', st_asewkt(ST_SplitGeometry('SRID=10;LINESTRING(0 0, 10 0)', 'SRID=10;LINESTRING(5 0, 20 0)'));
+-- Split line by overlapping line (2)
+select '8.2', st_asewkt(ST_SplitGeometry('SRID=10;LINESTRING(0 0, 10 0)', 'SRID=10;LINESTRING(5 0, 8 0)'));
