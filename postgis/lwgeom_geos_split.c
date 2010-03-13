@@ -256,7 +256,7 @@ lwgeom_split(LWGEOM* lwgeom_in, LWGEOM* blade_in)
 		return lwpoly_split((LWPOLY*)lwgeom_in, blade_in);
 
 	default:
-		lwerror("Splitting of %d geometries is unsupported",
+		lwerror("Splitting of %s geometries is unsupported",
 			lwgeom_typename(TYPE_GETTYPE(lwgeom_in->type)));
 		return NULL;
 	}
