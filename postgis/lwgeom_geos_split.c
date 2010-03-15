@@ -56,7 +56,6 @@ lwline_split_by_line(LWLINE* lwline_in, LWLINE* blade_in)
 	GEOSGeometry* gdiff; /* difference */
 	GEOSGeometry* g1; 
 	GEOSGeometry* g2; 
-	char* i9;
 	int ret;
 
 	/* Possible outcomes:
@@ -64,9 +63,7 @@ lwline_split_by_line(LWLINE* lwline_in, LWLINE* blade_in)
 	 *  1. The lines do not cross or overlap 
 	 *      -> Return a collection with single element
 	 *  2. The lines cross
-	 *      -> Return a collection 2 elements:
-	 *         o segments falling on the left of the directed blade
-	 *         o segments falling on the right of the directed blade
+	 *      -> Return a collection of all elements resulting from the split
 	 */
 
 	initGEOS(lwgeom_geos_error, lwgeom_geos_error);
@@ -218,13 +215,167 @@ lwline_split(LWLINE* lwline_in, LWGEOM* blade_in)
 	return NULL;
 }
 
-static LWGEOM* lwpoly_split(LWPOLY* lwgeom_in, LWGEOM* blade_in);
+/* Initializes and uses GEOS internally */
+static LWGEOM* lwpoly_split_by_line(LWPOLY* lwgeom_in, LWLINE* blade_in);
 static LWGEOM*
-lwpoly_split(LWPOLY* lwgeom_in, LWGEOM* blade_in)
+lwpoly_split_by_line(LWPOLY* lwpoly_in, LWLINE* blade_in)
+{
+	LWCOLLECTION* out;
+	GEOSGeometry* g1; 
+	GEOSGeometry* g2; 
+	GEOSGeometry* g1_bounds; 
+	GEOSGeometry* polygons; 
+	const GEOSGeometry *vgeoms[1];
+	int i,n;
+
+	/* Possible outcomes:
+	 *
+	 *  1. The line does not split the polygon 
+	 *      -> Return a collection with single element
+	 *  2. The line does split the polygon
+	 *      -> Return a collection of all elements resulting from the split
+	 */
+
+	initGEOS(lwgeom_geos_error, lwgeom_geos_error);
+
+	g1 = LWGEOM2GEOS((LWGEOM*)lwpoly_in);
+	if ( NULL == g1 ) {
+		lwerror("LWGEOM2GEOS: %s", lwgeom_geos_errmsg);
+		return NULL;
+	}
+	g1_bounds = GEOSBoundary(g1);
+	if ( NULL == g1_bounds )
+	{
+		GEOSGeom_destroy(g1);
+		lwerror("GEOSBoundary: %s", lwgeom_geos_errmsg);
+		return NULL;
+	}
+
+	g2 = LWGEOM2GEOS((LWGEOM*)blade_in);
+	if ( NULL == g2 ) {
+		GEOSGeom_destroy(g1);
+		GEOSGeom_destroy(g1_bounds);
+		lwerror("LWGEOM2GEOS: %s", lwgeom_geos_errmsg);
+		return NULL;
+	}
+
+	vgeoms[0] = GEOSUnion(g1_bounds, g2);
+	if ( NULL == vgeoms[0] )
+	{
+		GEOSGeom_destroy(g1);
+		GEOSGeom_destroy(g2);
+		GEOSGeom_destroy(g1_bounds);
+		lwerror("GEOSUnion: %s", lwgeom_geos_errmsg);
+		return NULL;
+	}
+
+/* debugging..
+	lwnotice("Bounds poly: %s",
+	               lwgeom_to_ewkt(GEOS2LWGEOM(g1_bounds, 0),
+	                              PARSER_CHECK_NONE));
+	lwnotice("Line: %s",
+	               lwgeom_to_ewkt(GEOS2LWGEOM(g2, 0),
+	                              PARSER_CHECK_NONE));
+
+	lwnotice("Noded bounds: %s",
+	               lwgeom_to_ewkt(GEOS2LWGEOM(vgeoms[0], 0),
+	                              PARSER_CHECK_NONE));
+*/
+
+	polygons = GEOSPolygonize(vgeoms, 1);
+	if ( NULL == polygons )
+	{
+		GEOSGeom_destroy(g1);
+		GEOSGeom_destroy(g2);
+		GEOSGeom_destroy(g1_bounds);
+		GEOSGeom_destroy((GEOSGeometry*)vgeoms[0]);
+		lwerror("GEOSPolygonize: %s", lwgeom_geos_errmsg);
+		return NULL;
+	}
+
+#if PARANOIA_LEVEL > 0
+	if ( GEOSGeometryTypeId(polygons) != COLLECTIONTYPE )
+	{
+		GEOSGeom_destroy(g1);
+		GEOSGeom_destroy(g2);
+		GEOSGeom_destroy(g1_bounds);
+		GEOSGeom_destroy((GEOSGeometry*)vgeoms[0]);
+		GEOSGeom_destroy(polygons);
+		lwerror("Unexpected return from GEOSpolygonize");
+		return 0;
+	}
+#endif
+
+	/* We should now have all polygons, just skip
+	 * the ones which are in holes of the original
+	 * geometries and return the rest in a collection
+	 */
+	n = GEOSGetNumGeometries(polygons);
+	out = lwcollection_construct(COLLECTIONTYPE, lwpoly_in->SRID,
+		NULL, 0, NULL);
+	/* Allocate space for all polys */
+	out->geoms = lwalloc(sizeof(LWGEOM*)*n);
+	assert(0 == out->ngeoms);
+	for (i=0; i<n; ++i)
+	{
+		GEOSGeometry* pos; /* point on surface */
+		const GEOSGeometry* p = GEOSGetGeometryN(polygons, i); 
+		int contains;
+
+		pos = GEOSPointOnSurface(p);
+		if ( ! pos ) {
+			GEOSGeom_destroy(g1);
+			GEOSGeom_destroy(g2);
+			GEOSGeom_destroy(g1_bounds);
+			GEOSGeom_destroy((GEOSGeometry*)vgeoms[0]);
+			GEOSGeom_destroy(polygons);
+			lwerror("GEOSPointOnSurface: %s", lwgeom_geos_errmsg);
+			return NULL;
+		}
+
+		contains = GEOSContains(g1, pos);
+		if ( 2 == contains )
+		{
+			GEOSGeom_destroy(g1);
+			GEOSGeom_destroy(g2);
+			GEOSGeom_destroy(g1_bounds);
+			GEOSGeom_destroy((GEOSGeometry*)vgeoms[0]);
+			GEOSGeom_destroy(polygons);
+			GEOSGeom_destroy(pos);
+			lwerror("GEOSContains: %s", lwgeom_geos_errmsg);
+			return NULL;
+		}
+
+		GEOSGeom_destroy(pos);
+
+		if ( 0 == contains ) {
+			/* Original geometry doesn't contain
+			 * a point in this ring, must be an hole
+			 */
+			continue;
+		}
+
+		out->geoms[out->ngeoms++] = GEOS2LWGEOM(p,
+				TYPE_HASZ(lwpoly_in->type));
+	}
+
+	GEOSGeom_destroy(g1);
+	GEOSGeom_destroy(g2);
+	GEOSGeom_destroy(g1_bounds);
+	GEOSGeom_destroy((GEOSGeometry*)vgeoms[0]);
+	GEOSGeom_destroy(polygons);
+
+	return (LWGEOM*)out;
+}
+
+static LWGEOM* lwpoly_split(LWPOLY* lwpoly_in, LWGEOM* blade_in);
+static LWGEOM*
+lwpoly_split(LWPOLY* lwpoly_in, LWGEOM* blade_in)
 {
 	switch (TYPE_GETTYPE(blade_in->type))
 	{
 	case LINETYPE:
+		return lwpoly_split_by_line(lwpoly_in, (LWLINE*)blade_in);
 	default:
 		lwerror("Splitting a Polygon by a %s is unsupported",
 			lwgeom_typename(TYPE_GETTYPE(blade_in->type)));

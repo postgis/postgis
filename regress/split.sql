@@ -30,3 +30,15 @@ select '7', st_asewkt(ST_SplitGeometry('SRID=10;LINESTRING(0 0, 10 0, 10 10, 0 1
 select '8.1', st_asewkt(ST_SplitGeometry('SRID=10;LINESTRING(0 0, 10 0)', 'SRID=10;LINESTRING(5 0, 20 0)'));
 -- Split line by contained line (2)
 select '8.2', st_asewkt(ST_SplitGeometry('SRID=10;LINESTRING(0 0, 10 0)', 'SRID=10;LINESTRING(5 0, 8 0)'));
+
+-- Split exterior-only polygon by crossing line
+select '20', st_asewkt(ST_SplitGeometry('SRID=12;POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))', 'SRID=12;LINESTRING(5 -5, 5 15)'));
+
+-- Split single-hole polygon by line crossing both exterior and hole
+select '21', st_asewkt(ST_SplitGeometry('SRID=12;POLYGON((0 0, 10 0, 10 10, 0 10, 0 0),(2 2, 8 2, 8 8, 2 8, 2 2))', 'SRID=12;LINESTRING(5 -5, 5 15)'));
+
+-- Split single-hole polygon by line crossing only exterior 
+select '22', st_asewkt(ST_SplitGeometry('SRID=12;POLYGON((0 0, 10 0, 10 10, 0 10, 0 0),(5 2, 8 2, 8 8, 5 8, 5 2))', 'SRID=12;LINESTRING(2 -5, 2 15)'));
+
+-- Split double-hole polygon by line crossing exterior and both holes
+select '23', st_asewkt(ST_SplitGeometry('SRID=12;POLYGON((0 0, 10 0, 10 10, 0 10, 0 0),(2 2, 8 2, 8 4, 2 4, 2 2),(2 6,8 6,8 8,2 8,2 6))', 'SRID=12;LINESTRING(5 -5, 5 15)'));
