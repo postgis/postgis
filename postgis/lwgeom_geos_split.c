@@ -11,7 +11,7 @@
  *
  **********************************************************************
  *
- * ST_SplitGeometry
+ * ST_Split
  *
  * Split polygon by line, line by line, line by point.
  * Returns at most components as a collection.
@@ -405,9 +405,9 @@ lwgeom_split(LWGEOM* lwgeom_in, LWGEOM* blade_in)
 }
 
 
-Datum ST_SplitGeometry(PG_FUNCTION_ARGS);
-PG_FUNCTION_INFO_V1(ST_SplitGeometry);
-Datum ST_SplitGeometry(PG_FUNCTION_ARGS)
+Datum ST_Split(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_Split);
+Datum ST_Split(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *in, *blade_in, *out;
 	LWGEOM *lwgeom_in, *lwblade_in, *lwgeom_out;

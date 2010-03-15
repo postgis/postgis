@@ -4085,10 +4085,10 @@ CREATE OR REPLACE FUNCTION ST_CleanGeometry(geometry)
        COST 100;
 
 --------------------------------------------------------------------------------
--- ST_SplitGeometry 
+-- ST_Split
 --------------------------------------------------------------------------------
 
--- ST_SplitGeometry(in geometry, blade geometry)
+-- ST_Split(in geometry, blade geometry)
 --
 -- Split a geometry in parts after cutting it with given blade.
 -- Returns a collection containing all parts.
@@ -4098,9 +4098,9 @@ CREATE OR REPLACE FUNCTION ST_CleanGeometry(geometry)
 -- 
 -- Availability: 2.0.0
 --
-CREATE OR REPLACE FUNCTION ST_SplitGeometry(geometry, geometry)
+CREATE OR REPLACE FUNCTION ST_Split(geometry, geometry)
        RETURNS geometry
-       AS 'MODULE_PATHNAME', 'ST_SplitGeometry'
+       AS 'MODULE_PATHNAME', 'ST_Split'
        LANGUAGE 'C' IMMUTABLE STRICT
        COST 100;
 
