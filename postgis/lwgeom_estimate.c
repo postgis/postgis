@@ -239,6 +239,9 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 
 	if ( ! get_attstatsslot(stats1_tuple, 0, 0,
 	                        STATISTIC_KIND_GEOMETRY, InvalidOid, NULL, NULL,
+#if POSTGIS_PGSQL_VERSION >= 85
+	                        NULL,
+#endif
 	                        (float4 **)gs1ptr, &geomstats1_nvalues) )
 	{
 		POSTGIS_DEBUG(3, " STATISTIC_KIND_GEOMETRY stats not found - returning default geometry join selectivity");
@@ -263,6 +266,9 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 
 	if ( ! get_attstatsslot(stats2_tuple, 0, 0,
 	                        STATISTIC_KIND_GEOMETRY, InvalidOid, NULL, NULL,
+#if POSTGIS_PGSQL_VERSION >= 85
+	                        NULL,
+#endif
 	                        (float4 **)gs2ptr, &geomstats2_nvalues) )
 	{
 		POSTGIS_DEBUG(3, " STATISTIC_KIND_GEOMETRY stats not found - returning default geometry join selectivity");
@@ -715,6 +721,9 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 
 	if ( ! get_attstatsslot(stats_tuple, 0, 0,
 	                        STATISTIC_KIND_GEOMETRY, InvalidOid, NULL, NULL,
+#if POSTGIS_PGSQL_VERSION >= 85
+	                        NULL,
+#endif
 	                        (float4 **)gsptr, &geomstats_nvalues) )
 	{
 		POSTGIS_DEBUG(3, " STATISTIC_KIND_GEOMETRY stats not found - returning default geometry selectivity");
