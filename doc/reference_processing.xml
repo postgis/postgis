@@ -1863,4 +1863,41 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
 		<para><xref linkend="ST_Collect" /></para>
 	  </refsection>
 	</refentry>
+
+<refentry id="ST_Split">
+  <refnamediv>
+	<refname>ST_Split</refname>
+	<refpurpose>Returns a collection of geometries resulting by splitting a geometry.</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+	<funcsynopsis>
+	  <funcprototype>
+		<funcdef>geometry <function>ST_Split</function></funcdef>
+		<paramdef><type>input geometry</type> <parameter>blade geometry</parameter></paramdef>
+	  </funcprototype>
+	</funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsection>
+	<title>Description</title>
+<para>
+The function supports splitting a line by point, a line by line, a polygon by line. The returned geometry is always a collection.
+</para>
+
+<para>
+Think of this function as the opposite of ST_Union.
+Theoretically applying ST_Union to the elements of the returned collection
+should always yeld the original geometry.
+</para>
+
+<para>Availability: 2.0.0</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Union" /></para>
+	  </refsection>
+	</refentry>
 </sect1>
