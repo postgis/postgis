@@ -105,9 +105,13 @@ pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
 
 	if (fcinfo->context && IsA(fcinfo->context, AggState))
 		aggcontext = ((AggState *) fcinfo->context)->aggcontext;
-#if POSTGIS_PGSQL_VERSION >= 84
+#if POSTGIS_PGSQL_VERSION == 84
 	else if (fcinfo->context && IsA(fcinfo->context, WindowAggState))
 		aggcontext = ((WindowAggState *) fcinfo->context)->wincontext;
+#endif
+#if POSTGIS_PGSQL_VERSION > 84
+	else if (fcinfo->context && IsA(fcinfo->context, WindowAggState))
+		aggcontext = ((WindowAggState *) fcinfo->context)->aggcontext;
 #endif
 	else
 	{
