@@ -42,3 +42,18 @@ select '22', st_asewkt(ST_Split('SRID=12;POLYGON((0 0, 10 0, 10 10, 0 10, 0 0),(
 
 -- Split double-hole polygon by line crossing exterior and both holes
 select '23', st_asewkt(ST_Split('SRID=12;POLYGON((0 0, 10 0, 10 10, 0 10, 0 0),(2 2, 8 2, 8 4, 2 4, 2 2),(2 6,8 6,8 8,2 8,2 6))', 'SRID=12;LINESTRING(5 -5, 5 15)'));
+
+-- Split multiline by line crossing both
+select '30', st_asewkt(st_split('SRID=10;MULTILINESTRING((0 0, 10 0),(0 5, 10 5))', 'SRID=10;LINESTRING(5 -5, 5 10)'));
+
+-- Split multiline by line crossing only one of them
+select '31', st_asewkt(st_split('SRID=10;MULTILINESTRING((0 0, 10 0),(0 5, 10 5))', 'SRID=10;LINESTRING(5 -5, 5 2)'));
+
+-- Split multiline by disjoint line
+select '32', st_asewkt(st_split('SRID=10;MULTILINESTRING((0 0, 10 0),(0 5, 10 5))', 'SRID=10;LINESTRING(5 10, 5 20)'));
+
+-- Split multiline by point on one of them 
+select '40', st_asewkt(st_split('SRID=10;MULTILINESTRING((0 0, 10 0),(0 5, 10 5))', 'SRID=10;POINT(5 0)'));
+
+-- Split multipolygon by line 
+select '50', st_asewkt(ST_Split('SRID=12;MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0),(2 2, 8 2, 8 4, 2 4, 2 2),(2 6,8 6,8 8,2 8,2 6)),((20 0,20 10, 30 10, 30 0, 20 0),(25 5, 28 5, 25 8, 25 5)))', 'SRID=12;LINESTRING(5 -5, 5 15)'));

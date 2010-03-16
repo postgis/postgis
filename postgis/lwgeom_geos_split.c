@@ -45,8 +45,15 @@
 
 /* #define POSTGIS_DEBUG_LEVEL 4 */
 
-/* Initializes and uses GEOS internally */
 static LWGEOM* lwline_split_by_line(LWLINE* lwgeom_in, LWLINE* blade_in);
+static LWGEOM* lwline_split_by_point(LWLINE* lwgeom_in, LWPOINT* blade_in);
+static LWGEOM* lwline_split(LWLINE* lwgeom_in, LWGEOM* blade_in);
+static LWGEOM* lwpoly_split_by_line(LWPOLY* lwgeom_in, LWLINE* blade_in);
+static LWGEOM* lwcollection_split(LWCOLLECTION* lwcoll_in, LWGEOM* blade_in);
+static LWGEOM* lwpoly_split(LWPOLY* lwpoly_in, LWGEOM* blade_in);
+static LWGEOM* lwgeom_split(LWGEOM* lwgeom_in, LWGEOM* blade_in);
+
+/* Initializes and uses GEOS internally */
 static LWGEOM*
 lwline_split_by_line(LWLINE* lwline_in, LWLINE* blade_in)
 {
@@ -129,7 +136,6 @@ lwline_split_by_line(LWLINE* lwline_in, LWLINE* blade_in)
 	return (LWGEOM*)out;
 }
 
-static LWGEOM* lwline_split_by_point(LWLINE* lwgeom_in, LWPOINT* blade_in);
 static LWGEOM*
 lwline_split_by_point(LWLINE* lwline_in, LWPOINT* blade_in)
 {
@@ -195,7 +201,6 @@ lwline_split_by_point(LWLINE* lwline_in, LWPOINT* blade_in)
 	return (LWGEOM*)out;
 }
 
-static LWGEOM* lwline_split(LWLINE* lwgeom_in, LWGEOM* blade_in);
 static LWGEOM*
 lwline_split(LWLINE* lwline_in, LWGEOM* blade_in)
 {
@@ -216,7 +221,6 @@ lwline_split(LWLINE* lwline_in, LWGEOM* blade_in)
 }
 
 /* Initializes and uses GEOS internally */
-static LWGEOM* lwpoly_split_by_line(LWPOLY* lwgeom_in, LWLINE* blade_in);
 static LWGEOM*
 lwpoly_split_by_line(LWPOLY* lwpoly_in, LWLINE* blade_in)
 {
@@ -368,7 +372,58 @@ lwpoly_split_by_line(LWPOLY* lwpoly_in, LWLINE* blade_in)
 	return (LWGEOM*)out;
 }
 
-static LWGEOM* lwpoly_split(LWPOLY* lwpoly_in, LWGEOM* blade_in);
+static LWGEOM*
+lwcollection_split(LWCOLLECTION* lwcoll_in, LWGEOM* blade_in)
+{
+	LWGEOM** split_vector=NULL;
+	LWCOLLECTION* out;
+	size_t split_vector_capacity;
+	size_t split_vector_size=0;
+	size_t i,j;
+
+	split_vector_capacity=8;
+	split_vector = lwalloc(split_vector_capacity);
+	if ( ! split_vector ) {
+		lwerror("Out of virtual memory");
+		return NULL;
+	}
+
+	for (i=0; i<lwcoll_in->ngeoms; ++i)
+	{
+		LWCOLLECTION* col;
+		LWGEOM* split = lwgeom_split(lwcoll_in->geoms[i], blade_in);
+		/* an exception should prevent this from ever returning NULL */
+		if ( ! split ) return NULL;
+
+		col = lwgeom_as_lwcollection(split);
+		/* Output, if any, will always be a collection */
+		assert(col);
+
+		/* Reallocate split_vector if needed */
+		if ( split_vector_size + col->ngeoms > split_vector_capacity )
+		{
+			split_vector_capacity *= 2;
+			split_vector = lwrealloc(split_vector, split_vector_capacity);
+			if ( ! split_vector ) {
+				lwerror("Out of virtual memory");
+				return NULL;
+			}
+		}
+
+		for (j=0; j<col->ngeoms; ++j)
+		{
+			col->geoms[j]->SRID = -1; /* strip srid */
+			split_vector[split_vector_size++] = col->geoms[j];
+		}
+	}
+
+	/* Now split_vector has split_vector_size geometries */
+	out = lwcollection_construct(COLLECTIONTYPE, lwcoll_in->SRID,
+		NULL, split_vector_size, split_vector);
+
+	return (LWGEOM*)out;
+}
+
 static LWGEOM*
 lwpoly_split(LWPOLY* lwpoly_in, LWGEOM* blade_in)
 {
@@ -384,7 +439,6 @@ lwpoly_split(LWPOLY* lwpoly_in, LWGEOM* blade_in)
 	return NULL;
 }
 
-static LWGEOM* lwgeom_split(LWGEOM* lwgeom_in, LWGEOM* blade_in);
 static LWGEOM*
 lwgeom_split(LWGEOM* lwgeom_in, LWGEOM* blade_in)
 {
@@ -395,6 +449,11 @@ lwgeom_split(LWGEOM* lwgeom_in, LWGEOM* blade_in)
 
 	case POLYGONTYPE:
 		return lwpoly_split((LWPOLY*)lwgeom_in, blade_in);
+
+	case MULTIPOLYGONTYPE:
+	case MULTILINETYPE:
+	case COLLECTIONTYPE:
+		return lwcollection_split((LWCOLLECTION*)lwgeom_in, blade_in);
 
 	default:
 		lwerror("Splitting of %s geometries is unsupported",
