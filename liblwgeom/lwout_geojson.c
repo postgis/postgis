@@ -90,7 +90,7 @@ lwgeom_to_geojson(uchar *geom, char *srs, int precision, int has_bbox)
 			bbox = NULL;
 		}
 		lwerror("lwgeom_to_geojson: '%s' geometry type not supported",
-		        lwgeom_typename(type));
+		        lwtype_name(type));
 	}
 
 	if (bbox)

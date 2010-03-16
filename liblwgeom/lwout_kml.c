@@ -75,7 +75,7 @@ lwgeom_to_kml2(uchar *geom, int precision)
 
 	default:
 		lwerror("lwgeom_to_kml2: '%s' geometry type not supported",
-		        lwgeom_typename(type));
+		        lwtype_name(type));
 		return NULL;
 	}
 }

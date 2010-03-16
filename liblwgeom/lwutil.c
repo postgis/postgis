@@ -207,7 +207,7 @@ void lwgeom_install_default_allocators(void)
 }
 
 
-const char* lwgeom_typename(int type)
+const char* lwtype_name(int type)
 {
 	/* something went wrong somewhere */
 	if ( type < 0 || type > 15 )

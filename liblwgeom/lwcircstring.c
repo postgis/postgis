@@ -24,11 +24,11 @@ void lwcircstring_reverse(LWCIRCSTRING *curve);
 void lwcircstring_release(LWCIRCSTRING *lwcirc);
 LWCIRCSTRING *lwcircstring_segmentize2d(LWCIRCSTRING *curve, double dist);
 char lwcircstring_same(const LWCIRCSTRING *me, const LWCIRCSTRING *you);
-LWCIRCSTRING *lwcircstring_from_lwpointarray(int SRID, unsigned int npoints, LWPOINT **points);
+LWCIRCSTRING *lwcircstring_from_lwpointarray(int SRID, uint32 npoints, LWPOINT **points);
 LWCIRCSTRING *lwcircstring_from_lwmpoint(int SRID, LWMPOINT *mpoint);
-LWCIRCSTRING *lwcircstring_addpoint(LWCIRCSTRING *curve, LWPOINT *point, unsigned int where);
-LWCIRCSTRING *lwcircstring_removepoint(LWCIRCSTRING *curve, unsigned int index);
-void lwcircstring_setPoint4d(LWCIRCSTRING *curve, unsigned int index, POINT4D *newpoint);
+LWCIRCSTRING *lwcircstring_addpoint(LWCIRCSTRING *curve, LWPOINT *point, uint32 where);
+LWCIRCSTRING *lwcircstring_removepoint(LWCIRCSTRING *curve, uint32 index);
+void lwcircstring_setPoint4d(LWCIRCSTRING *curve, uint32 index, POINT4D *newpoint);
 
 
 
@@ -89,7 +89,7 @@ lwcircstring_deserialize(uchar *serialized_form)
 	type = (uchar)serialized_form[0];
 	if (lwgeom_getType(type) != CIRCSTRINGTYPE)
 	{
-		lwerror("lwcircstring_deserialize: attempt to deserialize a circularstring which is really a %s", lwgeom_typename(type));
+		lwerror("lwcircstring_deserialize: attempt to deserialize a circularstring which is really a %s", lwtype_name(type));
 		return NULL;
 	}
 
@@ -455,7 +455,7 @@ lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3)
  * TODO: This ignores curvature, which should be taken into account.
  */
 BOX3D *
-lwcircstring_compute_box3d(LWCIRCSTRING *curve)
+lwcircstring_compute_box3d(const LWCIRCSTRING *curve)
 {
 	BOX3D *box, *tmp;
 	int i;
@@ -496,7 +496,7 @@ lwcircstring_compute_box3d(LWCIRCSTRING *curve)
 
 
 int
-lwcircstring_compute_box2d_p(LWCIRCSTRING *curve, BOX2DFLOAT4 *result)
+lwcircstring_compute_box2d_p(const LWCIRCSTRING *curve, BOX2DFLOAT4 *result)
 {
 	BOX3D *box = lwcircstring_compute_box3d(curve);
 	LWDEBUG(2, "lwcircstring_compute_box2d_p called.");
@@ -569,57 +569,6 @@ lwcircstring_clone(const LWCIRCSTRING *g)
 	return ret;
 }
 
-/*
- * Add 'what' to this curve at position 'where'.
- * where=0 == prepend
- * where=-1 == append
- * Returns a MULTICURVE or a GEOMETRYCOLLECTION
- */
-LWGEOM *
-lwcircstring_add(const LWCIRCSTRING *to, uint32 where, const LWGEOM *what)
-{
-	LWCOLLECTION *col;
-	LWGEOM **geoms;
-	int newtype;
-
-	if (where != -1 && where != 0)
-	{
-		lwerror("lwcurve_add only supports 0 or -1 as second argument %d", where);
-		return NULL;
-	}
-
-	/* dimensions compatibility are checked by caller */
-
-	/* Construct geoms array */
-	geoms = lwalloc(sizeof(LWGEOM *)*2);
-	if (where == -1) /* append */
-	{
-		geoms[0] = lwgeom_clone((LWGEOM *)to);
-		geoms[1] = lwgeom_clone(what);
-	}
-	else /* prepend */
-	{
-		geoms[0] = lwgeom_clone(what);
-		geoms[1] = lwgeom_clone((LWGEOM *)to);
-	}
-
-	/* reset SRID and wantbbox flag from component types */
-	geoms[0]->SRID = geoms[1]->SRID = -1;
-	TYPE_SETHASSRID(geoms[0]->type, 0);
-	TYPE_SETHASSRID(geoms[1]->type, 0);
-	TYPE_SETHASBBOX(geoms[0]->type, 0);
-	TYPE_SETHASBBOX(geoms[1]->type, 0);
-
-	/* Find appropriate geom type */
-	if (TYPE_GETTYPE(what->type) == CIRCSTRINGTYPE || TYPE_GETTYPE(what->type) == LINETYPE) newtype = MULTICURVETYPE;
-	else newtype = COLLECTIONTYPE;
-
-	col = lwcollection_construct(newtype,
-	                             to->SRID, NULL,
-	                             2, geoms);
-
-	return (LWGEOM *)col;
-}
 
 void lwcircstring_reverse(LWCIRCSTRING *curve)
 {
@@ -648,10 +597,10 @@ lwcircstring_same(const LWCIRCSTRING *me, const LWCIRCSTRING *you)
  * LWCIRCSTRING dimensions are large enough to host all input dimensions.
  */
 LWCIRCSTRING *
-lwcircstring_from_lwpointarray(int SRID, unsigned int npoints, LWPOINT **points)
+lwcircstring_from_lwpointarray(int SRID, uint32 npoints, LWPOINT **points)
 {
 	int zmflag=0;
-	unsigned int i;
+	uint32 i;
 	POINTARRAY *pa;
 	uchar *newpoints, *ptr;
 	size_t ptsize, size;
@@ -664,7 +613,7 @@ lwcircstring_from_lwpointarray(int SRID, unsigned int npoints, LWPOINT **points)
 		if (TYPE_GETTYPE(points[i]->type) != POINTTYPE)
 		{
 			lwerror("lwcurve_from_lwpointarray: invalid input type: %s",
-			        lwgeom_typename(TYPE_GETTYPE(points[i]->type)));
+			        lwtype_name(TYPE_GETTYPE(points[i]->type)));
 			return NULL;
 		}
 		if (TYPE_HASZ(points[i]->type)) zmflag |= 2;
@@ -701,7 +650,7 @@ lwcircstring_from_lwpointarray(int SRID, unsigned int npoints, LWPOINT **points)
 LWCIRCSTRING *
 lwcircstring_from_lwmpoint(int SRID, LWMPOINT *mpoint)
 {
-	unsigned int i;
+	uint32 i;
 	POINTARRAY *pa;
 	char zmflag = TYPE_GETZM(mpoint->type);
 	size_t ptsize, size;
@@ -734,7 +683,7 @@ lwcircstring_from_lwmpoint(int SRID, LWMPOINT *mpoint)
 }
 
 LWCIRCSTRING *
-lwcircstring_addpoint(LWCIRCSTRING *curve, LWPOINT *point, unsigned int where)
+lwcircstring_addpoint(LWCIRCSTRING *curve, LWPOINT *point, uint32 where)
 {
 	POINTARRAY *newpa;
 	LWCIRCSTRING *ret;
@@ -748,7 +697,7 @@ lwcircstring_addpoint(LWCIRCSTRING *curve, LWPOINT *point, unsigned int where)
 }
 
 LWCIRCSTRING *
-lwcircstring_removepoint(LWCIRCSTRING *curve, unsigned int index)
+lwcircstring_removepoint(LWCIRCSTRING *curve, uint32 index)
 {
 	POINTARRAY *newpa;
 	LWCIRCSTRING *ret;
@@ -763,7 +712,7 @@ lwcircstring_removepoint(LWCIRCSTRING *curve, unsigned int index)
  * Note: input will be changed, make sure you have permissions for this.
  * */
 void
-lwcircstring_setPoint4d(LWCIRCSTRING *curve, unsigned int index, POINT4D *newpoint)
+lwcircstring_setPoint4d(LWCIRCSTRING *curve, uint32 index, POINT4D *newpoint)
 {
 	setPoint4d(curve->points, index, newpoint);
 }

@@ -182,7 +182,7 @@ Datum geometry_geometrytype(PG_FUNCTION_ARGS)
 
 	/* Build up the output string */
 	strncat(type_str, "ST_", 32);
-	strncat(type_str, lwgeom_typename(lwgeom_getType(lwgeom->type)), 32);
+	strncat(type_str, lwtype_name(lwgeom_getType(lwgeom->type)), 32);
 	size = strlen(type_str) + VARHDRSZ;
 
 	/* Build a text type to store things in */

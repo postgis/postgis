@@ -12,7 +12,7 @@ char *lwline_summary(LWLINE *line, int offset);
 char *lwpoint_summary(LWPOINT *point, int offset);
 
 char *
-lwgeom_summary(LWGEOM *lwgeom, int offset)
+lwgeom_summary(const LWGEOM *lwgeom, int offset)
 {
 	char *result;
 
@@ -54,7 +54,7 @@ lwpoint_summary(LWPOINT *point, int offset)
 	result = lwalloc(128+offset);
 
 	sprintf(result, "%*.s%s[%s]\n",
-	        offset, pad, lwgeom_typename(TYPE_GETTYPE(point->type)),
+	        offset, pad, lwtype_name(TYPE_GETTYPE(point->type)),
 	        lwgeom_typeflags(point->type));
 	return result;
 }
@@ -68,7 +68,7 @@ lwline_summary(LWLINE *line, int offset)
 	result = lwalloc(128+offset);
 
 	sprintf(result, "%*.s%s[%s] with %d points\n",
-	        offset, pad, lwgeom_typename(TYPE_GETTYPE(line->type)),
+	        offset, pad, lwtype_name(TYPE_GETTYPE(line->type)),
 	        lwgeom_typeflags(line->type),
 	        line->points->npoints);
 	return result;
@@ -89,7 +89,7 @@ lwcollection_summary(LWCOLLECTION *col, int offset)
 	result = (char *)lwalloc(size);
 
 	sprintf(result, "%*.s%s[%s] with %d elements\n",
-	        offset, pad, lwgeom_typename(TYPE_GETTYPE(col->type)),
+	        offset, pad, lwtype_name(TYPE_GETTYPE(col->type)),
 	        lwgeom_typeflags(col->type),
 	        col->ngeoms);
 
@@ -124,7 +124,7 @@ lwpoly_summary(LWPOLY *poly, int offset)
 	result = lwalloc(size);
 
 	sprintf(result, "%*.s%s[%s] with %i rings\n",
-	        offset, pad, lwgeom_typename(TYPE_GETTYPE(poly->type)),
+	        offset, pad, lwtype_name(TYPE_GETTYPE(poly->type)),
 	        lwgeom_typeflags(poly->type),
 	        poly->nrings);
 

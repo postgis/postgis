@@ -131,7 +131,7 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
 	uchar geom_type = TYPE_GETTYPE(pg_lwgeom->type);
 	if (POINTTYPE != geom_type)
 	{
-		lwerror("Only points are supported, you tried type %s.", lwgeom_typename(geom_type));
+		lwerror("Only points are supported, you tried type %s.", lwtype_name(geom_type));
 	}
 	/* Convert to LWGEOM type */
 	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(pg_lwgeom));
@@ -144,14 +144,14 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
 		format_str[str_size] = 0; /* null term */
 
 		/* The input string supposedly will be in the database encoding, so convert to UTF-8. */
-		format_str_utf8 = (char *)pg_do_encoding_conversion((unsigned char *)format_str, str_size, GetDatabaseEncoding(), PG_UTF8);
+		format_str_utf8 = (char *)pg_do_encoding_conversion((uchar *)format_str, str_size, GetDatabaseEncoding(), PG_UTF8);
 	}
 
 	/* Produce the formatted string. */
 	formatted_str_utf8 = lwpoint_to_latlon((LWPOINT *)lwgeom, format_str_utf8);
 
 	/* Convert the formatted string from UTF-8 back to database encoding. */
-	formatted_str = (char *)pg_do_encoding_conversion((unsigned char *)formatted_str_utf8, strlen(formatted_str_utf8), PG_UTF8, GetDatabaseEncoding());
+	formatted_str = (char *)pg_do_encoding_conversion((uchar *)formatted_str_utf8, strlen(formatted_str_utf8), PG_UTF8, GetDatabaseEncoding());
 
 	/* Convert to the postgres output string type. */
 	str_size = strlen(formatted_str) + VARHDRSZ;
@@ -204,7 +204,7 @@ Datum LWGEOM_asHEXEWKB(PG_FUNCTION_ARGS)
 	int result;
 	text *text_result;
 	text *type;
-	unsigned int byteorder=-1;
+	uint32 byteorder=-1;
 
 	lwgeom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
@@ -331,7 +331,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 	int t;
 #endif /* BINARY_FROM_HEX */
 	text *type;
-	unsigned int byteorder=-1;
+	uint32 byteorder=-1;
 
 	PROFSTART(PROF_QRUN);
 

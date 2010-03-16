@@ -320,7 +320,7 @@ lw_dist2d_distribute_bruteforce(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl)
 		}
 		else
 		{
-			lwerror("Unsupported geometry type: %s", lwgeom_typename(t2));
+			lwerror("Unsupported geometry type: %s", lwtype_name(t2));
 			return LW_FALSE;
 		}
 	}
@@ -344,7 +344,7 @@ lw_dist2d_distribute_bruteforce(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl)
 		}
 		else
 		{
-			lwerror("Unsupported geometry type: %s", lwgeom_typename(t2));
+			lwerror("Unsupported geometry type: %s", lwtype_name(t2));
 			return LW_FALSE;
 		}
 	}
@@ -367,13 +367,13 @@ lw_dist2d_distribute_bruteforce(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl)
 		}
 		else
 		{
-			lwerror("Unsupported geometry type: %s", lwgeom_typename(t2));
+			lwerror("Unsupported geometry type: %s", lwtype_name(t2));
 			return LW_FALSE;
 		}
 	}
 	else
 	{
-		lwerror("Unsupported geometry type: %s", lwgeom_typename(t1));
+		lwerror("Unsupported geometry type: %s", lwtype_name(t1));
 		return LW_FALSE;
 	}
 	/*You shouldn't being able to get here*/
@@ -427,7 +427,7 @@ lw_dist2d_distribute_fast(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl)
 		pa1 = ((LWPOLY *)lwg1)->rings[0];
 		break;
 	default:
-		lwerror("Unsupported geometry1 type: %s", lwgeom_typename(type1));
+		lwerror("Unsupported geometry1 type: %s", lwtype_name(type1));
 		return LW_FALSE;
 	}
 	switch (type2)
@@ -439,7 +439,7 @@ lw_dist2d_distribute_fast(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl)
 		pa2 = ((LWPOLY *)lwg2)->rings[0];
 		break;
 	default:
-		lwerror("Unsupported geometry2 type: %s", lwgeom_typename(type1));
+		lwerror("Unsupported geometry2 type: %s", lwtype_name(type1));
 		return LW_FALSE;
 	}
 	dl->twisted=1;
@@ -1192,7 +1192,7 @@ Functions in common for Brute force and new calculation
  *
  */
 int
-pt_in_ring_2d(POINT2D *p, POINTARRAY *ring)
+pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring)
 {
 	int cn = 0;    /* the crossing number counter */
 	int i;
@@ -1369,7 +1369,7 @@ End of Functions in common for Brute force and new calculation
  can be affectes in the world I don't dare removing it.
  */
 int
-pt_in_poly_2d(POINT2D *p, LWPOLY *poly)
+pt_in_poly_2d(const POINT2D *p, const LWPOLY *poly)
 {
 	int i;
 
@@ -1391,7 +1391,7 @@ pt_in_poly_2d(POINT2D *p, LWPOLY *poly)
 The old function nessecary for ptarray_segmentize2d in ptarray.c
 */
 double
-distance2d_pt_pt(POINT2D *p1, POINT2D *p2)
+distance2d_pt_pt(const POINT2D *p1, const POINT2D *p2)
 {
 	double hside = p2->x - p1->x;
 	double vside = p2->y - p1->y;
@@ -1411,7 +1411,7 @@ distance2d_pt_pt(POINT2D *p1, POINT2D *p2)
 The old function nessecary for ptarray_segmentize2d in ptarray.c
 */
 double
-distance2d_pt_seg(POINT2D *p, POINT2D *A, POINT2D *B)
+distance2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B)
 {
 	double	r,s;
 
@@ -1468,7 +1468,7 @@ distance2d_pt_seg(POINT2D *p, POINT2D *A, POINT2D *B)
 find the 2d length of the given POINTARRAY (even if it's 3d)
 */
 double
-lwgeom_pointarray_length2d(POINTARRAY *pts)
+lwgeom_pointarray_length2d(const POINTARRAY *pts)
 {
 	double dist = 0.0;
 	int i;
@@ -1491,7 +1491,7 @@ lwgeom_pointarray_length2d(POINTARRAY *pts)
  * (depending on its dimensions)
  */
 double
-lwgeom_pointarray_length(POINTARRAY *pts)
+lwgeom_pointarray_length(const POINTARRAY *pts)
 {
 	double dist = 0.0;
 	int i;
@@ -1529,7 +1529,7 @@ lwgeom_curvepolygon_area(LWCURVEPOLY *curvepoly)
  * Could use a more numerically stable calculator...
  */
 double
-lwgeom_polygon_area(LWPOLY *poly)
+lwgeom_polygon_area(const LWPOLY *poly)
 {
 	double poly_area=0.0;
 	int i;
@@ -1573,7 +1573,7 @@ lwgeom_polygon_area(LWPOLY *poly)
  * Could use a more numerically stable calculator...
  */
 double
-lwgeom_polygon_perimeter(LWPOLY *poly)
+lwgeom_polygon_perimeter(const LWPOLY *poly)
 {
 	double result=0.0;
 	int i;
@@ -1591,7 +1591,7 @@ lwgeom_polygon_perimeter(LWPOLY *poly)
  * Could use a more numerically stable calculator...
  */
 double
-lwgeom_polygon_perimeter2d(LWPOLY *poly)
+lwgeom_polygon_perimeter2d(const LWPOLY *poly)
 {
 	double result=0.0;
 	int i;
@@ -1623,7 +1623,7 @@ lwgeom_pt_inside_circle(POINT2D *p, double cx, double cy, double rad)
  * Return 0 on exception (same point), 1 otherwise.
  */
 int
-azimuth_pt_pt(POINT2D *A, POINT2D *B, double *d)
+azimuth_pt_pt(const POINT2D *A, const POINT2D *B, double *d)
 {
 	if ( A->x == B->x )
 	{

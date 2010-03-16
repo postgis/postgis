@@ -91,7 +91,7 @@ lwgeom_to_gml2(uchar *geom, char *srs, int precision)
 
 	default:
 		lwerror("lwgeom_to_gml2: '%s' geometry type not supported",
-		        lwgeom_typename(type));
+		        lwtype_name(type));
 		return NULL;
 	}
 }
@@ -597,7 +597,7 @@ lwgeom_to_gml3(uchar *geom, char *srs, int precision, int is_deegree)
 		return asgml3_collection(inspected, srs, precision, is_deegree);
 
 	default:
-		lwerror("lwgeom_to_gml3: '%s' geometry type not supported", lwgeom_typename(type));
+		lwerror("lwgeom_to_gml3: '%s' geometry type not supported", lwtype_name(type));
 		return NULL;
 	}
 }

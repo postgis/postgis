@@ -662,7 +662,7 @@ lwgeom_force2d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 	* first and then call us again
 	*/
 
-	LWDEBUGF(3, "lwgeom_force2d_recursive: it's a collection (%s)", lwgeom_typename(type));
+	LWDEBUGF(3, "lwgeom_force2d_recursive: it's a collection (%s)", lwtype_name(type));
 
 
 	/* Add type */
@@ -673,7 +673,7 @@ lwgeom_force2d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 	totsize++;
 	loc=serialized+1;
 
-	LWDEBUGF(3, "lwgeom_force2d_recursive: added collection type (%s[%s]) - size:%d", lwgeom_typename(type), lwgeom_typeflags(newtypefl), totsize);
+	LWDEBUGF(3, "lwgeom_force2d_recursive: added collection type (%s[%s]) - size:%d", lwtype_name(type), lwgeom_typeflags(newtypefl), totsize);
 
 	if ( lwgeom_hasBBOX(serialized[0]) != lwgeom_hasBBOX(newtypefl) )
 		lwerror("typeflag mismatch in BBOX");
@@ -1073,7 +1073,7 @@ lwgeom_force3dm_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 	* first and then call us again
 	*/
 
-	LWDEBUGF(3, "lwgeom_force3dm_recursive: it's a collection (%s)", lwgeom_typename(type));
+	LWDEBUGF(3, "lwgeom_force3dm_recursive: it's a collection (%s)", lwtype_name(type));
 
 
 	/* Add type */
@@ -1084,7 +1084,7 @@ lwgeom_force3dm_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 	totsize++;
 	loc=serialized+1;
 
-	LWDEBUGF(3, "lwgeom_force3dm_recursive: added collection type (%s[%s]) - size:%d", lwgeom_typename(type), lwgeom_typeflags(newtypefl), totsize);
+	LWDEBUGF(3, "lwgeom_force3dm_recursive: added collection type (%s[%s]) - size:%d", lwtype_name(type), lwgeom_typeflags(newtypefl), totsize);
 
 	if ( lwgeom_hasBBOX(serialized[0]) != lwgeom_hasBBOX(newtypefl) )
 		lwerror("typeflag mismatch in BBOX");
@@ -1883,7 +1883,7 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	Pointer geom2_ptr =  PG_GETARG_POINTER(1);
 	PG_LWGEOM *pglwgeom1, *pglwgeom2, *result;
 	LWGEOM *lwgeoms[2], *outlwg;
-	unsigned int type1, type2, outtype;
+	uint32 type1, type2, outtype;
 	BOX2DFLOAT4 *box=NULL;
 	int SRID;
 
@@ -1913,7 +1913,7 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	pglwgeom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	pglwgeom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	POSTGIS_DEBUGF(3, "LWGEOM_collect(%s, %s): call", lwgeom_typename(TYPE_GETTYPE(pglwgeom1->type)), lwgeom_typename(TYPE_GETTYPE(pglwgeom2->type)));
+	POSTGIS_DEBUGF(3, "LWGEOM_collect(%s, %s): call", lwtype_name(TYPE_GETTYPE(pglwgeom1->type)), lwtype_name(TYPE_GETTYPE(pglwgeom2->type)));
 
 #if 0
 	if ( pglwgeom_getSRID(pglwgeom1) != pglwgeom_getSRID(pglwgeom2) )
@@ -2106,7 +2106,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	/*PG_LWGEOM **geoms; */
 	PG_LWGEOM *result=NULL;
 	LWGEOM **lwgeoms, *outlwg;
-	unsigned int outtype;
+	uint32 outtype;
 	int i, count;
 	int SRID=-1;
 	size_t offset;
@@ -2161,7 +2161,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 		if ((bitmap && (*bitmap & bitmask) != 0) || !bitmap)
 		{
 			PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
-			unsigned int intype = TYPE_GETTYPE(geom->type);
+			uint32 intype = TYPE_GETTYPE(geom->type);
 
 			offset += INTALIGN(VARSIZE(geom));
 
@@ -2314,7 +2314,7 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 	PG_LWGEOM *result=NULL;
 	LWPOINT **lwpoints;
 	LWGEOM *outlwg;
-	unsigned int npoints;
+	uint32 npoints;
 	int i;
 	size_t offset;
 	int SRID=-1;
@@ -2479,8 +2479,8 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 	const LWLINE *shell=NULL;
 	const LWLINE **holes=NULL;
 	LWPOLY *outpoly;
-	unsigned int nholes=0;
-	unsigned int i;
+	uint32 nholes=0;
+	uint32 i;
 	size_t offset=0;
 
 	POSTGIS_DEBUG(2, "LWGEOM_makepoly called.");
@@ -3093,7 +3093,7 @@ Datum LWGEOM_removepoint(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *pglwg1, *result;
 	LWLINE *line, *outline;
-	unsigned int which;
+	uint32 which;
 
 	POSTGIS_DEBUG(2, "LWGEOM_removepoint called.");
 
@@ -3141,7 +3141,7 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS)
 	LWLINE *line;
 	LWPOINT *lwpoint;
 	POINT4D newpoint;
-	unsigned int which;
+	uint32 which;
 
 	POSTGIS_DEBUG(2, "LWGEOM_setpoint_linestring called.");
 

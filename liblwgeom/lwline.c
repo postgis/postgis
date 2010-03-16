@@ -46,6 +46,18 @@ lwline_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points)
 	return result;
 }
 
+LWLINE *
+lwline_construct_empty(int srid, char hasz, char hasm)
+{
+	LWLINE *result = lwalloc(sizeof(LWLINE));
+	result->type = lwgeom_makeType_full(hasz, hasm, (srid>0), LINETYPE, 0);
+	result->SRID = srid;
+	result->points = NULL;
+	result->bbox = NULL;
+	return result;
+}
+
+
 /*
  * given the LWGEOM serialized form (or a pointer into a muli* one)
  * construct a proper LWLINE.
@@ -65,7 +77,7 @@ lwline_deserialize(uchar *serialized_form)
 
 	if ( lwgeom_getType(type) != LINETYPE)
 	{
-		lwerror("lwline_deserialize: attempt to deserialize a line which is really a %s", lwgeom_typename(type));
+		lwerror("lwline_deserialize: attempt to deserialize a line which is really a %s", lwtype_name(type));
 		return NULL;
 	}
 
@@ -301,7 +313,7 @@ void printLWLINE(LWLINE *line)
 }
 
 int
-lwline_compute_box2d_p(LWLINE *line, BOX2DFLOAT4 *box)
+lwline_compute_box2d_p(const LWLINE *line, BOX2DFLOAT4 *box)
 {
 	return ptarray_compute_box2d_p(line->points, box);
 }
@@ -319,57 +331,6 @@ lwline_clone(const LWLINE *g)
 	return ret;
 }
 
-/*
- * Add 'what' to this line at position 'where'.
- * where=0 == prepend
- * where=-1 == append
- * Returns a MULTILINE or a GEOMETRYCOLLECTION
- */
-LWGEOM *
-lwline_add(const LWLINE *to, uint32 where, const LWGEOM *what)
-{
-	LWCOLLECTION *col;
-	LWGEOM **geoms;
-	int newtype;
-
-	if ( where != -1 && where != 0 )
-	{
-		lwerror("lwline_add only supports 0 or -1 as second argument, got %d", where);
-		return NULL;
-	}
-
-	/* dimensions compatibility are checked by caller */
-
-	/* Construct geoms array */
-	geoms = lwalloc(sizeof(LWGEOM *)*2);
-	if ( where == -1 ) /* append */
-	{
-		geoms[0] = lwgeom_clone((LWGEOM *)to);
-		geoms[1] = lwgeom_clone(what);
-	}
-	else /* prepend */
-	{
-		geoms[0] = lwgeom_clone(what);
-		geoms[1] = lwgeom_clone((LWGEOM *)to);
-	}
-
-	/* reset SRID and wantbbox flag from component types */
-	geoms[0]->SRID = geoms[1]->SRID = -1;
-	TYPE_SETHASSRID(geoms[0]->type, 0);
-	TYPE_SETHASSRID(geoms[1]->type, 0);
-	TYPE_SETHASBBOX(geoms[0]->type, 0);
-	TYPE_SETHASBBOX(geoms[1]->type, 0);
-
-	/* Find appropriate geom type */
-	if ( TYPE_GETTYPE(what->type) == LINETYPE ) newtype = MULTILINETYPE;
-	else newtype = COLLECTIONTYPE;
-
-	col = lwcollection_construct(newtype,
-	                             to->SRID, NULL,
-	                             2, geoms);
-
-	return (LWGEOM *)col;
-}
 
 void
 lwline_release(LWLINE *lwline)
@@ -402,10 +363,10 @@ lwline_same(const LWLINE *l1, const LWLINE *l2)
  * LWLINE dimensions are large enough to host all input dimensions.
  */
 LWLINE *
-lwline_from_lwpointarray(int SRID, unsigned int npoints, LWPOINT **points)
+lwline_from_lwpointarray(int SRID, uint32 npoints, LWPOINT **points)
 {
 	int zmflag=0;
-	unsigned int i;
+	uint32 i;
 	POINTARRAY *pa;
 	uchar *newpoints, *ptr;
 	size_t ptsize, size;
@@ -418,7 +379,7 @@ lwline_from_lwpointarray(int SRID, unsigned int npoints, LWPOINT **points)
 		if ( TYPE_GETTYPE(points[i]->type) != POINTTYPE )
 		{
 			lwerror("lwline_from_lwpointarray: invalid input type: %s",
-			        lwgeom_typename(TYPE_GETTYPE(points[i]->type)));
+			        lwtype_name(TYPE_GETTYPE(points[i]->type)));
 			return NULL;
 		}
 		if ( TYPE_HASZ(points[i]->type) ) zmflag |= 2;
@@ -456,7 +417,7 @@ lwline_from_lwpointarray(int SRID, unsigned int npoints, LWPOINT **points)
 LWLINE *
 lwline_from_lwmpoint(int SRID, LWMPOINT *mpoint)
 {
-	unsigned int i;
+	uint32 i;
 	POINTARRAY *pa;
 	char zmflag = TYPE_GETZM(mpoint->type);
 	size_t ptsize, size;
@@ -489,7 +450,7 @@ lwline_from_lwmpoint(int SRID, LWMPOINT *mpoint)
 }
 
 LWLINE *
-lwline_addpoint(LWLINE *line, LWPOINT *point, unsigned int where)
+lwline_addpoint(LWLINE *line, LWPOINT *point, uint32 where)
 {
 	POINTARRAY *newpa;
 	LWLINE *ret;
@@ -506,7 +467,7 @@ lwline_addpoint(LWLINE *line, LWPOINT *point, unsigned int where)
 }
 
 LWLINE *
-lwline_removepoint(LWLINE *line, unsigned int index)
+lwline_removepoint(LWLINE *line, uint32 index)
 {
 	POINTARRAY *newpa;
 	LWLINE *ret;
@@ -522,7 +483,7 @@ lwline_removepoint(LWLINE *line, unsigned int index)
  * Note: input will be changed, make sure you have permissions for this.
  */
 void
-lwline_setPoint4d(LWLINE *line, unsigned int index, POINT4D *newpoint)
+lwline_setPoint4d(LWLINE *line, uint32 index, POINT4D *newpoint)
 {
 	setPoint4d(line->points, index, newpoint);
 	/* Update the box, if there is one to update */

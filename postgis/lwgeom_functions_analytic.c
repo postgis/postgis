@@ -257,8 +257,8 @@ simplify2d_lwpoly(const LWPOLY *ipoly, double dist)
 LWCOLLECTION *
 simplify2d_collection(const LWCOLLECTION *igeom, double dist)
 {
-	unsigned int i;
-	unsigned int ngeoms=0;
+	uint32 i;
+	uint32 ngeoms=0;
 	LWGEOM **geoms = lwalloc(sizeof(LWGEOM *)*igeom->ngeoms);
 	LWCOLLECTION *out;
 
@@ -719,9 +719,9 @@ lwpoint_grid(LWPOINT *point, gridspec *grid)
 LWCOLLECTION *
 lwcollection_grid(LWCOLLECTION *coll, gridspec *grid)
 {
-	unsigned int i;
+	uint32 i;
 	LWGEOM **geoms;
-	unsigned int ngeoms=0;
+	uint32 ngeoms=0;
 
 	geoms = palloc(coll->ngeoms * sizeof(LWGEOM *));
 
@@ -755,7 +755,7 @@ lwgeom_grid(LWGEOM *lwgeom, gridspec *grid)
 		return (LWGEOM *)lwcollection_grid((LWCOLLECTION *)lwgeom, grid);
 	default:
 		elog(ERROR, "lwgeom_grid: Unsupported geometry type: %s",
-		     lwgeom_typename(TYPE_GETTYPE(lwgeom->type)));
+		     lwtype_name(TYPE_GETTYPE(lwgeom->type)));
 		return NULL;
 	}
 }
@@ -798,7 +798,7 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 
 	in_lwgeom = lwgeom_deserialize(SERIALIZED_FORM(in_geom));
 
-	POSTGIS_DEBUGF(3, "SnapToGrid got a %s", lwgeom_typename(TYPE_GETTYPE(in_lwgeom->type)));
+	POSTGIS_DEBUGF(3, "SnapToGrid got a %s", lwtype_name(TYPE_GETTYPE(in_lwgeom->type)));
 
 	out_lwgeom = lwgeom_grid(in_lwgeom, &grid);
 	if ( out_lwgeom == NULL ) PG_RETURN_NULL();
@@ -834,7 +834,7 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 	}
 #endif /* 0 */
 
-	POSTGIS_DEBUGF(3, "SnapToGrid made a %s", lwgeom_typename(TYPE_GETTYPE(out_lwgeom->type)));
+	POSTGIS_DEBUGF(3, "SnapToGrid made a %s", lwtype_name(TYPE_GETTYPE(out_lwgeom->type)));
 
 	out_geom = pglwgeom_serialize(out_lwgeom);
 
@@ -900,7 +900,7 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 
 	in_lwgeom = lwgeom_deserialize(SERIALIZED_FORM(in_geom));
 
-	POSTGIS_DEBUGF(3, "SnapToGrid got a %s", lwgeom_typename(TYPE_GETTYPE(in_lwgeom->type)));
+	POSTGIS_DEBUGF(3, "SnapToGrid got a %s", lwtype_name(TYPE_GETTYPE(in_lwgeom->type)));
 
 	out_lwgeom = lwgeom_grid(in_lwgeom, &grid);
 	if ( out_lwgeom == NULL ) PG_RETURN_NULL();
@@ -936,7 +936,7 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 	}
 #endif /* 0 */
 
-	POSTGIS_DEBUGF(3, "SnapToGrid made a %s", lwgeom_typename(TYPE_GETTYPE(out_lwgeom->type)));
+	POSTGIS_DEBUGF(3, "SnapToGrid made a %s", lwtype_name(TYPE_GETTYPE(out_lwgeom->type)));
 
 	out_geom = pglwgeom_serialize(out_lwgeom);
 

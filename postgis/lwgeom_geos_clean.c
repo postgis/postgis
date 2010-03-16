@@ -48,15 +48,15 @@
  * Return Nth vertex in GEOSGeometry as a POINT.
  * May return NULL if the geometry has NO vertexex.
  */
-GEOSGeometry* LWGEOM_GEOS_getPointN(const GEOSGeometry*, unsigned int);
+GEOSGeometry* LWGEOM_GEOS_getPointN(const GEOSGeometry*, uint32);
 GEOSGeometry*
-LWGEOM_GEOS_getPointN(const GEOSGeometry* g_in, unsigned int n)
+LWGEOM_GEOS_getPointN(const GEOSGeometry* g_in, uint32 n)
 {
-	unsigned int dims;
+	uint32 dims;
 	const GEOSCoordSequence* seq_in;
 	GEOSCoordSeq seq_out;
 	double val;
-	unsigned int sz;
+	uint32 sz;
 	int gn;
 	GEOSGeometry* ret;
 
@@ -570,10 +570,10 @@ LWGEOM_GEOS_makeValidMultiLine(const GEOSGeometry* gin)
 	GEOSGeometry* mline_out=0;
 	GEOSGeometry* mpoint_out=0;
 	GEOSGeometry* gout;
-	unsigned int nlines;
-	unsigned int npoints=0;
-	unsigned int ngeoms=0;
-	unsigned int i;
+	uint32 nlines;
+	uint32 npoints=0;
+	uint32 ngeoms=0;
+	uint32 i;
 
 	ngeoms = GEOSGetNumGeometries(gin);
 
@@ -879,8 +879,8 @@ lwgeom_clean(LWGEOM* lwgeom_in)
 	{
     		lwnotice("lwgeom_clean: mixed-type output (%s) "
 			"from single-type input (%s)",
-			lwgeom_typename(TYPE_GETTYPE(lwgeom_out->type)),
-			lwgeom_typename(TYPE_GETTYPE(lwgeom_in->type)));
+			lwtype_name(TYPE_GETTYPE(lwgeom_out->type)),
+			lwtype_name(TYPE_GETTYPE(lwgeom_in->type)));
 		return NULL;
 	}
 

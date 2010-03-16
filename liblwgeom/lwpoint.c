@@ -261,7 +261,7 @@ lwpoint_deserialize(uchar *serialized_form)
 
 	if ( geom_type != POINTTYPE)
 	{
-		lwerror("lwpoint_deserialize: attempt to deserialize a point which is really a %s", lwgeom_typename(geom_type));
+		lwerror("lwpoint_deserialize: attempt to deserialize a point which is really a %s", lwtype_name(geom_type));
 		return NULL;
 	}
 	result->type = type;
@@ -320,7 +320,7 @@ void printLWPOINT(LWPOINT *point)
 }
 
 int
-lwpoint_compute_box2d_p(LWPOINT *point, BOX2DFLOAT4 *box)
+lwpoint_compute_box2d_p(const LWPOINT *point, BOX2DFLOAT4 *box)
 {
 	return ptarray_compute_box2d_p(point->point, box);
 }
@@ -338,56 +338,6 @@ lwpoint_clone(const LWPOINT *g)
 	return ret;
 }
 
-/*
- * Add 'what' to this point at position 'where'.
- * where=0 == prepend
- * where=-1 == append
- * Returns a MULTIPOINT or a GEOMETRYCOLLECTION
- */
-LWGEOM *
-lwpoint_add(const LWPOINT *to, uint32 where, const LWGEOM *what)
-{
-	LWCOLLECTION *col;
-	LWGEOM **geoms;
-	int newtype;
-
-	if ( where != -1 && where != 0 )
-	{
-		lwerror("lwpoint_add only supports 0 or -1 as second argument, got %d", where);
-		return NULL;
-	}
-
-	/* dimensions compatibility are checked by caller */
-
-
-	/* Construct geoms array */
-	geoms = lwalloc(sizeof(LWGEOM *)*2);
-	if ( where == -1 ) /* append */
-	{
-		geoms[0] = lwgeom_clone((LWGEOM *)to);
-		geoms[1] = lwgeom_clone(what);
-	}
-	else /* prepend */
-	{
-		geoms[0] = lwgeom_clone(what);
-		geoms[1] = lwgeom_clone((LWGEOM *)to);
-	}
-	/* reset SRID and wantbbox flag from component types */
-	lwgeom_dropSRID(geoms[0]);
-	lwgeom_drop_bbox(geoms[0]);
-	lwgeom_dropSRID(geoms[1]);
-	lwgeom_drop_bbox(geoms[1]);
-
-	/* Find appropriate geom type */
-	if ( TYPE_GETTYPE(what->type) == POINTTYPE ) newtype = MULTIPOINTTYPE;
-	else newtype = COLLECTIONTYPE;
-
-	col = lwcollection_construct(newtype,
-	                             to->SRID, NULL,
-	                             2, geoms);
-
-	return (LWGEOM *)col;
-}
 
 /* Find length of this serialized point */
 size_t

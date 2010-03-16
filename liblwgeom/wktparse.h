@@ -42,6 +42,7 @@ typedef struct struct_lwgeom_unparser_result
 }
 LWGEOM_UNPARSER_RESULT;
 #endif
+
 typedef void* (*allocator)(size_t size);
 typedef void  (*freeor)(void* mem);
 typedef void  (*report_error)(const char* string, ...);

@@ -106,7 +106,7 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 	GEOSGeometry *tmp;
 	GEOSGeometry *geos_result, *shp;
 	GEOSGeometry const *vgeoms[1];
-	unsigned int i, ngeoms;
+	uint32 i, ngeoms;
 
 	vgeoms[0] = geom_in;
 	geos_result = GEOSPolygonize(vgeoms, 1);
@@ -596,7 +596,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 						PG_RETURN_NULL();
 					}
 					SRID = pglwgeom_getSRID(geom);
-					POSTGIS_DEBUGF(3, "first geom is a %s", lwgeom_typename(TYPE_GETTYPE(geom->type)));
+					POSTGIS_DEBUGF(3, "first geom is a %s", lwtype_name(TYPE_GETTYPE(geom->type)));
 				}
 				else
 				{
@@ -612,7 +612,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 					}
 
 					POSTGIS_DEBUGF(3, "unite_garray(%d): adding geom %d to union (%s)",
-					               call, i, lwgeom_typename(TYPE_GETTYPE(geom->type)));
+					               call, i, lwtype_name(TYPE_GETTYPE(geom->type)));
 
 					g2 = GEOSUnion(g1, geos_result);
 					if ( g2 == NULL )
@@ -3274,8 +3274,8 @@ Datum isring(PG_FUNCTION_ARGS)
 POINTARRAY *
 ptarray_from_GEOSCoordSeq(const GEOSCoordSequence *cs, char want3d)
 {
-	unsigned int dims=2;
-	unsigned int size, i, ptsize;
+	uint32 dims=2;
+	uint32 size, i, ptsize;
 	uchar *points, *ptr;
 	POINTARRAY *ret;
 
@@ -3351,7 +3351,7 @@ GEOS2LWGEOM(const GEOSGeometry *geom, char want3d)
 		POINTARRAY *pa, **ppaa;
 		const GEOSGeometry *g;
 		LWGEOM **geoms;
-		unsigned int i, ngeoms;
+		uint32 i, ngeoms;
 
 	case GEOS_POINT:
 		POSTGIS_DEBUG(4, "lwgeom_from_geometry: it's a Point");
@@ -3448,8 +3448,8 @@ GEOSGeom LWGEOM2GEOS(LWGEOM *lwgeom);
 GEOSCoordSeq
 ptarray_to_GEOSCoordSeq(POINTARRAY *pa)
 {
-	unsigned int dims = 2;
-	unsigned int size, i;
+	uint32 dims = 2;
+	uint32 size, i;
 	POINT3DZ p;
 	GEOSCoordSeq sq;
 
@@ -3480,14 +3480,14 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 	/*
 	LWGEOM *tmp;
 	*/
-	unsigned int ngeoms, i;
+	uint32 ngeoms, i;
 	int type = 0;
 	int geostype;
 #if POSTGIS_DEBUG_LEVEL >= 4
 	char *wkt;
 #endif
 
-	POSTGIS_DEBUGF(4, "LWGEOM2GEOS got a %s", lwgeom_typename(type));
+	POSTGIS_DEBUGF(4, "LWGEOM2GEOS got a %s", lwtype_name(type));
 
 	if (has_arc(lwgeom))
 	{
@@ -3669,7 +3669,7 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	Datum datum;
 	ArrayType *array;
 	int is3d = 0;
-	unsigned int nelems, i;
+	uint32 nelems, i;
 	PG_LWGEOM *result;
 	GEOSGeometry *geos_result;
 	const GEOSGeometry **vgeoms;

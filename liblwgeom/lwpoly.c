@@ -23,14 +23,14 @@
 /* construct a new LWPOLY.  arrays (points/points per ring) will NOT be copied
  * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
  */
-LWPOLY *
-lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox, unsigned int nrings, POINTARRAY **points)
+LWPOLY*
+lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox, uint32 nrings, POINTARRAY **points)
 {
 	LWPOLY *result;
 	int hasz, hasm;
 #ifdef CHECK_POLY_RINGS_ZM
 	char zm;
-	unsigned int i;
+	uint32 i;
 #endif
 
 	if ( nrings < 1 ) lwerror("lwpoly_construct: need at least 1 ring");
@@ -55,6 +55,19 @@ lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox, unsigned int nrings, POINTARRAY **
 	result->rings = points;
 	result->bbox = bbox;
 
+	return result;
+}
+
+LWPOLY*
+lwpoly_construct_empty(int srid, char hasz, char hasm)
+{
+	LWPOLY *result = lwalloc(sizeof(LWPOLY));
+	result->type = lwgeom_makeType_full(hasz, hasm, (srid>0), POLYGONTYPE, 0);
+	result->SRID = srid;
+	result->nrings = 0;
+	result->maxrings = 0;
+	result->rings = NULL;
+	result->bbox = NULL;
 	return result;
 }
 
@@ -95,7 +108,7 @@ lwpoly_deserialize(uchar *serialized_form)
 
 	if ( TYPE_GETTYPE(type) != POLYGONTYPE)
 	{
-		lwerror("lwpoly_deserialize: attempt to deserialize a poly which is really a %s", lwgeom_typename(type));
+		lwerror("lwpoly_deserialize: attempt to deserialize a poly which is really a %s", lwtype_name(type));
 		return NULL;
 	}
 
@@ -403,7 +416,7 @@ void printLWPOLY(LWPOLY *poly)
 }
 
 int
-lwpoly_compute_box2d_p(LWPOLY *poly, BOX2DFLOAT4 *box)
+lwpoly_compute_box2d_p(const LWPOLY *poly, BOX2DFLOAT4 *box)
 {
 	BOX2DFLOAT4 boxbuf;
 	uint32 i;
@@ -432,57 +445,6 @@ lwpoly_clone(const LWPOLY *g)
 	return ret;
 }
 
-/*
- * Add 'what' to this poly at position 'where'.
- * where=0 == prepend
- * where=-1 == append
- * Returns a MULTIPOLYGON or a GEOMETRYCOLLECTION
- */
-LWGEOM *
-lwpoly_add(const LWPOLY *to, uint32 where, const LWGEOM *what)
-{
-	LWCOLLECTION *col;
-	LWGEOM **geoms;
-	int newtype;
-
-	if ( where != -1 && where != 0 )
-	{
-		lwerror("lwpoly_add only supports 0 or -1 as second argument, got %d", where);
-		return NULL;
-	}
-
-	/* dimensions compatibility are checked by caller */
-
-	/* Construct geoms array */
-	geoms = lwalloc(sizeof(LWGEOM *)*2);
-	if ( where == -1 ) /* append */
-	{
-		geoms[0] = lwgeom_clone((LWGEOM *)to);
-		geoms[1] = lwgeom_clone(what);
-	}
-	else /* prepend */
-	{
-		geoms[0] = lwgeom_clone(what);
-		geoms[1] = lwgeom_clone((LWGEOM *)to);
-	}
-
-	/* reset SRID and wantbbox flag from component types */
-	geoms[0]->SRID = geoms[1]->SRID = -1;
-	TYPE_SETHASSRID(geoms[0]->type, 0);
-	TYPE_SETHASSRID(geoms[1]->type, 0);
-	TYPE_SETHASBBOX(geoms[0]->type, 0);
-	TYPE_SETHASBBOX(geoms[1]->type, 0);
-
-	/* Find appropriate geom type */
-	if ( TYPE_GETTYPE(what->type) == POLYGONTYPE ) newtype = MULTIPOLYGONTYPE;
-	else newtype = COLLECTIONTYPE;
-
-	col = lwcollection_construct(newtype,
-	                             to->SRID, NULL,
-	                             2, geoms);
-
-	return (LWGEOM *)col;
-}
 
 void
 lwpoly_forceRHR(LWPOLY *poly)
@@ -522,7 +484,7 @@ LWPOLY *
 lwpoly_segmentize2d(LWPOLY *poly, double dist)
 {
 	POINTARRAY **newrings;
-	unsigned int i;
+	uint32 i;
 
 	newrings = lwalloc(sizeof(POINTARRAY *)*poly->nrings);
 	for (i=0; i<poly->nrings; i++)
@@ -540,7 +502,7 @@ lwpoly_segmentize2d(LWPOLY *poly, double dist)
 char
 lwpoly_same(const LWPOLY *p1, const LWPOLY *p2)
 {
-	unsigned int i;
+	uint32 i;
 
 	if ( p1->nrings != p2->nrings ) return 0;
 	for (i=0; i<p1->nrings; i++)
@@ -560,9 +522,9 @@ lwpoly_same(const LWPOLY *p1, const LWPOLY *p2)
  */
 LWPOLY *
 lwpoly_from_lwlines(const LWLINE *shell,
-                    unsigned int nholes, const LWLINE **holes)
+                    uint32 nholes, const LWLINE **holes)
 {
-	unsigned int nrings;
+	uint32 nrings;
 	POINTARRAY **rings = lwalloc((nholes+1)*sizeof(POINTARRAY *));
 	int SRID = shell->SRID;
 	LWPOLY *ret;
@@ -595,7 +557,7 @@ lwpoly_from_lwlines(const LWLINE *shell,
 LWGEOM*
 lwpoly_remove_repeated_points(LWPOLY *poly)
 {
-	unsigned int i;
+	uint32 i;
 	POINTARRAY **newrings;
 
 	newrings = lwalloc(sizeof(POINTARRAY *)*poly->nrings);

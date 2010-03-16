@@ -542,7 +542,7 @@ pixel_add_float32(PIXEL *where, PIXEL *what)
 void
 pixel_add_int24(PIXEL *where, PIXEL *what)
 {
-	unsigned int red, green, blue;
+	uint32 red, green, blue;
 	RGB rgb1, rgb2;
 
 	memcpy(&rgb1, where->val, 3);
@@ -1022,7 +1022,7 @@ chip_draw_lwgeom(CHIP *chip, LWGEOM *lwgeom, PIXEL *pixel, int op)
 		return;
 	case POLYGONTYPE:
 		lwerror("%s geometry unsupported by draw operation",
-		        lwgeom_typename(TYPE_GETTYPE(lwgeom->type)));
+		        lwtype_name(TYPE_GETTYPE(lwgeom->type)));
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:

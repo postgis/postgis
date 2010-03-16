@@ -46,8 +46,8 @@ LWGEOM *lwgeom_desegmentize(LWGEOM *geom);
  * Determines (recursively in the case of collections) whether the geometry
  * contains at least on arc geometry or segment.
  */
-uint32
-has_arc(LWGEOM *geom)
+int
+has_arc(const LWGEOM *geom)
 {
 	LWCOLLECTION *col;
 	int i;
@@ -152,7 +152,7 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad)
 	POINTARRAY *result;
 	POINT4D pbuf;
 	size_t ptsize = sizeof(POINT4D);
-	unsigned int ptcount;
+	uint32 ptcount;
 	uchar *pt;
 
 	POINT4D *center;

@@ -22,6 +22,14 @@ lwmline_release(LWMLINE *lwmline)
 }
 
 LWMLINE *
+lwmline_construct_empty(int srid, char hasz, char hasm)
+{
+	LWMLINE *ret = (LWMLINE*)lwcollection_construct_empty(srid, hasz, hasm);
+	TYPE_SETTYPE(ret->type, MULTILINETYPE);
+	return ret;
+}
+
+LWMLINE *
 lwmline_deserialize(uchar *srl)
 {
 	LWMLINE *result;
@@ -76,51 +84,9 @@ lwmline_deserialize(uchar *srl)
 	return result;
 }
 
-/*
- * Add 'what' to this multiline at position 'where'.
- * where=0 == prepend
- * where=-1 == append
- * Returns a MULTILINE or a COLLECTION
- */
-LWGEOM *
-lwmline_add(const LWMLINE *to, uint32 where, const LWGEOM *what)
+LWMLINE* lwmline_add_lwline(LWMLINE *mobj, const LWLINE *obj)
 {
-	LWCOLLECTION *col;
-	LWGEOM **geoms;
-	int newtype;
-	uint32 i;
-
-	if ( where == -1 ) where = to->ngeoms;
-	else if ( where < -1 || where > to->ngeoms )
-	{
-		lwerror("lwmline_add: add position out of range %d..%d",
-		        -1, to->ngeoms);
-		return NULL;
-	}
-
-	/* dimensions compatibility are checked by caller */
-
-	/* Construct geoms array */
-	geoms = lwalloc(sizeof(LWGEOM *)*(to->ngeoms+1));
-	for (i=0; i<where; i++)
-	{
-		geoms[i] = lwgeom_clone((LWGEOM *)to->geoms[i]);
-	}
-	geoms[where] = lwgeom_clone(what);
-	for (i=where; i<to->ngeoms; i++)
-	{
-		geoms[i+1] = lwgeom_clone((LWGEOM *)to->geoms[i]);
-	}
-
-	if ( TYPE_GETTYPE(what->type) == LINETYPE ) newtype = MULTILINETYPE;
-	else newtype = COLLECTIONTYPE;
-
-	col = lwcollection_construct(newtype,
-	                             to->SRID, NULL,
-	                             to->ngeoms+1, geoms);
-
-	return (LWGEOM *)col;
-
+	return (LWMLINE*)lwcollection_add_lwgeom((LWCOLLECTION*)mobj, (LWGEOM*)obj);
 }
 
 /**

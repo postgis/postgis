@@ -76,11 +76,11 @@
 #define MAXFLOAT      3.402823466e+38F
 #endif
 
-#ifndef C_H
+typedef unsigned char uchar;
 
+#ifndef C_H
 typedef unsigned int uint32;
 typedef int int32;
-
 #endif
 
 /**
@@ -175,7 +175,6 @@ va_dcl
 
 /******************************************************************/
 
-typedef unsigned char uchar;
 
 typedef struct
 {
@@ -319,7 +318,8 @@ typedef struct
 	/* use TYPE_* macros to handle */
 	uchar  dims;
 
-	uint32 npoints;
+	int npoints;
+	int maxpoints;
 }
 POINTARRAY;
 
@@ -386,7 +386,7 @@ typedef struct
 	uchar type; /* LINETYPE */
 	BOX2DFLOAT4 *bbox;
 	uint32 SRID;
-	POINTARRAY    *points; /* array of POINT3D */
+	POINTARRAY *points; /* array of POINT3D */
 }
 LWLINE; /* "light-weight line" */
 
@@ -396,7 +396,8 @@ typedef struct
 	uchar type; /* POLYGONTYPE */
 	BOX2DFLOAT4 *bbox;
 	uint32 SRID;
-	int  nrings;
+	int nrings;
+	int maxrings;
 	POINTARRAY **rings; /* list of rings (list of points) */
 }
 LWPOLY; /* "light-weight polygon" */
@@ -407,7 +408,8 @@ typedef struct
 	uchar type;
 	BOX2DFLOAT4 *bbox;
 	uint32 SRID;
-	int  ngeoms;
+	int ngeoms;
+	int maxgeoms;
 	LWPOINT **geoms;
 }
 LWMPOINT;
@@ -418,7 +420,8 @@ typedef struct
 	uchar type;
 	BOX2DFLOAT4 *bbox;
 	uint32 SRID;
-	int  ngeoms;
+	int ngeoms;
+	int maxgeoms;
 	LWLINE **geoms;
 }
 LWMLINE;
@@ -429,7 +432,8 @@ typedef struct
 	uchar type;
 	BOX2DFLOAT4 *bbox;
 	uint32 SRID;
-	int  ngeoms;
+	int ngeoms;
+	int maxgeoms;
 	LWPOLY **geoms;
 }
 LWMPOLY;
@@ -440,7 +444,8 @@ typedef struct
 	uchar type;
 	BOX2DFLOAT4 *bbox;
 	uint32 SRID;
-	int  ngeoms;
+	int ngeoms;
+	int maxgeoms;
 	LWGEOM **geoms;
 }
 LWCOLLECTION;
@@ -462,6 +467,7 @@ typedef struct
 	BOX2DFLOAT4 *bbox;
 	uint32 SRID;
 	int ngeoms;
+	int maxgeoms;
 	LWGEOM **geoms;
 }
 LWCOMPOUND; /* "light-weight compound line" */
@@ -473,6 +479,7 @@ typedef struct
 	BOX2DFLOAT4 *bbox;
 	uint32 SRID;
 	int nrings;
+	int maxrings;
 	LWGEOM **rings; /* list of rings (list of points) */
 }
 LWCURVEPOLY; /* "light-weight polygon" */
@@ -484,6 +491,7 @@ typedef struct
 	BOX2DFLOAT4 *bbox;
 	uint32 SRID;
 	int ngeoms;
+	int maxgeoms;
 	LWGEOM **geoms;
 }
 LWMCURVE;
@@ -495,30 +503,37 @@ typedef struct
 	BOX2DFLOAT4 *bbox;
 	uint32 SRID;
 	int ngeoms;
+	int maxgeoms;
 	LWGEOM **geoms;
 }
 LWMSURFACE;
 
 /* Casts LWGEOM->LW* (return NULL if cast is illegal) */
-extern LWMPOLY *lwgeom_as_lwmpoly(LWGEOM *lwgeom);
-extern LWMLINE *lwgeom_as_lwmline(LWGEOM *lwgeom);
-extern LWMPOINT *lwgeom_as_lwmpoint(LWGEOM *lwgeom);
-extern LWCOLLECTION *lwgeom_as_lwcollection(LWGEOM *lwgeom);
-extern LWPOLY *lwgeom_as_lwpoly(LWGEOM *lwgeom);
-extern LWLINE *lwgeom_as_lwline(LWGEOM *lwgeom);
-extern LWPOINT *lwgeom_as_lwpoint(LWGEOM *lwgeom);
-extern LWCIRCSTRING *lwgeom_as_lwcircstring(LWGEOM *lwgeom);
-extern LWGEOM *lwgeom_as_multi(LWGEOM *lwgeom);
+extern LWMPOLY *lwgeom_as_lwmpoly(const LWGEOM *lwgeom);
+extern LWMLINE *lwgeom_as_lwmline(const LWGEOM *lwgeom);
+extern LWMPOINT *lwgeom_as_lwmpoint(const LWGEOM *lwgeom);
+extern LWCOLLECTION *lwgeom_as_lwcollection(const LWGEOM *lwgeom);
+extern LWPOLY *lwgeom_as_lwpoly(const LWGEOM *lwgeom);
+extern LWLINE *lwgeom_as_lwline(const LWGEOM *lwgeom);
+extern LWPOINT *lwgeom_as_lwpoint(const LWGEOM *lwgeom);
+extern LWCIRCSTRING *lwgeom_as_lwcircstring(const LWGEOM *lwgeom);
+extern LWGEOM *lwgeom_as_multi(const LWGEOM *lwgeom);
 
 /* Casts LW*->LWGEOM (always cast) */
-extern LWGEOM *lwmpoly_as_lwgeom(LWMPOLY *obj);
-extern LWGEOM *lwmline_as_lwgeom(LWMLINE *obj);
-extern LWGEOM *lwmpoint_as_lwgeom(LWMPOINT *obj);
-extern LWGEOM *lwcollection_as_lwgeom(LWCOLLECTION *obj);
-extern LWGEOM *lwcircstring_as_lwgeom(LWCIRCSTRING *obj);
-extern LWGEOM *lwpoly_as_lwgeom(LWPOLY *obj);
-extern LWGEOM *lwline_as_lwgeom(LWLINE *obj);
-extern LWGEOM *lwpoint_as_lwgeom(LWPOINT *obj);
+extern LWGEOM *lwmpoly_as_lwgeom(const LWMPOLY *obj);
+extern LWGEOM *lwmline_as_lwgeom(const LWMLINE *obj);
+extern LWGEOM *lwmpoint_as_lwgeom(const LWMPOINT *obj);
+extern LWGEOM *lwcollection_as_lwgeom(const LWCOLLECTION *obj);
+extern LWGEOM *lwcircstring_as_lwgeom(const LWCIRCSTRING *obj);
+extern LWGEOM *lwpoly_as_lwgeom(const LWPOLY *obj);
+extern LWGEOM *lwline_as_lwgeom(const LWLINE *obj);
+extern LWGEOM *lwpoint_as_lwgeom(const LWPOINT *obj);
+
+
+extern LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom);
+extern LWMPOINT* lwmpoint_add_lwpoint(LWMPOINT *mobj, const LWPOINT *obj);
+extern LWMLINE* lwmline_add_lwline(LWMLINE *mobj, const LWLINE *obj);
+extern LWMPOLY* lwmpoly_add_lwpoly(LWMPOLY *mobj, const LWPOLY *obj);
 
 /*
  * Call this function everytime LWGEOM coordinates
@@ -660,7 +675,6 @@ extern int pointArray_ptsize(const POINTARRAY *pa);
 #define WKBSRIDFLAG 0x20000000
 #define WKBBBOXFLAG 0x10000000
 
-
 /* These macros work on PG_LWGEOM.type, LWGEOM.type and all its subclasses */
 
 #define TYPE_SETTYPE(c,t) ((c)=(((c)&0xF0)|(t)))
@@ -713,8 +727,7 @@ PG_LWGEOM;
  * If you request bbox (wantbbox=1) it will be extracted or computed
  * from the serialized form.
  */
-extern PG_LWGEOM *PG_LWGEOM_construct(uchar *serialized, int SRID,
-                                      int wantbbox);
+extern PG_LWGEOM *PG_LWGEOM_construct(uchar *serialized, int SRID, int wantbbox);
 
 /*
  * Compute bbox of serialized geom
@@ -877,7 +890,7 @@ extern void lwcircstring_serialize_buf(LWCIRCSTRING *curve, uchar *buf, size_t *
 /*
  * find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
  */
-extern BOX3D *lwcircstring_compute_box3d(LWCIRCSTRING *curve);
+extern BOX3D *lwcircstring_compute_box3d(const LWCIRCSTRING *curve);
 
 
 
@@ -1179,12 +1192,10 @@ extern float LWGEOM_Maxf(float a, float b);
 extern double LWGEOM_Mind(double a, double b);
 extern double LWGEOM_Maxd(double a, double b);
 
-extern float  nextDown_f(double d);
-extern float  nextUp_f(double d);
-extern double nextDown_d(float d);
-extern double nextUp_d(float d);
-
-extern float nextafterf_custom(float x, float y);
+extern float  next_float_down(double d);
+extern float  next_float_up(double d);
+extern double next_double_down(float d);
+extern double next_double_up(float d);
 
 
 #define LW_MAX(a,b) ((a) >	(b) ? (a) : (b))
@@ -1196,26 +1207,26 @@ extern float nextafterf_custom(float x, float y);
 #define DIST2D_MIN		1
 
 /* general utilities */
-extern double distance2d_pt_pt(POINT2D *p1, POINT2D *p2);
-extern double distance2d_pt_seg(POINT2D *p, POINT2D *A, POINT2D *B);
+extern double distance2d_pt_pt(const POINT2D *p1, const POINT2D *p2);
+extern double distance2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B);
 extern LWGEOM *lw_dist2d_distancepoint(uchar *lw1, uchar *lw2,int srid,int mode);
 extern LWGEOM *lw_dist2d_distanceline(uchar *lw1, uchar *lw2,int srid,int mode);
 extern double lwgeom_mindistance2d(uchar *lw1, uchar *lw2);
 extern double lwgeom_mindistance2d_tolerance(uchar *lw1, uchar *lw2, double tolerance);
 extern double lwgeom_maxdistance2d(uchar *lw1, uchar *lw2);
 extern double lwgeom_maxdistance2d_tolerance(uchar *lw1, uchar *lw2, double tolerance);
-extern double lwgeom_polygon_area(LWPOLY *poly);
-extern double lwgeom_polygon_perimeter(LWPOLY *poly);
-extern double lwgeom_polygon_perimeter2d(LWPOLY *poly);
-extern double lwgeom_pointarray_length2d(POINTARRAY *pts);
-extern double lwgeom_pointarray_length(POINTARRAY *pts);
+extern double lwgeom_polygon_area(const LWPOLY *poly);
+extern double lwgeom_polygon_perimeter(const LWPOLY *poly);
+extern double lwgeom_polygon_perimeter2d(const LWPOLY *poly);
+extern double lwgeom_pointarray_length2d(const POINTARRAY *pts);
+extern double lwgeom_pointarray_length(const POINTARRAY *pts);
 extern void lwgeom_force2d_recursive(uchar *serialized, uchar *optr, size_t *retsize);
 extern void lwgeom_force3dz_recursive(uchar *serialized, uchar *optr, size_t *retsize);
 extern void lwgeom_force3dm_recursive(uchar *serialized, uchar *optr, size_t *retsize);
 extern void lwgeom_force4d_recursive(uchar *serialized, uchar *optr, size_t *retsize);
-extern int pt_in_ring_2d(POINT2D *p, POINTARRAY *ring);
-extern int pt_in_poly_2d(POINT2D *p, LWPOLY *poly);
-extern int azimuth_pt_pt(POINT2D *p1, POINT2D *p2, double *ret);
+extern int pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring);
+extern int pt_in_poly_2d(const POINT2D *p, const LWPOLY *poly);
+extern int azimuth_pt_pt(const POINT2D *p1, const POINT2D *p2, double *ret);
 extern int lwgeom_pt_inside_circle(POINT2D *p, double cx, double cy, double rad);
 extern char ptarray_isccw(const POINTARRAY *pa);
 extern void lwgeom_reverse(LWGEOM *lwgeom);
@@ -1223,17 +1234,17 @@ extern void lwline_reverse(LWLINE *line);
 extern void lwpoly_reverse(LWPOLY *poly);
 extern void lwpoly_forceRHR(LWPOLY *poly);
 extern void lwgeom_force_rhr(LWGEOM *lwgeom);
-extern char *lwgeom_summary(LWGEOM *lwgeom, int offset);
-extern const char *lwgeom_typename(int type);
+extern char* lwgeom_summary(const LWGEOM *lwgeom, int offset);
+extern const char *lwtype_name(int type);
 extern int ptarray_compute_box2d_p(const POINTARRAY *pa, BOX2DFLOAT4 *result);
 extern BOX2DFLOAT4 *ptarray_compute_box2d(const POINTARRAY *pa);
-extern int lwpoint_compute_box2d_p(LWPOINT *point, BOX2DFLOAT4 *box);
-extern int lwline_compute_box2d_p(LWLINE *line, BOX2DFLOAT4 *box);
-extern int lwpoly_compute_box2d_p(LWPOLY *poly, BOX2DFLOAT4 *box);
-extern int lwcollection_compute_box2d_p(LWCOLLECTION *col, BOX2DFLOAT4 *box);
-extern int lwcircstring_compute_box2d_p(LWCIRCSTRING *curve, BOX2DFLOAT4 *box);
-extern BOX2DFLOAT4 *lwgeom_compute_box2d(LWGEOM *lwgeom);
-extern char * lwpoint_to_latlon(LWPOINT * p, const char * format);
+extern int lwpoint_compute_box2d_p(const LWPOINT *point, BOX2DFLOAT4 *box);
+extern int lwline_compute_box2d_p(const LWLINE *line, BOX2DFLOAT4 *box);
+extern int lwpoly_compute_box2d_p(const LWPOLY *poly, BOX2DFLOAT4 *box);
+extern int lwcollection_compute_box2d_p(const LWCOLLECTION *col, BOX2DFLOAT4 *box);
+extern int lwcircstring_compute_box2d_p(const LWCIRCSTRING *curve, BOX2DFLOAT4 *box);
+extern BOX2DFLOAT4* lwgeom_compute_box2d(const LWGEOM *lwgeom);
+extern char* lwpoint_to_latlon(const LWPOINT *p, const char *format);
 
 extern void interpolate_point4d(POINT4D *A, POINT4D *B, POINT4D *I, double F);
 
@@ -1242,7 +1253,7 @@ extern BOX2DFLOAT4 *box2d_union(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2);
 
 /* args may overlap ! */
 extern int box2d_union_p(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2, BOX2DFLOAT4 *ubox);
-extern int lwgeom_compute_box2d_p(LWGEOM *lwgeom, BOX2DFLOAT4 *box);
+extern int lwgeom_compute_box2d_p(const LWGEOM *lwgeom, BOX2DFLOAT4 *box);
 void lwgeom_longitude_shift(LWGEOM *lwgeom);
 
 
@@ -1260,8 +1271,8 @@ extern int lwgeom_needs_bbox(const LWGEOM *geom);
 /**
 * Count the total number of vertices in any #LWGEOM.
 */
-extern int lwgeom_count_vertices(LWGEOM *geom);
-extern int32 lwgeom_npoints(uchar *serialized);
+extern int lwgeom_count_vertices(const LWGEOM *geom);
+extern int lwgeom_npoints(uchar *serialized);
 
 /**
 * Return true or false depending on whether a geometry has
@@ -1288,27 +1299,6 @@ char lwline_same(const LWLINE *p1, const LWLINE *p2);
 char lwpoly_same(const LWPOLY *p1, const LWPOLY *p2);
 char lwcollection_same(const LWCOLLECTION *p1, const LWCOLLECTION *p2);
 
-/*
- * Add 'what' to 'to' at position 'where'.
- * where=0 == prepend
- * where=-1 == append
- * Mix of dimensions is not allowed (TODO: allow it?).
- * Returns a newly allocated LWGEOM (with NO BBOX)
- */
-extern LWGEOM *lwgeom_add(const LWGEOM *to, uint32 where, const LWGEOM *what);
-
-LWGEOM *lwpoint_add(const LWPOINT *to, uint32 where, const LWGEOM *what);
-LWGEOM *lwline_add(const LWLINE *to, uint32 where, const LWGEOM *what);
-LWGEOM *lwpoly_add(const LWPOLY *to, uint32 where, const LWGEOM *what);
-LWGEOM *lwmpoly_add(const LWMPOLY *to, uint32 where, const LWGEOM *what);
-LWGEOM *lwmline_add(const LWMLINE *to, uint32 where, const LWGEOM *what);
-LWGEOM *lwmpoint_add(const LWMPOINT *to, uint32 where, const LWGEOM *what);
-LWGEOM *lwcollection_add(const LWCOLLECTION *to, uint32 where, const LWGEOM *what);
-LWGEOM *lwcompound_add(const LWCOMPOUND *to, uint32 where, const LWGEOM *what);
-LWGEOM *lwcurvepoly_add(const LWCURVEPOLY *to, uint32 where, const LWGEOM *what);
-LWGEOM *lwmcurve_add(const LWMCURVE *to, uint32 where, const LWGEOM *what);
-LWGEOM *lwmsurface_add(const LWMSURFACE *to, uint32 where, const LWGEOM *what);
-LWGEOM *lwcircstring_add(const LWCIRCSTRING *to, uint32 where, const LWGEOM *what);
 
 /*
  * Clone an LWGEOM
@@ -1325,49 +1315,48 @@ extern BOX2DFLOAT4 *box2d_clone(const BOX2DFLOAT4 *lwgeom);
 extern POINTARRAY *ptarray_clone(const POINTARRAY *ptarray);
 
 /*
- * Geometry constructors
- * Take ownership of arguments
- */
-extern LWPOINT  *lwpoint_construct(int SRID, BOX2DFLOAT4 *bbox,
-                                   POINTARRAY *point);
-extern LWLINE *lwline_construct(int SRID, BOX2DFLOAT4 *bbox,
-                                POINTARRAY *points);
-
-/*
- * Construct a new LWPOLY.  arrays (points/points per ring) will NOT be copied
- * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
- */
-extern LWPOLY *lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox,
-                                unsigned int nrings, POINTARRAY **points);
-
-extern LWCOLLECTION *lwcollection_construct(unsigned int type, int SRID,
-        BOX2DFLOAT4 *bbox, unsigned int ngeoms, LWGEOM **geoms);
-extern LWCOLLECTION *lwcollection_construct_empty(int SRID,
-        char hasZ, char hasM);
-
-/*
- * Construct a new LWCIRCSTRING.  arrays (points/points per ring) will NOT be copied
- * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
- */
+* Geometry constructors. These constructors to not copy the point arrays
+* passed to them, they just take references, so do not free them out
+* from underneath the geometries.
+*/
+extern LWPOINT *lwpoint_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *point);
+extern LWLINE *lwline_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
 extern LWCIRCSTRING *lwcircstring_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
+extern LWPOLY *lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox, uint32 nrings, POINTARRAY **points);
+extern LWCOLLECTION *lwcollection_construct(uint32 type, int SRID, BOX2DFLOAT4 *bbox, uint32 ngeoms, LWGEOM **geoms);
+
+/*
+* Empty geometry constructors.
+*/
+extern LWPOINT* lwpoint_construct_empty(int srid, char hasz, char hasm);
+extern LWLINE* lwline_construct_empty(int srid, char hasz, char hasm);
+extern LWPOLY* lwpoly_construct_empty(int srid, char hasz, char hasm);
+extern LWMPOINT* lwmpoint_construct_empty(int srid, char hasz, char hasm);
+extern LWMLINE* lwmline_construct_empty(int srid, char hasz, char hasm);
+extern LWMPOLY* lwmpoly_construct_empty(int srid, char hasz, char hasm);
+extern LWCOLLECTION* lwcollection_construct_empty(int srid, char hasz, char hasm);
+
 
 /* Other constructors */
 extern LWPOINT *make_lwpoint2d(int SRID, double x, double y);
 extern LWPOINT *make_lwpoint3dz(int SRID, double x, double y, double z);
 extern LWPOINT *make_lwpoint3dm(int SRID, double x, double y, double m);
 extern LWPOINT *make_lwpoint4d(int SRID, double x, double y, double z, double m);
-extern LWLINE *lwline_from_lwpointarray(int SRID, unsigned int npoints, LWPOINT **points);
+extern LWLINE *lwline_from_lwpointarray(int SRID, uint32 npoints, LWPOINT **points);
 extern LWLINE *lwline_from_lwmpoint(int SRID, LWMPOINT *mpoint);
-extern LWLINE *lwline_addpoint(LWLINE *line, LWPOINT *point, unsigned int where);
-extern LWLINE *lwline_removepoint(LWLINE *line, unsigned int which);
-extern void lwline_setPoint4d(LWLINE *line, unsigned int which, POINT4D *newpoint);
-extern LWPOLY *lwpoly_from_lwlines(const LWLINE *shell, unsigned int nholes, const LWLINE **holes);
+extern LWLINE *lwline_addpoint(LWLINE *line, LWPOINT *point, uint32 where);
+extern LWLINE *lwline_removepoint(LWLINE *line, uint32 which);
+extern void lwline_setPoint4d(LWLINE *line, uint32 which, POINT4D *newpoint);
+extern LWPOLY *lwpoly_from_lwlines(const LWLINE *shell, uint32 nholes, const LWLINE **holes);
 
 /* Return a char string with ASCII versionf of type flags */
 extern const char *lwgeom_typeflags(uchar type);
 
 /* Construct an empty pointarray */
-extern POINTARRAY *ptarray_construct(char hasz, char hasm, unsigned int npoints);
+extern POINTARRAY* ptarray_construct(char hasz, char hasm, uint32 npoints);
+
+/* Construct a pointarray, *copying* in the data from ptlist */
+extern POINTARRAY* ptarray_construct_copy_data(char hasz, char hasm, uint32 npoints, uchar *ptlist);
 
 /*
  * extern POINTARRAY *ptarray_construct2d(uint32 npoints, const POINT2D *pts);
@@ -1377,8 +1366,8 @@ extern POINTARRAY *ptarray_construct(char hasz, char hasm, unsigned int npoints)
  */
 
 extern POINTARRAY *ptarray_addPoint(const POINTARRAY *pa, uchar *p, size_t pdims,
-                                    unsigned int where);
-extern POINTARRAY *ptarray_removePoint(POINTARRAY *pa, unsigned int where);
+                                    uint32 where);
+extern POINTARRAY *ptarray_removePoint(POINTARRAY *pa, uint32 where);
 extern POINTARRAY *ptarray_merge(POINTARRAY *pa1, POINTARRAY *pa2);
 
 extern int ptarray_isclosed2d(const POINTARRAY *pa);
@@ -1415,7 +1404,7 @@ extern LWMLINE* lwmline_measured_from_lwmline(const LWMLINE *lwmline, double m_s
  * Returned LWGEOM might is unchanged if a POINT.
  */
 extern LWGEOM *lwgeom_segmentize2d(LWGEOM *line, double dist);
-extern POINTARRAY *ptarray_segmentize2d(POINTARRAY *ipa, double dist);
+extern POINTARRAY *ptarray_segmentize2d(const POINTARRAY *ipa, double dist);
 extern LWLINE *lwline_segmentize2d(LWLINE *line, double dist);
 extern LWPOLY *lwpoly_segmentize2d(LWPOLY *line, double dist);
 extern LWCOLLECTION *lwcollection_segmentize2d(LWCOLLECTION *coll, double dist);
@@ -1429,11 +1418,11 @@ extern LWCOLLECTION *lwcollection_segmentize2d(LWCOLLECTION *coll, double dist);
 #define OUT_MAX_DOUBLE_PRECISION 15
 #define OUT_MAX_DIGS_DOUBLE (OUT_SHOW_DIGS_DOUBLE + 2) /* +2 mean add dot and sign */
 
-extern char * lwgeom_to_gml2(uchar *geom, char *srs, int precision);
-extern char * lwgeom_to_gml3(uchar *geom, char *srs, int precision, int is_deegree);
-extern char * lwgeom_to_kml2(uchar *geom, int precision);
-extern char * lwgeom_to_geojson(uchar *geom, char *srs, int precision, int has_bbox);
-extern char * lwgeom_to_svg(uchar *geom, int precision, int relative);
+extern char* lwgeom_to_gml2(uchar *geom, char *srs, int precision);
+extern char* lwgeom_to_gml3(uchar *geom, char *srs, int precision, int is_deegree);
+extern char* lwgeom_to_kml2(uchar *geom, int precision);
+extern char* lwgeom_to_geojson(uchar *geom, char *srs, int precision, int has_bbox);
+extern char* lwgeom_to_svg(uchar *geom, int precision, int relative);
 
 
 extern POINTARRAY *ptarray_remove_repeated_points(POINTARRAY *in);
@@ -1451,7 +1440,7 @@ extern void deparse_hex(uchar str, char *result);
 /*
 ** New parsing and unparsing functions.
 */
-extern char *lwgeom_to_wkt(const LWGEOM *geom, uchar variant, int precision, size_t *size_out);
+extern char* lwgeom_to_wkt(const LWGEOM *geom, uchar variant, int precision, size_t *size_out);
 extern char* lwgeom_to_wkb(const LWGEOM *geom, uchar variant, size_t *size_out);
 
 
@@ -1511,16 +1500,16 @@ LWGEOM_UNPARSER_RESULT;
 
 /* Parser access routines */
 extern char *lwgeom_to_ewkt(LWGEOM *lwgeom, int flags);
-extern char *lwgeom_to_hexwkb(LWGEOM *lwgeom, int flags, unsigned int byteorder);
+extern char *lwgeom_to_hexwkb(LWGEOM *lwgeom, int flags, uint32 byteorder);
 extern LWGEOM *lwgeom_from_ewkb(uchar *ewkb, int flags, size_t ewkblen);
 extern LWGEOM *lwgeom_from_ewkt(char *ewkt, int flags);
 extern uchar *lwgeom_to_ewkb(LWGEOM *lwgeom, int flags, char byteorder, size_t *ewkblen);
 
 extern int serialized_lwgeom_to_ewkt(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags);
 extern int serialized_lwgeom_from_ewkt(LWGEOM_PARSER_RESULT *lwg_parser_result, char *wkt_input, int flags);
-extern int serialized_lwgeom_to_hexwkb(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags, unsigned int byteorder);
+extern int serialized_lwgeom_to_hexwkb(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags, uint32 byteorder);
 extern int serialized_lwgeom_from_hexwkb(LWGEOM_PARSER_RESULT *lwg_parser_result, char *hexwkb_input, int flags);
-extern int serialized_lwgeom_to_ewkb(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags, unsigned int byteorder);
+extern int serialized_lwgeom_to_ewkb(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags, uint32 byteorder);
 
 extern void *lwalloc(size_t size);
 extern void *lwrealloc(void *mem, size_t size);
@@ -1542,7 +1531,7 @@ void errorIfSRIDMismatch(int srid1, int srid2);
  * SQLMM internal functions - TODO: Move into separate header files
  ******************************************************************************/
 
-uint32 has_arc(LWGEOM *geom);
+int has_arc(const LWGEOM *geom);
 double lwcircle_center(POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D **result);
 LWGEOM *lwgeom_segmentize(LWGEOM *geom, uint32 perQuad);
 LWGEOM *lwgeom_desegmentize(LWGEOM *geom);

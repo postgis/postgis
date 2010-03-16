@@ -16,8 +16,8 @@
 #include "liblwgeom.h"
 
 
-POINTARRAY *
-ptarray_construct(char hasz, char hasm, unsigned int npoints)
+POINTARRAY*
+ptarray_construct(char hasz, char hasm, uint32 npoints)
 {
 	uchar dims = 0;
 	size_t size;
@@ -39,6 +39,33 @@ ptarray_construct(char hasz, char hasm, unsigned int npoints)
 
 	return pa;
 
+}
+
+POINTARRAY*
+ptarray_construct_copy_data(char hasz, char hasm, uint32 npoints, uchar *ptlist)
+{
+	uchar dims = 0;
+	size_t size;
+	POINTARRAY *pa = NULL;
+
+	pa = lwalloc(sizeof(POINTARRAY));
+
+	TYPE_SETZM(dims, hasz?1:0, hasm?1:0);
+	size = TYPE_NDIMS(dims)*npoints*sizeof(double);
+	pa->dims = dims;
+	pa->npoints = npoints;
+
+	if ( size )
+	{
+		pa->serialized_pointlist = (uchar *)lwalloc(size);
+		memcpy(pa->serialized_pointlist, ptlist, size);
+	}
+	else
+	{
+		pa->serialized_pointlist = NULL;
+	}
+
+	return pa;
 }
 
 void ptarray_free(POINTARRAY *pa)
@@ -174,7 +201,7 @@ ptarray_compute_box2d(const POINTARRAY *pa)
  * Z and M values for added points (if needed) are set to 0.
  */
 POINTARRAY *
-ptarray_segmentize2d(POINTARRAY *ipa, double dist)
+ptarray_segmentize2d(const POINTARRAY *ipa, double dist)
 {
 	double	segdist;
 	POINT4D	p1, p2;
@@ -252,7 +279,7 @@ ptarray_segmentize2d(POINTARRAY *ipa, double dist)
 char
 ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2)
 {
-	unsigned int i;
+	uint32 i;
 	size_t ptsize;
 
 	if ( TYPE_GETZM(pa1->dims) != TYPE_GETZM(pa2->dims) ) return 0;
@@ -282,7 +309,7 @@ ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2)
  *          for the actual points, or NULL on error.
  */
 POINTARRAY *
-ptarray_addPoint(const POINTARRAY *pa, uchar *p, size_t pdims, unsigned int where)
+ptarray_addPoint(const POINTARRAY *pa, uchar *p, size_t pdims, uint32 where)
 {
 	POINTARRAY *ret;
 	POINT4D pbuf;
@@ -341,7 +368,7 @@ ptarray_addPoint(const POINTARRAY *pa, uchar *p, size_t pdims, unsigned int wher
  * @return #POINTARRAY is newly allocated
  */
 POINTARRAY *
-ptarray_removePoint(POINTARRAY *pa, unsigned int which)
+ptarray_removePoint(POINTARRAY *pa, uint32 which)
 {
 	POINTARRAY *ret;
 	size_t ptsize = pointArray_ptsize(pa);

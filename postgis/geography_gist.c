@@ -314,35 +314,35 @@ static int gidx_from_gbox_p(GBOX box, GIDX *a)
 	ndims = (FLAGS_GET_GEODETIC(box.flags) ? 3 : FLAGS_NDIMS(box.flags));
 	SET_VARSIZE(a, VARHDRSZ + ndims * 2 * sizeof(float));
 
-	GIDX_SET_MIN(a,0,nextDown_f(box.xmin));
-	GIDX_SET_MAX(a,0,nextUp_f(box.xmax));
-	GIDX_SET_MIN(a,1,nextDown_f(box.ymin));
-	GIDX_SET_MAX(a,1,nextUp_f(box.ymax));
+	GIDX_SET_MIN(a,0,next_float_down(box.xmin));
+	GIDX_SET_MAX(a,0,next_float_up(box.xmax));
+	GIDX_SET_MIN(a,1,next_float_down(box.ymin));
+	GIDX_SET_MAX(a,1,next_float_up(box.ymax));
 
 	/* Geodetic indexes are always 3d, geocentric x/y/z */
 	if ( FLAGS_GET_GEODETIC(box.flags) )
 	{
-		GIDX_SET_MIN(a,2,nextDown_f(box.zmin));
-		GIDX_SET_MAX(a,2,nextUp_f(box.zmax));
+		GIDX_SET_MIN(a,2,next_float_down(box.zmin));
+		GIDX_SET_MAX(a,2,next_float_up(box.zmax));
 	}
 	else
 	{
 		/* Cartesian with Z implies Z is third dimension */
 		if ( FLAGS_GET_Z(box.flags) )
 		{
-			GIDX_SET_MIN(a,2,nextDown_f(box.zmin));
-			GIDX_SET_MAX(a,2,nextUp_f(box.zmax));
+			GIDX_SET_MIN(a,2,next_float_down(box.zmin));
+			GIDX_SET_MAX(a,2,next_float_up(box.zmax));
 			if ( FLAGS_GET_M(box.flags) )
 			{
-				GIDX_SET_MIN(a,3,nextDown_f(box.mmin));
-				GIDX_SET_MAX(a,3,nextUp_f(box.mmax));
+				GIDX_SET_MIN(a,3,next_float_down(box.mmin));
+				GIDX_SET_MAX(a,3,next_float_up(box.mmax));
 			}
 		}
 		/* Unless there's no Z, in which case M is third dimension */
 		else if ( FLAGS_GET_M(box.flags) )
 		{
-			GIDX_SET_MIN(a,2,nextDown_f(box.mmin));
-			GIDX_SET_MAX(a,2,nextUp_f(box.mmax));
+			GIDX_SET_MIN(a,2,next_float_down(box.mmin));
+			GIDX_SET_MAX(a,2,next_float_up(box.mmax));
 		}
 	}
 

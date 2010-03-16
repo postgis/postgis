@@ -384,7 +384,7 @@ static char * lwdoubles_to_latlon(double lat, double lon, const char * format)
  * First normalizes the values so they will display as -90 to 90 and -180 to 180.
  * Format string may be null or 0-length, in which case a default format will be used.
  * NOTE: Format string is required to be in UTF-8. */
-char * lwpoint_to_latlon(LWPOINT * pt, const char * format)
+char* lwpoint_to_latlon(const LWPOINT * pt, const char *format)
 {
 	POINT2D p;
 	if (NULL == pt)

@@ -22,6 +22,13 @@ lwmpoly_release(LWMPOLY *lwmpoly)
 	lwgeom_release(lwmpoly_as_lwgeom(lwmpoly));
 }
 
+LWMPOLY *
+lwmpoly_construct_empty(int srid, char hasz, char hasm)
+{
+	LWMPOLY *ret = (LWMPOLY*)lwcollection_construct_empty(srid, hasz, hasm);
+	TYPE_SETTYPE(ret->type, MULTIPOLYGONTYPE);
+	return ret;
+}
 
 LWMPOLY *
 lwmpoly_deserialize(uchar *srl)
@@ -79,51 +86,11 @@ lwmpoly_deserialize(uchar *srl)
 	return result;
 }
 
-/**
- * Add 'what' to this multiline at position 'where'.
- * @param where if 0 == prepend, if = -1 then append
- * @return a {@link #MULTIPOLY} or a {@link #COLLECTION}
- */
-LWGEOM *
-lwmpoly_add(const LWMPOLY *to, uint32 where, const LWGEOM *what)
+LWMPOLY* lwmpoly_add_lwpoly(LWMPOLY *mobj, const LWPOLY *obj)
 {
-	LWCOLLECTION *col;
-	LWGEOM **geoms;
-	int newtype;
-	uint32 i;
-
-	if ( where == -1 ) where = to->ngeoms;
-	else if ( where < -1 || where > to->ngeoms )
-	{
-		lwerror("lwmline_add: add position out of range %d..%d",
-		        -1, to->ngeoms);
-		return NULL;
-	}
-
-	/* dimensions compatibility are checked by caller */
-
-	/* Construct geoms array */
-	geoms = lwalloc(sizeof(LWGEOM *)*(to->ngeoms+1));
-	for (i=0; i<where; i++)
-	{
-		geoms[i] = lwgeom_clone((LWGEOM *)to->geoms[i]);
-	}
-	geoms[where] = lwgeom_clone(what);
-	for (i=where; i<to->ngeoms; i++)
-	{
-		geoms[i+1] = lwgeom_clone((LWGEOM *)to->geoms[i]);
-	}
-
-	if ( TYPE_GETTYPE(what->type) == POLYGONTYPE ) newtype = MULTIPOLYGONTYPE;
-	else newtype = COLLECTIONTYPE;
-
-	col = lwcollection_construct(newtype,
-	                             to->SRID, NULL,
-	                             to->ngeoms+1, geoms);
-
-	return (LWGEOM *)col;
-
+	return (LWMPOLY*)lwcollection_add_lwgeom((LWCOLLECTION*)mobj, (LWGEOM*)obj);
 }
+
 
 void lwmpoly_free(LWMPOLY *mpoly)
 {

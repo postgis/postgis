@@ -57,7 +57,7 @@ lwcurvepoly_deserialize(uchar *srl)
 		        && lwgeom_getType(result->rings[i]->type) != LINETYPE
 		        && lwgeom_getType(result->rings[i]->type) != COMPOUNDTYPE)
 		{
-			lwerror("Only Circular curves, Linestrings and Compound curves are supported as rings, not %s (%d)", lwgeom_typename(result->rings[i]->type), result->rings[i]->type);
+			lwerror("Only Circular curves, Linestrings and Compound curves are supported as rings, not %s (%d)", lwtype_name(result->rings[i]->type), result->rings[i]->type);
 			lwfree(result);
 			lwfree(insp);
 			return NULL;
@@ -73,14 +73,6 @@ lwcurvepoly_deserialize(uchar *srl)
 		}
 	}
 	return result;
-}
-
-LWGEOM *
-lwcurvepoly_add(const LWCURVEPOLY *to, uint32 where, const LWGEOM *what)
-{
-	/* TODO */
-	lwerror("lwcurvepoly_add not yet implemented.");
-	return NULL;
 }
 
 

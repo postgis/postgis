@@ -70,7 +70,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 	Datum result;
 	char address[256];
 	char *ptr;
-	unsigned int i;
+	uint32 i;
 	char *values[2];
 
 	if (SRF_IS_FIRSTCALL())

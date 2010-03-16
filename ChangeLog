@@ -1,3 +1,1019 @@
+2010-03-15 18:03  strk
+
+	* postgis/lwgeom_geos_split.c, postgis/postgis.sql.in.c,
+	  regress/split.sql: Rename ST_SplitGeometry to ST_Split (better
+	  now than never)
+
+2010-03-15 18:00  strk
+
+	* postgis/lwgeom_geos_split.c, regress/split.sql,
+	  regress/split_expected: Implement split-poly-by-line
+
+2010-03-13 12:55  strk
+
+	* postgis/lwgeom_geos_split.c, regress/split.sql,
+	  regress/split_expected: Reword exception message, make algorithm
+	  more robust not relying on constructive functions to detect
+	  relation between inputs
+
+2010-03-13 11:23  strk
+
+	* postgis/lwgeom_geos_split.c: Fix printf call
+
+2010-03-13 11:16  strk
+
+	* postgis/lwgeom_geos_split.c, regress/split.sql,
+	  regress/split_expected: Split-line-by-line: handle overlap cases
+	  by raising an exception
+
+2010-03-13 10:59  strk
+
+	* postgis/lwgeom_geos_split.c, regress/split.sql,
+	  regress/split_expected: Implement split-line-by-line
+
+2010-03-13 09:22  strk
+
+	* postgis/lwgeom_functions_analytic.c: Be polite
+
+2010-03-12 18:39  strk
+
+	* loader/shp2pgsql-core.c: Fix memory errors in presence of NULL
+	  (0-verticed) geometries and insert (default) policy.
+
+2010-03-12 15:46  strk
+
+	* liblwgeom/ptarray.c: ptarray_substring *does* already implement
+	  interpolation
+
+2010-03-12 15:25  strk
+
+	* postgis/TODO: Drop extraneous task (if it referred to loader we
+	  do have a switch for index creation now)
+
+2010-03-12 15:15  strk
+
+	* postgis/postgis.sql.in.c: Fix ST_DumpPoints not to relay on NULL
+	  return from ST_NumGeometries to tell multi and singles apart
+
+2010-03-12 15:14  strk
+
+	* regress/Makefile.in: Trigger reconstruction of regress'
+	  postgis.sql when original one changes
+
+2010-03-12 14:03  strk
+
+	* NEWS: Add item about GeometryN/NumGeometries
+
+2010-03-12 13:50  strk
+
+	* postgis/lwgeom_ogc.c, regress/regress_ogc.sql,
+	  regress/regress_ogc_expected: Add support for simple geometries
+	  in ST_GeometryN and ST_NumGeometries
+
+2010-03-12 13:29  mcayland
+
+	* configure.ac: Fix the PGXS override code for detecting older
+	  versions of PostgreSQL - the existing (incomplete) check was
+	  still checking for a minimum version of 8.5, rather
+	  than the new version number of 9.0.
+
+2010-03-12 00:21  robe
+
+	* doc/reference_lrs.xml: put in note about improvement to
+	  ST_Line_SubString #410
+
+2010-03-11 20:50  strk
+
+	* postgis/lwgeom_geos_split.c: More comments cleanup
+
+2010-03-11 20:48  strk
+
+	* postgis/lwgeom_geos_split.c: remove wrong comment
+
+2010-03-11 20:34  strk
+
+	* postgis/lwgeom_geos_split.c, regress/split.sql,
+	  regress/split_expected: Set interface specs in stone within the
+	  implementation file, add a testcase to show what's "left" and
+	  what's "right" in the split-line-by-point
+
+2010-03-11 20:28  strk
+
+	* postgis/lwgeom_geos_split.c, regress/split_expected: *always*
+	  return a collection from ST_SplitGeometry
+
+2010-03-11 20:19  strk
+
+	* postgis/lwgeom_geos_split.c, regress/split.sql,
+	  regress/split_expected: Have ST_SplitGeometry return a collection
+	  of at most 2 elements (original part, cut-away part) so it's
+	  easier to handle by callers
+
+2010-03-11 17:53  strk
+
+	* regress/remove_repeated_points.sql,
+	  regress/remove_repeated_points_expected: Add SRID retainment
+	  testcase for removerepeatedpoint (paranoia)
+
+2010-03-11 17:51  strk
+
+	* regress/clean.sql, regress/clean_expected: Add SRID retainment
+	  testcases
+
+2010-03-11 17:21  strk
+
+	* postgis/lwgeom_geos_clean.c: Don't 'clean' the SRID...
+
+2010-03-11 14:34  pramsey
+
+	* HOWTO_RELEASE: Grammar fix.
+
+2010-03-10 15:38  pramsey
+
+	* postgis/lwgeom_accum.c: Fix to allow compile on 9.0alpha
+
+2010-03-10 15:33  strk
+
+	* postgis/Makefile.in, postgis/lwgeom_geos_split.c,
+	  postgis/postgis.sql.in.c, regress/Makefile.in, regress/split.sql,
+	  regress/split_expected: Initial work on ST_SplitGeometry. Split
+	  line by point implemented.
+
+2010-03-10 15:29  strk
+
+	* liblwgeom/liblwgeom.h, liblwgeom/ptarray.c,
+	  postgis/lwgeom_functions_analytic.c: Since we do a full scan of
+	  pointarray from ptarray_locate_point, take the chance to also
+	  return min distance
+
+2010-03-10 14:32  strk
+
+	* liblwgeom/liblwgeom.h: Document closest_point_on_segment in
+	  header file
+
+2010-03-10 14:20  strk
+
+	* liblwgeom/liblwgeom.h: Document ptarray_locate_point in header
+	  file
+
+2010-03-10 10:07  strk
+
+	* postgis/lwgeom_geos.c, postgis/lwgeom_geos.h,
+	  postgis/lwgeom_geos_clean.c: Export geos error logger
+
+2010-03-09 00:37  pramsey
+
+	* doc/installation.xml: Fix syntax error in spatial_ref_sys hard
+	  upgrade directions (#373)
+
+2010-03-09 00:31  pramsey
+
+	* utils/postgis_proc_upgrade.pl: Include 'geography_columns' defn
+	  when upgrading from <= 1.4 (#414)
+
+2010-03-09 00:22  pramsey
+
+	* postgis/postgis.sql.in.c: Quiet notices in the .sql install files
+	  (#415)
+
+2010-03-08 23:28  pramsey
+
+	* liblwgeom/lwline.c, postgis/lwgeom_functions_basic.c: Update the
+	  bbox when you alter the underlying geometry (#410) ST_SetPoint,
+	  ST_Ad
+	  dPoint, ST_RemovePoint.
+
+2010-03-08 16:37  kneufeld
+
+	* doc/using_postgis_dataman.xml: updated broken link to utmzone
+	  PostGIS plpgsql helper function.
+	  bug #461
+
+2010-03-05 23:31  pramsey
+
+	* README.postgis: Note minimum required versions.
+
+2010-03-05 21:49  strk
+
+	* postgis/lwgeom_ogc.c: Fix typo
+
+2010-03-05 02:35  pramsey
+
+	* liblwgeom/cunit/cu_wkb.c: A few more WKB unit tests.
+
+2010-03-04 09:40  colivier
+
+	* doc/reference_editor.xml: Add ST_PointN xref in ST_SetPoint
+	  entry, from Bruno Friedmann report
+
+2010-03-03 06:10  pramsey
+
+	* liblwgeom/lwhomogenize.c, liblwgeom/lwout_geojson.c,
+	  liblwgeom/lwout_gml.c, liblwgeom/lwout_kml.c,
+	  liblwgeom/lwout_svg.c, liblwgeom/lwout_wkb.c,
+	  liblwgeom/lwout_wkt.c, liblwgeom/lwprint.c: Set keywords.
+
+2010-03-03 06:10  pramsey
+
+	* liblwgeom/cunit/cu_geodetic_data.h,
+	  liblwgeom/cunit/cu_homogenize.c,
+	  liblwgeom/cunit/cu_out_geojson.c, liblwgeom/cunit/cu_out_gml.c,
+	  liblwgeom/cunit/cu_out_kml.c, liblwgeom/cunit/cu_out_svg.c,
+	  liblwgeom/cunit/cu_print.c, liblwgeom/cunit/cu_tester.c,
+	  liblwgeom/cunit/cu_tester.h, liblwgeom/cunit/cu_wkb.c,
+	  liblwgeom/cunit/cu_wkt.c: Set keywords and some copyright
+	  headers.
+
+2010-03-03 06:06  pramsey
+
+	* liblwgeom/cunit/cu_wkb.c, liblwgeom/lwout_wkb.c: Add some tests
+	  of the old versus new WKB output.
+
+2010-03-03 06:06  pramsey
+
+	* postgis/geography_measurement.c: Move spheroid test to the
+	  correct place.
+
+2010-03-03 05:40  pramsey
+
+	* liblwgeom/lwout_wkb.c, liblwgeom/lwout_wkt.c: Remove doxygen
+	  flags from static functions.
+
+2010-03-03 05:38  pramsey
+
+	* liblwgeom/lwout_wkb.c, liblwgeom/lwout_wkt.c: Add some
+	  documentation to the public functions.
+
+2010-03-03 01:15  pramsey
+
+	* liblwgeom/cunit/Makefile.in, liblwgeom/cunit/cu_tester.c,
+	  liblwgeom/cunit/cu_wkb.c, liblwgeom/libgeom.h,
+	  liblwgeom/lwout_wkb.c, liblwgeom/lwout_wkt.c: Add in tests and
+	  fixes for WKB emitter.
+
+2010-03-02 23:18  pramsey
+
+	* liblwgeom/Makefile.in, liblwgeom/cunit/cu_libgeom.c,
+	  liblwgeom/cunit/cu_wkt.c, liblwgeom/libgeom.h,
+	  liblwgeom/liblwgeom.h, liblwgeom/lwout_wkb.c,
+	  liblwgeom/lwout_wkt.c: Add first cut to lwgeom_to_wkb function.
+
+2010-03-02 23:16  pramsey
+
+	* liblwgeom/stringbuffer.c, liblwgeom/stringbuffer.h: Add a couple
+	  functions (length, copy) to stringbuffer, and add comments.
+
+2010-03-02 21:32  strk
+
+	* postgis/lwgeom_geos_clean.c, regress/clean.sql,
+	  regress/clean_expected: ST_MakeValid : turn collapsed lines into
+	  points [RT-SIGTA]
+
+2010-02-28 23:11  strk
+
+	* postgis/lwgeom_geos_clean.c, regress/Makefile.in,
+	  regress/clean.sql, regress/clean_expected: Node lineal geometries
+	  resulting invalid. Re-enable automated testcase for st_MakeValid
+	  [RT-SIGTA]
+
+2010-02-28 22:48  strk
+
+	* postgis/lwgeom_geos_clean.c: Don't use a collection when there's
+	  no area
+
+2010-02-28 22:24  strk
+
+	* postgis/lwgeom_geos_clean.c: Fix build with debugging on, fix bug
+	  when run against invalid linestrings
+
+2010-02-28 21:31  strk
+
+	* postgis/lwgeom_geos_clean.c: Add paranoid check to make
+	  super-sure no input vertices are dropped by ST_MakeValid
+	  [RT-SIGTA]
+
+2010-02-28 20:36  strk
+
+	* postgis/lwgeom_geos_clean.c: Put GEOS-only functionality of
+	  ST_MakeValid in its own function
+
+2010-02-28 19:24  strk
+
+	* postgis/lwgeom_geos_clean.c: Fix documentation to match current
+	  behaviour
+
+2010-02-28 19:09  strk
+
+	* postgis/lwgeom_geos_clean.c: Simplify code
+
+2010-02-28 19:04  strk
+
+	* postgis/lwgeom_geos.c: Avoid a call to the GEOS CAPI when
+	  unnecessary (works around a bug in GEOS aborting in some cases of
+	  EMPTY polygons
+
+2010-02-28 17:20  strk
+
+	* postgis/lwgeom_geos_clean.c: Move ST_CleanGeometry core code into
+	  specialized 'lwgeom' function
+
+2010-02-28 17:11  strk
+
+	* postgis/lwgeom_geos_clean.c: cleanups
+
+2010-02-28 14:05  strk
+
+	* postgis/lwgeom_geos_clean.c: Put areal part first in collection,
+	  and collapsed edges second
+
+2010-02-26 15:05  colivier
+
+	* GNUmakefile, doc/Makefile.in, regress/Makefile.in: Add new 'make
+	  garden' rule to launch full Garden test regression tests
+
+2010-02-26 02:50  pramsey
+
+	* liblwgeom/cunit/Makefile.in, liblwgeom/cunit/README,
+	  liblwgeom/cunit/cu_tester.h: Instructions on adding new tests to
+	  cunit, from Jeff Adams.
+
+2010-02-26 00:16  colivier
+
+	* liblwgeom/lwgeom.c, regress/tickets_expected: Add few more
+	  lwgeom_typename, and update regress test if needed. Restore
+	  initial lwnotice behaviour in remove_repeated_points on unknown
+	  types (instead of lwerror).
+
+2010-02-25 17:54  colivier
+
+	* liblwgeom/lwgeom.c: Fix add forgotten return in flip_coordinates
+	  (cf #452). Add lwgeom_typename in several functions to avoid
+	  cryptic error message (#452 again).
+
+2010-02-25 15:13  pramsey
+
+	* liblwgeom/cunit/cu_geodetic.c, liblwgeom/lwgeodetic.c: Fix
+	  potential corner case in sphere area calculation (#451)
+
+2010-02-25 14:30  robe
+
+	* doc/reference_processing.xml: Put new functions in alphabetical
+	  order.
+
+2010-02-25 14:23  robe
+
+	* doc/xsl/postgis_aggs_mm.xml.xsl: Put in What is new in 2.0
+	  section to trap new 2.0 enhancements
+
+2010-02-25 14:11  colivier
+
+	* doc/installation.xml: Add libxml2 requirement para. Fix #344.
+	  Thanks to Mateus for report.
+
+2010-02-25 13:41  pramsey
+
+	* liblwgeom/cunit/cu_geodetic.c, liblwgeom/lwgeodetic.c,
+	  liblwgeom/lwspheroid.c: Fix for st_area(geography) over the
+	  dateline (#450)
+
+2010-02-25 13:38  colivier
+
+	* doc/reference_processing.xml, liblwgeom/cunit/cu_libgeom.c,
+	  liblwgeom/liblwgeom.h, liblwgeom/lwgeom.c, liblwgeom/ptarray.c,
+	  postgis/lwgeom_functions_basic.c, postgis/lwgeom_in_gml.c,
+	  postgis/postgis.sql.in.c: rename ptarray_reverse_axis to
+	  ptarray_flip_coordinates. Add lwgeom_flip_coordinates and
+	  ST_FlipCoordinates (#354). Add relevant cunit tests and basic
+	  documentation.
+
+2010-02-25 13:30  strk
+
+	* postgis/lwgeom_geos_clean.c: Drop unused code, avoid putting
+	  empty geometry in a collection.. [RT-SIGTA]
+
+2010-02-25 13:15  strk
+
+	* postgis/lwgeom_geos_clean.c: Recursively try to build area with
+	  portions of the original boundary not on the boundary of newly
+	  constructed area and symdifference the new area (if any) with the
+	  final polygon being built. This behaviour gives more chance to
+	  get a pure areal (not mixed) output still not missing vertices.
+
+2010-02-24 14:40  pramsey
+
+	* liblwgeom/cunit/cu_wkt.c, liblwgeom/lwout_wkt.c: Change
+	  dimensionality indicators to have spaces between type indicators
+	  for WKT_ISO output form.
+
+2010-02-24 13:50  pramsey
+
+	* liblwgeom/cunit/cu_wkt.c, liblwgeom/liblwgeom.h,
+	  liblwgeom/lwgeom.c, liblwgeom/lwout_wkt.c: Add support from SRID=
+	  block on EWKT
+
+2010-02-23 22:18  pramsey
+
+	* liblwgeom/cunit/cu_geodetic.c, liblwgeom/cunit/cu_tester.c,
+	  liblwgeom/cunit/cu_tester.h: Remove last compile warnings.
+
+2010-02-23 22:16  pramsey
+
+	* liblwgeom/cunit/cu_out_geojson.c, liblwgeom/cunit/cu_out_gml.c,
+	  liblwgeom/cunit/cu_out_kml.c, liblwgeom/cunit/cu_out_svg.c:
+	  Making test methods static to avoid compiler warnings. For Jeff
+	  Adams.
+
+2010-02-23 22:14  pramsey
+
+	* liblwgeom/cunit/cu_algorithm.c, liblwgeom/cunit/cu_geodetic.c,
+	  liblwgeom/cunit/cu_homogenize.c, liblwgeom/cunit/cu_libgeom.c,
+	  liblwgeom/cunit/cu_measures.c, liblwgeom/cunit/cu_print.c: Making
+	  test methods static to avoid compiler warnings.
+
+2010-02-23 22:11  pramsey
+
+	* liblwgeom/cunit/cu_wkt.c: Make test functions static.
+
+2010-02-23 22:07  pramsey
+
+	* liblwgeom/cunit/cu_algorithm.c, liblwgeom/cunit/cu_algorithm.h,
+	  liblwgeom/cunit/cu_geodetic.c, liblwgeom/cunit/cu_geodetic.h,
+	  liblwgeom/cunit/cu_homogenize.c, liblwgeom/cunit/cu_homogenize.h,
+	  liblwgeom/cunit/cu_libgeom.c, liblwgeom/cunit/cu_libgeom.h,
+	  liblwgeom/cunit/cu_measures.c, liblwgeom/cunit/cu_measures.h,
+	  liblwgeom/cunit/cu_out_geojson.c,
+	  liblwgeom/cunit/cu_out_geojson.h, liblwgeom/cunit/cu_out_gml.c,
+	  liblwgeom/cunit/cu_out_gml.h, liblwgeom/cunit/cu_out_kml.c,
+	  liblwgeom/cunit/cu_out_kml.h, liblwgeom/cunit/cu_out_svg.c,
+	  liblwgeom/cunit/cu_out_svg.h, liblwgeom/cunit/cu_print.c,
+	  liblwgeom/cunit/cu_print.h, liblwgeom/cunit/cu_tester.c,
+	  liblwgeom/cunit/cu_tester.h, liblwgeom/cunit/cu_wkt.c,
+	  liblwgeom/cunit/cu_wkt.h: Made unit tests easier to add. New
+	  suites now just need to be added to two lines in cu_tester.c, no
+	  changes to header files necessary, new tests need one line in the
+	  appropriate .c file. From Jeff Adams.
+
+2010-02-23 21:41  pramsey
+
+	* liblwgeom/stringbuffer.c: Remove unused va_copy.
+
+2010-02-23 21:41  pramsey
+
+	* liblwgeom/stringbuffer.h: Woops again, got work and start size
+	  values reversed.
+
+2010-02-23 21:30  pramsey
+
+	* liblwgeom/stringbuffer.h: Oops, commit stringbuffer.h with
+	  sensible values for internal sizes.
+
+2010-02-23 21:29  pramsey
+
+	* liblwgeom/cunit/cu_wkt.c, liblwgeom/stringbuffer.c,
+	  liblwgeom/stringbuffer.h: Improve performance and cut back
+	  stringbuffer_t to the minimum.
+
+2010-02-23 19:51  pramsey
+
+	* liblwgeom/cunit/cu_tester.c: Allow cu_tester to accept parameters
+	  to run individual tests or suites, from Jeff Adams.
+
+2010-02-23 19:42  strk
+
+	* liblwgeom/ptarray.c, regress/remove_repeated_points.sql,
+	  regress/remove_repeated_points_expected: Don't let
+	  ST_RemoveRepeatedPoint collapse LINESTRINGs (not sure why, but
+	  someone doesn't want them in the db)
+
+2010-02-23 18:29  colivier
+
+	* liblwgeom/liblwgeom.h, liblwgeom/ptarray.c,
+	  postgis/lwgeom_in_gml.c: Move ptarray reverse axis function from
+	  postgis/lwgeom_in_gml to liblwgeom/ptarray
+
+2010-02-23 18:18  pramsey
+
+	* liblwgeom/cunit/cu_wkt.c: More WKT tests.
+
+2010-02-23 17:55  pramsey
+
+	* liblwgeom/cunit/cu_wkt.c, liblwgeom/cunit/cu_wkt.h: More WKT unit
+	  tests
+
+2010-02-23 15:55  colivier
+
+	* liblwgeom/cunit/cu_out_geojson.c, liblwgeom/cunit/cu_out_svg.c:
+	  In fact Nested GeometryCollection are never been supported in SVG
+	  and GeoJSON. Update the cunit tests cases
+
+2010-02-23 15:21  colivier
+
+	* astyle.sh: Check astyle version prior to do anything. 'blessed'
+	  version is 1.23. Related to #433 and postgis-devel discussions
+
+2010-02-23 14:52  colivier
+
+	* postgis/geography_inout.c, regress/Makefile.in,
+	  regress/geojson.sql, regress/geojson_expected, regress/gml.sql,
+	  regress/gml_expected, regress/kml.sql, regress/kml_expected,
+	  regress/out_geography.sql, regress/out_geography_expected,
+	  regress/out_geometry.sql, regress/out_geometry_expected,
+	  regress/svg.sql, regress/svg_expected: Fix 443. Move all regress
+	  export functions test files in a single one. add geography output
+	  regression tests (SVG/KML/GML/GeoJSON)
+
+2010-02-22 22:43  pramsey
+
+	* liblwgeom/cunit/cu_wkt.c: Add more unit tests for WKT
+
+2010-02-22 22:04  colivier
+
+	* liblwgeom/cunit/cu_out_geojson.c, liblwgeom/lwout_geojson.c: Fix
+	  #441. And introduce a change in behaviour: if geometryCollection
+	  and bbox, not sub geoms bbox are provided anymore
+
+2010-02-22 20:58  strk
+
+	* postgis/lwgeom_geos_clean.c, postgis/postgis.sql.in.c: Let
+	  ST_CleanGeometry down to C [RT-SIGTA]
+
+2010-02-22 20:45  strk
+
+	* postgis/lwgeom_geos_clean.c: Derive an lwgeom_make_valid from
+	  ST_MakeValid [RT-SIGTA]
+
+2010-02-22 20:42  pramsey
+
+	* doc/reference_output.xml, liblwgeom/Makefile.in,
+	  liblwgeom/cunit/Makefile.in, liblwgeom/cunit/cu_print.c,
+	  liblwgeom/cunit/cu_print.h, liblwgeom/cunit/cu_tester.c,
+	  liblwgeom/cunit/cu_tester.h, liblwgeom/liblwgeom.h,
+	  liblwgeom/lwprint.c, postgis/lwgeom_inout.c,
+	  postgis/postgis.sql.in.c: ST_AsLatLonText(geometry, format) from
+	  Jeff Adams
+
+2010-02-22 20:29  strk
+
+	* postgis/lwgeom_geos_clean.c, postgis/postgis.sql.in.c: Follow
+	  style guidelines for function naming
+
+2010-02-22 19:53  pramsey
+
+	* liblwgeom/Makefile.in, liblwgeom/cunit/Makefile.in,
+	  liblwgeom/cunit/cu_tester.c, liblwgeom/cunit/cu_tester.h,
+	  liblwgeom/cunit/cu_wkt.c, liblwgeom/cunit/cu_wkt.h,
+	  liblwgeom/libgeom.h, liblwgeom/liblwgeom.h,
+	  liblwgeom/lwout_wkt.c, liblwgeom/stringbuffer.c,
+	  liblwgeom/stringbuffer.h: First cut of new WKT output functions,
+	  need more unit tests.
+
+2010-02-22 19:52  colivier
+
+	* liblwgeom/lwout_svg.c, postgis/geography_inout.c,
+	  postgis/lwgeom_export.c, postgis/lwgeom_export.h: Fix missing
+	  math.h include in lwout_svg (#438). Put back lwgeom_export.h as
+	  we need header for getSRSbySRID.
+
+2010-02-22 19:37  strk
+
+	* liblwgeom/liblwgeom.h: Oops (#434)
+
+2010-02-22 19:35  strk
+
+	* postgis/lwgeom_geos_clean.c: Fix warnings when building with GEOS
+	  < 3.3.0 (ticket #434
+
+2010-02-22 19:31  strk
+
+	* install-sh, liblwgeom/liblwgeom.h: Fix missing prototypes
+	  warnings
+
+2010-02-22 19:31  colivier
+
+	* liblwgeom/lwout_geojson.c, liblwgeom/lwout_gml.c,
+	  liblwgeom/lwout_kml.c, liblwgeom/lwout_svg.c: Id tag
+
+2010-02-22 19:16  colivier
+
+	* postgis/Makefile.in, postgis/geography_inout.c,
+	  postgis/lwgeom_export.c, postgis/lwgeom_export.h,
+	  postgis/lwgeom_geojson.c, postgis/lwgeom_gml.c,
+	  postgis/lwgeom_kml.c, postgis/lwgeom_svg.c,
+	  postgis/postgis.sql.in.c: merge all export functions in a same
+	  file. remove useless old ones. rename SVG one to LWGEOM_asSVG for
+	  consistancy.
+
+2010-02-22 18:49  colivier
+
+	* liblwgeom/cunit/cu_out_geojson.c, liblwgeom/cunit/cu_out_gml.c,
+	  liblwgeom/cunit/cu_out_kml.c: Fix comment stuff in cunit
+
+2010-02-22 18:43  colivier
+
+	* liblwgeom/Makefile.in, liblwgeom/cunit/Makefile.in,
+	  liblwgeom/cunit/cu_out_svg.c, liblwgeom/cunit/cu_out_svg.h,
+	  liblwgeom/cunit/cu_tester.c, liblwgeom/cunit/cu_tester.h,
+	  liblwgeom/liblwgeom.h, liblwgeom/lwout_svg.c,
+	  postgis/geography_inout.c, postgis/lwgeom_export.h,
+	  postgis/lwgeom_svg.c, regress/svg.sql, regress/svg_expected: move
+	  ST_AsSVG from postgis to lwgeom dir. write cun it tests. related
+	  to #377
+
+2010-02-22 15:37  colivier
+
+	* liblwgeom/cunit/cu_out_geojson.c: bbox only bother about external
+	  ring. add the related cunit test
+
+2010-02-22 15:30  pramsey
+
+	* liblwgeom/Makefile.in, liblwgeom/liblwgeom.h,
+	  liblwgeom/stringbuffer.c, liblwgeom/stringbuffer.h,
+	  loader/Makefile.in, loader/shp2pgsql-core.h,
+	  loader/stringbuffer.c, loader/stringbuffer.h: Move stringbuffer
+	  from ./loader to ./liblwgeom for use in string emitter functions.
+
+2010-02-22 14:03  colivier
+
+	* liblwgeom/Makefile.in, liblwgeom/cunit/Makefile.in,
+	  liblwgeom/cunit/cu_out_geojson.c,
+	  liblwgeom/cunit/cu_out_geojson.h, liblwgeom/cunit/cu_tester.c,
+	  liblwgeom/cunit/cu_tester.h, liblwgeom/liblwgeom.h,
+	  liblwgeom/lwout_geojson.c, postgis/geography_inout.c,
+	  postgis/lwgeom_geojson.c, regress/geojson.sql,
+	  regress/geojson_expected: Move ST_AsGeoJson from postgis to
+	  liblwgeom dir. Use as most as cunit test as possible. Related to
+	  #377.
+
+2010-02-21 22:34  strk
+
+	* postgis/postgis.sql.in.c: Cleanup the GeometryClean function now
+	  that vertex checking is done better in ST_MakeValid
+
+2010-02-21 22:10  strk
+
+	* postgis/lwgeom_geos_clean.c: Force multi-type in output if input
+	  was multi [RT-SIGTA]
+
+2010-02-21 21:53  colivier
+
+	* liblwgeom/cunit/cu_out_gml.c, liblwgeom/cunit/cu_out_kml.c: Add
+	  missing MultiPoint test. Fix wrong LWGEOM type on cu_gml tests.
+
+2010-02-21 21:34  colivier
+
+	* liblwgeom/cunit/cu_homogenize.c: add explicit void return type
+
+2010-02-21 21:11  strk
+
+	* postgis/Makefile.in, postgis/lwgeom_geos.c,
+	  postgis/lwgeom_geos.h, postgis/lwgeom_geos_clean.c,
+	  regress/Makefile.in: Disable 'clean' test (still deciding on
+	  what's the expected output); keep only cut-lines that have
+	  vertices not shared with boundary of final area; move 'clean'
+	  code in separate file [RT-SIGTA].
+
+2010-02-21 20:32  colivier
+
+	* liblwgeom/Makefile.in, liblwgeom/cunit/Makefile.in,
+	  liblwgeom/cunit/cu_out_gml.c, liblwgeom/cunit/cu_out_gml.h,
+	  liblwgeom/cunit/cu_out_kml.c, liblwgeom/cunit/cu_out_kml.h,
+	  liblwgeom/cunit/cu_tester.c, liblwgeom/cunit/cu_tester.h,
+	  liblwgeom/liblwgeom.h, liblwgeom/lwout_gml.c,
+	  liblwgeom/lwout_kml.c, postgis/geography_inout.c,
+	  postgis/lwgeom_kml.c, regress/kml.sql, regress/kml_expected: Move
+	  ST_AsKML from postgis to liblwgeom dir. Use as most cunit test as
+	  possible. Few related corrections on GML similar implementation.
+	  cf #377
+
+2010-02-21 18:23  colivier
+
+	* liblwgeom/lwout_gml.c: Add forgotten lwout_gml.c file (#377)
+
+2010-02-21 18:18  colivier
+
+	* liblwgeom/Makefile.in, liblwgeom/cunit/Makefile.in,
+	  liblwgeom/cunit/cu_tester.c, liblwgeom/cunit/cu_tester.h,
+	  liblwgeom/liblwgeom.h, postgis/geography_inout.c,
+	  postgis/lwgeom_export.h, postgis/lwgeom_gml.c, regress/gml.sql,
+	  regress/gml_expected, regress/tickets_expected: Move ST_AsGML
+	  from postgis dir to liblwgeom. Rewrite most units test with
+	  cunit. cf #377
+
+2010-02-21 12:36  colivier
+
+	* extras/wkb_reader/readwkb.c, liblwgeom/g_ptarray.c,
+	  liblwgeom/lwalgorithm.c, liblwgeom/lwgeom_api.c,
+	  liblwgeom/lwgunparse.c, liblwgeom/lwsegmentize.c,
+	  liblwgeom/lwspheroid.c, postgis/geography_inout.c,
+	  postgis/lwgeom_gist.c, postgis/lwgeom_in_gml.c,
+	  postgis/lwgeom_in_kml.c, postgis/lwgeom_inout.c,
+	  postgis/lwgeom_ogc.c: make astyle session
+
+2010-02-21 12:22  strk
+
+	* NEWS, doc/reference_processing.xml, liblwgeom/liblwgeom.h,
+	  liblwgeom/lwcollection.c, liblwgeom/lwgeom.c, liblwgeom/lwline.c,
+	  liblwgeom/lwmpoint.c, liblwgeom/lwpoly.c, liblwgeom/ptarray.c,
+	  postgis/lwgeom_functions_basic.c, postgis/postgis.sql.in.c,
+	  regress/Makefile.in, regress/remove_repeated_points.sql,
+	  regress/remove_repeated_points_expected: ST_RemoveRepeatedPoints
+	  [RT-SIGTA]
+
+2010-02-21 12:21  strk
+
+	* postgis/lwgeom_functions_analytic.c: style...
+
+2010-02-21 12:21  strk
+
+	* liblwgeom/cunit/cu_homogenize.c, liblwgeom/cunit/cu_tester.c,
+	  liblwgeom/lwhomogenize.c, postgis/lwgeom_gml.c,
+	  postgis/lwgeom_in_kml.c: Make stylish
+
+2010-02-20 19:47  colivier
+
+	* liblwgeom/cunit/cu_homogenize.c: use the rights homogenize cunit
+	  suite handlers
+
+2010-02-20 19:09  colivier
+
+	* postgis/lwgeom_gml.c: Fix computed string length in Polygon with
+	  several rings for ST_AsGML with GML3. Related to #421
+
+2010-02-20 18:26  colivier
+
+	* postgis/lwgeom_in_kml.c, regress/in_kml.sql,
+	  regress/in_kml_expected: Use lwgeom_homogenize in in_kml stuff.
+	  Related to #375
+
+2010-02-20 18:25  colivier
+
+	* liblwgeom/Makefile.in, liblwgeom/cunit/Makefile.in,
+	  liblwgeom/cunit/cu_homogenize.c, liblwgeom/cunit/cu_homogenize.h,
+	  liblwgeom/cunit/cu_tester.c, liblwgeom/cunit/cu_tester.h,
+	  liblwgeom/liblwgeom.h, liblwgeom/lwcollection.c,
+	  liblwgeom/lwhomogenize.c, liblwgeom/lwhomogenize.h: Add
+	  lwgeom_homogenize function. Related to #375. Add cunit related
+	  tests
+
+2010-02-20 16:47  colivier
+
+	* liblwgeom/cunit/cu_tester.c, liblwgeom/cunit/cu_tester.h: Add
+	  Cunit - lwerror use case handle - #420
+
+2010-02-18 21:02  pramsey
+
+	* postgis/lwgeom_functions_analytic.c: Add multilinestring support
+	  to st_line_substring (#419)
+
+2010-02-17 21:02  strk
+
+	* postgis/lwgeom_geos.c, regress/clean.sql, regress/clean_expected:
+	  Allow retaining badly collapsed rings (single-point) as points in
+	  ST_MakeValid. Add testcase for it [RT-SIGTA]
+
+2010-02-16 23:27  kneufeld
+
+	* doc/reference_editor.xml: removed sfs_compliant note for
+	  ST_Transform
+
+2010-02-16 09:38  strk
+
+	* doc/reference_accessor.xml, postgis/lwgeom_geos.c: Return NULL
+	  rather than throwing when a COLLECTION is given to ST_Boundary
+	  [RT-SIGTA]
+
+2010-02-16 09:29  strk
+
+	* postgis/lwgeom_geos.c: Fix build with --enable-debug=3 [RT-SIGTA]
+
+2010-02-16 09:08  strk
+
+	* regress/clean.sql: Add origin field for the clean dataset table,
+	  so we can add PG-specific ones w/out caring about visualizing
+	  them:)
+
+2010-02-16 09:06  strk
+
+	* regress/clean.sql, regress/clean_expected: Add a test for input
+	  being invalid (a test of the test)
+
+2010-02-16 09:03  strk
+
+	* postgis/lwgeom_geos.c: Separate areal-specific cleanups in
+	  LWGEOM_GEOS_makeValidPolygon [RT-SIGTA]
+
+2010-02-16 08:28  strk
+
+	* postgis/postgis.sql.in.c: Empty geometries are cleanest
+	  [RT-SIGTA]
+
+2010-02-16 08:22  strk
+
+	* postgis/postgis.sql.in.c: Drop the optional arg to ST_MakeClean,
+	  document what it does, improve the ST_CleanGeometry stub.
+	  [RT-SIGTA]
+
+2010-02-16 08:07  strk
+
+	* postgis/lwgeom_geos.c, regress/clean.sql: Drop the optional
+	  parameter to ST_MakeValid, we always want to collect collapses
+	  (users can always filter later) [RT-SIGTA].
+
+2010-02-16 08:03  strk
+
+	* doc/reference_accessor.xml: Document ST_Dimension handling of
+	  empty geometries
+
+2010-02-16 07:54  strk
+
+	* postgis/lwgeom_ogc.c: Do not throw exception on empty
+	  ST_Dimension(empty) [RT-SIGTA]
+
+2010-02-15 22:41  strk
+
+	* postgis/lwgeom_geos.c: Further cleanups in ST_MakeClean
+	  [RT-SIGTA]
+
+2010-02-15 22:31  strk
+
+	* postgis/lwgeom_geos.c: Fix unsupported message
+
+2010-02-15 21:17  strk
+
+	* postgis/lwgeom_geos.c: Plug more leaks
+
+2010-02-15 20:40  strk
+
+	* postgis/lwgeom_geos.c: Plug memory leak on GEOS geom construction
+	  failure [RT-SIGTA]
+
+2010-02-15 20:21  strk
+
+	* regress/clean.sql, regress/clean_expected: Rework the regress
+	  test to make it easier for curious people to keep the test
+	  dataset for inspection with some GUI (give it a try, it's a nice
+	  one).
+
+2010-02-14 23:35  strk
+
+	* doc/using_postgis_dataman.xml: Clarify the case of linestring
+	  invalidity dropping confugins reference to linearrings
+
+2010-02-14 22:59  strk
+
+	* postgis/lwgeom_geos.c, postgis/postgis.sql.in.c,
+	  regress/Makefile.in, regress/clean.sql, regress/clean_expected:
+	  Implement ST_MakeValid(geom_in, collect_collapses) and stub
+	  ST_CleanGeometry. Add regression test for ST_MakeValid and
+	  polygons [RT-SIGTA]
+
+2010-02-14 16:54  strk
+
+	* postgis/lwgeom_dump.c: Cleanups. Hope to reuse some structs for a
+	  C-version of ST_DumpPoints
+
+2010-02-14 16:33  strk
+
+	* doc/reference_processing.xml: Try to make st_DumpPoints reference
+	  somewhat clearer [RT-SIGTA]
+
+2010-02-14 13:46  strk
+
+	* liblwgeom/liblwgeom.h, liblwgeom/ptarray.c:
+	  ptarray_remove_repeated_points [RT-SIGTA]
+
+2010-02-13 15:29  strk
+
+	* regress/tickets.sql, regress/tickets_expected: Add another
+	  validity test [RT-SIGTA]
+
+2010-02-13 14:35  strk
+
+	* GNUmakefile, postgis/lwgeom_geos.c: Handle NULL returns from
+	  POSTGIS2GEOS and LWGEOM2GEOS now that we allow that [RT-SIGTA].
+	  Add a 'commit' rule (give it a try)
+
+2010-02-12 23:04  strk
+
+	* postgis/lwgeom_geos.c: Revert GEOS error handlers to be lwnotice
+	  to avoid aborting full transactions (like it was in 1.5)
+
+2010-02-11 23:12  strk
+
+	* doc/reference_measure.xml: Fix typo
+
+2010-02-11 21:01  strk
+
+	* liblwgeom/ptarray.c: Get style
+
+2010-02-11 18:56  strk
+
+	* postgis/lwgeom_geos.c, postgis/lwgeom_geos.h: Separate GEOS part
+	  of 'buildarea' function from POSTGIS part of it (might eventually
+	  be moved down to GEOS) [RT-SIGTA]
+
+2010-02-10 22:23  strk
+
+	* doc/reference_lrs.xml: xref
+
+2010-02-10 20:54  strk
+
+	* liblwgeom/ptarray.c: Enhance documentation of ptarray_addPoint
+	  [RT-SIGTA]
+
+2010-02-09 22:36  strk
+
+	* postgis/lwgeom_inout.c: Don't refuse to output invalid geometries
+	  trough a cursor, being consistent with other output routines
+	  (dumper ends up using these) -- [RT-SIGTA]
+
+2010-02-09 17:59  strk
+
+	* liblwgeom/liblwgeom.h: Oops, it seems I broke the build (sorry)
+
+2010-02-09 06:52  strk
+
+	* liblwgeom/ptarray.c: Fix documention
+
+2010-02-08 22:36  strk
+
+	* NEWS: tweak the sponsor name
+
+2010-02-08 21:39  strk
+
+	* postgis/lwgeom_geos.c: Initialie GEOS using lwerror for errors so
+	  that exceptions are really handled (or testcases in #411 crash on
+	  many GEOS functions)
+
+2010-02-08 20:05  strk
+
+	* NEWS: Add credits to new feature item
+
+2010-02-08 18:54  strk
+
+	* postgis/lwgeom_inout.c, postgis/lwgeom_ogc.c,
+	  regress/tickets.sql, regress/tickets_expected: Don't refuse to
+	  unparse malformed geometries. Fixes #411. Didn't seem to expose
+	  the crash in #168, the testcase for it was expanded to extract
+	  invalidity reason.
+
+2010-02-06 13:57  strk
+
+	* postgis/lwgeom_geos.c: Simplify hooks on GEOS error reporter
+	  function from isvalid* functions
+
+2010-02-06 13:48  strk
+
+	* regress/tickets.sql, regress/tickets_expected: Add another test
+	  for #407
+
+2010-02-06 10:49  colivier
+
+	* postgis/lwgeom_svg.c, regress/svg.sql, regress/svg_expected: Fix
+	  non NULL terminated string in ST_AsSVG with GEOMETRYCOLLECTION
+	  EMPTY, cf #409 reported by sdikiy. Add related unit test
+
+2010-02-05 20:58  strk
+
+	* NEWS: Add ST_isValidDetail item
+
+2010-02-05 20:55  strk
+
+	* postgis/lwgeom_geos.c, regress/tickets.sql,
+	  regress/tickets_expected: Register a buffer-logger as
+	  error-reporter from ST_isValidReason and ST_isValidDetail so to
+	  catch exceptions thrown by GEOS at postgis->geos conversion for
+	  the sake of reporting actual error. Fixes ticket #408. Completed
+	  with testcase.
+
+2010-02-05 17:58  strk
+
+	* doc/reference_processing.xml: A space after return type looks
+	  better (and seems to be the policy) for funcdef tags
+
+2010-02-05 17:57  strk
+
+	* doc/reference_accessor.xml: Document ST_IsValidDetail
+
+2010-02-05 17:26  strk
+
+	* postgis/lwgeom_geos.c, postgis/postgis.sql.in.c: Add
+	  ST_isValidDetail(geom) returns valid_detail (new type!)
+
+2010-02-04 20:30  strk
+
+	* postgis/geography_gist.c: Astyle run (a-ha, got you!)
+
+2010-02-04 17:43  pramsey
+
+	* NEWS, README.postgis, Version.config: Push version numbers on
+	  trunk forward to next release.
+
+2010-02-04 17:21  pramsey
+
+	* ChangeLog, NEWS, README.postgis, doc/release_notes.xml: Update
+	  release dates and changelog for 1.5.0
+
 2010-02-03 22:42  pramsey
 
 	* loader/shp2pgsql-core.c: Initialize config->createindex value to

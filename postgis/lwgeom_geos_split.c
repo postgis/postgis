@@ -209,7 +209,7 @@ lwline_split(LWLINE* lwline_in, LWGEOM* blade_in)
 
 	default:
 		lwerror("Splitting a Line by a %s is unsupported",
-			lwgeom_typename(TYPE_GETTYPE(blade_in->type)));
+			lwtype_name(TYPE_GETTYPE(blade_in->type)));
 		return NULL;
 	}
 	return NULL;
@@ -378,7 +378,7 @@ lwpoly_split(LWPOLY* lwpoly_in, LWGEOM* blade_in)
 		return lwpoly_split_by_line(lwpoly_in, (LWLINE*)blade_in);
 	default:
 		lwerror("Splitting a Polygon by a %s is unsupported",
-			lwgeom_typename(TYPE_GETTYPE(blade_in->type)));
+			lwtype_name(TYPE_GETTYPE(blade_in->type)));
 		return NULL;
 	}
 	return NULL;
@@ -398,7 +398,7 @@ lwgeom_split(LWGEOM* lwgeom_in, LWGEOM* blade_in)
 
 	default:
 		lwerror("Splitting of %s geometries is unsupported",
-			lwgeom_typename(TYPE_GETTYPE(lwgeom_in->type)));
+			lwtype_name(TYPE_GETTYPE(lwgeom_in->type)));
 		return NULL;
 	}
 

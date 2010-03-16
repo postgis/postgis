@@ -21,6 +21,13 @@ lwmpoint_release(LWMPOINT *lwmpoint)
 	lwgeom_release(lwmpoint_as_lwgeom(lwmpoint));
 }
 
+LWMPOINT *
+lwmpoint_construct_empty(int srid, char hasz, char hasm)
+{
+	LWMPOINT *ret = (LWMPOINT*)lwcollection_construct_empty(srid, hasz, hasm);
+	TYPE_SETTYPE(ret->type, MULTIPOINTTYPE);
+	return ret;
+}
 
 LWMPOINT *
 lwmpoint_deserialize(uchar *srl)
@@ -79,51 +86,10 @@ lwmpoint_deserialize(uchar *srl)
 	return result;
 }
 
-/*
- * Add 'what' to this multipoint at position 'where'.
- * where=0 == prepend
- * where=-1 == append
- * Returns a MULTIPOINT or a COLLECTION
- */
-LWGEOM *
-lwmpoint_add(const LWMPOINT *to, uint32 where, const LWGEOM *what)
+LWMPOINT* lwmpoint_add_lwpoint(LWMPOINT *mobj, const LWPOINT *obj)
 {
-	LWCOLLECTION *col;
-	LWGEOM **geoms;
-	int newtype;
-	uint32 i;
-
-	if ( where == -1 ) where = to->ngeoms;
-	else if ( where < -1 || where > to->ngeoms )
-	{
-		lwerror("lwmpoint_add: add position out of range %d..%d",
-		        -1, to->ngeoms);
-		return NULL;
-	}
-
-	/* dimensions compatibility are checked by caller */
-
-	/* Construct geoms array */
-	geoms = lwalloc(sizeof(LWGEOM *)*(to->ngeoms+1));
-	for (i=0; i<where; i++)
-	{
-		geoms[i] = lwgeom_clone((LWGEOM *)to->geoms[i]);
-	}
-	geoms[where] = lwgeom_clone(what);
-	for (i=where; i<to->ngeoms; i++)
-	{
-		geoms[i+1] = lwgeom_clone((LWGEOM *)to->geoms[i]);
-	}
-
-	if ( TYPE_GETTYPE(what->type) == POINTTYPE ) newtype = MULTIPOINTTYPE;
-	else newtype = COLLECTIONTYPE;
-
-	col = lwcollection_construct(newtype,
-	                             to->SRID, NULL,
-	                             to->ngeoms+1, geoms);
-
-	return (LWGEOM *)col;
-
+	LWDEBUG(4, "Called");
+	return (LWMPOINT*)lwcollection_add_lwgeom((LWCOLLECTION*)mobj, (LWGEOM*)obj);
 }
 
 void lwmpoint_free(LWMPOINT *mpt)
@@ -151,8 +117,8 @@ void lwmpoint_free(LWMPOINT *mpt)
 LWGEOM*
 lwmpoint_remove_repeated_points(LWMPOINT *mpoint)
 {
-	unsigned int nnewgeoms;
-	unsigned int i, j;
+	uint32 nnewgeoms;
+	uint32 i, j;
 	LWGEOM **newgeoms;
 
 	newgeoms = lwalloc(sizeof(LWGEOM *)*mpoint->ngeoms);

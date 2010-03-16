@@ -46,10 +46,10 @@ uchar* output_multipoint(uchar* geom,int suppress);
 uchar* output_compound(uchar* geom, int suppress);
 uchar* output_multisurface(uchar* geom, int suppress);
 
-void write_wkb_hex_bytes(uchar* ptr, unsigned int cnt, size_t size);
-void write_wkb_bin_bytes(uchar* ptr, unsigned int cnt, size_t size);
-void write_wkb_bin_flip_bytes(uchar* ptr, unsigned int cnt, size_t size);
-void write_wkb_hex_flip_bytes(uchar* ptr, unsigned int cnt, size_t size);
+void write_wkb_hex_bytes(uchar* ptr, uint32 cnt, size_t size);
+void write_wkb_bin_bytes(uchar* ptr, uint32 cnt, size_t size);
+void write_wkb_bin_flip_bytes(uchar* ptr, uint32 cnt, size_t size);
+void write_wkb_hex_flip_bytes(uchar* ptr, uint32 cnt, size_t size);
 
 void write_wkb_int(int i);
 uchar* output_wkb_collection(uchar* geom,outwkbfunc func);
@@ -71,7 +71,7 @@ static char*  out_pos;
 static int len;
 static int lwgi;
 static uchar endianbyte;
-void (*write_wkb_bytes)(uchar* ptr,unsigned int cnt,size_t size);
+void (*write_wkb_bytes)(uchar* ptr,uint32 cnt,size_t size);
 
 /*
  * Unparser current instance check flags - a bitmap of flags that determine which checks are enabled during the current unparse
@@ -453,7 +453,7 @@ uchar *output_wkt(uchar* geom, int supress);
 /* special case for multipoint to supress extra brackets */
 uchar *output_multipoint(uchar* geom,int suppress)
 {
-	unsigned char type = *geom & 0x0f;
+	uchar type = *geom & 0x0f;
 
 	if ( type  == POINTTYPE )
 		return output_point(++geom,suppress);
@@ -472,7 +472,7 @@ uchar *output_multipoint(uchar* geom,int suppress)
    a component of a COMPOUNDCURVE, but not CIRCULARSTRING */
 uchar *output_compound(uchar* geom, int suppress)
 {
-	unsigned char type;
+	uchar type;
 
 	LWDEBUG(2, "output_compound called.");
 
@@ -520,7 +520,7 @@ uchar *output_curvepoly(uchar* geom, int supress)
    a component of a MULTISURFACE, but not CURVEPOLYGON */
 uchar *output_multisurface(uchar* geom, int suppress)
 {
-	unsigned char type;
+	uchar type;
 
 	LWDEBUG(2, "output_multisurface called.");
 
@@ -546,7 +546,7 @@ uchar *
 output_wkt(uchar* geom, int supress)
 {
 
-	unsigned char type=*geom++;
+	uchar type=*geom++;
 	char writeM=0;
 	dims = TYPE_NDIMS(type); /* ((type & 0x30) >> 4)+2; */
 
@@ -740,9 +740,9 @@ static char outchr[]=
 
 /* Write HEX bytes flipping */
 void
-write_wkb_hex_flip_bytes(uchar* ptr, unsigned int cnt, size_t size)
+write_wkb_hex_flip_bytes(uchar* ptr, uint32 cnt, size_t size)
 {
-	unsigned int bc; /* byte count */
+	uint32 bc; /* byte count */
 
 	ensure(cnt*2*size);
 
@@ -759,9 +759,9 @@ write_wkb_hex_flip_bytes(uchar* ptr, unsigned int cnt, size_t size)
 
 /* Write HEX bytes w/out flipping */
 void
-write_wkb_hex_bytes(uchar* ptr, unsigned int cnt, size_t size)
+write_wkb_hex_bytes(uchar* ptr, uint32 cnt, size_t size)
 {
-	unsigned int bc; /* byte count */
+	uint32 bc; /* byte count */
 
 	ensure(cnt*2*size);
 
@@ -778,9 +778,9 @@ write_wkb_hex_bytes(uchar* ptr, unsigned int cnt, size_t size)
 
 /* Write BIN bytes flipping */
 void
-write_wkb_bin_flip_bytes(uchar* ptr, unsigned int cnt, size_t size)
+write_wkb_bin_flip_bytes(uchar* ptr, uint32 cnt, size_t size)
 {
-	unsigned int bc; /* byte count */
+	uint32 bc; /* byte count */
 
 	ensure(cnt*size);
 
@@ -795,9 +795,9 @@ write_wkb_bin_flip_bytes(uchar* ptr, unsigned int cnt, size_t size)
 
 /* Write BIN bytes w/out flipping */
 void
-write_wkb_bin_bytes(uchar* ptr, unsigned int cnt, size_t size)
+write_wkb_bin_bytes(uchar* ptr, uint32 cnt, size_t size)
 {
-	unsigned int bc; /* byte count */
+	uint32 bc; /* byte count */
 
 	ensure(cnt*size);
 
@@ -967,7 +967,7 @@ output_wkb_circstring_collection(uchar* geom,outwkbfunc func)
 uchar *
 output_wkb(uchar* geom)
 {
-	unsigned char type=*geom++;
+	uchar type=*geom++;
 	int4 wkbtype;
 
 	dims = TYPE_NDIMS(type);

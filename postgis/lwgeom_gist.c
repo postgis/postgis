@@ -778,7 +778,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_gist_decompress);
 Datum LWGEOM_gist_decompress(PG_FUNCTION_ARGS)
 {
 #if POSTGIS_DEBUG_LEVEL >= 4
-	static unsigned int counter2 = 0;
+	static uint32 counter2 = 0;
 	counter2++;
 	POSTGIS_DEBUGF(4, "GIST: LWGEOM_gist_decompress called %i",counter2);
 #endif

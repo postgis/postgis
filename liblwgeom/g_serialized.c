@@ -139,7 +139,7 @@ static size_t gserialized_from_any_size(const LWGEOM *geom)
 {
 	int type = TYPE_GETTYPE(geom->type);
 
-	LWDEBUGF(2, "Input type: %s", lwgeom_typename(type));
+	LWDEBUGF(2, "Input type: %s", lwtype_name(type));
 
 	switch (type)
 	{
@@ -389,7 +389,7 @@ static size_t gserialized_from_lwgeom_any(const LWGEOM *geom, uchar *buf)
 
 	type = TYPE_GETTYPE(geom->type);
 
-	LWDEBUGF(2, "Input type (%d) %s", type, lwgeom_typename(type));
+	LWDEBUGF(2, "Input type (%d) %s", type, lwtype_name(type));
 	LWDEBUGF(2, "LWGEOM(%p) uchar(%p)", geom, buf);
 
 	switch (type)
@@ -428,29 +428,29 @@ static size_t gserialized_from_gbox(const GBOX *gbox, uchar *buf)
 
 	loc = buf;
 
-	f = nextDown_f(gbox->xmin);
+	f = next_float_down(gbox->xmin);
 	memcpy(loc, &f, sizeof(float));
 	loc += sizeof(float);
 
-	f = nextUp_f(gbox->xmax);
+	f = next_float_up(gbox->xmax);
 	memcpy(loc, &f, sizeof(float));
 	loc += sizeof(float);
 
-	f = nextDown_f(gbox->ymin);
+	f = next_float_down(gbox->ymin);
 	memcpy(loc, &f, sizeof(float));
 	loc += sizeof(float);
 
-	f = nextUp_f(gbox->ymax);
+	f = next_float_up(gbox->ymax);
 	memcpy(loc, &f, sizeof(float));
 	loc += sizeof(float);
 
 	if ( FLAGS_GET_GEODETIC(gbox->flags) )
 	{
-		f = nextDown_f(gbox->zmin);
+		f = next_float_down(gbox->zmin);
 		memcpy(loc, &f, sizeof(float));
 		loc += sizeof(float);
 
-		f = nextUp_f(gbox->zmax);
+		f = next_float_up(gbox->zmax);
 		memcpy(loc, &f, sizeof(float));
 		loc += sizeof(float);
 
@@ -461,11 +461,11 @@ static size_t gserialized_from_gbox(const GBOX *gbox, uchar *buf)
 
 	if ( FLAGS_GET_Z(gbox->flags) )
 	{
-		f = nextDown_f(gbox->zmin);
+		f = next_float_down(gbox->zmin);
 		memcpy(loc, &f, sizeof(float));
 		loc += sizeof(float);
 
-		f = nextUp_f(gbox->zmax);
+		f = next_float_up(gbox->zmax);
 		memcpy(loc, &f, sizeof(float));
 		loc += sizeof(float);
 
@@ -473,11 +473,11 @@ static size_t gserialized_from_gbox(const GBOX *gbox, uchar *buf)
 
 	if ( FLAGS_GET_M(gbox->flags) )
 	{
-		f = nextDown_f(gbox->mmin);
+		f = next_float_down(gbox->mmin);
 		memcpy(loc, &f, sizeof(float));
 		loc += sizeof(float);
 
-		f = nextUp_f(gbox->mmax);
+		f = next_float_up(gbox->mmax);
 		memcpy(loc, &f, sizeof(float));
 		loc += sizeof(float);
 	}
@@ -782,7 +782,7 @@ static LWCOLLECTION* lwcollection_from_gserialized_buffer(uchar *data_ptr, uchar
 
 		if ( ! lwcollection_from_gserialized_allowed_types(type, subtype) )
 		{
-			lwerror("Invalid subtype (%s) for collection type (%s)", lwgeom_typename(subtype), lwgeom_typename(type));
+			lwerror("Invalid subtype (%s) for collection type (%s)", lwtype_name(subtype), lwtype_name(type));
 			lwfree(collection);
 			return NULL;
 		}
@@ -805,7 +805,7 @@ LWGEOM* lwgeom_from_gserialized_buffer(uchar *data_ptr, uchar g_flags, size_t *g
 
 	type = lw_get_uint32(data_ptr);
 
-	LWDEBUGF(2, "Got type %d (%s)", type, lwgeom_typename(type));
+	LWDEBUGF(2, "Got type %d (%s)", type, lwtype_name(type));
 
 	switch (type)
 	{
@@ -1065,7 +1065,7 @@ static int gserialized_calculate_gbox_geocentric_from_any(uchar *data_ptr, size_
 
 	type = lw_get_uint32(data_ptr);
 
-	LWDEBUGF(2, "Got type %d (%s)", type, lwgeom_typename(type));
+	LWDEBUGF(2, "Got type %d (%s)", type, lwtype_name(type));
 	LWDEBUGF(3, "Got gbox pointer (%p)", gbox);
 
 	switch (type)

@@ -22,19 +22,10 @@
  *  handles the funny differences in float4 and float8 reps.
  **********************************************************************/
 
-
-/*
- * These are taken from glibc
- * some machines do *not* have these functions defined, so we give
- *  an implementation of them here.
- */
-typedef int int32_tt;
-typedef unsigned int u_int32_tt;
-
 typedef union
 {
 	float value;
-	u_int32_tt word;
+	uint32 word;
 } ieee_float_shape_type;
 
 #define GET_FLOAT_WORD(i,d)			\
@@ -57,10 +48,10 @@ typedef union
  * Returns the next smaller or next larger float
  * from x (in direction of y).
  */
-float
+static float
 nextafterf_custom(float x, float y)
 {
-	int32_tt hx,hy,ix,iy;
+	int hx,hy,ix,iy;
 
 	GET_FLOAT_WORD(hx,x);
 	GET_FLOAT_WORD(hy,y);
@@ -125,7 +116,7 @@ nextafterf_custom(float x, float y)
 }
 
 
-float nextDown_f(double d)
+float next_float_down(double d)
 {
 	float result  = d;
 
@@ -141,7 +132,7 @@ float nextDown_f(double d)
  * handles the funny differences in float4 and float8 reps.
  */
 float
-nextUp_f(double d)
+next_float_up(double d)
 {
 	float result  = d;
 
@@ -157,7 +148,7 @@ nextUp_f(double d)
  * handles the funny differences in float4 and float8 reps.
  */
 double
-nextDown_d(float d)
+next_double_down(float d)
 {
 	double result  = d;
 
@@ -172,7 +163,7 @@ nextDown_d(float d)
  * handles the funny differences in float4 and float8 reps.
  */
 double
-nextUp_d(float d)
+next_double_up(float d)
 {
 	double result  = d;
 
@@ -201,11 +192,11 @@ box3d_to_box2df(BOX3D *box)
 	}
 #endif
 
-	result->xmin = nextDown_f(box->xmin);
-	result->ymin = nextDown_f(box->ymin);
+	result->xmin = next_float_down(box->xmin);
+	result->ymin = next_float_down(box->ymin);
 
-	result->xmax = nextUp_f(box->xmax);
-	result->ymax = nextUp_f(box->ymax);
+	result->xmax = next_float_up(box->xmax);
+	result->ymax = next_float_up(box->ymax);
 
 	return result;
 }
@@ -226,11 +217,11 @@ box3d_to_box2df_p(BOX3D *box, BOX2DFLOAT4 *result)
 	}
 #endif
 
-	result->xmin = nextDown_f(box->xmin);
-	result->ymin = nextDown_f(box->ymin);
+	result->xmin = next_float_down(box->xmin);
+	result->ymin = next_float_down(box->ymin);
 
-	result->xmax = nextUp_f(box->xmax);
-	result->ymax = nextUp_f(box->ymax);
+	result->xmax = next_float_up(box->xmax);
+	result->ymax = next_float_up(box->ymax);
 
 	return 1;
 }
@@ -899,7 +890,7 @@ lwgeom_hasBBOX(uchar type)
  * Basic sub-geometry types
  *****************************************************************************/
 
-/* handle missaligned unsigned int32 data */
+/* handle missaligned uint3232 data */
 uint32
 lw_get_uint32(const uchar *loc)
 {
@@ -1902,7 +1893,7 @@ printMULTI(uchar *serialized)
 void
 printType(uchar type)
 {
-	lwnotice("type 0x%x ==> hasBBOX=%i, hasSRID=%i, ndims=%i, type=%i",(unsigned int) type, lwgeom_hasBBOX(type), lwgeom_hasSRID(type),lwgeom_ndims(type), lwgeom_getType(type));
+	lwnotice("type 0x%x ==> hasBBOX=%i, hasSRID=%i, ndims=%i, type=%i",(uint32) type, lwgeom_hasBBOX(type), lwgeom_hasSRID(type),lwgeom_ndims(type), lwgeom_getType(type));
 }
 
 /**

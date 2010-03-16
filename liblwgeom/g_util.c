@@ -66,7 +66,7 @@ struct geomtype_struct geomtype_struct_array[32] =
 
 uchar gflags(int hasz, int hasm, int geodetic)
 {
-	unsigned char flags = 0;
+	uchar flags = 0;
 	if ( hasz )
 		FLAGS_SET_Z(flags, 1);
 	if ( hasm )

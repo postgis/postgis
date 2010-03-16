@@ -91,7 +91,7 @@ void geography_valid_type(uchar type)
 	{
 		ereport(ERROR, (
 		            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-		            errmsg("Geography type does not support %s", lwgeom_typename(type) )));
+		            errmsg("Geography type does not support %s", lwtype_name(type) )));
 
 	}
 }
@@ -146,7 +146,7 @@ void geography_valid_typmod(LWGEOM *lwgeom, int32 typmod)
 	{
 		ereport(ERROR, (
 		            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-		            errmsg("Geometry type (%s) does not match column type (%s)", lwgeom_typename(lwgeom_type), lwgeom_typename(typmod_type)) ));
+		            errmsg("Geometry type (%s) does not match column type (%s)", lwtype_name(lwgeom_type), lwtype_name(typmod_type)) ));
 	}
 
 	/* Mismatched Z dimensionality. */
@@ -417,7 +417,7 @@ Datum geography_typmod_out(PG_FUNCTION_ARGS)
 
 	/* Has type? */
 	if ( type )
-		str += sprintf(str, "%s", lwgeom_typename(type));
+		str += sprintf(str, "%s", lwtype_name(type));
 
 	/* Need dummy type to append Z/M to? */
 	if ( !type & (hasz || hasz) )
@@ -891,7 +891,7 @@ Datum geography_typmod_type(PG_FUNCTION_ARGS)
 	if ( typmod < 0 || type == 0 )
 		str += sprintf(str, "Geometry");
 	else
-		str += sprintf(str, "%s", lwgeom_typename(type));
+		str += sprintf(str, "%s", lwtype_name(type));
 
 	/* Has Z? */
 	if ( typmod >= 0 && TYPMOD_GET_Z(typmod) )

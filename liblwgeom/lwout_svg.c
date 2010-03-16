@@ -74,7 +74,7 @@ lwgeom_to_svg(uchar *geom, int precision, int relative)
 
 	default:
 		lwerror("lwgeom_to_svg: '%s' geometry type not supported",
-		        lwgeom_typename(type));
+		        lwtype_name(type));
 	}
 
 	return ret;
@@ -512,7 +512,7 @@ assvg_inspected_buf(LWGEOM_INSPECTED *insp, char *output, int relative, int prec
 
 	default:
 		lwerror("ST_AsSVG: '%s' geometry type not supported.",
-		        lwgeom_typename(type));
+		        lwtype_name(type));
 	}
 
 	return (ptr-output);

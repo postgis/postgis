@@ -54,6 +54,10 @@
 #define WKB_HEX 0x10
 #define WKB_NO_NPOINTS 0x20 /* Internal use only */
 
+#define WKB_DOUBLE_SIZE 8 /* Internal use only */
+#define WKB_INT_SIZE 4 /* Internal use only */
+#define WKB_BYTE_SIZE 1 /* Internal use only */
+
 /**
 * Maximum allowed SRID value. 
 * Currently we are using 20 bits (1048575) of storage for SRID.

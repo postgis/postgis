@@ -469,8 +469,7 @@ static LWGEOM* parse_kml_multi(xmlNodePtr xnode, bool *hasz)
 		{
 
 			if (xa->children == NULL) break;
-			geom = lwcollection_add((LWCOLLECTION *)geom, -1,
-			                        parse_kml(xa, hasz));
+			geom = (LWGEOM*)lwcollection_add_lwgeom((LWCOLLECTION*)geom, parse_kml(xa, hasz));
 		}
 	}
 

@@ -171,7 +171,7 @@ typedef struct shp_loader_state
 	char *pgtype;
 
 	/* PostGIS geometry type (numeric version) */
-	unsigned int wkbtype;
+	uint32 wkbtype;
 
 	/* Number of dimensions to output */
 	int pgdims;
