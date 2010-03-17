@@ -5,9 +5,11 @@ YYYY/MM/DD
 
   * New Features *
 
+  - ST_Split (Sandro Santilli / Faunalia for RT-SIGTA)
+  - ST_isValidDetail (Sandro Santilli / Faunalia for RT-SIGTA)
+  - ST_RemoveRepeatedPoints (Sandro Santilli / Faunalia for RT-SIGTA)
   - ST_GeometryN and ST_NumGeometries support for non-collections
-  - ST_isValidDetail (Sandro Santilli - work done for Regione Toscana-SIGTA)
-  - ST_RemoveRepeatedPoints (Sandro Santilli for RT-SIGTA)
+    (Sandro Santilli)
 
 PostGIS 1.5.0
 2010/02/04
