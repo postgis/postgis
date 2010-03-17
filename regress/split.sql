@@ -57,3 +57,6 @@ select '40', st_asewkt(st_split('SRID=10;MULTILINESTRING((0 0, 10 0),(0 5, 10 5)
 
 -- Split multipolygon by line 
 select '50', st_asewkt(ST_Split('SRID=12;MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0),(2 2, 8 2, 8 4, 2 4, 2 2),(2 6,8 6,8 8,2 8,2 6)),((20 0,20 10, 30 10, 30 0, 20 0),(25 5, 28 5, 25 8, 25 5)))', 'SRID=12;LINESTRING(5 -5, 5 15)'));
+
+-- Split geometrycollection by line 
+select '60', st_asewkt(ST_Split('SRID=12;GEOMETRYCOLLECTION(MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0),(2 2, 8 2, 8 4, 2 4, 2 2),(2 6,8 6,8 8,2 8,2 6)),((20 0,20 10, 30 10, 30 0, 20 0),(25 5, 28 5, 25 8, 25 5))),MULTILINESTRING((0 0, 10 0),(0 5, 10 5)))', 'SRID=12;LINESTRING(5 -5, 5 15)'));
