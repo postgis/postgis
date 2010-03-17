@@ -74,7 +74,8 @@ all: liblwgeom.a
 liblwgeom.a: $(SA_OBJS) $(NM_OBJS) $(SA_HEADERS) 
 	ar rs liblwgeom.a $(SA_OBJS) $(NM_OBJS) 	
 
-clean:
+maintainer-clean clean:
+	$(MAKE) -C cunit clean
 	rm -f $(SA_OBJS) 
 	rm -f $(NM_OBJS) 
 	rm -f liblwgeom.a 
