@@ -57,8 +57,8 @@ $(OBJS): %.o: %.c
 
 # Clean target
 clean:
-	@rm $(OBJS)
-	@rm cu_tester
+	@rm -f $(OBJS)
+	@rm -f cu_tester
 
 # Requirements message
 requirements_not_met_cunit:
