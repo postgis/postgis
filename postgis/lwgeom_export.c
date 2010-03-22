@@ -107,6 +107,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	int option = 0;
 	int is_deegree = 0;
 	int precision = OUT_MAX_DOUBLE_PRECISION;
+	const char* prefix = "gml:"; /* default prefix */
 
 	/* Get the version */
 	version = PG_GETARG_INT32(0);
@@ -141,9 +142,9 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	if (option & 16) is_deegree = 1;
 
 	if (version == 2)
-		gml = lwgeom_to_gml2(SERIALIZED_FORM(geom), srs, precision);
+		gml = lwgeom_to_gml2(SERIALIZED_FORM(geom), srs, precision, prefix);
 	else
-		gml = lwgeom_to_gml3(SERIALIZED_FORM(geom), srs, precision, is_deegree);
+		gml = lwgeom_to_gml3(SERIALIZED_FORM(geom), srs, precision, is_deegree, prefix);
 
 	PG_FREE_IF_COPY(geom, 1);
 

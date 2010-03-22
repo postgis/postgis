@@ -510,6 +510,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	int precision = OUT_MAX_DOUBLE_PRECISION;
 	int option=0;
 	int is_deegree=0;
+	const char *prefix = "gml:";
 
 	/* Get the version */
 	version = PG_GETARG_INT32(0);
@@ -551,9 +552,9 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	if (option & 1) is_deegree = 1;
 
 	if (version == 2)
-		gml = lwgeom_to_gml2(lwgeom_serialize(lwgeom), srs, precision);
+		gml = lwgeom_to_gml2(lwgeom_serialize(lwgeom), srs, precision, prefix);
 	else
-		gml = lwgeom_to_gml3(lwgeom_serialize(lwgeom), srs, precision, is_deegree);
+		gml = lwgeom_to_gml3(lwgeom_serialize(lwgeom), srs, precision, is_deegree, prefix);
 
 	PG_FREE_IF_COPY(lwgeom, 1);
 

@@ -24,7 +24,24 @@ static void do_gml2_test(char * in, char * out, char * srs, int precision)
 	char *h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_gml2(lwgeom_serialize(g), srs, precision);
+	h = lwgeom_to_gml2(lwgeom_serialize(g), srs, precision, "gml:");
+
+	if (strcmp(h, out))
+		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
+
+	CU_ASSERT_STRING_EQUAL(h, out);
+
+	lwgeom_free(g);
+	lwfree(h);
+}
+
+static void do_gml2_test_prefix(char * in, char * out, char * srs, int precision, const char *prefix)
+{
+	LWGEOM *g;
+	char *h;
+
+	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
+	h = lwgeom_to_gml2(lwgeom_serialize(g), srs, precision, prefix);
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
@@ -42,7 +59,24 @@ static void do_gml3_test(char * in, char * out, char * srs, int precision, int i
 	char *h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_gml3(lwgeom_serialize(g), srs, precision, is_geodetic);
+	h = lwgeom_to_gml3(lwgeom_serialize(g), srs, precision, is_geodetic, "gml:");
+
+	if (strcmp(h, out))
+		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
+
+	CU_ASSERT_STRING_EQUAL(h, out);
+
+	lwgeom_free(g);
+	lwfree(h);
+}
+
+static void do_gml3_test_prefix(char * in, char * out, char * srs, int precision, int is_geodetic, const char *prefix)
+{
+	LWGEOM *g;
+	char *h;
+
+	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
+	h = lwgeom_to_gml3(lwgeom_serialize(g), srs, precision, is_geodetic, prefix);
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
@@ -59,7 +93,7 @@ static void do_gml2_unsupported(char * in, char * out)
 	char *h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_gml2(lwgeom_serialize(g), NULL, 0);
+	h = lwgeom_to_gml2(lwgeom_serialize(g), NULL, 0, "");
 
 	if (strcmp(cu_error_msg, out))
 		fprintf(stderr, "\nGML 2 - In:   %s\nOut:  %s\nTheo: %s\n",
@@ -77,7 +111,7 @@ static void do_gml3_unsupported(char * in, char * out)
 	char *h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_gml3(lwgeom_serialize(g), NULL, 0, 0);
+	h = lwgeom_to_gml3(lwgeom_serialize(g), NULL, 0, 0, "");
 
 	if (strcmp(cu_error_msg, out))
 		fprintf(stderr, "\nGML 3 - In:   %s\nOut:  %s\nTheo: %s\n",
@@ -466,6 +500,244 @@ static void out_gml_test_geoms(void)
 	    "lwgeom_to_gml3: 'MultiSurface' geometry type not supported");
 }
 
+static void out_gml_test_geoms_prefix(void)
+{
+	/* GML2 - Linestring */
+	do_gml2_test_prefix(
+	    "LINESTRING(0 1,2 3,4 5)",
+	    "<custom:LineString><custom:coordinates>0,1 2,3 4,5</custom:coordinates></custom:LineString>",
+	    NULL, 0, "custom:");
+
+	/* GML3 - Linestring */
+	do_gml3_test_prefix(
+	    "LINESTRING(0 1,2 3,4 5)",
+	    "<custom:Curve><custom:segments><custom:LineStringSegment><custom:posList srsDimension=\"2\">0 1 2 3 4 5</custom:posList></custom:LineStringSegment></custom:segments></custom:Curve>",
+	    NULL, 0, 0, "custom:");
+
+
+	/* GML2 Polygon */
+	do_gml2_test_prefix(
+	    "POLYGON((0 1,2 3,4 5,0 1))",
+	    "<custom:Polygon><custom:outerBoundaryIs><custom:LinearRing><custom:coordinates>0,1 2,3 4,5 0,1</custom:coordinates></custom:LinearRing></custom:outerBoundaryIs></custom:Polygon>",
+	    NULL, 0, "custom:");
+
+	/* GML3 Polygon */
+	do_gml3_test_prefix(
+	    "POLYGON((0 1,2 3,4 5,0 1))",
+	    "<custom:Polygon><custom:exterior><custom:LinearRing><custom:posList srsDimension=\"2\">0 1 2 3 4 5 0 1</custom:posList></custom:LinearRing></custom:exterior></custom:Polygon>",
+	    NULL, 0, 0, "custom:");
+
+
+	/* GML2 Polygon - with internal ring */
+	do_gml2_test_prefix(
+	    "POLYGON((0 1,2 3,4 5,0 1),(6 7,8 9,10 11,6 7))",
+	    "<custom:Polygon><custom:outerBoundaryIs><custom:LinearRing><custom:coordinates>0,1 2,3 4,5 0,1</custom:coordinates></custom:LinearRing></custom:outerBoundaryIs><custom:innerBoundaryIs><custom:LinearRing><custom:coordinates>6,7 8,9 10,11 6,7</custom:coordinates></custom:LinearRing></custom:innerBoundaryIs></custom:Polygon>",
+	    NULL, 0, "custom:");
+
+	/* GML3 Polygon - with internal ring */
+	do_gml3_test_prefix(
+	    "POLYGON((0 1,2 3,4 5,0 1),(6 7,8 9,10 11,6 7))",
+	    "<custom:Polygon><custom:exterior><custom:LinearRing><custom:posList srsDimension=\"2\">0 1 2 3 4 5 0 1</custom:posList></custom:LinearRing></custom:exterior><custom:interior><custom:LinearRing><custom:posList srsDimension=\"2\">6 7 8 9 10 11 6 7</custom:posList></custom:LinearRing></custom:interior></custom:Polygon>",
+	    NULL, 0, 0, "custom:");
+
+
+	/* GML2 MultiPoint */
+	do_gml2_test_prefix(
+	    "MULTIPOINT(0 1,2 3)",
+	    "<custom:MultiPoint><custom:pointMember><custom:Point><custom:coordinates>0,1</custom:coordinates></custom:Point></custom:pointMember><custom:pointMember><custom:Point><custom:coordinates>2,3</custom:coordinates></custom:Point></custom:pointMember></custom:MultiPoint>",
+	    NULL, 0, "custom:");
+
+	/* GML3 MultiPoint */
+	do_gml3_test_prefix(
+	    "MULTIPOINT(0 1,2 3)",
+	    "<custom:MultiPoint><custom:pointMember><custom:Point><custom:pos srsDimension=\"2\">0 1</custom:pos></custom:Point></custom:pointMember><custom:pointMember><custom:Point><custom:pos srsDimension=\"2\">2 3</custom:pos></custom:Point></custom:pointMember></custom:MultiPoint>",
+	    NULL, 0, 0, "custom:");
+
+
+	/* GML2 Multiline */
+	do_gml2_test_prefix(
+	    "MULTILINESTRING((0 1,2 3,4 5),(6 7,8 9,10 11))",
+	    "<custom:MultiLineString><custom:lineStringMember><custom:LineString><custom:coordinates>0,1 2,3 4,5</custom:coordinates></custom:LineString></custom:lineStringMember><custom:lineStringMember><custom:LineString><custom:coordinates>6,7 8,9 10,11</custom:coordinates></custom:LineString></custom:lineStringMember></custom:MultiLineString>",
+	    NULL, 0, "custom:");
+
+	/* GML3 Multiline */
+	do_gml3_test_prefix(
+	    "MULTILINESTRING((0 1,2 3,4 5),(6 7,8 9,10 11))",
+	    "<custom:MultiCurve><custom:curveMember><custom:Curve><custom:segments><custom:LineStringSegment><custom:posList srsDimension=\"2\">0 1 2 3 4 5</custom:posList></custom:LineStringSegment></custom:segments></custom:Curve></custom:curveMember><custom:curveMember><custom:Curve><custom:segments><custom:LineStringSegment><custom:posList srsDimension=\"2\">6 7 8 9 10 11</custom:posList></custom:LineStringSegment></custom:segments></custom:Curve></custom:curveMember></custom:MultiCurve>",
+	    NULL, 0, 0, "custom:");
+
+
+	/* GML2 MultiPolygon */
+	do_gml2_test_prefix(
+	    "MULTIPOLYGON(((0 1,2 3,4 5,0 1)),((6 7,8 9,10 11,6 7)))",
+	    "<custom:MultiPolygon><custom:polygonMember><custom:Polygon><custom:outerBoundaryIs><custom:LinearRing><custom:coordinates>0,1 2,3 4,5 0,1</custom:coordinates></custom:LinearRing></custom:outerBoundaryIs></custom:Polygon></custom:polygonMember><custom:polygonMember><custom:Polygon><custom:outerBoundaryIs><custom:LinearRing><custom:coordinates>6,7 8,9 10,11 6,7</custom:coordinates></custom:LinearRing></custom:outerBoundaryIs></custom:Polygon></custom:polygonMember></custom:MultiPolygon>",
+	    NULL, 0, "custom:");
+
+	/* GML3 MultiPolygon */
+	do_gml3_test_prefix(
+	    "MULTIPOLYGON(((0 1,2 3,4 5,0 1)),((6 7,8 9,10 11,6 7)))",
+	    "<custom:MultiSurface><custom:surfaceMember><custom:Polygon><custom:exterior><custom:LinearRing><custom:posList srsDimension=\"2\">0 1 2 3 4 5 0 1</custom:posList></custom:LinearRing></custom:exterior></custom:Polygon></custom:surfaceMember><custom:surfaceMember><custom:Polygon><custom:exterior><custom:LinearRing><custom:posList srsDimension=\"2\">6 7 8 9 10 11 6 7</custom:posList></custom:LinearRing></custom:exterior></custom:Polygon></custom:surfaceMember></custom:MultiSurface>",
+	    NULL, 0, 0, "custom:");
+
+
+	/* GML2 - GeometryCollection */
+	do_gml2_test_prefix(
+	    "GEOMETRYCOLLECTION(POINT(0 1),LINESTRING(2 3,4 5))",
+	    "<custom:MultiGeometry><custom:geometryMember><custom:Point><custom:coordinates>0,1</custom:coordinates></custom:Point></custom:geometryMember><custom:geometryMember><custom:LineString><custom:coordinates>2,3 4,5</custom:coordinates></custom:LineString></custom:geometryMember></custom:MultiGeometry>",
+	    NULL, 0, "custom:");
+
+	/* GML3 - GeometryCollection */
+	do_gml3_test_prefix(
+	    "GEOMETRYCOLLECTION(POINT(0 1),LINESTRING(2 3,4 5))",
+	    "<custom:MultiGeometry><custom:geometryMember><custom:Point><custom:pos srsDimension=\"2\">0 1</custom:pos></custom:Point></custom:geometryMember><custom:geometryMember><custom:Curve><custom:segments><custom:LineStringSegment><custom:posList srsDimension=\"2\">2 3 4 5</custom:posList></custom:LineStringSegment></custom:segments></custom:Curve></custom:geometryMember></custom:MultiGeometry>",
+	    NULL, 0, 0, "custom:");
+
+
+	/* GML2 - Empty GeometryCollection */
+	do_gml2_test_prefix(
+	    "GEOMETRYCOLLECTION EMPTY",
+	    "<custom:MultiGeometry></custom:MultiGeometry>",
+	    NULL, 0, "custom:");
+
+	/* GML3 - Empty GeometryCollection */
+	do_gml3_test_prefix(
+	    "GEOMETRYCOLLECTION EMPTY",
+	    "<custom:MultiGeometry></custom:MultiGeometry>",
+	    NULL, 0, 0, "custom:");
+
+	/* GML2 - Nested GeometryCollection */
+	do_gml2_test_prefix(
+	    "GEOMETRYCOLLECTION(POINT(0 1),GEOMETRYCOLLECTION(LINESTRING(2 3,4 5)))",
+	    "<custom:MultiGeometry><custom:geometryMember><custom:Point><custom:coordinates>0,1</custom:coordinates></custom:Point></custom:geometryMember><custom:geometryMember><custom:MultiGeometry><custom:geometryMember><custom:LineString><custom:coordinates>2,3 4,5</custom:coordinates></custom:LineString></custom:geometryMember></custom:MultiGeometry></custom:geometryMember></custom:MultiGeometry>",
+	    NULL, 0, "custom:");
+
+	/* GML3 - Nested GeometryCollection */
+	do_gml3_test_prefix(
+	    "GEOMETRYCOLLECTION(POINT(0 1),GEOMETRYCOLLECTION(LINESTRING(2 3,4 5)))",
+	    "<custom:MultiGeometry><custom:geometryMember><custom:Point><custom:pos srsDimension=\"2\">0 1</custom:pos></custom:Point></custom:geometryMember><custom:geometryMember><custom:MultiGeometry><custom:geometryMember><custom:Curve><custom:segments><custom:LineStringSegment><custom:posList srsDimension=\"2\">2 3 4 5</custom:posList></custom:LineStringSegment></custom:segments></custom:Curve></custom:geometryMember></custom:MultiGeometry></custom:geometryMember></custom:MultiGeometry>",
+	    NULL, 0, 0, "custom:");
+
+	/*------------- empty prefixes below ------------------------ */
+
+	/* GML2 - Linestring */
+	do_gml2_test_prefix(
+	    "LINESTRING(0 1,2 3,4 5)",
+	    "<LineString><coordinates>0,1 2,3 4,5</coordinates></LineString>",
+	    NULL, 0, "");
+
+	/* GML3 - Linestring */
+	do_gml3_test_prefix(
+	    "LINESTRING(0 1,2 3,4 5)",
+	    "<Curve><segments><LineStringSegment><posList srsDimension=\"2\">0 1 2 3 4 5</posList></LineStringSegment></segments></Curve>",
+	    NULL, 0, 0, "");
+
+
+	/* GML2 Polygon */
+	do_gml2_test_prefix(
+	    "POLYGON((0 1,2 3,4 5,0 1))",
+	    "<Polygon><outerBoundaryIs><LinearRing><coordinates>0,1 2,3 4,5 0,1</coordinates></LinearRing></outerBoundaryIs></Polygon>",
+	    NULL, 0, "");
+
+	/* GML3 Polygon */
+	do_gml3_test_prefix(
+	    "POLYGON((0 1,2 3,4 5,0 1))",
+	    "<Polygon><exterior><LinearRing><posList srsDimension=\"2\">0 1 2 3 4 5 0 1</posList></LinearRing></exterior></Polygon>",
+	    NULL, 0, 0, "");
+
+
+	/* GML2 Polygon - with internal ring */
+	do_gml2_test_prefix(
+	    "POLYGON((0 1,2 3,4 5,0 1),(6 7,8 9,10 11,6 7))",
+	    "<Polygon><outerBoundaryIs><LinearRing><coordinates>0,1 2,3 4,5 0,1</coordinates></LinearRing></outerBoundaryIs><innerBoundaryIs><LinearRing><coordinates>6,7 8,9 10,11 6,7</coordinates></LinearRing></innerBoundaryIs></Polygon>",
+	    NULL, 0, "");
+
+	/* GML3 Polygon - with internal ring */
+	do_gml3_test_prefix(
+	    "POLYGON((0 1,2 3,4 5,0 1),(6 7,8 9,10 11,6 7))",
+	    "<Polygon><exterior><LinearRing><posList srsDimension=\"2\">0 1 2 3 4 5 0 1</posList></LinearRing></exterior><interior><LinearRing><posList srsDimension=\"2\">6 7 8 9 10 11 6 7</posList></LinearRing></interior></Polygon>",
+	    NULL, 0, 0, "");
+
+
+	/* GML2 MultiPoint */
+	do_gml2_test_prefix(
+	    "MULTIPOINT(0 1,2 3)",
+	    "<MultiPoint><pointMember><Point><coordinates>0,1</coordinates></Point></pointMember><pointMember><Point><coordinates>2,3</coordinates></Point></pointMember></MultiPoint>",
+	    NULL, 0, "");
+
+	/* GML3 MultiPoint */
+	do_gml3_test_prefix(
+	    "MULTIPOINT(0 1,2 3)",
+	    "<MultiPoint><pointMember><Point><pos srsDimension=\"2\">0 1</pos></Point></pointMember><pointMember><Point><pos srsDimension=\"2\">2 3</pos></Point></pointMember></MultiPoint>",
+	    NULL, 0, 0, "");
+
+
+	/* GML2 Multiline */
+	do_gml2_test_prefix(
+	    "MULTILINESTRING((0 1,2 3,4 5),(6 7,8 9,10 11))",
+	    "<MultiLineString><lineStringMember><LineString><coordinates>0,1 2,3 4,5</coordinates></LineString></lineStringMember><lineStringMember><LineString><coordinates>6,7 8,9 10,11</coordinates></LineString></lineStringMember></MultiLineString>",
+	    NULL, 0, "");
+
+	/* GML3 Multiline */
+	do_gml3_test_prefix(
+	    "MULTILINESTRING((0 1,2 3,4 5),(6 7,8 9,10 11))",
+	    "<MultiCurve><curveMember><Curve><segments><LineStringSegment><posList srsDimension=\"2\">0 1 2 3 4 5</posList></LineStringSegment></segments></Curve></curveMember><curveMember><Curve><segments><LineStringSegment><posList srsDimension=\"2\">6 7 8 9 10 11</posList></LineStringSegment></segments></Curve></curveMember></MultiCurve>",
+	    NULL, 0, 0, "");
+
+
+	/* GML2 MultiPolygon */
+	do_gml2_test_prefix(
+	    "MULTIPOLYGON(((0 1,2 3,4 5,0 1)),((6 7,8 9,10 11,6 7)))",
+	    "<MultiPolygon><polygonMember><Polygon><outerBoundaryIs><LinearRing><coordinates>0,1 2,3 4,5 0,1</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember><polygonMember><Polygon><outerBoundaryIs><LinearRing><coordinates>6,7 8,9 10,11 6,7</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember></MultiPolygon>",
+	    NULL, 0, "");
+
+	/* GML3 MultiPolygon */
+	do_gml3_test_prefix(
+	    "MULTIPOLYGON(((0 1,2 3,4 5,0 1)),((6 7,8 9,10 11,6 7)))",
+	    "<MultiSurface><surfaceMember><Polygon><exterior><LinearRing><posList srsDimension=\"2\">0 1 2 3 4 5 0 1</posList></LinearRing></exterior></Polygon></surfaceMember><surfaceMember><Polygon><exterior><LinearRing><posList srsDimension=\"2\">6 7 8 9 10 11 6 7</posList></LinearRing></exterior></Polygon></surfaceMember></MultiSurface>",
+	    NULL, 0, 0, "");
+
+
+	/* GML2 - GeometryCollection */
+	do_gml2_test_prefix(
+	    "GEOMETRYCOLLECTION(POINT(0 1),LINESTRING(2 3,4 5))",
+	    "<MultiGeometry><geometryMember><Point><coordinates>0,1</coordinates></Point></geometryMember><geometryMember><LineString><coordinates>2,3 4,5</coordinates></LineString></geometryMember></MultiGeometry>",
+	    NULL, 0, "");
+
+	/* GML3 - GeometryCollection */
+	do_gml3_test_prefix(
+	    "GEOMETRYCOLLECTION(POINT(0 1),LINESTRING(2 3,4 5))",
+	    "<MultiGeometry><geometryMember><Point><pos srsDimension=\"2\">0 1</pos></Point></geometryMember><geometryMember><Curve><segments><LineStringSegment><posList srsDimension=\"2\">2 3 4 5</posList></LineStringSegment></segments></Curve></geometryMember></MultiGeometry>",
+	    NULL, 0, 0, "");
+
+
+	/* GML2 - Empty GeometryCollection */
+	do_gml2_test_prefix(
+	    "GEOMETRYCOLLECTION EMPTY",
+	    "<MultiGeometry></MultiGeometry>",
+	    NULL, 0, "");
+
+	/* GML3 - Empty GeometryCollection */
+	do_gml3_test_prefix(
+	    "GEOMETRYCOLLECTION EMPTY",
+	    "<MultiGeometry></MultiGeometry>",
+	    NULL, 0, 0, "");
+
+	/* GML2 - Nested GeometryCollection */
+	do_gml2_test_prefix(
+	    "GEOMETRYCOLLECTION(POINT(0 1),GEOMETRYCOLLECTION(LINESTRING(2 3,4 5)))",
+	    "<MultiGeometry><geometryMember><Point><coordinates>0,1</coordinates></Point></geometryMember><geometryMember><MultiGeometry><geometryMember><LineString><coordinates>2,3 4,5</coordinates></LineString></geometryMember></MultiGeometry></geometryMember></MultiGeometry>",
+	    NULL, 0, "");
+
+	/* GML3 - Nested GeometryCollection */
+	do_gml3_test_prefix(
+	    "GEOMETRYCOLLECTION(POINT(0 1),GEOMETRYCOLLECTION(LINESTRING(2 3,4 5)))",
+	    "<MultiGeometry><geometryMember><Point><pos srsDimension=\"2\">0 1</pos></Point></geometryMember><geometryMember><MultiGeometry><geometryMember><Curve><segments><LineStringSegment><posList srsDimension=\"2\">2 3 4 5</posList></LineStringSegment></segments></Curve></geometryMember></MultiGeometry></geometryMember></MultiGeometry>",
+	    NULL, 0, 0, "");
+
+
+
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -475,6 +747,7 @@ CU_TestInfo out_gml_tests[] = {
 	PG_TEST(out_gml_test_dims),
 	PG_TEST(out_gml_test_geodetic),
 	PG_TEST(out_gml_test_geoms),
+	PG_TEST(out_gml_test_geoms_prefix),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo out_gml_suite = {"GML Out Suite",  NULL,  NULL, out_gml_tests};
