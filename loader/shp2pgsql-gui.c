@@ -1212,19 +1212,19 @@ main(int argc, char *argv[])
 		switch (c)
 		{
 		case 'U':
-			conn->username = optarg;
+			conn->username = pgis_optarg;
 			break;
 		case 'p':
-			conn->port = optarg;
+			conn->port = pgis_optarg;
 			break;
 		case 'W':
-			conn->password = optarg;
+			conn->password = pgis_optarg;
 			break;
 		case 'd':
-			conn->database = optarg;
+			conn->database = pgis_optarg;
 			break;
 		case 'h':
-			conn->host = optarg;
+			conn->host = pgis_optarg;
 			break;
 		default:
 			usage();

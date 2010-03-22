@@ -31,7 +31,7 @@
  */
 
 #define ERR(s, c)\
-  if(opterr){\
+  if(pgis_opterr){\
         char errbuf[2];\
         errbuf[0] = (char)c; errbuf[1] = '\n';\
         (void) write(2, argv[0], (unsigned)strlen(argv[0]));\
@@ -39,10 +39,10 @@
         (void) write(2, errbuf, 2);\
   }
 
-int     opterr = 1;
-int     optind = 1;
-int     optopt;
-char    *optarg;
+int     pgis_opterr = 1;
+int     pgis_optind = 1;
+int     pgis_optopt;
+char    *pgis_optarg;
 
 int
 pgis_getopt(int argc, char **argv, char *opts)
@@ -53,51 +53,51 @@ pgis_getopt(int argc, char **argv, char *opts)
 
 	if (sp == 1)
 	{
-		if (optind >= argc ||
-		        argv[optind][0] != '-' /* && argv[optind][0] != '/' */ ||
-		        argv[optind][1] == '\0')
+		if (pgis_optind >= argc ||
+		        argv[pgis_optind][0] != '-' /* && argv[pgis_optind][0] != '/' */ ||
+		        argv[pgis_optind][1] == '\0')
 		{
 			return(EOF);
 		}
-		else if (strcmp(argv[optind], "--") == 0)
+		else if (strcmp(argv[pgis_optind], "--") == 0)
 		{
-			optind++;
+			pgis_optind++;
 			return(EOF);
 		}
 	}
-	optopt = c = argv[optind][sp];
+	pgis_optopt = c = argv[pgis_optind][sp];
 	if (c == ':' || (cp=strchr(opts, c)) == 0)
 	{
 		ERR(": illegal option -- ", c);
-		if (argv[optind][++sp] == '\0')
+		if (argv[pgis_optind][++sp] == '\0')
 		{
-			optind++;
+			pgis_optind++;
 			sp = 1;
 		}
 		return('?');
 	}
 	if (*++cp == ':')
 	{
-		if (argv[optind][sp+1] != '\0')
-			optarg = &argv[optind++][sp+1];
-		else if (++optind >= argc)
+		if (argv[pgis_optind][sp+1] != '\0')
+			pgis_optarg = &argv[pgis_optind++][sp+1];
+		else if (++pgis_optind >= argc)
 		{
 			ERR(": option requires an argument -- ", c);
 			sp = 1;
 			return('?');
 		}
 		else
-			optarg = argv[optind++];
+			pgis_optarg = argv[pgis_optind++];
 		sp = 1;
 	}
 	else
 	{
-		if (argv[optind][++sp] == '\0')
+		if (argv[pgis_optind][++sp] == '\0')
 		{
 			sp = 1;
-			optind++;
+			pgis_optind++;
 		}
-		optarg = NULL;
+		pgis_optarg = NULL;
 	}
 	return(c);
 }

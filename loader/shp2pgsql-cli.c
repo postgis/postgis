@@ -92,9 +92,9 @@ main (int argc, char **argv)
 			break;
 
 		case 's':
-			if (optarg)
+			if (pgis_optarg)
 			{
-				sscanf(optarg, "%d", &(config->sr_id));
+				sscanf(pgis_optarg, "%d", &(config->sr_id));
 			}
 			else
 			{
@@ -105,7 +105,7 @@ main (int argc, char **argv)
 			break;
 
 		case 'g':
-			config->geom = optarg;
+			config->geom = pgis_optarg;
 			break;
 
 		case 'k':
@@ -129,11 +129,11 @@ main (int argc, char **argv)
 			break;
 
 		case 'W':
-			config->encoding = optarg;
+			config->encoding = pgis_optarg;
 			break;
 
 		case 'N':
-			switch (optarg[0])
+			switch (pgis_optarg[0])
 			{
 			case 'a':
 				config->null_policy = POLICY_NULL_ABORT;
@@ -161,10 +161,10 @@ main (int argc, char **argv)
 	}
 
 	/* Determine the shapefile name from the next argument, if no shape file, exit. */
-	if (optind < argc)
+	if (pgis_optind < argc)
 	{
-		config->shp_file = argv[optind];
-		optind++;
+		config->shp_file = argv[pgis_optind];
+		pgis_optind++;
 	}
 	else
 	{
@@ -173,25 +173,25 @@ main (int argc, char **argv)
 	}
 
 	/* Determine the table and schema names from the next argument */
-	if (optind < argc)
+	if (pgis_optind < argc)
 	{
 		char *ptr;
 
-		ptr = strchr(argv[optind], '.');
+		ptr = strchr(argv[pgis_optind], '.');
 
 		/* Schema qualified table name */
 		if (ptr)
 		{
-			config->schema = malloc(strlen(argv[optind]) + 1);
-			snprintf(config->schema, ptr - argv[optind] + 1, "%s", argv[optind]);
+			config->schema = malloc(strlen(argv[pgis_optind]) + 1);
+			snprintf(config->schema, ptr - argv[pgis_optind] + 1, "%s", argv[pgis_optind]);
 
-			config->table = malloc(strlen(argv[optind]));
-			snprintf(config->table, strlen(argv[optind]) - strlen(config->schema), "%s", ptr + 1);
+			config->table = malloc(strlen(argv[pgis_optind]));
+			snprintf(config->table, strlen(argv[pgis_optind]) - strlen(config->schema), "%s", ptr + 1);
 		}
 		else
 		{
-			config->table = malloc(strlen(argv[optind]) + 1);
-			strcpy(config->table, argv[optind]);
+			config->table = malloc(strlen(argv[pgis_optind]) + 1);
+			strcpy(config->table, argv[pgis_optind]);
 		}
 	}
 

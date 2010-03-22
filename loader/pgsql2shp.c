@@ -1307,10 +1307,10 @@ parse_commandline(int ARGC, char **ARGV)
 			binary = 1;
 			break;
 		case 'f':
-			shp_file = optarg;
+			shp_file = pgis_optarg;
 			break;
 		case 'h':
-			snprintf(buf + strlen(buf), 255, "host=%s ", optarg);
+			snprintf(buf + strlen(buf), 255, "host=%s ", pgis_optarg);
 			break;
 		case 'd':
 			dswitchprovided = 1;
@@ -1321,16 +1321,16 @@ parse_commandline(int ARGC, char **ARGV)
 			unescapedattrs = 1;
 			break;
 		case 'u':
-			snprintf(buf + strlen(buf), 255, "user=%s ", optarg);
+			snprintf(buf + strlen(buf), 255, "user=%s ", pgis_optarg);
 			break;
 		case 'p':
-			snprintf(buf + strlen(buf), 255, "port=%s ", optarg);
+			snprintf(buf + strlen(buf), 255, "port=%s ", pgis_optarg);
 			break;
 		case 'P':
-			snprintf(buf + strlen(buf), 255, "password=%s ", optarg);
+			snprintf(buf + strlen(buf), 255, "password=%s ", pgis_optarg);
 			break;
 		case 'g':
-			geo_col_name = optarg;
+			geo_col_name = pgis_optarg;
 			break;
 		case 'k':
 			keep_fieldname_case = 1;
@@ -1343,15 +1343,15 @@ parse_commandline(int ARGC, char **ARGV)
 	}
 
 	curindex=0;
-	for (; optind<ARGC; optind++)
+	for (; pgis_optind<ARGC; pgis_optind++)
 	{
 		if (curindex == 0)
 		{
-			snprintf(buf + strlen(buf), 255, "dbname=%s", ARGV[optind]);
+			snprintf(buf + strlen(buf), 255, "dbname=%s", ARGV[pgis_optind]);
 		}
 		else if (curindex == 1)
 		{
-			parse_table(ARGV[optind]);
+			parse_table(ARGV[pgis_optind]);
 
 		}
 		curindex++;
