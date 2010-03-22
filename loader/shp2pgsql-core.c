@@ -407,6 +407,7 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 	{
 		lwcollection = lwcollection_construct(MULTILINETYPE, state->config->sr_id, NULL, obj->nParts, lwmultilinestrings);
 		serialized_lwgeom = lwgeom_serialize(lwcollection_as_lwgeom(lwcollection));
+		
 	}
 	else
 	{
