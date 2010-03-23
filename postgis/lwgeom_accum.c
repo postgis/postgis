@@ -169,9 +169,7 @@ pgis_accum_finalfn(pgis_abs *p, MemoryContext mctx, FunctionCallInfo fcinfo)
 #if POSTGIS_PGSQL_VERSION < 84
 	result = makeMdArrayResult(state, 1, dims, lbs, mctx);
 #else
-	/* Release working state if regular aggregate, but not if window agg */
-	result = makeMdArrayResult(state, 1, dims, lbs, mctx,
-	                           IsA(fcinfo->context, AggState));
+	result = makeMdArrayResult(state, 1, dims, lbs, mctx, false);
 #endif
 	return result;
 }
