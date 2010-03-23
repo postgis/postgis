@@ -107,7 +107,10 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	int option = 0;
 	int is_deegree = 0;
 	int precision = OUT_MAX_DOUBLE_PRECISION;
-	const char* prefix = "gml:"; /* default prefix */
+	static const char* default_prefix = "gml:"; /* default prefix */
+	char *prefixbuf;
+	const char* prefix = default_prefix;
+	text *prefix_text;
 
 	/* Get the version */
 	version = PG_GETARG_INT32(0);
@@ -133,6 +136,27 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	/* retrieve option */
 	if (PG_NARGS() >3 && !PG_ARGISNULL(3))
 		option = PG_GETARG_INT32(3);
+
+	/* retrieve prefix */
+	if (PG_NARGS() >4 && !PG_ARGISNULL(4))
+	{
+		prefix_text = PG_GETARG_TEXT_P(4);
+		if ( VARSIZE(prefix_text)-VARHDRSZ == 0 )
+		{
+			prefix = "";
+		}
+		else
+		{
+			/* +2 is one for the ':' and one for term null */
+			prefixbuf = palloc(VARSIZE(prefix_text)-VARHDRSZ+2);
+			memcpy(prefixbuf, VARDATA(prefix_text),
+			       VARSIZE(prefix_text)-VARHDRSZ);
+			/* add colon and null terminate */
+			prefixbuf[VARSIZE(prefix_text)-VARHDRSZ] = ':';
+			prefixbuf[VARSIZE(prefix_text)-VARHDRSZ+1] = '\0';
+			prefix = prefixbuf;
+		}
+	}
 
 	SRID = lwgeom_getsrid(SERIALIZED_FORM(geom));
 	if (SRID == -1)      srs = NULL;
