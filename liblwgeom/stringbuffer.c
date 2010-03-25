@@ -160,7 +160,8 @@ void stringbuffer_copy(stringbuffer_t *dst, stringbuffer_t *src)
 
 /**
 * Appends a formatted string to the current string buffer, 
-* using the format and argument list provided.
+* using the format and argument list provided. Returns -1 on error,
+* check errno for reasons, documented in the printf man page.
 */
 static int stringbuffer_avprintf(stringbuffer_t *s, const char *fmt, va_list ap)
 {
@@ -204,6 +205,8 @@ static int stringbuffer_avprintf(stringbuffer_t *s, const char *fmt, va_list ap)
 /**
 * Appends a formatted string to the current string buffer, 
 * using the format and argument list provided.
+* Returns -1 on error, check errno for reasons, 
+* as documented in the printf man page.
 */
 int stringbuffer_aprintf(stringbuffer_t *s, const char *fmt, ...)
 {
