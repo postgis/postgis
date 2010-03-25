@@ -42,7 +42,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#define STRINGBUFFER_STARTSIZE 16
+#define STRINGBUFFER_STARTSIZE 128
 
 typedef struct
 {
