@@ -42,26 +42,25 @@
 /**
 * Allocate a new stringbuffer_t. Use stringbuffer_destroy to free.
 */
-stringbuffer_t *stringbuffer_create(void)
+stringbuffer_t* stringbuffer_create(void)
 {
-	stringbuffer_t *sb;
+	stringbuffer_t *s;
 
-	sb = lwalloc(sizeof(stringbuffer_t));
-	sb->length = 0;
-	sb->capacity = STRINGBUFFER_STARTSIZE;
-	sb->str = lwalloc(sizeof(char) * STRINGBUFFER_STARTSIZE);
-	memset(sb->str,0,STRINGBUFFER_STARTSIZE);
-	memset(sb->buffer,0,STRINGBUFFER_WORKSIZE);
-	return sb;
+	s = lwalloc(sizeof(stringbuffer_t));
+	s->str_start = lwalloc(sizeof(char) * STRINGBUFFER_STARTSIZE);
+	s->str_end = s->str_start;
+	s->capacity = STRINGBUFFER_STARTSIZE;
+	memset(s->str_start,0,STRINGBUFFER_STARTSIZE);
+	return s;
 }
 
 /**
 * Free the stringbuffer_t and all memory managed within it.
 */
-void stringbuffer_destroy(stringbuffer_t *sb)
+void stringbuffer_destroy(stringbuffer_t *s)
 {
-	if( sb->str ) lwfree(sb->str);
-	if( sb ) lwfree(sb);
+	if( s->str_start ) lwfree(s->str_start);
+	if( s ) lwfree(s);
 }
 
 /** 
@@ -69,46 +68,44 @@ void stringbuffer_destroy(stringbuffer_t *sb)
 * without the expense of freeing and re-allocating a new
 * stringbuffer_t.
 */
-void stringbuffer_clear(stringbuffer_t *sb)
+void stringbuffer_clear(stringbuffer_t *s)
 {
-	sb->str[0] = '\0';
-	sb->length = 0;
-	memset(sb->buffer,0,STRINGBUFFER_WORKSIZE);
+	s->str_start[0] = '\0';
+	s->str_end = s->str_start;
 }
 
 /**
 * If necessary, expand the stringbuffer_t internal buffer to accomodate the 
 * specified additional size.
 */
-static void stringbuffer_makeroom(stringbuffer_t *sb, size_t length_to_add)
+static void stringbuffer_makeroom(stringbuffer_t *s, size_t size_to_add)
 {
-	size_t reqd_capacity = sb->capacity; 
+	size_t current_size = (s->str_end - s->str_start);
+	size_t capacity = s->capacity; 
+	size_t required_size = current_size + size_to_add;
 
-	while(reqd_capacity < (length_to_add + sb->length))
-		reqd_capacity *= 2;
+	while(capacity < required_size)
+		capacity *= 2;
 
-	if( reqd_capacity > sb->capacity )
+	if( capacity > s->capacity )
 	{
-		sb->str = lwrealloc(sb->str, sizeof(char) * reqd_capacity);
-		sb->capacity = reqd_capacity;
+		s->str_start = lwrealloc(s->str_start, sizeof(char) * capacity);
+		s->capacity = capacity;
+		s->str_end = s->str_start + current_size;
 	}
 }
 
 /**
 * Append the specified string to the stringbuffer_t.
 */
-void stringbuffer_append(stringbuffer_t *sb, const char *s)
+void stringbuffer_append(stringbuffer_t *s, const char *a)
 {
-	int slen = strlen(s); /* Length of string to append */
-	int slen0 = slen + 1; /* Length including null terminator */
+	int alen = strlen(a); /* Length of string to append */
+	int alen0 = alen + 1; /* Length including null terminator */
 
-	stringbuffer_makeroom(sb, slen0);
-
-	memcpy(sb->str + sb->length, s, slen0);
-
-	sb->length += slen;
-	sb->str[sb->length] = '\0';
-
+	stringbuffer_makeroom(s, alen0);
+	memcpy(s->str_end, a, alen0);
+	s->str_end += alen;
 }
 
 /**
@@ -116,9 +113,9 @@ void stringbuffer_append(stringbuffer_t *sb, const char *s)
 * the stringbuffer. The current string will be null-terminated
 * within the internal string.
 */
-const char *stringbuffer_getstring(stringbuffer_t *sb)
+const char* stringbuffer_getstring(stringbuffer_t *s)
 {
-	return sb->str;
+	return s->str_start;
 }
 
 /**
@@ -126,35 +123,31 @@ const char *stringbuffer_getstring(stringbuffer_t *sb)
 * current state of the string. Caller is responsible for
 * freeing the return value.
 */
-char *stringbuffer_getstringcopy(stringbuffer_t *sb)
+char* stringbuffer_getstringcopy(stringbuffer_t *s)
 {
-	char *rv;
-	size_t size;
-	if( sb->length <= 0 )
-		return NULL;
-	size = sb->length + 1;
-	rv = lwalloc(size);
-	memcpy(rv, sb->str, size);
-	rv[sb->length] = '\0';
-	return rv;
+	size_t size = (s->str_end - s->str_start) + 1;
+	char *str = lwalloc(size);
+	memcpy(str, s->str_start, size);
+	str[size - 1] = '\0';
+	return str;
 }
 
 /**
 * Returns the length of the current string, not including the 
 * null terminator (same behavior as strlen()).
 */
-int stringbuffer_getlength(stringbuffer_t *sb)
+int stringbuffer_getlength(stringbuffer_t *s)
 {
-	return sb->length;
+	return (s->str_end - s->str_start);
 }
 
 /**
 * Clear the stringbuffer_t and re-start it with the specified string.
 */
-void stringbuffer_set(stringbuffer_t *sb, const char *s)
+void stringbuffer_set(stringbuffer_t *s, const char *str)
 {
-	stringbuffer_clear(sb); 
-	stringbuffer_append(sb, s);
+	stringbuffer_clear(s); 
+	stringbuffer_append(s, str);
 }
 
 /** 
@@ -169,57 +162,69 @@ void stringbuffer_copy(stringbuffer_t *dst, stringbuffer_t *src)
 * Appends a formatted string to the current string buffer, 
 * using the format and argument list provided.
 */
-static void stringbuffer_avprintf(stringbuffer_t *sb, const char *fmt, va_list ap)
+static int stringbuffer_avprintf(stringbuffer_t *s, const char *fmt, va_list ap)
 {
+	int maxlen = (s->capacity - (s->str_end - s->str_start));
 	int len = 0; /* Length of the output */
-	int len0 = 0; /* Length of the output with null terminator */
 	va_list ap2;
 	
+	/* Make a copy of the variadic arguments, in case we need to print twice */
 	va_copy(ap2, ap);
 	
-	/* Print to our static buffer */
-	len = vsnprintf(sb->buffer, STRINGBUFFER_WORKSIZE, fmt, ap);
-	len0 = len + 1;
-	
-	stringbuffer_makeroom(sb, len0);
+	/* Print to our buffer */
+	len = vsnprintf(s->str_end, maxlen, fmt, ap);
 
-	/* This output doesn't fit in our static buffer, allocate a dynamic one */
-	if( len0 > STRINGBUFFER_WORKSIZE )
+	/* Propogate any printing errors upwards (check errno for info) */
+	if( len < 0 ) 
+		return -1;
+
+	/* If we had enough space, return the number of characters printed */
+	if( len < maxlen ) 
 	{
-		char *tmpstr = lwalloc(sizeof(char) * len0);
-		vsnprintf(tmpstr, len0, fmt, ap2);
-		memcpy(sb->str + sb->length, tmpstr, len0);
-		lwfree(tmpstr);
+		s->str_end += len;
+		return len;
 	}
-	/* Copy the result out of the static buffer */
-	else
-	{
-		memcpy(sb->str + sb->length, sb->buffer, len0);
-	}
-	sb->length += len;
-	sb->str[sb->length] = '\0';
+
+	/* We didn't have enough space! Expand the buffer. */
+	stringbuffer_makeroom(s, len + 1);
+	maxlen = (s->capacity - (s->str_end - s->str_start));
+	
+	/* Try to print a second time */
+	len = vsnprintf(s->str_end, maxlen, fmt, ap2);
+
+	/* Printing error or too long still? Error! */
+	if( len < 0 || len >= maxlen ) 
+		return -1;
+
+	/* Move end pointer forward and return. */
+	s->str_end += len;
+	return len;
 }
 
 /**
 * Appends a formatted string to the current string buffer, 
 * using the format and argument list provided.
 */
-void stringbuffer_aprintf(stringbuffer_t *sb, const char *fmt, ...)
+int stringbuffer_aprintf(stringbuffer_t *s, const char *fmt, ...)
 {
+	int r;
 	va_list ap;
 	va_start(ap, fmt);
-	stringbuffer_avprintf(sb, fmt, ap);
+	r = stringbuffer_avprintf(s, fmt, ap);
 	va_end(ap);
+	return r;
 }
 
 /**
 * Synonym for stringbuffer_aprintf
 * TODO: Remove this.
 */
-void stringbuffer_vasbappend(stringbuffer_t *sb, const char *fmt, ... )
+int stringbuffer_vasbappend(stringbuffer_t *s, const char *fmt, ... )
 {
+	int r;
 	va_list ap;
 	va_start(ap, fmt);
-	stringbuffer_avprintf(sb, fmt, ap);
+	r = stringbuffer_avprintf(s, fmt, ap);
 	va_end(ap);
+	return r;
 }

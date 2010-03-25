@@ -42,15 +42,13 @@
 #include <string.h>
 #include <stdio.h>
 
-#define STRINGBUFFER_STARTSIZE 128
-#define STRINGBUFFER_WORKSIZE 64
+#define STRINGBUFFER_STARTSIZE 16
 
 typedef struct
 {
-	size_t length;
 	size_t capacity;
-	char buffer[STRINGBUFFER_WORKSIZE];
-	char *str;
+	char *str_end;
+	char *str_start;
 }
 stringbuffer_t;
 
@@ -60,9 +58,9 @@ extern void stringbuffer_clear(stringbuffer_t *sb);
 void stringbuffer_set(stringbuffer_t *sb, const char *s);
 void stringbuffer_copy(stringbuffer_t *sb, stringbuffer_t *src);
 extern void stringbuffer_append(stringbuffer_t *sb, const char *s);
-extern void stringbuffer_aprintf(stringbuffer_t *sb, const char *fmt, ...);
+extern int stringbuffer_aprintf(stringbuffer_t *sb, const char *fmt, ...);
 extern const char *stringbuffer_getstring(stringbuffer_t *sb);
 extern char *stringbuffer_getstringcopy(stringbuffer_t *sb);
 extern int stringbuffer_getlength(stringbuffer_t *sb);
-extern void stringbuffer_vasbappend(stringbuffer_t *sb, const char *fmt, ... );
+extern int stringbuffer_vasbappend(stringbuffer_t *sb, const char *fmt, ... );
 
