@@ -151,6 +151,16 @@ garden:	postgis_aggs_mm.xml
 	$(XSLTPROC) -o gardentest.sql xsl/postgis_gardentest.sql.xsl postgis.xml
 endif
 
+
+
+ifeq ($(XSLTPROC),)
+check: requirements_not_met_xsltproc
+else
+check:	postgis_aggs_mm.xml
+	xmllint --loaddtd --xinclude --valid postgis.xml > /dev/null
+endif
+
+
 requirements_not_met_xsltproc:
 	@echo
 	@echo "configure was unable to find 'xsltproc' which is required to build the documentation."
