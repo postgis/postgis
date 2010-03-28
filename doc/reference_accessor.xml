@@ -134,7 +134,7 @@ MULTIPOINT(-1 1 1,1 1 0.75)
 	  <refnamediv>
 		<refname>ST_CoordDim</refname>
 
-		<refpurpose><para>Return the coordinate dimension of the ST_Geometry value.</para></refpurpose>
+		<refpurpose>Return the coordinate dimension of the ST_Geometry value.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1579,7 +1579,7 @@ POINT(3 2)
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the spatial reference identifier for the ST_Geometry as defined in <xref linkend="spatial_ref_sys">spatial_ref_sys</xref> table. </para>
+		<para>Returns the spatial reference identifier for the ST_Geometry as defined in spatial_ref_sys table. <xref linkend="spatial_ref_sys" /></para>
 		<para><note><para>spatial_ref_sys
 		table is a table that catalogs all spatial reference systems known to PostGIS and is used for transformations from one spatial
 			reference system to another.  So verifying you have the right spatial reference system identifier is important if you plan to ever transform your geometries.</para></note></para>

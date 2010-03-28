@@ -276,7 +276,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 
 	  <variablelist>
 		<varlistentry>
-		  <term><command>--prefix=<emphasis>PREFIX</emphasis></command></term>
+		  <term><command>--prefix=PREFIX</command></term>
 		  <listitem>
 			<para>
 			  This is the location the PostGIS libraries and SQL scripts will be
@@ -298,7 +298,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		</varlistentry>
 
 		<varlistentry>
-		  <term><command>--with-pgconfig=<emphasis>FILE</emphasis></command></term>
+		  <term><command>--with-pgconfig=FILE</command></term>
 		  <listitem>
 			<para>
 			  PostgreSQL provides a utility called <command>pg_config</command>
@@ -312,7 +312,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		</varlistentry>
 
 		<varlistentry>
-		  <term><command>--with-geosconfig=<emphasis>FILE</emphasis></command></term>
+		  <term><command>--with-geosconfig=FILE</command></term>
 		  <listitem>
 			<para>
 			  GEOS, a required geometry library, provides a utility called
@@ -326,7 +326,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		</varlistentry>
 
 		<varlistentry>
-		  <term><command>--with-projdir=<emphasis>DIR</emphasis></command></term>
+		  <term><command>--with-projdir=DIR</command></term>
 		  <listitem>
 			<para>
 			  Proj4 is a reprojection library required by PostGIS. Use this

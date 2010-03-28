@@ -94,7 +94,7 @@
 			<paramdef><type>float </type> <parameter>a</parameter></paramdef>
 			<paramdef><type>float </type> <parameter>b</parameter></paramdef>
 			<paramdef><type>float </type> <parameter>d</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>e</parameter></paramdef>>
+			<paramdef><type>float </type> <parameter>e</parameter></paramdef>
 			<paramdef><type>float </type> <parameter>xoff</parameter></paramdef>
 			<paramdef><type>float </type> <parameter>yoff</parameter></paramdef>
 		  </funcprototype>

@@ -904,42 +904,42 @@ F000000000000000000000000000000000000000000000000');
 
 		  <refsection>
 			<title>Examples</title>
-Default format.
+<para>Default format.</para>
 <programlisting>
 SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)'));
       st_aslatlontext       
 ----------------------------
  2°19'29.928"S 3°14'3.243"W
 </programlisting>
-Providing a format (same as the default).
+<para>Providing a format (same as the default).</para>
 <programlisting>
 SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS"C'));
       st_aslatlontext       
 ----------------------------
  2°19'29.928"S 3°14'3.243"W
 </programlisting>
-Characters other than D, M, S, C and . are just passed through.
+<para>Characters other than D, M, S, C and . are just passed through.</para>
 <programlisting>
 SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D degrees, M minutes, S seconds to the C'));
                                    st_aslatlontext                                    
 --------------------------------------------------------------------------------------
  2 degrees, 19 minutes, 30 seconds to the S 3 degrees, 14 minutes, 3 seconds to the W
 </programlisting>
-Signed degrees instead of cardinal directions.
+<para>Signed degrees instead of cardinal directions.</para>
 <programlisting>
 SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS"'));
       st_aslatlontext       
 ----------------------------
  -2°19'29.928" -3°14'3.243"
 </programlisting>
-Decimal degrees.
+<para>Decimal degrees.</para>
 <programlisting>
 SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D.DDDD degrees C'));
           st_aslatlontext          
 -----------------------------------
  2.3250 degrees S 3.2342 degrees W
 </programlisting>
-Excessively large values are normalized.
+<para>Excessively large values are normalized.</para>
 <programlisting>
 SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
         st_aslatlontext        

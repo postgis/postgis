@@ -136,6 +136,7 @@
 		  <funcsynopsis>
 			<funcprototype>
 			  <funcdef>text <function>DisableLongTransactions</function></funcdef>
+	   		  <paramdef></paramdef>
 			</funcprototype>
 		  </funcsynopsis>
 		</refsynopsisdiv>
@@ -185,6 +186,7 @@ Long transactions support disabled
 		  <funcsynopsis>
 			<funcprototype>
 			  <funcdef>text <function>EnableLongTransactions</function></funcdef>
+	   		  <paramdef></paramdef>
 			</funcprototype>
 		  </funcsynopsis>
 		</refsynopsisdiv>

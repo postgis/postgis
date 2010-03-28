@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
   <sect1 id="PostGIS_Types">
-    <title>PostgreSQL PostGIS Types</title>
     <sect1info>
     <abstract>
     <para>This section lists the PostgreSQL data types installed by PostGIS.  Note we describe the casting behavior of these which is very 
@@ -15,9 +14,11 @@
     	but no geometry.  What happens is that both functions are equally good to use with geometry since geometry has an autocast for both 
     	-- so you end up with an ambiguous function error. To force PostgreSQL to choose, you do a CAST(mygeom As box3d)  or mygeom::box3d.</para>
     	
-    <para><note>At least as of PostgreSQL 8.3 - Everything can be CAST to text (presumably because of the magical unknown type), so no defined CASTS for that need to be present for you to CAST an object to text.</note></para>
+    <para><emphasis>At least as of PostgreSQL 8.3</emphasis> - Everything can be CAST to text (presumably because of the magical unknown type), so no defined CASTS for that need to be present for you to CAST an object to text.</para>
     </abstract>
     </sect1info>
+    <title>PostgreSQL PostGIS Types</title>
+
 	<refentry id="box2d">
       <refnamediv>
         <refname>box2d</refname>

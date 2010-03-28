@@ -36,7 +36,7 @@
 				<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
 					<xsl:choose>
 						<xsl:when test="contains(paramdef/type,'geometry set')">
-							 <listitem><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /></listitem>
+							 <listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
 						</xsl:when>
 					</xsl:choose>
 				</xsl:for-each>
@@ -67,7 +67,7 @@
 							<xsl:for-each select="para">
 								<xsl:choose>
 									<xsl:when test="contains(.,'implements the SQL/MM')">
-										<listitem><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /> <xsl:value-of select="." /></listitem>
+										<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /> <xsl:value-of select="." /></simpara></listitem>
 									</xsl:when>
 								</xsl:choose>
 							</xsl:for-each>
@@ -98,7 +98,7 @@
 			<!-- If at least one proto function accepts or returns a geography -->
 					<xsl:choose>
 						<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'geography') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geography')">
-							<listitem><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></listitem>
+							<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
 						</xsl:when>
 					</xsl:choose>
 				</xsl:for-each>
@@ -125,7 +125,7 @@
 			<!-- If at least one proto function accepts or returns a geography -->
 					<xsl:choose>
 						<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'geometry_dump') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geometry_dump')">
-							<listitem><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></listitem>
+							<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
 						</xsl:when>
 					</xsl:choose>
 				</xsl:for-each>
@@ -153,7 +153,7 @@
 			<!-- If at least one proto function accepts or returns a geography -->
 					<xsl:choose>
 						<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'box') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'box')">
-							<listitem><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></listitem>
+							<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
 						</xsl:when>
 					</xsl:choose>
 				</xsl:for-each>
@@ -179,7 +179,7 @@
 							<xsl:for-each select="para">
 								<xsl:choose>
 									<xsl:when test="contains(.,'This function supports 3d')">
-										<listitem><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /></listitem>
+										<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
 									</xsl:when>
 								</xsl:choose>
 							</xsl:for-each>
@@ -210,7 +210,7 @@
 							<xsl:for-each select="para">
 								<xsl:choose>
 									<xsl:when test="contains(.,'supports Circular Strings')">
-										<listitem><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></listitem>
+										<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
 									</xsl:when>
 								</xsl:choose>
 							</xsl:for-each>
@@ -228,10 +228,10 @@
 			<para>Below is an alphabetical listing of spatial specific functions in PostGIS and the kinds of spatial
 				types they work with or OGC/SQL compliance they try to conform to.</para>
 			<para><itemizedlist>
-				<listitem>A <xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/> means the function works with the type or subtype natively.</listitem>
-				<listitem>A <xsl:value-of select="$matrix_transform" disable-output-escaping="yes"/> means it works but with a transform cast built-in using cast to geometry, transform to a "best srid" spatial ref and then cast back. Results may not be as expected for large areas or areas at poles 
-						and may accumulate floating point junk.</listitem>
-				<listitem>A <xsl:value-of select="$matrix_autocast" disable-output-escaping="yes"/> means the function works with the type because of a auto-cast to another such as to box3d rather than direct type support.</listitem>
+				<listitem><simpara>A <xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/> means the function works with the type or subtype natively.</simpara></listitem>
+				<listitem><simpara>A <xsl:value-of select="$matrix_transform" disable-output-escaping="yes"/> means it works but with a transform cast built-in using cast to geometry, transform to a "best srid" spatial ref and then cast back. Results may not be as expected for large areas or areas at poles 
+						and may accumulate floating point junk.</simpara></listitem>
+				<listitem><simpara>A <xsl:value-of select="$matrix_autocast" disable-output-escaping="yes"/> means the function works with the type because of a auto-cast to another such as to box3d rather than direct type support.</simpara></listitem>
 				</itemizedlist>
 			</para>
 				
@@ -370,7 +370,7 @@
 								<xsl:for-each select="para">
 									<xsl:choose>
 										<xsl:when test="contains(.,'Availability: 2.0')">
-											<listitem><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /><xsl:text> </xsl:text> <xsl:value-of select="$comment" /> </listitem>
+											<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /><xsl:text> </xsl:text> <xsl:value-of select="$comment" /></simpara></listitem>
 										</xsl:when>
 									</xsl:choose>
 								</xsl:for-each>
@@ -402,7 +402,7 @@
 								<xsl:for-each select="para">
 									<xsl:choose>
 										<xsl:when test="contains(.,'Availability: 1.5')">
-											<listitem><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /><xsl:text> </xsl:text> <xsl:value-of select="$comment" /> </listitem>
+											<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /><xsl:text> </xsl:text> <xsl:value-of select="$comment" /></simpara></listitem>
 										</xsl:when>
 									</xsl:choose>
 								</xsl:for-each>
@@ -429,7 +429,7 @@
 								<xsl:for-each select="para|note">
 									<xsl:choose>
 										<xsl:when test="contains(.,'Availability: 1.4')">
-											<listitem><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /> <xsl:text> </xsl:text><xsl:value-of select="." /></listitem>
+											<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /> <xsl:text> </xsl:text><xsl:value-of select="." /></simpara></listitem>
 										</xsl:when>
 									</xsl:choose>
 								</xsl:for-each>
@@ -456,7 +456,7 @@
 							<xsl:for-each select="para">
 								<xsl:choose>
 									<xsl:when test="contains(.,'Availability: 1.3')">
-										<listitem><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /> <xsl:text> </xsl:text><xsl:value-of select="." /></listitem>
+										<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /> <xsl:text> </xsl:text><xsl:value-of select="." /></simpara></listitem>
 									</xsl:when>
 								</xsl:choose>
 							</xsl:for-each>

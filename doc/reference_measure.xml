@@ -1499,7 +1499,7 @@ postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 )
 
 		<refpurpose>Returns minimum distance in meters between two lon/lat
 				geometries. Uses a spherical earth and radius of 6370986 meters.
-				Faster than <xref linkend="ST_Distance_Spheroid">ST_Distance_Spheroid</xref>, but less
+				Faster than ST_Distance_Spheroid <xref linkend="ST_Distance_Spheroid" />, but less
 				accurate. PostGIS versions prior to 1.5 only implemented for points.</refpurpose>
 	  </refnamediv>
 

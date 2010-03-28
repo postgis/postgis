@@ -945,8 +945,7 @@ FROM
 			  geometries.</para></note>
 
 			 <para>Availability: 1.5.0 changed behavior</para>
-		  </refsection>
-		  
+
 			<warning>
 			  <para>This operator has changed behavior in PostGIS 1.5
 			  from testing for actual geometric equality to only 
@@ -958,6 +957,8 @@ FROM
 			  linkend="ST_Equals" /> and to check for bounding box equality <xref linkend="ST_Geometry_EQ" />; 
 			  operator is a safer option.</para>
 			  </warning>
+		  </refsection>
+
 		  <refsection>
 			<title>Examples</title>
 <programlisting>

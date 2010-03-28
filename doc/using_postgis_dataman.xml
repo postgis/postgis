@@ -365,11 +365,11 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 	  <para>The new GEOGRAPHY type allows you to store data in longitude/latitude coordinates, but at a cost: there are fewer functions defined on GEOGRAPHY than there are on GEOMETRY; those functions that are defined take more CPU time to execute.</para>
 	  <para>The type you choose should be conditioned on the expected working area of the application you are building. Will your data span the globe or a large continental area, or is it local to a state, county or municipality? </para>
 	  <itemizedlist>
-		<listitem>If your data is contained in a small area, you might find that choosing an appropriate projection and using GEOMETRY is the best solution, in terms of performance and functionality available.</listitem>
-		<listitem>If your data is global or covers a continental region, you may find that GEOGRAPHY allows you to build a system without having to worry about projection details. 
-				You store your data in longitude/latitude, and use the functions that have been defined on GEOGRAPHY.</listitem>
-		<listitem>If you don't understand projections, and you don't want to learn about them, and you're prepared to accept the limitations in functionality available in GEOGRAPHY, then it might be easier for you to use GEOGRAPHY than GEOMETRY. 
-		Simply load your data up as longitude/latitude and go from there.</listitem>
+		<listitem><para>If your data is contained in a small area, you might find that choosing an appropriate projection and using GEOMETRY is the best solution, in terms of performance and functionality available.</para></listitem>
+		<listitem><para>If your data is global or covers a continental region, you may find that GEOGRAPHY allows you to build a system without having to worry about projection details. 
+				You store your data in longitude/latitude, and use the functions that have been defined on GEOGRAPHY.</para></listitem>
+		<listitem><para>If you don't understand projections, and you don't want to learn about them, and you're prepared to accept the limitations in functionality available in GEOGRAPHY, then it might be easier for you to use GEOGRAPHY than GEOMETRY. 
+		Simply load your data up as longitude/latitude and go from there.</para></listitem>
 	</itemizedlist>
 	<para>Refer to <xref linkend="PostGIS_TypeFunctionMatrix" /> for compare between
 			what is supported for Geography vs. Geometry.  For a brief listing and description of Geography functions, refer to
