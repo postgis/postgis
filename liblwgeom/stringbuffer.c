@@ -178,23 +178,20 @@ static int stringbuffer_avprintf(stringbuffer_t *s, const char *fmt, va_list ap)
 	/* Propogate any printing errors upwards (check errno for info) */
 	if( len < 0 ) return len;
 
-	/* If we had enough space, return the number of characters printed */
-	if( len < maxlen ) 
-	{
-		s->str_end += len;
-		return len;
-	}
-
 	/* We didn't have enough space! Expand the buffer. */
-	stringbuffer_makeroom(s, len + 1);
-	maxlen = (s->capacity - (s->str_end - s->str_start));
+	if( len >= maxlen ) 
+	{
+		stringbuffer_makeroom(s, len + 1);
+		maxlen = (s->capacity - (s->str_end - s->str_start));
 	
-	/* Try to print a second time */
-	len = vsnprintf(s->str_end, maxlen, fmt, ap2);
+		/* Try to print a second time */
+		len = vsnprintf(s->str_end, maxlen, fmt, ap2);
 
-	/* Printing error or too long still? Error! */
-	if( len < 0 ) return len;
-	if( len >= maxlen ) return -1
+		/* Printing error? Error! */
+		if( len < 0 ) return len;
+		/* Too long still? Error! */
+		if( len >= maxlen ) return -1
+	}
 
 	/* Move end pointer forward and return. */
 	s->str_end += len;
