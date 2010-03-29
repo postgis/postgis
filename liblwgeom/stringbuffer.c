@@ -190,7 +190,7 @@ static int stringbuffer_avprintf(stringbuffer_t *s, const char *fmt, va_list ap)
 		/* Printing error? Error! */
 		if( len < 0 ) return len;
 		/* Too long still? Error! */
-		if( len >= maxlen ) return -1
+		if( len >= maxlen ) return -1;
 	}
 
 	/* Move end pointer forward and return. */
