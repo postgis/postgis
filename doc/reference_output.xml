@@ -424,6 +424,14 @@ st_asgeojson
 			<funcprototype>
 				<funcdef>text <function>ST_AsGML</function></funcdef>
 				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>options</parameter></paramdef>
+				<paramdef><type>text </type> <parameter>namespace prefix</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGML</function></funcdef>
+				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
 				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>options</parameter></paramdef>
@@ -431,10 +439,17 @@ st_asgeojson
 			<funcprototype>
 				<funcdef>text <function>ST_AsGML</function></funcdef>
 				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>options</parameter></paramdef>
-				<paramdef><type>text </type> <parameter>prefix</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGML</function></funcdef>
+				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>options</parameter></paramdef>
+				<paramdef><type>text </type> <parameter>namespace prefix</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -465,10 +480,8 @@ st_asgeojson
 						  </itemizedlist>
 						</para>
 
-		<para>The 'prefix' argument may be used to specify a custom
+		<para>The 'namespace prefix' argument may be used to specify a custom
 namespace prefix or no prefix (if empty). If null or omitted 'gml' prefix is used</para>
-
-		<!-- TODO: Itemize defaults for each function -->
 
 		<note>
 		  <para>Availability: 1.3.2</para>
@@ -493,7 +506,6 @@ namespace prefix or no prefix (if empty). If null or omitted 'gml' prefix is use
 			</programlisting>
 
 	  </refsection>
-	    <!-- Optionally add a "See Also" section -->
   <refsection>
     <title>See Also</title>
 

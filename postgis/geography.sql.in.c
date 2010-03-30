@@ -397,22 +397,22 @@ CREATE OR REPLACE FUNCTION ST_AsSVG(text)
 --
 
 -- _ST_AsGML(version, geography, precision, option)
-CREATE OR REPLACE FUNCTION _ST_AsGML(int4, geography, int4, int4)
+CREATE OR REPLACE FUNCTION _ST_AsGML(int4, geography, int4, int4, text)
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_gml'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE;
 
 -- ST_AsGML(geography, precision) / version=2 options=0
 CREATE OR REPLACE FUNCTION ST_AsGML(geography, int4)
 	RETURNS text
-	AS 'SELECT _ST_AsGML(2, $1, $2, 0)'
+	AS 'SELECT _ST_AsGML(2, $1, $2, 0, null)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- ST_AsGML(geography) / precision=15 version=2 options=0
 CREATE OR REPLACE FUNCTION ST_AsGML(geography)
 	RETURNS text
-	AS 'SELECT _ST_AsGML(2, $1, 15, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	AS 'SELECT _ST_AsGML(2, $1, 15, 0, null)'
+	LANGUAGE 'SQL' IMMUTABLE;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 -- TODO Remove in 2.0
@@ -424,25 +424,31 @@ CREATE OR REPLACE FUNCTION ST_AsGML(text)
 -- ST_AsGML(version, geography) / precision=15 version=2 options=0
 CREATE OR REPLACE FUNCTION ST_AsGML(int4, geography)
 	RETURNS text
-	AS 'SELECT _ST_AsGML($1, $2, 15, 0)'
+	AS 'SELECT _ST_AsGML($1, $2, 15, 0, null)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- ST_AsGML(version, geography, precision) / options = 0
 CREATE OR REPLACE FUNCTION ST_AsGML(int4, geography, int4)
 	RETURNS text
-	AS 'SELECT _ST_AsGML($1, $2, $3, 0)'
+	AS 'SELECT _ST_AsGML($1, $2, $3, 0, null)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- ST_AsGML (geography, precision, option) / version=2
 CREATE OR REPLACE FUNCTION ST_AsGML(geography, int4, int4)
 	RETURNS text
-	AS 'SELECT _ST_AsGML(2, $1, $2, $3)'
+	AS 'SELECT _ST_AsGML(2, $1, $2, $3, null)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- ST_AsGML(version, geography, precision, option)
 CREATE OR REPLACE FUNCTION ST_AsGML(int4, geography, int4, int4)
 	RETURNS text
-	AS 'SELECT _ST_AsGML($1, $2, $3, $4)'
+	AS 'SELECT _ST_AsGML($1, $2, $3, $4, null)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- ST_AsGML(version, geography, precision, option, prefix)
+CREATE OR REPLACE FUNCTION ST_AsGML(int4, geography, int4, int4, text)
+	RETURNS text
+	AS 'SELECT _ST_AsGML($1, $2, $3, $4, $5)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 

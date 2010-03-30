@@ -37,23 +37,10 @@ SELECT 'gml_deegree_05', ST_AsGML(2, GeomFromEWKT('SRID=4326;POINT(1 2 3)'), 0, 
 SELECT 'gml_deegree_06', ST_AsGML(3, GeomFromEWKT('SRID=4326;POINT(1 2 3)'), 0, 16);
 
 -- Prefix
-SELECT 'gml_deegree_01_noprefix', ST_AsGML(3, GeomFromEWKT('SRID=4326;POINT(1 2)'), 0, 0, '');
-SELECT 'gml_deegree_01_customprefix', ST_AsGML(3, GeomFromEWKT('SRID=4326;POINT(1 2)'), 0, 0, 'custom');
-
-SELECT 'gml_deegree_02_noprefix', ST_AsGML(2, GeomFromEWKT('SRID=4326;POINT(1 2)'), 0, 16, '');
-SELECT 'gml_deegree_02_customprefix', ST_AsGML(2, GeomFromEWKT('SRID=4326;POINT(1 2)'), 0, 16, 'custom');
-
-SELECT 'gml_deegree_03_noprefix', ST_AsGML(3, GeomFromEWKT('SRID=4326;POINT(1 2)'), 0, 16, '');
-SELECT 'gml_deegree_03_customprefix', ST_AsGML(3, GeomFromEWKT('SRID=4326;POINT(1 2)'), 0, 16, 'custom');
-
-SELECT 'gml_deegree_04_noprefix', ST_AsGML(3, GeomFromEWKT('SRID=4326;POINT(1 2 3)'), 0, 0, '');
-SELECT 'gml_deegree_04_customprefix', ST_AsGML(3, GeomFromEWKT('SRID=4326;POINT(1 2 3)'), 0, 0, 'custom');
-
-SELECT 'gml_deegree_05_noprefix', ST_AsGML(2, GeomFromEWKT('SRID=4326;POINT(1 2 3)'), 0, 16, '');
-SELECT 'gml_deegree_05_customprefix', ST_AsGML(2, GeomFromEWKT('SRID=4326;POINT(1 2 3)'), 0, 16, 'custom');
-
-SELECT 'gml_deegree_06_noprefix', ST_AsGML(3, GeomFromEWKT('SRID=4326;POINT(1 2 3)'), 0, 16, '');
-SELECT 'gml_deegree_06_customprefix', ST_AsGML(3, GeomFromEWKT('SRID=4326;POINT(1 2 3)'), 0, 16, 'custom');
+SELECT 'gml_prefix_01', ST_AsGML(2, GeomFromEWKT('SRID=4326;POINT(1 2)'), 0, 16, '');
+SELECT 'gml_prefix_02', ST_AsGML(3, GeomFromEWKT('SRID=4326;POINT(1 2)'), 0, 16, '');
+SELECT 'gml_prefix_03', ST_AsGML(2, GeomFromEWKT('SRID=4326;POINT(1 2)'), 0, 16, 'foo');
+SELECT 'gml_prefix_04', ST_AsGML(3, GeomFromEWKT('SRID=4326;POINT(1 2)'), 0, 16, 'foo');
 
 --
 -- KML

@@ -34,6 +34,12 @@ SELECT 'gml_deegree_02', ST_AsGML(2, geography(GeomFromEWKT('SRID=4326;POINT(1 2
 SELECT 'gml_deegree_03', ST_AsGML(3, geography(GeomFromEWKT('SRID=4326;POINT(1 2)')), 0, 0);
 SELECT 'gml_deegree_04', ST_AsGML(3, geography(GeomFromEWKT('SRID=4326;POINT(1 2)')), 0, 1);
 
+-- Prefix
+SELECT 'gml_prefix_01', ST_AsGML(2, geography(GeomFromEWKT('SRID=4326;POINT(1 2)')), 0, 0, '');
+SELECT 'gml_prefix_02', ST_AsGML(3, geography(GeomFromEWKT('SRID=4326;POINT(1 2)')), 0, 0, '');
+SELECT 'gml_prefix_03', ST_AsGML(2, geography(GeomFromEWKT('SRID=4326;POINT(1 2)')), 0, 0, 'foo');
+SELECT 'gml_prefix_04', ST_AsGML(3, geography(GeomFromEWKT('SRID=4326;POINT(1 2)')), 0, 0, 'foo');
+
 
 --
 -- KML

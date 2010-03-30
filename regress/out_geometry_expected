@@ -13,18 +13,10 @@ gml_deegree_03|<gml:Point srsName="EPSG:4326"><gml:pos srsDimension="2">2 1</gml
 gml_deegree_04|<gml:Point srsName="EPSG:4326"><gml:pos srsDimension="3">1 2 3</gml:pos></gml:Point>
 gml_deegree_05|<gml:Point srsName="EPSG:4326"><gml:coordinates>1,2,3</gml:coordinates></gml:Point>
 gml_deegree_06|<gml:Point srsName="EPSG:4326"><gml:pos srsDimension="3">2 1 3</gml:pos></gml:Point>
-gml_deegree_01_noprefix|<Point srsName="EPSG:4326"><pos srsDimension="2">1 2</pos></Point>
-gml_deegree_01_customprefix|<custom:Point srsName="EPSG:4326"><custom:pos srsDimension="2">1 2</custom:pos></custom:Point>
-gml_deegree_02_noprefix|<Point srsName="EPSG:4326"><coordinates>1,2</coordinates></Point>
-gml_deegree_02_customprefix|<custom:Point srsName="EPSG:4326"><custom:coordinates>1,2</custom:coordinates></custom:Point>
-gml_deegree_03_noprefix|<Point srsName="EPSG:4326"><pos srsDimension="2">2 1</pos></Point>
-gml_deegree_03_customprefix|<custom:Point srsName="EPSG:4326"><custom:pos srsDimension="2">2 1</custom:pos></custom:Point>
-gml_deegree_04_noprefix|<Point srsName="EPSG:4326"><pos srsDimension="3">1 2 3</pos></Point>
-gml_deegree_04_customprefix|<custom:Point srsName="EPSG:4326"><custom:pos srsDimension="3">1 2 3</custom:pos></custom:Point>
-gml_deegree_05_noprefix|<Point srsName="EPSG:4326"><coordinates>1,2,3</coordinates></Point>
-gml_deegree_05_customprefix|<custom:Point srsName="EPSG:4326"><custom:coordinates>1,2,3</custom:coordinates></custom:Point>
-gml_deegree_06_noprefix|<Point srsName="EPSG:4326"><pos srsDimension="3">2 1 3</pos></Point>
-gml_deegree_06_customprefix|<custom:Point srsName="EPSG:4326"><custom:pos srsDimension="3">2 1 3</custom:pos></custom:Point>
+gml_prefix_01|<Point srsName="EPSG:4326"><coordinates>1,2</coordinates></Point>
+gml_prefix_02|<Point srsName="EPSG:4326"><pos srsDimension="2">2 1</pos></Point>
+gml_prefix_03|<foo:Point srsName="EPSG:4326"><foo:coordinates>1,2</foo:coordinates></foo:Point>
+gml_prefix_04|<foo:Point srsName="EPSG:4326"><foo:pos srsDimension="2">2 1</foo:pos></foo:Point>
 ERROR:  GetProj4StringSPI: Cannot find SRID (10) in spatial_ref_sys
 ERROR:  Input geometry has unknown (-1) SRID
 kml_empty_geom|

@@ -11,6 +11,10 @@ gml_deegree_01|<gml:Point srsName="EPSG:4326"><gml:coordinates>1,2</gml:coordina
 gml_deegree_02|<gml:Point srsName="urn:ogc:def:crs:EPSG:4326"><gml:coordinates>1,2</gml:coordinates></gml:Point>
 gml_deegree_03|<gml:Point srsName="EPSG:4326"><gml:pos srsDimension="2">1 2</gml:pos></gml:Point>
 gml_deegree_04|<gml:Point srsName="urn:ogc:def:crs:EPSG:4326"><gml:pos srsDimension="2">2 1</gml:pos></gml:Point>
+gml_prefix_01|<Point srsName="EPSG:4326"><coordinates>1,2</coordinates></Point>
+gml_prefix_02|<Point srsName="EPSG:4326"><pos srsDimension="2">1 2</pos></Point>
+gml_prefix_03|<foo:Point srsName="EPSG:4326"><foo:coordinates>1,2</foo:coordinates></foo:Point>
+gml_prefix_04|<foo:Point srsName="EPSG:4326"><foo:pos srsDimension="2">1 2</foo:pos></foo:Point>
 ERROR:  Only SRID SRID_DEFAULT is currently supported in geography.
 kml_srid_02|<Point><coordinates>0,1</coordinates></Point>
 kml_empty_geom|
