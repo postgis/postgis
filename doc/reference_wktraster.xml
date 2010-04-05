@@ -153,19 +153,19 @@ WHERE rid = 2;
 				<para>Returns the georeference meta data in GDAL or ESRI format. Default is GDAL if no type specified.  type is string 'GDAL' or 'ESRI'.</para>
 				<para>Difference between format representations is as follows:</para>
 				<para><varname>GDAL</varname>: 
-<progromlisting>pixelsizex 
+<programlisting>pixelsizex 
 skewy 
 skewx
 pixelsizey
 upperleftx
-upperlefty</progromlisting></para>
+upperlefty</programlisting></para>
 				<para><varname>ESRI</varname>: 
-<progromlisting>pixelsizex 
+<programlisting>pixelsizex 
 skewy 
 skewx
 pixelsizey
 upperleftx + pixelsizex*0.5
-upperleftx + pixelsizey*0.5</progromlisting></para>
+upperleftx + pixelsizey*0.5</programlisting></para>
 			</refsection>
 				
 			<refsection>
