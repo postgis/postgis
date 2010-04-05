@@ -45,7 +45,7 @@ VALUES (1,
 '41000000007719564100000000000000000000000000000000FFFFFFFF050005000400FDFEFDFEFEFDFEFEFDF9FAFEF' ||
 'EFCF9FBFDFEFEFDFCFAFEFEFE04004E627AADD16076B4F9FE6370A9F5FE59637AB0E54F58617087040046566487A1506CA2E3FA5A6CAFFBFE4D566DA4CB3E454C5665')::raster);
   </programlisting>
-  	<sect id="Raster_Constructors">
+  	<sect1 id="Raster_Constructors">
   		<title>Raster Constructors</title>
   		<refentry id="RT_ST_MakeEmptyRaster">
 			<refnamediv>
@@ -90,7 +90,7 @@ VALUES(3, ST_MakeEmptyRaster( 100, 100, 0.0005, 0.0005, 1, 1, 0, 0, 4326) )
 				<para></para>
 			</refsection>
 		</refentry>
-  	</sect>
+  	</sect1>
 	<sect1 id="Raster_Accessors">
 		<title>Raster Accessors</title>
 		<refentry id="RT_ST_BandNoDataValue">
