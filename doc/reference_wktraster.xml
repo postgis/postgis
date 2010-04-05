@@ -523,7 +523,8 @@ FROM dummy_rast;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the y size of pixels in units of coordinate reference system?</para>
+				<para>Returns the y size of pixels in units of coordinate reference system.  May be negative.  Refer to <ulink url="http://en.wikipedia.org/wiki/World_file">World File</ulink>
+				for more details.</para>
 				</refsection>
 				
 				<refsection>
@@ -535,7 +536,7 @@ FROM dummy_rast;
  rid | rastpixheight
 -----+---------------
    1 |             3
-   2 |         -0.05  --this might be a bug
+   2 |         -0.05
 				</programlisting>
 			
 			</refsection>
