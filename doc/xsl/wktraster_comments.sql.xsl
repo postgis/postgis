@@ -6,7 +6,7 @@
 	 Copyright 2008, Regina Obe
      License: BSD
 	 Purpose: This is an xsl transform that generates PostgreSQL COMMENT ON FUNCTION ddl
-	 statements from postgis xml doc reference
+	 statements from postgis xml doc reference for WKT Raster section
      ******************************************************************** -->
 	<xsl:output method="text" />
 
