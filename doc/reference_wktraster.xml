@@ -569,7 +569,15 @@ srid
 				<refsection>
 					<title>Examples</title>
 				
-					<programlisting><!-- TODO: Examples needed --> 
+					<programlisting>
+SELECt rid, ST_Value(rast, 1,1,1) As b1pval, 
+    ST_Value(rast, 2,1,1) As b2pval, ST_Value(rast, 3,1,1) As b3pval
+FROM dummy_rast
+WHERE rid=2;
+
+ rid | b1pval | b2pval | b3pval
+-----+--------+--------+--------
+   2 |    253 |     78 |     70
 				</programlisting>
 			
 			</refsection>
