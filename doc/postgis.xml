@@ -32,6 +32,7 @@
 <!ENTITY reference_transaction SYSTEM "reference_transaction.xml">
 <!ENTITY reference_misc SYSTEM "reference_misc.xml">
 <!ENTITY reference_exception SYSTEM "reference_exception.xml">
+<!ENTITY reference_wktraster SYSTEM "reference_wktraster.xml">
 
 <!ENTITY sfs_compliant 
 "<inlinemediaobject>
@@ -106,6 +107,7 @@
   &performance_tips;
   &reference;
   &postgis_aggs_mm;
+  &reference_wktraster;
   &reporting;
   &release_notes;
 
