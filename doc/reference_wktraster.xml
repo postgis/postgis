@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="RT_reference">
+  <title>WKT Raster Reference</title>
+
+  <para>The functions given below are the ones which a user of WKT Raster is
+  likely to need and which are currently available in WKT Raster. There are other functions which are required support
+  functions to the raster objects which are not of use to a general
+  user.</para>
+  <para>WKT Raster is a sub-project of PostGIS that introduces a new type called <varname>raster</varname> for storing and analyzing raster data.
+  In order to use these functions, you need PostGIS 1.4 above installed in your database as well as wktraster compiled and the rtpostgis.sql loaded in your database.  
+  This will change later once the two projects are fully integrated.</para>
+  <para>For more information about WKT Raster, please refer to <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster">PostGIS WKT Raster Home Page</ulink>.</para>
+  <sect1 id="Raster_Outputs">
+	  <title>Raster Outputs</title>
+		  <refentry id="RT_ST_AsBinary">
+		  <refnamediv>
+			<refname>ST_AsBinary</refname>
+			<refpurpose>Return the Well-Known Binary (WKB) representation of the raster without SRID meta data.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>bytea <function>ST_AsBinary</function></funcdef>
+				<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>Returns the Binary representation of the raster.  There are 2 variants of the function.  The first
+			variant takes no endian encoding paramater and defaults to little endian.  The second variant takes a second argument
+			denoting the encoding - using little-endian ('NDR') or big-endian ('XDR') encoding.</para>
+			<para>This is useful in binary cursors to pull data out of the
+			database without converting it to a string representation.</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>CREATE TABLE dummy_rast(rast raster);
+INSERT INTO dummy_rast(rast)
+VALUES(
+('01' -- little endian (uint8 ndr)
+|| 
+'0000' -- version (uint16 0)
+||
+'0000' -- nBands (uint16 0)
+||
+'0000000000000040' -- scaleX (float64 2)
+||
+'0000000000000840' -- scaleY (float64 3)
+||
+'000000000000E03F' -- ipX (float64 0.5)
+||
+'000000000000E03F' -- ipY (float64 0.5)
+||
+'0000000000000000' -- skewX (float64 0)
+||
+'0000000000000000' -- skewY (float64 0)
+||
+'0A000000' -- SRID (int32 10)
+||
+'0A00' -- width (uint16 10)
+||
+'1400' -- height (uint16 20)
+)::raster
+);			
+SELECT ST_AsBinary(rast) As rastbin
+ FROM dummy_rast LIMIT 1;
+ 
+                                 rastbin
+---------------------------------------------------------------------------------
+ \001\000\000\000\000\000\000\000\000\000\000\000@\000\000\000\000\000\000\010@\
+000\000\000\000\000\000\340?\000\000\000\000\000\000\340?\000\000\000\000\000\00
+0\000\000\000\000\000\000\000\000\000\000\012\000\000\000\012\000\024\000 
+</programlisting>
+			
+		  </refsection>
+
+		  <!-- Optionally add a "See Also" section -->
+		  <refsection>
+			<title>See Also</title>
+			<para></para>
+		  </refsection>
+	</refentry>
+ </sect1>
+</chapter>
