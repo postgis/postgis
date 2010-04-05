@@ -609,7 +609,7 @@ FROM dummy_rast;
 					<title>Examples</title>
 				
 					<programlisting>
-SELECt rid, ST_UpperLeftY(rast) As uly
+SELECT rid, ST_UpperLeftY(rast) As uly
 FROM dummy_rast;
 
  rid |   uly
@@ -663,6 +663,27 @@ WHERE rid=2;
 -----+--------+--------+--------
    2 |    253 |     78 |     70
 				</programlisting>
+				
+				<programlisting>
+				--- Get all values in bands 1,2,3 of each pixel --
+SELECT x, y, ST_Value(rast, 1, x, y) As b1val, 
+	ST_Value(rast, 2, x, y) As b2val, ST_Value(rast, 3, x, y) As b3val
+FROM dummy_rast CROSS JOIN
+generate_series(1,1000) As x CROSS JOIN generate_series(1,1000) As y
+WHERE rid =  2 AND x &lt;= ST_Width(rast) AND y &lt;= ST_Height(rast);
+
+ x | y | b1val | b2val | b3val
+---+---+-------+-------+-------
+ 1 | 1 |   253 |    78 |    70
+ 1 | 2 |   253 |    96 |    80
+ 1 | 3 |   250 |    99 |    90
+ 1 | 4 |   251 |    89 |    77
+ 1 | 5 |   252 |    79 |    62
+ 2 | 1 |   254 |    98 |    86
+ 2 | 2 |   254 |   118 |   108
+ :
+ :
+				</programlisting>
 			
 			</refsection>
 
@@ -710,6 +731,126 @@ rastwidth
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="RT_ST_Height" /></para>
+			</refsection>
+		</refentry>
+	</sect1>
+	
+	<sect1 id="Raster_Editors">
+		<title>Raster Editors</title>
+		<refentry id="RT_ST_SetBandNoDataValue">
+			<refnamediv>
+				<refname>ST_SetBandNoDataValue</refname>
+				<refpurpose>Sets the value for the given band that represents no data.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>integer <function>ST_SetBandNoDataValue</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>val</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the value that represents no data for the band.  This will effect ST_Polygon and ST_ConvexHull results.</para>
+				</refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>-- change just first band no data value
+UPDATE dummy_rast 
+	SET rast = ST_SetBandNoDataValue(rast,1, 254)  
+WHERE rid = 2;
+
+-- change no data band value of bands 1,2,3
+UPDATE dummy_rast 
+	SET rast = 
+		ST_SetBandNoDataValue(
+			ST_SetBandNoDataValue(
+				ST_SetBandNoDataValue(
+					rast,1, 254)
+				,2,99),
+				3,108)  
+		WHERE rid = 2;
+					</programlisting>
+			
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_BandNoDataValue" />,<xref linkend="RT_ST_NumBands" /></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_SetPixelSize">
+			<refnamediv>
+				<refname>ST_SetPixelSize</refname>
+				<refpurpose>Sets the x and y size of pixels in units of coordinate reference system. Number units/pixel width/height</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>raster <function>ST_SetPixelSize</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>float8 </type> <parameter>xy</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_SetPixelSize</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>float8 </type> <parameter>x</parameter></paramdef>
+					<paramdef><type>float8 </type> <parameter>y</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Sets the x and y size of pixels in units of coordinate reference system. Number units/pixel width/height.  If
+				only one unit passed in, assumed x and y are the same number.</para>
+				</refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>UPDATE dummy_rast 
+	SET rast = ST_SetPixelSize(rast,1.5)
+WHERE rid = 2;
+
+SELECT ST_PixelSizeX(rast) As pixx, ST_PixelSizeY(rast) As pixy, ST_Box2D(rast) As newbox
+FROM dummy_rast
+WHERE rid = 2;
+
+ pixx | pixy |                    newbox
+------+------+----------------------------------------------
+  1.5 |  1.5 | BOX(3427927.75 5793244,3427935.25 5793251.5)
+				</programlisting>
+				<programlisting>UPDATE dummy_rast 
+	SET rast = ST_SetPixelSize(rast,1.5,0.55)
+WHERE rid = 2;
+
+SELECT ST_PixelSizeX(rast) As pixx, ST_PixelSizeY(rast) As pixy, ST_Box2D(rast) As newbox
+FROM dummy_rast
+WHERE rid = 2;
+
+ pixx | pixy |                   newbox
+------+------+--------------------------------------------
+  1.5 | 0.55 | BOX(3427927.75 5793244,3427935.25 5793247)
+				</programlisting>
+			
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_PixelSizeX" />, <xref linkend="RT_ST_PixelSizeY" />, <xref linkend="RT_ST_Box2D" /></para>
 			</refsection>
 		</refentry>
 	</sect1>
