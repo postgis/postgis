@@ -541,6 +541,90 @@ srid
 				<para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_SRID" /></para>
 			</refsection>
 		</refentry>
+	
+		<refentry id="RT_ST_UpperLeftX">
+			<refnamediv>
+				<refname>ST_UpperLeftX</refname>
+				<refpurpose>Returns the upper left x coordinate of raster in projected spatial ref.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>float8 <function>ST_UpperLeftX</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the upper left x coordinate of raster in projected spatial ref.</para>
+				</refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>
+SELECt rid, ST_UpperLeftX(rast) As ulx
+FROM dummy_rast;
+
+ rid |    ulx
+-----+------------
+   1 |        0.5
+   2 | 3427927.75
+				</programlisting>
+			
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_UpperLeftY" />, <xref linkend="RT_ST_GeoReference" />, <xref linkend="RT_ST_Box2D" /></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_UpperLeftY">
+			<refnamediv>
+				<refname>ST_UpperLeftY</refname>
+				<refpurpose>Returns the upper left y coordinate of raster in projected spatial ref.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>float8 <function>ST_UpperLeftY</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the upper left y coordinate of raster in projected spatial ref.</para>
+				</refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>
+SELECt rid, ST_UpperLeftY(rast) As uly
+FROM dummy_rast;
+
+ rid |   uly
+-----+---------
+   1 |     0.5
+   2 | 5793244
+				</programlisting>
+			
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_UpperLeftX" />, <xref linkend="RT_ST_GeoReference" />, <xref linkend="RT_ST_Box2D" /></para>
+			</refsection>
+		</refentry>
 		
 		<refentry id="RT_ST_Value">
 			<refnamediv>
@@ -581,8 +665,7 @@ WHERE rid=2;
 				</programlisting>
 			
 			</refsection>
-		
-			<!-- Optionally add a "See Also" section -->
+
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="RT_ST_NumBands" /></para>
