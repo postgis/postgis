@@ -80,6 +80,7 @@ char *
 utf8(const char *fromcode, char *inputbuf)
 {
 	iconv_t cd;
+	char *inbufptr = inputbuf;
 	char *outputptr;
 	char *outputbuf;
 	size_t outbytesleft;
@@ -100,8 +101,21 @@ utf8(const char *fromcode, char *inputbuf)
 	memset(outputbuf, 0, outbytesleft);
 	outputptr = outputbuf;
 
-	if (-1 == iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft))
-		return NULL;
+	if (-1 == iconv(cd, &inbufptr, &inbytesleft, &outputptr, &outbytesleft))
+	{
+		switch (errno)
+		{
+			case EINVAL:
+				fprintf(stderr, "WARNING: Incomplete multibyte sequence in string '%s' discarded\n", inputbuf);
+				*outputptr = '\0';
+				break;
+			case EILSEQ:
+				fprintf(stderr, "ERROR: Invalid multibyte sequence '%s' in string '%s'\n", inbufptr, inputbuf);
+			case E2BIG: /* This would be a programmatic error */
+			default:
+				return NULL;
+		}
+	}
 
 	iconv_close (cd);
 
