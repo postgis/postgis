@@ -17,6 +17,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
+#ifdef MAC_INTEGRATION
+#include <ige-mac-integration.h>
+#endif
 #include "libpq-fe.h"
 #include "shp2pgsql-core.h"
 
@@ -1157,6 +1160,15 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(textview_log), GTK_WRAP_WORD);
 	gtk_container_add (GTK_CONTAINER (scrolledwindow_log), textview_log);
 	gtk_container_add (GTK_CONTAINER (frame_log), scrolledwindow_log);
+
+#ifdef MAC_INTEGRATION
+	/*
+	** OS/X menu integration for command-Q
+	*/
+	menu_item_quit = gtk_menu_item_new();
+	g_signal_connect (G_OBJECT (menu_item_quit), "activate", G_CALLBACK (pgui_action_cancel), NULL);
+	ige_mac_menu_set_quit_menu_item (GTK_MENU_ITEM (menu_item_quit));
+#endif 
 
 	/*
 	** Main window

@@ -192,5 +192,33 @@ main ()
   fi
   AC_SUBST(GTK_CFLAGS)
   AC_SUBST(GTK_LIBS)
+
+dnl
+dnl test for OS/X GTK installation
+dnl
+  _gdk_tgt=`$PKG_CONFIG --variable=target gdk-2.0`
+  if test "x$_gdk_tgt" = xquartz; then 
+    AC_MSG_CHECKING([for ige-mac-integration])
+    if $PKG_CONFIG --exists "ige-mac-integration" ; then
+      AC_MSG_RESULT([yes])
+
+      AC_MSG_CHECKING([for IGE_MAC_CFLAGS])
+      IGE_MAC_CFLAGS=`$PKG_CONFIG --cflags "ige-mac-integration"`
+      AC_MSG_RESULT($IGE_MAC_CFLAGS)
+
+      AC_MSG_CHECKING([for IGE_MAC_LIBS])
+      IGE_MAC_LIBS=`$PKG_CONFIG --libs "ige-mac-integration"`
+      AC_MSG_RESULT($IGE_MAC_LIBS)
+
+    else
+      IGE_MAC_CFLAGS=""
+      IGE_MAC_LIBS=""
+      AC_MSG_RESULT([no])
+    fi
+
+  fi
+  AC_SUBST(IGE_MAC_CFLAGS)
+  AC_SUBST(IGE_MAC_LIBS)
+
   rm -f conf.gtktest
 ])

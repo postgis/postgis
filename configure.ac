@@ -567,23 +567,8 @@ AC_ARG_WITH([gui],
 
 if test "x$GUI" = "xyes"; then
 	AC_MSG_RESULT([GUI: Build requested, checking for dependencies (GKT+2.0)])
-	case $host in
-		*darwin10.1*)
-			for frmwrk [ in Cairo GLib Gtk ]; do
-				if test -d /Library/Frameworks/${frmwrk}.framework; then
-					GTK_CFLAGS="$GTK_CFLAGS -I/Library/Frameworks/${frmwrk}.framework/Headers" 
-					GTK_LIBS="$GTK_LIBS -framework $frmwrk" 
-					AC_MSG_RESULT([GUI: Found /Library/Frameworks/${frmwrk}.framework])
-				else
-					AC_MSG_ERROR([GUI: Mac OS/X build requires the GTK+2.0 frameworks available from http://www.gtk-osx.org])
-				fi
-			done
-			GTK_BUILD="gui"
-			;;
-		*)
-			dnl Try to find the GTK libs with pkgconfig 
-			AM_PATH_GTK_2_0([2.8.0], [GTK_BUILD="gui"], [GTK_BUILD=""])
-	esac
+	dnl Try to find the GTK libs with pkgconfig 
+	AM_PATH_GTK_2_0([2.8.0], [GTK_BUILD="gui"], [GTK_BUILD=""])
 
 	dnl Add -mwindows to MinGW GUI build
 	case $host in
@@ -602,6 +587,8 @@ AC_SUBST([GTK_LIBS])
 AC_SUBST([GTK_WIN32_FLAGS])
 AC_SUBST([GTK_WIN32_RES])
 AC_SUBST([GTK_BUILD])
+AC_SUBST([IGE_MAC_CFLAGS])
+AC_SUBST([IGE_MAC_LIBS])
 
 
 
