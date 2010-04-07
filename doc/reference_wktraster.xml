@@ -951,4 +951,87 @@ FROM dummy_rast WHERE rid=1;
 			</refsection>
 		</refentry>
 	</sect1>
+	
+	<sect1 id="Raster_Processing">
+		<title>Raster Processing Functions</title>
+		<refentry id="RT_ST_ConvexHull">
+			<refnamediv>
+				<refname>ST_ConvexHull</refname>
+				<refpurpose>Return the convex hull geometry of the raster including pixel values equal to BandNoDataValue. 
+				For regular shaped and non-skewed
+				rasters, this gives the same answer as ST_Envelope so only useful for irregularly shaped or skewed rasters.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>geometry <function>ST_ConvexHull</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Return the convex hull geometry of the raster including the NoDataBandValue band pixels. For regular shaped and non-skewed
+				rasters, this gives more or less the same answer as ST_Envelope 
+				so only useful for irregularly shaped or skewed rasters.</para>
+				
+				<para><note>ST_Envelope floors the coordinates and hence add a little buffer around the raster so the answer is subtley 
+					different from ST_ConvexHull which does not floor.</note>
+				</para>
+			</refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				<informaltable>
+				  <tgroup cols="2">
+					<tbody>
+					  <row>
+						<entry>
+							<para> <!-- TODO: Put in pictures -->
+<programlisting>-- Note envelope and convexhull are more or less the same
+SELECT ST_AsText(ST_ConvexHull(rast)) As convhull, 
+	ST_AsText(ST_Envelope(rast)) As env
+FROM dummy_rast WHERE rid=1;
+
+                        convhull                        |                env
+
+--------------------------------------------------------+-----------------------
+ POLYGON((0.5 0.5,20.5 0.5,20.5 60.5,0.5 60.5,0.5 0.5)) | POLYGON((0 0,20 0,20 60,0 60,0 0))
+ </programlisting>
+						</para>
+					</entry>
+
+					<entry>
+						<para> <!-- TODO: Put in pictures -->
+				<programlisting> 
+-- now we skew the raster 
+-- note how the convex hull and envelope are now different
+SELECT ST_AsText(ST_ConvexHull(rast)) As convhull, 
+	ST_AsText(ST_Envelope(rast)) As env
+FROM (SELECT ST_SetRotation(rast,0.1,0.1) As rast 
+	FROM dummy_rast WHERE rid=1) As foo;
+	
+                        convhull                        |                env
+
+--------------------------------------------------------+------------------------------------
+ POLYGON((0.5 0.5,20.5 1.5,22.5 61.5,2.5 60.5,0.5 0.5)) | POLYGON((0 0,22 0,22 61,0 61,0 0))
+				</programlisting>
+						</para>
+					</entry>
+			</row>
+		</tbody>
+		</tgroup>
+		</informaltable>
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_Envelop" />, <xref linkend="ST_ConvexHull" />, <xref linkend="ST_AsText" /></para>
+			</refsection>
+		</refentry>
+	</sect1>
 </chapter>
