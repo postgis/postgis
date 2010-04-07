@@ -60,7 +60,7 @@
       </question>
 
       <answer>
-        <para>Refer to the list of <xref linkend="Raster_Functions">documented raster functions</xref>. There are more, but this is still a work in progress.</para>
+        <para>Refer to the list of <xref linkend="RT_reference">documented raster functions</xref>. There are more, but this is still a work in progress.</para>
 		<para>Refer to the <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster/PlanningAndFunding">WKT Raster roadmap page</ulink> for details of what you can expect in the future.</para>
       </answer>
     </qandaentry>
