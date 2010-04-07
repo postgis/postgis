@@ -983,8 +983,10 @@ FROM dummy_rast WHERE rid=1;
 				</para>
 			</refsection>
 				
-				<refsection>
-					<title>Examples</title>
+			<refsection>
+				<title>Examples</title>
+				<para>Refer to <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster/SpecificationWorking01">WKT Raster Specification</ulink>
+					 for a diagram of this.</para>
 				<informaltable>
 				  <tgroup cols="2">
 					<tbody>
