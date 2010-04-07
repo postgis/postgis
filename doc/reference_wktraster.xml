@@ -1032,7 +1032,7 @@ FROM (SELECT ST_SetRotation(rast,0.1,0.1) As rast
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_Envelop" />, <xref linkend="ST_ConvexHull" />, <xref linkend="ST_AsText" /></para>
+				<para><xref linkend="RT_ST_Envelope" />, <xref linkend="ST_ConvexHull" />, <xref linkend="ST_AsText" /></para>
 			</refsection>
 		</refentry>
 	</sect1>
