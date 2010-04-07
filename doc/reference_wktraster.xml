@@ -234,7 +234,7 @@ WHERE rid = 2;
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>box2d<function>ST_Box2D</function></funcdef>
+					<funcdef>box2d <function>ST_Box2D</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
