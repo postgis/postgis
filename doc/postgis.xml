@@ -109,6 +109,7 @@
   &reference;
   &postgis_aggs_mm;
   &reference_wktraster;
+  &faq_wktraster;
   &reporting;
   &release_notes;
 
