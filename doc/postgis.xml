@@ -33,6 +33,7 @@
 <!ENTITY reference_misc SYSTEM "reference_misc.xml">
 <!ENTITY reference_exception SYSTEM "reference_exception.xml">
 <!ENTITY reference_wktraster SYSTEM "reference_wktraster.xml">
+<!ENTITY faq_wktraster SYSTEM "faq_wktraster.xml">
 
 <!ENTITY sfs_compliant 
 "<inlinemediaobject>

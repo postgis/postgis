@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter>
+  <title>Raster Frequently Asked Questions</title>
+
+  <qandaset>
+  	 <qandaentry>
+      <question>
+        <para>Where can I find out more about the WKT Raster Project?</para>
+      </question>
+
+      <answer>
+        <para>Refer to the <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster">WKT Raster home page</ulink>.</para>
+      </answer>
+    </qandaentry>
+	
+	 <qandaentry>
+      <question>
+        <para>How do I install Raster support in my PostGIS database?</para>
+      </question>
+
+      <answer>
+        <para>First you need a working PostGIS 1.3.5 or above database.  Then you need to compile WKT Raster if you are on Linux/Mac OSX.
+			If you are on windows, you can compile yourself, or use the <ulink url="http://www.postgis.org/download/windows/experimental.php#wktraster">pre-comiled WKT Raster windows binaries</ulink>.
+		</para>
+		<para>For more details about compiling from source, please refer to <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster/Documentation01#a2.3-CompilingandInstallingfromSources">Installing WKT Raster from source</ulink></para>
+      </answer>
+    </qandaentry>
+	
+  	<qandaentry>
+      <question>
+        <para>How do I load Raster data into PostGIS?</para>
+      </question>
+
+      <answer>
+        <para>Currently you need <ulink url="http://www.gdal.org/">GDAL 1.6+</ulink>, <ulink url="http://www.python.org/download/releases/2.5/">Python 2.5</ulink> with <ulink url="http://pypi.python.org/pypi/GDAL/1.6.1">GDAL 1.6 or higher bindings</ulink>, 
+			and <ulink url="http://pypi.python.org/pypi/numpy">NumPy</ulink>.</para>
+		<para>
+			For windows users, installing these components from binary sources is documented in the 
+			ReadMe.txt packaged with the <ulink url="http://www.postgis.org/download/windows/experimental.php#wktraster">Windows WKT Raster experimental builds</ulink>.</para>
+		<para>Once you have a functioning Python with GDAL and NumPy, you can use the gdal2wktraster.py script packaged with WKT Raster.
+			Please refer to <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html">gdal2wktraster.py usage</ulink> for more details.
+		</para>
+      </answer>
+    </qandaentry>
+	
+    <qandaentry>
+      <question>
+        <para>What kind of raster file formats can I load into my database?</para>
+      </question>
+
+      <answer>
+        <para>Any that gdal supports. GDAL supported formats are documented <ulink url="http://www.gdal.org/formats_list.html">GDAL File Formats</ulink>.</para>
+		<para>Your particular gdal install may not support all formats.  To verify the ones supported by your particular gdal install, you can use gdalinfo --formats</para> 
+      </answer>
+    </qandaentry>
+	
+	<qandaentry>
+      <question>
+        <para>What functions can I currently use with my raster data?</para>
+      </question>
+
+      <answer>
+        <para>Refer to the list of <xref linkend="Raster_Functions">documented raster functions</xref>. There are more, but this is still a work in progress.</para>
+		<para>Refer to the <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster/PlanningAndFunding">WKT Raster roadmap page</ulink> for details of what you can expect in the future.</para>
+      </answer>
+    </qandaentry>
+	
+  </qandaset>
+</chapter>
