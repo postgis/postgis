@@ -900,6 +900,49 @@ WHERE rid = 2;
 				<para><xref linkend="RT_ST_PixelSizeX" />, <xref linkend="RT_ST_PixelSizeY" />, <xref linkend="RT_ST_Box2D" /></para>
 			</refsection>
 		</refentry>
+		
+		<refentry id="RT_ST_SetSRID">
+		  <refnamediv>
+			<refname>ST_SetSRID</refname>
+	
+			<refpurpose>Sets the SRID of a raster to a particular integer srid defined in the spatial_ref_sys table.</refpurpose>
+		  </refnamediv>
+	
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>raster <function>ST_SetSRID</function></funcdef>
+	
+				<paramdef><type>raster </type>
+				<parameter>rast</parameter></paramdef>
+	
+				<paramdef><type>integer </type>
+				<parameter>srid</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+	
+		  <refsection>
+			<title>Description</title>
+	
+			<para>Sets the SRID on a raster to a particular integer value.</para>
+	
+			<note>
+			  <para>This function does not transform the raster in any way -
+			  it simply sets meta data defining the spatial ref of the coordinate reference system that it's currently in.
+			  Useful for transformations later.
+			  </para>
+			</note>
+		  </refsection>
+	
+		  <refsection>
+			<title>See Also</title>
+	
+			<para><xref linkend="spatial_ref_sys" />, <xref linkend="RT_ST_SRID"/></para>
+		  </refsection>
+	
+		</refentry>
+
 	</sect1>
 	
 	<sect1 id="Raster_Outputs">
