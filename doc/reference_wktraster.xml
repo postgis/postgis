@@ -942,6 +942,46 @@ WHERE rid = 2;
 		  </refsection>
 	
 		</refentry>
+		
+		<refentry id="RT_ST_SetUpperLeft">
+			<refnamediv>
+				<refname>ST_SetUpperLeft</refname>
+				<refpurpose>Sets the value of the upper left corner of the pixel to projected x,y coordinates</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>raster <function>ST_SetUpperLeft</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>x</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>y</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Set the value of the uppler left corner of raster to the projected x coordinates</para>
+				</refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>
+SELECT ST_SetUpperLeft(rast,-71.01,42.37)  
+FROM dummy_rast
+WHERE rid = 2;
+					</programlisting>
+			
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_UpperLeftX" />,<xref linkend="RT_ST_UpperLeftY" /></para>
+			</refsection>
+		</refentry>
 
 	</sect1>
 	
