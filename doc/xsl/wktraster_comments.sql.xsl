@@ -31,8 +31,8 @@
 			</xsl:call-template>
 		</xsl:variable>
 		<xsl:choose>
-<!-- If this is a postgis type grab the ref entry summary and refname to make type comment -->
-<xsl:when test="parent::sect1[@id='PostGIS_Types']">
+<!-- If this is a raster type grab the ref entry summary and refname to make type comment -->
+<xsl:when test="parent::sect1[@id='RT_Types']">
 	COMMENT ON TYPE <xsl:value-of select="refnamediv/refname" /> IS 'postgis type: <xsl:value-of select='$comment' />';
 </xsl:when>
 		</xsl:choose>
