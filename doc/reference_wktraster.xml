@@ -1173,7 +1173,7 @@ FROM (SELECT ST_SetRotation(rast,0.1,0.1) As rast
 	</sect1>
 	
 	<sect1 id="RT_Operators">
-	<title>Operators</title>
+	<title>Raster Operators</title>
 		<refentry id="RT_Raster_Overlap">
 		  <refnamediv>
 			<refname>&amp;&amp;</refname>
