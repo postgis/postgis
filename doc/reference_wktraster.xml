@@ -1171,4 +1171,177 @@ FROM (SELECT ST_SetRotation(rast,0.1,0.1) As rast
 			</refsection>
 		</refentry>
 	</sect1>
+	
+	<sect1 id="RT_Operators">
+	<title>Operators</title>
+		<refentry id="RT_Raster_Overlap">
+		  <refnamediv>
+			<refname>&amp;&amp;</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if A's bounding box overlaps B's.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>&amp;&amp;</function></funcdef>
+
+				<paramdef>
+				  <type>raster </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>raster </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> if the bounding box of raster A overlaps the bounding box of raster B.</para>
+
+			<note><para>This operand will make use of any indexes that may be available on the
+				rasters.</para></note>
+
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT A.rid As a_rid, B.rid As b_rid, A.rast &amp;&amp; B.rast As overlap
+ FROM dummy_rast AS A CROSS JOIN dummy_rast AS B LIMIT 3;
+
+ a_rid | b_rid | overlap
+-------+-------+---------
+     2 |     2 | t
+     2 |     3 | f
+     2 |     1 | f
+</programlisting>
+		  </refsection>
+		 </refentry>
+		 
+		<refentry id="RT_Raster_OverLeft">
+		  <refnamediv>
+			<refname>&amp;&lt;</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if A's bounding box is to the left of B's.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>&amp;&lt;</function></funcdef>
+
+				<paramdef>
+				  <type>raster </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>raster </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>&amp;&lt;</varname> operator returns <varname>TRUE</varname> if the bounding box of raster A
+			overlaps or is to the left of the bounding box of raster B, or more accurately, overlaps or is NOT to the right
+			of the bounding box of raster B.</para>
+
+			<note><para>This operand will make use of any indexes that may be available on the
+				geometries.</para></note>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT A.rid As a_rid, B.rid As b_rid, A.rast &amp;&lt; B.rast As overleft
+ FROM dummy_rast AS A CROSS JOIN dummy_rast AS B;
+
+a_rid | b_rid | overleft
+------+-------+----------
+    2 |     2 | t
+    2 |     3 | f
+    2 |     1 | f
+    3 |     2 | t
+    3 |     3 | t
+    3 |     1 | f
+    1 |     2 | t
+    1 |     3 | t
+    1 |     1 | t
+</programlisting>
+		  </refsection>
+		 </refentry>
+		 
+		<refentry id="RT_Raster_OverRight">
+		  <refnamediv>
+			<refname>&amp;&lt;</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if A's bounding box is to the right of B's.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>&amp;&gt;</function></funcdef>
+
+				<paramdef>
+				  <type>raster </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>raster </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>&amp;&lt;</varname> operator returns <varname>TRUE</varname> if the bounding box of raster A
+			overlaps or is to the right of the bounding box of raster B, or more accurately, overlaps or is NOT to the left
+			of the bounding box of raster B.</para>
+
+			<note><para>This operand will make use of any indexes that may be available on the
+				geometries.</para></note>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT A.rid As a_rid, B.rid As b_rid, A.rast &amp;&gt; B.rast As overright
+ FROM dummy_rast AS A CROSS JOIN dummy_rast AS B;
+
+ a_rid | b_rid | overright
+-------+-------+----------
+     2 |     2 | t
+     2 |     3 | t
+     2 |     1 | t
+     3 |     2 | f
+     3 |     3 | t
+     3 |     1 | f
+     1 |     2 | f
+     1 |     3 | t
+     1 |     1 | t
+</programlisting>
+		  </refsection>
+		 </refentry>
+	</sect1>
 </chapter>
