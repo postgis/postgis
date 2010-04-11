@@ -351,7 +351,7 @@ VALUES (1,
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="RT_AddRasterColumn"/>, <xref linkend="RT_DropGeometryColumn"/></para>
+		<para><xref linkend="RT_AddRasterColumn"/>, <xref linkend="RT_DropRasterColumn"/></para>
 	  </refsection>
 	</refentry>
 
@@ -1481,6 +1481,53 @@ FROM (SELECT ST_SetRotation(rast,0.1,0.1) As rast
 				<title>See Also</title>
 				<para><xref linkend="RT_ST_Envelope" />, <xref linkend="ST_ConvexHull" />, <xref linkend="ST_AsText" /></para>
 			</refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_DumpAsPolygons">
+		  <refnamediv>
+			<refname>ST_DumpAsPolygons</refname>
+			<refpurpose>Returns a set of geomval (geom,val) rows, from a given raster band.  If no band number is specified, band num defaults to 1.</refpurpose>
+		  </refnamediv>
+	
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geomval[] <function>ST_DumpAsPolygons</function></funcdef>
+				<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+			  </funcprototype>
+			  
+			  <funcprototype>
+				<funcdef>geomval[] <function>ST_DumpAsPolygons</function></funcdef>
+				<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>band_num</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+	
+		  <refsection>
+			<title>Description</title>
+				<para>This is a set-returning function (SRF). It returns a set of
+				geomval rows, formed by a geometry (geom) and a pixel band value (val). 
+				Each polygon is the union of all pixels for that band that have the same pixel value denoted by val</para>
+	
+				<para>ST_DumpAsPolygon is useful for polygonizing rasters. It is the
+				reverse of a GROUP BY in that it creates new rows. For example it
+				can be used to expand a single raster into multiple POLYGONS/MULTIPOLYGONS.</para>
+	
+				<para>Availability: Requires GDAL 1.6 or higher.</para>
+				<note><para>Still under development and testing.</para></note>
+		  </refsection>
+	
+		  <refsection>
+			<title>Examples</title>
+		<programlisting><!-- TODO: need examples --> 
+			Forthcoming
+		</programlisting>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="RT_ST_Value" /></para>
+		  </refsection>
 		</refentry>
 	</sect1>
 	
