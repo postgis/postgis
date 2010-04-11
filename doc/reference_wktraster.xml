@@ -45,7 +45,320 @@ VALUES (1,
 '41000000007719564100000000000000000000000000000000FFFFFFFF050005000400FDFEFDFEFEFDFEFEFDF9FAFEF' ||
 'EFCF9FBFDFEFEFDFCFAFEFEFE04004E627AADD16076B4F9FE6370A9F5FE59637AB0E54F58617087040046566487A1506CA2E3FA5A6CAFFBFE4D566DA4CB3E454C5665')::raster);
   </programlisting>
-  	<sect1 id="Raster_Constructors">
+  <sect1 id="Raster_Management_Functions">
+  	<title>Raster Management Functions</title>
+  	<refentry id="RT_AddRasterColumn">
+	  <refnamediv>
+		<refname>AddRasterColumn</refname>
+
+		<refpurpose>Adds a raster column to an existing table and generates column constraints on the new column.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>AddRasterColumn</function></funcdef>
+			
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>column_name</parameter></paramdef>
+
+			<paramdef><type>integer </type>
+			<parameter>srid</parameter></paramdef>
+
+			<paramdef><type>varchar[] </type>
+			<parameter>pixel_types</parameter></paramdef>
+
+			<paramdef><type>boolean </type>
+			<parameter>out_db</parameter></paramdef>
+			
+			<paramdef><type>boolean </type>
+			<parameter>regular_blocking</parameter></paramdef>
+			
+			<paramdef><type>double precision[] </type>
+			<parameter>no_data_values</parameter></paramdef>
+			
+			<paramdef><type>double precision </type>
+			<parameter>pixelsize_x</parameter></paramdef>
+			
+			<paramdef><type>double precision </type>
+			<parameter>pixelsize_y</parameter></paramdef>
+			
+			<paramdef><type>integer </type>
+			<parameter>blocksize_x</parameter></paramdef>
+			
+			<paramdef><type>integer </type>
+			<parameter>blocksize_y</parameter></paramdef>
+			
+			<paramdef><type>geometry </type>
+			<parameter>envelope</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>text <function>AddRasterColumn</function></funcdef>
+			<paramdef><type>varchar </type>
+			<parameter>schema_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>column_name</parameter></paramdef>
+
+			<paramdef><type>integer </type>
+			<parameter>srid</parameter></paramdef>
+
+			<paramdef><type>varchar[] </type>
+			<parameter>pixel_types</parameter></paramdef>
+
+			<paramdef><type>boolean </type>
+			<parameter>out_db</parameter></paramdef>
+			
+			<paramdef><type>boolean </type>
+			<parameter>regular_blocking</parameter></paramdef>
+			
+			<paramdef><type>double precision[] </type>
+			<parameter>no_data_values</parameter></paramdef>
+			
+			<paramdef><type>double precision </type>
+			<parameter>pixelsize_x</parameter></paramdef>
+			
+			<paramdef><type>double precision </type>
+			<parameter>pixelsize_y</parameter></paramdef>
+			
+			<paramdef><type>integer </type>
+			<parameter>blocksize_x</parameter></paramdef>
+			
+			<paramdef><type>integer </type>
+			<parameter>blocksize_y</parameter></paramdef>
+			
+			<paramdef><type>geometry </type>
+			<parameter>envelope</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>text <function>AddRasterColumn</function></funcdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>catalog_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>schema_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>column_name</parameter></paramdef>
+
+			<paramdef><type>integer </type>
+			<parameter>srid</parameter></paramdef>
+
+			<paramdef><type>varchar[] </type>
+			<parameter>pixel_types</parameter></paramdef>
+
+			<paramdef><type>boolean </type>
+			<parameter>out_db</parameter></paramdef>
+			
+			<paramdef><type>boolean </type>
+			<parameter>regular_blocking</parameter></paramdef>
+			
+			<paramdef><type>double precision[] </type>
+			<parameter>no_data_values</parameter></paramdef>
+			
+			<paramdef><type>double precision </type>
+			<parameter>pixelsize_x</parameter></paramdef>
+			
+			<paramdef><type>double precision </type>
+			<parameter>pixelsize_y</parameter></paramdef>
+			
+			<paramdef><type>integer </type>
+			<parameter>blocksize_x</parameter></paramdef>
+			
+			<paramdef><type>integer </type>
+			<parameter>blocksize_y</parameter></paramdef>
+			
+			<paramdef><type>geometry </type>
+			<parameter>envelope</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Adds a raster column to an existing table and also generates constraints on the new column. the constraints generated constrict the SRID, and band pixel types of the new raster column.
+		The <varname>schema_name</varname> is the name of the table schema (unused
+		for pre-schema PostgreSQL installations). The <varname>srid</varname>
+		must be an integer value reference to an entry in the SPATIAL_REF_SYS
+		table. The <varname>pixel_types</varname> must be an array of pixel types as described in <xref linkend="RT_ST_BandPixelType" />, one for each band.  
+		An error is thrown if the schemaname doesn't exist
+		(or not visible in the current search_path) or the specified SRID,
+		pixel types are invalid.</para>
+
+		<note>
+			<para>Views and derivatively created spatial tables will need to be registered in raster_columns manually,
+				since AddRasterColumn also adds a raster column which is not needed when you already have a raster column.  
+			</para>
+		</note>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting><!-- TODO -->
+		</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="AddGeometryColumn"/>, <xref linkend="RT_DropRasterTable"/>, <xref linkend="RT_DropRasterColumn"/></para>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="RT_DropRasterColumn">
+	  <refnamediv>
+		<refname>DropRasterColumn</refname>
+
+		<refpurpose>Removes a raster column from a table.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>DropRasterColumn</function></funcdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>column_name</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>text <function>DropRasterColumn</function></funcdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>schema_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>column_name</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>text <function>DropRasterColumn</function></funcdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>catalog_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>schema_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>column_name</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Removes a raster column from a table. Note that
+		schema_name will need to match the r_table_schema field of the table's
+		row in the raster_columns table.</para>
+
+	  </refsection>
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+			SELECT DropRasterColumn ('my_schema','my_raster_table','rast');
+			----RESULT output ---
+			my_schema.my_raster_table.rast effectively removed.
+		</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="RT_AddRasterColumn"/>, <xref linkend="RT_DropRasterTable"/></para>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="RT_DropRasterTable">
+	  <refnamediv>
+		<refname>DropRasterTable</refname>
+
+		<refpurpose>Drops a table and all its references in
+		raster_columns.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>DropRasterTable</function></funcdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>text <function>DropRasterTable</function></funcdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>schema_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>text <function>DropRasterTable</function></funcdef>
+			<paramdef><type>varchar </type>
+			<parameter>catalog_name</parameter></paramdef>
+			<paramdef><type>varchar </type>
+			<parameter>schema_name</parameter></paramdef>
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Drops a table and all its references in raster_columns. Note:
+		uses current_schema() on schema-aware pgsql installations if schema is
+		not provided.</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+			SELECT DropRasterTable ('my_schema','my_raster_table');
+			----RESULT output ---
+			my_schema.my_raster_table dropped.
+		</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="RT_AddRasterColumn"/>, <xref linkend="RT_DropGeometryColumn"/></para>
+	  </refsection>
+	</refentry>
+
+  </sect1>
+  
+  <sect1 id="Raster_Constructors">
   		<title>Raster Constructors</title>
   		<refentry id="RT_ST_MakeEmptyRaster">
 			<refnamediv>
