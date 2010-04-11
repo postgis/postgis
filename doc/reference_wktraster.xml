@@ -51,7 +51,7 @@ VALUES (1,
 	  <refnamediv>
 		<refname>AddRasterColumn</refname>
 
-		<refpurpose>Adds a raster column to an existing table and generates column constraints on the new column.</refpurpose>
+		<refpurpose>Adds a raster column to an existing table and generates column constraint on the new column to enforce srid.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -189,7 +189,7 @@ VALUES (1,
 	  <refsection>
 		<title>Description</title>
 
-		<para>Adds a raster column to an existing table and also generates constraints on the new column. the constraints generated constrict the SRID, and band pixel types of the new raster column.
+		<para>Adds a raster column to an existing table and also generates constraints on the new column. Currently only constrains the <varname>SRID</varname>.
 		The <varname>schema_name</varname> is the name of the table schema (unused
 		for pre-schema PostgreSQL installations). The <varname>srid</varname>
 		must be an integer value reference to an entry in the SPATIAL_REF_SYS
@@ -215,7 +215,7 @@ VALUES (1,
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="AddGeometryColumn"/>, <xref linkend="RT_DropRasterTable"/>, <xref linkend="RT_DropRasterColumn"/></para>
+		<para><xref linkend="AddGeometryColumn"/>, <xref linkend="RT_DropRasterTable"/>, <xref linkend="RT_DropRasterColumn"/>, <xref linkend-"RT_ST_SRID" /></para>
 	  </refsection>
 	</refentry>
 	
