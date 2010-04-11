@@ -215,7 +215,7 @@ VALUES (1,
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="AddGeometryColumn"/>, <xref linkend="RT_DropRasterTable"/>, <xref linkend="RT_DropRasterColumn"/>, <xref linkend-"RT_ST_SRID" /></para>
+		<para><xref linkend="AddGeometryColumn"/>, <xref linkend="RT_DropRasterTable"/>, <xref linkend="RT_DropRasterColumn"/>, <xref linkend="RT_ST_SRID" /></para>
 	  </refsection>
 	</refentry>
 	
@@ -275,7 +275,6 @@ VALUES (1,
 		<para>Removes a raster column from a table. Note that
 		schema_name will need to match the r_table_schema field of the table's
 		row in the raster_columns table.</para>
-
 	  </refsection>
 	  <refsection>
 		<title>Examples</title>
