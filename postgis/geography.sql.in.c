@@ -458,21 +458,21 @@ CREATE OR REPLACE FUNCTION ST_AsGML(int4, geography, int4, int4, text)
 --
 
 -- _ST_AsKML(version, geography, precision)
-CREATE OR REPLACE FUNCTION _ST_AsKML(int4, geography, int4)
+CREATE OR REPLACE FUNCTION _ST_AsKML(int4, geography, int4, text)
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_kml'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE;
 
 -- AsKML(geography,precision) / version=2
 CREATE OR REPLACE FUNCTION ST_AsKML(geography, int4)
 	RETURNS text
-	AS 'SELECT _ST_AsKML(2, $1, $2)'
+	AS 'SELECT _ST_AsKML(2, $1, $2, null)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- AsKML(geography) / precision=15 version=2
 CREATE OR REPLACE FUNCTION ST_AsKML(geography)
 	RETURNS text
-	AS 'SELECT _ST_AsKML(2, $1, 15)'
+	AS 'SELECT _ST_AsKML(2, $1, 15, null)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
@@ -485,13 +485,20 @@ CREATE OR REPLACE FUNCTION ST_AsKML(text)
 -- ST_AsKML(version, geography) / precision=15 
 CREATE OR REPLACE FUNCTION ST_AsKML(int4, geography)
 	RETURNS text
-	AS 'SELECT _ST_AsKML($1, $2, 15)'
+	AS 'SELECT _ST_AsKML($1, $2, 15, null)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- ST_AsKML(version, geography, precision)
 CREATE OR REPLACE FUNCTION ST_AsKML(int4, geography, int4)
 	RETURNS text
-	AS 'SELECT _ST_AsKML($1, $2, $3)'
+	AS 'SELECT _ST_AsKML($1, $2, $3, null)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- ST_AsKML(version, geography, precision, prefix)
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_AsKML(int4, geography, int4, text)
+	RETURNS text
+	AS 'SELECT _ST_AsKML($1, $2, $3, $4)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 

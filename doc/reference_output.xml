@@ -616,6 +616,13 @@ namespace prefix or no prefix (if empty). If null or omitted 'gml' prefix is use
 				<paramdef><type>geography </type> <parameter>geom1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
 			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsKML</function></funcdef>
+				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>geography </type> <parameter>geom1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
+				<paramdef><type>text </type> <parameter>namespace prefix</parameter></paramdef>
+			</funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
@@ -624,12 +631,13 @@ namespace prefix or no prefix (if empty). If null or omitted 'gml' prefix is use
 
 		<para>Return the geometry as a Keyhole Markup Language (KML) element. There are several variants of this function.
 			maximum number of decimal places used in
-			output (defaults to 15) and version default to 2.</para>
+			output (defaults to 15), version default to 2 and default namespace is no prefix.</para>
 
 		<para>Version 1: ST_AsKML(geom) / version=2 precision=15</para>
 		<para>Version 2: ST_AsKML(geom, max_sig_digits) / version=2 </para>
 		<para>Version 3: ST_AsKML(version, geom) / precision=15 </para>
 		<para>Version 4: ST_AsKML(version, geom, precision) </para>
+		<para>Version 5: ST_AsKML(version, geom, precision, namespace_prefix) </para>
 
 		<note>
 		  <para>Requires PostGIS be compiled with Proj support.  Use <xref linkend="PostGIS_Full_Version" /> to confirm you have proj support compiled in.</para>
@@ -637,6 +645,9 @@ namespace prefix or no prefix (if empty). If null or omitted 'gml' prefix is use
 
 		<note>
 		  <para>Availability: 1.2.2 - later variants that include version param came in 1.3.2</para>
+		</note>
+		<note>
+		  <para>Availability: 2.0.0 - Add prefix namespace. Default is no prefix</para>
 		</note>
 
 		<note>

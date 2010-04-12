@@ -21,16 +21,16 @@
 #include "liblwgeom.h"
 #include <math.h>	/* fabs */
 
-char *lwgeom_to_kml2(uchar *srl, int precision);
+char *lwgeom_to_kml2(uchar *srl, int precision, const char *prefix);
 
-static size_t askml2_point_size(LWPOINT *point, int precision);
-static char *askml2_point(LWPOINT *point, int precision);
-static size_t askml2_line_size(LWLINE *line, int precision);
-static char *askml2_line(LWLINE *line, int precision);
-static size_t askml2_poly_size(LWPOLY *poly, int precision);
-static char *askml2_poly(LWPOLY *poly, int precision);
-static size_t askml2_inspected_size(LWGEOM_INSPECTED *geom, int precision);
-static char *askml2_inspected(LWGEOM_INSPECTED *geom, int precision);
+static size_t askml2_point_size(LWPOINT *point, int precision, const char *prefix);
+static char *askml2_point(LWPOINT *point, int precision, const char *prefix);
+static size_t askml2_line_size(LWLINE *line, int precision, const char *prefix);
+static char *askml2_line(LWLINE *line, int precision, const char *prefix);
+static size_t askml2_poly_size(LWPOLY *poly, int precision, const char *prefix);
+static char *askml2_poly(LWPOLY *poly, int precision, const char *prefix);
+static size_t askml2_inspected_size(LWGEOM_INSPECTED *geom, int precision, const char *prefix);
+static char *askml2_inspected(LWGEOM_INSPECTED *geom, int precision, const char *prefix);
 static size_t pointArray_toKML2(POINTARRAY *pa, char *buf, int precision);
 
 static size_t pointArray_KMLsize(POINTARRAY *pa, int precision);
@@ -42,7 +42,7 @@ static size_t pointArray_KMLsize(POINTARRAY *pa, int precision);
 
 /* takes a GEOMETRY and returns a KML representation */
 char *
-lwgeom_to_kml2(uchar *geom, int precision)
+lwgeom_to_kml2(uchar *geom, int precision, const char *prefix)
 {
 	int type;
 	LWPOINT *point;
@@ -57,21 +57,21 @@ lwgeom_to_kml2(uchar *geom, int precision)
 
 	case POINTTYPE:
 		point = lwpoint_deserialize(geom);
-		return askml2_point(point, precision);
+		return askml2_point(point, precision, prefix);
 
 	case LINETYPE:
 		line = lwline_deserialize(geom);
-		return askml2_line(line, precision);
+		return askml2_line(line, precision, prefix);
 
 	case POLYGONTYPE:
 		poly = lwpoly_deserialize(geom);
-		return askml2_poly(poly, precision);
+		return askml2_poly(poly, precision, prefix);
 
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
 		inspected = lwgeom_inspect(geom);
-		return askml2_inspected(inspected, precision);
+		return askml2_inspected(inspected, precision, prefix);
 
 	default:
 		lwerror("lwgeom_to_kml2: '%s' geometry type not supported",
@@ -81,83 +81,92 @@ lwgeom_to_kml2(uchar *geom, int precision)
 }
 
 static size_t
-askml2_point_size(LWPOINT *point, int precision)
+askml2_point_size(LWPOINT *point, int precision, const char *prefix)
 {
 	int size;
+	size_t prefixlen = strlen(prefix);
+
 	size = pointArray_KMLsize(point->point, precision);
 	size += sizeof("<point><coordinates>/") * 2;
+	size += prefixlen * 2 * 2;
 	return size;
 }
 
 static size_t
-askml2_point_buf(LWPOINT *point, char *output, int precision)
+askml2_point_buf(LWPOINT *point, char *output, int precision, const char *prefix)
 {
 	char *ptr = output;
 
-	ptr += sprintf(ptr, "<Point>");
-	ptr += sprintf(ptr, "<coordinates>");
+	ptr += sprintf(ptr, "<%sPoint>", prefix);
+	ptr += sprintf(ptr, "<%scoordinates>", prefix);
 	ptr += pointArray_toKML2(point->point, ptr, precision);
-	ptr += sprintf(ptr, "</coordinates></Point>");
+	ptr += sprintf(ptr, "</%scoordinates></%sPoint>", prefix, prefix);
 
 	return (ptr-output);
 }
 
 static char *
-askml2_point(LWPOINT *point, int precision)
+askml2_point(LWPOINT *point, int precision, const char *prefix)
 {
 	char *output;
 	int size;
 
-	size = askml2_point_size(point, precision);
+	size = askml2_point_size(point, precision, prefix);
 	output = lwalloc(size);
-	askml2_point_buf(point, output, precision);
+	askml2_point_buf(point, output, precision, prefix);
 	return output;
 }
 
 static size_t
-askml2_line_size(LWLINE *line, int precision)
+askml2_line_size(LWLINE *line, int precision, const char * prefix)
 {
 	int size;
+	size_t prefixlen = strlen(prefix);
+
 	size = pointArray_KMLsize(line->points, precision);
 	size += sizeof("<linestring><coordinates>/") * 2;
+	size += prefixlen * 2 * 2;
 	return size;
 }
 
 static size_t
-askml2_line_buf(LWLINE *line, char *output, int precision)
+askml2_line_buf(LWLINE *line, char *output, int precision, const char *prefix)
 {
 	char *ptr=output;
 
-	ptr += sprintf(ptr, "<LineString>");
-	ptr += sprintf(ptr, "<coordinates>");
+	ptr += sprintf(ptr, "<%sLineString>", prefix);
+	ptr += sprintf(ptr, "<%scoordinates>", prefix);
 	ptr += pointArray_toKML2(line->points, ptr, precision);
-	ptr += sprintf(ptr, "</coordinates></LineString>");
+	ptr += sprintf(ptr, "</%scoordinates></%sLineString>", prefix, prefix);
 
 	return (ptr-output);
 }
 
 static char *
-askml2_line(LWLINE *line, int precision)
+askml2_line(LWLINE *line, int precision, const char *prefix)
 {
 	char *output;
 	int size;
 
-	size = askml2_line_size(line, precision);
+	size = askml2_line_size(line, precision, prefix);
 	output = lwalloc(size);
-	askml2_line_buf(line, output, precision);
+	askml2_line_buf(line, output, precision, prefix);
 	return output;
 }
 
 static size_t
-askml2_poly_size(LWPOLY *poly, int precision)
+askml2_poly_size(LWPOLY *poly, int precision, const char *prefix)
 {
 	size_t size;
 	int i;
+	size_t prefixlen = strlen(prefix);
 
 	size = sizeof("<polygon></polygon>");
 	size += sizeof("<outerboundaryis><linearring><coordinates>/") * 2;
 	size += sizeof("<innerboundaryis><linearring><coordinates>/") * 2 *
 	        poly->nrings;
+	
+	size += prefixlen * (1 + 3 + (3 * poly->nrings)) * 2;
 
 	for (i=0; i<poly->nrings; i++)
 		size += pointArray_KMLsize(poly->rings[i], precision);
@@ -166,35 +175,44 @@ askml2_poly_size(LWPOLY *poly, int precision)
 }
 
 static size_t
-askml2_poly_buf(LWPOLY *poly, char *output, int precision)
+askml2_poly_buf(LWPOLY *poly, char *output, int precision, const char *prefix)
 {
 	int i;
 	char *ptr=output;
 
-	ptr += sprintf(ptr, "<Polygon>");
-	ptr += sprintf(ptr, "<outerBoundaryIs><LinearRing><coordinates>");
+	ptr += sprintf(ptr, "<%sPolygon>", prefix);
+	ptr += sprintf(ptr, "<%souterBoundaryIs><%sLinearRing><%scoordinates>",
+		prefix, prefix, prefix);
 	ptr += pointArray_toKML2(poly->rings[0], ptr, precision);
-	ptr += sprintf(ptr, "</coordinates></LinearRing></outerBoundaryIs>");
+	ptr += sprintf(ptr, "</%scoordinates></%sLinearRing></%souterBoundaryIs>",
+		prefix, prefix, prefix);
+
 	for (i=1; i<poly->nrings; i++)
 	{
-		ptr += sprintf(ptr, "<innerBoundaryIs><LinearRing><coordinates>");
+		ptr += sprintf(ptr,
+			"<%sinnerBoundaryIs><%sLinearRing><%scoordinates>",
+			prefix, prefix, prefix);
+
 		ptr += pointArray_toKML2(poly->rings[i], ptr, precision);
-		ptr += sprintf(ptr, "</coordinates></LinearRing></innerBoundaryIs>");
+
+		ptr += sprintf(ptr,
+			"</%scoordinates></%sLinearRing></%sinnerBoundaryIs>",
+			prefix, prefix, prefix);
 	}
-	ptr += sprintf(ptr, "</Polygon>");
+	ptr += sprintf(ptr, "</%sPolygon>", prefix);
 
 	return (ptr-output);
 }
 
 static char *
-askml2_poly(LWPOLY *poly, int precision)
+askml2_poly(LWPOLY *poly, int precision, const char *prefix)
 {
 	char *output;
 	int size;
 
-	size = askml2_poly_size(poly, precision);
+	size = askml2_poly_size(poly, precision, prefix);
 	output = lwalloc(size);
-	askml2_poly_buf(poly, output, precision);
+	askml2_poly_buf(poly, output, precision, prefix);
 	return output;
 }
 
@@ -204,13 +222,14 @@ askml2_poly(LWPOLY *poly, int precision)
  * Don't call this with single-geoms inspected.
  */
 static size_t
-askml2_inspected_size(LWGEOM_INSPECTED *insp, int precision)
+askml2_inspected_size(LWGEOM_INSPECTED *insp, int precision, const char *prefix)
 {
 	int i;
 	size_t size;
+	size_t prefixlen = strlen(prefix);
 
 	/* the longest possible multi version */
-	size = sizeof("<MultiGeometry></MultiGeometry>");
+	size = sizeof("<MultiGeometry></MultiGeometry>") + prefixlen * 2;
 
 	for (i=0; i<insp->ngeometries; i++)
 	{
@@ -222,24 +241,24 @@ askml2_inspected_size(LWGEOM_INSPECTED *insp, int precision)
 
 		if ((point=lwgeom_getpoint_inspected(insp, i)))
 		{
-			size += askml2_point_size(point, precision);
+			size += askml2_point_size(point, precision, prefix);
 			lwpoint_free(point);
 		}
 		else if ((line=lwgeom_getline_inspected(insp, i)))
 		{
-			size += askml2_line_size(line, precision);
+			size += askml2_line_size(line, precision, prefix);
 			lwline_free(line);
 		}
 		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
 		{
-			size += askml2_poly_size(poly, precision);
+			size += askml2_poly_size(poly, precision, prefix);
 			lwpoly_free(poly);
 		}
 		else
 		{
 			subgeom = lwgeom_getsubgeometry_inspected(insp, i);
 			subinsp = lwgeom_inspect(subgeom);
-			size += askml2_inspected_size(subinsp, precision);
+			size += askml2_inspected_size(subinsp, precision, prefix);
 			lwinspected_release(subinsp);
 		}
 	}
@@ -251,7 +270,7 @@ askml2_inspected_size(LWGEOM_INSPECTED *insp, int precision)
  * Don't call this with single-geoms inspected!
  */
 static size_t
-askml2_inspected_buf(LWGEOM_INSPECTED *insp, char *output, int precision)
+askml2_inspected_buf(LWGEOM_INSPECTED *insp, char *output, int precision, const char *prefix)
 {
 	char *ptr, *kmltype;
 	int i;
@@ -260,7 +279,7 @@ askml2_inspected_buf(LWGEOM_INSPECTED *insp, char *output, int precision)
 	kmltype = "MultiGeometry";
 
 	/* Open outmost tag */
-	ptr += sprintf(ptr, "<%s>", kmltype);
+	ptr += sprintf(ptr, "<%s%s>", prefix, kmltype);
 
 	for (i=0; i<insp->ngeometries; i++)
 	{
@@ -272,30 +291,30 @@ askml2_inspected_buf(LWGEOM_INSPECTED *insp, char *output, int precision)
 
 		if ((point=lwgeom_getpoint_inspected(insp, i)))
 		{
-			ptr += askml2_point_buf(point, ptr, precision);
+			ptr += askml2_point_buf(point, ptr, precision, prefix);
 			lwpoint_free(point);
 		}
 		else if ((line=lwgeom_getline_inspected(insp, i)))
 		{
-			ptr += askml2_line_buf(line, ptr, precision);
+			ptr += askml2_line_buf(line, ptr, precision, prefix);
 			lwline_free(line);
 		}
 		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
 		{
-			ptr += askml2_poly_buf(poly, ptr, precision);
+			ptr += askml2_poly_buf(poly, ptr, precision, prefix);
 			lwpoly_free(poly);
 		}
 		else
 		{
 			subgeom = lwgeom_getsubgeometry_inspected(insp, i);
 			subinsp = lwgeom_inspect(subgeom);
-			ptr += askml2_inspected_buf(subinsp, ptr, precision);
+			ptr += askml2_inspected_buf(subinsp, ptr, precision, prefix);
 			lwinspected_release(subinsp);
 		}
 	}
 
 	/* Close outmost tag */
-	ptr += sprintf(ptr, "</%s>", kmltype);
+	ptr += sprintf(ptr, "</%s%s>",prefix,  kmltype);
 
 	return (ptr-output);
 }
@@ -304,14 +323,14 @@ askml2_inspected_buf(LWGEOM_INSPECTED *insp, char *output, int precision)
  * Don't call this with single-geoms inspected!
  */
 static char *
-askml2_inspected(LWGEOM_INSPECTED *insp, int precision)
+askml2_inspected(LWGEOM_INSPECTED *insp, int precision, const char *prefix)
 {
 	char *kml;
 	size_t size;
 
-	size = askml2_inspected_size(insp, precision);
+	size = askml2_inspected_size(insp, precision, prefix);
 	kml = lwalloc(size);
-	askml2_inspected_buf(insp, kml, precision);
+	askml2_inspected_buf(insp, kml, precision, prefix);
 	return kml;
 }
 

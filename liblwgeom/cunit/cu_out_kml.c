@@ -24,7 +24,7 @@ static void do_kml_test(char * in, char * out, int precision)
 	char * h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_kml2(lwgeom_serialize(g), precision);
+	h = lwgeom_to_kml2(lwgeom_serialize(g), precision, "");
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
@@ -42,7 +42,7 @@ static void do_kml_unsupported(char * in, char * out)
 	char *h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_kml2(lwgeom_serialize(g), 0);
+	h = lwgeom_to_kml2(lwgeom_serialize(g), 0, "");
 
 	if (strcmp(cu_error_msg, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n",
@@ -53,6 +53,25 @@ static void do_kml_unsupported(char * in, char * out)
 
 	lwfree(h);
 	lwgeom_free(g);
+}
+
+
+static void do_kml_test_prefix(char * in, char * out, int precision, const char *prefix)
+{
+	LWGEOM *g;
+	char * h;
+
+	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
+	h = lwgeom_to_kml2(lwgeom_serialize(g), precision, prefix);
+
+	if (strcmp(h, out))
+		fprintf(stderr, "\nPrefix: %s\nIn:   %s\nOut:  %s\nTheo: %s\n",
+			prefix, in, h, out);
+
+	CU_ASSERT_STRING_EQUAL(h, out);
+
+	lwgeom_free(g);
+	lwfree(h);
 }
 
 
@@ -175,6 +194,45 @@ static void out_kml_test_geoms(void)
 	    "lwgeom_to_kml2: 'MultiSurface' geometry type not supported");
 }
 
+static void out_kml_test_prefix(void)
+{
+	/* Linestring */
+	do_kml_test_prefix(
+	    "LINESTRING(0 1,2 3,4 5)",
+	    "<kml:LineString><kml:coordinates>0,1 2,3 4,5</kml:coordinates></kml:LineString>",
+	    0, "kml:");
+
+	/* Polygon */
+	do_kml_test_prefix(
+	    "POLYGON((0 1,2 3,4 5,0 1))",
+	    "<kml:Polygon><kml:outerBoundaryIs><kml:LinearRing><kml:coordinates>0,1 2,3 4,5 0,1</kml:coordinates></kml:LinearRing></kml:outerBoundaryIs></kml:Polygon>",
+	    0, "kml:");
+
+	/* Polygon - with internal ring */
+	do_kml_test_prefix(
+	    "POLYGON((0 1,2 3,4 5,0 1),(6 7,8 9,10 11,6 7))",
+	    "<kml:Polygon><kml:outerBoundaryIs><kml:LinearRing><kml:coordinates>0,1 2,3 4,5 0,1</kml:coordinates></kml:LinearRing></kml:outerBoundaryIs><kml:innerBoundaryIs><kml:LinearRing><kml:coordinates>6,7 8,9 10,11 6,7</kml:coordinates></kml:LinearRing></kml:innerBoundaryIs></kml:Polygon>",
+	    0, "kml:");
+
+	/* MultiPoint */
+	do_kml_test_prefix(
+	    "MULTIPOINT(0 1,2 3)",
+	    "<kml:MultiGeometry><kml:Point><kml:coordinates>0,1</kml:coordinates></kml:Point><kml:Point><kml:coordinates>2,3</kml:coordinates></kml:Point></kml:MultiGeometry>",
+	    0, "kml:");
+
+	/* MultiLine */
+	do_kml_test_prefix(
+	    "MULTILINESTRING((0 1,2 3,4 5),(6 7,8 9,10 11))",
+	    "<kml:MultiGeometry><kml:LineString><kml:coordinates>0,1 2,3 4,5</kml:coordinates></kml:LineString><kml:LineString><kml:coordinates>6,7 8,9 10,11</kml:coordinates></kml:LineString></kml:MultiGeometry>",
+	    0, "kml:");
+
+	/* MultiPolygon */
+	do_kml_test_prefix(
+	    "MULTIPOLYGON(((0 1,2 3,4 5,0 1)),((6 7,8 9,10 11,6 7)))",
+	    "<kml:MultiGeometry><kml:Polygon><kml:outerBoundaryIs><kml:LinearRing><kml:coordinates>0,1 2,3 4,5 0,1</kml:coordinates></kml:LinearRing></kml:outerBoundaryIs></kml:Polygon><kml:Polygon><kml:outerBoundaryIs><kml:LinearRing><kml:coordinates>6,7 8,9 10,11 6,7</kml:coordinates></kml:LinearRing></kml:outerBoundaryIs></kml:Polygon></kml:MultiGeometry>",
+	    0, "kml:");
+
+}
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -182,6 +240,7 @@ CU_TestInfo out_kml_tests[] = {
 	PG_TEST(out_kml_test_precision),
 	PG_TEST(out_kml_test_dims),
 	PG_TEST(out_kml_test_geoms),
+	PG_TEST(out_kml_test_prefix),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo out_kml_suite = {"KML Out Suite",  NULL,  NULL, out_kml_tests};

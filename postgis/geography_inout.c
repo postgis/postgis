@@ -610,6 +610,10 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 	int len;
 	int version;
 	int precision = OUT_MAX_DOUBLE_PRECISION;
+	static const char *default_prefix = "";
+	char *prefixbuf;
+        const char* prefix = default_prefix;
+        text *prefix_text;
 
 
 	/* Get the version */
@@ -636,7 +640,28 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 		else if ( precision < 0 ) precision = 0;
 	}
 
-	kml = lwgeom_to_kml2(lwgeom_serialize(lwgeom), precision);
+	/* retrieve prefix */
+	if (PG_NARGS() >3 && !PG_ARGISNULL(3))
+        {
+                prefix_text = PG_GETARG_TEXT_P(3);
+                if ( VARSIZE(prefix_text)-VARHDRSZ == 0 )
+                {
+                        prefix = "";
+                }
+                else
+                {
+                        /* +2 is one for the ':' and one for term null */
+                        prefixbuf = palloc(VARSIZE(prefix_text)-VARHDRSZ+2);
+                        memcpy(prefixbuf, VARDATA(prefix_text),
+                               VARSIZE(prefix_text)-VARHDRSZ);
+                        /* add colon and null terminate */
+                        prefixbuf[VARSIZE(prefix_text)-VARHDRSZ] = ':';
+                        prefixbuf[VARSIZE(prefix_text)-VARHDRSZ+1] = '\0';
+                        prefix = prefixbuf;
+                }
+        }
+
+	kml = lwgeom_to_kml2(lwgeom_serialize(lwgeom), precision, prefix);
 
 	PG_FREE_IF_COPY(lwgeom, 1);
 

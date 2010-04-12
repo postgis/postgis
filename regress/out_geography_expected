@@ -23,6 +23,8 @@ kml_precision_02|<Point><coordinates>1.1111111,1.1111111</coordinates></Point>
 kml_version_01|<Point><coordinates>1,1</coordinates></Point>
 ERROR:  Only KML 2 is supported
 ERROR:  Only KML 2 is supported
+kml_prefix_01|<Point><coordinates>1,2</coordinates></Point>
+kml_prefix_02|<kml:Point><kml:coordinates>1,2</kml:coordinates></kml:Point>
 ERROR:  Only SRID SRID_DEFAULT is currently supported in geography.
 svg_empty_geom|
 svg_option_01|M 1 -1 L 4 -4 5 -7

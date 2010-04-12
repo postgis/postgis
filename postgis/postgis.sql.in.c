@@ -4733,57 +4733,65 @@ CREATE OR REPLACE FUNCTION ST_AsGML(int4, geometry, int4, int4, text)
 -- KML OUTPUT
 -----------------------------------------------------------------------
 -- _ST_AsKML(version, geom, precision)
-CREATE OR REPLACE FUNCTION _ST_AsKML(int4, geometry, int4)
+CREATE OR REPLACE FUNCTION _ST_AsKML(int4, geometry, int4, text)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asKML'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'C' IMMUTABLE;
 
 -- AsKML(geom, precision) / version=2
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsKML(geometry, int4)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsKML(2, transform($1,4326), $2)'
+	AS 'SELECT _ST_AsKML(2, transform($1,4326), $2, null)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsKML(geometry, int4)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsKML(2, ST_Transform($1,4326), $2)'
+	AS 'SELECT _ST_AsKML(2, ST_Transform($1,4326), $2, null)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- AsKML(geom) / precision=15 version=2
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsKML(geometry)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsKML(2, transform($1,4326), 15)'
+	AS 'SELECT _ST_AsKML(2, transform($1,4326), 15, null)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- AsKML(version, geom, precision)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsKML(int4, geometry, int4)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsKML($1, transform($2,4326), $3)'
+	AS 'SELECT _ST_AsKML($1, transform($2,4326), $3, null)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsKML(geometry)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsKML(2, ST_Transform($1,4326), 15)'
+	AS 'SELECT _ST_AsKML(2, ST_Transform($1,4326), 15, null)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- ST_AsKML(version, geom) / precision=15 version=2
 -- Availability: 1.3.2
 CREATE OR REPLACE FUNCTION ST_AsKML(int4, geometry)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsKML($1, ST_Transform($2,4326), 15)'
+	AS 'SELECT _ST_AsKML($1, ST_Transform($2,4326), 15, null)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- ST_AsKML(version, geom, precision)
 -- Availability: 1.3.2
 CREATE OR REPLACE FUNCTION ST_AsKML(int4, geometry, int4)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsKML($1, ST_Transform($2,4326), $3)'
+	AS 'SELECT _ST_AsKML($1, ST_Transform($2,4326), $3, null)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- ST_AsKML(version, geom, precision, text)
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_AsKML(int4, geometry, int4, text)
+	RETURNS TEXT
+	AS 'SELECT _ST_AsKML($1, ST_Transform($2,4326), $3, $4)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
 
 -----------------------------------------------------------------------
 -- GEOJSON OUTPUT
