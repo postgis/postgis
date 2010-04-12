@@ -197,6 +197,8 @@ VALUES (1,
 		An error is thrown if the schemaname doesn't exist
 		(or not visible in the current search_path) or the specified SRID,
 		pixel types are invalid.</para>
+		
+		<para><varname>gdal2wktraster.py</varname> loader uses this function to register raster tables</para>
 
 		<note>
 			<para>Views and derivatively created spatial tables will need to be registered in raster_columns manually,
@@ -632,7 +634,7 @@ FROM dummy_rast;
 		<refentry id="RT_ST_GeoReference">
 			<refnamediv>
 				<refname>ST_GeoReference</refname>
-				<refpurpose>Returns the georeference meta data in GDAL or ESRI format. Default is GDAL.</refpurpose>
+				<refpurpose>Returns the georeference meta data in GDAL or ESRI format as commonly seen in a world file. Default is GDAL.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -652,7 +654,8 @@ FROM dummy_rast;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the georeference meta data in GDAL or ESRI format. Default is GDAL if no type specified.  type is string 'GDAL' or 'ESRI'.</para>
+				<para>Returns the georeference meta data including carriage return in GDAL or ESRI format as commonly seen in a <ulink href="http://en.wikipedia.org/wiki/World_file">world file</ulink>. Default is GDAL if no type specified.  type is string 'GDAL' or 'ESRI'.
+					 </para>
 				<para>Difference between format representations is as follows:</para>
 				<para><varname>GDAL</varname>: 
 <programlisting>pixelsizex 
