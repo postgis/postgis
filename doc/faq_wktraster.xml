@@ -64,13 +64,13 @@
 		<para>GDAL 1.7+ has a PostGIS WKT Raster.  If you are compiling from source, you need to include in your configure 
 		 --enable-FEATURE=WKTRaster --with-pg=path/to/pg_config  to enable the driver.
 		 </para>
-		 <para>If you version of GDAL is compiled with the WKT Raster driver you should see PostGIS WKT Raster in list when you do
+		 <para>If your version of GDAL is compiled with the WKT Raster driver you should see PostGIS WKT Raster in list when you do
 		 		gdalinfo --formats</para>
 		 <para><ulink url="http://fwtools.maptools.org/">FWTools latest version for Windows is compiled with WKT Raster support</ulink>.</para>
 		 <para>To get a summary about your raster via gdal use gdalinfo:
 		 <programlisting>gdalinfo  "PG:host=localhost port=5432 dbname='mygisdb' user='postgres' password='whatever' schema='someschema' table=sometable"</programlisting>
 		 </para>
-		 <para>To export data to other raster formats, use gdal_translate the below will export all data into a table at 10% size.
+		 <para>To export data to other raster formats, use gdal_translate the below will export all data from a table to a PNG file at 10% size.
 		  <programlisting>gdal_translate -of PNG -outsize 10% 10% "PG:host=localhost dbname='mygisdb' user='postgres' password=whatever' schema='someschema' table=sometable" C:\somefile.png</programlisting>
 		 </para>
 		 <para>Refer to <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html#a3.2-Readingdata">Reading Raster Data of PostGIS WKT Raster section</ulink></para>
