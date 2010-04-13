@@ -37,9 +37,8 @@
 		<para>
 			For windows users, installing these components from binary sources is documented in the 
 			ReadMe.txt packaged with the <ulink url="http://www.postgis.org/download/windows/experimental.php#wktraster">Windows WKT Raster experimental builds</ulink>.</para>
-		<para>Once you have a functioning Python with GDAL and NumPy, you can use the gdal2wktraster.py script packaged with WKT Raster.
-			Please refer to <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html">gdal2wktraster.py usage</ulink> for more details.
-		</para>
+		<para>Once you have a functioning Python with GDAL and NumPy, you can use the gdal2wktraster.py script packaged with WKT Raster.</para>
+		<para>Please refer to <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html">gdal2wktraster.py usage</ulink> for more details.</para>
       </answer>
     </qandaentry>
 	
@@ -49,7 +48,7 @@
       </question>
 
       <answer>
-        <para>Any that gdal supports. GDAL supported formats are documented <ulink url="http://www.gdal.org/formats_list.html">GDAL File Formats</ulink>.</para>
+        <para>Any that your gdal library supports. GDAL supported formats are documented <ulink url="http://www.gdal.org/formats_list.html">GDAL File Formats</ulink>.</para>
 		<para>Your particular gdal install may not support all formats.  To verify the ones supported by your particular gdal install, you can use gdalinfo --formats</para> 
       </answer>
     </qandaentry>
@@ -61,19 +60,24 @@
 
       <answer>
         <para>Yes</para>
-		<para>GDAL 1.7+ has a PostGIS WKT Raster.  If you are compiling from source, you need to include in your configure 
-		 --enable-FEATURE=WKTRaster --with-pg=path/to/pg_config  to enable the driver.
+		<para>GDAL 1.7+ has a PostGIS WKT Raster driver, but is not compiled in by default. </para>
+		<para>The driver currently doesn't support irregularly blocked rasters, all though you can store irregularly blocked rasters in PostGIS raster data type.</para>
+		<para>If you are compiling from source, you need to include in your configure 
+		 <programlisting>--enable-FEATURE=WKTRaster --with-pg=path/to/pg_config</programlisting>  to enable the driver.
 		 </para>
-		 <para>If your version of GDAL is compiled with the WKT Raster driver you should see PostGIS WKT Raster in list when you do
-		 		gdalinfo --formats</para>
+		 <para>If your version of GDAL is compiled with the WKT Raster driver you should see PostGIS WKT Raster in list when you do 
+		 <programlisting>gdalinfo --formats</programlisting></para>
 		 <para><ulink url="http://fwtools.maptools.org/">FWTools latest version for Windows is compiled with WKT Raster support</ulink>.</para>
 		 <para>To get a summary about your raster via gdal use gdalinfo:
 		 <programlisting>gdalinfo  "PG:host=localhost port=5432 dbname='mygisdb' user='postgres' password='whatever' schema='someschema' table=sometable"</programlisting>
 		 </para>
-		 <para>To export data to other raster formats, use gdal_translate the below will export all data from a table to a PNG file at 10% size.
+		 <para>To export data to other raster formats, use gdal_translate the below will export all data from a table to a PNG file at 10% size.</para>
+		 <para>Depending on your pixel band types, some translations may not work if the export format does not support that Pixel type.  For example floating point band types and 32 bit unsigned ints
+		 	will not translate easily to JPG or some others.</para>
+		 <para>Here is an example simple translation</para>
 		  <programlisting>gdal_translate -of PNG -outsize 10% 10% "PG:host=localhost dbname='mygisdb' user='postgres' password=whatever' schema='someschema' table=sometable" C:\somefile.png</programlisting>
-		 </para>
-		 <para>Refer to <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html#a3.2-Readingdata">Reading Raster Data of PostGIS WKT Raster section</ulink></para>
+		 <para>You can also use SQL where clauses in your export using the where=... in your driver connection string.  Here is an example
+		 <para>To see more examples and syntax refere to <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html#a3.2-Readingdata">Reading Raster Data of PostGIS WKT Raster section</ulink></para>
       </answer>
     </qandaentry>
 	
