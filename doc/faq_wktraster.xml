@@ -76,7 +76,7 @@
 		 	will not translate easily to JPG or some others.</para>
 		 <para>Here is an example simple translation</para>
 		  <programlisting>gdal_translate -of PNG -outsize 10% 10% "PG:host=localhost dbname='mygisdb' user='postgres' password=whatever' schema='someschema' table=sometable" C:\somefile.png</programlisting>
-		 <para>You can also use SQL where clauses in your export using the where=... in your driver connection string.  Here is an example
+		 <para>You can also use SQL where clauses in your export using the where=... in your driver connection string.  </para>
 		 <para>To see more examples and syntax refere to <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html#a3.2-Readingdata">Reading Raster Data of PostGIS WKT Raster section</ulink></para>
       </answer>
     </qandaentry>
