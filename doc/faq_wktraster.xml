@@ -22,6 +22,7 @@
         <para>First you need a working PostGIS 1.3.5 or above database.  Then you need to compile WKT Raster if you are on Linux/Mac OSX.
 			If you are on windows, you can compile yourself, or use the <ulink url="http://www.postgis.org/download/windows/experimental.php#wktraster">pre-comiled WKT Raster windows binaries</ulink>.
 		</para>
+		<para>Then to enable raster support in your database, run the rtpostgis.sql file in your database.</para>
 		<para>For more details about compiling from source, please refer to <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster/Documentation01#a2.3-CompilingandInstallingfromSources">Installing WKT Raster from source</ulink></para>
       </answer>
     </qandaentry>
