@@ -62,18 +62,22 @@
       <answer>
         <para>Yes</para>
 		<para>GDAL 1.7+ has a PostGIS WKT Raster driver, but is not compiled in by default. </para>
-		<para>The driver currently doesn't support irregularly blocked rasters, all though you can store irregularly blocked rasters in PostGIS raster data type.</para>
+		<para>The driver currently doesn't support irregularly blocked rasters, 
+		although you can store irregularly blocked rasters in PostGIS raster data type.</para>
 		<para>If you are compiling from source, you need to include in your configure 
 		 <programlisting>--enable-FEATURE=WKTRaster --with-pg=path/to/pg_config</programlisting>  to enable the driver.
 		 </para>
-		 <para>If your version of GDAL is compiled with the WKT Raster driver you should see PostGIS WKT Raster in list when you do 
+		 <para>If your version of GDAL is compiled with the WKT Raster driver 
+		 you should see PostGIS WKT Raster in list when you do 
 		 <programlisting>gdalinfo --formats</programlisting></para>
 		 <para><ulink url="http://fwtools.maptools.org/">FWTools latest version for Windows is compiled with WKT Raster support</ulink>.</para>
 		 <para>To get a summary about your raster via gdal use gdalinfo:
 		 <programlisting>gdalinfo  "PG:host=localhost port=5432 dbname='mygisdb' user='postgres' password='whatever' schema='someschema' table=sometable"</programlisting>
 		 </para>
-		 <para>To export data to other raster formats, use gdal_translate the below will export all data from a table to a PNG file at 10% size.</para>
-		 <para>Depending on your pixel band types, some translations may not work if the export format does not support that Pixel type.  For example floating point band types and 32 bit unsigned ints
+		 <para>To export data to other raster formats, 
+		 	use gdal_translate the below will export all data from a table to a PNG file at 10% size.</para>
+		 <para>Depending on your pixel band types, some translations may not work if the export format does not support that Pixel type.  
+		 For example floating point band types and 32 bit unsigned ints
 		 	will not translate easily to JPG or some others.</para>
 		 <para>Here is an example simple translation</para>
 		  <programlisting>gdal_translate -of PNG -outsize 10% 10% "PG:host=localhost dbname='mygisdb' user='postgres' password=whatever' schema='someschema' table=sometable" C:\somefile.png</programlisting>
@@ -99,9 +103,11 @@
       </question>
 
       <answer>
-        <para>You can much like you can with any other raster.  Refer to <ulink url="http://mapserver.org/input/raster.html">Mapserver Raster processing options</ulink>
+        <para>You can much like you can with any other raster.  
+        Refer to <ulink url="http://mapserver.org/input/raster.html">Mapserver Raster processing options</ulink>
         for list of various processing functions you can use with Mapserver raster layers.</para>
-        <para>What makes PostGIS raster data particularly interesting, is that since each tile can have various standard database columns, you can segment it in your data source</para>
+        <para>What makes PostGIS raster data particularly interesting, is that since 
+        	each tile can have various standard database columns, you can segment it in your data source</para>
         <para>Below is an example of how you would defined a PostGIS raster layer in Mapserver.</para>
         <programlisting>
 -- displaying raster with standard raster options
@@ -109,7 +115,8 @@ LAYER
 	NAME coolwktraster
 	TYPE raster
 	STATUS ON
-	DATA "PG:host=localhost port=5432 dbname='somedb' user='someuser' password='whatever' schema='someschema' table='cooltable'"	
+	DATA "PG:host=localhost port=5432 dbname='somedb' user='someuser' password='whatever' 
+		schema='someschema' table='cooltable'"	
 	PROCESSING "NODATA=0"
 	PROCESSING "SCALE=AUTO"
 	#... other standard raster processing functions here
@@ -138,7 +145,8 @@ LAYER
 	NAME soil_survey2009
 	TYPE raster
 	STATUS ON
-	DATA "PG:host=localhost port=5432 dbname='somedb' user='someuser' password='whatever' schema='someschema' table='cooltable' where='survey_year=2009'"	
+	DATA "PG:host=localhost port=5432 dbname='somedb' user='someuser' password='whatever' 
+		schema='someschema' table='cooltable' where='survey_year=2009'"	
 	PROCESSING "NODATA=0"
 	PROCESSING "SCALE=AUTO"
 	#... other standard raster processing functions here
@@ -156,8 +164,10 @@ END
       </question>
 
       <answer>
-        <para>Refer to the list of <xref linkend="RT_reference">documented raster functions</xref>. There are more, but this is still a work in progress.</para>
-		<para>Refer to the <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster/PlanningAndFunding">WKT Raster roadmap page</ulink> for details of what you can expect in the future.</para>
+        <para>Refer to the list of <xref linkend="RT_reference">documented raster functions</xref>. 
+        There are more, but this is still a work in progress.</para>
+		<para>Refer to the <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster/PlanningAndFunding">WKT Raster roadmap page</ulink> 
+		for details of what you can expect in the future.</para>
       </answer>
     </qandaentry>
 	
