@@ -1012,11 +1012,11 @@ FROM dummy_rast;
 				<para>Returns the value of a given band in a given columnx, rowy pixel. Band numbers start at 1.</para>
 				<note><para>Note that although the X and Ys of these are not in coordinates of the spatial system, 
 						you can get that by the following relationship.</para>
-					<para>Coordinate upper left of a row column 
+					<para>Coordinate upper left ppoint of a row column 
 						is:
 					ST_SetSRID(ST_Point(ST_UpperLeftX(rast) + ST_PixelSizeX(rast)*columnx, ST_UpperRightY(rast) + ST_PixelSizeX(rast)*columny), ST_SRID(rast))
 					</para>
-					<para>If you want the pixel box instead of the upper left point, you can use the ST_MakeEnvelop function and
+					<para>If you want the pixel box instead of the upper left point, you can use the ST_MakeEnvelope function and
 						translate it every x,y.</para>
 				<para>Also note that many of these examples particular the intersection example can be more 
 					simply done with the planned functions that are not currently available.</para>
