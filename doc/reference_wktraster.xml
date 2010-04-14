@@ -210,7 +210,23 @@ VALUES (1,
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting><!-- TODO -->
+		<programlisting>SELECT AddRasterColumn('public', 'myrasters', 'rast',4326,
+    '{8BUI,8BUI,8BUI,8BUI}',
+false, true, '{255,255,255,255}', 0.25,-0.25,200,300, null);
+
+public.myrasters.rast 
+srid:4326 pixel_types:{8BUI,8BUI,8BUI,8BUI} 
+out_db:false 
+regular_blocking:true 
+nodata_values:'{255,255,255,255}' 
+pixelsize_x:'0.25' 
+pixelsize_y:'-0.25' blocksize_x:'200' blocksize_y:'300' extent:NULL
+
+--- After loading the data, you can currect the geometry column
+UPDATE raster_columns SET extent = (SELECT ST_Union(ST_Envelope(rast)) FROM myrasters)
+	WHERE r_table_schema = 'public'
+  AND r_table_name = 'myrasters'
+  AND r_column = 'rast';
 		</programlisting>
 	  </refsection>
 
