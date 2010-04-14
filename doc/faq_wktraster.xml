@@ -81,7 +81,9 @@
 		 	will not translate easily to JPG or some others.</para>
 		 <para>Here is an example simple translation</para>
 		  <programlisting>gdal_translate -of PNG -outsize 10% 10% "PG:host=localhost dbname='mygisdb' user='postgres' password=whatever' schema='someschema' table=sometable" C:\somefile.png</programlisting>
-		 <para>You can also use SQL where clauses in your export using the where=... in your driver connection string.  </para>
+		 <para>You can also use SQL where clauses in your export using the where=... in your driver connection string. 
+		 	Below is one using a where clause</para>
+		 <programlisting>gdal_translate -of PNG -outsize 10% 10% "PG:host=localhost dbname='mygisdb' user='postgres' password=whatever' schema='someschema' table=sometable where="owner='jimmy'" " C:\somefile.png</programlisting>
 		 <para>To see more examples and syntax refer to <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html#a3.2-Readingdata">Reading Raster Data of PostGIS WKT Raster section</ulink></para>
       </answer>
     </qandaentry>
@@ -92,14 +94,15 @@
       </question>
 
       <answer>
-        <para>You can use MapServer compiled with GDAL 1.7+ and PostGIS WKT Raster driver support to view Raster data.  In
-        	theory any tool that renders data using GDAL can support PostGIS raster data or support it with fairly minimal effort.</para>
+        <para>You can use MapServer compiled with GDAL 1.7+ and PostGIS WKT Raster driver support to view Raster data.  
+        In theory any tool that renders data using GDAL can support PostGIS raster data or 
+        support it with fairly minimal effort.</para>
       </answer>
     </qandaentry>
     
     <qandaentry>
       <question>
-        <para>How can I add a PostGIS raster layer to my Mapserver map.</para>
+        <para>How can I add a PostGIS raster layer to my Mapserver map?</para>
       </question>
 
       <answer>
