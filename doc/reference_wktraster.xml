@@ -1010,6 +1010,18 @@ FROM dummy_rast;
 				<title>Description</title>
 				
 				<para>Returns the value of a given band in a given columnx, rowy pixel. Band numbers start at 1.</para>
+				<note><para>Note that although the X and Ys of these are not in coordinates of the spatial system, 
+						you can get that by the following relationship.</para>
+					<para>Coordinate upper left of a row column 
+						is:
+					ST_SetSRID(ST_Point(ST_UpperLeftX(rast) + ST_PixelSizeX(rast)*columnx, ST_UpperRightY(rast) + ST_PixelSizeX(rast)*columny), ST_SRID(rast))
+					</para>
+					<para>If you want the pixel box instead of the upper left point, you can use the ST_MakeEnvelop function and
+						translate it every x,y.</para>
+				<para>Also note that many of these examples particular the intersection example can be more 
+					simply done with the planned functions that are not currently available.</para>
+				</note>
+				
 				</refsection>
 				
 				<refsection>
@@ -1046,12 +1058,68 @@ WHERE rid =  2 AND x &lt;= ST_Width(rast) AND y &lt;= ST_Height(rast);
  :
  :
 				</programlisting>
-			
+				
+				<programlisting>
+--- Get all values in bands 1,2,3 of each pixel same as above but returning the upper left point point of each pixel --
+SELECT ST_AsText(ST_SetSRID(
+	ST_Point(ST_UpperLeftX(rast) + ST_PixelSizeX(rast)*x, 
+		ST_UpperLeftY(rast) + ST_PixelSizeX(rast)*y), 
+		ST_SRID(rast))) As uplpt
+    , ST_Value(rast, 1, x, y) As b1val, 
+	ST_Value(rast, 2, x, y) As b2val, ST_Value(rast, 3, x, y) As b3val
+FROM dummy_rast CROSS JOIN
+generate_series(1,1000) As x CROSS JOIN generate_series(1,1000) As y
+WHERE rid =  2 AND x &lt;= ST_Width(rast) AND y &lt;= ST_Height(rast);
+
+            uplpt            | b1val | b2val | b3val
+-----------------------------+-------+-------+-------
+ POINT(3427929.25 5793245.5) |   253 |    78 |    70
+ POINT(3427929.25 5793247)   |   253 |    96 |    80
+ POINT(3427929.25 5793248.5) |   250 |    99 |    90
+:
+				</programlisting>
+				<programlisting>
+--- Get a polygon formed by union of all pixels 
+	that fall in a particular value range and intersect particular polygon --
+SELECT ST_AsText(ST_Union(pixpolyg)) As shadow
+FROM (SELECT ST_Translate(ST_MakeEnvelope(
+		ST_UpperLeftX(rast), ST_UpperLeftY(rast), 
+			ST_UpperLeftX(rast) + ST_PixelSizeX(rast),
+			ST_UpperLeftY(rast) + ST_PixelSizeY(rast), 0
+			), ST_PixelSizeX(rast)*x, ST_PixelSizeY(rast)*y
+		) As pixpolyg, ST_Value(rast, 1, x, y) As b1val
+	FROM dummy_rast CROSS JOIN
+generate_series(1,1000) As x CROSS JOIN generate_series(1,1000) As y
+WHERE rid =  2 
+	AND x &lt;= ST_Width(rast) AND y &lt;= ST_Height(rast)) As foo
+WHERE  
+	ST_Intersects(
+		pixpolyg, 
+		ST_GeomFromText('POLYGON ((3427935.6902608695 5793250.889478261, 
+			3427932.0770434784 5793251.682173912, 
+			3427931.9295652173 5793250.400956522, 
+			3427933.0576086957 5793248.985, 3427933.518478261 5793249.192391304, 
+			3427934.611826087 5793248.999913043, 3427935.6902608695 5793250.889478261))',0)
+		) AND b1val != 254;
+
+		shadow
+------------------------------------------------------------------------------------
+ MULTIPOLYGON(((3427933.75 5793248.5,3427933.75 5793250,3427935.25 5793250,
+ 3427935.25 5793248.5,3427933.75 5793248.5)),
+ ((3427930.75 5793250,3427930.75 5793251.5,3427930.75 5793253,3427932.25 5793253,
+3427932.25 5793251.5,3427932.25 5793250,3427930.75 5793250)),
+((3427935.25 5793250,3427935.25 5793251.5,3427936.75 5793251.5,
+3427936.75 5793250,3427935.25 5793250)))
+				</programlisting>
 			</refsection>
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_NumBands" /></para>
+				<para><xref linkend="RT_ST_NumBands" />, <xref linkend="RT_ST_PixelSizeX" />,
+					, <xref linkend="RT_ST_PixelSizeY" />, <xref linkend="RT_ST_UpperLeftX" />, 
+					<xref linkend="RT_ST_UpperLeftY" />, <xref linkend="RT_ST_SRID" />, <xref linkend="ST_AsText" />,
+					, <xref linkend="ST_Point" />, <xref linkend="ST_MakeEnvelope" />, 
+					<xref linkend="ST_Intersects" /></para>
 			</refsection>
 		</refentry>
 		
