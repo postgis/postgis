@@ -81,6 +81,74 @@
 		 <para>To see more examples and syntax refer to <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html#a3.2-Readingdata">Reading Raster Data of PostGIS WKT Raster section</ulink></para>
       </answer>
     </qandaentry>
+    
+    <qandaentry>
+      <question>
+        <para>What tools can I use to view PostGIS raster data?</para>
+      </question>
+
+      <answer>
+        <para>You can use MapServer compiled with GDAL 1.7+ and PostGIS WKT Raster driver support to view Raster data.  In
+        	theory any tool that renders data using GDAL can support PostGIS raster data or support it with fairly minimal effort.</para>
+      </answer>
+    </qandaentry>
+    
+    <qandaentry>
+      <question>
+        <para>How can I add a PostGIS raster layer to my Mapserver map.</para>
+      </question>
+
+      <answer>
+        <para>You can much like you can with any other raster.  Refer to <ulink url="http://mapserver.org/input/raster.html">Mapserver Raster processing options</ulink>
+        for list of various processing functions you can use with Mapserver raster layers.</para>
+        <para>What makes PostGIS raster data particularly interesting, is that since each tile can have various standard database columns, you can segment it in your data source</para>
+        <para>Below is an example of how you would defined a PostGIS raster layer in Mapserver.</para>
+        <programlisting>
+-- displaying raster with standard raster options
+LAYER
+	NAME coolwktraster
+	TYPE raster
+	STATUS ON
+	DATA "PG:host=localhost port=5432 dbname='somedb' user='someuser' password='whatever' schema='someschema' table='cooltable'"	
+	PROCESSING "NODATA=0"
+	PROCESSING "SCALE=AUTO"
+	#... other standard raster processing functions here
+	#... classes are optional but useful for 1 band data
+	CLASS
+		NAME "boring"
+		EXPRESSION ([pixel] &lt; 20)
+		COLOR 250 250 250
+	END
+	CLASS
+		NAME "mildly interesting"
+		EXPRESSION ([pixel] &gt; 20 AND [pixel] &lt; 1000)
+		COLOR 255 0 0
+	END
+	CLASS
+		NAME "very interesting"
+		EXPRESSION ([pixel] &gt;= 1000)
+		COLOR 0 255 0
+	END
+END
+        </programlisting>
+        
+        <programlisting>
+-- displaying raster with standard raster options and a where clause
+LAYER
+	NAME soil_survey2009
+	TYPE raster
+	STATUS ON
+	DATA "PG:host=localhost port=5432 dbname='somedb' user='someuser' password='whatever' schema='someschema' table='cooltable' where='survey_year=2009'"	
+	PROCESSING "NODATA=0"
+	PROCESSING "SCALE=AUTO"
+	#... other standard raster processing functions here
+	#... classes are optional but useful for 1 band data
+END
+        </programlisting>
+        
+      </answer>
+    </qandaentry>
+    
 	
 	<qandaentry>
       <question>
