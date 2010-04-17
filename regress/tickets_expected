@@ -68,3 +68,6 @@ SELECT
 NOTICE:  IllegalArgumentException: point array must contain 0 or >1 elements
 #408.1|f
 #408.2|IllegalArgumentException: point array must contain 0 or >1 elements
+NOTICE:  IllegalArgumentException: Invalid number of points in LinearRing found 2 - must be 0 or >= 4
+#408.3|f
+#408.4|IllegalArgumentException: Invalid number of points in LinearRing found 2 - must be 0 or >= 4

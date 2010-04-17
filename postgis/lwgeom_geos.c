@@ -3545,7 +3545,7 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 			if ( ! geoms[i-1] )
 			{
 				--i;
-				while (i) GEOSGeom_destroy(geoms[i-1]);
+				while (i) GEOSGeom_destroy(geoms[--i]);
 				free(geoms);
 				GEOSGeom_destroy(shell);
 				return NULL;
