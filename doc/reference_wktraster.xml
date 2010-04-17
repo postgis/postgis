@@ -930,7 +930,7 @@ FROM dummy_rast;
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_GeoReference" />, <xref linkend="RT_ST_SkewY" /></para>
+				<para><xref linkend="RT_ST_GeoReference" />, <xref linkend="RT_ST_SkewY" />, <xref linkend="RT_ST_SetSkew" /></para>
 			</refsection>
 		</refentry>
 		
@@ -1533,7 +1533,7 @@ FROM dummy_rast WHERE rid = 1;
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_GeoReference" />, <xref linkend="RT_ST_SkewY" />, <xref linkend="RT_ST_SkewY" /></para>
+				<para><xref linkend="RT_ST_GeoReference" />,<xref linkend="RT_ST_SetGeoReference" />, <xref linkend="RT_ST_SkewX" />, <xref linkend="RT_ST_SkewY" /></para>
 			</refsection>
 		</refentry>
 		
