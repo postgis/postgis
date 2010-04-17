@@ -3576,7 +3576,12 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 		for (i=0; i<ngeoms; ++i)
 		{
 			GEOSGeometry* g = LWGEOM2GEOS(lwc->geoms[i]);
-			if ( ! g ) return NULL;
+			if ( ! g )
+			{
+				while (i) GEOSGeom_destroy(geoms[--i]);
+				free(geoms);
+				return NULL;
+			}
 			geoms[i] = g;
 		}
 		g = GEOSGeom_createCollection(geostype, geoms, ngeoms);
