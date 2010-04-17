@@ -1874,7 +1874,8 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
 	<funcsynopsis>
 	  <funcprototype>
 		<funcdef>geometry <function>ST_Split</function></funcdef>
-		<paramdef><type>input geometry</type> <parameter>blade geometry</parameter></paramdef>
+		<paramdef><type>geometry</type><parameter>input</parameter></paramdef>
+		<paramdef><type>geometry</type><parameter>blade</parameter></paramdef>
 	  </funcprototype>
 	</funcsynopsis>
   </refsynopsisdiv>
