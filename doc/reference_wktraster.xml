@@ -402,7 +402,7 @@ UPDATE raster_columns SET extent = (SELECT ST_Union(ST_Envelope(rast)) FROM myra
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the value that represents no data for the band</para>
+				<para>Returns an empty raster of given dimensions, pixel x y, skew and spatial reference system with no bands</para>
 				</refsection>
 				
 				<refsection>
