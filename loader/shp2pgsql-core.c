@@ -1188,8 +1188,11 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		 */
 		if (name[0] == '_' ||
 		        ! strcmp(name, "gid") || ! strcmp(name, "tableoid") ||
-		        ! strcmp(name, "cmax") || ! strcmp(name, "xmax") ||
-		        ! strcmp(name, "cmin") || ! strcmp(name, "primary") ||
+		        ! strcmp(name, "cmin") ||
+		        ! strcmp(name, "cmax") ||
+		        ! strcmp(name, "xmin") || 
+			! strcmp(name, "xmax") ||
+			! strcmp(name, "primary") ||
 		        ! strcmp(name, "oid") || ! strcmp(name, "ctid"))
 		{
 			strncpy(name2 + 2, name, MAXFIELDNAMELEN - 2);
