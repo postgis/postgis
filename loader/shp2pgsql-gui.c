@@ -988,6 +988,10 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	GtkWidget *hbox_buttons, *button_options, *button_import, *button_cancel, *button_about;
 	/* Log section */
 	GtkWidget *scrolledwindow_log;
+#ifdef MAC_INTEGRATION
+	/* MacOSX Command-Quit menu item */
+	GtkWidget *menu_item_quit;
+#endif
 
 	/* create the main, top level, window */
 	window_main = gtk_window_new (GTK_WINDOW_TOPLEVEL);
