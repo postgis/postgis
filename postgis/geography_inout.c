@@ -510,6 +510,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	int precision = OUT_MAX_DOUBLE_PRECISION;
 	int option=0;
 	int is_deegree=0;
+	int is_dims=1;
 	static const char *default_prefix = "gml:";
 	char *prefixbuf;
         const char* prefix = default_prefix;
@@ -576,11 +577,12 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	
 	/* Revert lat/lon only with long SRS */
 	if (option & 1) is_deegree = 1;
+	if (option & 2) is_dims = 0;
 
 	if (version == 2)
 		gml = lwgeom_to_gml2(lwgeom_serialize(lwgeom), srs, precision, prefix);
 	else
-		gml = lwgeom_to_gml3(lwgeom_serialize(lwgeom), srs, precision, is_deegree, prefix);
+		gml = lwgeom_to_gml3(lwgeom_serialize(lwgeom), srs, precision, is_deegree, is_dims, prefix);
 
 	PG_FREE_IF_COPY(lwgeom, 1);
 

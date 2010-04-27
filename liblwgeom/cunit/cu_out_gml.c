@@ -59,7 +59,7 @@ static void do_gml3_test(char * in, char * out, char * srs, int precision, int i
 	char *h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_gml3(lwgeom_serialize(g), srs, precision, is_geodetic, "gml:");
+	h = lwgeom_to_gml3(lwgeom_serialize(g), srs, precision, is_geodetic, 1, "gml:");
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
@@ -76,7 +76,24 @@ static void do_gml3_test_prefix(char * in, char * out, char * srs, int precision
 	char *h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_gml3(lwgeom_serialize(g), srs, precision, is_geodetic, prefix);
+	h = lwgeom_to_gml3(lwgeom_serialize(g), srs, precision, is_geodetic, 1, prefix);
+
+	if (strcmp(h, out))
+		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
+
+	CU_ASSERT_STRING_EQUAL(h, out);
+
+	lwgeom_free(g);
+	lwfree(h);
+}
+
+static void do_gml3_test_nodims(char * in, char * out, char * srs, int precision, int is_geodetic, int is_dims, const char *prefix)
+{
+	LWGEOM *g;
+	char *h;
+
+	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
+	h = lwgeom_to_gml3(lwgeom_serialize(g), srs, precision, is_geodetic, is_dims, prefix);
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
@@ -111,7 +128,7 @@ static void do_gml3_unsupported(char * in, char * out)
 	char *h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_gml3(lwgeom_serialize(g), NULL, 0, 0, "");
+	h = lwgeom_to_gml3(lwgeom_serialize(g), NULL, 0, 0, 1, "");
 
 	if (strcmp(cu_error_msg, out))
 		fprintf(stderr, "\nGML 3 - In:   %s\nOut:  %s\nTheo: %s\n",
@@ -738,6 +755,66 @@ static void out_gml_test_geoms_prefix(void)
 
 }
 
+
+static void out_gml_test_geoms_nodims(void)
+{
+	/* GML3 - Linestring */
+	do_gml3_test_nodims(
+	    "LINESTRING(0 1,2 3,4 5)",
+	    "<Curve><segments><LineStringSegment><posList>0 1 2 3 4 5</posList></LineStringSegment></segments></Curve>",
+	    NULL, 0, 0, 0, "");
+
+
+	/* GML3 Polygon */
+	do_gml3_test_nodims(
+	    "POLYGON((0 1,2 3,4 5,0 1))",
+	    "<Polygon><exterior><LinearRing><posList>0 1 2 3 4 5 0 1</posList></LinearRing></exterior></Polygon>",
+	    NULL, 0, 0, 0, "");
+
+
+	/* GML3 Polygon - with internal ring */
+	do_gml3_test_nodims(
+	    "POLYGON((0 1,2 3,4 5,0 1),(6 7,8 9,10 11,6 7))",
+	    "<Polygon><exterior><LinearRing><posList>0 1 2 3 4 5 0 1</posList></LinearRing></exterior><interior><LinearRing><posList>6 7 8 9 10 11 6 7</posList></LinearRing></interior></Polygon>",
+	    NULL, 0, 0, 0, "");
+
+
+	/* GML3 MultiPoint */
+	do_gml3_test_nodims(
+	    "MULTIPOINT(0 1,2 3)",
+	    "<MultiPoint><pointMember><Point><pos>0 1</pos></Point></pointMember><pointMember><Point><pos>2 3</pos></Point></pointMember></MultiPoint>",
+	    NULL, 0, 0, 0, "");
+
+
+	/* GML3 Multiline */
+	do_gml3_test_nodims(
+	    "MULTILINESTRING((0 1,2 3,4 5),(6 7,8 9,10 11))",
+	    "<MultiCurve><curveMember><Curve><segments><LineStringSegment><posList>0 1 2 3 4 5</posList></LineStringSegment></segments></Curve></curveMember><curveMember><Curve><segments><LineStringSegment><posList>6 7 8 9 10 11</posList></LineStringSegment></segments></Curve></curveMember></MultiCurve>",
+	    NULL, 0, 0, 0, "");
+
+
+	/* GML3 MultiPolygon */
+	do_gml3_test_nodims(
+	    "MULTIPOLYGON(((0 1,2 3,4 5,0 1)),((6 7,8 9,10 11,6 7)))",
+	    "<MultiSurface><surfaceMember><Polygon><exterior><LinearRing><posList>0 1 2 3 4 5 0 1</posList></LinearRing></exterior></Polygon></surfaceMember><surfaceMember><Polygon><exterior><LinearRing><posList>6 7 8 9 10 11 6 7</posList></LinearRing></exterior></Polygon></surfaceMember></MultiSurface>",
+	    NULL, 0, 0, 0, "");
+
+
+	/* GML3 - GeometryCollection */
+	do_gml3_test_nodims(
+	    "GEOMETRYCOLLECTION(POINT(0 1),LINESTRING(2 3,4 5))",
+	    "<MultiGeometry><geometryMember><Point><pos>0 1</pos></Point></geometryMember><geometryMember><Curve><segments><LineStringSegment><posList>2 3 4 5</posList></LineStringSegment></segments></Curve></geometryMember></MultiGeometry>",
+	    NULL, 0, 0, 0, "");
+
+	/* GML3 - Nested GeometryCollection */
+	do_gml3_test_nodims(
+	    "GEOMETRYCOLLECTION(POINT(0 1),GEOMETRYCOLLECTION(LINESTRING(2 3,4 5)))",
+	    "<MultiGeometry><geometryMember><Point><pos>0 1</pos></Point></geometryMember><geometryMember><MultiGeometry><geometryMember><Curve><segments><LineStringSegment><posList>2 3 4 5</posList></LineStringSegment></segments></Curve></geometryMember></MultiGeometry></geometryMember></MultiGeometry>",
+	    NULL, 0, 0, 0, "");
+}
+
+
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -748,6 +825,7 @@ CU_TestInfo out_gml_tests[] = {
 	PG_TEST(out_gml_test_geodetic),
 	PG_TEST(out_gml_test_geoms),
 	PG_TEST(out_gml_test_geoms_prefix),
+	PG_TEST(out_gml_test_geoms_nodims),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo out_gml_suite = {"GML Out Suite",  NULL,  NULL, out_gml_tests};

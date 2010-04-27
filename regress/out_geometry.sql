@@ -27,6 +27,7 @@ SELECT 'gml_version_04', ST_AsGML(-4, GeomFromEWKT('SRID=4326;POINT(1 1)'));
 -- Option
 SELECT 'gml_option_01', ST_AsGML(2, GeomFromEWKT('SRID=4326;POINT(1 1)'), 0, 0);
 SELECT 'gml_option_02', ST_AsGML(3, GeomFromEWKT('SRID=4326;POINT(1 1)'), 0, 1);
+SELECT 'gml_option_03', ST_AsGML(3, GeomFromEWKT('SRID=4326;POINT(1 1)'), 0, 2);
 
 -- Deegree data
 SELECT 'gml_deegree_01', ST_AsGML(3, GeomFromEWKT('SRID=4326;POINT(1 2)'), 0, 0);

@@ -106,6 +106,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	int SRID;
 	int option = 0;
 	int is_deegree = 0;
+	int is_dims = 1;
 	int precision = OUT_MAX_DOUBLE_PRECISION;
 	static const char* default_prefix = "gml:"; /* default prefix */
 	char *prefixbuf;
@@ -163,12 +164,13 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	else if (option & 1) srs = getSRSbySRID(SRID, false);
 	else                 srs = getSRSbySRID(SRID, true);
 
+	if (option & 2)  is_dims = 0;
 	if (option & 16) is_deegree = 1;
 
 	if (version == 2)
 		gml = lwgeom_to_gml2(SERIALIZED_FORM(geom), srs, precision, prefix);
 	else
-		gml = lwgeom_to_gml3(SERIALIZED_FORM(geom), srs, precision, is_deegree, prefix);
+		gml = lwgeom_to_gml3(SERIALIZED_FORM(geom), srs, precision, is_deegree, is_dims, prefix);
 
 	PG_FREE_IF_COPY(geom, 1);
 
