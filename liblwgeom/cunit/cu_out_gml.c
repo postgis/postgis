@@ -278,14 +278,14 @@ static void out_gml_test_geodetic(void)
 	/* GML3 - Geodetic Point */
 	do_gml3_test(
 	    "POINT(0 1)",
-	    "<gml:Point srsName=\"urn:ogc:def:crs:EPSG:4326\"><gml:pos srsDimension=\"2\">1 0</gml:pos></gml:Point>",
-	    "urn:ogc:def:crs:EPSG:4326", 0, 1);
+	    "<gml:Point srsName=\"urn:ogc:def:crs:EPSG::4326\"><gml:pos srsDimension=\"2\">1 0</gml:pos></gml:Point>",
+	    "urn:ogc:def:crs:EPSG::4326", 0, 1);
 
 	/* GML3 - 3D Geodetic Point */
 	do_gml3_test(
 	    "POINT(0 1 2)",
-	    "<gml:Point srsName=\"urn:ogc:def:crs:EPSG:4326\"><gml:pos srsDimension=\"3\">1 0 2</gml:pos></gml:Point>",
-	    "urn:ogc:def:crs:EPSG:4326", 0, 1);
+	    "<gml:Point srsName=\"urn:ogc:def:crs:EPSG::4326\"><gml:pos srsDimension=\"3\">1 0 2</gml:pos></gml:Point>",
+	    "urn:ogc:def:crs:EPSG::4326", 0, 1);
 }
 
 

@@ -32,7 +32,7 @@ Datum LWGEOM_asSVG(PG_FUNCTION_ARGS);
  * Require valid spatial_ref_sys table entry
  *
  * Could return SRS as short one (i.e EPSG:4326)
- * or as long one: (i.e urn:ogc:def:crs:EPSG:4326)
+ * or as long one: (i.e urn:ogc:def:crs:EPSG::4326)
  */
 char * getSRSbySRID(int SRID, bool short_crs)
 {
@@ -51,7 +51,7 @@ char * getSRSbySRID(int SRID, bool short_crs)
 		sprintf(query, "SELECT auth_name||':'||auth_srid \
 		        FROM spatial_ref_sys WHERE srid='%d'", SRID);
 	else
-		sprintf(query, "SELECT 'urn:ogc:def:crs:'||auth_name||':'||auth_srid \
+		sprintf(query, "SELECT 'urn:ogc:def:crs:'||auth_name||'::'||auth_srid \
 		        FROM spatial_ref_sys WHERE srid='%d'", SRID);
 
 	err = SPI_exec(query, 1);

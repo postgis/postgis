@@ -6,7 +6,7 @@ gml_version_02|<gml:Point srsName="EPSG:4326"><gml:pos srsDimension="2">1 1</gml
 ERROR:  Only GML 2 and GML 3 are supported
 ERROR:  Only GML 2 and GML 3 are supported
 gml_option_01|<gml:Point srsName="EPSG:4326"><gml:coordinates>1,1</gml:coordinates></gml:Point>
-gml_option_02|<gml:Point srsName="urn:ogc:def:crs:EPSG:4326"><gml:pos srsDimension="2">1 1</gml:pos></gml:Point>
+gml_option_02|<gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos srsDimension="2">1 1</gml:pos></gml:Point>
 gml_deegree_01|<gml:Point srsName="EPSG:4326"><gml:pos srsDimension="2">1 2</gml:pos></gml:Point>
 gml_deegree_02|<gml:Point srsName="EPSG:4326"><gml:coordinates>1,2</gml:coordinates></gml:Point>
 gml_deegree_03|<gml:Point srsName="EPSG:4326"><gml:pos srsDimension="2">2 1</gml:pos></gml:Point>
@@ -43,7 +43,7 @@ ERROR:  Only GeoJSON 1 is supported
 ERROR:  Only GeoJSON 1 is supported
 geojson_crs_01|{"type":"Point","crs":{"type":"name","properties":{"name":"EPSG:4326"}},"coordinates":[1,1]}
 geojson_crs_02|{"type":"Point","coordinates":[1,1]}
-geojson_crs_03|{"type":"Point","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG:4326"}},"coordinates":[1,1]}
+geojson_crs_03|{"type":"Point","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"coordinates":[1,1]}
 geojson_crs_04|{"type":"Point","coordinates":[1,1]}
 ERROR:  SRID 1 unknown in spatial_ref_sys table
 ERROR:  SRID 1 unknown in spatial_ref_sys table
@@ -60,10 +60,10 @@ geojson_options_06|{"type":"LineString","crs":{"type":"name","properties":{"name
 geojson_options_07|{"type":"LineString","bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
 geojson_options_08|{"type":"LineString","crs":{"type":"name","properties":{"name":"EPSG:4326"}},"bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
 geojson_options_09|{"type":"LineString","coordinates":[[1,1],[2,2],[3,3],[4,4]]}
-geojson_options_10|{"type":"LineString","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG:4326"}},"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
+geojson_options_10|{"type":"LineString","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
 geojson_options_11|{"type":"LineString","bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
-geojson_options_12|{"type":"LineString","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG:4326"}},"bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
+geojson_options_12|{"type":"LineString","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
 geojson_options_13|{"type":"LineString","coordinates":[[1,1],[2,2],[3,3],[4,4]]}
-geojson_options_14|{"type":"LineString","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG:4326"}},"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
+geojson_options_14|{"type":"LineString","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
 geojson_options_15|{"type":"LineString","bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
-geojson_options_16|{"type":"LineString","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG:4326"}},"bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
+geojson_options_16|{"type":"LineString","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
