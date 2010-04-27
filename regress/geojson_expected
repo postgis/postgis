@@ -11,9 +11,9 @@ crs_01|{"type":"Point","crs":{"type":"name","properties":{"name":"EPSG:4326"}},"
 crs_02|{"type":"Point","coordinates":[1,1]}
 crs_03|{"type":"Point","crs":{"type":"name","properties":{"name":"EPSG:27572"}},"coordinates":[600000,2430000]}
 ERROR:  SRID 100000 unknown in spatial_ref_sys table
-crs_05|{"type":"Point","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG:4326"}},"coordinates":[1,1]}
+crs_05|{"type":"Point","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"coordinates":[1,1]}
 crs_06|{"type":"Point","coordinates":[1,1]}
-crs_07|{"type":"Point","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG:27572"}},"coordinates":[600000,2430000]}
+crs_07|{"type":"Point","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::27572"}},"coordinates":[600000,2430000]}
 bbox_01|{"type":"LineString","coordinates":[[1,1],[2,2],[3,3],[4,4]]}
 bbox_02|{"type":"LineString","bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
 bbox_03|{"type":"LineString","bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
@@ -27,13 +27,13 @@ options_06|{"type":"LineString","crs":{"type":"name","properties":{"name":"EPSG:
 options_07|{"type":"LineString","bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
 options_08|{"type":"LineString","crs":{"type":"name","properties":{"name":"EPSG:4326"}},"bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
 options_09|{"type":"LineString","coordinates":[[1,1],[2,2],[3,3],[4,4]]}
-options_10|{"type":"LineString","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG:4326"}},"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
+options_10|{"type":"LineString","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
 options_10|{"type":"LineString","bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
-options_11|{"type":"LineString","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG:4326"}},"bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
+options_11|{"type":"LineString","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
 options_12|{"type":"LineString","coordinates":[[1,1],[2,2],[3,3],[4,4]]}
-options_13|{"type":"LineString","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG:4326"}},"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
+options_13|{"type":"LineString","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
 options_14|{"type":"LineString","bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
-options_15|{"type":"LineString","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG:4326"}},"bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
+options_15|{"type":"LineString","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
 line_01|{"type":"LineString","coordinates":[[3429562.6,5799490.68],[3429750.99,5799199.87],[3429825.45,5799078.39],[3429901.8,5798961.45],[3429995.54,5798822.93],[3430072.89,5798719.46],[3430216,5798558.95],[3430272.08,5798489.33],[3430393.87,5798328.51],[3430463.53,5798251.11],[3430532.22,5798190.16],[3430591.24,5798149.53],[3430667.67,5798108.9],[3430723.78,5798088.58],[3430797.33,5798067.95],[3430857.34,5798056.34],[3430912.52,5798051.5],[3430961.89,5798048.59],[3431052.88,5798053.43],[3431159.36,5798059.24],[3431218.41,5798061.18],[3431366.56,5798056.09],[3431474.07,5798044.47],[3431568.02,5798028.97],[3431644.53,5798012.51]]}
 line_02|{"type":"LineString","coordinates":[[3429563,5799491],[3429751,5799200],[3429825,5799078],[3429902,5798961],[3429996,5798823],[3430073,5798719],[3430216,5798559],[3430272,5798489],[3430394,5798329],[3430464,5798251],[3430532,5798190],[3430591,5798150],[3430668,5798109],[3430724,5798089],[3430797,5798068],[3430857,5798056],[3430913,5798052],[3430962,5798049],[3431053,5798053],[3431159,5798059],[3431218,5798061],[3431367,5798056],[3431474,5798044],[3431568,5798029],[3431645,5798013]]}
 line_03|{"type":"LineString","bbox":[3429563,5798013,3431645,5799491],"coordinates":[[3429563,5799491],[3429751,5799200],[3429825,5799078],[3429902,5798961],[3429996,5798823],[3430073,5798719],[3430216,5798559],[3430272,5798489],[3430394,5798329],[3430464,5798251],[3430532,5798190],[3430591,5798150],[3430668,5798109],[3430724,5798089],[3430797,5798068],[3430857,5798056],[3430913,5798052],[3430962,5798049],[3431053,5798053],[3431159,5798059],[3431218,5798061],[3431367,5798056],[3431474,5798044],[3431568,5798029],[3431645,5798013]]}

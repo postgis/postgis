@@ -7346,7 +7346,7 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 				</listitem>
 
 				<listitem>
-				  <para>4: GeoJSON Long CRS (e.g urn:ogc:def:crs:EPSG:4326)</para>
+				  <para>4: GeoJSON Long CRS (e.g urn:ogc:def:crs:EPSG::4326)</para>
 				</listitem>
 			  </itemizedlist>
 			</para>
@@ -7445,7 +7445,7 @@ st_asgeojson
 								</listitem>
 
 								<listitem>
-								  <para>1: GML Long CRS (e.g urn:ogc:def:crs:EPSG:4326)</para>
+								  <para>1: GML Long CRS (e.g urn:ogc:def:crs:EPSG::4326)</para>
 								</listitem>
 
 								<listitem>
@@ -7478,7 +7478,7 @@ st_asgeojson
 		<programlisting><![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('POINT(5.234234233242 6.34534534534)',4326), 5, 17);
 			st_asgml
 			--------
-		<gml:Point srsName="urn:ogc:def:crs:EPSG:4326"><gml:pos>6.34535 5.23423</gml:pos></gml:Point>]]>
+		<gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>6.34535 5.23423</gml:pos></gml:Point>]]>
 			</programlisting>
 
 	  </refsection>
