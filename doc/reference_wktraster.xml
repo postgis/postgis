@@ -1860,14 +1860,31 @@ FROM (SELECT ST_SetRotation(rast,0.1,0.1) As rast
 				reverse of a GROUP BY in that it creates new rows. For example it
 				can be used to expand a single raster into multiple POLYGONS/MULTIPOLYGONS.</para>
 	
-				<para>Availability: Requires GDAL 1.6 or higher.</para>
+				<para>Availability: Requires GDAL 1.6.1 or higher.</para>
 				<note><para>Still under development and testing.</para></note>
 		  </refsection>
 	
 		  <refsection>
 			<title>Examples</title>
-		<programlisting><!-- TODO: need examples --> 
-			Forthcoming
+		<programlisting>SELECT val, ST_AsText(geom) As geomwkt
+FROM (
+SELECT (ST_DumpAsPolygons(rast)).*
+FROM dummy_rast 
+WHERE rid = 2
+) As foo
+WHERE val BETWEEN 249 and 251
+ORDER BY val;
+
+ val |                                                       geomwkt
+-----+--------------------------------------------------------------------------
+ 249 | POLYGON((3427927.95 5793243.95,3427927.95 5793243.85,3427928 5793243.85,
+ 		3427928 5793243.95,3427927.95 5793243.95))
+ 250 | POLYGON((3427927.75 5793243.9,3427927.75 5793243.85,3427927.8 5793243.85,
+ 		3427927.8 5793243.9,3427927.75 5793243.9))
+ 250 | POLYGON((3427927.8 5793243.8,3427927.8 5793243.75,3427927.85 5793243.75,
+ 		3427927.85 5793243.8, 3427927.8 5793243.8))
+ 251 | POLYGON((3427927.75 5793243.85,3427927.75 5793243.8,3427927.8 5793243.8,
+ 		3427927.8 5793243.85,3427927.75 5793243.85))
 		</programlisting>
 		  </refsection>
 		  <refsection>
