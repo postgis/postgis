@@ -466,95 +466,6 @@ WHERE rid = 2;
 			</refsection>
 		</refentry>
 		
-		<refentry id="RT_ST_BandPixelType">
-			<refnamediv>
-				<refname>ST_BandPixelType</refname>
-				<refpurpose>Returns the type of pixel for given band.</refpurpose>
-			</refnamediv>
-		
-			<refsynopsisdiv>
-				<funcsynopsis>
-				  <funcprototype>
-					<funcdef>text <function>ST_BandPixelType</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
-				  </funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-		
-			<refsection>
-				<title>Description</title>
-				
-				<para>Returns the value that represents no data for the band</para>
-				<para>Pixel Types supported are as follows:
-					<itemizedlist>
-						<listitem>
-						  <para>1BB -  1-bit boolean</para>
-						</listitem>
-						
-						<listitem>
-						  <para>2BUI - 2-bit unsigned integer</para>
-						</listitem>
-		
-						<listitem>
-						  <para>4BUI - 4-bit unsigned integer </para>
-						</listitem>
-		
-						<listitem>
-						  <para>8BSI - 8-bit signed integer </para>
-						</listitem>
-						<listitem>
-						  <para>8BUI - 8-bit unsigned integer</para>
-						</listitem>
-						<listitem>
-						  <para>16BSI - 16-bit signed integer</para>
-						</listitem>
-						<listitem>
-						  <para>16BUI - 16-bit unsigned integer</para>
-						</listitem>
-						<listitem>
-						  <para>16BUI - 16-bit unsigned integer</para>
-						</listitem>
-						<listitem>
-						  <para>32BSI - 32-bit signed integer</para>
-						</listitem>
-						<listitem>
-						  <para>32BUI - 32-bit unsigned integer</para>
-						</listitem>
-						<listitem>
-						  <para>16BF - 16-bit float</para>
-						</listitem>
-						<listitem>
-						  <para>32BF - 32-bit float</para>
-						</listitem>
-						<listitem>
-						  <para>64BF - 64-bit float</para>
-						</listitem>
-					</itemizedlist>
-				</para>
-			</refsection>
-				
-			<refsection>
-				<title>Examples</title>
-				
-					<programlisting>SELECT ST_BandPixelType(rast,1) As btype1, 
-    ST_BandPixelType(rast,2) As btype2, ST_BandPixelType(rast,3) As btype3
-FROM dummy_rast
-WHERE rid = 2;
-
- btype1 | btype2 | btype3
---------+--------+--------
- 8BUI   | 8BUI   | 8BUI
-				</programlisting>
-			
-			</refsection>
-
-			<refsection>
-				<title>See Also</title>
-				<para><xref linkend="RT_ST_NumBands" /></para>
-			</refsection>
-		</refentry>
-		
 		<refentry id="RT_ST_Box2D">
 			<refnamediv>
 				<refname>ST_Box2D</refname>
@@ -1324,6 +1235,177 @@ rastwidth
 		</refentry>
 	</sect1>
 	
+	<sect1 id="RasterBand_Accessors">
+		<title>Raster Band Accessors</title>
+		<refentry id="RT_ST_BandHasNoDataValue">
+			<refnamediv>
+				<refname>ST_BandHasNoDataValue</refname>
+				<refpurpose>Returns whether or not a band has a value that should be considered no data.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>boolean <function>ST_BandHasNoDataValue</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns true or false whether or not a band has a value that should be considered no data.</para>
+				</refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>-- change just first band no data value
+SELECT ST_BandHasNoDataValue(rast,1)  As hasnodataval
+FROM dummy_rast
+WHERE rid = 2;
+
+hasnodataval
+------------
+f
+					</programlisting>
+			
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_SetBandNoDataValue" />,, <xref linkend="RT_ST_BandNoDataValue" />,<xref linkend="RT_ST_SetBandNoDataValue" /></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_BandPath">
+			<refnamediv>
+				<refname>ST_BandPath</refname>
+				<refpurpose>Returns system file path to a band stored in file system.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>text <function>ST_BandPath</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns system file path to a band.  Throws an error if called with an in db band.</para>
+				</refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting><!-- TODO: -->
+					</programlisting>
+			
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_BandPixelType">
+			<refnamediv>
+				<refname>ST_BandPixelType</refname>
+				<refpurpose>Returns the type of pixel for given band.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>text <function>ST_BandPixelType</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the value that represents no data for the band</para>
+				<para>Pixel Types supported are as follows:
+					<itemizedlist>
+						<listitem>
+						  <para>1BB -  1-bit boolean</para>
+						</listitem>
+						
+						<listitem>
+						  <para>2BUI - 2-bit unsigned integer</para>
+						</listitem>
+		
+						<listitem>
+						  <para>4BUI - 4-bit unsigned integer </para>
+						</listitem>
+		
+						<listitem>
+						  <para>8BSI - 8-bit signed integer </para>
+						</listitem>
+						<listitem>
+						  <para>8BUI - 8-bit unsigned integer</para>
+						</listitem>
+						<listitem>
+						  <para>16BSI - 16-bit signed integer</para>
+						</listitem>
+						<listitem>
+						  <para>16BUI - 16-bit unsigned integer</para>
+						</listitem>
+						<listitem>
+						  <para>16BUI - 16-bit unsigned integer</para>
+						</listitem>
+						<listitem>
+						  <para>32BSI - 32-bit signed integer</para>
+						</listitem>
+						<listitem>
+						  <para>32BUI - 32-bit unsigned integer</para>
+						</listitem>
+						<listitem>
+						  <para>16BF - 16-bit float</para>
+						</listitem>
+						<listitem>
+						  <para>32BF - 32-bit float</para>
+						</listitem>
+						<listitem>
+						  <para>64BF - 64-bit float</para>
+						</listitem>
+					</itemizedlist>
+				</para>
+			</refsection>
+				
+			<refsection>
+				<title>Examples</title>
+				
+					<programlisting>SELECT ST_BandPixelType(rast,1) As btype1, 
+    ST_BandPixelType(rast,2) As btype2, ST_BandPixelType(rast,3) As btype3
+FROM dummy_rast
+WHERE rid = 2;
+
+ btype1 | btype2 | btype3
+--------+--------+--------
+ 8BUI   | 8BUI   | 8BUI
+				</programlisting>
+			
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_NumBands" /></para>
+			</refsection>
+		</refentry>
+		
+	</sect1>
 	<sect1 id="Raster_Editors">
 		<title>Raster Editors</title>
 		<refentry id="RT_ST_SetBandHasNoDataValue">
@@ -1335,7 +1417,7 @@ rastwidth
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>integer <function>ST_SetBandHasNoDataValue</function></funcdef>
+					<funcdef>raster <function>ST_SetBandHasNoDataValue</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
 					<paramdef><type>boolean </type> <parameter>has_nodatavalue</parameter></paramdef>
@@ -1386,7 +1468,7 @@ WHERE rid = 2;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the value that represents no data for the band.  This will effect ST_Polygon and ST_ConvexHull results.</para>
+				<para>Sets the value that represents no data for the band.  This will effect ST_Polygon and ST_ConvexHull results.</para>
 				</refsection>
 				
 				<refsection>
@@ -1866,7 +1948,7 @@ FROM (SELECT ST_SetRotation(rast,0.1,0.1) As rast
 	
 		  <refsection>
 			<title>Examples</title>
-		<programlisting>SELECT val, ST_AsText(geom) As geomwkt
+			<programlisting>SELECT val, ST_AsText(geom) As geomwkt
 FROM (
 SELECT (ST_DumpAsPolygons(rast)).*
 FROM dummy_rast 
@@ -1885,7 +1967,7 @@ ORDER BY val;
  		3427927.85 5793243.8, 3427927.8 5793243.8))
  251 | POLYGON((3427927.75 5793243.85,3427927.75 5793243.8,3427927.8 5793243.8,
  		3427927.8 5793243.85,3427927.75 5793243.85))
-		</programlisting>
+			</programlisting>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
