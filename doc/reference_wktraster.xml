@@ -383,7 +383,7 @@ UPDATE raster_columns SET extent = (SELECT ST_Union(ST_Envelope(rast)) FROM myra
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>timestamp <function>PostGIS_Raster_Lib_Build_Date</function></funcdef>
+			<funcdef>text <function>PostGIS_Raster_Lib_Build_Date</function></funcdef>
 
 			<paramdef></paramdef>
 		  </funcprototype>
