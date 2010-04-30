@@ -506,49 +506,6 @@ VALUES(3, ST_MakeEmptyRaster( 100, 100, 0.0005, 0.0005, 1, 1, 0, 0, 4326) )
   	</sect1>
 	<sect1 id="Raster_Accessors">
 		<title>Raster Accessors</title>
-		<refentry id="RT_ST_BandNoDataValue">
-			<refnamediv>
-				<refname>ST_BandNoDataValue</refname>
-				<refpurpose>Returns the value in a given band that represents no data.</refpurpose>
-			</refnamediv>
-		
-			<refsynopsisdiv>
-				<funcsynopsis>
-				  <funcprototype>
-					<funcdef>integer <function>ST_BandNoDataValue</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
-				  </funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-		
-			<refsection>
-				<title>Description</title>
-				
-				<para>Returns the value that represents no data for the band</para>
-				</refsection>
-				
-				<refsection>
-					<title>Examples</title>
-				
-					<programlisting>SELECT ST_BandNoDataValue(rast,1) As bnval1, 
-    ST_BandNoDataValue(rast,2) As bnval2, ST_BandNoDataValue(rast,3) As bnval3
-FROM dummy_rast
-WHERE rid = 2;
-
- bnval1 | bnval2 | bnval3
---------+--------+--------
-      0 |      0 |      0
-				</programlisting>
-			
-			</refsection>
-
-			<refsection>
-				<title>See Also</title>
-				<para><xref linkend="RT_ST_NumBands" /></para>
-			</refsection>
-		</refentry>
-		
 		<refentry id="RT_ST_Box2D">
 			<refnamediv>
 				<refname>ST_Box2D</refname>
@@ -1360,6 +1317,49 @@ f
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="RT_ST_SetBandNoDataValue" />,, <xref linkend="RT_ST_BandNoDataValue" />,<xref linkend="RT_ST_SetBandNoDataValue" /></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_BandNoDataValue">
+			<refnamediv>
+				<refname>ST_BandNoDataValue</refname>
+				<refpurpose>Returns the value in a given band that represents no data.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>integer <function>ST_BandNoDataValue</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the value that represents no data for the band</para>
+				</refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>SELECT ST_BandNoDataValue(rast,1) As bnval1, 
+    ST_BandNoDataValue(rast,2) As bnval2, ST_BandNoDataValue(rast,3) As bnval3
+FROM dummy_rast
+WHERE rid = 2;
+
+ bnval1 | bnval2 | bnval3
+--------+--------+--------
+      0 |      0 |      0
+				</programlisting>
+			
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_NumBands" /></para>
 			</refsection>
 		</refentry>
 		
