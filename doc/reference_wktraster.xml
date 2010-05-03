@@ -1398,7 +1398,7 @@ WHERE
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_NumBands" />, <xref linkend="RT_ST_PixelSizeX" />,
+				<para><xref linkend="RT_ST_DumpAsPolygons" />, <xref linkend="RT_ST_NumBands" />, <xref linkend="RT_ST_PixelSizeX" />,
 					, <xref linkend="RT_ST_PixelSizeY" />, <xref linkend="RT_ST_UpperLeftX" />, 
 					<xref linkend="RT_ST_UpperLeftY" />, <xref linkend="RT_ST_SRID" />, <xref linkend="ST_AsText" />,
 					, <xref linkend="ST_Point" />, <xref linkend="ST_MakeEnvelope" />, 
