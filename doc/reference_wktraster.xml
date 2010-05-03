@@ -506,98 +506,6 @@ VALUES(3, ST_MakeEmptyRaster( 100, 100, 0.0005, 0.0005, 1, 1, 0, 0, 4326) )
   	</sect1>
 	<sect1 id="Raster_Accessors">
 		<title>Raster Accessors</title>
-		<refentry id="RT_ST_Box2D">
-			<refnamediv>
-				<refname>ST_Box2D</refname>
-				<refpurpose>Returns the box 2d representation of the enclosing box of the raster</refpurpose>
-			</refnamediv>
-		
-			<refsynopsisdiv>
-				<funcsynopsis>
-				  <funcprototype>
-					<funcdef>box2d <function>ST_Box2D</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-				  </funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-		
-			<refsection>
-				<title>Description</title>
-				
-				<para>Returns the box representing the extent of the raster.</para>
-				<para>The polygon is defined by the corner points of the bounding box
-			((<varname>MINX</varname>, <varname>MINY</varname>),
-			(<varname>MAXX</varname>, <varname>MAXY</varname>))</para>
-			</refsection>
-				
-			<refsection>
-				<title>Examples</title>
-			
-				<programlisting>SELECT rid, ST_Box2D(rast) As rastbox
-FROM dummy_rast;
-
-rid |        rastbox
-----+-------------------------------------------------
-1   | BOX(0.5 0.5,20.5 60.5)
-2   | BOX(3427927.75 5793243.5,3427928 5793244)
-			</programlisting>
-			
-			</refsection>
-
-			<refsection>
-				<title>See Also</title>
-				<para><xref linkend="RT_ST_Envelope" /></para>
-			</refsection>
-		</refentry>
-		
-		<refentry id="RT_ST_Envelope">
-			<refnamediv>
-				<refname>ST_Envelope</refname>
-				<refpurpose>Returns the polygon representation of the extent of the raster.</refpurpose>
-			</refnamediv>
-		
-			<refsynopsisdiv>
-				<funcsynopsis>
-				  <funcprototype>
-					<funcdef>geometry <function>ST_Envelope</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-				  </funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-		
-			<refsection>
-				<title>Description</title>
-				
-				<para>Returns the polygon representation of the extent of the raster in spatial coordinate units defiend by srid. It is a float8 minimum bounding box represented as a polygon. </para>
-				<para>The polygon is defined by the corner points of the bounding box
-			((<varname>MINX</varname>, <varname>MINY</varname>),
-			(<varname>MINX</varname>, <varname>MAXY</varname>),
-			(<varname>MAXX</varname>, <varname>MAXY</varname>),
-			(<varname>MAXX</varname>, <varname>MINY</varname>),
-			(<varname>MINX</varname>, <varname>MINY</varname>))</para>
-				</refsection>
-				
-				<refsection>
-					<title>Examples</title>
-				
-					<programlisting>SELECT rid, ST_AsText(ST_Envelope(rast)) As envgeomwkt
-FROM dummy_rast;
-
- rid |                                         envgeomwkt
------+--------------------------------------------------------------------
-   1 | POLYGON((0 0,20 0,20 60,0 60,0 0))
-   2 | POLYGON((3427927 5793243,3427928 5793243,
-   		3427928 5793244,3427927 5793244, 3427927 5793243))
-				</programlisting>
-			
-			</refsection>
-
-			<refsection>
-				<title>See Also</title>
-				<para><xref linkend="ST_Envelope" />, <xref linkend="ST_AsText" />, <xref linkend="RT_ST_SRID" /></para>
-			</refsection>
-		</refentry>
-		
 		<refentry id="RT_ST_GeoReference">
 			<refnamediv>
 				<refname>ST_GeoReference</refname>
@@ -1065,177 +973,6 @@ FROM dummy_rast;
 			</refsection>
 		</refentry>
 		
-		<refentry id="RT_ST_Value">
-			<refnamediv>
-				<refname>ST_Value</refname>
-				<refpurpose>Returns the value of a given band in a given columnx, rowy pixel. Band numbers start at 1.</refpurpose>
-			</refnamediv>
-		
-			<refsynopsisdiv>
-				<funcsynopsis>
-				  <funcprototype>
-					<funcdef>integer <function>ST_Value</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
-				  </funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-		
-			<refsection>
-				<title>Description</title>
-				
-				<para>Returns the value of a given band in a given columnx, rowy pixel. Band numbers start at 1.</para>
-				<note><para>Note that although the X and Ys of these are not in coordinates of the spatial system, 
-						you can get that by the following relationship.</para>
-					<para>Coordinate upper left ppoint of a row column 
-						is:
-					ST_SetSRID(ST_Point(ST_UpperLeftX(rast) + ST_PixelSizeX(rast)*columnx, ST_UpperLeftY(rast) + ST_PixelSizeY(rast)*columny), ST_SRID(rast))
-					</para>
-					<para>If you want the pixel box instead of the upper left point, you can use the ST_MakeEnvelope function and
-						translate it every x,y.</para>
-				<para>Also note that many of these examples particular the intersection example can be more 
-					simply done with the planned functions that are not currently available.</para>
-					
-					<para>If you are looking for a function that will take a geometry point and return a pixel value, this is in the works, for now
-						you can use a user contributed function <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiwktrasterfunctions">upgis_ptval</ulink>
-					</para>
-				</note>
-				
-				</refsection>
-				
-				<refsection>
-					<title>Examples</title>
-				
-					<programlisting>
-SELECt rid, ST_Value(rast, 1,1,1) As b1pval, 
-    ST_Value(rast, 2,1,1) As b2pval, ST_Value(rast, 3,1,1) As b3pval
-FROM dummy_rast
-WHERE rid=2;
-
- rid | b1pval | b2pval | b3pval
------+--------+--------+--------
-   2 |    253 |     78 |     70
-				</programlisting>
-				
-				<programlisting>
---- Get all values in bands 1,2,3 of each pixel --
-SELECT x, y, ST_Value(rast, 1, x, y) As b1val, 
-	ST_Value(rast, 2, x, y) As b2val, ST_Value(rast, 3, x, y) As b3val
-FROM dummy_rast CROSS JOIN
-generate_series(1,1000) As x CROSS JOIN generate_series(1,1000) As y
-WHERE rid =  2 AND x &lt;= ST_Width(rast) AND y &lt;= ST_Height(rast);
-
- x | y | b1val | b2val | b3val
----+---+-------+-------+-------
- 1 | 1 |   253 |    78 |    70
- 1 | 2 |   253 |    96 |    80
- 1 | 3 |   250 |    99 |    90
- 1 | 4 |   251 |    89 |    77
- 1 | 5 |   252 |    79 |    62
- 2 | 1 |   254 |    98 |    86
- 2 | 2 |   254 |   118 |   108
- :
- :
-				</programlisting>
-				
-				<programlisting>
---- Get all values in bands 1,2,3 of each pixel same as above but returning the upper left point point of each pixel --
-SELECT ST_AsText(ST_SetSRID(
-	ST_Point(ST_UpperLeftX(rast) + ST_PixelSizeX(rast)*x, 
-		ST_UpperLeftY(rast) + ST_PixelSizeY(rast)*y), 
-		ST_SRID(rast))) As uplpt
-    , ST_Value(rast, 1, x, y) As b1val, 
-	ST_Value(rast, 2, x, y) As b2val, ST_Value(rast, 3, x, y) As b3val
-FROM dummy_rast CROSS JOIN
-generate_series(1,1000) As x CROSS JOIN generate_series(1,1000) As y
-WHERE rid =  2 AND x &lt;= ST_Width(rast) AND y &lt;= ST_Height(rast);
-
-            uplpt            | b1val | b2val | b3val
------------------------------+-------+-------+-------
- POINT(3427929.25 5793245.5) |   253 |    78 |    70
- POINT(3427929.25 5793247)   |   253 |    96 |    80
- POINT(3427929.25 5793248.5) |   250 |    99 |    90
-:
-				</programlisting>
-				<programlisting>
---- Get a polygon formed by union of all pixels 
-	that fall in a particular value range and intersect particular polygon --
-SELECT ST_AsText(ST_Union(pixpolyg)) As shadow
-FROM (SELECT ST_Translate(ST_MakeEnvelope(
-		ST_UpperLeftX(rast), ST_UpperLeftY(rast), 
-			ST_UpperLeftX(rast) + ST_PixelSizeX(rast),
-			ST_UpperLeftY(rast) + ST_PixelSizeY(rast), 0
-			), ST_PixelSizeX(rast)*x, ST_PixelSizeY(rast)*y
-		) As pixpolyg, ST_Value(rast, 2, x, y) As b2val
-	FROM dummy_rast CROSS JOIN
-generate_series(1,1000) As x CROSS JOIN generate_series(1,1000) As y
-WHERE rid =  2 
-	AND x &lt;= ST_Width(rast) AND y &lt;= ST_Height(rast)) As foo
-WHERE  
-	ST_Intersects(
-		pixpolyg, 
-		ST_GeomFromText('POLYGON((3427928 5793244,3427927.75 5793243.75,3427928 5793243.75,3427928 5793244))',0)
-		) AND b2val != 254;
-
-
-		shadow
-------------------------------------------------------------------------------------
- MULTIPOLYGON(((3427928 5793243.9,3427928 5793243.85,3427927.95 5793243.85,3427927.95 5793243.9,
- 3427927.95 5793243.95,3427928 5793243.95,3427928.05 5793243.95,3427928.05 5793243.9,3427928 5793243.9)),((3427927.95 5793243.9,3427927.95 579324
-3.85,3427927.9 5793243.85,3427927.85 5793243.85,3427927.85 5793243.9,3427927.9 5793243.9,3427927.9 5793243.95,
-3427927.95 5793243.95,3427927.95 5793243.9)),((3427927.85 5793243.75,3427927.85 5793243.7,3427927.8 5793243.7,3427927.8 5793243.75
-,3427927.8 5793243.8,3427927.8 5793243.85,3427927.85 5793243.85,3427927.85 5793243.8,3427927.85 5793243.75)),
-((3427928.05 5793243.75,3427928.05 5793243.7,3427928 5793243.7,3427927.95 5793243.7,3427927.95 5793243.75,3427927.95 5793243.8,3427
-927.95 5793243.85,3427928 5793243.85,3427928 5793243.8,3427928.05 5793243.8,
-3427928.05 5793243.75)),((3427927.95 5793243.75,3427927.95 5793243.7,3427927.9 5793243.7,3427927.85 5793243.7,
-3427927.85 5793243.75,3427927.85 5793243.8,3427927.85 5793243.85,3427927.9 5793243.85,
-3427927.95 5793243.85,3427927.95 5793243.8,3427927.95 5793243.75)))
-				</programlisting>
-				
-				<programlisting>
---- Checking all the pixels of a large raster tile can take a long time.
---- You can dramatically improve speed at some lose of precision by orders of magnitude 
---  by sampling pixels using the step optional parameter of generate_series.  
---  This next example does the same as previous but by checking 1 for every 4 (2x2) pixels and putting in the last checked
---  putting in the checked pixel as the value for subsequent 4
-	
-SELECT ST_AsText(ST_Union(pixpolyg)) As shadow
-FROM (SELECT ST_Translate(ST_MakeEnvelope(
-		ST_UpperLeftX(rast), ST_UpperLeftY(rast), 
-			ST_UpperLeftX(rast) + ST_PixelSizeX(rast)*2,
-			ST_UpperLeftY(rast) + ST_PixelSizeY(rast)*2, 0
-			), ST_PixelSizeX(rast)*x, ST_PixelSizeY(rast)*y
-		) As pixpolyg, ST_Value(rast, 2, x, y) As b2val
-	FROM dummy_rast CROSS JOIN
-generate_series(1,1000,2) As x CROSS JOIN generate_series(1,1000,2) As y
-WHERE rid =  2 
-	AND x &lt;= ST_Width(rast)  AND y &lt;= ST_Height(rast)  ) As foo
-WHERE  
-	ST_Intersects(
-		pixpolyg, 
-		ST_GeomFromText('POLYGON((3427928 5793244,3427927.75 5793243.75,3427928 5793243.75,3427928 5793244))',0)
-		) AND b2val != 254;
-
-		shadow
-------------------------------------------------------------------------------------
- MULTIPOLYGON(((3427927.9 5793243.85,3427927.8 5793243.85,3427927.8 5793243.95,
- 3427927.9 5793243.95,3427928 5793243.95,3427928.1 5793243.95,3427928.1 5793243.85,3427928 5793243.85,3427927.9 5793243.85)),
- ((3427927.9 5793243.65,3427927.8 5793243.65,3427927.8 5793243.75,3427927.8 5793243.85,3427927.9 5793243.85,
- 3427928 5793243.85,3427928 5793243.75,3427928.1 5793243.75,3427928.1 5793243.65,3427928 5793243.65,3427927.9 5793243.65)))
-				</programlisting>
-			</refsection>
-
-			<refsection>
-				<title>See Also</title>
-				<para><xref linkend="RT_ST_NumBands" />, <xref linkend="RT_ST_PixelSizeX" />,
-					, <xref linkend="RT_ST_PixelSizeY" />, <xref linkend="RT_ST_UpperLeftX" />, 
-					<xref linkend="RT_ST_UpperLeftY" />, <xref linkend="RT_ST_SRID" />, <xref linkend="ST_AsText" />,
-					, <xref linkend="ST_Point" />, <xref linkend="ST_MakeEnvelope" />, 
-					<xref linkend="ST_Intersects" /></para>
-			</refsection>
-		</refentry>
 		
 		<refentry id="RT_ST_Width">
 			<refnamediv>
@@ -1493,6 +1230,183 @@ WHERE rid = 2;
 		</refentry>
 		
 	</sect1>
+	
+	<sect1 id="Raster_Pixel_Accessors">
+	    <title>Raster Pixel Accessors</title>
+	    
+	    		<refentry id="RT_ST_Value">
+			<refnamediv>
+				<refname>ST_Value</refname>
+				<refpurpose>Returns the value of a given band in a given columnx, rowy pixel. Band numbers start at 1.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>integer <function>ST_Value</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the value of a given band in a given columnx, rowy pixel. Band numbers start at 1.</para>
+				<note><para>Note that although the X and Ys of these are not in coordinates of the spatial system, 
+						you can get that by the following relationship.</para>
+					<para>Coordinate upper left ppoint of a row column 
+						is:
+					ST_SetSRID(ST_Point(ST_UpperLeftX(rast) + ST_PixelSizeX(rast)*columnx, ST_UpperLeftY(rast) + ST_PixelSizeY(rast)*columny), ST_SRID(rast))
+					</para>
+					<para>If you want the pixel box instead of the upper left point, you can use the ST_MakeEnvelope function and
+						translate it every x,y.</para>
+				<para>Also note that many of these examples particular the intersection example can be more 
+					simply done with the planned functions that are not currently available.</para>
+					
+					<para>If you are looking for a function that will take a geometry point and return a pixel value, this is in the works, for now
+						you can use a user contributed function <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiwktrasterfunctions">upgis_ptval</ulink>
+					</para>
+				</note>
+				
+				</refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>
+SELECt rid, ST_Value(rast, 1,1,1) As b1pval, 
+    ST_Value(rast, 2,1,1) As b2pval, ST_Value(rast, 3,1,1) As b3pval
+FROM dummy_rast
+WHERE rid=2;
+
+ rid | b1pval | b2pval | b3pval
+-----+--------+--------+--------
+   2 |    253 |     78 |     70
+				</programlisting>
+				
+				<programlisting>
+--- Get all values in bands 1,2,3 of each pixel --
+SELECT x, y, ST_Value(rast, 1, x, y) As b1val, 
+	ST_Value(rast, 2, x, y) As b2val, ST_Value(rast, 3, x, y) As b3val
+FROM dummy_rast CROSS JOIN
+generate_series(1,1000) As x CROSS JOIN generate_series(1,1000) As y
+WHERE rid =  2 AND x &lt;= ST_Width(rast) AND y &lt;= ST_Height(rast);
+
+ x | y | b1val | b2val | b3val
+---+---+-------+-------+-------
+ 1 | 1 |   253 |    78 |    70
+ 1 | 2 |   253 |    96 |    80
+ 1 | 3 |   250 |    99 |    90
+ 1 | 4 |   251 |    89 |    77
+ 1 | 5 |   252 |    79 |    62
+ 2 | 1 |   254 |    98 |    86
+ 2 | 2 |   254 |   118 |   108
+ :
+ :
+				</programlisting>
+				
+				<programlisting>
+--- Get all values in bands 1,2,3 of each pixel same as above but returning the upper left point point of each pixel --
+SELECT ST_AsText(ST_SetSRID(
+	ST_Point(ST_UpperLeftX(rast) + ST_PixelSizeX(rast)*x, 
+		ST_UpperLeftY(rast) + ST_PixelSizeY(rast)*y), 
+		ST_SRID(rast))) As uplpt
+    , ST_Value(rast, 1, x, y) As b1val, 
+	ST_Value(rast, 2, x, y) As b2val, ST_Value(rast, 3, x, y) As b3val
+FROM dummy_rast CROSS JOIN
+generate_series(1,1000) As x CROSS JOIN generate_series(1,1000) As y
+WHERE rid =  2 AND x &lt;= ST_Width(rast) AND y &lt;= ST_Height(rast);
+
+            uplpt            | b1val | b2val | b3val
+-----------------------------+-------+-------+-------
+ POINT(3427929.25 5793245.5) |   253 |    78 |    70
+ POINT(3427929.25 5793247)   |   253 |    96 |    80
+ POINT(3427929.25 5793248.5) |   250 |    99 |    90
+:
+				</programlisting>
+				<programlisting>
+--- Get a polygon formed by union of all pixels 
+	that fall in a particular value range and intersect particular polygon --
+SELECT ST_AsText(ST_Union(pixpolyg)) As shadow
+FROM (SELECT ST_Translate(ST_MakeEnvelope(
+		ST_UpperLeftX(rast), ST_UpperLeftY(rast), 
+			ST_UpperLeftX(rast) + ST_PixelSizeX(rast),
+			ST_UpperLeftY(rast) + ST_PixelSizeY(rast), 0
+			), ST_PixelSizeX(rast)*x, ST_PixelSizeY(rast)*y
+		) As pixpolyg, ST_Value(rast, 2, x, y) As b2val
+	FROM dummy_rast CROSS JOIN
+generate_series(1,1000) As x CROSS JOIN generate_series(1,1000) As y
+WHERE rid =  2 
+	AND x &lt;= ST_Width(rast) AND y &lt;= ST_Height(rast)) As foo
+WHERE  
+	ST_Intersects(
+		pixpolyg, 
+		ST_GeomFromText('POLYGON((3427928 5793244,3427927.75 5793243.75,3427928 5793243.75,3427928 5793244))',0)
+		) AND b2val != 254;
+
+
+		shadow
+------------------------------------------------------------------------------------
+ MULTIPOLYGON(((3427928 5793243.9,3427928 5793243.85,3427927.95 5793243.85,3427927.95 5793243.9,
+ 3427927.95 5793243.95,3427928 5793243.95,3427928.05 5793243.95,3427928.05 5793243.9,3427928 5793243.9)),((3427927.95 5793243.9,3427927.95 579324
+3.85,3427927.9 5793243.85,3427927.85 5793243.85,3427927.85 5793243.9,3427927.9 5793243.9,3427927.9 5793243.95,
+3427927.95 5793243.95,3427927.95 5793243.9)),((3427927.85 5793243.75,3427927.85 5793243.7,3427927.8 5793243.7,3427927.8 5793243.75
+,3427927.8 5793243.8,3427927.8 5793243.85,3427927.85 5793243.85,3427927.85 5793243.8,3427927.85 5793243.75)),
+((3427928.05 5793243.75,3427928.05 5793243.7,3427928 5793243.7,3427927.95 5793243.7,3427927.95 5793243.75,3427927.95 5793243.8,3427
+927.95 5793243.85,3427928 5793243.85,3427928 5793243.8,3427928.05 5793243.8,
+3427928.05 5793243.75)),((3427927.95 5793243.75,3427927.95 5793243.7,3427927.9 5793243.7,3427927.85 5793243.7,
+3427927.85 5793243.75,3427927.85 5793243.8,3427927.85 5793243.85,3427927.9 5793243.85,
+3427927.95 5793243.85,3427927.95 5793243.8,3427927.95 5793243.75)))
+				</programlisting>
+				
+				<programlisting>
+--- Checking all the pixels of a large raster tile can take a long time.
+--- You can dramatically improve speed at some lose of precision by orders of magnitude 
+--  by sampling pixels using the step optional parameter of generate_series.  
+--  This next example does the same as previous but by checking 1 for every 4 (2x2) pixels and putting in the last checked
+--  putting in the checked pixel as the value for subsequent 4
+	
+SELECT ST_AsText(ST_Union(pixpolyg)) As shadow
+FROM (SELECT ST_Translate(ST_MakeEnvelope(
+		ST_UpperLeftX(rast), ST_UpperLeftY(rast), 
+			ST_UpperLeftX(rast) + ST_PixelSizeX(rast)*2,
+			ST_UpperLeftY(rast) + ST_PixelSizeY(rast)*2, 0
+			), ST_PixelSizeX(rast)*x, ST_PixelSizeY(rast)*y
+		) As pixpolyg, ST_Value(rast, 2, x, y) As b2val
+	FROM dummy_rast CROSS JOIN
+generate_series(1,1000,2) As x CROSS JOIN generate_series(1,1000,2) As y
+WHERE rid =  2 
+	AND x &lt;= ST_Width(rast)  AND y &lt;= ST_Height(rast)  ) As foo
+WHERE  
+	ST_Intersects(
+		pixpolyg, 
+		ST_GeomFromText('POLYGON((3427928 5793244,3427927.75 5793243.75,3427928 5793243.75,3427928 5793244))',0)
+		) AND b2val != 254;
+
+		shadow
+------------------------------------------------------------------------------------
+ MULTIPOLYGON(((3427927.9 5793243.85,3427927.8 5793243.85,3427927.8 5793243.95,
+ 3427927.9 5793243.95,3427928 5793243.95,3427928.1 5793243.95,3427928.1 5793243.85,3427928 5793243.85,3427927.9 5793243.85)),
+ ((3427927.9 5793243.65,3427927.8 5793243.65,3427927.8 5793243.75,3427927.8 5793243.85,3427927.9 5793243.85,
+ 3427928 5793243.85,3427928 5793243.75,3427928.1 5793243.75,3427928.1 5793243.65,3427928 5793243.65,3427927.9 5793243.65)))
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_NumBands" />, <xref linkend="RT_ST_PixelSizeX" />,
+					, <xref linkend="RT_ST_PixelSizeY" />, <xref linkend="RT_ST_UpperLeftX" />, 
+					<xref linkend="RT_ST_UpperLeftY" />, <xref linkend="RT_ST_SRID" />, <xref linkend="ST_AsText" />,
+					, <xref linkend="ST_Point" />, <xref linkend="ST_MakeEnvelope" />, 
+					<xref linkend="ST_Intersects" /></para>
+			</refsection>
+		</refentry>
+	</sect1>
+	
 	<sect1 id="Raster_Editors">
 		<title>Raster Editors</title>
 		<refentry id="RT_ST_SetBandHasNoDataValue">
@@ -1915,6 +1829,50 @@ FROM dummy_rast WHERE rid=1;
 	
 	<sect1 id="Raster_Processing">
 		<title>Raster Processing Functions</title>
+		<refentry id="RT_ST_Box2D">
+			<refnamediv>
+				<refname>ST_Box2D</refname>
+				<refpurpose>Returns the box 2d representation of the enclosing box of the raster</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>box2d <function>ST_Box2D</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the box representing the extent of the raster.</para>
+				<para>The polygon is defined by the corner points of the bounding box
+			((<varname>MINX</varname>, <varname>MINY</varname>),
+			(<varname>MAXX</varname>, <varname>MAXY</varname>))</para>
+			</refsection>
+				
+			<refsection>
+				<title>Examples</title>
+			
+				<programlisting>SELECT rid, ST_Box2D(rast) As rastbox
+FROM dummy_rast;
+
+rid |        rastbox
+----+-------------------------------------------------
+1   | BOX(0.5 0.5,20.5 60.5)
+2   | BOX(3427927.75 5793243.5,3427928 5793244)
+			</programlisting>
+			
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_Envelope" /></para>
+			</refsection>
+		</refentry>
+		
 		<refentry id="RT_ST_ConvexHull">
 			<refnamediv>
 				<refname>ST_ConvexHull</refname>
@@ -2059,6 +2017,54 @@ ORDER BY val;
 			<title>See Also</title>
 			<para><xref linkend="RT_ST_Value" /></para>
 		  </refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_Envelope">
+			<refnamediv>
+				<refname>ST_Envelope</refname>
+				<refpurpose>Returns the polygon representation of the extent of the raster.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>geometry <function>ST_Envelope</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the polygon representation of the extent of the raster in spatial coordinate units defiend by srid. It is a float8 minimum bounding box represented as a polygon. </para>
+				<para>The polygon is defined by the corner points of the bounding box
+			((<varname>MINX</varname>, <varname>MINY</varname>),
+			(<varname>MINX</varname>, <varname>MAXY</varname>),
+			(<varname>MAXX</varname>, <varname>MAXY</varname>),
+			(<varname>MAXX</varname>, <varname>MINY</varname>),
+			(<varname>MINX</varname>, <varname>MINY</varname>))</para>
+				</refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>SELECT rid, ST_AsText(ST_Envelope(rast)) As envgeomwkt
+FROM dummy_rast;
+
+ rid |                                         envgeomwkt
+-----+--------------------------------------------------------------------
+   1 | POLYGON((0 0,20 0,20 60,0 60,0 0))
+   2 | POLYGON((3427927 5793243,3427928 5793243,
+   		3427928 5793244,3427927 5793244, 3427927 5793243))
+				</programlisting>
+			
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="ST_Envelope" />, <xref linkend="ST_AsText" />, <xref linkend="RT_ST_SRID" /></para>
+			</refsection>
 		</refentry>
 	</sect1>
 	
