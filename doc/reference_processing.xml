@@ -1874,8 +1874,8 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
 	<funcsynopsis>
 	  <funcprototype>
 		<funcdef>geometry <function>ST_Split</function></funcdef>
-		<paramdef><type>geometry</type><parameter>input</parameter></paramdef>
-		<paramdef><type>geometry</type><parameter>blade</parameter></paramdef>
+		<paramdef><type>geometry</type> <parameter>input</parameter></paramdef>
+		<paramdef><type>geometry</type> <parameter>blade</parameter></paramdef>
 	  </funcprototype>
 	</funcsynopsis>
   </refsynopsisdiv>
@@ -1899,6 +1899,58 @@ should always yeld the original geometry.
 	  <refsection>
 		<title>See Also</title>
 		<para><xref linkend="ST_Union" /></para>
+	  </refsection>
+	</refentry>
+
+<refentry id="ST_MakeValid">
+  <refnamediv>
+	<refname>ST_MakeValid</refname>
+	<refpurpose>Attempts to make an invalid geometry valid w/out loosing vertices.</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+	<funcsynopsis>
+	  <funcprototype>
+		<funcdef>geometry <function>ST_MakeValid</function></funcdef>
+		<paramdef><type>geometry</type> <parameter>input</parameter></paramdef>
+	  </funcprototype>
+	</funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsection>
+	<title>Description</title>
+<para>
+The function attempts to create a valid representation of a given invalid
+geometry without loosing any of the input vertices. 
+Already-valid geometries are returned w/out further intervention.
+</para>
+
+<para>
+Supported inputs are: LINESTRINGS, MULTILINESTRINGS, POLYGONS, MULTIPOLYGONS.
+</para>
+
+<para>
+In case of full or partial dimensional collapses, the output geometry
+may be a collection of lower-to-equal dimension geometries or a
+geometry of lower dimension. 
+</para>
+
+<para>
+Single polygons may become multi-geometries in case of self-intersections.
+</para>
+
+<para>Availability: 2.0.0, requires GEOS-3.3.0 or higher.</para>
+
+<para>&Z_support;</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+		<para>
+			<xref linkend="ST_IsValid" />
+			<xref linkend="ST_CollectionExtract" />
+		</para>
 	  </refsection>
 	</refentry>
 </sect1>
