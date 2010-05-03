@@ -994,6 +994,21 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	lwgeom_in = lwgeom_deserialize(SERIALIZED_FORM(in));
 
+	switch ( TYPE_GETTYPE(lwgeom_in->type) )
+	{
+		case GEOS_LINESTRING:
+		case GEOS_POLYGON:
+		case GEOS_MULTILINESTRING:
+		case GEOS_MULTIPOLYGON:
+			break;
+
+		default:
+			lwerror("ST_MakeValid: unsupported geometry type %s",
+				lwtype_name(TYPE_GETTYPE(lwgeom_in->type)));
+			PG_RETURN_NULL();
+			break;
+	}
+
 	lwgeom_out = lwgeom_make_valid(lwgeom_in);
 	if ( ! lwgeom_out ) {
 		PG_FREE_IF_COPY(in, 0);
