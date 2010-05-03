@@ -640,14 +640,15 @@ LWGEOM_GEOS_makeValidMultiLine(const GEOSGeometry* gin)
 	GEOSGeometry* mline_out=0;
 	GEOSGeometry* mpoint_out=0;
 	GEOSGeometry* gout;
-	uint32 nlines;
+	uint32 nlines, nlines_alloc;
 	uint32 npoints=0;
-	uint32 ngeoms=0;
-	uint32 i;
+	uint32 ngeoms=0, nsubgeoms;
+	uint32 i, j;
 
 	ngeoms = GEOSGetNumGeometries(gin);
 
-	lines = lwalloc(sizeof(GEOSGeometry*)*ngeoms);
+	nlines_alloc = ngeoms;
+	lines = lwalloc(sizeof(GEOSGeometry*)*nlines_alloc);
 	points = lwalloc(sizeof(GEOSGeometry*)*ngeoms);
 
 	for (i=0; i<ngeoms; ++i)
@@ -666,6 +667,19 @@ LWGEOM_GEOS_makeValidMultiLine(const GEOSGeometry* gin)
 		else if ( GEOSGeomTypeId(vg) == GEOS_LINESTRING )
 		{
 			lines[nlines++] = vg;
+		}
+		else if ( GEOSGeomTypeId(vg) == GEOS_MULTILINESTRING )
+		{
+		  nsubgeoms=GEOSGetNumGeometries(vg); 
+		  nlines_alloc += nsubgeoms;
+		  lines = lwrealloc(lines, sizeof(GEOSGeometry*)*nlines_alloc);
+		  for (j=0; j<nsubgeoms; ++j)
+		  {
+		    const GEOSGeometry* gc = GEOSGetGeometryN(vg, j);
+		    /* NOTE: ownership of the cloned geoms will be
+		     *       taken by final collection */
+		    lines[nlines++] = GEOSGeom_clone(gc);
+		  }
 		}
 		else
 		{
