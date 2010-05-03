@@ -391,8 +391,9 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 {
 	GEOSGeom gout;
 	GEOSGeom geos_bound;
-	GEOSGeom geos_cut_edges, geos_area;
-	GEOSGeometry *vgeoms[2]; /* One for area, one for cut-edges */
+	GEOSGeom geos_cut_edges, geos_area, collapse_points;
+	GEOSGeometry *vgeoms[3]; /* One for area, one for cut-edges */
+	unsigned int nvgeoms=0;
 
 	assert (GEOSGeomTypeId(gin) == GEOS_POLYGON ||
 	        GEOSGeomTypeId(gin) == GEOS_MULTIPOLYGON);
@@ -410,13 +411,71 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 
 	/* Use noded boundaries as initial "cut" edges */
 
+
 	geos_cut_edges = LWGEOM_GEOS_nodeLines(geos_bound);
-	GEOSGeom_destroy(geos_bound); 
 	if ( NULL == geos_cut_edges )
 	{
+		GEOSGeom_destroy(geos_bound); 
 		lwnotice("LWGEOM_GEOS_nodeLines(): %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
+
+	/* NOTE: the noding process may drop lines collapsing to points.
+	 *       We want to retrive any of those */
+	{
+		GEOSGeometry* pi;
+		GEOSGeometry* po;
+		
+		pi = GEOSGeom_extractUniquePoints(geos_bound);
+		if ( NULL == pi ) {
+			GEOSGeom_destroy(geos_bound); 
+			lwnotice("GEOSGeom_extractUniquePoints(): %s",
+				lwgeom_geos_errmsg);
+			return NULL;
+		}
+
+	POSTGIS_DEBUGF(3,
+	               "Boundaries input points %s",
+	               lwgeom_to_ewkt(GEOS2LWGEOM(pi, 0),
+	                              PARSER_CHECK_NONE));
+
+		po = GEOSGeom_extractUniquePoints(geos_cut_edges);
+		if ( NULL == po ) {
+			GEOSGeom_destroy(geos_bound); 
+			GEOSGeom_destroy(pi); 
+			lwnotice("GEOSGeom_extractUniquePoints(): %s",
+				lwgeom_geos_errmsg);
+			return NULL;
+		}
+
+	POSTGIS_DEBUGF(3,
+	               "Boundaries output points %s",
+	               lwgeom_to_ewkt(GEOS2LWGEOM(po, 0),
+	                              PARSER_CHECK_NONE));
+
+		collapse_points = GEOSDifference(pi, po);
+		if ( NULL == collapse_points ) {
+			GEOSGeom_destroy(geos_bound); 
+			GEOSGeom_destroy(pi); 
+			GEOSGeom_destroy(po); 
+			lwnotice("GEOSDifference(): %s", lwgeom_geos_errmsg);
+			return NULL;
+		}
+
+	POSTGIS_DEBUGF(3,
+	               "Collapse points: %s",
+	               lwgeom_to_ewkt(GEOS2LWGEOM(collapse_points, 0),
+	                              PARSER_CHECK_NONE));
+
+		GEOSGeom_destroy(pi);
+		GEOSGeom_destroy(po);
+	}
+	GEOSGeom_destroy(geos_bound); 
+
+	POSTGIS_DEBUGF(3,
+	               "Noded Boundaries: %s",
+	               lwgeom_to_ewkt(GEOS2LWGEOM(geos_cut_edges, 0),
+	                              PARSER_CHECK_NONE));
 
 	/* And use an empty geometry as initial "area" */
 	geos_area = GEOSGeom_createEmptyPolygon();
@@ -524,33 +583,44 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		geos_cut_edges = new_cut_edges;
 	}
 
-	if ( GEOSisEmpty(geos_area) )
+	if ( ! GEOSisEmpty(geos_area) ) {
+		vgeoms[nvgeoms++] = geos_area;
+	} else {
+		GEOSGeom_destroy(geos_area);
+	}
+
+	if ( ! GEOSisEmpty(geos_cut_edges) ) {
+		vgeoms[nvgeoms++] = geos_cut_edges;
+	} else {
+		GEOSGeom_destroy(geos_cut_edges);
+	}
+
+	if ( ! GEOSisEmpty(collapse_points) ) {
+		vgeoms[nvgeoms++] = collapse_points;
+	} else {
+		GEOSGeom_destroy(collapse_points);
+	}
+
+	if ( 1 == nvgeoms )
 	{
 		/* Return cut edges */
-		GEOSGeom_destroy(geos_area);
-		return geos_cut_edges;
+		gout = vgeoms[0];
 	}
-	else if ( ! GEOSisEmpty(geos_cut_edges) )
+	else 
 	{
 		/* Collect areas and lines (if any line) */
-		vgeoms[0] = geos_area;
-		vgeoms[1] = geos_cut_edges;
-		gout = GEOSGeom_createCollection(GEOS_GEOMETRYCOLLECTION, vgeoms, 2);
+		gout = GEOSGeom_createCollection(GEOS_GEOMETRYCOLLECTION, vgeoms, nvgeoms);
 		if ( ! gout )   /* an exception again */
 		{
 			/* cleanup and throw */
 			lwnotice("GEOSGeom_createCollection() threw an error: %s",
 			         lwgeom_geos_errmsg);
+			/* TODO: cleanup! */
 			return NULL;
 		}
+	}
 
-		return gout;
-	}
-	else
-	{
-		GEOSGeom_destroy(geos_cut_edges);
-		return geos_area;
-	}
+	return gout;
 
 }
 
