@@ -2026,7 +2026,6 @@ FROM (SELECT ST_SetRotation(rast,0.1,0.1) As rast
 				can be used to expand a single raster into multiple POLYGONS/MULTIPOLYGONS.</para>
 	
 				<para>Availability: Requires GDAL 1.6.1 or higher.</para>
-				<note><para>Still under development and testing.</para></note>
 		  </refsection>
 	
 		  <refsection>
