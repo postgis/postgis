@@ -1097,6 +1097,10 @@ FROM dummy_rast;
 						translate it every x,y.</para>
 				<para>Also note that many of these examples particular the intersection example can be more 
 					simply done with the planned functions that are not currently available.</para>
+					
+					<para>If you are looking for a function that will take a geometry point and return a pixel value, this is in the works, for now
+						you can use a user contributed function <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiwktrasterfunctions">upgis_ptval</ulink>
+					</para>
 				</note>
 				
 				</refsection>
