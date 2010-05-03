@@ -92,9 +92,11 @@ all: test
 postgis.sql: ../postgis/postgis.sql
 	sed 's,$$libdir,$(REGRESS_INSTALLDIR)/lib,g' ../postgis/postgis.sql > postgis.sql
 
-test check: postgis.sql
+staged-install:
 	$(MAKE) -C ../postgis REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
 	$(MAKE) -C ../loader REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
+
+test check: postgis.sql staged-install
 	@USE_VERSION=$(POSTGIS_PGSQL_VERSION) ./run_test $(TESTS)
 
 garden:
