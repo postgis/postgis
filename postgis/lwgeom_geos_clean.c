@@ -996,10 +996,10 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 
 	switch ( TYPE_GETTYPE(lwgeom_in->type) )
 	{
-		case GEOS_LINESTRING:
-		case GEOS_POLYGON:
-		case GEOS_MULTILINESTRING:
-		case GEOS_MULTIPOLYGON:
+		case LINETYPE:
+		case POLYGONTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
 			break;
 
 		default:
