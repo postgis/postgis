@@ -1409,96 +1409,6 @@ WHERE
 	
 	<sect1 id="Raster_Editors">
 		<title>Raster Editors</title>
-		<refentry id="RT_ST_SetBandHasNoDataValue">
-			<refnamediv>
-				<refname>ST_SetBandHasNoDataValue</refname>
-				<refpurpose>Sets whether or not a band has a value that should be considered no data.</refpurpose>
-			</refnamediv>
-		
-			<refsynopsisdiv>
-				<funcsynopsis>
-				  <funcprototype>
-					<funcdef>raster <function>ST_SetBandHasNoDataValue</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>has_nodatavalue</parameter></paramdef>
-				  </funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-		
-			<refsection>
-				<title>Description</title>
-				
-				<para>Sets whether or not a band has a value that should be considered no data.</para>
-				</refsection>
-				
-				<refsection>
-					<title>Examples</title>
-				
-					<programlisting>-- change just first band no data value
-UPDATE dummy_rast 
-	SET rast = ST_SetBandHasNoDataValue(rast,1, false)  
-WHERE rid = 2;
-					</programlisting>
-			
-			</refsection>
-
-			<refsection>
-				<title>See Also</title>
-				<para><xref linkend="RT_ST_BandNoDataValue" />,<xref linkend="RT_ST_SetBandNoDataValue" /></para>
-			</refsection>
-		</refentry>
-		
-		<refentry id="RT_ST_SetBandNoDataValue">
-			<refnamediv>
-				<refname>ST_SetBandNoDataValue</refname>
-				<refpurpose>Sets the value for the given band that represents no data.</refpurpose>
-			</refnamediv>
-		
-			<refsynopsisdiv>
-				<funcsynopsis>
-				  <funcprototype>
-					<funcdef>integer <function>ST_SetBandNoDataValue</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>val</parameter></paramdef>
-				  </funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-		
-			<refsection>
-				<title>Description</title>
-				
-				<para>Sets the value that represents no data for the band.  This will effect ST_Polygon and ST_ConvexHull results.</para>
-				</refsection>
-				
-				<refsection>
-					<title>Examples</title>
-				
-					<programlisting>-- change just first band no data value
-UPDATE dummy_rast 
-	SET rast = ST_SetBandNoDataValue(rast,1, 254)  
-WHERE rid = 2;
-
--- change no data band value of bands 1,2,3
-UPDATE dummy_rast 
-	SET rast = 
-		ST_SetBandNoDataValue(
-			ST_SetBandNoDataValue(
-				ST_SetBandNoDataValue(
-					rast,1, 254)
-				,2,99),
-				3,108)  
-		WHERE rid = 2;
-					</programlisting>
-			
-			</refsection>
-
-			<refsection>
-				<title>See Also</title>
-				<para><xref linkend="RT_ST_BandNoDataValue" />,<xref linkend="RT_ST_NumBands" /></para>
-			</refsection>
-		</refentry>
 		
 		<refentry id="RT_ST_SetGeoReference">
 			<refnamediv>
@@ -1775,6 +1685,99 @@ WHERE rid = 2;
 			</refsection>
 		</refentry>
 
+	</sect1>
+	<sect1 id="RasterBand_Editors">
+		<title>Raster Band Editors</title>
+		<refentry id="RT_ST_SetBandHasNoDataValue">
+			<refnamediv>
+				<refname>ST_SetBandHasNoDataValue</refname>
+				<refpurpose>Sets whether or not a band has a value that should be considered no data.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>raster <function>ST_SetBandHasNoDataValue</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>has_nodatavalue</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Sets whether or not a band has a value that should be considered no data.</para>
+				</refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>-- change just first band no data value
+UPDATE dummy_rast 
+	SET rast = ST_SetBandHasNoDataValue(rast,1, false)  
+WHERE rid = 2;
+					</programlisting>
+			
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_BandNoDataValue" />,<xref linkend="RT_ST_SetBandNoDataValue" /></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_SetBandNoDataValue">
+			<refnamediv>
+				<refname>ST_SetBandNoDataValue</refname>
+				<refpurpose>Sets the value for the given band that represents no data.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>integer <function>ST_SetBandNoDataValue</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>val</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Sets the value that represents no data for the band.  This will effect ST_Polygon and ST_ConvexHull results.</para>
+				</refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>-- change just first band no data value
+UPDATE dummy_rast 
+	SET rast = ST_SetBandNoDataValue(rast,1, 254)  
+WHERE rid = 2;
+
+-- change no data band value of bands 1,2,3
+UPDATE dummy_rast 
+	SET rast = 
+		ST_SetBandNoDataValue(
+			ST_SetBandNoDataValue(
+				ST_SetBandNoDataValue(
+					rast,1, 254)
+				,2,99),
+				3,108)  
+		WHERE rid = 2;
+					</programlisting>
+			
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_BandNoDataValue" />,<xref linkend="RT_ST_NumBands" /></para>
+			</refsection>
+		</refentry>
 	</sect1>
 	
 	<sect1 id="Raster_Outputs">
