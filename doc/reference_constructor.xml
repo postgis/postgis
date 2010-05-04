@@ -122,12 +122,12 @@
 		  </refsection>
 		  
 		 <refsection>
-		 		<title>Examples</title>
-				<programlisting>
+		 	<title>Examples</title>
+			<programlisting>
 --- converting lon lat coords to geography
 ALTER TABLE sometable ADD COLUMN geog geography(POINT,4326);
 UPDATE sometable SET geog = ST_GeogFromText('SRID=4326;POINT(' || lon || ' ' || lat || ')');		
-				</programlisting>
+			</programlisting>
 		 </refsection>
 		  <refsection>
 			<title>See Also</title>
