@@ -119,8 +119,17 @@
 			<title>Description</title>
 			<para>Returns a geography object from the  well-known text or extended well-known representation.  SRID 4326 is assumed. This
 				is an alias for ST_GeographyFromText</para>
-			<!-- TODO: put in example -->
 		  </refsection>
+		  
+		  <refsection>
+		 	<title>Examples</title>
+			<programlisting>
+--- converting lon lat coords to geography
+ALTER TABLE sometable ADD COLUMN geog geography(POINT,4326);
+UPDATE sometable SET geog = ST_GeogFromText('SRID=4326;POINT(' || lon || ' ' || lat || ')');		
+			</programlisting>
+		 </refsection>
+		 
 		  <refsection>
 			<title>See Also</title>
 			<para><xref linkend="ST_AsText" />,<xref linkend="ST_GeographyFromText" /></para>
