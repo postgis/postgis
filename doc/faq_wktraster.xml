@@ -65,15 +65,18 @@
 		<para>The driver currently doesn't support irregularly blocked rasters, 
 		although you can store irregularly blocked rasters in PostGIS raster data type.</para>
 		<para>If you are compiling from source, you need to include in your configure 
-		 <programlisting>--enable-FEATURE=WKTRaster --with-pg=path/to/pg_config</programlisting>  to enable the driver.
+		 <programlisting>--with-pg=path/to/pg_config</programlisting>  to enable the driver.
+		 Refer to <ulink url="http://trac.osgeo.org/gdal/wiki/BuildHints">GDAL Build Hints</ulink> for tips
+		 on building gdal against in various OS platforms.
 		 </para>
 		 <para>If your version of GDAL is compiled with the WKT Raster driver 
 		 you should see PostGIS WKT Raster in list when you do 
 		 <programlisting>gdalinfo --formats</programlisting></para>
-		 <para><ulink url="http://fwtools.maptools.org/">FWTools latest version for Windows is compiled with WKT Raster support</ulink>.</para>
+		 
 		 <para>To get a summary about your raster via gdal use gdalinfo:
 		 <programlisting>gdalinfo  "PG:host=localhost port=5432 dbname='mygisdb' user='postgres' password='whatever' schema='someschema' table=sometable"</programlisting>
 		 </para>
+		
 		 <para>To export data to other raster formats, 
 		 	use gdal_translate the below will export all data from a table to a PNG file at 10% size.</para>
 		 <para>Depending on your pixel band types, some translations may not work if the export format does not support that Pixel type.  
@@ -87,6 +90,20 @@
 		 <programlisting>gdal_translate -of PNG -outsize 10% 10% "PG:host=localhost dbname='mygisdb' user='postgres' password=whatever' schema='someschema' table=sometable where='ST_Intersects(rast, ST_SetSRID(ST_Point(-71.032,42.3793),4326) )' " C:\intersectregion.png</programlisting>
 		 <para>To see more examples and syntax refer to <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html#a3.2-Readingdata">Reading Raster Data of PostGIS WKT Raster section</ulink></para>
       </answer>
+    </qandaentry>
+    
+    <qandaentry>
+    	<question><para>Are their binaries of GDAL available already compiled with PostGIS WKT Raster suppport?</para></question>
+    	<answer>
+    		<para>Yes. Check out the page <ulink url="http://trac.osgeo.org/gdal/wiki/DownloadingGdalBinaries">GDAL Binaries</ulink> page.  Any compiled wiht PostgreSQL
+    		support should have PostGIS WKT Raster in them.  </para>
+    		<para>We know for sure the following windows binaries have PostGIS WKT Raster built in.</para>
+    		<para><ulink url="http://fwtools.maptools.org/">FWTools latest stable version for Windows is compiled with WKT Raster support</ulink>.</para>
+    		<para>PostGIS WKT Raster is undergoing many changes.  If you want to get the latest nightly build for Windows -- then check out 
+		 the Tamas Szekeres  nightly builds built with Visual Studio which contain GDAL trunk, Python Bindings and Mapserver executables.  Just
+		 	click the SDK bat and run your commands from there.  <ulink url="http://vbkto.dyndns.org/sdk/">http://vbkto.dyndns.org/sdk/</ulink>.
+		 	Also available are VS project files.</para>
+    	</answer>
     </qandaentry>
     
     <qandaentry>
