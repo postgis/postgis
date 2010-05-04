@@ -7,6 +7,7 @@ YYYY/MM/DD
 
   - ST_Split (Sandro Santilli / Faunalia for RT-SIGTA)
   - ST_isValidDetail (Sandro Santilli / Faunalia for RT-SIGTA)
+  - ST_MakeValid (Sandro Santilli / Faunalia for RT-SIGTA)
   - ST_RemoveRepeatedPoints (Sandro Santilli / Faunalia for RT-SIGTA)
   - ST_GeometryN and ST_NumGeometries support for non-collections
     (Sandro Santilli)
