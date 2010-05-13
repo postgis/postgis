@@ -382,7 +382,7 @@ lwcollection_split(LWCOLLECTION* lwcoll_in, LWGEOM* blade_in)
 	size_t i,j;
 
 	split_vector_capacity=8;
-	split_vector = lwalloc(split_vector_capacity);
+	split_vector = lwalloc(split_vector_capacity * sizeof(LWGEOM*));
 	if ( ! split_vector ) {
 		lwerror("Out of virtual memory");
 		return NULL;
@@ -402,8 +402,10 @@ lwcollection_split(LWCOLLECTION* lwcoll_in, LWGEOM* blade_in)
 		/* Reallocate split_vector if needed */
 		if ( split_vector_size + col->ngeoms > split_vector_capacity )
 		{
-			split_vector_capacity *= 2;
-			split_vector = lwrealloc(split_vector, split_vector_capacity);
+			/* NOTE: we could be smarter on reallocations here */
+			split_vector_capacity += col->ngeoms;
+			split_vector = lwrealloc(split_vector,
+				split_vector_capacity * sizeof(LWGEOM*));
 			if ( ! split_vector ) {
 				lwerror("Out of virtual memory");
 				return NULL;
