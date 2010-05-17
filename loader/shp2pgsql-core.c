@@ -52,28 +52,6 @@ void ReleasePolygons(Ring **polys, int npolys);
 int GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry);
 
 
-/* Append variadic formatted string to a stringbuffer */
-void
-vasbappend(stringbuffer_t *sb, char *fmt, ... )
-{
-	va_list ap;
-	char *msg;
-
-	va_start(ap, fmt);
-
-	if (!lw_vasprintf (&msg, fmt, ap))
-	{
-		va_end (ap);
-		return;
-	}
-
-	/* Append to the stringbuffer */
-	stringbuffer_append(sb, msg);
-	free(msg);
-
-	va_end(ap);
-}
-
 /* Return allocated string containing UTF8 string converted from encoding fromcode */
 char *
 utf8(const char *fromcode, char *inputbuf)
@@ -1255,11 +1233,11 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 	/* Set the client encoding if required */
 	if (state->config->encoding)
 	{
-		vasbappend(sb, "SET CLIENT_ENCODING TO UTF8;\n");
+		stringbuffer_aprintf(sb, "SET CLIENT_ENCODING TO UTF8;\n");
 	}
 
 	/* Use SQL-standard string escaping rather than PostgreSQL standard */
-	vasbappend(sb, "SET STANDARD_CONFORMING_STRINGS TO ON;\n");
+	stringbuffer_aprintf(sb, "SET STANDARD_CONFORMING_STRINGS TO ON;\n");
 
 	/* Drop table if requested */
 	if (state->config->opt == 'd')
@@ -1279,27 +1257,27 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		{
 			if (state->config->readshape == 1 && (! state->config->geography) )
 			{
-				vasbappend(sb, "SELECT DropGeometryColumn('%s','%s','%s');\n",
+				stringbuffer_aprintf(sb, "SELECT DropGeometryColumn('%s','%s','%s');\n",
 				           state->config->schema, state->config->table, state->config->geom);
 			}
 
-			vasbappend(sb, "DROP TABLE \"%s\".\"%s\";\n", state->config->schema,
+			stringbuffer_aprintf(sb, "DROP TABLE \"%s\".\"%s\";\n", state->config->schema,
 			           state->config->table);
 		}
 		else
 		{
 			if (state->config->readshape == 1  && (! state->config->geography) )
 			{
-				vasbappend(sb, "SELECT DropGeometryColumn('','%s','%s');\n",
+				stringbuffer_aprintf(sb, "SELECT DropGeometryColumn('','%s','%s');\n",
 				           state->config->table, state->config->geom);
 			}
 
-			vasbappend(sb, "DROP TABLE \"%s\";\n", state->config->table);
+			stringbuffer_aprintf(sb, "DROP TABLE \"%s\";\n", state->config->table);
 		}
 	}
 
 	/* Start of transaction */
-	vasbappend(sb, "BEGIN;\n");
+	stringbuffer_aprintf(sb, "BEGIN;\n");
 
 	/* If not in 'append' mode create the spatial table */
 	if (state->config->opt != 'a')
@@ -1310,47 +1288,47 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		*/
 		if (state->config->schema)
 		{
-			vasbappend(sb, "CREATE TABLE \"%s\".\"%s\" (gid serial PRIMARY KEY",
+			stringbuffer_aprintf(sb, "CREATE TABLE \"%s\".\"%s\" (gid serial PRIMARY KEY",
 			           state->config->schema, state->config->table);
 		}
 		else
 		{
-			vasbappend(sb, "CREATE TABLE \"%s\" (gid serial PRIMARY KEY", state->config->table);
+			stringbuffer_aprintf(sb, "CREATE TABLE \"%s\" (gid serial PRIMARY KEY", state->config->table);
 		}
 
 		/* Generate the field types based upon the shapefile information */
 		for (j = 0; j < state->num_fields; j++)
 		{
-			vasbappend(sb, ",\n\"%s\" ", state->field_names[j]);
+			stringbuffer_aprintf(sb, ",\n\"%s\" ", state->field_names[j]);
 
 			switch (state->types[j])
 			{
 			case FTString:
 				/* use DBF attribute size as maximum width */
-				vasbappend(sb, "varchar(%d)", state->widths[j]);
+				stringbuffer_aprintf(sb, "varchar(%d)", state->widths[j]);
 				break;
 
 			case FTDate:
-				vasbappend(sb, "date");
+				stringbuffer_aprintf(sb, "date");
 				break;
 
 			case FTInteger:
 				/* Determine exact type based upon field width */
 				if (state->config->forceint4)
 				{
-					vasbappend(sb, "int4");
+					stringbuffer_aprintf(sb, "int4");
 				}
 				else if (state->widths[j] < 5)
 				{
-					vasbappend(sb, "int2");
+					stringbuffer_aprintf(sb, "int2");
 				}
 				else if (state->widths[j] < 10)
 				{
-					vasbappend(sb, "int4");
+					stringbuffer_aprintf(sb, "int4");
 				}
 				else
 				{
-					vasbappend(sb, "numeric(%d,0)", state->widths[j]);
+					stringbuffer_aprintf(sb, "numeric(%d,0)", state->widths[j]);
 				}
 				break;
 
@@ -1358,16 +1336,16 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 				/* Determine exact type based upon field width */
 				if (state->widths[j] > 18)
 				{
-					vasbappend(sb, "numeric");
+					stringbuffer_aprintf(sb, "numeric");
 				}
 				else
 				{
-					vasbappend(sb, "float8");
+					stringbuffer_aprintf(sb, "float8");
 				}
 				break;
 
 			case FTLogical:
-				vasbappend(sb, "boolean");
+				stringbuffer_aprintf(sb, "boolean");
 				break;
 
 			default:
@@ -1392,26 +1370,26 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 				stringbuffer_destroy(sb);
 				return SHPLOADERERR;
 			}
-			vasbappend(sb, ",\n\"%s\" geography(%s%s,%d)", state->config->geom, state->pgtype, dimschar, 4326);
+			stringbuffer_aprintf(sb, ",\n\"%s\" geography(%s%s,%d)", state->config->geom, state->pgtype, dimschar, 4326);
 		}
 
-		vasbappend(sb, ");\n");
+		stringbuffer_aprintf(sb, ");\n");
 
 		/* Create the geometry column with an addgeometry call */
 		if (state->config->readshape == 1 && (!state->config->geography))
 		{
 			if (state->config->schema)
 			{
-				vasbappend(sb, "SELECT AddGeometryColumn('%s','%s','%s','%d',",
+				stringbuffer_aprintf(sb, "SELECT AddGeometryColumn('%s','%s','%s','%d',",
 				           state->config->schema, state->config->table, state->config->geom, state->config->sr_id);
 			}
 			else
 			{
-				vasbappend(sb, "SELECT AddGeometryColumn('','%s','%s','%d',",
+				stringbuffer_aprintf(sb, "SELECT AddGeometryColumn('','%s','%s','%d',",
 				           state->config->table, state->config->geom, state->config->sr_id);
 			}
 
-			vasbappend(sb, "'%s',%d);\n", state->pgtype, state->pgdims);
+			stringbuffer_aprintf(sb, "'%s',%d);\n", state->pgtype, state->pgdims);
 		}
 	}
 
@@ -1522,12 +1500,12 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 	{
 		if (state->config->schema)
 		{
-			vasbappend(sb, "INSERT INTO \"%s\".\"%s\" %s VALUES (", state->config->schema,
+			stringbuffer_aprintf(sb, "INSERT INTO \"%s\".\"%s\" %s VALUES (", state->config->schema,
 			           state->config->table, state->col_names);
 		}
 		else
 		{
-			vasbappend(sb, "INSERT INTO \"%s\" %s VALUES (", state->config->table,
+			stringbuffer_aprintf(sb, "INSERT INTO \"%s\" %s VALUES (", state->config->table,
 			           state->col_names);
 		}
 	}
@@ -1540,9 +1518,9 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 		if (DBFIsAttributeNULL(state->hDBFHandle, item, i))
 		{
 			if (state->config->dump_format)
-				vasbappend(sb, "\\N");
+				stringbuffer_aprintf(sb, "\\N");
 			else
-				vasbappend(sb, "NULL");
+				stringbuffer_aprintf(sb, "NULL");
 		}
 		else
 		{
@@ -1553,7 +1531,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 			case FTDouble:
 				if (-1 == snprintf(val, MAXVALUELEN, "%s", DBFReadStringAttribute(state->hDBFHandle, item, i)))
 				{
-					vasbappend(sbwarn, "Warning: field %d name truncated\n", i);
+					stringbuffer_aprintf(sbwarn, "Warning: field %d name truncated\n", i);
 					val[MAXVALUELEN - 1] = '\0';
 				}
 
@@ -1574,7 +1552,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 			case FTDate:
 				if (-1 == snprintf(val, MAXVALUELEN, "%s", DBFReadStringAttribute(state->hDBFHandle, item, i)))
 				{
-					vasbappend(sbwarn, "Warning: field %d name truncated\n", i);
+					stringbuffer_aprintf(sbwarn, "Warning: field %d name truncated\n", i);
 					val[MAXVALUELEN - 1] = '\0';
 				}
 				break;
@@ -1607,12 +1585,12 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 			if (state->config->dump_format)
 			{
 				escval = escape_copy_string(val);
-				vasbappend(sb, "%s", escval);
+				stringbuffer_aprintf(sb, "%s", escval);
 			}
 			else
 			{
 				escval = escape_insert_string(val);
-				vasbappend(sb, "'%s'", escval);
+				stringbuffer_aprintf(sb, "'%s'", escval);
 			}
 
 			/* Free the escaped version if required */
@@ -1624,9 +1602,9 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 		if (state->config->readshape == 1 || i < DBFGetFieldCount(state->hDBFHandle) - 1)
 		{
 			if (state->config->dump_format)
-				vasbappend(sb, "\t");
+				stringbuffer_aprintf(sb, "\t");
 			else
-				vasbappend(sb, ",");
+				stringbuffer_aprintf(sb, ",");
 		}
 
 		/* End of DBF attribute loop */
@@ -1640,9 +1618,9 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 		if (obj->nVertices == 0)
 		{
 			if (state->config->dump_format)
-				vasbappend(sb, "\\N");
+				stringbuffer_aprintf(sb, "\\N");
 			else
-				vasbappend(sb, "NULL");
+				stringbuffer_aprintf(sb, "NULL");
 		}
 		else
 		{
@@ -1713,37 +1691,37 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 			{
 				/* Old-style hwgeom (WKT) */
 				if (!state->config->dump_format)
-					vasbappend(sb, "GeomFromText('");
+					stringbuffer_aprintf(sb, "GeomFromText('");
 				else
 				{
 					/* Output SRID if relevant */
 					if (state->config->sr_id != 0)
-						vasbappend(sb, "SRID=%d;", state->config->sr_id);
+						stringbuffer_aprintf(sb, "SRID=%d;", state->config->sr_id);
 				}
 
-				vasbappend(sb, "%s", geometry);
+				stringbuffer_aprintf(sb, "%s", geometry);
 
 				if (!state->config->dump_format)
 				{
-					vasbappend(sb, "'");
+					stringbuffer_aprintf(sb, "'");
 
 					/* Output SRID if relevant */
 					if (state->config->sr_id != 0)
-						vasbappend(sb, ", %d)", state->config->sr_id);
+						stringbuffer_aprintf(sb, ", %d)", state->config->sr_id);
 					else
-						vasbappend(sb, ")");
+						stringbuffer_aprintf(sb, ")");
 				}
 			}
 			else
 			{
 				/* New style lwgeom (HEXEWKB) */
 				if (!state->config->dump_format)
-					vasbappend(sb, "'");
+					stringbuffer_aprintf(sb, "'");
 
-				vasbappend(sb, "%s", geometry);
+				stringbuffer_aprintf(sb, "%s", geometry);
 
 				if (!state->config->dump_format)
-					vasbappend(sb, "'");
+					stringbuffer_aprintf(sb, "'");
 			}
 
 			free(geometry);
@@ -1755,7 +1733,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 
 	/* Close the line correctly for dump/insert format */
 	if (!state->config->dump_format)
-		vasbappend(sb, ");");
+		stringbuffer_aprintf(sb, ");");
 
 
 	/* Copy the string buffer into a new string, destroying the string buffer */
@@ -1806,17 +1784,17 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 	{
 		if (state->config->schema)
 		{
-			vasbappend(sb, "CREATE INDEX \"%s_%s_gist\" ON \"%s\".\"%s\" using gist (\"%s\" %s);\n", state->config->table, state->config->geom,
+			stringbuffer_aprintf(sb, "CREATE INDEX \"%s_%s_gist\" ON \"%s\".\"%s\" using gist (\"%s\" %s);\n", state->config->table, state->config->geom,
 			           state->config->schema, state->config->table, state->config->geom, ops);
 		}
 		else
 		{
-			vasbappend(sb, "CREATE INDEX \"%s_%s_gist\" ON \"%s\" using gist (\"%s\" %s);\n", state->config->table, state->config->geom, state->config->table, state->config->geom, ops);
+			stringbuffer_aprintf(sb, "CREATE INDEX \"%s_%s_gist\" ON \"%s\" using gist (\"%s\" %s);\n", state->config->table, state->config->geom, state->config->table, state->config->geom, ops);
 		}
 	}
 
 	/* End the transaction */
-	vasbappend(sb, "COMMIT;\n");
+	stringbuffer_aprintf(sb, "COMMIT;\n");
 
 	/* Copy the string buffer into a new string, destroying the string buffer */
 	ret = (char *)malloc(strlen((char *)stringbuffer_getstring(sb)) + 1);

@@ -441,7 +441,7 @@ pgui_read_connection(void)
 	/* Read the host */
 	if ( pg_host && strlen(pg_host) > 0 )
 	{
-		vasbappend(sb, "host=%s ", pg_host);
+		stringbuffer_aprintf(sb, "host=%s ", pg_host);
 	}
 
 	/* Read the port */
@@ -453,25 +453,25 @@ pgui_read_connection(void)
 			stringbuffer_destroy(sb);
 			return NULL;
 		}
-		vasbappend(sb, "port=%s ", pg_port);
+		stringbuffer_aprintf(sb, "port=%s ", pg_port);
 	}
 
 	/* Read the user name */
 	if ( pg_user && strlen(pg_user) > 0 )
 	{
-		vasbappend(sb, "user=%s ", pg_user);
+		stringbuffer_aprintf(sb, "user=%s ", pg_user);
 	}
 
 	/* Read the database name */
 	if ( pg_db && strlen(pg_db) > 0 )
 	{
-		vasbappend(sb, "dbname=%s ", pg_db);
+		stringbuffer_aprintf(sb, "dbname=%s ", pg_db);
 	}
 
 	/* Read the password */
 	if ( pg_pass && strlen(pg_pass) > 0 )
 	{
-		vasbappend(sb, "password=%s ", pg_pass);
+		stringbuffer_aprintf(sb, "password=%s ", pg_pass);
 	}
 
 	/* Return the connection string */

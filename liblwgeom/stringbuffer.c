@@ -213,17 +213,3 @@ int stringbuffer_aprintf(stringbuffer_t *s, const char *fmt, ...)
 	va_end(ap);
 	return r;
 }
-
-/**
-* Synonym for stringbuffer_aprintf
-* TODO: Remove this.
-*/
-int stringbuffer_vasbappend(stringbuffer_t *s, const char *fmt, ... )
-{
-	int r;
-	va_list ap;
-	va_start(ap, fmt);
-	r = stringbuffer_avprintf(s, fmt, ap);
-	va_end(ap);
-	return r;
-}

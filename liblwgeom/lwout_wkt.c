@@ -77,7 +77,7 @@ static void ptarray_to_wkt_sb(const POINTARRAY *ptarray, stringbuffer_t *sb, int
 			/* Spaces before every ordinate but the first */
 			if( j > 0 )
 				stringbuffer_append(sb, " ");
-			stringbuffer_vasbappend(sb, "%.*g", precision, d);
+			stringbuffer_aprintf(sb, "%.*g", precision, d);
 		}
 	}
 	
@@ -541,7 +541,7 @@ char* lwgeom_to_wkt(const LWGEOM *geom, uchar variant, int precision, size_t *si
 	/* Extended mode starts with an "SRID=" section for geoms that have one */
 	if( (variant & WKT_EXTENDED) && lwgeom_has_srid(geom) )
 	{
-		stringbuffer_vasbappend(sb, "SRID=%d;", geom->SRID);
+		stringbuffer_aprintf(sb, "SRID=%d;", geom->SRID);
 	}
 	lwgeom_to_wkt_sb(geom, sb, precision, variant);
 	if( stringbuffer_getstring(sb) == NULL )
