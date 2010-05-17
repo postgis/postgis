@@ -41,7 +41,6 @@ void lwgeom_init_allocators()
  */
 
 char *utf8(const char *fromcode, char *inputbuf);
-void vasbappend(stringbuffer_t *sb, char *fmt, ... );
 char *escape_copy_string(char *str);
 char *escape_insert_string(char *str);
 
