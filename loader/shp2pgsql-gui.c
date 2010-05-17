@@ -124,8 +124,8 @@ pgui_raise_error_dialogue(void)
 
 	label = gtk_label_new(pgui_errmsg);
 	dialog = gtk_dialog_new_with_buttons("Error", GTK_WINDOW(window_main),
-	                                     GTK_DIALOG_MODAL & GTK_DIALOG_NO_SEPARATOR & GTK_DIALOG_DESTROY_WITH_PARENT,
-	                                     GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
+										 GTK_DIALOG_MODAL & GTK_DIALOG_NO_SEPARATOR & GTK_DIALOG_DESTROY_WITH_PARENT,
+										 GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
 	gtk_dialog_set_has_separator ( GTK_DIALOG(dialog), FALSE );
 	gtk_container_set_border_width (GTK_CONTAINER(dialog), 5);
 	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), 15);
@@ -436,40 +436,48 @@ pgui_read_connection(void)
 	const char *pg_db = gtk_entry_get_text(GTK_ENTRY(entry_pg_db));
 	char *connection_string = NULL;
 
-	if ( ! pg_host || strlen(pg_host) == 0 )
+	stringbuffer_t *sb = stringbuffer_create();
+
+	/* Read the host */
+	if ( pg_host && strlen(pg_host) > 0 )
 	{
-		pgui_seterr("Fill in the server host.");
-		return NULL;
+		vasbappend(sb, "host=%s ", pg_host);
 	}
-	if ( ! pg_port || strlen(pg_port) == 0 )
+
+	/* Read the port */
+	if ( pg_port && strlen(pg_port) > 0 )
+	{	
+		if ( ! atoi(pg_port) )
+		{
+			pgui_seterr("Server port must be a number.");
+			stringbuffer_destroy(sb);
+			return NULL;
+		}
+		vasbappend(sb, "port=%s ", pg_port);
+	}
+
+	/* Read the user name */
+	if ( pg_user && strlen(pg_user) > 0 )
 	{
-		pgui_seterr("Fill in the server port.");
-		return NULL;
+		vasbappend(sb, "user=%s ", pg_user);
 	}
-	if ( ! pg_user || strlen(pg_user) == 0 )
+
+	/* Read the database name */
+	if ( pg_db && strlen(pg_db) > 0 )
 	{
-		pgui_seterr("Fill in the user name.");
-		return NULL;
+		vasbappend(sb, "dbname=%s ", pg_db);
 	}
-	if ( ! pg_db || strlen(pg_db) == 0 )
+
+	/* Read the password */
+	if ( pg_pass && strlen(pg_pass) > 0 )
 	{
-		pgui_seterr("Fill in the database name.");
-		return NULL;
+		vasbappend(sb, "password=%s ", pg_pass);
 	}
-	if ( ! atoi(pg_port) )
-	{
-		pgui_seterr("Server port must be a number.");
-		return NULL;
-	}
-	if ( ! lw_asprintf(&connection_string, "user=%s password=%s port=%s host=%s dbname=%s", pg_user, pg_pass, pg_port, pg_host, pg_db) )
-	{
-		return NULL;
-	}
-	if ( connection_string )
-	{
-		return connection_string;
-	}
-	return NULL;
+
+	/* Return the connection string */
+	connection_string = strdup(stringbuffer_getstring(sb));
+	stringbuffer_destroy(sb);	
+	return connection_string;
 }
 
 static void
