@@ -1041,6 +1041,13 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		}
 	}
 
+	/* If everything was a deviant, the new histobox is the same as the old histobox */
+	if ( ! newhistobox )
+	{
+		newhistobox = palloc(sizeof(GBOX));
+		memcpy(newhistobox, &histobox, sizeof(GBOX));
+	}
+
 	/*
 	 * Set histogram extent as the intersection between
 	 * standard deviation based histogram extent
