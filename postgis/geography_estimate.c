@@ -825,6 +825,8 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	int i;
 
 	POSTGIS_DEBUG(2, "compute_geography_stats called");
+	POSTGIS_DEBUGF(3, " samplerows = %d", samplerows);
+	POSTGIS_DEBUGF(3, " totalrows = %f", totalrows);
 
 	/*
 	 * We'll build an histogram having from 40 to 400 boxesPerSide
@@ -1010,8 +1012,8 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		box = (GBOX *)sampleboxes[i];
 
 		if ( box->xmin > histobox.xmax || box->xmax < histobox.xmin ||
-		        box->ymin > histobox.ymax || box->ymax < histobox.ymin ||
-		        box->zmin > histobox.zmax || box->zmax < histobox.zmin)
+		     box->ymin > histobox.ymax || box->ymax < histobox.ymin ||
+		     box->zmin > histobox.zmax || box->zmax < histobox.zmin )
 		{
 			POSTGIS_DEBUGF(4, " feat %d is an hard deviant, skipped", i);
 
@@ -1039,6 +1041,13 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 			if ( box->zmax > newhistobox->zmax )
 				newhistobox->zmax = box->zmax;
 		}
+	}
+
+	/* If everything was a deviant, the new histobox is the same as the old histobox */
+	if ( ! newhistobox )
+	{
+		newhistobox = palloc(sizeof(GBOX));
+		memcpy(newhistobox, &histobox, sizeof(GBOX));
 	}
 
 	/*
