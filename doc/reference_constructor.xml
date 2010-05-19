@@ -1392,6 +1392,7 @@ FROM
 			you have raw coordinates rather than WKT.</para>
 
 			<note><para>Note x is longitude and y is latitude</para></note>
+			<note><para>Use <xref linkend="ST_MakePointM" /> if you need to make a point with x,y,m.</para></note>
 			<para>&Z_support;</para>
 
 		</refsection>
@@ -1415,7 +1416,7 @@ result
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_PointFromText" />, <xref linkend="ST_SetSRID" /></para>
+			<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_PointFromText" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_MakePointM" /></para>
 		</refsection>
 	</refentry>
 
