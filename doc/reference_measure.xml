@@ -647,7 +647,7 @@ ST_Point      | t          | t              | f           | f
 		<refname>ST_Covers</refname>
 
 		<refpurpose>Returns 1 (TRUE) if no point in Geometry B is outside
-			Geometry A</refpurpose>
+			Geometry A. For geography: if geography point B is not outside Polygon Geography A</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -727,7 +727,14 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
 (1 row)	</programlisting>
 		<para>Geeography Example</para>
 		<programlisting>
-
+-- a point with a 300 meter buffer compared to a point, a point and its 10 meter buffer
+SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt, ST_Covers(ST_Buffer(geog_pt,10), geog_pt) As buff_10m_covers_cent
+	FROM (SELECT ST_Buffer(ST_GeogFromText('SRID=4326;POINT(-99.327 31.4821)'), 300) As geog_poly,
+				ST_GeogFromText('SRID=4326;POINT(-99.33 31.483)') As geog_pt ) As foo;
+				
+ poly_covers_pt | buff_10m_covers_cent
+----------------+------------------
+ f              | t
 		</programlisting>
 	  </refsection>
 
