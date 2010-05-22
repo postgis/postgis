@@ -12,6 +12,11 @@ YYYY/MM/DD
   - ST_GeometryN and ST_NumGeometries support for non-collections
     (Sandro Santilli)
 
+ * Enhancements *
+
+  - Made loader tolerant of truncated multibyte values found
+    in some free worldwide shapefiles (Sandro Santilli)
+    
 PostGIS 1.5.0
 2010/02/04
 
