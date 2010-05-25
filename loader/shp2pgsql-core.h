@@ -70,7 +70,7 @@
 /*
  * Default character encoding
  */
-#define ENCODING_DEFAULT "WINDOWS-1252"
+#define ENCODING_DEFAULT "LATIN1"
 
 /*
  * Structure to hold the loader configuration options 
