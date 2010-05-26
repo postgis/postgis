@@ -1229,16 +1229,24 @@ main(int argc, char *argv[])
 {
 	char c;
 
-	/* Parse command line options and set configuration */
+	/* Set default configuration */
 	config = malloc(sizeof(SHPLOADERCONFIG));
 	set_config_defaults(config);
 
 	/* Here we override any defaults for the GUI */
 	config->createindex = 1;
 
+	/* Prepare our shape connection */
 	conn = malloc(sizeof(SHPCONNECTIONCONFIG));
 	memset(conn, 0, sizeof(SHPCONNECTIONCONFIG));
 
+    /* Read any environment values */
+    conn->port = getenv("PGPORT");
+    conn->username = getenv("PGUSER");
+    conn->database = getenv("PGDATABASE");
+    conn->host = getenv("PGHOST");
+
+	/* Over-ride the environment with any command line options */
 	while ((c = pgis_getopt(argc, argv, "U:p:W:d:h:")) != -1)
 	{
 		switch (c)
