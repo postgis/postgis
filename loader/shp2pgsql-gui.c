@@ -614,7 +614,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	char *connection_string = NULL;
 	char *connection_sanitized = NULL;
 	char *dest_string = NULL;
-	int ret, i = 0;
+	int ret, record_count = 0, i = 0, progress_bar_update_frequency = 1;
 	char *header, *footer, *record;
 	PGresult *result;
 
@@ -733,8 +733,13 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	/* Main loop: iterate through all of the records and send them to stdout */
 	pgui_logf("Importing shapefile (%d records)...", ShpLoaderGetRecordCount(state));
 
+    /* Number of records in this file */
+    record_count = ShpLoaderGetRecordCount(state);
+    /* Assume a progress bar 1000 pixels across, how we only want to update it every N records */
+    progress_bar_update_frequency = 1 + record_count / 1000;
+    
 	import_running = TRUE;
-	for (i = 0; i < ShpLoaderGetRecordCount(state) && import_running; i++)
+	for (i = 0; (i < record_count) && import_running; i++)
 	{
 		ret = ShpLoaderGenerateSQLRowStatement(state, i, &record);
 
@@ -786,7 +791,10 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		}
 
 		/* Update the progress bar */
-		gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), (float)i / ShpLoaderGetRecordCount(state));
+        if( i % progress_bar_update_frequency == 0 )
+        {
+		    gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), (float)i / record_count);
+	    }
 
 		/* Allow GTK events to get a look in */
 		while (gtk_events_pending())
