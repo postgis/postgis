@@ -1573,7 +1573,8 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 				utf8str = utf8(state->config->encoding, val);
 				if (!utf8str)
 				{
-					snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert field value \"%s\" from %s encoding to UTF-8: iconv reports \"%s\"", val, state->config->encoding, strerror(errno));
+					snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert field value \"%s\" to UTF-8 (iconv reports \"%s\"). Current encoding is \"%s\", try \"LATIN1\" (Western European), or one of the values described at http://www.postgresql.org/docs/current/static/multibyte.html.", val, strerror(errno), state->config->encoding);
+
 					return SHPLOADERERR;
 				}
 
