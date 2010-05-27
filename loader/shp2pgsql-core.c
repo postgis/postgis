@@ -102,6 +102,7 @@ int utf8(const char *fromcode, char *inputbuf, char **outputbuf)
         return UTF8_BAD_RESULT;
 #else
         free(*outputbuf);
+        iconv_close(cd);
         return UTF8_NO_RESULT;        
 #endif
     }
