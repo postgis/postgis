@@ -70,7 +70,7 @@
 /*
  * Default character encoding
  */
-#define ENCODING_DEFAULT "UTF8"
+#define ENCODING_DEFAULT "UTF-8"
 
 /*
  * Structure to hold the loader configuration options 
