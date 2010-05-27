@@ -85,7 +85,6 @@ int utf8(const char *fromcode, char *inputbuf, char **outputbuf)
 	char *outputptr;
 	size_t outbytesleft;
 	size_t inbytesleft;
-    int on = 1;
 
 	inbytesleft = strlen(inputbuf);
 
@@ -106,6 +105,8 @@ int utf8(const char *fromcode, char *inputbuf, char **outputbuf)
     /* Does this string convert cleanly? */
 	if ( iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft) == -1 )
 	{
+#ifdef HAVE_ICONVCTL
+        int on = 1;
 	    /* No. Try to convert it while transliterating. */
         iconvctl(cd, ICONV_SET_TRANSLITERATE, &on);
     	if ( iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft) == -1 )
@@ -122,6 +123,11 @@ int utf8(const char *fromcode, char *inputbuf, char **outputbuf)
         }
         iconv_close(cd);
         return UTF8_BAD_RESULT;
+#else
+        free(*outputbuf);
+        iconv_close(cd);
+        return UTF8_NO_RESULT;        
+#endif
     }
     /* Return a good result, converted string is in buffer. */
 	iconv_close(cd);
