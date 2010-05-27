@@ -60,7 +60,6 @@ int GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geomet
 int utf8(const char *fromcode, char *inputbuf, char **outputbuf)
 {
 	iconv_t cd;
-	char *inbufptr = inputbuf;
 	char *outputptr;
 	size_t outbytesleft;
 	size_t inbytesleft;
