@@ -40,7 +40,11 @@ void lwgeom_init_allocators()
  * Internal functions
  */
 
-char *utf8(const char *fromcode, char *inputbuf);
+#define UTF8_GOOD_RESULT 0
+#define UTF8_BAD_RESULT 1
+#define UTF8_NO_RESULT 2
+
+int utf8(const char *fromcode, char *inputbuf, char **outputbuf);
 char *escape_copy_string(char *str);
 char *escape_insert_string(char *str);
 
@@ -53,50 +57,54 @@ int GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geomet
 
 
 /* Return allocated string containing UTF8 string converted from encoding fromcode */
-char *
-utf8(const char *fromcode, char *inputbuf)
+int utf8(const char *fromcode, char *inputbuf, char **outputbuf)
 {
 	iconv_t cd;
 	char *inbufptr = inputbuf;
 	char *outputptr;
-	char *outputbuf;
 	size_t outbytesleft;
 	size_t inbytesleft;
+    int on = 1;
 
 	inbytesleft = strlen(inputbuf);
 
 	cd = iconv_open("UTF-8", fromcode);
 	if ( cd == ((iconv_t)(-1)) )
-		return NULL;
+		return UTF8_NO_RESULT;
 
 	outbytesleft = inbytesleft * 3 + 1; /* UTF8 string can be 3 times larger */
 	/* then local string */
-	outputbuf = (char *)malloc(outbytesleft);
-	if (!outputbuf)
-		return NULL;
+	*outputbuf = (char *)malloc(outbytesleft);
+	if (!*outputbuf)
+		return UTF8_NO_RESULT;
 
-	memset(outputbuf, 0, outbytesleft);
-	outputptr = outputbuf;
+	memset(*outputbuf, 0, outbytesleft);
+	outputptr = *outputbuf;
 
-	if (-1 == iconv(cd, &inbufptr, &inbytesleft, &outputptr, &outbytesleft))
+    /* Does this string convert cleanly? */
+	if ( iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft) == -1 )
 	{
-		switch (errno)
-		{
-			case EINVAL:
-				fprintf(stderr, "WARNING: Incomplete multibyte sequence in string '%s' discarded\n", inputbuf);
-				*outputptr = '\0';
-				break;
-			case EILSEQ:
-				fprintf(stderr, "ERROR: Invalid multibyte sequence '%s' in string '%s'\n", inbufptr, inputbuf);
-			case E2BIG: /* This would be a programmatic error */
-			default:
-				return NULL;
-		}
-	}
 
-	iconv_close (cd);
-
-	return outputbuf;
+	    /* No. Try to convert it while transliterating. */
+        iconvctl(cd, ICONV_SET_TRANSLITERATE, &on);
+    	if ( iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft) == -1 )
+    	{
+	        /* No. Try to convert it while discarding errors. */
+            iconvctl(cd, ICONV_SET_DISCARD_ILSEQ, &on);
+        	if ( iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft) == -1 )
+        	{
+                /* Still no. Throw away the buffer and return. */
+                free(*outputbuf);
+                iconv_close(cd);
+                return UTF8_NO_RESULT;
+            }
+        }
+        iconv_close(cd);
+        return UTF8_BAD_RESULT;
+    }
+    /* Return a good result, converted string is in buffer. */
+	iconv_close(cd);
+    return UTF8_GOOD_RESULT;
 }
 
 /**
@@ -1139,11 +1147,22 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 
 		if (state->config->encoding)
 		{
-			/* If we are converting from another encoding to UTF8, convert the field name to UTF8 */
-			utf8str = utf8(state->config->encoding, name);
-			if (!utf8str)
+            static char *encoding_msg = "Try \"LATIN1\" (Western European), or one of the values described at http://www.postgresql.org/docs/current/static/multibyte.html.";
+
+            int rv = utf8(state->config->encoding, name, &utf8str);
+						
+			if (rv != UTF8_GOOD_RESULT)
 			{
-				snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert field name \"%s\" from %s encoding to UTF-8: iconv reports \"%s\"", name, state->config->encoding, strerror(errno));
+                if( rv == UTF8_BAD_RESULT )
+				    snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert field name \"%s\" to UTF-8 (iconv reports \"%s\"). Current encoding is \"%s\". %s", utf8str, strerror(errno), state->config->encoding, encoding_msg);
+			    else if( rv == UTF8_NO_RESULT )
+				    snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert field name to UTF-8 (iconv reports \"%s\"). Current encoding is \"%s\". %s", strerror(errno), state->config->encoding, encoding_msg);
+				else 
+				    snprintf(state->message, SHPLOADERMSGLEN, "Unexpected return value from utf8()");
+
+                if( rv == UTF8_BAD_RESULT )
+			        free(utf8str);
+
 				return SHPLOADERERR;
 			}
 
@@ -1569,18 +1588,25 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 
 			if (state->config->encoding)
 			{
-				/* If we are converting from another encoding to UTF8, convert the field value to UTF8 */
-				utf8str = utf8(state->config->encoding, val);
-				if (!utf8str)
-				{
-					snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert field value \"%s\" to UTF-8 (iconv reports \"%s\"). Current encoding is \"%s\", try \"LATIN1\" (Western European), or one of the values described at http://www.postgresql.org/docs/current/static/multibyte.html.", val, strerror(errno), state->config->encoding);
+                static char *encoding_msg = "Try \"LATIN1\" (Western European), or one of the values described at http://www.postgresql.org/docs/current/static/multibyte.html.";
 
-					return SHPLOADERERR;
-				}
+				int rv = utf8(state->config->encoding, val, &utf8str);
 
-				strncpy(val, utf8str, MAXVALUELEN);
-				free(utf8str);
-			}
+                if (rv != UTF8_GOOD_RESULT)
+                {
+                    if( rv == UTF8_BAD_RESULT )
+					    snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert data value \"%s\" to UTF-8 (iconv reports \"%s\"). Current encoding is \"%s\". %s", utf8str, strerror(errno), state->config->encoding, encoding_msg);
+				    else if( rv == UTF8_NO_RESULT )
+					    snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert data value to UTF-8 (iconv reports \"%s\"). Current encoding is \"%s\". %s", strerror(errno), state->config->encoding, encoding_msg);
+					else 
+					    snprintf(state->message, SHPLOADERMSGLEN, "Unexpected return value from utf8()");
+
+                    if( rv == UTF8_BAD_RESULT )
+				        free(utf8str);
+        		    
+                	return SHPLOADERERR;
+                }
+            }
 
 			/* Escape attribute correctly according to dump format */
 			if (state->config->dump_format)
