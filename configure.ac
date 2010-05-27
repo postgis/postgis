@@ -252,6 +252,8 @@ else
 	AC_MSG_ERROR([Could not find iconv.h header. Please install libiconv and libiconv-devel.])
 fi
 
+AC_CHECK_FUNCS([iconvctl libiconvctl],[],[])
+
 LDFLAGS="$LDFLAGS_SAVE"
 CFLAGS="$CFLAGS_SAVE"
 
