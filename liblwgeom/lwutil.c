@@ -24,7 +24,7 @@ static char *lwgeomTypeName[] =
     {
         "Unknown",
         "Point",
-        "Line",
+        "LineString",
         "Polygon",
         "MultiPoint",
         "MultiLine",
