@@ -879,6 +879,10 @@ ShpLoaderCreate(SHPLOADERCONFIG *config)
 	state->hSHPHandle = NULL;
 	state->hDBFHandle = NULL;
 	state->wkbtype = 0;
+    state->types = NULL;
+    state->widths = NULL;
+    state->precisions = NULL;
+    state->col_names = NULL;
 
 	return state;
 }
