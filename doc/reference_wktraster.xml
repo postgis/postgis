@@ -2327,4 +2327,120 @@ a_rid | b_rid | overleft
 		  </refsection>
 		 </refentry>
 	</sect1>
+	
+	<sect1 id="Raster_Relationships">
+		<title>Raster and Raster Band Spatial Relationships</title>
+		<refentry id="RT_ST_Intersects">
+		<refnamediv>
+			<refname>ST_Intersects</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if rastA pixel in a band with non-no data band value intersects
+				with a geometry/raster. If band number is not specified it defaults to 1.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>ST_Intersects</function></funcdef>
+
+				<paramdef>
+				  <type>raster </type>
+
+				  <parameter>rastA</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>geomB</parameter>
+				</paramdef>
+			  </funcprototype>
+			  
+			  <funcprototype>
+				<funcdef>boolean <function>ST_Intersects</function></funcdef>
+
+				<paramdef>
+				  <type>raster </type>
+
+				  <parameter>rastA</parameter>
+				</paramdef>
+				
+				<paramdef>
+				  <type>integer </type>
+
+				  <parameter>band_num</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>geomB</parameter>
+				</paramdef>
+			  </funcprototype>
+			  
+			  <funcprototype>
+				<funcdef>boolean <function>ST_Intersects</function></funcdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>geomA</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>rast </type>
+
+				  <parameter>rastB</parameter>
+				</paramdef>
+			  </funcprototype>
+			  
+			    <funcprototype>
+				<funcdef>boolean <function>ST_Intersects</function></funcdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>geomA</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>rast </type>
+
+				  <parameter>rastB</parameter>
+				</paramdef>
+				<parameter>band_num</parameter>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>Returns true if any pixel in a raster band has a value that is not nodatavalue and that 
+				geometry region of the pixel intersects the geometry</para>
+
+			<note><para>This operand will make use of any indexes that may be available on the
+				geometries / rasters.</para></note>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT A.rid, g.gid , ST_Intersects(A.rast, g.geom) As inter
+ FROM dummy_rast AS A CROSS JOIN 
+	(VALUES (1, ST_Point(3427928, 5793243.85) ) ,
+		(2, ST_GeomFromText('LINESTRING(3427927.85 5793243.75,3427927.8 5793243.75,3427927.8 5793243.8)') ),
+		(3, ST_GeomFromText('LINESTRING(1 2, 3 4)') )
+		) As g(gid,geom)
+WHERE A.rid =2 ;
+
+ rid | gid | inter
+-----+-----+-------
+   2 |   1 | t
+   2 |   2 | t
+   2 |   3 | f
+</programlisting>
+		  </refsection>		
+		</refentry>
+	</sect1>
 </chapter>
