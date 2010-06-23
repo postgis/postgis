@@ -2096,14 +2096,14 @@ FROM dummy_rast;
 				  <funcprototype>
 					<funcdef>setof geomval <function>ST_Intersection</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>geom </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
 					<funcdef>setof geomval <function>ST_Intersection</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>band_num</parameter></paramdef>
-					<paramdef><type>geom </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
