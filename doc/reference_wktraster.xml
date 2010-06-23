@@ -2408,7 +2408,11 @@ a_rid | b_rid | overleft
 
 				  <parameter>rastB</parameter>
 				</paramdef>
-				<parameter>band_num</parameter>
+				
+				<paramdef>
+				  <type>integer </type>
+				  <parameter>band_num</parameter>
+				</paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
