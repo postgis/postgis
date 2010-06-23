@@ -3,6 +3,17 @@
   <title>WKT Raster Frequently Asked Questions</title>
 
   <qandaset>
+  
+     <qandaentry>
+      <question>
+        <para> What is the meaning of "WKT" in WKT Raster?</para>
+      </question>
+
+      <answer>
+        <para>WKT stands for " Well Known Text". Is is an OGC standard to represent geographical information in a human readable textual representation. However, the OCG WKT standard does not define a way to represent raster yet. PostGIS WKT Raster is a bit ahead on this :-)</para>
+      </answer>
+    </qandaentry>
+    
   	 <qandaentry>
       <question>
         <para>Where can I find out more about the WKT Raster Project?</para>
@@ -191,6 +202,22 @@ END
 		for details of what you can expect in the future.</para>
       </answer>
     </qandaentry>
-	
+    
+    <qandaentry>
+      <question>
+        <para>How is WKT Raster different than the Oracle SDO_GEORASTER and SDO_RASTER types?</para>
+      </question>
+
+      <answer>
+       	<para>The major advantage of one-georeference-by-raster over one-georeference-by-layer is to allow:</para>
+       	<para>* coverages to be not necessarily rectangular (which is often the case of raster coverage covering large extents. See the possible raster arrangements in the documentation)</para>
+       	<para>* rasters to overlaps (which is necessary to implement lossless vector to raster conversion) </para>
+       	<para>These arrangements are possible in Oracle as well, but they imply the storage of multiple SDO_GEORASTER objects linked to as many SDO_RASTER tables. A complex coverage can lead to hundreds of tables in the database. With WKT Raster you can store a similar raster arrangement into a unique table.</para>
+
+       	<para>It's a bit like if PostGIS would force you to store only full rectangular vector coverage without gaps or overlaps (a perfect rectangular topological layer). 
+       	This is very practical in some applications but practice has shown that it is not realistic or desirable for most geographical coverages. Vector structures needs the flexibility to store discontinuous and non-rectangular coverages. 
+       	We think it is a big advantage that raster structure should benefit as well. </para>
+      </answer>
+    </qandaentry> 
   </qandaset>
 </chapter>
