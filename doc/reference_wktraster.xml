@@ -1968,12 +1968,12 @@ FROM (SELECT ST_SetRotation(rast,0.1,0.1) As rast
 		  <refsynopsisdiv>
 			<funcsynopsis>
 			  <funcprototype>
-				<funcdef>geomval[] <function>ST_DumpAsPolygons</function></funcdef>
+				<funcdef>setof geomval <function>ST_DumpAsPolygons</function></funcdef>
 				<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 			  </funcprototype>
 			  
 			  <funcprototype>
-				<funcdef>geomval[] <function>ST_DumpAsPolygons</function></funcdef>
+				<funcdef>setof geomval <function>ST_DumpAsPolygons</function></funcdef>
 				<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>band_num</parameter></paramdef>
 			  </funcprototype>
@@ -2068,6 +2068,87 @@ FROM dummy_rast;
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="ST_Envelope" />, <xref linkend="ST_AsText" />, <xref linkend="RT_ST_SRID" /></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_Intersection">
+			<refnamediv>
+				<refname>ST_Intersection</refname>
+				<refpurpose>Returns a set of geometry-pixelvalue pairs resulting from intersection of a raster band with a geometry. If
+					no band number is specified, band 1 is assumed.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>setof geomval <function>ST_Intersection</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>setof geomval <function>ST_Intersection</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>band_num</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>setof geomval <function>ST_Intersection</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>geom </type> <parameter>geom</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>setof geomval <function>ST_Intersection</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>band_num</parameter></paramdef>
+					<paramdef><type>geom </type> <parameter>geom</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Return the intersections of the geometry with the vectorized parts of 
+        the raster and the values associated with those parts, if really their intersection is not empty. If no band number is specified
+        band 1 is assumed.</para>
+			
+				</refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>SELECT foo.rid, foo.gid, 
+   ST_AsText((foo.geomval).geom) As geomwkt, (foo.geomval).val
+FROM
+	(
+SELECT A.rid, g.gid , ST_Intersection(A.rast, g.geom) As geomval
+ FROM dummy_rast AS A CROSS JOIN 
+	(VALUES (1, ST_Point(3427928, 5793243.85) ) ,
+		(2, ST_GeomFromText('LINESTRING(3427927.85 5793243.75,3427927.8 5793243.75,3427927.8 5793243.8)') ),
+		(3, ST_GeomFromText('LINESTRING(1 2, 3 4)') )
+		) As g(gid,geom)
+WHERE A.rid =2 ) As foo;
+
+ rid | gid |      geomwkt												| val
+-----+-----+---------------------------------------------------------------------------------------------
+   2 |   1 | POINT(3427928 5793243.85)									| 249
+   2 |   1 | POINT(3427928 5793243.85)									| 253
+   2 |   2 | POINT(3427927.85 5793243.75)								| 254
+   2 |   2 | POINT(3427927.8 5793243.8)									| 251
+   2 |   2 | POINT(3427927.8 5793243.8)									| 253
+   2 |   2 | LINESTRING(3427927.8 5793243.75,3427927.8 5793243.8)   	| 252
+   2 |   2 | MULTILINESTRING((3427927.8 5793243.8,3427927.8 5793243.75),...) | 250
+   2 |   3 | GEOMETRYCOLLECTION EMPTY
+</programlisting>
+			
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_Intersects" />, <xref linkend="ST_AsText" /></para>
 			</refsection>
 		</refentry>
 		
@@ -2431,7 +2512,7 @@ a_rid | b_rid | overleft
 			<title>Examples</title>
 
 			<programlisting>SELECT A.rid, g.gid , ST_Intersects(A.rast, g.geom) As inter
- FROM dummy_rast AS A CROSS JOIN 
+FROM dummy_rast AS A CROSS JOIN 
 	(VALUES (1, ST_Point(3427928, 5793243.85) ) ,
 		(2, ST_GeomFromText('LINESTRING(3427927.85 5793243.75,3427927.8 5793243.75,3427927.8 5793243.8)') ),
 		(3, ST_GeomFromText('LINESTRING(1 2, 3 4)') )
@@ -2444,7 +2525,11 @@ WHERE A.rid =2 ;
    2 |   2 | t
    2 |   3 | f
 </programlisting>
-		  </refsection>		
+		  </refsection>	
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_Intersection" /></para>
+			</refsection>
 		</refentry>
 	</sect1>
 </chapter>
