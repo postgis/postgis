@@ -1748,7 +1748,7 @@ WHERE rid = 2;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Sets the value that represents no data for the band.  This will effect ST_Polygon and ST_ConvexHull results.</para>
+				<para>Sets the value that represents no data for the band.  This will effect <xref linkend="RT_ST_Polygon" /> and <xref linkend="RT_ST_ConvexHull" /> results.</para>
 				</refsection>
 				
 				<refsection>
@@ -1984,13 +1984,14 @@ FROM (SELECT ST_SetRotation(rast,0.1,0.1) As rast
 			<title>Description</title>
 				<para>This is a set-returning function (SRF). It returns a set of
 				geomval rows, formed by a geometry (geom) and a pixel band value (val). 
-				Each polygon is the union of all pixels for that band that have the same pixel value denoted by val</para>
+				Each polygon is the union of all pixels for that band that have the same pixel value denoted by val.</para>
 	
 				<para>ST_DumpAsPolygon is useful for polygonizing rasters. It is the
 				reverse of a GROUP BY in that it creates new rows. For example it
 				can be used to expand a single raster into multiple POLYGONS/MULTIPOLYGONS.</para>
 	
-				<para>Availability: Requires GDAL 1.6.1 or higher.</para>
+				<para>Availability: Requires GDAL 1.7 or higher.</para>
+				<note><para>If there is a no data value set for a band, pixels with that value will not be returned.</para></note>
 		  </refsection>
 	
 		  <refsection>
@@ -2018,7 +2019,7 @@ ORDER BY val;
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="RT_ST_Value" /></para>
+			<para><xref linkend="RT_ST_Value" />, <xref linkend="RT_ST_Polygon" /></para>
 		  </refsection>
 		</refentry>
 		
@@ -2068,6 +2069,89 @@ FROM dummy_rast;
 				<title>See Also</title>
 				<para><xref linkend="ST_Envelope" />, <xref linkend="ST_AsText" />, <xref linkend="RT_ST_SRID" /></para>
 			</refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_Polygon">
+		  <refnamediv>
+			<refname>ST_Polygon</refname>
+			<refpurpose>Returns a polygon geometry formed by the union of pixels that have a pixel value that is not no data value.  If no band number is specified, band num defaults to 1.</refpurpose>
+		  </refnamediv>
+	
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_Polygon</function></funcdef>
+				<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+			  </funcprototype>
+			  
+			  <funcprototype>
+				<funcdef>geometry <function>ST_Polygon</function></funcdef>
+				<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>band_num</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+	
+		  <refsection>
+			<title>Description</title>
+				<para>Availability: Requires GDAL 1.7 or higher.</para>
+		  </refsection>
+	
+		  <refsection>
+			<title>Examples</title>
+			<programlisting>
+-- by default no data band value is 0 or not set, so polygon will return a square polygon	
+SELECT ST_AsText(ST_Polygon(rast)) As geomwkt
+FROM dummy_rast
+WHERE rid = 2;
+
+geomwkt
+--------------------------------------------
+POLYGON((3427927.8 5793243.75,3427927.75 5793243.75,3427927.75 5793243.8,3427927.75 5793243.85,3427927.75 5793243.9,
+3427927.75 5793244,3427927.8 5793244,3427927.85 5793244,3427927.9 5793244,3427928 5793244,3427928 5793243.95,
+3427928 5793243.85,3427928 5793243.8,3427928 5793243.75,3427927.85 5793243.75,3427927.8 5793243.75))
+ 		
+ 		
+-- now we change the no data value of first band
+UPDATE dummy_rast SET rast = ST_SetBandNoDataValue(rast,1,254)
+WHERE rid = 2;
+SELECt rid, ST_BandNoDataValue(rast)
+from dummy_rast where rid = 2;
+
+-- ST_Polygon excludes the pixel value 254 and returns a multipolygon
+SELECT ST_AsText(ST_Polygon(rast)) As geomwkt
+FROM dummy_rast
+WHERE rid = 2;
+
+geomwkt
+---------------------------------------------------------
+MULTIPOLYGON(((3427927.9 5793243.95,3427927.85 5793243.95,3427927.85 5793244,3427927.9 5793244,3427927.9 5793243.95)),
+((3427928 5793243.85,3427928 5793243.8,3427927.95 5793243.8,3427927.95 5793243.85,3427927.9 5793243.85,3427927.9 5793243.9,3427927.9 5793243.95,3427927.95 5793243.95,3427928 5793243.95,3427928 5793243.85)),
+((3427927.8 5793243.75,3427927.75 5793243.75,3427927.75 5793243.8,3427927.75 5793243.85,3427927.75 5793243.9,3427927.75 5793244,3427927.8 5793244,
+3427927.8 5793243.9,3427927.8 5793243.85,3427927.85 5793243.85,3427927.85 5793243.8,3427927.85 5793243.75,3427927.8 5793243.75)))
+
+-- Or if you want the no data value different for just one time
+
+SELECT ST_AsText(
+	ST_Polygon(
+		ST_SetBandNoDataValue(rast,1,252)
+		)
+	) As geomwkt
+FROM dummy_rast
+WHERE rid =2;
+
+geomwkt
+---------------------------------
+POLYGON((3427928 5793243.85,3427928 5793243.8,3427928 5793243.75,3427927.85 5793243.75,3427927.8 5793243.75,3427927.8 5793243.8,3427927.75 5793243.8,3427927.75 5793243.85,3427927.75 5793243.9,3427927.75 5793244,3427927.8 5793244,3427927.85 5793244,3427927.9 5793244,3427928 5793244,3427928 5793243.95,3427928 5793243.85),
+(3427927.9 5793243.9,3427927.9 5793243.85,3427927.95 5793243.85,3427927.95 5793243.9,3427927.9 5793243.9))
+
+
+			</programlisting>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="RT_ST_Value" />, <xref linkend="RT_ST_DumpAsPolygons" /></para>
+		  </refsection>
 		</refentry>
 	</sect1>
 	
