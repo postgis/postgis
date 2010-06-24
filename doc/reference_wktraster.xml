@@ -2469,7 +2469,7 @@ a_rid | b_rid | overleft
 				</paramdef>
 
 				<paramdef>
-				  <type>rast </type>
+				  <type>raster </type>
 
 				  <parameter>rastB</parameter>
 				</paramdef>
@@ -2485,7 +2485,7 @@ a_rid | b_rid | overleft
 				</paramdef>
 
 				<paramdef>
-				  <type>rast </type>
+				  <type>raster </type>
 
 				  <parameter>rastB</parameter>
 				</paramdef>
