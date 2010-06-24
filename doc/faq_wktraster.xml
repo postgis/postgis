@@ -10,7 +10,8 @@
       </question>
 
       <answer>
-        <para>WKT stands for " Well Known Text". Is is an OGC standard to represent geographical information in a human readable textual representation. However, the OCG WKT standard does not define a way to represent raster yet. PostGIS WKT Raster is a bit ahead on this :-)</para>
+        <para>WKT stands for &quot;Well Known Text&quot;. It is trying to follow the OGC WKT for geometry to provide a standard to represent geographical information in a human readable textual representation. 
+        However, the OGC WKT standard does not define a way to represent raster yet. PostGIS WKT Raster is a bit ahead on this :-)</para>
       </answer>
     </qandaentry>
     
