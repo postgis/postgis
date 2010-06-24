@@ -23,6 +23,20 @@
         <para>Refer to the <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster">WKT Raster home page</ulink>.</para>
       </answer>
     </qandaentry>
+    
+    <qandaentry>
+      <question>
+        <para>Are there any books or tutorials to get me started with this wonderful invention?</para>
+      </question>
+
+      <answer>
+        <para>There is a full length beginner tutorial <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRasterTutorial01"> Intersecting vector buffers with large raster coverage using PostGIS WKT Raster</ulink>.
+        There is a whole chapter (more than 35 pages of content) dedicated to WKT Raster with free code and data downloads at <ulink url="http://www.postgis.us/chapter_13">PostGIS in Action - WKT Raster chapter</ulink>.
+        You can <ulink url="http://www.postgis.us/page_buy_book">buy PostGIS in Action</ulink>  now from Manning and get all draft chapters and completed book once out or buy from Amazon at a significant discount, but wait for the book to come out.
+        </para>
+      </answer>
+    
+    </qandaentry>
 	
 	 <qandaentry>
       <question>
@@ -44,7 +58,7 @@
       </question>
 
       <answer>
-        <para>Currently you need <ulink url="http://www.gdal.org/">GDAL 1.6+</ulink>, <ulink url="http://www.python.org/download/releases/2.5/">Python 2.5</ulink> with <ulink url="http://pypi.python.org/pypi/GDAL/1.6.1">GDAL 1.6 or higher bindings</ulink>, 
+        <para>Currently you need <ulink url="http://www.gdal.org/">GDAL 1.6+</ulink> though later versions would be better since they have many memory leak fixes, <ulink url="http://www.python.org/download/releases/2.5/">Python 2.5</ulink> with <ulink url="http://pypi.python.org/pypi/GDAL/1.6.1">GDAL 1.6 or higher bindings</ulink>, 
 			and <ulink url="http://pypi.python.org/pypi/numpy">NumPy</ulink>.</para>
 		<para>
 			For windows users, installing these components from binary sources is documented in the 
