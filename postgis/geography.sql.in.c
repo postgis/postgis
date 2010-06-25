@@ -621,7 +621,7 @@ CREATE OR REPLACE FUNCTION ST_DWithin(geography, geography, float8)
 CREATE OR REPLACE FUNCTION ST_DWithin(text, text, float8)
 	RETURNS boolean AS
 	$$ SELECT ST_DWithin($1::geometry, $2::geometry, $3);  $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'SQL' IMMUTABLE;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Area(geography, boolean)
@@ -683,41 +683,41 @@ CREATE OR REPLACE FUNCTION _ST_Covers(geography, geography)
 CREATE OR REPLACE FUNCTION ST_Covers(geography, geography)
 	RETURNS boolean
 	AS 'SELECT $1 && $2 AND _ST_Covers($1, $2)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'SQL' IMMUTABLE;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 -- TODO Remove in 2.0
 CREATE OR REPLACE FUNCTION ST_Covers(text, text)
 	RETURNS boolean AS
 	$$ SELECT ST_Covers($1::geometry, $2::geometry);  $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'SQL' IMMUTABLE ;
 
 -- Only implemented for polygon-over-point
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_CoveredBy(geography, geography)
 	RETURNS boolean
 	AS 'SELECT $1 && $2 AND _ST_Covers($2, $1)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'SQL' IMMUTABLE ;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 -- TODO Remove in 2.0
 CREATE OR REPLACE FUNCTION ST_CoveredBy(text, text)
 	RETURNS boolean AS
 	$$ SELECT ST_CoveredBy($1::geometry, $2::geometry);  $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'SQL' IMMUTABLE ;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Intersects(geography, geography)
 	RETURNS boolean
 	AS 'SELECT $1 && $2 AND _ST_Distance($1, $2, 0.0, false) < 0.00001'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'SQL' IMMUTABLE ;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 -- TODO Remove in 2.0
 CREATE OR REPLACE FUNCTION ST_Intersects(text, text)
 	RETURNS boolean AS
 	$$ SELECT ST_Intersects($1::geometry, $2::geometry);  $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'SQL' IMMUTABLE ;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION _ST_BestSRID(geography, geography)
