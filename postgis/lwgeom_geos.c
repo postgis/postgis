@@ -275,7 +275,7 @@ Datum hausdorffdistance(PG_FUNCTION_ARGS)
 
 	if (retcode == 0)
 	{
-		elog(ERROR,"GEOS HausdorffDistance() threw an error!");
+		lwerror("GEOSHausdorffDistance: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /*never get here */
 	}
 
@@ -331,7 +331,7 @@ Datum hausdorffdistancedensify(PG_FUNCTION_ARGS)
 
 	if (retcode == 0)
 	{
-		elog(ERROR,"GEOS HausdorffDistanceDensify() threw an error!");
+		lwerror("GEOSHausdorffDistanceDensify: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /*never get here */
 	}
 
@@ -631,7 +631,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 					{
 						GEOSGeom_destroy((GEOSGeometry *)g1);
 						GEOSGeom_destroy((GEOSGeometry *)geos_result);
-						elog(ERROR,"GEOS union() threw an error!");
+						lwerror("GEOSUnion: %s", lwgeom_geos_errmsg);
 					}
 					GEOSGeom_destroy((GEOSGeometry *)g1);
 					GEOSGeom_destroy((GEOSGeometry *)geos_result);
@@ -724,8 +724,8 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	PROFSTOP(PROF_P2G2);
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
-		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
+		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
@@ -743,7 +743,7 @@ Datum geomunion(PG_FUNCTION_ARGS)
 
 	if (g3 == NULL)
 	{
-		elog(ERROR,"GEOS union() threw an error!");
+		lwerror("GEOSUnion: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /* never get here */
 	}
 
@@ -827,9 +827,9 @@ Datum symdifference(PG_FUNCTION_ARGS)
 
 	if (g3 == NULL)
 	{
-		elog(ERROR,"GEOS symdifference() threw an error!");
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
+		lwerror("GEOSSymDifference: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /*never get here */
 	}
 
@@ -897,8 +897,8 @@ Datum boundary(PG_FUNCTION_ARGS)
 
 	if (g3 == NULL)
 	{
-		elog(NOTICE,"GEOSBoundary(): %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
+		lwerror("GEOSBoundary: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /* never get here */
 	}
 
@@ -965,8 +965,8 @@ Datum convexhull(PG_FUNCTION_ARGS)
 
 	if (g3 == NULL)
 	{
-		elog(ERROR,"GEOS convexhull() threw an error!");
 		GEOSGeom_destroy(g1);
+		lwerror("GEOSConvexHull: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /* never get here */
 	}
 
@@ -1041,8 +1041,8 @@ Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 
 	if (g3 == NULL)
 	{
-		elog(ERROR,"GEOS topologypreservesimplify() threw an error!");
 		GEOSGeom_destroy(g1);
+		lwerror("GEOSTopologyPreserveSimplify: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /* never get here */
 	}
 
@@ -1254,8 +1254,8 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 	if (g3 == NULL)
 	{
-		elog(ERROR,"GEOS buffer() threw an error!");
 		GEOSGeom_destroy(g1);
+		lwerror("GEOSBuffer: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /* never get here */
 	}
 
@@ -1346,9 +1346,9 @@ Datum intersection(PG_FUNCTION_ARGS)
 
 	if (g3 == NULL)
 	{
-		elog(ERROR,"GEOS Intersection() threw an error!");
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
+		lwerror("GEOSIntersection: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /* never get here */
 	}
 
@@ -1365,7 +1365,7 @@ Datum intersection(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
 		GEOSGeom_destroy(g3);
-		elog(ERROR,"GEOS Intersection() threw an error (result postgis geometry formation)!");
+		lwerror("GEOS Intersection() threw an error (result postgis geometry formation)!");
 		PG_RETURN_NULL(); /* never get here */
 	}
 
@@ -1424,8 +1424,8 @@ Datum difference(PG_FUNCTION_ARGS)
 	PROFSTOP(PROF_P2G2);
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
-		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
+		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
@@ -1435,9 +1435,9 @@ Datum difference(PG_FUNCTION_ARGS)
 
 	if (g3 == NULL)
 	{
-		elog(ERROR,"GEOS difference() threw an error!");
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
+		lwerror("GEOSDifference: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /* never get here */
 	}
 
@@ -1505,8 +1505,8 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 
 	if (g3 == NULL)
 	{
-		elog(WARNING, "GEOSPointOnSurface(): %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
+		lwerror("GEOSPointOnSurface: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /* never get here */
 	}
 
@@ -1567,7 +1567,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 	if ( geosresult == NULL )
 	{
 		GEOSGeom_destroy(geosgeom);
-		elog(ERROR,"GEOS getCentroid() threw an error!");
+		lwerror("GEOSGetCentroid: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
@@ -1888,8 +1888,8 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	PROFSTOP(PROF_P2G2);
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
-		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
+		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
@@ -1901,7 +1901,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(g2);
 	if (result == 2)
 	{
-		elog(ERROR,"GEOS overlaps() threw an error!");
+		lwerror("GEOSOverlaps: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /* never get here */
 	}
 
@@ -2056,7 +2056,7 @@ Datum contains(PG_FUNCTION_ARGS)
 
 	if (result == 2)
 	{
-		elog(ERROR,"GEOS contains() threw an error!");
+		lwerror("GEOSContains: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /* never get here */
 	}
 
@@ -2139,7 +2139,7 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 
 	if (result == 2)
 	{
-		elog(ERROR,"GEOS contains() threw an error!");
+		lwerror("GEOSContains: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /* never get here */
 	}
 
@@ -2293,7 +2293,7 @@ Datum covers(PG_FUNCTION_ARGS)
 
 	if (result == 2)
 	{
-		elog(ERROR,"GEOS covers() threw an error!");
+		lwerror("GEOSCovers: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /* never get here */
 	}
 
@@ -2428,7 +2428,7 @@ Datum within(PG_FUNCTION_ARGS)
 
 	if (result == 2)
 	{
-		elog(ERROR,"GEOS within() threw an error!");
+		lwerror("GEOSWithin: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /* never get here */
 	}
 
@@ -2571,7 +2571,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 
 	if (result == 2)
 	{
-		elog(ERROR,"GEOS coveredby() threw an error!");
+		lwerror("GEOSCoveredBy: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /* never get here */
 	}
 
@@ -2648,7 +2648,7 @@ Datum crosses(PG_FUNCTION_ARGS)
 
 	if (result == 2)
 	{
-		elog(ERROR,"GEOS crosses() threw an error!");
+		lwerror("GEOSCrosses: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /* never get here */
 	}
 
@@ -2822,7 +2822,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 
 	if (result == 2)
 	{
-		elog(ERROR,"GEOS intersects() threw an error!");
+		lwerror("GEOSIntersects: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /* never get here */
 	}
 
@@ -2895,7 +2895,7 @@ Datum touches(PG_FUNCTION_ARGS)
 
 	if (result == 2)
 	{
-		elog(ERROR,"GEOS touches() threw an error!");
+		lwerror("GEOSTouches: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /* never get here */
 	}
 
@@ -2971,7 +2971,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 
 	if (result == 2)
 	{
-		elog(ERROR,"GEOS disjoin() threw an error!");
+		lwerror("GEOSDisjoint: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /* never get here */
 	}
 
@@ -3036,7 +3036,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 
 	if (result == 2)
 	{
-		elog(ERROR,"GEOS relate_pattern() threw an error!");
+		lwerror("GEOSRelatePattern: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /* never get here */
 	}
 
@@ -3104,7 +3104,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 
 	if (relate_str == NULL)
 	{
-		elog(ERROR,"GEOS relate() threw an error!");
+		lwerror("GEOSRelate: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /* never get here */
 	}
 
@@ -3185,7 +3185,7 @@ Datum geomequals(PG_FUNCTION_ARGS)
 
 	if (result == 2)
 	{
-		elog(ERROR,"GEOS equals() threw an error!");
+		lwerror("GEOSEquals: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /*never get here */
 	}
 
@@ -3225,7 +3225,7 @@ Datum issimple(PG_FUNCTION_ARGS)
 
 	if (result == 2)
 	{
-		elog(ERROR,"GEOS issimple() threw an error!");
+		lwerror("GEOSisSimple: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /*never get here */
 	}
 
@@ -3264,7 +3264,7 @@ Datum isring(PG_FUNCTION_ARGS)
 
 	if (result == 2)
 	{
-		elog(ERROR,"GEOS isring() threw an error!");
+		lwerror("GEOSisRing: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
@@ -3878,6 +3878,7 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 
 	if ( ! geos_out ) /* exception thrown.. */
 	{
+		lwerror("LWGEOM_GEOS_buildArea: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
