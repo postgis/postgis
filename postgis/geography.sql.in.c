@@ -608,7 +608,7 @@ CREATE OR REPLACE FUNCTION ST_DWithin(geography, geography, float8)
 CREATE OR REPLACE FUNCTION ST_DWithin(text, text, float8)
 	RETURNS boolean AS
 	$$ SELECT ST_DWithin($1::geometry, $2::geometry, $3);  $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'SQL' IMMUTABLE ;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Area(geography, boolean)
