@@ -360,7 +360,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	int nelems, i;
 	PG_LWGEOM *result = NULL;
 	PG_LWGEOM *pgis_geom = NULL;
-	const GEOSGeometry * g1 = NULL;
+	GEOSGeometry * g1 = NULL;
 	GEOSGeometry * g2 = NULL;
 	GEOSGeometry * geos_result=NULL;
 	int SRID=-1;
@@ -550,12 +550,24 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		if (curgeom > 0)
 		{
 			g1 = GEOSGeom_createCollection(GEOS_MULTIPOLYGON, geoms, curgeom);
-			if ( g1 ) g2 = GEOSUnionCascaded(g1);
-			if ( g2 ) GEOSSetSRID(g2, SRID);
-			if ( g2 ) result = GEOS2POSTGIS(g2, is3d);
-			/* Clean up the mess. */
-			if ( g1 ) GEOSGeom_destroy((GEOSGeometry *)g1);
-			if ( g2 ) GEOSGeom_destroy(g2);
+			if ( ! g1 ) 
+			{
+				/* TODO: cleanup geoms memory */
+				lwerror("Could not create MULTIPOLYGON from geometry array: %s", lwgeom_geos_errmsg);
+				PG_RETURN_NULL();
+			}
+			g2 = GEOSUnionCascaded(g1);
+			GEOSGeom_destroy(g1);
+			if ( ! g2 )
+			{
+				lwerror("GEOSUnionCascaded: %s",
+					lwgeom_geos_errmsg);
+				PG_RETURN_NULL();
+			}
+
+			GEOSSetSRID(g2, SRID);
+			result = GEOS2POSTGIS(g2, is3d);
+			GEOSGeom_destroy(g2);
 		}
 		else
 		{
