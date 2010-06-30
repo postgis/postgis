@@ -61,10 +61,10 @@ sqlmm:
 	psql -f sqlmm_topology.sql $(DATABASE)
 
 topopred: topo_predicates.sql
-	@psql -tf topo_predicates.sql $(DATABASE)
+	@psql --no-psqlrc -tf topo_predicates.sql $(DATABASE)
 
 geompred: geom_predicates.sql 
-	@psql -tf geom_predicates.sql $(DATABASE)
+	@psql --no-psqlrc -tf geom_predicates.sql $(DATABASE)
 
 topo_predicates.sql: predicates.sql.in
 	@cpp -P -traditional-cpp predicates.sql.in | sed -e 's:@COLUMN@:feature:g;s:@SCHEMA@:topology.:g' > topo_predicates.sql
