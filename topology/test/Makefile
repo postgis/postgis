@@ -34,7 +34,7 @@ test: inittopo load loadmore hier cache pred invalid edit
 initdb:
 	createdb $(DATABASE)
 	createlang plpgsql $(DATABASE)
-	psql -f ../../lwpostgis.sql $(DATABASE)
+	psql -f ../../postgis/postgis.sql $(DATABASE)
 
 inittopo:
 	psql -f ../topology.sql $(DATABASE)
