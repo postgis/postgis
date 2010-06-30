@@ -162,6 +162,11 @@
 
 #include "../postgis/sqldefines.h"
 
+/* These were dropped from sqldefines.h... */
+#define CREATEFUNCTION CREATE OR REPLACE FUNCTION
+#define _VOLATILE_STRICT VOLATILE STRICT 
+#define _VOLATILE VOLATILE 
+
 DROP SCHEMA topology CASCADE;
 
 BEGIN;
@@ -281,7 +286,7 @@ CREATE TABLE topology.layer (
 	schema_name VARCHAR NOT NULL,
 	table_name VARCHAR NOT NULL,
 	feature_column VARCHAR NOT NULL,
-	feature_type VARCHAR NOT NULL,
+	feature_type integer NOT NULL,
 	level INTEGER NOT NULL DEFAULT 0,
 	child_id INTEGER DEFAULT NULL,
 	UNIQUE(schema_name, table_name, feature_column),
@@ -1160,7 +1165,7 @@ BEGIN
 			clyr = rec;
 		END LOOP;
 
-		query = ''SELECT geomunion(topology.Geometry(''
+		query = ''SELECT st_union(topology.Geometry(''
 			|| quote_ident(clyr.feature_column)
 			|| '')) as geom FROM ''
 			|| quote_ident(clyr.schema_name) || ''.''
@@ -1186,7 +1191,7 @@ BEGIN
 	
 
 	IF topogeom.type = 3 THEN -- [multi]polygon
-		FOR rec IN EXECUTE ''SELECT geomunion(''
+		FOR rec IN EXECUTE ''SELECT st_union(''
 			|| ''topology.ST_GetFaceGeometry(''
 			|| quote_literal(toponame) || '',''
 			|| ''element_id)) as g FROM '' 
@@ -1211,7 +1216,7 @@ BEGIN
 		END LOOP;
 	
 	ELSIF topogeom.type = 1 THEN -- [multi]point
-		FOR rec IN EXECUTE ''SELECT geomunion(n.geom) as g FROM ''
+		FOR rec IN EXECUTE ''SELECT st_union(n.geom) as g FROM ''
 			|| quote_ident(toponame) || ''.node n, ''
 			|| quote_ident(toponame) || ''.relation r ''
 			|| '' WHERE r.topogeo_id = '' || topogeom.id
