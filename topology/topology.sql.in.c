@@ -2395,9 +2395,9 @@ BEGIN
 	--
 	FOR rec IN EXECUTE ''SELECT node_id FROM ''
 		|| quote_ident(atopology) || ''.node '' ||
-		''WHERE geom && '' || quote_literal(apoint) || ''::geometry''
-		||'' AND x(geom) = x(''||quote_literal(apoint)||''::geometry)''
-		||'' AND y(geom) = y(''||quote_literal(apoint)||''::geometry)''
+		''WHERE geom && '' || quote_literal(apoint::text) || ''::geometry''
+		||'' AND x(geom) = x(''||quote_literal(apoint::text)||''::geometry)''
+		||'' AND y(geom) = y(''||quote_literal(apoint::text)||''::geometry)''
 	LOOP
 		RAISE EXCEPTION
 		 ''SQL/MM Spatial exception - coincident node'';
@@ -2409,8 +2409,8 @@ BEGIN
 	--
 	FOR rec IN EXECUTE ''SELECT edge_id FROM ''
 		|| quote_ident(atopology) || ''.edge '' 
-		|| ''WHERE geom && '' || quote_literal(apoint) 
-		|| '' AND intersects(geom, '' || quote_literal(apoint)
+		|| ''WHERE geom && '' || quote_literal(apoint::text) 
+		|| '' AND intersects(geom, '' || quote_literal(apoint::text)
 		|| '')''
 	LOOP
 		RAISE EXCEPTION
@@ -2425,7 +2425,7 @@ BEGIN
 	IF aface IS NOT NULL THEN
 
 	FOR rec IN EXECUTE ''SELECT within(''
-		|| quote_literal(apoint) || ''::geometry, 
+		|| quote_literal(apoint::text) || ''::geometry, 
 		topology.ST_GetFaceGeometry(''
 		|| quote_literal(atopology) || '', '' || aface ||
 		''))''
@@ -2456,12 +2456,12 @@ BEGIN
 	IF aface IS NOT NULL THEN
 		EXECUTE ''INSERT INTO '' || quote_ident(atopology)
 			|| ''.node(node_id, geom, containing_face) 
-			VALUES(''||nodeid||'',''||quote_literal(apoint)||
+			VALUES(''||nodeid||'',''||quote_literal(apoint::text)||
 			'',''||aface||'')'';
 	ELSE
 		EXECUTE ''INSERT INTO '' || quote_ident(atopology)
 			|| ''.node(node_id, geom) 
-			VALUES(''||nodeid||'',''||quote_literal(apoint)||
+			VALUES(''||nodeid||'',''||quote_literal(apoint::text)||
 			'')'';
 	END IF;
 
@@ -2523,9 +2523,9 @@ BEGIN
 	--
 	FOR rec IN EXECUTE ''SELECT node_id FROM ''
 		|| quote_ident(atopology) || ''.node '' ||
-		''WHERE geom && '' || quote_literal(apoint) || ''::geometry''
-		||'' AND x(geom) = x(''||quote_literal(apoint)||''::geometry)''
-		||'' AND y(geom) = y(''||quote_literal(apoint)||''::geometry)''
+		''WHERE geom && '' || quote_literal(apoint::text) || ''::geometry''
+		||'' AND x(geom) = x(''||quote_literal(apoint::text)||''::geometry)''
+		||'' AND y(geom) = y(''||quote_literal(apoint::text)||''::geometry)''
 	LOOP
 		RAISE EXCEPTION
 		 ''SQL/MM Spatial exception - coincident node'';
@@ -2537,8 +2537,8 @@ BEGIN
 	--
 	FOR rec IN EXECUTE ''SELECT edge_id FROM ''
 		|| quote_ident(atopology) || ''.edge '' 
-		|| ''WHERE geom && '' || quote_literal(apoint) 
-		|| '' AND intersects(geom, '' || quote_literal(apoint)
+		|| ''WHERE geom && '' || quote_literal(apoint::text) 
+		|| '' AND intersects(geom, '' || quote_literal(apoint::text)
 		|| '')''
 	LOOP
 		RAISE EXCEPTION
@@ -2549,7 +2549,7 @@ BEGIN
 	-- Update node point
 	--
 	EXECUTE ''UPDATE '' || quote_ident(atopology) || ''.node ''
-		|| '' SET geom = '' || quote_literal(apoint) 
+		|| '' SET geom = '' || quote_literal(apoint::text) 
 		|| '' WHERE node_id = '' || anode;
 
 	RETURN ''Isolated Node '' || anode || '' moved to location ''
@@ -2737,10 +2737,13 @@ BEGIN
 	-- Check if a coincident node already exists
 	--
 	FOR rec IN EXECUTE ''SELECT node_id FROM ''
-		|| quote_ident(atopology) || ''.node '' ||
-		''WHERE geom && '' || quote_literal(apoint) || ''::geometry''
-		||'' AND x(geom) = x(''||quote_literal(apoint)||''::geometry)''
-		||'' AND y(geom) = y(''||quote_literal(apoint)||''::geometry)''
+		|| quote_ident(atopology) || ''.node ''
+		|| ''WHERE geom && ''
+		|| quote_literal(apoint::text) || ''::geometry''
+		|| '' AND x(geom) = x(''
+		|| quote_literal(apoint::text) || ''::geometry)''
+		|| '' AND y(geom) = y(''
+		|| quote_literal(apoint::text) || ''::geometry)''
 	LOOP
 		RAISE EXCEPTION
 		 ''SQL/MM Spatial exception - coincident node'';
@@ -2762,8 +2765,9 @@ BEGIN
 	--
 	EXECUTE ''INSERT INTO '' || quote_ident(atopology)
 		|| ''.node(node_id, geom) 
-		VALUES(''||nodeid||'',''||quote_literal(apoint)||
-		'')'';
+		VALUES('' || nodeid || '',''
+		|| quote_literal(apoint::text)
+		|| '')'';
 
 	--
 	-- Delete the old edge
@@ -2805,7 +2809,7 @@ BEGIN
 		||'',''||oldedge.next_right_edge
 		||'',''||oldedge.left_face
 		||'',''||oldedge.right_face
-		||'',''||quote_literal(edge1)
+		||'',''||quote_literal(edge1::text)
 		||'')'';
 
 	EXECUTE ''INSERT INTO '' || quote_ident(atopology)
@@ -2816,7 +2820,7 @@ BEGIN
 		||'',-''||edgeid1
 		||'',''||oldedge.left_face
 		||'',''||oldedge.right_face
-		||'',''||quote_literal(edge2)
+		||'',''||quote_literal(edge2::text)
 		||'')'';
 
 	--
@@ -2852,6 +2856,10 @@ BEGIN
 	-- Get topology id
         SELECT id FROM topology.topology into topoid
                 WHERE name = atopology;
+	IF topoid IS NULL THEN
+		RAISE EXCEPTION ''No topology % registered'',
+			quote_ident(atopology);
+	END IF;
 
 	--
 	-- Update references in the Relation table.
@@ -2991,9 +2999,12 @@ BEGIN
 	--
 	FOR rec IN EXECUTE ''SELECT node_id FROM ''
 		|| quote_ident(atopology) || ''.node '' ||
-		''WHERE geom && '' || quote_literal(apoint) || ''::geometry''
-		||'' AND x(geom) = x(''||quote_literal(apoint)||''::geometry)''
-		||'' AND y(geom) = y(''||quote_literal(apoint)||''::geometry)''
+		''WHERE geom && ''
+		|| quote_literal(apoint::text) || ''::geometry''
+		||'' AND x(geom) = x(''
+		|| quote_literal(apoint::text) || ''::geometry)''
+		||'' AND y(geom) = y(''
+		||quote_literal(apoint::text)||''::geometry)''
 	LOOP
 		RAISE EXCEPTION
 		 ''SQL/MM Spatial exception - coincident node'';
@@ -3015,7 +3026,7 @@ BEGIN
 	--
 	EXECUTE ''INSERT INTO '' || quote_ident(atopology)
 		|| ''.node(node_id, geom) 
-		VALUES(''||nodeid||'',''||quote_literal(apoint)||
+		VALUES(''||nodeid||'',''||quote_literal(apoint::text)||
 		'')'';
 
 	--
@@ -3050,14 +3061,14 @@ BEGIN
 		||'',-''||anedge
 		||'',''||oldedge.left_face
 		||'',''||oldedge.right_face
-		||'',''||quote_literal(newedge2)
+		||'',''||quote_literal(newedge2::text)
 		||'')'';
 
 	--
 	-- Update the old edge
 	--
 	EXECUTE ''UPDATE '' || quote_ident(atopology) || ''.edge_data ''
-		|| '' SET geom = '' || quote_literal(newedge1)
+		|| '' SET geom = '' || quote_literal(newedge1::text)
 		|| '',''
 		|| '' next_left_edge = '' || newedgeid
 		|| '',''
@@ -3292,8 +3303,8 @@ BEGIN
 	-- 
 	FOR rec IN EXECUTE ''SELECT node_id FROM ''
 		|| quote_ident(atopology) || ''.node ''
-		|| '' WHERE geom && '' || quote_literal(acurve) 
-		|| '' AND contains('' || quote_literal(acurve)
+		|| '' WHERE geom && '' || quote_literal(acurve::text) 
+		|| '' AND contains('' || quote_literal(acurve::text)
 		|| '',geom)''
 	LOOP
 		RAISE EXCEPTION
@@ -3305,8 +3316,8 @@ BEGIN
 	-- 
 	FOR rec IN EXECUTE ''SELECT * FROM ''
 		|| quote_ident(atopology) || ''.edge_data
-		WHERE geom && '' || quote_literal(acurve) || ''::geometry
-		AND intersects(geom, '' || quote_literal(acurve) || ''::geometry)''
+		WHERE geom && '' || quote_literal(acurve::text) || ''::geometry
+		AND intersects(geom, '' || quote_literal(acurve::text) || ''::geometry)''
 	LOOP
 		RAISE EXCEPTION
 		''SQL/MM Spatial exception - geometry intersects an edge'';
@@ -3331,7 +3342,7 @@ BEGIN
 			'',''||anothernode||'',''
 			||(-edgeid)||'',''||edgeid||'',''
 			||aface||'',''||aface||'',''
-			||quote_literal(acurve)||'')'';
+			||quote_literal(acurve::text)||'')'';
 
 	RETURN edgeid;
 
@@ -3434,8 +3445,8 @@ BEGIN
 	-- 
 	FOR rec IN EXECUTE ''SELECT node_id FROM ''
 		|| quote_ident(atopology) || ''.node
-		WHERE geom && '' || quote_literal(acurve) || ''::geometry
-		AND within(geom, '' || quote_literal(acurve) || ''::geometry)''
+		WHERE geom && '' || quote_literal(acurve::text) || ''::geometry
+		AND within(geom, '' || quote_literal(acurve::text) || ''::geometry)''
 	LOOP
 		RAISE EXCEPTION
 		''SQL/MM Spatial exception - geometry crosses a node'';
@@ -3448,9 +3459,9 @@ BEGIN
 		|| quote_ident(atopology) || ''.edge_data ''
 		|| '' WHERE edge_id != '' || anedge
 		|| '' AND geom && ''
-		|| quote_literal(acurve) || ''::geometry ''
+		|| quote_literal(acurve::text) || ''::geometry ''
 		|| '' AND intersects(geom, ''
-		|| quote_literal(acurve) || ''::geometry)''
+		|| quote_literal(acurve::text) || ''::geometry)''
 	LOOP
 		RAISE EXCEPTION
 		''SQL/MM Spatial exception - geometry intersects an edge'';
@@ -3460,7 +3471,7 @@ BEGIN
 	-- Update edge geometry
 	--
 	EXECUTE ''UPDATE '' || quote_ident(atopology) || ''.edge_data ''
-		|| '' SET geom = '' || quote_literal(acurve) 
+		|| '' SET geom = '' || quote_literal(acurve::text) 
 		|| '' WHERE edge_id = '' || anedge;
 
 	RETURN ''Edge '' || anedge || '' changed'';
@@ -3563,8 +3574,8 @@ BEGIN
 	--
 	FOR rec IN EXECUTE ''SELECT node_id FROM ''
 		|| quote_ident(atopology) || ''.node
-		WHERE geom && '' || quote_literal(acurve) || ''::geometry
-		AND within(geom, '' || quote_literal(acurve) || ''::geometry)''
+		WHERE geom && '' || quote_literal(acurve::text) || ''::geometry
+		AND within(geom, '' || quote_literal(acurve::text) || ''::geometry)''
 	LOOP
 		RAISE EXCEPTION
 		''SQL/MM Spatial exception - geometry crosses a node'';
@@ -3575,8 +3586,8 @@ BEGIN
 	--
 	FOR rec IN EXECUTE ''SELECT * FROM ''
 		|| quote_ident(atopology) || ''.edge_data
-		WHERE geom && '' || quote_literal(acurve) || ''::geometry
-		AND crosses(geom, '' || quote_literal(acurve) || ''::geometry)''
+		WHERE geom && '' || quote_literal(acurve::text) || ''::geometry
+		AND crosses(geom, '' || quote_literal(acurve::text) || ''::geometry)''
 	LOOP
 		RAISE EXCEPTION
 		''SQL/MM Spatial exception - geometry crosses an edge'';
@@ -3588,7 +3599,7 @@ BEGIN
 	FOR rec IN EXECUTE ''SELECT * FROM ''
 		|| quote_ident(atopology) || ''.edge_data ''
 		|| '' WHERE ''
-		|| '' geom && '' || quote_literal(acurve) || ''::geometry ''
+		|| '' geom && '' || quote_literal(acurve::text) || ''::geometry ''
 		|| '' AND ''
 		|| '' ( (''
 		|| '' start_node = '' || anode
@@ -3600,7 +3611,7 @@ BEGIN
 		|| '' start_node = '' || anothernode
 		|| '' ) )''
 		|| '' AND ''
-		|| ''equals(geom,'' || quote_literal(acurve) || ''::geometry)''
+		|| ''equals(geom,'' || quote_literal(acurve::text) || ''::geometry)''
 	LOOP
 		RAISE EXCEPTION
 		''SQL/MM Spatial exception - coincident edge'';
