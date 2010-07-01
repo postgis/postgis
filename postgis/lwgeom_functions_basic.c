@@ -84,6 +84,7 @@ Datum optimistic_overlap(PG_FUNCTION_ARGS);
 Datum ST_GeoHash(PG_FUNCTION_ARGS);
 Datum ST_MakeEnvelope(PG_FUNCTION_ARGS);
 Datum ST_CollectionExtract(PG_FUNCTION_ARGS);
+Datum ST_IsCollection(PG_FUNCTION_ARGS);
 
 void lwgeom_affine_ptarray(POINTARRAY *pa, double afac, double bfac, double cfac,
                            double dfac, double efac, double ffac, double gfac, double hfac, double ifac, double xoff, double yoff, double zoff);
@@ -2975,6 +2976,21 @@ Datum ST_MakeEnvelope(PG_FUNCTION_ARGS)
 	lwpoly_free(poly);
 
 	PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(ST_IsCollection);
+Datum ST_IsCollection(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM* geom;
+	int type;
+
+        /* Pull only a small amount of the tuple,
+	 * enough to get the type. size = header + type */
+	geom = (PG_LWGEOM*)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0),
+	                   0, VARHDRSZ + 1);
+
+	type = lwgeom_getType(SERIALIZED_FORM(geom)[0]);
+	PG_RETURN_BOOL(lwgeom_is_collection(type));
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_makepoint);

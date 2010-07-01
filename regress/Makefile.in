@@ -60,6 +60,7 @@ TESTS = \
 	out_geography \
 	in_gml \
 	in_kml \
+	iscollection \
 	regress_ogc \
 	regress_ogc_cover \
 	regress_ogc_prep \

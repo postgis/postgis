@@ -4580,6 +4580,12 @@ CREATE OR REPLACE FUNCTION ST_IsSimple(geometry)
 	AS 'MODULE_PATHNAME', 'issimple'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_IsCollection(geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'ST_IsCollection'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Equals(geometry,geometry)
 	RETURNS boolean
