@@ -731,7 +731,7 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 
 		if (!srs)
 		{
-			elog(ERROR, "SRID SRID_DEFAULT unknown in spatial_ref_sys table");
+			elog(ERROR, "SRID %d unknown in spatial_ref_sys table", SRID_DEFAULT);
 			PG_RETURN_NULL();
 		}
 	}
@@ -931,7 +931,7 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 	{
 		ereport(ERROR, (
 		            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-		            errmsg("Only SRID SRID_DEFAULT is currently supported in geography." )));
+		            errmsg("Only SRID %d is currently supported in geography.", SRID_DEFAULT )));
 	}
 
 	/*
