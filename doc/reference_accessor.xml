@@ -702,7 +702,89 @@ postgis=# SELECT ST_IsClosed('MULTIPOINT((0 0), (1 1))'::geometry);
 
 		<para><xref linkend="ST_IsRing" /></para>
 	  </refsection>
-	</refentry>
+        </refentry>
+
+	<refentry id="ST_IsCollection">
+	  <refnamediv>
+		<refname>ST_IsCollection</refname>
+
+                <refpurpose>Returns <varname>TRUE</varname> if the argument is a
+                  collection (<varname>MULTI*</varname>, <varname>GEOMETRYCOLLECTION</varname>, ...)
+                </refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_IsCollection</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+                <para>Returns <varname>TRUE</varname> if the geometry type of
+                  the argument is either:
+                  <itemizedlist>
+                    <listitem>GEOMETRYCOLLECTION</listitem>
+                    <listitem>MULTI{POINT,POLYGON,LINESTRING,CURVE,SURFACE}</listitem>
+                    <listitem>COMPOUNDCURVE</listitem>
+                  </itemizedlist>
+                </para>
+
+                <note>
+                  This function analyzes the type of the geometry. This means
+                  that it will return <varname>TRUE</varname> on collections
+                  that are empty or that contain a single element.
+                </note>
+		
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>postgis=# SELECT ST_IsCollection('LINESTRING(0 0, 1 1)'::geometry);
+ st_iscollection
+-------------
+ f
+(1 row)
+
+postgis=# SELECT ST_IsCollection('MULTIPOINT EMPTY'::geometry);
+ st_iscollection
+-------------
+ t
+(1 row)
+
+postgis=# SELECT ST_IsCollection('MULTIPOINT((0 0))'::geometry);
+ st_iscollection
+-------------
+ t
+(1 row)
+
+postgis=# SELECT ST_IsCollection('MULTIPOINT((0 0), (42 42))'::geometry);
+ st_iscollection
+-------------
+ t
+(1 row)
+
+postgis=# SELECT ST_IsCollection('GEOMETRYCOLLECTION(POINT(0 0))'::geometry);
+ st_iscollection
+-------------
+ t
+(1 row)</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_NumGeometries" /></para>
+	  </refsection>
+        </refentry>
 
 	<refentry id="ST_IsEmpty">
 	  <refnamediv>

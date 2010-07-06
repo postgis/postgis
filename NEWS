@@ -11,7 +11,7 @@ YYYY/MM/DD
   - ST_RemoveRepeatedPoints (Sandro Santilli / Faunalia for RT-SIGTA)
   - ST_GeometryN and ST_NumGeometries support for non-collections
     (Sandro Santilli)
-  - ST_isCollection (Sandro Santilli, yabo)
+  - ST_isCollection (Sandro Santilli, Maxime van Noppen)
 
  * Enhancements *
 
