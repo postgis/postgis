@@ -1342,7 +1342,7 @@ WHERE rid = 2;
 						translate it every x,y.</para>
 				<para>Also note that many of these examples particular the intersection example can be more 
 					simply done with the planned functions that are not currently available.</para>
-					
+				</note>	
 				
 				</refsection>
 				
@@ -1360,7 +1360,7 @@ WHERE rid=2;
    2 |    252 |     79
    
    
--- general fictious example using a real table
+-- general fictitious example using a real table
 SELECT rid, ST_Value(rast, 3, sometable.geom) As b3pval
 FROM sometable
 WHERE ST_Intersects(rast,sometable.geom);
