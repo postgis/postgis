@@ -612,6 +612,49 @@ FROM dummy_rast;
 			</refsection>
 		</refentry>
 		
+		<refentry id="RT_ST_MetaData">
+			<refnamediv>
+				<refname>ST_MetaData</refname>
+				<refpurpose>Returns basic meta data about a raster object such as skew, rotation, upper,lower left etc.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>record <function>ST_MetaData</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns basic meta data about a raster object such as skew, rotation, upper,lower left etc. Columns returned
+					upperleftx | upperlefty | width | height | pixelsizex | pixelsizey | skewx | skewy | srid | numbands</para>
+			</refsection>
+				
+			<refsection>
+				<title>Examples</title>
+			
+				<programlisting>SELECT rid, (foo.md).*  
+ FROM (SELECT rid, ST_MetaData(rast) As md
+FROM dummy_rast) As foo;
+
+ rid | upperleftx | upperlefty | width | height | pixelsizex | pixelsizey | skewx | skewy | srid | numbands
+ -----+------------+------------+-------+--------+-----------+-----------+-------+-------+------+----------
+   1 |        0.5 |        0.5 |    10 |     20 |          2 |          3 |		0 |     0 |    0 |        0
+   2 | 3427927.75 |    5793244 |     5 |      5 |       0.05 |      -0.05 |		0 |     0 |   -1 |        3
+				</programlisting>	
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_NumBands" /></para>
+			</refsection>
+		</refentry>
+		
 		<refentry id="RT_ST_NumBands">
 			<refnamediv>
 				<refname>ST_NumBands</refname>
