@@ -1293,16 +1293,33 @@ WHERE rid = 2;
 	<sect1 id="Raster_Pixel_Accessors">
 	    <title>Raster Pixel Accessors</title>
 	    
-	    		<refentry id="RT_ST_Value">
+	    <refentry id="RT_ST_Value">
 			<refnamediv>
 				<refname>ST_Value</refname>
-				<refpurpose>Returns the value of a given band in a given columnx, rowy pixel. Band numbers start at 1.</refpurpose>
+				<refpurpose>Returns the value of a given band in a given columnx, rowy pixel or at a particular geometric point. Band numbers start at 1 and assumed to be 1 if not specified.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
+				 <funcprototype>
+					<funcdef>double precision <function>ST_Value</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
+				  </funcprototype>
 				  <funcprototype>
-					<funcdef>integer <function>ST_Value</function></funcdef>
+					<funcdef>double precision <function>ST_Value</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>double precision <function>ST_Value</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>double precision <function>ST_Value</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
@@ -1326,18 +1343,30 @@ WHERE rid = 2;
 				<para>Also note that many of these examples particular the intersection example can be more 
 					simply done with the planned functions that are not currently available.</para>
 					
-					<para>If you are looking for a function that will take a geometry point and return a pixel value, this is in the works, for now
-						you can use a user contributed function <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiwktrasterfunctions">upgis_ptval</ulink>
-					</para>
-				</note>
 				
 				</refsection>
 				
 				<refsection>
 					<title>Examples</title>
-				
 					<programlisting>
-SELECt rid, ST_Value(rast, 1,1,1) As b1pval, 
+-- get raster values at particular postgis geometry points
+-- the srid of your geometry should be same as for your raster
+SELECT rid, ST_Value(rast, foo.pt_geom) As b1pval, ST_Value(rast, 2, foo.pt_geom) As b2pval
+FROM dummy_rast CROSS JOIN (SELECT ST_SetSRID(ST_Point(3427927.77,5793243.76),-1) As pt_geom) As foo
+WHERE rid=2;
+
+ rid | b1pval | b2pval
+-----+--------+--------
+   2 |    252 |     79
+   
+   
+-- general fictious example using a real table
+SELECT rid, ST_Value(rast, 3, sometable.geom) As b3pval
+FROM sometable
+WHERE ST_Intersects(rast,sometable.geom);
+				</programlisting>				
+					<programlisting>
+SELECT rid, ST_Value(rast, 1,1,1) As b1pval, 
     ST_Value(rast, 2,1,1) As b2pval, ST_Value(rast, 3,1,1) As b3pval
 FROM dummy_rast
 WHERE rid=2;
