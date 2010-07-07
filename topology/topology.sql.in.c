@@ -1238,6 +1238,9 @@ END
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} Geometry(TopoGeometry)
 
+-- 7.3+ explicit cast 
+CREATE CAST (topology.TopoGeometry AS Geometry) WITH FUNCTION topology.Geometry(topology.TopoGeometry) AS IMPLICIT;
+
 --{
 --  ValidateTopology(toponame)
 --
