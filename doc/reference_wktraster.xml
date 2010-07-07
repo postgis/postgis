@@ -1068,11 +1068,15 @@ f
 		<refentry id="RT_ST_BandNoDataValue">
 			<refnamediv>
 				<refname>ST_BandNoDataValue</refname>
-				<refpurpose>Returns the value in a given band that represents no data.</refpurpose>
+				<refpurpose>Returns the value in a given band that represents no data. If no band num 1 is assumed.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
+				<funcprototype>
+					<funcdef>integer <function>ST_BandNoDataValue</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+				  </funcprototype>
 				  <funcprototype>
 					<funcdef>integer <function>ST_BandNoDataValue</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
