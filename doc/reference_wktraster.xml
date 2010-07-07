@@ -1115,11 +1115,15 @@ WHERE rid = 2;
 		<refentry id="RT_ST_BandPath">
 			<refnamediv>
 				<refname>ST_BandPath</refname>
-				<refpurpose>Returns system file path to a band stored in file system.</refpurpose>
+				<refpurpose>Returns system file path to a band stored in file system. If no bandnum specified, 1 is assumed.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>text <function>ST_BandPath</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+				  </funcprototype>
 				  <funcprototype>
 					<funcdef>text <function>ST_BandPath</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
@@ -1151,11 +1155,15 @@ WHERE rid = 2;
 		<refentry id="RT_ST_BandPixelType">
 			<refnamediv>
 				<refname>ST_BandPixelType</refname>
-				<refpurpose>Returns the type of pixel for given band.</refpurpose>
+				<refpurpose>Returns the type of pixel for given band. If no bandnum specified, 1 is assumed.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>text <function>ST_BandPixelType</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+				  </funcprototype>
 				  <funcprototype>
 					<funcdef>text <function>ST_BandPixelType</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
