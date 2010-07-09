@@ -1155,7 +1155,7 @@ FROM dummy_rast WHERE rid=2) As foo;
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_MetaData" /></para>
+				<para><xref linkend="RT_ST_MetaData" />, <xref linkend="RT_ST_BandPixelType" /></para>
 			</refsection>
 		</refentry>
 		
