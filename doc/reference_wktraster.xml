@@ -651,7 +651,7 @@ FROM dummy_rast) As foo;
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_NumBands" /></para>
+				<para><xref linkend="RT_ST_BandMetaData" />, <xref linkend="RT_ST_NumBands" /></para>
 			</refsection>
 		</refentry>
 		
@@ -1105,6 +1105,57 @@ f
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="RT_ST_SetBandNoDataValue" />,, <xref linkend="RT_ST_BandNoDataValue" />,<xref linkend="RT_ST_SetBandNoDataValue" /></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_BandMetaData">
+			<refnamediv>
+				<refname>ST_BandMetaData</refname>
+				<refpurpose>Returns basic meta data for a specific raster band. band num 1 is assumed if none-specified.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>record <function>ST_BandMetaData</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>record <function>ST_BandMetaData</function></funcdef>
+					<paramdef><type>raster </type><parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type><parameter>bandnum</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns basic meta data about a raster band. Columns returned
+					 pixeltype | hasnodatavalue | nodatavalue | isoutdb | path.
+				</para>
+				<note>
+					If raster contains no bands then an error is thrown.
+				</note>
+			</refsection>
+				
+			<refsection>
+				<title>Examples</title>
+			
+				<programlisting>SELECT rid, (foo.md).*  
+ FROM (SELECT rid, ST_BandMetaData(rast,1) As md
+FROM dummy_rast WHERE rid=2) As foo;
+
+ rid | pixeltype | hasnodatavalue | nodatavalue | isoutdb | path
+-----+-----------+----------------+-------------+---------+------
+   2 | 8BUI      | t              |           0 | f       |
+				</programlisting>	
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_MetaData" /></para>
 			</refsection>
 		</refentry>
 		
