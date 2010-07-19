@@ -530,6 +530,14 @@ pgui_action_handle_tree_combo(GtkCellRendererCombo *combo,
 		case(2):
 			status = icon_good;
 			break;
+		default:
+			/* 
+			 * This should really be something more neutral than
+			 * 'good', but it's basically the absence of something
+			 * wrong as implemented.
+			 */
+			status = icon_good;
+			break;
 	}
 	gtk_list_store_set(list_store, &iter,
 						STATUS_COLUMN, status, -1);
