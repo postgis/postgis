@@ -762,6 +762,7 @@ pgui_quit (GtkWidget *widget, gpointer data)
 {
 	if ( pg_connection) PQfinish(pg_connection);
 	pg_connection = NULL;
+	destroy_file_list();
 	gtk_main_quit ();
 }
 
@@ -1142,7 +1143,7 @@ validate_shape_file(FILENODE *filenode)
 		{
 			const char *sql_form = "SELECT a.attnum, a.attname AS field, t.typname AS type, a.attlen AS length, a.atttypmod AS precision FROM pg_class c, pg_attribute a, pg_type t, pg_namespace n WHERE c.relname = '%s' AND n.nspname = '%s' AND a.attnum > 0 AND a.attrelid = c.oid AND a.atttypid = t.oid AND c.relnamespace = n.oid ORDER BY a.attnum";
 
-			query = malloc(strlen(sql_form) + strlen(filenode->table) + 1);
+			query = malloc(strlen(sql_form) + strlen(filenode->schema) + strlen(filenode->table) + 1);
 			sprintf(query, sql_form, filenode->table, filenode->schema);
 
 			if ( ! (connection_string = pgui_read_connection()) )

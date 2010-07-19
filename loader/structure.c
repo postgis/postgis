@@ -42,12 +42,19 @@ destroy_file_list(void)
 		node = get_next_node(NULL);
 	}
 
-	file_list_head->next = NULL;
-	file_list_head->prev = NULL;
-	file_list_tail->next = NULL;
-	file_list_tail->prev = NULL;
-	free(file_list_head);
-	free(file_list_tail);
+	if(file_list_head != NULL)
+	{
+		file_list_head->next = NULL;
+		file_list_head->prev = NULL;
+		free(file_list_head);
+	}
+
+	if(file_list_tail != NULL)
+	{
+		file_list_tail->next = NULL;
+		file_list_tail->prev = NULL;
+		free(file_list_tail);
+	}
 }
 
 
