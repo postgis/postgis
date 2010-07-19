@@ -4,11 +4,13 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
  * Copyright 2008 OpenGeo.org
+ * Copyright 2010 LISAsoft
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
  *
  * Maintainer: Paul Ramsey <pramsey@opengeo.org>
+ *             Mark Leslie <mark.leslie@lisasoft.com>
  *
  **********************************************************************/
 
@@ -17,13 +19,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
-#ifdef MAC_INTEGRATION
-#include <ige-mac-integration.h>
-#endif
+#include <gdk/gdk.h>
+#include <sys/stat.h>
 #include "libpq-fe.h"
 #include "shp2pgsql-core.h"
+#include "structure.h"
 
 #define GUI_RCSID "shp2pgsql-gui $Revision$"
+#define SHAPEFIELDMAXWIDTH 60
+#define SHAPEFIELDMINWIDTH 30
 
 /*
 ** Global variables for GUI only
@@ -36,18 +40,81 @@ static GtkWidget *entry_pg_pass = NULL;
 static GtkWidget *entry_pg_host = NULL;
 static GtkWidget *entry_pg_port = NULL;
 static GtkWidget *entry_pg_db = NULL;
-static GtkWidget *entry_config_table = NULL;
-static GtkWidget *entry_config_schema = NULL;
-static GtkWidget *entry_config_srid = NULL;
-static GtkWidget *entry_config_geocolumn = NULL;
+//static GtkWidget *entry_config_table = NULL;
+//static GtkWidget *entry_config_schema = NULL;
+//static GtkWidget *entry_config_srid = NULL;
+//static GtkWidget *entry_config_geocolumn = NULL;
 static GtkWidget *label_pg_connection_test = NULL;
 static GtkWidget *textview_log = NULL;
-static GtkWidget *file_chooser_button_shape = NULL;
+static GtkWidget *add_file_button = NULL;
 static GtkWidget *progress = NULL;
 static GtkTextBuffer *textbuffer_log = NULL;
+static int current_list_index = 0;
+static int valid_connection = 0;
+
+/* Tree View Stuffs */
+
+enum
+{
+	STATUS_COLUMN,
+	FILENAME_COLUMN,
+	SCHEMA_COLUMN,
+	TABLE_COLUMN,
+	GEOMETRY_COLUMN,
+	SRID_COLUMN,
+	MODE_COLUMN,
+	REMOVE_COLUMN,
+	N_COLUMNS
+};
+
+enum
+{
+	COMBO_TEXT,
+	COMBO_COLUMNS
+};
+
+enum
+{
+	CREATE_MODE,
+	APPEND_MODE,
+	DELETE_MODE,
+	PREPARE_MODE
+};
+
+GdkPixbuf *icon_good = NULL;
+GdkPixbuf *icon_warn = NULL;
+GdkPixbuf *icon_err = NULL;
+
+
+static void pgui_logf(const char *fmt, ...);
+
+
+GtkListStore *list_store;
+GtkWidget *tree;
+GtkCellRenderer *status_renderer;
+GtkCellRenderer *filename_renderer;
+GtkCellRenderer *schema_renderer;
+GtkCellRenderer *table_renderer;
+GtkCellRenderer *geom_column_renderer;
+GtkCellRenderer *srid_renderer;
+GtkCellRenderer *mode_renderer;
+GtkCellRenderer *remove_renderer;
+
+GtkTreeViewColumn *status_column;
+GtkTreeViewColumn *filename_column;
+GtkTreeViewColumn *schema_column;
+GtkTreeViewColumn *table_column;
+GtkTreeViewColumn *geom_column;
+GtkTreeViewColumn *srid_column;
+GtkTreeViewColumn *mode_column;
+GtkTreeViewColumn *remove_column;
+
+GtkWidget *mode_combo = NULL;
+
+GtkListStore *combo_list;
 
 /* Options window */
-static GtkWidget *entry_options_encoding = NULL;
+static GtkWidget *entry_options_encoding = NULL;	
 static GtkWidget *checkbutton_options_preservecase = NULL;
 static GtkWidget *checkbutton_options_forceint = NULL;
 static GtkWidget *checkbutton_options_autoindex = NULL;
@@ -66,20 +133,36 @@ static volatile int import_running = 0;
 
 /* Local prototypes */
 static void pgui_create_options_dialogue(void);
-
+static void pgui_create_file_table(GtkWidget *frame_shape);
+static void pgui_action_shape_file_set(const char *gtk_filename);
+static void pgui_action_handle_file_drop(GtkWidget *widget, 
+		                                 GdkDragContext *dc,
+							             gint x, gint y,
+							             GtkSelectionData *selection_data,
+							             guint info, guint t, gpointer data);
+static int validate_string(char *string);
+static int validate_shape_file(FILENODE *filenode);
+static int validate_shape_filename(const char *filename);
+static void pgui_set_config_from_options_ui(void);
+static void pgui_set_config_from_ui(FILENODE *file);
+static void pgui_sanitize_connection_string(char *connection_string);
+static char *pgui_read_connection(void);
 
 /*
 ** Write a message to the Import Log text area.
 */
-static void
+void
 pgui_log_va(const char *fmt, va_list ap)
 {
 	char *msg;
+	GtkTextIter iter;
 
 	if (!lw_vasprintf (&msg, fmt, ap)) return;
 
-	gtk_text_buffer_insert_at_cursor(textbuffer_log, msg, -1);
-	gtk_text_buffer_insert_at_cursor(textbuffer_log, "\n", -1);
+	gtk_text_buffer_get_end_iter(textbuffer_log, &iter);
+	gtk_text_buffer_insert(textbuffer_log, &iter, msg, -1);
+	gtk_text_buffer_get_end_iter(textbuffer_log, &iter);
+	gtk_text_buffer_insert(textbuffer_log, &iter, "\n", -1);
 	gtk_text_view_scroll_mark_onscreen(GTK_TEXT_VIEW(textview_log), gtk_text_buffer_get_insert(textbuffer_log) );
 
 	/* Allow GTK to process events */
@@ -116,6 +199,543 @@ pgui_seterr(const char *errmsg)
 	return;
 }
 
+/*
+ * Loads the status icons used in the file list table.
+ */
+static void
+load_icons(void)
+{
+	const char *good_filename = "image/good.png";
+	const char *warn_filename = "image/warn.png";
+	const char *err_filename = "image/error.png";
+	GError *error = NULL;
+
+	icon_good = gdk_pixbuf_new_from_file(good_filename, &error);
+	if(!icon_good)
+	{
+		g_free(error);
+		error = NULL;
+	}
+	icon_warn = gdk_pixbuf_new_from_file(warn_filename, &error);
+	if(!icon_warn)
+	{
+		g_free(error);
+		error = NULL;
+	}
+	icon_err = gdk_pixbuf_new_from_file(err_filename, &error);
+	if(!icon_err)
+	{
+		g_free(error);
+		error = NULL;
+	}
+
+}
+
+/*
+ * Ensures that the field width is within the stated bounds, and 
+ * 'appropriately' sized, for some definition of 'appropriately'.
+ */
+static void
+set_filename_field_width(void)
+{
+	FILENODE *node;
+	int needed_width = -1;
+	int i;
+
+	node = get_next_node(NULL);
+	while(node)
+	{
+		i = strlen(node->filename);
+		if(i > needed_width)
+		{
+			needed_width = i;
+		}
+		node = get_next_node(node);
+	}
+
+	if(needed_width < SHAPEFIELDMINWIDTH)
+	{
+		g_object_set(filename_renderer, "width-chars", SHAPEFIELDMINWIDTH, NULL);
+	}
+	else if(needed_width > SHAPEFIELDMAXWIDTH)
+	{
+		g_object_set(filename_renderer, "width-chars", SHAPEFIELDMAXWIDTH, NULL);
+	}
+	else
+	{
+		g_object_set(filename_renderer, "width-chars", -1, NULL);
+	}
+
+}
+
+/*
+ * Signal handler for the remove box.  Performs no user interaction, simply
+ * removes the FILENODE from the list and the row from the table.  
+ */
+static void
+pgui_action_handle_tree_remove(GtkCellRendererToggle *renderer,
+							   gchar *path,
+							   gpointer user_data)
+{
+	GtkTreeIter iter;
+	FILENODE *file_node;
+	int index;
+
+	/*
+	 * First item of business, find me a GtkTreeIter.
+	 * Second item, find the correct FILENODE
+	 */
+	if(!gtk_tree_model_get_iter_from_string(GTK_TREE_MODEL(list_store), &iter, 
+			path))
+	{
+		pgui_logf("Problem retrieving the edited row.");
+		return;
+	}
+
+	index = atoi(path);
+	if(index >= current_list_index)
+		return;
+
+	file_node = find_file_by_index(index);
+	if(file_node == NULL)
+	{
+		/*
+		 * If we can't find the struct, we shouldn't update the ui.
+		 * That would just be misleading.
+		 */
+		pgui_logf("Problem finding the correct file.");
+		return;
+	}
+
+	/* Remove the row from the list */
+	if(!gtk_list_store_remove(list_store, &iter))
+	{
+		pgui_logf("Unable to remove row.");
+		return;
+	}
+
+	current_list_index--;
+	remove_file(file_node);
+
+	set_filename_field_width();
+}
+
+/*
+ * Ensures that the given file has a .shp extension.
+ * This function will return a new string, come hell or high water, so free it.
+ */
+static char*
+ensure_shapefile(char *filein)
+{
+	char *fileout;
+	char *p;
+
+	p = filein;
+	while(*p)
+		p++;
+	p--;
+	while(g_ascii_isspace(*p))
+		p--;
+	while(*p && p > filein && *p != '.')
+		p--;
+
+	if(strcmp(p, ".shp") == 0 
+			|| strcmp(p, ".SHP") == 0
+			|| strcmp(p, ".Shp") == 0)
+		return strdup(filein);
+
+	/* if there is no extension, let's add one. */
+	if(p == filein) {
+		fileout = malloc(strlen(filein) + 5);
+		strcpy(fileout, filein);
+		strcat(fileout, ".shp");
+		return fileout;
+	}
+
+	/* p is on the '.', so we need to remember not to copy it. */
+	pgui_logf("mallocing %d, from %p %p", p - filein + 5, p, filein);
+	fileout = malloc(p - filein + 5);
+	strncpy(fileout, filein, p - filein);
+	fileout[p - filein] = '\0';
+	pgui_logf("b: %s", fileout);
+	strcat(fileout, ".shp");
+	
+	pgui_logf("Rewritten as %s", fileout);
+	return fileout;
+}
+
+/*
+ * Creates a single file row in the list table given the URI of a file.
+ */
+static void
+process_single_uri(char *uri)
+{
+	char *filename = NULL;
+	char *hostname;
+	GError *error = NULL;
+
+	if(uri == NULL) {
+		pgui_logf("Unable to process drag uri.");
+		return;
+	}
+
+	filename = g_filename_from_uri(uri, &hostname, &error);
+	g_free(uri);
+
+	if(filename == NULL) {
+		pgui_logf("Unable to process filename: %s\n", error->message);
+		g_error_free(error);
+		return;
+	}
+
+	pgui_action_shape_file_set(filename);
+	
+	g_free(filename);
+	g_free(hostname);
+
+}
+
+/*
+ * Here lives the magic of the drag-n-drop of the app.  We really don't care
+ * about much of the provided tidbits.  We only actually user selection_data
+ * and extract a list of filenames from it.
+ */
+static void 
+pgui_action_handle_file_drop(GtkWidget *widget, 
+		                     GdkDragContext *dc,
+							 gint x, gint y,
+							 GtkSelectionData *selection_data,
+							 guint info, guint t, gpointer data)
+{
+	const gchar *p, *q;
+
+	if(selection_data->data == NULL) {
+		pgui_logf("Unable to process drag data.");
+		return;
+	}
+
+	p = (char*)selection_data->data;
+	while(p)
+	{
+		/* Only process non-comments */
+		if(*p != '#')
+		{
+			/* Trim leading whitespace */
+			while(g_ascii_isspace(*p))
+				p++;
+			q = p;
+			/* Scan to the end of the string (null or newline) */
+			while(*q && (*q != '\n') && (*q != '\r'))
+				q++;
+			if (q > p)
+			{
+				/* Ignore terminating character */
+				q--;
+				/* Trim trailing whitespace */
+				while(q > p && g_ascii_isspace(*q))
+					q--;
+				if(q > p) {
+					process_single_uri(g_strndup(p, q - p + 1));
+				}
+			}
+		}
+		/* Skip to the next entry */
+		p = strchr(p, '\n');
+		if(p)
+			p++;
+	}
+}
+
+/*
+ * This function is a signal handler for the load mode combo boxes.
+ * It's fairly small-minded, but is where the char's representing the various 
+ * modes in the FILENODE are hardcoded.
+ */
+static void
+pgui_action_handle_tree_combo(GtkCellRendererCombo *combo,
+		                      gchar *path_string,
+							  GtkTreeIter *new_iter,
+							  gpointer user_data)
+{
+	GtkTreeIter iter;
+	GdkPixbuf *status;
+	FILENODE *file_node;
+	int index;
+
+	/*
+	 * First item of business, find me a GtkTreeIter.
+	 * Second item, find the correct FILENODE
+	 */
+	if(!gtk_tree_model_get_iter_from_string(GTK_TREE_MODEL(list_store), &iter, 
+			path_string))
+	{
+		pgui_logf("Problem retrieving the edited row.");
+		return;
+	}
+
+	index = atoi(path_string);
+	file_node = find_file_by_index(index);
+	if(file_node == NULL)
+	{
+		/*
+		 * If we can't find the struct, we shouldn't update the ui.
+		 * That would just be misleading.
+		 */
+		pgui_logf("Problem finding the correct file.");
+		return;
+	}
+
+	GtkTreePath *path = gtk_tree_model_get_path(GTK_TREE_MODEL(combo_list), new_iter);
+	const char *str_path = gtk_tree_path_to_string(path);
+	index = atoi(str_path);
+	gtk_tree_path_free(path);
+
+	if(index == APPEND_MODE)
+	{
+		file_node->mode = 'a';
+		gtk_list_store_set(list_store, &iter,
+				           MODE_COLUMN, "Append",
+						   -1);
+	}
+	else if(index == DELETE_MODE)
+	{
+		file_node->mode = 'd';
+		gtk_list_store_set(list_store, &iter,
+				           MODE_COLUMN, "Delete",
+						   -1);
+	}
+	else if(index == PREPARE_MODE)
+	{
+		file_node->mode = 'p';
+		gtk_list_store_set(list_store, &iter,
+				           MODE_COLUMN, "Prepare",
+						   -1);
+	}
+	else
+	{
+
+		file_node->mode = 'c';
+		gtk_list_store_set(list_store, &iter,
+				           MODE_COLUMN, "Create",
+						   -1);
+	}
+	switch(validate_shape_file(file_node))
+	{
+		case(0):
+			status = icon_err;
+			break;
+		case(1):
+			status = icon_warn;
+			break;
+		case(2):
+			status = icon_good;
+			break;
+	}
+	gtk_list_store_set(list_store, &iter,
+						STATUS_COLUMN, status, -1);
+	
+}
+
+/*
+ * This method will generate a file row in the list table given an edit
+ * of a single column.  Most fields will contain defaults, but a filename 
+ * generally can't be created from the ether, so faking that up is still
+ * a bit weak.
+ */
+static void
+generate_file_bits(GtkCellRendererText *renderer, char *new_text)
+{
+	GtkTreeIter iter;
+	FILENODE *file_node;
+	GdkPixbuf *status;
+	char *filename;
+	char *schema;
+	char *table;
+	char *geom_column;
+	char *srid;
+
+	if(renderer == GTK_CELL_RENDERER_TEXT(filename_renderer))
+	{
+		/* If we've been given a filename, we can use the existing method. */
+		pgui_logf("Setting filename to %s", new_text);
+		pgui_action_shape_file_set(ensure_shapefile(new_text));
+		return;
+	}
+	else if(renderer == GTK_CELL_RENDERER_TEXT(table_renderer))
+	{
+		pgui_logf("Setting table to %s", new_text);
+		table = strdup(new_text);
+		filename = malloc(strlen(new_text) + 5);
+		sprintf(filename, "%s.shp", new_text);
+	}
+	else
+	{
+		pgui_logf("Default filename / table.");
+		filename = "";
+		table = "new_table";
+	}
+	if(renderer == GTK_CELL_RENDERER_TEXT(schema_renderer))
+	{
+		pgui_logf("Setting schema to %s", new_text);
+		schema = strdup(new_text);
+	}
+	else 
+	{
+		pgui_logf("Default schema.");
+		schema = "public";
+	}
+	if(renderer == GTK_CELL_RENDERER_TEXT(geom_column_renderer))
+	{
+		pgui_logf("Setting geometry column to %s", new_text);
+		geom_column = strdup(new_text);
+	}
+	else 
+	{
+		pgui_logf("Default geom_column");
+		if(config->geography)
+			geom_column = GEOGRAPHY_DEFAULT;
+		else
+			geom_column = GEOMETRY_DEFAULT;
+		
+	}
+	if(renderer == GTK_CELL_RENDERER_TEXT(srid_renderer))
+	{
+		pgui_logf("Setting srid to %s", new_text);
+		srid = strdup(new_text);
+	}
+	else
+	{
+		pgui_logf("Default srid.");
+		srid = "-1";
+	}
+
+	file_node = append_file(filename, schema, table, geom_column, srid, 'c', &iter);
+
+	switch(validate_shape_file(file_node))
+	{
+		case(0):
+			status = icon_err;
+			break;
+		case(1):
+			status = icon_warn;
+			break;
+		case(2):
+			status = icon_good;
+			break;
+	}
+
+	gtk_list_store_insert_with_values(
+			           list_store, &iter, current_list_index++,
+					   STATUS_COLUMN, status,
+	                   FILENAME_COLUMN, filename,
+					   SCHEMA_COLUMN, schema,
+					   TABLE_COLUMN, table,
+					   GEOMETRY_COLUMN, geom_column,
+					   SRID_COLUMN, srid,
+					   MODE_COLUMN, "Create",
+					   -1);
+}
+
+/*
+ * This method is a signal listener for all text renderers in the file 
+ * list table, including the empty ones.  Edits of the empty table are 
+ * passed to an appropriate function, while edits of existing file rows
+ * are applied and the various validations called.
+ */
+static void
+pgui_action_handle_tree_edit(GtkCellRendererText *renderer,
+		                     gchar *path,
+		                     gchar *new_text,
+							 gpointer user_data)
+{
+	GtkTreeIter iter;
+	GdkPixbuf *status;
+	FILENODE *file_node;
+	int index;
+
+	/* Empty doesn't fly */
+	if(strlen(new_text) == 0)
+		return;
+
+	/*
+	 * First item of business, find me a GtkTreeIter.
+	 * Second item, find the correct FILENODE
+	 */
+	if(!gtk_tree_model_get_iter_from_string(GTK_TREE_MODEL(list_store), &iter, 
+			path))
+	{
+		pgui_logf("Problem retrieving the edited row.");
+		return;
+	}
+	index = atoi(path);
+	file_node = find_file_by_index(index);
+	if(file_node == NULL)
+	{
+		/* 
+		 * If there is no file, it may be a new addition.
+		 * Check the path against our current index to see if they're 
+		 * editing the empty row.
+		 */
+		int index = atoi(path);
+		if(index == current_list_index)
+		{
+			generate_file_bits(renderer, new_text);
+			return;
+		}
+
+		/*
+		 * If we can't find (or create) the struct, we shouldn't update the ui.
+		 * That would just be misleading.
+		 */
+		pgui_logf("Problem finding the correct file.");
+		return;
+	}
+
+	if(renderer == GTK_CELL_RENDERER_TEXT(filename_renderer))
+	{
+		file_node->filename = ensure_shapefile(new_text);
+		set_filename_field_width();
+	}
+	else if(renderer == GTK_CELL_RENDERER_TEXT(schema_renderer))
+	{
+		file_node->schema = strdup(new_text);
+	}
+	else if(renderer == GTK_CELL_RENDERER_TEXT(table_renderer))
+	{
+		file_node->table = strdup(new_text);
+	}
+	else if(renderer == GTK_CELL_RENDERER_TEXT(geom_column_renderer))
+	{
+		file_node->geom_column = strdup(new_text);
+	}
+	else if(renderer == GTK_CELL_RENDERER_TEXT(srid_renderer))
+	{
+		file_node->srid = strdup(new_text);
+	}
+
+	switch(validate_shape_file(file_node))
+	{
+		case(0):
+			status = icon_err;
+			break;
+		case(1):
+			status = icon_warn;
+			break;
+		case(2):
+			status = icon_good;
+			break;
+	}
+	
+	gtk_list_store_set(list_store, &iter,
+					   STATUS_COLUMN, status,
+	                   FILENAME_COLUMN, file_node->filename,
+					   SCHEMA_COLUMN, file_node->schema,
+					   TABLE_COLUMN, file_node->table,
+					   GEOMETRY_COLUMN, file_node->geom_column,
+					   SRID_COLUMN, file_node->srid,
+					   -1);
+}
+
 static void
 pgui_raise_error_dialogue(void)
 {
@@ -123,9 +743,9 @@ pgui_raise_error_dialogue(void)
 	gint result;
 
 	label = gtk_label_new(pgui_errmsg);
-	dialog = gtk_dialog_new_with_buttons("Error", GTK_WINDOW(window_main),
-										 GTK_DIALOG_MODAL & GTK_DIALOG_NO_SEPARATOR & GTK_DIALOG_DESTROY_WITH_PARENT,
-										 GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
+	dialog = gtk_dialog_new_with_buttons("Error", GTK_WINDOW(window_main), 
+	                GTK_DIALOG_MODAL & GTK_DIALOG_NO_SEPARATOR & GTK_DIALOG_DESTROY_WITH_PARENT, 
+	                GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
 	gtk_dialog_set_has_separator ( GTK_DIALOG(dialog), FALSE );
 	gtk_container_set_border_width (GTK_CONTAINER(dialog), 5);
 	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), 15);
@@ -149,6 +769,7 @@ pgui_quit (GtkWidget *widget, gpointer data)
 static void
 pgui_set_config_from_options_ui()
 {
+	FILENODE *current_node;
 	const char *entry_encoding = gtk_entry_get_text(GTK_ENTRY(entry_options_encoding));
 	gboolean preservecase = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_preservecase));
 	gboolean forceint = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_options_forceint));
@@ -161,23 +782,54 @@ pgui_set_config_from_options_ui()
 	{
 		config->geography = 1;
 		/* Flip the geometry column name to match the load type */
-		if ( ! strcmp(gtk_entry_get_text(GTK_ENTRY(entry_config_geocolumn)), GEOMETRY_DEFAULT) )
+		current_node = get_next_node(NULL);
+		while(current_node != NULL)
 		{
-			gtk_entry_set_text(GTK_ENTRY(entry_config_geocolumn), GEOGRAPHY_DEFAULT );
-			free(config->geom);
-			config->geom = strdup(GEOGRAPHY_DEFAULT);
+			if(!strcmp(current_node->geom_column, GEOMETRY_DEFAULT))
+			{
+				free(current_node->geom_column);
+				current_node->geom_column = strdup(GEOGRAPHY_DEFAULT);
+				gtk_list_store_set(GTK_LIST_STORE(list_store),
+						                 current_node->tree_iterator,
+										 GEOMETRY_COLUMN,
+										 GEOGRAPHY_DEFAULT, -1);
+				free(config->geom);
+				config->geom = strdup(GEOGRAPHY_DEFAULT);
+			}
+			current_node = get_next_node(current_node);
+		}
+	}
+	else
+	{
+		config->geography = 0;
+		/* Flip the geometry column name to match the load type */
+		current_node = get_next_node(NULL);
+		while(current_node != NULL)
+		{
+			if(!strcmp(current_node->geom_column, GEOGRAPHY_DEFAULT))
+			{
+				free(current_node->geom_column);
+				current_node->geom_column = strdup(GEOMETRY_DEFAULT);
+				gtk_list_store_set(GTK_LIST_STORE(list_store),
+						                 current_node->tree_iterator,
+										 GEOMETRY_COLUMN,
+										 GEOMETRY_DEFAULT, -1);
+				free(config->geom);
+				config->geom = strdup(GEOMETRY_DEFAULT);
+			}
+			current_node = get_next_node(current_node);
 		}
 	}
 
 	/* Encoding */
-	if ( entry_encoding && strlen(entry_encoding) > 0 )
+	if( entry_encoding && strlen(entry_encoding) > 0 ) 
 	{
 		if (config->encoding)
 			free(config->encoding);
 
 		config->encoding = strdup(entry_encoding);
 	}
-
+	
 	/* Preserve case */
 	if ( preservecase )
 		config->quoteidentifiers = 1;
@@ -189,13 +841,13 @@ pgui_set_config_from_options_ui()
 		config->forceint4 = 1;
 	else
 		config->forceint4 = 0;
-
+	
 	/* Create spatial index after load */
 	if ( createindex )
 		config->createindex = 1;
 	else
 		config->createindex = 0;
-
+	
 	/* Read the .shp file, don't ignore it */
 	if ( dbfonly )
 		config->readshape = 0;
@@ -207,40 +859,35 @@ pgui_set_config_from_options_ui()
 		config->dump_format = 1;
 	else
 		config->dump_format = 0;
-
+	
 	return;
 }
 
 /* Set the global configuration based upon the current UI */
 static void
-pgui_set_config_from_ui()
+pgui_set_config_from_ui(FILENODE *file_node)
 {
-	const char *pg_table = gtk_entry_get_text(GTK_ENTRY(entry_config_table));
-	const char *pg_schema = gtk_entry_get_text(GTK_ENTRY(entry_config_schema));
-	const char *pg_geom = gtk_entry_get_text(GTK_ENTRY(entry_config_geocolumn));
-	const char *source_file = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_chooser_button_shape));
-	const char *entry_srid = gtk_entry_get_text(GTK_ENTRY(entry_config_srid));
-
+	const char *srid = strdup(file_node->srid);
 	char *c;
 
 	/* Set the destination schema, table and column parameters */
 	if (config->table)
 		free(config->table);
 
-	config->table = strdup(pg_table);
+	config->table = strdup(file_node->table);
 
 	if (config->schema)
 		free(config->schema);
 
-	if (strlen(pg_schema) == 0)
+	if (strlen(file_node->schema) == 0)
 		config->schema = strdup("public");
 	else
-		config->schema = strdup(pg_schema);
+		config->schema = strdup(file_node->schema);
 
-	if (strlen(pg_geom) == 0)
+	if (strlen(file_node->geom_column) == 0)
 		config->geom = strdup(GEOMETRY_DEFAULT);
 	else
-		config->geom = strdup(pg_geom);
+		config->geom = strdup(file_node->geom_column);
 
 	/* Set the destination filename: note the shp2pgsql core engine simply wants the file
 	   without the .shp extension */
@@ -248,10 +895,10 @@ pgui_set_config_from_ui()
 		free(config->shp_file);
 
 	/* Handle empty selection */
-	if (source_file == NULL)
+	if (file_node->filename == NULL)
 		config->shp_file = strdup("");
 	else
-		config->shp_file = strdup(source_file);
+		config->shp_file = strdup(file_node->filename);
 
 	/*  NULL-terminate the file name before the .shp extension */
 	for (c = config->shp_file + strlen(config->shp_file); c >= config->shp_file; c--)
@@ -264,19 +911,373 @@ pgui_set_config_from_ui()
 	}
 
 	/* SRID */
-	if ( ! ( config->sr_id = atoi(entry_srid) ) )
+	if ( srid == NULL || ! ( config->sr_id = atoi(srid) ) ) 
 	{
 		config->sr_id = -1;
 	}
 
+	/* Mode */
+	if (file_node->mode == '\0')
+		config->opt = 'c';
+	else
+		config->opt = file_node->mode;
 
 	return;
+}
+
+/*
+ * Performs rudimentary validation on the given string.  This takes the form 
+ * of checking for nullage and zero length, the trimming whitespace and 
+ * checking again for zero length.
+ *
+ * Returns 1 for valid, 0 for not.
+ */
+static int
+validate_string(char *string)
+{
+	char *p, *q;
+	if(string == NULL || strlen(string) == 0)
+		return 0;
+
+	p = string;
+	while(g_ascii_isspace(*p))
+		p++;
+	q = p;
+	while(*q)
+		q++;
+	q--;
+	while(g_ascii_isspace(*q) && q > p)
+		q--;
+	if(p >= q)
+		return 0;
+
+	return 1;
+}
+
+/*
+ * This compares two columns indicated state/result structs.  They are 
+ * assumed to already have had their names compared, so this will only
+ * compare the types.  Precision remains TBD.
+ *
+ * 0 if the comparison fails, 1 if it's happy.
+ */
+static int
+compare_columns(SHPLOADERSTATE *state, int dbf_index, 
+				PGresult *result, int db_index)
+{
+	char *string;
+	int value = 1;
+	int i = dbf_index;
+	int j  = db_index;
+
+	int dbTypeColumn = PQfnumber(result, "type");
+	/* It would be nice to go into this level of detail, but not today. */
+	/* 
+	int dbSizeColumn = PQfnumber(result, "length");
+	int dbPrecisionColumn = PQfnumber(result, "precision"); 
+	*/
+
+	string = PQgetvalue(result, j, dbTypeColumn);
+	switch(state->types[i])
+	{
+		case FTString:
+			if(strcmp(string, "varchar") != 0)
+			{
+				pgui_logf("  DBF field %s is a varchar, while the table attribute is of type %s", state->field_names[i], string);
+				value = 0;
+			}
+			break;
+		case FTDate:
+			if(strcmp(string, "date") != 0)
+			{
+				pgui_logf("  DBF field %s is a date, while the table attribute is of type %s", state->field_names[i], string);
+				value = 0;
+			}
+			break;
+		case FTInteger:
+			if(state->widths[i] < 5 && !state->config->forceint4 && strcmp(string, "int2") != 0)
+			{
+				pgui_logf("  DBF field %s is an int2, while the table attribute is of type %s", state->field_names[i], string);
+				value = 0;
+			}
+			else if((state->widths[i] < 10 || state->config->forceint4) && strcmp(string, "int4") != 0)
+			{
+				pgui_logf("  DBF field %s is an int4, while the table attribute is of type %s", state->field_names[i], string);
+				value = 0;
+			}
+			else if(strcmp(string, "numeric") != 0)
+			{
+				pgui_logf("  DBF field %s is a numeric, while the table attribute is of type %s", state->field_names[i], string);
+				value = 0;
+			}
+
+			break;
+		case FTDouble:
+			if(state->widths[i] > 18 && strcmp(string, "numeric") != 0)
+			{
+				pgui_logf("  DBF field %s is a numeric, while the table attribute is of type %s", state->field_names[i], string);
+				value = 0;
+			}
+			else if(state->widths[i] <= 18 && strcmp(string, "float8") != 0)
+			{
+				pgui_logf("  DBF field %s is a float8, while the table attribute is of type %s", state->field_names[i], string);
+				value = 0;
+			}
+			break;
+		case FTLogical:
+			if(strcmp(string, "boolean") != 0)
+			{
+				pgui_logf("  DBF field %s is a boolean, while the table attribue is of type %s", state->field_names[i], string);
+				value = 0;
+			}
+			break;
+	}
+	return value;
+}
+
+/*
+ * This will loop through each field defined in the DBF and find an attribute
+ * in the table (provided by the PGresult) with the same name.  It then 
+ * delegates a comparison to the compare_columns function.
+ *
+ * 0 if all fields in the DBF cannot be matched to one in the table results,
+ * 1 if they all can.
+ */
+static int
+compare_column_lists(SHPLOADERSTATE *state, PGresult *result)
+{
+	int dbCount= PQntuples(result);
+	int dbNameColumn = PQfnumber(result, "field");
+	char **db_columns;
+	int i, j, colgood;
+	int value = 1;
+	
+	int shpCount = state->num_fields;
+
+	db_columns = malloc(dbCount * sizeof(char*));
+	for(j = 0; j < dbCount; j++)
+	{
+		db_columns[j] = strdup(PQgetvalue(result, j, dbNameColumn));
+	}
+
+	for(i = 0; i < shpCount; i++)
+	{
+		colgood = 0;
+		for(j = 0; j < dbCount; j++)
+		{
+			if(strcmp(state->field_names[i], db_columns[j]) == 0)
+			{
+				value = value & compare_columns(state, i, result, j);
+				colgood = 1;
+				break;
+			}
+		}
+		if(colgood == 0)
+		{
+			pgui_logf("   DBF field %s (%d) could not be matched to a table attribute.", state->field_names[i], i);
+			value = 0;
+		}
+	}
+
+	return value;
+}
+
+/*
+ * Checks the file node for general completeness.
+ * First all fields are checked to ensure they contain values.
+ * Next the filename is checked to ensure it is stat'able (ie can be parsed 
+ * and is visible to the application).
+ * Finally the database is checked.  What is done here depends on the load
+ * mode as follows:
+ *   Delete: nothing is checked.
+ *   Create: check if the table already exists.
+ *   Prepare: check if the table already exists.
+ *   Append: check if the table is absent or if columns are missing or of the 
+ *           wrong type as defined in the DBF.
+ *
+ * returns 0 for error, 1 for warning, 2 for good
+ */
+static int
+validate_shape_file(FILENODE *filenode)
+{
+	PGresult *result = NULL;
+	int nresult;
+	ExecStatusType status;
+	char *connection_string;
+	char *query;
+
+	if(validate_string(filenode->filename) == 0
+			|| validate_string(filenode->schema) == 0
+			|| validate_string(filenode->table) == 0
+			|| validate_string(filenode->srid) == 0)
+	{
+		pgui_logf("Incomplete, please fill in all fields.");
+		return 0;
+	}
+
+	if(!validate_shape_filename(filenode->filename))
+	{
+		pgui_logf("Warning: Cannot find %s", filenode->filename);
+		return 1;
+	}
+
+	if(filenode->mode != 'd')
+	{
+		int ret;
+		SHPLOADERSTATE *state;
+
+		pgui_set_config_from_options_ui();
+		pgui_set_config_from_ui(filenode);
+
+		state = ShpLoaderCreate(config);
+		ret = ShpLoaderOpenShape(state);
+		if(ret != SHPLOADEROK)
+		{
+			pgui_logf("Warning: Could not load shapefile %s.", filenode->filename);
+			ShpLoaderDestroy(state);
+			return 1;
+		}
+
+		if(valid_connection == 1)
+		{
+			const char *sql_form = "SELECT a.attnum, a.attname AS field, t.typname AS type, a.attlen AS length, a.atttypmod AS precision FROM pg_class c, pg_attribute a, pg_type t, pg_namespace n WHERE c.relname = '%s' AND n.nspname = '%s' AND a.attnum > 0 AND a.attrelid = c.oid AND a.atttypid = t.oid AND c.relnamespace = n.oid ORDER BY a.attnum";
+
+			query = malloc(strlen(sql_form) + strlen(filenode->table) + 1);
+			sprintf(query, sql_form, filenode->table, filenode->schema);
+
+			if ( ! (connection_string = pgui_read_connection()) )
+			{
+				pgui_raise_error_dialogue();
+				ShpLoaderDestroy(state);
+				valid_connection = 0;
+				return 0;
+			}
+
+			/*
+			connection_sanitized = strdup(connection_string);
+			pgui_sanitize_connection_string(connection_sanitized);
+			pgui_logf("Connection: %s", connection_sanitized);
+			free(connection_sanitized);
+			*/
+
+			if ( pg_connection ) PQfinish(pg_connection);
+			pg_connection = PQconnectdb(connection_string);
+		
+			if (PQstatus(pg_connection) == CONNECTION_BAD)
+			{
+				pgui_logf( "Warning: Connection failed: %s", PQerrorMessage(pg_connection));
+				free(connection_string);
+				free(query);
+				PQfinish(pg_connection);
+				pg_connection = NULL;
+				ShpLoaderDestroy(state);
+				return 1;
+			}
+
+			/*
+			 * TBD: There is a horrible amount of switching/cleanup code
+			 * here.  I would love to decompose this a bit better.
+			 */
+
+			result = PQexec(pg_connection, query);
+			status = PQresultStatus(result);
+			if(filenode->mode == 'a' && status != PGRES_TUPLES_OK)
+			{
+				pgui_logf("Warning: Append mode selected but no existing table found: %s", filenode->table);
+				PQclear(result);
+				free(connection_string);
+				free(query);
+				PQfinish(pg_connection);
+				pg_connection = NULL;
+				ShpLoaderDestroy(state);
+				return 1;
+			}
+
+			if(status == PGRES_TUPLES_OK)
+			{
+				nresult = PQntuples(result);
+				if((filenode->mode == 'c' || filenode->mode == 'p') 
+						&& nresult > 0)
+				{
+					if(filenode->mode == 'c')
+						pgui_logf("Warning: Create mode selected for existing table name: %s", filenode->table);
+					else
+						pgui_logf("Warning: Prepare mode selected for existing table name: %s", filenode->table);
+
+					PQclear(result);
+					free(connection_string);
+					free(query);
+					PQfinish(pg_connection);
+					pg_connection = NULL;
+					ShpLoaderDestroy(state);
+					return 1;
+				}
+				if(filenode->mode == 'a')
+				{
+					if(nresult == 0)
+					{
+						pgui_logf("Warning: Destination table (%s.%s) could not be found for appending.", filenode->schema, filenode->table);
+						PQclear(result);
+						free(connection_string);
+						free(query);
+						PQfinish(pg_connection);
+						pg_connection = NULL;
+						ShpLoaderDestroy(state);
+						return 1;
+
+					}
+					int generated_columns = 2;
+					if(config->readshape == 0)
+						generated_columns = 1;
+					pgui_logf("Validating schema of %s.%s against the shapefile %s.", 
+							filenode->schema, filenode->table, 
+							filenode->filename);
+					if(compare_column_lists(state, result) == 0)
+						ret = 1;
+					else
+						ret = 2;
+
+					PQclear(result);
+					free(connection_string);
+					free(query);
+					PQfinish(pg_connection);
+					pg_connection = NULL;
+					ShpLoaderDestroy(state);
+					return ret;
+				}
+			}
+			PQclear(result);
+			free(connection_string);
+			free(query);
+			PQfinish(pg_connection);
+			pg_connection = NULL;
+			ShpLoaderDestroy(state);
+		}
+	}
+	return 2;
+}
+
+/*
+ * This checks the shapefile to ensure it exists.
+ *
+ * returns 0 for invalid, 1 for happy goodness
+ */
+static int
+validate_shape_filename(const char *filename)
+{
+	struct stat buf;
+
+	if(stat(filename, &buf) != 0) {
+		return 0;
+	}
+	return 1;
 }
 
 /* Validate the configuration, returning true or false */
 static int
 pgui_validate_config()
 {
+	char *p;
 	/* Validate table parameters */
 	if ( ! config->table || strlen(config->table) == 0 )
 	{
@@ -301,6 +1302,20 @@ pgui_validate_config()
 		pgui_seterr("Select a shape file to import.");
 		return 0;
 	}
+
+	p = malloc(strlen(config->shp_file) + 5);
+	sprintf(p, "%s.shp", config->shp_file);
+	if (validate_shape_filename(p) == 0)
+	{
+		const char *format = "Unable to stat file: %s";
+		char *s = malloc(strlen(p) + strlen(format) + 1);
+		sprintf(s, format, p);
+		pgui_seterr(s);
+		free(s);
+		free(p);
+		return 0;
+	}
+	free(p);
 
 	return 1;
 }
@@ -436,48 +1451,40 @@ pgui_read_connection(void)
 	const char *pg_db = gtk_entry_get_text(GTK_ENTRY(entry_pg_db));
 	char *connection_string = NULL;
 
-	stringbuffer_t *sb = stringbuffer_create();
-
-	/* Read the host */
-	if ( pg_host && strlen(pg_host) > 0 )
+	if ( ! pg_host || strlen(pg_host) == 0 )
 	{
-		vasbappend(sb, "host=%s ", pg_host);
+		pgui_seterr("Fill in the server host.");
+		return NULL;
 	}
-
-	/* Read the port */
-	if ( pg_port && strlen(pg_port) > 0 )
-	{	
-		if ( ! atoi(pg_port) )
-		{
-			pgui_seterr("Server port must be a number.");
-			stringbuffer_destroy(sb);
-			return NULL;
-		}
-		vasbappend(sb, "port=%s ", pg_port);
-	}
-
-	/* Read the user name */
-	if ( pg_user && strlen(pg_user) > 0 )
+	if ( ! pg_port || strlen(pg_port) == 0 )
 	{
-		vasbappend(sb, "user=%s ", pg_user);
+		pgui_seterr("Fill in the server port.");
+		return NULL;
 	}
-
-	/* Read the database name */
-	if ( pg_db && strlen(pg_db) > 0 )
+	if ( ! pg_user || strlen(pg_user) == 0 )
 	{
-		vasbappend(sb, "dbname=%s ", pg_db);
+		pgui_seterr("Fill in the user name.");
+		return NULL;
 	}
-
-	/* Read the password */
-	if ( pg_pass && strlen(pg_pass) > 0 )
+	if ( ! pg_db || strlen(pg_db) == 0 )
 	{
-		vasbappend(sb, "password=%s ", pg_pass);
+		pgui_seterr("Fill in the database name.");
+		return NULL;
 	}
-
-	/* Return the connection string */
-	connection_string = strdup(stringbuffer_getstring(sb));
-	stringbuffer_destroy(sb);	
-	return connection_string;
+	if ( ! atoi(pg_port) )
+	{
+		pgui_seterr("Server port must be a number.");
+		return NULL;
+	}
+	if ( ! lw_asprintf(&connection_string, "user=%s password=%s port=%s host=%s dbname=%s", pg_user, pg_pass, pg_port, pg_host, pg_db) )
+	{
+		return NULL;
+	}
+	if ( connection_string )
+	{
+		return connection_string;
+	}
+	return NULL;
 }
 
 static void
@@ -493,10 +1500,10 @@ static void
 pgui_sanitize_connection_string(char *connection_string)
 {
 	char *ptr = strstr(connection_string, "password");
-	if ( ptr )
+	if ( ptr ) 
 	{
 		ptr += 9;
-		while ( *ptr != ' ' && *ptr != '\0' )
+		while( *ptr != ' ' && *ptr != '\0' )
 		{
 			*ptr = '*';
 			ptr++;
@@ -505,8 +1512,13 @@ pgui_sanitize_connection_string(char *connection_string)
 	return;
 }
 
-static void
-pgui_action_connection_test(GtkWidget *widget, gpointer data)
+/*
+ * This will create a connection to the database, just to see if it can.
+ * It cleans up after itself like a good little function and maintains
+ * the status of the valid_connection parameter.
+ */
+static int 
+connection_test(void)
 {
 	char *connection_string = NULL;
 	char *connection_sanitized = NULL;
@@ -514,9 +1526,10 @@ pgui_action_connection_test(GtkWidget *widget, gpointer data)
 	if ( ! (connection_string = pgui_read_connection()) )
 	{
 		pgui_raise_error_dialogue();
-		return;
+		valid_connection = 0;
+		return 0;
 	}
-
+	
 	connection_sanitized = strdup(connection_string);
 	pgui_sanitize_connection_string(connection_sanitized);
 	pgui_logf("Connecting: %s", connection_sanitized);
@@ -529,20 +1542,84 @@ pgui_action_connection_test(GtkWidget *widget, gpointer data)
 	if (PQstatus(pg_connection) == CONNECTION_BAD)
 	{
 		pgui_logf( "Connection failed: %s", PQerrorMessage(pg_connection));
-		gtk_label_set_text(GTK_LABEL(label_pg_connection_test), "Connection failed.");
 		free(connection_string);
 		PQfinish(pg_connection);
 		pg_connection = NULL;
-		return;
+		valid_connection = 0;
+		return 0;
 	}
-	gtk_label_set_text(GTK_LABEL(label_pg_connection_test), "Connection succeeded.");
-	pgui_logf( "Connection succeeded." );
-	gtk_widget_show(label_pg_connection_test);
 	PQfinish(pg_connection);
 	pg_connection = NULL;
 	free(connection_string);
 
-	return;
+	valid_connection = 1;
+	return 1;
+}
+
+/*
+ * This is a signal handler delegate used for validating connection 
+ * parameters as the user is changing them, prior to testing for a database
+ * connection.
+ */
+static void
+pgui_action_auto_connection_test()
+{
+	/* 
+	 * Since this isn't explicitly triggered, I don't want to error
+	 * if we don't have enough information.
+	 */
+	if(validate_string((char*)gtk_entry_get_text(GTK_ENTRY(entry_pg_host))) == 0
+			|| validate_string((char*)gtk_entry_get_text(GTK_ENTRY(entry_pg_port))) == 0
+			|| validate_string((char*)gtk_entry_get_text(GTK_ENTRY(entry_pg_user))) == 0
+			|| validate_string((char*)gtk_entry_get_text(GTK_ENTRY(entry_pg_pass))) == 0
+			|| validate_string((char*)gtk_entry_get_text(GTK_ENTRY(entry_pg_db))) == 0)
+		return;
+	if(connection_test() == 1)
+		pgui_logf("Connection succeeded.");
+	else
+		pgui_logf("Connection Failed.");
+}
+
+/*
+ * Signal handler for the connection parameter entry fields on activation.
+ */
+static void
+pgui_action_auto_connection_test_activate(GtkWidget *entry, gpointer user_data)
+{
+	pgui_action_auto_connection_test();
+}
+
+/*
+ * Signal handler for the connection parameter entry fields on loss of focus.
+ *
+ * Note that this must always return FALSE to allow subsequent event handlers
+ * to be called.
+ */
+static gboolean 
+pgui_action_auto_connection_test_focus(GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
+{
+	pgui_action_auto_connection_test();
+	return FALSE;
+}
+
+/*
+ * We retain the ability to explicitly request a test of the connection 
+ * parameters.  This is the button signal handler to do so.
+ */
+static void
+pgui_action_connection_test(GtkWidget *widget, gpointer data)
+{
+	if(!connection_test())
+	{
+		gtk_label_set_text(GTK_LABEL(label_pg_connection_test), "Connection failed.");
+
+	}
+	
+	gtk_label_set_text(
+			GTK_LABEL(label_pg_connection_test), 
+			"Connection succeeded.");
+	pgui_logf( "Connection succeeded." );
+	gtk_widget_show(label_pg_connection_test);
 }
 
 static void
@@ -561,40 +1638,75 @@ pgui_action_options_close(GtkWidget *widget, gpointer data)
 }
 
 static void
-pgui_action_shape_file_set(GtkWidget *widget, gpointer data)
+pgui_action_null(GtkWidget *widget, gpointer data)
 {
+	;
+}
+
+static void
+pgui_action_open_file_dialog(GtkWidget *widget, gpointer data)
+{
+	GtkFileFilter *file_filter_shape;
+
+	GtkWidget *file_chooser_dialog_shape = gtk_file_chooser_dialog_new( "Select a Shape File", GTK_WINDOW (window_main), GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CLOSE, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+
+	pgui_logf("pgui_action_open_file_dialog called.");
+
+
+	file_filter_shape = gtk_file_filter_new();
+	gtk_file_filter_add_pattern(GTK_FILE_FILTER(file_filter_shape), "*.shp");
+	gtk_file_filter_set_name(GTK_FILE_FILTER(file_filter_shape), "Shapefiles (*.shp)");
+
+	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(file_chooser_dialog_shape), file_filter_shape);
+
+	if(gtk_dialog_run(GTK_DIALOG(file_chooser_dialog_shape))
+				== GTK_RESPONSE_ACCEPT)
+	{
+		pgui_action_shape_file_set(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_chooser_dialog_shape)));
+		gtk_widget_destroy(file_chooser_dialog_shape);
+	}
+
+}
+
+/*
+ * Given a filename, this function generates the default load parameters,
+ * creates a new FILENODE in the file list and adds a row to the list table.
+ */
+static void
+pgui_action_shape_file_set(const char *gtk_filename)
+{
+	GtkTreeIter iter;
+	FILENODE *file;
+	GdkPixbuf *status;
 	char *shp_file;
 	int shp_file_len;
 	char *table_start;
 	char *table_end;
 	char *table;
-	const char *gtk_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widget));
 
-	if ( gtk_filename )
+	if( gtk_filename ) 
 	{
 		shp_file = strdup(gtk_filename);
 		shp_file_len = strlen(shp_file);
 	}
-	else
+	else 
 	{
 		return;
 	}
 
 	/* Roll back from end to first slash character. */
 	table_start = shp_file + shp_file_len;
-	while ( *table_start != '/' && *table_start != '\\' && table_start > shp_file)
-	{
+	while ( *table_start != '/' && *table_start != '\\' && table_start > shp_file) {
 		table_start--;
 	}
 	table_start++; /* Forward one to start of actual characters. */
 
 	/* Roll back from end to first . character. */
 	table_end = shp_file + shp_file_len;
-	while ( *table_end != '.' && table_end > shp_file && table_end > table_start )
-	{
+	while ( *table_end != '.' && table_end > shp_file && table_end > table_start ) {
 		table_end--;
 	}
-
+	
 	/* Copy the table name into a fresh memory slot. */
 	table = malloc(table_end - table_start + 1);
 	memcpy(table, table_start, table_end - table_start);
@@ -603,7 +1715,37 @@ pgui_action_shape_file_set(GtkWidget *widget, gpointer data)
 	/* Set the table name into the configuration */
 	config->table = table;
 
+	/*
 	gtk_entry_set_text(GTK_ENTRY(entry_config_table), table);
+	*/
+
+	file = append_file(shp_file, "public", table, "the_geom", "-1", 'c', &iter);
+
+	set_filename_field_width();
+
+	switch(validate_shape_file(file))
+	{
+		case(0):
+			status = icon_err;
+			break;
+		case(1):
+			status = icon_warn;
+			break;
+		case(2):
+			status = icon_good;
+			break;
+	}
+	
+	gtk_list_store_insert(list_store, &iter, current_list_index++);
+	gtk_list_store_set(list_store, &iter,
+					STATUS_COLUMN, status,
+	                   FILENAME_COLUMN, shp_file,
+					   SCHEMA_COLUMN, "public",
+					   TABLE_COLUMN, table,
+					   GEOMETRY_COLUMN, "the_geom",
+					   SRID_COLUMN, "-1",
+					   MODE_COLUMN, "Create",
+					   -1);
 
 	free(shp_file);
 }
@@ -614,9 +1756,10 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	char *connection_string = NULL;
 	char *connection_sanitized = NULL;
 	char *dest_string = NULL;
-	int ret, record_count = 0, i = 0, progress_bar_update_frequency = 1;
-	char *header, *footer, *record;
+	int ret, i = 0;
+	char *header, *footer, *record;	
 	PGresult *result;
+	FILENODE *current_file;
 
 
 	if ( ! (connection_string = pgui_read_connection() ) )
@@ -625,259 +1768,272 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		return;
 	}
 
-	/*
-	** Set the configuration from the UI and validate
-	*/
-	pgui_set_config_from_ui();
-	if (! pgui_validate_config() )
+	current_file = get_next_node(NULL);
+	if(current_file == NULL)
 	{
-		pgui_raise_error_dialogue();
-		free(connection_string);
-
+		pgui_logf("File list is empty or uninitialised.");
 		return;
 	}
 
-	/* Log what we know so far */
-	connection_sanitized = strdup(connection_string);
-	pgui_sanitize_connection_string(connection_sanitized);
-	pgui_logf("Connection: %s", connection_sanitized);
-	pgui_logf("Destination: %s.%s", config->schema, config->table);
-	pgui_logf("Source File: %s", config->shp_file);
-	free(connection_sanitized);
-
-	/* Connect to the database. */
-	if ( pg_connection ) PQfinish(pg_connection);
-	pg_connection = PQconnectdb(connection_string);
-
-	if (PQstatus(pg_connection) == CONNECTION_BAD)
+	while(current_file != NULL)
 	{
-		pgui_logf( "Connection failed: %s", PQerrorMessage(pg_connection));
-		gtk_label_set_text(GTK_LABEL(label_pg_connection_test), "Connection failed.");
-		free(connection_string);
-		free(dest_string);
-		PQfinish(pg_connection);
-		pg_connection = NULL;
-		return;
-	}
 
-	/*
-	 * Loop through the items in the shapefile
-	 */
-
-	/* Disable the button to prevent multiple imports running at the same time */
-	gtk_widget_set_sensitive(widget, FALSE);
-
-	/* Allow GTK events to get a look in */
-	while (gtk_events_pending())
-		gtk_main_iteration();
-
-	/* Create the shapefile state object */
-	state = ShpLoaderCreate(config);
-
-	/* Open the shapefile */
-	ret = ShpLoaderOpenShape(state);
-	if (ret != SHPLOADEROK)
-	{
-		pgui_logf("%s", state->message);
-
-		if (ret == SHPLOADERERR)
-			goto import_cleanup;
-	}
-
-	/* If reading the whole shapefile, display its type */
-	if (state->config->readshape)
-	{
-		pgui_logf("Shapefile type: %s", SHPTypeName(state->shpfiletype));
-		pgui_logf("Postgis type: %s[%d]", state->pgtype, state->pgdims);
-	}
-
-	/* Get the header */
-	ret = ShpLoaderGetSQLHeader(state, &header);
-	if (ret != SHPLOADEROK)
-	{
-		pgui_logf("%s", state->message);
-
-		if (ret == SHPLOADERERR)
-			goto import_cleanup;
-	}
-
-	/* Send the header to the remote server: if we are in COPY mode then the last
-	   statement will be a COPY and so will change connection mode */
-	ret = pgui_exec(header);
-	free(header);
-
-	if (!ret)
-		goto import_cleanup;
-
-	/* If we are in COPY (dump format) mode, output the COPY statement and enter COPY mode */
-	if (state->config->dump_format)
-	{
-		ret = ShpLoaderGetSQLCopyStatement(state, &header);
-
-		if (ret != SHPLOADEROK)
+		/* 
+		** Set the configuration from the UI and validate
+		*/
+		pgui_set_config_from_ui(current_file);
+		if (! pgui_validate_config() )
 		{
-			pgui_logf("%s", state->message);
-
-			if (ret == SHPLOADERERR)
-				goto import_cleanup;
+			pgui_raise_error_dialogue();
+	
+			current_file = get_next_node(current_file);
+			continue;
 		}
 
-		/* Send the result to the remote server: this should put us in COPY mode */
-		ret = pgui_copy_start(header);
-		free(header);
-
-		if (!ret)
-			goto import_cleanup;
-	}
-
-	/* Main loop: iterate through all of the records and send them to stdout */
-	pgui_logf("Importing shapefile (%d records)...", ShpLoaderGetRecordCount(state));
-
-    /* Number of records in this file */
-    record_count = ShpLoaderGetRecordCount(state);
-    /* Assume a progress bar 1000 pixels across, how we only want to update it every N records */
-    progress_bar_update_frequency = 1 + record_count / 1000;
-    
-	import_running = TRUE;
-	for (i = 0; (i < record_count) && import_running; i++)
-	{
-		ret = ShpLoaderGenerateSQLRowStatement(state, i, &record);
-
-		switch (ret)
+		pgui_logf("\n==============================");
+		pgui_logf("Importing with configuration: %s, %s, %s, %s, mode=%c, dump=%d, simple=%d, geography=%d, index=%d, shape=%d, srid=%d", config->table, config->schema, config->geom, config->shp_file, config->opt, config->dump_format, config->simple_geometries, config->geography, config->createindex, config->readshape, config->sr_id);
+	
+		/* Log what we know so far */
+		connection_sanitized = strdup(connection_string);
+		pgui_sanitize_connection_string(connection_sanitized);
+		pgui_logf("Connection: %s", connection_sanitized);
+		pgui_logf("Destination: %s.%s", config->schema, config->table);
+		pgui_logf("Source File: %s", config->shp_file);
+		free(connection_sanitized);
+	
+		/* Connect to the database. */
+		if ( pg_connection ) PQfinish(pg_connection);
+		pg_connection = PQconnectdb(connection_string);
+	
+		if (PQstatus(pg_connection) == CONNECTION_BAD)
 		{
-		case SHPLOADEROK:
-			/* Simply send the statement */
-			if (state->config->dump_format)
-				ret = pgui_copy_write(record);
-			else
-				ret = pgui_exec(record);
-
-			/* Display a record number if we failed */
-			if (!ret)
-				pgui_logf("Failed record number #%d", i);
-
-			free(record);
-			break;
-
-		case SHPLOADERERR:
-			/* Display the error message then stop */
-			pgui_logf("%s\n", state->message);
-			goto import_cleanup;
-			break;
-
-		case SHPLOADERWARN:
-			/* Display the warning, but continue */
-			pgui_logf("%s\n", state->message);
-
-			if (state->config->dump_format)
-				ret = pgui_copy_write(record);
-			else
-				ret = pgui_exec(record);
-
-			/* Display a record number if we failed */
-			if (!ret)
-				pgui_logf("Failed record number #%d", i);
-
-			free(record);
-			break;
-
-		case SHPLOADERRECDELETED:
-			/* Record is marked as deleted - ignore */
-			break;
-
-		case SHPLOADERRECISNULL:
-			/* Record is NULL and should be ignored according to NULL policy */
-			break;
+			pgui_logf( "Connection failed: %s", PQerrorMessage(pg_connection));
+			gtk_label_set_text(GTK_LABEL(label_pg_connection_test), "Connection failed.");
+			free(connection_string);
+			free(dest_string);
+			PQfinish(pg_connection);
+			pg_connection = NULL;
+			return;
 		}
 
-		/* Update the progress bar */
-        if( i % progress_bar_update_frequency == 0 )
-        {
-		    gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), (float)i / record_count);
-	    }
-
+		/*
+	 	* Loop through the items in the shapefile
+	 	*/
+	
+		/* Disable the button to prevent multiple imports running at the same time */
+		gtk_widget_set_sensitive(widget, FALSE); 
+	
 		/* Allow GTK events to get a look in */
 		while (gtk_events_pending())
 			gtk_main_iteration();
-	}
-
-	/* If we are in COPY (dump format) mode, leave COPY mode */
-	if (state->config->dump_format)
-	{
-		if (! pgui_copy_end(0) )
-			goto import_cleanup;
-
-		result = PQgetResult(pg_connection);
-		if (PQresultStatus(result) != PGRES_COMMAND_OK)
-		{
-			pgui_logf("COPY failed with the following error: %s", PQerrorMessage(pg_connection));
-			ret = SHPLOADERERR;
-			goto import_cleanup;
-		}
-	}
-
-	/* Only continue if we didn't abort part way through */
-	if (import_running)
-	{
-		/* Get the footer */
-		ret = ShpLoaderGetSQLFooter(state, &footer);
+	
+		/* Create the shapefile state object */
+		state = ShpLoaderCreate(config);
+	
+		/* Open the shapefile */
+		ret = ShpLoaderOpenShape(state);
 		if (ret != SHPLOADEROK)
 		{
-			pgui_logf("%s\n", state->message);
-
+			pgui_logf("%s", state->message);
+	
 			if (ret == SHPLOADERERR)
 				goto import_cleanup;
 		}
 
-		if ( state->config->createindex )
+		/* If reading the whole shapefile, display its type */
+		if (state->config->readshape)
 		{
-			pgui_logf("Creating spatial index...\n");
+			pgui_logf("Shapefile type: %s", SHPTypeName(state->shpfiletype));
+			pgui_logf("Postgis type: %s[%d]", state->pgtype, state->pgdims);
 		}
-
-		/* Send the footer to the server */
-		ret = pgui_exec(footer);
-		free(footer);
-
+	
+		/* Get the header */
+		ret = ShpLoaderGetSQLHeader(state, &header);
+		if (ret != SHPLOADEROK)
+		{
+			pgui_logf("%s", state->message);
+	
+			if (ret == SHPLOADERERR)
+				goto import_cleanup;
+		}
+	
+		/* Send the header to the remote server: if we are in COPY mode then the last
+	   	statement will be a COPY and so will change connection mode */
+		ret = pgui_exec(header);
+		free(header);
+	
 		if (!ret)
 			goto import_cleanup;
-	}
+	
+		import_running = TRUE;
+
+		/* If we are in prepare mode, we need to skip the actual load. */
+		if (state->config->opt != 'p') {
+
+			/* If we are in COPY (dump format) mode, output the COPY statement and enter COPY mode */
+			if (state->config->dump_format)
+			{
+				ret = ShpLoaderGetSQLCopyStatement(state, &header);
+		
+				if (ret != SHPLOADEROK)
+				{
+					pgui_logf("%s", state->message);
+			
+					if (ret == SHPLOADERERR)
+						goto import_cleanup;
+				}
+		
+				/* Send the result to the remote server: this should put us in COPY mode */
+				ret = pgui_copy_start(header);
+				free(header);
+	
+				if (!ret)
+					goto import_cleanup;
+			}
+		
+			/* Main loop: iterate through all of the records and send them to stdout */
+			pgui_logf("Importing shapefile (%d records)...", ShpLoaderGetRecordCount(state));
+		
+			for (i = 0; i < ShpLoaderGetRecordCount(state) && import_running; i++)
+			{
+				ret = ShpLoaderGenerateSQLRowStatement(state, i, &record);
+		
+				switch(ret)
+				{
+					case SHPLOADEROK:
+						/* Simply send the statement */
+						if (state->config->dump_format)
+							ret = pgui_copy_write(record);
+						else
+							ret = pgui_exec(record);
+		
+						/* Display a record number if we failed */
+						if (!ret)
+							pgui_logf("Failed record number #%d", i);
+		
+						free(record);
+						break;
+		
+					case SHPLOADERERR:
+						/* Display the error message then stop */
+						pgui_logf("%s\n", state->message);
+						goto import_cleanup;
+						break;
+		
+					case SHPLOADERWARN:
+						/* Display the warning, but continue */
+						pgui_logf("%s\n", state->message);
+			
+						if (state->config->dump_format)
+							ret = pgui_copy_write(record);
+						else
+							ret = pgui_exec(record);
+		
+						/* Display a record number if we failed */
+						if (!ret)
+							pgui_logf("Failed record number #%d", i);
+		
+						free(record);
+						break;
+		
+					case SHPLOADERRECDELETED:
+						/* Record is marked as deleted - ignore */
+						break;
+		
+					case SHPLOADERRECISNULL:
+						/* Record is NULL and should be ignored according to NULL policy */
+						break;
+				}
+		
+				/* Update the progress bar */
+				gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), (float)i / ShpLoaderGetRecordCount(state));
+		
+				/* Allow GTK events to get a look in */
+				while (gtk_events_pending())
+					gtk_main_iteration();
+			}
+		
+			/* If we are in COPY (dump format) mode, leave COPY mode */
+			if (state->config->dump_format)
+			{
+				if (! pgui_copy_end(0) )
+					goto import_cleanup;
+		
+				result = PQgetResult(pg_connection);
+				if (PQresultStatus(result) != PGRES_COMMAND_OK)
+				{
+					pgui_logf("COPY failed with the following error: %s", PQerrorMessage(pg_connection));
+					ret = SHPLOADERERR;
+					goto import_cleanup;
+				}
+			}
+		} /* if (state->config->opt != 'p') */
+	
+		/* Only continue if we didn't abort part way through */
+		if (import_running)
+		{
+			/* Get the footer */
+			ret = ShpLoaderGetSQLFooter(state, &footer);
+			if (ret != SHPLOADEROK)
+			{
+				pgui_logf("%s\n", state->message);
+		
+				if (ret == SHPLOADERERR)
+					goto import_cleanup;
+			}
+	
+			if( state->config->createindex )
+			{
+				pgui_logf("Creating spatial index...\n");
+			}
+		
+			/* Send the footer to the server */
+			ret = pgui_exec(footer);
+			free(footer);
+		
+			if (!ret)
+				goto import_cleanup;
+		}
 
 
 import_cleanup:
-	/* If we didn't finish inserting all of the items, an error occurred */
-	if (i != ShpLoaderGetRecordCount(state) || !ret)
-		pgui_logf("Shapefile import failed.");
-	else
-		pgui_logf("Shapefile import completed.");
+		/* If we didn't finish inserting all of the items (and we expected to), an error occurred */
+		if ((state->config->opt != 'p' && i != ShpLoaderGetRecordCount(state)) || !ret)
+			pgui_logf("Shapefile import failed.");
+		else
+			pgui_logf("Shapefile import completed.");
+	
+		/* Free the state object */
+		ShpLoaderDestroy(state);
 
-	/* Free the state object */
-	ShpLoaderDestroy(state);
+		/* Import has definitely finished */
+		import_running = FALSE;
+	
+		/* Enable the button once again */
+		gtk_widget_set_sensitive(widget, TRUE);
+	
+		/* Silly GTK bug means we have to hide and show the button for it to work again! */
+		gtk_widget_hide(widget);
+		gtk_widget_show(widget);
+	
+		/* Reset the progress bar */
+		gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), 0.0);
+	
+		/* Allow GTK events to get a look in */
+		while (gtk_events_pending())
+			gtk_main_iteration();
+	
+		/* Disconnect from the database */
+		PQfinish(pg_connection);
+		pg_connection = NULL;
 
-	/* Import has definitely finished */
-	import_running = FALSE;
-
-	/* Enable the button once again */
-	gtk_widget_set_sensitive(widget, TRUE);
-
-	/* Silly GTK bug means we have to hide and show the button for it to work again! */
-	gtk_widget_hide(widget);
-	gtk_widget_show(widget);
-
-	/* Reset the progress bar */
-	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), 0.0);
-
-	/* Allow GTK events to get a look in */
-	while (gtk_events_pending())
-		gtk_main_iteration();
+		current_file = get_next_node(current_file);
+	}
 
 	/* Tidy up */
 	free(connection_string);
 	free(dest_string);
 	connection_string = dest_string = NULL;
-
-	/* Disconnect from the database */
-	PQfinish(pg_connection);
-	pg_connection = NULL;
 
 	return;
 }
@@ -896,19 +2052,20 @@ pgui_action_about_open()
 {
 	GtkWidget *dlg;
 	const char *authors[] =
-	{
-		"Paul Ramsey <pramsey@opengeo.org>",
-		"Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>",
-		NULL
-	};
+	  {
+	    "Paul Ramsey <pramsey@opengeo.org>",
+	    "Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>",
+		"Mark Leslie <mark.leslie@lisasoft.com>",
+	    NULL
+	  };
 
 	dlg = gtk_about_dialog_new ();
 	gtk_about_dialog_set_name (GTK_ABOUT_DIALOG(dlg), "Shape to PostGIS");
 	gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG(dlg), GUI_RCSID);
-	/*	gtk_about_dialog_set_version (GTK_ABOUT_DIALOG(dlg), GUI_RCSID); */
+/*	gtk_about_dialog_set_version (GTK_ABOUT_DIALOG(dlg), GUI_RCSID); */
 	gtk_about_dialog_set_website (GTK_ABOUT_DIALOG(dlg), "http://postgis.org/");
 	gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG(dlg), authors);
-	g_signal_connect_swapped(dlg, "response", G_CALLBACK(gtk_widget_destroy), dlg);
+	g_signal_connect_swapped(dlg, "response", G_CALLBACK(gtk_widget_destroy), dlg);	
 	gtk_widget_show (dlg);
 }
 
@@ -921,7 +2078,7 @@ pgui_create_options_dialogue()
 	static int text_width = 12;
 
 	dialog_options = gtk_dialog_new_with_buttons ("Import Options", GTK_WINDOW(window_main), GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_OK, GTK_RESPONSE_NONE, NULL);
-
+	
 	gtk_window_set_modal (GTK_WINDOW(dialog_options), TRUE);
 	gtk_window_set_keep_above (GTK_WINDOW(dialog_options), TRUE);
 	gtk_window_set_default_size (GTK_WINDOW(dialog_options), 180, 200);
@@ -936,14 +2093,14 @@ pgui_create_options_dialogue()
 	gtk_entry_set_width_chars(GTK_ENTRY(entry_options_encoding), text_width);
 	gtk_entry_set_text(GTK_ENTRY(entry_options_encoding), config->encoding);
 	gtk_table_attach_defaults(GTK_TABLE(table_options), entry_options_encoding, 0, 1, 0, 1 );
-
+	
 	pgui_create_options_dialogue_add_label(table_options, "Preserve case of column names", 0.0, 1);
 	checkbutton_options_preservecase = gtk_check_button_new();
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_options_preservecase), config->quoteidentifiers ? TRUE : FALSE);
 	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 1.0 );
 	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 1, 2 );
 	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_options_preservecase);
-
+	
 	pgui_create_options_dialogue_add_label(table_options, "Do not create 'bigint' columns", 0.0, 2);
 	checkbutton_options_forceint = gtk_check_button_new();
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_options_forceint), config->forceint4 ? TRUE : FALSE);
@@ -993,21 +2150,14 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	GtkWidget *label;
 	/* Main widgets */
 	GtkWidget *vbox_main;
-	/* Shape file section */
-	GtkWidget *file_chooser_dialog_shape;
-	GtkFileFilter *file_filter_shape;
 	/* PgSQL section */
-	GtkWidget *frame_pg, *frame_shape, *frame_log, *frame_config;
-	GtkWidget *table_pg, *table_config;
+	GtkWidget *frame_pg, *frame_shape, *frame_log;
+	GtkWidget *table_pg;
 	GtkWidget *button_pg_test;
 	/* Button section */
 	GtkWidget *hbox_buttons, *button_options, *button_import, *button_cancel, *button_about;
 	/* Log section */
 	GtkWidget *scrolledwindow_log;
-#ifdef MAC_INTEGRATION
-	/* MacOSX Command-Quit menu item */
-	GtkWidget *menu_item_quit;
-#endif
 
 	/* create the main, top level, window */
 	window_main = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -1027,21 +2177,7 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	*/
 	g_signal_connect (G_OBJECT (window_main), "destroy", G_CALLBACK (pgui_quit), NULL);
 
-	/*
-	** Shape file selector
-	*/
-	frame_shape = gtk_frame_new("Shape File");
-	gtk_container_set_border_width (GTK_CONTAINER (frame_shape), 0);
-	file_chooser_dialog_shape = gtk_file_chooser_dialog_new( "Select a Shape File", GTK_WINDOW (window_main), GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
-	file_chooser_button_shape = gtk_file_chooser_button_new_with_dialog( file_chooser_dialog_shape );
-	gtk_container_set_border_width (GTK_CONTAINER (file_chooser_button_shape), 8);
-	file_filter_shape = gtk_file_filter_new();
-	gtk_file_filter_add_pattern(GTK_FILE_FILTER(file_filter_shape), "*.shp");
-	gtk_file_filter_set_name(GTK_FILE_FILTER(file_filter_shape), "Shapefiles (*.shp)");
-	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(file_chooser_button_shape), file_filter_shape);
-	gtk_container_add (GTK_CONTAINER (frame_shape), file_chooser_button_shape);
-	g_signal_connect (G_OBJECT (file_chooser_button_shape), "file-set", G_CALLBACK (pgui_action_shape_file_set), NULL);
-
+	load_icons();
 
 	/*
 	** PostGIS info in a table
@@ -1054,42 +2190,62 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	/* User name row */
 	label = gtk_label_new("Username:");
 	entry_pg_user = gtk_entry_new();
-	if ( conn->username )
+	if( conn->username )
 		gtk_entry_set_text(GTK_ENTRY(entry_pg_user), conn->username);
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), label, 0, 1, 0, 1 );
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), entry_pg_user, 1, 3, 0, 1 );
+	g_signal_connect(G_OBJECT(entry_pg_user), "activate", 
+			G_CALLBACK(pgui_action_auto_connection_test), NULL);
+	g_signal_connect(G_OBJECT(entry_pg_user), "focus-out-event", 
+			G_CALLBACK(pgui_action_auto_connection_test_focus), NULL);
 	/* Password row */
 	label = gtk_label_new("Password:");
 	entry_pg_pass = gtk_entry_new();
-	if ( conn->password )
+	if( conn->password )
 		gtk_entry_set_text(GTK_ENTRY(entry_pg_pass), conn->password);
 	gtk_entry_set_visibility( GTK_ENTRY(entry_pg_pass), FALSE);
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), label, 0, 1, 1, 2 );
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), entry_pg_pass, 1, 3, 1, 2 );
+	g_signal_connect(G_OBJECT(entry_pg_pass), "activate", 
+			G_CALLBACK(pgui_action_auto_connection_test_activate), NULL);
+	g_signal_connect(G_OBJECT(entry_pg_pass), "focus-out-event",
+			G_CALLBACK(pgui_action_auto_connection_test_focus), NULL);
 	/* Host and port row */
 	label = gtk_label_new("Server Host:");
 	entry_pg_host = gtk_entry_new();
-	if ( conn->host )
+	if( conn->host )
 		gtk_entry_set_text(GTK_ENTRY(entry_pg_host), conn->host);
 	else
 		gtk_entry_set_text(GTK_ENTRY(entry_pg_host), "localhost");
 	gtk_entry_set_width_chars(GTK_ENTRY(entry_pg_host), text_width);
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), label, 0, 1, 2, 3 );
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), entry_pg_host, 1, 2, 2, 3 );
+	g_signal_connect(G_OBJECT(entry_pg_host), "activate", 
+			G_CALLBACK(pgui_action_auto_connection_test_activate), NULL);
+	g_signal_connect(G_OBJECT(entry_pg_host), "focus-out-event",
+			G_CALLBACK(pgui_action_auto_connection_test_focus), NULL);
 	entry_pg_port = gtk_entry_new();
-	if ( conn->port )
+	if( conn->port )
 		gtk_entry_set_text(GTK_ENTRY(entry_pg_port), conn->port);
 	else
 		gtk_entry_set_text(GTK_ENTRY(entry_pg_port), "5432");
 	gtk_entry_set_width_chars(GTK_ENTRY(entry_pg_port), 8);
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), entry_pg_port, 2, 3, 2, 3 );
+	g_signal_connect(G_OBJECT(entry_pg_port), "activate", 
+			G_CALLBACK(pgui_action_auto_connection_test_activate), NULL);
+	g_signal_connect(G_OBJECT(entry_pg_port), "focus-out-event",
+			G_CALLBACK(pgui_action_auto_connection_test_focus), NULL);
 	/* Database row */
 	label = gtk_label_new("Database:");
 	entry_pg_db   = gtk_entry_new();
-	if ( conn->database )
+	if( conn->database )
 		gtk_entry_set_text(GTK_ENTRY(entry_pg_db), conn->database);
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), label, 0, 1, 3, 4 );
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), entry_pg_db, 1, 3, 3, 4 );
+	g_signal_connect(G_OBJECT(entry_pg_db), "activate", 
+			G_CALLBACK(pgui_action_auto_connection_test_activate), NULL);
+	g_signal_connect(G_OBJECT(entry_pg_db), "focus-out-event",
+			G_CALLBACK(pgui_action_auto_connection_test_focus), NULL);
 	/* Test button row */
 	button_pg_test = gtk_button_new_with_label("Test Connection...");
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), button_pg_test, 1, 2, 4, 5 );
@@ -1100,43 +2256,10 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	gtk_container_add (GTK_CONTAINER (frame_pg), table_pg);
 
 	/*
-	** Configuration in a table
+	** Shape file selector 
 	*/
-	frame_config = gtk_frame_new("Configuration");
-	table_config = gtk_table_new(2, 4, TRUE);
-	gtk_table_set_col_spacings(GTK_TABLE(table_config), 7);
-	gtk_table_set_row_spacings(GTK_TABLE(table_config), 3);
-	gtk_container_set_border_width (GTK_CONTAINER (table_config), 8);
-	/* Destination schemea row */
-	label = gtk_label_new("Destination Schema:");
-	entry_config_schema = gtk_entry_new();
-	gtk_entry_set_text(GTK_ENTRY(entry_config_schema), "public");
-	gtk_entry_set_width_chars(GTK_ENTRY(entry_config_schema), text_width);
-	gtk_table_attach_defaults(GTK_TABLE(table_config), label, 0, 1, 0, 1 );
-	gtk_table_attach_defaults(GTK_TABLE(table_config), entry_config_schema, 1, 2, 0, 1 );
-	/* Destination table row */
-	label = gtk_label_new("Destination Table:");
-	entry_config_table = gtk_entry_new();
-	gtk_entry_set_width_chars(GTK_ENTRY(entry_config_table), text_width);
-	gtk_table_attach_defaults(GTK_TABLE(table_config), label, 0, 1, 1, 2 );
-	gtk_table_attach_defaults(GTK_TABLE(table_config), entry_config_table, 1, 2, 1, 2 );
-	/* SRID row */
-	label = gtk_label_new("SRID:");
-	entry_config_srid = gtk_entry_new();
-	gtk_entry_set_width_chars(GTK_ENTRY(entry_config_srid), text_width);
-	gtk_entry_set_text(GTK_ENTRY(entry_config_srid), "-1");
-	gtk_table_attach_defaults(GTK_TABLE(table_config), label, 2, 3, 0, 1 );
-	gtk_table_attach_defaults(GTK_TABLE(table_config), entry_config_srid, 3, 4, 0, 1 );
-	/* Geom column row */
-	label = gtk_label_new("Geometry Column:");
-	entry_config_geocolumn = gtk_entry_new();
-	gtk_entry_set_width_chars(GTK_ENTRY(entry_config_geocolumn), text_width);
-	gtk_entry_set_text(GTK_ENTRY(entry_config_geocolumn), GEOMETRY_DEFAULT);
-	gtk_table_attach_defaults(GTK_TABLE(table_config), label, 2, 3, 1, 2 );
-	gtk_table_attach_defaults(GTK_TABLE(table_config), entry_config_geocolumn, 3, 4, 1, 2 );
-
-	/* Add table into containing frame */
-	gtk_container_add (GTK_CONTAINER (frame_config), table_config);
+	frame_shape = gtk_frame_new("Shape File");
+	pgui_create_file_table(frame_shape);
 
 	/* Progress bar for the import */
 	progress = gtk_progress_bar_new();
@@ -1181,24 +2304,14 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	gtk_container_add (GTK_CONTAINER (scrolledwindow_log), textview_log);
 	gtk_container_add (GTK_CONTAINER (frame_log), scrolledwindow_log);
 
-#ifdef MAC_INTEGRATION
 	/*
-	** OS/X menu integration for command-Q
-	*/
-	menu_item_quit = gtk_menu_item_new();
-	g_signal_connect (G_OBJECT (menu_item_quit), "activate", G_CALLBACK (pgui_action_cancel), NULL);
-	ige_mac_menu_set_quit_menu_item (GTK_MENU_ITEM (menu_item_quit));
-#endif 
-
-	/*
-	** Main window
+	** Main window 
 	*/
 	vbox_main = gtk_vbox_new(FALSE, 10);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_main), 0);
 	/* Add the frames into the main vbox */
-	gtk_box_pack_start(GTK_BOX(vbox_main), frame_shape, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_main), frame_pg, FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_main), frame_config, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_main), frame_shape, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_main), hbox_buttons, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_main), progress, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_main), frame_log, TRUE, TRUE, 0);
@@ -1209,6 +2322,198 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 
 	return;
 }
+
+/*
+ * This function creates the UI artefacts for the file list table and hooks
+ * up all the pretty signals.
+ */
+static void
+pgui_create_file_table(GtkWidget *frame_shape)
+{
+	GdkWindow *bin_window;
+	GtkWidget *vbox_tree;
+
+	gtk_container_set_border_width (GTK_CONTAINER (frame_shape), 0);
+
+	vbox_tree = gtk_vbox_new(FALSE, 15);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox_tree), 5);
+	gtk_container_add(GTK_CONTAINER(frame_shape), vbox_tree);
+
+	add_file_button = gtk_button_new_with_label("Add File"); 
+
+	gtk_container_add (GTK_CONTAINER (vbox_tree), add_file_button);
+
+	/* Setup a model */
+	list_store = gtk_list_store_new (N_COLUMNS, 
+					G_TYPE_OBJECT,
+		                          G_TYPE_STRING,
+	                                  G_TYPE_STRING, 
+					  G_TYPE_STRING,
+					  G_TYPE_STRING, 
+					  G_TYPE_STRING,
+					  G_TYPE_STRING,
+					  G_TYPE_BOOLEAN);
+	/* Create file details list */
+	init_file_list();
+	/* Create the view and such */
+	tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(list_store));
+	/* Make the tree view */
+	gtk_box_pack_start(GTK_BOX(vbox_tree), tree, TRUE, TRUE, 0);
+	
+	/* Status Field */
+	status_renderer = gtk_cell_renderer_pixbuf_new();
+	g_object_set(status_renderer, "pixbuf", icon_warn, NULL);
+	status_column = gtk_tree_view_column_new_with_attributes(" ",
+													status_renderer,
+													"pixbuf",
+													STATUS_COLUMN,
+													NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), status_column);
+
+	/* Filename Field */
+	filename_renderer = gtk_cell_renderer_text_new();
+	set_filename_field_width();
+	g_object_set(filename_renderer, "editable", TRUE, NULL);
+	g_signal_connect(G_OBJECT(filename_renderer), "edited", G_CALLBACK(pgui_action_handle_tree_edit), NULL);
+	filename_column = gtk_tree_view_column_new_with_attributes("Shapefile",
+	                                                  filename_renderer,
+													  "text",
+													  FILENAME_COLUMN,
+													  NULL);
+	g_object_set(filename_column, "resizable", TRUE, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), filename_column);
+
+	/* Schema Field */
+	schema_renderer = gtk_cell_renderer_text_new();
+	g_object_set(schema_renderer, "editable", TRUE, NULL);
+	g_signal_connect(G_OBJECT(schema_renderer), "edited", G_CALLBACK(pgui_action_handle_tree_edit), NULL);
+	schema_column = gtk_tree_view_column_new_with_attributes("Schema",
+	                                                         schema_renderer,
+															 "text",
+															 SCHEMA_COLUMN,
+															 "background",
+															 "white",
+															 NULL);
+	g_object_set(schema_column, "resizable", TRUE, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), schema_column);
+	
+	/* Table Field */
+	table_renderer = gtk_cell_renderer_text_new();
+	g_object_set(table_renderer, "editable", TRUE, NULL);
+	g_signal_connect(G_OBJECT(table_renderer), "edited", G_CALLBACK(pgui_action_handle_tree_edit), NULL);
+	table_column = gtk_tree_view_column_new_with_attributes("Table",
+	                                                        table_renderer,
+															"text",
+															TABLE_COLUMN,
+														    "background",
+														    "white",
+															NULL);
+	g_object_set(schema_column, "resizable", TRUE, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), table_column);
+	
+	geom_column_renderer = gtk_cell_renderer_text_new();
+	g_object_set(geom_column_renderer, "editable", TRUE, NULL);
+	g_signal_connect(G_OBJECT(geom_column_renderer), "edited", G_CALLBACK(pgui_action_handle_tree_edit), NULL);
+	geom_column = gtk_tree_view_column_new_with_attributes("Geometry Column",
+	                                                       geom_column_renderer,
+														   "text",
+														   GEOMETRY_COLUMN,
+														   "background",
+														   "white",
+														   NULL);
+	g_object_set(geom_column, "resizable", TRUE, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), geom_column);
+
+	/* SRID Field */
+	srid_renderer = gtk_cell_renderer_text_new();
+	g_object_set(srid_renderer, "editable", TRUE, NULL);
+	g_signal_connect(G_OBJECT(srid_renderer), "edited", G_CALLBACK(pgui_action_handle_tree_edit), NULL);
+	srid_column = gtk_tree_view_column_new_with_attributes("SRID",
+	                                                       srid_renderer,
+														   "text",
+														   SRID_COLUMN,
+														   "background",
+														   "white",
+														   NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), srid_column);
+
+	/* Mode Combo */
+	combo_list = gtk_list_store_new(COMBO_COLUMNS, 
+												 G_TYPE_STRING);
+	GtkTreeIter iter;
+	gtk_list_store_insert(combo_list, &iter, CREATE_MODE);
+	gtk_list_store_set(combo_list, &iter,
+			           COMBO_TEXT, "Create");
+	gtk_list_store_insert(combo_list, &iter, APPEND_MODE);
+	gtk_list_store_set(combo_list, &iter,
+			           COMBO_TEXT, "Append");
+	gtk_list_store_insert(combo_list, &iter, DELETE_MODE);
+	gtk_list_store_set(combo_list, &iter,
+			           COMBO_TEXT, "Delete");
+	gtk_list_store_insert(combo_list, &iter, PREPARE_MODE);
+	gtk_list_store_set(combo_list, &iter,
+			           COMBO_TEXT, "Prepare");
+	mode_combo = gtk_combo_box_new_with_model(GTK_TREE_MODEL(combo_list));
+	mode_renderer = gtk_cell_renderer_combo_new();
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(mode_combo), 
+			                   mode_renderer, TRUE);
+	gtk_cell_layout_add_attribute(GTK_CELL_LAYOUT(mode_combo), 
+			                      mode_renderer, "text", 0);
+	g_object_set(mode_renderer, "width-chars", 8, NULL);
+	g_object_set(mode_renderer, 
+			     "model", combo_list,
+			     "editable", TRUE,
+				 "has-entry", FALSE,
+				 "text-column", COMBO_TEXT,
+				 NULL);
+	mode_column = gtk_tree_view_column_new_with_attributes("Mode",
+			                                               mode_renderer,
+														   "text",
+														   MODE_COLUMN,
+														   NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), mode_column);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(mode_combo), 1);
+	
+	g_signal_connect (G_OBJECT(mode_renderer), "changed", G_CALLBACK(pgui_action_handle_tree_combo), NULL);
+
+
+
+	remove_renderer = gtk_cell_renderer_toggle_new();
+	g_object_set(remove_renderer, "editable", TRUE, NULL);
+	g_signal_connect(G_OBJECT(remove_renderer), "toggled", G_CALLBACK (pgui_action_handle_tree_remove), NULL);
+	remove_column = gtk_tree_view_column_new_with_attributes("Rm", 
+						remove_renderer, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), remove_column);
+															 
+
+	g_signal_connect (G_OBJECT (add_file_button), "clicked", G_CALLBACK (pgui_action_open_file_dialog), NULL);
+	
+
+	//GtkTreeIter iter;
+	gtk_list_store_append(list_store, &iter);
+	gtk_list_store_set(list_store, &iter,
+	                   FILENAME_COLUMN, "",
+					   SCHEMA_COLUMN, "",
+					   TABLE_COLUMN, "",
+					   GEOMETRY_COLUMN, "",
+					   SRID_COLUMN, "",
+					   -1);
+
+	/* Drag n Drop wiring */
+	GtkTargetEntry drop_types[] = {
+		{ "text/uri-list", 0, 0}
+	};
+	gint n_drop_types = sizeof(drop_types)/sizeof(drop_types[0]);
+	gtk_drag_dest_set(GTK_WIDGET(tree),
+			          GTK_DEST_DEFAULT_ALL,
+					  drop_types, n_drop_types,
+					  GDK_ACTION_COPY);
+	g_signal_connect(G_OBJECT(tree), "drag_data_received",
+			         G_CALLBACK(pgui_action_handle_file_drop), NULL);
+
+					  
+}
+
 
 static void
 usage()
@@ -1229,48 +2534,40 @@ main(int argc, char *argv[])
 {
 	char c;
 
-	/* Set default configuration */
+	/* Parse command line options and set configuration */
 	config = malloc(sizeof(SHPLOADERCONFIG));
 	set_config_defaults(config);
 
 	/* Here we override any defaults for the GUI */
 	config->createindex = 1;
-
-	/* Prepare our shape connection */
+	
 	conn = malloc(sizeof(SHPCONNECTIONCONFIG));
 	memset(conn, 0, sizeof(SHPCONNECTIONCONFIG));
 
-    /* Read any environment values */
-    conn->port = getenv("PGPORT");
-    conn->username = getenv("PGUSER");
-    conn->database = getenv("PGDATABASE");
-    conn->host = getenv("PGHOST");
-
-	/* Over-ride the environment with any command line options */
 	while ((c = pgis_getopt(argc, argv, "U:p:W:d:h:")) != -1)
 	{
 		switch (c)
 		{
-		case 'U':
-			conn->username = pgis_optarg;
-			break;
-		case 'p':
-			conn->port = pgis_optarg;
-			break;
-		case 'W':
-			conn->password = pgis_optarg;
-			break;
-		case 'd':
-			conn->database = pgis_optarg;
-			break;
-		case 'h':
-			conn->host = pgis_optarg;
-			break;
-		default:
-			usage();
-			free(conn);
-			free(config);
-			exit(0);
+			case 'U':
+				conn->username = pgis_optarg;
+				break;
+			case 'p':
+				conn->port = pgis_optarg;
+				break;
+			case 'W':
+				conn->password = pgis_optarg;
+				break;
+			case 'd':
+				conn->database = pgis_optarg;
+				break;
+			case 'h':
+				conn->host = pgis_optarg;
+				break;
+			default:
+				usage();
+				free(conn);
+				free(config);
+				exit(0);
 		}
 	}
 
@@ -1279,7 +2576,7 @@ main(int argc, char *argv[])
 
 	/* set up the user interface */
 	pgui_create_main_window(conn);
-
+	
 	/* start the main loop */
 	gtk_main();
 
