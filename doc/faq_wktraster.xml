@@ -39,17 +39,32 @@
     
     </qandaentry>
 	
-	 <qandaentry>
+	<qandaentry>
       <question>
         <para>How do I install Raster support in my PostGIS database?</para>
       </question>
 
       <answer>
-        <para>First you need a working PostGIS 1.3.5 or above database.  Then you need to compile WKT Raster if you are on Linux/Mac OSX.
+        <para>First you need a working PostGIS 1.3.5 or above database. Then you need to compile GDAL. Then you need to compile WKT Raster if there are no binaries available for your platform.
 			If you are on windows, you can compile yourself, or use the <ulink url="http://www.postgis.org/download/windows/experimental.php#wktraster">pre-comiled WKT Raster windows binaries</ulink>.
+			If you are on Mac OSX Leopard or Snow Leopard, there are binaries available at <ulink url="http://www.kyngchaos.com/software/postgres">Kyng Chaos Mac OSX PostgreSQL/GIS binaries</ulink>.
 		</para>
 		<para>Then to enable raster support in your database, run the rtpostgis.sql file in your database.</para>
 		<para>For more details about compiling from source, please refer to <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster/Documentation01#a2.3-CompilingandInstallingfromSources">Installing WKT Raster from source</ulink></para>
+      </answer>
+    </qandaentry>
+    
+	 <qandaentry>
+      <question>
+        <para>I get error could not load library "C:/Program Files/PostgreSQL/8.4/lib/rtpostgis.dll": The specified module could not be found.
+        	or could not load library on Linux when trying to run rtpostgis.sql</para>
+      </question>
+
+      <answer>
+        <para>rtpostgis.so/dll is built with dependency on libgdal.dll/so. Make sure for Windows you have libgdal.dll in the bin folder of your PostgreSQL install.  
+        For Linux libgdal has to be in your path or bin folder.  </para>
+		<para>You may also run into different errors if you don't have PostGIS installed in your database.  Make sure to install PostGIS first in your 
+		database before trying to install the raster support.</para>
       </answer>
     </qandaentry>
 	
