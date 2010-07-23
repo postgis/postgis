@@ -33,7 +33,8 @@
       <answer>
         <para>There is a full length beginner tutorial <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRasterTutorial01"> Intersecting vector buffers with large raster coverage using PostGIS WKT Raster</ulink>.
         There is a whole chapter (more than 35 pages of content) dedicated to WKT Raster with free code and data downloads at <ulink url="http://www.postgis.us/chapter_13">PostGIS in Action - WKT Raster chapter</ulink>.
-        You can <ulink url="http://www.postgis.us/page_buy_book">buy PostGIS in Action</ulink>  now from Manning and get all draft chapters and completed book once out or buy from Amazon at a significant discount, but wait for the book to come out.
+        You can <ulink url="http://www.postgis.us/page_buy_book">buy PostGIS in Action</ulink>  now from Manning and get all draft chapters NOW and as they are revised (note: all chapters are completed but undergoing revision) and completed book once out.  
+        You can also buy from Amazon now at a significant discount and lock in lowest price sold before publication, but have to wait for the book to come out to receive your copy.
         </para>
       </answer>
     
@@ -45,12 +46,14 @@
       </question>
 
       <answer>
-        <para>First you need a working PostGIS 1.3.5 or above database. Then you need to compile GDAL. Then you need to compile WKT Raster if there are no binaries available for your platform.
+        <para>The easiest is to download binaries for PostGIS and WKT Raster which are currently available for windows and latest versions of Mac OSX. 
+        	First you need a working PostGIS 1.3.5 or above and be running PostgreSQL 8.3, 8.4, or 9.0. </para>
+        <para>
 			If you are on windows, you can compile yourself, or use the <ulink url="http://www.postgis.org/download/windows/experimental.php#wktraster">pre-comiled WKT Raster windows binaries</ulink>.
 			If you are on Mac OSX Leopard or Snow Leopard, there are binaries available at <ulink url="http://www.kyngchaos.com/software/postgres">Kyng Chaos Mac OSX PostgreSQL/GIS binaries</ulink>.
 		</para>
 		<para>Then to enable raster support in your database, run the rtpostgis.sql file in your database.</para>
-		<para>For more details about compiling from source, please refer to <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster/Documentation01#a2.3-CompilingandInstallingfromSources">Installing WKT Raster from source</ulink></para>
+		<para>For other platforms, you generally need to compile yourself. Dependencies are PostGIS and GDAL. For more details about compiling from source, please refer to <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster/Documentation01#a2.3-CompilingandInstallingfromSources">Installing WKT Raster from source</ulink></para>
       </answer>
     </qandaentry>
     
@@ -91,7 +94,8 @@
 
       <answer>
         <para>Any that your gdal library supports. GDAL supported formats are documented <ulink url="http://www.gdal.org/formats_list.html">GDAL File Formats</ulink>.</para>
-		<para>Your particular gdal install may not support all formats.  To verify the ones supported by your particular gdal install, you can use gdalinfo --formats</para> 
+		<para>Your particular gdal install may not support all formats.  To verify the ones supported by your particular gdal install, you can use</para> 
+		<programlisting>gdalinfo --formats</programlisting>
       </answer>
     </qandaentry>
     
@@ -102,7 +106,7 @@
 
       <answer>
         <para>Yes</para>
-		<para>GDAL 1.7+ has a PostGIS WKT Raster driver, but is not compiled in by default. </para>
+		<para>GDAL 1.7+ has a PostGIS WKT Raster driver, but is only compiled in if you choose to compile with PostgreSQL support. </para>
 		<para>The driver currently doesn't support irregularly blocked rasters, 
 		although you can store irregularly blocked rasters in PostGIS raster data type.</para>
 		<para>If you are compiling from source, you need to include in your configure 
@@ -141,7 +145,7 @@
     		<para>We know for sure the following windows binaries have PostGIS WKT Raster built in.</para>
     		<para><ulink url="http://fwtools.maptools.org/">FWTools latest stable version for Windows is compiled with WKT Raster support</ulink>.</para>
     		<para>PostGIS WKT Raster is undergoing many changes.  If you want to get the latest nightly build for Windows -- then check out 
-		 the Tamas Szekeres  nightly builds built with Visual Studio which contain GDAL trunk, Python Bindings and Mapserver executables.  Just
+		 the Tamas Szekeres  nightly builds built with Visual Studio which contain GDAL trunk, Python Bindings and Mapserver executables and PostGIS WKT Raster driver built-in.  Just
 		 	click the SDK bat and run your commands from there.  <ulink url="http://vbkto.dyndns.org/sdk/">http://vbkto.dyndns.org/sdk/</ulink>.
 		 	Also available are VS project files.</para>
     	</answer>
@@ -155,7 +159,7 @@
       <answer>
         <para>You can use MapServer compiled with GDAL 1.7+ and PostGIS WKT Raster driver support to view Raster data.  
         In theory any tool that renders data using GDAL can support PostGIS raster data or 
-        support it with fairly minimal effort.</para>
+        support it with fairly minimal effort. Again for Windows Tamas binaries <ulink url="http://vbkto.dyndns.org/sdk/">http://vbkto.dyndns.org/sdk/</ulink> are a good choice if you don't want the hassle of having to setup to compile your own.</para>
       </answer>
     </qandaentry>
     
@@ -170,7 +174,7 @@
         for list of various processing functions you can use with Mapserver raster layers.</para>
         <para>What makes PostGIS raster data particularly interesting, is that since 
         	each tile can have various standard database columns, you can segment it in your data source</para>
-        <para>Below is an example of how you would defined a PostGIS raster layer in Mapserver.</para>
+        <para>Below is an example of how you would define a PostGIS raster layer in Mapserver.</para>
         <programlisting>
 -- displaying raster with standard raster options
 LAYER
