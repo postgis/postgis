@@ -69,7 +69,6 @@ static freeor local_free;
 static char*  out_start;
 static char*  out_pos;
 static int len;
-static int lwgi;
 static uchar endianbyte;
 void (*write_wkb_bytes)(uchar* ptr,uint32 cnt,size_t size);
 
@@ -168,10 +167,7 @@ void
 write_double(double val)
 {
 	ensure(32);
-	if (lwgi)
-		sprintf(out_pos,"%.8g",val);
-	else
-		sprintf(out_pos,"%.15g",val);
+	sprintf(out_pos,"%.15g",val);
 	to_end();
 }
 
@@ -224,20 +220,10 @@ double round(double);
 
 double read_double(uchar** geom)
 {
-	if (lwgi)
-	{
-		double ret = *((int4*)*geom);
-		ret /= 0xb60b60;
-		(*geom)+=4;
-		return ret-180.0;
-	}
-	else
-	{
-		double ret;
-		memcpy(&ret, *geom, 8);
-		(*geom)+=8;
-		return ret;
-	}
+	double ret;
+	memcpy(&ret, *geom, 8);
+	(*geom)+=8;
+	return ret;
 }
 
 uchar *
@@ -457,13 +443,6 @@ uchar *output_multipoint(uchar* geom,int suppress)
 
 	if ( type  == POINTTYPE )
 		return output_point(++geom,suppress);
-	else if ( type == POINTTYPEI )
-	{
-		lwgi++;
-		geom=output_point(++geom,0);
-		lwgi--;
-		return geom;
-	}
 
 	return output_wkt(geom,suppress);
 }
@@ -667,36 +646,6 @@ output_wkt(uchar* geom, int supress)
 		geom = output_collection(geom,output_wkt,1);
 		break;
 
-	case POINTTYPEI:
-		if ( supress < 2 )
-		{
-			if (writeM) write_str("POINTM");
-			else write_str("POINT");
-		}
-		lwgi++;
-		geom=output_single(geom,0);
-		lwgi--;
-		break;
-	case LINETYPEI:
-		if ( supress < 2 )
-		{
-			if (writeM) write_str("LINESTRINGM");
-			else write_str("LINESTRING");
-		}
-		lwgi++;
-		geom = output_collection(geom,output_point,0);
-		lwgi--;
-		break;
-	case POLYGONTYPEI:
-		if ( supress < 2 )
-		{
-			if (writeM) write_str("POLYGONM");
-			else write_str("POLYGON");
-		}
-		lwgi++;
-		geom = output_collection(geom,output_polygon_collection,0);
-		lwgi--;
-		break;
 	}
 	return geom;
 }
@@ -722,7 +671,6 @@ unparse_WKT(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar* serialized, allo
 	local_free=free;
 	len = 128;
 	out_start = out_pos = alloc(len);
-	lwgi=0;
 
 	output_wkt(serialized, 0);
 
@@ -813,16 +761,8 @@ write_wkb_bin_bytes(uchar* ptr, uint32 cnt, size_t size)
 uchar *
 output_wkb_point(uchar* geom)
 {
-	if ( lwgi )
-	{
-		write_wkb_bytes(geom,dims,4);
-		return geom + (4*dims);
-	}
-	else
-	{
-		write_wkb_bytes(geom,dims,8);
-		return geom + (8*dims);
-	}
+	write_wkb_bytes(geom,dims,8);
+	return geom + (8*dims);
 }
 
 void
@@ -1030,30 +970,6 @@ output_wkb(uchar* geom)
 	case COLLECTIONTYPE:
 		geom = output_wkb_collection(geom,output_wkb);
 		break;
-
-		/*
-			These don't output standard wkb at the moment
-			the output and integer version.
-
-			however you could run it through the wkt parser
-			for a lwg and then output that.  There should
-			also be a force_to_real_(lwgi)
-		*/
-	case POINTTYPEI:
-		lwgi++;
-		geom=output_wkb_point(geom);
-		lwgi--;
-		break;
-	case LINETYPEI:
-		lwgi++;
-		geom = output_wkb_collection(geom,output_wkb_point);
-		lwgi--;
-		break;
-	case POLYGONTYPEI:
-		lwgi++;
-		geom = output_wkb_collection(geom,output_wkb_polygon_collection);
-		lwgi--;
-		break;
 	}
 	return geom;
 }
@@ -1078,7 +994,6 @@ unparse_WKB(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar* serialized, allo
 	local_free=free;
 	len = 128;
 	out_start = out_pos = alloc(len);
-	lwgi=0;
 
 	if ( endian == (char)-1 )
 	{
@@ -1115,54 +1030,3 @@ unparse_WKB(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar* serialized, allo
 
 	return unparser_ferror_occured;
 }
-
-
-/******************************************************************
- * $Log$
- * Revision 1.23  2006/02/06 11:12:22  strk
- * uint32_t typedef moved back from wktparse.h to lwgparse.c and wktunparse.c
- *
- * Revision 1.22  2006/02/03 20:53:37  strk
- * Swapped stdint.h (unavailable on Solaris9) with inttypes.h
- *
- * Revision 1.21  2006/02/03 09:52:14  strk
- * Changed int4 typedefs to use POSIX uint32_t
- *
- * Revision 1.20  2006/01/09 15:12:02  strk
- * ISO C90 comments
- *
- * Revision 1.19  2005/03/10 18:19:16  strk
- * Made void args explicit to make newer compilers happy
- *
- * Revision 1.18  2005/02/21 16:16:14  strk
- * Changed byte to uchar to avoid clashes with win32 headers.
- *
- * Revision 1.17  2005/02/07 13:21:10  strk
- * Replaced DEBUG* macros with PGIS_DEBUG*, to avoid clashes with postgresql DEBUG
- *
- * Revision 1.16  2005/01/18 09:32:03  strk
- * Changed unparse_WKB interface to take an output size pointer and an HEXFORM
- * specifier. Reworked code in wktunparse to use function pointers.
- *
- * Revision 1.15  2004/12/21 15:19:01  strk
- * Canonical binary reverted back to EWKB, now supporting SRID inclusion.
- *
- * Revision 1.14  2004/12/17 11:08:53  strk
- * Moved getMachineEndian from parser to liblwgeom.{h,c}.
- * Added XDR and NDR defines.
- * Fixed all usage of them.
- *
- * Revision 1.13  2004/10/25 12:27:33  strk
- * Removed useless network type includes,
- * Added param.h include for BYTE_ORDER defines under win32.
- *
- * Revision 1.12  2004/10/21 19:48:34  strk
- * Stricter syntax fixes. Reported by Sébastien NICAISE <snicaise@iciatechnologies.com>
- *
- * Revision 1.11  2004/10/15 07:35:41  strk
- * Fixed a bug introduced by me (byteorder skipped for inner geoms in WKB)
- *
- * Revision 1.10  2004/10/11 14:03:33  strk
- * Added endiannes specification to unparse_WKB, AsBinary, lwgeom_to_wkb.
- *
- ******************************************************************/

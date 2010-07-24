@@ -401,9 +401,8 @@ static uchar MULTITYPE[16] =
 	0,0,0,0,
 	MULTICURVETYPE,
 	MULTICURVETYPE,
-	0,0,0,
 	MULTISURFACETYPE,
-	0,0
+	0,0,0,0,0
 };
 
 /**

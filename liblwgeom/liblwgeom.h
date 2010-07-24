@@ -657,18 +657,18 @@ extern int ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *out);
  */
 extern int pointArray_ptsize(const POINTARRAY *pa);
 
-#define	POINTTYPE	1
-#define	LINETYPE	2
-#define	POLYGONTYPE	3
-#define	MULTIPOINTTYPE	4
-#define	MULTILINETYPE	5
+#define	POINTTYPE	        1
+#define	LINETYPE	        2
+#define	POLYGONTYPE	        3
+#define	MULTIPOINTTYPE	        4
+#define	MULTILINETYPE	        5
 #define	MULTIPOLYGONTYPE	6
-#define	COLLECTIONTYPE	7
-#define CIRCSTRINGTYPE    8
-#define COMPOUNDTYPE      9
-#define CURVEPOLYTYPE    13
-#define MULTICURVETYPE   14
-#define MULTISURFACETYPE 15
+#define	COLLECTIONTYPE	        7
+#define CIRCSTRINGTYPE          8
+#define COMPOUNDTYPE            9
+#define CURVEPOLYTYPE           10
+#define MULTICURVETYPE          11
+#define MULTISURFACETYPE        12
 
 #define WKBZOFFSET 0x80000000
 #define WKBMOFFSET 0x40000000

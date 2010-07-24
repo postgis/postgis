@@ -55,24 +55,18 @@ typedef void  (*report_error)(const char* string, ...);
 /* to shrink ints less than 0x7f to 1 byte */
 /* #define SHRINK_INTS */
 
-#define	POINTTYPE	1
-#define	LINETYPE	2
-#define	POLYGONTYPE	3
-#define	MULTIPOINTTYPE	4
-#define	MULTILINETYPE	5
-#define	MULTIPOLYGONTYPE	6
-#define	COLLECTIONTYPE	7
-
-/* Extended lwgeom integer types */
-#define POINTTYPEI    10
-#define LINETYPEI     11
-#define POLYGONTYPEI  12
-
-#define CIRCSTRINGTYPE       8
-#define COMPOUNDTYPE    9
-#define CURVEPOLYTYPE   13
-#define MULTICURVETYPE          14
-#define MULTISURFACETYPE        15
+#define POINTTYPE	        1
+#define LINETYPE	        2
+#define POLYGONTYPE	        3
+#define MULTIPOINTTYPE	        4
+#define MULTILINETYPE	        5
+#define MULTIPOLYGONTYPE        6
+#define COLLECTIONTYPE	        7
+#define CIRCSTRINGTYPE          8
+#define COMPOUNDTYPE            9
+#define CURVEPOLYTYPE           10
+#define MULTICURVETYPE          11
+#define MULTISURFACETYPE        12
 
 extern int srid;
 
@@ -130,7 +124,6 @@ void alloc_wkb(const char* parser);
 */
 
 int parse_lwg(LWGEOM_PARSER_RESULT *lwg_parser_result, const char* wkt, int flags, allocator allocfunc,report_error errfunc);
-int parse_lwgi(LWGEOM_PARSER_RESULT *lwg_parser_result, const char* wkt, int flags, allocator allocfunc,report_error errfunc);
 int unparse_WKT(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar* serialized, allocator alloc, freeor free, int flags);
 int unparse_WKB(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar* serialized, allocator alloc, freeor free, int flags, char endian, uchar hexform);
 int lwg_parse_yyparse(void);

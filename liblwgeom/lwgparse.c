@@ -79,10 +79,6 @@ struct
 	int	ndims;
 	int	hasZ;
 	int	hasM;
-	/* create integer version */
-	int lwgi;
-	/* input is integer (wkb only)*/
-	int from_lwgi;
 
 	int4 alloc_size;
 
@@ -243,7 +239,7 @@ uchar strhex_readbyte(const char *in);
 uchar read_wkb_byte(const char **in);
 void read_wkb_bytes(const char **in, uchar* out, int cnt);
 int4 read_wkb_int(const char **in);
-double read_wkb_double(const char **in, int convert_from_int);
+double read_wkb_double(const char **in);
 void read_wkb_point(const char **b);
 void read_wkb_polygon(const char **b);
 void read_wkb_linestring(const char **b);
@@ -254,7 +250,6 @@ void parse_wkb(const char **b);
 void alloc_wkb(const char *parser);
 int parse_it(LWGEOM_PARSER_RESULT *lwg_parser_result, const char* geometry, int flags, allocator allocfunc, report_error errfunc);
 int parse_lwg(LWGEOM_PARSER_RESULT *lwg_parser_result, const char* geometry, int flags, allocator allocfunc, report_error errfunc);
-int parse_lwgi(LWGEOM_PARSER_RESULT *lwg_parser_result, const char* geometry, int flags, allocator allocfunc, report_error errfunc);
 
 void
 set_srid(double d_srid)
@@ -368,7 +363,7 @@ alloc_lwgeom(int srid)
 void
 alloc_point_2d(double x,double y)
 {
-	tuple* p = alloc_tuple(write_point_2,the_geom.lwgi?8:16);
+	tuple* p = alloc_tuple(write_point_2, 16);
 	p->uu.points[0] = x;
 	p->uu.points[1] = y;
 
@@ -384,7 +379,7 @@ alloc_point_2d(double x,double y)
 void
 alloc_point_3d(double x,double y,double z)
 {
-	tuple* p = alloc_tuple(write_point_3,the_geom.lwgi?12:24);
+	tuple* p = alloc_tuple(write_point_3, 24);
 	p->uu.points[0] = x;
 	p->uu.points[1] = y;
 	p->uu.points[2] = z;
@@ -399,7 +394,7 @@ alloc_point_3d(double x,double y,double z)
 void
 alloc_point_4d(double x,double y,double z,double m)
 {
-	tuple* p = alloc_tuple(write_point_4,the_geom.lwgi?16:32);
+	tuple* p = alloc_tuple(write_point_4, 32);
 	p->uu.points[0] = x;
 	p->uu.points[1] = y;
 	p->uu.points[2] = z;
@@ -988,24 +983,8 @@ WRITE_INT4(output_state * out,int4 val)
 void
 WRITE_DOUBLES(output_state* out,double* points, int cnt)
 {
-	if ( the_geom.lwgi)
-	{
-		int4 vals[4];
-		int i;
-
-		for (i=0; i<cnt; i++)
-		{
-			vals[i] = (int4)(((points[i]+180.0)*0xB60B60)+.5);
-		}
-		memcpy(out->pos,vals,sizeof(int4)*cnt);
-		out->pos+=sizeof(int4)*cnt;
-	}
-	else
-	{
-		memcpy(out->pos,points,sizeof(double)*cnt);
-		out->pos+=sizeof(double)*cnt;
-	}
-
+	memcpy(out->pos,points,sizeof(double)*cnt);
+	out->pos+=sizeof(double)*cnt;
 }
 
 void
@@ -1099,10 +1078,7 @@ alloc_point(void)
 {
 	LWDEBUG(3, "alloc_point");
 
-	if ( the_geom.lwgi)
-		alloc_stack_tuple(POINTTYPEI,write_type,1);
-	else
-		alloc_stack_tuple(POINTTYPE,write_type,1);
+	alloc_stack_tuple(POINTTYPE,write_type,1);
 
 }
 
@@ -1111,10 +1087,7 @@ alloc_linestring(void)
 {
 	LWDEBUG(3, "alloc_linestring");
 
-	if ( the_geom.lwgi)
-		alloc_stack_tuple(LINETYPEI,write_type,1);
-	else
-		alloc_stack_tuple(LINETYPE,write_type,1);
+	alloc_stack_tuple(LINETYPE,write_type,1);
 
 }
 
@@ -1145,10 +1118,7 @@ alloc_polygon(void)
 {
 	LWDEBUG(3, "alloc_polygon");
 
-	if ( the_geom.lwgi)
-		alloc_stack_tuple(POLYGONTYPEI, write_type,1);
-	else
-		alloc_stack_tuple(POLYGONTYPE, write_type,1);
+	alloc_stack_tuple(POLYGONTYPE, write_type,1);
 }
 
 void
@@ -1388,21 +1358,11 @@ read_wkb_int(const char** in)
 }
 
 double
-read_wkb_double(const char** in, int convert_from_int)
+read_wkb_double(const char** in)
 {
 	double ret=0;
-
-	if ( ! convert_from_int)
-	{
-		read_wkb_bytes(in,(uchar*)&ret,8);
-		return ret;
-	}
-	else
-	{
-		ret  = read_wkb_int(in);
-		ret /= 0xb60b60;
-		return ret-180.0;
-	}
+	read_wkb_bytes(in,(uchar*)&ret,8);
+	return ret;
 }
 
 void
@@ -1411,52 +1371,22 @@ read_wkb_point(const char **b)
 	int i;
 	tuple* p = NULL;
 
-
-	if (the_geom.lwgi && the_geom.from_lwgi )
+	switch (the_geom.ndims)
 	{
-		/*
-		 * Special case - reading from lwgi to lwgi
-		 * we don't want to go via doubles in the middle.
-		 */
-		switch (the_geom.ndims)
-		{
-		case 2:
-			p=alloc_tuple(write_point_2i,8);
-			break;
-		case 3:
-			p=alloc_tuple(write_point_3i,12);
-			break;
-		case 4:
-			p=alloc_tuple(write_point_4i,16);
-			break;
-		}
-
-		for (i=0; i<the_geom.ndims; i++)
-		{
-			p->uu.pointsi[i]=read_wkb_int(b);
-		}
+	case 2:
+		p=alloc_tuple(write_point_2, 16);
+		break;
+	case 3:
+		p=alloc_tuple(write_point_3, 24);
+		break;
+	case 4:
+		p=alloc_tuple(write_point_4, 32);
+		break;
 	}
-	else
+
+	for (i=0; i<the_geom.ndims; i++)
 	{
-		int mul = the_geom.lwgi ? 1 : 2;
-
-		switch (the_geom.ndims)
-		{
-		case 2:
-			p=alloc_tuple(write_point_2,8*mul);
-			break;
-		case 3:
-			p=alloc_tuple(write_point_3,12*mul);
-			break;
-		case 4:
-			p=alloc_tuple(write_point_4,16*mul);
-			break;
-		}
-
-		for (i=0; i<the_geom.ndims; i++)
-		{
-			p->uu.points[i]=read_wkb_double(b,the_geom.from_lwgi);
-		}
+		p->uu.points[i]=read_wkb_double(b);
 	}
 
 	inc_num();
@@ -1576,27 +1506,9 @@ parse_wkb(const char **b)
 	}
 
 	type &=0x0f;
+	alloc_stack_tuple(type,write_type,1);
 
-	if ( the_geom.lwgi  )
-	{
-
-		if ( type<= POLYGONTYPE )
-			alloc_stack_tuple(type +9,write_type,1);
-		else
-			alloc_stack_tuple(type,write_type,1);
-	}
-	else
-	{
-		/* If we are writing lwg and are reading wbki */
-		int4 towrite=type;
-		if (towrite >= POINTTYPEI && towrite <= POLYGONTYPEI)
-		{
-			towrite-=9;
-		}
-		alloc_stack_tuple(towrite,write_type,1);
-	}
-
-	switch (type )
+	switch (type)
 	{
 	case	POINTTYPE:
 		read_wkb_point(b);
@@ -1610,11 +1522,9 @@ parse_wkb(const char **b)
 	case	POLYGONTYPE:
 		read_wkb_polygon(b);
 		break;
-
 	case	COMPOUNDTYPE:
 		read_collection(b,parse_wkb);
 		break;
-
 	case	CURVEPOLYTYPE:
 		read_collection(b,parse_wkb);
 		break;
@@ -1627,26 +1537,9 @@ parse_wkb(const char **b)
 		read_collection(b,parse_wkb);
 		break;
 
-	case	POINTTYPEI:
-		the_geom.from_lwgi=1;
-		read_wkb_point(b);
-		break;
-
-	case	LINETYPEI:
-		the_geom.from_lwgi=1;
-		read_wkb_linestring(b);
-		break;
-
-	case	POLYGONTYPEI:
-		the_geom.from_lwgi=1;
-		read_wkb_polygon(b);
-		break;
-
 	default:
 		LWGEOM_WKB_PARSER_ERROR(PARSER_ERROR_INVALIDWKBTYPE);
 	}
-
-	the_geom.from_lwgi=0;
 
 	pop();
 }
@@ -1695,14 +1588,6 @@ parse_it(LWGEOM_PARSER_RESULT *lwg_parser_result, const char *geometry, int flag
 int
 parse_lwg(LWGEOM_PARSER_RESULT *lwg_parser_result, const char* geometry, int flags, allocator allocfunc, report_error errfunc)
 {
-	the_geom.lwgi=0;
-	return parse_it(lwg_parser_result, geometry, flags, allocfunc, errfunc);
-}
-
-int
-parse_lwgi(LWGEOM_PARSER_RESULT *lwg_parser_result, const char* geometry, int flags, allocator allocfunc, report_error errfunc)
-{
-	the_geom.lwgi=1;
 	return parse_it(lwg_parser_result, geometry, flags, allocfunc, errfunc);
 }
 
