@@ -508,6 +508,19 @@ typedef struct
 }
 LWMSURFACE;
 
+/* POLYHEDRALSURFACETYPE */
+typedef struct
+{
+	uchar type;
+	BOX2DFLOAT4 *bbox;
+	uint32 SRID;
+	int ngeoms;
+	int maxgeoms;
+	LWGEOM **geoms;
+}
+LWPSURFACE;
+
+
 /* Casts LWGEOM->LW* (return NULL if cast is illegal) */
 extern LWMPOLY *lwgeom_as_lwmpoly(const LWGEOM *lwgeom);
 extern LWMLINE *lwgeom_as_lwmline(const LWGEOM *lwgeom);
@@ -517,9 +530,11 @@ extern LWPOLY *lwgeom_as_lwpoly(const LWGEOM *lwgeom);
 extern LWLINE *lwgeom_as_lwline(const LWGEOM *lwgeom);
 extern LWPOINT *lwgeom_as_lwpoint(const LWGEOM *lwgeom);
 extern LWCIRCSTRING *lwgeom_as_lwcircstring(const LWGEOM *lwgeom);
+extern LWPSURFACE *lwgeom_as_lwpsurface(LWGEOM *lwgeom);
 extern LWGEOM *lwgeom_as_multi(const LWGEOM *lwgeom);
 
 /* Casts LW*->LWGEOM (always cast) */
+extern LWGEOM *lwpsurface_as_lwgeom(LWPSURFACE *obj);
 extern LWGEOM *lwmpoly_as_lwgeom(const LWMPOLY *obj);
 extern LWGEOM *lwmline_as_lwgeom(const LWMLINE *obj);
 extern LWGEOM *lwmpoint_as_lwgeom(const LWMPOINT *obj);
@@ -534,6 +549,7 @@ extern LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *ge
 extern LWMPOINT* lwmpoint_add_lwpoint(LWMPOINT *mobj, const LWPOINT *obj);
 extern LWMLINE* lwmline_add_lwline(LWMLINE *mobj, const LWLINE *obj);
 extern LWMPOLY* lwmpoly_add_lwpoly(LWMPOLY *mobj, const LWPOLY *obj);
+extern LWPSURFACE* lwpsurface_add_lwpoly(LWPSURFACE *mobj, const LWPOLY *obj);
 
 /*
  * Call this function everytime LWGEOM coordinates
@@ -669,6 +685,7 @@ extern int pointArray_ptsize(const POINTARRAY *pa);
 #define CURVEPOLYTYPE           10
 #define MULTICURVETYPE          11
 #define MULTISURFACETYPE        12
+#define POLYHEDRALSURFACETYPE   13
 
 #define WKBZOFFSET 0x80000000
 #define WKBMOFFSET 0x40000000
@@ -930,6 +947,7 @@ LWCOMPOUND *lwcompound_deserialize(uchar *serialized_form);
 LWCURVEPOLY *lwcurvepoly_deserialize(uchar *serialized_form);
 LWMCURVE *lwmcurve_deserialize(uchar *serialized_form);
 LWMSURFACE *lwmsurface_deserialize(uchar *serialized_form);
+LWPSURFACE *lwpsurface_deserialize(uchar *serialized_form);
 
 LWGEOM *lwcollection_getsubgeom(LWCOLLECTION *col, int gnum);
 BOX3D *lwcollection_compute_box3d(LWCOLLECTION *col);
@@ -1146,6 +1164,7 @@ extern void lwpoly_free(LWPOLY *poly);
 extern void lwmpoint_free(LWMPOINT *mpt);
 extern void lwmline_free(LWMLINE *mline);
 extern void lwmpoly_free(LWMPOLY *mpoly);
+extern void lwpsurface_free(LWPSURFACE *psurf);
 extern void lwcollection_free(LWCOLLECTION *col);
 extern void lwcircstring_free(LWCIRCSTRING *curve);
 extern void lwgeom_free(LWGEOM *geom);
@@ -1182,6 +1201,7 @@ extern void printPA(POINTARRAY *pa);
 extern void printLWPOINT(LWPOINT *point);
 extern void printLWLINE(LWLINE *line);
 extern void printLWPOLY(LWPOLY *poly);
+extern void printLWPSURFACE(LWPSURFACE *psurf);
 extern void printBYTES(uchar *a, int n);
 extern void printMULTI(uchar *serialized);
 extern void printType(uchar str);
@@ -1474,7 +1494,9 @@ LWGEOM_PARSER_RESULT;
 #define PARSER_ERROR_MIXDIMS        4
 #define PARSER_ERROR_INVALIDGEOM    5
 #define PARSER_ERROR_INVALIDWKBTYPE 6
-#define PARSER_ERROR_INCONTINUOUS	7
+#define PARSER_ERROR_INCONTINUOUS   7
+#define PARSER_ERROR_MOREFACES      8
+
 
 
 /*

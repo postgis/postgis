@@ -37,6 +37,7 @@ SA_OBJS = \
 	lwcurvepoly.o \
 	lwmcurve.o \
 	lwmsurface.o \
+	lwpsurface.o \
 	lwout_wkt.o \
 	lwout_wkb.o \
 	lwutil.o \

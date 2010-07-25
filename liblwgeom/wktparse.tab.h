@@ -36,43 +36,44 @@
 /* Tokens.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-/* Put the tokens into the symbol table, so that GDB and other debuggers
-   know about them.  */
-enum yytokentype {
-    POINT = 258,
-    LINESTRING = 259,
-    POLYGON = 260,
-    MULTIPOINT = 261,
-    MULTILINESTRING = 262,
-    MULTIPOLYGON = 263,
-    GEOMETRYCOLLECTION = 264,
-    CIRCULARSTRING = 265,
-    COMPOUNDCURVE = 266,
-    CURVEPOLYGON = 267,
-    MULTICURVE = 268,
-    MULTISURFACE = 269,
-    POINTM = 270,
-    LINESTRINGM = 271,
-    POLYGONM = 272,
-    MULTIPOINTM = 273,
-    MULTILINESTRINGM = 274,
-    MULTIPOLYGONM = 275,
-    GEOMETRYCOLLECTIONM = 276,
-    CIRCULARSTRINGM = 277,
-    COMPOUNDCURVEM = 278,
-    CURVEPOLYGONM = 279,
-    MULTICURVEM = 280,
-    MULTISURFACEM = 281,
-    SRID = 282,
-    EMPTY = 283,
-    VALUE = 284,
-    LPAREN = 285,
-    RPAREN = 286,
-    COMMA = 287,
-    EQUALS = 288,
-    SEMICOLON = 289,
-    WKB = 290
-};
+   /* Put the tokens into the symbol table, so that GDB and other debuggers
+      know about them.  */
+   enum yytokentype {
+     POINT = 258,
+     LINESTRING = 259,
+     POLYGON = 260,
+     MULTIPOINT = 261,
+     MULTILINESTRING = 262,
+     MULTIPOLYGON = 263,
+     GEOMETRYCOLLECTION = 264,
+     CIRCULARSTRING = 265,
+     COMPOUNDCURVE = 266,
+     CURVEPOLYGON = 267,
+     MULTICURVE = 268,
+     MULTISURFACE = 269,
+     POLYHEDRALSURFACE = 270,
+     POINTM = 271,
+     LINESTRINGM = 272,
+     POLYGONM = 273,
+     MULTIPOINTM = 274,
+     MULTILINESTRINGM = 275,
+     MULTIPOLYGONM = 276,
+     GEOMETRYCOLLECTIONM = 277,
+     CIRCULARSTRINGM = 278,
+     COMPOUNDCURVEM = 279,
+     CURVEPOLYGONM = 280,
+     MULTICURVEM = 281,
+     MULTISURFACEM = 282,
+     SRID = 283,
+     EMPTY = 284,
+     VALUE = 285,
+     LPAREN = 286,
+     RPAREN = 287,
+     COMMA = 288,
+     EQUALS = 289,
+     SEMICOLON = 290,
+     WKB = 291
+   };
 #endif
 /* Tokens.  */
 #define POINT 258
@@ -87,27 +88,28 @@ enum yytokentype {
 #define CURVEPOLYGON 267
 #define MULTICURVE 268
 #define MULTISURFACE 269
-#define POINTM 270
-#define LINESTRINGM 271
-#define POLYGONM 272
-#define MULTIPOINTM 273
-#define MULTILINESTRINGM 274
-#define MULTIPOLYGONM 275
-#define GEOMETRYCOLLECTIONM 276
-#define CIRCULARSTRINGM 277
-#define COMPOUNDCURVEM 278
-#define CURVEPOLYGONM 279
-#define MULTICURVEM 280
-#define MULTISURFACEM 281
-#define SRID 282
-#define EMPTY 283
-#define VALUE 284
-#define LPAREN 285
-#define RPAREN 286
-#define COMMA 287
-#define EQUALS 288
-#define SEMICOLON 289
-#define WKB 290
+#define POLYHEDRALSURFACE 270
+#define POINTM 271
+#define LINESTRINGM 272
+#define POLYGONM 273
+#define MULTIPOINTM 274
+#define MULTILINESTRINGM 275
+#define MULTIPOLYGONM 276
+#define GEOMETRYCOLLECTIONM 277
+#define CIRCULARSTRINGM 278
+#define COMPOUNDCURVEM 279
+#define CURVEPOLYGONM 280
+#define MULTICURVEM 281
+#define MULTISURFACEM 282
+#define SRID 283
+#define EMPTY 284
+#define VALUE 285
+#define LPAREN 286
+#define RPAREN 287
+#define COMMA 288
+#define EQUALS 289
+#define SEMICOLON 290
+#define WKB 291
 
 
 
@@ -119,9 +121,9 @@ typedef union YYSTYPE
 	double value;
 	const char* wkb;
 }
-/* Line 1489 of yacc.c.  */
-#line 124 "y.tab.h"
-YYSTYPE;
+/* Line 1529 of yacc.c.  */
+#line 126 "y.tab.h"
+	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 # define YYSTYPE_IS_TRIVIAL 1
@@ -132,12 +134,11 @@ extern YYSTYPE lwg_parse_yylval;
 #if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
 typedef struct YYLTYPE
 {
-	int first_line;
-	int first_column;
-	int last_line;
-	int last_column;
-}
-YYLTYPE;
+  int first_line;
+  int first_column;
+  int last_line;
+  int last_column;
+} YYLTYPE;
 # define yyltype YYLTYPE /* obsolescent; will be withdrawn */
 # define YYLTYPE_IS_DECLARED 1
 # define YYLTYPE_IS_TRIVIAL 1

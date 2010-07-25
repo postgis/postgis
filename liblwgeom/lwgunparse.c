@@ -516,6 +516,7 @@ uchar *output_multisurface(uchar* geom, int suppress)
 	return geom;
 }
 
+
 /*
  * Suppress=0 -- write TYPE, M, coords
  * Suppress=1 -- write TYPE, coords
@@ -636,6 +637,14 @@ output_wkt(uchar* geom, int supress)
 			else write_str("MULTISURFACE");
 		}
 		geom = output_collection(geom,output_multisurface,2);
+		break;
+	case POLYHEDRALSURFACETYPE:
+		if ( supress < 2)
+		{
+			/* POLYHEDRALSURFACE can't be 3DM */
+			write_str("POLYHEDRALSURFACE");
+		}
+		geom = output_collection(geom,output_wkt,2);
 		break;
 	case COLLECTIONTYPE:
 		if ( supress < 2 )
@@ -967,6 +976,7 @@ output_wkb(uchar* geom)
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
+	case POLYHEDRALSURFACETYPE:
 	case COLLECTIONTYPE:
 		geom = output_wkb_collection(geom,output_wkb);
 		break;

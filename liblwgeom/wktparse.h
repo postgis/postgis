@@ -67,6 +67,7 @@ typedef void  (*report_error)(const char* string, ...);
 #define CURVEPOLYTYPE           10
 #define MULTICURVETYPE          11
 #define MULTISURFACETYPE        12
+#define POLYHEDRALSURFACETYPE   13
 
 extern int srid;
 
@@ -100,6 +101,7 @@ void alloc_multilinestring(void);
 void alloc_multicurve(void);
 void alloc_multipolygon(void);
 void alloc_multisurface(void);
+void alloc_polyhedralsurface(void);
 void alloc_geomertycollection(void);
 void alloc_empty();
 void alloc_counter(void);
@@ -112,6 +114,11 @@ void check_circularstring(void);
 void check_closed_compoundcurve(void);
 void check_closed_linestring(void);
 void check_closed_circularstring(void);
+void check_polyhedralsurface(void);
+void check_polyhedralsurface_face(void);
+
+void inc_faces(void);
+void reset_faces(void);
 
 void pop(void);
 void popc(void);

@@ -79,6 +79,7 @@ struct
 	int	ndims;
 	int	hasZ;
 	int	hasM;
+	int     faces;
 
 	int4 alloc_size;
 
@@ -135,7 +136,8 @@ const char *parser_error_messages[] =
 	"can not mix dimensionality in a geometry",
 	"parse error - invalid geometry",
 	"invalid WKB type",
-	"incontinuous compound curve"
+	"incontinuous compound curve",
+	"PolyhedralSurface requires more faces"
 };
 
 /* Macro to return the error message and the current position within WKT */
@@ -234,6 +236,9 @@ void check_compoundcurve_minpoints(void);
 void check_linestring_minpoints(void);
 void check_circularstring_minpoints(void);
 void check_circularstring_isodd(void);
+void check_polyhedralsurface_face_closed(void);
+void check_polyhedralsurface_face_minpoints(void);
+void check_polyhedralsurface_minfaces(void);
 void make_serialized_lwgeom(LWGEOM_PARSER_RESULT *lwg_parser_result);
 uchar strhex_readbyte(const char *in);
 uchar read_wkb_byte(const char **in);
@@ -901,6 +906,118 @@ void check_circularstring_minpoints()
 	check_linestring_minpoints();
 }
 
+void check_polyhedralsurface_face(void)
+{
+        check_polyhedralsurface_face_minpoints();
+        check_polyhedralsurface_face_closed();
+}
+
+void check_polyhedralsurface(void)
+{
+        check_polyhedralsurface_minfaces();
+}
+
+
+/*
+ * Determines if the current face is closed and raises an error if it
+ * is not.
+ * This is done by walking through the tuple list and identifying the first
+ * and last point tuples, then comparing their 3d values.
+ */
+void
+check_polyhedralsurface_face_closed(void)
+{
+        tuple *tp = the_geom.stack; /* Current tuple */
+        int i; /* Loop counter */
+        int num; /* point count */
+        tuple *first, *last; /* First and last tuple of the compount curve */
+
+        LWDEBUG(3, "check_polyhedralsurface_face_closed");
+
+        /* tuple counting points */
+        tp = tp->next;
+        if (tp->uu.nn.num > 0)
+        {
+                first = tp->next;
+                num = tp->uu.nn.num;
+                for (i = 0; i < num; i++) 
+                        tp = tp->next;
+                last = tp;
+                if (    first->uu.points[0] != last->uu.points[0] 
+                     || first->uu.points[1] != last->uu.points[1]
+                     || first->uu.points[2] != last->uu.points[2] )
+                {
+                        LWDEBUGF(4, "Unclosed geometry: (%f, %f, %f) != (%f, %f, %f)",
+                                 first->uu.points[0], first->uu.points[1], first->uu.points[2],
+                                 last->uu.points[0], last->uu.points[1], last->uu.points[2]);
+			LWDEBUGF(5, "First %p, last %p", first, last);
+                        LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_UNCLOSED,
+				the_geom.stack->next->uu.nn.parse_location);
+                }
+                else LWDEBUG(5, "PolyhedralSurface face found closed.");
+        }
+}
+
+void
+inc_faces(void)
+{
+        the_geom.faces++;
+}
+
+void
+reset_faces(void)
+{
+        the_geom.faces=0;
+}
+
+
+/*
+ * Checks to ensure that current face of the Polyhedron contains the
+ * given number of points.  
+ */
+void
+check_polyhedralsurface_face_minpoints(void)
+{
+        tuple *tp = the_geom.stack->next; /* Current tuple */
+        int num = tp->uu.nn.num; /* point count */
+        int minpoints = 4;
+
+        LWDEBUG(3, "check_polyhedralsurface_face_minpoints");
+
+        if (num < minpoints)
+        {
+                LWDEBUGF(5, "Minpoint check failed: needed %d, got %d",
+                         minpoints, num);
+                LWDEBUGF(5, "tuple = %p; parse_location = %d; parser reported column = %d",
+                         tp, tp->uu.nn.parse_location, lwg_parse_yylloc.last_column);
+                LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_MOREPOINTS,
+                        the_geom.stack->next->uu.nn.parse_location);
+        }
+}
+
+
+/*
+ * Checks to ensure that current Polyhedron contains the
+ * given number of faces.  
+ */
+void
+check_polyhedralsurface_minfaces(void)
+{
+        int minfaces = 4;
+
+        LWDEBUG(3, "check_polyhedralsurface_minfaces");
+
+        if(the_geom.faces < minfaces) {
+                LWDEBUGF(5, "Minfaces check failed: needed %d, got %d",
+                        minfaces, the_geom.faces);
+                LWDEBUGF(5, "tuple = %p; parse_location = %d; parser reported column = %d",
+                        tp, tp->uu.nn.parse_location, lwg_parse_yylloc.last_column);
+                LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_MOREFACES,
+                        the_geom.stack->next->uu.nn.parse_location);
+        }
+}
+
+
 void
 pop(void)
 {
@@ -1183,6 +1300,14 @@ alloc_multisurface(void)
 	LWDEBUG(3, "alloc_multisurface called");
 
 	alloc_stack_tuple(MULTISURFACETYPE,write_type,1);
+}
+
+void
+alloc_polyhedralsurface(void)
+{
+	LWDEBUG(3, "alloc_polyhedralsurface called");
+
+	alloc_stack_tuple(POLYHEDRALSURFACETYPE,write_type,1);
 }
 
 void
@@ -1533,6 +1658,7 @@ parse_wkb(const char **b)
 	case	MULTICURVETYPE:
 	case	MULTIPOLYGONTYPE:
 	case	MULTISURFACETYPE:
+	case	POLYHEDRALSURFACETYPE:
 	case	COLLECTIONTYPE:
 		read_collection(b,parse_wkb);
 		break;

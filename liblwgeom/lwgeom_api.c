@@ -1727,7 +1727,8 @@ compute_serialized_box3d(uchar *srl)
 	if ( ! ( type == MULTIPOINTTYPE || type == MULTILINETYPE ||
 	         type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE ||
 	         type == COMPOUNDTYPE || type == CURVEPOLYTYPE ||
-	         type == MULTICURVETYPE || type == MULTISURFACETYPE) )
+	         type == MULTICURVETYPE || type == MULTISURFACETYPE ||
+	         type == POLYHEDRALSURFACETYPE ))
 	{
 		lwnotice("compute_serialized_box3d called on unknown type %d", type);
 		return NULL;

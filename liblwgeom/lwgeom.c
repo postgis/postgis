@@ -51,6 +51,8 @@ lwgeom_deserialize(uchar *srl)
 		return (LWGEOM *)lwmcurve_deserialize(srl);
 	case MULTISURFACETYPE:
 		return (LWGEOM *)lwmsurface_deserialize(srl);
+	case POLYHEDRALSURFACETYPE:
+		return (LWGEOM *)lwpsurface_deserialize(srl);
 	default:
 		lwerror("lwgeom_deserialize: Unknown geometry type: %s",
 			lwtype_name(type));
@@ -84,6 +86,7 @@ lwgeom_serialize_size(LWGEOM *lwgeom)
 	case MULTICURVETYPE:
 	case MULTIPOLYGONTYPE:
 	case MULTISURFACETYPE:
+	case POLYHEDRALSURFACETYPE:
 	case COLLECTIONTYPE:
 		return lwcollection_serialize_size((LWCOLLECTION *)lwgeom);
 	default:
@@ -123,6 +126,7 @@ lwgeom_serialize_buf(LWGEOM *lwgeom, uchar *buf, size_t *retsize)
 	case MULTICURVETYPE:
 	case MULTIPOLYGONTYPE:
 	case MULTISURFACETYPE:
+	case POLYHEDRALSURFACETYPE:
 	case COLLECTIONTYPE:
 		lwcollection_serialize_buf((LWCOLLECTION *)lwgeom, buf,
 		                           retsize);
@@ -169,6 +173,7 @@ lwgeom_force_rhr(LWGEOM *lwgeom)
 		return;
 
 	case MULTIPOLYGONTYPE:
+	case POLYHEDRALSURFACETYPE:
 	case COLLECTIONTYPE:
 		coll = (LWCOLLECTION *)lwgeom;
 		for (i=0; i<coll->ngeoms; i++)
@@ -194,6 +199,7 @@ lwgeom_reverse(LWGEOM *lwgeom)
 		return;
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
+	case POLYHEDRALSURFACETYPE:
 	case COLLECTIONTYPE:
 		col = (LWCOLLECTION *)lwgeom;
 		for (i=0; i<col->ngeoms; i++)
@@ -223,6 +229,7 @@ BOX3D *lwgeom_compute_box3d(const LWGEOM *lwgeom)
 	case MULTICURVETYPE:
 	case MULTIPOLYGONTYPE:
 	case MULTISURFACETYPE:
+	case POLYHEDRALSURFACETYPE:
 	case COLLECTIONTYPE:
 		return lwcollection_compute_box3d((LWCOLLECTION *)lwgeom);
 	}
@@ -254,6 +261,7 @@ lwgeom_compute_box2d_p(const LWGEOM *lwgeom, BOX2DFLOAT4 *buf)
 	case MULTICURVETYPE:
 	case MULTIPOLYGONTYPE:
 	case MULTISURFACETYPE:
+	case POLYHEDRALSURFACETYPE:
 	case COLLECTIONTYPE:
 		return lwcollection_compute_box2d_p((LWCOLLECTION *)lwgeom, buf);
 	}
@@ -347,6 +355,19 @@ lwgeom_as_lwmpoly(const LWGEOM *lwgeom)
 	else return NULL;
 }
 
+LWPSURFACE *
+lwgeom_as_lwpsurface(LWGEOM *lwgeom)
+{
+	if ( TYPE_GETTYPE(lwgeom->type) == POLYHEDRALSURFACETYPE )
+		return (LWPSURFACE *)lwgeom;
+	else return NULL;
+}
+
+LWGEOM *lwpsurface_as_lwgeom(LWPSURFACE *obj)
+{
+	return (LWGEOM *)obj;
+}
+
 LWGEOM *lwmpoly_as_lwgeom(const LWMPOLY *obj)
 {
 	if( obj == NULL ) return NULL;
@@ -402,7 +423,8 @@ static uchar MULTITYPE[16] =
 	MULTICURVETYPE,
 	MULTICURVETYPE,
 	MULTISURFACETYPE,
-	0,0,0,0,0
+	POLYHEDRALSURFACETYPE,
+	0,0,0,0
 };
 
 /**
@@ -511,6 +533,7 @@ lwgeom_clone(const LWGEOM *lwgeom)
 	case MULTICURVETYPE:
 	case MULTIPOLYGONTYPE:
 	case MULTISURFACETYPE:
+	case POLYHEDRALSURFACETYPE:
 	case COLLECTIONTYPE:
 		return (LWGEOM *)lwcollection_clone((LWCOLLECTION *)lwgeom);
 	default:
@@ -528,7 +551,6 @@ lwgeom_to_ewkt(LWGEOM *lwgeom, int flags)
 	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
 	uchar *serialized = lwgeom_serialize(lwgeom);
 	int result;
-
 	if ( ! serialized )
 	{
 		lwerror("Error serializing geom %p", lwgeom);
@@ -766,6 +788,7 @@ lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
+	case POLYHEDRALSURFACETYPE:
 	case COLLECTIONTYPE:
 		return lwcollection_same((LWCOLLECTION *)lwgeom1,
 		                         (LWCOLLECTION *)lwgeom2);
@@ -862,6 +885,7 @@ lwgeom_longitude_shift(LWGEOM *lwgeom)
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
+	case POLYHEDRALSURFACETYPE:
 	case COLLECTIONTYPE:
 		coll = (LWCOLLECTION *)lwgeom;
 		for (i=0; i<coll->ngeoms; i++)
@@ -887,6 +911,7 @@ lwgeom_is_collection(int type)
 	case COMPOUNDTYPE:
 	case MULTICURVETYPE:
 	case MULTISURFACETYPE:
+	case POLYHEDRALSURFACETYPE:
 		return LW_TRUE;
 		break;
 
@@ -917,6 +942,9 @@ void lwgeom_free(LWGEOM *lwgeom)
 		break;
 	case MULTIPOLYGONTYPE:
 		lwmpoly_free((LWMPOLY *)lwgeom);
+		break;
+	case POLYHEDRALSURFACETYPE:
+		lwpsurface_free((LWPSURFACE *)lwgeom);
 		break;
 	case COLLECTIONTYPE:
 		lwcollection_free((LWCOLLECTION *)lwgeom);
@@ -1002,6 +1030,7 @@ int lwgeom_count_vertices(const LWGEOM *geom)
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
+	case POLYHEDRALSURFACETYPE:
 	case COLLECTIONTYPE:
 		result = lwcollection_count_vertices((LWCOLLECTION *)geom);
 		break;
@@ -1075,6 +1104,7 @@ int lwgeom_is_empty(const LWGEOM *geom)
 	case COMPOUNDTYPE:
 	case MULTICURVETYPE:
 	case MULTISURFACETYPE:
+	case POLYHEDRALSURFACETYPE:
 	case COLLECTIONTYPE:
 		return lwcollection_is_empty((LWCOLLECTION *)geom);
 		break;
@@ -1132,6 +1162,9 @@ extern int lwgeom_dimensionality(LWGEOM *geom)
 	case MULTISURFACETYPE:
 		return 2;
 		break;
+	case POLYHEDRALSURFACETYPE:
+		return 3;
+		break;
 	case COLLECTIONTYPE:
 		return lwcollection_dimensionality((LWCOLLECTION *)geom);
 		break;
@@ -1159,6 +1192,7 @@ extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in)
 	case MULTILINETYPE:
 	case COLLECTIONTYPE:
 	case MULTIPOLYGONTYPE:
+	case POLYHEDRALSURFACETYPE:
 		return lwcollection_remove_repeated_points((LWCOLLECTION *)in);
 
 	case POLYGONTYPE:
@@ -1192,7 +1226,7 @@ extern LWGEOM* lwgeom_flip_coordinates(LWGEOM *in)
 	LWPOLY *poly;
 	int i;
 
-	LWDEBUGF(3, "lwgeom_flip_coordinates: unsupported type: %s",
+	LWDEBUGF(4, "lwgeom_flip_coordinates, got type: %s",
 		lwtype_name(TYPE_GETTYPE(in->type)));
 
 	switch (TYPE_GETTYPE(in->type))
@@ -1223,6 +1257,7 @@ extern LWGEOM* lwgeom_flip_coordinates(LWGEOM *in)
 	case CURVEPOLYTYPE:
 	case MULTISURFACETYPE:
 	case MULTICURVETYPE:
+	case POLYHEDRALSURFACETYPE:
 		col = (LWCOLLECTION *) in;
 		for (i=0; i<col->ngeoms; i++)
 			lwgeom_flip_coordinates(col->geoms[i]);

@@ -34,7 +34,8 @@ static char *lwgeomTypeName[] =
 	"CompoundString",
 	"CurvePolygon",
 	"MultiCurve",
-	"MultiSurface"
+	"MultiSurface",
+	"PolyhedralSurface"
 };
 
 
