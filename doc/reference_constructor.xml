@@ -303,12 +303,20 @@ ST_GeogFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\
 		<title>Examples</title>
 		<para>line string binary rep 0f
 		LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932) in NAD 83 long lat (4269).</para>
-		<note><para>NOTE: Even though byte arrays are delimited with \ and may have ', we need to escape both out with \ and ''.  So it does not
+		<note><para>NOTE: Even though byte arrays are delimited with \ and may have ', we need to escape both out with \ and '' if standard_conforming_strings is off.  So it does not
 			look exactly like its AsEWKB representation.</para></note>
 	<programlisting>SELECT ST_GeomFromEWKB(E'\\001\\002\\000\\000 \\255\\020\\000\\000\\003\\000\\000\\000\\344J=
 \\013B\\312Q\\300n\\303(\\010\\036!E@''\\277E''K
 \\312Q\\300\\366{b\\235*!E@\\225|\\354.P\\312Q
 \\300p\\231\\323e1!E@');</programlisting>
+
+		<note><para>In PostgreSQL 9.0+ - standard_conforming_strings is set to on by default, where as in past versions it was set to on.  You can change defaults as needed
+		    for a single query or at the database or server level.  Below is how you would do it with standard_conforming_strings = on.  In this case we escape the ' with standard ansi ',
+		    but slashes are not escaped</para></note>
+	<programlisting>
+	    set standard_conforming_strings = on;
+SELECT ST_GeomFromEWKB('\001\002\000\000 \255\020\000\000\003\000\000\000\344J=\012\013B
+    \312Q\300n\303(\010\036!E@''\277E''K\012\312Q\300\366{b\235*!E@\225|\354.P\312Q\012\300p\231\323e1')</programlisting>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
