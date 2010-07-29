@@ -10,7 +10,7 @@
  **********************************************************************/
 
 #include "libgeom.h"
-
+#include <sys/param.h>
 static char* lwgeom_to_wkb_buf(const LWGEOM *geom, char *buf, uchar variant);
 static size_t lwgeom_to_wkb_size(const LWGEOM *geom, uchar variant);
 
