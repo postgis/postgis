@@ -641,8 +641,8 @@ output_wkt(uchar* geom, int supress)
 	case POLYHEDRALSURFACETYPE:
 		if ( supress < 2)
 		{
-			/* POLYHEDRALSURFACE can't be 3DM */
-			write_str("POLYHEDRALSURFACE");
+			if (writeM) write_str("POLYHEDRALSURFACEM");
+			else write_str("POLYHEDRALSURFACE");
 		}
 		geom = output_collection(geom,output_wkt,2);
 		break;

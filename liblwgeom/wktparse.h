@@ -114,11 +114,7 @@ void check_circularstring(void);
 void check_closed_compoundcurve(void);
 void check_closed_linestring(void);
 void check_closed_circularstring(void);
-void check_polyhedralsurface(void);
 void check_polyhedralsurface_face(void);
-
-void inc_faces(void);
-void reset_faces(void);
 
 void pop(void);
 void popc(void);

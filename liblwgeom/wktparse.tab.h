@@ -64,15 +64,16 @@
      CURVEPOLYGONM = 280,
      MULTICURVEM = 281,
      MULTISURFACEM = 282,
-     SRID = 283,
-     EMPTY = 284,
-     VALUE = 285,
-     LPAREN = 286,
-     RPAREN = 287,
-     COMMA = 288,
-     EQUALS = 289,
-     SEMICOLON = 290,
-     WKB = 291
+     POLYHEDRALSURFACEM = 283,
+     SRID = 284,
+     EMPTY = 285,
+     VALUE = 286,
+     LPAREN = 287,
+     RPAREN = 288,
+     COMMA = 289,
+     EQUALS = 290,
+     SEMICOLON = 291,
+     WKB = 292
    };
 #endif
 /* Tokens.  */
@@ -101,15 +102,16 @@
 #define CURVEPOLYGONM 280
 #define MULTICURVEM 281
 #define MULTISURFACEM 282
-#define SRID 283
-#define EMPTY 284
-#define VALUE 285
-#define LPAREN 286
-#define RPAREN 287
-#define COMMA 288
-#define EQUALS 289
-#define SEMICOLON 290
-#define WKB 291
+#define POLYHEDRALSURFACEM 283
+#define SRID 284
+#define EMPTY 285
+#define VALUE 286
+#define LPAREN 287
+#define RPAREN 288
+#define COMMA 289
+#define EQUALS 290
+#define SEMICOLON 291
+#define WKB 292
 
 
 
@@ -122,7 +124,7 @@ typedef union YYSTYPE
 	const char* wkb;
 }
 /* Line 1529 of yacc.c.  */
-#line 126 "y.tab.h"
+#line 128 "y.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

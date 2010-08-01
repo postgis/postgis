@@ -25,7 +25,7 @@ int lwg_parse_yylex(void);
 }
 
 %token POINT LINESTRING POLYGON MULTIPOINT MULTILINESTRING MULTIPOLYGON GEOMETRYCOLLECTION CIRCULARSTRING COMPOUNDCURVE CURVEPOLYGON MULTICURVE MULTISURFACE POLYHEDRALSURFACE
-%token POINTM LINESTRINGM POLYGONM MULTIPOINTM MULTILINESTRINGM MULTIPOLYGONM GEOMETRYCOLLECTIONM CIRCULARSTRINGM COMPOUNDCURVEM CURVEPOLYGONM  MULTICURVEM MULTISURFACEM
+%token POINTM LINESTRINGM POLYGONM MULTIPOINTM MULTILINESTRINGM MULTIPOLYGONM GEOMETRYCOLLECTIONM CIRCULARSTRINGM COMPOUNDCURVEM CURVEPOLYGONM MULTICURVEM MULTISURFACEM POLYHEDRALSURFACEM
 %token SRID      
 %token EMPTY
 %token <value> VALUE
@@ -375,28 +375,30 @@ face :
 	{ alloc_polygon(); } face_1 { pop(); }
 
 face_1:
-	{ alloc_counter(); } LPAREN face_int RPAREN { check_polyhedralsurface_face(); inc_faces(); pop(); }
+	{ alloc_counter(); } LPAREN face_rings RPAREN { check_polyhedralsurface_face(); pop(); }
+
+face_rings:
+	face_int
+	|
+	face_rings COMMA face_int
 
 face_int :
 	{ alloc_counter(); } LPAREN face_int1 RPAREN { pop(); }
 
 face_int1 :
-	a_point_face
+	a_point
 	|
-	face_int1 COMMA a_point_face;
-
-a_point_face:
-	point_3d
-	|
-	point_4d
+	face_int1 COMMA a_point;
 
 geom_polyhedralsurface :
         POLYHEDRALSURFACE {alloc_polyhedralsurface(); } polyhedralsurface { pop(); }
+	|
+	POLYHEDRALSURFACEM {set_zm(0, 1); alloc_polyhedralsurface(); } polyhedralsurface { pop(); }
 
 polyhedralsurface :
         empty
         |
-        { alloc_counter(); reset_faces(); } LPAREN polyhedralsurface_int RPAREN { check_polyhedralsurface(); pop(); }
+        { alloc_counter(); } LPAREN polyhedralsurface_int RPAREN { pop(); }
 
 polyhedralsurface_int :
         face

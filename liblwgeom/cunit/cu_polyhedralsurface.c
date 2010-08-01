@@ -16,29 +16,36 @@
 void polyhedralsurface_parse(void)
 {
 	LWGEOM *geom;
+	cu_error_msg_reset();	/* Because i don't trust that much prior tests...  ;) */
 
-	/* ERROR: 2 dims */
+	/* 2 dims */
 	geom = lwgeom_from_ewkt("POLYHEDRALSURFACE(((0 1,2 3,4 5,0 1)))", PARSER_CHECK_NONE);
-	CU_ASSERT_STRING_EQUAL("parse error - invalid geometry", cu_error_msg);
-	cu_error_msg_reset();
+	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
+	CU_ASSERT_EQUAL(TYPE_GETTYPE(geom->type), POLYHEDRALSURFACETYPE);
+	CU_ASSERT_STRING_EQUAL("010D00000001000000010300000001000000040000000000000000000000000000000000F03F00000000000000400000000000000840000000000000104000000000000014400000000000000000000000000000F03F", lwgeom_to_hexwkb(geom, PARSER_CHECK_NONE, (char) -1));
+	CU_ASSERT_STRING_EQUAL("POLYHEDRALSURFACE(((0 1,2 3,4 5,0 1)))", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE));
+	lwgeom_free(geom);
+
+	/* 3DM */
+	geom = lwgeom_from_ewkt("POLYHEDRALSURFACEM(((0 1 2,3 4 5,6 7 8,0 1 2)))", PARSER_CHECK_NONE);
+	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
+	CU_ASSERT_EQUAL(TYPE_GETTYPE(geom->type), POLYHEDRALSURFACETYPE);
+	CU_ASSERT_STRING_EQUAL("POLYHEDRALSURFACEM(((0 1 2,3 4 5,6 7 8,0 1 2)))", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE));
+	CU_ASSERT_STRING_EQUAL("010D00004001000000010300004001000000040000000000000000000000000000000000F03F000000000000004000000000000008400000000000001040000000000000144000000000000018400000000000001C4000000000000020400000000000000000000000000000F03F0000000000000040", lwgeom_to_hexwkb(geom, PARSER_CHECK_NONE, (char) -1));
 	lwgeom_free(geom);
 
 	/* ERROR: a missing Z values */
 	geom = lwgeom_from_ewkt("POLYHEDRALSURFACE(((0 1 2,3 4 5,6 7,0 1 2)))", PARSER_CHECK_NONE);
-	CU_ASSERT_STRING_EQUAL("parse error - invalid geometry", cu_error_msg);
+	CU_ASSERT_STRING_EQUAL("can not mix dimensionality in a geometry", cu_error_msg);
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
-	/* ERROR: 3DM not allowed */
-	geom = lwgeom_from_ewkt("POLYHEDRALSURFACEM(((0 1 2,3 4 5,6 7 8,0 1 2)))", PARSER_CHECK_NONE);
-	CU_ASSERT_STRING_EQUAL("parse error - invalid geometry", cu_error_msg);
-	cu_error_msg_reset();
-	lwgeom_free(geom);
-
-	/* ERROR: 2 rings */
+	/* 1 face with 1 interior ring */
 	geom = lwgeom_from_ewkt("POLYHEDRALSURFACE(((0 1 2,3 4 5,6 7 8,0 1 2),(9 10 11,12 13 14,15 16 17,9 10 11)))", PARSER_CHECK_NONE);
-	CU_ASSERT_STRING_EQUAL("parse error - invalid geometry", cu_error_msg);
-	cu_error_msg_reset();
+	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
+	CU_ASSERT_EQUAL(TYPE_GETTYPE(geom->type), POLYHEDRALSURFACETYPE);
+	CU_ASSERT_STRING_EQUAL("POLYHEDRALSURFACE(((0 1 2,3 4 5,6 7 8,0 1 2),(9 10 11,12 13 14,15 16 17,9 10 11)))", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE));
+	CU_ASSERT_STRING_EQUAL("010D00008001000000010300008002000000040000000000000000000000000000000000F03F000000000000004000000000000008400000000000001040000000000000144000000000000018400000000000001C4000000000000020400000000000000000000000000000F03F00000000000000400400000000000000000022400000000000002440000000000000264000000000000028400000000000002A400000000000002C400000000000002E4000000000000030400000000000003140000000000000224000000000000024400000000000002640", lwgeom_to_hexwkb(geom, PARSER_CHECK_NONE, (char) -1));
 	lwgeom_free(geom);
 
 	/* ERROR: non closed rings */
@@ -65,14 +72,12 @@ void polyhedralsurface_parse(void)
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
-	/* ERROR: 3 faces only */
-	geom = lwgeom_from_ewkt("POLYHEDRALSURFACE(((0 1 2,3 4 5,6 7 8,0 1 2)),((9 10 11,12 13 14,15 16 17,9 10 11)),((18 19 20,21 22 23,24 25 26,18 19 20)))", PARSER_CHECK_NONE);
-	CU_ASSERT_STRING_EQUAL("PolyhedralSurface requires more faces", cu_error_msg);
-	cu_error_msg_reset();
-	lwgeom_free(geom);
-
-	/* EMPTY face 	(NOTA: Theses 3 ASSERT results will change a day cf #294) */
+	/* EMPTY face */	
 	geom = lwgeom_from_ewkt("POLYHEDRALSURFACE EMPTY", PARSER_CHECK_NONE);
+	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
+        /*
+          NOTA: Theses 3 ASSERT results will change a day cf #294 
+        */
 	CU_ASSERT_EQUAL(TYPE_GETTYPE(geom->type), COLLECTIONTYPE);
 	CU_ASSERT_STRING_EQUAL("010700000000000000", lwgeom_to_hexwkb(geom, PARSER_CHECK_NONE, (char) -1));
 	CU_ASSERT_STRING_EQUAL("GEOMETRYCOLLECTION EMPTY", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE));

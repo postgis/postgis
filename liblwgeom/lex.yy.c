@@ -3438,10 +3438,10 @@ static yyconst flex_int16_t yy_nxt[][128] =
      -178, -178, -178, -178, -178, -178, -178, -178, -178, -178,
 
      -178, -178, -178, -178, -178, -178, -178, -178, -178, -178,
+     -178, -178, -178, -178, -178, -178, -178,  180, -178, -178,
      -178, -178, -178, -178, -178, -178, -178, -178, -178, -178,
      -178, -178, -178, -178, -178, -178, -178, -178, -178, -178,
-     -178, -178, -178, -178, -178, -178, -178, -178, -178, -178,
-     -178, -178, -178, -178, -178, -178, -178, -178, -178, -178,
+     -178, -178, -178, -178, -178, -178, -178, -178, -178,  180,
      -178, -178, -178, -178, -178, -178, -178, -178, -178, -178,
      -178, -178, -178, -178, -178, -178, -178, -178
     },
@@ -3455,10 +3455,10 @@ static yyconst flex_int16_t yy_nxt[][128] =
      -179, -179, -179, -179, -179, -179, -179, -179, -179, -179,
      -179, -179, -179, -179, -179, -179, -179, -179, -179, -179,
      -179, -179, -179, -179, -179, -179, -179, -179, -179, -179,
-     -179, -179, -179, -179, -179, -179, -179,  180, -179, -179,
+     -179, -179, -179, -179, -179, -179, -179,  181, -179, -179,
      -179, -179, -179, -179, -179, -179, -179, -179, -179, -179,
      -179, -179, -179, -179, -179, -179, -179, -179, -179, -179,
-     -179, -179, -179, -179, -179, -179, -179, -179, -179,  180,
+     -179, -179, -179, -179, -179, -179, -179, -179, -179,  181,
      -179, -179, -179, -179, -179, -179, -179, -179, -179, -179,
      -179, -179, -179, -179, -179, -179, -179, -179
 
@@ -3481,6 +3481,23 @@ static yyconst flex_int16_t yy_nxt[][128] =
      -180, -180, -180, -180, -180, -180, -180, -180
     },
 
+    {
+        5, -181, -181, -181, -181, -181, -181, -181, -181, -181,
+     -181, -181, -181, -181, -181, -181, -181, -181, -181, -181,
+     -181, -181, -181, -181, -181, -181, -181, -181, -181, -181,
+     -181, -181, -181, -181, -181, -181, -181, -181, -181, -181,
+     -181, -181, -181, -181, -181, -181, -181, -181, -181, -181,
+     -181, -181, -181, -181, -181, -181, -181, -181, -181, -181,
+     -181, -181, -181, -181, -181, -181, -181, -181, -181, -181,
+
+     -181, -181, -181, -181, -181, -181, -181, -181, -181, -181,
+     -181, -181, -181, -181, -181, -181, -181, -181, -181, -181,
+     -181, -181, -181, -181, -181, -181, -181, -181, -181, -181,
+     -181, -181, -181, -181, -181, -181, -181, -181, -181, -181,
+     -181, -181, -181, -181, -181, -181, -181, -181, -181, -181,
+     -181, -181, -181, -181, -181, -181, -181, -181
+    },
+
     } ;
 
 static yy_state_type yy_get_previous_state (void );
@@ -3498,8 +3515,8 @@ static void yy_fatal_error (yyconst char msg[]  );
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
 
-#define YY_NUM_RULES 39
-#define YY_END_OF_BUFFER 40
+#define YY_NUM_RULES 40
+#define YY_END_OF_BUFFER 41
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -3507,16 +3524,16 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static yyconst flex_int16_t yy_accept[181] =
+static yyconst flex_int16_t yy_accept[182] =
     {   0,
-        0,    0,    0,    0,   40,   38,   37,   37,   32,   33,
-       34,   38,   36,   35,   38,   38,   38,   38,   38,   38,
-       38,   38,   38,    1,   37,    3,    4,    0,    0,    0,
+        0,    0,    0,    0,   41,   39,   38,   38,   33,   34,
+       35,   39,   37,   36,   39,   39,   39,   39,   39,   39,
+       39,   39,   39,    1,   38,    3,    4,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    1,    2,    1,
         1,    0,    3,    4,    0,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    1,    0,    1,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,   30,    0,    2,
-        0,    0,    0,   31,    0,    0,    0,    5,    0,    0,
+        0,    0,    0,    0,    0,    0,    0,   31,    0,    2,
+        0,    0,    0,   32,    0,    0,    0,    5,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    6,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
 
@@ -3527,13 +3544,14 @@ static yyconst flex_int16_t yy_accept[181] =
         0,    8,   22,    0,   18,    0,    0,    0,    0,    0,
        15,    0,    0,   23,   25,    0,    0,   13,   16,    0,
         0,   24,   26,    0,    9,   14,    0,    0,    0,   10,
-        0,   19,    0,    0,   20,    0,    0,   27,   28,   29
+        0,   19,    0,    0,   20,    0,    0,   27,   29,   28,
+       30
     } ;
 
 static yy_state_type yy_last_accepting_state;
 static char *yy_last_accepting_cpos;
 
-static yyconst yy_state_type yy_NUL_trans[181] =
+static yyconst yy_state_type yy_NUL_trans[182] =
     {   0,
         6,    6,    6,    6,    0,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
@@ -3553,7 +3571,8 @@ static yyconst yy_state_type yy_NUL_trans[181] =
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0
+        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+        0
     } ;
 
 extern int lwg_parse_yy_flex_debug;
@@ -3593,7 +3612,7 @@ static YY_BUFFER_STATE buf_state;
 /* Macro to keep track of the current parse position */
 #define UPDATE_YYLLOC() (lwg_parse_yylloc.last_column += lwg_parse_yyleng)
 
-#line 3597 "lex.yy.c"
+#line 3616 "lex.yy.c"
 
 #define INITIAL 0
 #define vals_ok 1
@@ -3734,7 +3753,7 @@ YY_DECL
 #line 29 "wktparse.lex"
 
 
-#line 3738 "lex.yy.c"
+#line 3757 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -3943,65 +3962,70 @@ YY_RULE_SETUP
 case 28:
 YY_RULE_SETUP
 #line 60 "wktparse.lex"
-{ UPDATE_YYLLOC(); return GEOMETRYCOLLECTION; }
+{ UPDATE_YYLLOC(); return POLYHEDRALSURFACEM; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 61 "wktparse.lex"
-{ UPDATE_YYLLOC(); return GEOMETRYCOLLECTIONM; }
+{ UPDATE_YYLLOC(); return GEOMETRYCOLLECTION; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
 #line 62 "wktparse.lex"
-{ BEGIN(vals_ok); UPDATE_YYLLOC(); return SRID; }
+{ UPDATE_YYLLOC(); return GEOMETRYCOLLECTIONM; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 63 "wktparse.lex"
-{ UPDATE_YYLLOC(); return EMPTY; }
+{ BEGIN(vals_ok); UPDATE_YYLLOC(); return SRID; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 65 "wktparse.lex"
-{ BEGIN(vals_ok); UPDATE_YYLLOC(); return LPAREN; }
+#line 64 "wktparse.lex"
+{ UPDATE_YYLLOC(); return EMPTY; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 66 "wktparse.lex"
-{ UPDATE_YYLLOC(); return RPAREN; }
+{ BEGIN(vals_ok); UPDATE_YYLLOC(); return LPAREN; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
 #line 67 "wktparse.lex"
-{ UPDATE_YYLLOC(); return COMMA ; }
+{ UPDATE_YYLLOC(); return RPAREN; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
 #line 68 "wktparse.lex"
-{ UPDATE_YYLLOC(); return EQUALS ; }
+{ UPDATE_YYLLOC(); return COMMA ; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
 #line 69 "wktparse.lex"
-{ BEGIN(0); UPDATE_YYLLOC(); return SEMICOLON; }
+{ UPDATE_YYLLOC(); return EQUALS ; }
 	YY_BREAK
 case 37:
-/* rule 37 can match eol */
 YY_RULE_SETUP
 #line 70 "wktparse.lex"
-/*eat whitespace*/ { UPDATE_YYLLOC(); }
+{ BEGIN(0); UPDATE_YYLLOC(); return SEMICOLON; }
 	YY_BREAK
 case 38:
+/* rule 38 can match eol */
 YY_RULE_SETUP
 #line 71 "wktparse.lex"
-{ return lwg_parse_yytext[0]; }
+/*eat whitespace*/ { UPDATE_YYLLOC(); }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 73 "wktparse.lex"
+#line 72 "wktparse.lex"
+{ return lwg_parse_yytext[0]; }
+	YY_BREAK
+case 40:
+YY_RULE_SETUP
+#line 74 "wktparse.lex"
 ECHO;
 	YY_BREAK
-#line 4005 "lex.yy.c"
+#line 4029 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(vals_ok):
 	yyterminate();
@@ -4983,7 +5007,7 @@ void lwg_parse_yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 73 "wktparse.lex"
+#line 74 "wktparse.lex"
 
 
 
