@@ -132,6 +132,12 @@ geometry = ST_GeometryFromText(text WKT, SRID);</programlisting>
 		  <para>GEOMETRYCOLLECTIONM(POINTM(2 3 9), LINESTRINGM(2 3 4, 3 4
 		  5))</para>
 		</listitem>
+		
+		<listitem>
+		  <para>POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),  
+((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),  ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),  
+((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )</para>
+		</listitem>
 	  </itemizedlist>
 
 	  <para>Input/Output of these formats are available using the following
