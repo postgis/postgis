@@ -9,7 +9,7 @@
 			using a garden variety of geometries.  Its intent is to flag major crashes.
 	 ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='testversion'>1.5.0</xsl:variable>
+	<xsl:variable name='testversion'>2.0.0</xsl:variable>
 	<xsl:variable name='fnexclude14'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
 	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable Populate_Geometry_Columns ST_CurveToLine ST_LineToCurve</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 or tested separately -->
@@ -76,6 +76,13 @@
 			CROSS JOIN generate_series(50,70, 20) As j
 			CROSS JOIN generate_series(1,2) As m
 			ORDER BY i, j, i+j+m, m, i*j*m)</pgis:gset>
+			
+		<pgis:gset ID='PolyhedralSurface' GeometryType='PolyhedralSurface'>(SELECT ST_GeomFromEWKT(
+'SRID=0;PolyhedralSurface( 
+((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),  
+((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),  ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),  
+((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) 
+)') )</pgis:gset>
 
 		<pgis:gset ID='GCSet3D' GeometryType='GEOMETRYCOLLECTIONZ' SkipUnary='1'>(SELECT ST_Collect(ST_Collect(ST_SetSRID(ST_MakePoint(i,j,m),4326),ST_SetSRID(ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_MakePoint(i+m,j,m),ST_MakePoint(j+m,i-m,m)),ST_MakePoint(i,j,m)),ST_MakePointM(i+m,j,m))),4326)))  As the_geom
 		FROM generate_series(-10,50,20) As i
