@@ -310,7 +310,7 @@ ST_GeogFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\
 \\312Q\\300\\366{b\\235*!E@\\225|\\354.P\\312Q
 \\300p\\231\\323e1!E@');</programlisting>
 
-		<note><para>In PostgreSQL 9.0+ - standard_conforming_strings is set to on by default, where as in past versions it was set to on.  You can change defaults as needed
+		<note><para>In PostgreSQL 9.1+ - standard_conforming_strings is set to on by default, where as in past versions it was set to on.  You can change defaults as needed
 		    for a single query or at the database or server level.  Below is how you would do it with standard_conforming_strings = on.  In this case we escape the ' with standard ansi ',
 		    but slashes are not escaped</para></note>
 	<programlisting>
@@ -710,7 +710,8 @@ SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>--Although bytea rep contains single \, these need to be escaped when inserting into a table
+		<programlisting>--Although bytea rep contains single \, these need to be escaped when inserting into a table 
+		-- unless standard_conforming_strings is set to on.
 SELECT ST_AsEWKT(
 ST_GeomFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\270~\\\\\\300\\323Mb\\020X\\231C@\\020X9\\264\\310~\\\\\\300)\\\\\\217\\302\\365\\230C@',4326)
 );

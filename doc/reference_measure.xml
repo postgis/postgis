@@ -1589,7 +1589,7 @@ FROM
 				geometries given a particular spheroid. See the explanation of spheroids given for
 			<xref linkend="ST_Length_Spheroid" />. PostGIS version prior to 1.5 only support points.</para>
 		<note>
-			<para>This function currently does not look at the SRID of a geometry and will always assume its in WGS 80 long lat. Prior versions of this function only support points.</para>
+			<para>This function currently does not look at the SRID of a geometry and will always assume its represented in the coordinates of the passed in spheroid. Prior versions of this function only support points.</para>
 		</note>
 		
 		<para>Availability: 1.5 - support for other geometry types besides points was introduced. Prior versions only work with points.</para>
