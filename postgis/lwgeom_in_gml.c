@@ -3,7 +3,7 @@
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
- * Copyright 2009 Oslandia
+ * Copyright 2009 - 2010 Oslandia
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -16,7 +16,7 @@
 * or an error message.
 *
 * Implement ISO SQL/MM ST_GMLToSQL method
-* Cf: ISO 13249-3 -> 5.1.50 (p 134)
+* Cf: ISO 13249-3:2009 -> 5.1.50 (p 134)
 *
 * GML versions supported:
 *  - GML 3.2.1 Namespace
@@ -66,7 +66,7 @@ gmlSrs;
  * or an error message.
  *
  * ISO SQL/MM define two error messages:
-*  Cf: ISO 13249-3 -> 5.1.50 (p 134)
+*  Cf: ISO 13249-3:2009 -> 5.1.50 (p 134)
  *  - invalid GML representation
  *  - unknown spatial reference system
  */
@@ -401,7 +401,7 @@ static gmlSrs* parse_gml_srs(xmlNodePtr xnode)
 
 	/* Severals srsName formats are available...
 	 *  cf WFS 1.1.0 -> 9.2 (p36)
-	 *  cf ISO 19142 -> 7.9.2.4.4 (p34)
+	 *  cf ISO 19142:2009 -> 7.9.2.4.4 (p34)
 	 *  cf RFC 5165 <http://tools.ietf.org/html/rfc5165>
 	 *  cf CITE WFS-1.1 (GetFeature-tc17.2)
 	 */
@@ -494,7 +494,7 @@ static double parse_gml_double(char *d, bool space_before, bool space_after)
 
 		if (isdigit(*p))
 		{
-			if (st == INIT || st == NEED_DIG) 	st = DIG;
+			if (st == INIT || st == NEED_DIG) 		st = DIG;
 			else if (st == NEED_DIG_DEC) 			st = DIG_DEC;
 			else if (st == NEED_DIG_EXP || st == EXP) 	st = DIG_EXP;
 			else if (st == DIG || st == DIG_DEC || st == DIG_EXP);
@@ -1110,7 +1110,7 @@ static LWGEOM* parse_gml_curve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	/*
 	 * "The curve segments are connected to one another, with the end point
 	 *  of each segment except the last being the start point of the next
-	 *  segment"  from  ISO 19107 -> 6.3.16.1 (p43)
+	 *  segment"  from  ISO 19107:2003 -> 6.3.16.1 (p43)
 	 *
 	 * So we must aggregate all the segments into a single one and avoid
 	 * to copy the redundants points
@@ -1295,7 +1295,7 @@ static LWGEOM* parse_gml_surface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		patch++;
 
 		/* SQL/MM define ST_CurvePolygon as a single patch only,
-		   cf ISO 13249-3 -> 4.2.9 (p27) */
+		   cf ISO 13249-3:2009 -> 4.2.9 (p27) */
 		if (patch > 1) lwerror("invalid GML representation");
 
 		/* GML SF is resticted to planar interpolation  */
@@ -1419,7 +1419,8 @@ static LWGEOM* parse_gml_mpoint(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		if (!is_gml_namespace(xa, false)) continue;
 		if (strcmp((char *) xa->name, "pointMember")) continue;
 		if (xa->children != NULL)
-			geom = (LWGEOM*)lwmpoint_add_lwpoint((LWMPOINT*)geom, (LWPOINT*)parse_gml(xa->children, hasz, root_srid));
+			geom = (LWGEOM*)lwmpoint_add_lwpoint((LWMPOINT*)geom,
+			(LWPOINT*)parse_gml(xa->children, hasz, root_srid));
 	}
 
 	return geom;
@@ -1459,7 +1460,8 @@ static LWGEOM* parse_gml_mline(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		if (!is_gml_namespace(xa, false)) continue;
 		if (strcmp((char *) xa->name, "lineStringMember")) continue;
 		if (xa->children != NULL)
-			geom = (LWGEOM*)lwmline_add_lwline((LWMLINE*)geom, (LWLINE*)parse_gml(xa->children, hasz, root_srid));
+			geom = (LWGEOM*)lwmline_add_lwline((LWMLINE*)geom,
+			(LWLINE*)parse_gml(xa->children, hasz, root_srid));
 	}
 
 	return geom;
@@ -1499,7 +1501,8 @@ static LWGEOM* parse_gml_mcurve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		if (!is_gml_namespace(xa, false)) continue;
 		if (strcmp((char *) xa->name, "curveMember")) continue;
 		if (xa->children != NULL)
-			geom = (LWGEOM*)lwmline_add_lwline((LWMLINE*)geom, (LWLINE*)parse_gml(xa->children, hasz, root_srid));
+			geom = (LWGEOM*)lwmline_add_lwline((LWMLINE*)geom,
+			(LWLINE*)parse_gml(xa->children, hasz, root_srid));
 	}
 
 	return geom;
@@ -1539,7 +1542,8 @@ static LWGEOM* parse_gml_mpoly(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		if (!is_gml_namespace(xa, false)) continue;
 		if (strcmp((char *) xa->name, "polygonMember")) continue;
 		if (xa->children != NULL)
-			geom = (LWGEOM*)lwmpoly_add_lwpoly((LWMPOLY*)geom, (LWPOLY*)parse_gml(xa->children, hasz, root_srid));
+			geom = (LWGEOM*)lwmpoly_add_lwpoly((LWMPOLY*)geom,
+			(LWPOLY*)parse_gml(xa->children, hasz, root_srid));
 	}
 
 	return geom;
@@ -1579,7 +1583,8 @@ static LWGEOM* parse_gml_msurface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		if (!is_gml_namespace(xa, false)) continue;
 		if (strcmp((char *) xa->name, "surfaceMember")) continue;
 		if (xa->children != NULL)
-			geom = (LWGEOM*)lwmpoly_add_lwpoly((LWMPOLY*)geom, (LWPOLY*)parse_gml(xa->children, hasz, root_srid));
+			geom = (LWGEOM*)lwmpoly_add_lwpoly((LWMPOLY*)geom,
+			(LWPOLY*)parse_gml(xa->children, hasz, root_srid));
 	}
 
 	return geom;
@@ -1629,7 +1634,8 @@ static LWGEOM* parse_gml_coll(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		{
 
 			if (xa->children == NULL) break;
-			geom = (LWGEOM*)lwcollection_add_lwgeom((LWCOLLECTION *)geom, parse_gml(xa->children, hasz, root_srid));
+			geom = (LWGEOM*)lwcollection_add_lwgeom((LWCOLLECTION *)geom,
+				parse_gml(xa->children, hasz, root_srid));
 		}
 	}
 
