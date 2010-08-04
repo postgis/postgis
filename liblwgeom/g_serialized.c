@@ -158,6 +158,7 @@ static size_t gserialized_from_any_size(const LWGEOM *geom)
 	case MULTICURVETYPE:
 	case MULTIPOLYGONTYPE:
 	case MULTISURFACETYPE:
+	case POLYHEDRALSURFACETYPE:
 	case COLLECTIONTYPE:
 		return gserialized_from_lwcollection_size((LWCOLLECTION *)geom);
 	default:
@@ -409,6 +410,7 @@ static size_t gserialized_from_lwgeom_any(const LWGEOM *geom, uchar *buf)
 	case MULTICURVETYPE:
 	case MULTIPOLYGONTYPE:
 	case MULTISURFACETYPE:
+	case POLYHEDRALSURFACETYPE:
 	case COLLECTIONTYPE:
 		return gserialized_from_lwcollection((LWCOLLECTION *)geom, buf);
 	default:
@@ -743,6 +745,9 @@ static int lwcollection_from_gserialized_allowed_types(int collectiontype, int s
 	if ( collectiontype == MULTISURFACETYPE &&
 	        (subtype == POLYGONTYPE || subtype == CURVEPOLYTYPE) )
 		return LW_TRUE;
+	if ( collectiontype == POLYHEDRALSURFACETYPE &&
+		subtype == POLYGONTYPE )
+		return LW_TRUE;
 
 	/* Must be a bad combination! */
 	return LW_FALSE;
@@ -824,6 +829,7 @@ LWGEOM* lwgeom_from_gserialized_buffer(uchar *data_ptr, uchar g_flags, size_t *g
 	case CURVEPOLYTYPE:
 	case MULTICURVETYPE:
 	case MULTISURFACETYPE:
+	case POLYHEDRALSURFACETYPE:
 	case COLLECTIONTYPE:
 		return (LWGEOM *)lwcollection_from_gserialized_buffer(data_ptr, g_flags, g_size);
 	default:
@@ -1083,6 +1089,7 @@ static int gserialized_calculate_gbox_geocentric_from_any(uchar *data_ptr, size_
 	case CURVEPOLYTYPE:
 	case MULTICURVETYPE:
 	case MULTISURFACETYPE:
+	case POLYHEDRALSURFACETYPE:
 	case COLLECTIONTYPE:
 		return gserialized_calculate_gbox_geocentric_from_collection(data_ptr, g_size, gbox);
 	default:

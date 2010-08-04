@@ -593,6 +593,7 @@ int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox)
 	case MULTICURVETYPE:
 	case MULTIPOLYGONTYPE:
 	case MULTISURFACETYPE:
+	case POLYHEDRALSURFACETYPE:
 	case COLLECTIONTYPE:
 		return lwcollection_calculate_gbox((LWCOLLECTION *)lwgeom, gbox);
 	}
