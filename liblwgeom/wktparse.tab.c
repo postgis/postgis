@@ -630,8 +630,8 @@ static const char *const yytname[] =
   "polygon_1", "@37", "polygon_int", "geom_curvepolygon", "@38", "@39",
   "curvepolygon", "@40", "curvepolygon_int", "geom_multipolygon", "@41",
   "@42", "multipolygon", "@43", "multipolygon_int", "geom_multisurface",
-  "@44", "@45", "multisurface", "@46", "multisurface_int", "face", "@47",
-  "face_1", "@48", "face_rings", "face_int", "@49", "face_int1",
+  "@44", "@45", "multisurface", "@46", "multisurface_int", "patch", "@47",
+  "patch_1", "@48", "patch_rings", "patch_int", "@49", "patch_int1",
   "geom_polyhedralsurface", "@50", "@51", "polyhedralsurface", "@52",
   "polyhedralsurface_int", "geom_geometrycollection", "@53", "@54",
   "geometrycollection", "@55", "geometrycollection_int", "a_point",
@@ -2180,7 +2180,7 @@ yyreduce:
 
   case 172:
 #line 378 "wktparse.y"
-    { check_polyhedralsurface_face(); pop(); }
+    { check_polyhedralsurface_patch(); pop(); }
     break;
 
   case 175:

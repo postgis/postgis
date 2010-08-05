@@ -234,9 +234,9 @@ void check_compoundcurve_minpoints(void);
 void check_linestring_minpoints(void);
 void check_circularstring_minpoints(void);
 void check_circularstring_isodd(void);
-void check_polyhedralsurface_face(void);
-void check_polyhedralsurface_face_closed(void);
-void check_polyhedralsurface_face_minpoints(void);
+void check_polyhedralsurface_patch(void);
+void check_polyhedralsurface_patch_closed(void);
+void check_polyhedralsurface_patch_minpoints(void);
 void make_serialized_lwgeom(LWGEOM_PARSER_RESULT *lwg_parser_result);
 uchar strhex_readbyte(const char *in);
 uchar read_wkb_byte(const char **in);
@@ -904,10 +904,10 @@ void check_circularstring_minpoints()
 	check_linestring_minpoints();
 }
 
-void check_polyhedralsurface_face(void)
+void check_polyhedralsurface_patch(void)
 {
-        check_polyhedralsurface_face_minpoints();
-        check_polyhedralsurface_face_closed();
+        check_polyhedralsurface_patch_minpoints();
+        check_polyhedralsurface_patch_closed();
 }
 
 
@@ -921,14 +921,14 @@ void check_polyhedralsurface_face(void)
  * is the Z value check.
  */
 void
-check_polyhedralsurface_face_closed(void)
+check_polyhedralsurface_patch_closed(void)
 {
         tuple *tp = the_geom.stack; /* Current tuple */
         int i; /* Loop counter */
         int num; /* point count */
         tuple *first, *last; /* First and last tuple of the compount curve */
 
-        LWDEBUG(3, "check_polyhedralsurface_face_closed");
+        LWDEBUG(3, "check_polyhedralsurface_patch_closed");
 
         /* tuple counting points */
         tp = tp->next;
@@ -961,13 +961,13 @@ check_polyhedralsurface_face_closed(void)
  * given number of points.  
  */
 void
-check_polyhedralsurface_face_minpoints(void)
+check_polyhedralsurface_patch_minpoints(void)
 {
         tuple *tp = the_geom.stack->next; /* Current tuple */
         int num = tp->uu.nn.num; /* point count */
         int minpoints = 4;
 
-        LWDEBUG(3, "check_polyhedralsurface_face_minpoints");
+        LWDEBUG(3, "check_polyhedralsurface_patch_minpoints");
 
         if (num < minpoints)
         {

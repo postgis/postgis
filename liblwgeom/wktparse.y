@@ -371,24 +371,24 @@ multisurface_int :
         multisurface_int COMMA geom_curvepolygon
 
 /* POLYHEDRALSURFACE */
-face :
-	{ alloc_polygon(); } face_1 { pop(); }
+patch :
+	{ alloc_polygon(); } patch_1 { pop(); }
 
-face_1:
-	{ alloc_counter(); } LPAREN face_rings RPAREN { check_polyhedralsurface_face(); pop(); }
+patch_1:
+	{ alloc_counter(); } LPAREN patch_rings RPAREN { check_polyhedralsurface_patch(); pop(); }
 
-face_rings:
-	face_int
+patch_rings:
+	patch_int
 	|
-	face_rings COMMA face_int
+	patch_rings COMMA patch_int
 
-face_int :
-	{ alloc_counter(); } LPAREN face_int1 RPAREN { pop(); }
+patch_int :
+	{ alloc_counter(); } LPAREN patch_int1 RPAREN { pop(); }
 
-face_int1 :
+patch_int1 :
 	a_point
 	|
-	face_int1 COMMA a_point;
+	patch_int1 COMMA a_point;
 
 geom_polyhedralsurface :
         POLYHEDRALSURFACE {alloc_polyhedralsurface(); } polyhedralsurface { pop(); }
@@ -401,9 +401,9 @@ polyhedralsurface :
         { alloc_counter(); } LPAREN polyhedralsurface_int RPAREN { pop(); }
 
 polyhedralsurface_int :
-        face
+        patch
         |
-        polyhedralsurface_int COMMA face
+        polyhedralsurface_int COMMA patch
 
 
 /* GEOMETRYCOLLECTION */
