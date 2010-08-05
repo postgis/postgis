@@ -151,6 +151,8 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 		strcpy(result, "MULTISURFACE");
 	else if (type == COLLECTIONTYPE)
 		strcpy(result,"GEOMETRYCOLLECTION");
+	else if (type == POLYHEDRALSURFACETYPE)
+		strcpy(result,"POLYHEDRALSURFACE");
 	else
 		strcpy(result,"UNKNOWN");
 
@@ -296,7 +298,8 @@ Datum LWGEOM_numgeometries_collection(PG_FUNCTION_ARGS)
 	type = lwgeom_getType(geom->type);
 	if (type==MULTIPOINTTYPE || type==MULTILINETYPE ||
 	        type==MULTICURVETYPE || type==MULTIPOLYGONTYPE ||
-	        type==MULTISURFACETYPE || type==COLLECTIONTYPE)
+	        type==MULTISURFACETYPE || type==POLYHEDRALSURFACETYPE ||
+		type==COLLECTIONTYPE)
 	{
 		ret = lwgeom_getnumgeometries(serialized);
 		PG_FREE_IF_COPY(geom, 0);
@@ -395,6 +398,7 @@ lwgeom_dimension_recursive(const uchar *serialized)
 		else if ( type == CURVEPOLYTYPE ) dims=2;
 		else if ( type == MULTIPOLYGONTYPE ) dims=2;
 		else if ( type == MULTISURFACETYPE ) dims=2;
+		else if ( type == POLYHEDRALSURFACETYPE ) dims=2;  /* FIXME should it be 3 if IsClosed ? */
 		else if ( type == COLLECTIONTYPE )
 		{
 			subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
