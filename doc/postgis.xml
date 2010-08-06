@@ -71,6 +71,14 @@
    </imageobject>
  </inlinemediaobject>
  This function supports M coordinates.">
+ 
+<!ENTITY P_support
+"<inlinemediaobject>
+   <imageobject>
+     <imagedata fileref='images/check.png' />
+   </imageobject>
+ </inlinemediaobject>
+ This function supports Polyhedral surfaces.">
 ]>
 <book>
   <title>PostGIS &last_release_version; Manual</title>
