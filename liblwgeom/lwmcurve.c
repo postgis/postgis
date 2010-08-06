@@ -26,7 +26,7 @@ lwmcurve_deserialize(uchar *srl)
 
 	if (type != MULTICURVETYPE)
 	{
-		lwerror("lwmcurve_deserialize called on NON multicurve: %d", type);
+		lwerror("lwmcurve_deserialize called on NON multicurve: %d - %s",type, lwtype_name(type));
 		return NULL;
 	}
 

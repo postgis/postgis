@@ -25,7 +25,7 @@ lwcompound_deserialize(uchar *serialized)
 
 	if (type != COMPOUNDTYPE)
 	{
-		lwerror("lwcompound_deserialize called on non compound: %d", type);
+		lwerror("lwcompound_deserialize called on non compound: %d - %s", type, lwtype_name(type));
 		return NULL;
 	}
 

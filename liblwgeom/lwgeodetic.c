@@ -2299,7 +2299,8 @@ int lwgeom_calculate_gbox_geodetic(const LWGEOM *geom, GBOX *gbox)
 		result = lwcollection_calculate_gbox_geodetic((LWCOLLECTION *)geom, gbox);
 		break;
 	default:
-		lwerror("unsupported input geometry type: %d", TYPE_GETTYPE(geom->type));
+		lwerror("unsupported input geometry type: %d - %s",
+			TYPE_GETTYPE(geom->type), lwtype_name(TYPE_GETTYPE(geom->type)));
 		break;
 	}
 	return result;
@@ -2379,7 +2380,8 @@ int lwgeom_check_geodetic(const LWGEOM *geom)
 	case COLLECTIONTYPE:
 		return lwcollection_check_geodetic((LWCOLLECTION *)geom);
 	default:
-		lwerror("unsupported input geometry type: %d", TYPE_GETTYPE(geom->type));
+		lwerror("unsupported input geometry type: %d - %s",
+			TYPE_GETTYPE(geom->type), lwtype_name(TYPE_GETTYPE(geom->type)));
 	}
 	return LW_FALSE;
 }

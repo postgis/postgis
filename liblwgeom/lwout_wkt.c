@@ -302,7 +302,7 @@ static void lwcompound_to_wkt_sb(const LWCOMPOUND *comp, stringbuffer_t *sb, int
 		}
 		else
 		{
-			lwerror("lwcompound_to_wkt_size: Unknown type recieved %d", type);
+			lwerror("lwcompound_to_wkt_size: Unknown type recieved %d - %s", type, lwtype_name(type));
 		}
 	}
 	stringbuffer_append(sb, ")");	
@@ -348,7 +348,7 @@ static void lwcurvepoly_to_wkt_sb(const LWCURVEPOLY *cpoly, stringbuffer_t *sb, 
 				lwcompound_to_wkt_sb((LWCOMPOUND*)cpoly->rings[i], sb, precision, variant );
 				break;
 			default:
-				lwerror("lwcurvepoly_to_wkt_size: Unknown type recieved %d", type);
+				lwerror("lwcurvepoly_to_wkt_size: Unknown type recieved %d - %s", type, lwtype_name(type));
 		}
 	}
 	stringbuffer_append(sb, ")");
@@ -395,7 +395,7 @@ static void lwmcurve_to_wkt_sb(const LWMCURVE *mcurv, stringbuffer_t *sb, int pr
 				lwcompound_to_wkt_sb((LWCOMPOUND*)mcurv->geoms[i], sb, precision, variant );
 				break;
 			default:
-				lwerror("lwmcurve_to_wkt_size: Unknown type recieved %d", type);
+				lwerror("lwmcurve_to_wkt_size: Unknown type recieved %d - %s", type, lwtype_name(type));
 		}
 	}	
 	stringbuffer_append(sb, ")");
@@ -438,7 +438,7 @@ static void lwmsurface_to_wkt_sb(const LWMSURFACE *msurf, stringbuffer_t *sb, in
 				lwcurvepoly_to_wkt_sb((LWCURVEPOLY*)msurf->geoms[i], sb, precision, variant );
 				break;
 			default:
-				lwerror("lwmsurface_to_wkt_size: Unknown type recieved %d", type);
+				lwerror("lwmsurface_to_wkt_size: Unknown type recieved %d - %s", type, lwtype_name(type));
 		}
 	}	
 	stringbuffer_append(sb, ")");
@@ -517,7 +517,8 @@ static void lwgeom_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, int precisi
 			lwmsurface_to_wkt_sb((LWMSURFACE*)geom, sb, precision, variant);
 			break;
 		default:
-			lwerror("lwgeom_to_wkt_sb: Type %d unsupported.", TYPE_GETTYPE(geom->type));
+			lwerror("lwgeom_to_wkt_sb: Type %d - %s unsupported.",
+				TYPE_GETTYPE(geom->type), lwtype_name(TYPE_GETTYPE(geom->type)));
 	}
 }
 

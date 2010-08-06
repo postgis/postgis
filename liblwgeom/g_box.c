@@ -598,6 +598,7 @@ int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox)
 		return lwcollection_calculate_gbox((LWCOLLECTION *)lwgeom, gbox);
 	}
 	/* Never get here, please. */
-	lwerror("unsupported type (%d)", TYPE_GETTYPE(lwgeom->type));
+	lwerror("unsupported type (%d) - %s", TYPE_GETTYPE(lwgeom->type),
+		lwtype_name(TYPE_GETTYPE(lwgeom->type)));
 	return G_FAILURE;
 }

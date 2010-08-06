@@ -162,7 +162,7 @@ static size_t gserialized_from_any_size(const LWGEOM *geom)
 	case COLLECTIONTYPE:
 		return gserialized_from_lwcollection_size((LWCOLLECTION *)geom);
 	default:
-		lwerror("Unknown geometry type: %d", type);
+		lwerror("Unknown geometry type: %d - %s", type, lwtype_name(type));
 		return 0;
 	}
 }
@@ -414,7 +414,7 @@ static size_t gserialized_from_lwgeom_any(const LWGEOM *geom, uchar *buf)
 	case COLLECTIONTYPE:
 		return gserialized_from_lwcollection((LWCOLLECTION *)geom, buf);
 	default:
-		lwerror("Unknown geometry type: %d", geom->type);
+		lwerror("Unknown geometry type: %d - %s", type, lwtype_name(type));
 		return 0;
 	}
 	return 0;
@@ -833,7 +833,7 @@ LWGEOM* lwgeom_from_gserialized_buffer(uchar *data_ptr, uchar g_flags, size_t *g
 	case COLLECTIONTYPE:
 		return (LWGEOM *)lwcollection_from_gserialized_buffer(data_ptr, g_flags, g_size);
 	default:
-		lwerror("Unknown geometry type: %d", type);
+		lwerror("Unknown geometry type: %d - %s", type, lwtype_name(type));
 		return NULL;
 	}
 }
@@ -1093,7 +1093,7 @@ static int gserialized_calculate_gbox_geocentric_from_any(uchar *data_ptr, size_
 	case COLLECTIONTYPE:
 		return gserialized_calculate_gbox_geocentric_from_collection(data_ptr, g_size, gbox);
 	default:
-		lwerror("Unsupported geometry type: %d", type);
+		lwerror("Unsupported geometry type: %d - %s", type, lwtype_name(type));
 		return G_FAILURE;
 	}
 }

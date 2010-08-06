@@ -386,7 +386,8 @@ lwcompound_segmentize(LWCOMPOUND *icompound, uint32 perQuad)
 		}
 		else
 		{
-			lwerror("Unsupported geometry type %d found.", lwgeom_getType(geom->type));
+			lwerror("Unsupported geometry type %d found.",
+				lwgeom_getType(geom->type), lwtype_name(lwgeom_getType(geom->type)));
 			return NULL;
 		}
 	}
@@ -614,7 +615,7 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
 		}
 		else
 		{
-			lwerror("Invalid segment type %d.", type);
+			lwerror("Invalid segment type %d - %s.", type, lwtype_name(type));
 		}
 	}
 
@@ -739,7 +740,7 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
 		}
 		else
 		{
-			lwerror("Invalid segment type %d.", type);
+			lwerror("Invalid segment type %d - %s.", type, lwtype_name(type));
 			return NULL;
 		}
 		geomArray[compound->ngeoms] = lwgeom_clone(newGeom);
@@ -749,7 +750,8 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
 		lwgeom_release(geom);
 		return result;
 	}
-	lwerror("Invalid state %d-%d", currentType, type);
+	lwerror("Invalid state [%d] %s - [%d] %s",
+		currentType, lwtype_name(currentType), type, lwtype_name(type));
 	return NULL;
 }
 

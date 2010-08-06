@@ -29,7 +29,7 @@ lwmsurface_deserialize(uchar *srl)
 
 	if (type != MULTISURFACETYPE)
 	{
-		lwerror("lwmsurface_deserialize called on a non-multisurface: %d", type);
+		lwerror("lwmsurface_deserialize called on a non-multisurface: %d - %s", type, lwtype_name(type));
 		return NULL;
 	}
 

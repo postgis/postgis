@@ -100,7 +100,7 @@ lwcollection_deserialize(uchar *srl)
 
 	if ( type != COLLECTIONTYPE )
 	{
-		lwerror("lwcollection_deserialize called on NON geometrycollection: %d", type);
+		lwerror("lwcollection_deserialize called on NON geometrycollection: %d - %s", type, lwtype_name(type));
 		return NULL;
 	}
 
