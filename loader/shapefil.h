@@ -399,8 +399,8 @@ extern "C"
 
 	    int         nRecords;
 
-	    int		nRecordLength;
-	    int		nHeaderLength;
+	    long	nRecordLength;
+	    long	nHeaderLength;
 	    int		nFields;
 	    int		*panFieldOffset;
 	    int		*panFieldSize;

@@ -741,7 +741,7 @@ DBFAddField(DBFHandle psDBF, const char * pszFieldName,
 
 int DBFReadSetup(DBFHandle psDBF, int hEntity)
 {
-	int	       	nRecordOffset;
+	long	       	nRecordOffset;
 
 	/* -------------------------------------------------------------------- */
 	/*      Verify selection.                                               */
