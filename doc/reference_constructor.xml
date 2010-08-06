@@ -717,8 +717,6 @@ SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406
 		<para>&sfs_compliant; s3.2.7.2 - the optional SRID is from the conformance suite</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.41</para>
 		<para>&curve_support;</para>
-		<para>&P_support;</para>
-
 	  </refsection>
 
 

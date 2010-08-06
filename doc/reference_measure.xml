@@ -98,7 +98,6 @@ SELECT ST_Area(the_geog)/POWER(0.3048,2) As sqft_spheroid,  ST_Area(the_geog,fal
 			<title>See Also</title>
 			<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_GeographyFromText" />, <xref linkend="ST_SetSRID" />,<xref linkend="ST_Transform" /></para>
 		</refsection>
-
 	</refentry>
 
 	<refentry id="ST_Azimuth">
