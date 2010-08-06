@@ -1823,13 +1823,10 @@ SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
 		<para>If an SRID is not specified, it defaults to -1.  <varname>NULL</varname> is
 		returned if the input <varname>bytea</varname> does not represent a
 		<varname>POINT</varname> geometry.</para>
-		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 		<para>&sfs_compliant; s3.2.7.2</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 6.1.9</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
-		<para>&P_support;</para>
-
 	  </refsection>
 
 	  <refsection>
