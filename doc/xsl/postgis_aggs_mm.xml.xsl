@@ -232,6 +232,10 @@
 				<listitem><simpara>A <xsl:value-of select="$matrix_transform" disable-output-escaping="yes"/> means it works but with a transform cast built-in using cast to geometry, transform to a "best srid" spatial ref and then cast back. Results may not be as expected for large areas or areas at poles 
 						and may accumulate floating point junk.</simpara></listitem>
 				<listitem><simpara>A <xsl:value-of select="$matrix_autocast" disable-output-escaping="yes"/> means the function works with the type because of a auto-cast to another such as to box3d rather than direct type support.</simpara></listitem>
+				<listitem><simpara>geom - Basic 2D geometry support (x,y).</simpara></listitem>
+				<listitem><simpara>geog - Basic 2D geography support (x,y).</simpara></listitem>
+				<listitem><simpara>2.5D - basic 2D geometries in 3 D/4D space (has Z or M coord).</simpara></listitem>
+				<listitem><simpara>PS - Polyhedral surfaces</simpara></listitem>
 				</itemizedlist>
 			</para>
 				
@@ -241,17 +245,19 @@
 						<colspec colname='function' />
 						<colspec colname='geometry' align='center'/>
 						<colspec colname='geography' align='center'/>
-						<colspec colname='3D' align='center'/>
+						<colspec colname='25D' align='center'/>
 						<colspec colname='Curves' align='center'/>
 						<colspec colname='SQLMM' align='center' />
+						<colspec colname='PS' align='center' />
 						<thead>
 						  <row>
 							<entry>Function</entry>
-							<entry>geometry</entry>
-							<entry>geography</entry>
-							<entry>3D (2.5D)</entry>
+							<entry>geom</entry>
+							<entry>geog</entry>
+							<entry>2.5D</entry>
 							<entry>Curves</entry>
 							<entry>SQL MM</entry>
+							<entry>PS</entry>
 						  </row>
 						</thead>
 						<tbody>
@@ -329,6 +335,17 @@
 								<xsl:choose>
 									<!-- supports -->
 									<xsl:when test="contains(.,'implements the SQL/MM')">
+										<entry><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></entry>
+									</xsl:when>
+									<!-- no support -->
+									<xsl:otherwise>
+										<entry></entry>
+									</xsl:otherwise>
+								</xsl:choose>
+							<!-- Polyhedral surface support -->
+								<xsl:choose>
+									<!-- supports -->
+									<xsl:when test="contains(.,'Polyhedral')">
 										<entry><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></entry>
 									</xsl:when>
 									<!-- no support -->
