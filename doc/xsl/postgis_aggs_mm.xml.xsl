@@ -272,7 +272,7 @@
 				
 			<para>
 				<informaltable frame='all'>
-					<tgroup cols='6' align='left' colsep='1' rowsep='1'>
+					<tgroup cols='7' align='left' colsep='1' rowsep='1'>
 						<colspec colname='function' />
 						<colspec colname='geometry' align='center'/>
 						<colspec colname='geography' align='center'/>
