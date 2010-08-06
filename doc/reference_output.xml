@@ -116,8 +116,10 @@
 			<note>
 			  <para>ST_AsEWKB is the reverse of ST_GeomFromEWKB.  Use ST_GeomFromEWKB to convert to a postgis geometry from ST_AsEWKB representation.</para>
 			</note>
+			<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 			<para>&Z_support;</para>
 			<para>&curve_support;</para>
+			<para>&P_support;</para>
 		  </refsection>
 
 
@@ -185,8 +187,10 @@
 			<note>
 			  <para>ST_AsEWKT is the reverse of <xref linkend="ST_GeomFromEWKT" />.  Use <xref linkend="ST_GeomFromEWKT" /> to convert to a postgis geometry from ST_AsEWKT representation.</para>
 			</note>
+			<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 			<para>&Z_support;</para>
 			<para>&curve_support;</para>
+			<para>&P_support;</para>
 		  </refsection>
 
 
