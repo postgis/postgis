@@ -1647,11 +1647,13 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 					val[1] = '\0';
 				}
 
-				strncpy(val, utf8str, MAXVALUELEN);
 				
 				/* The utf8str buffer is only alloc'ed if the UTF8 conversion works */
 				if ( rv == UTF8_GOOD_RESULT )
+				{
+					strncpy(val, utf8str, MAXVALUELEN);
 					free(utf8str);
+				}
 			}
 
 			/* Escape attribute correctly according to dump format */
