@@ -652,7 +652,8 @@ lwgeom_force2d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 	if ( type != MULTIPOINTTYPE && type != MULTIPOLYGONTYPE &&
 	        type != MULTILINETYPE && type != COLLECTIONTYPE &&
 	        type != COMPOUNDTYPE && type != CURVEPOLYTYPE &&
-	        type != MULTICURVETYPE && type != MULTISURFACETYPE)
+	        type != MULTICURVETYPE && type != MULTISURFACETYPE &&
+		type != POLYHEDRALSURFACETYPE )
 	{
 		lwerror("lwgeom_force2d_recursive: unknown geometry: %d",
 		        type);
@@ -1063,7 +1064,8 @@ lwgeom_force3dm_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 	if ( type != MULTIPOINTTYPE && type != MULTIPOLYGONTYPE &&
 	        type != MULTILINETYPE && type != COLLECTIONTYPE &&
 	        type != COMPOUNDTYPE && type != CURVEPOLYTYPE &&
-	        type != MULTICURVETYPE && type != MULTISURFACETYPE)
+	        type != MULTICURVETYPE && type != MULTISURFACETYPE &&
+		type != POLYHEDRALSURFACETYPE )
 	{
 		lwerror("lwgeom_force3dm_recursive: unknown geometry: %d",
 		        type);
