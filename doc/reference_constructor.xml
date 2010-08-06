@@ -295,8 +295,10 @@ ST_GeogFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\
 			<para>The EWKB format is not an OGC standard, but a PostGIS specific format that includes the spatial reference system (SRID)
 			identifier</para>
 		</note>
+		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
+		<para>&P_support;</para>
 	  </refsection>
 
 	  <refsection>
@@ -712,9 +714,7 @@ SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406
 		SQL. This is an alternate name for ST_WKBToSQL.</para>
 
 		<para>If SRID is not specified, it defaults to -1 (Unknown).</para>
-		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 		<para>&sfs_compliant; s3.2.7.2 - the optional SRID is from the conformance suite</para>
-
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.41</para>
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
