@@ -37,12 +37,20 @@ void lwgeom_init_allocators()
 
 
 /*
- * Internal functions
- */
+* Internal return values
+*/
 
 #define UTF8_GOOD_RESULT 0
 #define UTF8_BAD_RESULT 1
 #define UTF8_NO_RESULT 2
+
+/*
+* Only turn this on if you want to skip bad UTF8 charaters. Not a good
+* idea, generally, as "bad characters" usually indicate that the source
+* encoding is *not* UTF8
+*/
+#define UTF8_DROP_BAD_CHARACTERS 0
+
 
 int utf8(const char *fromcode, char *inputbuf, char **outputbuf);
 char *escape_copy_string(char *str);
@@ -1618,7 +1626,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
                 static char *encoding_msg = "Try \"LATIN1\" (Western European), or one of the values described at http://www.postgresql.org/docs/current/static/multibyte.html.";
 				/* If we are converting from another encoding to UTF8, convert the field value to UTF8 */
 				int rv = utf8(state->config->encoding, val, &utf8str);
-                if (rv != UTF8_GOOD_RESULT)
+                if ( !UTF8_DROP_BAD_CHARACTERS && rv != UTF8_GOOD_RESULT )
                 {
                     if( rv == UTF8_BAD_RESULT )
 					    snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert data value \"%s\" to UTF-8 (iconv reports \"%s\"). Current encoding is \"%s\". %s", utf8str, strerror(errno), state->config->encoding, encoding_msg);
@@ -1632,9 +1640,18 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
         		    
                 	return SHPLOADERERR;
                 }
+				/* Optionally (compile-time) suppress bad UTF8 values */
+				if ( UTF8_DROP_BAD_CHARACTERS && rv != UTF8_GOOD_RESULT )
+				{
+					val[0] = '.';
+					val[1] = '\0';
+				}
 
 				strncpy(val, utf8str, MAXVALUELEN);
-				free(utf8str);
+				
+				/* The utf8str buffer is only alloc'ed if the UTF8 conversion works */
+				if ( rv == UTF8_GOOD_RESULT )
+					free(utf8str);
 			}
 
 			/* Escape attribute correctly according to dump format */
