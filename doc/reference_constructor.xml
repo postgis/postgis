@@ -346,8 +346,10 @@ SELECT ST_GeomFromEWKB('\001\002\000\000 \255\020\000\000\003\000\000\000\344J=\
 			<para>The EWKT format is not an OGC standard, but an PostGIS specific format that includes the spatial reference system (SRID)
 			identifier</para>
 		</note>
+		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
+		<para>&P_support;</para>
 	  </refsection>
 
 	  <refsection>
@@ -383,10 +385,22 @@ SELECT ST_GeomFromEWKT('SRID=4269;MULTIPOLYGON(((-71.1031880899493 42.3152774590
 -71.1031880899493 42.3152774590236)),
 ((-71.1043632495873 42.315113108546,-71.1043583974082 42.3151211109857,
 -71.1043443253471 42.3150676015829,-71.1043850704575 42.3150793250568,-71.1043632495873 42.315113108546)))');
-
+</programlisting>
+<programlisting>
 --3d circular string
 SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)');
-	</programlisting>
+</programlisting>
+<programlisting>
+--Polyhedral Surface example
+SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE( 
+	((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),  
+	((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), 
+	((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
+	((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),  
+	((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  
+	((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) 
+)');
+</programlisting>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
@@ -698,11 +712,12 @@ SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406
 		SQL. This is an alternate name for ST_WKBToSQL.</para>
 
 		<para>If SRID is not specified, it defaults to -1 (Unknown).</para>
-
+		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 		<para>&sfs_compliant; s3.2.7.2 - the optional SRID is from the conformance suite</para>
 
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.41</para>
 		<para>&curve_support;</para>
+		<para>&P_support;</para>
 
 	  </refsection>
 
@@ -1808,11 +1823,12 @@ SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
 		<para>If an SRID is not specified, it defaults to -1.  <varname>NULL</varname> is
 		returned if the input <varname>bytea</varname> does not represent a
 		<varname>POINT</varname> geometry.</para>
-
+		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 		<para>&sfs_compliant; s3.2.7.2</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 6.1.9</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
+		<para>&P_support;</para>
 
 	  </refsection>
 
