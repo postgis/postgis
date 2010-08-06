@@ -242,7 +242,6 @@ SELECT 'surface_22', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:Po
 
 
 
-
 --
 -- MultiPoint
 --
@@ -386,6 +385,76 @@ SELECT 'msurface_8', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface><gml:surfaceMem
 -- Mixed srsName
 SELECT 'msurface_9', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface srsName="EPSG:27582"><gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember><gml:surfaceMember><gml:Polygon srsName="EPSG:27562"><gml:exterior><gml:LinearRing><gml:coordinates>400000,5000000 400010,5000010 400020,5000020 400000,5000000</gml:coordinates></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:coordinates>400100,5000100 400110,5000110 400120,5000120 400100,5000100</gml:coordinates></gml:LinearRing></gml:interior></gml:Polygon></gml:surfaceMember></gml:MultiSurface>'));
 
+
+
+--
+-- PolyhedralSurface
+--
+
+-- 1 ring
+SELECT 'polyhedralsurface_1', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
+
+-- srsName handle
+SELECT 'polyhedralsurface_2', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface srsName="EPSG:4326"><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
+
+-- ERROR: In exterior ring: Last point is not the same as the first one 
+SELECT 'polyhedralsurface_3', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 0 3</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
+
+-- ERROR: In exterior 3D ring: Last point is not the same as the first one in Z
+SELECT 'polyhedralsurface_4', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 0</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
+
+-- ERROR: Only 3 points in exterior ring
+SELECT 'polyhedralsurface_5', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
+
+-- ERROR: Empty exterior ring coordinates 
+SELECT 'polyhedralsurface_6', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
+SELECT 'polyhedralsurface_7', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior></gml:exterior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
+SELECT 'polyhedralsurface_8', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
+SELECT 'polyhedralsurface_9', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches></gml:polygonPatches></gml:PolyhedralSurface>'));
+SELECT 'polyhedralsurface_10', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface></gml:PolyhedralSurface>'));
+
+-- 2 rings
+SELECT 'polyhedralsurface_11', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension="3">10 11 12 13 14 15 16 17 18 10 11 12</gml:posList></gml:LinearRing></gml:interior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
+
+-- 2 patches
+SELECT 'polyhedralsurface_12', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">10 11 12 13 14 15 16 17 18 10 11 12</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
+
+-- 2 patches & 2 rings
+SELECT 'polyhedralsurface_13', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">10 11 12 13 14 15 16 17 18 10 11 12</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension="3">19 20 21 22 23 24 25 26 27 19 20 21</gml:posList></gml:LinearRing></gml:interior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
+
+-- XML not elements handle
+SELECT 'polyhedralsurface_14', ST_AsEWKT(ST_GeomFromGML(' <!-- --> <gml:PolyhedralSurface> <!-- --> <gml:polygonPatches> <!-- --> <gml:PolygonPatch> <!-- --> <gml:exterior> <!-- --> <gml:LinearRing> <!-- --> <gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList> <!-- --> </gml:LinearRing> <!-- --> </gml:exterior> <!-- --> </gml:PolygonPatch> <!-- --> <gml:PolygonPatch> <!-- --> <gml:exterior> <!-- --> <gml:LinearRing> <!-- --> <gml:posList srsDimension="3">10 11 12 13 14 15 16 17 18 10 11 12</gml:posList> <!-- --> </gml:LinearRing> <!-- --> </gml:exterior> <!-- --> <gml:interior> <!-- --> <gml:LinearRing> <!-- --> <gml:posList srsDimension="3">19 20 21 22 23 24 25 26 27 19 20 21</gml:posList> <!-- --> </gml:LinearRing> <!-- --> </gml:interior> <!-- --> </gml:PolygonPatch> <!-- --> </gml:polygonPatches> <!-- --> </gml:PolyhedralSurface>'));
+
+-- Empty interior ring coordinates  (even if defined)
+SELECT 'polyhedralsurface_15', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior><gml:interior></gml:interior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
+
+-- ERROR: Only 3 points in interior ring
+SELECT 'polyhedralsurface_16', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension="3">10 11 12 13 14 15 16 10 11 12</gml:posList></gml:LinearRing></gml:interior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
+
+-- ERROR: In interior ring: Last point is not the same as the first one 
+SELECT 'polyhedralsurface_17', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension="3">10 11 12 13 14 15 16 17 18 10 0 12</gml:posList></gml:LinearRing></gml:interior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
+
+-- ERROR: In interior 3D ring: Last point is not the same as the first one in Z
+SELECT 'polyhedralsurface_18', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension="3">10 11 12 13 14 15 16 17 18 10 11 0</gml:posList></gml:LinearRing></gml:interior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
+
+-- 3 rings
+SELECT 'polyhedralsurface_19', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension="3">10 11 12 13 14 15 16 17 18 10 11 12</gml:posList></gml:LinearRing></gml:interior><gml:interior><gml:LinearRing><gml:posList srsDimension="3">19 20 21 22 23 24 25 26 27 19 20 21</gml:posList></gml:LinearRing></gml:interior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
+
+-- Mixed dimension in rings
+SELECT 'polyhedralsurface_20', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension="2">10 11 12 13 14 15 10 11</gml:posList></gml:LinearRing></gml:interior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
+
+SELECT 'polyhedralsurface_21', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension="3">7 8 9 10 11 12 13 14 15 7 8 9</gml:posList></gml:LinearRing></gml:interior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
+
+-- Mixed dimension in patches
+SELECT 'polyhedralsurface_22', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">10 11 12 13 14 15 10 11</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
+
+SELECT 'polyhedralsurface_23', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">7 8 9 10 11 12 13 14 15 7 8 9</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
+
+-- planar interpolation
+SELECT 'polyhedralsurface_24', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch interpolation="planar"><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
+
+-- ERROR: interpolation not planar
+SELECT 'polyhedralsurface_25', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch interpolation="not_planar"><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
 
 
 --
