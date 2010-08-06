@@ -38,7 +38,7 @@
 		  	<para>Availability: 2.0.0 - support for 2D polyhedral surfaces was introduced.</para>
 		 	<para>&sfs_compliant;</para>
 		 	<para>&sqlmm_compliant; SQL-MM 3: 8.1.2, 9.5.3</para>
-		 	<para>&P_compliant;</para>
+		 	<para>&P_support;</para>
 		 	<note><para>For polyhedral surfaces, only supports 2D polyhedral surfaces (not 2.5D).  For 2.5D, may give a non-zero answer, but only for the faces that
 		 	sit completely in XY plane.</para></note>
 		</refsection>
