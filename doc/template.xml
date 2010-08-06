@@ -50,6 +50,9 @@
 
 	<!-- Optionally mention Circular String Support -->
 	<para>&curve_support;</para>
+	
+	<!-- Optionally mention supports Polyhedral Surface  -->
+	<para>&P_support;</para>
   </refsection>
 
 

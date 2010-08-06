@@ -218,6 +218,37 @@
 				</xsl:for-each>
 				</itemizedlist>
 		</sect1>
+		
+		<sect1 id="PostGIS_PS_GeometryFunctions">
+			<title>PostGIS Polyhedral Surface Support Functions</title>
+			<para>The functions given below are PostGIS functions that can use POLYHEDRALSURFACE, POLYHEDRALSURFACEM geometries</para>
+				<itemizedlist>
+			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
+				<xsl:for-each select='sect1/refentry'>
+					<xsl:sort select="@id"/>
+					<xsl:variable name='comment'>
+						<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
+					</xsl:variable>
+					<xsl:variable name="refid">
+						<xsl:value-of select="@id" />
+					</xsl:variable>
+					<xsl:variable name="refname">
+						<xsl:value-of select="refnamediv/refname" />
+					</xsl:variable>
+
+			<!-- For each section if there is note that it supports Polyhedral surfaces catalog it -->
+						<xsl:for-each select="refsection">
+							<xsl:for-each select="para">
+								<xsl:choose>
+									<xsl:when test="contains(.,'supports Polyhedral')">
+										<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
+									</xsl:when>
+								</xsl:choose>
+							</xsl:for-each>
+						</xsl:for-each>
+				</xsl:for-each>
+				</itemizedlist>
+		</sect1>
 
 		<sect1 id="PostGIS_TypeFunctionMatrix">
 			<xsl:variable name='matrix_checkmark'><![CDATA[<inlinemediaobject><imageobject><imagedata fileref='images/matrix_checkmark.png' /></imageobject></inlinemediaobject>]]></xsl:variable>
