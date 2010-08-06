@@ -1252,7 +1252,7 @@ static LWGEOM* parse_gml_patch(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 	/* PolygonPatch */
 	if (strcmp((char *) xnode->name, "PolygonPatch"))
-		lwerror("B invalid GML representation");
+		lwerror("invalid GML representation");
 
 	/* GML SF is resticted to planar interpolation  */
 	interpolation = gmlGetProp(xnode, (xmlChar *) "interpolation");
