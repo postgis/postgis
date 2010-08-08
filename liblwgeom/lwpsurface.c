@@ -104,8 +104,8 @@ void lwpsurface_free(LWPSURFACE *psurf)
 
 void printLWPSURFACE(LWPSURFACE *psurf)
 {
-	int i;
-	LWPOLY *faces;
+	int i, j;
+	LWPOLY *patch;
 
 	if (TYPE_GETTYPE(psurf->type) != POLYHEDRALSURFACETYPE)
         	lwerror("printLWPSURFACE called with something else than a POLYHEDRALSURFACE");
@@ -117,10 +117,11 @@ void printLWPSURFACE(LWPSURFACE *psurf)
 
         for (i=0; i<psurf->ngeoms; i++)
         {
-		faces = (LWPOLY *) psurf->geoms[i];
-                printPA(faces->rings[0]);
+		patch = (LWPOLY *) psurf->geoms[i];
+        	for (j=0; j<patch->nrings; j++) {
+			lwnotice("    RING # %i :",j);
+                	printPA(patch->rings[j]);
+		}
         }
         lwnotice("}");
 }
-
-
