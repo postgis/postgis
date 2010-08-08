@@ -72,7 +72,7 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS);
 /* ---- GeomFromWKB(bytea, integer) */
 Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS);
 /* ---- IsClosed(geometry) */
-Datum LWGEOM_isclosed_linestring(PG_FUNCTION_ARGS);
+Datum LWGEOM_isclosed(PG_FUNCTION_ARGS);
 
 /* internal */
 static int32 lwgeom_numpoints_linestring_recursive(const uchar *serialized);
@@ -80,6 +80,7 @@ static int32 lwgeom_dimension_recursive(const uchar *serialized);
 char line_is_closed(LWLINE *line);
 char circstring_is_closed(LWCIRCSTRING *curve);
 char compound_is_closed(LWCOMPOUND *compound);
+char psurface_is_closed(LWPSURFACE *psurface);
 
 /*------------------------------------------------------------------*/
 
@@ -356,7 +357,7 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 }
 
 /**
- * @brief returns 0 for points, 1 for lines, 2 for polygons.
+ * @brief returns 0 for points, 1 for lines, 2 for polygons, 3 for volume.
  * 			returns max dimension for a collection.
  * 		returns -1 for the empty geometry (TODO)
  * 		returns -2 on error
@@ -365,7 +366,9 @@ static int32
 lwgeom_dimension_recursive(const uchar *serialized)
 {
 	LWGEOM_INSPECTED *inspected;
+	LWPSURFACE *psurf;
 	int ret = -1;
+	int dims= -1;
 	int i;
 
 	/** @todo
@@ -377,13 +380,23 @@ lwgeom_dimension_recursive(const uchar *serialized)
 	 */
 	if (lwgeom_getType(serialized[0]) == CURVEPOLYTYPE) return 2;
 
+	/* SubType of an PolyhedralSurface contains only Polygons 
+         * so we checked here if it's a volume (or not)
+	 */
+	if (lwgeom_getType(serialized[0]) == POLYHEDRALSURFACETYPE)
+	{
+			psurf = lwpsurface_deserialize((uchar *)serialized);
+			dims = psurface_is_closed(psurf)?3:2;
+			lwfree(psurf);
+			return dims;
+	}
+
 	inspected = lwgeom_inspect(serialized);
 	for (i=0; i<inspected->ngeometries; i++)
 	{
 		uchar *subgeom;
 		char typeflags = lwgeom_getsubtype_inspected(inspected, i);
 		int type = lwgeom_getType(typeflags);
-		int dims=-1;
 
 		LWDEBUGF(3, "lwgeom_dimension_recursive: type %d", type);
 
@@ -398,7 +411,13 @@ lwgeom_dimension_recursive(const uchar *serialized)
 		else if ( type == CURVEPOLYTYPE ) dims=2;
 		else if ( type == MULTIPOLYGONTYPE ) dims=2;
 		else if ( type == MULTISURFACETYPE ) dims=2;
-		else if ( type == POLYHEDRALSURFACETYPE ) dims=2;  /* FIXME should it be 3 if IsClosed ? */
+		else if ( type == POLYHEDRALSURFACETYPE )
+		{
+			subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
+			psurf = lwpsurface_deserialize(subgeom);
+			dims = psurface_is_closed(psurf)?3:2;
+			lwfree(psurf);
+		}
 		else if ( type == COLLECTIONTYPE )
 		{
 			subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
@@ -411,11 +430,11 @@ lwgeom_dimension_recursive(const uchar *serialized)
 			dims = lwgeom_dimension_recursive(subgeom);
 		}
 
-		if ( dims == 2 )
+		if ( dims == 3 )
 		{
 			/* nothing can be higher */
 			lwinspected_release(inspected);
-			return 2;
+			return 3;
 		}
 		if ( dims > ret ) ret = dims;
 	}
@@ -426,7 +445,7 @@ lwgeom_dimension_recursive(const uchar *serialized)
 }
 
 /** @brief
- * 		returns 0 for points, 1 for lines, 2 for polygons.
+ * 		returns 0 for points, 1 for lines, 2 for polygons, 3 for volume.
  * 		returns max dimension for a collection.
  * 	TODO: @todo return -1 for the empty geometry (TODO)
  */
@@ -1253,23 +1272,135 @@ char compound_is_closed(LWCOMPOUND *compound)
 	return 1;
 }
 
+struct struct_psurface_arcs
+{
+	double ax, ay, az;
+	double bx, by, bz;
+	int cnt, face;
+};
+typedef struct struct_psurface_arcs *psurface_arcs;
+
+/* We supposed that the geometry is valid 
+   we could have wrong result if not */
+char psurface_is_closed(LWPSURFACE *psurface)
+{
+	int i, j, k;
+	int narcs, carc;
+	bool found;
+	psurface_arcs arcs;
+	POINT4D pa, pb;
+	LWPOLY *patch;
+
+	/* If surface is not 3D, it's can't be closed */
+	if (!TYPE_HASZ(psurface->type)) return 0;
+
+	/* If surface is less than 4 faces hard to be closed too */
+	if (psurface->ngeoms < 4) return 0;
+
+	/* Max theorical arcs number if no one is shared ... */
+	for (i=0, narcs=0 ; i < psurface->ngeoms ; i++) {
+		patch = (LWPOLY *) psurface->geoms[i];
+		narcs += patch->rings[0]->npoints - 1;
+	}
+
+	arcs = lwalloc(sizeof(struct struct_psurface_arcs) * narcs);
+	for (i=0, carc=0; i < psurface->ngeoms ; i++) {
+		
+		patch = (LWPOLY *) psurface->geoms[i];
+		for (j=0; j < patch->rings[0]->npoints - 1; j++) {
+			
+			getPoint4d_p(patch->rings[0], j,   &pa);
+			getPoint4d_p(patch->rings[0], j+1, &pb);
+
+			/* remove redundant points if any */
+			if (pa.x == pb.x && pa.y == pb.y && pa.z == pb.z) continue;
+
+			/* Make sure to order the 'lower' point first */
+			if ( (pa.x > pb.x) ||
+			     (pa.x == pb.x && pa.y > pb.y) ||
+			     (pa.x == pb.x && pa.y == pb.y && pa.z > pb.z) )
+			{
+				pa = pb;
+				getPoint4d_p(patch->rings[0], j, &pb);
+			}
+			
+			for (found=false, k=0; k < carc ; k++) {
+
+				if (  ( arcs[k].ax == pa.x && arcs[k].ay == pa.y &&
+					arcs[k].az == pa.z && arcs[k].bx == pb.x &&
+					arcs[k].by == pb.y && arcs[k].bz == pb.z &&
+					arcs[k].face != i) )
+				{
+					arcs[k].cnt++;
+					found = true;
+
+					/* Look like an invalid PolyhedralSurface 
+				   	   anyway not a closed one */
+					if (arcs[k].cnt > 2)
+					{
+						lwfree(arcs);
+						return 0;
+					}
+				}
+			}
+
+			if (!found)
+			{
+				arcs[carc].cnt=1;
+				arcs[carc].face=i;
+				arcs[carc].ax = pa.x;
+				arcs[carc].ay = pa.y;
+				arcs[carc].az = pa.z;
+				arcs[carc].bx = pb.x;
+				arcs[carc].by = pb.y;
+				arcs[carc].bz = pb.z;
+				carc++;
+
+				/* Look like an invalid PolyhedralSurface 
+			   	   anyway not a closed one */
+				if (carc > narcs)
+				{
+					lwfree(arcs);
+					return 0;
+				}
+			}
+		}
+	}
+	
+	/* A polyhedron is closed if each edge 
+           is shared by exactly 2 faces */
+	for (k=0; k < carc ; k++) {
+		if (arcs[k].cnt != 2) {
+			lwfree(arcs);
+			return 0;
+		}
+	}
+	lwfree(arcs);
+
+	/* Invalid Polyhedral case */
+	if (carc < psurface->ngeoms) return 0;
+
+	return 1;
+}
+
 /**
  * @brief IsClosed(GEOMETRY) if geometry is a linestring then returns
  * 		startpoint == endpoint.  If its not a linestring then return NULL.
  * 		If it's a collection containing multiple linestrings,
  * @return true only if all the linestrings have startpoint=endpoint.
  */
-PG_FUNCTION_INFO_V1(LWGEOM_isclosed_linestring);
-Datum LWGEOM_isclosed_linestring(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(LWGEOM_isclosed);
+Datum LWGEOM_isclosed(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
 	LWGEOM_INSPECTED *inspected;
 	LWGEOM *sub = NULL;
 	LWCOMPOUND *compound = NULL;
+	LWPSURFACE *psurface = NULL;
 	int linesfound=0;
 	int i;
 
-	POSTGIS_DEBUG(2, "LWGEOM_isclosed_linestring called.");
+	POSTGIS_DEBUG(2, "LWGEOM_isclosed called.");
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	if (lwgeom_getType((uchar)SERIALIZED_FORM(geom)[0]) == COMPOUNDTYPE)
@@ -1284,6 +1415,23 @@ Datum LWGEOM_isclosed_linestring(PG_FUNCTION_ARGS)
 		else
 		{
 			lwgeom_release((LWGEOM *)compound);
+			PG_FREE_IF_COPY(geom, 0);
+			PG_RETURN_BOOL(FALSE);
+		}
+	}
+
+	if (lwgeom_getType((uchar)SERIALIZED_FORM(geom)[0]) == POLYHEDRALSURFACETYPE)
+	{
+		psurface = lwpsurface_deserialize(SERIALIZED_FORM(geom));
+		if (psurface_is_closed(psurface))
+		{
+			lwgeom_release((LWGEOM *)psurface);
+			PG_FREE_IF_COPY(geom, 0);
+			PG_RETURN_BOOL(TRUE);
+		}
+		else
+		{
+			lwgeom_release((LWGEOM *)psurface);
 			PG_FREE_IF_COPY(geom, 0);
 			PG_RETURN_BOOL(FALSE);
 		}
