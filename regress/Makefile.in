@@ -9,7 +9,7 @@ HAVE_LIBXML2=@HAVE_LIBXML2@
 # to the directory and then use "pwd" to return the path. This
 # ensures that the returned path is in MSYS format, otherwise
 # colons in drive letters will break PATH.
-PGSQL_BINDIR=$(shell pushd "@PGSQL_BINDIR@" > /dev/null && pwd && popd > /dev/null)
+PGSQL_BINDIR=$(shell cd "@PGSQL_BINDIR@" && pwd)
 
 # Where we put our regression installation 
 srcdir=$(shell @PWDREGRESS@)
