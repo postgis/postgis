@@ -35,9 +35,11 @@
 		  <para>This function also indicates if the geometry is measured,
 		  by returning a string of the form 'POINTM'.</para>
 		</note>
-
+		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 		<para>&sfs_compliant;</para>
 		<para>&curve_support;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
 
 	  </refsection>
 
@@ -50,6 +52,13 @@
 --------------
  LINESTRING
 </programlisting>
+		<programlisting>SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
+		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
+		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
+		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
+			--result
+			POLYHEDRALSURFACE
+			</programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -546,7 +555,10 @@ WHERE n &lt;= ST_NumGeometries(the_geom);
 
 			<para>Returns the type of the geometry as a string. EG: 'ST_Linestring', 'ST_Polygon','ST_MultiPolygon' etc. This function differs from GeometryType(geometry) in the case of the string and ST in front that is returned, as well as the fact that it will not indicate whether the geometry is measured.</para>
 
+			<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 		 	<para>&sqlmm_compliant;	SQL-MM 3: 5.1.4</para>
+		 	<para>&Z_support;</para>
+		 	<para>&P_support;</para>
 
 		</refsection>
 
@@ -556,6 +568,14 @@ WHERE n &lt;= ST_NumGeometries(the_geom);
 			<programlisting>SELECT ST_GeometryType(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));
 			--result
 			ST_LineString
+			</programlisting>
+			
+			<programlisting>SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
+		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
+		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
+		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
+			--result
+			ST_PolyhedralSurface
 			</programlisting>
 		</refsection>
 		<refsection>
@@ -1407,7 +1427,10 @@ SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 
 			<para>Returns the number of Geometries. If geometry is a GEOMETRYCOLLECTION (or MULTI*) return the
 			number of geometries, otherwise return NULL.</para>
 
+			<para>Availability: 2.0.0 Support for Polyhedral surfaces was introduced.</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 9.1.4</para>
+			<para>&Z_support;</para>
+			<para>&P_support;</para>
 
 		</refsection>
 
@@ -1520,6 +1543,52 @@ GROUP BY gid, field1,field2;
 		<para><xref linkend="ST_NumInteriorRings" /></para>
 	  </refsection>
 	</refentry>
+	
+	<refentry id="ST_NumPatches">
+	  <refnamediv>
+		<refname>ST_NumPatches</refname>
+		<refpurpose>Return the number of faces on a Polyhedral Surface.  Will return null for non-polyhedral geometries.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>ST_NumPatches</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Return the number of faces on a Polyhedral Surface.  Will return null for non-polyhedral geometries. This is
+		an alias for ST_NumGeometries to support MM naming. Faster to use ST_NumGeometries if you don't care about MM convention.</para>
+
+		<para>Availability: 2.0.0</para>
+		<para>&Z_support;</para>
+		<para>&sfs_compliant;</para>
+		<para>&sqlmm_compliant; SQL-MM 3: ?</para>
+		<para>&P_support;</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_NumPatches(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
+		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
+		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
+		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
+		--result
+		6
+		</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeomFromEWKT" />,<xref linkend="ST_NumGeometries" /></para>
+	  </refsection>
+	</refentry>
 
 	<refentry id="ST_NumPoints">
 	  <refnamediv>
@@ -1562,6 +1631,75 @@ GROUP BY gid, field1,field2;
 		<title>See Also</title>
 
 		<para><xref linkend="ST_NPoints" /></para>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="ST_PatchN">
+	  <refnamediv>
+		<refname>ST_PatchN</refname>
+
+		<refpurpose>Return the 1-based Nth geometry (face) if the geometry is a
+			POLYHEDRALSURFACE, POLYHEDRALSURFACEM.
+			Otherwise, return NULL.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_PatchN</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>n</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>>Return the 1-based Nth geometry (face) if the geometry is a
+			POLYHEDRALSURFACE, POLYHEDRALSURFACEM.
+			Otherwise, return NULL.  This  returns the same answer as ST_GeometryN for Polyhedral Surfaces.  
+				Using ST_GemoetryN is faster.</para>
+
+		<note>
+		  <para>Index is 1-based.</para>
+		</note>
+
+		<note>
+		  <para>If you want to extract all geometries, of a geometry, ST_Dump is more efficient.</para>
+		</note>
+
+		<para>Availability: 2.0.0</para>
+		<para>&sqlmm_compliant; SQL-MM 3: ?</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+--Extract the 2nd face of the polyhedral surface
+SELECT ST_AsEWKT(ST_PatchN(geom, 2)) As geomewkt
+FROM (
+VALUES (ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
+	((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
+	((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
+	((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )')) ) As foo(geom);
+
+              geomewkt
+---+-----------------------------------------
+ POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0))
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_Dump" />, <xref linkend="ST_GeometryN" />, <xref linkend="ST_NumGeometries" /></para>
 	  </refsection>
 	</refentry>
 

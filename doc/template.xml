@@ -36,8 +36,10 @@
       geometries.</para>
     </note>
 
-	<para>Availability: version goes here - requires GEOS &gt;= 2.1.0.</para>
-
+	<para>Availability: version goes here - requires GEOS &gt;= 2.1.0. </para>
+	
+	<!-- use this format if not a new function but functionality was changed or enhanced -->
+	<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
     <!-- Optionally mention OpenGIS compliancy if appropriate -->
     <para>&sfs_compliant;</para>
 
