@@ -1063,6 +1063,7 @@ SELECT ST_AsEWKT(geom) As the_geom, path
 	  	<para>&Z_support;</para>
 	  	<para>&M_support;</para>
 		<para>Availability: 2.0.0</para>
+		<para>&P_support;</para>
 	  </refsection>
 
 	  <refsection>
@@ -1464,6 +1465,8 @@ geomtextrep
 				this function.</para>
 
 		<para>Availability: 2.0.0</para>
+		<para>&P_support;</para>
+		<para>&Z_support;</para>
 	  </refsection>
 
 		  <refsection>
@@ -1505,6 +1508,8 @@ geomtextrep
 		</para>
 
 		<para>&Z_support;</para>
+		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para>&P_support;</para>
 	  </refsection>
 
 
