@@ -153,46 +153,68 @@ void geographic_point_init(double lon, double lat, GEOGRAPHIC_POINT *g)
 * the box is generated from external edges and there's an "interior" which
 * contains the pole.
 *
-* WARNING: There might be degenerate cases that contain multiple poles but are not
-* caught, this is not a 100% function.
+* This function is overdetermined, for very large polygons it might add an
+* unwarranted pole. STILL NEEDS WORK!
 */
 static int gbox_check_poles(GBOX *gbox)
 {
+	int rv = LW_FALSE;
+	LWDEBUG(4, "checking poles");
+	LWDEBUGF(4, "gbox %s", gbox_to_string(gbox));
 	/* Z axis */
 	if ( gbox->xmin < 0.0 && gbox->xmax > 0.0 &&
 	        gbox->ymin < 0.0 && gbox->ymax > 0.0 )
 	{
-		if ( (gbox->zmin+gbox->zmin)/2 > 0.0 )
+		if ( (gbox->zmin + gbox->zmax) > 0.0 )
+		{
+			LWDEBUG(4, "enclosed positive z axis");
 			gbox->zmax = 1.0;
+		}
 		else
+		{
+			LWDEBUG(4, "enclosed negative z axis");
 			gbox->zmin = -1.0;
-		return LW_TRUE;
+		}
+		rv = LW_TRUE;
 	}
 
 	/* Y axis */
 	if ( gbox->xmin < 0.0 && gbox->xmax > 0.0 &&
 	        gbox->zmin < 0.0 && gbox->zmax > 0.0 )
 	{
-		if ( (gbox->ymin+gbox->ymin)/2 > 0.0 )
+		if ( gbox->ymin + gbox->ymax > 0.0 )
+		{
+			LWDEBUG(4, "enclosed positive y axis");
 			gbox->ymax = 1.0;
+		}
 		else
+		{
+			LWDEBUG(4, "enclosed negative y axis");
 			gbox->ymin = -1.0;
-		return LW_TRUE;
+		}
+		rv = LW_TRUE;
 	}
 
 	/* X axis */
 	if ( gbox->ymin < 0.0 && gbox->ymax > 0.0 &&
 	        gbox->zmin < 0.0 && gbox->zmax > 0.0 )
 	{
-		if ( (gbox->xmin+gbox->xmin)/2 > 0.0 )
+		if ( gbox->xmin + gbox->xmax > 0.0 )
+		{
+			LWDEBUG(4, "enclosed positive x axis");
 			gbox->xmax = 1.0;
+		}
 		else
+		{
+			LWDEBUG(4, "enclosed negative x axis");
 			gbox->xmin = -1.0;
-		return LW_TRUE;
+		}
+		rv = LW_TRUE;
 	}
 
 	return LW_FALSE;
 }
+
 
 
 /**
@@ -1248,99 +1270,81 @@ int edge_calculate_gbox(const GEOGRAPHIC_EDGE *e, GBOX *gbox)
 */
 void gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside)
 {
-	static double grow = M_PI / 180.0 / 60.0; /* one arc-minute */
-	double d;
+	double grow = M_PI / 180.0 / 60.0; /* one arc-minute */
 	int i;
 	GBOX ge;
 	POINT3D corners[8];
 	POINT3D pt;
 	GEOGRAPHIC_POINT g;
 
-	/* Assign our box and expand it slightly. */
-	ge = *gbox;
-	ge.xmin -= grow;
-	ge.ymin -= grow;
-	ge.zmin -= grow;
-	ge.xmax += grow;
-	ge.ymax += grow;
-	ge.zmax += grow;
-
-	/* Build our eight corner points */
-	corners[0].x = ge.xmin;
-	corners[0].y = ge.ymin;
-	corners[0].z = ge.zmin;
-
-	corners[1].x = ge.xmin;
-	corners[1].y = ge.ymax;
-	corners[1].z = ge.zmin;
-
-	corners[2].x = ge.xmin;
-	corners[2].y = ge.ymin;
-	corners[2].z = ge.zmax;
-
-	corners[3].x = ge.xmax;
-	corners[3].y = ge.ymin;
-	corners[3].z = ge.zmin;
-
-	corners[4].x = ge.xmax;
-	corners[4].y = ge.ymax;
-	corners[4].z = ge.zmin;
-
-	corners[5].x = ge.xmax;
-	corners[5].y = ge.ymin;
-	corners[5].z = ge.zmax;
-
-	corners[6].x = ge.xmin;
-	corners[6].y = ge.ymax;
-	corners[6].z = ge.zmax;
-
-	corners[7].x = ge.xmax;
-	corners[7].y = ge.ymax;
-	corners[7].z = ge.zmax;
-
-	for ( i = 0; i < 8; i++ )
+	while( grow < M_PI ) 
 	{
-		normalize(&(corners[i]));
-		if ( ! gbox_contains_point3d(gbox, &(corners[i])) )
+		/* Assign our box and expand it slightly. */
+		ge = *gbox;
+		ge.xmin -= grow;
+		ge.ymin -= grow;
+		ge.zmin -= grow;
+		ge.xmax += grow;
+		ge.ymax += grow;
+		ge.zmax += grow;
+
+		/* Build our eight corner points */
+		corners[0].x = ge.xmin;
+		corners[0].y = ge.ymin;
+		corners[0].z = ge.zmin;
+
+		corners[1].x = ge.xmin;
+		corners[1].y = ge.ymax;
+		corners[1].z = ge.zmin;
+
+		corners[2].x = ge.xmin;
+		corners[2].y = ge.ymin;
+		corners[2].z = ge.zmax;
+
+		corners[3].x = ge.xmax;
+		corners[3].y = ge.ymin;
+		corners[3].z = ge.zmin;
+
+		corners[4].x = ge.xmax;
+		corners[4].y = ge.ymax;
+		corners[4].z = ge.zmin;
+
+		corners[5].x = ge.xmax;
+		corners[5].y = ge.ymin;
+		corners[5].z = ge.zmax;
+
+		corners[6].x = ge.xmin;
+		corners[6].y = ge.ymax;
+		corners[6].z = ge.zmax;
+
+		corners[7].x = ge.xmax;
+		corners[7].y = ge.ymax;
+		corners[7].z = ge.zmax;
+
+		LWDEBUG(4, "trying to use a box corner point...");
+		for ( i = 0; i < 8; i++ )
 		{
-			pt = corners[i];
-			normalize(&pt);
-			cart2geog(&pt, &g);
-			pt_outside->x = rad2deg(g.lon);
-			pt_outside->y = rad2deg(g.lat);
-			return;
+			normalize(&(corners[i]));
+			LWDEBUGF(4, "testing corner %d: POINT(%.8g %.8g %.8g)", i, corners[i].x, corners[i].y, corners[i].z);
+			if ( ! gbox_contains_point3d(gbox, &(corners[i])) )
+			{
+				LWDEBUGF(4, "corner %d is outside our gbox", i);
+				pt = corners[i];
+				normalize(&pt);
+				cart2geog(&pt, &g);
+				pt_outside->x = rad2deg(g.lon);
+				pt_outside->y = rad2deg(g.lat);
+				LWDEBUGF(4, "returning POINT(%.8g %.8g) as outside point", pt_outside->x, pt_outside->y);
+				return;
+			}
 		}
+		
+		/* Try a wider growth to push the corners outside the original box. */
+		grow *= 2.0;
 	}
 
-	pt.x = 1.0;
-	pt.y = 0.0;
-	pt.z = 0.0;
-
-	if ((1.0 - gbox->xmax) > 0.1)
-	{
-		pt.x = gbox->xmax + (1.0 - gbox->xmax) * 0.01;
-		d = sqrt((1.0 - POW2(pt.x))/2.0);
-		pt.y = d;
-		pt.z = d;
-	}
-	else if ((1.0 - gbox->ymax) > 0.1)
-	{
-		pt.y = gbox->ymax + (1.0 - gbox->ymax) * 0.01;
-		d = sqrt((1.0 - POW2(pt.y))/2.0);
-		pt.x = d;
-		pt.z = d;
-	}
-	else if ((1.0 - gbox->zmax) > 0.1)
-	{
-		pt.z = gbox->zmax + (1.0 - gbox->zmax) * 0.01;
-		d = sqrt((1.0 - POW2(pt.z))/2.0);
-		pt.x = d;
-		pt.y = d;
-	}
-	normalize(&pt);
-	cart2geog(&pt, &g);
-	pt_outside->x = rad2deg(g.lon);
-	pt_outside->y = rad2deg(g.lat);
+	/* This should never happen! */
+	lwerror("BOOM! Could not generate outside point!");
 	return;
 }
 
@@ -1421,7 +1425,9 @@ double ptarray_area_sphere(const POINTARRAY *pa, const POINT2D *pt_outside)
 
 
 /**
-* This routine returns LW_TRUE if the point is inside the ring or on the boundary, LW_FALSE otherwise.
+* This routine returns LW_TRUE if the stabline joining the pt_outside and pt_to_test 
+* crosses the ring an odd number of times, or if the pt_to_test is on the ring boundary itself, 
+* returning LW_FALSE otherwise.
 * The pt_outside must be guaranteed to be outside the ring (use the geography_pt_outside() function
 * to derive one in postgis, or the gbox_pt_outside() function if you don't mind burning CPU cycles
 * building a gbox first).
@@ -2071,7 +2077,10 @@ int lwpoly_covers_point2d(const LWPOLY *poly, const GBOX *gbox, const POINT2D *p
 	geographic_point_init(pt_to_test->x, pt_to_test->y, &gpt_to_test);
 	geog2cart(&gpt_to_test, &p);
 	if ( ! gbox_contains_point3d(gbox, &p) )
+	{
+		LWDEBUG(4, "the point is not in the box!");
 		return LW_FALSE;
+	}
 
 	/* Calculate our outside point from the gbox */
 	gbox_pt_outside(gbox, &pt_outside);

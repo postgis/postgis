@@ -760,6 +760,17 @@ static void test_lwpoly_covers_point2d(void)
 	result = lwpoly_covers_point2d(poly, &gbox, &pt_to_test);
 	CU_ASSERT_EQUAL(result, LW_TRUE);
 	lwgeom_free(lwg);
+	
+	/* Great big ring */
+	lwg = lwgeom_from_ewkt("POLYGON((-40.0 52.0, 102.0 -6.0, -67.0 -29.0, -40.0 52.0))", PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
+	poly = (LWPOLY*)lwg;
+	pt_to_test.x = 4.0;
+	pt_to_test.y = 11.0;
+	result = lwpoly_covers_point2d(poly, &gbox, &pt_to_test);
+	CU_ASSERT_EQUAL(result, LW_TRUE);
+	lwgeom_free(lwg);
+	
 }
 
 
