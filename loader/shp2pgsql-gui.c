@@ -213,19 +213,19 @@ load_icons(void)
 	icon_good = gdk_pixbuf_new_from_file(good_filename, &error);
 	if(!icon_good)
 	{
-		g_free(error);
+		if( error ) g_free(error);
 		error = NULL;
 	}
 	icon_warn = gdk_pixbuf_new_from_file(warn_filename, &error);
 	if(!icon_warn)
 	{
-		g_free(error);
+		if( error ) g_free(error);
 		error = NULL;
 	}
 	icon_err = gdk_pixbuf_new_from_file(err_filename, &error);
 	if(!icon_err)
 	{
-		g_free(error);
+		if( error ) g_free(error);
 		error = NULL;
 	}
 
@@ -2452,16 +2452,16 @@ pgui_create_file_table(GtkWidget *frame_shape)
 	GtkTreeIter iter;
 	gtk_list_store_insert(combo_list, &iter, CREATE_MODE);
 	gtk_list_store_set(combo_list, &iter,
-			           COMBO_TEXT, "Create");
+			           COMBO_TEXT, "Create", -1);
 	gtk_list_store_insert(combo_list, &iter, APPEND_MODE);
 	gtk_list_store_set(combo_list, &iter,
-			           COMBO_TEXT, "Append");
+			           COMBO_TEXT, "Append", -1);
 	gtk_list_store_insert(combo_list, &iter, DELETE_MODE);
 	gtk_list_store_set(combo_list, &iter,
-			           COMBO_TEXT, "Delete");
+			           COMBO_TEXT, "Delete", -1);
 	gtk_list_store_insert(combo_list, &iter, PREPARE_MODE);
 	gtk_list_store_set(combo_list, &iter,
-			           COMBO_TEXT, "Prepare");
+			           COMBO_TEXT, "Prepare", -1);
 	mode_combo = gtk_combo_box_new_with_model(GTK_TREE_MODEL(combo_list));
 	mode_renderer = gtk_cell_renderer_combo_new();
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(mode_combo), 
