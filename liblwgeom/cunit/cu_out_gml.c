@@ -276,6 +276,13 @@ static void out_gml_test_srid(void)
 	    "<gml:MultiSurface srsName=\"EPSG:4326\"><gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList srsDimension=\"2\">0 1 2 3 4 5 0 1</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember><gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList srsDimension=\"2\">6 7 8 9 10 11 6 7</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember></gml:MultiSurface>",
 	    "EPSG:4326", 0, 0);
 
+	/* GML3 PolyhedralSurface with SRID */
+	do_gml3_test(
+	    "POLYHEDRALSURFACE(((0 1,2 3,4 5,0 1)),((6 7,8 9,10 11,6 7)))",
+	    "<gml:PolyhedralSurface srsName=\"EPSG:4326\"><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension=\"2\">0 1 2 3 4 5 0 1</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension=\"2\">6 7 8 9 10 11 6 7</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>",
+	    "EPSG:4326", 0, 0);
+
+
 	/* GML2 GeometryCollection with SRID */
 	do_gml2_test(
 	    "GEOMETRYCOLLECTION(POINT(0 1),LINESTRING(2 3,4 5))",
@@ -515,6 +522,11 @@ static void out_gml_test_geoms(void)
 	do_gml3_unsupported(
 	    "MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))",
 	    "lwgeom_to_gml3: 'MultiSurface' geometry type not supported");
+
+	/* GML2 - PolyhedralSurface */
+	do_gml2_unsupported(
+	    "POLYHEDRALSURFACE(((0 1,2 3,4 5,0 1)))",
+	    "lwgeom_to_gml2: 'PolyhedralSurface' geometry type not supported");
 }
 
 static void out_gml_test_geoms_prefix(void)
@@ -596,6 +608,11 @@ static void out_gml_test_geoms_prefix(void)
 	    "<custom:MultiSurface><custom:surfaceMember><custom:Polygon><custom:exterior><custom:LinearRing><custom:posList srsDimension=\"2\">0 1 2 3 4 5 0 1</custom:posList></custom:LinearRing></custom:exterior></custom:Polygon></custom:surfaceMember><custom:surfaceMember><custom:Polygon><custom:exterior><custom:LinearRing><custom:posList srsDimension=\"2\">6 7 8 9 10 11 6 7</custom:posList></custom:LinearRing></custom:exterior></custom:Polygon></custom:surfaceMember></custom:MultiSurface>",
 	    NULL, 0, 0, "custom:");
 
+	/* GML3 PolyhedralSurface */
+	do_gml3_test_prefix(
+	    "POLYHEDRALSURFACE(((0 1,2 3,4 5,0 1)),((6 7,8 9,10 11,6 7)))",
+	    "<custom:PolyhedralSurface><custom:polygonPatches><custom:PolygonPatch><custom:exterior><custom:LinearRing><custom:posList srsDimension=\"2\">0 1 2 3 4 5 0 1</custom:posList></custom:LinearRing></custom:exterior></custom:PolygonPatch><custom:PolygonPatch><custom:exterior><custom:LinearRing><custom:posList srsDimension=\"2\">6 7 8 9 10 11 6 7</custom:posList></custom:LinearRing></custom:exterior></custom:PolygonPatch></custom:polygonPatches></custom:PolyhedralSurface>",
+	    NULL, 0, 0, "custom:");
 
 	/* GML2 - GeometryCollection */
 	do_gml2_test_prefix(
@@ -713,6 +730,11 @@ static void out_gml_test_geoms_prefix(void)
 	    "<MultiSurface><surfaceMember><Polygon><exterior><LinearRing><posList srsDimension=\"2\">0 1 2 3 4 5 0 1</posList></LinearRing></exterior></Polygon></surfaceMember><surfaceMember><Polygon><exterior><LinearRing><posList srsDimension=\"2\">6 7 8 9 10 11 6 7</posList></LinearRing></exterior></Polygon></surfaceMember></MultiSurface>",
 	    NULL, 0, 0, "");
 
+	/* GML3 PolyhedralSurface */
+	do_gml3_test_prefix(
+	    "POLYHEDRALSURFACE(((0 1,2 3,4 5,0 1)),((6 7,8 9,10 11,6 7)))",
+	    "<PolyhedralSurface><polygonPatches><PolygonPatch><exterior><LinearRing><posList srsDimension=\"2\">0 1 2 3 4 5 0 1</posList></LinearRing></exterior></PolygonPatch><PolygonPatch><exterior><LinearRing><posList srsDimension=\"2\">6 7 8 9 10 11 6 7</posList></LinearRing></exterior></PolygonPatch></polygonPatches></PolyhedralSurface>",
+	    NULL, 0, 0, "");
 
 	/* GML2 - GeometryCollection */
 	do_gml2_test_prefix(
@@ -799,6 +821,11 @@ static void out_gml_test_geoms_nodims(void)
 	    "<MultiSurface><surfaceMember><Polygon><exterior><LinearRing><posList>0 1 2 3 4 5 0 1</posList></LinearRing></exterior></Polygon></surfaceMember><surfaceMember><Polygon><exterior><LinearRing><posList>6 7 8 9 10 11 6 7</posList></LinearRing></exterior></Polygon></surfaceMember></MultiSurface>",
 	    NULL, 0, 0, 0, "");
 
+	/* GML3 PolyhedralSurface */
+	do_gml3_test_nodims(
+	    "POLYHEDRALSURFACE(((0 1,2 3,4 5,0 1)),((6 7,8 9,10 11,6 7)))",
+	    "<PolyhedralSurface><polygonPatches><PolygonPatch><exterior><LinearRing><posList>0 1 2 3 4 5 0 1</posList></LinearRing></exterior></PolygonPatch><PolygonPatch><exterior><LinearRing><posList>6 7 8 9 10 11 6 7</posList></LinearRing></exterior></PolygonPatch></polygonPatches></PolyhedralSurface>",
+	    NULL, 0, 0, 0, "");
 
 	/* GML3 - GeometryCollection */
 	do_gml3_test_nodims(
