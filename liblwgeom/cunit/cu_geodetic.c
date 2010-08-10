@@ -27,12 +27,12 @@ CU_pSuite register_geodetic_suite(void)
 		return NULL;
 	}
 
-	if (
+	if ( 
 	    (NULL == CU_add_test(pSuite, "test_signum()", test_signum))  ||
 	    (NULL == CU_add_test(pSuite, "test_gbox_from_spherical_coordinates()", test_gbox_from_spherical_coordinates))  ||
 	    (NULL == CU_add_test(pSuite, "test_gserialized_get_gbox_geocentric()", test_gserialized_get_gbox_geocentric))  ||
 	    (NULL == CU_add_test(pSuite, "test_clairaut()", test_clairaut))  ||
-	    (NULL == CU_add_test(pSuite, "test_edge_intersection()", test_edge_intersection))  ||
+	    (NULL == CU_add_test(pSuite, "test_edge_intersection()", test_edge_intersection))   ||
 	    (NULL == CU_add_test(pSuite, "test_edge_distance_to_point()", test_edge_distance_to_point)) ||
 	    (NULL == CU_add_test(pSuite, "test_edge_distance_to_edge()", test_edge_distance_to_edge)) ||
 	    (NULL == CU_add_test(pSuite, "test_lwgeom_distance_sphere()", test_lwgeom_distance_sphere)) ||
@@ -40,9 +40,9 @@ CU_pSuite register_geodetic_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_gbox_calculation()", test_gbox_calculation)) ||
 	    (NULL == CU_add_test(pSuite, "test_gserialized_from_lwgeom()", test_gserialized_from_lwgeom)) ||
 	    (NULL == CU_add_test(pSuite, "test_spheroid_distance()", test_spheroid_distance)) ||
-	    (NULL == CU_add_test(pSuite, "test_spheroid_area()", test_spheroid_area)) ||
-	    (NULL == CU_add_test(pSuite, "test_lwpoly_covers_point2d()", test_lwpoly_covers_point2d)) ||
-	    (NULL == CU_add_test(pSuite, "test_ptarray_point_in_ring()", test_ptarray_point_in_ring))
+	    (NULL == CU_add_test(pSuite, "test_spheroid_area()", test_spheroid_area)) || 
+	    (NULL == CU_add_test(pSuite, "test_ptarray_point_in_ring()", test_ptarray_point_in_ring)) || 
+	    (NULL == CU_add_test(pSuite, "test_lwpoly_covers_point2d()", test_lwpoly_covers_point2d))   
 	)
 	{
 		CU_cleanup_registry();
@@ -777,6 +777,17 @@ void test_ptarray_point_in_ring(void)
 	CU_ASSERT_EQUAL(result, LW_TRUE);
 	lwgeom_free(lwg);
 
+	/* Great big ring, correct in and out */
+	lwg = lwgeom_from_ewkt("POLYGON((-40.0 52.0, 102.0 -6.0, -67.0 -29.0, -40.0 52.0))", PARSER_CHECK_NONE);
+	poly = (LWPOLY*)lwg;
+	pt_to_test.x = 4.0;
+	pt_to_test.y = 11.0;
+	pt_outside.x = 81.0;
+	pt_outside.y = 59.0;
+	result = ptarray_point_in_ring(poly->rings[0], &pt_outside, &pt_to_test);
+	CU_ASSERT_EQUAL(result, LW_TRUE);
+	lwgeom_free(lwg);
+	
 #if 0
 	/* Small polygon and huge distance between outside point and close-but-not-quite-inside point. Should return LW_FALSE. Pretty degenerate case. */
 	lwg = lwgeom_from_ewkt("0103000020E61000000100000025000000ACAD6F91DDB65EC03F84A86D57264540CCABC279DDB65EC0FCE6926B57264540B6DEAA62DDB65EC0A79F6B63572645402E0BE84CDDB65EC065677155572645405D0B1D39DDB65EC0316310425726454082B5DB27DDB65EC060A4E12957264540798BB619DDB65EC0C393A10D57264540D4BC160FDDB65EC0BD0320EE56264540D7AC4E08DDB65EC096C862CC56264540AFD29205DDB65EC02A1F68A956264540363AFA06DDB65EC0722E418656264540B63A780CDDB65EC06E9B0064562645409614E215DDB65EC0E09DA84356264540FF71EF22DDB65EC0B48145265626454036033F33DDB65EC081B8A60C5626454066FB4546DDB65EC08A47A6F7552645409061785BDDB65EC0F05AE0E755264540D4B63772DDB65EC05C86CEDD55264540D2E4C689DDB65EC09B6EBFD95526454082E573A1DDB65EC0C90BD5DB552645401ABE85B8DDB65EC06692FCE35526454039844ECEDDB65EC04D8AF6F155264540928319E2DDB65EC0AD8D570556264540D31055F3DDB65EC02D618F1D56264540343B7A01DEB65EC0EB70CF3956264540920A1A0CDEB65EC03B00515956264540911BE212DEB65EC0E43A0E7B56264540E3F69D15DEB65EC017E4089E562645408D903614DEB65EC0F0D42FC1562645402191B80EDEB65EC0586870E35626454012B84E05DEB65EC09166C80357264540215B41F8DDB65EC08F832B21572645408392F7E7DDB65EC01138C13A57264540F999F0D4DDB65EC0E4A9C14F57264540AC3FB8BFDDB65EC0EED6875F57264540D3DCFEA8DDB65EC04F6C996957264540ACAD6F91DDB65EC03F84A86D57264540", PARSER_CHECK_NONE);
@@ -797,11 +808,13 @@ void test_lwpoly_covers_point2d(void)
 	LWPOLY *poly;
 	LWGEOM *lwg;
 	POINT2D pt_to_test;
+//	POINT2D pt_outside;
 	GBOX gbox;
 	int result;
 
 	gbox.flags = gflags(0, 0, 1);
 
+	/* Simple ring */
 	lwg = lwgeom_from_ewkt("POLYGON((-9 50,51 -11,-10 50,-9 50))", PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
 	poly = (LWPOLY*)lwg;
@@ -810,6 +823,20 @@ void test_lwpoly_covers_point2d(void)
 	result = lwpoly_covers_point2d(poly, &gbox, &pt_to_test);
 	CU_ASSERT_EQUAL(result, LW_TRUE);
 	lwgeom_free(lwg);
+
+
+	/* Great big ring */
+	lwg = lwgeom_from_ewkt("POLYGON((-40.0 52.0, 102.0 -6.0, -67.0 -29.0, -40.0 52.0))", PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
+/*	gbox_pt_outside(&gbox, &pt_outside); */
+/*	printf("POINT(%.9g %.9g)\n", pt_outside.x, pt_outside.y); */
+	poly = (LWPOLY*)lwg;
+	pt_to_test.x = 4.0;
+	pt_to_test.y = 11.0;
+	result = lwpoly_covers_point2d(poly, &gbox, &pt_to_test);
+	CU_ASSERT_EQUAL(result, LW_TRUE);
+	lwgeom_free(lwg);
+	
 }
 
 
