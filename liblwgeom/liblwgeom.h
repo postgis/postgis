@@ -1229,12 +1229,12 @@ extern double next_double_up(float d);
 /* general utilities */
 extern double distance2d_pt_pt(const POINT2D *p1, const POINT2D *p2);
 extern double distance2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B);
-extern LWGEOM *lw_dist2d_distancepoint(uchar *lw1, uchar *lw2,int srid,int mode);
-extern LWGEOM *lw_dist2d_distanceline(uchar *lw1, uchar *lw2,int srid,int mode);
-extern double lwgeom_mindistance2d(uchar *lw1, uchar *lw2);
-extern double lwgeom_mindistance2d_tolerance(uchar *lw1, uchar *lw2, double tolerance);
-extern double lwgeom_maxdistance2d(uchar *lw1, uchar *lw2);
-extern double lwgeom_maxdistance2d_tolerance(uchar *lw1, uchar *lw2, double tolerance);
+extern LWGEOM *lw_dist2d_distancepoint(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode);
+extern LWGEOM *lw_dist2d_distanceline(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode);
+extern double lwgeom_mindistance2d(LWGEOM *lw1, LWGEOM *lw2);
+extern double lwgeom_mindistance2d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance);
+extern double lwgeom_maxdistance2d(LWGEOM *lw1, LWGEOM *lw2);
+extern double lwgeom_maxdistance2d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance);
 extern double lwgeom_polygon_area(const LWPOLY *poly);
 extern double lwgeom_polygon_perimeter(const LWPOLY *poly);
 extern double lwgeom_polygon_perimeter2d(const LWPOLY *poly);

@@ -20,101 +20,62 @@
 #include "measures.h"
 #include "lwtree.h"
 
+static void do_test_mindistance2d_tolerance(char *in1, char *in2, double expected_res)
+{
+	LWGEOM *lw1;
+	LWGEOM *lw2;
+	double distance;
+
+	lw1 = lwgeom_from_ewkt(in1, PARSER_CHECK_NONE);
+	lw2 = lwgeom_from_ewkt(in2, PARSER_CHECK_NONE);
+
+	distance = lwgeom_mindistance2d_tolerance(lw1, lw2, 0.0);
+	CU_ASSERT_EQUAL(distance, expected_res);
+	lwgeom_free(lw1);
+	lwgeom_free(lw2);
+
+}
 static void test_mindistance2d_tolerance(void)
 {
-	LWGEOM_PARSER_RESULT gp1;
-	LWGEOM_PARSER_RESULT gp2;
-	double distance;
-	int result1, result2;
-
 	/*
 	** Simple case.
 	*/
-	result1 = serialized_lwgeom_from_ewkt(&gp1, "POINT(0 0)", PARSER_CHECK_NONE);
-	result2 = serialized_lwgeom_from_ewkt(&gp2, "MULTIPOINT(0 1.5,0 2,0 2.5)", PARSER_CHECK_NONE);
-	distance = lwgeom_mindistance2d_tolerance(gp1.serialized_lwgeom, gp2.serialized_lwgeom, 0.0);
-	//printf("\ndistance #1 = %g\n",distance);
-	CU_ASSERT_EQUAL(distance, 1.5);
-	free(gp1.serialized_lwgeom);
-	free(gp2.serialized_lwgeom);
+	do_test_mindistance2d_tolerance("POINT(0 0)", "MULTIPOINT(0 1.5,0 2,0 2.5)", 1.5);
 
 	/*
 	** Point vs Geometry Collection.
 	*/
-	result1 = serialized_lwgeom_from_ewkt(&gp1, "POINT(0 0)", PARSER_CHECK_NONE);
-	result2 = serialized_lwgeom_from_ewkt(&gp2, "GEOMETRYCOLLECTION(POINT(3 4))", PARSER_CHECK_NONE);
-	distance = lwgeom_mindistance2d_tolerance(gp1.serialized_lwgeom, gp2.serialized_lwgeom, 0.0);
-	//printf("distance #2 = %g\n",distance);
-	CU_ASSERT_EQUAL(distance, 5.0);
-	free(gp1.serialized_lwgeom);
-	free(gp2.serialized_lwgeom);
+	do_test_mindistance2d_tolerance("POINT(0 0)", "GEOMETRYCOLLECTION(POINT(3 4))", 5.0);
 
 	/*
 	** Point vs Geometry Collection Collection.
 	*/
-	result1 = serialized_lwgeom_from_ewkt(&gp1, "POINT(0 0)", PARSER_CHECK_NONE);
-	result2 = serialized_lwgeom_from_ewkt(&gp2, "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(3 4)))", PARSER_CHECK_NONE);
-	distance = lwgeom_mindistance2d_tolerance(gp1.serialized_lwgeom, gp2.serialized_lwgeom, 0.0);
-	//printf("distance #3 = %g\n",distance);
-	CU_ASSERT_EQUAL(distance, 5.0);
-	free(gp1.serialized_lwgeom);
-	free(gp2.serialized_lwgeom);
+	do_test_mindistance2d_tolerance("POINT(0 0)", "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(3 4)))", 5.0);
 
 	/*
 	** Point vs Geometry Collection Collection Collection.
 	*/
-	result1 = serialized_lwgeom_from_ewkt(&gp1, "POINT(0 0)", PARSER_CHECK_NONE);
-	result2 = serialized_lwgeom_from_ewkt(&gp2, "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(3 4))))", PARSER_CHECK_NONE);
-	distance = lwgeom_mindistance2d_tolerance(gp1.serialized_lwgeom, gp2.serialized_lwgeom, 0.0);
-	//printf("distance #4 = %g\n",distance);
-	CU_ASSERT_EQUAL(distance, 5.0);
-	free(gp1.serialized_lwgeom);
-	free(gp2.serialized_lwgeom);
+	do_test_mindistance2d_tolerance("POINT(0 0)", "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(3 4))))", 5.0);
 
 	/*
 	** Point vs Geometry Collection Collection Collection Multipoint.
 	*/
-	result1 = serialized_lwgeom_from_ewkt(&gp1, "POINT(0 0)", PARSER_CHECK_NONE);
-	result2 = serialized_lwgeom_from_ewkt(&gp2, "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(MULTIPOINT(3 4))))", PARSER_CHECK_NONE);
-	distance = lwgeom_mindistance2d_tolerance(gp1.serialized_lwgeom, gp2.serialized_lwgeom, 0.0);
-	//printf("distance #5 = %g\n",distance);
-	CU_ASSERT_EQUAL(distance, 5.0);
-	free(gp1.serialized_lwgeom);
-	free(gp2.serialized_lwgeom);
+	do_test_mindistance2d_tolerance("POINT(0 0)", "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(MULTIPOINT(3 4))))", 5.0);
 
 	/*
 	** Geometry Collection vs Geometry Collection
 	*/
-	result1 = serialized_lwgeom_from_ewkt(&gp1, "GEOMETRYCOLLECTION(POINT(0 0))", PARSER_CHECK_NONE);
-	result2 = serialized_lwgeom_from_ewkt(&gp2, "GEOMETRYCOLLECTION(POINT(3 4))", PARSER_CHECK_NONE);
-	distance = lwgeom_mindistance2d_tolerance(gp1.serialized_lwgeom, gp2.serialized_lwgeom, 0.0);
-	//printf("distance #6 = %g\n",distance);
-	CU_ASSERT_EQUAL(distance, 5.0);
-	free(gp1.serialized_lwgeom);
-	free(gp2.serialized_lwgeom);
+	do_test_mindistance2d_tolerance("GEOMETRYCOLLECTION(POINT(0 0))", "GEOMETRYCOLLECTION(POINT(3 4))", 5.0);
 
 	/*
 	** Geometry Collection Collection vs Geometry Collection Collection
 	*/
-	result1 = serialized_lwgeom_from_ewkt(&gp1, "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 0)))", PARSER_CHECK_NONE);
-	result2 = serialized_lwgeom_from_ewkt(&gp2, "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(3 4)))", PARSER_CHECK_NONE);
-	distance = lwgeom_mindistance2d_tolerance(gp1.serialized_lwgeom, gp2.serialized_lwgeom, 0.0);
-	//printf("distance #7 = %g\n",distance);
-	CU_ASSERT_EQUAL(distance, 5.0);
-	free(gp1.serialized_lwgeom);
-	free(gp2.serialized_lwgeom);
+	do_test_mindistance2d_tolerance("GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 0)))", "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(3 4)))", 5.0);
 
 	/*
 	** Geometry Collection Collection Multipoint vs Geometry Collection Collection Multipoint
 	*/
-	result1 = serialized_lwgeom_from_ewkt(&gp1, "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(MULTIPOINT(0 0)))", PARSER_CHECK_NONE);
-	result2 = serialized_lwgeom_from_ewkt(&gp2, "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(MULTIPOINT(3 4)))", PARSER_CHECK_NONE);
-	distance = lwgeom_mindistance2d_tolerance(gp1.serialized_lwgeom, gp2.serialized_lwgeom, 0.0);
-	//printf("distance #8 = %g\n",distance);
-	CU_ASSERT_EQUAL(distance, 5.0);
-	free(gp1.serialized_lwgeom);
-	free(gp2.serialized_lwgeom);
-
+	do_test_mindistance2d_tolerance("GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(MULTIPOINT(0 0)))", "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(MULTIPOINT(3 4)))", 5.0);
 }
 
 static void test_rect_tree_contains_point(void)
@@ -328,7 +289,8 @@ static void test_rect_tree_intersects_tree(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo measures_tests[] = {
+CU_TestInfo measures_tests[] =
+{
 	PG_TEST(test_mindistance2d_tolerance),
 	PG_TEST(test_rect_tree_contains_point),
 	PG_TEST(test_rect_tree_intersects_tree),

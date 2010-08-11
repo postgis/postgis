@@ -653,7 +653,7 @@ lwgeom_force2d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 	        type != MULTILINETYPE && type != COLLECTIONTYPE &&
 	        type != COMPOUNDTYPE && type != CURVEPOLYTYPE &&
 	        type != MULTICURVETYPE && type != MULTISURFACETYPE &&
-		type != POLYHEDRALSURFACETYPE )
+	        type != POLYHEDRALSURFACETYPE )
 	{
 		lwerror("lwgeom_force2d_recursive: unknown geometry: %d",
 		        type);
@@ -1065,7 +1065,7 @@ lwgeom_force3dm_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 	        type != MULTILINETYPE && type != COLLECTIONTYPE &&
 	        type != COMPOUNDTYPE && type != CURVEPOLYTYPE &&
 	        type != MULTICURVETYPE && type != MULTISURFACETYPE &&
-		type != POLYHEDRALSURFACETYPE )
+	        type != POLYHEDRALSURFACETYPE )
 	{
 		lwerror("lwgeom_force3dm_recursive: unknown geometry: %d",
 		        type);
@@ -1557,30 +1557,29 @@ Datum LWGEOM_closestpoint(PG_FUNCTION_ARGS)
 
 
 	int srid;
-	PG_LWGEOM *geom1;
-	PG_LWGEOM *geom2;
+	LWGEOM *geom1;
+	LWGEOM *geom2;
 
-	PG_LWGEOM *result=NULL;
 	LWGEOM *point;
 
-	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
+	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
 
-	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
+	if (geom1->SRID != geom2->SRID)
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
 
-	srid = pglwgeom_getSRID(geom1);
+	srid = geom1->SRID;
 
-	point = lw_dist2d_distancepoint( SERIALIZED_FORM(geom1),SERIALIZED_FORM(geom2), srid, DIST2D_MIN);
+	point = lw_dist2d_distancepoint( geom1,geom2, srid, DIST2D_MIN);
 	if (lwgeom_is_empty(point))
 	{
 		PG_RETURN_NULL();
 	}
-	result = pglwgeom_serialize(point);
-	PG_RETURN_POINTER(result);
+
+	PG_RETURN_POINTER(pglwgeom_serialize(point));
 }
 
 /**
@@ -1590,30 +1589,29 @@ PG_FUNCTION_INFO_V1(LWGEOM_shortestline2d);
 Datum LWGEOM_shortestline2d(PG_FUNCTION_ARGS)
 {
 	int srid;
-	PG_LWGEOM *geom1;
-	PG_LWGEOM *geom2;
+	LWGEOM *geom1;
+	LWGEOM *geom2;
 
-	PG_LWGEOM *result=NULL;
 	LWGEOM *theline;
 
-	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
+	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
 
-	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
+	if (geom1->SRID != geom2->SRID)
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
 
-	srid = pglwgeom_getSRID(geom1);
+	srid = geom1->SRID;
 
-	theline = lw_dist2d_distanceline( SERIALIZED_FORM(geom1),SERIALIZED_FORM(geom2), srid, DIST2D_MIN);
+	theline = lw_dist2d_distanceline(geom1,geom2, srid, DIST2D_MIN);
 	if (lwgeom_is_empty(theline))
 	{
 		PG_RETURN_NULL();
 	}
-	result = pglwgeom_serialize(theline);
-	PG_RETURN_POINTER(result);
+
+	PG_RETURN_POINTER(pglwgeom_serialize(theline));
 }
 
 /**
@@ -1623,30 +1621,29 @@ PG_FUNCTION_INFO_V1(LWGEOM_longestline2d);
 Datum LWGEOM_longestline2d(PG_FUNCTION_ARGS)
 {
 	int srid;
-	PG_LWGEOM *geom1;
-	PG_LWGEOM *geom2;
+	LWGEOM *geom1;
+	LWGEOM *geom2;
 
-	PG_LWGEOM *result=NULL;
 	LWGEOM *theline;
 
-	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
+	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
 
-	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
+	if (geom1->SRID != geom2->SRID)
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
 
-	srid = pglwgeom_getSRID(geom1);
+	srid = geom1->SRID;
 
-	theline = lw_dist2d_distanceline( SERIALIZED_FORM(geom1),SERIALIZED_FORM(geom2), srid, DIST2D_MAX);
+	theline = lw_dist2d_distanceline( geom1,geom2, srid, DIST2D_MAX);
 	if (lwgeom_is_empty(theline))
 	{
 		PG_RETURN_NULL();
 	}
-	result = pglwgeom_serialize(theline);
-	PG_RETURN_POINTER(result);
+
+	PG_RETURN_POINTER(pglwgeom_serialize(theline));
 }
 /**
  Minimum 2d distance between objects in geom1 and geom2.
@@ -1654,23 +1651,22 @@ Datum LWGEOM_longestline2d(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_mindistance2d);
 Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom1;
-	PG_LWGEOM *geom2;
+	LWGEOM *geom1;
+	LWGEOM *geom2;
 	double mindist;
 
 	PROFSTART(PROF_QRUN);
 
-	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
+	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
 
-	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
+	if (geom1->SRID != geom2->SRID)
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
 
-	mindist = lwgeom_mindistance2d(SERIALIZED_FORM(geom1),
-	                               SERIALIZED_FORM(geom2));
+	mindist = lwgeom_mindistance2d(geom1,geom2);
 
 	PROFSTOP(PROF_QRUN);
 	PROFREPORT("dist",geom1, geom2, NULL);
@@ -1693,14 +1689,14 @@ geom1 and geom2 is shorter than tolerance
 PG_FUNCTION_INFO_V1(LWGEOM_dwithin);
 Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom1;
-	PG_LWGEOM *geom2;
+	LWGEOM *geom1;
+	LWGEOM *geom2;
 	double mindist, tolerance;
 
 	PROFSTART(PROF_QRUN);
 
-	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
+	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
 	tolerance = PG_GETARG_FLOAT8(2);
 
 	if ( tolerance < 0 )
@@ -1709,17 +1705,13 @@ Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
+	if (geom1->SRID != geom2->SRID)
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
 
-	mindist = lwgeom_mindistance2d_tolerance(
-	              SERIALIZED_FORM(geom1),
-	              SERIALIZED_FORM(geom2),
-	              tolerance
-	          );
+	mindist = lwgeom_mindistance2d_tolerance(geom1,geom2,tolerance);
 
 	PROFSTOP(PROF_QRUN);
 	PROFREPORT("dist",geom1, geom2, NULL);
@@ -1739,14 +1731,14 @@ geom1 and geom2 is shorter than tolerance
 PG_FUNCTION_INFO_V1(LWGEOM_dfullywithin);
 Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom1;
-	PG_LWGEOM *geom2;
+	LWGEOM *geom1;
+	LWGEOM *geom2;
 	double maxdist, tolerance;
 
 	PROFSTART(PROF_QRUN);
 
-	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
+	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
 	tolerance = PG_GETARG_FLOAT8(2);
 
 	if ( tolerance < 0 )
@@ -1755,16 +1747,12 @@ Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
+	if (geom1->SRID != geom2->SRID)
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
-	maxdist = lwgeom_maxdistance2d_tolerance(
-	              SERIALIZED_FORM(geom1),
-	              SERIALIZED_FORM(geom2),
-	              tolerance
-	          );
+	maxdist = lwgeom_maxdistance2d_tolerance(geom1,geom2,tolerance);
 	PROFSTOP(PROF_QRUN);
 	PROFREPORT("dist",geom1, geom2, NULL);
 
@@ -1784,24 +1772,23 @@ Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_maxdistance2d_linestring);
 Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom1;
-	PG_LWGEOM *geom2;
+	LWGEOM *geom1;
+	LWGEOM *geom2;
 	double maxdist;
 
 	PROFSTART(PROF_QRUN);
 
-	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
+	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
 
-	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
+	if (geom1->SRID != geom2->SRID)
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
 
 
-	maxdist = lwgeom_maxdistance2d(SERIALIZED_FORM(geom1),
-	                               SERIALIZED_FORM(geom2));
+	maxdist = lwgeom_maxdistance2d(geom1,geom2);
 
 	PROFSTOP(PROF_QRUN);
 	PROFREPORT("maxdist",geom1, geom2, NULL);
@@ -2986,10 +2973,10 @@ Datum ST_IsCollection(PG_FUNCTION_ARGS)
 	PG_LWGEOM* geom;
 	int type;
 
-        /* Pull only a small amount of the tuple,
-	 * enough to get the type. size = header + type */
+	/* Pull only a small amount of the tuple,
+	* enough to get the type. size = header + type */
 	geom = (PG_LWGEOM*)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0),
-	                   0, VARHDRSZ + 1);
+	        0, VARHDRSZ + 1);
 
 	type = lwgeom_getType(SERIALIZED_FORM(geom)[0]);
 	PG_RETURN_BOOL(lwgeom_is_collection(type));
