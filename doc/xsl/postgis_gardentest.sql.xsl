@@ -257,7 +257,7 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 		<xsl:choose>
 			  <xsl:when test="contains($fndef, 'geography ')">
 			  INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start) 
-			  	VALUES('<xsl:value-of select="$log_label" /> Geography <xsl:value-of select="$geom1type" /> <xsl:value-of select="@GeometryType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="$geom1type" />','<xsl:value-of select="@GeometryType" />', clock_timestamp());
+			  	VALUES('<xsl:value-of select="$log_label" /> Geography <xsl:value-of select="$geom1type" /><xsl:text> </xsl:text><xsl:value-of select="@GeometryType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="$geom1type" />','<xsl:value-of select="@GeometryType" />', clock_timestamp());
 
 			SELECT 'Geography <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
 			BEGIN;
@@ -266,20 +266,20 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 					;
 					
 			UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		WHERE log_label = '<xsl:value-of select="$log_label" /> Geography <xsl:value-of select="$geom1type" /> <xsl:value-of select="@GeometryType" />' AND log_end IS NULL;
+		WHERE log_label = '<xsl:value-of select="$log_label" /> Geography <xsl:value-of select="$geom1type" /><xsl:text> </xsl:text><xsl:value-of select="@GeometryType" />' AND log_end IS NULL;
 			COMMIT;
 			</xsl:when>
 			<xsl:otherwise>
 			SELECT 'Geometry <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
 			 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start) 
-			  	VALUES('<xsl:value-of select="$log_label" /> Geometry <xsl:value-of select="$geom1type" /> <xsl:value-of select="@GeometryType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="$geom1type" />','<xsl:value-of select="@GeometryType" />', clock_timestamp());
+			  	VALUES('<xsl:value-of select="$log_label" /> Geometry <xsl:value-of select="$geom1type" /><xsl:text> </xsl:text><xsl:value-of select="@GeometryType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="$geom1type" />','<xsl:value-of select="@GeometryType" />', clock_timestamp());
 
 			BEGIN;
 			SELECT foo1.the_geom <xsl:value-of select="$fnname" /> foo2.the_geom
 					FROM (<xsl:value-of select="$from1" />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2
 					;
 			UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		WHERE log_label = '<xsl:value-of select="$log_label" /> Geometry <xsl:value-of select="$geom1type" /> <xsl:value-of select="@GeometryType" />' AND log_end IS NULL;
+		WHERE log_label = '<xsl:value-of select="$log_label" /> Geometry <xsl:value-of select="$geom1type" /><xsl:text> </xsl:text><xsl:value-of select="@GeometryType" />' AND log_end IS NULL;
 	
 			COMMIT;
 			</xsl:otherwise>
@@ -303,11 +303,35 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 				<xsl:variable name='numparams'><xsl:value-of select="count(paramdef/parameter)" /></xsl:variable>
 				<xsl:variable name='numparamgeoms'><xsl:value-of select="count(paramdef/type[contains(text(),'geometry') or contains(text(),'geography') or contains(text(),'box') or contains(text(), 'bytea')]) + count(paramdef/parameter[contains(text(),'WKT')]) + count(paramdef/parameter[contains(text(),'geomgml')])" /></xsl:variable>
 				<xsl:variable name='numparamgeogs'><xsl:value-of select="count(paramdef/type[contains(text(),'geography')] )" /></xsl:variable>
+				<xsl:variable name='log_label'><xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)</xsl:variable>
+
+				<xsl:variable name="geoftype">
+				  <!--Conditionally instantiate a value to be assigned to the variable -->
+				  <xsl:choose>
+					<xsl:when test="contains(paramdef, 'geometry ')">
+					  <xsl:value-of select="Geometry"/>
+					</xsl:when>
+					<xsl:when test="contains(paramdef, 'geography ')">
+					  <xsl:value-of select="Geography"/>
+					</xsl:when>
+					<xsl:otherwise>
+					  <xsl:value-of select="Other"/>
+					</xsl:otherwise>
+				  </xsl:choose>
+				</xsl:variable>
+
 				<!-- For each function prototype generate a test sql statement -->
 				<xsl:choose>
 <!--Test functions that take no arguments or take no geometries -->
-	<xsl:when test="$numparamgeoms = '0' and not(contains($fnexclude,funcdef/function))">SELECT  'Starting <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)';BEGIN;
+	<xsl:when test="$numparamgeoms = '0' and not(contains($fnexclude,funcdef/function))">SELECT  'Starting <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)';
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, log_start) 
+			  	VALUES('<xsl:value-of select="$log_label" />','<xsl:value-of select="$fnname" />', clock_timestamp());
+	
+BEGIN;
 SELECT  <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnfakeparams" />);
+UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
+		WHERE log_label = '<xsl:value-of select="$log_label" />' AND log_end IS NULL;
+	
 COMMIT;
 SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)';
 	</xsl:when>
@@ -315,26 +339,33 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 <!-- put functions that take only one geometry no need to cross with another geom collection, these are unary geom, aggregates, and so forth -->
 	<xsl:when test="$numparamgeoms = '1' and not(contains($fnexclude,funcdef/function))" >
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
+		SELECT '<xsl:value-of select="$geoftype" /> <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@GeometryType" />';
+	INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
+			  	VALUES('<xsl:value-of select="$log_label" /> <xsl:value-of select="$geoftype" /> <xsl:text> </xsl:text><xsl:value-of select="@ID" /><xsl:text> </xsl:text><xsl:value-of select="@GeometryType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
+		BEGIN;
 			<xsl:choose>
 			  <xsl:when test="contains(paramdef, 'geometry ')">
 			  
-	SELECT 'Geometry <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@GeometryType" />';
-	BEGIN; <!-- If output is geometry show ewkt rep -->
+	
+	 <!-- If output is geometry show ewkt rep -->
 	SELECT ST_AsEWKT(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />))
 			  </xsl:when>
 			  <xsl:when test="contains(paramdef, 'geography ')">
 	SELECT 'Geography <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@GeometryType" />';
-	BEGIN; <!-- If output is geometry show astext rep -->
+	 <!-- If output is geometry show astext rep -->
 	SELECT ST_AsText(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />))
 			  </xsl:when>
 			  <xsl:otherwise>
 	SELECT 'Other <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@GeometryType" />';
-	BEGIN; <!-- If output is geometry show ewkt rep -->
+	 <!-- If output is geometry show ewkt rep -->
 	SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)
 			  </xsl:otherwise>
 			</xsl:choose>
 			FROM (<xsl:value-of select="." />) As foo1
 			LIMIT 3;
+	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
+		WHERE log_label = '<xsl:value-of select="$log_label" /> <xsl:value-of select="$geoftype" /> <xsl:text> </xsl:text><xsl:value-of select="@ID" /><xsl:text> </xsl:text><xsl:value-of select="@GeometryType" />' AND log_end IS NULL;
+	
 	COMMIT;
 	SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text> <xsl:value-of select="@ID" />: End Testing <xsl:value-of select="@GeometryType" />';
 		<xsl:text>
