@@ -78,20 +78,16 @@ shp2pgsql-core.o: shp2pgsql-core.c
 pgsql2shp.o: pgsql2shp.c
 	$(CC) $(CFLAGS) $(ICONV_CFLAGS) $(PGSQL_FE_CPPFLAGS) -c $<
 
-
 $(PGSQL2SHP): shpopen.o dbfopen.o getopt.o pgsql2shp.o $(LIBLWGEOM) 
 	$(CC) $(CFLAGS) $^ $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) -lm -o $@ 
 
 $(SHP2PGSQL-CLI): stringbuffer.o shpopen.o dbfopen.o getopt.o shp2pgsql-core.o shp2pgsql-cli.o $(LIBLWGEOM) 
 	$(CC) $(CFLAGS) $^ -o $@ $(ICONV_LDFLAGS) -lm 
 
-structure.o: structure.c
-	$(CC) $(CFLAGS) $(GTK_CFLAGS) -o $@ -c structure.c
-
 shp2pgsql-gui.o: shp2pgsql-gui.c
 	$(CC) $(CFLAGS) $(PGSQL_FE_CPPFLAGS) $(GTK_CFLAGS) -o $@ -c shp2pgsql-gui.c
 
-$(SHP2PGSQL-GUI): stringbuffer.o shpopen.o dbfopen.o shp2pgsql-core.o shp2pgsql-gui.o getopt.o structure.o $(LIBLWGEOM) $(GTK_WIN32_RES)
+$(SHP2PGSQL-GUI): stringbuffer.o shpopen.o dbfopen.o shp2pgsql-core.o shp2pgsql-gui.o getopt.o $(LIBLWGEOM) $(GTK_WIN32_RES)
 	$(CC) $(CFLAGS) $(GTK_WIN32_FLAGS) $^ -o $@ $(GTK_LIBS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) -lm 
 
 installdir:
@@ -110,7 +106,4 @@ uninstall:
 
 clean:
 	@rm -f *.o $(SHP2PGSQL-CLI) $(PGSQL2SHP) $(GTK_WIN32_RES)
-
-check:
-	make -C cunit check
 
