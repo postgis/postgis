@@ -29,6 +29,7 @@
 	<xsl:variable name='var_spheroid'>'SPHEROID["GRS_1980",6378137,298.257222101]'</xsl:variable>
 	<xsl:variable name='var_matrix'>'FF1FF0102'</xsl:variable>
 	<xsl:variable name='var_boolean'>false</xsl:variable>
+	<xsl:variable name='var_logtable'>postgis_garden_log</xsl:variable>
 	<pgis:gardens>
 		<pgis:gset ID='PointSet' GeometryType='POINT'>(SELECT ST_SetSRID(ST_Point(i,j),4326) As the_geom
 		FROM (SELECT a*1.11111111 FROM generate_series(-10,50,10) As a) As i(i)
@@ -78,7 +79,7 @@
 			ORDER BY i, j, i+j+m, m, i*j*m)</pgis:gset>
 			
 		<pgis:gset ID='PolyhedralSurface' GeometryType='PolyhedralSurface'>(SELECT ST_GeomFromEWKT(
-'SRID=0;PolyhedralSurface( 
+'SRID=-1;PolyhedralSurface( 
 ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),  
 ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),  ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),  
 ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) 
@@ -175,9 +176,15 @@
         </xsl:template>
 
 	<xsl:template match='chapter'>
+<!-- Create logging table -->
+DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />;
+CREATE TABLE <xsl:value-of select="$var_logtable" />(logid serial PRIMARY KEY, log_label text, func text, g1 text, g2 text, log_start timestamp, log_end timestamp);
 <!--Start Test table creation, insert, drop -->
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset[not(contains(@createtable,'false'))]">
-SELECT 'create,insert,drop Test: Start Testing Multi/<xsl:value-of select="@GeometryType" />';
+		<xsl:variable name='log_label'>create,insert,drop Test <xsl:value-of select="@GeometryType" /></xsl:variable>
+SELECT '<xsl:value-of select="$log_label" />: Start Testing';
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
+VALUES('<xsl:value-of select="$log_label" /> Geometry','AddGeometryColumn', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
 BEGIN;
 	CREATE TABLE pgis_garden (gid serial);
 	SELECT AddGeometryColumn('pgis_garden','the_geom',ST_SRID(the_geom),GeometryType(the_geom),ST_CoordDim(the_geom))
@@ -192,32 +199,42 @@ BEGIN;
 
 	SELECT DropGeometryColumn ('pgis_garden','the_geom');
 	SELECT DropGeometryTable ('pgis_garden');
+	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
+		WHERE log_label = '<xsl:value-of select="$log_label" /> Geometry' AND log_end IS NULL;
+
 COMMIT;
-SELECT 'create,insert,drop Test: End Testing  Multi/<xsl:value-of select="@GeometryType" />';
+SELECT '<xsl:value-of select="$log_label" />: End Testing  <xsl:value-of select="@GeometryType" />';
 	<xsl:text>
 
 	</xsl:text>
-SELECT 'create,insert,drop Test: Start Testing Geography <xsl:value-of select="@GeometryType" />';
+SELECT '<xsl:value-of select="$log_label" /> Geography: Start Testing <xsl:value-of select="@GeometryType" />';
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) VALUES('<xsl:value-of select="$log_label" /> Geography','CREATE TABLE geography', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
 BEGIN;
 	CREATE TABLE pgis_geoggarden (gid serial, the_geog geography(<xsl:value-of select="@GeometryType" />, 4326));
 	INSERT INTO pgis_geoggarden(the_geog)
 	SELECT the_geom
 	FROM (<xsl:value-of select="." />) As foo;
+	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
+		WHERE log_label = '<xsl:value-of select="$log_label" /> Geography' AND log_end IS NULL;
 COMMIT;
+SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing <xsl:value-of select="@GeometryType" />';
 	-- test operators
-	SELECT 'start overlap test';
+SELECT '<xsl:value-of select="$log_label" /> overlap Geography: Start Testing <xsl:value-of select="@GeometryType" />';
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) VALUES('<xsl:value-of select="$log_label" /> overlap Geography','&amp;&amp;', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
 BEGIN;
 	SELECT ST_AsText(a.the_geog) As a_geog, ST_AsText(b.the_geog) As b_geog, a.the_geog &amp;&amp; b.the_geog
 		FROM pgis_geoggarden As a CROSS JOIN pgis_geoggarden As b
 		WHERE a.the_geog &amp;&amp; b.the_geog OR ST_DWithin(a.the_geog, b.the_geog,1000);
+UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
+		WHERE log_label = '<xsl:value-of select="$log_label" /> overlap Geography' AND log_end IS NULL;
 COMMIT;
-	SELECT 'end overlap test';
+	SELECT '<xsl:value-of select="$log_label" /> overlap Geography: End Testing';
 BEGIN;	
 	SELECT 'BEFORE DROP' As look_at, * FROM geography_columns;
 	DROP TABLE pgis_geoggarden;
 	SELECT 'AFTER DROP' As look_at, * FROM geography_columns;
 COMMIT;
-SELECT 'create,insert,drop Test: End Testing Geography <xsl:value-of select="@GeometryType" />';
+SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 	<xsl:text>
 
 	</xsl:text>
@@ -234,23 +251,36 @@ SELECT 'create,insert,drop Test: End Testing Geography <xsl:value-of select="@Ge
 			<!--Store first garden sql geometry from -->
 					<xsl:variable name="from1"><xsl:value-of select="." /></xsl:variable>
 					<xsl:variable name='geom1type'><xsl:value-of select="@ID"/></xsl:variable>
-		SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" /> : Start Testing <xsl:value-of select="$geom1type" /> against other types';
+					<xsl:variable name='log_label'><xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" /> <xsl:value-of select="$geom1type" /> against other types</xsl:variable>
+		SELECT '<xsl:value-of select="$log_label" />: Start Testing ';
 						<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 		<xsl:choose>
 			  <xsl:when test="contains($fndef, 'geography ')">
+			  INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start) 
+			  	VALUES('<xsl:value-of select="$log_label" /> Geography <xsl:value-of select="$geom1type" /> <xsl:value-of select="@GeometryType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="$geom1type" />','<xsl:value-of select="@GeometryType" />', clock_timestamp());
+
 			SELECT 'Geography <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
 			BEGIN;
 			SELECT geography(foo1.the_geom) <xsl:value-of select="$fnname" /> geography(foo2.the_geom)
 					FROM (<xsl:value-of select="$from1" />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2
 					;
+					
+			UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
+		WHERE log_label = '<xsl:value-of select="$log_label" /> Geography <xsl:value-of select="$geom1type" /> <xsl:value-of select="@GeometryType" />' AND log_end IS NULL;
 			COMMIT;
 			</xsl:when>
 			<xsl:otherwise>
 			SELECT 'Geometry <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
+			 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start) 
+			  	VALUES('<xsl:value-of select="$log_label" /> Geometry <xsl:value-of select="$geom1type" /> <xsl:value-of select="@GeometryType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="$geom1type" />','<xsl:value-of select="@GeometryType" />', clock_timestamp());
+
 			BEGIN;
 			SELECT foo1.the_geom <xsl:value-of select="$fnname" /> foo2.the_geom
 					FROM (<xsl:value-of select="$from1" />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2
 					;
+			UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
+		WHERE log_label = '<xsl:value-of select="$log_label" /> Geometry <xsl:value-of select="$geom1type" /> <xsl:value-of select="@GeometryType" />' AND log_end IS NULL;
+	
 			COMMIT;
 			</xsl:otherwise>
 		</xsl:choose>
