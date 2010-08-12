@@ -882,8 +882,9 @@ LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
 		<note><para><code>ST_RotateX(geomA,  rotRadians)</code>
 			is short-hand for <code>ST_Affine(geomA, 1, 0, 0, 0, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), cos(rotRadians), 0, 0, 0)</code>.</para></note>
 
+		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 		<para>Availability: 1.1.2. Name changed from RotateX to ST_RotateX in 1.2.2</para>
-
+	  	<para>&P_support;</para>
 	  	<para>&Z_support;</para>
 	  </refsection>
 
@@ -934,8 +935,10 @@ SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2)
 			is short-hand for <code>ST_Affine(geomA,  cos(rotRadians), 0, sin(rotRadians),  0, 1, 0,  -sin(rotRadians), 0, cos(rotRadians), 0,  0, 0)</code>.</para></note>
 
 		<para>Availability: 1.1.2. Name changed from RotateY to ST_RotateY in 1.2.2</para>
-
+		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+	  	<para>&P_support;</para>
 	  	<para>&Z_support;</para>
+	  	
 	  </refsection>
 
 
