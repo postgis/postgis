@@ -501,7 +501,7 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 
 	  <refsection>
 		<title>Examples - XLink usage</title>
-		<programlisting><![CDATA[ST_GeomFromGML('
+		<programlisting>SELECT <![CDATA[ST_GeomFromGML('
 		<gml:LineString xmlns:gml="http://www.opengis.net/gml" 
 				xmlns:xlink="http://www.w3.org/1999/xlink"
 				srsName="urn:ogc:def:crs:EPSG::4269">
@@ -518,7 +518,7 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 	  
 	 <refsection>
 		<title>Examples - Polyhedral Surface</title>
-		<programlisting>ST_AsEWKT(<![CDATA[ST_GeomFromGML('
+		<programlisting>SELECT ST_AsEWKT(<![CDATA[ST_GeomFromGML('
 <gml:PolyhedralSurface>
 <gml:polygonPatches>
   <gml:PolygonPatch>
