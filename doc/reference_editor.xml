@@ -193,7 +193,10 @@ SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi
 		This is useful for force OGC-compliant output (since OGC only
 		specifies 2-D geometries).</para>
 
+		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 	  	<para>&curve_support;</para>
+	  	<para>&P_support;</para>
+	  	<para>&Z_support;</para>
 	  </refsection>
 
 
@@ -243,8 +246,10 @@ SELECT  ST_AsEWKT(ST_Force_2D('POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 
 
 		<para>Forces the geometries into XYZ mode.  This is an alias for ST_Force_3DZ. If a geometry has no Z component, then a 0 Z coordinate is tacked on.</para>
 
-	  	<para>&Z_support;</para>
+		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para>&P_support;</para>
 	  	<para>&curve_support;</para>
+	  	<para>&Z_support;</para>
 	  </refsection>
 
 
@@ -296,6 +301,8 @@ SELECT  ST_AsEWKT(ST_Force_3D('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 
 		<para>Forces the geometries into XYZ mode.  This is a synonym for ST_Force_3DZ. If a geometry has no Z component, then a 0 Z coordinate is tacked on.</para>
 
+		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para>&P_support;</para>
 	  	<para>&Z_support;</para>
 	  	<para>&curve_support;</para>
 	  </refsection>
@@ -459,7 +466,10 @@ SELECT  ST_AsEWKT(ST_Force_4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 1 1
 		<para>Converts the geometry into a GEOMETRYCOLLECTION. This is
 			useful for simplifying the WKB representation.</para>
 
+		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 		<para>Availability: 1.2.2, prior to 1.3.4 this function will crash with Curves.  This is fixed in 1.3.4+</para>
+		
+		<para>&P_support;</para>
 	  	<para>&Z_support;</para>
 	  	<para>&curve_support;</para>
 	  </refsection>
@@ -483,6 +493,27 @@ SELECT  ST_AsEWKT(ST_Force_Collection('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,
  GEOMETRYCOLLECTION(CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))
 (1 row)
 
+		</programlisting>
+		
+		<programlisting>
+-- POLYHEDRAL example --
+SELECT ST_AsEWKT(ST_Force_Collection('POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
+ ((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),
+ ((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),
+ ((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
+ ((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),
+ ((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)))'))
+
+								   st_asewkt
+----------------------------------------------------------------------------------
+GEOMETRYCOLLECTION(
+  POLYGON((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
+  POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),
+  POLYGON((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),
+  POLYGON((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
+  POLYGON((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),
+  POLYGON((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1))
+)
 		</programlisting>
 	  </refsection>
 
@@ -522,7 +553,9 @@ SELECT  ST_AsEWKT(ST_Force_Collection('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,
 				orientated in a clockwise direction and the interior rings in a counter-clockwise
 				direction.</para>
 
+			<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 	  		<para>&Z_support;</para>
+	  		<para>&P_support;</para>
 		</refsection>
 
 		<refsection>
