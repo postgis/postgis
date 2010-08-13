@@ -491,13 +491,16 @@ st_asgeojson
 		<para>The 'namespace prefix' argument may be used to specify a custom
 namespace prefix or no prefix (if empty). If null or omitted 'gml' prefix is used</para>
 
-		<note>
+
 		  <para>Availability: 1.3.2</para>
 		  <para>Availability: 1.5.0 geography support was introduced.</para>
-		  <para>Availability: 2.0.0 prefix support was introduced.</para>
-		</note>
+		  <para>Availability: 2.0.0 prefix support was introduced. Support for Polyhedral surfaces was introduced.</para>
+		 
 
+
+		<note><para>Only version 3 of ST_AsGML supports Polyhedral Surfaces.</para></note>
 		<para>&Z_support;</para>
+		<para>&P_support;</para>
 	  </refsection>
 
 	  <refsection>
@@ -511,6 +514,61 @@ namespace prefix or no prefix (if empty). If null or omitted 'gml' prefix is use
 			st_asgml
 			--------
 		<gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>6.34535 5.23423</gml:pos></gml:Point>]]>
+			</programlisting>
+			
+		<programlisting>-- Polyhedral Example --
+SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
+((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
+((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
+((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
+	st_asgml
+	--------
+<![CDATA[ <gml:PolyhedralSurface>
+<gml:polygonPatches>
+   <gml:PolygonPatch>
+		<gml:exterior>
+			  <gml:LinearRing>
+				   <gml:posList srsDimension="3">0 0 0 0 0 1 0 1 1 0 1 0 0 0 0</gml:posList>
+			  </gml:LinearRing>
+		</gml:exterior>
+   </gml:PolygonPatch>
+   <gml:PolygonPatch>
+		<gml:exterior>
+			  <gml:LinearRing>
+				   <gml:posList srsDimension="3">0 0 0 0 1 0 1 1 0 1 0 0 0 0 0</gml:posList>
+			  </gml:LinearRing>
+		</gml:exterior>
+   </gml:PolygonPatch>
+   <gml:PolygonPatch>
+		<gml:exterior>
+			  <gml:LinearRing>
+				   <gml:posList srsDimension="3">0 0 0 1 0 0 1 0 1 0 0 1 0 0 0</gml:posList>
+			  </gml:LinearRing>
+		</gml:exterior>
+   </gml:PolygonPatch>
+   <gml:PolygonPatch>
+		<gml:exterior>
+			  <gml:LinearRing>
+				   <gml:posList srsDimension="3">1 1 0 1 1 1 1 0 1 1 0 0 1 1 0</gml:posList>
+			  </gml:LinearRing>
+		</gml:exterior>
+   </gml:PolygonPatch>
+   <gml:PolygonPatch>
+		<gml:exterior>
+			  <gml:LinearRing>
+				   <gml:posList srsDimension="3">0 1 0 0 1 1 1 1 1 1 1 0 0 1 0</gml:posList>
+			  </gml:LinearRing>
+		</gml:exterior>
+   </gml:PolygonPatch>
+   <gml:PolygonPatch>
+		<gml:exterior>
+			  <gml:LinearRing>
+				   <gml:posList srsDimension="3">0 0 1 1 0 1 1 1 1 0 1 1 0 0 1</gml:posList>
+			  </gml:LinearRing>
+		</gml:exterior>
+   </gml:PolygonPatch>
+</gml:polygonPatches>
+</gml:PolyhedralSurface>]]>
 			</programlisting>
 
 	  </refsection>
