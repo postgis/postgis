@@ -24,8 +24,8 @@ int lwg_parse_yylex(void);
 	const char* wkb;
 }
 
-%token POINT LINESTRING POLYGON MULTIPOINT MULTILINESTRING MULTIPOLYGON GEOMETRYCOLLECTION CIRCULARSTRING COMPOUNDCURVE CURVEPOLYGON MULTICURVE MULTISURFACE POLYHEDRALSURFACE
-%token POINTM LINESTRINGM POLYGONM MULTIPOINTM MULTILINESTRINGM MULTIPOLYGONM GEOMETRYCOLLECTIONM CIRCULARSTRINGM COMPOUNDCURVEM CURVEPOLYGONM MULTICURVEM MULTISURFACEM POLYHEDRALSURFACEM
+%token POINT LINESTRING POLYGON MULTIPOINT MULTILINESTRING MULTIPOLYGON GEOMETRYCOLLECTION CIRCULARSTRING COMPOUNDCURVE CURVEPOLYGON MULTICURVE MULTISURFACE POLYHEDRALSURFACE TRIANGLE TIN
+%token POINTM LINESTRINGM POLYGONM MULTIPOINTM MULTILINESTRINGM MULTIPOLYGONM GEOMETRYCOLLECTIONM CIRCULARSTRINGM COMPOUNDCURVEM CURVEPOLYGONM MULTICURVEM MULTISURFACEM POLYHEDRALSURFACEM TRIANGLEM TINM
 %token SRID      
 %token EMPTY
 %token <value> VALUE
@@ -50,6 +50,8 @@ geometry_int :
         |
 	geom_polygon
 	|
+	geom_triangle
+	|
         geom_compoundcurve
         |
         geom_curvepolygon
@@ -66,6 +68,8 @@ geometry_int :
         |
 	geom_polyhedralsurface
         |
+	geom_tin
+	|
 	geom_geometrycollection
 
 srid :
@@ -304,6 +308,34 @@ polygon_int :
 	/* polygon_int COMMA nonempty_linestring_closed */
 	polygon_int COMMA linestring_1
 
+/* TRIANGLE */
+
+geom_triangle :
+	TRIANGLE triangle
+	|
+	TRIANGLEM { set_zm(0, 1); } triangle 
+
+triangle :
+	empty_triangle
+	|
+	nonempty_triangle
+
+empty_triangle :
+	{ alloc_triangle(); } empty { pop(); } 
+
+nonempty_triangle :
+	{ alloc_triangle(); } LPAREN triangle_int RPAREN { check_triangle(); pop(); }
+
+triangle_int :
+        { alloc_counter(); } LPAREN triangle_1 RPAREN { pop(); }
+
+triangle_1 :
+        a_point
+        |
+        triangle_1 COMMA a_point;
+
+
+
 /* CURVEPOLYGON */
 
 geom_curvepolygon :
@@ -404,6 +436,22 @@ polyhedralsurface_int :
         patch
         |
         polyhedralsurface_int COMMA patch
+
+/* TIN */
+geom_tin :
+        TIN {alloc_tin(); } tin { pop(); }
+	|
+	TINM {set_zm(0, 1); alloc_tin(); } tin { pop(); }
+
+tin :
+        empty
+        |
+        { alloc_counter(); } LPAREN tin_int RPAREN { pop(); }
+
+tin_int :
+        nonempty_triangle
+	|
+	tin_int COMMA nonempty_triangle
 
 
 /* GEOMETRYCOLLECTION */

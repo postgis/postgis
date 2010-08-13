@@ -717,4 +717,12 @@ lwcircstring_setPoint4d(LWCIRCSTRING *curve, uint32 index, POINT4D *newpoint)
 	setPoint4d(curve->points, index, newpoint);
 }
 
+int
+lwcircstring_is_closed(LWCIRCSTRING *curve)
+{
+        if (TYPE_HASZ(curve->type))
+                return ptarray_isclosed3d(curve->points);
+        
+        return ptarray_isclosed2d(curve->points);
+}
 

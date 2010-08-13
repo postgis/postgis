@@ -35,6 +35,8 @@ lwgeom_deserialize(uchar *srl)
 		return (LWGEOM *)lwcircstring_deserialize(srl);
 	case POLYGONTYPE:
 		return (LWGEOM *)lwpoly_deserialize(srl);
+	case TRIANGLETYPE:
+		return (LWGEOM *)lwtriangle_deserialize(srl);
 	case MULTIPOINTTYPE:
 		return (LWGEOM *)lwmpoint_deserialize(srl);
 	case MULTILINETYPE:
@@ -53,6 +55,8 @@ lwgeom_deserialize(uchar *srl)
 		return (LWGEOM *)lwmsurface_deserialize(srl);
 	case POLYHEDRALSURFACETYPE:
 		return (LWGEOM *)lwpsurface_deserialize(srl);
+	case TINTYPE:
+		return (LWGEOM *)lwtin_deserialize(srl);
 	default:
 		lwerror("lwgeom_deserialize: Unknown geometry type: %s",
 			lwtype_name(type));
@@ -77,6 +81,8 @@ lwgeom_serialize_size(LWGEOM *lwgeom)
 		return lwline_serialize_size((LWLINE *)lwgeom);
 	case POLYGONTYPE:
 		return lwpoly_serialize_size((LWPOLY *)lwgeom);
+	case TRIANGLETYPE:
+		return lwtriangle_serialize_size((LWTRIANGLE *)lwgeom);
 	case CIRCSTRINGTYPE:
 		return lwcircstring_serialize_size((LWCIRCSTRING *)lwgeom);
 	case CURVEPOLYTYPE:
@@ -87,6 +93,7 @@ lwgeom_serialize_size(LWGEOM *lwgeom)
 	case MULTIPOLYGONTYPE:
 	case MULTISURFACETYPE:
 	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
 	case COLLECTIONTYPE:
 		return lwcollection_serialize_size((LWCOLLECTION *)lwgeom);
 	default:
@@ -116,6 +123,9 @@ lwgeom_serialize_buf(LWGEOM *lwgeom, uchar *buf, size_t *retsize)
 	case POLYGONTYPE:
 		lwpoly_serialize_buf((LWPOLY *)lwgeom, buf, retsize);
 		break;
+	case TRIANGLETYPE:
+		lwtriangle_serialize_buf((LWTRIANGLE *)lwgeom, buf, retsize);
+		break;
 	case CIRCSTRINGTYPE:
 		lwcircstring_serialize_buf((LWCIRCSTRING *)lwgeom, buf, retsize);
 		break;
@@ -127,6 +137,7 @@ lwgeom_serialize_buf(LWGEOM *lwgeom, uchar *buf, size_t *retsize)
 	case MULTIPOLYGONTYPE:
 	case MULTISURFACETYPE:
 	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
 	case COLLECTIONTYPE:
 		lwcollection_serialize_buf((LWCOLLECTION *)lwgeom, buf,
 		                           retsize);
@@ -172,8 +183,15 @@ lwgeom_force_rhr(LWGEOM *lwgeom)
 		lwpoly_forceRHR((LWPOLY *)lwgeom);
 		return;
 
+	case TRIANGLETYPE:
+		lwtriangle_forceRHR((LWTRIANGLE *)lwgeom);
+		return;
+
 	case MULTIPOLYGONTYPE:
-	case POLYHEDRALSURFACETYPE:
+
+	/* Not handle POLYHEDRALSURFACE and TIN 
+           as they are supposed to be well oriented */
+
 	case COLLECTIONTYPE:
 		coll = (LWCOLLECTION *)lwgeom;
 		for (i=0; i<coll->ngeoms; i++)
@@ -197,9 +215,13 @@ lwgeom_reverse(LWGEOM *lwgeom)
 	case POLYGONTYPE:
 		lwpoly_reverse((LWPOLY *)lwgeom);
 		return;
+	case TRIANGLETYPE:
+		lwtriangle_reverse((LWTRIANGLE *)lwgeom);
+		return;
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
 	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
 	case COLLECTIONTYPE:
 		col = (LWCOLLECTION *)lwgeom;
 		for (i=0; i<col->ngeoms; i++)
@@ -222,6 +244,8 @@ BOX3D *lwgeom_compute_box3d(const LWGEOM *lwgeom)
 		return lwcircstring_compute_box3d((LWCIRCSTRING *)lwgeom);
 	case POLYGONTYPE:
 		return lwpoly_compute_box3d((LWPOLY *)lwgeom);
+	case TRIANGLETYPE:
+		return lwtriangle_compute_box3d((LWTRIANGLE *)lwgeom);
 	case COMPOUNDTYPE:
 	case CURVEPOLYTYPE:
 	case MULTIPOINTTYPE:
@@ -230,6 +254,7 @@ BOX3D *lwgeom_compute_box3d(const LWGEOM *lwgeom)
 	case MULTIPOLYGONTYPE:
 	case MULTISURFACETYPE:
 	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
 	case COLLECTIONTYPE:
 		return lwcollection_compute_box3d((LWCOLLECTION *)lwgeom);
 	}
@@ -254,6 +279,8 @@ lwgeom_compute_box2d_p(const LWGEOM *lwgeom, BOX2DFLOAT4 *buf)
 		return lwcircstring_compute_box2d_p((LWCIRCSTRING *)lwgeom, buf);
 	case POLYGONTYPE:
 		return lwpoly_compute_box2d_p((LWPOLY *)lwgeom, buf);
+	case TRIANGLETYPE:
+		return lwtriangle_compute_box2d_p((LWTRIANGLE *)lwgeom, buf);
 	case COMPOUNDTYPE:
 	case CURVEPOLYTYPE:
 	case MULTIPOINTTYPE:
@@ -262,6 +289,7 @@ lwgeom_compute_box2d_p(const LWGEOM *lwgeom, BOX2DFLOAT4 *buf)
 	case MULTIPOLYGONTYPE:
 	case MULTISURFACETYPE:
 	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
 	case COLLECTIONTYPE:
 		return lwcollection_compute_box2d_p((LWCOLLECTION *)lwgeom, buf);
 	}
@@ -319,6 +347,15 @@ lwgeom_as_lwpoly(const LWGEOM *lwgeom)
 	else return NULL;
 }
 
+LWTRIANGLE *
+lwgeom_as_lwtriangle(const LWGEOM *lwgeom)
+{
+	if( lwgeom == NULL ) return NULL;
+	if ( TYPE_GETTYPE(lwgeom->type) == TRIANGLETYPE )
+		return (LWTRIANGLE *)lwgeom;
+	else return NULL;
+}
+
 LWCOLLECTION *
 lwgeom_as_lwcollection(const LWGEOM *lwgeom)
 {
@@ -356,14 +393,27 @@ lwgeom_as_lwmpoly(const LWGEOM *lwgeom)
 }
 
 LWPSURFACE *
-lwgeom_as_lwpsurface(LWGEOM *lwgeom)
+lwgeom_as_lwpsurface(const LWGEOM *lwgeom)
 {
 	if ( TYPE_GETTYPE(lwgeom->type) == POLYHEDRALSURFACETYPE )
 		return (LWPSURFACE *)lwgeom;
 	else return NULL;
 }
 
-LWGEOM *lwpsurface_as_lwgeom(LWPSURFACE *obj)
+LWTIN *
+lwgeom_as_lwtin(const LWGEOM *lwgeom)
+{
+	if ( TYPE_GETTYPE(lwgeom->type) == TINTYPE )
+		return (LWTIN *)lwgeom;
+	else return NULL;
+}
+
+LWGEOM *lwtin_as_lwgeom(const LWTIN *obj)
+{
+	return (LWGEOM *)obj;
+}
+
+LWGEOM *lwpsurface_as_lwgeom(const LWPSURFACE *obj)
 {
 	return (LWGEOM *)obj;
 }
@@ -398,6 +448,11 @@ LWGEOM *lwpoly_as_lwgeom(const LWPOLY *obj)
 	if( obj == NULL ) return NULL;
 	return (LWGEOM *)obj;
 }
+LWGEOM *lwtriangle_as_lwgeom(const LWTRIANGLE *obj)
+{
+	if( obj == NULL ) return NULL;
+	return (LWGEOM *)obj;
+}
 LWGEOM *lwline_as_lwgeom(const LWLINE *obj)
 {
 	if( obj == NULL ) return NULL;
@@ -424,7 +479,9 @@ static uchar MULTITYPE[16] =
 	MULTICURVETYPE,
 	MULTISURFACETYPE,
 	POLYHEDRALSURFACETYPE,
-	0,0,0,0
+	0,
+	TINTYPE,
+	0,0
 };
 
 /**
@@ -526,6 +583,8 @@ lwgeom_clone(const LWGEOM *lwgeom)
 		return (LWGEOM *)lwcircstring_clone((LWCIRCSTRING *)lwgeom);
 	case POLYGONTYPE:
 		return (LWGEOM *)lwpoly_clone((LWPOLY *)lwgeom);
+	case TRIANGLETYPE:
+		return (LWGEOM *)lwtriangle_clone((LWTRIANGLE *)lwgeom);
 	case COMPOUNDTYPE:
 	case CURVEPOLYTYPE:
 	case MULTIPOINTTYPE:
@@ -534,6 +593,7 @@ lwgeom_clone(const LWGEOM *lwgeom)
 	case MULTIPOLYGONTYPE:
 	case MULTISURFACETYPE:
 	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
 	case COLLECTIONTYPE:
 		return (LWGEOM *)lwcollection_clone((LWCOLLECTION *)lwgeom);
 	default:
@@ -785,10 +845,14 @@ lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 	case POLYGONTYPE:
 		return lwpoly_same((LWPOLY *)lwgeom1,
 		                   (LWPOLY *)lwgeom2);
+	case TRIANGLETYPE:
+		return lwtriangle_same((LWTRIANGLE *)lwgeom1,
+		                       (LWTRIANGLE *)lwgeom2);
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
 	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
 	case COLLECTIONTYPE:
 		return lwcollection_same((LWCOLLECTION *)lwgeom1,
 		                         (LWCOLLECTION *)lwgeom2);
@@ -867,6 +931,7 @@ lwgeom_longitude_shift(LWGEOM *lwgeom)
 		LWPOINT *point;
 		LWLINE *line;
 		LWPOLY *poly;
+		LWTRIANGLE *triangle;
 		LWCOLLECTION *coll;
 
 	case POINTTYPE:
@@ -882,10 +947,15 @@ lwgeom_longitude_shift(LWGEOM *lwgeom)
 		for (i=0; i<poly->nrings; i++)
 			ptarray_longitude_shift(poly->rings[i]);
 		return;
+	case TRIANGLETYPE:
+		triangle = (LWTRIANGLE *)lwgeom;
+		ptarray_longitude_shift(triangle->points);
+		return;
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
 	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
 	case COLLECTIONTYPE:
 		coll = (LWCOLLECTION *)lwgeom;
 		for (i=0; i<coll->ngeoms; i++)
@@ -912,6 +982,7 @@ lwgeom_is_collection(int type)
 	case MULTICURVETYPE:
 	case MULTISURFACETYPE:
 	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
 		return LW_TRUE;
 		break;
 
@@ -934,6 +1005,9 @@ void lwgeom_free(LWGEOM *lwgeom)
 	case POLYGONTYPE:
 		lwpoly_free((LWPOLY *)lwgeom);
 		break;
+	case TRIANGLETYPE:
+		lwtriangle_free((LWTRIANGLE *)lwgeom);
+		break;
 	case MULTIPOINTTYPE:
 		lwmpoint_free((LWMPOINT *)lwgeom);
 		break;
@@ -945,6 +1019,9 @@ void lwgeom_free(LWGEOM *lwgeom)
 		break;
 	case POLYHEDRALSURFACETYPE:
 		lwpsurface_free((LWPSURFACE *)lwgeom);
+		break;
+	case TINTYPE:
+		lwtin_free((LWTIN *)lwgeom);
 		break;
 	case COLLECTIONTYPE:
 		lwcollection_free((LWCOLLECTION *)lwgeom);
@@ -994,6 +1071,14 @@ static int lwpolygon_count_vertices(LWPOLY *poly)
 	return v;
 }
 
+static int lwtriangle_count_vertices(LWTRIANGLE *triangle)
+{
+	assert(triangle);
+	if ( ! triangle->points )
+		return 0;
+	return triangle->points->npoints;
+}
+
 static int lwline_count_vertices(LWLINE *line)
 {
 	assert(line);
@@ -1027,10 +1112,14 @@ int lwgeom_count_vertices(const LWGEOM *geom)
 	case POLYGONTYPE:
 		result = lwpolygon_count_vertices((LWPOLY *)geom);
 		break;
+	case TRIANGLETYPE:
+		result = lwtriangle_count_vertices((LWTRIANGLE *)geom);
+		break;
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
 	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
 	case COLLECTIONTYPE:
 		result = lwcollection_count_vertices((LWCOLLECTION *)geom);
 		break;
@@ -1053,6 +1142,13 @@ static int lwpoint_is_empty(const LWPOINT *point)
 static int lwline_is_empty(const LWLINE *line)
 {
 	if ( !line->points || line->points->npoints == 0 )
+		return LW_TRUE;
+	return LW_FALSE;
+}
+
+static int lwtriangle_is_empty(const LWTRIANGLE *triangle)
+{
+	if ( !triangle->points || triangle->points->npoints == 0 )
 		return LW_TRUE;
 	return LW_FALSE;
 }
@@ -1098,6 +1194,9 @@ int lwgeom_is_empty(const LWGEOM *geom)
 	case POLYGONTYPE:
 		return lwpoly_is_empty((LWPOLY*)geom);
 		break;
+	case TRIANGLETYPE:
+		return lwtriangle_is_empty((LWTRIANGLE*)geom);
+		break;
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
@@ -1105,6 +1204,7 @@ int lwgeom_is_empty(const LWGEOM *geom)
 	case MULTICURVETYPE:
 	case MULTISURFACETYPE:
 	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
 	case COLLECTIONTYPE:
 		return lwcollection_is_empty((LWCOLLECTION *)geom);
 		break;
@@ -1157,12 +1257,15 @@ extern int lwgeom_dimensionality(LWGEOM *geom)
 		return 1;
 		break;
 	case POLYGONTYPE:
+	case TRIANGLETYPE:
 	case CURVEPOLYTYPE:
 	case MULTIPOLYGONTYPE:
 	case MULTISURFACETYPE:
 		return 2;
 		break;
+	/* FIXME: it depends if geometry is or not closed ! */
 	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
 		return 3;
 		break;
 	case COLLECTIONTYPE:
@@ -1200,7 +1303,9 @@ extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in)
 		break;
 
 	case POINTTYPE:
-		/* No point is repeated for a single point */
+	case TRIANGLETYPE:
+	case TINTYPE:
+		/* No point is repeated for a single point, or for Triangle or TIN */
 		return in;
 
 	case CIRCSTRINGTYPE:
@@ -1249,6 +1354,10 @@ extern LWGEOM* lwgeom_flip_coordinates(LWGEOM *in)
 			ptarray_flip_coordinates(poly->rings[i]);
 		return in;
 
+	case TRIANGLETYPE:
+		ptarray_flip_coordinates(lwgeom_as_lwtriangle(in)->points);
+		return in;
+
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
@@ -1258,6 +1367,7 @@ extern LWGEOM* lwgeom_flip_coordinates(LWGEOM *in)
 	case MULTISURFACETYPE:
 	case MULTICURVETYPE:
 	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
 		col = (LWCOLLECTION *) in;
 		for (i=0; i<col->ngeoms; i++)
 			lwgeom_flip_coordinates(col->geoms[i]);

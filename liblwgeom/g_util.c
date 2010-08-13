@@ -27,7 +27,7 @@ struct geomtype_struct
    before it. Otherwise if we search for "POINT" at the top of the
    list we would also match MULTIPOINT, for example. */
 
-struct geomtype_struct geomtype_struct_array[36] =
+struct geomtype_struct geomtype_struct_array[44] =
 {
 	{ "GEOMETRYCOLLECTIONZM", COLLECTIONTYPE, 1, 1 },
 	{ "GEOMETRYCOLLECTIONZ", COLLECTIONTYPE, 1, 0 },
@@ -41,6 +41,10 @@ struct geomtype_struct geomtype_struct_array[36] =
 	{ "POLYHEDRALSURFACEZ", POLYHEDRALSURFACETYPE, 1, 0 },
 	{ "POLYHEDRALSURFACEM", POLYHEDRALSURFACETYPE, 0, 1 },
 	{ "POLYHEDRALSURFACE", POLYHEDRALSURFACETYPE, 0, 0 },
+	{ "TINZM", TINTYPE, 1, 1 },
+	{ "TINZ", TINTYPE, 1, 0 },
+	{ "TINM", TINTYPE, 0, 1 },
+	{ "TIN", TINTYPE, 0, 0 },
 	{ "MULTILINESTRINGZM", MULTILINETYPE, 1, 1 },
 	{ "MULTILINESTRINGZ", MULTILINETYPE, 1, 0 },
 	{ "MULTILINESTRINGM", MULTILINETYPE, 0, 1 },
@@ -57,6 +61,10 @@ struct geomtype_struct geomtype_struct_array[36] =
 	{ "LINESTRINGZ", LINETYPE, 1, 0 },
 	{ "LINESTRINGM", LINETYPE, 0, 1 },
 	{ "LINESTRING", LINETYPE, 0, 0 },
+	{ "TRIANGLEZM", TRIANGLETYPE, 1, 1 },
+	{ "TRIANGLEZ", TRIANGLETYPE, 1, 0 },
+	{ "TRIANGLEM", TRIANGLETYPE, 0, 1 },
+	{ "TRIANGLE", TRIANGLETYPE, 0, 0 },
 	{ "POLYGONZM", POLYGONTYPE, 1, 1 },
 	{ "POLYGONZ", POLYGONTYPE, 1, 0 },
 	{ "POLYGONM", POLYGONTYPE, 0, 1 },
@@ -132,7 +140,7 @@ int geometry_type_from_string(const char *str, int *type, int *z, int *m)
 	tmpstr[i - tmpstartpos] = '\0';
 
 	/* Now check for the type */
-	for (i = 0; i < 36; i++)
+	for (i = 0; i < 44; i++)
 	{
 		if (!strcmp(tmpstr, geomtype_struct_array[i].typename))
 		{

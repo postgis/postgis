@@ -850,7 +850,7 @@ int lwgeom_hasZ(uchar type)
 int
 lwgeom_getType(uchar type)
 {
-	LWDEBUGF(2, "lwgeom_getType %d", type);
+	LWDEBUGF(2, "lwgeom_getType %d", type & 0x0F);
 
 	return (type & 0x0F);
 }
@@ -1161,6 +1161,58 @@ lwgeom_getpoly_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 	if (type != POLYGONTYPE) return NULL;
 
 	return lwpoly_deserialize(sub_geom);
+}
+
+/*
+ * 1st geometry has geom_number = 0
+ * if the actual geometry isnt a TRIANGLE, null is returned (see _gettype()).
+ * if there arent enough geometries, return null.
+ * this is fine to call on a Triangle, Tin or geometrycollection
+ */
+LWTRIANGLE *
+lwgeom_gettriangle(uchar *serialized_form, int geom_number)
+{
+	uchar type = lwgeom_getType( (uchar) serialized_form[0]);
+	uchar *sub_geom;
+
+	if ((type == TRIANGLETYPE)  && (geom_number == 0))
+	{
+		/* be nice and do as they want instead of what they say */
+		return lwtriangle_deserialize(serialized_form);
+	}
+
+	if ((type != TINTYPE) && (type != COLLECTIONTYPE) )
+		return NULL;
+
+	sub_geom = lwgeom_getsubgeometry(serialized_form, geom_number);
+	if (sub_geom == NULL) return NULL;
+
+	type = lwgeom_getType((uchar) sub_geom[0]);
+	if (type != TRIANGLETYPE) return NULL;
+
+	return lwtriangle_deserialize(sub_geom);
+}
+
+/*
+ * 1st geometry has geom_number = 0
+ * if the actual geometry isnt a TRIANGLE, null is returned (see _gettype()).
+ * if there arent enough geometries, return null.
+ * this is fine to call on a Triangle, Tin or geometrycollection
+ */
+LWTRIANGLE *
+lwgeom_gettriangle_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
+{
+	uchar *sub_geom;
+	uchar type;
+
+	sub_geom = lwgeom_getsubgeometry_inspected(inspected, geom_number);
+
+	if (sub_geom == NULL) return NULL;
+
+	type = lwgeom_getType(sub_geom[0]);
+	if (type != TRIANGLETYPE) return NULL;
+
+	return lwtriangle_deserialize(sub_geom);
 }
 
 /*
@@ -1537,6 +1589,12 @@ lwgeom_size(const uchar *serialized_form)
 
 		return lwgeom_size_poly(serialized_form);
 	}
+	else if (type == TRIANGLETYPE)
+	{
+		LWDEBUG(3, "lwgeom_size: is a triangle");
+
+		return lwgeom_size_triangle(serialized_form);
+	}
 	else if (type == COMPOUNDTYPE)
 	{
 		LWDEBUG(3, "lwgeom_size: is a compound curve");
@@ -1723,12 +1781,19 @@ compute_serialized_box3d(uchar *srl)
 		lwpoly_free(poly);
 		return result;
 	}
+	else if (type == TRIANGLETYPE)
+	{
+		LWTRIANGLE *triangle = lwtriangle_deserialize(srl);
+		result = lwtriangle_compute_box3d(triangle);
+		lwtriangle_free(triangle);
+		return result;
+	}
 
 	if ( ! ( type == MULTIPOINTTYPE || type == MULTILINETYPE ||
 	         type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE ||
 	         type == COMPOUNDTYPE || type == CURVEPOLYTYPE ||
 	         type == MULTICURVETYPE || type == MULTISURFACETYPE ||
-	         type == POLYHEDRALSURFACETYPE ))
+	         type == POLYHEDRALSURFACETYPE || type == TINTYPE ))
 	{
 		lwnotice("compute_serialized_box3d called on unknown type %d", type);
 		return NULL;

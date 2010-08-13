@@ -2247,6 +2247,15 @@ static int lwpolygon_calculate_gbox_geodetic(const LWPOLY *poly, GBOX *gbox)
 	return G_SUCCESS;
 }
 
+static int lwtriangle_calculate_gbox_geodetic(const LWTRIANGLE *triangle, GBOX *gbox)
+{
+       assert(triangle);
+       if ( ptarray_calculate_gbox_geodetic(triangle->points, gbox) == G_FAILURE )
+               return G_FAILURE;
+       return G_SUCCESS;
+}
+
+
 static int lwcollection_calculate_gbox_geodetic(const LWCOLLECTION *coll, GBOX *gbox)
 {
 	GBOX subbox;
@@ -2301,9 +2310,14 @@ int lwgeom_calculate_gbox_geodetic(const LWGEOM *geom, GBOX *gbox)
 	case POLYGONTYPE:
 		result = lwpolygon_calculate_gbox_geodetic((LWPOLY *)geom, gbox);
 		break;
+        case TRIANGLETYPE:
+                result = lwtriangle_calculate_gbox_geodetic((LWTRIANGLE *)geom, gbox);
+                break;
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
+        case POLYHEDRALSURFACETYPE:
+        case TINTYPE:
 	case COLLECTIONTYPE:
 		result = lwcollection_calculate_gbox_geodetic((LWCOLLECTION *)geom, gbox);
 		break;
@@ -2360,6 +2374,13 @@ static int lwpoly_check_geodetic(const LWPOLY *poly)
 	return LW_TRUE;
 }
 
+static int lwtriangle_check_geodetic(const LWTRIANGLE *triangle)
+{
+       assert(triangle);
+       return ptarray_check_geodetic(triangle->points);
+}
+
+
 static int lwcollection_check_geodetic(const LWCOLLECTION *col)
 {
 	int i = 0;
@@ -2383,9 +2404,13 @@ int lwgeom_check_geodetic(const LWGEOM *geom)
 		return lwline_check_geodetic((LWLINE *)geom);
 	case POLYGONTYPE:
 		return lwpoly_check_geodetic((LWPOLY *)geom);
+        case TRIANGLETYPE:
+               return lwtriangle_check_geodetic((LWTRIANGLE *)geom);
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
+        case POLYHEDRALSURFACETYPE:
+        case TINTYPE:
 	case COLLECTIONTYPE:
 		return lwcollection_check_geodetic((LWCOLLECTION *)geom);
 	default:
@@ -2457,6 +2482,9 @@ double lwgeom_length_spheroid(const LWGEOM *geom, const SPHEROID *s)
 		}
 		return length;
 	}
+
+	if ( type == TRIANGLETYPE )
+		return ptarray_length_spheroid(((LWTRIANGLE*)geom)->points, s);
 
 	if ( lwgeom_is_collection( type ) )
 	{

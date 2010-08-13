@@ -282,6 +282,12 @@ static void out_gml_test_srid(void)
 	    "<gml:PolyhedralSurface srsName=\"EPSG:4326\"><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension=\"2\">0 1 2 3 4 5 0 1</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension=\"2\">6 7 8 9 10 11 6 7</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>",
 	    "EPSG:4326", 0, 0);
 
+	/* GML3 Tin with SRID */
+	do_gml3_test(
+	    "TIN(((0 1,2 3,4 5,0 1)),((6 7,8 9,10 11,6 7)))",
+	    "<gml:Tin srsName=\"EPSG:4326\"><gml:trianglePatches><gml:Triangle><gml:exterior><gml:LinearRing><gml:posList srsDimension=\"2\">0 1 2 3 4 5 0 1</gml:posList></gml:LinearRing></gml:exterior></gml:Triangle><gml:Triangle><gml:exterior><gml:LinearRing><gml:posList srsDimension=\"2\">6 7 8 9 10 11 6 7</gml:posList></gml:LinearRing></gml:exterior></gml:Triangle></gml:trianglePatches></gml:Tin>",
+	    "EPSG:4326", 0, 0);
+
 
 	/* GML2 GeometryCollection with SRID */
 	do_gml2_test(
@@ -382,7 +388,6 @@ static void out_gml_test_geoms(void)
 	    "<gml:Polygon><gml:exterior><gml:LinearRing><gml:posList srsDimension=\"2\">0 1 2 3 4 5 0 1</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>",
 	    NULL, 0, 0);
 
-
 	/* GML2 Polygon - with internal ring */
 	do_gml2_test(
 	    "POLYGON((0 1,2 3,4 5,0 1),(6 7,8 9,10 11,6 7))",
@@ -393,6 +398,13 @@ static void out_gml_test_geoms(void)
 	do_gml3_test(
 	    "POLYGON((0 1,2 3,4 5,0 1),(6 7,8 9,10 11,6 7))",
 	    "<gml:Polygon><gml:exterior><gml:LinearRing><gml:posList srsDimension=\"2\">0 1 2 3 4 5 0 1</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension=\"2\">6 7 8 9 10 11 6 7</gml:posList></gml:LinearRing></gml:interior></gml:Polygon>",
+	    NULL, 0, 0);
+
+
+	/* GML3 Triangle */
+	do_gml3_test(
+	    "TRIANGLE((0 1,2 3,4 5,0 1))",
+	    "<gml:Triangle><gml:exterior><gml:LinearRing><gml:posList srsDimension=\"2\">0 1 2 3 4 5 0 1</gml:posList></gml:LinearRing></gml:exterior></gml:Triangle>",
 	    NULL, 0, 0);
 
 
@@ -527,6 +539,11 @@ static void out_gml_test_geoms(void)
 	do_gml2_unsupported(
 	    "POLYHEDRALSURFACE(((0 1,2 3,4 5,0 1)))",
 	    "lwgeom_to_gml2: 'PolyhedralSurface' geometry type not supported");
+
+	/* GML2 - Tin */
+	do_gml2_unsupported(
+	    "TIN(((0 1,2 3,4 5,0 1)))",
+	    "lwgeom_to_gml2: 'Tin' geometry type not supported");
 }
 
 static void out_gml_test_geoms_prefix(void)
@@ -567,6 +584,12 @@ static void out_gml_test_geoms_prefix(void)
 	do_gml3_test_prefix(
 	    "POLYGON((0 1,2 3,4 5,0 1),(6 7,8 9,10 11,6 7))",
 	    "<custom:Polygon><custom:exterior><custom:LinearRing><custom:posList srsDimension=\"2\">0 1 2 3 4 5 0 1</custom:posList></custom:LinearRing></custom:exterior><custom:interior><custom:LinearRing><custom:posList srsDimension=\"2\">6 7 8 9 10 11 6 7</custom:posList></custom:LinearRing></custom:interior></custom:Polygon>",
+	    NULL, 0, 0, "custom:");
+
+	/* GML3 Triangle */
+	do_gml3_test_prefix(
+	    "TRIANGLE((0 1,2 3,4 5,0 1))",
+	    "<custom:Triangle><custom:exterior><custom:LinearRing><custom:posList srsDimension=\"2\">0 1 2 3 4 5 0 1</custom:posList></custom:LinearRing></custom:exterior></custom:Triangle>",
 	    NULL, 0, 0, "custom:");
 
 
@@ -612,6 +635,12 @@ static void out_gml_test_geoms_prefix(void)
 	do_gml3_test_prefix(
 	    "POLYHEDRALSURFACE(((0 1,2 3,4 5,0 1)),((6 7,8 9,10 11,6 7)))",
 	    "<custom:PolyhedralSurface><custom:polygonPatches><custom:PolygonPatch><custom:exterior><custom:LinearRing><custom:posList srsDimension=\"2\">0 1 2 3 4 5 0 1</custom:posList></custom:LinearRing></custom:exterior></custom:PolygonPatch><custom:PolygonPatch><custom:exterior><custom:LinearRing><custom:posList srsDimension=\"2\">6 7 8 9 10 11 6 7</custom:posList></custom:LinearRing></custom:exterior></custom:PolygonPatch></custom:polygonPatches></custom:PolyhedralSurface>",
+	    NULL, 0, 0, "custom:");
+
+	/* GML3 Tin */
+	do_gml3_test_prefix(
+	    "TIN(((0 1,2 3,4 5,0 1)),((6 7,8 9,10 11,6 7)))",
+	    "<custom:Tin><custom:trianglePatches><custom:Triangle><custom:exterior><custom:LinearRing><custom:posList srsDimension=\"2\">0 1 2 3 4 5 0 1</custom:posList></custom:LinearRing></custom:exterior></custom:Triangle><custom:Triangle><custom:exterior><custom:LinearRing><custom:posList srsDimension=\"2\">6 7 8 9 10 11 6 7</custom:posList></custom:LinearRing></custom:exterior></custom:Triangle></custom:trianglePatches></custom:Tin>",
 	    NULL, 0, 0, "custom:");
 
 	/* GML2 - GeometryCollection */
@@ -691,6 +720,12 @@ static void out_gml_test_geoms_prefix(void)
 	    "<Polygon><exterior><LinearRing><posList srsDimension=\"2\">0 1 2 3 4 5 0 1</posList></LinearRing></exterior><interior><LinearRing><posList srsDimension=\"2\">6 7 8 9 10 11 6 7</posList></LinearRing></interior></Polygon>",
 	    NULL, 0, 0, "");
 
+	/* GML3 Triangle */
+	do_gml3_test_prefix(
+	    "TRIANGLE((0 1,2 3,4 5,0 1))",
+	    "<Triangle><exterior><LinearRing><posList srsDimension=\"2\">0 1 2 3 4 5 0 1</posList></LinearRing></exterior></Triangle>",
+	    NULL, 0, 0, "");
+
 
 	/* GML2 MultiPoint */
 	do_gml2_test_prefix(
@@ -734,6 +769,12 @@ static void out_gml_test_geoms_prefix(void)
 	do_gml3_test_prefix(
 	    "POLYHEDRALSURFACE(((0 1,2 3,4 5,0 1)),((6 7,8 9,10 11,6 7)))",
 	    "<PolyhedralSurface><polygonPatches><PolygonPatch><exterior><LinearRing><posList srsDimension=\"2\">0 1 2 3 4 5 0 1</posList></LinearRing></exterior></PolygonPatch><PolygonPatch><exterior><LinearRing><posList srsDimension=\"2\">6 7 8 9 10 11 6 7</posList></LinearRing></exterior></PolygonPatch></polygonPatches></PolyhedralSurface>",
+	    NULL, 0, 0, "");
+
+	/* GML3 PolyhedralSurface */
+	do_gml3_test_prefix(
+	    "TIN(((0 1,2 3,4 5,0 1)),((6 7,8 9,10 11,6 7)))",
+	    "<Tin><trianglePatches><Triangle><exterior><LinearRing><posList srsDimension=\"2\">0 1 2 3 4 5 0 1</posList></LinearRing></exterior></Triangle><Triangle><exterior><LinearRing><posList srsDimension=\"2\">6 7 8 9 10 11 6 7</posList></LinearRing></exterior></Triangle></trianglePatches></Tin>",
 	    NULL, 0, 0, "");
 
 	/* GML2 - GeometryCollection */
@@ -800,6 +841,12 @@ static void out_gml_test_geoms_nodims(void)
 	    "<Polygon><exterior><LinearRing><posList>0 1 2 3 4 5 0 1</posList></LinearRing></exterior><interior><LinearRing><posList>6 7 8 9 10 11 6 7</posList></LinearRing></interior></Polygon>",
 	    NULL, 0, 0, 0, "");
 
+	/* GML3 Triangle */
+	do_gml3_test_nodims(
+	    "TRIANGLE((0 1,2 3,4 5,0 1))",
+	    "<Triangle><exterior><LinearRing><posList>0 1 2 3 4 5 0 1</posList></LinearRing></exterior></Triangle>",
+	    NULL, 0, 0, 0, "");
+
 
 	/* GML3 MultiPoint */
 	do_gml3_test_nodims(
@@ -825,6 +872,12 @@ static void out_gml_test_geoms_nodims(void)
 	do_gml3_test_nodims(
 	    "POLYHEDRALSURFACE(((0 1,2 3,4 5,0 1)),((6 7,8 9,10 11,6 7)))",
 	    "<PolyhedralSurface><polygonPatches><PolygonPatch><exterior><LinearRing><posList>0 1 2 3 4 5 0 1</posList></LinearRing></exterior></PolygonPatch><PolygonPatch><exterior><LinearRing><posList>6 7 8 9 10 11 6 7</posList></LinearRing></exterior></PolygonPatch></polygonPatches></PolyhedralSurface>",
+	    NULL, 0, 0, 0, "");
+
+	/* GML3 Tin */
+	do_gml3_test_nodims(
+	    "TIN(((0 1,2 3,4 5,0 1)),((6 7,8 9,10 11,6 7)))",
+	    "<Tin><trianglePatches><Triangle><exterior><LinearRing><posList>0 1 2 3 4 5 0 1</posList></LinearRing></exterior></Triangle><Triangle><exterior><LinearRing><posList>6 7 8 9 10 11 6 7</posList></LinearRing></exterior></Triangle></trianglePatches></Tin>",
 	    NULL, 0, 0, 0, "");
 
 	/* GML3 - GeometryCollection */

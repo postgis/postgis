@@ -516,10 +516,31 @@ typedef struct
 	uint32 SRID;
 	int ngeoms;
 	int maxgeoms;
-	LWGEOM **geoms;
+	LWPOLY **geoms;
 }
 LWPSURFACE;
 
+/* TRIANGLE */
+typedef struct
+{
+	uchar type;
+	BOX2DFLOAT4 *bbox;
+	uint32 SRID;
+	POINTARRAY *points;
+}
+LWTRIANGLE;
+
+/* TINTYPE */
+typedef struct
+{
+	uchar type;
+	BOX2DFLOAT4 *bbox;
+	uint32 SRID;
+	int ngeoms;
+	int maxgeoms;
+	LWTRIANGLE **geoms;
+}
+LWTIN;
 
 /* Casts LWGEOM->LW* (return NULL if cast is illegal) */
 extern LWMPOLY *lwgeom_as_lwmpoly(const LWGEOM *lwgeom);
@@ -530,11 +551,15 @@ extern LWPOLY *lwgeom_as_lwpoly(const LWGEOM *lwgeom);
 extern LWLINE *lwgeom_as_lwline(const LWGEOM *lwgeom);
 extern LWPOINT *lwgeom_as_lwpoint(const LWGEOM *lwgeom);
 extern LWCIRCSTRING *lwgeom_as_lwcircstring(const LWGEOM *lwgeom);
-extern LWPSURFACE *lwgeom_as_lwpsurface(LWGEOM *lwgeom);
+extern LWPSURFACE *lwgeom_as_lwpsurface(const LWGEOM *lwgeom);
+extern LWTRIANGLE *lwgeom_as_lwtriangle(const LWGEOM *lwgeom);
+extern LWTIN *lwgeom_as_lwtin(const LWGEOM *lwgeom);
 extern LWGEOM *lwgeom_as_multi(const LWGEOM *lwgeom);
 
 /* Casts LW*->LWGEOM (always cast) */
-extern LWGEOM *lwpsurface_as_lwgeom(LWPSURFACE *obj);
+extern LWGEOM *lwtin_as_lwgeom(const LWTIN *obj);
+extern LWGEOM *lwtriangle_as_lwgeom(const LWTRIANGLE *obj);
+extern LWGEOM *lwpsurface_as_lwgeom(const LWPSURFACE *obj);
 extern LWGEOM *lwmpoly_as_lwgeom(const LWMPOLY *obj);
 extern LWGEOM *lwmline_as_lwgeom(const LWMLINE *obj);
 extern LWGEOM *lwmpoint_as_lwgeom(const LWMPOINT *obj);
@@ -550,6 +575,7 @@ extern LWMPOINT* lwmpoint_add_lwpoint(LWMPOINT *mobj, const LWPOINT *obj);
 extern LWMLINE* lwmline_add_lwline(LWMLINE *mobj, const LWLINE *obj);
 extern LWMPOLY* lwmpoly_add_lwpoly(LWMPOLY *mobj, const LWPOLY *obj);
 extern LWPSURFACE* lwpsurface_add_lwpoly(LWPSURFACE *mobj, const LWPOLY *obj);
+extern LWTIN* lwtin_add_lwtriangle(LWTIN *mobj, const LWTRIANGLE *obj);
 
 /*
  * Call this function everytime LWGEOM coordinates
@@ -686,6 +712,8 @@ extern int pointArray_ptsize(const POINTARRAY *pa);
 #define MULTICURVETYPE          11
 #define MULTISURFACETYPE        12
 #define POLYHEDRALSURFACETYPE   13
+#define TRIANGLETYPE            14
+#define TINTYPE                 15
 
 #define WKBZOFFSET 0x80000000
 #define WKBMOFFSET 0x40000000
@@ -773,6 +801,7 @@ extern size_t lwgeom_size_line(const uchar *serialized_line);
 extern size_t lwgeom_size_circstring(const uchar *serialized_curve);
 extern size_t lwgeom_size_point(const uchar *serialized_point);
 extern size_t lwgeom_size_poly(const uchar *serialized_line);
+extern size_t lwgeom_size_triangle(const uchar *serialized_line);
 
 
 /*--------------------------------------------------------
@@ -880,6 +909,36 @@ extern void lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *size);
 extern BOX3D *lwpoly_compute_box3d(LWPOLY *poly);
 
 /******************************************************************
+ * LWTRIANGLE functions
+ ******************************************************************/
+
+/*
+ * given the LWGEOM serialized form 
+ * construct a proper LWTRIANGLE.
+ * serialized_form should point to the 8bit type format 
+ * See SERIALIZED_FORM doc
+ */
+extern LWTRIANGLE *lwtriangle_deserialize(uchar *serialized_form);
+
+/* find the size this triangle would get when serialized */
+extern size_t lwtriangle_serialize_size(LWTRIANGLE *triangle);
+
+/*
+ * convert this triangle into its serialize form
+ * result's first char will be the 8bit type.  See serialized form doc
+ * copies data.
+ */
+extern uchar *lwtriangle_serialize(LWTRIANGLE *triangle);
+
+/* same as above, writes to buf */
+extern void lwtriangle_serialize_buf(LWTRIANGLE *triangle, uchar *buf, size_t *size);
+
+/*
+ * find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
+ */
+extern BOX3D *lwtriangle_compute_box3d(LWTRIANGLE *triangle);
+
+/******************************************************************
  * LWCIRCSTRING functions
  ******************************************************************/
 
@@ -948,6 +1007,7 @@ LWCURVEPOLY *lwcurvepoly_deserialize(uchar *serialized_form);
 LWMCURVE *lwmcurve_deserialize(uchar *serialized_form);
 LWMSURFACE *lwmsurface_deserialize(uchar *serialized_form);
 LWPSURFACE *lwpsurface_deserialize(uchar *serialized_form);
+LWTIN *lwtin_deserialize(uchar *serialized_form);
 
 LWGEOM *lwcollection_getsubgeom(LWCOLLECTION *col, int gnum);
 BOX3D *lwcollection_compute_box3d(LWCOLLECTION *col);
@@ -1030,6 +1090,15 @@ extern LWLINE *lwgeom_getline_inspected(LWGEOM_INSPECTED *inspected, int geom_nu
  */
 extern LWPOLY *lwgeom_getpoly(uchar *serialized_form, int geom_number);
 extern LWPOLY *lwgeom_getpoly_inspected(LWGEOM_INSPECTED *inspected, int geom_number);
+
+/*
+ * 1st geometry has geom_number = 0
+ * if the actual geometry isnt a TRIANGLE, null is returned (see _gettype()).
+ * if there arent enough geometries, return null.
+ * this is fine to call on a triangle, Tin or geometrycollection
+ */
+extern LWTRIANGLE *lwgeom_gettriangle(uchar *serialized_form, int geom_number);
+extern LWTRIANGLE *lwgeom_gettriangle_inspected(LWGEOM_INSPECTED *inspected, int geom_number);
 
 /*
  * 1st geometry has geom_number = 0
@@ -1161,10 +1230,12 @@ extern void ptarray_free(POINTARRAY *pa);
 extern void lwpoint_free(LWPOINT *pt);
 extern void lwline_free(LWLINE *line);
 extern void lwpoly_free(LWPOLY *poly);
+extern void lwtriangle_free(LWTRIANGLE *triangle);
 extern void lwmpoint_free(LWMPOINT *mpt);
 extern void lwmline_free(LWMLINE *mline);
 extern void lwmpoly_free(LWMPOLY *mpoly);
 extern void lwpsurface_free(LWPSURFACE *psurf);
+extern void lwtin_free(LWTIN *tin);
 extern void lwcollection_free(LWCOLLECTION *col);
 extern void lwcircstring_free(LWCIRCSTRING *curve);
 extern void lwgeom_free(LWGEOM *geom);
@@ -1182,10 +1253,13 @@ extern void lwinspected_release(LWGEOM_INSPECTED *inspected); /* TODO: make this
 extern void lwpoint_release(LWPOINT *lwpoint);
 extern void lwline_release(LWLINE *lwline);
 extern void lwpoly_release(LWPOLY *lwpoly);
+extern void lwtriangle_release(LWTRIANGLE *lwtriangle);
 extern void lwcircstring_release(LWCIRCSTRING *lwcirc);
 extern void lwmpoint_release(LWMPOINT *lwpoint);
 extern void lwmline_release(LWMLINE *lwline);
 extern void lwmpoly_release(LWMPOLY *lwpoly);
+extern void lwpsurface_release(LWPSURFACE *lwpsurface);
+extern void lwtin_release(LWTIN *lwtin);
 extern void lwcollection_release(LWCOLLECTION *lwcollection);
 extern void lwgeom_release(LWGEOM *lwgeom);
 
@@ -1201,7 +1275,9 @@ extern void printPA(POINTARRAY *pa);
 extern void printLWPOINT(LWPOINT *point);
 extern void printLWLINE(LWLINE *line);
 extern void printLWPOLY(LWPOLY *poly);
+extern void printLWTRIANGLE(LWTRIANGLE *triangle);
 extern void printLWPSURFACE(LWPSURFACE *psurf);
+extern void printLWTIN(LWTIN *tin);
 extern void printBYTES(uchar *a, int n);
 extern void printMULTI(uchar *serialized);
 extern void printType(uchar str);
@@ -1252,7 +1328,9 @@ extern char ptarray_isccw(const POINTARRAY *pa);
 extern void lwgeom_reverse(LWGEOM *lwgeom);
 extern void lwline_reverse(LWLINE *line);
 extern void lwpoly_reverse(LWPOLY *poly);
+extern void lwtriangle_reverse(LWTRIANGLE *triangle);
 extern void lwpoly_forceRHR(LWPOLY *poly);
+extern void lwtriangle_forceRHR(LWTRIANGLE *triangle);
 extern void lwgeom_force_rhr(LWGEOM *lwgeom);
 extern char* lwgeom_summary(const LWGEOM *lwgeom, int offset);
 extern const char *lwtype_name(int type);
@@ -1261,10 +1339,17 @@ extern BOX2DFLOAT4 *ptarray_compute_box2d(const POINTARRAY *pa);
 extern int lwpoint_compute_box2d_p(const LWPOINT *point, BOX2DFLOAT4 *box);
 extern int lwline_compute_box2d_p(const LWLINE *line, BOX2DFLOAT4 *box);
 extern int lwpoly_compute_box2d_p(const LWPOLY *poly, BOX2DFLOAT4 *box);
+extern int lwtriangle_compute_box2d_p(const LWTRIANGLE *triangle, BOX2DFLOAT4 *box);
 extern int lwcollection_compute_box2d_p(const LWCOLLECTION *col, BOX2DFLOAT4 *box);
 extern int lwcircstring_compute_box2d_p(const LWCIRCSTRING *curve, BOX2DFLOAT4 *box);
 extern BOX2DFLOAT4* lwgeom_compute_box2d(const LWGEOM *lwgeom);
 extern char* lwpoint_to_latlon(const LWPOINT *p, const char *format);
+extern int lwline_is_closed(LWLINE *line);
+extern int lwcircstring_is_closed(LWCIRCSTRING *curve);
+extern int lwcompound_is_closed(LWCOMPOUND *curve);
+extern int lwpsurface_is_closed(LWPSURFACE *psurface);
+extern int lwtin_is_closed(LWTIN *tin);
+
 
 extern void interpolate_point4d(POINT4D *A, POINT4D *B, POINT4D *I, double F);
 
@@ -1317,6 +1402,7 @@ char ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2);
 char lwpoint_same(const LWPOINT *p1, const LWPOINT *p2);
 char lwline_same(const LWLINE *p1, const LWLINE *p2);
 char lwpoly_same(const LWPOLY *p1, const LWPOLY *p2);
+char lwtriangle_same(const LWTRIANGLE *p1, const LWTRIANGLE *p2);
 char lwcollection_same(const LWCOLLECTION *p1, const LWCOLLECTION *p2);
 
 
@@ -1329,6 +1415,7 @@ extern LWGEOM *lwgeom_clone(const LWGEOM *lwgeom);
 extern LWPOINT *lwpoint_clone(const LWPOINT *lwgeom);
 extern LWLINE *lwline_clone(const LWLINE *lwgeom);
 extern LWPOLY *lwpoly_clone(const LWPOLY *lwgeom);
+extern LWTRIANGLE *lwtriangle_clone(const LWTRIANGLE *lwgeom);
 extern LWCOLLECTION *lwcollection_clone(const LWCOLLECTION *lwgeom);
 extern LWCIRCSTRING *lwcircstring_clone(const LWCIRCSTRING *curve);
 extern BOX2DFLOAT4 *box2d_clone(const BOX2DFLOAT4 *lwgeom);
@@ -1343,6 +1430,7 @@ extern LWPOINT *lwpoint_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *point
 extern LWLINE *lwline_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
 extern LWCIRCSTRING *lwcircstring_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
 extern LWPOLY *lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox, uint32 nrings, POINTARRAY **points);
+extern LWTRIANGLE *lwtriangle_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
 extern LWCOLLECTION *lwcollection_construct(uint32 type, int SRID, BOX2DFLOAT4 *bbox, uint32 ngeoms, LWGEOM **geoms);
 
 /*
@@ -1351,6 +1439,7 @@ extern LWCOLLECTION *lwcollection_construct(uint32 type, int SRID, BOX2DFLOAT4 *
 extern LWPOINT* lwpoint_construct_empty(int srid, char hasz, char hasm);
 extern LWLINE* lwline_construct_empty(int srid, char hasz, char hasm);
 extern LWPOLY* lwpoly_construct_empty(int srid, char hasz, char hasm);
+extern LWTRIANGLE* lwtriangle_construct_empty(int srid, char hasz, char hasm);
 extern LWMPOINT* lwmpoint_construct_empty(int srid, char hasz, char hasm);
 extern LWMLINE* lwmline_construct_empty(int srid, char hasz, char hasm);
 extern LWMPOLY* lwmpoly_construct_empty(int srid, char hasz, char hasm);
@@ -1368,6 +1457,7 @@ extern LWLINE *lwline_addpoint(LWLINE *line, LWPOINT *point, uint32 where);
 extern LWLINE *lwline_removepoint(LWLINE *line, uint32 which);
 extern void lwline_setPoint4d(LWLINE *line, uint32 which, POINT4D *newpoint);
 extern LWPOLY *lwpoly_from_lwlines(const LWLINE *shell, uint32 nholes, const LWLINE **holes);
+extern LWTRIANGLE *lwtriangle_from_lwline(const LWLINE *shell);
 
 /* Return a char string with ASCII versionf of type flags */
 extern const char *lwgeom_typeflags(uchar type);
@@ -1451,6 +1541,7 @@ extern LWGEOM* lwmpoint_remove_repeated_points(LWMPOINT *in);
 extern LWGEOM* lwline_remove_repeated_points(LWLINE *in);
 extern LWGEOM* lwcollection_remove_repeated_points(LWCOLLECTION *in);
 extern LWGEOM* lwpoly_remove_repeated_points(LWPOLY *in);
+extern char lwtriangle_is_repeated_points(LWTRIANGLE *triangle);
 
 extern LWGEOM* lwgeom_flip_coordinates(LWGEOM *in);
 
@@ -1495,6 +1586,7 @@ LWGEOM_PARSER_RESULT;
 #define PARSER_ERROR_INVALIDGEOM    5
 #define PARSER_ERROR_INVALIDWKBTYPE 6
 #define PARSER_ERROR_INCONTINUOUS   7
+#define PARSER_ERROR_TRIANGLEPOINTS 8
 
 
 

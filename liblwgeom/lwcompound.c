@@ -63,5 +63,25 @@ lwcompound_deserialize(uchar *serialized)
 	return result;
 }
 
+int
+lwcompound_is_closed(LWCOMPOUND *compound)
+{
+	size_t size;
+	int npoints=0;
 
+	if (!TYPE_HASZ(compound->type))
+		size = sizeof(POINT2D);
+	else    size = sizeof(POINT3D);
 
+	if      (lwgeom_getType(compound->geoms[compound->ngeoms - 1]->type) == CIRCSTRINGTYPE)
+		npoints = ((LWCIRCSTRING *)compound->geoms[compound->ngeoms - 1])->points->npoints;
+	else if (lwgeom_getType(compound->geoms[compound->ngeoms - 1]->type) == LINETYPE)
+		npoints = ((LWLINE *)compound->geoms[compound->ngeoms - 1])->points->npoints;
+
+	if ( memcmp(getPoint_internal( (POINTARRAY *)compound->geoms[0]->data, 0),
+                    getPoint_internal( (POINTARRAY *)compound->geoms[compound->ngeoms - 1]->data,
+					npoints - 1),
+                    size) ) return 0;
+	
+	return 1;
+}

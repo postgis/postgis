@@ -40,6 +40,7 @@ uchar* output_collection(uchar* geom,outfunc func,int supress);
 uchar* output_line_collection(uchar* geom,outfunc func,int supress);
 uchar* output_polygon_collection(uchar* geom,int suppress);
 uchar* output_polygon_ring_collection(uchar* geom,outfunc func,int supress);
+uchar* output_triangle_collection(uchar* geom,outfunc func,int supress);
 uchar* output_circstring_collection(uchar* geom,outfunc func,int supress);
 uchar* output_curvepoly(uchar* geom, int supress);
 uchar* output_multipoint(uchar* geom,int suppress);
@@ -55,6 +56,7 @@ void write_wkb_int(int i);
 uchar* output_wkb_collection(uchar* geom,outwkbfunc func);
 uchar* output_wkb_polygon_collection(uchar* geom);
 uchar* output_wkb_polygon_ring_collection(uchar* geom,outwkbfunc func);
+uchar* output_wkb_triangle_collection(uchar* geom,outwkbfunc func);
 uchar* output_wkb_line_collection(uchar* geom,outwkbfunc func);
 uchar* output_wkb_circstring_collection(uchar* geom,outwkbfunc func);
 uchar* output_wkb_point(uchar* geom);
@@ -301,6 +303,37 @@ output_line_collection(uchar* geom,outfunc func,int supress)
 
 	/* Ensure that LINESTRING has a minimum of 2 points */
 	if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && orig_cnt < 2)
+		LWGEOM_WKT_UNPARSER_ERROR(UNPARSER_ERROR_MOREPOINTS);
+
+	return geom;
+}
+
+uchar *
+output_triangle_collection(uchar* geom,outfunc func,int supress)
+{
+	int cnt = read_int(&geom);
+	int orig_cnt = cnt;
+
+	if ( cnt == 0 )
+	{
+		write_str(" EMPTY");
+	}
+	else
+	{
+		write_str("((");
+		while (cnt--)
+		{
+			geom=func(geom,supress);
+			if ( cnt )
+			{
+				write_str(",");
+			}
+		}
+		write_str("))");
+	}
+
+	/* Ensure that TRIANGLE has 4 points */
+	if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && orig_cnt != 4)
 		LWGEOM_WKT_UNPARSER_ERROR(UNPARSER_ERROR_MOREPOINTS);
 
 	return geom;
@@ -582,6 +615,14 @@ output_wkt(uchar* geom, int supress)
 		}
 		geom = output_collection(geom,output_polygon_collection,0);
 		break;
+	case TRIANGLETYPE:
+		if ( supress < 2 )
+		{
+			if (writeM) write_str("TRIANGLEM");
+			else write_str("TRIANGLE");
+		}
+		geom = output_triangle_collection(geom,output_point,0);
+		break;
 	case COMPOUNDTYPE:
 		if ( supress < 2 )
 		{
@@ -643,6 +684,14 @@ output_wkt(uchar* geom, int supress)
 		{
 			if (writeM) write_str("POLYHEDRALSURFACEM");
 			else write_str("POLYHEDRALSURFACE");
+		}
+		geom = output_collection(geom,output_wkt,2);
+		break;
+	case TINTYPE:
+		if ( supress < 2)
+		{
+			if (writeM) write_str("TINM");
+			else write_str("TIN");
 		}
 		geom = output_collection(geom,output_wkt,2);
 		break;
@@ -886,6 +935,28 @@ output_wkb_polygon_collection(uchar* geom)
 	return output_wkb_polygon_ring_collection(geom,output_wkb_point);
 }
 
+/* Output a set of TRIANGLE points */
+uchar *
+output_wkb_triangle_collection(uchar* geom,outwkbfunc func)
+{
+	int cnt = read_int(&geom);
+	int orig_cnt = cnt;
+
+	LWDEBUGF(2, "output_wkb_triangle_collection: %d iterations loop", cnt);
+
+	write_wkb_int(cnt);
+	while (cnt--) geom=func(geom);
+
+	/* Ensure that TRIANGLE has exactly 4 points */
+	if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && orig_cnt !=4)
+	{
+		LWGEOM_WKB_UNPARSER_ERROR(UNPARSER_ERROR_MOREPOINTS);
+	}
+
+	return geom;
+}
+
+/* Output an individual ring from a POLYGON  */
 /* Ouput the points from a CIRCULARSTRING */
 uchar *
 output_wkb_circstring_collection(uchar* geom,outwkbfunc func)
@@ -965,6 +1036,9 @@ output_wkb(uchar* geom)
 	case POLYGONTYPE:
 		geom=output_wkb_collection(geom,output_wkb_polygon_collection);
 		break;
+	case TRIANGLETYPE:
+		geom=output_wkb_triangle_collection(geom,output_wkb_point);
+		break;
 	case COMPOUNDTYPE:
 		geom=output_wkb_collection(geom,output_wkb);
 		break;
@@ -977,6 +1051,7 @@ output_wkb(uchar* geom)
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
 	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
 	case COLLECTIONTYPE:
 		geom = output_wkb_collection(geom,output_wkb);
 		break;

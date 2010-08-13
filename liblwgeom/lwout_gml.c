@@ -40,9 +40,12 @@ static size_t asgml3_line_size(LWLINE *line, char *srs, int precision, int is_di
 static char *asgml3_line(LWLINE *line, char *srs, int precision, int is_deegree, int is_dims, const char *prefix);
 static size_t asgml3_poly_size(LWPOLY *poly, char *srs, int precision, int is_dims, const char *prefix);
 static char *asgml3_poly(LWPOLY *poly, char *srs, int precision, int is_deegree, int is_dims, int is_patch, const char *prefix);
+static size_t asgml3_triangle_size(LWTRIANGLE *triangle, char *srs, int precision, int is_dims, const char *prefix);
+static char *asgml3_triangle(LWTRIANGLE *triangle, char *srs, int precision, int is_deegree, int is_dims, const char *prefix);
 static size_t asgml3_multi_size(LWGEOM_INSPECTED *geom, char *srs, int precision, int is_dims, const char *prefix);
 static char *asgml3_multi(LWGEOM_INSPECTED *geom, char *srs, int precision, int is_deegree, int is_dims, const char *prefix);
 static char *asgml3_psurface(LWGEOM_INSPECTED *insp, char *srs, int precision, int is_deegree, int is_dims, const char *prefix);
+static char *asgml3_tin(LWGEOM_INSPECTED *insp, char *srs, int precision, int is_deegree, int is_dims, const char *prefix);
 static size_t asgml3_collection_size(LWGEOM_INSPECTED *geom, char *srs, int precision, int is_dims, const char *prefix);
 static char *asgml3_collection(LWGEOM_INSPECTED *insp, char *srs, int precision, int is_deegree, int is_dims, const char *prefix);
 static size_t pointArray_toGML3(POINTARRAY *pa, char *buf, int precision, int is_deegree);
@@ -585,6 +588,7 @@ lwgeom_to_gml3(uchar *geom, char *srs, int precision, int is_deegree, int is_dim
 	LWPOINT *point;
 	LWLINE *line;
 	LWPOLY *poly;
+	LWTRIANGLE *triangle;
 	LWGEOM_INSPECTED *inspected;
 
 	type = lwgeom_getType(geom[0]);
@@ -603,6 +607,10 @@ lwgeom_to_gml3(uchar *geom, char *srs, int precision, int is_deegree, int is_dim
 		poly = lwpoly_deserialize(geom);
 		return asgml3_poly(poly, srs, precision, is_deegree, is_dims, 0, prefix);
 
+	case TRIANGLETYPE:
+		triangle = lwtriangle_deserialize(geom);
+		return asgml3_triangle(triangle, srs, precision, is_deegree, is_dims, prefix);
+
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
@@ -612,6 +620,10 @@ lwgeom_to_gml3(uchar *geom, char *srs, int precision, int is_deegree, int is_dim
 	case POLYHEDRALSURFACETYPE:
 		inspected = lwgeom_inspect(geom);
 		return asgml3_psurface(inspected, srs, precision, is_deegree, is_dims, prefix);
+
+	case TINTYPE:
+		inspected = lwgeom_inspect(geom);
+		return asgml3_tin(inspected, srs, precision, is_deegree, is_dims, prefix);
 
 	case COLLECTIONTYPE:
 		inspected = lwgeom_inspect(geom);
@@ -795,6 +807,58 @@ asgml3_poly(LWPOLY *poly, char *srs, int precision, int is_deegree, int is_dims,
 }
 
 
+static size_t
+asgml3_triangle_size(LWTRIANGLE *triangle, char *srs, int precision, int is_dims, const char *prefix)
+{
+	size_t size;
+	size_t prefixlen = strlen(prefix);
+
+	size =  ( sizeof("<Triangle><exterior><LinearRing>///") + (prefixlen*3) ) * 2;
+	size +=   sizeof("<posList></posList>") + (prefixlen*2);
+	if (srs)     size += strlen(srs) + sizeof(" srsName=..");
+	if (is_dims) size += sizeof(" srsDimension='x'");
+
+	size += pointArray_GMLsize(triangle->points, precision);
+
+	return size;
+}
+
+static size_t
+asgml3_triangle_buf(LWTRIANGLE *triangle, char *srs, char *output, int precision, int is_deegree, int is_dims, const char *prefix)
+{
+	char *ptr=output;
+	int dimension=2;
+
+	if (TYPE_HASZ(triangle->type)) dimension = 3;
+	if (srs) ptr += sprintf(ptr, "<%sTriangle srsName=\"%s\">", prefix, srs);
+	else     ptr += sprintf(ptr, "<%sTriangle>", prefix);
+
+	ptr += sprintf(ptr, "<%sexterior><%sLinearRing>", prefix, prefix);
+	if (is_dims) ptr += sprintf(ptr, "<%sposList srsDimension=\"%d\">", prefix, dimension);
+	else         ptr += sprintf(ptr, "<%sposList>", prefix);
+
+	ptr += pointArray_toGML3(triangle->points, ptr, precision, is_deegree);
+	ptr += sprintf(ptr, "</%sposList></%sLinearRing></%sexterior>",
+		prefix, prefix, prefix);
+
+	ptr += sprintf(ptr, "</%sTriangle>", prefix);
+
+	return (ptr-output);
+}
+
+static char *
+asgml3_triangle(LWTRIANGLE *triangle, char *srs, int precision, int is_deegree, int is_dims, const char *prefix)
+{
+	char *output;
+	int size;
+
+	size = asgml3_triangle_size(triangle, srs, precision, is_dims, prefix);
+	output = lwalloc(size);
+	asgml3_triangle_buf(triangle, srs, output, precision, is_deegree, is_dims, prefix);
+	return output;
+}
+
+
 /*
  * Compute max size required for GML version of this
  * inspected geometry. Will recurse when needed.
@@ -927,9 +991,7 @@ asgml3_psurface_size(LWGEOM_INSPECTED *insp, char *srs, int precision, int is_di
 	size_t prefixlen = strlen(prefix);
 	LWPOLY *poly;
 
-	/* the longest possible multi version */
 	size = (sizeof("<PolyhedralSurface><polygonPatches>/") + prefixlen*2) * 2;
-
 	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
 
 	for (i=0; i<insp->ngeometries; i++)
@@ -988,6 +1050,77 @@ asgml3_psurface(LWGEOM_INSPECTED *insp, char *srs, int precision, int is_deegree
 	size = asgml3_psurface_size(insp, srs, precision, is_dims, prefix);
 	gml = lwalloc(size);
 	asgml3_psurface_buf(insp, srs, gml, precision, is_deegree, is_dims, prefix);
+	return gml;
+}
+
+
+static size_t
+asgml3_tin_size(LWGEOM_INSPECTED *insp, char *srs, int precision, int is_dims, const char *prefix)
+{
+	int i;
+	size_t size;
+	size_t prefixlen = strlen(prefix);
+	LWTRIANGLE *triangle;
+
+	size = (sizeof("<Tin><trianglePatches>/") + prefixlen*2) * 2;
+	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
+
+	for (i=0; i<insp->ngeometries; i++)
+	{
+		triangle=lwgeom_gettriangle_inspected(insp, i);
+		size += asgml3_triangle_size(triangle, 0, precision, is_dims, prefix);
+		lwtriangle_release(triangle);
+	}
+
+	return size;
+}
+
+
+/*
+ * Don't call this with single-geoms inspected!
+ */
+static size_t
+asgml3_tin_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, int precision, int is_deegree, int is_dims, const char *prefix)
+{
+	char *ptr;
+	int i;
+
+	ptr = output;
+
+	/* Open outmost tag */
+	if (srs) ptr += sprintf(ptr, "<%sTin srsName=\"%s\"><%strianglePatches>",
+			prefix, srs, prefix);
+	else	 ptr += sprintf(ptr, "<%sTin><%strianglePatches>",
+			prefix, prefix);
+
+	for (i=0; i<insp->ngeometries; i++)
+	{
+		LWTRIANGLE *triangle;
+
+		triangle = lwgeom_gettriangle_inspected(insp, i);
+		ptr += asgml3_triangle_buf(triangle, 0, ptr, precision,
+			is_deegree, is_dims, prefix);
+		lwtriangle_release(triangle);
+	}
+
+	/* Close outmost tag */
+	ptr += sprintf(ptr, "</%strianglePatches></%sTin>", prefix, prefix);
+
+	return (ptr-output);
+}
+
+/*
+ * Don't call this with single-geoms inspected!
+ */
+static char *
+asgml3_tin(LWGEOM_INSPECTED *insp, char *srs, int precision, int is_deegree, int is_dims, const char *prefix)
+{
+	char *gml;
+	size_t size;
+
+	size = asgml3_tin_size(insp, srs, precision, is_dims, prefix);
+	gml = lwalloc(size);
+	asgml3_tin_buf(insp, srs, gml, precision, is_deegree, is_dims, prefix);
 	return gml;
 }
 

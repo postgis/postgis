@@ -16,33 +16,32 @@
 #include "liblwgeom.h"
 
 
-LWPSURFACE *
-lwpsurface_deserialize(uchar *srl)
+LWTIN *
+lwtin_deserialize(uchar *srl)
 {
-	LWPSURFACE *result;
+	LWTIN *result;
 	LWGEOM_INSPECTED *insp;
 	int type = lwgeom_getType(srl[0]);
 	int i;
 
-	LWDEBUG(2, "lwpsurface_deserialize called");
+	LWDEBUG(2, "lwtin_deserialize called");
 
-	if ( type != POLYHEDRALSURFACETYPE )
+	if ( type != TINTYPE )
 	{
-		lwerror("lwpsurface_deserialize called on NON polyhedralsurface: %d - %s",
-		        type, lwtype_name(type));
+		lwerror("lwtin called on NON tin: %d - %s", type, lwtype_name(type));
 		return NULL;
 	}
 
 	insp = lwgeom_inspect(srl);
 
-	result = lwalloc(sizeof(LWPSURFACE));
+	result = lwalloc(sizeof(LWTIN));
 	result->type = insp->type;
 	result->SRID = insp->SRID;
 	result->ngeoms = insp->ngeometries;
 	
 	if( insp->ngeometries )
 	{
-		result->geoms = lwalloc(sizeof(LWPOLY *)*insp->ngeometries);
+		result->geoms = lwalloc(sizeof(LWTRIANGLE *)*insp->ngeometries);
 	}
 	else
 	{
@@ -58,10 +57,10 @@ lwpsurface_deserialize(uchar *srl)
 
 	for (i=0; i<insp->ngeometries; i++)
 	{
-		result->geoms[i] = lwpoly_deserialize(insp->sub_geoms[i]);
+		result->geoms[i] = lwtriangle_deserialize(insp->sub_geoms[i]);
 		if ( TYPE_NDIMS(result->geoms[i]->type) != TYPE_NDIMS(result->type) )
 		{
-			lwerror("Mixed dimensions (polyhedralsurface:%d, face%d:%d)",
+			lwerror("Mixed dimensions (tin:%d, triangle%d:%d)",
 			        TYPE_NDIMS(result->type), i,
 			        TYPE_NDIMS(result->geoms[i]->type)
 			       );
@@ -73,108 +72,94 @@ lwpsurface_deserialize(uchar *srl)
 }
 
 
-LWPSURFACE* lwpsurface_add_lwpoly(LWPSURFACE *mobj, const LWPOLY *obj)
+LWTIN* lwtin_add_lwtriangle(LWTIN *mobj, const LWTRIANGLE *obj)
 {
-        return (LWPSURFACE*)lwcollection_add_lwgeom((LWCOLLECTION*)mobj, (LWGEOM*)obj);
+        return (LWTIN*)lwcollection_add_lwgeom((LWCOLLECTION*)mobj, (LWGEOM*)obj);
 }
 
 
-void lwpsurface_free(LWPSURFACE *psurf)
+void lwtin_free(LWTIN *tin)
 {
 	int i;
 
-	if ( psurf->bbox )
+	if ( tin->bbox )
 	{
-		lwfree(psurf->bbox);
+		lwfree(tin->bbox);
 	}
-	for ( i = 0; i < psurf->ngeoms; i++ )
+	for ( i = 0; i < tin->ngeoms; i++ )
 	{
-		if ( psurf->geoms[i] )
+		if ( tin->geoms[i] )
 		{
-			lwpoly_free((LWPOLY *) psurf->geoms[i]);
+			lwtriangle_free((LWTRIANGLE *) tin->geoms[i]);
 		}
 	}
-	if ( psurf->geoms )
+	if ( tin->geoms )
 	{
-		lwfree(psurf->geoms);
+		lwfree(tin->geoms);
 	}
-	lwfree(psurf);
+	lwfree(tin);
 }
 
 
-void printLWPSURFACE(LWPSURFACE *psurf)
+void printLWTIN(LWTIN *tin)
 {
-	int i, j;
-	LWPOLY *patch;
+	int i;
+	LWTRIANGLE *triangle;
 
-	if (TYPE_GETTYPE(psurf->type) != POLYHEDRALSURFACETYPE)
-        	lwerror("printLWPSURFACE called with something else than a POLYHEDRALSURFACE");
+	if (TYPE_GETTYPE(tin->type) != TINTYPE)
+        	lwerror("printLWTIN called with something else than a TIN");
 
-        lwnotice("LWPSURFACE {");
-        lwnotice("    ndims = %i", (int)TYPE_NDIMS(psurf->type));
-        lwnotice("    SRID = %i", (int)psurf->SRID);
-        lwnotice("    ngeoms = %i", (int)psurf->ngeoms);
+        lwnotice("LWTIN {");
+        lwnotice("    ndims = %i", (int)TYPE_NDIMS(tin->type));
+        lwnotice("    SRID = %i", (int)tin->SRID);
+        lwnotice("    ngeoms = %i", (int)tin->ngeoms);
 
-        for (i=0; i<psurf->ngeoms; i++)
+        for (i=0; i<tin->ngeoms; i++)
         {
-		patch = (LWPOLY *) psurf->geoms[i];
-        	for (j=0; j<patch->nrings; j++) {
-			lwnotice("    RING # %i :",j);
-                	printPA(patch->rings[j]);
-		}
+		triangle = (LWTRIANGLE *) tin->geoms[i];
+               	printPA(triangle->points);
         }
         lwnotice("}");
 }
-
-
 
 
 /*
  * TODO rewrite all this stuff to be based on a truly topological model
  */
 
-struct struct_psurface_arcs
+struct struct_tin_arcs
 {
 	double ax, ay, az;
 	double bx, by, bz;
 	int cnt, face;
 };
-typedef struct struct_psurface_arcs *psurface_arcs;
+typedef struct struct_tin_arcs *tin_arcs;
 
 /* We supposed that the geometry is valid 
    we could have wrong result if not */
-int lwpsurface_is_closed(LWPSURFACE *psurface)
+int lwtin_is_closed(LWTIN *tin)
 {
 	int i, j, k;
 	int narcs, carc;
 	int found;
-	psurface_arcs arcs;
+	tin_arcs arcs;
 	POINT4D pa, pb;
-	LWPOLY *patch;
+	LWTRIANGLE *patch;
 
 	/* If surface is not 3D, it's can't be closed */
-	if (!TYPE_HASZ(psurface->type)) return 0;
-
-	/* If surface is less than 4 faces hard to be closed too */
-	if (psurface->ngeoms < 4) return 0;
+	if (!TYPE_HASZ(tin->type)) return 0;
 
 	/* Max theorical arcs number if no one is shared ... */
-	for (i=0, narcs=0 ; i < psurface->ngeoms ; i++) {
-		patch = (LWPOLY *) psurface->geoms[i];
-		narcs += patch->rings[0]->npoints - 1;
-	}
+	narcs = 3 * tin->ngeoms;
 
-	arcs = lwalloc(sizeof(struct struct_psurface_arcs) * narcs);
-	for (i=0, carc=0; i < psurface->ngeoms ; i++) {
+	arcs = lwalloc(sizeof(struct struct_tin_arcs) * narcs);
+	for (i=0, carc=0; i < tin->ngeoms ; i++) {
 		
-		patch = (LWPOLY *) psurface->geoms[i];
-		for (j=0; j < patch->rings[0]->npoints - 1; j++) {
+		patch = (LWTRIANGLE *) tin->geoms[i];
+		for (j=0; j < 3 ; j++) {
 			
-			getPoint4d_p(patch->rings[0], j,   &pa);
-			getPoint4d_p(patch->rings[0], j+1, &pb);
-
-			/* remove redundant points if any */
-			if (pa.x == pb.x && pa.y == pb.y && pa.z == pb.z) continue;
+			getPoint4d_p(patch->points, j,   &pa);
+			getPoint4d_p(patch->points, j+1, &pb);
 
 			/* Make sure to order the 'lower' point first */
 			if ( (pa.x > pb.x) ||
@@ -182,7 +167,7 @@ int lwpsurface_is_closed(LWPSURFACE *psurface)
 			     (pa.x == pb.x && pa.y == pb.y && pa.z > pb.z) )
 			{
 				pa = pb;
-				getPoint4d_p(patch->rings[0], j, &pb);
+				getPoint4d_p(patch->points, j, &pb);
 			}
 			
 			for (found=0, k=0; k < carc ; k++) {
@@ -195,7 +180,7 @@ int lwpsurface_is_closed(LWPSURFACE *psurface)
 					arcs[k].cnt++;
 					found = 1;
 
-					/* Look like an invalid PolyhedralSurface 
+					/* Look like an invalid TIN 
 				   	   anyway not a closed one */
 					if (arcs[k].cnt > 2)
 					{
@@ -217,7 +202,7 @@ int lwpsurface_is_closed(LWPSURFACE *psurface)
 				arcs[carc].bz = pb.z;
 				carc++;
 
-				/* Look like an invalid PolyhedralSurface 
+				/* Look like an invalid TIN 
 			   	   anyway not a closed one */
 				if (carc > narcs)
 				{
@@ -228,7 +213,7 @@ int lwpsurface_is_closed(LWPSURFACE *psurface)
 		}
 	}
 	
-	/* A polyhedron is closed if each edge 
+	/* A TIN is closed if each edge 
            is shared by exactly 2 faces */
 	for (k=0; k < carc ; k++) {
 		if (arcs[k].cnt != 2) {
@@ -238,8 +223,8 @@ int lwpsurface_is_closed(LWPSURFACE *psurface)
 	}
 	lwfree(arcs);
 
-	/* Invalid Polyhedral case */
-	if (carc < psurface->ngeoms) return 0;
+	/* Invalid TIN case */
+	if (carc < tin->ngeoms) return 0;
 
 	return 1;
 }

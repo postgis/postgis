@@ -566,3 +566,12 @@ lwline_remove_repeated_points(LWLINE *lwline)
 	                                 lwline->bbox ? box2d_clone(lwline->bbox) : 0,
 	                                 npts);
 }
+
+int
+lwline_is_closed(LWLINE *line)
+{
+	if (TYPE_HASZ(line->type))
+		return ptarray_isclosed3d(line->points);
+
+	return ptarray_isclosed2d(line->points); 
+}

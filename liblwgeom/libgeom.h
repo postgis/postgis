@@ -195,6 +195,7 @@ typedef struct
 
 /* LINETYPE */
 /* CIRCSTRINGTYPE */
+/* TRIANGLE */
 typedef struct
 {
 	uchar flags;
@@ -205,6 +206,7 @@ typedef struct
 } G_LINESTRING;
 
 typedef G_LINESTRING G_CIRCULARSTRING;
+typedef G_LINESTRING G_TRIANGLE;
 
 /* POLYGONTYPE */
 typedef struct
@@ -225,6 +227,8 @@ typedef struct
 /* CURVEPOLYTYPE */
 /* MULTICURVETYPE */
 /* MULTISURFACETYPE */
+/* POLYHEDRALSURFACETYPE */
+/* TINTYPE */
 /* COLLECTIONTYPE */
 typedef struct
 {
@@ -249,6 +253,8 @@ typedef G_COLLECTION G_MSURFACE;
 typedef G_COLLECTION G_MCURVE;
 typedef G_COLLECTION G_COMPOUNDCURVE;
 typedef G_COLLECTION G_CURVEPOLYGON;
+typedef G_COLLECTION G_POLYHEDRALSURFACE;
+typedef G_COLLECTION G_TIN;
 
 /*
 * Utility casts from GEOMETRY to concrete type.

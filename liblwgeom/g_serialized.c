@@ -78,6 +78,20 @@ static size_t gserialized_from_lwline_size(const LWLINE *line)
 	return size;
 }
 
+static size_t gserialized_from_lwtriangle_size(const LWTRIANGLE *triangle)
+{
+	size_t size = 4; /* Type number. */
+
+	assert(triangle);
+
+	size += 4; /* Number of points (zero => empty). */
+	size += triangle->points->npoints * TYPE_NDIMS(triangle->type) * sizeof(double);
+
+	LWDEBUGF(3, "triangle size = %d", size);
+
+	return size;
+}
+
 static size_t gserialized_from_lwpoly_size(const LWPOLY *poly)
 {
 	size_t size = 4; /* Type number. */
@@ -149,6 +163,8 @@ static size_t gserialized_from_any_size(const LWGEOM *geom)
 		return gserialized_from_lwline_size((LWLINE *)geom);
 	case POLYGONTYPE:
 		return gserialized_from_lwpoly_size((LWPOLY *)geom);
+	case TRIANGLETYPE:
+		return gserialized_from_lwtriangle_size((LWTRIANGLE *)geom);
 	case CIRCSTRINGTYPE:
 		return gserialized_from_lwcircstring_size((LWCIRCSTRING *)geom);
 	case CURVEPOLYTYPE:
@@ -159,6 +175,7 @@ static size_t gserialized_from_any_size(const LWGEOM *geom)
 	case MULTIPOLYGONTYPE:
 	case MULTISURFACETYPE:
 	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
 	case COLLECTIONTYPE:
 		return gserialized_from_lwcollection_size((LWCOLLECTION *)geom);
 	default:
@@ -312,6 +329,47 @@ static size_t gserialized_from_lwpoly(const LWPOLY *poly, uchar *buf)
 	return (size_t)(loc - buf);
 }
 
+static size_t gserialized_from_lwtriangle(const LWTRIANGLE *triangle, uchar *buf)
+{
+	uchar *loc;
+	int ptsize;
+	size_t size;
+	int type = TRIANGLETYPE;
+
+	assert(triangle);
+	assert(buf);
+
+	LWDEBUGF(2, "lwtriangle_to_gserialized(%p, %p) called", triangle, buf);
+
+	if ( TYPE_GETZM(triangle->type) != TYPE_GETZM(triangle->points->dims) )
+		lwerror("Dimensions mismatch in lwtriangle");
+
+	ptsize = pointArray_ptsize(triangle->points);
+
+	loc = buf;
+
+	/* Write in the type. */
+	memcpy(loc, &type, sizeof(uint32));
+	loc += sizeof(uint32);
+
+	/* Write in the npoints. */
+	memcpy(loc, &(triangle->points->npoints), sizeof(uint32));
+	loc += sizeof(uint32);
+
+	LWDEBUGF(3, "lwtriangle_to_gserialized added npoints (%d)", triangle->points->npoints);
+
+	/* Copy in the ordinates. */
+	if ( triangle->points->npoints > 0 )
+	{
+		size = triangle->points->npoints * ptsize;
+		memcpy(loc, getPoint_internal(triangle->points, 0), size);
+		loc += size;
+	}
+	LWDEBUGF(3, "lwtriangle_to_gserialized copied serialized_pointlist (%d bytes)", ptsize * triangle->points->npoints);
+
+	return (size_t)(loc - buf);
+}
+
 static size_t gserialized_from_lwcircstring(const LWCIRCSTRING *curve, uchar *buf)
 {
 	uchar *loc;
@@ -401,6 +459,8 @@ static size_t gserialized_from_lwgeom_any(const LWGEOM *geom, uchar *buf)
 		return gserialized_from_lwline((LWLINE *)geom, buf);
 	case POLYGONTYPE:
 		return gserialized_from_lwpoly((LWPOLY *)geom, buf);
+	case TRIANGLETYPE:
+		return gserialized_from_lwtriangle((LWTRIANGLE *)geom, buf);
 	case CIRCSTRINGTYPE:
 		return gserialized_from_lwcircstring((LWCIRCSTRING *)geom, buf);
 	case CURVEPOLYTYPE:
@@ -411,6 +471,7 @@ static size_t gserialized_from_lwgeom_any(const LWGEOM *geom, uchar *buf)
 	case MULTIPOLYGONTYPE:
 	case MULTISURFACETYPE:
 	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
 	case COLLECTIONTYPE:
 		return gserialized_from_lwcollection((LWCOLLECTION *)geom, buf);
 	default:
@@ -689,6 +750,37 @@ static LWPOLY* lwpoly_from_gserialized_buffer(uchar *data_ptr, uchar g_flags, si
 	return poly;
 }
 
+static LWTRIANGLE* lwtriangle_from_gserialized_buffer(uchar *data_ptr, uchar g_flags, size_t *g_size)
+{
+	static uint32 type = TRIANGLETYPE;
+	uchar *start_ptr = data_ptr;
+	LWTRIANGLE *triangle;
+	uint32 npoints = 0;
+
+	assert(data_ptr);
+
+	triangle = (LWTRIANGLE*)lwalloc(sizeof(LWTRIANGLE));
+	triangle->SRID = -1; /* Default */
+	triangle->bbox = NULL;
+	triangle->type = lwgeom_makeType_full(FLAGS_GET_Z(g_flags), FLAGS_GET_M(g_flags), 0, type, 0);
+
+	data_ptr += 4; /* Skip past the type. */
+	npoints = lw_get_uint32(data_ptr); /* Zero => empty geometry */
+	data_ptr += 4; /* Skip past the npoints. */
+
+	if ( npoints > 0 )
+		triangle->points = pointArray_construct(data_ptr, FLAGS_GET_Z(g_flags), FLAGS_GET_M(g_flags), npoints);
+	else
+		triangle->points = ptarray_construct(FLAGS_GET_Z(g_flags), FLAGS_GET_M(g_flags), 0); /* Empty triangle */
+
+	data_ptr += FLAGS_NDIMS(g_flags) * npoints * sizeof(double);
+
+	if ( g_size )
+		*g_size = data_ptr - start_ptr;
+
+	return triangle;
+}
+
 static LWCIRCSTRING* lwcircstring_from_gserialized_buffer(uchar *data_ptr, uchar g_flags, size_t *g_size)
 {
 	static uint32 type = CIRCSTRINGTYPE;
@@ -747,6 +839,9 @@ static int lwcollection_from_gserialized_allowed_types(int collectiontype, int s
 		return LW_TRUE;
 	if ( collectiontype == POLYHEDRALSURFACETYPE &&
 		subtype == POLYGONTYPE )
+		return LW_TRUE;
+	if ( collectiontype == TINTYPE &&
+		subtype == TRIANGLETYPE )
 		return LW_TRUE;
 
 	/* Must be a bad combination! */
@@ -822,6 +917,8 @@ LWGEOM* lwgeom_from_gserialized_buffer(uchar *data_ptr, uchar g_flags, size_t *g
 		return (LWGEOM *)lwcircstring_from_gserialized_buffer(data_ptr, g_flags, g_size);
 	case POLYGONTYPE:
 		return (LWGEOM *)lwpoly_from_gserialized_buffer(data_ptr, g_flags, g_size);
+	case TRIANGLETYPE:
+		return (LWGEOM *)lwtriangle_from_gserialized_buffer(data_ptr, g_flags, g_size);
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
@@ -830,6 +927,7 @@ LWGEOM* lwgeom_from_gserialized_buffer(uchar *data_ptr, uchar g_flags, size_t *g
 	case MULTICURVETYPE:
 	case MULTISURFACETYPE:
 	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
 	case COLLECTIONTYPE:
 		return (LWGEOM *)lwcollection_from_gserialized_buffer(data_ptr, g_flags, g_size);
 	default:
@@ -1019,6 +1117,40 @@ static int gserialized_calculate_gbox_geocentric_from_polygon(uchar *data_ptr, s
 	return G_SUCCESS;
 }
 
+static int gserialized_calculate_gbox_geocentric_from_triangle(uchar *data_ptr, size_t *g_size, GBOX *gbox)
+{
+	uchar *start_ptr = data_ptr;
+	int npoints = 0;
+	POINTARRAY *pa;
+
+	assert(data_ptr);
+
+	data_ptr += 4; /* Move past type integer. */
+	npoints = lw_get_uint32(data_ptr);
+	data_ptr += 4; /* Move past npoints. */
+
+	if ( npoints == 0 ) /* Empty triangle */
+	{
+		if (g_size) *g_size = data_ptr - start_ptr;
+		return G_FAILURE;
+	}
+
+	pa = pointArray_construct(data_ptr, FLAGS_GET_Z(gbox->flags), FLAGS_GET_M(gbox->flags), npoints);
+
+	if ( ptarray_calculate_gbox_geodetic(pa, gbox) == G_FAILURE )
+		return G_FAILURE;
+
+	/* Move past all the double ordinates. */
+	data_ptr += sizeof(double) * FLAGS_NDIMS(gbox->flags) * npoints;
+
+	if (g_size)
+		*g_size = data_ptr - start_ptr;
+
+	lwfree(pa);
+
+	return G_SUCCESS;
+}
+
 static int gserialized_calculate_gbox_geocentric_from_collection(uchar *data_ptr, size_t *g_size, GBOX *gbox)
 {
 	uchar *start_ptr = data_ptr;
@@ -1082,6 +1214,8 @@ static int gserialized_calculate_gbox_geocentric_from_any(uchar *data_ptr, size_
 		return gserialized_calculate_gbox_geocentric_from_line(data_ptr, g_size, gbox);
 	case POLYGONTYPE:
 		return gserialized_calculate_gbox_geocentric_from_polygon(data_ptr, g_size, gbox);
+	case TRIANGLETYPE:
+		return gserialized_calculate_gbox_geocentric_from_triangle(data_ptr, g_size, gbox);
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:

@@ -529,6 +529,12 @@ static int lwline_calculate_gbox(LWLINE *line, GBOX *gbox)
 	return ptarray_calculate_gbox( line->points, gbox );
 }
 
+static int lwtriangle_calculate_gbox(LWTRIANGLE *triangle, GBOX *gbox)
+{
+	if ( ! triangle ) return G_FAILURE;
+	return ptarray_calculate_gbox( triangle->points, gbox );
+}
+
 static int lwpoly_calculate_gbox(LWPOLY *poly, GBOX *gbox)
 {
 	if ( ! poly ) return G_FAILURE;
@@ -586,6 +592,8 @@ int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox)
 		return lwcircstring_calculate_gbox((LWCIRCSTRING *)lwgeom, gbox);
 	case POLYGONTYPE:
 		return lwpoly_calculate_gbox((LWPOLY *)lwgeom, gbox);
+	case TRIANGLETYPE:
+		return lwtriangle_calculate_gbox((LWTRIANGLE *)lwgeom, gbox);
 	case COMPOUNDTYPE:
 	case CURVEPOLYTYPE:
 	case MULTIPOINTTYPE:
@@ -594,6 +602,7 @@ int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox)
 	case MULTIPOLYGONTYPE:
 	case MULTISURFACETYPE:
 	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
 	case COLLECTIONTYPE:
 		return lwcollection_calculate_gbox((LWCOLLECTION *)lwgeom, gbox);
 	}

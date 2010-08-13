@@ -135,7 +135,8 @@ const char *parser_error_messages[] =
 	"can not mix dimensionality in a geometry",
 	"parse error - invalid geometry",
 	"invalid WKB type",
-	"incontinuous compound curve"
+	"incontinuous compound curve",
+	"triangle must have exactly 4 points"
 };
 
 /* Macro to return the error message and the current position within WKT */
@@ -207,11 +208,14 @@ void alloc_compoundcurve(void);
 void alloc_compoundcurve_closed(void);
 void alloc_curvepolygon(void);
 void alloc_polygon(void);
+void alloc_triangle(void);
 void alloc_multipoint(void);
 void alloc_multilinestring(void);
 void alloc_multicurve(void);
 void alloc_multipolygon(void);
 void alloc_multisurface(void);
+void alloc_polyhedralsurface(void);
+void alloc_tin(void);
 void alloc_geomertycollection(void);
 void alloc_counter(void);
 void alloc_empty(void);
@@ -222,6 +226,8 @@ void check_closed_linestring(void);
 void check_circularstring(void);
 void check_closed_circularstring(void);
 void check_polygon(void);
+void check_triangle(void);
+void check_triangle_points(void);
 void check_curvepolygon(void);
 void check_compoundcurve_continuity(void);
 void check_compoundcurve_closed(void);
@@ -235,8 +241,8 @@ void check_linestring_minpoints(void);
 void check_circularstring_minpoints(void);
 void check_circularstring_isodd(void);
 void check_polyhedralsurface_patch(void);
-void check_polyhedralsurface_patch_closed(void);
 void check_polyhedralsurface_patch_minpoints(void);
+void check_ring_closed_3D(void);
 void make_serialized_lwgeom(LWGEOM_PARSER_RESULT *lwg_parser_result);
 uchar strhex_readbyte(const char *in);
 uchar read_wkb_byte(const char **in);
@@ -245,6 +251,7 @@ int4 read_wkb_int(const char **in);
 double read_wkb_double(const char **in);
 void read_wkb_point(const char **b);
 void read_wkb_polygon(const char **b);
+void read_wkb_triangle(const char **b);
 void read_wkb_linestring(const char **b);
 void read_wkb_circstring(const char **b);
 void read_wkb_ordinate_array(const char **b);
@@ -484,6 +491,12 @@ void check_polygon(void)
 {
 	check_polygon_minpoints();
 	check_polygon_closed();
+}
+
+void check_triangle(void)
+{
+	check_triangle_points();
+        check_ring_closed_3D();
 }
 
 void check_curvepolygon(void)
@@ -762,6 +775,31 @@ check_polygon_minpoints(void)
 }
 
 /*
+ * Checks to ensure that current face of the Triangle contains the
+ * given number of points.  
+ * NOTA: same test as check_polygon_minpoints except that we need 
+ * here exactly 4 points.
+ */
+void
+check_triangle_points(void)
+{
+        tuple *tp = the_geom.stack->next; /* Current tuple */
+        int num = tp->uu.nn.num; /* point count */
+        int points = 4;
+
+        LWDEBUG(3, "check_triangle_points");
+
+        if (num != points)
+        {
+                LWDEBUGF(5, "point check failed: needed %d, got %d", points, num);
+                LWDEBUGF(5, "tuple = %p; parse_location = %d; parser reported column = %d",
+                         tp, tp->uu.nn.parse_location, lwg_parse_yylloc.last_column);
+                LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_TRIANGLEPOINTS,
+                        the_geom.stack->next->uu.nn.parse_location);
+        }
+}
+
+/*
  * Checks to ensure that each ring of the curved polygon (itself a proper
  * geometry) contains the minimum number of points.
  */
@@ -907,7 +945,7 @@ void check_circularstring_minpoints()
 void check_polyhedralsurface_patch(void)
 {
         check_polyhedralsurface_patch_minpoints();
-        check_polyhedralsurface_patch_closed();
+        check_ring_closed_3D();
 }
 
 
@@ -921,14 +959,14 @@ void check_polyhedralsurface_patch(void)
  * is the Z value check.
  */
 void
-check_polyhedralsurface_patch_closed(void)
+check_ring_closed_3D(void)
 {
         tuple *tp = the_geom.stack; /* Current tuple */
         int i; /* Loop counter */
         int num; /* point count */
-        tuple *first, *last; /* First and last tuple of the compount curve */
+        tuple *first, *last; /* First and last tuple of the ring */
 
-        LWDEBUG(3, "check_polyhedralsurface_patch_closed");
+        LWDEBUG(3, "check_3d_ring_closed");
 
         /* tuple counting points */
         tp = tp->next;
@@ -951,10 +989,8 @@ check_polyhedralsurface_patch_closed(void)
                         LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_UNCLOSED,
 				the_geom.stack->next->uu.nn.parse_location);
                 }
-                else LWDEBUG(5, "PolyhedralSurface face found closed.");
         }
 }
-
 
 /*
  * Checks to ensure that current face of the Polyhedron contains the
@@ -1202,6 +1238,14 @@ alloc_polygon(void)
 }
 
 void
+alloc_triangle(void)
+{
+	LWDEBUG(3, "alloc_triangle");
+
+	alloc_stack_tuple(TRIANGLETYPE, write_type,1);
+}
+
+void
 alloc_curvepolygon(void)
 {
 	LWDEBUG(3, "alloc_curvepolygon called.");
@@ -1271,6 +1315,14 @@ alloc_polyhedralsurface(void)
 	LWDEBUG(3, "alloc_polyhedralsurface called");
 
 	alloc_stack_tuple(POLYHEDRALSURFACETYPE,write_type,1);
+}
+
+void
+alloc_tin(void)
+{
+	LWDEBUG(3, "alloc_tin called");
+
+	alloc_stack_tuple(TINTYPE,write_type,1);
 }
 
 void
@@ -1500,6 +1552,12 @@ read_wkb_polygon(const char **b)
 }
 
 void
+read_wkb_triangle(const char **b)
+{
+	read_wkb_ordinate_array(b);
+}
+
+void
 read_wkb_linestring(const char **b)
 {
 
@@ -1610,18 +1668,18 @@ parse_wkb(const char **b)
 	case	POLYGONTYPE:
 		read_wkb_polygon(b);
 		break;
+	case	TRIANGLETYPE:
+		read_wkb_triangle(b);
+		break;
 	case	COMPOUNDTYPE:
-		read_collection(b,parse_wkb);
-		break;
 	case	CURVEPOLYTYPE:
-		read_collection(b,parse_wkb);
-		break;
 	case	MULTIPOINTTYPE:
 	case	MULTILINETYPE:
 	case	MULTICURVETYPE:
 	case	MULTIPOLYGONTYPE:
 	case	MULTISURFACETYPE:
 	case	POLYHEDRALSURFACETYPE:
+	case	TINTYPE:
 	case	COLLECTIONTYPE:
 		read_collection(b,parse_wkb);
 		break;

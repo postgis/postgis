@@ -28,6 +28,7 @@ SA_OBJS = \
 	lwpoint.o \
 	lwline.o \
 	lwpoly.o \
+	lwtriangle.o \
 	lwmpoint.o \
 	lwmline.o \
 	lwmpoly.o \
@@ -38,6 +39,7 @@ SA_OBJS = \
 	lwmcurve.o \
 	lwmsurface.o \
 	lwpsurface.o \
+	lwtin.o \
 	lwout_wkt.o \
 	lwout_wkb.o \
 	lwutil.o \

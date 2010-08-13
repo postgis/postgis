@@ -773,6 +773,108 @@ static void test_geohash(void)
 	lwfree(geohash);
 }
 
+static void test_isclosed(void)
+{
+	LWGEOM *geom;
+
+	/* LINESTRING */
+
+	/* Not Closed on 2D */
+	geom = lwgeom_from_ewkt("LINESTRING(1 2,3 4)", PARSER_CHECK_NONE);
+	CU_ASSERT(!lwline_is_closed((LWLINE *) geom));
+	lwfree(geom);
+
+	/* Closed on 2D */
+	geom = lwgeom_from_ewkt("LINESTRING(1 2,3 4,1 2)", PARSER_CHECK_NONE);
+	CU_ASSERT(lwline_is_closed((LWLINE *) geom));
+	lwfree(geom);
+
+	/* Not closed on 3D */
+	geom = lwgeom_from_ewkt("LINESTRING(1 2 3,4 5 6)", PARSER_CHECK_NONE);
+	CU_ASSERT(!lwline_is_closed((LWLINE *) geom));
+	lwfree(geom);
+
+	/* Closed on 3D */
+	geom = lwgeom_from_ewkt("LINESTRING(1 2 3,4 5 6,1 2 3)", PARSER_CHECK_NONE);
+	CU_ASSERT(lwline_is_closed((LWLINE *) geom));
+	lwfree(geom);
+	
+	/* Closed on 4D, even if M is not the same */
+	geom = lwgeom_from_ewkt("LINESTRING(1 2 3 4,5 6 7 8,1 2 3 0)", PARSER_CHECK_NONE);
+	CU_ASSERT(lwline_is_closed((LWLINE *) geom));
+	lwfree(geom);
+
+
+	/* CIRCULARSTRING */
+
+	/* Not Closed on 2D */
+	geom = lwgeom_from_ewkt("CIRCULARSTRING(1 2,3 4,5 6)", PARSER_CHECK_NONE);
+	CU_ASSERT(!lwcircstring_is_closed((LWCIRCSTRING *) geom));
+	lwfree(geom);
+
+	/* Closed on 2D */
+	geom = lwgeom_from_ewkt("CIRCULARSTRING(1 2,3 4,1 2)", PARSER_CHECK_NONE);
+	CU_ASSERT(lwcircstring_is_closed((LWCIRCSTRING *) geom));
+	lwfree(geom);
+
+	/* Not closed on 3D */
+	geom = lwgeom_from_ewkt("CIRCULARSTRING(1 2 3,4 5 6,7 8 9)", PARSER_CHECK_NONE);
+	CU_ASSERT(!lwcircstring_is_closed((LWCIRCSTRING *) geom));
+	lwfree(geom);
+
+	/* Closed on 3D */
+	geom = lwgeom_from_ewkt("CIRCULARSTRING(1 2 3,4 5 6,1 2 3)", PARSER_CHECK_NONE);
+	CU_ASSERT(lwcircstring_is_closed((LWCIRCSTRING *) geom));
+	lwfree(geom);
+	
+	/* Closed on 4D, even if M is not the same */
+	geom = lwgeom_from_ewkt("CIRCULARSTRING(1 2 3 4,5 6 7 8,1 2 3 0)", PARSER_CHECK_NONE);
+	CU_ASSERT(lwcircstring_is_closed((LWCIRCSTRING *) geom));
+	lwfree(geom);
+
+
+	/* COMPOUNDCURVE */
+
+	/* Not Closed on 2D */
+	geom = lwgeom_from_ewkt("COMPOUNDCURVE(CIRCULARSTRING(1 2,3 4,1 2),(5 6,7 8,5 6))", PARSER_CHECK_NONE);
+	CU_ASSERT(!lwcompound_is_closed((LWCOMPOUND *) geom));
+	lwfree(geom);
+
+	geom = lwgeom_from_ewkt("COMPOUNDCURVE((1 2,3 4,1 2),CIRCULARSTRING(1 2,7 8,5 6))", PARSER_CHECK_NONE);
+	CU_ASSERT(!lwcompound_is_closed((LWCOMPOUND *) geom));
+	lwfree(geom);
+
+	/* Closed on 2D */
+	geom = lwgeom_from_ewkt("COMPOUNDCURVE(CIRCULARSTRING(1 2,3 4,5 6), (5 6,7 8,1 2))", PARSER_CHECK_NONE);
+	CU_ASSERT(lwcompound_is_closed((LWCOMPOUND *) geom));
+	lwfree(geom);
+
+	geom = lwgeom_from_ewkt("COMPOUNDCURVE((1 2,3 4,5 6),CIRCULARSTRING(5 6,7 8,1 2))", PARSER_CHECK_NONE);
+	CU_ASSERT(lwcompound_is_closed((LWCOMPOUND *) geom));
+	lwfree(geom);
+
+	/* Not Closed on 3D */
+	geom = lwgeom_from_ewkt("COMPOUNDCURVE(CIRCULARSTRING(1 2 3,4 5 6,1 2 3),(1 2 3,7 8 9,10 11 12))", PARSER_CHECK_NONE);
+	CU_ASSERT(!lwcompound_is_closed((LWCOMPOUND *) geom));
+	lwfree(geom);
+
+	geom = lwgeom_from_ewkt("COMPOUNDCURVE((1 2 3,4 5 6,1 2 3),CIRCULARSTRING(1 2 3,7 8 9,10 11 12))", PARSER_CHECK_NONE);
+	CU_ASSERT(!lwcompound_is_closed((LWCOMPOUND *) geom));
+	lwfree(geom);
+
+	/* Closed on 3D */
+	geom = lwgeom_from_ewkt("COMPOUNDCURVE(CIRCULARSTRING(1 2 3,4 5 6,7 8 9),(7 8 9,10 11 12,1 2 3))", PARSER_CHECK_NONE);
+	CU_ASSERT(lwcompound_is_closed((LWCOMPOUND *) geom));
+	lwfree(geom);
+
+	geom = lwgeom_from_ewkt("COMPOUNDCURVE((1 2 3,4 5 6,7 8 9),CIRCULARSTRING(7 8 9,10 11 12,1 2 3))", PARSER_CHECK_NONE);
+	CU_ASSERT(lwcompound_is_closed((LWCOMPOUND *) geom));
+	lwfree(geom);
+
+	/* Closed on 4D, even if M is not the same */
+	geom = lwgeom_from_ewkt("COMPOUNDCURVE((1 2 3 4,5 6 7 8,9 10 11 12),CIRCULARSTRING(9 10 11 12,13 14 15 16,1 2 3 0))", PARSER_CHECK_NONE);
+	CU_ASSERT(lwcompound_is_closed((LWCOMPOUND *) geom));
+}
 
 /*
 ** Used by test harness to register the tests in this file.
@@ -792,6 +894,7 @@ CU_TestInfo algorithms_tests[] = {
 	PG_TEST(test_geohash_point),
 	PG_TEST(test_geohash_precision),
 	PG_TEST(test_geohash),
+	PG_TEST(test_isclosed),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo algorithms_suite = {"PostGIS Computational Geometry Suite",  init_cg_suite,  clean_cg_suite, algorithms_tests};
