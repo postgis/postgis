@@ -39,8 +39,8 @@ lwmline_deserialize(uchar *srl)
 
 	if ( type != MULTILINETYPE )
 	{
-		lwerror("lwmline_deserialize called on NON multiline: %d",
-		        type);
+		lwerror("lwmline_deserialize called on NON multiline: %d - %s",
+		        type, lwtype_name(type));
 		return NULL;
 	}
 

@@ -39,8 +39,8 @@ lwmpoint_deserialize(uchar *srl)
 
 	if ( type != MULTIPOINTTYPE )
 	{
-		lwerror("lwmpoint_deserialize called on NON multipoint: %d",
-		        type);
+		lwerror("lwmpoint_deserialize called on NON multipoint: %d - %s",
+		        type, lwtype_name(type));
 		return NULL;
 	}
 

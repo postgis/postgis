@@ -42,8 +42,8 @@ lwmpoly_deserialize(uchar *srl)
 
 	if ( type != MULTIPOLYGONTYPE )
 	{
-		lwerror("lwmpoly_deserialize called on NON multipoly: %d",
-		        type);
+		lwerror("lwmpoly_deserialize called on NON multipoly: %d - %s",
+		        type, lwtype_name(type));
 		return NULL;
 	}
 
