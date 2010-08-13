@@ -651,7 +651,7 @@ FROM (SELECT ST_BuildArea(
 		<refname>ST_IsClosed</refname>
 
 		<refpurpose>Returns <varname>TRUE</varname> if the
-		<varname>LINESTRING</varname>'s start and end points are coincident.
+		<varname>LINESTRING</varname>'s start and end points are coincident. For Polyhedral surface is closed (volumetric).
 		</refpurpose>
 	  </refnamediv>
 
@@ -669,7 +669,7 @@ FROM (SELECT ST_BuildArea(
 		<title>Description</title>
 
 		<para>Returns <varname>TRUE</varname> if the <varname>LINESTRING</varname>'s
-		start and end points are coincident.</para>
+		start and end points are coincident.  For Polyhedral Surfaces, it tells you if the surface is areal (open) or volumetric (closed).</para>
 
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 7.1.5, 9.3.3</para>
@@ -681,11 +681,14 @@ FROM (SELECT ST_BuildArea(
 		
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
+		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+
+		<para>&P_support;</para>
 
 	  </refsection>
 
 	  <refsection>
-		<title>Examples</title>
+		<title>Line String and Point Examples</title>
 
 		<programlisting>postgis=# SELECT ST_IsClosed('LINESTRING(0 0, 1 1)'::geometry);
  st_isclosed
@@ -716,6 +719,34 @@ postgis=# SELECT ST_IsClosed('MULTIPOINT((0 0), (1 1))'::geometry);
 -------------
  t
 (1 row)</programlisting>
+	  </refsection>
+	  
+	  	  <refsection>
+		<title>Polyhedral Surface Examples</title>
+
+		<programlisting>
+		-- A cube --
+		SELECT ST_IsClosed(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
+		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
+		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
+		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
+
+ st_isclosed
+-------------
+ t
+
+
+ -- Same as cube but missing a side --
+ SELECT ST_IsClosed(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
+		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
+		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
+		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)) )'));
+
+ st_isclosed
+-------------
+ f
+
+</programlisting>
 	  </refsection>
 
 	  <refsection>
