@@ -82,6 +82,7 @@ lwmpoly_deserialize(uchar *srl)
 			return NULL;
 		}
 	}
+	lwinspected_release(insp);
 
 	return result;
 }
