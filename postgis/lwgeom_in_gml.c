@@ -1464,6 +1464,12 @@ static LWGEOM* parse_gml_surface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 /**
  * Parse GML Tin (and TriangulatedSurface) (3.1.1)
+ *
+ * TODO handle also Tin attributes:
+ * - stopLines
+ * - breakLines
+ * - maxLength
+ * - position
  */
 static LWGEOM* parse_gml_tin(xmlNodePtr xnode, bool *hasz, int *root_srid)
 {

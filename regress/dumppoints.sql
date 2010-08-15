@@ -37,6 +37,19 @@ FROM (
     ) AS g
   ) j;
 
+SELECT path, ST_AsText(geom) 
+FROM (
+  SELECT (ST_DumpPoints(g.geom)).* 
+  FROM
+    (SELECT 
+       'TRIANGLE ((
+                0 0, 
+                0 9, 
+                9 0, 
+                0 0
+            ))'::geometry AS geom
+    ) AS g
+  ) j;
 
 SELECT path, ST_AsText(geom) 
 FROM (
@@ -86,6 +99,48 @@ FROM (
                 7 6
             )))'::geometry AS geom
     ) AS g
+  ) j;
+
+SELECT path, ST_AsEWKT(geom) 
+FROM (
+  SELECT (ST_DumpPoints(g.geom)).* 
+   FROM
+     (SELECT 
+       'POLYHEDRALSURFACE (((
+                0 0 0, 
+                0 0 1, 
+                0 1 1, 
+                0 1 0, 
+                0 0 0
+            )), ((
+                0 0 0, 
+                0 1 0, 
+                1 1 0, 
+                1 0 0, 
+                0 0 0
+            ))
+            )'::geometry AS geom
+   ) AS g
+  ) j;
+
+SELECT path, ST_AsEWKT(geom) 
+FROM (
+  SELECT (ST_DumpPoints(g.geom)).* 
+   FROM
+     (SELECT 
+       'TIN (((
+                0 0 0, 
+                0 0 1, 
+                0 1 0, 
+                0 0 0
+            )), ((
+                0 0 0, 
+                0 1 0, 
+                1 1 0, 
+                0 0 0
+            ))
+            )'::geometry AS geom
+   ) AS g
   ) j;
 
 SELECT path, ST_AsText(geom) 

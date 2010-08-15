@@ -1943,18 +1943,15 @@ DECLARE
   i integer;
   j integer;
   g geometry;
-  typ text;
   
 BEGIN
   
   RAISE DEBUG '%,%', cur_path, ST_GeometryType(the_geom);
 
-  -- Special case (MULTI* OR GEOMETRYCOLLECTION) : iterate and return the DumpPoints of the geometries
-  SELECT ST_GeometryType(the_geom) INTO typ;
+  -- Special case collections : iterate and return the DumpPoints of the geometries
 
-  -- Dont we have an ST_isMulti ?
-  IF (typ like 'ST_Multi%' OR typ = 'ST_GeometryCollection') THEN
-    
+  IF (ST_IsCollection(the_geom)) THEN
+ 
     i = 1;
     FOR tmp2 IN SELECT (ST_Dump(the_geom)).* LOOP
 
@@ -2000,7 +1997,7 @@ BEGIN
 
 
   -- Use ST_NumPoints rather than ST_NPoints to have a NULL value if the_geom isn't
-  -- a LINESTRING or CIRCULARSTRING.
+  -- a LINESTRING, CIRCULARSTRING or TRIANGLE.
   SELECT ST_NumPoints(the_geom) INTO nb_points;
 
   -- This should never happen
@@ -4875,13 +4872,13 @@ CREATE OR REPLACE FUNCTION ST_GeoHash(geometry)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION NumPoints(geometry)
 	RETURNS int4
-	AS 'MODULE_PATHNAME', 'LWGEOM_numpoints_linestring'
+	AS 'MODULE_PATHNAME', 'LWGEOM_numpoints'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: NumPoints(geometry)
 CREATE OR REPLACE FUNCTION ST_NumPoints(geometry)
 	RETURNS int4
-	AS 'MODULE_PATHNAME', 'LWGEOM_numpoints_linestring'
+	AS 'MODULE_PATHNAME', 'LWGEOM_numpoints'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
@@ -4983,13 +4980,13 @@ CREATE OR REPLACE FUNCTION ST_GeometryType(geometry)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION PointN(geometry,integer)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME','LWGEOM_pointn_linestring'
+	AS 'MODULE_PATHNAME','LWGEOM_pointn'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: PointN(geometry,integer)
 CREATE OR REPLACE FUNCTION ST_PointN(geometry,integer)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME','LWGEOM_pointn_linestring'
+	AS 'MODULE_PATHNAME','LWGEOM_pointn'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 2.0.0
