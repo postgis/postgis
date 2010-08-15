@@ -19,6 +19,7 @@
 * Cf: ISO 13249-3:2009 -> 5.1.50 (p 134)
 *
 * GML versions supported:
+*  - Triangle, Tin and TriangulatedSurface elements
 *  - GML 3.2.1 Namespace
 *  - GML 3.1.1 Simple Features profile SF-2
 *    (with backward compatibility to GML 3.1.0 and 3.0.0)
@@ -1239,6 +1240,78 @@ static LWGEOM* parse_gml_polygon(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 
 /**
+ * Parse GML Triangle (3.1.1)
+ */
+static LWGEOM* parse_gml_triangle(xmlNodePtr xnode, bool *hasz, int *root_srid)
+{
+	gmlSrs *srs;
+	LWGEOM *geom;
+	xmlNodePtr xa, xb;
+	POINTARRAY *pa = NULL;
+	xmlChar *interpolation=NULL;
+
+	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+	srs = parse_gml_srs(xnode);
+
+	/* GML SF is resticted to planar interpolation
+	       NOTA: I know Triangle is not part of SF, but
+	       we have to be consistent with other surfaces */
+	interpolation = gmlGetProp(xnode, (xmlChar *) "interpolation");
+	if (interpolation != NULL)
+	{
+		if (strcmp((char *) interpolation, "planar"))
+			lwerror("invalid GML representation");
+		xmlFree(interpolation);
+	}
+
+	for (xa = xnode->children ; xa != NULL ; xa = xa->next)
+	{
+		/* Triangle/exterior */
+		if (xa->type != XML_ELEMENT_NODE) continue;
+		if (!is_gml_namespace(xa, false)) continue;
+		if (strcmp((char *) xa->name, "exterior")) continue;
+
+		for (xb = xa->children ; xb != NULL ; xb = xb->next)
+		{
+			/* Triangle/exterior/LinearRing */
+			if (xb->type != XML_ELEMENT_NODE) continue;
+			if (!is_gml_namespace(xb, false)) continue;
+			if (strcmp((char *) xb->name, "LinearRing")) continue;
+
+			pa = (POINTARRAY*) lwalloc(sizeof(POINTARRAY));
+			pa = parse_gml_data(xb->children, hasz, root_srid);
+
+			if (pa->npoints != 4
+			        || (!*hasz && !ptarray_isclosed2d(pa))
+			        ||  (*hasz && !ptarray_isclosed3d(pa)))
+				lwerror("invalid GML representation");
+
+			if (srs->reverse_axis) pa = ptarray_flip_coordinates(pa);
+		}
+	}
+
+	/* Exterior Ring is mandatory */
+	if (pa == NULL) lwerror("invalid GML representation");
+
+	if (!*root_srid)
+	{
+		*root_srid = srs->srid;
+		geom = (LWGEOM *) lwtriangle_construct(*root_srid, NULL, pa);
+	}
+	else
+	{
+		if (srs->srid != *root_srid)
+			gml_reproject_pa(pa, srs->srid, *root_srid);
+
+		geom = (LWGEOM *) lwtriangle_construct(-1, NULL, pa);
+	}
+	lwfree(srs);
+
+	return geom;
+}
+
+
+/**
  * Parse GML PolygonPatch (3.1.1)
  */
 static LWGEOM* parse_gml_patch(xmlNodePtr xnode, bool *hasz, int *root_srid)
@@ -1384,6 +1457,62 @@ static LWGEOM* parse_gml_surface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	}
 
 	if (!patch) lwerror("invalid GML representation");
+
+	return geom;
+}
+
+
+/**
+ * Parse GML Tin (and TriangulatedSurface) (3.1.1)
+ */
+static LWGEOM* parse_gml_tin(xmlNodePtr xnode, bool *hasz, int *root_srid)
+{
+	gmlSrs *srs;
+	xmlNodePtr xa;
+	LWGEOM *geom=NULL;
+	bool found=false;
+
+	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+
+	srs = parse_gml_srs(xnode);
+	if (!*root_srid)
+	{
+		*root_srid = srs->srid;
+		geom = (LWGEOM *)lwcollection_construct_empty(*root_srid, 1, 0);
+		TYPE_SETTYPE(geom->type, TINTYPE);
+	}
+	else
+	{
+		geom = (LWGEOM *)lwcollection_construct_empty(-1, 1, 0);
+		TYPE_SETTYPE(geom->type, TINTYPE);
+	}
+	lwfree(srs);
+
+	/* Looking for gml:patches or gml:trianglePatches */
+	for (xa = xnode->children ; xa != NULL ; xa = xa->next)
+	{
+		if (xa->type != XML_ELEMENT_NODE) continue;
+		if (!is_gml_namespace(xa, false)) continue;
+		if (!strcmp((char *) xa->name, "patches") ||
+		        !strcmp((char *) xa->name, "trianglePatches"))
+		{
+			found = true;
+			break;
+		}
+	}
+	if (!found) return geom; /* empty one */
+
+	/* Processing each gml:Triangle */
+	for (xa = xa->children ; xa != NULL ; xa = xa->next)
+	{
+		if (xa->type != XML_ELEMENT_NODE) continue;
+		if (!is_gml_namespace(xa, false)) continue;
+		if (strcmp((char *) xa->name, "Triangle")) continue;
+
+		if (xa->children != NULL)
+			geom = (LWGEOM*) lwtin_add_lwtriangle((LWTIN *) geom,
+			                                      (LWTRIANGLE *) parse_gml_triangle(xa, hasz, root_srid));
+	}
 
 	return geom;
 }
@@ -1719,6 +1848,9 @@ static LWGEOM* parse_gml(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (!strcmp((char *) xa->name, "Polygon"))
 		return parse_gml_polygon(xa, hasz, root_srid);
 
+	if (!strcmp((char *) xa->name, "Triangle"))
+		return parse_gml_triangle(xa, hasz, root_srid);
+
 	if (!strcmp((char *) xa->name, "Surface"))
 		return parse_gml_surface(xa, hasz, root_srid);
 
@@ -1739,6 +1871,10 @@ static LWGEOM* parse_gml(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 	if (!strcmp((char *) xa->name, "PolyhedralSurface"))
 		return parse_gml_psurface(xa, hasz, root_srid);
+
+	if ((!strcmp((char *) xa->name, "Tin")) ||
+	        !strcmp((char *) xa->name, "TriangulatedSurface" ))
+		return parse_gml_tin(xa, hasz, root_srid);
 
 	if (!strcmp((char *) xa->name, "MultiGeometry"))
 		return parse_gml_coll(xa, hasz, root_srid);

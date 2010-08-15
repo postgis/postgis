@@ -181,6 +181,41 @@ SELECT 'polygon_19', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon><gml:exterior><gml:L
 
 
 --
+-- Triangle
+--
+
+-- a triangle
+SELECT 'triangle_1', ST_AsEWKT(ST_GeomFromGML('<gml:Triangle><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:exterior></gml:Triangle>'));
+
+-- srsName handle
+SELECT 'triangle_2', ST_AsEWKT(ST_GeomFromGML('<gml:Triangle srsName="EPSG:4326"><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:exterior></gml:Triangle>'));
+
+-- ERROR: Last point is not the same as the first one 
+SELECT 'triangle_3', ST_AsEWKT(ST_GeomFromGML('<gml:Triangle><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,0</gml:coordinates></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:patches></gml:Surfacne>'));
+
+-- ERROR: Last point is not the same as the first one in Z
+SELECT 'triangle_4', ST_AsEWKT(ST_GeomFromGML('<gml:Triangle><gml:exterior><gml:LinearRing><gml:coordinates>1,2,3 4,5,6 7,8,9 1,2,0</gml:coordinates></gml:LinearRing></gml:exterior></gml:Triangle>'));
+
+-- ERROR: Only 3 points
+SELECT 'triangle_5', ST_AsEWKT(ST_GeomFromGML('<gml:Triangle><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 1,2</gml:coordinates></gml:LinearRing></gml:exterior></gml:Triangle>'));
+
+-- ERROR: Empty exterior ring coordinates 
+SELECT 'triangle_6', ST_AsEWKT(ST_GeomFromGML('<gml:Triangle><gml:exterior><gml:LinearRing></gml:LinearRing></gml:exterior></gml:Triangle>'));
+SELECT 'triangle_7', ST_AsEWKT(ST_GeomFromGML('<gml:Triangle><gml:exterior></gml:exterior></gml:Triangle>'));
+SELECT 'triangle_8', ST_AsEWKT(ST_GeomFromGML('<gml:Triangle></gml:Triangle>'));
+
+-- XML not elements handle
+SELECT 'triangle_9', ST_AsEWKT(ST_GeomFromGML(' <!-- --> <gml:Triangle> <!-- --> <gml:exterior> <!-- --> <gml:LinearRing> <!-- --> <gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:exterior></gml:Triangle>'));
+
+-- planar interpolation
+SELECT 'triangle_10', ST_AsEWKT(ST_GeomFromGML('<gml:Triangle interpolation="planar"><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:exterior></gml:Triangle>'));
+
+-- ERROR: interpolation not planar
+SELECT 'triangle_11', ST_AsEWKT(ST_GeomFromGML('<gml:Triangle interpolation="not_planar"><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:exterior></gml:Triangle>'));
+
+
+
+--
 -- Surface
 --
 
@@ -191,10 +226,10 @@ SELECT 'surface_1', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:Pol
 SELECT 'surface_2', ST_AsEWKT(ST_GeomFromGML('<gml:Surface srsName="EPSG:4326"><gml:patches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:patches></gml:Surface>'));
 
 -- ERROR: In exterior ring: Last point is not the same as the first one 
-SELECT 'surface_3', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,0</gml:coordinates></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:patches></gml:Surfacne>'));
+SELECT 'surface_3', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,0</gml:coordinates></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:patches></gml:Surface>'));
 
 -- ERROR: In exterior 3D ring: Last point is not the same as the first one in Z
-SELECT 'surface_4', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:coordinates>1,2,3 4,5,6 7,8,9 1,2,0</gml:coordinates></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:patches></gml:Surfacne>'));
+SELECT 'surface_4', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:coordinates>1,2,3 4,5,6 7,8,9 1,2,0</gml:coordinates></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:patches></gml:Surface>'));
 
 -- ERROR: Only 3 points in exterior ring
 SELECT 'surface_5', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 1,2</gml:coordinates></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:patches></gml:Surface>'));
@@ -410,6 +445,8 @@ SELECT 'polyhedralsurface_5', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><
 SELECT 'polyhedralsurface_6', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
 SELECT 'polyhedralsurface_7', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior></gml:exterior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
 SELECT 'polyhedralsurface_8', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
+
+-- EMPTY
 SELECT 'polyhedralsurface_9', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches></gml:polygonPatches></gml:PolyhedralSurface>'));
 SELECT 'polyhedralsurface_10', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface></gml:PolyhedralSurface>'));
 
@@ -455,6 +492,58 @@ SELECT 'polyhedralsurface_24', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface>
 
 -- ERROR: interpolation not planar
 SELECT 'polyhedralsurface_25', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch interpolation="not_planar"><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
+
+
+--
+-- Tin and TriangulatedSurface
+--
+
+-- 1 patch
+SELECT 'tin_1', ST_AsEWKT(ST_GeomFromGML('<gml:Tin><gml:patches><gml:Triangle><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:Triangle></gml:patches></gml:Tin>'));
+
+-- srsName handle
+SELECT 'tin_2', ST_AsEWKT(ST_GeomFromGML('<gml:Tin srsName="EPSG:4326"><gml:patches><gml:Triangle><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:Triangle></gml:patches></gml:Tin>'));
+
+-- ERROR: Last point is not the same as the first one 
+SELECT 'tin_3', ST_AsEWKT(ST_GeomFromGML('<gml:Tin><gml:patches><gml:Triangle><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 0 3</gml:posList></gml:LinearRing></gml:exterior></gml:Triangle></gml:patches></gml:Tin>'));
+
+-- ERROR: Last point is not the same as the first one in Z
+SELECT 'tin_4', ST_AsEWKT(ST_GeomFromGML('<gml:Tin><gml:patches><gml:Triangle><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 0</gml:posList></gml:LinearRing></gml:exterior></gml:Triangle></gml:patches></gml:Tin>'));
+
+-- ERROR: Only 3 points in exterior ring
+SELECT 'tin_5', ST_AsEWKT(ST_GeomFromGML('<gml:Tin><gml:patches><gml:Triangle><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:Triangle></gml:patches></gml:Tin>'));
+
+-- ERROR: Empty exterior ring coordinates 
+SELECT 'tin_6', ST_AsEWKT(ST_GeomFromGML('<gml:Tin><gml:patches><gml:Triangle><gml:exterior><gml:LinearRing></gml:LinearRing></gml:exterior></gml:Triangle></gml:patches></gml:Tin>'));
+SELECT 'tin_7', ST_AsEWKT(ST_GeomFromGML('<gml:Tin><gml:patches><gml:Triangle><gml:exterior></gml:exterior></gml:Triangle></gml:patches></gml:Tin>'));
+
+-- EMPTY
+SELECT 'tin_8', ST_AsEWKT(ST_GeomFromGML('<gml:Tin><gml:patches><gml:Triangle></gml:Triangle></gml:patches></gml:Tin>'));
+SELECT 'tin_9', ST_AsEWKT(ST_GeomFromGML('<gml:Tin><gml:patches></gml:patches></gml:Tin>'));
+SELECT 'tin_10', ST_AsEWKT(ST_GeomFromGML('<gml:Tin></gml:Tin>'));
+
+-- 2 patches
+SELECT 'tin_11', ST_AsEWKT(ST_GeomFromGML('<gml:Tin><gml:patches><gml:Triangle><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:Triangle><gml:Triangle><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">10 11 12 13 14 15 16 17 18 10 11 12</gml:posList></gml:LinearRing></gml:exterior></gml:Triangle></gml:patches></gml:Tin>'));
+
+-- XML not elements handle
+SELECT 'tin_12', ST_AsEWKT(ST_GeomFromGML('<gml:Tin> <!-- --> <gml:patches> <!-- --> <gml:Triangle> <!-- --> <gml:exterior> <!-- --> <gml:LinearRing> <!-- --> <gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList> <!-- --> </gml:LinearRing> <!-- --> </gml:exterior> <!-- --> </gml:Triangle> <!-- --> <gml:Triangle> <!-- --> <gml:exterior> <!-- --> <gml:LinearRing> <!-- --> <gml:posList srsDimension="3">10 11 12 13 14 15 16 17 18 10 11 12</gml:posList> <!-- --> </gml:LinearRing> <!-- --> </gml:exterior> <!-- --> </gml:Triangle> <!-- --> </gml:patches> <!-- --> </gml:Tin>'));
+
+-- 3 patches
+SELECT 'tin_13', ST_AsEWKT(ST_GeomFromGML('<gml:Tin><gml:patches><gml:Triangle><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:Triangle><gml:Triangle><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">10 11 12 13 14 15 16 17 18 10 11 12</gml:posList></gml:LinearRing></gml:exterior></gml:Triangle><gml:Triangle><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">19 20 21 22 23 24 25 26 27 19 20 21</gml:posList></gml:LinearRing></gml:exterior></gml:Triangle></gml:patches></gml:Tin>'));
+
+-- Mixed dimension in patches
+SELECT 'tin_14', ST_AsEWKT(ST_GeomFromGML('<gml:Tin><gml:patches><gml:Triangle><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:Triangle><gml:Triangle><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">10 11 12 13 14 15 10 11</gml:posList></gml:LinearRing></gml:exterior></gml:Triangle></gml:patches></gml:Tin>'));
+
+SELECT 'tin_15', ST_AsEWKT(ST_GeomFromGML('<gml:Tin><gml:patches><gml:Triangle><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing></gml:exterior></gml:Triangle><gml:Triangle><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">7 8 9 10 11 12 13 14 15 7 8 9</gml:posList></gml:LinearRing></gml:exterior></gml:Triangle></gml:patches></gml:Tin>'));
+
+-- TriangulatedSurface
+SELECT 'tin_16', ST_AsEWKT(ST_GeomFromGML('<gml:TriangulatedSurface><gml:patches><gml:Triangle><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:Triangle></gml:patches></gml:TriangulatedSurface>'));
+
+-- trianglePatches
+SELECT 'tin_17', ST_AsEWKT(ST_GeomFromGML('<gml:Tin><gml:trianglePatches><gml:Triangle><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:Triangle></gml:trianglePatches></gml:Tin>'));
+
+SELECT 'tin_18', ST_AsEWKT(ST_GeomFromGML('<gml:TriangulatedSurface><gml:trianglePatches><gml:Triangle><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:Triangle></gml:trianglePatches></gml:TriangulatedSurface>'));
+
 
 
 --
@@ -935,98 +1024,133 @@ SELECT 'gml_17', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('SRID=27582;POLYGON
 SELECT 'gml_18', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('POLYGON((1 2,3 4,5 6,1 2))'))));
 
 -- Polygon GML 3 & SRID lat/lon
-SELECT 'gml_19', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;POLYGON((1 2,3 4,5 6,1 2))'))));
+SELECT 'gml_19', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;POLYGON((1 2,3 4,5 6,1 2))'), 16)));
 
 -- Polygon GML 3 - 3D
 SELECT 'gml_20', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('POLYGON((1 2 3,4 5 6,7 8 9,1 2 3))'))));
 
 -- Polygon GML 3 - 3D & SRID lat/lon
-SELECT 'gml_21', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;POLYGON((1 2 3,4 5 6,7 8 9,1 2 3))'))));
+SELECT 'gml_21', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;POLYGON((1 2 3,4 5 6,7 8 9,1 2 3))'), 16)));
+
+-- Triangle GML 3
+SELECT 'gml_22', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('TRIANGLE((1 2,3 4,5 6,1 2))'))));
+
+-- Triangle GML 3 & SRID lat/lon
+SELECT 'gml_23', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;TRIANGLE((1 2,3 4,5 6,1 2))'), 16)));
+
+-- Triangle GML 3 & SRID planar
+SELECT 'gml_24', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=27582;TRIANGLE((1 2,3 4,5 6,1 2))'))));
+
+-- Triangle GML 3 - 3D
+SELECT 'gml_25', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('TRIANGLE((1 2 3,4 5 6,7 8 9,1 2 3))'))));
+
+-- Triangle GML 3 - 3D & SRID lat/lon
+SELECT 'gml_26', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;TRIANGLE((1 2 3,4 5 6,7 8 9,1 2 3))'), 16)));
 
 -- Multipoint GML 2
-SELECT 'gml_22', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('MULTIPOINT(1 2)'))));
+SELECT 'gml_27', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('MULTIPOINT(1 2)'))));
 
 -- Multipoint GML 2 - 3D
-SELECT 'gml_23', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('MULTIPOINT(1 2 3)'))));
+SELECT 'gml_28', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('MULTIPOINT(1 2 3)'))));
 
 -- Multipoint GML 2 & SRID planar
-SELECT 'gml_24', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('SRID=27582;MULTIPOINT(1 2)'))));
+SELECT 'gml_29', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('SRID=27582;MULTIPOINT(1 2)'))));
 
 -- Multipoint GML 3
-SELECT 'gml_25', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('MULTIPOINT(1 2)'))));
+SELECT 'gml_30', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('MULTIPOINT(1 2)'))));
 
 -- Multipoint GML 3 & SRID lat/lon
-SELECT 'gml_26', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;MULTIPOINT(1 2)'), 16)));
+SELECT 'gml_31', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;MULTIPOINT(1 2)'), 16)));
 
 -- Multipoint GML 3 - 3D
-SELECT 'gml_27', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('MULTIPOINT(1 2 3)'))));
+SELECT 'gml_32', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('MULTIPOINT(1 2 3)'))));
 
 -- Multipoint GML 3 - 3D & SRID lat/lon
-SELECT 'gml_28', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;MULTIPOINT(1 2 3)'), 16)));
+SELECT 'gml_33', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;MULTIPOINT(1 2 3)'), 16)));
 
 -- Multilinestring GML 2
-SELECT 'gml_29', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('MULTILINESTRING((1 2,3 4))'))));
+SELECT 'gml_34', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('MULTILINESTRING((1 2,3 4))'))));
 
 -- Multilinestring GML 2 - 3D
-SELECT 'gml_30', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('MULTILINESTRING((1 2 3,4 5 6))'))));
+SELECT 'gml_35', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('MULTILINESTRING((1 2 3,4 5 6))'))));
 
 -- Multilinestring GML 2 & SRID planar
-SELECT 'gml_31', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('SRID=27582;MULTILINESTRING((1 2,3 4))'))));
+SELECT 'gml_36', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('SRID=27582;MULTILINESTRING((1 2,3 4))'))));
 
 -- Multilinestring GML 3
-SELECT 'gml_32', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('MULTILINESTRING((1 2,3 4))'))));
+SELECT 'gml_37', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('MULTILINESTRING((1 2,3 4))'))));
 
 -- Multilinestring GML 3 & SRID lat/lon
-SELECT 'gml_33', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;MULTILINESTRING((1 2,3 4))'), 16)));
+SELECT 'gml_38', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;MULTILINESTRING((1 2,3 4))'), 16)));
 
 -- Multilinestring GML 3 - 3D
-SELECT 'gml_34', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('MULTILINESTRING((1 2 3,4 5 6))'))));
+SELECT 'gml_39', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('MULTILINESTRING((1 2 3,4 5 6))'))));
 
 -- Multilinestring GML 3 - 3D & SRID lat/lon
-SELECT 'gml_35', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;MULTILINESTRING((1 2 3,4 5 6))'), 16)));
+SELECT 'gml_40', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;MULTILINESTRING((1 2 3,4 5 6))'), 16)));
 
 -- Multipolygon GML 2
-SELECT 'gml_36', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('MULTIPOLYGON(((1 2,3 4,5 6,1 2)))'))));
+SELECT 'gml_41', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('MULTIPOLYGON(((1 2,3 4,5 6,1 2)))'))));
 
 -- Multipolygon GML 2 - 3D
-SELECT 'gml_37', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('MULTIPOLYGON(((1 2 3,4 5 6,7 8 9,1 2 3)))'))));
+SELECT 'gml_42', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('MULTIPOLYGON(((1 2 3,4 5 6,7 8 9,1 2 3)))'))));
 
 -- Multipolygon GML 2 & SRID planar
-SELECT 'gml_38', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('SRID=27582;MULTIPOLYGON(((1 2,3 4,5 6,1 2)))'))));
+SELECT 'gml_43', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('SRID=27582;MULTIPOLYGON(((1 2,3 4,5 6,1 2)))'))));
 
 -- Multipolygon GML 3
-SELECT 'gml_39', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('MULTIPOLYGON(((1 2,3 4,5 6,1 2)))'))));
+SELECT 'gml_44', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('MULTIPOLYGON(((1 2,3 4,5 6,1 2)))'))));
 
 -- Multipolygon GML 3 & SRID lat/lon
-SELECT 'gml_40', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;MULTIPOLYGON(((1 2,3 4,5 6,1 2)))'))));
+SELECT 'gml_45', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;MULTIPOLYGON(((1 2,3 4,5 6,1 2)))'), 16)));
 
 -- Multipolygon GML 3 - 3D
-SELECT 'gml_41', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('MULTIPOLYGON(((1 2 3,4 5 6,7 8 9,1 2 3)))'))));
+SELECT 'gml_46', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('MULTIPOLYGON(((1 2 3,4 5 6,7 8 9,1 2 3)))'))));
+
+-- Multipolygon GML 3 - 3D & SRID planar
+SELECT 'gml_47', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=27582;MULTIPOLYGON(((1 2 3,4 5 6,7 8 9,1 2 3)))'))));
 
 -- Multipolygon GML 3 - 3D & SRID lat/lon
-SELECT 'gml_42', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;MULTIPOLYGON(((1 2 3,4 5 6,7 8 9,1 2 3)))'))));
+SELECT 'gml_48', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;MULTIPOLYGON(((1 2 3,4 5 6,7 8 9,1 2 3)))'), 16)));
+
+-- Tin GML 3
+SELECT 'gml_49', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('TIN(((1 2,3 4,5 6,1 2)))'))));
+
+-- Tin GML 3 & SRID planar
+SELECT 'gml_50', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=27582;TIN(((1 2,3 4,5 6,1 2)))'))));
+
+-- Tin GML 3 & SRID lat/lon
+SELECT 'gml_51', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;TIN(((1 2,3 4,5 6,1 2)))'), 16)));
+
+-- Tin GML 3 - 3D
+SELECT 'gml_52', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('TIN(((1 2 3,4 5 6,7 8 9,1 2 3)))'))));
+
+-- Tin GML 3 - 3D & SRID planar
+SELECT 'gml_53', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=27582;TIN(((1 2 3,4 5 6,7 8 9,1 2 3)))'))));
+
+-- Tin GML 3 - 3D & SRID lat/lon
+SELECT 'gml_54', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;TIN(((1 2 3,4 5 6,7 8 9,1 2 3)))'), 16)));
 
 -- Collection GML 2
-SELECT 'gml_43', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('GEOMETRYCOLLECTION(POINT(1 2))'))));
+SELECT 'gml_55', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('GEOMETRYCOLLECTION(POINT(1 2))'))));
 
 -- Collection GML 2 - 3D
-SELECT 'gml_44', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('GEOMETRYCOLLECTION(POINT(1 2 3))'))));
+SELECT 'gml_56', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('GEOMETRYCOLLECTION(POINT(1 2 3))'))));
 
 -- Collection GML 2 & SRID planar
-SELECT 'gml_45', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('SRID=27582;GEOMETRYCOLLECTION(POINT(1 2))'))));
+SELECT 'gml_57', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(ST_AsEWKT('SRID=27582;GEOMETRYCOLLECTION(POINT(1 2))'))));
 
 -- Collection GML 3
-SELECT 'gml_46', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('GEOMETRYCOLLECTION(POINT(1 2))'))));
+SELECT 'gml_58', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('GEOMETRYCOLLECTION(POINT(1 2))'))));
 
 -- Collection GML 3 & SRID lat/lon
-SELECT 'gml_47', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;GEOMETRYCOLLECTION(POINT(1 2))'), 16)));
+SELECT 'gml_59', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;GEOMETRYCOLLECTION(POINT(1 2))'), 16)));
 
 -- Collection GML 3 - 3D
-SELECT 'gml_48', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('GEOMETRYCOLLECTION(POINT(1 2 3))'))));
+SELECT 'gml_60', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('GEOMETRYCOLLECTION(POINT(1 2 3))'))));
 
 -- Collection GML 3 - 3D & SRID lat/lon
-SELECT 'gml_49', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;GEOMETRYCOLLECTION(POINT(1 2 3))'), 16)));
-
+SELECT 'gml_61', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;GEOMETRYCOLLECTION(POINT(1 2 3))'), 16)));
 
 
 
