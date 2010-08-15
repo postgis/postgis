@@ -26,7 +26,7 @@ CC=@CC@
 CFLAGS=@CFLAGS@ @PICFLAGS@ @WARNFLAGS@
 
 # Filenames with extension as determined by the OS
-PGSQL2SHP=pgsql2shp@EXESUFFIX@
+PGSQL2SHP-CLI=pgsql2shp@EXESUFFIX@
 SHP2PGSQL-CLI=shp2pgsql@EXESUFFIX@
 SHP2PGSQL-GUI=shp2pgsql-gui@EXESUFFIX@
 
@@ -60,7 +60,7 @@ endif
 gtk_build = @GTK_BUILD@
 
 # The real parts of the Makefile
-all: $(SHP2PGSQL-CLI) $(PGSQL2SHP) @GTK_BUILD@
+all: $(SHP2PGSQL-CLI) $(PGSQL2SHP-CLI) @GTK_BUILD@
 
 gui: $(SHP2PGSQL-GUI) $(SHP2PGSQL-CLI) @GTK_WIN32_RES@
 
@@ -75,11 +75,14 @@ $(LIBLWGEOM):
 shp2pgsql-core.o: shp2pgsql-core.c
 	$(CC) $(CFLAGS) $(ICONV_CFLAGS) -c $<
 
-pgsql2shp.o: pgsql2shp.c
+pgsql2shp-core.o: pgsql2shp-core.c
 	$(CC) $(CFLAGS) $(ICONV_CFLAGS) $(PGSQL_FE_CPPFLAGS) -c $<
 
-$(PGSQL2SHP): shpopen.o dbfopen.o getopt.o pgsql2shp.o $(LIBLWGEOM) 
-	$(CC) $(CFLAGS) $^ $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) -lm -o $@ 
+pgsql2shp-cli.o: pgsql2shp-cli.c
+	$(CC) $(CFLAGS) $(ICONV_CFLAGS) $(PGSQL_FE_CPPFLAGS) -c $<
+
+$(PGSQL2SHP-CLI): shpopen.o dbfopen.o getopt.o pgsql2shp-core.o pgsql2shp-cli.o $(LIBLWGEOM) 
+	$(CC) $(CFLAGS) $^ $(PGSQL_FE_CPPFLAGS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) -lm -o $@
 
 $(SHP2PGSQL-CLI): shpopen.o dbfopen.o getopt.o shp2pgsql-core.o shp2pgsql-cli.o $(LIBLWGEOM) 
 	$(CC) $(CFLAGS) $^ -o $@ $(ICONV_LDFLAGS) -lm 
@@ -100,16 +103,16 @@ install: installdir
 ifdef gtk_build
 	$(INSTALL) $(SHP2PGSQL-GUI) $(DESTDIR)$(bindir)
 endif
-	$(INSTALL) $(PGSQL2SHP) $(DESTDIR)$(bindir)
+	$(INSTALL) $(PGSQL2SHP-CLI) $(DESTDIR)$(bindir)
 	$(INSTALL) $(SHP2PGSQL-CLI) $(DESTDIR)$(bindir)
 
 uninstall:
-	@rm -f $(DESTDIR)$(bindir)/$(PGSQL2SHP)
+	@rm -f $(DESTDIR)$(bindir)/$(PGSQL2SHP-CLI)
 	@rm -f $(DESTDIR)$(bindir)/$(SHP2PGSQL-CLI)
 
 check:
 	make -C cunit check
 
 clean:
-	@rm -f *.o $(SHP2PGSQL-CLI) $(PGSQL2SHP) $(GTK_WIN32_RES)
+	@rm -f *.o $(SHP2PGSQL-CLI) $(PGSQL2SHP-CLI) $(GTK_WIN32_RES)
 
