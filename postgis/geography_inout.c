@@ -513,8 +513,8 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	int is_dims=1;
 	static const char *default_prefix = "gml:";
 	char *prefixbuf;
-        const char* prefix = default_prefix;
-        text *prefix_text;
+	const char* prefix = default_prefix;
+	text *prefix_text;
 
 
 	/* Get the version */
@@ -548,24 +548,24 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 
 	/* retrieve prefix */
 	if (PG_NARGS() >4 && !PG_ARGISNULL(4))
-        {
-                prefix_text = PG_GETARG_TEXT_P(4);
-                if ( VARSIZE(prefix_text)-VARHDRSZ == 0 )
-                {
-                        prefix = "";
-                }
-                else
-                {
-                        /* +2 is one for the ':' and one for term null */
-                        prefixbuf = palloc(VARSIZE(prefix_text)-VARHDRSZ+2);
-                        memcpy(prefixbuf, VARDATA(prefix_text),
-                               VARSIZE(prefix_text)-VARHDRSZ);
-                        /* add colon and null terminate */
-                        prefixbuf[VARSIZE(prefix_text)-VARHDRSZ] = ':';
-                        prefixbuf[VARSIZE(prefix_text)-VARHDRSZ+1] = '\0';
-                        prefix = prefixbuf;
-                }
-        }
+	{
+		prefix_text = PG_GETARG_TEXT_P(4);
+		if ( VARSIZE(prefix_text)-VARHDRSZ == 0 )
+		{
+			prefix = "";
+		}
+		else
+		{
+			/* +2 is one for the ':' and one for term null */
+			prefixbuf = palloc(VARSIZE(prefix_text)-VARHDRSZ+2);
+			memcpy(prefixbuf, VARDATA(prefix_text),
+			       VARSIZE(prefix_text)-VARHDRSZ);
+			/* add colon and null terminate */
+			prefixbuf[VARSIZE(prefix_text)-VARHDRSZ] = ':';
+			prefixbuf[VARSIZE(prefix_text)-VARHDRSZ+1] = '\0';
+			prefix = prefixbuf;
+		}
+	}
 
 	if (option & 1) srs = getSRSbySRID(SRID, false);
 	else srs = getSRSbySRID(SRID, true);
@@ -574,7 +574,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 		elog(ERROR, "SRID %d unknown in spatial_ref_sys table", SRID_DEFAULT);
 		PG_RETURN_NULL();
 	}
-	
+
 	/* Revert lat/lon only with long SRS */
 	if (option & 1) is_deegree = 1;
 	if (option & 2) is_dims = 0;
@@ -614,8 +614,8 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 	int precision = OUT_MAX_DOUBLE_PRECISION;
 	static const char *default_prefix = "";
 	char *prefixbuf;
-        const char* prefix = default_prefix;
-        text *prefix_text;
+	const char* prefix = default_prefix;
+	text *prefix_text;
 
 
 	/* Get the version */
@@ -644,24 +644,24 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 
 	/* retrieve prefix */
 	if (PG_NARGS() >3 && !PG_ARGISNULL(3))
-        {
-                prefix_text = PG_GETARG_TEXT_P(3);
-                if ( VARSIZE(prefix_text)-VARHDRSZ == 0 )
-                {
-                        prefix = "";
-                }
-                else
-                {
-                        /* +2 is one for the ':' and one for term null */
-                        prefixbuf = palloc(VARSIZE(prefix_text)-VARHDRSZ+2);
-                        memcpy(prefixbuf, VARDATA(prefix_text),
-                               VARSIZE(prefix_text)-VARHDRSZ);
-                        /* add colon and null terminate */
-                        prefixbuf[VARSIZE(prefix_text)-VARHDRSZ] = ':';
-                        prefixbuf[VARSIZE(prefix_text)-VARHDRSZ+1] = '\0';
-                        prefix = prefixbuf;
-                }
-        }
+	{
+		prefix_text = PG_GETARG_TEXT_P(3);
+		if ( VARSIZE(prefix_text)-VARHDRSZ == 0 )
+		{
+			prefix = "";
+		}
+		else
+		{
+			/* +2 is one for the ':' and one for term null */
+			prefixbuf = palloc(VARSIZE(prefix_text)-VARHDRSZ+2);
+			memcpy(prefixbuf, VARDATA(prefix_text),
+			       VARSIZE(prefix_text)-VARHDRSZ);
+			/* add colon and null terminate */
+			prefixbuf[VARSIZE(prefix_text)-VARHDRSZ] = ':';
+			prefixbuf[VARSIZE(prefix_text)-VARHDRSZ+1] = '\0';
+			prefix = prefixbuf;
+		}
+	}
 
 	kml = lwgeom_to_kml2(lwgeom_serialize(lwgeom), precision, prefix);
 

@@ -318,7 +318,8 @@ static void out_svg_test_srid(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo out_svg_tests[] = {
+CU_TestInfo out_svg_tests[] =
+{
 	PG_TEST(out_svg_test_precision),
 	PG_TEST(out_svg_test_dims),
 	PG_TEST(out_svg_test_relative),

@@ -79,9 +79,9 @@ lwcompound_is_closed(LWCOMPOUND *compound)
 		npoints = ((LWLINE *)compound->geoms[compound->ngeoms - 1])->points->npoints;
 
 	if ( memcmp(getPoint_internal( (POINTARRAY *)compound->geoms[0]->data, 0),
-                    getPoint_internal( (POINTARRAY *)compound->geoms[compound->ngeoms - 1]->data,
-					npoints - 1),
-                    size) ) return 0;
-	
+	            getPoint_internal( (POINTARRAY *)compound->geoms[compound->ngeoms - 1]->data,
+	                               npoints - 1),
+	            size) ) return 0;
+
 	return 1;
 }

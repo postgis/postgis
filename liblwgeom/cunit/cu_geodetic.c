@@ -760,7 +760,7 @@ static void test_lwpoly_covers_point2d(void)
 	result = lwpoly_covers_point2d(poly, &gbox, &pt_to_test);
 	CU_ASSERT_EQUAL(result, LW_TRUE);
 	lwgeom_free(lwg);
-	
+
 	/* Great big ring */
 	lwg = lwgeom_from_ewkt("POLYGON((-40.0 52.0, 102.0 -6.0, -67.0 -29.0, -40.0 52.0))", PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
@@ -770,7 +770,7 @@ static void test_lwpoly_covers_point2d(void)
 	result = lwpoly_covers_point2d(poly, &gbox, &pt_to_test);
 	CU_ASSERT_EQUAL(result, LW_TRUE);
 	lwgeom_free(lwg);
-	
+
 }
 
 
@@ -972,7 +972,8 @@ static void test_spheroid_area(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo geodetic_tests[] = {
+CU_TestInfo geodetic_tests[] =
+{
 	PG_TEST(test_signum),
 	PG_TEST(test_gbox_from_spherical_coordinates),
 	PG_TEST(test_gserialized_get_gbox_geocentric),

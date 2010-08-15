@@ -458,8 +458,8 @@ lwline_addpoint(LWLINE *line, LWPOINT *point, uint32 where)
 	newpa = ptarray_addPoint(line->points,
 	                         getPoint_internal(point->point, 0),
 	                         TYPE_NDIMS(point->type), where);
-	
-	
+
+
 
 	ret = lwline_construct(line->SRID, ptarray_compute_box2d(newpa), newpa);
 
@@ -487,7 +487,7 @@ lwline_setPoint4d(LWLINE *line, uint32 index, POINT4D *newpoint)
 {
 	setPoint4d(line->points, index, newpoint);
 	/* Update the box, if there is one to update */
-	if( line->bbox )
+	if ( line->bbox )
 	{
 		lwgeom_drop_bbox((LWGEOM*)line);
 		lwgeom_add_bbox((LWGEOM*)line);
@@ -573,5 +573,5 @@ lwline_is_closed(LWLINE *line)
 	if (TYPE_HASZ(line->type))
 		return ptarray_isclosed3d(line->points);
 
-	return ptarray_isclosed2d(line->points); 
+	return ptarray_isclosed2d(line->points);
 }

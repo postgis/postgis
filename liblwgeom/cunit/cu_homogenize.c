@@ -241,7 +241,8 @@ static void test_geom(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo homogenize_tests[] = {
+CU_TestInfo homogenize_tests[] =
+{
 	PG_TEST(test_coll_point),
 	PG_TEST(test_coll_line),
 	PG_TEST(test_coll_poly),

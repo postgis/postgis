@@ -1277,7 +1277,7 @@ void gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside)
 	POINT3D pt;
 	GEOGRAPHIC_POINT g;
 
-	while( grow < M_PI ) 
+	while ( grow < M_PI )
 	{
 		/* Assign our box and expand it slightly. */
 		ge = *gbox;
@@ -1338,7 +1338,7 @@ void gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside)
 				return;
 			}
 		}
-		
+
 		/* Try a wider growth to push the corners outside the original box. */
 		grow *= 2.0;
 	}
@@ -1395,7 +1395,7 @@ double ptarray_area_sphere(const POINTARRAY *pa, const POINT2D *pt_outside)
 			LWDEBUGF(4, "after shift a1(%.8g %.8g) b1(%.8g %.8g) c1(%.8g %.8g)", a1.lat, a1.lon, b1.lat, b1.lon, c1.lat, c1.lon);
 			excess = sphere_excess(&a1, &b1, &c1);
 		}
-		else if( crosses_dateline(&a, &c) )
+		else if ( crosses_dateline(&a, &c) )
 		{
 			GEOGRAPHIC_POINT a1 = a, b1 = b, c1 = c;
 			double shift;
@@ -1410,7 +1410,7 @@ double ptarray_area_sphere(const POINTARRAY *pa, const POINT2D *pt_outside)
 			point_shift(&c1, shift);
 			excess = sphere_excess(&a1, &b1, &c1);
 		}
-		else 
+		else
 		{
 			excess = sphere_excess(&a, &b, &c);
 		}
@@ -1425,8 +1425,8 @@ double ptarray_area_sphere(const POINTARRAY *pa, const POINT2D *pt_outside)
 
 
 /**
-* This routine returns LW_TRUE if the stabline joining the pt_outside and pt_to_test 
-* crosses the ring an odd number of times, or if the pt_to_test is on the ring boundary itself, 
+* This routine returns LW_TRUE if the stabline joining the pt_outside and pt_to_test
+* crosses the ring an odd number of times, or if the pt_to_test is on the ring boundary itself,
 * returning LW_FALSE otherwise.
 * The pt_outside must be guaranteed to be outside the ring (use the geography_pt_outside() function
 * to derive one in postgis, or the gbox_pt_outside() function if you don't mind burning CPU cycles
@@ -2249,10 +2249,10 @@ static int lwpolygon_calculate_gbox_geodetic(const LWPOLY *poly, GBOX *gbox)
 
 static int lwtriangle_calculate_gbox_geodetic(const LWTRIANGLE *triangle, GBOX *gbox)
 {
-       assert(triangle);
-       if ( ptarray_calculate_gbox_geodetic(triangle->points, gbox) == G_FAILURE )
-               return G_FAILURE;
-       return G_SUCCESS;
+	assert(triangle);
+	if ( ptarray_calculate_gbox_geodetic(triangle->points, gbox) == G_FAILURE )
+		return G_FAILURE;
+	return G_SUCCESS;
 }
 
 
@@ -2310,20 +2310,20 @@ int lwgeom_calculate_gbox_geodetic(const LWGEOM *geom, GBOX *gbox)
 	case POLYGONTYPE:
 		result = lwpolygon_calculate_gbox_geodetic((LWPOLY *)geom, gbox);
 		break;
-        case TRIANGLETYPE:
-                result = lwtriangle_calculate_gbox_geodetic((LWTRIANGLE *)geom, gbox);
-                break;
+	case TRIANGLETYPE:
+		result = lwtriangle_calculate_gbox_geodetic((LWTRIANGLE *)geom, gbox);
+		break;
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
-        case POLYHEDRALSURFACETYPE:
-        case TINTYPE:
+	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
 	case COLLECTIONTYPE:
 		result = lwcollection_calculate_gbox_geodetic((LWCOLLECTION *)geom, gbox);
 		break;
 	default:
 		lwerror("unsupported input geometry type: %d - %s",
-			TYPE_GETTYPE(geom->type), lwtype_name(TYPE_GETTYPE(geom->type)));
+		        TYPE_GETTYPE(geom->type), lwtype_name(TYPE_GETTYPE(geom->type)));
 		break;
 	}
 	return result;
@@ -2376,8 +2376,8 @@ static int lwpoly_check_geodetic(const LWPOLY *poly)
 
 static int lwtriangle_check_geodetic(const LWTRIANGLE *triangle)
 {
-       assert(triangle);
-       return ptarray_check_geodetic(triangle->points);
+	assert(triangle);
+	return ptarray_check_geodetic(triangle->points);
 }
 
 
@@ -2404,18 +2404,18 @@ int lwgeom_check_geodetic(const LWGEOM *geom)
 		return lwline_check_geodetic((LWLINE *)geom);
 	case POLYGONTYPE:
 		return lwpoly_check_geodetic((LWPOLY *)geom);
-        case TRIANGLETYPE:
-               return lwtriangle_check_geodetic((LWTRIANGLE *)geom);
+	case TRIANGLETYPE:
+		return lwtriangle_check_geodetic((LWTRIANGLE *)geom);
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
-        case POLYHEDRALSURFACETYPE:
-        case TINTYPE:
+	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
 	case COLLECTIONTYPE:
 		return lwcollection_check_geodetic((LWCOLLECTION *)geom);
 	default:
 		lwerror("unsupported input geometry type: %d - %s",
-			TYPE_GETTYPE(geom->type), lwtype_name(TYPE_GETTYPE(geom->type)));
+		        TYPE_GETTYPE(geom->type), lwtype_name(TYPE_GETTYPE(geom->type)));
 	}
 	return LW_FALSE;
 }

@@ -159,7 +159,7 @@ static bool is_gml_namespace(xmlNodePtr xnode, bool is_strict)
 	{
 		if ((*p)->href == NULL) continue;
 		if (!strcmp((char *) (*p)->href, GML_NS) ||
-		    !strcmp((char *) (*p)->href, GML32_NS))
+		        !strcmp((char *) (*p)->href, GML32_NS))
 		{
 			if (	(*p)->prefix == NULL ||
 			        !xmlStrcmp(xnode->ns->prefix, (*p)->prefix))
@@ -983,16 +983,16 @@ static LWGEOM* parse_gml_point(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	srs = parse_gml_srs(xnode);
 	if (srs->reverse_axis) pa = ptarray_flip_coordinates(pa);
 	if (!*root_srid)
-        {
-                *root_srid = srs->srid;
-                geom = (LWGEOM *) lwpoint_construct(*root_srid, NULL, pa);
-        }
-        else
-        {
-                if (srs->srid != *root_srid)
-                        gml_reproject_pa(pa, srs->srid, *root_srid);
-                geom = (LWGEOM *) lwpoint_construct(-1, NULL, pa);
-        }
+	{
+		*root_srid = srs->srid;
+		geom = (LWGEOM *) lwpoint_construct(*root_srid, NULL, pa);
+	}
+	else
+	{
+		if (srs->srid != *root_srid)
+			gml_reproject_pa(pa, srs->srid, *root_srid);
+		geom = (LWGEOM *) lwpoint_construct(-1, NULL, pa);
+	}
 	lwfree(srs);
 
 	return geom;
@@ -1016,17 +1016,17 @@ static LWGEOM* parse_gml_line(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 	srs = parse_gml_srs(xnode);
 	if (srs->reverse_axis) pa = ptarray_flip_coordinates(pa);
-        if (!*root_srid)
-        {
-                *root_srid = srs->srid;
-                geom = (LWGEOM *) lwline_construct(*root_srid, NULL, pa);
-        }
-        else
-        {
-                if (srs->srid != *root_srid)
-                        gml_reproject_pa(pa, srs->srid, *root_srid);
-                geom = (LWGEOM *) lwline_construct(-1, NULL, pa);
-        }
+	if (!*root_srid)
+	{
+		*root_srid = srs->srid;
+		geom = (LWGEOM *) lwline_construct(*root_srid, NULL, pa);
+	}
+	else
+	{
+		if (srs->srid != *root_srid)
+			gml_reproject_pa(pa, srs->srid, *root_srid);
+		geom = (LWGEOM *) lwline_construct(-1, NULL, pa);
+	}
 	lwfree(srs);
 
 	return geom;
@@ -1111,8 +1111,8 @@ static LWGEOM* parse_gml_curve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 			if (i + 1 == lss) last = 1;
 			/* Check if segments are not disjoints */
 			if (i > 0 && memcmp(	getPoint_internal(pa, npoints),
-			                        getPoint_internal(ppa[i], 0),
-			                        *hasz?sizeof(POINT3D):sizeof(POINT2D)))
+			                     getPoint_internal(ppa[i], 0),
+			                     *hasz?sizeof(POINT3D):sizeof(POINT2D)))
 				lwerror("invalid GML representation");
 
 			/* Aggregate stuff */
@@ -1128,17 +1128,17 @@ static LWGEOM* parse_gml_curve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 	srs = parse_gml_srs(xnode);
 	if (srs->reverse_axis) pa = ptarray_flip_coordinates(pa);
-        if (!*root_srid)
-        {
-                *root_srid = srs->srid;
-                geom = (LWGEOM *) lwline_construct(*root_srid, NULL, pa);
-        }
-        else
-        {
-                if (srs->srid != *root_srid)
-                        gml_reproject_pa(pa, srs->srid, *root_srid);
-                geom = (LWGEOM *) lwline_construct(-1, NULL, pa);
-        }
+	if (!*root_srid)
+	{
+		*root_srid = srs->srid;
+		geom = (LWGEOM *) lwline_construct(*root_srid, NULL, pa);
+	}
+	else
+	{
+		if (srs->srid != *root_srid)
+			gml_reproject_pa(pa, srs->srid, *root_srid);
+		geom = (LWGEOM *) lwline_construct(-1, NULL, pa);
+	}
 	lwfree(srs);
 
 	return geom;
@@ -1218,20 +1218,20 @@ static LWGEOM* parse_gml_polygon(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	/* Exterior Ring is mandatory */
 	if (ppa == NULL || ppa[0] == NULL) lwerror("invalid GML representation");
 
-        if (!*root_srid)
-        {
-                *root_srid = srs->srid;
-                geom = (LWGEOM *) lwpoly_construct(*root_srid, NULL, ring, ppa);
-        }
-        else
-        {
-                if (srs->srid != *root_srid)
-                {
-                        for (i=0 ; i < ring ; i++)
-                                gml_reproject_pa(ppa[i], srs->srid, *root_srid);
-                }
-                geom = (LWGEOM *) lwpoly_construct(-1, NULL, ring, ppa);
-        }
+	if (!*root_srid)
+	{
+		*root_srid = srs->srid;
+		geom = (LWGEOM *) lwpoly_construct(*root_srid, NULL, ring, ppa);
+	}
+	else
+	{
+		if (srs->srid != *root_srid)
+		{
+			for (i=0 ; i < ring ; i++)
+				gml_reproject_pa(ppa[i], srs->srid, *root_srid);
+		}
+		geom = (LWGEOM *) lwpoly_construct(-1, NULL, ring, ppa);
+	}
 	lwfree(srs);
 
 	return geom;
@@ -1239,9 +1239,9 @@ static LWGEOM* parse_gml_polygon(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 
 /**
- * Parse GML PolygonPatch (3.1.1) 
+ * Parse GML PolygonPatch (3.1.1)
  */
-static LWGEOM* parse_gml_patch(xmlNodePtr xnode, bool *hasz, int *root_srid) 
+static LWGEOM* parse_gml_patch(xmlNodePtr xnode, bool *hasz, int *root_srid)
 {
 	xmlChar *interpolation=NULL;
 	POINTARRAY **ppa=NULL;
@@ -1293,7 +1293,7 @@ static LWGEOM* parse_gml_patch(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 	/* PolygonPatch/interior */
 	for (ring=1, xa = xnode->children ; xa != NULL ; xa = xa->next)
-		{
+	{
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
 		if (strcmp((char *) xa->name, "interior")) continue;
@@ -1305,7 +1305,7 @@ static LWGEOM* parse_gml_patch(xmlNodePtr xnode, bool *hasz, int *root_srid)
 			if (strcmp((char *) xb->name, "LinearRing")) continue;
 
 			ppa = (POINTARRAY**) lwrealloc((POINTARRAY *) ppa,
-			          sizeof(POINTARRAY*) * (ring + 1));
+			                               sizeof(POINTARRAY*) * (ring + 1));
 			ppa[ring] = parse_gml_data(xb->children, hasz, root_srid);
 
 			if (ppa[ring]->npoints < 4
@@ -1323,20 +1323,20 @@ static LWGEOM* parse_gml_patch(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	/* Exterior Ring is mandatory */
 	if (ppa == NULL || ppa[0] == NULL) lwerror("invalid GML representation");
 
-        if (!*root_srid)
-        {
-                *root_srid = srs->srid;
-                geom = (LWGEOM *) lwpoly_construct(*root_srid, NULL, ring, ppa);
-        }
-        else
-        {
-                if (srs->srid != *root_srid)
-                {
-                        for (i=0 ; i < ring ; i++)
-                                gml_reproject_pa(ppa[i], srs->srid, *root_srid);
-                }
-                geom = (LWGEOM *) lwpoly_construct(-1, NULL, ring, ppa);
-        }
+	if (!*root_srid)
+	{
+		*root_srid = srs->srid;
+		geom = (LWGEOM *) lwpoly_construct(*root_srid, NULL, ring, ppa);
+	}
+	else
+	{
+		if (srs->srid != *root_srid)
+		{
+			for (i=0 ; i < ring ; i++)
+				gml_reproject_pa(ppa[i], srs->srid, *root_srid);
+		}
+		geom = (LWGEOM *) lwpoly_construct(-1, NULL, ring, ppa);
+	}
 	lwfree(srs);
 
 	return geom;
@@ -1401,17 +1401,17 @@ static LWGEOM* parse_gml_mpoint(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
 
 	srs = parse_gml_srs(xnode);
-        if (!*root_srid)
-        {
-                *root_srid = srs->srid;
-                geom = (LWGEOM *)lwcollection_construct_empty(*root_srid, 1, 0);
-                TYPE_SETTYPE(geom->type, MULTIPOINTTYPE);
-        }
-        else
-        {
-                geom = (LWGEOM *)lwcollection_construct_empty(-1, 1, 0);
-                TYPE_SETTYPE(geom->type, MULTIPOINTTYPE);
-        }
+	if (!*root_srid)
+	{
+		*root_srid = srs->srid;
+		geom = (LWGEOM *)lwcollection_construct_empty(*root_srid, 1, 0);
+		TYPE_SETTYPE(geom->type, MULTIPOINTTYPE);
+	}
+	else
+	{
+		geom = (LWGEOM *)lwcollection_construct_empty(-1, 1, 0);
+		TYPE_SETTYPE(geom->type, MULTIPOINTTYPE);
+	}
 	lwfree(srs);
 
 	for (xa = xnode->children ; xa != NULL ; xa = xa->next)
@@ -1422,7 +1422,7 @@ static LWGEOM* parse_gml_mpoint(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		if (strcmp((char *) xa->name, "pointMember")) continue;
 		if (xa->children != NULL)
 			geom = (LWGEOM*)lwmpoint_add_lwpoint((LWMPOINT*)geom,
-			(LWPOINT*)parse_gml(xa->children, hasz, root_srid));
+			                                     (LWPOINT*)parse_gml(xa->children, hasz, root_srid));
 	}
 
 	return geom;
@@ -1441,17 +1441,17 @@ static LWGEOM* parse_gml_mline(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
 
 	srs = parse_gml_srs(xnode);
-        if (!*root_srid)
-        {
-                *root_srid = srs->srid;
-                geom = (LWGEOM *)lwcollection_construct_empty(*root_srid, 1, 0);
-                TYPE_SETTYPE(geom->type, MULTILINETYPE);
-        }
-        else
-        {
-                geom = (LWGEOM *)lwcollection_construct_empty(-1, 1, 0);
-                TYPE_SETTYPE(geom->type, MULTILINETYPE);
-        }
+	if (!*root_srid)
+	{
+		*root_srid = srs->srid;
+		geom = (LWGEOM *)lwcollection_construct_empty(*root_srid, 1, 0);
+		TYPE_SETTYPE(geom->type, MULTILINETYPE);
+	}
+	else
+	{
+		geom = (LWGEOM *)lwcollection_construct_empty(-1, 1, 0);
+		TYPE_SETTYPE(geom->type, MULTILINETYPE);
+	}
 	lwfree(srs);
 
 	for (xa = xnode->children ; xa != NULL ; xa = xa->next)
@@ -1462,7 +1462,7 @@ static LWGEOM* parse_gml_mline(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		if (strcmp((char *) xa->name, "lineStringMember")) continue;
 		if (xa->children != NULL)
 			geom = (LWGEOM*)lwmline_add_lwline((LWMLINE*)geom,
-			(LWLINE*)parse_gml(xa->children, hasz, root_srid));
+			                                   (LWLINE*)parse_gml(xa->children, hasz, root_srid));
 	}
 
 	return geom;
@@ -1481,17 +1481,17 @@ static LWGEOM* parse_gml_mcurve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
 
 	srs = parse_gml_srs(xnode);
-        if (!*root_srid)
-        {
-                *root_srid = srs->srid;
-                geom = (LWGEOM *)lwcollection_construct_empty(*root_srid, 1, 0);
-                TYPE_SETTYPE(geom->type, MULTILINETYPE);
-        }
-        else
-        {
-                geom = (LWGEOM *)lwcollection_construct_empty(-1, 1, 0);
-                TYPE_SETTYPE(geom->type, MULTILINETYPE);
-        }
+	if (!*root_srid)
+	{
+		*root_srid = srs->srid;
+		geom = (LWGEOM *)lwcollection_construct_empty(*root_srid, 1, 0);
+		TYPE_SETTYPE(geom->type, MULTILINETYPE);
+	}
+	else
+	{
+		geom = (LWGEOM *)lwcollection_construct_empty(-1, 1, 0);
+		TYPE_SETTYPE(geom->type, MULTILINETYPE);
+	}
 	lwfree(srs);
 
 	for (xa = xnode->children ; xa != NULL ; xa = xa->next)
@@ -1503,7 +1503,7 @@ static LWGEOM* parse_gml_mcurve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		if (strcmp((char *) xa->name, "curveMember")) continue;
 		if (xa->children != NULL)
 			geom = (LWGEOM*)lwmline_add_lwline((LWMLINE*)geom,
-			(LWLINE*)parse_gml(xa->children, hasz, root_srid));
+			                                   (LWLINE*)parse_gml(xa->children, hasz, root_srid));
 	}
 
 	return geom;
@@ -1522,17 +1522,17 @@ static LWGEOM* parse_gml_mpoly(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
 
 	srs = parse_gml_srs(xnode);
-        if (!*root_srid)
-        {
-                *root_srid = srs->srid;
-                geom = (LWGEOM *)lwcollection_construct_empty(*root_srid, 1, 0);
-                TYPE_SETTYPE(geom->type, MULTIPOLYGONTYPE);
-        }
-        else
-        {
-                geom = (LWGEOM *)lwcollection_construct_empty(-1, 1, 0);
-                TYPE_SETTYPE(geom->type, MULTIPOLYGONTYPE);
-        }
+	if (!*root_srid)
+	{
+		*root_srid = srs->srid;
+		geom = (LWGEOM *)lwcollection_construct_empty(*root_srid, 1, 0);
+		TYPE_SETTYPE(geom->type, MULTIPOLYGONTYPE);
+	}
+	else
+	{
+		geom = (LWGEOM *)lwcollection_construct_empty(-1, 1, 0);
+		TYPE_SETTYPE(geom->type, MULTIPOLYGONTYPE);
+	}
 	lwfree(srs);
 
 	for (xa = xnode->children ; xa != NULL ; xa = xa->next)
@@ -1543,7 +1543,7 @@ static LWGEOM* parse_gml_mpoly(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		if (strcmp((char *) xa->name, "polygonMember")) continue;
 		if (xa->children != NULL)
 			geom = (LWGEOM*)lwmpoly_add_lwpoly((LWMPOLY*)geom,
-			(LWPOLY*)parse_gml(xa->children, hasz, root_srid));
+			                                   (LWPOLY*)parse_gml(xa->children, hasz, root_srid));
 	}
 
 	return geom;
@@ -1562,17 +1562,17 @@ static LWGEOM* parse_gml_msurface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
 
 	srs = parse_gml_srs(xnode);
-        if (!*root_srid)
-        {
-                *root_srid = srs->srid;
-                geom = (LWGEOM *)lwcollection_construct_empty(*root_srid, 1, 0);
-                TYPE_SETTYPE(geom->type, MULTIPOLYGONTYPE);
-        }
-        else
-        {
-                geom = (LWGEOM *)lwcollection_construct_empty(-1, 1, 0);
-                TYPE_SETTYPE(geom->type, MULTIPOLYGONTYPE);
-        }
+	if (!*root_srid)
+	{
+		*root_srid = srs->srid;
+		geom = (LWGEOM *)lwcollection_construct_empty(*root_srid, 1, 0);
+		TYPE_SETTYPE(geom->type, MULTIPOLYGONTYPE);
+	}
+	else
+	{
+		geom = (LWGEOM *)lwcollection_construct_empty(-1, 1, 0);
+		TYPE_SETTYPE(geom->type, MULTIPOLYGONTYPE);
+	}
 	lwfree(srs);
 
 	for (xa = xnode->children ; xa != NULL ; xa = xa->next)
@@ -1583,7 +1583,7 @@ static LWGEOM* parse_gml_msurface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		if (strcmp((char *) xa->name, "surfaceMember")) continue;
 		if (xa->children != NULL)
 			geom = (LWGEOM*)lwmpoly_add_lwpoly((LWMPOLY*)geom,
-			(LWPOLY*)parse_gml(xa->children, hasz, root_srid));
+			                                   (LWPOLY*)parse_gml(xa->children, hasz, root_srid));
 	}
 
 	return geom;
@@ -1591,7 +1591,7 @@ static LWGEOM* parse_gml_msurface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 
 /**
- * Parse GML PolyhedralSurface (3.1.1) 
+ * Parse GML PolyhedralSurface (3.1.1)
  * Nota: It's not part of SF-2
  */
 static LWGEOM* parse_gml_psurface(xmlNodePtr xnode, bool *hasz, int *root_srid)
@@ -1604,17 +1604,17 @@ static LWGEOM* parse_gml_psurface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
 
 	srs = parse_gml_srs(xnode);
-        if (!*root_srid)
-        {
-                *root_srid = srs->srid;
-                geom = (LWGEOM *)lwcollection_construct_empty(*root_srid, 1, 0);
+	if (!*root_srid)
+	{
+		*root_srid = srs->srid;
+		geom = (LWGEOM *)lwcollection_construct_empty(*root_srid, 1, 0);
 		TYPE_SETTYPE(geom->type, POLYHEDRALSURFACETYPE);
-        }
-        else
-        {
-                geom = (LWGEOM *)lwcollection_construct_empty(-1, 1, 0);
+	}
+	else
+	{
+		geom = (LWGEOM *)lwcollection_construct_empty(-1, 1, 0);
 		TYPE_SETTYPE(geom->type, POLYHEDRALSURFACETYPE);
-        }
+	}
 	lwfree(srs);
 
 	/* Looking for gml:polygonPatches */
@@ -1638,7 +1638,7 @@ static LWGEOM* parse_gml_psurface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		if (strcmp((char *) xa->name, "PolygonPatch")) continue;
 
 		geom = (LWGEOM*)lwpsurface_add_lwpoly((LWPSURFACE*)geom,
-		(LWPOLY*)parse_gml_patch(xa, hasz, root_srid));
+		                                      (LWPOLY*)parse_gml_patch(xa, hasz, root_srid));
 	}
 
 	return geom;
@@ -1657,17 +1657,17 @@ static LWGEOM* parse_gml_coll(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
 
 	srs = parse_gml_srs(xnode);
-        if (!*root_srid)
-        {
-                *root_srid = srs->srid;
-                geom = (LWGEOM *)lwcollection_construct_empty(*root_srid, 1, 0);
-                TYPE_SETTYPE(geom->type, COLLECTIONTYPE);
-        }
-        else
-        {
-                geom = (LWGEOM *)lwcollection_construct_empty(-1, 1, 0);
-                TYPE_SETTYPE(geom->type, COLLECTIONTYPE);
-        }
+	if (!*root_srid)
+	{
+		*root_srid = srs->srid;
+		geom = (LWGEOM *)lwcollection_construct_empty(*root_srid, 1, 0);
+		TYPE_SETTYPE(geom->type, COLLECTIONTYPE);
+	}
+	else
+	{
+		geom = (LWGEOM *)lwcollection_construct_empty(-1, 1, 0);
+		TYPE_SETTYPE(geom->type, COLLECTIONTYPE);
+	}
 	lwfree(srs);
 
 	for (xa = xnode->children ; xa != NULL ; xa = xa->next)
@@ -1681,13 +1681,13 @@ static LWGEOM* parse_gml_coll(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		 * substitution group
 		 */
 		if (	   !strcmp((char *) xa->name, "pointMember")
-		           || !strcmp((char *) xa->name, "lineStringMember")
-		           || !strcmp((char *) xa->name, "polygonMember")
-		           || !strcmp((char *) xa->name, "geometryMember"))
+		        || !strcmp((char *) xa->name, "lineStringMember")
+		        || !strcmp((char *) xa->name, "polygonMember")
+		        || !strcmp((char *) xa->name, "geometryMember"))
 		{
 			if (xa->children == NULL) break;
 			geom = (LWGEOM*)lwcollection_add_lwgeom((LWCOLLECTION *)geom,
-				parse_gml(xa->children, hasz, root_srid));
+			                                        parse_gml(xa->children, hasz, root_srid));
 		}
 	}
 

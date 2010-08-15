@@ -415,7 +415,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 	geos_cut_edges = LWGEOM_GEOS_nodeLines(geos_bound);
 	if ( NULL == geos_cut_edges )
 	{
-		GEOSGeom_destroy(geos_bound); 
+		GEOSGeom_destroy(geos_bound);
 		lwnotice("LWGEOM_GEOS_nodeLines(): %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
@@ -425,52 +425,55 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 	{
 		GEOSGeometry* pi;
 		GEOSGeometry* po;
-		
+
 		pi = GEOSGeom_extractUniquePoints(geos_bound);
-		if ( NULL == pi ) {
-			GEOSGeom_destroy(geos_bound); 
+		if ( NULL == pi )
+		{
+			GEOSGeom_destroy(geos_bound);
 			lwnotice("GEOSGeom_extractUniquePoints(): %s",
-				lwgeom_geos_errmsg);
+			         lwgeom_geos_errmsg);
 			return NULL;
 		}
 
-	POSTGIS_DEBUGF(3,
-	               "Boundaries input points %s",
-	               lwgeom_to_ewkt(GEOS2LWGEOM(pi, 0),
-	                              PARSER_CHECK_NONE));
+		POSTGIS_DEBUGF(3,
+		               "Boundaries input points %s",
+		               lwgeom_to_ewkt(GEOS2LWGEOM(pi, 0),
+		                              PARSER_CHECK_NONE));
 
 		po = GEOSGeom_extractUniquePoints(geos_cut_edges);
-		if ( NULL == po ) {
-			GEOSGeom_destroy(geos_bound); 
-			GEOSGeom_destroy(pi); 
+		if ( NULL == po )
+		{
+			GEOSGeom_destroy(geos_bound);
+			GEOSGeom_destroy(pi);
 			lwnotice("GEOSGeom_extractUniquePoints(): %s",
-				lwgeom_geos_errmsg);
+			         lwgeom_geos_errmsg);
 			return NULL;
 		}
 
-	POSTGIS_DEBUGF(3,
-	               "Boundaries output points %s",
-	               lwgeom_to_ewkt(GEOS2LWGEOM(po, 0),
-	                              PARSER_CHECK_NONE));
+		POSTGIS_DEBUGF(3,
+		               "Boundaries output points %s",
+		               lwgeom_to_ewkt(GEOS2LWGEOM(po, 0),
+		                              PARSER_CHECK_NONE));
 
 		collapse_points = GEOSDifference(pi, po);
-		if ( NULL == collapse_points ) {
-			GEOSGeom_destroy(geos_bound); 
-			GEOSGeom_destroy(pi); 
-			GEOSGeom_destroy(po); 
+		if ( NULL == collapse_points )
+		{
+			GEOSGeom_destroy(geos_bound);
+			GEOSGeom_destroy(pi);
+			GEOSGeom_destroy(po);
 			lwnotice("GEOSDifference(): %s", lwgeom_geos_errmsg);
 			return NULL;
 		}
 
-	POSTGIS_DEBUGF(3,
-	               "Collapse points: %s",
-	               lwgeom_to_ewkt(GEOS2LWGEOM(collapse_points, 0),
-	                              PARSER_CHECK_NONE));
+		POSTGIS_DEBUGF(3,
+		               "Collapse points: %s",
+		               lwgeom_to_ewkt(GEOS2LWGEOM(collapse_points, 0),
+		                              PARSER_CHECK_NONE));
 
 		GEOSGeom_destroy(pi);
 		GEOSGeom_destroy(po);
 	}
-	GEOSGeom_destroy(geos_bound); 
+	GEOSGeom_destroy(geos_bound);
 
 	POSTGIS_DEBUGF(3,
 	               "Noded Boundaries: %s",
@@ -505,15 +508,17 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		 */
 
 		new_area = LWGEOM_GEOS_buildArea(geos_cut_edges);
-		if ( ! new_area ) { /* must be an exception */
+		if ( ! new_area )   /* must be an exception */
+		{
 			GEOSGeom_destroy(geos_cut_edges);
 			GEOSGeom_destroy(geos_area);
 			lwnotice("LWGEOM_GEOS_buildArea() threw an error: %s",
-				 lwgeom_geos_errmsg);
+			         lwgeom_geos_errmsg);
 			return NULL;
 		}
 
-		if ( GEOSisEmpty(new_area) ) {
+		if ( GEOSisEmpty(new_area) )
+		{
 			/* no more rings can be build with thes edges */
 			GEOSGeom_destroy(new_area);
 			break;
@@ -529,29 +534,31 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		 * further cut edges later)
 		 */
 		new_area_bound = GEOSBoundary(new_area);
-		if ( ! new_area_bound ) { 
+		if ( ! new_area_bound )
+		{
 			/* We did check for empty area already so
 			 * this must be some other error */
 			lwnotice("GEOSBoundary('%s') threw an error: %s",
-				 lwgeom_to_ewkt(GEOS2LWGEOM(new_area, 0),
-						PARSER_CHECK_NONE),
-				 lwgeom_geos_errmsg);
+			         lwgeom_to_ewkt(GEOS2LWGEOM(new_area, 0),
+			                        PARSER_CHECK_NONE),
+			         lwgeom_geos_errmsg);
 			GEOSGeom_destroy(new_area);
 			GEOSGeom_destroy(geos_area);
 			return NULL;
 		}
 
 		/*
-		 * Now symdif new and old area 
+		 * Now symdif new and old area
 		 */
 		symdif = GEOSSymDifference(geos_area, new_area);
-		if ( ! symdif ) { /* must be an exception */
+		if ( ! symdif )   /* must be an exception */
+		{
 			GEOSGeom_destroy(geos_cut_edges);
 			GEOSGeom_destroy(new_area);
 			GEOSGeom_destroy(new_area_bound);
 			GEOSGeom_destroy(geos_area);
 			lwnotice("GEOSSymDifference() threw an error: %s",
-				 lwgeom_geos_errmsg);
+			         lwgeom_geos_errmsg);
 			return NULL;
 		}
 
@@ -576,28 +583,37 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 			GEOSGeom_destroy(geos_cut_edges);
 			GEOSGeom_destroy(geos_area);
 			lwnotice("GEOSDifference() threw an error: %s",
-				 lwgeom_geos_errmsg);
+			         lwgeom_geos_errmsg);
 			return NULL;
 		}
 		GEOSGeom_destroy(geos_cut_edges);
 		geos_cut_edges = new_cut_edges;
 	}
 
-	if ( ! GEOSisEmpty(geos_area) ) {
+	if ( ! GEOSisEmpty(geos_area) )
+	{
 		vgeoms[nvgeoms++] = geos_area;
-	} else {
+	}
+	else
+	{
 		GEOSGeom_destroy(geos_area);
 	}
 
-	if ( ! GEOSisEmpty(geos_cut_edges) ) {
+	if ( ! GEOSisEmpty(geos_cut_edges) )
+	{
 		vgeoms[nvgeoms++] = geos_cut_edges;
-	} else {
+	}
+	else
+	{
 		GEOSGeom_destroy(geos_cut_edges);
 	}
 
-	if ( ! GEOSisEmpty(collapse_points) ) {
+	if ( ! GEOSisEmpty(collapse_points) )
+	{
 		vgeoms[nvgeoms++] = collapse_points;
-	} else {
+	}
+	else
+	{
 		GEOSGeom_destroy(collapse_points);
 	}
 
@@ -606,7 +622,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		/* Return cut edges */
 		gout = vgeoms[0];
 	}
-	else 
+	else
 	{
 		/* Collect areas and lines (if any line) */
 		gout = GEOSGeom_createCollection(GEOS_GEOMETRYCOLLECTION, vgeoms, nvgeoms);
@@ -656,7 +672,8 @@ LWGEOM_GEOS_makeValidMultiLine(const GEOSGeometry* gin)
 		const GEOSGeometry* g = GEOSGetGeometryN(gin, i);
 		GEOSGeometry* vg;
 		vg = LWGEOM_GEOS_makeValidLine(g);
-		if ( GEOSisEmpty(vg) ) {
+		if ( GEOSisEmpty(vg) )
+		{
 			/* we don't care about this one */
 			GEOSGeom_destroy(vg);
 		}
@@ -670,43 +687,49 @@ LWGEOM_GEOS_makeValidMultiLine(const GEOSGeometry* gin)
 		}
 		else if ( GEOSGeomTypeId(vg) == GEOS_MULTILINESTRING )
 		{
-		  nsubgeoms=GEOSGetNumGeometries(vg); 
-		  nlines_alloc += nsubgeoms;
-		  lines = lwrealloc(lines, sizeof(GEOSGeometry*)*nlines_alloc);
-		  for (j=0; j<nsubgeoms; ++j)
-		  {
-		    const GEOSGeometry* gc = GEOSGetGeometryN(vg, j);
-		    /* NOTE: ownership of the cloned geoms will be
-		     *       taken by final collection */
-		    lines[nlines++] = GEOSGeom_clone(gc);
-		  }
+			nsubgeoms=GEOSGetNumGeometries(vg);
+			nlines_alloc += nsubgeoms;
+			lines = lwrealloc(lines, sizeof(GEOSGeometry*)*nlines_alloc);
+			for (j=0; j<nsubgeoms; ++j)
+			{
+				const GEOSGeometry* gc = GEOSGetGeometryN(vg, j);
+				/* NOTE: ownership of the cloned geoms will be
+				 *       taken by final collection */
+				lines[nlines++] = GEOSGeom_clone(gc);
+			}
 		}
 		else
 		{
 			/* NOTE: return from GEOSGeomType will leak
 			 * but we really don't expect this to happen */
 			lwerror("unexpected geom type returned "
-				"by LWGEOM_GEOS_makeValid: %s",
-				GEOSGeomType(vg));
+			        "by LWGEOM_GEOS_makeValid: %s",
+			        GEOSGeomType(vg));
 		}
 	}
 
 	if ( npoints )
 	{
-		if ( npoints > 1 ) {
+		if ( npoints > 1 )
+		{
 			mpoint_out = GEOSGeom_createCollection(GEOS_MULTIPOINT,
-				points, npoints);
-		} else {
+			                                       points, npoints);
+		}
+		else
+		{
 			mpoint_out = points[0];
 		}
 	}
 
 	if ( nlines )
 	{
-		if ( nlines > 1 ) {
+		if ( nlines > 1 )
+		{
 			mline_out = GEOSGeom_createCollection(
-				GEOS_MULTILINESTRING, lines, nlines);
-		} else {
+			                GEOS_MULTILINESTRING, lines, nlines);
+		}
+		else
+		{
 			mline_out = lines[0];
 		}
 	}
@@ -718,7 +741,7 @@ LWGEOM_GEOS_makeValidMultiLine(const GEOSGeometry* gin)
 		points[0] = mline_out;
 		points[1] = mpoint_out;
 		gout = GEOSGeom_createCollection(GEOS_GEOMETRYCOLLECTION,
-			points, 2);
+		                                 points, 2);
 	}
 	else if ( mline_out )
 	{
@@ -755,19 +778,19 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 	else if ( ret_char )
 	{
 		POSTGIS_DEBUGF(3,
-			       "Geometry [%s] is valid. ",
-			       lwgeom_to_ewkt(GEOS2LWGEOM(gin, 0),
-				PARSER_CHECK_NONE));
+		               "Geometry [%s] is valid. ",
+		               lwgeom_to_ewkt(GEOS2LWGEOM(gin, 0),
+		                              PARSER_CHECK_NONE));
 
-                /* It's valid at this step, return what we have */
+		/* It's valid at this step, return what we have */
 		return GEOSGeom_clone(gin);
 	}
 
 	POSTGIS_DEBUGF(3,
 	               "Geometry [%s] is still not valid: %s. "
-		       "Will try to clean up further.",
+	               "Will try to clean up further.",
 	               lwgeom_to_ewkt(GEOS2LWGEOM(gin, 0),
-			PARSER_CHECK_NONE), lwgeom_geos_errmsg);
+	                              PARSER_CHECK_NONE), lwgeom_geos_errmsg);
 
 
 
@@ -836,29 +859,30 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 	 * Input geometry was lwgeom_in
 	 */
 	{
-	const int paranoia = 2;
-	/* TODO: check if the result is valid */
-	if (paranoia) {
-		int loss;
-		GEOSGeometry *pi, *po, *pd;
-
-		/* TODO: handle some errors here...
-		 * Lack of exceptions is annoying indeed,
-		 * I'm getting old --strk;
-		 */
-		pi = GEOSGeom_extractUniquePoints(gin);
-		po = GEOSGeom_extractUniquePoints(gout);
-		pd = GEOSDifference(pi, po); /* input points - output points */
-		GEOSGeom_destroy(pi);
-		GEOSGeom_destroy(po);
-		loss = !GEOSisEmpty(pd);
-		GEOSGeom_destroy(pd);
-		if ( loss )
+		const int paranoia = 2;
+		/* TODO: check if the result is valid */
+		if (paranoia)
 		{
-			lwnotice("Vertices lost in LWGEOM_GEOS_makeValid");
-			/* return NULL */
+			int loss;
+			GEOSGeometry *pi, *po, *pd;
+
+			/* TODO: handle some errors here...
+			 * Lack of exceptions is annoying indeed,
+			 * I'm getting old --strk;
+			 */
+			pi = GEOSGeom_extractUniquePoints(gin);
+			po = GEOSGeom_extractUniquePoints(gout);
+			pd = GEOSDifference(pi, po); /* input points - output points */
+			GEOSGeom_destroy(pi);
+			GEOSGeom_destroy(po);
+			loss = !GEOSisEmpty(pd);
+			GEOSGeom_destroy(pd);
+			if ( loss )
+			{
+				lwnotice("Vertices lost in LWGEOM_GEOS_makeValid");
+				/* return NULL */
+			}
 		}
-	}
 	}
 
 
@@ -918,13 +942,14 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 
 	geosout = LWGEOM_GEOS_makeValid(geosgeom);
 	GEOSGeom_destroy(geosgeom);
-	if ( ! geosout ) {
+	if ( ! geosout )
+	{
 		return NULL;
 	}
 
 	lwgeom_out = GEOS2LWGEOM(geosout, is3d);
 	if ( lwgeom_is_collection(TYPE_GETTYPE(lwgeom_in->type))
-		&& ! lwgeom_is_collection(TYPE_GETTYPE(lwgeom_out->type)) )
+	        && ! lwgeom_is_collection(TYPE_GETTYPE(lwgeom_out->type)) )
 	{
 		POSTGIS_DEBUG(3, "lwgeom_make_valid: forcing multi");
 		lwgeom_out = lwgeom_as_multi(lwgeom_out);
@@ -944,27 +969,28 @@ lwgeom_clean(LWGEOM* lwgeom_in)
 	LWGEOM* lwgeom_out;
 
 	lwgeom_out = lwgeom_make_valid(lwgeom_in);
-	if ( ! lwgeom_out ) {
+	if ( ! lwgeom_out )
+	{
 		return NULL;
 	}
 
 	/* Check dimensionality is the same as input */
 	if ( lwgeom_dimensionality(lwgeom_in) != lwgeom_dimensionality(lwgeom_out) )
 	{
-    		lwnotice("lwgeom_clean: dimensional collapse (%d to %d)",
-			lwgeom_dimensionality(lwgeom_in), lwgeom_dimensionality(lwgeom_out));
+		lwnotice("lwgeom_clean: dimensional collapse (%d to %d)",
+		         lwgeom_dimensionality(lwgeom_in), lwgeom_dimensionality(lwgeom_out));
 
 		return NULL;
 	}
 
 	/* Check that the output is not a collection if the input wasn't */
 	if ( TYPE_GETTYPE(lwgeom_out->type) == COLLECTIONTYPE &&
-	     TYPE_GETTYPE(lwgeom_in->type) != COLLECTIONTYPE )
+	        TYPE_GETTYPE(lwgeom_in->type) != COLLECTIONTYPE )
 	{
-    		lwnotice("lwgeom_clean: mixed-type output (%s) "
-			"from single-type input (%s)",
-			lwtype_name(TYPE_GETTYPE(lwgeom_out->type)),
-			lwtype_name(TYPE_GETTYPE(lwgeom_in->type)));
+		lwnotice("lwgeom_clean: mixed-type output (%s) "
+		         "from single-type input (%s)",
+		         lwtype_name(TYPE_GETTYPE(lwgeom_out->type)),
+		         lwtype_name(TYPE_GETTYPE(lwgeom_in->type)));
 		return NULL;
 	}
 
@@ -996,21 +1022,22 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 
 	switch ( TYPE_GETTYPE(lwgeom_in->type) )
 	{
-		case LINETYPE:
-		case POLYGONTYPE:
-		case MULTILINETYPE:
-		case MULTIPOLYGONTYPE:
-			break;
+	case LINETYPE:
+	case POLYGONTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+		break;
 
-		default:
-			lwerror("ST_MakeValid: unsupported geometry type %s",
-				lwtype_name(TYPE_GETTYPE(lwgeom_in->type)));
-			PG_RETURN_NULL();
-			break;
+	default:
+		lwerror("ST_MakeValid: unsupported geometry type %s",
+		        lwtype_name(TYPE_GETTYPE(lwgeom_in->type)));
+		PG_RETURN_NULL();
+		break;
 	}
 
 	lwgeom_out = lwgeom_make_valid(lwgeom_in);
-	if ( ! lwgeom_out ) {
+	if ( ! lwgeom_out )
+	{
 		PG_FREE_IF_COPY(in, 0);
 		PG_RETURN_NULL();
 	}
@@ -1038,7 +1065,8 @@ Datum ST_CleanGeometry(PG_FUNCTION_ARGS)
 
 	/* Short-circuit: empty geometry are the cleanest ! */
 #if 0
-	if ( lwgeom_is_empty(lwgeom_in) ) {
+	if ( lwgeom_is_empty(lwgeom_in) )
+	{
 		out = pglwgeom_serialize(lwgeom_in);
 		PG_FREE_IF_COPY(in, 0);
 		PG_RETURN_POINTER(out);
@@ -1046,7 +1074,8 @@ Datum ST_CleanGeometry(PG_FUNCTION_ARGS)
 #endif
 
 	lwgeom_out = lwgeom_clean(lwgeom_in);
-	if ( ! lwgeom_out ) {
+	if ( ! lwgeom_out )
+	{
 		PG_FREE_IF_COPY(in, 0);
 		PG_RETURN_NULL();
 	}

@@ -11,15 +11,15 @@
 # **********************************************************************
 
 CC=gcc
-CFLAGS=-m32  -Wall -Wmissing-prototypes
+CFLAGS=-g -O2  -Wall -Wmissing-prototypes
 
 CUNIT_LDFLAGS= -lcunit
-CUNIT_CPPFLAGS=-m32 -I..
+CUNIT_CPPFLAGS= -I..
 
 # GTK includes and libraries
-GTK_CFLAGS = -mms-bitfields -Ic:/gtkbundle/include/gtk-2.0 -Ic:/gtkbundle/lib/gtk-2.0/include -Ic:/gtkbundle/include/atk-1.0 -Ic:/gtkbundle/include/cairo -Ic:/gtkbundle/include/pango-1.0 -Ic:/gtkbundle/include/glib-2.0 -Ic:/gtkbundle/lib/glib-2.0/include -Ic:/gtkbundle/include/freetype2 -Ic:/gtkbundle/include -Ic:/gtkbundle/include/libpng12   
-GTK_LIBS = -Lc:/gtkbundle/lib -lgtk-win32-2.0 -lgdk-win32-2.0 -latk-1.0 -lgio-2.0 -lgdk_pixbuf-2.0 -lpangowin32-1.0 -lgdi32 -lpangocairo-1.0 -lpango-1.0 -lcairo -lgobject-2.0 -lgmodule-2.0 -lglib-2.0 -lintl   
-GTK_WIN32_FLAGS = -mwindows
+GTK_CFLAGS =  
+GTK_LIBS =  
+GTK_WIN32_FLAGS = 
 
 OBJS=	\
 	cu_list.o \

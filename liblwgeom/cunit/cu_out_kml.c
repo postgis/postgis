@@ -66,7 +66,7 @@ static void do_kml_test_prefix(char * in, char * out, int precision, const char 
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nPrefix: %s\nIn:   %s\nOut:  %s\nTheo: %s\n",
-			prefix, in, h, out);
+		        prefix, in, h, out);
 
 	CU_ASSERT_STRING_EQUAL(h, out);
 
@@ -236,7 +236,8 @@ static void out_kml_test_prefix(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo out_kml_tests[] = {
+CU_TestInfo out_kml_tests[] =
+{
 	PG_TEST(out_kml_test_precision),
 	PG_TEST(out_kml_test_dims),
 	PG_TEST(out_kml_test_geoms),

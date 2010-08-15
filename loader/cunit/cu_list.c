@@ -50,18 +50,18 @@ CU_pSuite register_list_suite(void)
 
 	if (
 	    (NULL == CU_add_test(pSuite, "test_append_file()", test_append_file))
-		 ||
-		(NULL == CU_add_test(pSuite, "test_find_file()", test_find_file))
-		 ||
-		(NULL == CU_add_test(pSuite, "test_traversal()", test_traversal))
-		 ||
-		(NULL == CU_add_test(pSuite, "test_remove_first()", test_remove_first))
-		 ||
-		(NULL == CU_add_test(pSuite, "test_remove_last()", test_remove_first))
-		 ||
-		(NULL == CU_add_test(pSuite, "test_remove_middle()", test_remove_middle))
-		 ||
-		(NULL == CU_add_test(pSuite, "test_find_index()", test_find_index))
+	    ||
+	    (NULL == CU_add_test(pSuite, "test_find_file()", test_find_file))
+	    ||
+	    (NULL == CU_add_test(pSuite, "test_traversal()", test_traversal))
+	    ||
+	    (NULL == CU_add_test(pSuite, "test_remove_first()", test_remove_first))
+	    ||
+	    (NULL == CU_add_test(pSuite, "test_remove_last()", test_remove_first))
+	    ||
+	    (NULL == CU_add_test(pSuite, "test_remove_middle()", test_remove_middle))
+	    ||
+	    (NULL == CU_add_test(pSuite, "test_find_index()", test_find_index))
 	)
 	{
 		CU_cleanup_registry();
@@ -133,7 +133,7 @@ void test_find_file(void)
 	node = append_file("file8", "schema", "table", "geom_column", "-1", 'c', &iter);
 	CU_ASSERT_PTR_NOT_NULL(node);
 
-    node = find_file_by_iter(&keeper_iter);
+	node = find_file_by_iter(&keeper_iter);
 	CU_ASSERT_PTR_NOT_NULL(node);
 	CU_ASSERT_PTR_EQUAL(node, keeper_node);
 
@@ -161,7 +161,7 @@ void test_traversal(void)
 
 	current_node = get_next_node(NULL);
 	CU_ASSERT_PTR_NOT_NULL(current_node);
-	while(current_node != NULL)
+	while (current_node != NULL)
 	{
 		CU_ASSERT_NOT_EQUAL(i, 5);
 		CU_ASSERT_PTR_EQUAL(current_node, node[i]);
@@ -191,7 +191,7 @@ void test_remove_first(void)
 
 	current_node = get_next_node(NULL);
 	CU_ASSERT_PTR_NOT_NULL(current_node);
-	while(current_node != NULL)
+	while (current_node != NULL)
 	{
 		CU_ASSERT_NOT_EQUAL(i, 5);
 		CU_ASSERT_PTR_EQUAL(current_node, node[i]);
@@ -203,7 +203,7 @@ void test_remove_first(void)
 	i = 1;
 	current_node = get_next_node(NULL);
 	CU_ASSERT_PTR_NOT_NULL(current_node);
-	while(current_node != NULL)
+	while (current_node != NULL)
 	{
 		CU_ASSERT_NOT_EQUAL(i, 5);
 		CU_ASSERT_PTR_EQUAL(current_node, node[i]);
@@ -235,7 +235,7 @@ void test_remove_last(void)
 
 	current_node = get_next_node(NULL);
 	CU_ASSERT_PTR_NOT_NULL(current_node);
-	while(current_node != NULL)
+	while (current_node != NULL)
 	{
 		CU_ASSERT_NOT_EQUAL(i, 5);
 		CU_ASSERT_PTR_EQUAL(current_node, node[i]);
@@ -247,7 +247,7 @@ void test_remove_last(void)
 	i = 0;
 	current_node = get_next_node(NULL);
 	CU_ASSERT_PTR_NOT_NULL(current_node);
-	while(current_node != NULL)
+	while (current_node != NULL)
 	{
 		CU_ASSERT_NOT_EQUAL(i, 4);
 		CU_ASSERT_PTR_EQUAL(current_node, node[i]);
@@ -279,7 +279,7 @@ void test_remove_middle(void)
 
 	current_node = get_next_node(NULL);
 	CU_ASSERT_PTR_NOT_NULL(current_node);
-	while(current_node != NULL)
+	while (current_node != NULL)
 	{
 		CU_ASSERT_NOT_EQUAL(i, 5);
 		CU_ASSERT_PTR_EQUAL(current_node, node[i]);
@@ -291,13 +291,13 @@ void test_remove_middle(void)
 	i = 0;
 	current_node = get_next_node(NULL);
 	CU_ASSERT_PTR_NOT_NULL(current_node);
-	while(current_node != NULL)
+	while (current_node != NULL)
 	{
 		CU_ASSERT_NOT_EQUAL(i, 5);
 		CU_ASSERT_PTR_EQUAL(current_node, node[i]);
 		current_node = get_next_node(current_node);
 		i++;
-		if(i == 3)
+		if (i == 3)
 			i++;
 	}
 	CU_ASSERT_EQUAL(i, 5);
@@ -326,7 +326,7 @@ void test_find_index(void)
 	node[4] = append_file("file5", "schema", "table", "geom_column", "-1", 'c', &iter);
 	CU_ASSERT_PTR_NOT_NULL(node[4]);
 
-	for(i = 0; i < 11; i++) 
+	for (i = 0; i < 11; i++)
 	{
 		current_node = find_file_by_index(index[i]);
 		CU_ASSERT_PTR_EQUAL(node[index[i]], current_node);

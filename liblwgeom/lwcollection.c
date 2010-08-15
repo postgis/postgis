@@ -276,38 +276,38 @@ lwcollection_clone(const LWCOLLECTION *g)
 	return ret;
 }
 
-/** 
+/**
 * Appends geom to the collection managed by col. Does not copy or
 * clone, simply takes a reference on the passed geom.
 */
 LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 {
 	int i = 0;
-	
-	if( col == NULL || geom == NULL ) return NULL;
 
-	if( col->geoms == NULL && (col->ngeoms || col->maxgeoms) )
+	if ( col == NULL || geom == NULL ) return NULL;
+
+	if ( col->geoms == NULL && (col->ngeoms || col->maxgeoms) )
 		lwerror("Collection is in inconsistent state. Null memory but non-zero collection counts.");
 
 	/* In case this is a truly empty, make some initial space  */
-	if( col->geoms == NULL )
+	if ( col->geoms == NULL )
 	{
 		col->maxgeoms = 2;
 		col->ngeoms = 0;
 		col->geoms = lwalloc(col->maxgeoms * sizeof(LWGEOM*));
 	}
-	
+
 	/* Allocate more space if we need it */
-	if( col->ngeoms == col->maxgeoms )
+	if ( col->ngeoms == col->maxgeoms )
 	{
 		col->geoms = lwrealloc(col->geoms, sizeof(LWGEOM*) * col->maxgeoms * 2);
 		col->maxgeoms *= 2;
 	}
-	
+
 	/* Make sure we don't already have a reference to this geom */
-	for( i = 0; i < col->ngeoms; i++ )
+	for ( i = 0; i < col->ngeoms; i++ )
 	{
-		if( col->geoms[i] == geom )
+		if ( col->geoms[i] == geom )
 		{
 			LWDEBUGF(4, "Found duplicate geometry in collection %p == %p", col->geoms[i], geom);
 			return col;

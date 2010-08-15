@@ -63,7 +63,7 @@ lwgeom_homogenize(const LWGEOM *geom)
 		{
 
 			hgeom = lwgeom_clone((LWGEOM *)
-			                    ((LWCOLLECTION *)geom)->geoms[0]);
+			                     ((LWCOLLECTION *)geom)->geoms[0]);
 
 			hgeom->SRID = geom->SRID;
 			if (geom->bbox)
@@ -132,8 +132,8 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 
 	/* Check if struct is mixed typed, and need a COLLECTION as output */
 	if ((geoms->points->ngeoms && geoms->lines->ngeoms) ||
-	    (geoms->points->ngeoms && geoms->polys->ngeoms) ||
-	    (geoms->lines->ngeoms  && geoms->polys->ngeoms))
+	        (geoms->points->ngeoms && geoms->polys->ngeoms) ||
+	        (geoms->lines->ngeoms  && geoms->polys->ngeoms))
 	{
 		LWDEBUGF(4,"geoms->points->ngeoms %d  geoms->lines->ngeoms %d  geoms->polys->ngeoms %d", geoms->points->ngeoms, geoms->lines->ngeoms, geoms->polys->ngeoms);
 		coll = lwcollection_construct_empty(srid, hasz, hasm);
@@ -168,10 +168,10 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 		lwmline_release(geoms->lines);
 		lwmpoly_release(geoms->polys);
 		lwfree(geoms);
-		
-		for( i = 0; i < coll->ngeoms; i++ )
+
+		for ( i = 0; i < coll->ngeoms; i++ )
 			LWDEBUGF(2,"TYPE_GETTYPE(coll->geoms[%d]->type) %d", i, TYPE_GETTYPE(coll->geoms[i]->type));
-			
+
 
 		return (LWGEOM *) coll;
 	}
@@ -216,7 +216,7 @@ lwcollection_homogenize_subgeom(LWGEOM_HOMOGENIZE *hgeoms, LWGEOM *geom)
 	if (!geom) lwerror("lwcollection_homogenize: Sub geometry is Null");
 
 	type = TYPE_GETTYPE(geom->type);
-	
+
 	/* We manage the SRID in lwcollection_homogenize */
 	geom->SRID = -1;
 
@@ -238,7 +238,7 @@ lwcollection_homogenize_subgeom(LWGEOM_HOMOGENIZE *hgeoms, LWGEOM *geom)
 		for (i=0; i < obj->ngeoms ; i++)
 			hgeoms = lwcollection_homogenize_subgeom(hgeoms, obj->geoms[i]);
 	}
-	else 
+	else
 	{
 		lwerror("lwcollection_homogenize: Unsupported geometry type");
 	}

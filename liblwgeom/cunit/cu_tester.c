@@ -41,7 +41,8 @@ extern CU_SuiteInfo out_svg_suite;
 int main(int argc, char *argv[])
 {
 	/* ADD YOUR SUITE HERE (2 of 2) */
-	CU_SuiteInfo suites[] = {
+	CU_SuiteInfo suites[] =
+	{
 		print_suite,
 		algorithms_suite,
 		measures_suite,
@@ -70,14 +71,16 @@ int main(int argc, char *argv[])
 	int num_failed;
 
 	/* initialize the CUnit test registry */
-	if (CUE_SUCCESS != CU_initialize_registry()) {
+	if (CUE_SUCCESS != CU_initialize_registry())
+	{
 		errCode = CU_get_error();
 		printf("    Error attempting to initialize registry: %d.  See CUError.h for error code list.\n", errCode);
 		return errCode;
 	}
 
 	/* Register all the test suites. */
-	if (CUE_SUCCESS != CU_register_suites(suites)) {
+	if (CUE_SUCCESS != CU_register_suites(suites))
+	{
 		errCode = CU_get_error();
 		printf("    Error attempting to register test suites: %d.  See CUError.h for error code list.\n", errCode);
 		return errCode;
@@ -85,23 +88,30 @@ int main(int argc, char *argv[])
 
 	/* Run all tests using the CUnit Basic interface */
 	CU_basic_set_mode(CU_BRM_VERBOSE);
-	if (argc <= 1) {
+	if (argc <= 1)
+	{
 		CU_basic_run_tests();
-	} else {
+	}
+	else
+	{
 		/* NOTE: The cunit functions used here (CU_get_registry, CU_get_suite_by_name, and CU_get_test_by_name) are
 		 *       listed with the following warning: "Internal CUnit system functions.  Should not be routinely called by users."
 		 *       However, there didn't seem to be any other way to get tests by name, so we're calling them. */
 		registry = CU_get_registry();
-		for (index = 1; index < argc; index++) {
+		for (index = 1; index < argc; index++)
+		{
 			suite_name = argv[index];
 			test_name = NULL;
 			suite_to_run = CU_get_suite_by_name(suite_name, registry);
-			if (NULL == suite_to_run) {
+			if (NULL == suite_to_run)
+			{
 				/* See if it's a test name instead of a suite name. */
 				suite_to_run = registry->pSuite;
-				while (suite_to_run != NULL) {
+				while (suite_to_run != NULL)
+				{
 					test_to_run = CU_get_test_by_name(suite_name, suite_to_run);
-					if (test_to_run != NULL) {
+					if (test_to_run != NULL)
+					{
 						/* It was a test name. */
 						test_name = suite_name;
 						suite_name = suite_to_run->pName;
@@ -110,42 +120,54 @@ int main(int argc, char *argv[])
 					suite_to_run = suite_to_run->pNext;
 				}
 			}
-			if (suite_to_run == NULL) {
+			if (suite_to_run == NULL)
+			{
 				printf("\n'%s' does not appear to be either a suite name or a test name.\n\n", suite_name);
-			} else {
-				if (test_name != NULL) {
+			}
+			else
+			{
+				if (test_name != NULL)
+				{
 					/* Run only this test. */
 					printf("\nRunning test '%s' in suite '%s'.\n", test_name, suite_name);
 					/* This should be CU_basic_run_test, but that method is broken, see:
 					 *     https://sourceforge.net/tracker/?func=detail&aid=2851925&group_id=32992&atid=407088
 					 * This one doesn't output anything for success, so we have to do it manually. */
 					errCode = CU_run_test(suite_to_run, test_to_run);
-					if (errCode != CUE_SUCCESS) {
+					if (errCode != CUE_SUCCESS)
+					{
 						printf("    Error attempting to run tests: %d.  See CUError.h for error code list.\n", errCode);
-					} else {
+					}
+					else
+					{
 						num_run = CU_get_number_of_asserts();
 						num_failed = CU_get_number_of_failures();
 						printf("\n    %s - asserts - %3d passed, %3d failed, %3d total.\n\n",
-							(0 == num_failed ? "PASSED" : "FAILED"), (num_run - num_failed), num_failed, num_run);
+						       (0 == num_failed ? "PASSED" : "FAILED"), (num_run - num_failed), num_failed, num_run);
 					}
-				} else {
+				}
+				else
+				{
 					/* Run all the tests in the suite. */
 					printf("\nRunning all tests in suite '%s'.\n", suite_name);
 					/* This should be CU_basic_run_suite, but that method is broken, see:
 					 *     https://sourceforge.net/tracker/?func=detail&aid=2851925&group_id=32992&atid=407088
 					 * This one doesn't output anything for success, so we have to do it manually. */
 					errCode = CU_run_suite(suite_to_run);
-					if (errCode != CUE_SUCCESS) {
+					if (errCode != CUE_SUCCESS)
+					{
 						printf("    Error attempting to run tests: %d.  See CUError.h for error code list.\n", errCode);
-					} else {
+					}
+					else
+					{
 						num_run = CU_get_number_of_tests_run();
 						num_failed = CU_get_number_of_tests_failed();
 						printf("\n    %s -   tests - %3d passed, %3d failed, %3d total.\n",
-							(0 == num_failed ? "PASSED" : "FAILED"), (num_run - num_failed), num_failed, num_run);
+						       (0 == num_failed ? "PASSED" : "FAILED"), (num_run - num_failed), num_failed, num_run);
 						num_run = CU_get_number_of_asserts();
 						num_failed = CU_get_number_of_failures();
 						printf("           - asserts - %3d passed, %3d failed, %3d total.\n\n",
-							(num_run - num_failed), num_failed, num_run);
+						       (num_run - num_failed), num_failed, num_run);
 					}
 				}
 			}

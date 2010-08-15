@@ -53,7 +53,7 @@ static void cu_wkb(char *wkt)
 	LWGEOM *g = lwgeom_from_ewkt(wkt, PARSER_CHECK_NONE);
 	if ( s ) free(s);
 	if ( t ) free(t);
-	s = lwgeom_to_wkb(g, WKB_HEX | WKB_NDR | WKB_EXTENDED, NULL);	
+	s = lwgeom_to_wkb(g, WKB_HEX | WKB_NDR | WKB_EXTENDED, NULL);
 	t = lwgeom_to_hexwkb(g, PARSER_CHECK_NONE, NDR);
 	lwgeom_free(g);
 }
@@ -93,9 +93,9 @@ static void test_wkb_polygon(void)
 	CU_ASSERT_STRING_EQUAL(s, t);
 }
 
-static void test_wkb_multipoint(void){}
+static void test_wkb_multipoint(void) {}
 
-static void test_wkb_multilinestring(void){}
+static void test_wkb_multilinestring(void) {}
 
 static void test_wkb_multipolygon(void)
 {
@@ -112,22 +112,23 @@ static void test_wkb_collection(void)
 	CU_ASSERT_STRING_EQUAL(s, t);
 }
 
-static void test_wkb_circularstring(void){}
+static void test_wkb_circularstring(void) {}
 
-static void test_wkb_compoundcurve(void){}
+static void test_wkb_compoundcurve(void) {}
 
-static void test_wkb_curvpolygon(void){}
+static void test_wkb_curvpolygon(void) {}
 
-static void test_wkb_multicurve(void){}
+static void test_wkb_multicurve(void) {}
 
-static void test_wkb_multisurface(void){}
+static void test_wkb_multisurface(void) {}
 
 
 /*
 ** Used by test harness to register the tests in this file.
 */
 
-CU_TestInfo wkb_tests[] = {
+CU_TestInfo wkb_tests[] =
+{
 	PG_TEST(test_wkb_point),
 	PG_TEST(test_wkb_linestring),
 	PG_TEST(test_wkb_polygon),

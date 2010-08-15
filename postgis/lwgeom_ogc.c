@@ -300,7 +300,7 @@ Datum LWGEOM_numgeometries_collection(PG_FUNCTION_ARGS)
 	if (type==MULTIPOINTTYPE || type==MULTILINETYPE ||
 	        type==MULTICURVETYPE || type==MULTIPOLYGONTYPE ||
 	        type==MULTISURFACETYPE || type==POLYHEDRALSURFACETYPE ||
-		type==TINTYPE || type==COLLECTIONTYPE)
+	        type==TINTYPE || type==COLLECTIONTYPE)
 	{
 		ret = lwgeom_getnumgeometries(serialized);
 		PG_FREE_IF_COPY(geom, 0);
@@ -380,15 +380,15 @@ lwgeom_dimension_recursive(const uchar *serialized)
 	 */
 	if (lwgeom_getType(serialized[0]) == CURVEPOLYTYPE) return 2;
 
-	/* SubType of an PolyhedralSurface contains only Polygons 
-         * so we checked here if it's a volume (or not)
+	/* SubType of an PolyhedralSurface contains only Polygons
+	     * so we checked here if it's a volume (or not)
 	 */
 	if (lwgeom_getType(serialized[0]) == POLYHEDRALSURFACETYPE )
 	{
-			psurf = lwpsurface_deserialize((uchar *)serialized);
-			dims = lwpsurface_is_closed(psurf)?3:2;
-			lwfree(psurf);
-			return dims;
+		psurf = lwpsurface_deserialize((uchar *)serialized);
+		dims = lwpsurface_is_closed(psurf)?3:2;
+		lwfree(psurf);
+		return dims;
 	}
 
 	inspected = lwgeom_inspect(serialized);

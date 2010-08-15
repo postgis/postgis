@@ -165,7 +165,7 @@ askml2_poly_size(LWPOLY *poly, int precision, const char *prefix)
 	size += sizeof("<outerboundaryis><linearring><coordinates>/") * 2;
 	size += sizeof("<innerboundaryis><linearring><coordinates>/") * 2 *
 	        poly->nrings;
-	
+
 	size += prefixlen * (1 + 3 + (3 * poly->nrings)) * 2;
 
 	for (i=0; i<poly->nrings; i++)
@@ -182,22 +182,22 @@ askml2_poly_buf(LWPOLY *poly, char *output, int precision, const char *prefix)
 
 	ptr += sprintf(ptr, "<%sPolygon>", prefix);
 	ptr += sprintf(ptr, "<%souterBoundaryIs><%sLinearRing><%scoordinates>",
-		prefix, prefix, prefix);
+	               prefix, prefix, prefix);
 	ptr += pointArray_toKML2(poly->rings[0], ptr, precision);
 	ptr += sprintf(ptr, "</%scoordinates></%sLinearRing></%souterBoundaryIs>",
-		prefix, prefix, prefix);
+	               prefix, prefix, prefix);
 
 	for (i=1; i<poly->nrings; i++)
 	{
 		ptr += sprintf(ptr,
-			"<%sinnerBoundaryIs><%sLinearRing><%scoordinates>",
-			prefix, prefix, prefix);
+		               "<%sinnerBoundaryIs><%sLinearRing><%scoordinates>",
+		               prefix, prefix, prefix);
 
 		ptr += pointArray_toKML2(poly->rings[i], ptr, precision);
 
 		ptr += sprintf(ptr,
-			"</%scoordinates></%sLinearRing></%sinnerBoundaryIs>",
-			prefix, prefix, prefix);
+		               "</%scoordinates></%sLinearRing></%sinnerBoundaryIs>",
+		               prefix, prefix, prefix);
 	}
 	ptr += sprintf(ptr, "</%sPolygon>", prefix);
 

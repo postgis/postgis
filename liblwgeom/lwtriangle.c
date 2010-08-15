@@ -19,7 +19,7 @@
 
 
 
-/* construct a new LWTRIANGLE. 
+/* construct a new LWTRIANGLE.
  * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
  */
 LWTRIANGLE*
@@ -89,7 +89,7 @@ lwtriangle_deserialize(uchar *serialized_form)
 	if ( TYPE_GETTYPE(type) != TRIANGLETYPE)
 	{
 		lwerror("lwtriangle_deserialize: attempt to deserialize a triangle which is really a %s",
-			lwtype_name(type));
+		        lwtype_name(type));
 		return NULL;
 	}
 
@@ -119,10 +119,10 @@ lwtriangle_deserialize(uchar *serialized_form)
 	}
 
 	npoints = lw_get_uint32(loc);
-        /*lwnotice("triangle npoints = %d", npoints); */
-        loc +=4;
-        pa = pointArray_construct(loc, TYPE_HASZ(type), TYPE_HASM(type), npoints);
-        result->points = pa;
+	/*lwnotice("triangle npoints = %d", npoints); */
+	loc +=4;
+	pa = pointArray_construct(loc, TYPE_HASZ(type), TYPE_HASM(type), npoints);
+	result->points = pa;
 
 	return result;
 }
@@ -160,67 +160,67 @@ lwtriangle_serialize(LWTRIANGLE *triangle)
 void
 lwtriangle_serialize_buf(LWTRIANGLE *triangle, uchar *buf, size_t *retsize)
 {
-        char hasSRID;
-        uchar *loc;
-        int ptsize;
-        size_t size;
+	char hasSRID;
+	uchar *loc;
+	int ptsize;
+	size_t size;
 
-        LWDEBUGF(2, "lwtriangle_serialize_buf(%p, %p, %p) called",
-                 triangle, buf, retsize);
+	LWDEBUGF(2, "lwtriangle_serialize_buf(%p, %p, %p) called",
+	         triangle, buf, retsize);
 
-        if (triangle == NULL)
-                lwerror("lwtriangle_serialize:: given null triangle");
+	if (triangle == NULL)
+		lwerror("lwtriangle_serialize:: given null triangle");
 
-        if ( TYPE_GETZM(triangle->type) != TYPE_GETZM(triangle->points->dims) )
-                lwerror("Dimensions mismatch in lwtriangle");
+	if ( TYPE_GETZM(triangle->type) != TYPE_GETZM(triangle->points->dims) )
+		lwerror("Dimensions mismatch in lwtriangle");
 
-        ptsize = pointArray_ptsize(triangle->points);
+	ptsize = pointArray_ptsize(triangle->points);
 
-        hasSRID = (triangle->SRID != -1);
+	hasSRID = (triangle->SRID != -1);
 
-        buf[0] = (uchar) lwgeom_makeType_full(
-                     TYPE_HASZ(triangle->type), TYPE_HASM(triangle->type),
-                     hasSRID, TRIANGLETYPE, triangle->bbox ? 1 : 0);
-        loc = buf+1;
+	buf[0] = (uchar) lwgeom_makeType_full(
+	             TYPE_HASZ(triangle->type), TYPE_HASM(triangle->type),
+	             hasSRID, TRIANGLETYPE, triangle->bbox ? 1 : 0);
+	loc = buf+1;
 
-        LWDEBUGF(3, "lwtriangle_serialize_buf added type (%d)", triangle->type);
+	LWDEBUGF(3, "lwtriangle_serialize_buf added type (%d)", triangle->type);
 
-        if (triangle->bbox)
-        {
-                memcpy(loc, triangle->bbox, sizeof(BOX2DFLOAT4));
-                loc += sizeof(BOX2DFLOAT4);
+	if (triangle->bbox)
+	{
+		memcpy(loc, triangle->bbox, sizeof(BOX2DFLOAT4));
+		loc += sizeof(BOX2DFLOAT4);
 
-                LWDEBUG(3, "lwtriangle_serialize_buf added BBOX");
-        }
+		LWDEBUG(3, "lwtriangle_serialize_buf added BBOX");
+	}
 
-        if (hasSRID)
-        {
-                memcpy(loc, &triangle->SRID, sizeof(int32));
-                loc += sizeof(int32);
+	if (hasSRID)
+	{
+		memcpy(loc, &triangle->SRID, sizeof(int32));
+		loc += sizeof(int32);
 
-                LWDEBUG(3, "lwtriangle_serialize_buf added SRID");
-        }
+		LWDEBUG(3, "lwtriangle_serialize_buf added SRID");
+	}
 
-        memcpy(loc, &triangle->points->npoints, sizeof(uint32));
-        loc += sizeof(uint32);
+	memcpy(loc, &triangle->points->npoints, sizeof(uint32));
+	loc += sizeof(uint32);
 
-        LWDEBUGF(3, "lwtriangle_serialize_buf added npoints (%d)",
-                 triangle->points->npoints);
+	LWDEBUGF(3, "lwtriangle_serialize_buf added npoints (%d)",
+	         triangle->points->npoints);
 
-        /*copy in points */
-        size = triangle->points->npoints*ptsize;
-        memcpy(loc, getPoint_internal(triangle->points, 0), size);
-        loc += size;
+	/*copy in points */
+	size = triangle->points->npoints*ptsize;
+	memcpy(loc, getPoint_internal(triangle->points, 0), size);
+	loc += size;
 
-        LWDEBUGF(3, "lwtriangle_serialize_buf copied serialized_pointlist (%d bytes)",
-                 ptsize * triangle->points->npoints);
+	LWDEBUGF(3, "lwtriangle_serialize_buf copied serialized_pointlist (%d bytes)",
+	         ptsize * triangle->points->npoints);
 
-        if (retsize) *retsize = loc-buf;
+	if (retsize) *retsize = loc-buf;
 
-        /*printBYTES((uchar *)result, loc-buf); */
+	/*printBYTES((uchar *)result, loc-buf); */
 
-        LWDEBUGF(3, "lwtriangle_serialize_buf returning (loc: %p, size: %d)",
-		loc, loc-buf);
+	LWDEBUGF(3, "lwtriangle_serialize_buf returning (loc: %p, size: %d)",
+	         loc, loc-buf);
 }
 
 
@@ -239,40 +239,40 @@ lwtriangle_compute_box3d(LWTRIANGLE *triangle)
 size_t
 lwgeom_size_triangle(const uchar *serialized_triangle)
 {
-        int type = (uchar) serialized_triangle[0];
-        uint32 result = 1;  /*type */
-        const uchar *loc;
-        uint32 npoints;
+	int type = (uchar) serialized_triangle[0];
+	uint32 result = 1;  /*type */
+	const uchar *loc;
+	uint32 npoints;
 
-        LWDEBUG(2, "lwgeom_size_triangle called");
+	LWDEBUG(2, "lwgeom_size_triangle called");
 
-        if ( lwgeom_getType(type) != TRIANGLETYPE)
-                lwerror("lwgeom_size_triangle::attempt to find the length of a non-triangle");
+	if ( lwgeom_getType(type) != TRIANGLETYPE)
+		lwerror("lwgeom_size_triangle::attempt to find the length of a non-triangle");
 
 
-        loc = serialized_triangle+1;
+	loc = serialized_triangle+1;
 
-        if (lwgeom_hasBBOX(type))
-        {
-                loc += sizeof(BOX2DFLOAT4);
-                result +=sizeof(BOX2DFLOAT4);
-        }
+	if (lwgeom_hasBBOX(type))
+	{
+		loc += sizeof(BOX2DFLOAT4);
+		result +=sizeof(BOX2DFLOAT4);
+	}
 
-        if ( lwgeom_hasSRID(type))
-        {
-                loc += 4; /* type + SRID */
-                result +=4;
-        }
+	if ( lwgeom_hasSRID(type))
+	{
+		loc += 4; /* type + SRID */
+		result +=4;
+	}
 
-        /* we've read the type (1 byte) and SRID (4 bytes, if present) */
-        npoints = lw_get_uint32(loc);
-        result += sizeof(uint32); /* npoints */
+	/* we've read the type (1 byte) and SRID (4 bytes, if present) */
+	npoints = lw_get_uint32(loc);
+	result += sizeof(uint32); /* npoints */
 
-        result += TYPE_NDIMS(type) * sizeof(double) * npoints;
+	result += TYPE_NDIMS(type) * sizeof(double) * npoints;
 
-        LWDEBUGF(3, "lwgeom_size_triangle returning %d", result);
+	LWDEBUGF(3, "lwgeom_size_triangle returning %d", result);
 
-        return result;
+	return result;
 }
 
 
@@ -280,19 +280,19 @@ lwgeom_size_triangle(const uchar *serialized_triangle)
 size_t
 lwtriangle_serialize_size(LWTRIANGLE *triangle)
 {
-        size_t size = 1;  /* type */
+	size_t size = 1;  /* type */
 
-        LWDEBUG(2, "lwtriangle_serialize_size called");
+	LWDEBUG(2, "lwtriangle_serialize_size called");
 
-        if ( triangle->SRID != -1 ) size += 4; /* SRID */
-        if ( triangle->bbox ) size += sizeof(BOX2DFLOAT4);
+	if ( triangle->SRID != -1 ) size += 4; /* SRID */
+	if ( triangle->bbox ) size += sizeof(BOX2DFLOAT4);
 
-        size += 4; /* npoints */
-        size += pointArray_ptsize(triangle->points)*triangle->points->npoints;
+	size += 4; /* npoints */
+	size += pointArray_ptsize(triangle->points)*triangle->points->npoints;
 
-        LWDEBUGF(3, "lwtriangle_serialize_size returning %d", size);
+	LWDEBUGF(3, "lwtriangle_serialize_size returning %d", size);
 
-        return size;
+	return size;
 }
 
 
@@ -323,7 +323,7 @@ LWTRIANGLE *
 lwtriangle_clone(const LWTRIANGLE *g)
 {
 	LWTRIANGLE *ret = lwalloc(sizeof(LWTRIANGLE));
-        LWDEBUGF(2, "lwtriangle_clone called with %p", g);
+	LWDEBUGF(2, "lwtriangle_clone called with %p", g);
 	memcpy(ret, g, sizeof(LWTRIANGLE));
 	if ( g->bbox ) ret->bbox = box2d_clone(g->bbox);
 	return ret;
@@ -352,12 +352,12 @@ lwtriangle_release(LWTRIANGLE *lwtriangle)
 char
 lwtriangle_same(const LWTRIANGLE *t1, const LWTRIANGLE *t2)
 {
-        return ptarray_same(t1->points, t2->points);
+	return ptarray_same(t1->points, t2->points);
 }
 
 /*
  * Construct a triangle from a LWLINE being
- * the shell 
+ * the shell
  * Pointarray from intput geom are cloned.
  * Input line must have 4 points, and be closed.
  */
@@ -371,7 +371,7 @@ lwtriangle_from_lwline(const LWLINE *shell)
 		lwerror("lwtriangle_from_lwline: shell must have exactly 4 points");
 
 	if (   (!TYPE_HASZ(shell->type) && !ptarray_isclosed2d(shell->points)) ||
-		(TYPE_HASZ(shell->type) && !ptarray_isclosed3d(shell->points)) )
+	        (TYPE_HASZ(shell->type) && !ptarray_isclosed3d(shell->points)) )
 		lwerror("lwtriangle_from_lwline: shell must be closed");
 
 	pa = ptarray_clone(shell->points);

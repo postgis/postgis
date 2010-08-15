@@ -61,13 +61,13 @@ lwline_split_by_line(LWLINE* lwline_in, LWLINE* blade_in)
 	LWGEOM* diff;
 	LWCOLLECTION* out;
 	GEOSGeometry* gdiff; /* difference */
-	GEOSGeometry* g1; 
-	GEOSGeometry* g2; 
+	GEOSGeometry* g1;
+	GEOSGeometry* g2;
 	int ret;
 
 	/* Possible outcomes:
 	 *
-	 *  1. The lines do not cross or overlap 
+	 *  1. The lines do not cross or overlap
 	 *      -> Return a collection with single element
 	 *  2. The lines cross
 	 *      -> Return a collection of all elements resulting from the split
@@ -76,12 +76,14 @@ lwline_split_by_line(LWLINE* lwline_in, LWLINE* blade_in)
 	initGEOS(lwgeom_geos_error, lwgeom_geos_error);
 
 	g1 = LWGEOM2GEOS((LWGEOM*)lwline_in);
-	if ( ! g1 ) {
+	if ( ! g1 )
+	{
 		lwerror("LWGEOM2GEOS: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
 	g2 = LWGEOM2GEOS((LWGEOM*)blade_in);
-	if ( ! g2 ) {
+	if ( ! g2 )
+	{
 		GEOSGeom_destroy(g1);
 		lwerror("LWGEOM2GEOS: %s", lwgeom_geos_errmsg);
 		return NULL;
@@ -89,13 +91,15 @@ lwline_split_by_line(LWLINE* lwline_in, LWLINE* blade_in)
 
 	/* If interior intersecton is linear we can't split */
 	ret = GEOSRelatePattern(g1, g2, "1********");
-	if ( 2 == ret ) {
+	if ( 2 == ret )
+	{
 		lwerror("GEOSRelatePattern: %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
 		return NULL;
 	}
-	if ( ret ) {
+	if ( ret )
+	{
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
 		lwerror("Splitter line has linear intersection with input");
@@ -106,14 +110,16 @@ lwline_split_by_line(LWLINE* lwline_in, LWLINE* blade_in)
 	gdiff = GEOSDifference(g1,g2);
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
-	if (gdiff == NULL) {
+	if (gdiff == NULL)
+	{
 		lwerror("GEOSDifference: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
 
 	diff = GEOS2LWGEOM(gdiff, TYPE_HASZ(lwline_in->type));
 	GEOSGeom_destroy(gdiff);
-	if (NULL == diff) {
+	if (NULL == diff)
+	{
 		lwerror("GEOS2LWGEOM: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
@@ -123,13 +129,13 @@ lwline_split_by_line(LWLINE* lwline_in, LWLINE* blade_in)
 		components = lwalloc(sizeof(LWGEOM*)*1);
 		components[0] = diff;
 		out = lwcollection_construct(COLLECTIONTYPE, lwline_in->SRID,
-			NULL, 1, components);
+		                             NULL, 1, components);
 	}
 	else
 	{
 		out = lwcollection_construct(COLLECTIONTYPE, lwline_in->SRID,
-			NULL, ((LWCOLLECTION*)diff)->ngeoms,
-			((LWCOLLECTION*)diff)->geoms);
+		                             NULL, ((LWCOLLECTION*)diff)->ngeoms,
+		                             ((LWCOLLECTION*)diff)->geoms);
 	}
 
 
@@ -167,7 +173,8 @@ lwline_split_by_point(LWLINE* lwline_in, LWPOINT* blade_in)
 		components = lwalloc(sizeof(LWGEOM*)*2);
 		ncomponents = 1;
 
-		if ( dist > 0 ) { /* TODO: accept a tolerance ? */
+		if ( dist > 0 )   /* TODO: accept a tolerance ? */
+		{
 			/* No intersection */
 			components[0] = (LWGEOM*)lwline_clone(lwline_in);
 			components[0]->SRID = -1;
@@ -191,10 +198,11 @@ lwline_split_by_point(LWLINE* lwline_in, LWPOINT* blade_in)
 		components[0] = (LWGEOM*)lwline_construct(-1, NULL, pa1);
 		components[1] = (LWGEOM*)lwline_construct(-1, NULL, pa2);
 		++ncomponents;
-	} while (0);
+	}
+	while (0);
 
 	out = lwcollection_construct(COLLECTIONTYPE, lwline_in->SRID,
-		NULL, ncomponents, components);
+	                             NULL, ncomponents, components);
 
 	/* That's all folks */
 
@@ -214,7 +222,7 @@ lwline_split(LWLINE* lwline_in, LWGEOM* blade_in)
 
 	default:
 		lwerror("Splitting a Line by a %s is unsupported",
-			lwtype_name(TYPE_GETTYPE(blade_in->type)));
+		        lwtype_name(TYPE_GETTYPE(blade_in->type)));
 		return NULL;
 	}
 	return NULL;
@@ -225,16 +233,16 @@ static LWGEOM*
 lwpoly_split_by_line(LWPOLY* lwpoly_in, LWLINE* blade_in)
 {
 	LWCOLLECTION* out;
-	GEOSGeometry* g1; 
-	GEOSGeometry* g2; 
-	GEOSGeometry* g1_bounds; 
-	GEOSGeometry* polygons; 
+	GEOSGeometry* g1;
+	GEOSGeometry* g2;
+	GEOSGeometry* g1_bounds;
+	GEOSGeometry* polygons;
 	const GEOSGeometry *vgeoms[1];
 	int i,n;
 
 	/* Possible outcomes:
 	 *
-	 *  1. The line does not split the polygon 
+	 *  1. The line does not split the polygon
 	 *      -> Return a collection with single element
 	 *  2. The line does split the polygon
 	 *      -> Return a collection of all elements resulting from the split
@@ -243,7 +251,8 @@ lwpoly_split_by_line(LWPOLY* lwpoly_in, LWLINE* blade_in)
 	initGEOS(lwgeom_geos_error, lwgeom_geos_error);
 
 	g1 = LWGEOM2GEOS((LWGEOM*)lwpoly_in);
-	if ( NULL == g1 ) {
+	if ( NULL == g1 )
+	{
 		lwerror("LWGEOM2GEOS: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
@@ -256,7 +265,8 @@ lwpoly_split_by_line(LWPOLY* lwpoly_in, LWLINE* blade_in)
 	}
 
 	g2 = LWGEOM2GEOS((LWGEOM*)blade_in);
-	if ( NULL == g2 ) {
+	if ( NULL == g2 )
+	{
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g1_bounds);
 		lwerror("LWGEOM2GEOS: %s", lwgeom_geos_errmsg);
@@ -273,18 +283,18 @@ lwpoly_split_by_line(LWPOLY* lwpoly_in, LWLINE* blade_in)
 		return NULL;
 	}
 
-/* debugging..
-	lwnotice("Bounds poly: %s",
-	               lwgeom_to_ewkt(GEOS2LWGEOM(g1_bounds, 0),
-	                              PARSER_CHECK_NONE));
-	lwnotice("Line: %s",
-	               lwgeom_to_ewkt(GEOS2LWGEOM(g2, 0),
-	                              PARSER_CHECK_NONE));
+	/* debugging..
+		lwnotice("Bounds poly: %s",
+		               lwgeom_to_ewkt(GEOS2LWGEOM(g1_bounds, 0),
+		                              PARSER_CHECK_NONE));
+		lwnotice("Line: %s",
+		               lwgeom_to_ewkt(GEOS2LWGEOM(g2, 0),
+		                              PARSER_CHECK_NONE));
 
-	lwnotice("Noded bounds: %s",
-	               lwgeom_to_ewkt(GEOS2LWGEOM(vgeoms[0], 0),
-	                              PARSER_CHECK_NONE));
-*/
+		lwnotice("Noded bounds: %s",
+		               lwgeom_to_ewkt(GEOS2LWGEOM(vgeoms[0], 0),
+		                              PARSER_CHECK_NONE));
+	*/
 
 	polygons = GEOSPolygonize(vgeoms, 1);
 	if ( NULL == polygons )
@@ -316,18 +326,19 @@ lwpoly_split_by_line(LWPOLY* lwpoly_in, LWLINE* blade_in)
 	 */
 	n = GEOSGetNumGeometries(polygons);
 	out = lwcollection_construct(COLLECTIONTYPE, lwpoly_in->SRID,
-		NULL, 0, NULL);
+	                             NULL, 0, NULL);
 	/* Allocate space for all polys */
 	out->geoms = lwalloc(sizeof(LWGEOM*)*n);
 	assert(0 == out->ngeoms);
 	for (i=0; i<n; ++i)
 	{
 		GEOSGeometry* pos; /* point on surface */
-		const GEOSGeometry* p = GEOSGetGeometryN(polygons, i); 
+		const GEOSGeometry* p = GEOSGetGeometryN(polygons, i);
 		int contains;
 
 		pos = GEOSPointOnSurface(p);
-		if ( ! pos ) {
+		if ( ! pos )
+		{
 			GEOSGeom_destroy(g1);
 			GEOSGeom_destroy(g2);
 			GEOSGeom_destroy(g1_bounds);
@@ -352,7 +363,8 @@ lwpoly_split_by_line(LWPOLY* lwpoly_in, LWLINE* blade_in)
 
 		GEOSGeom_destroy(pos);
 
-		if ( 0 == contains ) {
+		if ( 0 == contains )
+		{
 			/* Original geometry doesn't contain
 			 * a point in this ring, must be an hole
 			 */
@@ -360,7 +372,7 @@ lwpoly_split_by_line(LWPOLY* lwpoly_in, LWLINE* blade_in)
 		}
 
 		out->geoms[out->ngeoms++] = GEOS2LWGEOM(p,
-				TYPE_HASZ(lwpoly_in->type));
+		                                        TYPE_HASZ(lwpoly_in->type));
 	}
 
 	GEOSGeom_destroy(g1);
@@ -383,7 +395,8 @@ lwcollection_split(LWCOLLECTION* lwcoll_in, LWGEOM* blade_in)
 
 	split_vector_capacity=8;
 	split_vector = lwalloc(split_vector_capacity * sizeof(LWGEOM*));
-	if ( ! split_vector ) {
+	if ( ! split_vector )
+	{
 		lwerror("Out of virtual memory");
 		return NULL;
 	}
@@ -405,8 +418,9 @@ lwcollection_split(LWCOLLECTION* lwcoll_in, LWGEOM* blade_in)
 			/* NOTE: we could be smarter on reallocations here */
 			split_vector_capacity += col->ngeoms;
 			split_vector = lwrealloc(split_vector,
-				split_vector_capacity * sizeof(LWGEOM*));
-			if ( ! split_vector ) {
+			                         split_vector_capacity * sizeof(LWGEOM*));
+			if ( ! split_vector )
+			{
 				lwerror("Out of virtual memory");
 				return NULL;
 			}
@@ -421,7 +435,7 @@ lwcollection_split(LWCOLLECTION* lwcoll_in, LWGEOM* blade_in)
 
 	/* Now split_vector has split_vector_size geometries */
 	out = lwcollection_construct(COLLECTIONTYPE, lwcoll_in->SRID,
-		NULL, split_vector_size, split_vector);
+	                             NULL, split_vector_size, split_vector);
 
 	return (LWGEOM*)out;
 }
@@ -435,7 +449,7 @@ lwpoly_split(LWPOLY* lwpoly_in, LWGEOM* blade_in)
 		return lwpoly_split_by_line(lwpoly_in, (LWLINE*)blade_in);
 	default:
 		lwerror("Splitting a Polygon by a %s is unsupported",
-			lwtype_name(TYPE_GETTYPE(blade_in->type)));
+		        lwtype_name(TYPE_GETTYPE(blade_in->type)));
 		return NULL;
 	}
 	return NULL;
@@ -459,7 +473,7 @@ lwgeom_split(LWGEOM* lwgeom_in, LWGEOM* blade_in)
 
 	default:
 		lwerror("Splitting of %s geometries is unsupported",
-			lwtype_name(TYPE_GETTYPE(lwgeom_in->type)));
+		        lwtype_name(TYPE_GETTYPE(lwgeom_in->type)));
 		return NULL;
 	}
 
@@ -482,7 +496,8 @@ Datum ST_Split(PG_FUNCTION_ARGS)
 	errorIfSRIDMismatch(lwgeom_in->SRID, lwblade_in->SRID);
 
 	lwgeom_out = lwgeom_split(lwgeom_in, lwblade_in);
-	if ( ! lwgeom_out ) {
+	if ( ! lwgeom_out )
+	{
 		PG_FREE_IF_COPY(in, 0);
 		PG_FREE_IF_COPY(blade_in, 1);
 		PG_RETURN_NULL();

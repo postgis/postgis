@@ -898,7 +898,8 @@ static void out_gml_test_geoms_nodims(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo out_gml_tests[] = {
+CU_TestInfo out_gml_tests[] =
+{
 	PG_TEST(out_gml_test_precision),
 	PG_TEST(out_gml_test_srid),
 	PG_TEST(out_gml_test_dims),

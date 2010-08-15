@@ -48,7 +48,7 @@ static char* cu_wkt(char *wkt, uchar variant)
 {
 	LWGEOM *g = lwgeom_from_ewkt(wkt, PARSER_CHECK_NONE);
 	if ( s ) free(s);
-	s = lwgeom_to_wkt(g, variant, 8, NULL);	
+	s = lwgeom_to_wkt(g, variant, 8, NULL);
 	lwgeom_free(g);
 	return s;
 }
@@ -77,82 +77,82 @@ static void test_wkt_point(void)
 
 }
 
-static void test_wkt_linestring(void) 
+static void test_wkt_linestring(void)
 {
 	CU_ASSERT_STRING_EQUAL(cu_wkt("LINESTRING(1 2 3 4,5 6 7 8)",WKT_ISO), "LINESTRING ZM (1 2 3 4,5 6 7 8)");
 	CU_ASSERT_STRING_EQUAL(cu_wkt("LINESTRING(1 2 3,5 6 7)",WKT_ISO), "LINESTRING Z (1 2 3,5 6 7)");
 	CU_ASSERT_STRING_EQUAL(cu_wkt("LINESTRINGM(1 2 3,5 6 7)",WKT_ISO), "LINESTRING M (1 2 3,5 6 7)");
 }
 
-static void test_wkt_polygon(void) 
+static void test_wkt_polygon(void)
 {
 	CU_ASSERT_STRING_EQUAL(
-	  cu_wkt("POLYGON((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2))",WKT_ISO), 
-      "POLYGON Z ((100 100 2,100 200 2,200 200 2,200 100 2,100 100 2))"
-    );
+	    cu_wkt("POLYGON((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2))",WKT_ISO),
+	    "POLYGON Z ((100 100 2,100 200 2,200 200 2,200 100 2,100 100 2))"
+	);
 	CU_ASSERT_STRING_EQUAL(
-	  cu_wkt("POLYGON((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2))",WKT_EXTENDED), 
-	  "POLYGON((100 100 2,100 200 2,200 200 2,200 100 2,100 100 2))"
+	    cu_wkt("POLYGON((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2))",WKT_EXTENDED),
+	    "POLYGON((100 100 2,100 200 2,200 200 2,200 100 2,100 100 2))"
 	);
 }
-static void test_wkt_multipoint(void) 
+static void test_wkt_multipoint(void)
 {
 	CU_ASSERT_STRING_EQUAL(cu_wkt("MULTIPOINT(1 2 3 4,5 6 7 8)",WKT_ISO), "MULTIPOINT ZM (1 2 3 4,5 6 7 8)");
 	CU_ASSERT_STRING_EQUAL(cu_wkt("MULTIPOINT(1 2 3,5 6 7)",WKT_ISO), "MULTIPOINT Z (1 2 3,5 6 7)");
 	CU_ASSERT_STRING_EQUAL(cu_wkt("MULTIPOINTM(1 2 3,5 6 7)",WKT_ISO), "MULTIPOINT M (1 2 3,5 6 7)");
-	
+
 }
 
-static void test_wkt_multilinestring(void) 
+static void test_wkt_multilinestring(void)
 {
 	CU_ASSERT_STRING_EQUAL(
-	  cu_wkt("MULTILINESTRING((1 2 3 4,5 6 7 8))",WKT_ISO), 
-	  "MULTILINESTRING ZM ((1 2 3 4,5 6 7 8))"
+	    cu_wkt("MULTILINESTRING((1 2 3 4,5 6 7 8))",WKT_ISO),
+	    "MULTILINESTRING ZM ((1 2 3 4,5 6 7 8))"
 	);
 	CU_ASSERT_STRING_EQUAL(
-	  cu_wkt("MULTILINESTRING((1 2 3,5 6 7))",WKT_ISO), 
-	  "MULTILINESTRING Z ((1 2 3,5 6 7))"
+	    cu_wkt("MULTILINESTRING((1 2 3,5 6 7))",WKT_ISO),
+	    "MULTILINESTRING Z ((1 2 3,5 6 7))"
 	);
 	CU_ASSERT_STRING_EQUAL(
-	  cu_wkt("MULTILINESTRINGM((1 2 3,5 6 7))",WKT_ISO), 
-	  "MULTILINESTRING M ((1 2 3,5 6 7))"
+	    cu_wkt("MULTILINESTRINGM((1 2 3,5 6 7))",WKT_ISO),
+	    "MULTILINESTRING M ((1 2 3,5 6 7))"
 	);
 }
 
-static void test_wkt_multipolygon(void) 
+static void test_wkt_multipolygon(void)
 {
 	CU_ASSERT_STRING_EQUAL(
-	  cu_wkt("MULTIPOLYGON(((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2)))",WKT_ISO), 
-      "MULTIPOLYGON Z (((100 100 2,100 200 2,200 200 2,200 100 2,100 100 2)))"
+	    cu_wkt("MULTIPOLYGON(((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2)))",WKT_ISO),
+	    "MULTIPOLYGON Z (((100 100 2,100 200 2,200 200 2,200 100 2,100 100 2)))"
 	);
 	CU_ASSERT_STRING_EQUAL(
-	  cu_wkt("MULTIPOLYGON(((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2)))",WKT_EXTENDED), 
-	  "MULTIPOLYGON(((100 100 2,100 200 2,200 200 2,200 100 2,100 100 2)))"
+	    cu_wkt("MULTIPOLYGON(((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2)))",WKT_EXTENDED),
+	    "MULTIPOLYGON(((100 100 2,100 200 2,200 200 2,200 100 2,100 100 2)))"
 	);
 }
 
-static void test_wkt_collection(void) 
+static void test_wkt_collection(void)
 {
 	//printf("%s\n",cu_wkt("GEOMETRYCOLLECTION(MULTIPOLYGON(((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2))),MULTIPOINT(.5 .5 .5,1 1 1),CURVEPOLYGON((.8 .8 .8,.8 .8 .8,.8 .8 .8)))",WKT_ISO));
 	CU_ASSERT_STRING_EQUAL(
-	  cu_wkt("GEOMETRYCOLLECTION(POLYGON((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2)),POINT(.5 .5 .5),CIRCULARSTRING(.8 .8 .8,.8 .8 .8,.8 .8 .8))",WKT_ISO), 
-      "GEOMETRYCOLLECTION Z (POLYGON Z ((100 100 2,100 200 2,200 200 2,200 100 2,100 100 2)),POINT Z (0.5 0.5 0.5),CIRCULARSTRING Z (0.8 0.8 0.8,0.8 0.8 0.8,0.8 0.8 0.8))"
+	    cu_wkt("GEOMETRYCOLLECTION(POLYGON((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2)),POINT(.5 .5 .5),CIRCULARSTRING(.8 .8 .8,.8 .8 .8,.8 .8 .8))",WKT_ISO),
+	    "GEOMETRYCOLLECTION Z (POLYGON Z ((100 100 2,100 200 2,200 200 2,200 100 2,100 100 2)),POINT Z (0.5 0.5 0.5),CIRCULARSTRING Z (0.8 0.8 0.8,0.8 0.8 0.8,0.8 0.8 0.8))"
 	);
 	CU_ASSERT_STRING_EQUAL(
-	  cu_wkt("GEOMETRYCOLLECTION(MULTIPOLYGON(((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2))),MULTIPOINT(.5 .5 .5,1 1 1),CURVEPOLYGON((.8 .8 .8,.8 .8 .8,.8 .8 .8)))",WKT_ISO), 
-      "GEOMETRYCOLLECTION Z (MULTIPOLYGON Z (((100 100 2,100 200 2,200 200 2,200 100 2,100 100 2))),MULTIPOINT Z (0.5 0.5 0.5,1 1 1),CURVEPOLYGON Z ((0.8 0.8 0.8,0.8 0.8 0.8,0.8 0.8 0.8)))"
+	    cu_wkt("GEOMETRYCOLLECTION(MULTIPOLYGON(((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2))),MULTIPOINT(.5 .5 .5,1 1 1),CURVEPOLYGON((.8 .8 .8,.8 .8 .8,.8 .8 .8)))",WKT_ISO),
+	    "GEOMETRYCOLLECTION Z (MULTIPOLYGON Z (((100 100 2,100 200 2,200 200 2,200 100 2,100 100 2))),MULTIPOINT Z (0.5 0.5 0.5,1 1 1),CURVEPOLYGON Z ((0.8 0.8 0.8,0.8 0.8 0.8,0.8 0.8 0.8)))"
 	);
 }
 
-static void test_wkt_circularstring(void) 
+static void test_wkt_circularstring(void)
 {
 	CU_ASSERT_STRING_EQUAL(
-	  cu_wkt("CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0)",WKT_ISO), 
-      "CIRCULARSTRING ZM (1 2 3 4,4 5 6 7,7 8 9 0)"
+	    cu_wkt("CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0)",WKT_ISO),
+	    "CIRCULARSTRING ZM (1 2 3 4,4 5 6 7,7 8 9 0)"
 	);
 	CU_ASSERT_STRING_EQUAL(
-	  cu_wkt("CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0)",WKT_EXTENDED), 
-	  "CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0)"
+	    cu_wkt("CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0)",WKT_EXTENDED),
+	    "CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0)"
 	);
 	//printf("%s\n",cu_wkt("GEOMETRYCOLLECTION(MULTIPOLYGON(((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2))),MULTIPOINT(.5 .5 .5,1 1 1),CURVEPOLYGON((.8 .8 .8,.8 .8 .8,.8 .8 .8)))",WKT_ISO));
 }
@@ -160,41 +160,42 @@ static void test_wkt_circularstring(void)
 static void test_wkt_compoundcurve(void)
 {
 	CU_ASSERT_STRING_EQUAL(
-	  cu_wkt("COMPOUNDCURVE((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0))",WKT_ISO), 
-      "COMPOUNDCURVE ZM ((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING ZM (1 2 3 4,4 5 6 7,7 8 9 0))"
+	    cu_wkt("COMPOUNDCURVE((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0))",WKT_ISO),
+	    "COMPOUNDCURVE ZM ((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING ZM (1 2 3 4,4 5 6 7,7 8 9 0))"
 	);
 }
 
 static void test_wkt_curvpolygon(void)
 {
 	CU_ASSERT_STRING_EQUAL(
-	  cu_wkt("CURVEPOLYGON((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0))",WKT_ISO), 
-      "CURVEPOLYGON ZM ((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING ZM (1 2 3 4,4 5 6 7,7 8 9 0))"
+	    cu_wkt("CURVEPOLYGON((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0))",WKT_ISO),
+	    "CURVEPOLYGON ZM ((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING ZM (1 2 3 4,4 5 6 7,7 8 9 0))"
 	);
 }
 
 static void test_wkt_multicurve(void)
 {
 	CU_ASSERT_STRING_EQUAL(
-	  cu_wkt("MULTICURVE((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0))",WKT_ISO), 
-      "MULTICURVE ZM ((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING ZM (1 2 3 4,4 5 6 7,7 8 9 0))"
+	    cu_wkt("MULTICURVE((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0))",WKT_ISO),
+	    "MULTICURVE ZM ((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING ZM (1 2 3 4,4 5 6 7,7 8 9 0))"
 	);
 }
 
 static void test_wkt_multisurface(void)
 {
 	CU_ASSERT_STRING_EQUAL(
-	  cu_wkt("MULTISURFACE(((1 2 3 4,4 5 6 7,7 8 9 0)),CURVEPOLYGON((1 2 3 4,4 5 6 7,7 8 9 0)))",WKT_ISO), 
-      "MULTISURFACE ZM (((1 2 3 4,4 5 6 7,7 8 9 0)),CURVEPOLYGON ZM ((1 2 3 4,4 5 6 7,7 8 9 0)))"
+	    cu_wkt("MULTISURFACE(((1 2 3 4,4 5 6 7,7 8 9 0)),CURVEPOLYGON((1 2 3 4,4 5 6 7,7 8 9 0)))",WKT_ISO),
+	    "MULTISURFACE ZM (((1 2 3 4,4 5 6 7,7 8 9 0)),CURVEPOLYGON ZM ((1 2 3 4,4 5 6 7,7 8 9 0)))"
 	);
-	
+
 }
 
 /*
 ** Used by test harness to register the tests in this file.
 */
 
-CU_TestInfo wkt_tests[] = {
+CU_TestInfo wkt_tests[] =
+{
 	PG_TEST(test_wkt_point),
 	PG_TEST(test_wkt_linestring),
 	PG_TEST(test_wkt_polygon),

@@ -75,12 +75,12 @@ void triangle_parse(void)
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
-	/* EMPTY face */	
+	/* EMPTY face */
 	geom = lwgeom_from_ewkt("TRIANGLE EMPTY", PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
-        /*
-          NOTA: Theses 3 ASSERT results will change a day cf #294 
-        */
+	/*
+	  NOTA: Theses 3 ASSERT results will change a day cf #294
+	*/
 	CU_ASSERT_EQUAL(TYPE_GETTYPE(geom->type), COLLECTIONTYPE);
 	CU_ASSERT_STRING_EQUAL("GEOMETRYCOLLECTION EMPTY", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE));
 	lwgeom_free(geom);
@@ -90,14 +90,14 @@ void triangle_parse(void)
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(TYPE_GETTYPE(geom->type), TRIANGLETYPE);
 	CU_ASSERT_EQUAL(geom->SRID, 4326);
-	CU_ASSERT_STRING_EQUAL("SRID=4326;TRIANGLE((0 1 2,3 4 5,6 7 8,0 1 2))", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE)); 
+	CU_ASSERT_STRING_EQUAL("SRID=4326;TRIANGLE((0 1 2,3 4 5,6 7 8,0 1 2))", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE));
 	lwgeom_free(geom);
 
 
 	/* geography support */
 	geom = lwgeom_from_ewkt("TRIANGLE((0 1 2,3 4 5,6 7 8,0 1 2))", PARSER_CHECK_NONE);
 	g = gserialized_from_lwgeom(geom, 1, 0);
-        CU_ASSERT_EQUAL(gserialized_get_type(g), TRIANGLETYPE);
+	CU_ASSERT_EQUAL(gserialized_get_type(g), TRIANGLETYPE);
 	lwgeom_free(geom);
 	lwfree(g);
 }
@@ -166,12 +166,12 @@ void tin_parse(void)
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
-	/* EMPTY face */	
+	/* EMPTY face */
 	geom = lwgeom_from_ewkt("TIN EMPTY", PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
-        /*
-          NOTA: Theses 3 ASSERT results will change a day cf #294 
-        */
+	/*
+	  NOTA: Theses 3 ASSERT results will change a day cf #294
+	*/
 	CU_ASSERT_EQUAL(TYPE_GETTYPE(geom->type), COLLECTIONTYPE);
 	CU_ASSERT_STRING_EQUAL("GEOMETRYCOLLECTION EMPTY", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE));
 	lwgeom_free(geom);
@@ -181,7 +181,7 @@ void tin_parse(void)
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(TYPE_GETTYPE(geom->type), TINTYPE);
 	CU_ASSERT_EQUAL(geom->SRID, -1);
-	CU_ASSERT_STRING_EQUAL("TIN(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE)); 
+	CU_ASSERT_STRING_EQUAL("TIN(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE));
 	lwgeom_free(geom);
 
 	/* A 4D tetrahedron */
@@ -190,7 +190,7 @@ void tin_parse(void)
 	CU_ASSERT_EQUAL(TYPE_GETTYPE(geom->type), TINTYPE);
 	CU_ASSERT_EQUAL(TYPE_HASM(geom->type), 1);
 	CU_ASSERT_EQUAL(geom->SRID, -1);
-	CU_ASSERT_STRING_EQUAL("TIN(((0 0 0 0,0 0 1 0,0 1 0 2,0 0 0 0)),((0 0 0 0,0 1 0 0,1 0 0 4,0 0 0 0)),((0 0 0 0,1 0 0 0,0 0 1 6,0 0 0 0)),((1 0 0 0,0 1 0 0,0 0 1 0,1 0 0 0)))", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE)); 
+	CU_ASSERT_STRING_EQUAL("TIN(((0 0 0 0,0 0 1 0,0 1 0 2,0 0 0 0)),((0 0 0 0,0 1 0 0,1 0 0 4,0 0 0 0)),((0 0 0 0,1 0 0 0,0 0 1 6,0 0 0 0)),((1 0 0 0,0 1 0 0,0 0 1 0,1 0 0 0)))", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE));
 	lwgeom_free(geom);
 
 
@@ -199,14 +199,14 @@ void tin_parse(void)
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(TYPE_GETTYPE(geom->type), TINTYPE);
 	CU_ASSERT_EQUAL(geom->SRID, 4326);
-	CU_ASSERT_STRING_EQUAL("SRID=4326;TIN(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE)); 
+	CU_ASSERT_STRING_EQUAL("SRID=4326;TIN(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE));
 	lwgeom_free(geom);
 
 
 	/* geography support */
 	geom = lwgeom_from_ewkt("TIN(((0 1 2,3 4 5,6 7 8,0 1 2)))", PARSER_CHECK_NONE);
 	g = gserialized_from_lwgeom(geom, 1, 0);
-        CU_ASSERT_EQUAL(gserialized_get_type(g), TINTYPE);
+	CU_ASSERT_EQUAL(gserialized_get_type(g), TINTYPE);
 	lwgeom_free(geom);
 	lwfree(g);
 }
@@ -215,9 +215,10 @@ void tin_parse(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo tin_tests[] = {
-        PG_TEST(triangle_parse),
-        PG_TEST(tin_parse),
-        CU_TEST_INFO_NULL
+CU_TestInfo tin_tests[] =
+{
+	PG_TEST(triangle_parse),
+	PG_TEST(tin_parse),
+	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo tin_suite = {"TIN and Triangle Suite",  NULL,  NULL, tin_tests};

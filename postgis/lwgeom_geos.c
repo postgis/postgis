@@ -131,8 +131,8 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 	ngeoms = GEOSGetNumGeometries(geos_result);
 
 	POSTGIS_DEBUGF(3, "GEOSpolygonize: ngeoms in polygonize output: %d", ngeoms);
-	POSTGIS_DEBUGF(3, "GEOSpolygonize: polygonized:%s",  
-		lwgeom_to_ewkt(GEOS2LWGEOM(geos_result, 0), PARSER_CHECK_NONE));
+	POSTGIS_DEBUGF(3, "GEOSpolygonize: polygonized:%s",
+	               lwgeom_to_ewkt(GEOS2LWGEOM(geos_result, 0), PARSER_CHECK_NONE));
 
 	/*
 	 * No geometries in collection, early out
@@ -194,17 +194,17 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 		if ( shp == NULL )
 		{
 			shp = extring;
-			POSTGIS_DEBUGF(3, "GEOSpolygonize: shp:%s",  
-				lwgeom_to_ewkt(GEOS2LWGEOM(shp, 0), PARSER_CHECK_NONE));
+			POSTGIS_DEBUGF(3, "GEOSpolygonize: shp:%s",
+			               lwgeom_to_ewkt(GEOS2LWGEOM(shp, 0), PARSER_CHECK_NONE));
 		}
 		else
 		{
 			tmp = GEOSSymDifference(shp, extring);
-			POSTGIS_DEBUGF(3, "GEOSpolygonize: SymDifference(%s, %s):%s",  
-				lwgeom_to_ewkt(GEOS2LWGEOM(shp, 0), PARSER_CHECK_NONE),
-				lwgeom_to_ewkt(GEOS2LWGEOM(extring, 0), PARSER_CHECK_NONE),
-				lwgeom_to_ewkt(GEOS2LWGEOM(tmp, 0), PARSER_CHECK_NONE)
-			);
+			POSTGIS_DEBUGF(3, "GEOSpolygonize: SymDifference(%s, %s):%s",
+			               lwgeom_to_ewkt(GEOS2LWGEOM(shp, 0), PARSER_CHECK_NONE),
+			               lwgeom_to_ewkt(GEOS2LWGEOM(extring, 0), PARSER_CHECK_NONE),
+			               lwgeom_to_ewkt(GEOS2LWGEOM(tmp, 0), PARSER_CHECK_NONE)
+			              );
 			GEOSGeom_destroy(shp);
 			GEOSGeom_destroy(extring);
 			shp = tmp;
@@ -550,7 +550,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		if (curgeom > 0)
 		{
 			g1 = GEOSGeom_createCollection(GEOS_MULTIPOLYGON, geoms, curgeom);
-			if ( ! g1 ) 
+			if ( ! g1 )
 			{
 				/* TODO: cleanup geoms memory */
 				lwerror("Could not create MULTIPOLYGON from geometry array: %s", lwgeom_geos_errmsg);
@@ -561,7 +561,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 			if ( ! g2 )
 			{
 				lwerror("GEOSUnionCascaded: %s",
-					lwgeom_geos_errmsg);
+				        lwgeom_geos_errmsg);
 				PG_RETURN_NULL();
 			}
 

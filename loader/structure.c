@@ -36,20 +36,20 @@ void
 destroy_file_list(void)
 {
 	FILENODE *node = get_next_node(NULL);
-	while(node != NULL)
+	while (node != NULL)
 	{
 		remove_file(node);
 		node = get_next_node(NULL);
 	}
 
-	if(file_list_head != NULL)
+	if (file_list_head != NULL)
 	{
 		file_list_head->next = NULL;
 		file_list_head->prev = NULL;
 		free(file_list_head);
 	}
 
-	if(file_list_tail != NULL)
+	if (file_list_tail != NULL)
 	{
 		file_list_tail->next = NULL;
 		file_list_tail->prev = NULL;
@@ -61,7 +61,7 @@ destroy_file_list(void)
 FILENODE*
 append_file_node(void)
 {
-	if(file_list_head == NULL || file_list_tail == NULL)
+	if (file_list_head == NULL || file_list_tail == NULL)
 	{
 		init_file_list();
 	}
@@ -78,14 +78,14 @@ append_file_node(void)
 	new_node->prev = file_list_tail->prev;
 	file_list_tail->prev->next = new_node;
 	file_list_tail->prev = new_node;
-	
+
 	return new_node;
 }
 
 FILENODE*
-append_file(char *filename, char *schema, char *table, 
-		    char *geom_column, char *srid, char mode, 
-			GtkTreeIter *tree_iterator)
+append_file(char *filename, char *schema, char *table,
+            char *geom_column, char *srid, char mode,
+            GtkTreeIter *tree_iterator)
 {
 	FILENODE *new_file = append_file_node();
 
@@ -109,15 +109,15 @@ find_file_by_iter(GtkTreeIter *tree_iterator)
 {
 
 	FILENODE *current_node;
-	
-	if(file_list_head == NULL)
+
+	if (file_list_head == NULL)
 	{
 		return NULL;
 	}
 	current_node = file_list_head->next;
-	while(current_node != NULL && current_node != file_list_tail)
+	while (current_node != NULL && current_node != file_list_tail)
 	{
-		if(current_node->tree_iterator == tree_iterator)
+		if (current_node->tree_iterator == tree_iterator)
 		{
 			return current_node;
 		}
@@ -132,14 +132,14 @@ find_file_by_index(int index)
 	FILENODE *current_node;
 	int i = 0;
 
-	if(file_list_head == NULL)
+	if (file_list_head == NULL)
 	{
 		return NULL;
 	}
 	current_node = file_list_head->next;
-	while(current_node != NULL && current_node != file_list_tail)
+	while (current_node != NULL && current_node != file_list_tail)
 	{
-		if(i == index)
+		if (i == index)
 		{
 			return current_node;
 		}
@@ -153,9 +153,9 @@ find_file_by_index(int index)
 void
 remove_file(FILENODE *remove_node)
 {
-	if(remove_node == NULL 
-			|| remove_node->next == NULL 
-			|| remove_node->prev == NULL)
+	if (remove_node == NULL
+	        || remove_node->next == NULL
+	        || remove_node->prev == NULL)
 	{
 		return;
 	}
@@ -163,27 +163,27 @@ remove_file(FILENODE *remove_node)
 	remove_node->prev->next = remove_node->next;
 	remove_node->next = NULL;
 	remove_node->prev = NULL;
-	if(remove_node->filename == NULL)
+	if (remove_node->filename == NULL)
 	{
 		free(remove_node->filename);
 		remove_node->filename = NULL;
 	}
-	if(remove_node->schema == NULL)
+	if (remove_node->schema == NULL)
 	{
 		free(remove_node->schema);
 		remove_node->schema = NULL;
 	}
-	if(remove_node->table == NULL)
+	if (remove_node->table == NULL)
 	{
 		free(remove_node->table);
 		remove_node->table = NULL;
 	}
-	if(remove_node->geom_column == NULL)
+	if (remove_node->geom_column == NULL)
 	{
 		free(remove_node->geom_column);
 		remove_node->geom_column = NULL;
 	}
-	if(remove_node->srid == NULL)
+	if (remove_node->srid == NULL)
 	{
 		free(remove_node->srid);
 		remove_node->srid = NULL;
@@ -194,9 +194,9 @@ remove_file(FILENODE *remove_node)
 FILENODE*
 get_next_node(FILENODE *current)
 {
-	if(file_list_head == NULL)
+	if (file_list_head == NULL)
 		return NULL;
-	if(current == NULL)
+	if (current == NULL)
 		current = file_list_head;
 	return (current->next != file_list_tail) ? current->next : NULL;
 
@@ -226,7 +226,7 @@ print_file_list(void (*printer)(const char *fmt, va_list ap))
 	print_file_list_delegate(printer, "Head %p <-- %p --> %p\n", file_list_head->prev, file_list_head, file_list_head->next);
 
 	current_node = get_next_node(NULL);
-	while(current_node != NULL)
+	while (current_node != NULL)
 	{
 		print_file_list_delegate(printer, "  Node %d: %s\n", i++, current_node->filename);
 		print_file_list_delegate(printer, "    %p <-- %p --> %p\n", current_node->prev, current_node, current_node->next);

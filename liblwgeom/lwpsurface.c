@@ -39,8 +39,8 @@ lwpsurface_deserialize(uchar *srl)
 	result->type = insp->type;
 	result->SRID = insp->SRID;
 	result->ngeoms = insp->ngeometries;
-	
-	if( insp->ngeometries )
+
+	if ( insp->ngeometries )
 	{
 		result->geoms = lwalloc(sizeof(LWPOLY *)*insp->ngeometries);
 	}
@@ -75,7 +75,7 @@ lwpsurface_deserialize(uchar *srl)
 
 LWPSURFACE* lwpsurface_add_lwpoly(LWPSURFACE *mobj, const LWPOLY *obj)
 {
-        return (LWPSURFACE*)lwcollection_add_lwgeom((LWCOLLECTION*)mobj, (LWGEOM*)obj);
+	return (LWPSURFACE*)lwcollection_add_lwgeom((LWCOLLECTION*)mobj, (LWGEOM*)obj);
 }
 
 
@@ -108,22 +108,23 @@ void printLWPSURFACE(LWPSURFACE *psurf)
 	LWPOLY *patch;
 
 	if (TYPE_GETTYPE(psurf->type) != POLYHEDRALSURFACETYPE)
-        	lwerror("printLWPSURFACE called with something else than a POLYHEDRALSURFACE");
+		lwerror("printLWPSURFACE called with something else than a POLYHEDRALSURFACE");
 
-        lwnotice("LWPSURFACE {");
-        lwnotice("    ndims = %i", (int)TYPE_NDIMS(psurf->type));
-        lwnotice("    SRID = %i", (int)psurf->SRID);
-        lwnotice("    ngeoms = %i", (int)psurf->ngeoms);
+	lwnotice("LWPSURFACE {");
+	lwnotice("    ndims = %i", (int)TYPE_NDIMS(psurf->type));
+	lwnotice("    SRID = %i", (int)psurf->SRID);
+	lwnotice("    ngeoms = %i", (int)psurf->ngeoms);
 
-        for (i=0; i<psurf->ngeoms; i++)
-        {
+	for (i=0; i<psurf->ngeoms; i++)
+	{
 		patch = (LWPOLY *) psurf->geoms[i];
-        	for (j=0; j<patch->nrings; j++) {
+		for (j=0; j<patch->nrings; j++)
+		{
 			lwnotice("    RING # %i :",j);
-                	printPA(patch->rings[j]);
+			printPA(patch->rings[j]);
 		}
-        }
-        lwnotice("}");
+	}
+	lwnotice("}");
 }
 
 
@@ -141,7 +142,7 @@ struct struct_psurface_arcs
 };
 typedef struct struct_psurface_arcs *psurface_arcs;
 
-/* We supposed that the geometry is valid 
+/* We supposed that the geometry is valid
    we could have wrong result if not */
 int lwpsurface_is_closed(LWPSURFACE *psurface)
 {
@@ -159,17 +160,20 @@ int lwpsurface_is_closed(LWPSURFACE *psurface)
 	if (psurface->ngeoms < 4) return 0;
 
 	/* Max theorical arcs number if no one is shared ... */
-	for (i=0, narcs=0 ; i < psurface->ngeoms ; i++) {
+	for (i=0, narcs=0 ; i < psurface->ngeoms ; i++)
+	{
 		patch = (LWPOLY *) psurface->geoms[i];
 		narcs += patch->rings[0]->npoints - 1;
 	}
 
 	arcs = lwalloc(sizeof(struct struct_psurface_arcs) * narcs);
-	for (i=0, carc=0; i < psurface->ngeoms ; i++) {
-		
+	for (i=0, carc=0; i < psurface->ngeoms ; i++)
+	{
+
 		patch = (LWPOLY *) psurface->geoms[i];
-		for (j=0; j < patch->rings[0]->npoints - 1; j++) {
-			
+		for (j=0; j < patch->rings[0]->npoints - 1; j++)
+		{
+
 			getPoint4d_p(patch->rings[0], j,   &pa);
 			getPoint4d_p(patch->rings[0], j+1, &pb);
 
@@ -178,25 +182,26 @@ int lwpsurface_is_closed(LWPSURFACE *psurface)
 
 			/* Make sure to order the 'lower' point first */
 			if ( (pa.x > pb.x) ||
-			     (pa.x == pb.x && pa.y > pb.y) ||
-			     (pa.x == pb.x && pa.y == pb.y && pa.z > pb.z) )
+			        (pa.x == pb.x && pa.y > pb.y) ||
+			        (pa.x == pb.x && pa.y == pb.y && pa.z > pb.z) )
 			{
 				pa = pb;
 				getPoint4d_p(patch->rings[0], j, &pb);
 			}
-			
-			for (found=0, k=0; k < carc ; k++) {
+
+			for (found=0, k=0; k < carc ; k++)
+			{
 
 				if (  ( arcs[k].ax == pa.x && arcs[k].ay == pa.y &&
-					arcs[k].az == pa.z && arcs[k].bx == pb.x &&
-					arcs[k].by == pb.y && arcs[k].bz == pb.z &&
-					arcs[k].face != i) )
+				        arcs[k].az == pa.z && arcs[k].bx == pb.x &&
+				        arcs[k].by == pb.y && arcs[k].bz == pb.z &&
+				        arcs[k].face != i) )
 				{
 					arcs[k].cnt++;
 					found = 1;
 
-					/* Look like an invalid PolyhedralSurface 
-				   	   anyway not a closed one */
+					/* Look like an invalid PolyhedralSurface
+					      anyway not a closed one */
 					if (arcs[k].cnt > 2)
 					{
 						lwfree(arcs);
@@ -217,8 +222,8 @@ int lwpsurface_is_closed(LWPSURFACE *psurface)
 				arcs[carc].bz = pb.z;
 				carc++;
 
-				/* Look like an invalid PolyhedralSurface 
-			   	   anyway not a closed one */
+				/* Look like an invalid PolyhedralSurface
+				      anyway not a closed one */
 				if (carc > narcs)
 				{
 					lwfree(arcs);
@@ -227,11 +232,13 @@ int lwpsurface_is_closed(LWPSURFACE *psurface)
 			}
 		}
 	}
-	
-	/* A polyhedron is closed if each edge 
-           is shared by exactly 2 faces */
-	for (k=0; k < carc ; k++) {
-		if (arcs[k].cnt != 2) {
+
+	/* A polyhedron is closed if each edge
+	       is shared by exactly 2 faces */
+	for (k=0; k < carc ; k++)
+	{
+		if (arcs[k].cnt != 2)
+		{
 			lwfree(arcs);
 			return 0;
 		}

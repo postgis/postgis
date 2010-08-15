@@ -274,7 +274,8 @@ static void out_geojson_test_geoms(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo out_geojson_tests[] = {
+CU_TestInfo out_geojson_tests[] =
+{
 	PG_TEST(out_geojson_test_precision),
 	PG_TEST(out_geojson_test_dims),
 	PG_TEST(out_geojson_test_srid),

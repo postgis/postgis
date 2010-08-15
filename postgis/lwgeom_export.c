@@ -320,9 +320,9 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 			if (option & 4) srs = getSRSbySRID(SRID, false);
 			if (!srs)
 			{
-				elog(	ERROR, 
-					"SRID %i unknown in spatial_ref_sys table",
-					SRID);
+				elog(	ERROR,
+				      "SRID %i unknown in spatial_ref_sys table",
+				      SRID);
 				PG_RETURN_NULL();
 			}
 		}

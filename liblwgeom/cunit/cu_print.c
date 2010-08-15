@@ -160,7 +160,8 @@ static void test_lwprint_bad_formats(void)
 /*
 ** Used by the test harness to register the tests in this file.
 */
-CU_TestInfo print_tests[] = {
+CU_TestInfo print_tests[] =
+{
 	PG_TEST(test_lwprint_default_format),
 	PG_TEST(test_lwprint_format_orders),
 	PG_TEST(test_lwprint_optional_format),

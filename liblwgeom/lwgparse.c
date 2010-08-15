@@ -496,7 +496,7 @@ void check_polygon(void)
 void check_triangle(void)
 {
 	check_triangle_points();
-        check_ring_closed_3D();
+	check_ring_closed_3D();
 }
 
 void check_curvepolygon(void)
@@ -776,27 +776,27 @@ check_polygon_minpoints(void)
 
 /*
  * Checks to ensure that current face of the Triangle contains the
- * given number of points.  
- * NOTA: same test as check_polygon_minpoints except that we need 
+ * given number of points.
+ * NOTA: same test as check_polygon_minpoints except that we need
  * here exactly 4 points.
  */
 void
 check_triangle_points(void)
 {
-        tuple *tp = the_geom.stack->next; /* Current tuple */
-        int num = tp->uu.nn.num; /* point count */
-        int points = 4;
+	tuple *tp = the_geom.stack->next; /* Current tuple */
+	int num = tp->uu.nn.num; /* point count */
+	int points = 4;
 
-        LWDEBUG(3, "check_triangle_points");
+	LWDEBUG(3, "check_triangle_points");
 
-        if (num != points)
-        {
-                LWDEBUGF(5, "point check failed: needed %d, got %d", points, num);
-                LWDEBUGF(5, "tuple = %p; parse_location = %d; parser reported column = %d",
-                         tp, tp->uu.nn.parse_location, lwg_parse_yylloc.last_column);
-                LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_TRIANGLEPOINTS,
-                        the_geom.stack->next->uu.nn.parse_location);
-        }
+	if (num != points)
+	{
+		LWDEBUGF(5, "point check failed: needed %d, got %d", points, num);
+		LWDEBUGF(5, "tuple = %p; parse_location = %d; parser reported column = %d",
+		         tp, tp->uu.nn.parse_location, lwg_parse_yylloc.last_column);
+		LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_TRIANGLEPOINTS,
+		                            the_geom.stack->next->uu.nn.parse_location);
+	}
 }
 
 /*
@@ -944,8 +944,8 @@ void check_circularstring_minpoints()
 
 void check_polyhedralsurface_patch(void)
 {
-        check_polyhedralsurface_patch_minpoints();
-        check_ring_closed_3D();
+	check_polyhedralsurface_patch_minpoints();
+	check_ring_closed_3D();
 }
 
 
@@ -961,59 +961,59 @@ void check_polyhedralsurface_patch(void)
 void
 check_ring_closed_3D(void)
 {
-        tuple *tp = the_geom.stack; /* Current tuple */
-        int i; /* Loop counter */
-        int num; /* point count */
-        tuple *first, *last; /* First and last tuple of the ring */
+	tuple *tp = the_geom.stack; /* Current tuple */
+	int i; /* Loop counter */
+	int num; /* point count */
+	tuple *first, *last; /* First and last tuple of the ring */
 
-        LWDEBUG(3, "check_3d_ring_closed");
+	LWDEBUG(3, "check_3d_ring_closed");
 
-        /* tuple counting points */
-        tp = tp->next;
-        if (tp->uu.nn.num > 0)
-        {
-                first = tp->next;
-                num = tp->uu.nn.num;
-                for (i = 0; i < num; i++) 
-                        tp = tp->next;
-                last = tp;
-                if (    first->uu.points[0] != last->uu.points[0] 
-                     || first->uu.points[1] != last->uu.points[1]
-		     || (the_geom.hasZ &&
-			 first->uu.points[2] != last->uu.points[2] ))
-                {
-                        LWDEBUGF(4, "Unclosed geometry: (%f, %f, %f) != (%f, %f, %f)",
-                                 first->uu.points[0], first->uu.points[1], first->uu.points[2],
-                                 last->uu.points[0], last->uu.points[1], last->uu.points[2]);
+	/* tuple counting points */
+	tp = tp->next;
+	if (tp->uu.nn.num > 0)
+	{
+		first = tp->next;
+		num = tp->uu.nn.num;
+		for (i = 0; i < num; i++)
+			tp = tp->next;
+		last = tp;
+		if (    first->uu.points[0] != last->uu.points[0]
+		        || first->uu.points[1] != last->uu.points[1]
+		        || (the_geom.hasZ &&
+		            first->uu.points[2] != last->uu.points[2] ))
+		{
+			LWDEBUGF(4, "Unclosed geometry: (%f, %f, %f) != (%f, %f, %f)",
+			         first->uu.points[0], first->uu.points[1], first->uu.points[2],
+			         last->uu.points[0], last->uu.points[1], last->uu.points[2]);
 			LWDEBUGF(5, "First %p, last %p", first, last);
-                        LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_UNCLOSED,
-				the_geom.stack->next->uu.nn.parse_location);
-                }
-        }
+			LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_UNCLOSED,
+			                            the_geom.stack->next->uu.nn.parse_location);
+		}
+	}
 }
 
 /*
  * Checks to ensure that current face of the Polyhedron contains the
- * given number of points.  
+ * given number of points.
  */
 void
 check_polyhedralsurface_patch_minpoints(void)
 {
-        tuple *tp = the_geom.stack->next; /* Current tuple */
-        int num = tp->uu.nn.num; /* point count */
-        int minpoints = 4;
+	tuple *tp = the_geom.stack->next; /* Current tuple */
+	int num = tp->uu.nn.num; /* point count */
+	int minpoints = 4;
 
-        LWDEBUG(3, "check_polyhedralsurface_patch_minpoints");
+	LWDEBUG(3, "check_polyhedralsurface_patch_minpoints");
 
-        if (num < minpoints)
-        {
-                LWDEBUGF(5, "Minpoint check failed: needed %d, got %d",
-                         minpoints, num);
-                LWDEBUGF(5, "tuple = %p; parse_location = %d; parser reported column = %d",
-                         tp, tp->uu.nn.parse_location, lwg_parse_yylloc.last_column);
-                LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_MOREPOINTS,
-                        the_geom.stack->next->uu.nn.parse_location);
-        }
+	if (num < minpoints)
+	{
+		LWDEBUGF(5, "Minpoint check failed: needed %d, got %d",
+		         minpoints, num);
+		LWDEBUGF(5, "tuple = %p; parse_location = %d; parser reported column = %d",
+		         tp, tp->uu.nn.parse_location, lwg_parse_yylloc.last_column);
+		LWGEOM_WKT_VALIDATION_ERROR(PARSER_ERROR_MOREPOINTS,
+		                            the_geom.stack->next->uu.nn.parse_location);
+	}
 }
 
 

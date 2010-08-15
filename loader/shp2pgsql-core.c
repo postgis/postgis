@@ -79,36 +79,36 @@ int utf8(const char *fromcode, char *inputbuf, char **outputbuf)
 	memset(*outputbuf, 0, outbytesleft);
 	outputptr = *outputbuf;
 
-    /* Does this string convert cleanly? */
+	/* Does this string convert cleanly? */
 	if ( iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft) == -1 )
 	{
 #ifdef HAVE_ICONVCTL
-        int on = 1;
-	    /* No. Try to convert it while transliterating. */
-        iconvctl(cd, ICONV_SET_TRANSLITERATE, &on);
-    	if ( iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft) == -1 )
-    	{
-	        /* No. Try to convert it while discarding errors. */
-            iconvctl(cd, ICONV_SET_DISCARD_ILSEQ, &on);
-        	if ( iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft) == -1 )
-        	{
-                /* Still no. Throw away the buffer and return. */
-                free(*outputbuf);
-                iconv_close(cd);
-                return UTF8_NO_RESULT;
-            }
-        }
-        iconv_close(cd);
-        return UTF8_BAD_RESULT;
+		int on = 1;
+		/* No. Try to convert it while transliterating. */
+		iconvctl(cd, ICONV_SET_TRANSLITERATE, &on);
+		if ( iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft) == -1 )
+		{
+			/* No. Try to convert it while discarding errors. */
+			iconvctl(cd, ICONV_SET_DISCARD_ILSEQ, &on);
+			if ( iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft) == -1 )
+			{
+				/* Still no. Throw away the buffer and return. */
+				free(*outputbuf);
+				iconv_close(cd);
+				return UTF8_NO_RESULT;
+			}
+		}
+		iconv_close(cd);
+		return UTF8_BAD_RESULT;
 #else
-        free(*outputbuf);
-        iconv_close(cd);
-        return UTF8_NO_RESULT;        
+		free(*outputbuf);
+		iconv_close(cd);
+		return UTF8_NO_RESULT;
 #endif
-    }
-    /* Return a good result, converted string is in buffer. */
+	}
+	/* Return a good result, converted string is in buffer. */
 	iconv_close(cd);
-    return UTF8_GOOD_RESULT;
+	return UTF8_GOOD_RESULT;
 }
 
 /**
@@ -410,7 +410,7 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 	{
 		lwcollection = lwcollection_construct(MULTILINETYPE, state->config->sr_id, NULL, obj->nParts, lwmultilinestrings);
 		serialized_lwgeom = lwgeom_serialize(lwcollection_as_lwgeom(lwcollection));
-		
+
 	}
 	else
 	{
@@ -879,10 +879,10 @@ ShpLoaderCreate(SHPLOADERCONFIG *config)
 	state->hSHPHandle = NULL;
 	state->hDBFHandle = NULL;
 	state->wkbtype = 0;
-    state->types = NULL;
-    state->widths = NULL;
-    state->precisions = NULL;
-    state->col_names = NULL;
+	state->types = NULL;
+	state->widths = NULL;
+	state->precisions = NULL;
+	state->col_names = NULL;
 
 	return state;
 }
@@ -1155,21 +1155,21 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 
 		if (state->config->encoding)
 		{
-            static char *encoding_msg = "Try \"LATIN1\" (Western European), or one of the values described at http://www.postgresql.org/docs/current/static/multibyte.html.";
+			static char *encoding_msg = "Try \"LATIN1\" (Western European), or one of the values described at http://www.postgresql.org/docs/current/static/multibyte.html.";
 
-            int rv = utf8(state->config->encoding, name, &utf8str);
-						
+			int rv = utf8(state->config->encoding, name, &utf8str);
+
 			if (rv != UTF8_GOOD_RESULT)
 			{
-                if( rv == UTF8_BAD_RESULT )
-				    snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert field name \"%s\" to UTF-8 (iconv reports \"%s\"). Current encoding is \"%s\". %s", utf8str, strerror(errno), state->config->encoding, encoding_msg);
-			    else if( rv == UTF8_NO_RESULT )
-				    snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert field name to UTF-8 (iconv reports \"%s\"). Current encoding is \"%s\". %s", strerror(errno), state->config->encoding, encoding_msg);
-				else 
-				    snprintf(state->message, SHPLOADERMSGLEN, "Unexpected return value from utf8()");
+				if ( rv == UTF8_BAD_RESULT )
+					snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert field name \"%s\" to UTF-8 (iconv reports \"%s\"). Current encoding is \"%s\". %s", utf8str, strerror(errno), state->config->encoding, encoding_msg);
+				else if ( rv == UTF8_NO_RESULT )
+					snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert field name to UTF-8 (iconv reports \"%s\"). Current encoding is \"%s\". %s", strerror(errno), state->config->encoding, encoding_msg);
+				else
+					snprintf(state->message, SHPLOADERMSGLEN, "Unexpected return value from utf8()");
 
-                if( rv == UTF8_BAD_RESULT )
-			        free(utf8str);
+				if ( rv == UTF8_BAD_RESULT )
+					free(utf8str);
 
 				return SHPLOADERERR;
 			}
@@ -1194,9 +1194,9 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		        ! strcmp(name, "gid") || ! strcmp(name, "tableoid") ||
 		        ! strcmp(name, "cmin") ||
 		        ! strcmp(name, "cmax") ||
-		        ! strcmp(name, "xmin") || 
-			! strcmp(name, "xmax") ||
-			! strcmp(name, "primary") ||
+		        ! strcmp(name, "xmin") ||
+		        ! strcmp(name, "xmax") ||
+		        ! strcmp(name, "primary") ||
 		        ! strcmp(name, "oid") || ! strcmp(name, "ctid"))
 		{
 			strncpy(name2 + 2, name, MAXFIELDNAMELEN - 2);
@@ -1285,18 +1285,18 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 			if (state->config->readshape == 1 && (! state->config->geography) )
 			{
 				stringbuffer_aprintf(sb, "SELECT DropGeometryColumn('%s','%s','%s');\n",
-				           state->config->schema, state->config->table, state->config->geom);
+				                     state->config->schema, state->config->table, state->config->geom);
 			}
 
 			stringbuffer_aprintf(sb, "DROP TABLE \"%s\".\"%s\";\n", state->config->schema,
-			           state->config->table);
+			                     state->config->table);
 		}
 		else
 		{
 			if (state->config->readshape == 1  && (! state->config->geography) )
 			{
 				stringbuffer_aprintf(sb, "SELECT DropGeometryColumn('','%s','%s');\n",
-				           state->config->table, state->config->geom);
+				                     state->config->table, state->config->geom);
 			}
 
 			stringbuffer_aprintf(sb, "DROP TABLE \"%s\";\n", state->config->table);
@@ -1316,7 +1316,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		if (state->config->schema)
 		{
 			stringbuffer_aprintf(sb, "CREATE TABLE \"%s\".\"%s\" (gid serial PRIMARY KEY",
-			           state->config->schema, state->config->table);
+			                     state->config->schema, state->config->table);
 		}
 		else
 		{
@@ -1408,12 +1408,12 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 			if (state->config->schema)
 			{
 				stringbuffer_aprintf(sb, "SELECT AddGeometryColumn('%s','%s','%s','%d',",
-				           state->config->schema, state->config->table, state->config->geom, state->config->sr_id);
+				                     state->config->schema, state->config->table, state->config->geom, state->config->sr_id);
 			}
 			else
 			{
 				stringbuffer_aprintf(sb, "SELECT AddGeometryColumn('','%s','%s','%d',",
-				           state->config->table, state->config->geom, state->config->sr_id);
+				                     state->config->table, state->config->geom, state->config->sr_id);
 			}
 
 			stringbuffer_aprintf(sb, "'%s',%d);\n", state->pgtype, state->pgdims);
@@ -1528,12 +1528,12 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 		if (state->config->schema)
 		{
 			stringbuffer_aprintf(sb, "INSERT INTO \"%s\".\"%s\" %s VALUES (", state->config->schema,
-			           state->config->table, state->col_names);
+			                     state->config->table, state->col_names);
 		}
 		else
 		{
 			stringbuffer_aprintf(sb, "INSERT INTO \"%s\" %s VALUES (", state->config->table,
-			           state->col_names);
+			                     state->col_names);
 		}
 	}
 
@@ -1596,25 +1596,25 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 
 			if (state->config->encoding)
 			{
-                static char *encoding_msg = "Try \"LATIN1\" (Western European), or one of the values described at http://www.postgresql.org/docs/current/static/multibyte.html.";
+				static char *encoding_msg = "Try \"LATIN1\" (Western European), or one of the values described at http://www.postgresql.org/docs/current/static/multibyte.html.";
 
 				int rv = utf8(state->config->encoding, val, &utf8str);
 
-                if (rv != UTF8_GOOD_RESULT)
-                {
-                    if( rv == UTF8_BAD_RESULT )
-					    snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert data value \"%s\" to UTF-8 (iconv reports \"%s\"). Current encoding is \"%s\". %s", utf8str, strerror(errno), state->config->encoding, encoding_msg);
-				    else if( rv == UTF8_NO_RESULT )
-					    snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert data value to UTF-8 (iconv reports \"%s\"). Current encoding is \"%s\". %s", strerror(errno), state->config->encoding, encoding_msg);
-					else 
-					    snprintf(state->message, SHPLOADERMSGLEN, "Unexpected return value from utf8()");
+				if (rv != UTF8_GOOD_RESULT)
+				{
+					if ( rv == UTF8_BAD_RESULT )
+						snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert data value \"%s\" to UTF-8 (iconv reports \"%s\"). Current encoding is \"%s\". %s", utf8str, strerror(errno), state->config->encoding, encoding_msg);
+					else if ( rv == UTF8_NO_RESULT )
+						snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert data value to UTF-8 (iconv reports \"%s\"). Current encoding is \"%s\". %s", strerror(errno), state->config->encoding, encoding_msg);
+					else
+						snprintf(state->message, SHPLOADERMSGLEN, "Unexpected return value from utf8()");
 
-                    if( rv == UTF8_BAD_RESULT )
-				        free(utf8str);
-        		    
-                	return SHPLOADERERR;
-                }
-            }
+					if ( rv == UTF8_BAD_RESULT )
+						free(utf8str);
+
+					return SHPLOADERERR;
+				}
+			}
 
 			/* Escape attribute correctly according to dump format */
 			if (state->config->dump_format)
@@ -1820,7 +1820,7 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 		if (state->config->schema)
 		{
 			stringbuffer_aprintf(sb, "CREATE INDEX \"%s_%s_gist\" ON \"%s\".\"%s\" using gist (\"%s\" %s);\n", state->config->table, state->config->geom,
-			           state->config->schema, state->config->table, state->config->geom, ops);
+			                     state->config->schema, state->config->table, state->config->geom, ops);
 		}
 		else
 		{

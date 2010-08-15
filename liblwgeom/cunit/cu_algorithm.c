@@ -798,7 +798,7 @@ static void test_isclosed(void)
 	geom = lwgeom_from_ewkt("LINESTRING(1 2 3,4 5 6,1 2 3)", PARSER_CHECK_NONE);
 	CU_ASSERT(lwline_is_closed((LWLINE *) geom));
 	lwfree(geom);
-	
+
 	/* Closed on 4D, even if M is not the same */
 	geom = lwgeom_from_ewkt("LINESTRING(1 2 3 4,5 6 7 8,1 2 3 0)", PARSER_CHECK_NONE);
 	CU_ASSERT(lwline_is_closed((LWLINE *) geom));
@@ -826,7 +826,7 @@ static void test_isclosed(void)
 	geom = lwgeom_from_ewkt("CIRCULARSTRING(1 2 3,4 5 6,1 2 3)", PARSER_CHECK_NONE);
 	CU_ASSERT(lwcircstring_is_closed((LWCIRCSTRING *) geom));
 	lwfree(geom);
-	
+
 	/* Closed on 4D, even if M is not the same */
 	geom = lwgeom_from_ewkt("CIRCULARSTRING(1 2 3 4,5 6 7 8,1 2 3 0)", PARSER_CHECK_NONE);
 	CU_ASSERT(lwcircstring_is_closed((LWCIRCSTRING *) geom));
@@ -879,7 +879,8 @@ static void test_isclosed(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo algorithms_tests[] = {
+CU_TestInfo algorithms_tests[] =
+{
 	PG_TEST(test_lw_segment_side),
 	PG_TEST(test_lw_segment_intersects),
 	PG_TEST(test_lwline_crossing_short_lines),

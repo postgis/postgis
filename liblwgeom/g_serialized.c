@@ -838,10 +838,10 @@ static int lwcollection_from_gserialized_allowed_types(int collectiontype, int s
 	        (subtype == POLYGONTYPE || subtype == CURVEPOLYTYPE) )
 		return LW_TRUE;
 	if ( collectiontype == POLYHEDRALSURFACETYPE &&
-		subtype == POLYGONTYPE )
+	        subtype == POLYGONTYPE )
 		return LW_TRUE;
 	if ( collectiontype == TINTYPE &&
-		subtype == TRIANGLETYPE )
+	        subtype == TRIANGLETYPE )
 		return LW_TRUE;
 
 	/* Must be a bad combination! */

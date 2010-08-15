@@ -38,8 +38,8 @@ lwtin_deserialize(uchar *srl)
 	result->type = insp->type;
 	result->SRID = insp->SRID;
 	result->ngeoms = insp->ngeometries;
-	
-	if( insp->ngeometries )
+
+	if ( insp->ngeometries )
 	{
 		result->geoms = lwalloc(sizeof(LWTRIANGLE *)*insp->ngeometries);
 	}
@@ -74,7 +74,7 @@ lwtin_deserialize(uchar *srl)
 
 LWTIN* lwtin_add_lwtriangle(LWTIN *mobj, const LWTRIANGLE *obj)
 {
-        return (LWTIN*)lwcollection_add_lwgeom((LWCOLLECTION*)mobj, (LWGEOM*)obj);
+	return (LWTIN*)lwcollection_add_lwgeom((LWCOLLECTION*)mobj, (LWGEOM*)obj);
 }
 
 
@@ -107,19 +107,19 @@ void printLWTIN(LWTIN *tin)
 	LWTRIANGLE *triangle;
 
 	if (TYPE_GETTYPE(tin->type) != TINTYPE)
-        	lwerror("printLWTIN called with something else than a TIN");
+		lwerror("printLWTIN called with something else than a TIN");
 
-        lwnotice("LWTIN {");
-        lwnotice("    ndims = %i", (int)TYPE_NDIMS(tin->type));
-        lwnotice("    SRID = %i", (int)tin->SRID);
-        lwnotice("    ngeoms = %i", (int)tin->ngeoms);
+	lwnotice("LWTIN {");
+	lwnotice("    ndims = %i", (int)TYPE_NDIMS(tin->type));
+	lwnotice("    SRID = %i", (int)tin->SRID);
+	lwnotice("    ngeoms = %i", (int)tin->ngeoms);
 
-        for (i=0; i<tin->ngeoms; i++)
-        {
+	for (i=0; i<tin->ngeoms; i++)
+	{
 		triangle = (LWTRIANGLE *) tin->geoms[i];
-               	printPA(triangle->points);
-        }
-        lwnotice("}");
+		printPA(triangle->points);
+	}
+	lwnotice("}");
 }
 
 
@@ -135,7 +135,7 @@ struct struct_tin_arcs
 };
 typedef struct struct_tin_arcs *tin_arcs;
 
-/* We supposed that the geometry is valid 
+/* We supposed that the geometry is valid
    we could have wrong result if not */
 int lwtin_is_closed(LWTIN *tin)
 {
@@ -153,35 +153,38 @@ int lwtin_is_closed(LWTIN *tin)
 	narcs = 3 * tin->ngeoms;
 
 	arcs = lwalloc(sizeof(struct struct_tin_arcs) * narcs);
-	for (i=0, carc=0; i < tin->ngeoms ; i++) {
-		
+	for (i=0, carc=0; i < tin->ngeoms ; i++)
+	{
+
 		patch = (LWTRIANGLE *) tin->geoms[i];
-		for (j=0; j < 3 ; j++) {
-			
+		for (j=0; j < 3 ; j++)
+		{
+
 			getPoint4d_p(patch->points, j,   &pa);
 			getPoint4d_p(patch->points, j+1, &pb);
 
 			/* Make sure to order the 'lower' point first */
 			if ( (pa.x > pb.x) ||
-			     (pa.x == pb.x && pa.y > pb.y) ||
-			     (pa.x == pb.x && pa.y == pb.y && pa.z > pb.z) )
+			        (pa.x == pb.x && pa.y > pb.y) ||
+			        (pa.x == pb.x && pa.y == pb.y && pa.z > pb.z) )
 			{
 				pa = pb;
 				getPoint4d_p(patch->points, j, &pb);
 			}
-			
-			for (found=0, k=0; k < carc ; k++) {
+
+			for (found=0, k=0; k < carc ; k++)
+			{
 
 				if (  ( arcs[k].ax == pa.x && arcs[k].ay == pa.y &&
-					arcs[k].az == pa.z && arcs[k].bx == pb.x &&
-					arcs[k].by == pb.y && arcs[k].bz == pb.z &&
-					arcs[k].face != i) )
+				        arcs[k].az == pa.z && arcs[k].bx == pb.x &&
+				        arcs[k].by == pb.y && arcs[k].bz == pb.z &&
+				        arcs[k].face != i) )
 				{
 					arcs[k].cnt++;
 					found = 1;
 
-					/* Look like an invalid TIN 
-				   	   anyway not a closed one */
+					/* Look like an invalid TIN
+					      anyway not a closed one */
 					if (arcs[k].cnt > 2)
 					{
 						lwfree(arcs);
@@ -202,8 +205,8 @@ int lwtin_is_closed(LWTIN *tin)
 				arcs[carc].bz = pb.z;
 				carc++;
 
-				/* Look like an invalid TIN 
-			   	   anyway not a closed one */
+				/* Look like an invalid TIN
+				      anyway not a closed one */
 				if (carc > narcs)
 				{
 					lwfree(arcs);
@@ -212,11 +215,13 @@ int lwtin_is_closed(LWTIN *tin)
 			}
 		}
 	}
-	
-	/* A TIN is closed if each edge 
-           is shared by exactly 2 faces */
-	for (k=0; k < carc ; k++) {
-		if (arcs[k].cnt != 2) {
+
+	/* A TIN is closed if each edge
+	       is shared by exactly 2 faces */
+	for (k=0; k < carc ; k++)
+	{
+		if (arcs[k].cnt != 2)
+		{
 			lwfree(arcs);
 			return 0;
 		}

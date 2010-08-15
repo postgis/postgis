@@ -157,9 +157,9 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad)
 
 	POINT4D *center;
 	double radius = 0.0,
-	       sweep = 0.0,
-	       angle = 0.0,
-	       increment = 0.0;
+	                sweep = 0.0,
+	                        angle = 0.0,
+	                                increment = 0.0;
 	double a1, a2, a3, i;
 
 	LWDEBUG(2, "lwcircle_segmentize called. ");
@@ -387,7 +387,7 @@ lwcompound_segmentize(LWCOMPOUND *icompound, uint32 perQuad)
 		else
 		{
 			lwerror("Unsupported geometry type %d found.",
-				lwgeom_getType(geom->type), lwtype_name(lwgeom_getType(geom->type)));
+			        lwgeom_getType(geom->type), lwtype_name(lwgeom_getType(geom->type)));
 			return NULL;
 		}
 	}
@@ -751,7 +751,7 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
 		return result;
 	}
 	lwerror("Invalid state [%d] %s - [%d] %s",
-		currentType, lwtype_name(currentType), type, lwtype_name(type));
+	        currentType, lwtype_name(currentType), type, lwtype_name(type));
 	return NULL;
 }
 

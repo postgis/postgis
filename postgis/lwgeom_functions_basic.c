@@ -684,7 +684,7 @@ lwgeom_force2d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 	        type != MULTILINETYPE && type != COLLECTIONTYPE &&
 	        type != COMPOUNDTYPE && type != CURVEPOLYTYPE &&
 	        type != MULTICURVETYPE && type != MULTISURFACETYPE &&
-		type != POLYHEDRALSURFACETYPE && type != TINTYPE )
+	        type != POLYHEDRALSURFACETYPE && type != TINTYPE )
 	{
 		lwerror("lwgeom_force2d_recursive: unknown geometry: %d - %s",
 		        type, lwtype_name(type));
@@ -925,7 +925,7 @@ lwgeom_force3dz_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 	        type != MULTILINETYPE && type != COLLECTIONTYPE &&
 	        type != COMPOUNDTYPE && type != CURVEPOLYTYPE &&
 	        type != MULTICURVETYPE && type != MULTISURFACETYPE &&
-		type != POLYHEDRALSURFACETYPE && type != TINTYPE )
+	        type != POLYHEDRALSURFACETYPE && type != TINTYPE )
 	{
 		lwerror("lwgeom_force3dz_recursive: unknown geometry: %d - %s",
 		        type, lwtype_name(type));
@@ -1139,7 +1139,7 @@ lwgeom_force3dm_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 		newpts.serialized_pointlist = lwalloc(sizeof(POINT3DM)*triangle->points->npoints);
 
 		LWDEBUGF(3, "lwgeom_force3dm_recursive: %d bytes pointlist allocated",
-			sizeof(POINT3DM)*triangle->points->npoints);
+		         sizeof(POINT3DM)*triangle->points->npoints);
 
 		loc = newpts.serialized_pointlist;
 		for (j=0; j<triangle->points->npoints; j++)
@@ -1163,7 +1163,7 @@ lwgeom_force3dm_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 	        type != MULTILINETYPE && type != COLLECTIONTYPE &&
 	        type != COMPOUNDTYPE && type != CURVEPOLYTYPE &&
 	        type != MULTICURVETYPE && type != MULTISURFACETYPE &&
-		type != POLYHEDRALSURFACETYPE && type != TINTYPE )
+	        type != POLYHEDRALSURFACETYPE && type != TINTYPE )
 	{
 		lwerror("lwgeom_force3dm_recursive: unknown geometry: %d - %s",
 		        type, lwtype_name(type));
@@ -1399,7 +1399,7 @@ lwgeom_force4d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 	        type != MULTILINETYPE && type != COLLECTIONTYPE &&
 	        type != COMPOUNDTYPE && type != CURVEPOLYTYPE &&
 	        type != MULTICURVETYPE && type != MULTISURFACETYPE &&
-		type != POLYHEDRALSURFACETYPE && type != TINTYPE )
+	        type != POLYHEDRALSURFACETYPE && type != TINTYPE )
 	{
 		lwerror("lwgeom_force4d_recursive: unknown geometry: %d - %s",
 		        type, lwtype_name(type));
@@ -1723,8 +1723,8 @@ Datum LWGEOM_shortestline2d(PG_FUNCTION_ARGS)
 	LWGEOM *geom2;
 	LWGEOM *theline;
 
-	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0)))); 
-	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1)))); 
+	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
+	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
 
 	if (geom1->SRID != geom2->SRID)
 	{
@@ -1753,8 +1753,8 @@ Datum LWGEOM_longestline2d(PG_FUNCTION_ARGS)
 	LWGEOM *geom2;
 	LWGEOM *theline;
 
-	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));  
-	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));  
+	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
+	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
 
 	if (geom1->SRID != geom2->SRID)
 	{
@@ -1821,8 +1821,8 @@ Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
 
 	PROFSTART(PROF_QRUN);
 
-	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0)))); 
-	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1)))); 
+	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
+	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
 	tolerance = PG_GETARG_FLOAT8(2);
 
 	if ( tolerance < 0 )
@@ -1904,8 +1904,8 @@ Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS)
 
 	PROFSTART(PROF_QRUN);
 
-	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0)))); 
-	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1)))); 
+	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
+	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
 
 	if (geom1->SRID != geom2->SRID)
 	{
@@ -3099,8 +3099,8 @@ Datum ST_IsCollection(PG_FUNCTION_ARGS)
 	PG_LWGEOM* geom;
 	int type;
 
-        /* Pull only a small amount of the tuple,
-	 * enough to get the type. size = header + type */
+	/* Pull only a small amount of the tuple,
+	* enough to get the type. size = header + type */
 	geom = (PG_LWGEOM*)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0),
 	        0, VARHDRSZ + 1);
 

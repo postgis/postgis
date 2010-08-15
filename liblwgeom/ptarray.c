@@ -107,20 +107,20 @@ ptarray_reverse(POINTARRAY *pa)
 POINTARRAY*
 ptarray_flip_coordinates(POINTARRAY *pa)
 {
-        int i;
-        double d;
-        POINT4D p;
+	int i;
+	double d;
+	POINT4D p;
 
-        for (i=0 ; i < pa->npoints ; i++)
-        {
-                getPoint4d_p(pa, i, &p);
-                d = p.y;
-                p.y = p.x;
-                p.x = d;
-                setPoint4d(pa, i, &p);
-        }
+	for (i=0 ; i < pa->npoints ; i++)
+	{
+		getPoint4d_p(pa, i, &p);
+		d = p.y;
+		p.y = p.x;
+		p.x = d;
+		setPoint4d(pa, i, &p);
+	}
 
-        return pa;
+	return pa;
 }
 
 
@@ -997,7 +997,7 @@ ptarray_remove_repeated_points(POINTARRAY *in)
 	for (ipn=1; ipn<in->npoints; ++ipn)
 	{
 		if ( (ipn==in->npoints-1 && opn==1) || memcmp(getPoint_internal(in, ipn-1),
-		            getPoint_internal(in, ipn), ptsize) )
+		        getPoint_internal(in, ipn), ptsize) )
 		{
 			/* The point is different from the previous,
 			 * we add it to output */

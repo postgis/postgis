@@ -158,7 +158,7 @@ asgml2_line_size(LWLINE *line, char *srs, int precision, const char *prefix)
 
 static size_t
 asgml2_line_buf(LWLINE *line, char *srs, char *output, int precision,
-	const char *prefix)
+                const char *prefix)
 {
 	char *ptr=output;
 
@@ -209,7 +209,7 @@ asgml2_poly_size(LWPOLY *poly, char *srs, int precision, const char *prefix)
 
 static size_t
 asgml2_poly_buf(LWPOLY *poly, char *srs, char *output, int precision,
-	const char *prefix)
+                const char *prefix)
 {
 	int i;
 	char *ptr=output;
@@ -223,7 +223,7 @@ asgml2_poly_buf(LWPOLY *poly, char *srs, char *output, int precision,
 		ptr += sprintf(ptr, "<%sPolygon>", prefix);
 	}
 	ptr += sprintf(ptr, "<%souterBoundaryIs><%sLinearRing><%scoordinates>",
-		prefix, prefix, prefix);
+	               prefix, prefix, prefix);
 	ptr += pointArray_toGML2(poly->rings[0], ptr, precision);
 	ptr += sprintf(ptr, "</%scoordinates></%sLinearRing></%souterBoundaryIs>", prefix, prefix, prefix);
 	for (i=1; i<poly->nrings; i++)
@@ -256,7 +256,7 @@ asgml2_poly(LWPOLY *poly, char *srs, int precision, const char *prefix)
  */
 static size_t
 asgml2_multi_size(LWGEOM_INSPECTED *insp, char *srs, int precision,
-		const char *prefix)
+                  const char *prefix)
 {
 	int i;
 	size_t size;
@@ -302,7 +302,7 @@ asgml2_multi_size(LWGEOM_INSPECTED *insp, char *srs, int precision,
  */
 static size_t
 asgml2_multi_buf(LWGEOM_INSPECTED *insp, char *srs, char *output,
-	int precision, const char *prefix)
+                 int precision, const char *prefix)
 {
 	int type = lwgeom_getType(insp->serialized_form[0]);
 	char *ptr, *gmltype;
@@ -365,7 +365,7 @@ asgml2_multi_buf(LWGEOM_INSPECTED *insp, char *srs, char *output,
  */
 static char *
 asgml2_multi(LWGEOM_INSPECTED *insp, char *srs, int precision,
-		const char *prefix)
+             const char *prefix)
 {
 	char *gml;
 	size_t size;
@@ -379,7 +379,7 @@ asgml2_multi(LWGEOM_INSPECTED *insp, char *srs, int precision,
 
 static size_t
 asgml2_collection_size(LWGEOM_INSPECTED *insp, char *srs, int precision,
-		const char *prefix)
+                       const char *prefix)
 {
 	int i;
 	size_t size;
@@ -495,7 +495,7 @@ asgml2_collection_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, int preci
  */
 static char *
 asgml2_collection(LWGEOM_INSPECTED *insp, char *srs, int precision,
-		const char *prefix)
+                  const char *prefix)
 {
 	char *gml;
 	size_t size;
@@ -764,10 +764,13 @@ asgml3_poly_buf(LWPOLY *poly, char *srs, char *output, int precision, int is_dee
 	int dimension=2;
 
 	if (TYPE_HASZ(poly->type)) dimension = 3;
-	if (is_patch) {
+	if (is_patch)
+	{
 		if (srs) ptr += sprintf(ptr, "<%sPolygonPatch srsName=\"%s\">", prefix, srs);
 		else     ptr += sprintf(ptr, "<%sPolygonPatch>", prefix);
-	} else {
+	}
+	else
+	{
 		if (srs) ptr += sprintf(ptr, "<%sPolygon srsName=\"%s\">", prefix, srs);
 		else     ptr += sprintf(ptr, "<%sPolygon>", prefix);
 	}
@@ -778,7 +781,7 @@ asgml3_poly_buf(LWPOLY *poly, char *srs, char *output, int precision, int is_dee
 
 	ptr += pointArray_toGML3(poly->rings[0], ptr, precision, is_deegree);
 	ptr += sprintf(ptr, "</%sposList></%sLinearRing></%sexterior>",
-		prefix, prefix, prefix);
+	               prefix, prefix, prefix);
 	for (i=1; i<poly->nrings; i++)
 	{
 		ptr += sprintf(ptr, "<%sinterior><%sLinearRing>", prefix, prefix);
@@ -786,7 +789,7 @@ asgml3_poly_buf(LWPOLY *poly, char *srs, char *output, int precision, int is_dee
 		else         ptr += sprintf(ptr, "<%sposList>", prefix);
 		ptr += pointArray_toGML3(poly->rings[i], ptr, precision, is_deegree);
 		ptr += sprintf(ptr, "</%sposList></%sLinearRing></%sinterior>",
-			prefix, prefix, prefix);
+		               prefix, prefix, prefix);
 	}
 	if (is_patch) ptr += sprintf(ptr, "</%sPolygonPatch>", prefix);
 	else ptr += sprintf(ptr, "</%sPolygon>", prefix);
@@ -839,7 +842,7 @@ asgml3_triangle_buf(LWTRIANGLE *triangle, char *srs, char *output, int precision
 
 	ptr += pointArray_toGML3(triangle->points, ptr, precision, is_deegree);
 	ptr += sprintf(ptr, "</%sposList></%sLinearRing></%sexterior>",
-		prefix, prefix, prefix);
+	               prefix, prefix, prefix);
 
 	ptr += sprintf(ptr, "</%sTriangle>", prefix);
 
@@ -1018,9 +1021,9 @@ asgml3_psurface_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, int precisi
 
 	/* Open outmost tag */
 	if (srs) ptr += sprintf(ptr, "<%sPolyhedralSurface srsName=\"%s\"><%spolygonPatches>",
-			prefix, srs, prefix);
+		                        prefix, srs, prefix);
 	else	 ptr += sprintf(ptr, "<%sPolyhedralSurface><%spolygonPatches>",
-			prefix, prefix);
+		                     prefix, prefix);
 
 	for (i=0; i<insp->ngeometries; i++)
 	{
@@ -1033,7 +1036,7 @@ asgml3_psurface_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, int precisi
 
 	/* Close outmost tag */
 	ptr += sprintf(ptr, "</%spolygonPatches></%sPolyhedralSurface>",
-		prefix, prefix);
+	               prefix, prefix);
 
 	return (ptr-output);
 }
@@ -1089,9 +1092,9 @@ asgml3_tin_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, int precision, i
 
 	/* Open outmost tag */
 	if (srs) ptr += sprintf(ptr, "<%sTin srsName=\"%s\"><%strianglePatches>",
-			prefix, srs, prefix);
+		                        prefix, srs, prefix);
 	else	 ptr += sprintf(ptr, "<%sTin><%strianglePatches>",
-			prefix, prefix);
+		                     prefix, prefix);
 
 	for (i=0; i<insp->ngeometries; i++)
 	{
@@ -1099,7 +1102,7 @@ asgml3_tin_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, int precision, i
 
 		triangle = lwgeom_gettriangle_inspected(insp, i);
 		ptr += asgml3_triangle_buf(triangle, 0, ptr, precision,
-			is_deegree, is_dims, prefix);
+		                           is_deegree, is_dims, prefix);
 		lwtriangle_release(triangle);
 	}
 
