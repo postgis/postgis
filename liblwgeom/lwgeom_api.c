@@ -962,9 +962,10 @@ lwgeom_inspect(const uchar *serialized_form)
 		loc += 4;
 	}
 
-	if ( (type==POINTTYPE) || (type==LINETYPE) || (type==POLYGONTYPE) || (type == CIRCSTRINGTYPE))
+	if ( (type==POINTTYPE) || (type==LINETYPE) || (type==POLYGONTYPE) ||
+	        (type == CIRCSTRINGTYPE) || (type == TRIANGLETYPE))
 	{
-		/* simple geometry (point/line/polygon/circstring)-- not multi! */
+		/* simple geometry (point/line/polygon/circstring/triangle)-- not multi! */
 		result->ngeometries = 1;
 		sub_geoms = (uchar**) lwalloc(sizeof(char*));
 		sub_geoms[0] = (uchar *)serialized_form;
