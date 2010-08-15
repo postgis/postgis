@@ -671,7 +671,7 @@ lwgeom_force2d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 		}
 		triangle->points = &newpts;
 		TYPE_SETZM(triangle->type, 0, 0);
-		lwline_serialize_buf(line, optr, retsize);
+		lwtriangle_serialize_buf(triangle, optr, retsize);
 		lwfree(newpts.serialized_pointlist);
 		lwfree(triangle);
 
