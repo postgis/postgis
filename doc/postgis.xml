@@ -79,6 +79,14 @@
    </imageobject>
  </inlinemediaobject>
  This function supports Polyhedral surfaces.">
+ 
+<!ENTITY T_support
+"<inlinemediaobject>
+   <imageobject>
+     <imagedata fileref='images/check.png' />
+   </imageobject>
+ </inlinemediaobject>
+ This function supports Triangles and Triangulated Irregular Network Surfaces (TIN).">
 ]>
 <book>
   <title>PostGIS &last_release_version; Manual</title>

@@ -55,6 +55,9 @@
 	
 	<!-- Optionally mention supports Polyhedral Surface  -->
 	<para>&P_support;</para>
+	
+	<!-- Optionally mention support for Triangles and TINS  -->
+	<para>&T_support;</para>
   </refsection>
 
 
