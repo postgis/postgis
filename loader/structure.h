@@ -1,5 +1,5 @@
 /**********************************************************************
- * $ID$
+ * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
