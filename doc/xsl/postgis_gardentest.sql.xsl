@@ -78,12 +78,34 @@
 			CROSS JOIN generate_series(1,2) As m
 			ORDER BY i, j, i+j+m, m, i*j*m)</pgis:gset>
 			
-		<pgis:gset ID='PolyhedralSurface' GeometryType='PolyhedralSurface'>(SELECT ST_GeomFromEWKT(
+		<pgis:gset ID='PolyhedralSurface' GeometryType='POLYHEDRALSURFACE'>(SELECT ST_GeomFromEWKT(
 'SRID=4326;PolyhedralSurface( 
 ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),  
 ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),  ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),  
 ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) 
 )') As the_geom) </pgis:gset>
+
+		<pgis:gset ID='Triangle' GeometryType='TRIANGLE'>(SELECT ST_GeomFromEWKT(
+'SRID=4326;TRIANGLE ((
+                0 0, 
+                0 9, 
+                9 0, 
+                0 0
+            ))') As the_geom) </pgis:gset>
+            
+		<pgis:gset ID='TIN' GeometryType='TIN'>(SELECT ST_GeomFromEWKT(
+'SRID=4326;TIN (((
+                0 0 0, 
+                0 0 1, 
+                0 1 0, 
+                0 0 0
+            )), ((
+                0 0 0, 
+                0 1 0, 
+                1 1 0, 
+                0 0 0
+            ))
+            )') As the_geom) </pgis:gset>
 
 		<pgis:gset ID='GCSet3D' GeometryType='GEOMETRYCOLLECTIONZ' SkipUnary='1'>(SELECT ST_Collect(ST_Collect(ST_SetSRID(ST_MakePoint(i,j,m),4326),ST_SetSRID(ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_MakePoint(i+m,j,m),ST_MakePoint(j+m,i-m,m)),ST_MakePoint(i,j,m)),ST_MakePointM(i+m,j,m))),4326)))  As the_geom
 		FROM generate_series(-10,50,20) As i

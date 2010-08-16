@@ -267,19 +267,21 @@
 				<listitem><simpara>geog - Basic 2D geography support (x,y).</simpara></listitem>
 				<listitem><simpara>2.5D - basic 2D geometries in 3 D/4D space (has Z or M coord).</simpara></listitem>
 				<listitem><simpara>PS - Polyhedral surfaces</simpara></listitem>
+				<listitem><simpara>T - Triangles and Triangulated Irregular Network surfaces (TIN)</simpara></listitem>
 				</itemizedlist>
 			</para>
 				
 			<para>
 				<informaltable frame='all'>
-					<tgroup cols='7' align='left' colsep='1' rowsep='1'>
-						<colspec colname='function' />
+					<tgroup cols='8' align='left' colsep='1' rowsep='1'>
+						<colspec colname='function' align='left'/>
 						<colspec colname='geometry' align='center'/>
 						<colspec colname='geography' align='center'/>
 						<colspec colname='25D' align='center'/>
 						<colspec colname='Curves' align='center'/>
 						<colspec colname='SQLMM' align='center' />
 						<colspec colname='PS' align='center' />
+						<colspec colname='T' align='center' />
 						<thead>
 						  <row>
 							<entry>Function</entry>
@@ -289,6 +291,7 @@
 							<entry>Curves</entry>
 							<entry>SQL MM</entry>
 							<entry>PS</entry>
+							<entry>T</entry>
 						  </row>
 						</thead>
 						<tbody>
@@ -377,6 +380,17 @@
 								<xsl:choose>
 									<!-- supports -->
 									<xsl:when test="contains(.,'Polyhedral')">
+										<entry><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></entry>
+									</xsl:when>
+									<!-- no support -->
+									<xsl:otherwise>
+										<entry></entry>
+									</xsl:otherwise>
+								</xsl:choose>
+							<!-- Triangle and TIN surface support -->
+								<xsl:choose>
+									<!-- supports -->
+									<xsl:when test="contains(.,'Triang')">
 										<entry><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></entry>
 									</xsl:when>
 									<!-- no support -->
