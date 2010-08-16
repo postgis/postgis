@@ -1,3 +1,19 @@
+/**********************************************************************
+ * $ID$
+ *
+ * PostGIS - Spatial Types for PostgreSQL
+ * http://postgis.refractions.net
+ * Copyright 2010 LISAsoft Pty Ltd <mark.leslie@lisasoft.com>
+ *
+ * This is free softwark; you can redistribute and/or modify it under 
+ * the terms of the GNU General Public Licence.  See the COPYING file.
+ *
+ * This file contains struct and method definitions used to manage the
+ * basic elements stored withing the shp2pgsql-gui.c list item.  These
+ * were separated out for ease of testing.
+ *
+ *********************************************************************/
+
 
 #ifndef __PGIS_STRUCTURE_H__
 #define __PGIS_STRUCTURE_H__
