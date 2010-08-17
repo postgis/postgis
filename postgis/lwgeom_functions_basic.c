@@ -3575,6 +3575,7 @@ lwgeom_affine_recursive(uchar *serialized,
 		LWLINE *line=NULL;
 		LWPOINT *point=NULL;
 		LWPOLY *poly=NULL;
+		LWTRIANGLE *triangle=NULL;
 		LWCIRCSTRING *curve=NULL;
 		uchar *subgeom=NULL;
 
@@ -3626,6 +3627,18 @@ lwgeom_affine_recursive(uchar *serialized,
 			                      gfac, hfac, ifac,
 			                      xoff, yoff, zoff);
 			lwgeom_release((LWGEOM *)curve);
+			continue;
+		}
+
+		triangle = lwgeom_gettriangle_inspected(inspected, i);
+		if (triangle != NULL)
+		{
+			lwgeom_affine_ptarray(triangle->points,
+			                      afac, bfac, cfac,
+			                      dfac, efac, ffac,
+			                      gfac, hfac, ifac,
+			                      xoff, yoff, zoff);
+			lwgeom_release((LWGEOM *)triangle);
 			continue;
 		}
 
