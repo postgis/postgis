@@ -212,7 +212,7 @@ static int gbox_check_poles(GBOX *gbox)
 		rv = LW_TRUE;
 	}
 
-	return LW_FALSE;
+	return rv;
 }
 
 
@@ -1271,7 +1271,7 @@ int edge_calculate_gbox(const GEOGRAPHIC_EDGE *e, GBOX *gbox)
 */
 void gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside)
 {
-	static double grow = M_PI / 180.0 / 60.0; /* one arc-minute */
+	double grow = M_PI / 180.0 / 60.0; /* one arc-minute */
 	int i;
 	GBOX ge;
 	POINT3D corners[8];
