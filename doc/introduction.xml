@@ -25,7 +25,7 @@
 		<term>Mark Cave-Ayland</term>
 		<listitem>
 		  <para>Coordinates bug fixing and maintenance effort, alignment of
-		  PostGIS with PostgreSQL releases, spatial index selectivity and binding, windows production builds, integration of new
+		  PostGIS with PostgreSQL releases, spatial index selectivity and binding, loader/dumper, and Shapefile GUI Loader, integration of new
 		  GEOS functionality, and new function enhancements.</para>
 		</listitem>
 	  </varlistentry>
@@ -34,7 +34,7 @@
 		<term>Paul Ramsey</term>
 		<listitem>
 		  <para>Co-founder of PostGIS project.  General bug fixing, geography support, GEOS functionality integration and alignment with 
-		  GEOS releases.</para>
+		  GEOS releases, loader/dumper, and Shapefile GUI loader.</para>
 		</listitem>
 	  </varlistentry>
 
@@ -88,14 +88,14 @@
 	  <varlistentry>
 		<term>Mark Leslie</term>
 		<listitem>
-		  <para>Ongoing maintenance and development of core functions.  Enhanced curve support.</para>
+		  <para>Ongoing maintenance and development of core functions.  Enhanced curve support. Shapefile GUI loader.</para>
 		</listitem>
 	  </varlistentry>
 	  
 	  <varlistentry>
 		<term>Olivier Courtin</term>
 		<listitem>
-		  <para>Input output XML (KML,GML)/GeoJSON functions and bug fixes.</para>
+		  <para>Input output XML (KML,GML)/GeoJSON functions, 3D support and bug fixes.</para>
 		</listitem>
 	  </varlistentry>
 	  
@@ -154,7 +154,7 @@
 		  III, Carl Anderson, Charlie Savage, Dane Springmeyer, David Skea,
 		  David Techer, Eduin Carrillo, IIDA Tetsushi, George Silva, Geographic Data BC,
 		  Gerald Fenoy, Gino Lucrezi, Guillaume Lelarge, Klaus Foerster, Kris Jurka, Mark
-		  Sondheim, Markus Schaber, Michael Fuhr, Nikita Shulga, Norman Vine,
+		  Sondheim, Markus Schaber, Maxime van Noppen, Michael Fuhr, Nikita Shulga, Norman Vine,
 		  Ralph Mason, Steffen Macke, Vincent Picavet</para>
 		</listitem>
 	  </varlistentry>
