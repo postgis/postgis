@@ -78,12 +78,18 @@
 			CROSS JOIN generate_series(1,2) As m
 			ORDER BY i, j, i+j+m, m, i*j*m)</pgis:gset>
 			
-		<pgis:gset ID='PolyhedralSurface' GeometryType='POLYHEDRALSURFACE'>(SELECT ST_GeomFromEWKT(
+		<pgis:gset ID='PolyhedralSurface' GeometryType='POLYHEDRALSURFACE'>(SELECT the_geom
+		FROM (VALUES ( ST_GeomFromEWKT(
 'SRID=4326;PolyhedralSurface( 
 ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),  
 ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),  ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),  
 ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) 
-)') As the_geom) </pgis:gset>
+)') ) ,
+( ST_GeomFromEWKT(
+'SRID=4326;PolyhedralSurface( 
+((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),  
+((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)) )') ) )
+As foo(the_geom) ) </pgis:gset>
 
 		<pgis:gset ID='Triangle' GeometryType='TRIANGLE'>(SELECT ST_GeomFromEWKT(
 'SRID=4326;TRIANGLE ((
