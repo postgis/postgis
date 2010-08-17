@@ -90,7 +90,7 @@ geometry = ST_GeometryFromText(text WKT, SRID);</programlisting>
 	  SRID information.</para>
 
 	  <para>Examples of the text representations (EWKT) of the extended
-	  spatial objects of the features are as follows:</para>
+	  spatial objects of the features are as follows. The * ones are new in this version of PostGIS:</para>
 
 	  <itemizedlist>
 		<listitem>
@@ -129,14 +129,26 @@ geometry = ST_GeometryFromText(text WKT, SRID);</programlisting>
 		</listitem>
 
 		<listitem>
-		  <para>GEOMETRYCOLLECTIONM(POINTM(2 3 9), LINESTRINGM(2 3 4, 3 4
-		  5))</para>
+		  <para>GEOMETRYCOLLECTIONM( POINTM(2 3 9), LINESTRINGM(2 3 4, 3 4 5) )</para>
 		</listitem>
 		
 		<listitem>
+		    <para>MULTICURVE( (0 0, 5 5) ,CIRCULARSTRING(4 0, 4 4, 8 4) )</para>
+		</listitem>
+		
+		<listitem>*
 		  <para>POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),  
 ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),  ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),  
 ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )</para>
+		</listitem>
+		
+		<listitem>*
+		  <para>TRIANGLE ((0 0, 0 9, 9 0, 0 0))</para>
+		</listitem>
+		
+		<listitem>*
+		  <para>TIN( ((0 0 0, 0 0 1, 0 1 0, 0 0 0)), 
+		  ((0 0 0, 0 1 0, 1 1 0, 0 0 0)) )</para>
 		</listitem>
 	  </itemizedlist>
 
