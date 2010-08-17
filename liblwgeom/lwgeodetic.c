@@ -212,7 +212,7 @@ static int gbox_check_poles(GBOX *gbox)
 		rv = LW_TRUE;
 	}
 
-	return LW_FALSE;
+	return rv;
 }
 
 
