@@ -59,9 +59,12 @@ has_arc(const LWGEOM *geom)
 	case POINTTYPE:
 	case LINETYPE:
 	case POLYGONTYPE:
+	case TRIANGLETYPE:
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
+	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
 		return 0;
 	case CIRCSTRINGTYPE:
 		return 1;
