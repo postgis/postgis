@@ -128,11 +128,12 @@ y' = d*x + e*y + yoff
 z' = z </programlisting> This method is a subcase of the 3D method
 			above.</para>
 
-		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para>Availability: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>Availability: 1.1.2. Name changed from Affine to ST_Affine in 1.2.2</para>
 		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 
 		<para>&P_support;</para>
+		<para>&T_support;</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 	  </refsection>
@@ -834,11 +835,12 @@ LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
 
 		<para>This is a synonym for ST_RotateZ..  Rotates geometry rotZRadians about the Z-axis.</para>
 
-		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para>Availability: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>Availability: 1.1.2. Name changed from Rotate to ST_Rotate in 1.2.2</para>
 	  	<para>&Z_support;</para>
 	  	<para>&curve_support;</para>
 	  	<para>&P_support;</para>
+	  	<para>&T_support;</para>
 	  	
 	  </refsection>
 
@@ -882,10 +884,11 @@ LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
 		<note><para><code>ST_RotateX(geomA,  rotRadians)</code>
 			is short-hand for <code>ST_Affine(geomA, 1, 0, 0, 0, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), cos(rotRadians), 0, 0, 0)</code>.</para></note>
 
-		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para>Availability: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>Availability: 1.1.2. Name changed from RotateX to ST_RotateX in 1.2.2</para>
 	  	<para>&P_support;</para>
 	  	<para>&Z_support;</para>
+	  	<para>&T_support;</para>
 	  </refsection>
 
 
@@ -935,9 +938,11 @@ SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2)
 			is short-hand for <code>ST_Affine(geomA,  cos(rotRadians), 0, sin(rotRadians),  0, 1, 0,  -sin(rotRadians), 0, cos(rotRadians), 0,  0, 0)</code>.</para></note>
 
 		<para>Availability: 1.1.2. Name changed from RotateY to ST_RotateY in 1.2.2</para>
-		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para>Availability: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		
 	  	<para>&P_support;</para>
 	  	<para>&Z_support;</para>
+	  	<para>&T_support;</para>
 	  	
 	  </refsection>
 
@@ -988,13 +993,15 @@ SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2)
 		<note><para><code>ST_RotateZ(geomA,  rotRadians)</code>
 			is short-hand for <code>SELECT ST_Affine(geomA,  cos(rotRadians), -sin(rotRadians), 0,  sin(rotRadians), cos(rotRadians), 0,  0, 0, 1,  0, 0, 0)</code>.</para></note>
 
-		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para>Availability: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		
 		<para>Availability: 1.1.2. Name changed from RotateZ to ST_RotateZ in 1.2.2</para>
 		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 
 	  	<para>&Z_support;</para>
 	  	<para>&curve_support;</para>
 	  	<para>&P_support;</para>
+	  	<para>&T_support;</para>
 	  </refsection>
 
 
@@ -1071,10 +1078,11 @@ FROM (SELECT ST_LineToCurve(ST_Buffer(ST_GeomFromText('POINT(234 567)'), 3)) As 
 
 
 		<para>Availability: 1.1.0.</para>
-		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para>Availability: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>&P_support;</para>
 	  	<para>&Z_support;</para>
 	  	<para>&curve_support;</para>
+	  	<para>&T_support;</para>
 	  </refsection>
 
 
