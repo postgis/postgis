@@ -3499,6 +3499,7 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 	char *wkt;
 #endif
 
+	type = TYPE_GETTYPE(lwgeom->type);
 	POSTGIS_DEBUGF(4, "LWGEOM2GEOS got a %s", lwtype_name(type));
 
 	if (has_arc(lwgeom))
@@ -3513,7 +3514,7 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 		POSTGIS_DEBUGF(3, "LWGEOM2GEOM_c: was %p, is %p", tmp, lwgeom);
 		*/
 	}
-	type = TYPE_GETTYPE(lwgeom->type);
+
 	switch (type)
 	{
 		LWPOINT *lwp;
