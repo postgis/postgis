@@ -163,7 +163,7 @@ static int gbox_check_poles(GBOX *gbox)
 	LWDEBUGF(4, "gbox %s", gbox_to_string(gbox));
 	/* Z axis */
 	if ( gbox->xmin < 0.0 && gbox->xmax > 0.0 &&
-	        gbox->ymin < 0.0 && gbox->ymax > 0.0 )
+	     gbox->ymin < 0.0 && gbox->ymax > 0.0 )
 	{
 		if ( (gbox->zmin + gbox->zmax) > 0.0 )
 		{
@@ -180,9 +180,9 @@ static int gbox_check_poles(GBOX *gbox)
 
 	/* Y axis */
 	if ( gbox->xmin < 0.0 && gbox->xmax > 0.0 &&
-	        gbox->zmin < 0.0 && gbox->zmax > 0.0 )
+	     gbox->zmin < 0.0 && gbox->zmax > 0.0 )
 	{
-		if ( gbox->ymin + gbox->ymax > 0.0 )
+		if ( (gbox->ymin + gbox->ymax) > 0.0 )
 		{
 			LWDEBUG(4, "enclosed positive y axis");
 			gbox->ymax = 1.0;
@@ -197,9 +197,9 @@ static int gbox_check_poles(GBOX *gbox)
 
 	/* X axis */
 	if ( gbox->ymin < 0.0 && gbox->ymax > 0.0 &&
-	        gbox->zmin < 0.0 && gbox->zmax > 0.0 )
+	     gbox->zmin < 0.0 && gbox->zmax > 0.0 )
 	{
-		if ( gbox->xmin + gbox->xmax > 0.0 )
+		if ( (gbox->xmin + gbox->xmax) > 0.0 )
 		{
 			LWDEBUG(4, "enclosed positive x axis");
 			gbox->xmax = 1.0;
@@ -1282,12 +1282,12 @@ void gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside)
 	{
 		/* Assign our box and expand it slightly. */
 		ge = *gbox;
-		ge.xmin -= grow;
-		ge.ymin -= grow;
-		ge.zmin -= grow;
-		ge.xmax += grow;
-		ge.ymax += grow;
-		ge.zmax += grow;
+		if ( ge.xmin > -1 ) ge.xmin -= grow;
+		if ( ge.ymin > -1 ) ge.ymin -= grow;
+		if ( ge.zmin > -1 ) ge.zmin -= grow;
+		if ( ge.xmax < 1 )  ge.xmax += grow;
+		if ( ge.ymax < 1 )  ge.ymax += grow;
+		if ( ge.zmax < 1 )  ge.zmax += grow;
 
 		/* Build our eight corner points */
 		corners[0].x = ge.xmin;
