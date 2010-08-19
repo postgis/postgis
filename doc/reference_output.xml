@@ -41,11 +41,19 @@
 			<note>
 			  <para>ST_AsBinary is the reverse of <xref linkend="ST_GeomFromWKB" /> for geometry.  Use <xref linkend="ST_GeomFromWKB" /> to convert to a postgis geometry from ST_AsBinary representation.</para>
 			</note>
+			
+			<note>
+			  <para>The default behavior in PostgreSQL 9.0 has been changed to output bytea in hex encoding.  ST_AsBinary is the reverse of <xref linkend="ST_GeomFromWKB" /> for geometry.  If your GUI tools
+			  	require the old behavior, then SET bytea_output='escape' in your database.</para>
+			</note>
 
+			<para>Availability: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 			<para>Availability: 1.5.0 geography support was introduced.</para>
 			<para>&sfs_compliant; s2.1.1.1</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.37</para>
 			<para>&curve_support;</para>
+			<para>&P_support;</para>
+			<para>&T_support;</para>
 		  </refsection>
 
 
@@ -116,10 +124,11 @@
 			<note>
 			  <para>ST_AsEWKB is the reverse of ST_GeomFromEWKB.  Use ST_GeomFromEWKB to convert to a postgis geometry from ST_AsEWKB representation.</para>
 			</note>
-			<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+			<para>Availability: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 			<para>&Z_support;</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
+			<para>&T_support;</para>
 		  </refsection>
 
 
@@ -187,10 +196,11 @@
 			<note>
 			  <para>ST_AsEWKT is the reverse of <xref linkend="ST_GeomFromEWKT" />.  Use <xref linkend="ST_GeomFromEWKT" /> to convert to a postgis geometry from ST_AsEWKT representation.</para>
 			</note>
-			<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+			<para>Availability: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 			<para>&Z_support;</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
+			<para>&T_support;</para>
 		  </refsection>
 
 
