@@ -1281,12 +1281,12 @@ void gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside)
 	{
 		/* Assign our box and expand it slightly. */
 		ge = *gbox;
-		ge.xmin -= grow;
-		ge.ymin -= grow;
-		ge.zmin -= grow;
-		ge.xmax += grow;
-		ge.ymax += grow;
-		ge.zmax += grow;
+		if ( ge.xmin > -1 ) ge.xmin -= grow;
+		if ( ge.ymin > -1 ) ge.ymin -= grow;
+		if ( ge.zmin > -1 ) ge.zmin -= grow;
+		if ( ge.xmax < 1 )  ge.xmax += grow;
+		if ( ge.ymax < 1 )  ge.ymax += grow;
+		if ( ge.zmax < 1 )  ge.zmax += grow;
 
 		/* Build our eight corner points */
 		corners[0].x = ge.xmin;
