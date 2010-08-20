@@ -2056,8 +2056,8 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
 			</tgroup>
 		</informaltable>
 		<programlisting>
---this creates the same gaping hole
---but using linestrings instead of polygons
+-- this creates a geometry collection consisting of the 2 halves of the polygon
+-- this is similar to the example we demonstrated in ST_BuildArea
 SELECT ST_Split(circle, line)
 FROM (SELECT 
 	ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)) As line,
@@ -2066,7 +2066,7 @@ FROM (SELECT
 -- result --
  GEOMETRYCOLLECTION(POLYGON((150 90,149.039264020162 80.2454838991936,146.193976625564 70.8658283817455,..), POLYGON(..)))
  
--- To convert to regular geometries, you can use ST_Dump or ST_GeometryN
+-- To convert to individual polygons, you can use ST_Dump or ST_GeometryN
 SELECT ST_AsText((ST_Dump(ST_Split(circle, line))).geom) As wkt
 FROM (SELECT 
 	ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)) As line,
@@ -2082,7 +2082,7 @@ POLYGON((60.1371179574584 60.1371179574584,58.4265193848728 62.2214883490198,53.
 	</refsection>
 	<refsection>
 	<title>See Also</title>
-	<para><xref linkend="ST_Dump" />,<xref linkend="ST_GeometryN" />,<xref linkend="ST_Union" /></para>
+	<para><xref linkend="ST_BuildArea" />, <xref linkend="ST_Dump" />,<xref linkend="ST_GeometryN" />,<xref linkend="ST_Union" /></para>
 	</refsection>
 </refentry>
 
