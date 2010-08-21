@@ -243,7 +243,7 @@ END
       </question>
 
       <answer>
-      	<para>For a more extensive discussion on this topic, check out Jorge Arévalo <ulink url="http://gis4free.wordpress.com/2010/07/19/oracle-georaster-and-postgis-wkt-raster-first-impressions-part-i/">Oracle GeoRaster and PostGIS WKT Raster: First impressions </ulink></para>
+      	<para>For a more extensive discussion on this topic, check out Jorge Arévalo <ulink url="http://gis4free.wordpress.com/2010/07/19/oracle-georaster-part-i/">Oracle GeoRaster and PostGIS WKT Raster: First impressions </ulink></para>
        	<para>The major advantage of one-georeference-by-raster over one-georeference-by-layer is to allow:</para>
        	<para>* coverages to be not necessarily rectangular (which is often the case of raster coverage covering large extents. See the possible raster arrangements in the documentation)</para>
        	<para>* rasters to overlaps (which is necessary to implement lossless vector to raster conversion) </para>
