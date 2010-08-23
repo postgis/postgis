@@ -1418,7 +1418,7 @@ WHERE rid = 2;
 				<title>Description</title>
 				
 				<para>Returns the value that represents no data for the band</para>
-				<para>Pixel Types supported are as follows:
+				<para>There are 11 pixel types.  Pixel Types supported are as follows:
 					<itemizedlist>
 						<listitem>
 						  <para>1BB -  1-bit boolean</para>
@@ -1445,16 +1445,10 @@ WHERE rid = 2;
 						  <para>16BUI - 16-bit unsigned integer</para>
 						</listitem>
 						<listitem>
-						  <para>16BUI - 16-bit unsigned integer</para>
-						</listitem>
-						<listitem>
 						  <para>32BSI - 32-bit signed integer</para>
 						</listitem>
 						<listitem>
 						  <para>32BUI - 32-bit unsigned integer</para>
-						</listitem>
-						<listitem>
-						  <para>16BF - 16-bit float</para>
 						</listitem>
 						<listitem>
 						  <para>32BF - 32-bit float</para>
