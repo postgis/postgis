@@ -2109,17 +2109,19 @@ POLYGON((60.1371179574584 60.1371179574584,58.4265193848728 62.2214883490198,53.
 			</tgroup>
 		</informaltable>
 		<programlisting>
-		SELECT ST_AsText(ST_Split(mline, pt)) As wktcut
+SELECT ST_AsText(ST_Split(mline, pt)) As wktcut
 		FROM (SELECT 
-	ST_GeomFromText('MULTILINESTRING((10 10, 190 190), (15 15, 16 16, 100 90))') As mline,
-	ST_Point(16,16) As pt) As foo;
+	ST_GeomFromText('MULTILINESTRING((10 10, 190 190), (15 15, 30 30, 100 90))') As mline,
+	ST_Point(30,30) As pt) As foo;
 	
-	wktcut
-	------
-	GEOMETRYCOLLECTION(LINESTRING(10 10,16 16),
-		LINESTRING(16 16,190 190),
-		LINESTRING(15 15,16 16),
-		LINESTRING(16 16,100 90))
+wktcut
+------
+GEOMETRYCOLLECTION(
+	LINESTRING(10 10,30 30),
+	LINESTRING(30 30,190 190),
+	LINESTRING(15 15,30 30),
+	LINESTRING(30 30,100 90)
+)
 		</programlisting>
 	</refsection>
 	<refsection>
