@@ -2079,10 +2079,52 @@ POLYGON((150 90,149.039264020162 80.2454838991936,..))
 POLYGON((60.1371179574584 60.1371179574584,58.4265193848728 62.2214883490198,53.8060233744357 ..))
 
 		</programlisting>
+		<para>Multilinestring Cut by point</para>
+		<informaltable>
+			<tgroup cols="2">
+				<tbody>
+				  <row>
+					<entry>
+						<informalfigure>
+						<mediaobject>
+						  <imageobject>
+							<imagedata fileref="images/st_split03.png" />
+						  </imageobject>
+						  <caption><para>Before Split</para></caption>
+						</mediaobject>
+					    </informalfigure>
+					</entry>
+					<entry>
+						<informalfigure>
+						<mediaobject>
+						  <imageobject>
+							<imagedata fileref="images/st_split04.png" />
+						  </imageobject>
+						  <caption><para>After split</para></caption>
+						</mediaobject>
+					    </informalfigure>
+					</entry>
+				</row>
+				</tbody>
+			</tgroup>
+		</informaltable>
+		<programlisting>
+		SELECT ST_AsText(ST_Split(mline, pt)) As wktcut
+		FROM (SELECT 
+	ST_GeomFromText('MULTILINESTRING((10 10, 190 190), (15 15, 16 16, 100 90))') As mline,
+	ST_Point(16,16) As pt) As foo;
+	
+	wktcut
+	------
+	GEOMETRYCOLLECTION(LINESTRING(10 10,16 16),
+		LINESTRING(16 16,190 190),
+		LINESTRING(15 15,16 16),
+		LINESTRING(16 16,100 90))
+		</programlisting>
 	</refsection>
 	<refsection>
 	<title>See Also</title>
-	<para><xref linkend="ST_BuildArea" />, <xref linkend="ST_Dump" />,<xref linkend="ST_GeometryN" />,<xref linkend="ST_Union" /></para>
+	<para><xref linkend="ST_AsText" />,<xref linkend="ST_BuildArea" />, <xref linkend="ST_Dump" />,<xref linkend="ST_GeometryN" />,<xref linkend="ST_Union" /></para>
 	</refsection>
 </refentry>
 
