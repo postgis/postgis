@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id: pgsql2shp-core.h 5646 2010-05-27 13:19:12Z pramsey $
+ * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
@@ -29,7 +29,7 @@
 
 #include "../liblwgeom/liblwgeom.h"
 
-#define RCSID "$Id: pgsql2shp-core.h 5646 2010-05-27 13:19:12Z pramsey $"
+#define RCSID "$Id$"
 
 
 /*
