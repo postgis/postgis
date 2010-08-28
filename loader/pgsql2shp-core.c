@@ -1232,7 +1232,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 
 	char buf[256];
 	char *query;
-	int gidfound, i, j, ret;
+	int gidfound = 0, i, j, ret;
 
 
 	/* If a user-defined query has been specified, create and point the state to our new table */
