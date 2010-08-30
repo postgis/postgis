@@ -240,8 +240,8 @@ check_tgeom(char *ewkt, int type, uint32 srid, int is_solid)
 	CU_ASSERT_EQUAL(srid, tgeom->srid);
 
 	if (FLAGS_GET_SOLID(tgeom->flags) != is_solid)
-		printf("\n[%s], solid %i / %i\n", ewkt, 
-			FLAGS_GET_SOLID(tgeom->flags), is_solid);
+		printf("\n[%s], solid %i / %i\n", ewkt,
+		       FLAGS_GET_SOLID(tgeom->flags), is_solid);
 	CU_ASSERT_EQUAL(FLAGS_GET_SOLID(tgeom->flags), is_solid);
 
 	g2 = lwgeom_from_tgeom(tgeom);
