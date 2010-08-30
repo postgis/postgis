@@ -15,9 +15,12 @@
 #include <string.h>
 #include "CUnit/Basic.h"
 
-#include "libgeom.h"
+#include "libtgeom.h"
 #include "cu_tester.h"
 
 /* Test functions */
 void triangle_parse(void);
 void tin_parse(void);
+void polyhedralsurface_parse(void);
+void tin_tgeom(void);
+void psurface_tgeom(void);

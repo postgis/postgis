@@ -24,8 +24,7 @@ extern CU_SuiteInfo measures_suite;
 extern CU_SuiteInfo wkt_suite;
 extern CU_SuiteInfo wkb_suite;
 extern CU_SuiteInfo libgeom_suite;
-extern CU_SuiteInfo polyhedralsurface_suite;
-extern CU_SuiteInfo tin_suite;
+extern CU_SuiteInfo surface_suite;
 extern CU_SuiteInfo geodetic_suite;
 extern CU_SuiteInfo homogenize_suite;
 extern CU_SuiteInfo out_gml_suite;
@@ -49,8 +48,7 @@ int main(int argc, char *argv[])
 		wkt_suite,
 		wkb_suite,
 		libgeom_suite,
-		polyhedralsurface_suite,
-		tin_suite,
+		surface_suite,
 		geodetic_suite,
 		homogenize_suite,
 		out_gml_suite,
