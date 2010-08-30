@@ -1341,7 +1341,7 @@ lwgeom_getnumgeometries(uchar *serialized_form)
 	uchar type = lwgeom_getType((uchar)serialized_form[0]);
 	uchar *loc;
 
-	if ( (type==POINTTYPE) || (type==LINETYPE) || (type==POLYGONTYPE) ||
+	if ( (type==POINTTYPE) || (type==LINETYPE) || (type==POLYGONTYPE) || (type==TRIANGLETYPE) ||
 	        (type==CIRCSTRINGTYPE) || (type==COMPOUNDTYPE) || (type==CURVEPOLYTYPE) )
 	{
 		return 1;
