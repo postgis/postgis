@@ -19,7 +19,8 @@
 * Cf: ISO 13249-3:2009 -> 5.1.50 (p 134)
 *
 * GML versions supported:
-*  - Triangle, Tin and TriangulatedSurface elements
+*  - Triangle, Tin and TriangulatedSurface,
+*    and PolyhedralSurface elements
 *  - GML 3.2.1 Namespace
 *  - GML 3.1.1 Simple Features profile SF-2
 *    (with backward compatibility to GML 3.1.0 and 3.0.0)
