@@ -249,8 +249,16 @@ check_tgeom(char *ewkt, int type, uint32 srid, int is_solid)
 	{
 		printf("\n[%s]\n, lwgeom_same I", ewkt);
 		printTGEOM(tgeom);
-		printLWTIN((LWTIN *)g1);
-		printLWTIN((LWTIN *)g2);
+		if (type == TINTYPE) 
+		{
+			printLWTIN((LWTIN *)g1);
+			printLWTIN((LWTIN *)g2);
+		}
+		else
+		{
+			printLWPSURFACE((LWPSURFACE *)g1);
+			printLWPSURFACE((LWPSURFACE *)g2);
+		}
 	}
 	CU_ASSERT(lwgeom_same(g1, g2));
 	lwfree(g2);
@@ -259,8 +267,17 @@ check_tgeom(char *ewkt, int type, uint32 srid, int is_solid)
 	if (!lwgeom_same(g1, g2))
 	{
 		printf("\n[%s]\n, lwgeom_same II", ewkt);
-		printLWTIN((LWTIN *) g1);
-		printLWTIN((LWTIN *) g2);
+		printTGEOM(tgeom);
+		if (type == TINTYPE) 
+		{
+			printLWTIN((LWTIN *)g1);
+			printLWTIN((LWTIN *)g2);
+		}
+		else
+		{
+			printLWPSURFACE((LWPSURFACE *)g1);
+			printLWPSURFACE((LWPSURFACE *)g2);
+		}
 	}
 	CU_ASSERT(lwgeom_same(g1, g2));
 

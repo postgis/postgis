@@ -65,7 +65,7 @@ tgeom_is_edge(const TGEOM *tgeom, const POINT4D *s, const POINT4D *e)
 	hasz = FLAGS_GET_Z(tgeom->flags);
 	hasm = FLAGS_GET_M(tgeom->flags);
 
-	LWDEBUGF(3, "tgeom_is_edge: to check [%lf,%lf,%lf,%lf] -> [%lf,%lf,%lf,%lf]\n",
+	LWDEBUGF(3, "To check [%lf,%lf,%lf,%lf] -> [%lf,%lf,%lf,%lf]\n",
 	         s->x, s->y, s->z, s->m, e->x, e->y, e->z, e->m);
 
 	for (i=1 ; i <= tgeom->nedges ; i++)  /* edges are 1 based */
@@ -73,8 +73,10 @@ tgeom_is_edge(const TGEOM *tgeom, const POINT4D *s, const POINT4D *e)
 		p1 = tgeom->edges[i]->s;
 		p2 = tgeom->edges[i]->e;
 
-		LWDEBUGF(3, "tgeom_is_edge:  [%i]/[%i] (%lf,%lf,%lf,%lf) -> (%lf,%lf,%lf,%lf)\n",
-		         i, tgeom->nedges, p1->x, p1->y, p1->z, p1->m, p2->x, p2->y, p2->z, p2->m);
+		LWDEBUGF(3, "[%i]/[%i]  (%lf,%lf,%lf,%lf) -> (%lf,%lf,%lf,%lf)\n",
+		         i, tgeom->nedges,
+			 p1->x, p1->y, p1->z, p1->m,
+			 p2->x, p2->y, p2->z, p2->m);
 
 		/* X,Y,Z,M */
 		if (hasz && hasm)
@@ -121,7 +123,7 @@ tgeom_is_edge(const TGEOM *tgeom, const POINT4D *s, const POINT4D *e)
 		}
 	}
 
-	LWDEBUGF(3, "tgeom_is_edge: Edge not found");
+	LWDEBUG(3, "Edge not found in array");
 
 	return 0;
 }
@@ -147,7 +149,7 @@ tgeom_add_face_edge(TGEOM *tgeom, int face_id, POINT4D *s, POINT4D *e)
 	if (edge_id)
 	{
 		tgeom->edges[abs(edge_id)]->count++;
-		LWDEBUGF(3, "tgeom_add_face_edge: face [%i] Founded Edge: %i\n",
+		LWDEBUGF(3, "face [%i] Founded Edge: %i\n",
 		         face_id, edge_id);
 	}
 	else
@@ -176,24 +178,24 @@ tgeom_add_face_edge(TGEOM *tgeom, int face_id, POINT4D *s, POINT4D *e)
 		memcpy(tgeom->edges[edge_id]->e, e, sizeof(POINT4D));
 		tgeom->edges[edge_id]->count = 1;
 
-		LWDEBUGF(3, "tgeom_add_face_edge: face [%i] adding edge [%i] (%lf, %lf, %lf, %lf) -> (%lf, %lf, %lf, %lf)\n",
+		LWDEBUGF(3, "face [%i] adding edge [%i] (%lf, %lf, %lf, %lf) -> (%lf, %lf, %lf, %lf)\n",
 		         face_id, edge_id, s->x, s->y, s->z, s->m, e->x, e->y, e->z, e->m);
 	}
 
 	nedges = tgeom->faces[face_id]->nedges;
 	if (tgeom->faces[face_id]->maxedges == 0)
 	{
-		tgeom->faces[face_id]->edges = lwalloc(sizeof(int) * 4);
+		tgeom->faces[face_id]->edges = lwalloc(sizeof(TEDGE*) * 4);
 		tgeom->faces[face_id]->maxedges = 4;
 	}
 	if (tgeom->faces[face_id]->maxedges == nedges)
 	{
 		tgeom->faces[face_id]->edges = lwrealloc(tgeom->faces[face_id]->edges,
-		                               sizeof(int) * tgeom->faces[face_id]->maxedges * 2);
+		                               sizeof(TEDGE*) * tgeom->faces[face_id]->maxedges * 2);
 		tgeom->faces[face_id]->maxedges *= 2;
 	}
 
-	LWDEBUGF(3, "tgeom_add_face_edge: face [%i] add %i in edge array in %i pos\n",
+	LWDEBUGF(3, "face [%i] add %i in edge array in %i pos\n",
 	         face_id, edge_id, tgeom->faces[face_id]->nedges);
 
 	tgeom->faces[face_id]->edges[nedges]= edge_id;
@@ -454,11 +456,10 @@ tgeom_from_lwgeom(LWGEOM *lwgeom)
 	{
 		if (tgeom->edges[i]->count != 2)
 		{
-			LWDEBUGF(3, """tgeom_from_lwgeom: no solid, edges: [%i], count: [%i]
-			         (%lf,%lf,%lf,%lf)->(%lf,%lf,%lf,%lf)\n""",
+			LWDEBUGF(3, "no solid, edges: [%i], count: [%i] (%lf,%lf,%lf,%lf)->(%lf,%lf,%lf,%lf)\n",
 			         i, tgeom->edges[i]->count,
 			         tgeom->edges[i]->s->x, tgeom->edges[i]->s->y,
-			         tgeom->edges[i]->s->z, tgeom->edges[i]->s->m
+			         tgeom->edges[i]->s->z, tgeom->edges[i]->s->m,
 			         tgeom->edges[i]->e->x, tgeom->edges[i]->e->y,
 			         tgeom->edges[i]->e->z, tgeom->edges[i]->e->m);
 
@@ -512,29 +513,28 @@ lwgeom_from_tgeom(TGEOM *tgeom)
 		TYPE_SETTYPE(geom->type, TINTYPE);
 		for (i=0 ; i < tgeom->nfaces ; i++)
 		{
+
 			TYPE_SETZM(dims, hasz?1:0, hasm?1:0);
 			dpa = dynptarray_create(tgeom->faces[i]->nedges + 1, dims);
 
 			for (j=0 ; j < tgeom->faces[i]->nedges ; j++)
 			{
 				edge_id = tgeom->faces[i]->edges[j];
+				LWDEBUGF(3, "TIN edge_id: %i\n", edge_id);
 
 				assert(edge_id);
 				if (edge_id > 0)
-					dynptarray_addPoint4d(dpa,
-					                      tgeom->edges[edge_id]->s, 1);
+					dynptarray_addPoint4d(dpa, tgeom->edges[edge_id]->s, 1);
 				else
-					dynptarray_addPoint4d(dpa,
-					                      tgeom->edges[-edge_id]->e, 1);
+					dynptarray_addPoint4d(dpa, tgeom->edges[-edge_id]->e, 1);
 			}
 
 			edge_id = tgeom->faces[i]->edges[0];
+			LWDEBUGF(3, "TIN edge_id: %i\n", edge_id);
 			if (edge_id > 0)
-				dynptarray_addPoint4d(dpa,
-				                      tgeom->edges[edge_id]->s, 1);
+				dynptarray_addPoint4d(dpa, tgeom->edges[edge_id]->s, 1);
 			else
-				dynptarray_addPoint4d(dpa,
-				                      tgeom->edges[-edge_id]->e, 1);
+				dynptarray_addPoint4d(dpa, tgeom->edges[-edge_id]->e, 1);
 
 			geom = (LWGEOM *) lwtin_add_lwtriangle((LWTIN *) geom,
 			                                       lwtriangle_construct(tgeom->srid, NULL, dpa->pa));
@@ -552,6 +552,7 @@ lwgeom_from_tgeom(TGEOM *tgeom)
 			{
 				edge_id = tgeom->faces[i]->edges[j];
 				assert(edge_id);
+				LWDEBUGF(3, "POLYHEDRALSURFACE edge_id: %i\n", edge_id);
 				if (edge_id > 0)
 					dynptarray_addPoint4d(dpa,
 					                      tgeom->edges[edge_id]->s, 1);
@@ -561,12 +562,11 @@ lwgeom_from_tgeom(TGEOM *tgeom)
 			}
 
 			edge_id = tgeom->faces[i]->edges[0];
+			LWDEBUGF(3, "POLYHEDRALSURFACE edge_id: %i\n", edge_id);
 			if (edge_id > 0)
-				dynptarray_addPoint4d(dpa,
-				                      tgeom->edges[edge_id]->s, 1);
+				dynptarray_addPoint4d(dpa, tgeom->edges[edge_id]->s, 1);
 			else
-				dynptarray_addPoint4d(dpa,
-				                      tgeom->edges[-edge_id]->e, 1);
+				dynptarray_addPoint4d(dpa, tgeom->edges[-edge_id]->e, 1);
 
 			ppa = lwalloc(sizeof(POINTARRAY*)
 			              * (tgeom->faces[i]->nrings + 1));
@@ -772,9 +772,9 @@ tgeom_serialize(const TGEOM *tgeom)
 	t->data = data;
 
 	/*
-	     * We are aping PgSQL code here, PostGIS code should use
-	     * VARSIZE to set this for real.
-	     */
+         * We are aping PgSQL code here, PostGIS code should use
+         * VARSIZE to set this for real.
+         */
 	t->size = retsize << 2;
 
 	return t;
@@ -822,7 +822,7 @@ tgeom_deserialize(TSERIALIZED *serialized_form)
 	loc  += 4;
 
 	/* edges */
-	result->edges = lwalloc(sizeof(int) * (result->nedges + 1));
+	result->edges = lwalloc(sizeof(TEDGE*) * (result->nedges + 1));
 	for (i=1 ; i <= result->nedges ; i++)
 	{
 		result->edges[i] = lwalloc(sizeof(TEDGE));
@@ -863,7 +863,7 @@ tgeom_deserialize(TSERIALIZED *serialized_form)
 	loc  += 4;
 
 	/* faces */
-	result->faces = lwalloc(sizeof(int) * result->nfaces);
+	result->faces = lwalloc(sizeof(TFACE*) * result->nfaces);
 	for (i=0 ; i < result->nfaces ; i++)
 	{
 		result->faces[i] = lwalloc(sizeof(TFACE));
@@ -873,9 +873,9 @@ tgeom_deserialize(TSERIALIZED *serialized_form)
 		loc  += 4;
 
 		/* edges array */
-		result->faces[i]->edges = lwalloc(sizeof(int)
+		result->faces[i]->edges = lwalloc(sizeof(TEDGE*)
 		                                  * result->faces[i]->nedges);
-		memcpy(result->faces[i]->edges, loc, sizeof(int)
+		memcpy(result->faces[i]->edges, loc, sizeof(TEDGE*)
 		       * result->faces[i]->nedges);
 		loc  += 4 * result->faces[i]->nedges;
 
