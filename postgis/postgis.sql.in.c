@@ -4607,7 +4607,7 @@ CREATE OR REPLACE FUNCTION _ST_Equals(geometry,geometry)
 CREATE OR REPLACE FUNCTION ST_Equals(geometry,geometry)
 	RETURNS boolean
 	AS 'SELECT $1 && $2 AND _ST_Equals($1,$2)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'SQL' IMMUTABLE;
 
 
 -----------------------------------------------------------------------
