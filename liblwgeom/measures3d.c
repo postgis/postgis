@@ -40,7 +40,7 @@ lw_dist3d_distanceline(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode)
 	thedl.tolerance = 0.0;
 
 	LWDEBUG(2, "lw_dist3d_distanceline is called");
-	if (!lw_dist3d_recursive( lw1,lw2,&thedl))
+	if (!lw_dist3d_recursive((LWCOLLECTION*) lw1,(LWCOLLECTION*) lw2,&thedl))
 	{
 		/*should never get here. all cases ought to be error handled earlier*/
 		lwerror("Some unspecified error.");
@@ -89,7 +89,7 @@ lw_dist3d_distancepoint(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode)
 
 	LWDEBUG(2, "lw_dist3d_distancepoint is called");
 
-	if (!lw_dist3d_recursive( lw1,lw2,&thedl))
+	if (!lw_dist3d_recursive((LWCOLLECTION*) lw1,(LWCOLLECTION*) lw2,&thedl))
 	{
 		/*should never get here. all cases ought to be error handled earlier*/
 		lwerror("Some unspecified error.");
@@ -137,7 +137,7 @@ lwgeom_maxdistance3d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance)
 	thedl.mode = DIST_MAX;
 	thedl.distance= -1;
 	thedl.tolerance = tolerance;
-	if (lw_dist3d_recursive( lw1,lw2,&thedl))
+	if (lw_dist3d_recursive((LWCOLLECTION*) lw1,(LWCOLLECTION*) lw2,&thedl))
 	{
 		return thedl.distance;
 	}
@@ -168,7 +168,7 @@ lwgeom_mindistance3d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance)
 	thedl.mode = DIST_MIN;
 	thedl.distance= MAXFLOAT;
 	thedl.tolerance = tolerance;
-	if (lw_dist3d_recursive( lw1,lw2,&thedl))
+	if (lw_dist3d_recursive((LWCOLLECTION*) lw1,(LWCOLLECTION*) lw2,&thedl))
 	{
 		return thedl.distance;
 	}
