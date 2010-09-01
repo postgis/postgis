@@ -923,24 +923,24 @@ int getTableInfo(SHPDUMPERSTATE *state)
 
 	if (PQresultStatus(res) != PGRES_TUPLES_OK)
 	{
-		printf("ERROR: Could not determine geometry type: %s\n", PQresultErrorMessage(res));
+		snprintf(state->message, SHPDUMPERMSGLEN, "ERROR: Could not determine geometry type: %s", PQresultErrorMessage(res));
 		PQclear(res);
-		return 0;
+		return SHPDUMPERERR;
 	}
 
 	/* Make sure we error if the table is empty or our geometry column contains mixed types */
 	if (PQntuples(res) == 0)
 	{
-		printf("ERROR: Could not determine geometry type (empty table).\n");
+		snprintf(state->message, SHPDUMPERMSGLEN, "ERROR: Could not determine geometry type (empty table)");
 		PQclear(res);
-		return 0;
+		return SHPDUMPERERR;
 	}
 
 	if (PQntuples(res) > 1)
 	{
-		printf("ERROR: Mixed geometry types in table\n");
+		snprintf(state->message, SHPDUMPERMSGLEN, "ERROR: Mixed geometry types in table");
 		PQclear(res);
-		return 0;
+		return SHPDUMPERERR;
 	}
 
 	/* If we have a geo* column, get the dimension and type information */
@@ -1035,7 +1035,7 @@ int getTableInfo(SHPDUMPERSTATE *state)
 	/* Dispose of the result set */
 	PQclear(res);
 
-	return 0;
+	return SHPDUMPEROK;
 }
 
 
@@ -1232,7 +1232,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 
 	char buf[256];
 	char *query;
-	int gidfound = 0, i, j, ret;
+	int gidfound = 0, i, j, ret, status;
 
 
 	/* If a user-defined query has been specified, create and point the state to our new table */
@@ -1642,7 +1642,9 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	}
 
 	/* Now we have generated the field lists, grab some info about the table */
-	getTableInfo(state);
+	status = getTableInfo(state);
+	if (status == SHPDUMPERERR)
+		return SHPDUMPERERR;
 
 	LWDEBUGF(3, "rows: %d\n", state->rowcount);
 	LWDEBUGF(3, "shptype: %c\n", state->outtype);
