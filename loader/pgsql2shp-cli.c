@@ -52,7 +52,7 @@ main(int argc, char **argv)
 	SHPDUMPERCONFIG *config;
 	SHPDUMPERSTATE *state;
 
-	int ret, c, i;
+	int ret, c, i, exit_status = 0;
 
 	/* If no options are specified, display usage */
 	if (argc == 1)
@@ -215,6 +215,14 @@ main(int argc, char **argv)
 	fprintf(stdout, " [%d rows].\n", ShpDumperGetRecordCount(state));
 	fflush(stdout);
 
+	/* Return an error code of 2 to indicate "success, but 0 records were processed"
+	   (maybe because of an empty table or a user-defined query not returning any results).
+	   This is useful for scripts that need to determine whether or not the output shapefile
+	   contains any useful data. */
+
+	if (ShpDumperGetRecordCount(state) == 0)
+		exit_status = 2;
+
 	ret = ShpDumperCloseTable(state);
 	if (ret != SHPDUMPEROK)
 	{
@@ -227,5 +235,5 @@ main(int argc, char **argv)
 
 	ShpDumperDestroy(state);
 
-	return 0;
+	return exit_status;
 }
