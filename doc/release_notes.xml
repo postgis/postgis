@@ -4,6 +4,42 @@
     <subtitle>Release Notes</subtitle>
 
       <sect1>
+        <title>Release 1.5.2</title>
+        <para>Release date: 2010/09/xx (not yet released)</para>
+        <para>This is a bug fix release, addressing issues that have been filed since the 1.5.1 release.</para>
+        <simplesect>
+          <title>Bug Fixes</title>
+           <para>Loader: fix handling of empty (0-verticed) geometries in shapefiles. (Sandro Santilli)</para>
+           <para>#536, Geography ST_Intersects, ST_Covers, ST_CoveredBy and Geometry ST_Equals not using spatial index (Regina Obe, Nicklas Aven)</para>
+           <para>#573, Improvement to ST_Contains geography (Paul Ramsey)</para>
+           <para>Loader: Add support for command-q shutdown in Mac GTK build (Paul Ramsey)</para>
+           <para>#393, Loader: Add temporary patch for large DBF files (Maxime Guillaud, Paul Ramsey)</para>  
+           <para>#507, Fix wrong OGC URN in GeoJSON and GML output (Olivier Courtin)</para>
+           <para>spatial_ref_sys.sql Add datum conversion for projection SRID 3021 (Paul Ramsey)</para>
+           <para>Geography - remove crash for case when all geographies are out of the estimate (Paul Ramsey)</para>
+           <para>#469, Fix for array_aggregation error (Greg Stark, Paul Ramsey)</para>
+        </simplesect>
+      </sect1>
+      
+      <sect1>
+        <title>Release 1.5.1</title>
+        <para>Release date: 2010/03/11</para>
+        <para>This is a bug fix release, addressing issues that have been filed since the 1.4.1 release.</para>
+        <simplesect>
+          <title>Bug Fixes</title>
+           <para>#410, update embedded bbox when applying ST_SetPoint, ST_AddPoint ST_RemovePoint to a linestring (Paul Ramsey)</para>
+           <para>#411, allow dumping tables with invalid geometries (Sandro Santilli, for Regione Toscana-SIGTA)</para>
+           <para>#414, include geography_columns view when running upgrade scripts (Paul Ramsey)</para>
+           <para>#419, allow support for multilinestring in ST_Line_Substring (Paul Ramsey, for Lidwala Consulting Engineers)</para>
+           <para>#421, fix computed string length in ST_AsGML() (Olivier Courtin)</para>
+           <para>#441, fix GML generation with heterogeneous collections (Olivier Courtin)</para>
+           <para>#443, incorrect coordinate reversal in GML 3 generation (Olivier Courtin)</para>
+           <para>#450, #451, wrong area calculation for geography features that  cross the date line (Paul Ramsey)</para>
+           <para>Ensure support for upcoming 9.0 PgSQL release (Paul Ramsey)</para>
+        </simplesect>
+      </sect1>
+      
+      <sect1>
         <title>Release 1.5.0</title>
         <para>Release date: 2010/02/04</para>
         <para>This release provides support for geographic coordinates (lat/lon) via a new GEOGRAPHY type. Also performance enhancements, new input format support (GML,KML) and general upkeep.</para>
@@ -36,7 +72,8 @@
         		<listitem><para>ST_LongestLine</para></listitem>
         		<listitem><para>ST_MaxDistance</para></listitem>
         		<listitem><para>ST_ShortestLine</para></listitem>
-      	  </itemizedlist>      	  
+      	  </itemizedlist>  
+          <para>ST_DumpPoints (Maxime van Noppen)</para>     	  
           <para>KML, GML input via ST_GeomFromGML and ST_GeomFromKML (Olivier Courtin)</para>
           <para>Extract homogeneous collection with ST_CollectionExtract (Paul Ramsey)</para>
           <para>Add measure values to an existing linestring with ST_AddMeasure (Paul Ramsey)</para>
