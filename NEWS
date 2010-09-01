@@ -7,21 +7,18 @@ PostGIS 1.5.2
  - Bug Fixes
    - Loader: fix handling of empty (0-verticed) geometries in shapefiles.
      (Sandro Santilli)
-   - #536 Geography ST_Intersects, ST_Covers, ST_CoveredBy and Geometry ST_Equals not using spatial index
-		(Regina Obe, Nicklas Aven)
+   - #536 Geography ST_Intersects, ST_Covers, ST_CoveredBy and
+     Geometry ST_Equals not using spatial index (Regina Obe, Nicklas Aven)
    - #573 Improvement to ST_Contains geography
-   -- Loader: Add support for command-q shutdown in Mac GTK build
-        (Paul Ramsey)
-   -- #393 Loader: Add temporary patch for large DBF files 
-        (Maxime Guillaud, Paul Ramsey)  
-   -- #507 Fix wrong OGC URN in GeoJSON and GML output
-        (Olivier Courtin)
-   -- spatial_ref_sys.sql Add datum conversion for projection SRID 3021
-        (Paul Ramsey)
-   -- Geography - remove crash for case when all geographies are out of the estimate
-        (Paul Ramsey)
-   -- #469 Fix for array_aggregation error
-        (Greg Stark, Paul Ramsey)
+   - Loader: Add support for command-q shutdown in Mac GTK build (Paul Ramsey)
+   - #393 Loader: Add temporary patch for large DBF files 
+     (Maxime Guillaud, Paul Ramsey)  
+   - #507 Fix wrong OGC URN in GeoJSON and GML output (Olivier Courtin)
+   - spatial_ref_sys.sql Add datum conversion for projection SRID 3021
+     (Paul Ramsey)
+   - Geography - remove crash for case when all geographies are out of
+     the estimate (Paul Ramsey)
+   - #469 Fix for array_aggregation error (Greg Stark, Paul Ramsey)
         
 PostGIS 1.5.1
 2010/03/11
