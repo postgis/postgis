@@ -54,7 +54,8 @@
         		<listitem><para>ST_LongestLine</para></listitem>
         		<listitem><para>ST_MaxDistance</para></listitem>
         		<listitem><para>ST_ShortestLine</para></listitem>
-      	  </itemizedlist>      	  
+      	  </itemizedlist>  
+          <para>ST_DumpPoints (Maxime van Noppen)</para>    	  
           <para>KML, GML input via ST_GeomFromGML and ST_GeomFromKML (Olivier Courtin)</para>
           <para>Extract homogeneous collection with ST_CollectionExtract (Paul Ramsey)</para>
           <para>Add measure values to an existing linestring with ST_AddMeasure (Paul Ramsey)</para>
