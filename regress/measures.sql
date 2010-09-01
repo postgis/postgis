@@ -201,8 +201,59 @@ select 'distancepoly6',
 			geomfromtext('POLYGON((-1 -1, -1 25, 25 25, 25 -1, -1 -1), (14 14,14 19,19 19,19 14,14 14))') as b
 	) as foo;
 
+--3D Distance functions
 
+
+SELECT '3dDistancetest1',
+	ST_3DDistance(a,b),
+		ST_3DMaxDistance(a,b),
+			ST_3DDWithin(a,b,5),
+				ST_3DDFullyWithin(a,b,5),
+					ST_ASEWKT(ST_3DShortestline(a,b)),
+						ST_ASEWKT(ST_3DClosestpoint(a,b)),
+							ST_ASEWKT(ST_3DLongestline(a,b)) FROM (
+	SELECT 'POINT(1 1 1)'::geometry as a, 'POINT(3 2 7)'::geometry as b
+	) as foo;
 	
+	
+SELECT '3dDistancetest2',
+	ST_3DDistance(a,b),
+		ST_3DMaxDistance(a,b),
+			ST_3DDWithin(a,b,5),
+				ST_3DDFullyWithin(a,b,5),
+					ST_ASEWKT(ST_3DShortestline(a,b)),
+						ST_ASEWKT(ST_3DClosestpoint(a,b)),
+							ST_ASEWKT(ST_3DLongestline(a,b)) FROM (
+	SELECT 'POINT(1 1 1)'::geometry as a, 'LINESTRING(0 0 0, 2 2 2)'::geometry as b
+	) as foo;
+	
+	
+SELECT '3dDistancetest3',
+	ST_3DDistance(a,b),
+		ST_3DMaxDistance(a,b),
+			ST_3DDWithin(a,b,5),
+				ST_3DDFullyWithin(a,b,5),
+					ST_ASEWKT(ST_3DShortestline(a,b)),
+						ST_ASEWKT(ST_3DClosestpoint(a,b)),
+							ST_ASEWKT(ST_3DLongestline(a,b)) FROM (
+	SELECT 'POINT(1 1 1)'::geometry as a, 'LINESTRING(5 2 6, -3 -2 4)'::geometry as b
+	) as foo;
+	
+	
+SELECT '3dDistancetest4',
+	ST_3DDistance(a,b),
+		ST_3DMaxDistance(a,b),
+			ST_3DDWithin(a,b,5),
+				ST_3DDFullyWithin(a,b,5),
+					ST_ASEWKT(ST_3DShortestline(a,b)),
+						ST_ASEWKT(ST_3DClosestpoint(a,b)),
+							ST_ASEWKT(ST_3DLongestline(a,b)) FROM (
+	SELECT  'LINESTRING(1 1 3, 5 7 8)'::geometry  as a, 'POINT(1 1 1)'::geometry as b
+	) as foo;
+
+SELECT 'unsupported_test1',
+	ST_3DDistance(a,b) FROM (
+	SELECT 'LINESTRING(1 1 1 , 2 2 2)'::geometry as a, 'LINESTRING(0 0 0, 2 2 2)'::geometry as b) as foo;	
 
 -- Area of an empty polygon
 select 'emptyPolyArea', st_area('POLYGON EMPTY');

@@ -21,6 +21,7 @@ LEX=@LEX@
 SA_OBJS = \
 	stringbuffer.o \
 	measures.o \
+	measures3d.o \
 	box2d.o \
 	ptarray.o \
 	lwgeom_api.o \

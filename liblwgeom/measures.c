@@ -31,7 +31,7 @@ lw_dist2d_distanceline(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode)
 {
 	double x1,x2,y1,y2;
 
-	double initdistance = ( mode == DIST2D_MIN ? MAXFLOAT : -1.0);
+	double initdistance = ( mode == DIST_MIN ? MAXFLOAT : -1.0);
 	DISTPTS thedl;
 	LWPOINT *lwpoints[2];
 	LWGEOM *result;
@@ -129,7 +129,7 @@ lwgeom_maxdistance2d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance)
 	/*double thedist;*/
 	DISTPTS thedl;
 	LWDEBUG(2, "lwgeom_maxdistance2d_tolerance is called");
-	thedl.mode = DIST2D_MAX;
+	thedl.mode = DIST_MAX;
 	thedl.distance= -1;
 	thedl.tolerance = tolerance;
 	if (lw_dist2d_comp( lw1,lw2,&thedl))
@@ -160,7 +160,7 @@ lwgeom_mindistance2d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance)
 {
 	DISTPTS thedl;
 	LWDEBUG(2, "lwgeom_mindistance2d_tolerance is called");
-	thedl.mode = DIST2D_MIN;
+	thedl.mode = DIST_MIN;
 	thedl.distance= MAXFLOAT;
 	thedl.tolerance = tolerance;
 	if (lw_dist2d_comp( lw1,lw2,&thedl))
@@ -266,10 +266,10 @@ int lw_dist2d_recursive(const LWCOLLECTION * lwg1,const LWCOLLECTION * lwg2,DIST
 			/*If one of geometries is empty, return. True here only means continue searching. False would have stoped the process*/
 			if (lwgeom_is_empty(g1)||lwgeom_is_empty(g2)) return LW_TRUE;
 
-			if ((dl->mode==DIST2D_MAX)||(TYPE_GETTYPE(g1->type)==POINTTYPE) ||(TYPE_GETTYPE(g2->type)==POINTTYPE)||lw_dist2d_check_overlap(g1, g2))
+			if ((dl->mode==DIST_MAX)||(TYPE_GETTYPE(g1->type)==POINTTYPE) ||(TYPE_GETTYPE(g2->type)==POINTTYPE)||lw_dist2d_check_overlap(g1, g2))
 			{
 				if (!lw_dist2d_distribute_bruteforce(g1, g2, dl)) return LW_FALSE;
-				if (dl->distance<=dl->tolerance && dl->mode == DIST2D_MIN) return LW_TRUE; /*just a check if  the answer is already given*/
+				if (dl->distance<=dl->tolerance && dl->mode == DIST_MIN) return LW_TRUE; /*just a check if  the answer is already given*/
 			}
 			else
 			{
@@ -495,7 +495,7 @@ lw_dist2d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS *dl)
 
 	getPoint2d_p(point->point, 0, &p);
 
-	if (dl->mode == DIST2D_MAX)
+	if (dl->mode == DIST_MAX)
 	{
 		LWDEBUG(3, "looking for maxdistance");
 		return lw_dist2d_pt_ptarray(&p, poly->rings[0], dl);
@@ -524,7 +524,7 @@ lw_dist2d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS *dl)
 	}
 
 	LWDEBUG(3, " inside the polygon");
-	if (dl->mode == DIST2D_MIN)
+	if (dl->mode == DIST_MIN)
 	{
 		dl->distance=0.0;
 		dl->p1.x=p.x;
@@ -576,7 +576,7 @@ lw_dist2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS *dl)
 	LWDEBUG(2, "lw_dist2d_poly_poly called");
 
 	/*1	if we are looking for maxdistance, just check the outer rings.*/
-	if (dl->mode == DIST2D_MAX)
+	if (dl->mode == DIST_MAX)
 	{
 		return lw_dist2d_ptarray_ptarray(poly1->rings[0],	poly2->rings[0],dl);
 	}
@@ -667,7 +667,7 @@ lw_dist2d_pt_ptarray(POINT2D *p, POINTARRAY *pa,DISTPTS *dl)
 		getPoint2d_p(pa, t, &end);
 		if (!lw_dist2d_pt_seg(p, &start, &end,dl)) return LW_FALSE;
 
-		if (dl->distance<=dl->tolerance && dl->mode == DIST2D_MIN) return LW_TRUE; /*just a check if  the answer is already given*/
+		if (dl->distance<=dl->tolerance && dl->mode == DIST_MIN) return LW_TRUE; /*just a check if  the answer is already given*/
 		start = end;
 	}
 
@@ -705,7 +705,7 @@ lw_dist2d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly, DISTPTS *dl)
 
 		LWDEBUGF(3, " distance from ring %d: %f, mindist: %f",
 		         i, dl->distance, dl->tolerance);
-		if (dl->distance<=dl->tolerance && dl->mode == DIST2D_MIN) return LW_TRUE; /*just a check if  the answer is already given*/
+		if (dl->distance<=dl->tolerance && dl->mode == DIST_MIN) return LW_TRUE; /*just a check if  the answer is already given*/
 	}
 
 	/*
@@ -738,7 +738,7 @@ lw_dist2d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly, DISTPTS *dl)
 			return LW_TRUE;
 		}
 	}
-	if (dl->mode == DIST2D_MIN)
+	if (dl->mode == DIST_MIN)
 	{
 		dl->distance=0.0;
 		dl->p1.x=pt.x;
@@ -765,7 +765,7 @@ lw_dist2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl)
 
 	LWDEBUGF(2, "lw_dist2d_ptarray_ptarray called (points: %d-%d)",l1->npoints, l2->npoints);
 
-	if (dl->mode == DIST2D_MAX)/*If we are searching for maxdistance we go straight to point-point calculation since the maxdistance have to be between two vertexes*/
+	if (dl->mode == DIST_MAX)/*If we are searching for maxdistance we go straight to point-point calculation since the maxdistance have to be between two vertexes*/
 	{
 		for (t=0; t<l1->npoints; t++) /*for each segment in L1 */
 		{
@@ -795,7 +795,7 @@ lw_dist2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl)
 				LWDEBUGF(4, "mindist_ptarray_ptarray; seg %i * seg %i, dist = %g\n",t,u,dl->distance);
 				LWDEBUGF(3, " seg%d-seg%d dist: %f, mindist: %f",
 				         t, u, dl->distance, dl->tolerance);
-				if (dl->distance<=dl->tolerance && dl->mode == DIST2D_MIN) return LW_TRUE; /*just a check if  the answer is already given*/
+				if (dl->distance<=dl->tolerance && dl->mode == DIST_MIN) return LW_TRUE; /*just a check if  the answer is already given*/
 				start2 = end2;
 			}
 			start = end;
@@ -875,7 +875,7 @@ lw_dist2d_seg_seg(POINT2D *A, POINT2D *B, POINT2D *C, POINT2D *D, DISTPTS *dl)
 	s = s_top/s_bot;
 	r=  r_top/r_bot;
 
-	if (((r<0) || (r>1) || (s<0) || (s>1)) || (dl->mode == DIST2D_MAX))
+	if (((r<0) || (r>1) || (s<0) || (s>1)) || (dl->mode == DIST_MAX))
 	{
 		if ((lw_dist2d_pt_seg(A,C,D,dl)) && (lw_dist2d_pt_seg(B,C,D,dl)))
 		{
@@ -889,7 +889,7 @@ lw_dist2d_seg_seg(POINT2D *A, POINT2D *B, POINT2D *C, POINT2D *D, DISTPTS *dl)
 	}
 	else
 	{
-		if (dl->mode == DIST2D_MIN)	/*If there is intersection we identify the intersection point and return it but only if we are looking for mindistance*/
+		if (dl->mode == DIST_MIN)	/*If there is intersection we identify the intersection point and return it but only if we are looking for mindistance*/
 		{
 			POINT2D theP;
 
@@ -1283,7 +1283,7 @@ lw_dist2d_pt_seg(POINT2D *p, POINT2D *A, POINT2D *B, DISTPTS *dl)
 	the maxdistance have to be between two vertexes,
 	compared to mindistance which can be between
 	tvo vertexes vertex.*/
-	if (dl->mode == DIST2D_MAX)
+	if (dl->mode == DIST_MAX)
 	{
 		if (r>=0.5)
 		{

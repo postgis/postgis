@@ -6313,6 +6313,72 @@ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 #include "sqlmm.sql.in.c"
 #include "geography.sql.in.c"
 
+
+---------------------------------------------------------------
+-- 3D-functions
+---------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION ST_3DDistance(geometry,geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'LWGEOM_mindistance3d'
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
+	
+CREATE OR REPLACE FUNCTION ST_3DMaxDistance(geometry,geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'LWGEOM_maxdistance3d'
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;	
+
+CREATE OR REPLACE FUNCTION ST_3DClosestPoint(geometry,geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_closestpoint3d'
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION ST_3DShortestLine(geometry,geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_shortestline3d'
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION ST_3DLongestLine(geometry,geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_longestline3d'
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
+	
+CREATE OR REPLACE FUNCTION _ST_3DDWithin(geometry,geometry,float8)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'LWGEOM_dwithin3d'
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
+	
+CREATE OR REPLACE FUNCTION ST_3DDWithin(geometry,geometry,float8)
+	RETURNS boolean
+	AS 'SELECT $1 && ST_Expand($2,$3) AND $2 && ST_Expand($1,$3) AND _ST_3DDWithin($1, $2, $3)'
+	LANGUAGE 'SQL' IMMUTABLE
+	COST 100;
+	
+CREATE OR REPLACE FUNCTION _ST_3DDFullyWithin(geometry,geometry,float8)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'LWGEOM_dfullywithin3d'
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
+	
+CREATE OR REPLACE FUNCTION ST_3DDFullyWithin(geometry,geometry,float8)
+	RETURNS boolean
+	AS 'SELECT $1 && ST_Expand($2,$3) AND $2 && ST_Expand($1,$3) AND _ST_3DDFullyWithin($1, $2, $3)'
+	LANGUAGE 'SQL' IMMUTABLE
+	COST 100;
+	
+CREATE OR REPLACE FUNCTION ST_3DIntersects(geometry,geometry)
+	RETURNS boolean
+	AS 'SELECT $1 && $2 AND _ST_3DDWithin($1, $2, 0.0)'
+	LANGUAGE 'SQL' IMMUTABLE
+	COST 100;
+	
+	
 ---------------------------------------------------------------
 -- SQL-MM
 ---------------------------------------------------------------
