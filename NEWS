@@ -5,7 +5,7 @@ YYYY/MM/DD
 
   * New Features *
 
-  - Support for TIN and PolyHedralSurface
+  - Support for TIN and PolyHedralSurface (Olivier Courtin)
   - ST_Split (Sandro Santilli / Faunalia for RT-SIGTA)
   - ST_isValidDetail (Sandro Santilli / Faunalia for RT-SIGTA)
   - ST_MakeValid (Sandro Santilli / Faunalia for RT-SIGTA)
