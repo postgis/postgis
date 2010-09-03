@@ -536,7 +536,8 @@ MULTILINESTRING((1 2,3 4),(3 4,4 5))
 		<note><para>Note - If you are using with points, use ST_Collect. If you are using with polygons, use ST_Union since
 			it may fail with invalid geometries.</para></note>
 			
-		<note><para>Note - The smaller you make the target percent, the longer it takes to process the concave hull.</para></note>
+		<note><para>Note - The smaller you make the target percent, the longer it takes to process the concave hull. Also the more 
+			floating points and number of points you acrue.  To reduce precision and float points, use <xref linkend="ST_SnapToGrid" /> after ST_ConcaveHull.</para></note>
 
 	  </refsection>
 
@@ -550,7 +551,7 @@ SELECT d.disease_type,
 	GROUP BY d.disease_type;
 </programlisting>
 			<informaltable>
-				  <tgroup cols="2">
+				  <tgroup cols="3">
 					<tbody>
 					  <row>
 					  	<entry><para><informalfigure>
@@ -609,13 +610,73 @@ SELECT
 				</programlisting>
 						</para></entry>
 					  </row>
+					  <row>
+					  	<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_concavehull04.png" />
+							  </imageobject>
+							  <caption><para>Set of points overlaid with convex hull</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_ConvexHull(
+	ST_SnapToGrid(
+		ST_Collect(
+			ST_Point(x*pi()*0.25*abs(cos(radians(y))),y*pi()*abs(sin(radians(x)))))
+			,0.5)
+		)) As geom
+FROM generate_series(0,90,10) As x CROSS JOIN generate_series(50,60,3) As y;
+				</programlisting>
+						  </para></entry>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_concavehull05.png" />
+							  </imageobject>
+							  <caption><para>ST_ConcaveHull of points overlaid with target 90% of convex hull</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_ConcaveHull(
+	ST_SnapToGrid(
+		ST_Collect(
+			ST_Point(x*pi()*0.25*abs(cos(radians(y))),y*pi()*abs(sin(radians(x)))))
+			,0.5)
+		, 0.9)
+	 As target_90
+FROM generate_series(0,90,10) As x CROSS JOIN generate_series(50,60,3) As y;
+				</programlisting>
+						  </para></entry>
+
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_concavehull06.png" />
+							  </imageobject>
+							  <caption><para>-- geometries overlaid with concavehull at target 70% shrink</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+				-- geometries overlaid with concavehull at target 75% of convexhull
+SELECT ST_ConcaveHull(
+	ST_SnapToGrid(
+		ST_Collect(
+			ST_Point(x*pi()*0.25*abs(cos(radians(y))),y*pi()*abs(sin(radians(x)))))
+			,0.5)
+		, 0.9)
+	 As target_75
+FROM generate_series(0,90,10) As x CROSS JOIN generate_series(50,60,3) As y;
+				</programlisting>
+						</para></entry>
+					  </row>
 		</tbody>
 	</tgroup>
 </informaltable>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_Collect" />, <xref linkend="ST_ConvexHull" />, <xref linkend="ST_MinimumBoundingCircle" /></para>
+		<para><xref linkend="ST_Collect" />, <xref linkend="ST_ConvexHull" />, <xref linkend="ST_MinimumBoundingCircle" />, <xref linkend="ST_SnapToGrid" /></para>
 	  </refsection>
 	</refentry>
 	
