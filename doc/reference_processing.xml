@@ -572,9 +572,29 @@ SELECT ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40,
 						<entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_concavehull02.png" />
+								<imagedata fileref="images/st_concavehull03.png" />
 							  </imageobject>
 							  <caption><para>ST_ConcaveHull of 2 polygons encased in target 90% shrink concave hull</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+				-- geometries overlaid with concavehull at target 100% shrink (this is the same as convex hull - since no shrink)
+SELECT 
+	ST_ConcaveHull(
+		ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, 
+			50 60, 125 100, 175 150))'),
+		ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
+		), 1)  
+	 As convexhull;
+				</programlisting>
+						  </para></entry>
+
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_concavehull02.png" />
+							  </imageobject>
+							  <caption><para>-- geometries overlaid with concavehull at target 70% shrink</para></caption>
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
@@ -586,25 +606,6 @@ SELECT
 		ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
 		), 0.9)  
 	 As target_90;
-				</programlisting>
-						  </para></entry>
-
-						<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_concavehull03.png" />
-							  </imageobject>
-							  <caption><para>-- geometries overlaid with concavehull at target 70% shrink</para></caption>
-							</mediaobject>
-						  </informalfigure>
-				<programlisting>
-SELECT 
-	ST_ConcaveHull(
-		ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, 
-			50 60, 125 100, 175 150))'),
-		ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
-		), 0.85)  
-	 As target_85;
 				</programlisting>
 						</para></entry>
 					  </row>
