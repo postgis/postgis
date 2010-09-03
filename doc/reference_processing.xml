@@ -596,7 +596,8 @@ SELECT
 							  <imageobject>
 								<imagedata fileref="images/st_concavehull02.png" />
 							  </imageobject>
-							  <caption><para>-- geometries overlaid with concavehull at target 70% shrink</para></caption>
+							  <caption><para>-- geometries overlaid with concavehull 
+							  	at target 70% shrink</para></caption>
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
@@ -624,10 +625,12 @@ SELECT
 SELECT ST_ConvexHull(
 	ST_SnapToGrid(
 		ST_Collect(
-			ST_Point(x*pi()*0.25*abs(cos(radians(y))),y*pi()*abs(sin(radians(x)))))
+			ST_Point(x*pi()*0.25*abs(cos(radians(y))),
+				y*pi()*abs(sin(radians(x)))))
 			,0.5)
 		)) As geom
-FROM generate_series(0,90,10) As x CROSS JOIN generate_series(50,60,3) As y;
+FROM generate_series(0,90,10) As x 
+	CROSS JOIN generate_series(50,60,3) As y;
 				</programlisting>
 						  </para></entry>
 						<entry><para><informalfigure>
@@ -635,18 +638,21 @@ FROM generate_series(0,90,10) As x CROSS JOIN generate_series(50,60,3) As y;
 							  <imageobject>
 								<imagedata fileref="images/st_concavehull05.png" />
 							  </imageobject>
-							  <caption><para>ST_ConcaveHull of points overlaid with target 90% of convex hull</para></caption>
+							  <caption><para>ST_ConcaveHull of points overlaid
+							  with target 90% of convex hull</para></caption>
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
 SELECT ST_ConcaveHull(
 	ST_SnapToGrid(
 		ST_Collect(
-			ST_Point(x*pi()*0.25*abs(cos(radians(y))),y*pi()*abs(sin(radians(x)))))
+			ST_Point(x*pi()*0.25*abs(cos(radians(y))),
+				y*pi()*abs(sin(radians(x)))))
 			,0.5)
 		, 0.9)
 	 As target_90
-FROM generate_series(0,90,10) As x CROSS JOIN generate_series(50,60,3) As y;
+FROM generate_series(0,90,10) As x 
+	CROSS JOIN generate_series(50,60,3) As y;
 				</programlisting>
 						  </para></entry>
 
@@ -655,7 +661,8 @@ FROM generate_series(0,90,10) As x CROSS JOIN generate_series(50,60,3) As y;
 							  <imageobject>
 								<imagedata fileref="images/st_concavehull06.png" />
 							  </imageobject>
-							  <caption><para>-- geometries overlaid with concavehull at target 70% shrink</para></caption>
+							  <caption><para>geometries overlaid with concavehull 
+							  	at target 70% shrink</para></caption>
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
@@ -663,11 +670,13 @@ FROM generate_series(0,90,10) As x CROSS JOIN generate_series(50,60,3) As y;
 SELECT ST_ConcaveHull(
 	ST_SnapToGrid(
 		ST_Collect(
-			ST_Point(x*pi()*0.25*abs(cos(radians(y))),y*pi()*abs(sin(radians(x)))))
+			ST_Point(x*pi()*0.25*abs(cos(radians(y))),
+				y*pi()*abs(sin(radians(x)))))
 			,0.5)
 		, 0.9)
 	 As target_75
-FROM generate_series(0,90,10) As x CROSS JOIN generate_series(50,60,3) As y;
+FROM generate_series(0,90,10) As x 
+	CROSS JOIN generate_series(50,60,3) As y;
 				</programlisting>
 						</para></entry>
 					  </row>
