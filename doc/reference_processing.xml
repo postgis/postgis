@@ -512,13 +512,20 @@ MULTILINESTRING((1 2,3 4),(3 4,4 5))
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 			<paramdef><type>float </type> <parameter>target_shrink_percent</parameter></paramdef>
 		  </funcprototype>
+			
+		 <funcprototype>
+			<funcdef>geometry <function>ST_ConcaveHull</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>target_shrink_percent</parameter></paramdef>
+			<paramdef><type>boolean </type> <parameter>allow_holes</parameter></paramdef>
+		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
 	  <refsection>
 		<title>Description</title>
 			<para>The concave hull of a geometry represents a possibly concave
-		geometry that encloses all geometries within the set.</para>
+		geometry that encloses all geometries within the set. Defaults to false for allowing polygons with holes.</para>
 
 		<para>One can think of the concave hull as the geometry you get by vacuum sealing a set of geometries. A
 			target_shrink_percent of 1 will give you the same answer as the convex hull.  A target_shrink_percent 
