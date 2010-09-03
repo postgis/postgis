@@ -603,8 +603,8 @@ SELECT
 		ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, 
 			50 60, 125 100, 175 150))'),
 		ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
-		), 0.7)  
-	 As target_70;
+		), 0.8)  
+	 As target_80;
 				</programlisting>
 						</para></entry>
 					  </row>
