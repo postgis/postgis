@@ -539,6 +539,7 @@ MULTILINESTRING((1 2,3 4),(3 4,4 5))
 		<note><para>Note - The smaller you make the target percent, the longer it takes to process the concave hull. Also the more 
 			floating points and number of points you acrue.  To reduce precision and float points, use <xref linkend="ST_SnapToGrid" /> after ST_ConcaveHull.</para></note>
 
+		<para>Availability: 2.0.0</para>
 	  </refsection>
 
 	  <refsection>
@@ -562,8 +563,7 @@ SELECT d.disease_type,
 							  <caption><para>The original 2 polygons</para></caption>
 							</mediaobject>
 						  </informalfigure>
-				<programlisting>
-SELECT ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, 
+				<programlisting>SELECT ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, 
 			50 60, 125 100, 175 150))'),
 		ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
 		)
@@ -579,7 +579,8 @@ SELECT ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40,
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
-				-- geometries overlaid with concavehull at target 100% shrink (this is the same as convex hull - since no shrink)
+-- geometries overlaid with concavehull 
+-- at target 100% shrink (this is the same as convex hull - since no shrink)
 SELECT 
 	ST_ConcaveHull(
 		ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, 
@@ -599,7 +600,7 @@ SELECT
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
-				-- geometries overlaid with concavehull at target 90% shrink
+-- geometries overlaid with concavehull at target 90% shrink
 SELECT 
 	ST_ConcaveHull(
 		ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, 
@@ -658,7 +659,7 @@ FROM generate_series(0,90,10) As x CROSS JOIN generate_series(50,60,3) As y;
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
-				-- geometries overlaid with concavehull at target 75% of convexhull
+-- geometries overlaid with concavehull at target 75% of convexhull
 SELECT ST_ConcaveHull(
 	ST_SnapToGrid(
 		ST_Collect(
