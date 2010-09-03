@@ -575,7 +575,7 @@ SELECT d.disease_type,
 							  <imageobject>
 								<imagedata fileref="images/st_concavehull03.png" />
 							  </imageobject>
-							  <caption><para>ST_ConcaveHull of 2 polygons encased in target 90% shrink concave hull</para></caption>
+							  <caption><para>ST_ConcaveHull of 2 polygons encased in target 100% shrink concave hull</para></caption>
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
