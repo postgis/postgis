@@ -498,7 +498,126 @@ MULTILINESTRING((1 2,3 4),(3 4,4 5))
 		<para><xref linkend="ST_Dump" />, <xref linkend="ST_Union" /></para>
 	  </refsection>
 	</refentry>
+	<refentry id="ST_ConcaveHull">
+	  <refnamediv>
+		<refname>ST_ConcaveHull</refname>
+		<refpurpose>The concave hull of a geometry represents a possibly concave
+		geometry that encloses all geometries within the set.  You can think of it as shrink wrapping.</refpurpose>
+	  </refnamediv>
 
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_ConcaveHull</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>target_shrink_percent</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+			<para>The concave hull of a geometry represents a possibly concave
+		geometry that encloses all geometries within the set.</para>
+
+		<para>One can think of the concave hull as the geometry you get by vacuum sealing a set of geometries. A
+			target_shrink_percent of 1 will give you the same answer as the convex hull.  A target_shrink_percent 
+				between 0 and .  This is different from a convex hull which is more like wrapping a rubber band around.</para>
+
+			<para>It is usually used with MULTI and Geometry Collections.
+		Although it is not an aggregate - you can use it in conjunction
+		with ST_Collect or ST_Union to get the concave hull of a set of points/linestring/polygons or .
+		ST_ConcaveHull(ST_Collect(somepointfield)).</para>
+
+		<para>It is often used to determine an affected area based on a set of point
+		observations.  Its slower to compute than convex hull but encloses the geometry better.</para>
+
+		<para>Performed by the GEOS module</para>
+		<note><para>Note - If you are using with points, use ST_Collect. If you are using with polygons, use ST_Union since
+			it may fail with invalid geometries.</para></note>
+			
+		<note><para>Note - The smaller you make the target percent, the longer it takes to process the concave hull.</para></note>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+<programlisting>
+--Get estimate of infected area based on point observations
+SELECT d.disease_type,
+	ST_ConcaveHull(ST_Collect(d.pnt_geom), 0.8) As geom
+	FROM disease_obs As d
+	GROUP BY d.disease_type;
+</programlisting>
+			<informaltable>
+				  <tgroup cols="2">
+					<tbody>
+					  <row>
+					  	<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_concavehull01.png" />
+							  </imageobject>
+							  <caption><para>The original 2 polygons</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, 
+			50 60, 125 100, 175 150))'),
+		ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
+		)
+ As geom;
+				</programlisting>
+						  </para></entry>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_concavehull02.png" />
+							  </imageobject>
+							  <caption><para>ST_ConcaveHull of 2 polygons encased in target 90% shrink concave hull</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+				-- geometries overlaid with concavehull at target 90% shrink
+SELECT 
+	ST_ConcaveHull(
+		ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, 
+			50 60, 125 100, 175 150))'),
+		ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
+		), 0.9)  
+	 As target_90;
+				</programlisting>
+						  </para></entry>
+
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_concavehull03.png" />
+							  </imageobject>
+							  <caption><para>-- geometries overlaid with concavehull at target 70% shrink</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT 
+	ST_ConcaveHull(
+		ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, 
+			50 60, 125 100, 175 150))'),
+		ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
+		), 0.7)  
+	 As target_70;
+				</programlisting>
+						</para></entry>
+					  </row>
+		</tbody>
+	</tgroup>
+</informaltable>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Collect" />, <xref linkend="ST_ConvexHull" />, <xref linkend="ST_MinimumBoundingCircle" /></para>
+	  </refsection>
+	</refentry>
+	
 	<refentry id="ST_ConvexHull">
 	  <refnamediv>
 		<refname>ST_ConvexHull</refname>
@@ -572,7 +691,7 @@ POLYGON((50 5,10 8,10 10,100 190,150 30,150 10,50 5))
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_Collect" />, <xref linkend="ST_MinimumBoundingCircle" /></para>
+		<para><xref linkend="ST_Collect" />, <xref linkend="ST_ConcaveHull" />, <xref linkend="ST_MinimumBoundingCircle" /></para>
 	  </refsection>
 	</refentry>
 

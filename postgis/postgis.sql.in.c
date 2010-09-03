@@ -6539,6 +6539,135 @@ CREATE OR REPLACE FUNCTION ST_MinimumBoundingCircle(geometry)
  RETURNS geometry AS
 'SELECT ST_MinimumBoundingCircle($1, 48)'
  LANGUAGE 'sql' IMMUTABLE STRICT;
+ 
+-- ST_ConcaveHull and Helper functions starts here --
+CREATE OR REPLACE FUNCTION _ST_ConcaveHull(param_inputgeom geometry)
+  RETURNS geometry AS
+$$
+	DECLARE     
+	vexhull GEOMETRY;
+	vexring GEOMETRY;
+	cavering GEOMETRY;
+	cavept geometry[];
+	seglength double precision;
+	i integer;
+	
+	BEGIN
+
+		-- First compute the ConvexHull of the geometry
+		vexhull = ST_ConvexHull(param_inputgeom);
+		--A point really has no concave hull
+		IF ST_GeometryType(vexhull) = 'ST_Point' THEN
+			RETURN vexhull;
+		END IF;
+
+		-- convert the hull perimeter to a linestring so we can manipulate individual points
+		vexring := CASE WHEN ST_GeometryType(vexhull) = 'ST_LineString' THEN vexhull ELSE ST_ExteriorRing(vexhull) END;
+		seglength := ST_Length(vexring)/greatest(ST_NPoints(vexring),1000) ;
+		vexring := ST_Segmentize(vexring, seglength);
+		-- find the point on the original geom that is closest to each point of the convex hull and make a new linestring out of it.
+		cavering := ST_Collect(
+			ARRAY(
+
+				SELECT 
+					ST_ClosestPoint(param_inputgeom, pt ) As the_geom
+					FROM (
+						SELECT  ST_PointN(vexring, n ) As pt, n
+							FROM 
+							generate_series(1, ST_NPoints(vexring) ) As n
+						) As pt
+				
+				)
+			)
+		; 
+
+		vexhull := cavering;
+		
+		RETURN ST_MakePolygon(ST_MakeLine(geom)) 
+			FROM ST_Dump(cavering) As foo;
+	
+	END;
+$$
+  LANGUAGE 'plpgsql' IMMUTABLE STRICT
+  COST 100;
+
+CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex float, param_allow_holes boolean) RETURNS geometry AS
+$$
+	DECLARE
+		var_initarea float := ST_Area(ST_ConvexHull(param_geom));
+		var_newarea float := var_initarea;
+		var_div integer := 6; /** this is the 1/var_div is the percent increase we will allow per triangle to keep speed decent **/
+		var_tempgeom geometry;
+		var_cent geometry;
+		var_geoms geometry[4]; /** We will cut the current geometry into 4 triangular quadrants along the centroid/extent **/
+		var_enline geometry;
+		var_resultgeom geometry;
+		var_buf float := 1; /**tolerance so that geometries that are right on the extent don't get accidentally clipped off **/
+	BEGIN
+		-- We start with convex hull as our base
+		var_resultgeom := ST_ConvexHull(param_geom);
+		-- If the geometric dimension is > 1 more work otherwise its degenerate just return it 
+		IF ST_Dimension(param_geom) > 1 AND (var_newarea - ST_Area(param_geom))/(1 + var_newarea) < 0.5 THEN
+		-- the geometry occupies so much of the convex area that its not worth cutting up
+			var_tempgeom := _ST_ConcaveHull(param_geom);
+			IF ST_IsValid(var_tempgeom) THEN
+				var_resultgeom := var_tempgeom;
+			END IF;
+		ELSIF ST_Dimension(var_resultgeom) > 1 AND param_pctconvex BETWEEN 0 and 0.99 THEN
+			-- uses closest point on geometry to centroid
+			var_cent := ST_ClosestPoint(param_geom,ST_Centroid(param_geom));
+			-- get linestring that forms envelope of geometry
+			var_enline := ST_Boundary(ST_Envelope(param_geom));
+			var_buf := least(ST_Length(var_enline)/1000.0,0.0001);
+			-- break envelope into 4 triangles about the centroid of the geometry and returned the clipped geometry in each quadrant
+			var_geoms[1] := ST_Intersection(param_geom, ST_Buffer(ST_MakePolygon(ST_MakeLine(ARRAY[ST_PointN(var_enline,1), ST_PointN(var_enline,2), var_cent, ST_PointN(var_enline,1)])),var_buf)); 
+			var_geoms[2] := ST_Intersection(param_geom, ST_Buffer(ST_MakePolygon(ST_MakeLine(ARRAY[ST_PointN(var_enline,2), ST_PointN(var_enline,3), var_cent, ST_PointN(var_enline,2)])),var_buf)); 
+			var_geoms[3] := ST_Intersection(param_geom, ST_Buffer(ST_MakePolygon(ST_MakeLine(ARRAY[ST_PointN(var_enline,3), ST_PointN(var_enline,4), var_cent, ST_PointN(var_enline,3)])),var_buf));
+			var_geoms[4] := ST_Intersection(param_geom, ST_Buffer(ST_MakePolygon(ST_MakeLine(ARRAY[ST_PointN(var_enline,4), ST_PointN(var_enline,5), var_cent, ST_PointN(var_enline,4)])),var_buf));  
+			var_tempgeom := ST_Union(ARRAY[ST_ConvexHull(var_geoms[1]), ST_ConvexHull(var_geoms[2]) , ST_ConvexHull(var_geoms[3]), ST_ConvexHull(var_geoms[4])]); 
+			--RAISE NOTICE 'Curr vex % ', ST_AsText(var_tempgeom);
+			IF ST_Area(var_tempgeom) <= var_newarea AND ST_IsValid(var_tempgeom) AND ST_GeometryType(var_tempgeom) ILIKE '%Polygon'  THEN
+				var_buf := sqrt(var_newarea)/100;
+				var_tempgeom := ST_Union(ARRAY[ST_Buffer(ST_ConcaveHull(var_geoms[1],least(param_pctconvex + param_pctconvex/var_div),true),var_buf), 
+					ST_Buffer(ST_ConcaveHull(var_geoms[2],least(param_pctconvex + param_pctconvex/var_div),true),var_buf) , 
+					ST_Buffer(ST_ConcaveHull(var_geoms[3],least(param_pctconvex + param_pctconvex/var_div),true),var_buf), 
+					ST_Buffer(ST_ConcaveHull(var_geoms[4],least(param_pctconvex + param_pctconvex/var_div),true),var_buf)]);
+				--RAISE NOTICE 'Curr concave % ', ST_AsText(var_tempgeom);
+				IF ST_IsValid(var_tempgeom) THEN
+					var_resultgeom := var_tempgeom;
+				END IF;
+				var_newarea := ST_Area(var_resultgeom);
+			ELSIF ST_IsValid(var_tempgeom) THEN
+				var_resultgeom := var_tempgeom;
+			END IF;
+
+			IF ST_NumGeometries(var_resultgeom) > 1  THEN
+				var_tempgeom := _ST_ConcaveHull(var_resultgeom);
+				IF ST_IsValid(var_tempgeom) AND ST_GeometryType(var_tempgeom) ILIKE '%Polygon' THEN
+					var_resultgeom := var_tempgeom;
+				ELSE
+					var_resultgeom := ST_Buffer(var_tempgeom,0.0001);
+				END IF;
+			END IF;
+			IF param_allow_holes = false THEN 
+			-- only keep exterior ring since we do not want holes
+				var_resultgeom := ST_MakePolygon(ST_ExteriorRing(var_resultgeom));
+			END IF;
+		ELSE
+			var_resultgeom := ST_Buffer(var_resultgeom,0.0001);
+		END IF;
+		RETURN var_resultgeom;
+	END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex float)
+	RETURNS geometry AS
+$$
+	SELECT ST_ConcaveHull($1, $2, false);
+$$
+LANGUAGE 'sql' IMMUTABLE STRICT;
+-- ST_ConcaveHull and Helper functions end here --
 COMMIT;
 
 #include "postgis_drop.sql.in.c"
