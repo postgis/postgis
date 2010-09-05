@@ -15,6 +15,7 @@
 #include <stdarg.h>
 
 #include "liblwgeom_internal.h"
+#include "libtgeom.h"
 #include "wktparse.h"
 
 
@@ -187,11 +188,9 @@ lwgeom_force_rhr(LWGEOM *lwgeom)
 		lwtriangle_forceRHR((LWTRIANGLE *)lwgeom);
 		return;
 
-	case MULTIPOLYGONTYPE:
-
 		/* Not handle POLYHEDRALSURFACE and TIN
-		       as they are supposed to be well oriented */
-
+		   as they are supposed to be well oriented */
+	case MULTIPOLYGONTYPE:
 	case COLLECTIONTYPE:
 		coll = (LWCOLLECTION *)lwgeom;
 		for (i=0; i<coll->ngeoms; i++)
@@ -1240,6 +1239,8 @@ static int lwcollection_dimensionality(LWCOLLECTION *col)
 
 extern int lwgeom_dimensionality(LWGEOM *geom)
 {
+	int dim;
+
 	LWDEBUGF(3, "lwgeom_dimensionality got type %s",
 	         lwtype_name(TYPE_GETTYPE(geom->type)));
 
@@ -1263,11 +1264,13 @@ extern int lwgeom_dimensionality(LWGEOM *geom)
 	case MULTISURFACETYPE:
 		return 2;
 		break;
-		/* FIXME: it depends if geometry is or not closed ! */
+
 	case POLYHEDRALSURFACETYPE:
 	case TINTYPE:
-		return 3;
+		dim = lwgeom_is_solid(geom)?3:2;
+		return dim;
 		break;
+
 	case COLLECTIONTYPE:
 		return lwcollection_dimensionality((LWCOLLECTION *)geom);
 		break;

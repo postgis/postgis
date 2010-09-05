@@ -460,6 +460,34 @@ psurface_tgeom(void)
 }
 
 
+static void
+check_dimension(char *ewkt, int dim)
+{
+	LWGEOM *geom;
+
+	geom = lwgeom_from_ewkt(ewkt, PARSER_CHECK_NONE);
+	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
+	CU_ASSERT_EQUAL(lwgeom_dimensionality(geom), dim);
+	lwgeom_free(geom);
+} 
+
+void
+surface_dimension(void)
+{
+	/* 2D */
+	check_dimension("POLYHEDRALSURFACE(((0 0,0 1,1 1,0 0)))", 2);
+	check_dimension("TIN(((0 0,0 1,1 1,0 0)))", 2);
+
+	/* 3D single face */
+	check_dimension("POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 0,0 0 0)))", 2);
+	check_dimension("TIN(((0 0 0,0 0 1,0 1 0,0 0 0)))", 2);
+
+	/* Tetrahedron */
+	check_dimension("POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", 3);
+	check_dimension("TIN(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", 3);
+}
+
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -470,6 +498,7 @@ CU_TestInfo surface_tests[] =
 	PG_TEST(polyhedralsurface_parse),
 	PG_TEST(tin_tgeom),
 	PG_TEST(psurface_tgeom),
+	PG_TEST(surface_dimension),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo surface_suite = {"Triangle, Tin and PolyhedralSurface Suite",  NULL,  NULL, surface_tests};

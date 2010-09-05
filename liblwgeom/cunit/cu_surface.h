@@ -24,3 +24,4 @@ void tin_parse(void);
 void polyhedralsurface_parse(void);
 void tin_tgeom(void);
 void psurface_tgeom(void);
+void surface_dimension(void);

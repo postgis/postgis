@@ -75,8 +75,8 @@ tgeom_is_edge(const TGEOM *tgeom, const POINT4D *s, const POINT4D *e)
 
 		LWDEBUGF(3, "[%i]/[%i]  (%lf,%lf,%lf,%lf) -> (%lf,%lf,%lf,%lf)\n",
 		         i, tgeom->nedges,
-			 p1->x, p1->y, p1->z, p1->m,
-			 p2->x, p2->y, p2->z, p2->m);
+		         p1->x, p1->y, p1->z, p1->m,
+		         p2->x, p2->y, p2->z, p2->m);
 
 		/* X,Y,Z,M */
 		if (hasz && hasm)
@@ -772,9 +772,9 @@ tgeom_serialize(const TGEOM *tgeom)
 	t->data = data;
 
 	/*
-         * We are aping PgSQL code here, PostGIS code should use
-         * VARSIZE to set this for real.
-         */
+	     * We are aping PgSQL code here, PostGIS code should use
+	     * VARSIZE to set this for real.
+	     */
 	t->size = retsize << 2;
 
 	return t;
@@ -903,6 +903,32 @@ tgeom_deserialize(TSERIALIZED *serialized_form)
 	}
 
 	return result;
+}
+
+
+/*
+ * Indicate if an given LWGEOM is or not a solid
+ */
+int
+lwgeom_is_solid(LWGEOM *lwgeom)
+{
+	int type;
+	int solid=0;
+	TGEOM *tgeom;
+
+	assert(lwgeom);
+
+	/* Obvious case who could'nt be solid */
+	type = TYPE_GETTYPE(lwgeom->type);
+	if (type != POLYHEDRALSURFACETYPE && type != TINTYPE) return 0;
+	if (!TYPE_HASZ(lwgeom->type)) return 0;
+
+	/* Use TGEOM convert to know */
+	tgeom = tgeom_from_lwgeom(lwgeom);
+	solid = FLAGS_GET_SOLID(tgeom->flags);
+	tgeom_free(tgeom);
+
+	return solid;
 }
 
 
