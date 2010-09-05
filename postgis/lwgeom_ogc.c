@@ -36,7 +36,7 @@ Datum LWGEOM_setSRID(PG_FUNCTION_ARGS);
 Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS);
 Datum geometry_geometrytype(PG_FUNCTION_ARGS);
 /* ---- NumPoints(geometry) */
-Datum LWGEOM_numpoints(PG_FUNCTION_ARGS);
+Datum LWGEOM_numpoints_linestring(PG_FUNCTION_ARGS);
 /* ---- NumGeometries(geometry) */
 Datum LWGEOM_numgeometries_collection(PG_FUNCTION_ARGS);
 /* ---- GeometryN(geometry, integer) */
@@ -50,7 +50,7 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS);
 /* ---- NumInteriorRings(geometry) */
 Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS);
 /* ---- PointN(geometry, integer) */
-Datum LWGEOM_pointn(PG_FUNCTION_ARGS);
+Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS);
 /* ---- X(geometry) */
 Datum LWGEOM_x_point(PG_FUNCTION_ARGS);
 /* ---- Y(geometry) */
@@ -75,7 +75,7 @@ Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS);
 Datum LWGEOM_isclosed(PG_FUNCTION_ARGS);
 
 /* internal */
-static int32 lwgeom_numpoints_recursive(const uchar *serialized);
+static int32 lwgeom_numpoints_recursive_linestring(const uchar *serialized);
 static int32 lwgeom_dimension_recursive(const uchar *serialized);
 
 /*------------------------------------------------------------------*/
@@ -199,17 +199,17 @@ Datum geometry_geometrytype(PG_FUNCTION_ARGS)
 
 
 /**
- * Find first geometry in serialized geometry with numpoints
+ * Find first linestring in serialized geometry with numpoints
  * notion and return the number of points in it.
- * If no such geometry are found return -1.
+ * If no such linestring are found return -1.
  */
 static int32
-lwgeom_numpoints_recursive(const uchar *serialized)
+lwgeom_numpoints_linestring_recursive(const uchar *serialized)
 {
 	LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized);
 	int i;
 
-	LWDEBUG(2, "lwgeom_numpoints_recursive called.");
+	LWDEBUG(2, "lwgeom_numpoints_linestring_recursive called.");
 	/*
 	 * CURVEPOLY and COMPOUND have no concept of numpoints but look like
 	 * collections once inspected.  Fast-fail on these here.
@@ -239,10 +239,6 @@ lwgeom_numpoints_recursive(const uchar *serialized)
 		{
 			return ((LWCIRCSTRING *)geom)->points->npoints;
 		}
-		else if (lwgeom_getType(geom->type) == TRIANGLETYPE)
-		{
-			return ((LWTRIANGLE*)geom)->points->npoints;
-		}
 
 		subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
 		if ( subgeom == NULL )
@@ -255,7 +251,7 @@ lwgeom_numpoints_recursive(const uchar *serialized)
 		/* MULTILINESTRING && GEOMETRYCOLLECTION are worth checking */
 		if ( type != MULTILINETYPE && type != COLLECTIONTYPE ) continue;
 
-		npoints = lwgeom_numpoints_recursive(subgeom);
+		npoints = lwgeom_numpoints_linestring_recursive(subgeom);
 		if ( npoints == -1 ) continue;
 
 		lwinspected_release(inspected);
@@ -273,15 +269,15 @@ lwgeom_numpoints_recursive(const uchar *serialized)
  * the number of points in it.  Return NULL if there is no LINESTRING(..)
  * in GEOMETRY
  */
-PG_FUNCTION_INFO_V1(LWGEOM_numpoints);
-Datum LWGEOM_numpoints(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(LWGEOM_numpoints_linestring);
+Datum LWGEOM_numpoints_linestring(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	int32 ret;
 
 	POSTGIS_DEBUG(2, "LWGEOM_numpoints_called.");
 
-	ret = lwgeom_numpoints_recursive(SERIALIZED_FORM(geom));
+	ret = lwgeom_numpoints_linestring_recursive(SERIALIZED_FORM(geom));
 	if ( ret == -1 )
 	{
 		PG_FREE_IF_COPY(geom, 0);
@@ -484,6 +480,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	LWPOLY *poly = NULL;
 	LWCURVEPOLY *curvepoly = NULL;
+	LWTRIANGLE *triangle = NULL;
 	POINTARRAY *extring;
 	LWGEOM *ring;
 	LWLINE *line;
@@ -493,7 +490,8 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUG(2, "LWGEOM_exteriorring_polygon called.");
 
 	if ( TYPE_GETTYPE(geom->type) != POLYGONTYPE &&
-	        TYPE_GETTYPE(geom->type) != CURVEPOLYTYPE)
+	        TYPE_GETTYPE(geom->type) != CURVEPOLYTYPE &&
+	        TYPE_GETTYPE(geom->type) != TRIANGLETYPE)
 	{
 		elog(ERROR, "ExteriorRing: geom is not a polygon");
 		PG_RETURN_NULL();
@@ -518,6 +516,23 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 		lwgeom_release((LWGEOM *)line);
 		lwgeom_release((LWGEOM *)poly);
 	}
+	else if (lwgeom_getType((uchar)SERIALIZED_FORM(geom)[0]) == TRIANGLETYPE)
+	{
+		triangle = lwtriangle_deserialize(SERIALIZED_FORM(geom));
+
+		/*
+		* This is a LWLINE constructed by exterior ring POINTARRAY
+		* If the input geom has a bbox, use it for
+		* the output geom, as exterior ring makes it up !
+		*/
+		if ( triangle->bbox ) bbox=box2d_clone(triangle->bbox);
+		line = lwline_construct(triangle->SRID, bbox, triangle->points);
+
+		result = pglwgeom_serialize((LWGEOM *)line);
+
+		lwgeom_release((LWGEOM *)line);
+		lwgeom_release((LWGEOM *)triangle);
+	}
 	else
 	{
 		curvepoly = lwcurvepoly_deserialize(SERIALIZED_FORM(geom));
@@ -527,7 +542,6 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	}
 
 	PG_FREE_IF_COPY(geom, 0);
-
 
 	PG_RETURN_POINTER(result);
 }
@@ -690,8 +704,8 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
  * @return the point at index INTEGER (1 is 1st point).  Return NULL if
  * 		there is no LINESTRING(..) in GEOMETRY or INTEGER is out of bounds.
  */
-PG_FUNCTION_INFO_V1(LWGEOM_pointn);
-Datum LWGEOM_pointn(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(LWGEOM_pointn_linestring);
+Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
 	int32 wanted_index;
@@ -701,7 +715,6 @@ Datum LWGEOM_pointn(PG_FUNCTION_ARGS)
 	LWGEOM *tmp = NULL;
 	POINTARRAY *pts;
 	LWPOINT *point;
-	LWTRIANGLE *triangle;
 	uchar *serializedpoint;
 	PG_LWGEOM *result;
 	int i, type;
@@ -725,8 +738,7 @@ Datum LWGEOM_pointn(PG_FUNCTION_ARGS)
 		{
 			tmp = lwgeom_getgeom_inspected(inspected, i);
 			if (lwgeom_getType(tmp->type) == LINETYPE ||
-			        lwgeom_getType(tmp->type) == CIRCSTRINGTYPE ||
-			        lwgeom_getType(tmp->type) == TRIANGLETYPE)
+			        lwgeom_getType(tmp->type) == CIRCSTRINGTYPE)
 				break;
 		}
 
@@ -771,24 +783,6 @@ Datum LWGEOM_pointn(PG_FUNCTION_ARGS)
 			pts = pointArray_construct(getPoint_internal(line->points,
 			                           wanted_index-1),
 			                           TYPE_HASZ(line->type), TYPE_HASM(line->type), 1);
-		}
-		else if (lwgeom_getType(tmp->type) == TRIANGLETYPE)
-		{
-			triangle = (LWTRIANGLE *)tmp;
-			if (wanted_index > triangle->points->npoints)
-			{
-				lwinspected_release(inspected);
-				PG_FREE_IF_COPY(geom, 0);
-				lwgeom_release(tmp);
-				PG_RETURN_NULL();
-			}
-			lwinspected_release(inspected);
-
-			pts = pointArray_construct(getPoint_internal(
-			                               triangle->points,
-			                               wanted_index-1),
-			                           TYPE_HASZ(triangle->type),
-			                           TYPE_HASM(triangle->type), 1);
 		}
 		else
 		{

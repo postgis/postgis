@@ -1983,6 +1983,16 @@ BEGIN
     RETURN;
   END IF;
 
+  -- Special case (TRIANGLE) : return the points of the external rings of a TRIANGLE
+  IF (ST_GeometryType(the_geom) = 'ST_Triangle') THEN
+
+    FOR tmp IN SELECT * FROM _ST_DumpPoints(ST_ExteriorRing(the_geom), cur_path || ARRAY[1]) LOOP
+      RETURN NEXT tmp;
+    END LOOP;
+    
+    RETURN;
+  END IF;
+
     
   -- Special case (POINT) : return the point
   IF (ST_GeometryType(the_geom) = 'ST_Point') THEN
@@ -1997,7 +2007,7 @@ BEGIN
 
 
   -- Use ST_NumPoints rather than ST_NPoints to have a NULL value if the_geom isn't
-  -- a LINESTRING, CIRCULARSTRING or TRIANGLE.
+  -- a LINESTRING, CIRCULARSTRING.
   SELECT ST_NumPoints(the_geom) INTO nb_points;
 
   -- This should never happen
@@ -4872,13 +4882,13 @@ CREATE OR REPLACE FUNCTION ST_GeoHash(geometry)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION NumPoints(geometry)
 	RETURNS int4
-	AS 'MODULE_PATHNAME', 'LWGEOM_numpoints'
+	AS 'MODULE_PATHNAME', 'LWGEOM_numpoints_linestring'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: NumPoints(geometry)
 CREATE OR REPLACE FUNCTION ST_NumPoints(geometry)
 	RETURNS int4
-	AS 'MODULE_PATHNAME', 'LWGEOM_numpoints'
+	AS 'MODULE_PATHNAME', 'LWGEOM_numpoints_linestring'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
@@ -4980,13 +4990,13 @@ CREATE OR REPLACE FUNCTION ST_GeometryType(geometry)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION PointN(geometry,integer)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME','LWGEOM_pointn'
+	AS 'MODULE_PATHNAME','LWGEOM_pointn_linestring'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: PointN(geometry,integer)
 CREATE OR REPLACE FUNCTION ST_PointN(geometry,integer)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME','LWGEOM_pointn'
+	AS 'MODULE_PATHNAME','LWGEOM_pointn_linestring'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 2.0.0
