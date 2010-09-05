@@ -249,7 +249,7 @@ check_tgeom(char *ewkt, int type, uint32 srid, int is_solid)
 	{
 		printf("\n[%s]\n, lwgeom_same I", ewkt);
 		printTGEOM(tgeom);
-		if (type == TINTYPE) 
+		if (type == TINTYPE)
 		{
 			printLWTIN((LWTIN *)g1);
 			printLWTIN((LWTIN *)g2);
@@ -268,7 +268,7 @@ check_tgeom(char *ewkt, int type, uint32 srid, int is_solid)
 	{
 		printf("\n[%s]\n, lwgeom_same II", ewkt);
 		printTGEOM(tgeom);
-		if (type == TINTYPE) 
+		if (type == TINTYPE)
 		{
 			printLWTIN((LWTIN *)g1);
 			printLWTIN((LWTIN *)g2);
@@ -469,7 +469,7 @@ check_dimension(char *ewkt, int dim)
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(lwgeom_dimensionality(geom), dim);
 	lwgeom_free(geom);
-} 
+}
 
 void
 surface_dimension(void)
