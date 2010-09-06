@@ -933,6 +933,74 @@ lwgeom_is_solid(LWGEOM *lwgeom)
 
 
 /*
+ *  Compute 2D perimeter of a TGEOM
+ */
+double
+tgeom_perimeter2d(TGEOM* tgeom)
+{
+	int i;
+	double hz, vt, bdy = 0.0;
+
+	assert(tgeom);
+
+	if (tgeom->type != POLYHEDRALSURFACETYPE && tgeom->type != TINTYPE)
+		lwerror("tgeom_perimeter2d called with wrong type: %i - %s",
+			tgeom->type, lwtype_name(tgeom->type)); 
+
+	/* Solid have a 0.0 length perimeter */
+	if (FLAGS_GET_SOLID(tgeom->flags)) return bdy;
+
+	for (i=1 ; i <= tgeom->nedges ; i++)
+	{
+		if (tgeom->edges[i]->count == 1)
+		{
+       			hz = tgeom->edges[i]->s->x - tgeom->edges[i]->e->x;
+       			vt = tgeom->edges[i]->s->y - tgeom->edges[i]->e->y;
+       			bdy += sqrt(hz*hz + vt*vt);
+		}
+	}
+	
+	return bdy;
+}
+
+
+/*
+ *  Compute 2D/3D perimeter of a TGEOM
+ */
+double
+tgeom_perimeter(TGEOM* tgeom)
+{
+	int i;
+	double hz, vt, ht, bdy = 0.0;
+
+	assert(tgeom);
+
+	if (tgeom->type != POLYHEDRALSURFACETYPE && tgeom->type != TINTYPE)
+		lwerror("tgeom_perimeter called with wrong type: %i - %s",
+			tgeom->type, lwtype_name(tgeom->type)); 
+
+	/* Solid have a 0.0 length perimeter */
+	if (FLAGS_GET_SOLID(tgeom->flags)) return bdy;
+
+	/* If no Z use 2d function instead */
+	if (!FLAGS_GET_Z(tgeom->flags))     return tgeom_perimeter2d(tgeom);
+
+	for (i=1 ; i <= tgeom->nedges ; i++)
+	{
+		if (tgeom->edges[i]->count == 1)
+		{
+       			hz = tgeom->edges[i]->s->x - tgeom->edges[i]->e->x;
+       			vt = tgeom->edges[i]->s->y - tgeom->edges[i]->e->y;
+       			ht = tgeom->edges[i]->s->z - tgeom->edges[i]->e->z;
+       			bdy += sqrt(hz*hz + vt*vt + ht*ht);
+		}
+	}
+	
+	return bdy;
+}
+
+
+/*
  * Print a TGEOM struct
  * Debug purpose only
  */

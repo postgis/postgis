@@ -75,4 +75,6 @@ extern LWGEOM* lwgeom_from_tgeom(TGEOM *tgeom);
 extern int lwgeom_is_solid(LWGEOM *lwgeom);
 TSERIALIZED * tgeom_serialize(const TGEOM *tgeom);
 TGEOM * tgeom_deserialize(TSERIALIZED *serialized_form);
+double tgeom_perimeter2d(TGEOM* tgeom);
+double tgeom_perimeter(TGEOM* tgeom);
 extern void printTGEOM(TGEOM *tgeom);

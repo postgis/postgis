@@ -17,6 +17,7 @@
 #include "utils/geo_decls.h"
 
 #include "liblwgeom.h"
+#include "libtgeom.h"
 #include "lwalgorithm.h"
 #include "lwgeom_pg.h"
 #include "profile.h"
@@ -366,6 +367,7 @@ Datum LWGEOM_area_polygon(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	LWGEOM_INSPECTED *inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
 	LWPOLY *poly;
+	LWTRIANGLE *triangle;
 	LWCURVEPOLY *curvepoly;
 	LWGEOM *tmp;
 	double area = 0.0;
@@ -385,6 +387,11 @@ Datum LWGEOM_area_polygon(PG_FUNCTION_ARGS)
 		{
 			curvepoly = (LWCURVEPOLY *)tmp;
 			area += lwgeom_curvepolygon_area(curvepoly);
+		}
+		else if (lwgeom_getType(tmp->type) == TRIANGLETYPE)
+		{
+			triangle = (LWTRIANGLE *)tmp;
+			area += lwgeom_triangle_area(triangle);
 		}
 		lwgeom_release(tmp);
 
@@ -471,18 +478,34 @@ Datum LWGEOM_perimeter_poly(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	LWGEOM_INSPECTED *inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
+	int type = lwgeom_getType((uchar)SERIALIZED_FORM(geom)[0]);
 	double ret = 0.0;
+	TGEOM *tgeom;
 	int i;
 
-	for (i=0; i<inspected->ngeometries; i++)
+	if (type == POLYHEDRALSURFACETYPE || type == TINTYPE)
 	{
-		LWPOLY *poly;
-		poly = lwgeom_getpoly_inspected(inspected, i);
-		if ( poly == NULL ) continue;
-		ret += lwgeom_polygon_perimeter(poly);
+		tgeom = tgeom_from_lwgeom(lwgeom_deserialize(SERIALIZED_FORM(geom)));
+		ret = tgeom_perimeter(tgeom);
 	}
+	else
+	{ 
+		for (i=0; i<inspected->ngeometries; i++)
+		{
+			LWPOLY *poly;
+			LWTRIANGLE *triangle;
 
-	lwinspected_release(inspected);
+			poly = lwgeom_getpoly_inspected(inspected, i);
+			if (poly != NULL)
+				ret += lwgeom_polygon_perimeter(poly);
+
+			triangle = lwgeom_gettriangle_inspected(inspected, i);
+			if (triangle != NULL)
+				ret += lwgeom_triangle_perimeter(triangle);
+		}
+
+		lwinspected_release(inspected);
+	}
 
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_FLOAT8(ret);
@@ -500,18 +523,34 @@ Datum LWGEOM_perimeter2d_poly(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	LWGEOM_INSPECTED *inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
+	int type = lwgeom_getType((uchar)SERIALIZED_FORM(geom)[0]);
+	TGEOM *tgeom;
 	double ret = 0.0;
 	int i;
 
-	for (i=0; i<inspected->ngeometries; i++)
+	if (type == POLYHEDRALSURFACETYPE || type == TINTYPE)
 	{
-		LWPOLY *poly;
-		poly = lwgeom_getpoly_inspected(inspected, i);
-		if ( poly == NULL ) continue;
-		ret += lwgeom_polygon_perimeter2d(poly);
+		tgeom = tgeom_from_lwgeom(lwgeom_deserialize(SERIALIZED_FORM(geom)));
+		ret = tgeom_perimeter(tgeom);
 	}
+	else
+	{ 
+		for (i=0; i<inspected->ngeometries; i++)
+		{
+			LWPOLY *poly;
+			LWTRIANGLE *triangle;
 
-	lwinspected_release(inspected);
+			poly = lwgeom_getpoly_inspected(inspected, i);
+			if (poly != NULL)
+				ret += lwgeom_polygon_perimeter2d(poly);
+
+			triangle = lwgeom_gettriangle_inspected(inspected, i);
+			if (triangle != NULL)
+				ret += lwgeom_triangle_perimeter2d(triangle);
+		}
+
+		lwinspected_release(inspected);
+	}
 	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_FLOAT8(ret);

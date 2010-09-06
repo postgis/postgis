@@ -1563,6 +1563,32 @@ lwgeom_polygon_area(const LWPOLY *poly)
 }
 
 /**
+ * Find the area of the outer ring 
+ */
+double
+lwgeom_triangle_area(const LWTRIANGLE *triangle)
+{
+	double area=0.0;
+	int i;
+	POINT2D p1;
+	POINT2D p2;
+
+	if (! triangle->points->npoints) return area; /* empty triangle */
+
+	for (i=0; i < triangle->points->npoints-1; i++)
+	{
+		getPoint2d_p(triangle->points, i, &p1);
+		getPoint2d_p(triangle->points, i+1, &p2);
+		area += ( p1.x * p2.y ) - ( p1.y * p2.x );
+	}
+
+	area  /= 2.0;
+
+	return fabs(area);
+}
+
+
+/**
  * Compute the sum of polygon rings length.
  * Could use a more numerically stable calculator...
  */
@@ -1598,6 +1624,17 @@ lwgeom_polygon_perimeter2d(const LWPOLY *poly)
 	return result;
 }
 
+double
+lwgeom_triangle_perimeter(const LWTRIANGLE *triangle)
+{
+	return lwgeom_pointarray_length(triangle->points);
+}
+
+double
+lwgeom_triangle_perimeter2d(const LWTRIANGLE *triangle)
+{
+	return lwgeom_pointarray_length2d(triangle->points);
+}
 
 int
 lwgeom_pt_inside_circle(POINT2D *p, double cx, double cy, double rad)

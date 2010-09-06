@@ -488,6 +488,43 @@ surface_dimension(void)
 }
 
 
+static void
+check_perimeter(char *ewkt, int dim, double p)
+{
+	LWGEOM *geom;
+	TGEOM *tgeom;
+
+	geom = lwgeom_from_ewkt(ewkt, PARSER_CHECK_NONE);
+	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
+	tgeom = tgeom_from_lwgeom(geom);
+
+	if (dim == 2) CU_ASSERT_DOUBLE_EQUAL(tgeom_perimeter2d(tgeom), p, 0.01);
+	if (dim == 3) CU_ASSERT_DOUBLE_EQUAL(tgeom_perimeter(tgeom), p, 0.01);
+
+	tgeom_free(tgeom);
+	lwgeom_free(geom);
+}
+
+void
+surface_perimeter(void)
+{
+	/* 2D single face */
+	check_perimeter("POLYHEDRALSURFACE(((0 0,0 1,1 1,0 0)))", 2, 3.4142);
+	check_perimeter("TIN(((0 0,0 1,1 1,0 0)))", 2, 3.4142);
+
+	/* 3D single face */
+	check_perimeter("POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 0,0 0 0)))", 3, 3.4142);
+	check_perimeter("TIN(((0 0 0,0 0 1,0 1 0,0 0 0)))", 3, 3.4142);
+
+	/* 3D Tetrahedron */
+	check_perimeter("POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", 3, 0.0);
+	check_perimeter("TIN(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", 3, 0.0);
+}
+
+
+/*
+** Used by test harness to register the tests in this file.
+*/
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -499,6 +536,7 @@ CU_TestInfo surface_tests[] =
 	PG_TEST(tin_tgeom),
 	PG_TEST(psurface_tgeom),
 	PG_TEST(surface_dimension),
+	PG_TEST(surface_perimeter),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo surface_suite = {"Triangle, Tin and PolyhedralSurface Suite",  NULL,  NULL, surface_tests};
