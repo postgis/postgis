@@ -2093,12 +2093,14 @@ ShpDumperGetRecordCount(SHPDUMPERSTATE *state)
 int
 ShpDumperCloseTable(SHPDUMPERSTATE *state)
 {
+	int ret = SHPDUMPEROK;
+
 	/* Clear the current batch fetch resource */
 	PQclear(state->fetchres);
 
 	/* If a geo column is present, generate the projection file */
 	if (state->geo_col_name)
-		projFileCreate(state);	
+		ret = projFileCreate(state);	
 
 	/* Close the DBF and SHP files */
 	if (state->dbf)
@@ -2106,7 +2108,7 @@ ShpDumperCloseTable(SHPDUMPERSTATE *state)
 	if (state->shp)
 		SHPClose(state->shp);
 
-	return SHPDUMPEROK;
+	return ret;
 }
 
 
