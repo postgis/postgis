@@ -545,6 +545,9 @@ MULTILINESTRING((1 2,3 4),(3 4,4 5))
 			
 		<note><para>Note - The smaller you make the target percent, the longer it takes to process the concave hull. Also the more 
 			floating points and number of points you acrue.  To reduce precision and float points, use <xref linkend="ST_SnapToGrid" /> after ST_ConcaveHull.</para></note>
+			
+		<para>More real world examples and brief explanation of the technique are shown <ulink
+		url="http://www.bostongis.com/postgis_concavehull.shippet">http://www.bostongis.com/postgis_concavehull.shippet</ulink></para>
 
 		<para>Availability: 2.0.0</para>
 	  </refsection>
