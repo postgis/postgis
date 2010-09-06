@@ -529,18 +529,18 @@ MULTILINESTRING((1 2,3 4),(3 4,4 5))
 
 		<para>One can think of the concave hull as the geometry you get by vacuum sealing a set of geometries. A
 			target_shrink_percent of 1 will give you the same answer as the convex hull.  A target_shrink_percent 
-				between 0 and .  This is different from a convex hull which is more like wrapping a rubber band around.</para>
+				between 0 and 0.99 will give you something that should have a smaller area than the convex ull.  This is different from a convex hull which is more like wrapping a rubber band around the set of geometries.</para>
 
 			<para>It is usually used with MULTI and Geometry Collections.
 		Although it is not an aggregate - you can use it in conjunction
 		with ST_Collect or ST_Union to get the concave hull of a set of points/linestring/polygons or .
-		ST_ConcaveHull(ST_Collect(somepointfield)).</para>
+		ST_ConcaveHull(ST_Collect(somepointfield), 0.80).</para>
 
 		<para>It is often used to determine an affected area based on a set of point
 		observations.  Its slower to compute than convex hull but encloses the geometry better.</para>
 
 		<para>Performed by the GEOS module</para>
-		<note><para>Note - If you are using with points, use ST_Collect. If you are using with polygons, use ST_Union since
+		<note><para>Note - If you are using with points, linestrings, or geometry collections use ST_Collect. If you are using with polygons, use ST_Union since
 			it may fail with invalid geometries.</para></note>
 			
 		<note><para>Note - The smaller you make the target percent, the longer it takes to process the concave hull. Also the more 
