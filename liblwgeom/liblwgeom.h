@@ -1293,6 +1293,7 @@ extern float  next_float_up(double d);
 extern double next_double_down(float d);
 extern double next_double_up(float d);
 
+extern int geometry_type_from_string(const char *str, int *type, int *z, int *m);
 
 #define LW_MAX(a,b) ((a) >	(b) ? (a) : (b))
 #define LW_MIN(a,b) ((a) <= (b) ? (a) : (b))

@@ -877,7 +877,7 @@ int getTableInfo(SHPDUMPERSTATE *state)
 	 */
 
 	PGresult *res;
-	char *query, *tmpstr;
+	char *query;
 	int tmpint;
 
 
@@ -923,30 +923,104 @@ int getTableInfo(SHPDUMPERSTATE *state)
 
 	if (PQresultStatus(res) != PGRES_TUPLES_OK)
 	{
-		snprintf(state->message, SHPDUMPERMSGLEN, "ERROR: Could not determine geometry type: %s", PQresultErrorMessage(res));
+		snprintf(state->message, SHPDUMPERMSGLEN, "ERROR: Could not execute table metadata query: %s", PQresultErrorMessage(res));
 		PQclear(res);
 		return SHPDUMPERERR;
 	}
 
-	/* Make sure we error if the table is empty or our geometry column contains mixed types */
+	/* Make sure we error if the table is empty */
 	if (PQntuples(res) == 0)
 	{
-		snprintf(state->message, SHPDUMPERMSGLEN, "ERROR: Could not determine geometry type (empty table)");
+		snprintf(state->message, SHPDUMPERMSGLEN, "ERROR: Could not determine table metadata (empty table)");
 		PQclear(res);
 		return SHPDUMPERERR;
 	}
 
-	if (PQntuples(res) > 1)
-	{
-		snprintf(state->message, SHPDUMPERMSGLEN, "ERROR: Mixed geometry types in table");
-		PQclear(res);
-		return SHPDUMPERERR;
-	}
-
-	/* If we have a geo* column, get the dimension and type information */
+	/* If we have a geo* column, get the dimension, type and count information */
 	if (state->geo_col_name)
 	{
-		/* Set up the dimension output type */
+		/* If a table has a geometry column containing mixed types then
+		   the metadata query will return multiple rows. We need to cycle
+		   through all rows to determine if the type combinations are valid.
+
+		   Note that if we find a combination of a MULTI and non-MULTI geometry
+		   of the same type, we always choose MULTI to ensure that everything
+		   gets output correctly. The create_* conversion functions are clever
+		   enough to up-convert the non-MULTI geometry to a MULTI in this case. */
+
+		int dummy, i;
+		int type = 0, typefound = 0, typemismatch = 0;
+
+		state->rowcount = 0;
+
+		for (i = 0; i < PQntuples(res); i++)
+		{
+			geometry_type_from_string(PQgetvalue(res, i, 2), &type, &dummy, &dummy);
+
+			/* We can always set typefound to that of the first column found */
+			if (!typefound)
+				typefound = type;
+
+			switch (type)
+			{
+			case MULTIPOINTTYPE:
+				if (typefound != MULTIPOINTTYPE && typefound != POINTTYPE)
+					typemismatch = 1;
+				else
+					typefound = MULTIPOINTTYPE;
+				break;
+
+			case MULTILINETYPE:
+				if (typefound != MULTILINETYPE && typefound != LINETYPE)
+					typemismatch = 1;
+				else
+					typefound = MULTILINETYPE;
+				break;					
+
+			case MULTIPOLYGONTYPE:
+				if (typefound != MULTIPOLYGONTYPE && typefound != POLYGONTYPE)
+					typemismatch = 1;
+				else
+					typefound = MULTIPOLYGONTYPE;
+				break;
+
+			case POINTTYPE:
+				if (typefound != POINTTYPE && typefound != MULTIPOINTTYPE)
+					typemismatch = 1;
+				else if (!lwgeom_is_collection(type))
+					typefound = POINTTYPE;
+				break;
+
+			case LINETYPE:
+				if (typefound != LINETYPE && typefound != MULTILINETYPE)
+					typemismatch = 1;
+				else if (!lwgeom_is_collection(type))
+					typefound = LINETYPE;
+				break;
+
+			case POLYGONTYPE:
+				if (typefound != POLYGONTYPE && typefound != MULTIPOLYGONTYPE)
+					typemismatch = 1;
+				else if (!lwgeom_is_collection(type))
+					typefound = POLYGONTYPE;
+				break;
+			}
+
+			/* Update the rowcount for each type */
+			state->rowcount += atoi(PQgetvalue(res, i, 0));
+		}
+
+		/* Flag an error if the table contains incompatible geometry combinations */
+		if (typemismatch)
+		{
+			snprintf(state->message, SHPDUMPERMSGLEN, "ERROR: Incompatible mixed geometry types in table");
+			PQclear(res);
+			return SHPDUMPERERR;
+		}
+
+		/* Set up the dimension output type (note: regardless of how many rows
+		   the table metadata query returns, this value will be the same. But
+		   we'll choose to use the first value anyway) */
 		tmpint = atoi(PQgetvalue(res, 0, 1));
 		switch (tmpint)
 		{
@@ -960,11 +1034,11 @@ int getTableInfo(SHPDUMPERSTATE *state)
 			state->outtype = 'z';
 			break;
 		}
-	
-		/* Now work out the correct geometry type */
-		tmpstr = PQgetvalue(res, 0, 2);
-		if (!strncmp(tmpstr, "POINT", 5))
+
+		/* Set up the shapefile output type based upon the dimension information */
+		switch (typefound)
 		{
+		case POINTTYPE:
 			switch(state->outtype)
 			{
 			case 'z':
@@ -978,41 +1052,9 @@ int getTableInfo(SHPDUMPERSTATE *state)
 			default:
 				state->outshptype = SHPT_POINT;
 			}
-		} 
-		else if (!strncmp(tmpstr, "LINESTRING", 10) || !strncmp(tmpstr, "MULTILINESTRING", 15))
-		{
-			switch(state->outtype)
-			{
-			case 'z':
-				state->outshptype = SHPT_ARCZ;
-				break;
-	
-			case 'm':
-				state->outshptype = SHPT_ARCM;
-				break;
-	
-			default:
-				state->outshptype = SHPT_ARC;
-			}
-		}
-		else if (!strncmp(tmpstr, "POLYGON", 7) || !strncmp(tmpstr, "MULTIPOLYGON", 12))
-		{
-			switch(state->outtype)
-			{
-			case 'z':
-				state->outshptype = SHPT_POLYGONZ;
-				break;
-	
-			case 'm':
-				state->outshptype = SHPT_POLYGONM;
-				break;
-	
-			default:
-				state->outshptype = SHPT_POLYGON;
-			}
-		}
-		else if (!strncmp(tmpstr, "MULTIPOINT", 10))
-		{
+			break;
+
+		case MULTIPOINTTYPE:
 			switch(state->outtype)
 			{
 			case 'z':
@@ -1026,11 +1068,48 @@ int getTableInfo(SHPDUMPERSTATE *state)
 			default:
 				state->outshptype = SHPT_MULTIPOINT;
 			}
+			break;
+
+		case LINETYPE:
+		case MULTILINETYPE:
+			switch(state->outtype)
+			{
+			case 'z':
+				state->outshptype = SHPT_ARCZ;
+				break;
+	
+			case 'm':
+				state->outshptype = SHPT_ARCM;
+				break;
+	
+			default:
+				state->outshptype = SHPT_ARC;
+			}
+			break;
+
+		case POLYGONTYPE:
+		case MULTIPOLYGONTYPE:
+			switch(state->outtype)
+			{
+			case 'z':
+				state->outshptype = SHPT_POLYGONZ;
+				break;
+	
+			case 'm':
+				state->outshptype = SHPT_POLYGONM;
+				break;
+	
+			default:
+				state->outshptype = SHPT_POLYGON;
+			}
+			break;
 		}
 	}
-
-	/* Finally get the row count information */
-	state->rowcount = atoi(PQgetvalue(res, 0, 0));
+	else
+	{
+		/* Without a geo* column the total is simply the first (COUNT) column */
+		state->rowcount = atoi(PQgetvalue(res, 0, 0));
+	}
 
 	/* Dispose of the result set */
 	PQclear(res);
