@@ -329,7 +329,8 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 
 	/* call is valid on multi* geoms only */
 	if (type==POINTTYPE || type==LINETYPE || type==CIRCSTRINGTYPE ||
-	        type==COMPOUNDTYPE || type==POLYGONTYPE || type==CURVEPOLYTYPE)
+	        type==COMPOUNDTYPE || type==POLYGONTYPE ||
+		type==CURVEPOLYTYPE || type==TRIANGLETYPE)
 	{
 		if ( idx == 0 ) PG_RETURN_POINTER(geom);
 		PG_RETURN_NULL();
