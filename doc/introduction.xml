@@ -33,7 +33,7 @@
 	  <varlistentry>
 		<term>Paul Ramsey</term>
 		<listitem>
-		  <para>Co-founder of PostGIS project.  General bug fixing, geography support, GEOS functionality integration and alignment with 
+		  <para>Co-founder of PostGIS project.  General bug fixing, geography support, 3D, geography, geometry index support, underlying geometry internal structures, GEOS functionality integration and alignment with 
 		  GEOS releases, loader/dumper, and Shapefile GUI loader.</para>
 		</listitem>
 	  </varlistentry>
@@ -63,8 +63,7 @@
 		<term>Sandro Santilli</term>
 
 		<listitem>
-		  <para>Bug fixes and maintenance and integration of new GEOS
-		  functionality. WKT Raster support.</para>
+		  <para>Bug fixes and maintenance and integration of new GEOS functionality and alignment with GEOS releases. Raster support.</para>
 		</listitem>
 	  </varlistentry>
 	  
