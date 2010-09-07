@@ -46,8 +46,8 @@ typedef struct
 {
 	int nedges;
 	int maxedges;
-	int *edges;		/* Array of edge index, if value is negative,
-				   mean that the edge is reversed */
+	int *edges;		/* Array of edge index, a negative value
+				   means that the edge is reversed */
 	int nrings;
 	POINTARRAY **rings;	/* Internal rings array */
 } TFACE;
