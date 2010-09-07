@@ -6551,6 +6551,10 @@ CREATE OR REPLACE FUNCTION ST_MinimumBoundingCircle(geometry)
  LANGUAGE 'sql' IMMUTABLE STRICT;
  
 -- ST_ConcaveHull and Helper functions starts here --
+-----------------------------------------------------------------------
+-- Contributed by Regina Obe and Leo Hsu
+-- Availability: 2.0.0
+-----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION _ST_ConcaveHull(param_inputgeom geometry)
   RETURNS geometry AS
 $$
@@ -6579,7 +6583,6 @@ $$
 		-- find the point on the original geom that is closest to each point of the convex hull and make a new linestring out of it.
 		cavering := ST_Collect(
 			ARRAY(
-
 				SELECT 
 					ST_ClosestPoint(param_inputgeom, pt ) As the_geom
 					FROM (
@@ -6589,9 +6592,7 @@ $$
 						) As pt
 				
 				)
-			)
-		; 
-
+			); 
 		var_resultgeom := ST_MakePolygon(ST_MakeLine(geom)) 
 			FROM ST_Dump(cavering) As foo;
 		
