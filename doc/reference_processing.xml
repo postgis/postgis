@@ -722,7 +722,7 @@ FROM generate_series(0,90,10) As x
 		geometry that encloses all geometries within the set.</para>
 
 		<para>One can think of the convex hull as the geometry you get by wrapping an elastic
-			band around a set of geometries.  This is different from a concave hull (not currently supported)
+			band around a set of geometries.  This is different from a concave hull 
 				which is analogous to shrink-wrapping your geometries.</para>
 
 			<para>It is usually used with MULTI and Geometry Collections.
