@@ -857,7 +857,7 @@ int projFileCreate(SHPDUMPERSTATE *state)
 	}
 	PQclear(res);
 	free(query);
-	return 1;
+	return SHPDUMPEROK;
 }
 
 
