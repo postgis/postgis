@@ -163,12 +163,12 @@ CREATE OR REPLACE VIEW geography_columns AS
 		pg_attribute a, 
 		pg_type t, 
 		pg_namespace n
-	WHERE c.relkind IN('r','v')
-	AND t.typname = 'geography'
-	AND a.attisdropped = false
-	AND a.atttypid = t.oid
-	AND a.attrelid = c.oid
-	AND c.relnamespace = n.oid;
+	WHERE t.typname = 'geography'
+        AND pg_table_is_visible(c.oid)
+        AND a.attisdropped = false
+        AND a.atttypid = t.oid
+        AND a.attrelid = c.oid
+        AND c.relnamespace = n.oid;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography(geometry)
