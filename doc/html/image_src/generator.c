@@ -332,7 +332,7 @@ int main( int argc, const char* argv[] )
 {
 	FILE *pfile;
 	LWGEOM *lwgeom;
-	char line [4096];
+	char line [2048];
 	char *filename;
 	int layerCount;
 	int styleNumber;
@@ -363,7 +363,7 @@ int main( int argc, const char* argv[] )
 	while ( fgets ( line, sizeof line, pfile ) != NULL && !isspace(*line) )
 	{
 
-		char output[4096];
+		char output[2048];
 		char *ptr = output;
 		char *styleName;
 		int useDefaultStyle;
