@@ -132,29 +132,18 @@ ptarray_flip_coordinates(POINTARRAY *pa)
 int
 ptarray_compute_box2d_p(const POINTARRAY *pa, BOX2DFLOAT4 *result)
 {
-	int t;
-	POINT2D pt;
-	BOX3D box;
+	BOX3D box3d;
+
+	/* Note: we perform the calculation using BOX3D and then
+	   convert to BOX2DFLOAT4 to prevent cumulative floating
+	   point rounding errors when calculating using BOX2DFLOAT4
+	   directly. */
 
 	if (pa->npoints == 0) return 0;
 
-	getPoint2d_p(pa, 0, &pt);
+	ptarray_compute_box3d_p(pa, &box3d);
 
-	box.xmin = pt.x;
-	box.xmax = pt.x;
-	box.ymin = pt.y;
-	box.ymax = pt.y;
-
-	for (t=1; t<pa->npoints; t++)
-	{
-		getPoint2d_p(pa, t, &pt);
-		if (pt.x < box.xmin) box.xmin = pt.x;
-		if (pt.y < box.ymin) box.ymin = pt.y;
-		if (pt.x > box.xmax) box.xmax = pt.x;
-		if (pt.y > box.ymax) box.ymax = pt.y;
-	}
-
-	box3d_to_box2df_p(&box, result);
+	box3d_to_box2df_p(&box3d, result);
 
 	return 1;
 }
@@ -166,29 +155,18 @@ ptarray_compute_box2d_p(const POINTARRAY *pa, BOX2DFLOAT4 *result)
 BOX2DFLOAT4 *
 ptarray_compute_box2d(const POINTARRAY *pa)
 {
-	int t;
-	POINT2D pt;
+	BOX3D box3d;
 	BOX2DFLOAT4 *result;
 
-	if (pa->npoints == 0) return NULL;
+	/* Note: we perform the calculation using BOX3D and then
+	   convert to BOX2DFLOAT4 to prevent cumulative floating
+	   point rounding errors when calculating using BOX2DFLOAT4
+	   directly. */
 
 	result = lwalloc(sizeof(BOX2DFLOAT4));
 
-	getPoint2d_p(pa, 0, &pt);
-
-	result->xmin = pt.x;
-	result->xmax = pt.x;
-	result->ymin = pt.y;
-	result->ymax = pt.y;
-
-	for (t=1; t<pa->npoints; t++)
-	{
-		getPoint2d_p(pa, t, &pt);
-		if (pt.x < result->xmin) result->xmin = pt.x;
-		if (pt.y < result->ymin) result->ymin = pt.y;
-		if (pt.x > result->xmax) result->xmax = pt.x;
-		if (pt.y > result->ymax) result->ymax = pt.y;
-	}
+	ptarray_compute_box3d_p(pa, &box3d);
+	box3d_to_box2df_p(&box3d, result);
 
 	return result;
 }
