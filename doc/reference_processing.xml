@@ -596,7 +596,7 @@ SELECT
 								<imagedata fileref="images/st_concavehull02.png" />
 							  </imageobject>
 							  <caption><para>-- geometries overlaid with concavehull 
-							  	at target 90% shrink</para></caption>
+							  	at target 90% of convex hull area</para></caption>
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
@@ -618,7 +618,7 @@ SELECT
 								<imagedata fileref="images/st_concavehull04.png" />
 							  </imageobject>
 							  <caption><para>Set of points forming S overlaid with convex hull. This is a scaled/clipped version
-							  	adapted from <ulink href="http://www.spatialdbadvisor.com/oracle_spatial_tips_tricks/172/concave-hull-geometries-in-oracle-11gr2">Simon Greener Oracle ConcaveHull example</ulink>
+							  	adapted from <ulink url="http://www.spatialdbadvisor.com/oracle_spatial_tips_tricks/172/concave-hull-geometries-in-oracle-11gr2">Simon Greener's Oracle ConcaveHull example</ulink>
 							  	so we could fit on our document grid.</para></caption>
 							</mediaobject>
 						  </informalfigure>
@@ -667,8 +667,7 @@ FROM s_shape;
 							  <imageobject>
 								<imagedata fileref="images/st_concavehull05.png" />
 							  </imageobject>
-							  <caption><para>ST_ConcaveHull of points overlaid
-							  with target 99% of convex hull</para></caption>
+							  <caption><para>ST_ConcaveHull of S points at target 99% of convex hull</para></caption>
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
@@ -683,8 +682,7 @@ SELECT ST_ConcaveHull(geom, 0.99)
 				  <imageobject>
 					<imagedata fileref="images/st_concavehull06.png" />
 				  </imageobject>
-				  <caption><para>geometries overlaid with concavehull 
-					at target 75% shrink</para></caption>
+				  <caption><para>Concave Hull of S points at target 75% convex hull area</para></caption>
 				</mediaobject>
 			  </informalfigure>
 	<programlisting>
