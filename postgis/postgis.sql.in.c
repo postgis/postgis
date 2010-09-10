@@ -6565,6 +6565,7 @@ $$
 	cavering GEOMETRY;
 	cavept geometry[];
 	seglength double precision;
+	var_tempgeom geometry;
 	i integer;
 	
 	BEGIN
@@ -6578,11 +6579,13 @@ $$
 
 		-- convert the hull perimeter to a linestring so we can manipulate individual points
 		vexring := CASE WHEN ST_GeometryType(vexhull) = 'ST_LineString' THEN vexhull ELSE ST_ExteriorRing(vexhull) END;
-		seglength := ST_Length(vexring)/greatest(ST_NPoints(vexring)*2,1000) ;
+		seglength := ST_Length(vexring)/least(ST_NPoints(vexring)*2,1000) ;
+
 		vexring := ST_Segmentize(vexring, seglength);
 		-- find the point on the original geom that is closest to each point of the convex hull and make a new linestring out of it.
 		cavering := ST_Collect(
 			ARRAY(
+
 				SELECT 
 					ST_ClosestPoint(param_inputgeom, pt ) As the_geom
 					FROM (
@@ -6592,25 +6595,30 @@ $$
 						) As pt
 				
 				)
-			); 
+			)
+		; 
+
 		var_resultgeom := ST_MakePolygon(ST_MakeLine(geom)) 
 			FROM ST_Dump(cavering) As foo;
 		
 		IF NOT ST_IsValid(var_resultgeom) THEN
-            --RAISE NOTICE '_ST_Concavehull invalid %', ST_AsText(var_resultgeom);
-            var_resultgeom := ST_Buffer(var_resultgeom,ST_Length(cavering)/1000, 'quad_segs=4'); -- try to make valid
-             --if still invalid or doens't  contain the geometry just return convex hull
-            IF NOT ST_IsValid(var_resultgeom) or ST_GeometryType(var_resultgeom) <> 'ST_Polygon' THEN
-                var_resultgeom := ST_ConvexHull(param_inputgeom);
-            ELSIF ST_GeometryType(param_inputgeom) ILIKE '%Geometry%' THEN
-                IF EXISTS(SELECT geom FROM ST_Dump(param_inputgeom) WHERE NOT ST_Contains(var_resultgeom,geom) ) THEN 
-            --we have to explode inputgeom since geos doesn't support geometrycollections for containment check
-                   var_resultgeom := ST_ConvexHull(param_inputgeom);
-                END IF;
-            ELSIF NOT ST_Contains(var_resultgeom, param_inputgeom) THEN
-                var_resultgeom := ST_ConvexHull(param_inputgeom);
-            END IF;
-        END IF;
+		    --RAISE NOTICE '_ST_Concavehull invalid %', ST_AsText(var_resultgeom);
+		    var_tempgeom := ST_BuildArea(var_resultgeom); -- try to make valid
+		    IF NOT ST_IsValid(var_tempgeom) THEN
+				var_resultgeom := ST_Buffer(var_resultgeom,ST_Length(cavering)/1000, 'quad_segs=3'); -- try to make valid
+		    END IF;
+		     --if still invalid or doens't  contain the geometry just return convex hull
+		    IF NOT ST_IsValid(var_resultgeom) or ST_GeometryType(var_resultgeom) <> 'ST_Polygon' THEN
+				var_resultgeom := ST_ConvexHull(param_inputgeom);
+		    ELSIF ST_GeometryType(param_inputgeom) ILIKE '%Geometry%' THEN
+				IF EXISTS(SELECT geom FROM ST_Dump(param_inputgeom) WHERE NOT ST_Contains(var_resultgeom,geom) ) THEN 
+				--we have to explode inputgeom since geos doesn't support geometrycollections for containment check
+				   var_resultgeom := ST_ConvexHull(param_inputgeom);
+				END IF;
+			ELSIF NOT ST_Contains(var_resultgeom, param_inputgeom) THEN
+				var_resultgeom := ST_ConvexHull(param_inputgeom);
+			END IF;
+		END IF;
 		RETURN var_resultgeom;
 	
 	END;
@@ -6621,7 +6629,7 @@ $$
 CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex float, param_allow_holes boolean) RETURNS geometry AS
 $$
 	DECLARE
-        var_convhull geometry := ST_ConvexHull(param_geom);
+		var_convhull geometry := ST_ConvexHull(param_geom);
 		var_initarea float := ST_Area(var_convhull);
 		var_newarea float := var_initarea;
 		var_div integer := 6; /** this is the 1/var_div is the percent increase we will allow per triangle to keep speed decent **/
@@ -6631,24 +6639,79 @@ $$
 		var_geoms geometry[4]; /** We will cut the current geometry into 4 triangular quadrants along the centroid/extent **/
 		var_enline geometry;
 		var_resultgeom geometry;
+		var_atempgeoms geometry[];
 		var_buf float := 1; /**tolerance so that geometries that are right on the extent don't get accidentally clipped off **/
 	BEGIN
 		-- We start with convex hull as our base
-		var_resultgeom := ST_ConvexHull(param_geom);
+		var_resultgeom := var_convhull;
 		
-	
+		IF param_pctconvex = 1 THEN
+			return var_resultgeom;
+		ELSIF ST_GeometryType(param_geom) = 'ST_Polygon' THEN -- it is as concave as it is going to get
+			IF param_allow_holes THEN -- leave the holes
+				RETURN param_geom;
+			ELSE -- remove the holes
+				var_resultgeom := ST_MakePolygon(ST_ExteriorRing(param_geom));
+				RETURN var_resultgeom;
+			END IF;
+		END IF;
 		IF ST_Dimension(var_resultgeom) > 1 AND param_pctconvex BETWEEN 0 and 0.98 THEN
-
-            -- get linestring that forms envelope of geometry
+		-- get linestring that forms envelope of geometry
 			var_enline := ST_Boundary(ST_Envelope(param_geom));
-			var_buf := least(ST_Length(var_enline)/1000.0);
+			var_buf := ST_Length(var_enline)/1000.0;
+			IF ST_GeometryType(param_geom) = 'ST_MultiPoint' AND ST_NumGeometries(param_geom) BETWEEN 20 and 500 THEN
+			-- we make polygons out of points since they are easier to cave in. 
+			-- Note we limit to between 20 and 500 points because this process is slow and gets quadratically slow
+				var_buf := sqrt(ST_Area(var_convhull)*0.8/(ST_NumGeometries(param_geom)*ST_NumGeometries(param_geom)));
+				var_atempgeoms := ARRAY(SELECT geom FROM ST_DumpPoints(param_geom));
+				
+				var_tempgeom := ST_Union(ARRAY(SELECT geom
+						FROM (
+						-- fuse near neighbors together
+						SELECT DISTINCT ON (i) i,  ST_Distance(var_atempgeoms[i],var_atempgeoms[j]), ST_Buffer(ST_MakeLine(var_atempgeoms[i], var_atempgeoms[j]) , var_buf*5, 'quad_segs=3') As geom
+								FROM generate_series(1,array_upper(var_atempgeoms, 1)) As i
+									INNER JOIN generate_series(1,array_upper(var_atempgeoms, 1)) As j 
+										ON (
+								 NOT ST_Intersects(var_atempgeoms[i],var_atempgeoms[j])
+									AND ST_DWithin(var_atempgeoms[i],var_atempgeoms[j], var_buf*10)
+									)
+								UNION ALL
+						-- catch the ones with no near neighbors
+								SELECT i, 0, ST_Buffer(var_atempgeoms[i] , var_buf*10, 'quad_segs=3') As geom
+								FROM generate_series(1,array_upper(var_atempgeoms, 1)) As i
+									LEFT JOIN generate_series(ceiling(array_upper(var_atempgeoms,1)/2)::integer,array_upper(var_atempgeoms, 1)) As j 
+										ON (
+								 NOT ST_Intersects(var_atempgeoms[i],var_atempgeoms[j])
+									AND ST_DWithin(var_atempgeoms[i],var_atempgeoms[j], var_buf*10) 
+									)
+									WHERE j IS NULL
+								ORDER BY 1, 2
+							) As foo	) );
+				IF ST_IsValid(var_tempgeom) AND ST_GeometryType(var_tempgeom) = 'ST_Polygon' THEN
+					var_tempgeom := ST_Intersection(var_tempgeom, var_convhull);
+					IF param_allow_holes THEN
+						param_geom := var_tempgeom;
+					ELSE
+						param_geom := ST_MakePolygon(ST_ExteriorRing(var_tempgeom));
+					END IF;
+					param_geom := ST_Intersection(param_geom,var_convhull);
+					return param_geom;
+				END IF;
+			END IF;
+
+			IF ST_GeometryType(param_geom) = 'ST_Polygon' THEN
+				IF NOT param_allow_holes THEN
+					param_geom := ST_MakePolygon(ST_ExteriorRing(param_geom));
+				END IF;
+				return param_geom;
+			END IF;
             var_cent := ST_Centroid(param_geom);
             IF (ST_XMax(var_enline) - ST_XMin(var_enline) ) > var_buf AND (ST_YMax(var_enline) - ST_YMin(var_enline) ) > var_buf THEN
-                    IF ST_Dwithin(ST_Centroid(var_convhull) , ST_Centroid(ST_Envelope(param_geom)), 0.00001) THEN
+                    IF ST_Dwithin(ST_Centroid(var_convhull) , ST_Centroid(ST_Envelope(param_geom)), var_buf/2) THEN
                 -- If the geometric dimension is > 1 and the object is symettric (cutting at centroid will not work -- offset a bit)
                         var_cent := ST_Translate(var_cent, (ST_XMax(var_enline) - ST_XMin(var_enline))/1000,  (ST_YMAX(var_enline) - ST_YMin(var_enline))/1000);
                     ELSE
-                        -- uses closest point on geometry to centroid
+                        -- uses closest point on geometry to centroid. I can't explain why we are doing this
                         var_cent := ST_ClosestPoint(param_geom,var_cent);
                     END IF;
                     IF ST_DWithin(var_cent, var_enline,var_buf) THEN
@@ -6661,17 +6724,16 @@ $$
                        IF ST_IsValid(var_geoms[i]) THEN 
                             
                        ELSE
-                            --RAISE NOTICE 'Current trianlgle i: %, %', i, ST_AsText(var_geoms[i]);
-                            var_geoms[i] := ST_MakePolygon(ST_MakeLine(ARRAY[ST_PointN(var_enline,i), ST_PointN(var_enline,i+1), var_cent, ST_PointN(var_enline,i)]));
+                            var_geoms[i] := ST_BuildArea(ST_MakeLine(ARRAY[ST_PointN(var_enline,i), ST_PointN(var_enline,i+1), var_cent, ST_PointN(var_enline,i)]));
                        END IF; 
                     END LOOP;
                     var_tempgeom := ST_Union(ARRAY[ST_ConvexHull(var_geoms[1]), ST_ConvexHull(var_geoms[2]) , ST_ConvexHull(var_geoms[3]), ST_ConvexHull(var_geoms[4])]); 
                     --RAISE NOTICE 'Curr vex % ', ST_AsText(var_tempgeom);
-                    IF ST_Area(var_tempgeom) <= var_newarea AND ST_IsValid(var_tempgeom) AND ST_GeometryType(var_tempgeom) ILIKE '%Polygon'  THEN
-                        --var_buf := sqrt(var_newarea)/100;
-                        var_tempgeom := ST_Buffer(ST_ConcaveHull(var_geoms[1],least(param_pctconvex + param_pctconvex/var_div),true),var_buf, 'quad_segs=8');
+                    IF ST_Area(var_tempgeom) <= var_newarea AND ST_IsValid(var_tempgeom)  THEN --AND ST_GeometryType(var_tempgeom) ILIKE '%Polygon'
+                        
+                        var_tempgeom := ST_Buffer(ST_ConcaveHull(var_geoms[1],least(param_pctconvex + param_pctconvex/var_div),true),var_buf, 'quad_segs=2');
                         FOR i IN 1 .. 4 LOOP
-                            var_geoms[i] := ST_Buffer(ST_ConcaveHull(var_geoms[i],least(param_pctconvex + param_pctconvex/var_div),true), var_buf, 'quad_segs=8');
+                            var_geoms[i] := ST_Buffer(ST_ConcaveHull(var_geoms[i],least(param_pctconvex + param_pctconvex/var_div),true), var_buf, 'quad_segs=2');
                             IF ST_IsValid(var_geoms[i]) Then
                                 var_tempgeom := ST_Union(var_tempgeom, var_geoms[i]);
                             ELSE
@@ -6691,15 +6753,15 @@ $$
 
                     IF ST_NumGeometries(var_resultgeom) > 1  THEN
                         var_tempgeom := _ST_ConcaveHull(var_resultgeom);
-                        IF ST_IsValid(var_tempgeom) AND ST_GeometryType(var_tempgeom) ILIKE '%Polygon' THEN
+                        IF ST_IsValid(var_tempgeom) AND ST_GeometryType(var_tempgeom) ILIKE 'ST_Polygon' THEN
                             var_resultgeom := var_tempgeom;
                         ELSE
-                            var_resultgeom := ST_Buffer(var_tempgeom,var_buf);
+                            var_resultgeom := ST_Buffer(var_tempgeom,var_buf, 'quad_segs=2');
                         END IF;
                     END IF;
                     IF param_allow_holes = false THEN 
                     -- only keep exterior ring since we do not want holes
-                        var_resultgeom := ST_MakePolygon(ST_LineMerge(ST_ExteriorRing(var_resultgeom)));
+                        var_resultgeom := ST_MakePolygon(ST_ExteriorRing(var_resultgeom));
                     END IF;
                 ELSE
                     var_resultgeom := ST_Buffer(var_resultgeom,var_buf);
@@ -6709,8 +6771,7 @@ $$
                 -- dimensions are too small to cut
                 var_resultgeom := _ST_ConcaveHull(param_geom);
             END IF;
-            
-		RETURN var_resultgeom;
+            RETURN var_resultgeom;
 	END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE STRICT;
