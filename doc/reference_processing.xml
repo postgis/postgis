@@ -562,7 +562,7 @@ MULTILINESTRING((1 2,3 4),(3 4,4 5))
 <programlisting>
 --Get estimate of infected area based on point observations
 SELECT d.disease_type,
-	ST_ConcaveHull(ST_Collect(d.pnt_geom), 0.8) As geom
+	ST_ConcaveHull(ST_Collect(d.pnt_geom), 0.99) As geom
 	FROM disease_obs As d
 	GROUP BY d.disease_type;
 </programlisting>

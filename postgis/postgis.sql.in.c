@@ -6630,6 +6630,7 @@ CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex f
 $$
 	DECLARE
 		var_convhull geometry := ST_ConvexHull(param_geom);
+		var_param_geom geometry := param_geom;
 		var_initarea float := ST_Area(var_convhull);
 		var_newarea float := var_initarea;
 		var_div integer := 6; /** this is the 1/var_div is the percent increase we will allow per triangle to keep speed decent **/
@@ -6647,23 +6648,23 @@ $$
 		
 		IF param_pctconvex = 1 THEN
 			return var_resultgeom;
-		ELSIF ST_GeometryType(param_geom) = 'ST_Polygon' THEN -- it is as concave as it is going to get
+		ELSIF ST_GeometryType(var_param_geom) = 'ST_Polygon' THEN -- it is as concave as it is going to get
 			IF param_allow_holes THEN -- leave the holes
-				RETURN param_geom;
+				RETURN var_param_geom;
 			ELSE -- remove the holes
-				var_resultgeom := ST_MakePolygon(ST_ExteriorRing(param_geom));
+				var_resultgeom := ST_MakePolygon(ST_ExteriorRing(var_param_geom));
 				RETURN var_resultgeom;
 			END IF;
 		END IF;
 		IF ST_Dimension(var_resultgeom) > 1 AND param_pctconvex BETWEEN 0 and 0.98 THEN
 		-- get linestring that forms envelope of geometry
-			var_enline := ST_Boundary(ST_Envelope(param_geom));
+			var_enline := ST_Boundary(ST_Envelope(var_param_geom));
 			var_buf := ST_Length(var_enline)/1000.0;
-			IF ST_GeometryType(param_geom) = 'ST_MultiPoint' AND ST_NumGeometries(param_geom) BETWEEN 20 and 500 THEN
+			IF ST_GeometryType(var_param_geom) = 'ST_MultiPoint' AND ST_NumGeometries(var_param_geom) BETWEEN 20 and 500 THEN
 			-- we make polygons out of points since they are easier to cave in. 
 			-- Note we limit to between 20 and 500 points because this process is slow and gets quadratically slow
-				var_buf := sqrt(ST_Area(var_convhull)*0.8/(ST_NumGeometries(param_geom)*ST_NumGeometries(param_geom)));
-				var_atempgeoms := ARRAY(SELECT geom FROM ST_DumpPoints(param_geom));
+				var_buf := sqrt(ST_Area(var_convhull)*0.8/(ST_NumGeometries(var_param_geom)*ST_NumGeometries(var_param_geom)));
+				var_atempgeoms := ARRAY(SELECT geom FROM ST_DumpPoints(var_param_geom));
 				
 				var_tempgeom := ST_Union(ARRAY(SELECT geom
 						FROM (
@@ -6690,38 +6691,38 @@ $$
 				IF ST_IsValid(var_tempgeom) AND ST_GeometryType(var_tempgeom) = 'ST_Polygon' THEN
 					var_tempgeom := ST_Intersection(var_tempgeom, var_convhull);
 					IF param_allow_holes THEN
-						param_geom := var_tempgeom;
+						var_param_geom := var_tempgeom;
 					ELSE
-						param_geom := ST_MakePolygon(ST_ExteriorRing(var_tempgeom));
+						var_param_geom := ST_MakePolygon(ST_ExteriorRing(var_tempgeom));
 					END IF;
-					return param_geom;
+					return var_param_geom;
 				ELSIF ST_IsValid(var_tempgeom) THEN
-					param_geom := ST_Intersection(var_tempgeom, var_convhull);	
+					var_param_geom := ST_Intersection(var_tempgeom, var_convhull);	
 				END IF;
 			END IF;
 
-			IF ST_GeometryType(param_geom) = 'ST_Polygon' THEN
+			IF ST_GeometryType(var_param_geom) = 'ST_Polygon' THEN
 				IF NOT param_allow_holes THEN
-					param_geom := ST_MakePolygon(ST_ExteriorRing(param_geom));
+					var_param_geom := ST_MakePolygon(ST_ExteriorRing(var_param_geom));
 				END IF;
-				return param_geom;
+				return var_param_geom;
 			END IF;
-            var_cent := ST_Centroid(param_geom);
+            var_cent := ST_Centroid(var_param_geom);
             IF (ST_XMax(var_enline) - ST_XMin(var_enline) ) > var_buf AND (ST_YMax(var_enline) - ST_YMin(var_enline) ) > var_buf THEN
-                    IF ST_Dwithin(ST_Centroid(var_convhull) , ST_Centroid(ST_Envelope(param_geom)), var_buf/2) THEN
+                    IF ST_Dwithin(ST_Centroid(var_convhull) , ST_Centroid(ST_Envelope(var_param_geom)), var_buf/2) THEN
                 -- If the geometric dimension is > 1 and the object is symettric (cutting at centroid will not work -- offset a bit)
                         var_cent := ST_Translate(var_cent, (ST_XMax(var_enline) - ST_XMin(var_enline))/1000,  (ST_YMAX(var_enline) - ST_YMin(var_enline))/1000);
                     ELSE
                         -- uses closest point on geometry to centroid. I can't explain why we are doing this
-                        var_cent := ST_ClosestPoint(param_geom,var_cent);
+                        var_cent := ST_ClosestPoint(var_param_geom,var_cent);
                     END IF;
                     IF ST_DWithin(var_cent, var_enline,var_buf) THEN
-                        var_cent := ST_centroid(ST_Envelope(param_geom));
+                        var_cent := ST_centroid(ST_Envelope(var_param_geom));
                     END IF;
                     -- break envelope into 4 triangles about the centroid of the geometry and returned the clipped geometry in each quadrant
                     FOR i in 1 .. 4 LOOP
                        var_geoms[i] := ST_MakePolygon(ST_MakeLine(ARRAY[ST_PointN(var_enline,i), ST_PointN(var_enline,i+1), var_cent, ST_PointN(var_enline,i)]));
-                       var_geoms[i] := ST_Intersection(param_geom, ST_Buffer(var_geoms[i],var_buf));
+                       var_geoms[i] := ST_Intersection(var_param_geom, ST_Buffer(var_geoms[i],var_buf));
                        IF ST_IsValid(var_geoms[i]) THEN 
                             
                        ELSE
@@ -6767,10 +6768,10 @@ $$
                 ELSE
                     var_resultgeom := ST_Buffer(var_resultgeom,var_buf);
                 END IF;
-                var_resultgeom := ST_Intersection(var_resultgeom, ST_ConvexHull(param_geom));
+                var_resultgeom := ST_Intersection(var_resultgeom, ST_ConvexHull(var_param_geom));
             ELSE
                 -- dimensions are too small to cut
-                var_resultgeom := _ST_ConcaveHull(param_geom);
+                var_resultgeom := _ST_ConcaveHull(var_param_geom);
             END IF;
             RETURN var_resultgeom;
 	END;
