@@ -6694,8 +6694,9 @@ $$
 					ELSE
 						param_geom := ST_MakePolygon(ST_ExteriorRing(var_tempgeom));
 					END IF;
-					param_geom := ST_Intersection(param_geom,var_convhull);
 					return param_geom;
+				ELSIF ST_IsValid(var_tempgeom) THEN
+					param_geom := ST_Intersection(var_tempgeom, var_convhull);	
 				END IF;
 			END IF;
 
