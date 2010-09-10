@@ -160,18 +160,18 @@ tgeom_add_face_edge(TGEOM *tgeom, int face_id, POINT4D *s, POINT4D *e)
 		/* alloc edges array */
 		if (tgeom->maxedges == 0)
 		{
-			tgeom->edges = lwalloc(sizeof(TEDGE) * 4);
+			tgeom->edges = (TEDGE**) lwalloc(sizeof(TEDGE*) * 4);
 			tgeom->maxedges = 4;
 		}
 		if (tgeom->maxedges >= (tgeom->nedges + 1))
 		{
-			tgeom->edges = lwrealloc(tgeom->edges,
-			                         sizeof(TEDGE) * tgeom->maxedges * 2);
+			tgeom->edges = (TEDGE **) lwrealloc(tgeom->edges,
+			                         sizeof(TEDGE*) * tgeom->maxedges * 2);
 			tgeom->maxedges *= 2;
 		}
 
 		edge_id = ++tgeom->nedges; /* edge_id is 1 based */
-		tgeom->edges[edge_id] = lwalloc(sizeof(TEDGE*));
+		tgeom->edges[edge_id] = (TEDGE*) lwalloc(sizeof(TEDGE));
 		tgeom->edges[edge_id]->s = lwalloc(sizeof(POINT4D));
 		tgeom->edges[edge_id]->e = lwalloc(sizeof(POINT4D));
 		memcpy(tgeom->edges[edge_id]->s, s, sizeof(POINT4D));
@@ -185,13 +185,13 @@ tgeom_add_face_edge(TGEOM *tgeom, int face_id, POINT4D *s, POINT4D *e)
 	nedges = tgeom->faces[face_id]->nedges;
 	if (tgeom->faces[face_id]->maxedges == 0)
 	{
-		tgeom->faces[face_id]->edges = lwalloc(sizeof(TEDGE*) * 4);
+		tgeom->faces[face_id]->edges = (int *) lwalloc(sizeof(int) * 4);
 		tgeom->faces[face_id]->maxedges = 4;
 	}
 	if (tgeom->faces[face_id]->maxedges == nedges)
 	{
-		tgeom->faces[face_id]->edges = lwrealloc(tgeom->faces[face_id]->edges,
-		                               sizeof(TEDGE*) * tgeom->faces[face_id]->maxedges * 2);
+		tgeom->faces[face_id]->edges = (int *) lwrealloc(tgeom->faces[face_id]->edges,
+		                               sizeof(int) * tgeom->faces[face_id]->maxedges * 2);
 		tgeom->faces[face_id]->maxedges *= 2;
 	}
 
