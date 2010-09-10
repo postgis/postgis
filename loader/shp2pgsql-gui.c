@@ -196,9 +196,13 @@ pgui_set_config_from_options_ui()
 	else
 		config->createindex = 0;
 
-	/* Read the .shp file, don't ignore it */
+	/* Don't read the .shp file, just the .dbf */
 	if ( dbfonly )
+	{
 		config->readshape = 0;
+		/* There will be no spatial column so don't create a spatial index */
+		config->createindex = 0; 
+	}
 	else
 		config->readshape = 1;
 
