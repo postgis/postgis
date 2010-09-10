@@ -75,7 +75,7 @@ Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS);
 Datum LWGEOM_isclosed(PG_FUNCTION_ARGS);
 
 /* internal */
-static int32 lwgeom_numpoints_recursive_linestring(const uchar *serialized);
+static int32 lwgeom_numpoints_linestring_recursive(const uchar *serialized);
 static int32 lwgeom_dimension_recursive(const uchar *serialized);
 
 /*------------------------------------------------------------------*/
