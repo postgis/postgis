@@ -13,10 +13,10 @@ POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
 POSTGIS_MICRO_VERSION=@POSTGIS_MICRO_VERSION@
 
-XSLTPROC = @XSLTPROC@
-XSLBASE = @XSLBASE@
+XSLTPROC=@XSLTPROC@
+XSLBASE=@XSLBASE@
 
-XSLTPROC_COMMONOPTS = \
+XSLTPROC_COMMONOPTS= \
 	--param section.autolabel 1 \
 	--param section.label.includes.component.label 1 \
 	--param chunk.section.depth 0 \
@@ -28,17 +28,17 @@ XSLTPROC_COMMONOPTS = \
 	--param use.id.as.filename 1 \
 	--param chunk.quietly 1
 
-XSLTPROC_HTMLOPTS = \
+XSLTPROC_HTMLOPTS= \
 	--stringparam html.stylesheet style.css \
 
 HTML_DOCBOOK_XSL=$(XSLBASE)/html/docbook.xsl
 CHUNK_HTML_DOCBOOK_XSL=$(XSLBASE)/html/chunk.xsl
 
 # DBLatex's dblatex script for PDF generation from DocBook
-DBLATEX = @DBLATEX@
+DBLATEX=@DBLATEX@
 
 # Imagemagick's convert utility program for generated images used in the documentation
-IMAGEMAGICK = @IMAGEMAGICK@
+IMAGEMAGICK=@IMAGEMAGICK@
 
 # Directories for postgresql subdirectories
 PGSQL_DOCDIR=@PGSQL_DOCDIR@
@@ -125,7 +125,7 @@ maintainer-clean: clean
 comments: postgis_comments.sql
 
 comments-install: comments
-	cp postgis_comments.sql $(PGSQL_SHAREDIR)/contrib/postgis_comments.sql
+	make -f Makefile.comments install
 
 comments-uninstall:
 	rm -f $(PGSQL_SHAREDIR)/contrib/postgis_comments.sql
