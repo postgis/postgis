@@ -688,7 +688,7 @@ SELECT ST_ConcaveHull(geom, 0.99)
 				</mediaobject>
 			  </informalfigure>
 	<programlisting>
-	-- geometries overlaid with concavehull 
+	-- Concave Hull S shape points
 	-- at target 75% of convexhull
 	SELECT ST_ConcaveHull(geom, 0.75)
 	FROM s_shape;
