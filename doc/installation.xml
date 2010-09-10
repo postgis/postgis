@@ -40,8 +40,9 @@ psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
 	<itemizedlist>
 	  <listitem>
 		<para>
-		  PostgreSQL 8.3 or higher. A complete installation of PostgreSQL
-		  (including server headers) is required. PostgreSQL is available from
+		  PostgreSQL &min_postgres_version; or higher. A complete installation
+		  of PostgreSQL (including server headers) is required. PostgreSQL
+		  is available from
 		  <ulink url="http://www.postgresql.org">
 			http://www.postgresql.org
 		  </ulink>
@@ -211,8 +212,8 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 	  The PostGIS module is an extension to the PostgreSQL backend server. As
 	  such, PostGIS &last_release_version; <emphasis>requires</emphasis> full
 	  PostgreSQL server headers access in order to compile. It can be built
-	  against PostgreSQL versions 8.3 or higher. Earlier versions of
-	  PostgreSQL are <emphasis>not</emphasis> supported.
+	  against PostgreSQL versions &min_postgres_version; or higher. Earlier
+	  versions of PostgreSQL are <emphasis>not</emphasis> supported.
 	</para>
 
 	<para>
@@ -808,12 +809,13 @@ newdb=&gt; \i spatial_ref_sys.sql</programlisting>
 	<orderedlist>
 	  <listitem>
 		<para>
-		  Check that you you have installed PostgreSQL 8.1 or newer, and that
-		  you are compiling against the same version of the PostgreSQL source as
-		  the version of PostgreSQL that is running. Mix-ups can occur when your
-		  (Linux) distribution has already installed PostgreSQL, or you have
-		  otherwise installed PostgreSQL before and forgotten about it. PostGIS
-		  will only work with PostgreSQL 8.1 or newer, and strange, unexpected
+		  Check that you you have installed PostgreSQL &min_postgres_version;
+		  or newer, and that you are compiling against the same version of the
+		  PostgreSQL source as the version of PostgreSQL that is running.
+		  Mix-ups can occur when your (Linux) distribution has already
+		  installed PostgreSQL, or you have otherwise installed PostgreSQL
+		  before and forgotten about it. PostGIS will only work with PostgreSQL
+		  &min_postgres_version; or newer, and strange, unexpected
 		  error messages will result if you use an older version. To check the
 		  version of PostgreSQL which is running, connect to the database using
 		  psql and run this query:
