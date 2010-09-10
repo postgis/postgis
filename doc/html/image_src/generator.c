@@ -332,7 +332,7 @@ int main( int argc, const char* argv[] )
 {
 	FILE *pfile;
 	LWGEOM *lwgeom;
-	char line [2048];
+	char line [3072];
 	char *filename;
 	int layerCount;
 	int styleNumber;
