@@ -1,0 +1,39 @@
+# **********************************************************************
+# * $Id$
+# *
+# * PostGIS - Spatial Types for PostgreSQL
+# * http://postgis.refractions.net
+# * Copyright 2010 Mark Cave-Ayland
+# *
+# * This is free software; you can redistribute and/or modify it under
+# * the terms of the GNU General Public Licence. See the COPYING file.
+# *
+# **********************************************************************
+
+# Separate PGXS-enabled Makefile for documentation installation (it is
+# not possible to merge into the main Makefile as has been done for
+# the shapefile loader)
+
+MODULE_doc=postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
+MODULEDIR=contrib/$(MODULE_doc)
+
+# Files to be copied to the contrib/ directory
+DATA_built=postgis_comments.sql
+
+# PGXS information
+PG_CONFIG = @PGCONFIG@ 
+PGXS := @PGXS@
+include $(PGXS)
+
+# PGXS override feature. The ability to allow PostGIS to install itself
+# in a versioned directory is only available in PostgreSQL >= 8.5. To
+# do this by default on older PostgreSQL versions, we need to override
+# the existing PGXS targets.
+#
+# Once PostgreSQL 8.5 becomes the minimum supported version, this entire
+# section and its associated Makefile.pgxs should be removed.
+PGXSOVERRIDE = @PGXSOVERRIDE@
+ifeq ($(PGXSOVERRIDE),1)
+	include ../postgis/Makefile.pgxs
+endif
+
