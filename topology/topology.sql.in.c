@@ -519,7 +519,7 @@ AS '
 DECLARE
 	toponame alias for $1;
 	schema alias for $2;
-	table alias for $3;
+	tbl alias for $3;
 	col alias for $4;
 	ltype alias for $5;
 	child alias for $6;
@@ -572,7 +572,7 @@ BEGIN
 			|| topoid || '',''
 			|| layer_id || '','' 
 			|| quote_literal(schema) || '',''
-			|| quote_literal(table) || '',''
+			|| quote_literal(tbl) || '',''
 			|| quote_literal(col) || '',''
 			|| intltype || '');'';
 	ELSE
@@ -591,7 +591,7 @@ BEGIN
 			|| layer_id || '','' || level || '',''
 			|| child || '',''
 			|| quote_literal(schema) || '',''
-			|| quote_literal(table) || '',''
+			|| quote_literal(tbl) || '',''
 			|| quote_literal(col) || '',''
 			|| intltype || '');'';
 	END IF;
@@ -607,7 +607,7 @@ BEGIN
 	-- Add new TopoGeometry column in schema.table
 	--
 	EXECUTE ''ALTER TABLE '' || quote_ident(schema)
-		|| ''.'' || quote_ident(table) 
+		|| ''.'' || quote_ident(tbl) 
 		|| '' ADD COLUMN '' || quote_ident(col)
 		|| '' topology.TopoGeometry;'';
 
@@ -615,7 +615,7 @@ BEGIN
 	-- Add constraints on TopoGeom column
 	--
 	EXECUTE ''ALTER TABLE '' || quote_ident(schema)
-		|| ''.'' || quote_ident(table) 
+		|| ''.'' || quote_ident(tbl) 
 		|| '' ADD CONSTRAINT check_topogeom CHECK (''
 		|| ''topology_id('' || quote_ident(col) || '') = '' || topoid
 		|| '' AND ''
@@ -636,7 +636,7 @@ BEGIN
 		|| '' WHERE fcat.relname = ''''pg_class'''' ''
 		|| '' AND fnsp.nspname = '' || quote_literal(schema)
 		|| '' AND fobj.relnamespace = fnsp.oid ''
-		|| '' AND fobj.relname = '' || quote_literal(table)
+		|| '' AND fobj.relname = '' || quote_literal(tbl)
 		|| '' AND fsub.attrelid = fobj.oid ''
 		|| '' AND fsub.attname = '' || quote_literal(col)
 		|| '' AND tcat.relname = ''''pg_namespace'''' ''
@@ -663,7 +663,7 @@ BEGIN
 		|| '' WHERE fcat.relname = ''''pg_class'''' ''
 		|| '' AND fnsp.nspname = '' || quote_literal(schema)
 		|| '' AND fobj.relnamespace = fnsp.oid ''
-		|| '' AND fobj.relname = '' || quote_literal(table)
+		|| '' AND fobj.relname = '' || quote_literal(tbl)
 		|| '' AND fsub.attrelid = fobj.oid ''
 		|| '' AND fsub.attname = '' || quote_literal(col)
 		|| '' AND scat.relname = ''''pg_class'''' ''
@@ -703,7 +703,7 @@ CREATEFUNCTION topology.DropTopoGeometryColumn(varchar, varchar, varchar)
 AS '
 DECLARE
 	schema alias for $1;
-	table alias for $2;
+	tbl alias for $2;
 	col alias for $3;
 	rec RECORD;
 	lyrinfo RECORD;
@@ -716,7 +716,7 @@ BEGIN
 	FOR rec IN EXECUTE ''SELECT t.name as toponame, l.* FROM ''
 		|| ''topology.topology t, topology.layer l ''
 		|| '' WHERE l.schema_name = '' || quote_literal(schema)
-		|| '' AND l.table_name = '' || quote_literal(table)
+		|| '' AND l.table_name = '' || quote_literal(tbl)
 		|| '' AND l.feature_column = '' || quote_literal(col)
 	LOOP
 		ok = true;
@@ -726,7 +726,7 @@ BEGIN
 	-- Layer not found
 	IF NOT ok THEN
 		RAISE EXCEPTION ''No layer registered on %.%.%'',
-			schema,table,col;
+			schema,tbl,col;
 	END IF;
 		
 	-- Clean up the topology schema
@@ -749,7 +749,7 @@ BEGIN
 	FOR rec IN SELECT * FROM pg_namespace n, pg_class c, pg_attribute a
 		WHERE text(n.nspname) = schema
 		AND c.relnamespace = n.oid
-		AND text(c.relname) = table
+		AND text(c.relname) = tbl
 		AND a.attrelid = c.oid
 		AND text(a.attname) = col
 	LOOP
@@ -762,7 +762,7 @@ BEGIN
 		-- Set feature column to NULL to bypass referential integrity
 		-- checks
 		EXECUTE ''UPDATE '' || quote_ident(schema) || ''.''
-			|| quote_ident(table)
+			|| quote_ident(tbl)
 			|| '' SET '' || quote_ident(col)
 			|| '' = NULL'';
 	END IF;
@@ -775,13 +775,13 @@ BEGIN
 	IF ok THEN
 		-- Drop the layer column
 		EXECUTE ''ALTER TABLE '' || quote_ident(schema) || ''.''
-			|| quote_ident(table)
+			|| quote_ident(tbl)
 			|| '' DROP '' || quote_ident(col)
 			|| '' cascade'';
 	END IF;
 
 	result = ''Layer '' || lyrinfo.layer_id || '' (''
-		|| schema || ''.'' || table || ''.'' || col
+		|| schema || ''.'' || tbl || ''.'' || col
 		|| '') dropped'';
 
 	RETURN result;
