@@ -516,7 +516,7 @@ MULTILINESTRING((1 2,3 4),(3 4,4 5))
 		 <funcprototype>
 			<funcdef>geometry <function>ST_ConcaveHull</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>target_shrink_percent</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>target_percent</parameter></paramdef>
 			<paramdef><type>boolean </type> <parameter>allow_holes</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -668,19 +668,33 @@ SELECT ST_ConcaveHull(ST_Collect(geom), 0.99)
 	</programlisting>
 			</para>
 			</entry>
-			<entry><para><informalfigure>
+			<entry><para>
+				<informalfigure>
 				<mediaobject>
 				  <imageobject>
 					<imagedata fileref="images/st_concavehull07.png" />
 				  </imageobject>
-				  <caption><para>multilinestring with overlaid with Concave hull of linestrings at 99% target -- first hop</para></caption>
+				  <caption><para>multilinestring overlaid with Convex hull</para></caption>
+				</mediaobject>
+			  </informalfigure>
+				<informalfigure>
+				<mediaobject>
+				  <imageobject>
+					<imagedata fileref="images/st_concavehull08.png" />
+				  </imageobject>
+				  <caption><para>multilinestring with overlaid with Concave hull 
+				  of linestrings at 99% target -- first hop</para></caption>
 				</mediaobject>
 			  </informalfigure>
 	<programlisting>
-SELECT ST_ConcaveHull(ST_GeomFromText('MULTILINESTRING((106 164,30 112,74 70,82 112,130 94,130 62,122 40,156 32,162 76,172 88),
-(132 178,134 148,128 136,96 128,132 108,150 130,170 142,174 110,156 96,158 90,158 88),
-(22 64,66 28,94 38,94 68,114 76,112 30,132 10,168 18,178 34,186 52,184 74,190 100,
-190 122,182 148,178 170,176 184,156 164,146 178,132 186,92 182,56 158,36 150,62 150,76 128,88 118))'),0.99)
+SELECT ST_ConcaveHull(ST_GeomFromText('MULTILINESTRING((106 164,30 112,74 70,82 112,130 94,
+	130 62,122 40,156 32,162 76,172 88),
+(132 178,134 148,128 136,96 128,132 108,150 130,
+170 142,174 110,156 96,158 90,158 88),
+(22 64,66 28,94 38,94 68,114 76,112 30,
+132 10,168 18,178 34,186 52,184 74,190 100,
+190 122,182 148,178 170,176 184,156 164,146 178,
+132 186,92 182,56 158,36 150,62 150,76 128,88 118))'),0.99)
 	</programlisting>
 			</para>
 			</entry>
