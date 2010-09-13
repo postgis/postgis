@@ -22,7 +22,7 @@ Comments welcome --strk(2005-10-13);
 To enable topology support:
 
 	$ make
-	$ psql -f topology.sql
+	$ psql -f topology.sql <your_postgis_enabled_db>
 
 To uninstall:
 
