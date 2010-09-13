@@ -6611,7 +6611,7 @@ $$
 		    IF NOT ST_IsValid(var_resultgeom) or ST_GeometryType(var_resultgeom) <> 'ST_Polygon' THEN
 				var_resultgeom := ST_ConvexHull(param_inputgeom);
 		    ELSIF ST_GeometryType(param_inputgeom) ILIKE '%Geometry%' THEN
-				IF EXISTS(SELECT geom FROM ST_Dump(param_inputgeom) WHERE NOT ST_Contains(var_resultgeom,geom) ) THEN 
+				IF EXISTS(SELECT geom FROM ST_Dump(param_inputgeom) WHERE NOT ST_Covers(var_resultgeom,geom) ) THEN 
 				--we have to explode inputgeom since geos doesn't support geometrycollections for containment check
 				   var_resultgeom := ST_ConvexHull(param_inputgeom);
 				END IF;
@@ -6625,7 +6625,7 @@ $$
 $$
   LANGUAGE 'plpgsql' IMMUTABLE STRICT
   COST 100;
-
+  
 CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex float, param_allow_holes boolean) RETURNS geometry AS
 $$
 	DECLARE
@@ -6660,12 +6660,12 @@ $$
 		-- get linestring that forms envelope of geometry
 			var_enline := ST_Boundary(ST_Envelope(var_param_geom));
 			var_buf := ST_Length(var_enline)/1000.0;
-			IF ST_GeometryType(var_param_geom) = 'ST_MultiPoint' AND ST_NumGeometries(var_param_geom) BETWEEN 20 and 500 THEN
+			IF ST_GeometryType(var_param_geom) = 'ST_MultiPoint' AND ST_NumGeometries(var_param_geom) BETWEEN 4 and 200 THEN
 			-- we make polygons out of points since they are easier to cave in. 
-			-- Note we limit to between 20 and 500 points because this process is slow and gets quadratically slow
+			-- Note we limit to between 4 and 200 points because this process is slow and gets quadratically slow
 				var_buf := sqrt(ST_Area(var_convhull)*0.8/(ST_NumGeometries(var_param_geom)*ST_NumGeometries(var_param_geom)));
 				var_atempgeoms := ARRAY(SELECT geom FROM ST_DumpPoints(var_param_geom));
-				
+				-- 5 and 10 and just fudge factors
 				var_tempgeom := ST_Union(ARRAY(SELECT geom
 						FROM (
 						-- fuse near neighbors together
