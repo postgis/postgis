@@ -510,7 +510,7 @@ MULTILINESTRING((1 2,3 4),(3 4,4 5))
 		  <funcprototype>
 			<funcdef>geometry <function>ST_ConcaveHull</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>target_shrink_percent</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>target_percent</parameter></paramdef>
 		  </funcprototype>
 			
 		 <funcprototype>
@@ -525,10 +525,12 @@ MULTILINESTRING((1 2,3 4),(3 4,4 5))
 	  <refsection>
 		<title>Description</title>
 			<para>The concave hull of a geometry represents a possibly concave
-		geometry that encloses all geometries within the set. Defaults to false for allowing polygons with holes.</para>
+		geometry that encloses all geometries within the set. Defaults to false for allowing polygons with holes.
+		The result is never higher than a single polygon.</para>
 
-		<para>One can think of the concave hull as the geometry you get by vacuum sealing a set of geometries. A
-			target_shrink_percent of 1 will give you the same answer as the convex hull.  A target_shrink_percent 
+		<para>The target_percent is the target percent of area of convex hull the PostGIS solution will try to approach before giving up or exiting.
+		One can think of the concave hull as the geometry you get by vacuum sealing a set of geometries. The
+			targe_percent of 1 will give you the same answer as the convex hull.  A target_percent 
 				between 0 and 0.99 will give you something that should have a smaller area than the convex ull.  This is different from a convex hull which is more like wrapping a rubber band around the set of geometries.</para>
 
 			<para>It is usually used with MULTI and Geometry Collections.
@@ -536,7 +538,7 @@ MULTILINESTRING((1 2,3 4),(3 4,4 5))
 		with ST_Collect or ST_Union to get the concave hull of a set of points/linestring/polygons 
 		ST_ConcaveHull(ST_Collect(somepointfield), 0.80).</para>
 
-		<para>It is much much slower to compute than convex hull but encloses the geometry better and is also useful for 
+		<para>It is much slower to compute than convex hull but encloses the geometry better and is also useful for 
 			image recognition.</para>
 
 		<para>Performed by the GEOS module</para>
@@ -544,7 +546,7 @@ MULTILINESTRING((1 2,3 4),(3 4,4 5))
 			it may fail with invalid geometries.</para></note>
 			
 		<note><para>Note - The smaller you make the target percent, the longer it takes to process the concave hull and more likely to run into topological exceptions. Also the more 
-			floating points and number of points you acrue.  First try a 0.99 which does a first hop and usually gives much better than 99% of shrink since it almost always overshoots. Second hope of 0.98 it slower, others get slower usually quadratically.
+			floating points and number of points you acrue.  First try a 0.99 which does a first hop, is usually very fast, sometimes as fast as computing the convex hull, and usually gives much better than 99% of shrink since it almost always overshoots. Second hope of 0.98 it slower, others get slower usually quadratically.
 			To reduce precision and float points, use <xref linkend="ST_SimplifyPreserveTopology" /> or <xref linkend="ST_SnapToGrid" /> after ST_ConcaveHull. ST_SnapToGrid is a bit faster, but
 				could result in invalid geometries where as ST_SimplifyPreserveTopology almost always preserves the validity of the geometry.</para></note>
 			
@@ -552,7 +554,8 @@ MULTILINESTRING((1 2,3 4),(3 4,4 5))
 		url="http://www.bostongis.com/postgis_concavehull.snippet">http://www.bostongis.com/postgis_concavehull.snippet</ulink></para>
 
 		<para>Also check out Simon Greener's article on demonstrating ConcaveHull introduced in Oracle 11G R2. <ulink
-		url="http://www.spatialdbadvisor.com/oracle_spatial_tips_tricks/172/concave-hull-geometries-in-oracle-11gr2">http://www.spatialdbadvisor.com/oracle_spatial_tips_tricks/172/concave-hull-geometries-in-oracle-11gr2</ulink></para>
+		url="http://www.spatialdbadvisor.com/oracle_spatial_tips_tricks/172/concave-hull-geometries-in-oracle-11gr2">http://www.spatialdbadvisor.com/oracle_spatial_tips_tricks/172/concave-hull-geometries-in-oracle-11gr2</ulink>.
+		The solution we get at 0.75 target percent of convex hull is similar to the shape Simon gets with  Oracle SDO_CONCAVEHULL_BOUNDARY.</para>
 
 		<para>Availability: 2.0.0</para>
 	  </refsection>
@@ -617,49 +620,21 @@ SELECT
 							  <imageobject>
 								<imagedata fileref="images/st_concavehull04.png" />
 							  </imageobject>
-							  <caption><para>Set of points forming S overlaid with convex hull. This is a scaled/clipped version
-							  	adapted from <ulink url="http://www.spatialdbadvisor.com/oracle_spatial_tips_tricks/172/concave-hull-geometries-in-oracle-11gr2">Simon Greener's Oracle ConcaveHull example</ulink>
-							  	so we could fit on our document grid.</para></caption>
+							  <caption><para>L Shape points overlaid with convex hull</para></caption>
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
-SELECT ST_GeomFromText(
-'MULTIPOINT(0 60.75,4.5 44.25,9 138.75,9.75 33.75,9.75 127.5,12 61.5,
-	12 150,13.5 116.25,17.25 24.75,
-18 45.75,19.5 159.75,21 107.25,21 138.75,24 62.25,25.5 33,26.25 17.25,
-28.5 167.25,30 99.75,30 116.25,30 155.25,31.5 132,33 144,
-34.5 51.75,36 63,36.75 12,38.25 173.25,39.75 93.75,40.5 24.75,
-41.25 124.5,42 42.75,42.75 151.5,
-47.25 7.5,47.25 111,48.75 64.5,49.5 177,51 90,51.75 35.25,52.5 53.25,
-54 165,55.5 153.75,57 24.75,57.75 141,
-58.5 3.75,58.5 109.5,60 44.25,60 129.75,60.75 180,62.25 86.25,66.75 148.5,67.5 16.5,
-69 36.75,69 102,69 162,69.75 2.25,69.75 123.75,72 182.25,73.5 84,
-78 152.25,80.25 33,81 0.75,
-81 120,81 171,83.25 183.75,84.75 81.75,88.5 16.5,88.5 103.5,
-89.25 153.75,91.5 30.75,92.25 0,92.25 117.75,94.5 183.75,95.25 172.5,
-96 79.5,98.25 96,100.5 154.5,102.75 30,103.5 115.5,104.25 0,
-105.75 183.75,107.25 77.25,108.75 13.5,111.75 153.75,
-114 30.75,114 171,114.75 113.25,
-115.5 98.25,116.25 0,116.25 86.25,117 183.75,
-118.5 75,123 152.25,125.25 31.5,126 111.75,126.75 17.25,
-127.5 0.75,128.25 183,129 84.75,129 99,129.75 72.75,
-133.5 147.75,134.25 165,136.5 35.25,137.25 109.5,
-138.75 2.25,139.5 180.75,141 69,141.75 139.5,
-144 24,145.5 128.25,146.25 41.25,146.25 87.75,148.5 106.5,
-150 4.5,150.75 62.25,150.75 75.75,150.75 178.5,
-151.5 167.25,152.25 51,154.5 156,157.5 24,
-158.25 129,158.25 144,159.75 88.5,159.75 103.5,
-161.25 7.5,162 174.75,165.75 42,165.75 69.75,
-166.5 155.25,168 30,168 54.75,170.25 99,
-171 129.75,171.75 12,171.75 168.75,173.25 79.5,
-179.25 145.5,180 61.5,180.75 94.5,181.5 162,
-182.25 17.25,183.75 130.5,184.5 41.25,
-186.75 72,189 153,189.75 87,190.5 25.5,192 60.75,
-194.25 142.5,196.5 131.25,197.25 78,198 34.5)') As geom 
-	INTO TABLE s_shape;
+-- this produces a table of 42 points that form an L shape
+SELECT (ST_DumpPoints(ST_GeomFromText(
+'MULTIPOINT(14 14,34 14,54 14,74 14,94 14,114 14,134 14,
+150 14,154 14,154 6,134 6,114 6,94 6,74 6,54 6,34 6,
+14 6,10 6,8 6,7 7,6 8,6 10,6 30,6 50,6 70,6 90,6 110,6 130,
+6 150,6 170,6 190,6 194,14 194,14 174,14 154,14 134,14 114,
+14 94,14 74,14 54,14 34,14 14)'))).geom 
+	INTO TABLE l_shape;
 
-SELECT ST_ConvexHull(geom)
-FROM s_shape;
+SELECT ST_ConvexHull(ST_Collect(geom))
+FROM l_shape;
 				</programlisting>
 						  </para></entry>
 						<entry><para><informalfigure>
@@ -667,12 +642,12 @@ FROM s_shape;
 							  <imageobject>
 								<imagedata fileref="images/st_concavehull05.png" />
 							  </imageobject>
-							  <caption><para>ST_ConcaveHull of S points at target 99% of convex hull</para></caption>
+							  <caption><para>ST_ConcaveHull of L points at target 99% of convex hull</para></caption>
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
-SELECT ST_ConcaveHull(geom, 0.99)
-	FROM s_shape;
+SELECT ST_ConcaveHull(ST_Collect(geom), 0.99)
+	FROM l_shape;
 				</programlisting>
 						  </para></entry>
 		</row>
@@ -682,19 +657,14 @@ SELECT ST_ConcaveHull(geom, 0.99)
 				  <imageobject>
 					<imagedata fileref="images/st_concavehull06.png" />
 				  </imageobject>
-				  <caption><para>Concave Hull of S points at target 75% convex hull area</para></caption>
+				  <caption><para>Concave Hull of L points at target 80% convex hull area</para></caption>
 				</mediaobject>
 			  </informalfigure>
 	<programlisting>
-	-- Concave Hull S shape points
-	-- at target 75% of convexhull
-	SELECT ST_ConcaveHull(geom, 0.75)
-	FROM s_shape;
-	
-	-- to remove excess floating points 
-	-- use ST_SimplifyPreserveTopology
-SELECT ST_SimplifyPreserveTopology(ST_ConcaveHull(geom, 0.75),0.5)
-	FROM s_shape;
+	-- Concave Hull L shape points
+	-- at target 80% of convexhull
+	SELECT ST_ConcaveHull(ST_Collect(geom), 0.80)
+	FROM l_shape;
 	</programlisting>
 			</para>
 			</entry>
@@ -703,13 +673,14 @@ SELECT ST_SimplifyPreserveTopology(ST_ConcaveHull(geom, 0.75),0.5)
 				  <imageobject>
 					<imagedata fileref="images/st_concavehull07.png" />
 				  </imageobject>
-				  <caption><para>Concave hull of the S points with allowing holes</para></caption>
+				  <caption><para>multilinestring with overlaid with Concave hull of linestrings at 99% target -- first hop</para></caption>
 				</mediaobject>
 			  </informalfigure>
 	<programlisting>
-	-- Just the concave hull -- no overlaying of original geometries
-	SELECT ST_ConcaveHull(geom, 0.75,true)
-	FROM s_shape;
+SELECT ST_ConcaveHull(ST_GeomFromText('MULTILINESTRING((106 164,30 112,74 70,82 112,130 94,130 62,122 40,156 32,162 76,172 88),
+(132 178,134 148,128 136,96 128,132 108,150 130,170 142,174 110,156 96,158 90,158 88),
+(22 64,66 28,94 38,94 68,114 76,112 30,132 10,168 18,178 34,186 52,184 74,190 100,
+190 122,182 148,178 170,176 184,156 164,146 178,132 186,92 182,56 158,36 150,62 150,76 128,88 118))'),0.99)
 	</programlisting>
 			</para>
 			</entry>
