@@ -1,6 +1,193 @@
 <?xml version="1.0" encoding="UTF-8"?>
   <sect1 id="Spatial_Relationships_Measurements">
 	<title>Spatial Relationships and Measurements</title>
+	<refentry id="ST_3DDistance">
+	  <refnamediv>
+		<refname>ST_3DDistance</refname>
+
+		<refpurpose>For geometry type Returns the 3-dimensional cartesian minimum distance (based on spatial ref) between two geometries in
+		projected units.  Currently only supported for 3d points and linestrings.</refpurpose>
+	  </refnamediv>
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_Distance</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>For geometry type returns the 3-dimensional minimum cartesian distance between two geometries in
+		projected units (spatial ref units). Currently only supported for 3D points and linestrings.</para>
+
+		<para>&Z_support;</para>
+		<para>&sqlmm_compliant; SQL-MM ?</para>
+
+		<para>Availability: 2.0.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+-- Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (3D point and line compared 2D point and line)
+-- Note: currently no vertical datum support so Z is not transformed and assumed to be same units as final.
+SELECT ST_3DDistance(
+			ST_Transform(ST_GeomFromEWKT('SRID=4326;POINT(-72.1235 42.3521 4)'),2163),
+			ST_Transform(ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'),2163)
+		) As dist_3d,
+		ST_Distance(
+			ST_Transform(ST_GeomFromText('POINT(-72.1235 42.3521)',4326),2163),
+			ST_Transform(ST_GeomFromText('LINESTRING(-72.1260 42.45, -72.123 42.1546)', 4326),2163)
+		) As dist_2d;
+
+     dist_3d      |     dist_2d
+------------------+-----------------
+ 127.295059324629 | 126.66425605671
+</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Distance"/>,<xref linkend="ST_3DDWithin"/>,<xref linkend="ST_3DMaxDistance" />, <xref linkend="ST_Transform" /></para>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="ST_3DDWithin">
+	  <refnamediv>
+		<refname>ST_3DDWithin</refname>
+
+		<refpurpose>For 3d (z) geometry type Returns true if two geometries 3d distance is within number of units.  Currently only works
+			for points and linestrings.</refpurpose>
+	  </refnamediv>
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_3DDWithin</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+			
+			<paramdef><type>double precision </type>
+			<parameter>distance_of_srid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>For geometry type returns true if the 3d distance between two objects is within distance_of_srid specified 
+		projected units (spatial ref units). Currently only supported for 3D points and linestrings.</para>
+
+		<para>&Z_support;</para>
+		<para>&sqlmm_compliant; SQL-MM ?</para>
+
+		<para>Availability: 2.0.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+-- Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (3D point and line compared 2D point and line)
+-- Note: currently no vertical datum support so Z is not transformed and assumed to be same units as final.
+SELECT ST_3DDWithin(
+			ST_Transform(ST_GeomFromEWKT('SRID=4326;POINT(-72.1235 42.3521 4)'),2163),
+			ST_Transform(ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'),2163),
+			126.8
+		) As within_dist_3d,
+ST_DWithin(
+			ST_Transform(ST_GeomFromEWKT('SRID=4326;POINT(-72.1235 42.3521 4)'),2163),
+			ST_Transform(ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'),2163),
+			126.8
+		) As within_dist_2d;
+
+ within_dist_3d | within_dist_2d
+----------------+----------------
+ f              | t
+</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Distance"/>,<xref linkend="ST_DWithin"/>,<xref linkend="ST_3DMaxDistance" />, <xref linkend="ST_Transform" /></para>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="ST_3DMaxDistance">
+	  <refnamediv>
+		<refname>ST_3DMaxDistance</refname>
+
+		<refpurpose>For geometry type Returns the 3-dimensional cartesian maximum distance (based on spatial ref) between two geometries in
+		projected units.  Currently only supported for 3d points and linestrings.</refpurpose>
+	  </refnamediv>
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_Distance</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>For geometry type returns the 3-dimensional maximum cartesian distance between two geometries in
+		projected units (spatial ref units). Currently only supported for 3D points and linestrings.  (combo one geometry is a point and one is a linestring)</para>
+
+		<para>&Z_support;</para>
+		<para>&sqlmm_compliant; SQL-MM ?</para>
+
+		<para>Availability: 2.0.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+-- Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (3D point and line compared 2D point and line)
+-- Note: currently no vertical datum support so Z is not transformed and assumed to be same units as final.
+SELECT ST_3DMaxDistance(
+			ST_Transform(ST_GeomFromEWKT('SRID=4326;POINT(-72.1235 42.3521 10000)'),2163),
+			ST_Transform(ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'),2163)
+		) As dist_3d,
+		ST_MaxDistance(
+			ST_Transform(ST_GeomFromEWKT('SRID=4326;POINT(-72.1235 42.3521 10000)'),2163),
+			ST_Transform(ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'),2163)
+		) As dist_2d;
+
+     dist_3d      |     dist_2d
+------------------+------------------
+ 24383.7467488441 | 22247.8472107251
+</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Distance"/>,<xref linkend="ST_3DDWithin"/>,<xref linkend="ST_3DMaxDistance" />, <xref linkend="ST_Transform" /></para>
+	  </refsection>
+	</refentry>
 	<refentry id="ST_Area">
 		<refnamediv>
 		  <refname>ST_Area</refname>
@@ -1364,7 +1551,7 @@ FROM (SELECT
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_DWithin"/>, <xref linkend="ST_Distance_Sphere"/>, <xref linkend="ST_Distance_Spheroid"/>, <xref linkend="ST_MaxDistance" />, <xref linkend="ST_Transform" /></para>
+		<para><xref linkend="ST_3DDistance"/>,<xref linkend="ST_DWithin"/>, <xref linkend="ST_Distance_Sphere"/>, <xref linkend="ST_Distance_Spheroid"/>, <xref linkend="ST_MaxDistance" />, <xref linkend="ST_Transform" /></para>
 	  </refsection>
 	</refentry>
 
@@ -1762,6 +1949,8 @@ FROM
 		  From 1.3.4, ST_DWithin uses a more short-circuit distance function which should make it more efficient
 		  than prior versions for larger buffer regions.</para>
 		</note>
+		
+		<note><para>Use ST_3DDWithin if you have 3D geometries.</para></note>
 
 		<para>&sfs_compliant;</para>
 		<para>Availability: 1.5.0 support for geography was introduced</para>
