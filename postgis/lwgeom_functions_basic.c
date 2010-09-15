@@ -243,6 +243,7 @@ lwgeom_npoints(uchar *serialized)
 		LWLINE *line=NULL;
 		LWPOINT *point=NULL;
 		LWPOLY *poly=NULL;
+		LWTRIANGLE *triangle=NULL;
 		LWCIRCSTRING *curve=NULL;
 		uchar *subgeom=NULL;
 
@@ -267,6 +268,13 @@ lwgeom_npoints(uchar *serialized)
 		if (line != NULL)
 		{
 			npoints += line->points->npoints;
+			continue;
+		}
+
+		triangle = lwgeom_gettriangle_inspected(inspected, i);
+		if (triangle != NULL)
+		{
+			npoints += triangle->points->npoints;
 			continue;
 		}
 
