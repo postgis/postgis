@@ -1,27 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="RT_FAQ">
-  <title>WKT Raster Frequently Asked Questions</title>
+  <title>PostGIS Raster Frequently Asked Questions</title>
 
   <qandaset>
-  
-     <qandaentry>
-      <question>
-        <para> What is the meaning of "WKT" in WKT Raster?</para>
-      </question>
-
-      <answer>
-        <para>WKT stands for &quot;Well Known Text&quot;. It is trying to follow the OGC WKT for geometry to provide a standard to represent geographical information in a human readable textual representation. 
-        However, the OGC WKT standard does not define a way to represent raster yet. PostGIS WKT Raster is a bit ahead on this :-)</para>
-      </answer>
-    </qandaentry>
     
   	 <qandaentry>
       <question>
-        <para>Where can I find out more about the WKT Raster Project?</para>
+        <para>Where can I find out more about the PostGIS Raster Project?</para>
       </question>
 
       <answer>
-        <para>Refer to the <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster">WKT Raster home page</ulink>.</para>
+        <para>Refer to the <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster">PostGIS Raster home page</ulink>.</para>
       </answer>
     </qandaentry>
     
@@ -31,8 +20,8 @@
       </question>
 
       <answer>
-        <para>There is a full length beginner tutorial <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRasterTutorial01"> Intersecting vector buffers with large raster coverage using PostGIS WKT Raster</ulink>.
-        There is a whole chapter (more than 35 pages of content) dedicated to WKT Raster with free code and data downloads at <ulink url="http://www.postgis.us/chapter_13">PostGIS in Action - WKT Raster chapter</ulink>.
+        <para>There is a full length beginner tutorial <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRasterTutorial01"> Intersecting vector buffers with large raster coverage using PostGIS Raster</ulink>.
+        There is a whole chapter (more than 35 pages of content) dedicated to Raster with free code and data downloads at <ulink url="http://www.postgis.us/chapter_13">PostGIS in Action - Raster chapter</ulink>.
         You can <ulink url="http://www.postgis.us/page_buy_book">buy PostGIS in Action</ulink>  now from Manning and get all draft chapters NOW and as they are revised (note: all chapters are completed but undergoing revision) and completed book once out.  
         You can also buy from Amazon now at a significant discount and lock in lowest price sold before publication, but have to wait for the book to come out to receive your copy.
         </para>
@@ -46,14 +35,14 @@
       </question>
 
       <answer>
-        <para>The easiest is to download binaries for PostGIS and WKT Raster which are currently available for windows and latest versions of Mac OSX. 
+        <para>The easiest is to download binaries for PostGIS and Raster which are currently available for windows and latest versions of Mac OSX. 
         	First you need a working PostGIS 1.3.5 or above and be running PostgreSQL 8.3, 8.4, or 9.0. </para>
         <para>
 			If you are on windows, you can compile yourself, or use the <ulink url="http://www.postgis.org/download/windows/experimental.php#wktraster">pre-comiled WKT Raster windows binaries</ulink>.
 			If you are on Mac OSX Leopard or Snow Leopard, there are binaries available at <ulink url="http://www.kyngchaos.com/software/postgres">Kyng Chaos Mac OSX PostgreSQL/GIS binaries</ulink>.
 		</para>
 		<para>Then to enable raster support in your database, run the rtpostgis.sql file in your database.</para>
-		<para>For other platforms, you generally need to compile yourself. Dependencies are PostGIS and GDAL. For more details about compiling from source, please refer to <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster/Documentation01#a2.3-CompilingandInstallingfromSources">Installing WKT Raster from source</ulink></para>
+		<para>For other platforms, you generally need to compile yourself. Dependencies are PostGIS and GDAL. For more details about compiling from source, please refer to <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster/Documentation01#a2.3-CompilingandInstallingfromSources">Installing WKT Raster from source (in prior versions of PostGIS)</ulink></para>
       </answer>
     </qandaentry>
     
@@ -101,12 +90,12 @@
     
     <qandaentry>
       <question>
-        <para>Can I export my PostGIS WKT Raster data to other raster formats?</para>
+        <para>Can I export my PostGIS raster data to other raster formats?</para>
       </question>
 
       <answer>
         <para>Yes</para>
-		<para>GDAL 1.7+ has a PostGIS WKT Raster driver, but is only compiled in if you choose to compile with PostgreSQL support. </para>
+		<para>GDAL 1.7+ has a PostGIS raster driver, but is only compiled in if you choose to compile with PostgreSQL support. </para>
 		<para>The driver currently doesn't support irregularly blocked rasters, 
 		although you can store irregularly blocked rasters in PostGIS raster data type.</para>
 		<para>If you are compiling from source, you need to include in your configure 

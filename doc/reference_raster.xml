@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="RT_reference">
-  <title>WKT Raster Reference</title>
+  <title>Raster Reference</title>
 
   <para>The functions given below are the ones which a user of WKT Raster is
   likely to need and which are currently available in WKT Raster. There are other functions which are required support
   functions to the raster objects which are not of use to a general
   user.</para>
-  <para>WKT Raster is a sub-project of PostGIS that introduces a new type called <varname>raster</varname> for storing and analyzing raster data.
-  In order to use these functions, you need PostGIS 1.4 above installed in your database as well as wktraster compiled and the rtpostgis.sql loaded in your database.  
-  This will change later once the two projects are fully integrated.</para>
-  <para>For more information about WKT Raster, please refer to <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster">PostGIS WKT Raster Home Page</ulink>.</para>
+  <para><varname>raster</varname> is a new PostGIS type for storing and analyzing raster data. </para>
+  <para>For more information about Raster, please refer to <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster">PostGIS Raster Home Page</ulink>.</para>
   <para>For the examples in this reference we will be using a raster table of dummy rasters - Formed with the following code </para>
   <programlisting>
 CREATE TABLE dummy_rast(rid integer, rast raster);
