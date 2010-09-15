@@ -125,8 +125,8 @@
   &performance_tips;
   &reference;
   &postgis_aggs_mm;
-  &reference_wktraster;
-  &faq_wktraster;
+  &reference_raster;
+  &faq_raster;
   &reporting;
   &release_notes;
 
