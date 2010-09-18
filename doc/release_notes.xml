@@ -22,7 +22,11 @@
            <para>#562, ST_Dwithin errors for large geographies (Paul Ramsey)</para>
            <para>#513, shape loading GUI tries to make spatial index when loading DBF only mode (Paul Ramsey)</para>
            <para>#527, shape loading GUI should always append log messages (Mark Cave-Ayland)</para>
-
+           <para>#504, shp2pgsql should rename xmin/xmax fields (Sandro Santilli)</para>
+           <para>#458, postgis_comments being installed in contrib instead of version folder (Mark Cave-Ayland)</para>
+           <para>#474, Analyzing a table with geography column crashes server (Paul Ramsey)</para>
+           <para>#581, LWGEOM-expand produces inconsistent results (Mark Cave-Ayland)</para>
+           <para>#513, Add dbf filter to shp2pgsql-gui and allow uploading dbf only (Paul Ramsey)</para>
         </simplesect>
       </sect1>
       
