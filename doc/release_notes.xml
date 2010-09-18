@@ -18,6 +18,11 @@
            <para>spatial_ref_sys.sql Add datum conversion for projection SRID 3021 (Paul Ramsey)</para>
            <para>Geography - remove crash for case when all geographies are out of the estimate (Paul Ramsey)</para>
            <para>#469, Fix for array_aggregation error (Greg Stark, Paul Ramsey)</para>
+           <para>#532, Temporary geography tables showing up in other user sessions (Paul Ramsey)</para>
+           <para>#562, ST_Dwithin errors for large geographies (Paul Ramsey)</para>
+           <para>#513, shape loading GUI tries to make spatial index when loading DBF only mode (Paul Ramsey)</para>
+           <para>#527, shape loading GUI should always append log messages (Mark Cave-Ayland)</para>
+
         </simplesect>
       </sect1>
       
