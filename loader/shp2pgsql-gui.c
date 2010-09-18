@@ -1043,10 +1043,17 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	file_chooser_dialog_shape = gtk_file_chooser_dialog_new( "Select a Shape File", GTK_WINDOW (window_main), GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
 	file_chooser_button_shape = gtk_file_chooser_button_new_with_dialog( file_chooser_dialog_shape );
 	gtk_container_set_border_width (GTK_CONTAINER (file_chooser_button_shape), 8);
+	/* Filter for .shp files */
 	file_filter_shape = gtk_file_filter_new();
 	gtk_file_filter_add_pattern(GTK_FILE_FILTER(file_filter_shape), "*.shp");
-	gtk_file_filter_set_name(GTK_FILE_FILTER(file_filter_shape), "Shapefiles (*.shp)");
+	gtk_file_filter_set_name(GTK_FILE_FILTER(file_filter_shape), "Shape Files (*.shp)");
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(file_chooser_button_shape), file_filter_shape);
+	/* Filter for .dbf files */
+	file_filter_shape = gtk_file_filter_new();
+	gtk_file_filter_add_pattern(GTK_FILE_FILTER(file_filter_shape), "*.dbf");
+	gtk_file_filter_set_name(GTK_FILE_FILTER(file_filter_shape), "DBF Files (*.dbf)");
+	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(file_chooser_button_shape), file_filter_shape);
+	
 	gtk_container_add (GTK_CONTAINER (frame_shape), file_chooser_button_shape);
 	g_signal_connect (G_OBJECT (file_chooser_button_shape), "file-set", G_CALLBACK (pgui_action_shape_file_set), NULL);
 
