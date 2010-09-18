@@ -74,14 +74,18 @@ static void pgui_create_options_dialogue(void);
 static void
 pgui_log_va(const char *fmt, va_list ap)
 {
+	GtkTextIter iter;
 	char *msg;
 
 	if (!lw_vasprintf (&msg, fmt, ap)) return;
 
-	gtk_text_buffer_insert_at_cursor(textbuffer_log, msg, -1);
-	gtk_text_buffer_insert_at_cursor(textbuffer_log, "\n", -1);
-	gtk_text_view_scroll_mark_onscreen(GTK_TEXT_VIEW(textview_log), gtk_text_buffer_get_insert(textbuffer_log) );
+	/* Append text to the end of the text area, scrolling if required to make it visible */
+	gtk_text_buffer_get_end_iter(textbuffer_log, &iter);
+	gtk_text_buffer_insert(textbuffer_log, &iter, msg, -1);
+	gtk_text_buffer_insert(textbuffer_log, &iter, "\n", -1);
 
+	gtk_text_view_scroll_to_iter(GTK_TEXT_VIEW(textview_log), &iter, 0.0, TRUE, 0.0, 1.0);
+	
 	/* Allow GTK to process events */
 	while (gtk_events_pending())
 		gtk_main_iteration();
