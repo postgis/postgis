@@ -164,11 +164,11 @@ CREATE OR REPLACE VIEW geography_columns AS
 		pg_type t, 
 		pg_namespace n
 	WHERE t.typname = 'geography'
-        AND pg_table_is_visible(c.oid)
         AND a.attisdropped = false
         AND a.atttypid = t.oid
         AND a.attrelid = c.oid
-        AND c.relnamespace = n.oid;
+        AND c.relnamespace = n.oid
+        AND NOT pg_is_other_temp_schema(c.relnamespace);
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography(geometry)
