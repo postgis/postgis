@@ -1,3 +1,301 @@
+2010-09-18 18:51  pramsey
+
+	* loader/shp2pgsql-gui.c: Add DBF *.dbf filter to file chooser..
+	  (#513)
+
+2010-09-18 18:01  pramsey
+
+	* postgis/geography.sql.in.c: Actually commit the change into 1.5
+	  branch (#532)
+
+2010-09-18 15:13  mcayland
+
+	* loader/shp2pgsql-gui.c: Fix #527: Log window in shp2pgsql-gui
+	  should always append text to bottom of window.
+
+2010-09-10 20:44  pramsey
+
+	* loader/Makefile.in, loader/dbfopen.c, loader/safileio.c,
+	  loader/shapefil.h, loader/shpopen.c: Fix for #554, align internal
+	  shapelib with official shapelib
+
+2010-09-10 15:23  pramsey
+
+	* loader/shp2pgsql-gui.c: Fix #513, Can't upload dbf only with gui
+	  (without unchecking index?)
+
+2010-09-10 15:11  pramsey
+
+	* postgis/geography.sql.in.c: Fix for #532, Temporary table
+	  geography columns appear in other's sessions
+
+2010-09-10 13:01  mcayland
+
+	* configure.ac, doc/Makefile.comments.in, doc/Makefile.in: Fix
+	  #458: postgis_comments being installed in contrib instead of
+	  version folder (this is a little bit of a hack since we can't
+	  merge PGXS into the main Makefile directly, but it works).
+
+2010-09-10 08:50  mcayland
+
+	* liblwgeom/ptarray.c: Fix #581: LWGEOM_expand produces
+	  inconsistent results. Change the bounding box calculation
+	  routines in ptarray.c so that they perform th
+	  e entire calculation in double precision then convert the final
+	  result to BOX2DFLOAT4. This prevents rounding errors being
+	  introduced in
+	  to the bounding box when each input result is converted to
+	  BOX2DFLOAT4 in turn.
+
+2010-09-01 08:20  strk
+
+	* NEWS: Restrict lines within 80 columns
+
+2010-09-01 05:57  robe
+
+	* doc/introduction.xml: update credits
+
+2010-09-01 05:52  robe
+
+	* doc/release_notes.xml: update release notes to include 1.5.2
+	  changes (not yet released)
+
+2010-09-01 05:42  robe
+
+	* doc/release_notes.xml: forgot ST_DumpPoints in release and credit
+	  to Maxime
+
+2010-09-01 05:37  robe
+
+	* NEWS: update NEWS to reflect all non-trivial changes in PostGIS
+	  1.5.2
+
+2010-08-31 18:00  nicklas
+
+	* postgis/postgis.sql.in.c: remove strict on st_equals as discussed
+	  in #536
+
+2010-08-19 19:48  pramsey
+
+	* liblwgeom/lwgeodetic.c: Slight improvement to #573
+
+2010-08-17 20:11  pramsey
+
+	* liblwgeom/lwgeodetic.c: Return the return value (not a constant)
+
+2010-08-17 16:18  pramsey
+
+	* spatial_ref_sys.sql: Add datum conversion for projection
+
+2010-08-11 09:49  mleslie
+
+	* configure.ac, loader/Makefile.in, loader/cunit, loader/image,
+	  loader/shp2pgsql-gui.c, loader/structure.c, loader/structure.h:
+	  Backing out the shp2pgsql-gui changes.
+
+2010-08-10 23:54  pramsey
+
+	* loader/shp2pgsql-gui.c: Fix start-up segfaults for shp2pgsql-gui
+	  in OS/X (#563)
+
+2010-08-10 19:35  pramsey
+
+	* liblwgeom/cunit/cu_geodetic.c,
+	  liblwgeom/cunit/cu_geodetic_data.h, liblwgeom/lwgeodetic.c: Fix
+	  for #562, fix an error in the pole checking routines to allow
+	  multiple poles to be found as contained in a polygon. The pole
+	  checking code is certainly over-aggressive, but that is "OK"ish
+	  for now.
+
+2010-08-06 19:02  pramsey
+
+	* loader/dbfopen.c, loader/shapefil.h: Apply temporary patch for
+	  large DBF files. (#393)
+
+2010-08-06 19:01  pramsey
+
+	* loader/shp2pgsql-core.c: Whoops, not actually avoiding bad
+	  characters, have to do that...
+
+2010-08-06 18:26  pramsey
+
+	* loader/shp2pgsql-core.c: For 2010 benchmarking, allow loader to
+	  swallow invalid utf8 characters (compile-time switch only at this
+	  point).
+
+2010-08-03 14:21  robe
+
+	* doc/faq.xml, doc/reference_measure.xml: correction about
+	  st_distance_spheroid and faq about 9.0 new bytea output behavior
+
+2010-07-19 05:11  mleslie
+
+	* loader/shp2pgsql-gui.c: Adding a default to the validation case
+	  statement to ensure we are initialising our parameters.
+
+2010-07-19 05:07  mleslie
+
+	* loader/shp2pgsql-gui.c, loader/structure.c: Fixed a couple of
+	  memory issues.
+
+2010-07-19 00:44  mleslie
+
+	* configure.ac, loader/Makefile.in, loader/cunit,
+	  loader/cunit/Makefile.in, loader/cunit/cu_list.c,
+	  loader/cunit/cu_list.h, loader/cunit/cu_tester.c,
+	  loader/cunit/cu_tester.h, loader/image, loader/image/error.png,
+	  loader/image/good.png, loader/image/icon_source.svg,
+	  loader/image/warn.png, loader/shp2pgsql-gui.c,
+	  loader/structure.c, loader/structure.h: Migrating the
+	  shp2pgsql-gui and related changes from spike to the 1.5 branch.
+
+2010-07-02 01:43  pramsey
+
+	* postgis/geography_inout.c: Fix error messages to handle
+	  SRID_DEFAULT macro properly
+
+2010-06-25 07:48  robe
+
+	* postgis/geography.sql.in.c: #536 missed a spot text,text variant
+	  of ST_DWithin
+
+2010-06-25 07:43  robe
+
+	* postgis/geography.sql.in.c: #536 get rid of strict on
+	  ST_Intersects, ST_CoveredBy and ST_Covers because spatial index
+	  doesn't work with strict on
+
+2010-06-03 19:08  pramsey
+
+	* loader/shp2pgsql-core.c: Remove crash case in early shutdown due
+	  to missing shapefile
+
+2010-06-01 20:00  pramsey
+
+	* loader/dbfopen.c: Accept "0" as a null DBF date value.
+
+2010-05-27 14:04  pramsey
+
+	* configure.ac, loader/shp2pgsql-core.c: Make use of iconvctl
+	  conditional on it existing
+
+2010-05-27 13:19  pramsey
+
+	* loader/shp2pgsql-core.c, loader/shp2pgsql-core.h: Fix utf8 to
+	  return *something* when it can, so that something can be reported
+	  inthe error string.
+
+2010-05-26 17:27  pramsey
+
+	* loader/shp2pgsql-core.c, loader/shp2pgsql-core.h: Change default
+	  back to UTF8 and improve error message on failure.
+
+2010-05-26 16:25  pramsey
+
+	* loader/shp2pgsql-gui.c: Read configuration info from environment,
+	  if it's there.
+
+2010-05-26 16:02  pramsey
+
+	* loader/shp2pgsql-gui.c: Only update the progress bar once every N
+	  records, where N is determined by the
+	  number of records in the file.
+
+2010-05-25 18:43  pramsey
+
+	* loader/shp2pgsql-core.h: Back off from win32 encoding to generic
+	  ISO 8859-1
+
+2010-05-20 04:19  robe
+
+	* doc/reference_measure.xml: minor formatting on ST_Covers
+
+2010-05-19 15:24  robe
+
+	* doc/reference_constructor.xml: link to ST_MakePointM from
+	  ST_MakePoint
+
+2010-05-19 15:12  robe
+
+	* doc/reference_measure.xml: Put in a geography example for
+	  st_covers
+
+2010-05-18 17:41  pramsey
+
+	* postgis/geography_estimate.c: Remove crash for case when all
+	  geographies are on the outer edges of the histobox, causing all
+	  to be classified as "deviants" by the stdev code line (#474)
+
+2010-05-17 23:20  pramsey
+
+	* loader/shp2pgsql-core.c, loader/shp2pgsql-core.h,
+	  loader/shp2pgsql-gui.c, loader/stringbuffer.c: Allow connection
+	  strings with missing parameters. Fixes a problem when 'password='
+	  is sent through.
+
+2010-05-04 17:19  robe
+
+	* doc/reference_constructor.xml: Provide example of ST_GeogFromText
+
+2010-04-27 13:59  colivier
+
+	* doc/reference_output.xml, postgis/lwgeom_export.c,
+	  regress/geojson_expected, regress/gml_expected: Fix wrong OGC URN
+	  in GeoJson and GML output. Cf #507
+
+2010-04-23 14:56  pramsey
+
+	* loader/shp2pgsql-gui.c: Declare menu_item_quit for MacOSX cmd-Q
+	  shortcut code.
+
+2010-04-06 23:36  pramsey
+
+	* configure.ac, loader/Makefile.in, loader/shp2pgsql-gui.c,
+	  macros/gtk-2.0.m4: Add support for command-q shutdown in Mac GTK
+	  build
+
+2010-03-23 00:23  pramsey
+
+	* postgis/lwgeom_accum.c: Fix for array aggregation error (#469)
+
+2010-03-22 19:38  pramsey
+
+	* loader/getopt.c, loader/getopt.h, loader/pgsql2shp.c,
+	  loader/shp2pgsql-cli.c, loader/shp2pgsql-gui.c: Convert all
+	  extern opt* variables to pgis_opt* variables to avoid clashes
+	  with system variables.
+
+2010-03-12 18:55  strk
+
+	* NEWS, loader/shp2pgsql-core.c: Back-port shp2pgsql fix in NULL
+	  geometries handling
+
+2010-03-12 13:26  mcayland
+
+	* configure.ac: Fix the PGXS override code for detecting older
+	  versions of PostgreSQL - the existing (incomplete) check was
+	  still checking for a minimum version of 8.5, rather
+	  than the new version number of 9.0.
+
+2010-03-12 00:22  robe
+
+	* doc/reference_lrs.xml: note about ST_Line_SubString supporting
+	  multilinestrings
+
+2010-03-11 15:04  pramsey
+
+	* NEWS, Version.config: Update version numbers and news file for
+	  further development
+
+2010-03-11 14:34  pramsey
+
+	* ChangeLog, HOWTO_RELEASE, README.postgis, doc/release_notes.xml:
+	  1.5.1 release prep
+
+2010-03-11 14:19  pramsey
+
+	* NEWS: Update for 1.5.1 release.
+
 2010-03-10 15:38  pramsey
 
 	* postgis/lwgeom_accum.c: Fix to allow compile on 9.0alpha
