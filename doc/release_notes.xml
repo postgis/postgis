@@ -27,6 +27,8 @@
            <para>#474, Analyzing a table with geography column crashes server (Paul Ramsey)</para>
            <para>#581, LWGEOM-expand produces inconsistent results (Mark Cave-Ayland)</para>
            <para>#513, Add dbf filter to shp2pgsql-gui and allow uploading dbf only (Paul Ramsey)</para>
+           <para>Fix further build issues against PostgreSQL 9.0 (Mark Cave-Ayland)</para>
+           <para>#572, Password whitespace for Shape File</para> 
         </simplesect>
       </sect1>
       

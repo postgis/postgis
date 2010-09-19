@@ -34,10 +34,13 @@ PostGIS 1.5.2
    - #581 LWGEOM-expand produces inconsistent results
      (Mark Cave-Ayland)
    - #471 DocBook dtd errors (Olivier Courtin)
+   - Fix further build issues against PostgreSQL 9.0 
+     (Mark Cave-Ayland)
+   - #572 Password whitespace for Shape File to PostGIS 
+     Import not supported (Mark Cave-Ayland)
  - Enhancement
    - #513 Add dbf filter to shp2pgsql-gui and allow uploading dbf only
      (Paul Ramsey)
-
         
 PostGIS 1.5.1
 2010/03/11
