@@ -443,6 +443,7 @@ pgui_read_connection(void)
 	const char *pg_pass = gtk_entry_get_text(GTK_ENTRY(entry_pg_pass));
 	const char *pg_db = gtk_entry_get_text(GTK_ENTRY(entry_pg_db));
 	char *connection_string = NULL;
+	char *escape_pg_pass = NULL;
 
 	stringbuffer_t *sb = stringbuffer_create();
 
@@ -479,7 +480,13 @@ pgui_read_connection(void)
 	/* Read the password */
 	if ( pg_pass && strlen(pg_pass) > 0 )
 	{
-		vasbappend(sb, "password=%s ", pg_pass);
+		/* Escape the password in case it contains any special characters */
+		escape_pg_pass = escape_connection_string((char *)pg_pass);
+		vasbappend(sb, "password='%s' ", escape_pg_pass);
+
+		/* Free the escaped version */
+		if (escape_pg_pass != pg_pass)
+			free(escape_pg_pass);
 	}
 
 	/* Return the connection string */
@@ -503,11 +510,14 @@ pgui_sanitize_connection_string(char *connection_string)
 	char *ptr = strstr(connection_string, "password");
 	if ( ptr )
 	{
-		ptr += 9;
-		while ( *ptr != ' ' && *ptr != '\0' )
+		ptr += 10;
+		while ( *ptr != '\'' && *ptr != '\0' )
 		{
-			*ptr = '*';
-			ptr++;
+			/* If we find a \, hide both it and the next character */
+			if ( *ptr == '\\' )
+				*ptr++ = '*';
+		
+			*ptr++ = '*';
 		}
 	}
 	return;

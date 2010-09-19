@@ -209,6 +209,7 @@ typedef struct shp_connection_state
 /* Externally accessible functions */
 void strtolower(char *s);
 void vasbappend(stringbuffer_t *sb, char *fmt, ... );
+char *escape_connection_string(char *str);
 void set_config_defaults(SHPLOADERCONFIG *config);
 
 SHPLOADERSTATE *ShpLoaderCreate(SHPLOADERCONFIG *config);
