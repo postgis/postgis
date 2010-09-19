@@ -1470,6 +1470,7 @@ pgui_read_connection(void)
 	const char *pg_pass = gtk_entry_get_text(GTK_ENTRY(entry_pg_pass));
 	const char *pg_db = gtk_entry_get_text(GTK_ENTRY(entry_pg_db));
 	char *connection_string = NULL;
+	char *escape_pg_pass = NULL;
 
 	if ( ! pg_host || strlen(pg_host) == 0 )
 	{
@@ -1496,10 +1497,19 @@ pgui_read_connection(void)
 		pgui_seterr("Server port must be a number.");
 		return NULL;
 	}
-	if ( ! lw_asprintf(&connection_string, "user=%s password=%s port=%s host=%s dbname=%s", pg_user, pg_pass, pg_port, pg_host, pg_db) )
+
+	/* Escape the password in case it contains any special characters */
+	escape_pg_pass = escape_connection_string((char *)pg_pass);
+
+	if ( ! lw_asprintf(&connection_string, "user=%s password='%s' port=%s host=%s dbname=%s", pg_user, escape_pg_pass, pg_port, pg_host, pg_db) )
 	{
 		return NULL;
 	}
+
+	/* Free the escaped version */
+	if (escape_pg_pass != pg_pass)
+		free(escape_pg_pass);
+
 	if ( connection_string )
 	{
 		return connection_string;
@@ -1522,11 +1532,14 @@ pgui_sanitize_connection_string(char *connection_string)
 	char *ptr = strstr(connection_string, "password");
 	if ( ptr )
 	{
-		ptr += 9;
-		while ( *ptr != ' ' && *ptr != '\0' )
+		ptr += 10;
+		while ( *ptr != '\'' && *ptr != '\0' )
 		{
-			*ptr = '*';
-			ptr++;
+			/* If we find a \, hide both it and the next character */
+			if ( *ptr == '\\' )
+				*ptr++ = '*';
+		
+			*ptr++ = '*';
 		}
 	}
 	return;

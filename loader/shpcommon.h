@@ -28,3 +28,6 @@ typedef struct shp_connection_state
 	char *host;
 
 } SHPCONNECTIONCONFIG;
+
+/* External shared functions */
+char *escape_connection_string(char *str);
