@@ -409,6 +409,14 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 	if (state->config->simple_geometries == 0)
 	{
 		lwcollection = lwcollection_construct(MULTILINETYPE, state->config->sr_id, NULL, obj->nParts, lwmultilinestrings);
+
+		/* When outputting wkt rather than wkb, we need to remove the SRID from the inner geometries */
+		if (state->config->hwgeom)
+		{
+			for (u = 0; u < obj->nParts; u++)
+				lwmultilinestrings[u]->SRID = -1;
+		}
+
 		serialized_lwgeom = lwgeom_serialize(lwcollection_as_lwgeom(lwcollection));
 
 	}
@@ -766,6 +774,14 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 	if (state->config->simple_geometries == 0)
 	{
 		lwcollection = lwcollection_construct(MULTIPOLYGONTYPE, state->config->sr_id, NULL, polygon_total, lwpolygons);
+
+		/* When outputting wkt rather than wkb, we need to remove the SRID from the inner geometries */
+		if (state->config->hwgeom)
+		{
+			for (u = 0; u < pi; u++)
+				lwpolygons[u]->SRID = -1;
+		}
+
 		serialized_lwgeom = lwgeom_serialize(lwcollection_as_lwgeom(lwcollection));
 	}
 	else
