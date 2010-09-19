@@ -128,7 +128,7 @@ comments-install: comments
 	make -f Makefile.comments install
 
 comments-uninstall:
-	rm -f $(PGSQL_SHAREDIR)/contrib/postgis_comments.sql
+	make -f Makefile.comments uninstall
 
 install: html/postgis.html man/shp2pgsql.1 man/pgsql2shp.1
 	@mkdir -p $(PGSQL_DOCDIR)/postgis
