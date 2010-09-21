@@ -52,7 +52,6 @@ static int valid_connection = 0;
 
 enum
 {
-	STATUS_COLUMN,
 	FILENAME_COLUMN,
 	SCHEMA_COLUMN,
 	TABLE_COLUMN,
@@ -77,11 +76,6 @@ enum
 	PREPARE_MODE
 };
 
-/* These are unused until icon support is sorted out. */
-GdkPixbuf *icon_good = NULL;
-GdkPixbuf *icon_warn = NULL;
-GdkPixbuf *icon_err = NULL;
-
 
 static void pgui_logf(const char *fmt, ...);
 static void pgui_log_va(const char *fmt, va_list ap);
@@ -89,7 +83,6 @@ static void pgui_log_va(const char *fmt, va_list ap);
 
 GtkListStore *list_store;
 GtkWidget *tree;
-GtkCellRenderer *status_renderer;
 GtkCellRenderer *filename_renderer;
 GtkCellRenderer *schema_renderer;
 GtkCellRenderer *table_renderer;
@@ -98,7 +91,6 @@ GtkCellRenderer *srid_renderer;
 GtkCellRenderer *mode_renderer;
 GtkCellRenderer *remove_renderer;
 
-GtkTreeViewColumn *status_column;
 GtkTreeViewColumn *filename_column;
 GtkTreeViewColumn *schema_column;
 GtkTreeViewColumn *table_column;
@@ -196,41 +188,6 @@ pgui_seterr(const char *errmsg)
 	}
 	pgui_errmsg = strdup(errmsg);
 	return;
-}
-
-/*
- * Loads the status icons used in the file list table.
- *
- * ML: Icon support is currently not working reliably, so I'm removing it
- * until I can get it sorted out.
- */
-static void
-load_icons(void)
-{
-	const char *good_filename = "image/good.png";
-	const char *warn_filename = "image/warn.png";
-	const char *err_filename = "image/error.png";
-	GError *error = NULL;
-
-	icon_good = gdk_pixbuf_new_from_file(good_filename, &error);
-	if (!icon_good)
-	{
-		if ( error ) g_free(error);
-		error = NULL;
-	}
-	icon_warn = gdk_pixbuf_new_from_file(warn_filename, &error);
-	if (!icon_warn)
-	{
-		if ( error ) g_free(error);
-		error = NULL;
-	}
-	icon_err = gdk_pixbuf_new_from_file(err_filename, &error);
-	if (!icon_err)
-	{
-		if ( error ) g_free(error);
-		error = NULL;
-	}
-
 }
 
 /*
@@ -465,7 +422,6 @@ pgui_action_handle_tree_combo(GtkCellRendererCombo *combo,
                               gpointer user_data)
 {
 	GtkTreeIter iter;
-	GdkPixbuf *status = NULL;
 	FILENODE *file_node;
 	int index;
 
@@ -527,26 +483,6 @@ pgui_action_handle_tree_combo(GtkCellRendererCombo *combo,
 		                   -1);
 	}
 	validate_shape_file(file_node);
-	/* Removing until icon support is sorted. */
-	/*
-	switch (validate_shape_file(file_node))
-	{
-	case(0):
-		status = icon_err;
-		break;
-	case(1):
-		status = icon_warn;
-		break;
-	case(2):
-		status = icon_good;
-		break;
-	default:
-		status = icon_good;
-		break;
-	}
-	*/
-	gtk_list_store_set(list_store, &iter,
-	                   STATUS_COLUMN, status, -1);
 
 }
 
@@ -561,7 +497,6 @@ generate_file_bits(GtkCellRendererText *renderer, char *new_text)
 {
 	GtkTreeIter iter;
 	FILENODE *file_node;
-	GdkPixbuf *status = NULL;
 	char *filename;
 	char *schema;
 	char *table;
@@ -627,25 +562,8 @@ generate_file_bits(GtkCellRendererText *renderer, char *new_text)
 
 	validate_shape_file(file_node);
 	
-	/* Removing until icon support is sorted. */
-	/*
-	switch (validate_shape_file(file_node))
-	{
-	case(0):
-		status = icon_err;
-		break;
-	case(1):
-		status = icon_warn;
-		break;
-	case(2):
-		status = icon_good;
-		break;
-	}
-	*/
-
 	gtk_list_store_insert_with_values(
 	    list_store, &iter, current_list_index++,
-	    STATUS_COLUMN, status,
 	    FILENAME_COLUMN, filename,
 	    SCHEMA_COLUMN, schema,
 	    TABLE_COLUMN, table,
@@ -668,7 +586,6 @@ pgui_action_handle_tree_edit(GtkCellRendererText *renderer,
                              gpointer user_data)
 {
 	GtkTreeIter iter;
-	GdkPixbuf *status = NULL;
 	FILENODE *file_node;
 	int index;
 
@@ -733,24 +650,8 @@ pgui_action_handle_tree_edit(GtkCellRendererText *renderer,
 	}
 
 	validate_shape_file(file_node);
-	/* Removing until icon support is sorted. */
-	/*
-	switch (validate_shape_file(file_node))
-	{
-	case(0):
-		status = icon_err;
-		break;
-	case(1):
-		status = icon_warn;
-		break;
-	case(2):
-		status = icon_good;
-		break;
-	}
-	*/
 
 	gtk_list_store_set(list_store, &iter,
-	                   STATUS_COLUMN, status,
 	                   FILENAME_COLUMN, file_node->filename,
 	                   SCHEMA_COLUMN, file_node->schema,
 	                   TABLE_COLUMN, file_node->table,
@@ -1729,7 +1630,6 @@ pgui_action_shape_file_set(const char *gtk_filename)
 {
 	GtkTreeIter iter;
 	FILENODE *file;
-	GdkPixbuf *status = NULL;
 	char *shp_file;
 	int shp_file_len;
 	char *table_start;
@@ -1778,25 +1678,9 @@ pgui_action_shape_file_set(const char *gtk_filename)
 	set_filename_field_width();
 
 	validate_shape_file(file);
-	/* Removing this until I get the time to sort out icons properly */
-	/*
-	switch (validate_shape_file(file))
-	{
-	case(0):
-		status = icon_err;
-		break;
-	case(1):
-		status = icon_warn;
-		break;
-	case(2):
-		status = icon_good;
-		break;
-	}
-	*/
 
 	gtk_list_store_insert(list_store, &iter, current_list_index++);
 	gtk_list_store_set(list_store, &iter,
-	                   STATUS_COLUMN, status,
 	                   FILENAME_COLUMN, shp_file,
 	                   SCHEMA_COLUMN, "public",
 	                   TABLE_COLUMN, table,
@@ -2401,7 +2285,6 @@ pgui_create_file_table(GtkWidget *frame_shape)
 
 	/* Setup a model */
 	list_store = gtk_list_store_new (N_COLUMNS,
-	                                 G_TYPE_OBJECT,
 	                                 G_TYPE_STRING,
 	                                 G_TYPE_STRING,
 	                                 G_TYPE_STRING,
@@ -2415,16 +2298,6 @@ pgui_create_file_table(GtkWidget *frame_shape)
 	tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(list_store));
 	/* Make the tree view */
 	gtk_box_pack_start(GTK_BOX(vbox_tree), tree, TRUE, TRUE, 0);
-
-	/* Status Field */
-	status_renderer = gtk_cell_renderer_pixbuf_new();
-	g_object_set(status_renderer, "pixbuf", icon_warn, NULL);
-	status_column = gtk_tree_view_column_new_with_attributes(" ",
-	                status_renderer,
-	                "pixbuf",
-	                STATUS_COLUMN,
-	                NULL);
-	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), status_column);
 
 	/* Filename Field */
 	filename_renderer = gtk_cell_renderer_text_new();
