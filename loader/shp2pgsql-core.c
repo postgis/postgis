@@ -55,6 +55,27 @@ int FindPolygons(SHPObject *obj, Ring ***Out);
 void ReleasePolygons(Ring **polys, int npolys);
 int GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry);
 
+/* Append variadic formatted string to a stringbuffer */
+void
+vasbappend(stringbuffer_t *sb, char *fmt, ... )
+{
+	va_list ap;
+	char *msg;
+
+	va_start(ap, fmt);
+
+	if (!lw_vasprintf (&msg, fmt, ap))
+	{
+		va_end (ap);
+		return;
+	}
+
+	/* Append to the stringbuffer */
+	stringbuffer_append(sb, msg);
+	free(msg);
+
+	va_end(ap);
+}
 
 /* Return allocated string containing UTF8 string converted from encoding fromcode */
 int utf8(const char *fromcode, char *inputbuf, char **outputbuf)

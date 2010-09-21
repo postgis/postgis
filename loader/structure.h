@@ -42,6 +42,7 @@ FILENODE *append_file(char *filename, char *schema, char *table,
 FILENODE *find_file_by_iter(GtkTreeIter *tree_iterator);
 FILENODE *find_file_by_index(int index);
 void remove_file(FILENODE *remove_node);
+void print_file_list_delegate(void (*printer)(const char *fmta, va_list apa), const char *fmt, ...);
 
 /*
  * This is a debugging function, it shouldn't really be used for 

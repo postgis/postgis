@@ -40,10 +40,6 @@ static GtkWidget *entry_pg_pass = NULL;
 static GtkWidget *entry_pg_host = NULL;
 static GtkWidget *entry_pg_port = NULL;
 static GtkWidget *entry_pg_db = NULL;
-//static GtkWidget *entry_config_table = NULL;
-//static GtkWidget *entry_config_schema = NULL;
-//static GtkWidget *entry_config_srid = NULL;
-//static GtkWidget *entry_config_geocolumn = NULL;
 static GtkWidget *label_pg_connection_test = NULL;
 static GtkWidget *textview_log = NULL;
 static GtkWidget *add_file_button = NULL;
@@ -81,12 +77,14 @@ enum
 	PREPARE_MODE
 };
 
+/* These are unused until icon support is sorted out. */
 GdkPixbuf *icon_good = NULL;
 GdkPixbuf *icon_warn = NULL;
 GdkPixbuf *icon_err = NULL;
 
 
 static void pgui_logf(const char *fmt, ...);
+static void pgui_log_va(const char *fmt, va_list ap);
 
 
 GtkListStore *list_store;
@@ -202,6 +200,9 @@ pgui_seterr(const char *errmsg)
 
 /*
  * Loads the status icons used in the file list table.
+ *
+ * ML: Icon support is currently not working reliably, so I'm removing it
+ * until I can get it sorted out.
  */
 static void
 load_icons(void)
@@ -464,7 +465,7 @@ pgui_action_handle_tree_combo(GtkCellRendererCombo *combo,
                               gpointer user_data)
 {
 	GtkTreeIter iter;
-	GdkPixbuf *status;
+	GdkPixbuf *status = NULL;
 	FILENODE *file_node;
 	int index;
 
@@ -525,6 +526,9 @@ pgui_action_handle_tree_combo(GtkCellRendererCombo *combo,
 		                   MODE_COLUMN, "Create",
 		                   -1);
 	}
+	validate_shape_file(file_node);
+	/* Removing until icon support is sorted. */
+	/*
 	switch (validate_shape_file(file_node))
 	{
 	case(0):
@@ -537,14 +541,10 @@ pgui_action_handle_tree_combo(GtkCellRendererCombo *combo,
 		status = icon_good;
 		break;
 	default:
-		/*
-		 * This should really be something more neutral than
-		 * 'good', but it's basically the absence of something
-		 * wrong as implemented.
-		 */
 		status = icon_good;
 		break;
 	}
+	*/
 	gtk_list_store_set(list_store, &iter,
 	                   STATUS_COLUMN, status, -1);
 
@@ -561,7 +561,7 @@ generate_file_bits(GtkCellRendererText *renderer, char *new_text)
 {
 	GtkTreeIter iter;
 	FILENODE *file_node;
-	GdkPixbuf *status;
+	GdkPixbuf *status = NULL;
 	char *filename;
 	char *schema;
 	char *table;
@@ -625,6 +625,10 @@ generate_file_bits(GtkCellRendererText *renderer, char *new_text)
 
 	file_node = append_file(filename, schema, table, geom_column, srid, 'c', &iter);
 
+	validate_shape_file(file_node);
+	
+	/* Removing until icon support is sorted. */
+	/*
 	switch (validate_shape_file(file_node))
 	{
 	case(0):
@@ -637,6 +641,7 @@ generate_file_bits(GtkCellRendererText *renderer, char *new_text)
 		status = icon_good;
 		break;
 	}
+	*/
 
 	gtk_list_store_insert_with_values(
 	    list_store, &iter, current_list_index++,
@@ -663,7 +668,7 @@ pgui_action_handle_tree_edit(GtkCellRendererText *renderer,
                              gpointer user_data)
 {
 	GtkTreeIter iter;
-	GdkPixbuf *status;
+	GdkPixbuf *status = NULL;
 	FILENODE *file_node;
 	int index;
 
@@ -727,6 +732,9 @@ pgui_action_handle_tree_edit(GtkCellRendererText *renderer,
 		file_node->srid = strdup(new_text);
 	}
 
+	validate_shape_file(file_node);
+	/* Removing until icon support is sorted. */
+	/*
 	switch (validate_shape_file(file_node))
 	{
 	case(0):
@@ -739,6 +747,7 @@ pgui_action_handle_tree_edit(GtkCellRendererText *renderer,
 		status = icon_good;
 		break;
 	}
+	*/
 
 	gtk_list_store_set(list_store, &iter,
 	                   STATUS_COLUMN, status,
@@ -1050,6 +1059,13 @@ compare_columns(SHPLOADERSTATE *state, int dbf_index,
 			value = 0;
 		}
 		break;
+	/* 
+	 * It should be safe to assume that we aren't going to 
+	 * match an invalid column 
+	 */
+	case FTInvalid:
+		value = 0;
+		break;
 	}
 	return value;
 }
@@ -1172,6 +1188,7 @@ validate_shape_file(FILENODE *filenode)
 				return 0;
 			}
 
+			/* This has been moved into the earlier validation functions. */
 			/*
 			connection_sanitized = strdup(connection_string);
 			pgui_sanitize_connection_string(connection_sanitized);
@@ -1470,51 +1487,49 @@ pgui_read_connection(void)
 	const char *pg_pass = gtk_entry_get_text(GTK_ENTRY(entry_pg_pass));
 	const char *pg_db = gtk_entry_get_text(GTK_ENTRY(entry_pg_db));
 	char *connection_string = NULL;
-	char *escape_pg_pass = NULL;
 
-	if ( ! pg_host || strlen(pg_host) == 0 )
+	stringbuffer_t *sb = stringbuffer_create();
+
+	/* Read the host */
+	if ( pg_host && strlen(pg_host) > 0 )
 	{
-		pgui_seterr("Fill in the server host.");
-		return NULL;
-	}
-	if ( ! pg_port || strlen(pg_port) == 0 )
-	{
-		pgui_seterr("Fill in the server port.");
-		return NULL;
-	}
-	if ( ! pg_user || strlen(pg_user) == 0 )
-	{
-		pgui_seterr("Fill in the user name.");
-		return NULL;
-	}
-	if ( ! pg_db || strlen(pg_db) == 0 )
-	{
-		pgui_seterr("Fill in the database name.");
-		return NULL;
-	}
-	if ( ! atoi(pg_port) )
-	{
-		pgui_seterr("Server port must be a number.");
-		return NULL;
+		vasbappend(sb, "host=%s ", pg_host);
 	}
 
-	/* Escape the password in case it contains any special characters */
-	escape_pg_pass = escape_connection_string((char *)pg_pass);
-
-	if ( ! lw_asprintf(&connection_string, "user=%s password='%s' port=%s host=%s dbname=%s", pg_user, escape_pg_pass, pg_port, pg_host, pg_db) )
-	{
-		return NULL;
+	/* Read the port */
+	if ( pg_port && strlen(pg_port) > 0 )
+	{	
+		if ( ! atoi(pg_port) )
+		{
+			pgui_seterr("Server port must be a number.");
+			stringbuffer_destroy(sb);
+			return NULL;
+		}
+		vasbappend(sb, "port=%s ", pg_port);
 	}
 
-	/* Free the escaped version */
-	if (escape_pg_pass != pg_pass)
-		free(escape_pg_pass);
-
-	if ( connection_string )
+	/* Read the user name */
+	if ( pg_user && strlen(pg_user) > 0 )
 	{
-		return connection_string;
+		vasbappend(sb, "user=%s ", pg_user);
 	}
-	return NULL;
+
+	/* Read the database name */
+	if ( pg_db && strlen(pg_db) > 0 )
+	{
+		vasbappend(sb, "dbname=%s ", pg_db);
+	}
+
+	/* Read the password */
+	if ( pg_pass && strlen(pg_pass) > 0 )
+	{
+		vasbappend(sb, "password=%s ", pg_pass);
+	}
+
+	/* Return the connection string */
+	connection_string = strdup(stringbuffer_getstring(sb));
+	stringbuffer_destroy(sb);	
+	return connection_string;
 }
 
 static void
@@ -1645,14 +1660,18 @@ pgui_action_connection_test(GtkWidget *widget, gpointer data)
 	if (!connection_test())
 	{
 		gtk_label_set_text(GTK_LABEL(label_pg_connection_test), "Connection failed.");
+		pgui_logf( "Connection failed." );
+		gtk_widget_show(label_pg_connection_test);
 
 	}
-
-	gtk_label_set_text(
-	    GTK_LABEL(label_pg_connection_test),
-	    "Connection succeeded.");
-	pgui_logf( "Connection succeeded." );
-	gtk_widget_show(label_pg_connection_test);
+	else
+	{
+		gtk_label_set_text(
+	    	GTK_LABEL(label_pg_connection_test),
+	    	"Connection succeeded.");
+		pgui_logf( "Connection succeeded." );
+		gtk_widget_show(label_pg_connection_test);
+	}
 }
 
 static void
@@ -1710,7 +1729,7 @@ pgui_action_shape_file_set(const char *gtk_filename)
 {
 	GtkTreeIter iter;
 	FILENODE *file;
-	GdkPixbuf *status;
+	GdkPixbuf *status = NULL;
 	char *shp_file;
 	int shp_file_len;
 	char *table_start;
@@ -1758,6 +1777,9 @@ pgui_action_shape_file_set(const char *gtk_filename)
 
 	set_filename_field_width();
 
+	validate_shape_file(file);
+	/* Removing this until I get the time to sort out icons properly */
+	/*
 	switch (validate_shape_file(file))
 	{
 	case(0):
@@ -1770,6 +1792,7 @@ pgui_action_shape_file_set(const char *gtk_filename)
 		status = icon_good;
 		break;
 	}
+	*/
 
 	gtk_list_store_insert(list_store, &iter, current_list_index++);
 	gtk_list_store_set(list_store, &iter,
@@ -2213,8 +2236,6 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	*/
 	g_signal_connect (G_OBJECT (window_main), "destroy", G_CALLBACK (pgui_quit), NULL);
 
-	load_icons();
-
 	/*
 	** PostGIS info in a table
 	*/
@@ -2366,7 +2387,6 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 static void
 pgui_create_file_table(GtkWidget *frame_shape)
 {
-	GdkWindow *bin_window;
 	GtkWidget *vbox_tree;
 
 	gtk_container_set_border_width (GTK_CONTAINER (frame_shape), 0);
