@@ -1547,7 +1547,7 @@ pgui_sanitize_connection_string(char *connection_string)
 	char *ptr = strstr(connection_string, "password");
 	if ( ptr )
 	{
-		ptr += 10;
+		ptr += 9;
 		while ( *ptr != '\'' && *ptr != '\0' )
 		{
 			/* If we find a \, hide both it and the next character */
@@ -1773,7 +1773,7 @@ pgui_action_shape_file_set(const char *gtk_filename)
 	gtk_entry_set_text(GTK_ENTRY(entry_config_table), table);
 	*/
 
-	file = append_file(shp_file, "public", table, "the_geom", "-1", 'c', &iter);
+	file = append_file(shp_file, "public", table, GEOMETRY_DEFAULT, "-1", 'c', &iter);
 
 	set_filename_field_width();
 
@@ -1800,7 +1800,7 @@ pgui_action_shape_file_set(const char *gtk_filename)
 	                   FILENAME_COLUMN, shp_file,
 	                   SCHEMA_COLUMN, "public",
 	                   TABLE_COLUMN, table,
-	                   GEOMETRY_COLUMN, "the_geom",
+	                   GEOMETRY_COLUMN, GEOMETRY_DEFAULT,
 	                   SRID_COLUMN, "-1",
 	                   MODE_COLUMN, "Create",
 	                   -1);
