@@ -208,6 +208,63 @@ ST_DWithin(
 	  </refsection>
 	</refentry>
 	
+	<refentry id="ST_3DIntersects">
+		<refnamediv>
+			<refname>ST_3DIntersects</refname>
+
+			<refpurpose>Returns TRUE if the Geometries "spatially
+			intersect" in 3d - only for points and linestrings
+			</refpurpose>
+		</refnamediv>
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>boolean <function>ST_3DIntersects</function></funcdef>
+					<paramdef>
+						<type>geometry</type>
+						<parameter>geomA</parameter>
+					</paramdef>
+					<paramdef>
+						<type>geometry</type>
+						<parameter>geomB</parameter>
+					</paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+		<refsection>
+			<title>Description</title>
+			<para>Overlaps, Touches, Within all imply spatial intersection.  If any of the aforementioned
+				returns true, then the geometries also spatially intersect.
+				Disjoint implies false for spatial intersection.</para>
+
+
+			
+			<para>Availability: 2.0.0</para>
+			<note>
+			  <para>This function call will automatically include a bounding box
+			  comparison that will make use of any indexes that are available on the
+			  geometries.</para>
+			</note>
+			<para>&Z_support;</para>
+			<para>&sqlmm_compliant; SQL-MM 3: ?</para>
+		</refsection>
+		<refsection>
+		<title>Geometry Examples</title>
+<programlisting>SELECT ST_3DIntersects(pt, line), ST_Intersects(pt,line) 
+	FROM (SELECT 'POINT(0 0 2)'::geometry As pt, 
+		'LINESTRING (0 0 1, 0 2 3 )'::geometry As line) As foo;
+ st_3dintersects | st_intersects
+-----------------+---------------
+ f               | t
+(1 row)
+		</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Intersects"/></para>
+		</refsection>
+	</refentry>
+	
 	<refentry id="ST_3DMaxDistance">
 	  <refnamediv>
 		<refname>ST_3DMaxDistance</refname>
@@ -2179,7 +2236,7 @@ SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 			<refname>ST_Intersects</refname>
 
 			<refpurpose>Returns TRUE if the Geometries/Geography "spatially
-			intersect" - (share any portion of space) and FALSE if they don't (they are Disjoint).
+			intersect in 2D" - (share any portion of space) and FALSE if they don't (they are Disjoint).
 			For geography -- tolerance is 0.00001 meters (so any points that close are considered to intersect)
 			</refpurpose>
 		</refnamediv>
@@ -2268,7 +2325,7 @@ t
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Disjoint"/></para>
+			<para> <xref linkend="ST_3DIntersects" />, <xref linkend="ST_Disjoint"/></para>
 		</refsection>
 	</refentry>
 	<refentry id="ST_Length">
