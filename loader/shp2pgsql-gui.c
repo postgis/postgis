@@ -1632,6 +1632,7 @@ pgui_action_shape_file_set(const char *gtk_filename)
 	FILENODE *file;
 	char *shp_file;
 	int shp_file_len;
+	int i;
 	char *table_start;
 	char *table_end;
 	char *table;
@@ -1666,8 +1667,18 @@ pgui_action_shape_file_set(const char *gtk_filename)
 	memcpy(table, table_start, table_end - table_start);
 	table[table_end - table_start] = '\0';
 
+	/* Force the table name to lower case */
+	for(i = 0; i < table_end - table_start; i++)
+	{
+		if(isupper(table[i]) != 0)
+		{
+			table[i] = tolower(table[i]);
+		}
+	}
+
 	/* Set the table name into the configuration */
 	config->table = table;
+
 
 	/*
 	gtk_entry_set_text(GTK_ENTRY(entry_config_table), table);
