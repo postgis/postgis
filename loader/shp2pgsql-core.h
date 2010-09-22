@@ -63,7 +63,7 @@
 /*
  * Default geometry column name
  */
-#define GEOMETRY_DEFAULT "geom"
+#define GEOMETRY_DEFAULT "the_geom"
 #define GEOGRAPHY_DEFAULT "geog"
 
 /*
