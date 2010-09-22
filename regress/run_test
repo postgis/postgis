@@ -178,7 +178,7 @@ run_loader_test ()
 
 	show_progress
 
-	${SHP2PGSQL} ${TEST}.shp $_tblname \
+	${SHP2PGSQL} -g the_geom ${TEST}.shp $_tblname \
 		> ${TMPDIR}/loader \
 		2> ${TMPDIR}/loader.err
 
@@ -216,7 +216,7 @@ run_loader_test ()
 
 	show_progress
 
-	${SHP2PGSQL} -D ${TEST}.shp $_tblname \
+	${SHP2PGSQL} -g the_geom -D ${TEST}.shp $_tblname \
 		> ${TMPDIR}/loader \
 		2> ${TMPDIR}/loader.err
 
@@ -294,7 +294,7 @@ run_loader_test ()
 
 	show_progress
 
-	${SHP2PGSQL} -w ${TEST}.shp $_tblname \
+	${SHP2PGSQL} -g the_geom -w ${TEST}.shp $_tblname \
 		> ${TMPDIR}/loader \
 		2> ${TMPDIR}/loader.err
 
@@ -326,7 +326,7 @@ run_loader_test ()
 
 	show_progress
 
-	${SHP2PGSQL} -D -w ${TEST}.shp $_tblname \
+	${SHP2PGSQL} -g the_geom -D -w ${TEST}.shp $_tblname \
 		> ${TMPDIR}/loader \
 		2> ${TMPDIR}/loader.err
 
