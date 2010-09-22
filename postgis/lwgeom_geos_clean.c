@@ -655,8 +655,8 @@ LWGEOM_GEOS_makeValidMultiLine(const GEOSGeometry* gin)
 	GEOSGeometry** points;
 	GEOSGeometry* mline_out=0;
 	GEOSGeometry* mpoint_out=0;
-	GEOSGeometry* gout;
-	uint32 nlines, nlines_alloc;
+	GEOSGeometry* gout=0;
+	uint32 nlines=0, nlines_alloc;
 	uint32 npoints=0;
 	uint32 ngeoms=0, nsubgeoms;
 	uint32 i, j;
