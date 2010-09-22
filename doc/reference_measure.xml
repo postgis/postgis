@@ -91,7 +91,7 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>float <function>ST_Distance</function></funcdef>
+			<funcdef>float <function>ST_3DDistance</function></funcdef>
 
 			<paramdef><type>geometry </type>
 			<parameter>g1</parameter></paramdef>
@@ -218,7 +218,7 @@ ST_DWithin(
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>float <function>ST_Distance</function></funcdef>
+			<funcdef>float <function>ST_3DMaxDistance</function></funcdef>
 
 			<paramdef><type>geometry </type>
 			<parameter>g1</parameter></paramdef>
@@ -236,7 +236,6 @@ ST_DWithin(
 		projected units (spatial ref units). Currently only supported for 3D points and linestrings.  (combo one geometry is a point and one is a linestring)</para>
 
 		<para>&Z_support;</para>
-		<para>&sqlmm_compliant; SQL-MM ?</para>
 
 		<para>Availability: 2.0.0</para>
 	  </refsection>
