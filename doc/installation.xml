@@ -14,12 +14,26 @@ cd postgis-&last_release_version;
 ./configure
 make
 make install
+#BEGIN OPTIONAL -- this is already part of the tar
+# only really need this if installing from SVN
+cd doc/
+make comments-install
+#END OPTIONAL
 createdb yourdatabase
 createlang plpgsql yourdatabase
 psql -d yourdatabase -f postgis.sql
 psql -d yourdatabase -f postgis_comments.sql
 psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
-
+	
+	<note>
+	  <para>
+	  	NOTE: The postgis.sql and spatial_ref_sys.sql will be installed in the
+	  		/share/contrib/postgis-&last_minor_release_version;
+	  		of your PostGIS install.  If you didn't install the OPTIONAL comments section, you will need to manually copy the
+	  		postgis_comments.sql file from the doc folder of your source install to your /share/contrib/postgis-&last_minor_release_version;
+	  		folder.
+	  </para>
+	</note>
 	<para>
 	  The rest of this chapter goes into detail each of the above installation
 	  steps.

@@ -9,6 +9,9 @@
 <!ENTITY last_proj_release_version "4.6.1">
 <!ENTITY last_geos_release_version "3.0.3">
 
+<!--NOTE: hard coding for now because too lazy to figure out where exactly this is set -->
+<!ENTITY last_minor_release_version "1.5">
+
 <!ENTITY introduction SYSTEM "introduction.xml">
 <!ENTITY installation SYSTEM "installation.xml">
 <!ENTITY faq SYSTEM "faq.xml">
