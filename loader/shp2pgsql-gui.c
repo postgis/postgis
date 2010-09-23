@@ -1388,49 +1388,51 @@ pgui_read_connection(void)
 	const char *pg_pass = gtk_entry_get_text(GTK_ENTRY(entry_pg_pass));
 	const char *pg_db = gtk_entry_get_text(GTK_ENTRY(entry_pg_db));
 	char *connection_string = NULL;
+	char *escape_pg_pass = NULL;
 
-	stringbuffer_t *sb = stringbuffer_create();
-
-	/* Read the host */
-	if ( pg_host && strlen(pg_host) > 0 )
+	if ( ! pg_host || strlen(pg_host) == 0 )
 	{
-		vasbappend(sb, "host=%s ", pg_host);
+		pgui_seterr("Fill in the server host.");
+		return NULL;
 	}
-
-	/* Read the port */
-	if ( pg_port && strlen(pg_port) > 0 )
-	{	
-		if ( ! atoi(pg_port) )
-		{
-			pgui_seterr("Server port must be a number.");
-			stringbuffer_destroy(sb);
-			return NULL;
-		}
-		vasbappend(sb, "port=%s ", pg_port);
-	}
-
-	/* Read the user name */
-	if ( pg_user && strlen(pg_user) > 0 )
+	if ( ! pg_port || strlen(pg_port) == 0 )
 	{
-		vasbappend(sb, "user=%s ", pg_user);
+		pgui_seterr("Fill in the server port.");
+		return NULL;
 	}
-
-	/* Read the database name */
-	if ( pg_db && strlen(pg_db) > 0 )
+	if ( ! pg_user || strlen(pg_user) == 0 )
 	{
-		vasbappend(sb, "dbname=%s ", pg_db);
+		pgui_seterr("Fill in the user name.");
+		return NULL;
 	}
-
-	/* Read the password */
-	if ( pg_pass && strlen(pg_pass) > 0 )
+	if ( ! pg_db || strlen(pg_db) == 0 )
 	{
-		vasbappend(sb, "password=%s ", pg_pass);
+		pgui_seterr("Fill in the database name.");
+		return NULL;
+	}
+	if ( ! atoi(pg_port) )
+	{
+		pgui_seterr("Server port must be a number.");
+		return NULL;
 	}
 
-	/* Return the connection string */
-	connection_string = strdup(stringbuffer_getstring(sb));
-	stringbuffer_destroy(sb);	
-	return connection_string;
+	/* Escape the password in case it contains any special characters */
+	escape_pg_pass = escape_connection_string((char *)pg_pass);
+
+	if ( ! lw_asprintf(&connection_string, "user=%s password='%s' port=%s host=%s dbname=%s", pg_user, escape_pg_pass, pg_port, pg_host, pg_db) )
+	{
+		return NULL;
+	}
+
+	/* Free the escaped version */
+	if (escape_pg_pass != pg_pass)
+		free(escape_pg_pass);
+
+	if ( connection_string )
+	{
+		return connection_string;
+	}
+	return NULL;
 }
 
 static void
@@ -1448,7 +1450,7 @@ pgui_sanitize_connection_string(char *connection_string)
 	char *ptr = strstr(connection_string, "password");
 	if ( ptr )
 	{
-		ptr += 9;
+		ptr += 10;
 		while ( *ptr != '\'' && *ptr != '\0' )
 		{
 			/* If we find a \, hide both it and the next character */
