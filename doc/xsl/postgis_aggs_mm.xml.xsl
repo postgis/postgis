@@ -477,7 +477,7 @@
 						<xsl:variable name="refname">
 							<xsl:value-of select="refnamediv/refname" />
 						</xsl:variable>
-				<!-- For each section if there is note about enhanced in this version -->
+				<!-- For each section if there is note about changed in this version -->
 							<xsl:for-each select="refsection">
 								<xsl:for-each select="para">
 									<xsl:choose>
