@@ -1024,7 +1024,7 @@ MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)
 			reverse of a GROUP BY in that it creates new rows. For example it
 			can be use to expand MULTIPOLYGONS into POLYGONS.</para>
 
-			<para>Availability: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+			<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 			<para>Availability: PostGIS 1.0.0RC1. Requires PostgreSQL 7.3 or higher.</para>
 			
 			<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
@@ -1110,7 +1110,7 @@ SELECT (a.p_geom).path[1] As path, ST_AsEWKT((a.p_geom).geom) As geom_ewkt
 					<varname>i</varname> is the ring number (1 is outer; inner rings follow) and <varname>j</varname> 
 					enumerates the <varname>POINT</varname>s (again 1-based index).
 				</para>
-				<para>Availability: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+				<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 				<para>Availability: 1.5.0</para>
 				<para>&curve_support;</para>
 				<para>&P_support;</para>
@@ -1819,7 +1819,7 @@ geomtextrep
 		</para>
 
 		<para>&Z_support;</para>
-		<para>Availability: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
+		<para>Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 	  </refsection>

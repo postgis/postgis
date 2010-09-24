@@ -358,7 +358,7 @@ SELECT ST_3DMaxDistance(
 		  ST_MultiSurface value. For geometry Area is in the units of the srid.  For geography area is in square meters  and defaults to measuring about the spheroid of the geography (currently only WGS84).
 		  To measure around the faster but less accurate sphere -- ST_Area(geog,false).
 		  </para>
-		  	<para>Availability: 2.0.0 - support for 2D polyhedral surfaces was introduced.</para>
+		  	<para>Enhanced: 2.0.0 - support for 2D polyhedral surfaces was introduced.</para>
 		 	<para>&sfs_compliant;</para>
 		 	<para>&sqlmm_compliant; SQL-MM 3: 8.1.2, 9.5.3</para>
 		 	<para>&P_support;</para>

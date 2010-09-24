@@ -295,10 +295,11 @@ ST_GeogFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\
 			<para>The EWKB format is not an OGC standard, but a PostGIS specific format that includes the spatial reference system (SRID)
 			identifier</para>
 		</note>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para>Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
+		<para>&T_support;</para>
 	  </refsection>
 
 	  <refsection>
@@ -348,10 +349,11 @@ SELECT ST_GeomFromEWKB('\001\002\000\000 \255\020\000\000\003\000\000\000\344J=\
 			<para>The EWKT format is not an OGC standard, but an PostGIS specific format that includes the spatial reference system (SRID)
 			identifier</para>
 		</note>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para>Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
+		<para>&T_support;</para>
 	  </refsection>
 
 	  <refsection>

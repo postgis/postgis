@@ -54,7 +54,7 @@
 			<note><para>This operand will make use of any indexes that may be available on the
 				geometries.</para></note>
 
-			<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+			<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 			<para>Availability: 1.5.0 support for geography was introduced.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>

@@ -47,7 +47,7 @@
 			  	require the old behavior, then SET bytea_output='escape' in your database.</para>
 			</note>
 
-			<para>Availability: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+			<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 			<para>Availability: 1.5.0 geography support was introduced.</para>
 			<para>&sfs_compliant; s2.1.1.1</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.37</para>
@@ -124,7 +124,7 @@
 			<note>
 			  <para>ST_AsEWKB is the reverse of ST_GeomFromEWKB.  Use ST_GeomFromEWKB to convert to a postgis geometry from ST_AsEWKB representation.</para>
 			</note>
-			<para>Availability: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+			<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 			<para>&Z_support;</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
@@ -196,7 +196,7 @@
 			<note>
 			  <para>ST_AsEWKT is the reverse of <xref linkend="ST_GeomFromEWKT" />.  Use <xref linkend="ST_GeomFromEWKT" /> to convert to a postgis geometry from ST_AsEWKT representation.</para>
 			</note>
-			<para>Availability: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+			<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 			<para>&Z_support;</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
@@ -504,7 +504,7 @@ namespace prefix or no prefix (if empty). If null or omitted 'gml' prefix is use
 
 		  <para>Availability: 1.3.2</para>
 		  <para>Availability: 1.5.0 geography support was introduced.</para>
-		  <para>Availability: 2.0.0 prefix support was introduced. Support for Polyhedral surfaces was introduced.</para>
+		  <para>Enhanced: 2.0.0 prefix support was introduced. Support for Polyhedral surfaces was introduced.</para>
 		 
 
 
@@ -723,7 +723,7 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 		  <para>Availability: 1.2.2 - later variants that include version param came in 1.3.2</para>
 		</note>
 		<note>
-		  <para>Availability: 2.0.0 - Add prefix namespace. Default is no prefix</para>
+		  <para>Enhanced: 2.0.0 - Add prefix namespace. Default is no prefix</para>
 		</note>
 
 		<note>
