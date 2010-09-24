@@ -150,7 +150,8 @@ SELECT '#234', ST_AsText(ST_GeomFromText('COMPOUNDCURVE( (0 0,1 1) )'));
 --SELECT '#239', ST_AsSVG('010700002031BF0D0000000000');
 
 -- #241 --
-CREATE TABLE c AS SELECT ST_MakeLine(ST_Point(-10,40),ST_Point(40,-10)) As the_geom;
+CREATE TABLE c ( the_geom GEOMETRY);
+INSERT INTO c SELECT ST_MakeLine(ST_Point(-10,40),ST_Point(40,-10)) As the_geom;
 INSERT INTO c SELECT ST_MakeLine(ST_Point(-10,40),ST_Point(40,-10)) As the_geom;
 SELECT '#241', sum(ST_LineCrossingDirection(the_geom, ST_GeomFromText('LINESTRING(1 2,3 4)'))) FROM c;
 DROP TABLE c;

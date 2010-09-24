@@ -1,7 +1,8 @@
 SELECT 'Starting up MapServer/Geoserver tests...';
 -- Set up the data table
 SELECT 'Setting up the data table...';
-CREATE TABLE wmstest AS SELECT lon * 100 + lat AS id, st_setsrid(st_buffer(st_makepoint(lon, lat),1.0),4326) AS pt
+CREATE TABLE wmstest ( id INTEGER, pt GEOMETRY );
+INSERT INTO wmstest SELECT lon * 100 + lat AS id, st_setsrid(st_buffer(st_makepoint(lon, lat),1.0),4326) AS pt
 FROM (select lon, generate_series(-80,80, 5) AS lat FROM (SELECT generate_series(-175, 175, 5) AS lon) AS sq1) AS sq2;
 INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'public','wmstest','pt',2,4326,'POLYGON');
 ALTER TABLE wmstest add PRIMARY KEY ( id );
