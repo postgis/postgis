@@ -464,31 +464,6 @@
 							</xsl:for-each>
 					</xsl:for-each>
 				</itemizedlist>
-				
-				<para>The functions given below are PostGIS functions that are changed and may be breaking changes in PostGIS 2.0.</para>
-				<itemizedlist>
-				<!-- Pull out the purpose section for each ref entry   -->
-					<xsl:for-each select='sect1/refentry'>
-						<xsl:sort select="@id"/>
-						<xsl:variable name="refid">
-							<xsl:value-of select="@id" />
-						</xsl:variable>
-						
-						<xsl:variable name="refname">
-							<xsl:value-of select="refnamediv/refname" />
-						</xsl:variable>
-				<!-- For each section if there is note about changed in this version -->
-							<xsl:for-each select="refsection">
-								<xsl:for-each select="para">
-									<xsl:choose>
-										<xsl:when test="contains(.,'Changed: 2.0')">
-											<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /></simpara></listitem>
-										</xsl:when>
-									</xsl:choose>
-								</xsl:for-each>
-							</xsl:for-each>
-					</xsl:for-each>
-				</itemizedlist>
 			</sect2>
 			<sect2 id="NewFunctions_1_5">
 				<title>PostGIS Functions new, behavior changed, or enhanced in 1.5</title>
