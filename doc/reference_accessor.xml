@@ -1443,14 +1443,14 @@ SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 
 		<refnamediv>
 			<refname>ST_NumGeometries</refname>
 			<refpurpose>If geometry is a GEOMETRYCOLLECTION (or MULTI*) return the
-			number of geometries, otherwise return NULL.</refpurpose>
+			number of geometries, for single geometries will return 1, otherwise return NULL.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
 			<funcdef>integer <function>ST_NumGeometries</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>a_multi_or_geomcollection</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 		</refsynopsisdiv>
@@ -1459,9 +1459,11 @@ SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 
 			<title>Description</title>
 
 			<para>Returns the number of Geometries. If geometry is a GEOMETRYCOLLECTION (or MULTI*) return the
-			number of geometries, otherwise return NULL.</para>
+			number of geometries, for single geometries will return 1, otherwise return NULL.</para>
 
 			<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+			<para>Changed: 2.0.0 In prior versions this would return NULL if the geometry was not a collection/MULTI type. 
+				2.0.0+ now returns 1 for single geometries e.g POLYGON, LINESTRING, POINT.</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 9.1.4</para>
 			<para>&Z_support;</para>
 			<para>&P_support;</para>
@@ -1472,8 +1474,8 @@ SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 
 			<title>Examples</title>
 
 <programlisting>
---Although ST_NumGeometries will return null when passed a single, you can wrap in ST_Multi to force 1 or more for all geoms
-SELECT ST_NumGeometries(ST_Multi(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)')));
+--Prior versions would have returned NULL for this -- in 2.0.0 this returns 1
+SELECT ST_NumGeometries(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));
 --result
 1
 
