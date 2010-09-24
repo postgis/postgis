@@ -35,7 +35,7 @@
 		  <para>This function also indicates if the geometry is measured,
 		  by returning a string of the form 'POINTM'.</para>
 		</note>
-		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 		<para>&sfs_compliant;</para>
 		<para>&curve_support;</para>
 		<para>&Z_support;</para>
@@ -222,7 +222,7 @@ MULTIPOINT(-1 1 1,1 1 0.75)
 		</para>
 
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.2</para>
-		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced. No longer throws an exception if given empty geometry.</para>
+		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced. No longer throws an exception if given empty geometry.</para>
 		<note> <para>Prior to 2.0.0, this function throws an exception if used with empty geometry. </para></note>
 		<para>&P_support;</para>
 	  </refsection>
@@ -487,7 +487,7 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 		<note>
 		  <para>If you want to extract all geometries, of a geometry, ST_Dump is more efficient and will also work for singular geoms.</para>
 		</note>
-		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 9.1.5</para>
 		<para>&Z_support;</para>
@@ -556,7 +556,7 @@ WHERE n &lt;= ST_NumGeometries(the_geom);
 
 			<para>Returns the type of the geometry as a string. EG: 'ST_Linestring', 'ST_Polygon','ST_MultiPolygon' etc. This function differs from GeometryType(geometry) in the case of the string and ST in front that is returned, as well as the fact that it will not indicate whether the geometry is measured.</para>
 
-			<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+			<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 		 	<para>&sqlmm_compliant;	SQL-MM 3: 5.1.4</para>
 		 	<para>&Z_support;</para>
 		 	<para>&P_support;</para>
@@ -681,7 +681,7 @@ FROM (SELECT ST_BuildArea(
 		
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
-		<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 
 		<para>&P_support;</para>
 
@@ -1367,7 +1367,7 @@ SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 150407,222020 1
 			<title>Description</title>
 
 			<para>Return the number of points in a geometry.  Works for all geometries.</para>
-			<para>Availability: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+			<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 			<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 			<para>&Z_support;</para>
 			<para>&curve_support;</para>
@@ -1461,7 +1461,7 @@ SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 
 			<para>Returns the number of Geometries. If geometry is a GEOMETRYCOLLECTION (or MULTI*) return the
 			number of geometries, otherwise return NULL.</para>
 
-			<para>Availability: 2.0.0 Support for Polyhedral surfaces was introduced.</para>
+			<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 9.1.4</para>
 			<para>&Z_support;</para>
 			<para>&P_support;</para>
