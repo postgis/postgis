@@ -22,7 +22,7 @@
 		<title>Description</title>
 
 		<para>Aggregate. Constructs an array of geometries.</para>
-		<para>Availability: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
@@ -83,7 +83,7 @@ all_em|grabone   | grab_rest
 
 		<para>Returns a BOX2D representing the maximum extents of the geometry.</para>
 		
-		<para>Availability: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -133,7 +133,7 @@ all_em|grabone   | grab_rest
 		<title>Description</title>
 
 		<para>Returns a BOX3D representing the maximum extents of the geometry.</para>
-		<para>Availability: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -283,7 +283,7 @@ BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
 			<para>Availability: 1.5.0 behavior changed to output double precision instead of float4 coordinates.</para>
 		</note>
 		
-		<para>Availability: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 
@@ -357,7 +357,7 @@ SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' As bo
 		  <para>Availability: 1.4.0 As of 1.4.0 now returns a box3d_extent instead of box2d object.</para>
 		</note>
 		
-		<para>Availability: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 
@@ -430,7 +430,7 @@ SELECT ST_SetSRID(ST_Extent(the_geom),2249) as bextent FROM sometable;
 			a geometry with SRID meta data.  The coordinates are in the units of the spatial ref of the orginal geometries.</para>
 		</note>
 
-		<para>Availability: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
