@@ -8,7 +8,7 @@ PostGIS 1.5.2
    - Loader: fix handling of empty (0-verticed) geometries in shapefiles.
      (Sandro Santilli)
    - #536, Geography ST_Intersects, ST_Covers, ST_CoveredBy and
-     Geometry ST_Equals not using spatial index (Regina Obe, Nicklas Aven)
+     Geometry ST_Equals not using spatial index (Regina Obe, Nicklas Avén)
    - #573, Improvement to ST_Contains geography
    - Loader: Add support for command-q shutdown in Mac GTK build (Paul Ramsey)
    - #393, Loader: Add temporary patch for large DBF files 
