@@ -25,7 +25,13 @@ REQUIREMENTS
 PostGIS Raster core lib depends on liblwgeom, as found in postgis
 source package as of SVN 2009-01 (latest 1.3.5 release won't work).
 
+Some PostGIS Raster functions depends on GDAL library version 1.6.0 or
+higher
+
+PostGIS Raster loader dependes on Python GDAL bindings.
+
 PostgreSQL interface depends on PostgreSQL version 8.3.5.
+
 
 BUILD
 -----
