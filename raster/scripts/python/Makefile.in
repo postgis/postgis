@@ -1,0 +1,27 @@
+#############################################################################
+# $Id$
+#
+# Copyright (c) 2009 Pierre Racine <pierre.racine@sbf.ulaval.ca>
+#
+# This is free software; you can redistribute and/or modify it under
+# the terms of the GNU General Public Licence. See the COPYING file.
+#
+#############################################################################
+CP = cp -p
+
+# Filenames with extension as determined by the OS
+GDAL2RASTER=gdal2raster.py
+
+# PostgreSQL executable directory
+PGSQL_BINDIR=@PGSQL_BINDIR@
+
+all:
+
+install:
+	$(CP) $(GDAL2RASTER) $(PGSQL_BINDIR)/$(GDAL2RASTER)
+
+uninstall:
+	$(RM) $(PGSQL_BINDIR)/$(GDAL2RASTER)
+
+clean:
+	$(RM) *.o

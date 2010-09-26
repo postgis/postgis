@@ -1,0 +1,93 @@
+#############################################################################
+# $Id$
+#
+# Copyright (c) 2009 Sandro Santilli <strk@keybit.net>, Pierre Racine <pierre.racine@sbf.ulaval.ca>
+#
+# This is free software; you can redistribute and/or modify it under
+# the terms of the GNU General Public Licence. See the COPYING file.
+#
+#############################################################################
+
+POSTGIS_SRC=@POSTGIS_SRCDIR@
+
+TEST_METADATA = \
+	check_raster_columns.sql \
+	check_raster_overviews.sql \
+	$(NULL)
+
+TEST_IO = \
+	rt_io.sql \
+	$(NULL)
+
+TEST_FUNC = \
+	create_rt_bytea_test.sql \
+	rt_bytea.sql \
+	create_rt_box2d_test.sql \
+	rt_box2d.sql \
+	rt_addband.sql \
+	$(NULL)
+
+TEST_PROPS = \
+	create_rt_properties_test.sql \
+	rt_dimensions.sql \
+	rt_pixelsize.sql \
+	rt_upperleft.sql \
+	rt_rotation.sql \
+	rt_georeference.sql \
+	rt_set_properties.sql \
+	$(NULL)
+
+TEST_BANDPROPS = \
+	create_rt_band_properties_test.sql \
+	rt_band_properties.sql \
+	rt_set_band_properties.sql \
+	$(NULL)
+
+TEST_PIXEL = \
+	rt_pixelvalue.sql \
+	$(NULL)
+
+TEST_UTILITY = \
+	create_rt_utility_test.sql \
+	rt_utility.sql \
+	$(NULL)
+
+TEST_GIST = \
+	create_rt_gist_test.sql \
+	rt_above.sql \
+	rt_below.sql \
+	rt_contained.sql \
+	rt_contain.sql \
+	rt_left.sql \
+	rt_overabove.sql \
+	rt_overbelow.sql \
+	rt_overlap.sql \
+	rt_overleft.sql \
+	rt_overright.sql \
+	rt_right.sql \
+	rt_same.sql \
+	$(NULL)
+	
+TEST_SREL = \
+	rt_spatial_relationship.sql \
+	$(NULL)
+	
+TEST_BUGS = \
+	bug_test_car5.sql
+
+TESTS = $(TEST_METADATA) $(TEST_IO) $(TEST_FUNC) \
+		$(TEST_PROPS) $(TEST_BANDPROPS) $(TEST_PIXEL) \
+		$(TEST_UTILITY) $(TEST_GIST) $(TEST_SREL) \
+		$(TEST_BUGS)
+
+all: run_test
+
+run_test: run_test.in Makefile
+	sed -e "s#@POSTGIS_SRC@#$(POSTGIS_SRC)#" $< > $@
+	chmod +x $@
+
+post-install-check check: run_test
+	./run_test $(TESTS)
+
+clean:
+	$(RM) run_test

@@ -1,0 +1,271 @@
+RFC1: serialized format (storage) for RASTER type
+------------------------------------------------------
+$Author$
+$Date$
+$Revision$
+------------------------------------------------------
+
+The goals of the serialized version for RASTER type are:
+
+ - Small memory footprint on deserialization
+   This means that the amount of allocated memory
+   required for deserialization is minimal
+
+ - Fast access 
+   Access to band data must be aligned, saving from
+   memory copies on full scan.
+
+ - Ease of format switch
+   On-disk format must be allowed to change 
+   w/out need for dump-reload of the whole
+   database.
+
+The first two goals boil down to forcing alignment of band
+data in the serialized format itself, which in turn will
+require variable padding based on pixeltype of each band.
+
+For simplicity we will ensure that each band of the 
+raster starts at the 8-byte boundary and thus pad
+previous structures in the stream accordingly.
+
+The structure will then look like this:
+
+ [HEADER]  [BAND0]    [BAND1]    [BAND2]
+           ^aligned   ^aligned   ^aligned
+
+The third goal can be accomplished by adding a version
+number to the serialized format so that in case of changes
+the deserializer can pick the correct parsing procedure
+based on that.
+
+The HEADER
+----------
+
+PostgreSQL forces a 4-byte size field a the start of
+the detoasted datum, and ensure this start of structure
+is aligned to 8-byte.  We'll add version number right after it,
+and then make sure the total size is a multiple of 8 bytes.
+
+ The following structure is composed by 8 slots of 8-bytes,
+ totaling 64 bytes:
+
+ struct rt_raster_serialized_t {
+
+    /*---[ 8 byte boundary ]---{ */
+    uint32_t size;    /* required by postgresql: 4 bytes */
+    uint16_t version; /* format version (this is version 0): 2 bytes */
+    uint16_t numBands; /* Number of bands: 2 bytes */
+
+    /* }---[ 8 byte boundary ]---{ */
+    double scaleX; /* pixel width: 8 bytes */
+
+    /* }---[ 8 byte boundary ]---{ */
+    double scaleY; /* pixel height: 8 bytes */
+
+    /* }---[ 8 byte boundary ]---{ */
+    double ipX; /* insertion point X: 8 bytes */
+
+    /* }---[ 8 byte boundary ]---{ */
+    double ipY; /* insertion point Y: 8 bytes */
+
+    /* }---[ 8 byte boundary ]---{ */
+    double skewX;  /* rotation about the X axis: 8 bytes */
+
+    /* }---[ 8 byte boundary ]---{ */
+    double skewY;  /* rotation about the Y axis: 8 bytes */
+
+    /* }---[ 8 byte boundary ]--- */
+    int32_t srid; /* Spatial reference id: 4 bytes */
+    uint16_t width;  /* pixel columns: 2 bytes */
+    uint16_t height; /* pixel rows: 2 bytes */
+ };
+
+The BANDS
+---------
+
+Given the serialized raster header structure above, it
+is guaranteed that a serialized band always start at 8-bytes
+boundary, so it's simpler to compute padding required at
+the end of each band to ensure next band will be guaranteed
+the same assumption.
+
+We'll need to take 2 padding spots into account:
+the first is to ensure actual band data is aligned accordingly
+to the pixel type (and storage flag) needs, the second is to
+ensure next band (if any) will also be aligned to 8-bytes:
+
+ [PIXELTYPE+STORAGE_FLAG] [DATA_PADDING] [DATA] [TRAILING_PADDING]
+
+The total size of a band's serialized form in bytes
+must be a multiple of 8.
+
+The maximum required data padding size will be of 7 bytes
+(64bit pixel type). The maximum required trailing padding size
+will be of 7 bytes.
+
+ Pixel type and storage flag
+ ---------------------------
+
+ Pixel type specifies type of pixel values in a band.
+ Storage flag specifies whether the band data is stored
+ as part of the datum or is to be found on the server's
+ filesytem.
+
+ There are currently 11 supported pixel value types, so 4
+ bits are enough to account for all. We'll reserve
+ the upper 4 bits for generic flags and define upmost as
+ storage flag:
+ 
+ #define BANDTYPE_FLAGS_MASK 0xF0
+ #define BANDTYPE_PIXTYPE_MASK 0x0F
+
+ #define BANDTYPE_FLAG_OFFDB     (1<<7)
+ #define BANDTYPE_FLAG_HASNODATA (1<<6)
+ #define BANDTYPE_FLAG_RESERVED2 (1<<5)
+ #define BANDTYPE_FLAG_RESERVED3 (1<<4)
+
+ Data padding
+ ------------
+
+ Band alignment depends on pixeltypes, as follows:
+
+    - PT_1BB, PT_2BUI, PT_4BUI, PT_8BSI, PT_8BUI:
+      No alignment required, each value is 1 byte.
+
+    - PT_16BSI, PT_16BUI:
+      Data must be aligned to 2-bytes boundary.
+
+    - PT_32BSI, PT_32BUI, PT_32BF:
+      Data must be aligned to 4-bytes boundary.
+
+    - PT_64BF:
+      Data must be aligned to 8-bytes boundary.
+ 
+ Accordingly we can then define the following structures:
+
+      struct rt_band8_serialized_t {
+            uint8_t pixeltype;
+            uint8_t data[1]; /* no data padding */
+      }
+
+      struct rt_band16_serialized_t {
+            uint8_t pixeltype;
+            uint8_t padding; /* 1-byte padding */
+            uint8_t data[1];
+      }
+
+      struct rt_band32_serialized_t {
+            uint8_t pixeltype;
+            uint8_t padding[3]; /* 3-bytes padding */
+            uint8_t data[1];
+      }
+
+      struct rt_band64_serialized_t {
+            uint8_t pixeltype;
+            uint8_t padding[7]; /* 7-bytes padding */
+            uint8_t data[1];
+      }
+
+ And an abstract base class:
+
+      struct rt_band_serialized_t {
+            uint8_t pixeltype
+      }
+
+ Data
+ ----
+
+ The band data - guaranteed to be always aligned as required by
+ pixeltype - will start with the nodata value.
+ After that we may have pixel values or off-db raster reference
+ depending on OFFDB flag in the pixeltype field:
+
+ * For in-db bands the nodata value is followed by a value
+   for each column in first row, then in second row and so on.
+   For example, a 2x2 raster band data will have this form:
+
+      [nodata] [x:0,y:0] [x:1,y:0] [x:0,y:1] [x:1,y:1]
+
+   Where the size of the [...] blocks is 1,2,4 or 8 bytes depending
+   on pixeltype. Endiannes of multi-bytes value is the host endiannes.
+
+ * For off-db bands the nodata value is followed by a band number
+   followed by a null-terminated string expressing the path to
+   the raster file:
+
+      [nodata] [bandno] [path]
+
+   Where the size of the [nodata] block is 1,2,4 or 8 bytes depending
+   on pixeltype (endiannes of multi-bytes value is the host endiannes),
+   size of [bandno] is 1 byte, and [path] is null-terminated.
+   
+
+ Trailing padding
+ ----------------
+
+ The trailing band padding is used to ensure next band (if any)
+ will start on the 8-bytes boundary.
+ It is both dependent on raster dimensions (number of values)
+ and band data pixel type (size of each value).
+
+ In order to obtain the required padding size for a band
+ we'll need to compute the minimum size required to hold the band
+ data, add the data padding and pixeltype sizes, and then grow
+ the resulting size to reach a multiple of 8 bytes:
+
+    size_t 
+    rt_band_serialized_size(rt_context ctx, rt_band band)
+    {
+        rt_pixtype pixtype = rt_band_get_pixtype(ctx, band);
+        size_t sz;
+
+        /* pixeltype + data padding */
+        sz = rt_pixtype_alignment(ctx, pixtype);
+
+        /* add data size */
+        sz += rt_band_get_data_size(ctx, band);
+
+        /* grow size to reach a multiple of 8 bytes */
+        sz = TYPEALIGN(sz, 8);
+
+        assert( !(sz%8) );
+
+        return sz;
+    }
+
+
+Example sizes
+-------------
+
+255x255 single band PT_16BUI:
+    header size:                        64 +
+    pixeltype+data_padding:              2 +
+    data size:     (255*255+1)*2 == 130052 =
+                                    130118 +
+    trailing padding:                    2 =
+    total size:                     130120 (~127k)
+
+255x255 single band PT_8BUI:
+    header size:                        64 +
+    pixeltype+data_padding:              1 +
+    data size:        (255*255+1) == 65026 =
+                                     65091 + 
+    trailing padding:                    5 =
+    total size:                      65096 (~63k)
+
+64x64 single band PT_16BSI:
+    header size:                        64 +
+    pixeltype+data_padding:              2 +
+    data size:         (64*64+1)*2 == 8194 =
+                                      8260 + 
+    trailing padding:                    4 =
+    total size:                       8264 (~8k -- >page size)
+
+64x64 single band PT_8BUI:
+    header size:                        64 +
+    pixeltype+data_padding:              1 +
+    data size:           (64*64+1) == 4097 =
+                                      4162 + 
+    trailing padding:                    6 =
+    total size:                       4168 (~4k)
+

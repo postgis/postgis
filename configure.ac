@@ -657,9 +657,205 @@ SHLIB_LINK="$PGSQL_LDFLAGS $GEOS_LDFLAGS $PROJ_LDFLAGS -lgeos_c -lproj $XML2_LDF
 AC_SUBST([SHLIB_LINK])
 dnl AC_MSG_RESULT([SHLIB_LINK: $SHLIB_LINK])
 
+dnl ====================================
+dnl raster stuff
+dnl ====================================
+AC_ARG_WITH([raster],
+    [AS_HELP_STRING([--with-raster], [compile the raster stuff (requires GDAL >=
+            1.6.0)])], [RASTER="yes"], [RASTER="no"])
+
+if test "x$RASTER" = "xyes"; then
+    AC_MSG_RESULT([RASTER: Raster build requested])
+
+    AC_CONFIG_HEADERS([raster/raster_config.h])
+
+    dnl
+    dnl Raster Version Information imported from raster/Version.config 
+    dnl
+    POSTGIS_RASTER_MAJOR_VERSION=`cat raster/Version.config | grep POSTGIS_RASTER_MAJOR_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
+    POSTGIS_RASTER_MINOR_VERSION=`cat raster/Version.config | grep POSTGIS_RASTER_MINOR_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
+    POSTGIS_RASTER_MICRO_VERSION=`cat raster/Version.config | grep POSTGIS_RASTER_MICRO_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
+
+
+    AC_DEFINE_UNQUOTED([POSTGIS_RASTER_MAJOR_VERSION], ["$POSTGIS_RASTER_MAJOR_VERSION"], [PostGIS Raster major version])
+    AC_DEFINE_UNQUOTED([POSTGIS_RASTER_MINOR_VERSION], ["$POSTGIS_RASTER_MINOR_VERSION"], [PostGIS Raster minor version])
+    AC_DEFINE_UNQUOTED([POSTGIS_RASTER_MICRO_VERSION], ["$POSTGIS_RASTER_MICRO_VERSION"], [PostGIS Raster micro version])
+
+    AC_SUBST([POSTGIS_RASTER_MAJOR_VERSION])
+    AC_SUBST([POSTGIS_RASTER_MINOR_VERSION])
+    AC_SUBST([POSTGIS_RASTER_MICRO_VERSION])
+
+    dnl ==============================
+    dnl Define raster version macros
+    dnl ==============================
+    POSTGIS_RASTER_VERSION="$POSTGIS_RASTER_MAJOR_VERSION.$POSTGIS_RASTER_MINOR_VERSION"
+    POSTGIS_RASTER_LIB_VERSION="$POSTGIS_RASTER_MAJOR_VERSION.$POSTGIS_RASTER_MINOR_VERSION.$POSTGIS_RASTER_MICRO_VERSION"
+    POSTGIS_RASTER_BUILD_DATE=`date -u "+%Y-%m-%d %H:%M:%S"`
+    POSTGIS_RASTER_SCRIPTS_VERSION="$POSTGIS_RASTER_LIB_VERSION"
+
+    AC_DEFINE_UNQUOTED([POSTGIS_RASTER_VERSION], ["$POSTGIS_RASTER_VERSION"], [WKTRaster version])
+    AC_DEFINE_UNQUOTED([POSTGIS_RASTER_LIB_VERSION], ["$POSTGIS_RASTER_LIB_VERSION"], [WKTRaster library version])
+    AC_DEFINE_UNQUOTED([POSTGIS_RASTER_BUILD_DATE], ["$POSTGIS_RASTER_BUILD_DATE"], [WKTRaster build date])
+    AC_DEFINE_UNQUOTED([POSTGIS_RASTER_SCRIPTS_VERSION], ["$POSTGIS_RASTER_SCRIPTS_VERSION"], [WKTRaster scripts version])
+
+    AC_SUBST([POSTGIS_RASTER_VERSION])
+    AC_SUBST([POSTGIS_RASTER_LIB_VERSION])
+    AC_SUBST([POSTGIS_RASTER_BUILD_DATE])
+    AC_SUBST([POSTGIS_RASTER_SCRIPTS_VERSION])
+
+    dnl ================================================
+    dnl Vars needed for raster extension
+    dnl ================================================
+    POSTGIS_SRCDIR=`$PWDREGRESS`
+    LIBLWGEOM_CFLAGS="-I${POSTGIS_SRCDIR}/liblwgeom"
+    LIBLWGEOM_LDFLAGS="${POSTGIS_SRCDIR}/liblwgeom/liblwgeom.a"
+
+    AC_SUBST([POSTGIS_SRCDIR])
+    AC_SUBST([LIBLWGEOM_CFLAGS])
+    AC_SUBST([LIBLWGEOM_LDFLAGS])
+
+    dnl ========================================================================
+    dnl Determine GDAL Support
+    dnl
+    dnl TODO: Now, --with-gdal can have only 1 value: path to gdal-config. It
+    dnl could be useful to allow path to GDAL tree, because the cflags and the
+    dnl libs can be obtained from GDAL tree too, apart from gdal-config
+    dnl How to get cflags and libs from GDAL tree?
+    dnl
+    dnl LIBGDAL_CFLAGS="-I$with_gdal/port -I$with_gdal/ogr -I$with_gdal/alg -I$with_gdal/gcore -I$with_gdal/frmts "
+    dnl LIBGDAL_LDFLAGS="-L${with_gdal}/.libs -lgdal -L${with_gdal}/ -lgdal"
+    dnl ========================================================================
+    dnl not used right now
+    USE_GDAL_SOURCE_TREE="no"
+    LIBGDAL_CFLAGS=""
+    LIBGDAL_LDFLAGS=""
+
+    AC_MSG_CHECKING([for GDAL])
+    AC_ARG_WITH([gdal],
+	    AC_HELP_STRING([--with-gdal=@<:@ARG@:>@],[specify location of gdal-config (ARG=path)]),
+        	[GDAL_CONFIG="$withval"], [GDAL_CONFIG=""])
+
+    if test "x$GDAL_CONFIG" = "x"; then
+	    dnl If GDAL_CONFIG path not provided, try to find it
+        GDAL_CONFIG_TMP=`which gdal-config`
+        if test "`basename xx/${GDAL_CONFIG_TMP}`" = "gdal-config" ; then
+            AC_MSG_RESULT([yes])
+            GDAL_CONFIG=${GDAL_CONFIG_TMP}
+        else
+            AC_MSG_ERROR([gdal-config not found. Try --with-gdal=<path to gdal-config>])
+        fi
+    fi
+
+    dnl Extract the version information from gdal-config
+    dnl Note: we extract the major & minor separately, ensure they are numeric,
+    dnl and then combine to give the final version.
+    dnl This is to guard against user error...
+    GDAL_MAJOR_VERSION=`$GDAL_CONFIG --version | cut -d. -f1 | sed 's/[[^0-9]]//g'`
+    GDAL_MINOR_VERSION=`$GDAL_CONFIG --version | cut -d. -f2 | sed 's/[[^0-9]]//g'`
+    GDAL_PATCH_VERSION=`$GDAL_CONFIG --version | cut -d. -f3 | sed 's/[[^0-9]]//g'`
+    GDAL_FULL_VERSION=`$GDAL_CONFIG --version`
+    POSTGIS_GDAL_VERSION="$GDAL_MAJOR_VERSION$GDAL_MINOR_VERSION"
+    GDAL_NUMERIC_VERSION="$GDAL_MAJOR_VERSION$GDAL_MINOR_VERSION$GDAL_PATCH_VERSION"
+
+    dnl Ensure that we are using GDAL >= 1.6.0
+    AC_MSG_RESULT([checking GDAL version... $GDAL_FULL_VERSION])
+    if test ! "$GDAL_NUMERIC_VERSION" -ge 160; then
+	    AC_MSG_ERROR([POSTGIS requires GDAL >= 1.6.0])
+    fi
+
+    dnl Extract the linker and include flags 
+    LIBGDAL_LDFLAGS=`$GDAL_CONFIG --libs`
+    LIBGDAL_CFLAGS=`$GDAL_CONFIG --cflags`
+
+    AC_SUBST([LIBGDAL_CFLAGS])
+    AC_SUBST([LIBGDAL_LDFLAGS])
+
+    dnl ===========================================================================
+    dnl Detect if various RT DEBUG modes requested
+    dnl ===========================================================================
+    POSTGIS_RASTER_API_DEBUG_CFLAGS=""
+    POSTGIS_RASTER_PG_DEBUG_CFLAGS=""
+    rt_debug_msg=""
+
+    AC_MSG_CHECKING([for low-level RASTER API debug mode])
+    AC_ARG_ENABLE([rtapi-debug],
+        AC_HELP_STRING([--enable-rtapi-debug=@<:@yes|no@:>@],
+            [enable to debug low-level RASTER API @<:@default=no@:>@]
+        ),
+        [
+            if test "x$enableval" = "xyes"; then
+                rt_api_debug=1
+                AC_DEFINE_UNQUOTED([POSTGIS_RASTER_API_DEBUG], [$rt_api_debug], [debug low-level RASTER API])
+                POSTGIS_RASTER_API_DEBUG_CFLAGS="-DPOSTGIS_RASTER_API_DEBUG=$rt_api_debug"
+                rt_debug_msg="enabled"
+            else
+                rt_debug_msg="disabled"
+            fi
+        ],
+        [rt_debug_msg="disabled"]
+    )
+    AC_MSG_RESULT([$rt_debug_msg])
+
+    AC_MSG_CHECKING([for PostGIS RASTER activity debug mode])
+    AC_ARG_ENABLE([rtpg-debug],
+        AC_HELP_STRING([--enable-rtpg-debug=@<:@yes|no@:>@],
+            [enable to debug PostGIS RASTER activity @<:@default=no@:>@]
+        ),
+        [
+            if test "x$enableval" = "xyes"; then
+                rt_pg_debug=1
+                AC_DEFINE_UNQUOTED([POSTGIS_RASTER_PG_DEBUG], [$rt_pg_debug], [debug PostGIS RASTER activity])
+                POSTGIS_RASTER_PG_DEBUG_CFLAGS="$POSTGIS_RASTER_PG_DEBUG_CFLAGS -DPOSTGIS_RASTER_PG_DEBUG=$rt_pg_debug"
+                rt_debug_msg="enabled"
+            else
+                rt_debug_msg="disabled"
+            fi
+        ],
+        [rt_debug_msg="disabled"]
+    )
+    AC_MSG_RESULT([$rt_debug_msg])
+
+    AC_MSG_CHECKING([for PostGIS RASTER memory activity debug mode])
+    AC_ARG_ENABLE([rtpgmem-debug],
+        AC_HELP_STRING([--enable-rtpgmem-debug=@<:@yes|no@:>@],
+            [enable to debug PostGIS RASTER memory activity @<:@default=no@:>@]
+        ),
+        [
+            if test "x$enableval" = "xyes"; then
+                rt_pgmem_debug=1
+                AC_DEFINE_UNQUOTED([POSTGIS_RASTER_PG_DEBUG_MEM], [$POSTGIS_RASTER_PG_DEBUG_MEM], [debug PostGIS RASTER memory activity])
+                POSTGIS_RASTER_PG_DEBUG_CFLAGS="$POSTGIS_RASTER_PG_DEBUG_CFLAGS -DPOSTGIS_RASTER_PG_DEBUG_MEM=$rt_pgmem_debug"
+                rt_debug_msg="enabled"
+            else
+                rt_debug_msg="disabled"
+            fi
+        ],
+        [rt_debug_msg="disabled"]
+    )
+    AC_MSG_RESULT([$rt_debug_msg])
+    
+    AC_SUBST([POSTGIS_RASTER_API_DEBUG_CFLAGS])
+    AC_SUBST([POSTGIS_RASTER_PG_DEBUG_CFLAGS])
+ 
+    dnl Define raster objects, for makefiles
+    RT_CORE_LIB=corelib
+    RT_PG_LIB=pglib
+    RT_POSTGIS_SQL=rtpostgis.sql
+
+    AC_SUBST([RT_CORE_LIB])
+    AC_SUBST([RT_PG_LIB])
+    AC_SUBST([RT_POSTGIS_SQL])
+
+    AC_OUTPUT([raster/Makefile raster/rt_core/Makefile raster/rt_pg/Makefile
+            raster/test/Makefile raster/test/core/Makefile
+            raster/test/regress/Makefile raster/scripts/python/Makefile])
+
+fi
+
+
 dnl Output the relevant files
 AC_OUTPUT([liblwgeom/Makefile liblwgeom/cunit/Makefile postgis/Makefile postgis/sqldefines.h loader/Makefile loader/cunit/Makefile topology/Makefile regress/Makefile doc/Makefile doc/Makefile.comments doc/html/image_src/Makefile])
-
+    
 dnl ===========================================================================
 dnl Display the configuration status information
 dnl ===========================================================================
@@ -674,12 +870,20 @@ AC_MSG_RESULT()
 AC_MSG_RESULT([ -------------- Dependencies -------------- ])
 AC_MSG_RESULT([  GEOS config:          ${GEOSCONFIG}])
 AC_MSG_RESULT([  GEOS version:         ${GEOS_FULL_VERSION}])
+if test "x$RASTER" = "xyes"; then
+    AC_MSG_RESULT([  GDAL config:          ${GDAL_CONFIG}])
+    AC_MSG_RESULT([  GDAL version:         ${GDAL_FULL_VERSION}])
+fi
 AC_MSG_RESULT([  PostgreSQL config:    ${PGCONFIG}])
 AC_MSG_RESULT([  PostgreSQL version:   ${PGSQL_FULL_VERSION}])
 AC_MSG_RESULT([  PROJ4 version:        ${POSTGIS_PROJ_VERSION}])
 AC_MSG_RESULT([  Libxml2 config:       ${XML2CONFIG}])
 AC_MSG_RESULT([  Libxml2 version:      ${POSTGIS_LIBXML2_VERSION}])
 AC_MSG_RESULT([  PostGIS debug level:  ${POSTGIS_DEBUG_LEVEL}])
+if test "x$RASTER" = "xyes"; then
+    AC_MSG_RESULT([ -------------- Extensions -------------- ])
+    AC_MSG_RESULT([  PostGIS Raster:       ${POSTGIS_RASTER_LIB_VERSION}])
+fi
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------- Documentation Generation -------- ])
 AC_MSG_RESULT([  xsltproc:             ${XSLTPROC}])
@@ -687,5 +891,3 @@ AC_MSG_RESULT([  xsl style sheets:     ${XSLBASE}])
 AC_MSG_RESULT([  dblatex:              ${DBLATEX}])
 AC_MSG_RESULT([  convert:              ${IMAGEMAGICK}])
 AC_MSG_RESULT()
-
-

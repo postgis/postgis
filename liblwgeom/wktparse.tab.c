@@ -1,24 +1,23 @@
-/* A Bison parser, made by GNU Bison 2.3.  */
+
+/* A Bison parser, made by GNU Bison 2.4.1.  */
 
 /* Skeleton implementation for Bison's Yacc-like parsers in C
-
-   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006
+   
+      Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006
    Free Software Foundation, Inc.
-
-   This program is free software; you can redistribute it and/or modify
+   
+   This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
-
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-
+   
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor,
-   Boston, MA 02110-1301, USA.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -29,7 +28,7 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-
+   
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
@@ -47,7 +46,7 @@
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "2.3"
+#define YYBISON_VERSION "2.4.1"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -55,18 +54,59 @@
 /* Pure parsers.  */
 #define YYPURE 0
 
+/* Push parsers.  */
+#define YYPUSH 0
+
+/* Pull parsers.  */
+#define YYPULL 1
+
 /* Using locations.  */
 #define YYLSP_NEEDED 1
 
 /* Substitute the variable and function names.  */
-#define yyparse lwg_parse_yyparse
-#define yylex   lwg_parse_yylex
-#define yyerror lwg_parse_yyerror
-#define yylval  lwg_parse_yylval
-#define yychar  lwg_parse_yychar
-#define yydebug lwg_parse_yydebug
-#define yynerrs lwg_parse_yynerrs
-#define yylloc lwg_parse_yylloc
+#define yyparse         lwg_parse_yyparse
+#define yylex           lwg_parse_yylex
+#define yyerror         lwg_parse_yyerror
+#define yylval          lwg_parse_yylval
+#define yychar          lwg_parse_yychar
+#define yydebug         lwg_parse_yydebug
+#define yynerrs         lwg_parse_yynerrs
+#define yylloc          lwg_parse_yylloc
+
+/* Copy the first part of user declarations.  */
+
+/* Line 189 of yacc.c  */
+#line 9 "wktparse.y"
+
+#include "wktparse.h"
+#include <unistd.h>
+#include <stdio.h>
+
+void set_zm(char z, char m);
+int lwg_parse_yylex(void);
+
+
+/* Line 189 of yacc.c  */
+#line 91 "y.tab.c"
+
+/* Enabling traces.  */
+#ifndef YYDEBUG
+# define YYDEBUG 0
+#endif
+
+/* Enabling verbose error messages.  */
+#ifdef YYERROR_VERBOSE
+# undef YYERROR_VERBOSE
+# define YYERROR_VERBOSE 1
+#else
+# define YYERROR_VERBOSE 0
+#endif
+
+/* Enabling the token table.  */
+#ifndef YYTOKEN_TABLE
+# define YYTOKEN_TABLE 0
+#endif
+
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -159,48 +199,24 @@
 
 
 
-/* Copy the first part of user declarations.  */
-#line 9 "wktparse.y"
-
-#include "wktparse.h"
-#include <unistd.h>
-#include <stdio.h>
-
-void set_zm(char z, char m);
-int lwg_parse_yylex(void);
-
-
-/* Enabling traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 0
-#endif
-
-/* Enabling verbose error messages.  */
-#ifdef YYERROR_VERBOSE
-# undef YYERROR_VERBOSE
-# define YYERROR_VERBOSE 1
-#else
-# define YYERROR_VERBOSE 0
-#endif
-
-/* Enabling the token table.  */
-#ifndef YYTOKEN_TABLE
-# define YYTOKEN_TABLE 0
-#endif
-
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 22 "wktparse.y"
 {
+
+/* Line 214 of yacc.c  */
+#line 22 "wktparse.y"
+
 	double value;
 	const char* wkb;
-}
-/* Line 193 of yacc.c.  */
-#line 200 "y.tab.c"
-	YYSTYPE;
+
+
+
+/* Line 214 of yacc.c  */
+#line 216 "y.tab.c"
+} YYSTYPE;
+# define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
-# define YYSTYPE_IS_TRIVIAL 1
 #endif
 
 #if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
@@ -220,8 +236,8 @@ typedef struct YYLTYPE
 /* Copy the second part of user declarations.  */
 
 
-/* Line 216 of yacc.c.  */
-#line 225 "y.tab.c"
+/* Line 264 of yacc.c  */
+#line 241 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -271,7 +287,7 @@ typedef short int yytype_int16;
 #define YYSIZE_MAXIMUM ((YYSIZE_T) -1)
 
 #ifndef YY_
-# if defined YYENABLE_NLS && YYENABLE_NLS
+# if YYENABLE_NLS
 #  if ENABLE_NLS
 #   include <libintl.h> /* INFRINGES ON USER NAME SPACE */
 #   define YY_(msgid) dgettext ("bison-runtime", msgid)
@@ -296,14 +312,14 @@ typedef short int yytype_int16;
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static int
-YYID (int i)
+YYID (int yyi)
 #else
 static int
-YYID (i)
-    int i;
+YYID (yyi)
+    int yyi;
 #endif
 {
-  return i;
+  return yyi;
 }
 #endif
 
@@ -385,9 +401,9 @@ void free (void *); /* INFRINGES ON USER NAME SPACE */
 /* A type that is properly aligned for any stack member.  */
 union yyalloc
 {
-  yytype_int16 yyss;
-  YYSTYPE yyvs;
-    YYLTYPE yyls;
+  yytype_int16 yyss_alloc;
+  YYSTYPE yyvs_alloc;
+  YYLTYPE yyls_alloc;
 };
 
 /* The size of the maximum gap between one aligned stack and the next.  */
@@ -422,12 +438,12 @@ union yyalloc
    elements in the stack, and YYPTR gives the new location of the
    stack.  Advance YYPTR to a properly aligned location for the next
    stack.  */
-# define YYSTACK_RELOCATE(Stack)					\
+# define YYSTACK_RELOCATE(Stack_alloc, Stack)				\
     do									\
       {									\
 	YYSIZE_T yynewbytes;						\
-	YYCOPY (&yyptr->Stack, Stack, yysize);				\
-	Stack = &yyptr->Stack;						\
+	YYCOPY (&yyptr->Stack_alloc, Stack, yysize);			\
+	Stack = &yyptr->Stack_alloc;					\
 	yynewbytes = yystacksize * sizeof (*Stack) + YYSTACK_GAP_MAXIMUM; \
 	yyptr += yynewbytes / sizeof (*yyptr);				\
       }									\
@@ -627,37 +643,37 @@ static const char *const yytname[] =
   "COMPOUNDCURVEM", "CURVEPOLYGONM", "MULTICURVEM", "MULTISURFACEM",
   "POLYHEDRALSURFACEM", "TRIANGLEM", "TINM", "SRID", "EMPTY", "VALUE",
   "LPAREN", "RPAREN", "COMMA", "EQUALS", "SEMICOLON", "WKB", "$accept",
-  "geometry", "@1", "@2", "geometry_int", "srid", "geom_wkb", "geom_point",
-  "@3", "point", "empty_point", "@4", "nonempty_point", "@5", "point_int",
-  "geom_multipoint", "@6", "@7", "multipoint", "@8", "multipoint_int",
-  "mpoint_element", "@9", "geom_linestring", "@10", "linestring",
-  "empty_linestring", "@11", "nonempty_linestring", "@12",
-  "nonempty_linestring_closed", "@13", "linestring_1", "@14",
-  "linestring_int", "geom_circularstring", "@15",
-  "geom_circularstring_closed", "@16", "circularstring",
-  "circularstring_closed", "empty_circularstring", "@17",
-  "nonempty_circularstring", "@18", "nonempty_circularstring_closed",
-  "@19", "circularstring_1", "@20", "circularstring_int",
-  "geom_compoundcurve", "@21", "geom_compoundcurve_closed", "@22",
-  "compoundcurve", "compoundcurve_closed", "empty_compoundcurve", "@23",
-  "empty_compoundcurve_closed", "@24", "nonempty_compoundcurve", "@25",
-  "nonempty_compoundcurve_closed", "@26", "compoundcurve_1", "@27",
-  "compoundcurve_int", "geom_multilinestring", "@28", "@29",
-  "multilinestring", "@30", "multilinestring_int", "geom_multicurve",
-  "@31", "@32", "multicurve", "@33", "multicurve_int", "geom_polygon",
-  "@34", "polygon", "empty_polygon", "@35", "nonempty_polygon", "@36",
-  "polygon_1", "@37", "polygon_int", "geom_triangle", "@38", "triangle",
-  "empty_triangle", "@39", "nonempty_triangle", "@40", "triangle_int",
-  "@41", "triangle_1", "geom_curvepolygon", "@42", "@43", "curvepolygon",
-  "@44", "curvepolygon_int", "geom_multipolygon", "@45", "@46",
-  "multipolygon", "@47", "multipolygon_int", "geom_multisurface", "@48",
-  "@49", "multisurface", "@50", "multisurface_int", "patch", "@51",
-  "patch_1", "@52", "patch_rings", "patch_int", "@53", "patch_int1",
-  "geom_polyhedralsurface", "@54", "@55", "polyhedralsurface", "@56",
-  "polyhedralsurface_int", "geom_tin", "@57", "@58", "tin", "@59",
-  "tin_int", "geom_geometrycollection", "@60", "@61", "geometrycollection",
-  "@62", "geometrycollection_int", "a_point", "point_2d", "point_3d",
-  "point_4d", "empty", 0
+  "geometry", "$@1", "$@2", "geometry_int", "srid", "geom_wkb",
+  "geom_point", "$@3", "point", "empty_point", "$@4", "nonempty_point",
+  "$@5", "point_int", "geom_multipoint", "$@6", "$@7", "multipoint", "$@8",
+  "multipoint_int", "mpoint_element", "$@9", "geom_linestring", "$@10",
+  "linestring", "empty_linestring", "$@11", "nonempty_linestring", "$@12",
+  "nonempty_linestring_closed", "$@13", "linestring_1", "$@14",
+  "linestring_int", "geom_circularstring", "$@15",
+  "geom_circularstring_closed", "$@16", "circularstring",
+  "circularstring_closed", "empty_circularstring", "$@17",
+  "nonempty_circularstring", "$@18", "nonempty_circularstring_closed",
+  "$@19", "circularstring_1", "$@20", "circularstring_int",
+  "geom_compoundcurve", "$@21", "geom_compoundcurve_closed", "$@22",
+  "compoundcurve", "compoundcurve_closed", "empty_compoundcurve", "$@23",
+  "empty_compoundcurve_closed", "$@24", "nonempty_compoundcurve", "$@25",
+  "nonempty_compoundcurve_closed", "$@26", "compoundcurve_1", "$@27",
+  "compoundcurve_int", "geom_multilinestring", "$@28", "$@29",
+  "multilinestring", "$@30", "multilinestring_int", "geom_multicurve",
+  "$@31", "$@32", "multicurve", "$@33", "multicurve_int", "geom_polygon",
+  "$@34", "polygon", "empty_polygon", "$@35", "nonempty_polygon", "$@36",
+  "polygon_1", "$@37", "polygon_int", "geom_triangle", "$@38", "triangle",
+  "empty_triangle", "$@39", "nonempty_triangle", "$@40", "triangle_int",
+  "$@41", "triangle_1", "geom_curvepolygon", "$@42", "$@43",
+  "curvepolygon", "$@44", "curvepolygon_int", "geom_multipolygon", "$@45",
+  "$@46", "multipolygon", "$@47", "multipolygon_int", "geom_multisurface",
+  "$@48", "$@49", "multisurface", "$@50", "multisurface_int", "patch",
+  "$@51", "patch_1", "$@52", "patch_rings", "patch_int", "$@53",
+  "patch_int1", "geom_polyhedralsurface", "$@54", "$@55",
+  "polyhedralsurface", "$@56", "polyhedralsurface_int", "geom_tin", "$@57",
+  "$@58", "tin", "$@59", "tin_int", "geom_geometrycollection", "$@60",
+  "$@61", "geometrycollection", "$@62", "geometrycollection_int",
+  "a_point", "point_2d", "point_3d", "point_4d", "empty", 0
 };
 #endif
 
@@ -1023,7 +1039,7 @@ while (YYID (0))
    we won't break user code: when these are the locations we know.  */
 
 #ifndef YY_LOCATION_PRINT
-# if defined YYLTYPE_IS_TRIVIAL && YYLTYPE_IS_TRIVIAL
+# if YYLTYPE_IS_TRIVIAL
 #  define YY_LOCATION_PRINT(File, Loc)			\
      fprintf (File, "%d.%d-%d.%d",			\
 	      (Loc).first_line, (Loc).first_column,	\
@@ -1139,17 +1155,20 @@ yy_symbol_print (yyoutput, yytype, yyvaluep, yylocationp)
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yy_stack_print (yytype_int16 *bottom, yytype_int16 *top)
+yy_stack_print (yytype_int16 *yybottom, yytype_int16 *yytop)
 #else
 static void
-yy_stack_print (bottom, top)
-    yytype_int16 *bottom;
-    yytype_int16 *top;
+yy_stack_print (yybottom, yytop)
+    yytype_int16 *yybottom;
+    yytype_int16 *yytop;
 #endif
 {
   YYFPRINTF (stderr, "Stack now");
-  for (; bottom <= top; ++bottom)
-    YYFPRINTF (stderr, " %d", *bottom);
+  for (; yybottom <= yytop; yybottom++)
+    {
+      int yybot = *yybottom;
+      YYFPRINTF (stderr, " %d", yybot);
+    }
   YYFPRINTF (stderr, "\n");
 }
 
@@ -1184,11 +1203,11 @@ yy_reduce_print (yyvsp, yylsp, yyrule)
   /* The symbols being reduced.  */
   for (yyi = 0; yyi < yynrhs; yyi++)
     {
-      fprintf (stderr, "   $%d = ", yyi + 1);
+      YYFPRINTF (stderr, "   $%d = ", yyi + 1);
       yy_symbol_print (stderr, yyrhs[yyprhs[yyrule] + yyi],
 		       &(yyvsp[(yyi + 1) - (yynrhs)])
 		       , &(yylsp[(yyi + 1) - (yynrhs)])		       );
-      fprintf (stderr, "\n");
+      YYFPRINTF (stderr, "\n");
     }
 }
 
@@ -1470,10 +1489,8 @@ yydestruct (yymsg, yytype, yyvaluep, yylocationp)
 	break;
     }
 }
-
 
 /* Prevent warnings from -Wmissing-prototypes.  */
-
 #ifdef YYPARSE_PARAM
 #if defined __STDC__ || defined __cplusplus
 int yyparse (void *YYPARSE_PARAM);
@@ -1489,23 +1506,23 @@ int yyparse ();
 #endif /* ! YYPARSE_PARAM */
 
 
-
-/* The look-ahead symbol.  */
+/* The lookahead symbol.  */
 int yychar;
 
-/* The semantic value of the look-ahead symbol.  */
+/* The semantic value of the lookahead symbol.  */
 YYSTYPE yylval;
+
+/* Location data for the lookahead symbol.  */
+YYLTYPE yylloc;
 
 /* Number of syntax errors so far.  */
 int yynerrs;
-/* Location data for the look-ahead symbol.  */
-YYLTYPE yylloc;
 
 
 
-/*----------.
-| yyparse.  |
-`----------*/
+/*-------------------------.
+| yyparse or yypush_parse.  |
+`-------------------------*/
 
 #ifdef YYPARSE_PARAM
 #if (defined __STDC__ || defined __C99__FUNC__ \
@@ -1529,14 +1546,49 @@ yyparse ()
 #endif
 #endif
 {
-  
-  int yystate;
+
+
+    int yystate;
+    /* Number of tokens to shift before error messages enabled.  */
+    int yyerrstatus;
+
+    /* The stacks and their tools:
+       `yyss': related to states.
+       `yyvs': related to semantic values.
+       `yyls': related to locations.
+
+       Refer to the stacks thru separate pointers, to allow yyoverflow
+       to reallocate them elsewhere.  */
+
+    /* The state stack.  */
+    yytype_int16 yyssa[YYINITDEPTH];
+    yytype_int16 *yyss;
+    yytype_int16 *yyssp;
+
+    /* The semantic value stack.  */
+    YYSTYPE yyvsa[YYINITDEPTH];
+    YYSTYPE *yyvs;
+    YYSTYPE *yyvsp;
+
+    /* The location stack.  */
+    YYLTYPE yylsa[YYINITDEPTH];
+    YYLTYPE *yyls;
+    YYLTYPE *yylsp;
+
+    /* The locations where the error started and ended.  */
+    YYLTYPE yyerror_range[2];
+
+    YYSIZE_T yystacksize;
+
   int yyn;
   int yyresult;
-  /* Number of tokens to shift before error messages enabled.  */
-  int yyerrstatus;
-  /* Look-ahead token as an internal (translated) token number.  */
-  int yytoken = 0;
+  /* Lookahead token as an internal (translated) token number.  */
+  int yytoken;
+  /* The variables used to return semantic value and location from the
+     action routines.  */
+  YYSTYPE yyval;
+  YYLTYPE yyloc;
+
 #if YYERROR_VERBOSE
   /* Buffer for error messages, and its allocated size.  */
   char yymsgbuf[128];
@@ -1544,63 +1596,37 @@ yyparse ()
   YYSIZE_T yymsg_alloc = sizeof yymsgbuf;
 #endif
 
-  /* Three stacks and their tools:
-     `yyss': related to states,
-     `yyvs': related to semantic values,
-     `yyls': related to locations.
-
-     Refer to the stacks thru separate pointers, to allow yyoverflow
-     to reallocate them elsewhere.  */
-
-  /* The state stack.  */
-  yytype_int16 yyssa[YYINITDEPTH];
-  yytype_int16 *yyss = yyssa;
-  yytype_int16 *yyssp;
-
-  /* The semantic value stack.  */
-  YYSTYPE yyvsa[YYINITDEPTH];
-  YYSTYPE *yyvs = yyvsa;
-  YYSTYPE *yyvsp;
-
-  /* The location stack.  */
-  YYLTYPE yylsa[YYINITDEPTH];
-  YYLTYPE *yyls = yylsa;
-  YYLTYPE *yylsp;
-  /* The locations where the error started and ended.  */
-  YYLTYPE yyerror_range[2];
-
 #define YYPOPSTACK(N)   (yyvsp -= (N), yyssp -= (N), yylsp -= (N))
-
-  YYSIZE_T yystacksize = YYINITDEPTH;
-
-  /* The variables used to return semantic value and location from the
-     action routines.  */
-  YYSTYPE yyval;
-  YYLTYPE yyloc;
 
   /* The number of symbols on the RHS of the reduced rule.
      Keep to zero when no symbol should be popped.  */
   int yylen = 0;
+
+  yytoken = 0;
+  yyss = yyssa;
+  yyvs = yyvsa;
+  yyls = yylsa;
+  yystacksize = YYINITDEPTH;
 
   YYDPRINTF ((stderr, "Starting parse\n"));
 
   yystate = 0;
   yyerrstatus = 0;
   yynerrs = 0;
-  yychar = YYEMPTY;		/* Cause a token to be read.  */
+  yychar = YYEMPTY; /* Cause a token to be read.  */
 
   /* Initialize stack pointers.
      Waste one element of value and location stack
      so that they stay on the same level as the state stack.
      The wasted elements are never initialized.  */
-
   yyssp = yyss;
   yyvsp = yyvs;
   yylsp = yyls;
-#if defined YYLTYPE_IS_TRIVIAL && YYLTYPE_IS_TRIVIAL
+
+#if YYLTYPE_IS_TRIVIAL
   /* Initialize the default location before parsing starts.  */
   yylloc.first_line   = yylloc.last_line   = 1;
-  yylloc.first_column = yylloc.last_column = 0;
+  yylloc.first_column = yylloc.last_column = 1;
 #endif
 
   goto yysetstate;
@@ -1639,6 +1665,7 @@ yyparse ()
 		    &yyvs1, yysize * sizeof (*yyvsp),
 		    &yyls1, yysize * sizeof (*yylsp),
 		    &yystacksize);
+
 	yyls = yyls1;
 	yyss = yyss1;
 	yyvs = yyvs1;
@@ -1660,9 +1687,9 @@ yyparse ()
 	  (union yyalloc *) YYSTACK_ALLOC (YYSTACK_BYTES (yystacksize));
 	if (! yyptr)
 	  goto yyexhaustedlab;
-	YYSTACK_RELOCATE (yyss);
-	YYSTACK_RELOCATE (yyvs);
-	YYSTACK_RELOCATE (yyls);
+	YYSTACK_RELOCATE (yyss_alloc, yyss);
+	YYSTACK_RELOCATE (yyvs_alloc, yyvs);
+	YYSTACK_RELOCATE (yyls_alloc, yyls);
 #  undef YYSTACK_RELOCATE
 	if (yyss1 != yyssa)
 	  YYSTACK_FREE (yyss1);
@@ -1683,6 +1710,9 @@ yyparse ()
 
   YYDPRINTF ((stderr, "Entering state %d\n", yystate));
 
+  if (yystate == YYFINAL)
+    YYACCEPT;
+
   goto yybackup;
 
 /*-----------.
@@ -1691,16 +1721,16 @@ yyparse ()
 yybackup:
 
   /* Do appropriate processing given the current state.  Read a
-     look-ahead token if we need one and don't already have one.  */
+     lookahead token if we need one and don't already have one.  */
 
-  /* First try to decide what to do without reference to look-ahead token.  */
+  /* First try to decide what to do without reference to lookahead token.  */
   yyn = yypact[yystate];
   if (yyn == YYPACT_NINF)
     goto yydefault;
 
-  /* Not known => get a look-ahead token if don't already have one.  */
+  /* Not known => get a lookahead token if don't already have one.  */
 
-  /* YYCHAR is either YYEMPTY or YYEOF or a valid look-ahead symbol.  */
+  /* YYCHAR is either YYEMPTY or YYEOF or a valid lookahead symbol.  */
   if (yychar == YYEMPTY)
     {
       YYDPRINTF ((stderr, "Reading a token: "));
@@ -1732,20 +1762,16 @@ yybackup:
       goto yyreduce;
     }
 
-  if (yyn == YYFINAL)
-    YYACCEPT;
-
   /* Count tokens shifted since error; after three, turn off error
      status.  */
   if (yyerrstatus)
     yyerrstatus--;
 
-  /* Shift the look-ahead token.  */
+  /* Shift the lookahead token.  */
   YY_SYMBOL_PRINT ("Shifting", yytoken, &yylval, &yylloc);
 
-  /* Discard the shifted token unless it is eof.  */
-  if (yychar != YYEOF)
-    yychar = YYEMPTY;
+  /* Discard the shifted token.  */
+  yychar = YYEMPTY;
 
   yystate = yyn;
   *++yyvsp = yylval;
@@ -1786,608 +1812,849 @@ yyreduce:
   switch (yyn)
     {
         case 2:
+
+/* Line 1455 of yacc.c  */
 #line 38 "wktparse.y"
     { alloc_lwgeom(srid); }
     break;
 
   case 4:
+
+/* Line 1455 of yacc.c  */
 #line 40 "wktparse.y"
     { alloc_lwgeom(-1); }
     break;
 
   case 22:
+
+/* Line 1455 of yacc.c  */
 #line 76 "wktparse.y"
     { set_srid((yyvsp[(3) - (3)].value)); }
     break;
 
   case 23:
+
+/* Line 1455 of yacc.c  */
 #line 79 "wktparse.y"
     { alloc_wkb((yyvsp[(1) - (1)].wkb)); }
     break;
 
   case 25:
+
+/* Line 1455 of yacc.c  */
 #line 87 "wktparse.y"
     { set_zm(0, 1); }
     break;
 
   case 29:
+
+/* Line 1455 of yacc.c  */
 #line 95 "wktparse.y"
     { alloc_point(); }
     break;
 
   case 30:
+
+/* Line 1455 of yacc.c  */
 #line 95 "wktparse.y"
     { pop(); }
     break;
 
   case 31:
+
+/* Line 1455 of yacc.c  */
 #line 98 "wktparse.y"
     { alloc_point(); }
     break;
 
   case 32:
+
+/* Line 1455 of yacc.c  */
 #line 98 "wktparse.y"
     { pop(); }
     break;
 
   case 34:
+
+/* Line 1455 of yacc.c  */
 #line 106 "wktparse.y"
     { alloc_multipoint(); }
     break;
 
   case 35:
+
+/* Line 1455 of yacc.c  */
 #line 106 "wktparse.y"
     { pop(); }
     break;
 
   case 36:
+
+/* Line 1455 of yacc.c  */
 #line 108 "wktparse.y"
     { set_zm(0, 1); alloc_multipoint(); }
     break;
 
   case 37:
+
+/* Line 1455 of yacc.c  */
 #line 108 "wktparse.y"
     {pop(); }
     break;
 
   case 39:
+
+/* Line 1455 of yacc.c  */
 #line 113 "wktparse.y"
     { alloc_counter(); }
     break;
 
   case 40:
+
+/* Line 1455 of yacc.c  */
 #line 113 "wktparse.y"
     { pop(); }
     break;
 
   case 44:
+
+/* Line 1455 of yacc.c  */
 #line 124 "wktparse.y"
     { alloc_point(); }
     break;
 
   case 45:
+
+/* Line 1455 of yacc.c  */
 #line 124 "wktparse.y"
     { pop(); }
     break;
 
   case 47:
+
+/* Line 1455 of yacc.c  */
 #line 132 "wktparse.y"
     { set_zm(0, 1); }
     break;
 
   case 51:
+
+/* Line 1455 of yacc.c  */
 #line 140 "wktparse.y"
     { alloc_linestring(); }
     break;
 
   case 52:
+
+/* Line 1455 of yacc.c  */
 #line 140 "wktparse.y"
     { pop(); }
     break;
 
   case 53:
+
+/* Line 1455 of yacc.c  */
 #line 143 "wktparse.y"
     { alloc_linestring(); }
     break;
 
   case 54:
+
+/* Line 1455 of yacc.c  */
 #line 143 "wktparse.y"
     { check_linestring(); pop(); }
     break;
 
   case 55:
+
+/* Line 1455 of yacc.c  */
 #line 146 "wktparse.y"
     { alloc_linestring_closed(); }
     break;
 
   case 56:
+
+/* Line 1455 of yacc.c  */
 #line 146 "wktparse.y"
     { check_closed_linestring(); pop(); }
     break;
 
   case 57:
+
+/* Line 1455 of yacc.c  */
 #line 149 "wktparse.y"
     { alloc_counter(); }
     break;
 
   case 58:
+
+/* Line 1455 of yacc.c  */
 #line 149 "wktparse.y"
     { pop(); }
     break;
 
   case 62:
+
+/* Line 1455 of yacc.c  */
 #line 161 "wktparse.y"
     {set_zm(0, 1); }
     break;
 
   case 65:
+
+/* Line 1455 of yacc.c  */
 #line 166 "wktparse.y"
     {set_zm(0, 1); }
     break;
 
   case 71:
+
+/* Line 1455 of yacc.c  */
 #line 179 "wktparse.y"
     { alloc_circularstring(); }
     break;
 
   case 72:
+
+/* Line 1455 of yacc.c  */
 #line 179 "wktparse.y"
     { pop(); }
     break;
 
   case 73:
+
+/* Line 1455 of yacc.c  */
 #line 182 "wktparse.y"
     { alloc_circularstring(); }
     break;
 
   case 74:
+
+/* Line 1455 of yacc.c  */
 #line 182 "wktparse.y"
     { check_circularstring(); pop(); }
     break;
 
   case 75:
+
+/* Line 1455 of yacc.c  */
 #line 185 "wktparse.y"
     { alloc_circularstring_closed(); }
     break;
 
   case 76:
+
+/* Line 1455 of yacc.c  */
 #line 185 "wktparse.y"
     { check_closed_circularstring(); pop(); }
     break;
 
   case 77:
+
+/* Line 1455 of yacc.c  */
 #line 188 "wktparse.y"
     { alloc_counter(); }
     break;
 
   case 78:
+
+/* Line 1455 of yacc.c  */
 #line 188 "wktparse.y"
     { pop(); }
     break;
 
   case 82:
+
+/* Line 1455 of yacc.c  */
 #line 200 "wktparse.y"
     { set_zm(0, 1); }
     break;
 
   case 85:
+
+/* Line 1455 of yacc.c  */
 #line 205 "wktparse.y"
     { set_zm(0, 1); }
     break;
 
   case 91:
+
+/* Line 1455 of yacc.c  */
 #line 218 "wktparse.y"
     { alloc_compoundcurve(); }
     break;
 
   case 92:
+
+/* Line 1455 of yacc.c  */
 #line 218 "wktparse.y"
     { pop(); }
     break;
 
   case 93:
+
+/* Line 1455 of yacc.c  */
 #line 221 "wktparse.y"
     { alloc_compoundcurve_closed(); }
     break;
 
   case 94:
+
+/* Line 1455 of yacc.c  */
 #line 221 "wktparse.y"
     { pop(); }
     break;
 
   case 95:
+
+/* Line 1455 of yacc.c  */
 #line 224 "wktparse.y"
     { alloc_compoundcurve(); }
     break;
 
   case 96:
+
+/* Line 1455 of yacc.c  */
 #line 224 "wktparse.y"
     {  check_compoundcurve(); pop(); }
     break;
 
   case 97:
+
+/* Line 1455 of yacc.c  */
 #line 227 "wktparse.y"
     { alloc_compoundcurve_closed(); }
     break;
 
   case 98:
+
+/* Line 1455 of yacc.c  */
 #line 227 "wktparse.y"
     {  check_closed_compoundcurve(); pop(); }
     break;
 
   case 99:
+
+/* Line 1455 of yacc.c  */
 #line 230 "wktparse.y"
     { alloc_counter(); }
     break;
 
   case 100:
+
+/* Line 1455 of yacc.c  */
 #line 230 "wktparse.y"
     {pop();}
     break;
 
   case 105:
+
+/* Line 1455 of yacc.c  */
 #line 244 "wktparse.y"
     { alloc_multilinestring(); }
     break;
 
   case 106:
+
+/* Line 1455 of yacc.c  */
 #line 245 "wktparse.y"
     { pop(); }
     break;
 
   case 107:
+
+/* Line 1455 of yacc.c  */
 #line 247 "wktparse.y"
     { set_zm(0, 1); alloc_multilinestring(); }
     break;
 
   case 108:
+
+/* Line 1455 of yacc.c  */
 #line 248 "wktparse.y"
     { pop(); }
     break;
 
   case 110:
+
+/* Line 1455 of yacc.c  */
 #line 253 "wktparse.y"
     { alloc_counter(); }
     break;
 
   case 111:
+
+/* Line 1455 of yacc.c  */
 #line 253 "wktparse.y"
     { pop();}
     break;
 
   case 114:
+
+/* Line 1455 of yacc.c  */
 #line 263 "wktparse.y"
     { alloc_multicurve(); }
     break;
 
   case 115:
+
+/* Line 1455 of yacc.c  */
 #line 264 "wktparse.y"
     { pop(); }
     break;
 
   case 116:
+
+/* Line 1455 of yacc.c  */
 #line 266 "wktparse.y"
     { set_zm(0, 1); alloc_multicurve(); }
     break;
 
   case 117:
+
+/* Line 1455 of yacc.c  */
 #line 267 "wktparse.y"
     { pop(); }
     break;
 
   case 119:
+
+/* Line 1455 of yacc.c  */
 #line 272 "wktparse.y"
     { alloc_counter(); }
     break;
 
   case 120:
+
+/* Line 1455 of yacc.c  */
 #line 272 "wktparse.y"
     { pop(); }
     break;
 
   case 126:
+
+/* Line 1455 of yacc.c  */
 #line 288 "wktparse.y"
     { set_zm(0, 1); }
     break;
 
   case 130:
+
+/* Line 1455 of yacc.c  */
 #line 296 "wktparse.y"
     { alloc_polygon(); }
     break;
 
   case 131:
+
+/* Line 1455 of yacc.c  */
 #line 296 "wktparse.y"
     { pop(); }
     break;
 
   case 132:
+
+/* Line 1455 of yacc.c  */
 #line 299 "wktparse.y"
     { alloc_polygon(); }
     break;
 
   case 133:
+
+/* Line 1455 of yacc.c  */
 #line 299 "wktparse.y"
     { check_polygon(); pop(); }
     break;
 
   case 134:
+
+/* Line 1455 of yacc.c  */
 #line 302 "wktparse.y"
     { alloc_counter(); }
     break;
 
   case 135:
+
+/* Line 1455 of yacc.c  */
 #line 302 "wktparse.y"
     { pop();}
     break;
 
   case 139:
+
+/* Line 1455 of yacc.c  */
 #line 316 "wktparse.y"
     { set_zm(0, 1); }
     break;
 
   case 143:
+
+/* Line 1455 of yacc.c  */
 #line 324 "wktparse.y"
     { alloc_triangle(); }
     break;
 
   case 144:
+
+/* Line 1455 of yacc.c  */
 #line 324 "wktparse.y"
     { pop(); }
     break;
 
   case 145:
+
+/* Line 1455 of yacc.c  */
 #line 327 "wktparse.y"
     { alloc_triangle(); }
     break;
 
   case 146:
+
+/* Line 1455 of yacc.c  */
 #line 327 "wktparse.y"
     { check_triangle(); pop(); }
     break;
 
   case 147:
+
+/* Line 1455 of yacc.c  */
 #line 330 "wktparse.y"
     { alloc_counter(); }
     break;
 
   case 148:
+
+/* Line 1455 of yacc.c  */
 #line 330 "wktparse.y"
     { pop(); }
     break;
 
   case 151:
+
+/* Line 1455 of yacc.c  */
 #line 342 "wktparse.y"
     { alloc_curvepolygon(); }
     break;
 
   case 152:
+
+/* Line 1455 of yacc.c  */
 #line 342 "wktparse.y"
     { check_curvepolygon(); pop(); }
     break;
 
   case 153:
+
+/* Line 1455 of yacc.c  */
 #line 344 "wktparse.y"
     { set_zm(0, 1); alloc_curvepolygon(); }
     break;
 
   case 154:
+
+/* Line 1455 of yacc.c  */
 #line 345 "wktparse.y"
     { check_curvepolygon(); pop(); }
     break;
 
   case 156:
+
+/* Line 1455 of yacc.c  */
 #line 350 "wktparse.y"
     { alloc_counter(); }
     break;
 
   case 157:
+
+/* Line 1455 of yacc.c  */
 #line 350 "wktparse.y"
     { pop(); }
     break;
 
   case 164:
+
+/* Line 1455 of yacc.c  */
 #line 368 "wktparse.y"
     { alloc_multipolygon(); }
     break;
 
   case 165:
+
+/* Line 1455 of yacc.c  */
 #line 368 "wktparse.y"
     { pop(); }
     break;
 
   case 166:
+
+/* Line 1455 of yacc.c  */
 #line 370 "wktparse.y"
     { set_zm(0, 1); alloc_multipolygon(); }
     break;
 
   case 167:
+
+/* Line 1455 of yacc.c  */
 #line 371 "wktparse.y"
     { pop();}
     break;
 
   case 169:
+
+/* Line 1455 of yacc.c  */
 #line 376 "wktparse.y"
     { alloc_counter(); }
     break;
 
   case 170:
+
+/* Line 1455 of yacc.c  */
 #line 376 "wktparse.y"
     { pop(); }
     break;
 
   case 173:
+
+/* Line 1455 of yacc.c  */
 #line 386 "wktparse.y"
     {alloc_multisurface(); }
     break;
 
   case 174:
+
+/* Line 1455 of yacc.c  */
 #line 386 "wktparse.y"
     { pop(); }
     break;
 
   case 175:
+
+/* Line 1455 of yacc.c  */
 #line 388 "wktparse.y"
     { set_zm(0, 1); alloc_multisurface(); }
     break;
 
   case 176:
+
+/* Line 1455 of yacc.c  */
 #line 389 "wktparse.y"
     { pop(); }
     break;
 
   case 178:
+
+/* Line 1455 of yacc.c  */
 #line 394 "wktparse.y"
     { alloc_counter(); }
     break;
 
   case 179:
+
+/* Line 1455 of yacc.c  */
 #line 394 "wktparse.y"
     { pop(); }
     break;
 
   case 184:
+
+/* Line 1455 of yacc.c  */
 #line 407 "wktparse.y"
     { alloc_polygon(); }
     break;
 
   case 185:
+
+/* Line 1455 of yacc.c  */
 #line 407 "wktparse.y"
     { pop(); }
     break;
 
   case 186:
+
+/* Line 1455 of yacc.c  */
 #line 410 "wktparse.y"
     { alloc_counter(); }
     break;
 
   case 187:
+
+/* Line 1455 of yacc.c  */
 #line 410 "wktparse.y"
     { check_polyhedralsurface_patch(); pop(); }
     break;
 
   case 190:
+
+/* Line 1455 of yacc.c  */
 #line 418 "wktparse.y"
     { alloc_counter(); }
     break;
 
   case 191:
+
+/* Line 1455 of yacc.c  */
 #line 418 "wktparse.y"
     { pop(); }
     break;
 
   case 194:
+
+/* Line 1455 of yacc.c  */
 #line 426 "wktparse.y"
     {alloc_polyhedralsurface(); }
     break;
 
   case 195:
+
+/* Line 1455 of yacc.c  */
 #line 426 "wktparse.y"
     { pop(); }
     break;
 
   case 196:
+
+/* Line 1455 of yacc.c  */
 #line 428 "wktparse.y"
     {set_zm(0, 1); alloc_polyhedralsurface(); }
     break;
 
   case 197:
+
+/* Line 1455 of yacc.c  */
 #line 428 "wktparse.y"
     { pop(); }
     break;
 
   case 199:
+
+/* Line 1455 of yacc.c  */
 #line 433 "wktparse.y"
     { alloc_counter(); }
     break;
 
   case 200:
+
+/* Line 1455 of yacc.c  */
 #line 433 "wktparse.y"
     { pop(); }
     break;
 
   case 203:
+
+/* Line 1455 of yacc.c  */
 #line 442 "wktparse.y"
     {alloc_tin(); }
     break;
 
   case 204:
+
+/* Line 1455 of yacc.c  */
 #line 442 "wktparse.y"
     { pop(); }
     break;
 
   case 205:
+
+/* Line 1455 of yacc.c  */
 #line 444 "wktparse.y"
     {set_zm(0, 1); alloc_tin(); }
     break;
 
   case 206:
+
+/* Line 1455 of yacc.c  */
 #line 444 "wktparse.y"
     { pop(); }
     break;
 
   case 208:
+
+/* Line 1455 of yacc.c  */
 #line 449 "wktparse.y"
     { alloc_counter(); }
     break;
 
   case 209:
+
+/* Line 1455 of yacc.c  */
 #line 449 "wktparse.y"
     { pop(); }
     break;
 
   case 212:
+
+/* Line 1455 of yacc.c  */
 #line 460 "wktparse.y"
     { alloc_geomertycollection(); }
     break;
 
   case 213:
+
+/* Line 1455 of yacc.c  */
 #line 461 "wktparse.y"
     { pop(); }
     break;
 
   case 214:
+
+/* Line 1455 of yacc.c  */
 #line 463 "wktparse.y"
     { set_zm(0, 1); alloc_geomertycollection(); }
     break;
 
   case 215:
+
+/* Line 1455 of yacc.c  */
 #line 464 "wktparse.y"
     { pop();}
     break;
 
   case 217:
+
+/* Line 1455 of yacc.c  */
 #line 469 "wktparse.y"
     { alloc_counter(); }
     break;
 
   case 218:
+
+/* Line 1455 of yacc.c  */
 #line 469 "wktparse.y"
     { pop(); }
     break;
 
   case 225:
+
+/* Line 1455 of yacc.c  */
 #line 488 "wktparse.y"
     {alloc_point_2d((yyvsp[(1) - (2)].value),(yyvsp[(2) - (2)].value)); }
     break;
 
   case 226:
+
+/* Line 1455 of yacc.c  */
 #line 491 "wktparse.y"
     {alloc_point_3d((yyvsp[(1) - (3)].value),(yyvsp[(2) - (3)].value),(yyvsp[(3) - (3)].value)); }
     break;
 
   case 227:
+
+/* Line 1455 of yacc.c  */
 #line 494 "wktparse.y"
     {alloc_point_4d((yyvsp[(1) - (4)].value),(yyvsp[(2) - (4)].value),(yyvsp[(3) - (4)].value),(yyvsp[(4) - (4)].value)); }
     break;
 
   case 228:
+
+/* Line 1455 of yacc.c  */
 #line 497 "wktparse.y"
     { alloc_empty(); }
     break;
 
 
-/* Line 1267 of yacc.c.  */
-#line 2391 "y.tab.c"
+
+/* Line 1455 of yacc.c  */
+#line 2658 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2463,7 +2730,7 @@ yyerrlab:
 
   if (yyerrstatus == 3)
     {
-      /* If just tried and failed to reuse look-ahead token after an
+      /* If just tried and failed to reuse lookahead token after an
 	 error, discard it.  */
 
       if (yychar <= YYEOF)
@@ -2480,7 +2747,7 @@ yyerrlab:
 	}
     }
 
-  /* Else will try to reuse look-ahead token after shifting the error
+  /* Else will try to reuse lookahead token after shifting the error
      token.  */
   goto yyerrlab1;
 
@@ -2538,14 +2805,11 @@ yyerrlab1:
       YY_STACK_PRINT (yyss, yyssp);
     }
 
-  if (yyn == YYFINAL)
-    YYACCEPT;
-
   *++yyvsp = yylval;
 
   yyerror_range[1] = yylloc;
   /* Using YYLLOC is tempting, but would change the location of
-     the look-ahead.  YYLOC is available though.  */
+     the lookahead.  YYLOC is available though.  */
   YYLLOC_DEFAULT (yyloc, (yyerror_range - 1), 2);
   *++yylsp = yyloc;
 
@@ -2570,7 +2834,7 @@ yyabortlab:
   yyresult = 1;
   goto yyreturn;
 
-#ifndef yyoverflow
+#if !defined(yyoverflow) || YYERROR_VERBOSE
 /*-------------------------------------------------.
 | yyexhaustedlab -- memory exhaustion comes here.  |
 `-------------------------------------------------*/
@@ -2581,7 +2845,7 @@ yyexhaustedlab:
 #endif
 
 yyreturn:
-  if (yychar != YYEOF && yychar != YYEMPTY)
+  if (yychar != YYEMPTY)
      yydestruct ("Cleanup: discarding lookahead",
 		 yytoken, &yylval, &yylloc);
   /* Do not reclaim the symbols of the rule which action triggered
@@ -2607,6 +2871,8 @@ yyreturn:
 }
 
 
+
+/* Line 1675 of yacc.c  */
 #line 498 "wktparse.y"
 
 

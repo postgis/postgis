@@ -1,0 +1,71 @@
+#############################################################################
+# $Id$ 
+#
+# Makefile used to simplify creation of PostGIS and WKT Raster enabled
+# database. Run make -f Makefile.rt to see usage message.
+#
+#############################################################################
+# Copyright (C) 2009 Mateusz Loskot <mateusz@loskot.net>
+#
+# This is free software; you can redistribute and/or modify it under
+# the terms of the GNU General Public Licence. See the COPYING file.
+#
+#############################################################################
+#
+# Instructions:
+# You may need to update the location of SQL scripts of PostGIS
+# and WKT Raster extensions.
+#
+### BEGIN OF CONFIGURATION ##################################################
+POSTGIS = /usr/share/postgresql/8.4/contrib
+WKTRASTER = ${POSTGIS}
+### END OF CONFIGURATION ####################################################
+#
+# *** DO NOT EDIT ANYTHING BELOW ***
+
+ifndef VERBOSE
+	ERROUT=2>&1
+endif
+
+all:
+	@echo "****** Makefile.rt usage ******"
+	@echo "*** Create PostGIS and WKT Raster enabled database:"
+	@echo "\tDBNAME=mydb make -f Makefile.rt create"
+	@echo "*** Drop PostGIS and WKT Raster enabled database:"
+	@echo "\tDBNAME=mydb make -f Makefile.rt drop"
+	@echo "*** Check if database exists:"
+	@echo "\tDBNAME=mydb make -f Makefile.rt check"
+	@echo "PostGIS installation scripts: $(POSTGIS)"
+drop:
+	@echo "****** Makefile.rt ******"
+ifdef DBNAME
+	@echo "*** Dropping database '$(DBNAME)'..."
+	@dropdb $(DBNAME) > /dev/null $(ERROUT);
+	@echo "****** END. *******"
+else
+	@echo "****** Missing DBNAME option. Aborting."
+endif
+
+create:
+	@echo "****** Makefile.rt ******"
+ifdef DBNAME
+	@echo "****** Creating database '$(DBNAME)'..."
+	@createdb --tablespace=tablespace2 $(DBNAME) > /dev/null $(ERROUT);
+	@createlang plpgsql $(DBNAME) > /dev/null $(ERROUT);
+	@echo "****** Loading PostGIS into '$(DBNAME)'..."
+	@psql -d $(DBNAME) -f $(POSTGIS)/postgis.sql > /dev/null $(ERROUT);
+	@psql -d $(DBNAME) -f $(POSTGIS)/spatial_ref_sys.sql > /dev/null $(ERROUT);
+	@echo "****** Loading WKT Raster into '$(DBNAME)'..."
+	@psql -d $(DBNAME) -f $(WKTRASTER)/rtpostgis.sql > /dev/null $(ERROUT);
+	@echo "****** END. *******"
+else
+	@echo "****** Missing DBNAME option. Aborting."
+endif
+
+check:
+	@echo "****** Makefile.rt ******"
+ifeq ($(shell psql -l | grep ' $(DBNAME) '  | wc -l), 1)
+	@echo "****** Database '$(DBNAME)' found"
+else
+	@echo "****** Database '$(DBNAME)' not found"
+endif

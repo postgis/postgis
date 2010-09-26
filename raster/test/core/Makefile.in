@@ -1,0 +1,55 @@
+#############################################################################
+# $Id$
+#
+# Copyright (c) 2009 Sandro Santilli <strk@keybit.net>
+#
+# This is free software; you can redistribute and/or modify it under
+# the terms of the GNU General Public Licence. See the COPYING file.
+#
+#############################################################################
+
+RT_CORE=../../rt_core
+
+LIBLWGEOM_LDFLAGS=@LIBLWGEOM_LDFLAGS@
+LIBLWGEOM_CFLAGS=@LIBLWGEOM_CFLAGS@
+LIBGDAL_CFLAGS=@LIBGDAL_CFLAGS@
+LIBGDAL_LDFLAGS=@LIBGDAL_LDFLAGS@
+
+RTCORE_CFLAGS=-I$(RT_CORE)
+RTCORE_LDFLAGS=$(RT_CORE)/librtcore.a
+
+CFLAGS = \
+	@CFLAGS@ @PICFLAGS@ @WARNFLAGS@ @POSTGIS_RASTER_API_DEBUG_CFLAGS@ \
+	$(RTCORE_CFLAGS) \
+	$(LIBLWGEOM_CFLAGS) \
+    $(LIBGDAL_CFLAGS)
+
+LDFLAGS = \
+	-lm \
+	$(RTCORE_LDFLAGS) \
+	$(LIBLWGEOM_LDFLAGS) \
+    $(LIBGDAL_LDFLAGS)
+       
+
+TESTS = testapi testwkb
+
+all: $(TESTS)
+
+check: $(RT_CORE)/librtcore.a $(TESTS)
+	./testapi
+	./testwkb
+
+testapi: $(RT_CORE)/librtcore.a testapi.c
+	$(CC) $(CFLAGS) -o testapi testapi.c $(LDFLAGS) 
+
+testwkb: $(RT_CORE)/librtcore.a testwkb.c
+	$(CC) $(CFLAGS) -o testwkb testwkb.c $(LDFLAGS) 
+
+$(RT_CORE)/librtcore.a:
+	$(MAKE) -C ../../rt_core
+
+clean:
+	$(RM) $(TESTS)
+
+distclean: clean
+	$(RM) Makefile

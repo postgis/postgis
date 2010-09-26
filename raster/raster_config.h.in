@@ -1,0 +1,83 @@
+/* raster_config.h.in.  Generated from configure.ac by autoheader.  */
+
+/* Define to 1 if you have the <dlfcn.h> header file. */
+#undef HAVE_DLFCN_H
+
+/* Defined if libiconv headers and library are present */
+#undef HAVE_ICONV
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the `pq' library (-lpq). */
+#undef HAVE_LIBPQ
+
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define to the sub-directory in which libtool stores uninstalled libraries.*/
+#undef LT_OBJDIR
+
+/* debug low-level RASTER API */
+#undef POSTGIS_RASTER_API_DEBUG
+
+/* WKTRaster build date */
+#undef POSTGIS_RASTER_BUILD_DATE
+
+/* WKTRaster library version */
+#undef POSTGIS_RASTER_LIB_VERSION
+
+/* WKTRaster major version */
+#undef POSTGIS_RASTER_MAJOR_VERSION
+
+/* WKTRaster micro version */
+#undef POSTGIS_RASTER_MICRO_VERSION
+
+/* WKTRaster minor version */
+#undef POSTGIS_RASTER_MINOR_VERSION
+
+/* PostgreSQL server version */
+#undef POSTGIS_RASTER_PGSQL_VERSION
+
+/* debug PostGIS RASTER memory activity */
+#undef POSTGIS_RASTER_PG_DEBUG_MEM
+
+/* WKTRaster scripts version */
+#undef POSTGIS_RASTER_SCRIPTS_VERSION
+
+/* WKTRaster version */
+#undef POSTGIS_RASTER_VERSION
+
+/* debug PostGIS RASTER activity */
+#undef POSTGIS_RASTER_PG_DEBUG
+
+/* Enable development variable */
+#undef ENABLE_DEVELOPMENT
+
+/* Define to 1 if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Define to 1 if `lex' declares `yytext' as a `char *' by default, not a
+   `char[]'. */
+#undef YYTEXT_POINTER

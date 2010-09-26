@@ -1,0 +1,53 @@
+#############################################################################
+# $Id$
+#
+# Copyright (c) 2009 Sandro Santilli <strk@keybit.net>
+#
+# This is free software; you can redistribute and/or modify it under
+# the terms of the GNU General Public Licence. See the COPYING file.
+#
+#############################################################################
+
+MODULE_big=rtpostgis
+
+
+# Files to be copied to the contrib/ directory
+DATA_built=rtpostgis.sql
+DATA=
+
+# SQL objects (files requiring C pre-processing)
+SQL_OBJS=rtpostgis.sql.in
+
+# Objects to build using PGXS
+OBJS=rt_pg.o
+
+# Libraries to link into the module (proj, geos)
+#
+# Note: we specify liblwgeom.a directly in SHLIB_LINK rather than using
+# -L... -l options to prevent issues with some platforms trying to link
+# to an existing liblwgeom.so in the PostgreSQL $libdir supplied by an
+# older version of PostGIS, rather than with the static liblwgeom.a 
+# supplied with newer versions of PostGIS
+#
+
+LIBLWGEOM_LDFLAGS=@LIBLWGEOM_LDFLAGS@
+LIBLWGEOM_CFLAGS=@LIBLWGEOM_CFLAGS@
+LIBGDAL_CFLAGS=@LIBGDAL_CFLAGS@
+LIBGDAL_LDFLAGS=@LIBGDAL_LDFLAGS@
+
+PG_CPPFLAGS+=@CPPFLAGS@ @POSTGIS_RASTER_PG_DEBUG_CFLAGS@ $(LIBLWGEOM_CFLAGS) $(LIBGDAL_CFLAGS) -I../rt_core
+SHLIB_LINK+=@SHLIB_LINK@ ../rt_core/librtcore.a $(LIBLWGEOM_LDFLAGS) $(LIBGDAL_LDFLAGS)
+# Extra files to remove during 'make clean'
+EXTRA_CLEAN=$(SQL_OBJS) rtpostgis.sql
+
+# PGXS information
+PG_CONFIG = @PGCONFIG@ 
+PGXS := @PGXS@
+include $(PGXS)
+
+# Generate any .sql.in files from .sql.in.c files by running them through the C pre-processor 
+$(SQL_OBJS): %.in: %.in.c
+	$(CPP) -traditional-cpp $< | grep -v '^#' > $@
+
+distclean: clean
+	$(RM) Makefile

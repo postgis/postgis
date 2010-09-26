@@ -1,0 +1,121 @@
+RFC2: Well Known Binary format for RASTER type
+----------------------------------------------
+$Author$
+$Date$
+$Revision$
+------------------------------------------------------
+
+The WKB format for RASTER is meant for transport.
+Takes into account endiannes and avoids any padding.
+Still, beside padding and endiannes, it matches the
+internal serialized format (see RFC1), for quick
+input/output.
+
+// Basic Type definitions
+// byte : 1 byte
+// uint16 : 16 bit unsigned integer (2 bytes)
+// uint32 : 32 bit unsigned integer (4 bytes)
+// float64 : double precision floating point number (8 bytes)
+
+ +------------------------------------------------------------+
+ | RASTER                                                     |
+ +---------------+-------------+------------------------------+
+ | - name -      |  - type -   | - meaning -                  |
+ +---------------+-------------+------------------------------+
+ | endiannes     | byte        | 1:ndr/little endian          |
+ |               |             | 0:xdr/big endian             |
+ +---------------+-------------+------------------------------+
+ | version       | uint16      | format version (0 for this   |
+ |               |             | structure)                   |
+ +---------------+-------------+------------------------------+
+ | nBands        | uint16      | Number of bands              |
+ +---------------+-------------+------------------------------+
+ | scaleX        | float64     | pixel width                  |
+ |               |             | in geographical units        |
+ +---------------+-------------+------------------------------+
+ | scaleY        | float64     | pixel height                 |
+ |               |             | in geographical units        |
+ +---------------+-------------+------------------------------+
+ | ipX           | float64     | X ordinate of upper-left     |
+ |               |             | pixel's upper-left corner    |
+ |               |             | in geographical units        |
+ +---------------+-------------+------------------------------+
+ | ipY           | float64     | Y ordinate of upper-left     |
+ |               |             | pixel's upper-left corner    |
+ |               |             | in geographical units        |
+ +---------------+-------------+------------------------------+
+ | skewX         | float64     | rotation about Y-axis        |
+ +---------------+-------------+------------------------------+
+ | skewY         | float64     | rotation about X-axis        |
+ +---------------+-------------+------------------------------+
+ | srid          | int32       | Spatial reference id         |
+ +---------------+-------------+------------------------------+
+ | width         | uint16      | number of pixel columns      |
+ +---------------+-------------+------------------------------+
+ | height        | uint16      | number of pixel rows         |
+ +---------------+-------------+------------------------------+
+ | bands[nBands] | RASTERBAND  | Bands data                   |
+ +---------------+-------------+------------------------------+
+
+
+ +------------------------------------------------------------------+
+ | RASTERBAND                                                       |
+ +---------------+--------------+-----------------------------------+
+ | - name -      |  - type -    | - meaning -                       |
+ +---------------+--------------+-----------------------------------+
+ | isOffline     | 1bit         | If true, data is to be found      |
+ |               |              | on the filesystem, trought the    |
+ |               |              | path specified in RASTERDATA      |
+ +---------------+--------------+-----------------------------------+
+ | hasNodataValue| 1bit         | If true, stored nodata value is   |
+ |               |              | a true nodata value. Otherwise    |
+ |               |              | the value stored as a nodata      |
+ |               |              | value should be ignored.          |
+ +---------------+--------------+-----------------------------------+
+ | reserved      | 2bits        | unused in this version            |
+ +---------------+--------------+-----------------------------------+
+ | pixtype       | 4bits        | 0: 1-bit boolean                  |
+ |               |              | 1: 2-bit unsigned integer         |
+ |               |              | 2: 4-bit unsigned integer         |
+ |               |              | 3: 8-bit signed integer           |
+ |               |              | 4: 8-bit unsigned integer         |
+ |               |              | 5: 16-bit signed integer          |
+ |               |              | 6: 16-bit unsigned signed integer |
+ |               |              | 7: 32-bit signed integer          |
+ |               |              | 8: 32-bit unsigned signed integer |
+ |               |              | 9: 32-bit float                  |
+ |               |              | 10: 64-bit float                  |
+ +---------------+--------------+-----------------------------------+
+ | nodata        | 1 to 8 bytes | Nodata value                      |
+ |               | depending on |                                   |
+ |               | pixtype [1]  |                                   |
+ +---------------+--------------+-----------------------------------+
+ | data          | RASTERDATA   | Raster band data (see below)      |
+ +---------------+--------------+-----------------------------------+
+
+ +------------------------------------------------------------------+
+ | RASTERDATA (isOffline flag clear)                                |
+ +---------------+--------------+-----------------------------------+
+ | pix[w*h]      | 1 to 8 bytes | Pixels values, row after row,     |
+ |               | depending on | so pix[0] is upper-left, pix[w-1] |
+ |               | pixtype [1]  | is upper-right.                   |
+ |               |              |                                   |
+ |               |              | As for endiannes, it is specified |
+ |               |              | at the start of WKB, and implicit |
+ |               |              | up to 8bits (bit-order is most    |
+ |               |              | significant first)                |
+ |               |              |                                   |
+ +---------------+--------------+-----------------------------------+
+
+ [1] 1,2 and 4 bit pixtypes are still encoded as 1-byte per value
+
+ +-----------------------------------------------------------------+
+ | RASTERDATA (isOffline flag set)                                 |
+ +---------------+-------------+-----------------------------------+
+ | bandNumber    | int8        | 0-based band number to use from   |
+ |               |             | the set available in the external |
+ |               |             | file                              |
+ +---------------+-------------+-----------------------------------+
+ | path          | string      | null-terminated path to data file |
+ +---------------+-------------+-----------------------------------+
+

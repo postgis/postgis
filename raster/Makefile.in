@@ -1,0 +1,45 @@
+#############################################################################
+# $Id: Makefile 3940 2009-03-30 09:30:43Z mloskot $
+#
+# Master makefile used to build WKT Raster
+#
+# Copyright (c) 2009 Sandro Santilli <strk@keybit.net>
+#
+# This is free software; you can redistribute and/or modify it under
+# the terms of the GNU General Public Licence. See the COPYING file.
+#
+#############################################################################
+ 
+all: @RT_CORE_LIB@ @RT_PG_LIB@ @RT_POSTGIS_SQL@ 
+
+corelib:
+	$(MAKE) -C rt_core
+
+pglib:
+	$(MAKE) -C rt_pg
+
+rtpostgis.sql:
+	$(MAKE) -C rt_pg rtpostgis.sql
+
+install: all
+	$(MAKE) -C rt_pg install
+	$(MAKE) -C scripts/python install
+
+clean:
+	$(MAKE) -C rt_core $@
+	$(MAKE) -C rt_pg $@
+	$(MAKE) -C test $@
+	$(MAKE) -C scripts/python $@
+
+distclean: clean
+	$(RM) -R autom4te.cache
+	$(RM) config.status
+
+check:
+	$(MAKE) -C test $@
+	@echo 
+	@echo "Consider also running make post-install-check after installation"
+	@echo 
+
+post-install-check: 
+	$(MAKE) -C test $@

@@ -123,9 +123,33 @@ config.status: configure
 ChangeLog.svn:
 	svn2cl --authors=authors.svn -i -o ChangeLog.svn
 
+rt-all:
+	@echo '------------------------------------------------------'
+	@echo 'Generating PostGIS Raster stuff'
+	@echo '------------------------------------------------------'
+	$(MAKE) -C raster all
+
+rt-clean:
+	$(MAKE) -C raster clean
+    
+rt-distclean:
+	$(MAKE) -C raster distclean
+
+rt-install:
+	$(MAKE) -C raster install
+    
+rt-check:
+	$(MAKE) -C raster check
+
+rt-post-install-check:
+	$(MAKE) -C raster post-install-check
+
+rt-sql:
+	$(MAKE) -C raster rtpostgis.sql
+
 astyle:
 	./astyle.sh
-
+    
 commit:
 	$(MAKE) astyle && $(MAKE) clean && $(MAKE) check && svn commit
 

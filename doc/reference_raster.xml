@@ -2,8 +2,8 @@
 <chapter id="RT_reference">
   <title>Raster Reference</title>
 
-  <para>The functions given below are the ones which a user of WKT Raster is
-  likely to need and which are currently available in WKT Raster. There are other functions which are required support
+  <para>The functions given below are the ones which a user of PostGIS Raster is
+  likely to need and which are currently available in PostGIS Raster. There are other functions which are required support
   functions to the raster objects which are not of use to a general
   user.</para>
   <para><varname>raster</varname> is a new PostGIS type for storing and analyzing raster data. </para>
@@ -196,7 +196,7 @@ VALUES (1,
 		(or not visible in the current search_path) or the specified SRID,
 		pixel types are invalid.</para>
 		
-		<para><varname>gdal2wktraster.py</varname> loader uses this function to register raster tables</para>
+		<para><varname>gdal2raster.py</varname> loader uses this function to register raster tables</para>
 
 		<note>
 			<para>Views and derivatively created spatial tables will need to be registered in raster_columns manually,
@@ -2317,7 +2317,7 @@ rid |        rastbox
 				
 			<refsection>
 				<title>Examples</title>
-				<para>Refer to <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster/SpecificationWorking01">WKT Raster Specification</ulink>
+				<para>Refer to <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster/SpecificationWorking01">PostGIS Raster Specification</ulink>
 					 for a diagram of this.</para>
 				<informaltable>
 				  <tgroup cols="1">
