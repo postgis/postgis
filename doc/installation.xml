@@ -122,6 +122,16 @@ psql -d yourdatabase -f raster/rt_pg/rtpostgis.sql
 	<itemizedlist>
 	  <listitem>
 		<para>
+		  GTK (requires GTK+2.0) to compile the shp2pgsql-gui shape file loader.
+		  <ulink url="http://www.gtk.org/">
+			http://www.gtk.org/
+		  </ulink>
+		  .
+		</para>
+	  </listitem>
+	  
+	  <listitem>
+		<para>
 		  Apache Ant (<filename>ant</filename>) is required for building any of
 		  the drivers under the <filename>java</filename> directory. Ant is
 		  available from
