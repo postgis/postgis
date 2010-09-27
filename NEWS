@@ -20,7 +20,7 @@ YYYY/MM/DD
     in some free worldwide shapefiles (Sandro Santilli)
 
 PostGIS 1.5.2
-2010/09/XX
+2010/09/27
 
  - This is a bug fix release, addressing issues that have been
    filed since the 1.5.1 release.
@@ -29,7 +29,7 @@ PostGIS 1.5.2
    - Loader: fix handling of empty (0-verticed) geometries in shapefiles.
      (Sandro Santilli)
    - #536, Geography ST_Intersects, ST_Covers, ST_CoveredBy and
-     Geometry ST_Equals not using spatial index (Regina Obe, Nicklas Aven)
+     Geometry ST_Equals not using spatial index (Regina Obe, Nicklas Avén)
    - #573, Improvement to ST_Contains geography
    - Loader: Add support for command-q shutdown in Mac GTK build (Paul Ramsey)
    - #393, Loader: Add temporary patch for large DBF files 
@@ -59,7 +59,7 @@ PostGIS 1.5.2
      (Mark Cave-Ayland)
    - #572 Password whitespace for Shape File to PostGIS 
      Import not supported (Mark Cave-Ayland)
-   - #603 shp2pgsql: "-w" produces invalid WKT for MULTI* objects.
+   - #603: shp2pgsql: "-w" produces invalid WKT for MULTI* objects.
      (Mark Cave-Ayland)
  - Enhancement
    - #513 Add dbf filter to shp2pgsql-gui and allow uploading dbf only
