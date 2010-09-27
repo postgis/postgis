@@ -8,17 +8,21 @@
 
   <sect1>
 	<title>Short Version</title>
-
+	<para><note>The raster support is currently optional, but in final release it will be required.</note></para>
 	<programlisting>tar xvfz postgis-&last_release_version;.tar.gz
 cd postgis-&last_release_version;
-./configure
+./configure --with-raster
 make
+make rt-all
 make install
+make rt-install
 createdb yourdatabase
 createlang plpgsql yourdatabase
 psql -d yourdatabase -f postgis.sql
 psql -d yourdatabase -f postgis_comments.sql
-psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
+psql -d yourdatabase -f spatial_ref_sys.sql
+psql -d yourdatabase -f raster/rt_pg/rtpostgis.sql
+</programlisting>
 
 	<para>
 	  The rest of this chapter goes into detail each of the above installation
@@ -85,11 +89,9 @@ psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
 
 	  <listitem>
 		<para>
-		  GEOS geometry library, version 3.1.1 or greater, but GEOS 3.2 is recommended.  Without GEOS 3.2,
-			you will be missing some major enhancements with handling of topological exceptions and improvements to ST_Buffer that allow beveling and mitre and much faster buffering. The GEOS library is
-		  used to provide geometry tests (ST_Touches(), ST_Contains(),
-		  ST_Intersects()) and operations (ST_Buffer(), ST_Union(),ST_Intersection()
-		  ST_Difference()) within PostGIS. GEOS is available for download from
+		  GEOS geometry library, version 3.2.2 or greater, but GEOS 3.3 is recommended.  Without GEOS 3.3,
+			you will be missing some major enhancements with handling of topological exceptions and improvements to geometry validation and
+			making geometries valid such as ST_ValidDetail and ST_MakeValid.  GEOS is available for download from
 		  <ulink url="http://trac.osgeo.org/geos/">
 			http://trac.osgeo.org/geos/
 		  </ulink>
@@ -98,9 +100,17 @@ psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
 	  </listitem>
 	  <listitem>
 		<para>
-		  LibXML2, version 2.5.x or higher. LibXML2 is currenlty used in some imports
-		  functions (ST_AsGML and ST_AsKML). LibXML2 is available for download from 
+		  LibXML2, version 2.5.x or higher. LibXML2 is currently used in some imports
+		  functions (ST_GeomFromGML and ST_GeomFromKML). LibXML2 is available for download from 
 		  <ulink url="http://xmlsoft.org/downloads.html">http://xmlsoft.org/downloads.html</ulink>.
+		</para>
+	  </listitem>
+	  
+	  <listitem>
+		<para>
+		  GDAL, version 1.6 or higher.  This is needed for raster support and will be required in final
+		  release of PostGIS 2.0.
+		  <ulink url="http://trac.osgeo.org/gdal/wiki/DownloadSource">http://trac.osgeo.org/gdal/wiki/DownloadSource</ulink>.
 		</para>
 	  </listitem>
 	</itemizedlist>
@@ -162,12 +172,12 @@ psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
 
 	<para>
 	  Retrieve the PostGIS source archive from the downloads website
-	  <ulink url="http://postgis.refractions.net/download/postgis-&last_release_version;.tar.gz">
-		http://postgis.refractions.net/download/postgis-&last_release_version;.tar.gz
+	  <ulink url="http://www.postgis.org/download/postgis-&last_release_version;.tar.gz">
+		http://www.postgis.org/download/postgis-&last_release_version;.tar.gz
 	  </ulink>
 	</para>
 
-	<programlisting>wget http://postgis.refractions.net/download/postgis-&last_release_version;.tar.gz
+	<programlisting>wget http://www.postgis.org/download/postgis-&last_release_version;.tar.gz
 tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 
 	<para>
