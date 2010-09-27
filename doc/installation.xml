@@ -109,6 +109,14 @@ psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
 		  .
 		</para>
 	  </listitem>
+	  
+	  <listitem>
+		<para>
+		  LibXML2, version 2.5.x or higher. LibXML2 is currently used in some imports
+		  functions (ST_GeomFromGML and ST_GeomFromKML). LibXML2 is available for download from 
+		  <ulink url="http://xmlsoft.org/downloads.html">http://xmlsoft.org/downloads.html</ulink>.
+		</para>
+	  </listitem>
 	</itemizedlist>
 
 	<para>
@@ -116,6 +124,16 @@ psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
 	</para>
 
 	<itemizedlist>
+	  <listitem>
+		<para>
+		  GTK (requires GTK+2.0) to compile the shp2pgsql-gui shape file loader.
+		  <ulink url="http://www.gtk.org/">
+			http://www.gtk.org/
+		  </ulink>
+		  .
+		</para>
+	  </listitem>
+	
 	  <listitem>
 		<para>
 		  Apache Ant (<filename>ant</filename>) is required for building any of
@@ -168,12 +186,12 @@ psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
 
 	<para>
 	  Retrieve the PostGIS source archive from the downloads website
-	  <ulink url="http://postgis.refractions.net/download/postgis-&last_release_version;.tar.gz">
-		http://postgis.refractions.net/download/postgis-&last_release_version;.tar.gz
+	  <ulink url="http://www.postgis.org/download/postgis-&last_release_version;.tar.gz">
+		http://www.postgis.org/download/postgis-&last_release_version;.tar.gz
 	  </ulink>
 	</para>
 
-	<programlisting>wget http://postgis.refractions.net/download/postgis-&last_release_version;.tar.gz
+	<programlisting>wget http://www.postgis.org/download/postgis-&last_release_version;.tar.gz
 tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 
 	<para>
