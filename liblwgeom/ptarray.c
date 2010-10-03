@@ -36,6 +36,7 @@ ptarray_construct(char hasz, char hasm, uint32 npoints)
 	pa->dims = dims;
 	pa->serialized_pointlist = ptlist;
 	pa->npoints = npoints;
+	pa->maxpoints = npoints;
 
 	return pa;
 
@@ -54,6 +55,7 @@ ptarray_construct_copy_data(char hasz, char hasm, uint32 npoints, const uchar *p
 	size = TYPE_NDIMS(dims)*npoints*sizeof(double);
 	pa->dims = dims;
 	pa->npoints = npoints;
+	pa->maxpoints = npoints;
 
 	if ( size )
 	{
@@ -79,9 +81,11 @@ void ptarray_free(POINTARRAY *pa)
 	lwfree(pa);
 }
 
+
 void
 ptarray_reverse(POINTARRAY *pa)
 {
+	/* TODO change this to double array operations once point array is double alligned */
 	POINT4D pbuf;
 	uint32 i;
 	int ptsize = pointArray_ptsize(pa);
@@ -193,9 +197,10 @@ ptarray_segmentize2d(const POINTARRAY *ipa, double dist)
 	pbuf.x = pbuf.y = pbuf.z = pbuf.m = 0;
 
 	/* Initial storage */
-	opa = (POINTARRAY *)lwalloc(ptsize * maxpoints);
+	opa = (POINTARRAY *)lwalloc(POINTARRAY);
 	opa->dims = ipa->dims;
 	opa->npoints = 0;
+	opa->maxpoints = maxpoints;
 	opa->serialized_pointlist = (uchar *)lwalloc(maxpoints*ptsize);
 
 	/* Add first point */
@@ -434,6 +439,7 @@ ptarray_clone(const POINTARRAY *in)
 
 	out->dims = in->dims;
 	out->npoints = in->npoints;
+	out->maxpoints = in->maxpoints;
 
 	size = in->npoints*sizeof(double)*TYPE_NDIMS(in->dims);
 	out->serialized_pointlist = lwalloc(size);
