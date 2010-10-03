@@ -197,7 +197,7 @@ ptarray_segmentize2d(const POINTARRAY *ipa, double dist)
 	pbuf.x = pbuf.y = pbuf.z = pbuf.m = 0;
 
 	/* Initial storage */
-	opa = (POINTARRAY *)lwalloc(POINTARRAY);
+	opa = (POINTARRAY *)lwalloc(sizeof(POINTARRAY));
 	opa->dims = ipa->dims;
 	opa->npoints = 0;
 	opa->maxpoints = maxpoints;
