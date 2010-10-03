@@ -173,7 +173,7 @@ lwgeom_serialize(LWGEOM *lwgeom)
 
 /** Force Right-hand-rule on LWGEOM polygons **/
 void
-lwgeom_force_rhr(LWGEOM *lwgeom)
+lwgeom_force_clockwise(LWGEOM *lwgeom)
 {
 	LWCOLLECTION *coll;
 	int i;
@@ -181,11 +181,11 @@ lwgeom_force_rhr(LWGEOM *lwgeom)
 	switch (TYPE_GETTYPE(lwgeom->type))
 	{
 	case POLYGONTYPE:
-		lwpoly_forceRHR((LWPOLY *)lwgeom);
+		lwpoly_force_clockwise((LWPOLY *)lwgeom);
 		return;
 
 	case TRIANGLETYPE:
-		lwtriangle_forceRHR((LWTRIANGLE *)lwgeom);
+		lwtriangle_force_clockwise((LWTRIANGLE *)lwgeom);
 		return;
 
 		/* Not handle POLYHEDRALSURFACE and TIN
@@ -194,7 +194,7 @@ lwgeom_force_rhr(LWGEOM *lwgeom)
 	case COLLECTIONTYPE:
 		coll = (LWCOLLECTION *)lwgeom;
 		for (i=0; i<coll->ngeoms; i++)
-			lwgeom_force_rhr(coll->geoms[i]);
+			lwgeom_force_clockwise(coll->geoms[i]);
 		return;
 	}
 }

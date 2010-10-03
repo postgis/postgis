@@ -1510,13 +1510,13 @@ CREATE OR REPLACE FUNCTION ST_Reverse(geometry)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION ForceRHR(geometry)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_forceRHR_poly'
+	AS 'MODULE_PATHNAME', 'LWGEOM_force_clockwise_poly'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_ForceRHR(geometry)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_forceRHR_poly'
+	AS 'MODULE_PATHNAME', 'LWGEOM_force_clockwise_poly'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3

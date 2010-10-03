@@ -330,7 +330,7 @@ lwtriangle_clone(const LWTRIANGLE *g)
 }
 
 void
-lwtriangle_forceRHR(LWTRIANGLE *triangle)
+lwtriangle_force_clockwise(LWTRIANGLE *triangle)
 {
 	if ( ptarray_isccw(triangle->points) )
 		ptarray_reverse(triangle->points);

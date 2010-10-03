@@ -42,7 +42,7 @@ ptarray_construct(char hasz, char hasm, uint32 npoints)
 }
 
 POINTARRAY*
-ptarray_construct_copy_data(char hasz, char hasm, uint32 npoints, uchar *ptlist)
+ptarray_construct_copy_data(char hasz, char hasm, uint32 npoints, const uchar *ptlist)
 {
 	uchar dims = 0;
 	size_t size;

@@ -312,14 +312,14 @@ POINT4D;
  */
 typedef struct
 {
-	/* array of POINT 2D, 3D or 4D. probably missaligned. */
+	/* array of POINT 2D, 3D or 4D. possibly missaligned. */
 	uchar *serialized_pointlist;
 
 	/* use TYPE_* macros to handle */
 	uchar  dims;
 
-	int npoints;
-	int maxpoints;
+	int npoints;   /* how many points we are currently storing */
+	int maxpoints; /* how many points we have space for in serialized_pointlist */
 }
 POINTARRAY;
 
@@ -396,8 +396,8 @@ typedef struct
 	uchar type; /* POLYGONTYPE */
 	BOX2DFLOAT4 *bbox;
 	uint32 SRID;
-	int nrings;
-	int maxrings;
+	int nrings;   /* how many rings we are currently storing */
+	int maxrings; /* how many rings we have space for in **rings */
 	POINTARRAY **rings; /* list of rings (list of points) */
 }
 LWPOLY; /* "light-weight polygon" */
@@ -408,8 +408,8 @@ typedef struct
 	uchar type;
 	BOX2DFLOAT4 *bbox;
 	uint32 SRID;
-	int ngeoms;
-	int maxgeoms;
+	int ngeoms;   /* how many geometries we are currently storing */
+	int maxgeoms; /* how many geometries we have space for in **geoms */
 	LWPOINT **geoms;
 }
 LWMPOINT;
@@ -420,8 +420,8 @@ typedef struct
 	uchar type;
 	BOX2DFLOAT4 *bbox;
 	uint32 SRID;
-	int ngeoms;
-	int maxgeoms;
+	int ngeoms;   /* how many geometries we are currently storing */
+	int maxgeoms; /* how many geometries we have space for in **geoms */
 	LWLINE **geoms;
 }
 LWMLINE;
@@ -432,8 +432,8 @@ typedef struct
 	uchar type;
 	BOX2DFLOAT4 *bbox;
 	uint32 SRID;
-	int ngeoms;
-	int maxgeoms;
+	int ngeoms;   /* how many geometries we are currently storing */
+	int maxgeoms; /* how many geometries we have space for in **geoms */
 	LWPOLY **geoms;
 }
 LWMPOLY;
@@ -444,8 +444,8 @@ typedef struct
 	uchar type;
 	BOX2DFLOAT4 *bbox;
 	uint32 SRID;
-	int ngeoms;
-	int maxgeoms;
+	int ngeoms;   /* how many geometries we are currently storing */
+	int maxgeoms; /* how many geometries we have space for in **geoms */
 	LWGEOM **geoms;
 }
 LWCOLLECTION;
@@ -466,8 +466,8 @@ typedef struct
 	uchar type; /* COMPOUNDTYPE */
 	BOX2DFLOAT4 *bbox;
 	uint32 SRID;
-	int ngeoms;
-	int maxgeoms;
+	int ngeoms;   /* how many geometries we are currently storing */
+	int maxgeoms; /* how many geometries we have space for in **geoms */
 	LWGEOM **geoms;
 }
 LWCOMPOUND; /* "light-weight compound line" */
@@ -478,8 +478,8 @@ typedef struct
 	uchar type; /* CURVEPOLYTYPE */
 	BOX2DFLOAT4 *bbox;
 	uint32 SRID;
-	int nrings;
-	int maxrings;
+	int nrings;    /* how many rings we are currently storing */
+	int maxrings;  /* how many rings we have space for in **rings */
 	LWGEOM **rings; /* list of rings (list of points) */
 }
 LWCURVEPOLY; /* "light-weight polygon" */
@@ -490,8 +490,8 @@ typedef struct
 	uchar type;
 	BOX2DFLOAT4 *bbox;
 	uint32 SRID;
-	int ngeoms;
-	int maxgeoms;
+	int ngeoms;   /* how many geometries we are currently storing */
+	int maxgeoms; /* how many geometries we have space for in **geoms */
 	LWGEOM **geoms;
 }
 LWMCURVE;
@@ -502,8 +502,8 @@ typedef struct
 	uchar type;
 	BOX2DFLOAT4 *bbox;
 	uint32 SRID;
-	int ngeoms;
-	int maxgeoms;
+	int ngeoms;   /* how many geometries we are currently storing */
+	int maxgeoms; /* how many geometries we have space for in **geoms */
 	LWGEOM **geoms;
 }
 LWMSURFACE;
@@ -514,8 +514,8 @@ typedef struct
 	uchar type;
 	BOX2DFLOAT4 *bbox;
 	uint32 SRID;
-	int ngeoms;
-	int maxgeoms;
+	int ngeoms;   /* how many geometries we are currently storing */
+	int maxgeoms; /* how many geometries we have space for in **geoms */
 	LWPOLY **geoms;
 }
 LWPSURFACE;
@@ -536,8 +536,8 @@ typedef struct
 	uchar type;
 	BOX2DFLOAT4 *bbox;
 	uint32 SRID;
-	int ngeoms;
-	int maxgeoms;
+	int ngeoms;   /* how many geometries we are currently storing */
+	int maxgeoms; /* how many geometries we have space for in **geoms */
 	LWTRIANGLE **geoms;
 }
 LWTIN;
@@ -907,6 +907,13 @@ extern void lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *size);
  * find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
  */
 extern BOX3D *lwpoly_compute_box3d(LWPOLY *poly);
+
+/**
+* Add a ring, allocating extra space if necessary. The polygon takes
+* ownership of the passed point array.
+*/
+extern int lwpoly_add_ring(LWPOLY *poly, POINTARRAY *pa);
+
 
 /******************************************************************
  * LWTRIANGLE functions
@@ -1347,9 +1354,6 @@ extern void lwgeom_reverse(LWGEOM *lwgeom);
 extern void lwline_reverse(LWLINE *line);
 extern void lwpoly_reverse(LWPOLY *poly);
 extern void lwtriangle_reverse(LWTRIANGLE *triangle);
-extern void lwpoly_forceRHR(LWPOLY *poly);
-extern void lwtriangle_forceRHR(LWTRIANGLE *triangle);
-extern void lwgeom_force_rhr(LWGEOM *lwgeom);
 extern char* lwgeom_summary(const LWGEOM *lwgeom, int offset);
 extern const char *lwtype_name(int type);
 extern int ptarray_compute_box2d_p(const POINTARRAY *pa, BOX2DFLOAT4 *result);
@@ -1367,6 +1371,14 @@ extern int lwcircstring_is_closed(LWCIRCSTRING *curve);
 extern int lwcompound_is_closed(LWCOMPOUND *curve);
 extern int lwpsurface_is_closed(LWPSURFACE *psurface);
 extern int lwtin_is_closed(LWTIN *tin);
+
+/**
+* Ensure the outer ring is clockwise oriented and all inner rings 
+* are counter-clockwise.
+*/
+extern void lwgeom_force_clockwise(LWGEOM *lwgeom);
+extern void lwpoly_force_clockwise(LWPOLY *poly);
+extern void lwtriangle_force_clockwise(LWTRIANGLE *triangle);
 
 
 extern void interpolate_point4d(POINT4D *A, POINT4D *B, POINT4D *I, double F);
@@ -1484,7 +1496,7 @@ extern const char *lwgeom_typeflags(uchar type);
 extern POINTARRAY* ptarray_construct(char hasz, char hasm, uint32 npoints);
 
 /* Construct a pointarray, *copying* in the data from ptlist */
-extern POINTARRAY* ptarray_construct_copy_data(char hasz, char hasm, uint32 npoints, uchar *ptlist);
+extern POINTARRAY* ptarray_construct_copy_data(char hasz, char hasm, uint32 npoints, const uchar *ptlist);
 
 /*
  * extern POINTARRAY *ptarray_construct2d(uint32 npoints, const POINT2D *pts);

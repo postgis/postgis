@@ -73,7 +73,7 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS);
 Datum LWGEOM_isempty(PG_FUNCTION_ARGS);
 Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_reverse(PG_FUNCTION_ARGS);
-Datum LWGEOM_forceRHR_poly(PG_FUNCTION_ARGS);
+Datum LWGEOM_force_clockwise_poly(PG_FUNCTION_ARGS);
 Datum LWGEOM_noop(PG_FUNCTION_ARGS);
 Datum LWGEOM_zmflag(PG_FUNCTION_ARGS);
 Datum LWGEOM_hasz(PG_FUNCTION_ARGS);
@@ -3205,18 +3205,18 @@ Datum LWGEOM_reverse(PG_FUNCTION_ARGS)
 }
 
 /** Force polygons of the collection to obey Right-Hand-Rule */
-PG_FUNCTION_INFO_V1(LWGEOM_forceRHR_poly);
-Datum LWGEOM_forceRHR_poly(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(LWGEOM_force_clockwise_poly);
+Datum LWGEOM_force_clockwise_poly(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *ingeom, *outgeom;
 	LWGEOM *lwgeom;
 
-	POSTGIS_DEBUG(2, "LWGEOM_forceRHR_poly called");
+	POSTGIS_DEBUG(2, "LWGEOM_force_clockwise_poly called");
 
 	ingeom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 
 	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(ingeom));
-	lwgeom_force_rhr(lwgeom);
+	lwgeom_force_clockwise(lwgeom);
 
 	outgeom = pglwgeom_serialize(lwgeom);
 

@@ -11,6 +11,24 @@
 
 #include "libgeom.h"
 
+
+/**
+* Used for passing the parse state between the parsing functions.
+*/
+typedef struct 
+{
+	const char *wkb; /* Points to start of WKB */
+	size_t wkb_size; /* Expected size of WKB */
+	int swap_bytes; /* Do an endian flip? */
+	int check; /* Simple validity checks on geometries */
+	uint32 lwtype; /* Current type we are handling */
+	uint32 srid; /* Current SRID we are handling */
+	int has_z; /* Z? */
+	int has_m; /* M? */
+	int has_srid; /* SRID? */
+	const char *pos; /* Current parse position */
+} wkb_parse_state;
+
 /**********************************************************************/
 
 static char hex2char[256] = {
@@ -55,8 +73,8 @@ static char* bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
 		
 	for( i = 0; i < hexsize/2; i++ )
 	{
-		h1 = hex2char[hexbuf[2*i]];
-		h2 = hex2char[hexbuf[2*i+1]];
+		h1 = hex2char[(int)hexbuf[2*i]];
+		h2 = hex2char[(int)hexbuf[2*i+1]];
 		if( h1 < 0 )
 			lwerror("Invalid hex character (%c) encountered", hexbuf[i]);
 		if( h2 < 0 )
@@ -71,22 +89,7 @@ static char* bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
 
 
 
-/**
-* Used for passing the parse state between the parsing functions.
-*/
-typedef struct 
-{
-	const char *wkb; /* Points to start of WKB */
-	const size_t wkb_size; /* Expected size of WKB */
-	int swap_bytes; /* Do an endian flip? */
-	int check; /* Simple validity checks on geometries */
-	uint32 lwtype; /* Current type we are handling */
-	uint32 srid; /* Current SRID we are handling */
-	int has_z; /* Z? */
-	int has_m; /* M? */
-	int has_srid; /* SRID? */
-	const char *pos; /* Current parse position */
-} wkb_parse_state;
+
 
 /**
 * Check that we are not about to read off the end of the WKB 
@@ -208,7 +211,7 @@ static uint32 integer_from_wkb_state(wkb_parse_state *s)
 
 	wkb_parse_state_check(s, WKB_INT_SIZE);
 	
-	i = *((uint32*)(s->pos));
+	memcpy(&i, s->pos, WKB_INT_SIZE);
 	
 	/* Swap? Copy into a stack-allocated integer. */
 	if( s->swap_bytes )
@@ -237,7 +240,7 @@ static double double_from_wkb_state(wkb_parse_state *s)
 
 	wkb_parse_state_check(s, WKB_DOUBLE_SIZE);
 
-	d = *((double*)(s->pos));
+	memcpy(&d, s->pos, WKB_DOUBLE_SIZE);
 
 	/* Swap? Copy into a stack-allocated integer. */
 	if( s->swap_bytes )
@@ -277,16 +280,15 @@ static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 	wkb_parse_state_check(s, npoints * ndims * WKB_DOUBLE_SIZE);
 	
 	/* If we're in a native endianness, we can just copy the data directly! */
-	if( ! s->flip_bytes )
+	if( ! s->swap_bytes )
 	{
 		pa = ptarray_construct_copy_data(s->has_z, s->has_m, npoints, s->pos);
-		s->pos += pa->npoints * TYPE_NDIMS(pa->dims);
+		s->pos += npoints * ndims * WKB_DOUBLE_SIZE;
 	}
 	/* Otherwise we have to read each double, separately */
 	else
 	{
 		int i = 0;
-		double d;
 		double *dlist;
 		pa = ptarray_construct(s->has_z, s->has_m, npoints);
 		dlist = (double*)(pa->serialized_pointlist);
@@ -304,7 +306,7 @@ static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 */
 static LWLINE* lwline_from_wkb_state(wkb_parse_state *s)
 {
-	POINTARRAY pa = ptarray_from_wkb_state(s);
+	POINTARRAY *pa = ptarray_from_wkb_state(s);
 
 	if( pa == NULL )
 		return lwline_construct_empty(s->has_z, s->has_m, s->srid);
@@ -323,7 +325,7 @@ static LWLINE* lwline_from_wkb_state(wkb_parse_state *s)
 */
 static LWCIRCSTRING* lwcircstring_from_wkb_state(wkb_parse_state *s)
 {
-	POINTARRAY pa = ptarray_from_wkb_state(s);
+	POINTARRAY *pa = ptarray_from_wkb_state(s);
 
 	if( pa == NULL )
 		return lwcircstring_construct_empty(s->has_z, s->has_m, s->srid);
@@ -357,10 +359,11 @@ static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 
 	for( i = 0; i < nrings; i++ )
 	{
-		POINTARRAY pa = ptarray_from_wkb_state(s);
+		POINTARRAY *pa = ptarray_from_wkb_state(s);
 		if( pa == NULL )
 			continue;
-		lwpoly_add_ring(poly, pa);
+		if ( lwpoly_add_ring(poly, pa) == LW_FALSE )
+			lwerror("Unable to add ring to polygon");
 	}
 	return poly;
 }
@@ -417,7 +420,6 @@ static LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 /** TODO TODO
 * lw*_construct_empty() for all types
 * add maxrings, maxpoints, maxgeoms to all lwtypes
-* lwpoly_add_ring()
 * lwcollection_add_geom()
 * ptarray_add_point()
 * reorganize header file for clarity

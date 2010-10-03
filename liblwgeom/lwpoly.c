@@ -52,6 +52,7 @@ lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox, uint32 nrings, POINTARRAY **points
 	                                    0);
 	result->SRID = SRID;
 	result->nrings = nrings;
+	result->maxrings = nrings;
 	result->rings = points;
 	result->bbox = bbox;
 
@@ -64,9 +65,9 @@ lwpoly_construct_empty(int srid, char hasz, char hasm)
 	LWPOLY *result = lwalloc(sizeof(LWPOLY));
 	result->type = lwgeom_makeType_full(hasz, hasm, (srid>0), POLYGONTYPE, 0);
 	result->SRID = srid;
+	result->maxrings = 1;
 	result->nrings = 0;
-	result->maxrings = 0;
-	result->rings = NULL;
+	result->rings = lwalloc(result->maxrings * sizeof(POINTARRAY*));
 	result->bbox = NULL;
 	return result;
 }
@@ -140,6 +141,7 @@ lwpoly_deserialize(uchar *serialized_form)
 
 	nrings = lw_get_uint32(loc);
 	result->nrings = nrings;
+	result->maxrings = nrings;
 	loc +=4;
 	if ( nrings )
 	{
@@ -381,7 +383,7 @@ lwpoly_serialize_size(LWPOLY *poly)
 	return size;
 }
 
-void lwpoly_free  (LWPOLY  *poly)
+void lwpoly_free(LWPOLY  *poly)
 {
 	int t;
 
@@ -445,9 +447,31 @@ lwpoly_clone(const LWPOLY *g)
 	return ret;
 }
 
+/**
+* Add a ring to a polygon. Point array will be referenced, not copied.
+*/
+int
+lwpoly_add_ring(LWPOLY *poly, POINTARRAY *pa) 
+{
+	if( ! poly || ! pa ) 
+		return LW_FALSE;
+		
+	/* We have used up our storage, add some more. */
+	if( poly->nrings >= poly->maxrings ) 
+	{
+		int new_maxrings = 2 * (poly->nrings + 1);
+		poly->rings = lwrealloc(poly->rings, new_maxrings * sizeof(POINTARRAY*));
+	}
+	
+	/* Add the new ring entry. */
+	poly->rings[poly->nrings] = pa;
+	poly->nrings++;
+	
+	return LW_TRUE;
+}
 
 void
-lwpoly_forceRHR(LWPOLY *poly)
+lwpoly_force_clockwise(LWPOLY *poly)
 {
 	int i;
 

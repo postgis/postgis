@@ -43,6 +43,7 @@ SA_OBJS = \
 	lwtin.o \
 	lwout_wkt.o \
 	lwout_wkb.o \
+	lwin_wkb.o \
 	lwutil.o \
 	lwhomogenize.o \
 	lwalgorithm.o \
