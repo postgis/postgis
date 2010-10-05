@@ -127,7 +127,7 @@ static void lwtype_from_wkb_state(wkb_parse_state *s, uint32 wkb_type)
 	/* Strip out just the type number (1-12) from the ISO number (eg 3001-3012) */
 	wkb_simple_type = wkb_type % 1000;
 	
-	/* Only the extended form has an SRID */
+	/* Extract the Z/M information from ISO style numbers */
 	if( wkb_type >= 3000 && wkb_type < 4000 )
 	{
 		s->has_z = LW_TRUE;
@@ -190,7 +190,7 @@ static void lwtype_from_wkb_state(wkb_parse_state *s, uint32 wkb_type)
 			s->lwtype = TRIANGLETYPE;
 			break;
 		default: /* Error! */
-			lwerror("Unknown WKB type! %d", wkb_simple_type);
+			lwerror("Unknown WKB type (%d)! Full WKB type number was (%d).", wkb_simple_type, wkb_type);
 			break;	
 	}
 	return;
