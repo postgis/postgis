@@ -43,40 +43,49 @@ static uint32 lwgeom_wkb_type(const LWGEOM *geom, uchar variant)
 	switch ( TYPE_GETTYPE(type) )
 	{
 	case POINTTYPE:
-		wkb_type = 1;
+		wkb_type = WKB_POINT_TYPE;
 		break;
 	case LINETYPE:
-		wkb_type = 2;
+		wkb_type = WKB_LINESTRING_TYPE;
 		break;
 	case POLYGONTYPE:
-		wkb_type = 3;
+		wkb_type = WKB_POLYGON_TYPE;
 		break;
 	case MULTIPOINTTYPE:
-		wkb_type = 4;
+		wkb_type = WKB_MULTIPOINT_TYPE;
 		break;
 	case MULTILINETYPE:
-		wkb_type = 5;
+		wkb_type = WKB_MULTILINESTRING_TYPE;
 		break;
 	case MULTIPOLYGONTYPE:
-		wkb_type = 6;
+		wkb_type = WKB_MULTIPOLYGON_TYPE;
 		break;
 	case COLLECTIONTYPE:
-		wkb_type = 7;
+		wkb_type = WKB_GEOMETRYCOLLECTION_TYPE;
 		break;
 	case CIRCSTRINGTYPE:
-		wkb_type = 8;
+		wkb_type = WKB_CIRCULARSTRING_TYPE;
 		break;
 	case COMPOUNDTYPE:
-		wkb_type = 9;
+		wkb_type = WKB_COMPOUNDCURVE_TYPE;
 		break;
 	case CURVEPOLYTYPE:
-		wkb_type = 10;
+		wkb_type = WKB_CURVEPOLYGON_TYPE;
 		break;
 	case MULTICURVETYPE:
-		wkb_type = 11;
+		wkb_type = WKB_MULTICURVE_TYPE;
 		break;
 	case MULTISURFACETYPE:
-		wkb_type = 12;
+		wkb_type = WKB_MULTISURFACE_TYPE;
+		break;
+	case POLYHEDRALSURFACETYPE:
+		wkb_type = WKB_POLYHEDRALSURFACE_TYPE;
+		break;
+	case TINTYPE:
+		wkb_type = WKB_TIN_TYPE;
+		break;
+	case TRIANGLETYPE:
+		wkb_type = WKB_TRIANGLE_TYPE;
 		break;
 	default:
 		lwerror("Unsupported geometry type: %s [%d]", lwtype_name(type), type);

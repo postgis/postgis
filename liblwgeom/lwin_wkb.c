@@ -144,41 +144,50 @@ static void lwtype_from_wkb_state(wkb_parse_state *s, uint32 wkb_type)
 
 	switch (wkb_simple_type)
 	{
-		case 1: /* POINT */
+		case WKB_POINT_TYPE: 
 			s->lwtype = POINTTYPE;
 			break;
-		case 2: /* LINESTRING */
+		case WKB_LINESTRING_TYPE: 
 			s->lwtype = LINETYPE;
 			break;
-		case 3: /* POLYGON */
+		case WKB_POLYGON_TYPE:
 			s->lwtype = POLYGONTYPE;
 			break;
-		case 4: /* MULTIPOINT */
+		case WKB_MULTIPOINT_TYPE:
 			s->lwtype = MULTIPOINTTYPE;
 			break;
-		case 5: /* MULTILINESTRING */
+		case WKB_MULTILINESTRING_TYPE:
 			s->lwtype = MULTILINETYPE;
 			break;
-		case 6: /* MULTIPOLYGON */
+		case WKB_MULTIPOLYGON_TYPE:
 			s->lwtype = MULTIPOLYGONTYPE;
 			break;
-		case 7: /* GEOMETRYCOLLECTION */
+		case WKB_GEOMETRYCOLLECTION_TYPE: 
 			s->lwtype = COLLECTIONTYPE;
 			break;
-		case 8: /* CIRCULARSTRING */
+		case WKB_CIRCULARSTRING_TYPE:
 			s->lwtype = CIRCSTRINGTYPE;
 			break;
-		case 9: /* COMPOUNDCURVE */
+		case WKB_COMPOUNDCURVE_TYPE:
 			s->lwtype = COMPOUNDTYPE;
 			break;
-		case 10: /* CURVEPOLYGON */
+		case WKB_CURVEPOLYGON_TYPE:
 			s->lwtype = CURVEPOLYTYPE;
 			break;
-		case 11: /* MULTICURVE */
+		case WKB_MULTICURVE_TYPE:
 			s->lwtype = MULTICURVETYPE;
 			break;
-		case 12: /* MULTISURFACE */
+		case WKB_MULTISURFACE_TYPE: 
 			s->lwtype = MULTISURFACETYPE;
+			break;
+		case WKB_POLYHEDRALSURFACE_TYPE:
+			s->lwtype = POLYHEDRALSURFACETYPE;
+			break;
+		case WKB_TIN_TYPE:
+			s->lwtype = TINTYPE;
+			break;
+		case WKB_TRIANGLE_TYPE:
+			s->lwtype = TRIANGLETYPE;
 			break;
 		default: /* Error! */
 			lwerror("Unknown WKB type! %d", wkb_simple_type);
@@ -389,13 +398,9 @@ static LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 	if( BYTE_ORDER == LITTLE_ENDIAN ) /* Machine arch is little */
 		if ( ! wkb_little_endian )    /* Data is big! */
 			s->swap_bytes = LW_TRUE;
-		else
-			s->swap_bytes = LW_FALSE;
 	else                           /* Machine arch is big */
 		if ( wkb_little_endian )   /* Data is little! */
 			s->swap_bytes = LW_TRUE;
-		else
-			s->swap_bytes = LW_FALSE;
 
 	/* Read the type number */
 	lwtype_from_wkb_state(s, integer_from_wkb_state(s));

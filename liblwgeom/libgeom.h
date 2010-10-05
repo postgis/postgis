@@ -59,6 +59,27 @@
 #define WKB_BYTE_SIZE 1 /* Internal use only */
 
 /**
+* Well-Known Binary (WKB) Geometry Types 
+*/
+#define WKB_POINT_TYPE 1
+#define WKB_LINESTRING_TYPE 2
+#define WKB_POLYGON_TYPE 3
+#define WKB_MULTIPOINT_TYPE 4
+#define WKB_MULTILINESTRING_TYPE 5
+#define WKB_MULTIPOLYGON_TYPE 6
+#define WKB_GEOMETRYCOLLECTION_TYPE 7
+#define WKB_CIRCULARSTRING_TYPE 8
+#define WKB_COMPOUNDCURVE_TYPE 9
+#define WKB_CURVEPOLYGON_TYPE 10
+#define WKB_MULTICURVE_TYPE 11
+#define WKB_MULTISURFACE_TYPE 12
+#define WKB_CURVE_TYPE 13 /* from ISO draft, not sure is real */
+#define WKB_SURFACE_TYPE 14 /* from ISO draft, not sure is real */
+#define WKB_POLYHEDRALSURFACE_TYPE 15
+#define WKB_TIN_TYPE 16
+#define WKB_TRIANGLE_TYPE 17
+
+/**
 * Maximum allowed SRID value. 
 * Currently we are using 20 bits (1048575) of storage for SRID.
 */
