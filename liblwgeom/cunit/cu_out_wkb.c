@@ -112,16 +112,40 @@ static void test_wkb_out_collection(void)
 	CU_ASSERT_STRING_EQUAL(s, t);
 }
 
-static void test_wkb_out_circularstring(void) {}
+static void test_wkb_out_circularstring(void) 
+{
+	cu_wkb_out("CIRCULARSTRING(0 -2,-2 0,0 2,2 0,0 -2)");
+	CU_ASSERT_STRING_EQUAL(s, t);
 
-static void test_wkb_out_compoundcurve(void) {}
+	cu_wkb_out("CIRCULARSTRING(-5 0 0 4, 0 5 1 3, 5 0 2 2, 10 -5 3 1, 15 0 4 0)");
+	CU_ASSERT_STRING_EQUAL(s, t);	
 
-static void test_wkb_out_curvpolygon(void) {}
+	cu_wkb_out("SRID=43;CIRCULARSTRING(-5 0 0 4, 0 5 1 3, 5 0 2 2, 10 -5 3 1, 15 0 4 0)");
+	CU_ASSERT_STRING_EQUAL(s, t);	
+}
+
+static void test_wkb_out_compoundcurve(void) 
+{
+	cu_wkb_out("COMPOUNDCURVE(CIRCULARSTRING(0 0 0, 0.26794919243112270647255365849413 1 3, 0.5857864376269049511983112757903 1.4142135623730950488016887242097 1),(0.5857864376269049511983112757903 1.4142135623730950488016887242097 1,2 0 0,0 0 0))");
+	CU_ASSERT_STRING_EQUAL(s, t);	
+}
+
+static void test_wkb_out_curvpolygon(void) 
+{
+	cu_wkb_out("CURVEPOLYGON(CIRCULARSTRING(-2 0 0 0,-1 -1 1 2,0 0 2 4,1 -1 3 6,2 0 4 8,0 2 2 4,-2 0 0 0),(-1 0 1 2,0 0.5 2 4,1 0 3 6,0 1 3 4,-1 0 1 2))");
+	CU_ASSERT_STRING_EQUAL(s, t);	
+}
 
 static void test_wkb_out_multicurve(void) {}
 
 static void test_wkb_out_multisurface(void) {}
 
+static void test_wkb_out_polyhedralsurface(void) 
+{
+//	cu_wkb_out("POLYHEDRALSURFACE(((0 0 0 0,0 0 1 0,0 1 0 2,0 0 0 0)),((0 0 0 0,0 1 0 0,1 0 0 4,0 0 0 0)),((0 0 0 0,1 0 0 0,0 0 1 6,0 0 0 0)),((1 0 0 0,0 1 0 0,0 0 1 0,1 0 0 0)))");
+//	CU_ASSERT_STRING_EQUAL(s, t);		
+//	printf("\nnew: %s\nold: %s\n",s,t);
+}
 
 /*
 ** Used by test harness to register the tests in this file.
@@ -141,6 +165,7 @@ CU_TestInfo wkb_out_tests[] =
 	PG_TEST(test_wkb_out_curvpolygon),
 	PG_TEST(test_wkb_out_multicurve),
 	PG_TEST(test_wkb_out_multisurface),
+	PG_TEST(test_wkb_out_polyhedralsurface),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo wkb_out_suite = {"WKB Out Suite",  init_wkb_out_suite,  clean_wkb_out_suite, wkb_out_tests};

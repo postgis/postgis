@@ -68,7 +68,7 @@ static void cu_wkb_out(char *wkt)
 	for (i=0; i<wkb_size; i++)
 		deparse_hex(wkb[i], &hex[i*2]);
 	hex[2*wkb_size] = '\0';
-	printf("%s\n",hex);
+	//printf("%s\n",hex);
 	lwfree(hex);
 
 	/* Turn WKB back into geom with old function */
@@ -130,7 +130,7 @@ static void test_wkb_in_multipolygon(void)
 {
 	cu_wkb_out("SRID=14;MULTIPOLYGON(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((-1 -1 0,-1 2 0,2 2 0,2 -1 0,-1 -1 0),(0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)))");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
-	printf("old: %s\nnew: %s\n",hex_a, hex_b);
+	//printf("old: %s\nnew: %s\n",hex_a, hex_b);
 }
 
 static void test_wkb_in_collection(void)
