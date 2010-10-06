@@ -48,7 +48,7 @@ static int clean_wkb_in_suite(void)
 	return 0;
 }
 
-static void cu_wkb_out(char *wkt)
+static void cu_wkb_in(char *wkt)
 {
 	LWGEOM *g, *g_a, *g_b;
 	char *wkb, *hex;
@@ -63,13 +63,13 @@ static void cu_wkb_out(char *wkt)
 	
 	/* Turn geom into WKB */
 	wkb = lwgeom_to_wkb(g, WKB_NDR | WKB_EXTENDED, &wkb_size);
-	/* Flip WKB into hex for string comparisons */
+	/* Flip WKB into hex for string comparisons 
 	hex = lwalloc(2*wkb_size+1);
 	for (i=0; i<wkb_size; i++)
 		deparse_hex(wkb[i], &hex[i*2]);
 	hex[2*wkb_size] = '\0';
-	//printf("%s\n",hex);
-	lwfree(hex);
+	printf("%s\n",hex);
+	lwfree(hex); */
 
 	/* Turn WKB back into geom with old function */
 	g_a = lwgeom_from_ewkb((uchar*)wkb, 0, wkb_size);
@@ -89,64 +89,89 @@ static void cu_wkb_out(char *wkt)
 
 static void test_wkb_in_point(void)
 {
-	cu_wkb_out("POINT(0 0 0 0)");
+	cu_wkb_in("POINT(0 0 0 0)");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 //	printf("old: %s\nnew: %s\n",hex_a, hex_b);
 
-	cu_wkb_out("SRID=4;POINTM(1 1 1)");
+	cu_wkb_in("SRID=4;POINTM(1 1 1)");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 //	printf("old: %s\nnew: %s\n",hex_a, hex_b);
 }
 
 static void test_wkb_in_linestring(void)
 {
-	cu_wkb_out("LINESTRING(0 0,1 1)");
+	cu_wkb_in("LINESTRING(0 0,1 1)");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 
-	cu_wkb_out("LINESTRING(0 0 1,1 1 2,2 2 3)");
+	cu_wkb_in("LINESTRING(0 0 1,1 1 2,2 2 3)");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
 static void test_wkb_in_polygon(void)
 {
-	cu_wkb_out("SRID=4;POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0))");
+	cu_wkb_in("SRID=4;POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0))");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 
-	cu_wkb_out("SRID=14;POLYGON((0 0 0 1,0 1 0 2,1 1 0 3,1 0 0 4,0 0 0 5))");
+	cu_wkb_in("SRID=14;POLYGON((0 0 0 1,0 1 0 2,1 1 0 3,1 0 0 4,0 0 0 5))");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 
-	cu_wkb_out("SRID=4;POLYGON((0 0 0 1,0 1 0 2,1 1 0 3,1 0 0 4,0 0 0 5))");
+	cu_wkb_in("SRID=4;POLYGON((0 0 0 1,0 1 0 2,1 1 0 3,1 0 0 4,0 0 0 5))");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 
-	cu_wkb_out("POLYGON EMPTY");
+	cu_wkb_in("POLYGON EMPTY");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
-static void test_wkb_in_multipoint(void) {}
+static void test_wkb_in_multipoint(void) 
+{
+	cu_wkb_in("SRID=4;MULTIPOINT(0 0 0,0 1 0,1 1 0,1 0 0,0 0 ))");
+	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+
+	cu_wkb_in("MULTIPOINT(0 0 0, 0.26794919243112270647255365849413 1 3)");
+	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+}
 
 static void test_wkb_in_multilinestring(void) {}
 
 static void test_wkb_in_multipolygon(void)
 {
-	cu_wkb_out("SRID=14;MULTIPOLYGON(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((-1 -1 0,-1 2 0,2 2 0,2 -1 0,-1 -1 0),(0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)))");
+	cu_wkb_in("SRID=14;MULTIPOLYGON(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((-1 -1 0,-1 2 0,2 2 0,2 -1 0,-1 -1 0),(0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)))");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 	//printf("old: %s\nnew: %s\n",hex_a, hex_b);
 }
 
 static void test_wkb_in_collection(void)
 {
-	cu_wkb_out("SRID=14;GEOMETRYCOLLECTION(POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),POINT(1 1 1))");
+	cu_wkb_in("SRID=14;GEOMETRYCOLLECTION(POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),POINT(1 1 1))");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 
-	cu_wkb_out("GEOMETRYCOLLECTION EMPTY");
+	cu_wkb_in("GEOMETRYCOLLECTION EMPTY");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
-static void test_wkb_in_circularstring(void) {}
+static void test_wkb_in_circularstring(void) 
+{
+	cu_wkb_in("CIRCULARSTRING(0 -2,-2 0,0 2,2 0,0 -2)");
+	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 
-static void test_wkb_in_compoundcurve(void) {}
+	cu_wkb_in("CIRCULARSTRING(-5 0 0 4, 0 5 1 3, 5 0 2 2, 10 -5 3 1, 15 0 4 0)");
+	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 
-static void test_wkb_in_curvpolygon(void) {}
+	cu_wkb_in("SRID=43;CIRCULARSTRING(-5 0 0 4, 0 5 1 3, 5 0 2 2, 10 -5 3 1, 15 0 4 0)");
+	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+}
+
+static void test_wkb_in_compoundcurve(void) 
+{
+	cu_wkb_in("COMPOUNDCURVE(CIRCULARSTRING(0 0 0, 0.26794919243112270647255365849413 1 3, 0.5857864376269049511983112757903 1.4142135623730950488016887242097 1),(0.5857864376269049511983112757903 1.4142135623730950488016887242097 1,2 0 0,0 0 0))");
+	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+}
+
+static void test_wkb_in_curvpolygon(void) 
+{
+	cu_wkb_in("CURVEPOLYGON(CIRCULARSTRING(-2 0 0 0,-1 -1 1 2,0 0 2 4,1 -1 3 6,2 0 4 8,0 2 2 4,-2 0 0 0),(-1 0 1 2,0 0.5 2 4,1 0 3 6,0 1 3 4,-1 0 1 2))");
+	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+}
 
 static void test_wkb_in_multicurve(void) {}
 

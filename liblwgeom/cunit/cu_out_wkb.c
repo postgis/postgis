@@ -93,7 +93,14 @@ static void test_wkb_out_polygon(void)
 	CU_ASSERT_STRING_EQUAL(s, t);
 }
 
-static void test_wkb_out_multipoint(void) {}
+static void test_wkb_out_multipoint(void) 
+{
+	cu_wkb_out("SRID=4;MULTIPOINT(0 0 0,0 1 0,1 1 0,1 0 0,0 0 ))");
+	CU_ASSERT_STRING_EQUAL(s, t);
+
+	cu_wkb_out("MULTIPOINT(0 0 0, 0.26794919243112270647255365849413 1 3)");
+	CU_ASSERT_STRING_EQUAL(s, t);
+}
 
 static void test_wkb_out_multilinestring(void) {}
 

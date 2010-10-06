@@ -457,8 +457,35 @@ static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 		POINTARRAY *pa = ptarray_from_wkb_state(s);
 		if( pa == NULL )
 			continue;
+
+		/* Check for at least four points. */
+		if( s->check & PARSER_CHECK_MINPOINTS && pa->npoints < 4 )
+		{
+			LWDEBUGF(2, "%s must have at least four points in each ring", lwtype_name(s->lwtype));
+			lwerror("%s must have at least four points in each ring", lwtype_name(s->lwtype));
+			return NULL;
+		}
+
+		/* Check that first and last points are the same. */
+		if( s->check & PARSER_CHECK_CLOSURE )
+		{
+			POINT4D p1 = getPoint4d(pa, 0);
+			POINT4D p2 = getPoint4d(pa, pa->npoints - 1);
+			if( memcmp(&p1,&p2,sizeof(POINT4D)) != 0 )
+			{
+				LWDEBUGF(2, "%s must have closed rings", lwtype_name(s->lwtype));
+				lwerror("%s must have closed rings", lwtype_name(s->lwtype));
+				return NULL;
+			}
+		}
+		
+		/* Add ring to polygon */
 		if ( lwpoly_add_ring(poly, pa) == LW_FALSE )
+		{
+			LWDEBUG(2, "Unable to add ring to polygon");
 			lwerror("Unable to add ring to polygon");
+		}
+
 	}
 	return poly;
 }
@@ -487,6 +514,25 @@ static LWTRIANGLE* lwtriangle_from_wkb_state(wkb_parse_state *s)
 	/* If there's no points, return an empty triangle. */
 	if( pa == NULL )
 		return tri;
+
+	/* Check for at least four points. */
+	if( s->check & PARSER_CHECK_MINPOINTS && pa->npoints < 4 )
+	{
+		LWDEBUGF(2, "%s must have at least four points", lwtype_name(s->lwtype));
+		lwerror("%s must have at least four points", lwtype_name(s->lwtype));
+		return NULL;
+	}
+
+	if( s->check & PARSER_CHECK_CLOSURE )
+	{
+		POINT4D p1 = getPoint4d(pa, 0);
+		POINT4D p2 = getPoint4d(pa, pa->npoints - 1);
+		if( memcmp(&p1,&p2,sizeof(POINT4D)) != 0 )
+		{
+			lwerror("%s must have closed rings", lwtype_name(s->lwtype));
+			return NULL;
+		}
+	}
 
 	tri->points = pa;	
 	return tri;
@@ -640,6 +686,11 @@ LWGEOM* lwgeom_from_wkb(const uchar *wkb, const size_t wkb_size, const char chec
 	s.has_srid = LW_FALSE;
 	s.pos = wkb;
 	
+	/* Hand the check catch-all values */
+	if ( check & PARSER_CHECK_NONE ) s.check = 0;
+	if ( check & PARSER_CHECK_ALL ) s.check = PARSER_CHECK_MINPOINTS | PARSER_CHECK_ODD | PARSER_CHECK_CLOSURE;
+	
+
 	return lwgeom_from_wkb_state(&s);
 }
 
