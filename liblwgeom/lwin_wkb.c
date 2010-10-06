@@ -198,6 +198,7 @@ static void lwtype_from_wkb_state(wkb_parse_state *s, uint32 wkb_type)
 
 /**
 * Byte
+* Read a byte and advance the parse state forward.
 */
 static char byte_from_wkb_state(wkb_parse_state *s)
 {
@@ -213,6 +214,7 @@ static char byte_from_wkb_state(wkb_parse_state *s)
 
 /**
 * Int32
+* Read 4-byte integer and advance the parse state forward.
 */
 static uint32 integer_from_wkb_state(wkb_parse_state *s)
 {
@@ -242,6 +244,7 @@ static uint32 integer_from_wkb_state(wkb_parse_state *s)
 
 /**
 * Double
+* Read an 8-byte double and advance the parse state forward.
 */
 static double double_from_wkb_state(wkb_parse_state *s)
 {
@@ -270,6 +273,11 @@ static double double_from_wkb_state(wkb_parse_state *s)
 	return d;
 }
 
+/**
+* POINTARRAY
+* Read a dynamically sized point array and advance the parse state forward.
+* First read the number of points, then read the points.
+*/
 static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 {
 	POINTARRAY *pa = NULL;
@@ -285,7 +293,7 @@ static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 
 	/* Empty! */
 	if( npoints == 0 )
-		return NULL;
+		return ptarray_construct(s->has_z, s->has_m, npoints);
 
 	/* Does the data we want to read exist? */
 	wkb_parse_state_check(s, pa_size);
@@ -314,6 +322,12 @@ static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 
 /**
 * POINT
+* Read a WKB point, starting just after the endian byte, 
+* type number and optional srid number.
+* Advance the parse state forward appropriately.
+* WKB point has just a set of doubles, with the quantity depending on the 
+* dimension of the point, so this looks like a special case of the above
+* with only one point.
 */
 static LWPOINT* lwpoint_from_wkb_state(wkb_parse_state *s)
 {
@@ -354,6 +368,11 @@ static LWPOINT* lwpoint_from_wkb_state(wkb_parse_state *s)
 
 /**
 * LINESTRING
+* Read a WKB linestring, starting just after the endian byte, 
+* type number and optional srid number. Advance the parse state 
+* forward appropriately. 
+* There is only one pointarray in a linestring. Optionally
+* check for minimal following of rules (two point minimum).
 */
 static LWLINE* lwline_from_wkb_state(wkb_parse_state *s)
 {
@@ -373,6 +392,12 @@ static LWLINE* lwline_from_wkb_state(wkb_parse_state *s)
 
 /**
 * CIRCULARSTRING
+* Read a WKB circularstring, starting just after the endian byte, 
+* type number and optional srid number. Advance the parse state 
+* forward appropriately. 
+* There is only one pointarray in a linestring. Optionally
+* check for minimal following of rules (three point minimum,
+* odd number of points).
 */
 static LWCIRCSTRING* lwcircstring_from_wkb_state(wkb_parse_state *s)
 {
@@ -398,6 +423,11 @@ static LWCIRCSTRING* lwcircstring_from_wkb_state(wkb_parse_state *s)
 
 /**
 * POLYGON
+* Read a WKB polygon, starting just after the endian byte, 
+* type number and optional srid number. Advance the parse state 
+* forward appropriately. 
+* First read the number of rings, then read each ring
+* (which are structured as point arrays)
 */
 static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 {
@@ -405,6 +435,7 @@ static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 	int i = 0;
 	LWPOLY *poly = lwpoly_construct_empty(s->has_z, s->has_m, s->srid);
 	
+	/* Empty polygon? */
 	if( nrings == 0 )
 		return poly;
 
@@ -421,6 +452,11 @@ static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 
 /**
 * TRIANGLE
+* Read a WKB triangle, starting just after the endian byte, 
+* type number and optional srid number. Advance the parse state 
+* forward appropriately. 
+* Triangles are encoded like polygons in WKB, but more like linestrings
+* as lwgeometries.
 */
 static LWTRIANGLE* lwtriangle_from_wkb_state(wkb_parse_state *s)
 {
@@ -444,7 +480,38 @@ static LWTRIANGLE* lwtriangle_from_wkb_state(wkb_parse_state *s)
 }
 
 /**
+* COLLECTION, MULTIPOINTTYPE, MULTILINETYPE, MULTIPOLYGONTYPE, COMPOUNDTYPE,
+* CURVEPOLYTYPE, MULTICURVETYPE, MULTISURFACETYPE, POLYHEDRALSURFACETYPE,
+* TINTYPE
+*/
+static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
+{
+	uint32 ngeoms = integer_from_wkb_state(s);
+	LWCOLLECTION *col = lwcollection_construct_empty(s->has_z, s->has_m, s->srid);
+	LWGEOM *geom = NULL;
+	int i;
+	
+	/* Empty collection? */
+	if ( ngeoms == 0 )
+		return col;
+
+	for ( i = 0; i < ngeoms; i++ )
+	{
+		geom = lwgeom_from_wkb_state(s);
+		if ( lwcollection_add_lwgeom(col, geom) == LW_FALSE )
+			lwerror("Unable to add geometry (%p) to collection (%p)", geom, col);
+	}
+	
+	return col;
+}
+
+
+/**
 * GEOMETRY
+* Generic handling for WKB geometries. The front of every WKB geometry
+* (including those embedded in collections) is an endian byte, a type
+* number and an optional srid number. We handle all those here, then pass
+* to the appropriate handler for the specific type.
 */
 static LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 {
@@ -498,16 +565,26 @@ static LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 		case TRIANGLETYPE:
 			return (LWGEOM*)lwtriangle_from_wkb_state(s);
 			break;
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COMPOUNDTYPE:
+		case CURVEPOLYTYPE:
+		case MULTICURVETYPE:
+		case MULTISURFACETYPE:
+		case POLYHEDRALSURFACETYPE:
+		case TINTYPE:
+		case COLLECTIONTYPE:
+			return (LWGEOM*)lwcollection_from_wkb_state(s);
+			break;
 
-/** TODO TODO
-* lw*_construct_empty() for all types
-* add maxrings, maxpoints, maxgeoms to all lwtypes
-* lwcollection_add_geom()
-* ptarray_add_point()
-* reorganize header file for clarity
-*/
-
+		/* Unknown type! */
+		default:
+			lwerror("Unsupported geometry type: %s [%d]", lwtype_name(s->lwtype), TYPE_GETTYPE(s->lwtype));
 	}
+
+	/* Return value to keep compiler happy. */
+	return NULL;
 	
 }
 

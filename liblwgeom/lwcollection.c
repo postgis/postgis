@@ -81,8 +81,8 @@ lwcollection_construct_empty(int srid, char hasz, char hasm)
 	ret->type = lwgeom_makeType_full(hasz, hasm, (srid!=-1), COLLECTIONTYPE, 0);
 	ret->SRID = srid;
 	ret->ngeoms = 0;
-	ret->maxgeoms = 0;
-	ret->geoms = NULL;
+	ret->maxgeoms = 1; /* Allocate room for sub-members, just in case. */
+	ret->geoms = lwalloc(ret->maxgeoms * sizeof(LWGEOM*));
 	ret->bbox = NULL;
 
 	return ret;
@@ -300,8 +300,8 @@ LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 	/* Allocate more space if we need it */
 	if ( col->ngeoms == col->maxgeoms )
 	{
-		col->geoms = lwrealloc(col->geoms, sizeof(LWGEOM*) * col->maxgeoms * 2);
 		col->maxgeoms *= 2;
+		col->geoms = lwrealloc(col->geoms, sizeof(LWGEOM*) * col->maxgeoms);
 	}
 
 	/* Make sure we don't already have a reference to this geom */

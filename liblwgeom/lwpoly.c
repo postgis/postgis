@@ -65,8 +65,8 @@ lwpoly_construct_empty(int srid, char hasz, char hasm)
 	LWPOLY *result = lwalloc(sizeof(LWPOLY));
 	result->type = lwgeom_makeType_full(hasz, hasm, (srid>0), POLYGONTYPE, 0);
 	result->SRID = srid;
-	result->maxrings = 1;
 	result->nrings = 0;
+	result->maxrings = 1; /* Allocate room for ring, just in case. */
 	result->rings = lwalloc(result->maxrings * sizeof(POINTARRAY*));
 	result->bbox = NULL;
 	return result;
