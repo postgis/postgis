@@ -147,6 +147,10 @@ static void test_wkb_in_collection(void)
 
 	cu_wkb_in("GEOMETRYCOLLECTION EMPTY");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+
+	cu_wkb_in("SRID=14;GEOMETRYCOLLECTION(MULTIPOLYGON(POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0))),POINT(1 1 1),LINESTRING(0 0 0, 1 1 1))");
+	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+
 }
 
 static void test_wkb_in_circularstring(void) 
