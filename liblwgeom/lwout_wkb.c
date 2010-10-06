@@ -108,7 +108,7 @@ static uint32 lwgeom_wkb_type(const LWGEOM *geom, uchar variant)
 		/* M types are in the 2000 range */
 		if ( TYPE_HASM(type) )
 			wkb_type += 2000;
-		/* ZM types are in the 1000 + 2000 = 3000 range */
+		/* ZM types are in the 1000 + 2000 = 3000 range, see above */
 	}
 	return wkb_type;
 }

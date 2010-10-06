@@ -65,6 +65,17 @@ lwcircstring_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points)
 	return result;
 }
 
+LWCIRCSTRING *
+lwcircstring_construct_empty(int srid, char hasz, char hasm)
+{
+	LWCIRCSTRING *result = lwalloc(sizeof(LWCIRCSTRING));
+	result->type = lwgeom_makeType_full(hasz, hasm, (srid>0), CIRCSTRINGTYPE, 0);
+	result->SRID = srid;
+	result->points = NULL;
+	result->bbox = NULL;
+	return result;
+}
+
 void
 lwcircstring_release(LWCIRCSTRING *lwcirc)
 {

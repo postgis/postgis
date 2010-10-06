@@ -1474,6 +1474,7 @@ extern LWMPOINT* lwmpoint_construct_empty(int srid, char hasz, char hasm);
 extern LWMLINE* lwmline_construct_empty(int srid, char hasz, char hasm);
 extern LWMPOLY* lwmpoly_construct_empty(int srid, char hasz, char hasm);
 extern LWCOLLECTION* lwcollection_construct_empty(int srid, char hasz, char hasm);
+extern LWCIRCSTRING* lwcircstring_construct_empty(int srid, char hasz, char hasm);
 
 
 /* Other constructors */

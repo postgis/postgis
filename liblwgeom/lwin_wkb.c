@@ -17,7 +17,7 @@
 */
 typedef struct 
 {
-	const char *wkb; /* Points to start of WKB */
+	const uchar *wkb; /* Points to start of WKB */
 	size_t wkb_size; /* Expected size of WKB */
 	int swap_bytes; /* Do an endian flip? */
 	int check; /* Simple validity checks on geometries */
@@ -26,7 +26,7 @@ typedef struct
 	int has_z; /* Z? */
 	int has_m; /* M? */
 	int has_srid; /* SRID? */
-	const char *pos; /* Current parse position */
+	const uchar *pos; /* Current parse position */
 } wkb_parse_state;
 
 /**********************************************************************/
@@ -277,24 +277,26 @@ static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 	uint32 ndims = 2;
 	uint32 npoints = 0;
 
+	/* Calculate the size of this point array. */
 	npoints = integer_from_wkb_state(s);
 	if( s->has_z ) ndims++;
 	if( s->has_m ) ndims++;
+	pa_size = npoints * ndims * WKB_DOUBLE_SIZE;
 
 	/* Empty! */
 	if( npoints == 0 )
 		return NULL;
 
 	/* Does the data we want to read exist? */
-	wkb_parse_state_check(s, npoints * ndims * WKB_DOUBLE_SIZE);
+	wkb_parse_state_check(s, pa_size);
 	
 	/* If we're in a native endianness, we can just copy the data directly! */
 	if( ! s->swap_bytes )
 	{
 		pa = ptarray_construct_copy_data(s->has_z, s->has_m, npoints, s->pos);
-		s->pos += npoints * ndims * WKB_DOUBLE_SIZE;
+		s->pos += pa_size;
 	}
-	/* Otherwise we have to read each double, separately */
+	/* Otherwise we have to read each double, separately. */
 	else
 	{
 		int i = 0;
@@ -308,6 +310,46 @@ static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 	}
 		
 	return pa;
+}
+
+/**
+* POINT
+*/
+static LWPOINT* lwpoint_from_wkb_state(wkb_parse_state *s)
+{
+	static uint32 npoints = 1;
+	POINTARRAY *pa = NULL;
+	size_t pa_size;
+	uint32 ndims = 2;
+
+	/* Count the dimensions. */
+	if( s->has_z ) ndims++;
+	if( s->has_m ) ndims++;
+	pa_size = ndims * WKB_DOUBLE_SIZE;
+
+	/* Does the data we want to read exist? */
+	wkb_parse_state_check(s, pa_size);
+
+	/* If we're in a native endianness, we can just copy the data directly! */
+	if( ! s->swap_bytes )
+	{
+		pa = ptarray_construct_copy_data(s->has_z, s->has_m, npoints, s->pos);
+		s->pos += pa_size;
+	}
+	/* Otherwise we have to read each double, separately */
+	else
+	{
+		int i = 0;
+		double *dlist;
+		pa = ptarray_construct(s->has_z, s->has_m, npoints);
+		dlist = (double*)(pa->serialized_pointlist);
+		for( i = 0; i < ndims; i++ )
+		{
+			dlist[i] = double_from_wkb_state(s);
+		}
+	}
+	
+	return lwpoint_construct(s->srid, NULL, pa);
 }
 
 /**
@@ -378,6 +420,30 @@ static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 }
 
 /**
+* TRIANGLE
+*/
+static LWTRIANGLE* lwtriangle_from_wkb_state(wkb_parse_state *s)
+{
+	uint32 nrings = integer_from_wkb_state(s);
+	LWTRIANGLE *tri = lwtriangle_construct_empty(s->has_z, s->has_m, s->srid);
+	POINTARRAY *pa = NULL;
+
+	/* Should be only one ring. */
+	if ( nrings != 1 )
+		lwerror("Triangle has wrong number of rings: %d", nrings);
+
+	/* There's only one ring, we hope? */	
+	pa = ptarray_from_wkb_state(s);
+
+	/* If there's no points, return an empty triangle. */
+	if( pa == NULL )
+		return tri;
+
+	tri->points = pa;	
+	return tri;
+}
+
+/**
 * GEOMETRY
 */
 static LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
@@ -396,14 +462,19 @@ static LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 	/* Check the endianness of our input  */
 	s->swap_bytes = LW_FALSE;
 	if( BYTE_ORDER == LITTLE_ENDIAN ) /* Machine arch is little */
+	{
 		if ( ! wkb_little_endian )    /* Data is big! */
 			s->swap_bytes = LW_TRUE;
-	else                           /* Machine arch is big */
-		if ( wkb_little_endian )   /* Data is little! */
+	}
+	else                              /* Machine arch is big */
+	{
+		if ( wkb_little_endian )      /* Data is little! */
 			s->swap_bytes = LW_TRUE;
+	}
 
 	/* Read the type number */
-	lwtype_from_wkb_state(s, integer_from_wkb_state(s));
+	wkb_type = integer_from_wkb_state(s);
+	lwtype_from_wkb_state(s, wkb_type);
 	
 	/* Read the SRID, if necessary */
 	if( s->has_srid )
@@ -418,8 +489,14 @@ static LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 		case LINETYPE:
 			return (LWGEOM*)lwline_from_wkb_state(s);
 			break;
+		case CIRCSTRINGTYPE:
+			return (LWGEOM*)lwcircstring_from_wkb_state(s);
+			break;
 		case POLYGONTYPE:
 			return (LWGEOM*)lwpoly_from_wkb_state(s);
+			break;
+		case TRIANGLETYPE:
+			return (LWGEOM*)lwtriangle_from_wkb_state(s);
 			break;
 
 /** TODO TODO
@@ -444,7 +521,7 @@ static LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 * PARSER_CHECK_MINPOINTS, PARSER_CHECK_ODD, PARSER_CHECK_CLOSURE, 
 * PARSER_CHECK_NONE, PARSER_CHECK_ALL
 */
-LWGEOM* lwgeom_from_wkb(const char *wkb, const size_t wkb_size, const char check)
+LWGEOM* lwgeom_from_wkb(const uchar *wkb, const size_t wkb_size, const char check)
 {
 	wkb_parse_state s;
 	
