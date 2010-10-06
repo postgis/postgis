@@ -704,8 +704,11 @@ char* lwgeom_to_wkb(const LWGEOM *geom, uchar variant, size_t *size_out)
 	buf = lwgeom_to_wkb_buf(geom, buf, variant);
 
 	/* Null the last byte if this is a hex output */
-	*buf = '\0';
-	buf++;
+	if ( variant & WKB_HEX )
+	{
+		*buf = '\0';
+		buf++;
+	}
 
 	LWDEBUGF(4,"buf (%p) - wkb_out (%p) = %d", buf, wkb_out, buf - wkb_out);
 
