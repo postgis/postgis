@@ -26,8 +26,17 @@ static char *hexchr = "0123456789ABCDEF";
 */
 static int lwgeom_wkb_needs_srid(const LWGEOM *geom, uchar variant)
 {
+	/* Sub-components of collections inherit their SRID from the parent.
+	   We force that behavior with the WKB_NO_SRID flag */
+	if ( variant & WKB_NO_SRID )
+		return LW_FALSE;
+		
+	/* We can only add an SRID if the geometry has one, and the 
+	   WKB form is extended */	
 	if ( (variant & WKB_EXTENDED) && lwgeom_has_srid(geom) )
 		return LW_TRUE;
+		
+	/* Everything else doesn't get an SRID */
 	return LW_FALSE;
 }
 
@@ -97,7 +106,7 @@ static uint32 lwgeom_wkb_type(const LWGEOM *geom, uchar variant)
 			wkb_type |= WKBZOFFSET;
 		if ( TYPE_HASM(type) )
 			wkb_type |= WKBMOFFSET;
-		if ( lwgeom_has_srid(geom) )
+		if ( lwgeom_has_srid(geom) && ! (variant & WKB_NO_SRID) )
 			wkb_type |= WKBSRIDFLAG;
 	}
 	else if ( variant & WKB_ISO )
@@ -507,7 +516,7 @@ static size_t lwcollection_to_wkb_size(const LWCOLLECTION *col, uchar variant)
 	for ( i = 0; i < col->ngeoms; i++ )
 	{
 		/* size of subgeom */
-		size += lwgeom_to_wkb_size((LWGEOM*)col->geoms[i], variant);
+		size += lwgeom_to_wkb_size((LWGEOM*)col->geoms[i], variant | WKB_NO_SRID);
 	}
 
 	return size;
@@ -527,9 +536,11 @@ static char* lwcollection_to_wkb_buf(const LWCOLLECTION *col, char *buf, uchar v
 	/* Set the number of sub-geometries */
 	buf = integer_to_wkb_buf(col->ngeoms, buf, variant);
 
+	/* Write the sub-geometries. Sub-geometries do not get SRIDs, they
+	   inherit from their parents. */
 	for ( i = 0; i < col->ngeoms; i++ )
 	{
-		buf = lwgeom_to_wkb_buf(col->geoms[i], buf, variant);
+		buf = lwgeom_to_wkb_buf(col->geoms[i], buf, variant | WKB_NO_SRID);
 	}
 
 	return buf;

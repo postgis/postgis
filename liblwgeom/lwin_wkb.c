@@ -11,7 +11,6 @@
 
 #include "libgeom.h"
 
-
 /**
 * Used for passing the parse state between the parsing functions.
 */
@@ -28,6 +27,14 @@ typedef struct
 	int has_srid; /* SRID? */
 	const uchar *pos; /* Current parse position */
 } wkb_parse_state;
+
+
+/**
+* Internal function declarations.
+*/
+LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s);
+
+
 
 /**********************************************************************/
 
@@ -57,7 +64,7 @@ static char hex2char[256] = {
     };
 
 
-static char* bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
+char* bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
 {
 	char *buf = NULL;
 	register char h1, h2;
@@ -110,6 +117,8 @@ static void lwtype_from_wkb_state(wkb_parse_state *s, uint32 wkb_type)
 {
 	uint32 wkb_simple_type;
 	
+	LWDEBUG(4, "Entered function");
+	
 	s->has_z = LW_FALSE;
 	s->has_m = LW_FALSE;
 	s->has_srid = LW_FALSE;
@@ -117,9 +126,10 @@ static void lwtype_from_wkb_state(wkb_parse_state *s, uint32 wkb_type)
 	/* If any of the higher bits are set, this is probably an extended type. */
 	if( wkb_type & 0xF0000000 )
 	{
-		s->has_z = wkb_type & WKBZOFFSET;
-		s->has_m = wkb_type & WKBMOFFSET;
-		s->has_srid = wkb_type & WKBSRIDFLAG;
+		if( wkb_type & WKBZOFFSET ) s->has_z = LW_TRUE;
+		if( wkb_type & WKBMOFFSET ) s->has_m = LW_TRUE;
+		if( wkb_type & WKBSRIDFLAG ) s->has_srid = LW_TRUE;
+		LWDEBUGF(4, "Extended type: has_z=%d has_m=%d has_srid=%d", s->has_z, s->has_m, s->has_srid);
 	}
 	
 	/* Mask off the flags */
@@ -203,10 +213,13 @@ static void lwtype_from_wkb_state(wkb_parse_state *s, uint32 wkb_type)
 static char byte_from_wkb_state(wkb_parse_state *s)
 {
 	char char_value = 0;
+	LWDEBUG(4, "Entered function");
 
 	wkb_parse_state_check(s, WKB_BYTE_SIZE);
+	LWDEBUG(4, "Passed state check");
 	
 	char_value = s->pos[0];
+	LWDEBUGF(4, "Read byte value: %x", char_value);
 	s->pos += WKB_BYTE_SIZE;
 	
 	return char_value;
@@ -379,7 +392,7 @@ static LWLINE* lwline_from_wkb_state(wkb_parse_state *s)
 	POINTARRAY *pa = ptarray_from_wkb_state(s);
 
 	if( pa == NULL )
-		return lwline_construct_empty(s->has_z, s->has_m, s->srid);
+		return lwline_construct_empty(s->srid, s->has_z, s->has_m);
 
 	if( s->check & PARSER_CHECK_MINPOINTS && pa->npoints < 2 )
 	{
@@ -404,7 +417,7 @@ static LWCIRCSTRING* lwcircstring_from_wkb_state(wkb_parse_state *s)
 	POINTARRAY *pa = ptarray_from_wkb_state(s);
 
 	if( pa == NULL )
-		return lwcircstring_construct_empty(s->has_z, s->has_m, s->srid);
+		return lwcircstring_construct_empty(s->srid, s->has_z, s->has_m);
 
 	if( s->check & PARSER_CHECK_MINPOINTS && pa->npoints < 3 )
 	{
@@ -433,7 +446,7 @@ static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 {
 	uint32 nrings = integer_from_wkb_state(s);
 	int i = 0;
-	LWPOLY *poly = lwpoly_construct_empty(s->has_z, s->has_m, s->srid);
+	LWPOLY *poly = lwpoly_construct_empty(s->srid, s->has_z, s->has_m);
 	
 	/* Empty polygon? */
 	if( nrings == 0 )
@@ -461,7 +474,7 @@ static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 static LWTRIANGLE* lwtriangle_from_wkb_state(wkb_parse_state *s)
 {
 	uint32 nrings = integer_from_wkb_state(s);
-	LWTRIANGLE *tri = lwtriangle_construct_empty(s->has_z, s->has_m, s->srid);
+	LWTRIANGLE *tri = lwtriangle_construct_empty(s->srid, s->has_z, s->has_m);
 	POINTARRAY *pa = NULL;
 
 	/* Should be only one ring. */
@@ -487,9 +500,12 @@ static LWTRIANGLE* lwtriangle_from_wkb_state(wkb_parse_state *s)
 static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
 {
 	uint32 ngeoms = integer_from_wkb_state(s);
-	LWCOLLECTION *col = lwcollection_construct_empty(s->has_z, s->has_m, s->srid);
+	LWCOLLECTION *col = lwcollection_construct_empty(s->srid, s->has_z, s->has_m);
 	LWGEOM *geom = NULL;
 	int i;
+	
+	/* Set the specific geometry type onto the collection */
+	TYPE_SETTYPE(col->type, s->lwtype);
 	
 	/* Empty collection? */
 	if ( ngeoms == 0 )
@@ -513,15 +529,18 @@ static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
 * number and an optional srid number. We handle all those here, then pass
 * to the appropriate handler for the specific type.
 */
-static LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
+LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 {
 	char wkb_little_endian;
 	uint32 wkb_type;
+	
+	LWDEBUG(4,"Entered function");
 	
 	/* Fail when handed incorrect starting byte */
 	wkb_little_endian = byte_from_wkb_state(s);
 	if( wkb_little_endian != 1 && wkb_little_endian != 0 )
 	{
+		LWDEBUG(4,"Leaving due to bad first byte!");
 		lwerror("Invalid endian flag value encountered.");
 		return NULL;
 	}
@@ -541,11 +560,16 @@ static LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 
 	/* Read the type number */
 	wkb_type = integer_from_wkb_state(s);
+	LWDEBUGF(4,"Got type number: 0x%X", wkb_type);
 	lwtype_from_wkb_state(s, wkb_type);
+	LWDEBUGF(4,"Found lwtype: %u", s->lwtype);
 	
 	/* Read the SRID, if necessary */
 	if( s->has_srid )
+	{
 		s->srid = integer_from_wkb_state(s);
+		LWDEBUGF(4,"Got SRID: %u", s->srid);
+	}
 	
 	/* Do the right thing */
 	switch( s->lwtype )
@@ -588,15 +612,17 @@ static LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 	
 }
 
+/* TODO ensure all PARSER_CHECK flags are handled 
+   TODO add check for SRID consistency */
 
 /**
-* WKB inputs must have a declared size, to prevent malformed WKB from reading
+* WKB inputs *must* have a declared size, to prevent malformed WKB from reading
 * off the end of the memory segment (this stops a malevolent user from declaring
 * a one-ring polygon to have 10 rings, causing the WKB reader to walk off the 
 * end of the memory).
 *
-* PARSER_CHECK_MINPOINTS, PARSER_CHECK_ODD, PARSER_CHECK_CLOSURE, 
-* PARSER_CHECK_NONE, PARSER_CHECK_ALL
+* Check is a bitmask of: PARSER_CHECK_MINPOINTS, PARSER_CHECK_ODD, 
+* PARSER_CHECK_CLOSURE, PARSER_CHECK_NONE, PARSER_CHECK_ALL
 */
 LWGEOM* lwgeom_from_wkb(const uchar *wkb, const size_t wkb_size, const char check)
 {

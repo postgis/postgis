@@ -1579,12 +1579,6 @@ extern LWGEOM* lwgeom_flip_coordinates(LWGEOM *in);
 extern uchar parse_hex(char *str);
 extern void deparse_hex(uchar str, char *result);
 
-/*
-** New parsing and unparsing functions.
-*/
-extern char* lwgeom_to_wkt(const LWGEOM *geom, uchar variant, int precision, size_t *size_out);
-extern char* lwgeom_to_wkb(const LWGEOM *geom, uchar variant, size_t *size_out);
-
 
 /* Parser check flags */
 #define PARSER_CHECK_MINPOINTS  1
@@ -1648,6 +1642,17 @@ extern char *lwgeom_to_hexwkb(LWGEOM *lwgeom, int flags, uint32 byteorder);
 extern LWGEOM *lwgeom_from_ewkb(uchar *ewkb, int flags, size_t ewkblen);
 extern LWGEOM *lwgeom_from_ewkt(char *ewkt, int flags);
 extern uchar *lwgeom_to_ewkb(LWGEOM *lwgeom, int flags, char byteorder, size_t *ewkblen);
+
+
+/*
+** New parsing and unparsing functions.
+*/
+extern char*   lwgeom_to_wkt(const LWGEOM *geom, uchar variant, int precision, size_t *size_out);
+extern char*   lwgeom_to_wkb(const LWGEOM *geom, uchar variant, size_t *size_out);
+extern LWGEOM* lwgeom_from_wkb(const uchar *wkb, const size_t wkb_size, const char check);
+extern char*   bytes_from_hexbytes(const char *hexbuf, size_t hexsize);
+/* extern char*   bytes_to_hexbytes(const char *buf, size_t bufsize);*/
+
 
 extern int serialized_lwgeom_to_ewkt(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags);
 extern int serialized_lwgeom_from_ewkt(LWGEOM_PARSER_RESULT *lwg_parser_result, char *wkt_input, int flags);

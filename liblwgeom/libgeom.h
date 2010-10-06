@@ -53,6 +53,7 @@
 #define WKB_NDR 0x08
 #define WKB_HEX 0x10
 #define WKB_NO_NPOINTS 0x20 /* Internal use only */
+#define WKB_NO_SRID 0x40 /* Internal use only */
 
 #define WKB_DOUBLE_SIZE 8 /* Internal use only */
 #define WKB_INT_SIZE 4 /* Internal use only */

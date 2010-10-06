@@ -22,7 +22,8 @@ extern CU_SuiteInfo print_suite;
 extern CU_SuiteInfo algorithms_suite;
 extern CU_SuiteInfo measures_suite;
 extern CU_SuiteInfo wkt_suite;
-extern CU_SuiteInfo wkb_suite;
+extern CU_SuiteInfo wkb_out_suite;
+extern CU_SuiteInfo wkb_in_suite;
 extern CU_SuiteInfo libgeom_suite;
 extern CU_SuiteInfo surface_suite;
 extern CU_SuiteInfo geodetic_suite;
@@ -46,7 +47,8 @@ int main(int argc, char *argv[])
 		algorithms_suite,
 		measures_suite,
 		wkt_suite,
-		wkb_suite,
+		wkb_out_suite,
+		wkb_in_suite,
 		libgeom_suite,
 		surface_suite,
 		geodetic_suite,
