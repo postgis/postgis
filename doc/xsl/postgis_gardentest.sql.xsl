@@ -207,7 +207,7 @@ As foo(the_geom) ) </pgis:gset>
 <!-- Create logging table -->
 DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />;
 CREATE TABLE <xsl:value-of select="$var_logtable" />(logid serial PRIMARY KEY, log_label text, func text, g1 text, g2 text, log_start timestamp, log_end timestamp);
-<!--Start Test table creation, insert, drop -->
+<!--Start Test table creation, insert, analyze crash test, drop -->
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset[not(contains(@createtable,'false'))]">
 		<xsl:variable name='log_label'>create,insert,drop Test <xsl:value-of select="@GeometryType" /></xsl:variable>
 SELECT '<xsl:value-of select="$log_label" />: Start Testing';
@@ -223,7 +223,9 @@ BEGIN;
 	SELECT the_geom, ST_Multi(the_geom)
 	FROM (<xsl:value-of select="." />) As foo;
 
+	ANALYZE pgis_garden;
 	SELECT UpdateGeometrySRID('pgis_garden', 'the_geom', 4269);
+	VACUUM ANALYZE pgis_garden;
 
 	SELECT DropGeometryColumn ('pgis_garden','the_geom');
 	SELECT DropGeometryTable ('pgis_garden');
@@ -259,6 +261,7 @@ COMMIT;
 	SELECT '<xsl:value-of select="$log_label" /> overlap Geography: End Testing';
 BEGIN;	
 	SELECT 'BEFORE DROP' As look_at, * FROM geography_columns;
+	ANALYZE pgis_geoggarden;
 	DROP TABLE pgis_geoggarden;
 	SELECT 'AFTER DROP' As look_at, * FROM geography_columns;
 COMMIT;
