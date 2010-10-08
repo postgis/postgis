@@ -10,6 +10,7 @@
  **********************************************************************/
 
 #include "libgeom.h"
+#include <sys/param.h>
 
 /**
 * Used for passing the parse state between the parsing functions.
