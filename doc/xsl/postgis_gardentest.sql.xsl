@@ -232,18 +232,20 @@ BEGIN;
  UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
 		WHERE log_label = '<xsl:value-of select="$log_label" /> insert data Geometry' AND log_end IS NULL;
 COMMIT;	
-
 		
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
-VALUES('<xsl:value-of select="$log_label" /> Analyze','UpdateGeometrySRID', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
+VALUES('<xsl:value-of select="$log_label" /> UpdateGeometrySRID','UpdateGeometrySRID', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
 BEGIN;
-	ANALYZE pgis_garden;
 	SELECT UpdateGeometrySRID('pgis_garden', 'the_geom', 4269);
-	VACUUM ANALYZE pgis_garden;
-
 	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		WHERE log_label = '<xsl:value-of select="$log_label" /> analyze' AND log_end IS NULL;
+		WHERE log_label = ''<xsl:value-of select="$log_label" /> UpdateGeometrySRID' AND log_end IS NULL;	
 COMMIT;
+
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
+VALUES('<xsl:value-of select="$log_label" /> Analyze','Analyze', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
+ANALYZE pgis_garden;
+UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
+		WHERE log_label = '<xsl:value-of select="$log_label" /> analyze' AND log_end IS NULL;
 
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
 VALUES('<xsl:value-of select="$log_label" /> DropGeometryColumn','DropGeometryColumn', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
@@ -276,7 +278,7 @@ BEGIN;
 		WHERE log_label = '<xsl:value-of select="$log_label" /> Geography' AND log_end IS NULL;
 COMMIT;
 SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing <xsl:value-of select="@GeometryType" />';
-	-- test operators
+
 SELECT '<xsl:value-of select="$log_label" /> overlap Geography: Start Testing <xsl:value-of select="@GeometryType" />';
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) VALUES('<xsl:value-of select="$log_label" /> overlap Geography','&amp;&amp;', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
 BEGIN;
@@ -289,14 +291,20 @@ COMMIT;
 SELECT '<xsl:value-of select="$log_label" /> overlap Geography: End Testing';
 
 
-INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) VALUES('<xsl:value-of select="$log_label" /> analyze drop Geography','', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) VALUES('<xsl:value-of select="$log_label" /> analyze Geography','', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
 BEGIN;	
 	SELECT 'BEFORE DROP' As look_at, * FROM geography_columns;
 	ANALYZE pgis_geoggarden;
+COMMIT;
+	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
+		WHERE log_label = '<xsl:value-of select="$log_label" />  analyze Geography' AND log_end IS NULL;
+
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) VALUES('<xsl:value-of select="$log_label" /> drop Geography table','', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
+BEGIN;
 	DROP TABLE pgis_geoggarden;
 	SELECT 'AFTER DROP' As look_at, * FROM geography_columns;
 	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		WHERE log_label = '<xsl:value-of select="$log_label" /> analyze drop Geography' AND log_end IS NULL;
+		WHERE log_label = ''<xsl:value-of select="$log_label" /> drop Geography table' AND log_end IS NULL;
 COMMIT;
 SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 	<xsl:text>
