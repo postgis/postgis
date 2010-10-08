@@ -245,7 +245,7 @@ INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_sta
 VALUES('<xsl:value-of select="$log_label" /> Analyze','Analyze', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
 ANALYZE pgis_garden;
 UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		WHERE log_label = '<xsl:value-of select="$log_label" /> analyze' AND log_end IS NULL;
+		WHERE log_label = '<xsl:value-of select="$log_label" /> Analyze' AND log_end IS NULL;
 
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
 VALUES('<xsl:value-of select="$log_label" /> DropGeometryColumn','DropGeometryColumn', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
