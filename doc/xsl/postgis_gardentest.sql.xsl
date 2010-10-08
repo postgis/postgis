@@ -11,7 +11,7 @@
 	<xsl:output method="text" />
 	<xsl:variable name='testversion'>2.0.0</xsl:variable>
 	<xsl:variable name='fnexclude14'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
-	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable Populate_Geometry_Columns ST_CurveToLine ST_LineToCurve</xsl:variable>
+	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable Populate_Geometry_Columns ST_CurveToLine ST_LineToCurve ST_Transform</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 or tested separately -->
 
 	<xsl:variable name='var_srid'>3395</xsl:variable>
@@ -200,38 +200,66 @@ As foo(the_geom) ) </pgis:gset>
 
         <!-- We deal only with the reference chapter -->
         <xsl:template match="/">
+<!-- Create logging table -->
+DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />;
+CREATE TABLE <xsl:value-of select="$var_logtable" />(logid serial PRIMARY KEY, log_label text, func text, g1 text, g2 text, log_start timestamp, log_end timestamp);
                 <xsl:apply-templates select="/book/chapter[@id='reference']" />
         </xsl:template>
 
 	<xsl:template match='chapter'>
-<!-- Create logging table -->
-DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />;
-CREATE TABLE <xsl:value-of select="$var_logtable" />(logid serial PRIMARY KEY, log_label text, func text, g1 text, g2 text, log_start timestamp, log_end timestamp);
 <!--Start Test table creation, insert, analyze crash test, drop -->
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset[not(contains(@createtable,'false'))]">
-		<xsl:variable name='log_label'>create,insert,drop Test <xsl:value-of select="@GeometryType" /></xsl:variable>
+			<xsl:variable name='log_label'>create,insert,drop Test <xsl:value-of select="@GeometryType" /></xsl:variable>
 SELECT '<xsl:value-of select="$log_label" />: Start Testing';
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
-VALUES('<xsl:value-of select="$log_label" /> Geometry','AddGeometryColumn', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
+VALUES('<xsl:value-of select="$log_label" /> AddGeometryColumn','AddGeometryColumn', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
 BEGIN;
 	CREATE TABLE pgis_garden (gid serial);
 	SELECT AddGeometryColumn('pgis_garden','the_geom',ST_SRID(the_geom),GeometryType(the_geom),ST_CoordDim(the_geom))
 			FROM (<xsl:value-of select="." />) As foo limit 1;
 	SELECT AddGeometryColumn('pgis_garden','the_geom_multi',ST_SRID(the_geom),GeometryType(ST_Multi(the_geom)),ST_CoordDim(the_geom))
 			FROM (<xsl:value-of select="." />) As foo limit 1;
+	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
+		WHERE log_label = '<xsl:value-of select="$log_label" /> AddGeometryColumn' AND log_end IS NULL;
+COMMIT;
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
+VALUES('<xsl:value-of select="$log_label" /> insert data Geometry','insert data', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
+
+BEGIN;
 	INSERT INTO pgis_garden(the_geom, the_geom_multi)
 	SELECT the_geom, ST_Multi(the_geom)
 	FROM (<xsl:value-of select="." />) As foo;
+ UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
+		WHERE log_label = '<xsl:value-of select="$log_label" /> insert data Geometry' AND log_end IS NULL;
+COMMIT;	
 
+		
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
+VALUES('<xsl:value-of select="$log_label" /> Analyze','UpdateGeometrySRID', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
+BEGIN;
 	ANALYZE pgis_garden;
 	SELECT UpdateGeometrySRID('pgis_garden', 'the_geom', 4269);
 	VACUUM ANALYZE pgis_garden;
 
-	SELECT DropGeometryColumn ('pgis_garden','the_geom');
-	SELECT DropGeometryTable ('pgis_garden');
 	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		WHERE log_label = '<xsl:value-of select="$log_label" /> Geometry' AND log_end IS NULL;
+		WHERE log_label = '<xsl:value-of select="$log_label" /> analyze' AND log_end IS NULL;
+COMMIT;
 
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
+VALUES('<xsl:value-of select="$log_label" /> DropGeometryColumn','DropGeometryColumn', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
+
+BEGIN;
+	SELECT DropGeometryColumn ('pgis_garden','the_geom');
+	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
+		WHERE log_label = '<xsl:value-of select="$log_label" /> DropGeometryColumn' AND log_end IS NULL;
+COMMIT;
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
+VALUES('<xsl:value-of select="$log_label" /> DropGeometryTable','DropGeometryTable', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
+
+BEGIN;
+	SELECT DropGeometryTable ('pgis_garden','the_geom');
+	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
+		WHERE log_label = '<xsl:value-of select="$log_label" /> DropGeometryTable' AND log_end IS NULL;
 COMMIT;
 SELECT '<xsl:value-of select="$log_label" />: End Testing  <xsl:value-of select="@GeometryType" />';
 	<xsl:text>
@@ -258,12 +286,17 @@ BEGIN;
 UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
 		WHERE log_label = '<xsl:value-of select="$log_label" /> overlap Geography' AND log_end IS NULL;
 COMMIT;
-	SELECT '<xsl:value-of select="$log_label" /> overlap Geography: End Testing';
+SELECT '<xsl:value-of select="$log_label" /> overlap Geography: End Testing';
+
+
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) VALUES('<xsl:value-of select="$log_label" /> analyze drop Geography','', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
 BEGIN;	
 	SELECT 'BEFORE DROP' As look_at, * FROM geography_columns;
 	ANALYZE pgis_geoggarden;
 	DROP TABLE pgis_geoggarden;
 	SELECT 'AFTER DROP' As look_at, * FROM geography_columns;
+	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
+		WHERE log_label = '<xsl:value-of select="$log_label" /> analyze drop Geography' AND log_end IS NULL;
 COMMIT;
 SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 	<xsl:text>
