@@ -238,7 +238,7 @@ VALUES('<xsl:value-of select="$log_label" /> UpdateGeometrySRID','UpdateGeometry
 BEGIN;
 	SELECT UpdateGeometrySRID('pgis_garden', 'the_geom', 4269);
 	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		WHERE log_label = ''<xsl:value-of select="$log_label" /> UpdateGeometrySRID' AND log_end IS NULL;	
+		WHERE log_label = '<xsl:value-of select="$log_label" /> UpdateGeometrySRID' AND log_end IS NULL;	
 COMMIT;
 
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
