@@ -1102,7 +1102,7 @@ CREATE OPERATOR ~ (
 -- raster and the geometry. If only nodatavalue pixel are found, the 
 -- geometry does not intersect with the raster.
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION _st_intersects(geomin geometry, rast raster, band integer) 
+CREATE OR REPLACE FUNCTION _st_intersects(geomin geometry, rast raster, band integer, hasnodata boolean) 
     RETURNS boolean AS
     $$
     DECLARE
@@ -1142,7 +1142,7 @@ CREATE OR REPLACE FUNCTION _st_intersects(geomin geometry, rast raster, band int
         END IF;
 
         -- If the band does not have a nodatavalue, there is no need to search for with value pixels
-        IF NOT st_bandhasnodatavalue(rast, band) THEN
+        IF NOT hasnodata OR NOT st_bandhasnodatavalue(rast, band) THEN
             RETURN TRUE;
         END IF;
 
@@ -1222,23 +1222,43 @@ CREATE OR REPLACE FUNCTION _st_intersects(geomin geometry, rast raster, band int
 
 CREATE OR REPLACE FUNCTION st_intersects(geometry, raster, integer) 
     RETURNS boolean AS 
-    $$ SELECT $1 && $2 AND _st_intersects($1, $2, $3);
-    $$ LANGUAGE 'SQL' IMMUTABLE STRICT;
+    $$ SELECT $1 && $2 AND _st_intersects($1, $2, $3, TRUE);
+    $$ LANGUAGE 'SQL' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_intersects(raster, integer, geometry) 
     RETURNS boolean AS 
     $$ SELECT st_intersects($3, $1, $2);
-    $$ LANGUAGE 'SQL' IMMUTABLE STRICT;
+    $$ LANGUAGE 'SQL' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_intersects(geometry, raster) 
     RETURNS boolean AS 
     $$ SELECT st_intersects($1, $2, 1);
-    $$ LANGUAGE 'SQL' IMMUTABLE STRICT;
+    $$ LANGUAGE 'SQL' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_intersects(raster, geometry) 
     RETURNS boolean AS 
     $$ SELECT st_intersects($2, $1, 1);
-    $$ LANGUAGE 'SQL' IMMUTABLE STRICT;
+    $$ LANGUAGE 'SQL' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_intersects(geometry, raster, integer, boolean) 
+    RETURNS boolean AS 
+    $$ SELECT $1 && $2 AND _st_intersects($1, $2, $3, $4);
+    $$ LANGUAGE 'SQL' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_intersects(raster, integer, boolean, geometry) 
+    RETURNS boolean AS 
+    $$ SELECT st_intersects($4, $1, $2, $3);
+    $$ LANGUAGE 'SQL' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_intersects(geometry, raster, boolean) 
+    RETURNS boolean AS 
+    $$ SELECT st_intersects($1, $2, 1, $3);
+    $$ LANGUAGE 'SQL' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_intersects(raster, boolean, geometry) 
+    RETURNS boolean AS 
+    $$ SELECT st_intersects($3, $1, 1, $2);
+    $$ LANGUAGE 'SQL' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- _st_intersection(geom geometry, rast raster, band integer)
