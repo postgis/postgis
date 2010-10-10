@@ -51,9 +51,9 @@ static int clean_wkb_in_suite(void)
 static void cu_wkb_in(char *wkt)
 {
 	LWGEOM *g, *g_a, *g_b;
-	char *wkb, *hex;
+	char *wkb;
 	size_t wkb_size, wkb_size_a, wkb_size_b;
-	int i;
+	/* int i; char *hex; */
 	
 	if ( hex_a ) free(hex_a);
 	if ( hex_b ) free(hex_b);
