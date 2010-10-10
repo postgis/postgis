@@ -43,6 +43,74 @@ ptarray_construct(char hasz, char hasm, uint32 npoints)
 }
 
 POINTARRAY*
+ptarray_construct_empty(char hasz, char hasm)
+{
+	uchar dims = 0;
+	size_t size;
+	POINTARRAY *pa = lwalloc(sizeof(POINTARRAY));
+	
+	/* Set our dimsionality info on the bitmap */
+	TYPE_SETZM(dims, hasz?1:0, hasm?1:0);
+	pa->dims = dims;
+	
+	/* We will be allocating a bit of room */
+	pa->npoints = 0;
+	pa->maxpoints = 32;
+	
+	/* Allocate the coordinate array */
+	size = TYPE_NDIMS(dims) * pa->maxpoints * sizeof(double);
+	pa->serialized_pointlist = (uchar *)lwalloc(size);
+
+	return pa;
+}
+
+int
+ptarray_add_point(POINTARRAY *pa, POINT4D *pt)
+{
+	size_t size;
+	double *d = NULL;
+	int i = 0;
+
+	/* Check for pathology */
+	if( ! pa || ! pt ) 
+		return LW_FALSE;
+
+	/* If we have no storage, let's allocate some */
+	if( pa->maxpoints == 0 || ! pa->serialized_pointlist ) 
+	{
+		pa->maxpoints = 32;
+		size = TYPE_NDIMS(pa->dims) * pa->maxpoints * sizeof(double);
+		pa->serialized_pointlist = lwalloc(size);
+	}
+	
+	/* Check if we have enough storage, add more if necessary */
+	if( pa->npoints == pa->maxpoints )
+	{
+		pa->maxpoints = (pa->maxpoints + 1) * 2;
+		size = pa->maxpoints * TYPE_NDIMS(pa->dims) * sizeof(double);
+		pa->serialized_pointlist = lwrealloc(pa->serialized_pointlist, size);
+	}
+	
+	/* Hope this is double-aligned storage... */
+	/* Write in the double values */
+	d = (double*)pa->serialized_pointlist;
+	i = pa->npoints * TYPE_NDIMS(pa->dims);
+	d[i++] = pt->x;
+	d[i++] = pt->y;
+	if( TYPE_HASZ(pa->dims) )
+		d[i++] = pt->z;
+	if( TYPE_HASM(pa->dims) )
+		d[i++] = pt->m;
+
+	/* Increment our point count */
+	pa->npoints++;
+
+	return LW_TRUE;
+}
+
+
+
+POINTARRAY*
 ptarray_construct_copy_data(char hasz, char hasm, uint32 npoints, const uchar *ptlist)
 {
 	uchar dims = 0;

@@ -44,6 +44,7 @@ SA_OBJS = \
 	lwout_wkt.o \
 	lwout_wkb.o \
 	lwin_wkb.o \
+	lwin_wkt.o \
 	lwutil.o \
 	lwhomogenize.o \
 	lwalgorithm.o \
@@ -98,6 +99,16 @@ $(SA_OBJS): %.o: %.c
 # Command to build each of the .o files
 $(NM_OBJS): %.o: %.c 
 	$(CC) $(CFLAGS) $(NUMERICFLAGS) -c -o $@ $<
+
+# Generate WKT parser from Flex/Yacc inputs
+lwin_wkt_parse.c: lwin_wkt_parse.y
+	$(YACC) --debug --verbose -o $@ -d $^
+  
+#       $(YACC) --debug --verbose -o $@ -d $^
+#       $(YACC) -o $@ -d $^
+
+lwin_wkt_lex.c: lwin_wkt_lex.l lwin_wkt.h
+	$(LEX) --case-insensitive -o $@ $<
 
 
 # Commands to generate the lexer and parser from input files

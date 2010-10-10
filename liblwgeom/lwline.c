@@ -24,7 +24,7 @@
  * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
  */
 LWLINE *
-lwline_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points)
+lwline_construct(int srid, BOX2DFLOAT4 *bbox, POINTARRAY *points)
 {
 	LWLINE *result;
 	result = (LWLINE*) lwalloc(sizeof(LWLINE));
@@ -34,12 +34,12 @@ lwline_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points)
 	result->type = lwgeom_makeType_full(
 	                   TYPE_HASZ(points->dims),
 	                   TYPE_HASM(points->dims),
-	                   (SRID!=-1), LINETYPE,
+	                   (srid!=-1), LINETYPE,
 	                   0);
 
 	LWDEBUGF(3, "lwline_construct type=%d", result->type);
 
-	result->SRID = SRID;
+	result->SRID = srid;
 	result->points = points;
 	result->bbox = bbox;
 

@@ -692,6 +692,16 @@ extern BOX3D *ptarray_compute_box3d(const POINTARRAY *pa);
 extern int ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *out);
 
 
+/**
+* Create a new POINTARRAY with no points
+*/
+extern POINTARRAY* ptarray_construct_empty(char hasz, char hasm);
+
+/**
+* Add a point to an existing pointarray 
+*/
+extern int ptarray_add_point(POINTARRAY *pa, POINT4D *pt);
+
 
 /*
  * size of point represeneted in the POINTARRAY
