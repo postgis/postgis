@@ -502,7 +502,7 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
         /**
          * Dump raster
          */
-        geomval = rt_raster_dump_as_polygons(ctx, raster, nband, &nElements);      
+        geomval = rt_raster_dump_as_wktpolygons(ctx, raster, nband, &nElements);
         if (NULL == geomval)
         {
             ereport(ERROR,

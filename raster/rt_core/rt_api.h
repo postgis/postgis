@@ -581,10 +581,12 @@ LWPOLY* rt_raster_get_convex_hull(rt_context ctx, rt_raster raster);
  * @param nband: the band to polygonize. From 1 to rt_raster_get_num_bands
  *
  * @return A set of "geomval" values, one for each group of pixels
- * sharing the same value for the provided band.
+ * sharing the same value for the provided band. The returned values are
+ * WKT geometries, not real PostGIS geometries (this may change in the
+ * future, and the function returns real geometries)
  */
 rt_geomval
-rt_raster_dump_as_polygons(rt_context ctx, rt_raster raster, int nband, 
+rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
         int * pnElements);
 
     

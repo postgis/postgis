@@ -537,30 +537,30 @@ CREATE TYPE geomval AS (
     val double precision
 );
 
-CREATE TYPE geomval AS (
-    geom text,
+CREATE TYPE wktgeomval AS (
+    wktgeom text,
     val double precision,
     srid int 
 );
 
-CREATE OR REPLACE FUNCTION dumpaspolygons(rast raster, band integer)
-    RETURNS SETOF geomval
-    AS 'MODULE_PATHNAME','RASTER_dumpAsPolygons'
+CREATE OR REPLACE FUNCTION dumpaswktpolygons(rast raster, band integer)
+    RETURNS SETOF wktgeomval
+    AS 'MODULE_PATHNAME','RASTER_dumpAsWKTPolygons'
     LANGUAGE 'C' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_dumpaspolygons(rast raster, band integer) 
     RETURNS SETOF geomval AS 
     $$
-    SELECT st_geomfromtext(geomval.geom, geomval.srid), geomval.val
-    FROM dumpaspolygons($1, $2) AS geomval;
+    SELECT st_geomfromtext(wktgeomval.wktgeom, wktgeomval.srid), wktgeomval.val
+    FROM dumpaswktpolygons($1, $2) AS wktgeomval;
     $$ 
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_dumpaspolygons(raster) 
     RETURNS SETOF geomval AS 
     $$
-    SELECT st_geomfromtext(geomval.geom, geomval.srid), geomval.val
-    FROM dumpaspolygons($1, 1) AS geomval;
+    SELECT st_geomfromtext(wktgeomval.wktgeom, wktgeomval.srid), wktgeomval.val
+    FROM dumpaswktpolygons($1, 1) AS wktgeomval;
     $$ 
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 

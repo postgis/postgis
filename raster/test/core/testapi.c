@@ -1110,7 +1110,7 @@ main()
         typedef struct rt_geomval_t* rt_geomval;
         int nPols = 0;
         
-        rt_geomval gv = (rt_geomval) rt_raster_dump_as_polygons(ctx, rt, 1, &nPols);
+        rt_geomval gv = (rt_geomval) rt_raster_dump_as_wktpolygons(ctx, rt, 1, &nPols);
 
 
         CHECK_EQUALS_DOUBLE(gv[0].val, 1.0);
