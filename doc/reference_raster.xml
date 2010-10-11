@@ -1248,7 +1248,7 @@ rastwidth
 				<refsection>
 					<title>Examples</title>
 				
-					<programlisting>-- Add another band of type 8 bit unsigned integer with pixels initialize to 200
+					<programlisting>-- Add another band of type 8 bit unsigned integer with pixels initialized to 200
 UPDATE dummy_rast
     SET rast = ST_AddBand(rast,'8BUI',200)  
 WHERE rid = 1;
