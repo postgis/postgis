@@ -2,7 +2,7 @@
 --
 -- $Id$
 --
--- WKTRaster - Raster Type for PostGIS
+-- PostGIS Raster - Raster Type for PostGIS
 -- http://trac.osgeo.org/postgis/wiki/WKTRaster
 --
 -- Copyright (c) 2009 Sandro Santilli <strk@keybit.net>
@@ -1325,7 +1325,7 @@ CREATE OR REPLACE FUNCTION st_intersection(rast raster, band integer, geom geome
 ------------------------------------------------------------------------------
 -- RASTER_COLUMNS
 --
--- The metadata is documented in the WKT Raster specification:
+-- The metadata is documented in the PostGIS Raster specification:
 -- http://trac.osgeo.org/postgis/wiki/WKTRaster/SpecificationFinal01
 ------------------------------------------------------------------------------
 CREATE TABLE raster_columns (
