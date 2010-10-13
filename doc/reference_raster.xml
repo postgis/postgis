@@ -483,7 +483,8 @@ postgis_raster_lib_version
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns an empty raster of given dimensions, pixel x y, skew and spatial reference system with no bands</para>
+				<para>Returns an empty raster of given dimensions, pixel x y, skew and spatial reference system with no bands.  After you create an empty raster you 
+				    probably want to add bands to it and hmm maybe edit it.  Refer to <xref linkend="RT_ST_AddBand" /> to define bands and <xref linkend="RT_ST_SetValue" /> to set pixel values.</para>
 				</refsection>
 				
 				<refsection>
@@ -498,7 +499,7 @@ VALUES(3, ST_MakeEmptyRaster( 100, 100, 0.0005, 0.0005, 1, 1, 0, 0, 4326) )
 
 			<refsection>
 				<title>See Also</title>
-				<para></para>
+				<para><xref linkend="RT_ST_AddBand" />, <xref linkend="RT_ST_SetValue" /></para>
 			</refsection>
 		</refentry>
   	</sect1>
