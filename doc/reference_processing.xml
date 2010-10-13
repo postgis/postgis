@@ -1443,7 +1443,7 @@ LINESTRING(241.42 38.38,241.8 38.45)
 	  <refnamediv>
 		<refname>ST_Simplify</refname>
 		<refpurpose>Returns a "simplified" version of the given geometry using
-				the Douglas-Peuker algorithm.</refpurpose>
+				the Douglas-Peucker algorithm.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1459,7 +1459,7 @@ LINESTRING(241.42 38.38,241.8 38.45)
 	  <refsection>
 		<title>Description</title>
 		<para>Returns a "simplified" version of the given geometry using
-				the Douglas-Peuker algorithm. Will actually do something only with
+				the Douglas-Peucker algorithm. Will actually do something only with
 				(multi)lines and (multi)polygons but you can safely call it with
 				any kind of geometry. Since simplification occurs on a
 				object-by-object basis you can also feed a GeometryCollection to
@@ -1498,7 +1498,7 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
 	  <refnamediv>
 		<refname>ST_SimplifyPreserveTopology</refname>
 		<refpurpose>Returns a "simplified" version of the given geometry using
-			the Douglas-Peuker algorithm. Will avoid creating derived
+			the Douglas-Peucker algorithm. Will avoid creating derived
 			geometries (polygons in particular) that are invalid.</refpurpose>
 	  </refnamediv>
 
@@ -1515,7 +1515,7 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
 	  <refsection>
 		<title>Description</title>
 		<para>Returns a "simplified" version of the given geometry using
-			the Douglas-Peuker algorithm. Will avoid creating derived
+			the Douglas-Peucker algorithm. Will avoid creating derived
 			geometries (polygons in particular) that are invalid. Will actually do something only with
 				(multi)lines and (multi)polygons but you can safely call it with
 				any kind of geometry. Since simplification occurs on a
