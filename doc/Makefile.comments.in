@@ -18,7 +18,7 @@ MODULE_doc=postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULEDIR=contrib/$(MODULE_doc)
 
 # Files to be copied to the contrib/ directory
-DATA_built=postgis_comments.sql
+DATA_built=postgis_comments.sql raster_comments.sql
 
 # PGXS information
 PG_CONFIG = @PGCONFIG@ 
