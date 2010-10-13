@@ -8,8 +8,8 @@
 #
 #############################################################################
 
-MODULE_big=rtpostgis
-
+MODULE_big=rtpostgis-@POSTGIS_RASTER_MAJOR_VERSION@.@POSTGIS_RASTER_MINOR_VERSION@
+MODULEDIR=contrib/$(MODULE_big)
 
 # Files to be copied to the contrib/ directory
 DATA_built=rtpostgis.sql
@@ -44,6 +44,23 @@ EXTRA_CLEAN=$(SQL_OBJS) rtpostgis.sql
 PG_CONFIG = @PGCONFIG@ 
 PGXS := @PGXS@
 include $(PGXS)
+
+# PGXS override feature. The ability to allow PostGIS to install itself
+# in a versioned directory is only available in PostgreSQL >= 8.5. To
+# do this by default on older PostgreSQL versions, we need to override
+# the existing PGXS targets.
+#
+# Once PostgreSQL 8.5 becomes the minimum supported version, this entire
+# section and its associated Makefile.pgxs should be removed.
+PGXSOVERRIDE = @PGXSOVERRIDE@
+ifeq ($(PGXSOVERRIDE),1)
+	include Makefile.pgxs
+endif
+
+# Borrow the $libdir substitution from PGXS but customise by adding the version number
+%.sql: %.sql.in
+	sed 's,MODULE_PATHNAME,$$libdir/rtpostgis-@POSTGIS_RASTER_MAJOR_VERSION@.@POSTGIS_RASTER_MINOR_VERSION@,g' $< >$@
+
 
 # Generate any .sql.in files from .sql.in.c files by running them through the C pre-processor 
 $(SQL_OBJS): %.in: %.in.c
