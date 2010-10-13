@@ -1215,11 +1215,23 @@ rastwidth
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
+				   <funcprototype>
+					<funcdef>raster <function>ST_AddBand</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+				  </funcprototype>
 				  <funcprototype>
 					<funcdef>raster <function>ST_AddBand</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>initialvalue</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>raster <function>ST_AddBand</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>initialvalue</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>nodataval</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>raster <function>ST_AddBand</function></funcdef>
@@ -1234,15 +1246,23 @@ rastwidth
 					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>initialvalue</parameter></paramdef>
 				  </funcprototype>
+				  <funcprototype>
+					<funcdef>raster <function>ST_AddBand</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>band_num</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>initialvalue</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>nodataval</parameter></paramdef>
+				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 		
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns a raster with a new band added in given position (band number), of given type, of given intial value.  If no index is specified, the band is added to the end.  Pixel type is a string representation
+				<para>Returns a raster with a new band added in given position (band number), of given type, of given intial value, and of given nodata value.  If no index is specified, the band is added to the end.  Pixel type is a string representation
 				    of one of the pixel types specified in <xref linkend="RT_ST_BandPixelType" />.  If an existing index is specfied all subsequent bands >= that index are incremented by 1.
-				    If an initial value greater than the max of the pixel type is specified, then the initial value is set to the highest value allowed by the pixel type.</para>
+				    If an initial value greater than the max of the pixel type is specified, then the initial value is set to the highest value allowed by the pixel type. </para>
 				</refsection>
 				
 				<refsection>
@@ -1253,12 +1273,37 @@ UPDATE dummy_rast
     SET rast = ST_AddBand(rast,'8BUI',200)  
 WHERE rid = 1;
 					</programlisting>
+					
+					<programlisting>-- Create an empty raster 100x100 units, with upper left  right at 0, add 2 bands (band 1 is 0/1 bit switches, band2 1-4)
+INSERT INTO dummy_rast(rid,rast)
+    VALUES(10, ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(100,100,0,0,1,-1,0,0, -1), '2BUI'), '4BUI') );
+    
+-- output meta data of raster bands to verify all is right --
+SELECT  (bmd).*
+FROM (SELECT ST_BandMetaData(rast,generate_series(1,2)) As bmd 
+    FROM dummy_rast WHERE rid = 10) AS foo;
+ --result --   
+ pixeltype | hasnodatavalue | nodatavalue | isoutdb | path
+-----------+----------------+-------------+---------+------
+ 2BUI      | f              |           0 | f       |
+ 4BUI      | f              |           0 | f       |
+ 
+ 
+-- output meta data of raster -
+SELECT  (rmd).width, (rmd).height, (rmd).numbands
+FROM (SELECT ST_MetaData(rast) As rmd 
+    FROM dummy_rast WHERE rid = 10) AS foo;
+-- result --
+ upperleftx | upperlefty | width | height | pixelsizex | pixelsizey | skewx | skewy | srid | numbands
+------------+------------+-------+--------+------------+------------+-------+-------+------+----------
+          0 |          0 |   100 |    100 |          1 |         -1 |     0 |  0 |   -1 |        2
+					</programlisting>
 			
 			</refsection>
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_NumBands" /></para>
+				<para><xref linkend="RT_ST_BandMetaData" />, <xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_MakeEmptyRaster" />, <xref linkend="RT_ST_MetaData" />, <xref linkend="RT_ST_NumBands" /></para>
 			</refsection>
 		</refentry>
 		<refentry id="RT_ST_BandHasNoDataValue">
