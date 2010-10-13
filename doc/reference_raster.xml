@@ -371,7 +371,7 @@ UPDATE raster_columns SET extent = (SELECT ST_Union(ST_Envelope(rast)) FROM myra
 	  </refsection>
 	</refentry>
 	
-	<refentry id="RT_PostGIS_Raster_Lib_Build_Date()">
+	<refentry id="RT_PostGIS_Raster_Lib_Build_Date">
 	  <refnamediv>
 		<refname>PostGIS_Raster_Lib_Build_Date</refname>
 

@@ -226,7 +226,7 @@ END
       </question>
 
       <answer>
-        <para>Refer to the list of <xref linkend="RT_reference">documented raster functions</xref>. 
+        <para>Refer to the list of <xref linkend="RT_reference" />. 
         There are more, but this is still a work in progress.</para>
 		<para>Refer to the <ulink
         url="http://trac.osgeo.org/postgis/wiki/WKTRaster/PlanningAndFunding">PostGIS Raster roadmap page</ulink> 
