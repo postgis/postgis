@@ -1275,9 +1275,9 @@ UPDATE dummy_rast
 WHERE rid = 1;
 					</programlisting>
 					
-					<programlisting>-- Create an empty raster 100x100 units, with upper left  right at 0, add 2 bands (band 1 is 0/1 bit switches, band2 1-4)
+					<programlisting>-- Create an empty raster 100x100 units, with upper left  right at 0, add 2 bands (band 1 is 0/1 boolean bit switch, band2 allows values 0-15)
 INSERT INTO dummy_rast(rid,rast)
-    VALUES(10, ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(100,100,0,0,1,-1,0,0, -1), '2BUI'), '4BUI') );
+    VALUES(10, ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(100,100,0,0,1,-1,0,0, -1), '1BB'), '4BUI') );
     
 -- output meta data of raster bands to verify all is right --
 SELECT  (bmd).*
@@ -1286,7 +1286,7 @@ FROM (SELECT ST_BandMetaData(rast,generate_series(1,2)) As bmd
  --result --   
  pixeltype | hasnodatavalue | nodatavalue | isoutdb | path
 -----------+----------------+-------------+---------+------
- 2BUI      | f              |           0 | f       |
+ 1BB       | f              |           0 | f       |
  4BUI      | f              |           0 | f       |
  
  
