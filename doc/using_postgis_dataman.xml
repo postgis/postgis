@@ -136,17 +136,17 @@ geometry = ST_GeometryFromText(text WKT, SRID);</programlisting>
 		    <para>MULTICURVE( (0 0, 5 5) ,CIRCULARSTRING(4 0, 4 4, 8 4) )</para>
 		</listitem>
 		
-		<listitem>*
+		<listitem>
 		  <para>POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),  
 ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),  ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),  
 ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )</para>
 		</listitem>
 		
-		<listitem>*
+		<listitem>
 		  <para>TRIANGLE ((0 0, 0 9, 9 0, 0 0))</para>
 		</listitem>
 		
-		<listitem>*
+		<listitem>
 		  <para>TIN( ((0 0 0, 0 0 1, 0 1 0, 0 0 0)), 
 		  ((0 0 0, 0 1 0, 1 1 0, 0 0 0)) )</para>
 		</listitem>

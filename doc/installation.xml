@@ -8,7 +8,7 @@
 
   <sect1>
 	<title>Short Version</title>
-	<para><note>The raster support is currently optional, but in final release it will be required.</note></para>
+	<note><para>The raster support is currently optional, but in final release it will be required.</para></note>
 	<programlisting>tar xvfz postgis-&last_release_version;.tar.gz
 cd postgis-&last_release_version;
 ./configure --with-raster

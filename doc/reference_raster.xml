@@ -528,7 +528,7 @@ VALUES(3, ST_MakeEmptyRaster( 100, 100, 0.0005, 0.0005, 1, 1, 0, 0, 4326) )
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the georeference meta data including carriage return in GDAL or ESRI format as commonly seen in a <ulink href="http://en.wikipedia.org/wiki/World_file">world file</ulink>. Default is GDAL if no type specified.  type is string 'GDAL' or 'ESRI'.
+				<para>Returns the georeference meta data including carriage return in GDAL or ESRI format as commonly seen in a <ulink url="http://en.wikipedia.org/wiki/World_file">world file</ulink>. Default is GDAL if no type specified.  type is string 'GDAL' or 'ESRI'.
 					 </para>
 				<para>Difference between format representations is as follows:</para>
 				<para><varname>GDAL</varname>: 
@@ -811,9 +811,9 @@ FROM dummy_rast;
 						columns in raster, it will give you 
 					coordinates outside of the raster file to left or right with the assumption that the 
 					skew and pixel sizes are same as selected raster. </para>
-				<para><note>For non-skewed rasters, providing the x column is sufficient.  For skewed rasters,
+				<note><para>For non-skewed rasters, providing the x column is sufficient.  For skewed rasters,
 						the georeferenced coordinate is a function of the ST_PixelSizeX and SkewX and row and column.
-						An error will be raised if you give just the x column for a skewed raster.</note></para>
+						An error will be raised if you give just the x column for a skewed raster.</para></note>
 				</refsection>
 				
 				<refsection>
@@ -885,9 +885,9 @@ FROM (SELECT rid, ST_SetSkew(rast,100.5,0) As rast FROM dummy_rast) As foo;
 						columns/rows in raster, it will give you 
 					coordinates outside of the raster file to left or right with the assumption that the 
 					skew and pixel sizes are same as selected raster tile. </para>
-				<para><note>For non-skewed rasters, providing the y column is sufficient.  For skewed rasters,
+				<note><para>For non-skewed rasters, providing the y column is sufficient.  For skewed rasters,
 						the georeferenced coordinate is a function of the ST_PixelSizeY and SkewY and row and column.
-						An error will be raised if you give just the y row for a skewed raster.</note></para>
+						An error will be raised if you give just the y row for a skewed raster.</para></note>
 				</refsection>
 				
 				<refsection>
@@ -1381,7 +1381,9 @@ f
 					 pixeltype | hasnodatavalue | nodatavalue | isoutdb | path.
 				</para>
 				<note>
+                                  <para>
 					If raster contains no bands then an error is thrown.
+                                  </para>
 				</note>
 			</refsection>
 				
@@ -2410,9 +2412,9 @@ rid |        rastbox
 				rasters, this gives more or less the same answer as ST_Envelope 
 				so only useful for irregularly shaped or skewed rasters.</para>
 				
-				<para><note>ST_Envelope floors the coordinates and hence add a little buffer around the raster so the answer is subtley 
-					different from ST_ConvexHull which does not floor.</note>
-				</para>
+				<note><para>ST_Envelope floors the coordinates and hence add a little buffer around the raster so the answer is subtley 
+					different from ST_ConvexHull which does not floor.</para>
+				</note>
 			</refsection>
 				
 			<refsection>

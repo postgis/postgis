@@ -2242,6 +2242,7 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
 				<tbody>
 				  <row>
 					<entry>
+                                           <para>
 						<informalfigure>
 						<mediaobject>
 						  <imageobject>
@@ -2250,8 +2251,10 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
 						  <caption><para>Before Split</para></caption>
 						</mediaobject>
 					    </informalfigure>
+                                           </para>
 					</entry>
 					<entry>
+                                           <para>
 						<informalfigure>
 						<mediaobject>
 						  <imageobject>
@@ -2260,6 +2263,7 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
 						  <caption><para>After split</para></caption>
 						</mediaobject>
 					    </informalfigure>
+                                          </para>
 					</entry>
 				</row>
 				</tbody>
@@ -2295,6 +2299,7 @@ POLYGON((60.1371179574584 60.1371179574584,58.4265193848728 62.2214883490198,53.
 				<tbody>
 				  <row>
 					<entry>
+                                           <para>
 						<informalfigure>
 						<mediaobject>
 						  <imageobject>
@@ -2303,8 +2308,10 @@ POLYGON((60.1371179574584 60.1371179574584,58.4265193848728 62.2214883490198,53.
 						  <caption><para>Before Split</para></caption>
 						</mediaobject>
 					    </informalfigure>
+                                           </para>
 					</entry>
 					<entry>
+                                           <para>
 						<informalfigure>
 						<mediaobject>
 						  <imageobject>
@@ -2313,6 +2320,7 @@ POLYGON((60.1371179574584 60.1371179574584,58.4265193848728 62.2214883490198,53.
 						  <caption><para>After split</para></caption>
 						</mediaobject>
 					    </informalfigure>
+                                           </para>
 					</entry>
 				</row>
 				</tbody>
