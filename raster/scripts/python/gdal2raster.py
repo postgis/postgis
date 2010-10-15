@@ -890,7 +890,7 @@ def wkblify_raster_level(options, ds, level, band_range, infile, i):
 
             # INSERT INTO
             check_hex(hexwkb) # TODO: Remove to not to decrease performance
-            sql = make_sql_insert_raster(gen_table, options.column, hexwkb, options.filename, file)
+            sql = make_sql_insert_raster(gen_table, options.column, hexwkb, options.filename, infile)
             options.output.write(sql)
             tile_count = tile_count + 1
 
@@ -974,7 +974,7 @@ def main():
             logit("MSG: Dataset #%d: %s\n" % (i + 1, filename))
             
             # Write raster data to WKB and send it to opts.output
-            wkblify_raster(opts, filename, i)
+            wkblify_raster(opts, filename.replace( '\\', '/') , i)
             i += 1
 
     # INDEX
