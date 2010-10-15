@@ -259,7 +259,7 @@ INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_sta
 VALUES('<xsl:value-of select="$log_label" /> DropGeometryTable','DropGeometryTable', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
 
 BEGIN;
-	SELECT DropGeometryTable ('pgis_garden','pgis_garden');
+	SELECT DropGeometryTable ('pgis_garden');
 	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
 		WHERE log_label = '<xsl:value-of select="$log_label" /> DropGeometryTable' AND log_end IS NULL;
 COMMIT;
@@ -304,7 +304,7 @@ BEGIN;
 	DROP TABLE pgis_geoggarden;
 	SELECT 'AFTER DROP' As look_at, * FROM geography_columns;
 	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		WHERE log_label = ''<xsl:value-of select="$log_label" /> drop Geography table' AND log_end IS NULL;
+		WHERE log_label = '<xsl:value-of select="$log_label" /> drop Geography table' AND log_end IS NULL;
 COMMIT;
 SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 	<xsl:text>
