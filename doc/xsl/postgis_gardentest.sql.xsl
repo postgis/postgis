@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  xmlns:pgis="http://postgis.refractions.net/pgis">
 <!-- ********************************************************************
  * $Id$
@@ -259,7 +259,7 @@ INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_sta
 VALUES('<xsl:value-of select="$log_label" /> DropGeometryTable','DropGeometryTable', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
 
 BEGIN;
-	SELECT DropGeometryTable ('pgis_garden','the_geom');
+	SELECT DropGeometryTable ('pgis_garden','pgis_garden');
 	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
 		WHERE log_label = '<xsl:value-of select="$log_label" /> DropGeometryTable' AND log_end IS NULL;
 COMMIT;
