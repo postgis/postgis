@@ -297,7 +297,7 @@ BEGIN;
 	ANALYZE pgis_geoggarden;
 COMMIT;
 	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		WHERE log_label = '<xsl:value-of select="$log_label" />  analyze Geography' AND log_end IS NULL;
+		WHERE log_label = '<xsl:value-of select="$log_label" /> analyze Geography' AND log_end IS NULL;
 
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) VALUES('<xsl:value-of select="$log_label" /> drop Geography table','', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
 BEGIN;
