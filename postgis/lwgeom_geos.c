@@ -1757,7 +1757,7 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 	char *values[3]; /* valid bool, reason text, location geometry */
 	char *geos_reason = NULL;
 	char *reason = NULL;
-	const GEOSGeometry *geos_location = NULL;
+	GEOSGeometry *geos_location = NULL;
 	LWGEOM *location = NULL;
 	char valid = 0;
 	Datum result;
