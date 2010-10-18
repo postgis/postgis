@@ -233,7 +233,7 @@ SELECT '3dDistancetest3',
 		ST_3DMaxDistance(a,b),
 			ST_3DDWithin(a,b,5),
 				ST_3DDFullyWithin(a,b,5),
-					ST_ASEWKT(ST_3DShortestline(a,b)),
+					ST_ASEWKT(ST_SnapToGrid(ST_3DShortestline(a,b), 1e-14)),
 						ST_ASEWKT(ST_3DClosestpoint(a,b)),
 							ST_ASEWKT(ST_3DLongestline(a,b)) FROM (
 	SELECT 'POINT(1 1 1)'::geometry as a, 'LINESTRING(5 2 6, -3 -2 4)'::geometry as b
