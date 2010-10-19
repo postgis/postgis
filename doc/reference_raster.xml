@@ -461,10 +461,25 @@ postgis_raster_lib_version
   		<refentry id="RT_ST_MakeEmptyRaster">
 			<refnamediv>
 				<refname>ST_MakeEmptyRaster</refname>
-				<refpurpose>Returns an empty raster of given dimensions, pixel x y, skew and spatial reference system with no bands</refpurpose>
+				<refpurpose>Returns an empty raster of given dimensions, pixel x y, skew and spatial reference system with no bands.  If a raster is passed in, returns a new raster with same meta data properties.</refpurpose>
 			</refnamediv>
 			<refsynopsisdiv>
 				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>raster <function>ST_MakeEmptyRaster</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>raster <function>ST_MakeEmptyRaster</function></funcdef>
+					<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
+					<paramdef><type>float8 </type> <parameter>ipx</parameter></paramdef>
+					<paramdef><type>float8 </type> <parameter>ipy</parameter></paramdef>
+					<paramdef><type>float8 </type> <parameter>scalex</parameter></paramdef>
+					<paramdef><type>float8 </type> <parameter>scaley</parameter></paramdef>
+					<paramdef><type>float8 </type> <parameter>skewx</parameter></paramdef>
+					<paramdef><type>float8 </type> <parameter>skewy</parameter></paramdef>
+				  </funcprototype>
 				  <funcprototype>
 					<funcdef>raster <function>ST_MakeEmptyRaster</function></funcdef>
 					<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
@@ -479,11 +494,12 @@ postgis_raster_lib_version
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns an empty raster of given dimensions, pixel x y, skew and spatial reference system with no bands.  After you create an empty raster you 
+				<para>Returns an empty raster of given dimensions, pixel x y, skew and spatial reference system with no bands.  If an existing raster is passed in,
+				it returns a new raster with the same meta data settings (minus number of bands and band types). If no srid is specified it defaults to -1, though this may change to 0 in future.
+				After you create an empty raster you 
 				    probably want to add bands to it and hmm maybe edit it.  Refer to <xref linkend="RT_ST_AddBand" /> to define bands and <xref linkend="RT_ST_SetValue" /> to set pixel values.</para>
 				</refsection>
 				
@@ -492,7 +508,12 @@ postgis_raster_lib_version
 				
 					<programlisting>
 INSERT INTO dummy_rast(rid,rast)
-VALUES(3, ST_MakeEmptyRaster( 100, 100, 0.0005, 0.0005, 1, 1, 0, 0, 4326) )
+VALUES(3, ST_MakeEmptyRaster( 100, 100, 0.0005, 0.0005, 1, 1, 0, 0, 4326) );
+
+--use an existing raster as template for new raster
+INSERT INTO dummy_rast(rid,rast)
+SELECT 4, ST_MakeEmptyRaster(rast)
+FROM dummy_rast WHERE rid = 3;
 				</programlisting>
 			
 			</refsection>
@@ -2927,84 +2948,136 @@ a_rid | b_rid | overleft
 		<refnamediv>
 			<refname>ST_Intersects</refname>
 
-			<refpurpose>Returns <varname>TRUE</varname> if rastA pixel in a band with non-no data band value intersects
-				with a geometry/raster. If band number is not specified it defaults to 1.</refpurpose>
+			<refpurpose>Returns <varname>TRUE</varname> if rast pixel in a band with non-no data band value intersects
+				with a geometry/raster. If band  is not specified it defaults to 1. If hasnodata is omitted, reads from band meta data.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
 			<funcsynopsis>
 			  <funcprototype>
 				<funcdef>boolean <function>ST_Intersects</function></funcdef>
-
 				<paramdef>
 				  <type>raster </type>
-
-				  <parameter>rastA</parameter>
+				  <parameter>rast</parameter>
 				</paramdef>
-
 				<paramdef>
 				  <type>geometry </type>
-
-				  <parameter>geomB</parameter>
+				  <parameter>geommin</parameter>
 				</paramdef>
 			  </funcprototype>
 			  
 			  <funcprototype>
 				<funcdef>boolean <function>ST_Intersects</function></funcdef>
-
 				<paramdef>
 				  <type>raster </type>
-
-				  <parameter>rastA</parameter>
+				  <parameter>rast</parameter>
 				</paramdef>
-				
 				<paramdef>
 				  <type>integer </type>
-
-				  <parameter>band_num</parameter>
+				  <parameter>band</parameter>
 				</paramdef>
-
 				<paramdef>
 				  <type>geometry </type>
-
-				  <parameter>geomB</parameter>
+				  <parameter>geommin</parameter>
 				</paramdef>
 			  </funcprototype>
 			  
 			  <funcprototype>
 				<funcdef>boolean <function>ST_Intersects</function></funcdef>
-
 				<paramdef>
 				  <type>geometry </type>
-
 				  <parameter>geomA</parameter>
 				</paramdef>
-
 				<paramdef>
 				  <type>raster </type>
-
-				  <parameter>rastB</parameter>
+				  <parameter>rast</parameter>
+				</paramdef>
+			  </funcprototype>	  
+			  <funcprototype>
+				<funcdef>boolean <function>ST_Intersects</function></funcdef>
+				<paramdef>
+				  <type>geometry </type>
+				  <parameter>geommin</parameter>
+				</paramdef>
+				<paramdef>
+				  <type>raster </type>
+				  <parameter>rast</parameter>
+				</paramdef>
+				<paramdef>
+				  <type>integer </type>
+				  <parameter>band</parameter>
 				</paramdef>
 			  </funcprototype>
 			  
-			    <funcprototype>
+			   <funcprototype>
 				<funcdef>boolean <function>ST_Intersects</function></funcdef>
-
-				<paramdef>
-				  <type>geometry </type>
-
-				  <parameter>geomA</parameter>
-				</paramdef>
-
 				<paramdef>
 				  <type>raster </type>
-
-				  <parameter>rastB</parameter>
+				  <parameter>rast</parameter>
 				</paramdef>
-				
+				<paramdef>
+				  <type>boolean </type>
+				  <parameter>hasnodata</parameter>
+				</paramdef>
+				<paramdef>
+				  <type>geometry </type>
+				  <parameter>geommin</parameter>
+				</paramdef>
+			  </funcprototype>
+			  
+			  <funcprototype>
+				<funcdef>boolean <function>ST_Intersects</function></funcdef>
+				<paramdef>
+				  <type>geometry </type>
+				  <parameter>geommin</parameter>
+				</paramdef>
+				<paramdef>
+				  <type>raster </type>
+				  <parameter>rast</parameter>
+				</paramdef>
+				<paramdef>
+				  <type>boolean </type>
+				  <parameter>hasnodata</parameter>
+				</paramdef>
+			  </funcprototype>
+			  
+			  <funcprototype>
+				<funcdef>boolean <function>ST_Intersects</function></funcdef>
+				<paramdef>
+				  <type>geometry </type>
+				  <parameter>geommin</parameter>
+				</paramdef>
+				<paramdef>
+				  <type>raster </type>
+				  <parameter>rast</parameter>
+				</paramdef>
 				<paramdef>
 				  <type>integer </type>
-				  <parameter>band_num</parameter>
+				  <parameter>band</parameter>
+				</paramdef>
+				<paramdef>
+				  <type>boolean </type>
+				  <parameter>hasnodata</parameter>
+				</paramdef>
+			  </funcprototype>
+			  
+			  <funcprototype>
+				<funcdef>boolean <function>ST_Intersects</function></funcdef>
+				<paramdef>
+				  <type>raster </type>
+				  <parameter>rast</parameter>
+				</paramdef>
+				<paramdef>
+				  <type>integer </type>
+				  <parameter>band</parameter>
+				</paramdef>
+				<paramdef>
+				  <type>boolean </type>
+				  <parameter>hasnodata</parameter>
+				</paramdef>
+				<paramdef>
+				  <type>geometry </type>
+				  <parameter>geommin</parameter>
 				</paramdef>
 			  </funcprototype>
 			</funcsynopsis>
@@ -3014,7 +3087,10 @@ a_rid | b_rid | overleft
 			<title>Description</title>
 
 			<para>Returns true if any pixel in a raster band has a value that is not nodatavalue and that 
-				geometry region of the pixel intersects the geometry</para>
+				geometry region of the pixel intersects the geometry.  If hasnodata is passed in, then
+				it will use that to consider if it needs to analyze pixels (true) means analyze pixels, if the convexhull
+				intersects the geometry.  false means just return true if the convex hull of the raster intersects 
+				with the geometry.  If hasnodata is omitted, it reads the value from the meta data of the raster.</para>
 
 			<note><para>This operand will make use of any indexes that may be available on the
 				geometries / rasters.</para></note>
