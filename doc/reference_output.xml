@@ -408,6 +408,18 @@ st_asgeojson
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGML</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>options</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGML</function></funcdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>options</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGML</function></funcdef>
 				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 			</funcprototype>
@@ -695,7 +707,14 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 			<funcprototype>
 				<funcdef>text <function>ST_AsKML</function></funcdef>
 				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
-				<paramdef><type>geography </type> <parameter>geom1</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>geom1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
+				<paramdef><type>text </type> <parameter>namespace prefix</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsKML</function></funcdef>
+				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>geography </type> <parameter>geog1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
 				<paramdef><type>text </type> <parameter>namespace prefix</parameter></paramdef>
 			</funcprototype>
