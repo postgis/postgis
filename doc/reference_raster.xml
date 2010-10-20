@@ -1994,33 +1994,33 @@ WHERE
 		   <refentry id="RT_ST_SetValue">
 			<refnamediv>
 				<refname>ST_SetValue</refname>
-				<refpurpose>Sets the value of a given band in a given columnx, rowy pixel or at a pixel that intersects a particular geometric point. Band numbers start at 1 and assumed to be 1 if not specified.</refpurpose>
+				<refpurpose>Returns modified raster resulting from setting the value of a given band in a given columnx, rowy pixel or at a pixel that intersects a particular geometric point. Band numbers start at 1 and assumed to be 1 if not specified.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
 				 <funcprototype>
-					<funcdef>double precision <function>ST_SetValue</function></funcdef>
+					<funcdef>raster <function>ST_SetValue</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>newvalue</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
-					<funcdef>double precision <function>ST_SEtValue</function></funcdef>
+					<funcdef>raster <function>ST_SEtValue</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>newvalue</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
-					<funcdef>double precision <function>ST_SetValue</function></funcdef>
+					<funcdef>raster <function>ST_SetValue</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>newvalue</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
-					<funcdef>double precision <function>ST_SetValue</function></funcdef>
+					<funcdef>raster <function>ST_SetValue</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
@@ -2032,7 +2032,7 @@ WHERE
 			
 			<refsection>
 				<title>Description</title>
-				<para>Sets the specified pixel value to new value for the designed band given the row column location or a goemetric point location.
+				<para>Returns modified raster resulting from setting the specified pixel value to new value for the designed band given the row column location or a goemetric point location.
 					If no band is specified, then band 1 is assumed.
 				</para>
 				<note><para>Setting by geometry currently only works for points.</para></note>
@@ -2058,7 +2058,15 @@ GROUP BY (foo.geomval).val;
 -----+-------------------------------------------------------------------
   50 | POLYGON((3427927.75 5793244,3427927.75 5793243.95,3427927.8 579324 ...
  249 | POLYGON((3427927.95 5793243.95,3427927.95 5793243.85,3427928 57932 ...
-				</programlisting>	
+ 
+				</programlisting>
+				
+				<programlisting>
+-- Store the changed raster --
+	UPDATE dummy_rast SET rast = ST_SetValue(rast,1, ST_Point(3427927.75, 5793243.95),100)
+		WHERE rid = 2   ;
+
+				</programlisting>
 			</refsection>
 			<refsection>
 				<title>See Also</title>
