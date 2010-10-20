@@ -492,6 +492,15 @@ postgis_raster_lib_version
 					<paramdef><type>float8 </type> <parameter>skewy</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
 				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_MakeEmptyRaster</function></funcdef>
+					<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>upperleftx</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>upperlefty</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>pixelsize</parameter></paramdef>
+				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 			<refsection>
@@ -1223,6 +1232,124 @@ rastwidth
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="RT_ST_Height" /></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_World2RasterCoordX">
+			<refnamediv>
+				<refname>ST_World2RasterCoordX</refname>
+				<refpurpose>Returns the column in the raster of the point geometry (pt) or a x y world coordinate (xw, yw) represented
+				in world spatial reference system of raster.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>integer <function>ST_World2RasterCoordX</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>integer <function>ST_World2RasterCoordX</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>xw</parameter></paramdef>
+				  </funcprototype>
+				  
+				   <funcprototype>
+					<funcdef>integer <function>ST_World2RasterCoordX</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>xw</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>yw</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the column in the raster of the point geometry (pt) or a x y world coordinate (xw, yw).  A point, or (both xw and yw world coordinates are required if a raster is skewed).  If a raster
+					is not skewed then xw is sufficient. World coordinates are in the spatial reference coordinate system of the raster.</para>
+			</refsection>
+				
+			<refsection>
+				<title>Examples</title>
+			
+				<programlisting>SELECT rid, ST_World2RasterCoordX(rast,3427927.8) As xcoord, 
+		ST_World2RasterCoordX(rast,3427927.8,20.5) As xcoord_xwyw, 
+		ST_World2RasterCoordX(rast,ST_GeomFromText('POINT(3427927.8 20.5)',ST_SRID(rast))) As ptxcoord
+FROM dummy_rast;
+
+ rid | xcoord  |  xcoord_xwyw   | ptxcoord
+-----+---------+---------+----------
+   1 | 1713964 | 1713964 |  1713964
+   2 |       1 |       1 |        1
+				</programlisting>	
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_Raster2WorldCoordX" />, <xref linkend="RT_ST_Raster2WorldCoordY" />, <xref linkend="RT_ST_SRID" /></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_World2RasterCoordY">
+			<refnamediv>
+				<refname>ST_World2RasterCoordY</refname>
+				<refpurpose>Returns the row in the raster of the point geometry (pt) or a x y world coordinate (xw, yw) represented
+				in world spatial reference system of raster.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>integer <function>ST_World2RasterCoordY</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>integer <function>ST_World2RasterCoordY</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>xw</parameter></paramdef>
+				  </funcprototype>
+				  
+				   <funcprototype>
+					<funcdef>integer <function>ST_World2RasterCoordY</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>xw</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>yw</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the row in the raster of the point geometry (pt) or a x y world coordinate (xw, yw).  A point, or (both xw and yw world coordinates are required if a raster is skewed).  If a raster
+					is not skewed then xw is sufficient. World coordinates are in the spatial reference coordinate system of the raster.</para>
+			</refsection>
+				
+			<refsection>
+				<title>Examples</title>
+			
+				<programlisting>SELECT rid, ST_World2RasterCoordY(rast,20.5) As ycoord, 
+		ST_World2RasterCoordY(rast,3427927.8,20.5) As ycoord_xwyw, 
+		ST_World2RasterCoordY(rast,ST_GeomFromText('POINT(3427927.8 20.5)',ST_SRID(rast))) As ptycoord
+FROM dummy_rast;
+
+ rid |  ycoord   | ycoord_xwyw | ptycoord
+-----+-----------+-------------+-----------
+   1 |         7 |           7 |         7
+   2 | 115864471 |   115864471 | 115864471
+				</programlisting>	
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_Raster2WorldCoordX" />, <xref linkend="RT_ST_Raster2WorldCoordY" />, <xref linkend="RT_ST_SRID" /></para>
 			</refsection>
 		</refentry>
 	</sect1>
@@ -2224,11 +2351,16 @@ WHERE rid = 2;
 		<refentry id="RT_ST_SetBandHasNoDataValue">
 			<refnamediv>
 				<refname>ST_SetBandHasNoDataValue</refname>
-				<refpurpose>Sets whether or not a band has a value that should be considered no data.</refpurpose>
+				<refpurpose>Sets whether or not a band has a value that should be considered no data. Band defaults to 1.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
+				<funcprototype>
+					<funcdef>raster <function>ST_SetBandHasNoDataValue</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>has_nodatavalue</parameter></paramdef>
+				  </funcprototype>
 				  <funcprototype>
 					<funcdef>raster <function>ST_SetBandHasNoDataValue</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
@@ -2241,7 +2373,7 @@ WHERE rid = 2;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Sets whether or not a band has a value that should be considered no data.</para>
+				<para>Sets whether or not a band has a value that should be considered no data. Band num defaults to 1.</para>
 				</refsection>
 				
 				<refsection>
@@ -2264,15 +2396,20 @@ WHERE rid = 2;
 		<refentry id="RT_ST_SetBandNoDataValue">
 			<refnamediv>
 				<refname>ST_SetBandNoDataValue</refname>
-				<refpurpose>Sets the value for the given band that represents no data.</refpurpose>
+				<refpurpose>Sets the value for the given band that represents no data. Band 1 is assumed if no band is specified.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
+				 <funcprototype>
+					<funcdef>integer <function>ST_SetBandNoDataValue</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>val</parameter></paramdef>
+				  </funcprototype>
 				  <funcprototype>
 					<funcdef>integer <function>ST_SetBandNoDataValue</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>val</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
@@ -2281,7 +2418,7 @@ WHERE rid = 2;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Sets the value that represents no data for the band.  This will effect <xref linkend="RT_ST_Polygon" /> and <xref linkend="RT_ST_ConvexHull" /> results.</para>
+				<para>Sets the value that represents no data for the band.  Band 1 is assumed if not specified. This will effect <xref linkend="RT_ST_Polygon" /> and <xref linkend="RT_ST_ConvexHull" /> results.</para>
 				</refsection>
 				
 				<refsection>
