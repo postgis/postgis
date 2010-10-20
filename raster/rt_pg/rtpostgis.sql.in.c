@@ -713,7 +713,7 @@ CREATE OR REPLACE FUNCTION st_world2rastercoordx(rast raster, xw float8)
 -- This function works even if the point is outside the raster extent.
 ---------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_world2rastercoordx(rast raster, pt geometry) 
-    RETURNS float8 AS
+    RETURNS int AS
     $$
     DECLARE
     BEGIN
@@ -802,7 +802,7 @@ CREATE OR REPLACE FUNCTION st_world2rastercoordy(rast raster, yw float8)
 -- This function works even if the point is outside the raster extent.
 ---------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_world2rastercoordy(rast raster, pt geometry) 
-    RETURNS float8 AS
+    RETURNS int AS
     $$
     DECLARE
     BEGIN
