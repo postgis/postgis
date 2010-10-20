@@ -1382,3 +1382,24 @@ extern LWGEOM* lwgeom_flip_coordinates(LWGEOM *in)
 	}
 	return NULL;
 }
+
+void lwgeom_set_srid(LWGEOM *geom, int srid)
+{
+	int i;
+		
+	if ( lwgeom_is_collection(TYPE_GETTYPE(geom->type)) )
+	{
+		/* All the children are set to the unknown SRID value */
+		LWCOLLECTION *col = lwgeom_as_lwcollection(geom);
+		for ( i = 0; i < col->ngeoms; i++ )
+		{
+			lwgeom_set_srid(col->geoms[i], SRID_UNKNOWN);
+		}
+	}
+	else
+	{
+		geom->SRID = srid;
+	}
+}
+
+

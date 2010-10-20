@@ -45,6 +45,8 @@ SA_OBJS = \
 	lwout_wkb.o \
 	lwin_wkb.o \
 	lwin_wkt.o \
+	lwin_wkt_lex.o \
+	lwin_wkt_parse.o \
 	lwutil.o \
 	lwhomogenize.o \
 	lwalgorithm.o \
@@ -67,8 +69,8 @@ SA_OBJS = \
 	lwout_gml.o \
 	lwout_kml.o \
 	lwout_geojson.o \
-	lwout_svg.o
-
+	lwout_svg.o 
+	
 NM_OBJS = \
 	lwspheroid.o 
 
@@ -76,12 +78,13 @@ SA_HEADERS = \
 	liblwgeom.h \
 	lwalgorithm.h \
 	libgeom.h \
+	lwin_wkt_parse.h \
 	libtgeom.h 
 
 all: liblwgeom.a
 
 liblwgeom.a: $(SA_OBJS) $(NM_OBJS) $(SA_HEADERS) 
-	ar rs liblwgeom.a $(SA_OBJS) $(NM_OBJS) 	
+	ar rs liblwgeom.a $(SA_OBJS) $(NM_OBJS) 
 
 maintainer-clean clean:
 	$(MAKE) -C cunit clean
@@ -101,13 +104,13 @@ $(NM_OBJS): %.o: %.c
 	$(CC) $(CFLAGS) $(NUMERICFLAGS) -c -o $@ $<
 
 # Generate WKT parser from Flex/Yacc inputs
-lwin_wkt_parse.c: lwin_wkt_parse.y
+lwin_wkt_parse.c lwin_wkt_parse.h: lwin_wkt_parse.y
 	$(YACC) --debug --verbose -o $@ -d $^
   
 #       $(YACC) --debug --verbose -o $@ -d $^
 #       $(YACC) -o $@ -d $^
 
-lwin_wkt_lex.c: lwin_wkt_lex.l lwin_wkt.h
+lwin_wkt_lex.c: lwin_wkt_lex.l
 	$(LEX) --case-insensitive -o $@ $<
 
 

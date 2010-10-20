@@ -4,47 +4,100 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "../libgeom.h" 
-#include "g_wkt_parse.h"
+#include "lwin_wkt.h"
+#include "lwin_wkt_parse.h"
 
 static YY_BUFFER_STATE wkt_yy_buf_state; 
-void wkt_lexer_init(char *src) { wkt_yy_buf_state = wkt_yy_scan_string(src); } 
-void wkt_lexer_close() { wkt_yy_delete_buffer(wkt_yy_buf_state); } 
 
 
+/*
+* Set up the lexer!
+*/
+void wkt_lexer_init(char *src) 
+{ 
+	wkt_yy_buf_state = wkt_yy_scan_string(src); 
+} 
+
+/*
+* Clean up the lexer!
+*/
+void wkt_lexer_close() 
+{ 
+	wkt_yy_delete_buffer(wkt_yy_buf_state); 
+} 
+
+/*
+* Handle errors due to unexpected junk in WKT strings.
+*/
+static void wkt_lexer_unknown() 
+{
+	/* Set the global error state */
+	global_parser_result.message = "syntax error";
+	global_parser_result.errcode = PARSER_ERROR_OTHER;
+	global_parser_result.errlocation = wkt_yylloc.first_column;
+};
+
+
+/* This macro is magically run after a rule is found but before the main action is run. */
+#define YY_USER_ACTION do { \
+	wkt_yylloc.first_line = wkt_yylloc.last_line = yylineno; \
+	wkt_yylloc.first_column = wkt_yylloc.last_column; \
+	wkt_yylloc.last_column += yyleng; \
+	LWDEBUGF(5,"lex: %s", wkt_yytext); \
+	} while (0);
+
+ 
 %}
 
+%option nounput
 %option noyywrap
 %option prefix="wkt_yy"
 
 %%
 
-SRID= { printf("lex: SRID\n"); return SRID_TOK; }
-GEOMETRYCOLLECTION { printf("lex: GEOMETRYCOLLECTION\n"); return COLLECTION_TOK; }
-MULTISURFACE { printf("lex: MULTISURFACE\n"); return MSURFACE_TOK; }
-MULTIPOLYGON { printf("lex: MULTIPOLYGON\n"); return MPOLYGON_TOK; }
-MULTICURVE { printf("lex: MULTICURVE\n"); return MCURVE_TOK; }
-MULTILINESTRING { printf("lex: MULTILINESTRING\n"); return MLINESTRING_TOK; }
-MULTIPOINT { printf("lex: MULTIPOINT\n"); return MPOINT_TOK; }
-CURVEPOLYGON { printf("lex: CURVEPOLYGON\n"); return CURVEPOLYGON_TOK; }
-POLYGON { printf("lex: POLYGON\n"); return POLYGON_TOK; }
-COMPOUNDCURVE { printf("lex: COMPOUNDCURVE\n"); return COMPOUNDCURVE_TOK; }
-CIRCULARSTRING { printf("lex: CIRCULARSTRING\n"); return CIRCULARSTRING_TOK; }
-LINESTRING { printf("lex: LINESTRING\n"); return LINESTRING_TOK; }
-POINT { printf("lex: POINT\n"); return POINT_TOK; }
-Z|M|ZM { wkt_yylval.stringvalue = strdup(wkt_yytext); printf("lex: DIMENSIONALITY\n"); return DIMENSIONALITY_TOK; }
-EMPTY { printf("lex: EMPTY\n"); return EMPTY_TOK; }
+-?(([0-9]+)|([0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?) {  
+	LWDEBUG(5,"DOUBLE");
+	wkt_yylval.doublevalue = atof(wkt_yytext); 
+	return DOUBLE_TOK; 
+	}
 
--?(([0-9]+)|([0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?) {  /* LWDEBUGF(5,"Lex got double: %s",wkt_yytext); */  printf("lex: DOUBLE\n"); wkt_yylval.doublevalue = atof(wkt_yytext); return DOUBLE_TOK; }
+SRID=-?[0-9]+ { 
+	LWDEBUG(5,"SRID");
+	wkt_yylval.integervalue = wkt_lexer_read_srid(wkt_yytext); 
+	return SRID_TOK; 
+	}
 
--?([0-9]+) {  /* LWDEBUGF(5,"Lex got integer: %s",wkt_yytext); */  printf("lex: INTEGER\n"); wkt_yylval.integervalue = atoi(wkt_yytext); return INTEGER_TOK; }
+GEOMETRYCOLLECTION { return COLLECTION_TOK; }
+MULTISURFACE { return MSURFACE_TOK; }
+MULTIPOLYGON { return MPOLYGON_TOK; }
+MULTICURVE { return MCURVE_TOK; }
+MULTILINESTRING { return MLINESTRING_TOK; }
+MULTIPOINT { return MPOINT_TOK; }
+CURVEPOLYGON { return CURVEPOLYGON_TOK; }
+POLYGON { return POLYGON_TOK; }
+COMPOUNDCURVE { return COMPOUNDCURVE_TOK; }
+CIRCULARSTRING { return CIRCULARSTRING_TOK; }
+LINESTRING { return LINESTRING_TOK; }
+POINT { return POINT_TOK; }
+EMPTY { return EMPTY_TOK; }
 
-\( { printf("lex: LBRACKET\n"); return LBRACKET_TOK; }
-\) { printf("lex: RBRACKET\n"); return RBRACKET_TOK; }
-, { printf("lex: COMMA\n"); return COMMA_TOK; }
-\; { printf("lex: SEMICOLON\n"); return SEMICOLON_TOK; }
+Z|M|ZM { 
+	LWDEBUG(5,"DIMENSIONALITY");
+	wkt_yylval.stringvalue = strdup(wkt_yytext); 
+	return DIMENSIONALITY_TOK; 
+	}
 
-[ \t]+  /* ignore whitespace */;
+\( { LWDEBUG(5,"LBRACKET"); return LBRACKET_TOK; }
+\) { LWDEBUG(5,"RBRACKET"); return RBRACKET_TOK; }
+,  { LWDEBUG(5,"COMMA"); return COMMA_TOK; }
+\; { LWDEBUG(5,"SEMICOLON"); return SEMICOLON_TOK; }
 
-	
+[ \t]+ { /* ignore whitespace */ LWDEBUG(5,"WHITESPACE"); }
+
+. { /* Error out on unknown/unexpected characters */
+	LWDEBUG(5,"UNKNOWN"); 
+	wkt_lexer_unknown();
+	yyterminate(); 
+	}
+
 %%

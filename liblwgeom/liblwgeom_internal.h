@@ -13,7 +13,26 @@
  **********************************************************************/
 
 #include <assert.h>
-
 #include "liblwgeom.h"
+
+/**
+* Maximum allowed SRID value. 
+* Currently we are using 20 bits (1048575) of storage for SRID.
+*/
+#define SRID_MAXIMUM 999999
+#define SRID_UNKNOWN 0
+
+
+/**
+* Maximum allowed SRID value. 
+* Currently we are using 20 bits (1048575) of storage for SRID.
+*/
+#define SRID_MAXIMUM 999999
+#define SRID_UNKNOWN 0
+
+
+
+
+
 
 

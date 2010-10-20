@@ -1189,6 +1189,12 @@ size_t lwgeom_empty_length(int SRID);
  */
 extern int lwgeom_getsrid(uchar *serialized);
 
+/**
+* Set the SRID on an LWGEOM
+* For collections, only the parent gets an SRID, all
+* the children get zero.
+*/
+extern void lwgeom_set_srid(LWGEOM *geom, int srid);
 
 /*------------------------------------------------------
  * other stuff
@@ -1603,11 +1609,13 @@ extern void deparse_hex(uchar str, char *result);
  */
 typedef struct struct_lwgeom_parser_result
 {
-	const char *wkinput;		/* Copy of pointer to input WKT/WKB */
-	uchar *serialized_lwgeom;	/* Pointer to serialized LWGEOM */
-	int size;			/* Size of serialized LWGEOM in bytes */
-	const char *message;		/* Error/warning message */
-	int errlocation;		/* Location of error */
+	const char *wkinput;        /* Copy of pointer to input WKT/WKB */
+	uchar *serialized_lwgeom;   /* Pointer to serialized LWGEOM */
+	int size;                   /* Size of serialized LWGEOM in bytes */
+	LWGEOM *geom;               /* Poingter to LWGEOM struct */
+	const char *message;        /* Error/warning message */
+	int errcode;                /* Error/warning number */
+	int errlocation;            /* Location of error */
 }
 LWGEOM_PARSER_RESULT;
 
@@ -1622,6 +1630,7 @@ LWGEOM_PARSER_RESULT;
 #define PARSER_ERROR_INVALIDWKBTYPE 6
 #define PARSER_ERROR_INCONTINUOUS   7
 #define PARSER_ERROR_TRIANGLEPOINTS 8
+#define PARSER_ERROR_OTHER          9
 
 
 
@@ -1662,6 +1671,8 @@ extern char*   lwgeom_to_wkb(const LWGEOM *geom, uchar variant, size_t *size_out
 extern LWGEOM* lwgeom_from_wkb(const uchar *wkb, const size_t wkb_size, const char check);
 extern char*   bytes_from_hexbytes(const char *hexbuf, size_t hexsize);
 /* extern char*   bytes_to_hexbytes(const char *buf, size_t bufsize);*/
+extern void lwgeom_parser_result_free(LWGEOM_PARSER_RESULT *parser_result);
+extern int lwgeom_from_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parse_flags);
 
 
 extern int serialized_lwgeom_to_ewkt(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags);
@@ -1669,6 +1680,7 @@ extern int serialized_lwgeom_from_ewkt(LWGEOM_PARSER_RESULT *lwg_parser_result, 
 extern int serialized_lwgeom_to_hexwkb(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags, uint32 byteorder);
 extern int serialized_lwgeom_from_hexwkb(LWGEOM_PARSER_RESULT *lwg_parser_result, char *hexwkb_input, int flags);
 extern int serialized_lwgeom_to_ewkb(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags, uint32 byteorder);
+
 
 extern void *lwalloc(size_t size);
 extern void *lwrealloc(void *mem, size_t size);

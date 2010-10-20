@@ -27,11 +27,12 @@ OBJS=	\
 	cu_homogenize.o \
 	cu_out_wkt.o \
 	cu_out_wkb.o \
-	cu_in_wkb.o \
 	cu_out_gml.o \
 	cu_out_kml.o \
 	cu_out_geojson.o \
 	cu_out_svg.o \
+	cu_in_wkb.o \
+	cu_in_wkt.o \
 	cu_tester.o 
 
 # If we couldn't find the cunit library then display a helpful message

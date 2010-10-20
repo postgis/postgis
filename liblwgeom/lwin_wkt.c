@@ -1,4 +1,23 @@
 #include "lwin_wkt.h"
+#include "lwin_wkt_parse.h"
+
+
+/*
+* Error messages for failures in the parser. 
+*/
+static const char *parser_error_messages[] =
+{
+	"",
+	"geometry requires more points",
+	"geometry must have an odd number of points",
+	"geometry contains non-closed rings",
+	"can not mix dimensionality in a geometry",
+	"parse error - invalid geometry",
+	"invalid WKB type",
+	"incontinuous compound curve",
+	"triangle must have exactly 4 points",
+	"unknown parse error"
+};
 
 /**
 * Given flags and a string ("Z", "M" or "ZM") determine if the flags and 
@@ -16,6 +35,18 @@ static int wkt_parser_dimensionality_check(uchar flags, uchar type)
 }
 */
 
+int wkt_lexer_read_srid(char *str)
+{
+	char *c = str;
+	long i = 0;
+	
+	if( ! str ) return 0;
+	c += 5; /* Advance past "SRID=" */
+	i = strtol(c, NULL, 10);
+	return (int)i;
+};
+
+
 static uchar wkt_parser_dimensionality(POINTARRAY *pa, char *dimensionality)
 {	
 	uchar flags = 0;
@@ -26,9 +57,9 @@ static uchar wkt_parser_dimensionality(POINTARRAY *pa, char *dimensionality)
 	{
 		for( i = 0; i < strlen(dimensionality); i++ )
 		{
-			if( dimensionality[i] == 'Z' )
+			if( dimensionality[i] == 'Z' || dimensionality[i] == 'z' )
 				FLAGS_SET_Z(flags,1);
-			if( dimensionality[i] == 'M' )
+			if( dimensionality[i] == 'M' || dimensionality[i] == 'm' )
 				FLAGS_SET_M(flags,1);
 		}
 	}
@@ -92,6 +123,17 @@ void wkt_parser_ptarray_add_coord(POINTARRAY *pa, POINT p)
 {
 	POINT4D pt;
 	
+	/* Avoid trouble */
+	if( ! pa ) return;
+	
+	/* Check that the coordinate has the same dimesionality as the array */
+	if( FLAGS_NDIMS(p.flags) != TYPE_NDIMS(pa->dims) )
+	{
+		global_parser_result.message = parser_error_messages[PARSER_ERROR_MIXDIMS];
+		global_parser_result.errcode = PARSER_ERROR_MIXDIMS;
+		return;
+	}
+	
 	/* While parsing the point arrays, XYM and XMZ points are both treated as XYZ */
 	pt.x = p.x;
 	pt.y = p.y;
@@ -122,7 +164,7 @@ LWGEOM* wkt_parser_linestring_new(POINTARRAY *pa, char *dimensionality)
 	uchar flags;
 	
 	/* TODO apply the parser checks? (not enough points, etc) */	
-	
+		
 	/* If there's an explicit dimensionality, we use that */
 	flags = wkt_parser_dimensionality(pa, dimensionality);
 	
@@ -130,11 +172,16 @@ LWGEOM* wkt_parser_linestring_new(POINTARRAY *pa, char *dimensionality)
 	if( ! pa )
 		return lwline_as_lwgeom(lwline_construct_empty(0, FLAGS_GET_Z(flags), FLAGS_GET_M(flags)));
 	
+	/* What are the numbers of dimensions? */
+	LWDEBUGF(5,"FLAGS_NDIMS(flags) == %d", FLAGS_NDIMS(flags));
+	LWDEBUGF(5,"TYPE_NDIMS(pa->dims) == %d", TYPE_NDIMS(pa->dims));
+	
 	/* If the number of dimensions is not consistent, we have a problem. */
 	if( FLAGS_NDIMS(flags) != TYPE_NDIMS(pa->dims) )
 	{
-		/* TODO: Error out of the parse. */		
-		printf("________ ndims of array != ndims of dimensionalty tokens \n\n>>>>>> ERROR <<<<<<<\n\n");
+		global_parser_result.message = parser_error_messages[PARSER_ERROR_MIXDIMS];
+		global_parser_result.errcode = PARSER_ERROR_MIXDIMS;
+		return NULL;
 	}
 	
 	TYPE_SETZM(pa->dims, FLAGS_GET_Z(flags), FLAGS_GET_M(flags));
@@ -150,3 +197,34 @@ LWGEOM* wkt_parser_circularstring_new(POINTARRAY *pa, char *dimensionality)
 	TYPE_SETTYPE(circ->type, CIRCSTRINGTYPE);
 	return lwcircstring_as_lwgeom(circ);
 }
+
+
+void wkt_parser_geometry_new(LWGEOM *geom, int srid)
+{
+	if ( geom == NULL ) 
+	{
+		lwerror("Parsed geometry is null!");
+		return;
+	}
+		
+	if ( srid != SRID_UNKNOWN && srid < SRID_MAXIMUM )
+		lwgeom_set_srid(geom, srid);
+	else
+		lwgeom_set_srid(geom, SRID_UNKNOWN);
+	
+	global_parser_result.geom = geom;
+}
+
+
+void lwgeom_parser_result_free(LWGEOM_PARSER_RESULT *parser_result)
+{
+	if ( parser_result->geom )
+		lwgeom_free(parser_result->geom);
+	if ( parser_result->serialized_lwgeom )
+		lwfree(parser_result->serialized_lwgeom );
+	/* We don't free parser_result->message because
+	   it is a const *char */
+}
+
+
+

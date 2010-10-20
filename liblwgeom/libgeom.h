@@ -12,9 +12,10 @@
  *
  **********************************************************************/
 
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 #include <string.h>
 #include <math.h>
+#include <inttypes.h>
 #include <assert.h>
 #if HAVE_IEEEFP_H
 #include <ieeefp.h>
@@ -79,12 +80,6 @@
 #define WKB_POLYHEDRALSURFACE_TYPE 15
 #define WKB_TIN_TYPE 16
 #define WKB_TRIANGLE_TYPE 17
-
-/**
-* Maximum allowed SRID value. 
-* Currently we are using 20 bits (1048575) of storage for SRID.
-*/
-#define SRID_MAXIMUM 999999
 
 /**
 * Macros for manipulating the 'flags' byte. A uchar used as follows: 
