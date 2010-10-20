@@ -796,7 +796,7 @@ rt_band_set_pixel(rt_context ctx, rt_band band, uint16_t x, uint16_t y,
 
 	if ( x >= band->width || y >= band->height )
 	{
-		ctx->err("Coordinates ouf of range");
+		ctx->err("Coordinates out of range");
 		return -1;
 	}
 
