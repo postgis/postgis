@@ -59,6 +59,13 @@ static char* cu_wkt_in(char *wkt, uchar variant)
 
 static void test_wkt_in_point(void)
 {
+	char *s;
+	char *r;
+	
+	s = "POINT(0 0)";
+	r = cu_wkt_in(s, WKT_SFSQL);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	lwfree(r);
 }
 
 static void test_wkt_in_linestring(void)
@@ -81,6 +88,16 @@ static void test_wkt_in_linestring(void)
 	CU_ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 
+	s = "LINESTRING ZM (0 0 0 1,1 1 1 1,2 2 2 2,0.141231 4 5 4)";
+	r = cu_wkt_in(s, WKT_ISO);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	lwfree(r);
+
+	s = "LINESTRINGM(0 0 0,1 1 1)";
+	r = cu_wkt_in(s, WKT_EXTENDED);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	lwfree(r);
 }
 
 static void test_wkt_in_polygon(void)
@@ -89,6 +106,19 @@ static void test_wkt_in_polygon(void)
 
 static void test_wkt_in_multipoint(void)
 {
+	char *s;
+	char *r;
+
+	s = "MULTIPOINT(0 0)";
+	r = cu_wkt_in(s, WKT_SFSQL);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	lwfree(r);
+
+	s = "MULTIPOINT(0 0,1 1)";
+	r = cu_wkt_in(s, WKT_SFSQL);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	lwfree(r);
 }
 
 static void test_wkt_in_multilinestring(void)

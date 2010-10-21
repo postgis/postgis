@@ -13,7 +13,6 @@ int wkt_yyparse(void);
 void wkt_yyerror(const char *str);
 int wkt_yywrap(void);
 int wkt_yylex(void);
-int lwgeom_from_wkt_string(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parse_flags);
 
 
 /* Declare the global parser variable */
@@ -37,7 +36,7 @@ void wkt_yyerror(const char *str)
 		/* First column should be start of problematic token */
 		global_parser_result.errlocation = wkt_yylloc.first_column;
 	}
-	//asprintf(global_parser_result.message, "%s",str);
+	LWDEBUGF(4,"%s", str);
 }
 
 int wkt_yywrap(void)
@@ -51,7 +50,7 @@ int wkt_yywrap(void)
 * (eg, from within other functions in lwin_wkt.c) or from a threaded program.
 * Note that parser_result.wkinput picks up a reference to wktstr.
 */
-int lwgeom_from_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parse_flags)
+int lwgeom_from_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parser_check_flags)
 {
 	int parse_rv = 0;
 
@@ -63,14 +62,15 @@ int lwgeom_from_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parse
 	global_parser_result.errlocation = 0;
 	global_parser_result.size = 0;
 
-	/* Set the input text string */
+	/* Set the input text string, and parse checks. */
 	global_parser_result.wkinput = wktstr;
+	global_parser_result.parser_check_flags = parser_check_flags;
 	
 	/* Clean up the return value by copying onto it */
 	
 	wkt_lexer_init(wktstr); /* Lexer ready */
 	parse_rv = wkt_yyparse(); /* Run the parse */
-	LWDEBUGF(4,"wkt_yyparse returned %d", rv);
+	LWDEBUGF(4,"wkt_yyparse returned %d", parse_rv);
 	wkt_lexer_close(); /* Clean up lexer */
 	
 	/* A non-zero parser return is an error. */
@@ -157,13 +157,13 @@ geometry:
 		{ wkt_parser_geometry_new($3, $1); WKT_ERROR(); } ;
 
 geometry_no_srid : 
-	point {} | 
+	point { $$ = $1; } | 
 	linestring { $$ = $1; } | 
-	circularstring {} | 
+	circularstring { $$ = $1; } | 
 	compoundcurve {} | 
 	polygon {} | 
 	curvepolygon {} | 
-	multipoint {} |
+	multipoint { $$ = $1; } |
 	multilinestring {} | 
 	multipolygon {} |
 	multisurface {} |
@@ -176,8 +176,8 @@ geometrycollection :
 	COLLECTION_TOK EMPTY_TOK {} ;
 	
 geometry_list :
-	geometry_list COMMA_TOK geometry {} |
-	geometry {} ;
+	geometry_list COMMA_TOK geometry_no_srid {} |
+	geometry_no_srid {} ;
 
 multisurface :
 	MSURFACE_TOK LBRACKET_TOK surface_list RBRACKET_TOK {} |
@@ -255,9 +255,14 @@ linestring_list :
 	linestring_untagged {} ;
 
 circularstring : 
-	CIRCULARSTRING_TOK LBRACKET_TOK ptarray RBRACKET_TOK {} |
-	CIRCULARSTRING_TOK DIMENSIONALITY_TOK LBRACKET_TOK ptarray RBRACKET_TOK {} |
-	CIRCULARSTRING_TOK EMPTY_TOK {} ;
+	CIRCULARSTRING_TOK LBRACKET_TOK ptarray RBRACKET_TOK 
+		{ $$ = wkt_parser_circularstring_new($3, NULL); WKT_ERROR(); } |
+	CIRCULARSTRING_TOK DIMENSIONALITY_TOK LBRACKET_TOK ptarray RBRACKET_TOK 
+		{ $$ = wkt_parser_circularstring_new($4, $2); WKT_ERROR(); } |
+	CIRCULARSTRING_TOK DIMENSIONALITY_TOK EMPTY_TOK
+		{ $$ = wkt_parser_circularstring_new(NULL, $2); WKT_ERROR(); } |
+	CIRCULARSTRING_TOK EMPTY_TOK 
+		{ $$ = wkt_parser_circularstring_new(NULL, NULL); WKT_ERROR(); } ;
 
 linestring : 
 	LINESTRING_TOK LBRACKET_TOK ptarray RBRACKET_TOK 
@@ -271,23 +276,34 @@ linestring :
 
 linestring_untagged :
 	LBRACKET_TOK ptarray RBRACKET_TOK 
-		{ $$ = wkt_parser_linestring_new($2,NULL); WKT_ERROR(); } ;
+		{ $$ = wkt_parser_linestring_new($2, NULL); WKT_ERROR(); } ;
 
 multipoint :
-	MPOINT_TOK LBRACKET_TOK ptarray RBRACKET_TOK {} |
-	MPOINT_TOK DIMENSIONALITY_TOK LBRACKET_TOK ptarray RBRACKET_TOK {} |
-	MPOINT_TOK EMPTY_TOK {} ;
+	MPOINT_TOK LBRACKET_TOK ptarray RBRACKET_TOK 
+		{ $$ = wkt_parser_multipoint_new($3, NULL); WKT_ERROR(); } |
+	MPOINT_TOK DIMENSIONALITY_TOK LBRACKET_TOK ptarray RBRACKET_TOK 
+		{ $$ = wkt_parser_multipoint_new($4, $2); WKT_ERROR(); } |
+	MPOINT_TOK DIMENSIONALITY_TOK EMPTY_TOK 
+		{ $$ = wkt_parser_multipoint_new(NULL, $2); WKT_ERROR(); } |
+	MPOINT_TOK EMPTY_TOK 
+		{ $$ = wkt_parser_multipoint_new(NULL, NULL); WKT_ERROR(); } ;
 
 point : 
-	POINT_TOK LBRACKET_TOK coordinate RBRACKET_TOK {} |
-	POINT_TOK DIMENSIONALITY_TOK LBRACKET_TOK coordinate RBRACKET_TOK {} |
-	POINT_TOK EMPTY_TOK {} ;
+	POINT_TOK LBRACKET_TOK ptarray RBRACKET_TOK 
+		{ $$ = wkt_parser_point_new($3, NULL); WKT_ERROR(); } |
+	POINT_TOK DIMENSIONALITY_TOK LBRACKET_TOK ptarray RBRACKET_TOK 
+		{ $$ = wkt_parser_point_new($4, $2); WKT_ERROR(); } |
+	POINT_TOK DIMENSIONALITY_TOK EMPTY_TOK 
+		{ $$ = wkt_parser_point_new(NULL, $2); WKT_ERROR(); } |
+	POINT_TOK EMPTY_TOK 
+		{ $$ = wkt_parser_point_new(NULL,NULL); WKT_ERROR(); } ;
 
 ptarray : 
 	ptarray COMMA_TOK coordinate 
 		{ wkt_parser_ptarray_add_coord($$, $3); WKT_ERROR(); } |
 	coordinate 
-		{ $$ = wkt_parser_ptarray_new(FLAGS_NDIMS(($1).flags)); WKT_ERROR(); wkt_parser_ptarray_add_coord($$, $1); } ;
+		{ $$ = wkt_parser_ptarray_new(FLAGS_NDIMS(($1).flags)); WKT_ERROR(); 
+		  wkt_parser_ptarray_add_coord($$, $1); WKT_ERROR(); } ;
 
 coordinate : 
 	DOUBLE_TOK DOUBLE_TOK 

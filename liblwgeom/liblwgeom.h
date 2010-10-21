@@ -1472,12 +1472,13 @@ extern POINTARRAY *ptarray_clone(const POINTARRAY *ptarray);
 * passed to them, they just take references, so do not free them out
 * from underneath the geometries.
 */
-extern LWPOINT *lwpoint_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *point);
-extern LWLINE *lwline_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
-extern LWCIRCSTRING *lwcircstring_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
-extern LWPOLY *lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox, uint32 nrings, POINTARRAY **points);
-extern LWTRIANGLE *lwtriangle_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
-extern LWCOLLECTION *lwcollection_construct(uint32 type, int SRID, BOX2DFLOAT4 *bbox, uint32 ngeoms, LWGEOM **geoms);
+extern LWPOINT* lwpoint_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *point);
+extern LWLINE* lwline_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
+extern LWCIRCSTRING* lwcircstring_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
+extern LWPOLY* lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox, uint32 nrings, POINTARRAY **points);
+extern LWTRIANGLE* lwtriangle_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
+extern LWMPOINT* lwmpoint_construct(int srid, BOX2DFLOAT4 *bbox, POINTARRAY *pts);
+extern LWCOLLECTION* lwcollection_construct(uint32 type, int SRID, BOX2DFLOAT4 *bbox, uint32 ngeoms, LWGEOM **geoms);
 
 /*
 * Empty geometry constructors.
@@ -1616,6 +1617,7 @@ typedef struct struct_lwgeom_parser_result
 	const char *message;        /* Error/warning message */
 	int errcode;                /* Error/warning number */
 	int errlocation;            /* Location of error */
+	int parser_check_flags;      /* Bitmask of validity checks run during this parse */
 }
 LWGEOM_PARSER_RESULT;
 
@@ -1631,6 +1633,7 @@ LWGEOM_PARSER_RESULT;
 #define PARSER_ERROR_INCONTINUOUS   7
 #define PARSER_ERROR_TRIANGLEPOINTS 8
 #define PARSER_ERROR_OTHER          9
+#define PARSER_ERROR_LESSPOINTS     10
 
 
 

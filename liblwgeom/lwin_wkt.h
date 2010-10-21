@@ -37,6 +37,8 @@ POINT wkt_parser_coord_3(double c1, double c2, double c3);
 POINT wkt_parser_coord_4(double c1, double c2, double c3, double c4);
 void wkt_parser_ptarray_add_coord(POINTARRAY *pa, POINT p);
 POINTARRAY* wkt_parser_ptarray_new(int ndims);
+LWGEOM* wkt_parser_point_new(POINTARRAY *pa, char *dimensionality);
 LWGEOM* wkt_parser_linestring_new(POINTARRAY *pa, char *dimensionality);
 LWGEOM* wkt_parser_circularstring_new(POINTARRAY *pa, char *dimensionality);
+LWGEOM* wkt_parser_multipoint_new(POINTARRAY *pa, char *dimensionality);
 void wkt_parser_geometry_new(LWGEOM *geom, int srid);

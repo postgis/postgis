@@ -16,7 +16,8 @@ static const char *parser_error_messages[] =
 	"invalid WKB type",
 	"incontinuous compound curve",
 	"triangle must have exactly 4 points",
-	"unknown parse error"
+	"unknown parse error",
+	"geometry has too many points"
 };
 
 /**
@@ -154,24 +155,20 @@ POINTARRAY* wkt_parser_ptarray_new(int ndims)
 	return pa;
 }
 
-
 /**
-* Create a new linestring. Null point array implies empty. Null dimensionality
-* implies no specified dimensionality in the WKT. Check for 
+* Create a new point. Null point array implies empty. Null dimensionality
+* implies no specified dimensionality in the WKT.
 */
-LWGEOM* wkt_parser_linestring_new(POINTARRAY *pa, char *dimensionality)
+LWGEOM* wkt_parser_point_new(POINTARRAY *pa, char *dimensionality)
 {
-	uchar flags;
-	
-	/* TODO apply the parser checks? (not enough points, etc) */	
-		
-	/* If there's an explicit dimensionality, we use that */
-	flags = wkt_parser_dimensionality(pa, dimensionality);
+	/* If there's an explicit dimensionality, we use that, otherwise
+	   use the implicit dimensionality of the array. */
+	uchar flags = wkt_parser_dimensionality(pa, dimensionality);
 	
 	/* No pointarray means it is empty */
 	if( ! pa )
-		return lwline_as_lwgeom(lwline_construct_empty(0, FLAGS_GET_Z(flags), FLAGS_GET_M(flags)));
-	
+		return lwpoint_as_lwgeom(lwpoint_construct_empty(SRID_UNKNOWN, FLAGS_GET_Z(flags), FLAGS_GET_M(flags)));
+
 	/* What are the numbers of dimensions? */
 	LWDEBUGF(5,"FLAGS_NDIMS(flags) == %d", FLAGS_NDIMS(flags));
 	LWDEBUGF(5,"TYPE_NDIMS(pa->dims) == %d", TYPE_NDIMS(pa->dims));
@@ -186,16 +183,139 @@ LWGEOM* wkt_parser_linestring_new(POINTARRAY *pa, char *dimensionality)
 	
 	TYPE_SETZM(pa->dims, FLAGS_GET_Z(flags), FLAGS_GET_M(flags));
 
-	return lwline_as_lwgeom(lwline_construct(0, NULL, pa));
+	/* Only one point allowed in our point array! */	
+	if( pa->npoints != 1 )
+	{
+		global_parser_result.message = parser_error_messages[PARSER_ERROR_LESSPOINTS];
+		global_parser_result.errcode = PARSER_ERROR_LESSPOINTS;
+		return NULL;
+	}		
+
+	return lwpoint_as_lwgeom(lwpoint_construct(SRID_UNKNOWN, NULL, pa));
 }
 
-/* Circular strings are just like linestrings! */
+/**
+* Create a new point. Null point array implies empty. Null dimensionality
+* implies no specified dimensionality in the WKT.
+*/
+LWGEOM* wkt_parser_multipoint_new(POINTARRAY *pa, char *dimensionality)
+{
+	/* If there's an explicit dimensionality, we use that, otherwise
+	   use the implicit dimensionality of the array. */
+	uchar flags = wkt_parser_dimensionality(pa, dimensionality);
+	
+	/* No pointarray means it is empty */
+	if( ! pa )
+		return lwmpoint_as_lwgeom(lwmpoint_construct_empty(SRID_UNKNOWN, FLAGS_GET_Z(flags), FLAGS_GET_M(flags)));
+
+	/* What are the numbers of dimensions? */
+	LWDEBUGF(5,"FLAGS_NDIMS(flags) == %d", FLAGS_NDIMS(flags));
+	LWDEBUGF(5,"TYPE_NDIMS(pa->dims) == %d", TYPE_NDIMS(pa->dims));
+	
+	/* If the number of dimensions is not consistent, we have a problem. */
+	if( FLAGS_NDIMS(flags) != TYPE_NDIMS(pa->dims) )
+	{
+		global_parser_result.message = parser_error_messages[PARSER_ERROR_MIXDIMS];
+		global_parser_result.errcode = PARSER_ERROR_MIXDIMS;
+		return NULL;
+	}
+	
+	TYPE_SETZM(pa->dims, FLAGS_GET_Z(flags), FLAGS_GET_M(flags));
+
+	return lwmpoint_as_lwgeom(lwmpoint_construct(SRID_UNKNOWN, NULL, pa));
+}
+
+
+
+
+/**
+* Create a new linestring. Null point array implies empty. Null dimensionality
+* implies no specified dimensionality in the WKT. Check for numpoints >= 2 if
+* requested.
+*/
+LWGEOM* wkt_parser_linestring_new(POINTARRAY *pa, char *dimensionality)
+{
+	/* If there's an explicit dimensionality, we use that, otherwise
+	   use the implicit dimensionality of the array. */
+	uchar flags = wkt_parser_dimensionality(pa, dimensionality);
+	
+	/* No pointarray means it is empty */
+	if( ! pa )
+		return lwline_as_lwgeom(lwline_construct_empty(SRID_UNKNOWN, FLAGS_GET_Z(flags), FLAGS_GET_M(flags)));
+
+	/* What are the numbers of dimensions? */
+	LWDEBUGF(5,"FLAGS_NDIMS(flags) == %d", FLAGS_NDIMS(flags));
+	LWDEBUGF(5,"TYPE_NDIMS(pa->dims) == %d", TYPE_NDIMS(pa->dims));
+	
+	/* If the number of dimensions is not consistent, we have a problem. */
+	if( FLAGS_NDIMS(flags) != TYPE_NDIMS(pa->dims) )
+	{
+		global_parser_result.message = parser_error_messages[PARSER_ERROR_MIXDIMS];
+		global_parser_result.errcode = PARSER_ERROR_MIXDIMS;
+		return NULL;
+	}
+	
+	TYPE_SETZM(pa->dims, FLAGS_GET_Z(flags), FLAGS_GET_M(flags));
+
+	/* Apply check for not enough points, if requested. */	
+	if( (global_parser_result.parser_check_flags & PARSER_CHECK_MINPOINTS) && (pa->npoints < 2) )
+	{
+		global_parser_result.message = parser_error_messages[PARSER_ERROR_MOREPOINTS];
+		global_parser_result.errcode = PARSER_ERROR_MOREPOINTS;
+		return NULL;
+	}		
+
+	return lwline_as_lwgeom(lwline_construct(SRID_UNKNOWN, NULL, pa));
+}
+
+/**
+* Create a new circularstring. Null point array implies empty. Null dimensionality
+* implies no specified dimensionality in the WKT. 
+* Circular strings are just like linestrings, except with slighty different
+* validity rules (minpoint == 3, numpoints % 2 == 1). 
+*/
 LWGEOM* wkt_parser_circularstring_new(POINTARRAY *pa, char *dimensionality)
 {
-	/* TODO apply the parser checks? */
-	LWCIRCSTRING *circ = (LWCIRCSTRING*)wkt_parser_linestring_new(pa, dimensionality);
-	TYPE_SETTYPE(circ->type, CIRCSTRINGTYPE);
-	return lwcircstring_as_lwgeom(circ);
+	/* If there's an explicit dimensionality, we use that, otherwise
+	   use the implicit dimensionality of the array. */
+	uchar flags = wkt_parser_dimensionality(pa, dimensionality);
+	
+	/* No pointarray means it is empty */
+	if( ! pa )
+		return lwcircstring_as_lwgeom(lwcircstring_construct_empty(SRID_UNKNOWN, FLAGS_GET_Z(flags), FLAGS_GET_M(flags)));
+
+	/* What are the numbers of dimensions? */
+	LWDEBUGF(5,"FLAGS_NDIMS(flags) == %d", FLAGS_NDIMS(flags));
+	LWDEBUGF(5,"TYPE_NDIMS(pa->dims) == %d", TYPE_NDIMS(pa->dims));
+	
+	/* If the number of dimensions is not consistent, we have a problem. */
+	if( FLAGS_NDIMS(flags) != TYPE_NDIMS(pa->dims) )
+	{
+		global_parser_result.message = parser_error_messages[PARSER_ERROR_MIXDIMS];
+		global_parser_result.errcode = PARSER_ERROR_MIXDIMS;
+		return NULL;
+	}
+	
+	TYPE_SETZM(pa->dims, FLAGS_GET_Z(flags), FLAGS_GET_M(flags));
+
+	/* Apply check for not enough points, if requested. */	
+	if( (global_parser_result.parser_check_flags & PARSER_CHECK_MINPOINTS) && (pa->npoints < 3) )
+	{
+		global_parser_result.message = parser_error_messages[PARSER_ERROR_MOREPOINTS];
+		global_parser_result.errcode = PARSER_ERROR_MOREPOINTS;
+		return NULL;
+	}	
+
+	/* Apply check for odd number of points, if requested. */	
+	if( (global_parser_result.parser_check_flags & PARSER_CHECK_ODD) && ((pa->npoints % 2) == 1) )
+	{
+		global_parser_result.message = parser_error_messages[PARSER_ERROR_ODDPOINTS];
+		global_parser_result.errcode = PARSER_ERROR_ODDPOINTS;
+		return NULL;
+	}
+	
+	return lwcircstring_as_lwgeom(lwcircstring_construct(SRID_UNKNOWN, NULL, pa));	
+	
 }
 
 

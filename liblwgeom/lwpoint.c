@@ -178,6 +178,17 @@ lwpoint_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *point)
 }
 
 LWPOINT *
+lwpoint_construct_empty(int srid, char hasz, char hasm)
+{
+	LWPOINT *result = lwalloc(sizeof(LWPOINT));
+	result->type = lwgeom_makeType_full(hasz, hasm, (srid>0), POINTTYPE, 0);
+	result->SRID = srid;
+	result->point = NULL;
+	result->bbox = NULL;
+	return result;
+}
+
+LWPOINT *
 make_lwpoint2d(int SRID, double x, double y)
 {
 	POINT2D p;
