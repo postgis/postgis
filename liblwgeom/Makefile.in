@@ -41,9 +41,9 @@ SA_OBJS = \
 	lwmsurface.o \
 	lwpsurface.o \
 	lwtin.o \
-	lwout_wkt.o \
 	lwout_wkb.o \
 	lwin_wkb.o \
+	lwout_wkt.o \
 	lwin_wkt.o \
 	lwin_wkt_lex.o \
 	lwin_wkt_parse.o \
@@ -70,7 +70,7 @@ SA_OBJS = \
 	lwout_kml.o \
 	lwout_geojson.o \
 	lwout_svg.o 
-	
+
 NM_OBJS = \
 	lwspheroid.o 
 
@@ -103,12 +103,17 @@ $(SA_OBJS): %.o: %.c
 $(NM_OBJS): %.o: %.c 
 	$(CC) $(CFLAGS) $(NUMERICFLAGS) -c -o $@ $<
 
+
+# Ensure there is never a missing header
+lwin_wkt_parse.o: lwin_wkt_parse.c lwin_wkt_parse.h
+
 # Generate WKT parser from Flex/Yacc inputs
 lwin_wkt_parse.c lwin_wkt_parse.h: lwin_wkt_parse.y
-	$(YACC) --debug --verbose -o $@ -d $^
+	$(YACC) --debug --verbose -o lwin_wkt_parse.c -d $<
   
-#       $(YACC) --debug --verbose -o $@ -d $^
-#       $(YACC) -o $@ -d $^
+#       $(YACC) --debug --verbose -o lwin_wkt_parse.c -d $<
+#       $(YACC) -o lwin_wkt_parse.c -d $^
+
 
 lwin_wkt_lex.c: lwin_wkt_lex.l
 	$(LEX) --case-insensitive -o $@ $<
