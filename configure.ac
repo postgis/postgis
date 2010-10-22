@@ -717,7 +717,7 @@ if test "x$RASTER" = "xyes"; then
     dnl ========================================================================
     dnl Determine GDAL Support
     dnl
-    dnl TODO: Now, --with-gdal can have only 1 value: path to gdal-config. It
+    dnl TODO: Now, --with-gdalconfig can have only 1 value: path to gdal-config. It
     dnl could be useful to allow path to GDAL tree, because the cflags and the
     dnl libs can be obtained from GDAL tree too, apart from gdal-config
     dnl How to get cflags and libs from GDAL tree?
@@ -732,7 +732,7 @@ if test "x$RASTER" = "xyes"; then
 
     AC_MSG_CHECKING([for GDAL])
     AC_ARG_WITH([gdal],
-	    AC_HELP_STRING([--with-gdal=@<:@ARG@:>@],[specify location of gdal-config (ARG=path)]),
+	    AC_HELP_STRING([--with-gdalconfig=@<:@ARG@:>@],[specify location of gdal-config (ARG=path)]),
         	[GDAL_CONFIG="$withval"], [GDAL_CONFIG=""])
 
     if test "x$GDAL_CONFIG" = "x"; then
@@ -742,7 +742,7 @@ if test "x$RASTER" = "xyes"; then
             AC_MSG_RESULT([yes])
             GDAL_CONFIG=${GDAL_CONFIG_TMP}
         else
-            AC_MSG_ERROR([gdal-config not found. Try --with-gdal=<path to gdal-config>])
+            AC_MSG_ERROR([gdal-config not found. Try --with-gdalconfig=<path to gdal-config>])
         fi
     fi
 
