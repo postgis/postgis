@@ -501,7 +501,8 @@ static char* lwpoly_to_wkb_buf(const LWPOLY *poly, char *buf, uchar variant)
 
 /*
 * MULTIPOINT, MULTILINESTRING, MULTIPOLYGON, GEOMETRYCOLLECTION
-* MULTICURVE, COMPOUNDCURVE, MULTISURFACE, CURVEPOLYGON
+* MULTICURVE, COMPOUNDCURVE, MULTISURFACE, CURVEPOLYGON, TIN, 
+* POLYHEDRALSURFACE
 */
 static size_t lwcollection_to_wkb_size(const LWCOLLECTION *col, uchar variant)
 {
