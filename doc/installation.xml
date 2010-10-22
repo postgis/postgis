@@ -9,19 +9,19 @@
   <sect1>
 	<title>Short Version</title>
 	<note><para>The raster support is currently optional, but in final release it will be required.</para></note>
+	<para>All the .sql files once installed will be installed in share/contrib/postgis-&last_release_version; folder
+		of your PostgreSQL install</para>
 	<programlisting>tar xvfz postgis-&last_release_version;.tar.gz
 cd postgis-&last_release_version;
 ./configure --with-raster
 make
-make rt-all
 make install
-make rt-install
 createdb yourdatabase
 createlang plpgsql yourdatabase
 psql -d yourdatabase -f postgis.sql
 psql -d yourdatabase -f postgis_comments.sql
 psql -d yourdatabase -f spatial_ref_sys.sql
-psql -d yourdatabase -f raster/rt_pg/rtpostgis.sql
+psql -d yourdatabase -f rtpostgis.sql
 </programlisting>
 
 	<para>
