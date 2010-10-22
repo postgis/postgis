@@ -337,7 +337,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		  <listitem>
 			<para>
 			  GDAL, a required library, provides functionality needed for raster support
-			  <command>geos-config</command> to enable software installations to
+			  <command>gdal-config</command> to enable software installations to
 			  locate the GDAL installation directory. Use this parameter
 			  (<command>--with-gdal=/path/to/gdal-config</command>) to
 			  manually specify a particular GDAL installation that PostGIS will
