@@ -331,6 +331,21 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 			</para>
 		  </listitem>
 		</varlistentry>
+		
+		<varlistentry>
+		  <term><command>--with-gdal=FILE</command></term>
+		  <listitem>
+			<para>
+			  GDAL, a required library, provides functionality needed for raster support
+			  <command>geos-config</command> to enable software installations to
+			  locate the GDAL installation directory. Use this parameter
+			  (<command>--with-gdal=/path/to/gdal-config</command>) to
+			  manually specify a particular GDAL installation that PostGIS will
+			  build against.
+			  <!-- TODO: Change this once Jorge changes the name to --with-gdalconfig to be consistent with other naming -->
+			</para>
+		  </listitem>
+		</varlistentry>
 
 		<varlistentry>
 		  <term><command>--with-geosconfig=FILE</command></term>
@@ -345,6 +360,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 			</para>
 		  </listitem>
 		</varlistentry>
+		
 
 		<varlistentry>
 		  <term><command>--with-projdir=DIR</command></term>
