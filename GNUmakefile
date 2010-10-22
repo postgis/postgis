@@ -4,14 +4,14 @@
 #
 #-----------------------------------------------------
 
-all: postgis loaderdumper utils
+all: postgis loaderdumper utils raster
 	@echo "PostGIS was built successfully. Ready to install." 
 
-install: all postgis-install loaderdumper-install
+install: all postgis-install loaderdumper-install raster-install
 
 uninstall: postgis-uninstall loaderdumper-uninstall docs-uninstall comments-uninstall
 
-clean: liblwgeom-clean postgis-clean loaderdumper-clean docs-clean test-clean 
+clean: liblwgeom-clean postgis-clean loaderdumper-clean docs-clean test-clean raster-clean
 	rm -f postgis.sql postgis_upgrade.sql
 
 distclean: clean
@@ -123,28 +123,25 @@ config.status: configure
 ChangeLog.svn:
 	svn2cl --authors=authors.svn -i -o ChangeLog.svn
 
-rt-all:
-	@echo '------------------------------------------------------'
-	@echo 'Generating PostGIS Raster stuff'
-	@echo '------------------------------------------------------'
+raster:
 	$(MAKE) -C raster all
 
-rt-clean:
+raster-clean:
 	$(MAKE) -C raster clean
     
-rt-distclean:
+raster-distclean:
 	$(MAKE) -C raster distclean
 
-rt-install:
+raster-install:
 	$(MAKE) -C raster install
     
-rt-check:
+raster-check:
 	$(MAKE) -C raster check
 
-rt-post-install-check:
+raster-post-install-check:
 	$(MAKE) -C raster post-install-check
 
-rt-sql:
+raster-sql:
 	$(MAKE) -C raster rtpostgis.sql
 
 astyle:
@@ -153,4 +150,4 @@ astyle:
 commit:
 	$(MAKE) astyle && $(MAKE) clean && $(MAKE) check && svn commit
 
-.PHONY: utils liblwgeom ChangeLog.svn
+.PHONY: utils liblwgeom ChangeLog.svn raster

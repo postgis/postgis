@@ -8,7 +8,7 @@
 #
 #############################################################################
 
-MODULE_big=rtpostgis-@POSTGIS_RASTER_MAJOR_VERSION@.@POSTGIS_RASTER_MINOR_VERSION@
+MODULE_big=rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULEDIR=contrib/$(MODULE_big)
 
 # Files to be copied to the contrib/ directory
@@ -59,7 +59,7 @@ endif
 
 # Borrow the $libdir substitution from PGXS but customise by adding the version number
 %.sql: %.sql.in
-	sed 's,MODULE_PATHNAME,$$libdir/rtpostgis-@POSTGIS_RASTER_MAJOR_VERSION@.@POSTGIS_RASTER_MINOR_VERSION@,g' $< >$@
+	sed 's,MODULE_PATHNAME,$$libdir/rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@,g' $< >$@
 
 
 # Generate any .sql.in files from .sql.in.c files by running them through the C pre-processor 

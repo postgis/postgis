@@ -842,19 +842,36 @@ if test "x$RASTER" = "xyes"; then
     RT_PG_LIB=pglib
     RT_POSTGIS_SQL=rtpostgis.sql
 
+    dnl Activates raster stuff construction.
+    BUILD_RASTER=yes
+
     AC_SUBST([RT_CORE_LIB])
     AC_SUBST([RT_PG_LIB])
     AC_SUBST([RT_POSTGIS_SQL])
+    AC_SUBST([BUILD_RASTER])
 
-    AC_OUTPUT([raster/Makefile raster/rt_core/Makefile raster/rt_pg/Makefile
-            raster/test/Makefile raster/test/core/Makefile
-            raster/test/regress/Makefile raster/scripts/python/Makefile])
+    RT_MAKEFILE_LIST="
+                    raster/Makefile \
+                    raster/rt_core/Makefile \ 
+                    raster/rt_pg/Makefile \ 
+                    raster/test/Makefile \
+                    raster/test/core/Makefile \ 
+                    raster/test/regress/Makefile \ 
+                    raster/scripts/python/Makefile"
 
+
+else
+    BUILD_RASTER=no
+    AC_SUBST([BUILD_RASTER])
+    RT_MAKEFILE_LIST="raster/Makefile"
 fi
 
 
 dnl Output the relevant files
-AC_OUTPUT([liblwgeom/Makefile liblwgeom/cunit/Makefile postgis/Makefile postgis/sqldefines.h loader/Makefile loader/cunit/Makefile topology/Makefile regress/Makefile doc/Makefile doc/Makefile.comments doc/html/image_src/Makefile])
+AC_OUTPUT([liblwgeom/Makefile liblwgeom/cunit/Makefile postgis/Makefile
+        postgis/sqldefines.h loader/Makefile loader/cunit/Makefile
+        topology/Makefile regress/Makefile doc/Makefile doc/Makefile.comments
+        doc/html/image_src/Makefile $RT_MAKEFILE_LIST])
     
 dnl ===========================================================================
 dnl Display the configuration status information
