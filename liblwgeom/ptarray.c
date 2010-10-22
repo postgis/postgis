@@ -149,6 +149,16 @@ void ptarray_free(POINTARRAY *pa)
 	lwfree(pa);
 }
 
+void ptarray_freeall(POINTARRAY *pa)
+{
+	if(pa)
+	{
+		if(pa->serialized_pointlist)
+			lwfree(pa->serialized_pointlist);	
+		lwfree(pa);
+	}
+}
+
 
 void
 ptarray_reverse(POINTARRAY *pa)
@@ -515,6 +525,19 @@ ptarray_clone(const POINTARRAY *in)
 
 	return out;
 }
+
+/**
+* Check for ring closure using whatever dimensionality is declared on the 
+* pointarray.
+*/
+int
+ptarray_isclosed(const POINTARRAY *in)
+{
+	int ndims = TYPE_NDIMS(in->dims);
+	if ( memcmp(getPoint_internal(in, 0), getPoint_internal(in, in->npoints-1), ndims*sizeof(double)) ) return 0;
+	return 1;
+}
+
 
 int
 ptarray_isclosed2d(const POINTARRAY *in)

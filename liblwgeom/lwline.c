@@ -258,8 +258,8 @@ void lwline_free (LWLINE  *line)
 {
 	if ( line->bbox )
 		lwfree(line->bbox);
-
-	ptarray_free(line->points);
+	if ( line->points )
+		ptarray_free(line->points);
 	lwfree(line);
 }
 

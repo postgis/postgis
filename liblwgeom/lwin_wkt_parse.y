@@ -1,5 +1,14 @@
 %{
 
+/* 
+* TODO
+*
+* When an error occurs and we stop the parse process, 
+* what happens to the partially build structres, the point
+* arrays and whatever else is hanging around at different
+* parts of the process?
+*/
+
 /* WKT Parser */
 #include <stdio.h>
 #include <string.h>
@@ -115,38 +124,57 @@ int lwgeom_from_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parse
 %token COLLECTION_TOK 
 %token RBRACKET_TOK LBRACKET_TOK COMMA_TOK EMPTY_TOK
 %token SEMICOLON_TOK
+%token TRIANGLE_TOK TIN_TOK
+%token POLYHEDRALSURFACE_TOK
 
 %token <doublevalue> DOUBLE_TOK
-%token <stringvalue> STRING_TOK
 %token <stringvalue> DIMENSIONALITY_TOK
 %token <integervalue> SRID_TOK
 
-%type <geometryvalue> geometry
-%type <geometryvalue> geometry_no_srid
-%type <geometryvalue> geometrycollection
-%type <geometryvalue> multisurface
-%type <geometryvalue> multicurve
-%type <geometryvalue> curvepolygon
-%type <geometryvalue> compoundcurve
-%type <geometryvalue> geometry_list
-%type <geometryvalue> surface_list
-%type <geometryvalue> polygon_list
-%type <geometryvalue> curve_list
-%type <geometryvalue> linestring_list
-%type <geometryvalue> curvering_list
-%type <geometryvalue> ring_list
-%type <geometryvalue> point
-%type <geometryvalue> circularstring
-%type <geometryvalue> linestring
-%type <geometryvalue> linestring_untagged
-%type <geometryvalue> ring
-%type <geometryvalue> polygon
-%type <geometryvalue> polygon_untagged
-%type <geometryvalue> multipoint
-%type <geometryvalue> multilinestring
-%type <geometryvalue> multipolygon
+%type <ptarrayvalue> ring
 %type <ptarrayvalue> ptarray
 %type <coordinatevalue> coordinate
+%type <geometryvalue> circularstring
+%type <geometryvalue> compoundcurve
+%type <geometryvalue> curve_list
+%type <geometryvalue> curvepolygon
+%type <geometryvalue> curvering_list
+%type <geometryvalue> geometry
+%type <geometryvalue> geometry_no_srid
+%type <geometryvalue> geometry_list
+%type <geometryvalue> geometrycollection
+%type <geometryvalue> linestring
+%type <geometryvalue> linestring_list
+%type <geometryvalue> linestring_untagged
+%type <geometryvalue> multicurve
+%type <geometryvalue> multilinestring
+%type <geometryvalue> multipoint
+%type <geometryvalue> multipolygon
+%type <geometryvalue> multisurface
+%type <geometryvalue> point
+%type <geometryvalue> point_list
+%type <geometryvalue> point_untagged
+%type <geometryvalue> polygon
+%type <geometryvalue> polygon_list
+%type <geometryvalue> polygon_untagged
+%type <geometryvalue> polyhedralsurface
+%type <geometryvalue> ring_list
+%type <geometryvalue> surface_list
+%type <geometryvalue> tin
+%type <geometryvalue> triangle
+%type <geometryvalue> triangle_list
+%type <geometryvalue> triangle_untagged
+
+/* TODO: Turn this stuff on for memory cleanliness.
+%destructor { ptarray_freeall($$); } ptarray
+%destructor { ptarray_freeall($$); } ring
+%destructor { lwgeom_free($$); } linestring
+%destructor { lwgeom_free($$); } linestring_untagged
+%destructor { lwgeom_free($$); } circularstring
+%destructor { lwgeom_free($$); } linestring_list
+%destructor { lwgeom_free($$); } point
+%destructor { lwgeom_free($$); } multipoint
+*/
 
 %%
 
@@ -161,13 +189,16 @@ geometry_no_srid :
 	linestring { $$ = $1; } | 
 	circularstring { $$ = $1; } | 
 	compoundcurve {} | 
-	polygon {} | 
+	polygon { $$ = $1; } | 
 	curvepolygon {} | 
 	multipoint { $$ = $1; } |
 	multilinestring { $$ = $1; } | 
-	multipolygon {} |
+	multipolygon { $$ = $1; } |
 	multisurface {} |
 	multicurve {} |
+	tin { $$ = $1; } |
+	polyhedralsurface { $$ = $1; } |
+	triangle { $$ = $1; } |
 	geometrycollection {} ;
 	
 geometrycollection :
@@ -192,22 +223,55 @@ surface_list :
 	curvepolygon {} |
 	polygon_untagged {} ;
 
+tin :
+	TIN_TOK LBRACKET_TOK triangle_list RBRACKET_TOK
+		{ $$ = wkt_parser_collection_finalize(TINTYPE, $3, NULL); WKT_ERROR(); } |
+	TIN_TOK DIMENSIONALITY_TOK LBRACKET_TOK triangle_list RBRACKET_TOK
+		{ $$ = wkt_parser_collection_finalize(TINTYPE, $4, $2); WKT_ERROR(); } |
+	TIN_TOK DIMENSIONALITY_TOK EMPTY_TOK
+		{ $$ = wkt_parser_collection_finalize(TINTYPE, NULL, $2); WKT_ERROR(); } |
+	TIN_TOK EMPTY_TOK
+		{ $$ = wkt_parser_collection_finalize(TINTYPE, NULL, NULL); WKT_ERROR(); } ;
+
+polyhedralsurface :
+	POLYHEDRALSURFACE_TOK LBRACKET_TOK polygon_list RBRACKET_TOK
+		{ $$ = wkt_parser_collection_finalize(POLYHEDRALSURFACETYPE, $3, NULL); WKT_ERROR(); } |
+	POLYHEDRALSURFACE_TOK DIMENSIONALITY_TOK LBRACKET_TOK polygon_list RBRACKET_TOK
+		{ $$ = wkt_parser_collection_finalize(POLYHEDRALSURFACETYPE, $4, $2); WKT_ERROR(); } |
+	POLYHEDRALSURFACE_TOK DIMENSIONALITY_TOK EMPTY_TOK
+		{ $$ = wkt_parser_collection_finalize(POLYHEDRALSURFACETYPE, NULL, $2); WKT_ERROR(); } |
+	POLYHEDRALSURFACE_TOK EMPTY_TOK
+		{ $$ = wkt_parser_collection_finalize(POLYHEDRALSURFACETYPE, NULL, NULL); WKT_ERROR(); } ;
+
 multipolygon :
-	MPOLYGON_TOK LBRACKET_TOK polygon_list RBRACKET_TOK {} |
-	MPOLYGON_TOK DIMENSIONALITY_TOK LBRACKET_TOK polygon_list RBRACKET_TOK {} |
-	MPOLYGON_TOK EMPTY_TOK {} ;
+	MPOLYGON_TOK LBRACKET_TOK polygon_list RBRACKET_TOK
+		{ $$ = wkt_parser_collection_finalize(MULTIPOLYGONTYPE, $3, NULL); WKT_ERROR(); } |
+	MPOLYGON_TOK DIMENSIONALITY_TOK LBRACKET_TOK polygon_list RBRACKET_TOK
+		{ $$ = wkt_parser_collection_finalize(MULTIPOLYGONTYPE, $4, $2); WKT_ERROR(); } |
+	MPOLYGON_TOK DIMENSIONALITY_TOK EMPTY_TOK
+		{ $$ = wkt_parser_collection_finalize(MULTIPOLYGONTYPE, NULL, $2); WKT_ERROR(); } |
+	MPOLYGON_TOK EMPTY_TOK
+		{ $$ = wkt_parser_collection_finalize(MULTIPOLYGONTYPE, NULL, NULL); WKT_ERROR(); } ;
 
 polygon_list :
-	polygon_list COMMA_TOK polygon_untagged {} |
-	polygon_untagged {} ;
+	polygon_list COMMA_TOK polygon_untagged 
+		{ wkt_parser_collection_add_geom($$,$3); WKT_ERROR(); } |
+	polygon_untagged 
+		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } ;
 
 polygon : 
-	POLYGON_TOK LBRACKET_TOK ring_list RBRACKET_TOK {} |
-	POLYGON_TOK DIMENSIONALITY_TOK LBRACKET_TOK ring_list RBRACKET_TOK {} |
-	POLYGON_TOK EMPTY_TOK {} ;
+	POLYGON_TOK LBRACKET_TOK ring_list RBRACKET_TOK 
+		{ $$ = wkt_parser_polygon_finalize($3, NULL); WKT_ERROR(); } |
+	POLYGON_TOK DIMENSIONALITY_TOK LBRACKET_TOK ring_list RBRACKET_TOK 
+		{ $$ = wkt_parser_polygon_finalize($4, $2); WKT_ERROR(); } |
+	POLYGON_TOK DIMENSIONALITY_TOK EMPTY_TOK 
+		{ $$ = wkt_parser_polygon_finalize(NULL, $2); WKT_ERROR(); } |
+	POLYGON_TOK EMPTY_TOK 
+		{ $$ = wkt_parser_polygon_finalize(NULL, NULL); WKT_ERROR(); } ;
 
 polygon_untagged : 
-	LBRACKET_TOK ring_list RBRACKET_TOK {} ;
+	LBRACKET_TOK ring_list RBRACKET_TOK 
+		{ $$ = $2; } ;
 
 curvepolygon :
 	CURVEPOLYGON_TOK LBRACKET_TOK curvering_list RBRACKET_TOK {} |
@@ -221,11 +285,14 @@ curvering_list :
 	circularstring {} ;
 
 ring_list :
-	ring_list COMMA_TOK ring {} |
-	ring {} ;
+	ring_list COMMA_TOK ring 
+		{ wkt_parser_polygon_add_ring($$,$3); WKT_ERROR(); } |
+	ring 
+		{ $$ = wkt_parser_polygon_new($1); WKT_ERROR(); } ;
 
 ring :
-	LBRACKET_TOK ptarray RBRACKET_TOK {} ;
+	LBRACKET_TOK ptarray RBRACKET_TOK 
+		{ $$ = $2; } ;
 
 compoundcurve :
 	COMPOUNDCURVE_TOK LBRACKET_TOK curve_list RBRACKET_TOK {} |
@@ -285,15 +352,47 @@ linestring_untagged :
 	LBRACKET_TOK ptarray RBRACKET_TOK 
 		{ $$ = wkt_parser_linestring_new($2, NULL); WKT_ERROR(); } ;
 
+triangle_list :
+	triangle_list COMMA_TOK triangle_untagged 
+		{ wkt_parser_collection_add_geom($$,$3); WKT_ERROR(); } |
+	triangle_untagged 
+		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } ;
+
+triangle :
+	TRIANGLE_TOK LBRACKET_TOK LBRACKET_TOK ptarray RBRACKET_TOK RBRACKET_TOK 
+		{ $$ = wkt_parser_triangle_new($4, NULL); WKT_ERROR(); } | 
+	TRIANGLE_TOK DIMENSIONALITY_TOK LBRACKET_TOK LBRACKET_TOK ptarray RBRACKET_TOK RBRACKET_TOK 
+		{ $$ = wkt_parser_triangle_new($5, $2); WKT_ERROR(); } |
+	TRIANGLE_TOK DIMENSIONALITY_TOK EMPTY_TOK
+		{ $$ = wkt_parser_triangle_new(NULL, $2); WKT_ERROR(); } | 
+	TRIANGLE_TOK EMPTY_TOK
+		{ $$ = wkt_parser_triangle_new(NULL, NULL); WKT_ERROR(); } ;
+
+triangle_untagged :
+	LBRACKET_TOK LBRACKET_TOK ptarray RBRACKET_TOK RBRACKET_TOK
+		{ $$ = wkt_parser_triangle_new($3, NULL); WKT_ERROR(); } ;
+
 multipoint :
-	MPOINT_TOK LBRACKET_TOK ptarray RBRACKET_TOK 
-		{ $$ = wkt_parser_multipoint_new($3, NULL); WKT_ERROR(); } |
-	MPOINT_TOK DIMENSIONALITY_TOK LBRACKET_TOK ptarray RBRACKET_TOK 
-		{ $$ = wkt_parser_multipoint_new($4, $2); WKT_ERROR(); } |
+	MPOINT_TOK LBRACKET_TOK point_list RBRACKET_TOK 
+		{ $$ = wkt_parser_collection_finalize(MULTIPOINTTYPE, $3, NULL); WKT_ERROR(); } |
+	MPOINT_TOK DIMENSIONALITY_TOK LBRACKET_TOK point_list RBRACKET_TOK 
+		{ $$ = wkt_parser_collection_finalize(MULTIPOINTTYPE, $4, $2); WKT_ERROR(); } |
 	MPOINT_TOK DIMENSIONALITY_TOK EMPTY_TOK 
-		{ $$ = wkt_parser_multipoint_new(NULL, $2); WKT_ERROR(); } |
+		{ $$ = wkt_parser_collection_finalize(MULTIPOINTTYPE, NULL, $2); WKT_ERROR(); } |
 	MPOINT_TOK EMPTY_TOK 
-		{ $$ = wkt_parser_multipoint_new(NULL, NULL); WKT_ERROR(); } ;
+		{ $$ = wkt_parser_collection_finalize(MULTIPOINTTYPE, NULL, NULL); WKT_ERROR(); } ;
+
+point_list :
+	point_list COMMA_TOK point_untagged 
+		{ wkt_parser_collection_add_geom($$,$3); WKT_ERROR(); } |
+	point_untagged 
+		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } ;
+
+point_untagged :
+	coordinate 
+		{ $$ = wkt_parser_point_new(wkt_parser_ptarray_new($1),NULL); WKT_ERROR(); } |
+	LBRACKET_TOK coordinate RBRACKET_TOK
+		{ $$ = wkt_parser_point_new(wkt_parser_ptarray_new($2),NULL); WKT_ERROR(); } ;
 
 point : 
 	POINT_TOK LBRACKET_TOK ptarray RBRACKET_TOK 

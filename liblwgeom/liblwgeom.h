@@ -1241,7 +1241,7 @@ char box2d_same(BOX2DFLOAT4 *box1, BOX2DFLOAT4 *box2);
  ****************************************************************/
 
 /*
- * The lwfree_* family of functions frees *all* memory associated
+ * The *_free family of functions frees *all* memory associated
  * with the pointer, including the serialized__pointlist in the
  * point arrays. Do not use these on LWGEOMs de-serialized from
  * PG_LWGEOMs or they will try to free an underlying structure
@@ -1250,6 +1250,7 @@ char box2d_same(BOX2DFLOAT4 *box1, BOX2DFLOAT4 *box2);
  */
 
 extern void ptarray_free(POINTARRAY *pa);
+extern void ptarray_freeall(POINTARRAY *pa);
 extern void lwpoint_free(LWPOINT *pt);
 extern void lwline_free(LWLINE *line);
 extern void lwpoly_free(LWPOLY *poly);
@@ -1477,7 +1478,6 @@ extern LWLINE* lwline_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points)
 extern LWCIRCSTRING* lwcircstring_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
 extern LWPOLY* lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox, uint32 nrings, POINTARRAY **points);
 extern LWTRIANGLE* lwtriangle_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
-extern LWMPOINT* lwmpoint_construct(int srid, BOX2DFLOAT4 *bbox, POINTARRAY *pts);
 extern LWCOLLECTION* lwcollection_construct(uint32 type, int SRID, BOX2DFLOAT4 *bbox, uint32 ngeoms, LWGEOM **geoms);
 
 /*
@@ -1528,6 +1528,7 @@ extern POINTARRAY *ptarray_addPoint(const POINTARRAY *pa, uchar *p, size_t pdims
 extern POINTARRAY *ptarray_removePoint(POINTARRAY *pa, uint32 where);
 extern POINTARRAY *ptarray_merge(POINTARRAY *pa1, POINTARRAY *pa2);
 
+extern int ptarray_isclosed(const POINTARRAY *pa);
 extern int ptarray_isclosed2d(const POINTARRAY *pa);
 extern int ptarray_isclosed3d(const POINTARRAY *pa);
 

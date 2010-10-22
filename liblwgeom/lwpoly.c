@@ -48,8 +48,7 @@ lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox, uint32 nrings, POINTARRAY **points
 #endif
 
 	result = (LWPOLY*) lwalloc(sizeof(LWPOLY));
-	result->type = lwgeom_makeType_full(hasz, hasm, (SRID!=-1), POLYGONTYPE,
-	                                    0);
+	result->type = lwgeom_makeType_full(hasz, hasm, (SRID!=-1), POLYGONTYPE, 0);
 	result->SRID = SRID;
 	result->nrings = nrings;
 	result->maxrings = nrings;

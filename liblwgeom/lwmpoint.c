@@ -29,34 +29,6 @@ lwmpoint_construct_empty(int srid, char hasz, char hasm)
 	return ret;
 }
 
-LWMPOINT *
-lwmpoint_construct(int srid, BOX2DFLOAT4 *bbox, POINTARRAY *pts)
-{
-	int i;
-	LWMPOINT *lwmp;
-	int ptsize;
-	
-	
-	/* Null point array or no points, return an empty geometry */
-	if( ! pts )
-		return lwmpoint_construct_empty(srid, 0, 0);
-		
-	lwmp = lwmpoint_construct_empty(srid, TYPE_HASZ(pts->dims), TYPE_HASM(pts->dims));
-	
-	if( pts->npoints == 0 )
-		return lwmp;
-		
-	ptsize = pointArray_ptsize(pts);
-	for( i = 0; i < pts->npoints; i++ )
-	{
-		POINTARRAY *pa = ptarray_construct(TYPE_HASZ(pts->dims), TYPE_HASM(pts->dims), 1);
-		LWPOINT *lwp = lwpoint_construct(srid, bbox, pa);
-		memcpy(getPoint_internal(pa, 0), getPoint_internal(pts, i), ptsize);
-		lwmp = (LWMPOINT*)(lwcollection_add_lwgeom((LWCOLLECTION*)lwmp, lwpoint_as_lwgeom(lwp)));
-	}
-	return lwmp;
-}
-
 
 LWMPOINT *
 lwmpoint_deserialize(uchar *srl)

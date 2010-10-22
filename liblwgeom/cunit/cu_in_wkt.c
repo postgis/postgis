@@ -112,6 +112,14 @@ static void test_wkt_in_linestring(void)
 
 static void test_wkt_in_polygon(void)
 {
+	char *s;
+	char *r;
+
+	s = "POLYGON((0 0,0 1,1 1,0 0))";
+	r = cu_wkt_in(s, WKT_SFSQL);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	lwfree(r);
 }
 
 static void test_wkt_in_multipoint(void)
@@ -122,6 +130,7 @@ static void test_wkt_in_multipoint(void)
 	s = "MULTIPOINT(0 0)";
 	r = cu_wkt_in(s, WKT_SFSQL);
 	CU_ASSERT_STRING_EQUAL(r,s);
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
 
 	s = "MULTIPOINT(0 0,1 1)";
@@ -133,10 +142,33 @@ static void test_wkt_in_multipoint(void)
 
 static void test_wkt_in_multilinestring(void)
 {
+	char *s;
+	char *r;
+
+	s = "MULTILINESTRING((0 0,1 1),(1 1,2 2),(3 3,3 3,3 3,2 2,2 1))";
+	r = cu_wkt_in(s, WKT_SFSQL);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	lwfree(r);
+	
 }
 
 static void test_wkt_in_multipolygon(void)
 {
+	char *s;
+	char *r;
+
+	s = "MULTIPOLYGON(((0 0,0 1,1 1,0 0)))";
+	r = cu_wkt_in(s, WKT_SFSQL);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	lwfree(r);
+
+	s = "MULTIPOLYGON(((0 0,0 10,10 10,0 0),(1 1,1 2,2 2,1 1)),((-10 -10,-10 -5,-5 -5,-10 -10)))";
+	r = cu_wkt_in(s, WKT_SFSQL);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	lwfree(r);
 }
 
 static void test_wkt_in_collection(void)
@@ -163,6 +195,18 @@ static void test_wkt_in_multisurface(void)
 {
 }
 
+static void test_wkt_in_polyhedralsurface(void)
+{
+	char *s;
+	char *r;
+
+	s = "POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))";
+	r = cu_wkt_in(s, WKT_SFSQL);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	printf("\nIN:  %s\nOUT: %s\n",s,r);
+	lwfree(r);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -181,6 +225,7 @@ CU_TestInfo wkt_in_tests[] =
 	PG_TEST(test_wkt_in_curvpolygon),
 	PG_TEST(test_wkt_in_multicurve),
 	PG_TEST(test_wkt_in_multisurface),
+//	PG_TEST(test_wkt_in_polyhedralsurface),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo wkt_in_suite = {"WKT In Suite",  init_wkt_in_suite,  clean_wkt_in_suite, wkt_in_tests};
