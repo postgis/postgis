@@ -96,6 +96,18 @@ static void stringbuffer_makeroom(stringbuffer_t *s, size_t size_to_add)
 }
 
 /**
+* Return the last character in the buffer.
+*/
+char stringbuffer_lastchar(stringbuffer_t *s)
+{
+	if( s->str_end == s->str_start ) 
+		return 0;
+	
+	return *(s->str_end - 1);
+}
+
+
+/**
 * Append the specified string to the stringbuffer_t.
 */
 void stringbuffer_append(stringbuffer_t *s, const char *a)

@@ -104,9 +104,11 @@ static void lwpoint_to_wkt_sb(const LWPOINT *pt, stringbuffer_t *sb, int precisi
 		dimension_qualifiers_to_wkt_sb((LWGEOM*)pt, sb, variant);
 	}
 
-	if ( pt->point->npoints < 1 )
+	if ( (! pt->point) || (pt->point->npoints < 1) )
 	{
-		stringbuffer_append(sb, " EMPTY"); /* "EMPTY" */
+		if ( stringbuffer_lastchar(sb) != ' ' ) /* "EMPTY" */
+			stringbuffer_append(sb, " "); 
+		stringbuffer_append(sb, "EMPTY"); 
 		return;
 	}
 
@@ -123,9 +125,11 @@ static void lwline_to_wkt_sb(const LWLINE *line, stringbuffer_t *sb, int precisi
 		stringbuffer_append(sb, "LINESTRING"); /* "LINESTRING" */
 		dimension_qualifiers_to_wkt_sb((LWGEOM*)line, sb, variant);
 	}
-	if ( line->points->npoints < 1 )
-	{
-		stringbuffer_append(sb, " EMPTY"); /* "EMPTY" */
+	if ( (! line->points) || (line->points->npoints < 1) )
+	{  
+		if ( stringbuffer_lastchar(sb) != ' ' ) /* "EMPTY" */
+			stringbuffer_append(sb, " "); 
+		stringbuffer_append(sb, "EMPTY"); 
 		return;
 	}
 
@@ -145,7 +149,9 @@ static void lwpoly_to_wkt_sb(const LWPOLY *poly, stringbuffer_t *sb, int precisi
 	}
 	if ( poly->nrings < 1 )
 	{
-		stringbuffer_append(sb, " EMPTY"); /* "EMPTY" */
+		if ( stringbuffer_lastchar(sb) != ' ' ) /* "EMPTY" */
+			stringbuffer_append(sb, " "); 
+		stringbuffer_append(sb, "EMPTY"); 
 		return;
 	}
 
@@ -169,9 +175,11 @@ static void lwcircstring_to_wkt_sb(const LWCIRCSTRING *circ, stringbuffer_t *sb,
 		stringbuffer_append(sb, "CIRCULARSTRING"); /* "CIRCULARSTRING" */
 		dimension_qualifiers_to_wkt_sb((LWGEOM*)circ, sb, variant);
 	}
-	if ( circ->points->npoints < 1 )
+	if ( (! circ->points) || (circ->points->npoints < 1) )
 	{
-		stringbuffer_append(sb, " EMPTY"); /* "EMPTY" */
+		if ( stringbuffer_lastchar(sb) != ' ' ) /* "EMPTY" */
+			stringbuffer_append(sb, " "); 
+		stringbuffer_append(sb, "EMPTY"); 
 		return;
 	}
 	ptarray_to_wkt_sb(circ->points, sb, precision, variant);
@@ -192,7 +200,9 @@ static void lwmpoint_to_wkt_sb(const LWMPOINT *mpoint, stringbuffer_t *sb, int p
 	}
 	if ( mpoint->ngeoms < 1 )
 	{
-		stringbuffer_append(sb, " EMPTY"); /* "EMPTY" */
+		if ( stringbuffer_lastchar(sb) != ' ' ) /* "EMPTY" */
+			stringbuffer_append(sb, " "); 
+		stringbuffer_append(sb, "EMPTY"); 
 		return;
 	}
 	stringbuffer_append(sb, "(");
@@ -220,7 +230,9 @@ static void lwmline_to_wkt_sb(const LWMLINE *mline, stringbuffer_t *sb, int prec
 	}
 	if ( mline->ngeoms < 1 )
 	{
-		stringbuffer_append(sb, " EMPTY"); /* "EMPTY" */
+		if ( stringbuffer_lastchar(sb) != ' ' ) /* "EMPTY" */
+			stringbuffer_append(sb, " "); 
+		stringbuffer_append(sb, "EMPTY"); 
 		return;
 	}
 
@@ -249,7 +261,9 @@ static void lwmpoly_to_wkt_sb(const LWMPOLY *mpoly, stringbuffer_t *sb, int prec
 	}
 	if ( mpoly->ngeoms < 1 )
 	{
-		stringbuffer_append(sb, " EMPTY"); /* "EMPTY" */
+		if ( stringbuffer_lastchar(sb) != ' ' ) /* "EMPTY" */
+			stringbuffer_append(sb, " "); 
+		stringbuffer_append(sb, "EMPTY"); 
 		return;
 	}
 
@@ -280,7 +294,9 @@ static void lwcompound_to_wkt_sb(const LWCOMPOUND *comp, stringbuffer_t *sb, int
 	}
 	if ( comp->ngeoms < 1 )
 	{
-		stringbuffer_append(sb, " EMPTY"); /* "EMPTY" */
+		if ( stringbuffer_lastchar(sb) != ' ' ) /* "EMPTY" */
+			stringbuffer_append(sb, " "); 
+		stringbuffer_append(sb, "EMPTY"); 
 		return;
 	}
 
@@ -324,7 +340,9 @@ static void lwcurvepoly_to_wkt_sb(const LWCURVEPOLY *cpoly, stringbuffer_t *sb, 
 	}
 	if ( cpoly->nrings < 1 )
 	{
-		stringbuffer_append(sb, " EMPTY"); /* "EMPTY" */
+		if ( stringbuffer_lastchar(sb) != ' ' ) /* "EMPTY" */
+			stringbuffer_append(sb, " "); 
+		stringbuffer_append(sb, "EMPTY"); 
 		return;
 	}
 	stringbuffer_append(sb, "(");
@@ -371,7 +389,9 @@ static void lwmcurve_to_wkt_sb(const LWMCURVE *mcurv, stringbuffer_t *sb, int pr
 	}
 	if ( mcurv->ngeoms < 1 )
 	{
-		stringbuffer_append(sb, " EMPTY"); /* "EMPTY" */
+		if ( stringbuffer_lastchar(sb) != ' ' ) /* "EMPTY" */
+			stringbuffer_append(sb, " "); 
+		stringbuffer_append(sb, "EMPTY"); 
 		return;
 	}
 	stringbuffer_append(sb, "(");
@@ -418,7 +438,9 @@ static void lwmsurface_to_wkt_sb(const LWMSURFACE *msurf, stringbuffer_t *sb, in
 	}
 	if ( msurf->ngeoms < 1 )
 	{
-		stringbuffer_append(sb, " EMPTY"); /* "EMPTY" */
+		if ( stringbuffer_lastchar(sb) != ' ' ) /* "EMPTY" */
+			stringbuffer_append(sb, " "); 
+		stringbuffer_append(sb, "EMPTY"); 
 		return;
 	}
 	stringbuffer_append(sb, "(");
@@ -460,7 +482,9 @@ static void lwcollection_to_wkt_sb(const LWCOLLECTION *collection, stringbuffer_
 	}
 	if ( collection->ngeoms < 1 )
 	{
-		stringbuffer_append(sb, " EMPTY"); /* "EMPTY" */
+		if ( stringbuffer_lastchar(sb) != ' ' ) /* "EMPTY" */
+			stringbuffer_append(sb, " "); 
+		stringbuffer_append(sb, "EMPTY"); 
 		return;
 	}
 	stringbuffer_append(sb, "(");

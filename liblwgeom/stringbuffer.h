@@ -62,4 +62,5 @@ extern int stringbuffer_aprintf(stringbuffer_t *sb, const char *fmt, ...);
 extern const char *stringbuffer_getstring(stringbuffer_t *sb);
 extern char *stringbuffer_getstringcopy(stringbuffer_t *sb);
 extern int stringbuffer_getlength(stringbuffer_t *sb);
+extern char stringbuffer_lastchar(stringbuffer_t *s);
 

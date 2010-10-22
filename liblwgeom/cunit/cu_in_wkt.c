@@ -72,7 +72,12 @@ static void test_wkt_in_linestring(void)
 {
 	char *s;
 	char *r;
-	
+
+	s = "LINESTRING EMPTY";
+	r = cu_wkt_in(s, WKT_SFSQL);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	lwfree(r);
+
 	s = "LINESTRING(0 0,1 1)";
 	r = cu_wkt_in(s, WKT_SFSQL);
 	CU_ASSERT_STRING_EQUAL(r,s);
@@ -95,6 +100,11 @@ static void test_wkt_in_linestring(void)
 
 	s = "LINESTRINGM(0 0 0,1 1 1)";
 	r = cu_wkt_in(s, WKT_EXTENDED);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	lwfree(r);
+
+	s = "LINESTRING ZM EMPTY";
+	r = cu_wkt_in(s, WKT_ISO);
 	CU_ASSERT_STRING_EQUAL(r,s);
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);

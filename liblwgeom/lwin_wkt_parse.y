@@ -164,7 +164,7 @@ geometry_no_srid :
 	polygon {} | 
 	curvepolygon {} | 
 	multipoint { $$ = $1; } |
-	multilinestring {} | 
+	multilinestring { $$ = $1; } | 
 	multipolygon {} |
 	multisurface {} |
 	multicurve {} |
@@ -246,13 +246,20 @@ curve_list :
 	linestring_untagged {} ;
 
 multilinestring :
-	MLINESTRING_TOK LBRACKET_TOK linestring_list RBRACKET_TOK {} |
-	MLINESTRING_TOK DIMENSIONALITY_TOK LBRACKET_TOK linestring_list RBRACKET_TOK {} |
-	MLINESTRING_TOK EMPTY_TOK {} ;
+	MLINESTRING_TOK LBRACKET_TOK linestring_list RBRACKET_TOK 
+		{ $$ = wkt_parser_collection_finalize(MULTILINETYPE, $3, NULL); WKT_ERROR(); } |
+	MLINESTRING_TOK DIMENSIONALITY_TOK LBRACKET_TOK linestring_list RBRACKET_TOK 
+		{ $$ = wkt_parser_collection_finalize(MULTILINETYPE, $4, $2); WKT_ERROR(); } |
+	MLINESTRING_TOK DIMENSIONALITY_TOK EMPTY_TOK 
+		{ $$ = wkt_parser_collection_finalize(MULTILINETYPE, NULL, $2); WKT_ERROR(); } |
+	MLINESTRING_TOK EMPTY_TOK 
+		{ $$ = wkt_parser_collection_finalize(MULTILINETYPE, NULL, NULL); WKT_ERROR(); } ;
 
 linestring_list :
-	linestring_list COMMA_TOK linestring_untagged {} |
-	linestring_untagged {} ;
+	linestring_list COMMA_TOK linestring_untagged 
+		{ wkt_parser_collection_add_geom($$,$3); WKT_ERROR(); } |
+	linestring_untagged 
+		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } ;
 
 circularstring : 
 	CIRCULARSTRING_TOK LBRACKET_TOK ptarray RBRACKET_TOK 
@@ -302,8 +309,7 @@ ptarray :
 	ptarray COMMA_TOK coordinate 
 		{ wkt_parser_ptarray_add_coord($$, $3); WKT_ERROR(); } |
 	coordinate 
-		{ $$ = wkt_parser_ptarray_new(FLAGS_NDIMS(($1).flags)); WKT_ERROR(); 
-		  wkt_parser_ptarray_add_coord($$, $1); WKT_ERROR(); } ;
+		{ $$ = wkt_parser_ptarray_new($1); WKT_ERROR(); } ;
 
 coordinate : 
 	DOUBLE_TOK DOUBLE_TOK 
