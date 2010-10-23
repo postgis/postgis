@@ -1485,13 +1485,11 @@ static LWGEOM* parse_gml_tin(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (!*root_srid)
 	{
 		*root_srid = srs->srid;
-		geom = (LWGEOM *)lwcollection_construct_empty(*root_srid, 1, 0);
-		TYPE_SETTYPE(geom->type, TINTYPE);
+		geom = (LWGEOM *)lwcollection_construct_empty(TINTYPE, *root_srid, 1, 0);
 	}
 	else
 	{
-		geom = (LWGEOM *)lwcollection_construct_empty(-1, 1, 0);
-		TYPE_SETTYPE(geom->type, TINTYPE);
+		geom = (LWGEOM *)lwcollection_construct_empty(TINTYPE, -1, 1, 0);
 	}
 	lwfree(srs);
 
@@ -1540,13 +1538,11 @@ static LWGEOM* parse_gml_mpoint(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (!*root_srid)
 	{
 		*root_srid = srs->srid;
-		geom = (LWGEOM *)lwcollection_construct_empty(*root_srid, 1, 0);
-		TYPE_SETTYPE(geom->type, MULTIPOINTTYPE);
+		geom = (LWGEOM *)lwcollection_construct_empty(MULTIPOINTTYPE, *root_srid, 1, 0);
 	}
 	else
 	{
-		geom = (LWGEOM *)lwcollection_construct_empty(-1, 1, 0);
-		TYPE_SETTYPE(geom->type, MULTIPOINTTYPE);
+		geom = (LWGEOM *)lwcollection_construct_empty(MULTIPOINTTYPE, -1, 1, 0);
 	}
 	lwfree(srs);
 
@@ -1580,13 +1576,11 @@ static LWGEOM* parse_gml_mline(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (!*root_srid)
 	{
 		*root_srid = srs->srid;
-		geom = (LWGEOM *)lwcollection_construct_empty(*root_srid, 1, 0);
-		TYPE_SETTYPE(geom->type, MULTILINETYPE);
+		geom = (LWGEOM *)lwcollection_construct_empty(MULTILINETYPE, *root_srid, 1, 0);
 	}
 	else
 	{
-		geom = (LWGEOM *)lwcollection_construct_empty(-1, 1, 0);
-		TYPE_SETTYPE(geom->type, MULTILINETYPE);
+		geom = (LWGEOM *)lwcollection_construct_empty(MULTILINETYPE, -1, 1, 0);
 	}
 	lwfree(srs);
 
@@ -1620,13 +1614,11 @@ static LWGEOM* parse_gml_mcurve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (!*root_srid)
 	{
 		*root_srid = srs->srid;
-		geom = (LWGEOM *)lwcollection_construct_empty(*root_srid, 1, 0);
-		TYPE_SETTYPE(geom->type, MULTILINETYPE);
+		geom = (LWGEOM *)lwcollection_construct_empty(MULTILINETYPE, *root_srid, 1, 0);
 	}
 	else
 	{
-		geom = (LWGEOM *)lwcollection_construct_empty(-1, 1, 0);
-		TYPE_SETTYPE(geom->type, MULTILINETYPE);
+		geom = (LWGEOM *)lwcollection_construct_empty(MULTILINETYPE, -1, 1, 0);
 	}
 	lwfree(srs);
 
@@ -1661,13 +1653,11 @@ static LWGEOM* parse_gml_mpoly(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (!*root_srid)
 	{
 		*root_srid = srs->srid;
-		geom = (LWGEOM *)lwcollection_construct_empty(*root_srid, 1, 0);
-		TYPE_SETTYPE(geom->type, MULTIPOLYGONTYPE);
+		geom = (LWGEOM *)lwcollection_construct_empty(MULTIPOLYGONTYPE, *root_srid, 1, 0);
 	}
 	else
 	{
-		geom = (LWGEOM *)lwcollection_construct_empty(-1, 1, 0);
-		TYPE_SETTYPE(geom->type, MULTIPOLYGONTYPE);
+		geom = (LWGEOM *)lwcollection_construct_empty(MULTIPOLYGONTYPE, -1, 1, 0);
 	}
 	lwfree(srs);
 
@@ -1701,13 +1691,11 @@ static LWGEOM* parse_gml_msurface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (!*root_srid)
 	{
 		*root_srid = srs->srid;
-		geom = (LWGEOM *)lwcollection_construct_empty(*root_srid, 1, 0);
-		TYPE_SETTYPE(geom->type, MULTIPOLYGONTYPE);
+		geom = (LWGEOM *)lwcollection_construct_empty(MULTIPOLYGONTYPE, *root_srid, 1, 0);
 	}
 	else
 	{
-		geom = (LWGEOM *)lwcollection_construct_empty(-1, 1, 0);
-		TYPE_SETTYPE(geom->type, MULTIPOLYGONTYPE);
+		geom = (LWGEOM *)lwcollection_construct_empty(MULTIPOLYGONTYPE, -1, 1, 0);
 	}
 	lwfree(srs);
 
@@ -1743,13 +1731,11 @@ static LWGEOM* parse_gml_psurface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (!*root_srid)
 	{
 		*root_srid = srs->srid;
-		geom = (LWGEOM *)lwcollection_construct_empty(*root_srid, 1, 0);
-		TYPE_SETTYPE(geom->type, POLYHEDRALSURFACETYPE);
+		geom = (LWGEOM *)lwcollection_construct_empty(POLYHEDRALSURFACETYPE, *root_srid, 1, 0);
 	}
 	else
 	{
-		geom = (LWGEOM *)lwcollection_construct_empty(-1, 1, 0);
-		TYPE_SETTYPE(geom->type, POLYHEDRALSURFACETYPE);
+		geom = (LWGEOM *)lwcollection_construct_empty(POLYHEDRALSURFACETYPE, -1, 1, 0);
 	}
 	lwfree(srs);
 
@@ -1796,13 +1782,11 @@ static LWGEOM* parse_gml_coll(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (!*root_srid)
 	{
 		*root_srid = srs->srid;
-		geom = (LWGEOM *)lwcollection_construct_empty(*root_srid, 1, 0);
-		TYPE_SETTYPE(geom->type, COLLECTIONTYPE);
+		geom = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, *root_srid, 1, 0);
 	}
 	else
 	{
-		geom = (LWGEOM *)lwcollection_construct_empty(-1, 1, 0);
-		TYPE_SETTYPE(geom->type, COLLECTIONTYPE);
+		geom = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, -1, 1, 0);
 	}
 	lwfree(srs);
 

@@ -525,7 +525,7 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 
 	if ( lwout == NULL )
 	{
-		lwout = (LWGEOM *)lwcollection_construct_empty(
+		lwout = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, 
 		            pglwgeom_getSRID(gin), lwgeom_hasZ(gin->type),
 		            lwgeom_hasM(gin->type));
 	}

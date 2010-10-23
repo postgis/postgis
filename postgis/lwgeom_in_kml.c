@@ -454,7 +454,7 @@ static LWGEOM* parse_kml_multi(xmlNodePtr xnode, bool *hasz)
 	LWGEOM *geom;
 	xmlNodePtr xa;
 
-	geom = (LWGEOM *)lwcollection_construct_empty(4326, 1, 0);
+	geom = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, 4326, 1, 0);
 
 	for (xa = xnode->children ; xa != NULL ; xa = xa->next)
 	{
