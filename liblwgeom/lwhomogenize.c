@@ -112,7 +112,7 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 
 	/* EMPTY Geometry case */
 	if (col->ngeoms == 0)
-		return (LWGEOM *) lwcollection_construct_empty(col->SRID, 0, 0);
+		return (LWGEOM *) lwcollection_construct_empty(COLLECTIONTYPE, col->SRID, 0, 0);
 
 	hasz = TYPE_HASZ(col->type);
 	hasm = TYPE_HASM(col->type);
@@ -136,7 +136,7 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 	        (geoms->lines->ngeoms  && geoms->polys->ngeoms))
 	{
 		LWDEBUGF(4,"geoms->points->ngeoms %d  geoms->lines->ngeoms %d  geoms->polys->ngeoms %d", geoms->points->ngeoms, geoms->lines->ngeoms, geoms->polys->ngeoms);
-		coll = lwcollection_construct_empty(srid, hasz, hasm);
+		coll = lwcollection_construct_empty(COLLECTIONTYPE, srid, hasz, hasm);
 
 		LWDEBUGF(4,"coll->ngeoms %d", coll->ngeoms);
 
@@ -199,7 +199,7 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 	lwfree(geoms);
 
 	/* Empty (and recursive) Geometry case */
-	if (!res) return (LWGEOM *) lwcollection_construct_empty(col->SRID, 0, 0);
+	if (!res) return (LWGEOM *) lwcollection_construct_empty(COLLECTIONTYPE, col->SRID, 0, 0);
 
 	/* Handle SRID and Bbox */
 	res->SRID = srid;

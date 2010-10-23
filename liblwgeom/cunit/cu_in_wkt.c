@@ -195,6 +195,7 @@ static void test_wkt_in_multisurface(void)
 {
 }
 
+/*
 static void test_wkt_in_polyhedralsurface(void)
 {
 	char *s;
@@ -206,6 +207,7 @@ static void test_wkt_in_polyhedralsurface(void)
 	printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
 }
+*/
 
 /*
 ** Used by test harness to register the tests in this file.

@@ -386,7 +386,7 @@ LWCOLLECTION *lwmline_clip_to_ordinate_range(LWMLINE *mline, int ordinate, doubl
 		int i, j;
 		char homogeneous = 1;
 		size_t geoms_size = 0;
-		lwgeom_out = lwcollection_construct_empty(mline->SRID, hasz, hasm);
+		lwgeom_out = lwcollection_construct_empty(COLLECTIONTYPE, mline->SRID, hasz, hasm);
 		lwgeom_out->type = lwgeom_makeType(hasz, hasm, hassrid, MULTILINETYPE);
 		for ( i = 0; i < mline->ngeoms; i ++ )
 		{

@@ -547,12 +547,9 @@ static LWTRIANGLE* lwtriangle_from_wkb_state(wkb_parse_state *s)
 static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
 {
 	uint32 ngeoms = integer_from_wkb_state(s);
-	LWCOLLECTION *col = lwcollection_construct_empty(s->srid, s->has_z, s->has_m);
+	LWCOLLECTION *col = lwcollection_construct_empty(s->lwtype, s->srid, s->has_z, s->has_m);
 	LWGEOM *geom = NULL;
 	int i;
-	
-	/* Set the specific geometry type onto the collection */
-	TYPE_SETTYPE(col->type, s->lwtype);
 	
 	/* Empty collection? */
 	if ( ngeoms == 0 )

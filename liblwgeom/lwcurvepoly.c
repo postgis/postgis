@@ -75,5 +75,68 @@ lwcurvepoly_deserialize(uchar *srl)
 	return result;
 }
 
+LWCURVEPOLY *
+lwcurvepoly_construct_empty(int srid, char hasz, char hasm)
+{
+	LWCURVEPOLY *ret;
+
+	ret = lwalloc(sizeof(LWCURVEPOLY));
+	ret->type = lwgeom_makeType_full(hasz, hasm, (srid!=-1), CURVEPOLYTYPE, 0);
+	ret->SRID = srid;
+	ret->nrings = 0;
+	ret->maxrings = 1; /* Allocate room for sub-members, just in case. */
+	ret->rings = lwalloc(ret->maxrings * sizeof(LWGEOM*));
+	ret->bbox = NULL;
+
+	return ret;
+}
+
+int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring)
+{
+	int ringtype, i;
+	
+	/* Can't do anything with NULLs */
+	if( ! poly || ! ring ) 
+		return LW_FALSE;
+
+	/* Check that we're not working with garbage */
+	if ( poly->rings == NULL && (poly->nrings || poly->maxrings) )
+		lwerror("Curvepolygon is in inconsistent state. Null memory but non-zero collection counts.");
+
+	/* Check that we're adding an allowed ring type */
+	ringtype = TYPE_GETTYPE(ring->type);
+	if ( ! ( ringtype == LINETYPE || ringtype == CIRCSTRINGTYPE || ringtype == CURVEPOLYTYPE ) )
+		return LW_FALSE;
+		
+	/* In case this is a truly empty, make some initial space  */
+	if ( poly->rings == NULL )
+	{
+		poly->maxrings = 2;
+		poly->nrings = 0;
+		poly->rings = lwalloc(poly->maxrings * sizeof(LWGEOM*));
+	}
+
+	/* Allocate more space if we need it */
+	if ( poly->nrings == poly->maxrings )
+	{
+		poly->maxrings *= 2;
+		poly->rings = lwrealloc(poly->rings, sizeof(LWGEOM*) * poly->maxrings);
+	}
+
+	/* Make sure we don't already have a reference to this geom */
+	for ( i = 0; i < poly->nrings; i++ )
+	{
+		if ( poly->rings[i] == ring )
+		{
+			LWDEBUGF(4, "Found duplicate geometry in collection %p == %p", poly->rings[i], ring);
+			return LW_TRUE;
+		}
+	}
+
+	/* Add the ring and increment the ring count */
+	poly->rings[poly->nrings] = (LWGEOM*)ring;
+	poly->nrings++;
+	return LW_TRUE;	
+}
 
 

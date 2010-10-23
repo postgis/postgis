@@ -73,12 +73,14 @@ lwcollection_construct(uint32 type, int SRID, BOX2DFLOAT4 *bbox,
 }
 
 LWCOLLECTION *
-lwcollection_construct_empty(int srid, char hasz, char hasm)
+lwcollection_construct_empty(uint32 type, int srid, char hasz, char hasm)
 {
 	LWCOLLECTION *ret;
+	if( ! lwgeom_is_collection(type) )
+		lwerror("Non-collection type specified in collection constructor!");
 
 	ret = lwalloc(sizeof(LWCOLLECTION));
-	ret->type = lwgeom_makeType_full(hasz, hasm, (srid!=-1), COLLECTIONTYPE, 0);
+	ret->type = lwgeom_makeType_full(hasz, hasm, (srid!=-1), type, 0);
 	ret->SRID = srid;
 	ret->ngeoms = 0;
 	ret->maxgeoms = 1; /* Allocate room for sub-members, just in case. */
@@ -597,7 +599,7 @@ LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type)
 	}
 	else
 	{
-		outcol = lwcollection_construct_empty(col->SRID, TYPE_HASZ(col->type), TYPE_HASM(col->type));
+		outcol = lwcollection_construct_empty(COLLECTIONTYPE, col->SRID, TYPE_HASZ(col->type), TYPE_HASM(col->type));
 	}
 
 	return outcol;

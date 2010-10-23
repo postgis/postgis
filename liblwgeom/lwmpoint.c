@@ -24,8 +24,7 @@ lwmpoint_release(LWMPOINT *lwmpoint)
 LWMPOINT *
 lwmpoint_construct_empty(int srid, char hasz, char hasm)
 {
-	LWMPOINT *ret = (LWMPOINT*)lwcollection_construct_empty(srid, hasz, hasm);
-	TYPE_SETTYPE(ret->type, MULTIPOINTTYPE);
+	LWMPOINT *ret = (LWMPOINT*)lwcollection_construct_empty(MULTIPOINTTYPE, srid, hasz, hasm);
 	return ret;
 }
 

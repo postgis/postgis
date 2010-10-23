@@ -505,7 +505,7 @@ lwgeom_from_tgeom(TGEOM *tgeom)
 	hasz=FLAGS_GET_Z(tgeom->flags);
 	hasm=FLAGS_GET_M(tgeom->flags);
 
-	geom = (LWGEOM *)lwcollection_construct_empty(tgeom->srid, hasz, hasm);
+	geom = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, tgeom->srid, hasz, hasm);
 
 	switch (type)
 	{

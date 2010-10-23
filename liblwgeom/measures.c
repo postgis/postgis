@@ -46,14 +46,14 @@ lw_dist2d_distanceline(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode)
 	{
 		/*should never get here. all cases ought to be error handled earlier*/
 		lwerror("Some unspecified error.");
-		result =(LWGEOM *)lwcollection_construct_empty(srid, 0, 0);
+		result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
 	}
 
 	/*if thedl.distance is unchanged there where only empty geometries input*/
 	if (thedl.distance == initdistance)
 	{
 		LWDEBUG(3, "didn't find geometries to measure between, returning null");
-		result =(LWGEOM *)lwcollection_construct_empty(srid, 0, 0);
+		result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
 	}
 	else
 	{
@@ -91,12 +91,12 @@ lw_dist2d_distancepoint(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode)
 	{
 		/*should never get here. all cases ought to be error handled earlier*/
 		lwerror("Some unspecified error.");
-		result =(LWGEOM *)lwcollection_construct_empty(srid, 0, 0);
+		result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
 	}
 	if (thedl.distance == initdistance)
 	{
 		LWDEBUG(3, "didn't find geometries to measure between, returning null");
-		result =(LWGEOM *)lwcollection_construct_empty(srid, 0, 0);
+		result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
 	}
 	else
 	{

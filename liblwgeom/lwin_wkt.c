@@ -376,9 +376,7 @@ LWGEOM* wkt_parser_triangle_new(POINTARRAY *pa, char *dimensionality)
 
 LWGEOM* wkt_parser_polygon_new(POINTARRAY *pa)
 {
-	POINTARRAY **pas = NULL;
 	LWPOLY *poly = NULL;
-	static int nrings = 1;
 	
 	/* No pointarray is a problem */
 	if( ! pa )
@@ -387,9 +385,7 @@ LWGEOM* wkt_parser_polygon_new(POINTARRAY *pa)
 		return NULL;	
 	}
 
-	pas = lwalloc(nrings * sizeof(POINTARRAY*));
-	pas[0] = pa;
-	poly = lwpoly_construct(SRID_UNKNOWN, NULL, nrings, pas);
+	poly = lwpoly_construct_empty(SRID_UNKNOWN, TYPE_HASZ(pa->dims), TYPE_HASM(pa->dims));
 	
 	/* Error out if we can't build this polygon. */
 	if( ! poly )
@@ -398,6 +394,7 @@ LWGEOM* wkt_parser_polygon_new(POINTARRAY *pa)
 		return NULL;
 	}
 	
+	wkt_parser_polygon_add_ring(lwpoly_as_lwgeom(poly), pa);	
 	return lwpoly_as_lwgeom(poly);
 }
 
@@ -464,19 +461,179 @@ LWGEOM* wkt_parser_polygon_finalize(LWGEOM *poly, char *dimensionality)
 	return poly;
 }
 
+LWGEOM* wkt_parser_curvepolygon_new(LWGEOM *ring) 
+{
+	LWCURVEPOLY *poly;
+	
+	/* Toss error on null geometry input */
+	if( ! ring )
+	{
+		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+		return NULL;
+	}
+	
+	/* Construct poly and add the ring. */
+	poly = lwcurvepoly_construct_empty(SRID_UNKNOWN, TYPE_HASZ(ring->type), TYPE_HASM(ring->type));
+	wkt_parser_curvepolygon_add_ring(lwcurvepoly_as_lwgeom(poly),ring);
+	
+	/* Return the result. */
+	return lwcurvepoly_as_lwgeom(poly);
+}
+
+void wkt_parser_curvepolygon_add_ring(LWGEOM *poly, LWGEOM *ring)
+{
+	LWDEBUG(4,"entered");
+
+	/* Toss error on null input */
+	if( ! ring || ! poly )
+	{
+		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+		return;
+	}
+	
+	/* XXX finish curvepolygon support, watch out for compoundcurve rings? check spec
+	   XXX check the _new functions and make sure they include integrity checks, maybe
+	       go back to the _new/_add pattern
+	*/
+	
+	/* All the elements must agree on dimensionality */
+	if( TYPE_HASZ(poly->type) != TYPE_HASZ(ring->type) || 
+	    TYPE_HASM(poly->type) != TYPE_HASM(ring->type) )
+	{
+		SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
+		return;
+	}
+	
+	/* Apply check for minimum number of points, if requested. */	
+	if( (global_parser_result.parser_check_flags & PARSER_CHECK_MINPOINTS) && 
+	    (lwgeom_count_vertices(ring) < 4) )
+	{
+		SET_PARSER_ERROR(PARSER_ERROR_MOREPOINTS);
+		return;
+	}
+	
+	/* Apply check for not closed rings, if requested. */	
+	if( (global_parser_result.parser_check_flags & PARSER_CHECK_CLOSURE) )
+	{
+		int is_closed = 1;
+		switch ( TYPE_GETTYPE(ring->type) )
+		{
+			case LINETYPE:
+			is_closed = lwline_is_closed(lwgeom_as_lwline(ring));
+			break;
+			
+			case CIRCSTRINGTYPE:
+			is_closed = lwcircstring_is_closed(lwgeom_as_lwcircstring(ring));
+			break;
+			
+			case COMPOUNDTYPE:
+			is_closed = lwcompound_is_closed(lwgeom_as_lwcompound(ring));
+			break;
+		}
+		if ( ! is_closed )
+		{
+			SET_PARSER_ERROR(PARSER_ERROR_UNCLOSED);
+			return;
+		}
+	}
+		
+	if( LW_FALSE == lwcurvepoly_add_ring(lwgeom_as_lwcurvepoly(poly), ring) )
+	{
+		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+		return;
+	}
+	
+	return;
+}
+
+LWGEOM* wkt_parser_curvepolygon_finalize(LWGEOM *poly, char *dimensionality)
+{
+	uchar flags = wkt_dimensionality(dimensionality);
+	
+	/* Null input implies empty return */
+	if( ! poly )
+		return lwcurvepoly_as_lwgeom(lwcurvepoly_construct_empty(SRID_UNKNOWN, FLAGS_GET_Z(flags), FLAGS_GET_M(flags)));
+
+	/* If the number of dimensions are not consistent, we have a problem. */
+	if( FLAGS_NDIMS(flags) != TYPE_NDIMS(poly->type) )
+	{
+		SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
+		return NULL;
+	}
+
+	/* Harmonize the flags in the sub-components with the wkt flags */
+	if( LW_FALSE == wkt_parser_set_dims(poly, flags) )
+	{
+		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+		return NULL;
+	}
+
+	return poly;
+}
+
+LWGEOM* wkt_parser_collection_new(LWGEOM *geom) 
+{
+	LWCOLLECTION *col;
+	LWGEOM **geoms;
+	static int ngeoms = 1;
+	LWDEBUG(4,"entered");
+	
+	/* Toss error on null geometry input */
+	if( ! geom )
+	{
+		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+		return NULL;
+	}
+	
+	/* Create our geometry array */
+	geoms = lwalloc(sizeof(LWGEOM*) * ngeoms);
+	geoms[0] = geom;
+	
+	/* Make a new collection */
+	col = lwcollection_construct(COLLECTIONTYPE, SRID_UNKNOWN, NULL, ngeoms, geoms); 
+
+	/* Return the result. */
+	return lwcollection_as_lwgeom(col);
+}
+
+void wkt_parser_collection_add_geom(LWGEOM *col, LWGEOM *geom)
+{
+	LWCOLLECTION *c;
+	LWDEBUG(4,"entered");
+
+	/* Toss error on null geometry input */
+	if( ! geom || ! col )
+	{
+		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+		return;
+	}
+		
+	/* Toss an error on a null collection input */
+	if ( ! col )
+	{
+		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+		return;
+	}
+
+	/* All the elements must agree on dimensionality */
+	if( TYPE_HASZ(col->type) != TYPE_HASZ(geom->type) || 
+	    TYPE_HASM(col->type) != TYPE_HASM(geom->type) )
+	{
+		SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
+		return;
+	}
+	c = lwcollection_add_lwgeom(lwgeom_as_lwcollection(col), geom);
+	return;
+}
+
 LWGEOM* wkt_parser_collection_finalize(int lwtype, LWGEOM *col, char *dimensionality) 
 {
 	uchar flags = wkt_dimensionality(dimensionality);
-	LWDEBUG(4,"entered");
-
-	LWDEBUGF(4,"type1 %d",col->type);
 	
 	/* No geometry means it is empty */
 	if( ! col )
 	{
-		LWCOLLECTION *col = lwcollection_construct_empty(SRID_UNKNOWN, FLAGS_GET_Z(flags), FLAGS_GET_M(flags));
-		TYPE_SETTYPE(col->type, lwtype);
-		return lwcollection_as_lwgeom(col);
+		return lwcollection_as_lwgeom(lwcollection_construct_empty(lwtype, SRID_UNKNOWN, FLAGS_GET_Z(flags), FLAGS_GET_M(flags)));
 	}
 
 	/* If the number of dimensions are not consistent, we have a problem. */
@@ -507,59 +664,6 @@ LWGEOM* wkt_parser_collection_finalize(int lwtype, LWGEOM *col, char *dimensiona
 			
 	return col;
 }
-
-
-void wkt_parser_collection_add_geom(LWGEOM *col, LWGEOM *geom)
-{
-	LWCOLLECTION *c;
-	LWDEBUG(4,"entered");
-
-	/* No action if the geometry argument is null. */
-	if ( ! geom ) return;
-	
-	/* Toss an error on a null collection input */
-	if ( ! col )
-	{
-		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
-		return;
-	}
-
-	/* All the elements must agree on dimensionality */
-	if( TYPE_HASZ(col->type) != TYPE_HASZ(geom->type) || 
-	    TYPE_HASM(col->type) != TYPE_HASM(geom->type) )
-	{
-		SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
-		return;
-	}
-	c = lwcollection_add_lwgeom(lwgeom_as_lwcollection(col), geom);
-	return;
-}
-
-LWGEOM* wkt_parser_collection_new(LWGEOM *geom) 
-{
-	LWCOLLECTION *col;
-	LWGEOM **geoms;
-	static int ngeoms = 1;
-	LWDEBUG(4,"entered");
-	
-	/* Toss error on null geometry input */
-	if( ! geom )
-	{
-		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
-		return NULL;
-	}
-	
-	/* Create our geometry array */
-	geoms = lwalloc(sizeof(LWGEOM*) * ngeoms);
-	geoms[0] = geom;
-	
-	/* Make a new collection */
-	col = lwcollection_construct(COLLECTIONTYPE, SRID_UNKNOWN, NULL, ngeoms, geoms); 
-
-	/* Return the result. */
-	return lwcollection_as_lwgeom(col);
-}
-
 void wkt_parser_geometry_new(LWGEOM *geom, int srid)
 {
 	LWDEBUG(4,"entered");

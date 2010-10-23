@@ -551,6 +551,8 @@ extern LWPOLY *lwgeom_as_lwpoly(const LWGEOM *lwgeom);
 extern LWLINE *lwgeom_as_lwline(const LWGEOM *lwgeom);
 extern LWPOINT *lwgeom_as_lwpoint(const LWGEOM *lwgeom);
 extern LWCIRCSTRING *lwgeom_as_lwcircstring(const LWGEOM *lwgeom);
+extern LWCURVEPOLY *lwgeom_as_lwcurvepoly(const LWGEOM *lwgeom);
+extern LWCOMPOUND *lwgeom_as_lwcompound(const LWGEOM *lwgeom);
 extern LWPSURFACE *lwgeom_as_lwpsurface(const LWGEOM *lwgeom);
 extern LWTRIANGLE *lwgeom_as_lwtriangle(const LWGEOM *lwgeom);
 extern LWTIN *lwgeom_as_lwtin(const LWGEOM *lwgeom);
@@ -565,6 +567,8 @@ extern LWGEOM *lwmline_as_lwgeom(const LWMLINE *obj);
 extern LWGEOM *lwmpoint_as_lwgeom(const LWMPOINT *obj);
 extern LWGEOM *lwcollection_as_lwgeom(const LWCOLLECTION *obj);
 extern LWGEOM *lwcircstring_as_lwgeom(const LWCIRCSTRING *obj);
+extern LWGEOM *lwcompound_as_lwgeom(const LWCOMPOUND *obj);
+extern LWGEOM *lwcurvepoly_as_lwgeom(const LWCURVEPOLY *obj);
 extern LWGEOM *lwpoly_as_lwgeom(const LWPOLY *obj);
 extern LWGEOM *lwline_as_lwgeom(const LWLINE *obj);
 extern LWGEOM *lwpoint_as_lwgeom(const LWPOINT *obj);
@@ -923,6 +927,12 @@ extern BOX3D *lwpoly_compute_box3d(LWPOLY *poly);
 * ownership of the passed point array.
 */
 extern int lwpoly_add_ring(LWPOLY *poly, POINTARRAY *pa);
+
+/**
+* Add a ring, allocating extra space if necessary. The curvepolygon takes
+* ownership of the passed point array.
+*/
+extern int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring);
 
 
 /******************************************************************
@@ -1477,6 +1487,7 @@ extern LWPOINT* lwpoint_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *point
 extern LWLINE* lwline_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
 extern LWCIRCSTRING* lwcircstring_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
 extern LWPOLY* lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox, uint32 nrings, POINTARRAY **points);
+extern LWCURVEPOLY* lwcurvepoly_construct(int SRID, BOX2DFLOAT4 *bbox, uint32 nrings, LWGEOM **geoms);
 extern LWTRIANGLE* lwtriangle_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
 extern LWCOLLECTION* lwcollection_construct(uint32 type, int SRID, BOX2DFLOAT4 *bbox, uint32 ngeoms, LWGEOM **geoms);
 
@@ -1486,12 +1497,14 @@ extern LWCOLLECTION* lwcollection_construct(uint32 type, int SRID, BOX2DFLOAT4 *
 extern LWPOINT* lwpoint_construct_empty(int srid, char hasz, char hasm);
 extern LWLINE* lwline_construct_empty(int srid, char hasz, char hasm);
 extern LWPOLY* lwpoly_construct_empty(int srid, char hasz, char hasm);
+extern LWCURVEPOLY* lwcurvepoly_construct_empty(int srid, char hasz, char hasm);
+extern LWCIRCSTRING* lwcircstring_construct_empty(int srid, char hasz, char hasm);
+extern LWCOMPOUND* lwcompound_construct_empty(int srid, char hasz, char hasm);
 extern LWTRIANGLE* lwtriangle_construct_empty(int srid, char hasz, char hasm);
 extern LWMPOINT* lwmpoint_construct_empty(int srid, char hasz, char hasm);
 extern LWMLINE* lwmline_construct_empty(int srid, char hasz, char hasm);
 extern LWMPOLY* lwmpoly_construct_empty(int srid, char hasz, char hasm);
-extern LWCOLLECTION* lwcollection_construct_empty(int srid, char hasz, char hasm);
-extern LWCIRCSTRING* lwcircstring_construct_empty(int srid, char hasz, char hasm);
+extern LWCOLLECTION* lwcollection_construct_empty(uint32 type, int srid, char hasz, char hasm);
 
 
 /* Other constructors */

@@ -25,8 +25,7 @@ lwmpoly_release(LWMPOLY *lwmpoly)
 LWMPOLY *
 lwmpoly_construct_empty(int srid, char hasz, char hasm)
 {
-	LWMPOLY *ret = (LWMPOLY*)lwcollection_construct_empty(srid, hasz, hasm);
-	TYPE_SETTYPE(ret->type, MULTIPOLYGONTYPE);
+	LWMPOLY *ret = (LWMPOLY*)lwcollection_construct_empty(MULTIPOLYGONTYPE, srid, hasz, hasm);
 	return ret;
 }
 

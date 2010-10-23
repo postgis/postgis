@@ -24,8 +24,7 @@ lwmline_release(LWMLINE *lwmline)
 LWMLINE *
 lwmline_construct_empty(int srid, char hasz, char hasm)
 {
-	LWMLINE *ret = (LWMLINE*)lwcollection_construct_empty(srid, hasz, hasm);
-	TYPE_SETTYPE(ret->type, MULTILINETYPE);
+	LWMLINE *ret = (LWMLINE*)lwcollection_construct_empty(MULTILINETYPE, srid, hasz, hasm);
 	return ret;
 }
 
@@ -124,7 +123,7 @@ lwmline_measured_from_lwmline(const LWMLINE *lwmline, double m_start, double m_e
 
 	if ( lwgeom_is_empty((LWGEOM*)lwmline) )
 	{
-		return (LWMLINE*)lwcollection_construct_empty(lwmline->SRID, hasz, hasm);
+		return (LWMLINE*)lwcollection_construct_empty(MULTILINETYPE, lwmline->SRID, hasz, hasm);
 	}
 
 	geoms = lwalloc(sizeof(LWGEOM*) * lwmline->ngeoms);

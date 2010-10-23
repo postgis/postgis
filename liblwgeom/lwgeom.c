@@ -337,6 +337,24 @@ lwgeom_as_lwcircstring(const LWGEOM *lwgeom)
 	else return NULL;
 }
 
+LWCOMPOUND *
+lwgeom_as_lwcompound(const LWGEOM *lwgeom)
+{
+	if ( lwgeom == NULL ) return NULL;
+	if ( TYPE_GETTYPE(lwgeom->type) == COMPOUNDTYPE )
+		return (LWCOMPOUND *)lwgeom;
+	else return NULL;
+}
+
+LWCURVEPOLY *
+lwgeom_as_lwcurvepoly(const LWGEOM *lwgeom)
+{
+	if ( lwgeom == NULL ) return NULL;
+	if ( TYPE_GETTYPE(lwgeom->type) == CURVEPOLYTYPE )
+		return (LWCURVEPOLY *)lwgeom;
+	else return NULL;
+}
+
 LWPOLY *
 lwgeom_as_lwpoly(const LWGEOM *lwgeom)
 {
@@ -438,6 +456,16 @@ LWGEOM *lwcollection_as_lwgeom(const LWCOLLECTION *obj)
 	return (LWGEOM *)obj;
 }
 LWGEOM *lwcircstring_as_lwgeom(const LWCIRCSTRING *obj)
+{
+	if ( obj == NULL ) return NULL;
+	return (LWGEOM *)obj;
+}
+LWGEOM *lwcurvepoly_as_lwgeom(const LWCURVEPOLY *obj)
+{
+	if ( obj == NULL ) return NULL;
+	return (LWGEOM *)obj;
+}
+LWGEOM *lwcompound_as_lwgeom(const LWCOMPOUND *obj)
 {
 	if ( obj == NULL ) return NULL;
 	return (LWGEOM *)obj;
