@@ -107,13 +107,13 @@ $(NM_OBJS): %.o: %.c
 
 # Generate WKT parser from Flex/Yacc inputs
 lwin_wkt_parse.c: lwin_wkt_parse.y
-	$(YACC) -o $@ -d $^
+	$(YACC) -o$@ -d $^
   
 #       $(YACC) --debug --verbose -o $@ -d $<
 #       $(YACC) -o $@ -d $^
 
 lwin_wkt_lex.c: lwin_wkt_lex.l
-	$(LEX) -i -o $@ $<
+	$(LEX) -o$@ -i $<
 
 
 # Commands to generate the lexer and parser from input files
