@@ -19,6 +19,12 @@
 #include "cu_tester.h"
 
 /*
+** Globals used by tests
+*/
+char *s;
+char *r;	
+
+/*
 ** The suite initialization function.
 ** Create any re-used objects.
 */
@@ -59,9 +65,6 @@ static char* cu_wkt_in(char *wkt, uchar variant)
 
 static void test_wkt_in_point(void)
 {
-	char *s;
-	char *r;
-	
 	s = "POINT(0 0)";
 	r = cu_wkt_in(s, WKT_SFSQL);
 	CU_ASSERT_STRING_EQUAL(r,s);
@@ -70,9 +73,6 @@ static void test_wkt_in_point(void)
 
 static void test_wkt_in_linestring(void)
 {
-	char *s;
-	char *r;
-
 	s = "LINESTRING EMPTY";
 	r = cu_wkt_in(s, WKT_SFSQL);
 	CU_ASSERT_STRING_EQUAL(r,s);
@@ -112,9 +112,6 @@ static void test_wkt_in_linestring(void)
 
 static void test_wkt_in_polygon(void)
 {
-	char *s;
-	char *r;
-
 	s = "POLYGON((0 0,0 1,1 1,0 0))";
 	r = cu_wkt_in(s, WKT_SFSQL);
 	CU_ASSERT_STRING_EQUAL(r,s);
@@ -124,9 +121,6 @@ static void test_wkt_in_polygon(void)
 
 static void test_wkt_in_multipoint(void)
 {
-	char *s;
-	char *r;
-
 	s = "MULTIPOINT(0 0)";
 	r = cu_wkt_in(s, WKT_SFSQL);
 	CU_ASSERT_STRING_EQUAL(r,s);
@@ -142,9 +136,6 @@ static void test_wkt_in_multipoint(void)
 
 static void test_wkt_in_multilinestring(void)
 {
-	char *s;
-	char *r;
-
 	s = "MULTILINESTRING((0 0,1 1),(1 1,2 2),(3 3,3 3,3 3,2 2,2 1))";
 	r = cu_wkt_in(s, WKT_SFSQL);
 	CU_ASSERT_STRING_EQUAL(r,s);
@@ -155,9 +146,6 @@ static void test_wkt_in_multilinestring(void)
 
 static void test_wkt_in_multipolygon(void)
 {
-	char *s;
-	char *r;
-
 	s = "MULTIPOLYGON(((0 0,0 1,1 1,0 0)))";
 	r = cu_wkt_in(s, WKT_SFSQL);
 	CU_ASSERT_STRING_EQUAL(r,s);
@@ -177,10 +165,20 @@ static void test_wkt_in_collection(void)
 
 static void test_wkt_in_circularstring(void)
 {
+	s = "CIRCULARSTRING(0 0,0 1,1 1,0 1,2 2)";
+	r = cu_wkt_in(s, WKT_SFSQL);
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	lwfree(r);
 }
 
 static void test_wkt_in_compoundcurve(void)
 {
+//	s = "COMPOUNDCURVE(CIRCULARSTRING((0 0,0 1,1 1,0 0,2 2)),(0 0, 1 1, 2 2))";
+//	r = cu_wkt_in(s, WKT_SFSQL);
+//	CU_ASSERT_STRING_EQUAL(r,s);
+//	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+//	lwfree(r);
 }
 
 static void test_wkt_in_curvpolygon(void)

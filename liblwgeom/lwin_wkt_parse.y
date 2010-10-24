@@ -42,8 +42,8 @@ void wkt_yyerror(const char *str)
 	if ( ! global_parser_result.message ) 
 	{
 		global_parser_result.message = str;
-		/* First column should be start of problematic token */
-		global_parser_result.errlocation = wkt_yylloc.first_column;
+		global_parser_result.errcode = PARSER_ERROR_OTHER;
+		global_parser_result.errlocation = wkt_yylloc.last_column;
 	}
 	LWDEBUGF(4,"%s", str);
 }
@@ -85,10 +85,17 @@ int lwgeom_from_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parse
 	/* A non-zero parser return is an error. */
 	if ( parse_rv != 0 ) 
 	{
-		if( ! global_parser_result.message )
-			global_parser_result.message = "syntax error";
+		if( ! global_parser_result.errcode )
+		{
+			global_parser_result.errcode = PARSER_ERROR_OTHER;
+			global_parser_result.message = parser_error_messages[global_parser_result.errcode];
+			global_parser_result.errlocation = wkt_yylloc.last_column;
+		}
 
-		LWDEBUGF(5, "parser error: '%s'", global_parser_result.message);
+		LWDEBUGF(5, "error returned by wkt_yyparse() @ %d: [%d] '%s'", 
+		            global_parser_result.errlocation, 
+		            global_parser_result.errcode, 
+		            global_parser_result.message);
 		
 		/* Copy the global values into the return pointer */
 		*parser_result = global_parser_result;
@@ -166,16 +173,30 @@ int lwgeom_from_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parse
 %type <geometryvalue> triangle_list
 %type <geometryvalue> triangle_untagged
 
-/* TODO: Turn this stuff on for memory cleanliness.
-%destructor { ptarray_freeall($$); } ptarray
+/* This cleans up memory on errors and aborts. 
+%destructor { ptarray_freeall($$); } ptarray */
 %destructor { ptarray_freeall($$); } ring
+%destructor { lwgeom_free($$); } circularstring
+%destructor { lwgeom_free($$); } compoundcurve
+%destructor { lwgeom_free($$); } curvepolygon
+%destructor { lwgeom_free($$); } curvering
+%destructor { lwgeom_free($$); } geometry_no_srid
+%destructor { lwgeom_free($$); } geometrycollection
 %destructor { lwgeom_free($$); } linestring
 %destructor { lwgeom_free($$); } linestring_untagged
-%destructor { lwgeom_free($$); } circularstring
-%destructor { lwgeom_free($$); } linestring_list
-%destructor { lwgeom_free($$); } point
+%destructor { lwgeom_free($$); } multicurve
+%destructor { lwgeom_free($$); } multilinestring
 %destructor { lwgeom_free($$); } multipoint
-*/
+%destructor { lwgeom_free($$); } multipolygon
+%destructor { lwgeom_free($$); } multisurface
+%destructor { lwgeom_free($$); } point
+%destructor { lwgeom_free($$); } point_untagged
+%destructor { lwgeom_free($$); } polygon
+%destructor { lwgeom_free($$); } polygon_untagged
+%destructor { lwgeom_free($$); } polyhedralsurface
+%destructor { lwgeom_free($$); } tin
+%destructor { lwgeom_free($$); } triangle
+%destructor { lwgeom_free($$); } triangle_untagged
 
 %%
 
@@ -292,10 +313,14 @@ polygon_untagged :
 	LBRACKET_TOK ring_list RBRACKET_TOK { $$ = $2; } ;
 
 curvepolygon :
-	CURVEPOLYGON_TOK LBRACKET_TOK curvering_list RBRACKET_TOK {} |
-	CURVEPOLYGON_TOK DIMENSIONALITY_TOK LBRACKET_TOK curvering_list RBRACKET_TOK {} |
-	CURVEPOLYGON_TOK DIMENSIONALITY_TOK EMPTY_TOK {} |
-	CURVEPOLYGON_TOK EMPTY_TOK {} ;
+	CURVEPOLYGON_TOK LBRACKET_TOK curvering_list RBRACKET_TOK
+		{ $$ = wkt_parser_curvepolygon_finalize($3, NULL); WKT_ERROR(); } |
+	CURVEPOLYGON_TOK DIMENSIONALITY_TOK LBRACKET_TOK curvering_list RBRACKET_TOK
+		{ $$ = wkt_parser_curvepolygon_finalize($4, $2); WKT_ERROR(); } |
+	CURVEPOLYGON_TOK DIMENSIONALITY_TOK EMPTY_TOK
+		{ $$ = wkt_parser_curvepolygon_finalize(NULL, $2); WKT_ERROR(); } |
+	CURVEPOLYGON_TOK EMPTY_TOK
+		{ $$ = wkt_parser_curvepolygon_finalize(NULL, NULL); WKT_ERROR(); } ;
 
 curvering_list :
 	curvering_list COMMA_TOK curvering 

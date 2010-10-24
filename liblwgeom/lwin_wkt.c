@@ -5,7 +5,7 @@
 /*
 * Error messages for failures in the parser. 
 */
-static const char *parser_error_messages[] =
+const char *parser_error_messages[] =
 {
 	"",
 	"geometry requires more points",
@@ -16,8 +16,8 @@ static const char *parser_error_messages[] =
 	"invalid WKB type",
 	"incontinuous compound curve",
 	"triangle must have exactly 4 points",
-	"unknown parse error",
-	"geometry has too many points"
+	"geometry has too many points",
+	"parse error - invalid geometry"
 };
 
 #define SET_PARSER_ERROR(errno) { \
@@ -113,7 +113,7 @@ static int wkt_parser_set_dims(LWGEOM *geom, uchar flags)
 		}
 		else
 		{
-			LWDEBUGF(2,"Unknown geometry type: %d", type);
+			LWDEBUGF(2,"Unknown geometry type: %d", lwtype);
 			return LW_FALSE;
 		}	
 	}

@@ -20,6 +20,7 @@ POINT;
 * Global that holds the final output geometry for the WKT parser.
 */
 extern LWGEOM_PARSER_RESULT global_parser_result;
+extern const char *parser_error_messages[];
 
 /*
 * Prototypes for the lexer

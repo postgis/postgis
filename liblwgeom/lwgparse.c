@@ -126,7 +126,7 @@ double *last_point=NULL;
  * The 0th element should always be empty since it is unused (error constants start from -1)
  */
 
-const char *parser_error_messages[] =
+static const char *parser_error_messages[] =
 {
 	"",
 	"geometry requires more points",
