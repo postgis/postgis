@@ -49,9 +49,9 @@ static void wkt_lexer_unknown()
  
 %}
 
+%option prefix="wkt_yy"
 %option nounput
 %option noyywrap
-%option prefix="wkt_yy"
 
 %%
 
