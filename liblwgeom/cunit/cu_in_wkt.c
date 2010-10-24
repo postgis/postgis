@@ -203,19 +203,14 @@ static void test_wkt_in_multisurface(void)
 {
 }
 
-/*
 static void test_wkt_in_polyhedralsurface(void)
 {
-	char *s;
-	char *r;
-
 	s = "POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))";
 	r = cu_wkt_in(s, WKT_SFSQL);
 	CU_ASSERT_STRING_EQUAL(r,s);
 	printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
 }
-*/
 
 /*
 ** Used by test harness to register the tests in this file.

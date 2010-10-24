@@ -113,7 +113,7 @@ lwin_wkt_parse.c: lwin_wkt_parse.y
 #       $(YACC) -o'$@' -d $^
 
 lwin_wkt_lex.c: lwin_wkt_lex.l
-	$(LEX) -o'$@' -i $<
+	$(LEX) -i $<
 
 
 # Commands to generate the lexer and parser from input files

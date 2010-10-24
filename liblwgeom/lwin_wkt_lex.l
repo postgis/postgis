@@ -51,6 +51,9 @@ static void wkt_lexer_unknown()
 
 %option prefix="wkt_yy"
 %option nounput
+%option never-interactive
+%option outfile="lwin_wkt_lex.c"
+%option header-file="lwin_wkt_lex.h"
 %option noyywrap
 
 %%
