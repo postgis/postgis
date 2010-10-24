@@ -21,7 +21,7 @@
 extern CU_SuiteInfo print_suite;
 extern CU_SuiteInfo algorithms_suite;
 extern CU_SuiteInfo measures_suite;
-extern CU_SuiteInfo wkt_suite;
+extern CU_SuiteInfo wkt_out_suite;
 extern CU_SuiteInfo wkt_in_suite;
 extern CU_SuiteInfo wkb_out_suite;
 extern CU_SuiteInfo wkb_in_suite;
@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 		print_suite,
 		algorithms_suite,
 		measures_suite,
-		wkt_suite,
+		wkt_out_suite,
 		wkt_in_suite,
 		wkb_out_suite,
 		wkb_in_suite,
