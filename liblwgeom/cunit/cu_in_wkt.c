@@ -161,6 +161,11 @@ static void test_wkt_in_multipolygon(void)
 
 static void test_wkt_in_collection(void)
 {
+	s = "GEOMETRYCOLLECTION(POINT(0 0),LINESTRING(1 0,0 0),CIRCULARSTRING(0 0,0 1,1 1,0 1,2 2))";
+	r = cu_wkt_in(s, WKT_SFSQL);
+	// printf("\nIN:  %s\nOUT: %s\n",s,r);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	lwfree(r);
 }
 
 static void test_wkt_in_circularstring(void)
@@ -174,15 +179,20 @@ static void test_wkt_in_circularstring(void)
 
 static void test_wkt_in_compoundcurve(void)
 {
-//	s = "COMPOUNDCURVE(CIRCULARSTRING((0 0,0 1,1 1,0 0,2 2)),(0 0, 1 1, 2 2))";
-//	r = cu_wkt_in(s, WKT_SFSQL);
-//	CU_ASSERT_STRING_EQUAL(r,s);
-//	//printf("\nIN:  %s\nOUT: %s\n",s,r);
-//	lwfree(r);
+	s = "COMPOUNDCURVE Z (CIRCULARSTRING Z (0 0 0,0 1 0,1 1 0,0 0 0,2 2 0),(0 0 1,1 1 1,2 2 1))";
+	r = cu_wkt_in(s, WKT_ISO);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	lwfree(r);
 }
 
 static void test_wkt_in_curvpolygon(void)
 {
+	s = "CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0,0 1,1 1,0 0,2 2),(0 0,1 1,2 2)),CIRCULARSTRING(0 0,0 1,1 1,0 0,2 2),(0 0,1 1,2 1))";
+	r = cu_wkt_in(s, WKT_ISO);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	lwfree(r);
 }
 
 static void test_wkt_in_multicurve(void)

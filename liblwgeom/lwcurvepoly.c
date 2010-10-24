@@ -97,16 +97,26 @@ int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring)
 	
 	/* Can't do anything with NULLs */
 	if( ! poly || ! ring ) 
+	{
+		LWDEBUG(4,"NULL inputs!!! quitting");
 		return LW_FALSE;
+	}
 
 	/* Check that we're not working with garbage */
 	if ( poly->rings == NULL && (poly->nrings || poly->maxrings) )
+	{
+		LWDEBUG(4,"mismatched nrings/maxrings");
 		lwerror("Curvepolygon is in inconsistent state. Null memory but non-zero collection counts.");
+	}
 
 	/* Check that we're adding an allowed ring type */
 	ringtype = TYPE_GETTYPE(ring->type);
-	if ( ! ( ringtype == LINETYPE || ringtype == CIRCSTRINGTYPE || ringtype == CURVEPOLYTYPE ) )
+	if ( ! ( ringtype == LINETYPE || ringtype == CIRCSTRINGTYPE || ringtype == COMPOUNDTYPE ) )
+	{
+		LWDEBUGF(4,"got incorrect ring type: %s",lwtype_name(ringtype));
 		return LW_FALSE;
+	}
+
 		
 	/* In case this is a truly empty, make some initial space  */
 	if ( poly->rings == NULL )

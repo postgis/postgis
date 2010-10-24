@@ -28,7 +28,7 @@ int wkt_yylex(void);
 LWGEOM_PARSER_RESULT global_parser_result;
 
 /* Turn on/off verbose parsing (turn off for production) */
-int wkt_yydebug = 0;
+int wkt_yydebug = 1;
 
 /* 
 * Error handler called by the bison parser. Mostly we will be 
