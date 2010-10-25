@@ -195,7 +195,7 @@ POINT wkt_parser_coord_4(double c1, double c2, double c3, double c4)
 	return p;
 };
 
-void wkt_parser_ptarray_add_coord(POINTARRAY *pa, POINT p)
+POINTARRAY* wkt_parser_ptarray_add_coord(POINTARRAY *pa, POINT p)
 {
 	POINT4D pt;
 	LWDEBUG(4,"entered");
@@ -204,7 +204,7 @@ void wkt_parser_ptarray_add_coord(POINTARRAY *pa, POINT p)
 	if( ! pa ) 
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
-		return;	
+		return NULL;	
 	}
 	
 	/* Check that the coordinate has the same dimesionality as the array */
@@ -212,7 +212,7 @@ void wkt_parser_ptarray_add_coord(POINTARRAY *pa, POINT p)
 	{
 		global_parser_result.message = parser_error_messages[PARSER_ERROR_MIXDIMS];
 		global_parser_result.errcode = PARSER_ERROR_MIXDIMS;
-		return;
+		return NULL;
 	}
 	
 	/* While parsing the point arrays, XYM and XMZ points are both treated as XYZ */
@@ -227,6 +227,7 @@ void wkt_parser_ptarray_add_coord(POINTARRAY *pa, POINT p)
 		pt.m = p.z;
 		
 	ptarray_add_point(pa, &pt);
+	return pa;
 }
 
 /**
@@ -242,8 +243,7 @@ POINTARRAY* wkt_parser_ptarray_new(POINT p)
 		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
 		return NULL;
 	}
-	wkt_parser_ptarray_add_coord(pa, p);
-	return pa;
+	return wkt_parser_ptarray_add_coord(pa, p);
 }
 
 /**
@@ -405,7 +405,7 @@ LWGEOM* wkt_parser_polygon_new(POINTARRAY *pa)
 	return lwpoly_as_lwgeom(poly);
 }
 
-void wkt_parser_polygon_add_ring(LWGEOM *poly, POINTARRAY *pa)
+LWGEOM* wkt_parser_polygon_add_ring(LWGEOM *poly, POINTARRAY *pa)
 {
 	LWDEBUG(4,"entered");
 
@@ -413,36 +413,37 @@ void wkt_parser_polygon_add_ring(LWGEOM *poly, POINTARRAY *pa)
 	if( ! pa || ! poly )
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
-		return;	
+		return NULL;	
 	}
 
 	/* Rings must agree on dimensionality */
 	if( TYPE_NDIMS(poly->type) != TYPE_NDIMS(pa->dims) )
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
-		return;
+		return NULL;
 	}
 
 	/* Apply check for minimum number of points, if requested. */	
 	if( (global_parser_result.parser_check_flags & PARSER_CHECK_MINPOINTS) && (pa->npoints < 4) )
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_MOREPOINTS);
-		return;
+		return NULL;
 	}
 	
 	/* Apply check for not closed rings, if requested. */	
 	if( (global_parser_result.parser_check_flags & PARSER_CHECK_CLOSURE) && ! ptarray_isclosed(pa) )
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_UNCLOSED);
-		return;
+		return NULL;
 	}
 
 	/* If something goes wrong adding a ring, error out. */
 	if ( LW_FALSE == lwpoly_add_ring(lwgeom_as_lwpoly(poly), pa) )
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
-		return;	
+		return NULL;	
 	}
+	return poly;
 }
 
 LWGEOM* wkt_parser_polygon_finalize(LWGEOM *poly, char *dimensionality)
@@ -473,7 +474,7 @@ LWGEOM* wkt_parser_polygon_finalize(LWGEOM *poly, char *dimensionality)
 
 LWGEOM* wkt_parser_curvepolygon_new(LWGEOM *ring) 
 {
-	LWCURVEPOLY *poly;	
+	LWGEOM *poly;	
 	LWDEBUG(4,"entered");
 
 	/* Toss error on null geometry input */
@@ -484,14 +485,12 @@ LWGEOM* wkt_parser_curvepolygon_new(LWGEOM *ring)
 	}
 	
 	/* Construct poly and add the ring. */
-	poly = lwcurvepoly_construct_empty(SRID_UNKNOWN, TYPE_HASZ(ring->type), TYPE_HASM(ring->type));
-	wkt_parser_curvepolygon_add_ring(lwcurvepoly_as_lwgeom(poly),ring);
-	
+	poly = lwcurvepoly_as_lwgeom(lwcurvepoly_construct_empty(SRID_UNKNOWN, TYPE_HASZ(ring->type), TYPE_HASM(ring->type)));
 	/* Return the result. */
-	return lwcurvepoly_as_lwgeom(poly);
+	return wkt_parser_curvepolygon_add_ring(poly,ring);
 }
 
-void wkt_parser_curvepolygon_add_ring(LWGEOM *poly, LWGEOM *ring)
+LWGEOM* wkt_parser_curvepolygon_add_ring(LWGEOM *poly, LWGEOM *ring)
 {
 	LWDEBUG(4,"entered");
 
@@ -500,7 +499,7 @@ void wkt_parser_curvepolygon_add_ring(LWGEOM *poly, LWGEOM *ring)
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
 		LWDEBUG(4,"inputs are null");
-		return;
+		return NULL;
 	}
 	
 	/* All the elements must agree on dimensionality */
@@ -509,7 +508,7 @@ void wkt_parser_curvepolygon_add_ring(LWGEOM *poly, LWGEOM *ring)
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
 		LWDEBUG(4,"dimensionality does not match");
-		return;
+		return NULL;
 	}
 	
 	/* Apply check for minimum number of points, if requested. */	
@@ -518,7 +517,7 @@ void wkt_parser_curvepolygon_add_ring(LWGEOM *poly, LWGEOM *ring)
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_MOREPOINTS);
 		LWDEBUG(4,"number of points is incorrect");
-		return;
+		return NULL;
 	}
 	
 	/* Apply check for not closed rings, if requested. */	
@@ -544,7 +543,7 @@ void wkt_parser_curvepolygon_add_ring(LWGEOM *poly, LWGEOM *ring)
 		{
 			LWDEBUG(4,"ring is not closed");
 			SET_PARSER_ERROR(PARSER_ERROR_UNCLOSED);
-			return;
+			return NULL;
 		}
 	}
 		
@@ -552,10 +551,10 @@ void wkt_parser_curvepolygon_add_ring(LWGEOM *poly, LWGEOM *ring)
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
 		LWDEBUG(4,"failed to add ring");
-		return;
+		return NULL;
 	}
 	
-	return;
+	return poly;
 }
 
 LWGEOM* wkt_parser_curvepolygon_finalize(LWGEOM *poly, char *dimensionality)
@@ -609,23 +608,22 @@ LWGEOM* wkt_parser_collection_new(LWGEOM *geom)
 	return lwcollection_as_lwgeom(col);
 }
 
-void wkt_parser_collection_add_geom(LWGEOM *col, LWGEOM *geom)
+LWGEOM* wkt_parser_collection_add_geom(LWGEOM *col, LWGEOM *geom)
 {
-	LWCOLLECTION *c;
 	LWDEBUG(4,"entered");
 
 	/* Toss error on null geometry input */
 	if( ! geom || ! col )
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
-		return;
+		return NULL;
 	}
 		
 	/* Toss an error on a null collection input */
 	if ( ! col )
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
-		return;
+		return NULL;
 	}
 
 	/* All the elements must agree on dimensionality */
@@ -633,10 +631,10 @@ void wkt_parser_collection_add_geom(LWGEOM *col, LWGEOM *geom)
 	    TYPE_HASM(col->type) != TYPE_HASM(geom->type) )
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
-		return;
+		return NULL;
 	}
-	c = lwcollection_add_lwgeom(lwgeom_as_lwcollection(col), geom);
-	return;
+	
+	return lwcollection_as_lwgeom(lwcollection_add_lwgeom(lwgeom_as_lwcollection(col), geom));
 }
 
 LWGEOM* wkt_parser_collection_finalize(int lwtype, LWGEOM *col, char *dimensionality) 

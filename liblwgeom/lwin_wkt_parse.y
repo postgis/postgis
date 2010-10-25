@@ -173,9 +173,17 @@ int lwgeom_from_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parse
 %type <geometryvalue> triangle_list
 %type <geometryvalue> triangle_untagged
 
-/* This cleans up memory on errors and aborts. 
-%destructor { ptarray_freeall($$); } ptarray */
+
+/* This cleans up memory on errors and aborts. */ 
+%destructor { ptarray_freeall($$); } ptarray 
 %destructor { ptarray_freeall($$); } ring
+%destructor { lwgeom_free($$); } curvering_list
+%destructor { lwgeom_free($$); } triangle_list
+%destructor { lwgeom_free($$); } surface_list
+%destructor { lwgeom_free($$); } polygon_list
+%destructor { lwgeom_free($$); } point_list
+%destructor { lwgeom_free($$); } linestring_list
+%destructor { lwgeom_free($$); } curve_list
 %destructor { lwgeom_free($$); } circularstring
 %destructor { lwgeom_free($$); } compoundcurve
 %destructor { lwgeom_free($$); } curvepolygon
@@ -235,7 +243,7 @@ geometrycollection :
 	
 geometry_list :
 	geometry_list COMMA_TOK geometry_no_srid 
-		{ wkt_parser_collection_add_geom($$,$3); WKT_ERROR(); } |
+		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
 	geometry_no_srid 
 		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } ;
 
@@ -251,11 +259,11 @@ multisurface :
 	
 surface_list :
 	surface_list COMMA_TOK polygon
-		{ wkt_parser_collection_add_geom($$,$3); WKT_ERROR(); } |
+		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
 	surface_list COMMA_TOK curvepolygon
-		{ wkt_parser_collection_add_geom($$,$3); WKT_ERROR(); } |
+		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
 	surface_list COMMA_TOK polygon_untagged
-		{ wkt_parser_collection_add_geom($$,$3); WKT_ERROR(); } |
+		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
 	polygon 
 		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } |
 	curvepolygon 
@@ -295,7 +303,7 @@ multipolygon :
 
 polygon_list :
 	polygon_list COMMA_TOK polygon_untagged 
-		{ wkt_parser_collection_add_geom($$,$3); WKT_ERROR(); } |
+		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
 	polygon_untagged 
 		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } ;
 
@@ -324,7 +332,7 @@ curvepolygon :
 
 curvering_list :
 	curvering_list COMMA_TOK curvering 
-		{ wkt_parser_curvepolygon_add_ring($$,$3); WKT_ERROR(); } |
+		{ $$ = wkt_parser_curvepolygon_add_ring($1,$3); WKT_ERROR(); } |
 	curvering 
 		{ $$ = wkt_parser_curvepolygon_new($1); WKT_ERROR(); } ;
 
@@ -336,7 +344,7 @@ curvering :
 
 ring_list :
 	ring_list COMMA_TOK ring 
-		{ wkt_parser_polygon_add_ring($$,$3); WKT_ERROR(); } |
+		{ $$ = wkt_parser_polygon_add_ring($1,$3); WKT_ERROR(); } |
 	ring 
 		{ $$ = wkt_parser_polygon_new($1); WKT_ERROR(); } ;
 
@@ -365,11 +373,11 @@ multicurve :
 
 curve_list :
 	curve_list COMMA_TOK circularstring
-		{ wkt_parser_collection_add_geom($$,$3); WKT_ERROR(); } |
+		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
 	curve_list COMMA_TOK linestring
-		{ wkt_parser_collection_add_geom($$,$3); WKT_ERROR(); } |
+		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
 	curve_list COMMA_TOK linestring_untagged
-		{ wkt_parser_collection_add_geom($$,$3); WKT_ERROR(); } |
+		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
 	circularstring
 		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } |
 	linestring
@@ -389,7 +397,7 @@ multilinestring :
 
 linestring_list :
 	linestring_list COMMA_TOK linestring_untagged 
-		{ wkt_parser_collection_add_geom($$,$3); WKT_ERROR(); } |
+		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
 	linestring_untagged 
 		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } ;
 
@@ -419,7 +427,7 @@ linestring_untagged :
 
 triangle_list :
 	triangle_list COMMA_TOK triangle_untagged 
-		{ wkt_parser_collection_add_geom($$,$3); WKT_ERROR(); } |
+		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
 	triangle_untagged 
 		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } ;
 
@@ -449,7 +457,7 @@ multipoint :
 
 point_list :
 	point_list COMMA_TOK point_untagged 
-		{ wkt_parser_collection_add_geom($$,$3); WKT_ERROR(); } |
+		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
 	point_untagged 
 		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } ;
 
@@ -471,7 +479,7 @@ point :
 
 ptarray : 
 	ptarray COMMA_TOK coordinate 
-		{ wkt_parser_ptarray_add_coord($$, $3); WKT_ERROR(); } |
+		{ $$ = wkt_parser_ptarray_add_coord($1, $3); WKT_ERROR(); } |
 	coordinate 
 		{ $$ = wkt_parser_ptarray_new($1); WKT_ERROR(); } ;
 
