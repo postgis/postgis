@@ -468,16 +468,11 @@ static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 		}
 
 		/* Check that first and last points are the same. */
-		if( s->check & PARSER_CHECK_CLOSURE )
+		if( s->check & PARSER_CHECK_CLOSURE && ! ptarray_isclosed(pa) )
 		{
-			POINT4D p1 = getPoint4d(pa, 0);
-			POINT4D p2 = getPoint4d(pa, pa->npoints - 1);
-			if( memcmp(&p1,&p2,sizeof(POINT4D)) != 0 )
-			{
-				LWDEBUGF(2, "%s must have closed rings", lwtype_name(s->lwtype));
-				lwerror("%s must have closed rings", lwtype_name(s->lwtype));
-				return NULL;
-			}
+			LWDEBUGF(2, "%s must have closed rings", lwtype_name(s->lwtype));
+			lwerror("%s must have closed rings", lwtype_name(s->lwtype));
+			return NULL;
 		}
 		
 		/* Add ring to polygon */
@@ -524,15 +519,10 @@ static LWTRIANGLE* lwtriangle_from_wkb_state(wkb_parse_state *s)
 		return NULL;
 	}
 
-	if( s->check & PARSER_CHECK_CLOSURE )
+	if( s->check & PARSER_CHECK_CLOSURE && ! ptarray_isclosed(pa) )
 	{
-		POINT4D p1 = getPoint4d(pa, 0);
-		POINT4D p2 = getPoint4d(pa, pa->npoints - 1);
-		if( memcmp(&p1,&p2,sizeof(POINT4D)) != 0 )
-		{
-			lwerror("%s must have closed rings", lwtype_name(s->lwtype));
-			return NULL;
-		}
+		lwerror("%s must have closed rings", lwtype_name(s->lwtype));
+		return NULL;
 	}
 
 	tri->points = pa;	
@@ -656,8 +646,7 @@ LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 	
 }
 
-/* TODO ensure all PARSER_CHECK flags are handled 
-   TODO add check for SRID consistency */
+/* TODO add check for SRID consistency */
 
 /**
 * WKB inputs *must* have a declared size, to prevent malformed WKB from reading
