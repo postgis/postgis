@@ -206,9 +206,15 @@ static void test_wkt_in_multisurface(void)
 static void test_wkt_in_polyhedralsurface(void)
 {
 	s = "POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))";
-	r = cu_wkt_in(s, WKT_SFSQL);
+	r = cu_wkt_in(s, WKT_EXTENDED);
 	CU_ASSERT_STRING_EQUAL(r,s);
-	printf("\nIN:  %s\nOUT: %s\n",s,r);
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	lwfree(r);
+
+	s = "POLYHEDRALSURFACE Z (((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))";
+	r = cu_wkt_in(s, WKT_ISO);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
 }
 
@@ -230,7 +236,7 @@ CU_TestInfo wkt_in_tests[] =
 	PG_TEST(test_wkt_in_curvpolygon),
 	PG_TEST(test_wkt_in_multicurve),
 	PG_TEST(test_wkt_in_multisurface),
-//	PG_TEST(test_wkt_in_polyhedralsurface),
+	PG_TEST(test_wkt_in_polyhedralsurface),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo wkt_in_suite = {"WKT In Suite",  init_wkt_in_suite,  clean_wkt_in_suite, wkt_in_tests};
