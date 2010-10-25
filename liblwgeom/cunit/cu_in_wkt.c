@@ -69,6 +69,16 @@ static void test_wkt_in_point(void)
 	r = cu_wkt_in(s, WKT_SFSQL);
 	CU_ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
+
+	s = "POINT EMPTY";
+	r = cu_wkt_in(s, WKT_SFSQL);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	lwfree(r);
+
+	s = "POINT M EMPTY";
+	r = cu_wkt_in(s, WKT_ISO);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	lwfree(r);
 }
 
 static void test_wkt_in_linestring(void)
@@ -168,9 +178,15 @@ static void test_wkt_in_multipolygon(void)
 
 static void test_wkt_in_collection(void)
 {
-	s = "GEOMETRYCOLLECTION(POINT(0 0),LINESTRING(1 0,0 0),CIRCULARSTRING(0 0,0 1,1 1,0 1,2 2))";
+	s = "SRID=5;GEOMETRYCOLLECTION(POINT(0 0),LINESTRING(1 0,0 0),CIRCULARSTRING(0 0,0 1,1 1,0 1,2 2))";
+	r = cu_wkt_in(s, WKT_EXTENDED);
+ 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	lwfree(r);
+
+	s = "GEOMETRYCOLLECTION(POINT(0 0),POINT EMPTY,LINESTRING(1 0,0 0),POLYGON EMPTY,CIRCULARSTRING(0 0,0 1,1 1,0 1,2 2))";
 	r = cu_wkt_in(s, WKT_SFSQL);
-	// printf("\nIN:  %s\nOUT: %s\n",s,r);
+ 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	CU_ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 }
