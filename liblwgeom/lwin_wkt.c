@@ -25,13 +25,15 @@ const char *parser_error_messages[] =
 		global_parser_result.errcode = (errno); \
 	}
 		
-
+/**
+* Read the SRID number from an SRID=<> string
+*/
 int wkt_lexer_read_srid(char *str)
 {
 	char *c = str;
 	long i = 0;
-	
-	if( ! str ) return 0;
+
+	if( ! str ) return SRID_UNKNOWN;
 	c += 5; /* Advance past "SRID=" */
 	i = strtol(c, NULL, 10);
 	return (int)i;
@@ -702,6 +704,7 @@ void wkt_parser_geometry_new(LWGEOM *geom, int srid)
 {
 	LWDEBUG(4,"entered");
 	LWDEBUGF(4,"geom %p",geom);
+	LWDEBUGF(4,"srid %d",srid);
 
 	if ( geom == NULL ) 
 	{

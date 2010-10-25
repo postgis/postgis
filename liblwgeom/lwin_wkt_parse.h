@@ -94,7 +94,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 119 "lwin_wkt_parse.y"
+#line 102 "lwin_wkt_parse.y"
 {
 	int integervalue;
 	double doublevalue;

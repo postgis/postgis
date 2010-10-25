@@ -157,6 +157,13 @@ static void test_wkt_in_multipolygon(void)
 	CU_ASSERT_STRING_EQUAL(r,s);
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
+
+	s = "SRID=4;MULTIPOLYGON(((0 0,0 1,1 1,0 0)))";
+	r = cu_wkt_in(s, WKT_EXTENDED);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	lwfree(r);
+
 }
 
 static void test_wkt_in_collection(void)

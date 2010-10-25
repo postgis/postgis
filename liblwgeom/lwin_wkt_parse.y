@@ -1,14 +1,5 @@
 %{
 
-/* 
-* TODO
-*
-* When an error occurs and we stop the parse process, 
-* what happens to the partially build structres, the point
-* arrays and whatever else is hanging around at different
-* parts of the process?
-*/
-
 /* WKT Parser */
 #include <stdio.h>
 #include <string.h>
@@ -20,7 +11,6 @@
 /* Prototypes to quiet the compiler */
 int wkt_yyparse(void);
 void wkt_yyerror(const char *str);
-int wkt_yywrap(void);
 int wkt_yylex(void);
 
 
@@ -48,11 +38,6 @@ void wkt_yyerror(const char *str)
 	LWDEBUGF(4,"%s", str);
 }
 
-int wkt_yywrap(void)
-{
-	return 1;
-}
-
 /**
 * Parse a WKT geometry string into an LWGEOM structure. Note that this
 * process uses globals and is not re-entrant, so don't call it within itself
@@ -74,9 +59,7 @@ int lwgeom_from_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parse
 	/* Set the input text string, and parse checks. */
 	global_parser_result.wkinput = wktstr;
 	global_parser_result.parser_check_flags = parser_check_flags;
-	
-	/* Clean up the return value by copying onto it */
-	
+		
 	wkt_lexer_init(wktstr); /* Lexer ready */
 	parse_rv = wkt_yyparse(); /* Run the parse */
 	LWDEBUGF(4,"wkt_yyparse returned %d", parse_rv);
@@ -174,7 +157,7 @@ int lwgeom_from_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parse
 %type <geometryvalue> triangle_untagged
 
 
-/* This cleans up memory on errors and aborts. */ 
+/* These clean up memory on errors and parser aborts. */ 
 %destructor { ptarray_freeall($$); } ptarray 
 %destructor { ptarray_freeall($$); } ring
 %destructor { lwgeom_free($$); } curvering_list

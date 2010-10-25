@@ -38,7 +38,12 @@ static void wkt_lexer_unknown()
 };
 
 
-/* This macro is magically run after a rule is found but before the main action is run. */
+/* 
+* This macro is magically run after a rule is found but before the main 
+* action is run. We use it to update the parse location information
+* so we can report on where things fail. Also optionally to dump
+* debugging info.
+*/
 #define YY_USER_ACTION do { \
 	wkt_yylloc.first_line = wkt_yylloc.last_line = yylineno; \
 	wkt_yylloc.first_column = wkt_yylloc.last_column; \
@@ -99,7 +104,7 @@ Z|M|ZM {
 
 [ \t]+ { /* ignore whitespace */ LWDEBUG(5,"WHITESPACE"); }
 
-. { /* Error out on unknown/unexpected characters */
+. { /* Error out and stop parsing on unknown/unexpected characters */
 	LWDEBUG(5,"UNKNOWN"); 
 	wkt_lexer_unknown();
 	yyterminate(); 

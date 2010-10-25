@@ -1414,7 +1414,10 @@ extern LWGEOM* lwgeom_flip_coordinates(LWGEOM *in)
 void lwgeom_set_srid(LWGEOM *geom, int srid)
 {
 	int i;
-		
+
+	geom->SRID = srid;
+
+	LWDEBUG(4,"entered");
 	if ( lwgeom_is_collection(TYPE_GETTYPE(geom->type)) )
 	{
 		/* All the children are set to the unknown SRID value */
@@ -1423,10 +1426,6 @@ void lwgeom_set_srid(LWGEOM *geom, int srid)
 		{
 			lwgeom_set_srid(col->geoms[i], SRID_UNKNOWN);
 		}
-	}
-	else
-	{
-		geom->SRID = srid;
 	}
 }
 
