@@ -34,7 +34,7 @@
 			<!-- For each function prototype if it takes a geometry set then catalog it as an aggregate function  -->
 				<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
 					<xsl:choose>
-						<xsl:when test="contains(paramdef/type,'geometry set') or contains(paramdef/type,'geography set') contains(paramdef/type,'raster set')">
+						<xsl:when test="contains(paramdef/type,'geometry set') or contains(paramdef/type,'geography set') or contains(paramdef/type,'raster set')">
 							 <listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
 						</xsl:when>
 					</xsl:choose>
@@ -106,7 +106,7 @@
 		
 		<sect1 id="PostGIS_RasterFunctions">
 			<title>PostGIS Raster Support Functions</title>
-			<para>The functions and operators given below are PostGIS functions/operators that take as input or return as output a <link linkend="RT_reference">raster</link> data type object. Listed
+			<para>The functions and operators given below are PostGIS functions/operators that take as input or return as output a <xref linkend="raster" /> data type object. Listed
 			in alphabetical order.</para>
 				<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
@@ -439,7 +439,7 @@
 				<title>PostGIS Functions new, behavior changed, or enhanced in 2.0</title>
 				<para>The functions given below are PostGIS functions that were added, enhanced, or have breaking changes in 2.0 releases.</para>
 				<para>New geometry types: TIN and Polyhedral surfaces was introduced in 2.0</para>
-				<note><para>In PostGIS 2.0, rater type and raster functionality has been integrated.  There are way too many new raster functions to list here and all are new so 
+				<note><para>In PostGIS 2.0, raster type and raster functionality has been integrated.  There are way too many new raster functions to list here and all are new so 
 					please refer to <xref linkend="RT_reference" /> for more details of the raster functions available.</para></note>
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
