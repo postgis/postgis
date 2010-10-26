@@ -11,7 +11,7 @@
 
 	<!-- We deal only with the reference chapter -->
 	<xsl:template match="/">
-		<xsl:apply-templates select="/book/chapter[@id='reference' or @id='RT_reference']" />
+		<xsl:apply-templates select="/book/chapter[@id='reference']" />
 	</xsl:template>
 
 	<xsl:template match="chapter">
@@ -103,7 +103,7 @@
 				</xsl:for-each>
 				</itemizedlist>
 		</sect1>
-		
+		<xsl:if test="@id='RT_reference'">
 		<sect1 id="PostGIS_RasterFunctions">
 			<title>PostGIS Raster Support Functions</title>
 			<para>The functions and operators given below are PostGIS functions/operators that take as input or return as output a <xref linkend="raster" /> data type object. Listed
@@ -131,6 +131,7 @@
 				</xsl:for-each>
 				</itemizedlist>
 		</sect1>
+		</xsl:if>
 		
 		<sect1 id="PostGIS_Geometry_DumpFunctions">
 			<title>PostGIS Dump Functions</title>
