@@ -32,10 +32,6 @@
 
 #include "rt_api.h"
 
-/* Define this to debug low-level RASTER API activity */
-/* Alternative, use ./configure --enable-rtapi-debug */
-/*#define POSTGIS_RASTER_API_DEBUG*/
-
 #define POSTGIS_RASTER_WARN_ON_TRUNCATION
 
 /*--- Utilities -------------------------------------------------*/
@@ -268,7 +264,7 @@ d_binptr_to_pos(const uint8_t* const ptr, const uint8_t* const end, size_t size)
 
 #define CHECK_BINPTR_POSITION(ptr, end, size, pos) ((void)0);
 
-#endif /* ifndef POSTGIS_RASTER_API_DEBUG */
+#endif /* ifndef POSTGIS_DEBUG_LEVEL > 3 */
 
 /*- rt_pixeltype -----------------------------------------------------*/
 
@@ -1123,7 +1119,7 @@ rt_raster_new(rt_context ctx, uint16_t width, uint16_t height)
 void
 rt_raster_destroy(rt_context ctx, rt_raster raster)
 {
-    RASTER_DEBUGF(3, "Destroying rt_raster @ %p", ret);
+    RASTER_DEBUGF(3, "Destroying rt_raster @ %p", ctx);
     
     if ( raster->bands )
     {
@@ -1352,7 +1348,8 @@ rt_raster_cell_to_geopoint(rt_context ctx, rt_raster raster,
 
     RASTER_DEBUGF(3, "rt_raster_cell_to_geopoint(%g,%g)", x, y);
     RASTER_DEBUGF(3, " ipx/y:%g/%g", raster->ipX, raster->ipY);
-    RASTER_DEBUGF(3, "cell_to_geopoint: ipX:%g, ipY:%g, %g,%g -> %g,%g",);
+    RASTER_DEBUGF(3, "cell_to_geopoint: ipX:%g, ipY:%g, %g,%g -> %g,%g",
+            raster->ipX, raster->ipY, x, y, *x1, *y1);
 
 }
 
@@ -1421,7 +1418,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
      *****************************/
     OGRRegisterAll();
 
-    RASTER_DEBUG(3, "rt_raster_dump_as_polygons: creating OGR MEM vector");
+    RASTER_DEBUG(3, "creating OGR MEM vector");
 
 
     /*****************************************************
@@ -1447,7 +1444,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
         return 0;    
     }
 
-    RASTER_DEBUG(3, "rt_raster_dump_as_polygons: creating GDAL MEM raster");
+    RASTER_DEBUG(3, "creating GDAL MEM raster");
 
     
     /****************************************************************
@@ -1484,7 +1481,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
     adfGeoTransform[5] = rt_raster_get_pixel_height(ctx, raster);
     GDALSetGeoTransform(memdataset, adfGeoTransform);
 
-    RASTER_DEBUG(3, "rt_raster_dump_as_polygons: Adding GDAL MEM raster band");
+    RASTER_DEBUG(3, "Adding GDAL MEM raster band");
 
     /**
      * Now, add the raster band
@@ -1525,7 +1522,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
 
     void * pVoid = rt_band_get_data(ctx, band);
 
-    RASTER_DEBUGF(4, "rt_raster_dump_as_polygons: Band data is at pos %p", pVoid);
+    RASTER_DEBUGF(4, "Band data is at pos %p", pVoid);
 
     /**
      * Be careful!! If this pointer is defined as szDataPointer[20]
@@ -1545,8 +1542,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
     else
     	sprintf(szGdalOption, "DATAPOINTER=0x%s", pszDataPointer);
 
-    RASTER_DEBUG(3, "rt_raster_dump_as_wktpolygons: Storing info for GDAL MEM raster \
-            band");
+    RASTER_DEBUG(3, "Storing info for GDAL MEM raster band");
 
     apszOptions[0] = szGdalOption;
     apszOptions[1] = NULL;  // pixel offset, not needed
@@ -1582,7 +1578,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
     }
 
 
-    RASTER_DEBUG(3, "rt_raster_dump_as_polygons: polygonizying GDAL MEM raster band");
+    RASTER_DEBUG(3, "polygonizying GDAL MEM raster band");
 
      /*****************************
      * Polygonize the raster band
@@ -1688,7 +1684,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
      * I choose a), for this reason
      *********************************************************************/
 
-    RASTER_DEBUG(3, "rt_raster_dump_as_polygons: counting valid polygons");
+    RASTER_DEBUG(3, "counting valid polygons");
 
      /*********************************************************************
      * Count the "valid" polygons. This is, the polygons with the "Pixel
@@ -1744,8 +1740,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
         return 0;
     }
 
-    RASTER_DEBUGF(3, "rt_raster_dump_as_polygons: storing polygons (%d)",
-            nFeatureCount);
+    RASTER_DEBUGF(3, "storing polygons (%d)", nFeatureCount);
 
     nCont = 0;
     if (pnElements)
@@ -1792,13 +1787,13 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
    if (pnElements)
 	*pnElements = nCont;
        
-   RASTER_DEBUG(3, "rt_raster_dump_as_polygons: destroying GDAL MEM raster");
+   RASTER_DEBUG(3, "destroying GDAL MEM raster");
 
    GDALClose(memdataset);
    GDALDeregisterDriver(gdal_drv);
    GDALDestroyDriver(gdal_drv);
 
-   RASTER_DEBUG(3, "rt_raster_dump_as_polygons: destroying OGR MEM vector");
+   RASTER_DEBUG(3, "destroying OGR MEM vector");
    
    OGR_Fld_Destroy(hFldDfn);
    OGR_DS_DeleteLayer(memdatasource, 0);
@@ -2847,7 +2842,7 @@ rt_raster_to_hexwkb(rt_context ctx, rt_raster raster, uint32_t *hexwkbsize)
 
     wkb = rt_raster_to_wkb(ctx, raster, &wkbsize);
 
-    RASTER_DEBUGF(3, "rt_raster_to_hexwkb: rt_raster_to_wkb returned");
+    RASTER_DEBUG(3, "rt_raster_to_hexwkb: rt_raster_to_wkb returned");
 
     *hexwkbsize = wkbsize * 2; /* hex is 2 times bytes */
     hexwkb = (char*)ctx->alloc( (*hexwkbsize)+1);

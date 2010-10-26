@@ -39,38 +39,29 @@
 /* Define to the sub-directory in which libtool stores uninstalled libraries.*/
 #undef LT_OBJDIR
 
-/* debug low-level RASTER API */
-#undef POSTGIS_RASTER_API_DEBUG
-
-/* WKTRaster build date */
+/* PostGIS Raster build date */
 #undef POSTGIS_RASTER_BUILD_DATE
 
-/* WKTRaster library version */
+/* PostGIS Raster library version */
 #undef POSTGIS_RASTER_LIB_VERSION
 
-/* WKTRaster major version */
+/* PostGIS Raster major version */
 #undef POSTGIS_RASTER_MAJOR_VERSION
 
-/* WKTRaster micro version */
+/* PostGIS Raster micro version */
 #undef POSTGIS_RASTER_MICRO_VERSION
 
-/* WKTRaster minor version */
+/* PostGIS Raster minor version */
 #undef POSTGIS_RASTER_MINOR_VERSION
 
 /* PostgreSQL server version */
 #undef POSTGIS_RASTER_PGSQL_VERSION
 
-/* debug PostGIS RASTER memory activity */
-#undef POSTGIS_RASTER_PG_DEBUG_MEM
-
-/* WKTRaster scripts version */
+/* PostGIS Raster scripts version */
 #undef POSTGIS_RASTER_SCRIPTS_VERSION
 
-/* WKTRaster version */
+/* PostGIS Raster version */
 #undef POSTGIS_RASTER_VERSION
-
-/* debug PostGIS RASTER activity */
-#undef POSTGIS_RASTER_PG_DEBUG
 
 /* Enable development variable */
 #undef ENABLE_DEVELOPMENT

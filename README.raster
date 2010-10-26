@@ -54,7 +54,7 @@ PRE-INSTALL TEST
 
 After a successful build, you can run:
 
-    $ make rt-check
+    $ make raster-check
 
 It won't test postgresql interface, as that would require more setup
 then a simple make check. See POST-INSTALL TESTING for more info on how
@@ -66,14 +66,14 @@ INSTALL
 You need to install the library to the postgresql library
 directory. You do it by running:
 
-    $ sudo make rt-install
+    $ sudo make install
 
 POST-INSTALL TEST
 -----------------
 
 You can run the post install tests against it:
 
-    $ make rt-post-install-check
+    $ make raster-post-install-check
 
 USE
 ---

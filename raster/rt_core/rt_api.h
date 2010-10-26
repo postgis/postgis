@@ -93,6 +93,20 @@
 #include "../../postgis_config.h"
 
 
+typedef struct rt_context_t* rt_context;
+typedef struct rt_raster_t* rt_raster;
+typedef struct rt_band_t* rt_band;
+typedef struct rt_geomval_t* rt_geomval;
+
+
+/*- rt_context -------------------------------------------------------*/
+
+typedef void* (*rt_allocator)(size_t size);
+typedef void* (*rt_reallocator)(void *mem, size_t size);
+typedef void  (*rt_deallocator)(void *mem);
+typedef void  (*rt_message_handler)(const char* string, ...);
+
+
 /* Debugging macros */
 #if POSTGIS_DEBUG_LEVEL > 0
  
@@ -100,14 +114,14 @@
 #define RASTER_DEBUG(level, msg) \
     do { \
         if (POSTGIS_DEBUG_LEVEL >= level) \
-            ereport(NOTICE, (errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__))); \
+            default_info_handler("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__); \
     } while (0);
 
 /* Display a formatted message at NOTICE level (like printf, with variadic arguments) */
 #define RASTER_DEBUGF(level, msg, ...) \
     do { \
         if (POSTGIS_DEBUG_LEVEL >= level) \
-        ereport(NOTICE, (errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__, __VA_ARGS__))); \
+        default_info_handler("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__, __VA_ARGS__); \
     } while (0);
  
 #else
@@ -122,18 +136,7 @@
 
 #endif
 
-typedef struct rt_context_t* rt_context;
-typedef struct rt_raster_t* rt_raster;
-typedef struct rt_band_t* rt_band;
-typedef struct rt_geomval_t* rt_geomval;
 
-
-/*- rt_context -------------------------------------------------------*/
-
-typedef void* (*rt_allocator)(size_t size);
-typedef void* (*rt_reallocator)(void *mem, size_t size);
-typedef void  (*rt_deallocator)(void *mem);
-typedef void  (*rt_message_handler)(const char* string, ...);
 
 /* Initialize a context object
  * @param allocator memory allocator to use, 0 to use malloc

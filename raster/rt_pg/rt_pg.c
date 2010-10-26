@@ -44,14 +44,6 @@
 #include "rt_api.h"
 #include "../raster_config.h"
 
-/* Define this to debug pgsql RASTER activity */
-/* Alternative, use ./configure --enable-rtpg-debug */
-/*#define POSTGIS_RASTER_PG_DEBUG 1*/
-
-/* Define this to debug pgsql RASTER memory activity */
-/* Alternative, use ./configure --enable-rtpgmem-debug */
-/*#define POSTGIS_RASTER_PG_DEBUG_MEM 1*/
-
 #define POSTGIS_RASTER_WARN_ON_TRUNCATION
 
 /*
@@ -481,7 +473,7 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
         else
             nband = 1; /* By default, first band */
 			
-        POSTGIS_RT_DEBUGF(3, "RASTER_dumpAsWKTPolygons: band %d", nband);
+        POSTGIS_RT_DEBUGF(3, "band %d", nband);
 
         /* Polygonize raster */
         
@@ -497,7 +489,7 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
             PG_RETURN_NULL();
         }
 		
-        POSTGIS_RT_DEBUGF(3, "RASTER_dumpAsWKTPolygons: raster dump, %d elements returned", nElements);
+        POSTGIS_RT_DEBUGF(3, "raster dump, %d elements returned", nElements);
 
         /**
          * Not needed to check geomval. It was allocated by the new
@@ -542,7 +534,7 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
         HeapTuple    tuple;
         Datum        result;
 				
-        POSTGIS_RT_DEBUGF(3, "RASTER_dumpAsWKTPolygons: call number %d", call_cntr);
+        POSTGIS_RT_DEBUGF(3, "call number %d", call_cntr);
 		        
         /*
          * Prepare a values array for building the returned tuple.
