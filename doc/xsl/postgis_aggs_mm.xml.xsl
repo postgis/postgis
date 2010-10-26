@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <!-- ********************************************************************
 	 $Id$
 	 ********************************************************************
-	 Copyright 2008, Regina Obe
+	 Copyright 2010, Regina Obe
 	 License: BSD
 	 Purpose: This is an xsl transform that generates index listing of aggregate functions and mm /sql compliant functions xml section from reference_new.xml to then
 	 be processed by doc book
