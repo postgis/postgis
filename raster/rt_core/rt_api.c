@@ -157,9 +157,9 @@ rt_context_new(rt_allocator allocator, rt_reallocator reallocator,
         default_error_handler("Out of virtual memory creating an rt_context");
         return 0;
     }
-#ifdef POSTGIS_RASTER_API_DEBUG
-    default_info_handler("Created rt_context @ %p", ret);
-#endif
+    
+    RASTER_DEBUGF(3, "Created rt_context @ %p", ret);
+
     ret->alloc = allocator;
     ret->realloc = reallocator;
     ret->dealloc = deallocator;
@@ -194,15 +194,14 @@ rt_context_set_message_handlers(rt_context ctx,
 void
 rt_context_destroy(rt_context ctx)
 {
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("Destroying rt_context @ %p", ctx);
-#endif
+    RASTER_DEBUGF(3, "Destroying rt_context @ %p", ctx);
+
     ctx->dealloc(ctx);
 }
 
 /*--- Debug and Testing Utilities --------------------------------------------*/
 
-#ifdef POSTGIS_RASTER_API_DEBUG
+#if POSTGIS_DEBUG_LEVEL > 3
 
 static char*
 d_binary_to_hex(rt_context ctx, const uint8_t* const raw, uint32_t size, uint32_t *hexsize)
@@ -307,10 +306,9 @@ rt_pixtype_size(rt_context ctx, rt_pixtype pixtype)
             break;
     }
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("Pixel type = %s and size = %d bytes",
+    RASTER_DEBUGF(3, "Pixel type = %s and size = %d bytes",
               rt_pixtype_name(ctx, pixtype), pixbytes);
-#endif
+
 
     return pixbytes;
 }
@@ -426,10 +424,9 @@ rt_band_new_inline(rt_context ctx, uint16_t width, uint16_t height,
         return 0;
     }
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("Created rt_band @ %p with pixtype %s",
+    RASTER_DEBUGF(3, "Created rt_band @ %p with pixtype %s",
         band, rt_pixtype_name(ctx, pixtype));
-#endif
+
 
     band->pixtype = pixtype;
     band->offline = 0;
@@ -460,10 +457,9 @@ rt_band_new_offline(rt_context ctx, uint16_t width, uint16_t height,
         return 0;
     }   
 
- #ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("Created rt_band @ %p with pixtype %s",
+
+    RASTER_DEBUGF(3,  "Created rt_band @ %p with pixtype %s",
         band, rt_pixtype_name(ctx, pixtype));
- #endif
 
     band->pixtype = pixtype;
     band->offline = 1;
@@ -499,9 +495,8 @@ rt_band_is_offline(rt_context ctx, rt_band band)
 void
 rt_band_destroy(rt_context ctx, rt_band band)
 {
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("Destroying rt_band @ %p", band);
-#endif
+    RASTER_DEBUGF(3, "Destroying rt_band @ %p", band);
+
 
     /* band->data content is externally owned */
     /* XXX jorgearevalo: not really... rt_band_from_wkb allocates memory for
@@ -602,10 +597,8 @@ setBits(char* ch, double val, int bits, int bitOffset)
 
 	assert(8-bitOffset >= bits);
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-	printf("ival:%d bits:%d mask:%hhx bitoffset:%d\n",
+    RASTER_DEBUGF(4, "ival:%d bits:%d mask:%hhx bitoffset:%d\n",
 		   ival, bits, mask, bitOffset);
-#endif
 
 	/* clear all but significant bits from ival */
 	ival &= mask;
@@ -616,32 +609,25 @@ setBits(char* ch, double val, int bits, int bitOffset)
 	}
 #endif /* POSTGIS_RASTER_WARN_ON_TRUNCATION */
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-	printf(" cleared ival:%hhx\n", ival);
-#endif
+    RASTER_DEBUGF(4, " cleared ival:%hhx\n", ival);
+
 
 	/* Shift ival so the significant bits start at
 	 * the first bit */
 	ival <<= (8-bitOffset-bits);
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-	printf(" ival shifted:%hhx\n", ival);
-	printf("  ch:%hhx\n", *ch);
-#endif
+    RASTER_DEBUGF(4, " ival shifted:%hhx\n", ival);
+    RASTER_DEBUGF(4, "  ch:%hhx\n", *ch);
 
 	/* clear first bits of target */
 	*ch  &= ~(mask << (8-bits-bitOffset));
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-	printf("  ch cleared:%hhx\n", *ch);
-#endif
+    RASTER_DEBUGF(4, "  ch cleared:%hhx\n", *ch);
 
 	/* Set the first bit of target */
 	*ch |= ival;
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-	printf("  ch ored:%hhx\n", *ch);
-#endif
+    RASTER_DEBUGF(4, "  ch ored:%hhx\n", *ch);
 
 }
 #endif /* OPTIMIZE_SPACE */
@@ -674,9 +660,7 @@ rt_band_set_nodata(rt_context ctx, rt_band band, double val)
 
     pixtype = band->pixtype;
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_band_set_nodata: setting NODATA %g with band type %s", val, rt_pixtype_name(ctx, pixtype));
-#endif
+    RASTER_DEBUGF(3, "rt_band_set_nodata: setting NODATA %g with band type %s", val, rt_pixtype_name(ctx, pixtype));
 
     /* return -1 on out of range */
     switch (pixtype)
@@ -757,10 +741,8 @@ rt_band_set_nodata(rt_context ctx, rt_band band, double val)
         }
     }
     
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_band_set_nodata: band->hasnodata = %d", band->hasnodata);
-    ctx->info("rt_band_set_nodata: band->nodataval = %g", band->nodataval);
-#endif
+    RASTER_DEBUGF(3, "rt_band_set_nodata: band->hasnodata = %d", band->hasnodata);
+    RASTER_DEBUGF(3, "rt_band_set_nodata: band->nodataval = %d", band->nodataval);
 
 
     // the NODATA value was just set, so this band has NODATA
@@ -1117,9 +1099,7 @@ rt_raster_new(rt_context ctx, uint16_t width, uint16_t height)
         return 0;
     }
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("Created rt_raster @ %p", ret);
-#endif
+    RASTER_DEBUGF(3, "Created rt_raster @ %p", ret);
 
     assert(NULL != ret);
 
@@ -1143,9 +1123,8 @@ rt_raster_new(rt_context ctx, uint16_t width, uint16_t height)
 void
 rt_raster_destroy(rt_context ctx, rt_raster raster)
 {
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("Destroying rt_raster @ %p", raster);
-#endif
+    RASTER_DEBUGF(3, "Destroying rt_raster @ %p", ret);
+    
     if ( raster->bands )
     {
         ctx->dealloc(raster->bands);
@@ -1306,9 +1285,7 @@ rt_raster_add_band(rt_context ctx, rt_raster raster, rt_band band, int index)
     assert(NULL != ctx);
     assert(NULL != raster);
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("Adding band %p to raster %p", band, raster);
-#endif
+    RASTER_DEBUGF(3, "Adding band %p to raster %p", band, raster);
 
     if ( band->width != raster->width )
     {
@@ -1325,17 +1302,13 @@ rt_raster_add_band(rt_context ctx, rt_raster raster, rt_band band, int index)
 
     oldbands = raster->bands;
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("Oldbands at %p", oldbands);
-#endif
+    RASTER_DEBUGF(3, "Oldbands at %p", oldbands);
 
     raster->bands = (rt_band*)ctx->realloc(raster->bands,
         sizeof(rt_band)*(raster->numBands + 1)
     );
-
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("realloc returned %p", raster->bands);
-#endif
+    
+    RASTER_DEBUGF(4, "realloc returned %p", raster->bands);
 
     if ( ! raster->bands ) {
         ctx->err("Out of virtual memory "
@@ -1377,12 +1350,10 @@ rt_raster_cell_to_geopoint(rt_context ctx, rt_raster raster,
     *x1 = raster->scaleX*x + raster->skewX*y + raster->ipX;
     *y1 = raster->scaleY*y + raster->skewY*x + raster->ipY;
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_raster_cell_to_geopoint(%g,%g)", x, y);
-    ctx->info(" ipx/y:%g/%g", raster->ipX, raster->ipY);
-    ctx->info("cell_to_geopoint: ipX:%g, ipY:%g, %g,%g -> %g,%g",
-        raster->ipX, raster->ipY, x, y, *x1, *y1);
-#endif
+    RASTER_DEBUGF(3, "rt_raster_cell_to_geopoint(%g,%g)", x, y);
+    RASTER_DEBUGF(3, " ipx/y:%g/%g", raster->ipX, raster->ipY);
+    RASTER_DEBUGF(3, "cell_to_geopoint: ipX:%g, ipY:%g, %g,%g -> %g,%g",);
+
 }
 
 
@@ -1432,10 +1403,8 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
     assert(NULL != raster);
     assert(nband > 0 && nband <= rt_raster_get_num_bands(ctx, raster));
     
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("In rt_raster_dump_as_polygons");
-#endif
-    
+    RASTER_DEBUG(2, "In rt_raster_dump_as_polygons");
+
     /*******************************
      * Get band
      *******************************/
@@ -1452,9 +1421,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
      *****************************/
     OGRRegisterAll();
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_raster_dump_as_polygons: creating OGR MEM vector");
-#endif
+    RASTER_DEBUG(3, "rt_raster_dump_as_polygons: creating OGR MEM vector");
 
 
     /*****************************************************
@@ -1480,9 +1447,8 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
         return 0;    
     }
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_raster_dump_as_polygons: creating GDAL MEM raster");
-#endif
+    RASTER_DEBUG(3, "rt_raster_dump_as_polygons: creating GDAL MEM raster");
+
     
     /****************************************************************
      * Create a GDAL MEM raster with one band, from rt_band object
@@ -1518,10 +1484,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
     adfGeoTransform[5] = rt_raster_get_pixel_height(ctx, raster);
     GDALSetGeoTransform(memdataset, adfGeoTransform);
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_raster_dump_as_polygons: Adding GDAL MEM raster band");
-#endif
-
+    RASTER_DEBUG(3, "rt_raster_dump_as_polygons: Adding GDAL MEM raster band");
 
     /**
      * Now, add the raster band
@@ -1562,9 +1525,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
 
     void * pVoid = rt_band_get_data(ctx, band);
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_raster_dump_as_polygons: Band data is at pos %p", pVoid);
-#endif
+    RASTER_DEBUGF(4, "rt_raster_dump_as_polygons: Band data is at pos %p", pVoid);
 
     /**
      * Be careful!! If this pointer is defined as szDataPointer[20]
@@ -1576,20 +1537,16 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
     pszDataPointer = (char *)ctx->alloc(20 * sizeof(char));
     sprintf(pszDataPointer, "%p", pVoid);
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_raster_dump_as_polygons: szDatapointer is %p",
+    RASTER_DEBUGF(4, "rt_raster_dump_as_polygons: szDatapointer is %p",
             pszDataPointer);
-#endif
 
 	if (strnicmp(pszDataPointer,"0x", 2) == 0)
 		sprintf(szGdalOption, "DATAPOINTER=%s", pszDataPointer);
     else
     	sprintf(szGdalOption, "DATAPOINTER=0x%s", pszDataPointer);
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_raster_dump_as_wktpolygons: Storing info for GDAL MEM raster \
+    RASTER_DEBUG(3, "rt_raster_dump_as_wktpolygons: Storing info for GDAL MEM raster \
             band");
-#endif
 
     apszOptions[0] = szGdalOption;
     apszOptions[1] = NULL;  // pixel offset, not needed
@@ -1625,9 +1582,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
     }
 
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_raster_dump_as_polygons: polygonizying GDAL MEM raster band");
-#endif
+    RASTER_DEBUG(3, "rt_raster_dump_as_polygons: polygonizying GDAL MEM raster band");
 
      /*****************************
      * Polygonize the raster band
@@ -1733,11 +1688,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
      * I choose a), for this reason
      *********************************************************************/
 
-
-
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_raster_dump_as_polygons: counting valid polygons");
-#endif
+    RASTER_DEBUG(3, "rt_raster_dump_as_polygons: counting valid polygons");
 
      /*********************************************************************
      * Count the "valid" polygons. This is, the polygons with the "Pixel
@@ -1793,11 +1744,8 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
         return 0;
     }
 
-
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_raster_dump_as_polygons: storing polygons (%d)",
+    RASTER_DEBUGF(3, "rt_raster_dump_as_polygons: storing polygons (%d)",
             nFeatureCount);
-#endif
 
     nCont = 0;
     if (pnElements)
@@ -1821,11 +1769,10 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
                     * sizeof(char));
             strcpy(pols[nCont].geom, pszSrcText);            
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-            ctx->info("Feature %d, Polygon: %s", j, pols[nCont].geom);
-            ctx->info("Feature %d, value: %d", j, (int)(pols[nCont].val));
-            ctx->info("Feature %d, srid: %d", j, pols[nCont].srid);
-#endif                               
+            RASTER_DEBUGF(4, "Feature %d, Polygon: %s", j, pols[nCont].geom);
+            RASTER_DEBUGF(4, "Feature %d, value: %d", j, (int)(pols[nCont].val));
+            RASTER_DEBUGF(4, "Feature %d, srid: %d", j, pols[nCont].srid);
+
             nCont++;
 
             /**
@@ -1845,23 +1792,19 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
    if (pnElements)
 	*pnElements = nCont;
        
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_raster_dump_as_polygons: destroying GDAL MEM raster");
-#endif
+   RASTER_DEBUG(3, "rt_raster_dump_as_polygons: destroying GDAL MEM raster");
 
-    GDALClose(memdataset);
-    GDALDeregisterDriver(gdal_drv);
-    GDALDestroyDriver(gdal_drv);
+   GDALClose(memdataset);
+   GDALDeregisterDriver(gdal_drv);
+   GDALDestroyDriver(gdal_drv);
 
-
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_raster_dump_as_polygons: destroying OGR MEM vector");
-#endif
-    OGR_Fld_Destroy(hFldDfn);
-    OGR_DS_DeleteLayer(memdatasource, 0);
-    OGRReleaseDataSource(memdatasource);
-
-    return pols;    
+   RASTER_DEBUG(3, "rt_raster_dump_as_polygons: destroying OGR MEM vector");
+   
+   OGR_Fld_Destroy(hFldDfn);
+   OGR_DS_DeleteLayer(memdatasource, 0);
+   OGRReleaseDataSource(memdatasource);
+   
+   return pols;    
 }
 
 
@@ -1876,10 +1819,9 @@ rt_raster_get_convex_hull(rt_context ctx, rt_raster raster)
     assert(NULL != ctx);
     assert(NULL != raster);
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_raster_get_convex_hull: raster is %dx%d",
+    RASTER_DEBUGF(3, "rt_raster_get_convex_hull: raster is %dx%d",
         raster->width, raster->height);
-#endif
+
     if ( (!raster->width)  || (!raster->height) )
     {
         return 0;
@@ -2287,12 +2229,10 @@ rt_band_from_wkb(rt_context ctx, uint16_t width, uint16_t height,
     band->width = width;
     band->height = height;
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info(" Band pixtype:%s, offline:%d, hasnodata:%d",
+    RASTER_DEBUGF(3, " Band pixtype:%s, offline:%d, hasnodata:%d",
                 rt_pixtype_name(ctx, band->pixtype),
                 band->offline,
                 band->hasnodata);
-#endif
 
     /* Check there's enough bytes to read nodata value */
 
@@ -2369,10 +2309,8 @@ rt_band_from_wkb(rt_context ctx, uint16_t width, uint16_t height,
         }
     }
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info(" Nodata value: %g, pixbytes: %d, ptr @ %p, end @ %p",
+    RASTER_DEBUGF(3, " Nodata value: %g, pixbytes: %d, ptr @ %p, end @ %p",
               band->nodataval, pixbytes, *ptr, end);
-#endif
 
     if ( band->offline )
     {
@@ -2402,10 +2340,9 @@ rt_band_from_wkb(rt_context ctx, uint16_t width, uint16_t height,
             memcpy(band->data.offline.path, *ptr, sz);
             band->data.offline.path[sz] = '\0';
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-            ctx->info("OFFDB band path is %s (size is %d)",
+            RASTER_DEBUGF(3, "OFFDB band path is %s (size is %d)",
                       band->data.offline.path, sz);
-#endif
+
             *ptr += sz + 1;
         }
         return band;
@@ -2514,10 +2451,9 @@ rt_raster_from_wkb(rt_context ctx, const uint8_t* wkb, uint32_t wkbsize)
     }
     wkbend = wkb + wkbsize;
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("Parsing header from wkb position %d (expected 0)",
+    RASTER_DEBUGF(3, "Parsing header from wkb position %d (expected 0)",
               d_binptr_to_pos(ptr, wkbend, wkbsize));
-#endif
+
 
     CHECK_BINPTR_POSITION(ptr, wkbend, wkbsize, 0);
 
@@ -2554,22 +2490,20 @@ rt_raster_from_wkb(rt_context ctx, const uint8_t* wkb, uint32_t wkbsize)
     /* Consistency checking, should have been checked before */
     assert(ptr <= wkbend);
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_raster_from_wkb: Raster numBands: %d",
+    RASTER_DEBUGF(3, "rt_raster_from_wkb: Raster numBands: %d",
         rast->numBands);
-    ctx->info("rt_raster_from_wkb: Raster scale: %gx%g",
+    RASTER_DEBUGF(3, "rt_raster_from_wkb: Raster scale: %gx%g",
         rast->scaleX, rast->scaleY);
-    ctx->info("rt_raster_from_wkb: Raster ip: %gx%g",
+    RASTER_DEBUGF(3, "rt_raster_from_wkb: Raster ip: %gx%g",
         rast->ipX, rast->ipY);
-    ctx->info("rt_raster_from_wkb: Raster skew: %gx%g",
+    RASTER_DEBUGF(3, "rt_raster_from_wkb: Raster skew: %gx%g",
         rast->skewX, rast->skewY );
-    ctx->info("rt_raster_from_wkb: Raster srid: %d",
+    RASTER_DEBUGF(3, "rt_raster_from_wkb: Raster srid: %d",
         rast->srid);
-    ctx->info("rt_raster_from_wkb: Raster dims: %dx%d",
+    RASTER_DEBUGF(3, "rt_raster_from_wkb: Raster dims: %dx%d",
         rast->width, rast->height);
-    ctx->info("Parsing raster header finished at wkb position %d (expected 61)",
+    RASTER_DEBUGF(3, "Parsing raster header finished at wkb position %d (expected 61)",
               d_binptr_to_pos(ptr, wkbend, wkbsize));
-#endif
 
     CHECK_BINPTR_POSITION(ptr, wkbend, wkbsize, 61);
 
@@ -2605,10 +2539,9 @@ rt_raster_from_wkb(rt_context ctx, const uint8_t* wkb, uint32_t wkbsize)
 
     for (i = 0; i < rast->numBands; ++i)
     {
-#ifdef POSTGIS_RASTER_API_DEBUG
-        ctx->info("Parsing band %d from wkb position %d", i,
+        RASTER_DEBUGF(3, "Parsing band %d from wkb position %d", i,
                   d_binptr_to_pos(ptr, wkbend, wkbsize));
-#endif
+
         rt_band band = rt_band_from_wkb(ctx, rast->width, rast->height,
                                         &ptr, wkbend, endian);
         if ( ! band )
@@ -2648,9 +2581,7 @@ rt_raster_from_hexwkb(rt_context ctx, const char* hexwkb,
     assert(NULL != ctx);
     assert(NULL != hexwkb);
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_raster_from_hexwkb: input wkb: %s", hexwkb);
-#endif
+    RASTER_DEBUGF(3, "rt_raster_from_hexwkb: input wkb: %s", hexwkb);
 
     if ( hexwkbsize % 2 )
     {
@@ -2687,10 +2618,8 @@ rt_raster_wkb_size(rt_context ctx, rt_raster raster)
     assert(NULL != ctx);
     assert(NULL != raster);
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_raster_wkb_size: computing size for %d bands",
+    RASTER_DEBUGF(3, "rt_raster_wkb_size: computing size for %d bands",
         raster->numBands);
-#endif
 
     for (i = 0; i < raster->numBands; ++i)
     {
@@ -2698,9 +2627,7 @@ rt_raster_wkb_size(rt_context ctx, rt_raster raster)
         rt_pixtype pixtype = band->pixtype;
         int pixbytes = rt_pixtype_size(ctx, pixtype);
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_raster_wkb_size: adding size of band %d", i);
-#endif
+        RASTER_DEBUGF(3, "rt_raster_wkb_size: adding size of band %d", i);
 
         if ( pixbytes < 1 ) {
             ctx->err("Corrupted band: unkonwn pixtype");
@@ -2735,7 +2662,7 @@ rt_raster_wkb_size(rt_context ctx, rt_raster raster)
 uint8_t *
 rt_raster_to_wkb(rt_context ctx, rt_raster raster, uint32_t *wkbsize)
 {
-#ifdef POSTGIS_RASTER_API_DEBUG
+#if POSTGIS_DEBUG_LEVEL > 2
     const uint8_t *wkbend = NULL;
 #endif
     uint8_t *wkb = NULL;
@@ -2747,15 +2674,11 @@ rt_raster_to_wkb(rt_context ctx, rt_raster raster, uint32_t *wkbsize)
     assert(NULL != raster);
     assert(NULL != wkbsize);
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_raster_to_wkb: about to call rt_raster_wkb_size");
-#endif
+    RASTER_DEBUG(2, "rt_raster_to_wkb: about to call rt_raster_wkb_size");
 
     *wkbsize = rt_raster_wkb_size(ctx, raster);
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_raster_to_wkb: found size: %d", *wkbsize);
-#endif
+    RASTER_DEBUGF(3, "rt_raster_to_wkb: found size: %d", *wkbsize);
 
     wkb = (uint8_t*)ctx->alloc(*wkbsize);
     if ( ! wkb )
@@ -2766,11 +2689,11 @@ rt_raster_to_wkb(rt_context ctx, rt_raster raster, uint32_t *wkbsize)
 
     ptr = wkb;
 
-#ifdef POSTGIS_RASTER_API_DEBUG
+#if POSTGIS_DEBUG_LEVEL > 2
     wkbend = ptr + (*wkbsize);
-    ctx->info("Writing raster header to wkb on position %d (expected 0)",
-              d_binptr_to_pos(ptr, wkbend, *wkbsize));
 #endif
+    RASTER_DEBUGF(3, "Writing raster header to wkb on position %d (expected 0)",
+              d_binptr_to_pos(ptr, wkbend, *wkbsize));
 
     /* Write endianness */
     *ptr = littleEndian;
@@ -2783,10 +2706,8 @@ rt_raster_to_wkb(rt_context ctx, rt_raster raster, uint32_t *wkbsize)
     memcpy(ptr, &(raster->numBands), sizeof(struct rt_raster_serialized_t) - 6);
     ptr += sizeof(struct rt_raster_serialized_t) - 6;
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("Writing bands header to wkb position %d (expected 61)",
+    RASTER_DEBUGF(3, "Writing bands header to wkb position %d (expected 61)",
               d_binptr_to_pos(ptr, wkbend, *wkbsize));
-#endif
 
     /* Serialize bands now */
     for (i = 0; i < raster->numBands; ++i)
@@ -2795,11 +2716,9 @@ rt_raster_to_wkb(rt_context ctx, rt_raster raster, uint32_t *wkbsize)
         rt_pixtype pixtype = band->pixtype;
         int pixbytes = rt_pixtype_size(ctx, pixtype);
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-        ctx->info("Writing WKB for band %d", i);
-        ctx->info("Writing band pixel type to wkb position %d",
+        RASTER_DEBUGF(3, "Writing WKB for band %d", i);
+        RASTER_DEBUGF(3, "Writing band pixel type to wkb position %d",
                   d_binptr_to_pos(ptr, wkbend, *wkbsize));
-#endif
 
         if ( pixbytes < 1 ) {
             ctx->err("Corrupted band: unkonwn pixtype");
@@ -2822,11 +2741,9 @@ rt_raster_to_wkb(rt_context ctx, rt_raster raster, uint32_t *wkbsize)
         assert(! (((uint64_t)ptr)%pixbytes) );
 #endif
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-        ctx->info("Writing band nodata to wkb position %d",
+        RASTER_DEBUGF(3, "Writing band nodata to wkb position %d",
                   d_binptr_to_pos(ptr, wkbend, *wkbsize));
-#endif
-
+ 
         /* Add nodata value */
         switch (pixtype)
         {
@@ -2926,15 +2843,11 @@ rt_raster_to_hexwkb(rt_context ctx, rt_raster raster, uint32_t *hexwkbsize)
     assert(NULL != raster);
     assert(NULL != hexwkbsize);
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_raster_to_hexwkb: calling rt_raster_to_wkb");
-#endif
+    RASTER_DEBUG(2, "rt_raster_to_hexwkb: calling rt_raster_to_wkb");
 
     wkb = rt_raster_to_wkb(ctx, raster, &wkbsize);
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_raster_to_hexwkb: rt_raster_to_wkb returned");
-#endif
+    RASTER_DEBUGF(3, "rt_raster_to_hexwkb: rt_raster_to_wkb returned");
 
     *hexwkbsize = wkbsize * 2; /* hex is 2 times bytes */
     hexwkb = (char*)ctx->alloc( (*hexwkbsize)+1);
@@ -2953,9 +2866,7 @@ rt_raster_to_hexwkb(rt_context ctx, rt_raster raster, uint32_t *hexwkbsize)
 
     ctx->dealloc(wkb); /* we don't need this anymore */
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_raster_to_hexwkb: output wkb: %s", hexwkb);
-#endif
+    RASTER_DEBUGF(3, "rt_raster_to_hexwkb: output wkb: %s", hexwkb);
 
     return hexwkb;
 }
@@ -2972,10 +2883,8 @@ rt_raster_serialized_size(rt_context ctx, rt_raster raster)
     assert(NULL != ctx);
     assert(NULL != raster);
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("Serialized size with just header:%d - now adding size of %d bands",
+    RASTER_DEBUGF(3, "Serialized size with just header:%d - now adding size of %d bands",
 	          size, raster->numBands);
-#endif
 
     for (i = 0; i < raster->numBands; ++i)
     {
@@ -3008,16 +2917,12 @@ rt_raster_serialized_size(rt_context ctx, rt_raster raster)
             size += pixbytes * raster->width * raster->height;
         }
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-        ctx->info("Size before alignment is %d", size);
-#endif
+        RASTER_DEBUGF(3, "Size before alignment is %d", size);
 
         /* Align size to 8-bytes boundary (trailing padding) */
         size += 8 - (size % 8);
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-        ctx->info("Size after alignment is %d", size);
-#endif
+        RASTER_DEBUGF(3, "Size after alignment is %d", size);
     }
 
     return size;
@@ -3046,13 +2951,11 @@ rt_raster_serialize(rt_context ctx, rt_raster raster)
 
     ptr = ret;
   
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("sizeof(struct rt_raster_serialized_t):%u",
+    RASTER_DEBUGF(3, "sizeof(struct rt_raster_serialized_t):%u",
               sizeof(struct rt_raster_serialized_t));
-    ctx->info("sizeof(struct rt_raster_t):%u",
+    RASTER_DEBUGF(3, "sizeof(struct rt_raster_t):%u",
               sizeof(struct rt_raster_t));
-    ctx->info("serialized size:%lu", (long unsigned)size);
-#endif
+    RASTER_DEBUGF(3, "serialized size:%lu", (long unsigned)size);
 
     /* Set size */
     /* NOTE: Value of rt_raster.size may be updated in
@@ -3067,8 +2970,9 @@ rt_raster_serialize(rt_context ctx, rt_raster raster)
     /* Copy header */
     memcpy(ptr, raster, sizeof(struct rt_raster_serialized_t));
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("Start hex dump of raster being serialized using 0x2D to mark non-written bytes");
+    RASTER_DEBUG(3, "Start hex dump of raster being serialized using 0x2D to mark non-written bytes");
+
+#if POSTGIS_DEBUG_LEVEL > 2 
     uint8_t* dbg_ptr = ptr;
     d_print_binary_hex(ctx, "HEADER", dbg_ptr, size);
 #endif
@@ -3094,7 +2998,7 @@ rt_raster_serialize(rt_context ctx, rt_raster raster)
         if ( band->offline ) { *ptr |= BANDTYPE_FLAG_OFFDB; }
         if ( band->hasnodata ) { *ptr |= BANDTYPE_FLAG_HASNODATA; }
 
-#ifdef POSTGIS_RASTER_API_DEBUG
+#if POSTGIS_DEBUG_LEVEL > 2
         d_print_binary_hex(ctx, "PIXTYPE", dbg_ptr, size);
 #endif
 
@@ -3106,7 +3010,7 @@ rt_raster_serialize(rt_context ctx, rt_raster raster)
             ptr += pixbytes - 1;
         }
 
-#ifdef POSTGIS_RASTER_API_DEBUG
+#if POSTGIS_DEBUG_LEVEL > 2
         d_print_binary_hex(ctx, "PADDING", dbg_ptr, size);
 #endif
 
@@ -3165,7 +3069,7 @@ rt_raster_serialize(rt_context ctx, rt_raster raster)
         /* Consistency checking (ptr is pixbytes-aligned) */
         assert(! ((uintptr_t)ptr % pixbytes) );
 
-#ifdef POSTGIS_RASTER_API_DEBUG
+#if POSTGIS_DEBUG_LEVEL > 2
         d_print_binary_hex(ctx, "NODATA", dbg_ptr, size);
 #endif
 
@@ -3187,7 +3091,7 @@ rt_raster_serialize(rt_context ctx, rt_raster raster)
             ptr += datasize;
         }
 
-#ifdef POSTGIS_RASTER_API_DEBUG
+#if POSTGIS_DEBUG_LEVEL > 2
         d_print_binary_hex(ctx, "BAND", dbg_ptr, size);
 #endif
 
@@ -3197,9 +3101,8 @@ rt_raster_serialize(rt_context ctx, rt_raster raster)
             *ptr = 0;
             ++ptr;
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-            ctx->info("PAD at %d", (uint64_t)ptr % 8);
-#endif
+            RASTER_DEBUGF(3, "PAD at %d", (uint64_t)ptr % 8);
+
         }
 
         /* Consistency checking (ptr is pixbytes-aligned) */
@@ -3207,7 +3110,7 @@ rt_raster_serialize(rt_context ctx, rt_raster raster)
 
     } /* for-loop over bands */
 
-#ifdef POSTGIS_RASTER_API_DEBUG
+#if POSTGIS_DEBUG_LEVEL > 2
     d_print_binary_hex(ctx, "SERIALIZED RASTER", dbg_ptr, size);
 #endif
 
@@ -3252,9 +3155,7 @@ rt_raster_deserialize(rt_context ctx, void* serialized)
     /* Allocate registry of raster bands */
     rast->bands = ctx->alloc(rast->numBands * sizeof(rt_band));
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_raster_deserialize: %d bands", rast->numBands);
-#endif
+    RASTER_DEBUGF(3, "rt_raster_deserialize: %d bands", rast->numBands);
 
     /* Move to the beginning of first band */
     ptr = beg;
@@ -3280,9 +3181,7 @@ rt_raster_deserialize(rt_context ctx, void* serialized)
         ptr++;
         band->pixtype = type & BANDTYPE_PIXTYPE_MASK;
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-    ctx->info("rt_raster_deserialize: band %d with pixel type %s", i, rt_pixtype_name(ctx, band->pixtype));
-#endif
+        RASTER_DEBUGF(3, "rt_raster_deserialize: band %d with pixel type %s", i, rt_pixtype_name(ctx, band->pixtype));
 
         band->offline = BANDTYPE_IS_OFFDB(type) ? 1 : 0;
         band->hasnodata = BANDTYPE_HAS_NODATA(type) ? 1: 0;
@@ -3361,10 +3260,9 @@ rt_raster_deserialize(rt_context ctx, void* serialized)
             }
         }
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-        ctx->info("rt_raster_deserialize: has NODATA flag %d", band->hasnodata);
-        ctx->info("rt_raster_deserialize: NODATA value %g", band->nodataval);
-#endif
+        RASTER_DEBUGF(3, "rt_raster_deserialize: has NODATA flag %d", band->hasnodata);
+        RASTER_DEBUGF(3, "rt_raster_deserialize: NODATA value %g", band->nodataval);
+
         /* Consistency checking (ptr is pixbytes-aligned) */
          assert(! (((uintptr_t)ptr) % pixbytes) );
 
@@ -3387,7 +3285,7 @@ rt_raster_deserialize(rt_context ctx, void* serialized)
         }
 
         /* Skip bytes of padding up to 8-bytes boundary */
-#ifdef POSTGIS_RASTER_API_DEBUG
+#if POSTGIS_DEBUG_LEVEL > 2
         const uint8_t *padbeg = ptr;
 #endif
         while ( 0 != ((ptr - beg) % 8) )
@@ -3396,9 +3294,8 @@ rt_raster_deserialize(rt_context ctx, void* serialized)
             ++ptr;
         }
 
-#ifdef POSTGIS_RASTER_API_DEBUG
-        ctx->info("rt_raster_deserialize: skip %d bytes of 8-bytes boundary padding", ptr - padbeg);
-#endif
+        RASTER_DEBUGF(3, "rt_raster_deserialize: skip %d bytes of 8-bytes boundary padding", ptr - padbeg);
+
         /* Consistency checking (ptr is pixbytes-aligned) */
         assert(! ((uintptr_t)ptr % pixbytes) );
     }

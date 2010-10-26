@@ -119,13 +119,8 @@ static void *
 rt_pgalloc(size_t size)
 {
     void* ret;
-#ifdef POSTGIS_RASTER_PG_DEBUG_MEM
-    elog(NOTICE, "rt_pgalloc(%ld) called", size);
-#endif
+    POSTGIS_RT_DEBUGF(5, "rt_pgalloc(%ld) called", size);
     ret = palloc(size);
-#ifdef POSTGIS_RASTER_PG_DEBUG_MEM
-    elog(NOTICE, "palloc(%ld) returned", size);
-#endif
     return ret;
 }
 
@@ -133,21 +128,18 @@ static void *
 rt_pgrealloc(void *mem, size_t size)
 {
     void* ret;
-#ifdef POSTGIS_RASTER_PG_DEBUG_MEM
-    elog(NOTICE, "rt_pgrealloc(%p, %ld) called", mem, size);
-#endif
+    
+    POSTGIS_RT_DEBUGF(5, "rt_pgrealloc(%p, %ld) called", mem, size);
+
     if ( mem )
     {
-#ifdef POSTGIS_RASTER_PG_DEBUG_MEM
-        elog(NOTICE, "rt_pgrealloc calling repalloc(%p, %ld)", mem, size);
-#endif
+    
+        POSTGIS_RT_DEBUGF(5, "rt_pgrealloc calling repalloc(%p, %ld) called", mem, size);
         ret = repalloc(mem, size);
     }
     else
     {
-#ifdef POSTGIS_RASTER_PG_DEBUG_MEM
-        elog(NOTICE, "rt_pgrealloc calling palloc(%ld)", size);
-#endif
+        POSTGIS_RT_DEBUGF(5, "rt_pgrealloc calling palloc(%ld)", size);
         ret = palloc(size);
     }
     return ret;
@@ -156,9 +148,7 @@ rt_pgrealloc(void *mem, size_t size)
 static void
 rt_pgfree(void *mem)
 {
-#ifdef POSTGIS_RASTER_PG_DEBUG_MEM
-    elog(NOTICE, "rt_pgfree(%p) calling pfree", mem);
-#endif
+    POSTGIS_RT_DEBUGF(5, "rt_pgfree(%p) calling pfree", mem);
     pfree(mem);
 }
 
@@ -457,10 +447,8 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
     /* stuff done only on the first call of the function */
     if (SRF_IS_FIRSTCALL())
     {
+        POSTGIS_RT_DEBUG(2, "RASTER_dumpAsWKTPolygons first call");
 	
-#ifdef POSTGIS_RASTER_PG_DEBUG_MEM
-        elog(NOTICE, "RASTER_dumpAsWKTPolygons first call");
-#endif	
         MemoryContext   oldcontext;
 
         /* create a function context for cross-call persistence */
@@ -493,9 +481,7 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
         else
             nband = 1; /* By default, first band */
 			
-#ifdef POSTGIS_RASTER_PG_DEBUG_MEM
-        elog(NOTICE, "RASTER_dumpAsWKTPolygons: band %d", nband);
-#endif			
+        POSTGIS_RT_DEBUGF(3, "RASTER_dumpAsWKTPolygons: band %d", nband);
 
         /* Polygonize raster */
         
@@ -511,9 +497,7 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
             PG_RETURN_NULL();
         }
 		
-#ifdef POSTGIS_RASTER_PG_DEBUG_MEM
-        elog(NOTICE, "RASTER_dumpAsWKTPolygons: raster dump, %d elements returned", nElements);
-#endif		
+        POSTGIS_RT_DEBUGF(3, "RASTER_dumpAsWKTPolygons: raster dump, %d elements returned", nElements);
 
         /**
          * Not needed to check geomval. It was allocated by the new
@@ -557,11 +541,8 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
         char       **values;
         HeapTuple    tuple;
         Datum        result;
-		
-		
-#ifdef POSTGIS_RASTER_PG_DEBUG_MEM
-    elog(NOTICE, "RASTER_dumpAsWKTPolygons: call number %d", call_cntr);
-#endif
+				
+        POSTGIS_RT_DEBUGF(3, "RASTER_dumpAsWKTPolygons: call number %d", call_cntr);
 		        
         /*
          * Prepare a values array for building the returned tuple.
@@ -680,11 +661,9 @@ Datum RASTER_makeEmpty(PG_FUNCTION_ARGS)
     else
         srid = PG_GETARG_INT32(8);
 
-#ifdef POSTGIS_RASTER_PG_DEBUG
-    elog(NOTICE, "%dx%d, ip:%g,%g, scale:%g,%g, skew:%g,%g srid:%d",
+    POSTGIS_RT_DEBUGF(4, "%dx%d, ip:%g,%g, scale:%g,%g, skew:%g,%g srid:%d",
                   width, height, ipx, ipy, scalex, scaley,
                   skewx, skewy, srid);
-#endif
 
     ctx = get_rt_context(fcinfo);
 
@@ -1507,9 +1486,9 @@ Datum RASTER_getPixelValue(PG_FUNCTION_ARGS)
     /* Validate pixel coordinates are in range */
     x = PG_GETARG_INT32(2);
     y = PG_GETARG_INT32(3);
-#ifdef POSTGIS_RASTER_PG_DEBUG
-    elog(NOTICE, "Pixel coordinates (%d, %d)", x, y);
-#endif
+
+    POSTGIS_RT_DEBUGF(3, "Pixel coordinates (%d, %d)", x, y);
+
     /* Deserialize raster */
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
     ctx = get_rt_context(fcinfo);
@@ -1559,9 +1538,8 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS)
     /* Validate pixel coordinates are in range */
     x = PG_GETARG_INT32(2);
     y = PG_GETARG_INT32(3);
-#ifdef POSTGIS_RASTER_PG_DEBUG
-    elog(NOTICE, "Pixel coordinates (%d, %d)", x, y);
-#endif
+    
+    POSTGIS_RT_DEBUGF(3, "Pixel coordinates (%d, %d)", x, y);
 
     /* Get the pixel value */
     pixvalue = PG_GETARG_FLOAT8(4);
