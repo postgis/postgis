@@ -257,7 +257,7 @@
 			Each raster has 1 or more bands each having a set of pixel values. Rasters can be georeferenced.</para>
 		<note>
 		  <para>Requires PostGIS be compiled with GDAL support. Currently rasters can be implicitly converted to geometry type, but the conversion returns the 
-		  	<xref linkend="RT_ConvexHull" /> of the raster.  This auto casting may be removed in the near future so don't rely on it.</para>
+		  	<xref linkend="RT_ST_ConvexHull" /> of the raster.  This auto casting may be removed in the near future so don't rely on it.</para>
 		</note>
 		</refsection>
 		
