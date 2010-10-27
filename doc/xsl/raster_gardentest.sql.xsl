@@ -23,9 +23,12 @@
 	<xsl:variable name='var_NDRXDR'>XDR</xsl:variable>
 	<xsl:variable name='var_text'>'monkey'</xsl:variable>
 	<xsl:variable name='var_varchar'>'test'</xsl:variable>
-	<xsl:variable name='var_pixeltype'>'1BB'</xsl:variable>
+	<xsl:variable name='var_pixeltype'>1BB</xsl:variable>
+	<xsl:variable name='var_pixelvalue'>0</xsl:variable>
 	<xsl:variable name='var_boolean'>false</xsl:variable>
 	<xsl:variable name='var_logtable'>raster_garden_log</xsl:variable>
+	<xsl:variable name='var_pixeltypes'>{8BUI,1BB}</xsl:variable>
+	<xsl:variable name='var_pixelvalues'>{255,0}</xsl:variable>
 	<pgis:gardens>
 		<pgis:gset ID='PointSet' GeometryType='POINT'>(SELECT ST_SetSRID(ST_Point(i,j),4326) As the_geom
 		FROM (SELECT a*1.11111111 FROM generate_series(-10,50,10) As a) As i(i)
@@ -46,8 +49,17 @@
 		<pgis:gset ID="MultipleNULLs" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom FROM generate_series(1,4) As foo)</pgis:gset>
 	</pgis:gardens>
 	<pgis:pixeltypes>
-		 <pgis:pixeltype ID="1BB" PixType="1BB" createtable="false" nodata="0"/>
-		 <pgis:pixeltype ID="2BUI" PixType="2BUI" createtable="false" nodata="0"/>
+		 <pgis:pixeltype ID="1bb" PixType="1BB" createtable="true" nodata="0" />
+		 <pgis:pixeltype ID="2bui" PixType="2BUI" createtable="true" nodata="2"/>
+		 <pgis:pixeltype ID="4bui" PixType="4BUI" createtable="true" nodata="15"/>
+		 <pgis:pixeltype ID="8bsi" PixType="8BSI" createtable="true" nodata="-255"/>
+		 <pgis:pixeltype ID="8bui" PixType="8BUI" createtable="true" nodata="255"/>
+		 <pgis:pixeltype ID="16bsi" PixType="16BSI" createtable="true" nodata="-65535"/>
+		 <pgis:pixeltype ID="16bui" PixType="16BUI" createtable="true" nodata="65535"/>
+		 <pgis:pixeltype ID="32bsi" PixType="32BSI" createtable="true" nodata="-4294967295"/>
+		 <pgis:pixeltype ID="32bui" PixType="32BUI" createtable="true" nodata="4294967295"/>
+		 <pgis:pixeltype ID="32bf" PixType="32BF" createtable="true" nodata="-4294.967295"/>
+		  <pgis:pixeltype ID="64bf" PixType="64BF" createtable="true" nodata="-429496.7295"/>
 	</pgis:pixeltypes>
 
         <!-- We deal only with the reference chapter -->
@@ -55,29 +67,41 @@
 <!-- Create logging table -->
 DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />;
 CREATE TABLE <xsl:value-of select="$var_logtable" />(logid serial PRIMARY KEY, log_label text, func text, g1 text, g2 text, log_start timestamp, log_end timestamp);
-                <xsl:apply-templates select="/book/chapter[@id='reference_RT']" />
+                <xsl:apply-templates select="/book/chapter[@id='RT_reference']" />
         </xsl:template>
-
 	<xsl:template match='chapter'>
-<!--Start Test table creation, insert, analyze crash test, drop -->
-		<xsl:for-each select="document('')//pgis:pixeltypes/pgis:pixeltyp[not(contains(@createtable,'false'))]">
-			<xsl:variable name='log_label'>create,insert,drop Test <xsl:value-of select="@PixType" /></xsl:variable>
+<!--Start Test table creation -->
+		<xsl:for-each select="document('')//pgis:pixeltypes/pgis:pixeltype[not(contains(@createtable,'false'))]">
+			<xsl:variable name='log_label'>create table Test <xsl:value-of select="@PixType" /></xsl:variable>
 SELECT '<xsl:value-of select="$log_label" />: Start Testing';
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
 VALUES('<xsl:value-of select="$log_label" /> AddRasterColumn','AddRasterColumn', '<xsl:value-of select="@PixType" />', clock_timestamp());
 BEGIN;
-	CREATE TABLE pgis_rgarden (rid serial);
-	SELECT AddRasterColumn('public', 'rast_<xsl:value-of select="@PixType" />', 'rast',4326, '{8BUI,8BUI,8BUI,8BUI}',false, true, '{<xsl:value-of select="@nodata" />}', 0.25,-0.25,200,300, null);
+	CREATE TABLE pgis_rgarden_<xsl:value-of select="@ID" />(rid serial);
+	SELECT AddRasterColumn('public', 'pgis_rgarden_<xsl:value-of select="@ID" />', 'rast',4326, '{<xsl:value-of select="@PixType" />}',false, true, '{<xsl:value-of select="@nodata" />}', 0.25,-0.25,200,300, null);
+	SELECT AddRasterColumn('public', 'pgis_rgarden_<xsl:value-of select="@ID" />','r_rasttothrow', 4326, '{<xsl:value-of select="@PixType" />,<xsl:value-of select="$var_pixeltype" />}',false, true, '{<xsl:value-of select="@nodata" />, <xsl:value-of select="$var_pixelvalue" />}', 0.25,-0.25,200,300, null);
 
 	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
 		WHERE log_label = '<xsl:value-of select="$log_label" /> AddRasterColumn' AND log_end IS NULL;
-COMMIT;
-
-	<xsl:text>
-
-	</xsl:text>
+COMMIT;<xsl:text> 
+</xsl:text>
 		</xsl:for-each>
-<!--End Test table creation, insert, drop  -->
+<!--End Test table creation  -->
+
+<!--Start Test table drop -->
+		<xsl:for-each select="document('')//pgis:pixeltypes/pgis:pixeltype[not(contains(@createtable,'false'))]">
+			<xsl:variable name='log_label'>drop table Test <xsl:value-of select="@PixType" /></xsl:variable>
+SELECT '<xsl:value-of select="$log_label" />: Start Testing';
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
+VALUES('<xsl:value-of select="$log_label" /> DropRasterTable','DropRasterTable', '<xsl:value-of select="@PixType" />', clock_timestamp());
+BEGIN;
+	SELECT DropRasterTable('public', 'pgis_rgarden_<xsl:value-of select="@ID" />');
+	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
+		WHERE log_label = '<xsl:value-of select="$log_label" /> DropRasterTable' AND log_end IS NULL;
+COMMIT;<xsl:text> 
+</xsl:text>
+		</xsl:for-each>
+<!--End Test table drop -->
 	</xsl:template>
 
 	<!--macro to replace func args with dummy var args -->

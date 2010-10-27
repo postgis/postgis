@@ -231,7 +231,7 @@ UPDATE raster_columns SET extent = (SELECT ST_Union(ST_Envelope(rast)) FROM myra
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="AddGeometryColumn"/>, <xref linkend="RT_DropRasterTable"/>, <xref linkend="RT_DropRasterColumn"/>, <xref linkend="RT_ST_SRID" /></para>
+		<para><xref linkend="AddGeometryColumn"/>, <xref linkend="RT_DropRasterTable"/>, <xref linkend="RT_DropRasterColumn"/>, <xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_SRID" /></para>
 	  </refsection>
 	</refentry>
 	
