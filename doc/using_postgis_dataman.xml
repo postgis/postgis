@@ -1047,7 +1047,7 @@ FROM public.myschema.myspecialpois LIMIT 1;
 			  <entry><para><informalfigure>
 				  <mediaobject>
 					<imageobject>
-					  <imagedata fileref="images/st_isvalid08.png" />
+					  <imagedata fileref="images/st_isvalid09.png" />
 					</imageobject>
 
 					<caption><para><emphasis role="bold">(p)</emphasis></para></caption>
