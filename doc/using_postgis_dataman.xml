@@ -1043,6 +1043,16 @@ FROM public.myschema.myspecialpois LIMIT 1;
 					<caption><para><emphasis role="bold">(o)</emphasis></para></caption>
 				  </mediaobject>
 				</informalfigure></para></entry>
+				
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_isvalid08.png" />
+					</imageobject>
+
+					<caption><para><emphasis role="bold">(p)</emphasis></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
 			</row>
 		  </tbody>
 		</tgroup>
@@ -1051,7 +1061,8 @@ FROM public.myschema.myspecialpois LIMIT 1;
 			<row>
 				<entry><para><emphasis role="bold">(n)</emphasis> and
 				<emphasis role="bold">(o)</emphasis> are not valid
-				<varname>MULTIPOLYGON</varname>s.</para></entry>
+				<varname>MULTIPOLYGON</varname>s.  
+				<emphasis role="bold">(p)</emphasis>, however, is valid.</para></entry>
 			</row>
 		  </tbody>
 		</tgroup>
