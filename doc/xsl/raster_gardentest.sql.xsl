@@ -49,19 +49,51 @@
 		<pgis:gset ID="MultipleNULLs" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom FROM generate_series(1,4) As foo)</pgis:gset>
 	</pgis:gardens>
 	<pgis:pixeltypes>
-		 <pgis:pixeltype ID="1bb" PixType="1BB" createtable="true" nodata="0" />
-		 <pgis:pixeltype ID="2bui" PixType="2BUI" createtable="true" nodata="2"/>
-		 <pgis:pixeltype ID="4bui" PixType="4BUI" createtable="true" nodata="15"/>
-		 <pgis:pixeltype ID="8bsi" PixType="8BSI" createtable="true" nodata="-255"/>
-		 <pgis:pixeltype ID="8bui" PixType="8BUI" createtable="true" nodata="255"/>
-		 <pgis:pixeltype ID="16bsi" PixType="16BSI" createtable="true" nodata="-65535"/>
-		 <pgis:pixeltype ID="16bui" PixType="16BUI" createtable="true" nodata="65535"/>
-		 <pgis:pixeltype ID="32bsi" PixType="32BSI" createtable="true" nodata="-4294967295"/>
-		 <pgis:pixeltype ID="32bui" PixType="32BUI" createtable="true" nodata="4294967295"/>
-		 <pgis:pixeltype ID="32bf" PixType="32BF" createtable="true" nodata="-4294.967295"/>
-		  <pgis:pixeltype ID="64bf" PixType="64BF" createtable="true" nodata="-429496.7295"/>
+		 <pgis:pixeltype ID="1bb" PixType="1BB" createtable="true" nodata="0">
+		 	(SELECT ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 1*i, 1*i), '1BB'), i, (i+1),0) As rast
+		 		FROM generate_series(1,10) As i)
+		 </pgis:pixeltype>
+		 <pgis:pixeltype ID="2bui" PixType="2BUI" createtable="true" nodata="2">
+		 	(SELECT ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 1*i, 1*i), '2BUI'), i, (i+1),1) As rast
+		 		FROM generate_series(1,10) As i)
+		 </pgis:pixeltype>
+		 <pgis:pixeltype ID="4bui" PixType="4BUI" createtable="true" nodata="15">
+		 	(SELECT ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 1*i, 1*i), '4BUI'), i, (i+1),14) As rast
+		 		FROM generate_series(1,10) As i)
+		 </pgis:pixeltype>
+		 <pgis:pixeltype ID="8bsi" PixType="8BSI" createtable="true" nodata="-255">
+		 	(SELECT ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 1*i, 1*i), '8BSI'), i, (i+1),200) As rast
+		 		FROM generate_series(1,10) As i)
+		 </pgis:pixeltype>
+		 <pgis:pixeltype ID="8bui" PixType="8BUI" createtable="true" nodata="255">
+		 	(SELECT ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 1*i, 1*i), '8BUI'), i, (i+1),150) As rast
+		 		FROM generate_series(1,10) As i)
+		 </pgis:pixeltype>
+		 <pgis:pixeltype ID="16bsi" PixType="16BSI" createtable="true" nodata="-65535">
+		 	(SELECT ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 1*i, 1*i), '16BSI'), i, (i+1),-6000) As rast
+		 		FROM generate_series(1,10) As i)
+		 </pgis:pixeltype>
+		 <pgis:pixeltype ID="16bui" PixType="16BUI" createtable="true" nodata="65535">
+		 	(SELECT ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 1*i, 1*i), '16BUI'), i, (i+1),64567) As rast
+		 		FROM generate_series(1,10) As i)
+		 </pgis:pixeltype>
+		 <pgis:pixeltype ID="32bsi" PixType="32BSI" createtable="true" nodata="-4294967295">
+		 	(SELECT ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 1*i, 1*i), '32BSI'), i, (i+1),-429496) As rast
+		 		FROM generate_series(1,10) As i)
+		 </pgis:pixeltype>
+		 <pgis:pixeltype ID="32bui" PixType="32BUI" createtable="true" nodata="4294967295">
+		 	(SELECT ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 1*i, 1*i), '32BUI'), i, (i+1),42949) As rast
+		 		FROM generate_series(1,10) As i)
+		 </pgis:pixeltype>
+		 <pgis:pixeltype ID="32bf" PixType="32BF" createtable="true" nodata="-4294.967295">
+		 	(SELECT ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 1*i, 1*i), '32BF'), i, (i+1),-4294) As rast
+		 		FROM generate_series(1,10) As i)
+		 </pgis:pixeltype>
+		  <pgis:pixeltype ID="64bf" PixType="64BF" createtable="true" nodata="429496.7295">
+		 	(SELECT ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 1*i, 1*i), '64BF'), i, (i+1),42949.12345) As rast
+		 		FROM generate_series(1,10) As i)
+		 </pgis:pixeltype>
 	</pgis:pixeltypes>
-
         <!-- We deal only with the reference chapter -->
         <xsl:template match="/">
 <!-- Create logging table -->
@@ -70,6 +102,9 @@ CREATE TABLE <xsl:value-of select="$var_logtable" />(logid serial PRIMARY KEY, l
                 <xsl:apply-templates select="/book/chapter[@id='RT_reference']" />
         </xsl:template>
 	<xsl:template match='chapter'>
+<!-- define a table we call pgis_rgarden_mega that will contain a raster column with a band for all types of pixels we support -->
+DROP TABLE IF EXISTS pgis_rgarden_mega;
+CREATE TABLE pgis_rgarden_mega(rid serial PRIMARY KEY, rast raster);
 <!--Start Test table creation -->
 		<xsl:for-each select="document('')//pgis:pixeltypes/pgis:pixeltype[not(contains(@createtable,'false'))]">
 			<xsl:variable name='log_label'>create table Test <xsl:value-of select="@PixType" /></xsl:variable>
@@ -77,7 +112,7 @@ SELECT '<xsl:value-of select="$log_label" />: Start Testing';
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
 VALUES('<xsl:value-of select="$log_label" /> AddRasterColumn','AddRasterColumn', '<xsl:value-of select="@PixType" />', clock_timestamp());
 BEGIN;
-	CREATE TABLE pgis_rgarden_<xsl:value-of select="@ID" />(rid serial);
+	CREATE TABLE pgis_rgarden_<xsl:value-of select="@ID" />(rid serial PRIMARY KEY);
 	SELECT AddRasterColumn('public', 'pgis_rgarden_<xsl:value-of select="@ID" />', 'rast',4326, '{<xsl:value-of select="@PixType" />}',false, true, '{<xsl:value-of select="@nodata" />}', 0.25,-0.25,200,300, null);
 	SELECT AddRasterColumn('public', 'pgis_rgarden_<xsl:value-of select="@ID" />','r_rasttothrow', 4326, '{<xsl:value-of select="@PixType" />,<xsl:value-of select="$var_pixeltype" />}',false, true, '{<xsl:value-of select="@nodata" />, <xsl:value-of select="$var_pixelvalue" />}', 0.25,-0.25,200,300, null);
 
@@ -85,6 +120,18 @@ BEGIN;
 		WHERE log_label = '<xsl:value-of select="$log_label" /> AddRasterColumn' AND log_end IS NULL;
 COMMIT;<xsl:text> 
 </xsl:text>
+
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
+VALUES('<xsl:value-of select="$log_label" /> insert data raster','insert data', '<xsl:value-of select="@PixType" />', clock_timestamp());
+
+BEGIN;
+	INSERT INTO pgis_rgarden_mega(rast)
+	SELECT rast
+	FROM (<xsl:value-of select="." />) As foo;
+ UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
+		WHERE log_label = '<xsl:value-of select="$log_label" /> insert data raster' AND log_end IS NULL;
+COMMIT;	
+		
 		</xsl:for-each>
 <!--End Test table creation  -->
 
