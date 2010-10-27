@@ -10,7 +10,7 @@
 CP = cp -p
 
 # Filenames with extension as determined by the OS
-GDAL2RASTER=gdal2raster.py
+RASTER2PGSQL=raster2pgsql.py
 
 # PostgreSQL executable directory
 PGSQL_BINDIR=@PGSQL_BINDIR@
@@ -18,10 +18,10 @@ PGSQL_BINDIR=@PGSQL_BINDIR@
 all:
 
 install:
-	$(CP) $(GDAL2RASTER) $(PGSQL_BINDIR)/$(GDAL2RASTER)
+	$(CP) $(RASTER2PGSQL) $(PGSQL_BINDIR)/$(RASTER2PGSQL)
 
 uninstall:
-	$(RM) $(PGSQL_BINDIR)/$(GDAL2RASTER)
+	$(RM) $(PGSQL_BINDIR)/$(RASTER2PGSQL)
 
 clean:
 	$(RM) *.o

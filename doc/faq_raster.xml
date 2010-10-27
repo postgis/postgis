@@ -78,8 +78,8 @@
             url="http://www.postgis.org/download/windows/experimental.php#wktraster">Windows
             PostGIS Raster experimental builds</ulink>.</para>
 		<para>Once you have a functioning Python with GDAL and NumPy, you can
-        use the gdal2raster.py script packaged with PostGIS Raster.</para>
-		<para>Please refer to <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html">gdal2raster.py usage</ulink> for more details.</para>
+        use the raster2pgsql.py script packaged with PostGIS Raster.</para>
+		<para>Please refer to <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html">raster2pgsql.py usage</ulink> for more details.</para>
       </answer>
     </qandaentry>
 	
