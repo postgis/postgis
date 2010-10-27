@@ -3431,9 +3431,6 @@ SELECT ST_AsText(
 
 		<para>In mathematical terms, this predicate is expressed as:</para>
 
-		<remark>TODO: Insert appropriate MathML markup here or use a gif.
-		Simple HTML markup does not work well in both IE and Firefox.</remark>
-
 		<informalfigure>
 		  <mediaobject>
 			<imageobject>
