@@ -27,6 +27,7 @@
         You can <ulink url="http://www.postgis.us/page_buy_book">buy PostGIS in Action</ulink>  now from Manning and get all draft chapters NOW and as they are revised (note: all chapters are completed but undergoing revision) and completed book once out.  
         You can also buy from Amazon now at a significant discount and lock in lowest price sold before publication, but have to wait for the book to come out to receive your copy.
         </para>
+        <para>Here is a review from a PostGIS Raster user <ulink url="http://fuzzytolerance.info/code/postgis-raster-ftw/">PostGIS raster applied to land classification urban forestry</ulink></para>
       </answer>
     
     </qandaentry>
@@ -236,11 +237,11 @@ END
     
     <qandaentry>
       <question>
-        <para>How is PostGIS Raster different than the Oracle SDO_GEORASTER and SDO_RASTER types?</para>
+        <para>How is PostGIS Raster different from Oracle GeoRaster (SDO_GEORASTER) and SDO_RASTER types?</para>
       </question>
 
       <answer>
-      	<para>For a more extensive discussion on this topic, check out Jorge Arévalo <ulink url="http://gis4free.wordpress.com/2010/07/19/oracle-georaster-part-i/">Oracle GeoRaster and PostGIS WKT Raster: First impressions </ulink></para>
+      	<para>For a more extensive discussion on this topic, check out Jorge Arévalo <ulink url="http://gis4free.wordpress.com/2010/07/19/oracle-georaster-part-i/">Oracle GeoRaster and PostGIS Raster: First impressions </ulink></para>
        	<para>The major advantage of one-georeference-by-raster over one-georeference-by-layer is to allow:</para>
        	<para>* coverages to be not necessarily rectangular (which is often the case of raster coverage covering large extents. See the possible raster arrangements in the documentation)</para>
        	<para>* rasters to overlaps (which is necessary to implement lossless vector to raster conversion) </para>
