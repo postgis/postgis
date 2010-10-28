@@ -506,7 +506,7 @@ postgis_raster_lib_version
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns an empty raster of given dimensions, pixel x y, skew and spatial reference system with no bands.  If an existing raster is passed in,
+				<para>Returns an empty raster of given dimensions, pixel width in spatial coordinates x (ipx), pixel height y in spatial coordinates (ipy), (pixelsize - uses same size for pixel height (ipy) and width (ipx)), skew and spatial reference system with no bands.  If an existing raster is passed in,
 				it returns a new raster with the same meta data settings (minus number of bands and band types). If no srid is specified it defaults to -1, though this may change to 0 in future.
 				After you create an empty raster you 
 				    probably want to add bands to it and hmm maybe edit it.  Refer to <xref linkend="RT_ST_AddBand" /> to define bands and <xref linkend="RT_ST_SetValue" /> to set pixel values.</para>
@@ -523,13 +523,25 @@ VALUES(3, ST_MakeEmptyRaster( 100, 100, 0.0005, 0.0005, 1, 1, 0, 0, 4326) );
 INSERT INTO dummy_rast(rid,rast)
 SELECT 4, ST_MakeEmptyRaster(rast)
 FROM dummy_rast WHERE rid = 3;
+
+-- output meta data of rasters we just added
+SELECT rid, (md).*
+FROM (SELECT rid, ST_MetaData(rast) As md 
+	FROM dummy_rast
+	WHERE rid IN(3,4)) As foo;
+	
+-- output --
+ rid | upperleftx | upperlefty | width | height | pixelsizex | pixelsizey | skewx | skewy | srid | numbands
+-----+------------+------------+-------+--------+------------+------------+-------+-------+------+----------
+   3 |     0.0005 |     0.0005 |   100 |    100 |          1 |          1 |		0 |     0 | 4326 |        0
+   4 |     0.0005 |     0.0005 |   100 |    100 |          1 |          1 |		0 |     0 | 4326 |        0
 				</programlisting>
 			
 			</refsection>
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_AddBand" />, <xref linkend="RT_ST_SetValue" /></para>
+				<para><xref linkend="RT_ST_AddBand" />, <xref linkend="RT_ST_MetaData" />, <xref linkend="RT_ST_PixelSizeX" />, <xref linkend="RT_ST_PixelSizeY" />, <xref linkend="RT_ST_SetValue" />, <xref linkend="RT_ST_SkewX" />, , <xref linkend="RT_ST_SkewY" /></para>
 			</refsection>
 		</refentry>
   	</sect1>
