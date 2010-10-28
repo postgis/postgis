@@ -1,7 +1,16 @@
+----------------------------------------------------------------------
+--
 -- $Id$
-----------------------------------------------------------------------
+--
 -- Copyright (c) 2009-2010 Pierre Racine <pierre.racine@sbf.ulaval.ca>
+--
 ----------------------------------------------------------------------
+
+-- Note: this script is dependent on 
+--   ST_DeleteBand(rast raster, band int) 
+--   ST_AddBand(newrast, rast, b, NULL)
+--   ST_MapAlgebra(rast raster, band integer, expression text, nodatavalueexpr text, pixeltype text)
+-- to be found in the script/plpgsql folder
 
 CREATE OR REPLACE FUNCTION ST_Reclass(rast raster,
 				      band int,
@@ -47,17 +56,18 @@ CREATE OR REPLACE FUNCTION ST_Reclass(rast raster,
     		END IF;
     		-- Build the maexpr expression
     		IF fromstr[2] IS NULL OR fromstr[2] = ''  THEN
-			maexpr := maexpr || ' WHEN ' || fromstr[1] || ' = rast1 THEN ' || reclassstr[2] || ' ';
+			maexpr := maexpr || ' WHEN ' || fromstr[1] || ' = rast THEN ' || reclassstr[2] || ' ';
 		ELSE
-			maexpr := maexpr || ' WHEN ' || fromstr[1] || ' <= rast1 AND rast1 < ' || fromstr[2] || ' THEN ' || reclassstr[2] || ' ';
+			maexpr := maexpr || ' WHEN ' || fromstr[1] || ' <= rast AND rast < ' || fromstr[2] || ' THEN ' || reclassstr[2] || ' ';
 		END IF;
     	END LOOP;
-    	maexpr := maexpr || 'ELSE rast1 END';
+    	maexpr := maexpr || 'ELSE rast END';
     	newrast := ST_AddBand(rast, ST_MapAlgebra(rast, band, maexpr), 1, band);
 	RETURN newrast;
     END;
     $$
     LANGUAGE 'plpgsql';
 
+SELECT ST_Value(ST_TestRaster(1, 1, 4),1,1)
 SELECT ST_Value(ST_Reclass(ST_TestRaster(1, 1, 4), 1, '1:2|2:2|3-5:10'), 1, 1);
 

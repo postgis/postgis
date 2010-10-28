@@ -1,7 +1,13 @@
+----------------------------------------------------------------------
 -- $Id$
-----------------------------------------------------------------------
+--
 -- Copyright (c) 2009-2010 Pierre Racine <pierre.racine@sbf.ulaval.ca>
+--
 ----------------------------------------------------------------------
+
+-- NOTE: The one raster version of ST_MapAlgebra found in this file is ready to be being implemented in C
+-- NOTE: The ST_SameAlignment function found in this files is is ready to be being implemented in C
+-- NOTE: The two raster version of ST_MapAlgebra found in this file is to be replaced by the optimized version found in st_mapalgebra_optimized.sql
 
 --------------------------------------------------------------------
 -- ST_MapAlgebra - (one raster version) Return a raster which values 
@@ -34,6 +40,8 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast raster, band integer, expression t
         initexpr text;
         initndvexpr text;
         newpixeltype text;
+        skipcomputation int := 0;
+        newhasnodatavalue boolean := FALSE;
     BEGIN
         -- Check if raster is NULL
         IF rast IS NULL THEN
@@ -63,10 +71,12 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast raster, band integer, expression t
         IF ST_BandHasNodataValue(rast, band) THEN
             newnodatavalue := ST_BandNodataValue(rast, band);
         ELSE
-            newnodatavalue := NULL;
+            RAISE NOTICE 'ST_MapAlgebra: Source raster do not have a nodata value, nodata value for new raster set to the min value possible';
+            newnodatavalue := ST_MinPossibleVal(newrast);
         END IF;
         -- We set the initial value of the future band to nodata value. 
-        -- If nodatavalue is null then the raster will be initialise to 0 and all the values will be recomputed.
+        -- If nodatavalue is null then the raster will be initialise to ST_MinPossibleVal 
+        -- but all the values should be recomputed anyway.
         newinitialvalue := newnodatavalue;
 
         -- Set the new pixeltype
@@ -78,44 +88,79 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast raster, band integer, expression t
             RAISE EXCEPTION 'ST_MapAlgebra: Invalid pixeltype "%". Aborting.', newpixeltype;
         END IF;
 
-        initexpr := 'SELECT ' || expression;
-        initndvexpr := 'SELECT ' || nodatavalueexpr;
+        initexpr := 'SELECT ' || trim(upper(expression));
+        initndvexpr := 'SELECT ' || trim(upper(nodatavalueexpr));
 
-        -- First optimization: Recompute the initial value if a nodatavalueexpr is provided so we can then initialise the raster with this value. 
-        -- This avoid having to compute nodata values one by one in the main computing loop
-        IF NOT nodatavalueexpr IS NULL AND NOT newnodatavalue IS NULL THEN 
-            newexpr := replace(initndvexpr, 'rast', newnodatavalue::text);
+--RAISE NOTICE '111 initexpr=%, newnodatavalue=%', initexpr,newnodatavalue;
+
+        -- Optimization: If a nodatavalueexpr is provided, recompute the initial value 
+        -- so we can then initialise the raster with this value and skip the computation
+        -- of nodata values one by one in the main computing loop
+        IF NOT nodatavalueexpr IS NULL THEN
+            newexpr := replace(initndvexpr, 'RAST', newnodatavalue::text);
+--RAISE NOTICE '222 newexpr=%', newexpr;
             EXECUTE newexpr INTO newinitialvalue;
         END IF;
-        
-        -- Second optimization: If the raster is only filled with nodata value return right now a raster filled with the nodatavalueexpr
+
+--RAISE NOTICE '333';
+
+        -- Optimization: If the raster is only filled with nodata value return right now a raster filled with the nodatavalueexpr
         IF ST_BandIsNoData(rast, band) THEN
             RETURN ST_AddBand(newrast, newpixeltype, newinitialvalue, newnodatavalue);
         END IF;
         
-        -- Third optimization: If expression resume to 'rast' and nodatavalueexpr is NULL or also equal to 'RAST', we can just return the band from the original raster
-        IF trim(upper(expression)) = 'RAST' AND (nodatavalueexpr IS NULL OR trim(upper(nodatavalueexpr)) = 'RAST') THEN
-            RETURN ST_AddBand(newrast, rast, band, 1);   -- To be implemented         
+        -- Optimization: If expression resume to 'RAST' and nodatavalueexpr is NULL or also equal to 'RAST', 
+        -- we can just return the band from the original raster
+        IF initexpr = 'SELECT RAST' AND (nodatavalueexpr IS NULL OR initndvexpr = 'SELECT RAST') THEN
+            RETURN ST_AddBand(newrast, rast, band, 1);   -- To be implemented in C       
+        END IF;
+        
+        -- Optimization: If expression resume to a constant (it does not contain RAST) 
+        IF position('RAST' in initexpr) = 0 THEN
+--RAISE NOTICE '444';
+            EXECUTE initexpr INTO newval;
+--RAISE NOTICE '555';
+            skipcomputation := 1;
+            
+            IF nodatavalueexpr IS NULL THEN
+                -- Compute the new value, set it and we will return after creating the new raster
+                newinitialvalue := newval;
+                skipcomputation := 2;
+            ELSEIF newval = newinitialvalue THEN
+                -- Return the new raster as it will be before computing pixel by pixel
+                skipcomputation := 2;
+            END IF;
         END IF;
         
         --Create the raster receiving all the computed values. Initialize it to the new initial value.
         newrast := ST_AddBand(newrast, newpixeltype, newinitialvalue, newnodatavalue);
 
+
+        -- Optimization: If expression is NULL, or all the pixels could be set in a one step, return the initialised raster now
+        IF expression IS NULL OR skipcomputation = 2 THEN
+            RETURN newrast;
+        END IF;   
         FOR x IN 1..width LOOP
             FOR y IN 1..height LOOP
                 r := ST_Value(rast, band, x, y);
-        -- We compute a value only for the withdata value pixel since the nodata value have already been set by the first optimization
+                -- We compute a value only for the withdata value pixel since the nodata value have already been set by the first optimization
                 IF NOT r IS NULL AND (newnodatavalue IS NULL OR r != newnodatavalue) THEN -- The second part of the test can be removed once ST_Value return NULL for a nodata value
-                    newexpr := replace(initexpr, 'rast', r::text);
-                    EXECUTE newexpr INTO newval;
-                    IF newval IS NULL THEN
-                        newval := newnodatavalue;
+                    IF skipcomputation = 0 THEN
+                        newexpr := replace(initexpr, 'RAST', r::text);
+--RAISE NOTICE '666 newexpr=%', newexpr;
+                        EXECUTE newexpr INTO newval;
+                        IF newval IS NULL THEN
+                            newval := newnodatavalue;
+                        END IF;
                     END IF;
                     newrast = ST_SetValue(newrast, band, x, y, newval);
+                ELSE
+                    newhasnodatavalue := TRUE;
                 END IF;
             END LOOP;
         END LOOP;
-        RETURN newrast;
+        
+        RETURN ST_SetBandHasNodataValue(newrast, 1, newhasnodatavalue);
     END;
     $$
     LANGUAGE 'plpgsql';
@@ -141,7 +186,7 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast raster, expression text)
 
 CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast raster, band integer, expression text, nodatavalexpr text) 
     RETURNS raster
-    AS 'SELECT ST_MapAlgebra($1, $2, $3, nodatavalexpr, NULL)'
+    AS 'SELECT ST_MapAlgebra($1, $2, $3, $4, NULL)'
     LANGUAGE 'SQL' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast raster, expression text, nodatavalexpr text, pixeltype text) 
@@ -303,7 +348,7 @@ CREATE OR REPLACE FUNCTION ST_HasNoBand(raster, int)
 --------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION ST_BandIsNoData(raster, int)
     RETURNS boolean
-    AS 'SELECT ST_BandHasNodataValue($1, $2) AND false'
+    AS 'SELECT ST_HasNoBand($1, $2) AND ST_BandHasNodataValue($1, $2) AND false'
     LANGUAGE 'SQL' IMMUTABLE;
 
 --CREATE OR REPLACE FUNCTION toto()
@@ -329,15 +374,9 @@ CREATE OR REPLACE FUNCTION ST_BandIsNoData(raster, int)
 --                     -SECOND: Same extent as the second) raster. Default.
 --                     -INTERSECTION: Intersection of extent of the two rasters.
 --                     -UNION: Union oof extent of the two rasters.
--- rast1nodatavalrepl float8
--- rast2nodatavalrepl float8 - Values used in replacement when the raster
---                        pixel involved in the expression are nodata values or  
---                        do not exist. When both pixels values are nodata values 
---                        (or one is nodata and the other does not exist), there 
---                        is no replacement and the expression is evaluated to nodata.
---                        When nodatavalrepl is NULL the missing value is replaced 
---                        with the 'NULL' string in the expression and can be evaluated
---                        using 'IS NULL' in the expression. e.g. "CASE WHEN rast2 IS NULL OR rast1 < rast2 THEN rast1 WHEN rast1 IS NULL OR rast2 < rast1 THEN rast2 END"
+-- nodata1expr text - Expression used when rast1 pixel value is nodata or absent.
+-- nodata2expr text - Expression used when rast2 pixel value is nodata or absent.
+-- nodatanodataexpr text - Expression used when both pixel values are nodata values or absent.
 
 -- Further enhancements:
 -- -Optimization for UNION & FIRST. We might not have to iterate over all the new raster.
@@ -353,8 +392,9 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast1 raster,
                                          expression text, 
                                          pixeltype text, 
                                          extentexpr text, 
-                                         rast1nodatavalrepl float8,
-                                         rast2nodatavalrepl float8) 
+                                         nodata1expr text, 
+                                         nodata2expr text,
+                                         nodatanodatadaexpr text) 
     RETURNS raster AS 
     $$
     DECLARE
@@ -412,7 +452,7 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast1 raster,
         
         newval float;
         newexpr text;
-        initexpr text;
+        
     BEGIN
         -- We have to deal with NULL, empty, hasnoband and hasnodatavalue band rasters... 
         -- These are respectively tested by "IS NULL", "ST_IsEmpty()", "ST_HasNoBand()" and "ST_BandIsNodata()"
@@ -714,16 +754,9 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast1 raster,
                 newpixeltype := ST_BandPixelType(rast1, band1);
             END IF;
         END IF;
-        
-        -- Determine new notadavalue
-        IF (upper(extentexpr) = 'SECOND' AND NOT ST_HasNoBand(rast2, band2)) OR ST_HasNoBand(rast1, band1) THEN
-            newnodatavalue := ST_BandNodataValue(rast2, band2);
-        ELSE
-            newnodatavalue := ST_BandNodataValue(rast1, band1);
-        END IF;
-        
-         -- Get the nodata value for first raster and set newnodatavalue
-        IF NOT ST_HasNoBand(rast1, band1) AND ST_BandHasNodatavalue(rast1, band1) THEN
+               
+         -- Get the nodata value for first raster
+        IF NOT ST_HasNoBand(rast1, band1) AND ST_BandHasNodataValue(rast1, band1) THEN
             rast1nodataval := ST_BandNodatavalue(rast1, band1);
         ELSE
             rast1nodataval := NULL;
@@ -735,6 +768,16 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast1 raster,
             rast2nodataval := NULL;
         END IF;
         
+        -- Determine new notadavalue
+        IF (upper(extentexpr) = 'SECOND' AND NOT rast2nodataval IS NULL) THEN
+            newnodatavalue := rast2nodataval;
+        ELSEIF NOT rast1nodataval IS NULL THEN
+            newnodatavalue := rast1nodataval;
+        ELSE
+            RAISE NOTICE 'ST_MapAlgebra: Both source rasters do not have a nodata value, nodata value for new raster set to the minimum value possible';
+            newnodatavalue := ST_MinPossibleVal(newrast);
+        END IF;
+        
         -------------------------------------------------------------------
         --Create the raster receiving all the computed values. Initialize it to the new nodatavalue.
         newrast := ST_AddBand(ST_MakeEmptyRaster(newwidth, newheight, newulx, newuly, newpixelsizex, newpixelsizey, newskewx, newskewy, newsrid), newpixeltype, newnodatavalue, newnodatavalue);
@@ -744,52 +787,49 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast1 raster,
         -- and there is no replacement value for those missing values 
         -- and this raster IS involved in the expression 
         -- return NOW with the nodata band raster.
-        --IF (rast1 IS NULL OR ST_IsEmpty(rast1) OR ST_HasNoBand(rast1, band1) OR ST_BandIsNoData(rast1, band1)) AND nodatavalrepl IS NULL AND position('rast1' in expression) != 0 THEN
+        --IF (rast1 IS NULL OR ST_IsEmpty(rast1) OR ST_HasNoBand(rast1, band1) OR ST_BandIsNoData(rast1, band1)) AND nodatavalrepl IS NULL AND position('RAST1' in upper(expression)) != 0 THEN
         --    RETURN newrast;
         --END IF;
-        --IF (rast2 IS NULL OR ST_IsEmpty(rast2) OR ST_HasNoBand(rast2, band2) OR ST_BandIsNoData(rast2, band2)) AND nodatavalrepl IS NULL AND position('rast2' in expression) != 0 THEN
+        --IF (rast2 IS NULL OR ST_IsEmpty(rast2) OR ST_HasNoBand(rast2, band2) OR ST_BandIsNoData(rast2, band2)) AND nodatavalrepl IS NULL AND position('RAST2' in upper(expression)) != 0 THEN
         --    RETURN newrast;
         --END IF;
-        
-        initexpr := 'SELECT ' || expression;
-        
+                
         -- There is place for optimization here when doing a UNION we don't want to iterate over the empty space.
         FOR x IN 1..newwidth LOOP
             FOR y IN 1..newheight LOOP
                 r1 := ST_Value(rast1, band1, x - rast1offsetx, y - rast1offsety);
                 r2 := ST_Value(rast2, band2, x - rast2offsetx1, y - rast2offsety1);
+                
                 -- Check if both values are outside the extent or nodata values
-                IF (r1 IS NULL OR r1 = rast1nodataval) AND (r2 IS NULL OR r2 = rast2nodataval) AND rast1nodatavalrepl IS NULL AND rast2nodatavalrepl IS NULL THEN
-                    newval := newnodatavalue;
-                ELSE
-                    newexpr := initexpr;
-                    -- Check if r1 or r2 are outside the extent or are nodata value
-                    IF r1 IS NULL OR r1 = rast1nodataval THEN
-                        IF rast1nodatavalrepl IS NULL THEN
-                            newexpr := replace(newexpr, 'rast1', 'NULL');
-                        ELSE
-                            newexpr := replace(newexpr, 'rast1', rast1nodatavalrepl::text);
-                        END IF;
+                IF (r1 IS NULL OR r1 = rast1nodataval) AND (r2 IS NULL OR r2 = rast1nodataval) THEN
+                    IF nodatanodataexpr IS NULL THEN
+                        newval := newnodatavalue;
                     ELSE
-                        newexpr := replace(newexpr, 'rast1', r1::text);
+                        EXECUTE 'SELECT ' || nodatanodataexpr INTO newval;
                     END IF;
-                    IF r2 IS NULL OR r2 = rast2nodataval THEN
-                        IF rast2nodatavalrepl IS NULL THEN
-                            newexpr := replace(newexpr, 'rast2', 'NULL');
-                        ELSE
-                            newexpr := replace(newexpr, 'rast2', rast2nodatavalrepl::text);
-                        END IF;
+                ELSIF r1 IS NULL OR r1 = rast1nodataval THEN
+                    IF nodata1expr IS NULL THEN
+                        newval := newnodatavalue;
                     ELSE
-                        newexpr := replace(newexpr, 'rast2', r2::text);
+                        newexpr := replace('SELECT ' || upper(nodata1expr), 'RAST2', r2);
+                        EXECUTE newexpr INTO newval;
                     END IF;
 
-                    -- Evaluate the epression
-                    EXECUTE newexpr INTO newval;
-                    IF newval IS NULL THEN
+                ELSIF r2 IS NULL OR r2 = rast2nodataval THEN
+                    IF nodata2expr IS NULL THEN
                         newval := newnodatavalue;
+                    ELSE
+                        newexpr := replace('SELECT ' || upper(nodata2expr), 'RAST1', r1);
+                        EXECUTE newexpr INTO newval;
                     END IF;
+                ELSE
+                    newexpr := replace('SELECT ' || upper(expression), 'RAST1', r1);
+                    newexpr := replace(newexpr, 'RAST2', r2);
+                    EXECUTE newexpr INTO newval;
+                END IF; 
+                IF newval IS NULL THEN
+                    newval := newnodatavalue;
                 END IF;
---RAISE NOTICE 'x=%, y=%, r1=%, r2=%, newval=%',x,y,r1,r2,newval;
                 newrast = ST_SetValue(newrast, 1, x, y, newval);
             END LOOP;
         END LOOP;
@@ -797,6 +837,7 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast1 raster,
     END;
     $$
     LANGUAGE 'plpgsql';
+
 
 --------------------------------------------------------------------
 -- ST_MapAlgebra (two raster version) variants 
@@ -808,10 +849,11 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast1 raster,
                                          expression text, 
                                          pixeltype text, 
                                          extentexpr text, 
-                                         rast1nodatavalrepl float8,
-                                         rast2nodatavalrepl float8)
+                                         nodata1expr text,
+                                         nodata2expr text,
+                                         nodatanodataexpr text)
     RETURNS raster
-    AS 'SELECT ST_MapAlgebra($1, 1, $2, 1, $3, $4, $5, $6, $7)'
+    AS 'SELECT ST_MapAlgebra($1, 1, $2, 1, $3, $4, $5, $6, $7, $8)'
     LANGUAGE 'SQL' IMMUTABLE;
 
 -- Variant 6
@@ -821,17 +863,16 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast1 raster,
                                          pixeltype text, 
                                          extentexpr text)
     RETURNS raster
-    AS 'SELECT ST_MapAlgebra($1, 1, $2, 1, $3, $4, $5, NULL, NULL)'
+    AS 'SELECT ST_MapAlgebra($1, 1, $2, 1, $3, $4, $5, NULL, NULL, NULL)'
     LANGUAGE 'SQL' IMMUTABLE;
 
 -- Variant 7
 CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast1 raster, 
                                          rast2 raster, 
                                          expression text, 
-                                         pixeltype text, 
-                                         extentexpr text)
+                                         pixeltype text)
     RETURNS raster
-    AS 'SELECT ST_MapAlgebra($1, 1, $2, 1, $3, $4, $5, NULL, NULL)'
+    AS 'SELECT ST_MapAlgebra($1, 1, $2, 1, $3, $4, NULL, NULL, NULL, NULL)'
     LANGUAGE 'SQL' IMMUTABLE;
 
     
@@ -840,7 +881,7 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast1 raster,
                                          rast2 raster, 
                                          expression text)
     RETURNS raster
-    AS 'SELECT ST_MapAlgebra($1, 1, $2, 1, $3, NULL, NULL, NULL, NULL)'
+    AS 'SELECT ST_MapAlgebra($1, 1, $2, 1, $3, NULL, NULL, NULL, NULL, NULL)'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
     
 -- Variant 10
@@ -852,9 +893,9 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast1 raster,
                                          expression text, 
                                          pixeltype text, 
                                          extentexpr text, 
-                                         rastnodatavalrepl float8)
+                                         nodataexpr text)
     RETURNS raster
-    AS 'SELECT ST_MapAlgebra($1, $2, $3, $4, $5, $6, $7, $8, $8)'
+    AS 'SELECT ST_MapAlgebra($1, $2, $3, $4, $5, $6, $7, $8, $8, $8)'
     LANGUAGE 'SQL' IMMUTABLE;
 
 -- Variant 11
@@ -866,7 +907,7 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast1 raster,
                                          pixeltype text, 
                                          extentexpr text)
     RETURNS raster
-    AS 'SELECT ST_MapAlgebra($1, $2, $3, $4, $5, $6, $7, NULL, NULL)'
+    AS 'SELECT ST_MapAlgebra($1, $2, $3, $4, $5, $6, $7, NULL, NULL, NULL)'
     LANGUAGE 'SQL' IMMUTABLE;
 
 -- Variant 12
@@ -877,7 +918,7 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast1 raster,
                                          expression text, 
                                          pixeltype text)
     RETURNS raster
-    AS 'SELECT ST_MapAlgebra($1, $2, $3, $4, $5, $6, NULL, NULL, NULL)'
+    AS 'SELECT ST_MapAlgebra($1, $2, $3, $4, $5, $6, NULL, NULL, NULL, NULL)'
     LANGUAGE 'SQL' IMMUTABLE;
 
 -- Variant 13
@@ -887,7 +928,7 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast1 raster,
                                          band2 integer, 
                                          expression text)
     RETURNS raster
-    AS 'SELECT ST_MapAlgebra($1, $2, $3, $4, $5, NULL, NULL, NULL, NULL)'
+    AS 'SELECT ST_MapAlgebra($1, $2, $3, $4, $5, NULL, NULL, NULL, NULL, NULL)'
     LANGUAGE 'SQL' IMMUTABLE;
     
 --test MapAlgebra with NULL

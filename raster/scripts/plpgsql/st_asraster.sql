@@ -1,7 +1,12 @@
+----------------------------------------------------------------------
+--
 -- $Id$
-----------------------------------------------------------------------
+--
 -- Copyright (c) 2009-2010 Pierre Racine <pierre.racine@sbf.ulaval.ca>
+--
 ----------------------------------------------------------------------
+
+-- NOTE: The ST_AsRaster function found in this file still many improvements before being implemented in C.
 
 CREATE OR REPLACE FUNCTION ST_AsRaster(geom geometry, rast raster, pixeltype text, nodatavalue float8, val float8) 
     RETURNS raster AS 
