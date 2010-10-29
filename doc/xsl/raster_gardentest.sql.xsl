@@ -160,7 +160,7 @@ COMMIT;<xsl:text>
 			<!--Store first garden sql geometry from -->
 					<xsl:variable name="from1"><xsl:value-of select="." /></xsl:variable>
 					<xsl:variable name='rast1type'><xsl:value-of select="@ID"/></xsl:variable>
-					<xsl:variable name='log_label'><xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" /> <xsl:value-of select="$rast1type" /> against other types</xsl:variable>
+					<xsl:variable name='log_label'><xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" /> against other types</xsl:variable>
 		SELECT '<xsl:value-of select="$log_label" />: Start Testing ';
 						<xsl:for-each select="document('')//pgis:pixeltypes/pgis:pixeltype">
 		<xsl:choose>
@@ -188,7 +188,7 @@ COMMIT;<xsl:text>
 					FROM (<xsl:value-of select="$from1" />) As rast1 CROSS JOIN (<xsl:value-of select="." />) As rast2
 					;
 			UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		WHERE log_label = '<xsl:value-of select="$log_label" /> Geometry <xsl:value-of select="$rast1type" /><xsl:text> </xsl:text><xsl:value-of select="@PixelType" />' AND log_end IS NULL;
+		WHERE log_label = '<xsl:value-of select="$log_label" /> Raster <xsl:value-of select="$rast1type" /><xsl:text> </xsl:text><xsl:value-of select="@PixType" />' AND log_end IS NULL;
 	
 			COMMIT;
 			</xsl:otherwise>
