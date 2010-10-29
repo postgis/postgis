@@ -11,7 +11,7 @@
 
 	<!-- We deal only with the reference chapter -->
 	<xsl:template match="/">
-		<xsl:apply-templates select="/book/chapter[@id='reference']" />
+		<xsl:apply-templates select="/book/chapter[@id='reference' or @id='RT_reference']" />
 	</xsl:template>
 
 	<xsl:template match="chapter">
@@ -22,7 +22,7 @@
 			<para>The functions given below are spatial aggregate functions provided with PostGIS that can be used just like any other sql aggregate function such as sum, average.</para>
 			<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-			<xsl:for-each select='sect1/refentry'>
+			<xsl:for-each select='//refentry'>
 				<xsl:sort select="@id"/>
 				<xsl:variable name='comment'>
 					<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
@@ -52,7 +52,7 @@
 			</note>
 				<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-				<xsl:for-each select='sect1/refentry'>
+				<xsl:for-each select='//refentry'>
 					<xsl:sort select="@id"/>
 					<xsl:variable name='comment'>
 						<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
@@ -82,7 +82,7 @@
 				and for large geometries or geometry pairs that cover more than one UTM zone. Basic tranform - (favoring UTM, Lambert Azimuthal (North/South), and falling back on mercator in worst case scenario)</para></note>
 				<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-				<xsl:for-each select='sect1/refentry'>
+				<xsl:for-each select='//refentry'>
 					<xsl:sort select="@id"/>
 					<xsl:variable name='comment'>
 						<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
@@ -103,14 +103,14 @@
 				</xsl:for-each>
 				</itemizedlist>
 		</sect1>
-		<xsl:if test="@id='RT_reference'">
+
 		<sect1 id="PostGIS_RasterFunctions">
 			<title>PostGIS Raster Support Functions</title>
 			<para>The functions and operators given below are PostGIS functions/operators that take as input or return as output a <xref linkend="raster" /> data type object. Listed
 			in alphabetical order.</para>
 				<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-				<xsl:for-each select='sect1/refentry'>
+				<xsl:for-each select='//refentry'>
 					<xsl:sort select="@id"/>
 					<xsl:variable name='comment'>
 						<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
@@ -131,14 +131,14 @@
 				</xsl:for-each>
 				</itemizedlist>
 		</sect1>
-		</xsl:if>
+	
 		
 		<sect1 id="PostGIS_Geometry_DumpFunctions">
-			<title>PostGIS Dump Functions</title>
+			<title>PostGIS Geometry / Geography / Raster Dump Functions</title>
 			<para>The functions given below are PostGIS functions that take as input or return as output a set of or single <link linkend="geometry_dump">geometry_dump</link> or  <link linkend="geomval">geomval</link> data type object.</para>
 				<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-				<xsl:for-each select='sect1/refentry'>
+				<xsl:for-each select='//refentry'>
 					<xsl:sort select="@id"/>
 					<xsl:variable name='comment'>
 						<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
@@ -166,7 +166,7 @@
 				The box family of types consists of <link linkend="box2d">box2d</link>, <link linkend="box3d">box3d</link>, <link linkend="box3d_extent">box3d_extent</link> </para>
 				<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-				<xsl:for-each select='sect1/refentry'>
+				<xsl:for-each select='//refentry'>
 					<xsl:sort select="@id"/>
 					<xsl:variable name='comment'>
 						<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
@@ -193,7 +193,7 @@
 			<para>The functions given below are PostGIS functions that do not throw away the Z-Index.</para>
 				<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-				<xsl:for-each select='sect1/refentry'>
+				<xsl:for-each select='//refentry'>
 					<xsl:sort select="@id"/>
 					<xsl:variable name='comment'>
 						<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
@@ -221,7 +221,7 @@
 			<para>The functions given below are PostGIS functions that can use CIRCULARSTRING, CURVEDPOLYGON, and other curved geometry types</para>
 				<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-				<xsl:for-each select='sect1/refentry'>
+				<xsl:for-each select='//refentry'>
 					<xsl:sort select="@id"/>
 					<xsl:variable name='comment'>
 						<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
@@ -252,7 +252,7 @@
 			<para>The functions given below are PostGIS functions that can use POLYHEDRALSURFACE, POLYHEDRALSURFACEM geometries</para>
 				<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-				<xsl:for-each select='sect1/refentry'>
+				<xsl:for-each select='//refentry'>
 					<xsl:sort select="@id"/>
 					<xsl:variable name='comment'>
 						<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
@@ -444,7 +444,7 @@
 					please refer to <xref linkend="RT_reference" /> for more details of the raster functions available.</para></note>
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-					<xsl:for-each select='sect1/refentry'>
+					<xsl:for-each select='//refentry'>
 						<xsl:sort select="@id"/>
 						<xsl:variable name='comment'>
 							<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
@@ -474,7 +474,7 @@
 				<para>The functions given below are PostGIS functions that are enhanced in PostGIS 2.0.</para>
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry   -->
-					<xsl:for-each select='sect1/refentry'>
+					<xsl:for-each select='//refentry'>
 						<xsl:sort select="@id"/>
 						<xsl:variable name="refid">
 							<xsl:value-of select="@id" />
@@ -499,7 +499,7 @@
 				<para>The functions given below are PostGIS functions that have changed behavior in PostGIS 2.0.</para>
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry   -->
-					<xsl:for-each select='sect1/refentry'>
+					<xsl:for-each select='//refentry'>
 						<xsl:sort select="@id"/>
 						<xsl:variable name="refid">
 							<xsl:value-of select="@id" />
@@ -526,7 +526,7 @@
 				<para>The functions given below are PostGIS functions that were introduced or enhanced in this minor release.</para>
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-					<xsl:for-each select='sect1/refentry'>
+					<xsl:for-each select='//refentry'>
 						<xsl:sort select="@id"/>
 						<xsl:variable name='comment'>
 							<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
