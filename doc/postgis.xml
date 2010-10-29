@@ -124,9 +124,9 @@
   &using_postgis_app;
   &performance_tips;
   &reference;
+  &postgis_aggs_mm;
   &reference_raster;
   &faq_raster;
-  &postgis_aggs_mm;
   &reporting;
   &release_notes;
 
