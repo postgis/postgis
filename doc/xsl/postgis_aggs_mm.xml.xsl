@@ -11,10 +11,10 @@
 
 	<!-- We deal only with the reference chapter -->
 	<xsl:template match="/">
-		<xsl:apply-templates select="/book/chapter[@id='reference' or @id='RT_reference']" />
+		<xsl:apply-templates select="/book/chapter[@id='reference' or @id='RT_references']" />
 	</xsl:template>
 
-	<xsl:template match="chapter">
+	<xsl:template match="//chapter">
 	<chapter>
 		<title>PostGIS Special Functions Index</title>
 		<sect1 id="PostGIS_Aggregate_Functions">
@@ -558,7 +558,7 @@
 				<para>The functions given below are PostGIS functions that were introduced or enhanced in the 1.4 release.</para>
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-					<xsl:for-each select='sect1/refentry'>
+					<xsl:for-each select='//refentry'>
 						<xsl:sort select="@id"/>
 						<xsl:variable name='comment'>
 							<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
@@ -585,7 +585,7 @@
 				<para>The functions given below are PostGIS functions that were introduced in the 1.3 release.</para>
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-				<xsl:for-each select='sect1/refentry'>
+				<xsl:for-each select='//refentry'>
 					<xsl:sort select="@id"/>
 					<xsl:variable name='comment'>
 						<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
