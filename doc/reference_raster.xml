@@ -2709,7 +2709,7 @@ ORDER BY val;
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="RT_ST_Value" />, <xref linkend="RT_ST_Polygon" /></para>
+			<para><xref linkend="geomval" />,,<xref linkend="RT_ST_Value" />, <xref linkend="RT_ST_Polygon" /></para>
 		  </refsection>
 		</refentry>
 		
@@ -2838,7 +2838,7 @@ WHERE A.rid =2 ) As foo;
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_Intersects" />, <xref linkend="ST_AsText" /></para>
+				<para><xref linkend="geomval" />, <xref linkend="RT_ST_Intersects" />, <xref linkend="ST_AsText" /></para>
 			</refsection>
 		</refentry>
 		
