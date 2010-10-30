@@ -430,18 +430,17 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
     AttInMetadata *attinmeta;
     int nband;
     rt_geomval geomval;
-	rt_geomval geomval2;
+    rt_geomval geomval2;
     int call_cntr;
     int max_calls;
     int nElements;
+    MemoryContext   oldcontext;
 
 
     /* stuff done only on the first call of the function */
     if (SRF_IS_FIRSTCALL())
     {
         POSTGIS_RT_DEBUG(2, "RASTER_dumpAsWKTPolygons first call");
-	
-        MemoryContext   oldcontext;
 
         /* create a function context for cross-call persistence */
         funcctx = SRF_FIRSTCALL_INIT();
