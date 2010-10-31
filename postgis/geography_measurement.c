@@ -19,7 +19,7 @@
 #include <stdio.h>
 #include <errno.h>
 
-#include "libgeom.h"         /* For standard geometry types. */
+#include "liblwgeom.h"         /* For standard geometry types. */
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "geography.h"	     /* For utility functions. */
 
@@ -195,7 +195,7 @@ Datum geography_expand(PG_FUNCTION_ARGS)
 
 	/* Get our bounding box out of the geography, return right away if
 	   input is an EMPTY geometry. */
-	if ( geography_gidx(g, gidx) == G_FAILURE )
+	if ( geography_gidx(g, gidx) == LW_FAILURE )
 	{
 		g_out = palloc(VARSIZE(g));
 		memcpy(g_out, g, VARSIZE(g));
@@ -486,7 +486,7 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	/* Calculate if the geometry is empty. */
 	empty1 = lwgeom_is_empty(lwgeom1);
 	/* Calculate a naive cartesian bounds for the objects */
-	if ( ! empty1 && lwgeom_calculate_gbox(lwgeom1, &gbox1) == G_FAILURE )
+	if ( ! empty1 && lwgeom_calculate_gbox(lwgeom1, &gbox1) == LW_FAILURE )
 		elog(ERROR, "Error in geography_bestsrid calling lwgeom_calculate_gbox(lwgeom1, &gbox1)");
 
 	/* If we have a unique second argument, fill in all the necessarily variables. */
@@ -497,7 +497,7 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 		gbox2.flags = g2->flags;
 		lwgeom2 = lwgeom_from_gserialized(g2);
 		empty2 = lwgeom_is_empty(lwgeom2);
-		if ( ! empty2 && lwgeom_calculate_gbox(lwgeom2, &gbox2) == G_FAILURE )
+		if ( ! empty2 && lwgeom_calculate_gbox(lwgeom2, &gbox2) == LW_FAILURE )
 			elog(ERROR, "Error in geography_bestsrid calling lwgeom_calculate_gbox(lwgeom2, &gbox2)");
 	}
 	/*

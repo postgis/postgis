@@ -10,8 +10,8 @@
  *
  **********************************************************************/
 
+#include "liblwgeom_internal.h"
 #include "lwalgorithm.h"
-
 
 
 /**

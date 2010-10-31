@@ -10,7 +10,7 @@
  **********************************************************************/
 
 #include <math.h>
-#include "libgeom.h"
+#include "liblwgeom_internal.h"
 
 extern int gbox_geocentric_slow;
 

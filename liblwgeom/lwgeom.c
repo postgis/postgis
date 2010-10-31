@@ -15,8 +15,8 @@
 #include <stdarg.h>
 
 #include "liblwgeom_internal.h"
-#include "libtgeom.h"
 #include "wktparse.h"
+#include "libtgeom.h"
 
 
 LWGEOM *
@@ -560,10 +560,8 @@ lwgeom_release(LWGEOM *lwgeom)
 	uint32 i;
 	LWCOLLECTION *col;
 
-#ifdef INTEGRITY_CHECKS
 	if ( ! lwgeom )
 		lwerror("lwgeom_release: someone called on 0x0");
-#endif
 
 	LWDEBUGF(3, "releasing type %s", lwtype_name(TYPE_GETTYPE(lwgeom->type)));
 

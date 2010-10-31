@@ -9,7 +9,7 @@
  *
  **********************************************************************/
 
-#include "libgeom.h"
+#include "liblwgeom_internal.h"
 #include <math.h>
 #include <stdlib.h>
 
@@ -28,7 +28,7 @@ int gbox_merge_point3d(const POINT3D *p, GBOX *gbox)
 	if ( gbox->xmax < p->x ) gbox->xmax = p->x;
 	if ( gbox->ymax < p->y ) gbox->ymax = p->y;
 	if ( gbox->zmax < p->z ) gbox->zmax = p->z;
-	return G_SUCCESS;
+	return LW_SUCCESS;
 }
 
 int gbox_contains_point3d(const GBOX *gbox, const POINT3D *pt)
@@ -46,7 +46,7 @@ int gbox_merge(const GBOX *new_box, GBOX *merge_box)
 	assert(merge_box);
 
 	if ( merge_box->flags != new_box->flags )
-		return G_FAILURE;
+		return LW_FAILURE;
 
 	if ( new_box->xmin < merge_box->xmin) merge_box->xmin = new_box->xmin;
 	if ( new_box->ymin < merge_box->ymin) merge_box->ymin = new_box->ymin;
@@ -64,7 +64,7 @@ int gbox_merge(const GBOX *new_box, GBOX *merge_box)
 		if ( new_box->mmax > merge_box->mmax) merge_box->mmax = new_box->mmax;
 	}
 
-	return G_SUCCESS;
+	return LW_SUCCESS;
 }
 
 int gbox_overlaps(const GBOX *g1, const GBOX *g2)
@@ -205,7 +205,7 @@ int gbox_from_gserialized(const GSERIALIZED *g, GBOX *gbox)
 {
 
 	/* Null input! */
-	if ( ! g ) return G_FAILURE;
+	if ( ! g ) return LW_FAILURE;
 
 	/* Initialize the flags on the box */
 	gbox->flags = g->flags;
@@ -228,7 +228,7 @@ int gbox_from_gserialized(const GSERIALIZED *g, GBOX *gbox)
 			i++;
 			gbox->zmax = fbox[i];
 			i++;
-			return G_SUCCESS;
+			return LW_SUCCESS;
 		}
 		if ( FLAGS_GET_Z(g->flags) )
 		{
@@ -244,16 +244,16 @@ int gbox_from_gserialized(const GSERIALIZED *g, GBOX *gbox)
 			gbox->mmax = fbox[i];
 			i++;
 		}
-		return G_SUCCESS;
+		return LW_SUCCESS;
 	}
 
 	LWDEBUG(4, "calculating new box from scratch");
-	if ( gserialized_calculate_gbox_geocentric_p(g, gbox) == G_FAILURE )
+	if ( gserialized_calculate_gbox_geocentric_p(g, gbox) == LW_FAILURE )
 	{
 		LWDEBUG(4, "calculated null bbox, returning failure");
-		return G_FAILURE;
+		return LW_FAILURE;
 	}
-	return G_SUCCESS;
+	return LW_SUCCESS;
 }
 
 
@@ -276,7 +276,7 @@ static int lwcircle_calculate_gbox(POINT4D p1, POINT4D p2, POINT4D p3, GBOX *gbo
 	LWDEBUG(2, "lwcircle_calculate_gbox called.");
 
 	radius = lwcircle_center(&p1, &p2, &p3, &center);
-	if (radius < 0.0) return G_FAILURE;
+	if (radius < 0.0) return LW_FAILURE;
 
 	x1 = MAXFLOAT;
 	x2 = -1 * MAXFLOAT;
@@ -444,7 +444,7 @@ static int lwcircle_calculate_gbox(POINT4D p1, POINT4D p2, POINT4D p3, GBOX *gbo
 		gbox->mmax = m2;
 	}
 
-	return G_SUCCESS;
+	return LW_SUCCESS;
 }
 
 int ptarray_calculate_gbox(const POINTARRAY *pa, GBOX *gbox )
@@ -454,8 +454,8 @@ int ptarray_calculate_gbox(const POINTARRAY *pa, GBOX *gbox )
 	int has_z = FLAGS_GET_Z(gbox->flags);
 	int has_m = FLAGS_GET_M(gbox->flags);
 
-	if ( ! pa ) return G_FAILURE;
-	if ( pa->npoints < 1 ) return G_FAILURE;
+	if ( ! pa ) return LW_FAILURE;
+	if ( pa->npoints < 1 ) return LW_FAILURE;
 
 	getPoint4d_p(pa, 0, &p);
 	gbox->xmin = gbox->xmax = p.x;
@@ -483,7 +483,7 @@ int ptarray_calculate_gbox(const POINTARRAY *pa, GBOX *gbox )
 			gbox->mmax = FP_MAX(gbox->mmax, p.m);
 		}
 	}
-	return G_SUCCESS;
+	return LW_SUCCESS;
 }
 
 static int lwcircstring_calculate_gbox(LWCIRCSTRING *curve, GBOX *gbox)
@@ -493,8 +493,8 @@ static int lwcircstring_calculate_gbox(LWCIRCSTRING *curve, GBOX *gbox)
 	POINT4D p1, p2, p3;
 	int i;
 
-	if ( ! curve ) return G_FAILURE;
-	if ( curve->points->npoints < 3 ) return G_FAILURE;
+	if ( ! curve ) return LW_FAILURE;
+	if ( curve->points->npoints < 3 ) return LW_FAILURE;
 
 	tmp.flags = flags;
 
@@ -508,37 +508,37 @@ static int lwcircstring_calculate_gbox(LWCIRCSTRING *curve, GBOX *gbox)
 		getPoint4d_p(curve->points, i-1, &p2);
 		getPoint4d_p(curve->points, i, &p3);
 
-		if (lwcircle_calculate_gbox(p1, p2, p3, &tmp) == G_FAILURE)
+		if (lwcircle_calculate_gbox(p1, p2, p3, &tmp) == LW_FAILURE)
 			continue;
 
 		gbox_merge(&tmp, gbox);
 	}
 
-	return G_SUCCESS;
+	return LW_SUCCESS;
 }
 
 static int lwpoint_calculate_gbox(LWPOINT *point, GBOX *gbox)
 {
-	if ( ! point ) return G_FAILURE;
+	if ( ! point ) return LW_FAILURE;
 	return ptarray_calculate_gbox( point->point, gbox );
 }
 
 static int lwline_calculate_gbox(LWLINE *line, GBOX *gbox)
 {
-	if ( ! line ) return G_FAILURE;
+	if ( ! line ) return LW_FAILURE;
 	return ptarray_calculate_gbox( line->points, gbox );
 }
 
 static int lwtriangle_calculate_gbox(LWTRIANGLE *triangle, GBOX *gbox)
 {
-	if ( ! triangle ) return G_FAILURE;
+	if ( ! triangle ) return LW_FAILURE;
 	return ptarray_calculate_gbox( triangle->points, gbox );
 }
 
 static int lwpoly_calculate_gbox(LWPOLY *poly, GBOX *gbox)
 {
-	if ( ! poly ) return G_FAILURE;
-	if ( poly->nrings == 0 ) return G_FAILURE;
+	if ( ! poly ) return LW_FAILURE;
+	if ( poly->nrings == 0 ) return LW_FAILURE;
 	/* Just need to check outer ring */
 	return ptarray_calculate_gbox( poly->rings[0], gbox );
 }
@@ -547,17 +547,17 @@ static int lwcollection_calculate_gbox(LWCOLLECTION *coll, GBOX *gbox)
 {
 	GBOX subbox;
 	int i;
-	int result = G_FAILURE;
+	int result = LW_FAILURE;
 	int first = LW_TRUE;
 	assert(coll);
 	if ( coll->ngeoms == 0 )
-		return G_FAILURE;
+		return LW_FAILURE;
 
 	subbox.flags = gbox->flags;
 
 	for ( i = 0; i < coll->ngeoms; i++ )
 	{
-		if ( lwgeom_calculate_gbox((LWGEOM*)(coll->geoms[i]), &subbox) == G_FAILURE )
+		if ( lwgeom_calculate_gbox((LWGEOM*)(coll->geoms[i]), &subbox) == LW_FAILURE )
 		{
 			continue;
 		}
@@ -572,7 +572,7 @@ static int lwcollection_calculate_gbox(LWCOLLECTION *coll, GBOX *gbox)
 			{
 				gbox_merge(&subbox, gbox);
 			}
-			result = G_SUCCESS;
+			result = LW_SUCCESS;
 		}
 	}
 	return result;
@@ -580,7 +580,7 @@ static int lwcollection_calculate_gbox(LWCOLLECTION *coll, GBOX *gbox)
 
 int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox)
 {
-	if ( ! lwgeom ) return G_FAILURE;
+	if ( ! lwgeom ) return LW_FAILURE;
 
 	switch (TYPE_GETTYPE(lwgeom->type))
 	{
@@ -609,5 +609,5 @@ int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox)
 	/* Never get here, please. */
 	lwerror("unsupported type (%d) - %s", TYPE_GETTYPE(lwgeom->type),
 	        lwtype_name(TYPE_GETTYPE(lwgeom->type)));
-	return G_FAILURE;
+	return LW_FAILURE;
 }

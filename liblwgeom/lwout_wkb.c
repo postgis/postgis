@@ -9,7 +9,7 @@
  *
  **********************************************************************/
 
-#include "libgeom.h"
+#include "liblwgeom_internal.h"
 #include <sys/param.h>
 
 static char* lwgeom_to_wkb_buf(const LWGEOM *geom, char *buf, uchar variant);

@@ -1206,7 +1206,6 @@ pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring)
 	int i;
 	POINT2D v1, v2;
 
-#if INTEGRITY_CHECKS
 	POINT2D first, last;
 
 	getPoint2d_p(ring, 0, &first);
@@ -1218,7 +1217,6 @@ pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring)
 		return LW_FALSE;
 
 	}
-#endif
 
 	LWDEBUGF(2, "pt_in_ring_2d called with point: %g %g", p->x, p->y);
 	/* printPA(ring); */

@@ -11,7 +11,7 @@
 
 #include <ctype.h>
 
-#include "libgeom.h"
+#include "liblwgeom_internal.h"
 
 /* Structure for the type array */
 struct geomtype_struct
@@ -92,7 +92,7 @@ uchar gflags(int hasz, int hasm, int geodetic)
 * Calculate type integer and dimensional flags from string input.
 * Case insensitive, and insensitive to spaces at front and back.
 * Type == 0 in the case of the string "GEOMETRY" or "GEOGRAPHY".
-* Return G_SUCCESS for success.
+* Return LW_SUCCESS for success.
 */
 int geometry_type_from_string(const char *str, int *type, int *z, int *m)
 {
@@ -150,14 +150,14 @@ int geometry_type_from_string(const char *str, int *type, int *z, int *m)
 
 			lwfree(tmpstr);
 
-			return G_SUCCESS;
+			return LW_SUCCESS;
 		}
 
 	}
 
 	lwfree(tmpstr);
 
-	return G_FAILURE;
+	return LW_FAILURE;
 }
 
 

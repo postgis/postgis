@@ -10,10 +10,6 @@
  *
  **********************************************************************/
 
-#include "liblwgeom.h"
-#include "libgeom.h"
-
-
 /* We use same value and macro to flags than in libgeom.h
    and we add a solid flag for surface enclosing a solid
    (so still 2 unused bits) */

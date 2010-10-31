@@ -1,4 +1,4 @@
-#include "libgeom.h"
+#include "liblwgeom_internal.h"
 
 
 

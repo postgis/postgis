@@ -16,7 +16,7 @@
 #include "utils/array.h"
 #include "utils/geo_decls.h"
 
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 #include "libtgeom.h"
 #include "lwalgorithm.h"
 #include "lwgeom_pg.h"

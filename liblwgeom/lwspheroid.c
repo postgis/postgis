@@ -280,7 +280,7 @@ int spheroid_project(const GEOGRAPHIC_POINT *r, const SPHEROID *spheroid, double
 	lambda2 = r->lon + omega;
 	g->lat = lat2;
 	g->lon = lambda2;
-	return G_SUCCESS;
+	return LW_SUCCESS;
 }
 
 

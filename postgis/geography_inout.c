@@ -25,7 +25,7 @@
 #include "lib/stringinfo.h"  /* For binary input */
 #include "catalog/pg_type.h" /* for CSTRINGOID */
 
-#include "libgeom.h"         /* For standard geometry types. */
+#include "liblwgeom.h"         /* For standard geometry types. */
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "geography.h"	     /* For utility functions. */
 #include "lwgeom_export.h"   /* For export functions. */
@@ -57,7 +57,7 @@ Datum geometry_from_geography(PG_FUNCTION_ARGS);
 
 
 /**
-* Utility method to call the libgeom serialization and then set the
+* Utility method to call the serialization and then set the
 * PgSQL varsize header appropriately with the serialized size.
 */
 GSERIALIZED* geography_serialize(LWGEOM *lwgeom)
@@ -111,7 +111,7 @@ void geography_valid_typmod(LWGEOM *lwgeom, int32 typmod)
 	int32 typmod_z = TYPMOD_GET_Z(typmod);
 	int32 typmod_m = TYPMOD_GET_M(typmod);
 
-	assert(lwgeom);
+	Assert(lwgeom);
 
 	lwgeom_type = TYPE_GETTYPE(lwgeom->type);
 	lwgeom_srid = lwgeom->SRID;
@@ -365,7 +365,7 @@ Datum geography_typmod_in(PG_FUNCTION_ARGS)
 			int z = 0;
 			int m = 0;
 
-			if ( geometry_type_from_string(s, &type, &z, &m) == G_FAILURE )
+			if ( geometry_type_from_string(s, &type, &z, &m) == LW_FAILURE )
 			{
 				ereport(ERROR,
 				        (errcode(ERRCODE_INVALID_PARAMETER_VALUE),

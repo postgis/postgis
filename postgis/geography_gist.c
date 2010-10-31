@@ -29,7 +29,7 @@
 
 #include "../postgis_config.h"
 
-#include "libgeom.h"         /* For standard geometry types. */
+#include "liblwgeom.h"         /* For standard geometry types. */
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "geography.h"	     /* For utility functions. */
 
@@ -75,9 +75,9 @@ Datum geography_overlaps(PG_FUNCTION_ARGS);
 /*********************************************************************************
 ** GIDX support functions.
 **
-** We put the GIDX support here rather than libgeom because it is a specialized
-** type only used for indexing purposes. It also makes use of some PgSQL
-** infrastructure like the VARSIZE() macros.
+** We put the GIDX support here rather than liblwgeom because it is a 
+** specialized type only used for indexing purposes. It also makes use 
+** of some PgSQL infrastructure like the VARSIZE() macros.
 */
 
 /*
@@ -348,7 +348,7 @@ static int gidx_from_gbox_p(GBOX box, GIDX *a)
 
 	POSTGIS_DEBUGF(5, "converted %s to %s", gbox_to_string(&box), gidx_to_string(a));
 
-	return G_SUCCESS;
+	return LW_SUCCESS;
 }
 
 GIDX* gidx_from_gbox(GBOX box)
@@ -541,12 +541,12 @@ static bool gidx_equals(GIDX *a, GIDX *b)
 ** Peak into a geography (gserialized) datum to find the bounding box. If the
 ** box is there, copy it out and return it. If not, calculate the box from the
 ** full geography and return the box based on that. If no box is available,
-** return G_FAILURE, otherwise G_SUCCESS.
+** return LW_FAILURE, otherwise LW_SUCCESS.
 */
 int geography_datum_gidx(Datum geography_datum, GIDX *gidx)
 {
 	GSERIALIZED *gpart;
-	int result = G_SUCCESS;
+	int result = LW_SUCCESS;
 
 	POSTGIS_DEBUG(4, "entered function");
 
@@ -571,14 +571,14 @@ int geography_datum_gidx(Datum geography_datum, GIDX *gidx)
 		GSERIALIZED *g = (GSERIALIZED*)PG_DETOAST_DATUM(geography_datum);
 		GBOX gbox;
 		POSTGIS_DEBUG(4, "calculating new box from scratch");
-		if ( gserialized_calculate_gbox_geocentric_p(g, &gbox) == G_FAILURE )
+		if ( gserialized_calculate_gbox_geocentric_p(g, &gbox) == LW_FAILURE )
 		{
 			POSTGIS_DEBUG(4, "calculated null bbox, returning null");
-			return G_FAILURE;
+			return LW_FAILURE;
 		}
 		result = gidx_from_gbox_p(gbox, gidx);
 	}
-	if ( result == G_SUCCESS )
+	if ( result == LW_SUCCESS )
 	{
 		POSTGIS_DEBUGF(4, "got gidx %s", gidx_to_string(gidx));
 	}
@@ -590,11 +590,11 @@ int geography_datum_gidx(Datum geography_datum, GIDX *gidx)
 ** Peak into a geography to find the bounding box. If the
 ** box is there, copy it out and return it. If not, calculate the box from the
 ** full geography and return the box based on that. If no box is available,
-** return G_FAILURE, otherwise G_SUCCESS.
+** return LW_FAILURE, otherwise LW_SUCCESS.
 */
 int geography_gidx(GSERIALIZED *g, GIDX *gidx)
 {
-	int result = G_SUCCESS;
+	int result = LW_SUCCESS;
 
 	POSTGIS_DEBUG(4, "entered function");
 
@@ -611,14 +611,14 @@ int geography_gidx(GSERIALIZED *g, GIDX *gidx)
 	{
 		GBOX gbox;
 		POSTGIS_DEBUG(4, "calculating new box from scratch");
-		if ( gserialized_calculate_gbox_geocentric_p(g, &gbox) == G_FAILURE )
+		if ( gserialized_calculate_gbox_geocentric_p(g, &gbox) == LW_FAILURE )
 		{
 			POSTGIS_DEBUG(4, "calculated null bbox, returning null");
-			return G_FAILURE;
+			return LW_FAILURE;
 		}
 		result = gidx_from_gbox_p(gbox, gidx);
 	}
-	if ( result == G_SUCCESS )
+	if ( result == LW_SUCCESS )
 	{
 		POSTGIS_DEBUGF(4, "got gidx %s", gidx_to_string(gidx));
 	}
@@ -668,7 +668,7 @@ Datum geography_gist_compress(PG_FUNCTION_ARGS)
 	GISTENTRY *entry_out = NULL;
 	char gidxmem[GIDX_MAX_SIZE];
 	GIDX *bbox_out = (GIDX*)gidxmem;
-	int result = G_SUCCESS;
+	int result = LW_SUCCESS;
 
 	int i;
 
@@ -704,7 +704,7 @@ Datum geography_gist_compress(PG_FUNCTION_ARGS)
 	result = geography_datum_gidx(entry_in->key, bbox_out);
 
 	/* Is the bounding box valid (non-empty, non-infinite)? If not, return input uncompressed. */
-	if ( result == G_FAILURE )
+	if ( result == LW_FAILURE )
 	{
 		POSTGIS_DEBUG(4, "[GIST] empty geometry!");
 		PG_RETURN_POINTER(entry_in);
@@ -854,7 +854,7 @@ Datum geography_gist_consistent(PG_FUNCTION_ARGS)
 	}
 
 	/* Null box should never make this far. */
-	if ( geography_datum_gidx(PG_GETARG_DATUM(1), query_gbox_index) == G_FAILURE )
+	if ( geography_datum_gidx(PG_GETARG_DATUM(1), query_gbox_index) == LW_FAILURE )
 	{
 		POSTGIS_DEBUG(4, "[GIST] null query_gbox_index!");
 		PG_RETURN_BOOL(FALSE);

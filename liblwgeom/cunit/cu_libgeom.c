@@ -206,7 +206,7 @@ static void test_geometry_type_from_string(void)
 	str = "  POINTZ";
 	rv = geometry_type_from_string(str, &type, &z, &m);
 	//printf("\n in type: %s\nout type: %d\n out z: %d\n out m: %d", str, type, z, m);
-	CU_ASSERT_EQUAL(rv, G_SUCCESS);
+	CU_ASSERT_EQUAL(rv, LW_SUCCESS);
 	CU_ASSERT_EQUAL(type, POINTTYPE);
 	CU_ASSERT_EQUAL(z, 1);
 	CU_ASSERT_EQUAL(m, 0);
@@ -214,7 +214,7 @@ static void test_geometry_type_from_string(void)
 	str = "LINESTRINGM ";
 	rv = geometry_type_from_string(str, &type, &z, &m);
 	//printf("\n in type: %s\nout type: %d\n out z: %d\n out m: %d", str, type, z, m);
-	CU_ASSERT_EQUAL(rv, G_SUCCESS);
+	CU_ASSERT_EQUAL(rv, LW_SUCCESS);
 	CU_ASSERT_EQUAL(type, LINETYPE);
 	CU_ASSERT_EQUAL(z, 0);
 	CU_ASSERT_EQUAL(m, 1);
@@ -222,7 +222,7 @@ static void test_geometry_type_from_string(void)
 	str = "MULTIPOLYGONZM";
 	rv = geometry_type_from_string(str, &type, &z, &m);
 	//printf("\n in type: %s\nout type: %d\n out z: %d\n out m: %d", str, type, z, m);
-	CU_ASSERT_EQUAL(rv, G_SUCCESS);
+	CU_ASSERT_EQUAL(rv, LW_SUCCESS);
 	CU_ASSERT_EQUAL(type, MULTIPOLYGONTYPE);
 	CU_ASSERT_EQUAL(z, 1);
 	CU_ASSERT_EQUAL(m, 1);
@@ -230,7 +230,7 @@ static void test_geometry_type_from_string(void)
 	str = "  GEOMETRYCOLLECTIONZM ";
 	rv = geometry_type_from_string(str, &type, &z, &m);
 	//printf("\n in type: %s\nout type: %d\n out z: %d\n out m: %d", str, type, z, m);
-	CU_ASSERT_EQUAL(rv, G_SUCCESS);
+	CU_ASSERT_EQUAL(rv, LW_SUCCESS);
 	CU_ASSERT_EQUAL(type, COLLECTIONTYPE);
 	CU_ASSERT_EQUAL(z, 1);
 	CU_ASSERT_EQUAL(m, 1);
@@ -238,7 +238,7 @@ static void test_geometry_type_from_string(void)
 	str = "  GEOMERYCOLLECTIONZM ";
 	rv = geometry_type_from_string(str, &type, &z, &m);
 	//printf("\n in type: %s\nout type: %d\n out z: %d\n out m: %d", str, type, z, m);
-	CU_ASSERT_EQUAL(rv, G_FAILURE);
+	CU_ASSERT_EQUAL(rv, LW_FAILURE);
 
 }
 

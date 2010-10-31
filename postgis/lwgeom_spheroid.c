@@ -25,7 +25,7 @@
 #include "fmgr.h"
 #include "utils/elog.h"
 
-#include "libgeom.h"
+#include "liblwgeom.h"
 #include "lwgeom_pg.h"
 
 #define SHOW_DIGS_DOUBLE 15
@@ -574,13 +574,13 @@ Datum geometry_distance_spheroid(PG_FUNCTION_ARGS)
 	lwgeom1 = lwgeom_deserialize(SERIALIZED_FORM(geom1));
 	lwgeom2 = lwgeom_deserialize(SERIALIZED_FORM(geom2));
 
-	if ( lwgeom_calculate_gbox_geodetic(lwgeom1, &gbox1) != G_SUCCESS )
+	if ( lwgeom_calculate_gbox_geodetic(lwgeom1, &gbox1) != LW_SUCCESS )
 	{
 		elog(ERROR, "geometry_distance_spheroid: unable to calculate gbox1\n");
 		PG_RETURN_NULL();
 	};
 
-	if ( lwgeom_calculate_gbox_geodetic(lwgeom2, &gbox2) != G_SUCCESS )
+	if ( lwgeom_calculate_gbox_geodetic(lwgeom2, &gbox2) != LW_SUCCESS )
 	{
 		elog(ERROR, "geometry_distance_spheroid: unable to calculate gbox2\n");
 		PG_RETURN_NULL();

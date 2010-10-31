@@ -11,7 +11,6 @@
  **********************************************************************/
 
 #include <math.h>
-#include "liblwgeom_internal.h"
 
 enum CG_SEGMENT_INTERSECTION_TYPE {
     SEG_ERROR = -1,

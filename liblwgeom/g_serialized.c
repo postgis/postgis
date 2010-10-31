@@ -9,7 +9,7 @@
  *
  **********************************************************************/
 
-#include "libgeom.h"
+#include "liblwgeom_internal.h"
 
 /***********************************************************************
 * GSERIALIZED metadata utility functions.
@@ -570,13 +570,13 @@ GSERIALIZED* gserialized_from_lwgeom(const LWGEOM *geom, int is_geodetic, size_t
 	*/
 	if ( ! lwgeom_is_empty(geom) && lwgeom_needs_bbox(geom) )
 	{
-		int result = G_SUCCESS;
+		int result = LW_SUCCESS;
 		LWDEBUG(3, "calculating bbox");
 		if ( is_geodetic )
 			result = lwgeom_calculate_gbox_geodetic(geom, &gbox);
 		else
 			result = lwgeom_calculate_gbox(geom, &gbox);
-		if ( result == G_SUCCESS )
+		if ( result == LW_SUCCESS )
 		{
 			FLAGS_SET_BBOX(gbox.flags, 1);
 			expected_box_size = gbox_serialized_size(gbox.flags);
@@ -1014,13 +1014,13 @@ static int gserialized_calculate_gbox_geocentric_from_point(uchar *data_ptr, siz
 	if ( npoints == 0 ) /* Empty point */
 	{
 		if (g_size) *g_size = data_ptr - start_ptr;
-		return G_FAILURE;
+		return LW_FAILURE;
 	}
 
 	pa = pointArray_construct(data_ptr, FLAGS_GET_Z(gbox->flags), FLAGS_GET_M(gbox->flags), npoints);
 
-	if ( ptarray_calculate_gbox_geodetic(pa, gbox) == G_FAILURE )
-		return G_FAILURE;
+	if ( ptarray_calculate_gbox_geodetic(pa, gbox) == LW_FAILURE )
+		return LW_FAILURE;
 
 	/* Move past all the double ordinates. */
 	data_ptr += sizeof(double) * FLAGS_NDIMS(gbox->flags);
@@ -1030,7 +1030,7 @@ static int gserialized_calculate_gbox_geocentric_from_point(uchar *data_ptr, siz
 
 	lwfree(pa);
 
-	return G_SUCCESS;
+	return LW_SUCCESS;
 }
 
 static int gserialized_calculate_gbox_geocentric_from_line(uchar *data_ptr, size_t *g_size, GBOX *gbox)
@@ -1048,13 +1048,13 @@ static int gserialized_calculate_gbox_geocentric_from_line(uchar *data_ptr, size
 	if ( npoints == 0 ) /* Empty linestring */
 	{
 		if (g_size) *g_size = data_ptr - start_ptr;
-		return G_FAILURE;
+		return LW_FAILURE;
 	}
 
 	pa = pointArray_construct(data_ptr, FLAGS_GET_Z(gbox->flags), FLAGS_GET_M(gbox->flags), npoints);
 
-	if ( ptarray_calculate_gbox_geodetic(pa, gbox) == G_FAILURE )
-		return G_FAILURE;
+	if ( ptarray_calculate_gbox_geodetic(pa, gbox) == LW_FAILURE )
+		return LW_FAILURE;
 
 	/* Move past all the double ordinates. */
 	data_ptr += sizeof(double) * FLAGS_NDIMS(gbox->flags) * npoints;
@@ -1064,7 +1064,7 @@ static int gserialized_calculate_gbox_geocentric_from_line(uchar *data_ptr, size
 
 	lwfree(pa);
 
-	return G_SUCCESS;
+	return LW_SUCCESS;
 }
 
 static int gserialized_calculate_gbox_geocentric_from_polygon(uchar *data_ptr, size_t *g_size, GBOX *gbox)
@@ -1086,7 +1086,7 @@ static int gserialized_calculate_gbox_geocentric_from_polygon(uchar *data_ptr, s
 	if ( nrings <= 0 )
 	{
 		if (g_size) *g_size = data_ptr - start_ptr;
-		return G_FAILURE; /* Empty polygon */
+		return LW_FAILURE; /* Empty polygon */
 	}
 
 	npoints0 = lw_get_uint32(data_ptr); /* NPoints in first (exterior) ring. */
@@ -1103,8 +1103,8 @@ static int gserialized_calculate_gbox_geocentric_from_polygon(uchar *data_ptr, s
 	pa = pointArray_construct(data_ptr, FLAGS_GET_Z(gbox->flags), FLAGS_GET_M(gbox->flags), npoints);
 
 	/* Bounds of exterior ring is bounds of whole polygon. */
-	if ( ptarray_calculate_gbox_geodetic(pa, gbox) == G_FAILURE )
-		return G_FAILURE;
+	if ( ptarray_calculate_gbox_geodetic(pa, gbox) == LW_FAILURE )
+		return LW_FAILURE;
 
 	/* Move past all the double ordinates. */
 	data_ptr += sizeof(double) * FLAGS_NDIMS(gbox->flags) * npoints;
@@ -1114,7 +1114,7 @@ static int gserialized_calculate_gbox_geocentric_from_polygon(uchar *data_ptr, s
 
 	lwfree(pa);
 
-	return G_SUCCESS;
+	return LW_SUCCESS;
 }
 
 static int gserialized_calculate_gbox_geocentric_from_triangle(uchar *data_ptr, size_t *g_size, GBOX *gbox)
@@ -1132,13 +1132,13 @@ static int gserialized_calculate_gbox_geocentric_from_triangle(uchar *data_ptr, 
 	if ( npoints == 0 ) /* Empty triangle */
 	{
 		if (g_size) *g_size = data_ptr - start_ptr;
-		return G_FAILURE;
+		return LW_FAILURE;
 	}
 
 	pa = pointArray_construct(data_ptr, FLAGS_GET_Z(gbox->flags), FLAGS_GET_M(gbox->flags), npoints);
 
-	if ( ptarray_calculate_gbox_geodetic(pa, gbox) == G_FAILURE )
-		return G_FAILURE;
+	if ( ptarray_calculate_gbox_geodetic(pa, gbox) == LW_FAILURE )
+		return LW_FAILURE;
 
 	/* Move past all the double ordinates. */
 	data_ptr += sizeof(double) * FLAGS_NDIMS(gbox->flags) * npoints;
@@ -1148,7 +1148,7 @@ static int gserialized_calculate_gbox_geocentric_from_triangle(uchar *data_ptr, 
 
 	lwfree(pa);
 
-	return G_SUCCESS;
+	return LW_SUCCESS;
 }
 
 static int gserialized_calculate_gbox_geocentric_from_collection(uchar *data_ptr, size_t *g_size, GBOX *gbox)
@@ -1157,7 +1157,7 @@ static int gserialized_calculate_gbox_geocentric_from_collection(uchar *data_ptr
 	int ngeoms = 0;
 	int i;
 	int first = LW_TRUE;
-	int result = G_FAILURE;
+	int result = LW_FAILURE;
 
 	assert(data_ptr);
 
@@ -1165,14 +1165,14 @@ static int gserialized_calculate_gbox_geocentric_from_collection(uchar *data_ptr
 	ngeoms = lw_get_uint32(data_ptr);
 	data_ptr += 4; /* Move past ngeoms. */
 
-	if ( ngeoms <= 0 ) return G_FAILURE; /* Empty collection */
+	if ( ngeoms <= 0 ) return LW_FAILURE; /* Empty collection */
 
 	for ( i = 0; i < ngeoms; i++ )
 	{
 		size_t subgeom_size = 0;
 		GBOX subbox;
 		subbox.flags = gbox->flags;
-		if ( gserialized_calculate_gbox_geocentric_from_any(data_ptr, &subgeom_size, &subbox) != G_FAILURE )
+		if ( gserialized_calculate_gbox_geocentric_from_any(data_ptr, &subgeom_size, &subbox) != LW_FAILURE )
 		{
 			if ( first )
 			{
@@ -1183,7 +1183,7 @@ static int gserialized_calculate_gbox_geocentric_from_collection(uchar *data_ptr
 			{
 				gbox_merge(&subbox, gbox);
 			}
-			result = G_SUCCESS;
+			result = LW_SUCCESS;
 		}
 		data_ptr += subgeom_size;
 	}
@@ -1228,7 +1228,7 @@ static int gserialized_calculate_gbox_geocentric_from_any(uchar *data_ptr, size_
 		return gserialized_calculate_gbox_geocentric_from_collection(data_ptr, g_size, gbox);
 	default:
 		lwerror("Unsupported geometry type: %d - %s", type, lwtype_name(type));
-		return G_FAILURE;
+		return LW_FAILURE;
 	}
 }
 
@@ -1236,7 +1236,7 @@ int gserialized_calculate_gbox_geocentric_p(const GSERIALIZED *g, GBOX *g_box)
 {
 	uchar *data_ptr = NULL;
 	size_t g_size = 0;
-	int result = G_SUCCESS;
+	int result = LW_SUCCESS;
 
 	assert(g);
 
@@ -1244,7 +1244,7 @@ int gserialized_calculate_gbox_geocentric_p(const GSERIALIZED *g, GBOX *g_box)
 	if ( ! FLAGS_GET_GEODETIC(g->flags) )
 	{
 		lwerror("Function only accepts geodetic inputs.");
-		return G_FAILURE;
+		return LW_FAILURE;
 	}
 
 	LWDEBUGF(4, "Got input %s", gserialized_to_string(g));
@@ -1264,10 +1264,10 @@ int gserialized_calculate_gbox_geocentric_p(const GSERIALIZED *g, GBOX *g_box)
 	/* Calculate the bounding box from the geometry. */
 	result = gserialized_calculate_gbox_geocentric_from_any(data_ptr, &g_size, g_box);
 
-	if ( result == G_FAILURE )
+	if ( result == LW_FAILURE )
 	{
 		LWDEBUG(3,"Unable to calculate geocentric bounding box.");
-		return G_FAILURE; /* Ooops! */
+		return LW_FAILURE; /* Ooops! */
 	}
 
 	LWDEBUGF(3,"Returning box: %s", gbox_to_string(g_box));
@@ -1277,11 +1277,11 @@ int gserialized_calculate_gbox_geocentric_p(const GSERIALIZED *g, GBOX *g_box)
 GBOX* gserialized_calculate_gbox_geocentric(const GSERIALIZED *g)
 {
 	GBOX g_box;
-	int result = G_SUCCESS;
+	int result = LW_SUCCESS;
 
 	result = gserialized_calculate_gbox_geocentric_p(g, &g_box);
 
-	if ( result == G_FAILURE )
+	if ( result == LW_FAILURE )
 		return NULL; /* Ooops! */
 
 	LWDEBUGF(3,"Returning box: %s", gbox_to_string(&g_box));

@@ -83,6 +83,14 @@ dnl
 AC_CHECK_HEADER([ieeefp.h], [HAVE_IEEEFP_H=1], [HAVE_IEEEFP_H=0])
 AC_DEFINE_UNQUOTED([HAVE_IEEEFP_H], [$HAVE_IEEEFP_H], [ieeefp.h header])
 
+dnl
+dnl Check for platform-specific printing functions
+dnl
+AC_CHECK_FUNC(vasprintf, [HAVE_VASPRINTF=1], [HAVE_VASPRINTF=0])
+AC_CHECK_FUNC(asprintf, [HAVE_ASPRINTF=1], [HAVE_ASPRINTF=0])
+AC_SUBST([HAVE_VASPRINTF])
+AC_SUBST([HAVE_ASPRINTF])
+
 dnl 
 dnl MingW requires use of pwd -W to give proper Windows (not MingW) paths 
 dnl for in-place regression tests 

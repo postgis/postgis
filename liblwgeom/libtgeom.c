@@ -14,8 +14,8 @@
 #include <limits.h>
 #include <assert.h>
 
+#include "liblwgeom_internal.h"
 #include "libtgeom.h"
-#include "liblwgeom.h"
 
 
 /*

@@ -1,6 +1,3 @@
-#include "libgeom.h"
-
-
 /**
 * Note that p1 and p2 are pointers into an independent POINTARRAY, do not free them.
 */

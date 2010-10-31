@@ -12,6 +12,12 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
+/* Define to 1 if the platform supports vasprintf */
+#undef HAVE_VASPRINTF
+
+/* Define to 1 if the platform supports asprintf */
+#undef HAVE_ASPRINTF
+
 /* Define to 1 if you have the `geos_c' library (-lgeos_c). */
 #undef HAVE_LIBGEOS_C
 

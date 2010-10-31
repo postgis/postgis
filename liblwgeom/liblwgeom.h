@@ -37,10 +37,8 @@
 * no special handling for memory management and error reporting.
 */
 
-#define INTEGRITY_CHECKS 1
-
-/*
-** Floating point comparitors.
+/**
+* Floating point comparitors.
 */
 #define FP_TOLERANCE 1e-12
 #define FP_IS_ZERO(A) (fabs(A) <= FP_TOLERANCE)
@@ -58,11 +56,13 @@
 #define FP_CONTAINS_EXCL(A, X, B) (FP_LT(A, X) && FP_LT(X, B))
 #define FP_CONTAINS(A, X, B) FP_CONTAINS_EXCL(A, X, B)
 
-/*
-** Utility true and false defines.
+/**
+* Return types for functions with status returns.
 */
 #define LW_TRUE 1
 #define LW_FALSE 0
+#define LW_FAILURE 0
+#define LW_SUCCESS 1
 
 /*
 * this will change to NaN when I figure out how to
@@ -191,6 +191,26 @@ typedef struct
 	double xmax, ymax, zmax;
 }
 BOX3D;
+
+
+/**
+* GBOX structure. 
+* Include the flags, so we don't have to constantly pass them
+* into the functions.
+*/
+typedef struct
+{
+	uchar flags;
+	double xmin;
+	double xmax;
+	double ymin;
+	double ymax;
+	double zmin;
+	double zmax;
+	double mmin;
+	double mmax;
+} GBOX;
+
 
 typedef struct chiptag
 {
@@ -354,6 +374,21 @@ extern DYNPTARRAY *dynptarray_create(size_t initial_capacity, int dims);
  */
 extern int dynptarray_addPoint4d(DYNPTARRAY *dpa, POINT4D *p4d,
                                  int allow_duplicates);
+
+
+/******************************************************************
+* GSERIALIZED
+*/
+typedef struct
+{
+	uint32 size; /* For PgSQL use only, use VAR* macros to manipulate. */
+	uchar srid[3]; /* 24 bits of SRID */
+	uchar flags; /* HasZ, HasM, HasBBox, IsGeodetic, IsReadOnly */
+	uchar data[1]; /* See gserialized.txt */
+} GSERIALIZED;
+
+
+
 
 /******************************************************************
  *
@@ -581,6 +616,35 @@ extern LWMPOLY* lwmpoly_add_lwpoly(LWMPOLY *mobj, const LWPOLY *obj);
 extern LWPSURFACE* lwpsurface_add_lwpoly(LWPSURFACE *mobj, const LWPOLY *obj);
 extern LWTIN* lwtin_add_lwtriangle(LWTIN *mobj, const LWTRIANGLE *obj);
 
+
+
+/***********************************************************************
+** Utility functions for flag byte and srid_flag integer.
+*/
+
+/**
+* Construct a new flags char.
+*/
+extern uchar gflags(int hasz, int hasm, int geodetic);
+
+/**
+* Extract the geometry type from the serialized form (it hides in 
+* the anonymous data area, so this is a handy function).
+*/
+extern uint32 gserialized_get_type(const GSERIALIZED *g);
+
+/**
+* Extract the SRID from the serialized form (it is packed into
+* three bytes so this is a handy function).
+*/
+extern uint32 gserialized_get_srid(const GSERIALIZED *g);
+
+/**
+* Write the SRID into the serialized form (it is packed into
+* three bytes so this is a handy function).
+*/
+extern void gserialized_set_srid(GSERIALIZED *g, uint32 srid);
+
 /*
  * Call this function everytime LWGEOM coordinates
  * change so to invalidate bounding box
@@ -747,6 +811,50 @@ extern int pointArray_ptsize(const POINTARRAY *pa);
 #define TYPE_HASSRID(t) ( (((t)&0x40))>>6 )
 #define TYPE_NDIMS(t) ((((t)&0x20)>>5)+(((t)&0x10)>>4)+2)
 #define TYPE_GETTYPE(t) ((t)&0x0F)
+
+/**
+* Macros for manipulating the 'flags' byte. A uchar used as follows: 
+* ---RGBMZ
+* Three unused bits, followed by ReadOnly, Geodetic, HasBBox, HasM and HasZ flags.
+*/
+#define FLAGS_GET_Z(flags) ((flags) & 0x01)
+#define FLAGS_GET_M(flags) (((flags) & 0x02)>>1)
+#define FLAGS_GET_BBOX(flags) (((flags) & 0x4)>>2)
+#define FLAGS_GET_GEODETIC(flags) (((flags) & 0x08)>>3)
+#define FLAGS_GET_READONLY(flags) (((flags) & 0x10)>>4)
+#define FLAGS_SET_Z(flags, value) ((flags) = (value) ? ((flags) | 0x01) : ((flags) & 0xFE))
+#define FLAGS_SET_M(flags, value) ((flags) = (value) ? ((flags) | 0x02) : ((flags) & 0xFD))
+#define FLAGS_SET_BBOX(flags, value) ((flags) = (value) ? ((flags) | 0x04) : ((flags) & 0xFB))
+#define FLAGS_SET_GEODETIC(flags, value) ((flags) = (value) ? ((flags) | 0x08) : ((flags) & 0xF7))
+#define FLAGS_SET_READONLY(flags, value) ((flags) = (value) ? ((flags) | 0x10) : ((flags) & 0xEF))
+#define FLAGS_NDIMS(flags) (2 + FLAGS_GET_Z(flags) + FLAGS_GET_M(flags))
+
+/**
+* Macros for manipulating the 'typemod' int. An int32 used as follows:
+* Plus/minus = Top bit.
+* Spare bits = Next 3 bits.
+* SRID = Next 20 bits.
+* TYPE = Next 6 bits.
+* ZM Flags = Bottom 2 bits.
+*/
+#define TYPMOD_GET_SRID(typmod) ((typmod & 0x0FFFFF00)>>8)
+#define TYPMOD_SET_SRID(typmod, srid) ((typmod) = (typmod & 0x000000FF) | ((srid & 0x000FFFFF)<<8))
+#define TYPMOD_GET_TYPE(typmod) ((typmod & 0x000000FC)>>2)
+#define TYPMOD_SET_TYPE(typmod, type) ((typmod) = (typmod & 0xFFFFFF03) | ((type & 0x0000003F)<<2))
+#define TYPMOD_GET_Z(typmod) ((typmod & 0x00000002)>>1)
+#define TYPMOD_SET_Z(typmod) ((typmod) = typmod | 0x00000002)
+#define TYPMOD_GET_M(typmod) (typmod & 0x00000001)
+#define TYPMOD_SET_M(typmod) ((typmod) = typmod | 0x00000001)
+#define TYPMOD_GET_NDIMS(typmod) (2+TYPMOD_GET_Z(typmod)+TYPMOD_GET_M(typmod))
+
+/**
+* Maximum allowed SRID value. 
+* Currently we are using 20 bits (1048575) of storage for SRID.
+*/
+#define SRID_MAXIMUM 999999
+#define SRID_UNKNOWN 0
+
+
 
 /* 0x02==Z 0x01==M */
 #define TYPE_GETZM(t) (((t)&0x30)>>4)
@@ -1597,6 +1705,39 @@ extern char* lwgeom_to_geojson(uchar *geom, char *srs, int precision, int has_bb
 extern char* lwgeom_to_svg(uchar *geom, int precision, int relative);
 
 
+
+/**
+* Calculate the geodetic distance from lwgeom1 to lwgeom2 on the spheroid. 
+* A spheroid with major axis == minor axis will be treated as a sphere.
+* Pass in a tolerance in spheroid units.
+*/
+extern double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, const GBOX *gbox1, const GBOX *gbox2, const SPHEROID *spheroid, double tolerance);
+
+/**
+* Calculate the geodetic area of a lwgeom on the sphere. The result
+* will be multiplied by the average radius of the supplied spheroid.
+*/
+extern double lwgeom_area_sphere(const LWGEOM *lwgeom, const GBOX *gbox, const SPHEROID *spheroid);
+
+/**
+* Calculate the geodetic area of a lwgeom on the spheroid. The result
+* will have the squared units of the spheroid axes.
+*/
+extern double lwgeom_area_spheroid(const LWGEOM *lwgeom, const GBOX *gbox, const SPHEROID *spheroid);
+
+/**
+* Calculate the geodetic length of a lwgeom on the unit sphere. The result
+* will have to by multiplied by the real radius to get the real length.
+*/
+extern double lwgeom_length_spheroid(const LWGEOM *geom, const SPHEROID *s);
+
+/**
+* Calculate covers predicate for two lwgeoms on the sphere. Currently
+* only handles point-in-polygon.
+*/
+extern int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, const GBOX *gbox1, const GBOX *gbox2);
+
+
 extern POINTARRAY *ptarray_remove_repeated_points(POINTARRAY *in);
 extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in);
 extern LWGEOM* lwmpoint_remove_repeated_points(LWMPOINT *in);
@@ -1610,6 +1751,167 @@ extern LWGEOM* lwgeom_flip_coordinates(LWGEOM *in);
 extern uchar parse_hex(char *str);
 extern void deparse_hex(uchar str, char *result);
 
+
+/**
+* Initialize a spheroid object for use in geodetic functions.
+*/
+extern void spheroid_init(SPHEROID *s, double a, double b);
+
+
+/***********************************************************************
+** Functions for managing serialized forms and bounding boxes.
+*/
+
+/**
+* Calculate the geocentric bounding box directly from the serialized
+* form of the geodetic coordinates. Only accepts serialized geographies
+* flagged as geodetic. Caller is responsible for disposing of the GBOX.
+*/
+extern GBOX* gserialized_calculate_gbox_geocentric(const GSERIALIZED *g);
+
+/**
+* Calculate the geocentric bounding box directly from the serialized
+* form of the geodetic coordinates. Only accepts serialized geographies
+* flagged as geodetic.
+*/
+int gserialized_calculate_gbox_geocentric_p(const GSERIALIZED *g, GBOX *g_box);
+
+/**
+* Return a WKT representation of the gserialized geometry. 
+* Caller is responsible for disposing of the char*.
+*/
+extern char* gserialized_to_string(const GSERIALIZED *g);
+
+/**
+* Return a copy of the input serialized geometry. 
+*/ 
+extern GSERIALIZED* gserialized_copy(const GSERIALIZED *g);
+
+/**
+* Check that coordinates of LWGEOM are all within the geodetic range.
+*/
+extern int lwgeom_check_geodetic(const LWGEOM *geom);
+
+/**
+* Calculate the geodetic bounding box for an LWGEOM. Z/M coordinates are 
+* ignored for this calculation. Pass in non-null, geodetic bounding box for function
+* to fill out. LWGEOM must have been built from a GSERIALIZED to provide
+* double aligned point arrays.
+*/
+extern int lwgeom_calculate_gbox_geodetic(const LWGEOM *geom, GBOX *gbox);
+
+/**
+* Calculate the 2-4D bounding box of a geometry. Z/M coordinates are honored 
+* for this calculation, though for curves they are not included in calculations
+* of curvature.
+*/
+extern int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox);
+
+/**
+* New function to read doubles directly from the double* coordinate array
+* of an aligned lwgeom #POINTARRAY (built by de-serializing a #GSERIALIZED).
+*/
+extern int getPoint2d_p_ro(const POINTARRAY *pa, int n, POINT2D **point);
+
+/**
+* Calculate geodetic (x/y/z) box and add values to gbox. Return #LW_SUCCESS on success.
+*/
+extern int ptarray_calculate_gbox_geodetic(const POINTARRAY *pa, GBOX *gbox);
+
+/**
+* Calculate box (x/y) and add values to gbox. Return #LW_SUCCESS on success.
+*/
+extern int ptarray_calculate_gbox(const POINTARRAY *pa, GBOX *gbox );
+
+/**
+* Calculate a spherical point that falls outside the geocentric gbox
+*/
+void gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside);
+
+/**
+* Create a new gbox with the dimensionality indicated by the flags. Caller
+* is responsible for freeing.
+*/
+extern GBOX* gbox_new(uchar flags);
+
+/**
+* Update the merged #GBOX to be large enough to include itself and the new box.
+*/
+extern int gbox_merge(const GBOX *new_box, GBOX *merged_box);
+
+/**
+* Update the #GBOX to be large enough to include itself and the new point.
+*/
+extern int gbox_merge_point3d(const POINT3D *p, GBOX *gbox);
+
+/**
+* Return true if the point is inside the gbox
+*/
+extern int gbox_contains_point3d(const GBOX *gbox, const POINT3D *pt);
+
+/**
+* Allocate a string representation of the #GBOX, based on dimensionality of flags.
+*/
+extern char* gbox_to_string(const GBOX *gbox);
+
+/**
+* Return a copy of the #GBOX, based on dimensionality of flags.
+*/
+extern GBOX* gbox_copy(const GBOX *gbox);
+
+/**
+* Warning, do not use this function, it is very particular about inputs.
+*/
+extern GBOX* gbox_from_string(const char *str);
+
+/**
+* Given a serialized form, extract the box if it exists, calculate it if it does not.
+*/
+extern int gbox_from_gserialized(const GSERIALIZED *g, GBOX *gbox);
+
+/**
+* Return #LW_TRUE if the #GBOX overlaps, #LW_FALSE otherwise. 
+*/
+extern int gbox_overlaps(const GBOX *g1, const GBOX *g2);
+
+/**
+* Copy the values of original #GBOX into duplicate.
+*/
+extern void gbox_duplicate(const GBOX *original, GBOX *duplicate);
+
+/**
+* Return the number of bytes necessary to hold a #GBOX of this dimension in 
+* serialized form.
+*/
+extern size_t gbox_serialized_size(uchar flags);
+
+/**
+* Utility function to get type number from string. For example, a string 'POINTZ' 
+* would return type of 1 and z of 1 and m of 0. Valid 
+*/
+extern int geometry_type_from_string(const char *str, int *type, int *z, int *m);
+
+/**
+* Calculate required memory segment to contain a serialized form of the LWGEOM.
+* Primarily used internally by the serialization code. Exposed to allow the cunit
+* tests to exercise it.
+*/
+extern size_t gserialized_from_lwgeom_size(const LWGEOM *geom);
+
+/**
+* Allocate a new #GSERIALIZED from an #LWGEOM. For all non-point types, a bounding
+* box will be calculated and embedded in the serialization. The geodetic flag is used
+* to control the box calculation (cartesian or geocentric). If set, the size pointer
+* will contain the size of the final output, which is useful for setting the PgSQL 
+* VARSIZE information.
+*/
+extern GSERIALIZED* gserialized_from_lwgeom(const LWGEOM *geom, int is_geodetic, size_t *size);
+
+/**
+* Allocate a new #LWGEOM from a #GSERIALIZED. The resulting #LWGEOM will have coordinates
+* that are double aligned and suitable for direct reading using getPoint2d_p_ro
+*/
+extern LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g);
 
 /* Parser check flags */
 #define PARSER_CHECK_MINPOINTS  1

@@ -14,7 +14,7 @@
 
 #include "../postgis_config.h"
 
-#include "libgeom.h"         /* For standard geometry types. */
+#include "liblwgeom.h"         /* For standard geometry types. */
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "geography.h"	     /* For utility functions. */
 

@@ -695,7 +695,7 @@ int clairaut_cartesian(const POINT3D *start, const POINT3D *end, GEOGRAPHIC_POIN
 	g_bottom->lon = vN1.lon;
 	LWDEBUGF(4, "clairaut top == GPOINT(%.6g %.6g)", g_top->lat, g_top->lon);
 	LWDEBUGF(4, "clairaut bottom == GPOINT(%.6g %.6g)", g_bottom->lat, g_bottom->lon);
-	return G_SUCCESS;
+	return LW_SUCCESS;
 }
 
 /**
@@ -722,7 +722,7 @@ int clairaut_geographic(const GEOGRAPHIC_POINT *start, const GEOGRAPHIC_POINT *e
 	g_bottom->lon = vN1.lon;
 	LWDEBUGF(4, "clairaut top == GPOINT(%.6g %.6g)", g_top->lat, g_top->lon);
 	LWDEBUGF(4, "clairaut bottom == GPOINT(%.6g %.6g)", g_bottom->lat, g_bottom->lon);
-	return G_SUCCESS;
+	return LW_SUCCESS;
 }
 
 /**
@@ -916,7 +916,7 @@ int sphere_project(const GEOGRAPHIC_POINT *r, double distance, double azimuth, G
 	n->lat = asin(sin(lat1) * cos(d) +
 	              cos(lat1) * sin(d) * cos(azimuth));
 	n->lon = atan(b/a) + r->lon;
-	return G_SUCCESS;
+	return LW_SUCCESS;
 }
 
 
@@ -940,7 +940,7 @@ int edge_calculate_gbox_slow(const GEOGRAPHIC_EDGE *e, GBOX *gbox)
 		gbox->xmax = FP_MAX(start.x, end.x);
 		gbox->ymax = FP_MAX(start.y, end.y);
 		gbox->zmax = FP_MAX(start.z, end.z);
-		return G_SUCCESS;
+		return LW_SUCCESS;
 	}
 
 	/* Edge is antipodal (one point on each side of the globe),
@@ -950,7 +950,7 @@ int edge_calculate_gbox_slow(const GEOGRAPHIC_EDGE *e, GBOX *gbox)
 		LWDEBUG(4, "edge is antipodal. setting to maximum size box, and returning");
 		gbox->xmin = gbox->ymin = gbox->zmin = -1.0;
 		gbox->xmax = gbox->ymax = gbox->zmax = 1.0;
-		return G_SUCCESS;
+		return LW_SUCCESS;
 	}
 
 	/* Walk along the chord between start and end incrementally,
@@ -973,7 +973,7 @@ int edge_calculate_gbox_slow(const GEOGRAPHIC_EDGE *e, GBOX *gbox)
 		normalize(&pn);
 		gbox_merge_point3d(&pn, gbox);
 	}
-	return G_SUCCESS;
+	return LW_SUCCESS;
 }
 
 /**
@@ -1018,7 +1018,7 @@ int edge_calculate_gbox(const GEOGRAPHIC_EDGE *e, GBOX *gbox)
 		gbox->xmax = FP_MAX(start.x, end.x);
 		gbox->ymax = FP_MAX(start.y, end.y);
 		gbox->zmax = FP_MAX(start.z, end.z);
-		return G_SUCCESS;
+		return LW_SUCCESS;
 	}
 
 	/* Edge is antipodal (one point on each side of the globe),
@@ -1028,7 +1028,7 @@ int edge_calculate_gbox(const GEOGRAPHIC_EDGE *e, GBOX *gbox)
 		LWDEBUG(4, "edge is antipodal. setting to maximum size box, and returning");
 		gbox->xmin = gbox->ymin = gbox->zmin = -1.0;
 		gbox->xmax = gbox->ymax = gbox->zmax = 1.0;
-		return G_SUCCESS;
+		return LW_SUCCESS;
 	}
 
 	/* Calculate the difference in longitude between the two points. */
@@ -1261,7 +1261,7 @@ int edge_calculate_gbox(const GEOGRAPHIC_EDGE *e, GBOX *gbox)
 	}
 
 	LWDEBUGF(4, "final gbox: %s", gbox_to_string(gbox));
-	return G_SUCCESS;
+	return LW_SUCCESS;
 }
 
 /**
@@ -2136,7 +2136,7 @@ int getPoint2d_p_ro(const POINTARRAY *pa, int n, POINT2D **point)
 	/* printf( "pa_ptr[0]: %g\n", *((double*)pa_ptr)); */
 	*point = (POINT2D*)pa_ptr;
 
-	return G_SUCCESS;
+	return LW_SUCCESS;
 }
 
 int ptarray_calculate_gbox_geodetic(const POINTARRAY *pa, GBOX *gbox)
@@ -2153,7 +2153,7 @@ int ptarray_calculate_gbox_geodetic(const POINTARRAY *pa, GBOX *gbox)
 
 	edge_gbox.flags = gbox->flags;
 
-	if ( pa->npoints == 0 ) return G_FAILURE;
+	if ( pa->npoints == 0 ) return LW_FAILURE;
 
 	if ( pa->npoints == 1 )
 	{
@@ -2166,7 +2166,7 @@ int ptarray_calculate_gbox_geodetic(const POINTARRAY *pa, GBOX *gbox)
 		gbox->xmin = gbox->xmax = out_pt.x;
 		gbox->ymin = gbox->ymax = out_pt.y;
 		gbox->zmin = gbox->zmax = out_pt.z;
-		return G_SUCCESS;
+		return LW_SUCCESS;
 	}
 
 	for ( i = 1; i < pa->npoints; i++ )
@@ -2197,24 +2197,24 @@ int ptarray_calculate_gbox_geodetic(const POINTARRAY *pa, GBOX *gbox)
 
 	}
 
-	return G_SUCCESS;
+	return LW_SUCCESS;
 
 }
 
 static int lwpoint_calculate_gbox_geodetic(const LWPOINT *point, GBOX *gbox)
 {
 	assert(point);
-	if ( ptarray_calculate_gbox_geodetic(point->point, gbox) == G_FAILURE )
-		return G_FAILURE;
-	return G_SUCCESS;
+	if ( ptarray_calculate_gbox_geodetic(point->point, gbox) == LW_FAILURE )
+		return LW_FAILURE;
+	return LW_SUCCESS;
 }
 
 static int lwline_calculate_gbox_geodetic(const LWLINE *line, GBOX *gbox)
 {
 	assert(line);
-	if ( ptarray_calculate_gbox_geodetic(line->points, gbox) == G_FAILURE )
-		return G_FAILURE;
-	return G_SUCCESS;
+	if ( ptarray_calculate_gbox_geodetic(line->points, gbox) == LW_FAILURE )
+		return LW_FAILURE;
+	return LW_SUCCESS;
 }
 
 static int lwpolygon_calculate_gbox_geodetic(const LWPOLY *poly, GBOX *gbox)
@@ -2224,12 +2224,12 @@ static int lwpolygon_calculate_gbox_geodetic(const LWPOLY *poly, GBOX *gbox)
 	int first = LW_TRUE;
 	assert(poly);
 	if ( poly->nrings == 0 )
-		return G_FAILURE;
+		return LW_FAILURE;
 	ringbox.flags = gbox->flags;
 	for ( i = 0; i < poly->nrings; i++ )
 	{
-		if ( ptarray_calculate_gbox_geodetic(poly->rings[i], &ringbox) == G_FAILURE )
-			return G_FAILURE;
+		if ( ptarray_calculate_gbox_geodetic(poly->rings[i], &ringbox) == LW_FAILURE )
+			return LW_FAILURE;
 		if ( first )
 		{
 			gbox_duplicate(&ringbox, gbox);
@@ -2244,15 +2244,15 @@ static int lwpolygon_calculate_gbox_geodetic(const LWPOLY *poly, GBOX *gbox)
 	/* If the box wraps a poly, push that axis to the absolute min/max as appropriate */
 	gbox_check_poles(gbox);
 
-	return G_SUCCESS;
+	return LW_SUCCESS;
 }
 
 static int lwtriangle_calculate_gbox_geodetic(const LWTRIANGLE *triangle, GBOX *gbox)
 {
 	assert(triangle);
-	if ( ptarray_calculate_gbox_geodetic(triangle->points, gbox) == G_FAILURE )
-		return G_FAILURE;
-	return G_SUCCESS;
+	if ( ptarray_calculate_gbox_geodetic(triangle->points, gbox) == LW_FAILURE )
+		return LW_FAILURE;
+	return LW_SUCCESS;
 }
 
 
@@ -2260,17 +2260,17 @@ static int lwcollection_calculate_gbox_geodetic(const LWCOLLECTION *coll, GBOX *
 {
 	GBOX subbox;
 	int i;
-	int result = G_FAILURE;
+	int result = LW_FAILURE;
 	int first = LW_TRUE;
 	assert(coll);
 	if ( coll->ngeoms == 0 )
-		return G_FAILURE;
+		return LW_FAILURE;
 
 	subbox.flags = gbox->flags;
 
 	for ( i = 0; i < coll->ngeoms; i++ )
 	{
-		if ( lwgeom_calculate_gbox_geodetic((LWGEOM*)(coll->geoms[i]), &subbox) == G_FAILURE )
+		if ( lwgeom_calculate_gbox_geodetic((LWGEOM*)(coll->geoms[i]), &subbox) == LW_FAILURE )
 		{
 			continue;
 		}
@@ -2285,7 +2285,7 @@ static int lwcollection_calculate_gbox_geodetic(const LWCOLLECTION *coll, GBOX *
 			{
 				gbox_merge(&subbox, gbox);
 			}
-			result = G_SUCCESS;
+			result = LW_SUCCESS;
 		}
 	}
 	return result;
@@ -2293,7 +2293,7 @@ static int lwcollection_calculate_gbox_geodetic(const LWCOLLECTION *coll, GBOX *
 
 int lwgeom_calculate_gbox_geodetic(const LWGEOM *geom, GBOX *gbox)
 {
-	int result = G_FAILURE;
+	int result = LW_FAILURE;
 	LWDEBUGF(4, "got type %d", TYPE_GETTYPE(geom->type));
 	if ( ! FLAGS_GET_GEODETIC(gbox->flags) )
 	{
