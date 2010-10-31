@@ -899,7 +899,6 @@ extern PG_LWGEOM *PG_LWGEOM_construct(uchar *serialized, int SRID, int wantbbox)
 /*
  * Compute bbox of serialized geom
  */
-extern int compute_serialized_box2d_p(uchar *serialized_form, BOX2DFLOAT4 *box);
 extern BOX3D *compute_serialized_box3d(uchar *serialized_form);
 extern int compute_serialized_box3d_p(uchar *serialized_form, BOX3D *box);
 
@@ -1183,7 +1182,6 @@ typedef struct
 }
 LWGEOM_INSPECTED;
 
-extern int lwgeom_size_inspected(const LWGEOM_INSPECTED *inspected, int geom_number);
 
 /*
  * note - for a simple type (ie. point), this will have

@@ -1667,13 +1667,6 @@ lwgeom_size_subgeom(const uchar *serialized_form, int geom_number)
 }
 
 
-
-int
-lwgeom_size_inspected(const LWGEOM_INSPECTED *inspected, int geom_number)
-{
-	return lwgeom_size(inspected->sub_geoms[geom_number]);
-}
-
 int
 compute_serialized_box3d_p(uchar *srl, BOX3D *out)
 {
@@ -1690,25 +1683,6 @@ compute_serialized_box3d_p(uchar *srl, BOX3D *out)
 	return 1;
 }
 
-/**
- * Compute bounding box of a serialized LWGEOM, even if it is
- * already cached. The computed BOX2DFLOAT4 is stored at
- * the given location, the function returns 0 is the geometry
- * does not have a bounding box (EMPTY GEOM)
- */
-int
-compute_serialized_box2d_p(uchar *srl, BOX2DFLOAT4 *out)
-{
-	BOX3D *result = compute_serialized_box3d(srl);
-	if ( ! result ) return 0;
-	out->xmin = result->xmin;
-	out->xmax = result->xmax;
-	out->ymin = result->ymin;
-	out->ymax = result->ymax;
-	lwfree(result);
-
-	return 1;
-}
 
 /**
  * Don't forget to lwfree() result !
