@@ -494,7 +494,7 @@ lwgeom_from_tgeom(TGEOM *tgeom)
 {
 	int i, j, k;
 	LWGEOM *geom;
-	DYNPTARRAY *dpa;
+	POINTARRAY *dpa;
 	POINTARRAY **ppa;
 	int hasz, hasm, type, edge_id;
 	int dims=0;
@@ -515,7 +515,7 @@ lwgeom_from_tgeom(TGEOM *tgeom)
 		{
 
 			TYPE_SETZM(dims, hasz?1:0, hasm?1:0);
-			dpa = dynptarray_create(tgeom->faces[i]->nedges + 1, dims);
+			dpa = ptarray_construct_empty(hasz, hasm);
 
 			for (j=0 ; j < tgeom->faces[i]->nedges ; j++)
 			{
@@ -524,20 +524,20 @@ lwgeom_from_tgeom(TGEOM *tgeom)
 
 				assert(edge_id);
 				if (edge_id > 0)
-					dynptarray_addPoint4d(dpa, tgeom->edges[edge_id]->s, 1);
+					ptarray_add_point(dpa, tgeom->edges[edge_id]->s);
 				else
-					dynptarray_addPoint4d(dpa, tgeom->edges[-edge_id]->e, 1);
+					ptarray_add_point(dpa, tgeom->edges[-edge_id]->e);
 			}
 
 			edge_id = tgeom->faces[i]->edges[0];
 			LWDEBUGF(3, "TIN edge_id: %i\n", edge_id);
 			if (edge_id > 0)
-				dynptarray_addPoint4d(dpa, tgeom->edges[edge_id]->s, 1);
+				ptarray_add_point(dpa, tgeom->edges[edge_id]->s); 
 			else
-				dynptarray_addPoint4d(dpa, tgeom->edges[-edge_id]->e, 1);
+				ptarray_add_point(dpa, tgeom->edges[-edge_id]->e); 
 
 			geom = (LWGEOM *) lwtin_add_lwtriangle((LWTIN *) geom,
-			                                       lwtriangle_construct(tgeom->srid, NULL, dpa->pa));
+			                                       lwtriangle_construct(tgeom->srid, NULL, dpa));
 		}
 		break;
 
@@ -546,7 +546,7 @@ lwgeom_from_tgeom(TGEOM *tgeom)
 		for (i=0 ; i < tgeom->nfaces ; i++)
 		{
 			TYPE_SETZM(dims, hasz?1:0, hasm?1:0);
-			dpa = dynptarray_create(tgeom->faces[i]->nedges + 1, dims);
+			dpa = ptarray_construct_empty(hasz, hasm);
 
 			for (j=0 ; j < tgeom->faces[i]->nedges ; j++)
 			{
@@ -554,23 +554,21 @@ lwgeom_from_tgeom(TGEOM *tgeom)
 				assert(edge_id);
 				LWDEBUGF(3, "POLYHEDRALSURFACE edge_id: %i\n", edge_id);
 				if (edge_id > 0)
-					dynptarray_addPoint4d(dpa,
-					                      tgeom->edges[edge_id]->s, 1);
+					ptarray_add_point(dpa, tgeom->edges[edge_id]->s);
 				else
-					dynptarray_addPoint4d(dpa,
-					                      tgeom->edges[-edge_id]->e, 1);
+					ptarray_add_point(dpa, tgeom->edges[-edge_id]->e);
 			}
 
 			edge_id = tgeom->faces[i]->edges[0];
 			LWDEBUGF(3, "POLYHEDRALSURFACE edge_id: %i\n", edge_id);
 			if (edge_id > 0)
-				dynptarray_addPoint4d(dpa, tgeom->edges[edge_id]->s, 1);
+				ptarray_add_point(dpa, tgeom->edges[edge_id]->s);
 			else
-				dynptarray_addPoint4d(dpa, tgeom->edges[-edge_id]->e, 1);
+				ptarray_add_point(dpa, tgeom->edges[-edge_id]->e);
 
 			ppa = lwalloc(sizeof(POINTARRAY*)
 			              * (tgeom->faces[i]->nrings + 1));
-			ppa[0] = dpa->pa;
+			ppa[0] = dpa;
 			for (k=0; k < tgeom->faces[i]->nrings ; k++)
 				ppa[k+1] = tgeom->faces[i]->rings[k];
 
