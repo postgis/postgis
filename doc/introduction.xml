@@ -101,14 +101,14 @@
 	 <varlistentry>
 		<term>Pierre Racine</term>
 		<listitem>
-		  <para>WKT Raster overall architecture and programming support</para>
+		  <para>Raster overall architecture and programming support</para>
 		</listitem>
 	 </varlistentry>
 	  
 	 <varlistentry>
 		<term>Mateusz Loskot</term>
 		<listitem>
-		  <para>WKT Raster support</para>
+		  <para>Raster support</para>
 		</listitem>
 	  </varlistentry>
 	  
@@ -132,15 +132,15 @@
 		<term>Jorge Arevalo</term>
 
 		<listitem>
-		  <para>WKT Raster development</para>
+		  <para>Raster development</para>
 		</listitem>
 	  </varlistentry>
 	  
 	  <varlistentry>
-		<term>Stephen Frost</term>
+		<term>David Zwarg</term>
 
 		<listitem>
-		  <para>Tiger geocoder development</para>
+		  <para>Raster development</para>
 		</listitem>
 	  </varlistentry>
 
@@ -154,7 +154,7 @@
 		  David Techer, Eduin Carrillo, IIDA Tetsushi, George Silva, Geographic Data BC,
 		  Gerald Fenoy, Gino Lucrezi, Guillaume Lelarge, Klaus Foerster, Kris Jurka, Mark
 		  Sondheim, Markus Schaber, Maxime Guillaud, Maxime van Noppen, Michael Fuhr, Nikita Shulga, Norman Vine,
-		  Ralph Mason, Steffen Macke, Vincent Picavet</para>
+		  Ralph Mason, Steffen Macke, Stephen Frost, Vincent Picavet</para>
 		</listitem>
 	  </varlistentry>
 
