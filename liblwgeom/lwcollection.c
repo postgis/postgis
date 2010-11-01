@@ -428,6 +428,7 @@ void lwcollection_free(LWCOLLECTION *col)
 	}
 	for ( i = 0; i < col->ngeoms; i++ )
 	{
+		LWDEBUGF(4,"freeing geom[%d]", i);
 		if ( col->geoms[i] )
 		{
 			switch ( TYPE_GETTYPE(col->geoms[i]->type) )

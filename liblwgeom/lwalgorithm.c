@@ -449,8 +449,7 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 
 	POINTARRAY *pa_in = NULL;
 	LWCOLLECTION *lwgeom_out = NULL;
-	POINTARRAY *pa_out = NULL;
-	DYNPTARRAY *dp = NULL;
+	POINTARRAY *dp = NULL;
 	int i, rv;
 	int added_last_point = 0;
 	POINT4D *p = NULL, *q = NULL, *r = NULL;
@@ -458,7 +457,6 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 	char hasz = TYPE_HASZ(line->type);
 	char hasm = TYPE_HASM(line->type);
 	char dims = TYPE_NDIMS(line->type);
-	char hassrid = TYPE_HASSRID(line->type);
 
 	LWDEBUGF(4, "hassrid = %d", hassrid);
 
@@ -493,21 +491,15 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 	r = lwalloc(sizeof(POINT4D));
 
 	/* Construct a collection to hold our outputs. */
-	lwgeom_out = lwalloc(sizeof(LWCOLLECTION));
-	lwgeom_out->type = lwgeom_makeType(hasz, hasm, hassrid, MULTILINETYPE);
-	if (hassrid)
-		lwgeom_out->SRID = line->SRID;
-	else
-		lwgeom_out->SRID = -1;
-	lwgeom_out->bbox = NULL;
-	lwgeom_out->ngeoms = 0;
-	lwgeom_out->geoms = NULL;
+	lwgeom_out = lwcollection_construct_empty(MULTILINETYPE, line->SRID, hasz, hasm);
 
-	pa_in = (POINTARRAY*)line->points;
+	/* Get our input point array */
+	pa_in = line->points;
 
 	for ( i = 0; i < pa_in->npoints; i++ )
 	{
 		LWDEBUGF(4, "Point #%d", i);
+		LWDEBUGF(4, "added_last_point %d", added_last_point);
 		if ( i > 0 )
 		{
 			q->x = p->x;
@@ -531,8 +523,7 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				LWDEBUG(4,"  new ptarray required");
 				/* We didn't add the previous point, so this is a new segment.
 				*  Make a new point array. */
-				if ( dp ) lwfree(dp);
-				dp = dynptarray_create(64, line->type);
+				dp = ptarray_construct_empty(hasz, hasm, 32);
 
 				/* We're transiting into the range so add an interpolated
 				*  point at the range boundary.
@@ -546,12 +537,12 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 					double interpolation_value;
 					(ordinate_value_q > to) ? (interpolation_value = to) : (interpolation_value = from);
 					rv = lwpoint_interpolate(q, p, r, dims, ordinate, interpolation_value);
-					rv = dynptarray_addPoint4d(dp, r, 0);
-					LWDEBUGF(4, " interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
+					rv = ptarray_add_point(dp, r, LW_FALSE);
+					LWDEBUGF(4, "[0] interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
 				}
 			}
 			/* Add the current vertex to the point array. */
-			rv = dynptarray_addPoint4d(dp, p, 0);
+			rv = ptarray_add_point(dp, p, LW_FALSE);
 			if ( ordinate_value_p == from || ordinate_value_p == to )
 			{
 				added_last_point = 2; /* Added on boundary. */
@@ -572,8 +563,8 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				double interpolation_value;
 				(ordinate_value_p > to) ? (interpolation_value = to) : (interpolation_value = from);
 				rv = lwpoint_interpolate(q, p, r, dims, ordinate, interpolation_value);
-				rv = dynptarray_addPoint4d(dp, r, 0);
-				LWDEBUGF(4, " interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
+				rv = ptarray_add_point(dp, r, LW_FALSE);
+				LWDEBUGF(4, " [1] interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
 			}
 			else if ( added_last_point == 2 )
 			{
@@ -587,74 +578,56 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 					double interpolation_value;
 					(ordinate_value_p > to) ? (interpolation_value = to) : (interpolation_value = from);
 					rv = lwpoint_interpolate(q, p, r, dims, ordinate, interpolation_value);
-					rv = dynptarray_addPoint4d(dp, r, 0);
-					LWDEBUGF(4, " interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
+					rv = ptarray_add_point(dp, r, LW_FALSE);
+					LWDEBUGF(4, " [2] interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
 				}
 			}
 			else if ( i && ordinate_value_q < from && ordinate_value_p > to )
 			{
 				/* We just hopped over the whole range, from bottom to top,
 				*  so we need to add *two* interpolated points! */
-				pa_out = ptarray_construct(hasz, hasm, 2);
+				dp = ptarray_construct(hasz, hasm, 2);
 				/* Interpolate lower point. */
 				rv = lwpoint_interpolate(p, q, r, dims, ordinate, from);
-				setPoint4d(pa_out, 0, r);
+				setPoint4d(dp, 0, r);
 				/* Interpolate upper point. */
 				rv = lwpoint_interpolate(p, q, r, dims, ordinate, to);
-				setPoint4d(pa_out, 1, r);
+				setPoint4d(dp, 1, r);
 			}
 			else if ( i && ordinate_value_q > to && ordinate_value_p < from )
 			{
 				/* We just hopped over the whole range, from top to bottom,
 				*  so we need to add *two* interpolated points! */
-				pa_out = ptarray_construct(hasz, hasm, 2);
+				dp = ptarray_construct(hasz, hasm, 2);
 				/* Interpolate upper point. */
 				rv = lwpoint_interpolate(p, q, r, dims, ordinate, to);
-				setPoint4d(pa_out, 0, r);
+				setPoint4d(dp, 0, r);
 				/* Interpolate lower point. */
 				rv = lwpoint_interpolate(p, q, r, dims, ordinate, from);
-				setPoint4d(pa_out, 1, r);
+				setPoint4d(dp, 1, r);
 			}
 			/* We have an extant point-array, save it out to a multi-line. */
-			if ( dp || pa_out )
+			if ( dp )
 			{
-				LWGEOM *oline;
 				LWDEBUG(4, "saving pointarray to multi-line (1)");
-				if ( dp )
+
+				/* Only one point, so we have to make an lwpoint to hold this
+				*  and set the overall output type to a generic collection. */
+				if ( dp->npoints == 1 )
 				{
-					/* Only one point, so we have to make an lwpoint to hold this
-					*  and set the overall output type to a generic collection. */
-					if ( dp->pa->npoints == 1 )
-					{
-						oline = (LWGEOM*)lwpoint_construct(line->SRID, NULL, dp->pa);
-						oline->type = lwgeom_makeType(hasz, hasm, hassrid, POINTTYPE);
-						lwgeom_out->type = lwgeom_makeType(hasz, hasm, hassrid, COLLECTIONTYPE);
-					}
-					else
-					{
-						oline = (LWGEOM*)lwline_construct(line->SRID, NULL, dp->pa);
-						oline->type = lwgeom_makeType(hasz, hasm, hassrid, LINETYPE);
-					}
+					LWPOINT *opoint = lwpoint_construct(line->SRID, NULL, dp);
+					TYPE_SETTYPE(lwgeom_out->type, COLLECTIONTYPE);
+					lwgeom_out = lwcollection_add_lwgeom(lwgeom_out, lwpoint_as_lwgeom(opoint));
+					
 				}
 				else
 				{
-					oline = (LWGEOM*)lwline_construct(line->SRID, NULL, pa_out);
+					LWLINE *oline = lwline_construct(line->SRID, NULL, dp);
+					lwgeom_out = lwcollection_add_lwgeom(lwgeom_out, lwline_as_lwgeom(oline));
 				}
-				lwgeom_out->ngeoms++;
-				if ( lwgeom_out->geoms ) /* We can't just realloc, since repalloc chokes on a starting null ptr. */
-				{
-					lwgeom_out->geoms = lwrealloc(lwgeom_out->geoms, sizeof(LWGEOM*) * lwgeom_out->ngeoms);
-				}
-				else
-				{
-					lwgeom_out->geoms = lwalloc(sizeof(LWGEOM*) * lwgeom_out->ngeoms);
-				}
-				lwgeom_out->geoms[lwgeom_out->ngeoms - 1] = oline;
-				lwgeom_drop_bbox((LWGEOM*)lwgeom_out);
-				lwgeom_add_bbox((LWGEOM*)lwgeom_out);
-				if ( dp ) lwfree(dp);
+
+				/* Pointarray is now owned by lwgeom_out, so drop reference to it */
 				dp = NULL;
-				if ( pa_out ) pa_out = NULL;
 			}
 			added_last_point = 0;
 
@@ -662,38 +635,25 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 	}
 
 	/* Still some points left to be saved out. */
-	if ( dp && dp->pa->npoints > 0 )
+	if ( dp && dp->npoints > 0 )
 	{
-		LWGEOM *oline;
 		LWDEBUG(4, "saving pointarray to multi-line (2)");
-		LWDEBUGF(4, "dp->pa->npoints == %d", dp->pa->npoints);
+		LWDEBUGF(4, "dp->npoints == %d", dp->npoints);
 		LWDEBUGF(4, "lwgeom_out->ngeoms == %d", lwgeom_out->ngeoms);
 
-		if ( dp->pa->npoints == 1 )
+		if ( dp->npoints == 1 )
 		{
-			oline = (LWGEOM*)lwpoint_construct(line->SRID, NULL, dp->pa);
-			oline->type = lwgeom_makeType(hasz, hasm, hassrid, POINTTYPE);
-			lwgeom_out->type = lwgeom_makeType(hasz, hasm, hassrid, COLLECTIONTYPE);
+			LWPOINT *opoint = lwpoint_construct(line->SRID, NULL, dp);
+			TYPE_SETTYPE(lwgeom_out->type, COLLECTIONTYPE);
+			lwgeom_out = lwcollection_add_lwgeom(lwgeom_out, lwpoint_as_lwgeom(opoint));
 		}
 		else
 		{
-			oline = (LWGEOM*)lwline_construct(line->SRID, NULL, dp->pa);
-			oline->type = lwgeom_makeType(hasz, hasm, hassrid, LINETYPE);
+			LWLINE *oline = lwline_construct(line->SRID, NULL, dp);
+			lwgeom_out = lwcollection_add_lwgeom(lwgeom_out, lwline_as_lwgeom(oline));
 		}
 
-		lwgeom_out->ngeoms++;
-		if ( lwgeom_out->geoms ) /* We can't just realloc, since repalloc chokes on a starting null ptr. */
-		{
-			lwgeom_out->geoms = lwrealloc(lwgeom_out->geoms, sizeof(LWGEOM*) * lwgeom_out->ngeoms);
-		}
-		else
-		{
-			lwgeom_out->geoms = lwalloc(sizeof(LWGEOM*) * lwgeom_out->ngeoms);
-		}
-		lwgeom_out->geoms[lwgeom_out->ngeoms - 1] = oline;
-		lwgeom_drop_bbox((LWGEOM*)lwgeom_out);
-		lwgeom_add_bbox((LWGEOM*)lwgeom_out);
-		if ( dp ) lwfree(dp);
+		/* Pointarray is now owned by lwgeom_out, so drop reference to it */
 		dp = NULL;
 	}
 
@@ -702,7 +662,11 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 	lwfree(r);
 
 	if ( lwgeom_out->ngeoms > 0 )
+	{
+		lwgeom_drop_bbox((LWGEOM*)lwgeom_out);
+		lwgeom_add_bbox((LWGEOM*)lwgeom_out);
 		return lwgeom_out;
+	}
 
 	return NULL;
 

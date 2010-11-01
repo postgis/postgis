@@ -87,13 +87,5 @@
 
 
 
-/**
-* Create a new POINTARRAY with no points. Allocate enough storage
-* to hold maxpoints vertices before having to reallocate the storage
-* area.
-*/
-POINTARRAY* ptarray_construct_empty(char hasz, char hasm, int maxpoints);
-
-
 
 

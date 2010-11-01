@@ -542,13 +542,11 @@ static POINTARRAY* parse_gml_coordinates(xmlNodePtr xnode, bool *hasz)
 {
 	xmlChar *gml_coord, *gml_ts, *gml_cs, *gml_dec;
 	char cs, ts, dec;
-	DYNPTARRAY *dpa;
-	POINTARRAY *pa;
+	POINTARRAY *dpa;
 	int gml_dims;
 	char *p, *q;
 	bool digit;
 	POINT4D pt;
-	uchar dims=0;
 
 	/* We begin to retrieve coordinates string */
 	gml_coord = xmlNodeGetContent(xnode);
@@ -596,9 +594,8 @@ static POINTARRAY* parse_gml_coordinates(xmlNodePtr xnode, bool *hasz)
 	if (cs == ts || cs == dec || ts == dec)
 		lwerror("invalid GML representation");
 
-	/* Now we create PointArray from coordinates values */
-	TYPE_SETZM(dims, 1, 0);
-	dpa = dynptarray_create(1, dims);
+	/* HasZ, !HasM, 1 Point */
+	dpa = ptarray_construct_empty(1, 0, 1);
 
 	while (isspace(*p)) p++;		/* Eat extra whitespaces if any */
 	for (q = p, gml_dims=0, digit = false ; *p ; p++)
@@ -637,7 +634,7 @@ static POINTARRAY* parse_gml_coordinates(xmlNodePtr xnode, bool *hasz)
 				*hasz = false;
 			}
 
-			dynptarray_addPoint4d(dpa, &pt, 0);
+			ptarray_add_point(dpa, &pt, LW_FALSE);
 			digit = false;
 
 			q = p+1;
@@ -649,10 +646,10 @@ static POINTARRAY* parse_gml_coordinates(xmlNodePtr xnode, bool *hasz)
 	}
 
 	xmlFree(gml_coord);
-	pa = ptarray_clone(dpa->pa);
-	lwfree(dpa);
 
-	return pa;
+	/* TODO: this makes no sense, we shouldn't have to clone. but we're seeing 
+	   memory problems when we don't. */
+	return ptarray_clone(dpa);
 }
 
 
@@ -662,16 +659,14 @@ static POINTARRAY* parse_gml_coordinates(xmlNodePtr xnode, bool *hasz)
 static POINTARRAY* parse_gml_coord(xmlNodePtr xnode, bool *hasz)
 {
 	xmlNodePtr xyz;
-	DYNPTARRAY *dpa;
-	POINTARRAY *pa;
+	POINTARRAY *dpa;
 	bool x,y,z;
 	xmlChar *c;
 	POINT4D p;
-	uchar dims=0;
 
-	TYPE_SETZM(dims, 1, 0);
-	dpa = dynptarray_create(1, dims);
-
+	/* HasZ?, !HasM, 1 Point */
+	dpa = ptarray_construct_empty(1, 0, 1);
+	
 	x = y = z = false;
 	for (xyz = xnode->children ; xyz != NULL ; xyz = xyz->next)
 	{
@@ -707,13 +702,10 @@ static POINTARRAY* parse_gml_coord(xmlNodePtr xnode, bool *hasz)
 	if (!x || !y) lwerror("invalid GML representation");
 	if (!z) *hasz = false;
 
-	dynptarray_addPoint4d(dpa, &p, 0);
+	ptarray_add_point(dpa, &p, LW_FALSE);
 	x = y = z = false;
 
-	pa = ptarray_clone(dpa->pa);
-	lwfree(dpa);
-
-	return pa;
+	return ptarray_clone(dpa);
 }
 
 
@@ -725,15 +717,13 @@ static POINTARRAY* parse_gml_pos(xmlNodePtr xnode, bool *hasz)
 	xmlChar *dimension, *gmlpos;
 	xmlNodePtr posnode;
 	int dim, gml_dim;
-	DYNPTARRAY *dpa;
-	POINTARRAY *pa;
+	POINTARRAY *dpa;
 	char *pos, *p;
 	bool digit;
 	POINT4D pt;
-	uchar dims=0;
 
-	TYPE_SETZM(dims, 1, 0);
-	dpa = dynptarray_create(1, dims);
+	/* HasZ, !HasM, 1 Point */
+	dpa = ptarray_construct_empty(1, 0, 1);
 
 	for (posnode = xnode ; posnode != NULL ; posnode = posnode->next)
 	{
@@ -788,13 +778,10 @@ static POINTARRAY* parse_gml_pos(xmlNodePtr xnode, bool *hasz)
 		if (gml_dim < 2 || gml_dim > 3 || gml_dim != dim)
 			lwerror("invalid GML representation");
 
-		dynptarray_addPoint4d(dpa, &pt, 0);
+		ptarray_add_point(dpa, &pt, LW_FALSE);
 	}
 
-	pa = ptarray_clone(dpa->pa);
-	lwfree(dpa);
-
-	return pa;
+	return ptarray_clone(dpa);
 }
 
 
@@ -806,11 +793,9 @@ static POINTARRAY* parse_gml_poslist(xmlNodePtr xnode, bool *hasz)
 	xmlChar *dimension, *gmlposlist;
 	char *poslist, *p;
 	int dim, gml_dim;
-	DYNPTARRAY *dpa;
-	POINTARRAY *pa;
+	POINTARRAY *dpa;
 	POINT4D pt;
 	bool digit;
-	uchar dims=0;
 
 	/* Retrieve gml:srsDimension attribute if any */
 	dimension = gmlGetProp(xnode, (xmlChar *) "srsDimension");
@@ -829,8 +814,8 @@ static POINTARRAY* parse_gml_poslist(xmlNodePtr xnode, bool *hasz)
 	gmlposlist = xmlNodeGetContent(xnode);
 	poslist = (char *) gmlposlist;
 
-	TYPE_SETZM(dims, 1, 0);
-	dpa = dynptarray_create(1, dims);
+	/* HasZ?, !HasM, 1 point */
+	dpa = ptarray_construct_empty(1, 0, 1);
 
 	/* gml:posList pattern: 	x1 y1 x2 y2
 	 * 				x1 y1 z1 x2 y2 z2
@@ -850,7 +835,7 @@ static POINTARRAY* parse_gml_poslist(xmlNodePtr xnode, bool *hasz)
 
 			if (gml_dim == dim)
 			{
-				dynptarray_addPoint4d(dpa, &pt, 0);
+				ptarray_add_point(dpa, &pt, LW_FALSE);
 				gml_dim = 0;
 			}
 			else if (*(poslist+1) == '\0')
@@ -862,10 +847,8 @@ static POINTARRAY* parse_gml_poslist(xmlNodePtr xnode, bool *hasz)
 	}
 
 	xmlFree(gmlposlist);
-	pa = ptarray_clone(dpa->pa);
-	lwfree(dpa);
 
-	return pa;
+	return ptarray_clone(dpa);
 }
 
 

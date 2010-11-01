@@ -343,37 +343,6 @@ typedef struct
 POINTARRAY;
 
 
-/*
- * Use the following to build pointarrays
- * when number of points in output is not
- * known in advance
- */
-typedef struct
-{
-	POINTARRAY *pa;
-	size_t ptsize;
-	size_t capacity; /* given in points */
-}
-DYNPTARRAY;
-
-/* Create a new dynamic pointarray */
-extern DYNPTARRAY *dynptarray_create(size_t initial_capacity, int dims);
-
-/*
- * Add a POINT4D to the dynamic pointarray.
- *
- * The dynamic pointarray may be of any dimension, only
- * accepted dimensions will be copied.
- *
- * If allow_duplicates is set to 0 (false) a check
- * is performed to see if last point in array is equal to the
- * provided one. NOTE that the check is 4d based, with missing
- * ordinates in the pointarray set to NO_Z_VALUE and NO_M_VALUE
- * respectively.
- */
-extern int dynptarray_addPoint4d(DYNPTARRAY *dpa, POINT4D *p4d,
-                                 int allow_duplicates);
-
 
 /******************************************************************
 * GSERIALIZED
@@ -757,12 +726,6 @@ extern POINTARRAY *pointArray_construct(uchar *points, char hasz, char hasm,
  */
 extern BOX3D *ptarray_compute_box3d(const POINTARRAY *pa);
 extern int ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *out);
-
-
-/**
-* Add a point to an existing pointarray 
-*/
-extern int ptarray_add_point(POINTARRAY *pa, POINT4D *pt);
 
 
 /*
@@ -1629,12 +1592,21 @@ extern POINTARRAY* ptarray_construct(char hasz, char hasm, uint32 npoints);
 /* Construct a pointarray, *copying* in the data from ptlist */
 extern POINTARRAY* ptarray_construct_copy_data(char hasz, char hasm, uint32 npoints, const uchar *ptlist);
 
-/*
- * extern POINTARRAY *ptarray_construct2d(uint32 npoints, const POINT2D *pts);
- * extern POINTARRAY *ptarray_construct3dz(uint32 npoints, const POINT3DZ *pts);
- * extern POINTARRAY *ptarray_construct3dm(uint32 npoints, const POINT3DM *pts);
- * extern POINTARRAY *ptarray_construct4d(uint32 npoints, const POINT4D *pts);
- */
+
+/**
+* Create a new POINTARRAY with no points. Allocate enough storage
+* to hold maxpoints vertices before having to reallocate the storage
+* area.
+*/
+POINTARRAY* ptarray_construct_empty(char hasz, char hasm, int maxpoints);
+
+/**
+* Add a point to an existing pointarray 
+*/
+int ptarray_add_point(POINTARRAY *pa, POINT4D *pt, int allow_duplicates);
+
+
+
 
 extern POINTARRAY *ptarray_addPoint(const POINTARRAY *pa, uchar *p, size_t pdims,
                                     uint32 where);

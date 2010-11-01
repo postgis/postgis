@@ -252,7 +252,7 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 	uchar *serialized_lwgeom;
 	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
 
-	DYNPTARRAY **dpas;
+	POINTARRAY **dpas;
 	POINT4D point4d;
 
 	int dims = 0, hasz = 0, hasm = 0;
@@ -275,7 +275,7 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 
 	/* Allocate memory for our array of LWPOINTs and our dynptarrays */
 	lwmultipoints = malloc(sizeof(LWPOINT *) * obj->nVertices);
-	dpas = malloc(sizeof(DYNPTARRAY *) * obj->nVertices);
+	dpas = malloc(sizeof(POINTARRAY *) * obj->nVertices);
 
 	/* We need an array of pointers to each of our sub-geometries */
 	for (u = 0; u < obj->nVertices; u++)
@@ -290,11 +290,11 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 			point4d.m = obj->padfM[u];
 
 		/* Create a dynptarray containing a single point */
-		dpas[u] = dynptarray_create(1, dims);
-		dynptarray_addPoint4d(dpas[u], &point4d, 0);
+		dpas[u] = ptarray_construct_empty(hasz, hasm, 1);
+		ptarray_add_point(dpas[u], &point4d, LW_FALSE);
 
 		/* Generate the LWPOINT */
-		lwmultipoints[u] = lwpoint_as_lwgeom(lwpoint_construct(state->config->sr_id, NULL, dpas[u]->pa));
+		lwmultipoints[u] = lwpoint_as_lwgeom(lwpoint_construct(state->config->sr_id, NULL, dpas[u]));
 	}
 
 	/* If we have more than 1 vertex then we are working on a MULTIPOINT and so generate a MULTIPOINT
@@ -331,12 +331,11 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 
 	for (u = 0; u < obj->nVertices; u++)
 	{
-		if (dpas[u]->pa->serialized_pointlist)
-			lwfree(dpas[u]->pa->serialized_pointlist);
+		if (dpas[u]->serialized_pointlist)
+			lwfree(dpas[u]->serialized_pointlist);
 
 		lwpoint_free(lwgeom_as_lwpoint(lwmultipoints[u]));
 
-		lwfree(dpas[u]);
 	}
 
 	lwfree(dpas);
@@ -361,7 +360,7 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 	uchar *serialized_lwgeom;
 	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
 
-	DYNPTARRAY **dpas;
+	POINTARRAY **dpas;
 	POINT4D point4d;
 
 	int dims = 0, hasz = 0, hasm = 0;
@@ -391,13 +390,13 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 
 	/* Allocate memory for our array of LWLINEs and our dynptarrays */
 	lwmultilinestrings = malloc(sizeof(LWPOINT *) * obj->nParts);
-	dpas = malloc(sizeof(DYNPTARRAY *) * obj->nParts);
+	dpas = malloc(sizeof(POINTARRAY *) * obj->nParts);
 
 	/* We need an array of pointers to each of our sub-geometries */
 	for (u = 0; u < obj->nParts; u++)
 	{
 		/* Create a dynptarray containing the line points */
-		dpas[u] = dynptarray_create(obj->nParts, dims);
+		dpas[u] = ptarray_construct_empty(hasz, hasm, obj->nParts);
 
 		/* Set the start/end vertices depending upon whether this is
 		a MULTILINESTRING or not */
@@ -419,11 +418,11 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 			if (state->wkbtype & WKBMOFFSET)
 				point4d.m = obj->padfM[v];
 
-			dynptarray_addPoint4d(dpas[u], &point4d, 0);
+			ptarray_add_point(dpas[u], &point4d, LW_FALSE);
 		}
 
 		/* Generate the LWLINE */
-		lwmultilinestrings[u] = lwline_as_lwgeom(lwline_construct(state->config->sr_id, NULL, dpas[u]->pa));
+		lwmultilinestrings[u] = lwline_as_lwgeom(lwline_construct(state->config->sr_id, NULL, dpas[u]));
 	}
 
 	/* If using MULTILINESTRINGs then generate the serialized collection, otherwise just a single LINESTRING */
@@ -469,9 +468,9 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 
 	for (u = 0; u < obj->nParts; u++)
 	{
-		lwfree(dpas[u]->pa->serialized_pointlist);
+		if( dpas[u]->serialized_pointlist )
+			lwfree(dpas[u]->serialized_pointlist);
 		lwline_free(lwgeom_as_lwline(lwmultilinestrings[u]));
-		lwfree(dpas[u]);
 	}
 
 	lwfree(dpas);
@@ -698,7 +697,7 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
 
 	LWPOLY *lwpoly;
-	DYNPTARRAY *dpas;
+	POINTARRAY *dpas;
 	POINTARRAY ***pas;
 	POINT4D point4d;
 
@@ -757,8 +756,8 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 
 		while (polyring)
 		{
-			/* Create a DYNPTARRAY containing the points making up the ring */
-			dpas = dynptarray_create(polyring->n, dims);
+			/* Create a POINTARRAY containing the points making up the ring */
+			dpas = ptarray_construct_empty(hasz, hasm, polyring->n);
 
 			for (vi = 0; vi < polyring->n; vi++)
 			{
@@ -771,16 +770,11 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 				if (state->wkbtype & WKBMOFFSET)
 					point4d.m = polyring->list[vi].m;
 
-				dynptarray_addPoint4d(dpas, &point4d, 0);
+				ptarray_add_point(dpas, &point4d, LW_FALSE);
 			}
 
-			/* Copy the POINTARRAY pointer from the DYNPTARRAY structure so we can
-			 use the LWPOLY constructor */
-			pas[pi][ring_index] = dpas->pa;
-
-			/* Free the DYNPTARRAY structure (we don't need this part anymore as we
-			have the reference to the internal POINTARRAY) */
-			lwfree(dpas);
+			/* Copy the POINTARRAY pointer so we can use the LWPOLY constructor */
+			pas[pi][ring_index] = dpas;
 
 			polyring = polyring->next;
 			ring_index++;

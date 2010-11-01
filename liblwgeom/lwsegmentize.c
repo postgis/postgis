@@ -289,32 +289,28 @@ LWLINE *
 lwcurve_segmentize(LWCIRCSTRING *icurve, uint32 perQuad)
 {
 	LWLINE *oline;
-	DYNPTARRAY *ptarray;
+	POINTARRAY *ptarray;
 	POINTARRAY *tmp;
 	uint32 i, j;
-	POINT4D *p1 = lwalloc(sizeof(POINT4D));
-	POINT4D *p2 = lwalloc(sizeof(POINT4D));
-	POINT4D *p3 = lwalloc(sizeof(POINT4D));
-	POINT4D *p4 = lwalloc(sizeof(POINT4D));
-
+	POINT4D p1, p2, p3, p4;
 
 	LWDEBUGF(2, "lwcurve_segmentize called., dim = %d", icurve->points->dims);
 
-	ptarray = dynptarray_create(icurve->points->npoints, icurve->points->dims);
-	if (!getPoint4d_p(icurve->points, 0, p4))
+	ptarray = ptarray_construct_empty(TYPE_HASZ(icurve->points->dims), TYPE_HASM(icurve->points->dims), 64);
+	if (!getPoint4d_p(icurve->points, 0, &p4))
 	{
 		lwerror("lwcurve_segmentize: Cannot extract point.");
 	}
-	dynptarray_addPoint4d(ptarray, p4, 1);
+	ptarray_add_point(ptarray, &p4, LW_TRUE);
 
 	for (i = 2; i < icurve->points->npoints; i+=2)
 	{
 		LWDEBUGF(3, "lwcurve_segmentize: arc ending at point %d", i);
 
-		getPoint4d_p(icurve->points, i - 2, p1);
-		getPoint4d_p(icurve->points, i - 1, p2);
-		getPoint4d_p(icurve->points, i, p3);
-		tmp = lwcircle_segmentize(p1, p2, p3, perQuad);
+		getPoint4d_p(icurve->points, i - 2, &p1);
+		getPoint4d_p(icurve->points, i - 1, &p2);
+		getPoint4d_p(icurve->points, i, &p3);
+		tmp = lwcircle_segmentize(&p1, &p2, &p3, perQuad);
 
 		if (tmp)
 		{
@@ -322,8 +318,8 @@ lwcurve_segmentize(LWCIRCSTRING *icurve, uint32 perQuad)
 
 			for (j = 0; j < tmp->npoints; j++)
 			{
-				getPoint4d_p(tmp, j, p4);
-				dynptarray_addPoint4d(ptarray, p4, 1);
+				getPoint4d_p(tmp, j, &p4);
+				ptarray_add_point(ptarray, &p4, LW_TRUE);
 			}
 			lwfree(tmp);
 		}
@@ -333,37 +329,28 @@ lwcurve_segmentize(LWCIRCSTRING *icurve, uint32 perQuad)
 
 			for (j = i - 1 ; j <= i ; j++)
 			{
-				getPoint4d_p(icurve->points, j, p4);
-				dynptarray_addPoint4d(ptarray, p4, 1);
+				getPoint4d_p(icurve->points, j, &p4);
+				ptarray_add_point(ptarray, &p4, LW_TRUE);
 			}
 		}
 
 	}
-	oline = lwline_construct(icurve->SRID, NULL, ptarray_clone(ptarray->pa));
-
-	lwfree(p1);
-	lwfree(p2);
-	lwfree(p3);
-	lwfree(p4);
-	lwfree(ptarray);
+	oline = lwline_construct(icurve->SRID, NULL, ptarray);
 	return oline;
 }
 
 LWLINE *
 lwcompound_segmentize(LWCOMPOUND *icompound, uint32 perQuad)
 {
-	LWLINE *oline;
 	LWGEOM *geom;
-	DYNPTARRAY *ptarray = NULL;
+	POINTARRAY *ptarray = NULL;
 	LWLINE *tmp = NULL;
 	uint32 i, j;
-	POINT4D *p = NULL;
+	POINT4D p;
 
 	LWDEBUG(2, "lwcompound_segmentize called.");
 
-	p = lwalloc(sizeof(POINT4D));
-
-	ptarray = dynptarray_create(2, ((POINTARRAY *)icompound->geoms[0]->data)->dims);
+	ptarray = ptarray_construct_empty(TYPE_HASZ(icompound->type), TYPE_HASM(icompound->type), 64);
 
 	for (i = 0; i < icompound->ngeoms; i++)
 	{
@@ -373,8 +360,8 @@ lwcompound_segmentize(LWCOMPOUND *icompound, uint32 perQuad)
 			tmp = lwcurve_segmentize((LWCIRCSTRING *)geom, perQuad);
 			for (j = 0; j < tmp->points->npoints; j++)
 			{
-				getPoint4d_p(tmp->points, j, p);
-				dynptarray_addPoint4d(ptarray, p, 0);
+				getPoint4d_p(tmp->points, j, &p);
+				ptarray_add_point(ptarray, &p, LW_TRUE);
 			}
 			lwfree(tmp);
 		}
@@ -383,8 +370,8 @@ lwcompound_segmentize(LWCOMPOUND *icompound, uint32 perQuad)
 			tmp = (LWLINE *)geom;
 			for (j = 0; j < tmp->points->npoints; j++)
 			{
-				getPoint4d_p(tmp->points, j, p);
-				dynptarray_addPoint4d(ptarray, p, 0);
+				getPoint4d_p(tmp->points, j, &p);
+				ptarray_add_point(ptarray, &p, LW_TRUE);
 			}
 		}
 		else
@@ -394,10 +381,7 @@ lwcompound_segmentize(LWCOMPOUND *icompound, uint32 perQuad)
 			return NULL;
 		}
 	}
-	oline = lwline_construct(icompound->SRID, NULL, ptarray_clone(ptarray->pa));
-	lwfree(ptarray);
-	lwfree(p);
-	return oline;
+	return lwline_construct(icompound->SRID, NULL, ptarray);
 }
 
 LWPOLY *

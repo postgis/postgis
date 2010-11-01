@@ -66,7 +66,7 @@ ptarray_construct_empty(char hasz, char hasm, int maxpoints)
 
 
 int
-ptarray_add_point(POINTARRAY *pa, POINT4D *pt)
+ptarray_add_point(POINTARRAY *pa, POINT4D *pt, int allow_duplicates)
 {
 	size_t size;
 	double *d = NULL;
@@ -74,7 +74,19 @@ ptarray_add_point(POINTARRAY *pa, POINT4D *pt)
 
 	/* Check for pathology */
 	if( ! pa || ! pt ) 
-		return LW_FALSE;
+		return LW_FAILURE;
+
+	/* Check for duplicates end point */
+	if ( ! allow_duplicates && pa->npoints > 0 )
+	{
+		POINT4D tmp;
+		getPoint4d_p(pa, pa->npoints-1, &tmp);
+
+		/* Return LW_SUCCESS and do nothing else if previous point in list is equal to this one */
+		if (tmp.x == pt->x && tmp.y == pt->y && tmp.z == pt->z && tmp.m == pt->m) 
+			return LW_SUCCESS;
+	}
+
 
 	/* If we have no storage, let's allocate some */
 	if( pa->maxpoints == 0 || ! pa->serialized_pointlist ) 
@@ -106,7 +118,7 @@ ptarray_add_point(POINTARRAY *pa, POINT4D *pt)
 	/* Increment our point count */
 	pa->npoints++;
 
-	return LW_TRUE;
+	return LW_SUCCESS;
 }
 
 
@@ -634,8 +646,7 @@ ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *result)
 POINTARRAY *
 ptarray_substring(POINTARRAY *ipa, double from, double to)
 {
-	DYNPTARRAY *dpa;
-	POINTARRAY *opa;
+	POINTARRAY *dpa;
 	POINT4D pt;
 	POINT4D p1, p2;
 	POINT4D *p1ptr=&p1; /* don't break strict-aliasing rule */
@@ -648,7 +659,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 	 * Create a dynamic pointarray with an initial capacity
 	 * equal to full copy of input points
 	 */
-	dpa = dynptarray_create(ipa->npoints, ipa->dims);
+	dpa = ptarray_construct_empty(TYPE_HASZ(ipa->dims), TYPE_HASM(ipa->dims), ipa->npoints);
 
 	/* Compute total line length */
 	length = lwgeom_pointarray_length2d(ipa);
@@ -704,7 +715,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 				/*
 				 * Second point is our start
 				 */
-				dynptarray_addPoint4d(dpa, &p2, 1);
+				ptarray_add_point(dpa, &p2, LW_TRUE);
 				state=1; /* we're inside now */
 				goto END;
 			}
@@ -717,7 +728,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 				/*
 				 * First point is our start
 				 */
-				dynptarray_addPoint4d(dpa, &p1, 1);
+				ptarray_add_point(dpa, &p1, LW_TRUE);
 
 				/*
 				 * We're inside now, but will check
@@ -738,7 +749,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 				dseg = (from - tlength) / slength;
 				interpolate_point4d(&p1, &p2, &pt, dseg);
 
-				dynptarray_addPoint4d(dpa, &pt, 1);
+				ptarray_add_point(dpa, &pt, LW_TRUE);
 
 				/*
 				 * We're inside now, but will check
@@ -759,7 +770,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 			 */
 			if ( to > tlength + slength )
 			{
-				dynptarray_addPoint4d(dpa, &p2, 0);
+				ptarray_add_point(dpa, &p2, LW_FALSE);
 				goto END;
 			}
 
@@ -771,7 +782,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 
 				LWDEBUG(3, " Second point is our end");
 
-				dynptarray_addPoint4d(dpa, &p2, 0);
+				ptarray_add_point(dpa, &p2, LW_FALSE);
 				break; /* substring complete */
 			}
 
@@ -784,7 +795,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 
 				LWDEBUG(3, " First point is our end");
 
-				dynptarray_addPoint4d(dpa, &p1, 0);
+				ptarray_add_point(dpa, &p1, LW_FALSE);
 
 				break; /* substring complete */
 			}
@@ -801,7 +812,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 				dseg = (to - tlength) / slength;
 				interpolate_point4d(&p1, &p2, &pt, dseg);
 
-				dynptarray_addPoint4d(dpa, &pt, 0);
+				ptarray_add_point(dpa, &pt, LW_FALSE);
 
 				break;
 			}
@@ -819,15 +830,9 @@ END:
 		memcpy(&p1, &p2, sizeof(POINT4D));
 	}
 
-	/* Get constructed pointarray and release memory associated
-	 * with the dynamic pointarray
-	 */
-	opa = dpa->pa;
-	lwfree(dpa);
+	LWDEBUGF(3, "Out of loop, ptarray has %d points", dpa->npoints);
 
-	LWDEBUGF(3, "Out of loop, ptarray has %d points", opa->npoints);
-
-	return opa;
+	return dpa;
 }
 
 /*
@@ -974,69 +979,6 @@ ptarray_longitude_shift(POINTARRAY *pa)
 	}
 }
 
-DYNPTARRAY *
-dynptarray_create(size_t initial_capacity, int dims)
-{
-	DYNPTARRAY *ret=lwalloc(sizeof(DYNPTARRAY));
-
-	LWDEBUGF(3, "dynptarray_create called, dims=%d.", dims);
-
-	if ( initial_capacity < 1 ) initial_capacity=1;
-
-	ret->pa=lwalloc(sizeof(POINTARRAY));
-	ret->pa->dims=dims;
-	ret->ptsize=pointArray_ptsize(ret->pa);
-	ret->capacity=initial_capacity;
-	ret->pa->serialized_pointlist=lwalloc(ret->ptsize*ret->capacity);
-	ret->pa->npoints=0;
-
-	return ret;
-}
-
-/**
- * @brief Add a #POINT4D to the dynamic pointarray.
- *
- * The dynamic pointarray may be of any dimension, only
- * accepted dimensions will be copied.
- *
- * If allow_duplicates is set to 0 (false) a check
- * is performed to see if last point in array is equal to the
- * provided one. NOTE that the check is 4d based, with missing
- * ordinates in the pointarray set to #NO_Z_VALUE and #NO_M_VALUE
- * respectively.
- */
-int
-dynptarray_addPoint4d(DYNPTARRAY *dpa, POINT4D *p4d, int allow_duplicates)
-{
-	POINTARRAY *pa=dpa->pa;
-	POINT4D tmp;
-
-	LWDEBUG(3, "dynptarray_addPoint4d called.");
-
-	if ( ! allow_duplicates && pa->npoints > 0 )
-	{
-		getPoint4d_p(pa, pa->npoints-1, &tmp);
-
-		/*
-		 * return 0 and do nothing else if previous point in list is
-		 * equal to this one  (4D equality)
-		 */
-		if (tmp.x == p4d->x && tmp.y == p4d->y && tmp.z == p4d->z && tmp.m == p4d->m) return 0;
-	}
-
-	++pa->npoints;
-	if ( pa->npoints > dpa->capacity )
-	{
-		dpa->capacity*=2;
-		pa->serialized_pointlist = lwrealloc(
-		                               pa->serialized_pointlist,
-		                               dpa->capacity*dpa->ptsize);
-	}
-
-	setPoint4d(pa, pa->npoints-1, p4d);
-
-	return 1;
-}
 
 /*
  * Returns a POINTARRAY with consecutive equal points

@@ -237,7 +237,7 @@ POINTARRAY* wkt_parser_ptarray_add_coord(POINTARRAY *pa, POINT p)
 	if( TYPE_HASM(pa->dims) && ! TYPE_HASZ(pa->dims) )
 		pt.m = p.z;
 		
-	ptarray_add_point(pa, &pt);
+	ptarray_add_point(pa, &pt, LW_TRUE); /* Allow duplicate points in array */
 	return pa;
 }
 

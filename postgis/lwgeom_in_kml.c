@@ -264,12 +264,10 @@ static POINTARRAY* parse_kml_coordinates(xmlNodePtr xnode, bool *hasz)
 {
 	xmlChar *kml_coord;
 	bool digit, found;
-	DYNPTARRAY *dpa;
-	POINTARRAY *pa;
+	POINTARRAY *dpa;
 	int kml_dims;
 	char *p, *q;
 	POINT4D pt;
-	uchar dims=0;
 
 	if (xnode == NULL) lwerror("invalid KML representation");
 
@@ -293,8 +291,8 @@ static POINTARRAY* parse_kml_coordinates(xmlNodePtr xnode, bool *hasz)
 	*/
 
 	/* Now we create PointArray from coordinates values */
-	TYPE_SETZM(dims, 1, 0);
-	dpa = dynptarray_create(1, dims);
+	/* HasZ, !HasM, 1pt */
+	dpa = ptarray_construct_empty(1, 0, 1);
 
 	for (q = p, kml_dims=0, digit = false ; *p ; p++)
 	{
@@ -331,7 +329,7 @@ static POINTARRAY* parse_kml_coordinates(xmlNodePtr xnode, bool *hasz)
 				*hasz = false;
 			}
 
-			dynptarray_addPoint4d(dpa, &pt, 0);
+			ptarray_add_point(dpa, &pt, LW_FALSE);
 			digit = false;
 			q = p+1;
 			kml_dims = 0;
@@ -340,10 +338,9 @@ static POINTARRAY* parse_kml_coordinates(xmlNodePtr xnode, bool *hasz)
 	}
 
 	xmlFree(kml_coord);
-	pa = ptarray_clone(dpa->pa);
-	lwfree(dpa);
 
-	return pa;
+	/* TODO: we shouldn't need to clone here */
+	return ptarray_clone(dpa);
 }
 
 

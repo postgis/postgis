@@ -559,12 +559,11 @@ ptarray_grid(POINTARRAY *pa, gridspec *grid)
 {
 	POINT4D pbuf;
 	int ipn, opn; /* point numbers (input/output) */
-	DYNPTARRAY *dpa;
-	POINTARRAY *opa;
+	POINTARRAY *dpa;
 
 	LWDEBUGF(2, "ptarray_grid called on %p", pa);
 
-	dpa=dynptarray_create(pa->npoints, pa->dims);
+	dpa = ptarray_construct_empty(TYPE_HASZ(pa->dims),TYPE_HASM(pa->dims), pa->npoints);
 
 	for (ipn=0, opn=0; ipn<pa->npoints; ++ipn)
 	{
@@ -587,14 +586,11 @@ ptarray_grid(POINTARRAY *pa, gridspec *grid)
 			pbuf.m = rint((pbuf.m - grid->ipm)/grid->msize) *
 			         grid->msize + grid->ipm;
 
-		dynptarray_addPoint4d(dpa, &pbuf, 0);
+		ptarray_add_point(dpa, &pbuf, LW_FALSE);
 
 	}
 
-	opa = dpa->pa;
-	lwfree(dpa);
-
-	return opa;
+	return dpa;
 }
 
 LWLINE *

@@ -45,7 +45,7 @@ int main()
 	LWGEOM *lwgeom;
 	uchar *serialized_lwgeom;
 
-	DYNPTARRAY *dpa;
+	POINTARRAY *dpa;
 	POINT4D point4d;
 	POINTARRAY **rings;
 
@@ -58,13 +58,13 @@ int main()
 	 * Construct a geometry equivalent to POINT(0 51)
 	 */
 
-	dpa = dynptarray_create(10, 2);
+	dpa = ptarray_construct_empty(0, 0, 2);
 	point4d.x = 0;
 	point4d.y = 51;
 
-	dynptarray_addPoint4d(dpa, &point4d, 0);
+	ptarray_add_point(dpa, &point4d, 0);
 
-	testpoint = lwpoint_construct(-1, NULL, dpa->pa);
+	testpoint = lwpoint_construct(-1, NULL, dpa);
 
 	/* Generate the LWGEOM from LWPOINT, then serialize it ready for the parser */
 	lwgeom = lwpoint_as_lwgeom(testpoint);
@@ -80,27 +80,26 @@ int main()
 	lwfree(lwg_unparser_result.wkoutput);
 	lwfree(serialized_lwgeom);
 	lwpoint_free(testpoint);
-	lwfree(dpa);
 
 
 	/*
 	 * Construct a geometry equivalent to LINESTRING(0 0, 2 2, 4 1)
 	 */
 
-	dpa = dynptarray_create(10, 2);
+	dpa = ptarray_construct_empty(0, 0, 2);
 	point4d.x = 0;
 	point4d.y = 0;
-	dynptarray_addPoint4d(dpa, &point4d, 0);
+	ptarray_add_point(dpa, &point4d, 0);
 
 	point4d.x = 2;
 	point4d.y = 2;
-	dynptarray_addPoint4d(dpa, &point4d, 0);
+	ptarray_add_point(dpa, &point4d, 0);
 
 	point4d.x = 4;
 	point4d.y = 1;
-	dynptarray_addPoint4d(dpa, &point4d, 0);
+	ptarray_add_point(dpa, &point4d, 0);
 
-	testline = lwline_construct(-1, NULL, dpa->pa);
+	testline = lwline_construct(-1, NULL, dpa);
 
 	/* Generate the LWGEOM from LWLINE, then serialize it ready for the parser */
 	lwgeom = lwline_as_lwgeom(testline);
@@ -116,7 +115,6 @@ int main()
 	lwfree(lwg_unparser_result.wkoutput);
 	lwfree(serialized_lwgeom);
 	lwline_free(testline);
-	lwfree(dpa);
 
 
 	/*
@@ -127,54 +125,52 @@ int main()
 	rings = lwalloc(sizeof(POINTARRAY) * 2);
 
 	/* Construct the first ring */
-	dpa = dynptarray_create(10, 2);
+	dpa = ptarray_construct_empty(0, 0, 2);
 	point4d.x = 0;
 	point4d.y = 0;
-	dynptarray_addPoint4d(dpa, &point4d, 0);
+	ptarray_add_point(dpa, &point4d, 0);
 
 	point4d.x = 0;
 	point4d.y = 10;
-	dynptarray_addPoint4d(dpa, &point4d, 0);
+	ptarray_add_point(dpa, &point4d, 0);
 
 	point4d.x = 10;
 	point4d.y = 10;
-	dynptarray_addPoint4d(dpa, &point4d, 0);
+	ptarray_add_point(dpa, &point4d, 0);
 
 	point4d.x = 10;
 	point4d.y = 0;
-	dynptarray_addPoint4d(dpa, &point4d, 0);
+	ptarray_add_point(dpa, &point4d, 0);
 
 	point4d.x = 0;
 	point4d.y = 0;
-	dynptarray_addPoint4d(dpa, &point4d, 0);
+	ptarray_add_point(dpa, &point4d, 0);
 
-	rings[0] = dpa->pa;
-	lwfree(dpa);
+	rings[0] = dpa;
 
 	/* Construct the second ring */
-	dpa = dynptarray_create(10, 2);
+	dpa = ptarray_construct_empty(0, 0, 2);
 	point4d.x = 3;
 	point4d.y = 3;
-	dynptarray_addPoint4d(dpa, &point4d, 0);
+	ptarray_add_point(dpa, &point4d, 0);
 
 	point4d.x = 3;
 	point4d.y = 6;
-	dynptarray_addPoint4d(dpa, &point4d, 0);
+	ptarray_add_point(dpa, &point4d, 0);
 
 	point4d.x = 6;
 	point4d.y = 6;
-	dynptarray_addPoint4d(dpa, &point4d, 0);
+	ptarray_add_point(dpa, &point4d, 0);
 
 	point4d.x = 6;
 	point4d.y = 3;
-	dynptarray_addPoint4d(dpa, &point4d, 0);
+	ptarray_add_point(dpa, &point4d, 0);
 
 	point4d.x = 3;
 	point4d.y = 3;
-	dynptarray_addPoint4d(dpa, &point4d, 0);
+	ptarray_add_point(dpa, &point4d, 0);
 
-	rings[1] = dpa->pa;
-	lwfree(dpa);
+	rings[1] = dpa;
 
 	testpoly = lwpoly_construct(-1, NULL, 2, rings);
 
