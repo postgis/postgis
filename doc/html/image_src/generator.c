@@ -34,6 +34,7 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "liblwgeom.h"
 #include "lwalgorithm.h"
 #include "styles.h"
 
