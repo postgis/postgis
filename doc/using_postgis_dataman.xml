@@ -1273,8 +1273,7 @@ gisdb=# SELECT
                   <entry><emphasis role="bold">Interior</emphasis></entry>
 
                   <entry><emphasis><inlineequation>
-                      <mml:math display="block"
-                                xmlns:mml="http://www.w3.org/1998/Math/MathML">
+                      <mml:math display="block">
                         <mml:mrow>
                           <mml:mtext mathvariant="italic">dim(
                           I(a)</mml:mtext>
@@ -1287,8 +1286,7 @@ gisdb=# SELECT
                     </inlineequation></emphasis></entry>
 
                   <entry><emphasis><inlineequation>
-                      <mml:math display="block"
-                                xmlns:mml="http://www.w3.org/1998/Math/MathML">
+                      <mml:math display="block">
                         <mml:mrow>
                           <mml:mtext mathvariant="italic">dim(
                           I(a)</mml:mtext>
@@ -1301,8 +1299,7 @@ gisdb=# SELECT
                     </inlineequation></emphasis></entry>
 
                   <entry><emphasis><inlineequation>
-                      <mml:math display="block"
-                                xmlns:mml="http://www.w3.org/1998/Math/MathML">
+                      <mml:math display="block">
                         <mml:mrow>
                           <mml:mtext mathvariant="italic">dim(
                           I(a)</mml:mtext>
@@ -1319,8 +1316,7 @@ gisdb=# SELECT
                   <entry><emphasis role="bold">Boundary</emphasis></entry>
 
                   <entry><emphasis><inlineequation>
-                      <mml:math display="block"
-                                xmlns:mml="http://www.w3.org/1998/Math/MathML">
+                      <mml:math display="block">
                         <mml:mrow>
                           <mml:mtext mathvariant="italic">dim(
                           B(a)</mml:mtext>
@@ -1333,8 +1329,7 @@ gisdb=# SELECT
                     </inlineequation></emphasis></entry>
 
                   <entry><emphasis><inlineequation>
-                      <mml:math display="block"
-                                xmlns:mml="http://www.w3.org/1998/Math/MathML">
+                      <mml:math display="block">
                         <mml:mrow>
                           <mml:mtext mathvariant="italic">dim(
                           B(a)</mml:mtext>
@@ -1347,8 +1342,7 @@ gisdb=# SELECT
                     </inlineequation></emphasis></entry>
 
                   <entry><emphasis><inlineequation>
-                      <mml:math display="block"
-                                xmlns:mml="http://www.w3.org/1998/Math/MathML">
+                      <mml:math display="block">
                         <mml:mrow>
                           <mml:mtext mathvariant="italic">dim(
                           B(a)</mml:mtext>
@@ -1365,8 +1359,7 @@ gisdb=# SELECT
                   <entry><emphasis role="bold">Exterior</emphasis></entry>
 
                   <entry><emphasis><inlineequation>
-                      <mml:math display="block"
-                                xmlns:mml="http://www.w3.org/1998/Math/MathML">
+                      <mml:math display="block">
                         <mml:mrow>
                           <mml:mtext mathvariant="italic">dim(
                           E(a)</mml:mtext>
@@ -1379,8 +1372,7 @@ gisdb=# SELECT
                     </inlineequation></emphasis></entry>
 
                   <entry><emphasis><inlineequation>
-                      <mml:math display="block"
-                                xmlns:mml="http://www.w3.org/1998/Math/MathML">
+                      <mml:math display="block">
                         <mml:mrow>
                           <mml:mtext mathvariant="italic">dim(
                           E(a)</mml:mtext>
@@ -1393,8 +1385,7 @@ gisdb=# SELECT
                     </inlineequation></emphasis></entry>
 
                   <entry><emphasis><inlineequation>
-                      <mml:math display="block"
-                                xmlns:mml="http://www.w3.org/1998/Math/MathML">
+                      <mml:math display="block">
                         <mml:mrow>
                           <mml:mtext mathvariant="italic">dim(
                           E(a)</mml:mtext>
