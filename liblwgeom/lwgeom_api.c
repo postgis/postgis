@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <errno.h>
 
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 #include "wktparse.h"
 
 /*

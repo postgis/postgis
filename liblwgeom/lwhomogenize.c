@@ -11,7 +11,7 @@
  **********************************************************************/
 
 #include <stdlib.h>
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 #include "lwhomogenize.h"
 
 

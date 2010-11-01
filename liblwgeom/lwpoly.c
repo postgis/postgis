@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 
 
 #define CHECK_POLY_RINGS_ZM 1

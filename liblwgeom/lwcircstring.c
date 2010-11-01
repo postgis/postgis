@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 
 BOX3D *lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3);
 void printLWCIRCSTRING(LWCIRCSTRING *curve);

@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 
 
 void lwgeom_init_allocators()

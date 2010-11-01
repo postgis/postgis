@@ -515,7 +515,7 @@ lwgeom_from_tgeom(TGEOM *tgeom)
 		{
 
 			TYPE_SETZM(dims, hasz?1:0, hasm?1:0);
-			dpa = ptarray_construct_empty(hasz, hasm);
+			dpa = ptarray_construct_empty(hasz, hasm, 4);
 
 			for (j=0 ; j < tgeom->faces[i]->nedges ; j++)
 			{
@@ -546,7 +546,7 @@ lwgeom_from_tgeom(TGEOM *tgeom)
 		for (i=0 ; i < tgeom->nfaces ; i++)
 		{
 			TYPE_SETZM(dims, hasz?1:0, hasm?1:0);
-			dpa = ptarray_construct_empty(hasz, hasm);
+			dpa = ptarray_construct_empty(hasz, hasm, 4);
 
 			for (j=0 ; j < tgeom->faces[i]->nedges ; j++)
 			{

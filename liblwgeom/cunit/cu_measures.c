@@ -15,7 +15,7 @@
 #include <string.h>
 #include "CUnit/Basic.h"
 
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 #include "cu_tester.h"
 #include "measures.h"
 #include "lwtree.h"

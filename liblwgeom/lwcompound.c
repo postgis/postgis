@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 
 LWCOMPOUND *
 lwcompound_deserialize(uchar *serialized)

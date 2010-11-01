@@ -3,7 +3,7 @@
 #include <string.h>
 #include <math.h>
 
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 
 #ifndef EPSILON
 #define EPSILON        1.0E-06

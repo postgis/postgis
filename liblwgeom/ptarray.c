@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 
 
 POINTARRAY*
@@ -43,7 +43,7 @@ ptarray_construct(char hasz, char hasm, uint32 npoints)
 }
 
 POINTARRAY*
-ptarray_construct_empty(char hasz, char hasm)
+ptarray_construct_empty(char hasz, char hasm, int maxpoints)
 {
 	uchar dims = 0;
 	size_t size;
@@ -55,7 +55,7 @@ ptarray_construct_empty(char hasz, char hasm)
 	
 	/* We will be allocating a bit of room */
 	pa->npoints = 0;
-	pa->maxpoints = 32;
+	pa->maxpoints = maxpoints;
 	
 	/* Allocate the coordinate array */
 	size = TYPE_NDIMS(dims) * pa->maxpoints * sizeof(double);
@@ -63,6 +63,7 @@ ptarray_construct_empty(char hasz, char hasm)
 
 	return pa;
 }
+
 
 int
 ptarray_add_point(POINTARRAY *pa, POINT4D *pt)

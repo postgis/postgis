@@ -18,7 +18,7 @@
 *
 **********************************************************************/
 
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 #include <math.h>	/* fabs */
 
 char *lwgeom_to_kml2(uchar *srl, int precision, const char *prefix);

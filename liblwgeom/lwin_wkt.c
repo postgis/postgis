@@ -248,7 +248,7 @@ POINTARRAY* wkt_parser_ptarray_new(POINT p)
 {
 	int ndims = FLAGS_NDIMS(p.flags);
 	LWDEBUG(4,"entered");
-	POINTARRAY *pa = ptarray_construct_empty((ndims>2), (ndims>3));
+	POINTARRAY *pa = ptarray_construct_empty((ndims>2), (ndims>3), 4);
 	if ( ! pa )
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_OTHER);

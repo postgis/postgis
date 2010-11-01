@@ -10,7 +10,7 @@
  *
  **********************************************************************/
 
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 
 
 typedef struct

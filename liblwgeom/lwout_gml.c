@@ -19,8 +19,8 @@
 
 #include <string.h>
 #include <math.h> /* fabs */
-#include "liblwgeom.h"
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
+
 
 static size_t asgml2_point_size(LWPOINT *point, char *srs, int precision, const char *prefix);
 static char *asgml2_point(LWPOINT *point, char *srs, int precision, const char *prefix);

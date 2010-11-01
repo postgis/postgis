@@ -20,7 +20,7 @@
 **********************************************************************/
 
 
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 #include <math.h>  /* fabs */
 
 static char * assvg_point(LWPOINT *point, int relative, int precision);

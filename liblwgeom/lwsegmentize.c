@@ -16,7 +16,7 @@
 #include <string.h>
 #include <math.h>
 
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 
 
 double interpolate_arc(double angle, double zm1, double a1, double zm2, double a2);

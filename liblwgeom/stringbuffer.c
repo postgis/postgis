@@ -37,7 +37,7 @@
  **********************************************************************/
 
 
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 
 /**
 * Allocate a new stringbuffer_t. Use stringbuffer_destroy to free.

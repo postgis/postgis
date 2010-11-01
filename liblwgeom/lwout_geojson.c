@@ -11,7 +11,7 @@
  *
  **********************************************************************/
 
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 #include <math.h>	/* fabs */
 #include <string.h>	/* strlen */
 

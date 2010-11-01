@@ -15,7 +15,7 @@
 /* #include <stdint.h> */
 #include <inttypes.h>
 
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 #include "wktparse.h"
 
 
