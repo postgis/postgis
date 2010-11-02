@@ -1680,7 +1680,7 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
 
 	/* alread a multi*, just make it a collection */
-	if ( lwtype_is_collection(TYPE_GETTYPE(lwgeom->type)) )
+	if ( lwgeom_is_collection(lwgeom) )
 	{
 		TYPE_SETTYPE(lwgeom->type, COLLECTIONTYPE);
 	}
@@ -1723,7 +1723,8 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 	** in input. If bbox cache is not there we'll need to handle
 	** automatic bbox addition FOR_COMPLEX_GEOMS.
 	*/
-	if ( lwtype_is_collection(TYPE_GETTYPE(geom->type)) && TYPE_HASBBOX(geom->type) )
+	if ( lwtype_is_collection(TYPE_GETTYPE(geom->type)) && 
+	     TYPE_HASBBOX(geom->type) )
 	{
 		PG_RETURN_POINTER(geom);
 	}

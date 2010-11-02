@@ -40,7 +40,7 @@ lw_dist3d_distanceline(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode)
 	thedl.tolerance = 0.0;
 
 	LWDEBUG(2, "lw_dist3d_distanceline is called");
-	if (!lw_dist3d_recursive((LWCOLLECTION*) lw1,(LWCOLLECTION*) lw2,&thedl))
+	if (!lw_dist3d_recursive(lw1, lw2, &thedl))
 	{
 		/*should never get here. all cases ought to be error handled earlier*/
 		lwerror("Some unspecified error.");
@@ -89,7 +89,7 @@ lw_dist3d_distancepoint(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode)
 
 	LWDEBUG(2, "lw_dist3d_distancepoint is called");
 
-	if (!lw_dist3d_recursive((LWCOLLECTION*) lw1,(LWCOLLECTION*) lw2,&thedl))
+	if (!lw_dist3d_recursive(lw1, lw2, &thedl))
 	{
 		/*should never get here. all cases ought to be error handled earlier*/
 		lwerror("Some unspecified error.");
@@ -137,7 +137,7 @@ lwgeom_maxdistance3d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance)
 	thedl.mode = DIST_MAX;
 	thedl.distance= -1;
 	thedl.tolerance = tolerance;
-	if (lw_dist3d_recursive((LWCOLLECTION*) lw1,(LWCOLLECTION*) lw2,&thedl))
+	if (lw_dist3d_recursive(lw1, lw2, &thedl))
 	{
 		return thedl.distance;
 	}
@@ -168,7 +168,7 @@ lwgeom_mindistance3d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance)
 	thedl.mode = DIST_MIN;
 	thedl.distance= MAXFLOAT;
 	thedl.tolerance = tolerance;
-	if (lw_dist3d_recursive((LWCOLLECTION*) lw1,(LWCOLLECTION*) lw2,&thedl))
+	if (lw_dist3d_recursive(lw1, lw2, &thedl))
 	{
 		return thedl.distance;
 	}
@@ -191,60 +191,65 @@ Functions preparing geometries for distance-calculations
 /**
 This is a recursive function delivering every possible combinatin of subgeometries
 */
-int lw_dist3d_recursive(const LWCOLLECTION * lwg1,const LWCOLLECTION * lwg2,DISTPTS3D *dl)
+int lw_dist3d_recursive(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS3D *dl)
 {
 	int i, j;
 	int n1=1;
 	int n2=1;
-	LWGEOM *g1, *g2;
+	LWGEOM *g1 = NULL;
+	LWGEOM *g2 = NULL;
+	LWCOLLECTION *c1 = NULL;
+	LWCOLLECTION *c2 = NULL;
 
 	LWDEBUGF(2, "lw_dist3d_recursive is called with type1=%d, type2=%d", TYPE_GETTYPE(lwg1->type), TYPE_GETTYPE(lwg2->type));
 
-	if (lwtype_is_collection(TYPE_GETTYPE(lwg1->type)))
+	if (lwgeom_is_collection(lwg1))
 	{
 		LWDEBUG(3, "First geometry is collection");
-		n1=lwg1->ngeoms;
+		c1 = lwgeom_as_lwcollection(lwg1);
+		n1 = c1->ngeoms;
 	}
-	if (lwtype_is_collection(TYPE_GETTYPE(lwg2->type)))
+	if (lwgeom_is_collection(lwg2))
 	{
 		LWDEBUG(3, "Second geometry is collection");
-		n2=lwg2->ngeoms;
+		c2 = lwgeom_as_lwcollection(lwg2);
+		n2 = c2->ngeoms;
 	}
 
 	for ( i = 0; i < n1; i++ )
 	{
 
-		if (lwtype_is_collection(TYPE_GETTYPE(lwg1->type)))
+		if (lwgeom_is_collection(lwg1))
 		{
-			g1=lwg1->geoms[i];
+			g1 = c1->geoms[i];
 		}
 		else
 		{
-			g1=(LWGEOM*)lwg1;
+			g1 = (LWGEOM*)lwg1;
 		}
 
 		if (lwgeom_is_empty(g1)) return LW_TRUE;
 
-		if (lwtype_is_collection(TYPE_GETTYPE(g1->type)))
+		if (lwgeom_is_collection(g1))
 		{
 			LWDEBUG(3, "Found collection inside first geometry collection, recursing");
-			if (!lw_dist3d_recursive((LWCOLLECTION*)g1, (LWCOLLECTION*)lwg2, dl)) return LW_FALSE;
+			if (!lw_dist3d_recursive(g1, lwg2, dl)) return LW_FALSE;
 			continue;
 		}
 		for ( j = 0; j < n2; j++ )
 		{
-			if (lwtype_is_collection(TYPE_GETTYPE(lwg2->type)))
+			if (lwgeom_is_collection(lwg2))
 			{
-				g2=lwg2->geoms[j];
+				g2 = c2->geoms[j];
 			}
 			else
 			{
-				g2=(LWGEOM*)lwg2;
+				g2 = (LWGEOM*)lwg2;
 			}
-			if (lwtype_is_collection(TYPE_GETTYPE(g2->type)))
+			if (lwgeom_is_collection(g2))
 			{
 				LWDEBUG(3, "Found collection inside second geometry collection, recursing");
-				if (!lw_dist3d_recursive((LWCOLLECTION*) g1, (LWCOLLECTION*)g2, dl)) return LW_FALSE;
+				if (!lw_dist3d_recursive(g1, g2, dl)) return LW_FALSE;
 				continue;
 			}
 

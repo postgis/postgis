@@ -377,7 +377,7 @@ LWCOLLECTION *
 lwgeom_as_lwcollection(const LWGEOM *lwgeom)
 {
 	if ( lwgeom == NULL ) return NULL;
-	if ( lwtype_is_collection(TYPE_GETTYPE(lwgeom->type)) )
+	if ( lwgeom_is_collection(lwgeom) )
 		return (LWCOLLECTION*)lwgeom;
 	else return NULL;
 }
@@ -528,7 +528,7 @@ lwgeom_as_multi(const LWGEOM *lwgeom)
 	** This funx is a no-op only if a bbox cache is already present
 	** in input.
 	*/
-	if ( lwtype_is_collection(TYPE_GETTYPE(lwgeom->type)) )
+	if ( lwgeom_is_collection(lwgeom) )
 	{
 		return lwgeom_clone(lwgeom);
 	}
@@ -1415,7 +1415,7 @@ void lwgeom_set_srid(LWGEOM *geom, int srid)
 	geom->SRID = srid;
 
 	LWDEBUG(4,"entered");
-	if ( lwtype_is_collection(TYPE_GETTYPE(geom->type)) )
+	if ( lwgeom_is_collection(geom) )
 	{
 		/* All the children are set to the unknown SRID value */
 		LWCOLLECTION *col = lwgeom_as_lwcollection(geom);

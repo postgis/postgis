@@ -35,7 +35,7 @@ typedef struct
 Preprocessing functions
 */
 int lw_dist3d_distribute_bruteforce(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS3D *dl);
-int lw_dist3d_recursive(const LWCOLLECTION * lwg1,const LWCOLLECTION * lwg2, DISTPTS3D *dl);
+int lw_dist3d_recursive(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS3D *dl);
 int lw_dist3d_distribute_fast(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS3D *dl);
 
 /*

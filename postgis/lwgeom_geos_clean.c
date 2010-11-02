@@ -948,8 +948,7 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	}
 
 	lwgeom_out = GEOS2LWGEOM(geosout, is3d);
-	if ( lwtype_is_collection(TYPE_GETTYPE(lwgeom_in->type))
-	        && ! lwtype_is_collection(TYPE_GETTYPE(lwgeom_out->type)) )
+	if ( lwgeom_is_collection(lwgeom_in) && ! lwgeom_is_collection(lwgeom_out) )
 	{
 		POSTGIS_DEBUG(3, "lwgeom_make_valid: forcing multi");
 		lwgeom_out = lwgeom_as_multi(lwgeom_out);
