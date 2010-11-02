@@ -232,7 +232,7 @@ lwcollection_homogenize_subgeom(LWGEOM_HOMOGENIZE *hgeoms, LWGEOM *geom)
 	{
 		hgeoms->polys = lwmpoly_add_lwpoly(hgeoms->polys, (LWPOLY*)lwgeom_clone(geom));
 	}
-	else if ( lwgeom_is_collection(type) )
+	else if ( lwtype_is_collection(type) )
 	{
 		LWCOLLECTION *obj = (LWCOLLECTION*)geom;
 		for (i=0; i < obj->ngeoms ; i++)

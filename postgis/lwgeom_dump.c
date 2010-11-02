@@ -88,7 +88,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 		state->root = lwgeom;
 		state->stacklen=0;
 
-		if ( lwgeom_is_collection(TYPE_GETTYPE(lwgeom->type)) )
+		if ( lwtype_is_collection(TYPE_GETTYPE(lwgeom->type)) )
 		{
 			/*
 			 * Push a GEOMDUMPNODE on the state stack
@@ -126,7 +126,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 
 	/* Handled simple geometries */
 	if ( ! state->root ) SRF_RETURN_DONE(funcctx);
-	if ( ! lwgeom_is_collection(TYPE_GETTYPE(state->root->type)) )
+	if ( ! lwtype_is_collection(TYPE_GETTYPE(state->root->type)) )
 	{
 		values[0] = "{}";
 		values[1] = lwgeom_to_hexwkb(state->root, PARSER_CHECK_NONE, -1);
@@ -145,7 +145,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 		if ( node->idx < lwcoll->ngeoms )
 		{
 			lwgeom = lwcoll->geoms[node->idx];
-			if ( ! lwgeom_is_collection(TYPE_GETTYPE(lwgeom->type)) )
+			if ( ! lwtype_is_collection(TYPE_GETTYPE(lwgeom->type)) )
 			{
 				/* write address of current geom */
 				ptr=address;

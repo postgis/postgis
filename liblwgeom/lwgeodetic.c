@@ -1947,7 +1947,7 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 	}
 
 	/* Recurse into collections */
-	if ( lwgeom_is_collection(type1) )
+	if ( lwtype_is_collection(type1) )
 	{
 		int i;
 		double distance = MAXFLOAT;
@@ -1965,7 +1965,7 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 	}
 
 	/* Recurse into collections */
-	if ( lwgeom_is_collection(type2) )
+	if ( lwtype_is_collection(type2) )
 	{
 		int i;
 		double distance = MAXFLOAT;
@@ -2016,7 +2016,7 @@ int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 	}
 
 	/* If any of the first argument parts covers the second argument, it's true */
-	if ( lwgeom_is_collection( type1 ) )
+	if ( lwtype_is_collection( type1 ) )
 	{
 		int i;
 		LWCOLLECTION *col = (LWCOLLECTION*)lwgeom1;
@@ -2032,7 +2032,7 @@ int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 	}
 
 	/* Only if all of the second arguments are covered by the first argument is the condition true */
-	if ( lwgeom_is_collection( type2 ) )
+	if ( lwtype_is_collection( type2 ) )
 	{
 		int i;
 		LWCOLLECTION *col = (LWCOLLECTION*)lwgeom2;
@@ -2486,7 +2486,7 @@ double lwgeom_length_spheroid(const LWGEOM *geom, const SPHEROID *s)
 	if ( type == TRIANGLETYPE )
 		return ptarray_length_spheroid(((LWTRIANGLE*)geom)->points, s);
 
-	if ( lwgeom_is_collection( type ) )
+	if ( lwtype_is_collection( type ) )
 	{
 		LWCOLLECTION *col = (LWCOLLECTION*)geom;
 

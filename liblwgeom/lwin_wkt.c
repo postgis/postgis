@@ -106,7 +106,7 @@ static int wkt_parser_set_dims(LWGEOM *geom, uchar flags)
 				wkt_parser_set_dims(poly->rings[i], flags);
 			return LW_TRUE;
 		}
-		else if ( lwgeom_is_collection(lwtype) )
+		else if ( lwtype_is_collection(lwtype) )
 		{
 			LWCOLLECTION *col = (LWCOLLECTION*)geom;
 			for ( i = 0; i < col->ngeoms; i++ )

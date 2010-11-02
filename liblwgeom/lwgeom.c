@@ -377,7 +377,7 @@ LWCOLLECTION *
 lwgeom_as_lwcollection(const LWGEOM *lwgeom)
 {
 	if ( lwgeom == NULL ) return NULL;
-	if ( lwgeom_is_collection(TYPE_GETTYPE(lwgeom->type)) )
+	if ( lwtype_is_collection(TYPE_GETTYPE(lwgeom->type)) )
 		return (LWCOLLECTION*)lwgeom;
 	else return NULL;
 }
@@ -528,7 +528,7 @@ lwgeom_as_multi(const LWGEOM *lwgeom)
 	** This funx is a no-op only if a bbox cache is already present
 	** in input.
 	*/
-	if ( lwgeom_is_collection(TYPE_GETTYPE(lwgeom->type)) )
+	if ( lwtype_is_collection(TYPE_GETTYPE(lwgeom->type)) )
 	{
 		return lwgeom_clone(lwgeom);
 	}
@@ -890,14 +890,6 @@ lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 }
 
 void
-lwgeom_changed(LWGEOM *lwgeom)
-{
-	if ( lwgeom->bbox ) lwfree(lwgeom->bbox);
-	lwgeom->bbox = NULL;
-	TYPE_SETHASBBOX(lwgeom->type, 0);
-}
-
-void
 lwgeom_drop_bbox(LWGEOM *lwgeom)
 {
 	if ( lwgeom->bbox ) lwfree(lwgeom->bbox);
@@ -919,7 +911,7 @@ lwgeom_add_bbox(LWGEOM *lwgeom)
 }
 
 void
-lwgeom_dropSRID(LWGEOM *lwgeom)
+lwgeom_drop_srid(LWGEOM *lwgeom)
 {
 	TYPE_SETHASSRID(lwgeom->type, 0);
 	lwgeom->SRID = -1;
@@ -992,9 +984,16 @@ lwgeom_longitude_shift(LWGEOM *lwgeom)
 	}
 }
 
+int 
+lwgeom_is_collection(const LWGEOM *geom)
+{
+	if( ! geom ) return LW_FALSE;
+	return lwtype_is_collection(TYPE_GETTYPE(geom->type));
+}
+
 /** Return TRUE if the geometry may contain sub-geometries, i.e. it is a MULTI* or COMPOUNDCURVE */
 int
-lwgeom_is_collection(int type)
+lwtype_is_collection(int type)
 {
 
 	switch (type)
@@ -1416,7 +1415,7 @@ void lwgeom_set_srid(LWGEOM *geom, int srid)
 	geom->SRID = srid;
 
 	LWDEBUG(4,"entered");
-	if ( lwgeom_is_collection(TYPE_GETTYPE(geom->type)) )
+	if ( lwtype_is_collection(TYPE_GETTYPE(geom->type)) )
 	{
 		/* All the children are set to the unknown SRID value */
 		LWCOLLECTION *col = lwgeom_as_lwcollection(geom);

@@ -76,7 +76,7 @@ LWCOLLECTION *
 lwcollection_construct_empty(uint32 type, int srid, char hasz, char hasm)
 {
 	LWCOLLECTION *ret;
-	if( ! lwgeom_is_collection(type) )
+	if( ! lwtype_is_collection(type) )
 		lwerror("Non-collection type specified in collection constructor!");
 
 	ret = lwalloc(sizeof(LWCOLLECTION));
@@ -573,7 +573,7 @@ LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type)
 			geomlistlen++;
 		}
 		/* Recurse into sub-collections */
-		if ( lwgeom_is_collection( subtype ) )
+		if ( lwtype_is_collection( subtype ) )
 		{
 			int j = 0;
 			LWCOLLECTION *tmpcol = lwcollection_extract((LWCOLLECTION*)col->geoms[i], type);

@@ -192,11 +192,11 @@ typedef struct
 }
 BOX3D;
 
-
-/**
+/******************************************************************
 * GBOX structure. 
-* Include the flags, so we don't have to constantly pass them
-* into the functions.
+* We include the flags (information about dimensinality), 
+* so we don't have to constantly pass them
+* into functions that use the GBOX.
 */
 typedef struct
 {
@@ -258,91 +258,78 @@ typedef struct chiptag
 }
 CHIP;
 
-/*
- * standard definition of an ellipsoid (what wkt calls a spheroid)
- *    f = (a-b)/a
- *    e_sq = (a*a - b*b)/(a*a)
- *    b = a - fa
- */
+/******************************************************************
+* SPHEROID
+*
+*  Standard definition of an ellipsoid (what wkt calls a spheroid)
+*    f = (a-b)/a
+*    e_sq = (a*a - b*b)/(a*a)
+*    b = a - fa
+*/
 typedef struct
 {
 	double	a;	/* semimajor axis */
-	double	b; 	/* semiminor axis */
-	double	f;	/* flattening     */
+	double	b; 	/* semiminor axis b = (a - fa) */
+	double	f;	/* flattening f = (a-b)/a */
 	double	e;	/* eccentricity (first) */
-	double	e_sq;	/* eccentricity (first), squared */
-	double  radius; /* (2*a+b)/3 spherical average radius */
-	char	name[20]; /* name of ellipse */
+	double	e_sq;	/* eccentricity squared (first) e_sq = (a*a-b*b)/(a*a) */
+	double  radius;  /* spherical average radius = (2*a+b)/3 */
+	char	name[20];  /* name of ellipse */
 }
 SPHEROID;
 
-
-/*
- * ALL LWGEOM structures will use POINT3D as an abstract point.
- * This means a 2d geometry will be stored as (x,y) in its serialized
- * form, but all functions will work on (x,y,0).  This keeps all the
- * analysis functions simple.
- * NOTE: for GEOS integration, we'll probably set z=NaN
- *        so look out - z might be NaN for 2d geometries!
- */
+/******************************************************************
+* POINT2D, POINT3D, POINT3DM, POINT4D
+*/
 typedef struct
 {
-	double	x,y,z;
-}
-POINT3DZ;
-typedef struct
-{
-	double	x,y,z;
-}
-POINT3D; /* alias for POINT3DZ */
-typedef struct
-{
-	double	x,y,m;
-}
-POINT3DM;
-
-/*
- * type for 2d points.  When you convert this to 3d, the
- *   z component will be either 0 or NaN.
- */
-typedef struct
-{
-	double x;
-	double y;
+	double x, y;
 }
 POINT2D;
 
 typedef struct
 {
-	double x;
-	double y;
-	double z;
-	double m;
+	double x, y, z;
+}
+POINT3DZ;
+
+typedef struct
+{
+	double x, y, z;
+}
+POINT3D;
+
+typedef struct
+{
+	double x, y, m;
+}
+POINT3DM;
+
+typedef struct
+{
+	double x, y, z, m;
 }
 POINT4D;
 
-/******************************************************************/
-
-/*
- * Point array abstracts a lot of the complexity of points and point lists.
- * It handles miss-alignment in the serialized form, 2d/3d translation
- *    (2d points converted to 3d will have z=0 or NaN)
- * DONT MIX 2D and 3D POINTS!  *EVERYTHING* is either one or the other
- */
+/******************************************************************
+*  POINTARRAY
+*  Point array abstracts a lot of the complexity of points and point lists.
+*  It handles miss-alignment in the serialized form, 2d/3d translation
+*    (2d points converted to 3d will have z=0 or NaN)
+*  DO NOT MIX 2D and 3D POINTS! EVERYTHING* is either one or the other
+*/
 typedef struct
 {
-	/* array of POINT 2D, 3D or 4D. possibly missaligned. */
+	/* Array of POINT 2D, 3D or 4D, possibly missaligned. */
 	uchar *serialized_pointlist;
 
-	/* use TYPE_* macros to handle */
+	/* Use TYPE_* macros to handle */
 	uchar  dims;
 
 	int npoints;   /* how many points we are currently storing */
 	int maxpoints; /* how many points we have space for in serialized_pointlist */
 }
 POINTARRAY;
-
-
 
 /******************************************************************
 * GSERIALIZED
@@ -356,14 +343,12 @@ typedef struct
 } GSERIALIZED;
 
 
-
-
 /******************************************************************
- *
- * LWGEOM (any type)
- *
- ******************************************************************/
-
+* LWGEOM (any type)
+*
+* Abstract type, note that type, bbox and SRID are available in 
+* all variants.
+*/
 typedef struct
 {
 	uchar type;
@@ -613,27 +598,34 @@ extern uint32 gserialized_get_srid(const GSERIALIZED *g);
 */
 extern void gserialized_set_srid(GSERIALIZED *g, uint32 srid);
 
-/*
- * Call this function everytime LWGEOM coordinates
- * change so to invalidate bounding box
- */
-extern void lwgeom_changed(LWGEOM *lwgeom);
-
-/*
- * Call this function to drop BBOX and SRID
- * from LWGEOM. If LWGEOM type is *not* flagged
- * with the HASBBOX flag and has a bbox, it
- * will be released.
- */
+/**
+* Call this function to drop BBOX and SRID
+* from LWGEOM. If LWGEOM type is *not* flagged
+* with the HASBBOX flag and has a bbox, it
+* will be released.
+*/
 extern void lwgeom_drop_bbox(LWGEOM *lwgeom);
 
-/* Compute a bbox if not already computed */
+/** 
+* Compute a bbox if not already computed 
+*/
 extern void lwgeom_add_bbox(LWGEOM *lwgeom);
 
-extern void lwgeom_dropSRID(LWGEOM *lwgeom);
+/**
+* Remove the SRID from a geometry.
+*/
+extern void lwgeom_drop_srid(LWGEOM *lwgeom);
 
-/* Determine whether a LWGEOM can contain sub-geometries or not */
-extern int lwgeom_is_collection(int type);
+/** 
+* Determine whether a LWGEOM can contain sub-geometries or not 
+*/
+extern int lwgeom_is_collection(const LWGEOM *lwgeom);
+
+/** 
+* Determine whether a type number is a collection or not
+*/
+extern int lwtype_is_collection(int type);
+
 
 /******************************************************************/
 

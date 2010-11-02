@@ -200,12 +200,12 @@ int lw_dist3d_recursive(const LWCOLLECTION * lwg1,const LWCOLLECTION * lwg2,DIST
 
 	LWDEBUGF(2, "lw_dist3d_recursive is called with type1=%d, type2=%d", TYPE_GETTYPE(lwg1->type), TYPE_GETTYPE(lwg2->type));
 
-	if (lwgeom_is_collection(TYPE_GETTYPE(lwg1->type)))
+	if (lwtype_is_collection(TYPE_GETTYPE(lwg1->type)))
 	{
 		LWDEBUG(3, "First geometry is collection");
 		n1=lwg1->ngeoms;
 	}
-	if (lwgeom_is_collection(TYPE_GETTYPE(lwg2->type)))
+	if (lwtype_is_collection(TYPE_GETTYPE(lwg2->type)))
 	{
 		LWDEBUG(3, "Second geometry is collection");
 		n2=lwg2->ngeoms;
@@ -214,7 +214,7 @@ int lw_dist3d_recursive(const LWCOLLECTION * lwg1,const LWCOLLECTION * lwg2,DIST
 	for ( i = 0; i < n1; i++ )
 	{
 
-		if (lwgeom_is_collection(TYPE_GETTYPE(lwg1->type)))
+		if (lwtype_is_collection(TYPE_GETTYPE(lwg1->type)))
 		{
 			g1=lwg1->geoms[i];
 		}
@@ -225,7 +225,7 @@ int lw_dist3d_recursive(const LWCOLLECTION * lwg1,const LWCOLLECTION * lwg2,DIST
 
 		if (lwgeom_is_empty(g1)) return LW_TRUE;
 
-		if (lwgeom_is_collection(TYPE_GETTYPE(g1->type)))
+		if (lwtype_is_collection(TYPE_GETTYPE(g1->type)))
 		{
 			LWDEBUG(3, "Found collection inside first geometry collection, recursing");
 			if (!lw_dist3d_recursive((LWCOLLECTION*)g1, (LWCOLLECTION*)lwg2, dl)) return LW_FALSE;
@@ -233,7 +233,7 @@ int lw_dist3d_recursive(const LWCOLLECTION * lwg1,const LWCOLLECTION * lwg2,DIST
 		}
 		for ( j = 0; j < n2; j++ )
 		{
-			if (lwgeom_is_collection(TYPE_GETTYPE(lwg2->type)))
+			if (lwtype_is_collection(TYPE_GETTYPE(lwg2->type)))
 			{
 				g2=lwg2->geoms[j];
 			}
@@ -241,7 +241,7 @@ int lw_dist3d_recursive(const LWCOLLECTION * lwg1,const LWCOLLECTION * lwg2,DIST
 			{
 				g2=(LWGEOM*)lwg2;
 			}
-			if (lwgeom_is_collection(TYPE_GETTYPE(g2->type)))
+			if (lwtype_is_collection(TYPE_GETTYPE(g2->type)))
 			{
 				LWDEBUG(3, "Found collection inside second geometry collection, recursing");
 				if (!lw_dist3d_recursive((LWCOLLECTION*) g1, (LWCOLLECTION*)g2, dl)) return LW_FALSE;

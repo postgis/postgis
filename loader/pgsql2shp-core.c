@@ -987,21 +987,21 @@ int getTableInfo(SHPDUMPERSTATE *state)
 			case POINTTYPE:
 				if (typefound != POINTTYPE && typefound != MULTIPOINTTYPE)
 					typemismatch = 1;
-				else if (!lwgeom_is_collection(type))
+				else if (!lwtype_is_collection(type))
 					typefound = POINTTYPE;
 				break;
 
 			case LINETYPE:
 				if (typefound != LINETYPE && typefound != MULTILINETYPE)
 					typemismatch = 1;
-				else if (!lwgeom_is_collection(type))
+				else if (!lwtype_is_collection(type))
 					typefound = LINETYPE;
 				break;
 
 			case POLYGONTYPE:
 				if (typefound != POLYGONTYPE && typefound != MULTIPOLYGONTYPE)
 					typemismatch = 1;
-				else if (!lwgeom_is_collection(type))
+				else if (!lwtype_is_collection(type))
 					typefound = POLYGONTYPE;
 				break;
 			}

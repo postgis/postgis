@@ -124,7 +124,7 @@ lwline_split_by_line(LWLINE* lwline_in, LWLINE* blade_in)
 		return NULL;
 	}
 
-	if ( ! lwgeom_is_collection(TYPE_GETTYPE(diff->type)) )
+	if ( ! lwtype_is_collection(TYPE_GETTYPE(diff->type)) )
 	{
 		components = lwalloc(sizeof(LWGEOM*)*1);
 		components[0] = diff;

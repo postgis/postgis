@@ -1680,7 +1680,7 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
 
 	/* alread a multi*, just make it a collection */
-	if ( lwgeom_is_collection(TYPE_GETTYPE(lwgeom->type)) )
+	if ( lwtype_is_collection(TYPE_GETTYPE(lwgeom->type)) )
 	{
 		TYPE_SETTYPE(lwgeom->type, COLLECTIONTYPE);
 	}
@@ -1723,7 +1723,7 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 	** in input. If bbox cache is not there we'll need to handle
 	** automatic bbox addition FOR_COMPLEX_GEOMS.
 	*/
-	if ( lwgeom_is_collection(TYPE_GETTYPE(geom->type)) && TYPE_HASBBOX(geom->type) )
+	if ( lwtype_is_collection(TYPE_GETTYPE(geom->type)) && TYPE_HASBBOX(geom->type) )
 	{
 		PG_RETURN_POINTER(geom);
 	}
@@ -2372,9 +2372,9 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 
 	/* Drop input geometries bbox and SRID */
 	lwgeom_drop_bbox(lwgeoms[0]);
-	lwgeom_dropSRID(lwgeoms[0]);
+	lwgeom_drop_srid(lwgeoms[0]);
 	lwgeom_drop_bbox(lwgeoms[1]);
-	lwgeom_dropSRID(lwgeoms[1]);
+	lwgeom_drop_srid(lwgeoms[1]);
 
 	outlwg = (LWGEOM *)lwcollection_construct(
 	             outtype, SRID,
@@ -2632,7 +2632,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 				}
 			}
 
-			lwgeom_dropSRID(lwgeoms[count]);
+			lwgeom_drop_srid(lwgeoms[count]);
 			lwgeom_drop_bbox(lwgeoms[count]);
 
 			/* Output type not initialized */
@@ -3413,7 +3413,7 @@ Datum ST_IsCollection(PG_FUNCTION_ARGS)
 	        0, VARHDRSZ + 1);
 
 	type = lwgeom_getType(SERIALIZED_FORM(geom)[0]);
-	PG_RETURN_BOOL(lwgeom_is_collection(type));
+	PG_RETURN_BOOL(lwtype_is_collection(type));
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_makepoint);
@@ -4067,7 +4067,7 @@ Datum ST_CollectionExtract(PG_FUNCTION_ARGS)
 	}
 
 	/* Mirror non-collections right back */
-	if ( ! lwgeom_is_collection(lwgeom_type) )
+	if ( ! lwtype_is_collection(lwgeom_type) )
 	{
 		output = palloc(VARSIZE(input));
 		memcpy(VARDATA(output), VARDATA(input), VARSIZE(input) - VARHDRSZ);
