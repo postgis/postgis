@@ -1117,7 +1117,7 @@ FROM country
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Dimension"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_Intersects"/>, <xref linkend="ST_Multi"/></para>
+			<para><xref linkend="ST_Difference"/>, <xref linkend="ST_Dimension"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_SymDifference"/>, <xref linkend="ST_Intersects"/>, <xref linkend="ST_Multi"/></para>
 		</refsection>
 	</refentry>
 
