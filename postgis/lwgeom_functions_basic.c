@@ -3091,7 +3091,7 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 		pts[1].y = box.ymax;
 
 		/* Construct point array */
-		pa = pointArray_construct((uchar *)pts, 0, 0, 2);
+		pa = ptarray_construct_reference_data(0, 0, 2, (uchar*)pts);
 
 		/* Construct and serialize linestring */
 		line = lwline_construct(SRID, NULL, pa);
@@ -3115,7 +3115,7 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 		pts[4].y = box.ymin;
 
 		/* Construct point array */
-		pa = pointArray_construct((uchar *)pts, 0, 0, 5);
+		pa = ptarray_construct_reference_data(0, 0, 5, (uchar*)pts);
 
 		/* Construct polygon  */
 		poly = lwpoly_construct(SRID, ptarray_compute_box2d(pa), 1, &pa);

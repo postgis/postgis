@@ -145,7 +145,8 @@ lwcircstring_deserialize(uchar *serialized_form)
 	LWDEBUGF(3, "circstring npoints = %d", npoints);
 
 	loc += 4;
-	pa = pointArray_construct(loc, TYPE_HASZ(type), TYPE_HASM(type), npoints);
+	pa = ptarray_construct_reference_data(TYPE_HASZ(type), TYPE_HASM(type), npoints, loc);
+	
 	result->points = pa;
 	return result;
 }
@@ -650,8 +651,8 @@ lwcircstring_from_lwpointarray(int SRID, uint32 npoints, LWPOINT **points)
 		memcpy(ptr, getPoint_internal(points[i]->point, 0), size);
 		ptr += ptsize;
 	}
-	pa = pointArray_construct(newpoints, zmflag&2, zmflag&1, npoints);
-
+	pa = ptarray_construct_reference_data(zmflag&2, zmflag&1, npoints, newpoints);
+	
 	return lwcircstring_construct(SRID, NULL, pa);
 }
 
@@ -685,9 +686,8 @@ lwcircstring_from_lwmpoint(int SRID, LWMPOINT *mpoint)
 		ptr += ptsize;
 	}
 
-	pa = pointArray_construct(newpoints, zmflag&2, zmflag&1,
-	                          mpoint->ngeoms);
-
+	pa = ptarray_construct_reference_data(zmflag&2, zmflag&1, mpoint->ngeoms, newpoints);
+	
 	LWDEBUGF(3, "lwcurve_from_lwmpoint: constructed pointarray for %d points, %d zmflag", mpoint->ngeoms, zmflag);
 
 	return lwcircstring_construct(SRID, NULL, pa);

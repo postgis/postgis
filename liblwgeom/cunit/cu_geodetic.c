@@ -88,7 +88,8 @@ static void test_gbox_from_spherical_coordinates(void)
 	ll[2] = 15.5;
 	ll[3] = -5.25;
 
-	pa = pointArray_construct((uchar*)ll, 0, 0, 2);
+	pa = ptarray_construct_reference_data(0, 0, 2, (uchar*)ll);
+	
 	lwline = lwline_construct(-1, 0, pa);
 
 	srandomdev();

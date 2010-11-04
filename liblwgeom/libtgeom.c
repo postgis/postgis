@@ -894,8 +894,8 @@ tgeom_deserialize(TSERIALIZED *serialized_form)
 			loc  += 4;
 
 			/* pointarray */
-			result->faces[i]->rings[j] = pointArray_construct(loc,
-			                             FLAGS_GET_Z(flags), FLAGS_GET_M(flags), npoints);
+			result->faces[i]->rings[j] = ptarray_construct_reference_data(FLAGS_GET_Z(flags), FLAGS_GET_M(flags), npoints, loc);
+			
 			loc += sizeof(double)* FLAGS_NDIMS(flags) * npoints;
 		}
 	}

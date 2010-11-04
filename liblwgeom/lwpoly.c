@@ -156,8 +156,7 @@ lwpoly_deserialize(uchar *serialized_form)
 		/* read in a single ring and make a PA */
 		npoints = lw_get_uint32(loc);
 		loc +=4;
-
-		result->rings[t] = pointArray_construct(loc, hasz, hasm, npoints);
+		result->rings[t] = ptarray_construct_reference_data(hasz, hasm, npoints, loc);
 		loc += sizeof(double)*ndims*npoints;
 	}
 

@@ -122,15 +122,28 @@ ptarray_add_point(POINTARRAY *pa, POINT4D *pt, int allow_duplicates)
 }
 
 
+POINTARRAY* ptarray_construct_reference_data(char hasz, char hasm, uint32 npoints, uchar *ptlist)
+{
+	uchar dims = 0;
+	size_t size;
+	POINTARRAY *pa = lwalloc(sizeof(POINTARRAY));
+
+	TYPE_SETZM(dims, hasz?1:0, hasm?1:0);
+	size = TYPE_NDIMS(dims)*npoints*sizeof(double);
+	pa->dims = dims;
+	pa->npoints = npoints;
+	pa->maxpoints = npoints;
+	pa->serialized_pointlist = ptlist;
+	return pa;	
+}
+
 
 POINTARRAY*
 ptarray_construct_copy_data(char hasz, char hasm, uint32 npoints, const uchar *ptlist)
 {
 	uchar dims = 0;
 	size_t size;
-	POINTARRAY *pa = NULL;
-
-	pa = lwalloc(sizeof(POINTARRAY));
+	POINTARRAY *pa = lwalloc(sizeof(POINTARRAY));
 
 	TYPE_SETZM(dims, hasz?1:0, hasm?1:0);
 	size = TYPE_NDIMS(dims)*npoints*sizeof(double);

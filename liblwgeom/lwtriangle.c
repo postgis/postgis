@@ -121,7 +121,8 @@ lwtriangle_deserialize(uchar *serialized_form)
 	npoints = lw_get_uint32(loc);
 	/*lwnotice("triangle npoints = %d", npoints); */
 	loc +=4;
-	pa = pointArray_construct(loc, TYPE_HASZ(type), TYPE_HASM(type), npoints);
+	pa = ptarray_construct_reference_data(TYPE_HASZ(type), TYPE_HASM(type), npoints, loc);
+	
 	result->points = pa;
 
 	return result;

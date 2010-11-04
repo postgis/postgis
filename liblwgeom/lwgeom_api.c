@@ -770,37 +770,6 @@ getPoint_internal(const POINTARRAY *pa, int n)
 }
 
 
-
-/*
- * Constructs a POINTARRAY.
- *
- * NOTE: points is *not* copied, so be careful about modification
- * (can be aligned/missaligned).
- *
- * NOTE: ndims is descriptive - it describes what type of data 'points'
- *       points to.  No data conversion is done.
- */
-POINTARRAY *
-pointArray_construct(uchar *points, char hasz, char hasm, uint32 npoints)
-{
-	POINTARRAY  *pa;
-
-	LWDEBUG(2, "pointArray_construct called.");
-
-	pa = (POINTARRAY*)lwalloc(sizeof(POINTARRAY));
-
-	pa->dims = 0;
-	TYPE_SETZM(pa->dims, hasz?1:0, hasm?1:0);
-	pa->npoints = npoints;
-
-	pa->serialized_pointlist = points;
-
-	LWDEBUGF(4, "pointArray_construct returning %p", pa);
-
-	return pa;
-}
-
-
 /*
  * Size of point represeneted in the POINTARRAY
  * 16 for 2d, 24 for 3d, 32 for 4d

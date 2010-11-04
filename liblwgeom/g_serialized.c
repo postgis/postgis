@@ -653,7 +653,7 @@ static LWPOINT* lwpoint_from_gserialized_buffer(uchar *data_ptr, uchar g_flags, 
 	data_ptr += 4; /* Skip past the npoints. */
 
 	if ( npoints > 0 )
-		point->point = pointArray_construct(data_ptr, FLAGS_GET_Z(g_flags), FLAGS_GET_M(g_flags), 1);
+		point->point = ptarray_construct_reference_data(FLAGS_GET_Z(g_flags), FLAGS_GET_M(g_flags), 1, data_ptr);
 	else
 		point->point = ptarray_construct(FLAGS_GET_Z(g_flags), FLAGS_GET_M(g_flags), 0); /* Empty point */
 
@@ -684,7 +684,8 @@ static LWLINE* lwline_from_gserialized_buffer(uchar *data_ptr, uchar g_flags, si
 	data_ptr += 4; /* Skip past the npoints. */
 
 	if ( npoints > 0 )
-		line->points = pointArray_construct(data_ptr, FLAGS_GET_Z(g_flags), FLAGS_GET_M(g_flags), npoints);
+		line->points = ptarray_construct_reference_data(FLAGS_GET_Z(g_flags), FLAGS_GET_M(g_flags), npoints, data_ptr);
+		
 	else
 		line->points = ptarray_construct(FLAGS_GET_Z(g_flags), FLAGS_GET_M(g_flags), 0); /* Empty linestring */
 
@@ -740,7 +741,8 @@ static LWPOLY* lwpoly_from_gserialized_buffer(uchar *data_ptr, uchar g_flags, si
 		data_ptr += 4;
 
 		/* Make a point array for the ring, and move the ordinate pointer past the ring ordinates. */
-		poly->rings[i] = pointArray_construct(ordinate_ptr, FLAGS_GET_Z(g_flags), FLAGS_GET_M(g_flags), npoints);
+		poly->rings[i] = ptarray_construct_reference_data(FLAGS_GET_Z(g_flags), FLAGS_GET_M(g_flags), npoints, ordinate_ptr);
+		
 		ordinate_ptr += sizeof(double) * FLAGS_NDIMS(g_flags) * npoints;
 	}
 
@@ -769,7 +771,7 @@ static LWTRIANGLE* lwtriangle_from_gserialized_buffer(uchar *data_ptr, uchar g_f
 	data_ptr += 4; /* Skip past the npoints. */
 
 	if ( npoints > 0 )
-		triangle->points = pointArray_construct(data_ptr, FLAGS_GET_Z(g_flags), FLAGS_GET_M(g_flags), npoints);
+		triangle->points = ptarray_construct_reference_data(FLAGS_GET_Z(g_flags), FLAGS_GET_M(g_flags), npoints, data_ptr);		
 	else
 		triangle->points = ptarray_construct(FLAGS_GET_Z(g_flags), FLAGS_GET_M(g_flags), 0); /* Empty triangle */
 
@@ -800,7 +802,7 @@ static LWCIRCSTRING* lwcircstring_from_gserialized_buffer(uchar *data_ptr, uchar
 	data_ptr += 4; /* Skip past the npoints. */
 
 	if ( npoints > 0 )
-		circstring->points = pointArray_construct(data_ptr, FLAGS_GET_Z(g_flags), FLAGS_GET_M(g_flags), npoints);
+		circstring->points = ptarray_construct_reference_data(FLAGS_GET_Z(g_flags), FLAGS_GET_M(g_flags), npoints, data_ptr);		
 	else
 		circstring->points = ptarray_construct(FLAGS_GET_Z(g_flags), FLAGS_GET_M(g_flags), 0); /* Empty circularstring */
 
@@ -1016,9 +1018,9 @@ static int gserialized_calculate_gbox_geocentric_from_point(uchar *data_ptr, siz
 		if (g_size) *g_size = data_ptr - start_ptr;
 		return LW_FAILURE;
 	}
-
-	pa = pointArray_construct(data_ptr, FLAGS_GET_Z(gbox->flags), FLAGS_GET_M(gbox->flags), npoints);
-
+	
+	pa = ptarray_construct_reference_data(FLAGS_GET_Z(gbox->flags), FLAGS_GET_M(gbox->flags), npoints, data_ptr);
+	
 	if ( ptarray_calculate_gbox_geodetic(pa, gbox) == LW_FAILURE )
 		return LW_FAILURE;
 
@@ -1051,7 +1053,7 @@ static int gserialized_calculate_gbox_geocentric_from_line(uchar *data_ptr, size
 		return LW_FAILURE;
 	}
 
-	pa = pointArray_construct(data_ptr, FLAGS_GET_Z(gbox->flags), FLAGS_GET_M(gbox->flags), npoints);
+	pa = ptarray_construct_reference_data(FLAGS_GET_Z(gbox->flags), FLAGS_GET_M(gbox->flags), npoints, data_ptr);
 
 	if ( ptarray_calculate_gbox_geodetic(pa, gbox) == LW_FAILURE )
 		return LW_FAILURE;
@@ -1100,8 +1102,8 @@ static int gserialized_calculate_gbox_geocentric_from_polygon(uchar *data_ptr, s
 	if ( nrings % 2 ) /* Move past optional padding. */
 		data_ptr += 4;
 
-	pa = pointArray_construct(data_ptr, FLAGS_GET_Z(gbox->flags), FLAGS_GET_M(gbox->flags), npoints);
-
+	pa = ptarray_construct_reference_data(FLAGS_GET_Z(gbox->flags), FLAGS_GET_M(gbox->flags), npoints, data_ptr);
+		
 	/* Bounds of exterior ring is bounds of whole polygon. */
 	if ( ptarray_calculate_gbox_geodetic(pa, gbox) == LW_FAILURE )
 		return LW_FAILURE;
@@ -1135,8 +1137,8 @@ static int gserialized_calculate_gbox_geocentric_from_triangle(uchar *data_ptr, 
 		return LW_FAILURE;
 	}
 
-	pa = pointArray_construct(data_ptr, FLAGS_GET_Z(gbox->flags), FLAGS_GET_M(gbox->flags), npoints);
-
+	pa = ptarray_construct_reference_data(FLAGS_GET_Z(gbox->flags), FLAGS_GET_M(gbox->flags), npoints, data_ptr);
+	
 	if ( ptarray_calculate_gbox_geodetic(pa, gbox) == LW_FAILURE )
 		return LW_FAILURE;
 

@@ -761,11 +761,11 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 			}
 			lwinspected_release(inspected);
 
-			pts = pointArray_construct(getPoint_internal(
-			                               curve->points,
-			                               wanted_index-1),
-			                           TYPE_HASZ(curve->type),
-			                           TYPE_HASM(curve->type), 1);
+			pts = ptarray_construct_reference_data(
+			        TYPE_HASZ(curve->type), 
+			        TYPE_HASM(curve->type), 
+			        1, 
+			        getPoint_internal(curve->points, wanted_index-1) );
 		}
 		else if (lwgeom_getType(tmp->type) == LINETYPE)
 		{
@@ -781,9 +781,12 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 			lwinspected_release(inspected);
 
 			/* Construct a point array */
-			pts = pointArray_construct(getPoint_internal(line->points,
-			                           wanted_index-1),
-			                           TYPE_HASZ(line->type), TYPE_HASM(line->type), 1);
+			pts = ptarray_construct_reference_data(
+			        TYPE_HASZ(line->type), 
+			        TYPE_HASM(line->type), 
+			        1, 
+			        getPoint_internal(line->points, wanted_index-1) );
+
 		}
 		else
 		{
@@ -968,9 +971,12 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 	/* Ok, now we have a line.  */
 
 	/* Construct a point array */
-	pts = pointArray_construct(getPoint_internal(line->points, 0),
-	                           TYPE_HASZ(line->type),
-	                           TYPE_HASM(line->type), 1);
+	pts = ptarray_construct_reference_data(
+	        TYPE_HASZ(line->type), 
+	        TYPE_HASM(line->type), 
+	        1, 
+	        getPoint_internal(line->points, 0) );
+
 	lwgeom_release((LWGEOM *)line);
 
 	/* Construct an LWPOINT */
@@ -1028,10 +1034,13 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 	/* Ok, now we have a line.  */
 
 	/* Construct a point array */
-	pts = pointArray_construct(
-	          getPoint_internal(line->points, line->points->npoints-1),
-	          TYPE_HASZ(line->type),
-	          TYPE_HASM(line->type), 1);
+	pts = ptarray_construct_reference_data(
+	        TYPE_HASZ(line->type), 
+	        TYPE_HASM(line->type), 
+	        1, 
+	        getPoint_internal(line->points, line->points->npoints-1) );
+
+
 	lwgeom_release((LWGEOM *)line);
 
 	/* Construct an LWPOINT */

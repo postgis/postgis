@@ -117,7 +117,8 @@ lwline_deserialize(uchar *serialized_form)
 	npoints = lw_get_uint32(loc);
 	/*lwnotice("line npoints = %d", npoints); */
 	loc +=4;
-	pa = pointArray_construct(loc, TYPE_HASZ(type), TYPE_HASM(type), npoints);
+	pa = ptarray_construct_reference_data(TYPE_HASZ(type), TYPE_HASM(type), npoints, loc);
+	
 	result->points = pa;
 
 	return result;
@@ -406,8 +407,8 @@ lwline_from_lwpointarray(int SRID, uint32 npoints, LWPOINT **points)
 		ptr+=ptsize;
 	}
 
-	pa = pointArray_construct(newpoints, zmflag&2, zmflag&1, npoints);
-
+	pa = ptarray_construct_reference_data(zmflag&2, zmflag&1, npoints, newpoints);
+	
 	return lwline_construct(SRID, NULL, pa);
 }
 
@@ -441,9 +442,8 @@ lwline_from_lwmpoint(int SRID, LWMPOINT *mpoint)
 		ptr+=ptsize;
 	}
 
-	pa = pointArray_construct(newpoints, zmflag&2, zmflag&1,
-	                          mpoint->ngeoms);
-
+	pa = ptarray_construct_reference_data(zmflag&2, zmflag&1, mpoint->ngeoms, newpoints);
+	
 	LWDEBUGF(3, "lwline_from_lwmpoint: constructed pointarray for %d points, %d zmflag", mpoint->ngeoms, zmflag);
 
 	return lwline_construct(SRID, NULL, pa);

@@ -72,9 +72,99 @@
 #define NO_Z_VALUE NO_VALUE
 #define NO_M_VALUE NO_VALUE
 
+/**
+* Largest float value. TODO: Should this be from math.h instead?
+*/
 #ifndef MAXFLOAT
 #define MAXFLOAT      3.402823466e+38F
 #endif
+
+/**
+* LWTYPE numbers, used internally by PostGIS
+*/
+#define	POINTTYPE                1
+#define	LINETYPE                 2
+#define	POLYGONTYPE	             3
+#define	MULTIPOINTTYPE           4
+#define	MULTILINETYPE            5
+#define	MULTIPOLYGONTYPE         6
+#define	COLLECTIONTYPE           7
+#define CIRCSTRINGTYPE           8
+#define COMPOUNDTYPE             9
+#define CURVEPOLYTYPE           10
+#define MULTICURVETYPE          11
+#define MULTISURFACETYPE        12
+#define POLYHEDRALSURFACETYPE   13
+#define TRIANGLETYPE            14
+#define TINTYPE                 15
+
+/**
+* Flags applied in EWKB to indicate Z/M dimensions and
+* presence/absence of SRID and bounding boxes
+*/
+#define WKBZOFFSET  0x80000000
+#define WKBMOFFSET  0x40000000
+#define WKBSRIDFLAG 0x20000000
+#define WKBBBOXFLAG 0x10000000
+
+/**
+* These macros work on LWGEOM.type, PG_LWGEOM.type, 
+* and POINTARRAY.dims
+*/
+#define TYPE_SETTYPE(c,t) ((c)=(((c)&0xF0)|(t)))
+#define TYPE_SETZM(t,z,m) ((t)=(((t)&0xCF)|((z)<<5)|((m)<<4)))
+#define TYPE_SETHASBBOX(t,b) ((t)=(((t)&0x7F)|((b)<<7)))
+#define TYPE_SETHASSRID(t,s) ((t)=(((t)&0xBF)|((s)<<6)))
+#define TYPE_HASZ(t) ( ((t)&0x20)>>5 )
+#define TYPE_HASM(t) ( ((t)&0x10)>>4 )
+#define TYPE_HASBBOX(t) ( ((t)&0x80)>>7 )
+#define TYPE_HASSRID(t) ( (((t)&0x40))>>6 )
+#define TYPE_NDIMS(t) ((((t)&0x20)>>5)+(((t)&0x10)>>4)+2)
+#define TYPE_GETTYPE(t) ((t)&0x0F)
+
+/**
+* Macros for manipulating the 'flags' byte. A uchar used as follows: 
+* ---RGBMZ
+* Three unused bits, followed by ReadOnly, Geodetic, HasBBox, HasM and HasZ flags.
+*/
+#define FLAGS_GET_Z(flags) ((flags) & 0x01)
+#define FLAGS_GET_M(flags) (((flags) & 0x02)>>1)
+#define FLAGS_GET_BBOX(flags) (((flags) & 0x4)>>2)
+#define FLAGS_GET_GEODETIC(flags) (((flags) & 0x08)>>3)
+#define FLAGS_GET_READONLY(flags) (((flags) & 0x10)>>4)
+#define FLAGS_SET_Z(flags, value) ((flags) = (value) ? ((flags) | 0x01) : ((flags) & 0xFE))
+#define FLAGS_SET_M(flags, value) ((flags) = (value) ? ((flags) | 0x02) : ((flags) & 0xFD))
+#define FLAGS_SET_BBOX(flags, value) ((flags) = (value) ? ((flags) | 0x04) : ((flags) & 0xFB))
+#define FLAGS_SET_GEODETIC(flags, value) ((flags) = (value) ? ((flags) | 0x08) : ((flags) & 0xF7))
+#define FLAGS_SET_READONLY(flags, value) ((flags) = (value) ? ((flags) | 0x10) : ((flags) & 0xEF))
+#define FLAGS_NDIMS(flags) (2 + FLAGS_GET_Z(flags) + FLAGS_GET_M(flags))
+
+/**
+* Macros for manipulating the 'typemod' int. An int32 used as follows:
+* Plus/minus = Top bit.
+* Spare bits = Next 3 bits.
+* SRID = Next 20 bits.
+* TYPE = Next 6 bits.
+* ZM Flags = Bottom 2 bits.
+*/
+#define TYPMOD_GET_SRID(typmod) ((typmod & 0x0FFFFF00)>>8)
+#define TYPMOD_SET_SRID(typmod, srid) ((typmod) = (typmod & 0x000000FF) | ((srid & 0x000FFFFF)<<8))
+#define TYPMOD_GET_TYPE(typmod) ((typmod & 0x000000FC)>>2)
+#define TYPMOD_SET_TYPE(typmod, type) ((typmod) = (typmod & 0xFFFFFF03) | ((type & 0x0000003F)<<2))
+#define TYPMOD_GET_Z(typmod) ((typmod & 0x00000002)>>1)
+#define TYPMOD_SET_Z(typmod) ((typmod) = typmod | 0x00000002)
+#define TYPMOD_GET_M(typmod) (typmod & 0x00000001)
+#define TYPMOD_SET_M(typmod) ((typmod) = typmod | 0x00000001)
+#define TYPMOD_GET_NDIMS(typmod) (2+TYPMOD_GET_Z(typmod)+TYPMOD_GET_M(typmod))
+
+/**
+* Maximum allowed SRID value. 
+* Currently we are using 20 bits (1048575) of storage for SRID.
+*/
+#define SRID_MAXIMUM 999999
+#define SRID_UNKNOWN 0
+
+
 
 typedef unsigned char uchar;
 
@@ -696,19 +786,7 @@ extern void setPoint4d(POINTARRAY *pa, int n, POINT4D *p4d);
  */
 extern uchar *getPoint_internal(const POINTARRAY *pa, int n);
 
-/* --- here is a macro equivalent, for speed... */
-/* #define getPoint(x,n) &( (x)->serialized_pointlist[((x)->ndims*8)*(n)] ) */
 
-
-/*
- * constructs a POINTARRAY.
- * NOTE: points is *not* copied, so be careful about modification
- * (can be aligned/missaligned)
- * NOTE: hasz and hasm are descriptive - it describes what type of data
- *	 'points' points to.  No data conversion is done.
- */
-extern POINTARRAY *pointArray_construct(uchar *points, char hasz, char hasm,
-                                        uint32 npoints);
 
 /*
  * Calculate the (BOX3D) bounding box of a set of points.
@@ -726,82 +804,49 @@ extern int ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *out);
  */
 extern int pointArray_ptsize(const POINTARRAY *pa);
 
-#define	POINTTYPE	        1
-#define	LINETYPE	        2
-#define	POLYGONTYPE	        3
-#define	MULTIPOINTTYPE	        4
-#define	MULTILINETYPE	        5
-#define	MULTIPOLYGONTYPE	6
-#define	COLLECTIONTYPE	        7
-#define CIRCSTRINGTYPE          8
-#define COMPOUNDTYPE            9
-#define CURVEPOLYTYPE           10
-#define MULTICURVETYPE          11
-#define MULTISURFACETYPE        12
-#define POLYHEDRALSURFACETYPE   13
-#define TRIANGLETYPE            14
-#define TINTYPE                 15
 
-#define WKBZOFFSET 0x80000000
-#define WKBMOFFSET 0x40000000
-#define WKBSRIDFLAG 0x20000000
-#define WKBBBOXFLAG 0x10000000
+/* Construct an empty pointarray */
+extern POINTARRAY* ptarray_construct(char hasz, char hasm, uint32 npoints);
 
-/* These macros work on PG_LWGEOM.type, LWGEOM.type and all its subclasses */
+/* Construct a pointarray, *copying* in the data from ptlist */
+extern POINTARRAY* ptarray_construct_copy_data(char hasz, char hasm, uint32 npoints, const uchar *ptlist);
 
-#define TYPE_SETTYPE(c,t) ((c)=(((c)&0xF0)|(t)))
-#define TYPE_SETZM(t,z,m) ((t)=(((t)&0xCF)|((z)<<5)|((m)<<4)))
-#define TYPE_SETHASBBOX(t,b) ((t)=(((t)&0x7F)|((b)<<7)))
-#define TYPE_SETHASSRID(t,s) ((t)=(((t)&0xBF)|((s)<<6)))
+/* Construct a pointarray, *referencing* to the data from ptlist */
+extern POINTARRAY* ptarray_construct_reference_data(char hasz, char hasm, uint32 npoints, uchar *ptlist);
 
-#define TYPE_HASZ(t) ( ((t)&0x20)>>5 )
-#define TYPE_HASM(t) ( ((t)&0x10)>>4 )
-#define TYPE_HASBBOX(t) ( ((t)&0x80)>>7 )
-#define TYPE_HASSRID(t) ( (((t)&0x40))>>6 )
-#define TYPE_NDIMS(t) ((((t)&0x20)>>5)+(((t)&0x10)>>4)+2)
-#define TYPE_GETTYPE(t) ((t)&0x0F)
 
 /**
-* Macros for manipulating the 'flags' byte. A uchar used as follows: 
-* ---RGBMZ
-* Three unused bits, followed by ReadOnly, Geodetic, HasBBox, HasM and HasZ flags.
+* Create a new POINTARRAY with no points. Allocate enough storage
+* to hold maxpoints vertices before having to reallocate the storage
+* area.
 */
-#define FLAGS_GET_Z(flags) ((flags) & 0x01)
-#define FLAGS_GET_M(flags) (((flags) & 0x02)>>1)
-#define FLAGS_GET_BBOX(flags) (((flags) & 0x4)>>2)
-#define FLAGS_GET_GEODETIC(flags) (((flags) & 0x08)>>3)
-#define FLAGS_GET_READONLY(flags) (((flags) & 0x10)>>4)
-#define FLAGS_SET_Z(flags, value) ((flags) = (value) ? ((flags) | 0x01) : ((flags) & 0xFE))
-#define FLAGS_SET_M(flags, value) ((flags) = (value) ? ((flags) | 0x02) : ((flags) & 0xFD))
-#define FLAGS_SET_BBOX(flags, value) ((flags) = (value) ? ((flags) | 0x04) : ((flags) & 0xFB))
-#define FLAGS_SET_GEODETIC(flags, value) ((flags) = (value) ? ((flags) | 0x08) : ((flags) & 0xF7))
-#define FLAGS_SET_READONLY(flags, value) ((flags) = (value) ? ((flags) | 0x10) : ((flags) & 0xEF))
-#define FLAGS_NDIMS(flags) (2 + FLAGS_GET_Z(flags) + FLAGS_GET_M(flags))
+POINTARRAY* ptarray_construct_empty(char hasz, char hasm, int maxpoints);
 
 /**
-* Macros for manipulating the 'typemod' int. An int32 used as follows:
-* Plus/minus = Top bit.
-* Spare bits = Next 3 bits.
-* SRID = Next 20 bits.
-* TYPE = Next 6 bits.
-* ZM Flags = Bottom 2 bits.
+* Add a point to an existing pointarray 
 */
-#define TYPMOD_GET_SRID(typmod) ((typmod & 0x0FFFFF00)>>8)
-#define TYPMOD_SET_SRID(typmod, srid) ((typmod) = (typmod & 0x000000FF) | ((srid & 0x000FFFFF)<<8))
-#define TYPMOD_GET_TYPE(typmod) ((typmod & 0x000000FC)>>2)
-#define TYPMOD_SET_TYPE(typmod, type) ((typmod) = (typmod & 0xFFFFFF03) | ((type & 0x0000003F)<<2))
-#define TYPMOD_GET_Z(typmod) ((typmod & 0x00000002)>>1)
-#define TYPMOD_SET_Z(typmod) ((typmod) = typmod | 0x00000002)
-#define TYPMOD_GET_M(typmod) (typmod & 0x00000001)
-#define TYPMOD_SET_M(typmod) ((typmod) = typmod | 0x00000001)
-#define TYPMOD_GET_NDIMS(typmod) (2+TYPMOD_GET_Z(typmod)+TYPMOD_GET_M(typmod))
+int ptarray_add_point(POINTARRAY *pa, POINT4D *pt, int allow_duplicates);
 
-/**
-* Maximum allowed SRID value. 
-* Currently we are using 20 bits (1048575) of storage for SRID.
-*/
-#define SRID_MAXIMUM 999999
-#define SRID_UNKNOWN 0
+
+
+
+extern POINTARRAY *ptarray_addPoint(const POINTARRAY *pa, uchar *p, size_t pdims,
+                                    uint32 where);
+extern POINTARRAY *ptarray_removePoint(POINTARRAY *pa, uint32 where);
+extern POINTARRAY *ptarray_merge(POINTARRAY *pa1, POINTARRAY *pa2);
+
+extern int ptarray_isclosed(const POINTARRAY *pa);
+extern int ptarray_isclosed2d(const POINTARRAY *pa);
+extern int ptarray_isclosed3d(const POINTARRAY *pa);
+
+extern void ptarray_longitude_shift(POINTARRAY *pa);
+
+extern void ptarray_reverse(POINTARRAY *pa);
+extern POINTARRAY* ptarray_flip_coordinates(POINTARRAY *pa);
+
+extern POINTARRAY *ptarray_substring(POINTARRAY *, double, double);
+
+
 
 
 
@@ -1578,44 +1623,9 @@ extern LWTRIANGLE *lwtriangle_from_lwline(const LWLINE *shell);
 /* Return a char string with ASCII versionf of type flags */
 extern const char *lwgeom_typeflags(uchar type);
 
-/* Construct an empty pointarray */
-extern POINTARRAY* ptarray_construct(char hasz, char hasm, uint32 npoints);
 
-/* Construct a pointarray, *copying* in the data from ptlist */
-extern POINTARRAY* ptarray_construct_copy_data(char hasz, char hasm, uint32 npoints, const uchar *ptlist);
-
-
-/**
-* Create a new POINTARRAY with no points. Allocate enough storage
-* to hold maxpoints vertices before having to reallocate the storage
-* area.
-*/
-POINTARRAY* ptarray_construct_empty(char hasz, char hasm, int maxpoints);
-
-/**
-* Add a point to an existing pointarray 
-*/
-int ptarray_add_point(POINTARRAY *pa, POINT4D *pt, int allow_duplicates);
-
-
-
-
-extern POINTARRAY *ptarray_addPoint(const POINTARRAY *pa, uchar *p, size_t pdims,
-                                    uint32 where);
-extern POINTARRAY *ptarray_removePoint(POINTARRAY *pa, uint32 where);
-extern POINTARRAY *ptarray_merge(POINTARRAY *pa1, POINTARRAY *pa2);
-
-extern int ptarray_isclosed(const POINTARRAY *pa);
-extern int ptarray_isclosed2d(const POINTARRAY *pa);
-extern int ptarray_isclosed3d(const POINTARRAY *pa);
-
-extern void ptarray_longitude_shift(POINTARRAY *pa);
 
 extern int32 lwgeom_nrings_recursive(uchar *serialized);
-extern void ptarray_reverse(POINTARRAY *pa);
-extern POINTARRAY* ptarray_flip_coordinates(POINTARRAY *pa);
-
-extern POINTARRAY *ptarray_substring(POINTARRAY *, double, double);
 
 /*
  * Given a point, returns the location of closest point on pointarray

@@ -305,9 +305,8 @@ lwpoint_deserialize(uchar *serialized_form)
 	}
 
 	/* we've read the type (1 byte) and SRID (4 bytes, if present) */
-
-	pa = pointArray_construct(loc, TYPE_HASZ(type), TYPE_HASM(type), 1);
-
+	pa = ptarray_construct_reference_data(TYPE_HASZ(type), TYPE_HASM(type), 1, loc);
+	
 	result->point = pa;
 
 	return result;
