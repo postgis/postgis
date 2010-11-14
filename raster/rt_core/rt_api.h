@@ -354,6 +354,24 @@ int rt_band_set_pixel(rt_context ctx, rt_band band,
 int rt_band_get_pixel(rt_context ctx, rt_band band,
                          uint16_t x, uint16_t y, double *result );
 
+
+/**
+ * Returns the minimal possible value for the band according to the pixel type.
+ * @param ctx: context, for thread safety
+ * @param band: the band to get info from
+ * @return the minimal possible value for the band.
+ */
+double rt_band_get_min_value(rt_context ctx, rt_band band);
+
+/**
+ * Returns TRUE if the band is only nodata values
+ * @param ctx: context, for thread safety
+ * @param band: the band to get info from
+ * @return TRUE if the band is only nodata values, FALSE otherwise
+ */
+int rt_band_is_nodata(rt_context ctx, rt_band band);
+
+
 /*- rt_raster --------------------------------------------------------*/
 
 /**
@@ -641,5 +659,55 @@ void* rt_raster_serialize(rt_context ctx, rt_raster raster);
  *       form, which must be kept alive.
  */
 rt_raster rt_raster_deserialize(rt_context ctx, void* serialized);
+
+
+/**
+ * Return TRUE if the raster is empty. i.e. is NULL, width = 0 or height = 0
+ * @param ctx: context, for thread safety
+ * @param raster: the raster to get info from
+ * @return TRUE if the raster is empty, FALSE otherwise
+ */
+int rt_raster_is_empty(rt_context ctx, rt_raster raster);
+
+/**
+ * Return TRUE if the raster do not have a band of this number.
+ * @param ctx: context, for thread safety
+ * @param raster: the raster to get info from
+ * @param nband: the band number.
+ * @return TRUE if the raster do not have a band of this number, FALSE otherwise
+ */
+int rt_raster_has_no_band(rt_context ctx, rt_raster raster, int nband);
+
+
+/**
+ * Copy one band from one raster to another
+ * @param ctx: context, for thread safety
+ * @param raster1: raster to copy band to
+ * @param raster2: raster to copy band from
+ * @param nband1: band index of destination raster
+ * @param nband2: band index of source raster
+ * @return The band index of the first raster where the new band is copied.
+ */
+int32_t rt_raster_copy_band(rt_context ctx, rt_raster raster1,
+        rt_raster raster2, int nband1, int nband2);
+
+/**
+ * Return a raster which values are the result of an SQL expression involving
+ * pixel value from the input raster band.
+ * @param ctx: context, for thread safety
+ * @param raster: raster on which the expression is evaluated.
+ * @param nband: band number of the raster to be evaluated. Default to 1.
+ * @param expr: SQL expression to apply to with value pixels. Ex.: "rast + 2"
+ * @param nodatavalueexpr: SQL expression to apply to nodata value pixels. Ex.:
+ *  "2"
+ * @param pixtype: pixeltype assigned to the resulting raster. Expression
+ *  results are truncated to this type. Default to the pixeltype of the first
+ *  raster.
+ * @return a raster which values are the result of an SQL expression involving
+ *  pixel value from the input raster band.
+ */
+rt_raster rt_raster_map_algebra(rt_context ctx, rt_raster raster, int nband,
+        const char * expr, const char * nodatavalueexpr, rt_pixtype pixtype);
+
 
 #endif /* RT_API_H_INCLUDED */
