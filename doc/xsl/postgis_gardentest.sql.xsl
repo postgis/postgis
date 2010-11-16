@@ -471,8 +471,8 @@ SELECT '<xsl:value-of select="$fnname" /> <xsl:text> </xsl:text><xsl:value-of se
 	SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />), ST_AsText(foo1.the_geom) As ref1_geom, ST_AsText(foo2.the_geom) As ref2_geom
 			  </xsl:when>
 			  <xsl:when test="$numparamgeoms > '0'">
-	INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
-			  	VALUES('<xsl:value-of select="$log_label" /> Geometry <xsl:text> </xsl:text><xsl:value-of select="@ID" /><xsl:text> </xsl:text><xsl:value-of select="@GeometryType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
+	INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start) 
+			  	VALUES('<xsl:value-of select="$log_label" /> Geometry <xsl:text> </xsl:text><xsl:value-of select="$geom1type" /><xsl:text> </xsl:text><xsl:value-of select="@GeometryType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="@GeometryType" />','<xsl:value-of select="$geom1type" />', clock_timestamp());
 
 				SELECT 'Geometry <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
 	BEGIN; <!-- If input is geometry show ewkt rep -->
