@@ -1177,6 +1177,7 @@ int lwgeom_count_vertices(const LWGEOM *geom)
 		result = lwpoly_count_vertices((LWPOLY *)geom);
 		break;
 	case COMPOUNDTYPE:
+	case CURVEPOLYTYPE:
 	case MULTICURVETYPE:
 	case MULTISURFACETYPE:
 	case MULTIPOINTTYPE:

@@ -342,9 +342,11 @@ PG_FUNCTION_INFO_V1(LWGEOM_npoints);
 Datum LWGEOM_npoints(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
 	int32 npoints = 0;
 
-	npoints = lwgeom_npoints(SERIALIZED_FORM(geom));
+	npoints = lwgeom_count_vertices(lwgeom);
+	lwgeom_release(lwgeom);
 
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_INT32(npoints);

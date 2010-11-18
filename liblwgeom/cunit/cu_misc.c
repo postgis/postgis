@@ -65,6 +65,38 @@ static void test_misc_simplify(void)
 	lwfree(wkt_out);
 }
 
+static void test_misc_count_vertices(void)
+{
+	LWGEOM *geom;
+	int count;
+
+	geom = lwgeom_from_ewkt("GEOMETRYCOLLECTION(POINT(0 0),LINESTRING(0 0,1 1),POLYGON((0 0,0 1,1 0,0 0)),CIRCULARSTRING(0 0,0 1,1 1),CURVEPOLYGON(CIRCULARSTRING(0 0,0 1,1 1)))", PARSER_CHECK_NONE);
+	count = lwgeom_count_vertices(geom);
+	CU_ASSERT_EQUAL(count,13);
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_ewkt("GEOMETRYCOLLECTION(CIRCULARSTRING(0 0,0 1,1 1),POINT(0 0),CURVEPOLYGON(CIRCULARSTRING(0 0,0 1,1 1,1 0,0 0)))", PARSER_CHECK_NONE);
+	count = lwgeom_count_vertices(geom);
+	CU_ASSERT_EQUAL(count,9);
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_ewkt("CURVEPOLYGON((0 0,1 0,0 1,0 0),CIRCULARSTRING(0 0,1 0,1 1,1 0,0 0))", PARSER_CHECK_NONE);
+	count = lwgeom_count_vertices(geom);
+	CU_ASSERT_EQUAL(count,9);
+	lwgeom_free(geom);
+
+
+	geom = lwgeom_from_ewkt("POLYGON((0 0,1 0,0 1,0 0))", PARSER_CHECK_NONE);
+	count = lwgeom_count_vertices(geom);
+	CU_ASSERT_EQUAL(count,4);
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_ewkt("CURVEPOLYGON((0 0,1 0,0 1,0 0),CIRCULARSTRING(0 0,1 0,1 1,1 0,0 0))", PARSER_CHECK_NONE);
+	count = lwgeom_count_vertices(geom);
+	CU_ASSERT_EQUAL(count,9);
+	lwgeom_free(geom);	
+}
+
 
 /*
 ** Used by the test harness to register the tests in this file.
@@ -73,6 +105,7 @@ CU_TestInfo misc_tests[] =
 {
 	PG_TEST(test_misc_force_2d),
 	PG_TEST(test_misc_simplify),
+	PG_TEST(test_misc_count_vertices),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo misc_suite = {"Misc Suite", NULL, NULL, misc_tests };
