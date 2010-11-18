@@ -841,9 +841,9 @@ Datum geography_as_binary(PG_FUNCTION_ARGS)
 {
 	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
 	LWGEOM *lwgeom = NULL;
+	LWGEOM *lwgeom_2d = NULL;
 	uchar *lwgeom_serialized = NULL;
 	size_t lwgeom_serialized_size = 0;
-	uchar *lwgeom_serialized_2d = NULL;
 	int result = 0;
 	char *wkb = NULL;
 	size_t wkb_size = 0;
@@ -852,17 +852,18 @@ Datum geography_as_binary(PG_FUNCTION_ARGS)
 	/* Drop SRID so that WKB does not contain SRID. */
 	gserialized_set_srid(g, 0);
 
-	/* Convert to lwgeom so we can run the old functions */
+	/* Get our lwgeom form */
 	lwgeom = lwgeom_from_gserialized(g);
-	lwgeom_serialized_size = lwgeom_serialize_size(lwgeom);
-	lwgeom_serialized = lwgeom_serialize(lwgeom);
-
-	/* Force to 2D */
-	lwgeom_serialized_2d = lwalloc(lwgeom_serialized_size);
-	lwgeom_force2d_recursive(lwgeom_serialized, lwgeom_serialized_2d, &lwgeom_serialized_size);
+	
+	/* Strip out the higher dimensions */
+	lwgeom_2d = lwgeom_force_2d(lwgeom);
+	
+	/* Convert to lwgeom so we can run the old functions */
+	lwgeom_serialized_size = lwgeom_serialize_size(lwgeom_2d);
+	lwgeom_serialized = lwgeom_serialize(lwgeom_2d);
 
 	/* Create WKB */
-	result = serialized_lwgeom_to_ewkb(&lwg_unparser_result, lwgeom_serialized_2d, PARSER_CHECK_ALL, NDR);
+	result = serialized_lwgeom_to_ewkb(&lwg_unparser_result, lwgeom_serialized, PARSER_CHECK_ALL, NDR);
 	if (result)
 		PG_UNPARSER_ERROR(lwg_unparser_result);
 
@@ -875,8 +876,8 @@ Datum geography_as_binary(PG_FUNCTION_ARGS)
 	/* Clean up */
 	pfree(lwg_unparser_result.wkoutput);
 	lwgeom_release(lwgeom);
+	lwgeom_free(lwgeom_2d);
 	lwfree(lwgeom_serialized);
-	lwfree(lwgeom_serialized_2d);
 
 	PG_RETURN_POINTER(wkb);
 }

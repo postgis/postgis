@@ -121,6 +121,7 @@
 #define TYPE_HASSRID(t) ( (((t)&0x40))>>6 )
 #define TYPE_NDIMS(t) ((((t)&0x20)>>5)+(((t)&0x10)>>4)+2)
 #define TYPE_GETTYPE(t) ((t)&0x0F)
+#define TYPE_GETZM(t) (((t)&0x30)>>4) /* 0x03==ZM, 0x02==Z, 0x01==M */
 
 /**
 * Macros for manipulating the 'flags' byte. A uchar used as follows: 
@@ -773,7 +774,7 @@ extern int getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point);
  * will be extracted from it
  *
  */
-extern void setPoint4d(POINTARRAY *pa, int n, POINT4D *p4d);
+extern void ptarray_set_point4d(POINTARRAY *pa, int n, POINT4D *p4d);
 
 /*
  * get a pointer to nth point of a POINTARRAY
@@ -802,56 +803,72 @@ extern int ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *out);
  * size of point represeneted in the POINTARRAY
  * 16 for 2d, 24 for 3d, 32 for 4d
  */
-extern int pointArray_ptsize(const POINTARRAY *pa);
+extern int ptarray_point_size(const POINTARRAY *pa);
 
 
-/* Construct an empty pointarray */
+/** 
+* Construct an empty pointarray, allocating storage and setting
+* the npoints, but not filling in any information. Should be used in conjunction
+* with ptarray_set_point4d to fill in the information in the array.
+*/
 extern POINTARRAY* ptarray_construct(char hasz, char hasm, uint32 npoints);
 
-/* Construct a pointarray, *copying* in the data from ptlist */
+/**
+* Construct a new #POINTARRAY, <em>copying</em> in the data from ptlist 
+*/
 extern POINTARRAY* ptarray_construct_copy_data(char hasz, char hasm, uint32 npoints, const uchar *ptlist);
 
-/* Construct a pointarray, *referencing* to the data from ptlist */
+/**
+* Construct a new #POINTARRAY, <em>referencing</em> to the data from ptlist 
+*/
 extern POINTARRAY* ptarray_construct_reference_data(char hasz, char hasm, uint32 npoints, uchar *ptlist);
 
-
 /**
-* Create a new POINTARRAY with no points. Allocate enough storage
+* Create a new #POINTARRAY with no points. Allocate enough storage
 * to hold maxpoints vertices before having to reallocate the storage
 * area.
 */
-POINTARRAY* ptarray_construct_empty(char hasz, char hasm, int maxpoints);
+extern POINTARRAY* ptarray_construct_empty(char hasz, char hasm, int maxpoints);
 
 /**
-* Add a point to an existing pointarray 
+* Append a point to the end of an existing #POINTARRAY 
 */
-int ptarray_add_point(POINTARRAY *pa, POINT4D *pt, int allow_duplicates);
+extern int ptarray_append_point(POINTARRAY *pa, POINT4D *pt, int allow_duplicates);
 
+/**
+* Insert a point into an existing #POINTARRAY. Zero
+* is the index of the start of the array.
+*/
+extern int ptarray_insert_point(POINTARRAY *pa, POINT4D *p, int where);
 
+/**
+* Remove a point from an existing #POINTARRAY. Zero
+* is the index of the start of the array.
+*/
+extern int ptarray_remove_point(POINTARRAY *pa, int where);
 
-
-extern POINTARRAY *ptarray_addPoint(const POINTARRAY *pa, uchar *p, size_t pdims,
-                                    uint32 where);
+extern POINTARRAY *ptarray_addPoint(const POINTARRAY *pa, uchar *p, size_t pdims, uint32 where);
 extern POINTARRAY *ptarray_removePoint(POINTARRAY *pa, uint32 where);
 extern POINTARRAY *ptarray_merge(POINTARRAY *pa1, POINTARRAY *pa2);
-
 extern int ptarray_isclosed(const POINTARRAY *pa);
 extern int ptarray_isclosed2d(const POINTARRAY *pa);
 extern int ptarray_isclosed3d(const POINTARRAY *pa);
-
 extern void ptarray_longitude_shift(POINTARRAY *pa);
-
 extern void ptarray_reverse(POINTARRAY *pa);
 extern POINTARRAY* ptarray_flip_coordinates(POINTARRAY *pa);
-
-extern POINTARRAY *ptarray_substring(POINTARRAY *, double, double);
-
+extern POINTARRAY *ptarray_substring(POINTARRAY *pa, double d1, double d2);
 
 
+/**
+* Strip out the Z/M components of an #LWGEOM
+*/
+extern LWGEOM* lwgeom_force_2d(const LWGEOM *geom);
+extern LWGEOM* lwgeom_force_3dz(const LWGEOM *geom);
+extern LWGEOM* lwgeom_force_3dm(const LWGEOM *geom);
+extern LWGEOM* lwgeom_force_4d(const LWGEOM *geom);
 
+extern LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist);
 
-/* 0x02==Z 0x01==M */
-#define TYPE_GETZM(t) (((t)&0x30)>>4)
 
 extern char lwgeom_hasBBOX(uchar type); /* true iff B bit set     */
 extern int  lwgeom_ndims(uchar type);   /* returns 2,3 or 4       */
@@ -1468,7 +1485,6 @@ extern double lwgeom_triangle_perimeter(const LWTRIANGLE *triangle);
 extern double lwgeom_triangle_perimeter2d(const LWTRIANGLE *triangle);
 extern double lwgeom_pointarray_length2d(const POINTARRAY *pts);
 extern double lwgeom_pointarray_length(const POINTARRAY *pts);
-extern void lwgeom_force2d_recursive(uchar *serialized, uchar *optr, size_t *retsize);
 extern void lwgeom_force3dz_recursive(uchar *serialized, uchar *optr, size_t *retsize);
 extern void lwgeom_force3dm_recursive(uchar *serialized, uchar *optr, size_t *retsize);
 extern void lwgeom_force4d_recursive(uchar *serialized, uchar *optr, size_t *retsize);
@@ -1614,7 +1630,7 @@ extern LWPOINT *make_lwpoint3dm(int SRID, double x, double y, double m);
 extern LWPOINT *make_lwpoint4d(int SRID, double x, double y, double z, double m);
 extern LWLINE *lwline_from_lwpointarray(int SRID, uint32 npoints, LWPOINT **points);
 extern LWLINE *lwline_from_lwmpoint(int SRID, LWMPOINT *mpoint);
-extern LWLINE *lwline_addpoint(LWLINE *line, LWPOINT *point, uint32 where);
+extern int lwline_add_point(LWLINE *line, LWPOINT *point, int where);
 extern LWLINE *lwline_removepoint(LWLINE *line, uint32 which);
 extern void lwline_setPoint4d(LWLINE *line, uint32 which, POINT4D *newpoint);
 extern LWPOLY *lwpoly_from_lwlines(const LWLINE *shell, uint32 nholes, const LWLINE **holes);

@@ -245,12 +245,12 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 			LWDEBUGF(3, " 1 creating new POINTARRAY with first point %g,%g,%g,%g", p1.x, p1.y, p1.z, p1.m);
 
 			dpa = ptarray_construct_empty(TYPE_HASZ(ipa->dims), TYPE_HASM(ipa->dims), ipa->npoints-i);
-			ptarray_add_point(dpa, &p1, LW_TRUE);
+			ptarray_append_point(dpa, &p1, LW_TRUE);
 		}
 
 		/* Otherwise always add the next point, avoiding duplicates */
 		if (dpa)
-			ptarray_add_point(dpa, &p2, LW_FALSE);
+			ptarray_append_point(dpa, &p2, LW_FALSE);
 
 		/*
 		 * second point has been clipped

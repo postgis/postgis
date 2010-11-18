@@ -249,52 +249,52 @@ static void test_lwline_crossing_short_lines(void)
 	/* Vertical line from 0,0 to 1,1 */
 	p.x = 0.0;
 	p.y = 0.0;
-	setPoint4d(pa21, 0, &p);
+	ptarray_set_point4d(pa21, 0, &p);
 	p.y = 1.0;
-	setPoint4d(pa21, 1, &p);
+	ptarray_set_point4d(pa21, 1, &p);
 
 	/* Horizontal, crossing mid-segment */
 	p.x = -0.5;
 	p.y = 0.5;
-	setPoint4d(pa22, 0, &p);
+	ptarray_set_point4d(pa22, 0, &p);
 	p.x = 0.5;
-	setPoint4d(pa22, 1, &p);
+	ptarray_set_point4d(pa22, 1, &p);
 
 	CU_ASSERT( lwline_crossing_direction(l21, l22) == LINE_CROSS_RIGHT );
 
 	/* Horizontal, crossing at top end vertex (end crossings don't count) */
 	p.x = -0.5;
 	p.y = 1.0;
-	setPoint4d(pa22, 0, &p);
+	ptarray_set_point4d(pa22, 0, &p);
 	p.x = 0.5;
-	setPoint4d(pa22, 1, &p);
+	ptarray_set_point4d(pa22, 1, &p);
 
 	CU_ASSERT( lwline_crossing_direction(l21, l22) == LINE_NO_CROSS );
 
 	/* Horizontal, crossing at bottom end vertex */
 	p.x = -0.5;
 	p.y = 0.0;
-	setPoint4d(pa22, 0, &p);
+	ptarray_set_point4d(pa22, 0, &p);
 	p.x = 0.5;
-	setPoint4d(pa22, 1, &p);
+	ptarray_set_point4d(pa22, 1, &p);
 
 	CU_ASSERT( lwline_crossing_direction(l21, l22) == LINE_CROSS_RIGHT );
 
 	/* Horizontal, no crossing */
 	p.x = -0.5;
 	p.y = 2.0;
-	setPoint4d(pa22, 0, &p);
+	ptarray_set_point4d(pa22, 0, &p);
 	p.x = 0.5;
-	setPoint4d(pa22, 1, &p);
+	ptarray_set_point4d(pa22, 1, &p);
 
 	CU_ASSERT( lwline_crossing_direction(l21, l22) == LINE_NO_CROSS );
 
 	/* Vertical, no crossing */
 	p.x = -0.5;
 	p.y = 0.0;
-	setPoint4d(pa22, 0, &p);
+	ptarray_set_point4d(pa22, 0, &p);
 	p.y = 1.0;
-	setPoint4d(pa22, 1, &p);
+	ptarray_set_point4d(pa22, 1, &p);
 
 	CU_ASSERT( lwline_crossing_direction(l21, l22) == LINE_NO_CROSS );
 
@@ -656,17 +656,17 @@ static void test_lwline_clip_big(void)
 	p.x = 0.0;
 	p.y = 0.0;
 	p.z = 0.0;
-	setPoint4d(pa, 0, &p);
+	ptarray_set_point4d(pa, 0, &p);
 
 	p.x = 1.0;
 	p.y = 1.0;
 	p.z = 1.0;
-	setPoint4d(pa, 1, &p);
+	ptarray_set_point4d(pa, 1, &p);
 
 	p.x = 2.0;
 	p.y = 2.0;
 	p.z = 2.0;
-	setPoint4d(pa, 2, &p);
+	ptarray_set_point4d(pa, 2, &p);
 
 	c = lwline_clip_to_ordinate_range(line, 2, 0.5, 1.5);
 	ewkt = lwgeom_to_ewkt((LWGEOM*)c, PARSER_CHECK_NONE);

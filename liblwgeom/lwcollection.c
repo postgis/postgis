@@ -61,7 +61,7 @@ lwcollection_construct(uint32 type, int SRID, BOX2DFLOAT4 *bbox,
 
 
 	ret = lwalloc(sizeof(LWCOLLECTION));
-	ret->type = lwgeom_makeType_full(hasz, hasm, (SRID!=-1),
+	ret->type = lwgeom_makeType_full(hasz, hasm, (SRID>0),
 	                                 type, 0);
 	ret->SRID = SRID;
 	ret->ngeoms = ngeoms;
@@ -345,7 +345,7 @@ lwcollection_same(const LWCOLLECTION *c1, const LWCOLLECTION *c2)
 {
 	uint32 i;
 
-	LWDEBUG(2, "lwcollection_same called");
+	LWDEBUG(2, "function called");
 
 	if ( TYPE_GETTYPE(c1->type) != TYPE_GETTYPE(c2->type) ) return LW_FALSE;
 	if ( c1->ngeoms != c2->ngeoms ) return LW_FALSE;
@@ -621,5 +621,67 @@ lwcollection_remove_repeated_points(LWCOLLECTION *coll)
 	return (LWGEOM*)lwcollection_construct(coll->type,
 	                                       coll->SRID, coll->bbox ? box2d_clone(coll->bbox) : NULL,
 	                                       coll->ngeoms, newgeoms);
+}
 
+
+LWCOLLECTION*
+lwcollection_force_dims(const LWCOLLECTION *col, int hasz, int hasm)
+{
+	LWCOLLECTION *colout;
+	
+	/* Return 2D empty */
+	if( lwcollection_is_empty(col) )
+	{
+		colout = lwcollection_construct_empty(TYPE_GETTYPE(col->type), col->SRID, hasz, hasm);
+	}
+	else
+	{
+		int i;
+		LWGEOM **geoms = NULL;
+		geoms = lwalloc(sizeof(LWGEOM*) * col->ngeoms);
+		for( i = 0; i < col->ngeoms; i++ )
+		{
+			geoms[i] = lwgeom_force_dims(col->geoms[i], hasz, hasm);
+		}
+		colout = lwcollection_construct(TYPE_GETTYPE(col->type), col->SRID, NULL, col->ngeoms, geoms);
+	}
+	return colout;
+}
+
+int lwcollection_is_empty(const LWCOLLECTION *col)
+{
+	if ( !col->geoms || col->ngeoms == 0 )
+		return LW_TRUE;
+	return LW_FALSE;
+}
+
+
+int lwcollection_count_vertices(LWCOLLECTION *col)
+{
+	int i = 0;
+	int v = 0; /* vertices */
+	assert(col);
+	for ( i = 0; i < col->ngeoms; i++ )
+	{
+		v += lwgeom_count_vertices(col->geoms[i]);
+	}
+	return v;
+}
+
+LWCOLLECTION* lwcollection_simplify(const LWCOLLECTION *igeom, double dist)
+{
+ 	int i;
+	uchar type = igeom->type;
+	LWCOLLECTION *out = lwcollection_construct_empty(TYPE_GETTYPE(type), igeom->SRID, TYPE_HASZ(type), TYPE_HASM(type));
+
+	if( lwcollection_is_empty(igeom) )
+		return out;
+
+	for( i = 0; i < igeom->ngeoms; i++ )
+	{
+		LWGEOM *ngeom = lwgeom_simplify(igeom->geoms[i], dist);
+		out = lwcollection_add_lwgeom(out, ngeom);
+	}
+
+	return out;
 }

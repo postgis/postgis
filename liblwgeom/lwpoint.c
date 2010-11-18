@@ -50,7 +50,7 @@ lwpoint_serialize_buf(LWPOINT *point, uchar *buf, size_t *retsize)
 	int size=1;
 	char hasSRID;
 	uchar *loc;
-	int ptsize = pointArray_ptsize(point->point);
+	int ptsize = ptarray_point_size(point->point);
 
 	if ( TYPE_GETZM(point->type) != TYPE_GETZM(point->point->dims) )
 		lwerror("Dimensions mismatch in lwpoint");
@@ -169,7 +169,7 @@ lwpoint_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *point)
 		return NULL; /* error */
 
 	result = lwalloc(sizeof(LWPOINT));
-	result->type = lwgeom_makeType_full(TYPE_HASZ(point->dims), TYPE_HASM(point->dims), (SRID!=-1), POINTTYPE, 0);
+	result->type = lwgeom_makeType_full(TYPE_HASZ(point->dims), TYPE_HASM(point->dims), (SRID>0), POINTTYPE, 0);
 	result->SRID = SRID;
 	result->point = point;
 	result->bbox = bbox;
@@ -399,3 +399,33 @@ lwpoint_same(const LWPOINT *p1, const LWPOINT *p2)
 {
 	return ptarray_same(p1->point, p2->point);
 }
+
+
+LWPOINT*
+lwpoint_force_dims(const LWPOINT *point, int hasz, int hasm)
+{
+	POINTARRAY *pdims = NULL;
+	LWPOINT *pointout;
+	
+	/* Return 2D empty */
+	if( lwpoint_is_empty(point) )
+	{
+		pointout = lwpoint_construct_empty(point->SRID, hasz, hasm);
+	}
+	else
+	{
+		/* Always we duplicate the ptarray and return */
+		pdims = ptarray_force_dims(point->point, hasz, hasm);
+		pointout = lwpoint_construct(point->SRID, NULL, pdims);
+	}
+	TYPE_SETTYPE(pointout->type, TYPE_GETTYPE(point->type));
+	return pointout;
+}
+
+int lwpoint_is_empty(const LWPOINT *point)
+{
+	if ( ! point->point || point->point->npoints == 0 )
+		return LW_TRUE;
+	return LW_FALSE;
+}
+

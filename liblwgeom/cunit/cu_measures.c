@@ -285,6 +285,17 @@ static void test_rect_tree_intersects_tree(void)
 
 }
 
+static void
+test_lwgeom_segmentize2d(void)
+{
+	LWGEOM *linein = lwgeom_from_ewkt("LINESTRING(0 0,10 0)", PARSER_CHECK_NONE);
+	LWGEOM *lineout = lwgeom_segmentize2d(linein, 5);
+	char *strout = lwgeom_to_ewkt(lineout, PARSER_CHECK_NONE);
+	CU_ASSERT_STRING_EQUAL(strout, "LINESTRING(0 0,5 0,10 0)");
+	lwfree(strout);
+	lwgeom_free(linein);
+	lwgeom_free(lineout);
+}
 
 /*
 ** Used by test harness to register the tests in this file.
@@ -294,6 +305,7 @@ CU_TestInfo measures_tests[] =
 	PG_TEST(test_mindistance2d_tolerance),
 	PG_TEST(test_rect_tree_contains_point),
 	PG_TEST(test_rect_tree_intersects_tree),
+	PG_TEST(test_lwgeom_segmentize2d),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo measures_suite = {"PostGIS Measures Suite",  NULL,  NULL, measures_tests};

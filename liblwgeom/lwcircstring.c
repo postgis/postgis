@@ -57,7 +57,7 @@ lwcircstring_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points)
 	result->type = lwgeom_makeType_full(
 	                   TYPE_HASZ(points->dims),
 	                   TYPE_HASM(points->dims),
-	                   (SRID!=-1), CIRCSTRINGTYPE, 0);
+	                   (SRID>0), CIRCSTRINGTYPE, 0);
 	result->SRID = SRID;
 	result->points = points;
 	result->bbox = bbox;
@@ -203,7 +203,7 @@ void lwcircstring_serialize_buf(LWCIRCSTRING *curve, uchar *buf, size_t *retsize
 		return;
 	}
 
-	ptsize = pointArray_ptsize(curve->points);
+	ptsize = ptarray_point_size(curve->points);
 
 	hasSRID = (curve->SRID != -1);
 
@@ -262,7 +262,7 @@ lwcircstring_serialize_size(LWCIRCSTRING *curve)
 	if (curve->bbox) size += sizeof(BOX2DFLOAT4);
 
 	size += 4; /* npoints */
-	size += pointArray_ptsize(curve->points) * curve->points->npoints;
+	size += ptarray_point_size(curve->points) * curve->points->npoints;
 
 	LWDEBUGF(3, "lwcircstring_serialize_size returning %d", size);
 
@@ -647,7 +647,7 @@ lwcircstring_from_lwpointarray(int SRID, uint32 npoints, LWPOINT **points)
 	ptr = newpoints;
 	for (i = 0; i < npoints; i++)
 	{
-		size = pointArray_ptsize(points[i]->point);
+		size = ptarray_point_size(points[i]->point);
 		memcpy(ptr, getPoint_internal(points[i]->point, 0), size);
 		ptr += ptsize;
 	}
@@ -725,7 +725,7 @@ lwcircstring_removepoint(LWCIRCSTRING *curve, uint32 index)
 void
 lwcircstring_setPoint4d(LWCIRCSTRING *curve, uint32 index, POINT4D *newpoint)
 {
-	setPoint4d(curve->points, index, newpoint);
+	ptarray_set_point4d(curve->points, index, newpoint);
 }
 
 int
@@ -737,3 +737,9 @@ lwcircstring_is_closed(LWCIRCSTRING *curve)
 	return ptarray_isclosed2d(curve->points);
 }
 
+int lwcircstring_is_empty(const LWCIRCSTRING *circ)
+{
+	if ( !circ->points || circ->points->npoints == 0 )
+		return LW_TRUE;
+	return LW_FALSE;
+}

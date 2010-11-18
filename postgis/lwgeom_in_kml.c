@@ -57,14 +57,12 @@ static LWGEOM* parse_kml(xmlNodePtr xnode, bool *hasz);
 PG_FUNCTION_INFO_V1(geom_from_kml);
 Datum geom_from_kml(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom, *geom2d;
+	PG_LWGEOM *geom;
 	LWGEOM *lwgeom, *hlwgeom;
 	xmlDocPtr xmldoc;
 	text *xml_input;
 	int xml_size;
-	uchar *srl;
 	char *xml;
-	size_t size=0;
 	bool hasz=true;
 	xmlNodePtr xmlroot=NULL;
 
@@ -99,11 +97,6 @@ Datum geom_from_kml(PG_FUNCTION_ARGS)
 	}
 
 	lwgeom->bbox = lwgeom_compute_box2d(lwgeom);
-	geom = pglwgeom_serialize(lwgeom);
-	lwgeom_release(lwgeom);
-
-	xmlFreeDoc(xmldoc);
-	xmlCleanupParser();
 
 	/* KML geometries could be either 2 or 3D
 	 *
@@ -113,13 +106,16 @@ Datum geom_from_kml(PG_FUNCTION_ARGS)
 	 */
 	if (!hasz)
 	{
-		srl = lwalloc(VARSIZE(geom));
-		lwgeom_force2d_recursive(SERIALIZED_FORM(geom), srl, &size);
-		geom2d = PG_LWGEOM_construct(srl, pglwgeom_getSRID(geom),
-		                             lwgeom_hasBBOX(geom->type));
-		lwfree(geom);
-		geom = geom2d;
+		LWGEOM *tmp = lwgeom_force_2d(lwgeom);
+		lwgeom_free(lwgeom);
+		lwgeom = tmp;
 	}
+
+	geom = pglwgeom_serialize(lwgeom);
+	lwgeom_free(lwgeom);
+
+	xmlFreeDoc(xmldoc);
+	xmlCleanupParser();
 
 	PG_RETURN_POINTER(geom);
 }
@@ -329,7 +325,7 @@ static POINTARRAY* parse_kml_coordinates(xmlNodePtr xnode, bool *hasz)
 				*hasz = false;
 			}
 
-			ptarray_add_point(dpa, &pt, LW_FALSE);
+			ptarray_append_point(dpa, &pt, LW_FALSE);
 			digit = false;
 			q = p+1;
 			kml_dims = 0;

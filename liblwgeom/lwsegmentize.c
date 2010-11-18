@@ -301,7 +301,7 @@ lwcurve_segmentize(LWCIRCSTRING *icurve, uint32 perQuad)
 	{
 		lwerror("lwcurve_segmentize: Cannot extract point.");
 	}
-	ptarray_add_point(ptarray, &p4, LW_TRUE);
+	ptarray_append_point(ptarray, &p4, LW_TRUE);
 
 	for (i = 2; i < icurve->points->npoints; i+=2)
 	{
@@ -319,7 +319,7 @@ lwcurve_segmentize(LWCIRCSTRING *icurve, uint32 perQuad)
 			for (j = 0; j < tmp->npoints; j++)
 			{
 				getPoint4d_p(tmp, j, &p4);
-				ptarray_add_point(ptarray, &p4, LW_TRUE);
+				ptarray_append_point(ptarray, &p4, LW_TRUE);
 			}
 			lwfree(tmp);
 		}
@@ -330,7 +330,7 @@ lwcurve_segmentize(LWCIRCSTRING *icurve, uint32 perQuad)
 			for (j = i - 1 ; j <= i ; j++)
 			{
 				getPoint4d_p(icurve->points, j, &p4);
-				ptarray_add_point(ptarray, &p4, LW_TRUE);
+				ptarray_append_point(ptarray, &p4, LW_TRUE);
 			}
 		}
 
@@ -361,7 +361,7 @@ lwcompound_segmentize(LWCOMPOUND *icompound, uint32 perQuad)
 			for (j = 0; j < tmp->points->npoints; j++)
 			{
 				getPoint4d_p(tmp->points, j, &p);
-				ptarray_add_point(ptarray, &p, LW_TRUE);
+				ptarray_append_point(ptarray, &p, LW_TRUE);
 			}
 			lwfree(tmp);
 		}
@@ -371,7 +371,7 @@ lwcompound_segmentize(LWCOMPOUND *icompound, uint32 perQuad)
 			for (j = 0; j < tmp->points->npoints; j++)
 			{
 				getPoint4d_p(tmp->points, j, &p);
-				ptarray_add_point(ptarray, &p, LW_TRUE);
+				ptarray_append_point(ptarray, &p, LW_TRUE);
 			}
 		}
 		else
@@ -620,12 +620,12 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
 		{
 			getPoint4d_p(line->points, i, &pt);
 			LWDEBUGF(5, "copying to %p [%d]", newPoints, i);
-			setPoint4d(newPoints, i, &pt);
+			ptarray_set_point4d(newPoints, i, &pt);
 		}
 		for (i=1; i<pts->npoints; i++)
 		{
 			getPoint4d_p(pts, i, &pt);
-			setPoint4d(newPoints, i + line->points->npoints - 1, &pt);
+			ptarray_set_point4d(newPoints, i + line->points->npoints - 1, &pt);
 		}
 		result = (LWGEOM *)lwline_construct(SRID, NULL, newPoints);
 		lwgeom_release(geom);
@@ -649,7 +649,7 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
 
 			LWDEBUGF(3, "orig point %d: (%.16f,%.16f)", i, pt.x, pt.y);
 
-			setPoint4d(newPoints, i, &pt);
+			ptarray_set_point4d(newPoints, i, &pt);
 		}
 		for (i=1; i<pts->npoints; i++)
 		{
@@ -657,7 +657,7 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
 
 			LWDEBUGF(3, "new point %d: (%.16f,%.16f)", i + curve->points->npoints - 1, pt.x, pt.y);
 
-			setPoint4d(newPoints, i + curve->points->npoints - 1, &pt);
+			ptarray_set_point4d(newPoints, i + curve->points->npoints - 1, &pt);
 		}
 		result = (LWGEOM *)lwcircstring_construct(SRID, NULL, newPoints);
 		lwgeom_release(geom);
@@ -818,12 +818,12 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
 				          TYPE_HASM(type),
 				          3);
 				getPoint4d_p(points, commit, &tmp);
-				setPoint4d(pts, 0, &tmp);
+				ptarray_set_point4d(pts, 0, &tmp);
 				getPoint4d_p(points,
 				             commit + count/2, &tmp);
-				setPoint4d(pts, 1, &tmp);
+				ptarray_set_point4d(pts, 1, &tmp);
 				getPoint4d_p(points, i - 1, &tmp);
-				setPoint4d(pts, 2, &tmp);
+				ptarray_set_point4d(pts, 2, &tmp);
 
 				commit = i-1;
 				geom = append_segment(geom, pts, CIRCSTRINGTYPE, SRID);
@@ -896,7 +896,7 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
 				for (j=commit; j<i-2; j++)
 				{
 					getPoint4d_p(points, j, &tmp);
-					setPoint4d(pts, j-commit, &tmp);
+					ptarray_set_point4d(pts, j-commit, &tmp);
 				}
 
 				commit = i-3;
@@ -926,11 +926,11 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
 		          TYPE_HASM(type),
 		          3);
 		getPoint4d_p(points, commit, &tmp);
-		setPoint4d(pts, 0, &tmp);
+		ptarray_set_point4d(pts, 0, &tmp);
 		getPoint4d_p(points, commit + count/2, &tmp);
-		setPoint4d(pts, 1, &tmp);
+		ptarray_set_point4d(pts, 1, &tmp);
 		getPoint4d_p(points, i - 1, &tmp);
-		setPoint4d(pts, 2, &tmp);
+		ptarray_set_point4d(pts, 2, &tmp);
 
 		geom = append_segment(geom, pts, CIRCSTRINGTYPE, SRID);
 	}
@@ -945,7 +945,7 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
 		for (j=commit; j<i; j++)
 		{
 			getPoint4d_p(points, j, &tmp);
-			setPoint4d(pts, j-commit, &tmp);
+			ptarray_set_point4d(pts, j-commit, &tmp);
 		}
 		geom = append_segment(geom, pts, LINETYPE, SRID);
 	}

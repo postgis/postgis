@@ -565,263 +565,7 @@ Datum LWGEOM_perimeter2d_poly(PG_FUNCTION_ARGS)
 }
 
 
-/**
- *	@brief  Write to already allocated memory 'optr' a 2d version of
- * 		the given serialized form.
- * 		Higher dimensions in input geometry are discarded.
- * 	@return number bytes written in given int pointer.
- */
-void
-lwgeom_force2d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
-{
-	LWGEOM_INSPECTED *inspected;
-	int i,j,k;
-	size_t totsize=0;
-	size_t size=0;
-	int type;
-	uchar newtypefl;
-	LWPOINT *point = NULL;
-	LWLINE *line = NULL;
-	LWCIRCSTRING *curve = NULL;
-	LWPOLY *poly = NULL;
-	LWTRIANGLE *triangle = NULL;
-	POINTARRAY newpts;
-	POINTARRAY **nrings;
-	POINT2D p2d;
-	uchar *loc;
 
-
-	LWDEBUG(2, "lwgeom_force2d_recursive: call");
-
-	type = lwgeom_getType(serialized[0]);
-
-	if ( type == POINTTYPE )
-	{
-		point = lwpoint_deserialize(serialized);
-		TYPE_SETZM(newpts.dims, 0, 0);
-		newpts.npoints = 1;
-		newpts.serialized_pointlist = lwalloc(sizeof(POINT2D));
-		loc = newpts.serialized_pointlist;
-		getPoint2d_p(point->point, 0, &p2d);
-		memcpy(loc, &p2d, sizeof(POINT2D));
-		point->point = &newpts;
-		TYPE_SETZM(point->type, 0, 0);
-		lwpoint_serialize_buf(point, optr, retsize);
-		lwfree(newpts.serialized_pointlist);
-		lwfree(point);
-
-		LWDEBUG(3, "lwgeom_force2d_recursive returning");
-
-		return;
-	}
-
-	if ( type == LINETYPE )
-	{
-		line = lwline_deserialize(serialized);
-
-		LWDEBUGF(3, "lwgeom_force2d_recursive: it's a line with %d points", line->points->npoints);
-
-		TYPE_SETZM(newpts.dims, 0, 0);
-		newpts.npoints = line->points->npoints;
-		newpts.serialized_pointlist = lwalloc(sizeof(POINT2D)*line->points->npoints);
-
-		LWDEBUGF(3, "lwgeom_force2d_recursive: %d bytes pointlist allocated", sizeof(POINT2D)*line->points->npoints);
-
-		loc = newpts.serialized_pointlist;
-		for (j=0; j<line->points->npoints; j++)
-		{
-			getPoint2d_p(line->points, j, &p2d);
-			memcpy(loc, &p2d, sizeof(POINT2D));
-			loc+=sizeof(POINT2D);
-		}
-		line->points = &newpts;
-		TYPE_SETZM(line->type, 0, 0);
-		lwline_serialize_buf(line, optr, retsize);
-		lwfree(newpts.serialized_pointlist);
-		lwfree(line);
-
-		LWDEBUG(3, "lwgeom_force2d_recursive returning");
-
-		return;
-	}
-
-	if ( type == CIRCSTRINGTYPE )
-	{
-		curve = lwcircstring_deserialize(serialized);
-
-		LWDEBUGF(3, "lwgeom_force2d_recursize: it's a circularstring with %d points", curve->points->npoints);
-
-		TYPE_SETZM(newpts.dims, 0, 0);
-		newpts.npoints = curve->points->npoints;
-		newpts.serialized_pointlist = lwalloc(sizeof(POINT2D)*curve->points->npoints);
-
-		LWDEBUGF(3, "lwgeom_force2d_recursive: %d bytes pointlist allocated", sizeof(POINT2D)*curve->points->npoints);
-
-		loc = newpts.serialized_pointlist;
-		for (j=0; j<curve->points->npoints; j++)
-		{
-			getPoint2d_p(curve->points, j, &p2d);
-			memcpy(loc, &p2d, sizeof(POINT2D));
-			loc += sizeof(POINT2D);
-		}
-		curve->points = &newpts;
-		TYPE_SETZM(curve->type, 0, 0);
-		lwcircstring_serialize_buf(curve, optr, retsize);
-		lwfree(newpts.serialized_pointlist);
-		lwfree(curve);
-		return;
-	}
-
-	if ( type == POLYGONTYPE )
-	{
-		poly = lwpoly_deserialize(serialized);
-		TYPE_SETZM(newpts.dims, 0, 0);
-		newpts.npoints = 0;
-		newpts.serialized_pointlist = lwalloc(1);
-		nrings = lwalloc(sizeof(POINTARRAY *)*poly->nrings);
-		loc = newpts.serialized_pointlist;
-		for (j=0; j<poly->nrings; j++)
-		{
-			POINTARRAY *ring = poly->rings[j];
-			POINTARRAY *nring = lwalloc(sizeof(POINTARRAY));
-			TYPE_SETZM(nring->dims, 0, 0);
-			nring->npoints = ring->npoints;
-			nring->serialized_pointlist =
-			    lwalloc(ring->npoints*sizeof(POINT2D));
-			loc = nring->serialized_pointlist;
-			for (k=0; k<ring->npoints; k++)
-			{
-				getPoint2d_p(ring, k, &p2d);
-				memcpy(loc, &p2d, sizeof(POINT2D));
-				loc+=sizeof(POINT2D);
-			}
-			nrings[j] = nring;
-		}
-		poly->rings = nrings;
-		TYPE_SETZM(poly->type, 0, 0);
-		lwpoly_serialize_buf(poly, optr, retsize);
-		lwfree(poly);
-		/** @todo TODO: free nrigs[*]->serialized_pointlist
-			*/
-
-		LWDEBUG(3, "lwgeom_force2d_recursive returning");
-
-		return;
-	}
-
-	if ( type == TRIANGLETYPE )
-	{
-		triangle = lwtriangle_deserialize(serialized);
-
-		LWDEBUGF(3, "lwgeom_force2d_recursive: it's a triangle with %d points", triangle->points->npoints);
-
-		TYPE_SETZM(newpts.dims, 0, 0);
-		newpts.npoints = triangle->points->npoints;
-		newpts.serialized_pointlist = lwalloc(sizeof(POINT2D)*triangle->points->npoints);
-
-		LWDEBUGF(3, "lwgeom_force2d_recursive: %d bytes pointlist allocated", sizeof(POINT2D)*triangle->points->npoints);
-
-		loc = newpts.serialized_pointlist;
-		for (j=0; j<triangle->points->npoints; j++)
-		{
-			getPoint2d_p(triangle->points, j, &p2d);
-			memcpy(loc, &p2d, sizeof(POINT2D));
-			loc+=sizeof(POINT2D);
-		}
-		triangle->points = &newpts;
-		TYPE_SETZM(triangle->type, 0, 0);
-		lwtriangle_serialize_buf(triangle, optr, retsize);
-		lwfree(newpts.serialized_pointlist);
-		lwfree(triangle);
-
-		LWDEBUG(3, "lwgeom_force2d_recursive returning");
-
-		return;
-	}
-
-	if ( type != MULTIPOINTTYPE && type != MULTIPOLYGONTYPE &&
-	        type != MULTILINETYPE && type != COLLECTIONTYPE &&
-	        type != COMPOUNDTYPE && type != CURVEPOLYTYPE &&
-	        type != MULTICURVETYPE && type != MULTISURFACETYPE &&
-	        type != POLYHEDRALSURFACETYPE && type != TINTYPE )
-	{
-		lwerror("lwgeom_force2d_recursive: unknown geometry: %d - %s",
-		        type, lwtype_name(type));
-	}
-
-	/*
-	* OK, this is a collection, so we write down its metadata
-	* first and then call us again
-	*/
-
-	LWDEBUGF(3, "lwgeom_force2d_recursive: it's a collection (%s)", lwtype_name(type));
-
-
-	/* Add type */
-	newtypefl = lwgeom_makeType_full(0, 0, lwgeom_hasSRID(serialized[0]),
-	                                 type, lwgeom_hasBBOX(serialized[0]));
-	optr[0] = newtypefl;
-	optr++;
-	totsize++;
-	loc=serialized+1;
-
-	LWDEBUGF(3, "lwgeom_force2d_recursive: added collection type (%s[%s]) - size:%d", lwtype_name(type), lwgeom_typeflags(newtypefl), totsize);
-
-	if ( lwgeom_hasBBOX(serialized[0]) != lwgeom_hasBBOX(newtypefl) )
-		lwerror("typeflag mismatch in BBOX");
-	if ( lwgeom_hasSRID(serialized[0]) != lwgeom_hasSRID(newtypefl) )
-		lwerror("typeflag mismatch in SRID");
-
-	/* Add BBOX if any */
-	if (lwgeom_hasBBOX(serialized[0]))
-	{
-		memcpy(optr, loc, sizeof(BOX2DFLOAT4));
-		optr += sizeof(BOX2DFLOAT4);
-		totsize += sizeof(BOX2DFLOAT4);
-		loc += sizeof(BOX2DFLOAT4);
-
-		LWDEBUGF(3, "lwgeom_force2d_recursive: added collection bbox - size:%d", totsize);
-	}
-
-	/* Add SRID if any */
-	if (lwgeom_hasSRID(serialized[0]))
-	{
-		memcpy(optr, loc, 4);
-		optr += 4;
-		totsize += 4;
-		loc += 4;
-
-		LWDEBUGF(3, "lwgeom_force2d_recursive: added collection SRID - size:%d", totsize);
-	}
-
-	/* Add numsubobjects */
-	memcpy(optr, loc, sizeof(uint32));
-	optr += sizeof(uint32);
-	totsize += sizeof(uint32);
-	loc += sizeof(uint32);
-
-	LWDEBUGF(3, "lwgeom_force2d_recursive: added collection ngeoms - size:%d", totsize);
-
-	LWDEBUG(3, "lwgeom_force2d_recursive: inspecting subgeoms");
-
-	/* Now recurse for each subobject */
-	inspected = lwgeom_inspect(serialized);
-	for (i=0; i<inspected->ngeometries; i++)
-	{
-		uchar *subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
-		lwgeom_force2d_recursive(subgeom, optr, &size);
-		totsize += size;
-		optr += size;
-
-		LWDEBUGF(3, "lwgeom_force2d_recursive: added elem %d size: %d (tot: %d)",
-		         i, size, totsize);
-	}
-	lwinspected_release(inspected);
-
-	LWDEBUG(3, "lwgeom_force2d_recursive returning");
-
-	if ( retsize ) *retsize = totsize;
-}
 
 /**
  * @brief Write to already allocated memory 'optr' a 3dz version of
@@ -1526,130 +1270,79 @@ lwgeom_force4d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 PG_FUNCTION_INFO_V1(LWGEOM_force_2d);
 Datum LWGEOM_force_2d(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	uchar *srl;
-	PG_LWGEOM *result;
-	size_t size = 0;
+	PG_LWGEOM *pg_geom_in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *pg_geom_out;
+	LWGEOM *lwg;
 
 	/* already 2d */
-	if ( lwgeom_ndims(geom->type) == 2 ) PG_RETURN_POINTER(geom);
+	if ( lwgeom_ndims(pg_geom_in->type) == 2 ) PG_RETURN_POINTER(pg_geom_in);
 
-	/* allocate a larger for safety and simplicity */
-	srl = lwalloc(VARSIZE(geom));
+	lwg = lwgeom_force_2d(pglwgeom_deserialize(pg_geom_in));
+	pg_geom_out = pglwgeom_serialize(lwg);
+	lwgeom_free(lwg);
 
-	lwgeom_force2d_recursive(SERIALIZED_FORM(geom),
-	                         srl, &size);
-
-	result = PG_LWGEOM_construct(srl, pglwgeom_getSRID(geom),
-	                             lwgeom_hasBBOX(geom->type));
-	PG_FREE_IF_COPY(geom, 0);
-
-	PG_RETURN_POINTER(result);
+	PG_FREE_IF_COPY(pg_geom_in, 0);
+	PG_RETURN_POINTER(pg_geom_out);
 }
 
 /* transform input geometry to 3dz if not 3dz already */
 PG_FUNCTION_INFO_V1(LWGEOM_force_3dz);
 Datum LWGEOM_force_3dz(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	uchar *srl;
-	PG_LWGEOM *result;
-	int olddims;
-	size_t size = 0;
-
-	olddims = lwgeom_ndims(geom->type);
+	PG_LWGEOM *pg_geom_in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *pg_geom_out;
+	LWGEOM *lwg;
 
 	/* already 3d */
-	if ( olddims == 3 && TYPE_HASZ(geom->type) ) PG_RETURN_POINTER(geom);
+	if ( lwgeom_ndims(pg_geom_in->type) == 3 && TYPE_HASZ(pg_geom_in->type) ) 
+		PG_RETURN_POINTER(pg_geom_in);
 
-	if ( olddims > 3 )
-	{
-		srl = lwalloc(VARSIZE(geom));
-	}
-	else
-	{
-		/* allocate double as memory a larger for safety */
-		srl = lwalloc(VARSIZE(geom)*1.5);
-	}
+	lwg = lwgeom_force_3dz(pglwgeom_deserialize(pg_geom_in));
+	pg_geom_out = pglwgeom_serialize(lwg);
+	lwgeom_free(lwg);
 
-	lwgeom_force3dz_recursive(SERIALIZED_FORM(geom),
-	                          srl, &size);
-
-	result = PG_LWGEOM_construct(srl, pglwgeom_getSRID(geom),
-	                             lwgeom_hasBBOX(geom->type));
-
-	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_POINTER(result);
+	PG_FREE_IF_COPY(pg_geom_in, 0);
+	PG_RETURN_POINTER(pg_geom_out);
 }
 
 /** transform input geometry to 3dm if not 3dm already */
 PG_FUNCTION_INFO_V1(LWGEOM_force_3dm);
 Datum LWGEOM_force_3dm(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	uchar *srl;
-	PG_LWGEOM *result;
-	int olddims;
-	size_t size = 0;
+	PG_LWGEOM *pg_geom_in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *pg_geom_out;
+	LWGEOM *lwg;
 
-	olddims = lwgeom_ndims(geom->type);
+	/* already 3d */
+	if ( lwgeom_ndims(pg_geom_in->type) == 3 && TYPE_HASM(pg_geom_in->type) ) 
+		PG_RETURN_POINTER(pg_geom_in);
 
-	/* already 3dm */
-	if ( olddims == 3 && TYPE_HASM(geom->type) ) PG_RETURN_POINTER(geom);
+	lwg = lwgeom_force_3dm(pglwgeom_deserialize(pg_geom_in));
+	pg_geom_out = pglwgeom_serialize(lwg);
+	lwgeom_free(lwg);
 
-	if ( olddims > 3 )
-	{
-		size = VARSIZE(geom);
-	}
-	else
-	{
-		/* allocate double as memory a larger for safety */
-		size = VARSIZE(geom) * 2;
-	}
-	srl = lwalloc(size);
-
-	POSTGIS_DEBUGF(3, "LWGEOM_force_3dm: allocated %d bytes for result", (int)size);
-
-	lwgeom_force3dm_recursive(SERIALIZED_FORM(geom),
-	                          srl, &size);
-
-	POSTGIS_DEBUGF(3, "LWGEOM_force_3dm: lwgeom_force3dm_recursive returned a %d sized geom", (int)size);
-
-	result = PG_LWGEOM_construct(srl, pglwgeom_getSRID(geom),
-	                             lwgeom_hasBBOX(geom->type));
-
-	PG_FREE_IF_COPY(geom, 0);
-
-	PG_RETURN_POINTER(result);
+	PG_FREE_IF_COPY(pg_geom_in, 0);
+	PG_RETURN_POINTER(pg_geom_out);
 }
 
 /* transform input geometry to 4d if not 4d already */
 PG_FUNCTION_INFO_V1(LWGEOM_force_4d);
 Datum LWGEOM_force_4d(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	uchar *srl;
-	PG_LWGEOM *result;
-	int olddims;
-	size_t size = 0;
-
-	olddims = lwgeom_ndims(geom->type);
+	PG_LWGEOM *pg_geom_in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *pg_geom_out;
+	LWGEOM *lwg;
 
 	/* already 4d */
-	if ( olddims == 4 ) PG_RETURN_POINTER(geom);
+	if ( lwgeom_ndims(pg_geom_in->type) == 4 ) 
+		PG_RETURN_POINTER(pg_geom_in);
 
-	/* allocate double as memory a larger for safety  */
-	srl = lwalloc(VARSIZE(geom)*2);
+	lwg = lwgeom_force_4d(pglwgeom_deserialize(pg_geom_in));
+	pg_geom_out = pglwgeom_serialize(lwg);
+	lwgeom_free(lwg);
 
-	lwgeom_force4d_recursive(SERIALIZED_FORM(geom),
-	                         srl, &size);
-
-	result = PG_LWGEOM_construct(srl, pglwgeom_getSRID(geom),
-	                             lwgeom_hasBBOX(geom->type));
-
-	PG_FREE_IF_COPY(geom, 0);
-
-	PG_RETURN_POINTER(result);
+	PG_FREE_IF_COPY(pg_geom_in, 0);
+	PG_RETURN_POINTER(pg_geom_out);
 }
 
 /** transform input geometry to a collection type */
@@ -3477,7 +3170,7 @@ Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *pglwg1, *pglwg2, *result;
 	LWPOINT *point;
-	LWLINE *line, *outline;
+	LWLINE *line;
 	int where = -1;
 
 	POSTGIS_DEBUG(2, "LWGEOM_addpoint called.");
@@ -3513,16 +3206,19 @@ Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
 
 	point = lwpoint_deserialize(SERIALIZED_FORM(pglwg2));
 
-	outline = lwline_addpoint(line, point, where);
+	if ( lwline_add_point(line, point, where) == LW_FAILURE )
+	{
+		elog(ERROR, "Point insert failed");
+		PG_RETURN_NULL();
+	}
 
-	result = pglwgeom_serialize((LWGEOM *)outline);
+	result = pglwgeom_serialize(lwline_as_lwgeom(line));
 
 	/* Release memory */
 	PG_FREE_IF_COPY(pglwg1, 0);
 	PG_FREE_IF_COPY(pglwg2, 1);
 	lwgeom_release((LWGEOM *)point);
 	lwgeom_release((LWGEOM *)line);
-	lwgeom_release((LWGEOM *)outline);
 
 	PG_RETURN_POINTER(result);
 
@@ -3840,7 +3536,7 @@ lwgeom_affine_ptarray(POINTARRAY *pa,
 			p4d.x = afac * x + bfac * y + cfac * z + xoff;
 			p4d.y = dfac * x + efac * y + ffac * z + yoff;
 			p4d.z = gfac * x + hfac * y + ifac * z + zoff;
-			setPoint4d(pa, i, &p4d);
+			ptarray_set_point4d(pa, i, &p4d);
 
 			LWDEBUGF(3, " POINT %g %g %g => %g %g %g", x, y, x, p4d.x, p4d.y, p4d.z);
 		}
@@ -3856,7 +3552,7 @@ lwgeom_affine_ptarray(POINTARRAY *pa,
 			y = p4d.y;
 			p4d.x = afac * x + bfac * y + xoff;
 			p4d.y = dfac * x + efac * y + yoff;
-			setPoint4d(pa, i, &p4d);
+			ptarray_set_point4d(pa, i, &p4d);
 
 			LWDEBUGF(3, " POINT %g %g %g => %g %g %g", x, y, x, p4d.x, p4d.y, p4d.z);
 		}

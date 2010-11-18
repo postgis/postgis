@@ -206,7 +206,7 @@ static size_t gserialized_from_lwgeom_any(const LWGEOM *geom, uchar *buf);
 static size_t gserialized_from_lwpoint(const LWPOINT *point, uchar *buf)
 {
 	uchar *loc;
-	int ptsize = pointArray_ptsize(point->point);
+	int ptsize = ptarray_point_size(point->point);
 	int type = POINTTYPE;
 
 	assert(point);
@@ -251,7 +251,7 @@ static size_t gserialized_from_lwline(const LWLINE *line, uchar *buf)
 	if ( TYPE_GETZM(line->type) != TYPE_GETZM(line->points->dims) )
 		lwerror("Dimensions mismatch in lwline");
 
-	ptsize = pointArray_ptsize(line->points);
+	ptsize = ptarray_point_size(line->points);
 
 	loc = buf;
 
@@ -344,7 +344,7 @@ static size_t gserialized_from_lwtriangle(const LWTRIANGLE *triangle, uchar *buf
 	if ( TYPE_GETZM(triangle->type) != TYPE_GETZM(triangle->points->dims) )
 		lwerror("Dimensions mismatch in lwtriangle");
 
-	ptsize = pointArray_ptsize(triangle->points);
+	ptsize = ptarray_point_size(triangle->points);
 
 	loc = buf;
 
@@ -384,7 +384,7 @@ static size_t gserialized_from_lwcircstring(const LWCIRCSTRING *curve, uchar *bu
 		lwerror("Dimensions mismatch in lwcircstring");
 
 
-	ptsize = pointArray_ptsize(curve->points);
+	ptsize = ptarray_point_size(curve->points);
 	loc = buf;
 
 	/* Write in the type. */

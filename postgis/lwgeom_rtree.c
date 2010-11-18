@@ -125,24 +125,18 @@ RTREE_NODE *createLeafNode(POINTARRAY *pa, int startPoint)
 	 * independently of the index.	Since we may want to cache the index,
 	 * we must create independent arrays.
 	 */
-	npa = lwalloc(sizeof(POINTARRAY));
-	npa->dims = 0;
-	npa->npoints = 2;
-	TYPE_SETZM(npa->dims, 0, 0);
-	npa->serialized_pointlist = lwalloc(pointArray_ptsize(pa) * 2);
+	npa = ptarray_construct_empty(0,0,2);
 
 	getPoint4d_p(pa, startPoint, &tmp);
-
-	setPoint4d(npa, 0, &tmp);
 	value1 = tmp.y;
-
-	getPoint4d_p(pa, startPoint + 1, &tmp);
-
-	setPoint4d(npa, 1, &tmp);
+	ptarray_append_point(npa,&tmp,1);
+	
+	getPoint4d_p(pa, startPoint+1, &tmp);
 	value2 = tmp.y;
+	ptarray_append_point(npa,&tmp,1);
 
 	line = lwline_construct(-1, NULL, npa);
-
+	
 	parent = lwalloc(sizeof(RTREE_NODE));
 	parent->interval = createInterval(value1, value2);
 	parent->segment = line;

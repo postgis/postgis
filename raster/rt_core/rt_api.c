@@ -1825,26 +1825,26 @@ rt_raster_get_convex_hull(rt_context ctx, rt_raster raster) {
     rt_raster_cell_to_geopoint(ctx, raster,
             0, 0,
             &p4d.x, &p4d.y);
-    setPoint4d(pts, 0, &p4d);
-    setPoint4d(pts, 4, &p4d); /* needed for closing it? */
+    ptarray_set_point4d(pts, 0, &p4d);
+    ptarray_set_point4d(pts, 4, &p4d); /* needed for closing it? */
 
     /* Upper-right corner (we go clockwise) */
     rt_raster_cell_to_geopoint(ctx, raster,
             raster->width, 0,
             &p4d.x, &p4d.y);
-    setPoint4d(pts, 1, &p4d);
+    ptarray_set_point4d(pts, 1, &p4d);
 
     /* Lower-right corner */
     rt_raster_cell_to_geopoint(ctx, raster,
             raster->width, raster->height,
             &p4d.x, &p4d.y);
-    setPoint4d(pts, 2, &p4d);
+    ptarray_set_point4d(pts, 2, &p4d);
 
     /* Lower-left corner */
     rt_raster_cell_to_geopoint(ctx, raster,
             0, raster->height,
             &p4d.x, &p4d.y);
-    setPoint4d(pts, 3, &p4d);
+    ptarray_set_point4d(pts, 3, &p4d);
 
     ret = lwpoly_construct(raster->srid, 0, 1, rings);
 

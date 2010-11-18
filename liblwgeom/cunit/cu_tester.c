@@ -20,6 +20,7 @@
 /* ADD YOUR SUITE HERE (1 of 2) */
 extern CU_SuiteInfo print_suite;
 extern CU_SuiteInfo algorithms_suite;
+extern CU_SuiteInfo misc_suite;
 extern CU_SuiteInfo measures_suite;
 extern CU_SuiteInfo wkt_out_suite;
 extern CU_SuiteInfo wkt_in_suite;
@@ -45,6 +46,7 @@ int main(int argc, char *argv[])
 	CU_SuiteInfo suites[] =
 	{
 		print_suite,
+		misc_suite,
 		algorithms_suite,
 		measures_suite,
 		wkt_out_suite,

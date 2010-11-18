@@ -697,7 +697,7 @@ lwgeom_transform_recursive(uchar *geom, projPJ inpj, projPJ outpj)
 		{
 			getPoint4d_p(point->point, 0, &p);
 			transform_point(&p, inpj, outpj);
-			setPoint4d(point->point, 0, &p);
+			ptarray_set_point4d(point->point, 0, &p);
 			lwgeom_release((LWGEOM *)point);
 			continue;
 		}
@@ -710,7 +710,7 @@ lwgeom_transform_recursive(uchar *geom, projPJ inpj, projPJ outpj)
 			{
 				getPoint4d_p(pts, i, &p);
 				transform_point(&p, inpj, outpj);
-				setPoint4d(pts, i, &p);
+				ptarray_set_point4d(pts, i, &p);
 			}
 			lwgeom_release((LWGEOM *)line);
 			continue;
@@ -727,7 +727,7 @@ lwgeom_transform_recursive(uchar *geom, projPJ inpj, projPJ outpj)
 				{
 					getPoint4d_p(pts, pi, &p);
 					transform_point(&p, inpj, outpj);
-					setPoint4d(pts, pi, &p);
+					ptarray_set_point4d(pts, pi, &p);
 				}
 			}
 			lwgeom_release((LWGEOM *)poly);
@@ -742,7 +742,7 @@ lwgeom_transform_recursive(uchar *geom, projPJ inpj, projPJ outpj)
 			{
 				getPoint4d_p(pts, i, &p);
 				transform_point(&p, inpj, outpj);
-				setPoint4d(pts, i, &p);
+				ptarray_set_point4d(pts, i, &p);
 			}
 			lwgeom_release((LWGEOM *)curve);
 			continue;

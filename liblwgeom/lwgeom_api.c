@@ -718,7 +718,7 @@ getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point)
  *
  */
 void
-setPoint4d(POINTARRAY *pa, int n, POINT4D *p4d)
+ptarray_set_point4d(POINTARRAY *pa, int n, POINT4D *p4d)
 {
 	uchar *ptr=getPoint_internal(pa, n);
 	switch ( TYPE_GETZM(pa->dims) )
@@ -749,7 +749,8 @@ setPoint4d(POINTARRAY *pa, int n, POINT4D *p4d)
 uchar *
 getPoint_internal(const POINTARRAY *pa, int n)
 {
-	int size;
+	size_t size;
+	uchar *ptr;
 
 #if PARANOIA_LEVEL > 0
 	if ( pa == NULL )
@@ -757,16 +758,24 @@ getPoint_internal(const POINTARRAY *pa, int n)
 		lwerror("getPoint got NULL pointarray");
 		return NULL;
 	}
+	
+	LWDEBUGF(5, "(n=%d, pa.npoints=%d, pa.maxpoints=%d)",n,pa->npoints,pa->maxpoints);
 
-	if ( (n<0) || (n>=pa->npoints))
+	if ( ( n < 0 ) || 
+	     ( n > pa->npoints ) ||
+	     ( n >= pa->maxpoints ) )
 	{
+		lwerror("getPoint_internal called outside of ptarray range (n=%d, pa.npoints=%d, pa.maxpoints=%d)",n,pa->npoints,pa->maxpoints);
 		return NULL; /*error */
 	}
 #endif
 
-	size = pointArray_ptsize(pa);
+	size = ptarray_point_size(pa);
+	
+	ptr = pa->serialized_pointlist + size * n;
+	LWDEBUGF(5, "point = %g %g %g", *((double*)(ptr)), *((double*)(ptr+8)), *((double*)(ptr+16)));
 
-	return &(pa->serialized_pointlist[size*n]);
+	return ptr;
 }
 
 
@@ -775,9 +784,9 @@ getPoint_internal(const POINTARRAY *pa, int n)
  * 16 for 2d, 24 for 3d, 32 for 4d
  */
 int
-pointArray_ptsize(const POINTARRAY *pa)
+ptarray_point_size(const POINTARRAY *pa)
 {
-	LWDEBUGF(2, "pointArray_ptsize: TYPE_NDIMS(pa->dims)=%x",TYPE_NDIMS(pa->dims));
+	LWDEBUGF(2, "ptarray_point_size: TYPE_NDIMS(pa->dims)=%x",TYPE_NDIMS(pa->dims));
 
 	return sizeof(double)*TYPE_NDIMS(pa->dims);
 }
@@ -1820,7 +1829,7 @@ void printPA(POINTARRAY *pa)
 
 	lwnotice("      POINTARRAY%s{", mflag);
 	lwnotice("                 ndims=%i,   ptsize=%i",
-	         TYPE_NDIMS(pa->dims), pointArray_ptsize(pa));
+	         TYPE_NDIMS(pa->dims), ptarray_point_size(pa));
 	lwnotice("                 npoints = %i", pa->npoints);
 
 	for (t =0; t<pa->npoints; t++)

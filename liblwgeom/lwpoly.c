@@ -48,7 +48,7 @@ lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox, uint32 nrings, POINTARRAY **points
 #endif
 
 	result = (LWPOLY*) lwalloc(sizeof(LWPOLY));
-	result->type = lwgeom_makeType_full(hasz, hasm, (SRID!=-1), POLYGONTYPE, 0);
+	result->type = lwgeom_makeType_full(hasz, hasm, (SRID>0), POLYGONTYPE, 0);
 	result->SRID = SRID;
 	result->nrings = nrings;
 	result->maxrings = nrings;
@@ -592,4 +592,92 @@ lwpoly_remove_repeated_points(LWPOLY *poly)
 	                                 poly->bbox ? box2d_clone(poly->bbox) : NULL,
 	                                 poly->nrings, newrings);
 
+}
+
+
+LWPOLY*
+lwpoly_force_dims(const LWPOLY *poly, int hasz, int hasm)
+{
+	LWPOLY *polyout;
+	
+	/* Return 2D empty */
+	if( lwpoly_is_empty(poly) )
+	{
+		polyout = lwpoly_construct_empty(poly->SRID, hasz, hasm);
+	}
+	else
+	{
+		POINTARRAY **rings = NULL;
+		int i;
+		rings = lwalloc(sizeof(POINTARRAY*) * poly->nrings);
+		for( i = 0; i < poly->nrings; i++ )
+		{
+			rings[i] = ptarray_force_dims(poly->rings[i], hasz, hasm);
+		}
+		polyout = lwpoly_construct(poly->SRID, NULL, poly->nrings, rings);
+	}
+	TYPE_SETTYPE(polyout->type, TYPE_GETTYPE(poly->type));
+	return polyout;
+}
+
+int lwpoly_is_empty(const LWPOLY *poly)
+{
+	if ( !poly->rings || poly->nrings == 0 )
+		return LW_TRUE;
+	return LW_FALSE;
+}
+
+int lwpoly_count_vertices(LWPOLY *poly)
+{
+	int i = 0;
+	int v = 0; /* vertices */
+	assert(poly);
+	for ( i = 0; i < poly->nrings; i ++ )
+	{
+		v += poly->rings[i]->npoints;
+	}
+	return v;
+}
+
+LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist)
+{
+	int i;
+	LWPOLY *opoly = lwpoly_construct_empty(ipoly->SRID, TYPE_HASZ(ipoly->type), TYPE_HASM(ipoly->type));
+
+	LWDEBUGF(2, "simplify_polygon3d: simplifying polygon with %d rings", ipoly->nrings);
+
+	if( lwpoly_is_empty(ipoly) )
+		return opoly;
+
+	for (i = 0; i < ipoly->nrings; i++)
+	{
+		POINTARRAY *opts = ptarray_simplify(ipoly->rings[i], dist);
+
+		/* One point implies an error in the ptarray_simplify */
+		if ( opts->npoints < 2 )
+		{
+			lwnotice("ptarray_simplify returned a <2 pts array");
+			ptarray_free(opts);
+			continue;
+		}
+
+		/* Less points than are needed to form a closed ring, we can't use this */
+		if ( opts->npoints < 4 )
+		{
+			LWDEBUGF(3, "ring%d skipped (<4 pts)", ri);
+			ptarray_free(opts);
+			if ( i ) continue;
+			else break;
+		}
+
+		LWDEBUGF(3, "ring%d simplified from %d to %d points", ri, ipts->npoints, opts->npoints);
+
+		/* Add ring to simplified polygon */
+		if( lwpoly_add_ring(opoly, opts) == LW_FALSE )
+			return NULL;
+	}
+
+	LWDEBUGF(3, "simplified polygon with %d rings", norings);
+	TYPE_SETTYPE(opoly->type, TYPE_GETTYPE(ipoly->type));
+	return opoly;
 }

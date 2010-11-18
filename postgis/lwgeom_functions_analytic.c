@@ -29,12 +29,6 @@
 
 
 /* Prototypes */
-void DP_findsplit2d(POINTARRAY *pts, int p1, int p2, int *split, double *dist);
-POINTARRAY *DP_simplify2d(POINTARRAY *inpts, double epsilon);
-LWLINE *simplify2d_lwline(const LWLINE *iline, double dist);
-LWPOLY *simplify2d_lwpoly(const LWPOLY *ipoly, double dist);
-LWCOLLECTION *simplify2d_collection(const LWCOLLECTION *igeom, double dist);
-LWGEOM *simplify2d_lwgeom(const LWGEOM *igeom, double dist);
 Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS);
 Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS);
 Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS);
@@ -49,275 +43,21 @@ int point_in_polygon_rtree(RTREE_NODE **root, int ringCount, LWPOINT *point);
 int point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int ringCount, LWPOINT *point);
 
 
-/*
- * Search farthest point from segment p1-p2
- * returns distance in an int pointer
- */
-void
-DP_findsplit2d(POINTARRAY *pts, int p1, int p2, int *split, double *dist)
-{
-	int k;
-	POINT2D pa, pb, pk;
-	double tmp;
-
-	LWDEBUG(4, "DP_findsplit called");
-
-	*dist = -1;
-	*split = p1;
-
-	if (p1 + 1 < p2)
-	{
-
-		getPoint2d_p(pts, p1, &pa);
-		getPoint2d_p(pts, p2, &pb);
-
-		LWDEBUGF(4, "DP_findsplit: P%d(%f,%f) to P%d(%f,%f)",
-		         p1, pa.x, pa.y, p2, pb.x, pb.y);
-
-		for (k=p1+1; k<p2; k++)
-		{
-			getPoint2d_p(pts, k, &pk);
-
-			LWDEBUGF(4, "DP_findsplit: P%d(%f,%f)", k, pk.x, pk.y);
-
-			/* distance computation */
-			tmp = distance2d_pt_seg(&pk, &pa, &pb);
-
-			if (tmp > *dist)
-			{
-				*dist = tmp;	/* record the maximum */
-				*split = k;
-
-				LWDEBUGF(4, "DP_findsplit: P%d is farthest (%g)", k, *dist);
-			}
-		}
-
-	} /* length---should be redone if can == 0 */
-
-	else
-	{
-		LWDEBUG(3, "DP_findsplit: segment too short, no split/no dist");
-	}
-
-}
-
-
-POINTARRAY *
-DP_simplify2d(POINTARRAY *inpts, double epsilon)
-{
-	int *stack;			/* recursion stack */
-	int sp=-1;			/* recursion stack pointer */
-	int p1, split;
-	double dist;
-	POINTARRAY *outpts;
-	int ptsize = pointArray_ptsize(inpts);
-
-	/* Allocate recursion stack */
-	stack = lwalloc(sizeof(int)*inpts->npoints);
-
-	p1 = 0;
-	stack[++sp] = inpts->npoints-1;
-
-	LWDEBUGF(2, "DP_simplify called input has %d pts and %d dims (ptsize: %d)", inpts->npoints, inpts->dims, ptsize);
-
-	/* allocate space for output POINTARRAY */
-	outpts = palloc(sizeof(POINTARRAY));
-	outpts->dims = inpts->dims;
-	outpts->npoints=1;
-	outpts->serialized_pointlist = palloc(ptsize*inpts->npoints);
-	memcpy(getPoint_internal(outpts, 0), getPoint_internal(inpts, 0),
-	       ptsize);
-
-	LWDEBUG(3, "DP_simplify: added P0 to simplified point array (size 1)");
-
-	do
-	{
-
-		DP_findsplit2d(inpts, p1, stack[sp], &split, &dist);
-
-		LWDEBUGF(3, "DP_simplify: farthest point from P%d-P%d is P%d (dist. %g)", p1, stack[sp], split, dist);
-
-		if (dist > epsilon)
-		{
-			stack[++sp] = split;
-		}
-		else
-		{
-			outpts->npoints++;
-			memcpy(getPoint_internal(outpts, outpts->npoints-1),
-			       getPoint_internal(inpts, stack[sp]),
-			       ptsize);
-
-			LWDEBUGF(4, "DP_simplify: added P%d to simplified point array (size: %d)", stack[sp], outpts->npoints);
-
-			p1 = stack[sp--];
-		}
-
-		LWDEBUGF(4, "stack pointer = %d", sp);
-	}
-	while (! (sp<0) );
-
-	/*
-	 * If we have reduced the number of points realloc
-	 * outpoints array to free up some memory.
-	 * Might be turned on and off with a SAVE_MEMORY define ...
-	 */
-	if ( outpts->npoints < inpts->npoints )
-	{
-		outpts->serialized_pointlist = repalloc(
-		                                   outpts->serialized_pointlist,
-		                                   ptsize*outpts->npoints);
-		if ( outpts->serialized_pointlist == NULL )
-		{
-			elog(ERROR, "Out of virtual memory");
-		}
-	}
-
-	lwfree(stack);
-	return outpts;
-}
-
-LWLINE *
-simplify2d_lwline(const LWLINE *iline, double dist)
-{
-	POINTARRAY *ipts;
-	POINTARRAY *opts;
-	LWLINE *oline;
-
-	LWDEBUG(2, "simplify2d_lwline called");
-
-	ipts = iline->points;
-	opts = DP_simplify2d(ipts, dist);
-	oline = lwline_construct(iline->SRID, NULL, opts);
-
-	return oline;
-}
-
-LWPOLY *
-simplify2d_lwpoly(const LWPOLY *ipoly, double dist)
-{
-	POINTARRAY *ipts;
-	POINTARRAY **orings = NULL;
-	LWPOLY *opoly;
-	int norings=0, ri;
-
-	LWDEBUGF(2, "simplify_polygon3d: simplifying polygon with %d rings", ipoly->nrings);
-
-	orings = (POINTARRAY **)palloc(sizeof(POINTARRAY *)*ipoly->nrings);
-
-	for (ri=0; ri<ipoly->nrings; ri++)
-	{
-		POINTARRAY *opts;
-
-		ipts = ipoly->rings[ri];
-
-		opts = DP_simplify2d(ipts, dist);
-
-
-		if ( opts->npoints < 2 )
-		{
-			/* There as to be an error in DP_simplify */
-			elog(NOTICE, "DP_simplify returned a <2 pts array");
-			pfree(opts);
-			continue;
-		}
-
-		if ( opts->npoints < 4 )
-		{
-			pfree(opts);
-
-			LWDEBUGF(3, "simplify_polygon3d: ring%d skipped ( <4 pts )", ri);
-
-			if ( ri ) continue;
-			else break;
-		}
-
-
-		LWDEBUGF(3, "simplify_polygon3d: ring%d simplified from %d to %d points", ri, ipts->npoints, opts->npoints);
-
-
-		/*
-		 * Add ring to simplified ring array
-		 * (TODO: dinamic allocation of pts_per_ring)
-		 */
-		orings[norings] = opts;
-		norings++;
-
-	}
-
-	LWDEBUGF(3, "simplify_polygon3d: simplified polygon with %d rings", norings);
-
-	if ( ! norings ) return NULL;
-
-	opoly = lwpoly_construct(ipoly->SRID, NULL, norings, orings);
-
-	return opoly;
-}
-
-LWCOLLECTION *
-simplify2d_collection(const LWCOLLECTION *igeom, double dist)
-{
-	uint32 i;
-	uint32 ngeoms=0;
-	LWGEOM **geoms = lwalloc(sizeof(LWGEOM *)*igeom->ngeoms);
-	LWCOLLECTION *out;
-
-	for (i=0; i<igeom->ngeoms; i++)
-	{
-		LWGEOM *ngeom = simplify2d_lwgeom(igeom->geoms[i], dist);
-		if ( ngeom ) geoms[ngeoms++] = ngeom;
-	}
-
-	out = lwcollection_construct(TYPE_GETTYPE(igeom->type), igeom->SRID,
-	                             NULL, ngeoms, geoms);
-
-	return out;
-}
-
-LWGEOM *
-simplify2d_lwgeom(const LWGEOM *igeom, double dist)
-{
-	switch (TYPE_GETTYPE(igeom->type))
-	{
-	case POINTTYPE:
-	case MULTIPOINTTYPE:
-		return lwgeom_clone(igeom);
-	case LINETYPE:
-		return (LWGEOM *)simplify2d_lwline(
-		           (LWLINE *)igeom, dist);
-	case POLYGONTYPE:
-		return (LWGEOM *)simplify2d_lwpoly(
-		           (LWPOLY *)igeom, dist);
-	case MULTILINETYPE:
-	case MULTIPOLYGONTYPE:
-	case COLLECTIONTYPE:
-		return (LWGEOM *)simplify2d_collection(
-		           (LWCOLLECTION *)igeom, dist);
-	default:
-		lwerror("simplify2d_lwgeom: unknown geometry type: %d",
-		        TYPE_GETTYPE(igeom->type));
-	}
-	return NULL;
-}
-
 PG_FUNCTION_INFO_V1(LWGEOM_simplify2d);
 Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	LWGEOM *in = lwgeom_deserialize(SERIALIZED_FORM(geom));
 	LWGEOM *out;
-	PG_LWGEOM *result;
 	double dist = PG_GETARG_FLOAT8(1);
 
-	out = simplify2d_lwgeom(in, dist);
+	out = lwgeom_simplify(in, dist);
 	if ( ! out ) PG_RETURN_NULL();
 
 	/* COMPUTE_BBOX TAINTING */
 	if ( in->bbox ) lwgeom_add_bbox(out);
 
-	result = pglwgeom_serialize(out);
-
-	PG_RETURN_POINTER(result);
+	PG_RETURN_POINTER(pglwgeom_serialize(out));
 }
 
 /***********************************************************************
@@ -578,7 +318,7 @@ ptarray_grid(POINTARRAY *pa, gridspec *grid)
 			pbuf.m = rint((pbuf.m - grid->ipm)/grid->msize) *
 			         grid->msize + grid->ipm;
 
-		ptarray_add_point(dpa, &pbuf, LW_FALSE);
+		ptarray_append_point(dpa, &pbuf, LW_FALSE);
 
 	}
 

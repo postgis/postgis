@@ -84,6 +84,47 @@
 #define SIZE_SET(varsize, size) (((varsize) & 0x00000003)|(((size) & 0x3FFFFFFF) << 2 ))
 
 
+/*
+* Internal prototypes
+*/
+
+/*
+* Force dims
+*/
+LWGEOM* lwgeom_force_dims(const LWGEOM *lwgeom, int hasz, int hasm);
+LWPOINT* lwpoint_force_dims(const LWPOINT *lwpoint, int hasz, int hasm);
+LWLINE* lwline_force_dims(const LWLINE *lwline, int hasz, int hasm);
+LWPOLY* lwpoly_force_dims(const LWPOLY *lwpoly, int hasz, int hasm);
+LWCOLLECTION* lwcollection_force_dims(const LWCOLLECTION *lwcol, int hasz, int hasm);
+POINTARRAY* ptarray_force_dims(const POINTARRAY *pa, int hasz, int hasm);
+
+/*
+* Is Empty?
+*/
+int lwpoly_is_empty(const LWPOLY *poly);
+int lwcollection_is_empty(const LWCOLLECTION *col);
+int lwcircstring_is_empty(const LWCIRCSTRING *circ);
+int lwtriangle_is_empty(const LWTRIANGLE *triangle);
+int lwline_is_empty(const LWLINE *line);
+int lwpoint_is_empty(const LWPOINT *point);
+
+/*
+* Number of vertices?
+*/
+int lwline_count_vertices(LWLINE *line);
+int lwpoly_count_vertices(LWPOLY *poly);
+int lwcollection_count_vertices(LWCOLLECTION *col);
+
+/*
+* DP simplification
+*/
+POINTARRAY* ptarray_simplify(POINTARRAY *inpts, double epsilon);
+LWLINE* lwline_simplify(const LWLINE *iline, double dist);
+LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist);
+LWCOLLECTION* lwcollection_simplify(const LWCOLLECTION *igeom, double dist);
+
+
+
 
 
 

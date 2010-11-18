@@ -537,12 +537,12 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 					double interpolation_value;
 					(ordinate_value_q > to) ? (interpolation_value = to) : (interpolation_value = from);
 					rv = lwpoint_interpolate(q, p, r, dims, ordinate, interpolation_value);
-					rv = ptarray_add_point(dp, r, LW_FALSE);
+					rv = ptarray_append_point(dp, r, LW_FALSE);
 					LWDEBUGF(4, "[0] interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
 				}
 			}
 			/* Add the current vertex to the point array. */
-			rv = ptarray_add_point(dp, p, LW_FALSE);
+			rv = ptarray_append_point(dp, p, LW_FALSE);
 			if ( ordinate_value_p == from || ordinate_value_p == to )
 			{
 				added_last_point = 2; /* Added on boundary. */
@@ -563,7 +563,7 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				double interpolation_value;
 				(ordinate_value_p > to) ? (interpolation_value = to) : (interpolation_value = from);
 				rv = lwpoint_interpolate(q, p, r, dims, ordinate, interpolation_value);
-				rv = ptarray_add_point(dp, r, LW_FALSE);
+				rv = ptarray_append_point(dp, r, LW_FALSE);
 				LWDEBUGF(4, " [1] interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
 			}
 			else if ( added_last_point == 2 )
@@ -578,7 +578,7 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 					double interpolation_value;
 					(ordinate_value_p > to) ? (interpolation_value = to) : (interpolation_value = from);
 					rv = lwpoint_interpolate(q, p, r, dims, ordinate, interpolation_value);
-					rv = ptarray_add_point(dp, r, LW_FALSE);
+					rv = ptarray_append_point(dp, r, LW_FALSE);
 					LWDEBUGF(4, " [2] interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
 				}
 			}
@@ -589,10 +589,10 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				dp = ptarray_construct(hasz, hasm, 2);
 				/* Interpolate lower point. */
 				rv = lwpoint_interpolate(p, q, r, dims, ordinate, from);
-				setPoint4d(dp, 0, r);
+				ptarray_set_point4d(dp, 0, r);
 				/* Interpolate upper point. */
 				rv = lwpoint_interpolate(p, q, r, dims, ordinate, to);
-				setPoint4d(dp, 1, r);
+				ptarray_set_point4d(dp, 1, r);
 			}
 			else if ( i && ordinate_value_q > to && ordinate_value_p < from )
 			{
@@ -601,10 +601,10 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				dp = ptarray_construct(hasz, hasm, 2);
 				/* Interpolate upper point. */
 				rv = lwpoint_interpolate(p, q, r, dims, ordinate, to);
-				setPoint4d(dp, 0, r);
+				ptarray_set_point4d(dp, 0, r);
 				/* Interpolate lower point. */
 				rv = lwpoint_interpolate(p, q, r, dims, ordinate, from);
-				setPoint4d(dp, 1, r);
+				ptarray_set_point4d(dp, 1, r);
 			}
 			/* We have an extant point-array, save it out to a multi-line. */
 			if ( dp )

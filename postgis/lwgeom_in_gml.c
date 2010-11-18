@@ -75,14 +75,12 @@ gmlSrs;
 PG_FUNCTION_INFO_V1(geom_from_gml);
 Datum geom_from_gml(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom, *geom2d;
+	PG_LWGEOM *geom;
 	xmlDocPtr xmldoc;
 	text *xml_input;
 	LWGEOM *lwgeom;
 	int xml_size;
-	uchar *srl;
 	char *xml;
-	size_t size=0;
 	bool hasz=true;
 	int root_srid=0;
 	xmlNodePtr xmlroot=NULL;
@@ -109,8 +107,6 @@ Datum geom_from_gml(PG_FUNCTION_ARGS)
 
 	lwgeom = parse_gml(xmlroot, &hasz, &root_srid);
 	lwgeom->bbox = lwgeom_compute_box2d(lwgeom);
-	geom = pglwgeom_serialize(lwgeom);
-	lwgeom_release(lwgeom);
 
 	xmlFreeDoc(xmldoc);
 	xmlCleanupParser();
@@ -124,13 +120,13 @@ Datum geom_from_gml(PG_FUNCTION_ARGS)
 	 */
 	if (!hasz)
 	{
-		srl = lwalloc(VARSIZE(geom));
-		lwgeom_force2d_recursive(SERIALIZED_FORM(geom), srl, &size);
-		geom2d = PG_LWGEOM_construct(srl, pglwgeom_getSRID(geom),
-		                             lwgeom_hasBBOX(geom->type));
-		lwfree(geom);
-		geom = geom2d;
+		LWGEOM *tmp = lwgeom_force_2d(lwgeom);
+		lwgeom_free(lwgeom);
+		lwgeom = tmp;
 	}
+
+	geom = pglwgeom_serialize(lwgeom);
+	lwgeom_free(lwgeom);
 
 	PG_RETURN_POINTER(geom);
 }
@@ -326,7 +322,7 @@ static POINTARRAY* gml_reproject_pa(POINTARRAY *pa, int srid_in, int srid_out)
 	{
 		getPoint4d_p(pa, i, &p);
 		transform_point(&p, in_pj, out_pj);
-		setPoint4d(pa, i, &p);
+		ptarray_set_point4d(pa, i, &p);
 	}
 
 	pj_free(in_pj);
@@ -634,7 +630,7 @@ static POINTARRAY* parse_gml_coordinates(xmlNodePtr xnode, bool *hasz)
 				*hasz = false;
 			}
 
-			ptarray_add_point(dpa, &pt, LW_FALSE);
+			ptarray_append_point(dpa, &pt, LW_FALSE);
 			digit = false;
 
 			q = p+1;
@@ -702,7 +698,7 @@ static POINTARRAY* parse_gml_coord(xmlNodePtr xnode, bool *hasz)
 	if (!x || !y) lwerror("invalid GML representation");
 	if (!z) *hasz = false;
 
-	ptarray_add_point(dpa, &p, LW_FALSE);
+	ptarray_append_point(dpa, &p, LW_FALSE);
 	x = y = z = false;
 
 	return ptarray_clone(dpa);
@@ -778,7 +774,7 @@ static POINTARRAY* parse_gml_pos(xmlNodePtr xnode, bool *hasz)
 		if (gml_dim < 2 || gml_dim > 3 || gml_dim != dim)
 			lwerror("invalid GML representation");
 
-		ptarray_add_point(dpa, &pt, LW_FALSE);
+		ptarray_append_point(dpa, &pt, LW_FALSE);
 	}
 
 	return ptarray_clone(dpa);
@@ -835,7 +831,7 @@ static POINTARRAY* parse_gml_poslist(xmlNodePtr xnode, bool *hasz)
 
 			if (gml_dim == dim)
 			{
-				ptarray_add_point(dpa, &pt, LW_FALSE);
+				ptarray_append_point(dpa, &pt, LW_FALSE);
 				gml_dim = 0;
 			}
 			else if (*(poslist+1) == '\0')
@@ -1103,7 +1099,7 @@ static LWGEOM* parse_gml_curve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 			/* Aggregate stuff */
 			memcpy(	getPoint_internal(pa, npoints),
 			        getPoint_internal(ppa[i], 0),
-			        pointArray_ptsize(ppa[i]) * (ppa[i]->npoints + last));
+			        ptarray_point_size(ppa[i]) * (ppa[i]->npoints + last));
 
 			npoints += ppa[i]->npoints - 1;
 			lwfree(ppa[i]);

@@ -171,7 +171,7 @@ lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *retsize)
 	if ( TYPE_GETZM(line->type) != TYPE_GETZM(line->points->dims) )
 		lwerror("Dimensions mismatch in lwline");
 
-	ptsize = pointArray_ptsize(line->points);
+	ptsize = ptarray_point_size(line->points);
 
 	hasSRID = (line->SRID != -1);
 
@@ -248,7 +248,7 @@ lwline_serialize_size(LWLINE *line)
 	if ( line->bbox ) size += sizeof(BOX2DFLOAT4);
 
 	size += 4; /* npoints */
-	size += pointArray_ptsize(line->points)*line->points->npoints;
+	size += ptarray_point_size(line->points)*line->points->npoints;
 
 	LWDEBUGF(3, "lwline_serialize_size returning %d", size);
 
@@ -402,7 +402,7 @@ lwline_from_lwpointarray(int SRID, uint32 npoints, LWPOINT **points)
 	ptr=newpoints;
 	for (i=0; i<npoints; i++)
 	{
-		size=pointArray_ptsize(points[i]->point);
+		size=ptarray_point_size(points[i]->point);
 		memcpy(ptr, getPoint_internal(points[i]->point, 0), size);
 		ptr+=ptsize;
 	}
@@ -449,22 +449,15 @@ lwline_from_lwmpoint(int SRID, LWMPOINT *mpoint)
 	return lwline_construct(SRID, NULL, pa);
 }
 
-LWLINE *
-lwline_addpoint(LWLINE *line, LWPOINT *point, uint32 where)
+int
+lwline_add_point(LWLINE *line, LWPOINT *point, int where)
 {
-	POINTARRAY *newpa;
-	LWLINE *ret;
-
-	newpa = ptarray_addPoint(line->points,
-	                         getPoint_internal(point->point, 0),
-	                         TYPE_NDIMS(point->type), where);
-
-
-
-	ret = lwline_construct(line->SRID, ptarray_compute_box2d(newpa), newpa);
-
-	return ret;
+	POINT4D pt;	
+	getPoint4d_p(point->point, 0, &pt);
+	return ptarray_insert_point(line->points, &pt, where);
 }
+
+
 
 LWLINE *
 lwline_removepoint(LWLINE *line, uint32 index)
@@ -485,7 +478,7 @@ lwline_removepoint(LWLINE *line, uint32 index)
 void
 lwline_setPoint4d(LWLINE *line, uint32 index, POINT4D *newpoint)
 {
-	setPoint4d(line->points, index, newpoint);
+	ptarray_set_point4d(line->points, index, newpoint);
 	/* Update the box, if there is one to update */
 	if ( line->bbox )
 	{
@@ -548,7 +541,7 @@ lwline_measured_from_lwline(const LWLINE *lwline, double m_start, double m_end)
 		q.y = p2.y;
 		q.z = p2.z;
 		q.m = m;
-		setPoint4d(pa, i, &q);
+		ptarray_set_point4d(pa, i, &q);
 		p1 = p2;
 	}
 
@@ -574,4 +567,56 @@ lwline_is_closed(LWLINE *line)
 		return ptarray_isclosed3d(line->points);
 
 	return ptarray_isclosed2d(line->points);
+}
+
+
+LWLINE*
+lwline_force_dims(const LWLINE *line, int hasz, int hasm)
+{
+	POINTARRAY *pdims = NULL;
+	LWLINE *lineout;
+	
+	/* Return 2D empty */
+	if( lwline_is_empty(line) )
+	{
+		lineout = lwline_construct_empty(line->SRID, hasz, hasm);
+	}
+	else
+	{	
+		pdims = ptarray_force_dims(line->points, hasz, hasm);
+		lineout = lwline_construct(line->SRID, NULL, pdims);
+	}
+	TYPE_SETTYPE(lineout->type, TYPE_GETTYPE(line->type));
+	return lineout;
+}
+
+int lwline_is_empty(const LWLINE *line)
+{
+	if ( !line->points || line->points->npoints == 0 )
+		return LW_TRUE;
+	return LW_FALSE;
+}
+
+
+int lwline_count_vertices(LWLINE *line)
+{
+	assert(line);
+	if ( ! line->points )
+		return 0;
+	return line->points->npoints;
+}
+
+LWLINE* lwline_simplify(const LWLINE *iline, double dist)
+{
+	LWLINE *oline;
+
+	LWDEBUG(2, "function called");
+
+	/* Skip empty case */
+	if( lwline_is_empty(iline) )
+		return lwline_clone(iline);
+		
+	oline = lwline_construct(iline->SRID, NULL, ptarray_simplify(iline->points, dist));
+	TYPE_SETTYPE(oline->type, TYPE_GETTYPE(iline->type));
+	return oline;
 }

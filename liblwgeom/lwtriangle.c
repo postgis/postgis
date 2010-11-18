@@ -30,9 +30,8 @@ lwtriangle_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points)
 
 	hasz = TYPE_HASZ(points->dims);
 	hasm = TYPE_HASM(points->dims);
-
 	result = (LWTRIANGLE*) lwalloc(sizeof(LWTRIANGLE));
-	result->type = lwgeom_makeType_full(hasz, hasm, (SRID!=-1), TRIANGLETYPE, 0);
+	result->type = lwgeom_makeType_full(hasz, hasm, (SRID>0), TRIANGLETYPE, 0);
 	result->SRID = SRID;
 	result->points = points;
 	result->bbox = bbox;
@@ -121,7 +120,7 @@ lwtriangle_deserialize(uchar *serialized_form)
 	npoints = lw_get_uint32(loc);
 	/*lwnotice("triangle npoints = %d", npoints); */
 	loc +=4;
-	pa = ptarray_construct_reference_data(TYPE_HASZ(type), TYPE_HASM(type), npoints, loc);
+	pa = ptarray_construct_reference_data(hasz, hasm, npoints, loc);
 	
 	result->points = pa;
 
@@ -175,7 +174,7 @@ lwtriangle_serialize_buf(LWTRIANGLE *triangle, uchar *buf, size_t *retsize)
 	if ( TYPE_GETZM(triangle->type) != TYPE_GETZM(triangle->points->dims) )
 		lwerror("Dimensions mismatch in lwtriangle");
 
-	ptsize = pointArray_ptsize(triangle->points);
+	ptsize = ptarray_point_size(triangle->points);
 
 	hasSRID = (triangle->SRID != -1);
 
@@ -289,7 +288,7 @@ lwtriangle_serialize_size(LWTRIANGLE *triangle)
 	if ( triangle->bbox ) size += sizeof(BOX2DFLOAT4);
 
 	size += 4; /* npoints */
-	size += pointArray_ptsize(triangle->points)*triangle->points->npoints;
+	size += ptarray_point_size(triangle->points)*triangle->points->npoints;
 
 	LWDEBUGF(3, "lwtriangle_serialize_size returning %d", size);
 
@@ -353,7 +352,9 @@ lwtriangle_release(LWTRIANGLE *lwtriangle)
 char
 lwtriangle_same(const LWTRIANGLE *t1, const LWTRIANGLE *t2)
 {
-	return ptarray_same(t1->points, t2->points);
+	char r = ptarray_same(t1->points, t2->points);
+	LWDEBUGF(5, "returning %d", r);
+	return r;
 }
 
 /*
@@ -396,3 +397,11 @@ lwtriangle_is_repeated_points(LWTRIANGLE *triangle)
 
 	return ret;
 }
+
+int lwtriangle_is_empty(const LWTRIANGLE *triangle)
+{
+	if ( !triangle->points || triangle->points->npoints == 0 )
+		return LW_TRUE;
+	return LW_FALSE;
+}
+
