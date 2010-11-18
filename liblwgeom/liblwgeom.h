@@ -1550,6 +1550,13 @@ extern int lwgeom_count_vertices(const LWGEOM *geom);
 extern int lwgeom_npoints(uchar *serialized);
 
 /**
+* Count the total number of rings in any #LWGEOM. Multipolygons
+* and other collections get counted, not the same as OGC st_numrings.
+*/
+extern int lwgeom_count_rings(const LWGEOM *geom);
+
+
+/**
 * Return true or false depending on whether a geometry has
 * a valid SRID set.
 */
@@ -1636,9 +1643,6 @@ extern LWTRIANGLE *lwtriangle_from_lwline(const LWLINE *shell);
 /* Return a char string with ASCII versionf of type flags */
 extern const char *lwgeom_typeflags(uchar type);
 
-
-
-extern int32 lwgeom_nrings_recursive(uchar *serialized);
 
 /*
  * Given a point, returns the location of closest point on pointarray

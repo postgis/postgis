@@ -1197,6 +1197,57 @@ int lwgeom_count_vertices(const LWGEOM *geom)
 	return result;
 }
 
+/**
+* Count rings in an #LWGEOM.
+*/
+int lwgeom_count_rings(const LWGEOM *geom)
+{
+	int result = 0;
+	
+	/* Null? Empty? Zero. */
+	if( ! geom || lwgeom_is_empty(geom) ) 
+		return 0;
+
+	switch (TYPE_GETTYPE(geom->type))
+	{
+	case POINTTYPE:
+	case CIRCSTRINGTYPE: 
+	case COMPOUNDTYPE:
+	case MULTICURVETYPE:
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case LINETYPE:
+		result = 0;
+		break;
+	case TRIANGLETYPE:
+		result = 1;
+		break;
+	case POLYGONTYPE:
+		result = ((LWPOLY *)geom)->nrings;
+		break;
+	case CURVEPOLYTYPE:
+		result = ((LWCURVEPOLY *)geom)->nrings;
+		break;
+	case MULTISURFACETYPE:
+	case MULTIPOLYGONTYPE:
+	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
+	case COLLECTIONTYPE:
+	{
+		LWCOLLECTION *col = (LWCOLLECTION*)geom;
+		int i = 0;
+		for( i = 0; i < col->ngeoms; i++ )
+			result += lwgeom_count_rings(col->geoms[i]);
+		break;
+	}
+	default:
+		lwerror("lwgeom_count_rings: unsupported input geometry type: %s", lwtype_name(TYPE_GETTYPE(geom->type)));
+		break;
+	}
+	LWDEBUGF(3, "counted %d rings", result);
+	return result;
+}
+
 int lwgeom_is_empty(const LWGEOM *geom)
 {
 	int result = LW_FALSE;
