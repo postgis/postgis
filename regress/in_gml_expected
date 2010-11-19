@@ -281,7 +281,7 @@ poslist_17|LINESTRING(1 2,3 4)
 ERROR:  invalid GML representation
 data_1|LINESTRING(1 2,3 4,5 6,7 8,9 10,11 12)
 data_2|LINESTRING(1 2,3 4,5 6,7 8,9 10)
-xlink_1|LINESTRING(1 2,1 2,3 4)
+xlink_1|LINESTRING(1 2,3 4)
 ERROR:  invalid GML representation
 ERROR:  invalid GML representation
 ERROR:  invalid GML representation
@@ -291,7 +291,7 @@ ERROR:  invalid GML representation
 ERROR:  invalid GML representation
 ERROR:  invalid GML representation
 ERROR:  invalid GML representation
-xlink_11|LINESTRING(1 2,1 2,3 4)
+xlink_11|LINESTRING(1 2,3 4)
 xlink_12|GEOMETRYCOLLECTION(POINT(1 2),POINT(1 2))
 xlink_13|GEOMETRYCOLLECTION(LINESTRING(1 2,3 4),LINESTRING(1 2,3 4))
 xlink_14|GEOMETRYCOLLECTION(LINESTRING(1 2,3 4),LINESTRING(1 2,3 4))
