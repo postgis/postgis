@@ -32,15 +32,22 @@ lwcompound_deserialize(uchar *serialized)
 	insp = lwgeom_inspect(serialized);
 
 	result = lwalloc(sizeof(LWCOMPOUND));
-	result->type = insp->type;
+	result->type = COMPOUNDTYPE;
+	FLAGS_SET_Z(result->flags, TYPE_HASZ(insp->type));
+	FLAGS_SET_M(result->flags, TYPE_HASM(insp->type));
 	result->SRID = insp->SRID;
 	result->ngeoms = insp->ngeometries;
 	result->geoms = lwalloc(sizeof(LWGEOM *)*insp->ngeometries);
 
 	if (lwgeom_hasBBOX(serialized[0]))
 	{
-		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
-		memcpy(result->bbox, serialized + 1, sizeof(BOX2DFLOAT4));
+		BOX2DFLOAT4 *box2df;
+		
+		FLAGS_SET_BBOX(result->flags, 1);
+		box2df = lwalloc(sizeof(BOX2DFLOAT4));
+		memcpy(box2df, serialized + 1, sizeof(BOX2DFLOAT4));
+		result->bbox = gbox_from_box2df(result->flags, box2df);
+		lwfree(box2df);
 	}
 	else result->bbox = NULL;
 
@@ -69,19 +76,19 @@ lwcompound_is_closed(LWCOMPOUND *compound)
 	size_t size;
 	int npoints=0;
 
-	if (!TYPE_HASZ(compound->type))
+	if (!FLAGS_GET_Z(compound->flags))
 		size = sizeof(POINT2D);
 	else    size = sizeof(POINT3D);
 
-	if      (lwgeom_getType(compound->geoms[compound->ngeoms - 1]->type) == CIRCSTRINGTYPE)
+	if      (compound->geoms[compound->ngeoms - 1]->type == CIRCSTRINGTYPE)
 		npoints = ((LWCIRCSTRING *)compound->geoms[compound->ngeoms - 1])->points->npoints;
-	else if (lwgeom_getType(compound->geoms[compound->ngeoms - 1]->type) == LINETYPE)
+	else if (compound->geoms[compound->ngeoms - 1]->type == LINETYPE)
 		npoints = ((LWLINE *)compound->geoms[compound->ngeoms - 1])->points->npoints;
 
 	if ( memcmp(getPoint_internal( (POINTARRAY *)compound->geoms[0]->data, 0),
 	            getPoint_internal( (POINTARRAY *)compound->geoms[compound->ngeoms - 1]->data,
 	                               npoints - 1),
-	            size) ) return 0;
+	            size) ) return LW_FALSE;
 
-	return 1;
+	return LW_TRUE;
 }

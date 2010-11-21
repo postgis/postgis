@@ -114,7 +114,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 		else
 			getPoint4d_p(ipa, ipa->npoints-1, &pt);
 
-		opa = ptarray_construct_reference_data(TYPE_HASZ(line->type), TYPE_HASM(line->type), 1, (uchar*)&pt);
+		opa = ptarray_construct_reference_data(FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags), 1, (uchar*)&pt);
 		
 		point = lwpoint_construct(line->SRID, 0, opa);
 		srl = lwpoint_serialize(point);
@@ -148,7 +148,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 		{
 			double dseg = (distance - tlength) / slength;
 			interpolate_point4d(&p1, &p2, &pt, dseg);
-			opa = ptarray_construct_reference_data(TYPE_HASZ(line->type), TYPE_HASM(line->type), 1, (uchar*)&pt);
+			opa = ptarray_construct_reference_data(FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags), 1, (uchar*)&pt);
 			point = lwpoint_construct(line->SRID, 0, opa);
 			srl = lwpoint_serialize(point);
 			/* We shouldn't need this, the memory context is getting freed on the next line
@@ -161,7 +161,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 	/* Return the last point on the line. This shouldn't happen, but
 	 * could if there's some floating point rounding errors. */
 	getPoint4d_p(ipa, ipa->npoints-1, &pt);
-	opa = ptarray_construct_reference_data(TYPE_HASZ(line->type), TYPE_HASM(line->type), 1, (uchar*)&pt);
+	opa = ptarray_construct_reference_data(FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags), 1, (uchar*)&pt);
 	point = lwpoint_construct(line->SRID, 0, opa);
 	srl = lwpoint_serialize(point);
 	/* We shouldn't need this, the memory context is getting freed on the next line
@@ -295,7 +295,7 @@ ptarray_grid(POINTARRAY *pa, gridspec *grid)
 
 	LWDEBUGF(2, "ptarray_grid called on %p", pa);
 
-	dpa = ptarray_construct_empty(TYPE_HASZ(pa->dims),TYPE_HASM(pa->dims), pa->npoints);
+	dpa = ptarray_construct_empty(FLAGS_GET_Z(pa->dims),FLAGS_GET_M(pa->dims), pa->npoints);
 
 	for (ipn=0, opn=0; ipn<pa->npoints; ++ipn)
 	{
@@ -310,11 +310,11 @@ ptarray_grid(POINTARRAY *pa, gridspec *grid)
 			pbuf.y = rint((pbuf.y - grid->ipy)/grid->ysize) *
 			         grid->ysize + grid->ipy;
 
-		if ( TYPE_HASZ(pa->dims) && grid->zsize )
+		if ( FLAGS_GET_Z(pa->dims) && grid->zsize )
 			pbuf.z = rint((pbuf.z - grid->ipz)/grid->zsize) *
 			         grid->zsize + grid->ipz;
 
-		if ( TYPE_HASM(pa->dims) && grid->msize )
+		if ( FLAGS_GET_M(pa->dims) && grid->msize )
 			pbuf.m = rint((pbuf.m - grid->ipm)/grid->msize) *
 			         grid->msize + grid->ipm;
 
@@ -461,14 +461,14 @@ lwcollection_grid(LWCOLLECTION *coll, gridspec *grid)
 
 	if ( ! ngeoms ) return lwcollection_construct_empty(COLLECTIONTYPE, coll->SRID, 0, 0);
 
-	return lwcollection_construct(TYPE_GETTYPE(coll->type), coll->SRID,
+	return lwcollection_construct(coll->type, coll->SRID,
 	                              NULL, ngeoms, geoms);
 }
 
 LWGEOM *
 lwgeom_grid(LWGEOM *lwgeom, gridspec *grid)
 {
-	switch (TYPE_GETTYPE(lwgeom->type))
+	switch (lwgeom->type)
 	{
 	case POINTTYPE:
 		return (LWGEOM *)lwpoint_grid((LWPOINT *)lwgeom, grid);
@@ -483,7 +483,7 @@ lwgeom_grid(LWGEOM *lwgeom, gridspec *grid)
 		return (LWGEOM *)lwcollection_grid((LWCOLLECTION *)lwgeom, grid);
 	default:
 		elog(ERROR, "lwgeom_grid: Unsupported geometry type: %s",
-		     lwtype_name(TYPE_GETTYPE(lwgeom->type)));
+		     lwtype_name(lwgeom->type));
 		return NULL;
 	}
 }
@@ -526,7 +526,7 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 
 	in_lwgeom = lwgeom_deserialize(SERIALIZED_FORM(in_geom));
 
-	POSTGIS_DEBUGF(3, "SnapToGrid got a %s", lwtype_name(TYPE_GETTYPE(in_lwgeom->type)));
+	POSTGIS_DEBUGF(3, "SnapToGrid got a %s", lwtype_name(in_lwgeom->type));
 
 	out_lwgeom = lwgeom_grid(in_lwgeom, &grid);
 	if ( out_lwgeom == NULL ) PG_RETURN_NULL();
@@ -562,7 +562,7 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 	}
 #endif /* 0 */
 
-	POSTGIS_DEBUGF(3, "SnapToGrid made a %s", lwtype_name(TYPE_GETTYPE(out_lwgeom->type)));
+	POSTGIS_DEBUGF(3, "SnapToGrid made a %s", lwtype_name(out_lwgeom->type));
 
 	out_geom = pglwgeom_serialize(out_lwgeom);
 
@@ -611,9 +611,9 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 	getPoint4d_p(in_lwpoint->point, 0, &offsetpoint);
 	grid.ipx = offsetpoint.x;
 	grid.ipy = offsetpoint.y;
-	if (TYPE_HASZ(in_lwpoint->type) ) grid.ipz = offsetpoint.z;
+	if (FLAGS_GET_Z(in_lwpoint->flags) ) grid.ipz = offsetpoint.z;
 	else grid.ipz=0;
-	if (TYPE_HASM(in_lwpoint->type) ) grid.ipm = offsetpoint.m;
+	if (FLAGS_GET_M(in_lwpoint->flags) ) grid.ipm = offsetpoint.m;
 	else grid.ipm=0;
 
 #if POSTGIS_DEBUG_LEVEL >= 4
@@ -628,7 +628,7 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 
 	in_lwgeom = lwgeom_deserialize(SERIALIZED_FORM(in_geom));
 
-	POSTGIS_DEBUGF(3, "SnapToGrid got a %s", lwtype_name(TYPE_GETTYPE(in_lwgeom->type)));
+	POSTGIS_DEBUGF(3, "SnapToGrid got a %s", lwtype_name(in_lwgeom->type));
 
 	out_lwgeom = lwgeom_grid(in_lwgeom, &grid);
 	if ( out_lwgeom == NULL ) PG_RETURN_NULL();
@@ -664,7 +664,7 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 	}
 #endif /* 0 */
 
-	POSTGIS_DEBUGF(3, "SnapToGrid made a %s", lwtype_name(TYPE_GETTYPE(out_lwgeom->type)));
+	POSTGIS_DEBUGF(3, "SnapToGrid made a %s", lwtype_name(out_lwgeom->type));
 
 	out_geom = pglwgeom_serialize(out_lwgeom);
 
@@ -910,7 +910,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 		if ( ! homogeneous )
 			TYPE_SETTYPE(type,COLLECTIONTYPE);
 
-		olwgeom = (LWGEOM*)lwcollection_construct(type, iline->SRID, NULL, g, geoms);
+		olwgeom = (LWGEOM*)lwcollection_construct(TYPE_GETTYPE(type), iline->SRID, NULL, g, geoms);
 	}
 	else
 	{

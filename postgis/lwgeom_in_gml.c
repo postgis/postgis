@@ -106,7 +106,7 @@ Datum geom_from_gml(PG_FUNCTION_ARGS)
 	}
 
 	lwgeom = parse_gml(xmlroot, &hasz, &root_srid);
-	lwgeom->bbox = lwgeom_compute_box2d(lwgeom);
+	lwgeom_add_bbox(lwgeom);
 
 	xmlFreeDoc(xmldoc);
 	xmlCleanupParser();

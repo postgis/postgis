@@ -518,7 +518,7 @@ pointArray_toGML2(POINTARRAY *pa, char *output, int precision)
 
 	ptr = output;
 
-	if ( ! TYPE_HASZ(pa->dims) )
+	if ( ! FLAGS_GET_Z(pa->dims) )
 	{
 		for (i=0; i<pa->npoints; i++)
 		{
@@ -654,7 +654,7 @@ asgml3_point_buf(LWPOINT *point, char *srs, char *output, int precision, int is_
 	char *ptr = output;
 	int dimension=2;
 
-	if (TYPE_HASZ(point->type)) dimension = 3;
+	if (FLAGS_GET_Z(point->flags)) dimension = 3;
 	if ( srs )
 	{
 		ptr += sprintf(ptr, "<%sPoint srsName=\"%s\">", prefix, srs);
@@ -703,7 +703,7 @@ asgml3_line_buf(LWLINE *line, char *srs, char *output, int precision, int is_dee
 	char *ptr=output;
 	int dimension=2;
 
-	if (TYPE_HASZ(line->type)) dimension = 3;
+	if (FLAGS_GET_Z(line->flags)) dimension = 3;
 	if ( srs )
 	{
 		ptr += sprintf(ptr, "<%sCurve srsName=\"%s\">", prefix, srs);
@@ -763,7 +763,7 @@ asgml3_poly_buf(LWPOLY *poly, char *srs, char *output, int precision, int is_dee
 	char *ptr=output;
 	int dimension=2;
 
-	if (TYPE_HASZ(poly->type)) dimension = 3;
+	if (FLAGS_GET_Z(poly->flags)) dimension = 3;
 	if (is_patch)
 	{
 		if (srs) ptr += sprintf(ptr, "<%sPolygonPatch srsName=\"%s\">", prefix, srs);
@@ -832,7 +832,7 @@ asgml3_triangle_buf(LWTRIANGLE *triangle, char *srs, char *output, int precision
 	char *ptr=output;
 	int dimension=2;
 
-	if (TYPE_HASZ(triangle->type)) dimension = 3;
+	if (FLAGS_GET_Z(triangle->flags)) dimension = 3;
 	if (srs) ptr += sprintf(ptr, "<%sTriangle srsName=\"%s\">", prefix, srs);
 	else     ptr += sprintf(ptr, "<%sTriangle>", prefix);
 
@@ -1265,7 +1265,7 @@ pointArray_toGML3(POINTARRAY *pa, char *output, int precision, int is_deegree)
 
 	ptr = output;
 
-	if ( ! TYPE_HASZ(pa->dims) )
+	if ( ! FLAGS_GET_Z(pa->dims) )
 	{
 		for (i=0; i<pa->npoints; i++)
 		{
@@ -1335,7 +1335,7 @@ pointArray_toGML3(POINTARRAY *pa, char *output, int precision, int is_deegree)
 static size_t
 pointArray_GMLsize(POINTARRAY *pa, int precision)
 {
-	if (TYPE_NDIMS(pa->dims) == 2)
+	if (FLAGS_NDIMS(pa->dims) == 2)
 		return (OUT_MAX_DIGS_DOUBLE + precision + sizeof(", "))
 		       * 2 * pa->npoints;
 

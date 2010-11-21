@@ -23,15 +23,14 @@
  * Return a pointer on the newly allocated struct
  */
 TGEOM*
-tgeom_new(uint32 type, int hasz, int hasm)
+tgeom_new(uchar type, int hasz, int hasm)
 {
 	TGEOM *tgeom;
 
 	tgeom = lwalloc(sizeof(TGEOM));
 	tgeom->type = type;
-	tgeom->flags = 0;
-	if (hasz) FLAGS_SET_Z(tgeom->flags, 1);
-	if (hasm) FLAGS_SET_M(tgeom->flags, 1);
+	FLAGS_SET_Z(tgeom->flags, hasz);
+	FLAGS_SET_M(tgeom->flags, hasm);
 	tgeom->bbox=NULL;
 	tgeom->srid=0;
 	tgeom->nedges=0;
@@ -225,7 +224,7 @@ tgeom_add_polygon(TGEOM *tgeom, LWPOLY *poly)
 		lwerror("tgeom_add_polygon: Unable to handle %s - %s type",
 		        tgeom->type, lwtype_name(tgeom->type));
 
-	if (FLAGS_NDIMS(tgeom->flags) != TYPE_NDIMS(poly->type))
+	if (FLAGS_NDIMS(tgeom->flags) != FLAGS_NDIMS(poly->flags))
 		lwerror("tgeom_add_polygon: Mixed dimension");
 
 	if (tgeom->srid != poly->SRID && (tgeom->srid != 0 && poly->SRID != -1))
@@ -301,7 +300,7 @@ tgeom_add_triangle(TGEOM *tgeom, LWTRIANGLE *triangle)
 		lwerror("tgeom_add_triangle: Unable to handle %s - %s type",
 		        tgeom->type, lwtype_name(tgeom->type));
 
-	if (FLAGS_NDIMS(tgeom->flags) != TYPE_NDIMS(triangle->type))
+	if (FLAGS_NDIMS(tgeom->flags) != FLAGS_NDIMS(triangle->flags))
 		lwerror("tgeom_add_triangle: Mixed dimension");
 
 	if (tgeom->srid != triangle->SRID
@@ -413,16 +412,15 @@ tgeom_from_lwgeom(LWGEOM *lwgeom)
 	LWTIN *tin;
 	LWPSURFACE *psurf;
 	TGEOM *tgeom = NULL;
-	int type = TYPE_GETTYPE(lwgeom->type);
 
-	tgeom = tgeom_new(0, TYPE_HASZ(lwgeom->type), TYPE_HASM(lwgeom->type));
+	tgeom = tgeom_new(0, FLAGS_GET_Z(lwgeom->flags), FLAGS_GET_M(lwgeom->flags));
 
 	if (lwgeom->SRID == -1) tgeom->srid = 0;
 	else 			tgeom->srid = lwgeom->SRID;
 
 	if (lwgeom_is_empty(lwgeom)) return tgeom;
 
-	switch (type)
+	switch (lwgeom->type)
 	{
 	case TINTYPE:
 		tgeom->type = TINTYPE;
@@ -447,7 +445,7 @@ tgeom_from_lwgeom(LWGEOM *lwgeom)
 
 	default:
 		lwerror("tgeom_from_lwgeom: unknown geometry type %i - %s",
-		        type, lwtype_name(type));
+		        tgeom->type, lwtype_name(tgeom->type));
 	}
 
 
@@ -496,25 +494,24 @@ lwgeom_from_tgeom(TGEOM *tgeom)
 	LWGEOM *geom;
 	POINTARRAY *dpa;
 	POINTARRAY **ppa;
-	int hasz, hasm, type, edge_id;
+	int hasz, hasm, edge_id;
 	int dims=0;
 
 	assert(tgeom);
 
-	type=TYPE_GETTYPE(tgeom->type);
 	hasz=FLAGS_GET_Z(tgeom->flags);
 	hasm=FLAGS_GET_M(tgeom->flags);
 
 	geom = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, tgeom->srid, hasz, hasm);
 
-	switch (type)
+	switch (tgeom->type)
 	{
 	case TINTYPE:
-		TYPE_SETTYPE(geom->type, TINTYPE);
+		geom->type = TINTYPE;
 		for (i=0 ; i < tgeom->nfaces ; i++)
 		{
-
-			TYPE_SETZM(dims, hasz?1:0, hasm?1:0);
+			FLAGS_SET_Z(dims, hasz?1:0);
+			FLAGS_SET_M(dims, hasm?1:0);
 			dpa = ptarray_construct_empty(hasz, hasm, 4);
 
 			for (j=0 ; j < tgeom->faces[i]->nedges ; j++)
@@ -542,10 +539,11 @@ lwgeom_from_tgeom(TGEOM *tgeom)
 		break;
 
 	case POLYHEDRALSURFACETYPE:
-		TYPE_SETTYPE(geom->type, POLYHEDRALSURFACETYPE);
+		geom->type = POLYHEDRALSURFACETYPE;
 		for (i=0 ; i < tgeom->nfaces ; i++)
 		{
-			TYPE_SETZM(dims, hasz?1:0, hasm?1:0);
+			FLAGS_SET_Z(dims, hasz?1:0);
+			FLAGS_SET_M(dims, hasm?1:0);;
 			dpa = ptarray_construct_empty(hasz, hasm, 4);
 
 			for (j=0 ; j < tgeom->faces[i]->nedges ; j++)
@@ -578,8 +576,8 @@ lwgeom_from_tgeom(TGEOM *tgeom)
 		break;
 
 	default:
-		lwerror("tgeom_from_lwgeom: Unkwnown type %i - %s\n",
-		        type, lwtype_name(type));
+		lwerror("lwgeom_from_tgeom: Unkwnown type %i - %s\n",
+		        tgeom->type, lwtype_name(tgeom->type));
 	}
 
 	if (geom->SRID == 0) geom->SRID = -1;
@@ -910,16 +908,14 @@ tgeom_deserialize(TSERIALIZED *serialized_form)
 int
 lwgeom_is_solid(LWGEOM *lwgeom)
 {
-	int type;
 	int solid=0;
 	TGEOM *tgeom;
 
 	assert(lwgeom);
 
 	/* Obvious case who could'nt be solid */
-	type = TYPE_GETTYPE(lwgeom->type);
-	if (type != POLYHEDRALSURFACETYPE && type != TINTYPE) return 0;
-	if (!TYPE_HASZ(lwgeom->type)) return 0;
+	if (lwgeom->type != POLYHEDRALSURFACETYPE && lwgeom->type != TINTYPE) return 0;
+	if (!FLAGS_GET_Z(lwgeom->flags)) return 0;
 
 	/* Use TGEOM convert to know */
 	tgeom = tgeom_from_lwgeom(lwgeom);

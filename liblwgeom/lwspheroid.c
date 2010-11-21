@@ -520,7 +520,7 @@ double lwgeom_area_spheroid(const LWGEOM *lwgeom, const GBOX *gbox, const SPHERO
 		return 0.0;
 
 	/* Read the geometry type number */
-	type = TYPE_GETTYPE(lwgeom->type);
+	type = lwgeom->type;
 
 	/* Anything but polygons and collections returns zero */
 	if ( ! ( type == POLYGONTYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE ) )

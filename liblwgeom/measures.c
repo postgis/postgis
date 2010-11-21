@@ -208,7 +208,7 @@ int lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl)
 	LWCOLLECTION *c1 = NULL;
 	LWCOLLECTION *c2 = NULL;
 
-	LWDEBUGF(2, "lw_dist2d_comp is called with type1=%d, type2=%d", TYPE_GETTYPE(lwg1->type), TYPE_GETTYPE(lwg2->type));
+	LWDEBUGF(2, "lw_dist2d_comp is called with type1=%d, type2=%d", lwg1->type, lwg2->type);
 
 	if (lwgeom_is_collection(lwg1))
 	{
@@ -262,16 +262,17 @@ int lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl)
 
 			if ( ! g1->bbox )
 			{
-				g1->bbox = lwgeom_compute_box2d(g1);
+				lwgeom_add_bbox(g1);
 			}
 			if ( ! g2->bbox )
 			{
-				g2->bbox = lwgeom_compute_box2d(g2);
+				lwgeom_add_bbox(g2);
 			}
+
 			/*If one of geometries is empty, return. True here only means continue searching. False would have stoped the process*/
 			if (lwgeom_is_empty(g1)||lwgeom_is_empty(g2)) return LW_TRUE;
 
-			if ((dl->mode==DIST_MAX)||(TYPE_GETTYPE(g1->type)==POINTTYPE) ||(TYPE_GETTYPE(g2->type)==POINTTYPE)||lw_dist2d_check_overlap(g1, g2))
+			if ((dl->mode==DIST_MAX)||(g1->type==POINTTYPE) ||(g2->type==POINTTYPE)||lw_dist2d_check_overlap(g1, g2))
 			{
 				if (!lw_dist2d_distribute_bruteforce(g1, g2, dl)) return LW_FALSE;
 				if (dl->distance<=dl->tolerance && dl->mode == DIST_MIN) return LW_TRUE; /*just a check if  the answer is already given*/
@@ -295,10 +296,10 @@ int
 lw_dist2d_distribute_bruteforce(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl)
 {
 
-	int	t1 = TYPE_GETTYPE(lwg1->type);
-	int	t2 = TYPE_GETTYPE(lwg2->type);
+	int	t1 = lwg1->type;
+	int	t2 = lwg2->type;
 
-	LWDEBUGF(2, "lw_dist2d_distribute_bruteforce is called with typ1=%d, type2=%d", TYPE_GETTYPE(lwg1->type), TYPE_GETTYPE(lwg2->type));
+	LWDEBUGF(2, "lw_dist2d_distribute_bruteforce is called with typ1=%d, type2=%d", lwg1->type, lwg2->type);
 
 	if  ( t1 == POINTTYPE )
 	{
@@ -389,9 +390,9 @@ lw_dist2d_check_overlap(LWGEOM *lwg1,LWGEOM *lwg2)
 {
 	LWDEBUG(2, "lw_dist2d_check_overlap is called");
 	if ( ! lwg1->bbox )
-		lwg1->bbox = lwgeom_compute_box2d(lwg1);
+		lwgeom_calculate_gbox(lwg1, lwg1->bbox);
 	if ( ! lwg2->bbox )
-		lwg2->bbox = lwgeom_compute_box2d(lwg2);
+		lwgeom_calculate_gbox(lwg2, lwg2->bbox);
 
 	/*Check if the geometries intersect.
 	*/
@@ -412,10 +413,10 @@ int
 lw_dist2d_distribute_fast(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl)
 {
 	POINTARRAY *pa1, *pa2;
-	int	type1 = TYPE_GETTYPE(lwg1->type);
-	int	type2 = TYPE_GETTYPE(lwg2->type);
+	int	type1 = lwg1->type;
+	int	type2 = lwg2->type;
 
-	LWDEBUGF(2, "lw_dist2d_distribute_fast is called with typ1=%d, type2=%d", TYPE_GETTYPE(lwg1->type), TYPE_GETTYPE(lwg2->type));
+	LWDEBUGF(2, "lw_dist2d_distribute_fast is called with typ1=%d, type2=%d", lwg1->type, lwg2->type);
 
 	switch (type1)
 	{
@@ -942,7 +943,7 @@ The naming is not good but comes from that it compares a
 chosen selection of the points not all of them
 */
 int
-lw_dist2d_fast_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl, BOX2DFLOAT4 *box1, BOX2DFLOAT4 *box2)
+lw_dist2d_fast_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl, GBOX *box1, GBOX *box2)
 {
 	/*here we define two lists to hold our calculated "z"-values and the order number in the geometry*/
 
@@ -1512,7 +1513,7 @@ lwgeom_pointarray_length(const POINTARRAY *pts)
 	if ( pts->npoints < 2 ) return 0.0;
 
 	/* compute 2d length if 3d is not available */
-	if ( ! TYPE_HASZ(pts->dims) ) return lwgeom_pointarray_length2d(pts);
+	if ( ! FLAGS_GET_Z(pts->dims) ) return lwgeom_pointarray_length2d(pts);
 
 	for (i=0; i<pts->npoints-1; i++)
 	{

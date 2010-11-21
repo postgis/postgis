@@ -990,7 +990,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	/* Copy input bbox if any */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &bbox) )
 	{
-		lwout->bbox = box2d_clone(&bbox);
+		lwout->bbox = gbox_from_box2df(lwout->flags, &bbox);
 	}
 
 	result = pglwgeom_serialize(lwout);
@@ -3465,7 +3465,7 @@ ptarray_to_GEOSCoordSeq(POINTARRAY *pa)
 	POINT3DZ p;
 	GEOSCoordSeq sq;
 
-	if ( TYPE_HASZ(pa->dims) ) dims = 3;
+	if ( FLAGS_GET_Z(pa->dims) ) dims = 3;
 	size = pa->npoints;
 
 	sq = GEOSCoordSeq_create(size, dims);
@@ -3493,14 +3493,12 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 	LWGEOM *tmp;
 	*/
 	uint32 ngeoms, i;
-	int type = 0;
 	int geostype;
 #if POSTGIS_DEBUG_LEVEL >= 4
 	char *wkt;
 #endif
 
-	type = TYPE_GETTYPE(lwgeom->type);
-	POSTGIS_DEBUGF(4, "LWGEOM2GEOS got a %s", lwtype_name(type));
+	POSTGIS_DEBUGF(4, "LWGEOM2GEOS got a %s", lwtype_name(lwgeom->type));
 
 	if (has_arc(lwgeom))
 	{
@@ -3515,7 +3513,7 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 		*/
 	}
 
-	switch (type)
+	switch (lwgeom->type)
 	{
 		LWPOINT *lwp;
 		LWPOLY *lwpoly;
@@ -3573,11 +3571,11 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
 	case COLLECTIONTYPE:
-		if ( type == MULTIPOINTTYPE )
+		if ( lwgeom->type == MULTIPOINTTYPE )
 			geostype = GEOS_MULTIPOINT;
-		else if ( type == MULTILINETYPE )
+		else if ( lwgeom->type == MULTILINETYPE )
 			geostype = GEOS_MULTILINESTRING;
-		else if ( type == MULTIPOLYGONTYPE )
+		else if ( lwgeom->type == MULTIPOLYGONTYPE )
 			geostype = GEOS_MULTIPOLYGON;
 		else
 			geostype = GEOS_GEOMETRYCOLLECTION;
@@ -3603,7 +3601,7 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 		break;
 
 	default:
-		lwerror("Unknown geometry type: %d - %s", type, lwtype_name(type));
+		lwerror("Unknown geometry type: %d - %s", lwgeom->type, lwtype_name(lwgeom->type));
 		return NULL;
 	}
 

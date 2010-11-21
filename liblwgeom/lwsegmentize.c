@@ -54,7 +54,7 @@ has_arc(const LWGEOM *geom)
 
 	LWDEBUG(2, "has_arc called.");
 
-	switch (lwgeom_getType(geom->type))
+	switch (geom->type)
 	{
 	case POINTTYPE:
 	case LINETYPE:
@@ -296,7 +296,7 @@ lwcurve_segmentize(LWCIRCSTRING *icurve, uint32 perQuad)
 
 	LWDEBUGF(2, "lwcurve_segmentize called., dim = %d", icurve->points->dims);
 
-	ptarray = ptarray_construct_empty(TYPE_HASZ(icurve->points->dims), TYPE_HASM(icurve->points->dims), 64);
+	ptarray = ptarray_construct_empty(FLAGS_GET_Z(icurve->points->dims), FLAGS_GET_M(icurve->points->dims), 64);
 	if (!getPoint4d_p(icurve->points, 0, &p4))
 	{
 		lwerror("lwcurve_segmentize: Cannot extract point.");
@@ -350,7 +350,7 @@ lwcompound_segmentize(LWCOMPOUND *icompound, uint32 perQuad)
 
 	LWDEBUG(2, "lwcompound_segmentize called.");
 
-	ptarray = ptarray_construct_empty(TYPE_HASZ(icompound->type), TYPE_HASM(icompound->type), 64);
+	ptarray = ptarray_construct_empty(FLAGS_GET_Z(icompound->flags), FLAGS_GET_M(icompound->flags), 64);
 
 	for (i = 0; i < icompound->ngeoms; i++)
 	{
@@ -400,18 +400,18 @@ lwcurvepoly_segmentize(LWCURVEPOLY *curvepoly, uint32 perQuad)
 	for (i = 0; i < curvepoly->nrings; i++)
 	{
 		tmp = curvepoly->rings[i];
-		if (lwgeom_getType(tmp->type) == CIRCSTRINGTYPE)
+		if (tmp->type == CIRCSTRINGTYPE)
 		{
 			line = lwcurve_segmentize((LWCIRCSTRING *)tmp, perQuad);
 			ptarray[i] = ptarray_clone(line->points);
 			lwfree(line);
 		}
-		else if (lwgeom_getType(tmp->type) == LINETYPE)
+		else if (tmp->type == LINETYPE)
 		{
 			line = (LWLINE *)tmp;
 			ptarray[i] = ptarray_clone(line->points);
 		}
-		else if (lwgeom_getType(tmp->type) == COMPOUNDTYPE)
+		else if (tmp->type == COMPOUNDTYPE)
 		{
 			line = lwcompound_segmentize((LWCOMPOUND *)tmp, perQuad);
 			ptarray[i] = ptarray_clone(line->points);
@@ -443,11 +443,11 @@ lwmcurve_segmentize(LWMCURVE *mcurve, uint32 perQuad)
 	for (i = 0; i < mcurve->ngeoms; i++)
 	{
 		tmp = mcurve->geoms[i];
-		if (lwgeom_getType(tmp->type) == CIRCSTRINGTYPE)
+		if (tmp->type == CIRCSTRINGTYPE)
 		{
 			lines[i] = (LWGEOM *)lwcurve_segmentize((LWCIRCSTRING *)tmp, perQuad);
 		}
-		else if (lwgeom_getType(tmp->type) == LINETYPE)
+		else if (tmp->type == LINETYPE)
 		{
 			lines[i] = (LWGEOM *)lwline_construct(mcurve->SRID, NULL, ptarray_clone(((LWLINE *)tmp)->points));
 		}
@@ -479,7 +479,7 @@ lwmsurface_segmentize(LWMSURFACE *msurface, uint32 perQuad)
 	for (i = 0; i < msurface->ngeoms; i++)
 	{
 		tmp = msurface->geoms[i];
-		if (lwgeom_getType(tmp->type) == CURVEPOLYTYPE)
+		if (tmp->type == CURVEPOLYTYPE)
 		{
 			polys[i] = (LWGEOM *)lwcurvepoly_segmentize((LWCURVEPOLY *)tmp, perQuad);
 		}
@@ -513,7 +513,7 @@ lwcollection_segmentize(LWCOLLECTION *collection, uint32 perQuad)
 	for (i=0; i<collection->ngeoms; i++)
 	{
 		tmp = collection->geoms[i];
-		switch (lwgeom_getType(tmp->type))
+		switch (tmp->type)
 		{
 		case CIRCSTRINGTYPE:
 			geoms[i] = (LWGEOM *)lwcurve_segmentize((LWCIRCSTRING *)tmp, perQuad);
@@ -540,7 +540,7 @@ LWGEOM *
 lwgeom_segmentize(LWGEOM *geom, uint32 perQuad)
 {
 	LWGEOM * ogeom = NULL;
-	switch (lwgeom_getType(geom->type))
+	switch (geom->type)
 	{
 	case CIRCSTRINGTYPE:
 		ogeom = (LWGEOM *)lwcurve_segmentize((LWCIRCSTRING *)geom, perQuad);
@@ -606,7 +606,7 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
 		}
 	}
 
-	currentType = lwgeom_getType(geom->type);
+	currentType = geom->type;
 	if (currentType == LINETYPE && type == LINETYPE)
 	{
 		POINTARRAY *newPoints;
@@ -639,7 +639,7 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
 
 		LWDEBUG(3, "append_segment: circularstring to circularstring");
 
-		newPoints = ptarray_construct(TYPE_HASZ(pts->dims), TYPE_HASM(pts->dims), pts->npoints + curve->points->npoints - 1);
+		newPoints = ptarray_construct(FLAGS_GET_Z(pts->dims), FLAGS_GET_M(pts->dims), pts->npoints + curve->points->npoints - 1);
 
 		LWDEBUGF(3, "New array length: %d", pts->npoints + curve->points->npoints - 1);
 
@@ -814,8 +814,8 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
 
 				count = i - commit;
 				pts = ptarray_construct(
-				          TYPE_HASZ(type),
-				          TYPE_HASM(type),
+				          FLAGS_GET_Z(points->dims),
+				          FLAGS_GET_M(points->dims),
 				          3);
 				getPoint4d_p(points, commit, &tmp);
 				ptarray_set_point4d(pts, 0, &tmp);
@@ -890,8 +890,8 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
 				count = i - commit - 2;
 
 				pts = ptarray_construct(
-				          TYPE_HASZ(type),
-				          TYPE_HASM(type),
+				          FLAGS_GET_Z(points->dims),
+				          FLAGS_GET_M(points->dims),
 				          count);
 				for (j=commit; j<i-2; j++)
 				{
@@ -922,8 +922,8 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
 		LWDEBUGF(3, "Finishing circularstring %d,%d.", commit, i);
 
 		pts = ptarray_construct(
-		          TYPE_HASZ(type),
-		          TYPE_HASM(type),
+		          FLAGS_GET_Z(points->dims),
+		          FLAGS_GET_M(points->dims),
 		          3);
 		getPoint4d_p(points, commit, &tmp);
 		ptarray_set_point4d(pts, 0, &tmp);
@@ -939,8 +939,8 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
 		LWDEBUGF(3, "Finishing line %d,%d.", commit, i);
 
 		pts = ptarray_construct(
-		          TYPE_HASZ(type),
-		          TYPE_HASM(type),
+		          FLAGS_GET_Z(points->dims),
+		          FLAGS_GET_M(points->dims),
 		          count);
 		for (j=commit; j<i; j++)
 		{
@@ -957,7 +957,7 @@ lwline_desegmentize(LWLINE *line)
 {
 	LWDEBUG(2, "lwline_desegmentize called.");
 
-	return pta_desegmentize(line->points, line->type, line->SRID);
+	return pta_desegmentize(line->points, line->flags, line->SRID);
 }
 
 LWGEOM *
@@ -971,9 +971,8 @@ lwpolygon_desegmentize(LWPOLY *poly)
 	geoms = lwalloc(sizeof(LWGEOM *)*poly->nrings);
 	for (i=0; i<poly->nrings; i++)
 	{
-		geoms[i] = pta_desegmentize(poly->rings[i], poly->type, poly->SRID);
-		if (lwgeom_getType(geoms[i]->type) == CIRCSTRINGTYPE ||
-		        lwgeom_getType(geoms[i]->type) == COMPOUNDTYPE)
+		geoms[i] = pta_desegmentize(poly->rings[i], poly->flags, poly->SRID);
+		if (geoms[i]->type == CIRCSTRINGTYPE || geoms[i]->type == COMPOUNDTYPE)
 		{
 			hascurve = 1;
 		}
@@ -1002,8 +1001,7 @@ lwmline_desegmentize(LWMLINE *mline)
 	for (i=0; i<mline->ngeoms; i++)
 	{
 		geoms[i] = lwline_desegmentize((LWLINE *)mline->geoms[i]);
-		if (lwgeom_getType(geoms[i]->type) == CIRCSTRINGTYPE ||
-		        lwgeom_getType(geoms[i]->type) == COMPOUNDTYPE)
+		if (geoms[i]->type == CIRCSTRINGTYPE || geoms[i]->type == COMPOUNDTYPE)
 		{
 			hascurve = 1;
 		}
@@ -1031,7 +1029,7 @@ lwmpolygon_desegmentize(LWMPOLY *mpoly)
 	for (i=0; i<mpoly->ngeoms; i++)
 	{
 		geoms[i] = lwpolygon_desegmentize((LWPOLY *)mpoly->geoms[i]);
-		if (lwgeom_getType(geoms[i]->type) == CURVEPOLYTYPE)
+		if (geoms[i]->type == CURVEPOLYTYPE)
 		{
 			hascurve = 1;
 		}
@@ -1050,11 +1048,9 @@ lwmpolygon_desegmentize(LWMPOLY *mpoly)
 LWGEOM *
 lwgeom_desegmentize(LWGEOM *geom)
 {
-	int type = lwgeom_getType(geom->type);
-
 	LWDEBUG(2, "lwgeom_desegmentize called.");
 
-	switch (type)
+	switch (geom->type)
 	{
 	case LINETYPE:
 		return lwline_desegmentize((LWLINE *)geom);

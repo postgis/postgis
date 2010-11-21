@@ -70,11 +70,7 @@ lwgeom_deserialize(uchar *srl)
 size_t
 lwgeom_serialize_size(LWGEOM *lwgeom)
 {
-	int type = TYPE_GETTYPE(lwgeom->type);
-
-	LWDEBUGF(2, "lwgeom_serialize_size(%s) called", lwtype_name(type));
-
-	switch (type)
+	switch (lwgeom->type)
 	{
 	case POINTTYPE:
 		return lwpoint_serialize_size((LWPOINT *)lwgeom);
@@ -99,7 +95,7 @@ lwgeom_serialize_size(LWGEOM *lwgeom)
 		return lwcollection_serialize_size((LWCOLLECTION *)lwgeom);
 	default:
 		lwerror("lwgeom_serialize_size: Unknown geometry type: %s",
-		        lwtype_name(type));
+		        lwtype_name(lwgeom->type));
 
 		return 0;
 	}
@@ -108,12 +104,10 @@ lwgeom_serialize_size(LWGEOM *lwgeom)
 void
 lwgeom_serialize_buf(LWGEOM *lwgeom, uchar *buf, size_t *retsize)
 {
-	int type = TYPE_GETTYPE(lwgeom->type);
-
 	LWDEBUGF(2, "lwgeom_serialize_buf called with a %s",
-	         lwtype_name(type));
+	         lwtype_name(lwgeom->type));
 
-	switch (type)
+	switch (lwgeom->type)
 	{
 	case POINTTYPE:
 		lwpoint_serialize_buf((LWPOINT *)lwgeom, buf, retsize);
@@ -145,7 +139,7 @@ lwgeom_serialize_buf(LWGEOM *lwgeom, uchar *buf, size_t *retsize)
 		break;
 	default:
 		lwerror("lwgeom_serialize_buf: Unknown geometry type: %s",
-		        lwtype_name(type));
+		        lwtype_name(lwgeom->type));
 		return;
 	}
 	return;
@@ -178,7 +172,7 @@ lwgeom_force_clockwise(LWGEOM *lwgeom)
 	LWCOLLECTION *coll;
 	int i;
 
-	switch (TYPE_GETTYPE(lwgeom->type))
+	switch (lwgeom->type)
 	{
 	case POLYGONTYPE:
 		lwpoly_force_clockwise((LWPOLY *)lwgeom);
@@ -206,7 +200,7 @@ lwgeom_reverse(LWGEOM *lwgeom)
 	int i;
 	LWCOLLECTION *col;
 
-	switch (TYPE_GETTYPE(lwgeom->type))
+	switch (lwgeom->type)
 	{
 	case LINETYPE:
 		lwline_reverse((LWLINE *)lwgeom);
@@ -233,7 +227,7 @@ BOX3D *lwgeom_compute_box3d(const LWGEOM *lwgeom)
 {
 	if ( ! lwgeom ) return NULL;
 
-	switch (TYPE_GETTYPE(lwgeom->type))
+	switch (lwgeom->type)
 	{
 	case POINTTYPE:
 		return lwpoint_compute_box3d((LWPOINT *)lwgeom);
@@ -266,9 +260,9 @@ int
 lwgeom_compute_box2d_p(const LWGEOM *lwgeom, BOX2DFLOAT4 *buf)
 {
 	LWDEBUGF(2, "lwgeom_compute_box2d_p called of %p of type %s.",
-	         lwgeom, lwtype_name(TYPE_GETTYPE(lwgeom->type)));
+	         lwgeom, lwtype_name(lwgeom->type));
 
-	switch (TYPE_GETTYPE(lwgeom->type))
+	switch (lwgeom->type)
 	{
 	case POINTTYPE:
 		return lwpoint_compute_box2d_p((LWPOINT *)lwgeom, buf);
@@ -314,7 +308,7 @@ LWPOINT *
 lwgeom_as_lwpoint(const LWGEOM *lwgeom)
 {
 	if ( lwgeom == NULL ) return NULL;
-	if ( TYPE_GETTYPE(lwgeom->type) == POINTTYPE )
+	if ( lwgeom->type == POINTTYPE )
 		return (LWPOINT *)lwgeom;
 	else return NULL;
 }
@@ -323,7 +317,7 @@ LWLINE *
 lwgeom_as_lwline(const LWGEOM *lwgeom)
 {
 	if ( lwgeom == NULL ) return NULL;
-	if ( TYPE_GETTYPE(lwgeom->type) == LINETYPE )
+	if ( lwgeom->type == LINETYPE )
 		return (LWLINE *)lwgeom;
 	else return NULL;
 }
@@ -332,7 +326,7 @@ LWCIRCSTRING *
 lwgeom_as_lwcircstring(const LWGEOM *lwgeom)
 {
 	if ( lwgeom == NULL ) return NULL;
-	if ( TYPE_GETTYPE(lwgeom->type) == CIRCSTRINGTYPE )
+	if ( lwgeom->type == CIRCSTRINGTYPE )
 		return (LWCIRCSTRING *)lwgeom;
 	else return NULL;
 }
@@ -341,7 +335,7 @@ LWCOMPOUND *
 lwgeom_as_lwcompound(const LWGEOM *lwgeom)
 {
 	if ( lwgeom == NULL ) return NULL;
-	if ( TYPE_GETTYPE(lwgeom->type) == COMPOUNDTYPE )
+	if ( lwgeom->type == COMPOUNDTYPE )
 		return (LWCOMPOUND *)lwgeom;
 	else return NULL;
 }
@@ -350,7 +344,7 @@ LWCURVEPOLY *
 lwgeom_as_lwcurvepoly(const LWGEOM *lwgeom)
 {
 	if ( lwgeom == NULL ) return NULL;
-	if ( TYPE_GETTYPE(lwgeom->type) == CURVEPOLYTYPE )
+	if ( lwgeom->type == CURVEPOLYTYPE )
 		return (LWCURVEPOLY *)lwgeom;
 	else return NULL;
 }
@@ -359,7 +353,7 @@ LWPOLY *
 lwgeom_as_lwpoly(const LWGEOM *lwgeom)
 {
 	if ( lwgeom == NULL ) return NULL;
-	if ( TYPE_GETTYPE(lwgeom->type) == POLYGONTYPE )
+	if ( lwgeom->type == POLYGONTYPE )
 		return (LWPOLY *)lwgeom;
 	else return NULL;
 }
@@ -368,7 +362,7 @@ LWTRIANGLE *
 lwgeom_as_lwtriangle(const LWGEOM *lwgeom)
 {
 	if ( lwgeom == NULL ) return NULL;
-	if ( TYPE_GETTYPE(lwgeom->type) == TRIANGLETYPE )
+	if ( lwgeom->type == TRIANGLETYPE )
 		return (LWTRIANGLE *)lwgeom;
 	else return NULL;
 }
@@ -386,7 +380,7 @@ LWMPOINT *
 lwgeom_as_lwmpoint(const LWGEOM *lwgeom)
 {
 	if ( lwgeom == NULL ) return NULL;
-	if ( TYPE_GETTYPE(lwgeom->type) == MULTIPOINTTYPE )
+	if ( lwgeom->type == MULTIPOINTTYPE )
 		return (LWMPOINT *)lwgeom;
 	else return NULL;
 }
@@ -395,7 +389,7 @@ LWMLINE *
 lwgeom_as_lwmline(const LWGEOM *lwgeom)
 {
 	if ( lwgeom == NULL ) return NULL;
-	if ( TYPE_GETTYPE(lwgeom->type) == MULTILINETYPE )
+	if ( lwgeom->type == MULTILINETYPE )
 		return (LWMLINE *)lwgeom;
 	else return NULL;
 }
@@ -404,7 +398,7 @@ LWMPOLY *
 lwgeom_as_lwmpoly(const LWGEOM *lwgeom)
 {
 	if ( lwgeom == NULL ) return NULL;
-	if ( TYPE_GETTYPE(lwgeom->type) == MULTIPOLYGONTYPE )
+	if ( lwgeom->type == MULTIPOLYGONTYPE )
 		return (LWMPOLY *)lwgeom;
 	else return NULL;
 }
@@ -412,7 +406,7 @@ lwgeom_as_lwmpoly(const LWGEOM *lwgeom)
 LWPSURFACE *
 lwgeom_as_lwpsurface(const LWGEOM *lwgeom)
 {
-	if ( TYPE_GETTYPE(lwgeom->type) == POLYHEDRALSURFACETYPE )
+	if ( lwgeom->type == POLYHEDRALSURFACETYPE )
 		return (LWPSURFACE *)lwgeom;
 	else return NULL;
 }
@@ -420,7 +414,7 @@ lwgeom_as_lwpsurface(const LWGEOM *lwgeom)
 LWTIN *
 lwgeom_as_lwtin(const LWGEOM *lwgeom)
 {
-	if ( TYPE_GETTYPE(lwgeom->type) == TINTYPE )
+	if ( lwgeom->type == TINTYPE )
 		return (LWTIN *)lwgeom;
 	else return NULL;
 }
@@ -519,7 +513,7 @@ lwgeom_as_multi(const LWGEOM *lwgeom)
 {
 	LWGEOM **ogeoms;
 	LWGEOM *ogeom = NULL;
-	BOX2DFLOAT4 *box = NULL;
+	GBOX *box = NULL;
 	int type;
 
 	ogeoms = lwalloc(sizeof(LWGEOM*));
@@ -533,7 +527,7 @@ lwgeom_as_multi(const LWGEOM *lwgeom)
 		return lwgeom_clone(lwgeom);
 	}
 
-	type = TYPE_GETTYPE(lwgeom->type);
+	type = lwgeom->type;
 
 	if ( MULTITYPE[type] )
 	{
@@ -563,7 +557,7 @@ lwgeom_release(LWGEOM *lwgeom)
 	if ( ! lwgeom )
 		lwerror("lwgeom_release: someone called on 0x0");
 
-	LWDEBUGF(3, "releasing type %s", lwtype_name(TYPE_GETTYPE(lwgeom->type)));
+	LWDEBUGF(3, "releasing type %s", lwtype_name(lwgeom->type));
 
 	/* Drop bounding box (always a copy) */
 	if ( lwgeom->bbox )
@@ -596,9 +590,9 @@ LWGEOM *
 lwgeom_clone(const LWGEOM *lwgeom)
 {
 	LWDEBUGF(2, "lwgeom_clone called with %p, %s",
-	         lwgeom, lwtype_name(TYPE_GETTYPE(lwgeom->type)));
+	         lwgeom, lwtype_name(lwgeom->type));
 
-	switch (TYPE_GETTYPE(lwgeom->type))
+	switch (lwgeom->type)
 	{
 	case POINTTYPE:
 		return (LWGEOM *)lwpoint_clone((LWPOINT *)lwgeom);
@@ -829,17 +823,17 @@ char
 lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 {
 	LWDEBUGF(2, "lwgeom_same(%s, %s) called",
-	         lwtype_name(TYPE_GETTYPE(lwgeom1->type)),
-	         lwtype_name(TYPE_GETTYPE(lwgeom2->type)));
+	         lwtype_name(lwgeom1->type),
+	         lwtype_name(lwgeom2->type));
 
-	if ( TYPE_GETTYPE(lwgeom1->type) != TYPE_GETTYPE(lwgeom2->type) )
+	if ( lwgeom1->type != lwgeom2->type )
 	{
 		LWDEBUG(3, " type differ");
 
 		return LW_FALSE;
 	}
 
-	if ( TYPE_GETZM(lwgeom1->type) != TYPE_GETZM(lwgeom2->type) )
+	if ( FLAGS_GET_ZM(lwgeom1->flags) != FLAGS_GET_ZM(lwgeom2->flags) )
 	{
 		LWDEBUG(3, " ZM flags differ");
 
@@ -850,7 +844,7 @@ lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 	if ( lwgeom1->bbox && lwgeom2->bbox )
 	{
 		/*lwnotice("bbox1:%p, bbox2:%p", lwgeom1->bbox, lwgeom2->bbox);*/
-		if ( ! box2d_same(lwgeom1->bbox, lwgeom2->bbox) )
+		if ( ! gbox_same(lwgeom1->bbox, lwgeom2->bbox) )
 		{
 			LWDEBUG(3, " bounding boxes differ");
 
@@ -859,7 +853,7 @@ lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 	}
 
 	/* geoms have same type, invoke type-specific function */
-	switch (TYPE_GETTYPE(lwgeom1->type))
+	switch (lwgeom1->type)
 	{
 	case POINTTYPE:
 		return lwpoint_same((LWPOINT *)lwgeom1,
@@ -883,7 +877,7 @@ lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 		                         (LWCOLLECTION *)lwgeom2);
 	default:
 		lwerror("lwgeom_same: unsupported geometry type: %s",
-		        lwtype_name(TYPE_GETTYPE(lwgeom1->type)));
+		        lwtype_name(lwgeom1->type));
 		return LW_FALSE;
 	}
 
@@ -894,7 +888,7 @@ lwgeom_drop_bbox(LWGEOM *lwgeom)
 {
 	if ( lwgeom->bbox ) lwfree(lwgeom->bbox);
 	lwgeom->bbox = NULL;
-	TYPE_SETHASBBOX(lwgeom->type, 0);
+	FLAGS_SET_BBOX(lwgeom->flags, 0);
 }
 
 /**
@@ -906,21 +900,23 @@ void
 lwgeom_add_bbox(LWGEOM *lwgeom)
 {
 	if ( lwgeom->bbox ) return;
-	lwgeom->bbox = lwgeom_compute_box2d(lwgeom);
-	TYPE_SETHASBBOX(lwgeom->type, 1);
+	lwgeom->bbox = lwalloc(sizeof(GBOX));
+	FLAGS_SET_Z(lwgeom->bbox->flags, FLAGS_GET_Z(lwgeom->flags));
+	FLAGS_SET_M(lwgeom->bbox->flags, FLAGS_GET_M(lwgeom->flags));
+	lwgeom_calculate_gbox(lwgeom, lwgeom->bbox);
+	FLAGS_SET_BBOX(lwgeom->flags, 1);
 }
 
 void
 lwgeom_drop_srid(LWGEOM *lwgeom)
 {
-	TYPE_SETHASSRID(lwgeom->type, 0);
-	lwgeom->SRID = -1;
+	lwgeom->SRID = -1;	/* TODO: To be changed to SRID_UNKNOWN */
 }
 
 LWGEOM *
 lwgeom_segmentize2d(LWGEOM *lwgeom, double dist)
 {
-	switch (TYPE_GETTYPE(lwgeom->type))
+	switch (lwgeom->type)
 	{
 	case LINETYPE:
 		return (LWGEOM *)lwline_segmentize2d((LWLINE *)lwgeom,
@@ -966,7 +962,7 @@ lwgeom_force_4d(const LWGEOM *geom)
 LWGEOM*
 lwgeom_force_dims(const LWGEOM *geom, int hasz, int hasm)
 {	
-	switch(TYPE_GETTYPE(geom->type))
+	switch(geom->type)
 	{
 		case POINTTYPE:
 			return lwpoint_as_lwgeom(lwpoint_force_dims((LWPOINT*)geom, hasz, hasm));
@@ -988,7 +984,7 @@ lwgeom_force_dims(const LWGEOM *geom, int hasz, int hasm)
 		case COLLECTIONTYPE:
 			return lwcollection_as_lwgeom(lwcollection_force_dims((LWCOLLECTION*)geom, hasz, hasm));
 		default:
-			lwerror("lwgeom_force_2d: unsupported geom type: %s", lwtype_name(TYPE_GETTYPE(geom->type)));
+			lwerror("lwgeom_force_2d: unsupported geom type: %s", lwtype_name(geom->type));
 			return NULL;
 	}
 }
@@ -997,7 +993,7 @@ void
 lwgeom_longitude_shift(LWGEOM *lwgeom)
 {
 	int i;
-	switch (TYPE_GETTYPE(lwgeom->type))
+	switch (lwgeom->type)
 	{
 		LWPOINT *point;
 		LWLINE *line;
@@ -1034,7 +1030,7 @@ lwgeom_longitude_shift(LWGEOM *lwgeom)
 		return;
 	default:
 		lwerror("lwgeom_longitude_shift: unsupported geom type: %s",
-		        lwtype_name(TYPE_GETTYPE(lwgeom->type)));
+		        lwtype_name(lwgeom->type));
 	}
 }
 
@@ -1042,7 +1038,7 @@ int
 lwgeom_is_collection(const LWGEOM *geom)
 {
 	if( ! geom ) return LW_FALSE;
-	return lwtype_is_collection(TYPE_GETTYPE(geom->type));
+	return lwtype_is_collection(geom->type);
 }
 
 /** Return TRUE if the geometry may contain sub-geometries, i.e. it is a MULTI* or COMPOUNDCURVE */
@@ -1100,7 +1096,7 @@ lwtype_get_collectiontype(int type)
 void lwgeom_free(LWGEOM *lwgeom)
 {
 
-	switch (TYPE_GETTYPE(lwgeom->type))
+	switch (lwgeom->type)
 	{
 	case POINTTYPE:
 		lwpoint_free((LWPOINT *)lwgeom);
@@ -1140,7 +1136,7 @@ void lwgeom_free(LWGEOM *lwgeom)
 int lwgeom_needs_bbox(const LWGEOM *geom)
 {
 	assert(geom);
-	if ( TYPE_GETTYPE(geom->type) == POINTTYPE )
+	if ( geom->type == POINTTYPE )
 	{
 		return LW_FALSE;
 	}
@@ -1252,9 +1248,9 @@ int lwgeom_is_empty(const LWGEOM *geom)
 {
 	int result = LW_FALSE;
 	LWDEBUGF(4, "lwgeom_is_empty: got type %s",
-	         lwtype_name(TYPE_GETTYPE(geom->type)));
+	         lwtype_name(geom->type));
 
-	switch (TYPE_GETTYPE(geom->type))
+	switch (geom->type)
 	{
 	case POINTTYPE:
 		return lwpoint_is_empty((LWPOINT*)geom);
@@ -1285,7 +1281,7 @@ int lwgeom_is_empty(const LWGEOM *geom)
 		break;
 	default:
 		lwerror("lwgeom_is_empty: unsupported input geometry type: %s",
-		        lwtype_name(TYPE_GETTYPE(geom->type)));
+		        lwtype_name(geom->type));
 		break;
 	}
 	return result;
@@ -1318,9 +1314,9 @@ extern int lwgeom_dimensionality(LWGEOM *geom)
 	int dim;
 
 	LWDEBUGF(3, "lwgeom_dimensionality got type %s",
-	         lwtype_name(TYPE_GETTYPE(geom->type)));
+	         lwtype_name(geom->type));
 
-	switch (TYPE_GETTYPE(geom->type))
+	switch (geom->type)
 	{
 	case POINTTYPE:
 	case MULTIPOINTTYPE:
@@ -1352,7 +1348,7 @@ extern int lwgeom_dimensionality(LWGEOM *geom)
 		break;
 	default:
 		lwerror("lwgeom_dimensionality: unsupported input geometry type: %s",
-		        lwtype_name(TYPE_GETTYPE(geom->type)));
+		        lwtype_name(geom->type));
 		break;
 	}
 	return 0;
@@ -1361,9 +1357,9 @@ extern int lwgeom_dimensionality(LWGEOM *geom)
 extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in)
 {
 	LWDEBUGF(4, "lwgeom_remove_repeated_points got type %s",
-	         lwtype_name(TYPE_GETTYPE(in->type)));
+	         lwtype_name(in->type));
 
-	switch (TYPE_GETTYPE(in->type))
+	switch (in->type)
 	{
 	case MULTIPOINTTYPE:
 		return lwmpoint_remove_repeated_points((LWMPOINT*)in);
@@ -1397,7 +1393,7 @@ extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in)
 
 	default:
 		lwnotice("lwgeom_remove_repeated_points: unsupported geometry type: %s",
-		         lwtype_name(TYPE_GETTYPE(in->type)));
+		         lwtype_name(in->type));
 		return in;
 		break;
 	}
@@ -1411,9 +1407,9 @@ LWGEOM* lwgeom_flip_coordinates(LWGEOM *in)
 	int i;
 
 	LWDEBUGF(4, "lwgeom_flip_coordinates, got type: %s",
-	         lwtype_name(TYPE_GETTYPE(in->type)));
+	         lwtype_name(in->type));
 
-	switch (TYPE_GETTYPE(in->type))
+	switch (in->type)
 	{
 	case POINTTYPE:
 		ptarray_flip_coordinates(lwgeom_as_lwpoint(in)->point);
@@ -1454,7 +1450,7 @@ LWGEOM* lwgeom_flip_coordinates(LWGEOM *in)
 
 	default:
 		lwerror("lwgeom_flip_coordinates: unsupported geometry type: %s",
-		        lwtype_name(TYPE_GETTYPE(in->type)));
+		        lwtype_name(in->type));
 	}
 	return NULL;
 }

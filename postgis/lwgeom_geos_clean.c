@@ -135,8 +135,8 @@ POINTARRAY* ring_make_geos_friendly(POINTARRAY* ring);
 static LWGEOM *
 lwgeom_make_geos_friendly(LWGEOM *geom)
 {
-	LWDEBUGF(2, "lwgeom_make_geos_friendly enter (type %d)", TYPE_GETTYPE(geom->type));
-	switch (TYPE_GETTYPE(geom->type))
+	LWDEBUGF(2, "lwgeom_make_geos_friendly enter (type %d)", geom->type);
+	switch (geom->type)
 	{
 	case POINTTYPE:
 	case MULTIPOINTTYPE:
@@ -166,7 +166,7 @@ lwgeom_make_geos_friendly(LWGEOM *geom)
 	case MULTISURFACETYPE:
 	case MULTICURVETYPE:
 	default:
-		lwerror("unsupported input geometry type: %d", TYPE_GETTYPE(geom->type));
+		lwerror("unsupported input geometry type: %d", geom->type);
 		break;
 	}
 	return 0;
@@ -190,7 +190,7 @@ ptarray_close2d(POINTARRAY* ring)
 		/* close it up */
 		newring = ptarray_addPoint(ring,
 		                           getPoint_internal(ring, 0),
-		                           TYPE_NDIMS(ring->dims),
+		                           FLAGS_NDIMS(ring->dims),
 		                           ring->npoints);
 		ring = newring;
 	}
@@ -219,7 +219,7 @@ ring_make_geos_friendly(POINTARRAY* ring)
 		/* let's add another... */
 		ring = ptarray_addPoint(ring,
 		                        getPoint_internal(ring, 0),
-		                        TYPE_NDIMS(ring->dims),
+		                        FLAGS_NDIMS(ring->dims),
 		                        ring->npoints);
 	}
 
@@ -285,7 +285,7 @@ lwline_make_geos_friendly(LWLINE *line)
 		/* Duplicate point */
 		line->points = ptarray_addPoint(line->points,
 		                                getPoint_internal(line->points, 0),
-		                                TYPE_NDIMS(line->points->dims),
+		                                FLAGS_NDIMS(line->points->dims),
 		                                line->points->npoints);
 		ret = (LWGEOM*)line;
 #else
@@ -899,7 +899,7 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	GEOSGeometry* geosout;
 	LWGEOM *lwgeom_out;
 
-	is3d = TYPE_HASZ(lwgeom_in->type);
+	is3d = FLAGS_GET_Z(lwgeom_in->type);
 
 	/*
 	 * Step 1 : try to convert to GEOS, if impossible, clean that up first
@@ -983,13 +983,13 @@ lwgeom_clean(LWGEOM* lwgeom_in)
 	}
 
 	/* Check that the output is not a collection if the input wasn't */
-	if ( TYPE_GETTYPE(lwgeom_out->type) == COLLECTIONTYPE &&
-	        TYPE_GETTYPE(lwgeom_in->type) != COLLECTIONTYPE )
+	if ( lwgeom_out->type == COLLECTIONTYPE &&
+	        lwgeom_in->type != COLLECTIONTYPE )
 	{
 		lwnotice("lwgeom_clean: mixed-type output (%s) "
 		         "from single-type input (%s)",
-		         lwtype_name(TYPE_GETTYPE(lwgeom_out->type)),
-		         lwtype_name(TYPE_GETTYPE(lwgeom_in->type)));
+		         lwtype_name(lwgeom_out->type),
+		         lwtype_name(lwgeom_in->type));
 		return NULL;
 	}
 
@@ -1019,7 +1019,7 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	lwgeom_in = lwgeom_deserialize(SERIALIZED_FORM(in));
 
-	switch ( TYPE_GETTYPE(lwgeom_in->type) )
+	switch ( lwgeom_in->type )
 	{
 	case LINETYPE:
 	case POLYGONTYPE:
@@ -1029,7 +1029,7 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 
 	default:
 		lwerror("ST_MakeValid: unsupported geometry type %s",
-		        lwtype_name(TYPE_GETTYPE(lwgeom_in->type)));
+		        lwtype_name(lwgeom_in->type));
 		PG_RETURN_NULL();
 		break;
 	}

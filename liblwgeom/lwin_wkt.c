@@ -73,40 +73,45 @@ static int wkt_parser_set_dims(LWGEOM *geom, uchar flags)
 	if( ! geom ) 
 		return LW_FALSE;
 
-	TYPE_SETZM(geom->type, hasz, hasm);
+	FLAGS_SET_Z(geom->flags, hasz);
+	FLAGS_SET_M(geom->flags, hasm);
 		
 	if( ! lwgeom_is_empty(geom) )
 	{
-		int lwtype = TYPE_GETTYPE(geom->type);
-		if( lwtype == POINTTYPE )
+		if( geom->type == POINTTYPE )
 		{
 			LWPOINT *pt = (LWPOINT*)geom;
-			TYPE_SETZM(pt->point->dims, hasz, hasm);
+			FLAGS_SET_Z(pt->point->dims, hasz);
+			FLAGS_SET_M(pt->point->dims, hasm);
 			return LW_TRUE;
 		}
-		else if ( lwtype == TRIANGLETYPE || 
-		          lwtype == CIRCSTRINGTYPE || 
-		          lwtype == LINETYPE )
+		else if ( geom->type == TRIANGLETYPE || 
+		          geom->type == CIRCSTRINGTYPE || 
+		          geom->type == LINETYPE )
 		{
 			LWLINE *ln = (LWLINE*)geom;
-			TYPE_SETZM(ln->points->dims, hasz, hasm);
+			FLAGS_SET_Z(ln->points->dims, hasz);
+			FLAGS_SET_M(ln->points->dims, hasm);
 			return LW_TRUE;
 		}
-		else if ( lwtype == POLYGONTYPE )
+		else if ( geom->type == POLYGONTYPE )
 		{
 			LWPOLY *poly = (LWPOLY*)geom;
 			for ( i = 0; i < poly->nrings; i++ )
-				TYPE_SETZM(poly->rings[i]->dims, hasz, hasm);
+			{
+				FLAGS_SET_Z(poly->rings[i]->dims, hasz);
+				FLAGS_SET_M(poly->rings[i]->dims, hasm);
+			}
 			return LW_TRUE;
 		}
-		else if ( lwtype == CURVEPOLYTYPE )
+		else if ( geom->type == CURVEPOLYTYPE )
 		{
 			LWCURVEPOLY *poly = (LWCURVEPOLY*)geom;
 			for ( i = 0; i < poly->nrings; i++ )
 				wkt_parser_set_dims(poly->rings[i], flags);
 			return LW_TRUE;
 		}
-		else if ( lwtype_is_collection(lwtype) )
+		else if ( lwtype_is_collection(geom->type) )
 		{
 			LWCOLLECTION *col = (LWCOLLECTION*)geom;
 			for ( i = 0; i < col->ngeoms; i++ )
@@ -115,7 +120,7 @@ static int wkt_parser_set_dims(LWGEOM *geom, uchar flags)
 		}
 		else
 		{
-			LWDEBUGF(2,"Unknown geometry type: %d", lwtype);
+			LWDEBUGF(2,"Unknown geometry type: %d", geom->type);
 			return LW_FALSE;
 		}	
 	}
@@ -138,7 +143,7 @@ static int wkt_pointarray_dimensionality(POINTARRAY *pa, uchar flags)
 		return LW_TRUE;
 		
 	LWDEBUGF(5,"dimensionality ndims == %d", ndims);
-	LWDEBUGF(5,"TYPE_NDIMS(pa->dims) == %d", TYPE_NDIMS(pa->dims));
+	LWDEBUGF(5,"FLAGS_NDIMS(pa->dims) == %d", FLAGS_NDIMS(pa->dims));
 	
 	/* 
 	* ndims > 2 implies that the flags have something useful to add,
@@ -147,11 +152,14 @@ static int wkt_pointarray_dimensionality(POINTARRAY *pa, uchar flags)
 	if( ndims > 2 )
 	{
 		/* Mismatch implies a problem */
-		if ( TYPE_NDIMS(pa->dims) != ndims )
+		if ( FLAGS_NDIMS(pa->dims) != ndims )
 			return LW_FALSE;
 		/* Match means use the explicit dimensionality */
 		else
-			TYPE_SETZM(pa->dims, hasz, hasm);
+		{
+			FLAGS_SET_Z(pa->dims, hasz);
+			FLAGS_SET_M(pa->dims, hasm);
+		}
 	}
 
 	return LW_TRUE;
@@ -219,7 +227,7 @@ POINTARRAY* wkt_parser_ptarray_add_coord(POINTARRAY *pa, POINT p)
 	}
 	
 	/* Check that the coordinate has the same dimesionality as the array */
-	if( FLAGS_NDIMS(p.flags) != TYPE_NDIMS(pa->dims) )
+	if( FLAGS_NDIMS(p.flags) != FLAGS_NDIMS(pa->dims) )
 	{
 		global_parser_result.message = parser_error_messages[PARSER_ERROR_MIXDIMS];
 		global_parser_result.errcode = PARSER_ERROR_MIXDIMS;
@@ -229,12 +237,12 @@ POINTARRAY* wkt_parser_ptarray_add_coord(POINTARRAY *pa, POINT p)
 	/* While parsing the point arrays, XYM and XMZ points are both treated as XYZ */
 	pt.x = p.x;
 	pt.y = p.y;
-	if( TYPE_HASZ(pa->dims) )
+	if( FLAGS_GET_Z(pa->dims) )
 		pt.z = p.z;
-	if( TYPE_HASM(pa->dims) )
+	if( FLAGS_GET_M(pa->dims) )
 		pt.m = p.m;
 	/* If the destination is XYM, we'll write the third coordinate to m */
-	if( TYPE_HASM(pa->dims) && ! TYPE_HASZ(pa->dims) )
+	if( FLAGS_GET_M(pa->dims) && ! FLAGS_GET_Z(pa->dims) )
 		pt.m = p.z;
 		
 	ptarray_append_point(pa, &pt, LW_TRUE); /* Allow duplicate points in array */
@@ -403,7 +411,7 @@ LWGEOM* wkt_parser_polygon_new(POINTARRAY *pa)
 		return NULL;	
 	}
 
-	poly = lwpoly_construct_empty(SRID_UNKNOWN, TYPE_HASZ(pa->dims), TYPE_HASM(pa->dims));
+	poly = lwpoly_construct_empty(SRID_UNKNOWN, FLAGS_GET_Z(pa->dims), FLAGS_GET_M(pa->dims));
 	
 	/* Error out if we can't build this polygon. */
 	if( ! poly )
@@ -428,7 +436,7 @@ LWGEOM* wkt_parser_polygon_add_ring(LWGEOM *poly, POINTARRAY *pa)
 	}
 
 	/* Rings must agree on dimensionality */
-	if( TYPE_NDIMS(poly->type) != TYPE_NDIMS(pa->dims) )
+	if( FLAGS_NDIMS(poly->flags) != FLAGS_NDIMS(pa->dims) )
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
 		return NULL;
@@ -470,7 +478,7 @@ LWGEOM* wkt_parser_polygon_finalize(LWGEOM *poly, char *dimensionality)
 	/* If the number of dimensions are not consistent, we have a problem. */
 	if( flagdims > 2 )
 	{
-		if ( flagdims != TYPE_NDIMS(poly->type) )
+		if ( flagdims != FLAGS_NDIMS(poly->flags) )
 		{
 			SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
 			return NULL;
@@ -500,7 +508,7 @@ LWGEOM* wkt_parser_curvepolygon_new(LWGEOM *ring)
 	}
 	
 	/* Construct poly and add the ring. */
-	poly = lwcurvepoly_as_lwgeom(lwcurvepoly_construct_empty(SRID_UNKNOWN, TYPE_HASZ(ring->type), TYPE_HASM(ring->type)));
+	poly = lwcurvepoly_as_lwgeom(lwcurvepoly_construct_empty(SRID_UNKNOWN, FLAGS_GET_Z(ring->flags), FLAGS_GET_M(ring->flags)));
 	/* Return the result. */
 	return wkt_parser_curvepolygon_add_ring(poly,ring);
 }
@@ -518,8 +526,8 @@ LWGEOM* wkt_parser_curvepolygon_add_ring(LWGEOM *poly, LWGEOM *ring)
 	}
 	
 	/* All the elements must agree on dimensionality */
-	if( TYPE_HASZ(poly->type) != TYPE_HASZ(ring->type) || 
-	    TYPE_HASM(poly->type) != TYPE_HASM(ring->type) )
+	if( FLAGS_GET_Z(poly->flags) != FLAGS_GET_Z(ring->flags) || 
+	    FLAGS_GET_M(poly->flags) != FLAGS_GET_M(ring->flags) )
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
 		LWDEBUG(4,"dimensionality does not match");
@@ -540,7 +548,7 @@ LWGEOM* wkt_parser_curvepolygon_add_ring(LWGEOM *poly, LWGEOM *ring)
 	{
 		int is_closed = 1;
 		LWDEBUG(4,"checking ring closure");
-		switch ( TYPE_GETTYPE(ring->type) )
+		switch ( ring->type )
 		{
 			case LINETYPE:
 			is_closed = lwline_is_closed(lwgeom_as_lwline(ring));
@@ -585,7 +593,7 @@ LWGEOM* wkt_parser_curvepolygon_finalize(LWGEOM *poly, char *dimensionality)
 	if ( flagdims > 2 )
 	{
 		/* If the number of dimensions are not consistent, we have a problem. */
-		if( flagdims != TYPE_NDIMS(poly->type) )
+		if( flagdims != FLAGS_NDIMS(poly->flags) )
 		{
 			SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
 			return NULL;
@@ -646,8 +654,8 @@ LWGEOM* wkt_parser_collection_add_geom(LWGEOM *col, LWGEOM *geom)
 	}
 
 	/* All the elements must agree on dimensionality */
-	if( TYPE_HASZ(col->type) != TYPE_HASZ(geom->type) || 
-	    TYPE_HASM(col->type) != TYPE_HASM(geom->type) )
+	if( FLAGS_GET_Z(col->flags) != FLAGS_GET_Z(geom->flags) || 
+	    FLAGS_GET_M(col->flags) != FLAGS_GET_M(geom->flags) )
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
 		return NULL;
@@ -671,7 +679,7 @@ LWGEOM* wkt_parser_collection_finalize(int lwtype, LWGEOM *col, char *dimensiona
 	if ( flagdims > 2 )
 	{
 		/* If the number of dimensions are not consistent, we have a problem. */
-		if( flagdims != TYPE_NDIMS(col->type) )
+		if( flagdims != FLAGS_NDIMS(col->flags) )
 		{
 			SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
 			return NULL;
@@ -679,8 +687,8 @@ LWGEOM* wkt_parser_collection_finalize(int lwtype, LWGEOM *col, char *dimensiona
 
 		/* For GEOMETRYCOLLECTION, the exact type of the dimensions must match too */
 		if( lwtype == COLLECTIONTYPE &&
-		    ( FLAGS_GET_Z(flags) != TYPE_HASZ(col->type) ||
-		      FLAGS_GET_M(flags) != TYPE_HASM(col->type) ) )
+		    ( FLAGS_GET_Z(flags) != FLAGS_GET_Z(col->flags) ||
+		      FLAGS_GET_M(flags) != FLAGS_GET_M(col->flags) ) )
 		{
 			SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
 			return NULL;
@@ -695,7 +703,7 @@ LWGEOM* wkt_parser_collection_finalize(int lwtype, LWGEOM *col, char *dimensiona
 	}
 		
 	/* Set the collection type */
-	TYPE_SETTYPE(col->type, lwtype);
+	col->type=lwtype;
 			
 	return col;
 }

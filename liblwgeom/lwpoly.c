@@ -24,7 +24,7 @@
  * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
  */
 LWPOLY*
-lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox, uint32 nrings, POINTARRAY **points)
+lwpoly_construct(int SRID, GBOX *bbox, uint32 nrings, POINTARRAY **points)
 {
 	LWPOLY *result;
 	int hasz, hasm;
@@ -35,20 +35,23 @@ lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox, uint32 nrings, POINTARRAY **points
 
 	if ( nrings < 1 ) lwerror("lwpoly_construct: need at least 1 ring");
 
-	hasz = TYPE_HASZ(points[0]->dims);
-	hasm = TYPE_HASM(points[0]->dims);
+	hasz = FLAGS_GET_Z(points[0]->dims);
+	hasm = FLAGS_GET_M(points[0]->dims);
 
 #ifdef CHECK_POLY_RINGS_ZM
-	zm = TYPE_GETZM(points[0]->dims);
+	zm = FLAGS_GET_ZM(points[0]->dims);
 	for (i=1; i<nrings; i++)
 	{
-		if ( zm != TYPE_GETZM(points[i]->dims) )
+		if ( zm != FLAGS_GET_ZM(points[i]->dims) )
 			lwerror("lwpoly_construct: mixed dimensioned rings");
 	}
 #endif
 
 	result = (LWPOLY*) lwalloc(sizeof(LWPOLY));
-	result->type = lwgeom_makeType_full(hasz, hasm, (SRID>0), POLYGONTYPE, 0);
+	result->type = POLYGONTYPE;
+	FLAGS_SET_Z(result->flags, hasz?1:0);
+	FLAGS_SET_M(result->flags, hasm?1:0);
+	FLAGS_SET_BBOX(result->flags, bbox?1:0);
 	result->SRID = SRID;
 	result->nrings = nrings;
 	result->maxrings = nrings;
@@ -62,7 +65,9 @@ LWPOLY*
 lwpoly_construct_empty(int srid, char hasz, char hasm)
 {
 	LWPOLY *result = lwalloc(sizeof(LWPOLY));
-	result->type = lwgeom_makeType_full(hasz, hasm, (srid>0), POLYGONTYPE, 0);
+	result->type = POLYGONTYPE;
+	FLAGS_SET_Z(result->flags, hasz?1:0);
+	FLAGS_SET_M(result->flags, hasm?1:0);
 	result->SRID = srid;
 	result->nrings = 0;
 	result->maxrings = 1; /* Allocate room for ring, just in case. */
@@ -99,11 +104,13 @@ lwpoly_deserialize(uchar *serialized_form)
 	result = (LWPOLY*) lwalloc(sizeof(LWPOLY));
 
 	type = serialized_form[0];
-	result->type = type;
+	result->type = TYPE_GETTYPE(type);
 
 	ndims = TYPE_NDIMS(type);
 	hasz = TYPE_HASZ(type);
 	hasm = TYPE_HASM(type);
+	FLAGS_SET_Z(result->flags, hasz?1:0);
+	FLAGS_SET_M(result->flags, hasm?1:0);
 	loc = serialized_form;
 
 	if ( TYPE_GETTYPE(type) != POLYGONTYPE)
@@ -117,10 +124,15 @@ lwpoly_deserialize(uchar *serialized_form)
 
 	if (lwgeom_hasBBOX(type))
 	{
+		BOX2DFLOAT4 *box2df;
+
 		LWDEBUG(3, "lwpoly_deserialize: input has bbox");
 
-		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
-		memcpy(result->bbox, loc, sizeof(BOX2DFLOAT4));
+		FLAGS_SET_BBOX(result->flags, 1);
+		box2df = lwalloc(sizeof(BOX2DFLOAT4));
+                memcpy(box2df, loc, sizeof(BOX2DFLOAT4));
+                result->bbox = gbox_from_box2df(result->flags, box2df);
+                lwfree(box2df);
 		loc += sizeof(BOX2DFLOAT4);
 	}
 	else
@@ -204,7 +216,7 @@ lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *retsize)
 
 	LWDEBUG(2, "lwpoly_serialize_buf called");
 
-	ptsize = sizeof(double)*TYPE_NDIMS(poly->type);
+	ptsize = sizeof(double)*FLAGS_NDIMS(poly->flags);
 
 	hasSRID = (poly->SRID != -1);
 
@@ -212,13 +224,17 @@ lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *retsize)
 	size += 4*poly->nrings; /* npoints/ring */
 
 	buf[0] = (uchar) lwgeom_makeType_full(
-	             TYPE_HASZ(poly->type), TYPE_HASM(poly->type),
+	             FLAGS_GET_Z(poly->flags), FLAGS_GET_M(poly->flags),
 	             hasSRID, POLYGONTYPE, poly->bbox ? 1 : 0);
 	loc = buf+1;
 
 	if (poly->bbox)
 	{
-		memcpy(loc, poly->bbox, sizeof(BOX2DFLOAT4));
+		BOX2DFLOAT4 *box2df;
+		
+		box2df = box2df_from_gbox(poly->bbox);
+		memcpy(loc, box2df, sizeof(BOX2DFLOAT4));
+		lwfree(box2df);
 		size += sizeof(BOX2DFLOAT4); /* bvol */
 		loc += sizeof(BOX2DFLOAT4);
 	}
@@ -239,10 +255,10 @@ lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *retsize)
 		size_t pasize;
 		uint32 npoints;
 
-		LWDEBUGF(4, "TYPE_GETZM(poly->type) == %d", TYPE_GETZM(poly->type));
-		LWDEBUGF(4, "TYPE_GETZM(pa->dims) == %d", TYPE_GETZM(pa->dims));
+		LWDEBUGF(4, "FLAGS_GET_ZM(poly->type) == %d", FLAGS_GET_ZM(poly->flags));
+		LWDEBUGF(4, "FLAGS_GET_ZM(pa->dims) == %d", FLAGS_GET_ZM(pa->dims));
 
-		if ( TYPE_GETZM(poly->type) != TYPE_GETZM(pa->dims) )
+		if ( FLAGS_GET_ZM(poly->flags) != FLAGS_GET_ZM(pa->dims) )
 			lwerror("Dimensions mismatch in lwpoly");
 
 		npoints = pa->npoints;
@@ -373,7 +389,7 @@ lwpoly_serialize_size(LWPOLY *poly)
 	for (i=0; i<poly->nrings; i++)
 	{
 		size += 4; /* npoints */
-		size += poly->rings[i]->npoints*TYPE_NDIMS(poly->type)*sizeof(double);
+		size += poly->rings[i]->npoints*FLAGS_NDIMS(poly->flags)*sizeof(double);
 	}
 
 	LWDEBUGF(3, "lwpoly_serialize_size returning %d", size);
@@ -404,7 +420,7 @@ void printLWPOLY(LWPOLY *poly)
 {
 	int t;
 	lwnotice("LWPOLY {");
-	lwnotice("    ndims = %i", (int)TYPE_NDIMS(poly->type));
+	lwnotice("    ndims = %i", (int)FLAGS_NDIMS(poly->flags));
 	lwnotice("    SRID = %i", (int)poly->SRID);
 	lwnotice("    nrings = %i", (int)poly->nrings);
 	for (t=0; t<poly->nrings; t++)
@@ -441,7 +457,7 @@ lwpoly_clone(const LWPOLY *g)
 	memcpy(ret, g, sizeof(LWPOLY));
 	ret->rings = lwalloc(sizeof(POINTARRAY *)*g->nrings);
 	memcpy(ret->rings, g->rings, sizeof(POINTARRAY *)*g->nrings);
-	if ( g->bbox ) ret->bbox = box2d_clone(g->bbox);
+	if ( g->bbox ) ret->bbox = gbox_copy(g->bbox);
 	return ret;
 }
 
@@ -589,7 +605,7 @@ lwpoly_remove_repeated_points(LWPOLY *poly)
 	}
 
 	return (LWGEOM*)lwpoly_construct(poly->SRID,
-	                                 poly->bbox ? box2d_clone(poly->bbox) : NULL,
+	                                 poly->bbox ? gbox_copy(poly->bbox) : NULL,
 	                                 poly->nrings, newrings);
 
 }
@@ -616,7 +632,7 @@ lwpoly_force_dims(const LWPOLY *poly, int hasz, int hasm)
 		}
 		polyout = lwpoly_construct(poly->SRID, NULL, poly->nrings, rings);
 	}
-	TYPE_SETTYPE(polyout->type, TYPE_GETTYPE(poly->type));
+	polyout->type = poly->type;
 	return polyout;
 }
 
@@ -642,7 +658,7 @@ int lwpoly_count_vertices(LWPOLY *poly)
 LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist)
 {
 	int i;
-	LWPOLY *opoly = lwpoly_construct_empty(ipoly->SRID, TYPE_HASZ(ipoly->type), TYPE_HASM(ipoly->type));
+	LWPOLY *opoly = lwpoly_construct_empty(ipoly->SRID, FLAGS_GET_Z(ipoly->flags), FLAGS_GET_M(ipoly->flags));
 
 	LWDEBUGF(2, "simplify_polygon3d: simplifying polygon with %d rings", ipoly->nrings);
 
@@ -664,20 +680,20 @@ LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist)
 		/* Less points than are needed to form a closed ring, we can't use this */
 		if ( opts->npoints < 4 )
 		{
-			LWDEBUGF(3, "ring%d skipped (<4 pts)", ri);
+			LWDEBUGF(3, "ring%d skipped (<4 pts)", i);
 			ptarray_free(opts);
 			if ( i ) continue;
 			else break;
 		}
 
-		LWDEBUGF(3, "ring%d simplified from %d to %d points", ri, ipts->npoints, opts->npoints);
+		LWDEBUGF(3, "ring%d simplified from %d to %d points", i, ipoly->rings[i]->npoints, opts->npoints);
 
 		/* Add ring to simplified polygon */
 		if( lwpoly_add_ring(opoly, opts) == LW_FALSE )
 			return NULL;
 	}
 
-	LWDEBUGF(3, "simplified polygon with %d rings", norings);
-	TYPE_SETTYPE(opoly->type, TYPE_GETTYPE(ipoly->type));
+	LWDEBUGF(3, "simplified polygon with %d rings", ipoly->nrings);
+	opoly->type = ipoly->type;
 	return opoly;
 }

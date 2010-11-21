@@ -47,9 +47,7 @@ static uint32 lwgeom_wkb_type(const LWGEOM *geom, uchar variant)
 {
 	uint32 wkb_type = 0;
 
-	uchar type = geom->type;
-
-	switch ( TYPE_GETTYPE(type) )
+	switch ( geom->type )
 	{
 	case POINTTYPE:
 		wkb_type = WKB_POINT_TYPE;
@@ -97,25 +95,27 @@ static uint32 lwgeom_wkb_type(const LWGEOM *geom, uchar variant)
 		wkb_type = WKB_TRIANGLE_TYPE;
 		break;
 	default:
-		lwerror("Unsupported geometry type: %s [%d]", lwtype_name(type), type);
+		lwerror("Unsupported geometry type: %s [%d]",
+			lwtype_name(geom->type), geom->type);
 	}
 
 	if ( variant & WKB_EXTENDED )
 	{
-		if ( TYPE_HASZ(type) )
+		if ( FLAGS_GET_Z(geom->flags) )
 			wkb_type |= WKBZOFFSET;
-		if ( TYPE_HASM(type) )
+		if ( FLAGS_GET_M(geom->flags) )
 			wkb_type |= WKBMOFFSET;
-		if ( lwgeom_has_srid(geom) && ! (variant & WKB_NO_SRID) )
+		if ( geom->SRID != -1 && geom->SRID != SRID_UNKNOWN 
+			&& ! (variant & WKB_NO_SRID) )
 			wkb_type |= WKBSRIDFLAG;
 	}
 	else if ( variant & WKB_ISO )
 	{
 		/* Z types are in the 1000 range */
-		if ( TYPE_HASZ(type) )
+		if ( FLAGS_GET_Z(geom->flags) )
 			wkb_type += 1000;
 		/* M types are in the 2000 range */
-		if ( TYPE_HASM(type) )
+		if ( FLAGS_GET_M(geom->flags) )
 			wkb_type += 2000;
 		/* ZM types are in the 1000 + 2000 = 3000 range, see above */
 	}
@@ -266,7 +266,7 @@ static char* empty_to_wkb_buf(const LWGEOM *geom, char *buf, uchar variant)
 {
 	uint32 wkb_type = lwgeom_wkb_type(geom, variant);
 
-	if ( TYPE_GETTYPE(geom->type) == POINTTYPE )
+	if ( geom->type == POINTTYPE )
 		wkb_type += 3; /* Change POINT to MULTIPOINT */
 
 	/* Set the endian flag */
@@ -294,7 +294,7 @@ static size_t ptarray_to_wkb_size(const POINTARRAY *pa, uchar variant)
 	if ( pa->npoints < 1 )
 		return 0;
 	if ( variant & (WKB_ISO | WKB_EXTENDED) )
-		dims = TYPE_NDIMS(pa->dims);
+		dims = FLAGS_NDIMS(pa->dims);
 
 	/* Include the npoints if it's not a POINT type) */
 	if ( ! ( variant & WKB_NO_NPOINTS ) )
@@ -321,7 +321,7 @@ static char* ptarray_to_wkb_buf(const POINTARRAY *pa, char *buf, uchar variant)
 
 	/* SFSQL is always 2-d. Extended and ISO use all available dimensions */
 	if ( (variant & WKB_ISO) || (variant & WKB_EXTENDED) )
-		dims = TYPE_NDIMS(pa->dims);
+		dims = FLAGS_NDIMS(pa->dims);
 
 	/* Set the number of points (if it's not a POINT type) */
 	if ( ! ( variant & WKB_NO_NPOINTS ) )
@@ -563,7 +563,7 @@ static size_t lwgeom_to_wkb_size(const LWGEOM *geom, uchar variant)
 		return empty_to_wkb_size(geom, variant);
 	}
 
-	switch ( TYPE_GETTYPE(geom->type) )
+	switch ( geom->type )
 	{
 		case POINTTYPE:
 			size += lwpoint_to_wkb_size((LWPOINT*)geom, variant);
@@ -601,7 +601,7 @@ static size_t lwgeom_to_wkb_size(const LWGEOM *geom, uchar variant)
 
 		/* Unknown type! */
 		default:
-			lwerror("Unsupported geometry type: %s [%d]", lwtype_name(geom->type), TYPE_GETTYPE(geom->type));
+			lwerror("Unsupported geometry type: %s [%d]", lwtype_name(geom->type), geom->type);
 	}
 
 	return size;
@@ -615,7 +615,7 @@ static char* lwgeom_to_wkb_buf(const LWGEOM *geom, char *buf, uchar variant)
 	if ( lwgeom_is_empty(geom) )
 		return empty_to_wkb_buf(geom, buf, variant);
 
-	switch ( TYPE_GETTYPE(geom->type) )
+	switch ( geom->type )
 	{
 		case POINTTYPE:
 			return lwpoint_to_wkb_buf((LWPOINT*)geom, buf, variant);
@@ -648,7 +648,7 @@ static char* lwgeom_to_wkb_buf(const LWGEOM *geom, char *buf, uchar variant)
 
 		/* Unknown type! */
 		default:
-			lwerror("Unsupported geometry type: %s [%d]", lwtype_name(geom->type), TYPE_GETTYPE(geom->type));
+			lwerror("Unsupported geometry type: %s [%d]", lwtype_name(geom->type), geom->type);
 	}
 	/* Return value to keep compiler happy. */
 	return 0;

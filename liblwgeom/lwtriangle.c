@@ -23,15 +23,17 @@
  * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
  */
 LWTRIANGLE*
-lwtriangle_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points)
+lwtriangle_construct(int SRID, GBOX *bbox, POINTARRAY *points)
 {
 	LWTRIANGLE *result;
-	int hasz, hasm;
 
-	hasz = TYPE_HASZ(points->dims);
-	hasm = TYPE_HASM(points->dims);
 	result = (LWTRIANGLE*) lwalloc(sizeof(LWTRIANGLE));
-	result->type = lwgeom_makeType_full(hasz, hasm, (SRID>0), TRIANGLETYPE, 0);
+	result->type = TRIANGLETYPE;
+
+	FLAGS_SET_Z(result->flags, FLAGS_GET_Z(points->dims));
+	FLAGS_SET_M(result->flags, FLAGS_GET_M(points->dims));
+	FLAGS_SET_BBOX(result->flags, bbox?1:0);
+	
 	result->SRID = SRID;
 	result->points = points;
 	result->bbox = bbox;
@@ -43,7 +45,9 @@ LWTRIANGLE*
 lwtriangle_construct_empty(int srid, char hasz, char hasm)
 {
 	LWTRIANGLE *result = lwalloc(sizeof(LWTRIANGLE));
-	result->type = lwgeom_makeType_full(hasz, hasm, (srid>0), TRIANGLETYPE, 0);
+	result->type = TRIANGLETYPE;
+	FLAGS_SET_Z(result->flags, hasz);
+	FLAGS_SET_M(result->flags, hasm);
 	result->SRID = srid;
 	result->points = NULL;
 	result->bbox = NULL;
@@ -62,7 +66,7 @@ lwtriangle_deserialize(uchar *serialized_form)
 {
 	LWTRIANGLE *result;
 	POINTARRAY *pa;
-	int ndims, hasz, hasm;
+	int ndims;
 	uint32 npoints;
 	uchar type;
 	uchar *loc;
@@ -78,17 +82,17 @@ lwtriangle_deserialize(uchar *serialized_form)
 	result = (LWTRIANGLE*) lwalloc(sizeof(LWTRIANGLE));
 
 	type = serialized_form[0];
-	result->type = type;
+	result->type = TRIANGLETYPE;
 
 	ndims = TYPE_NDIMS(type);
-	hasz = TYPE_HASZ(type);
-	hasm = TYPE_HASM(type);
+	FLAGS_SET_Z(result->flags, TYPE_HASZ(type));
+	FLAGS_SET_M(result->flags, TYPE_HASM(type));
 	loc = serialized_form;
 
 	if ( TYPE_GETTYPE(type) != TRIANGLETYPE)
 	{
 		lwerror("lwtriangle_deserialize: attempt to deserialize a triangle which is really a %s",
-		        lwtype_name(type));
+		        lwtype_name(TYPE_GETTYPE(type)));
 		return NULL;
 	}
 
@@ -96,10 +100,16 @@ lwtriangle_deserialize(uchar *serialized_form)
 
 	if (lwgeom_hasBBOX(type))
 	{
+		BOX2DFLOAT4 *box2df;
+
 		LWDEBUG(3, "lwtriangle_deserialize: input has bbox");
 
-		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
-		memcpy(result->bbox, loc, sizeof(BOX2DFLOAT4));
+		FLAGS_SET_BBOX(result->flags, 1);
+		box2df = lwalloc(sizeof(BOX2DFLOAT4));
+		memcpy(box2df, loc, sizeof(BOX2DFLOAT4));
+		result->bbox = gbox_from_box2df(result->flags, box2df);
+		lwfree(box2df);
+
 		loc += sizeof(BOX2DFLOAT4);
 	}
 	else
@@ -120,7 +130,7 @@ lwtriangle_deserialize(uchar *serialized_form)
 	npoints = lw_get_uint32(loc);
 	/*lwnotice("triangle npoints = %d", npoints); */
 	loc +=4;
-	pa = ptarray_construct_reference_data(hasz, hasm, npoints, loc);
+	pa = ptarray_construct_reference_data(FLAGS_GET_Z(result->flags), FLAGS_GET_M(result->flags), npoints, loc);
 	
 	result->points = pa;
 
@@ -171,7 +181,7 @@ lwtriangle_serialize_buf(LWTRIANGLE *triangle, uchar *buf, size_t *retsize)
 	if (triangle == NULL)
 		lwerror("lwtriangle_serialize:: given null triangle");
 
-	if ( TYPE_GETZM(triangle->type) != TYPE_GETZM(triangle->points->dims) )
+	if ( FLAGS_GET_ZM(triangle->flags) != FLAGS_GET_ZM(triangle->points->dims) )
 		lwerror("Dimensions mismatch in lwtriangle");
 
 	ptsize = ptarray_point_size(triangle->points);
@@ -179,7 +189,7 @@ lwtriangle_serialize_buf(LWTRIANGLE *triangle, uchar *buf, size_t *retsize)
 	hasSRID = (triangle->SRID != -1);
 
 	buf[0] = (uchar) lwgeom_makeType_full(
-	             TYPE_HASZ(triangle->type), TYPE_HASM(triangle->type),
+	             FLAGS_GET_Z(triangle->flags), FLAGS_GET_M(triangle->flags),
 	             hasSRID, TRIANGLETYPE, triangle->bbox ? 1 : 0);
 	loc = buf+1;
 
@@ -187,8 +197,12 @@ lwtriangle_serialize_buf(LWTRIANGLE *triangle, uchar *buf, size_t *retsize)
 
 	if (triangle->bbox)
 	{
-		memcpy(loc, triangle->bbox, sizeof(BOX2DFLOAT4));
+		BOX2DFLOAT4 *box2df;
+		
+		box2df = box2df_from_gbox(triangle->bbox);
+		memcpy(loc, box2df, sizeof(BOX2DFLOAT4));
 		loc += sizeof(BOX2DFLOAT4);
+		lwfree(box2df);
 
 		LWDEBUG(3, "lwtriangle_serialize_buf added BBOX");
 	}
@@ -305,8 +319,11 @@ void lwtriangle_free(LWTRIANGLE  *triangle)
 
 void printLWTRIANGLE(LWTRIANGLE *triangle)
 {
+	if (triangle->type != TRIANGLETYPE)
+                lwerror("printLWTRIANGLE called with something else than a Triangle");
+
 	lwnotice("LWTRIANGLE {");
-	lwnotice("    ndims = %i", (int)TYPE_NDIMS(triangle->type));
+	lwnotice("    ndims = %i", (int)FLAGS_NDIMS(triangle->flags));
 	lwnotice("    SRID = %i", (int)triangle->SRID);
 	printPA(triangle->points);
 	lwnotice("}");
@@ -325,7 +342,7 @@ lwtriangle_clone(const LWTRIANGLE *g)
 	LWTRIANGLE *ret = lwalloc(sizeof(LWTRIANGLE));
 	LWDEBUGF(2, "lwtriangle_clone called with %p", g);
 	memcpy(ret, g, sizeof(LWTRIANGLE));
-	if ( g->bbox ) ret->bbox = box2d_clone(g->bbox);
+	if ( g->bbox ) ret->bbox = gbox_copy(g->bbox);
 	return ret;
 }
 
@@ -372,8 +389,8 @@ lwtriangle_from_lwline(const LWLINE *shell)
 	if ( shell->points->npoints != 4 )
 		lwerror("lwtriangle_from_lwline: shell must have exactly 4 points");
 
-	if (   (!TYPE_HASZ(shell->type) && !ptarray_isclosed2d(shell->points)) ||
-	        (TYPE_HASZ(shell->type) && !ptarray_isclosed3d(shell->points)) )
+	if (   (!FLAGS_GET_Z(shell->flags) && !ptarray_isclosed2d(shell->points)) ||
+	        (FLAGS_GET_Z(shell->flags) && !ptarray_isclosed3d(shell->points)) )
 		lwerror("lwtriangle_from_lwline: shell must be closed");
 
 	pa = ptarray_clone(shell->points);

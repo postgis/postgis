@@ -190,9 +190,6 @@ void alloc_lwgeom(int srid);
 void write_point_2(tuple* this,output_state* out);
 void write_point_3(tuple* this,output_state* out);
 void write_point_4(tuple* this,output_state* out);
-void write_point_2i(tuple* this,output_state* out);
-void write_point_3i(tuple* this,output_state* out);
-void write_point_4i(tuple* this,output_state* out);
 void alloc_point_2d(double x,double y);
 void alloc_point_3d(double x,double y,double z);
 void alloc_point_4d(double x,double y,double z,double m);
@@ -1127,26 +1124,10 @@ write_point_4(tuple* this,output_state* out)
 }
 
 void
-write_point_2i(tuple* this,output_state* out)
-{
-	WRITE_INT4_REAL_MULTIPLE(out,this->uu.points,2);
-}
-
-void
-write_point_3i(tuple* this,output_state* out)
-{
-	WRITE_INT4_REAL_MULTIPLE(out,this->uu.points,3);
-}
-
-void
-write_point_4i(tuple* this,output_state* out)
-{
-	WRITE_INT4_REAL_MULTIPLE(out,this->uu.points,4);
-}
-void
 write_type(tuple* this,output_state* out)
 {
 	uchar type=0;
+
 
 	/* Empty handler - switch back */
 	if ( this->uu.nn.type == 0xff )

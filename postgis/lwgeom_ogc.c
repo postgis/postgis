@@ -486,7 +486,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	LWGEOM *ring;
 	LWLINE *line;
 	PG_LWGEOM *result;
-	BOX2DFLOAT4 *bbox=NULL;
+	GBOX *bbox=NULL;
 
 	POSTGIS_DEBUG(2, "LWGEOM_exteriorring_polygon called.");
 
@@ -509,7 +509,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 		* If the input geom has a bbox, use it for
 		* the output geom, as exterior ring makes it up !
 		*/
-		if ( poly->bbox ) bbox=box2d_clone(poly->bbox);
+		if ( poly->bbox ) bbox=gbox_copy(poly->bbox);
 		line = lwline_construct(poly->SRID, bbox, extring);
 
 		result = pglwgeom_serialize((LWGEOM *)line);
@@ -526,7 +526,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 		* If the input geom has a bbox, use it for
 		* the output geom, as exterior ring makes it up !
 		*/
-		if ( triangle->bbox ) bbox=box2d_clone(triangle->bbox);
+		if ( triangle->bbox ) bbox=gbox_copy(triangle->bbox);
 		line = lwline_construct(triangle->SRID, bbox, triangle->points);
 
 		result = pglwgeom_serialize((LWGEOM *)line);
@@ -632,7 +632,7 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	POINTARRAY *ring;
 	LWLINE *line;
 	PG_LWGEOM *result;
-	BOX2DFLOAT4 *bbox = NULL;
+	GBOX *bbox = NULL;
 
 	POSTGIS_DEBUG(2, "LWGEOM_interierringn_polygon called.");
 
@@ -667,7 +667,7 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 		ring = poly->rings[wanted_index];
 
 		/* COMPUTE_BBOX==TAINTING */
-		if ( poly->bbox ) bbox = ptarray_compute_box2d(ring);
+		if ( poly->bbox ) ptarray_calculate_gbox(ring, bbox);
 
 		/* This is a LWLINE constructed by interior ring POINTARRAY */
 		line = lwline_construct(poly->SRID, bbox, ring);
@@ -762,8 +762,8 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 			lwinspected_release(inspected);
 
 			pts = ptarray_construct_reference_data(
-			        TYPE_HASZ(curve->type), 
-			        TYPE_HASM(curve->type), 
+			        FLAGS_GET_Z(curve->flags), 
+			        FLAGS_GET_M(curve->flags), 
 			        1, 
 			        getPoint_internal(curve->points, wanted_index-1) );
 		}
@@ -782,8 +782,8 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 
 			/* Construct a point array */
 			pts = ptarray_construct_reference_data(
-			        TYPE_HASZ(line->type), 
-			        TYPE_HASM(line->type), 
+			        FLAGS_GET_Z(line->flags), 
+			        FLAGS_GET_M(line->flags), 
 			        1, 
 			        getPoint_internal(line->points, wanted_index-1) );
 
@@ -915,7 +915,7 @@ Datum LWGEOM_m_point(PG_FUNCTION_ARGS)
 	point = lwgeom_getpoint(SERIALIZED_FORM(geom), 0);
 
 	/* no M in input */
-	if ( ! TYPE_HASM(point->type) ) PG_RETURN_NULL();
+	if ( ! FLAGS_GET_M(point->flags) ) PG_RETURN_NULL();
 
 	getPoint3dm_p(point->point, 0, &p);
 
@@ -972,8 +972,8 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 
 	/* Construct a point array */
 	pts = ptarray_construct_reference_data(
-	        TYPE_HASZ(line->type), 
-	        TYPE_HASM(line->type), 
+	        FLAGS_GET_Z(line->flags), 
+	        FLAGS_GET_M(line->flags), 
 	        1, 
 	        getPoint_internal(line->points, 0) );
 
@@ -1035,8 +1035,8 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 
 	/* Construct a point array */
 	pts = ptarray_construct_reference_data(
-	        TYPE_HASZ(line->type), 
-	        TYPE_HASM(line->type), 
+	        FLAGS_GET_Z(line->flags), 
+	        FLAGS_GET_M(line->flags), 
 	        1, 
 	        getPoint_internal(line->points, line->points->npoints-1) );
 
@@ -1099,7 +1099,7 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 
 	lwgeom = lwgeom_deserialize(lwg_parser_result.serialized_lwgeom);
 
-	if ( lwgeom->SRID != -1 || TYPE_GETZM(lwgeom->type) != 0 )
+	if ( lwgeom->SRID != -1 || FLAGS_GET_ZM(lwgeom->flags) != 0 )
 	{
 		elog(WARNING, "OGC WKT expected, EWKT provided - use GeomFromEWKT() for this");
 	}

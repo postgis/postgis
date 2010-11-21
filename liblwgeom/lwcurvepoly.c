@@ -38,35 +38,42 @@ lwcurvepoly_deserialize(uchar *srl)
 	insp = lwgeom_inspect(srl);
 
 	result = lwalloc(sizeof(LWCURVEPOLY));
-	result->type = insp->type;
+	result->type = CURVEPOLYTYPE;
+	FLAGS_SET_Z(result->flags, TYPE_HASZ(srl[0]));
+	FLAGS_SET_M(result->flags, TYPE_HASM(srl[0]));
 	result->SRID = insp->SRID;
 	result->nrings = insp->ngeometries;
 	result->rings = lwalloc(sizeof(LWGEOM *)*insp->ngeometries);
 
 	if (lwgeom_hasBBOX(srl[0]))
 	{
-		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
-		memcpy(result->bbox, srl + 1, sizeof(BOX2DFLOAT4));
+		BOX2DFLOAT4 *box2df;
+		
+		FLAGS_SET_BBOX(result->flags, 1);
+		box2df = lwalloc(sizeof(BOX2DFLOAT4));
+		memcpy(box2df, srl + 1, sizeof(BOX2DFLOAT4));
+		result->bbox = gbox_from_box2df(result->flags, box2df);
+		lwfree(box2df);
 	}
 	else result->bbox = NULL;
 
 	for (i = 0; i < insp->ngeometries; i++)
 	{
 		result->rings[i] = lwgeom_deserialize(insp->sub_geoms[i]);
-		if (lwgeom_getType(result->rings[i]->type) != CIRCSTRINGTYPE
-		        && lwgeom_getType(result->rings[i]->type) != LINETYPE
-		        && lwgeom_getType(result->rings[i]->type) != COMPOUNDTYPE)
+		if (result->rings[i]->type != CIRCSTRINGTYPE
+		        && result->rings[i]->type != LINETYPE
+		        && result->rings[i]->type != COMPOUNDTYPE)
 		{
 			lwerror("Only Circular curves, Linestrings and Compound curves are supported as rings, not %s (%d)", lwtype_name(result->rings[i]->type), result->rings[i]->type);
 			lwfree(result);
 			lwfree(insp);
 			return NULL;
 		}
-		if (TYPE_NDIMS(result->rings[i]->type) != TYPE_NDIMS(result->type))
+		if (FLAGS_NDIMS(result->rings[i]->flags) != FLAGS_NDIMS(result->flags))
 		{
 			lwerror("Mixed dimensions (curvepoly %d, ring %d)",
-			        TYPE_NDIMS(result->type), i,
-			        TYPE_NDIMS(result->rings[i]->type));
+			        FLAGS_NDIMS(result->flags), i,
+			        FLAGS_NDIMS(result->rings[i]->flags));
 			lwfree(result);
 			lwfree(insp);
 			return NULL;
@@ -81,7 +88,9 @@ lwcurvepoly_construct_empty(int srid, char hasz, char hasm)
 	LWCURVEPOLY *ret;
 
 	ret = lwalloc(sizeof(LWCURVEPOLY));
-	ret->type = lwgeom_makeType_full(hasz, hasm, (srid!=-1), CURVEPOLYTYPE, 0);
+	ret->type = CURVEPOLYTYPE;
+	FLAGS_SET_Z(ret->flags, hasz);
+	FLAGS_SET_M(ret->flags, hasm);
 	ret->SRID = srid;
 	ret->nrings = 0;
 	ret->maxrings = 1; /* Allocate room for sub-members, just in case. */
@@ -93,7 +102,7 @@ lwcurvepoly_construct_empty(int srid, char hasz, char hasm)
 
 int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring)
 {
-	int ringtype, i;
+	int i;
 	
 	/* Can't do anything with NULLs */
 	if( ! poly || ! ring ) 
@@ -110,10 +119,9 @@ int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring)
 	}
 
 	/* Check that we're adding an allowed ring type */
-	ringtype = TYPE_GETTYPE(ring->type);
-	if ( ! ( ringtype == LINETYPE || ringtype == CIRCSTRINGTYPE || ringtype == COMPOUNDTYPE ) )
+	if ( ! ( ring->type == LINETYPE || ring->type == CIRCSTRINGTYPE || ring->type == COMPOUNDTYPE ) )
 	{
-		LWDEBUGF(4,"got incorrect ring type: %s",lwtype_name(ringtype));
+		LWDEBUGF(4,"got incorrect ring type: %s",lwtype_name(ring->type));
 		return LW_FALSE;
 	}
 

@@ -10,13 +10,6 @@
  *
  **********************************************************************/
 
-/* We use same value and macro to flags than in libgeom.h
-   and we add a solid flag for surface enclosing a solid
-   (so still 2 unused bits) */
-#define FLAGS_GET_SOLID(flags) (((flags) & 0x20)>>5)
-#define FLAGS_SET_SOLID(flags, value) ((flags) = (value) ? ((flags) | 0x20) : ((flags) & 0xDF))
-
-
 /**
 * TSERIALIZED (mostly inspired by GSERIALIZED struct)
 */
@@ -62,7 +55,7 @@ typedef struct
 	TFACE **faces;
 } TGEOM;
 
-extern TGEOM* tgeom_new(uint32 type, int hasz, int hasm);
+extern TGEOM* tgeom_new(uchar type, int hasz, int hasm);
 extern void tgeom_free(TGEOM *tgeom);
 extern TSERIALIZED* tserialized_from_lwgeom(LWGEOM *lwgeom);
 extern TGEOM* tgeom_from_lwgeom(LWGEOM *lwgeom);

@@ -37,7 +37,7 @@ void lwcircstring_setPoint4d(LWCIRCSTRING *curve, uint32 index, POINT4D *newpoin
  * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
  */
 LWCIRCSTRING *
-lwcircstring_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points)
+lwcircstring_construct(int SRID, GBOX *bbox, POINTARRAY *points)
 {
 	LWCIRCSTRING *result;
 
@@ -54,10 +54,10 @@ lwcircstring_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points)
 
 	result = (LWCIRCSTRING*) lwalloc(sizeof(LWCIRCSTRING));
 
-	result->type = lwgeom_makeType_full(
-	                   TYPE_HASZ(points->dims),
-	                   TYPE_HASM(points->dims),
-	                   (SRID>0), CIRCSTRINGTYPE, 0);
+	result->type = CIRCSTRINGTYPE;
+	FLAGS_SET_Z(result->flags, FLAGS_GET_Z(points->dims));
+	FLAGS_SET_M(result->flags, FLAGS_GET_M(points->dims));
+	FLAGS_SET_BBOX(result->flags, bbox?1:0);
 	result->SRID = SRID;
 	result->points = points;
 	result->bbox = bbox;
@@ -69,7 +69,9 @@ LWCIRCSTRING *
 lwcircstring_construct_empty(int srid, char hasz, char hasm)
 {
 	LWCIRCSTRING *result = lwalloc(sizeof(LWCIRCSTRING));
-	result->type = lwgeom_makeType_full(hasz, hasm, (srid>0), CIRCSTRINGTYPE, 0);
+	result->type = CIRCSTRINGTYPE;
+	FLAGS_SET_Z(result->flags, hasz);
+	FLAGS_SET_M(result->flags, hasm);
 	result->SRID = srid;
 	result->points = NULL;
 	result->bbox = NULL;
@@ -100,21 +102,28 @@ lwcircstring_deserialize(uchar *serialized_form)
 	type = (uchar)serialized_form[0];
 	if (lwgeom_getType(type) != CIRCSTRINGTYPE)
 	{
-		lwerror("lwcircstring_deserialize: attempt to deserialize a circularstring which is really a %s", lwtype_name(type));
+		lwerror("lwcircstring_deserialize: attempt to deserialize a circularstring which is really a %s",
+			lwtype_name(TYPE_GETTYPE(type)));
 		return NULL;
 	}
 
 	result = (LWCIRCSTRING*) lwalloc(sizeof(LWCIRCSTRING));
-	result->type = type;
+	result->type = CIRCSTRINGTYPE;
+	FLAGS_SET_Z(result->flags, TYPE_HASZ(type)); 
+	FLAGS_SET_M(result->flags, TYPE_HASM(type)); 
 
 	loc = serialized_form + 1;
 
 	if (lwgeom_hasBBOX(type))
 	{
+		BOX2DFLOAT4 *box2df;
 		LWDEBUG(3, "lwcircstring_deserialize: input has bbox");
 
-		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
-		memcpy(result->bbox, loc, sizeof(BOX2DFLOAT4));
+		FLAGS_SET_BBOX(result->flags, 1);
+		box2df = lwalloc(sizeof(BOX2DFLOAT4));
+		memcpy(box2df, loc, sizeof(BOX2DFLOAT4));
+		result->bbox = gbox_from_box2df(result->flags, box2df);
+		lwfree(box2df);
 		loc += sizeof(BOX2DFLOAT4);
 	}
 	else
@@ -145,7 +154,7 @@ lwcircstring_deserialize(uchar *serialized_form)
 	LWDEBUGF(3, "circstring npoints = %d", npoints);
 
 	loc += 4;
-	pa = ptarray_construct_reference_data(TYPE_HASZ(type), TYPE_HASM(type), npoints, loc);
+	pa = ptarray_construct_reference_data(FLAGS_GET_Z(result->flags), FLAGS_GET_M(result->flags), npoints, loc);
 	
 	result->points = pa;
 	return result;
@@ -197,7 +206,7 @@ void lwcircstring_serialize_buf(LWCIRCSTRING *curve, uchar *buf, size_t *retsize
 		return;
 	}
 
-	if (TYPE_GETZM(curve->type) != TYPE_GETZM(curve->points->dims))
+	if (FLAGS_GET_ZM(curve->flags) != FLAGS_GET_ZM(curve->points->dims))
 	{
 		lwerror("Dimensions mismatch in lwcircstring");
 		return;
@@ -208,7 +217,7 @@ void lwcircstring_serialize_buf(LWCIRCSTRING *curve, uchar *buf, size_t *retsize
 	hasSRID = (curve->SRID != -1);
 
 	buf[0] = (uchar)lwgeom_makeType_full(
-	             TYPE_HASZ(curve->type), TYPE_HASM(curve->type),
+	             FLAGS_GET_Z(curve->flags), FLAGS_GET_M(curve->flags),
 	             hasSRID, CIRCSTRINGTYPE, curve->bbox ? 1 : 0);
 	loc = buf+1;
 
@@ -216,7 +225,11 @@ void lwcircstring_serialize_buf(LWCIRCSTRING *curve, uchar *buf, size_t *retsize
 
 	if (curve->bbox)
 	{
-		memcpy(loc, curve->bbox, sizeof(BOX2DFLOAT4));
+		BOX2DFLOAT4 *box2df;
+		
+		box2df = box2df_from_gbox(curve->bbox);
+		memcpy(loc, box2df, sizeof(BOX2DFLOAT4));
+		lwfree(box2df);
 		loc += sizeof(BOX2DFLOAT4);
 
 		LWDEBUG(3, "lwcircstring_serialize_buf added BBOX");
@@ -565,7 +578,7 @@ lwgeom_size_circstring(const uchar *serialized_curve)
 void printLWCIRCSTRING(LWCIRCSTRING *curve)
 {
 	lwnotice("LWCIRCSTRING {");
-	lwnotice("    ndims = %i", (int)TYPE_NDIMS(curve->type));
+	lwnotice("    ndims = %i", (int)FLAGS_NDIMS(curve->flags));
 	lwnotice("    SRID = %i", (int)curve->SRID);
 	printPA(curve->points);
 	lwnotice("}");
@@ -577,7 +590,7 @@ lwcircstring_clone(const LWCIRCSTRING *g)
 {
 	LWCIRCSTRING *ret = lwalloc(sizeof(LWCIRCSTRING));
 	memcpy(ret, g, sizeof(LWCIRCSTRING));
-	if (g->bbox) ret->bbox = box2d_clone(g->bbox);
+	if (g->bbox) ret->bbox = gbox_copy(g->bbox);
 	return ret;
 }
 
@@ -622,14 +635,14 @@ lwcircstring_from_lwpointarray(int SRID, uint32 npoints, LWPOINT **points)
 	 */
 	for (i = 0; i < npoints; i++)
 	{
-		if (TYPE_GETTYPE(points[i]->type) != POINTTYPE)
+		if (points[i]->type != POINTTYPE)
 		{
 			lwerror("lwcurve_from_lwpointarray: invalid input type: %s",
-			        lwtype_name(TYPE_GETTYPE(points[i]->type)));
+			        lwtype_name(points[i]->type));
 			return NULL;
 		}
-		if (TYPE_HASZ(points[i]->type)) zmflag |= 2;
-		if (TYPE_HASM(points[i]->type)) zmflag |=1;
+		if (FLAGS_GET_Z(points[i]->flags)) zmflag |= 2;
+		if (FLAGS_GET_M(points[i]->flags)) zmflag |= 1;
 		if (zmflag == 3) break;
 	}
 
@@ -664,7 +677,7 @@ lwcircstring_from_lwmpoint(int SRID, LWMPOINT *mpoint)
 {
 	uint32 i;
 	POINTARRAY *pa;
-	char zmflag = TYPE_GETZM(mpoint->type);
+	char zmflag = FLAGS_GET_ZM(mpoint->flags);
 	size_t ptsize, size;
 	uchar *newpoints, *ptr;
 
@@ -701,7 +714,7 @@ lwcircstring_addpoint(LWCIRCSTRING *curve, LWPOINT *point, uint32 where)
 
 	newpa = ptarray_addPoint(curve->points,
 	                         getPoint_internal(point->point, 0),
-	                         TYPE_NDIMS(point->type), where);
+	                         FLAGS_NDIMS(point->flags), where);
 	ret = lwcircstring_construct(curve->SRID, NULL, newpa);
 
 	return ret;
@@ -731,7 +744,7 @@ lwcircstring_setPoint4d(LWCIRCSTRING *curve, uint32 index, POINT4D *newpoint)
 int
 lwcircstring_is_closed(LWCIRCSTRING *curve)
 {
-	if (TYPE_HASZ(curve->type))
+	if (FLAGS_GET_Z(curve->flags))
 		return ptarray_isclosed3d(curve->points);
 
 	return ptarray_isclosed2d(curve->points);

@@ -20,6 +20,58 @@ GBOX* gbox_new(uchar flags)
 	return g;
 }
 
+/* TODO to be removed */
+GBOX* gbox_from_box2df(int flags, const BOX2DFLOAT4 *box)
+{
+	GBOX *g;
+	assert(box);
+	
+	g = gbox_new(flags);
+
+	g->xmin = next_float_down(box->xmin);
+        g->ymin = next_float_down(box->ymin);
+        g->xmax = next_float_up(box->xmax);
+        g->ymax = next_float_up(box->ymax);
+
+	/* CAUTION Inconsistent GBOX if Z or M Dim present ! */
+	g->zmin = g->zmax = NO_Z_VALUE;
+	g->mmin = g->mmax = NO_M_VALUE;
+
+	return g;
+}
+
+/* TODO to be removed */
+BOX2DFLOAT4* box2df_from_gbox(const GBOX *gbox)
+{
+	BOX2DFLOAT4 *b;
+	assert(gbox);
+	
+	b = lwalloc(sizeof(BOX2DFLOAT4));
+
+        b->xmin = next_float_down(gbox->xmin);
+        b->ymin = next_float_down(gbox->ymin);
+        b->xmax = next_float_up(gbox->xmax);
+        b->ymax = next_float_up(gbox->ymax);
+	
+ 	return b;	
+}
+
+int gbox_same(const GBOX *g1, const GBOX *g2)
+{
+	if (FLAGS_GET_ZM(g1->flags) != FLAGS_GET_ZM(g2->flags))
+		return LW_FALSE;
+
+	if ( g1->xmin != g2->xmin || g1->ymin != g2->ymin ||
+	     g1->xmax != g2->ymax || g1->ymax != g2->ymax ) return LW_FALSE;
+
+	if (FLAGS_GET_Z(g1->flags) && (g1->zmin != g2->zmin || g1->zmax != g2->zmax))
+		return LW_FALSE;
+	if (FLAGS_GET_M(g1->flags) && (g1->mmin != g2->mmin || g1->mmax != g2->mmax))
+		return LW_FALSE;
+
+	return LW_TRUE;
+}
+
 int gbox_merge_point3d(const POINT3D *p, GBOX *gbox)
 {
 	if ( gbox->xmin > p->x ) gbox->xmin = p->x;
@@ -45,7 +97,7 @@ int gbox_merge(const GBOX *new_box, GBOX *merge_box)
 {
 	assert(merge_box);
 
-	if ( merge_box->flags != new_box->flags )
+	if ( FLAGS_GET_ZM(merge_box->flags) != FLAGS_GET_ZM(new_box->flags) )
 		return LW_FAILURE;
 
 	if ( new_box->xmin < merge_box->xmin) merge_box->xmin = new_box->xmin;
@@ -451,11 +503,15 @@ int ptarray_calculate_gbox(const POINTARRAY *pa, GBOX *gbox )
 {
 	int i;
 	POINT4D p;
-	int has_z = FLAGS_GET_Z(gbox->flags);
-	int has_m = FLAGS_GET_M(gbox->flags);
+	int has_z, has_m;
 
 	if ( ! pa ) return LW_FAILURE;
+	if ( ! gbox ) return LW_FAILURE;
 	if ( pa->npoints < 1 ) return LW_FAILURE;
+
+	has_z = FLAGS_GET_Z(gbox->flags);
+	has_m = FLAGS_GET_M(gbox->flags);
+	LWDEBUGF(4, "ptarray_calculate_gbox Z: %d M: %d", has_z?1:0, has_m?1:0);
 
 	getPoint4d_p(pa, 0, &p);
 	gbox->xmin = gbox->xmax = p.x;
@@ -488,7 +544,7 @@ int ptarray_calculate_gbox(const POINTARRAY *pa, GBOX *gbox )
 
 static int lwcircstring_calculate_gbox(LWCIRCSTRING *curve, GBOX *gbox)
 {
-	uchar flags = gflags(TYPE_HASZ(curve->type), TYPE_HASM(curve->type), 0);
+	uchar flags = gflags(FLAGS_GET_Z(curve->flags), FLAGS_GET_M(curve->flags), 0);
 	GBOX tmp;
 	POINT4D p1, p2, p3;
 	int i;
@@ -550,7 +606,7 @@ static int lwcollection_calculate_gbox(LWCOLLECTION *coll, GBOX *gbox)
 	int result = LW_FAILURE;
 	int first = LW_TRUE;
 	assert(coll);
-	if ( coll->ngeoms == 0 )
+	if ( coll->ngeoms == 0 || !gbox)
 		return LW_FAILURE;
 
 	subbox.flags = gbox->flags;
@@ -581,8 +637,10 @@ static int lwcollection_calculate_gbox(LWCOLLECTION *coll, GBOX *gbox)
 int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox)
 {
 	if ( ! lwgeom ) return LW_FAILURE;
+	LWDEBUGF(4, "lwgeom_calculate_gbox got type (%d) - %s",
+		lwgeom->type, lwtype_name(lwgeom->type));
 
-	switch (TYPE_GETTYPE(lwgeom->type))
+	switch (lwgeom->type)
 	{
 	case POINTTYPE:
 		return lwpoint_calculate_gbox((LWPOINT *)lwgeom, gbox);
@@ -607,7 +665,6 @@ int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox)
 		return lwcollection_calculate_gbox((LWCOLLECTION *)lwgeom, gbox);
 	}
 	/* Never get here, please. */
-	lwerror("unsupported type (%d) - %s", TYPE_GETTYPE(lwgeom->type),
-	        lwtype_name(TYPE_GETTYPE(lwgeom->type)));
+	lwerror("unsupported type (%d) - %s", lwgeom->type, lwtype_name(lwgeom->type));
 	return LW_FAILURE;
 }

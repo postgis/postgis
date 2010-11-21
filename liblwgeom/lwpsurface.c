@@ -36,7 +36,9 @@ lwpsurface_deserialize(uchar *srl)
 	insp = lwgeom_inspect(srl);
 
 	result = lwalloc(sizeof(LWPSURFACE));
-	result->type = insp->type;
+	result->type = type;
+	FLAGS_SET_Z(result->flags, TYPE_HASZ(srl[0]));
+	FLAGS_SET_M(result->flags, TYPE_HASM(srl[0]));
 	result->SRID = insp->SRID;
 	result->ngeoms = insp->ngeometries;
 
@@ -51,8 +53,13 @@ lwpsurface_deserialize(uchar *srl)
 
 	if (lwgeom_hasBBOX(srl[0]))
 	{
-		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
-		memcpy(result->bbox, srl+1, sizeof(BOX2DFLOAT4));
+		BOX2DFLOAT4 *box2df;
+
+		FLAGS_SET_BBOX(result->flags, 1);
+		box2df = lwalloc(sizeof(BOX2DFLOAT4));
+		memcpy(box2df, srl+1, sizeof(BOX2DFLOAT4));
+		result->bbox = gbox_from_box2df(result->flags, box2df);
+		lwfree(box2df);
 	}
 	else result->bbox = NULL;
 
@@ -107,11 +114,11 @@ void printLWPSURFACE(LWPSURFACE *psurf)
 	int i, j;
 	LWPOLY *patch;
 
-	if (TYPE_GETTYPE(psurf->type) != POLYHEDRALSURFACETYPE)
+	if (psurf->type != POLYHEDRALSURFACETYPE)
 		lwerror("printLWPSURFACE called with something else than a POLYHEDRALSURFACE");
 
 	lwnotice("LWPSURFACE {");
-	lwnotice("    ndims = %i", (int)TYPE_NDIMS(psurf->type));
+	lwnotice("    ndims = %i", (int)FLAGS_NDIMS(psurf->flags));
 	lwnotice("    SRID = %i", (int)psurf->SRID);
 	lwnotice("    ngeoms = %i", (int)psurf->ngeoms);
 
@@ -154,7 +161,7 @@ int lwpsurface_is_closed(LWPSURFACE *psurface)
 	LWPOLY *patch;
 
 	/* If surface is not 3D, it's can't be closed */
-	if (!TYPE_HASZ(psurface->type)) return 0;
+	if (!FLAGS_GET_Z(psurface->flags)) return 0;
 
 	/* If surface is less than 4 faces hard to be closed too */
 	if (psurface->ngeoms < 4) return 0;

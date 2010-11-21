@@ -37,13 +37,12 @@ LWGEOM *
 lwgeom_homogenize(const LWGEOM *geom)
 {
 	LWGEOM *hgeom;
-	uint32 type=TYPE_GETTYPE(geom->type);
 
 	/* EMPTY Geometry */
 	if (lwgeom_is_empty(geom)) return lwgeom_clone(geom);
 
 	/* Already a simple Geometry */
-	switch (type)
+	switch (geom->type)
 	{
 	case POINTTYPE:
 	case LINETYPE:
@@ -52,7 +51,7 @@ lwgeom_homogenize(const LWGEOM *geom)
 	}
 
 	/* A MULTI */
-	switch (type)
+	switch (geom->type)
 	{
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
@@ -67,7 +66,7 @@ lwgeom_homogenize(const LWGEOM *geom)
 
 			hgeom->SRID = geom->SRID;
 			if (geom->bbox)
-				hgeom->bbox = box2d_clone(geom->bbox);
+				hgeom->bbox = gbox_copy(geom->bbox);
 
 			return hgeom;
 		}
@@ -76,11 +75,11 @@ lwgeom_homogenize(const LWGEOM *geom)
 		return lwgeom_clone(geom);
 	}
 
-	if (type == COLLECTIONTYPE)
+	if (geom->type == COLLECTIONTYPE)
 		return lwcollection_homogenize((LWCOLLECTION *) geom);
 
 	lwerror("lwgeom_homogenize: Geometry Type not supported (%i)",
-	        lwtype_name(type));
+	        lwtype_name(geom->type));
 
 	return NULL; /*Never reach */
 }
@@ -114,8 +113,8 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 	if (col->ngeoms == 0)
 		return (LWGEOM *) lwcollection_construct_empty(COLLECTIONTYPE, col->SRID, 0, 0);
 
-	hasz = TYPE_HASZ(col->type);
-	hasm = TYPE_HASM(col->type);
+	hasz = FLAGS_GET_Z(col->flags);
+	hasm = FLAGS_GET_M(col->flags);
 	srid = col->SRID;
 
 	/* LWGEOM_HOMOGENIZE struct setup */
@@ -140,7 +139,7 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 
 		LWDEBUGF(4,"coll->ngeoms %d", coll->ngeoms);
 
-		if (col->bbox) coll->bbox = box2d_clone(col->bbox);
+		if (col->bbox) coll->bbox = gbox_copy(col->bbox);
 
 		if (geoms->points->ngeoms == 1)
 			coll = lwcollection_add_lwgeom(coll, lwgeom_clone((LWGEOM*) geoms->points->geoms[0]));
@@ -170,7 +169,7 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 		lwfree(geoms);
 
 		for ( i = 0; i < coll->ngeoms; i++ )
-			LWDEBUGF(2,"TYPE_GETTYPE(coll->geoms[%d]->type) %d", i, TYPE_GETTYPE(coll->geoms[i]->type));
+			LWDEBUGF(2,"coll->geoms[%d]->type %d", i, coll->geoms[i]->type);
 
 
 		return (LWGEOM *) coll;
@@ -203,7 +202,7 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 
 	/* Handle SRID and Bbox */
 	res->SRID = srid;
-	if (col->bbox) res->bbox = box2d_clone(col->bbox);
+	if (col->bbox) res->bbox = gbox_copy(col->bbox);
 
 	return res;
 }
@@ -211,28 +210,26 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 static LWGEOM_HOMOGENIZE*
 lwcollection_homogenize_subgeom(LWGEOM_HOMOGENIZE *hgeoms, LWGEOM *geom)
 {
-	uint32 i, type;
+	uint32 i;
 
 	if (!geom) lwerror("lwcollection_homogenize: Sub geometry is Null");
-
-	type = TYPE_GETTYPE(geom->type);
 
 	/* We manage the SRID in lwcollection_homogenize */
 	geom->SRID = -1;
 
-	if (type == POINTTYPE)
+	if (geom->type == POINTTYPE)
 	{
 		hgeoms->points = lwmpoint_add_lwpoint(hgeoms->points, (LWPOINT*)lwgeom_clone(geom));
 	}
-	else if (type == LINETYPE)
+	else if (geom->type == LINETYPE)
 	{
 		hgeoms->lines = lwmline_add_lwline(hgeoms->lines, (LWLINE*)lwgeom_clone(geom));
 	}
-	else if (type == POLYGONTYPE)
+	else if (geom->type == POLYGONTYPE)
 	{
 		hgeoms->polys = lwmpoly_add_lwpoly(hgeoms->polys, (LWPOLY*)lwgeom_clone(geom));
 	}
-	else if ( lwtype_is_collection(type) )
+	else if ( lwtype_is_collection(geom->type) )
 	{
 		LWCOLLECTION *obj = (LWCOLLECTION*)geom;
 		for (i=0; i < obj->ngeoms ; i++)

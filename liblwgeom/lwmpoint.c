@@ -47,7 +47,9 @@ lwmpoint_deserialize(uchar *srl)
 	insp = lwgeom_inspect(srl);
 
 	result = lwalloc(sizeof(LWMPOINT));
-	result->type = insp->type;
+	result->type = type;
+	FLAGS_SET_Z(result->flags, TYPE_HASZ(srl[0]));
+	FLAGS_SET_M(result->flags, TYPE_HASM(srl[0]));
 	result->SRID = insp->SRID;
 	result->ngeoms = insp->ngeometries;
 
@@ -62,8 +64,13 @@ lwmpoint_deserialize(uchar *srl)
 
 	if (lwgeom_hasBBOX(srl[0]))
 	{
-		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
-		memcpy(result->bbox, srl+1, sizeof(BOX2DFLOAT4));
+		BOX2DFLOAT4 *box2df;
+
+		FLAGS_SET_BBOX(result->flags, 1);
+		box2df = lwalloc(sizeof(BOX2DFLOAT4));
+		memcpy(box2df, srl+1, sizeof(BOX2DFLOAT4));
+		result->bbox = gbox_from_box2df(result->flags, box2df);
+		lwfree(box2df);
 	}
 	else
 	{
@@ -73,11 +80,11 @@ lwmpoint_deserialize(uchar *srl)
 	for (i=0; i<insp->ngeometries; i++)
 	{
 		result->geoms[i] = lwpoint_deserialize(insp->sub_geoms[i]);
-		if ( TYPE_NDIMS(result->geoms[i]->type) != TYPE_NDIMS(result->type) )
+		if ( FLAGS_NDIMS(result->geoms[i]->flags) != FLAGS_NDIMS(result->flags) )
 		{
 			lwerror("Mixed dimensions (multipoint:%d, point%d:%d)",
-			        TYPE_NDIMS(result->type), i,
-			        TYPE_NDIMS(result->geoms[i]->type)
+			        FLAGS_NDIMS(result->flags), i,
+			        FLAGS_NDIMS(result->geoms[i]->flags)
 			       );
 			return NULL;
 		}
@@ -142,7 +149,7 @@ lwmpoint_remove_repeated_points(LWMPOINT *mpoint)
 	}
 
 	return (LWGEOM*)lwcollection_construct(mpoint->type,
-	                                       mpoint->SRID, mpoint->bbox ? box2d_clone(mpoint->bbox) : NULL,
+	                                       mpoint->SRID, mpoint->bbox ? gbox_copy(mpoint->bbox) : NULL,
 	                                       nnewgeoms, newgeoms);
 
 }

@@ -24,19 +24,19 @@ static void dimension_qualifiers_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *s
 {
 
 	/* Extended WKT: POINTM(0 0 0) */
-	if ( (variant & WKT_EXTENDED) && TYPE_HASM(geom->type) && (!TYPE_HASZ(geom->type)) )
+	if ( (variant & WKT_EXTENDED) && FLAGS_GET_M(geom->flags) && (!FLAGS_GET_Z(geom->flags)) )
 	{
 		stringbuffer_append(sb, "M"); /* "M" */
 		return;
 	}
 
 	/* ISO WKT: POINT ZM (0 0 0 0) */
-	if ( (variant & WKT_ISO) && (TYPE_NDIMS(geom->type) > 2) )
+	if ( (variant & WKT_ISO) && (FLAGS_NDIMS(geom->flags) > 2) )
 	{
 		stringbuffer_append(sb, " ");
-		if ( TYPE_HASZ(geom->type) )
+		if ( FLAGS_GET_Z(geom->flags) )
 			stringbuffer_append(sb, "Z");
-		if ( TYPE_HASM(geom->type) )
+		if ( FLAGS_GET_M(geom->flags) )
 			stringbuffer_append(sb, "M");
 		stringbuffer_append(sb, " ");
 	}
@@ -68,7 +68,7 @@ static void ptarray_to_wkt_sb(const POINTARRAY *ptarray, stringbuffer_t *sb, int
 
 	/* ISO and extended formats include all dimensions */
 	if ( variant & ( WKT_ISO | WKT_EXTENDED ) )
-		dimensions = TYPE_NDIMS(ptarray->dims);
+		dimensions = FLAGS_NDIMS(ptarray->dims);
 
 	/* Opening paren? */
 	if ( ! (variant & WKT_NO_PARENS) )
@@ -300,7 +300,7 @@ static void lwcompound_to_wkt_sb(const LWCOMPOUND *comp, stringbuffer_t *sb, int
 	stringbuffer_append(sb, "(");
 	for ( i = 0; i < comp->ngeoms; i++ )
 	{
-		int type = TYPE_GETTYPE(comp->geoms[i]->type);
+		int type = comp->geoms[i]->type;
 		if ( i > 0 )
 			stringbuffer_append(sb, ",");
 		/* Linestring subgeoms don't get type identifiers */
@@ -343,7 +343,7 @@ static void lwcurvepoly_to_wkt_sb(const LWCURVEPOLY *cpoly, stringbuffer_t *sb, 
 	stringbuffer_append(sb, "(");
 	for ( i = 0; i < cpoly->nrings; i++ )
 	{
-		int type = TYPE_GETTYPE(cpoly->rings[i]->type);
+		int type = cpoly->rings[i]->type;
 		if ( i > 0 )
 			stringbuffer_append(sb, ",");
 		switch (type)
@@ -390,7 +390,7 @@ static void lwmcurve_to_wkt_sb(const LWMCURVE *mcurv, stringbuffer_t *sb, int pr
 	stringbuffer_append(sb, "(");
 	for ( i = 0; i < mcurv->ngeoms; i++ )
 	{
-		int type = TYPE_GETTYPE(mcurv->geoms[i]->type);
+		int type = mcurv->geoms[i]->type;
 		if ( i > 0 )
 			stringbuffer_append(sb, ",");
 		switch (type)
@@ -437,7 +437,7 @@ static void lwmsurface_to_wkt_sb(const LWMSURFACE *msurf, stringbuffer_t *sb, in
 	stringbuffer_append(sb, "(");
 	for ( i = 0; i < msurf->ngeoms; i++ )
 	{
-		int type = TYPE_GETTYPE(msurf->geoms[i]->type);
+		int type = msurf->geoms[i]->type;
 		if ( i > 0 )
 			stringbuffer_append(sb, ",");
 		switch (type)
@@ -545,7 +545,7 @@ static void lwpsurface_to_wkt_sb(const LWPSURFACE *psurf, stringbuffer_t *sb, in
 
 	if ( ! (variant & WKT_NO_TYPE) )
 	{
-		stringbuffer_append(sb, "POLYHEDRALSURFACE"); /* "TIN" */
+		stringbuffer_append(sb, "POLYHEDRALSURFACE"); /* "POLYHEDRALSURFACE" */
 		dimension_qualifiers_to_wkt_sb((LWGEOM*)psurf, sb, variant);
 	}
 	if ( psurf->ngeoms < 1 )
@@ -571,7 +571,11 @@ static void lwpsurface_to_wkt_sb(const LWPSURFACE *psurf, stringbuffer_t *sb, in
 */
 static void lwgeom_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, int precision, uchar variant)
 {
-	switch (TYPE_GETTYPE(geom->type))
+	LWDEBUGF(4, "lwgeom_to_wkt_sb: type %s, hasz %d, hasm %d",
+		lwtype_name(geom->type), (geom->type),
+		FLAGS_GET_Z(geom->flags)?1:0, FLAGS_GET_M(geom->flags)?1:0);
+
+	switch (geom->type)
 	{
 	case POINTTYPE:
 		lwpoint_to_wkt_sb((LWPOINT*)geom, sb, precision, variant);
@@ -620,7 +624,7 @@ static void lwgeom_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, int precisi
 		break;
 	default:
 		lwerror("lwgeom_to_wkt_sb: Type %d - %s unsupported.",
-		        TYPE_GETTYPE(geom->type), lwtype_name(TYPE_GETTYPE(geom->type)));
+		        geom->type, lwtype_name(geom->type));
 	}
 }
 

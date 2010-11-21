@@ -244,7 +244,7 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 		{
 			LWDEBUGF(3, " 1 creating new POINTARRAY with first point %g,%g,%g,%g", p1.x, p1.y, p1.z, p1.m);
 
-			dpa = ptarray_construct_empty(TYPE_HASZ(ipa->dims), TYPE_HASM(ipa->dims), ipa->npoints-i);
+			dpa = ptarray_construct_empty(FLAGS_GET_Z(ipa->dims), FLAGS_GET_M(ipa->dims), ipa->npoints-i);
 			ptarray_append_point(dpa, &p1, LW_TRUE);
 		}
 
@@ -257,7 +257,7 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 		 */
 		if ( clipval & 0x0100 || i == ipa->npoints-1 )
 		{
-			LWDEBUGF(3, " closing pointarray %x with %d points", dpa->pa, dpa->pa->npoints);
+			LWDEBUGF(3, " closing pointarray %x with %d points", dpa, dpa->npoints);
 
 			ret.ptarrays[ret.nptarrays++] = dpa;
 			dpa = NULL;
@@ -347,16 +347,7 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 		/* This is a point */
 		if ( pa->npoints == 1 )
 		{
-			lwpoint=lwalloc(sizeof(LWPOINT));
-			lwpoint->type=lwgeom_makeType_full(
-			                  TYPE_HASZ(pa->dims),
-			                  TYPE_HASM(pa->dims),
-			                  lwline_in->SRID,
-			                  POINTTYPE,
-			                  0);
-			lwpoint->SRID=lwline_in->SRID;
-			lwpoint->bbox=NULL;
-			lwpoint->point=pa;
+			lwpoint = lwpoint_construct(lwline_in->SRID, NULL, pa);
 			geoms[i]=(LWGEOM *)lwpoint;
 			typeflag|=pointflag;
 		}
@@ -364,16 +355,7 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 		/* This is a line */
 		else if ( pa->npoints > 1 )
 		{
-			lwline=lwalloc(sizeof(LWLINE));
-			lwline->type=lwgeom_makeType_full(
-			                 TYPE_HASZ(pa->dims),
-			                 TYPE_HASM(pa->dims),
-			                 lwline_in->SRID,
-			                 LINETYPE,
-			                 0);
-			lwline->SRID=lwline_in->SRID;
-			lwline->bbox=NULL;
-			lwline->points=pa;
+			lwline = lwline_construct(lwline_in->SRID, NULL, pa);
 			geoms[i]=(LWGEOM *)lwline;
 			typeflag|=lineflag;
 		}
@@ -444,7 +426,7 @@ lwgeom_locate_between_m(LWGEOM *lwin, double m0, double m1)
 {
 	LWDEBUGF(2, "lwgeom_locate_between called for lwgeom %x", lwin);
 
-	switch (TYPE_GETTYPE(lwin->type))
+	switch (lwin->type)
 	{
 	case POINTTYPE:
 		return lwpoint_locate_between_m(

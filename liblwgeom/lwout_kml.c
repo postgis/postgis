@@ -14,7 +14,7 @@
 * @file
 * KML output routines based on lwgeom_gml.c
 * Written by: Eduin Carrillo <yecarrillo@cas.gov.co>
-*             © 2006 Corporacion Autonoma Regional de Santander - CAS
+*             ï¿½ 2006 Corporacion Autonoma Regional de Santander - CAS
 *
 **********************************************************************/
 
@@ -345,7 +345,7 @@ pointArray_toKML2(POINTARRAY *pa, char *output, int precision)
 
 	ptr = output;
 
-	if ( ! TYPE_HASZ(pa->dims) )
+	if ( ! FLAGS_GET_Z(pa->dims) )
 	{
 		for (i=0; i<pa->npoints; i++)
 		{
@@ -413,7 +413,7 @@ pointArray_toKML2(POINTARRAY *pa, char *output, int precision)
 static size_t
 pointArray_KMLsize(POINTARRAY *pa, int precision)
 {
-	if (TYPE_NDIMS(pa->dims) == 2)
+	if (FLAGS_NDIMS(pa->dims) == 2)
 		return (OUT_MAX_DIGS_DOUBLE + precision + sizeof(", "))
 		       * 2 * pa->npoints;
 

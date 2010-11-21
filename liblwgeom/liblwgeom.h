@@ -133,12 +133,15 @@
 #define FLAGS_GET_BBOX(flags) (((flags) & 0x4)>>2)
 #define FLAGS_GET_GEODETIC(flags) (((flags) & 0x08)>>3)
 #define FLAGS_GET_READONLY(flags) (((flags) & 0x10)>>4)
+#define FLAGS_GET_SOLID(flags) (((flags) & 0x20)>>5)
 #define FLAGS_SET_Z(flags, value) ((flags) = (value) ? ((flags) | 0x01) : ((flags) & 0xFE))
 #define FLAGS_SET_M(flags, value) ((flags) = (value) ? ((flags) | 0x02) : ((flags) & 0xFD))
 #define FLAGS_SET_BBOX(flags, value) ((flags) = (value) ? ((flags) | 0x04) : ((flags) & 0xFB))
 #define FLAGS_SET_GEODETIC(flags, value) ((flags) = (value) ? ((flags) | 0x08) : ((flags) & 0xF7))
 #define FLAGS_SET_READONLY(flags, value) ((flags) = (value) ? ((flags) | 0x10) : ((flags) & 0xEF))
+#define FLAGS_SET_SOLID(flags, value) ((flags) = (value) ? ((flags) | 0x20) : ((flags) & 0xDF))
 #define FLAGS_NDIMS(flags) (2 + FLAGS_GET_Z(flags) + FLAGS_GET_M(flags))
+#define FLAGS_GET_ZM(flags) (FLAGS_GET_M(flags) + FLAGS_GET_Z(flags) * 2)
 
 /**
 * Macros for manipulating the 'typemod' int. An int32 used as follows:
@@ -443,7 +446,8 @@ typedef struct
 typedef struct
 {
 	uchar type;
-	BOX2DFLOAT4 *bbox;
+	uchar flags;
+	GBOX *bbox;
 	uint32 SRID; /* -1 == unneeded */
 	void *data;
 }
@@ -453,7 +457,8 @@ LWGEOM;
 typedef struct
 {
 	uchar type; /* POINTTYPE */
-	BOX2DFLOAT4 *bbox;
+	uchar flags;
+	GBOX *bbox;
 	uint32 SRID;
 	POINTARRAY *point;  /* hide 2d/3d (this will be an array of 1 point) */
 }
@@ -463,7 +468,8 @@ LWPOINT; /* "light-weight point" */
 typedef struct
 {
 	uchar type; /* LINETYPE */
-	BOX2DFLOAT4 *bbox;
+	uchar flags;
+	GBOX *bbox;
 	uint32 SRID;
 	POINTARRAY *points; /* array of POINT3D */
 }
@@ -473,7 +479,8 @@ LWLINE; /* "light-weight line" */
 typedef struct
 {
 	uchar type; /* POLYGONTYPE */
-	BOX2DFLOAT4 *bbox;
+	uchar flags;
+	GBOX *bbox;
 	uint32 SRID;
 	int nrings;   /* how many rings we are currently storing */
 	int maxrings; /* how many rings we have space for in **rings */
@@ -485,7 +492,8 @@ LWPOLY; /* "light-weight polygon" */
 typedef struct
 {
 	uchar type;
-	BOX2DFLOAT4 *bbox;
+	uchar flags;
+	GBOX *bbox;
 	uint32 SRID;
 	int ngeoms;   /* how many geometries we are currently storing */
 	int maxgeoms; /* how many geometries we have space for in **geoms */
@@ -497,7 +505,8 @@ LWMPOINT;
 typedef struct
 {
 	uchar type;
-	BOX2DFLOAT4 *bbox;
+	uchar flags;
+	GBOX *bbox;
 	uint32 SRID;
 	int ngeoms;   /* how many geometries we are currently storing */
 	int maxgeoms; /* how many geometries we have space for in **geoms */
@@ -509,7 +518,8 @@ LWMLINE;
 typedef struct
 {
 	uchar type;
-	BOX2DFLOAT4 *bbox;
+	uchar flags;
+	GBOX *bbox;
 	uint32 SRID;
 	int ngeoms;   /* how many geometries we are currently storing */
 	int maxgeoms; /* how many geometries we have space for in **geoms */
@@ -521,7 +531,8 @@ LWMPOLY;
 typedef struct
 {
 	uchar type;
-	BOX2DFLOAT4 *bbox;
+	uchar flags;
+	GBOX *bbox;
 	uint32 SRID;
 	int ngeoms;   /* how many geometries we are currently storing */
 	int maxgeoms; /* how many geometries we have space for in **geoms */
@@ -533,7 +544,8 @@ LWCOLLECTION;
 typedef struct
 {
 	uchar type; /* CIRCSTRINGTYPE */
-	BOX2DFLOAT4 *bbox;
+	uchar flags;
+	GBOX *bbox;
 	uint32 SRID;
 	POINTARRAY *points; /* array of POINT(3D/3DM) */
 }
@@ -543,7 +555,8 @@ LWCIRCSTRING; /* "light-weight circularstring" */
 typedef struct
 {
 	uchar type; /* COMPOUNDTYPE */
-	BOX2DFLOAT4 *bbox;
+	uchar flags;
+	GBOX *bbox;
 	uint32 SRID;
 	int ngeoms;   /* how many geometries we are currently storing */
 	int maxgeoms; /* how many geometries we have space for in **geoms */
@@ -555,7 +568,8 @@ LWCOMPOUND; /* "light-weight compound line" */
 typedef struct
 {
 	uchar type; /* CURVEPOLYTYPE */
-	BOX2DFLOAT4 *bbox;
+	uchar flags;
+	GBOX *bbox;
 	uint32 SRID;
 	int nrings;    /* how many rings we are currently storing */
 	int maxrings;  /* how many rings we have space for in **rings */
@@ -567,7 +581,8 @@ LWCURVEPOLY; /* "light-weight polygon" */
 typedef struct
 {
 	uchar type;
-	BOX2DFLOAT4 *bbox;
+	uchar flags;
+	GBOX *bbox;
 	uint32 SRID;
 	int ngeoms;   /* how many geometries we are currently storing */
 	int maxgeoms; /* how many geometries we have space for in **geoms */
@@ -579,7 +594,8 @@ LWMCURVE;
 typedef struct
 {
 	uchar type;
-	BOX2DFLOAT4 *bbox;
+	uchar flags;
+	GBOX *bbox;
 	uint32 SRID;
 	int ngeoms;   /* how many geometries we are currently storing */
 	int maxgeoms; /* how many geometries we have space for in **geoms */
@@ -591,7 +607,8 @@ LWMSURFACE;
 typedef struct
 {
 	uchar type;
-	BOX2DFLOAT4 *bbox;
+	uchar flags;
+	GBOX *bbox;
 	uint32 SRID;
 	int ngeoms;   /* how many geometries we are currently storing */
 	int maxgeoms; /* how many geometries we have space for in **geoms */
@@ -603,7 +620,8 @@ LWPSURFACE;
 typedef struct
 {
 	uchar type;
-	BOX2DFLOAT4 *bbox;
+	uchar flags;
+	GBOX *bbox;
 	uint32 SRID;
 	POINTARRAY *points;
 }
@@ -613,7 +631,8 @@ LWTRIANGLE;
 typedef struct
 {
 	uchar type;
-	BOX2DFLOAT4 *bbox;
+	uchar flags;
+	GBOX *bbox;
 	uint32 SRID;
 	int ngeoms;   /* how many geometries we are currently storing */
 	int maxgeoms; /* how many geometries we have space for in **geoms */
@@ -696,16 +715,15 @@ extern void gserialized_set_srid(GSERIALIZED *g, uint32 srid);
 * will be released.
 */
 extern void lwgeom_drop_bbox(LWGEOM *lwgeom);
+extern void lwgeom_drop_srid(LWGEOM *lwgeom);
 
 /** 
 * Compute a bbox if not already computed 
 */
 extern void lwgeom_add_bbox(LWGEOM *lwgeom);
 
-/**
-* Remove the SRID from a geometry.
-*/
-extern void lwgeom_drop_srid(LWGEOM *lwgeom);
+GBOX* gbox_from_box2df(int flags, const BOX2DFLOAT4 *box);
+BOX2DFLOAT4* box2df_from_gbox(const GBOX *gbox);
 
 /** 
 * Determine whether a LWGEOM can contain sub-geometries or not 
@@ -716,6 +734,11 @@ extern int lwgeom_is_collection(const LWGEOM *lwgeom);
 * Determine whether a type number is a collection or not
 */
 extern int lwtype_is_collection(int type);
+
+/**
+* Given an lwtype number, what homogeneous collection can hold it?
+*/
+int lwtype_get_collectiontype(int type);
 
 
 /******************************************************************/
@@ -870,6 +893,8 @@ extern LWGEOM* lwgeom_force_4d(const LWGEOM *geom);
 extern LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist);
 
 
+
+extern char lwgeom_hasSRID(uchar type); /* true iff S bit is set */
 extern char lwgeom_hasBBOX(uchar type); /* true iff B bit set     */
 extern int  lwgeom_ndims(uchar type);   /* returns 2,3 or 4       */
 extern int  lwgeom_hasZ(uchar type);    /* has Z ?                */
@@ -878,10 +903,6 @@ extern int  lwgeom_getType(uchar type); /* returns the tttt value */
 
 extern uchar lwgeom_makeType(char hasZ, char hasM, char hasSRID, int type);
 extern uchar lwgeom_makeType_full(char hasZ, char hasM, char hasSRID, int type, char hasBBOX);
-extern char lwgeom_hasSRID(uchar type); /* true iff S bit is set */
-extern char lwgeom_hasBBOX(uchar type); /* true iff B bit set    */
-
-
 
 /*
  * This is the binary representation of lwgeom compatible
@@ -1009,6 +1030,11 @@ extern void lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *size);
  * find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
  */
 extern BOX3D *lwline_compute_box3d(LWLINE *line);
+
+/**
+ * Add a LWPOINT to an LWLINE
+ */
+extern int lwline_add_point(LWLINE *line, LWPOINT *point, int where);
 
 /******************************************************************
  * LWPOLY functions
@@ -1495,7 +1521,7 @@ extern void lwline_reverse(LWLINE *line);
 extern void lwpoly_reverse(LWPOLY *poly);
 extern void lwtriangle_reverse(LWTRIANGLE *triangle);
 extern char* lwgeom_summary(const LWGEOM *lwgeom, int offset);
-extern const char *lwtype_name(int type);
+extern const char *lwtype_name(uchar type);
 extern int ptarray_compute_box2d_p(const POINTARRAY *pa, BOX2DFLOAT4 *result);
 extern BOX2DFLOAT4 *ptarray_compute_box2d(const POINTARRAY *pa);
 extern int lwpoint_compute_box2d_p(const LWPOINT *point, BOX2DFLOAT4 *box);
@@ -1603,14 +1629,13 @@ extern POINTARRAY *ptarray_clone(const POINTARRAY *ptarray);
 * passed to them, they just take references, so do not free them out
 * from underneath the geometries.
 */
-extern LWPOINT* lwpoint_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *point);
-extern LWLINE* lwline_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
-extern LWCIRCSTRING* lwcircstring_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
-extern LWPOLY* lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox, uint32 nrings, POINTARRAY **points);
-extern LWCURVEPOLY* lwcurvepoly_construct(int SRID, BOX2DFLOAT4 *bbox, uint32 nrings, LWGEOM **geoms);
-extern LWTRIANGLE* lwtriangle_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
-extern LWCOLLECTION* lwcollection_construct(uint32 type, int SRID, BOX2DFLOAT4 *bbox, uint32 ngeoms, LWGEOM **geoms);
-
+extern LWPOINT* lwpoint_construct(int SRID, GBOX *bbox, POINTARRAY *point);
+extern LWLINE* lwline_construct(int SRID, GBOX *bbox, POINTARRAY *points);
+extern LWCIRCSTRING* lwcircstring_construct(int SRID, GBOX *bbox, POINTARRAY *points);
+extern LWPOLY* lwpoly_construct(int SRID, GBOX *bbox, uint32 nrings, POINTARRAY **points);
+extern LWCURVEPOLY* lwcurvepoly_construct(int SRID, GBOX *bbox, uint32 nrings, LWGEOM **geoms);
+extern LWTRIANGLE* lwtriangle_construct(int SRID, GBOX *bbox, POINTARRAY *points);
+extern LWCOLLECTION* lwcollection_construct(uchar type, int SRID, GBOX *bbox, uint32 ngeoms, LWGEOM **geoms); 
 /*
 * Empty geometry constructors.
 */
@@ -1624,7 +1649,7 @@ extern LWTRIANGLE* lwtriangle_construct_empty(int srid, char hasz, char hasm);
 extern LWMPOINT* lwmpoint_construct_empty(int srid, char hasz, char hasm);
 extern LWMLINE* lwmline_construct_empty(int srid, char hasz, char hasm);
 extern LWMPOLY* lwmpoly_construct_empty(int srid, char hasz, char hasm);
-extern LWCOLLECTION* lwcollection_construct_empty(uint32 type, int srid, char hasz, char hasm);
+extern LWCOLLECTION* lwcollection_construct_empty(uchar type, int srid, char hasz, char hasm);
 
 
 /* Other constructors */
@@ -1634,7 +1659,7 @@ extern LWPOINT *make_lwpoint3dm(int SRID, double x, double y, double m);
 extern LWPOINT *make_lwpoint4d(int SRID, double x, double y, double z, double m);
 extern LWLINE *lwline_from_lwpointarray(int SRID, uint32 npoints, LWPOINT **points);
 extern LWLINE *lwline_from_lwmpoint(int SRID, LWMPOINT *mpoint);
-extern int lwline_add_point(LWLINE *line, LWPOINT *point, int where);
+extern LWLINE *lwline_addpoint(LWLINE *line, LWPOINT *point, uint32 where);
 extern LWLINE *lwline_removepoint(LWLINE *line, uint32 which);
 extern void lwline_setPoint4d(LWLINE *line, uint32 which, POINT4D *newpoint);
 extern LWPOLY *lwpoly_from_lwlines(const LWLINE *shell, uint32 nholes, const LWLINE **holes);
@@ -1867,6 +1892,11 @@ extern void gbox_duplicate(const GBOX *original, GBOX *duplicate);
 * serialized form.
 */
 extern size_t gbox_serialized_size(uchar flags);
+
+/**
+* Check if 2 given Gbox are the same
+*/
+extern int gbox_same(const GBOX *g1, const GBOX *g2);
 
 /**
 * Utility function to get type number from string. For example, a string 'POINTZ' 

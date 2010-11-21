@@ -509,7 +509,6 @@ static void test_lwline_clip(void)
 	line = (LWLINE*)lwgeom_from_ewkt("LINESTRING(1 2 3, 4 5 6, 6 6 6, 1 1 1)", PARSER_CHECK_NONE);
 	c = lwline_clip_to_ordinate_range(line, 2, 1.0, 2.0);
 	ewkt = lwgeom_to_ewkt((LWGEOM*)c, PARSER_CHECK_NONE);
-	//printf("a = %s\n", ewkt);
 	CU_ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((2 2 2,1 1 1))" );
 	lwfree(ewkt);
 	lwcollection_free(c);

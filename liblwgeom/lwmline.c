@@ -46,7 +46,9 @@ lwmline_deserialize(uchar *srl)
 	insp = lwgeom_inspect(srl);
 
 	result = lwalloc(sizeof(LWMLINE));
-	result->type = insp->type;
+	result->type = type;
+	FLAGS_SET_Z(result->flags, TYPE_HASZ(srl[0])?1:0);
+	FLAGS_SET_M(result->flags, TYPE_HASM(srl[0])?1:0);
 	result->SRID = insp->SRID;
 	result->ngeoms = insp->ngeometries;
 
@@ -61,8 +63,13 @@ lwmline_deserialize(uchar *srl)
 
 	if (lwgeom_hasBBOX(srl[0]))
 	{
-		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
-		memcpy(result->bbox, srl+1, sizeof(BOX2DFLOAT4));
+		BOX2DFLOAT4 *box2df;
+		
+		FLAGS_SET_BBOX(result->flags, 1);
+		box2df = lwalloc(sizeof(BOX2DFLOAT4));
+		memcpy(box2df, srl+1, sizeof(BOX2DFLOAT4));
+		result->bbox = gbox_from_box2df(result->flags, box2df);
+		lwfree(box2df);
 	}
 	else result->bbox = NULL;
 
@@ -70,11 +77,11 @@ lwmline_deserialize(uchar *srl)
 	for (i=0; i<insp->ngeometries; i++)
 	{
 		result->geoms[i] = lwline_deserialize(insp->sub_geoms[i]);
-		if ( TYPE_NDIMS(result->geoms[i]->type) != TYPE_NDIMS(result->type) )
+		if ( FLAGS_NDIMS(result->geoms[i]->flags) != FLAGS_NDIMS(result->flags) )
 		{
 			lwerror("Mixed dimensions (multiline:%d, line%d:%d)",
-			        TYPE_NDIMS(result->type), i,
-			        TYPE_NDIMS(result->geoms[i]->type)
+			        FLAGS_NDIMS(result->flags), i,
+			        FLAGS_NDIMS(result->geoms[i]->flags)
 			       );
 			return NULL;
 		}
@@ -102,13 +109,13 @@ lwmline_measured_from_lwmline(const LWMLINE *lwmline, double m_start, double m_e
 	double m_range = m_end - m_start;
 	LWGEOM **geoms = NULL;
 
-	if ( TYPE_GETTYPE(lwmline->type) != MULTILINETYPE )
+	if ( lwmline->type != MULTILINETYPE )
 	{
 		lwerror("lwmline_measured_from_lmwline: only multiline types supported");
 		return NULL;
 	}
 
-	hasz = TYPE_HASZ(lwmline->type);
+	hasz = FLAGS_GET_Z(lwmline->flags);
 	hasm = 1;
 
 	/* Calculate the total length of the mline */

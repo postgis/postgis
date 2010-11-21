@@ -1721,7 +1721,7 @@ double lwgeom_area_sphere(const LWGEOM *lwgeom, const GBOX *gbox, const SPHEROID
 		return 0.0;
 
 	/* Read the geometry type number */
-	type = TYPE_GETTYPE(lwgeom->type);
+	type = lwgeom->type;
 
 	/* Anything but polygons and collections returns zero */
 	if ( ! ( type == POLYGONTYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE ) )
@@ -1795,8 +1795,8 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 		return -1.0;
 	}
 
-	type1 = TYPE_GETTYPE(lwgeom1->type);
-	type2 = TYPE_GETTYPE(lwgeom2->type);
+	type1 = lwgeom1->type;
+	type2 = lwgeom2->type;
 
 
 	/* If the boxes aren't disjoint, we have to check for edge intersections */
@@ -1996,8 +1996,8 @@ int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 	assert(lwgeom1);
 	assert(lwgeom2);
 
-	type1 = TYPE_GETTYPE(lwgeom1->type);
-	type2 = TYPE_GETTYPE(lwgeom2->type);
+	type1 = lwgeom1->type;
+	type2 = lwgeom2->type;
 
 	/* Currently a restricted implementation */
 	if ( ! ( (type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE || type1 == COLLECTIONTYPE) &&
@@ -2294,12 +2294,12 @@ static int lwcollection_calculate_gbox_geodetic(const LWCOLLECTION *coll, GBOX *
 int lwgeom_calculate_gbox_geodetic(const LWGEOM *geom, GBOX *gbox)
 {
 	int result = LW_FAILURE;
-	LWDEBUGF(4, "got type %d", TYPE_GETTYPE(geom->type));
+	LWDEBUGF(4, "got type %d", geom->type);
 	if ( ! FLAGS_GET_GEODETIC(gbox->flags) )
 	{
 		lwerror("lwgeom_get_gbox_geodetic: non-geodetic gbox provided");
 	}
-	switch (TYPE_GETTYPE(geom->type))
+	switch (geom->type)
 	{
 	case POINTTYPE:
 		result = lwpoint_calculate_gbox_geodetic((LWPOINT*)geom, gbox);
@@ -2323,7 +2323,7 @@ int lwgeom_calculate_gbox_geodetic(const LWGEOM *geom, GBOX *gbox)
 		break;
 	default:
 		lwerror("unsupported input geometry type: %d - %s",
-		        TYPE_GETTYPE(geom->type), lwtype_name(TYPE_GETTYPE(geom->type)));
+		        geom->type, lwtype_name(geom->type));
 		break;
 	}
 	return result;
@@ -2396,7 +2396,7 @@ static int lwcollection_check_geodetic(const LWCOLLECTION *col)
 
 int lwgeom_check_geodetic(const LWGEOM *geom)
 {
-	switch (TYPE_GETTYPE(geom->type))
+	switch (geom->type)
 	{
 	case POINTTYPE:
 		return lwpoint_check_geodetic((LWPOINT *)geom);
@@ -2415,7 +2415,7 @@ int lwgeom_check_geodetic(const LWGEOM *geom)
 		return lwcollection_check_geodetic((LWCOLLECTION *)geom);
 	default:
 		lwerror("unsupported input geometry type: %d - %s",
-		        TYPE_GETTYPE(geom->type), lwtype_name(TYPE_GETTYPE(geom->type)));
+		        geom->type, lwtype_name(geom->type));
 	}
 	return LW_FALSE;
 }
@@ -2465,7 +2465,7 @@ double lwgeom_length_spheroid(const LWGEOM *geom, const SPHEROID *s)
 	if ( lwgeom_is_empty(geom) )
 		return 0.0;
 
-	type = TYPE_GETTYPE(geom->type);
+	type = geom->type;
 
 	if ( type == POINTTYPE || type == MULTIPOINTTYPE )
 		return 0.0;

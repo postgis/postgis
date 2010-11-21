@@ -116,7 +116,7 @@ lwline_split_by_line(LWLINE* lwline_in, LWLINE* blade_in)
 		return NULL;
 	}
 
-	diff = GEOS2LWGEOM(gdiff, TYPE_HASZ(lwline_in->type));
+	diff = GEOS2LWGEOM(gdiff, FLAGS_GET_Z(lwline_in->flags));
 	GEOSGeom_destroy(gdiff);
 	if (NULL == diff)
 	{
@@ -124,7 +124,7 @@ lwline_split_by_line(LWLINE* lwline_in, LWLINE* blade_in)
 		return NULL;
 	}
 
-	if ( ! lwgeom_is_collection(diff) )
+	if ( ! lwtype_is_collection(diff->type) )
 	{
 		components = lwalloc(sizeof(LWGEOM*)*1);
 		components[0] = diff;
@@ -212,7 +212,7 @@ lwline_split_by_point(LWLINE* lwline_in, LWPOINT* blade_in)
 static LWGEOM*
 lwline_split(LWLINE* lwline_in, LWGEOM* blade_in)
 {
-	switch (TYPE_GETTYPE(blade_in->type))
+	switch (blade_in->type)
 	{
 	case POINTTYPE:
 		return lwline_split_by_point(lwline_in, (LWPOINT*)blade_in);
@@ -222,7 +222,7 @@ lwline_split(LWLINE* lwline_in, LWGEOM* blade_in)
 
 	default:
 		lwerror("Splitting a Line by a %s is unsupported",
-		        lwtype_name(TYPE_GETTYPE(blade_in->type)));
+		        lwtype_name(blade_in->type));
 		return NULL;
 	}
 	return NULL;
@@ -371,8 +371,7 @@ lwpoly_split_by_line(LWPOLY* lwpoly_in, LWLINE* blade_in)
 			continue;
 		}
 
-		out->geoms[out->ngeoms++] = GEOS2LWGEOM(p,
-		                                        TYPE_HASZ(lwpoly_in->type));
+		out->geoms[out->ngeoms++] = GEOS2LWGEOM(p, FLAGS_GET_Z(lwpoly_in->flags));
 	}
 
 	GEOSGeom_destroy(g1);
@@ -443,13 +442,13 @@ lwcollection_split(LWCOLLECTION* lwcoll_in, LWGEOM* blade_in)
 static LWGEOM*
 lwpoly_split(LWPOLY* lwpoly_in, LWGEOM* blade_in)
 {
-	switch (TYPE_GETTYPE(blade_in->type))
+	switch (blade_in->type)
 	{
 	case LINETYPE:
 		return lwpoly_split_by_line(lwpoly_in, (LWLINE*)blade_in);
 	default:
 		lwerror("Splitting a Polygon by a %s is unsupported",
-		        lwtype_name(TYPE_GETTYPE(blade_in->type)));
+		        lwtype_name(blade_in->type));
 		return NULL;
 	}
 	return NULL;
@@ -458,7 +457,7 @@ lwpoly_split(LWPOLY* lwpoly_in, LWGEOM* blade_in)
 static LWGEOM*
 lwgeom_split(LWGEOM* lwgeom_in, LWGEOM* blade_in)
 {
-	switch (TYPE_GETTYPE(lwgeom_in->type))
+	switch (lwgeom_in->type)
 	{
 	case LINETYPE:
 		return lwline_split((LWLINE*)lwgeom_in, blade_in);
@@ -473,7 +472,7 @@ lwgeom_split(LWGEOM* lwgeom_in, LWGEOM* blade_in)
 
 	default:
 		lwerror("Splitting of %s geometries is unsupported",
-		        lwtype_name(TYPE_GETTYPE(lwgeom_in->type)));
+		        lwtype_name(lwgeom_in->type));
 		return NULL;
 	}
 

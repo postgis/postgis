@@ -543,7 +543,7 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeoms[1];
 	LWGEOM *lwgeom;
 	int SRID;
-	BOX2DFLOAT4 *bbox;
+	GBOX *bbox;
 
 	POSTGIS_DEBUG(2, "LWGEOM_force_collection called");
 
@@ -562,9 +562,9 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
 
 	/* alread a multi*, just make it a collection */
-	if ( lwgeom_is_collection(lwgeom) )
+	if ( lwtype_is_collection(lwgeom->type) )
 	{
-		TYPE_SETTYPE(lwgeom->type, COLLECTIONTYPE);
+		lwgeom->type = COLLECTIONTYPE;
 	}
 
 	/* single geom, make it a collection */
@@ -1191,7 +1191,7 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	PG_LWGEOM *pglwgeom1, *pglwgeom2, *result;
 	LWGEOM *lwgeoms[2], *outlwg;
 	uint32 type1, type2, outtype;
-	BOX2DFLOAT4 *box=NULL;
+	GBOX *box=NULL;
 	int SRID;
 
 	POSTGIS_DEBUG(2, "LWGEOM_collect called.");
@@ -1236,8 +1236,8 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	lwgeoms[0] = lwgeom_deserialize(SERIALIZED_FORM(pglwgeom1));
 	lwgeoms[1] = lwgeom_deserialize(SERIALIZED_FORM(pglwgeom2));
 
-	type1 = TYPE_GETTYPE(lwgeoms[0]->type);
-	type2 = TYPE_GETTYPE(lwgeoms[1]->type);
+	type1 = lwgeoms[0]->type;
+	type2 = lwgeoms[1]->type;
 	if ( type1 == type2 && type1 < 4 ) outtype = type1+3;
 	else outtype = COLLECTIONTYPE;
 
@@ -1246,11 +1246,26 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	/* COMPUTE_BBOX WHEN_SIMPLE */
 	if ( lwgeoms[0]->bbox && lwgeoms[1]->bbox )
 	{
-		box = palloc(sizeof(BOX2DFLOAT4));
+		int hasz=(FLAGS_GET_Z(lwgeoms[0]->flags) && FLAGS_GET_Z(lwgeoms[1]->flags));
+		int hasm=(FLAGS_GET_M(lwgeoms[0]->flags) && FLAGS_GET_M(lwgeoms[1]->flags));
+
+		box = palloc(sizeof(GBOX));
+		FLAGS_SET_Z(box->flags, hasz?1:0);
+		FLAGS_SET_M(box->flags, hasm?1:0);
 		box->xmin = LW_MIN(lwgeoms[0]->bbox->xmin, lwgeoms[1]->bbox->xmin);
 		box->ymin = LW_MIN(lwgeoms[0]->bbox->ymin, lwgeoms[1]->bbox->ymin);
 		box->xmax = LW_MAX(lwgeoms[0]->bbox->xmax, lwgeoms[1]->bbox->xmax);
 		box->ymax = LW_MAX(lwgeoms[0]->bbox->ymax, lwgeoms[1]->bbox->ymax);
+		if (hasz)
+		{
+			box->zmin = LW_MIN(lwgeoms[0]->bbox->zmin, lwgeoms[1]->bbox->zmin);
+			box->zmax = LW_MAX(lwgeoms[0]->bbox->zmax, lwgeoms[1]->bbox->zmax);
+		}
+		if (hasm)
+		{
+			box->mmin = LW_MIN(lwgeoms[0]->bbox->mmin, lwgeoms[1]->bbox->mmin);
+			box->mmax = LW_MAX(lwgeoms[0]->bbox->mmax, lwgeoms[1]->bbox->mmax);
+		}
 	}
 
 	/* Drop input geometries bbox and SRID */
@@ -1376,7 +1391,7 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 		POSTGIS_DEBUGF(3, " %d bytes allocated for array", (int)nbytes);
 
 		POSTGIS_DEBUGF(3, " array start  @ %p", (void*)result);
-		POSTGIS_DEBUGF(3, " ARR_DATA_PTR @ %p (%ld)",
+		POSTGIS_DEBUGF(3, " ARR_DATA_PTR @ %p (%d)",
 		               ARR_DATA_PTR(result), (uchar *)ARR_DATA_PTR(result)-(uchar *)result);
 		POSTGIS_DEBUGF(3, " next element @ %p", (uchar *)result+oldsize);
 
@@ -1417,7 +1432,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	int i, count;
 	int SRID=-1;
 	size_t offset;
-	BOX2DFLOAT4 *box=NULL;
+	GBOX *box=NULL;
 	bits8 *bitmap;
 	int bitmask;
 
@@ -1484,7 +1499,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 				/* COMPUTE_BBOX WHEN_SIMPLE */
 				if ( lwgeoms[count]->bbox )
 				{
-					box = box2d_clone(lwgeoms[count]->bbox);
+					box = gbox_copy(lwgeoms[count]->bbox);
 				}
 			}
 			else
@@ -1880,11 +1895,13 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 	/* Construct point array */
 	pa[0] = lwalloc(sizeof(POINTARRAY));
 	pa[0]->serialized_pointlist = (uchar *)pts;
-	TYPE_SETZM(pa[0]->dims, 0, 0);
+	FLAGS_SET_Z(pa[0]->dims, 0);
+	FLAGS_SET_M(pa[0]->dims, 0);
 	pa[0]->npoints = 5;
 
 	/* Construct polygon  */
-	poly = lwpoly_construct(SRID, ptarray_compute_box2d(pa[0]), 1, pa);
+	poly = lwpoly_construct(SRID, NULL, 1, pa);
+	lwgeom_add_bbox((LWGEOM *)poly);
 
 	/* Construct PG_LWGEOM  */
 	result = pglwgeom_serialize((LWGEOM *)poly);
@@ -2000,7 +2017,8 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 		pa = ptarray_construct_reference_data(0, 0, 5, (uchar*)pts);
 
 		/* Construct polygon  */
-		poly = lwpoly_construct(SRID, ptarray_compute_box2d(pa), 1, &pa);
+		poly = lwpoly_construct(SRID, NULL, 1, &pa);
+		lwgeom_add_bbox((LWGEOM *)poly);
 
 		/* Serialize polygon */
 		ser = lwpoly_serialize(poly);
@@ -2057,7 +2075,7 @@ Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS)
 
 	/* Copy input bounding box if any */
 	if ( inlwgeom->bbox )
-		outlwgeom->bbox = box2d_clone(inlwgeom->bbox);
+		outlwgeom->bbox = gbox_copy(inlwgeom->bbox);
 
 	outgeom = pglwgeom_serialize(outlwgeom);
 
@@ -2276,7 +2294,8 @@ Datum ST_MakeEnvelope(PG_FUNCTION_ARGS)
 	pts[8] = x1;
 	pts[9] = y1;
 
-	poly = lwpoly_construct(srid, ptarray_compute_box2d(pa[0]), 1, pa);
+	poly = lwpoly_construct(srid, NULL, 1, pa);
+	lwgeom_add_bbox((LWGEOM *)poly);
 
 	result = pglwgeom_serialize((LWGEOM*)poly);
 	lwpoly_free(poly);
@@ -2656,13 +2675,13 @@ Datum optimistic_overlap(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if (TYPE_GETTYPE(geom1->type) != POLYGONTYPE)
+	if (geom1->type != POLYGONTYPE)
 	{
 		elog(ERROR,"optimistic_overlap: first arg isnt a polygon\n");
 		PG_RETURN_NULL();
 	}
 
-	if ( (TYPE_GETTYPE(geom2->type) != POLYGONTYPE) &&  (geom2->type != MULTIPOLYGONTYPE) )
+	if (geom2->type != POLYGONTYPE &&  geom2->type != MULTIPOLYGONTYPE)
 	{
 		elog(ERROR,"optimistic_overlap: 2nd arg isnt a [multi-]polygon\n");
 		PG_RETURN_NULL();
@@ -2712,7 +2731,7 @@ lwgeom_affine_ptarray(POINTARRAY *pa,
 
 	LWDEBUG(2, "lwgeom_affine_ptarray start");
 
-	if ( TYPE_HASZ(pa->dims) )
+	if ( FLAGS_GET_Z(pa->dims) )
 	{
 		LWDEBUG(3, " has z");
 
@@ -2885,7 +2904,7 @@ Datum LWGEOM_affine(PG_FUNCTION_ARGS)
 	/* COMPUTE_BBOX TAINTING */
 	tmp = pglwgeom_deserialize(geom);
 	lwgeom_drop_bbox(tmp);
-	tmp->bbox = lwgeom_compute_box2d(tmp);
+	lwgeom_add_bbox(tmp);
 	ret = pglwgeom_serialize(tmp);
 
 	/* Release memory */
@@ -2942,7 +2961,6 @@ Datum ST_CollectionExtract(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom = pglwgeom_deserialize(input);
 	LWCOLLECTION *lwcol = NULL;
 	int type = PG_GETARG_INT32(1);
-	int lwgeom_type = TYPE_GETTYPE(lwgeom->type);
 
 	/* Ensure the right type was input */
 	if ( ! ( type == POINTTYPE || type == LINETYPE || type == POLYGONTYPE ) )
@@ -2953,7 +2971,7 @@ Datum ST_CollectionExtract(PG_FUNCTION_ARGS)
 	}
 
 	/* Mirror non-collections right back */
-	if ( ! lwtype_is_collection(lwgeom_type) )
+	if ( ! lwtype_is_collection(lwgeom->type) )
 	{
 		output = palloc(VARSIZE(input));
 		memcpy(VARDATA(output), VARDATA(input), VARSIZE(input) - VARHDRSZ);

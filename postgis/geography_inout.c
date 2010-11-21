@@ -113,10 +113,10 @@ void geography_valid_typmod(LWGEOM *lwgeom, int32 typmod)
 
 	Assert(lwgeom);
 
-	lwgeom_type = TYPE_GETTYPE(lwgeom->type);
+	lwgeom_type = lwgeom->type;
 	lwgeom_srid = lwgeom->SRID;
-	lwgeom_z = TYPE_HASZ(lwgeom->type);
-	lwgeom_m = TYPE_HASM(lwgeom->type);
+	lwgeom_z = FLAGS_GET_Z(lwgeom->flags);
+	lwgeom_m = FLAGS_GET_M(lwgeom->flags);
 
 	POSTGIS_DEBUG(2, "Entered function");
 
@@ -203,7 +203,7 @@ Datum geography_in(PG_FUNCTION_ARGS)
 
 	lwgeom = lwgeom_deserialize(lwg_parser_result.serialized_lwgeom);
 
-	geography_valid_type(TYPE_GETTYPE(lwgeom->type));
+	geography_valid_type(lwgeom->type);
 
 	/* Force default SRID to the default */
 	if ( (int)lwgeom->SRID <= 0 )

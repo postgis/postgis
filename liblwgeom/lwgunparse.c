@@ -472,9 +472,9 @@ uchar *output_wkt(uchar* geom, int supress);
 /* special case for multipoint to supress extra brackets */
 uchar *output_multipoint(uchar* geom,int suppress)
 {
-	uchar type = *geom & 0x0f;
+	uchar type = *geom;
 
-	if ( type  == POINTTYPE )
+	if ( TYPE_GETTYPE(type)  == POINTTYPE )
 		return output_point(++geom,suppress);
 
 	return output_wkt(geom,suppress);
@@ -532,11 +532,10 @@ uchar *output_curvepoly(uchar* geom, int supress)
    a component of a MULTISURFACE, but not CURVEPOLYGON */
 uchar *output_multisurface(uchar* geom, int suppress)
 {
-	uchar type;
+	uchar type=*geom;
 
 	LWDEBUG(2, "output_multisurface called.");
 
-	type=*geom;
 	switch (TYPE_GETTYPE(type))
 	{
 	case POLYGONTYPE:
@@ -964,7 +963,7 @@ output_wkb_circstring_collection(uchar* geom,outwkbfunc func)
 	int cnt = read_int(&geom);
 	int orig_cnt = cnt;
 
-	LWDEBUGF(2, "output_wkb_curve_collection: %d iterations loop", cnt);
+	LWDEBUGF(2, "output_wkb_circstring_collection: %d iterations loop", cnt);
 
 	write_wkb_int(cnt);
 	while (cnt--) geom=func(geom);
@@ -992,7 +991,8 @@ output_wkb(uchar* geom)
 
 	dims = TYPE_NDIMS(type);
 
-	LWDEBUGF(2, "output_wkb: dims set to %d", dims);
+	LWDEBUGF(2, "output_wkb: type %d, dims set to %d",
+		TYPE_GETTYPE(type), dims);
 
 	/* Skip the bounding box */
 	if ( TYPE_HASBBOX(type) )

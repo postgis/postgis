@@ -14,7 +14,6 @@
 #define PARANOIA_LEVEL 1
 
 
-
 /**********************************************************************
  * BOX routines
  *
@@ -397,18 +396,6 @@ box3d_union_p(BOX3D *b1, BOX3D *b2, BOX3D *ubox)
 	return 1;
 }
 
-#if 0 /* UNUSED */
-/*
- * Returns a pointer to internal storage, or NULL
- * if the serialized form does not have a BBOX.
- */
-BOX2DFLOAT4 *
-getbox2d_internal(uchar *srl)
-{
-	if (TYPE_HASBBOX(srl[0])) return (BOX2DFLOAT4 *)(srl+1);
-	else return NULL;
-}
-#endif /* UNUSED */
 
 /*
  * Same as getbox2d, but modifies box instead of returning result on the stack
@@ -420,7 +407,7 @@ getbox2d_p(uchar *srl, BOX2DFLOAT4 *box)
 	uchar *loc;
 	BOX3D box3d;
 
-	LWDEBUG(2, "getbox2d_p call");
+	LWDEBUGF(2, "getbox2d_p call on type %d -> %d", type, TYPE_GETTYPE(type));
 
 	loc = srl+1;
 
@@ -429,21 +416,22 @@ getbox2d_p(uchar *srl, BOX2DFLOAT4 *box)
 		/*woot - this is easy */
 		LWDEBUG(4, "getbox2d_p: has box");
 		memcpy(box, loc, sizeof(BOX2DFLOAT4));
-		return 1;
+		return LW_TRUE;
 	}
 
 	LWDEBUG(4, "getbox2d_p: has no box - computing");
 
 	/* We have to actually compute it! */
-	if ( ! compute_serialized_box3d_p(srl, &box3d) ) return 0;
+	if ( ! compute_serialized_box3d_p(srl, &box3d)) return LW_FALSE;
 
 	LWDEBUGF(4, "getbox2d_p: compute_serialized_box3d returned %p", box3d);
 
-	if ( ! box3d_to_box2df_p(&box3d, box) ) return 0;
+	if ( ! box3d_to_box2df_p(&box3d, box) ) return LW_FALSE;
+
 
 	LWDEBUG(4, "getbox2d_p: box3d converted to box2d");
 
-	return 1;
+	return LW_TRUE;
 }
 
 /************************************************************************
@@ -494,7 +482,7 @@ getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
 
 	/* Get a pointer to nth point offset and zmflag */
 	ptr=getPoint_internal(pa, n);
-	zmflag=TYPE_GETZM(pa->dims);
+	zmflag=FLAGS_GET_ZM(pa->dims);
 
 	LWDEBUGF(4, "ptr %p, zmflag %d", ptr, zmflag);
 
@@ -579,7 +567,7 @@ getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
 #endif
 
 	LWDEBUGF(2, "getPoint3dz_p called on array of %d-dimensions / %u pts",
-	         TYPE_NDIMS(pa->dims), pa->npoints);
+	         FLAGS_NDIMS(pa->dims), pa->npoints);
 
 	/* Get a pointer to nth point offset */
 	ptr=getPoint_internal(pa, n);
@@ -588,7 +576,7 @@ getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
 	 * if input POINTARRAY has the Z, it is always
 	 * at third position so make a single copy
 	 */
-	if ( TYPE_HASZ(pa->dims) )
+	if ( FLAGS_GET_Z(pa->dims) )
 	{
 		memcpy(op, ptr, sizeof(POINT3DZ));
 	}
@@ -630,12 +618,12 @@ getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *op)
 #endif
 
 	LWDEBUGF(2, "getPoint3dm_p(%d) called on array of %d-dimensions / %u pts",
-	         n, TYPE_NDIMS(pa->dims), pa->npoints);
+	         n, FLAGS_NDIMS(pa->dims), pa->npoints);
 
 
 	/* Get a pointer to nth point offset and zmflag */
 	ptr=getPoint_internal(pa, n);
-	zmflag=TYPE_GETZM(pa->dims);
+	zmflag=FLAGS_GET_ZM(pa->dims);
 
 	/*
 	 * if input POINTARRAY has the M and NO Z,
@@ -721,7 +709,7 @@ void
 ptarray_set_point4d(POINTARRAY *pa, int n, POINT4D *p4d)
 {
 	uchar *ptr=getPoint_internal(pa, n);
-	switch ( TYPE_GETZM(pa->dims) )
+	switch ( FLAGS_GET_ZM(pa->dims) )
 	{
 	case 3:
 		memcpy(ptr, p4d, sizeof(POINT4D));
@@ -786,9 +774,9 @@ getPoint_internal(const POINTARRAY *pa, int n)
 int
 ptarray_point_size(const POINTARRAY *pa)
 {
-	LWDEBUGF(2, "ptarray_point_size: TYPE_NDIMS(pa->dims)=%x",TYPE_NDIMS(pa->dims));
+	LWDEBUGF(2, "ptarray_point_size: FLAGS_NDIMS(pa->dims)=%x",FLAGS_NDIMS(pa->dims));
 
-	return sizeof(double)*TYPE_NDIMS(pa->dims);
+	return sizeof(double)*FLAGS_NDIMS(pa->dims);
 }
 
 
@@ -1781,7 +1769,6 @@ compute_serialized_box3d(uchar *srl)
 	}
 
 	return result;
-
 }
 
 /****************************************************************
@@ -1810,7 +1797,6 @@ lwinspected_release(LWGEOM_INSPECTED *inspected)
  * debugging routines
  ************************************************/
 
-
 void printBOX3D(BOX3D *box)
 {
 	lwnotice("BOX3D: %g %g, %g %g", box->xmin, box->ymin,
@@ -1824,26 +1810,26 @@ void printPA(POINTARRAY *pa)
 	char *mflag;
 
 
-	if ( TYPE_HASM(pa->dims) ) mflag = "M";
+	if ( FLAGS_GET_M(pa->dims) ) mflag = "M";
 	else mflag = "";
 
 	lwnotice("      POINTARRAY%s{", mflag);
 	lwnotice("                 ndims=%i,   ptsize=%i",
-	         TYPE_NDIMS(pa->dims), ptarray_point_size(pa));
+	         FLAGS_NDIMS(pa->dims), ptarray_point_size(pa));
 	lwnotice("                 npoints = %i", pa->npoints);
 
 	for (t =0; t<pa->npoints; t++)
 	{
 		getPoint4d_p(pa, t, &pt);
-		if (TYPE_NDIMS(pa->dims) == 2)
+		if (FLAGS_NDIMS(pa->dims) == 2)
 		{
 			lwnotice("                    %i : %lf,%lf",t,pt.x,pt.y);
 		}
-		if (TYPE_NDIMS(pa->dims) == 3)
+		if (FLAGS_NDIMS(pa->dims) == 3)
 		{
 			lwnotice("                    %i : %lf,%lf,%lf",t,pt.x,pt.y,pt.z);
 		}
-		if (TYPE_NDIMS(pa->dims) == 4)
+		if (FLAGS_NDIMS(pa->dims) == 4)
 		{
 			lwnotice("                    %i : %lf,%lf,%lf,%lf",t,pt.x,pt.y,pt.z,pt.m);
 		}
@@ -2036,19 +2022,18 @@ box2d_union_p(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2, BOX2DFLOAT4 *ubox)
 }
 
 const char *
-lwgeom_typeflags(uchar type)
+lwgeom_typeflags(uchar flags)
 {
-	static char flags[5];
+	static char tflags[4];
 	int flagno=0;
-	if ( TYPE_HASZ(type) ) flags[flagno++] = 'Z';
-	if ( TYPE_HASM(type) ) flags[flagno++] = 'M';
-	if ( TYPE_HASBBOX(type) ) flags[flagno++] = 'B';
-	if ( TYPE_HASSRID(type) ) flags[flagno++] = 'S';
-	flags[flagno] = '\0';
+	if ( FLAGS_GET_Z(flags) ) tflags[flagno++] = 'Z';
+	if ( FLAGS_GET_M(flags) ) tflags[flagno++] = 'M';
+	if ( FLAGS_GET_BBOX(flags) ) tflags[flagno++] = 'B';
+	tflags[flagno] = '\0';
 
-	LWDEBUGF(4, "Flags: %s - returning %p", flags, flags);
+	LWDEBUGF(4, "Flags: %s - returning %p", flags, tflags);
 
-	return flags;
+	return tflags;
 }
 
 /**

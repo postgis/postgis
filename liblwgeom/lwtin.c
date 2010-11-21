@@ -35,7 +35,9 @@ lwtin_deserialize(uchar *srl)
 	insp = lwgeom_inspect(srl);
 
 	result = lwalloc(sizeof(LWTIN));
-	result->type = insp->type;
+	result->type = TINTYPE;
+	FLAGS_SET_Z(result->flags, TYPE_HASZ(insp->type));
+	FLAGS_SET_M(result->flags, TYPE_HASM(insp->type));
 	result->SRID = insp->SRID;
 	result->ngeoms = insp->ngeometries;
 
@@ -50,19 +52,24 @@ lwtin_deserialize(uchar *srl)
 
 	if (lwgeom_hasBBOX(srl[0]))
 	{
-		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
-		memcpy(result->bbox, srl+1, sizeof(BOX2DFLOAT4));
+		BOX2DFLOAT4 *box2df;
+
+		FLAGS_SET_BBOX(result->flags, 1);
+		box2df = lwalloc(sizeof(BOX2DFLOAT4));
+		memcpy(box2df, srl+1, sizeof(BOX2DFLOAT4));
+		result->bbox = gbox_from_box2df(result->flags, box2df);
+		lwfree(box2df);
 	}
 	else result->bbox = NULL;
 
 	for (i=0; i<insp->ngeometries; i++)
 	{
 		result->geoms[i] = lwtriangle_deserialize(insp->sub_geoms[i]);
-		if ( TYPE_NDIMS(result->geoms[i]->type) != TYPE_NDIMS(result->type) )
+		if ( FLAGS_NDIMS(result->geoms[i]->flags) != FLAGS_NDIMS(result->flags) )
 		{
 			lwerror("Mixed dimensions (tin:%d, triangle%d:%d)",
-			        TYPE_NDIMS(result->type), i,
-			        TYPE_NDIMS(result->geoms[i]->type)
+			        FLAGS_NDIMS(result->flags), i,
+			        FLAGS_NDIMS(result->geoms[i]->flags)
 			       );
 			return NULL;
 		}
@@ -106,11 +113,11 @@ void printLWTIN(LWTIN *tin)
 	int i;
 	LWTRIANGLE *triangle;
 
-	if (TYPE_GETTYPE(tin->type) != TINTYPE)
+	if (tin->type != TINTYPE)
 		lwerror("printLWTIN called with something else than a TIN");
 
 	lwnotice("LWTIN {");
-	lwnotice("    ndims = %i", (int)TYPE_NDIMS(tin->type));
+	lwnotice("    ndims = %i", (int)FLAGS_NDIMS(tin->flags));
 	lwnotice("    SRID = %i", (int)tin->SRID);
 	lwnotice("    ngeoms = %i", (int)tin->ngeoms);
 

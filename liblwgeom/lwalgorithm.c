@@ -380,14 +380,14 @@ LWCOLLECTION *lwmline_clip_to_ordinate_range(LWMLINE *mline, int ordinate, doubl
 	else
 	{
 		LWCOLLECTION *col;
-		char hasz = TYPE_HASZ(mline->type);
-		char hasm = TYPE_HASM(mline->type);
-		char hassrid = TYPE_HASSRID(mline->type);
+		char hasz = FLAGS_GET_Z(mline->flags);
+		char hasm = FLAGS_GET_M(mline->flags);
 		int i, j;
 		char homogeneous = 1;
 		size_t geoms_size = 0;
-		lwgeom_out = lwcollection_construct_empty(COLLECTIONTYPE, mline->SRID, hasz, hasm);
-		lwgeom_out->type = lwgeom_makeType(hasz, hasm, hassrid, MULTILINETYPE);
+		lwgeom_out = lwcollection_construct_empty(MULTILINETYPE, mline->SRID, hasz, hasm);
+		FLAGS_SET_Z(lwgeom_out->flags, hasz);
+		FLAGS_SET_M(lwgeom_out->flags, hasm);
 		for ( i = 0; i < mline->ngeoms; i ++ )
 		{
 			col = lwline_clip_to_ordinate_range(mline->geoms[i], ordinate, from, to);
@@ -411,7 +411,7 @@ LWCOLLECTION *lwmline_clip_to_ordinate_range(LWMLINE *mline, int ordinate, doubl
 					lwgeom_out->geoms[lwgeom_out->ngeoms] = col->geoms[j];
 					lwgeom_out->ngeoms++;
 				}
-				if ( TYPE_GETTYPE(col->type) != TYPE_GETTYPE(mline->type) )
+				if ( col->type != mline->type )
 				{
 					homogeneous = 0;
 				}
@@ -424,7 +424,7 @@ LWCOLLECTION *lwmline_clip_to_ordinate_range(LWMLINE *mline, int ordinate, doubl
 		lwgeom_add_bbox((LWGEOM*)lwgeom_out);
 		if ( ! homogeneous )
 		{
-			lwgeom_out->type = lwgeom_makeType(hasz, hasm, hassrid, COLLECTIONTYPE);
+			lwgeom_out->type = COLLECTIONTYPE;
 		}
 	}
 
@@ -454,11 +454,9 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 	int added_last_point = 0;
 	POINT4D *p = NULL, *q = NULL, *r = NULL;
 	double ordinate_value_p = 0.0, ordinate_value_q = 0.0;
-	char hasz = TYPE_HASZ(line->type);
-	char hasm = TYPE_HASM(line->type);
-	char dims = TYPE_NDIMS(line->type);
-
-	LWDEBUGF(4, "hassrid = %d", hassrid);
+	char hasz = FLAGS_GET_Z(line->flags);
+	char hasm = FLAGS_GET_M(line->flags);
+	char dims = FLAGS_NDIMS(line->flags);
 
 	/* Null input, nothing we can do. */
 	if ( ! line )
@@ -616,7 +614,7 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				if ( dp->npoints == 1 )
 				{
 					LWPOINT *opoint = lwpoint_construct(line->SRID, NULL, dp);
-					TYPE_SETTYPE(lwgeom_out->type, COLLECTIONTYPE);
+					lwgeom_out->type = COLLECTIONTYPE;
 					lwgeom_out = lwcollection_add_lwgeom(lwgeom_out, lwpoint_as_lwgeom(opoint));
 					
 				}
@@ -644,7 +642,7 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 		if ( dp->npoints == 1 )
 		{
 			LWPOINT *opoint = lwpoint_construct(line->SRID, NULL, dp);
-			TYPE_SETTYPE(lwgeom_out->type, COLLECTIONTYPE);
+			lwgeom_out->type = COLLECTIONTYPE;
 			lwgeom_out = lwcollection_add_lwgeom(lwgeom_out, lwpoint_as_lwgeom(opoint));
 		}
 		else

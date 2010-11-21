@@ -66,7 +66,7 @@ New faster distance calculations
 int lw_dist2d_pre_seg_seg(POINTARRAY *l1, POINTARRAY *l2,LISTSTRUCT *list1, LISTSTRUCT *list2,double k, DISTPTS *dl);
 int lw_dist2d_selected_seg_seg(POINT2D *A, POINT2D *B, POINT2D *C, POINT2D *D, DISTPTS *dl);
 int struct_cmp_by_measure(const void *a, const void *b);
-int lw_dist2d_fast_ptarray_ptarray(POINTARRAY *l1,POINTARRAY *l2, DISTPTS *dl, BOX2DFLOAT4 *box1, BOX2DFLOAT4 *box2);
+int lw_dist2d_fast_ptarray_ptarray(POINTARRAY *l1,POINTARRAY *l2, DISTPTS *dl,  GBOX *box1, GBOX *box2);
 /*
 Functions in common for Brute force and new calculation
 */

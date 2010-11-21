@@ -24,18 +24,17 @@
  * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
  */
 LWLINE *
-lwline_construct(int srid, BOX2DFLOAT4 *bbox, POINTARRAY *points)
+lwline_construct(int srid, GBOX *bbox, POINTARRAY *points)
 {
 	LWLINE *result;
 	result = (LWLINE*) lwalloc(sizeof(LWLINE));
 
 	LWDEBUG(2, "lwline_construct called.");
 
-	result->type = lwgeom_makeType_full(
-	                   TYPE_HASZ(points->dims),
-	                   TYPE_HASM(points->dims),
-	                   (srid!=-1), LINETYPE,
-	                   0);
+	result->type = LINETYPE;
+	FLAGS_SET_Z(result->flags, FLAGS_GET_Z(points->dims));
+	FLAGS_SET_M(result->flags, FLAGS_GET_M(points->dims));
+	FLAGS_SET_BBOX(result->flags, bbox?1:0);
 
 	LWDEBUGF(3, "lwline_construct type=%d", result->type);
 
@@ -50,7 +49,9 @@ LWLINE *
 lwline_construct_empty(int srid, char hasz, char hasm)
 {
 	LWLINE *result = lwalloc(sizeof(LWLINE));
-	result->type = lwgeom_makeType_full(hasz, hasm, (srid>0), LINETYPE, 0);
+	result->type = LINETYPE;
+	FLAGS_SET_Z(result->flags, hasz?1:0);
+	FLAGS_SET_M(result->flags, hasm?1:0);
 	result->SRID = srid;
 	result->points = NULL;
 	result->bbox = NULL;
@@ -82,16 +83,23 @@ lwline_deserialize(uchar *serialized_form)
 	}
 
 	result = (LWLINE*) lwalloc(sizeof(LWLINE)) ;
-	result->type = type;
+	result->type = LINETYPE;
+	FLAGS_SET_Z(result->flags, TYPE_HASZ(type)?1:0);
+        FLAGS_SET_M(result->flags, TYPE_HASM(type)?1:0);
 
 	loc = serialized_form+1;
 
 	if (lwgeom_hasBBOX(type))
 	{
+		BOX2DFLOAT4 *box2df;
+
 		LWDEBUG(3, "lwline_deserialize: input has bbox");
 
-		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
-		memcpy(result->bbox, loc, sizeof(BOX2DFLOAT4));
+		FLAGS_SET_BBOX(result->flags, 1);
+		box2df = lwalloc(sizeof(BOX2DFLOAT4));
+		memcpy(box2df, loc, sizeof(BOX2DFLOAT4));
+		result->bbox = gbox_from_box2df(result->flags, box2df);
+		lwfree(box2df);
 		loc += sizeof(BOX2DFLOAT4);
 	}
 	else
@@ -117,7 +125,8 @@ lwline_deserialize(uchar *serialized_form)
 	npoints = lw_get_uint32(loc);
 	/*lwnotice("line npoints = %d", npoints); */
 	loc +=4;
-	pa = ptarray_construct_reference_data(TYPE_HASZ(type), TYPE_HASM(type), npoints, loc);
+	pa = ptarray_construct_reference_data(TYPE_HASZ(type)?1:0,
+				TYPE_HASM(type)?1:0, npoints, loc);
 	
 	result->points = pa;
 
@@ -168,7 +177,7 @@ lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *retsize)
 	if (line == NULL)
 		lwerror("lwline_serialize:: given null line");
 
-	if ( TYPE_GETZM(line->type) != TYPE_GETZM(line->points->dims) )
+	if ( FLAGS_GET_ZM(line->flags) != FLAGS_GET_ZM(line->points->dims) )
 		lwerror("Dimensions mismatch in lwline");
 
 	ptsize = ptarray_point_size(line->points);
@@ -176,7 +185,7 @@ lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *retsize)
 	hasSRID = (line->SRID != -1);
 
 	buf[0] = (uchar) lwgeom_makeType_full(
-	             TYPE_HASZ(line->type), TYPE_HASM(line->type),
+	             FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags),
 	             hasSRID, LINETYPE, line->bbox ? 1 : 0);
 	loc = buf+1;
 
@@ -184,7 +193,11 @@ lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *retsize)
 
 	if (line->bbox)
 	{
-		memcpy(loc, line->bbox, sizeof(BOX2DFLOAT4));
+		BOX2DFLOAT4 *box2df;
+	
+		box2df = box2df_from_gbox(line->bbox);
+		memcpy(loc, box2df, sizeof(BOX2DFLOAT4));
+		lwfree(box2df);
 		loc += sizeof(BOX2DFLOAT4);
 
 		LWDEBUG(3, "lwline_serialize_buf added BBOX");
@@ -307,7 +320,7 @@ lwgeom_size_line(const uchar *serialized_line)
 void printLWLINE(LWLINE *line)
 {
 	lwnotice("LWLINE {");
-	lwnotice("    ndims = %i", (int)TYPE_NDIMS(line->type));
+	lwnotice("    ndims = %i", (int)FLAGS_NDIMS(line->flags));
 	lwnotice("    SRID = %i", (int)line->SRID);
 	printPA(line->points);
 	lwnotice("}");
@@ -328,7 +341,7 @@ lwline_clone(const LWLINE *g)
 	LWDEBUGF(2, "lwline_clone called with %p", g);
 
 	memcpy(ret, g, sizeof(LWLINE));
-	if ( g->bbox ) ret->bbox = box2d_clone(g->bbox);
+	if ( g->bbox ) ret->bbox = gbox_copy(g->bbox);
 	return ret;
 }
 
@@ -377,14 +390,14 @@ lwline_from_lwpointarray(int SRID, uint32 npoints, LWPOINT **points)
 	 */
 	for (i=0; i<npoints; i++)
 	{
-		if ( TYPE_GETTYPE(points[i]->type) != POINTTYPE )
+		if ( points[i]->type != POINTTYPE )
 		{
 			lwerror("lwline_from_lwpointarray: invalid input type: %s",
-			        lwtype_name(TYPE_GETTYPE(points[i]->type)));
+			        lwtype_name(points[i]->type));
 			return NULL;
 		}
-		if ( TYPE_HASZ(points[i]->type) ) zmflag |= 2;
-		if ( TYPE_HASM(points[i]->type) ) zmflag |= 1;
+		if ( FLAGS_GET_Z(points[i]->flags) ) zmflag |= 2;
+		if ( FLAGS_GET_M(points[i]->flags) ) zmflag |= 1;
 		if ( zmflag == 3 ) break;
 	}
 
@@ -420,7 +433,7 @@ lwline_from_lwmpoint(int SRID, LWMPOINT *mpoint)
 {
 	uint32 i;
 	POINTARRAY *pa;
-	char zmflag = TYPE_GETZM(mpoint->type);
+	char zmflag = FLAGS_GET_ZM(mpoint->flags);
 	size_t ptsize, size;
 	uchar *newpoints, *ptr;
 
@@ -467,7 +480,8 @@ lwline_removepoint(LWLINE *line, uint32 index)
 
 	newpa = ptarray_removePoint(line->points, index);
 
-	ret = lwline_construct(line->SRID, ptarray_compute_box2d(newpa), newpa);
+	ret = lwline_construct(line->SRID, NULL, newpa);
+	lwgeom_add_bbox((LWGEOM *) ret);
 
 	return ret;
 }
@@ -504,13 +518,13 @@ lwline_measured_from_lwline(const LWLINE *lwline, double m_start, double m_end)
 	POINTARRAY *pa = NULL;
 	POINT3DZ p1, p2;
 
-	if ( TYPE_GETTYPE(lwline->type) != LINETYPE )
+	if ( lwline->type != LINETYPE )
 	{
 		lwerror("lwline_construct_from_lwline: only line types supported");
 		return NULL;
 	}
 
-	hasz = TYPE_HASZ(lwline->type);
+	hasz = FLAGS_GET_Z(lwline->flags);
 	hasm = 1;
 
 	/* Null points or npoints == 0 will result in empty return geometry */
@@ -556,14 +570,14 @@ lwline_remove_repeated_points(LWLINE *lwline)
 	LWDEBUGF(3, "lwline_remove_repeated_points: npts %p", npts);
 
 	return (LWGEOM*)lwline_construct(lwline->SRID,
-	                                 lwline->bbox ? box2d_clone(lwline->bbox) : 0,
+	                                 lwline->bbox ? gbox_copy(lwline->bbox) : 0,
 	                                 npts);
 }
 
 int
 lwline_is_closed(LWLINE *line)
 {
-	if (TYPE_HASZ(line->type))
+	if (FLAGS_GET_Z(line->type))
 		return ptarray_isclosed3d(line->points);
 
 	return ptarray_isclosed2d(line->points);
@@ -586,7 +600,7 @@ lwline_force_dims(const LWLINE *line, int hasz, int hasm)
 		pdims = ptarray_force_dims(line->points, hasz, hasm);
 		lineout = lwline_construct(line->SRID, NULL, pdims);
 	}
-	TYPE_SETTYPE(lineout->type, TYPE_GETTYPE(line->type));
+	lineout->type = line->type;
 	return lineout;
 }
 
@@ -617,6 +631,6 @@ LWLINE* lwline_simplify(const LWLINE *iline, double dist)
 		return lwline_clone(iline);
 		
 	oline = lwline_construct(iline->SRID, NULL, ptarray_simplify(iline->points, dist));
-	TYPE_SETTYPE(oline->type, TYPE_GETTYPE(iline->type));
+	oline->type = iline->type;
 	return oline;
 }

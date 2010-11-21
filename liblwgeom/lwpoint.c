@@ -52,7 +52,7 @@ lwpoint_serialize_buf(LWPOINT *point, uchar *buf, size_t *retsize)
 	uchar *loc;
 	int ptsize = ptarray_point_size(point->point);
 
-	if ( TYPE_GETZM(point->type) != TYPE_GETZM(point->point->dims) )
+	if ( FLAGS_GET_ZM(point->flags) != FLAGS_GET_ZM(point->point->dims) )
 		lwerror("Dimensions mismatch in lwpoint");
 
 	LWDEBUGF(2, "lwpoint_serialize_buf(%p, %p) called", point, buf);
@@ -63,16 +63,20 @@ lwpoint_serialize_buf(LWPOINT *point, uchar *buf, size_t *retsize)
 	if (hasSRID) size +=4;  /*4 byte SRID */
 	if (point->bbox) size += sizeof(BOX2DFLOAT4); /* bvol */
 
-	size += sizeof(double)*TYPE_NDIMS(point->type);
+	size += sizeof(double)*FLAGS_NDIMS(point->flags);
 
 	buf[0] = (uchar) lwgeom_makeType_full(
-	             TYPE_HASZ(point->type), TYPE_HASM(point->type),
+	             FLAGS_GET_Z(point->flags), FLAGS_GET_M(point->flags),
 	             hasSRID, POINTTYPE, point->bbox?1:0);
 	loc = buf+1;
 
 	if (point->bbox)
 	{
-		memcpy(loc, point->bbox, sizeof(BOX2DFLOAT4));
+		BOX2DFLOAT4 *box2df;
+		
+		box2df = box2df_from_gbox(point->bbox);
+		memcpy(loc, box2df, sizeof(BOX2DFLOAT4));
+		lwfree(box2df);
 		loc += sizeof(BOX2DFLOAT4);
 	}
 
@@ -149,7 +153,7 @@ lwpoint_serialize_size(LWPOINT *point)
 	if ( point->SRID != -1 ) size += 4; /* SRID */
 	if ( point->bbox ) size += sizeof(BOX2DFLOAT4);
 
-	size += TYPE_NDIMS(point->type) * sizeof(double); /* point */
+	size += FLAGS_NDIMS(point->flags) * sizeof(double); /* point */
 
 	LWDEBUGF(3, "lwpoint_serialize_size returning %d", size);
 
@@ -161,15 +165,20 @@ lwpoint_serialize_size(LWPOINT *point)
  * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
  */
 LWPOINT *
-lwpoint_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *point)
+lwpoint_construct(int SRID, GBOX *bbox, POINTARRAY *point)
 {
 	LWPOINT *result ;
+	uchar flags=0;
 
 	if (point == NULL)
 		return NULL; /* error */
 
 	result = lwalloc(sizeof(LWPOINT));
-	result->type = lwgeom_makeType_full(TYPE_HASZ(point->dims), TYPE_HASM(point->dims), (SRID>0), POINTTYPE, 0);
+	result->type = POINTTYPE;
+	FLAGS_SET_Z(flags, FLAGS_GET_Z(point->dims));
+	FLAGS_SET_M(flags, FLAGS_GET_M(point->dims));
+	FLAGS_SET_BBOX(flags, bbox?1:0);
+	result->flags = flags;
 	result->SRID = SRID;
 	result->point = point;
 	result->bbox = bbox;
@@ -181,7 +190,9 @@ LWPOINT *
 lwpoint_construct_empty(int srid, char hasz, char hasm)
 {
 	LWPOINT *result = lwalloc(sizeof(LWPOINT));
-	result->type = lwgeom_makeType_full(hasz, hasm, (srid>0), POINTTYPE, 0);
+	result->type = POINTTYPE;
+	FLAGS_SET_Z(result->flags, hasz?1:0);
+	FLAGS_SET_M(result->flags, hasm?1:0);
 	result->SRID = srid;
 	result->point = NULL;
 	result->bbox = NULL;
@@ -257,7 +268,6 @@ make_lwpoint4d(int SRID, double x, double y, double z, double m)
 LWPOINT *
 lwpoint_deserialize(uchar *serialized_form)
 {
-	uchar type;
 	int geom_type;
 	LWPOINT *result;
 	uchar *loc = NULL;
@@ -267,24 +277,30 @@ lwpoint_deserialize(uchar *serialized_form)
 
 	result = (LWPOINT*) lwalloc(sizeof(LWPOINT)) ;
 
-	type = serialized_form[0];
-	geom_type = lwgeom_getType(type);
+	geom_type = lwgeom_getType(serialized_form[0]);
 
 	if ( geom_type != POINTTYPE)
 	{
 		lwerror("lwpoint_deserialize: attempt to deserialize a point which is really a %s", lwtype_name(geom_type));
 		return NULL;
 	}
-	result->type = type;
+	result->type = geom_type;
+	FLAGS_SET_Z(result->flags, TYPE_HASZ(serialized_form[0]));
+	FLAGS_SET_M(result->flags, TYPE_HASM(serialized_form[0]));
 
 	loc = serialized_form+1;
 
-	if (lwgeom_hasBBOX(type))
+	if (lwgeom_hasBBOX(serialized_form[0]))
 	{
+		BOX2DFLOAT4 *box2df;
+
 		LWDEBUG(3, "lwpoint_deserialize: input has bbox");
 
-		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
-		memcpy(result->bbox, loc, sizeof(BOX2DFLOAT4));
+		FLAGS_SET_BBOX(result->flags, 1);
+		box2df = lwalloc(sizeof(BOX2DFLOAT4));
+		memcpy(box2df, loc, sizeof(BOX2DFLOAT4));
+		result->bbox = gbox_from_box2df(result->flags, box2df);
+		lwfree(box2df);
 		loc += sizeof(BOX2DFLOAT4);
 	}
 	else
@@ -292,7 +308,7 @@ lwpoint_deserialize(uchar *serialized_form)
 		result->bbox = NULL;
 	}
 
-	if ( lwgeom_hasSRID(type))
+	if ( lwgeom_hasSRID(serialized_form[0]))
 	{
 		LWDEBUG(3, "lwpoint_deserialize: input has SRID");
 
@@ -305,7 +321,7 @@ lwpoint_deserialize(uchar *serialized_form)
 	}
 
 	/* we've read the type (1 byte) and SRID (4 bytes, if present) */
-	pa = ptarray_construct_reference_data(TYPE_HASZ(type), TYPE_HASM(type), 1, loc);
+	pa = ptarray_construct_reference_data(FLAGS_GET_Z(result->flags), FLAGS_GET_M(result->flags), 1, loc);
 	
 	result->point = pa;
 
@@ -322,8 +338,8 @@ void lwpoint_free(LWPOINT *pt)
 void printLWPOINT(LWPOINT *point)
 {
 	lwnotice("LWPOINT {");
-	lwnotice("    ndims = %i", (int)TYPE_NDIMS(point->type));
-	lwnotice("    BBOX = %i", TYPE_HASBBOX(point->type) ? 1 : 0 );
+	lwnotice("    ndims = %i", (int)FLAGS_NDIMS(point->flags));
+	lwnotice("    BBOX = %i", FLAGS_GET_BBOX(point->flags) ? 1 : 0 );
 	lwnotice("    SRID = %i", (int)point->SRID);
 	printPA(point->point);
 	lwnotice("}");
@@ -344,7 +360,7 @@ lwpoint_clone(const LWPOINT *g)
 	LWDEBUG(2, "lwpoint_clone called");
 
 	memcpy(ret, g, sizeof(LWPOINT));
-	if ( g->bbox ) ret->bbox = box2d_clone(g->bbox);
+	if ( g->bbox ) ret->bbox = gbox_copy(g->bbox);
 	return ret;
 }
 
@@ -418,7 +434,7 @@ lwpoint_force_dims(const LWPOINT *point, int hasz, int hasm)
 		pdims = ptarray_force_dims(point->point, hasz, hasm);
 		pointout = lwpoint_construct(point->SRID, NULL, pdims);
 	}
-	TYPE_SETTYPE(pointout->type, TYPE_GETTYPE(point->type));
+	pointout->type = point->type;
 	return pointout;
 }
 

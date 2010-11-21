@@ -541,8 +541,7 @@ Datum BOX2DFLOAT4_construct(PG_FUNCTION_ARGS)
 	minpoint = lwgeom_deserialize(SERIALIZED_FORM(min));
 	maxpoint = lwgeom_deserialize(SERIALIZED_FORM(max));
 
-	if ( TYPE_GETTYPE(minpoint->type) != POINTTYPE ||
-	        TYPE_GETTYPE(maxpoint->type) != POINTTYPE )
+	if ( minpoint->type != POINTTYPE || maxpoint->type != POINTTYPE )
 	{
 		elog(ERROR, "BOX2DFLOAT4_construct: args must be points");
 		PG_RETURN_NULL();

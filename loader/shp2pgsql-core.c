@@ -271,7 +271,8 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 		if (state->wkbtype & WKBMOFFSET)
 			hasm = 1;
 
-	TYPE_SETZM(dims, hasz, hasm);
+	FLAGS_SET_Z(dims, hasz?1:0);
+	FLAGS_SET_M(dims, hasm?1:0);
 
 	/* Allocate memory for our array of LWPOINTs and our dynptarrays */
 	lwmultipoints = malloc(sizeof(LWPOINT *) * obj->nVertices);
@@ -379,7 +380,8 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 		if (state->wkbtype & WKBMOFFSET)
 			hasm = 1;
 
-	TYPE_SETZM(dims, hasz, hasm);
+	FLAGS_SET_Z(dims, hasz?1:0);
+	FLAGS_SET_M(dims, hasm?1:0);
 
 	if (state->config->simple_geometries == 1 && obj->nParts > 1)
 	{
@@ -716,7 +718,8 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 		if (state->wkbtype & WKBMOFFSET)
 			hasm = 1;
 
-	TYPE_SETZM(dims, hasz, hasm);
+	FLAGS_SET_Z(dims, hasz?1:0);
+	FLAGS_SET_M(dims, hasm?1:0);
 
 	polygon_total = FindPolygons(obj, &Outer);
 
