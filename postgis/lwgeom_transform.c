@@ -687,6 +687,7 @@ lwgeom_transform_recursive(uchar *geom, projPJ inpj, projPJ outpj)
 	{
 		LWLINE *line=NULL;
 		LWPOINT *point=NULL;
+		LWTRIANGLE *triangle=NULL;
 		LWPOLY *poly=NULL;
 		LWCIRCSTRING *curve=NULL;
 		POINT4D p;
@@ -713,6 +714,20 @@ lwgeom_transform_recursive(uchar *geom, projPJ inpj, projPJ outpj)
 				ptarray_set_point4d(pts, i, &p);
 			}
 			lwgeom_release((LWGEOM *)line);
+			continue;
+		}
+
+		triangle = lwgeom_gettriangle_inspected(inspected, j);
+		if (triangle != NULL)
+		{
+			POINTARRAY *pts = triangle->points;
+			for (i=0; i<pts->npoints; i++)
+			{
+				getPoint4d_p(pts, i, &p);
+				transform_point(&p, inpj, outpj);
+				ptarray_set_point4d(pts, i, &p);
+			}
+			lwgeom_release((LWGEOM *)triangle);
 			continue;
 		}
 
