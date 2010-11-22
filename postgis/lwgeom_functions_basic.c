@@ -1859,8 +1859,9 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	double d = PG_GETARG_FLOAT8(1);
 	BOX3D box3d;
-	POINT2D *pts = lwalloc(sizeof(POINT2D)*5);
-	POINTARRAY *pa[1];
+	POINT4D pt;
+	POINTARRAY *pa = ptarray_construct_empty(0, 0, 5);
+	POINTARRAY **ppa = lwalloc(sizeof(POINTARRAY*));
 	LWPOLY *poly;
 	int SRID;
 	PG_LWGEOM *result;
@@ -1881,30 +1882,32 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 	expand_box3d(&box3d, d);
 
 	/* Assign coordinates to POINT2D array */
-	pts[0].x = box3d.xmin;
-	pts[0].y = box3d.ymin;
-	pts[1].x = box3d.xmin;
-	pts[1].y = box3d.ymax;
-	pts[2].x = box3d.xmax;
-	pts[2].y = box3d.ymax;
-	pts[3].x = box3d.xmax;
-	pts[3].y = box3d.ymin;
-	pts[4].x = box3d.xmin;
-	pts[4].y = box3d.ymin;
+	pt.x = box3d.xmin;
+	pt.y = box3d.ymin;
+	ptarray_append_point(pa, &pt, LW_TRUE);
+	pt.x = box3d.xmin;
+	pt.y = box3d.ymax;
+	ptarray_append_point(pa, &pt, LW_TRUE);
+	pt.x = box3d.xmax;
+	pt.y = box3d.ymax;
+	ptarray_append_point(pa, &pt, LW_TRUE);
+	pt.x = box3d.xmax;
+	pt.y = box3d.ymin;
+	ptarray_append_point(pa, &pt, LW_TRUE);
+	pt.x = box3d.xmin;
+	pt.y = box3d.ymin;
+	ptarray_append_point(pa, &pt, LW_TRUE);
 
 	/* Construct point array */
-	pa[0] = lwalloc(sizeof(POINTARRAY));
-	pa[0]->serialized_pointlist = (uchar *)pts;
-	FLAGS_SET_Z(pa[0]->dims, 0);
-	FLAGS_SET_M(pa[0]->dims, 0);
-	pa[0]->npoints = 5;
+	ppa[0] = pa;
 
 	/* Construct polygon  */
-	poly = lwpoly_construct(SRID, NULL, 1, pa);
+	poly = lwpoly_construct(SRID, NULL, 1, ppa);
 	lwgeom_add_bbox((LWGEOM *)poly);
 
 	/* Construct PG_LWGEOM  */
-	result = pglwgeom_serialize((LWGEOM *)poly);
+	result = pglwgeom_serialize(lwpoly_as_lwgeom(poly));
+	lwgeom_free(lwpoly_as_lwgeom(poly));
 
 	PG_FREE_IF_COPY(geom, 0);
 
