@@ -123,6 +123,10 @@ LWLINE* lwline_simplify(const LWLINE *iline, double dist);
 LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist);
 LWCOLLECTION* lwcollection_simplify(const LWCOLLECTION *igeom, double dist);
 
+/*
+* Point comparisons
+*/
+int p4d_same(POINT4D p1, POINT4D p2);
 
 
 

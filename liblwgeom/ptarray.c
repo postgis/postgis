@@ -138,14 +138,47 @@ ptarray_append_point(POINTARRAY *pa, POINT4D *pt, int allow_duplicates)
 	{
 		POINT4D tmp;
 		getPoint4d_p(pa, pa->npoints-1, &tmp);
+		LWDEBUGF(4,"checking for duplicate end point (pt = POINT(%g %g) pa->npoints-q = POINT(%g %g))",pt->x,pt->y,tmp.x,tmp.y);
 
 		/* Return LW_SUCCESS and do nothing else if previous point in list is equal to this one */
-		if (tmp.x == pt->x && tmp.y == pt->y && tmp.z == pt->z && tmp.m == pt->m) 
+		if ( (pt->x == tmp.x) && (pt->y == tmp.y) &&
+		     (TYPE_HASZ(pa->dims) ? pt->z == tmp.z : 1) &&
+		     (TYPE_HASM(pa->dims) ? pt->m == tmp.m : 1) )
+		{
 			return LW_SUCCESS;
+		}
 	}
 
 	/* Append is just a special case of insert */
 	return ptarray_insert_point(pa, pt, pa->npoints);
+}
+
+int
+ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, int splice_ends)
+{
+
+	/* Check for pathology */
+	if( ! pa1 || ! pa2 ) 
+	{
+		lwerror("ptarray_append_ptarray: null input");
+		return LW_FAILURE;
+	}
+
+	/* Check for duplicate end point */
+	if ( splice_ends && pa1->npoints > 0 && pa2->npoints > 0 )
+	{
+		POINT4D tmp1, tmp2;
+		getPoint4d_p(pa1, pa1->npoints-1, &tmp1);
+		getPoint4d_p(pa2, 0, &tmp2);
+
+		/* If the end point and start point are the same, then strip off the end point */
+		if (p4d_same(tmp1, tmp2)) 
+		{
+			pa1->npoints--;
+		}
+	}
+
+	return 0;
 }
 
 /*
@@ -1218,4 +1251,13 @@ ptarray_simplify(POINTARRAY *inpts, double epsilon)
 
 	lwfree(stack);
 	return outpts;
+}
+
+int
+p4d_same(POINT4D p1, POINT4D p2)
+{
+	if( p1.x == p2.x && p1.y == p2.y && p1.z == p2.z && p1.m == p2.m )
+		return LW_TRUE;
+	else
+		return LW_FALSE;
 }
