@@ -25,6 +25,7 @@
 	<xsl:variable name='var_text'>'monkey'</xsl:variable>
 	<xsl:variable name='var_varchar'>'test'</xsl:variable>
 	<xsl:variable name='var_pixeltype'>'1BB'</xsl:variable>
+	<xsl:variable name='var_pixeltypenoq'>8BUI</xsl:variable>
 	<xsl:variable name='var_pixelvalue'>0</xsl:variable>
 	<xsl:variable name='var_boolean'>false</xsl:variable>
 	<xsl:variable name='var_logtable'>raster_garden_log</xsl:variable>
@@ -117,10 +118,11 @@ VALUES('<xsl:value-of select="$log_label" /> AddRasterColumn','AddRasterColumn',
 BEGIN;
 	CREATE TABLE pgis_rgarden_<xsl:value-of select="@ID" />(rid serial PRIMARY KEY);
 	SELECT AddRasterColumn('public', 'pgis_rgarden_<xsl:value-of select="@ID" />', 'rast',4326, '{<xsl:value-of select="@PixType" />}',false, true, '{<xsl:value-of select="@nodata" />}', 0.25,-0.25,200,300, null);
-	SELECT AddRasterColumn('public', 'pgis_rgarden_<xsl:value-of select="@ID" />','r_rasttothrow', 4326, '{<xsl:value-of select="@PixType" />,<xsl:value-of select="$var_pixeltype" />}',false, true, '{<xsl:value-of select="@nodata" />, <xsl:value-of select="$var_pixelvalue" />}', 0.25,-0.25,200,300, null);
+	SELECT AddRasterColumn('public', 'pgis_rgarden_<xsl:value-of select="@ID" />','r_rasttothrow', 4326, '{<xsl:value-of select="@PixType" />,<xsl:value-of select="$var_pixeltypenoq" />}',false, true, '{<xsl:value-of select="@nodata" />, <xsl:value-of select="$var_pixelvalue" />}', 0.25,-0.25,200,300, null);
 
 	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		WHERE log_label = '<xsl:value-of select="$log_label" /> AddRasterColumn' AND log_end IS NULL;
+			FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
+		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;
 COMMIT;<xsl:text> 
 </xsl:text>
 
@@ -132,7 +134,8 @@ BEGIN;
 	SELECT rast
 	FROM (<xsl:value-of select="." />) As foo;
  UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		WHERE log_label = '<xsl:value-of select="$log_label" /> insert data raster' AND log_end IS NULL;
+ 	FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
+		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;
 COMMIT;	
 		
 		</xsl:for-each>
