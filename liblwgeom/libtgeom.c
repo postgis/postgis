@@ -521,17 +521,17 @@ lwgeom_from_tgeom(TGEOM *tgeom)
 
 				assert(edge_id);
 				if (edge_id > 0)
-					ptarray_append_point(dpa, tgeom->edges[edge_id]->s, LW_TRUE);
+					ptarray_append_point(dpa, tgeom->edges[edge_id]->s, REPEATED_POINTS_OK);
 				else
-					ptarray_append_point(dpa, tgeom->edges[-edge_id]->e, LW_TRUE);
+					ptarray_append_point(dpa, tgeom->edges[-edge_id]->e, REPEATED_POINTS_OK);
 			}
 
 			edge_id = tgeom->faces[i]->edges[0];
 			LWDEBUGF(3, "TIN edge_id: %i\n", edge_id);
 			if (edge_id > 0)
-				ptarray_append_point(dpa, tgeom->edges[edge_id]->s, LW_TRUE); 
+				ptarray_append_point(dpa, tgeom->edges[edge_id]->s, REPEATED_POINTS_OK); 
 			else
-				ptarray_append_point(dpa, tgeom->edges[-edge_id]->e, LW_TRUE); 
+				ptarray_append_point(dpa, tgeom->edges[-edge_id]->e, REPEATED_POINTS_OK); 
 
 			geom = (LWGEOM *) lwtin_add_lwtriangle((LWTIN *) geom,
 			                                       lwtriangle_construct(tgeom->srid, NULL, dpa));
@@ -552,17 +552,17 @@ lwgeom_from_tgeom(TGEOM *tgeom)
 				assert(edge_id);
 				LWDEBUGF(3, "POLYHEDRALSURFACE edge_id: %i\n", edge_id);
 				if (edge_id > 0)
-					ptarray_append_point(dpa, tgeom->edges[edge_id]->s, LW_TRUE);
+					ptarray_append_point(dpa, tgeom->edges[edge_id]->s, REPEATED_POINTS_OK);
 				else
-					ptarray_append_point(dpa, tgeom->edges[-edge_id]->e, LW_TRUE);
+					ptarray_append_point(dpa, tgeom->edges[-edge_id]->e, REPEATED_POINTS_OK);
 			}
 
 			edge_id = tgeom->faces[i]->edges[0];
 			LWDEBUGF(3, "POLYHEDRALSURFACE edge_id: %i\n", edge_id);
 			if (edge_id > 0)
-				ptarray_append_point(dpa, tgeom->edges[edge_id]->s, LW_TRUE);
+				ptarray_append_point(dpa, tgeom->edges[edge_id]->s, REPEATED_POINTS_OK);
 			else
-				ptarray_append_point(dpa, tgeom->edges[-edge_id]->e, LW_TRUE);
+				ptarray_append_point(dpa, tgeom->edges[-edge_id]->e, REPEATED_POINTS_OK);
 
 			ppa = lwalloc(sizeof(POINTARRAY*)
 			              * (tgeom->faces[i]->nrings + 1));

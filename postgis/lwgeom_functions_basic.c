@@ -1884,19 +1884,19 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 	/* Assign coordinates to POINT2D array */
 	pt.x = box3d.xmin;
 	pt.y = box3d.ymin;
-	ptarray_append_point(pa, &pt, LW_TRUE);
+	ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
 	pt.x = box3d.xmin;
 	pt.y = box3d.ymax;
-	ptarray_append_point(pa, &pt, LW_TRUE);
+	ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
 	pt.x = box3d.xmax;
 	pt.y = box3d.ymax;
-	ptarray_append_point(pa, &pt, LW_TRUE);
+	ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
 	pt.x = box3d.xmax;
 	pt.y = box3d.ymin;
-	ptarray_append_point(pa, &pt, LW_TRUE);
+	ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
 	pt.x = box3d.xmin;
 	pt.y = box3d.ymin;
-	ptarray_append_point(pa, &pt, LW_TRUE);
+	ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
 
 	/* Construct point array */
 	ppa[0] = pa;

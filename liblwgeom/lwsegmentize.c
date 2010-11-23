@@ -301,7 +301,7 @@ lwcurve_segmentize(LWCIRCSTRING *icurve, uint32 perQuad)
 	{
 		lwerror("lwcurve_segmentize: Cannot extract point.");
 	}
-	ptarray_append_point(ptarray, &p4, LW_TRUE);
+	ptarray_append_point(ptarray, &p4, REPEATED_POINTS_OK);
 
 	for (i = 2; i < icurve->points->npoints; i+=2)
 	{
@@ -319,7 +319,7 @@ lwcurve_segmentize(LWCIRCSTRING *icurve, uint32 perQuad)
 			for (j = 0; j < tmp->npoints; j++)
 			{
 				getPoint4d_p(tmp, j, &p4);
-				ptarray_append_point(ptarray, &p4, LW_TRUE);
+				ptarray_append_point(ptarray, &p4, REPEATED_POINTS_OK);
 			}
 			lwfree(tmp);
 		}
@@ -330,7 +330,7 @@ lwcurve_segmentize(LWCIRCSTRING *icurve, uint32 perQuad)
 			for (j = i - 1 ; j <= i ; j++)
 			{
 				getPoint4d_p(icurve->points, j, &p4);
-				ptarray_append_point(ptarray, &p4, LW_TRUE);
+				ptarray_append_point(ptarray, &p4, REPEATED_POINTS_OK);
 			}
 		}
 
@@ -361,7 +361,7 @@ lwcompound_segmentize(LWCOMPOUND *icompound, uint32 perQuad)
 			for (j = 0; j < tmp->points->npoints; j++)
 			{
 				getPoint4d_p(tmp->points, j, &p);
-				ptarray_append_point(ptarray, &p, LW_TRUE);
+				ptarray_append_point(ptarray, &p, REPEATED_POINTS_OK);
 			}
 			lwfree(tmp);
 		}
@@ -371,7 +371,7 @@ lwcompound_segmentize(LWCOMPOUND *icompound, uint32 perQuad)
 			for (j = 0; j < tmp->points->npoints; j++)
 			{
 				getPoint4d_p(tmp->points, j, &p);
-				ptarray_append_point(ptarray, &p, LW_TRUE);
+				ptarray_append_point(ptarray, &p, REPEATED_POINTS_OK);
 			}
 		}
 		else

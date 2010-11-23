@@ -129,11 +129,11 @@ RTREE_NODE *createLeafNode(POINTARRAY *pa, int startPoint)
 
 	getPoint4d_p(pa, startPoint, &tmp);
 	value1 = tmp.y;
-	ptarray_append_point(npa,&tmp,1);
+	ptarray_append_point(npa,&tmp,REPEATED_POINTS_OK);
 	
 	getPoint4d_p(pa, startPoint+1, &tmp);
 	value2 = tmp.y;
-	ptarray_append_point(npa,&tmp,1);
+	ptarray_append_point(npa,&tmp,REPEATED_POINTS_OK);
 
 	line = lwline_construct(-1, NULL, npa);
 	

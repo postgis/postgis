@@ -73,8 +73,6 @@
 #define WKB_TIN_TYPE 16
 #define WKB_TRIANGLE_TYPE 17
 
-
-
 /**
 * Macro for reading the size from the GSERIALIZED size attribute.
 * Cribbed from PgSQL, top 30 bits are size. Use VARSIZE() when working

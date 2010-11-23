@@ -325,7 +325,7 @@ static POINTARRAY* parse_kml_coordinates(xmlNodePtr xnode, bool *hasz)
 				*hasz = false;
 			}
 
-			ptarray_append_point(dpa, &pt, LW_FALSE);
+			ptarray_append_point(dpa, &pt, REPEATED_POINTS_NOT_OK);
 			digit = false;
 			q = p+1;
 			kml_dims = 0;

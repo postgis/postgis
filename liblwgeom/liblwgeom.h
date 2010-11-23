@@ -73,6 +73,16 @@
 #define NO_M_VALUE NO_VALUE
 
 /**
+* Repeated points defines
+* TODO, move to _internal
+*/
+#define REPEATED_POINTS_OK 1
+#define REPEATED_POINTS_NOT_OK 0
+#define SPLICE_LINES_YES 1
+#define SPLICE_LINES_NO 1
+
+
+/**
 * Largest float value. TODO: Should this be from math.h instead?
 */
 #ifndef MAXFLOAT
