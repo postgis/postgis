@@ -15,7 +15,7 @@
 #include <string.h>
 #include "CUnit/Basic.h"
 
-#include "libgeom.h"
+#include "liblwgeom_internal.h"
 #include "cu_tester.h"
 
 static void do_gml2_test(char * in, char * out, char * srs, int precision)

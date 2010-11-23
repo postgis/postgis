@@ -73,8 +73,8 @@ NM_OBJS = \
 
 SA_HEADERS = \
 	liblwgeom.h \
+	liblwgeom_internal.h \
 	lwalgorithm.h \
-	libgeom.h \
 	libtgeom.h 
 
 all: liblwgeom.a
