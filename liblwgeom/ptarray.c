@@ -15,8 +15,6 @@
 
 #include "liblwgeom_internal.h"
 
-
-
 POINTARRAY*
 ptarray_construct(char hasz, char hasm, uint32 npoints)
 {
@@ -48,8 +46,8 @@ POINTARRAY*
 ptarray_construct_empty(char hasz, char hasm, int maxpoints)
 {
 	uchar dims = 0;
-	size_t size;
 	POINTARRAY *pa = lwalloc(sizeof(POINTARRAY));
+	pa->serialized_pointlist = NULL;
 	
 	/* Set our dimsionality info on the bitmap */
 	FLAGS_SET_Z(dims, hasz?1:0);
@@ -61,8 +59,7 @@ ptarray_construct_empty(char hasz, char hasm, int maxpoints)
 	pa->maxpoints = maxpoints;
 	
 	/* Allocate the coordinate array */
-	size = FLAGS_NDIMS(dims) * pa->maxpoints * sizeof(double);
-	pa->serialized_pointlist = (uchar *)lwalloc(size);
+	pa->serialized_pointlist = lwalloc(maxpoints * ptarray_point_size(pa));
 
 	return pa;
 }
@@ -75,7 +72,6 @@ int
 ptarray_insert_point(POINTARRAY *pa, POINT4D *p, int where)
 {
 	size_t point_size = ptarray_point_size(pa);
-	size_t storage_size;
 	LWDEBUGF(5,"pa = %p; p = %p; where = %d", pa, p, where);
 	LWDEBUGF(5,"pa->npoints = %d; pa->maxpoints = %d", pa->npoints, pa->maxpoints);
 	
@@ -90,18 +86,19 @@ ptarray_insert_point(POINTARRAY *pa, POINT4D *p, int where)
 	if( pa->maxpoints == 0 || ! pa->serialized_pointlist ) 
 	{
 		pa->maxpoints = 32;
-		storage_size = point_size * pa->maxpoints;
-		pa->serialized_pointlist = lwalloc(storage_size);
-		LWDEBUGF(5,"no storage, allocating %d bytes", storage_size);
+		pa->npoints = 0;
+		pa->serialized_pointlist = lwalloc(ptarray_point_size(pa) * pa->maxpoints);
 	}
+
+	/* Error out if we have a bad situation */
+	if ( pa->npoints > pa->maxpoints )
+		lwerror("npoints (%d) is greated than maxpoints (%d)", pa->npoints, pa->maxpoints);
 	
 	/* Check if we have enough storage, add more if necessary */
 	if( pa->npoints == pa->maxpoints )
 	{
-		pa->maxpoints = (pa->maxpoints + 1) * 2;
-		storage_size = point_size * pa->maxpoints;
-		pa->serialized_pointlist = lwrealloc(pa->serialized_pointlist, storage_size);
-		LWDEBUGF(5,"increasing storage to %d bytes", storage_size);
+		pa->maxpoints *= 2;
+		pa->serialized_pointlist = lwrealloc(pa->serialized_pointlist, ptarray_point_size(pa) * pa->maxpoints);
 	}
 	
 	/* Make space to insert the new point */
@@ -163,6 +160,12 @@ ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, int splice_ends)
 		lwerror("ptarray_append_ptarray: null input");
 		return LW_FAILURE;
 	}
+	
+	if( pa1->dims != pa2->dims )
+	{
+		lwerror("ptarray_append_ptarray: appending mixed dimensionality is not allowed");
+		return LW_FAILURE;
+	}
 
 	/* Check for duplicate end point */
 	if ( splice_ends && pa1->npoints > 0 && pa2->npoints > 0 )
@@ -176,6 +179,12 @@ ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, int splice_ends)
 		{
 			pa1->npoints--;
 		}
+	}
+	
+	/* Check if we need extra space */
+	if ( pa1->maxpoints - pa1->npoints - pa2->npoints < 0 )
+	{
+		
 	}
 
 	return 0;
@@ -232,21 +241,17 @@ POINTARRAY* ptarray_construct_reference_data(char hasz, char hasm, uint32 npoint
 POINTARRAY*
 ptarray_construct_copy_data(char hasz, char hasm, uint32 npoints, const uchar *ptlist)
 {
-	uchar dims = 0;
-	size_t size;
 	POINTARRAY *pa = lwalloc(sizeof(POINTARRAY));
 
-	FLAGS_SET_Z(dims, hasz?1:0);
-	FLAGS_SET_M(dims, hasm?1:0);
-	size = FLAGS_NDIMS(dims)*npoints*sizeof(double);
-	pa->dims = dims;
+	FLAGS_SET_Z(pa->dims, hasz?1:0);
+	FLAGS_SET_M(pa->dims, hasm?1:0);
 	pa->npoints = npoints;
 	pa->maxpoints = npoints;
 
-	if ( size )
+	if ( npoints > 0 )
 	{
-		pa->serialized_pointlist = (uchar *)lwalloc(size);
-		memcpy(pa->serialized_pointlist, ptlist, size);
+		pa->serialized_pointlist = lwalloc(ptarray_point_size(pa) * npoints);
+		memcpy(pa->serialized_pointlist, ptlist, ptarray_point_size(pa) * npoints);
 	}
 	else
 	{
@@ -680,7 +685,7 @@ ptarray_force_dims(const POINTARRAY *pa, int hasz, int hasm)
 			pt.z = 0.0;
 		if( hasm && ! in_hasm )
 			pt.m = 0.0;
-		ptarray_append_point(pa_out, &pt, 0);
+		ptarray_append_point(pa_out, &pt, LW_TRUE);
 	} 
 
 	return pa_out;

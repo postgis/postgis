@@ -859,7 +859,7 @@ extern POINTARRAY* ptarray_construct_empty(char hasz, char hasm, int maxpoints);
 extern int ptarray_append_point(POINTARRAY *pa, POINT4D *pt, int allow_duplicates);
 
 /**
-* Append a #POINTARRAY to the end of an existing #POINTARRAY. If splice_ends
+* Append a #POINTARRAY, pa2 to the end of an existing #POINTARRAY, pa1. If splice_ends
 * is LW_TRUE, then duplicate points and the end of pa1 and start of pa2 will 
 * be removed.
 */

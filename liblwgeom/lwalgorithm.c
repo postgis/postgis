@@ -500,10 +500,7 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 		LWDEBUGF(4, "added_last_point %d", added_last_point);
 		if ( i > 0 )
 		{
-			q->x = p->x;
-			q->y = p->y;
-			q->z = p->z;
-			q->m = p->m;
+			*q = *p;
 			ordinate_value_q = ordinate_value_p;
 		}
 		rv = getPoint4d_p(pa_in, i, p);
