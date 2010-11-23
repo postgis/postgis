@@ -1708,11 +1708,12 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 * calculate external ring area and subtract internal ring area. A GBOX is
 * required to calculate an outside point.
 */
-double lwgeom_area_sphere(const LWGEOM *lwgeom, const GBOX *gbox, const SPHEROID *spheroid)
+double lwgeom_area_sphere(const LWGEOM *lwgeom, const SPHEROID *spheroid)
 {
 	int type;
 	POINT2D pt_outside;
 	double radius2 = spheroid->radius * spheroid->radius;
+	GBOX gbox;
 
 	assert(lwgeom);
 
@@ -1727,7 +1728,13 @@ double lwgeom_area_sphere(const LWGEOM *lwgeom, const GBOX *gbox, const SPHEROID
 	if ( ! ( type == POLYGONTYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE ) )
 		return 0.0;
 
-	gbox_pt_outside(gbox, &pt_outside);
+	/* Make sure we have boxes */
+	if ( lwgeom->bbox )
+		gbox = *(lwgeom->bbox);
+	else
+		lwgeom_calculate_gbox_geodetic(lwgeom, &gbox);
+
+	gbox_pt_outside(&gbox, &pt_outside);
 
 	LWDEBUGF(2, "pt_outside = POINT(%.20g %.20g)", pt_outside.x, pt_outside.y);
 
@@ -1762,7 +1769,7 @@ double lwgeom_area_sphere(const LWGEOM *lwgeom, const GBOX *gbox, const SPHEROID
 
 		for ( i = 0; i < col->ngeoms; i++ )
 		{
-			area += lwgeom_area_sphere(col->geoms[i], gbox, spheroid);
+			area += lwgeom_area_sphere(col->geoms[i], spheroid);
 		}
 		return area;
 	}
@@ -1778,14 +1785,15 @@ double lwgeom_area_sphere(const LWGEOM *lwgeom, const GBOX *gbox, const SPHEROID
 * below the tolerance (useful for dwithin calculations).
 * Return a negative distance for incalculable cases.
 */
-double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, const GBOX *gbox1, const GBOX *gbox2, const SPHEROID *spheroid, double tolerance)
+double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, const SPHEROID *spheroid, double tolerance)
 {
 	int type1, type2;
 	int check_intersection = LW_FALSE;
+	GBOX gbox1, gbox2;
 
 	assert(lwgeom1);
 	assert(lwgeom2);
-
+	
 	LWDEBUGF(4, "entered function, tolerance %.8g", tolerance);
 
 	/* What's the distance to an empty geometry? We don't know.
@@ -1798,9 +1806,20 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 	type1 = lwgeom1->type;
 	type2 = lwgeom2->type;
 
+	/* Make sure we have boxes */
+	if ( lwgeom1->bbox )
+		gbox1 = *(lwgeom1->bbox);
+	else
+		lwgeom_calculate_gbox_geodetic(lwgeom1, &gbox1);
+
+	/* Make sure we have boxes */
+	if ( lwgeom2->bbox )
+		gbox2 = *(lwgeom2->bbox);
+	else
+		lwgeom_calculate_gbox_geodetic(lwgeom2, &gbox2);
 
 	/* If the boxes aren't disjoint, we have to check for edge intersections */
-	if ( gbox_overlaps(gbox1, gbox2) )
+	if ( gbox_overlaps(&gbox1, &gbox2) )
 		check_intersection = LW_TRUE;
 
 	/* Point/line combinations can all be handled with simple point array iterations */
@@ -1829,7 +1848,6 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 		POINT2D p;
 		LWPOLY *lwpoly;
 		LWPOINT *lwpt;
-		const GBOX *gbox;
 		double distance = MAXFLOAT;
 		int i;
 
@@ -1837,20 +1855,20 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 		{
 			lwpt = (LWPOINT*)lwgeom1;
 			lwpoly = (LWPOLY*)lwgeom2;
-			gbox = gbox2;
 		}
 		else
 		{
 			lwpt = (LWPOINT*)lwgeom2;
 			lwpoly = (LWPOLY*)lwgeom1;
-			gbox = gbox1;
 		}
 		getPoint2d_p(lwpt->point, 0, &p);
 
 		/* Point in polygon implies zero distance */
-		if ( lwpoly_covers_point2d(lwpoly, gbox, &p) )
+		if ( lwpoly_covers_point2d(lwpoly, &p) )
+		{
 			return 0.0;
-
+		}
+		
 		/* Not inside, so what's the actual distance? */
 		for ( i = 0; i < lwpoly->nrings; i++ )
 		{
@@ -1870,7 +1888,6 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 		POINT2D p;
 		LWPOLY *lwpoly;
 		LWLINE *lwline;
-		const GBOX *gbox;
 		double distance = MAXFLOAT;
 		int i;
 
@@ -1878,20 +1895,18 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 		{
 			lwline = (LWLINE*)lwgeom1;
 			lwpoly = (LWPOLY*)lwgeom2;
-			gbox = gbox2;
 		}
 		else
 		{
 			lwline = (LWLINE*)lwgeom2;
 			lwpoly = (LWPOLY*)lwgeom1;
-			gbox = gbox1;
 		}
 		getPoint2d_p(lwline->points, 0, &p);
 
 		LWDEBUG(4, "checking if a point of line is in polygon");
 
 		/* Point in polygon implies zero distance */
-		if ( lwpoly_covers_point2d(lwpoly, gbox, &p) )
+		if ( lwpoly_covers_point2d(lwpoly, &p) ) 
 			return 0.0;
 
 		LWDEBUG(4, "checking ring distances");
@@ -1923,12 +1938,12 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 
 		/* Point of 2 in polygon 1 implies zero distance */
 		getPoint2d_p(lwpoly1->rings[0], 0, &p);
-		if ( lwpoly_covers_point2d(lwpoly2, gbox2, &p) )
+		if ( lwpoly_covers_point2d(lwpoly2, &p) )
 			return 0.0;
 
 		/* Point of 1 in polygon 2 implies zero distance */
 		getPoint2d_p(lwpoly2->rings[0], 0, &p);
-		if ( lwpoly_covers_point2d(lwpoly1, gbox1, &p) )
+		if ( lwpoly_covers_point2d(lwpoly1, &p) )
 			return 0.0;
 
 		/* Not contained, so what's the actual distance? */
@@ -1955,7 +1970,7 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 
 		for ( i = 0; i < col->ngeoms; i++ )
 		{
-			double geom_distance = lwgeom_distance_spheroid(col->geoms[i], lwgeom2, gbox1, gbox2, spheroid, tolerance);
+			double geom_distance = lwgeom_distance_spheroid(col->geoms[i], lwgeom2, spheroid, tolerance);
 			if ( geom_distance < distance )
 				distance = geom_distance;
 			if ( distance < tolerance )
@@ -1973,7 +1988,7 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 
 		for ( i = 0; i < col->ngeoms; i++ )
 		{
-			double geom_distance = lwgeom_distance_spheroid(lwgeom1, col->geoms[i], gbox1, gbox2, spheroid, tolerance);
+			double geom_distance = lwgeom_distance_spheroid(lwgeom1, col->geoms[i], spheroid, tolerance);
 			if ( geom_distance < distance )
 				distance = geom_distance;
 			if ( distance < tolerance )
@@ -1989,10 +2004,11 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 }
 
 
-int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, const GBOX *gbox1, const GBOX *gbox2)
+int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 {
 	int type1, type2;
-
+	GBOX gbox1, gbox2;
+		
 	assert(lwgeom1);
 	assert(lwgeom2);
 
@@ -2007,12 +2023,25 @@ int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 		return LW_FALSE;
 	}
 
+	/* Make sure we have boxes */
+	if ( lwgeom1->bbox )
+		gbox1 = *(lwgeom1->bbox);
+	else
+		lwgeom_calculate_gbox_geodetic(lwgeom1, &gbox1);
+
+	/* Make sure we have boxes */
+	if ( lwgeom2->bbox )
+		gbox2 = *(lwgeom2->bbox);
+	else
+		lwgeom_calculate_gbox_geodetic(lwgeom2, &gbox2);
+
+
 	/* Handle the polygon/point case */
 	if ( type1 == POLYGONTYPE && type2 == POINTTYPE )
 	{
 		POINT2D pt_to_test;
 		getPoint2d_p(((LWPOINT*)lwgeom2)->point, 0, &pt_to_test);
-		return lwpoly_covers_point2d((LWPOLY*)lwgeom1, gbox1, &pt_to_test);
+		return lwpoly_covers_point2d((LWPOLY*)lwgeom1, &pt_to_test);
 	}
 
 	/* If any of the first argument parts covers the second argument, it's true */
@@ -2023,7 +2052,7 @@ int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 
 		for ( i = 0; i < col->ngeoms; i++ )
 		{
-			if ( lwgeom_covers_lwgeom_sphere(col->geoms[i], lwgeom2, gbox1, gbox2) )
+			if ( lwgeom_covers_lwgeom_sphere(col->geoms[i], lwgeom2) )
 			{
 				return LW_TRUE;
 			}
@@ -2039,7 +2068,7 @@ int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 
 		for ( i = 0; i < col->ngeoms; i++ )
 		{
-			if ( ! lwgeom_covers_lwgeom_sphere(lwgeom1, col->geoms[i], gbox1, gbox2) )
+			if ( ! lwgeom_covers_lwgeom_sphere(lwgeom1, col->geoms[i]) )
 			{
 				return LW_FALSE;
 			}
@@ -2058,13 +2087,14 @@ int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 * a guaranteed outside point (lon/lat decimal degrees) (calculate with gbox_pt_outside())
 * return LW_TRUE if point is inside or on edge of polygon.
 */
-int lwpoly_covers_point2d(const LWPOLY *poly, const GBOX *gbox, const POINT2D *pt_to_test)
+int lwpoly_covers_point2d(const LWPOLY *poly, const POINT2D *pt_to_test)
 {
 	int i;
 	int in_hole_count = 0;
 	POINT3D p;
 	GEOGRAPHIC_POINT gpt_to_test;
 	POINT2D pt_outside;
+	GBOX gbox;
 
 	/* Nulls and empties don't contain anything! */
 	if ( ! poly || lwgeom_is_empty((LWGEOM*)poly) )
@@ -2073,22 +2103,28 @@ int lwpoly_covers_point2d(const LWPOLY *poly, const GBOX *gbox, const POINT2D *p
 		return LW_FALSE;
 	}
 
+	/* Make sure we have boxes */
+	if ( poly->bbox )
+		gbox = *(poly->bbox);
+	else
+		lwgeom_calculate_gbox_geodetic((LWGEOM*)poly, &gbox);
+
 	/* Point not in box? Done! */
 	geographic_point_init(pt_to_test->x, pt_to_test->y, &gpt_to_test);
 	geog2cart(&gpt_to_test, &p);
-	if ( ! gbox_contains_point3d(gbox, &p) )
+	if ( ! gbox_contains_point3d(&gbox, &p) )
 	{
 		LWDEBUG(4, "the point is not in the box!");
 		return LW_FALSE;
 	}
 
 	/* Calculate our outside point from the gbox */
-	gbox_pt_outside(gbox, &pt_outside);
+	gbox_pt_outside(&gbox, &pt_outside);
 
 	LWDEBUGF(4, "pt_outside POINT(%.18g %.18g)", pt_outside.x, pt_outside.y);
 	LWDEBUGF(4, "pt_to_test POINT(%.18g %.18g)", pt_to_test->x, pt_to_test->y);
 	LWDEBUGF(4, "polygon %s", lwgeom_to_ewkt((LWGEOM*)poly, PARSER_CHECK_NONE));
-	LWDEBUGF(4, "gbox %s", gbox_to_string(gbox));
+	LWDEBUGF(4, "gbox %s", gbox_to_string(&gbox));
 
 	/* Not in outer ring? We're done! */
 	if ( ! ptarray_point_in_ring(poly->rings[0], &pt_outside, pt_to_test) )
@@ -2295,10 +2331,8 @@ int lwgeom_calculate_gbox_geodetic(const LWGEOM *geom, GBOX *gbox)
 {
 	int result = LW_FAILURE;
 	LWDEBUGF(4, "got type %d", geom->type);
-	if ( ! FLAGS_GET_GEODETIC(gbox->flags) )
-	{
-		lwerror("lwgeom_get_gbox_geodetic: non-geodetic gbox provided");
-	}
+	FLAGS_SET_GEODETIC(gbox->flags,1);
+
 	switch (geom->type)
 	{
 	case POINTTYPE:

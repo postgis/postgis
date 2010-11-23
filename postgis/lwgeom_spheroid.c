@@ -535,7 +535,6 @@ Datum geometry_distance_spheroid(PG_FUNCTION_ARGS)
 	int type2 = TYPE_GETTYPE(geom2->type);
 	bool use_spheroid = PG_GETARG_BOOL(3);
 	LWGEOM *lwgeom1, *lwgeom2;
-	GBOX gbox1, gbox2;
 	double distance;
 
 	/* Calculate some other parameters on the spheroid */
@@ -546,9 +545,6 @@ Datum geometry_distance_spheroid(PG_FUNCTION_ARGS)
 	{
 		sphere->a = sphere->b = sphere->radius;
 	}
-
-	gbox1.flags = gflags(0, 0, 1);
-	gbox2.flags = gflags(0, 0, 1);
 
 	if ( ! ( type1 == POINTTYPE || type1 == LINETYPE || type1 == POLYGONTYPE ||
 	         type1 == MULTIPOINTTYPE || type1 == MULTILINETYPE || type1 == MULTIPOLYGONTYPE ))
@@ -574,19 +570,7 @@ Datum geometry_distance_spheroid(PG_FUNCTION_ARGS)
 	lwgeom1 = lwgeom_deserialize(SERIALIZED_FORM(geom1));
 	lwgeom2 = lwgeom_deserialize(SERIALIZED_FORM(geom2));
 
-	if ( lwgeom_calculate_gbox_geodetic(lwgeom1, &gbox1) != LW_SUCCESS )
-	{
-		elog(ERROR, "geometry_distance_spheroid: unable to calculate gbox1\n");
-		PG_RETURN_NULL();
-	};
-
-	if ( lwgeom_calculate_gbox_geodetic(lwgeom2, &gbox2) != LW_SUCCESS )
-	{
-		elog(ERROR, "geometry_distance_spheroid: unable to calculate gbox2\n");
-		PG_RETURN_NULL();
-	};
-
-	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &gbox1, &gbox2, sphere, 0.0);
+	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, sphere, 0.0);
 
 	PG_RETURN_FLOAT8(distance);
 

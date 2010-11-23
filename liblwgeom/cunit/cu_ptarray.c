@@ -43,13 +43,11 @@ static void test_ptarray_append_point(void)
 	p.y = 1;
 	ptarray_append_point(line->points, &p, REPEATED_POINTS_OK);
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line));
-	printf("\nWTK: %s\n",wkt);
 	CU_ASSERT_STRING_EQUAL(wkt,"LINESTRING(0 0,1 1,1 1)");
 	lwfree(wkt);
 
 	ptarray_append_point(line->points, &p, REPEATED_POINTS_NOT_OK);
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line));
-	printf("\nWTK: %s\n",wkt);
 	CU_ASSERT_STRING_EQUAL(wkt,"LINESTRING(0 0,1 1,1 1)");
 	lwfree(wkt);
 

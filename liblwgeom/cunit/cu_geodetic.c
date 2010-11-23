@@ -748,27 +748,22 @@ static void test_lwpoly_covers_point2d(void)
 	LWPOLY *poly;
 	LWGEOM *lwg;
 	POINT2D pt_to_test;
-	GBOX gbox;
 	int result;
 
-	gbox.flags = gflags(0, 0, 1);
-
 	lwg = lwgeom_from_ewkt("POLYGON((-9 50,51 -11,-10 50,-9 50))", PARSER_CHECK_NONE);
-	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
 	poly = (LWPOLY*)lwg;
 	pt_to_test.x = -10.0;
 	pt_to_test.y = 50.0;
-	result = lwpoly_covers_point2d(poly, &gbox, &pt_to_test);
+	result = lwpoly_covers_point2d(poly, &pt_to_test);
 	CU_ASSERT_EQUAL(result, LW_TRUE);
 	lwgeom_free(lwg);
 
 	/* Great big ring */
 	lwg = lwgeom_from_ewkt("POLYGON((-40.0 52.0, 102.0 -6.0, -67.0 -29.0, -40.0 52.0))", PARSER_CHECK_NONE);
-	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
 	poly = (LWPOLY*)lwg;
 	pt_to_test.x = 4.0;
 	pt_to_test.y = 11.0;
-	result = lwpoly_covers_point2d(poly, &gbox, &pt_to_test);
+	result = lwpoly_covers_point2d(poly, &pt_to_test);
 	CU_ASSERT_EQUAL(result, LW_TRUE);
 	lwgeom_free(lwg);
 
@@ -792,9 +787,7 @@ static void test_lwgeom_distance_sphere(void)
 	/* Line/line distance, 1 degree apart */
 	lwg1 = lwgeom_from_ewkt("LINESTRING(-30 10, -20 5, -10 3, 0 1)", PARSER_CHECK_NONE);
 	lwg2 = lwgeom_from_ewkt("LINESTRING(-10 -5, -5 0, 5 0, 10 -5)", PARSER_CHECK_NONE);
-	lwgeom_calculate_gbox_geodetic(lwg1, &gbox1);
-	lwgeom_calculate_gbox_geodetic(lwg2, &gbox2);
-	d = lwgeom_distance_spheroid(lwg1, lwg2, &gbox1, &gbox2, &s, 0.0);
+	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
 	CU_ASSERT_DOUBLE_EQUAL(d, s.radius * M_PI / 180.0, 0.00001);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
@@ -802,9 +795,7 @@ static void test_lwgeom_distance_sphere(void)
 	/* Line/line distance, crossing, 0.0 apart */
 	lwg1 = lwgeom_from_ewkt("LINESTRING(-30 10, -20 5, -10 3, 0 1)", PARSER_CHECK_NONE);
 	lwg2 = lwgeom_from_ewkt("LINESTRING(-10 -5, -5 20, 5 0, 10 -5)", PARSER_CHECK_NONE);
-	lwgeom_calculate_gbox_geodetic(lwg1, &gbox1);
-	lwgeom_calculate_gbox_geodetic(lwg2, &gbox2);
-	d = lwgeom_distance_spheroid(lwg1, lwg2, &gbox1, &gbox2, &s, 0.0);
+	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
 	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, 0.00001);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
@@ -812,18 +803,14 @@ static void test_lwgeom_distance_sphere(void)
 	/* Line/point distance, 1 degree apart */
 	lwg1 = lwgeom_from_ewkt("POINT(-4 1)", PARSER_CHECK_NONE);
 	lwg2 = lwgeom_from_ewkt("LINESTRING(-10 -5, -5 0, 5 0, 10 -5)", PARSER_CHECK_NONE);
-	lwgeom_calculate_gbox_geodetic(lwg1, &gbox1);
-	lwgeom_calculate_gbox_geodetic(lwg2, &gbox2);
-	d = lwgeom_distance_spheroid(lwg1, lwg2, &gbox1, &gbox2, &s, 0.0);
+	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
 	CU_ASSERT_DOUBLE_EQUAL(d, s.radius * M_PI / 180.0, 0.00001);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
 
 	lwg1 = lwgeom_from_ewkt("POINT(-4 1)", PARSER_CHECK_NONE);
 	lwg2 = lwgeom_from_ewkt("POINT(-4 -1)", PARSER_CHECK_NONE);
-	lwgeom_calculate_gbox_geodetic(lwg1, &gbox1);
-	lwgeom_calculate_gbox_geodetic(lwg2, &gbox2);
-	d = lwgeom_distance_spheroid(lwg1, lwg2, &gbox1, &gbox2, &s, 0.0);
+	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
 	CU_ASSERT_DOUBLE_EQUAL(d, s.radius * M_PI / 90.0, 0.00001);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
@@ -831,9 +818,7 @@ static void test_lwgeom_distance_sphere(void)
 	/* Poly/point distance, point inside polygon, 0.0 apart */
 	lwg1 = lwgeom_from_ewkt("POLYGON((-4 1, -3 5, 1 2, 1.5 -5, -4 1))", PARSER_CHECK_NONE);
 	lwg2 = lwgeom_from_ewkt("POINT(-1 -1)", PARSER_CHECK_NONE);
-	lwgeom_calculate_gbox_geodetic(lwg1, &gbox1);
-	lwgeom_calculate_gbox_geodetic(lwg2, &gbox2);
-	d = lwgeom_distance_spheroid(lwg1, lwg2, &gbox1, &gbox2, &s, 0.0);
+	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
 	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, 0.00001);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
@@ -841,9 +826,7 @@ static void test_lwgeom_distance_sphere(void)
 	/* Poly/point distance, point inside polygon hole, 1 degree apart */
 	lwg1 = lwgeom_from_ewkt("POLYGON((-4 -4, -4 4, 4 4, 4 -4, -4 -4), (-2 -2, -2 2, 2 2, 2 -2, -2 -2))", PARSER_CHECK_NONE);
 	lwg2 = lwgeom_from_ewkt("POINT(-1 -1)", PARSER_CHECK_NONE);
-	lwgeom_calculate_gbox_geodetic(lwg1, &gbox1);
-	lwgeom_calculate_gbox_geodetic(lwg2, &gbox2);
-	d = lwgeom_distance_spheroid(lwg1, lwg2, &gbox1, &gbox2, &s, 0.0);
+	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
 	CU_ASSERT_DOUBLE_EQUAL(d, 111178.142466, 0.1);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
@@ -851,9 +834,7 @@ static void test_lwgeom_distance_sphere(void)
 	/* Poly/point distance, point on hole boundary, 0.0 apart */
 	lwg1 = lwgeom_from_ewkt("POLYGON((-4 -4, -4 4, 4 4, 4 -4, -4 -4), (-2 -2, -2 2, 2 2, 2 -2, -2 -2))", PARSER_CHECK_NONE);
 	lwg2 = lwgeom_from_ewkt("POINT(2 2)", PARSER_CHECK_NONE);
-	lwgeom_calculate_gbox_geodetic(lwg1, &gbox1);
-	lwgeom_calculate_gbox_geodetic(lwg2, &gbox2);
-	d = lwgeom_distance_spheroid(lwg1, lwg2, &gbox1, &gbox2, &s, 0.0);
+	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
 	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, 0.00001);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
@@ -861,9 +842,7 @@ static void test_lwgeom_distance_sphere(void)
 	/* Medford test case #1 */
 	lwg1 = lwgeom_from_ewkt("0105000020E610000001000000010200000002000000EF7B8779C7BD5EC0FD20D94B852845400E539C62B9BD5EC0F0A5BE767C284540", PARSER_CHECK_NONE);
 	lwg2 = lwgeom_from_ewkt("0106000020E61000000100000001030000000100000007000000280EC3FB8CCA5EC0A5CDC747233C45402787C8F58CCA5EC0659EA2761E3C45400CED58DF8FCA5EC0C37FAE6E1E3C4540AE97B8E08FCA5EC00346F58B1F3C4540250359FD8ECA5EC05460628E1F3C45403738F4018FCA5EC05DC84042233C4540280EC3FB8CCA5EC0A5CDC747233C4540", PARSER_CHECK_NONE);
-	lwgeom_calculate_gbox_geodetic(lwg1, &gbox1);
-	lwgeom_calculate_gbox_geodetic(lwg2, &gbox2);
-	d = lwgeom_distance_spheroid(lwg1, lwg2, &gbox1, &gbox2, &s, 0.0);
+	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
 	CU_ASSERT_DOUBLE_EQUAL(d, 23630.8003, 0.1);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
@@ -926,8 +905,8 @@ static void test_spheroid_area(void)
 	/* Medford lot test polygon */
 	lwg = lwgeom_from_ewkt("POLYGON((-122.848227067007 42.5007249610493,-122.848309475585 42.5007179884263,-122.848327688675 42.500835880696,-122.848245279942 42.5008428533324,-122.848227067007 42.5007249610493))", PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
-	a1 = lwgeom_area_sphere(lwg, &gbox, &s);
-	a2 = lwgeom_area_spheroid(lwg, &gbox, &s);
+	a1 = lwgeom_area_sphere(lwg, &s);
+	a2 = lwgeom_area_spheroid(lwg, &s);
 	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 89.7211470368, 0.0001); /* sphere */
 	CU_ASSERT_DOUBLE_EQUAL(a2, 89.8684316032, 0.0001); /* spheroid */
@@ -935,8 +914,8 @@ static void test_spheroid_area(void)
 	/* Big-ass polygon */
 	lwg = lwgeom_from_ewkt("POLYGON((-2 3, -2 4, -1 4, -1 3, -2 3))", PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
-	a1 = lwgeom_area_sphere(lwg, &gbox, &s);
-	a2 = lwgeom_area_spheroid(lwg, &gbox, &s);
+	a1 = lwgeom_area_sphere(lwg, &s);
+	a2 = lwgeom_area_spheroid(lwg, &s);
 	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 12341436880.1, 10.0); /* sphere */
 	CU_ASSERT_DOUBLE_EQUAL(a2, 12286574431.9, 10.0); /* spheroid */
@@ -944,8 +923,8 @@ static void test_spheroid_area(void)
 	/* One-degree square */
 	lwg = lwgeom_from_ewkt("POLYGON((8.5 2,8.5 1,9.5 1,9.5 2,8.5 2))", PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
-	a1 = lwgeom_area_sphere(lwg, &gbox, &s);
-	a2 = lwgeom_area_spheroid(lwg, &gbox, &s);
+	a1 = lwgeom_area_sphere(lwg, &s);
+	a2 = lwgeom_area_spheroid(lwg, &s);
 	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.1, 10.0); /* sphere */
 	CU_ASSERT_DOUBLE_EQUAL(a2, 12304814950.073, 100.0); /* spheroid */
@@ -953,8 +932,8 @@ static void test_spheroid_area(void)
 	/* One-degree square *near* dateline */
 	lwg = lwgeom_from_ewkt("POLYGON((179.5 2,179.5 1,178.5 1,178.5 2,179.5 2))", PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
-	a1 = lwgeom_area_sphere(lwg, &gbox, &s);
-	a2 = lwgeom_area_spheroid(lwg, &gbox, &s);
+	a1 = lwgeom_area_sphere(lwg, &s);
+	a2 = lwgeom_area_spheroid(lwg, &s);
 	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.1, 10.0); /* sphere */
 	CU_ASSERT_DOUBLE_EQUAL(a2, 12304814950.073, 100.0); /* spheroid */
@@ -962,8 +941,8 @@ static void test_spheroid_area(void)
 	/* One-degree square *across* dateline */
 	lwg = lwgeom_from_ewkt("POLYGON((179.5 2,179.5 1,-179.5 1,-179.5 2,179.5 2))", PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
-	a1 = lwgeom_area_sphere(lwg, &gbox, &s);
-	a2 = lwgeom_area_spheroid(lwg, &gbox, &s);
+	a1 = lwgeom_area_sphere(lwg, &s);
+	a2 = lwgeom_area_spheroid(lwg, &s);
 	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.3679, 10.0); /* sphere */
 	CU_ASSERT_DOUBLE_EQUAL(a2, 12304814950.073, 100.0); /* spheroid */

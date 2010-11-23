@@ -202,6 +202,7 @@ Datum geography_in(PG_FUNCTION_ARGS)
 		PG_PARSER_ERROR(lwg_parser_result);
 
 	lwgeom = lwgeom_deserialize(lwg_parser_result.serialized_lwgeom);
+	FLAGS_SET_GEODETIC(lwgeom->flags,1);
 
 	geography_valid_type(lwgeom->type);
 
@@ -241,6 +242,9 @@ Datum geography_in(PG_FUNCTION_ARGS)
 		            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 		            errmsg("Coordinate values are out of range [-180 -90, 180 90] for GEOGRAPHY type" )));
 	}
+	
+	/* Clean up temporary object */
+	lwgeom_free(lwgeom);
 
 	PG_RETURN_POINTER(g_ser);
 }

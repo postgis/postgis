@@ -1736,19 +1736,19 @@ extern char* lwgeom_to_svg(uchar *geom, int precision, int relative);
 * A spheroid with major axis == minor axis will be treated as a sphere.
 * Pass in a tolerance in spheroid units.
 */
-extern double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, const GBOX *gbox1, const GBOX *gbox2, const SPHEROID *spheroid, double tolerance);
+extern double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, const SPHEROID *spheroid, double tolerance);
 
 /**
 * Calculate the geodetic area of a lwgeom on the sphere. The result
 * will be multiplied by the average radius of the supplied spheroid.
 */
-extern double lwgeom_area_sphere(const LWGEOM *lwgeom, const GBOX *gbox, const SPHEROID *spheroid);
+extern double lwgeom_area_sphere(const LWGEOM *lwgeom, const SPHEROID *spheroid);
 
 /**
 * Calculate the geodetic area of a lwgeom on the spheroid. The result
 * will have the squared units of the spheroid axes.
 */
-extern double lwgeom_area_spheroid(const LWGEOM *lwgeom, const GBOX *gbox, const SPHEROID *spheroid);
+extern double lwgeom_area_spheroid(const LWGEOM *lwgeom, const SPHEROID *spheroid);
 
 /**
 * Calculate the geodetic length of a lwgeom on the unit sphere. The result
@@ -1760,7 +1760,7 @@ extern double lwgeom_length_spheroid(const LWGEOM *geom, const SPHEROID *s);
 * Calculate covers predicate for two lwgeoms on the sphere. Currently
 * only handles point-in-polygon.
 */
-extern int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, const GBOX *gbox1, const GBOX *gbox2);
+extern int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2);
 
 
 extern POINTARRAY *ptarray_remove_repeated_points(POINTARRAY *in);

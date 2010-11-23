@@ -509,7 +509,7 @@ static double ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *sphero
 * required to check relationship to equator an outside point.
 * WARNING: Does NOT WORK for polygons over equator or pole.
 */
-double lwgeom_area_spheroid(const LWGEOM *lwgeom, const GBOX *gbox, const SPHEROID *spheroid)
+double lwgeom_area_spheroid(const LWGEOM *lwgeom, const SPHEROID *spheroid)
 {
 	int type;
 
@@ -557,7 +557,7 @@ double lwgeom_area_spheroid(const LWGEOM *lwgeom, const GBOX *gbox, const SPHERO
 
 		for ( i = 0; i < col->ngeoms; i++ )
 		{
-			area += lwgeom_area_spheroid(col->geoms[i], gbox, spheroid);
+			area += lwgeom_area_spheroid(col->geoms[i], spheroid);
 		}
 		return area;
 	}

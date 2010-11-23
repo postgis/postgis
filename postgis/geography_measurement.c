@@ -41,8 +41,6 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 {
 	LWGEOM *lwgeom1 = NULL;
 	LWGEOM *lwgeom2 = NULL;
-	GBOX gbox1;
-	GBOX gbox2;
 	GSERIALIZED *g1 = NULL;
 	GSERIALIZED *g2 = NULL;
 	double distance;
@@ -76,16 +74,7 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	/* We need the bounding boxes in case of polygon calculations,
-	   which requires them to generate a stab-line to test point-in-polygon. */
-	if ( ! gbox_from_gserialized(g1, &gbox1) ||
-	        ! gbox_from_gserialized(g2, &gbox2) )
-	{
-		elog(NOTICE, "gbox_from_gserialized unable to calculate bounding box!");
-		PG_RETURN_NULL();
-	}
-
-	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &gbox1, &gbox2, &s, FP_TOLERANCE);
+	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &s, FP_TOLERANCE);
 
 	/* Something went wrong, negative return... should already be eloged, return NULL */
 	if ( distance < 0.0 )
@@ -110,8 +99,6 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 {
 	LWGEOM *lwgeom1 = NULL;
 	LWGEOM *lwgeom2 = NULL;
-	GBOX gbox1;
-	GBOX gbox2;
 	GSERIALIZED *g1 = NULL;
 	GSERIALIZED *g2 = NULL;
 	double tolerance;
@@ -145,16 +132,7 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(FALSE);
 	}
 
-	/* We need the bounding boxes in case of polygon calculations,
-	   which requires them to generate a stab-line to test point-in-polygon. */
-	if ( ! gbox_from_gserialized(g1, &gbox1) ||
-	        ! gbox_from_gserialized(g2, &gbox2) )
-	{
-		elog(NOTICE, "gbox_from_gserialized unable to calculate bounding box!");
-		PG_RETURN_BOOL(FALSE);
-	}
-
-	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &gbox1, &gbox2, &s, tolerance);
+	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &s, tolerance);
 
 	/* Something went wrong... should already be eloged, return FALSE */
 	if ( distance < 0.0 )
@@ -233,8 +211,8 @@ PG_FUNCTION_INFO_V1(geography_area);
 Datum geography_area(PG_FUNCTION_ARGS)
 {
 	LWGEOM *lwgeom = NULL;
-	GBOX gbox;
 	GSERIALIZED *g = NULL;
+	GBOX gbox;
 	double area;
 	bool use_spheroid = LW_TRUE;
 	SPHEROID s;
@@ -256,13 +234,11 @@ Datum geography_area(PG_FUNCTION_ARGS)
 		lwgeom_release(lwgeom);
 		PG_RETURN_FLOAT8(0.0);
 	}
-
-	/* We need the bounding box to get an outside point for area algorithm */
-	if ( ! gbox_from_gserialized(g, &gbox) )
-	{
-		elog(ERROR, "Error in gbox_from_gserialized calculation.");
-		PG_RETURN_NULL();
-	}
+	
+	if ( lwgeom->bbox )
+		gbox = *(lwgeom->bbox);
+	else
+		lwgeom_calculate_gbox_geodetic(lwgeom, &gbox);
 
 	/* Test for cases that are currently not handled by spheroid code */
 	if ( use_spheroid )
@@ -281,9 +257,9 @@ Datum geography_area(PG_FUNCTION_ARGS)
 
 	/* Calculate the area */
 	if ( use_spheroid )
-		area = lwgeom_area_spheroid(lwgeom, &gbox, &s);
+		area = lwgeom_area_spheroid(lwgeom, &s);
 	else
-		area = lwgeom_area_sphere(lwgeom, &gbox, &s);
+		area = lwgeom_area_sphere(lwgeom, &s);
 
 	/* Something went wrong... */
 	if ( area < 0.0 )
@@ -398,8 +374,6 @@ Datum geography_covers(PG_FUNCTION_ARGS)
 {
 	LWGEOM *lwgeom1 = NULL;
 	LWGEOM *lwgeom2 = NULL;
-	GBOX gbox1;
-	GBOX gbox2;
 	GSERIALIZED *g1 = NULL;
 	GSERIALIZED *g2 = NULL;
 	int type1, type2;
@@ -432,17 +406,8 @@ Datum geography_covers(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(false);
 	}
 
-	/* We need the bounding boxes in case of polygon calculations,
-	   which requires them to generate a stab-line to test point-in-polygon. */
-	if ( ! gbox_from_gserialized(g1, &gbox1) ||
-	        ! gbox_from_gserialized(g2, &gbox2) )
-	{
-		elog(ERROR, "geography_covers: error in gbox_from_gserialized calculation.");
-		PG_RETURN_NULL();
-	}
-
 	/* Calculate answer */
-	result = lwgeom_covers_lwgeom_sphere(lwgeom1, lwgeom2, &gbox1, &gbox2);
+	result = lwgeom_covers_lwgeom_sphere(lwgeom1, lwgeom2);
 
 	/* Clean up, but not all the way to the point arrays */
 	lwgeom_release(lwgeom1);
