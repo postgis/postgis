@@ -33,8 +33,7 @@ lwcompound_deserialize(uchar *serialized)
 
 	result = lwalloc(sizeof(LWCOMPOUND));
 	result->type = COMPOUNDTYPE;
-	FLAGS_SET_Z(result->flags, TYPE_HASZ(insp->type));
-	FLAGS_SET_M(result->flags, TYPE_HASM(insp->type));
+	result->flags = gflags(TYPE_HASZ(insp->type),TYPE_HASM(insp->type),0);
 	result->SRID = insp->SRID;
 	result->ngeoms = insp->ngeometries;
 	result->geoms = lwalloc(sizeof(LWGEOM *)*insp->ngeometries);

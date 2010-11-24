@@ -23,15 +23,16 @@ lwcurvepoly_deserialize(uchar *srl)
 {
 	LWCURVEPOLY *result;
 	LWGEOM_INSPECTED *insp;
-	int type = lwgeom_getType(srl[0]);
+	uchar type = (uchar)srl[0];
+	int geomtype = lwgeom_getType(type);
 	int i;
 
 	LWDEBUG(3, "lwcurvepoly_deserialize called.");
 
-	if (type != CURVEPOLYTYPE)
+	if (geomtype != CURVEPOLYTYPE)
 	{
 		lwerror("lwcurvepoly_deserialize called on NON curvepoly: %d",
-		        type);
+		        geomtype);
 		return NULL;
 	}
 
@@ -39,8 +40,7 @@ lwcurvepoly_deserialize(uchar *srl)
 
 	result = lwalloc(sizeof(LWCURVEPOLY));
 	result->type = CURVEPOLYTYPE;
-	FLAGS_SET_Z(result->flags, TYPE_HASZ(srl[0]));
-	FLAGS_SET_M(result->flags, TYPE_HASM(srl[0]));
+	result->flags = gflags(TYPE_HASZ(type),TYPE_HASM(type),0);
 	result->SRID = insp->SRID;
 	result->nrings = insp->ngeometries;
 	result->rings = lwalloc(sizeof(LWGEOM *)*insp->ngeometries);

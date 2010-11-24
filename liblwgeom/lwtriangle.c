@@ -30,6 +30,7 @@ lwtriangle_construct(int SRID, GBOX *bbox, POINTARRAY *points)
 	result = (LWTRIANGLE*) lwalloc(sizeof(LWTRIANGLE));
 	result->type = TRIANGLETYPE;
 
+	result->flags = 0;
 	FLAGS_SET_Z(result->flags, FLAGS_GET_Z(points->dims));
 	FLAGS_SET_M(result->flags, FLAGS_GET_M(points->dims));
 	FLAGS_SET_BBOX(result->flags, bbox?1:0);
@@ -46,8 +47,7 @@ lwtriangle_construct_empty(int srid, char hasz, char hasm)
 {
 	LWTRIANGLE *result = lwalloc(sizeof(LWTRIANGLE));
 	result->type = TRIANGLETYPE;
-	FLAGS_SET_Z(result->flags, hasz);
-	FLAGS_SET_M(result->flags, hasm);
+	result->flags = gflags(hasz,hasm,0);
 	result->SRID = srid;
 	result->points = NULL;
 	result->bbox = NULL;
@@ -85,8 +85,7 @@ lwtriangle_deserialize(uchar *serialized_form)
 	result->type = TRIANGLETYPE;
 
 	ndims = TYPE_NDIMS(type);
-	FLAGS_SET_Z(result->flags, TYPE_HASZ(type));
-	FLAGS_SET_M(result->flags, TYPE_HASM(type));
+	result->flags = gflags(TYPE_HASZ(type),TYPE_HASM(type),0);
 	loc = serialized_form;
 
 	if ( TYPE_GETTYPE(type) != TRIANGLETYPE)

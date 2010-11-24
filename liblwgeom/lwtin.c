@@ -36,8 +36,7 @@ lwtin_deserialize(uchar *srl)
 
 	result = lwalloc(sizeof(LWTIN));
 	result->type = TINTYPE;
-	FLAGS_SET_Z(result->flags, TYPE_HASZ(insp->type));
-	FLAGS_SET_M(result->flags, TYPE_HASM(insp->type));
+	result->flags = gflags(TYPE_HASZ(insp->type), TYPE_HASM(insp->type), 0);
 	result->SRID = insp->SRID;
 	result->ngeoms = insp->ngeometries;
 

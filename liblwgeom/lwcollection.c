@@ -62,8 +62,7 @@ lwcollection_construct(uchar type, int SRID, GBOX *bbox,
 
 	ret = lwalloc(sizeof(LWCOLLECTION));
 	ret->type = type;
-	FLAGS_SET_Z(ret->flags, hasz?1:0);
-	FLAGS_SET_M(ret->flags, hasm?1:0);
+	ret->flags = gflags(hasz,hasm,0);
 	FLAGS_SET_BBOX(ret->flags, bbox?1:0);
 	ret->SRID = SRID;
 	ret->ngeoms = ngeoms;
@@ -83,8 +82,7 @@ lwcollection_construct_empty(uchar type, int srid, char hasz, char hasm)
 
 	ret = lwalloc(sizeof(LWCOLLECTION));
 	ret->type = type;
-	FLAGS_SET_Z(ret->flags, hasz);
-	FLAGS_SET_M(ret->flags, hasm);
+	ret->flags = gflags(hasz,hasm,0);
 	ret->SRID = srid;
 	ret->ngeoms = 0;
 	ret->maxgeoms = 1; /* Allocate room for sub-members, just in case. */
@@ -114,8 +112,7 @@ lwcollection_deserialize(uchar *srl)
 
 	result = lwalloc(sizeof(LWCOLLECTION));
 	result->type = type;
-	FLAGS_SET_Z(result->flags, TYPE_HASZ(typefl));
-	FLAGS_SET_M(result->flags, TYPE_HASM(typefl));
+	result->flags = gflags(TYPE_HASZ(typefl),TYPE_HASM(typefl),0);
 	result->SRID = insp->SRID;
 	result->ngeoms = insp->ngeometries;
 

@@ -167,8 +167,8 @@ lwpoint_serialize_size(LWPOINT *point)
 LWPOINT *
 lwpoint_construct(int SRID, GBOX *bbox, POINTARRAY *point)
 {
-	LWPOINT *result ;
-	uchar flags=0;
+	LWPOINT *result;
+	uchar flags = 0;
 
 	if (point == NULL)
 		return NULL; /* error */
@@ -191,8 +191,7 @@ lwpoint_construct_empty(int srid, char hasz, char hasm)
 {
 	LWPOINT *result = lwalloc(sizeof(LWPOINT));
 	result->type = POINTTYPE;
-	FLAGS_SET_Z(result->flags, hasz?1:0);
-	FLAGS_SET_M(result->flags, hasm?1:0);
+	result->flags = gflags(hasz, hasm, 0);
 	result->SRID = srid;
 	result->point = NULL;
 	result->bbox = NULL;
@@ -272,12 +271,14 @@ lwpoint_deserialize(uchar *serialized_form)
 	LWPOINT *result;
 	uchar *loc = NULL;
 	POINTARRAY *pa;
+	uchar type;
 
 	LWDEBUG(2, "lwpoint_deserialize called");
 
 	result = (LWPOINT*) lwalloc(sizeof(LWPOINT)) ;
 
-	geom_type = lwgeom_getType(serialized_form[0]);
+	type = (uchar) serialized_form[0];
+	geom_type = lwgeom_getType(type);
 
 	if ( geom_type != POINTTYPE)
 	{
@@ -285,8 +286,7 @@ lwpoint_deserialize(uchar *serialized_form)
 		return NULL;
 	}
 	result->type = geom_type;
-	FLAGS_SET_Z(result->flags, TYPE_HASZ(serialized_form[0]));
-	FLAGS_SET_M(result->flags, TYPE_HASM(serialized_form[0]));
+	result->flags = gflags(TYPE_HASZ(type),TYPE_HASM(type),0);
 
 	loc = serialized_form+1;
 

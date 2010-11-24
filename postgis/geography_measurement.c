@@ -71,6 +71,8 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	/* Return NULL on empty arguments. */
 	if ( lwgeom_is_empty(lwgeom1) || lwgeom_is_empty(lwgeom2) )
 	{
+		PG_FREE_IF_COPY(g1, 0);
+		PG_FREE_IF_COPY(g2, 1);
 		PG_RETURN_NULL();
 	}
 
@@ -79,6 +81,8 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	/* Something went wrong, negative return... should already be eloged, return NULL */
 	if ( distance < 0.0 )
 	{
+		PG_FREE_IF_COPY(g1, 0);
+		PG_FREE_IF_COPY(g2, 1);
 		PG_RETURN_NULL();
 	}
 
@@ -86,6 +90,8 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	lwgeom_release(lwgeom1);
 	lwgeom_release(lwgeom2);
 
+	PG_FREE_IF_COPY(g1, 0);
+	PG_FREE_IF_COPY(g2, 1);
 	PG_RETURN_FLOAT8(distance);
 
 }
@@ -145,8 +151,9 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 	lwgeom_release(lwgeom1);
 	lwgeom_release(lwgeom2);
 
+	PG_FREE_IF_COPY(g1, 0);
+	PG_FREE_IF_COPY(g2, 1);
 	PG_RETURN_BOOL(distance < tolerance);
-
 }
 
 
@@ -200,6 +207,7 @@ Datum geography_expand(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
+	PG_FREE_IF_COPY(g, 0);
 	PG_RETURN_POINTER(g_out);
 }
 
@@ -271,6 +279,7 @@ Datum geography_area(PG_FUNCTION_ARGS)
 	/* Clean up, but not all the way to the point arrays */
 	lwgeom_release(lwgeom);
 
+	PG_FREE_IF_COPY(g, 0);
 	PG_RETURN_FLOAT8(area);
 
 }
@@ -323,6 +332,7 @@ Datum geography_length(PG_FUNCTION_ARGS)
 	/* Clean up, but not all the way to the point arrays */
 	lwgeom_release(lwgeom);
 
+	PG_FREE_IF_COPY(g, 0);
 	PG_RETURN_FLOAT8(length);
 }
 
@@ -358,6 +368,7 @@ Datum geography_point_outside(PG_FUNCTION_ARGS)
 	g_out = gserialized_from_lwgeom((LWGEOM*)lwpoint, 1, &g_out_size);
 	SET_VARSIZE(g_out, g_out_size);
 
+	PG_FREE_IF_COPY(g, 0);
 	PG_RETURN_POINTER(g_out);
 
 }
@@ -403,6 +414,8 @@ Datum geography_covers(PG_FUNCTION_ARGS)
 	{
 		lwgeom_release(lwgeom1);
 		lwgeom_release(lwgeom2);
+		PG_FREE_IF_COPY(g1, 0);
+		PG_FREE_IF_COPY(g2, 1);
 		PG_RETURN_BOOL(false);
 	}
 
@@ -413,6 +426,8 @@ Datum geography_covers(PG_FUNCTION_ARGS)
 	lwgeom_release(lwgeom1);
 	lwgeom_release(lwgeom2);
 
+	PG_FREE_IF_COPY(g1, 0);
+	PG_FREE_IF_COPY(g2, 1);
 	PG_RETURN_BOOL(result);
 }
 

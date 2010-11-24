@@ -34,24 +34,24 @@ lwmpoly_deserialize(uchar *srl)
 {
 	LWMPOLY *result;
 	LWGEOM_INSPECTED *insp;
-	int type = lwgeom_getType(srl[0]);
+	uchar type = (uchar)srl[0];
+	int geomtype = lwgeom_getType(type);
 	int i;
 
 	LWDEBUG(2, "lwmpoly_deserialize called");
 
-	if ( type != MULTIPOLYGONTYPE )
+	if ( geomtype != MULTIPOLYGONTYPE )
 	{
 		lwerror("lwmpoly_deserialize called on NON multipoly: %d - %s",
-		        type, lwtype_name(type));
+		        geomtype, lwtype_name(geomtype));
 		return NULL;
 	}
 
 	insp = lwgeom_inspect(srl);
 
 	result = lwalloc(sizeof(LWMPOLY));
-	result->type = type;
-	FLAGS_SET_Z(result->flags, TYPE_HASZ(srl[0]));
-	FLAGS_SET_M(result->flags, TYPE_HASM(srl[0]));
+	result->type = geomtype;
+	result->flags = gflags(TYPE_HASZ(type),TYPE_HASM(type),0);
 	result->SRID = insp->SRID;
 	result->ngeoms = insp->ngeometries;
 
@@ -64,7 +64,7 @@ lwmpoly_deserialize(uchar *srl)
 		result->geoms = NULL;
 	}
 
-	if (lwgeom_hasBBOX(srl[0]))
+	if (lwgeom_hasBBOX(type))
 	{
 		BOX2DFLOAT4 *box2df;
 		

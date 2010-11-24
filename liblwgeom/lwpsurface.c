@@ -37,8 +37,7 @@ lwpsurface_deserialize(uchar *srl)
 
 	result = lwalloc(sizeof(LWPSURFACE));
 	result->type = type;
-	FLAGS_SET_Z(result->flags, TYPE_HASZ(srl[0]));
-	FLAGS_SET_M(result->flags, TYPE_HASM(srl[0]));
+	result->flags = gflags(TYPE_HASZ(srl[0]), TYPE_HASM(srl[0]), 0);
 	result->SRID = insp->SRID;
 	result->ngeoms = insp->ngeometries;
 

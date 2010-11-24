@@ -32,6 +32,8 @@ lwline_construct(int srid, GBOX *bbox, POINTARRAY *points)
 	LWDEBUG(2, "lwline_construct called.");
 
 	result->type = LINETYPE;
+	
+	result->flags = 0;
 	FLAGS_SET_Z(result->flags, FLAGS_GET_Z(points->dims));
 	FLAGS_SET_M(result->flags, FLAGS_GET_M(points->dims));
 	FLAGS_SET_BBOX(result->flags, bbox?1:0);
@@ -50,8 +52,7 @@ lwline_construct_empty(int srid, char hasz, char hasm)
 {
 	LWLINE *result = lwalloc(sizeof(LWLINE));
 	result->type = LINETYPE;
-	FLAGS_SET_Z(result->flags, hasz?1:0);
-	FLAGS_SET_M(result->flags, hasm?1:0);
+	result->flags = gflags(hasz,hasm,0);
 	result->SRID = srid;
 	result->points = NULL;
 	result->bbox = NULL;
@@ -84,8 +85,7 @@ lwline_deserialize(uchar *serialized_form)
 
 	result = (LWLINE*) lwalloc(sizeof(LWLINE)) ;
 	result->type = LINETYPE;
-	FLAGS_SET_Z(result->flags, TYPE_HASZ(type)?1:0);
-        FLAGS_SET_M(result->flags, TYPE_HASM(type)?1:0);
+	result->flags = gflags(TYPE_HASZ(type),TYPE_HASM(type),0);
 
 	loc = serialized_form+1;
 
