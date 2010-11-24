@@ -321,7 +321,7 @@ lwcurve_segmentize(LWCIRCSTRING *icurve, uint32 perQuad)
 				getPoint4d_p(tmp, j, &p4);
 				ptarray_append_point(ptarray, &p4, REPEATED_POINTS_OK);
 			}
-			lwfree(tmp);
+			ptarray_freeall(tmp);
 		}
 		else
 		{
