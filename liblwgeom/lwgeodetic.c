@@ -1714,6 +1714,7 @@ double lwgeom_area_sphere(const LWGEOM *lwgeom, const SPHEROID *spheroid)
 	POINT2D pt_outside;
 	double radius2 = spheroid->radius * spheroid->radius;
 	GBOX gbox;
+	gbox.flags = 0;
 
 	assert(lwgeom);
 
@@ -1790,6 +1791,7 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 	int type1, type2;
 	int check_intersection = LW_FALSE;
 	GBOX gbox1, gbox2;
+	gbox1.flags = gbox2.flags = 0;
 
 	assert(lwgeom1);
 	assert(lwgeom2);
@@ -2008,6 +2010,7 @@ int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 {
 	int type1, type2;
 	GBOX gbox1, gbox2;
+	gbox1.flags = gbox2.flags = 0;
 		
 	assert(lwgeom1);
 	assert(lwgeom2);
@@ -2095,6 +2098,7 @@ int lwpoly_covers_point2d(const LWPOLY *poly, const POINT2D *pt_to_test)
 	GEOGRAPHIC_POINT gpt_to_test;
 	POINT2D pt_outside;
 	GBOX gbox;
+	gbox.flags = 0;
 
 	/* Nulls and empties don't contain anything! */
 	if ( ! poly || lwgeom_is_empty((LWGEOM*)poly) )
