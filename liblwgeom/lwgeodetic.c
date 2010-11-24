@@ -2329,7 +2329,8 @@ int lwgeom_calculate_gbox_geodetic(const LWGEOM *geom, GBOX *gbox)
 {
 	int result = LW_FAILURE;
 	LWDEBUGF(4, "got type %d", geom->type);
-	FLAGS_SET_GEODETIC(gbox->flags,1);
+
+	gbox->flags = gflags(FLAGS_GET_Z(geom->flags),FLAGS_GET_M(geom->flags),1);
 
 	switch (geom->type)
 	{
