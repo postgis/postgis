@@ -118,8 +118,8 @@ INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_sta
 VALUES('<xsl:value-of select="$log_label" /> AddRasterColumn','AddRasterColumn', '<xsl:value-of select="@PixType" />', clock_timestamp());
 BEGIN;
 	CREATE TABLE pgis_rgarden_<xsl:value-of select="@ID" />(rid serial PRIMARY KEY);
-	SELECT AddRasterColumn('public', 'pgis_rgarden_<xsl:value-of select="@ID" />', 'rast',4326, '{<xsl:value-of select="@PixType" />}',false, true, '{<xsl:value-of select="@nodata" />}', 0.25,-0.25,200,300, null);
-	SELECT AddRasterColumn('public', 'pgis_rgarden_<xsl:value-of select="@ID" />','r_rasttothrow', 4326, '{<xsl:value-of select="@PixType" />,<xsl:value-of select="$var_pixeltypenoq" />}',false, true, '{<xsl:value-of select="@nodata" />, <xsl:value-of select="$var_pixelvalue" />}', 0.25,-0.25,200,300, null);
+	SELECT AddRasterColumn('public', lower('pgis_rgarden_<xsl:value-of select="@ID" />'), 'rast',4326, '{<xsl:value-of select="@PixType" />}',false, true, '{<xsl:value-of select="@nodata" />}', 0.25,-0.25,200,300, null);
+	SELECT AddRasterColumn('public', lower('pgis_rgarden_<xsl:value-of select="@ID" />'),'r_rasttothrow', 4326, '{<xsl:value-of select="@PixType" />,<xsl:value-of select="$var_pixeltypenoq" />}',false, true, '{<xsl:value-of select="@nodata" />, <xsl:value-of select="$var_pixelvalue" />}', 0.25,-0.25,200,300, null);
 
 	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
 			FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
