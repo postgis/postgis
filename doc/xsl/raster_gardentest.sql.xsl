@@ -149,7 +149,7 @@ SELECT '<xsl:value-of select="$log_label" />: Start Testing';
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
 VALUES('<xsl:value-of select="$log_label" /> DropRasterTable','DropRasterTable', '<xsl:value-of select="@PixType" />', clock_timestamp());
 BEGIN;
-	SELECT DropRasterTable('public', 'pgis_rgarden_<xsl:value-of select="@ID" />');
+	SELECT DropRasterTable('public', lower('pgis_rgarden_<xsl:value-of select="@ID" />'));
 	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
 		WHERE log_label = '<xsl:value-of select="$log_label" /> DropRasterTable' AND log_end IS NULL;
 COMMIT;<xsl:text> 
