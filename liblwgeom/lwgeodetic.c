@@ -2240,17 +2240,13 @@ int ptarray_calculate_gbox_geodetic(const POINTARRAY *pa, GBOX *gbox)
 static int lwpoint_calculate_gbox_geodetic(const LWPOINT *point, GBOX *gbox)
 {
 	assert(point);
-	if ( ptarray_calculate_gbox_geodetic(point->point, gbox) == LW_FAILURE )
-		return LW_FAILURE;
-	return LW_SUCCESS;
+	return ptarray_calculate_gbox_geodetic(point->point, gbox);
 }
 
 static int lwline_calculate_gbox_geodetic(const LWLINE *line, GBOX *gbox)
 {
 	assert(line);
-	if ( ptarray_calculate_gbox_geodetic(line->points, gbox) == LW_FAILURE )
-		return LW_FAILURE;
-	return LW_SUCCESS;
+	return ptarray_calculate_gbox_geodetic(line->points, gbox);
 }
 
 static int lwpolygon_calculate_gbox_geodetic(const LWPOLY *poly, GBOX *gbox)
@@ -2286,9 +2282,7 @@ static int lwpolygon_calculate_gbox_geodetic(const LWPOLY *poly, GBOX *gbox)
 static int lwtriangle_calculate_gbox_geodetic(const LWTRIANGLE *triangle, GBOX *gbox)
 {
 	assert(triangle);
-	if ( ptarray_calculate_gbox_geodetic(triangle->points, gbox) == LW_FAILURE )
-		return LW_FAILURE;
-	return LW_SUCCESS;
+	return ptarray_calculate_gbox_geodetic(triangle->points, gbox);
 }
 
 
