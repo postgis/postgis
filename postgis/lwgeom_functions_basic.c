@@ -542,7 +542,7 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	PG_LWGEOM *result;
 	LWGEOM *lwgeoms[1];
 	LWGEOM *lwgeom;
-	int SRID;
+	int srid;
 	GBOX *bbox;
 
 	POSTGIS_DEBUG(2, "LWGEOM_force_collection called");
@@ -570,14 +570,14 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	/* single geom, make it a collection */
 	else
 	{
-		SRID = lwgeom->SRID;
+		srid = lwgeom->srid;
 		/* We transfer bbox ownership from input to output */
 		bbox = lwgeom->bbox;
-		lwgeom->SRID = -1;
+		lwgeom->srid = -1;
 		lwgeom->bbox = NULL;
 		lwgeoms[0] = lwgeom;
 		lwgeom = (LWGEOM *)lwcollection_construct(COLLECTIONTYPE,
-		         SRID, bbox, 1,
+		         srid, bbox, 1,
 		         lwgeoms);
 	}
 
@@ -638,13 +638,13 @@ Datum LWGEOM_closestpoint(PG_FUNCTION_ARGS)
 	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
 	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
 
-	if (geom1->SRID != geom2->SRID)
+	if (geom1->srid != geom2->srid)
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
 
-	srid = geom1->SRID;
+	srid = geom1->srid;
 
 	point = lw_dist2d_distancepoint(geom1, geom2, srid, DIST_MIN);
 	if (lwgeom_is_empty(point))
@@ -668,13 +668,13 @@ Datum LWGEOM_shortestline2d(PG_FUNCTION_ARGS)
 	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
 	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
 
-	if (geom1->SRID != geom2->SRID)
+	if (geom1->srid != geom2->srid)
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
 
-	srid = geom1->SRID;
+	srid = geom1->srid;
 
 	theline = lw_dist2d_distanceline(geom1, geom2, srid, DIST_MIN);
 	if (lwgeom_is_empty(theline))
@@ -698,13 +698,13 @@ Datum LWGEOM_longestline2d(PG_FUNCTION_ARGS)
 	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
 	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
 
-	if (geom1->SRID != geom2->SRID)
+	if (geom1->srid != geom2->srid)
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
 
-	srid = geom1->SRID;
+	srid = geom1->srid;
 
 	theline = lw_dist2d_distanceline(geom1, geom2, srid, DIST_MAX);
 	if (lwgeom_is_empty(theline))
@@ -728,7 +728,7 @@ Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS)
 	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
 	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
 
-	if (geom1->SRID != geom2->SRID)
+	if (geom1->srid != geom2->srid)
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
@@ -773,7 +773,7 @@ Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if (geom1->SRID != geom2->SRID)
+	if (geom1->srid != geom2->srid)
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
@@ -815,7 +815,7 @@ Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if (geom1->SRID != geom2->SRID)
+	if (geom1->srid != geom2->srid)
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
@@ -849,7 +849,7 @@ Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS)
 	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
 	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
 
-	if (geom1->SRID != geom2->SRID)
+	if (geom1->srid != geom2->srid)
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
@@ -886,13 +886,13 @@ Datum LWGEOM_closestpoint3d(PG_FUNCTION_ARGS)
 	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
 	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
 
-	if (geom1->SRID != geom2->SRID)
+	if (geom1->srid != geom2->srid)
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
 
-	srid = geom1->SRID;
+	srid = geom1->srid;
 
 	point = lw_dist3d_distancepoint(geom1, geom2, srid, DIST_MIN);
 
@@ -917,13 +917,13 @@ Datum LWGEOM_shortestline3d(PG_FUNCTION_ARGS)
 	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
 	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
 
-	if (geom1->SRID != geom2->SRID)
+	if (geom1->srid != geom2->srid)
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
 
-	srid = geom1->SRID;
+	srid = geom1->srid;
 
 	theline = lw_dist3d_distanceline(geom1, geom2, srid, DIST_MIN);
 	if (lwgeom_is_empty(theline))
@@ -947,13 +947,13 @@ Datum LWGEOM_longestline3d(PG_FUNCTION_ARGS)
 	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
 	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
 
-	if (geom1->SRID != geom2->SRID)
+	if (geom1->srid != geom2->srid)
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
 
-	srid = geom1->SRID;
+	srid = geom1->srid;
 
 	theline = lw_dist3d_distanceline(geom1, geom2, srid, DIST_MAX);
 	if (lwgeom_is_empty(theline))
@@ -977,7 +977,7 @@ Datum LWGEOM_mindistance3d(PG_FUNCTION_ARGS)
 	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
 	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
 
-	if (geom1->SRID != geom2->SRID)
+	if (geom1->srid != geom2->srid)
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
@@ -1022,7 +1022,7 @@ Datum LWGEOM_dwithin3d(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if (geom1->SRID != geom2->SRID)
+	if (geom1->srid != geom2->srid)
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
@@ -1064,7 +1064,7 @@ Datum LWGEOM_dfullywithin3d(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if (geom1->SRID != geom2->SRID)
+	if (geom1->srid != geom2->srid)
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
@@ -1098,7 +1098,7 @@ Datum LWGEOM_maxdistance3d(PG_FUNCTION_ARGS)
 	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
 	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
 
-	if (geom1->SRID != geom2->SRID)
+	if (geom1->srid != geom2->srid)
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
@@ -1192,7 +1192,7 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeoms[2], *outlwg;
 	uint32 type1, type2, outtype;
 	GBOX *box=NULL;
-	int SRID;
+	int srid;
 
 	POSTGIS_DEBUG(2, "LWGEOM_collect called.");
 
@@ -1223,15 +1223,15 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(3, "LWGEOM_collect(%s, %s): call", lwtype_name(TYPE_GETTYPE(pglwgeom1->type)), lwtype_name(TYPE_GETTYPE(pglwgeom2->type)));
 
 #if 0
-	if ( pglwgeom_getSRID(pglwgeom1) != pglwgeom_getSRID(pglwgeom2) )
+	if ( pglwgeom_get_srid(pglwgeom1) != pglwgeom_get_srid(pglwgeom2) )
 	{
 		elog(ERROR, "Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
 #endif
 
-	SRID = pglwgeom_getSRID(pglwgeom1);
-	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(pglwgeom2));
+	srid = pglwgeom_get_srid(pglwgeom1);
+	error_if_srid_mismatch(srid, pglwgeom_get_srid(pglwgeom2));
 
 	lwgeoms[0] = lwgeom_deserialize(SERIALIZED_FORM(pglwgeom1));
 	lwgeoms[1] = lwgeom_deserialize(SERIALIZED_FORM(pglwgeom2));
@@ -1275,7 +1275,7 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	lwgeom_drop_srid(lwgeoms[1]);
 
 	outlwg = (LWGEOM *)lwcollection_construct(
-	             outtype, SRID,
+	             outtype, srid,
 	             box, 2, lwgeoms);
 
 	result = pglwgeom_serialize(outlwg);
@@ -1430,7 +1430,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	LWGEOM **lwgeoms, *outlwg;
 	uint32 outtype;
 	int i, count;
-	int SRID=-1;
+	int srid=-1;
 	size_t offset;
 	GBOX *box=NULL;
 	bits8 *bitmap;
@@ -1494,7 +1494,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 			if ( ! count )
 			{
 				/* Get first geometry SRID */
-				SRID = lwgeoms[count]->SRID;
+				srid = lwgeoms[count]->srid;
 
 				/* COMPUTE_BBOX WHEN_SIMPLE */
 				if ( lwgeoms[count]->bbox )
@@ -1505,7 +1505,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 			else
 			{
 				/* Check SRID homogeneity */
-				if ( lwgeoms[count]->SRID != SRID )
+				if ( lwgeoms[count]->srid != srid )
 				{
 					elog(ERROR,
 					     "Operation on mixed SRID geometries");
@@ -1574,7 +1574,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	else
 	{
 		outlwg = (LWGEOM *)lwcollection_construct(
-		             outtype, SRID,
+		             outtype, srid,
 		             box, count, lwgeoms);
 
 		result = pglwgeom_serialize(outlwg);
@@ -1606,7 +1606,7 @@ Datum LWGEOM_line_from_mpoint(PG_FUNCTION_ARGS)
 	}
 
 	mpoint = lwmpoint_deserialize(SERIALIZED_FORM(ingeom));
-	lwline = lwline_from_lwmpoint(mpoint->SRID, mpoint);
+	lwline = lwline_from_lwmpoint(mpoint->srid, mpoint);
 	if ( ! lwline )
 	{
 		PG_FREE_IF_COPY(ingeom, 0);
@@ -1639,7 +1639,7 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 	uint32 npoints;
 	int i;
 	size_t offset;
-	int SRID=-1;
+	int srid=-1;
 
 	bits8 *bitmap;
 	int bitmask;
@@ -1702,11 +1702,11 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 			if ( npoints == 1 )
 			{
 				/* Get first geometry SRID */
-				SRID = lwpoints[npoints-1]->SRID;
+				srid = lwpoints[npoints-1]->srid;
 			}
 			else
 			{
-				if ( lwpoints[npoints-1]->SRID != SRID )
+				if ( lwpoints[npoints-1]->srid != srid )
 				{
 					elog(ERROR,
 					     "Operation on mixed SRID geometries");
@@ -1739,7 +1739,7 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "LWGEOM_makeline_garray: point elements: %d", npoints);
 
-	outlwg = (LWGEOM *)lwline_from_lwpointarray(SRID, npoints, lwpoints);
+	outlwg = (LWGEOM *)lwline_from_lwpointarray(srid, npoints, lwpoints);
 
 	result = pglwgeom_serialize(outlwg);
 
@@ -1771,12 +1771,12 @@ Datum LWGEOM_makeline(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	errorIfSRIDMismatch(pglwgeom_getSRID(pglwg1), pglwgeom_getSRID(pglwg2));
+	error_if_srid_mismatch(pglwgeom_get_srid(pglwg1), pglwgeom_get_srid(pglwg2));
 
 	lwpoints[0] = lwpoint_deserialize(SERIALIZED_FORM(pglwg1));
 	lwpoints[1] = lwpoint_deserialize(SERIALIZED_FORM(pglwg2));
 
-	outline = lwline_from_lwpointarray(lwpoints[0]->SRID, 2, lwpoints);
+	outline = lwline_from_lwpointarray(lwpoints[0]->srid, 2, lwpoints);
 
 	result = pglwgeom_serialize((LWGEOM *)outline);
 
@@ -1863,7 +1863,7 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 	POINTARRAY *pa = ptarray_construct_empty(0, 0, 5);
 	POINTARRAY **ppa = lwalloc(sizeof(POINTARRAY*));
 	LWPOLY *poly;
-	int SRID;
+	int srid;
 	PG_LWGEOM *result;
 
 	POSTGIS_DEBUG(2, "LWGEOM_expand called.");
@@ -1876,7 +1876,7 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 	}
 
 	/* get geometry SRID */
-	SRID = lwgeom_getsrid(SERIALIZED_FORM(geom));
+	srid = lwgeom_getsrid(SERIALIZED_FORM(geom));
 
 	/* expand it */
 	expand_box3d(&box3d, d);
@@ -1902,7 +1902,7 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 	ppa[0] = pa;
 
 	/* Construct polygon  */
-	poly = lwpoly_construct(SRID, NULL, 1, ppa);
+	poly = lwpoly_construct(srid, NULL, 1, ppa);
 	lwgeom_add_bbox((LWGEOM *)poly);
 
 	/* Construct PG_LWGEOM  */
@@ -1944,7 +1944,7 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	BOX3D box;
-	int SRID;
+	int srid;
 	POINTARRAY *pa;
 	PG_LWGEOM *result;
 	uchar *ser = NULL;
@@ -1958,7 +1958,7 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 	}
 
 	/* get geometry SRID */
-	SRID = lwgeom_getsrid(SERIALIZED_FORM(geom));
+	srid = lwgeom_getsrid(SERIALIZED_FORM(geom));
 
 
 	/*
@@ -1977,7 +1977,7 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 	        box.ymin == box.ymax)
 	{
 		/* Construct and serialize point */
-		LWPOINT *point = make_lwpoint2d(SRID, box.xmin, box.ymin);
+		LWPOINT *point = make_lwpoint2d(srid, box.xmin, box.ymin);
 		ser = lwpoint_serialize(point);
 	}
 	else if (box.xmin == box.xmax ||
@@ -1996,7 +1996,7 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 		pa = ptarray_construct_reference_data(0, 0, 2, (uchar*)pts);
 
 		/* Construct and serialize linestring */
-		line = lwline_construct(SRID, NULL, pa);
+		line = lwline_construct(srid, NULL, pa);
 		ser = lwline_serialize(line);
 	}
 	else
@@ -2020,7 +2020,7 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 		pa = ptarray_construct_reference_data(0, 0, 5, (uchar*)pts);
 
 		/* Construct polygon  */
-		poly = lwpoly_construct(SRID, NULL, 1, &pa);
+		poly = lwpoly_construct(srid, NULL, 1, &pa);
 		lwgeom_add_bbox((LWGEOM *)poly);
 
 		/* Serialize polygon */
@@ -2030,7 +2030,7 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom, 0);
 
 	/* Construct PG_LWGEOM  */
-	result = PG_LWGEOM_construct(ser, SRID, 1);
+	result = PG_LWGEOM_construct(ser, srid, 1);
 
 	PG_RETURN_POINTER(result);
 }
@@ -2588,7 +2588,7 @@ Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
 	LWPOINT *lwpoint;
 	POINT2D p1, p2;
 	double result;
-	int SRID;
+	int srid;
 
 	/* Extract first point */
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -2599,7 +2599,7 @@ Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
 		lwerror("Argument must be POINT geometries");
 		PG_RETURN_NULL();
 	}
-	SRID = lwpoint->SRID;
+	srid = lwpoint->srid;
 	if ( ! getPoint2d_p(lwpoint->point, 0, &p1) )
 	{
 		PG_FREE_IF_COPY(geom, 0);
@@ -2618,7 +2618,7 @@ Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
 		lwerror("Argument must be POINT geometries");
 		PG_RETURN_NULL();
 	}
-	if ( lwpoint->SRID != SRID )
+	if ( lwpoint->srid != srid )
 	{
 		PG_FREE_IF_COPY(geom, 1);
 		lwerror("Operation on mixed SRID geometries");
@@ -2671,7 +2671,7 @@ Datum optimistic_overlap(PG_FUNCTION_ARGS)
 	geom1 = lwgeom_deserialize(SERIALIZED_FORM(pg_geom1));
 	geom2 = lwgeom_deserialize(SERIALIZED_FORM(pg_geom2));
 
-	if (geom1->SRID != geom2->SRID)
+	if (geom1->srid != geom2->srid)
 	{
 
 		elog(ERROR,"optimistic_overlap:Operation on two GEOMETRIES with different SRIDs\\n");

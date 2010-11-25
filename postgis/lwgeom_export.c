@@ -34,7 +34,7 @@ Datum LWGEOM_asSVG(PG_FUNCTION_ARGS);
  * Could return SRS as short one (i.e EPSG:4326)
  * or as long one: (i.e urn:ogc:def:crs:EPSG::4326)
  */
-char * getSRSbySRID(int SRID, bool short_crs)
+char * getSRSbySRID(int srid, bool short_crs)
 {
 	char query[256];
 	char *srs, *srscopy;
@@ -49,10 +49,10 @@ char * getSRSbySRID(int SRID, bool short_crs)
 
 	if (short_crs)
 		sprintf(query, "SELECT auth_name||':'||auth_srid \
-		        FROM spatial_ref_sys WHERE srid='%d'", SRID);
+		        FROM spatial_ref_sys WHERE srid='%d'", srid);
 	else
 		sprintf(query, "SELECT 'urn:ogc:def:crs:'||auth_name||'::'||auth_srid \
-		        FROM spatial_ref_sys WHERE srid='%d'", SRID);
+		        FROM spatial_ref_sys WHERE srid='%d'", srid);
 
 	err = SPI_exec(query, 1);
 	if ( err < 0 )
@@ -103,7 +103,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	int len;
 	int version;
 	char *srs;
-	int SRID;
+	int srid;
 	int option = 0;
 	int is_deegree = 0;
 	int is_dims = 1;
@@ -159,10 +159,10 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 		}
 	}
 
-	SRID = lwgeom_getsrid(SERIALIZED_FORM(geom));
-	if (SRID == -1)      srs = NULL;
-	else if (option & 1) srs = getSRSbySRID(SRID, false);
-	else                 srs = getSRSbySRID(SRID, true);
+	srid = lwgeom_getsrid(SERIALIZED_FORM(geom));
+	if (srid == -1)      srs = NULL;
+	else if (option & 1) srs = getSRSbySRID(srid, false);
+	else                 srs = getSRSbySRID(srid, true);
 
 	if (option & 2)  is_dims = 0;
 	if (option & 16) is_deegree = 1;
@@ -273,7 +273,7 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom;
 	char *geojson;
 	text *result;
-	int SRID;
+	int srid;
 	int len;
 	int version;
 	int option = 0;
@@ -313,16 +313,16 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 
 	if (option & 2 || option & 4)
 	{
-		SRID = lwgeom_getsrid(SERIALIZED_FORM(geom));
-		if ( SRID != -1 )
+		srid = lwgeom_getsrid(SERIALIZED_FORM(geom));
+		if ( srid != -1 )
 		{
-			if (option & 2) srs = getSRSbySRID(SRID, true);
-			if (option & 4) srs = getSRSbySRID(SRID, false);
+			if (option & 2) srs = getSRSbySRID(srid, true);
+			if (option & 4) srs = getSRSbySRID(srid, false);
 			if (!srs)
 			{
 				elog(	ERROR,
 				      "SRID %i unknown in spatial_ref_sys table",
-				      SRID);
+				      srid);
 				PG_RETURN_NULL();
 			}
 		}

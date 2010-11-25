@@ -41,7 +41,7 @@ lwcurvepoly_deserialize(uchar *srl)
 	result = lwalloc(sizeof(LWCURVEPOLY));
 	result->type = CURVEPOLYTYPE;
 	result->flags = gflags(TYPE_HASZ(type),TYPE_HASM(type),0);
-	result->SRID = insp->SRID;
+	result->srid = insp->srid;
 	result->nrings = insp->ngeometries;
 	result->rings = lwalloc(sizeof(LWGEOM *)*insp->ngeometries);
 
@@ -91,7 +91,7 @@ lwcurvepoly_construct_empty(int srid, char hasz, char hasm)
 	ret->type = CURVEPOLYTYPE;
 	FLAGS_SET_Z(ret->flags, hasz);
 	FLAGS_SET_M(ret->flags, hasm);
-	ret->SRID = srid;
+	ret->srid = srid;
 	ret->nrings = 0;
 	ret->maxrings = 1; /* Allocate room for sub-members, just in case. */
 	ret->rings = lwalloc(ret->maxrings * sizeof(LWGEOM*));

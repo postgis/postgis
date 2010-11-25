@@ -23,7 +23,7 @@
  * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
  */
 LWTRIANGLE*
-lwtriangle_construct(int SRID, GBOX *bbox, POINTARRAY *points)
+lwtriangle_construct(int srid, GBOX *bbox, POINTARRAY *points)
 {
 	LWTRIANGLE *result;
 
@@ -35,7 +35,7 @@ lwtriangle_construct(int SRID, GBOX *bbox, POINTARRAY *points)
 	FLAGS_SET_M(result->flags, FLAGS_GET_M(points->dims));
 	FLAGS_SET_BBOX(result->flags, bbox?1:0);
 	
-	result->SRID = SRID;
+	result->srid = srid;
 	result->points = points;
 	result->bbox = bbox;
 
@@ -48,7 +48,7 @@ lwtriangle_construct_empty(int srid, char hasz, char hasm)
 	LWTRIANGLE *result = lwalloc(sizeof(LWTRIANGLE));
 	result->type = TRIANGLETYPE;
 	result->flags = gflags(hasz,hasm,0);
-	result->SRID = srid;
+	result->srid = srid;
 	result->points = NULL;
 	result->bbox = NULL;
 	return result;
@@ -118,12 +118,12 @@ lwtriangle_deserialize(uchar *serialized_form)
 
 	if ( lwgeom_hasSRID(type))
 	{
-		result->SRID = lw_get_int32(loc);
+		result->srid = lw_get_int32(loc);
 		loc +=4; /* type + SRID */
 	}
 	else
 	{
-		result->SRID = -1;
+		result->srid = -1;
 	}
 
 	npoints = lw_get_uint32(loc);
@@ -169,7 +169,7 @@ lwtriangle_serialize(LWTRIANGLE *triangle)
 void
 lwtriangle_serialize_buf(LWTRIANGLE *triangle, uchar *buf, size_t *retsize)
 {
-	char hasSRID;
+	char has_srid;
 	uchar *loc;
 	int ptsize;
 	size_t size;
@@ -185,11 +185,11 @@ lwtriangle_serialize_buf(LWTRIANGLE *triangle, uchar *buf, size_t *retsize)
 
 	ptsize = ptarray_point_size(triangle->points);
 
-	hasSRID = (triangle->SRID != -1);
+	has_srid = (triangle->srid != -1);
 
 	buf[0] = (uchar) lwgeom_makeType_full(
 	             FLAGS_GET_Z(triangle->flags), FLAGS_GET_M(triangle->flags),
-	             hasSRID, TRIANGLETYPE, triangle->bbox ? 1 : 0);
+	             has_srid, TRIANGLETYPE, triangle->bbox ? 1 : 0);
 	loc = buf+1;
 
 	LWDEBUGF(3, "lwtriangle_serialize_buf added type (%d)", triangle->type);
@@ -206,9 +206,9 @@ lwtriangle_serialize_buf(LWTRIANGLE *triangle, uchar *buf, size_t *retsize)
 		LWDEBUG(3, "lwtriangle_serialize_buf added BBOX");
 	}
 
-	if (hasSRID)
+	if (has_srid)
 	{
-		memcpy(loc, &triangle->SRID, sizeof(int32));
+		memcpy(loc, &triangle->srid, sizeof(int32));
 		loc += sizeof(int32);
 
 		LWDEBUG(3, "lwtriangle_serialize_buf added SRID");
@@ -297,7 +297,7 @@ lwtriangle_serialize_size(LWTRIANGLE *triangle)
 
 	LWDEBUG(2, "lwtriangle_serialize_size called");
 
-	if ( triangle->SRID != -1 ) size += 4; /* SRID */
+	if ( triangle->srid != -1 ) size += 4; /* SRID */
 	if ( triangle->bbox ) size += sizeof(BOX2DFLOAT4);
 
 	size += 4; /* npoints */
@@ -323,7 +323,7 @@ void printLWTRIANGLE(LWTRIANGLE *triangle)
 
 	lwnotice("LWTRIANGLE {");
 	lwnotice("    ndims = %i", (int)FLAGS_NDIMS(triangle->flags));
-	lwnotice("    SRID = %i", (int)triangle->SRID);
+	lwnotice("    SRID = %i", (int)triangle->srid);
 	printPA(triangle->points);
 	lwnotice("}");
 }
@@ -393,7 +393,7 @@ lwtriangle_from_lwline(const LWLINE *shell)
 		lwerror("lwtriangle_from_lwline: shell must be closed");
 
 	pa = ptarray_clone(shell->points);
-	ret = lwtriangle_construct(shell->SRID, NULL, pa);
+	ret = lwtriangle_construct(shell->srid, NULL, pa);
 
 	if (lwtriangle_is_repeated_points(ret))
 		lwerror("lwtriangle_from_lwline: some points are repeated in triangle");

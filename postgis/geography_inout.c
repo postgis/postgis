@@ -114,7 +114,7 @@ void geography_valid_typmod(LWGEOM *lwgeom, int32 typmod)
 	Assert(lwgeom);
 
 	lwgeom_type = lwgeom->type;
-	lwgeom_srid = lwgeom->SRID;
+	lwgeom_srid = lwgeom->srid;
 	lwgeom_z = FLAGS_GET_Z(lwgeom->flags);
 	lwgeom_m = FLAGS_GET_M(lwgeom->flags);
 
@@ -207,9 +207,9 @@ Datum geography_in(PG_FUNCTION_ARGS)
 	geography_valid_type(lwgeom->type);
 
 	/* Force default SRID to the default */
-	if ( (int)lwgeom->SRID <= 0 )
+	if ( (int)lwgeom->srid <= 0 )
 	{
-		lwgeom->SRID = SRID_DEFAULT;
+		lwgeom->srid = SRID_DEFAULT;
 	}
 
 	if ( geog_typmod >= 0 )
@@ -510,7 +510,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	int len;
 	int version;
 	char *srs;
-	int SRID = SRID_DEFAULT;
+	int srid = SRID_DEFAULT;
 	int precision = OUT_MAX_DOUBLE_PRECISION;
 	int option=0;
 	int is_deegree=0;
@@ -571,8 +571,8 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 		}
 	}
 
-	if (option & 1) srs = getSRSbySRID(SRID, false);
-	else srs = getSRSbySRID(SRID, true);
+	if (option & 1) srs = getSRSbySRID(srid, false);
+	else srs = getSRSbySRID(srid, true);
 	if (!srs)
 	{
 		elog(ERROR, "SRID %d unknown in spatial_ref_sys table", SRID_DEFAULT);
@@ -980,13 +980,13 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_deserialize(lwgeom_serialized);
 
 	/* Force default SRID */
-	if ( (int)lwgeom->SRID <= 0 )
+	if ( (int)lwgeom->srid <= 0 )
 	{
-		lwgeom->SRID = SRID_DEFAULT;
+		lwgeom->srid = SRID_DEFAULT;
 	}
 
 	/* Error on any SRID != default */
-	if ( lwgeom->SRID != SRID_DEFAULT )
+	if ( lwgeom->srid != SRID_DEFAULT )
 	{
 		ereport(ERROR, (
 		            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
@@ -1029,8 +1029,8 @@ Datum geometry_from_geography(PG_FUNCTION_ARGS)
 
 	/* We want "geometry" to think all our "geography" has an SRID, and the
 	   implied SRID is the default, so we fill that in if our SRID is actually unknown. */
-	if ( (int)lwgeom->SRID <= 0 )
-		lwgeom->SRID = SRID_DEFAULT;
+	if ( (int)lwgeom->srid <= 0 )
+		lwgeom->srid = SRID_DEFAULT;
 
 	ret = pglwgeom_serialize(lwgeom);
 	lwgeom_release(lwgeom);

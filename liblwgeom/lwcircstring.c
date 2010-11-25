@@ -24,8 +24,8 @@ void lwcircstring_reverse(LWCIRCSTRING *curve);
 void lwcircstring_release(LWCIRCSTRING *lwcirc);
 LWCIRCSTRING *lwcircstring_segmentize2d(LWCIRCSTRING *curve, double dist);
 char lwcircstring_same(const LWCIRCSTRING *me, const LWCIRCSTRING *you);
-LWCIRCSTRING *lwcircstring_from_lwpointarray(int SRID, uint32 npoints, LWPOINT **points);
-LWCIRCSTRING *lwcircstring_from_lwmpoint(int SRID, LWMPOINT *mpoint);
+LWCIRCSTRING *lwcircstring_from_lwpointarray(int srid, uint32 npoints, LWPOINT **points);
+LWCIRCSTRING *lwcircstring_from_lwmpoint(int srid, LWMPOINT *mpoint);
 LWCIRCSTRING *lwcircstring_addpoint(LWCIRCSTRING *curve, LWPOINT *point, uint32 where);
 LWCIRCSTRING *lwcircstring_removepoint(LWCIRCSTRING *curve, uint32 index);
 void lwcircstring_setPoint4d(LWCIRCSTRING *curve, uint32 index, POINT4D *newpoint);
@@ -37,7 +37,7 @@ void lwcircstring_setPoint4d(LWCIRCSTRING *curve, uint32 index, POINT4D *newpoin
  * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
  */
 LWCIRCSTRING *
-lwcircstring_construct(int SRID, GBOX *bbox, POINTARRAY *points)
+lwcircstring_construct(int srid, GBOX *bbox, POINTARRAY *points)
 {
 	LWCIRCSTRING *result;
 
@@ -61,7 +61,7 @@ lwcircstring_construct(int SRID, GBOX *bbox, POINTARRAY *points)
 	FLAGS_SET_M(result->flags, FLAGS_GET_M(points->dims));
 	FLAGS_SET_BBOX(result->flags, bbox?1:0);
 
-	result->SRID = SRID;
+	result->srid = srid;
 	result->points = points;
 	result->bbox = bbox;
 
@@ -74,7 +74,7 @@ lwcircstring_construct_empty(int srid, char hasz, char hasm)
 	LWCIRCSTRING *result = lwalloc(sizeof(LWCIRCSTRING));
 	result->type = CIRCSTRINGTYPE;
 	result->flags = gflags(hasz,hasm,0);
-	result->SRID = srid;
+	result->srid = srid;
 	result->points = NULL;
 	result->bbox = NULL;
 	return result;
@@ -138,14 +138,14 @@ lwcircstring_deserialize(uchar *serialized_form)
 	{
 		LWDEBUG(3, "lwcircstring_deserialize: input has srid");
 
-		result->SRID = lw_get_int32(loc);
+		result->srid = lw_get_int32(loc);
 		loc += 4; /* type + SRID */
 	}
 	else
 	{
 		LWDEBUG(3, "lwcircstring_deserialize: input lacks srid");
 
-		result->SRID = -1;
+		result->srid = -1;
 	}
 
 	/* we've read the type (1 byte) and SRID (4 bytes, if present) */
@@ -193,7 +193,7 @@ lwcircstring_serialize(LWCIRCSTRING *curve)
  */
 void lwcircstring_serialize_buf(LWCIRCSTRING *curve, uchar *buf, size_t *retsize)
 {
-	char hasSRID;
+	char has_srid;
 	uchar *loc;
 	int ptsize;
 	size_t size;
@@ -215,11 +215,11 @@ void lwcircstring_serialize_buf(LWCIRCSTRING *curve, uchar *buf, size_t *retsize
 
 	ptsize = ptarray_point_size(curve->points);
 
-	hasSRID = (curve->SRID != -1);
+	has_srid = (curve->srid != -1);
 
 	buf[0] = (uchar)lwgeom_makeType_full(
 	             FLAGS_GET_Z(curve->flags), FLAGS_GET_M(curve->flags),
-	             hasSRID, CIRCSTRINGTYPE, curve->bbox ? 1 : 0);
+	             has_srid, CIRCSTRINGTYPE, curve->bbox ? 1 : 0);
 	loc = buf+1;
 
 	LWDEBUGF(3, "lwcircstring_serialize_buf added type (%d)", curve->type);
@@ -236,9 +236,9 @@ void lwcircstring_serialize_buf(LWCIRCSTRING *curve, uchar *buf, size_t *retsize
 		LWDEBUG(3, "lwcircstring_serialize_buf added BBOX");
 	}
 
-	if (hasSRID)
+	if (has_srid)
 	{
-		memcpy(loc, &curve->SRID, sizeof(int32));
+		memcpy(loc, &curve->srid, sizeof(int32));
 		loc += sizeof(int32);
 
 		LWDEBUG(3, "lwcircstring_serialize_buf added SRID");
@@ -272,7 +272,7 @@ lwcircstring_serialize_size(LWCIRCSTRING *curve)
 
 	LWDEBUG(2, "lwcircstring_serialize_size called");
 
-	if (curve->SRID != -1) size += 4; /* SRID */
+	if (curve->srid != -1) size += 4; /* SRID */
 	if (curve->bbox) size += sizeof(BOX2DFLOAT4);
 
 	size += 4; /* npoints */
@@ -580,7 +580,7 @@ void printLWCIRCSTRING(LWCIRCSTRING *curve)
 {
 	lwnotice("LWCIRCSTRING {");
 	lwnotice("    ndims = %i", (int)FLAGS_NDIMS(curve->flags));
-	lwnotice("    SRID = %i", (int)curve->SRID);
+	lwnotice("    srid = %i", (int)curve->srid);
 	printPA(curve->points);
 	lwnotice("}");
 }
@@ -607,7 +607,7 @@ void lwcircstring_reverse(LWCIRCSTRING *curve)
 LWCIRCSTRING *
 lwcircstring_segmentize2d(LWCIRCSTRING *curve, double dist)
 {
-	return lwcircstring_construct(curve->SRID, NULL,
+	return lwcircstring_construct(curve->srid, NULL,
 	                              ptarray_segmentize2d(curve->points, dist));
 }
 
@@ -623,7 +623,7 @@ lwcircstring_same(const LWCIRCSTRING *me, const LWCIRCSTRING *you)
  * LWCIRCSTRING dimensions are large enough to host all input dimensions.
  */
 LWCIRCSTRING *
-lwcircstring_from_lwpointarray(int SRID, uint32 npoints, LWPOINT **points)
+lwcircstring_from_lwpointarray(int srid, uint32 npoints, LWPOINT **points)
 {
 	int zmflag=0;
 	uint32 i;
@@ -667,14 +667,14 @@ lwcircstring_from_lwpointarray(int SRID, uint32 npoints, LWPOINT **points)
 	}
 	pa = ptarray_construct_reference_data(zmflag&2, zmflag&1, npoints, newpoints);
 	
-	return lwcircstring_construct(SRID, NULL, pa);
+	return lwcircstring_construct(srid, NULL, pa);
 }
 
 /*
  * Construct a LWCIRCSTRING from a LWMPOINT
  */
 LWCIRCSTRING *
-lwcircstring_from_lwmpoint(int SRID, LWMPOINT *mpoint)
+lwcircstring_from_lwmpoint(int srid, LWMPOINT *mpoint)
 {
 	uint32 i;
 	POINTARRAY *pa;
@@ -704,7 +704,7 @@ lwcircstring_from_lwmpoint(int SRID, LWMPOINT *mpoint)
 	
 	LWDEBUGF(3, "lwcurve_from_lwmpoint: constructed pointarray for %d points, %d zmflag", mpoint->ngeoms, zmflag);
 
-	return lwcircstring_construct(SRID, NULL, pa);
+	return lwcircstring_construct(srid, NULL, pa);
 }
 
 LWCIRCSTRING *
@@ -716,7 +716,7 @@ lwcircstring_addpoint(LWCIRCSTRING *curve, LWPOINT *point, uint32 where)
 	newpa = ptarray_addPoint(curve->points,
 	                         getPoint_internal(point->point, 0),
 	                         FLAGS_NDIMS(point->flags), where);
-	ret = lwcircstring_construct(curve->SRID, NULL, newpa);
+	ret = lwcircstring_construct(curve->srid, NULL, newpa);
 
 	return ret;
 }
@@ -728,7 +728,7 @@ lwcircstring_removepoint(LWCIRCSTRING *curve, uint32 index)
 	LWCIRCSTRING *ret;
 
 	newpa = ptarray_removePoint(curve->points, index);
-	ret = lwcircstring_construct(curve->SRID, NULL, newpa);
+	ret = lwcircstring_construct(curve->srid, NULL, newpa);
 
 	return ret;
 }

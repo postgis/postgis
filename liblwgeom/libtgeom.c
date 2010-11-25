@@ -227,9 +227,9 @@ tgeom_add_polygon(TGEOM *tgeom, LWPOLY *poly)
 	if (FLAGS_NDIMS(tgeom->flags) != FLAGS_NDIMS(poly->flags))
 		lwerror("tgeom_add_polygon: Mixed dimension");
 
-	if (tgeom->srid != poly->SRID && (tgeom->srid != 0 && poly->SRID != -1))
+	if (tgeom->srid != poly->srid && (tgeom->srid != 0 && poly->srid != -1))
 		lwerror("tgeom_add_polygon: Mixed srid. Tgeom: %i / Polygon: %i",
-		        tgeom->srid, poly->SRID);
+		        tgeom->srid, poly->srid);
 
 	/* handle face array allocation */
 	if (tgeom->maxfaces == 0)
@@ -303,10 +303,10 @@ tgeom_add_triangle(TGEOM *tgeom, LWTRIANGLE *triangle)
 	if (FLAGS_NDIMS(tgeom->flags) != FLAGS_NDIMS(triangle->flags))
 		lwerror("tgeom_add_triangle: Mixed dimension");
 
-	if (tgeom->srid != triangle->SRID
-	        && (tgeom->srid != 0 && triangle->SRID != -1))
+	if (tgeom->srid != triangle->srid
+	        && (tgeom->srid != 0 && triangle->srid != -1))
 		lwerror("tgeom_add_triangle: Mixed srid. Tgeom: %i / Triangle: %i",
-		        tgeom->srid, triangle->SRID);
+		        tgeom->srid, triangle->srid);
 
 	/* handle face array allocation */
 	if (tgeom->maxfaces == 0)
@@ -415,8 +415,8 @@ tgeom_from_lwgeom(LWGEOM *lwgeom)
 
 	tgeom = tgeom_new(0, FLAGS_GET_Z(lwgeom->flags), FLAGS_GET_M(lwgeom->flags));
 
-	if (lwgeom->SRID == -1) tgeom->srid = 0;
-	else 			tgeom->srid = lwgeom->SRID;
+	if (lwgeom->srid == -1) tgeom->srid = 0;
+	else 			tgeom->srid = lwgeom->srid;
 
 	if (lwgeom_is_empty(lwgeom)) return tgeom;
 
@@ -580,7 +580,7 @@ lwgeom_from_tgeom(TGEOM *tgeom)
 		        tgeom->type, lwtype_name(tgeom->type));
 	}
 
-	if (geom->SRID == 0) geom->SRID = -1;
+	if (geom->srid == 0) geom->srid = -1;
 
 	return geom;
 }
@@ -1007,7 +1007,7 @@ printTGEOM(TGEOM *tgeom)
 
 	printf("TGEOM:\n");
 	printf(" - type %i, %s\n", tgeom->type, lwtype_name(tgeom->type));
-	printf(" - SRID %i\n", tgeom->srid);
+	printf(" - srid %i\n", tgeom->srid);
 	printf(" - nedges %i\n", tgeom->nedges);
 	printf(" - nfaces %i\n", tgeom->nfaces);
 	printf("  => EDGES:\n");

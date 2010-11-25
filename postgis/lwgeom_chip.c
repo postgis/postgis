@@ -56,7 +56,7 @@ PIXEL chip_getPixel(CHIP *c, int x, int y);
 void chip_draw_pixel(CHIP *chip, int x, int y, PIXEL *pixel, int op);
 void chip_draw_segment(CHIP *chip, int x1, int y1, int x2, int y2, PIXEL *pixel, int op);
 void chip_fill(CHIP *chip, PIXEL *pixel, int op);
-CHIP * pgchip_construct(BOX3D *bvol, int SRID, int width, int height, int datatype, PIXEL *initvalue);
+CHIP * pgchip_construct(BOX3D *bvol, int srid, int width, int height, int datatype, PIXEL *initvalue);
 void chip_draw_ptarray(CHIP *chip, POINTARRAY *pa, PIXEL *pixel, int op);
 void chip_draw_lwpoint(CHIP *chip, LWPOINT *lwpoint, PIXEL* pixel, int op);
 void chip_draw_lwline(CHIP *chip, LWLINE *lwline, PIXEL* pixel, int op);
@@ -142,7 +142,7 @@ Datum CHIP_in(PG_FUNCTION_ARGS)
 		flip_endian_double((char *)  &result->bvol.ymax);
 		flip_endian_double((char *)  &result->bvol.zmax);
 
-		flip_endian_int32( (char *)  & result->SRID);
+		flip_endian_int32( (char *)  & result->srid);
 		/*dont know what to do with future[8] ... */
 
 		flip_endian_int32( (char *)  & result->height);
@@ -254,13 +254,13 @@ Datum CHIP_to_LWGEOM(PG_FUNCTION_ARGS)
 	pa[0]->npoints = 5;
 
 	/* Construct polygon */
-	poly = lwpoly_construct(chip->SRID, NULL, 1, pa);
+	poly = lwpoly_construct(chip->srid, NULL, 1, pa);
 
 	/* Serialize polygon */
 	ser = lwpoly_serialize(poly);
 
 	/* Construct PG_LWGEOM  */
-	result = PG_LWGEOM_construct(ser, chip->SRID, wantbbox);
+	result = PG_LWGEOM_construct(ser, chip->srid, wantbbox);
 
 	PG_RETURN_POINTER(result);
 
@@ -270,7 +270,7 @@ PG_FUNCTION_INFO_V1(CHIP_getSRID);
 Datum CHIP_getSRID(PG_FUNCTION_ARGS)
 {
 	CHIP *c = (CHIP *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	PG_RETURN_INT32(c->SRID);
+	PG_RETURN_INT32(c->srid);
 }
 
 PG_FUNCTION_INFO_V1(CHIP_getFactor);
@@ -336,7 +336,7 @@ Datum CHIP_setSRID(PG_FUNCTION_ARGS)
 	result = (CHIP *) palloc(c->size);
 
 	memcpy(result, c, c->size);
-	result->SRID = new_srid;
+	result->srid = new_srid;
 
 	PG_RETURN_POINTER(result);
 }
@@ -874,7 +874,7 @@ chip_fill(CHIP *chip, PIXEL *pixel, int op)
  ********************************************************************/
 
 CHIP *
-pgchip_construct(BOX3D *bvol, int SRID, int width, int height,
+pgchip_construct(BOX3D *bvol, int srid, int width, int height,
                  int datatype, PIXEL *initvalue)
 {
 	size_t pixsize = chip_pixel_value_size(datatype);
@@ -889,7 +889,7 @@ pgchip_construct(BOX3D *bvol, int SRID, int width, int height,
 	chip->size=size;
 	chip->endian_hint=1;
 	memcpy(&(chip->bvol), bvol, sizeof(BOX3D));
-	chip->SRID=SRID;
+	chip->srid=srid;
 	memset(chip->future, '\0', 4);
 	chip->factor=1.0;
 	chip->datatype=datatype;
@@ -1179,7 +1179,7 @@ Datum CHIP_construct(PG_FUNCTION_ARGS)
 {
 	CHIP *chip;
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
-	int SRID = PG_GETARG_INT32(1);
+	int srid = PG_GETARG_INT32(1);
 	int width = PG_GETARG_INT32(2);
 	int height = PG_GETARG_INT32(3);
 	text *pixel_text = PG_GETARG_TEXT_P(4);
@@ -1196,7 +1196,7 @@ Datum CHIP_construct(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	chip = pgchip_construct(box, SRID, width, height, pix.type, &pix);
+	chip = pgchip_construct(box, srid, width, height, pix.type, &pix);
 
 #if DEBUG_CHIP
 	lwnotice("Created %dx%d chip type", chip->width, chip->height);
@@ -1279,7 +1279,7 @@ Datum CHIP_draw(PG_FUNCTION_ARGS)
 	PIXEL pixel;
 
 	/* Check SRID match */
-	if ( chip->SRID != lwgeom->SRID )
+	if ( chip->srid != lwgeom->srid )
 	{
 		lwerror("Operation on mixed SRID objects");
 	}

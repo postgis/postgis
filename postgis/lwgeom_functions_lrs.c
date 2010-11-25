@@ -347,7 +347,7 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 		/* This is a point */
 		if ( pa->npoints == 1 )
 		{
-			lwpoint = lwpoint_construct(lwline_in->SRID, NULL, pa);
+			lwpoint = lwpoint_construct(lwline_in->srid, NULL, pa);
 			geoms[i]=(LWGEOM *)lwpoint;
 			typeflag|=pointflag;
 		}
@@ -355,7 +355,7 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 		/* This is a line */
 		else if ( pa->npoints > 1 )
 		{
-			lwline = lwline_construct(lwline_in->SRID, NULL, pa);
+			lwline = lwline_construct(lwline_in->srid, NULL, pa);
 			geoms[i]=(LWGEOM *)lwline;
 			typeflag|=lineflag;
 		}
@@ -380,7 +380,7 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 		else outtype = COLLECTIONTYPE;
 
 		return (LWGEOM *)lwcollection_construct(outtype,
-		                                        lwline_in->SRID, NULL, ngeoms, geoms);
+		                                        lwline_in->srid, NULL, ngeoms, geoms);
 	}
 }
 
@@ -409,7 +409,7 @@ lwcollection_locate_between_m(LWCOLLECTION *lwcoll, double m0, double m1)
 	if ( ngeoms == 0 ) return NULL;
 
 	return (LWGEOM *)lwcollection_construct(COLLECTIONTYPE,
-	                                        lwcoll->SRID, NULL, ngeoms, geoms);
+	                                        lwcoll->srid, NULL, ngeoms, geoms);
 }
 
 /*
@@ -507,7 +507,7 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 	if ( lwout == NULL )
 	{
 		lwout = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, 
-		            pglwgeom_getSRID(gin), lwgeom_hasZ(gin->type),
+		            pglwgeom_get_srid(gin), lwgeom_hasZ(gin->type),
 		            lwgeom_hasM(gin->type));
 	}
 

@@ -27,8 +27,8 @@ LWPOLY *lwcurvepoly_segmentize(LWCURVEPOLY *curvepoly, uint32 perQuad);
 LWMLINE *lwmcurve_segmentize(LWMCURVE *mcurve, uint32 perQuad);
 LWMPOLY *lwmsurface_segmentize(LWMSURFACE *msurface, uint32 perQuad);
 LWCOLLECTION *lwcollection_segmentize(LWCOLLECTION *collection, uint32 perQuad);
-LWGEOM *append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID);
-LWGEOM *pta_desegmentize(POINTARRAY *points, int type, int SRID);
+LWGEOM *append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int srid);
+LWGEOM *pta_desegmentize(POINTARRAY *points, int type, int srid);
 LWGEOM *lwline_desegmentize(LWLINE *line);
 LWGEOM *lwpolygon_desegmentize(LWPOLY *poly);
 LWGEOM *lwmline_desegmentize(LWMLINE *mline);
@@ -335,7 +335,7 @@ lwcurve_segmentize(LWCIRCSTRING *icurve, uint32 perQuad)
 		}
 
 	}
-	oline = lwline_construct(icurve->SRID, NULL, ptarray);
+	oline = lwline_construct(icurve->srid, NULL, ptarray);
 	return oline;
 }
 
@@ -381,7 +381,7 @@ lwcompound_segmentize(LWCOMPOUND *icompound, uint32 perQuad)
 			return NULL;
 		}
 	}
-	return lwline_construct(icompound->SRID, NULL, ptarray);
+	return lwline_construct(icompound->srid, NULL, ptarray);
 }
 
 LWPOLY *
@@ -424,7 +424,7 @@ lwcurvepoly_segmentize(LWCURVEPOLY *curvepoly, uint32 perQuad)
 		}
 	}
 
-	ogeom = lwpoly_construct(curvepoly->SRID, NULL, curvepoly->nrings, ptarray);
+	ogeom = lwpoly_construct(curvepoly->srid, NULL, curvepoly->nrings, ptarray);
 	return ogeom;
 }
 
@@ -449,7 +449,7 @@ lwmcurve_segmentize(LWMCURVE *mcurve, uint32 perQuad)
 		}
 		else if (tmp->type == LINETYPE)
 		{
-			lines[i] = (LWGEOM *)lwline_construct(mcurve->SRID, NULL, ptarray_clone(((LWLINE *)tmp)->points));
+			lines[i] = (LWGEOM *)lwline_construct(mcurve->srid, NULL, ptarray_clone(((LWLINE *)tmp)->points));
 		}
 		else
 		{
@@ -458,7 +458,7 @@ lwmcurve_segmentize(LWMCURVE *mcurve, uint32 perQuad)
 		}
 	}
 
-	ogeom = (LWMLINE *)lwcollection_construct(MULTILINETYPE, mcurve->SRID, NULL, mcurve->ngeoms, lines);
+	ogeom = (LWMLINE *)lwcollection_construct(MULTILINETYPE, mcurve->srid, NULL, mcurve->ngeoms, lines);
 	return ogeom;
 }
 
@@ -491,10 +491,10 @@ lwmsurface_segmentize(LWMSURFACE *msurface, uint32 perQuad)
 			{
 				ptarray[j] = ptarray_clone(poly->rings[j]);
 			}
-			polys[i] = (LWGEOM *)lwpoly_construct(msurface->SRID, NULL, poly->nrings, ptarray);
+			polys[i] = (LWGEOM *)lwpoly_construct(msurface->srid, NULL, poly->nrings, ptarray);
 		}
 	}
-	ogeom = (LWMPOLY *)lwcollection_construct(MULTIPOLYGONTYPE, msurface->SRID, NULL, msurface->ngeoms, polys);
+	ogeom = (LWMPOLY *)lwcollection_construct(MULTIPOLYGONTYPE, msurface->srid, NULL, msurface->ngeoms, polys);
 	return ogeom;
 }
 
@@ -532,7 +532,7 @@ lwcollection_segmentize(LWCOLLECTION *collection, uint32 perQuad)
 			break;
 		}
 	}
-	ocol = lwcollection_construct(COLLECTIONTYPE, collection->SRID, NULL, collection->ngeoms, geoms);
+	ocol = lwcollection_construct(COLLECTIONTYPE, collection->srid, NULL, collection->ngeoms, geoms);
 	return ocol;
 }
 
@@ -570,12 +570,12 @@ lwgeom_segmentize(LWGEOM *geom, uint32 perQuad)
  * End curve segmentize functions
  ******************************************************************************/
 LWGEOM *
-append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
+append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int srid)
 {
 	LWGEOM *result;
 	int currentType, i;
 
-	LWDEBUGF(2, "append_segment called %p, %p, %d, %d", geom, pts, type, SRID);
+	LWDEBUGF(2, "append_segment called %p, %p, %d, %d", geom, pts, type, srid);
 
 	if (geom == NULL)
 	{
@@ -583,7 +583,7 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
 		{
 			LWDEBUG(3, "append_segment: line to NULL");
 
-			return (LWGEOM *)lwline_construct(SRID, NULL, pts);
+			return (LWGEOM *)lwline_construct(srid, NULL, pts);
 		}
 		else if (type == CIRCSTRINGTYPE)
 		{
@@ -598,7 +598,7 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
 				LWDEBUGF(4, "new point: (%.16f,%.16f)",tmp.x,tmp.y);
 			}
 #endif
-			return (LWGEOM *)lwcircstring_construct(SRID, NULL, pts);
+			return (LWGEOM *)lwcircstring_construct(srid, NULL, pts);
 		}
 		else
 		{
@@ -627,7 +627,7 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
 			getPoint4d_p(pts, i, &pt);
 			ptarray_set_point4d(newPoints, i + line->points->npoints - 1, &pt);
 		}
-		result = (LWGEOM *)lwline_construct(SRID, NULL, newPoints);
+		result = (LWGEOM *)lwline_construct(srid, NULL, newPoints);
 		lwgeom_release(geom);
 		return result;
 	}
@@ -659,7 +659,7 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
 
 			ptarray_set_point4d(newPoints, i + curve->points->npoints - 1, &pt);
 		}
-		result = (LWGEOM *)lwcircstring_construct(SRID, NULL, newPoints);
+		result = (LWGEOM *)lwcircstring_construct(srid, NULL, newPoints);
 		lwgeom_release(geom);
 		return result;
 	}
@@ -673,10 +673,10 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
 		geomArray = lwalloc(sizeof(LWGEOM *)*2);
 		geomArray[0] = lwgeom_clone(geom);
 
-		line = lwline_construct(SRID, NULL, pts);
+		line = lwline_construct(srid, NULL, pts);
 		geomArray[1] = lwgeom_clone((LWGEOM *)line);
 
-		result = (LWGEOM *)lwcollection_construct(COMPOUNDTYPE, SRID, NULL, 2, geomArray);
+		result = (LWGEOM *)lwcollection_construct(COMPOUNDTYPE, srid, NULL, 2, geomArray);
 		lwfree((LWGEOM *)line);
 		lwgeom_release(geom);
 		return result;
@@ -691,10 +691,10 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
 		geomArray = lwalloc(sizeof(LWGEOM *)*2);
 		geomArray[0] = lwgeom_clone(geom);
 
-		curve = lwcircstring_construct(SRID, NULL, pts);
+		curve = lwcircstring_construct(srid, NULL, pts);
 		geomArray[1] = lwgeom_clone((LWGEOM *)curve);
 
-		result = (LWGEOM *)lwcollection_construct(COMPOUNDTYPE, SRID, NULL, 2, geomArray);
+		result = (LWGEOM *)lwcollection_construct(COMPOUNDTYPE, srid, NULL, 2, geomArray);
 		lwfree((LWGEOM *)curve);
 		lwgeom_release(geom);
 		return result;
@@ -717,13 +717,13 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
 		{
 			LWDEBUG(3, "append_segment: line to compound");
 
-			newGeom = (LWGEOM *)lwline_construct(SRID, NULL, pts);
+			newGeom = (LWGEOM *)lwline_construct(srid, NULL, pts);
 		}
 		else if (type == CIRCSTRINGTYPE)
 		{
 			LWDEBUG(3, "append_segment: circularstring to compound");
 
-			newGeom = (LWGEOM *)lwcircstring_construct(SRID, NULL, pts);
+			newGeom = (LWGEOM *)lwcircstring_construct(srid, NULL, pts);
 		}
 		else
 		{
@@ -732,7 +732,7 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
 		}
 		geomArray[compound->ngeoms] = lwgeom_clone(newGeom);
 
-		result = (LWGEOM *)lwcollection_construct(COMPOUNDTYPE, SRID, NULL, count, geomArray);
+		result = (LWGEOM *)lwcollection_construct(COMPOUNDTYPE, srid, NULL, count, geomArray);
 		lwfree(newGeom);
 		lwgeom_release(geom);
 		return result;
@@ -743,7 +743,7 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
 }
 
 LWGEOM *
-pta_desegmentize(POINTARRAY *points, int type, int SRID)
+pta_desegmentize(POINTARRAY *points, int type, int srid)
 {
 	int i, j, commit, isline, count;
 	double last_angle, last_length;
@@ -826,7 +826,7 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
 				ptarray_set_point4d(pts, 2, &tmp);
 
 				commit = i-1;
-				geom = append_segment(geom, pts, CIRCSTRINGTYPE, SRID);
+				geom = append_segment(geom, pts, CIRCSTRINGTYPE, srid);
 				isline = -1;
 
 				/*
@@ -900,7 +900,7 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
 				}
 
 				commit = i-3;
-				geom = append_segment(geom, pts, LINETYPE, SRID);
+				geom = append_segment(geom, pts, LINETYPE, srid);
 				isline = -1;
 			}
 			/* We are tracking a circularstring, keep going */
@@ -932,7 +932,7 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
 		getPoint4d_p(points, i - 1, &tmp);
 		ptarray_set_point4d(pts, 2, &tmp);
 
-		geom = append_segment(geom, pts, CIRCSTRINGTYPE, SRID);
+		geom = append_segment(geom, pts, CIRCSTRINGTYPE, srid);
 	}
 	else
 	{
@@ -947,7 +947,7 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
 			getPoint4d_p(points, j, &tmp);
 			ptarray_set_point4d(pts, j-commit, &tmp);
 		}
-		geom = append_segment(geom, pts, LINETYPE, SRID);
+		geom = append_segment(geom, pts, LINETYPE, srid);
 	}
 	return geom;
 }
@@ -957,7 +957,7 @@ lwline_desegmentize(LWLINE *line)
 {
 	LWDEBUG(2, "lwline_desegmentize called.");
 
-	return pta_desegmentize(line->points, line->flags, line->SRID);
+	return pta_desegmentize(line->points, line->flags, line->srid);
 }
 
 LWGEOM *
@@ -971,7 +971,7 @@ lwpolygon_desegmentize(LWPOLY *poly)
 	geoms = lwalloc(sizeof(LWGEOM *)*poly->nrings);
 	for (i=0; i<poly->nrings; i++)
 	{
-		geoms[i] = pta_desegmentize(poly->rings[i], poly->flags, poly->SRID);
+		geoms[i] = pta_desegmentize(poly->rings[i], poly->flags, poly->srid);
 		if (geoms[i]->type == CIRCSTRINGTYPE || geoms[i]->type == COMPOUNDTYPE)
 		{
 			hascurve = 1;
@@ -986,7 +986,7 @@ lwpolygon_desegmentize(LWPOLY *poly)
 		return lwgeom_clone((LWGEOM *)poly);
 	}
 
-	return (LWGEOM *)lwcollection_construct(CURVEPOLYTYPE, poly->SRID, NULL, poly->nrings, geoms);
+	return (LWGEOM *)lwcollection_construct(CURVEPOLYTYPE, poly->srid, NULL, poly->nrings, geoms);
 }
 
 LWGEOM *
@@ -1014,7 +1014,7 @@ lwmline_desegmentize(LWMLINE *mline)
 		}
 		return lwgeom_clone((LWGEOM *)mline);
 	}
-	return (LWGEOM *)lwcollection_construct(MULTICURVETYPE, mline->SRID, NULL, mline->ngeoms, geoms);
+	return (LWGEOM *)lwcollection_construct(MULTICURVETYPE, mline->srid, NULL, mline->ngeoms, geoms);
 }
 
 LWGEOM *
@@ -1042,7 +1042,7 @@ lwmpolygon_desegmentize(LWMPOLY *mpoly)
 		}
 		return lwgeom_clone((LWGEOM *)mpoly);
 	}
-	return (LWGEOM *)lwcollection_construct(MULTISURFACETYPE, mpoly->SRID, NULL, mpoly->ngeoms, geoms);
+	return (LWGEOM *)lwcollection_construct(MULTISURFACETYPE, mpoly->srid, NULL, mpoly->ngeoms, geoms);
 }
 
 LWGEOM *

@@ -77,8 +77,8 @@ extern PG_LWGEOM *pglwgeom_from_ewkb(uchar *ewkb, int flags, size_t ewkblen);
 extern char *pglwgeom_to_ewkb(PG_LWGEOM *geom, int flags, char byteorder, size_t *ewkblen);
 
 /* PG_LWGEOM SRID get/set */
-extern PG_LWGEOM *pglwgeom_setSRID(PG_LWGEOM *pglwgeom, int32 newSRID);
-extern int pglwgeom_getSRID(PG_LWGEOM *pglwgeom);
+extern PG_LWGEOM *pglwgeom_set_srid(PG_LWGEOM *pglwgeom, int32 newSRID);
+extern int pglwgeom_get_srid(PG_LWGEOM *pglwgeom);
 
 extern Oid getGeometryOID(void);
 

@@ -536,9 +536,9 @@ lwgeom_as_multi(const LWGEOM *lwgeom)
 		/* Sub-geometries are not allowed to have bboxes or SRIDs, move the bbox to the collection */
 		box = ogeoms[0]->bbox;
 		ogeoms[0]->bbox = NULL;
-		ogeoms[0]->SRID = -1;
+		ogeoms[0]->srid = -1;
 
-		ogeom = (LWGEOM *)lwcollection_construct(MULTITYPE[type], lwgeom->SRID, box, 1, ogeoms);
+		ogeom = (LWGEOM *)lwcollection_construct(MULTITYPE[type], lwgeom->srid, box, 1, ogeoms);
 	}
 	else
 	{
@@ -910,7 +910,7 @@ lwgeom_add_bbox(LWGEOM *lwgeom)
 void
 lwgeom_drop_srid(LWGEOM *lwgeom)
 {
-	lwgeom->SRID = -1;	/* TODO: To be changed to SRID_UNKNOWN */
+	lwgeom->srid = -1;	/* TODO: To be changed to SRID_UNKNOWN */
 }
 
 LWGEOM *
@@ -1289,7 +1289,7 @@ int lwgeom_is_empty(const LWGEOM *geom)
 
 int lwgeom_has_srid(const LWGEOM *geom)
 {
-	if ( (int)(geom->SRID) > 0 )
+	if ( (int)(geom->srid) > 0 )
 		return LW_TRUE;
 
 	return LW_FALSE;
@@ -1459,7 +1459,7 @@ void lwgeom_set_srid(LWGEOM *geom, int srid)
 {
 	int i;
 
-	geom->SRID = srid;
+	geom->srid = srid;
 
 	LWDEBUG(4,"entered");
 	if ( lwgeom_is_collection(geom) )

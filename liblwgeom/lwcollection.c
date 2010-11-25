@@ -26,7 +26,7 @@ lwcollection_release(LWCOLLECTION *lwcollection)
 
 
 LWCOLLECTION *
-lwcollection_construct(uchar type, int SRID, GBOX *bbox,
+lwcollection_construct(uchar type, int srid, GBOX *bbox,
                        uint32 ngeoms, LWGEOM **geoms)
 {
 	LWCOLLECTION *ret;
@@ -36,7 +36,7 @@ lwcollection_construct(uchar type, int SRID, GBOX *bbox,
 	uint32 i;
 #endif
 
-	LWDEBUGF(2, "lwcollection_construct called with %d, %d, %p, %d, %p.", type, SRID, bbox, ngeoms, geoms);
+	LWDEBUGF(2, "lwcollection_construct called with %d, %d, %p, %d, %p.", type, srid, bbox, ngeoms, geoms);
 
 	hasz = 0;
 	hasm = 0;
@@ -64,7 +64,7 @@ lwcollection_construct(uchar type, int SRID, GBOX *bbox,
 	ret->type = type;
 	ret->flags = gflags(hasz,hasm,0);
 	FLAGS_SET_BBOX(ret->flags, bbox?1:0);
-	ret->SRID = SRID;
+	ret->srid = srid;
 	ret->ngeoms = ngeoms;
 	ret->maxgeoms = ngeoms;
 	ret->geoms = geoms;
@@ -83,7 +83,7 @@ lwcollection_construct_empty(uchar type, int srid, char hasz, char hasm)
 	ret = lwalloc(sizeof(LWCOLLECTION));
 	ret->type = type;
 	ret->flags = gflags(hasz,hasm,0);
-	ret->SRID = srid;
+	ret->srid = srid;
 	ret->ngeoms = 0;
 	ret->maxgeoms = 1; /* Allocate room for sub-members, just in case. */
 	ret->geoms = lwalloc(ret->maxgeoms * sizeof(LWGEOM*));
@@ -113,7 +113,7 @@ lwcollection_deserialize(uchar *srl)
 	result = lwalloc(sizeof(LWCOLLECTION));
 	result->type = type;
 	result->flags = gflags(TYPE_HASZ(typefl),TYPE_HASM(typefl),0);
-	result->SRID = insp->SRID;
+	result->srid = insp->srid;
 	result->ngeoms = insp->ngeometries;
 
 	if (lwgeom_hasBBOX(srl[0]))
@@ -164,7 +164,7 @@ lwcollection_serialize_size(LWCOLLECTION *col)
 	size_t size = 5; /* type + nsubgeoms */
 	int i;
 
-	if ( col->SRID != -1 ) size += 4; /* SRID */
+	if ( col->srid != -1 ) size += 4; /* srid */
 	if ( col->bbox ) size += sizeof(BOX2DFLOAT4);
 
 	LWDEBUGF(2, "lwcollection_serialize_size[%p]: start size: %d", col, size);
@@ -191,18 +191,18 @@ lwcollection_serialize_buf(LWCOLLECTION *coll, uchar *buf, size_t *retsize)
 {
 	size_t size=1; /* type  */
 	size_t subsize=0;
-	char hasSRID;
+	char has_srid;
 	uchar *loc;
 	int i;
 
 	LWDEBUGF(2, "lwcollection_serialize_buf called (%s with %d elems)",
 	         lwtype_name(coll->type), coll->ngeoms);
 
-	hasSRID = (coll->SRID != -1);
+	has_srid = (coll->srid != -1);
 
 	buf[0] = lwgeom_makeType_full(FLAGS_GET_Z(coll->flags),
 	                              FLAGS_GET_M(coll->flags),
-	                              hasSRID,
+	                              has_srid,
 	                              coll->type,
 	                              coll->bbox ? 1 : 0 );
 	loc = buf+1;
@@ -220,9 +220,9 @@ lwcollection_serialize_buf(LWCOLLECTION *coll, uchar *buf, size_t *retsize)
 	}
 
 	/* Add SRID if requested */
-	if (hasSRID)
+	if (has_srid)
 	{
-		memcpy(loc, &coll->SRID, 4);
+		memcpy(loc, &coll->srid, 4);
 		size += 4;
 		loc += 4;
 	}
@@ -346,7 +346,7 @@ lwcollection_segmentize2d(LWCOLLECTION *col, double dist)
 	for (i=0; i<col->ngeoms; i++)
 		newgeoms[i] = lwgeom_segmentize2d(col->geoms[i], dist);
 
-	return lwcollection_construct(col->type, col->SRID, NULL, col->ngeoms, newgeoms);
+	return lwcollection_construct(col->type, col->srid, NULL, col->ngeoms, newgeoms);
 }
 
 /** @brief check for same geometry composition
@@ -605,12 +605,12 @@ LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type)
 
 	if ( geomlistlen > 0 )
 	{
-		outcol = lwcollection_construct(outtype, col->SRID, NULL, geomlistlen, geomlist);
+		outcol = lwcollection_construct(outtype, col->srid, NULL, geomlistlen, geomlist);
 		lwgeom_calculate_gbox((LWGEOM *) outcol, outcol->bbox);
 	}
 	else
 	{
-		outcol = lwcollection_construct_empty(COLLECTIONTYPE, col->SRID, FLAGS_GET_Z(col->flags), FLAGS_GET_M(col->flags));
+		outcol = lwcollection_construct_empty(COLLECTIONTYPE, col->srid, FLAGS_GET_Z(col->flags), FLAGS_GET_M(col->flags));
 	}
 
 	return outcol;
@@ -629,7 +629,7 @@ lwcollection_remove_repeated_points(LWCOLLECTION *coll)
 	}
 
 	return (LWGEOM*)lwcollection_construct(coll->type,
-	                                       coll->SRID, coll->bbox ? gbox_copy(coll->bbox) : NULL,
+	                                       coll->srid, coll->bbox ? gbox_copy(coll->bbox) : NULL,
 	                                       coll->ngeoms, newgeoms);
 }
 
@@ -642,7 +642,7 @@ lwcollection_force_dims(const LWCOLLECTION *col, int hasz, int hasm)
 	/* Return 2D empty */
 	if( lwcollection_is_empty(col) )
 	{
-		colout = lwcollection_construct_empty(col->type, col->SRID, hasz, hasm);
+		colout = lwcollection_construct_empty(col->type, col->srid, hasz, hasm);
 	}
 	else
 	{
@@ -653,7 +653,7 @@ lwcollection_force_dims(const LWCOLLECTION *col, int hasz, int hasm)
 		{
 			geoms[i] = lwgeom_force_dims(col->geoms[i], hasz, hasm);
 		}
-		colout = lwcollection_construct(col->type, col->SRID, NULL, col->ngeoms, geoms);
+		colout = lwcollection_construct(col->type, col->srid, NULL, col->ngeoms, geoms);
 	}
 	return colout;
 }
@@ -681,7 +681,7 @@ int lwcollection_count_vertices(LWCOLLECTION *col)
 LWCOLLECTION* lwcollection_simplify(const LWCOLLECTION *igeom, double dist)
 {
  	int i;
-	LWCOLLECTION *out = lwcollection_construct_empty(igeom->type, igeom->SRID, FLAGS_GET_Z(igeom->flags), FLAGS_GET_M(igeom->flags));
+	LWCOLLECTION *out = lwcollection_construct_empty(igeom->type, igeom->srid, FLAGS_GET_Z(igeom->flags), FLAGS_GET_M(igeom->flags));
 
 	if( lwcollection_is_empty(igeom) )
 		return out;

@@ -547,7 +547,7 @@ Datum BOX2DFLOAT4_construct(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	errorIfSRIDMismatch(minpoint->SRID, maxpoint->SRID);
+	error_if_srid_mismatch(minpoint->srid, maxpoint->srid);
 
 	getPoint2d_p(((LWPOINT *)minpoint)->point, 0, &minp);
 	getPoint2d_p(((LWPOINT *)maxpoint)->point, 0, &maxp);

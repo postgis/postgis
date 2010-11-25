@@ -38,7 +38,7 @@ lwpsurface_deserialize(uchar *srl)
 	result = lwalloc(sizeof(LWPSURFACE));
 	result->type = type;
 	result->flags = gflags(TYPE_HASZ(srl[0]), TYPE_HASM(srl[0]), 0);
-	result->SRID = insp->SRID;
+	result->srid = insp->srid;
 	result->ngeoms = insp->ngeometries;
 
 	if ( insp->ngeometries )
@@ -118,7 +118,7 @@ void printLWPSURFACE(LWPSURFACE *psurf)
 
 	lwnotice("LWPSURFACE {");
 	lwnotice("    ndims = %i", (int)FLAGS_NDIMS(psurf->flags));
-	lwnotice("    SRID = %i", (int)psurf->SRID);
+	lwnotice("    SRID = %i", (int)psurf->srid);
 	lwnotice("    ngeoms = %i", (int)psurf->ngeoms);
 
 	for (i=0; i<psurf->ngeoms; i++)

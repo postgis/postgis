@@ -50,7 +50,7 @@ lwmpoint_deserialize(uchar *srl)
 	result = lwalloc(sizeof(LWMPOINT));
 	result->type = geomtype;
 	result->flags = gflags(TYPE_HASZ(type), TYPE_HASM(type), 0);
-	result->SRID = insp->SRID;
+	result->srid = insp->srid;
 	result->ngeoms = insp->ngeometries;
 
 	if ( insp->ngeometries )
@@ -149,7 +149,7 @@ lwmpoint_remove_repeated_points(LWMPOINT *mpoint)
 	}
 
 	return (LWGEOM*)lwcollection_construct(mpoint->type,
-	                                       mpoint->SRID, mpoint->bbox ? gbox_copy(mpoint->bbox) : NULL,
+	                                       mpoint->srid, mpoint->bbox ? gbox_copy(mpoint->bbox) : NULL,
 	                                       nnewgeoms, newgeoms);
 
 }

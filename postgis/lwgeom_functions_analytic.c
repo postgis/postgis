@@ -116,11 +116,11 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 
 		opa = ptarray_construct_reference_data(FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags), 1, (uchar*)&pt);
 		
-		point = lwpoint_construct(line->SRID, 0, opa);
+		point = lwpoint_construct(line->srid, 0, opa);
 		srl = lwpoint_serialize(point);
 		/* We shouldn't need this, the memory context is getting freed on the next line.
 		lwpoint_free(point); */
-		PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->SRID, 0));
+		PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->srid, 0));
 	}
 
 	/* Interpolate a point on the line */
@@ -149,11 +149,11 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 			double dseg = (distance - tlength) / slength;
 			interpolate_point4d(&p1, &p2, &pt, dseg);
 			opa = ptarray_construct_reference_data(FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags), 1, (uchar*)&pt);
-			point = lwpoint_construct(line->SRID, 0, opa);
+			point = lwpoint_construct(line->srid, 0, opa);
 			srl = lwpoint_serialize(point);
 			/* We shouldn't need this, the memory context is getting freed on the next line
 			lwpoint_free(point); */
-			PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->SRID, 0));
+			PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->srid, 0));
 		}
 		tlength += slength;
 	}
@@ -162,11 +162,11 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 	 * could if there's some floating point rounding errors. */
 	getPoint4d_p(ipa, ipa->npoints-1, &pt);
 	opa = ptarray_construct_reference_data(FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags), 1, (uchar*)&pt);
-	point = lwpoint_construct(line->SRID, 0, opa);
+	point = lwpoint_construct(line->srid, 0, opa);
 	srl = lwpoint_serialize(point);
 	/* We shouldn't need this, the memory context is getting freed on the next line
 	lwpoint_free(point); */
-	PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->SRID, 0));
+	PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->srid, 0));
 }
 /***********************************************************************
  * --jsunday@rochgrp.com;
@@ -337,7 +337,7 @@ lwline_grid(LWLINE *line, gridspec *grid)
 	if ( opa->npoints < 2 ) return NULL;
 
 	/* TODO: grid bounding box... */
-	oline = lwline_construct(line->SRID, NULL, opa);
+	oline = lwline_construct(line->srid, NULL, opa);
 
 	return oline;
 }
@@ -424,7 +424,7 @@ lwpoly_grid(LWPOLY *poly, gridspec *grid)
 
 	if ( ! nrings ) return NULL;
 
-	opoly = lwpoly_construct(poly->SRID, NULL, nrings, newrings);
+	opoly = lwpoly_construct(poly->srid, NULL, nrings, newrings);
 	return opoly;
 }
 
@@ -437,7 +437,7 @@ lwpoint_grid(LWPOINT *point, gridspec *grid)
 	opa = ptarray_grid(point->point, grid);
 
 	/* TODO: grid bounding box ? */
-	opoint = lwpoint_construct(point->SRID, NULL, opa);
+	opoint = lwpoint_construct(point->srid, NULL, opa);
 
 	LWDEBUG(2, "lwpoint_grid called");
 
@@ -459,9 +459,9 @@ lwcollection_grid(LWCOLLECTION *coll, gridspec *grid)
 		if ( g ) geoms[ngeoms++] = g;
 	}
 
-	if ( ! ngeoms ) return lwcollection_construct_empty(COLLECTIONTYPE, coll->SRID, 0, 0);
+	if ( ! ngeoms ) return lwcollection_construct_empty(COLLECTIONTYPE, coll->srid, 0, 0);
 
-	return lwcollection_construct(coll->type, coll->SRID,
+	return lwcollection_construct(coll->type, coll->srid,
 	                              NULL, ngeoms, geoms);
 }
 
@@ -688,7 +688,7 @@ Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_LWGEOM *geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
+	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
 
 	/*
 	** If the bounding boxes don't interact, then there can't be any
@@ -825,9 +825,9 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 		opa = ptarray_substring(ipa, from, to);
 
 		if ( opa->npoints == 1 ) /* Point returned */
-			olwgeom = (LWGEOM *)lwpoint_construct(iline->SRID, NULL, opa);
+			olwgeom = (LWGEOM *)lwpoint_construct(iline->srid, NULL, opa);
 		else
-			olwgeom = (LWGEOM *)lwline_construct(iline->SRID, NULL, opa);
+			olwgeom = (LWGEOM *)lwline_construct(iline->srid, NULL, opa);
 
 	}
 	else if ( TYPE_GETTYPE(type) == MULTILINETYPE )
@@ -893,12 +893,12 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 			{
 				if ( opa->npoints == 1 ) /* Point returned */
 				{
-					geoms[g] = (LWGEOM *)lwpoint_construct(iline->SRID, NULL, opa);
+					geoms[g] = (LWGEOM *)lwpoint_construct(iline->srid, NULL, opa);
 					homogeneous = LW_FALSE;
 				}
 				else
 				{
-					geoms[g] = (LWGEOM *)lwline_construct(iline->SRID, NULL, opa);
+					geoms[g] = (LWGEOM *)lwline_construct(iline->srid, NULL, opa);
 				}
 				g++;
 			}
@@ -910,7 +910,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 		if ( ! homogeneous )
 			TYPE_SETTYPE(type,COLLECTIONTYPE);
 
-		olwgeom = (LWGEOM*)lwcollection_construct(TYPE_GETTYPE(type), iline->SRID, NULL, g, geoms);
+		olwgeom = (LWGEOM*)lwcollection_construct(TYPE_GETTYPE(type), iline->srid, NULL, g, geoms);
 	}
 	else
 	{
@@ -948,7 +948,7 @@ Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS)
 		elog(ERROR,"line_locate_point: 2st arg isnt a point");
 		PG_RETURN_NULL();
 	}
-	if ( pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2) )
+	if ( pglwgeom_get_srid(geom1) != pglwgeom_get_srid(geom2) )
 	{
 		elog(ERROR, "Operation on two geometries with different SRIDs");
 		PG_RETURN_NULL();

@@ -478,7 +478,7 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 	key1 = PG_GETARG_INT32(2);
 
 	errorIfGeometryCollection(geom1,geom2);
-	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
+	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
 
 	POSTGIS_DEBUG(3, "containsPrepared: entered function");
 
@@ -553,7 +553,7 @@ Datum coversPrepared(PG_FUNCTION_ARGS)
 	key1 = PG_GETARG_INT32(2);
 
 	errorIfGeometryCollection(geom1,geom2);
-	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
+	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
 
 	/*
 	* short-circuit: if geom2 bounding box is not completely inside
@@ -625,7 +625,7 @@ Datum intersectsPrepared(PG_FUNCTION_ARGS)
 	key2 = PG_GETARG_INT32(3);
 
 	errorIfGeometryCollection(geom1,geom2);
-	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
+	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
 
 	/*
 	* short-circuit 1: if geom2 bounding box does not overlap

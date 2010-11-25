@@ -436,7 +436,7 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 		if (state->config->hwgeom)
 		{
 			for (u = 0; u < obj->nParts; u++)
-				lwmultilinestrings[u]->SRID = -1;
+				lwmultilinestrings[u]->srid = -1;
 		}
 
 		serialized_lwgeom = lwgeom_serialize(lwcollection_as_lwgeom(lwcollection));
@@ -797,7 +797,7 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 		if (state->config->hwgeom)
 		{
 			for (u = 0; u < pi; u++)
-				lwpolygons[u]->SRID = -1;
+				lwpolygons[u]->srid = -1;
 		}
 
 		serialized_lwgeom = lwgeom_serialize(lwcollection_as_lwgeom(lwcollection));

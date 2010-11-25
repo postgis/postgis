@@ -64,7 +64,7 @@ lwgeom_homogenize(const LWGEOM *geom)
 			hgeom = lwgeom_clone((LWGEOM *)
 			                     ((LWCOLLECTION *)geom)->geoms[0]);
 
-			hgeom->SRID = geom->SRID;
+			hgeom->srid = geom->srid;
 			if (geom->bbox)
 				hgeom->bbox = gbox_copy(geom->bbox);
 
@@ -111,11 +111,11 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 
 	/* EMPTY Geometry case */
 	if (col->ngeoms == 0)
-		return (LWGEOM *) lwcollection_construct_empty(COLLECTIONTYPE, col->SRID, 0, 0);
+		return (LWGEOM *) lwcollection_construct_empty(COLLECTIONTYPE, col->srid, 0, 0);
 
 	hasz = FLAGS_GET_Z(col->flags);
 	hasm = FLAGS_GET_M(col->flags);
-	srid = col->SRID;
+	srid = col->srid;
 
 	/* LWGEOM_HOMOGENIZE struct setup */
 	geoms = lwalloc(sizeof(LWGEOM_HOMOGENIZE));
@@ -198,10 +198,10 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 	lwfree(geoms);
 
 	/* Empty (and recursive) Geometry case */
-	if (!res) return (LWGEOM *) lwcollection_construct_empty(COLLECTIONTYPE, col->SRID, 0, 0);
+	if (!res) return (LWGEOM *) lwcollection_construct_empty(COLLECTIONTYPE, col->srid, 0, 0);
 
-	/* Handle SRID and Bbox */
-	res->SRID = srid;
+	/* Handle srid and Bbox */
+	res->srid = srid;
 	if (col->bbox) res->bbox = gbox_copy(col->bbox);
 
 	return res;
@@ -214,8 +214,8 @@ lwcollection_homogenize_subgeom(LWGEOM_HOMOGENIZE *hgeoms, LWGEOM *geom)
 
 	if (!geom) lwerror("lwcollection_homogenize: Sub geometry is Null");
 
-	/* We manage the SRID in lwcollection_homogenize */
-	geom->SRID = -1;
+	/* We manage the srid in lwcollection_homogenize */
+	geom->srid = -1;
 
 	if (geom->type == POINTTYPE)
 	{

@@ -290,7 +290,7 @@ lwline_make_geos_friendly(LWLINE *line)
 		ret = (LWGEOM*)line;
 #else
 		/* Turn into a point */
-		ret = (LWGEOM*)lwpoint_construct(line->SRID, 0, line->points);
+		ret = (LWGEOM*)lwpoint_construct(line->srid, 0, line->points);
 #endif
 		return ret;
 	}
@@ -956,7 +956,7 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 
 	GEOSGeom_destroy(geosout);
 
-	lwgeom_out->SRID = lwgeom_in->SRID;
+	lwgeom_out->srid = lwgeom_in->srid;
 	return lwgeom_out;
 }
 

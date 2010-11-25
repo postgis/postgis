@@ -824,9 +824,9 @@ lwgeom_getType(uchar type)
 
 /* Construct a type (hasBOX=false) */
 uchar
-lwgeom_makeType(char hasz, char hasm, char hasSRID, int type)
+lwgeom_makeType(char hasz, char hasm, char has_srid, int type)
 {
-	return lwgeom_makeType_full(hasz, hasm, hasSRID, type, 0);
+	return lwgeom_makeType_full(hasz, hasm, has_srid, type, 0);
 }
 
 /*
@@ -834,12 +834,12 @@ lwgeom_makeType(char hasz, char hasm, char hasSRID, int type)
  * TODO: needs to be expanded to accept explicit MZ type
  */
 uchar
-lwgeom_makeType_full(char hasz, char hasm, char hasSRID, int type, char hasBBOX)
+lwgeom_makeType_full(char hasz, char hasm, char has_srid, int type, char hasBBOX)
 {
 	uchar result = (char)type;
 
 	TYPE_SETZM(result, hasz, hasm);
-	TYPE_SETHASSRID(result, hasSRID);
+	TYPE_SETHASSRID(result, has_srid);
 	TYPE_SETHASBBOX(result, hasBBOX);
 
 	return result;
@@ -911,7 +911,7 @@ lwgeom_inspect(const uchar *serialized_form)
 
 	result->serialized_form = serialized_form;
 	result->type = (uchar) serialized_form[0];
-	result->SRID = -1; /* assume */
+	result->srid = -1; /* assume */
 
 	type = lwgeom_getType(typefl);
 
@@ -924,7 +924,7 @@ lwgeom_inspect(const uchar *serialized_form)
 
 	if ( lwgeom_hasSRID(typefl) )
 	{
-		result->SRID = lw_get_int32(loc);
+		result->srid = lw_get_int32(loc);
 		loc += 4;
 	}
 
@@ -1347,7 +1347,7 @@ lwgeom_getnumgeometries_inspected(LWGEOM_INSPECTED *inspected)
  * if you want to construct an inspected, call this then inspect the result...
  */
 uchar *
-lwgeom_serialized_construct(int SRID, int finalType, char hasz, char hasm,
+lwgeom_serialized_construct(int srid, int finalType, char hasz, char hasm,
                             int nsubgeometries, uchar **serialized_subs)
 {
 	uint32 *lengths;
@@ -1359,7 +1359,7 @@ lwgeom_serialized_construct(int SRID, int finalType, char hasz, char hasm,
 	uchar *loc;
 
 	if (nsubgeometries == 0)
-		return lwgeom_constructempty(SRID, hasz, hasm);
+		return lwgeom_constructempty(srid, hasz, hasm);
 
 	lengths = lwalloc(sizeof(int32) * nsubgeometries);
 
@@ -1414,17 +1414,17 @@ lwgeom_serialized_construct(int SRID, int finalType, char hasz, char hasm,
 
 	/* now we have a multi* or GEOMETRYCOLLECTION, let's serialize it */
 
-	if (SRID != -1)
+	if (srid != -1)
 		total_length +=4; /* space for SRID */
 
 	total_length +=1 ;   /* main type; */
 	total_length +=4 ;   /* nsubgeometries */
 
 	result = lwalloc(total_length);
-	result[0] = (uchar) lwgeom_makeType(hasz, hasm, SRID != -1,  type);
-	if (SRID != -1)
+	result[0] = (uchar) lwgeom_makeType(hasz, hasm, srid != -1,  type);
+	if (srid != -1)
 	{
-		memcpy(&result[1],&SRID,4);
+		memcpy(&result[1],&srid,4);
 		loc = result+5;
 	}
 	else
@@ -1450,24 +1450,24 @@ lwgeom_serialized_construct(int SRID, int finalType, char hasz, char hasm,
  * Returns serialized form
  */
 uchar *
-lwgeom_constructempty(int SRID, char hasz, char hasm)
+lwgeom_constructempty(int srid, char hasz, char hasm)
 {
 	int size = 0;
 	uchar *result;
 	int ngeoms = 0;
 	uchar *loc;
 
-	if (SRID != -1)
+	if (srid != -1)
 		size +=4;
 
 	size += 5;
 
 	result = lwalloc(size);
 
-	result[0] = lwgeom_makeType(hasz, hasm, SRID != -1,  COLLECTIONTYPE);
-	if (SRID != -1)
+	result[0] = lwgeom_makeType(hasz, hasm, srid != -1,  COLLECTIONTYPE);
+	if (srid != -1)
 	{
-		memcpy(&result[1],&SRID,4);
+		memcpy(&result[1],&srid,4);
 		loc = result+5;
 	}
 	else
@@ -1478,10 +1478,10 @@ lwgeom_constructempty(int SRID, char hasz, char hasm)
 }
 
 size_t
-lwgeom_empty_length(int SRID)
+lwgeom_empty_length(int srid)
 {
 	int size = 5;
-	if ( SRID != 1 ) size += 4;
+	if ( srid != 1 ) size += 4;
 	return size;
 }
 
@@ -1490,15 +1490,15 @@ lwgeom_empty_length(int SRID)
  * writing it into the provided buffer.
  */
 void
-lwgeom_constructempty_buf(int SRID, char hasz, char hasm,
+lwgeom_constructempty_buf(int srid, char hasz, char hasm,
                           uchar *buf, size_t *retsize)
 {
 	int ngeoms = 0;
 
-	buf[0] =(uchar) lwgeom_makeType( hasz, hasm, SRID != -1,  COLLECTIONTYPE);
-	if (SRID != -1)
+	buf[0] =(uchar) lwgeom_makeType( hasz, hasm, srid != -1,  COLLECTIONTYPE);
+	if (srid != -1)
 	{
-		memcpy(&buf[1],&SRID,4);
+		memcpy(&buf[1],&srid,4);
 		buf += 5;
 	}
 	else
@@ -1506,7 +1506,7 @@ lwgeom_constructempty_buf(int SRID, char hasz, char hasm,
 
 	memcpy(buf, &ngeoms, 4);
 
-	if (retsize) *retsize = lwgeom_empty_length(SRID);
+	if (retsize) *retsize = lwgeom_empty_length(srid);
 }
 
 /**
@@ -1898,11 +1898,11 @@ printMULTI(uchar *serialized)
 void
 printType(uchar type)
 {
-	lwnotice("type 0x%x ==> hasBBOX=%i, hasSRID=%i, ndims=%i, type=%i",(uint32) type, lwgeom_hasBBOX(type), lwgeom_hasSRID(type),lwgeom_ndims(type), lwgeom_getType(type));
+	lwnotice("type 0x%x ==> hasBBOX=%i, has_srid=%i, ndims=%i, type=%i",(uint32) type, lwgeom_hasBBOX(type), lwgeom_hasSRID(type),lwgeom_ndims(type), lwgeom_getType(type));
 }
 
 /**
- * Get the SRID from the LWGEOM.
+ * Get the srid from the LWGEOM.
  * None present => -1
  */
 int

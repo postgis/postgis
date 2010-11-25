@@ -29,9 +29,9 @@
 
 
 /* ---- SRID(geometry) */
-Datum LWGEOM_getSRID(PG_FUNCTION_ARGS);
+Datum LWGEOM_get_srid(PG_FUNCTION_ARGS);
 /* ---- SetSRID(geometry, integer) */
-Datum LWGEOM_setSRID(PG_FUNCTION_ARGS);
+Datum LWGEOM_set_srid(PG_FUNCTION_ARGS);
 /* ---- GeometryType(geometry) */
 Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS);
 Datum geometry_geometrytype(PG_FUNCTION_ARGS);
@@ -81,24 +81,24 @@ static int32 lwgeom_dimension_recursive(const uchar *serialized);
 /*------------------------------------------------------------------*/
 
 /* getSRID(lwgeom) :: int4 */
-PG_FUNCTION_INFO_V1(LWGEOM_getSRID);
-Datum LWGEOM_getSRID(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(LWGEOM_get_srid);
+Datum LWGEOM_get_srid(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *pglwgeom=(PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	int srid = pglwgeom_getSRID (pglwgeom);
+	int srid = pglwgeom_get_srid (pglwgeom);
 	PG_FREE_IF_COPY(pglwgeom,0);
 	PG_RETURN_INT32(srid);
 }
 
 /* setSRID(lwgeom, int4) :: lwgeom */
-PG_FUNCTION_INFO_V1(LWGEOM_setSRID);
-Datum LWGEOM_setSRID(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(LWGEOM_set_srid);
+Datum LWGEOM_set_srid(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	int newSRID = PG_GETARG_INT32(1);
+	int new_srid = PG_GETARG_INT32(1);
 	PG_LWGEOM *result;
 
-	result = PG_LWGEOM_construct(SERIALIZED_FORM(geom), newSRID,
+	result = PG_LWGEOM_construct(SERIALIZED_FORM(geom), new_srid,
 	                             lwgeom_hasBBOX(geom->type));
 
 	PG_FREE_IF_COPY(geom, 0);
@@ -342,7 +342,7 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 	if ( idx >= coll->ngeoms ) PG_RETURN_NULL();
 
 	subgeom = coll->geoms[idx];
-	subgeom->SRID = coll->SRID;
+	subgeom->srid = coll->srid;
 
 	/* COMPUTE_BBOX==TAINTING */
 	if ( coll->bbox ) lwgeom_add_bbox(subgeom);
@@ -510,7 +510,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 		* the output geom, as exterior ring makes it up !
 		*/
 		if ( poly->bbox ) bbox=gbox_copy(poly->bbox);
-		line = lwline_construct(poly->SRID, bbox, extring);
+		line = lwline_construct(poly->srid, bbox, extring);
 
 		result = pglwgeom_serialize((LWGEOM *)line);
 
@@ -527,7 +527,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 		* the output geom, as exterior ring makes it up !
 		*/
 		if ( triangle->bbox ) bbox=gbox_copy(triangle->bbox);
-		line = lwline_construct(triangle->SRID, bbox, triangle->points);
+		line = lwline_construct(triangle->srid, bbox, triangle->points);
 
 		result = pglwgeom_serialize((LWGEOM *)line);
 
@@ -670,10 +670,10 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 		if ( poly->bbox ) ptarray_calculate_gbox(ring, bbox);
 
 		/* This is a LWLINE constructed by interior ring POINTARRAY */
-		line = lwline_construct(poly->SRID, bbox, ring);
+		line = lwline_construct(poly->srid, bbox, ring);
 
 		/* Copy SRID from polygon */
-		line->SRID = poly->SRID;
+		line->srid = poly->srid;
 
 		result = pglwgeom_serialize((LWGEOM *)line);
 		lwgeom_release((LWGEOM *)line);
@@ -798,7 +798,7 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 	}
 
 	/* Construct an LWPOINT */
-	point = lwpoint_construct(pglwgeom_getSRID(geom),
+	point = lwpoint_construct(pglwgeom_get_srid(geom),
 	                          NULL, pts);
 
 	/* Serialized the point */
@@ -808,7 +808,7 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 	 * TODO: use serialize_buf above, instead ..
 	 */
 	result = PG_LWGEOM_construct(serializedpoint,
-	                             pglwgeom_getSRID(geom), 0);
+	                             pglwgeom_get_srid(geom), 0);
 
 	pfree(point);
 	pfree(serializedpoint);
@@ -980,7 +980,7 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 	lwgeom_release((LWGEOM *)line);
 
 	/* Construct an LWPOINT */
-	point = lwpoint_construct(pglwgeom_getSRID(geom), NULL, pts);
+	point = lwpoint_construct(pglwgeom_get_srid(geom), NULL, pts);
 
 	/* Construct a PG_LWGEOM */
 	result = pglwgeom_serialize((LWGEOM *)point);
@@ -1044,7 +1044,7 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 	lwgeom_release((LWGEOM *)line);
 
 	/* Construct an LWPOINT */
-	point = (LWGEOM *)lwpoint_construct(pglwgeom_getSRID(geom), NULL, pts);
+	point = (LWGEOM *)lwpoint_construct(pglwgeom_get_srid(geom), NULL, pts);
 
 	/* Serialize an PG_LWGEOM */
 	result = pglwgeom_serialize(point);
@@ -1099,13 +1099,13 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 
 	lwgeom = lwgeom_deserialize(lwg_parser_result.serialized_lwgeom);
 
-	if ( lwgeom->SRID != -1 || FLAGS_GET_ZM(lwgeom->flags) != 0 )
+	if ( lwgeom->srid != -1 || FLAGS_GET_ZM(lwgeom->flags) != 0 )
 	{
 		elog(WARNING, "OGC WKT expected, EWKT provided - use GeomFromEWKT() for this");
 	}
 
 	/* read user-requested SRID if any */
-	if ( PG_NARGS() > 1 ) lwgeom->SRID = PG_GETARG_INT32(1);
+	if ( PG_NARGS() > 1 ) lwgeom->srid = PG_GETARG_INT32(1);
 
 	geom_result = pglwgeom_serialize(lwgeom);
 	lwgeom_release(lwgeom);
@@ -1125,13 +1125,13 @@ PG_FUNCTION_INFO_V1(LWGEOM_from_WKB);
 Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
-	int32 SRID;
+	int32 srid;
 	PG_LWGEOM *result = NULL;
 
 	geom = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
 	                                        LWGEOMFromWKB, PG_GETARG_DATUM(0)));
 
-	if ( pglwgeom_getSRID(geom) != -1 || TYPE_GETZM(geom->type) != 0 )
+	if ( pglwgeom_get_srid(geom) != -1 || TYPE_GETZM(geom->type) != 0 )
 	{
 		elog(WARNING, "OGC WKB expected, EWKB provided - use GeometryFromEWKB() for this");
 	}
@@ -1140,10 +1140,10 @@ Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS)
 	/* read user-requested SRID if any */
 	if ( PG_NARGS() > 1 )
 	{
-		SRID = PG_GETARG_INT32(1);
-		if ( SRID != pglwgeom_getSRID(geom) )
+		srid = PG_GETARG_INT32(1);
+		if ( srid != pglwgeom_get_srid(geom) )
 		{
-			result = pglwgeom_setSRID(geom, SRID);
+			result = pglwgeom_set_srid(geom, srid);
 			pfree(geom);
 		}
 	}
@@ -1208,7 +1208,7 @@ Datum LWGEOM_asBinary(PG_FUNCTION_ARGS)
 
 	/* Drop SRID */
 	ogclwgeom = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall2(
-	                LWGEOM_setSRID, PointerGetDatum(ogclwgeom), -1));
+	                LWGEOM_set_srid, PointerGetDatum(ogclwgeom), -1));
 
 	/* Call WKBFromLWGEOM */
 	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )

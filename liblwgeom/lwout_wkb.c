@@ -105,7 +105,7 @@ static uint32 lwgeom_wkb_type(const LWGEOM *geom, uchar variant)
 			wkb_type |= WKBZOFFSET;
 		if ( FLAGS_GET_M(geom->flags) )
 			wkb_type |= WKBMOFFSET;
-		if ( geom->SRID != -1 && geom->SRID != SRID_UNKNOWN 
+		if ( geom->srid != -1 && geom->srid != SRID_UNKNOWN 
 			&& ! (variant & WKB_NO_SRID) )
 			wkb_type |= WKBSRIDFLAG;
 	}
@@ -277,7 +277,7 @@ static char* empty_to_wkb_buf(const LWGEOM *geom, char *buf, uchar variant)
 
 	/* Set the SRID if necessary */
 	if ( lwgeom_wkb_needs_srid(geom, variant) )
-		buf = integer_to_wkb_buf(geom->SRID, buf, variant);
+		buf = integer_to_wkb_buf(geom->srid, buf, variant);
 
 	/* Set nrings/npoints/ngeoms to zero */
 	buf = integer_to_wkb_buf(0, buf, variant);
@@ -375,7 +375,7 @@ static char* lwpoint_to_wkb_buf(const LWPOINT *pt, char *buf, uchar variant)
 	/* Set the optional SRID for extended variant */
 	if ( lwgeom_wkb_needs_srid((LWGEOM*)pt, variant) )
 	{
-		buf = integer_to_wkb_buf(pt->SRID, buf, variant);
+		buf = integer_to_wkb_buf(pt->srid, buf, variant);
 		LWDEBUGF(4, "SRID set, buf = %p", buf);
 	}
 	/* Set the coordinates */
@@ -409,7 +409,7 @@ static char* lwline_to_wkb_buf(const LWLINE *line, char *buf, uchar variant)
 	buf = integer_to_wkb_buf(lwgeom_wkb_type((LWGEOM*)line, variant), buf, variant);
 	/* Set the optional SRID for extended variant */
 	if ( lwgeom_wkb_needs_srid((LWGEOM*)line, variant) )
-		buf = integer_to_wkb_buf(line->SRID, buf, variant);
+		buf = integer_to_wkb_buf(line->srid, buf, variant);
 	/* Set the coordinates */
 	buf = ptarray_to_wkb_buf(line->points, buf, variant);
 	return buf;
@@ -443,7 +443,7 @@ static char* lwtriangle_to_wkb_buf(const LWTRIANGLE *tri, char *buf, uchar varia
 	
 	/* Set the optional SRID for extended variant */
 	if ( lwgeom_wkb_needs_srid((LWGEOM*)tri, variant) )
-		buf = integer_to_wkb_buf(tri->SRID, buf, variant);
+		buf = integer_to_wkb_buf(tri->srid, buf, variant);
 
 	/* Set the number of rings (only one, it's a triangle, buddy) */
 	buf = integer_to_wkb_buf(1, buf, variant);
@@ -486,7 +486,7 @@ static char* lwpoly_to_wkb_buf(const LWPOLY *poly, char *buf, uchar variant)
 	buf = integer_to_wkb_buf(lwgeom_wkb_type((LWGEOM*)poly, variant), buf, variant);
 	/* Set the optional SRID for extended variant */
 	if ( lwgeom_wkb_needs_srid((LWGEOM*)poly, variant) )
-		buf = integer_to_wkb_buf(poly->SRID, buf, variant);
+		buf = integer_to_wkb_buf(poly->srid, buf, variant);
 	/* Set the number of rings */
 	buf = integer_to_wkb_buf(poly->nrings, buf, variant);
 
@@ -533,7 +533,7 @@ static char* lwcollection_to_wkb_buf(const LWCOLLECTION *col, char *buf, uchar v
 	buf = integer_to_wkb_buf(lwgeom_wkb_type((LWGEOM*)col, variant), buf, variant);
 	/* Set the optional SRID for extended variant */
 	if ( lwgeom_wkb_needs_srid((LWGEOM*)col, variant) )
-		buf = integer_to_wkb_buf(col->SRID, buf, variant);
+		buf = integer_to_wkb_buf(col->srid, buf, variant);
 	/* Set the number of sub-geometries */
 	buf = integer_to_wkb_buf(col->ngeoms, buf, variant);
 

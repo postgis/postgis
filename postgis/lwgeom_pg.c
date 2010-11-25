@@ -217,7 +217,7 @@ getGeometryOID(void)
 }
 
 PG_LWGEOM *
-PG_LWGEOM_construct(uchar *ser, int SRID, int wantbbox)
+PG_LWGEOM_construct(uchar *ser, int srid, int wantbbox)
 {
 	int size;
 	uchar *iptr, *optr, *eptr;
@@ -247,7 +247,7 @@ PG_LWGEOM_construct(uchar *ser, int SRID, int wantbbox)
 		size -= sizeof(BOX2DFLOAT4);
 	}
 
-	if ( SRID != -1 )
+	if ( srid != -1 )
 	{
 		wantsrid = 1;
 		size += 4;
@@ -274,7 +274,7 @@ PG_LWGEOM_construct(uchar *ser, int SRID, int wantbbox)
 	}
 	if ( wantsrid )
 	{
-		memcpy(optr, &SRID, 4);
+		memcpy(optr, &srid, 4);
 		optr += 4;
 	}
 	memcpy(optr, iptr, eptr-iptr);
@@ -344,7 +344,7 @@ pglwgeom_to_ewkb(PG_LWGEOM *geom, int flags, char byteorder, size_t *outsize)
  * Allocation will be done using the lwalloc.
  */
 PG_LWGEOM *
-pglwgeom_setSRID(PG_LWGEOM *lwgeom, int32 newSRID)
+pglwgeom_set_srid(PG_LWGEOM *lwgeom, int32 new_srid)
 {
 	uchar type = lwgeom->type;
 	int bbox_offset=0; /* 0=no bbox, otherwise sizeof(BOX2DFLOAT4) */
@@ -359,12 +359,12 @@ pglwgeom_setSRID(PG_LWGEOM *lwgeom, int32 newSRID)
 
 	if (lwgeom_hasSRID(type))
 	{
-		if ( newSRID != -1 )
+		if ( new_srid != -1 )
 		{
 			/* we create a new one and copy the SRID in */
 			result = lwalloc(len);
 			memcpy(result, lwgeom, len);
-			memcpy(result->data+bbox_offset, &newSRID,4);
+			memcpy(result->data+bbox_offset, &new_srid,4);
 		}
 		else
 		{
@@ -399,7 +399,7 @@ pglwgeom_setSRID(PG_LWGEOM *lwgeom, int32 newSRID)
 	else
 	{
 		/* just copy input, already w/out a SRID */
-		if ( newSRID == -1 )
+		if ( new_srid == -1 )
 		{
 			result = lwalloc(len);
 			memcpy(result, lwgeom, len);
@@ -431,7 +431,7 @@ pglwgeom_setSRID(PG_LWGEOM *lwgeom, int32 newSRID)
 
 			/* put in SRID */
 
-			memcpy(loc_new, &newSRID,4);
+			memcpy(loc_new, &new_srid,4);
 			loc_new +=4;
 			memcpy(loc_new, loc_old, len_left);
 		}
@@ -444,7 +444,7 @@ pglwgeom_setSRID(PG_LWGEOM *lwgeom, int32 newSRID)
  * none present => -1
  */
 int
-pglwgeom_getSRID(PG_LWGEOM *lwgeom)
+pglwgeom_get_srid(PG_LWGEOM *lwgeom)
 {
 	uchar type = lwgeom->type;
 	uchar *loc = lwgeom->data;

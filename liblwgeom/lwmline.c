@@ -49,7 +49,7 @@ lwmline_deserialize(uchar *srl)
 	result = lwalloc(sizeof(LWMLINE));
 	result->type = geomtype;
 	result->flags = gflags( TYPE_HASZ(type), TYPE_HASM(type), 0);
-	result->SRID = insp->SRID;
+	result->srid = insp->srid;
 	result->ngeoms = insp->ngeometries;
 
 	if ( insp->ngeometries )
@@ -130,7 +130,7 @@ lwmline_measured_from_lwmline(const LWMLINE *lwmline, double m_start, double m_e
 
 	if ( lwgeom_is_empty((LWGEOM*)lwmline) )
 	{
-		return (LWMLINE*)lwcollection_construct_empty(MULTILINETYPE, lwmline->SRID, hasz, hasm);
+		return (LWMLINE*)lwcollection_construct_empty(MULTILINETYPE, lwmline->srid, hasz, hasm);
 	}
 
 	geoms = lwalloc(sizeof(LWGEOM*) * lwmline->ngeoms);
@@ -154,7 +154,7 @@ lwmline_measured_from_lwmline(const LWMLINE *lwmline, double m_start, double m_e
 		length_so_far += sub_length;
 	}
 
-	return (LWMLINE*)lwcollection_construct(lwmline->type, lwmline->SRID, NULL, lwmline->ngeoms, geoms);
+	return (LWMLINE*)lwcollection_construct(lwmline->type, lwmline->srid, NULL, lwmline->ngeoms, geoms);
 }
 
 void lwmline_free(LWMLINE *mline)

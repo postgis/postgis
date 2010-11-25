@@ -451,7 +451,7 @@ Datum BOX3D_construct(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	errorIfSRIDMismatch(minpoint->SRID, maxpoint->SRID);
+	error_if_srid_mismatch(minpoint->srid, maxpoint->srid);
 
 	getPoint3dz_p(((LWPOINT *)minpoint)->point, 0, &minp);
 	getPoint3dz_p(((LWPOINT *)maxpoint)->point, 0, &maxp);

@@ -614,10 +614,10 @@ GSERIALIZED* gserialized_from_lwgeom(const LWGEOM *geom, int is_geodetic, size_t
 	*/
 	g->size = return_size << 2;
 
-	if ( geom->SRID == 0 || geom->SRID == (uint32)(-1) ) /* Zero is the no-SRID value now. */
+	if ( geom->srid == 0 || geom->srid == (uint32)(-1) ) /* Zero is the no-SRID value now. */
 		gserialized_set_srid(g, 0);
 	else
-		gserialized_set_srid(g, geom->SRID);
+		gserialized_set_srid(g, geom->srid);
 
 	g->flags = gbox.flags;
 
@@ -639,7 +639,7 @@ static LWPOINT* lwpoint_from_gserialized_buffer(uchar *data_ptr, uchar g_flags, 
 	assert(data_ptr);
 
 	point = (LWPOINT*)lwalloc(sizeof(LWPOINT));
-	point->SRID = -1; /* Default */
+	point->srid = -1; /* Default */
 	point->bbox = NULL;
 	point->type = POINTTYPE;
 	point->flags = g_flags;
@@ -670,7 +670,7 @@ static LWLINE* lwline_from_gserialized_buffer(uchar *data_ptr, uchar g_flags, si
 	assert(data_ptr);
 
 	line = (LWLINE*)lwalloc(sizeof(LWLINE));
-	line->SRID = -1; /* Default */
+	line->srid = -1; /* Default */
 	line->bbox = NULL;
 	line->type = LINETYPE;
 	line->flags = g_flags;
@@ -704,7 +704,7 @@ static LWPOLY* lwpoly_from_gserialized_buffer(uchar *data_ptr, uchar g_flags, si
 	assert(data_ptr);
 
 	poly = (LWPOLY*)lwalloc(sizeof(LWPOLY));
-	poly->SRID = -1; /* Default */
+	poly->srid = -1; /* Default */
 	poly->bbox = NULL;
 	poly->type = POLYGONTYPE;
 	poly->flags = g_flags;
@@ -757,7 +757,7 @@ static LWTRIANGLE* lwtriangle_from_gserialized_buffer(uchar *data_ptr, uchar g_f
 	assert(data_ptr);
 
 	triangle = (LWTRIANGLE*)lwalloc(sizeof(LWTRIANGLE));
-	triangle->SRID = -1; /* Default */
+	triangle->srid = -1; /* Default */
 	triangle->bbox = NULL;
 	triangle->type = TRIANGLETYPE;
 	triangle->flags = g_flags;
@@ -788,7 +788,7 @@ static LWCIRCSTRING* lwcircstring_from_gserialized_buffer(uchar *data_ptr, uchar
 	assert(data_ptr);
 
 	circstring = (LWCIRCSTRING*)lwalloc(sizeof(LWCIRCSTRING));
-	circstring->SRID = -1; /* Default */
+	circstring->srid = -1; /* Default */
 	circstring->bbox = NULL;
 	circstring->type = CIRCSTRINGTYPE;
 	circstring->flags = g_flags;
@@ -860,7 +860,7 @@ static LWCOLLECTION* lwcollection_from_gserialized_buffer(uchar *data_ptr, uchar
 	data_ptr += 4; /* Skip past the type. */
 
 	collection = (LWCOLLECTION*)lwalloc(sizeof(LWCOLLECTION));
-	collection->SRID = -1; /* Default */
+	collection->srid = -1; /* Default */
 	collection->bbox = NULL;
 	collection->type = type;
 	collection->flags = g_flags;
@@ -1003,9 +1003,9 @@ LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g)
 	}
 
 	if ( has_srid )
-		lwgeom->SRID = g_srid;
+		lwgeom->srid = g_srid;
 	else
-		lwgeom->SRID = -1;
+		lwgeom->srid = -1;
 
 	return lwgeom;
 }

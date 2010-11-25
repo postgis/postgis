@@ -48,7 +48,7 @@ void
 lwpoint_serialize_buf(LWPOINT *point, uchar *buf, size_t *retsize)
 {
 	int size=1;
-	char hasSRID;
+	char has_srid;
 	uchar *loc;
 	int ptsize = ptarray_point_size(point->point);
 
@@ -58,16 +58,16 @@ lwpoint_serialize_buf(LWPOINT *point, uchar *buf, size_t *retsize)
 	LWDEBUGF(2, "lwpoint_serialize_buf(%p, %p) called", point, buf);
 	/*printLWPOINT(point); */
 
-	hasSRID = (point->SRID != -1);
+	has_srid = (point->srid != -1);
 
-	if (hasSRID) size +=4;  /*4 byte SRID */
+	if (has_srid) size +=4;  /*4 byte SRID */
 	if (point->bbox) size += sizeof(BOX2DFLOAT4); /* bvol */
 
 	size += sizeof(double)*FLAGS_NDIMS(point->flags);
 
 	buf[0] = (uchar) lwgeom_makeType_full(
 	             FLAGS_GET_Z(point->flags), FLAGS_GET_M(point->flags),
-	             hasSRID, POINTTYPE, point->bbox?1:0);
+	             has_srid, POINTTYPE, point->bbox?1:0);
 	loc = buf+1;
 
 	if (point->bbox)
@@ -80,9 +80,9 @@ lwpoint_serialize_buf(LWPOINT *point, uchar *buf, size_t *retsize)
 		loc += sizeof(BOX2DFLOAT4);
 	}
 
-	if (hasSRID)
+	if (has_srid)
 	{
-		memcpy(loc, &point->SRID, sizeof(int32));
+		memcpy(loc, &point->srid, sizeof(int32));
 		loc += 4;
 	}
 
@@ -150,7 +150,7 @@ lwpoint_serialize_size(LWPOINT *point)
 
 	LWDEBUG(2, "lwpoint_serialize_size called");
 
-	if ( point->SRID != -1 ) size += 4; /* SRID */
+	if ( point->srid != -1 ) size += 4; /* SRID */
 	if ( point->bbox ) size += sizeof(BOX2DFLOAT4);
 
 	size += FLAGS_NDIMS(point->flags) * sizeof(double); /* point */
@@ -165,7 +165,7 @@ lwpoint_serialize_size(LWPOINT *point)
  * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
  */
 LWPOINT *
-lwpoint_construct(int SRID, GBOX *bbox, POINTARRAY *point)
+lwpoint_construct(int srid, GBOX *bbox, POINTARRAY *point)
 {
 	LWPOINT *result;
 	uchar flags = 0;
@@ -179,7 +179,7 @@ lwpoint_construct(int SRID, GBOX *bbox, POINTARRAY *point)
 	FLAGS_SET_M(flags, FLAGS_GET_M(point->dims));
 	FLAGS_SET_BBOX(flags, bbox?1:0);
 	result->flags = flags;
-	result->SRID = SRID;
+	result->srid = srid;
 	result->point = point;
 	result->bbox = bbox;
 
@@ -192,14 +192,14 @@ lwpoint_construct_empty(int srid, char hasz, char hasm)
 	LWPOINT *result = lwalloc(sizeof(LWPOINT));
 	result->type = POINTTYPE;
 	result->flags = gflags(hasz, hasm, 0);
-	result->SRID = srid;
+	result->srid = srid;
 	result->point = NULL;
 	result->bbox = NULL;
 	return result;
 }
 
 LWPOINT *
-make_lwpoint2d(int SRID, double x, double y)
+make_lwpoint2d(int srid, double x, double y)
 {
 	POINT2D p;
 	POINTARRAY *pa = ptarray_construct(0, 0, 1);
@@ -209,11 +209,11 @@ make_lwpoint2d(int SRID, double x, double y)
 
 	memcpy(getPoint_internal(pa, 0), &p, sizeof(POINT2D));
 
-	return lwpoint_construct(SRID, NULL, pa);
+	return lwpoint_construct(srid, NULL, pa);
 }
 
 LWPOINT *
-make_lwpoint3dz(int SRID, double x, double y, double z)
+make_lwpoint3dz(int srid, double x, double y, double z)
 {
 	POINT3DZ p;
 	POINTARRAY *pa = ptarray_construct(1, 0, 1);
@@ -224,11 +224,11 @@ make_lwpoint3dz(int SRID, double x, double y, double z)
 
 	memcpy(getPoint_internal(pa, 0), &p, sizeof(POINT3DZ));
 
-	return lwpoint_construct(SRID, NULL, pa);
+	return lwpoint_construct(srid, NULL, pa);
 }
 
 LWPOINT *
-make_lwpoint3dm(int SRID, double x, double y, double m)
+make_lwpoint3dm(int srid, double x, double y, double m)
 {
 	POINTARRAY *pa = ptarray_construct(0, 1, 1);
 	POINT3DM p;
@@ -239,11 +239,11 @@ make_lwpoint3dm(int SRID, double x, double y, double m)
 
 	memcpy(getPoint_internal(pa, 0), &p, sizeof(POINT3DM));
 
-	return lwpoint_construct(SRID, NULL, pa);
+	return lwpoint_construct(srid, NULL, pa);
 }
 
 LWPOINT *
-make_lwpoint4d(int SRID, double x, double y, double z, double m)
+make_lwpoint4d(int srid, double x, double y, double z, double m)
 {
 	POINTARRAY *pa = ptarray_construct(1, 1, 1);
 	POINT4D p;
@@ -255,7 +255,7 @@ make_lwpoint4d(int SRID, double x, double y, double z, double m)
 
 	memcpy(getPoint_internal(pa, 0), &p, sizeof(POINT4D));
 
-	return lwpoint_construct(SRID, NULL, pa);
+	return lwpoint_construct(srid, NULL, pa);
 }
 
 /*
@@ -312,12 +312,12 @@ lwpoint_deserialize(uchar *serialized_form)
 	{
 		LWDEBUG(3, "lwpoint_deserialize: input has SRID");
 
-		result->SRID = lw_get_int32(loc);
+		result->srid = lw_get_int32(loc);
 		loc += 4; /* type + SRID */
 	}
 	else
 	{
-		result->SRID = -1;
+		result->srid = -1;
 	}
 
 	/* we've read the type (1 byte) and SRID (4 bytes, if present) */
@@ -340,7 +340,7 @@ void printLWPOINT(LWPOINT *point)
 	lwnotice("LWPOINT {");
 	lwnotice("    ndims = %i", (int)FLAGS_NDIMS(point->flags));
 	lwnotice("    BBOX = %i", FLAGS_GET_BBOX(point->flags) ? 1 : 0 );
-	lwnotice("    SRID = %i", (int)point->SRID);
+	lwnotice("    SRID = %i", (int)point->srid);
 	printPA(point->point);
 	lwnotice("}");
 }
@@ -426,13 +426,13 @@ lwpoint_force_dims(const LWPOINT *point, int hasz, int hasm)
 	/* Return 2D empty */
 	if( lwpoint_is_empty(point) )
 	{
-		pointout = lwpoint_construct_empty(point->SRID, hasz, hasm);
+		pointout = lwpoint_construct_empty(point->srid, hasz, hasm);
 	}
 	else
 	{
 		/* Always we duplicate the ptarray and return */
 		pdims = ptarray_force_dims(point->point, hasz, hasm);
-		pointout = lwpoint_construct(point->SRID, NULL, pdims);
+		pointout = lwpoint_construct(point->srid, NULL, pdims);
 	}
 	pointout->type = point->type;
 	return pointout;

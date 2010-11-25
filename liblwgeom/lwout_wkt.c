@@ -648,7 +648,7 @@ char* lwgeom_to_wkt(const LWGEOM *geom, uchar variant, int precision, size_t *si
 	/* Extended mode starts with an "SRID=" section for geoms that have one */
 	if ( (variant & WKT_EXTENDED) && lwgeom_has_srid(geom) )
 	{
-		stringbuffer_aprintf(sb, "SRID=%d;", geom->SRID);
+		stringbuffer_aprintf(sb, "SRID=%d;", geom->srid);
 	}
 	lwgeom_to_wkt_sb(geom, sb, precision, variant);
 	if ( stringbuffer_getstring(sb) == NULL )

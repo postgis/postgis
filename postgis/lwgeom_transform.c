@@ -815,7 +815,7 @@ Datum transform(PG_FUNCTION_ARGS)
 	}
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
-	if (pglwgeom_getSRID(geom) == -1)
+	if (pglwgeom_get_srid(geom) == -1)
 	{
 		PG_FREE_IF_COPY(geom, 0);
 		elog(ERROR,"Input geometry has unknown (-1) SRID");
@@ -830,7 +830,7 @@ Datum transform(PG_FUNCTION_ARGS)
 	 * If input SRID and output SRID are equal, return geometry
 	 * without transform it
 	 */
-	if (pglwgeom_getSRID(geom) == result_srid)
+	if (pglwgeom_get_srid(geom) == result_srid)
 	{
 		pfree(geom);
 		PG_RETURN_POINTER(PG_GETARG_DATUM(0));
@@ -875,17 +875,17 @@ Datum transform(PG_FUNCTION_ARGS)
 
 	/* Add the output srid to the cache if it's not already there */
 	if (!IsInPROJ4SRSCache(PROJ4Cache, result_srid))
-		AddToPROJ4SRSCache(PROJ4Cache, result_srid, pglwgeom_getSRID(geom));
+		AddToPROJ4SRSCache(PROJ4Cache, result_srid, pglwgeom_get_srid(geom));
 
 	/* Get the output projection */
 	output_pj = GetProjectionFromPROJ4SRSCache(PROJ4Cache, result_srid);
 
 	/* Add the input srid to the cache if it's not already there */
-	if (!IsInPROJ4SRSCache(PROJ4Cache, pglwgeom_getSRID(geom)))
-		AddToPROJ4SRSCache(PROJ4Cache, pglwgeom_getSRID(geom), result_srid);
+	if (!IsInPROJ4SRSCache(PROJ4Cache, pglwgeom_get_srid(geom)))
+		AddToPROJ4SRSCache(PROJ4Cache, pglwgeom_get_srid(geom), result_srid);
 
 	/* Get the input projection	 */
-	input_pj = GetProjectionFromPROJ4SRSCache(PROJ4Cache, pglwgeom_getSRID(geom));
+	input_pj = GetProjectionFromPROJ4SRSCache(PROJ4Cache, pglwgeom_get_srid(geom));
 
 
 	/* now we have a geometry, and input/output PJ structs. */
@@ -900,7 +900,7 @@ Datum transform(PG_FUNCTION_ARGS)
 		lwgeom = lwgeom_deserialize(srl);
 		lwgeom_drop_bbox(lwgeom);
 		lwgeom_add_bbox(lwgeom);
-		lwgeom->SRID = result_srid;
+		lwgeom->srid = result_srid;
 		result = pglwgeom_serialize(lwgeom);
 		lwgeom_release(lwgeom);
 	}
@@ -946,7 +946,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	}
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
-	if (pglwgeom_getSRID(geom) == -1)
+	if (pglwgeom_get_srid(geom) == -1)
 	{
 		pfree(geom);
 		elog(ERROR,"tranform: source SRID = -1");
@@ -1016,7 +1016,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		lwgeom = lwgeom_deserialize(srl);
 		lwgeom_drop_bbox(lwgeom);
 		lwgeom_add_bbox(lwgeom);
-		lwgeom->SRID = result_srid;
+		lwgeom->srid = result_srid;
 		result = pglwgeom_serialize(lwgeom);
 		lwgeom_release(lwgeom);
 	}

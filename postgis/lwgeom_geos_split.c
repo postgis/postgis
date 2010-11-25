@@ -128,12 +128,12 @@ lwline_split_by_line(LWLINE* lwline_in, LWLINE* blade_in)
 	{
 		components = lwalloc(sizeof(LWGEOM*)*1);
 		components[0] = diff;
-		out = lwcollection_construct(COLLECTIONTYPE, lwline_in->SRID,
+		out = lwcollection_construct(COLLECTIONTYPE, lwline_in->srid,
 		                             NULL, 1, components);
 	}
 	else
 	{
-		out = lwcollection_construct(COLLECTIONTYPE, lwline_in->SRID,
+		out = lwcollection_construct(COLLECTIONTYPE, lwline_in->srid,
 		                             NULL, ((LWCOLLECTION*)diff)->ngeoms,
 		                             ((LWCOLLECTION*)diff)->geoms);
 	}
@@ -177,7 +177,7 @@ lwline_split_by_point(LWLINE* lwline_in, LWPOINT* blade_in)
 		{
 			/* No intersection */
 			components[0] = (LWGEOM*)lwline_clone(lwline_in);
-			components[0]->SRID = -1;
+			components[0]->srid = -1;
 			break;
 		}
 
@@ -186,7 +186,7 @@ lwline_split_by_point(LWLINE* lwline_in, LWPOINT* blade_in)
 		{
 			/* Intersection is on the boundary or outside */
 			components[0] = (LWGEOM*)lwline_clone(lwline_in);
-			components[0]->SRID = -1;
+			components[0]->srid = -1;
 			break;
 		}
 
@@ -201,7 +201,7 @@ lwline_split_by_point(LWLINE* lwline_in, LWPOINT* blade_in)
 	}
 	while (0);
 
-	out = lwcollection_construct(COLLECTIONTYPE, lwline_in->SRID,
+	out = lwcollection_construct(COLLECTIONTYPE, lwline_in->srid,
 	                             NULL, ncomponents, components);
 
 	/* That's all folks */
@@ -325,7 +325,7 @@ lwpoly_split_by_line(LWPOLY* lwpoly_in, LWLINE* blade_in)
 	 * geometries and return the rest in a collection
 	 */
 	n = GEOSGetNumGeometries(polygons);
-	out = lwcollection_construct(COLLECTIONTYPE, lwpoly_in->SRID,
+	out = lwcollection_construct(COLLECTIONTYPE, lwpoly_in->srid,
 	                             NULL, 0, NULL);
 	/* Allocate space for all polys */
 	out->geoms = lwalloc(sizeof(LWGEOM*)*n);
@@ -427,13 +427,13 @@ lwcollection_split(LWCOLLECTION* lwcoll_in, LWGEOM* blade_in)
 
 		for (j=0; j<col->ngeoms; ++j)
 		{
-			col->geoms[j]->SRID = -1; /* strip srid */
+			col->geoms[j]->srid = -1; /* strip srid */
 			split_vector[split_vector_size++] = col->geoms[j];
 		}
 	}
 
 	/* Now split_vector has split_vector_size geometries */
-	out = lwcollection_construct(COLLECTIONTYPE, lwcoll_in->SRID,
+	out = lwcollection_construct(COLLECTIONTYPE, lwcoll_in->srid,
 	                             NULL, split_vector_size, split_vector);
 
 	return (LWGEOM*)out;
@@ -492,7 +492,7 @@ Datum ST_Split(PG_FUNCTION_ARGS)
 	blade_in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	lwblade_in = lwgeom_deserialize(SERIALIZED_FORM(blade_in));
 
-	errorIfSRIDMismatch(lwgeom_in->SRID, lwblade_in->SRID);
+	error_if_srid_mismatch(lwgeom_in->srid, lwblade_in->srid);
 
 	lwgeom_out = lwgeom_split(lwgeom_in, lwblade_in);
 	if ( ! lwgeom_out )

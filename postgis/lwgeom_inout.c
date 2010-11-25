@@ -297,7 +297,7 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 
 	if (  ( PG_NARGS()>1) && ( ! PG_ARGISNULL(1) ))
 	{
-		lwgeom = pglwgeom_setSRID(lwgeom2, PG_GETARG_INT32(1));
+		lwgeom = pglwgeom_set_srid(lwgeom2, PG_GETARG_INT32(1));
 		lwfree(lwgeom2);
 	}
 	else lwgeom = lwgeom2;

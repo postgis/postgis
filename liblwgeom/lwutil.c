@@ -361,7 +361,7 @@ getMachineEndian(void)
 
 
 void
-errorIfSRIDMismatch(int srid1, int srid2)
+error_if_srid_mismatch(int srid1, int srid2)
 {
 	if ( srid1 != srid2 )
 	{

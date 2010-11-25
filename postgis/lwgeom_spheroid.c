@@ -561,7 +561,7 @@ Datum geometry_distance_spheroid(PG_FUNCTION_ARGS)
 	}
 
 
-	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
+	if (pglwgeom_get_srid(geom1) != pglwgeom_get_srid(geom2))
 	{
 		elog(ERROR, "geometry_distance_spheroid: Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();

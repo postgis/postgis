@@ -183,7 +183,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 		LAST(state)->idx++;
 	}
 
-	lwgeom->SRID = state->root->SRID;
+	lwgeom->srid = state->root->srid;
 
 	values[0] = address;
 	values[1] = lwgeom_to_hexwkb(lwgeom, PARSER_CHECK_NONE, -1);
@@ -276,7 +276,7 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 
 		/* Construct another polygon with shell only */
 		ringgeom = (LWGEOM*)lwpoly_construct(
-		               poly->SRID,
+		               poly->srid,
 		               NULL, /* TODO: could use input bounding box here */
 		               1, /* one ring */
 		               &ring);

@@ -37,7 +37,7 @@ lwtin_deserialize(uchar *srl)
 	result = lwalloc(sizeof(LWTIN));
 	result->type = TINTYPE;
 	result->flags = gflags(TYPE_HASZ(insp->type), TYPE_HASM(insp->type), 0);
-	result->SRID = insp->SRID;
+	result->srid = insp->srid;
 	result->ngeoms = insp->ngeometries;
 
 	if ( insp->ngeometries )
@@ -117,7 +117,7 @@ void printLWTIN(LWTIN *tin)
 
 	lwnotice("LWTIN {");
 	lwnotice("    ndims = %i", (int)FLAGS_NDIMS(tin->flags));
-	lwnotice("    SRID = %i", (int)tin->SRID);
+	lwnotice("    SRID = %i", (int)tin->srid);
 	lwnotice("    ngeoms = %i", (int)tin->ngeoms);
 
 	for (i=0; i<tin->ngeoms; i++)

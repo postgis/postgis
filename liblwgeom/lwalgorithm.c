@@ -385,7 +385,7 @@ LWCOLLECTION *lwmline_clip_to_ordinate_range(LWMLINE *mline, int ordinate, doubl
 		int i, j;
 		char homogeneous = 1;
 		size_t geoms_size = 0;
-		lwgeom_out = lwcollection_construct_empty(MULTILINETYPE, mline->SRID, hasz, hasm);
+		lwgeom_out = lwcollection_construct_empty(MULTILINETYPE, mline->srid, hasz, hasm);
 		FLAGS_SET_Z(lwgeom_out->flags, hasz);
 		FLAGS_SET_M(lwgeom_out->flags, hasm);
 		for ( i = 0; i < mline->ngeoms; i ++ )
@@ -489,7 +489,7 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 	r = lwalloc(sizeof(POINT4D));
 
 	/* Construct a collection to hold our outputs. */
-	lwgeom_out = lwcollection_construct_empty(MULTILINETYPE, line->SRID, hasz, hasm);
+	lwgeom_out = lwcollection_construct_empty(MULTILINETYPE, line->srid, hasz, hasm);
 
 	/* Get our input point array */
 	pa_in = line->points;
@@ -610,14 +610,14 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				*  and set the overall output type to a generic collection. */
 				if ( dp->npoints == 1 )
 				{
-					LWPOINT *opoint = lwpoint_construct(line->SRID, NULL, dp);
+					LWPOINT *opoint = lwpoint_construct(line->srid, NULL, dp);
 					lwgeom_out->type = COLLECTIONTYPE;
 					lwgeom_out = lwcollection_add_lwgeom(lwgeom_out, lwpoint_as_lwgeom(opoint));
 					
 				}
 				else
 				{
-					LWLINE *oline = lwline_construct(line->SRID, NULL, dp);
+					LWLINE *oline = lwline_construct(line->srid, NULL, dp);
 					lwgeom_out = lwcollection_add_lwgeom(lwgeom_out, lwline_as_lwgeom(oline));
 				}
 
@@ -638,13 +638,13 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 
 		if ( dp->npoints == 1 )
 		{
-			LWPOINT *opoint = lwpoint_construct(line->SRID, NULL, dp);
+			LWPOINT *opoint = lwpoint_construct(line->srid, NULL, dp);
 			lwgeom_out->type = COLLECTIONTYPE;
 			lwgeom_out = lwcollection_add_lwgeom(lwgeom_out, lwpoint_as_lwgeom(opoint));
 		}
 		else
 		{
-			LWLINE *oline = lwline_construct(line->SRID, NULL, dp);
+			LWLINE *oline = lwline_construct(line->srid, NULL, dp);
 			lwgeom_out = lwcollection_add_lwgeom(lwgeom_out, lwline_as_lwgeom(oline));
 		}
 

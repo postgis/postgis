@@ -39,7 +39,7 @@ lwmsurface_deserialize(uchar *srl)
 	result = lwalloc(sizeof(LWMSURFACE));
 	result->type = geomtype;
 	result->flags = gflags(TYPE_HASZ(type), TYPE_HASM(type), 0);
-	result->SRID = insp->SRID;
+	result->srid = insp->srid;
 	result->ngeoms = insp->ngeometries;
 
 	if ( insp->ngeometries )

@@ -40,7 +40,7 @@ Datum lwgeom_lt(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "lwgeom_lt called");
 
-	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
+	if (pglwgeom_get_srid(geom1) != pglwgeom_get_srid(geom2))
 	{
 		elog(BTREE_SRID_MISMATCH_SEVERITY,
 		     "Operation on two GEOMETRIES with different SRIDs\n");
@@ -95,7 +95,7 @@ Datum lwgeom_le(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "lwgeom_le called");
 
-	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
+	if (pglwgeom_get_srid(geom1) != pglwgeom_get_srid(geom2))
 	{
 		elog(BTREE_SRID_MISMATCH_SEVERITY,
 		     "Operation on two GEOMETRIES with different SRIDs\n");
@@ -177,7 +177,7 @@ Datum lwgeom_eq(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "lwgeom_eq called");
 
-	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
+	if (pglwgeom_get_srid(geom1) != pglwgeom_get_srid(geom2))
 	{
 		elog(BTREE_SRID_MISMATCH_SEVERITY,
 		     "Operation on two GEOMETRIES with different SRIDs\n");
@@ -235,7 +235,7 @@ Datum lwgeom_ge(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "lwgeom_ge called");
 
-	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
+	if (pglwgeom_get_srid(geom1) != pglwgeom_get_srid(geom2))
 	{
 		elog(BTREE_SRID_MISMATCH_SEVERITY,
 		     "Operation on two GEOMETRIES with different SRIDs\n");
@@ -309,7 +309,7 @@ Datum lwgeom_gt(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "lwgeom_gt called");
 
-	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
+	if (pglwgeom_get_srid(geom1) != pglwgeom_get_srid(geom2))
 	{
 		elog(BTREE_SRID_MISMATCH_SEVERITY,
 		     "Operation on two GEOMETRIES with different SRIDs\n");
@@ -379,7 +379,7 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "lwgeom_cmp called");
 
-	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
+	if (pglwgeom_get_srid(geom1) != pglwgeom_get_srid(geom2))
 	{
 		elog(BTREE_SRID_MISMATCH_SEVERITY,
 		     "Operation on two GEOMETRIES with different SRIDs\n");
@@ -465,7 +465,7 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
  *
  * Revision 1.6  2005/01/05 12:44:47  strk
  * Added is_worth_caching_serialized_bbox(). Renamed lwgeom_setSRID() to
- * pglwgeom_setSRID(). Fixed a bug in PG_LWGEOM_construct support for
+ * pglwgeom_set_srid(). Fixed a bug in PG_LWGEOM_construct support for
  * AUTOCACHE_BBOX.
  *
  * Revision 1.5  2004/09/29 10:50:30  strk
