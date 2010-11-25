@@ -1513,7 +1513,7 @@ lwgeom_pointarray_length(const POINTARRAY *pts)
 	if ( pts->npoints < 2 ) return 0.0;
 
 	/* compute 2d length if 3d is not available */
-	if ( ! FLAGS_GET_Z(pts->dims) ) return lwgeom_pointarray_length2d(pts);
+	if ( ! FLAGS_GET_Z(pts->flags) ) return lwgeom_pointarray_length2d(pts);
 
 	for (i=0; i<pts->npoints-1; i++)
 	{

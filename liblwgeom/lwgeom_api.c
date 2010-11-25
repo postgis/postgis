@@ -482,7 +482,7 @@ getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
 
 	/* Get a pointer to nth point offset and zmflag */
 	ptr=getPoint_internal(pa, n);
-	zmflag=FLAGS_GET_ZM(pa->dims);
+	zmflag=FLAGS_GET_ZM(pa->flags);
 
 	LWDEBUGF(4, "ptr %p, zmflag %d", ptr, zmflag);
 
@@ -567,7 +567,7 @@ getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
 #endif
 
 	LWDEBUGF(2, "getPoint3dz_p called on array of %d-dimensions / %u pts",
-	         FLAGS_NDIMS(pa->dims), pa->npoints);
+	         FLAGS_NDIMS(pa->flags), pa->npoints);
 
 	/* Get a pointer to nth point offset */
 	ptr=getPoint_internal(pa, n);
@@ -576,7 +576,7 @@ getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
 	 * if input POINTARRAY has the Z, it is always
 	 * at third position so make a single copy
 	 */
-	if ( FLAGS_GET_Z(pa->dims) )
+	if ( FLAGS_GET_Z(pa->flags) )
 	{
 		memcpy(op, ptr, sizeof(POINT3DZ));
 	}
@@ -618,12 +618,12 @@ getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *op)
 #endif
 
 	LWDEBUGF(2, "getPoint3dm_p(%d) called on array of %d-dimensions / %u pts",
-	         n, FLAGS_NDIMS(pa->dims), pa->npoints);
+	         n, FLAGS_NDIMS(pa->flags), pa->npoints);
 
 
 	/* Get a pointer to nth point offset and zmflag */
 	ptr=getPoint_internal(pa, n);
-	zmflag=FLAGS_GET_ZM(pa->dims);
+	zmflag=FLAGS_GET_ZM(pa->flags);
 
 	/*
 	 * if input POINTARRAY has the M and NO Z,
@@ -709,7 +709,7 @@ void
 ptarray_set_point4d(POINTARRAY *pa, int n, POINT4D *p4d)
 {
 	uchar *ptr=getPoint_internal(pa, n);
-	switch ( FLAGS_GET_ZM(pa->dims) )
+	switch ( FLAGS_GET_ZM(pa->flags) )
 	{
 	case 3:
 		memcpy(ptr, p4d, sizeof(POINT4D));
@@ -774,9 +774,9 @@ getPoint_internal(const POINTARRAY *pa, int n)
 int
 ptarray_point_size(const POINTARRAY *pa)
 {
-	LWDEBUGF(2, "ptarray_point_size: FLAGS_NDIMS(pa->dims)=%x",FLAGS_NDIMS(pa->dims));
+	LWDEBUGF(2, "ptarray_point_size: FLAGS_NDIMS(pa->flags)=%x",FLAGS_NDIMS(pa->flags));
 
-	return sizeof(double)*FLAGS_NDIMS(pa->dims);
+	return sizeof(double)*FLAGS_NDIMS(pa->flags);
 }
 
 
@@ -1810,26 +1810,26 @@ void printPA(POINTARRAY *pa)
 	char *mflag;
 
 
-	if ( FLAGS_GET_M(pa->dims) ) mflag = "M";
+	if ( FLAGS_GET_M(pa->flags) ) mflag = "M";
 	else mflag = "";
 
 	lwnotice("      POINTARRAY%s{", mflag);
 	lwnotice("                 ndims=%i,   ptsize=%i",
-	         FLAGS_NDIMS(pa->dims), ptarray_point_size(pa));
+	         FLAGS_NDIMS(pa->flags), ptarray_point_size(pa));
 	lwnotice("                 npoints = %i", pa->npoints);
 
 	for (t =0; t<pa->npoints; t++)
 	{
 		getPoint4d_p(pa, t, &pt);
-		if (FLAGS_NDIMS(pa->dims) == 2)
+		if (FLAGS_NDIMS(pa->flags) == 2)
 		{
 			lwnotice("                    %i : %lf,%lf",t,pt.x,pt.y);
 		}
-		if (FLAGS_NDIMS(pa->dims) == 3)
+		if (FLAGS_NDIMS(pa->flags) == 3)
 		{
 			lwnotice("                    %i : %lf,%lf,%lf",t,pt.x,pt.y,pt.z);
 		}
-		if (FLAGS_NDIMS(pa->dims) == 4)
+		if (FLAGS_NDIMS(pa->flags) == 4)
 		{
 			lwnotice("                    %i : %lf,%lf,%lf,%lf",t,pt.x,pt.y,pt.z,pt.m);
 		}

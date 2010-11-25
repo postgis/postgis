@@ -210,7 +210,7 @@ static size_t gserialized_from_lwpoint(const LWPOINT *point, uchar *buf)
 	assert(point);
 	assert(buf);
 
-	if ( FLAGS_GET_ZM(point->flags) != FLAGS_GET_ZM(point->point->dims) )
+	if ( FLAGS_GET_ZM(point->flags) != FLAGS_GET_ZM(point->point->flags) )
 		lwerror("Dimensions mismatch in lwpoint");
 
 	LWDEBUGF(2, "lwpoint_to_gserialized(%p, %p) called", point, buf);
@@ -246,7 +246,7 @@ static size_t gserialized_from_lwline(const LWLINE *line, uchar *buf)
 
 	LWDEBUGF(2, "lwline_to_gserialized(%p, %p) called", line, buf);
 
-	if ( FLAGS_GET_Z(line->flags) != FLAGS_GET_Z(line->points->dims) )
+	if ( FLAGS_GET_Z(line->flags) != FLAGS_GET_Z(line->points->flags) )
 		lwerror("Dimensions mismatch in lwline");
 
 	ptsize = ptarray_point_size(line->points);
@@ -317,7 +317,7 @@ static size_t gserialized_from_lwpoly(const LWPOLY *poly, uchar *buf)
 		POINTARRAY *pa = poly->rings[i];
 		size_t pasize;
 
-		if ( FLAGS_GET_ZM(poly->flags) != FLAGS_GET_ZM(pa->dims) )
+		if ( FLAGS_GET_ZM(poly->flags) != FLAGS_GET_ZM(pa->flags) )
 			lwerror("Dimensions mismatch in lwpoly");
 
 		pasize = pa->npoints * ptsize;
@@ -339,7 +339,7 @@ static size_t gserialized_from_lwtriangle(const LWTRIANGLE *triangle, uchar *buf
 
 	LWDEBUGF(2, "lwtriangle_to_gserialized(%p, %p) called", triangle, buf);
 
-	if ( FLAGS_GET_ZM(triangle->flags) != FLAGS_GET_ZM(triangle->points->dims) )
+	if ( FLAGS_GET_ZM(triangle->flags) != FLAGS_GET_ZM(triangle->points->flags) )
 		lwerror("Dimensions mismatch in lwtriangle");
 
 	ptsize = ptarray_point_size(triangle->points);
@@ -378,7 +378,7 @@ static size_t gserialized_from_lwcircstring(const LWCIRCSTRING *curve, uchar *bu
 	assert(curve);
 	assert(buf);
 
-	if (FLAGS_GET_ZM(curve->flags) != FLAGS_GET_ZM(curve->points->dims))
+	if (FLAGS_GET_ZM(curve->flags) != FLAGS_GET_ZM(curve->points->flags))
 		lwerror("Dimensions mismatch in lwcircstring");
 
 

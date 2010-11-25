@@ -52,7 +52,7 @@ lwpoint_serialize_buf(LWPOINT *point, uchar *buf, size_t *retsize)
 	uchar *loc;
 	int ptsize = ptarray_point_size(point->point);
 
-	if ( FLAGS_GET_ZM(point->flags) != FLAGS_GET_ZM(point->point->dims) )
+	if ( FLAGS_GET_ZM(point->flags) != FLAGS_GET_ZM(point->point->flags) )
 		lwerror("Dimensions mismatch in lwpoint");
 
 	LWDEBUGF(2, "lwpoint_serialize_buf(%p, %p) called", point, buf);
@@ -175,8 +175,8 @@ lwpoint_construct(int srid, GBOX *bbox, POINTARRAY *point)
 
 	result = lwalloc(sizeof(LWPOINT));
 	result->type = POINTTYPE;
-	FLAGS_SET_Z(flags, FLAGS_GET_Z(point->dims));
-	FLAGS_SET_M(flags, FLAGS_GET_M(point->dims));
+	FLAGS_SET_Z(flags, FLAGS_GET_Z(point->flags));
+	FLAGS_SET_M(flags, FLAGS_GET_M(point->flags));
 	FLAGS_SET_BBOX(flags, bbox?1:0);
 	result->flags = flags;
 	result->srid = srid;

@@ -295,7 +295,7 @@ ptarray_grid(POINTARRAY *pa, gridspec *grid)
 
 	LWDEBUGF(2, "ptarray_grid called on %p", pa);
 
-	dpa = ptarray_construct_empty(FLAGS_GET_Z(pa->dims),FLAGS_GET_M(pa->dims), pa->npoints);
+	dpa = ptarray_construct_empty(FLAGS_GET_Z(pa->flags),FLAGS_GET_M(pa->flags), pa->npoints);
 
 	for (ipn=0, opn=0; ipn<pa->npoints; ++ipn)
 	{
@@ -310,11 +310,11 @@ ptarray_grid(POINTARRAY *pa, gridspec *grid)
 			pbuf.y = rint((pbuf.y - grid->ipy)/grid->ysize) *
 			         grid->ysize + grid->ipy;
 
-		if ( FLAGS_GET_Z(pa->dims) && grid->zsize )
+		if ( FLAGS_GET_Z(pa->flags) && grid->zsize )
 			pbuf.z = rint((pbuf.z - grid->ipz)/grid->zsize) *
 			         grid->zsize + grid->ipz;
 
-		if ( FLAGS_GET_M(pa->dims) && grid->msize )
+		if ( FLAGS_GET_M(pa->flags) && grid->msize )
 			pbuf.m = rint((pbuf.m - grid->ipm)/grid->msize) *
 			         grid->msize + grid->ipm;
 

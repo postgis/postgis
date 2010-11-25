@@ -294,7 +294,7 @@ static size_t ptarray_to_wkb_size(const POINTARRAY *pa, uchar variant)
 	if ( pa->npoints < 1 )
 		return 0;
 	if ( variant & (WKB_ISO | WKB_EXTENDED) )
-		dims = FLAGS_NDIMS(pa->dims);
+		dims = FLAGS_NDIMS(pa->flags);
 
 	/* Include the npoints if it's not a POINT type) */
 	if ( ! ( variant & WKB_NO_NPOINTS ) )
@@ -321,7 +321,7 @@ static char* ptarray_to_wkb_buf(const POINTARRAY *pa, char *buf, uchar variant)
 
 	/* SFSQL is always 2-d. Extended and ISO use all available dimensions */
 	if ( (variant & WKB_ISO) || (variant & WKB_EXTENDED) )
-		dims = FLAGS_NDIMS(pa->dims);
+		dims = FLAGS_NDIMS(pa->flags);
 
 	/* Set the number of points (if it's not a POINT type) */
 	if ( ! ( variant & WKB_NO_NPOINTS ) )

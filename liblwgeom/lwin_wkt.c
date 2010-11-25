@@ -81,8 +81,8 @@ static int wkt_parser_set_dims(LWGEOM *geom, uchar flags)
 		if( geom->type == POINTTYPE )
 		{
 			LWPOINT *pt = (LWPOINT*)geom;
-			FLAGS_SET_Z(pt->point->dims, hasz);
-			FLAGS_SET_M(pt->point->dims, hasm);
+			FLAGS_SET_Z(pt->point->flags, hasz);
+			FLAGS_SET_M(pt->point->flags, hasm);
 			return LW_TRUE;
 		}
 		else if ( geom->type == TRIANGLETYPE || 
@@ -90,8 +90,8 @@ static int wkt_parser_set_dims(LWGEOM *geom, uchar flags)
 		          geom->type == LINETYPE )
 		{
 			LWLINE *ln = (LWLINE*)geom;
-			FLAGS_SET_Z(ln->points->dims, hasz);
-			FLAGS_SET_M(ln->points->dims, hasm);
+			FLAGS_SET_Z(ln->points->flags, hasz);
+			FLAGS_SET_M(ln->points->flags, hasm);
 			return LW_TRUE;
 		}
 		else if ( geom->type == POLYGONTYPE )
@@ -99,8 +99,8 @@ static int wkt_parser_set_dims(LWGEOM *geom, uchar flags)
 			LWPOLY *poly = (LWPOLY*)geom;
 			for ( i = 0; i < poly->nrings; i++ )
 			{
-				FLAGS_SET_Z(poly->rings[i]->dims, hasz);
-				FLAGS_SET_M(poly->rings[i]->dims, hasm);
+				FLAGS_SET_Z(poly->rings[i]->flags, hasz);
+				FLAGS_SET_M(poly->rings[i]->flags, hasm);
 			}
 			return LW_TRUE;
 		}
@@ -143,7 +143,7 @@ static int wkt_pointarray_dimensionality(POINTARRAY *pa, uchar flags)
 		return LW_TRUE;
 		
 	LWDEBUGF(5,"dimensionality ndims == %d", ndims);
-	LWDEBUGF(5,"FLAGS_NDIMS(pa->dims) == %d", FLAGS_NDIMS(pa->dims));
+	LWDEBUGF(5,"FLAGS_NDIMS(pa->flags) == %d", FLAGS_NDIMS(pa->flags));
 	
 	/* 
 	* ndims > 2 implies that the flags have something useful to add,
@@ -152,13 +152,13 @@ static int wkt_pointarray_dimensionality(POINTARRAY *pa, uchar flags)
 	if( ndims > 2 )
 	{
 		/* Mismatch implies a problem */
-		if ( FLAGS_NDIMS(pa->dims) != ndims )
+		if ( FLAGS_NDIMS(pa->flags) != ndims )
 			return LW_FALSE;
 		/* Match means use the explicit dimensionality */
 		else
 		{
-			FLAGS_SET_Z(pa->dims, hasz);
-			FLAGS_SET_M(pa->dims, hasm);
+			FLAGS_SET_Z(pa->flags, hasz);
+			FLAGS_SET_M(pa->flags, hasm);
 		}
 	}
 
@@ -227,7 +227,7 @@ POINTARRAY* wkt_parser_ptarray_add_coord(POINTARRAY *pa, POINT p)
 	}
 	
 	/* Check that the coordinate has the same dimesionality as the array */
-	if( FLAGS_NDIMS(p.flags) != FLAGS_NDIMS(pa->dims) )
+	if( FLAGS_NDIMS(p.flags) != FLAGS_NDIMS(pa->flags) )
 	{
 		global_parser_result.message = parser_error_messages[PARSER_ERROR_MIXDIMS];
 		global_parser_result.errcode = PARSER_ERROR_MIXDIMS;
@@ -237,12 +237,12 @@ POINTARRAY* wkt_parser_ptarray_add_coord(POINTARRAY *pa, POINT p)
 	/* While parsing the point arrays, XYM and XMZ points are both treated as XYZ */
 	pt.x = p.x;
 	pt.y = p.y;
-	if( FLAGS_GET_Z(pa->dims) )
+	if( FLAGS_GET_Z(pa->flags) )
 		pt.z = p.z;
-	if( FLAGS_GET_M(pa->dims) )
+	if( FLAGS_GET_M(pa->flags) )
 		pt.m = p.m;
 	/* If the destination is XYM, we'll write the third coordinate to m */
-	if( FLAGS_GET_M(pa->dims) && ! FLAGS_GET_Z(pa->dims) )
+	if( FLAGS_GET_M(pa->flags) && ! FLAGS_GET_Z(pa->flags) )
 		pt.m = p.z;
 		
 	ptarray_append_point(pa, &pt, REPEATED_POINTS_OK); /* Allow duplicate points in array */
@@ -411,7 +411,7 @@ LWGEOM* wkt_parser_polygon_new(POINTARRAY *pa)
 		return NULL;	
 	}
 
-	poly = lwpoly_construct_empty(SRID_UNKNOWN, FLAGS_GET_Z(pa->dims), FLAGS_GET_M(pa->dims));
+	poly = lwpoly_construct_empty(SRID_UNKNOWN, FLAGS_GET_Z(pa->flags), FLAGS_GET_M(pa->flags));
 	
 	/* Error out if we can't build this polygon. */
 	if( ! poly )
@@ -436,7 +436,7 @@ LWGEOM* wkt_parser_polygon_add_ring(LWGEOM *poly, POINTARRAY *pa)
 	}
 
 	/* Rings must agree on dimensionality */
-	if( FLAGS_NDIMS(poly->flags) != FLAGS_NDIMS(pa->dims) )
+	if( FLAGS_NDIMS(poly->flags) != FLAGS_NDIMS(pa->flags) )
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
 		return NULL;

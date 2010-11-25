@@ -33,7 +33,7 @@ ptarray_construct(char hasz, char hasm, uint32 npoints)
 		ptlist = NULL;
 
 	pa = lwalloc(sizeof(POINTARRAY));
-	pa->dims = dims;
+	pa->flags = dims;
 	pa->serialized_pointlist = ptlist;
 	pa->npoints = npoints;
 	pa->maxpoints = npoints;
@@ -52,7 +52,7 @@ ptarray_construct_empty(char hasz, char hasm, int maxpoints)
 	/* Set our dimsionality info on the bitmap */
 	FLAGS_SET_Z(dims, hasz?1:0);
 	FLAGS_SET_M(dims, hasm?1:0);
-	pa->dims = dims;
+	pa->flags = dims;
 	
 	/* We will be allocating a bit of room */
 	pa->npoints = 0;
@@ -139,8 +139,8 @@ ptarray_append_point(POINTARRAY *pa, POINT4D *pt, int repeated_points)
 
 		/* Return LW_SUCCESS and do nothing else if previous point in list is equal to this one */
 		if ( (pt->x == tmp.x) && (pt->y == tmp.y) &&
-		     (TYPE_HASZ(pa->dims) ? pt->z == tmp.z : 1) &&
-		     (TYPE_HASM(pa->dims) ? pt->m == tmp.m : 1) )
+		     (TYPE_HASZ(pa->flags) ? pt->z == tmp.z : 1) &&
+		     (TYPE_HASM(pa->flags) ? pt->m == tmp.m : 1) )
 		{
 			return LW_SUCCESS;
 		}
@@ -161,7 +161,7 @@ ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, int splice_ends)
 		return LW_FAILURE;
 	}
 	
-	if( pa1->dims != pa2->dims )
+	if( pa1->flags != pa2->flags )
 	{
 		lwerror("ptarray_append_ptarray: appending mixed dimensionality is not allowed");
 		return LW_FAILURE;
@@ -229,8 +229,8 @@ POINTARRAY* ptarray_construct_reference_data(char hasz, char hasm, uint32 npoint
 {
 	POINTARRAY *pa = lwalloc(sizeof(POINTARRAY));
 	LWDEBUGF(5, "hasz = %d, hasm = %d, npoints = %d, ptlist = %p", hasz, hasm, npoints, ptlist);
-	FLAGS_SET_Z(pa->dims, hasz?1:0);
-	FLAGS_SET_M(pa->dims, hasm?1:0);
+	FLAGS_SET_Z(pa->flags, hasz?1:0);
+	FLAGS_SET_M(pa->flags, hasm?1:0);
 	pa->npoints = npoints;
 	pa->maxpoints = npoints;
 	pa->serialized_pointlist = ptlist;
@@ -243,8 +243,8 @@ ptarray_construct_copy_data(char hasz, char hasm, uint32 npoints, const uchar *p
 {
 	POINTARRAY *pa = lwalloc(sizeof(POINTARRAY));
 
-	FLAGS_SET_Z(pa->dims, hasz?1:0);
-	FLAGS_SET_M(pa->dims, hasm?1:0);
+	FLAGS_SET_Z(pa->flags, hasz?1:0);
+	FLAGS_SET_M(pa->flags, hasm?1:0);
 	pa->npoints = npoints;
 	pa->maxpoints = npoints;
 
@@ -391,8 +391,8 @@ ptarray_segmentize2d(const POINTARRAY *ipa, double dist)
 	POINT4D pbuf;
 	POINTARRAY *opa;
 	int ipoff=0; /* input point offset */
-	int hasz = FLAGS_GET_Z(ipa->dims);
-	int hasm = FLAGS_GET_M(ipa->dims);
+	int hasz = FLAGS_GET_Z(ipa->flags);
+	int hasm = FLAGS_GET_M(ipa->flags);
 
 	pbuf.x = pbuf.y = pbuf.z = pbuf.m = 0;
 
@@ -451,7 +451,7 @@ ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2)
 	uint32 i;
 	size_t ptsize;
 
-	if ( FLAGS_GET_ZM(pa1->dims) != FLAGS_GET_ZM(pa2->dims) ) return LW_FALSE;
+	if ( FLAGS_GET_ZM(pa1->flags) != FLAGS_GET_ZM(pa2->flags) ) return LW_FALSE;
 	LWDEBUG(5,"dimensions are the same");
 	
 	if ( pa1->npoints != pa2->npoints ) return LW_FALSE;
@@ -514,8 +514,8 @@ ptarray_addPoint(const POINTARRAY *pa, uchar *p, size_t pdims, uint32 where)
 
 	LWDEBUG(3, "initialized point buffer");
 
-	ret = ptarray_construct(FLAGS_GET_Z(pa->dims),
-	                        FLAGS_GET_M(pa->dims), pa->npoints+1);
+	ret = ptarray_construct(FLAGS_GET_Z(pa->flags),
+	                        FLAGS_GET_M(pa->flags), pa->npoints+1);
 
 	if ( where == -1 ) where = pa->npoints;
 
@@ -564,8 +564,8 @@ ptarray_removePoint(POINTARRAY *pa, uint32 which)
 	}
 #endif
 
-	ret = ptarray_construct(FLAGS_GET_Z(pa->dims),
-	                        FLAGS_GET_M(pa->dims), pa->npoints-1);
+	ret = ptarray_construct(FLAGS_GET_Z(pa->flags),
+	                        FLAGS_GET_M(pa->flags), pa->npoints-1);
 
 	/* copy initial part */
 	if ( which )
@@ -596,11 +596,11 @@ ptarray_merge(POINTARRAY *pa1, POINTARRAY *pa2)
 	POINTARRAY *pa;
 	size_t ptsize = ptarray_point_size(pa1);
 
-	if (FLAGS_GET_ZM(pa1->dims) != FLAGS_GET_ZM(pa2->dims))
+	if (FLAGS_GET_ZM(pa1->flags) != FLAGS_GET_ZM(pa2->flags))
 		lwerror("ptarray_cat: Mixed dimension");
 
-	pa = ptarray_construct( FLAGS_GET_Z(pa1->dims),
-	                        FLAGS_GET_M(pa1->dims),
+	pa = ptarray_construct( FLAGS_GET_Z(pa1->flags),
+	                        FLAGS_GET_M(pa1->flags),
 	                        pa1->npoints + pa2->npoints);
 
 	memcpy(         getPoint_internal(pa, 0),
@@ -629,7 +629,7 @@ ptarray_clone(const POINTARRAY *in)
 
 	LWDEBUG(3, "ptarray_clone called.");
 
-	out->dims = in->dims;
+	out->flags = in->flags;
 	out->npoints = in->npoints;
 	out->maxpoints = in->maxpoints;
 
@@ -647,7 +647,7 @@ ptarray_clone(const POINTARRAY *in)
 int
 ptarray_isclosed(const POINTARRAY *in)
 {
-	int ndims = FLAGS_NDIMS(in->dims);
+	int ndims = FLAGS_NDIMS(in->flags);
 	if ( memcmp(getPoint_internal(in, 0), getPoint_internal(in, in->npoints-1), ndims*sizeof(double)) ) return 0;
 	return 1;
 }
@@ -673,8 +673,8 @@ ptarray_force_dims(const POINTARRAY *pa, int hasz, int hasm)
 {
 	/* TODO handle zero-length point arrays */
 	int i;
-	int in_hasz = FLAGS_GET_Z(pa->dims);
-	int in_hasm = FLAGS_GET_M(pa->dims);
+	int in_hasz = FLAGS_GET_Z(pa->flags);
+	int in_hasm = FLAGS_GET_M(pa->flags);
 	POINT4D pt;
 	POINTARRAY *pa_out = ptarray_construct_empty(hasz, hasm, pa->npoints);
 	
@@ -735,7 +735,7 @@ ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *result)
 	result->ymin = pt.y;
 	result->ymax = pt.y;
 
-	if ( FLAGS_GET_Z(pa->dims) )
+	if ( FLAGS_GET_Z(pa->flags) )
 	{
 		result->zmin = pt.z;
 		result->zmax = pt.z;
@@ -756,7 +756,7 @@ ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *result)
 		if (pt.x > result->xmax) result->xmax = pt.x;
 		if (pt.y > result->ymax) result->ymax = pt.y;
 
-		if ( FLAGS_GET_Z(pa->dims) )
+		if ( FLAGS_GET_Z(pa->flags) )
 		{
 			if (pt.z > result->zmax) result->zmax = pt.z;
 			if (pt.z < result->zmin) result->zmin = pt.z;
@@ -784,7 +784,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 	 * Create a dynamic pointarray with an initial capacity
 	 * equal to full copy of input points
 	 */
-	dpa = ptarray_construct_empty(FLAGS_GET_Z(ipa->dims), FLAGS_GET_M(ipa->dims), ipa->npoints);
+	dpa = ptarray_construct_empty(FLAGS_GET_Z(ipa->flags), FLAGS_GET_M(ipa->flags), ipa->npoints);
 
 	/* Compute total line length */
 	length = lwgeom_pointarray_length2d(ipa);
@@ -1129,8 +1129,8 @@ ptarray_remove_repeated_points(POINTARRAY *in)
 	LWDEBUGF(3, "ptsize: %d", ptsize);
 
 	/* Allocate enough space for all points */
-	out = ptarray_construct(FLAGS_GET_Z(in->dims),
-	                        FLAGS_GET_M(in->dims), in->npoints);
+	out = ptarray_construct(FLAGS_GET_Z(in->flags),
+	                        FLAGS_GET_M(in->flags), in->npoints);
 
 	/* Now fill up the actual points (NOTE: could be optimized) */
 
@@ -1220,10 +1220,10 @@ ptarray_simplify(POINTARRAY *inpts, double epsilon)
 	p1 = 0;
 	stack[++sp] = inpts->npoints-1;
 
-	LWDEBUGF(2, "Input has %d pts and %d dims", inpts->npoints, inpts->dims);
+	LWDEBUGF(2, "Input has %d pts and %d dims", inpts->npoints, inpts->flags);
 
 	/* Allocate output POINTARRAY, and add first point. */
-	outpts = ptarray_construct_empty(FLAGS_GET_Z(inpts->dims), FLAGS_GET_M(inpts->dims), inpts->npoints);
+	outpts = ptarray_construct_empty(FLAGS_GET_Z(inpts->flags), FLAGS_GET_M(inpts->flags), inpts->npoints);
 	getPoint4d_p(inpts, 0, &pt);
 	ptarray_append_point(outpts, &pt, REPEATED_POINTS_NOT_OK);
 

@@ -518,7 +518,7 @@ pointArray_toGML2(POINTARRAY *pa, char *output, int precision)
 
 	ptr = output;
 
-	if ( ! FLAGS_GET_Z(pa->dims) )
+	if ( ! FLAGS_GET_Z(pa->flags) )
 	{
 		for (i=0; i<pa->npoints; i++)
 		{
@@ -1265,7 +1265,7 @@ pointArray_toGML3(POINTARRAY *pa, char *output, int precision, int is_deegree)
 
 	ptr = output;
 
-	if ( ! FLAGS_GET_Z(pa->dims) )
+	if ( ! FLAGS_GET_Z(pa->flags) )
 	{
 		for (i=0; i<pa->npoints; i++)
 		{
@@ -1335,7 +1335,7 @@ pointArray_toGML3(POINTARRAY *pa, char *output, int precision, int is_deegree)
 static size_t
 pointArray_GMLsize(POINTARRAY *pa, int precision)
 {
-	if (FLAGS_NDIMS(pa->dims) == 2)
+	if (FLAGS_NDIMS(pa->flags) == 2)
 		return (OUT_MAX_DIGS_DOUBLE + precision + sizeof(", "))
 		       * 2 * pa->npoints;
 

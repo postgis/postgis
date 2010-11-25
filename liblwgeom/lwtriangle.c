@@ -31,8 +31,8 @@ lwtriangle_construct(int srid, GBOX *bbox, POINTARRAY *points)
 	result->type = TRIANGLETYPE;
 
 	result->flags = 0;
-	FLAGS_SET_Z(result->flags, FLAGS_GET_Z(points->dims));
-	FLAGS_SET_M(result->flags, FLAGS_GET_M(points->dims));
+	FLAGS_SET_Z(result->flags, FLAGS_GET_Z(points->flags));
+	FLAGS_SET_M(result->flags, FLAGS_GET_M(points->flags));
 	FLAGS_SET_BBOX(result->flags, bbox?1:0);
 	
 	result->srid = srid;
@@ -180,7 +180,7 @@ lwtriangle_serialize_buf(LWTRIANGLE *triangle, uchar *buf, size_t *retsize)
 	if (triangle == NULL)
 		lwerror("lwtriangle_serialize:: given null triangle");
 
-	if ( FLAGS_GET_ZM(triangle->flags) != FLAGS_GET_ZM(triangle->points->dims) )
+	if ( FLAGS_GET_ZM(triangle->flags) != FLAGS_GET_ZM(triangle->points->flags) )
 		lwerror("Dimensions mismatch in lwtriangle");
 
 	ptsize = ptarray_point_size(triangle->points);

@@ -294,9 +294,9 @@ lwcurve_segmentize(LWCIRCSTRING *icurve, uint32 perQuad)
 	uint32 i, j;
 	POINT4D p1, p2, p3, p4;
 
-	LWDEBUGF(2, "lwcurve_segmentize called., dim = %d", icurve->points->dims);
+	LWDEBUGF(2, "lwcurve_segmentize called., dim = %d", icurve->points->flags);
 
-	ptarray = ptarray_construct_empty(FLAGS_GET_Z(icurve->points->dims), FLAGS_GET_M(icurve->points->dims), 64);
+	ptarray = ptarray_construct_empty(FLAGS_GET_Z(icurve->points->flags), FLAGS_GET_M(icurve->points->flags), 64);
 	if (!getPoint4d_p(icurve->points, 0, &p4))
 	{
 		lwerror("lwcurve_segmentize: Cannot extract point.");
@@ -615,7 +615,7 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int srid)
 
 		LWDEBUG(3, "append_segment: line to line");
 
-		newPoints = ptarray_construct(TYPE_HASZ(pts->dims), TYPE_HASM(pts->dims), pts->npoints + line->points->npoints - 1);
+		newPoints = ptarray_construct(TYPE_HASZ(pts->flags), TYPE_HASM(pts->flags), pts->npoints + line->points->npoints - 1);
 		for (i=0; i<line->points->npoints; i++)
 		{
 			getPoint4d_p(line->points, i, &pt);
@@ -639,7 +639,7 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int srid)
 
 		LWDEBUG(3, "append_segment: circularstring to circularstring");
 
-		newPoints = ptarray_construct(FLAGS_GET_Z(pts->dims), FLAGS_GET_M(pts->dims), pts->npoints + curve->points->npoints - 1);
+		newPoints = ptarray_construct(FLAGS_GET_Z(pts->flags), FLAGS_GET_M(pts->flags), pts->npoints + curve->points->npoints - 1);
 
 		LWDEBUGF(3, "New array length: %d", pts->npoints + curve->points->npoints - 1);
 
@@ -814,8 +814,8 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 
 				count = i - commit;
 				pts = ptarray_construct(
-				          FLAGS_GET_Z(points->dims),
-				          FLAGS_GET_M(points->dims),
+				          FLAGS_GET_Z(points->flags),
+				          FLAGS_GET_M(points->flags),
 				          3);
 				getPoint4d_p(points, commit, &tmp);
 				ptarray_set_point4d(pts, 0, &tmp);
@@ -890,8 +890,8 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 				count = i - commit - 2;
 
 				pts = ptarray_construct(
-				          FLAGS_GET_Z(points->dims),
-				          FLAGS_GET_M(points->dims),
+				          FLAGS_GET_Z(points->flags),
+				          FLAGS_GET_M(points->flags),
 				          count);
 				for (j=commit; j<i-2; j++)
 				{
@@ -922,8 +922,8 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 		LWDEBUGF(3, "Finishing circularstring %d,%d.", commit, i);
 
 		pts = ptarray_construct(
-		          FLAGS_GET_Z(points->dims),
-		          FLAGS_GET_M(points->dims),
+		          FLAGS_GET_Z(points->flags),
+		          FLAGS_GET_M(points->flags),
 		          3);
 		getPoint4d_p(points, commit, &tmp);
 		ptarray_set_point4d(pts, 0, &tmp);
@@ -939,8 +939,8 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 		LWDEBUGF(3, "Finishing line %d,%d.", commit, i);
 
 		pts = ptarray_construct(
-		          FLAGS_GET_Z(points->dims),
-		          FLAGS_GET_M(points->dims),
+		          FLAGS_GET_Z(points->flags),
+		          FLAGS_GET_M(points->flags),
 		          count);
 		for (j=commit; j<i; j++)
 		{

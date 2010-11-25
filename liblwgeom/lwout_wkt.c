@@ -68,7 +68,7 @@ static void ptarray_to_wkt_sb(const POINTARRAY *ptarray, stringbuffer_t *sb, int
 
 	/* ISO and extended formats include all dimensions */
 	if ( variant & ( WKT_ISO | WKT_EXTENDED ) )
-		dimensions = FLAGS_NDIMS(ptarray->dims);
+		dimensions = FLAGS_NDIMS(ptarray->flags);
 
 	/* Opening paren? */
 	if ( ! (variant & WKT_NO_PARENS) )

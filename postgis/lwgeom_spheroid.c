@@ -325,7 +325,7 @@ double lwgeom_pointarray_length_ellipse(POINTARRAY *pts, SPHEROID *sphere)
 	if ( pts->npoints < 2 ) return 0.0;
 
 	/* compute 2d length if 3d is not available */
-	if ( TYPE_NDIMS(pts->dims) < 3 )
+	if ( TYPE_NDIMS(pts->flags) < 3 )
 	{
 		return lwgeom_pointarray_length2d_ellipse(pts, sphere);
 	}

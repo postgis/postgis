@@ -34,8 +34,8 @@ lwline_construct(int srid, GBOX *bbox, POINTARRAY *points)
 	result->type = LINETYPE;
 	
 	result->flags = 0;
-	FLAGS_SET_Z(result->flags, FLAGS_GET_Z(points->dims));
-	FLAGS_SET_M(result->flags, FLAGS_GET_M(points->dims));
+	FLAGS_SET_Z(result->flags, FLAGS_GET_Z(points->flags));
+	FLAGS_SET_M(result->flags, FLAGS_GET_M(points->flags));
 	FLAGS_SET_BBOX(result->flags, bbox?1:0);
 
 	LWDEBUGF(3, "lwline_construct type=%d", result->type);
@@ -177,7 +177,7 @@ lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *retsize)
 	if (line == NULL)
 		lwerror("lwline_serialize:: given null line");
 
-	if ( FLAGS_GET_ZM(line->flags) != FLAGS_GET_ZM(line->points->dims) )
+	if ( FLAGS_GET_ZM(line->flags) != FLAGS_GET_ZM(line->points->flags) )
 		lwerror("Dimensions mismatch in lwline");
 
 	ptsize = ptarray_point_size(line->points);

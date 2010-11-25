@@ -427,8 +427,8 @@ typedef struct
 	/* Array of POINT 2D, 3D or 4D, possibly missaligned. */
 	uchar *serialized_pointlist;
 
-	/* Use TYPE_* macros to handle */
-	uchar  dims;
+	/* Use FLAGS_* macros to handle */
+	uchar  flags;
 
 	int npoints;   /* how many points we are currently storing */
 	int maxpoints; /* how many points we have space for in serialized_pointlist */

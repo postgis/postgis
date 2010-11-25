@@ -3465,7 +3465,7 @@ ptarray_to_GEOSCoordSeq(POINTARRAY *pa)
 	POINT3DZ p;
 	GEOSCoordSeq sq;
 
-	if ( FLAGS_GET_Z(pa->dims) ) dims = 3;
+	if ( FLAGS_GET_Z(pa->flags) ) dims = 3;
 	size = pa->npoints;
 
 	sq = GEOSCoordSeq_create(size, dims);

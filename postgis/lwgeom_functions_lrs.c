@@ -244,7 +244,7 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 		{
 			LWDEBUGF(3, " 1 creating new POINTARRAY with first point %g,%g,%g,%g", p1.x, p1.y, p1.z, p1.m);
 
-			dpa = ptarray_construct_empty(FLAGS_GET_Z(ipa->dims), FLAGS_GET_M(ipa->dims), ipa->npoints-i);
+			dpa = ptarray_construct_empty(FLAGS_GET_Z(ipa->flags), FLAGS_GET_M(ipa->flags), ipa->npoints-i);
 			ptarray_append_point(dpa, &p1, REPEATED_POINTS_OK);
 		}
 

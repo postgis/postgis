@@ -2734,7 +2734,7 @@ lwgeom_affine_ptarray(POINTARRAY *pa,
 
 	LWDEBUG(2, "lwgeom_affine_ptarray start");
 
-	if ( FLAGS_GET_Z(pa->dims) )
+	if ( FLAGS_GET_Z(pa->flags) )
 	{
 		LWDEBUG(3, " has z");
 

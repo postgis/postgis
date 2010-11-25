@@ -35,14 +35,14 @@ lwpoly_construct(int srid, GBOX *bbox, uint32 nrings, POINTARRAY **points)
 
 	if ( nrings < 1 ) lwerror("lwpoly_construct: need at least 1 ring");
 
-	hasz = FLAGS_GET_Z(points[0]->dims);
-	hasm = FLAGS_GET_M(points[0]->dims);
+	hasz = FLAGS_GET_Z(points[0]->flags);
+	hasm = FLAGS_GET_M(points[0]->flags);
 
 #ifdef CHECK_POLY_RINGS_ZM
-	zm = FLAGS_GET_ZM(points[0]->dims);
+	zm = FLAGS_GET_ZM(points[0]->flags);
 	for (i=1; i<nrings; i++)
 	{
-		if ( zm != FLAGS_GET_ZM(points[i]->dims) )
+		if ( zm != FLAGS_GET_ZM(points[i]->flags) )
 			lwerror("lwpoly_construct: mixed dimensioned rings");
 	}
 #endif
@@ -254,9 +254,9 @@ lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *retsize)
 		uint32 npoints;
 
 		LWDEBUGF(4, "FLAGS_GET_ZM(poly->type) == %d", FLAGS_GET_ZM(poly->flags));
-		LWDEBUGF(4, "FLAGS_GET_ZM(pa->dims) == %d", FLAGS_GET_ZM(pa->dims));
+		LWDEBUGF(4, "FLAGS_GET_ZM(pa->flags) == %d", FLAGS_GET_ZM(pa->flags));
 
-		if ( FLAGS_GET_ZM(poly->flags) != FLAGS_GET_ZM(pa->dims) )
+		if ( FLAGS_GET_ZM(poly->flags) != FLAGS_GET_ZM(pa->flags) )
 			lwerror("Dimensions mismatch in lwpoly");
 
 		npoints = pa->npoints;

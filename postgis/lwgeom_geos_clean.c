@@ -190,7 +190,7 @@ ptarray_close2d(POINTARRAY* ring)
 		/* close it up */
 		newring = ptarray_addPoint(ring,
 		                           getPoint_internal(ring, 0),
-		                           FLAGS_NDIMS(ring->dims),
+		                           FLAGS_NDIMS(ring->flags),
 		                           ring->npoints);
 		ring = newring;
 	}
@@ -219,7 +219,7 @@ ring_make_geos_friendly(POINTARRAY* ring)
 		/* let's add another... */
 		ring = ptarray_addPoint(ring,
 		                        getPoint_internal(ring, 0),
-		                        FLAGS_NDIMS(ring->dims),
+		                        FLAGS_NDIMS(ring->flags),
 		                        ring->npoints);
 	}
 
@@ -285,7 +285,7 @@ lwline_make_geos_friendly(LWLINE *line)
 		/* Duplicate point */
 		line->points = ptarray_addPoint(line->points,
 		                                getPoint_internal(line->points, 0),
-		                                FLAGS_NDIMS(line->points->dims),
+		                                FLAGS_NDIMS(line->points->flags),
 		                                line->points->npoints);
 		ret = (LWGEOM*)line;
 #else
