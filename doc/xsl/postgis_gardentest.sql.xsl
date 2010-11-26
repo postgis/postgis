@@ -30,6 +30,9 @@
 	<xsl:variable name='var_matrix'>'FF1FF0102'</xsl:variable>
 	<xsl:variable name='var_boolean'>false</xsl:variable>
 	<xsl:variable name='var_logtable'>postgis_garden_log</xsl:variable>
+	<xsl:variable name='var_logupdatesql'>UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
+		FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
+		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;</xsl:variable>
 	<pgis:gardens>
 		<pgis:gset ID='PointSet' GeometryType='POINT'>(SELECT ST_SetSRID(ST_Point(i,j),4326) As the_geom
 		FROM (SELECT a*1.11111111 FROM generate_series(-10,50,10) As a) As i(i)
@@ -203,6 +206,15 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 			UNION ALL SELECT ST_GeomFromText('POLYGON EMPTY',4326) As the_geom
 		)
 		</pgis:gset>
+		
+		<pgis:gset ID='CurvePolySet' GeometryType='CURVEPOLYGON'>(SELECT ST_LineToCurve(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j))  As the_geom
+				FROM generate_series(-10,50,10) As i
+					CROSS JOIN generate_series(40,70, 20) As j
+					ORDER BY i, j, i*j)</pgis:gset>
+		<pgis:gset ID='CircularStringSet' GeometryType='CIRCULARSTRING'>(SELECT ST_LineToCurve(ST_Boundary(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j)))  As the_geom
+				FROM generate_series(-10,50,10) As i
+					CROSS JOIN generate_series(40,70, 20) As j
+					ORDER BY i, j, i*j)</pgis:gset>
 		<pgis:gset ID="SingleNULL" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom)</pgis:gset>
 		<pgis:gset ID="MultipleNULLs" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom FROM generate_series(1,4) As foo)</pgis:gset>
 
@@ -212,14 +224,7 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 	<!--This is just a placeholder to hold geometries that will crash server when hitting against some functions
 		We'll fix these crashers in 1.4 -->
 	<pgis:gardencrashers>
-		<pgis:gset ID='CurvePolySet' GeometryType='CURVEPOLYGON'>(SELECT ST_LineToCurve(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j))  As the_geom
-				FROM generate_series(-10,50,10) As i
-					CROSS JOIN generate_series(40,70, 20) As j
-					ORDER BY i, j, i*j)</pgis:gset>
-		<pgis:gset ID='CircularStringSet' GeometryType='CIRCULARSTRING'>(SELECT ST_LineToCurve(ST_Boundary(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j)))  As the_geom
-				FROM generate_series(-10,50,10) As i
-					CROSS JOIN generate_series(40,70, 20) As j
-					ORDER BY i, j, i*j)</pgis:gset>
+
 
 	</pgis:gardencrashers>
 
@@ -234,7 +239,7 @@ CREATE TABLE <xsl:value-of select="$var_logtable" />(logid serial PRIMARY KEY, l
 	<xsl:template match='chapter'>
 <!--Start Test table creation, insert, analyze crash test, drop -->
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset[not(contains(@createtable,'false'))]">
-			<xsl:variable name='log_label'>create,insert,drop Test <xsl:value-of select="@GeometryType" /></xsl:variable>
+			<xsl:variable name='log_label'>table Test <xsl:value-of select="@GeometryType" /></xsl:variable>
 SELECT '<xsl:value-of select="$log_label" />: Start Testing';
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
 VALUES('<xsl:value-of select="$log_label" /> AddGeometryColumn','AddGeometryColumn', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
@@ -244,8 +249,7 @@ BEGIN;
 			FROM (<xsl:value-of select="." />) As foo limit 1;
 	SELECT AddGeometryColumn('pgis_garden','the_geom_multi',ST_SRID(the_geom),GeometryType(ST_Multi(the_geom)),ST_CoordDim(the_geom))
 			FROM (<xsl:value-of select="." />) As foo limit 1;
-	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		WHERE log_label = '<xsl:value-of select="$log_label" /> AddGeometryColumn' AND log_end IS NULL;
+	<xsl:value-of select="$var_logupdatesql" />
 COMMIT;
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
 VALUES('<xsl:value-of select="$log_label" /> insert data Geometry','insert data', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
@@ -254,39 +258,34 @@ BEGIN;
 	INSERT INTO pgis_garden(the_geom, the_geom_multi)
 	SELECT the_geom, ST_Multi(the_geom)
 	FROM (<xsl:value-of select="." />) As foo;
- UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		WHERE log_label = '<xsl:value-of select="$log_label" /> insert data Geometry' AND log_end IS NULL;
+	<xsl:value-of select="$var_logupdatesql" />
 COMMIT;	
 		
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
 VALUES('<xsl:value-of select="$log_label" /> UpdateGeometrySRID','UpdateGeometrySRID', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
 BEGIN;
 	SELECT UpdateGeometrySRID('pgis_garden', 'the_geom', 4269);
-	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		WHERE log_label = '<xsl:value-of select="$log_label" /> UpdateGeometrySRID' AND log_end IS NULL;	
+	<xsl:value-of select="$var_logupdatesql" />
 COMMIT;
 
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
-VALUES('<xsl:value-of select="$log_label" /> Analyze','Analyze', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
-ANALYZE pgis_garden;
-UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		WHERE log_label = '<xsl:value-of select="$log_label" /> Analyze' AND log_end IS NULL;
+VALUES('<xsl:value-of select="$log_label" /> vacuum analyze','vacuum analyze', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
+VACUUM ANALYZE pgis_garden;
+<xsl:value-of select="$var_logupdatesql" />
 
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
 VALUES('<xsl:value-of select="$log_label" /> DropGeometryColumn','DropGeometryColumn', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
 
 BEGIN;
 	SELECT DropGeometryColumn ('pgis_garden','the_geom');
-	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		WHERE log_label = '<xsl:value-of select="$log_label" /> DropGeometryColumn' AND log_end IS NULL;
+	<xsl:value-of select="$var_logupdatesql" />
 COMMIT;
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
 VALUES('<xsl:value-of select="$log_label" /> DropGeometryTable','DropGeometryTable', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
 
 BEGIN;
 	SELECT DropGeometryTable ('pgis_garden');
-	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		WHERE log_label = '<xsl:value-of select="$log_label" /> DropGeometryTable' AND log_end IS NULL;
+	<xsl:value-of select="$var_logupdatesql" />
 COMMIT;
 SELECT '<xsl:value-of select="$log_label" />: End Testing  <xsl:value-of select="@GeometryType" />';
 	<xsl:text>
@@ -347,8 +346,8 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 			<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 			<!--Store first garden sql geometry from -->
 					<xsl:variable name="from1"><xsl:value-of select="." /></xsl:variable>
-					<xsl:variable name='geom1type'><xsl:value-of select="@ID"/></xsl:variable>
-					<xsl:variable name='log_label'><xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" /> <xsl:value-of select="$geom1type" /> against other types</xsl:variable>
+					<xsl:variable name='geom1type'><xsl:value-of select="@GeometryType"/></xsl:variable>
+					<xsl:variable name='log_label'><xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@GeometryType" /> <xsl:value-of select="$geom1type" /> against other types</xsl:variable>
 		SELECT '<xsl:value-of select="$log_label" />: Start Testing ';
 						<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 		<xsl:choose>
