@@ -95,7 +95,7 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;POLYGON((-71.0771 42.3866 1 2,-71.0767
 	( ST_GeomFromEWKT('SRID=4326;POLYGON((-71.0775 42.386 2 1.5,-71.0773 42.3863 1.75 1.5,-71.0773 42.3859 1.75 1.5,-71.0775 42.386 2 1.5))') )
 		)	As g(geom))</pgis:gset>
 			
-		<pgis:gset ID='PolyhedralSurface' GeometryType='POLYHEDRALSURFACE'>(SELECT the_geom
+		<pgis:gset ID='PolyhedralSurface' GeometryType='POLYHEDRALSURFACE'>(SELECT ST_Translate(the_geom,-72.2, 41.755) As the_geom
 		FROM (VALUES ( ST_GeomFromEWKT(
 'SRID=4326;PolyhedralSurface( 
 ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),  
@@ -106,27 +106,27 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;POLYGON((-71.0771 42.3866 1 2,-71.0767
 'SRID=4326;PolyhedralSurface( 
 ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),  
 ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)) )') ) )
-As foo(the_geom) ) </pgis:gset>
+As foo(the_geom)  ) </pgis:gset>
 
 		<pgis:gset ID='Triangle' GeometryType='TRIANGLE'>(SELECT ST_GeomFromEWKT(
 'SRID=4326;TRIANGLE ((
-                0 0, 
-                0 9, 
-                9 0, 
-                0 0
+                -71.0821 42.3036, 
+                -71.0821 42.3936, 
+                -71.0901 42.3036, 
+                -71.0821 42.3036
             ))') As the_geom) </pgis:gset>
             
 		<pgis:gset ID='TIN' GeometryType='TIN'>(SELECT ST_GeomFromEWKT(
 'SRID=4326;TIN (((
-                0 0 0, 
-                0 0 1, 
-                0 1 0, 
-                0 0 0
+                -71.0821 42.3036 0, 
+               -71.0821 42.3036 1, 
+                -71.0821 42.3436 0, 
+                -71.0821 42.3036 0
             )), ((
-                0 0 0, 
-                0 1 0, 
-                1 1 0, 
-                0 0 0
+                -71.0821 42.3036 0, 
+                -71.0821 42.3436 0, 
+                -71.0831 42.3436 0, 
+                -71.0821 42.3036 0
             ))
             )') As the_geom) </pgis:gset>
 
@@ -200,21 +200,18 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 		<pgis:gset ID='MultiPolygonMSet' GeometryType='MULTIPOLYGONM'>(
 			SELECT ST_GeomFromEWKT('SRID=4326;MULTIPOLYGONM(((0 0 2,10 0 1,10 10 -2,0 10 -5,0 0 -5),(5 5 6,7 5 6,7 7 6,5 7 10,5 5 -2)))')  As the_geom
 			)</pgis:gset>
+			
+		<!-- replacing crasher with a more harmless curve polygon and circular string -->
+		<pgis:gset ID='CurvePolySet' GeometryType='CURVEPOLYGON'>(SELECT ST_GeomFromEWKT('SRID=4326;CURVEPOLYGON(CIRCULARSTRING(-71.0821 42.3036, -71.4821 42.3036, -71.7821 42.7036, -71.0821 42.7036, -71.0821 42.3036),(-71.1821 42.4036, -71.3821 42.6036, -71.3821 42.4036, -71.1821 42.4036) ) ') As the_geom)</pgis:gset>
 
+		<pgis:gset ID='CircularStringSet' GeometryType='CIRCULARSTRING'>(SELECT ST_GeomFromeWKT('SRID=4326;CIRCULARSTRING(-71.0821 42.3036,-71.4821 42.3036,-71.7821 42.7036,-71.0821 42.7036,-71.0821 42.3036)') As the_geom)</pgis:gset>
+		<pgis:gset ID='MultiSurface' GeometryType='MULTISURFACE'>(SELECT ST_GeomFromeWKT('SRID=4326;MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-71.0821 42.3036, -71.4821 42.3036, -71.7821 42.7036, -71.0821 42.7036, -71.0821 42.3036),(-71.1821 42.4036, -71.3821 42.6036, -71.3821 42.4036, -71.1821 42.4036) ))') As the_geom)</pgis:gset>
 		<!--These are special case geometries -->
 		<pgis:gset ID="Empty" GeometryType="GEOMETRY" createtable="false">(SELECT ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326) As the_geom
 			UNION ALL SELECT ST_GeomFromText('POLYGON EMPTY',4326) As the_geom
 		)
 		</pgis:gset>
 		
-		<pgis:gset ID='CurvePolySet' GeometryType='CURVEPOLYGON'>(SELECT ST_LineToCurve(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j))  As the_geom
-				FROM generate_series(-10,50,10) As i
-					CROSS JOIN generate_series(40,70, 20) As j
-					ORDER BY i, j, i*j)</pgis:gset>
-		<pgis:gset ID='CircularStringSet' GeometryType='CIRCULARSTRING'>(SELECT ST_LineToCurve(ST_Boundary(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j)))  As the_geom
-				FROM generate_series(-10,50,10) As i
-					CROSS JOIN generate_series(40,70, 20) As j
-					ORDER BY i, j, i*j)</pgis:gset>
 		<pgis:gset ID="SingleNULL" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom)</pgis:gset>
 		<pgis:gset ID="MultipleNULLs" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom FROM generate_series(1,4) As foo)</pgis:gset>
 
@@ -223,6 +220,15 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 	</pgis:gardens>
 	<!--This is just a placeholder to hold geometries that will crash server when hitting against some functions
 		We'll fix these crashers in 1.4 -->
+		<pgis:gset ID='CurvePolySet' GeometryType='CURVEPOLYGON'>(SELECT ST_LineToCurve(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j))  As the_geom
+				FROM generate_series(-10,50,10) As i
+					CROSS JOIN generate_series(40,70, 20) As j
+					ORDER BY i, j, i*j)</pgis:gset>
+		<pgis:gset ID='CircularStringSet' GeometryType='CIRCULARSTRING'>(SELECT ST_LineToCurve(ST_Boundary(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j)))  As the_geom
+				FROM generate_series(-10,50,10) As i
+					CROSS JOIN generate_series(40,70, 20) As j
+					ORDER BY i, j, i*j)</pgis:gset>
+
 	<pgis:gardencrashers>
 
 
@@ -309,8 +315,7 @@ BEGIN;
 	SELECT ST_AsText(a.the_geog) As a_geog, ST_AsText(b.the_geog) As b_geog, a.the_geog &amp;&amp; b.the_geog
 		FROM pgis_geoggarden As a CROSS JOIN pgis_geoggarden As b
 		WHERE a.the_geog &amp;&amp; b.the_geog OR ST_DWithin(a.the_geog, b.the_geog,1000);
-UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		WHERE log_label = '<xsl:value-of select="$log_label" /> overlap Geography' AND log_end IS NULL;
+		<xsl:value-of select="$var_logupdatesql" />
 COMMIT;
 SELECT '<xsl:value-of select="$log_label" /> overlap Geography: End Testing';
 
@@ -327,8 +332,7 @@ INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_sta
 BEGIN;
 	DROP TABLE pgis_geoggarden;
 	SELECT 'AFTER DROP' As look_at, * FROM geography_columns;
-	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		WHERE log_label = '<xsl:value-of select="$log_label" /> drop Geography table' AND log_end IS NULL;
+	<xsl:value-of select="$var_logupdatesql" />
 COMMIT;
 SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 	<xsl:text>
@@ -357,12 +361,9 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 
 			SELECT 'Geography <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
 			BEGIN;
-			SELECT geography(foo1.the_geom) <xsl:value-of select="$fnname" /> geography(foo2.the_geom)
-					FROM (<xsl:value-of select="$from1" />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2
-					;
-					
-			UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		WHERE log_label = '<xsl:value-of select="$log_label" /> Geography <xsl:value-of select="$geom1type" /><xsl:text> </xsl:text><xsl:value-of select="@GeometryType" />' AND log_end IS NULL;
+				SELECT geography(foo1.the_geom) <xsl:value-of select="$fnname" /> geography(foo2.the_geom)
+					FROM (<xsl:value-of select="$from1" />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2;
+				<xsl:value-of select="$var_logupdatesql" />
 			COMMIT;
 			</xsl:when>
 			<xsl:otherwise>
@@ -371,12 +372,9 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 			  	VALUES('<xsl:value-of select="$log_label" /> Geometry <xsl:value-of select="$geom1type" /><xsl:text> </xsl:text><xsl:value-of select="@GeometryType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="$geom1type" />','<xsl:value-of select="@GeometryType" />', clock_timestamp());
 
 			BEGIN;
-			SELECT foo1.the_geom <xsl:value-of select="$fnname" /> foo2.the_geom
-					FROM (<xsl:value-of select="$from1" />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2
-					;
-			UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		WHERE log_label = '<xsl:value-of select="$log_label" /> Geometry <xsl:value-of select="$geom1type" /><xsl:text> </xsl:text><xsl:value-of select="@GeometryType" />' AND log_end IS NULL;
-	
+				SELECT foo1.the_geom <xsl:value-of select="$fnname" /> foo2.the_geom
+						FROM (<xsl:value-of select="$from1" />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2;
+				<xsl:value-of select="$var_logupdatesql" />
 			COMMIT;
 			</xsl:otherwise>
 		</xsl:choose>
@@ -424,10 +422,8 @@ INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, log_start)
 			  	VALUES('<xsl:value-of select="$log_label" />','<xsl:value-of select="$fnname" />', clock_timestamp());
 	
 BEGIN;
-SELECT  <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnfakeparams" />);
-UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		WHERE log_label = '<xsl:value-of select="$log_label" />' AND log_end IS NULL;
-	
+	SELECT  <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnfakeparams" />);
+	<xsl:value-of select="$var_logupdatesql" />	
 COMMIT;
 SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)';
 	</xsl:when>
@@ -458,18 +454,16 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 	INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
 			  	VALUES('<xsl:value-of select="$log_label" /> Other <xsl:text> </xsl:text><xsl:value-of select="@ID" /><xsl:text> </xsl:text><xsl:value-of select="@GeometryType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
 		BEGIN;
-	SELECT 'Other <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@GeometryType" />';
-	 <!-- If output is geometry show ewkt rep -->
-	SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)
-			  </xsl:otherwise>
-			</xsl:choose>
-			FROM (<xsl:value-of select="." />) As foo1
-			LIMIT 3;
-	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
-		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;
+		SELECT 'Other <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@GeometryType" />';
+		 <!-- If output is geometry show ewkt rep -->
+		SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)
+				  </xsl:otherwise>
+				</xsl:choose>
+				FROM (<xsl:value-of select="." />) As foo1
+				LIMIT 3;
+			<xsl:value-of select="$var_logupdatesql" />
 	
-	COMMIT;
+		COMMIT;
 	SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text> <xsl:value-of select="@ID" />: End Testing <xsl:value-of select="@GeometryType" />';
 		<xsl:text>
 
@@ -491,29 +485,29 @@ SELECT '<xsl:value-of select="$fnname" /> <xsl:text> </xsl:text><xsl:value-of se
 			  	VALUES('<xsl:value-of select="$log_label" /> Geography <xsl:text> </xsl:text><xsl:value-of select="@ID" /><xsl:text> </xsl:text><xsl:value-of select="@GeometryType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
 
 				SELECT 'Geography <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
-	BEGIN; <!-- If input is geography show wkt rep -->
-	SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />), ST_AsText(foo1.the_geom) As ref1_geom, ST_AsText(foo2.the_geom) As ref2_geom
+				BEGIN; <!-- If input is geography show wkt rep -->
+				SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />), ST_AsText(foo1.the_geom) As ref1_geom, ST_AsText(foo2.the_geom) As ref2_geom
 			  </xsl:when>
 			  <xsl:when test="$numparamgeoms > '0'">
 	INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start) 
 			  	VALUES('<xsl:value-of select="$log_label" /> Geometry <xsl:text> </xsl:text><xsl:value-of select="$geom1type" /><xsl:text> </xsl:text><xsl:value-of select="@GeometryType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="@GeometryType" />','<xsl:value-of select="$geom1type" />', clock_timestamp());
 
 				SELECT 'Geometry <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
-	BEGIN; <!-- If input is geometry show ewkt rep -->
-	SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />), ST_AsEWKT(foo1.the_geom) As ref1_geom, ST_AsEWKT(foo2.the_geom) As ref2_geom
+				BEGIN; <!-- If input is geometry show ewkt rep -->
+				SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />), ST_AsEWKT(foo1.the_geom) As ref1_geom, ST_AsEWKT(foo2.the_geom) As ref2_geom
 			  </xsl:when>
 			  <xsl:otherwise>
+			  	INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start) 
+			  	VALUES('<xsl:value-of select="$log_label" /> Other <xsl:text> </xsl:text><xsl:value-of select="$geom1type" /><xsl:text> </xsl:text><xsl:value-of select="@GeometryType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="@GeometryType" />','<xsl:value-of select="$geom1type" />', clock_timestamp());
+
 				SELECT 'Other <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
-	BEGIN; <!-- If input is geography show wkt rep -->
-	SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)
+				BEGIN; <!-- If input is geography show wkt rep -->
+				SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)
 			  </xsl:otherwise>
 			</xsl:choose>
 			FROM (<xsl:value-of select="$from1" />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2
 			LIMIT 2;
-	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
-		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;
-	
+			<xsl:value-of select="$var_logupdatesql" />
 	COMMIT;
 	SELECT '<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnargs" />) <xsl:text> </xsl:text> <xsl:value-of select="@ID" />: End Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
 		<xsl:text>

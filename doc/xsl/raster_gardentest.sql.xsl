@@ -33,6 +33,9 @@
 	<xsl:variable name='var_pixelvalues'>{255,0}</xsl:variable>
 	<xsl:variable name='var_pt'>ST_Centroid(rast1.rast::geometry)</xsl:variable>
 	<xsl:variable name='var_georefcoords'>'2 0 0 3 0.5 0.5'</xsl:variable>
+	<xsl:variable name='var_logupdatesql'>UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
+		FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
+		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;</xsl:variable>
 	<pgis:gardens>
 		<pgis:gset ID='PointSet' GeometryType='POINT'>(SELECT ST_SetSRID(ST_Point(i,j),4326) As the_geom
 		FROM (SELECT a*1.11111111 FROM generate_series(-10,50,10) As a) As i(i)
@@ -121,9 +124,7 @@ BEGIN;
 	SELECT AddRasterColumn('public', lower('pgis_rgarden_<xsl:value-of select="@ID" />'), 'rast',4326, '{<xsl:value-of select="@PixType" />}',false, true, '{<xsl:value-of select="@nodata" />}', 0.25,-0.25,200,300, null);
 	SELECT AddRasterColumn('public', lower('pgis_rgarden_<xsl:value-of select="@ID" />'),'r_rasttothrow', 4326, '{<xsl:value-of select="@PixType" />,<xsl:value-of select="$var_pixeltypenoq" />}',false, true, '{<xsl:value-of select="@nodata" />, <xsl:value-of select="$var_pixelvalue" />}', 0.25,-0.25,200,300, null);
 
-	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-			FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
-		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;
+	<xsl:value-of select="$var_logupdatesql" />
 COMMIT;<xsl:text> 
 </xsl:text>
 
@@ -134,9 +135,7 @@ BEGIN;
 	INSERT INTO pgis_rgarden_mega(rast)
 	SELECT rast
 	FROM (<xsl:value-of select="." />) As foo;
- UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
- 	FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
-		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;
+	<xsl:value-of select="$var_logupdatesql" />
 COMMIT;	
 		
 		</xsl:for-each>
@@ -150,8 +149,7 @@ INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_sta
 VALUES('<xsl:value-of select="$log_label" /> DropRasterTable','DropRasterTable', '<xsl:value-of select="@PixType" />', clock_timestamp());
 BEGIN;
 	SELECT DropRasterTable('public', lower('pgis_rgarden_<xsl:value-of select="@ID" />'));
-	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		WHERE log_label = '<xsl:value-of select="$log_label" /> DropRasterTable' AND log_end IS NULL;
+	<xsl:value-of select="$var_logupdatesql" />
 COMMIT;<xsl:text> 
 </xsl:text>
 		</xsl:for-each>
@@ -166,37 +164,32 @@ COMMIT;<xsl:text>
 			<xsl:for-each select="document('')//pgis:pixeltypes/pgis:pixeltype">
 			<!--Store first garden sql raster from -->
 					<xsl:variable name="from1"><xsl:value-of select="." /></xsl:variable>
-					<xsl:variable name='rast1type'><xsl:value-of select="@ID"/></xsl:variable>
+					<xsl:variable name='pix1type'><xsl:value-of select="@PixType"/></xsl:variable>
 					<xsl:variable name='log_label'><xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" /> against other types</xsl:variable>
 		SELECT '<xsl:value-of select="$log_label" />: Start Testing ';
 						<xsl:for-each select="document('')//pgis:pixeltypes/pgis:pixeltype">
 		<xsl:choose>
 			  <xsl:when test="contains($fndef, 'geometry')">
-				SELECT 'Geometry <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryTypeype" />';
+			 SELECT 'Geometry <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryTypeype" />';
 			 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start) 
 			  	VALUES('<xsl:value-of select="$log_label" /> Geometry <xsl:value-of select="$geom1type" /><xsl:text> </xsl:text><xsl:value-of select="@PixType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="$geom1type" />','<xsl:value-of select="@GeometryType" />', clock_timestamp());
 
 			BEGIN;
-			SELECT foo1.the_geom <xsl:value-of select="$fnname" /> foo2.the_geom
-					FROM (<xsl:value-of select="$from1" />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2
-					;
-			UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		 	FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
-		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;
+				SELECT foo1.the_geom <xsl:value-of select="$fnname" /> foo2.the_geom
+						FROM (<xsl:value-of select="$from1" />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2
+						;
+				<xsl:value-of select="$var_logupdatesql" />
 			COMMIT;
 			</xsl:when>
 			<xsl:otherwise>
-			SELECT 'Raster <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="$rast1type" />, <xsl:value-of select="@PixType" />';
+			SELECT 'Raster <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="$pix1type" />, <xsl:value-of select="@PixType" />';
 			 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start) 
-			  	VALUES('<xsl:value-of select="$log_label" /> Raster <xsl:value-of select="$rast1type" /><xsl:text> </xsl:text><xsl:value-of select="@PixType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="$rast1type" />','<xsl:value-of select="@PixType" />', clock_timestamp());
+			  	VALUES('<xsl:value-of select="$log_label" /> Raster <xsl:value-of select="$pix1type" /><xsl:text> </xsl:text><xsl:value-of select="@PixType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="$pix1type" />','<xsl:value-of select="@PixType" />', clock_timestamp());
 
 			BEGIN;
-			SELECT rast1.rast <xsl:value-of select="$fnname" /> rast2.rast
-					FROM (<xsl:value-of select="$from1" />) As rast1 CROSS JOIN (<xsl:value-of select="." />) As rast2
-					;
-			UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		 	FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
-		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;
+				SELECT rast1.rast <xsl:value-of select="$fnname" /> rast2.rast
+						FROM (<xsl:value-of select="$from1" />) As rast1 CROSS JOIN (<xsl:value-of select="." />) As rast2;
+				<xsl:value-of select="$var_logupdatesql" />
 			COMMIT;
 			</xsl:otherwise>
 		</xsl:choose>
@@ -247,14 +240,11 @@ COMMIT;<xsl:text>
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, log_start) 
 			  	VALUES('<xsl:value-of select="$log_label" />','<xsl:value-of select="$fnname" />', clock_timestamp());
 	
-BEGIN;
-SELECT  <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnfakeparams" />);
-<!-- log completion -->
-	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		 	FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
-		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;
-	
-COMMIT;
+	BEGIN;
+		SELECT  <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnfakeparams" />);
+		<!-- log completion -->
+		<xsl:value-of select="$var_logupdatesql" />
+	COMMIT;
 SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)';
 	</xsl:when>
 <!--Start Test aggregate and unary functions -->
@@ -267,28 +257,24 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 		BEGIN;
 			<xsl:choose>
 			  <xsl:when test="contains(paramdef, 'raster ')">
-			  
-	
 	 <!-- If output is raster show ewkt convexhull rep -->
 	SELECT ST_AsEWKT(ST_ConvexHull(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)))
 			  </xsl:when>
 			  <xsl:otherwise>
-	SELECT 'Other <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@GeometryType" />';
-	 <!-- If output is geometry show ewkt rep -->
-	SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)
+				SELECT 'Other <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@GeometryType" />';
+				 <!-- If output is geometry show ewkt rep -->
+				SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)
 			  </xsl:otherwise>
 			</xsl:choose>
-			FROM (<xsl:value-of select="." />) As rast1
-			LIMIT 3;
-	<!-- log completion -->
-	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		 	FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
-		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;
-	COMMIT;
-	SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text> <xsl:value-of select="@ID" />: End Testing <xsl:value-of select="@PixType" />';
-		<xsl:text>
-
-		</xsl:text>
+					FROM (<xsl:value-of select="." />) As rast1
+					LIMIT 3;
+			<!-- log completion -->
+		<xsl:value-of select="$var_logupdatesql" />
+		  COMMIT;
+		  SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text> <xsl:value-of select="@ID" />: End Testing <xsl:value-of select="@PixType" />';
+			<xsl:text>
+	
+			</xsl:text>
 		</xsl:for-each>
 	</xsl:when>
 
@@ -297,39 +283,40 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 		<xsl:for-each select="document('')//pgis:pixeltypes/pgis:pixeltype">
 <!-- log to results table -->
 		SELECT '<xsl:value-of select="$geoftype" /> <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@PixType" />';
-	INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
-			  	VALUES('<xsl:value-of select="$log_label" /> <xsl:value-of select="$geoftype" /> <xsl:text> </xsl:text><xsl:value-of select="@ID" /><xsl:text> </xsl:text><xsl:value-of select="@PixType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="@PixType" />', clock_timestamp());
-		BEGIN;
+
 	<!--Store first garden sql geometry from -->
-			<xsl:variable name="from1"><xsl:value-of select="." /></xsl:variable>
-			<xsl:variable name='geom1type'><xsl:value-of select="@ID"/></xsl:variable>
-SELECT '<xsl:value-of select="$fnname" /> <xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" /> against other types';
-				<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
-			<xsl:choose>
-				<xsl:when test="$numparamrasts > '1'">
-				SELECT 'Raster <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
-	<!-- If input is raster show wkt rep -->
-	SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />), ST_AsText(ST_ConvexHull(rast1.rast)) As ref1_geom, ST_AsText(ST_ConvexHull(rast2.rast)) As ref2_geom
-			  </xsl:when>
-			  <xsl:when test="$numparamgeoms > '0'">
-				SELECT 'Geometry <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
-	<!-- If input is geometry show ewkt rep -->
-	SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />), ST_AsEWKT(rast1.rast::geometry) As ref1_geom, ST_AsEWKT(foo2.the_geom) As ref2_geom
-			  </xsl:when>
-			  <xsl:otherwise>
-				SELECT 'Other <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
-	<!-- If input is geography show wkt rep -->
-	SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)
-			  </xsl:otherwise>
-			</xsl:choose>
-			FROM (<xsl:value-of select="$from1" />) As rast1 CROSS JOIN (<xsl:value-of select="." />) As foo2
-			LIMIT 2;
-	<!-- log completion -->
-	UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
-		 	FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
-		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;
+					<xsl:variable name="from1"><xsl:value-of select="." /></xsl:variable>
+					<xsl:variable name='pix1type'><xsl:value-of select="@PixType"/></xsl:variable>
+					
+		SELECT '<xsl:value-of select="$fnname" /> <xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$pix1type" /> against other types';
+						<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
+						
+			INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start) 
+			  	VALUES('<xsl:value-of select="$log_label" /> <xsl:value-of select="$pix1type" /> <xsl:text> </xsl:text><xsl:value-of select="@ID" /><xsl:text> </xsl:text>','<xsl:value-of select="$fnname" />', '<xsl:value-of select="$pix1type" />','<xsl:value-of select="@GeometryType" />', clock_timestamp());
+			BEGIN;
+					<xsl:choose>
+						<xsl:when test="$numparamrasts > '1'">
+						SELECT 'Raster <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="$pix1type" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$pix1type" />, <xsl:value-of select="@GeometryType" />';
+			<!-- If input is raster show wkt rep -->
+			SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />), ST_AsText(ST_ConvexHull(rast1.rast)) As ref1_geom, ST_AsText(ST_ConvexHull(rast2.rast)) As ref2_geom
+					  </xsl:when>
+					  <xsl:when test="$numparamgeoms > '0'">
+						SELECT 'Geometry <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$pix1type" />, <xsl:value-of select="@GeometryType" />';
+			<!-- If input is geometry show ewkt rep -->
+			SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />), ST_AsEWKT(rast1.rast::geometry) As ref1_geom, ST_AsEWKT(foo2.the_geom) As ref2_geom
+					  </xsl:when>
+					  <xsl:otherwise>
+						SELECT 'Other <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$pix1type" />, <xsl:value-of select="@GeometryType" />';
+			<!-- If input is geography show wkt rep -->
+			SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)
+					  </xsl:otherwise>
+					</xsl:choose>
+					FROM (<xsl:value-of select="$from1" />) As rast1 CROSS JOIN (<xsl:value-of select="." />) As foo2
+					LIMIT 2;
+			<!-- log completion -->
+			<xsl:value-of select="$var_logupdatesql" />
 	COMMIT;
-	SELECT '<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnargs" />) <xsl:text> </xsl:text> <xsl:value-of select="@ID" />: End Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@PixType" />';
+	SELECT '<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnargs" />) <xsl:text> </xsl:text> <xsl:value-of select="@ID" />: End Testing <xsl:value-of select="$pix1type" />, <xsl:value-of select="@PixType" />';
 		<xsl:text>
 
 		</xsl:text>
