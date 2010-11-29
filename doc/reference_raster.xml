@@ -3041,7 +3041,7 @@ a_rid | b_rid | overleft
 		 
 		<refentry id="RT_Raster_OverRight">
 		  <refnamediv>
-			<refname>&amp;&lt;</refname>
+			<refname>&amp;&gt;</refname>
 
 			<refpurpose>Returns <varname>TRUE</varname> if A's bounding box is to the right of B's.</refpurpose>
 		  </refnamediv>
@@ -3069,7 +3069,7 @@ a_rid | b_rid | overleft
 		  <refsection>
 			<title>Description</title>
 
-			<para>The <varname>&amp;&lt;</varname> operator returns <varname>TRUE</varname> if the bounding box of raster A
+			<para>The <varname>&amp;&gt;</varname> operator returns <varname>TRUE</varname> if the bounding box of raster A
 			overlaps or is to the right of the bounding box of raster B, or more accurately, overlaps or is NOT to the left
 			of the bounding box of raster B.</para>
 
