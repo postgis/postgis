@@ -2018,7 +2018,7 @@ WHERE
 					<paramdef><type>double precision </type> <parameter>newvalue</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
-					<funcdef>raster <function>ST_SEtValue</function></funcdef>
+					<funcdef>raster <function>ST_SetValue</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
