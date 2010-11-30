@@ -305,7 +305,7 @@ Datum geography_length(PG_FUNCTION_ARGS)
 	/* EMPTY things have no length */
 	if ( lwgeom_is_empty(lwgeom) )
 	{
-		lwgeom_release(lwgeom);
+		lwgeom_free(lwgeom);
 		PG_RETURN_FLOAT8(0.0);
 	}
 

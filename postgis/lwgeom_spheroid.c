@@ -408,28 +408,31 @@ PG_FUNCTION_INFO_V1(LWGEOM_length_ellipsoid_linestring);
 Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
 	SPHEROID *sphere = (SPHEROID *) PG_GETARG_POINTER(1);
-	LWGEOM_INSPECTED *inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
-	LWLINE *line;
-	double dist = 0.0;
-	int i;
+	double length = 0.0;
 
-	POSTGIS_DEBUG(2, "in LWGEOM_length_ellipsoid_linestring");
-
-	for (i=0; i<inspected->ngeometries; i++)
+	/* EMPTY things have no length */
+	if ( lwgeom_is_empty(lwgeom) )
 	{
-		line = lwgeom_getline_inspected(inspected, i);
-		if ( line == NULL ) continue;
-		dist += ptarray_length_ellipse(line->points,
-		        sphere);
-
-		POSTGIS_DEBUGF(3, " LWGEOM_length_ellipsoid_linestring found a line (%f)",
-		               dist);
+		lwgeom_free(lwgeom);
+		PG_RETURN_FLOAT8(0.0);
 	}
 
-	lwinspected_release(inspected);
+	length = lwgeom_length_spheroid(lwgeom, sphere);
 
-	PG_RETURN_FLOAT8(dist);
+	/* Something went wrong... */
+	if ( length < 0.0 )
+	{
+		elog(ERROR, "lwgeom_length_spheroid returned length < 0.0");
+		PG_RETURN_NULL();
+	}
+
+	/* Clean up, but not all the way to the point arrays */
+	lwgeom_release(lwgeom);
+
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_FLOAT8(length);
 }
 
 /*
