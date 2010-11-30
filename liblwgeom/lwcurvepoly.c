@@ -157,4 +157,17 @@ int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring)
 	return LW_TRUE;	
 }
 
+/**
+ * This should be rewritten to make use of the curve itself.
+ */
+double
+lwcurvepoly_area(const LWCURVEPOLY *curvepoly)
+{
+	double area = 0.0;
+	LWPOLY *poly = (LWPOLY *)lwgeom_segmentize((LWGEOM *)curvepoly, 32);
+	area = lwpoly_area(poly);
+	lwpoly_free(poly);
+	return area;
+}
+
 

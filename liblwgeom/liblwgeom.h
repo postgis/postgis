@@ -1519,11 +1519,9 @@ extern double lwgeom_maxdistance3d(LWGEOM *lw1, LWGEOM *lw2);
 extern double lwgeom_maxdistance3d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance);
 
 
-
-extern double lwgeom_polygon_area(const LWPOLY *poly);
+extern double lwgeom_area(const LWGEOM *geom);
 extern double lwgeom_polygon_perimeter(const LWPOLY *poly);
 extern double lwgeom_polygon_perimeter2d(const LWPOLY *poly);
-extern double lwgeom_triangle_area(const LWTRIANGLE *triangle);
 extern double lwgeom_triangle_perimeter(const LWTRIANGLE *triangle);
 extern double lwgeom_triangle_perimeter2d(const LWTRIANGLE *triangle);
 extern double lwgeom_pointarray_length2d(const POINTARRAY *pts);
@@ -2055,7 +2053,6 @@ int has_arc(const LWGEOM *geom);
 double lwcircle_center(POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D **result);
 LWGEOM *lwgeom_segmentize(LWGEOM *geom, uint32 perQuad);
 LWGEOM *lwgeom_desegmentize(LWGEOM *geom);
-extern double lwgeom_curvepolygon_area(LWCURVEPOLY *curvepoly);
 double lwcircle_center(POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D **result);
 
 #endif /* !defined _LIBLWGEOM_H  */

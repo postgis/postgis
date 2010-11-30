@@ -126,6 +126,12 @@ LWCOLLECTION* lwcollection_simplify(const LWCOLLECTION *igeom, double dist);
 */
 int p4d_same(POINT4D p1, POINT4D p2);
 
+/*
+* Area calculations
+*/
+extern double lwpoly_area(const LWPOLY *poly);
+extern double lwcurvepoly_area(const LWCURVEPOLY *curvepoly);
+extern double lwtriangle_area(const LWTRIANGLE *triangle);
 
 
 

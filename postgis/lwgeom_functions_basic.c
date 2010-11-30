@@ -263,42 +263,16 @@ PG_FUNCTION_INFO_V1(LWGEOM_area_polygon);
 Datum LWGEOM_area_polygon(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM_INSPECTED *inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
-	LWPOLY *poly;
-	LWTRIANGLE *triangle;
-	LWCURVEPOLY *curvepoly;
-	LWGEOM *tmp;
+	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
 	double area = 0.0;
-	int i;
 
 	POSTGIS_DEBUG(2, "in LWGEOM_area_polygon");
 
-	for (i=0; i<inspected->ngeometries; i++)
-	{
-		tmp = lwgeom_getgeom_inspected(inspected, i);
-		if (lwgeom_getType(tmp->type) == POLYGONTYPE)
-		{
-			poly = (LWPOLY *)tmp;
-			area += lwgeom_polygon_area(poly);
-		}
-		else if (lwgeom_getType(tmp->type) == CURVEPOLYTYPE)
-		{
-			curvepoly = (LWCURVEPOLY *)tmp;
-			area += lwgeom_curvepolygon_area(curvepoly);
-		}
-		else if (lwgeom_getType(tmp->type) == TRIANGLETYPE)
-		{
-			triangle = (LWTRIANGLE *)tmp;
-			area += lwgeom_triangle_area(triangle);
-		}
-		lwgeom_release(tmp);
+	area = lwgeom_area(lwgeom);
 
-		POSTGIS_DEBUGF(3, " LWGEOM_area_polygon found a poly (%f)", area);
-	}
-
-	lwinspected_release(inspected);
-
+	lwgeom_free(lwgeom);	
 	PG_FREE_IF_COPY(geom, 0);
+	
 	PG_RETURN_FLOAT8(area);
 }
 

@@ -1493,3 +1493,26 @@ LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist)
 	}
 	return NULL;
 }
+
+double lwgeom_area(const LWGEOM *geom)
+{
+	int type = geom->type;
+	
+	if ( type == POLYGONTYPE )
+		return lwpoly_area((LWPOLY*)geom);
+	else if ( type == CURVEPOLYTYPE )
+		return lwcurvepoly_area((LWCURVEPOLY*)geom);
+	else if (type ==  TRIANGLETYPE )
+		return lwtriangle_area((LWTRIANGLE*)geom);
+	else if ( lwgeom_is_collection(geom) )
+	{
+		double area = 0.0;
+		int i;
+		LWCOLLECTION *col = (LWCOLLECTION*)geom;
+		for ( i = 0; i < col->ngeoms; i++ )
+			area += lwgeom_area(col->geoms[i]);
+		return area;
+	}
+	else
+		return 0.0;
+}

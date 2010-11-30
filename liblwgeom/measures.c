@@ -1526,84 +1526,9 @@ lwgeom_pointarray_length(const POINTARRAY *pts)
 	return dist;
 }
 
-/**
- * This should be rewritten to make use of the curve itself.
- */
-double
-lwgeom_curvepolygon_area(LWCURVEPOLY *curvepoly)
-{
-	LWPOLY *poly = (LWPOLY *)lwgeom_segmentize((LWGEOM *)curvepoly, 32);
-	return lwgeom_polygon_area(poly);
-}
 
-/**
- * Find the area of the outer ring - sum (area of inner rings).
- * Could use a more numerically stable calculator...
- */
-double
-lwgeom_polygon_area(const LWPOLY *poly)
-{
-	double poly_area=0.0;
-	int i;
-	POINT2D p1;
-	POINT2D p2;
 
-	LWDEBUGF(2, "in lwgeom_polygon_area (%d rings)", poly->nrings);
 
-	for (i=0; i<poly->nrings; i++)
-	{
-		int j;
-		POINTARRAY *ring = poly->rings[i];
-		double ringarea = 0.0;
-
-		LWDEBUGF(4, " rings %d has %d points", i, ring->npoints);
-
-		if ( ! ring->npoints ) continue; /* empty ring */
-		for (j=0; j<ring->npoints-1; j++)
-		{
-			getPoint2d_p(ring, j, &p1);
-			getPoint2d_p(ring, j+1, &p2);
-			ringarea += ( p1.x * p2.y ) - ( p1.y * p2.x );
-		}
-
-		ringarea  /= 2.0;
-
-		LWDEBUGF(4, " ring 1 has area %lf",ringarea);
-
-		ringarea  = fabs(ringarea);
-		if (i != 0)	/*outer */
-			ringarea  = -1.0*ringarea ; /* its a hole */
-
-		poly_area += ringarea;
-	}
-
-	return poly_area;
-}
-
-/**
- * Find the area of the outer ring 
- */
-double
-lwgeom_triangle_area(const LWTRIANGLE *triangle)
-{
-	double area=0.0;
-	int i;
-	POINT2D p1;
-	POINT2D p2;
-
-	if (! triangle->points->npoints) return area; /* empty triangle */
-
-	for (i=0; i < triangle->points->npoints-1; i++)
-	{
-		getPoint2d_p(triangle->points, i, &p1);
-		getPoint2d_p(triangle->points, i+1, &p2);
-		area += ( p1.x * p2.y ) - ( p1.y * p2.x );
-	}
-
-	area  /= 2.0;
-
-	return fabs(area);
-}
 
 
 /**
