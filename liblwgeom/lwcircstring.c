@@ -22,7 +22,6 @@ BOX3D *lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3);
 void printLWCIRCSTRING(LWCIRCSTRING *curve);
 void lwcircstring_reverse(LWCIRCSTRING *curve);
 void lwcircstring_release(LWCIRCSTRING *lwcirc);
-LWCIRCSTRING *lwcircstring_segmentize2d(LWCIRCSTRING *curve, double dist);
 char lwcircstring_same(const LWCIRCSTRING *me, const LWCIRCSTRING *you);
 LWCIRCSTRING *lwcircstring_from_lwpointarray(int srid, uint32 npoints, LWPOINT **points);
 LWCIRCSTRING *lwcircstring_from_lwmpoint(int srid, LWMPOINT *mpoint);
@@ -601,16 +600,6 @@ void lwcircstring_reverse(LWCIRCSTRING *curve)
 	ptarray_reverse(curve->points);
 }
 
-/*
- * TODO: Invalid segmentization.  This should accomodate the curvature.
- */
-LWCIRCSTRING *
-lwcircstring_segmentize2d(LWCIRCSTRING *curve, double dist)
-{
-	return lwcircstring_construct(curve->srid, NULL,
-	                              ptarray_segmentize2d(curve->points, dist));
-}
-
 /* check coordinate equality */
 char
 lwcircstring_same(const LWCIRCSTRING *me, const LWCIRCSTRING *you)
@@ -756,4 +745,28 @@ int lwcircstring_is_empty(const LWCIRCSTRING *circ)
 	if ( !circ->points || circ->points->npoints == 0 )
 		return LW_TRUE;
 	return LW_FALSE;
+}
+
+double lwcircstring_length(const LWCIRCSTRING *circ)
+{
+	double length = 0.0;
+	LWLINE *line;
+	if ( lwcircstring_is_empty(circ) )
+		return 0.0;
+	line = lwcircstring_segmentize(circ, 32);
+	length = lwline_length(line);
+	lwline_free(line);
+	return length;
+}
+
+double lwcircstring_length_2d(const LWCIRCSTRING *circ)
+{
+	double length = 0.0;
+	LWLINE *line;
+	if ( lwcircstring_is_empty(circ) )
+		return 0.0;
+	line = lwcircstring_segmentize(circ, 32);
+	length = lwline_length_2d(line);
+	lwline_free(line);
+	return length;
 }

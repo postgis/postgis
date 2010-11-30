@@ -125,7 +125,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 
 	/* Interpolate a point on the line */
 	nsegs = ipa->npoints - 1;
-	length = lwgeom_pointarray_length2d(ipa);
+	length = ptarray_length_2d(ipa);
 	tlength = 0;
 	for ( i = 0; i < nsegs; i++ )
 	{
@@ -853,7 +853,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 		{
 			LWLINE *subline = (LWLINE*)iline->geoms[i];
 			if ( subline->points && subline->points->npoints > 1 )
-				length += lwgeom_pointarray_length2d(subline->points);
+				length += ptarray_length_2d(subline->points);
 		}
 
 		geoms = lwalloc(sizeof(LWGEOM*) * iline->ngeoms);
@@ -865,7 +865,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 			double subfrom = 0.0, subto = 0.0;
 
 			if ( subline->points && subline->points->npoints > 1 )
-				sublength += lwgeom_pointarray_length2d(subline->points);
+				sublength += ptarray_length_2d(subline->points);
 
 			/* Calculate proportions for this subline */
 			minprop = maxprop;

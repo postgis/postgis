@@ -1476,55 +1476,6 @@ distance2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B)
 
 
 
-/**
-find the 2d length of the given POINTARRAY (even if it's 3d)
-*/
-double
-lwgeom_pointarray_length2d(const POINTARRAY *pts)
-{
-	double dist = 0.0;
-	int i;
-	POINT2D frm;
-	POINT2D to;
-
-	if ( pts->npoints < 2 ) return 0.0;
-	for (i=0; i<pts->npoints-1; i++)
-	{
-		getPoint2d_p(pts, i, &frm);
-		getPoint2d_p(pts, i+1, &to);
-		dist += sqrt( ( (frm.x - to.x)*(frm.x - to.x) )  +
-		              ((frm.y - to.y)*(frm.y - to.y) ) );
-	}
-	return dist;
-}
-
-/**
- * Find the 3d/2d length of the given POINTARRAY
- * (depending on its dimensions)
- */
-double
-lwgeom_pointarray_length(const POINTARRAY *pts)
-{
-	double dist = 0.0;
-	int i;
-	POINT3DZ frm;
-	POINT3DZ to;
-
-	if ( pts->npoints < 2 ) return 0.0;
-
-	/* compute 2d length if 3d is not available */
-	if ( ! FLAGS_GET_Z(pts->flags) ) return lwgeom_pointarray_length2d(pts);
-
-	for (i=0; i<pts->npoints-1; i++)
-	{
-		getPoint3dz_p(pts, i, &frm);
-		getPoint3dz_p(pts, i+1, &to);
-		dist += sqrt( ( (frm.x - to.x)*(frm.x - to.x) )  +
-		              ((frm.y - to.y)*(frm.y - to.y) ) +
-		              ((frm.z - to.z)*(frm.z - to.z) ) );
-	}
-	return dist;
-}
 
 
 
@@ -1544,7 +1495,7 @@ lwgeom_polygon_perimeter(const LWPOLY *poly)
 	LWDEBUGF(2, "in lwgeom_polygon_perimeter (%d rings)", poly->nrings);
 
 	for (i=0; i<poly->nrings; i++)
-		result += lwgeom_pointarray_length(poly->rings[i]);
+		result += ptarray_length(poly->rings[i]);
 
 	return result;
 }
@@ -1562,7 +1513,7 @@ lwgeom_polygon_perimeter2d(const LWPOLY *poly)
 	LWDEBUGF(2, "in lwgeom_polygon_perimeter (%d rings)", poly->nrings);
 
 	for (i=0; i<poly->nrings; i++)
-		result += lwgeom_pointarray_length2d(poly->rings[i]);
+		result += ptarray_length_2d(poly->rings[i]);
 
 	return result;
 }
@@ -1570,13 +1521,13 @@ lwgeom_polygon_perimeter2d(const LWPOLY *poly)
 double
 lwgeom_triangle_perimeter(const LWTRIANGLE *triangle)
 {
-	return lwgeom_pointarray_length(triangle->points);
+	return ptarray_length(triangle->points);
 }
 
 double
 lwgeom_triangle_perimeter2d(const LWTRIANGLE *triangle)
 {
-	return lwgeom_pointarray_length2d(triangle->points);
+	return ptarray_length_2d(triangle->points);
 }
 
 int

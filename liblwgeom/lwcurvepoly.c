@@ -164,7 +164,10 @@ double
 lwcurvepoly_area(const LWCURVEPOLY *curvepoly)
 {
 	double area = 0.0;
-	LWPOLY *poly = (LWPOLY *)lwgeom_segmentize((LWGEOM *)curvepoly, 32);
+	LWPOLY *poly;
+	if( lwgeom_is_empty((LWGEOM*)curvepoly) )
+		return 0.0;
+	poly = lwcurvepoly_segmentize(curvepoly, 32);
 	area = lwpoly_area(poly);
 	lwpoly_free(poly);
 	return area;

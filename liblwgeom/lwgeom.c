@@ -1516,3 +1516,48 @@ double lwgeom_area(const LWGEOM *geom)
 	else
 		return 0.0;
 }
+
+double lwgeom_length(const LWGEOM *geom)
+{
+	int type = geom->type;
+	if ( type == LINETYPE )
+		return lwline_length((LWLINE*)geom);
+	else if ( type == CIRCSTRINGTYPE )
+		return lwcircstring_length((LWCIRCSTRING*)geom);
+	else if ( type == COMPOUNDTYPE )
+		return lwcompound_length((LWCOMPOUND*)geom);
+	else if ( lwgeom_is_collection(geom) )
+	{
+		double length = 0.0;
+		int i;
+		LWCOLLECTION *col = (LWCOLLECTION*)geom;
+		for ( i = 0; i < col->ngeoms; i++ )
+			length += lwgeom_length(col->geoms[i]);
+		return length;
+	}
+	else
+		return 0.0;
+}
+
+double lwgeom_length_2d(const LWGEOM *geom)
+{
+	int type = geom->type;
+	if ( type == LINETYPE )
+		return lwline_length_2d((LWLINE*)geom);
+	else if ( type == CIRCSTRINGTYPE )
+		return lwcircstring_length_2d((LWCIRCSTRING*)geom);
+	else if ( type == COMPOUNDTYPE )
+		return lwcompound_length_2d((LWCOMPOUND*)geom);
+	else if ( lwgeom_is_collection(geom) )
+	{
+		double length = 0.0;
+		int i;
+		LWCOLLECTION *col = (LWCOLLECTION*)geom;
+		for ( i = 0; i < col->ngeoms; i++ )
+			length += lwgeom_length_2d(col->geoms[i]);
+		return length;
+	}
+	else
+		return 0.0;
+}
+

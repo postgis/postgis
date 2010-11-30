@@ -55,8 +55,8 @@ double deltaLongitude(double azimuth, double sigma, double tsm,SPHEROID *sphere)
 double mu2(double azimuth,SPHEROID *sphere);
 double bigA(double u2);
 double bigB(double u2);
-double lwgeom_pointarray_length2d_ellipse(POINTARRAY *pts, SPHEROID *sphere);
-double lwgeom_pointarray_length_ellipse(POINTARRAY *pts, SPHEROID *sphere);
+double ptarray_length_2d_ellipse(POINTARRAY *pts, SPHEROID *sphere);
+double ptarray_length_ellipse(POINTARRAY *pts, SPHEROID *sphere);
 
 
 /*
@@ -315,19 +315,19 @@ distance_ellipse_calculation(double lat1, double long1,
  * Computed 2d/3d length of a POINTARRAY depending on input dimensions.
  * Uses ellipsoidal math to find the distance.
  */
-double lwgeom_pointarray_length_ellipse(POINTARRAY *pts, SPHEROID *sphere)
+double ptarray_length_ellipse(POINTARRAY *pts, SPHEROID *sphere)
 {
 	double dist = 0.0;
 	int i;
 
-	LWDEBUG(2, "lwgeom_pointarray_length_ellipse called");
+	LWDEBUG(2, "ptarray_length_ellipse called");
 
 	if ( pts->npoints < 2 ) return 0.0;
 
 	/* compute 2d length if 3d is not available */
 	if ( TYPE_NDIMS(pts->flags) < 3 )
 	{
-		return lwgeom_pointarray_length2d_ellipse(pts, sphere);
+		return ptarray_length_2d_ellipse(pts, sphere);
 	}
 
 	for (i=0; i<pts->npoints-1; i++)
@@ -352,14 +352,14 @@ double lwgeom_pointarray_length_ellipse(POINTARRAY *pts, SPHEROID *sphere)
  * Uses ellipsoidal math to find the distance.
  */
 double
-lwgeom_pointarray_length2d_ellipse(POINTARRAY *pts, SPHEROID *sphere)
+ptarray_length_2d_ellipse(POINTARRAY *pts, SPHEROID *sphere)
 {
 	double dist = 0.0;
 	int i;
 	POINT2D frm;
 	POINT2D to;
 
-	LWDEBUG(2, "lwgeom_pointarray_length2d_ellipse called");
+	LWDEBUG(2, "ptarray_length_2d_ellipse called");
 
 	if ( pts->npoints < 2 ) return 0.0;
 	for (i=0; i<pts->npoints-1; i++)
@@ -420,7 +420,7 @@ Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS)
 	{
 		line = lwgeom_getline_inspected(inspected, i);
 		if ( line == NULL ) continue;
-		dist += lwgeom_pointarray_length_ellipse(line->points,
+		dist += ptarray_length_ellipse(line->points,
 		        sphere);
 
 		POSTGIS_DEBUGF(3, " LWGEOM_length_ellipsoid_linestring found a line (%f)",

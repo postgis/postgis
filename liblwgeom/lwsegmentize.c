@@ -21,9 +21,6 @@
 
 double interpolate_arc(double angle, double zm1, double a1, double zm2, double a2);
 POINTARRAY *lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad);
-LWLINE *lwcurve_segmentize(LWCIRCSTRING *icurve, uint32 perQuad);
-LWLINE *lwcompound_segmentize(LWCOMPOUND *icompound, uint32 perQuad);
-LWPOLY *lwcurvepoly_segmentize(LWCURVEPOLY *curvepoly, uint32 perQuad);
 LWMLINE *lwmcurve_segmentize(LWMCURVE *mcurve, uint32 perQuad);
 LWMPOLY *lwmsurface_segmentize(LWMSURFACE *msurface, uint32 perQuad);
 LWCOLLECTION *lwcollection_segmentize(LWCOLLECTION *collection, uint32 perQuad);
@@ -286,7 +283,7 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad)
 }
 
 LWLINE *
-lwcurve_segmentize(LWCIRCSTRING *icurve, uint32 perQuad)
+lwcircstring_segmentize(const LWCIRCSTRING *icurve, uint32 perQuad)
 {
 	LWLINE *oline;
 	POINTARRAY *ptarray;
@@ -294,18 +291,18 @@ lwcurve_segmentize(LWCIRCSTRING *icurve, uint32 perQuad)
 	uint32 i, j;
 	POINT4D p1, p2, p3, p4;
 
-	LWDEBUGF(2, "lwcurve_segmentize called., dim = %d", icurve->points->flags);
+	LWDEBUGF(2, "lwcircstring_segmentize called., dim = %d", icurve->points->flags);
 
 	ptarray = ptarray_construct_empty(FLAGS_GET_Z(icurve->points->flags), FLAGS_GET_M(icurve->points->flags), 64);
 	if (!getPoint4d_p(icurve->points, 0, &p4))
 	{
-		lwerror("lwcurve_segmentize: Cannot extract point.");
+		lwerror("lwcircstring_segmentize: Cannot extract point.");
 	}
 	ptarray_append_point(ptarray, &p4, REPEATED_POINTS_OK);
 
 	for (i = 2; i < icurve->points->npoints; i+=2)
 	{
-		LWDEBUGF(3, "lwcurve_segmentize: arc ending at point %d", i);
+		LWDEBUGF(3, "lwcircstring_segmentize: arc ending at point %d", i);
 
 		getPoint4d_p(icurve->points, i - 2, &p1);
 		getPoint4d_p(icurve->points, i - 1, &p2);
@@ -314,7 +311,7 @@ lwcurve_segmentize(LWCIRCSTRING *icurve, uint32 perQuad)
 
 		if (tmp)
 		{
-			LWDEBUGF(3, "lwcurve_segmentize: generated %d points", tmp->npoints);
+			LWDEBUGF(3, "lwcircstring_segmentize: generated %d points", tmp->npoints);
 
 			for (j = 0; j < tmp->npoints; j++)
 			{
@@ -325,7 +322,7 @@ lwcurve_segmentize(LWCIRCSTRING *icurve, uint32 perQuad)
 		}
 		else
 		{
-			LWDEBUG(3, "lwcurve_segmentize: points are colinear, returning curve points as line");
+			LWDEBUG(3, "lwcircstring_segmentize: points are colinear, returning curve points as line");
 
 			for (j = i - 1 ; j <= i ; j++)
 			{
@@ -340,7 +337,7 @@ lwcurve_segmentize(LWCIRCSTRING *icurve, uint32 perQuad)
 }
 
 LWLINE *
-lwcompound_segmentize(LWCOMPOUND *icompound, uint32 perQuad)
+lwcompound_segmentize(const LWCOMPOUND *icompound, uint32 perQuad)
 {
 	LWGEOM *geom;
 	POINTARRAY *ptarray = NULL;
@@ -357,7 +354,7 @@ lwcompound_segmentize(LWCOMPOUND *icompound, uint32 perQuad)
 		geom = icompound->geoms[i];
 		if (lwgeom_getType(geom->type) == CIRCSTRINGTYPE)
 		{
-			tmp = lwcurve_segmentize((LWCIRCSTRING *)geom, perQuad);
+			tmp = lwcircstring_segmentize((LWCIRCSTRING *)geom, perQuad);
 			for (j = 0; j < tmp->points->npoints; j++)
 			{
 				getPoint4d_p(tmp->points, j, &p);
@@ -385,7 +382,7 @@ lwcompound_segmentize(LWCOMPOUND *icompound, uint32 perQuad)
 }
 
 LWPOLY *
-lwcurvepoly_segmentize(LWCURVEPOLY *curvepoly, uint32 perQuad)
+lwcurvepoly_segmentize(const LWCURVEPOLY *curvepoly, uint32 perQuad)
 {
 	LWPOLY *ogeom;
 	LWGEOM *tmp;
@@ -402,7 +399,7 @@ lwcurvepoly_segmentize(LWCURVEPOLY *curvepoly, uint32 perQuad)
 		tmp = curvepoly->rings[i];
 		if (tmp->type == CIRCSTRINGTYPE)
 		{
-			line = lwcurve_segmentize((LWCIRCSTRING *)tmp, perQuad);
+			line = lwcircstring_segmentize((LWCIRCSTRING *)tmp, perQuad);
 			ptarray[i] = ptarray_clone(line->points);
 			lwfree(line);
 		}
@@ -445,7 +442,7 @@ lwmcurve_segmentize(LWMCURVE *mcurve, uint32 perQuad)
 		tmp = mcurve->geoms[i];
 		if (tmp->type == CIRCSTRINGTYPE)
 		{
-			lines[i] = (LWGEOM *)lwcurve_segmentize((LWCIRCSTRING *)tmp, perQuad);
+			lines[i] = (LWGEOM *)lwcircstring_segmentize((LWCIRCSTRING *)tmp, perQuad);
 		}
 		else if (tmp->type == LINETYPE)
 		{
@@ -516,7 +513,7 @@ lwcollection_segmentize(LWCOLLECTION *collection, uint32 perQuad)
 		switch (tmp->type)
 		{
 		case CIRCSTRINGTYPE:
-			geoms[i] = (LWGEOM *)lwcurve_segmentize((LWCIRCSTRING *)tmp, perQuad);
+			geoms[i] = (LWGEOM *)lwcircstring_segmentize((LWCIRCSTRING *)tmp, perQuad);
 			break;
 		case COMPOUNDTYPE:
 			geoms[i] = (LWGEOM *)lwcompound_segmentize((LWCOMPOUND *)tmp, perQuad);
@@ -543,7 +540,7 @@ lwgeom_segmentize(LWGEOM *geom, uint32 perQuad)
 	switch (geom->type)
 	{
 	case CIRCSTRINGTYPE:
-		ogeom = (LWGEOM *)lwcurve_segmentize((LWCIRCSTRING *)geom, perQuad);
+		ogeom = (LWGEOM *)lwcircstring_segmentize((LWCIRCSTRING *)geom, perQuad);
 		break;
 	case COMPOUNDTYPE:
 		ogeom = (LWGEOM *)lwcompound_segmentize((LWCOMPOUND *)geom, perQuad);

@@ -124,7 +124,7 @@ lwmline_measured_from_lwmline(const LWMLINE *lwmline, double m_start, double m_e
 		LWLINE *lwline = (LWLINE*)lwmline->geoms[i];
 		if ( lwline->points && lwline->points->npoints > 1 )
 		{
-			length += lwgeom_pointarray_length2d(lwline->points);
+			length += ptarray_length_2d(lwline->points);
 		}
 	}
 
@@ -143,7 +143,7 @@ lwmline_measured_from_lwmline(const LWMLINE *lwmline, double m_start, double m_e
 
 		if ( lwline->points && lwline->points->npoints > 1 )
 		{
-			sub_length = lwgeom_pointarray_length2d(lwline->points);
+			sub_length = ptarray_length_2d(lwline->points);
 		}
 
 		sub_m_start = (m_start + m_range * length_so_far / length);

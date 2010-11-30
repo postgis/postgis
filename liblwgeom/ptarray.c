@@ -787,7 +787,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 	dpa = ptarray_construct_empty(FLAGS_GET_Z(ipa->flags), FLAGS_GET_M(ipa->flags), ipa->npoints);
 
 	/* Compute total line length */
-	length = lwgeom_pointarray_length2d(ipa);
+	length = ptarray_length_2d(ipa);
 
 
 	LWDEBUGF(3, "Total length: %g", length);
@@ -1056,7 +1056,7 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p, double* mindistout)
 
 	LWDEBUGF(3, "Closest point on segment: %g,%g", proj.x, proj.y);
 
-	tlen = lwgeom_pointarray_length2d(pa);
+	tlen = ptarray_length_2d(pa);
 
 	LWDEBUGF(3, "tlen %g", tlen);
 
@@ -1257,6 +1257,58 @@ ptarray_simplify(POINTARRAY *inpts, double epsilon)
 	lwfree(stack);
 	return outpts;
 }
+
+
+/**
+* Find the 2d length of the given #POINTARRAY (even if it's 3d)
+*/
+double
+ptarray_length_2d(const POINTARRAY *pts)
+{
+	double dist = 0.0;
+	int i;
+	POINT2D frm;
+	POINT2D to;
+
+	if ( pts->npoints < 2 ) return 0.0;
+	for (i=0; i<pts->npoints-1; i++)
+	{
+		getPoint2d_p(pts, i, &frm);
+		getPoint2d_p(pts, i+1, &to);
+		dist += sqrt( ( (frm.x - to.x)*(frm.x - to.x) )  +
+		              ((frm.y - to.y)*(frm.y - to.y) ) );
+	}
+	return dist;
+}
+
+/**
+* Find the 3d/2d length of the given #POINTARRAY
+* (depending on its dimensionality)
+*/
+double
+ptarray_length(const POINTARRAY *pts)
+{
+	double dist = 0.0;
+	int i;
+	POINT3DZ frm;
+	POINT3DZ to;
+
+	if ( pts->npoints < 2 ) return 0.0;
+
+	/* compute 2d length if 3d is not available */
+	if ( ! FLAGS_GET_Z(pts->flags) ) return ptarray_length_2d(pts);
+
+	for (i=0; i<pts->npoints-1; i++)
+	{
+		getPoint3dz_p(pts, i, &frm);
+		getPoint3dz_p(pts, i+1, &to);
+		dist += sqrt( ( (frm.x - to.x)*(frm.x - to.x) )  +
+		              ((frm.y - to.y)*(frm.y - to.y) ) +
+		              ((frm.z - to.z)*(frm.z - to.z) ) );
+	}
+	return dist;
+}
+
 
 int
 p4d_same(POINT4D p1, POINT4D p2)

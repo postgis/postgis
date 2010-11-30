@@ -531,7 +531,7 @@ lwline_measured_from_lwline(const LWLINE *lwline, double m_start, double m_end)
 	if ( lwline->points )
 	{
 		npoints = lwline->points->npoints;
-		length = lwgeom_pointarray_length2d(lwline->points);
+		length = ptarray_length_2d(lwline->points);
 		getPoint3dz_p(lwline->points, 0, &p1);
 	}
 
@@ -633,4 +633,18 @@ LWLINE* lwline_simplify(const LWLINE *iline, double dist)
 	oline = lwline_construct(iline->srid, NULL, ptarray_simplify(iline->points, dist));
 	oline->type = iline->type;
 	return oline;
+}
+
+double lwline_length(const LWLINE *line)
+{
+	if ( lwline_is_empty(line) )
+		return 0.0;
+	return ptarray_length(line->points);
+}
+
+double lwline_length_2d(const LWLINE *line)
+{
+	if ( lwline_is_empty(line) )
+		return 0.0;
+	return ptarray_length_2d(line->points);
 }

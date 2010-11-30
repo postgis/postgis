@@ -1520,12 +1520,16 @@ extern double lwgeom_maxdistance3d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double to
 
 
 extern double lwgeom_area(const LWGEOM *geom);
+extern double lwgeom_length(const LWGEOM *geom);
+extern double lwgeom_length_2d(const LWGEOM *geom);
+
 extern double lwgeom_polygon_perimeter(const LWPOLY *poly);
 extern double lwgeom_polygon_perimeter2d(const LWPOLY *poly);
 extern double lwgeom_triangle_perimeter(const LWTRIANGLE *triangle);
 extern double lwgeom_triangle_perimeter2d(const LWTRIANGLE *triangle);
-extern double lwgeom_pointarray_length2d(const POINTARRAY *pts);
-extern double lwgeom_pointarray_length(const POINTARRAY *pts);
+extern double ptarray_length_2d(const POINTARRAY *pts);
+extern double ptarray_length(const POINTARRAY *pts);
+
 extern int pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring);
 extern int pt_in_poly_2d(const POINT2D *p, const LWPOLY *poly);
 extern int azimuth_pt_pt(const POINT2D *p1, const POINT2D *p2, double *ret);

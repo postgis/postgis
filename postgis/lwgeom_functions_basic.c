@@ -287,24 +287,9 @@ PG_FUNCTION_INFO_V1(LWGEOM_length2d_linestring);
 Datum LWGEOM_length2d_linestring(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM_INSPECTED *inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
-	LWLINE *line;
-	double dist = 0.0;
-	int i;
-
-	POSTGIS_DEBUG(2, "in LWGEOM_length2d");
-
-	for (i=0; i<inspected->ngeometries; i++)
-	{
-		line = lwgeom_getline_inspected(inspected, i);
-		if ( line == NULL ) continue;
-		dist += lwgeom_pointarray_length2d(line->points);
-
-		POSTGIS_DEBUGF(3, " LWGEOM_length2d found a line (%f)", dist);
-	}
-
-	lwinspected_release(inspected);
-
+	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
+	double dist = lwgeom_length_2d(lwgeom);
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_FLOAT8(dist);
 }
@@ -320,20 +305,9 @@ PG_FUNCTION_INFO_V1(LWGEOM_length_linestring);
 Datum LWGEOM_length_linestring(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM_INSPECTED *inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
-	LWLINE *line;
-	double dist = 0.0;
-	int i;
-
-	for (i=0; i<inspected->ngeometries; i++)
-	{
-		line = lwgeom_getline_inspected(inspected, i);
-		if ( line == NULL ) continue;
-		dist += lwgeom_pointarray_length(line->points);
-	}
-
-	lwinspected_release(inspected);
-
+	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
+	double dist = lwgeom_length(lwgeom);
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_FLOAT8(dist);
 }

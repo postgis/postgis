@@ -91,3 +91,27 @@ lwcompound_is_closed(LWCOMPOUND *compound)
 
 	return LW_TRUE;
 }
+
+double lwcompound_length(const LWCOMPOUND *comp)
+{
+	double length = 0.0;
+	LWLINE *line;
+	if ( lwgeom_is_empty((LWGEOM*)comp) )
+		return 0.0;
+	line = lwcompound_segmentize(comp, 32);
+	length = lwline_length(line);
+	lwline_free(line);
+	return length;
+}
+
+double lwcompound_length_2d(const LWCOMPOUND *comp)
+{
+	double length = 0.0;
+	LWLINE *line;
+	if ( lwgeom_is_empty((LWGEOM*)comp) )
+		return 0.0;
+	line = lwcompound_segmentize(comp, 32);
+	length = lwline_length_2d(line);
+	lwline_free(line);
+	return length;
+}
