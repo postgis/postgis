@@ -21,16 +21,16 @@
 #include "liblwgeom_internal.h"
 #include <math.h>	/* fabs */
 
-char *lwgeom_to_kml2(uchar *srl, int precision, const char *prefix);
+char *lwgeom_to_kml2(const LWGEOM *geom, int precision, const char *prefix);
 
-static size_t askml2_point_size(LWPOINT *point, int precision, const char *prefix);
-static char *askml2_point(LWPOINT *point, int precision, const char *prefix);
-static size_t askml2_line_size(LWLINE *line, int precision, const char *prefix);
-static char *askml2_line(LWLINE *line, int precision, const char *prefix);
-static size_t askml2_poly_size(LWPOLY *poly, int precision, const char *prefix);
-static char *askml2_poly(LWPOLY *poly, int precision, const char *prefix);
-static size_t askml2_inspected_size(LWGEOM_INSPECTED *geom, int precision, const char *prefix);
-static char *askml2_inspected(LWGEOM_INSPECTED *geom, int precision, const char *prefix);
+static size_t askml2_point_size(const LWPOINT *point, int precision, const char *prefix);
+static char *askml2_point(const LWPOINT *point, int precision, const char *prefix);
+static size_t askml2_line_size(const LWLINE *line, int precision, const char *prefix);
+static char *askml2_line(const LWLINE *line, int precision, const char *prefix);
+static size_t askml2_poly_size(const LWPOLY *poly, int precision, const char *prefix);
+static char *askml2_poly(const LWPOLY *poly, int precision, const char *prefix);
+static size_t askml2_geom_size(const LWGEOM *geom, int precision, const char *prefix);
+static char *askml2_geom(const LWGEOM *geom, int precision, const char *prefix);
 static size_t pointArray_toKML2(POINTARRAY *pa, char *buf, int precision);
 
 static size_t pointArray_KMLsize(POINTARRAY *pa, int precision);
@@ -42,36 +42,26 @@ static size_t pointArray_KMLsize(POINTARRAY *pa, int precision);
 
 /* takes a GEOMETRY and returns a KML representation */
 char *
-lwgeom_to_kml2(uchar *geom, int precision, const char *prefix)
+lwgeom_to_kml2(const LWGEOM *geom, int precision, const char *prefix)
 {
-	int type;
-	LWPOINT *point;
-	LWLINE *line;
-	LWPOLY *poly;
-	LWGEOM_INSPECTED *inspected;
-
-	type = lwgeom_getType(geom[0]);
+	int type = geom->type;
 
 	switch (type)
 	{
 
 	case POINTTYPE:
-		point = lwpoint_deserialize(geom);
-		return askml2_point(point, precision, prefix);
+		return askml2_point((LWPOINT*)geom, precision, prefix);
 
 	case LINETYPE:
-		line = lwline_deserialize(geom);
-		return askml2_line(line, precision, prefix);
+		return askml2_line((LWLINE*)geom, precision, prefix);
 
 	case POLYGONTYPE:
-		poly = lwpoly_deserialize(geom);
-		return askml2_poly(poly, precision, prefix);
+		return askml2_poly((LWPOLY*)geom, precision, prefix);
 
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
-		inspected = lwgeom_inspect(geom);
-		return askml2_inspected(inspected, precision, prefix);
+		return askml2_geom(geom, precision, prefix);
 
 	default:
 		lwerror("lwgeom_to_kml2: '%s' geometry type not supported",
@@ -81,7 +71,7 @@ lwgeom_to_kml2(uchar *geom, int precision, const char *prefix)
 }
 
 static size_t
-askml2_point_size(LWPOINT *point, int precision, const char *prefix)
+askml2_point_size(const LWPOINT *point, int precision, const char *prefix)
 {
 	int size;
 	size_t prefixlen = strlen(prefix);
@@ -93,7 +83,7 @@ askml2_point_size(LWPOINT *point, int precision, const char *prefix)
 }
 
 static size_t
-askml2_point_buf(LWPOINT *point, char *output, int precision, const char *prefix)
+askml2_point_buf(const LWPOINT *point, char *output, int precision, const char *prefix)
 {
 	char *ptr = output;
 
@@ -106,7 +96,7 @@ askml2_point_buf(LWPOINT *point, char *output, int precision, const char *prefix
 }
 
 static char *
-askml2_point(LWPOINT *point, int precision, const char *prefix)
+askml2_point(const LWPOINT *point, int precision, const char *prefix)
 {
 	char *output;
 	int size;
@@ -118,7 +108,7 @@ askml2_point(LWPOINT *point, int precision, const char *prefix)
 }
 
 static size_t
-askml2_line_size(LWLINE *line, int precision, const char * prefix)
+askml2_line_size(const LWLINE *line, int precision, const char * prefix)
 {
 	int size;
 	size_t prefixlen = strlen(prefix);
@@ -130,7 +120,7 @@ askml2_line_size(LWLINE *line, int precision, const char * prefix)
 }
 
 static size_t
-askml2_line_buf(LWLINE *line, char *output, int precision, const char *prefix)
+askml2_line_buf(const LWLINE *line, char *output, int precision, const char *prefix)
 {
 	char *ptr=output;
 
@@ -143,7 +133,7 @@ askml2_line_buf(LWLINE *line, char *output, int precision, const char *prefix)
 }
 
 static char *
-askml2_line(LWLINE *line, int precision, const char *prefix)
+askml2_line(const LWLINE *line, int precision, const char *prefix)
 {
 	char *output;
 	int size;
@@ -155,7 +145,7 @@ askml2_line(LWLINE *line, int precision, const char *prefix)
 }
 
 static size_t
-askml2_poly_size(LWPOLY *poly, int precision, const char *prefix)
+askml2_poly_size(const LWPOLY *poly, int precision, const char *prefix)
 {
 	size_t size;
 	int i;
@@ -175,7 +165,7 @@ askml2_poly_size(LWPOLY *poly, int precision, const char *prefix)
 }
 
 static size_t
-askml2_poly_buf(LWPOLY *poly, char *output, int precision, const char *prefix)
+askml2_poly_buf(const LWPOLY *poly, char *output, int precision, const char *prefix)
 {
 	int i;
 	char *ptr=output;
@@ -205,7 +195,7 @@ askml2_poly_buf(LWPOLY *poly, char *output, int precision, const char *prefix)
 }
 
 static char *
-askml2_poly(LWPOLY *poly, int precision, const char *prefix)
+askml2_poly(const LWPOLY *poly, int precision, const char *prefix)
 {
 	char *output;
 	int size;
@@ -222,7 +212,7 @@ askml2_poly(LWPOLY *poly, int precision, const char *prefix)
  * Don't call this with single-geoms inspected.
  */
 static size_t
-askml2_inspected_size(LWGEOM_INSPECTED *insp, int precision, const char *prefix)
+askml2_geom_size(const LWGEOM *geom, int precision, const char *prefix)
 {
 	int i;
 	size_t size;
@@ -231,35 +221,27 @@ askml2_inspected_size(LWGEOM_INSPECTED *insp, int precision, const char *prefix)
 	/* the longest possible multi version */
 	size = sizeof("<MultiGeometry></MultiGeometry>") + prefixlen * 2;
 
-	for (i=0; i<insp->ngeometries; i++)
+	if ( geom->type == POINTTYPE )
 	{
-		LWPOINT *point;
-		LWLINE *line;
-		LWPOLY *poly;
-		LWGEOM_INSPECTED *subinsp;
-		uchar *subgeom;
-
-		if ((point=lwgeom_getpoint_inspected(insp, i)))
+		size += askml2_point_size((LWPOINT*)geom, precision, prefix);
+	}
+	else if ( geom->type == LINETYPE )
+	{
+		size += askml2_line_size((LWLINE*)geom, precision, prefix);
+	}
+	else if ( geom->type == POLYGONTYPE )
+	{
+		size += askml2_poly_size((LWPOLY*)geom, precision, prefix);
+	}
+	else if ( geom->type == MULTIPOLYGONTYPE ||
+	          geom->type == MULTILINETYPE ||
+	          geom->type == MULTIPOINTTYPE ||
+	          geom->type == COLLECTIONTYPE )
+	{
+		LWCOLLECTION *col = (LWCOLLECTION*)geom;
+		for ( i = 0; i < col->ngeoms; i++ )
 		{
-			size += askml2_point_size(point, precision, prefix);
-			lwpoint_free(point);
-		}
-		else if ((line=lwgeom_getline_inspected(insp, i)))
-		{
-			size += askml2_line_size(line, precision, prefix);
-			lwline_free(line);
-		}
-		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
-		{
-			size += askml2_poly_size(poly, precision, prefix);
-			lwpoly_free(poly);
-		}
-		else
-		{
-			subgeom = lwgeom_getsubgeometry_inspected(insp, i);
-			subinsp = lwgeom_inspect(subgeom);
-			size += askml2_inspected_size(subinsp, precision, prefix);
-			lwinspected_release(subinsp);
+			size += askml2_geom_size(col->geoms[i], precision, prefix);
 		}
 	}
 
@@ -270,51 +252,43 @@ askml2_inspected_size(LWGEOM_INSPECTED *insp, int precision, const char *prefix)
  * Don't call this with single-geoms inspected!
  */
 static size_t
-askml2_inspected_buf(LWGEOM_INSPECTED *insp, char *output, int precision, const char *prefix)
+askml2_geom_buf(const LWGEOM *geom, char *output, int precision, const char *prefix)
 {
 	char *ptr, *kmltype;
 	int i;
 
 	ptr = output;
-	kmltype = "MultiGeometry";
 
-	/* Open outmost tag */
-	ptr += sprintf(ptr, "<%s%s>", prefix, kmltype);
-
-	for (i=0; i<insp->ngeometries; i++)
+	if ( geom->type == POINTTYPE )
 	{
-		LWPOINT *point;
-		LWLINE *line;
-		LWPOLY *poly;
-		LWGEOM_INSPECTED *subinsp;
-		uchar *subgeom;
+		ptr += askml2_point_buf((LWPOINT*)geom, ptr, precision, prefix);
+	}
+	else if ( geom->type == LINETYPE )
+	{
+		ptr += askml2_line_buf((LWLINE*)geom, ptr, precision, prefix);
+	}
+	else if ( geom->type == POLYGONTYPE )
+	{
+		ptr += askml2_poly_buf((LWPOLY*)geom, ptr, precision, prefix);
+	}
+	else if ( geom->type == MULTIPOLYGONTYPE ||
+	          geom->type == MULTILINETYPE ||
+	          geom->type == MULTIPOINTTYPE ||
+	          geom->type == COLLECTIONTYPE )
+	{
+		LWCOLLECTION *col = (LWCOLLECTION*)geom;
+		kmltype = "MultiGeometry";
 
-		if ((point=lwgeom_getpoint_inspected(insp, i)))
+		/* Open outmost tag */
+		ptr += sprintf(ptr, "<%s%s>", prefix, kmltype);
+		for ( i = 0; i < col->ngeoms; i++ )
 		{
-			ptr += askml2_point_buf(point, ptr, precision, prefix);
-			lwpoint_free(point);
+			ptr += askml2_geom_buf(col->geoms[i], ptr, precision, prefix);
 		}
-		else if ((line=lwgeom_getline_inspected(insp, i)))
-		{
-			ptr += askml2_line_buf(line, ptr, precision, prefix);
-			lwline_free(line);
-		}
-		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
-		{
-			ptr += askml2_poly_buf(poly, ptr, precision, prefix);
-			lwpoly_free(poly);
-		}
-		else
-		{
-			subgeom = lwgeom_getsubgeometry_inspected(insp, i);
-			subinsp = lwgeom_inspect(subgeom);
-			ptr += askml2_inspected_buf(subinsp, ptr, precision, prefix);
-			lwinspected_release(subinsp);
-		}
+		/* Close outmost tag */
+		ptr += sprintf(ptr, "</%s%s>",prefix,  kmltype);
 	}
 
-	/* Close outmost tag */
-	ptr += sprintf(ptr, "</%s%s>",prefix,  kmltype);
 
 	return (ptr-output);
 }
@@ -323,14 +297,14 @@ askml2_inspected_buf(LWGEOM_INSPECTED *insp, char *output, int precision, const 
  * Don't call this with single-geoms inspected!
  */
 static char *
-askml2_inspected(LWGEOM_INSPECTED *insp, int precision, const char *prefix)
+askml2_geom(const LWGEOM *geom, int precision, const char *prefix)
 {
 	char *kml;
 	size_t size;
 
-	size = askml2_inspected_size(insp, precision, prefix);
+	size = askml2_geom_size(geom, precision, prefix);
 	kml = lwalloc(size);
-	askml2_inspected_buf(insp, kml, precision, prefix);
+	askml2_geom_buf(geom, kml, precision, prefix);
 	return kml;
 }
 

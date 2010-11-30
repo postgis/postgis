@@ -24,7 +24,7 @@ static void do_gml2_test(char * in, char * out, char * srs, int precision)
 	char *h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_gml2(lwgeom_serialize(g), srs, precision, "gml:");
+	h = lwgeom_to_gml2(g, srs, precision, "gml:");
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
@@ -41,7 +41,7 @@ static void do_gml2_test_prefix(char * in, char * out, char * srs, int precision
 	char *h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_gml2(lwgeom_serialize(g), srs, precision, prefix);
+	h = lwgeom_to_gml2(g, srs, precision, prefix);
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
@@ -59,7 +59,7 @@ static void do_gml3_test(char * in, char * out, char * srs, int precision, int i
 	char *h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_gml3(lwgeom_serialize(g), srs, precision, is_geodetic, 1, "gml:");
+	h = lwgeom_to_gml3(g, srs, precision, is_geodetic, 1, "gml:");
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
@@ -76,7 +76,7 @@ static void do_gml3_test_prefix(char * in, char * out, char * srs, int precision
 	char *h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_gml3(lwgeom_serialize(g), srs, precision, is_geodetic, 1, prefix);
+	h = lwgeom_to_gml3(g, srs, precision, is_geodetic, 1, prefix);
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
@@ -93,7 +93,7 @@ static void do_gml3_test_nodims(char * in, char * out, char * srs, int precision
 	char *h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_gml3(lwgeom_serialize(g), srs, precision, is_geodetic, is_dims, prefix);
+	h = lwgeom_to_gml3(g, srs, precision, is_geodetic, is_dims, prefix);
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
@@ -110,7 +110,7 @@ static void do_gml2_unsupported(char * in, char * out)
 	char *h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_gml2(lwgeom_serialize(g), NULL, 0, "");
+	h = lwgeom_to_gml2(g, NULL, 0, "");
 
 	if (strcmp(cu_error_msg, out))
 		fprintf(stderr, "\nGML 2 - In:   %s\nOut:  %s\nTheo: %s\n",
@@ -128,7 +128,7 @@ static void do_gml3_unsupported(char * in, char * out)
 	char *h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_gml3(lwgeom_serialize(g), NULL, 0, 0, 1, "");
+	h = lwgeom_to_gml3(g, NULL, 0, 0, 1, "");
 
 	if (strcmp(cu_error_msg, out))
 		fprintf(stderr, "\nGML 3 - In:   %s\nOut:  %s\nTheo: %s\n",

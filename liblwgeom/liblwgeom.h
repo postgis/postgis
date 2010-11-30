@@ -1723,9 +1723,9 @@ extern LWCOLLECTION *lwcollection_segmentize2d(LWCOLLECTION *coll, double dist);
 #define OUT_MAX_DOUBLE_PRECISION 15
 #define OUT_MAX_DIGS_DOUBLE (OUT_SHOW_DIGS_DOUBLE + 2) /* +2 mean add dot and sign */
 
-extern char* lwgeom_to_gml2(uchar *geom, char *srs, int precision, const char *prefix);
-extern char* lwgeom_to_gml3(uchar *geom, char *srs, int precision, int is_deegree, int is_dims, const char *prefix);
-extern char* lwgeom_to_kml2(uchar *geom, int precision, const char *prefix);
+extern char* lwgeom_to_gml2(const LWGEOM *geom, char *srs, int precision, const char *prefix);
+extern char* lwgeom_to_gml3(const LWGEOM *geom, char *srs, int precision, int is_deegree, int is_dims, const char *prefix);
+extern char* lwgeom_to_kml2(const LWGEOM *geom, int precision, const char *prefix);
 extern char* lwgeom_to_geojson(const LWGEOM *geo, char *srs, int precision, int has_bbox);
 extern char* lwgeom_to_svg(const LWGEOM *geom, int precision, int relative);
 

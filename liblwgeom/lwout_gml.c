@@ -22,32 +22,32 @@
 #include "liblwgeom_internal.h"
 
 
-static size_t asgml2_point_size(LWPOINT *point, char *srs, int precision, const char *prefix);
-static char *asgml2_point(LWPOINT *point, char *srs, int precision, const char *prefix);
-static size_t asgml2_line_size(LWLINE *line, char *srs, int precision, const char *prefix);
-static char *asgml2_line(LWLINE *line, char *srs, int precision, const char *prefix);
-static size_t asgml2_poly_size(LWPOLY *poly, char *srs, int precision, const char *prefix);
-static char *asgml2_poly(LWPOLY *poly, char *srs, int precision, const char *prefix);
-static size_t asgml2_multi_size(LWGEOM_INSPECTED *geom, char *srs, int precision, const char *prefix);
-static char *asgml2_multi(LWGEOM_INSPECTED *geom, char *srs, int precision, const char *prefix);
-static size_t asgml2_collection_size(LWGEOM_INSPECTED *geom, char *srs, int precision, const char *prefix);
-static char *asgml2_collection(LWGEOM_INSPECTED *geom, char *srs, int precision, const char *prefix);
+static size_t asgml2_point_size(const LWPOINT *point, char *srs, int precision, const char *prefix);
+static char *asgml2_point(const LWPOINT *point, char *srs, int precision, const char *prefix);
+static size_t asgml2_line_size(const LWLINE *line, char *srs, int precision, const char *prefix);
+static char *asgml2_line(const LWLINE *line, char *srs, int precision, const char *prefix);
+static size_t asgml2_poly_size(const LWPOLY *poly, char *srs, int precision, const char *prefix);
+static char *asgml2_poly(const LWPOLY *poly, char *srs, int precision, const char *prefix);
+static size_t asgml2_multi_size(const LWCOLLECTION *col, char *srs, int precision, const char *prefix);
+static char *asgml2_multi(const LWCOLLECTION *col, char *srs, int precision, const char *prefix);
+static size_t asgml2_collection_size(const LWCOLLECTION *col, char *srs, int precision, const char *prefix);
+static char *asgml2_collection(const LWCOLLECTION *col, char *srs, int precision, const char *prefix);
 static size_t pointArray_toGML2(POINTARRAY *pa, char *buf, int precision);
 
-static size_t asgml3_point_size(LWPOINT *point, char *srs, int precision, int is_dims, const char *prefix);
-static char *asgml3_point(LWPOINT *point, char *srs, int precision, int is_deegree, int is_dims, const char *prefix);
-static size_t asgml3_line_size(LWLINE *line, char *srs, int precision, int is_dims, const char *prefix);
-static char *asgml3_line(LWLINE *line, char *srs, int precision, int is_deegree, int is_dims, const char *prefix);
-static size_t asgml3_poly_size(LWPOLY *poly, char *srs, int precision, int is_dims, const char *prefix);
-static char *asgml3_poly(LWPOLY *poly, char *srs, int precision, int is_deegree, int is_dims, int is_patch, const char *prefix);
-static size_t asgml3_triangle_size(LWTRIANGLE *triangle, char *srs, int precision, int is_dims, const char *prefix);
-static char *asgml3_triangle(LWTRIANGLE *triangle, char *srs, int precision, int is_deegree, int is_dims, const char *prefix);
-static size_t asgml3_multi_size(LWGEOM_INSPECTED *geom, char *srs, int precision, int is_dims, const char *prefix);
-static char *asgml3_multi(LWGEOM_INSPECTED *geom, char *srs, int precision, int is_deegree, int is_dims, const char *prefix);
-static char *asgml3_psurface(LWGEOM_INSPECTED *insp, char *srs, int precision, int is_deegree, int is_dims, const char *prefix);
-static char *asgml3_tin(LWGEOM_INSPECTED *insp, char *srs, int precision, int is_deegree, int is_dims, const char *prefix);
-static size_t asgml3_collection_size(LWGEOM_INSPECTED *geom, char *srs, int precision, int is_dims, const char *prefix);
-static char *asgml3_collection(LWGEOM_INSPECTED *insp, char *srs, int precision, int is_deegree, int is_dims, const char *prefix);
+static size_t asgml3_point_size(const LWPOINT *point, char *srs, int precision, int is_dims, const char *prefix);
+static char *asgml3_point(const LWPOINT *point, char *srs, int precision, int is_deegree, int is_dims, const char *prefix);
+static size_t asgml3_line_size(const LWLINE *line, char *srs, int precision, int is_dims, const char *prefix);
+static char *asgml3_line(const LWLINE *line, char *srs, int precision, int is_deegree, int is_dims, const char *prefix);
+static size_t asgml3_poly_size(const LWPOLY *poly, char *srs, int precision, int is_dims, const char *prefix);
+static char *asgml3_poly(const LWPOLY *poly, char *srs, int precision, int is_deegree, int is_dims, int is_patch, const char *prefix);
+static size_t asgml3_triangle_size(const LWTRIANGLE *triangle, char *srs, int precision, int is_dims, const char *prefix);
+static char *asgml3_triangle(const LWTRIANGLE *triangle, char *srs, int precision, int is_deegree, int is_dims, const char *prefix);
+static size_t asgml3_multi_size(const LWCOLLECTION *col, char *srs, int precision, int is_dims, const char *prefix);
+static char *asgml3_multi(const LWCOLLECTION *col, char *srs, int precision, int is_deegree, int is_dims, const char *prefix);
+static char *asgml3_psurface(const LWPSURFACE *psur, char *srs, int precision, int is_deegree, int is_dims, const char *prefix);
+static char *asgml3_tin(const LWTIN *tin, char *srs, int precision, int is_deegree, int is_dims, const char *prefix);
+static size_t asgml3_collection_size(const LWCOLLECTION *col, char *srs, int precision, int is_dims, const char *prefix);
+static char *asgml3_collection(const LWCOLLECTION *col, char *srs, int precision, int is_deegree, int is_dims, const char *prefix);
 static size_t pointArray_toGML3(POINTARRAY *pa, char *buf, int precision, int is_deegree);
 
 static size_t pointArray_GMLsize(POINTARRAY *pa, int precision);
@@ -59,39 +59,28 @@ static size_t pointArray_GMLsize(POINTARRAY *pa, int precision);
  *  	takes a GEOMETRY and returns a GML2 representation
  */
 extern char *
-lwgeom_to_gml2(uchar *geom, char *srs, int precision, const char* prefix)
+lwgeom_to_gml2(const LWGEOM *geom, char *srs, int precision, const char* prefix)
 {
-	int type;
-	LWPOINT *point;
-	LWLINE *line;
-	LWPOLY *poly;
-	LWGEOM_INSPECTED *inspected;
-
-	type = lwgeom_getType(geom[0]);
+	int type = geom->type;
 
 	switch (type)
 	{
 	case POINTTYPE:
-		point = lwpoint_deserialize(geom);
-		return asgml2_point(point, srs, precision, prefix);
+		return asgml2_point((LWPOINT*)geom, srs, precision, prefix);
 
 	case LINETYPE:
-		line = lwline_deserialize(geom);
-		return asgml2_line(line, srs, precision, prefix);
+		return asgml2_line((LWLINE*)geom, srs, precision, prefix);
 
 	case POLYGONTYPE:
-		poly = lwpoly_deserialize(geom);
-		return asgml2_poly(poly, srs, precision, prefix);
+		return asgml2_poly((LWPOLY*)geom, srs, precision, prefix);
 
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
-		inspected = lwgeom_inspect(geom);
-		return asgml2_multi(inspected, srs, precision, prefix);
+		return asgml2_multi((LWCOLLECTION*)geom, srs, precision, prefix);
 
 	case COLLECTIONTYPE:
-		inspected = lwgeom_inspect(geom);
-		return asgml2_collection(inspected, srs, precision, prefix);
+		return asgml2_collection((LWCOLLECTION*)geom, srs, precision, prefix);
 
 	default:
 		lwerror("lwgeom_to_gml2: '%s' geometry type not supported",
@@ -101,7 +90,7 @@ lwgeom_to_gml2(uchar *geom, char *srs, int precision, const char* prefix)
 }
 
 static size_t
-asgml2_point_size(LWPOINT *point, char *srs, int precision, const char* prefix)
+asgml2_point_size(const LWPOINT *point, char *srs, int precision, const char* prefix)
 {
 	int size;
 	size_t prefixlen = strlen(prefix);
@@ -113,7 +102,7 @@ asgml2_point_size(LWPOINT *point, char *srs, int precision, const char* prefix)
 }
 
 static size_t
-asgml2_point_buf(LWPOINT *point, char *srs, char *output, int precision, const char* prefix)
+asgml2_point_buf(const LWPOINT *point, char *srs, char *output, int precision, const char* prefix)
 {
 	char *ptr = output;
 
@@ -133,7 +122,7 @@ asgml2_point_buf(LWPOINT *point, char *srs, char *output, int precision, const c
 }
 
 static char *
-asgml2_point(LWPOINT *point, char *srs, int precision, const char *prefix)
+asgml2_point(const LWPOINT *point, char *srs, int precision, const char *prefix)
 {
 	char *output;
 	int size;
@@ -145,7 +134,7 @@ asgml2_point(LWPOINT *point, char *srs, int precision, const char *prefix)
 }
 
 static size_t
-asgml2_line_size(LWLINE *line, char *srs, int precision, const char *prefix)
+asgml2_line_size(const LWLINE *line, char *srs, int precision, const char *prefix)
 {
 	int size;
 	size_t prefixlen = strlen(prefix);
@@ -157,7 +146,7 @@ asgml2_line_size(LWLINE *line, char *srs, int precision, const char *prefix)
 }
 
 static size_t
-asgml2_line_buf(LWLINE *line, char *srs, char *output, int precision,
+asgml2_line_buf(const LWLINE *line, char *srs, char *output, int precision,
                 const char *prefix)
 {
 	char *ptr=output;
@@ -178,7 +167,7 @@ asgml2_line_buf(LWLINE *line, char *srs, char *output, int precision,
 }
 
 static char *
-asgml2_line(LWLINE *line, char *srs, int precision, const char *prefix)
+asgml2_line(const LWLINE *line, char *srs, int precision, const char *prefix)
 {
 	char *output;
 	int size;
@@ -190,7 +179,7 @@ asgml2_line(LWLINE *line, char *srs, int precision, const char *prefix)
 }
 
 static size_t
-asgml2_poly_size(LWPOLY *poly, char *srs, int precision, const char *prefix)
+asgml2_poly_size(const LWPOLY *poly, char *srs, int precision, const char *prefix)
 {
 	size_t size;
 	int i;
@@ -208,7 +197,7 @@ asgml2_poly_size(LWPOLY *poly, char *srs, int precision, const char *prefix)
 }
 
 static size_t
-asgml2_poly_buf(LWPOLY *poly, char *srs, char *output, int precision,
+asgml2_poly_buf(const LWPOLY *poly, char *srs, char *output, int precision,
                 const char *prefix)
 {
 	int i;
@@ -238,7 +227,7 @@ asgml2_poly_buf(LWPOLY *poly, char *srs, char *output, int precision,
 }
 
 static char *
-asgml2_poly(LWPOLY *poly, char *srs, int precision, const char *prefix)
+asgml2_poly(const LWPOLY *poly, char *srs, int precision, const char *prefix)
 {
 	char *output;
 	int size;
@@ -255,12 +244,13 @@ asgml2_poly(LWPOLY *poly, char *srs, int precision, const char *prefix)
  * Don't call this with single-geoms inspected.
  */
 static size_t
-asgml2_multi_size(LWGEOM_INSPECTED *insp, char *srs, int precision,
+asgml2_multi_size(const LWCOLLECTION *col, char *srs, int precision,
                   const char *prefix)
 {
 	int i;
 	size_t size;
 	size_t prefixlen = strlen(prefix);
+	LWGEOM *subgeom;
 
 	/* the longest possible multi version */
 	size = sizeof("<MultiLineString></MultiLineString>");
@@ -268,29 +258,23 @@ asgml2_multi_size(LWGEOM_INSPECTED *insp, char *srs, int precision,
 
 	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
 
-	for (i=0; i<insp->ngeometries; i++)
+	for (i=0; i<col->ngeoms; i++)
 	{
-		LWPOINT *point;
-		LWLINE *line;
-		LWPOLY *poly;
-
-		if ((point=lwgeom_getpoint_inspected(insp, i)))
+		subgeom = col->geoms[i];
+		if (subgeom->type == POINTTYPE)
 		{
 			size += ( sizeof("<pointMember>/") + prefixlen ) * 2;
-			size += asgml2_point_size(point, 0, precision, prefix);
-			lwpoint_release(point);
+			size += asgml2_point_size((LWPOINT*)subgeom, 0, precision, prefix);
 		}
-		else if ((line=lwgeom_getline_inspected(insp, i)))
+		else if (subgeom->type == LINETYPE)
 		{
 			size += ( sizeof("<lineStringMember>/") + prefixlen ) * 2;
-			size += asgml2_line_size(line, 0, precision, prefix);
-			lwline_release(line);
+			size += asgml2_line_size((LWLINE*)subgeom, 0, precision, prefix);
 		}
-		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
+		else if (subgeom->type == POLYGONTYPE)
 		{
 			size += ( sizeof("<polygonMember>/") + prefixlen ) * 2;
-			size += asgml2_poly_size(poly, 0, precision, prefix);
-			lwpoly_release(poly);
+			size += asgml2_poly_size((LWPOLY*)subgeom, 0, precision, prefix);
 		}
 	}
 
@@ -301,12 +285,13 @@ asgml2_multi_size(LWGEOM_INSPECTED *insp, char *srs, int precision,
  * Don't call this with single-geoms inspected!
  */
 static size_t
-asgml2_multi_buf(LWGEOM_INSPECTED *insp, char *srs, char *output,
+asgml2_multi_buf(const LWCOLLECTION *col, char *srs, char *output,
                  int precision, const char *prefix)
 {
-	int type = lwgeom_getType(insp->serialized_form[0]);
+	int type = col->type;
 	char *ptr, *gmltype;
 	int i;
+	LWGEOM *subgeom;
 
 	ptr = output;
 	gmltype="";
@@ -325,31 +310,25 @@ asgml2_multi_buf(LWGEOM_INSPECTED *insp, char *srs, char *output,
 		ptr += sprintf(ptr, "<%s%s>", prefix, gmltype);
 	}
 
-	for (i=0; i<insp->ngeometries; i++)
+	for (i=0; i<col->ngeoms; i++)
 	{
-		LWPOINT *point;
-		LWLINE *line;
-		LWPOLY *poly;
-
-		if ((point=lwgeom_getpoint_inspected(insp, i)))
+		subgeom = col->geoms[i];
+		if (subgeom->type == POINTTYPE)
 		{
 			ptr += sprintf(ptr, "<%spointMember>", prefix);
-			ptr += asgml2_point_buf(point, 0, ptr, precision, prefix);
-			lwpoint_release(point);
+			ptr += asgml2_point_buf((LWPOINT*)subgeom, 0, ptr, precision, prefix);
 			ptr += sprintf(ptr, "</%spointMember>", prefix);
 		}
-		else if ((line=lwgeom_getline_inspected(insp, i)))
+		else if (subgeom->type == LINETYPE)
 		{
 			ptr += sprintf(ptr, "<%slineStringMember>", prefix);
-			ptr += asgml2_line_buf(line, 0, ptr, precision, prefix);
-			lwline_release(line);
+			ptr += asgml2_line_buf((LWLINE*)subgeom, 0, ptr, precision, prefix);
 			ptr += sprintf(ptr, "</%slineStringMember>", prefix);
 		}
-		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
+		else if (subgeom->type == POLYGONTYPE)
 		{
 			ptr += sprintf(ptr, "<%spolygonMember>", prefix);
-			ptr += asgml2_poly_buf(poly, 0, ptr, precision, prefix);
-			lwpoly_release(poly);
+			ptr += asgml2_poly_buf((LWPOLY*)subgeom, 0, ptr, precision, prefix);
 			ptr += sprintf(ptr, "</%spolygonMember>", prefix);
 		}
 	}
@@ -364,64 +343,61 @@ asgml2_multi_buf(LWGEOM_INSPECTED *insp, char *srs, char *output,
  * Don't call this with single-geoms inspected!
  */
 static char *
-asgml2_multi(LWGEOM_INSPECTED *insp, char *srs, int precision,
+asgml2_multi(const LWCOLLECTION *col, char *srs, int precision,
              const char *prefix)
 {
 	char *gml;
 	size_t size;
 
-	size = asgml2_multi_size(insp, srs, precision, prefix);
+	size = asgml2_multi_size(col, srs, precision, prefix);
 	gml = lwalloc(size);
-	asgml2_multi_buf(insp, srs, gml, precision, prefix);
+	asgml2_multi_buf(col, srs, gml, precision, prefix);
 	return gml;
 }
 
 
+/*
+ * Don't call this with single-geoms!
+ */
 static size_t
-asgml2_collection_size(LWGEOM_INSPECTED *insp, char *srs, int precision,
+asgml2_collection_size(const LWCOLLECTION *col, char *srs, int precision,
                        const char *prefix)
 {
 	int i;
 	size_t size;
 	size_t prefixlen = strlen(prefix);
+	LWGEOM *subgeom;
 
 	size = sizeof("<MultiGeometry></MultiGeometry>");
 	size += (prefixlen * 2);
 
 	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
 
-	for (i=0; i<insp->ngeometries; i++)
+	for (i=0; i<col->ngeoms; i++)
 	{
-		LWPOINT *point;
-		LWLINE *line;
-		LWPOLY *poly;
-		LWGEOM_INSPECTED *subinsp;
-		uchar *subgeom;
-
+		subgeom = col->geoms[i];
+		
 		size += ( sizeof("<geometryMember>/") + prefixlen ) * 2;
-		if ((point=lwgeom_getpoint_inspected(insp, i)))
+		if ( subgeom->type == POINTTYPE)
 		{
-			size += asgml2_point_size(point, 0, precision, prefix);
-			lwpoint_release(point);
+			size += asgml2_point_size((LWPOINT*)subgeom, 0, precision, prefix);
 		}
-		else if ((line=lwgeom_getline_inspected(insp, i)))
+		else if ( subgeom->type == LINETYPE)
 		{
-			size += asgml2_line_size(line, 0, precision, prefix);
-			lwline_release(line);
+			size += asgml2_line_size((LWLINE*)subgeom, 0, precision, prefix);
 		}
-		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
+		else if ( subgeom->type == POLYGONTYPE)
 		{
-			size += asgml2_poly_size(poly, 0, precision, prefix);
-			lwpoly_release(poly);
+			size += asgml2_poly_size((LWPOLY*)subgeom, 0, precision, prefix);
+		}
+		else if ( lwgeom_is_collection(subgeom) )
+		{
+			size += asgml2_collection_size((LWCOLLECTION*)subgeom, 0, precision, prefix);
 		}
 		else
-		{
-			subgeom = lwgeom_getsubgeometry_inspected(insp, i);
-			subinsp = lwgeom_inspect(subgeom);
-			size += asgml2_collection_size(subinsp, 0, precision, prefix);
-			lwinspected_release(subinsp);
-		}
+			lwerror("asgml2_collection_size: Unable to process geometry type!");
 	}
+
 
 	return size;
 }
@@ -430,11 +406,12 @@ asgml2_collection_size(LWGEOM_INSPECTED *insp, char *srs, int precision,
  * Don't call this with single-geoms inspected!
  */
 static size_t
-asgml2_collection_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, int precision, const char *prefix)
+asgml2_collection_buf(const LWCOLLECTION *col, char *srs, char *output, int precision, const char *prefix)
 {
 	char *ptr;
 	int i;
-
+	LWGEOM *subgeom;
+	
 	ptr = output;
 
 	/* Open outmost tag */
@@ -447,39 +424,29 @@ asgml2_collection_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, int preci
 		ptr += sprintf(ptr, "<%sMultiGeometry>", prefix);
 	}
 
-	for (i=0; i<insp->ngeometries; i++)
+	for (i=0; i<col->ngeoms; i++)
 	{
-		LWPOINT *point;
-		LWLINE *line;
-		LWPOLY *poly;
-		LWGEOM_INSPECTED *subinsp;
-		uchar *subgeom;
+ 		subgeom = col->geoms[i];
 
 		ptr += sprintf(ptr, "<%sgeometryMember>", prefix);
-		if ((point=lwgeom_getpoint_inspected(insp, i)))
+		if (subgeom->type == POINTTYPE)
 		{
-			ptr += asgml2_point_buf(point, 0, ptr, precision, prefix);
-			lwpoint_release(point);
+			ptr += asgml2_point_buf((LWPOINT*)subgeom, 0, ptr, precision, prefix);
 		}
-		else if ((line=lwgeom_getline_inspected(insp, i)))
+		else if (subgeom->type == LINETYPE)
 		{
-			ptr += asgml2_line_buf(line, 0, ptr, precision, prefix);
-			lwline_release(line);
+			ptr += asgml2_line_buf((LWLINE*)subgeom, 0, ptr, precision, prefix);
 		}
-		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
+		else if (subgeom->type == POLYGONTYPE)
 		{
-			ptr += asgml2_poly_buf(poly, 0, ptr, precision, prefix);
-			lwpoly_release(poly);
+			ptr += asgml2_poly_buf((LWPOLY*)subgeom, 0, ptr, precision, prefix);
 		}
-		else
+		else if (lwgeom_is_collection(subgeom))
 		{
-			subgeom = lwgeom_getsubgeometry_inspected(insp, i);
-			subinsp = lwgeom_inspect(subgeom);
-			if (lwgeom_getType(subgeom[0]) == COLLECTIONTYPE)
-				ptr += asgml2_collection_buf(subinsp, 0, ptr, precision, prefix);
+			if (subgeom->type == COLLECTIONTYPE)
+				ptr += asgml2_collection_buf((LWCOLLECTION*)subgeom, 0, ptr, precision, prefix);
 			else
-				ptr += asgml2_multi_buf(subinsp, 0, ptr, precision, prefix);
-			lwinspected_release(subinsp);
+				ptr += asgml2_multi_buf((LWCOLLECTION*)subgeom, 0, ptr, precision, prefix);
 		}
 		ptr += sprintf(ptr, "</%sgeometryMember>", prefix);
 	}
@@ -494,15 +461,15 @@ asgml2_collection_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, int preci
  * Don't call this with single-geoms inspected!
  */
 static char *
-asgml2_collection(LWGEOM_INSPECTED *insp, char *srs, int precision,
+asgml2_collection(const LWCOLLECTION *col, char *srs, int precision,
                   const char *prefix)
 {
 	char *gml;
 	size_t size;
 
-	size = asgml2_collection_size(insp, srs, precision, prefix);
+	size = asgml2_collection_size(col, srs, precision, prefix);
 	gml = lwalloc(size);
-	asgml2_collection_buf(insp, srs, gml, precision, prefix);
+	asgml2_collection_buf(col, srs, gml, precision, prefix);
 	return gml;
 }
 
@@ -582,52 +549,37 @@ pointArray_toGML2(POINTARRAY *pa, char *output, int precision)
 
 /* takes a GEOMETRY and returns a GML representation */
 extern char *
-lwgeom_to_gml3(uchar *geom, char *srs, int precision, int is_deegree, int is_dims, const char *prefix)
+lwgeom_to_gml3(const LWGEOM *geom, char *srs, int precision, int is_deegree, int is_dims, const char *prefix)
 {
-	int type;
-	LWPOINT *point;
-	LWLINE *line;
-	LWPOLY *poly;
-	LWTRIANGLE *triangle;
-	LWGEOM_INSPECTED *inspected;
-
-	type = lwgeom_getType(geom[0]);
+	int type = geom->type;
 
 	switch (type)
 	{
 	case POINTTYPE:
-		point = lwpoint_deserialize(geom);
-		return asgml3_point(point, srs, precision, is_deegree, is_dims, prefix);
+		return asgml3_point((LWPOINT*)geom, srs, precision, is_deegree, is_dims, prefix);
 
 	case LINETYPE:
-		line = lwline_deserialize(geom);
-		return asgml3_line(line, srs, precision, is_deegree, is_dims, prefix);
+		return asgml3_line((LWLINE*)geom, srs, precision, is_deegree, is_dims, prefix);
 
 	case POLYGONTYPE:
-		poly = lwpoly_deserialize(geom);
-		return asgml3_poly(poly, srs, precision, is_deegree, is_dims, 0, prefix);
+		return asgml3_poly((LWPOLY*)geom, srs, precision, is_deegree, is_dims, 0, prefix);
 
 	case TRIANGLETYPE:
-		triangle = lwtriangle_deserialize(geom);
-		return asgml3_triangle(triangle, srs, precision, is_deegree, is_dims, prefix);
+		return asgml3_triangle((LWTRIANGLE*)geom, srs, precision, is_deegree, is_dims, prefix);
 
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
-		inspected = lwgeom_inspect(geom);
-		return asgml3_multi(inspected, srs, precision, is_deegree, is_dims, prefix);
+		return asgml3_multi((LWCOLLECTION*)geom, srs, precision, is_deegree, is_dims, prefix);
 
 	case POLYHEDRALSURFACETYPE:
-		inspected = lwgeom_inspect(geom);
-		return asgml3_psurface(inspected, srs, precision, is_deegree, is_dims, prefix);
+		return asgml3_psurface((LWPSURFACE*)geom, srs, precision, is_deegree, is_dims, prefix);
 
 	case TINTYPE:
-		inspected = lwgeom_inspect(geom);
-		return asgml3_tin(inspected, srs, precision, is_deegree, is_dims, prefix);
+		return asgml3_tin((LWTIN*)geom, srs, precision, is_deegree, is_dims, prefix);
 
 	case COLLECTIONTYPE:
-		inspected = lwgeom_inspect(geom);
-		return asgml3_collection(inspected, srs, precision, is_deegree, is_dims, prefix);
+		return asgml3_collection((LWCOLLECTION*)geom, srs, precision, is_deegree, is_dims, prefix);
 
 	default:
 		lwerror("lwgeom_to_gml3: '%s' geometry type not supported", lwtype_name(type));
@@ -636,7 +588,7 @@ lwgeom_to_gml3(uchar *geom, char *srs, int precision, int is_deegree, int is_dim
 }
 
 static size_t
-asgml3_point_size(LWPOINT *point, char *srs, int precision, int is_dims, const char *prefix)
+asgml3_point_size(const LWPOINT *point, char *srs, int precision, int is_dims, const char *prefix)
 {
 	int size;
 	size_t prefixlen = strlen(prefix);
@@ -649,7 +601,7 @@ asgml3_point_size(LWPOINT *point, char *srs, int precision, int is_dims, const c
 }
 
 static size_t
-asgml3_point_buf(LWPOINT *point, char *srs, char *output, int precision, int is_deegree, int is_dims, const char *prefix)
+asgml3_point_buf(const LWPOINT *point, char *srs, char *output, int precision, int is_deegree, int is_dims, const char *prefix)
 {
 	char *ptr = output;
 	int dimension=2;
@@ -672,7 +624,7 @@ asgml3_point_buf(LWPOINT *point, char *srs, char *output, int precision, int is_
 }
 
 static char *
-asgml3_point(LWPOINT *point, char *srs, int precision, int is_deegree, int is_dims, const char *prefix)
+asgml3_point(const LWPOINT *point, char *srs, int precision, int is_deegree, int is_dims, const char *prefix)
 {
 	char *output;
 	int size;
@@ -685,7 +637,7 @@ asgml3_point(LWPOINT *point, char *srs, int precision, int is_deegree, int is_di
 
 
 static size_t
-asgml3_line_size(LWLINE *line, char *srs, int precision, int is_dims, const char *prefix)
+asgml3_line_size(const LWLINE *line, char *srs, int precision, int is_dims, const char *prefix)
 {
 	int size;
 	size_t prefixlen = strlen(prefix);
@@ -698,7 +650,7 @@ asgml3_line_size(LWLINE *line, char *srs, int precision, int is_dims, const char
 }
 
 static size_t
-asgml3_line_buf(LWLINE *line, char *srs, char *output, int precision, int is_deegree, int is_dims, const char *prefix)
+asgml3_line_buf(const LWLINE *line, char *srs, char *output, int precision, int is_deegree, int is_dims, const char *prefix)
 {
 	char *ptr=output;
 	int dimension=2;
@@ -725,7 +677,7 @@ asgml3_line_buf(LWLINE *line, char *srs, char *output, int precision, int is_dee
 }
 
 static char *
-asgml3_line(LWLINE *line, char *srs, int precision, int is_deegree, int is_dims, const char *prefix)
+asgml3_line(const LWLINE *line, char *srs, int precision, int is_deegree, int is_dims, const char *prefix)
 {
 	char *output;
 	int size;
@@ -738,7 +690,7 @@ asgml3_line(LWLINE *line, char *srs, int precision, int is_deegree, int is_dims,
 
 
 static size_t
-asgml3_poly_size(LWPOLY *poly, char *srs, int precision, int is_dims, const char *prefix)
+asgml3_poly_size(const LWPOLY *poly, char *srs, int precision, int is_dims, const char *prefix)
 {
 	size_t size;
 	size_t prefixlen = strlen(prefix);
@@ -757,7 +709,7 @@ asgml3_poly_size(LWPOLY *poly, char *srs, int precision, int is_dims, const char
 }
 
 static size_t
-asgml3_poly_buf(LWPOLY *poly, char *srs, char *output, int precision, int is_deegree, int is_dims, int is_patch, const char *prefix)
+asgml3_poly_buf(const LWPOLY *poly, char *srs, char *output, int precision, int is_deegree, int is_dims, int is_patch, const char *prefix)
 {
 	int i;
 	char *ptr=output;
@@ -798,7 +750,7 @@ asgml3_poly_buf(LWPOLY *poly, char *srs, char *output, int precision, int is_dee
 }
 
 static char *
-asgml3_poly(LWPOLY *poly, char *srs, int precision, int is_deegree, int is_dims, int is_patch, const char *prefix)
+asgml3_poly(const LWPOLY *poly, char *srs, int precision, int is_deegree, int is_dims, int is_patch, const char *prefix)
 {
 	char *output;
 	int size;
@@ -811,7 +763,7 @@ asgml3_poly(LWPOLY *poly, char *srs, int precision, int is_deegree, int is_dims,
 
 
 static size_t
-asgml3_triangle_size(LWTRIANGLE *triangle, char *srs, int precision, int is_dims, const char *prefix)
+asgml3_triangle_size(const LWTRIANGLE *triangle, char *srs, int precision, int is_dims, const char *prefix)
 {
 	size_t size;
 	size_t prefixlen = strlen(prefix);
@@ -827,7 +779,7 @@ asgml3_triangle_size(LWTRIANGLE *triangle, char *srs, int precision, int is_dims
 }
 
 static size_t
-asgml3_triangle_buf(LWTRIANGLE *triangle, char *srs, char *output, int precision, int is_deegree, int is_dims, const char *prefix)
+asgml3_triangle_buf(const LWTRIANGLE *triangle, char *srs, char *output, int precision, int is_deegree, int is_dims, const char *prefix)
 {
 	char *ptr=output;
 	int dimension=2;
@@ -850,7 +802,7 @@ asgml3_triangle_buf(LWTRIANGLE *triangle, char *srs, char *output, int precision
 }
 
 static char *
-asgml3_triangle(LWTRIANGLE *triangle, char *srs, int precision, int is_deegree, int is_dims, const char *prefix)
+asgml3_triangle(const LWTRIANGLE *triangle, char *srs, int precision, int is_deegree, int is_dims, const char *prefix)
 {
 	char *output;
 	int size;
@@ -868,40 +820,35 @@ asgml3_triangle(LWTRIANGLE *triangle, char *srs, int precision, int is_deegree, 
  * Don't call this with single-geoms inspected.
  */
 static size_t
-asgml3_multi_size(LWGEOM_INSPECTED *insp, char *srs, int precision, int is_dims, const char *prefix)
+asgml3_multi_size(const LWCOLLECTION *col, char *srs, int precision, int is_dims, const char *prefix)
 {
 	int i;
 	size_t size;
 	size_t prefixlen = strlen(prefix);
+	LWGEOM *subgeom;
 
 	/* the longest possible multi version */
 	size = sizeof("<MultiLineString></MultiLineString>") + prefixlen*2;
 
 	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
 
-	for (i=0; i<insp->ngeometries; i++)
+	for (i=0; i<col->ngeoms; i++)
 	{
-		LWPOINT *point;
-		LWLINE *line;
-		LWPOLY *poly;
-
-		if ((point=lwgeom_getpoint_inspected(insp, i)))
+		subgeom = col->geoms[i];
+		if (subgeom->type == POINTTYPE)
 		{
 			size += ( sizeof("<pointMember>/") + prefixlen ) * 2;
-			size += asgml3_point_size(point, 0, precision, is_dims, prefix);
-			lwpoint_release(point);
+			size += asgml3_point_size((LWPOINT*)subgeom, 0, precision, is_dims, prefix);
 		}
-		else if ((line=lwgeom_getline_inspected(insp, i)))
+		else if (subgeom->type == LINETYPE)
 		{
 			size += ( sizeof("<curveMember>/") + prefixlen ) * 2;
-			size += asgml3_line_size(line, 0, precision, is_dims, prefix);
-			lwline_release(line);
+			size += asgml3_line_size((LWLINE*)subgeom, 0, precision, is_dims, prefix);
 		}
-		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
+		else if (subgeom->type == POLYGONTYPE)
 		{
 			size += ( sizeof("<surfaceMember>/") + prefixlen ) * 2;
-			size += asgml3_poly_size(poly, 0, precision, is_dims, prefix);
-			lwpoly_release(poly);
+			size += asgml3_poly_size((LWPOLY*)subgeom, 0, precision, is_dims, prefix);
 		}
 	}
 
@@ -912,11 +859,12 @@ asgml3_multi_size(LWGEOM_INSPECTED *insp, char *srs, int precision, int is_dims,
  * Don't call this with single-geoms inspected!
  */
 static size_t
-asgml3_multi_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, int precision, int is_deegree, int is_dims, const char *prefix)
+asgml3_multi_buf(const LWCOLLECTION *col, char *srs, char *output, int precision, int is_deegree, int is_dims, const char *prefix)
 {
-	int type = lwgeom_getType(insp->serialized_form[0]);
+	int type = col->type;
 	char *ptr, *gmltype;
 	int i;
+	LWGEOM *subgeom;
 
 	ptr = output;
 	gmltype="";
@@ -935,31 +883,25 @@ asgml3_multi_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, int precision,
 		ptr += sprintf(ptr, "<%s%s>", prefix, gmltype);
 	}
 
-	for (i=0; i<insp->ngeometries; i++)
+	for (i=0; i<col->ngeoms; i++)
 	{
-		LWPOINT *point;
-		LWLINE *line;
-		LWPOLY *poly;
-
-		if ((point=lwgeom_getpoint_inspected(insp, i)))
+		subgeom = col->geoms[i];
+		if (subgeom->type == POINTTYPE)
 		{
 			ptr += sprintf(ptr, "<%spointMember>", prefix);
-			ptr += asgml3_point_buf(point, 0, ptr, precision, is_deegree, is_dims, prefix);
-			lwpoint_release(point);
+			ptr += asgml3_point_buf((LWPOINT*)subgeom, 0, ptr, precision, is_deegree, is_dims, prefix);
 			ptr += sprintf(ptr, "</%spointMember>", prefix);
 		}
-		else if ((line=lwgeom_getline_inspected(insp, i)))
+		else if (subgeom->type == LINETYPE)
 		{
 			ptr += sprintf(ptr, "<%scurveMember>", prefix);
-			ptr += asgml3_line_buf(line, 0, ptr, precision, is_deegree, is_dims, prefix);
-			lwline_release(line);
+			ptr += asgml3_line_buf((LWLINE*)subgeom, 0, ptr, precision, is_deegree, is_dims, prefix);
 			ptr += sprintf(ptr, "</%scurveMember>", prefix);
 		}
-		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
+		else if (subgeom->type == POLYGONTYPE)
 		{
 			ptr += sprintf(ptr, "<%ssurfaceMember>", prefix);
-			ptr += asgml3_poly_buf(poly, 0, ptr, precision, is_deegree, is_dims, 0, prefix);
-			lwpoly_release(poly);
+			ptr += asgml3_poly_buf((LWPOLY*)subgeom, 0, ptr, precision, is_deegree, is_dims, 0, prefix);
 			ptr += sprintf(ptr, "</%ssurfaceMember>", prefix);
 		}
 	}
@@ -974,34 +916,31 @@ asgml3_multi_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, int precision,
  * Don't call this with single-geoms inspected!
  */
 static char *
-asgml3_multi(LWGEOM_INSPECTED *insp, char *srs, int precision, int is_deegree, int is_dims, const char *prefix)
+asgml3_multi(const LWCOLLECTION *col, char *srs, int precision, int is_deegree, int is_dims, const char *prefix)
 {
 	char *gml;
 	size_t size;
 
-	size = asgml3_multi_size(insp, srs, precision, is_dims, prefix);
+	size = asgml3_multi_size(col, srs, precision, is_dims, prefix);
 	gml = lwalloc(size);
-	asgml3_multi_buf(insp, srs, gml, precision, is_deegree, is_dims, prefix);
+	asgml3_multi_buf(col, srs, gml, precision, is_deegree, is_dims, prefix);
 	return gml;
 }
 
 
 static size_t
-asgml3_psurface_size(LWGEOM_INSPECTED *insp, char *srs, int precision, int is_dims, const char *prefix)
+asgml3_psurface_size(const LWPSURFACE *psur, char *srs, int precision, int is_dims, const char *prefix)
 {
 	int i;
 	size_t size;
 	size_t prefixlen = strlen(prefix);
-	LWPOLY *poly;
 
 	size = (sizeof("<PolyhedralSurface><polygonPatches>/") + prefixlen*2) * 2;
 	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
 
-	for (i=0; i<insp->ngeometries; i++)
+	for (i=0; i<psur->ngeoms; i++)
 	{
-		poly=lwgeom_getpoly_inspected(insp, i);
-		size += asgml3_poly_size(poly, 0, precision, is_dims, prefix);
-		lwpoly_release(poly);
+		size += asgml3_poly_size(psur->geoms[i], 0, precision, is_dims, prefix);
 	}
 
 	return size;
@@ -1012,7 +951,7 @@ asgml3_psurface_size(LWGEOM_INSPECTED *insp, char *srs, int precision, int is_di
  * Don't call this with single-geoms inspected!
  */
 static size_t
-asgml3_psurface_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, int precision, int is_deegree, int is_dims, const char *prefix)
+asgml3_psurface_buf(const LWPSURFACE *psur, char *srs, char *output, int precision, int is_deegree, int is_dims, const char *prefix)
 {
 	char *ptr;
 	int i;
@@ -1025,13 +964,9 @@ asgml3_psurface_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, int precisi
 	else	 ptr += sprintf(ptr, "<%sPolyhedralSurface><%spolygonPatches>",
 		                     prefix, prefix);
 
-	for (i=0; i<insp->ngeometries; i++)
+	for (i=0; i<psur->ngeoms; i++)
 	{
-		LWPOLY *poly;
-
-		poly=lwgeom_getpoly_inspected(insp, i);
-		ptr += asgml3_poly_buf(poly, 0, ptr, precision, is_deegree, is_dims, 1, prefix);
-		lwpoly_release(poly);
+		ptr += asgml3_poly_buf(psur->geoms[i], 0, ptr, precision, is_deegree, is_dims, 1, prefix);
 	}
 
 	/* Close outmost tag */
@@ -1045,34 +980,31 @@ asgml3_psurface_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, int precisi
  * Don't call this with single-geoms inspected!
  */
 static char *
-asgml3_psurface(LWGEOM_INSPECTED *insp, char *srs, int precision, int is_deegree, int is_dims, const char *prefix)
+asgml3_psurface(const LWPSURFACE *psur, char *srs, int precision, int is_deegree, int is_dims, const char *prefix)
 {
 	char *gml;
 	size_t size;
 
-	size = asgml3_psurface_size(insp, srs, precision, is_dims, prefix);
+	size = asgml3_psurface_size(psur, srs, precision, is_dims, prefix);
 	gml = lwalloc(size);
-	asgml3_psurface_buf(insp, srs, gml, precision, is_deegree, is_dims, prefix);
+	asgml3_psurface_buf(psur, srs, gml, precision, is_deegree, is_dims, prefix);
 	return gml;
 }
 
 
 static size_t
-asgml3_tin_size(LWGEOM_INSPECTED *insp, char *srs, int precision, int is_dims, const char *prefix)
+asgml3_tin_size(const LWTIN *tin, char *srs, int precision, int is_dims, const char *prefix)
 {
 	int i;
 	size_t size;
 	size_t prefixlen = strlen(prefix);
-	LWTRIANGLE *triangle;
 
 	size = (sizeof("<Tin><trianglePatches>/") + prefixlen*2) * 2;
 	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
 
-	for (i=0; i<insp->ngeometries; i++)
+	for (i=0; i<tin->ngeoms; i++)
 	{
-		triangle=lwgeom_gettriangle_inspected(insp, i);
-		size += asgml3_triangle_size(triangle, 0, precision, is_dims, prefix);
-		lwtriangle_release(triangle);
+		size += asgml3_triangle_size(tin->geoms[i], 0, precision, is_dims, prefix);
 	}
 
 	return size;
@@ -1083,7 +1015,7 @@ asgml3_tin_size(LWGEOM_INSPECTED *insp, char *srs, int precision, int is_dims, c
  * Don't call this with single-geoms inspected!
  */
 static size_t
-asgml3_tin_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, int precision, int is_deegree, int is_dims, const char *prefix)
+asgml3_tin_buf(const LWTIN *tin, char *srs, char *output, int precision, int is_deegree, int is_dims, const char *prefix)
 {
 	char *ptr;
 	int i;
@@ -1096,14 +1028,10 @@ asgml3_tin_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, int precision, i
 	else	 ptr += sprintf(ptr, "<%sTin><%strianglePatches>",
 		                     prefix, prefix);
 
-	for (i=0; i<insp->ngeometries; i++)
+	for (i=0; i<tin->ngeoms; i++)
 	{
-		LWTRIANGLE *triangle;
-
-		triangle = lwgeom_gettriangle_inspected(insp, i);
-		ptr += asgml3_triangle_buf(triangle, 0, ptr, precision,
+		ptr += asgml3_triangle_buf(tin->geoms[i], 0, ptr, precision,
 		                           is_deegree, is_dims, prefix);
-		lwtriangle_release(triangle);
 	}
 
 	/* Close outmost tag */
@@ -1116,69 +1044,62 @@ asgml3_tin_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, int precision, i
  * Don't call this with single-geoms inspected!
  */
 static char *
-asgml3_tin(LWGEOM_INSPECTED *insp, char *srs, int precision, int is_deegree, int is_dims, const char *prefix)
+asgml3_tin(const LWTIN *tin, char *srs, int precision, int is_deegree, int is_dims, const char *prefix)
 {
 	char *gml;
 	size_t size;
 
-	size = asgml3_tin_size(insp, srs, precision, is_dims, prefix);
+	size = asgml3_tin_size(tin, srs, precision, is_dims, prefix);
 	gml = lwalloc(size);
-	asgml3_tin_buf(insp, srs, gml, precision, is_deegree, is_dims, prefix);
+	asgml3_tin_buf(tin, srs, gml, precision, is_deegree, is_dims, prefix);
 	return gml;
 }
 
 static size_t
-asgml3_collection_size(LWGEOM_INSPECTED *insp, char *srs, int precision, int is_dims, const char *prefix)
+asgml3_collection_size(const LWCOLLECTION *col, char *srs, int precision, int is_dims, const char *prefix)
 {
 	int i;
 	size_t size;
 	size_t prefixlen = strlen(prefix);
+	LWGEOM *subgeom;
 
 	size = sizeof("<MultiGeometry></MultiGeometry>") + prefixlen*2;
 
 	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
 
-	for (i=0; i<insp->ngeometries; i++)
+	for (i=0; i<col->ngeoms; i++)
 	{
-		LWPOINT *point;
-		LWLINE *line;
-		LWPOLY *poly;
-		LWGEOM_INSPECTED *subinsp;
-		uchar *subgeom;
-
+		subgeom = col->geoms[i];
 		size += ( sizeof("<geometryMember>/") + prefixlen ) * 2;
-		if ((point=lwgeom_getpoint_inspected(insp, i)))
+		if ( subgeom->type == POINTTYPE )
 		{
-			size += asgml3_point_size(point, 0, precision, is_dims, prefix);
-			lwpoint_release(point);
+			size += asgml3_point_size((LWPOINT*)subgeom, 0, precision, is_dims, prefix);
 		}
-		else if ((line=lwgeom_getline_inspected(insp, i)))
+		else if ( subgeom->type == LINETYPE )
 		{
-			size += asgml3_line_size(line, 0, precision, is_dims, prefix);
-			lwline_release(line);
+			size += asgml3_line_size((LWLINE*)subgeom, 0, precision, is_dims, prefix);
 		}
-		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
+		else if ( subgeom->type == POLYGONTYPE )
 		{
-			size += asgml3_poly_size(poly, 0, precision, is_dims, prefix);
-			lwpoly_release(poly);
+			size += asgml3_poly_size((LWPOLY*)subgeom, 0, precision, is_dims, prefix);
+		}
+		else if ( lwgeom_is_collection(subgeom) )
+		{
+			size += asgml3_multi_size((LWCOLLECTION*)subgeom, 0, precision, is_dims, prefix);
 		}
 		else
-		{
-			subgeom = lwgeom_getsubgeometry_inspected(insp, i);
-			subinsp = lwgeom_inspect(subgeom);
-			size += asgml3_multi_size(subinsp, 0, precision, is_dims, prefix);
-			lwinspected_release(subinsp);
-		}
+			lwerror("asgml3_collection_size: unknown geometry type");
 	}
 
 	return size;
 }
 
 static size_t
-asgml3_collection_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, int precision, int is_deegree, int is_dims, const char *prefix)
+asgml3_collection_buf(const LWCOLLECTION *col, char *srs, char *output, int precision, int is_deegree, int is_dims, const char *prefix)
 {
 	char *ptr;
 	int i;
+	LWGEOM *subgeom;
 
 	ptr = output;
 
@@ -1192,40 +1113,32 @@ asgml3_collection_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, int preci
 		ptr += sprintf(ptr, "<%sMultiGeometry>", prefix);
 	}
 
-	for (i=0; i<insp->ngeometries; i++)
+	for (i=0; i<col->ngeoms; i++)
 	{
-		LWPOINT *point;
-		LWLINE *line;
-		LWPOLY *poly;
-		LWGEOM_INSPECTED *subinsp;
-		uchar *subgeom;
-
+		subgeom = col->geoms[i];
 		ptr += sprintf(ptr, "<%sgeometryMember>", prefix);
-		if ((point=lwgeom_getpoint_inspected(insp, i)))
+		if ( subgeom->type == POINTTYPE )
 		{
-			ptr += asgml3_point_buf(point, 0, ptr, precision, is_deegree, is_dims, prefix);
-			lwpoint_release(point);
+			ptr += asgml3_point_buf((LWPOINT*)subgeom, 0, ptr, precision, is_deegree, is_dims, prefix);
 		}
-		else if ((line=lwgeom_getline_inspected(insp, i)))
+		else if ( subgeom->type == LINETYPE )
 		{
-			ptr += asgml3_line_buf(line, 0, ptr, precision, is_deegree, is_dims, prefix);
-			lwline_release(line);
+			ptr += asgml3_line_buf((LWLINE*)subgeom, 0, ptr, precision, is_deegree, is_dims, prefix);
 		}
-		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
+		else if ( subgeom->type == POLYGONTYPE )
 		{
-			ptr += asgml3_poly_buf(poly, 0, ptr, precision, is_deegree, is_dims, 0, prefix);
-			lwpoly_release(poly);
+			ptr += asgml3_poly_buf((LWPOLY*)subgeom, 0, ptr, precision, is_deegree, is_dims, 0, prefix);
 		}
-		else
+		else if ( lwgeom_is_collection(subgeom) )
 		{
-			subgeom = lwgeom_getsubgeometry_inspected(insp, i);
-			subinsp = lwgeom_inspect(subgeom);
-			if (lwgeom_getType(subgeom[0]) == COLLECTIONTYPE)
-				ptr += asgml3_collection_buf(subinsp, 0, ptr, precision, is_deegree, is_dims, prefix);
+			if ( subgeom->type == COLLECTIONTYPE )
+				ptr += asgml3_collection_buf((LWCOLLECTION*)subgeom, 0, ptr, precision, is_deegree, is_dims, prefix);
 			else
-				ptr += asgml3_multi_buf(subinsp, 0, ptr, precision, is_deegree, is_dims, prefix);
-			lwinspected_release(subinsp);
+				ptr += asgml3_multi_buf((LWCOLLECTION*)subgeom, 0, ptr, precision, is_deegree, is_dims, prefix);
 		}
+		else 
+			lwerror("asgml3_collection_buf: unknown geometry type");
+			
 		ptr += sprintf(ptr, "</%sgeometryMember>", prefix);
 	}
 
@@ -1239,14 +1152,14 @@ asgml3_collection_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, int preci
  * Don't call this with single-geoms inspected!
  */
 static char *
-asgml3_collection(LWGEOM_INSPECTED *insp, char *srs, int precision, int is_deegree, int is_dims, const char *prefix)
+asgml3_collection(const LWCOLLECTION *col, char *srs, int precision, int is_deegree, int is_dims, const char *prefix)
 {
 	char *gml;
 	size_t size;
 
-	size = asgml3_collection_size(insp, srs, precision, is_dims, prefix);
+	size = asgml3_collection_size(col, srs, precision, is_dims, prefix);
 	gml = lwalloc(size);
-	asgml3_collection_buf(insp, srs, gml, precision, is_deegree, is_dims, prefix);
+	asgml3_collection_buf(col, srs, gml, precision, is_deegree, is_dims, prefix);
 	return gml;
 }
 

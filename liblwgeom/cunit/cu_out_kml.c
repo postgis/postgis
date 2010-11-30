@@ -24,7 +24,7 @@ static void do_kml_test(char * in, char * out, int precision)
 	char * h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_kml2(lwgeom_serialize(g), precision, "");
+	h = lwgeom_to_kml2(g, precision, "");
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
@@ -42,7 +42,7 @@ static void do_kml_unsupported(char * in, char * out)
 	char *h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_kml2(lwgeom_serialize(g), 0, "");
+	h = lwgeom_to_kml2(g, 0, "");
 
 	if (strcmp(cu_error_msg, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n",
@@ -62,7 +62,7 @@ static void do_kml_test_prefix(char * in, char * out, int precision, const char 
 	char * h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_kml2(lwgeom_serialize(g), precision, prefix);
+	h = lwgeom_to_kml2(g, precision, prefix);
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nPrefix: %s\nIn:   %s\nOut:  %s\nTheo: %s\n",

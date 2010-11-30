@@ -98,6 +98,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_asGML);
 Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
+	LWGEOM *lwgeom;
 	char *gml;
 	text *result;
 	int len;
@@ -167,11 +168,14 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	if (option & 2)  is_dims = 0;
 	if (option & 16) is_deegree = 1;
 
-	if (version == 2)
-		gml = lwgeom_to_gml2(SERIALIZED_FORM(geom), srs, precision, prefix);
-	else
-		gml = lwgeom_to_gml3(SERIALIZED_FORM(geom), srs, precision, is_deegree, is_dims, prefix);
+	lwgeom = pglwgeom_deserialize(geom);
 
+	if (version == 2)
+		gml = lwgeom_to_gml2(lwgeom, srs, precision, prefix);
+	else
+		gml = lwgeom_to_gml3(lwgeom, srs, precision, is_deegree, is_dims, prefix);
+
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 1);
 
 	len = strlen(gml) + VARHDRSZ;
@@ -194,6 +198,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_asKML);
 Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
+	LWGEOM *lwgeom;
 	char *kml;
 	text *result;
 	int len;
@@ -247,8 +252,10 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 		}
 	}
 
-	kml = lwgeom_to_kml2(SERIALIZED_FORM(geom), precision, prefix);
+	lwgeom = pglwgeom_deserialize(geom);
+	kml = lwgeom_to_kml2(lwgeom, precision, prefix);
 
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 1);
 
 	len = strlen(kml) + VARHDRSZ;
@@ -271,6 +278,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_asGeoJson);
 Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
+	LWGEOM *lwgeom;
 	char *geojson;
 	text *result;
 	int srid;
@@ -330,7 +338,9 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 
 	if (option & 1) has_bbox = 1;
 
-	geojson = lwgeom_to_geojson(pglwgeom_deserialize(geom), srs, precision, has_bbox);
+	lwgeom = pglwgeom_deserialize(geom);
+	geojson = lwgeom_to_geojson(lwgeom, srs, precision, has_bbox);
+	lwgeom_free(lwgeom);
 
 	PG_FREE_IF_COPY(geom, 1);
 	if (srs) pfree(srs);
@@ -353,6 +363,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_asSVG);
 Datum LWGEOM_asSVG(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
+	LWGEOM *lwgeom;
 	char *svg;
 	text *result;
 	int len;
@@ -375,7 +386,9 @@ Datum LWGEOM_asSVG(PG_FUNCTION_ARGS)
 		else if ( precision < 0 ) precision = 0;
 	}
 
-	svg = lwgeom_to_svg(pglwgeom_deserialize(geom), precision, relative);
+	lwgeom = pglwgeom_deserialize(geom);
+	svg = lwgeom_to_svg(lwgeom, precision, relative);
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
 
 	len = strlen(svg) + VARHDRSZ;

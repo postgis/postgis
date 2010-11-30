@@ -584,9 +584,9 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	if (option & 2) is_dims = 0;
 
 	if (version == 2)
-		gml = lwgeom_to_gml2(lwgeom_serialize(lwgeom), srs, precision, prefix);
+		gml = lwgeom_to_gml2(lwgeom, srs, precision, prefix);
 	else
-		gml = lwgeom_to_gml3(lwgeom_serialize(lwgeom), srs, precision, is_deegree, is_dims, prefix);
+		gml = lwgeom_to_gml3(lwgeom, srs, precision, is_deegree, is_dims, prefix);
 
     lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(g, 1);
@@ -668,7 +668,7 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 		}
 	}
 
-	kml = lwgeom_to_kml2(lwgeom_serialize(lwgeom), precision, prefix);
+	kml = lwgeom_to_kml2(lwgeom, precision, prefix);
 
     lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(g, 1);
