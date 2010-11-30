@@ -24,7 +24,7 @@ static void do_svg_test(char * in, char * out, int precision, int relative)
 	char * h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_svg(lwgeom_serialize(g), precision, relative);
+	h = lwgeom_to_svg(g, precision, relative);
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
@@ -42,7 +42,7 @@ static void do_svg_unsupported(char * in, char * out)
 	char *h;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_svg(lwgeom_serialize(g), 0, 0);
+	h = lwgeom_to_svg(g, 0, 0);
 
 	if (strcmp(cu_error_msg, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n",
@@ -215,7 +215,7 @@ static void out_svg_test_geoms(void)
 	/* Nested GeometryCollection */
 	do_svg_unsupported(
 	    "GEOMETRYCOLLECTION(POINT(0 1),GEOMETRYCOLLECTION(LINESTRING(2 3,4 5)))",
-	    "ST_AsSVG: 'GeometryCollection' geometry type not supported.");
+	    "assvg_geom_buf: 'GeometryCollection' geometry type not supported.");
 
 	/* CircularString */
 	do_svg_unsupported(

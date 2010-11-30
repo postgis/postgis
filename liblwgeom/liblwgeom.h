@@ -1727,7 +1727,7 @@ extern char* lwgeom_to_gml2(uchar *geom, char *srs, int precision, const char *p
 extern char* lwgeom_to_gml3(uchar *geom, char *srs, int precision, int is_deegree, int is_dims, const char *prefix);
 extern char* lwgeom_to_kml2(uchar *geom, int precision, const char *prefix);
 extern char* lwgeom_to_geojson(uchar *geom, char *srs, int precision, int has_bbox);
-extern char* lwgeom_to_svg(uchar *geom, int precision, int relative);
+extern char* lwgeom_to_svg(const LWGEOM *geom, int precision, int relative);
 
 
 

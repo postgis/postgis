@@ -375,7 +375,7 @@ Datum LWGEOM_asSVG(PG_FUNCTION_ARGS)
 		else if ( precision < 0 ) precision = 0;
 	}
 
-	svg = lwgeom_to_svg(SERIALIZED_FORM(geom), precision, relative);
+	svg = lwgeom_to_svg(pglwgeom_deserialize(geom), precision, relative);
 	PG_FREE_IF_COPY(geom, 0);
 
 	len = strlen(svg) + VARHDRSZ;

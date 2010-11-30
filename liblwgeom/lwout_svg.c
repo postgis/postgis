@@ -19,20 +19,19 @@
 * BNF SVG Path: <http://www.w3.org/TR/SVG/paths.html#PathDataBNF>
 **********************************************************************/
 
-
 #include "liblwgeom_internal.h"
 #include <math.h>  /* fabs */
 
-static char * assvg_point(LWPOINT *point, int relative, int precision);
-static char * assvg_line(LWLINE *line, int relative, int precision);
-static char * assvg_polygon(LWPOLY *poly, int relative, int precision);
-static char * assvg_multipoint(LWGEOM_INSPECTED *insp, int relative, int precision);
-static char * assvg_multiline(LWGEOM_INSPECTED *insp, int relative, int precision);
-static char * assvg_multipolygon(LWGEOM_INSPECTED *insp, int relative, int precision);
-static char * assvg_collection(LWGEOM_INSPECTED *insp, int relative, int precision);
+static char * assvg_point(const LWPOINT *point, int relative, int precision);
+static char * assvg_line(const LWLINE *line, int relative, int precision);
+static char * assvg_polygon(const LWPOLY *poly, int relative, int precision);
+static char * assvg_multipoint(const LWMPOINT *mpoint, int relative, int precision);
+static char * assvg_multiline(const LWMLINE *mline, int relative, int precision);
+static char * assvg_multipolygon(const LWMPOLY *mpoly, int relative, int precision);
+static char * assvg_collection(const LWCOLLECTION *col, int relative, int precision);
 
-static size_t assvg_inspected_size(LWGEOM_INSPECTED *insp, int relative, int precision);
-static size_t assvg_inspected_buf(LWGEOM_INSPECTED *insp, char *output, int relative, int precision);
+static size_t assvg_geom_size(const LWGEOM *geom, int relative, int precision);
+static size_t assvg_geom_buf(const LWGEOM *geom, char *output, int relative, int precision);
 static size_t pointArray_svg_size(POINTARRAY *pa, int precision);
 static size_t pointArray_svg_rel(POINTARRAY *pa, char * output, int close_ring, int precision);
 static size_t pointArray_svg_abs(POINTARRAY *pa, char * output, int close_ring, int precision);
@@ -42,34 +41,33 @@ static size_t pointArray_svg_abs(POINTARRAY *pa, char * output, int close_ring, 
  * Takes a GEOMETRY and returns a SVG representation
  */
 char *
-lwgeom_to_svg(uchar *geom, int precision, int relative)
+lwgeom_to_svg(const LWGEOM *geom, int precision, int relative)
 {
 	char *ret = NULL;
-	int type;
-
-	type = lwgeom_getType(geom[0]);
+	int type = geom->type;
+	
 	switch (type)
 	{
 	case POINTTYPE:
-		ret = assvg_point(lwpoint_deserialize(geom), relative, precision);
+		ret = assvg_point((LWPOINT*)geom, relative, precision);
 		break;
 	case LINETYPE:
-		ret = assvg_line(lwline_deserialize(geom), relative, precision);
+		ret = assvg_line((LWLINE*)geom, relative, precision);
 		break;
 	case POLYGONTYPE:
-		ret = assvg_polygon(lwpoly_deserialize(geom), relative, precision);
+		ret = assvg_polygon((LWPOLY*)geom, relative, precision);
 		break;
 	case MULTIPOINTTYPE:
-		ret = assvg_multipoint(lwgeom_inspect(geom), relative, precision);
+		ret = assvg_multipoint((LWMPOINT*)geom, relative, precision);
 		break;
 	case MULTILINETYPE:
-		ret = assvg_multiline(lwgeom_inspect(geom), relative, precision);
+		ret = assvg_multiline((LWMLINE*)geom, relative, precision);
 		break;
 	case MULTIPOLYGONTYPE:
-		ret = assvg_multipolygon(lwgeom_inspect(geom), relative, precision);
+		ret = assvg_multipolygon((LWMPOLY*)geom, relative, precision);
 		break;
 	case COLLECTIONTYPE:
-		ret = assvg_collection(lwgeom_inspect(geom), relative, precision);
+		ret = assvg_collection((LWCOLLECTION*)geom, relative, precision);
 		break;
 
 	default:
@@ -86,7 +84,7 @@ lwgeom_to_svg(uchar *geom, int precision, int relative)
  */
 
 static size_t
-assvg_point_size(LWPOINT *point, int circle, int precision)
+assvg_point_size(const LWPOINT *point, int circle, int precision)
 {
 	size_t size;
 
@@ -98,7 +96,7 @@ assvg_point_size(LWPOINT *point, int circle, int precision)
 }
 
 static size_t
-assvg_point_buf(LWPOINT *point, char * output, int circle, int precision)
+assvg_point_buf(const LWPOINT *point, char * output, int circle, int precision)
 {
 	char *ptr=output;
 	char x[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
@@ -127,7 +125,7 @@ assvg_point_buf(LWPOINT *point, char * output, int circle, int precision)
 }
 
 static char *
-assvg_point(LWPOINT *point, int circle, int precision)
+assvg_point(const LWPOINT *point, int circle, int precision)
 {
 	char *output;
 	int size;
@@ -145,7 +143,7 @@ assvg_point(LWPOINT *point, int circle, int precision)
  */
 
 static size_t
-assvg_line_size(LWLINE *line, int relative, int precision)
+assvg_line_size(const LWLINE *line, int relative, int precision)
 {
 	size_t size;
 
@@ -156,7 +154,7 @@ assvg_line_size(LWLINE *line, int relative, int precision)
 }
 
 static size_t
-assvg_line_buf(LWLINE *line, char * output, int relative, int precision)
+assvg_line_buf(const LWLINE *line, char * output, int relative, int precision)
 {
 	char *ptr=output;
 
@@ -171,7 +169,7 @@ assvg_line_buf(LWLINE *line, char * output, int relative, int precision)
 }
 
 static char *
-assvg_line(LWLINE *line, int relative, int precision)
+assvg_line(const LWLINE *line, int relative, int precision)
 {
 	char *output;
 	int size;
@@ -189,7 +187,7 @@ assvg_line(LWLINE *line, int relative, int precision)
  */
 
 static size_t
-assvg_polygon_size(LWPOLY *poly, int relative, int precision)
+assvg_polygon_size(const LWPOLY *poly, int relative, int precision)
 {
 	int i;
 	size_t size=0;
@@ -202,7 +200,7 @@ assvg_polygon_size(LWPOLY *poly, int relative, int precision)
 }
 
 static size_t
-assvg_polygon_buf(LWPOLY *poly, char * output, int relative, int precision)
+assvg_polygon_buf(const LWPOLY *poly, char * output, int relative, int precision)
 {
 	int i;
 	char *ptr=output;
@@ -228,7 +226,7 @@ assvg_polygon_buf(LWPOLY *poly, char * output, int relative, int precision)
 }
 
 static char *
-assvg_polygon(LWPOLY *poly, int relative, int precision)
+assvg_polygon(const LWPOLY *poly, int relative, int precision)
 {
 	char *output;
 	int size;
@@ -246,17 +244,16 @@ assvg_polygon(LWPOLY *poly, int relative, int precision)
  */
 
 static size_t
-assvg_multipoint_size(LWGEOM_INSPECTED *insp, int relative, int precision)
+assvg_multipoint_size(const LWMPOINT *mpoint, int relative, int precision)
 {
-	LWPOINT *point;
+	const LWPOINT *point;
 	size_t size=0;
 	int i;
 
-	for (i=0 ; i<insp->ngeometries ; i++)
+	for (i=0 ; i<mpoint->ngeoms ; i++)
 	{
-		point = lwgeom_getpoint_inspected(insp, i);
+		point = mpoint->geoms[i];
 		size += assvg_point_size(point, relative, precision);
-		if (point) lwpoint_release(point);
 	}
 	size += sizeof(",") * --i;  /* Arbitrary comma separator */
 
@@ -264,32 +261,31 @@ assvg_multipoint_size(LWGEOM_INSPECTED *insp, int relative, int precision)
 }
 
 static size_t
-assvg_multipoint_buf(LWGEOM_INSPECTED *insp, char *output, int relative, int precision)
+assvg_multipoint_buf(const LWMPOINT *mpoint, char *output, int relative, int precision)
 {
-	LWPOINT *point;
+	const LWPOINT *point;
 	int i;
 	char *ptr=output;
 
-	for (i=0 ; i<insp->ngeometries ; i++)
+	for (i=0 ; i<mpoint->ngeoms ; i++)
 	{
 		if (i) ptr += sprintf(ptr, ",");  /* Arbitrary comma separator */
-		point = lwgeom_getpoint_inspected(insp, i);
+		point = mpoint->geoms[i];
 		ptr += assvg_point_buf(point, ptr, relative, precision);
-		if (point) lwpoint_release(point);
 	}
 
 	return (ptr-output);
 }
 
 static char *
-assvg_multipoint(LWGEOM_INSPECTED *point, int relative, int precision)
+assvg_multipoint(const LWMPOINT *mpoint, int relative, int precision)
 {
 	char *output;
 	int size;
 
-	size = assvg_multipoint_size(point, relative, precision);
+	size = assvg_multipoint_size(mpoint, relative, precision);
 	output = lwalloc(size);
-	assvg_multipoint_buf(point, output, relative, precision);
+	assvg_multipoint_buf(mpoint, output, relative, precision);
 
 	return output;
 }
@@ -300,17 +296,16 @@ assvg_multipoint(LWGEOM_INSPECTED *point, int relative, int precision)
  */
 
 static size_t
-assvg_multiline_size(LWGEOM_INSPECTED *insp, int relative, int precision)
+assvg_multiline_size(const LWMLINE *mline, int relative, int precision)
 {
-	LWLINE *line;
+	const LWLINE *line;
 	size_t size=0;
 	int i;
 
-	for (i=0 ; i<insp->ngeometries ; i++)
+	for (i=0 ; i<mline->ngeoms ; i++)
 	{
-		line = lwgeom_getline_inspected(insp, i);
+		line = mline->geoms[i];
 		size += assvg_line_size(line, relative, precision);
-		if (line) lwline_release(line);
 	}
 	size += sizeof(" ") * --i;   /* SVG whitespace Separator */
 
@@ -318,32 +313,31 @@ assvg_multiline_size(LWGEOM_INSPECTED *insp, int relative, int precision)
 }
 
 static size_t
-assvg_multiline_buf(LWGEOM_INSPECTED *insp, char *output, int relative, int precision)
+assvg_multiline_buf(const LWMLINE *mline, char *output, int relative, int precision)
 {
-	LWLINE *line;
+	const LWLINE *line;
 	int i;
 	char *ptr=output;
 
-	for (i=0 ; i<insp->ngeometries ; i++)
+	for (i=0 ; i<mline->ngeoms ; i++)
 	{
 		if (i) ptr += sprintf(ptr, " ");  /* SVG whitespace Separator */
-		line = lwgeom_getline_inspected(insp, i);
+		line = mline->geoms[i];
 		ptr += assvg_line_buf(line, ptr, relative, precision);
-		if (line) lwline_release(line);
 	}
 
 	return (ptr-output);
 }
 
 static char *
-assvg_multiline(LWGEOM_INSPECTED *line, int relative, int precision)
+assvg_multiline(const LWMLINE *mline, int relative, int precision)
 {
 	char *output;
 	int size;
 
-	size = assvg_multiline_size(line, relative, precision);
+	size = assvg_multiline_size(mline, relative, precision);
 	output = lwalloc(size);
-	assvg_multiline_buf(line, output, relative, precision);
+	assvg_multiline_buf(mline, output, relative, precision);
 
 	return output;
 }
@@ -354,17 +348,16 @@ assvg_multiline(LWGEOM_INSPECTED *line, int relative, int precision)
  */
 
 static size_t
-assvg_multipolygon_size(LWGEOM_INSPECTED *insp, int relative, int precision)
+assvg_multipolygon_size(const LWMPOLY *mpoly, int relative, int precision)
 {
-	LWPOLY *poly;
+	const LWPOLY *poly;
 	size_t size=0;
 	int i;
 
-	for (i=0 ; i<insp->ngeometries ; i++)
+	for (i=0 ; i<mpoly->ngeoms ; i++)
 	{
-		poly = lwgeom_getpoly_inspected(insp, i);
+		poly = mpoly->geoms[i];
 		size += assvg_polygon_size(poly, relative, precision);
-		if (poly) lwpoly_release(poly);
 	}
 	size += sizeof(" ") * --i;   /* SVG whitespace Separator */
 
@@ -372,32 +365,31 @@ assvg_multipolygon_size(LWGEOM_INSPECTED *insp, int relative, int precision)
 }
 
 static size_t
-assvg_multipolygon_buf(LWGEOM_INSPECTED *insp, char *output, int relative, int precision)
+assvg_multipolygon_buf(const LWMPOLY *mpoly, char *output, int relative, int precision)
 {
-	LWPOLY *poly;
+	const LWPOLY *poly;
 	int i;
 	char *ptr=output;
 
-	for (i=0 ; i<insp->ngeometries ; i++)
+	for (i=0 ; i<mpoly->ngeoms ; i++)
 	{
 		if (i) ptr += sprintf(ptr, " ");  /* SVG whitespace Separator */
-		poly = lwgeom_getpoly_inspected(insp, i);
+		poly = mpoly->geoms[i];
 		ptr += assvg_polygon_buf(poly, ptr, relative, precision);
-		if (poly) lwpoly_release(poly);
 	}
 
 	return (ptr-output);
 }
 
 static char *
-assvg_multipolygon(LWGEOM_INSPECTED *poly, int relative, int precision)
+assvg_multipolygon(const LWMPOLY *mpoly, int relative, int precision)
 {
 	char *output;
 	int size;
 
-	size = assvg_multipolygon_size(poly, relative, precision);
+	size = assvg_multipolygon_size(mpoly, relative, precision);
 	output = lwalloc(size);
-	assvg_multipolygon_buf(poly, output, relative, precision);
+	assvg_multipolygon_buf(mpoly, output, relative, precision);
 
 	return output;
 }
@@ -408,110 +400,94 @@ assvg_multipolygon(LWGEOM_INSPECTED *poly, int relative, int precision)
 */
 
 static size_t
-assvg_collection_size(LWGEOM_INSPECTED *insp, int relative, int precision)
+assvg_collection_size(const LWCOLLECTION *col, int relative, int precision)
 {
 	int i = 0;
 	size_t size=0;
-	LWGEOM_INSPECTED *subinsp;
-	uchar *subgeom;
+	const LWGEOM *subgeom;
 
-	for (i=0; i<insp->ngeometries; i++)
+	for (i=0; i<col->ngeoms; i++)
 	{
-		subgeom = lwgeom_getsubgeometry_inspected(insp, i);
-		subinsp = lwgeom_inspect(subgeom);
-		size += assvg_inspected_size(subinsp, relative, precision);
-		lwinspected_release(subinsp);
+		subgeom = col->geoms[i];
+		size += assvg_geom_size(subgeom, relative, precision);
 	}
 
 	if ( i ) /* We have some geometries, so add space for delimiters. */
 		size += sizeof(";") * --i;
 
-	if (size == 0) size++; /* EMPTY GEOMETRYCOLLECTION */
+	if (size == 0) size++; /* GEOMETRYCOLLECTION EMPTY, space for null terminator */
 
 	return size;
 }
 
 static size_t
-assvg_collection_buf(LWGEOM_INSPECTED *insp, char *output, int relative, int precision)
+assvg_collection_buf(const LWCOLLECTION *col, char *output, int relative, int precision)
 {
 	int i;
 	char *ptr=output;
-	LWGEOM_INSPECTED *subinsp;
-	uchar *subgeom;
+	const LWGEOM *subgeom;
 
 	/* EMPTY GEOMETRYCOLLECTION */
-	if (insp->ngeometries == 0) *ptr = '\0';
+	if (col->ngeoms == 0) *ptr = '\0';
 
-	for (i=0; i<insp->ngeometries; i++)
+	for (i=0; i<col->ngeoms; i++)
 	{
 		if (i) ptr += sprintf(ptr, ";");
-		subgeom = lwgeom_getsubgeometry_inspected(insp, i);
-		subinsp = lwgeom_inspect(subgeom);
-		ptr += assvg_inspected_buf(subinsp, ptr, relative, precision);
-		lwinspected_release(subinsp);
+		subgeom = col->geoms[i];
+		ptr += assvg_geom_buf(subgeom, ptr, relative, precision);
 	}
 
 	return (ptr - output);
 }
 
 static char *
-assvg_collection(LWGEOM_INSPECTED *insp, int relative, int precision)
+assvg_collection(const LWCOLLECTION *col, int relative, int precision)
 {
 	char *output;
 	int size;
 
-	size = assvg_collection_size(insp, relative, precision);
+	size = assvg_collection_size(col, relative, precision);
 	output = lwalloc(size);
-	assvg_collection_buf(insp, output, relative, precision);
+	assvg_collection_buf(col, output, relative, precision);
 
 	return output;
 }
 
 
-
 static size_t
-assvg_inspected_buf(LWGEOM_INSPECTED *insp, char *output, int relative, int precision)
+assvg_geom_buf(const LWGEOM *geom, char *output, int relative, int precision)
 {
-	LWPOINT *point;
-	LWLINE *line;
-	LWPOLY *poly;
-	int type = lwgeom_getType(insp->serialized_form[0]);
+    int type = geom->type;
 	char *ptr=output;
 
 	switch (type)
 	{
 	case POINTTYPE:
-		point=lwgeom_getpoint_inspected(insp, 0);
-		ptr += assvg_point_buf(point, ptr, relative, precision);
-		lwpoint_release(point);
+		ptr += assvg_point_buf((LWPOINT*)geom, ptr, relative, precision);
 		break;
 
 	case LINETYPE:
-		line=lwgeom_getline_inspected(insp, 0);
-		ptr += assvg_line_buf(line, ptr, relative, precision);
-		lwline_release(line);
+		ptr += assvg_line_buf((LWLINE*)geom, ptr, relative, precision);
 		break;
 
 	case POLYGONTYPE:
-		poly=lwgeom_getpoly_inspected(insp, 0);
-		ptr += assvg_polygon_buf(poly, ptr, relative, precision);
-		lwpoly_release(poly);
+		ptr += assvg_polygon_buf((LWPOLY*)geom, ptr, relative, precision);
 		break;
 
 	case MULTIPOINTTYPE:
-		ptr += assvg_multipoint_buf(insp, ptr, relative, precision);
+		ptr += assvg_multipoint_buf((LWMPOINT*)geom, ptr, relative, precision);
 		break;
 
 	case MULTILINETYPE:
-		ptr += assvg_multiline_buf(insp, ptr, relative, precision);
+		ptr += assvg_multiline_buf((LWMLINE*)geom, ptr, relative, precision);
 		break;
 
 	case MULTIPOLYGONTYPE:
-		ptr += assvg_multipolygon_buf(insp, ptr, relative, precision);
+		ptr += assvg_multipolygon_buf((LWMPOLY*)geom, ptr, relative, precision);
 		break;
 
 	default:
-		lwerror("ST_AsSVG: '%s' geometry type not supported.",
+		lwerror("assvg_geom_buf: '%s' geometry type not supported.",
 		        lwtype_name(type));
 	}
 
@@ -520,47 +496,39 @@ assvg_inspected_buf(LWGEOM_INSPECTED *insp, char *output, int relative, int prec
 
 
 static size_t
-assvg_inspected_size(LWGEOM_INSPECTED *insp, int relative, int precision)
+assvg_geom_size(const LWGEOM *geom, int relative, int precision)
 {
-	int type = lwgeom_getType(insp->serialized_form[0]);
+    int type = geom->type;
 	size_t size = 0;
-	LWPOINT *point;
-	LWLINE *line;
-	LWPOLY *poly;
 
 	switch (type)
 	{
 	case POINTTYPE:
-		point=lwgeom_getpoint_inspected(insp, 0);
-		size = assvg_point_size(point, relative, precision);
-		lwpoint_release(point);
+		size = assvg_point_size((LWPOINT*)geom, relative, precision);
 		break;
 
 	case LINETYPE:
-		line=lwgeom_getline_inspected(insp, 0);
-		size = assvg_line_size(line, relative, precision);
-		lwline_release(line);
+		size = assvg_line_size((LWLINE*)geom, relative, precision);
 		break;
 
 	case POLYGONTYPE:
-		poly=lwgeom_getpoly_inspected(insp, 0);
-		size = assvg_polygon_size(poly, relative, precision);
-		lwpoly_release(poly);
+		size = assvg_polygon_size((LWPOLY*)geom, relative, precision);
 
 	case MULTIPOINTTYPE:
-		size = assvg_multipoint_size(insp, relative, precision);
+		size = assvg_multipoint_size((LWMPOINT*)geom, relative, precision);
 		break;
 
 	case MULTILINETYPE:
-		size = assvg_multiline_size(insp, relative, precision);
+		size = assvg_multiline_size((LWMLINE*)geom, relative, precision);
 		break;
 
 	case MULTIPOLYGONTYPE:
-		size = assvg_multipolygon_size(insp, relative, precision);
+		size = assvg_multipolygon_size((LWMPOLY*)geom, relative, precision);
 		break;
 
 	default:
-		lwerror("ST_AsSVG: geometry not supported.");
+		lwerror("assvg_geom_size: '%s' geometry type not supported.",
+		        lwtype_name(type));
 	}
 
 	return size;

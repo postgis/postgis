@@ -588,7 +588,8 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	else
 		gml = lwgeom_to_gml3(lwgeom_serialize(lwgeom), srs, precision, is_deegree, is_dims, prefix);
 
-	PG_FREE_IF_COPY(lwgeom, 1);
+    lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(g, 1);
 
 	len = strlen(gml) + VARHDRSZ;
 
@@ -669,7 +670,8 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 
 	kml = lwgeom_to_kml2(lwgeom_serialize(lwgeom), precision, prefix);
 
-	PG_FREE_IF_COPY(lwgeom, 1);
+    lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(g, 1);
 
 	len = strlen(kml) + VARHDRSZ;
 
@@ -717,8 +719,10 @@ Datum geography_as_svg(PG_FUNCTION_ARGS)
 		else if ( precision < 0 ) precision = 0;
 	}
 
-	svg = lwgeom_to_svg(lwgeom_serialize(lwgeom), precision, relative);
-	PG_FREE_IF_COPY(lwgeom, 0);
+	svg = lwgeom_to_svg(lwgeom, precision, relative);
+	
+    lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(g, 0);
 
 	len = strlen(svg) + VARHDRSZ;
 	result = palloc(len);
@@ -797,7 +801,8 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 	if (option & 1) has_bbox = 1;
 
 	geojson = lwgeom_to_geojson(lwgeom_serialize(lwgeom), srs, precision, has_bbox);
-	PG_FREE_IF_COPY(lwgeom, 1);
+    lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(g, 1);
 	if (srs) pfree(srs);
 
 	len = strlen(geojson) + VARHDRSZ;
