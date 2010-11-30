@@ -55,8 +55,6 @@ double deltaLongitude(double azimuth, double sigma, double tsm,SPHEROID *sphere)
 double mu2(double azimuth,SPHEROID *sphere);
 double bigA(double u2);
 double bigB(double u2);
-double ptarray_length_2d_ellipse(POINTARRAY *pts, SPHEROID *sphere);
-double ptarray_length_ellipse(POINTARRAY *pts, SPHEROID *sphere);
 
 
 /*
@@ -311,67 +309,6 @@ distance_ellipse_calculation(double lat1, double long1,
 	return sphere->b * (A * (sigma - dsigma));
 }
 
-/*
- * Computed 2d/3d length of a POINTARRAY depending on input dimensions.
- * Uses ellipsoidal math to find the distance.
- */
-double ptarray_length_ellipse(POINTARRAY *pts, SPHEROID *sphere)
-{
-	double dist = 0.0;
-	int i;
-
-	LWDEBUG(2, "ptarray_length_ellipse called");
-
-	if ( pts->npoints < 2 ) return 0.0;
-
-	/* compute 2d length if 3d is not available */
-	if ( TYPE_NDIMS(pts->flags) < 3 )
-	{
-		return ptarray_length_2d_ellipse(pts, sphere);
-	}
-
-	for (i=0; i<pts->npoints-1; i++)
-	{
-		POINT3DZ frm;
-		POINT3DZ to;
-		double distellips;
-
-		getPoint3dz_p(pts, i, &frm);
-		getPoint3dz_p(pts, i+1, &to);
-
-		distellips = distance_ellipse(
-		                 frm.y*M_PI/180.0, frm.x*M_PI/180.0,
-		                 to.y*M_PI/180.0, to.x*M_PI/180.0, sphere);
-		dist += sqrt(distellips*distellips + (frm.z-to.z)*(frm.z-to.z));
-	}
-	return dist;
-}
-
-/*
- * Computed 2d length of a POINTARRAY regardless of input dimensions
- * Uses ellipsoidal math to find the distance.
- */
-double
-ptarray_length_2d_ellipse(POINTARRAY *pts, SPHEROID *sphere)
-{
-	double dist = 0.0;
-	int i;
-	POINT2D frm;
-	POINT2D to;
-
-	LWDEBUG(2, "ptarray_length_2d_ellipse called");
-
-	if ( pts->npoints < 2 ) return 0.0;
-	for (i=0; i<pts->npoints-1; i++)
-	{
-		getPoint2d_p(pts, i, &frm);
-		getPoint2d_p(pts, i+1, &to);
-		dist += distance_ellipse(frm.y*M_PI/180.0,
-		                         frm.x*M_PI/180.0, to.y*M_PI/180.0,
-		                         to.x*M_PI/180.0, sphere);
-	}
-	return dist;
-}
 
 /*
  * Find the "length of a geometry"
