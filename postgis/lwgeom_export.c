@@ -330,7 +330,7 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 
 	if (option & 1) has_bbox = 1;
 
-	geojson = lwgeom_to_geojson(SERIALIZED_FORM(geom), srs, precision, has_bbox);
+	geojson = lwgeom_to_geojson(pglwgeom_deserialize(geom), srs, precision, has_bbox);
 
 	PG_FREE_IF_COPY(geom, 1);
 	if (srs) pfree(srs);

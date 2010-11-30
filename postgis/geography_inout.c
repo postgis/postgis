@@ -800,7 +800,7 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 
 	if (option & 1) has_bbox = 1;
 
-	geojson = lwgeom_to_geojson(lwgeom_serialize(lwgeom), srs, precision, has_bbox);
+	geojson = lwgeom_to_geojson(lwgeom, srs, precision, has_bbox);
     lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(g, 1);
 	if (srs) pfree(srs);
