@@ -106,7 +106,7 @@
         <xsl:template match="/">
 <!-- Create logging table -->
 DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />;
-CREATE TABLE <xsl:value-of select="$var_logtable" />(logid serial PRIMARY KEY, log_label text, func text, g1 text, g2 text, log_start timestamp, log_end timestamp);
+CREATE TABLE <xsl:value-of select="$var_logtable" />(logid serial PRIMARY KEY, log_label text, spatial_class text DEFAULT 'raster', func text, g1 text, g2 text, log_start timestamp, log_end timestamp);
                 <xsl:apply-templates select="/book/chapter[@id='RT_reference']" />
         </xsl:template>
 	<xsl:template match='chapter'>
@@ -117,7 +117,7 @@ CREATE TABLE pgis_rgarden_mega(rid serial PRIMARY KEY, rast raster);
 		<xsl:for-each select="document('')//pgis:pixeltypes/pgis:pixeltype[not(contains(@createtable,'false'))]">
 			<xsl:variable name='log_label'>create table Test <xsl:value-of select="@PixType" /></xsl:variable>
 SELECT '<xsl:value-of select="$log_label" />: Start Testing';
-INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label,  func, g1, log_start) 
 VALUES('<xsl:value-of select="$log_label" /> AddRasterColumn','AddRasterColumn', '<xsl:value-of select="@PixType" />', clock_timestamp());
 BEGIN;
 	CREATE TABLE pgis_rgarden_<xsl:value-of select="@ID" />(rid serial PRIMARY KEY);
