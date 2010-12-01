@@ -157,3 +157,8 @@ FROM (
         )'::geometry AS geom
     ) AS g
   ) j;
+
+SELECT 't10', count(*) 
+FROM ST_Dump('
+GEOMETRYCOLLECTION EMPTY
+');
