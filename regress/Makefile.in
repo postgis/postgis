@@ -89,6 +89,10 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">" 32),1)
 	TESTS += clean
 endif
 
+# ST_SharedPaths if GEOS >= 3.3
+ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 33),1)
+	TESTS += sharedpaths
+endif
 
 all: test 
 
