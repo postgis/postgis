@@ -41,7 +41,6 @@ void to_rad(POINT4D *pt);
 void to_dec(POINT4D *pt);
 int pj_transform_nodatum(projPJ srcdefn, projPJ dstdefn, long point_count, int point_offset, double *x, double *y, double *z );
 int transform_point(POINT4D *pt, projPJ srcdefn, projPJ dstdefn);
-static int lwgeom_transform_recursive(uchar *geom, projPJ inpj, projPJ outpj);
 
 
 
@@ -673,118 +672,81 @@ make_project(char *str1)
 	return result;
 }
 
+
 /**
  * Transform given SERIALIZED geometry
  * from inpj projection to outpj projection
  */
 static int
-lwgeom_transform_recursive(uchar *geom, projPJ inpj, projPJ outpj)
+lwgeom_transform(LWGEOM *geom, projPJ inpj, projPJ outpj)
 {
-	LWGEOM_INSPECTED *inspected = lwgeom_inspect(geom);
 	int j, i;
-
-	for (j=0; j<inspected->ngeometries; j++)
+	int type = geom->type;
+	POINT4D p;
+	POINTARRAY *pa;
+	
+	/* No points to transform in an empty! */
+	if ( lwgeom_is_empty(geom) )
+		return LW_SUCCESS;
+	
+	switch(type) 
 	{
-		LWLINE *line=NULL;
-		LWPOINT *point=NULL;
-		LWTRIANGLE *triangle=NULL;
-		LWPOLY *poly=NULL;
-		LWCIRCSTRING *curve=NULL;
-		POINT4D p;
-		uchar *subgeom=NULL;
-
-		point = lwgeom_getpoint_inspected(inspected,j);
-		if (point != NULL)
+		case POINTTYPE:
+		case LINETYPE:
+		case CIRCSTRINGTYPE:
+		case TRIANGLETYPE:
 		{
-			getPoint4d_p(point->point, 0, &p);
-			transform_point(&p, inpj, outpj);
-			ptarray_set_point4d(point->point, 0, &p);
-			lwgeom_release((LWGEOM *)point);
-			continue;
-		}
-
-		line = lwgeom_getline_inspected(inspected, j);
-		if (line != NULL)
-		{
-			POINTARRAY *pts = line->points;
-			for (i=0; i<pts->npoints; i++)
+			LWLINE *g = (LWLINE*)geom;
+			pa = g->points;
+			for ( i = 0; i < pa->npoints; i++ )
 			{
-				getPoint4d_p(pts, i, &p);
+				getPoint4d_p(pa, i, &p);
 				transform_point(&p, inpj, outpj);
-				ptarray_set_point4d(pts, i, &p);
+				ptarray_set_point4d(pa, i, &p);
 			}
-			lwgeom_release((LWGEOM *)line);
-			continue;
+			break;
 		}
-
-		triangle = lwgeom_gettriangle_inspected(inspected, j);
-		if (triangle != NULL)
+		case POLYGONTYPE:
 		{
-			POINTARRAY *pts = triangle->points;
-			for (i=0; i<pts->npoints; i++)
+			LWPOLY *g = (LWPOLY*)geom;
+			for ( j = 0; j < g->nrings; j++ )
 			{
-				getPoint4d_p(pts, i, &p);
-				transform_point(&p, inpj, outpj);
-				ptarray_set_point4d(pts, i, &p);
-			}
-			lwgeom_release((LWGEOM *)triangle);
-			continue;
-		}
-
-		poly = lwgeom_getpoly_inspected(inspected, j);
-		if (poly !=NULL)
-		{
-			for (i=0; i<poly->nrings; i++)
-			{
-				int pi;
-				POINTARRAY *pts = poly->rings[i];
-				for (pi=0; pi<pts->npoints; pi++)
+				pa = g->rings[j];
+				for ( i = 0; i < pa->npoints; i++ )
 				{
-					getPoint4d_p(pts, pi, &p);
+					getPoint4d_p(pa, i, &p);
 					transform_point(&p, inpj, outpj);
-					ptarray_set_point4d(pts, pi, &p);
+					ptarray_set_point4d(pa, i, &p);
 				}
 			}
-			lwgeom_release((LWGEOM *)poly);
-			continue;
+			break;
 		}
-
-		curve = lwgeom_getcircstring_inspected(inspected, j);
-		if (curve != NULL)
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+		case COMPOUNDTYPE:
+		case CURVEPOLYTYPE:
+		case MULTICURVETYPE:
+		case MULTISURFACETYPE:
+		case POLYHEDRALSURFACETYPE:
+		case TINTYPE:
 		{
-			POINTARRAY *pts = curve->points;
-			for (i=0; i<pts->npoints; i++)
+			LWCOLLECTION *g = (LWCOLLECTION*)geom;
+			for ( i = 0; i < g->ngeoms; i++ )
 			{
-				getPoint4d_p(pts, i, &p);
-				transform_point(&p, inpj, outpj);
-				ptarray_set_point4d(pts, i, &p);
+				lwgeom_transform(g->geoms[i], inpj, outpj);
 			}
-			lwgeom_release((LWGEOM *)curve);
-			continue;
 		}
-
-		subgeom = lwgeom_getsubgeometry_inspected(inspected, j);
-		if ( subgeom != NULL )
+		default:
 		{
-			if (!lwgeom_transform_recursive(subgeom, inpj, outpj))
-			{
-				lwinspected_release(inspected);
-				return 0;
-			}
-			continue;
-		}
-		else
-		{
-			lwinspected_release(inspected);
-			lwerror("lwgeom_getsubgeometry_inspected returned NULL");
-			return 0;
+			lwerror("lwgeom_transform: Cannot handle type '%s'", lwtype_name(type));
+			return LW_FAILURE;
 		}
 	}
+	return LW_SUCCESS;
 
-	lwinspected_release(inspected);
-	return 1;
 }
-
 
 
 
@@ -802,7 +764,6 @@ Datum transform(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 	projPJ input_pj, output_pj;
 	int32 result_srid ;
-	uchar *srl;
 
 	PROJ4PortalCache *PROJ4Cache = NULL;
 
@@ -889,27 +850,20 @@ Datum transform(PG_FUNCTION_ARGS)
 
 
 	/* now we have a geometry, and input/output PJ structs. */
-	lwgeom_transform_recursive(SERIALIZED_FORM(geom),
-	                           input_pj, output_pj);
-
-	srl = SERIALIZED_FORM(geom);
+	lwgeom = pglwgeom_deserialize(geom);
+	lwgeom_transform(lwgeom, input_pj, output_pj);
+	lwgeom->srid = result_srid;
 
 	/* Re-compute bbox if input had one (COMPUTE_BBOX TAINTING) */
-	if ( TYPE_HASBBOX(geom->type) )
+	if ( FLAGS_GET_BBOX(lwgeom->flags) )
 	{
-		lwgeom = lwgeom_deserialize(srl);
 		lwgeom_drop_bbox(lwgeom);
 		lwgeom_add_bbox(lwgeom);
-		lwgeom->srid = result_srid;
-		result = pglwgeom_serialize(lwgeom);
-		lwgeom_release(lwgeom);
 	}
-	else
-	{
-		result = PG_LWGEOM_construct(srl, result_srid, 0);
-	}
-
-	pfree(geom);
+	
+	result = pglwgeom_serialize(lwgeom);
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(result); /* new geometry */
 }
@@ -934,7 +888,6 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	text *input_proj4_text;
 	text *output_proj4_text;
 	int32 result_srid ;
-	uchar *srl;
 	int* pj_errno_ref;
 
 
@@ -1001,31 +954,25 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	pfree(output_proj4);
 
 	/* now we have a geometry, and input/output PJ structs. */
-	lwgeom_transform_recursive(SERIALIZED_FORM(geom),
-	                           input_pj, output_pj);
+	lwgeom = pglwgeom_deserialize(geom);
+	lwgeom_transform(lwgeom, input_pj, output_pj);
+	lwgeom->srid = result_srid;
 
 	/* clean up */
 	pj_free(input_pj);
 	pj_free(output_pj);
 
-	srl = SERIALIZED_FORM(geom);
-
 	/* Re-compute bbox if input had one (COMPUTE_BBOX TAINTING) */
-	if ( TYPE_HASBBOX(geom->type) )
+	if ( FLAGS_GET_BBOX(lwgeom->flags) )
 	{
-		lwgeom = lwgeom_deserialize(srl);
 		lwgeom_drop_bbox(lwgeom);
 		lwgeom_add_bbox(lwgeom);
-		lwgeom->srid = result_srid;
-		result = pglwgeom_serialize(lwgeom);
-		lwgeom_release(lwgeom);
-	}
-	else
-	{
-		result = PG_LWGEOM_construct(srl, result_srid, 0);
 	}
 
-	pfree(geom);
+	result = pglwgeom_serialize(lwgeom);
+	
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(result); /* new geometry */
 }
