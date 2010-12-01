@@ -67,6 +67,7 @@ TESTS = \
 	regress_ogc_prep \
 	regress_bdpoly \
 	regress_proj \
+	dump \
 	dumppoints \
 	wmsservers \
 	tickets \
