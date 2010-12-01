@@ -26,8 +26,6 @@
  **********************************************************************/
 
 #include "lwgeom_geos.h"
-//#include "lwalgorithm.h"
-//#include "funcapi.h"
 
 #include <string.h>
 #include <assert.h>
@@ -82,8 +80,7 @@ Datum ST_SharedPaths(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); /* never get here */
 	}
 
-	/* TODO: dump instead ? */
-
+	GEOSSetSRID(g3, srid);
 	out = GEOS2POSTGIS(g3, is3d);
 	if (out == NULL)
 	{
