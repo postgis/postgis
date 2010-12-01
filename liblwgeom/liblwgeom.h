@@ -280,6 +280,13 @@ va_dcl
 /******************************************************************/
 
 
+
+typedef struct {
+	double afac, bfac, cfac, dfac, efac, ffac, gfac, hfac, ifac, xoff, yoff, zoff;
+} AFFINE;
+
+/******************************************************************/
+
 typedef struct
 {
 	float xmin;
@@ -485,6 +492,28 @@ typedef struct
 }
 LWLINE; /* "light-weight line" */
 
+/* TRIANGLE */
+typedef struct
+{
+	uchar type;
+	uchar flags;
+	GBOX *bbox;
+	uint32 srid;
+	POINTARRAY *points;
+}
+LWTRIANGLE;
+
+/* CIRCSTRINGTYPE */
+typedef struct
+{
+	uchar type; /* CIRCSTRINGTYPE */
+	uchar flags;
+	GBOX *bbox;
+	uint32 srid;
+	POINTARRAY *points; /* array of POINT(3D/3DM) */
+}
+LWCIRCSTRING; /* "light-weight circularstring" */
+
 /* POLYGONTYPE */
 typedef struct
 {
@@ -550,17 +579,6 @@ typedef struct
 }
 LWCOLLECTION;
 
-/* CIRCSTRINGTYPE */
-typedef struct
-{
-	uchar type; /* CIRCSTRINGTYPE */
-	uchar flags;
-	GBOX *bbox;
-	uint32 srid;
-	POINTARRAY *points; /* array of POINT(3D/3DM) */
-}
-LWCIRCSTRING; /* "light-weight circularstring" */
-
 /* COMPOUNDTYPE */
 typedef struct
 {
@@ -625,17 +643,6 @@ typedef struct
 	LWPOLY **geoms;
 }
 LWPSURFACE;
-
-/* TRIANGLE */
-typedef struct
-{
-	uchar type;
-	uchar flags;
-	GBOX *bbox;
-	uint32 srid;
-	POINTARRAY *points;
-}
-LWTRIANGLE;
 
 /* TINTYPE */
 typedef struct
@@ -1522,6 +1529,7 @@ extern double lwgeom_maxdistance3d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double to
 extern double lwgeom_area(const LWGEOM *geom);
 extern double lwgeom_length(const LWGEOM *geom);
 extern double lwgeom_length_2d(const LWGEOM *geom);
+extern void lwgeom_affine(LWGEOM *geom, const AFFINE *affine);
 
 extern double lwgeom_polygon_perimeter(const LWPOLY *poly);
 extern double lwgeom_polygon_perimeter2d(const LWPOLY *poly);

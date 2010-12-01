@@ -99,11 +99,6 @@ Datum ST_MakeEnvelope(PG_FUNCTION_ARGS);
 Datum ST_CollectionExtract(PG_FUNCTION_ARGS);
 Datum ST_IsCollection(PG_FUNCTION_ARGS);
 
-void lwgeom_affine_ptarray(POINTARRAY *pa, double afac, double bfac, double cfac,
-                           double dfac, double efac, double ffac, double gfac, double hfac, double ifac, double xoff, double yoff, double zoff);
-
-void lwgeom_affine_recursive(uchar *serialized, double afac, double bfac, double cfac,
-                             double dfac, double efac, double ffac, double gfac, double hfac, double ifac, double xoff, double yoff, double zoff);
 
 /*------------------------------------------------------------------*/
 
@@ -2674,201 +2669,41 @@ Datum optimistic_overlap(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(calc_dist < dist);
 }
 
-/**
- * Affine transform a pointarray.
- */
-void
-lwgeom_affine_ptarray(POINTARRAY *pa,
-                      double afac, double bfac, double cfac,
-                      double dfac, double efac, double ffac,
-                      double gfac, double hfac, double ifac,
-                      double xoff, double yoff, double zoff)
-{
-	int i;
-	double x,y,z;
-	POINT4D p4d;
-
-	LWDEBUG(2, "lwgeom_affine_ptarray start");
-
-	if ( FLAGS_GET_Z(pa->flags) )
-	{
-		LWDEBUG(3, " has z");
-
-		for (i=0; i<pa->npoints; i++)
-		{
-			getPoint4d_p(pa, i, &p4d);
-			x = p4d.x;
-			y = p4d.y;
-			z = p4d.z;
-			p4d.x = afac * x + bfac * y + cfac * z + xoff;
-			p4d.y = dfac * x + efac * y + ffac * z + yoff;
-			p4d.z = gfac * x + hfac * y + ifac * z + zoff;
-			ptarray_set_point4d(pa, i, &p4d);
-
-			LWDEBUGF(3, " POINT %g %g %g => %g %g %g", x, y, x, p4d.x, p4d.y, p4d.z);
-		}
-	}
-	else
-	{
-		LWDEBUG(3, " doesn't have z");
-
-		for (i=0; i<pa->npoints; i++)
-		{
-			getPoint4d_p(pa, i, &p4d);
-			x = p4d.x;
-			y = p4d.y;
-			p4d.x = afac * x + bfac * y + xoff;
-			p4d.y = dfac * x + efac * y + yoff;
-			ptarray_set_point4d(pa, i, &p4d);
-
-			LWDEBUGF(3, " POINT %g %g %g => %g %g %g", x, y, x, p4d.x, p4d.y, p4d.z);
-		}
-	}
-
-	LWDEBUG(3, "lwgeom_affine_ptarray end");
-
-}
-
-void
-lwgeom_affine_recursive(uchar *serialized,
-                        double afac, double bfac, double cfac,
-                        double dfac, double efac, double ffac,
-                        double gfac, double hfac, double ifac,
-                        double xoff, double yoff, double zoff)
-{
-	LWGEOM_INSPECTED *inspected;
-	int i, j;
-
-	inspected = lwgeom_inspect(serialized);
-
-	/* scan each object translating it */
-	for (i=0; i<inspected->ngeometries; i++)
-	{
-		LWLINE *line=NULL;
-		LWPOINT *point=NULL;
-		LWPOLY *poly=NULL;
-		LWTRIANGLE *triangle=NULL;
-		LWCIRCSTRING *curve=NULL;
-		uchar *subgeom=NULL;
-
-		point = lwgeom_getpoint_inspected(inspected, i);
-		if (point !=NULL)
-		{
-			lwgeom_affine_ptarray(point->point,
-			                      afac, bfac, cfac,
-			                      dfac, efac, ffac,
-			                      gfac, hfac, ifac,
-			                      xoff, yoff, zoff);
-			lwgeom_release((LWGEOM *)point);
-			continue;
-		}
-
-		poly = lwgeom_getpoly_inspected(inspected, i);
-		if (poly !=NULL)
-		{
-			for (j=0; j<poly->nrings; j++)
-			{
-				lwgeom_affine_ptarray(poly->rings[j],
-				                      afac, bfac, cfac,
-				                      dfac, efac, ffac,
-				                      gfac, hfac, ifac,
-				                      xoff, yoff, zoff);
-			}
-			lwgeom_release((LWGEOM *)poly);
-			continue;
-		}
-
-		line = lwgeom_getline_inspected(inspected, i);
-		if (line != NULL)
-		{
-			lwgeom_affine_ptarray(line->points,
-			                      afac, bfac, cfac,
-			                      dfac, efac, ffac,
-			                      gfac, hfac, ifac,
-			                      xoff, yoff, zoff);
-			lwgeom_release((LWGEOM *)line);
-			continue;
-		}
-
-		curve = lwgeom_getcircstring_inspected(inspected, i);
-		if (curve != NULL)
-		{
-			lwgeom_affine_ptarray(curve->points,
-			                      afac, bfac, cfac,
-			                      dfac, efac, ffac,
-			                      gfac, hfac, ifac,
-			                      xoff, yoff, zoff);
-			lwgeom_release((LWGEOM *)curve);
-			continue;
-		}
-
-		triangle = lwgeom_gettriangle_inspected(inspected, i);
-		if (triangle != NULL)
-		{
-			lwgeom_affine_ptarray(triangle->points,
-			                      afac, bfac, cfac,
-			                      dfac, efac, ffac,
-			                      gfac, hfac, ifac,
-			                      xoff, yoff, zoff);
-			lwgeom_release((LWGEOM *)triangle);
-			continue;
-		}
-
-		subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
-		if ( subgeom == NULL )
-		{
-			elog(ERROR, "lwgeom_getsubgeometry_inspected returned NULL??");
-		}
-
-		lwgeom_affine_recursive(subgeom,
-		                        afac, bfac, cfac,
-		                        dfac, efac, ffac,
-		                        gfac, hfac, ifac,
-		                        xoff, yoff, zoff);
-	}
-
-	lwinspected_release(inspected);
-}
 
 /*affine transform geometry */
 PG_FUNCTION_INFO_V1(LWGEOM_affine);
 Datum LWGEOM_affine(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
 	PG_LWGEOM *ret;
-	LWGEOM *tmp;
-	uchar *srl = SERIALIZED_FORM(geom);
+	AFFINE affine;
 
-	double afac =  PG_GETARG_FLOAT8(1);
-	double bfac =  PG_GETARG_FLOAT8(2);
-	double cfac =  PG_GETARG_FLOAT8(3);
-	double dfac =  PG_GETARG_FLOAT8(4);
-	double efac =  PG_GETARG_FLOAT8(5);
-	double ffac =  PG_GETARG_FLOAT8(6);
-	double gfac =  PG_GETARG_FLOAT8(7);
-	double hfac =  PG_GETARG_FLOAT8(8);
-	double ifac =  PG_GETARG_FLOAT8(9);
-	double xoff =  PG_GETARG_FLOAT8(10);
-	double yoff =  PG_GETARG_FLOAT8(11);
-	double zoff =  PG_GETARG_FLOAT8(12);
+	affine.afac =  PG_GETARG_FLOAT8(1);
+	affine.bfac =  PG_GETARG_FLOAT8(2);
+	affine.cfac =  PG_GETARG_FLOAT8(3);
+	affine.dfac =  PG_GETARG_FLOAT8(4);
+	affine.efac =  PG_GETARG_FLOAT8(5);
+	affine.ffac =  PG_GETARG_FLOAT8(6);
+	affine.gfac =  PG_GETARG_FLOAT8(7);
+	affine.hfac =  PG_GETARG_FLOAT8(8);
+	affine.ifac =  PG_GETARG_FLOAT8(9);
+	affine.xoff =  PG_GETARG_FLOAT8(10);
+	affine.yoff =  PG_GETARG_FLOAT8(11);
+	affine.zoff =  PG_GETARG_FLOAT8(12);
 
 	POSTGIS_DEBUG(2, "LWGEOM_affine called.");
 
-	lwgeom_affine_recursive(srl,
-	                        afac, bfac, cfac,
-	                        dfac, efac, ffac,
-	                        gfac, hfac, ifac,
-	                        xoff, yoff, zoff);
+	lwgeom_affine(lwgeom, &affine);
 
 	/* COMPUTE_BBOX TAINTING */
-	tmp = pglwgeom_deserialize(geom);
-	lwgeom_drop_bbox(tmp);
-	lwgeom_add_bbox(tmp);
-	ret = pglwgeom_serialize(tmp);
+	lwgeom_drop_bbox(lwgeom);
+	lwgeom_add_bbox(lwgeom);
+	ret = pglwgeom_serialize(lwgeom);
 
 	/* Release memory */
-	pfree(geom);
-	lwgeom_release(tmp);
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(ret);
 }

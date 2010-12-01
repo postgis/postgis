@@ -149,3 +149,10 @@ double lwcircstring_length_2d(const LWCIRCSTRING *circ);
 LWLINE *lwcircstring_segmentize(const LWCIRCSTRING *icurve, uint32 perQuad);
 LWLINE *lwcompound_segmentize(const LWCOMPOUND *icompound, uint32 perQuad);
 LWPOLY *lwcurvepoly_segmentize(const LWCURVEPOLY *curvepoly, uint32 perQuad);
+
+/*
+* Affine
+*/
+void ptarray_affine(POINTARRAY *pa, const AFFINE *affine);
+
+

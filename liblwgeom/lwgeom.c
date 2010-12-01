@@ -1561,3 +1561,55 @@ double lwgeom_length_2d(const LWGEOM *geom)
 		return 0.0;
 }
 
+void
+lwgeom_affine(LWGEOM *geom, const AFFINE *affine)
+{
+	int type = geom->type;
+	int i;
+
+	switch(type) 
+	{
+		/* Take advantage of fact tht pt/ln/circ/tri have same memory structure */
+		case POINTTYPE:
+		case LINETYPE:
+		case CIRCSTRINGTYPE:
+		case TRIANGLETYPE:
+		{
+			LWLINE *l = (LWLINE*)geom;
+			ptarray_affine(l->points, affine);
+			break;
+		}
+		case POLYGONTYPE:
+		{
+			LWPOLY *p = (LWPOLY*)geom;
+			for( i = 0; i < p->nrings; i++ )
+				ptarray_affine(p->rings[i], affine);
+			break;
+		}
+		case CURVEPOLYTYPE:
+		{
+			LWCURVEPOLY *c = (LWCURVEPOLY*)geom;
+			for( i = 0; i < c->nrings; i++ )
+				lwgeom_affine(c->rings[i], affine);
+			break;
+		}
+		default:
+		{
+			if( lwgeom_is_collection(geom) )
+			{
+				LWCOLLECTION *c = (LWCOLLECTION*)geom;
+				for( i = 0; i < c->ngeoms; i++ )
+				{
+					lwgeom_affine(c->geoms[i], affine);
+				}
+			}
+			else 
+			{
+				lwerror("lwgeom_affine: unable to handle type '%s'", lwtype_name(type));
+			}
+		}
+	}
+
+}
+
+
