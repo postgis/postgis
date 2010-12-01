@@ -36,6 +36,13 @@ Datum ST_SharedPaths(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_SharedPaths);
 Datum ST_SharedPaths(PG_FUNCTION_ARGS)
 {
+#if POSTGIS_GEOS_VERSION < 33
+	lwerror("The GEOS version this postgis binary "
+	        "was compiled against (%d) doesn't support "
+	        "'ST_SharedPaths' function (3.3.0+ required)",
+	        POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_GEOS_VERSION >= 33 */
 	PG_LWGEOM *geom1, *geom2, *out;
 	GEOSGeometry *g1, *g2, *g3;
 	int is3d;
@@ -96,6 +103,8 @@ Datum ST_SharedPaths(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(g3);
 
 	PG_RETURN_POINTER(out);
+
+#endif /* POSTGIS_GEOS_VERSION >= 33 */
 
 }
 
