@@ -4119,6 +4119,29 @@ CREATE OR REPLACE FUNCTION ST_Split(geometry, geometry)
        COST 100;
 
 --------------------------------------------------------------------------------
+-- ST_SharedPaths
+--------------------------------------------------------------------------------
+
+-- ST_SharedPaths(lineal1 geometry, lineal1 geometry)
+--
+-- Returns a collection containing paths shared by the two
+-- input geometries. Those going in the same direction are
+-- in the first element of the collection, those going in the
+-- opposite direction are in the second element.
+--
+-- The paths themselves are given in the direction of the
+-- first geometry.
+-- 
+-- Availability: 2.0.0
+-- Requires GEOS >= 3.3.0
+--
+CREATE OR REPLACE FUNCTION ST_SharedPaths(geometry, geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME', 'ST_SharedPaths'
+       LANGUAGE 'C' IMMUTABLE STRICT
+       COST 100;
+
+--------------------------------------------------------------------------------
 -- Aggregates and their supporting functions
 --------------------------------------------------------------------------------
 
