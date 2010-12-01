@@ -445,3 +445,22 @@ lwtriangle_area(const LWTRIANGLE *triangle)
 
 	return fabs(area);
 }
+
+
+double
+lwtriangle_perimeter(const LWTRIANGLE *triangle)
+{
+	if( triangle->points ) 
+		return ptarray_length(triangle->points);
+	else 
+		return 0.0;
+}
+
+double
+lwtriangle_perimeter_2d(const LWTRIANGLE *triangle)
+{
+	if( triangle->points ) 
+		return ptarray_length_2d(triangle->points);
+	else 
+		return 0.0;
+}

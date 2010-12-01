@@ -318,38 +318,12 @@ PG_FUNCTION_INFO_V1(LWGEOM_perimeter_poly);
 Datum LWGEOM_perimeter_poly(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM_INSPECTED *inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
-	int type = lwgeom_getType((uchar)SERIALIZED_FORM(geom)[0]);
-	double ret = 0.0;
-	TGEOM *tgeom;
-	int i;
-
-	if (type == POLYHEDRALSURFACETYPE || type == TINTYPE)
-	{
-		tgeom = tgeom_from_lwgeom(lwgeom_deserialize(SERIALIZED_FORM(geom)));
-		ret = tgeom_perimeter(tgeom);
-	}
-	else
-	{ 
-		for (i=0; i<inspected->ngeometries; i++)
-		{
-			LWPOLY *poly;
-			LWTRIANGLE *triangle;
-
-			poly = lwgeom_getpoly_inspected(inspected, i);
-			if (poly != NULL)
-				ret += lwgeom_polygon_perimeter(poly);
-
-			triangle = lwgeom_gettriangle_inspected(inspected, i);
-			if (triangle != NULL)
-				ret += lwgeom_triangle_perimeter(triangle);
-		}
-
-		lwinspected_release(inspected);
-	}
-
+	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
+	double perimeter = 0.0;
+	
+	perimeter = lwgeom_perimeter(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_FLOAT8(ret);
+	PG_RETURN_FLOAT8(perimeter);
 }
 
 /**
@@ -363,38 +337,12 @@ PG_FUNCTION_INFO_V1(LWGEOM_perimeter2d_poly);
 Datum LWGEOM_perimeter2d_poly(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM_INSPECTED *inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
-	int type = lwgeom_getType((uchar)SERIALIZED_FORM(geom)[0]);
-	TGEOM *tgeom;
-	double ret = 0.0;
-	int i;
-
-	if (type == POLYHEDRALSURFACETYPE || type == TINTYPE)
-	{
-		tgeom = tgeom_from_lwgeom(lwgeom_deserialize(SERIALIZED_FORM(geom)));
-		ret = tgeom_perimeter(tgeom);
-	}
-	else
-	{ 
-		for (i=0; i<inspected->ngeometries; i++)
-		{
-			LWPOLY *poly;
-			LWTRIANGLE *triangle;
-
-			poly = lwgeom_getpoly_inspected(inspected, i);
-			if (poly != NULL)
-				ret += lwgeom_polygon_perimeter2d(poly);
-
-			triangle = lwgeom_gettriangle_inspected(inspected, i);
-			if (triangle != NULL)
-				ret += lwgeom_triangle_perimeter2d(triangle);
-		}
-
-		lwinspected_release(inspected);
-	}
+	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
+	double perimeter = 0.0;
+	
+	perimeter = lwgeom_perimeter_2d(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
-
-	PG_RETURN_FLOAT8(ret);
+	PG_RETURN_FLOAT8(perimeter);
 }
 
 

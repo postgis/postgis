@@ -174,3 +174,26 @@ lwcurvepoly_area(const LWCURVEPOLY *curvepoly)
 }
 
 
+double
+lwcurvepoly_perimeter(const LWCURVEPOLY *poly)
+{
+	double result=0.0;
+	int i;
+
+	for (i=0; i<poly->nrings; i++)
+		result += lwgeom_length(poly->rings[i]);
+
+	return result;
+}
+
+double
+lwcurvepoly_perimeter_2d(const LWCURVEPOLY *poly)
+{
+	double result=0.0;
+	int i;
+
+	for (i=0; i<poly->nrings; i++)
+		result += lwgeom_length_2d(poly->rings[i]);
+
+	return result;
+}

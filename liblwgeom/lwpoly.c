@@ -739,3 +739,40 @@ lwpoly_area(const LWPOLY *poly)
 
 	return poly_area;
 }
+
+
+/**
+ * Compute the sum of polygon rings length.
+ * Could use a more numerically stable calculator...
+ */
+double
+lwpoly_perimeter(const LWPOLY *poly)
+{
+	double result=0.0;
+	int i;
+
+	LWDEBUGF(2, "in lwgeom_polygon_perimeter (%d rings)", poly->nrings);
+
+	for (i=0; i<poly->nrings; i++)
+		result += ptarray_length(poly->rings[i]);
+
+	return result;
+}
+
+/**
+ * Compute the sum of polygon rings length (forcing 2d computation).
+ * Could use a more numerically stable calculator...
+ */
+double
+lwpoly_perimeter_2d(const LWPOLY *poly)
+{
+	double result=0.0;
+	int i;
+
+	LWDEBUGF(2, "in lwgeom_polygon_perimeter (%d rings)", poly->nrings);
+
+	for (i=0; i<poly->nrings; i++)
+		result += ptarray_length_2d(poly->rings[i]);
+
+	return result;
+}

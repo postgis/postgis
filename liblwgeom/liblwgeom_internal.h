@@ -142,6 +142,12 @@ double lwline_length(const LWLINE *line);
 double lwline_length_2d(const LWLINE *line);
 double lwcircstring_length(const LWCIRCSTRING *circ);
 double lwcircstring_length_2d(const LWCIRCSTRING *circ);
+double lwpoly_perimeter(const LWPOLY *poly);
+double lwpoly_perimeter_2d(const LWPOLY *poly);
+double lwcurvepoly_perimeter(const LWCURVEPOLY *poly);
+double lwcurvepoly_perimeter_2d(const LWCURVEPOLY *poly);
+double lwtriangle_perimeter(const LWTRIANGLE *triangle);
+double lwtriangle_perimeter_2d(const LWTRIANGLE *triangle);
 
 /*
 * Segmentization
@@ -154,5 +160,10 @@ LWPOLY *lwcurvepoly_segmentize(const LWCURVEPOLY *curvepoly, uint32 perQuad);
 * Affine
 */
 void ptarray_affine(POINTARRAY *pa, const AFFINE *affine);
+
+/*
+* PointArray
+*/
+char ptarray_isccw(const POINTARRAY *pa);
 
 

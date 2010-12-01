@@ -58,7 +58,7 @@ typedef struct
 extern TGEOM* tgeom_new(uchar type, int hasz, int hasm);
 extern void tgeom_free(TGEOM *tgeom);
 extern TSERIALIZED* tserialized_from_lwgeom(LWGEOM *lwgeom);
-extern TGEOM* tgeom_from_lwgeom(LWGEOM *lwgeom);
+extern TGEOM* tgeom_from_lwgeom(const LWGEOM *lwgeom);
 extern LWGEOM* lwgeom_from_tserialized(TSERIALIZED *t);
 extern LWGEOM* lwgeom_from_tgeom(TGEOM *tgeom);
 extern int lwgeom_is_solid(LWGEOM *lwgeom);

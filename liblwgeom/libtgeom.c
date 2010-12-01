@@ -406,7 +406,7 @@ tserialized_from_lwgeom(LWGEOM *lwgeom)
  * Caution: Geometries from LWGEOM are copied
  */
 TGEOM*
-tgeom_from_lwgeom(LWGEOM *lwgeom)
+tgeom_from_lwgeom(const LWGEOM *lwgeom)
 {
 	int i, solid;
 	LWTIN *tin;

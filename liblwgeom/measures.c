@@ -1472,64 +1472,6 @@ distance2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B)
 
 
 
-
-
-
-
-
-
-
-
-
-
-/**
- * Compute the sum of polygon rings length.
- * Could use a more numerically stable calculator...
- */
-double
-lwgeom_polygon_perimeter(const LWPOLY *poly)
-{
-	double result=0.0;
-	int i;
-
-	LWDEBUGF(2, "in lwgeom_polygon_perimeter (%d rings)", poly->nrings);
-
-	for (i=0; i<poly->nrings; i++)
-		result += ptarray_length(poly->rings[i]);
-
-	return result;
-}
-
-/**
- * Compute the sum of polygon rings length (forcing 2d computation).
- * Could use a more numerically stable calculator...
- */
-double
-lwgeom_polygon_perimeter2d(const LWPOLY *poly)
-{
-	double result=0.0;
-	int i;
-
-	LWDEBUGF(2, "in lwgeom_polygon_perimeter (%d rings)", poly->nrings);
-
-	for (i=0; i<poly->nrings; i++)
-		result += ptarray_length_2d(poly->rings[i]);
-
-	return result;
-}
-
-double
-lwgeom_triangle_perimeter(const LWTRIANGLE *triangle)
-{
-	return ptarray_length(triangle->points);
-}
-
-double
-lwgeom_triangle_perimeter2d(const LWTRIANGLE *triangle)
-{
-	return ptarray_length_2d(triangle->points);
-}
-
 int
 lwgeom_pt_inside_circle(POINT2D *p, double cx, double cy, double rad)
 {
