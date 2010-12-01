@@ -221,6 +221,12 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 		)
 		</pgis:gset>
 		
+		<pgis:gset ID="Collection of Empties" GeometryType="GEOMETRY" createtable="false">(SELECT ST_Collect(ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326), ST_GeomFromText('POLYGON EMPTY',4326)) As the_geom
+			UNION ALL SELECT ST_COLLECT(ST_GeomFromText('POLYGON EMPTY',4326),ST_GeomFromText('TRIANGLE EMPTY',4326))  As the_geom
+			UNION ALL SELECT ST_Collect(ST_GeomFromText('POINT EMPTY',4326), ST_GeomFromText('MULTIPOINT EMPTY',4326)) As the_geom
+		)
+		</pgis:gset>
+		
 		<pgis:gset ID="Single NULL" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom)</pgis:gset>
 		<pgis:gset ID="Multiple NULLs" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom FROM generate_series(1,4) As foo)</pgis:gset>
 
@@ -293,7 +299,7 @@ BEGIN;
 COMMIT;
 
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
-VALUES('<xsl:value-of select="$log_label" /> vacuum analyze','vacuum analyze', '<xsl:value-of select="@ID" />', clock_timestamp());
+VALUES('<xsl:value-of select="$log_label" /> vacuum analyze Geometry','vacuum analyze', '<xsl:value-of select="@ID" />', clock_timestamp());
 VACUUM ANALYZE pgis_garden;
 <xsl:value-of select="$var_logupdatesql" />
 
@@ -336,10 +342,10 @@ SELECT '<xsl:value-of select="$log_label" /> Geography index: End Testing <xsl:v
 
 
 
-INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) VALUES('<xsl:value-of select="$log_label" /> analyze Geography','analyze geography table', '<xsl:value-of select="@ID" />', clock_timestamp());
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) VALUES('<xsl:value-of select="$log_label" /> vacuum analyze Geography','analyze geography table', '<xsl:value-of select="@ID" />', clock_timestamp());
 BEGIN;	
 	SELECT 'BEFORE DROP' As look_at, * FROM geography_columns;
-	ANALYZE pgis_geoggarden;
+	VACUUM ANALYZE pgis_geoggarden;
 COMMIT;
 	<xsl:value-of select="$var_logupdatesql" />
 
