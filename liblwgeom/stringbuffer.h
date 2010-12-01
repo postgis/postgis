@@ -52,6 +52,7 @@ typedef struct
 }
 stringbuffer_t;
 
+extern stringbuffer_t *stringbuffer_create_size(size_t size);
 extern stringbuffer_t *stringbuffer_create(void);
 extern void stringbuffer_destroy(stringbuffer_t *sb);
 extern void stringbuffer_clear(stringbuffer_t *sb);

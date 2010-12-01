@@ -44,13 +44,21 @@
 */
 stringbuffer_t* stringbuffer_create(void)
 {
+	return stringbuffer_create_size(STRINGBUFFER_STARTSIZE);
+}
+
+/**
+* Allocate a new stringbuffer_t. Use stringbuffer_destroy to free.
+*/
+stringbuffer_t* stringbuffer_create_size(size_t size)
+{
 	stringbuffer_t *s;
 
 	s = lwalloc(sizeof(stringbuffer_t));
-	s->str_start = lwalloc(sizeof(char) * STRINGBUFFER_STARTSIZE);
+	s->str_start = lwalloc(size);
 	s->str_end = s->str_start;
-	s->capacity = STRINGBUFFER_STARTSIZE;
-	memset(s->str_start,0,STRINGBUFFER_STARTSIZE);
+	s->capacity = size;
+	memset(s->str_start,0,size);
 	return s;
 }
 
