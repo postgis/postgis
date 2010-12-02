@@ -4142,6 +4142,24 @@ CREATE OR REPLACE FUNCTION ST_SharedPaths(geometry, geometry)
        COST 100;
 
 --------------------------------------------------------------------------------
+-- ST_Snap
+--------------------------------------------------------------------------------
+
+-- ST_Snap(g1 geometry, g2 geometry, tolerance float8)
+--
+-- Snap first geometry against second.
+--
+-- Availability: 2.0.0
+-- Requires GEOS >= 3.3.0
+--
+CREATE OR REPLACE FUNCTION ST_Snap(geometry, geometry, float8)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME', 'ST_Snap'
+       LANGUAGE 'C' IMMUTABLE STRICT
+       COST 100;
+
+
+--------------------------------------------------------------------------------
 -- Aggregates and their supporting functions
 --------------------------------------------------------------------------------
 

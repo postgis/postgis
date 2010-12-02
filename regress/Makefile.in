@@ -94,6 +94,11 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 33),1)
 	TESTS += sharedpaths
 endif
 
+# ST_Snap if GEOS >= 3.3
+ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 33),1)
+	TESTS += snap
+endif
+
 all: test 
 
 postgis.sql: ../postgis/postgis.sql
