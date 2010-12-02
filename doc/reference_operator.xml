@@ -632,7 +632,7 @@ FROM
 				<!-- TODO: Ideally, it would be nice if this could be reordered to
 				"boolean (geometry A @ geometry B)" instead of
 				"boolean @( geometry A, geometry B)" -->
-				<funcdef>boolean <function>~=</function></funcdef>
+				<funcdef>boolean <function>@</function></funcdef>
 
 				<paramdef>
 				  <type>geometry </type>
@@ -917,21 +917,6 @@ FROM
 
 				<paramdef>
 				  <type>geometry </type>
-
-				  <parameter>B</parameter>
-				</paramdef>
-			  </funcprototype>
-			  <funcprototype>
-				<funcdef>boolean <function>~=</function></funcdef>
-
-				<paramdef>
-				  <type>geography </type>
-
-				  <parameter>A</parameter>
-				</paramdef>
-
-				<paramdef>
-				  <type>geography </type>
 
 				  <parameter>B</parameter>
 				</paramdef>
