@@ -380,27 +380,26 @@ lwgeom_dimension_recursive(const uchar *serialized)
 }
 
 /** @brief
- * 		returns 0 for points, 1 for lines, 2 for polygons, 3 for volume.
- * 		returns max dimension for a collection.
- * 	TODO: @todo return -1 for the empty geometry (TODO)
- */
+* 		returns 0 for points, 1 for lines, 2 for polygons, 3 for volume.
+* 		returns max dimension for a collection.
+*/
 PG_FUNCTION_INFO_V1(LWGEOM_dimension);
 Datum LWGEOM_dimension(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	int dimension;
+	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
+	int dimension = -1;
 
-	POSTGIS_DEBUG(2, "LWGEOM_dimension called");
-
-	dimension = lwgeom_dimension_recursive(SERIALIZED_FORM(geom));
-	if ( dimension == -1 )
+	dimension = lwgeom_dimension(lwgeom);
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(geom, 0);
+	
+	if ( dimension < 0 )
 	{
-		PG_FREE_IF_COPY(geom, 0);
 		elog(NOTICE, "Could not compute geometry dimensions");
 		PG_RETURN_NULL();
 	}
 
-	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_INT32(dimension);
 }
 

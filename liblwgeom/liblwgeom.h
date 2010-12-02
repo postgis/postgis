@@ -1532,6 +1532,8 @@ extern double lwgeom_length_2d(const LWGEOM *geom);
 extern double lwgeom_perimeter(const LWGEOM *geom);
 extern double lwgeom_perimeter_2d(const LWGEOM *geom);
 extern void lwgeom_affine(LWGEOM *geom, const AFFINE *affine);
+extern int lwgeom_dimension(const LWGEOM *geom);
+
 
 extern double ptarray_length_2d(const POINTARRAY *pts);
 extern double ptarray_length(const POINTARRAY *pts);
