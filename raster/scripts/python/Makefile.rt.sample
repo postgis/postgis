@@ -17,8 +17,8 @@
 # and WKT Raster extensions.
 #
 ### BEGIN OF CONFIGURATION ##################################################
-POSTGIS = /usr/share/postgresql/8.4/contrib
-WKTRASTER = ${POSTGIS}
+POSTGIS = /usr/share/postgresql/8.4/contrib/postgis-2.0
+RTPOSTGIS = /usr/share/postgresql/8.4/contrib/rtpostgis-2.0
 ### END OF CONFIGURATION ####################################################
 #
 # *** DO NOT EDIT ANYTHING BELOW ***
@@ -56,7 +56,7 @@ ifdef DBNAME
 	@psql -d $(DBNAME) -f $(POSTGIS)/postgis.sql > /dev/null $(ERROUT);
 	@psql -d $(DBNAME) -f $(POSTGIS)/spatial_ref_sys.sql > /dev/null $(ERROUT);
 	@echo "****** Loading WKT Raster into '$(DBNAME)'..."
-	@psql -d $(DBNAME) -f $(WKTRASTER)/rtpostgis.sql > /dev/null $(ERROUT);
+	@psql -d $(DBNAME) -f $(RTPOSTGIS)/rtpostgis.sql > /dev/null $(ERROUT);
 	@echo "****** END. *******"
 else
 	@echo "****** Missing DBNAME option. Aborting."
