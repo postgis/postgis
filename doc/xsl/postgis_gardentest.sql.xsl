@@ -499,7 +499,7 @@ COMMIT;
 SELECT '<xsl:value-of select="$fnname" /> <xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1id" /> against other types';
 				<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 			<xsl:choose>
-			  <xsl:when test="($numparamgeogs > '0' or $numparamgeogs > '0')">
+			  <xsl:when test="($numparamgeogs > '0' or $numparamgeoms > '0')">
 	INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2,  log_start, log_sql) 
 			  	VALUES('<xsl:value-of select="$log_label" /> <xsl:value-of select="$geoftype" /> <xsl:text> </xsl:text> <xsl:value-of select="@ID" />','<xsl:value-of select="$fnname" />','<xsl:value-of select="$geom1id" />', '<xsl:value-of select="@ID" />', clock_timestamp(),
 			  			'<xsl:call-template name="escapesinglequotes">
