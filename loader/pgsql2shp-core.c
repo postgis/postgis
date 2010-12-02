@@ -570,7 +570,7 @@ getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname)
 	free(query);
 	if ( ! res || PQresultStatus(res) != PGRES_TUPLES_OK )
 	{
-		printf( "Querying for maximum field length: %s",
+		printf( _("Querying for maximum field length: %s"),
 		        PQerrorMessage(conn));
 		return -1;
 	}
@@ -797,7 +797,7 @@ int projFileCreate(SHPDUMPERSTATE *state)
 
 	if ( ! res || PQresultStatus(res) != PGRES_TUPLES_OK )
 	{
-		snprintf(state->message, SHPDUMPERMSGLEN, "WARNING: Could not execute prj query: %s", PQresultErrorMessage(res));
+		snprintf(state->message, SHPDUMPERMSGLEN, _("WARNING: Could not execute prj query: %s"), PQresultErrorMessage(res));
 		PQclear(res);
 		return SHPDUMPERWARN;
 	}
@@ -807,7 +807,7 @@ int projFileCreate(SHPDUMPERSTATE *state)
 		srtext = PQgetvalue(res, i, 0);
 		if (strcmp(srtext,"m") == 0)
 		{
-			snprintf(state->message, SHPDUMPERMSGLEN, "WARNING: Mixed set of spatial references. No prj file will be generated");
+			snprintf(state->message, SHPDUMPERMSGLEN, _("WARNING: Mixed set of spatial references. No prj file will be generated"));
 			PQclear(res);
 			return SHPDUMPERWARN;
 		}
@@ -815,7 +815,7 @@ int projFileCreate(SHPDUMPERSTATE *state)
 		{
 			if (srtext[0] == ' ')
 			{
-				snprintf(state->message, SHPDUMPERMSGLEN, "WARNING: Cannot determine spatial reference (empty table or unknown spatial ref). No prj file will be generated.");
+				snprintf(state->message, SHPDUMPERMSGLEN, _("WARNING: Cannot determine spatial reference (empty table or unknown spatial ref). No prj file will be generated."));
 				PQclear(res);
 				return SHPDUMPERWARN;
 			}
@@ -923,7 +923,7 @@ int getTableInfo(SHPDUMPERSTATE *state)
 
 	if (PQresultStatus(res) != PGRES_TUPLES_OK)
 	{
-		snprintf(state->message, SHPDUMPERMSGLEN, "ERROR: Could not execute table metadata query: %s", PQresultErrorMessage(res));
+		snprintf(state->message, SHPDUMPERMSGLEN, _("ERROR: Could not execute table metadata query: %s"), PQresultErrorMessage(res));
 		PQclear(res);
 		return SHPDUMPERERR;
 	}
@@ -931,7 +931,7 @@ int getTableInfo(SHPDUMPERSTATE *state)
 	/* Make sure we error if the table is empty */
 	if (PQntuples(res) == 0)
 	{
-		snprintf(state->message, SHPDUMPERMSGLEN, "ERROR: Could not determine table metadata (empty table)");
+		snprintf(state->message, SHPDUMPERMSGLEN, _("ERROR: Could not determine table metadata (empty table)"));
 		PQclear(res);
 		return SHPDUMPERERR;
 	}
@@ -1013,7 +1013,7 @@ int getTableInfo(SHPDUMPERSTATE *state)
 		/* Flag an error if the table contains incompatible geometry combinations */
 		if (typemismatch)
 		{
-			snprintf(state->message, SHPDUMPERMSGLEN, "ERROR: Incompatible mixed geometry types in table");
+			snprintf(state->message, SHPDUMPERMSGLEN, _("ERROR: Incompatible mixed geometry types in table"));
 			PQclear(res);
 			return SHPDUMPERERR;
 		}
@@ -1254,7 +1254,7 @@ ShpDumperConnectDatabase(SHPDUMPERSTATE *state)
 	res = PQexec(state->conn, "SELECT oid FROM pg_type WHERE typname = 'geometry'");
 	if (PQresultStatus(res) != PGRES_TUPLES_OK)
 	{
-		snprintf(state->message, SHPDUMPERMSGLEN, "Error looking up geometry oid: %s", PQresultErrorMessage(res));
+		snprintf(state->message, SHPDUMPERMSGLEN, _("Error looking up geometry oid: %s"), PQresultErrorMessage(res));
 		PQclear(res);
 		free(connstring);
 		return SHPDUMPERERR;		
@@ -1267,7 +1267,7 @@ ShpDumperConnectDatabase(SHPDUMPERSTATE *state)
 	}
 	else
 	{
-		snprintf(state->message, SHPDUMPERMSGLEN, "Geometry type unknown (have you enabled postgis?)");
+		snprintf(state->message, SHPDUMPERMSGLEN, _("Geometry type unknown (have you enabled postgis?)"));
 		PQclear(res);
 		free(connstring);
 		return SHPDUMPERERR;
@@ -1279,7 +1279,7 @@ ShpDumperConnectDatabase(SHPDUMPERSTATE *state)
 	res = PQexec(state->conn, "SELECT oid FROM pg_type WHERE typname = 'geography'");
 	if (PQresultStatus(res) != PGRES_TUPLES_OK)
 	{
-		snprintf(state->message, SHPDUMPERMSGLEN, "Error looking up geography oid: %s", PQresultErrorMessage(res));
+		snprintf(state->message, SHPDUMPERMSGLEN, _("Error looking up geography oid: %s"), PQresultErrorMessage(res));
 		PQclear(res);
 		free(connstring);
 		return SHPDUMPERERR;		
@@ -1329,7 +1329,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		/* Execute the code to create the table */
 		if (PQresultStatus(res) != PGRES_COMMAND_OK)
 		{
-			snprintf(state->message, SHPDUMPERMSGLEN, "Error executing user query: %s", PQresultErrorMessage(res));
+			snprintf(state->message, SHPDUMPERMSGLEN, _("Error executing user query: %s"), PQresultErrorMessage(res));
 			PQclear(res);
 			return SHPDUMPERERR;
 		}
@@ -1375,14 +1375,14 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 
 	if (PQresultStatus(res) != PGRES_TUPLES_OK)
 	{
-		snprintf(state->message, SHPDUMPERMSGLEN, "Error querying for attributes: %s", PQresultErrorMessage(res));
+		snprintf(state->message, SHPDUMPERMSGLEN, _("Error querying for attributes: %s"), PQresultErrorMessage(res));
 		PQclear(res);
 		return SHPDUMPERERR;
 	}
 
 	if (!PQntuples(res))
 	{
-		snprintf(state->message, SHPDUMPERMSGLEN, "Table %s does not exist", state->table);
+		snprintf(state->message, SHPDUMPERMSGLEN, _("Table %s does not exist"), state->table);
 		PQclear(res);
 		return SHPDUMPERERR;
 	}
@@ -1397,7 +1397,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	state->dbf = DBFCreate(state->shp_file);
 	if (!state->dbf)
 	{
-		snprintf(state->message, SHPDUMPERMSGLEN, "Could not create dbf file %s", state->shp_file);
+		snprintf(state->message, SHPDUMPERMSGLEN, _("Could not create dbf file %s"), state->shp_file);
 		return SHPDUMPERERR;
 	}
 
@@ -1502,7 +1502,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		if (strcasecmp(dbffieldname, pgfieldname))
 		{
 			/* Note: we concatenate all warnings from the main loop as this is useful information */
-			snprintf(buf, 256, "Warning, field %s renamed to %s\n", pgfieldname, dbffieldname);
+			snprintf(buf, 256, _("Warning, field %s renamed to %s\n"), pgfieldname, dbffieldname);
 			strncat(state->message, buf, SHPDUMPERMSGLEN - strlen(state->message));
 
 			ret = SHPDUMPERWARN;
@@ -1690,8 +1690,8 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			if (dbffieldsize > MAX_DBF_FIELD_SIZE)
 			{
 				/* Note: we concatenate all warnings from the main loop as this is useful information */
-				snprintf(buf, 256, "Warning: values of field '%s' exceeding maximum dbf field width (%d) "
-					"will be truncated.\n", dbffieldname, MAX_DBF_FIELD_SIZE);
+				snprintf(buf, 256, _("Warning: values of field '%s' exceeding maximum dbf field width (%d) "
+					"will be truncated.\n"), dbffieldname, MAX_DBF_FIELD_SIZE);
 				strncat(state->message, buf, SHPDUMPERMSGLEN - strlen(state->message));
 				dbffieldsize = MAX_DBF_FIELD_SIZE;				
 
@@ -1706,7 +1706,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			/* Add the field to the DBF file */
 			if (DBFAddField(state->dbf, dbffieldname, dbffieldtype, dbffieldsize, dbffielddecs) == -1)
 			{
-				snprintf(state->message, SHPDUMPERMSGLEN, "Error - field %s of type %d could not be created.", dbffieldname, dbffieldtype);
+				snprintf(state->message, SHPDUMPERMSGLEN, _("Error: field %s of type %d could not be created."), dbffieldname, dbffieldtype);
 
 				return SHPDUMPERERR;
 			}
@@ -1735,7 +1735,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		if (state->config->geo_col_name)
 		{
 			/* A geo* column was specified, but not found */
-			snprintf(state->message, SHPDUMPERMSGLEN, "%s: no such attribute in table %s", state->config->geo_col_name, state->table);
+			snprintf(state->message, SHPDUMPERMSGLEN, _("%s: no such attribute in table %s"), state->config->geo_col_name, state->table);
 
 			return SHPDUMPERERR;
 		}
@@ -1743,7 +1743,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		{
 			/* No geo* column specified so we can only create the DBF section -
 			   but let's issue a warning... */
-			snprintf(buf, 256, "No geometry column found.\nThe DBF file will be created but not the shx or shp files.\n");
+			snprintf(buf, 256, _("No geometry column found.\nThe DBF file will be created but not the shx or shp files.\n"));
 			strncat(state->message, buf, SHPDUMPERMSGLEN - strlen(state->message));
 
 			ret = SHPDUMPERWARN;
@@ -1755,7 +1755,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		state->shp = SHPCreate(state->shp_file, state->outshptype);
 		if (!state->shp)
 		{
-			snprintf(state->message, SHPDUMPERMSGLEN, "Could not open shapefile %s!", state->shp_file);
+			snprintf(state->message, SHPDUMPERMSGLEN, _("Could not open shapefile %s!"), state->shp_file);
 
 			return SHPDUMPERERR;
 		}
@@ -1844,7 +1844,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	res = PQexec(state->conn, "BEGIN");
 	if (!res || PQresultStatus(res) != PGRES_COMMAND_OK)
 	{
-		snprintf(state->message, SHPDUMPERMSGLEN, "Error starting transaction: %s", PQresultErrorMessage(res));
+		snprintf(state->message, SHPDUMPERMSGLEN, _("Error starting transaction: %s"), PQresultErrorMessage(res));
 		PQclear(res);
 		return SHPDUMPERERR;
 	}
@@ -1855,7 +1855,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	res = PQexec(state->conn, state->main_scan_query);
 	if (!res || PQresultStatus(res) != PGRES_COMMAND_OK)
 	{
-		snprintf(state->message, SHPDUMPERMSGLEN, "Error executing main scan query: %s", PQresultErrorMessage(res));
+		snprintf(state->message, SHPDUMPERMSGLEN, _("Error executing main scan query: %s"), PQresultErrorMessage(res));
 		PQclear(res);
 		return SHPDUMPERERR;
 	}
@@ -1894,7 +1894,7 @@ int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 	/* If we try to go pass the end of the table, fail immediately */
 	if (state->currow > state->rowcount)
 	{
-		snprintf(state->message, SHPDUMPERMSGLEN, "Tried to read past end of table!");
+		snprintf(state->message, SHPDUMPERMSGLEN, _("Tried to read past end of table!"));
 		PQclear(state->fetchres);
 		return SHPDUMPERERR;
 	}
@@ -1909,7 +1909,7 @@ int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 		state->fetchres = PQexec(state->conn, state->fetch_query);
 		if (PQresultStatus(state->fetchres) != PGRES_TUPLES_OK)
 		{
-			snprintf(state->message, SHPDUMPERMSGLEN, "Error executing fetch query: %s", PQresultErrorMessage(state->fetchres));
+			snprintf(state->message, SHPDUMPERMSGLEN, _("Error executing fetch query: %s"), PQresultErrorMessage(state->fetchres));
 			PQclear(state->fetchres);
 			return SHPDUMPERERR;
 		}
@@ -1946,7 +1946,7 @@ int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 		/* Write it to the DBF file */
 		if (!DBFWriteAttributeDirectly(state->dbf, state->currow, i, val))
 		{
-			snprintf(state->message, SHPDUMPERMSGLEN, "Error: record %d could not be created", state->currow);
+			snprintf(state->message, SHPDUMPERMSGLEN, _("Error: record %d could not be created"), state->currow);
 			PQclear(state->fetchres);
 			return SHPDUMPERERR;
 		}
@@ -1961,7 +1961,7 @@ int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 			obj = SHPCreateSimpleObject(SHPT_NULL, 0, NULL, NULL, NULL);
 			if (SHPWriteObject(state->shp, -1, obj) == -1)
 			{
-				snprintf(state->message, SHPDUMPERMSGLEN, "Error writing NULL shape for record %d", state->currow);
+				snprintf(state->message, SHPDUMPERMSGLEN, _("Error writing NULL shape for record %d"), state->currow);
 				PQclear(state->fetchres);
 				SHPDestroyObject(obj);
 				return SHPDUMPERERR;
@@ -2009,7 +2009,7 @@ int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 		result = serialized_lwgeom_from_hexwkb(&lwg_parser_result, hexewkb, PARSER_CHECK_ALL);
 		if (result)
 		{
-			snprintf(state->message, SHPDUMPERMSGLEN, "Error parsing HEXEWKB for record %d: %s", state->currow, lwg_parser_result.message);
+			snprintf(state->message, SHPDUMPERMSGLEN, _("Error parsing HEXEWKB for record %d: %s"), state->currow, lwg_parser_result.message);
 			PQclear(state->fetchres);
 			return SHPDUMPERERR;
 		}
@@ -2047,7 +2047,7 @@ int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 			break;
 	
 		default:
-			snprintf(state->message, SHPDUMPERMSGLEN, "Unknown WKB type (%8.8x) for record %d", lwgeom_getType(lwgeom->type), state->currow);
+			snprintf(state->message, SHPDUMPERMSGLEN, _("Unknown WKB type (%8.8x) for record %d"), lwgeom_getType(lwgeom->type), state->currow);
 			PQclear(state->fetchres);
 			SHPDestroyObject(obj);
 			return SHPDUMPERERR;
@@ -2060,7 +2060,7 @@ int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 		/* Write the shape out to the file */
 		if (SHPWriteObject(state->shp, -1, obj) == -1)
 		{
-			snprintf(state->message, SHPDUMPERMSGLEN, "Error writing shape %d", state->currow);
+			snprintf(state->message, SHPDUMPERMSGLEN, _("Error writing shape %d"), state->currow);
 			PQclear(state->fetchres);
 			SHPDestroyObject(obj);
 			return SHPDUMPERERR;

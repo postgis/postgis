@@ -23,27 +23,25 @@
 static void
 usage()
 {
-	printf("RCSID: %s RELEASE: %s\n", RCSID, POSTGIS_VERSION);
-	printf("USAGE: pgsql2shp [<options>] <database> [<schema>.]<table>\n");
-	printf("       pgsql2shp [<options>] <database> <query>\n");
-	printf("\n");
-	printf("OPTIONS:\n");
-	printf("  -f <filename>  Use this option to specify the name of the file\n");
-	printf("     to create.\n");
-	printf("  -h <host>  Allows you to specify connection to a database on a\n");
-	printf("     machine other than the default.\n");
-	printf("  -p <port>  Allows you to specify a database port other than the default.\n");
-	printf("  -P <password>  Connect to the database with the specified password.\n");
-	printf("  -u <user>  Connect to the database as the specified user.\n");
-	printf("  -g <geometry_column> Specify the geometry column to be exported.\n");
-	printf("  -b Use a binary cursor.\n");
-	printf("  -r Raw mode. Do not assume table has been created by \n");
-	printf("     the loader. This would not unescape attribute names\n");
-	printf("     and will not skip the 'gid' attribute.\n");
-	printf("  -k Keep postgresql identifiers case.\n");
-	printf("  -? Display this help screen.\n");
-	printf("\n");
-	exit (0);
+	printf(_("RELEASE: %s (%s)\n"), POSTGIS_VERSION, RCSID );
+	printf(_("USAGE: pgsql2shp [<options>] <database> [<schema>.]<table>\n"
+	         "       pgsql2shp [<options>] <database> <query>\n"
+	         "\n"
+	         "OPTIONS:\n" ));
+	printf(_("  -f <filename>  Use this option to specify the name of the file\n" 
+	         "     to create.\n" ));
+	printf(_("  -h <host>  Allows you to specify connection to a database on a\n" 
+	         "     machine other than the default.\n" ));
+	printf(_("  -p <port>  Allows you to specify a database port other than the default.\n" ));
+	printf(_("  -P <password>  Connect to the database with the specified password.\n" ));
+	printf(_("  -u <user>  Connect to the database as the specified user.\n" ));
+	printf(_("  -g <geometry_column> Specify the geometry column to be exported.\n" ));
+	printf(_("  -b Use a binary cursor.\n" ));
+	printf(_("  -r Raw mode. Do not assume table has been created by \n" 
+	         "     the loader. This would not unescape attribute names\n" 
+	         "     and will not skip the 'gid' attribute.\n" ));
+	printf(_("  -k Keep postgresql identifiers case.\n" ));
+	printf(_("  -? Display this help screen.\n\n" ));
 }
 
 int
@@ -169,12 +167,12 @@ main(int argc, char **argv)
 	/* Display a warning if the -d switch is used with PostGIS >= 1.0 */
 	if (state->pgis_major_version > 0 && state->config->dswitchprovided)
 	{
-		fprintf(stderr, "WARNING: -d switch is useless when dumping from postgis-1.0.0+\n");
+		fprintf(stderr, _("WARNING: -d switch is useless when dumping from postgis-1.0.0+\n"));
 		fflush(stderr);
 	}
 
 	/* Open the table ready to return rows */
-	fprintf(stdout, "Initializing... \n");
+	fprintf(stdout, _("Initializing... \n"));
 	fflush(stdout);
 
 	ret = ShpDumperOpenTable(state);
@@ -187,9 +185,9 @@ main(int argc, char **argv)
 			exit(1);
 	}
 
-	fprintf(stdout, "Done (postgis major version: %d).\n", state->pgis_major_version);
-	fprintf(stdout, "Output shape: %s\n", shapetypename(state->outshptype));
-	fprintf(stdout, "Dumping: ");
+	fprintf(stdout, _("Done (postgis major version: %d).\n"), state->pgis_major_version);
+	fprintf(stdout, _("Output shape: %s\n"), shapetypename(state->outshptype));
+	fprintf(stdout, _("Dumping: "));
 	fflush(stdout);
 
 	for (i = 0; i < ShpDumperGetRecordCount(state); i++)
@@ -212,7 +210,7 @@ main(int argc, char **argv)
 		}
 	}
 
-	fprintf(stdout, " [%d rows].\n", ShpDumperGetRecordCount(state));
+	fprintf(stdout, _(" [%d rows].\n"), ShpDumperGetRecordCount(state));
 	fflush(stdout);
 
 	ret = ShpDumperCloseTable(state);

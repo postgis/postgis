@@ -12,6 +12,16 @@
  *
  **********************************************************************/
 
+/* For internationalization */
+#ifdef USE_NLS
+#include <libintl.h>
+#include <locale.h>
+#define _(String) gettext(String)
+#define PACKAGE "shp2pgsql"
+#else
+#define _(String) String
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

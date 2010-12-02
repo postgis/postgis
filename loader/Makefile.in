@@ -96,7 +96,7 @@ pgsql2shp-cli.o: pgsql2shp-cli.c
 	$(CC) $(CFLAGS) $(ICONV_CFLAGS) $(PGSQL_FE_CPPFLAGS) -c $<
 
 $(PGSQL2SHP-CLI): shpopen.o dbfopen.o getopt.o pgsql2shp-core.o shpcommon.o pgsql2shp-cli.o safileio.o $(LIBLWGEOM) 
-	$(CC) $(CFLAGS) $^ $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) -lm -o $@
+	$(CC) $(CFLAGS) $^ $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) $(GETTEXT_LDFLAGS) -lm -o $@
 
 $(SHP2PGSQL-CLI): shpopen.o dbfopen.o getopt.o shp2pgsql-core.o shpcommon.o shp2pgsql-cli.o safileio.o $(LIBLWGEOM) 
 	$(CC) $(CFLAGS) $^ -o $@ $(GETTEXT_LDFLAGS) $(ICONV_LDFLAGS) -lm 
