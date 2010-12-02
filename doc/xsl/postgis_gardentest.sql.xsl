@@ -3,7 +3,7 @@
 <!-- ********************************************************************
  * $Id$
  ********************************************************************
-	 Copyright 2008, Regina Obe
+	 Copyright 2008-2010, Regina Obe
 	 License: BSD
 	 Purpose: This is an xsl transform that generates an sql test script from xml docs to test all the functions we have documented
 			using a garden variety of geometries.  Its intent is to flag major crashes.
@@ -34,6 +34,12 @@
 	<xsl:variable name='var_logupdatesql'>UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
 		FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
 		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;</xsl:variable>
+		
+	<!-- for queries that result data, we first log the sql in our log table and then use query_to_xml to output it as xml for easy storage 
+	    with this approach our run statement is always exactly the same -->
+	<xsl:variable name='var_logresultsasxml'>INSERT INTO <xsl:value-of select="$var_logtable" />_output(logid, log_output)
+				SELECT logid, query_to_xml(log_sql, false,false,'') As log_output
+				    FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC LIMIT 1;</xsl:variable>
 	<pgis:gardens>
 		<pgis:gset ID='POINT' GeometryType='POINT'>(SELECT ST_SetSRID(ST_Point(i,j),4326) As the_geom
 		FROM (SELECT a*1.11111111 FROM generate_series(-10,50,10) As a) As i(i)
@@ -253,7 +259,10 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
         <xsl:template match="/">
 <!-- Create logging table -->
 DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />;
-CREATE TABLE <xsl:value-of select="$var_logtable" />(logid serial PRIMARY KEY, log_label text, spatial_class text, func text, g1 text, g2 text, log_start timestamp, log_end timestamp);
+CREATE TABLE <xsl:value-of select="$var_logtable" />(logid serial PRIMARY KEY, log_label text, spatial_class text, func text, g1 text, g2 text, log_start timestamp, log_end timestamp, log_sql text);
+DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />_output;
+CREATE TABLE <xsl:value-of select="$var_logtable" />_output(logid integer PRIMARY KEY, log_output xml);
+
                 <xsl:apply-templates select="/book/chapter[@id='reference']" />
         </xsl:template>
 
@@ -262,14 +271,16 @@ CREATE TABLE <xsl:value-of select="$var_logtable" />(logid serial PRIMARY KEY, l
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset[not(contains(@createtable,'false'))]">
 			<xsl:variable name='log_label'>table Test <xsl:value-of select="@GeometryType" /></xsl:variable>
 SELECT '<xsl:value-of select="$log_label" />: Start Testing';
-INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
-VALUES('<xsl:value-of select="$log_label" /> AddGeometryColumn','AddGeometryColumn', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
-BEGIN;
-	CREATE TABLE pgis_garden (gid serial);
+<xsl:variable name='var_sql'>CREATE TABLE pgis_garden (gid serial);
 	SELECT AddGeometryColumn('pgis_garden','the_geom',ST_SRID(the_geom),GeometryType(the_geom),ST_CoordDim(the_geom))
 			FROM (<xsl:value-of select="." />) As foo limit 1;
 	SELECT AddGeometryColumn('pgis_garden','the_geom_multi',ST_SRID(the_geom),GeometryType(ST_Multi(the_geom)),ST_CoordDim(the_geom))
-			FROM (<xsl:value-of select="." />) As foo limit 1;
+			FROM (<xsl:value-of select="." />) As foo limit 1;</xsl:variable>
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start, log_sql) 
+VALUES('<xsl:value-of select="$log_label" /> AddGeometryColumn','AddGeometryColumn', '<xsl:value-of select="@GeometryType" />', clock_timestamp(),
+    '<xsl:call-template name="escapesinglequotes"><xsl:with-param name="arg1"><xsl:value-of select="$var_sql" /></xsl:with-param></xsl:call-template>');
+BEGIN;
+	<xsl:value-of select="$var_sql" />
 	<xsl:value-of select="$var_logupdatesql" />
 COMMIT;
 
@@ -299,7 +310,7 @@ BEGIN;
 COMMIT;
 
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
-VALUES('<xsl:value-of select="$log_label" /> vacuum analyze Geometry','vacuum analyze', '<xsl:value-of select="@ID" />', clock_timestamp());
+VALUES('<xsl:value-of select="$log_label" /> vacuum analyze Geometry','vacuum analyze Geometry', '<xsl:value-of select="@ID" />', clock_timestamp());
 VACUUM ANALYZE pgis_garden;
 <xsl:value-of select="$var_logupdatesql" />
 
@@ -341,16 +352,15 @@ COMMIT;
 SELECT '<xsl:value-of select="$log_label" /> Geography index: End Testing <xsl:value-of select="@ID" />';
 
 
-
-INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) VALUES('<xsl:value-of select="$log_label" /> vacuum analyze Geography','analyze geography table', '<xsl:value-of select="@ID" />', clock_timestamp());
-BEGIN;	
-	SELECT 'BEFORE DROP' As look_at, * FROM geography_columns;
-	VACUUM ANALYZE pgis_geoggarden;
-COMMIT;
+<!-- vacuum analyze can't be put in a commit so we can't completely tell if it completes if it doesn't crash -->
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start, log_sql) VALUES('<xsl:value-of select="$log_label" /> vacuum analyze Geography','analyze geography table', '<xsl:value-of select="@ID" />', clock_timestamp(),
+    'VACUUM ANALYZE pgis_geoggarden;');
+VACUUM ANALYZE pgis_geoggarden;
 	<xsl:value-of select="$var_logupdatesql" />
 
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) VALUES('<xsl:value-of select="$log_label" /> drop Geography table','drop geography table', '<xsl:value-of select="@ID" />', clock_timestamp());
 BEGIN;
+    SELECT 'BEFORE DROP' As look_at, * FROM geography_columns;
 	DROP TABLE pgis_geoggarden;
 	SELECT 'AFTER DROP' As look_at, * FROM geography_columns;
 	<xsl:value-of select="$var_logupdatesql" />
@@ -378,28 +388,33 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 						<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 		<xsl:choose>
 			  <xsl:when test="contains($fndef, 'geography ')">
-			  INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start) 
-			  	VALUES('<xsl:value-of select="$log_label" /> Geography <xsl:value-of select="$geom1id" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="$geom1id" />','<xsl:value-of select="@ID" />', clock_timestamp());
+			  INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start, log_sql) 
+			  	VALUES('<xsl:value-of select="$log_label" /> Geography <xsl:value-of select="$geom1id" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="$geom1id" />','<xsl:value-of select="@ID" />', clock_timestamp(),
+			  	'<xsl:call-template name="escapesinglequotes">
+ <xsl:with-param name="arg1">SELECT ST_AsEWKT(foo1.the_geom) as ewktgeog1, ST_AsEWKT(foo2.the_geom) as ewktgeog2, geography(foo1.the_geom) <xsl:value-of select="$fnname" /> geography(foo2.the_geom) As geog1_op_geog2
+					FROM (<xsl:value-of select="$from1" />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2
+					WHERE (geography(foo1.the_geom) <xsl:value-of select="$fnname" /> geography(foo2.the_geom)) = true OR
+						(geography(foo1.the_geom) <xsl:value-of select="$fnname" /> geography(foo2.the_geom)) = false;</xsl:with-param>
+</xsl:call-template>');
 
 			SELECT 'Geography <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="$geom1id" />, <xsl:value-of select="@ID" />';
 			BEGIN;
-				SELECT ST_AsEWKT(foo1.the_geom) as ewktgeog1, ST_AsEWKT(foo2.the_geom) as ewktgeog2, geography(foo1.the_geom) <xsl:value-of select="$fnname" /> geography(foo2.the_geom) As geog1_op_geog2
-					FROM (<xsl:value-of select="$from1" />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2
-					WHERE (geography(foo1.the_geom) <xsl:value-of select="$fnname" /> geography(foo2.the_geom)) = true OR
-						(geography(foo1.the_geom) <xsl:value-of select="$fnname" /> geography(foo2.the_geom)) = false;
+			    <xsl:value-of select="$var_logresultsasxml" />
 				<xsl:value-of select="$var_logupdatesql" />
 			COMMIT;
 			</xsl:when>
 			<xsl:otherwise>
 			SELECT 'Geometry <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="$geom1id" />, <xsl:value-of select="@ID" />';
-			 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start) 
-			  	VALUES('<xsl:value-of select="$log_label" /> Geometry <xsl:value-of select="$geom1id" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="$geom1id" />','<xsl:value-of select="@ID" />', clock_timestamp());
-
-			BEGIN;
-				SELECT ST_AsEWKT(foo1.the_geom) as ewktgeom1, ST_AsEWKT(foo2.the_geom) as ewktgeom2, foo1.the_geom <xsl:value-of select="$fnname" /> foo2.the_geom As geom1_op_geom2
+			 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start, log_sql) 
+			  	VALUES('<xsl:value-of select="$log_label" /> Geometry <xsl:value-of select="$geom1id" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="$geom1id" />','<xsl:value-of select="@ID" />', clock_timestamp(),
+			  	'<xsl:call-template name="escapesinglequotes">
+ <xsl:with-param name="arg1">SELECT ST_AsEWKT(foo1.the_geom) as ewktgeom1, ST_AsEWKT(foo2.the_geom) as ewktgeom2, foo1.the_geom <xsl:value-of select="$fnname" /> foo2.the_geom As geom1_op_geom2
 						FROM (<xsl:value-of select="$from1" />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2
 						WHERE (foo1.the_geom <xsl:value-of select="$fnname" /> foo2.the_geom) = true OR
-						(foo1.the_geom <xsl:value-of select="$fnname" /> foo2.the_geom) = false;
+						(foo1.the_geom <xsl:value-of select="$fnname" /> foo2.the_geom) = false;</xsl:with-param></xsl:call-template>');
+
+			BEGIN;
+				<xsl:value-of select="$var_logresultsasxml" />
 				<xsl:value-of select="$var_logupdatesql" />
 			COMMIT;
 			</xsl:otherwise>
@@ -444,11 +459,13 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 				<xsl:choose>
 <!--Test functions that take no arguments or take no geometries -->
 	<xsl:when test="$numparamgeoms = '0' and not(contains($fnexclude,funcdef/function))">SELECT  'Starting <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)';
-INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, log_start) 
-			  	VALUES('<xsl:value-of select="$log_label" />','<xsl:value-of select="$fnname" />', clock_timestamp());
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, log_start, log_sql) 
+			  	VALUES('<xsl:value-of select="$log_label" />','<xsl:value-of select="$fnname" />', clock_timestamp(),
+			  	    '<xsl:call-template name="escapesinglequotes">
+ <xsl:with-param name="arg1">SELECT  <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnfakeparams" />) As output;</xsl:with-param></xsl:call-template>');
 	
 BEGIN;
-	SELECT  <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnfakeparams" />);
+    <xsl:value-of select="$var_logresultsasxml" />
 	<xsl:value-of select="$var_logupdatesql" />	
 COMMIT;
 SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)';
@@ -663,4 +680,22 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 			</xsl:for-each>
 		</xsl:for-each>
 	</xsl:template>
+	
+	<!-- copied from http://www.thedumbterminal.co.uk/php/knowledgebase/?action=view&id=94 -->
+    <xsl:template name="escapesinglequotes">
+     <xsl:param name="arg1"/>
+     <xsl:variable name="apostrophe">'</xsl:variable>
+     <xsl:choose>
+      <!-- this string has at least on single quote -->
+      <xsl:when test="contains($arg1, $apostrophe)">
+      <xsl:if test="string-length(normalize-space(substring-before($arg1, $apostrophe))) > 0"><xsl:value-of select="substring-before($arg1, $apostrophe)" disable-output-escaping="yes"/>''</xsl:if>
+       <xsl:call-template name="escapesinglequotes">
+        <xsl:with-param name="arg1"><xsl:value-of select="substring-after($arg1, $apostrophe)" disable-output-escaping="yes"/></xsl:with-param>
+       </xsl:call-template>
+      </xsl:when>
+      <!-- no quotes found in string, just print it -->
+      <xsl:when test="string-length(normalize-space($arg1)) > 0"><xsl:value-of select="normalize-space($arg1)"/></xsl:when>
+     </xsl:choose>
+    </xsl:template>
+
 </xsl:stylesheet>
