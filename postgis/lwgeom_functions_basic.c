@@ -2160,6 +2160,7 @@ Datum ST_MakeEnvelope(PG_FUNCTION_ARGS)
 	LWPOLY *poly;
 	PG_LWGEOM *result;
 	POINTARRAY **pa;
+	POINT4D p;
 	double *pts;
 	double x1, y1, x2, y2;
 	int srid;
@@ -2173,33 +2174,37 @@ Datum ST_MakeEnvelope(PG_FUNCTION_ARGS)
 	srid = PG_GETARG_INT32(4);
 
 	pa = (POINTARRAY**)palloc(sizeof(POINTARRAY*));
-	pa[0] = ptarray_construct(0, 0, 5);
-	pts = (double*)(pa[0]->serialized_pointlist);
+	pa[0] = ptarray_construct_empty(0, 0, 5);
 
 	/* 1st point */
-	pts[0] = x1;
-	pts[1] = y1;
+	p.x = x1;
+	p.y = y1;
+	ptarray_append_point(pa[0], &p, REPEATED_POINTS_OK);
 
 	/* 2nd point */
-	pts[2] = x1;
-	pts[3] = y2;
+	p.x = x1;
+	p.y = y2;
+	ptarray_append_point(pa[0], &p, REPEATED_POINTS_OK);
 
 	/* 3rd point */
-	pts[4] = x2;
-	pts[5] = y2;
+	p.x = x2;
+	p.y = y2;
+	ptarray_append_point(pa[0], &p, REPEATED_POINTS_OK);
 
 	/* 4th point */
-	pts[6] = x2;
-	pts[7] = y1;
+	p.x = x2;
+	p.y = y1;
+	ptarray_append_point(pa[0], &p, REPEATED_POINTS_OK);
 
 	/* 5th point */
-	pts[8] = x1;
-	pts[9] = y1;
+	p.x = x1;
+	p.y = y1;
+	ptarray_append_point(pa[0], &p, REPEATED_POINTS_OK);
 
 	poly = lwpoly_construct(srid, NULL, 1, pa);
-	lwgeom_add_bbox((LWGEOM *)poly);
+	lwgeom_add_bbox(lwpoly_as_lwgeom(poly));
 
-	result = pglwgeom_serialize((LWGEOM*)poly);
+	result = pglwgeom_serialize(lwpoly_as_lwgeom(poly));
 	lwpoly_free(poly);
 
 	PG_RETURN_POINTER(result);
