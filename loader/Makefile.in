@@ -23,7 +23,7 @@ include $(PGXS)
 # Set CFLAGS afer PGXS, otherwise it will get overwritten with the PGXS
 # version which is not what we want. 
 CC=@CC@
-CFLAGS=@CFLAGS@ @PICFLAGS@ @WARNFLAGS@
+CFLAGS=@CFLAGS@ @PICFLAGS@ @WARNFLAGS@ 
 
 # Filenames with extension as determined by the OS
 PGSQL2SHP-CLI=pgsql2shp@EXESUFFIX@
@@ -41,11 +41,25 @@ ICONV_CFLAGS=@ICONV_CFLAGS@
 # liblwgeom
 LIBLWGEOM=../liblwgeom/liblwgeom.a
 
+LIBICONV=@LIBICONV@
+LTLIBICONV=@LTLIBICONV@
+
 # GTK includes and libraries
 GTK_CFLAGS = @GTK_CFLAGS@ @IGE_MAC_CFLAGS@
 GTK_LIBS = @GTK_LIBS@ @IGE_MAC_LIBS@
 GTK_WIN32_FLAGS = @GTK_WIN32_FLAGS@
 GTK_WIN32_RES = @GTK_WIN32_RES@
+
+# GetText includes and libraries
+GETTEXT_CFLAGS = @GETTEXT_CFLAGS@
+GETTEXT_LDFLAGS = @GETTEXT_LDFLAGS@ @LIBINTL@
+nls_build = @USE_NLS@
+ifdef nls_build
+	localedir = $(shell $(PG_CONFIG) --localedir)
+	CFLAGS += -DUSE_NLS
+	CFLAGS += -DLOCALEDIR=\"$(localedir)\"
+	LANGUAGES = fr
+endif
 
 # If REGRESS=1 passed as a parameter, change the default install paths
 # so that no prefix is included. This allows us to relocate to a temporary
@@ -73,7 +87,7 @@ $(LIBLWGEOM):
 	make -C ../liblwgeom
 
 shp2pgsql-core.o: shp2pgsql-core.c
-	$(CC) $(CFLAGS) $(ICONV_CFLAGS) -c $<
+	$(CC) $(CFLAGS) $(GETTEXT_CFLAGS) $(ICONV_CFLAGS) -c $<
 
 pgsql2shp-core.o: pgsql2shp-core.c
 	$(CC) $(CFLAGS) $(ICONV_CFLAGS) $(PGSQL_FE_CPPFLAGS) -c $<
@@ -82,19 +96,19 @@ pgsql2shp-cli.o: pgsql2shp-cli.c
 	$(CC) $(CFLAGS) $(ICONV_CFLAGS) $(PGSQL_FE_CPPFLAGS) -c $<
 
 $(PGSQL2SHP-CLI): shpopen.o dbfopen.o getopt.o pgsql2shp-core.o shpcommon.o pgsql2shp-cli.o safileio.o $(LIBLWGEOM) 
-	$(CC) $(CFLAGS) $^ $(PGSQL_FE_CPPFLAGS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) -lm -o $@
+	$(CC) $(CFLAGS) $^ $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) -lm -o $@
 
 $(SHP2PGSQL-CLI): shpopen.o dbfopen.o getopt.o shp2pgsql-core.o shpcommon.o shp2pgsql-cli.o safileio.o $(LIBLWGEOM) 
-	$(CC) $(CFLAGS) $^ -o $@ $(ICONV_LDFLAGS) -lm 
+	$(CC) $(CFLAGS) $^ -o $@ $(GETTEXT_LDFLAGS) $(ICONV_LDFLAGS) -lm 
 
 structure.o: structure.c
 	$(CC) $(CFLAGS) $(GTK_CFLAGS) -o $@ -c structure.c
 
 shp2pgsql-gui.o: shp2pgsql-gui.c
-	$(CC) $(CFLAGS) $(PGSQL_FE_CPPFLAGS) $(GTK_CFLAGS) -o $@ -c shp2pgsql-gui.c
+	$(CC) $(CFLAGS) $(GTK_CFLAGS) $(PGSQL_FE_CPPFLAGS) -o $@ -c shp2pgsql-gui.c
 
 $(SHP2PGSQL-GUI): shpopen.o dbfopen.o shp2pgsql-core.o shpcommon.o shp2pgsql-gui.o getopt.o structure.o safileio.o $(LIBLWGEOM) $(GTK_WIN32_RES)
-	$(CC) $(CFLAGS) $(GTK_WIN32_FLAGS) $^ -o $@ $(GTK_LIBS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) -lm 
+	$(CC) $(CFLAGS) $(GTK_WIN32_FLAGS) $^ -o $@ $(GTK_LIBS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) $(GETTEXT_LDFLAGS) -lm 
 
 installdir:
 	@mkdir -p $(DESTDIR)$(bindir)
@@ -116,3 +130,23 @@ check:
 clean:
 	@rm -f *.o $(SHP2PGSQL-CLI) $(PGSQL2SHP-CLI) $(GTK_WIN32_RES)
 
+
+#
+# Internationalization targets. These are going to need some work and 
+# love to land the files in the right places in all platforms.
+#
+pot: 
+	xgettext -k_ shp2pgsql-core.c shp2pgsql-cli.c shp2pgsql-gui.c -o po/shp2pgsql.pot
+	xgettext -k_ pgsql2shp-core.c pgsql2shp-cli.c -o po/pgsql2shp.pot
+
+mo:
+	for lang in $(LANGUAGES); do \
+	  msgfmt -o po/shp2pgsql-$$lang.mo po/shp2pgsql.$$lang ; \
+	done
+
+install-mo:
+ifneq (,$(LANGUAGES))
+	for lang in $(LANGUAGES); do \
+      $(INSTALL_DATA) po/shp2pgsql-$$lang.mo '$(localedir)'/$$lang/LC_MESSAGES/shp2pgsql.mo || exit 1; \
+    done
+endif

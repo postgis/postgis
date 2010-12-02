@@ -19,31 +19,33 @@
 static void
 usage()
 {
-	printf("RCSID: %s RELEASE: %s\n", RCSID, POSTGIS_VERSION);
-	printf("USAGE: shp2pgsql [<options>] <shapefile> [<schema>.]<table>\n");
-	printf("OPTIONS:\n");
-	printf("  -s <srid>  Set the SRID field. Defaults to -1.\n");
-	printf("  (-d|a|c|p) These are mutually exclusive options:\n");
-	printf("      -d  Drops the table, then recreates it and populates\n");
-	printf("          it with current shape file data.\n");
-	printf("      -a  Appends shape file into current table, must be\n");
-	printf("          exactly the same table schema.\n");
-	printf("      -c  Creates a new table and populates it, this is the\n");
-	printf("          default if you do not specify any options.\n");
-	printf("      -p  Prepare mode, only creates the table.\n");
-	printf("  -g <geocolumn> Specify the name of the geometry/geography column\n");
-	printf("     (mostly useful in append mode).\n");
-	printf("  -D  Use postgresql dump format (defaults to SQL insert statments.\n");
-	printf("  -G  Use geography type (requires lon/lat data).\n");
-	printf("  -k  Keep postgresql identifiers case.\n");
-	printf("  -i  Use int4 type for all integer dbf fields.\n");
-	printf("  -I  Create a spatial index on the geocolumn.\n");
-	printf("  -S  Generate simple geometries instead of MULTI geometries.\n");
-	printf("  -W <encoding> Specify the character encoding of Shape's\n");
-	printf("     attribute column. (default : \""ENCODING_DEFAULT"\")\n");
-	printf("  -N <policy> NULL geometries handling policy (insert*,skip,abort)\n");
-	printf("  -n  Only import DBF file.\n");
-	printf("  -?  Display this help screen.\n");
+	printf("RELEASE: %s (r%s)\n", POSTGIS_VERSION, RCSID);
+	printf(_(
+	    "USAGE: shp2pgsql [<options>] <shapefile> [<schema>.]<table>\n"
+	    "OPTIONS:\n"
+	    "  -s <srid>  Set the SRID field. Defaults to -1.\n"
+	    "  (-d|a|c|p) These are mutually exclusive options:\n"
+	    "      -d  Drops the table, then recreates it and populates\n"
+	    "          it with current shape file data.\n"
+	    "      -a  Appends shape file into current table, must be\n"
+	    "          exactly the same table schema.\n"
+	    "      -c  Creates a new table and populates it, this is the\n"
+	    "          default if you do not specify any options.\n"
+	    "      -p  Prepare mode, only creates the table.\n"
+	    "  -g <geocolumn> Specify the name of the geometry/geography column\n"
+	    "     (mostly useful in append mode).\n"
+	    "  -D  Use postgresql dump format (defaults to SQL insert statments.\n"
+	    "  -G  Use geography type (requires lon/lat data).\n"
+	    "  -k  Keep postgresql identifiers case.\n"
+	    "  -i  Use int4 type for all integer dbf fields.\n"
+	    "  -I  Create a spatial index on the geocolumn.\n"
+	    "  -S  Generate simple geometries instead of MULTI geometries.\n"
+	    "  -W <encoding> Specify the character encoding of Shape's\n"
+	    "     attribute column. (default: \"UTF-8\")\n"
+	    "  -N <policy> NULL geometries handling policy (insert*,skip,abort)\n"
+	    "  -n  Only import DBF file.\n"
+        "  -?  Display this help screen.\n"
+    ));
 }
 
 
@@ -56,6 +58,11 @@ main (int argc, char **argv)
 	char c;
 	int ret, i;
 
+#ifdef USE_NLS
+    setlocale (LC_ALL, "");
+    bindtextdomain (PACKAGE, LOCALEDIR);
+    textdomain (PACKAGE);
+#endif
 
 	/* If no options are specified, display usage */
 	if (argc == 1)

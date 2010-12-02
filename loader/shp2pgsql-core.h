@@ -12,6 +12,17 @@
  *
  **********************************************************************/
 
+/* For internationalization */
+#ifdef USE_NLS
+#include <libintl.h>
+#include <locale.h>
+#define _(String) gettext(String)
+#define PACKAGE "shp2pgsql"
+#else
+#define _(String) String
+#endif
+
+/* Standard headers */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -26,30 +37,27 @@
 #include "shpcommon.h"
 #include "getopt.h"
 
+
 #include "../liblwgeom/liblwgeom.h"
 
 #define RCSID "$Id$"
 
 
-/*
- * Loader policy constants
- */
-
+/* Loader policy constants */
 #define POLICY_NULL_ABORT 	0x0
 #define POLICY_NULL_INSERT 	0x1
 #define POLICY_NULL_SKIP	0x2
 
 
-/*
- * Error message handling
- */
-
+/* Error message handling */
 #define SHPLOADERMSGLEN		1024
 
+/* Error status codes */
 #define SHPLOADEROK		-1
 #define SHPLOADERERR		0
 #define SHPLOADERWARN		1
 
+/* Record status codes */
 #define SHPLOADERRECDELETED	2
 #define SHPLOADERRECISNULL	3
 
@@ -74,7 +82,6 @@
 /*
  * Structure to hold the loader configuration options 
  */
-
 typedef struct shp_loader_config
 {
 	/* load mode: c = create, d = delete, a = append, p = prepare */
@@ -131,7 +138,6 @@ typedef struct shp_loader_config
 /*
  * Structure to holder the current loader state 
  */
-
 typedef struct shp_loader_state
 {
 	/* Configuration for this state */

@@ -14,6 +14,7 @@
 
 #include "shp2pgsql-core.h"
 
+
 /* Internal ring/point structures */
 typedef struct struct_point
 {
@@ -385,7 +386,7 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 
 	if (state->config->simple_geometries == 1 && obj->nParts > 1)
 	{
-		snprintf(state->message, SHPLOADERMSGLEN, "We have a Multilinestring with %d parts, can't use -S switch!", obj->nParts);
+		snprintf(state->message, SHPLOADERMSGLEN, _("We have a Multilinestring with %d parts, can't use -S switch!"), obj->nParts);
 
 		return SHPLOADERERR;
 	}
@@ -725,7 +726,7 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 
 	if (state->config->simple_geometries == 1 && polygon_total != 1) /* We write Non-MULTI geometries, but have several parts: */
 	{
-		snprintf(state->message, SHPLOADERMSGLEN, "We have a Multipolygon with %d parts, can't use -S switch!", polygon_total);
+		snprintf(state->message, SHPLOADERMSGLEN, _("We have a Multipolygon with %d parts, can't use -S switch!"), polygon_total);
 
 		return SHPLOADERERR;
 	}
@@ -943,7 +944,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 
 		if (state->hSHPHandle == NULL)
 		{
-			snprintf(state->message, SHPLOADERMSGLEN, "%s: shape (.shp) or index files (.shx) can not be opened, will just import attribute data.", state->config->shp_file);
+			snprintf(state->message, SHPLOADERMSGLEN, _("%s: shape (.shp) or index files (.shx) can not be opened, will just import attribute data."), state->config->shp_file);
 			state->config->readshape = 0;
 
 			ret = SHPLOADERWARN;
@@ -954,7 +955,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	state->hDBFHandle = DBFOpen(state->config->shp_file, "rb");
 	if ((state->hSHPHandle == NULL && state->config->readshape == 1) || state->hDBFHandle == NULL)
 	{
-		snprintf(state->message, SHPLOADERMSGLEN, "%s: dbf file (.dbf) can not be opened.", state->config->shp_file);
+		snprintf(state->message, SHPLOADERMSGLEN, _("%s: dbf file (.dbf) can not be opened."), state->config->shp_file);
 
 		return SHPLOADERERR;
 	}
@@ -974,13 +975,13 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 
 				if (!obj)
 				{
-					snprintf(state->message, SHPLOADERMSGLEN, "Error reading shape object %d", j);
+					snprintf(state->message, SHPLOADERMSGLEN, _("Error reading shape object %d"), j);
 					return SHPLOADERERR;
 				}
 
 				if (obj->nVertices == 0)
 				{
-					snprintf(state->message, SHPLOADERMSGLEN, "Empty geometries found, aborted.");
+					snprintf(state->message, SHPLOADERMSGLEN, _("Empty geometries found, aborted.)"));
 					return SHPLOADERERR;
 				}
 
@@ -1140,7 +1141,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 			state->wkbtype = COLLECTIONTYPE | WKBZOFFSET | WKBMOFFSET;
 			state->pgdims = 4;
 
-			snprintf(state->message, SHPLOADERMSGLEN, "Unknown geometry type: %d\n", state->shpfiletype);
+			snprintf(state->message, SHPLOADERMSGLEN, _("Unknown geometry type: %d\n"), state->shpfiletype);
 			return SHPLOADERERR;
 
 			break;
@@ -1189,18 +1190,18 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 
 		if (state->config->encoding)
 		{
-			static char *encoding_msg = "Try \"LATIN1\" (Western European), or one of the values described at http://www.postgresql.org/docs/current/static/multibyte.html.";
+			char *encoding_msg = _("Try \"LATIN1\" (Western European), or one of the values described at http://www.postgresql.org/docs/current/static/multibyte.html.");
 
 			int rv = utf8(state->config->encoding, name, &utf8str);
 
 			if (rv != UTF8_GOOD_RESULT)
 			{
 				if ( rv == UTF8_BAD_RESULT )
-					snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert field name \"%s\" to UTF-8 (iconv reports \"%s\"). Current encoding is \"%s\". %s", utf8str, strerror(errno), state->config->encoding, encoding_msg);
+					snprintf(state->message, SHPLOADERMSGLEN, _("Unable to convert field name \"%s\" to UTF-8 (iconv reports \"%s\"). Current encoding is \"%s\". %s"), utf8str, strerror(errno), state->config->encoding, encoding_msg);
 				else if ( rv == UTF8_NO_RESULT )
-					snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert field name to UTF-8 (iconv reports \"%s\"). Current encoding is \"%s\". %s", strerror(errno), state->config->encoding, encoding_msg);
+					snprintf(state->message, SHPLOADERMSGLEN, _("Unable to convert field name to UTF-8 (iconv reports \"%s\"). Current encoding is \"%s\". %s"), strerror(errno), state->config->encoding, encoding_msg);
 				else
-					snprintf(state->message, SHPLOADERMSGLEN, "Unexpected return value from utf8()");
+					snprintf(state->message, SHPLOADERMSGLEN, _("Unexpected return value from utf8()"));
 
 				if ( rv == UTF8_BAD_RESULT )
 					free(utf8str);
@@ -1410,7 +1411,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 				break;
 
 			default:
-				snprintf(state->message, SHPLOADERMSGLEN, "Invalid type %x in DBF file", state->types[j]);
+				snprintf(state->message, SHPLOADERMSGLEN, _("Invalid type %x in DBF file"), state->types[j]);
 				stringbuffer_destroy(sb);
 				return SHPLOADERERR;
 			}
@@ -1427,7 +1428,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 				dimschar = "";
 			if (state->config->sr_id != -1 && state->config->sr_id != 4326)
 			{
-				snprintf(state->message, SHPLOADERMSGLEN, "Invalid SRID for geography type: %x", state->config->sr_id);
+				snprintf(state->message, SHPLOADERMSGLEN, _("Invalid SRID for geography type: %x"), state->config->sr_id);
 				stringbuffer_destroy(sb);
 				return SHPLOADERERR;
 			}
@@ -1495,7 +1496,7 @@ ShpLoaderGetSQLCopyStatement(SHPLOADERSTATE *state, char **strheader)
 	else
 	{
 		/* Flag an error as something has gone horribly wrong */
-		snprintf(state->message, SHPLOADERMSGLEN, "Internal error: attempt to generate a COPY statement for data that hasn't been requested in COPY format");
+		snprintf(state->message, SHPLOADERMSGLEN, _("Internal error: attempt to generate a COPY statement for data that hasn't been requested in COPY format"));
 
 		return SHPLOADERERR;
 	}
@@ -1542,7 +1543,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 		obj = SHPReadObject(state->hSHPHandle, item);
 		if (!obj)
 		{
-			snprintf(state->message, SHPLOADERMSGLEN, "Error reading shape object %d", item);
+			snprintf(state->message, SHPLOADERMSGLEN, _("Error reading shape object %d"), item);
 			return SHPLOADERERR;
 		}
 
@@ -1619,7 +1620,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 				break;
 
 			default:
-				snprintf(state->message, SHPLOADERMSGLEN, "Error: field %d has invalid or unknown field type (%d)", i, state->types[i]);
+				snprintf(state->message, SHPLOADERMSGLEN, _("Error: field %d has invalid or unknown field type (%d)"), i, state->types[i]);
 
 				SHPDestroyObject(obj);
 				stringbuffer_destroy(sbwarn);
@@ -1630,18 +1631,18 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 
 			if (state->config->encoding)
 			{
-				static char *encoding_msg = "Try \"LATIN1\" (Western European), or one of the values described at http://www.postgresql.org/docs/current/static/multibyte.html.";
+				char *encoding_msg = _("Try \"LATIN1\" (Western European), or one of the values described at http://www.postgresql.org/docs/current/static/multibyte.html.");
 
 				int rv = utf8(state->config->encoding, val, &utf8str);
 
 				if (rv != UTF8_GOOD_RESULT)
 				{
 					if ( rv == UTF8_BAD_RESULT )
-						snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert data value \"%s\" to UTF-8 (iconv reports \"%s\"). Current encoding is \"%s\". %s", utf8str, strerror(errno), state->config->encoding, encoding_msg);
+						snprintf(state->message, SHPLOADERMSGLEN, _("Unable to convert data value \"%s\" to UTF-8 (iconv reports \"%s\"). Current encoding is \"%s\". %s"), utf8str, strerror(errno), state->config->encoding, encoding_msg);
 					else if ( rv == UTF8_NO_RESULT )
-						snprintf(state->message, SHPLOADERMSGLEN, "Unable to convert data value to UTF-8 (iconv reports \"%s\"). Current encoding is \"%s\". %s", strerror(errno), state->config->encoding, encoding_msg);
+						snprintf(state->message, SHPLOADERMSGLEN, _("Unable to convert data value to UTF-8 (iconv reports \"%s\"). Current encoding is \"%s\". %s"), strerror(errno), state->config->encoding, encoding_msg);
 					else
-						snprintf(state->message, SHPLOADERMSGLEN, "Unexpected return value from utf8()");
+						snprintf(state->message, SHPLOADERMSGLEN, _("Unexpected return value from utf8()"));
 
 					if ( rv == UTF8_BAD_RESULT )
 						free(utf8str);
@@ -1745,7 +1746,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 				break;
 
 			default:
-				snprintf(state->message, SHPLOADERMSGLEN, "Shape type is NOT SUPPORTED, type id = %d", obj->nSHPType);
+				snprintf(state->message, SHPLOADERMSGLEN, _("Shape type is not supported, type id = %d"), obj->nSHPType);
 
 				SHPDestroyObject(obj);
 				stringbuffer_destroy(sbwarn);

@@ -517,6 +517,40 @@ AC_SUBST([POSTGIS_GEOS_VERSION])
 
 
 dnl ===========================================================================
+dnl Detect gettext
+dnl ===========================================================================
+
+GETTEXT_CFLAGS=""
+GETTEXT_LDFLAGS=""
+
+AC_ARG_WITH([gettext], 
+	[AS_HELP_STRING([--with-gettext=PATH], [specify a path to non-default gettext installation])], 
+	[GETTEXT_PATH="$withval"], [GETTEXT_PATH=""])
+
+LDFLAGS_SAVE="$LDFLAGS"
+CFLAGS_SAVE="$CFLAGS"
+
+if test "x$GETTEXT_PATH" != "x"; then
+	AC_MSG_RESULT([checking user-specified gettext location: $GETTEXT_PATH])
+	GETTEXT_CFLAGS="-I$GETTEXT_PATH/include"
+	GETTEXT_LDFLAGS="-L$GETTEXT_PATH/lib"
+	LDFLAGS="$GETTEXT_LDFLAGS $LDFLAGS"
+	CFLAGS="$GETTEXT_CFLAGS $CFLAGS"
+fi
+
+AM_GNU_GETTEXT([external], [], [])
+
+if test "x$LIBINTL" = "x"; then
+	USE_NLS=no
+fi
+
+AC_SUBST([GETTEXT_CFLAGS])
+AC_SUBST([GETTEXT_LDFLAGS])
+
+LDFLAGS="$LDFLAGS_SAVE"
+CFLAGS="$CFLAGS_SAVE"
+
+dnl ===========================================================================
 dnl Detect the version of PROJ.4 installed
 dnl ===========================================================================
 
