@@ -61,6 +61,9 @@ ifdef nls_build
 	LANGUAGES = fr
 endif
 
+# Built out CFLAGS with ICONV and GETTEXT
+CFLAGS += $(GETTEXT_CFLAGS) $(ICONV_CFLAGS)
+
 # If REGRESS=1 passed as a parameter, change the default install paths
 # so that no prefix is included. This allows us to relocate to a temporary
 # directory for regression testing.
@@ -87,13 +90,13 @@ $(LIBLWGEOM):
 	make -C ../liblwgeom
 
 shp2pgsql-core.o: shp2pgsql-core.c
-	$(CC) $(CFLAGS) $(GETTEXT_CFLAGS) $(ICONV_CFLAGS) -c $<
+	$(CC) $(CFLAGS) -c $<
 
 pgsql2shp-core.o: pgsql2shp-core.c
-	$(CC) $(CFLAGS) $(ICONV_CFLAGS) $(PGSQL_FE_CPPFLAGS) -c $<
+	$(CC) $(CFLAGS) $(PGSQL_FE_CPPFLAGS) -c $<
 
 pgsql2shp-cli.o: pgsql2shp-cli.c
-	$(CC) $(CFLAGS) $(ICONV_CFLAGS) $(PGSQL_FE_CPPFLAGS) -c $<
+	$(CC) $(CFLAGS) $(PGSQL_FE_CPPFLAGS) -c $<
 
 $(PGSQL2SHP-CLI): shpopen.o dbfopen.o getopt.o pgsql2shp-core.o shpcommon.o pgsql2shp-cli.o safileio.o $(LIBLWGEOM) 
 	$(CC) $(CFLAGS) $^ $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) $(GETTEXT_LDFLAGS) -lm -o $@
