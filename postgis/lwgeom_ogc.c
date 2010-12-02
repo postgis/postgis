@@ -75,7 +75,6 @@ Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS);
 Datum LWGEOM_isclosed(PG_FUNCTION_ARGS);
 
 /* internal */
-static int32 lwgeom_numpoints_linestring_recursive(const uchar *serialized);
 static int32 lwgeom_dimension_recursive(const uchar *serialized);
 
 /*------------------------------------------------------------------*/
@@ -198,93 +197,29 @@ Datum geometry_geometrytype(PG_FUNCTION_ARGS)
 }
 
 
-/**
- * Find first linestring in serialized geometry with numpoints
- * notion and return the number of points in it.
- * If no such linestring are found return -1.
- */
-static int32
-lwgeom_numpoints_linestring_recursive(const uchar *serialized)
-{
-	LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized);
-	int i;
-
-	LWDEBUG(2, "lwgeom_numpoints_linestring_recursive called.");
-	/*
-	 * CURVEPOLY and COMPOUND have no concept of numpoints but look like
-	 * collections once inspected.  Fast-fail on these here.
-	 */
-	if (lwgeom_getType(inspected->type) == COMPOUNDTYPE ||
-	        lwgeom_getType(inspected->type) == CURVEPOLYTYPE)
-	{
-		return -1;
-	}
-
-	for (i=0; i<inspected->ngeometries; i++)
-	{
-		int32 npoints;
-		int type;
-		LWGEOM *geom=NULL;
-		uchar *subgeom;
-
-		geom = lwgeom_getgeom_inspected(inspected, i);
-
-		LWDEBUGF(3, "numpoints_recursive: type=%d", lwgeom_getType(geom->type));
-
-		if (lwgeom_getType(geom->type) == LINETYPE)
-		{
-			return ((LWLINE *)geom)->points->npoints;
-		}
-		else if (lwgeom_getType(geom->type) == CIRCSTRINGTYPE)
-		{
-			return ((LWCIRCSTRING *)geom)->points->npoints;
-		}
-
-		subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
-		if ( subgeom == NULL )
-		{
-			elog(ERROR, "lwgeom_getsubgeometry_inspected returned NULL");
-		}
-
-		type = lwgeom_getType(subgeom[0]);
-
-		/* MULTILINESTRING && GEOMETRYCOLLECTION are worth checking */
-		if ( type != MULTILINETYPE && type != COLLECTIONTYPE ) continue;
-
-		npoints = lwgeom_numpoints_linestring_recursive(subgeom);
-		if ( npoints == -1 ) continue;
-
-		lwinspected_release(inspected);
-
-		return npoints;
-	}
-
-	lwinspected_release(inspected);
-
-	return -1;
-}
 
 /**
- * numpoints(GEOMETRY) -- find the first linestring in GEOMETRY, return
- * the number of points in it.  Return NULL if there is no LINESTRING(..)
- * in GEOMETRY
- */
+* numpoints(LINESTRING) -- return the number of points in the 
+* linestring, or NULL if it is not a linestring
+*/
 PG_FUNCTION_INFO_V1(LWGEOM_numpoints_linestring);
 Datum LWGEOM_numpoints_linestring(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	int32 ret;
+	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
+	int count = -1;
+	
+	if ( lwgeom->type == LINETYPE )
+		count = lwgeom_count_vertices(lwgeom);
 
-	POSTGIS_DEBUG(2, "LWGEOM_numpoints_called.");
-
-	ret = lwgeom_numpoints_linestring_recursive(SERIALIZED_FORM(geom));
-	if ( ret == -1 )
-	{
-		PG_FREE_IF_COPY(geom, 0);
-		PG_RETURN_NULL();
-	}
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_INT32(ret);
+
+	/* OGC says this functions is only valid on LINESTRING */
+	if ( count < 0 )
+		PG_RETURN_NULL();
+
+	PG_RETURN_INT32(count);
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_numgeometries_collection);
