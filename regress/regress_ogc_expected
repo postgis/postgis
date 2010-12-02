@@ -152,3 +152,4 @@ linemerge149|LINESTRING(-5 -5,0 0,1 1,4 4)
 intersects|f
 ST_GeometryN|LINESTRING(0 0,1 1)
 ST_NumGeometries|1
+ST_Union1|POLYGON((0 0,0 1,0.5 1,0.5 1.5,1.5 1.5,1.5 0.5,1 0.5,1 0,0 0))

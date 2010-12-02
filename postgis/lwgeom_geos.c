@@ -498,37 +498,26 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 				if ( pgtype == MULTIPOLYGONTYPE )
 				{
 					int j = 0;
-					LWGEOM_INSPECTED *lwgeom = lwgeom_inspect(SERIALIZED_FORM(pggeom));
-					for ( j = 0; j < lwgeom->ngeometries; j++ )
+					LWMPOLY *lwmpoly = (LWMPOLY*)pglwgeom_deserialize(pggeom);;
+					for ( j = 0; j < lwmpoly->ngeoms; j++ )
 					{
 						GEOSGeometry* g;
-						LWPOLY *lwpoly = NULL;
-						int k = 0;
 						if ( curgeom == geoms_size )
 						{
 							geoms_size *= 2;
 							geoms = repalloc( geoms, sizeof(GEOSGeom) * geoms_size );
 						}
 						/* This builds a LWPOLY on top of the serialized form */
-						lwpoly = lwgeom_getpoly_inspected(lwgeom, j);
-						g = LWGEOM2GEOS(lwpoly_as_lwgeom(lwpoly));
+						g = LWGEOM2GEOS(lwpoly_as_lwgeom(lwmpoly->geoms[j]));
 						if ( 0 == g )   /* exception thrown at construction */
 						{
 							/* TODO: cleanup all GEOS memory */
 							lwerror("Geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 							PG_RETURN_NULL();
 						}
-						geoms[curgeom] = g;
-
-						/* We delicately free the LWPOLY and POINTARRAY structs,
-						 * leaving the serialized form below untouched. */
-						for ( k = 0; k < lwpoly->nrings; k++ )
-						{
-							lwfree(lwpoly->rings[k]);
-						}
-						lwpoly_release(lwpoly);
-						curgeom++;
+						geoms[curgeom++] = g;
 					}
+					lwmpoly_free(lwmpoly);
 				}
 			}
 
