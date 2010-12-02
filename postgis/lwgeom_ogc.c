@@ -518,16 +518,11 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_pointn_linestring);
 Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom;
+	PG_LWGEOM *geom, *result = NULL;
 	int32 wanted_index;
-	LWGEOM_INSPECTED *inspected;
-	LWLINE *line = NULL;
-	LWCIRCSTRING *curve = NULL;
-	LWGEOM *tmp = NULL;
-	POINTARRAY *pts;
-	LWPOINT *point;
-	uchar *serializedpoint;
-	PG_LWGEOM *result;
+	LWGEOM *lwgeom = NULL;
+	LWPOINT *lwpoint = NULL;
+	POINTARRAY *pa;
 	int i, type;
 
 	wanted_index = PG_GETARG_INT32(1);
@@ -535,95 +530,35 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); /* index out of range */
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	type = lwgeom_getType((uchar)SERIALIZED_FORM(geom)[0]);
-	if (type == COMPOUNDTYPE || type == CURVEPOLYTYPE)
+	lwgeom = pglwgeom_deserialize(geom);
+
+	type = lwgeom->type;
+	
+	if ( type == LINETYPE || type == CIRCSTRINGTYPE )
 	{
-		PG_FREE_IF_COPY(geom, 0);
+		int hasz = FLAGS_GET_Z(lwgeom->flags);
+		int hasm = FLAGS_GET_M(lwgeom->flags);
+		LWLINE *line = (LWLINE*)lwgeom;
+
+		if (wanted_index <= line->points->npoints)
+		{
+			/* Construct a point array, with one point, referenced on the existing array. */
+			pa = ptarray_construct_reference_data(hasz, hasm, 1, getPoint_internal(line->points, wanted_index-1));
+			lwpoint = lwpoint_construct(lwgeom->srid, NULL, pa);
+			result = pglwgeom_serialize(lwpoint);
+		}
+	}
+	
+	if ( ! result )
+	{
+	 	PG_FREE_IF_COPY(geom, 0);
+		lwgeom_free(lwgeom);
 		PG_RETURN_NULL();
 	}
-	else
-	{
-		inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
 
-		for (i=0; i<inspected->ngeometries; i++)
-		{
-			tmp = lwgeom_getgeom_inspected(inspected, i);
-			if (lwgeom_getType(tmp->type) == LINETYPE ||
-			        lwgeom_getType(tmp->type) == CIRCSTRINGTYPE)
-				break;
-		}
-
-		if ( tmp == NULL )
-		{
-			lwinspected_release(inspected);
-			PG_FREE_IF_COPY(geom, 0);
-			PG_RETURN_NULL();
-		}
-		if (lwgeom_getType(tmp->type) == CIRCSTRINGTYPE)
-		{
-			curve = (LWCIRCSTRING *)tmp;
-			if (wanted_index > curve->points->npoints)
-			{
-				lwinspected_release(inspected);
-				PG_FREE_IF_COPY(geom, 0);
-				lwgeom_release(tmp);
-				PG_RETURN_NULL();
-			}
-			lwinspected_release(inspected);
-
-			pts = ptarray_construct_reference_data(
-			        FLAGS_GET_Z(curve->flags), 
-			        FLAGS_GET_M(curve->flags), 
-			        1, 
-			        getPoint_internal(curve->points, wanted_index-1) );
-		}
-		else if (lwgeom_getType(tmp->type) == LINETYPE)
-		{
-			line = (LWLINE *)tmp;
-			/* Ok, now we have a line. Let's see if it has enough points. */
-			if ( wanted_index > line->points->npoints )
-			{
-				lwinspected_release(inspected);
-				PG_FREE_IF_COPY(geom, 0);
-				lwgeom_release(tmp);
-				PG_RETURN_NULL();
-			}
-			lwinspected_release(inspected);
-
-			/* Construct a point array */
-			pts = ptarray_construct_reference_data(
-			        FLAGS_GET_Z(line->flags), 
-			        FLAGS_GET_M(line->flags), 
-			        1, 
-			        getPoint_internal(line->points, wanted_index-1) );
-
-		}
-		else
-		{
-			lwinspected_release(inspected);
-			PG_FREE_IF_COPY(geom, 0);
-			lwgeom_release(tmp);
-			PG_RETURN_NULL();
-		}
-	}
-
-	/* Construct an LWPOINT */
-	point = lwpoint_construct(pglwgeom_get_srid(geom),
-	                          NULL, pts);
-
-	/* Serialized the point */
-	serializedpoint = lwpoint_serialize(point);
-
-	/* And we construct the line
-	 * TODO: use serialize_buf above, instead ..
-	 */
-	result = PG_LWGEOM_construct(serializedpoint,
-	                             pglwgeom_get_srid(geom), 0);
-
-	pfree(point);
-	pfree(serializedpoint);
-	PG_FREE_IF_COPY(geom, 0);
-	lwgeom_release(tmp);
+ 	PG_FREE_IF_COPY(geom, 0);
+	lwpoint_free(lwpoint);
+	lwgeom_free(lwgeom);
 	PG_RETURN_POINTER(result);
 }
 
