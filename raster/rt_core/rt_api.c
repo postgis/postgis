@@ -3256,7 +3256,7 @@ int32_t rt_raster_copy_band(rt_context ctx, rt_raster raster1,
     if (raster1->height != raster2->height || raster1->width != raster2->width)
     {
         ctx->err("Attempting to add a band with different width or height");
-        return NULL;
+        return -1;
     }
 
     /* Check bands limits */
