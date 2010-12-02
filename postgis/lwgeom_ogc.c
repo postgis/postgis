@@ -74,9 +74,6 @@ Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS);
 /* ---- IsClosed(geometry) */
 Datum LWGEOM_isclosed(PG_FUNCTION_ARGS);
 
-/* internal */
-static int32 lwgeom_dimension_recursive(const uchar *serialized);
-
 /*------------------------------------------------------------------*/
 
 /* getSRID(lwgeom) :: int4 */
@@ -291,93 +288,6 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 
 }
 
-/**
- * @brief returns 0 for points, 1 for lines, 2 for polygons, 3 for volume.
- * 			returns max dimension for a collection.
- * 		returns -1 for the empty geometry (TODO)
- * 		returns -2 on error
- */
-static int32
-lwgeom_dimension_recursive(const uchar *serialized)
-{
-	LWGEOM_INSPECTED *inspected;
-	LWPSURFACE *psurf;
-	int ret = -1;
-	int dims= -1;
-	int i;
-
-	/** @todo
-	 * 		This has the unfortunate habit of traversing the CURVEPOLYTYPe
-	 * 		geoms and returning 1, as all contained geoms are linear.
-	 * 		Here we preempt this problem.
-	 * 		TODO: This should handle things a bit better.  Only
-	 * 		GEOMETRYCOLLECTION should ever need to be traversed.
-	 */
-	if (lwgeom_getType(serialized[0]) == CURVEPOLYTYPE) return 2;
-
-	/* SubType of an PolyhedralSurface contains only Polygons
-	     * so we checked here if it's a volume (or not)
-	 */
-	if (lwgeom_getType(serialized[0]) == POLYHEDRALSURFACETYPE )
-	{
-		psurf = lwpsurface_deserialize((uchar *)serialized);
-		dims = lwpsurface_is_closed(psurf)?3:2;
-		lwfree(psurf);
-		return dims;
-	}
-
-	inspected = lwgeom_inspect(serialized);
-	for (i=0; i<inspected->ngeometries; i++)
-	{
-		uchar *subgeom;
-		char typeflags = lwgeom_getsubtype_inspected(inspected, i);
-		int type = lwgeom_getType(typeflags);
-
-		LWDEBUGF(3, "lwgeom_dimension_recursive: type %d", type);
-
-		if ( type == POINTTYPE ) dims = 0;
-		else if ( type == MULTIPOINTTYPE ) dims=0;
-		else if ( type == LINETYPE ) dims=1;
-		else if ( type == CIRCSTRINGTYPE ) dims=1;
-		else if ( type == COMPOUNDTYPE ) dims=1;
-		else if ( type == MULTILINETYPE ) dims=1;
-		else if ( type == MULTICURVETYPE ) dims=1;
-		else if ( type == POLYGONTYPE ) dims=2;
-		else if ( type == CURVEPOLYTYPE ) dims=2;
-		else if ( type == MULTIPOLYGONTYPE ) dims=2;
-		else if ( type == MULTISURFACETYPE ) dims=2;
-		else if ( type == POLYHEDRALSURFACETYPE )
-		{
-			subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
-			psurf = lwpsurface_deserialize(subgeom);
-			dims = lwpsurface_is_closed(psurf)?3:2;
-			lwfree(psurf);
-		}
-		else if ( type == COLLECTIONTYPE )
-		{
-			subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
-			if ( subgeom == NULL )
-			{
-				lwinspected_release(inspected);
-				return -2;
-			}
-
-			dims = lwgeom_dimension_recursive(subgeom);
-		}
-
-		if ( dims == 3 )
-		{
-			/* nothing can be higher */
-			lwinspected_release(inspected);
-			return 3;
-		}
-		if ( dims > ret ) ret = dims;
-	}
-
-	lwinspected_release(inspected);
-
-	return ret;
-}
 
 /** @brief
 * 		returns 0 for points, 1 for lines, 2 for polygons, 3 for volume.
