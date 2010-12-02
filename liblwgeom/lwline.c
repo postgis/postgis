@@ -462,8 +462,30 @@ lwline_from_lwmpoint(int srid, LWMPOINT *mpoint)
 	return lwline_construct(srid, NULL, pa);
 }
 
+/**
+* Returns freshly allocated #LWPOINT that corresponds to the index where.
+* Returns NULL if the geometry is empty or the index invalid.
+*/
+LWPOINT*
+lwline_get_lwpoint(LWLINE *line, int where)
+{
+	POINT4D pt;
+	LWPOINT *lwpoint;
+	POINTARRAY *pa;
+
+	if ( lwline_is_empty(line) || where < 0 || where >= line->points->npoints )
+		return NULL;
+
+	pa = ptarray_construct_empty(FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags), 1);
+	pt = getPoint4d(line->points, where);
+	ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+	lwpoint = lwpoint_construct(line->srid, NULL, pa);
+	return lwpoint;
+}
+
+
 int
-lwline_add_point(LWLINE *line, LWPOINT *point, int where)
+lwline_add_lwpoint(LWLINE *line, LWPOINT *point, int where)
 {
 	POINT4D pt;	
 	getPoint4d_p(point->point, 0, &pt);

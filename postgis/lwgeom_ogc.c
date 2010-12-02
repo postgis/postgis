@@ -518,48 +518,29 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_pointn_linestring);
 Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom, *result = NULL;
-	int32 wanted_index;
-	LWGEOM *lwgeom = NULL;
+	PG_LWGEOM *geom = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	int where = PG_GETARG_INT32(1);
+	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
 	LWPOINT *lwpoint = NULL;
-	POINTARRAY *pa;
-	int i, type;
-
-	wanted_index = PG_GETARG_INT32(1);
-	if ( wanted_index < 1 )
-		PG_RETURN_NULL(); /* index out of range */
-
-	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	lwgeom = pglwgeom_deserialize(geom);
-
-	type = lwgeom->type;
+	int type = lwgeom->type;
 	
+	/* Can't handle crazy index! */
+	if ( where < 1 )
+		PG_RETURN_NULL();
+
 	if ( type == LINETYPE || type == CIRCSTRINGTYPE )
 	{
-		int hasz = FLAGS_GET_Z(lwgeom->flags);
-		int hasm = FLAGS_GET_M(lwgeom->flags);
-		LWLINE *line = (LWLINE*)lwgeom;
-
-		if (wanted_index <= line->points->npoints)
-		{
-			/* Construct a point array, with one point, referenced on the existing array. */
-			pa = ptarray_construct_reference_data(hasz, hasm, 1, getPoint_internal(line->points, wanted_index-1));
-			lwpoint = lwpoint_construct(lwgeom->srid, NULL, pa);
-			result = pglwgeom_serialize(lwpoint);
-		}
-	}
-	
-	if ( ! result )
-	{
-	 	PG_FREE_IF_COPY(geom, 0);
-		lwgeom_free(lwgeom);
-		PG_RETURN_NULL();
+		/* OGC index starts at one, so we substract first. */
+		lwpoint = lwline_get_lwpoint((LWLINE*)lwgeom, where - 1);
 	}
 
- 	PG_FREE_IF_COPY(geom, 0);
-	lwpoint_free(lwpoint);
 	lwgeom_free(lwgeom);
-	PG_RETURN_POINTER(result);
+	PG_FREE_IF_COPY(geom, 0);
+
+	if ( ! lwpoint )
+		PG_RETURN_NULL();
+
+	PG_RETURN_POINTER(pglwgeom_serialize(lwpoint_as_lwgeom(lwpoint)));
 }
 
 /**
@@ -669,71 +650,31 @@ Datum LWGEOM_m_point(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(p.m);
 }
 
-/** StartPoint(GEOMETRY) -- find the first linestring in GEOMETRY,
- * @return the first point.
- * 		Return NULL if there is no LINESTRING(..) in GEOMETRY
- */
+/** 
+* ST_StartPoint(GEOMETRY) 
+* @return the first point of a linestring.
+* 		Return NULL if there is no LINESTRING
+*/
 PG_FUNCTION_INFO_V1(LWGEOM_startpoint_linestring);
 Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom;
-	LWGEOM_INSPECTED *inspected;
-	LWLINE *line = NULL;
-	POINTARRAY *pts;
-	LWPOINT *point;
-	PG_LWGEOM *result;
-	int i, type;
+	PG_LWGEOM *geom = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
+	LWPOINT *lwpoint = NULL;
+	int type = lwgeom->type;
 
-	POSTGIS_DEBUG(2, "LWGEOM_startpoint_linestring called.");
-
-	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-
-	/*
-	 * Curved polygons and compound curves are both collections
-	 * that should not be traversed looking for linestrings.
-	 */
-	type = lwgeom_getType((uchar)SERIALIZED_FORM(geom)[0]);
-	if (type == CURVEPOLYTYPE || type == COMPOUNDTYPE)
+	if ( type == LINETYPE || type == CIRCSTRINGTYPE )
 	{
-		PG_FREE_IF_COPY(geom, 0);
-		PG_RETURN_NULL();
+		lwpoint = lwline_get_lwpoint((LWLINE*)lwgeom, 0);
 	}
 
-	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
-
-	for (i=0; i<inspected->ngeometries; i++)
-	{
-		line = lwgeom_getline_inspected(inspected, i);
-		if ( line ) break;
-	}
-
-	if ( line == NULL )
-	{
-		PG_FREE_IF_COPY(geom, 0);
-		PG_RETURN_NULL();
-	}
-
-	/* Ok, now we have a line.  */
-
-	/* Construct a point array */
-	pts = ptarray_construct_reference_data(
-	        FLAGS_GET_Z(line->flags), 
-	        FLAGS_GET_M(line->flags), 
-	        1, 
-	        getPoint_internal(line->points, 0) );
-
-	lwgeom_release((LWGEOM *)line);
-
-	/* Construct an LWPOINT */
-	point = lwpoint_construct(pglwgeom_get_srid(geom), NULL, pts);
-
-	/* Construct a PG_LWGEOM */
-	result = pglwgeom_serialize((LWGEOM *)point);
-
-	lwgeom_release((LWGEOM *)point);
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
 
-	PG_RETURN_POINTER(result);
+	if ( ! lwpoint )
+		PG_RETURN_NULL();
+
+	PG_RETURN_POINTER(pglwgeom_serialize(lwpoint_as_lwgeom(lwpoint)));
 }
 
 /** EndPoint(GEOMETRY) -- find the first linestring in GEOMETRY,
@@ -743,61 +684,25 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_endpoint_linestring);
 Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom;
-	LWGEOM_INSPECTED *inspected;
-	LWLINE *line = NULL;
-	POINTARRAY *pts;
-	LWGEOM *point;
-	PG_LWGEOM *result;
-	int i, type;
+	PG_LWGEOM *geom = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
+	LWPOINT *lwpoint = NULL;
+	int type = lwgeom->type;
 
-	POSTGIS_DEBUG(2, "LWGEOM_endpoint_linestring called.");
-
-	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	type = lwgeom_getType((uchar)SERIALIZED_FORM(geom)[0]);
-	if (type == CURVEPOLYTYPE || type == COMPOUNDTYPE)
+	if ( type == LINETYPE || type == CIRCSTRINGTYPE )
 	{
-		PG_FREE_IF_COPY(geom, 0);
-		PG_RETURN_NULL();
+		LWLINE *line = (LWLINE*)lwgeom;
+		if ( line->points )
+			lwpoint = lwline_get_lwpoint((LWLINE*)lwgeom, line->points->npoints - 1);
 	}
 
-	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
-
-	for (i=0; i<inspected->ngeometries; i++)
-	{
-		line = lwgeom_getline_inspected(inspected, i);
-		if ( line ) break;
-	}
-	lwinspected_release(inspected);
-
-	if ( line == NULL )
-	{
-		PG_FREE_IF_COPY(geom, 0);
-		PG_RETURN_NULL();
-	}
-
-	/* Ok, now we have a line.  */
-
-	/* Construct a point array */
-	pts = ptarray_construct_reference_data(
-	        FLAGS_GET_Z(line->flags), 
-	        FLAGS_GET_M(line->flags), 
-	        1, 
-	        getPoint_internal(line->points, line->points->npoints-1) );
-
-
-	lwgeom_release((LWGEOM *)line);
-
-	/* Construct an LWPOINT */
-	point = (LWGEOM *)lwpoint_construct(pglwgeom_get_srid(geom), NULL, pts);
-
-	/* Serialize an PG_LWGEOM */
-	result = pglwgeom_serialize(point);
-	lwgeom_release(point);
-
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
 
-	PG_RETURN_POINTER(result);
+	if ( ! lwpoint )
+		PG_RETURN_NULL();
+
+	PG_RETURN_POINTER(pglwgeom_serialize(lwpoint_as_lwgeom(lwpoint)));
 }
 
 /**

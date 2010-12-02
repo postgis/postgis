@@ -1058,7 +1058,7 @@ extern BOX3D *lwline_compute_box3d(LWLINE *line);
 /**
  * Add a LWPOINT to an LWLINE
  */
-extern int lwline_add_point(LWLINE *line, LWPOINT *point, int where);
+extern int lwline_add_lwpoint(LWLINE *line, LWPOINT *point, int where);
 
 /******************************************************************
  * LWPOLY functions
@@ -1534,6 +1534,7 @@ extern double lwgeom_perimeter_2d(const LWGEOM *geom);
 extern void lwgeom_affine(LWGEOM *geom, const AFFINE *affine);
 extern int lwgeom_dimension(const LWGEOM *geom);
 
+extern LWPOINT* lwline_get_lwpoint(LWLINE *line, int where);
 
 extern double ptarray_length_2d(const POINTARRAY *pts);
 extern double ptarray_length(const POINTARRAY *pts);

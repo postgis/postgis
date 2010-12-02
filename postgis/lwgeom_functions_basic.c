@@ -2316,7 +2316,7 @@ Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
 
 	point = lwpoint_deserialize(SERIALIZED_FORM(pglwg2));
 
-	if ( lwline_add_point(line, point, where) == LW_FAILURE )
+	if ( lwline_add_lwpoint(line, point, where) == LW_FAILURE )
 	{
 		elog(ERROR, "Point insert failed");
 		PG_RETURN_NULL();
