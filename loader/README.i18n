@@ -14,11 +14,11 @@ First, update the translation template ("pot") file
 This will create fresh template files in "po/", "shp2pgsql.pot" and 
 "pgsql2shp.pot"
 
-Second, copy a template to a translation file. For example, 
-for a French translation:
+Second, copy a template to a translation file, using the filename 
+pattern shp2pgsql_LANG.po. For example, for a French translation:
 
-  cp shp2pgsql.pot shp2pgsql.fr
-  cp pgsql2shp.pot pgsql2shp.fr
+  cp shp2pgsql.pot shp2pgsql_fr.po
+  cp pgsql2shp.pot pgsql2shp_fr.po
 
 Finally, prepare your translations. There is header information in the 
 translation file to identify yourself as the translator -- fill it in.

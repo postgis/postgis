@@ -144,12 +144,12 @@ pot:
 
 mo:
 	for lang in $(LANGUAGES); do \
-	  msgfmt -o po/shp2pgsql-$$lang.mo po/shp2pgsql.$$lang ; \
+	  msgfmt -o po/shp2pgsql_$$lang.mo po/shp2pgsql_$$lang.po ; \
 	done
 
 install-mo:
 ifneq (,$(LANGUAGES))
 	for lang in $(LANGUAGES); do \
-      $(INSTALL_DATA) po/shp2pgsql-$$lang.mo '$(localedir)'/$$lang/LC_MESSAGES/shp2pgsql.mo || exit 1; \
+      $(INSTALL_DATA) po/shp2pgsql_$$lang.mo '$(localedir)'/$$lang/LC_MESSAGES/shp2pgsql.mo || exit 1; \
     done
 endif
