@@ -703,11 +703,12 @@ dnl ====================================
 dnl raster stuff
 dnl ====================================
 AC_ARG_WITH([raster],
-    [AS_HELP_STRING([--with-raster], [compile the raster stuff (requires GDAL >=
-            1.6.0)])], [RASTER="yes"], [RASTER="no"])
+    [AS_HELP_STRING([--with-raster],
+                    [compile the raster extension (requires GDAL >= 1.6.0) @<:@default=no@:>@])],
+    [RASTER="yes"], [RASTER="no"])
 
 if test "x$RASTER" = "xyes"; then
-    AC_MSG_RESULT([RASTER: Raster build requested])
+    AC_MSG_RESULT([RASTER: Raster support requested])
 
     AC_CONFIG_HEADERS([raster/raster_config.h])
 
@@ -717,7 +718,6 @@ if test "x$RASTER" = "xyes"; then
     POSTGIS_RASTER_MAJOR_VERSION=`cat raster/Version.config | grep POSTGIS_RASTER_MAJOR_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
     POSTGIS_RASTER_MINOR_VERSION=`cat raster/Version.config | grep POSTGIS_RASTER_MINOR_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
     POSTGIS_RASTER_MICRO_VERSION=`cat raster/Version.config | grep POSTGIS_RASTER_MICRO_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
-
 
     AC_DEFINE_UNQUOTED([POSTGIS_RASTER_MAJOR_VERSION], ["$POSTGIS_RASTER_MAJOR_VERSION"], [PostGIS Raster major version])
     AC_DEFINE_UNQUOTED([POSTGIS_RASTER_MINOR_VERSION], ["$POSTGIS_RASTER_MINOR_VERSION"], [PostGIS Raster minor version])
