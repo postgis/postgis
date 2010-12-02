@@ -1616,10 +1616,16 @@ extern int lwgeom_count_rings(const LWGEOM *geom);
 extern int lwgeom_has_srid(const LWGEOM *geom);
 
 /**
-* Return true of false depending on whether a geometry is an "empty"
+* Return true or false depending on whether a geometry is an "empty"
 * geometry (no vertices members)
 */
 extern int lwgeom_is_empty(const LWGEOM *geom);
+
+/**
+* Return true or false depending on whether a geometry is a linear
+* feature that closes on itself.
+*/
+extern int lwgeom_is_closed(const LWGEOM *geom);
 
 /**
 * Return the dimensionality (relating to point/line/poly) of an lwgeom

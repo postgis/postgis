@@ -886,110 +886,11 @@ Datum LWGEOM_asBinary(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_isclosed);
 Datum LWGEOM_isclosed(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom;
-	LWGEOM_INSPECTED *inspected;
-	LWGEOM *sub = NULL;
-	LWCOMPOUND *compound = NULL;
-	LWPSURFACE *psurface = NULL;
-	LWTIN *tin = NULL;
-	int linesfound=0;
-	int i;
-
-	POSTGIS_DEBUG(2, "LWGEOM_isclosed called.");
-
-	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	if (lwgeom_getType((uchar)SERIALIZED_FORM(geom)[0]) == COMPOUNDTYPE)
-	{
-		compound = lwcompound_deserialize(SERIALIZED_FORM(geom));
-		if (lwcompound_is_closed(compound))
-		{
-			lwgeom_release((LWGEOM *)compound);
-			PG_FREE_IF_COPY(geom, 0);
-			PG_RETURN_BOOL(TRUE);
-		}
-		else
-		{
-			lwgeom_release((LWGEOM *)compound);
-			PG_FREE_IF_COPY(geom, 0);
-			PG_RETURN_BOOL(FALSE);
-		}
-	}
-
-	if (lwgeom_getType((uchar)SERIALIZED_FORM(geom)[0]) == POLYHEDRALSURFACETYPE)
-	{
-		psurface = lwpsurface_deserialize(SERIALIZED_FORM(geom));
-		if (lwpsurface_is_closed(psurface))
-		{
-			lwgeom_release((LWGEOM *)psurface);
-			PG_FREE_IF_COPY(geom, 0);
-			PG_RETURN_BOOL(TRUE);
-		}
-		else
-		{
-			lwgeom_release((LWGEOM *)psurface);
-			PG_FREE_IF_COPY(geom, 0);
-			PG_RETURN_BOOL(FALSE);
-		}
-	}
-
-	if (lwgeom_getType((uchar)SERIALIZED_FORM(geom)[0]) == TINTYPE)
-	{
-		tin = lwtin_deserialize(SERIALIZED_FORM(geom));
-		if (lwtin_is_closed(tin))
-		{
-			lwgeom_release((LWGEOM *)tin);
-			PG_FREE_IF_COPY(geom, 0);
-			PG_RETURN_BOOL(TRUE);
-		}
-		else
-		{
-			lwgeom_release((LWGEOM *)tin);
-			PG_FREE_IF_COPY(geom, 0);
-			PG_RETURN_BOOL(FALSE);
-		}
-	}
-
-	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
-
-	for (i=0; i<inspected->ngeometries; i++)
-	{
-		sub = lwgeom_getgeom_inspected(inspected, i);
-		if ( sub == NULL ) continue;
-		else if (lwgeom_getType(sub->type) == LINETYPE &&
-		         !lwline_is_closed((LWLINE *)sub))
-		{
-			lwgeom_release(sub);
-			lwinspected_release(inspected);
-			PG_FREE_IF_COPY(geom, 0);
-			PG_RETURN_BOOL(FALSE);
-		}
-		else if (lwgeom_getType(sub->type) == CIRCSTRINGTYPE &&
-		         !lwcircstring_is_closed((LWCIRCSTRING *)sub))
-		{
-			lwgeom_release(sub);
-			lwinspected_release(inspected);
-			PG_FREE_IF_COPY(geom, 0);
-			PG_RETURN_BOOL(FALSE);
-		}
-		else if (lwgeom_getType(sub->type) == COMPOUNDTYPE &&
-		         !lwcompound_is_closed((LWCOMPOUND *)sub))
-		{
-			lwgeom_release(sub);
-			lwinspected_release(inspected);
-			PG_FREE_IF_COPY(geom, 0);
-			PG_RETURN_BOOL(FALSE);
-		}
-		lwgeom_release(sub);
-		linesfound++;
-	}
-	lwinspected_release(inspected);
-
-	if ( ! linesfound )
-	{
-		PG_FREE_IF_COPY(geom, 0);
-		PG_RETURN_NULL();
-	}
+	PG_LWGEOM *geom = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));;
+	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
+	int closed = lwgeom_is_closed(lwgeom);
+	
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_BOOL(TRUE);
-
-}
+	PG_RETURN_BOOL(closed);
+}	

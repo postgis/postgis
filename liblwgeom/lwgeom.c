@@ -1035,6 +1035,45 @@ lwgeom_longitude_shift(LWGEOM *lwgeom)
 }
 
 int 
+lwgeom_is_closed(const LWGEOM *geom)
+{
+	int type = geom->type;
+	
+	/* Test linear types for closure */
+	switch (type)
+	{
+	case LINETYPE:
+		return lwline_is_closed((LWLINE*)geom);
+	case CIRCSTRINGTYPE:
+		return lwcircstring_is_closed((LWCIRCSTRING*)geom);
+	case COMPOUNDTYPE:
+		return lwcompound_is_closed((LWCOMPOUND*)geom);
+	case TINTYPE:
+		return lwtin_is_closed((LWTIN*)geom);
+	case POLYHEDRALSURFACETYPE:
+		return lwpsurface_is_closed((LWPSURFACE*)geom);
+	}
+	
+	/* Recurse into collections and see if anything is not closed */
+	if ( lwgeom_is_collection(geom) )
+	{
+		LWCOLLECTION *col = lwgeom_as_lwcollection(geom);
+		int i;
+		int closed;
+		for ( i = 0; i < col->ngeoms; i++ ) 
+		{
+			closed = lwgeom_is_closed(col->geoms[i]);
+			if ( ! closed ) 
+				return LW_FALSE;
+		}
+		return LW_TRUE;
+	}
+	
+	/* All non-linear non-collection types we will call closed */
+	return LW_TRUE;
+}
+
+int 
 lwgeom_is_collection(const LWGEOM *geom)
 {
 	if( ! geom ) return LW_FALSE;
