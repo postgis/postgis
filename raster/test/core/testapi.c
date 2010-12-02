@@ -1058,7 +1058,7 @@ main()
         rt_raster_set_skews(ctx, raster, 4, 5);
 
         convexhull = rt_raster_get_convex_hull(ctx, raster);
-        CHECK_EQUALS(convexhull->SRID, rt_raster_get_srid(ctx, raster));
+        CHECK_EQUALS(convexhull->srid, rt_raster_get_srid(ctx, raster));
         CHECK_EQUALS(convexhull->nrings, 1);
         ring = convexhull->rings[0];
         CHECK(ring);
