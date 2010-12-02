@@ -392,70 +392,36 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 }
 
 /**
- * NumInteriorRings(GEOMETRY) -- find the first polygon in GEOMETRY,
- *	@return the number of its interior rings (holes).
- * 		Return NULL if there is no POLYGON(..) in (first level of) GEOMETRY.
- */
+* NumInteriorRings(GEOMETRY) defined for Polygon and
+* and CurvePolygon.
+*
+* @return the number of its interior rings (holes). NULL if not a polygon.
+*/
 PG_FUNCTION_INFO_V1(LWGEOM_numinteriorrings_polygon);
 Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM_INSPECTED *inspected = NULL;
-	LWGEOM *tmp = NULL;
+	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
 	LWPOLY *poly = NULL;
 	LWCURVEPOLY *curvepoly = NULL;
-	int32 result;
-	int i;
+	int result = -1;
 
-	POSTGIS_DEBUG(2, "LWGEOM_numinteriorrings called.");
-
-	if (lwgeom_getType((uchar)SERIALIZED_FORM(geom)[0]) == CURVEPOLYTYPE)
+	if ( lwgeom->type == POLYGONTYPE )
 	{
-		tmp = (LWGEOM *)lwcurvepoly_deserialize(SERIALIZED_FORM(geom));
+		poly = lwgeom_as_lwpoly(lwgeom);
+		result = poly->nrings - 1;
 	}
-	else
+	else if ( lwgeom->type == CURVEPOLYTYPE )
 	{
-		inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
-		for (i=0; i<inspected->ngeometries; i++)
-		{
-			tmp = lwgeom_getgeom_inspected(inspected, i);
-			if (lwgeom_getType(tmp->type) == POLYGONTYPE ||
-			        lwgeom_getType(tmp->type) == CURVEPOLYTYPE) break;
-		}
+		curvepoly = lwgeom_as_lwcurvepoly(lwgeom);
+		result = curvepoly->nrings - 1;
 	}
-
-	if ( tmp == NULL )
-	{
-		PG_FREE_IF_COPY(geom, 0);
-		lwinspected_release(inspected);
-		PG_RETURN_NULL();
-	}
-
-	POSTGIS_DEBUGF(3, "Geometry of type %d found.", lwgeom_getType(tmp->type));
-
-	if (lwgeom_getType(tmp->type) == POLYGONTYPE)
-	{
-		poly = (LWPOLY *)tmp;
-
-		/* Ok, now we have a polygon. Here is its number of holes */
-		result = poly->nrings-1;
-	}
-	else if (lwgeom_getType(tmp->type) == CURVEPOLYTYPE)
-	{
-		POSTGIS_DEBUG(3, "CurvePolygon found.");
-
-		curvepoly = (LWCURVEPOLY *)tmp;
-		result = curvepoly->nrings-1;
-	}
-	else
-	{
-		PG_FREE_IF_COPY(geom, 0);
-		lwinspected_release(inspected);
-		PG_RETURN_NULL();
-	}
+	
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
-	if (inspected != NULL) lwinspected_release(inspected);
-	lwgeom_release((LWGEOM *)tmp);
+	
+	if ( result < 0 )
+		PG_RETURN_NULL();
 
 	PG_RETURN_INT32(result);
 }
