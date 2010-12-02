@@ -1154,12 +1154,12 @@ int lwgeom_count_vertices(const LWGEOM *geom)
 	if( ! geom ) return 0;
 	
 	LWDEBUGF(4, "lwgeom_count_vertices got type %s",
-	         lwtype_name(TYPE_GETTYPE(geom->type)));
+	         lwtype_name(geom->type));
 
 	/* Empty? Zero. */
 	if( lwgeom_is_empty(geom) ) return 0;
 
-	switch (TYPE_GETTYPE(geom->type))
+	switch (geom->type)
 	{
 	case POINTTYPE:
 		result = 1;
@@ -1186,7 +1186,7 @@ int lwgeom_count_vertices(const LWGEOM *geom)
 		break;
 	default:
 		lwerror("lwgeom_count_vertices: unsupported input geometry type: %s",
-		        lwtype_name(TYPE_GETTYPE(geom->type)));
+		        lwtype_name(geom->type));
 		break;
 	}
 	LWDEBUGF(3, "counted %d vertices", result);
@@ -1204,7 +1204,7 @@ int lwgeom_count_rings(const LWGEOM *geom)
 	if( ! geom || lwgeom_is_empty(geom) ) 
 		return 0;
 
-	switch (TYPE_GETTYPE(geom->type))
+	switch (geom->type)
 	{
 	case POINTTYPE:
 	case CIRCSTRINGTYPE: 
@@ -1237,7 +1237,7 @@ int lwgeom_count_rings(const LWGEOM *geom)
 		break;
 	}
 	default:
-		lwerror("lwgeom_count_rings: unsupported input geometry type: %s", lwtype_name(TYPE_GETTYPE(geom->type)));
+		lwerror("lwgeom_count_rings: unsupported input geometry type: %s", lwtype_name(geom->type));
 		break;
 	}
 	LWDEBUGF(3, "counted %d rings", result);
@@ -1475,7 +1475,7 @@ void lwgeom_set_srid(LWGEOM *geom, int srid)
 
 LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist)
 {
-	switch (TYPE_GETTYPE(igeom->type))
+	switch (igeom->type)
 	{
 	case POINTTYPE:
 	case MULTIPOINTTYPE:
@@ -1489,7 +1489,7 @@ LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist)
 	case COLLECTIONTYPE:
 		return (LWGEOM*)lwcollection_simplify((LWCOLLECTION *)igeom, dist);
 	default:
-		lwerror("lwgeom_simplify: unsupported geometry type: %s",lwtype_name(TYPE_GETTYPE(igeom->type)));
+		lwerror("lwgeom_simplify: unsupported geometry type: %s",lwtype_name(igeom->type));
 	}
 	return NULL;
 }
