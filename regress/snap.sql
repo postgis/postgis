@@ -17,3 +17,10 @@ select 't3', st_asewkt(st_snap(
 select 't4', st_asewkt(st_snap(
   'LINESTRING(0 0, 10 0)', 'POINT(11 0)', 2
 ));
+
+-- http://sourceforge.net/mailarchive/forum.php?thread_name=4CE841B8.4090702@cgf.upv.es&forum_name=jts-topo-suite-user
+select 't5', st_asewkt(st_snap(
+  'LINESTRING (70 250, 190 340)',
+  'POLYGON ((230 340, 300 340, 300 240, 230 240, 230 340))',
+  50
+));
