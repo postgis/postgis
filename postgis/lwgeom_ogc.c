@@ -886,7 +886,7 @@ Datum LWGEOM_asBinary(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_isclosed);
 Datum LWGEOM_isclosed(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));;
+	PG_LWGEOM *geom = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
 	int closed = lwgeom_is_closed(lwgeom);
 	
