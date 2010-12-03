@@ -1555,6 +1555,58 @@ SELECT ST_AsEWKT(ST_LineToCurve(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 8, 5 6 4,
 		<para><xref linkend="ST_CurveToLine" /></para>
 	  </refsection>
 	</refentry>
+	
+    <refentry id="ST_MakeValid">
+      <refnamediv>
+        <refname>ST_MakeValid</refname>
+        <refpurpose>Attempts to make an invalid geometry valid w/out loosing vertices.</refpurpose>
+      </refnamediv>
+    
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_MakeValid</function></funcdef>
+            <paramdef><type>geometry</type> <parameter>input</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+    
+      <refsection>
+        <title>Description</title>
+    <para>
+    The function attempts to create a valid representation of a given invalid
+    geometry without loosing any of the input vertices. 
+    Already-valid geometries are returned w/out further intervention.
+    </para>
+    
+    <para>
+    Supported inputs are: LINESTRINGS, MULTILINESTRINGS, POLYGONS, MULTIPOLYGONS.
+    </para>
+    
+    <para>
+    In case of full or partial dimensional collapses, the output geometry
+    may be a collection of lower-to-equal dimension geometries or a
+    geometry of lower dimension. 
+    </para>
+    
+    <para>
+    Single polygons may become multi-geometries in case of self-intersections.
+    </para>
+    
+    <para>Availability: 2.0.0, requires GEOS-3.3.0 or higher.</para>
+    
+    <para>&Z_support;</para>
+    
+          </refsection>
+    
+          <refsection>
+            <title>See Also</title>
+            <para>
+                <xref linkend="ST_IsValid" />
+                <xref linkend="ST_CollectionExtract" />
+            </para>
+          </refsection>
+    </refentry>
 
 	<refentry id="ST_MemUnion">
 	  <refnamediv>
@@ -1785,6 +1837,48 @@ geomtextrep
 			<para><xref linkend="ST_Simplify" /></para>
 		  </refsection>
 	</refentry>
+	
+	<refentry id="ST_SharedPaths">
+	  <refnamediv>
+		<refname>ST_SharedPaths</refname>
+		<refpurpose>Returns a collection containing paths shared by the two input linestrings/multilinestrings.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_SharedPaths</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>lineal1</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>lineal2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>Returns a collection containing paths shared by the two input geometries. 
+		    Those going in the same direction are in the first element of the collection, those going in the opposite direction are in the second element. 
+		    The paths themselves are given in the direction of the first geometry.
+		</para>
+
+		<para>Availability: 2.0.0 requires GEOS &gt;= 3.3.0.</para>
+	  </refsection>
+	  <refsection>
+		<title>Examples: Polygonizing single linestrings</title>
+		 <programlisting>
+SELECT ST_AsText(ST_SharedPaths(ST_GeomFromText('MULTILINESTRING((1 3, 4 5, 5 6, 8 9, 9 9, 1 3), (1 2, -5 5))'), 
+    ST_GeomFromText('LINESTRING(1 3, 4 5)'))) As wkt;
+
+                                wkt
+---------------------------------------------------------------------
+GEOMETRYCOLLECTION(MULTILINESTRING((1 3,4 5)),MULTILINESTRING EMPTY)
+			  </programlisting>
+	 </refsection>
+      <refsection>
+        <title>See Also</title>
+        <para></para>
+      </refsection>
+	</refentry>
 
 	<refentry id="ST_Shift_Longitude">
 	  <refnamediv>
@@ -1959,6 +2053,150 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
 			<para><xref linkend="ST_Simplify" /></para>
 		  </refsection>
 	</refentry>
+	
+    <refentry id="ST_Split">
+        <refnamediv>
+            <refname>ST_Split</refname>
+            <refpurpose>Returns a collection of geometries resulting by splitting a geometry.</refpurpose>
+        </refnamediv>
+        
+        <refsynopsisdiv>
+            <funcsynopsis>
+              <funcprototype>
+                <funcdef>geometry <function>ST_Split</function></funcdef>
+                <paramdef><type>geometry</type> <parameter>input</parameter></paramdef>
+                <paramdef><type>geometry</type> <parameter>blade</parameter></paramdef>
+              </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+    
+        <refsection>
+            <title>Description</title>
+            <para>
+            The function supports splitting a line by point, a line by line, a polygon by line. The returned geometry is always a collection.
+            </para>
+            
+            <para>
+            Think of this function as the opposite of ST_Union.
+            Theoretically applying ST_Union to the elements of the returned collection
+            should always yield the original geometry.
+            </para>
+            
+            <para>Availability: 2.0.0</para>
+        
+        </refsection>
+        <refsection>
+            <title>Examples</title>
+            <para>Polygon Cut by Line</para>
+            <informaltable>
+                <tgroup cols="2">
+                    <tbody>
+                      <row>
+                        <entry>
+                                               <para>
+                            <informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                <imagedata fileref="images/st_split01.png" />
+                              </imageobject>
+                              <caption><para>Before Split</para></caption>
+                            </mediaobject>
+                            </informalfigure>
+                                               </para>
+                        </entry>
+                        <entry>
+                                               <para>
+                            <informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                <imagedata fileref="images/st_split02.png" />
+                              </imageobject>
+                              <caption><para>After split</para></caption>
+                            </mediaobject>
+                            </informalfigure>
+                                              </para>
+                        </entry>
+                    </row>
+                    </tbody>
+                </tgroup>
+            </informaltable>
+            <programlisting>
+-- this creates a geometry collection consisting of the 2 halves of the polygon
+-- this is similar to the example we demonstrated in ST_BuildArea
+SELECT ST_Split(circle, line)
+FROM (SELECT 
+    ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)) As line,
+    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
+    
+-- result --
+ GEOMETRYCOLLECTION(POLYGON((150 90,149.039264020162 80.2454838991936,146.193976625564 70.8658283817455,..), POLYGON(..)))
+ 
+-- To convert to individual polygons, you can use ST_Dump or ST_GeometryN
+SELECT ST_AsText((ST_Dump(ST_Split(circle, line))).geom) As wkt
+FROM (SELECT 
+    ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)) As line,
+    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
+    
+-- result --
+wkt
+---------------
+POLYGON((150 90,149.039264020162 80.2454838991936,..))
+POLYGON((60.1371179574584 60.1371179574584,58.4265193848728 62.2214883490198,53.8060233744357 ..))
+            </programlisting>
+            <para>Multilinestring Cut by point</para>
+            <informaltable>
+                <tgroup cols="2">
+                    <tbody>
+                      <row>
+                        <entry>
+                                               <para>
+                            <informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                <imagedata fileref="images/st_split03.png" />
+                              </imageobject>
+                              <caption><para>Before Split</para></caption>
+                            </mediaobject>
+                            </informalfigure>
+                                               </para>
+                        </entry>
+                        <entry>
+                                               <para>
+                            <informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                <imagedata fileref="images/st_split04.png" />
+                              </imageobject>
+                              <caption><para>After split</para></caption>
+                            </mediaobject>
+                            </informalfigure>
+                                               </para>
+                        </entry>
+                    </row>
+                    </tbody>
+                </tgroup>
+            </informaltable>
+            <programlisting>
+SELECT ST_AsText(ST_Split(mline, pt)) As wktcut
+        FROM (SELECT 
+    ST_GeomFromText('MULTILINESTRING((10 10, 190 190), (15 15, 30 30, 100 90))') As mline,
+    ST_Point(30,30) As pt) As foo;
+    
+wktcut
+------
+GEOMETRYCOLLECTION(
+    LINESTRING(10 10,30 30),
+    LINESTRING(30 30,190 190),
+    LINESTRING(15 15,30 30),
+    LINESTRING(30 30,100 90)
+)
+            </programlisting>
+        </refsection>
+        <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_AsText" />,<xref linkend="ST_BuildArea" />, <xref linkend="ST_Dump" />,<xref linkend="ST_GeometryN" />,<xref linkend="ST_Union" /></para>
+        </refsection>
+    </refentry>
 
 	<refentry id="ST_SymDifference">
 	  <refnamediv>
@@ -2203,200 +2441,5 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
 	  </refsection>
 	</refentry>
 
-<refentry id="ST_Split">
-	<refnamediv>
-		<refname>ST_Split</refname>
-		<refpurpose>Returns a collection of geometries resulting by splitting a geometry.</refpurpose>
-	</refnamediv>
-	
-	<refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_Split</function></funcdef>
-			<paramdef><type>geometry</type> <parameter>input</parameter></paramdef>
-			<paramdef><type>geometry</type> <parameter>blade</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	</refsynopsisdiv>
 
-	<refsection>
-		<title>Description</title>
-		<para>
-		The function supports splitting a line by point, a line by line, a polygon by line. The returned geometry is always a collection.
-		</para>
-		
-		<para>
-		Think of this function as the opposite of ST_Union.
-		Theoretically applying ST_Union to the elements of the returned collection
-		should always yield the original geometry.
-		</para>
-		
-		<para>Availability: 2.0.0</para>
-	
-	</refsection>
-	<refsection>
-		<title>Examples</title>
-		<para>Polygon Cut by Line</para>
-		<informaltable>
-			<tgroup cols="2">
-				<tbody>
-				  <row>
-					<entry>
-                                           <para>
-						<informalfigure>
-						<mediaobject>
-						  <imageobject>
-							<imagedata fileref="images/st_split01.png" />
-						  </imageobject>
-						  <caption><para>Before Split</para></caption>
-						</mediaobject>
-					    </informalfigure>
-                                           </para>
-					</entry>
-					<entry>
-                                           <para>
-						<informalfigure>
-						<mediaobject>
-						  <imageobject>
-							<imagedata fileref="images/st_split02.png" />
-						  </imageobject>
-						  <caption><para>After split</para></caption>
-						</mediaobject>
-					    </informalfigure>
-                                          </para>
-					</entry>
-				</row>
-				</tbody>
-			</tgroup>
-		</informaltable>
-		<programlisting>
--- this creates a geometry collection consisting of the 2 halves of the polygon
--- this is similar to the example we demonstrated in ST_BuildArea
-SELECT ST_Split(circle, line)
-FROM (SELECT 
-	ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)) As line,
-	ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
-	
--- result --
- GEOMETRYCOLLECTION(POLYGON((150 90,149.039264020162 80.2454838991936,146.193976625564 70.8658283817455,..), POLYGON(..)))
- 
--- To convert to individual polygons, you can use ST_Dump or ST_GeometryN
-SELECT ST_AsText((ST_Dump(ST_Split(circle, line))).geom) As wkt
-FROM (SELECT 
-	ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)) As line,
-	ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
-	
--- result --
-wkt
----------------
-POLYGON((150 90,149.039264020162 80.2454838991936,..))
-POLYGON((60.1371179574584 60.1371179574584,58.4265193848728 62.2214883490198,53.8060233744357 ..))
-
-		</programlisting>
-		<para>Multilinestring Cut by point</para>
-		<informaltable>
-			<tgroup cols="2">
-				<tbody>
-				  <row>
-					<entry>
-                                           <para>
-						<informalfigure>
-						<mediaobject>
-						  <imageobject>
-							<imagedata fileref="images/st_split03.png" />
-						  </imageobject>
-						  <caption><para>Before Split</para></caption>
-						</mediaobject>
-					    </informalfigure>
-                                           </para>
-					</entry>
-					<entry>
-                                           <para>
-						<informalfigure>
-						<mediaobject>
-						  <imageobject>
-							<imagedata fileref="images/st_split04.png" />
-						  </imageobject>
-						  <caption><para>After split</para></caption>
-						</mediaobject>
-					    </informalfigure>
-                                           </para>
-					</entry>
-				</row>
-				</tbody>
-			</tgroup>
-		</informaltable>
-		<programlisting>
-SELECT ST_AsText(ST_Split(mline, pt)) As wktcut
-		FROM (SELECT 
-	ST_GeomFromText('MULTILINESTRING((10 10, 190 190), (15 15, 30 30, 100 90))') As mline,
-	ST_Point(30,30) As pt) As foo;
-	
-wktcut
-------
-GEOMETRYCOLLECTION(
-	LINESTRING(10 10,30 30),
-	LINESTRING(30 30,190 190),
-	LINESTRING(15 15,30 30),
-	LINESTRING(30 30,100 90)
-)
-		</programlisting>
-	</refsection>
-	<refsection>
-	<title>See Also</title>
-	<para><xref linkend="ST_AsText" />,<xref linkend="ST_BuildArea" />, <xref linkend="ST_Dump" />,<xref linkend="ST_GeometryN" />,<xref linkend="ST_Union" /></para>
-	</refsection>
-</refentry>
-
-<refentry id="ST_MakeValid">
-  <refnamediv>
-	<refname>ST_MakeValid</refname>
-	<refpurpose>Attempts to make an invalid geometry valid w/out loosing vertices.</refpurpose>
-  </refnamediv>
-
-  <refsynopsisdiv>
-	<funcsynopsis>
-	  <funcprototype>
-		<funcdef>geometry <function>ST_MakeValid</function></funcdef>
-		<paramdef><type>geometry</type> <parameter>input</parameter></paramdef>
-	  </funcprototype>
-	</funcsynopsis>
-  </refsynopsisdiv>
-
-  <refsection>
-	<title>Description</title>
-<para>
-The function attempts to create a valid representation of a given invalid
-geometry without loosing any of the input vertices. 
-Already-valid geometries are returned w/out further intervention.
-</para>
-
-<para>
-Supported inputs are: LINESTRINGS, MULTILINESTRINGS, POLYGONS, MULTIPOLYGONS.
-</para>
-
-<para>
-In case of full or partial dimensional collapses, the output geometry
-may be a collection of lower-to-equal dimension geometries or a
-geometry of lower dimension. 
-</para>
-
-<para>
-Single polygons may become multi-geometries in case of self-intersections.
-</para>
-
-<para>Availability: 2.0.0, requires GEOS-3.3.0 or higher.</para>
-
-<para>&Z_support;</para>
-
-	  </refsection>
-
-	  <refsection>
-		<title>See Also</title>
-		<para>
-			<xref linkend="ST_IsValid" />
-			<xref linkend="ST_CollectionExtract" />
-		</para>
-	  </refsection>
-	</refentry>
 </sect1>
