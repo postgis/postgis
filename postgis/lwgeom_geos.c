@@ -3277,8 +3277,8 @@ ptarray_from_GEOSCoordSeq(const GEOSCoordSequence *cs, char want3d)
 {
 	uint32 dims=2;
 	uint32 size, i, ptsize;
-	uchar *points, *ptr;
-	POINTARRAY *ret;
+	POINTARRAY *pa;
+	POINT4D point;
 
 	POSTGIS_DEBUG(2, "ptarray_fromGEOSCoordSeq called");
 
@@ -3302,21 +3302,17 @@ ptarray_from_GEOSCoordSeq(const GEOSCoordSequence *cs, char want3d)
 
 	ptsize = sizeof(double)*dims;
 
-	ret = ptarray_construct((dims==3), 0, size);
+	pa = ptarray_construct((dims==3), 0, size);
 
-	points = ret->serialized_pointlist;
-	ptr = points;
 	for (i=0; i<size; i++)
 	{
-		POINT3DZ point;
 		GEOSCoordSeq_getX(cs, i, &(point.x));
 		GEOSCoordSeq_getY(cs, i, &(point.y));
 		if ( dims >= 3 ) GEOSCoordSeq_getZ(cs, i, &(point.z));
-		memcpy(ptr, &point, ptsize);
-		ptr += ptsize;
+		ptarray_set_point4d(pa,i,&point);
 	}
 
-	return ret;
+	return pa;
 }
 
 /* Return an LWGEOM from a Geometry */

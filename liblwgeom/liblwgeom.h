@@ -868,7 +868,7 @@ extern POINTARRAY* ptarray_construct_reference_data(char hasz, char hasm, uint32
 * to hold maxpoints vertices before having to reallocate the storage
 * area.
 */
-extern POINTARRAY* ptarray_construct_empty(char hasz, char hasm, int maxpoints);
+extern POINTARRAY* ptarray_construct_empty(char hasz, char hasm, uint32 maxpoints);
 
 /**
 * Append a point to the end of an existing #POINTARRAY 

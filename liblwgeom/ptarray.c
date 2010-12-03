@@ -18,32 +18,13 @@
 POINTARRAY*
 ptarray_construct(char hasz, char hasm, uint32 npoints)
 {
-	uchar dims = 0;
-	size_t size;
-	uchar *ptlist;
-	POINTARRAY *pa;
-
-	FLAGS_SET_Z(dims, hasz?1:0);
-	FLAGS_SET_M(dims, hasm?1:0);
-	size = FLAGS_NDIMS(dims)*npoints*sizeof(double);
-
-	if ( size )
-		ptlist = (uchar *)lwalloc(size);
-	else
-		ptlist = NULL;
-
-	pa = lwalloc(sizeof(POINTARRAY));
-	pa->flags = dims;
-	pa->serialized_pointlist = ptlist;
+	POINTARRAY *pa = ptarray_construct_empty(hasz, hasm, npoints);
 	pa->npoints = npoints;
-	pa->maxpoints = npoints;
-
 	return pa;
-
 }
 
 POINTARRAY*
-ptarray_construct_empty(char hasz, char hasm, int maxpoints)
+ptarray_construct_empty(char hasz, char hasm, uint32 maxpoints)
 {
 	uchar dims = 0;
 	POINTARRAY *pa = lwalloc(sizeof(POINTARRAY));
@@ -59,7 +40,10 @@ ptarray_construct_empty(char hasz, char hasm, int maxpoints)
 	pa->maxpoints = maxpoints;
 	
 	/* Allocate the coordinate array */
-	pa->serialized_pointlist = lwalloc(maxpoints * ptarray_point_size(pa));
+	if ( maxpoints > 0 )
+		pa->serialized_pointlist = lwalloc(maxpoints * ptarray_point_size(pa));
+	else 
+		pa->serialized_pointlist = NULL;
 
 	return pa;
 }
