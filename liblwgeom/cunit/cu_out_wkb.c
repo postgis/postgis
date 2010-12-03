@@ -61,12 +61,13 @@ static void cu_wkb_out(char *wkt)
 static void test_wkb_out_point(void)
 {
 	cu_wkb_out("POINT(0 0 0 0)");
+//	printf("new: %s\nold: %s\n",s,t);
 	CU_ASSERT_STRING_EQUAL(s, t);
 
 	cu_wkb_out("SRID=4;POINTM(1 1 1)");
+//	printf("new: %s\nold: %s\n",s,t);
 	CU_ASSERT_STRING_EQUAL(s, t);
 
-	//printf("new: %s\nold: %s\n",s,t);
 }
 
 static void test_wkb_out_linestring(void)

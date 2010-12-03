@@ -162,7 +162,7 @@ void wkt_yyerror(const char *str)
 	/* If we haven't already set a message and location, let's set one now. */
 	if ( ! global_parser_result.message ) 
 	{
-		global_parser_result.message = str;
+		global_parser_result.message = parser_error_messages[PARSER_ERROR_OTHER];
 		global_parser_result.errcode = PARSER_ERROR_OTHER;
 		global_parser_result.errlocation = wkt_yylloc.last_column;
 	}
@@ -202,7 +202,7 @@ int lwgeom_from_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parse
 		if( ! global_parser_result.errcode )
 		{
 			global_parser_result.errcode = PARSER_ERROR_OTHER;
-			global_parser_result.message = parser_error_messages[global_parser_result.errcode];
+			global_parser_result.message = parser_error_messages[PARSER_ERROR_OTHER];
 			global_parser_result.errlocation = wkt_yylloc.last_column;
 		}
 

@@ -2029,15 +2029,31 @@ extern uchar *lwgeom_to_ewkb(LWGEOM *lwgeom, int flags, char byteorder, size_t *
 
 
 /*
+** Variants available for WKB and WKT output types
+*/
+
+#define WKB_ISO 0x01
+#define WKB_SFSQL 0x02
+#define WKB_EXTENDED 0x04
+#define WKB_NDR 0x08
+#define WKB_XDR 0x10
+#define WKB_HEX 0x11
+
+#define WKT_ISO 0x01
+#define WKT_SFSQL 0x02
+#define WKT_EXTENDED 0x04
+
+/*
 ** New parsing and unparsing functions.
 */
 extern char*   lwgeom_to_wkt(const LWGEOM *geom, uchar variant, int precision, size_t *size_out);
 extern char*   lwgeom_to_wkb(const LWGEOM *geom, uchar variant, size_t *size_out);
 extern LWGEOM* lwgeom_from_wkb(const uchar *wkb, const size_t wkb_size, const char check);
-extern char*   bytes_from_hexbytes(const char *hexbuf, size_t hexsize);
+extern uchar*  bytes_from_hexbytes(const char *hexbuf, size_t hexsize);
 /* extern char*   bytes_to_hexbytes(const char *buf, size_t bufsize);*/
-extern void lwgeom_parser_result_free(LWGEOM_PARSER_RESULT *parser_result);
-extern int lwgeom_from_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parse_flags);
+extern void    lwgeom_parser_result_free(LWGEOM_PARSER_RESULT *parser_result);
+extern void    lwgeom_parser_result_init(LWGEOM_PARSER_RESULT *parser_result);
+extern int     lwgeom_from_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parse_flags);
 
 
 extern int serialized_lwgeom_to_ewkt(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags);

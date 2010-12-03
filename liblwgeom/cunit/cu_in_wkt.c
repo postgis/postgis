@@ -63,6 +63,7 @@ static char* cu_wkt_in(char *wkt, uchar variant)
 	return s;
 }
 
+
 static void test_wkt_in_point(void)
 {
 	s = "POINT(0 0)";
@@ -241,6 +242,23 @@ static void test_wkt_in_polyhedralsurface(void)
 	lwfree(r);
 }
 
+static void test_wkt_in_errlocation(void)
+{
+	LWGEOM_PARSER_RESULT p;
+	int rv = 0;
+	char *wkt = 0;
+	
+	wkt = "LINESTRING((0 0 0,1 1)";
+	lwgeom_parser_result_init(&p);
+	rv = lwgeom_from_wkt(&p, wkt, PARSER_CHECK_ALL);
+	CU_ASSERT_EQUAL(12,p.errlocation);
+	lwgeom_parser_result_free(&p);
+
+//	printf("errlocation %d\n", p.errlocation);
+//	printf("message %s\n", p.message);
+	
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -260,6 +278,7 @@ CU_TestInfo wkt_in_tests[] =
 	PG_TEST(test_wkt_in_multicurve),
 	PG_TEST(test_wkt_in_multisurface),
 	PG_TEST(test_wkt_in_polyhedralsurface),
+	PG_TEST(test_wkt_in_errlocation),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo wkt_in_suite = {"WKT In Suite",  init_wkt_in_suite,  clean_wkt_in_suite, wkt_in_tests};

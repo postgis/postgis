@@ -65,9 +65,9 @@ static char hex2char[256] = {
     };
 
 
-char* bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
+uchar* bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
 {
-	char *buf = NULL;
+	unsigned char *buf = NULL;
 	register char h1, h2;
 	int i;
 	

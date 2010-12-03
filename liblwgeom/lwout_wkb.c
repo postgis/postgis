@@ -147,7 +147,7 @@ static inline int wkb_swap_bytes(uchar variant)
 {
 	/* If requested variant matches machine arch, we don't have to swap! */
 	if ( ((variant & WKB_NDR) && (BYTE_ORDER == LITTLE_ENDIAN)) ||
-	        ((! (variant & WKB_NDR)) && (BYTE_ORDER == BIG_ENDIAN)) )
+	     ((! (variant & WKB_NDR)) && (BYTE_ORDER == BIG_ENDIAN)) )
 	{
 		return LW_FALSE;
 	}
@@ -697,6 +697,16 @@ char* lwgeom_to_wkb(const LWGEOM *geom, uchar variant, size_t *size_out)
 	{
 		buf_size = 2 * buf_size + 1;
 		LWDEBUGF(4, "Hex WKB output size: %d", buf_size);
+	}
+
+	/* If neither or both variants are specified, choose the native order */
+	if ( ! (variant & WKB_NDR || variant & WKB_XDR) ||
+	       (variant & WKB_NDR && variant & WKB_XDR) )
+	{
+		if ( BYTE_ORDER == LITTLE_ENDIAN ) 
+			variant = variant | WKB_NDR;
+		else
+			variant = variant | WKB_XDR;
 	}
 
 	/* Allocate the buffer */

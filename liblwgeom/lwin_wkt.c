@@ -23,6 +23,7 @@ const char *parser_error_messages[] =
 #define SET_PARSER_ERROR(errno) { \
 		global_parser_result.message = parser_error_messages[(errno)]; \
 		global_parser_result.errcode = (errno); \
+		global_parser_result.errlocation = wkt_yylloc.last_column; \
 	}
 		
 /**
@@ -229,8 +230,7 @@ POINTARRAY* wkt_parser_ptarray_add_coord(POINTARRAY *pa, POINT p)
 	/* Check that the coordinate has the same dimesionality as the array */
 	if( FLAGS_NDIMS(p.flags) != FLAGS_NDIMS(pa->flags) )
 	{
-		global_parser_result.message = parser_error_messages[PARSER_ERROR_MIXDIMS];
-		global_parser_result.errcode = PARSER_ERROR_MIXDIMS;
+		SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
 		return NULL;
 	}
 	
@@ -726,6 +726,11 @@ void wkt_parser_geometry_new(LWGEOM *geom, int srid)
 		lwgeom_set_srid(geom, SRID_UNKNOWN);
 	
 	global_parser_result.geom = geom;
+}
+
+void lwgeom_parser_result_init(LWGEOM_PARSER_RESULT *parser_result)
+{
+	memset(parser_result, 0, sizeof(LWGEOM_PARSER_RESULT));
 }
 
 

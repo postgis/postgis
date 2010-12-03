@@ -647,7 +647,7 @@ static void wkt_lexer_unknown()
 {
 	/* Set the global error state */
 	global_parser_result.errcode = PARSER_ERROR_OTHER;
-	global_parser_result.message = parser_error_messages[global_parser_result.errcode];
+	global_parser_result.message = parser_error_messages[PARSER_ERROR_OTHER];
 	global_parser_result.errlocation = wkt_yylloc.last_column;
 };
 
