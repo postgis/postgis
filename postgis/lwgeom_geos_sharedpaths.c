@@ -73,10 +73,10 @@ Datum ST_SharedPaths(PG_FUNCTION_ARGS)
 	{
 		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
-		PG_FREE_IF_COPY(geom2, 0);
+		PG_FREE_IF_COPY(geom2, 1);
 		PG_RETURN_NULL();
 	}
-	PG_FREE_IF_COPY(geom2, 0);
+	PG_FREE_IF_COPY(geom2, 1);
 
 	g3 = GEOSSharedPaths(g1,g2);
 	if (g3 == NULL)
