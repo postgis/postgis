@@ -1864,7 +1864,7 @@ geomtextrep
 		<para>Availability: 2.0.0 requires GEOS &gt;= 3.3.0.</para>
 	  </refsection>
 	  <refsection>
-		<title>Examples: Polygonizing single linestrings</title>
+		<title>Examples: Finding shared paths</title>
 		 <programlisting>
 SELECT ST_AsText(ST_SharedPaths(ST_GeomFromText('MULTILINESTRING((1 3, 4 5, 5 6, 8 9, 9 9, 1 3), (1 2, -5 5))'), 
     ST_GeomFromText('LINESTRING(1 3, 4 5)'))) As wkt;
@@ -1876,7 +1876,11 @@ GEOMETRYCOLLECTION(MULTILINESTRING((1 3,4 5)),MULTILINESTRING EMPTY)
 	 </refsection>
       <refsection>
         <title>See Also</title>
-        <para></para>
+	<para>
+		<xref linkend="ST_Dump" />,
+		<xref linkend="ST_GeometryN" />,
+		<xref linkend="ST_NumGeometries" />
+	</para>
       </refsection>
 	</refentry>
 
