@@ -36,6 +36,11 @@
 	<xsl:variable name='var_logupdatesql'>UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
 		FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
 		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;</xsl:variable>
+		
+	<xsl:variable name='var_logresultsasxml'>INSERT INTO <xsl:value-of select="$var_logtable" />_output(logid, log_output)
+				SELECT logid, query_to_xml(log_sql, false,false,'') As log_output
+				    FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC LIMIT 1;</xsl:variable>
+				    
 	<pgis:gardens>
 		<pgis:gset ID='PointSet' GeometryType='POINT'>(SELECT ST_SetSRID(ST_Point(i,j),4326) As the_geom
 		FROM (SELECT a*1.11111111 FROM generate_series(-10,50,10) As a) As i(i)
@@ -105,8 +110,11 @@
         <!-- We deal only with the reference chapter -->
         <xsl:template match="/">
 <!-- Create logging table -->
+<!-- Create logging tables -->
 DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />;
-CREATE TABLE <xsl:value-of select="$var_logtable" />(logid serial PRIMARY KEY, log_label text, spatial_class text DEFAULT 'raster', func text, g1 text, g2 text, log_start timestamp, log_end timestamp);
+CREATE TABLE <xsl:value-of select="$var_logtable" />(logid serial PRIMARY KEY, log_label text, spatial_class text DEFAULT 'raster', func text, g1 text, g2 text, log_start timestamp, log_end timestamp, log_sql text);
+DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />_output;
+CREATE TABLE <xsl:value-of select="$var_logtable" />_output(logid integer PRIMARY KEY, log_output xml);
                 <xsl:apply-templates select="/book/chapter[@id='RT_reference']" />
         </xsl:template>
 	<xsl:template match='chapter'>
@@ -117,38 +125,41 @@ CREATE TABLE pgis_rgarden_mega(rid serial PRIMARY KEY, rast raster);
 		<xsl:for-each select="document('')//pgis:pixeltypes/pgis:pixeltype[not(contains(@createtable,'false'))]">
 			<xsl:variable name='log_label'>create table Test <xsl:value-of select="@PixType" /></xsl:variable>
 SELECT '<xsl:value-of select="$log_label" />: Start Testing';
-INSERT INTO <xsl:value-of select="$var_logtable" />(log_label,  func, g1, log_start) 
-VALUES('<xsl:value-of select="$log_label" /> AddRasterColumn','AddRasterColumn', '<xsl:value-of select="@PixType" />', clock_timestamp());
-BEGIN;
-	CREATE TABLE pgis_rgarden_<xsl:value-of select="@ID" />(rid serial PRIMARY KEY);
+<xsl:variable name='var_sql'>CREATE TABLE pgis_rgarden_<xsl:value-of select="@ID" />(rid serial PRIMARY KEY);
 	SELECT AddRasterColumn('public', lower('pgis_rgarden_<xsl:value-of select="@ID" />'), 'rast',4326, '{<xsl:value-of select="@PixType" />}',false, true, '{<xsl:value-of select="@nodata" />}', 0.25,-0.25,200,300, null);
-	SELECT AddRasterColumn('public', lower('pgis_rgarden_<xsl:value-of select="@ID" />'),'r_rasttothrow', 4326, '{<xsl:value-of select="@PixType" />,<xsl:value-of select="$var_pixeltypenoq" />}',false, true, '{<xsl:value-of select="@nodata" />, <xsl:value-of select="$var_pixelvalue" />}', 0.25,-0.25,200,300, null);
-
+	SELECT AddRasterColumn('public', lower('pgis_rgarden_<xsl:value-of select="@ID" />'),'r_rasttothrow', 4326, '{<xsl:value-of select="@PixType" />,<xsl:value-of select="$var_pixeltypenoq" />}',false, true, '{<xsl:value-of select="@nodata" />, <xsl:value-of select="$var_pixelvalue" />}', 0.25,-0.25,200,300, null);</xsl:variable>
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label,  func, g1, log_start,log_sql) 
+VALUES('<xsl:value-of select="$log_label" /> AddRasterColumn','AddRasterColumn', '<xsl:value-of select="@PixType" />', clock_timestamp(),
+	  '<xsl:call-template name="escapesinglequotes"><xsl:with-param name="arg1"><xsl:value-of select="$var_sql" /></xsl:with-param></xsl:call-template>');
+BEGIN;
+	<xsl:value-of select="$var_sql" />
 	<xsl:value-of select="$var_logupdatesql" />
 COMMIT;<xsl:text> 
 </xsl:text>
-
-INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
-VALUES('<xsl:value-of select="$log_label" /> insert data raster','insert data', '<xsl:value-of select="@PixType" />', clock_timestamp());
-
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start,log_sql) 
+VALUES('<xsl:value-of select="$log_label" /> insert data raster','insert data', '<xsl:value-of select="@PixType" />', clock_timestamp(),
+  '<xsl:call-template name="escapesinglequotes"><xsl:with-param name="arg1">INSERT INTO pgis_rgarden_mega(rast)
+	SELECT rast
+	FROM (<xsl:value-of select="." />) As foo;</xsl:with-param></xsl:call-template>');
 BEGIN;
 	INSERT INTO pgis_rgarden_mega(rast)
 	SELECT rast
 	FROM (<xsl:value-of select="." />) As foo;
 	<xsl:value-of select="$var_logupdatesql" />
 COMMIT;	
-		
 		</xsl:for-each>
 <!--End Test table creation  -->
 
 <!--Start Test table drop -->
 		<xsl:for-each select="document('')//pgis:pixeltypes/pgis:pixeltype[not(contains(@createtable,'false'))]">
 			<xsl:variable name='log_label'>drop table Test <xsl:value-of select="@PixType" /></xsl:variable>
+			<xsl:variable name='var_sql'>SELECT DropRasterTable('public', lower('pgis_rgarden_<xsl:value-of select="@ID" />'));</xsl:variable>
 SELECT '<xsl:value-of select="$log_label" />: Start Testing';
-INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
-VALUES('<xsl:value-of select="$log_label" /> DropRasterTable','DropRasterTable', '<xsl:value-of select="@PixType" />', clock_timestamp());
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start, log_sql) 
+VALUES('<xsl:value-of select="$log_label" /> DropRasterTable','DropRasterTable', '<xsl:value-of select="@PixType" />', clock_timestamp(),
+'<xsl:call-template name="escapesinglequotes"><xsl:with-param name="arg1"><xsl:value-of select="$var_sql" /></xsl:with-param></xsl:call-template>');
 BEGIN;
-	SELECT DropRasterTable('public', lower('pgis_rgarden_<xsl:value-of select="@ID" />'));
+	<xsl:value-of select="$var_sql" />
 	<xsl:value-of select="$var_logupdatesql" />
 COMMIT;<xsl:text> 
 </xsl:text>
@@ -171,24 +182,29 @@ COMMIT;<xsl:text>
 		<xsl:choose>
 			  <xsl:when test="contains($fndef, 'geometry')">
 			 SELECT 'Geometry <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryTypeype" />';
-			 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start) 
-			  	VALUES('<xsl:value-of select="$log_label" /> Geometry <xsl:value-of select="$geom1type" /><xsl:text> </xsl:text><xsl:value-of select="@PixType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="$geom1type" />','<xsl:value-of select="@GeometryType" />', clock_timestamp());
+			 <xsl:variable name='var_sql'>SELECT foo1.the_geom <xsl:value-of select="$fnname" /> foo2.the_geom
+						FROM (<xsl:value-of select="$from1" />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2;</xsl:variable>
+			 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start,log_sql) 
+			  	VALUES('<xsl:value-of select="$log_label" /> Geometry <xsl:value-of select="$geom1type" /><xsl:text> </xsl:text><xsl:value-of select="@PixType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="$geom1type" />','<xsl:value-of select="@GeometryType" />', clock_timestamp(),
+			  	'<xsl:call-template name="escapesinglequotes"><xsl:with-param name="arg1"><xsl:value-of select="$var_sql" /></xsl:with-param></xsl:call-template>');
 
 			BEGIN;
-				SELECT foo1.the_geom <xsl:value-of select="$fnname" /> foo2.the_geom
-						FROM (<xsl:value-of select="$from1" />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2
-						;
+				<!--  log query result to output table -->
+				<xsl:value-of select="$var_logresultsasxml" />
 				<xsl:value-of select="$var_logupdatesql" />
 			COMMIT;
 			</xsl:when>
 			<xsl:otherwise>
+			<xsl:variable name='var_sql'>SELECT rast1.rast <xsl:value-of select="$fnname" /> rast2.rast
+				FROM (<xsl:value-of select="$from1" />) As rast1 CROSS JOIN (<xsl:value-of select="." />) As rast2;</xsl:variable>
 			SELECT 'Raster <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="$pix1type" />, <xsl:value-of select="@PixType" />';
-			 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start) 
-			  	VALUES('<xsl:value-of select="$log_label" /> Raster <xsl:value-of select="$pix1type" /><xsl:text> </xsl:text><xsl:value-of select="@PixType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="$pix1type" />','<xsl:value-of select="@PixType" />', clock_timestamp());
+			 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start, log_sql) 
+			  	VALUES('<xsl:value-of select="$log_label" /> Raster <xsl:value-of select="$pix1type" /><xsl:text> </xsl:text><xsl:value-of select="@PixType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="$pix1type" />','<xsl:value-of select="@PixType" />', clock_timestamp(),
+			  		'<xsl:call-template name="escapesinglequotes"><xsl:with-param name="arg1"><xsl:value-of select="$var_sql" /></xsl:with-param></xsl:call-template>');
 
 			BEGIN;
-				SELECT rast1.rast <xsl:value-of select="$fnname" /> rast2.rast
-						FROM (<xsl:value-of select="$from1" />) As rast1 CROSS JOIN (<xsl:value-of select="." />) As rast2;
+				<!--  log query result to output table -->
+				<xsl:value-of select="$var_logresultsasxml" />
 				<xsl:value-of select="$var_logupdatesql" />
 			COMMIT;
 			</xsl:otherwise>
@@ -447,4 +463,21 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 			</xsl:for-each>
 		</xsl:for-each>
 	</xsl:template>
+	
+	<!-- copied from http://www.thedumbterminal.co.uk/php/knowledgebase/?action=view&id=94 -->
+    <xsl:template name="escapesinglequotes">
+     <xsl:param name="arg1"/>
+     <xsl:variable name="apostrophe">'</xsl:variable>
+     <xsl:choose>
+      <!-- this string has at least on single quote -->
+      <xsl:when test="contains($arg1, $apostrophe)">
+      <xsl:if test="string-length(normalize-space(substring-before($arg1, $apostrophe))) > 0"><xsl:value-of select="substring-before($arg1, $apostrophe)" disable-output-escaping="yes"/>''</xsl:if>
+       <xsl:call-template name="escapesinglequotes">
+        <xsl:with-param name="arg1"><xsl:value-of select="substring-after($arg1, $apostrophe)" disable-output-escaping="yes"/></xsl:with-param>
+       </xsl:call-template>
+      </xsl:when>
+      <!-- no quotes found in string, just print it -->
+      <xsl:when test="string-length(normalize-space($arg1)) > 0"><xsl:value-of select="normalize-space($arg1)"/></xsl:when>
+     </xsl:choose>
+    </xsl:template>
 </xsl:stylesheet>
