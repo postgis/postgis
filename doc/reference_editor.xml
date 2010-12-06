@@ -1272,11 +1272,9 @@ LINESTRING(-1 2 3,-1 3 4,-1 1 3)
 	  <refnamediv>
 		<refname>ST_SnapToGrid</refname>
 
-		<refpurpose>Snap all points of the input geometry to the grid defined by
-			its origin and cell size. Remove consecutive points falling on the
-			same cell, eventually returning NULL if output points are not
-			enough to define a geometry of the given type. Collapsed
-			geometries in a collection are stripped from it. Useful for reducing precision.</refpurpose>
+		<refpurpose>
+		Snap all points of the input geometry to a regular grid.
+		</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1323,6 +1321,7 @@ LINESTRING(-1 2 3,-1 3 4,-1 1 3)
 			same cell, eventually returning NULL if output points are not
 			enough to define a geometry of the given type. Collapsed
 			geometries in a collection are stripped from it.
+			Useful for reducing precision.
 		</para>
 
 		<para>Variant 4:  Introduced 1.1.0 - Snap all points of the input geometry to the grid defined by
@@ -1391,7 +1390,79 @@ SELECT ST_AsEWKT(ST_SnapToGrid(ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 3 2.
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_Simplify" /></para>
+		<para>
+		<xref linkend="ST_Snap" />,
+		<xref linkend="ST_AsEWKT" />,
+		<xref linkend="ST_AsText" />,
+		<xref linkend="ST_GeomFromText" />,
+		<xref linkend="ST_GeomFromEWKT" />,
+		<xref linkend="ST_Simplify" />
+		</para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Snap">
+	  <refnamediv>
+		<refname>ST_Snap</refname>
+
+		<refpurpose>
+	Snap segments and vertices of input geometry
+	to vertices of a reference geometry.
+		</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Snap</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>input</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>reference</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>tolerance</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>
+ Snaps the vertices and segments of a geometry
+ another Geometry's vertices.
+ A snap distance tolerance is used to control where snapping is performed.
+		</para>
+		<para>
+ Snapping one geometry to another can improve
+ robustness for overlay operations by eliminating
+ nearly-coincident edges
+ (which cause problems during noding and intersection calculation).
+		</para>
+
+		<para>
+ Too much snapping can result in invalid topology
+ being created, so the number and location of snapped vertices
+ is decided using heuristics to determine when it
+ is safe to snap.
+ This can result in some potential snaps being omitted, however.
+		</para>
+
+		<note>
+		  <para>
+		  The returned geometry might loose its simplicity (see
+		  <xref linkend="ST_IsSimple" />) and validity (see 
+		  <xref linkend="ST_IsValid" />).
+		  </para>
+		</note>
+
+		<para>Availability: 2.0.0 requires GEOS &gt;= 3.3.0.</para>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para>
+		<xref linkend="ST_SnapToGrid" />
+		</para>
 	  </refsection>
 	</refentry>
 
