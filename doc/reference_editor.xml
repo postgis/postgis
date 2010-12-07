@@ -1455,6 +1455,74 @@ SELECT ST_AsEWKT(ST_SnapToGrid(ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 3 2.
 
 		<para>Availability: 2.0.0 requires GEOS &gt;= 3.3.0.</para>
 	  </refsection>
+	  
+	  <refsection>
+		<title>Examples</title>
+			<informaltable>
+				  <tgroup cols="2">
+					<tbody>
+					  <row>
+						<entry><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_snap01.png" />
+							  </imageobject>
+							  <caption><para>A multipolygon shown with a linestring (before any snapping)</para></caption>
+							</mediaobject>
+						  </informalfigure>
+					   </entry>
+					   <entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_snap02.png" />
+							  </imageobject>
+							  <caption><para>A multipolygon snapped to linestring to tolerance: 1.01 of distance. 
+							  The new multipolygon is shown with reference linestring</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(ST_Snap(poly,line, ST_Distance(poly,line)*1.01)) AS polysnapped
+FROM (SELECT ST_GeomFromText('MULTIPOLYGON ((( 26 125, 26 200, 126 200, 126 125, 26 125 ),
+      ( 51 150, 101 150, 76 175, 51 150 )), (( 151 100, 151 200, 176 175, 151 100 )))') As poly,
+       ST_GeomFromText('LINESTRING (5 107, 54 84, 101 100)') As line
+		
+	) As foo;
+
+                             polysnapped
+-------------------------------------------------------------------------------------------------
+ MULTIPOLYGON(((26 125,26 200,126 200,126 125,101 100,26 125),
+ (51 150,101 150,76 175,51 150)),((151 100,151 200,176 175,151 100)))
+				</programlisting>
+						  </para></entry>
+					   <entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_snap03.png" />
+							  </imageobject>
+							  <caption><para>The linestring snapped to the original multipolygon  at tolerance 1.01 of distance. 
+							  The new linestring is shown with reference multipolygon</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(ST_Snap(line, poly, ST_Distance(poly,line)*1.01)) AS linesnapped
+FROM (SELECT ST_GeomFromText('MULTIPOLYGON ((( 26 125, 26 200, 126 200, 126 125, 26 125 ),
+      ( 51 150, 101 150, 76 175, 51 150 )), (( 151 100, 151 200, 176 175, 151 100 )))') As poly,
+       ST_GeomFromText('LINESTRING (5 107, 54 84, 101 100)') As line
+		
+	) As foo;
+
+              linesnapped
+----------------------------------------
+ LINESTRING(5 107,26 125,54 84,101 100)
+				</programlisting>
+						  </para></entry>
+
+					  </row>
+		</tbody>
+	</tgroup>
+</informaltable>
+
+	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>

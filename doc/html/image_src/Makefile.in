@@ -84,6 +84,9 @@ IMAGES= \
 	../images/st_minimumboundingcircle01.png \
 	../images/st_shortestline01.png \
 	../images/st_shortestline02.png \
+	../images/st_snap01.png \
+	../images/st_snap02.png \
+	../images/st_snap03.png \
 	../images/st_split01.png \
 	../images/st_split02.png \
 	../images/st_split03.png \
