@@ -33,7 +33,7 @@ void lwcircstring_setPoint4d(LWCIRCSTRING *curve, uint32 index, POINT4D *newpoin
 
 /*
  * Construct a new LWCIRCSTRING.  points will *NOT* be copied
- * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
+ * use SRID=SRID_UNKNOWN for unknown SRID (will have 8bit type's S = 0)
  */
 LWCIRCSTRING *
 lwcircstring_construct(int srid, GBOX *bbox, POINTARRAY *points)
@@ -213,7 +213,7 @@ void lwcircstring_serialize_buf(LWCIRCSTRING *curve, uchar *buf, size_t *retsize
 
 	ptsize = ptarray_point_size(curve->points);
 
-	has_srid = (curve->srid != -1);
+	has_srid = (curve->srid != SRID_UNKNOWN);
 
 	buf[0] = (uchar)lwgeom_makeType_full(
 	             FLAGS_GET_Z(curve->flags), FLAGS_GET_M(curve->flags),
@@ -270,7 +270,7 @@ lwcircstring_serialize_size(LWCIRCSTRING *curve)
 
 	LWDEBUG(2, "lwcircstring_serialize_size called");
 
-	if (curve->srid != -1) size += 4; /* SRID */
+	if (curve->srid != SRID_UNKNOWN) size += 4; /* SRID */
 	if (curve->bbox) size += sizeof(BOX2DFLOAT4);
 
 	size += 4; /* npoints */

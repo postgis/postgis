@@ -247,7 +247,7 @@ PG_LWGEOM_construct(uchar *ser, int srid, int wantbbox)
 		size -= sizeof(BOX2DFLOAT4);
 	}
 
-	if ( srid != -1 )
+	if ( srid != SRID_UNKNOWN )
 	{
 		wantsrid = 1;
 		size += 4;
@@ -304,7 +304,7 @@ pglwgeom_set_srid(PG_LWGEOM *lwgeom, int32 new_srid)
 
 	if (lwgeom_hasSRID(type))
 	{
-		if ( new_srid != -1 )
+		if ( new_srid != SRID_UNKNOWN )
 		{
 			/* we create a new one and copy the SRID in */
 			result = lwalloc(len);

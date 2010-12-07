@@ -43,7 +43,7 @@ typedef void (*read_col_func)(const char **f);
 
 /* Globals */
 
-int srid=-1;
+int srid=SRID_UNKNOWN;
 
 static int parser_ferror_occured;
 static allocator local_malloc;
@@ -358,7 +358,7 @@ alloc_lwgeom(int srid)
 		the_geom.first=the_geom.last=NULL;
 	}
 
-	if ( srid != -1 )
+	if ( srid != SRID_UNKNOWN )
 	{
 		the_geom.alloc_size+=4;
 	}
@@ -1140,7 +1140,7 @@ write_type(tuple* this,output_state* out)
 		TYPE_SETZM(type, the_geom.hasZ, the_geom.hasM);
 	}
 
-	if ( the_geom.srid != -1 )
+	if ( the_geom.srid != SRID_UNKNOWN )
 	{
 		type |= 0x40;
 	}
@@ -1148,7 +1148,7 @@ write_type(tuple* this,output_state* out)
 	*(out->pos)=type;
 	out->pos++;
 
-	if ( the_geom.srid != -1 )
+	if ( the_geom.srid != SRID_UNKNOWN )
 	{
 		/* Only the first geometry will have a srid attached */
 		WRITE_INT4(out,the_geom.srid);
@@ -1625,7 +1625,7 @@ parse_wkb(const char **b)
 	{
 		/* local (in-EWKB) srid spec overrides SRID=#; */
 		localsrid = read_wkb_int(b);
-		if ( localsrid != -1 )
+		if ( localsrid != SRID_UNKNOWN )
 		{
 			if ( the_geom.srid == -1 ) the_geom.alloc_size += 4;
 			the_geom.srid = localsrid;

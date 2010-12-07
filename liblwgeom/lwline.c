@@ -21,7 +21,7 @@
 
 /*
  * Construct a new LWLINE.  points will *NOT* be copied
- * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
+ * use SRID=SRID_UNKNOWN for unknown SRID (will have 8bit type's S = 0)
  */
 LWLINE *
 lwline_construct(int srid, GBOX *bbox, POINTARRAY *points)
@@ -182,7 +182,7 @@ lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *retsize)
 
 	ptsize = ptarray_point_size(line->points);
 
-	has_srid = (line->srid != -1);
+	has_srid = (line->srid != SRID_UNKNOWN);
 
 	buf[0] = (uchar) lwgeom_makeType_full(
 	             FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags),
@@ -257,7 +257,7 @@ lwline_serialize_size(LWLINE *line)
 
 	LWDEBUG(2, "lwline_serialize_size called");
 
-	if ( line->srid != -1 ) size += 4; /* SRID */
+	if ( line->srid != SRID_UNKNOWN ) size += 4; /* SRID */
 	if ( line->bbox ) size += sizeof(BOX2DFLOAT4);
 
 	size += 4; /* npoints */

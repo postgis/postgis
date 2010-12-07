@@ -227,7 +227,7 @@ tgeom_add_polygon(TGEOM *tgeom, LWPOLY *poly)
 	if (FLAGS_NDIMS(tgeom->flags) != FLAGS_NDIMS(poly->flags))
 		lwerror("tgeom_add_polygon: Mixed dimension");
 
-	if (tgeom->srid != poly->srid && (tgeom->srid != 0 && poly->srid != -1))
+	if (tgeom->srid != poly->srid && (tgeom->srid != 0 && poly->srid != SRID_UNKNOWN))
 		lwerror("tgeom_add_polygon: Mixed srid. Tgeom: %i / Polygon: %i",
 		        tgeom->srid, poly->srid);
 
@@ -304,7 +304,7 @@ tgeom_add_triangle(TGEOM *tgeom, LWTRIANGLE *triangle)
 		lwerror("tgeom_add_triangle: Mixed dimension");
 
 	if (tgeom->srid != triangle->srid
-	        && (tgeom->srid != 0 && triangle->srid != -1))
+	        && (tgeom->srid != 0 && triangle->srid != SRID_UNKNOWN))
 		lwerror("tgeom_add_triangle: Mixed srid. Tgeom: %i / Triangle: %i",
 		        tgeom->srid, triangle->srid);
 

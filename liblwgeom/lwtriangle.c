@@ -20,7 +20,7 @@
 
 
 /* construct a new LWTRIANGLE.
- * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
+ * use SRID=SRID_UNKNOWN for unknown SRID (will have 8bit type's S = 0)
  */
 LWTRIANGLE*
 lwtriangle_construct(int srid, GBOX *bbox, POINTARRAY *points)
@@ -185,7 +185,7 @@ lwtriangle_serialize_buf(LWTRIANGLE *triangle, uchar *buf, size_t *retsize)
 
 	ptsize = ptarray_point_size(triangle->points);
 
-	has_srid = (triangle->srid != -1);
+	has_srid = (triangle->srid != SRID_UNKNOWN);
 
 	buf[0] = (uchar) lwgeom_makeType_full(
 	             FLAGS_GET_Z(triangle->flags), FLAGS_GET_M(triangle->flags),
@@ -297,7 +297,7 @@ lwtriangle_serialize_size(LWTRIANGLE *triangle)
 
 	LWDEBUG(2, "lwtriangle_serialize_size called");
 
-	if ( triangle->srid != -1 ) size += 4; /* SRID */
+	if ( triangle->srid != SRID_UNKNOWN ) size += 4; /* SRID */
 	if ( triangle->bbox ) size += sizeof(BOX2DFLOAT4);
 
 	size += 4; /* npoints */

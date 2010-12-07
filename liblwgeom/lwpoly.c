@@ -21,7 +21,7 @@
 #define CHECK_POLY_RINGS_ZM 1
 
 /* construct a new LWPOLY.  arrays (points/points per ring) will NOT be copied
- * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
+ * use SRID=SRID_UNKNOWN for unknown SRID (will have 8bit type's S = 0)
  */
 LWPOLY*
 lwpoly_construct(int srid, GBOX *bbox, uint32 nrings, POINTARRAY **points)
@@ -216,7 +216,7 @@ lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *retsize)
 
 	ptsize = sizeof(double)*FLAGS_NDIMS(poly->flags);
 
-	has_srid = (poly->srid != -1);
+	has_srid = (poly->srid != SRID_UNKNOWN);
 
 	size += 4; /* nrings */
 	size += 4*poly->nrings; /* npoints/ring */
@@ -376,7 +376,7 @@ lwpoly_serialize_size(LWPOLY *poly)
 	size_t size = 1; /* type */
 	uint32 i;
 
-	if ( poly->srid != -1 ) size += 4; /* SRID */
+	if ( poly->srid != SRID_UNKNOWN ) size += 4; /* SRID */
 	if ( poly->bbox ) size += sizeof(BOX2DFLOAT4);
 
 	LWDEBUGF(2, "lwpoly_serialize_size called with poly[%p] (%d rings)",

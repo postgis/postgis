@@ -67,7 +67,7 @@ lwpoint_serialize_buf(LWPOINT *point, uchar *buf, size_t *retsize)
 		return;
 	}
 
-	has_srid = (point->srid != -1);
+	has_srid = (point->srid != SRID_UNKNOWN);
 
 	if (has_srid) size +=4;  /*4 byte SRID */
 	if (point->bbox) size += sizeof(BOX2DFLOAT4); /* bvol */
@@ -119,7 +119,7 @@ lwpoint_serialize_size(LWPOINT *point)
 	}
 		
 
-	if ( point->srid != -1 ) size += 4; /* SRID */
+	if ( point->srid != SRID_UNKNOWN ) size += 4; /* SRID */
 	if ( point->bbox ) size += sizeof(BOX2DFLOAT4);
 
 	size += FLAGS_NDIMS(point->flags) * sizeof(double); /* point */
@@ -181,7 +181,7 @@ lwpoint_getPoint4d_p(const LWPOINT *point, POINT4D *out)
 
 /*
  * Construct a new point.  point will not be copied
- * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
+ * use SRID=SRID_UNKNOWN for unknown SRID (will have 8bit type's S = 0)
  */
 LWPOINT *
 lwpoint_construct(int srid, GBOX *bbox, POINTARRAY *point)

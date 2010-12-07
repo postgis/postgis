@@ -1355,7 +1355,7 @@ extern int lwgeom_getnumgeometries_inspected(LWGEOM_INSPECTED *inspected);
 /*
  * set finalType to COLLECTIONTYPE or 0 (0 means choose a best type)
  *   (ie. give it 2 points and ask it to be a multipoint)
- *  use SRID=-1 for unknown SRID  (will have 8bit type's S = 0)
+ *  use SRID=SRID_UNKNOWN for unknown SRID  (will have 8bit type's S = 0)
  * all subgeometries must have the same SRID
  * if you want to construct an inspected, call this then inspect the result...
  */

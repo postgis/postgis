@@ -1342,7 +1342,7 @@ lwgeom_getnumgeometries_inspected(LWGEOM_INSPECTED *inspected)
 /*
  * Set finalType to COLLECTIONTYPE or 0 (0 means choose a best type)
  *   (ie. give it 2 points and ask it to be a multipoint)
- *  use SRID=-1 for unknown SRID  (will have 8bit type's S = 0)
+ *  use SRID=SRID_UNKNOWN for unknown SRID  (will have 8bit type's S = 0)
  * all subgeometries must have the same SRID
  * if you want to construct an inspected, call this then inspect the result...
  */
@@ -1414,15 +1414,15 @@ lwgeom_serialized_construct(int srid, int finalType, char hasz, char hasm,
 
 	/* now we have a multi* or GEOMETRYCOLLECTION, let's serialize it */
 
-	if (srid != -1)
+	if (srid != SRID_UNKNOWN)
 		total_length +=4; /* space for SRID */
 
 	total_length +=1 ;   /* main type; */
 	total_length +=4 ;   /* nsubgeometries */
 
 	result = lwalloc(total_length);
-	result[0] = (uchar) lwgeom_makeType(hasz, hasm, srid != -1,  type);
-	if (srid != -1)
+	result[0] = (uchar) lwgeom_makeType(hasz, hasm, srid != SRID_UNKNOWN,  type);
+	if (srid != SRID_UNKNOWN)
 	{
 		memcpy(&result[1],&srid,4);
 		loc = result+5;
@@ -1457,15 +1457,15 @@ lwgeom_constructempty(int srid, char hasz, char hasm)
 	int ngeoms = 0;
 	uchar *loc;
 
-	if (srid != -1)
+	if (srid != SRID_UNKNOWN)
 		size +=4;
 
 	size += 5;
 
 	result = lwalloc(size);
 
-	result[0] = lwgeom_makeType(hasz, hasm, srid != -1,  COLLECTIONTYPE);
-	if (srid != -1)
+	result[0] = lwgeom_makeType(hasz, hasm, srid != SRID_UNKNOWN,  COLLECTIONTYPE);
+	if (srid != SRID_UNKNOWN)
 	{
 		memcpy(&result[1],&srid,4);
 		loc = result+5;
@@ -1495,8 +1495,8 @@ lwgeom_constructempty_buf(int srid, char hasz, char hasm,
 {
 	int ngeoms = 0;
 
-	buf[0] =(uchar) lwgeom_makeType( hasz, hasm, srid != -1,  COLLECTIONTYPE);
-	if (srid != -1)
+	buf[0] =(uchar) lwgeom_makeType( hasz, hasm, srid != SRID_UNKNOWN,  COLLECTIONTYPE);
+	if (srid != SRID_UNKNOWN)
 	{
 		memcpy(&buf[1],&srid,4);
 		buf += 5;

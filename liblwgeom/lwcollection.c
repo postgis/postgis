@@ -164,7 +164,7 @@ lwcollection_serialize_size(LWCOLLECTION *col)
 	size_t size = 5; /* type + nsubgeoms */
 	int i;
 
-	if ( col->srid != -1 ) size += 4; /* srid */
+	if ( col->srid != SRID_UNKNOWN ) size += 4; /* srid */
 	if ( col->bbox ) size += sizeof(BOX2DFLOAT4);
 
 	LWDEBUGF(2, "lwcollection_serialize_size[%p]: start size: %d", col, size);
@@ -198,7 +198,7 @@ lwcollection_serialize_buf(LWCOLLECTION *coll, uchar *buf, size_t *retsize)
 	LWDEBUGF(2, "lwcollection_serialize_buf called (%s with %d elems)",
 	         lwtype_name(coll->type), coll->ngeoms);
 
-	has_srid = (coll->srid != -1);
+	has_srid = (coll->srid != SRID_UNKNOWN);
 
 	buf[0] = lwgeom_makeType_full(FLAGS_GET_Z(coll->flags),
 	                              FLAGS_GET_M(coll->flags),
