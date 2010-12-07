@@ -1866,13 +1866,10 @@ geomtextrep
 	  <refsection>
 		<title>Examples: Finding shared paths</title>
 		<informaltable>
-		  <tgroup cols="2">
-			<colspec colname="column1" />
-			<colspec colname="column2" />
-			<spanspec namest="column1" nameend="column2" spanname="span-horiz" align="center" />
+		  <tgroup cols="1">
 			<tbody>
 			  <row>
-				<entry spanname="span-horiz"><informalfigure>
+				<entry><informalfigure>
 					<mediaobject>
 					  <imageobject>
 						<imagedata fileref="images/st_sharedpaths01.png" />
@@ -1907,6 +1904,8 @@ GEOMETRYCOLLECTION(MULTILINESTRING((126 156.25,126 125),
 			  </programlisting>
 			</para>
 			</entry>
+		</row>
+		<row>
 			<entry><para>
 				  <programlisting>
 -- same example but linestring orientation flipped
