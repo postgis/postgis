@@ -1925,6 +1925,9 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
 			</para>
 			</entry>
 		</row>
+	</tbody>
+	</tgroup>
+</informaltable>
 	 </refsection>
       <refsection>
         <title>See Also</title>
