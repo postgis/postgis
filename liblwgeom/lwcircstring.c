@@ -47,8 +47,7 @@ lwcircstring_construct(int srid, GBOX *bbox, POINTARRAY *points)
 	        */
 	if (points->npoints % 2 != 1 || points->npoints < 3)
 	{
-		lwerror("lwcircstring_construct: invalid point count %d", points->npoints);
-		return NULL;
+		lwnotice("lwcircstring_construct: invalid point count %d", points->npoints);
 	}
 
 	result = (LWCIRCSTRING*) lwalloc(sizeof(LWCIRCSTRING));
@@ -74,7 +73,7 @@ lwcircstring_construct_empty(int srid, char hasz, char hasm)
 	result->type = CIRCSTRINGTYPE;
 	result->flags = gflags(hasz,hasm,0);
 	result->srid = srid;
-	result->points = NULL;
+	result->points = ptarray_construct_empty(hasz, hasm, 1);
 	result->bbox = NULL;
 	return result;
 }

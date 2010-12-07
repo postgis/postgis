@@ -472,7 +472,7 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 		srid = lwgeom->srid;
 		/* We transfer bbox ownership from input to output */
 		bbox = lwgeom->bbox;
-		lwgeom->srid = -1;
+		lwgeom->srid = SRID_UNKNOWN;
 		lwgeom->bbox = NULL;
 		lwgeoms[0] = lwgeom;
 		lwgeom = (LWGEOM *)lwcollection_construct(COLLECTIONTYPE,
@@ -1329,7 +1329,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	LWGEOM **lwgeoms, *outlwg;
 	uint32 outtype;
 	int i, count;
-	int srid=-1;
+	int srid=SRID_UNKNOWN;
 	size_t offset;
 	GBOX *box=NULL;
 	bits8 *bitmap;
@@ -1538,7 +1538,7 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 	uint32 npoints;
 	int i;
 	size_t offset;
-	int srid=-1;
+	int srid=SRID_UNKNOWN;
 
 	bits8 *bitmap;
 	int bitmask;
@@ -2445,37 +2445,30 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_asEWKT);
 Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS)
 {
-	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
-	PG_LWGEOM *lwgeom;
-	int len, result;
-	char *lwgeom_result,*loc_wkt;
-	/*char *semicolonLoc; */
+	PG_LWGEOM *geom;
+	LWGEOM *lwgeom;
+	char *wkt;
+	size_t wkt_size;
+	text *result;
 
-	lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	POSTGIS_DEBUG(2, "LWGEOM_asEWKT called.");
 
-	result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, SERIALIZED_FORM(lwgeom), PARSER_CHECK_ALL);
-	if (result)
-		PG_UNPARSER_ERROR(lwg_unparser_result);
+	geom = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	lwgeom = pglwgeom_deserialize(geom);
 
-#if 0
-	semicolonLoc = strchr(lwg_unparser_result.wkb,';');
+	/* Write to WKT and free the geometry */
+	wkt = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, DBL_DIG, &wkt_size);
+	lwgeom_free(lwgeom);
 
-	/*loc points to start of wkt */
-	if (semicolonLoc == NULL) loc_wkt = lwg_unparser_result.wkoutput;
-	else loc_wkt = semicolonLoc +1;
-#endif
-	loc_wkt = lwg_unparser_result.wkoutput;
+	/* Write to text and free the WKT */
+	result = palloc(wkt_size - 1 + VARHDRSZ);
+	memcpy(VARDATA(result), wkt, wkt_size - 1);
+	SET_VARSIZE(result, wkt_size - 1 + VARHDRSZ);
+	pfree(wkt);
 
-	len = strlen(loc_wkt);
-	lwgeom_result = palloc(len + VARHDRSZ);
-	SET_VARSIZE(lwgeom_result, len + VARHDRSZ);
-
-	memcpy(VARDATA(lwgeom_result), loc_wkt, len);
-
-	pfree(lwg_unparser_result.wkoutput);
-	PG_FREE_IF_COPY(lwgeom, 0);
-
-	PG_RETURN_POINTER(lwgeom_result);
+	/* Return the text */
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_TEXT_P(result);
 }
 
 /**

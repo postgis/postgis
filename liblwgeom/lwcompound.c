@@ -115,3 +115,37 @@ double lwcompound_length_2d(const LWCOMPOUND *comp)
 	lwline_free(line);
 	return length;
 }
+
+int lwcompound_add_lwgeom(LWCOMPOUND *comp, LWGEOM *geom)
+{
+	LWCOLLECTION *col = (LWCOLLECTION*)comp;
+	
+	/* Empty things can't continuously join up with other things */
+	if ( lwgeom_is_empty(geom) )
+	{
+		LWDEBUG(4, "Got an empty component for a compound curve!");
+		return LW_FAILURE;
+	}
+	
+	if( col->ngeoms > 0 )
+	{
+		POINT4D last, first;
+		/* First point of the component we are adding */
+		LWLINE *newline = (LWLINE*)geom;
+		/* Last point of the previous component */
+		LWLINE *prevline = (LWLINE*)(col->geoms[col->ngeoms-1]);
+
+		getPoint4d_p(newline->points, 0, &first);
+		getPoint4d_p(prevline->points, prevline->points->npoints-1, &last);
+		
+		if ( !(FP_EQUALS(first.x,last.x) && FP_EQUALS(first.y,last.y)) )
+		{
+			LWDEBUG(4, "Components don't join up end-to-end!");
+			LWDEBUGF(4, "first pt (%g %g %g %g) last pt (%g %g %g %g)", first.x, first.y, first.z, first.m, last.x, last.y, last.z, last.m);			
+			return LW_FAILURE;
+		}
+	}
+	
+	col = lwcollection_add_lwgeom(col, geom);
+	return LW_SUCCESS;
+}

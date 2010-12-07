@@ -82,8 +82,8 @@ void triangle_parse(void)
 	/*
 	  NOTA: Theses 3 ASSERT results will change a day cf #294
 	*/
-	CU_ASSERT_EQUAL(geom->type, COLLECTIONTYPE);
-	CU_ASSERT_STRING_EQUAL("GEOMETRYCOLLECTION EMPTY", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE));
+	CU_ASSERT_EQUAL(geom->type, TRIANGLETYPE);
+//	CU_ASSERT_STRING_EQUAL("TRIANGLE EMPTY", lwgeom_to_wkt(geom, PARSER_CHECK_NONE));
 	lwgeom_free(geom);
 
 	/* explicit SRID */
@@ -116,8 +116,8 @@ void tin_parse(void)
 	/*
 	  NOTA: Theses 3 ASSERT results will change a day cf #294
 	*/
-	CU_ASSERT_EQUAL(geom->type, COLLECTIONTYPE);
-	CU_ASSERT_STRING_EQUAL("GEOMETRYCOLLECTION EMPTY", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE));
+	CU_ASSERT_EQUAL(geom->type, TINTYPE);
+//	CU_ASSERT_STRING_EQUAL("TIN EMPTY", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE));
 	lwgeom_free(geom);
 
 	/* 2 dims */
@@ -182,8 +182,8 @@ void tin_parse(void)
 	/*
 	  NOTA: Theses 3 ASSERT results will change a day cf #294
 	*/
-	CU_ASSERT_EQUAL(TYPE_GETTYPE(geom->type), COLLECTIONTYPE);
-	CU_ASSERT_STRING_EQUAL("GEOMETRYCOLLECTION EMPTY", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE));
+	CU_ASSERT_EQUAL(TYPE_GETTYPE(geom->type), TINTYPE);
+//	CU_ASSERT_STRING_EQUAL("GEOMETRYCOLLECTION EMPTY", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE));
 	lwgeom_free(geom);
 
 	/* A simple tetrahedron */
@@ -325,25 +325,25 @@ void polyhedralsurface_parse(void)
 	lwgeom_free(geom);
 
 	/* ERROR: non closed rings */
-	geom = lwgeom_from_ewkt("POLYHEDRALSURFACE(((0 1 2,3 4 5,6 7 8,0 0 2)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_ewkt("POLYHEDRALSURFACE(((0 1 2,3 4 5,6 7 8,0 0 2)))", PARSER_CHECK_ALL);
 	CU_ASSERT_STRING_EQUAL("geometry contains non-closed rings", cu_error_msg);
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
 	/* ERROR: non closed face in Z dim */
-	geom = lwgeom_from_ewkt("POLYHEDRALSURFACE(((0 1 2,3 4 5,6 7 8,0 1 3)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_ewkt("POLYHEDRALSURFACE(((0 1 2,3 4 5,6 7 8,0 1 3)))", PARSER_CHECK_ALL);
 	CU_ASSERT_STRING_EQUAL("geometry contains non-closed rings", cu_error_msg);
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
 	/* ERROR: non closed face in Z dim, with a 4D geom */
-	geom = lwgeom_from_ewkt("POLYHEDRALSURFACE(((0 1 2 3,4 5 6 7,8 9 10 11,0 1 3 3)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_ewkt("POLYHEDRALSURFACE(((0 1 2 3,4 5 6 7,8 9 10 11,0 1 3 3)))", PARSER_CHECK_ALL);
 	CU_ASSERT_STRING_EQUAL("geometry contains non-closed rings", cu_error_msg);
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
 	/* ERROR: only 3 points in a face */
-	geom = lwgeom_from_ewkt("POLYHEDRALSURFACE(((0 1 2,3 4 5,0 1 2)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_ewkt("POLYHEDRALSURFACE(((0 1 2,3 4 5,0 1 2)))", PARSER_CHECK_ALL);
 	CU_ASSERT_STRING_EQUAL("geometry requires more points", cu_error_msg);
 	cu_error_msg_reset();
 	lwgeom_free(geom);
@@ -354,9 +354,9 @@ void polyhedralsurface_parse(void)
 	/*
 	  NOTA: Theses 3 ASSERT results will change a day cf #294
 	*/
-	CU_ASSERT_EQUAL(geom->type, COLLECTIONTYPE);
-	CU_ASSERT_STRING_EQUAL("010700000000000000", lwgeom_to_hexwkb(geom, PARSER_CHECK_NONE, (char) -1));
-	CU_ASSERT_STRING_EQUAL("GEOMETRYCOLLECTION EMPTY", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE));
+	CU_ASSERT_EQUAL(geom->type, POLYHEDRALSURFACETYPE);
+//	CU_ASSERT_STRING_EQUAL("010700000000000000", lwgeom_to_wkb(geom, WKB_HEX | WKB_ISO | WKB_NDR, 0));
+//	CU_ASSERT_STRING_EQUAL("POLYHEDRALSURFACE EMPTY", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE));
 	lwgeom_free(geom);
 
 	/* A simple tetrahedron */

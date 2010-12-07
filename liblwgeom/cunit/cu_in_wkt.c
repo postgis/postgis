@@ -66,6 +66,11 @@ static char* cu_wkt_in(char *wkt, uchar variant)
 
 static void test_wkt_in_point(void)
 {
+	s = "POINT(1e700 0)";
+	r = cu_wkt_in(s, WKT_SFSQL);
+	CU_ASSERT_STRING_EQUAL(r,"POINT(inf 0)");
+	lwfree(r);
+
 	s = "POINT(0 0)";
 	r = cu_wkt_in(s, WKT_SFSQL);
 	CU_ASSERT_STRING_EQUAL(r,s);
@@ -80,6 +85,8 @@ static void test_wkt_in_point(void)
 	r = cu_wkt_in(s, WKT_ISO);
 	CU_ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
+
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 }
 
 static void test_wkt_in_linestring(void)
@@ -132,6 +139,13 @@ static void test_wkt_in_polygon(void)
 
 static void test_wkt_in_multipoint(void)
 {
+	
+	s = "MULTIPOINT(-1 -2 -3,5.4 6.6 7.77,-5.4 -6.6 -7.77,1000000 1e-06 -1000000,-1.3e-06 -1.4e-05 0)";
+	r = cu_wkt_in(s, WKT_EXTENDED);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	lwfree(r);
+	
 	s = "MULTIPOINT(0 0)";
 	r = cu_wkt_in(s, WKT_SFSQL);
 	CU_ASSERT_STRING_EQUAL(r,s);
@@ -203,7 +217,13 @@ static void test_wkt_in_circularstring(void)
 
 static void test_wkt_in_compoundcurve(void)
 {
-	s = "COMPOUNDCURVE Z (CIRCULARSTRING Z (0 0 0,0 1 0,1 1 0,0 0 0,2 2 0),(0 0 1,1 1 1,2 2 1))";
+	s = "SRID=4326;COMPOUNDCURVEM(CIRCULARSTRING(0 0 2,1 1 2,1 0 2),(1 0 2,0 1 2))";
+	r = cu_wkt_in(s, WKT_EXTENDED);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	lwfree(r);
+
+	s = "COMPOUNDCURVE Z (CIRCULARSTRING Z (0 0 0,0 1 0,1 1 0,0 0 0,2 2 0),(2 2 0,0 0 1,1 1 1,2 2 1))";
 	r = cu_wkt_in(s, WKT_ISO);
 	CU_ASSERT_STRING_EQUAL(r,s);
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
@@ -212,7 +232,7 @@ static void test_wkt_in_compoundcurve(void)
 
 static void test_wkt_in_curvpolygon(void)
 {
-	s = "CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0,0 1,1 1,0 0,2 2),(0 0,1 1,2 2)),CIRCULARSTRING(0 0,0 1,1 1,0 0,2 2),(0 0,1 1,2 1))";
+	s = "CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0,0 1,1 1,2 2,0 0),(0 0,1 1,2 2)),CIRCULARSTRING(0 0,0 1,1 1,0 0,2 2),(0 0,1 1,2 1))";
 	r = cu_wkt_in(s, WKT_ISO);
 	CU_ASSERT_STRING_EQUAL(r,s);
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);

@@ -836,7 +836,7 @@ static void test_isclosed(void)
 	/* COMPOUNDCURVE */
 
 	/* Not Closed on 2D */
-	geom = lwgeom_from_ewkt("COMPOUNDCURVE(CIRCULARSTRING(1 2,3 4,1 2),(5 6,7 8,5 6))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_ewkt("COMPOUNDCURVE(CIRCULARSTRING(1 2,3 4,1 2),(1 2,7 8,5 6))", PARSER_CHECK_NONE);
 	CU_ASSERT(!lwcompound_is_closed((LWCOMPOUND *) geom));
 	lwfree(geom);
 

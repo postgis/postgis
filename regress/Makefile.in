@@ -22,6 +22,8 @@ PATH := $(PGSQL_BINDIR):$(PATH)
 export PATH
 
 
+#wkt \
+
 TESTS = \
 	loader/Point \
 	loader/PointM \
@@ -45,7 +47,6 @@ TESTS = \
 	simplify \
 	snaptogrid \
 	affine \
-	wkt \
 	measures \
 	long_xact \
 	ctors \

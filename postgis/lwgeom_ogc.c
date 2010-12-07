@@ -716,12 +716,11 @@ PG_FUNCTION_INFO_V1(LWGEOM_from_text);
 Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 {
 	text *wkttext = PG_GETARG_TEXT_P(0);
-	char *wkt, fc;
+	char *wkt;
 	size_t size;
 	LWGEOM_PARSER_RESULT lwg_parser_result;
 	PG_LWGEOM *geom_result = NULL;
 	LWGEOM *lwgeom;
-	int result;
 
 	POSTGIS_DEBUG(2, "LWGEOM_from_text");
 
@@ -735,30 +734,29 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	fc=*(VARDATA(wkttext));
-
+	/* Create c-string from PgSQL text */
 	wkt = lwalloc(size+1);
 	memcpy(wkt, VARDATA(wkttext), size);
 	wkt[size]='\0';
 
 	POSTGIS_DEBUGF(3, "wkt: [%s]", wkt);
 
-	result = serialized_lwgeom_from_ewkt(&lwg_parser_result, wkt, PARSER_CHECK_ALL);
-	if (result)
+	if (lwgeom_from_wkt(&lwg_parser_result, wkt, PARSER_CHECK_ALL) == LW_FAILURE)
 		PG_PARSER_ERROR(lwg_parser_result);
 
-	lwgeom = lwgeom_deserialize(lwg_parser_result.serialized_lwgeom);
+	lwgeom = lwg_parser_result.geom;
 
-	if ( lwgeom->srid != -1 || FLAGS_GET_ZM(lwgeom->flags) != 0 )
+	if ( lwgeom->srid != SRID_UNKNOWN )
 	{
 		elog(WARNING, "OGC WKT expected, EWKT provided - use GeomFromEWKT() for this");
 	}
 
 	/* read user-requested SRID if any */
-	if ( PG_NARGS() > 1 ) lwgeom->srid = PG_GETARG_INT32(1);
+	if ( PG_NARGS() > 1 ) 
+		lwgeom_set_srid(lwgeom, PG_GETARG_INT32(1));
 
 	geom_result = pglwgeom_serialize(lwgeom);
-	lwgeom_release(lwgeom);
+	lwgeom_parser_result_free(&lwg_parser_result);
 
 	PG_RETURN_POINTER(geom_result);
 }
@@ -807,74 +805,95 @@ Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_asText);
 Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 {
-	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
-	PG_LWGEOM *lwgeom;
-	PG_LWGEOM *ogclwgeom;
-	int len, result;
-	char *lwgeom_result,*loc_wkt;
-	char *semicolonLoc;
+	PG_LWGEOM *geom;
+	LWGEOM *lwgeom;
+	char *wkt;
+	size_t wkt_size;
+	text *result;
 
 	POSTGIS_DEBUG(2, "LWGEOM_asText called.");
 
-	lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	lwgeom = pglwgeom_deserialize(geom);
 
-	/* Force to 2d */
-	ogclwgeom = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
-	                LWGEOM_force_2d, PointerGetDatum(lwgeom)));
+	/* Get a 2D version of the geometry if necessary */
+	if ( FLAGS_NDIMS(lwgeom->flags) > 2 )
+	{
+		LWGEOM *lwgeom2d = lwgeom_force_2d(lwgeom);
+		lwgeom_free(lwgeom);
+		lwgeom = lwgeom2d;
+	}
 
-	result =  serialized_lwgeom_to_ewkt(&lwg_unparser_result, SERIALIZED_FORM(ogclwgeom), PARSER_CHECK_NONE);
-	if (result)
-		PG_UNPARSER_ERROR(lwg_unparser_result);
+	/* Write to WKT and free the geometry */
+	wkt = lwgeom_to_wkt(lwgeom, WKT_ISO, DBL_DIG, &wkt_size);
+	lwgeom_free(lwgeom);
 
-	semicolonLoc = strchr(lwg_unparser_result.wkoutput,';');
+	/* Write to text and free the WKT */
+	result = palloc(wkt_size - 1 + VARHDRSZ);
+	memcpy(VARDATA(result), wkt, wkt_size - 1);
+	SET_VARSIZE(result, wkt_size - 1 + VARHDRSZ);
+	pfree(wkt);
 
-	/* loc points to start of wkt */
-	if (semicolonLoc == NULL) loc_wkt = lwg_unparser_result.wkoutput;
-	else loc_wkt = semicolonLoc +1;
-
-	len = strlen(loc_wkt)+VARHDRSZ;
-	lwgeom_result = palloc(len);
-	SET_VARSIZE(lwgeom_result, len);
-
-	memcpy(VARDATA(lwgeom_result), loc_wkt, len-VARHDRSZ);
-
-	pfree(lwg_unparser_result.wkoutput);
-	PG_FREE_IF_COPY(lwgeom, 0);
-	if ( ogclwgeom != lwgeom ) pfree(ogclwgeom);
-
-	PG_RETURN_POINTER(lwgeom_result);
+	/* Return the text */
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_TEXT_P(result);
 }
 
 /** convert LWGEOM to wkb (in BINARY format) */
 PG_FUNCTION_INFO_V1(LWGEOM_asBinary);
 Datum LWGEOM_asBinary(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *ogclwgeom;
-	char *result;
+	PG_LWGEOM *geom;
+	LWGEOM *lwgeom;
+	uchar *wkb;
+	size_t wkb_size;
+	bytea *result;
+	/* By default we are currently emitting OGC WKB (2D) only */
+	uchar variant = WKB_SFSQL;
 
-	/* Force to 2d */
-	ogclwgeom = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
-	                LWGEOM_force_2d, PG_GETARG_DATUM(0)));
+	/* Get a 2D version of the geometry */
+	geom = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	lwgeom = pglwgeom_deserialize(geom);
 
-	/* Drop SRID */
-	ogclwgeom = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall2(
-	                LWGEOM_set_srid, PointerGetDatum(ogclwgeom), -1));
+	/* Get a 2D version of the geometry if necessary */
+	if ( FLAGS_NDIMS(lwgeom->flags) > 2 )
+	{
+		LWGEOM *lwgeom2d = lwgeom_force_2d(lwgeom);
+		lwgeom_free(lwgeom);
+		lwgeom = lwgeom2d;
+	}
 
-	/* Call WKBFromLWGEOM */
+	/* If user specified endianness, respect it */
 	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
 	{
-		result = (char *)DatumGetPointer(DirectFunctionCall2(
-		                                     WKBFromLWGEOM, PointerGetDatum(ogclwgeom),
-		                                     PG_GETARG_DATUM(1)));
-	}
-	else
-	{
-		result = (char *)DatumGetPointer(DirectFunctionCall1(
-		                                     WKBFromLWGEOM, PointerGetDatum(ogclwgeom)));
-	}
+		text *wkb_endian = PG_GETARG_TEXT_P(1);
 
-	PG_RETURN_POINTER(result);
+		if  ( ! strncmp(VARDATA(wkb_endian), "xdr", 3) ||
+		      ! strncmp(VARDATA(wkb_endian), "XDR", 3) )
+		{
+			variant = variant | WKB_XDR;
+		}
+		else
+		{
+			variant = variant | WKB_NDR;
+		}
+	}
+	
+	/* Write to WKB and free the geometry */
+	wkb = lwgeom_to_wkb(lwgeom, variant, &wkb_size);
+	lwgeom_free(lwgeom);
+
+	/* Write to text and free the WKT */
+	result = palloc(wkb_size + VARHDRSZ);
+	memcpy(VARDATA(result), wkb, wkb_size);
+	SET_VARSIZE(result, wkb_size + VARHDRSZ);
+	pfree(wkb);
+
+	/* Return the text */
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_BYTEA_P(result);
 }
+
 
 
 /**

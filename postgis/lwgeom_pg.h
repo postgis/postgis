@@ -72,10 +72,6 @@ extern void pg_unparser_errhint(LWGEOM_UNPARSER_RESULT *lwg_unparser_result);
 extern PG_LWGEOM *pglwgeom_serialize(LWGEOM *lwgeom);
 extern LWGEOM *pglwgeom_deserialize(PG_LWGEOM *pglwgeom);
 
-/* PG_LWGEOM WKB IO */
-extern PG_LWGEOM *pglwgeom_from_ewkb(uchar *ewkb, int flags, size_t ewkblen);
-extern char *pglwgeom_to_ewkb(PG_LWGEOM *geom, int flags, char byteorder, size_t *ewkblen);
-
 /* PG_LWGEOM SRID get/set */
 extern PG_LWGEOM *pglwgeom_set_srid(PG_LWGEOM *pglwgeom, int32 newSRID);
 extern int pglwgeom_get_srid(PG_LWGEOM *pglwgeom);

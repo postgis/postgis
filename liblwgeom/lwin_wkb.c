@@ -39,40 +39,41 @@ LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s);
 
 /**********************************************************************/
 
-static char hex2char[256] = {
+/* Our static character->number map. Anything > 15 is invalid */
+static uchar hex2char[256] = {
     /* not Hex characters */
-    -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-    -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-    -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
     /* 0-9 */
-    0,1,2,3,4,5,6,7,8,9,-1,-1,-1,-1,-1,-1,
+    0,1,2,3,4,5,6,7,8,9,20,20,20,20,20,20,
     /* A-F */
-    -1,10,11,12,13,14,15,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+    20,10,11,12,13,14,15,20,20,20,20,20,20,20,20,20,
     /* not Hex characters */
-    -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
 	/* a-f */
-    -1,10,11,12,13,14,15,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-    -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+    20,10,11,12,13,14,15,20,20,20,20,20,20,20,20,20,
+    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
     /* not Hex characters (upper 128 characters) */
-    -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-    -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-    -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-    -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-    -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-    -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-    -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-    -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
+    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20
     };
 
 
 uchar* bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
 {
-	unsigned char *buf = NULL;
-	register char h1, h2;
+	uchar *buf = NULL;
+	register uchar h1, h2;
 	int i;
 	
 	if( hexsize % 2 )
-		lwerror("Hex string size has to be a multiple of two.");
+		lwerror("Invalid hex string, length (%d) has to be a multiple of two!", hexsize);
 
 	buf = lwalloc(hexsize/2);
 	
@@ -83,15 +84,16 @@ uchar* bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
 	{
 		h1 = hex2char[(int)hexbuf[2*i]];
 		h2 = hex2char[(int)hexbuf[2*i+1]];
-		if( h1 < 0 )
+		if( h1 > 15 )
 			lwerror("Invalid hex character (%c) encountered", hexbuf[i]);
-		if( h2 < 0 )
+		if( h2 > 15 )
 			lwerror("Invalid hex character (%c) encountered", hexbuf[i+1]);
 		/* First character is high bits, second is low bits */
 		buf[i] = ((h1 & 0x0F) << 4) | (h2 & 0x0F);
 	}
 	return buf;
 }
+
 
 /**********************************************************************/
 
@@ -315,7 +317,7 @@ static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 	/* If we're in a native endianness, we can just copy the data directly! */
 	if( ! s->swap_bytes )
 	{
-		pa = ptarray_construct_copy_data(s->has_z, s->has_m, npoints, s->pos);
+		pa = ptarray_construct_copy_data(s->has_z, s->has_m, npoints, (uchar*)s->pos);
 		s->pos += pa_size;
 	}
 	/* Otherwise we have to read each double, separately. */
@@ -361,7 +363,7 @@ static LWPOINT* lwpoint_from_wkb_state(wkb_parse_state *s)
 	/* If we're in a native endianness, we can just copy the data directly! */
 	if( ! s->swap_bytes )
 	{
-		pa = ptarray_construct_copy_data(s->has_z, s->has_m, npoints, s->pos);
+		pa = ptarray_construct_copy_data(s->has_z, s->has_m, npoints, (uchar*)s->pos);
 		s->pos += pa_size;
 	}
 	/* Otherwise we have to read each double, separately */
@@ -392,7 +394,7 @@ static LWLINE* lwline_from_wkb_state(wkb_parse_state *s)
 {
 	POINTARRAY *pa = ptarray_from_wkb_state(s);
 
-	if( pa == NULL )
+	if( pa == NULL || pa->npoints == 0 )
 		return lwline_construct_empty(s->srid, s->has_z, s->has_m);
 
 	if( s->check & PARSER_CHECK_MINPOINTS && pa->npoints < 2 )
@@ -417,7 +419,7 @@ static LWCIRCSTRING* lwcircstring_from_wkb_state(wkb_parse_state *s)
 {
 	POINTARRAY *pa = ptarray_from_wkb_state(s);
 
-	if( pa == NULL )
+	if( pa == NULL || pa->npoints == 0 )
 		return lwcircstring_construct_empty(s->srid, s->has_z, s->has_m);
 
 	if( s->check & PARSER_CHECK_MINPOINTS && pa->npoints < 3 )
@@ -476,7 +478,7 @@ static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 		}
 		
 		/* Add ring to polygon */
-		if ( lwpoly_add_ring(poly, pa) == LW_FALSE )
+		if ( lwpoly_add_ring(poly, pa) == LW_FAILURE )
 		{
 			LWDEBUG(2, "Unable to add ring to polygon");
 			lwerror("Unable to add ring to polygon");
@@ -530,8 +532,32 @@ static LWTRIANGLE* lwtriangle_from_wkb_state(wkb_parse_state *s)
 }
 
 /**
+* CURVEPOLYTYPE
+*/
+static LWCURVEPOLY* lwcurvepoly_from_wkb_state(wkb_parse_state *s)
+{
+	uint32 ngeoms = integer_from_wkb_state(s);
+	LWCURVEPOLY *cp = lwcurvepoly_construct_empty(s->srid, s->has_z, s->has_m);
+	LWGEOM *geom = NULL;
+	int i;
+	
+	/* Empty collection? */
+	if ( ngeoms == 0 )
+		return cp;
+
+	for ( i = 0; i < ngeoms; i++ )
+	{
+		geom = lwgeom_from_wkb_state(s);
+		if ( lwcurvepoly_add_ring(cp, geom) == LW_FAILURE )
+			lwerror("Unable to add geometry (%p) to curvepoly (%p)", geom, cp);
+	}
+	
+	return cp;
+}
+
+/**
 * COLLECTION, MULTIPOINTTYPE, MULTILINETYPE, MULTIPOLYGONTYPE, COMPOUNDTYPE,
-* CURVEPOLYTYPE, MULTICURVETYPE, MULTISURFACETYPE, POLYHEDRALSURFACETYPE,
+* MULTICURVETYPE, MULTISURFACETYPE, POLYHEDRALSURFACETYPE,
 * TINTYPE
 */
 static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
@@ -623,11 +649,13 @@ LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 		case TRIANGLETYPE:
 			return (LWGEOM*)lwtriangle_from_wkb_state(s);
 			break;
+		case CURVEPOLYTYPE:
+			return (LWGEOM*)lwcurvepoly_from_wkb_state(s);
+			break;
 		case MULTIPOINTTYPE:
 		case MULTILINETYPE:
 		case MULTIPOLYGONTYPE:
 		case COMPOUNDTYPE:
-		case CURVEPOLYTYPE:
 		case MULTICURVETYPE:
 		case MULTISURFACETYPE:
 		case POLYHEDRALSURFACETYPE:
@@ -667,7 +695,7 @@ LWGEOM* lwgeom_from_wkb(const uchar *wkb, const size_t wkb_size, const char chec
 	s.swap_bytes = LW_FALSE;
 	s.check = check;
 	s.lwtype = 0;
-	s.srid = 0;
+	s.srid = SRID_UNKNOWN;
 	s.has_z = LW_FALSE;
 	s.has_m = LW_FALSE;
 	s.has_srid = LW_FALSE;
@@ -681,3 +709,21 @@ LWGEOM* lwgeom_from_wkb(const uchar *wkb, const size_t wkb_size, const char chec
 	return lwgeom_from_wkb_state(&s);
 }
 
+LWGEOM* lwgeom_from_hexwkb(const char *hexwkb, const char check)
+{
+	int hexwkb_len;
+	uchar *wkb;
+	LWGEOM *lwgeom;
+	
+	if ( ! hexwkb )	
+	{
+		lwerror("lwgeom_from_hexwkb: null input");
+		return NULL;
+	}
+	
+	hexwkb_len = strlen(hexwkb);
+	wkb = bytes_from_hexbytes(hexwkb, hexwkb_len);
+	lwgeom = lwgeom_from_wkb(wkb, hexwkb_len/2, check);
+	lwfree(wkb);
+	return lwgeom;	
+}

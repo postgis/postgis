@@ -149,7 +149,7 @@ run_simple_test ()
 		return 0
 	else
 		fail "${_msg}diff expected obtained" "${DIFFILE}"
-		rm "${OUTFILE}" # diff is enough
+#		rm "${OUTFILE}" # diff is enough
 		return 1
 	fi
 }

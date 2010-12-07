@@ -81,7 +81,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 		oldcontext = MemoryContextSwitchTo(newcontext);
 
 		pglwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
-		lwgeom = lwgeom_deserialize(SERIALIZED_FORM(pglwgeom));
+		lwgeom = pglwgeom_deserialize(pglwgeom);
 
 		/* Create function state */
 		state = lwalloc(sizeof(GEOMDUMPSTATE));
@@ -129,7 +129,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 	if ( ! lwgeom_is_collection(state->root) )
 	{
 		values[0] = "{}";
-		values[1] = lwgeom_to_hexwkb(state->root, PARSER_CHECK_NONE, -1);
+		values[1] = (char*)lwgeom_to_wkb(state->root, WKB_EXTENDED | WKB_HEX, 0);
 		tuple = BuildTupleFromCStrings(funcctx->attinmeta, values);
 		result = HeapTupleGetDatum(tuple);
 
@@ -186,7 +186,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 	lwgeom->srid = state->root->srid;
 
 	values[0] = address;
-	values[1] = lwgeom_to_hexwkb(lwgeom, PARSER_CHECK_NONE, -1);
+	values[1] = (char*)lwgeom_to_wkb(lwgeom, WKB_EXTENDED | WKB_HEX, 0);
 	tuple = BuildTupleFromCStrings(funcctx->attinmeta, values);
 	result = TupleGetDatum(funcctx->slot, tuple);
 	node->idx++;
@@ -227,7 +227,7 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 			lwerror("Input is not a polygon");
 		}
 
-		lwgeom = lwgeom_deserialize(SERIALIZED_FORM(pglwgeom));
+		lwgeom = pglwgeom_deserialize(pglwgeom);
 
 		/* Create function state */
 		state = lwalloc(sizeof(struct POLYDUMPSTATE));
@@ -285,7 +285,7 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 		sprintf(address, "{%d}", state->ringnum);
 
 		values[0] = address;
-		values[1] = lwgeom_to_hexwkb(ringgeom, PARSER_CHECK_NONE, -1);
+		values[1] = (char*)lwgeom_to_wkb(ringgeom, WKB_EXTENDED | WKB_HEX, 0);
 
 		MemoryContextSwitchTo(oldcontext);
 

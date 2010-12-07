@@ -54,7 +54,7 @@ lwline_construct_empty(int srid, char hasz, char hasm)
 	result->type = LINETYPE;
 	result->flags = gflags(hasz,hasm,0);
 	result->srid = srid;
-	result->points = NULL;
+	result->points = ptarray_construct_empty(hasz, hasm, 1);
 	result->bbox = NULL;
 	return result;
 }

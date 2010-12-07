@@ -70,6 +70,13 @@ lwgeom_deserialize(uchar *srl)
 size_t
 lwgeom_serialize_size(LWGEOM *lwgeom)
 {
+	
+//	if( lwgeom->type != COLLECTIONTYPE && lwgeom_is_empty(lwgeom) )
+//	{
+//		LWGEOM *tmp = (LWGEOM*)lwcollection_construct_empty(COLLECTIONTYPE, lwgeom->srid, FLAGS_GET_Z(lwgeom->flags), FLAGS_GET_M(lwgeom->flags));
+//		lwgeom = tmp;
+//	}
+	
 	switch (lwgeom->type)
 	{
 	case POINTTYPE:
@@ -106,6 +113,12 @@ lwgeom_serialize_buf(LWGEOM *lwgeom, uchar *buf, size_t *retsize)
 {
 	LWDEBUGF(2, "lwgeom_serialize_buf called with a %s",
 	         lwtype_name(lwgeom->type));
+
+//	if( lwgeom->type != COLLECTIONTYPE && lwgeom_is_empty(lwgeom) )
+//	{
+//		LWGEOM *tmp = (LWGEOM*)lwcollection_construct_empty(COLLECTIONTYPE, lwgeom->srid, FLAGS_GET_Z(lwgeom->flags), FLAGS_GET_M(lwgeom->flags));
+//		lwgeom = tmp;
+//	}
 
 	switch (lwgeom->type)
 	{
@@ -721,18 +734,18 @@ LWGEOM*
 lwgeom_from_ewkt(char *ewkt, int flags)
 {
 	int result;
-	LWGEOM *ret;
 	LWGEOM_PARSER_RESULT lwg_parser_result;
+	lwgeom_parser_result_init(&lwg_parser_result);
 
 	/* Rely on grammar parser to construct a LWGEOM */
-	result = serialized_lwgeom_from_ewkt(&lwg_parser_result, ewkt, flags);
-	if (result)
+	result = lwgeom_from_wkt(&lwg_parser_result, ewkt, flags);
+	if (result == LW_FAILURE)
+	{
 		lwerror("%s", (char *)lwg_parser_result.message);
+		return NULL;
+	}
 
-	/* Deserialize */
-	ret = lwgeom_deserialize(lwg_parser_result.serialized_lwgeom);
-
-	return ret;
+	return lwg_parser_result.geom;
 }
 
 /*
@@ -1135,6 +1148,9 @@ lwtype_get_collectiontype(int type)
 void lwgeom_free(LWGEOM *lwgeom)
 {
 
+	/* There's nothing here to free... */
+	if( ! lwgeom ) return;
+	
 	switch (lwgeom->type)
 	{
 	case POINTTYPE:

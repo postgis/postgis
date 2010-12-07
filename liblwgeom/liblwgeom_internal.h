@@ -33,12 +33,11 @@
 */
 #define WKT_NO_TYPE 0x08 /* Internal use only */
 #define WKT_NO_PARENS 0x10 /* Internal use only */
+#define WKT_IS_CHILD 0x20 /* Internal use only */
 
 /**
 * Well-Known Binary (WKB) Output Variant Types
 */
-#define WKB_NO_NPOINTS 0x20 /* Internal use only */
-#define WKB_NO_SRID 0x40 /* Internal use only */
 
 #define WKB_DOUBLE_SIZE 8 /* Internal use only */
 #define WKB_INT_SIZE 4 /* Internal use only */

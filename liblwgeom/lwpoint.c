@@ -58,6 +58,15 @@ lwpoint_serialize_buf(LWPOINT *point, uchar *buf, size_t *retsize)
 	LWDEBUGF(2, "lwpoint_serialize_buf(%p, %p) called", point, buf);
 	/*printLWPOINT(point); */
 
+	if ( lwgeom_is_empty((LWGEOM*)point) ) 
+	{
+		LWCOLLECTION *mp = lwcollection_construct_empty(MULTIPOINTTYPE, point->srid, FLAGS_GET_Z(point->flags), FLAGS_GET_M(point->flags));
+		LWDEBUG(4,"serializing 'POINT EMPTY' to 'MULTIPOINT EMPTY");
+		lwcollection_serialize_buf(mp, buf, retsize);
+		lwcollection_free(mp);
+		return;
+	}
+
 	has_srid = (point->srid != -1);
 
 	if (has_srid) size +=4;  /*4 byte SRID */
@@ -90,6 +99,34 @@ lwpoint_serialize_buf(LWPOINT *point, uchar *buf, size_t *retsize)
 	memcpy(loc, getPoint_internal(point->point, 0), ptsize);
 
 	if (retsize) *retsize = size;
+}
+
+/* find length of this deserialized point */
+size_t
+lwpoint_serialize_size(LWPOINT *point)
+{
+	size_t size = 1; /* type */
+
+	LWDEBUG(2, "lwpoint_serialize_size called");
+
+	if ( lwgeom_is_empty((LWGEOM*)point) ) 
+	{
+		LWCOLLECTION *mp = lwcollection_construct_empty(MULTIPOINTTYPE, point->srid, FLAGS_GET_Z(point->flags), FLAGS_GET_M(point->flags));
+		size_t s = lwcollection_serialize_size(mp);
+		LWDEBUGF(4,"serializing 'POINT EMPTY' to 'MULTIPOINT EMPTY', size=%d", s);
+		lwcollection_free(mp);
+		return s;
+	}
+		
+
+	if ( point->srid != -1 ) size += 4; /* SRID */
+	if ( point->bbox ) size += sizeof(BOX2DFLOAT4);
+
+	size += FLAGS_NDIMS(point->flags) * sizeof(double); /* point */
+
+	LWDEBUGF(3, "lwpoint_serialize_size returning %d", size);
+
+	return size;
 }
 
 /*
@@ -142,24 +179,6 @@ lwpoint_getPoint4d_p(const LWPOINT *point, POINT4D *out)
 	return getPoint4d_p(point->point,0,out);
 }
 
-/* find length of this deserialized point */
-size_t
-lwpoint_serialize_size(LWPOINT *point)
-{
-	size_t size = 1; /* type */
-
-	LWDEBUG(2, "lwpoint_serialize_size called");
-
-	if ( point->srid != -1 ) size += 4; /* SRID */
-	if ( point->bbox ) size += sizeof(BOX2DFLOAT4);
-
-	size += FLAGS_NDIMS(point->flags) * sizeof(double); /* point */
-
-	LWDEBUGF(3, "lwpoint_serialize_size returning %d", size);
-
-	return size;
-}
-
 /*
  * Construct a new point.  point will not be copied
  * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
@@ -193,7 +212,7 @@ lwpoint_construct_empty(int srid, char hasz, char hasm)
 	result->type = POINTTYPE;
 	result->flags = gflags(hasz, hasm, 0);
 	result->srid = srid;
-	result->point = NULL;
+	result->point = ptarray_construct(hasz, hasm, 0);
 	result->bbox = NULL;
 	return result;
 }

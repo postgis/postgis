@@ -62,7 +62,7 @@ static void wkt_lexer_unknown()
 
 %%
 
--?(([0-9]+)|([0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?) {  
+-?(([0-9]+\.?)|([0-9]*\.?[0-9]+)([eE][-+]?[0-9]+)?) {  
 	LWDEBUG(5,"DOUBLE");
 	wkt_yylval.doublevalue = atof(wkt_yytext); 
 	return DOUBLE_TOK; 
@@ -102,7 +102,7 @@ Z|M|ZM {
 ,  { LWDEBUG(5,"COMMA"); return COMMA_TOK; }
 \; { LWDEBUG(5,"SEMICOLON"); return SEMICOLON_TOK; }
 
-[ \t]+ { /* ignore whitespace */ LWDEBUG(5,"WHITESPACE"); }
+[ \t\n\r]+ { /* ignore whitespace */ LWDEBUG(5,"WHITESPACE"); }
 
 . { /* Error out and stop parsing on unknown/unexpected characters */
 	LWDEBUG(5,"UNKNOWN"); 

@@ -176,7 +176,7 @@
 * Currently we are using 20 bits (1048575) of storage for SRID.
 */
 #define SRID_MAXIMUM 999999
-#define SRID_UNKNOWN 0
+#define SRID_UNKNOWN -1
 
 
 
@@ -1101,6 +1101,13 @@ extern int lwpoly_add_ring(LWPOLY *poly, POINTARRAY *pa);
 * ownership of the passed point array.
 */
 extern int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring);
+
+/**
+* Add a component, allocating extra space if necessary. The compoundcurve
+* takes owership of the passed geometry.
+*/
+extern int lwcompound_add_lwgeom(LWCOMPOUND *comp, LWGEOM *geom);
+
 
 
 /******************************************************************
@@ -2037,7 +2044,9 @@ extern uchar *lwgeom_to_ewkb(LWGEOM *lwgeom, int flags, char byteorder, size_t *
 #define WKB_EXTENDED 0x04
 #define WKB_NDR 0x08
 #define WKB_XDR 0x10
-#define WKB_HEX 0x11
+#define WKB_HEX 0x20
+#define WKB_NO_NPOINTS 0x40 /* Internal use only */
+#define WKB_NO_SRID 0x80 /* Internal use only */
 
 #define WKT_ISO 0x01
 #define WKT_SFSQL 0x02
@@ -2047,10 +2056,12 @@ extern uchar *lwgeom_to_ewkb(LWGEOM *lwgeom, int flags, char byteorder, size_t *
 ** New parsing and unparsing functions.
 */
 extern char*   lwgeom_to_wkt(const LWGEOM *geom, uchar variant, int precision, size_t *size_out);
-extern char*   lwgeom_to_wkb(const LWGEOM *geom, uchar variant, size_t *size_out);
+extern uchar*  lwgeom_to_wkb(const LWGEOM *geom, uchar variant, size_t *size_out);
+//extern char*   lwgeom_to_hexwkb(const LWGEOM *geom, uchar variant, size_t *size_out);
 extern LWGEOM* lwgeom_from_wkb(const uchar *wkb, const size_t wkb_size, const char check);
+extern LWGEOM* lwgeom_from_hexwkb(const char *hexwkb, const char check);
 extern uchar*  bytes_from_hexbytes(const char *hexbuf, size_t hexsize);
-/* extern char*   bytes_to_hexbytes(const char *buf, size_t bufsize);*/
+extern char*   hexbytes_from_bytes(uchar *bytes, size_t size);
 extern void    lwgeom_parser_result_free(LWGEOM_PARSER_RESULT *parser_result);
 extern void    lwgeom_parser_result_init(LWGEOM_PARSER_RESULT *parser_result);
 extern int     lwgeom_from_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parse_flags);

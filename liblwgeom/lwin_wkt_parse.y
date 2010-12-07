@@ -82,12 +82,12 @@ int lwgeom_from_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parse
 		
 		/* Copy the global values into the return pointer */
 		*parser_result = global_parser_result;
-		return LW_FALSE;
+		return LW_FAILURE;
 	}
 	
 	/* Copy the global value into the return pointer */
 	*parser_result = global_parser_result;
-	return LW_TRUE;
+	return LW_SUCCESS;
 }
 
 #define WKT_ERROR() { if ( global_parser_result.errcode != 0 ) { YYERROR; } }
@@ -126,6 +126,7 @@ int lwgeom_from_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parse
 %type <coordinatevalue> coordinate
 %type <geometryvalue> circularstring
 %type <geometryvalue> compoundcurve
+%type <geometryvalue> compound_list
 %type <geometryvalue> curve_list
 %type <geometryvalue> curvepolygon
 %type <geometryvalue> curvering
@@ -167,6 +168,7 @@ int lwgeom_from_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parse
 %destructor { lwgeom_free($$); } point_list
 %destructor { lwgeom_free($$); } linestring_list
 %destructor { lwgeom_free($$); } curve_list
+%destructor { lwgeom_free($$); } compound_list
 %destructor { lwgeom_free($$); } circularstring
 %destructor { lwgeom_free($$); } compoundcurve
 %destructor { lwgeom_free($$); } curvepolygon
@@ -335,14 +337,28 @@ ring :
 	LBRACKET_TOK ptarray RBRACKET_TOK { $$ = $2; } ;
 
 compoundcurve :
-	COMPOUNDCURVE_TOK LBRACKET_TOK curve_list RBRACKET_TOK
+	COMPOUNDCURVE_TOK LBRACKET_TOK compound_list RBRACKET_TOK
 		{ $$ = wkt_parser_collection_finalize(COMPOUNDTYPE, $3, NULL); WKT_ERROR(); } |
-	COMPOUNDCURVE_TOK DIMENSIONALITY_TOK LBRACKET_TOK curve_list RBRACKET_TOK
+	COMPOUNDCURVE_TOK DIMENSIONALITY_TOK LBRACKET_TOK compound_list RBRACKET_TOK
 		{ $$ = wkt_parser_collection_finalize(COMPOUNDTYPE, $4, $2); WKT_ERROR(); } |
 	COMPOUNDCURVE_TOK DIMENSIONALITY_TOK EMPTY_TOK
 		{ $$ = wkt_parser_collection_finalize(COMPOUNDTYPE, NULL, $2); WKT_ERROR(); } |
 	COMPOUNDCURVE_TOK EMPTY_TOK
 		{ $$ = wkt_parser_collection_finalize(COMPOUNDTYPE, NULL, NULL); WKT_ERROR(); } ;
+
+compound_list :
+	compound_list COMMA_TOK circularstring
+		{ $$ = wkt_parser_compound_add_geom($1,$3); WKT_ERROR(); } |
+	compound_list COMMA_TOK linestring
+		{ $$ = wkt_parser_compound_add_geom($1,$3); WKT_ERROR(); } |
+	compound_list COMMA_TOK linestring_untagged
+		{ $$ = wkt_parser_compound_add_geom($1,$3); WKT_ERROR(); } |
+	circularstring
+		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } |
+	linestring
+		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } |
+	linestring_untagged
+		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } ;
 
 multicurve :
 	MCURVE_TOK LBRACKET_TOK curve_list RBRACKET_TOK

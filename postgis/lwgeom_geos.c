@@ -363,7 +363,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	GEOSGeometry * g1 = NULL;
 	GEOSGeometry * g2 = NULL;
 	GEOSGeometry * geos_result=NULL;
-	int srid=-1;
+	int srid=SRID_UNKNOWN;
 	size_t offset = 0;
 	bits8 *bitmap;
 	int bitmask;
@@ -1600,29 +1600,36 @@ void errorIfGeometryCollection(PG_LWGEOM *g1, PG_LWGEOM *g2)
 	int t1 = lwgeom_getType(g1->type);
 	int t2 = lwgeom_getType(g2->type);
 
-	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
-	int result;
 	char* hintmsg;
+	char* hintwkt;
+	size_t hintsz;
+	LWGEOM *lwgeom;
 
 	if ( t1 == COLLECTIONTYPE)
 	{
-		result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, SERIALIZED_FORM(g1), PARSER_CHECK_NONE);
-		hintmsg = lwmessage_truncate(lwg_unparser_result.wkoutput, 0, strlen(lwg_unparser_result.wkoutput), 80, 1);
+		lwgeom = pglwgeom_deserialize(g1);
+		hintwkt = lwgeom_to_wkt(lwgeom, WKT_SFSQL, DBL_DIG, &hintsz);
+		hintmsg = lwmessage_truncate(hintwkt, 0, hintsz-1, 80, 1);
 		ereport(ERROR,
 		        (errmsg("Relate Operation called with a LWGEOMCOLLECTION type.  This is unsupported."),
 		         errhint("Change argument 1: '%s'", hintmsg))
 		       );
+		pfree(hintwkt);
 		pfree(hintmsg);
+		lwgeom_free(lwgeom);
 	}
 	else if (t2 == COLLECTIONTYPE)
 	{
-		result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, SERIALIZED_FORM(g2), PARSER_CHECK_NONE);
-		hintmsg = lwmessage_truncate(lwg_unparser_result.wkoutput, 0, strlen(lwg_unparser_result.wkoutput), 80, 1);
+		lwgeom = pglwgeom_deserialize(g2);
+		hintwkt = lwgeom_to_wkt(lwgeom, WKT_SFSQL, DBL_DIG, &hintsz);
+		hintmsg = lwmessage_truncate(hintwkt, 0, hintsz-1, 80, 1);
 		ereport(ERROR,
 		        (errmsg("Relate Operation called with a LWGEOMCOLLECTION type.  This is unsupported."),
 		         errhint("Change argument 2: '%s'", hintmsg))
 		       );
+		pfree(hintwkt);
 		pfree(hintmsg);
+		lwgeom_free(lwgeom);
 	}
 }
 
@@ -1812,8 +1819,7 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 	values[1] =  reason;
 
 	/* the location */
-	values[2] =  location ?
-	             lwgeom_to_hexwkb(location, PARSER_CHECK_NONE, -1) : 0;
+	values[2] =  location ? (char*)lwgeom_to_wkb(location, WKB_EXTENDED | WKB_HEX, 0) : 0;
 
 	tuple = BuildTupleFromCStrings(attinmeta, values);
 	result = HeapTupleGetDatum(tuple);
@@ -3324,7 +3330,7 @@ GEOS2LWGEOM(const GEOSGeometry *geom, char want3d)
 	int SRID = GEOSGetSRID(geom);
 
 	/* GEOS's 0 is equivalent to our -1 as for SRID values */
-	if ( SRID == 0 ) SRID = -1;
+	if ( SRID == 0 ) SRID = SRID_UNKNOWN;
 
 	if ( want3d )
 	{
@@ -3650,10 +3656,6 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-#if POSTGIS_DEBUG_LEVEL > 0
-	result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, SERIALIZED_FORM(geom), PARSER_CHECK_NONE);
-	POSTGIS_DEBUGF(2, "GEOSnoop: IN: %s", lwg_unparser_result.wkoutput);
-#endif
 
 	geosgeom = (GEOSGeometry *)POSTGIS2GEOS(geom);
 	if ( ! geosgeom ) PG_RETURN_NULL();
@@ -3664,10 +3666,6 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	lwgeom_result = GEOS2POSTGIS(geosgeom, TYPE_HASZ(geom->type));
 	GEOSGeom_destroy(geosgeom);
 
-#if POSTGIS_DEBUG_LEVEL > 0
-	result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, SERIALIZED_FORM(lwgeom_result), PARSER_CHECK_NONE);
-	POSTGIS_DEBUGF(4, "GEOSnoop: OUT: %s", lwg_unparser_result.wkoutput);
-#endif
 
 	PG_FREE_IF_COPY(geom, 0);
 
@@ -3684,7 +3682,7 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	PG_LWGEOM *result;
 	GEOSGeometry *geos_result;
 	const GEOSGeometry **vgeoms;
-	int srid=-1;
+	int srid=SRID_UNKNOWN;
 	size_t offset;
 #if POSTGIS_DEBUG_LEVEL >= 3
 	static int call=1;
@@ -3842,7 +3840,7 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 	PG_LWGEOM *result;
 	GEOSGeometry* geos_in;
 	GEOSGeometry* geos_out;
-	int srid=-1;
+	int srid=SRID_UNKNOWN;
 #if POSTGIS_DEBUG_LEVEL >= 3
 	static int call=1;
 #endif

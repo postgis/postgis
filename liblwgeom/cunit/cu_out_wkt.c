@@ -160,16 +160,16 @@ static void test_wkt_out_circularstring(void)
 static void test_wkt_out_compoundcurve(void)
 {
 	CU_ASSERT_STRING_EQUAL(
-	    cu_wkt("COMPOUNDCURVE((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0))",WKT_ISO),
-	    "COMPOUNDCURVE ZM ((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING ZM (1 2 3 4,4 5 6 7,7 8 9 0))"
+	    cu_wkt("COMPOUNDCURVE((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING(7 8 9 0,4 3 2 1,1 2 3 4,4 5 6 7,7 8 9 0))",WKT_ISO),
+	    "COMPOUNDCURVE ZM ((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING ZM (7 8 9 0,4 3 2 1,1 2 3 4,4 5 6 7,7 8 9 0))"
 	);
 }
 
 static void test_wkt_out_curvpolygon(void)
 {
 	CU_ASSERT_STRING_EQUAL(
-	    cu_wkt("CURVEPOLYGON((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0))",WKT_ISO),
-	    "CURVEPOLYGON ZM ((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING ZM (1 2 3 4,4 5 6 7,7 8 9 0))"
+	    cu_wkt("CURVEPOLYGON((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING(7 8 9 0,1 2 1 1,1 2 3 4,4 5 6 7,7 8 9 0))",WKT_ISO),
+	    "CURVEPOLYGON ZM ((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING ZM (7 8 9 0,1 2 1 1,1 2 3 4,4 5 6 7,7 8 9 0))"
 	);
 }
 

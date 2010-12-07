@@ -497,11 +497,6 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 			/* lwgeom serialized form */
 			in = (PG_LWGEOM*)PG_DETOAST_DATUM(entry->key);
 
-#if POSTGIS_DEBUG_LEVEL > 0
-			result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, (uchar *)in+VARHDRSZ, PARSER_CHECK_NONE);
-			POSTGIS_DEBUGF(4, "GIST: LWGEOM_gist_compress detoasted entry->key: %s", lwg_unparser_result.wkoutput);
-#endif
-
 			if (in == NULL)
 			{
 				elog(ERROR, "PG_DETOAST_DATUM(<notnull>) returned NULL ??");

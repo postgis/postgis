@@ -40,5 +40,5 @@ SELECT origin,caseno,
        st_asewkt(st_makevalid(orig)) = st_asewkt(valid),
        st_isvalid(st_makevalid(orig)), -- paranoia
        (st_isvaliddetail(orig)).valid
-FROM clean_cases;
+  FROM clean_cases;
 

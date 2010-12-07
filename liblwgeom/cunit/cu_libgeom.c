@@ -306,22 +306,22 @@ static void test_lwgeom_free(void)
 
 	/* Empty geometries don't seem to free properly (#370) */
 	geom = lwgeom_from_ewkt("GEOMETRYCOLLECTION EMPTY", PARSER_CHECK_NONE);
-	CU_ASSERT_EQUAL(TYPE_GETTYPE(geom->type), COLLECTIONTYPE);
+	CU_ASSERT_EQUAL(geom->type, COLLECTIONTYPE);
 	lwgeom_free(geom);
 
 	/* Empty geometries don't seem to free properly (#370) */
 	geom = lwgeom_from_ewkt("POLYGON EMPTY", PARSER_CHECK_NONE);
-	CU_ASSERT_EQUAL(TYPE_GETTYPE(geom->type), COLLECTIONTYPE);
+	CU_ASSERT_EQUAL(geom->type, POLYGONTYPE);
 	lwgeom_free(geom);
 
 	/* Empty geometries don't seem to free properly (#370) */
 	geom = lwgeom_from_ewkt("LINESTRING EMPTY", PARSER_CHECK_NONE);
-	CU_ASSERT_EQUAL(TYPE_GETTYPE(geom->type), COLLECTIONTYPE);
+	CU_ASSERT_EQUAL(geom->type, LINETYPE);
 	lwgeom_free(geom);
 
 	/* Empty geometries don't seem to free properly (#370) */
 	geom = lwgeom_from_ewkt("POINT EMPTY", PARSER_CHECK_NONE);
-	CU_ASSERT_EQUAL(TYPE_GETTYPE(geom->type), COLLECTIONTYPE);
+	CU_ASSERT_EQUAL(geom->type, POINTTYPE);
 	lwgeom_free(geom);
 
 }

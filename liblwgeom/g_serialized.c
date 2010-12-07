@@ -1320,26 +1320,6 @@ GSERIALIZED* gserialized_copy(const GSERIALIZED *g)
 
 char* gserialized_to_string(const GSERIALIZED *g)
 {
-	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
-	LWGEOM *lwgeom = lwgeom_from_gserialized(g);
-	uchar *serialized_lwgeom;
-	int result;
-
-	assert(g);
-
-	if ( ! lwgeom )
-	{
-		lwerror("Unable to create lwgeom from gserialized");
-		return NULL;
-	}
-
-	serialized_lwgeom = lwgeom_serialize(lwgeom);
-	lwgeom_release(lwgeom);
-
-	result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_NONE);
-	lwfree(serialized_lwgeom);
-
-	return lwg_unparser_result.wkoutput;
-
+	return lwgeom_to_wkt(lwgeom_from_gserialized(g), WKT_ISO, 12, 0);
 }
 

@@ -247,20 +247,18 @@ escape_insert_string(char *str)
 int
 GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 {
-	LWCOLLECTION *lwcollection;
-
 	LWGEOM **lwmultipoints;
-	uchar *serialized_lwgeom;
-	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
+	LWGEOM *lwgeom = NULL;
+	LWCOLLECTION *lwcollection = NULL;
 
 	POINTARRAY **dpas;
 	POINT4D point4d;
 
 	int dims = 0, hasz = 0, hasm = 0;
-	int result;
 	int u;
 
 	char *mem;
+	size_t mem_length;
 
 
 	/* Determine the correct dimensions: note that in hwgeom-compatible mode we cannot use
@@ -304,33 +302,25 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 	if (obj->nVertices > 1)
 	{
 		lwcollection = lwcollection_construct(MULTIPOINTTYPE, state->config->sr_id, NULL, obj->nVertices, lwmultipoints);
-		serialized_lwgeom = lwgeom_serialize(lwcollection_as_lwgeom(lwcollection));
+		lwgeom = lwcollection_as_lwgeom(lwcollection);
 	}
 	else
 	{
-		serialized_lwgeom = lwgeom_serialize(lwmultipoints[0]);
+		lwgeom = lwmultipoints[0];
 	}
 
 	if (!state->config->hwgeom)
-		result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_NONE, -1);
+		mem = (char*)lwgeom_to_wkb(lwgeom, WKB_EXTENDED | WKB_HEX, &mem_length);
 	else
-		result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_NONE);
+		mem = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, 12, &mem_length);
 
-	if (result)
+	if ( !mem )
 	{
-		snprintf(state->message, SHPLOADERMSGLEN, "%s", lwg_unparser_result.message);
-
+		snprintf(state->message, SHPLOADERMSGLEN, "unable to write geometry");
 		return SHPLOADERERR;
 	}
 
-	/* Allocate a string containing the resulting geometry */
-	mem = malloc(strlen(lwg_unparser_result.wkoutput) + 1);
-	strcpy(mem, lwg_unparser_result.wkoutput);
-
 	/* Free all of the allocated items */
-	lwfree(lwg_unparser_result.wkoutput);
-	lwfree(serialized_lwgeom);
-
 	for (u = 0; u < obj->nVertices; u++)
 	{
 		if (dpas[u]->serialized_pointlist)
@@ -339,10 +329,10 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 		lwpoint_free(lwgeom_as_lwpoint(lwmultipoints[u]));
 
 	}
-
 	lwfree(dpas);
 	lwfree(lwmultipoints);
-
+	if(lwcollection) lwfree(lwcollection);
+	
 	/* Return the string - everything ok */
 	*geometry = mem;
 
@@ -356,20 +346,17 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 int
 GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 {
-	LWCOLLECTION *lwcollection = NULL;
 
 	LWGEOM **lwmultilinestrings;
-	uchar *serialized_lwgeom;
-	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
+	LWGEOM *lwgeom = NULL;
+	LWCOLLECTION *lwcollection = NULL;
 
 	POINTARRAY **dpas;
 	POINT4D point4d;
-
 	int dims = 0, hasz = 0, hasm = 0;
-	int result;
 	int u, v, start_vertex, end_vertex;
-
 	char *mem;
+	size_t mem_length;
 
 
 	/* Determine the correct dimensions: note that in hwgeom-compatible mode we cannot use
@@ -432,43 +419,23 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 	if (state->config->simple_geometries == 0)
 	{
 		lwcollection = lwcollection_construct(MULTILINETYPE, state->config->sr_id, NULL, obj->nParts, lwmultilinestrings);
-
-		/* When outputting wkt rather than wkb, we need to remove the SRID from the inner geometries */
-		if (state->config->hwgeom)
-		{
-			for (u = 0; u < obj->nParts; u++)
-				lwmultilinestrings[u]->srid = -1;
-		}
-
-		serialized_lwgeom = lwgeom_serialize(lwcollection_as_lwgeom(lwcollection));
-
+		lwgeom = lwcollection_as_lwgeom(lwcollection);
 	}
 	else
-	{
-		serialized_lwgeom = lwgeom_serialize(lwmultilinestrings[0]);
-	}
+		lwgeom = lwmultilinestrings[0];
 
 	if (!state->config->hwgeom)
-		result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_NONE, -1);
+		mem = (char*)lwgeom_to_wkb(lwgeom, WKB_EXTENDED | WKB_HEX, &mem_length);
 	else
-		result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_NONE);
+		mem = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, 12, &mem_length);
 
-	/* Return the error message if we failed */
-	if (result)
+	if ( !mem )
 	{
-		snprintf(state->message, SHPLOADERMSGLEN, "%s", lwg_unparser_result.message);
-
+		snprintf(state->message, SHPLOADERMSGLEN, "unable to write geometry");
 		return SHPLOADERERR;
 	}
 
-	/* Allocate a string containing the resulting geometry */
-	mem = malloc(strlen(lwg_unparser_result.wkoutput) + 1);
-	strcpy(mem, lwg_unparser_result.wkoutput);
-
 	/* Free all of the allocated items */
-	lwfree(lwg_unparser_result.wkoutput);
-	lwfree(serialized_lwgeom);
-
 	for (u = 0; u < obj->nParts; u++)
 	{
 		if( dpas[u]->serialized_pointlist )
@@ -693,11 +660,9 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 	int pi, vi; /* part index and vertex index */
 	int u;
 
-	LWCOLLECTION *lwcollection = NULL;
-
 	LWGEOM **lwpolygons;
-	uchar *serialized_lwgeom;
-	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
+	LWGEOM *lwgeom;
+	LWCOLLECTION *lwcollection = NULL;
 
 	LWPOLY *lwpoly;
 	POINTARRAY *dpas;
@@ -705,10 +670,9 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 	POINT4D point4d;
 
 	int dims = 0, hasz = 0, hasm = 0;
-	int result;
 
 	char *mem;
-
+	size_t mem_length;
 
 	/* Determine the correct dimensions: note that in hwgeom-compatible mode we cannot use
 	   the M coordinate */
@@ -793,21 +757,23 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 	if (state->config->simple_geometries == 0)
 	{
 		lwcollection = lwcollection_construct(MULTIPOLYGONTYPE, state->config->sr_id, NULL, polygon_total, lwpolygons);
-
-		/* When outputting wkt rather than wkb, we need to remove the SRID from the inner geometries */
-		if (state->config->hwgeom)
-		{
-			for (u = 0; u < pi; u++)
-				lwpolygons[u]->srid = -1;
-		}
-
-		serialized_lwgeom = lwgeom_serialize(lwcollection_as_lwgeom(lwcollection));
+		lwgeom = lwcollection_as_lwgeom(lwcollection);
 	}
 	else
+		lwgeom = lwpolygons[0];
+
+	if (!state->config->hwgeom)
+		mem = (char*)lwgeom_to_wkb(lwgeom, WKB_EXTENDED | WKB_HEX, &mem_length);
+	else
+		mem = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, 12, &mem_length);
+
+	if ( !mem )
 	{
-		serialized_lwgeom = lwgeom_serialize(lwpolygons[0]);
+		snprintf(state->message, SHPLOADERMSGLEN, "unable to write geometry");
+		return SHPLOADERERR;
 	}
 
+	/* Free all of the allocated items */
 	/* Note: lwpoly_free() currently doesn't free its serialized pointlist, so do it manually */
 	for (pi = 0; pi < polygon_total; pi++)
 	{
@@ -824,26 +790,6 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 	}
 
 	ReleasePolygons(Outer, polygon_total);
-
-	if (!state->config->hwgeom)
-		result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_NONE, -1);
-	else
-		result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_NONE);
-
-	if (result)
-	{
-		snprintf(state->message, SHPLOADERMSGLEN, "%s", lwg_unparser_result.message);
-
-		return SHPLOADERERR;
-	}
-
-	/* Allocate a string containing the resulting geometry */
-	mem = malloc(strlen(lwg_unparser_result.wkoutput) + 1);
-	strcpy(mem, lwg_unparser_result.wkoutput);
-
-	/* Free all of the allocated items */
-	lwfree(lwg_unparser_result.wkoutput);
-	lwfree(serialized_lwgeom);
 
 	/* Cycle through each polygon, freeing everything we need... */
 	for (u = 0; u < polygon_total; u++)

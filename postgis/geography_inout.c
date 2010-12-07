@@ -188,29 +188,54 @@ void geography_valid_typmod(LWGEOM *lwgeom, int32 typmod)
 PG_FUNCTION_INFO_V1(geography_in);
 Datum geography_in(PG_FUNCTION_ARGS)
 {
-	char *geog_str = PG_GETARG_CSTRING(0);
+	char *str = PG_GETARG_CSTRING(0);
 	/* Datum geog_oid = PG_GETARG_OID(1); Not needed. */
 	int32 geog_typmod = PG_GETARG_INT32(2);
 	LWGEOM_PARSER_RESULT lwg_parser_result;
 	LWGEOM *lwgeom = NULL;
 	GSERIALIZED *g_ser = NULL;
-	int result = 0;
 
-	/* Handles both HEXEWKB and EWKT */
-	result = serialized_lwgeom_from_ewkt(&lwg_parser_result, geog_str, PARSER_CHECK_ALL);
-	if (result)
-		PG_PARSER_ERROR(lwg_parser_result);
+	lwgeom_parser_result_init(&lwg_parser_result);
 
-	lwgeom = lwgeom_deserialize(lwg_parser_result.serialized_lwgeom);
+	/* Empty string. */
+	if ( str[0] == '\0' )
+		ereport(ERROR,(errmsg("parse error - invalid geometry")));
+
+	/* WKB? Let's find out. */
+	if ( str[0] == '0' )
+	{
+		/* TODO: 20101206: No parser checks! This is inline with current 1.5 behavior, but needs discussion */
+		lwgeom = lwgeom_from_hexwkb(str, PARSER_CHECK_NONE);
+		/* Error out if something went sideways */
+		if ( ! lwgeom ) 
+			ereport(ERROR,(errmsg("parse error - invalid geometry")));
+	}
+	/* WKT then. */
+	else
+	{
+		if ( lwgeom_from_wkt(&lwg_parser_result, str, PARSER_CHECK_ALL) == LW_FAILURE )
+			PG_PARSER_ERROR(lwg_parser_result);
+
+		lwgeom = lwg_parser_result.geom;
+	}
+
+	/* Set geodetic flag */
 	FLAGS_SET_GEODETIC(lwgeom->flags,1);
 
+	/* Check that this is a type we can handle */
 	geography_valid_type(lwgeom->type);
+
+	/* Check that the coordinates are in range */
+	if ( lwgeom_check_geodetic(lwgeom) == LW_FALSE )
+	{
+		ereport(ERROR, (
+		            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+		            errmsg("Coordinate values are out of range [-180 -90, 180 90] for GEOGRAPHY type" )));
+	}
 
 	/* Force default SRID to the default */
 	if ( (int)lwgeom->srid <= 0 )
-	{
 		lwgeom->srid = SRID_DEFAULT;
-	}
 
 	if ( geog_typmod >= 0 )
 	{
@@ -229,24 +254,11 @@ Datum geography_in(PG_FUNCTION_ARGS)
 	g_ser = geography_serialize(lwgeom);
 	FLAGS_SET_GEODETIC(g_ser->flags, 1);
 
-	/*
-	** Replace the unaligned lwgeom with a new aligned one based on GSERIALIZED.
-	*/
-	lwgeom_release(lwgeom);
-	lwgeom = lwgeom_from_gserialized(g_ser);
-
-	/* Check if the geography has valid coordinate range. */
-	if ( lwgeom_check_geodetic(lwgeom) == LW_FALSE )
-	{
-		ereport(ERROR, (
-		            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-		            errmsg("Coordinate values are out of range [-180 -90, 180 90] for GEOGRAPHY type" )));
-	}
-	
 	/* Clean up temporary object */
 	lwgeom_free(lwgeom);
 
 	PG_RETURN_POINTER(g_ser);
+
 }
 
 /*
@@ -255,19 +267,16 @@ Datum geography_in(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_out);
 Datum geography_out(PG_FUNCTION_ARGS)
 {
-	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
 	LWGEOM *lwgeom = NULL;
 	GSERIALIZED *g = NULL;
-	int result = 0;
+	char *hexwkb;
 
 	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	lwgeom = lwgeom_from_gserialized(g);
+	hexwkb = (char*)lwgeom_to_wkb(lwgeom, WKB_HEX | WKB_EXTENDED, 0);
+	lwgeom_free(lwgeom);
 
-	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, lwgeom_serialize(lwgeom), PARSER_CHECK_ALL, -1);
-	if (result)
-		PG_UNPARSER_ERROR(lwg_unparser_result);
-
-	PG_RETURN_CSTRING(lwg_unparser_result.wkoutput);
+	PG_RETURN_CSTRING(hexwkb);
 }
 
 /*
@@ -456,44 +465,30 @@ Datum geography_typmod_out(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_as_text);
 Datum geography_as_text(PG_FUNCTION_ARGS)
 {
-	LWGEOM *lwgeom = NULL;
 	GSERIALIZED *g = NULL;
-	int result = 0;
-	char *semicolon_loc = NULL;
+	LWGEOM *lwgeom = NULL;
 	char *wkt = NULL;
-	uchar *lwgeom_serialized = NULL;
-	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
+	text *result = NULL;
 	size_t len = 0;
 
 	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	/* Convert to lwgeom so we can run the old functions */
 	lwgeom = lwgeom_from_gserialized(g);
-	lwgeom_serialized = lwgeom_serialize(lwgeom);
 
 	/* Generate WKT */
-	result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, lwgeom_serialized, PARSER_CHECK_ALL);
-	if (result)
-		PG_UNPARSER_ERROR(lwg_unparser_result);
+	wkt = lwgeom_to_wkt(lwgeom, WKT_SFSQL, DBL_DIG, &len);
 
-	/* Strip SRID=NNNN;' off the front of the EWKT. */
-	semicolon_loc = strchr(lwg_unparser_result.wkoutput,';');
-	if (semicolon_loc == NULL)
-		semicolon_loc = lwg_unparser_result.wkoutput;
-	else
-		semicolon_loc = semicolon_loc + 1;
+	/* Copy into text obect */
+	len = len - 1 + VARHDRSZ;
+	result = palloc(len);
+	SET_VARSIZE(result, len);
+	memcpy(VARDATA(result), wkt, len - VARHDRSZ);
 
-	len = strlen(semicolon_loc) + VARHDRSZ;
-	wkt = palloc(len);
-	SET_VARSIZE(wkt, len);
+	pfree(wkt);
+	lwgeom_free(lwgeom);
 
-	memcpy(VARDATA(wkt), semicolon_loc, len - VARHDRSZ);
-
-	pfree(lwg_unparser_result.wkoutput);
-	pfree(lwgeom_serialized);
-	lwgeom_release(lwgeom);
-
-	PG_RETURN_POINTER(wkt);
+	PG_RETURN_TEXT_P(result);
 }
 
 
@@ -848,13 +843,9 @@ Datum geography_from_text(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_as_binary);
 Datum geography_as_binary(PG_FUNCTION_ARGS)
 {
-	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
 	LWGEOM *lwgeom = NULL;
-	LWGEOM *lwgeom_2d = NULL;
-	uchar *lwgeom_serialized = NULL;
-	size_t lwgeom_serialized_size = 0;
-	int result = 0;
-	char *wkb = NULL;
+	uchar *wkb = NULL;
+	bytea *wkb_result;
 	size_t wkb_size = 0;
 	GSERIALIZED *g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
@@ -864,31 +855,27 @@ Datum geography_as_binary(PG_FUNCTION_ARGS)
 	/* Get our lwgeom form */
 	lwgeom = lwgeom_from_gserialized(g);
 	
-	/* Strip out the higher dimensions */
-	lwgeom_2d = lwgeom_force_2d(lwgeom);
+	if ( FLAGS_NDIMS(lwgeom->flags) > 2 )
+	{
+		/* Strip out the higher dimensions */
+		LWGEOM *tmp = lwgeom_force_2d(lwgeom);
+		lwgeom = tmp;
+		lwgeom_free(lwgeom);
+	}
 	
-	/* Convert to lwgeom so we can run the old functions */
-	lwgeom_serialized_size = lwgeom_serialize_size(lwgeom_2d);
-	lwgeom_serialized = lwgeom_serialize(lwgeom_2d);
-
 	/* Create WKB */
-	result = serialized_lwgeom_to_ewkb(&lwg_unparser_result, lwgeom_serialized, PARSER_CHECK_ALL, NDR);
-	if (result)
-		PG_UNPARSER_ERROR(lwg_unparser_result);
-
+	wkb = lwgeom_to_wkb(lwgeom, WKB_SFSQL, &wkb_size);
+	
 	/* Copy to varlena pointer */
-	wkb_size = lwg_unparser_result.size + VARHDRSZ;
-	wkb = palloc(wkb_size);
-	SET_VARSIZE(wkb, wkb_size);
-	memcpy(VARDATA(wkb), lwg_unparser_result.wkoutput, lwg_unparser_result.size);
+	wkb_result = palloc(wkb_size + VARHDRSZ);
+	SET_VARSIZE(wkb_result, wkb_size + VARHDRSZ);
+	memcpy(VARDATA(wkb_result), wkb, wkb_size);
 
 	/* Clean up */
-	pfree(lwg_unparser_result.wkoutput);
-	lwgeom_release(lwgeom);
-	lwgeom_free(lwgeom_2d);
-	lwfree(lwgeom_serialized);
+	pfree(wkb);
+	lwgeom_free(lwgeom);
 
-	PG_RETURN_POINTER(wkb);
+	PG_RETURN_BYTEA_P(wkb_result);
 }
 
 /*
@@ -995,7 +982,7 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 	{
 		ereport(ERROR, (
 		            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-		            errmsg("Only SRID SRID_DEFAULT is currently supported in geography." )));
+		            errmsg("Only SRID %d is currently supported in geography.", SRID_DEFAULT)));
 	}
 
 	/*
@@ -1032,6 +1019,9 @@ Datum geometry_from_geography(PG_FUNCTION_ARGS)
 
 	lwgeom = lwgeom_from_gserialized(g_ser);
 
+	if ( lwgeom_needs_bbox(lwgeom) )
+		lwgeom_add_bbox(lwgeom);
+
 	/* We want "geometry" to think all our "geography" has an SRID, and the
 	   implied SRID is the default, so we fill that in if our SRID is actually unknown. */
 	if ( (int)lwgeom->srid <= 0 )
@@ -1039,11 +1029,6 @@ Datum geometry_from_geography(PG_FUNCTION_ARGS)
 
 	ret = pglwgeom_serialize(lwgeom);
 	lwgeom_release(lwgeom);
-
-	if ( is_worth_caching_pglwgeom_bbox(ret) )
-	{
-		ret = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(LWGEOM_addBBOX, PointerGetDatum(ret)));
-	}
 
 	PG_RETURN_POINTER(ret);
 }

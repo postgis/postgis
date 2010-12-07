@@ -1884,10 +1884,7 @@ int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 	size_t hexewkb_len;
 	const char *val;
 	SHPObject *obj = NULL;
-
-	LWGEOM_PARSER_RESULT lwg_parser_result;
 	LWGEOM *lwgeom;
-	int result;
 
 	int i, geocolnum = 0;
 
@@ -2005,17 +2002,14 @@ int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 
 		LWDEBUGF(4, "HexEWKB - length: %d  value: %s", strlen(hexewkb), hexewkb);
 
-		/* Use the liblwgeom parser to convert from EWKB format to serialized LWGEOM */
-		result = serialized_lwgeom_from_hexwkb(&lwg_parser_result, hexewkb, PARSER_CHECK_ALL);
-		if (result)
+		/* Deserialize the LWGEOM */
+		lwgeom = lwgeom_from_hexwkb(hexewkb, PARSER_CHECK_NONE);
+		if (!lwgeom)
 		{
-			snprintf(state->message, SHPDUMPERMSGLEN, _("Error parsing HEXEWKB for record %d: %s"), state->currow, lwg_parser_result.message);
+			snprintf(state->message, SHPDUMPERMSGLEN, _("Error parsing HEXEWKB for record %d"), state->currow);
 			PQclear(state->fetchres);
 			return SHPDUMPERERR;
 		}
-	
-		/* Deserialize the LWGEOM */
-		lwgeom = lwgeom_deserialize(lwg_parser_result.serialized_lwgeom);
 	
 		/* Call the relevant method depending upon the geometry type */
 		LWDEBUGF(4, "geomtype: %d\n", lwgeom_getType(lwgeom->type));
@@ -2054,7 +2048,6 @@ int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 		}
 	
 		/* Free both the original and geometries */
-		lwfree(lwg_parser_result.serialized_lwgeom);
 		lwgeom_free(lwgeom);
 
 		/* Write the shape out to the file */

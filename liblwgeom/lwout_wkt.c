@@ -24,7 +24,7 @@ static void dimension_qualifiers_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *s
 {
 
 	/* Extended WKT: POINTM(0 0 0) */
-	if ( (variant & WKT_EXTENDED) && FLAGS_GET_M(geom->flags) && (!FLAGS_GET_Z(geom->flags)) )
+	if ( (variant & WKT_EXTENDED) && ! (variant & WKT_IS_CHILD) && FLAGS_GET_M(geom->flags) && (!FLAGS_GET_Z(geom->flags)) )
 	{
 		stringbuffer_append(sb, "M"); /* "M" */
 		return;
@@ -209,6 +209,7 @@ static void lwmpoint_to_wkt_sb(const LWMPOINT *mpoint, stringbuffer_t *sb, int p
 		return;
 	}
 	stringbuffer_append(sb, "(");
+	variant = variant | WKT_IS_CHILD; /* Inform the sub-geometries they are childre */
 	for ( i = 0; i < mpoint->ngeoms; i++ )
 	{
 		if ( i > 0 )
@@ -238,6 +239,7 @@ static void lwmline_to_wkt_sb(const LWMLINE *mline, stringbuffer_t *sb, int prec
 	}
 
 	stringbuffer_append(sb, "(");
+	variant = variant | WKT_IS_CHILD; /* Inform the sub-geometries they are childre */
 	for ( i = 0; i < mline->ngeoms; i++ )
 	{
 		if ( i > 0 )
@@ -267,6 +269,7 @@ static void lwmpoly_to_wkt_sb(const LWMPOLY *mpoly, stringbuffer_t *sb, int prec
 	}
 
 	stringbuffer_append(sb, "(");
+	variant = variant | WKT_IS_CHILD; /* Inform the sub-geometries they are childre */
 	for ( i = 0; i < mpoly->ngeoms; i++ )
 	{
 		if ( i > 0 )
@@ -298,6 +301,7 @@ static void lwcompound_to_wkt_sb(const LWCOMPOUND *comp, stringbuffer_t *sb, int
 	}
 
 	stringbuffer_append(sb, "(");
+	variant = variant | WKT_IS_CHILD; /* Inform the sub-geometries they are childre */
 	for ( i = 0; i < comp->ngeoms; i++ )
 	{
 		int type = comp->geoms[i]->type;
@@ -341,6 +345,7 @@ static void lwcurvepoly_to_wkt_sb(const LWCURVEPOLY *cpoly, stringbuffer_t *sb, 
 		return;
 	}
 	stringbuffer_append(sb, "(");
+	variant = variant | WKT_IS_CHILD; /* Inform the sub-geometries they are childre */
 	for ( i = 0; i < cpoly->nrings; i++ )
 	{
 		int type = cpoly->rings[i]->type;
@@ -388,6 +393,7 @@ static void lwmcurve_to_wkt_sb(const LWMCURVE *mcurv, stringbuffer_t *sb, int pr
 		return;
 	}
 	stringbuffer_append(sb, "(");
+	variant = variant | WKT_IS_CHILD; /* Inform the sub-geometries they are childre */
 	for ( i = 0; i < mcurv->ngeoms; i++ )
 	{
 		int type = mcurv->geoms[i]->type;
@@ -435,6 +441,7 @@ static void lwmsurface_to_wkt_sb(const LWMSURFACE *msurf, stringbuffer_t *sb, in
 		return;
 	}
 	stringbuffer_append(sb, "(");
+	variant = variant | WKT_IS_CHILD; /* Inform the sub-geometries they are childre */
 	for ( i = 0; i < msurf->ngeoms; i++ )
 	{
 		int type = msurf->geoms[i]->type;
@@ -448,7 +455,7 @@ static void lwmsurface_to_wkt_sb(const LWMSURFACE *msurf, stringbuffer_t *sb, in
 			break;
 		case CURVEPOLYTYPE:
 			/* But circstring subgeoms *do* get type identifiers */
-			lwcurvepoly_to_wkt_sb((LWCURVEPOLY*)msurf->geoms[i], sb, precision, variant );
+			lwcurvepoly_to_wkt_sb((LWCURVEPOLY*)msurf->geoms[i], sb, precision, variant);
 			break;
 		default:
 			lwerror("lwmsurface_to_wkt_sb: Unknown type recieved %d - %s", type, lwtype_name(type));
@@ -477,6 +484,7 @@ static void lwcollection_to_wkt_sb(const LWCOLLECTION *collection, stringbuffer_
 		return;
 	}
 	stringbuffer_append(sb, "(");
+	variant = variant | WKT_IS_CHILD; /* Inform the sub-geometries they are childre */
 	for ( i = 0; i < collection->ngeoms; i++ )
 	{
 		if ( i > 0 )
@@ -553,6 +561,8 @@ static void lwpsurface_to_wkt_sb(const LWPSURFACE *psurf, stringbuffer_t *sb, in
 		empty_to_wkt_sb(sb);
 		return;
 	}
+
+	variant = variant | WKT_IS_CHILD; /* Inform the sub-geometries they are childre */
 
 	stringbuffer_append(sb, "(");
 	for ( i = 0; i < psurf->ngeoms; i++ )

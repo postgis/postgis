@@ -108,7 +108,7 @@ int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring)
 	if( ! poly || ! ring ) 
 	{
 		LWDEBUG(4,"NULL inputs!!! quitting");
-		return LW_FALSE;
+		return LW_FAILURE;
 	}
 
 	/* Check that we're not working with garbage */
@@ -122,7 +122,7 @@ int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring)
 	if ( ! ( ring->type == LINETYPE || ring->type == CIRCSTRINGTYPE || ring->type == COMPOUNDTYPE ) )
 	{
 		LWDEBUGF(4,"got incorrect ring type: %s",lwtype_name(ring->type));
-		return LW_FALSE;
+		return LW_FAILURE;
 	}
 
 		
@@ -147,14 +147,14 @@ int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring)
 		if ( poly->rings[i] == ring )
 		{
 			LWDEBUGF(4, "Found duplicate geometry in collection %p == %p", poly->rings[i], ring);
-			return LW_TRUE;
+			return LW_SUCCESS;
 		}
 	}
 
 	/* Add the ring and increment the ring count */
 	poly->rings[poly->nrings] = (LWGEOM*)ring;
 	poly->nrings++;
-	return LW_TRUE;	
+	return LW_SUCCESS;	
 }
 
 /**

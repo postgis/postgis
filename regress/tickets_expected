@@ -21,11 +21,11 @@ ERROR:  Geometry argument does not have an 'M' ordinate
 ERROR:  lwgeom_grid: Unsupported geometry type: CircularString
 #124a|COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,30 5),CIRCULARSTRING(30 5,34 56,67 89))
 ERROR:  incontinuous compound curve
-HINT:  "...IRCULARSTRING(0 0,1 1,1 0),(1 0,30 6)" <-- parse error at position 52 within geometry
+HINT:  "...0 6),CIRCULARSTRING(30 5,34 56,67 89)" <-- parse error at position 85 within geometry
 #145a|0107000020E610000000000000
 #145b|0
 #146|0|t|GEOMETRYCOLLECTION(LINESTRING(0 0,-1 -1),MULTIPOINT(1 2,2 3))
-ERROR:  geometry contains non-closed rings
+ERROR:  Invalid hex string, length (267) has to be a multiple of two!
 #157|ST_Polygon|POLYGON
 #157|ST_Point|POINT
 #157|ST_Polygon|POLYGON

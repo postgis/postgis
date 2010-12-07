@@ -466,7 +466,7 @@ int
 lwpoly_add_ring(LWPOLY *poly, POINTARRAY *pa) 
 {
 	if( ! poly || ! pa ) 
-		return LW_FALSE;
+		return LW_FAILURE;
 		
 	/* We have used up our storage, add some more. */
 	if( poly->nrings >= poly->maxrings ) 
@@ -479,7 +479,7 @@ lwpoly_add_ring(LWPOLY *poly, POINTARRAY *pa)
 	poly->rings[poly->nrings] = pa;
 	poly->nrings++;
 	
-	return LW_TRUE;
+	return LW_SUCCESS;
 }
 
 void
@@ -687,7 +687,7 @@ LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist)
 		LWDEBUGF(3, "ring%d simplified from %d to %d points", i, ipoly->rings[i]->npoints, opts->npoints);
 
 		/* Add ring to simplified polygon */
-		if( lwpoly_add_ring(opoly, opts) == LW_FALSE )
+		if( lwpoly_add_ring(opoly, opts) == LW_FAILURE )
 			return NULL;
 	}
 

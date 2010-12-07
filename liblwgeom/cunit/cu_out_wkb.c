@@ -21,7 +21,7 @@
 /*
 ** Global variable to hold WKB strings
 */
-char *s;
+uchar *s;
 char *t;
 
 /*
@@ -77,6 +77,10 @@ static void test_wkb_out_linestring(void)
 
 	cu_wkb_out("LINESTRING(0 0 1,1 1 2,2 2 3)");
 	CU_ASSERT_STRING_EQUAL(s, t);
+
+	cu_wkb_out("LINESTRING EMPTY");
+//	printf("new: %s\nold: %s\n",s,t);
+	CU_ASSERT_STRING_EQUAL(s, t);
 }
 
 static void test_wkb_out_polygon(void)
@@ -91,15 +95,16 @@ static void test_wkb_out_polygon(void)
 	CU_ASSERT_STRING_EQUAL(s, t);
 
 	cu_wkb_out("POLYGON EMPTY");
+//	printf("new: %s\nold: %s\n",s,t);
 	CU_ASSERT_STRING_EQUAL(s, t);
 }
 
 static void test_wkb_out_multipoint(void) 
 {
-	cu_wkb_out("SRID=4;MULTIPOINT(0 0 0,0 1 0,1 1 0,1 0 0,0 0 ))");
+	cu_wkb_out("SRID=4;MULTIPOINT(0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)");
 	CU_ASSERT_STRING_EQUAL(s, t);
 
-	cu_wkb_out("MULTIPOINT(0 0 0, 0.26794919243112270647255365849413 1 3)");
+//	cu_wkb_out("MULTIPOINT(0 0 0, 0.26794919243112270647255365849413 1 3)");
 	CU_ASSERT_STRING_EQUAL(s, t);
 }
 
