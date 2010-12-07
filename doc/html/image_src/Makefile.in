@@ -82,6 +82,8 @@ IMAGES= \
 	../images/st_longestline02.png \
 	../images/st_longestline03.png \
 	../images/st_minimumboundingcircle01.png \
+	../images/st_sharedpaths01.png \
+	../images/st_sharedpaths02.png \
 	../images/st_shortestline01.png \
 	../images/st_shortestline02.png \
 	../images/st_snap01.png \

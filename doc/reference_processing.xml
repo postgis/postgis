@@ -1865,14 +1865,66 @@ geomtextrep
 	  </refsection>
 	  <refsection>
 		<title>Examples: Finding shared paths</title>
-		 <programlisting>
-SELECT ST_AsText(ST_SharedPaths(ST_GeomFromText('MULTILINESTRING((1 3, 4 5, 5 6, 8 9, 9 9, 1 3), (1 2, -5 5))'), 
-    ST_GeomFromText('LINESTRING(1 3, 4 5)'))) As wkt;
+		<informaltable>
+		  <tgroup cols="2">
+			<colspec colname="column1" />
+			<colspec colname="column2" />
+			<spanspec namest="column1" nameend="column2" spanname="span-horiz" align="center" />
+			<tbody>
+			  <row>
+				<entry spanname="span-horiz"><informalfigure>
+					<mediaobject>
+					  <imageobject>
+						<imagedata fileref="images/st_sharedpaths01.png" />
+					  </imageobject>
+					  <caption><para>A multilinestring and a linestring</para></caption>
+					</mediaobject>
+				  </informalfigure>
+			   </entry>
+			  </row>
+			  <row>
+				<entry><para><informalfigure>
+					<mediaobject>
+					  <imageobject>
+						<imagedata fileref="images/st_sharedpaths02.png" />
+					  </imageobject>
+					  <caption><para>The shared path of multilinestring and linestring overlaid with original geometries.</para></caption>
+					</mediaobject>
+				  </informalfigure>
+				  <programlisting>
+ SELECT ST_AsText(
+  ST_SharedPaths(
+ 	ST_GeomFromText('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),
+ 	   (51 150,101 150,76 175,51 150))'),
+ 	ST_GeomFromText('LINESTRING(151 100,126 156.25,126 125,90 161, 76 175)')
+ 	)
+  ) As wkt
 
                                 wkt
----------------------------------------------------------------------
-GEOMETRYCOLLECTION(MULTILINESTRING((1 3,4 5)),MULTILINESTRING EMPTY)
+-------------------------------------------------------------
+GEOMETRYCOLLECTION(MULTILINESTRING((126 156.25,126 125),
+ (101 150,90 161),(90 161,76 175)),MULTILINESTRING EMPTY)
 			  </programlisting>
+			</para>
+			</entry>
+			<entry><para>
+				  <programlisting>
+-- same example but linestring orientation flipped
+SELECT ST_AsText(
+  ST_SharedPaths( ST_GeomFromText('LINESTRING(76 175,90 161,126 125,126 156.25,151 100)'),
+ 	ST_GeomFromText('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),
+ 	   (51 150,101 150,76 175,51 150))')
+ 	)
+  ) As wkt
+
+                                wkt
+-------------------------------------------------------------
+GEOMETRYCOLLECTION(MULTILINESTRING EMPTY,
+MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
+			  </programlisting>
+			</para>
+			</entry>
+		</row>
 	 </refsection>
       <refsection>
         <title>See Also</title>
