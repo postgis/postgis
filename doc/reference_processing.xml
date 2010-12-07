@@ -1894,7 +1894,7 @@ geomtextrep
 				  <programlisting>
  SELECT ST_AsText(
   ST_SharedPaths(
- 	ST_GeomFromText('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),
+    ST_GeomFromText('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),
  	   (51 150,101 150,76 175,51 150))'),
  	ST_GeomFromText('LINESTRING(151 100,126 156.25,126 125,90 161, 76 175)')
  	)
@@ -1911,8 +1911,9 @@ GEOMETRYCOLLECTION(MULTILINESTRING((126 156.25,126 125),
 				  <programlisting>
 -- same example but linestring orientation flipped
 SELECT ST_AsText(
-  ST_SharedPaths( ST_GeomFromText('LINESTRING(76 175,90 161,126 125,126 156.25,151 100)'),
- 	ST_GeomFromText('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),
+  ST_SharedPaths(
+   ST_GeomFromText('LINESTRING(76 175,90 161,126 125,126 156.25,151 100)'),
+   ST_GeomFromText('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),
  	   (51 150,101 150,76 175,51 150))')
  	)
   ) As wkt
