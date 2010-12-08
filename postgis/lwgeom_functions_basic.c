@@ -506,7 +506,7 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 	** automatic bbox addition FOR_COMPLEX_GEOMS.
 	*/
 	if ( lwtype_is_collection(pglwgeom_get_type(geom)) && 
-	     TYPE_HASBBOX(geom->type) )
+	     pglwgeom_has_bbox(geom) )
 	{
 		PG_RETURN_POINTER(geom);
 	}
