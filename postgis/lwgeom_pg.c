@@ -410,6 +410,12 @@ pglwgeom_get_type(const PG_LWGEOM *lwgeom)
 	return TYPE_GETTYPE(lwgeom->type);
 }
 
+int
+pglwgeom_get_zm(const PG_LWGEOM *lwgeom)
+{
+	return TYPE_GETZM(lwgeom->type);
+}
+
 bool
 pglwgeom_has_bbox(const PG_LWGEOM *lwgeom)
 {

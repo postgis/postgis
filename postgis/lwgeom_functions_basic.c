@@ -2077,8 +2077,8 @@ Datum LWGEOM_zmflag(PG_FUNCTION_ARGS)
 
 	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	type = in->type;
-	if ( TYPE_HASZ(type) ) ret += 2;
-	if ( TYPE_HASM(type) ) ret += 1;
+	if ( pglwgeom_has_z(in) ) ret += 2;
+	if ( pglwgeom_has_m(in) ) ret += 1;
 	PG_FREE_IF_COPY(in, 0);
 	PG_RETURN_INT16(ret);
 }
@@ -2087,14 +2087,14 @@ PG_FUNCTION_INFO_V1(LWGEOM_hasz);
 Datum LWGEOM_hasz(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	PG_RETURN_BOOL(TYPE_HASZ(in->type));
+	PG_RETURN_BOOL(pglwgeom_has_z(in));
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_hasm);
 Datum LWGEOM_hasm(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	PG_RETURN_BOOL(TYPE_HASM(in->type));
+	PG_RETURN_BOOL(pglwgeom_has_m(in));
 }
 
 
@@ -2115,7 +2115,7 @@ Datum LWGEOM_ndims(PG_FUNCTION_ARGS)
 	int ret;
 
 	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	ret = (TYPE_NDIMS(in->type));
+	ret = (pglwgeom_ndims(in));
 	PG_FREE_IF_COPY(in, 0);
 	PG_RETURN_INT16(ret);
 }
@@ -2136,7 +2136,7 @@ Datum LWGEOM_same(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(FALSE); /* different types */
 	}
 
-	if ( TYPE_GETZM(g1->type) != TYPE_GETZM(g2->type) )
+	if ( pglwgeom_get_zm(g1) != pglwgeom_get_zm(g2) )
 	{
 		PG_FREE_IF_COPY(g1, 0);
 		PG_FREE_IF_COPY(g2, 1);

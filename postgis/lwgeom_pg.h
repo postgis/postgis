@@ -76,6 +76,7 @@ extern LWGEOM *pglwgeom_deserialize(PG_LWGEOM *pglwgeom);
 extern PG_LWGEOM *pglwgeom_set_srid(PG_LWGEOM *pglwgeom, int32 newSRID);
 extern int pglwgeom_get_srid(PG_LWGEOM *pglwgeom);
 extern int pglwgeom_get_type(const PG_LWGEOM *lwgeom);
+extern int pglwgeom_get_zm(const PG_LWGEOM *lwgeom);
 extern PG_LWGEOM* pglwgeom_drop_bbox(PG_LWGEOM *geom);
 extern size_t pglwgeom_size(const PG_LWGEOM *geom);
 extern int pglwgeom_ndims(const PG_LWGEOM *geom);
