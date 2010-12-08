@@ -477,7 +477,7 @@ Datum geography_as_text(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_from_gserialized(g);
 
 	/* Generate WKT */
-	wkt = lwgeom_to_wkt(lwgeom, WKT_SFSQL, DBL_DIG, &len);
+	wkt = lwgeom_to_wkt(lwgeom, WKT_ISO, DBL_DIG, &len);
 
 	/* Copy into text obect */
 	len = len - 1 + VARHDRSZ;
