@@ -85,9 +85,9 @@ uchar* bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
 		h1 = hex2char[(int)hexbuf[2*i]];
 		h2 = hex2char[(int)hexbuf[2*i+1]];
 		if( h1 > 15 )
-			lwerror("Invalid hex character (%c) encountered", hexbuf[i]);
+			lwerror("Invalid hex character (%c) encountered", hexbuf[2*i]);
 		if( h2 > 15 )
-			lwerror("Invalid hex character (%c) encountered", hexbuf[i+1]);
+			lwerror("Invalid hex character (%c) encountered", hexbuf[2*i+1]);
 		/* First character is high bits, second is low bits */
 		buf[i] = ((h1 & 0x0F) << 4) | (h2 & 0x0F);
 	}

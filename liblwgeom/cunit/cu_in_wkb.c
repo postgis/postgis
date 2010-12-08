@@ -60,7 +60,7 @@ static void cu_wkb_in(char *wkt)
 	if ( hex_b ) free(hex_b);
 
 	/* Turn WKT into geom */
-	lwgeom_from_wkt(&pr, wkt, PARSER_CHECK_NONE);
+	lwgeom_parse_wkt(&pr, wkt, PARSER_CHECK_NONE);
 	if ( pr.errcode ) 
 	{
 		printf("ERROR: %s\n", pr.message);

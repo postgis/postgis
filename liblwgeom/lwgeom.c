@@ -658,7 +658,7 @@ lwgeom_to_ewkt(LWGEOM *lwgeom, int flags)
  * Return an alloced string
  */
 char*
-lwgeom_to_hexwkb(LWGEOM *lwgeom, int flags, uint32 byteorder)
+lwgeom_to_hexwkb_old(LWGEOM *lwgeom, int flags, uint32 byteorder)
 {
 	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
 	uchar *serialized = lwgeom_serialize(lwgeom);
@@ -738,7 +738,7 @@ lwgeom_from_ewkt(char *ewkt, int flags)
 	lwgeom_parser_result_init(&lwg_parser_result);
 
 	/* Rely on grammar parser to construct a LWGEOM */
-	result = lwgeom_from_wkt(&lwg_parser_result, ewkt, flags);
+	result = lwgeom_parse_wkt(&lwg_parser_result, ewkt, flags);
 	if (result == LW_FAILURE)
 	{
 		lwerror("%s", (char *)lwg_parser_result.message);

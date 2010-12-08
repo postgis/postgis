@@ -104,7 +104,7 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 	/* WKT then. */
 	else
 	{
-		if ( lwgeom_from_wkt(&lwg_parser_result, str, PARSER_CHECK_ALL) == LW_FAILURE )
+		if ( lwgeom_parse_wkt(&lwg_parser_result, str, PARSER_CHECK_ALL) == LW_FAILURE )
 		{
 			PG_PARSER_ERROR(lwg_parser_result);
 		}
@@ -218,7 +218,7 @@ Datum LWGEOM_out(PG_FUNCTION_ARGS)
 	size_t hexwkb_size;
 
 	lwgeom = pglwgeom_deserialize(geom);
-	hexwkb = (char*)lwgeom_to_wkb(lwgeom, WKB_EXTENDED | WKB_HEX , &hexwkb_size);
+	hexwkb = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, &hexwkb_size);
 	lwgeom_free(lwgeom);
 	
 	PG_RETURN_CSTRING(hexwkb);
@@ -257,7 +257,7 @@ Datum LWGEOM_asHEXEWKB(PG_FUNCTION_ARGS)
 
 	/* Create WKB hex string */
 	lwgeom = pglwgeom_deserialize(geom);
-	hexwkb = (char*)lwgeom_to_wkb(lwgeom, variant | WKB_EXTENDED | WKB_HEX , &hexwkb_size);
+	hexwkb = lwgeom_to_hexwkb(lwgeom, variant | WKB_EXTENDED, &hexwkb_size);
 	lwgeom_free(lwgeom);
 	
 	/* Prepare the PgSQL text return type */
@@ -292,7 +292,7 @@ Datum LWGEOM_to_text(PG_FUNCTION_ARGS)
 
 	/* Generate WKB hex text */
 	lwgeom = pglwgeom_deserialize(geom);
-	hexwkb = (char*)lwgeom_to_wkb(lwgeom, WKB_EXTENDED | WKB_HEX , &hexwkb_size);
+	hexwkb = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, &hexwkb_size);
 	lwgeom_free(lwgeom);
 	
 	/* Prepare the PgSQL text return type, which doesn't include a null terminator */

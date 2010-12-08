@@ -54,7 +54,7 @@ static void cu_wkb_out(char *wkt)
 	if ( s ) free(s);
 	if ( t ) free(t);
 	s = lwgeom_to_wkb(g, WKB_HEX | WKB_NDR | WKB_EXTENDED, NULL);
-	t = lwgeom_to_hexwkb(g, PARSER_CHECK_NONE, NDR);
+	t = lwgeom_to_hexwkb_old(g, PARSER_CHECK_NONE, NDR);
 	lwgeom_free(g);
 }
 

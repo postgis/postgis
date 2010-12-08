@@ -213,7 +213,7 @@ Datum geography_in(PG_FUNCTION_ARGS)
 	/* WKT then. */
 	else
 	{
-		if ( lwgeom_from_wkt(&lwg_parser_result, str, PARSER_CHECK_ALL) == LW_FAILURE )
+		if ( lwgeom_parse_wkt(&lwg_parser_result, str, PARSER_CHECK_ALL) == LW_FAILURE )
 			PG_PARSER_ERROR(lwg_parser_result);
 
 		lwgeom = lwg_parser_result.geom;
@@ -273,7 +273,7 @@ Datum geography_out(PG_FUNCTION_ARGS)
 
 	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	lwgeom = lwgeom_from_gserialized(g);
-	hexwkb = (char*)lwgeom_to_wkb(lwgeom, WKB_HEX | WKB_EXTENDED, 0);
+	hexwkb = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, 0);
 	lwgeom_free(lwgeom);
 
 	PG_RETURN_CSTRING(hexwkb);

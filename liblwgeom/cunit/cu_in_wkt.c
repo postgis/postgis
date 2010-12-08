@@ -54,7 +54,7 @@ static char* cu_wkt_in(char *wkt, uchar variant)
 	int rv = 0;
 	char *s = 0;
 	
-	rv = lwgeom_from_wkt(&p, wkt, 0);
+	rv = lwgeom_parse_wkt(&p, wkt, 0);
 	if( p.errcode ) {
 		return strdup(p.message);
 	}
@@ -270,7 +270,7 @@ static void test_wkt_in_errlocation(void)
 	
 	wkt = "LINESTRING((0 0 0,1 1)";
 	lwgeom_parser_result_init(&p);
-	rv = lwgeom_from_wkt(&p, wkt, PARSER_CHECK_ALL);
+	rv = lwgeom_parse_wkt(&p, wkt, PARSER_CHECK_ALL);
 	CU_ASSERT_EQUAL(12,p.errlocation);
 	lwgeom_parser_result_free(&p);
 

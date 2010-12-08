@@ -768,8 +768,8 @@ uchar* lwgeom_to_wkb(const LWGEOM *geom, uchar variant, size_t *size_out)
 	return wkb_out;
 }
 
-//char* lwgeom_to_hexwkb(const LWGEOM *geom, uchar variant, size_t *size_out)
-//{
-//	return (char*)lwgeom_to_wkb(geom, variant | WKB_HEX, size_out);
-//}
+char* lwgeom_to_hexwkb(const LWGEOM *geom, uchar variant, size_t *size_out)
+{
+	return (char*)lwgeom_to_wkb(geom, variant | WKB_HEX, size_out);
+}
 

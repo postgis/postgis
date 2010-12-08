@@ -44,7 +44,7 @@ void wkt_yyerror(const char *str)
 * (eg, from within other functions in lwin_wkt.c) or from a threaded program.
 * Note that parser_result.wkinput picks up a reference to wktstr.
 */
-int lwgeom_from_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parser_check_flags)
+int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parser_check_flags)
 {
 	int parse_rv = 0;
 
