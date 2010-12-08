@@ -44,12 +44,12 @@ LWGEOM *lwgeom_desegmentize(LWGEOM *geom);
  * contains at least on arc geometry or segment.
  */
 int
-has_arc(const LWGEOM *geom)
+lwgeom_has_arc(const LWGEOM *geom)
 {
 	LWCOLLECTION *col;
 	int i;
 
-	LWDEBUG(2, "has_arc called.");
+	LWDEBUG(2, "lwgeom_has_arc called.");
 
 	switch (geom->type)
 	{
@@ -62,17 +62,18 @@ has_arc(const LWGEOM *geom)
 	case MULTIPOLYGONTYPE:
 	case POLYHEDRALSURFACETYPE:
 	case TINTYPE:
-		return 0;
+		return LW_FALSE;
 	case CIRCSTRINGTYPE:
-		return 1;
-		/* It's a collection that MAY contain an arc */
+		return LW_TRUE;
+	/* It's a collection that MAY contain an arc */
 	default:
 		col = (LWCOLLECTION *)geom;
 		for (i=0; i<col->ngeoms; i++)
 		{
-			if (has_arc(col->geoms[i]) == 1) return 1;
+			if (lwgeom_has_arc(col->geoms[i]) == LW_TRUE) 
+				return LW_TRUE;
 		}
-		return 0;
+		return LW_FALSE;
 	}
 }
 

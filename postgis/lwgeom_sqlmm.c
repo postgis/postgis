@@ -37,7 +37,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_has_arc);
 Datum LWGEOM_has_arc(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	uint32 result = has_arc(lwgeom_deserialize(SERIALIZED_FORM(geom)));
+	uint32 result = lwgeom_has_arc(lwgeom_deserialize(SERIALIZED_FORM(geom)));
 	PG_RETURN_BOOL(result == 1);
 }
 
@@ -69,7 +69,7 @@ Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS)
 	}
 #endif
 	igeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
-	if ( ! has_arc(igeom) )
+	if ( ! lwgeom_has_arc(igeom) )
 	{
 		PG_RETURN_POINTER(geom);
 	}
