@@ -221,7 +221,7 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 		<pgis:gset ID='CIRCULARSTRING' GeometryType='CIRCULARSTRING'>(SELECT ST_GeomFromEWKT('SRID=4326;CIRCULARSTRING(-71.0821 42.3036,-71.4821 42.3036,-71.7821 42.7036,-71.0821 42.7036,-71.0821 42.3036)') As the_geom)</pgis:gset>
 		<pgis:gset ID='MULTISURFACE' GeometryType='MULTISURFACE'>(SELECT ST_GeomFromEWKT('SRID=4326;MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-71.0821 42.3036, -71.4821 42.3036, -71.7821 42.7036, -71.0821 42.7036, -71.0821 42.3036),(-71.1821 42.4036, -71.3821 42.6036, -71.3821 42.4036, -71.1821 42.4036) ))') As the_geom)</pgis:gset>
 		<!--These are special case geometries -->
-		<pgis:gset ID="Empty Geometries" GeometryType="GEOMETRY" createtable="false">(SELECT ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326) As the_geom
+		<pgis:gset ID="Typed Empty Geometries" GeometryType="GEOMETRY" createtable="false">(SELECT 
 			UNION ALL SELECT ST_GeomFromText('POLYGON EMPTY',4326) As the_geom
 			UNION ALL SELECT ST_GeomFromText('POINT EMPTY',4326) As the_geom
 			UNION ALL SELECT ST_GeomFromText('MULTIPOINT EMPTY',4326) As the_geom
@@ -229,6 +229,10 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 			UNION ALL SELECT ST_GeomFromText('LINESTRING EMPTY',4326) As the_geom
 			UNION ALL SELECT ST_GeomFromText('MULTILINESTRING EMPTY',4326) As the_geom
 		)
+		</pgis:gset>
+		
+		<pgis:gset ID="Empty Geometry Collection" GeometryType="GEOMETRY" createtable="false">
+		 (ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326) As the_geom )
 		</pgis:gset>
 		
 		<pgis:gset ID="Collection of Empties" GeometryType="GEOMETRY" createtable="false">(SELECT ST_Collect(ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326), ST_GeomFromText('POLYGON EMPTY',4326)) As the_geom
