@@ -392,57 +392,21 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_addBBOX);
 Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_LWGEOM *result;
-	BOX2DFLOAT4	box;
-	uchar	old_type;
-	int		size;
+	LWGEOM *lwgeom;
 
-	POSTGIS_DEBUG(2, "in LWGEOM_addBBOX");
-
-	if (lwgeom_hasBBOX( lwgeom->type ) )
+	lwgeom = pglwgeom_deserialize(geom);
+	
+	if ( FLAGS_GET_BBOX(lwgeom->flags) )
 	{
-		POSTGIS_DEBUG(3, "LWGEOM_addBBOX  -- already has bbox");
-
-		/* easy - already has one.  Just copy! */
-		result = palloc (VARSIZE(lwgeom));
-		SET_VARSIZE(result, VARSIZE(lwgeom));
-		memcpy(VARDATA(result), VARDATA(lwgeom), VARSIZE(lwgeom)-VARHDRSZ);
-		PG_RETURN_POINTER(result);
+		PG_RETURN_POINTER(geom);
 	}
 
-	POSTGIS_DEBUG(3, "LWGEOM_addBBOX  -- giving it a bbox");
+	lwgeom_calculate_gbox(lwgeom, lwgeom->bbox);
 
-	/* construct new one */
-	if ( ! getbox2d_p(SERIALIZED_FORM(lwgeom), &box) )
-	{
-		/* Empty geom, no bbox to add */
-		result = palloc (VARSIZE(lwgeom));
-		SET_VARSIZE(result, VARSIZE(lwgeom));
-		memcpy(VARDATA(result), VARDATA(lwgeom), VARSIZE(lwgeom)-VARHDRSZ);
-		PG_RETURN_POINTER(result);
-	}
-	old_type = lwgeom->type;
-
-	size = VARSIZE(lwgeom)+sizeof(BOX2DFLOAT4);
-
-	result = palloc(size); /* 16 for bbox2d */
-	SET_VARSIZE(result, size);
-
-	result->type = lwgeom_makeType_full(
-	                   TYPE_HASZ(old_type),
-	                   TYPE_HASM(old_type),
-	                   lwgeom_hasSRID(old_type), lwgeom_getType(old_type), 1);
-
-	/* copy in bbox */
-	memcpy(result->data, &box, sizeof(BOX2DFLOAT4));
-
-	POSTGIS_DEBUGF(3, "result->type hasbbox: %d", TYPE_HASBBOX(result->type));
-	POSTGIS_DEBUG(3, "LWGEOM_addBBOX  -- about to copy serialized form");
-
-	/* everything but the type and length */
-	memcpy((char *)VARDATA(result)+sizeof(BOX2DFLOAT4)+1, (char *)VARDATA(lwgeom)+1, VARSIZE(lwgeom)-VARHDRSZ-1);
-
+	result = pglwgeom_serialize(lwgeom);
+	
 	PG_RETURN_POINTER(result);
 }
 

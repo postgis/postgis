@@ -116,7 +116,7 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 	text_ob = lwalloc(20+VARHDRSZ);
 	result = text_ob+VARHDRSZ;
 
-	type = lwgeom_getType(lwgeom->type);
+	type = pglwgeom_get_type(lwgeom);
 
 	memset(VARDATA(text_ob), 0, 20);
 
@@ -181,7 +181,7 @@ Datum geometry_geometrytype(PG_FUNCTION_ARGS)
 
 	/* Build up the output string */
 	strncat(type_str, "ST_", 32);
-	strncat(type_str, lwtype_name(lwgeom_getType(lwgeom->type)), 32);
+	strncat(type_str, lwtype_name(pglwgeom_get_type(lwgeom)), 32);
 	size = strlen(type_str) + VARHDRSZ;
 
 	/* Build a text type to store things in */
@@ -227,7 +227,7 @@ Datum LWGEOM_numgeometries_collection(PG_FUNCTION_ARGS)
 	int32 ret;
 	uchar *serialized = SERIALIZED_FORM(geom);
 
-	type = lwgeom_getType(geom->type);
+	type = pglwgeom_get_type(geom);
 	if (type==MULTIPOINTTYPE || type==MULTILINETYPE ||
 	        type==MULTICURVETYPE || type==MULTIPOLYGONTYPE ||
 	        type==MULTISURFACETYPE || type==POLYHEDRALSURFACETYPE ||
@@ -247,7 +247,7 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_LWGEOM *result;
-	int type = lwgeom_getType(geom->type);
+	int type = pglwgeom_get_type(geom);
 	int32 idx;
 	LWCOLLECTION *coll;
 	LWGEOM *subgeom;
@@ -362,7 +362,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 		lwgeom_release((LWGEOM *)line);
 		lwgeom_release((LWGEOM *)poly);
 	}
-	else if (lwgeom_getType((uchar)SERIALIZED_FORM(geom)[0]) == TRIANGLETYPE)
+	else if (pglwgeom_get_type(geom) == TRIANGLETYPE)
 	{
 		triangle = lwtriangle_deserialize(SERIALIZED_FORM(geom));
 

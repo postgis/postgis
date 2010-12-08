@@ -99,7 +99,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if ( lwgeom_getType(geom->type) != LINETYPE )
+	if ( pglwgeom_get_type(geom) != LINETYPE )
 	{
 		elog(ERROR,"line_interpolate_point: 1st arg isnt a line");
 		PG_RETURN_NULL();
@@ -708,8 +708,8 @@ Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS)
 		}
 	}
 
-	type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
-	type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
+	type1 = pglwgeom_get_type(geom1);
+	type2 = pglwgeom_get_type(geom2);
 
 	if ( type1 != LINETYPE || type2 != LINETYPE )
 	{
@@ -939,12 +939,12 @@ Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS)
 	POINT2D p;
 	double ret;
 
-	if ( lwgeom_getType(geom1->type) != LINETYPE )
+	if ( pglwgeom_get_type(geom1) != LINETYPE )
 	{
 		elog(ERROR,"line_locate_point: 1st arg isnt a line");
 		PG_RETURN_NULL();
 	}
-	if ( lwgeom_getType(geom2->type) != POINTTYPE )
+	if ( pglwgeom_get_type(geom2) != POINTTYPE )
 	{
 		elog(ERROR,"line_locate_point: 2st arg isnt a point");
 		PG_RETURN_NULL();

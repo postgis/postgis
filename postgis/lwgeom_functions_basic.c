@@ -2227,7 +2227,7 @@ Datum ST_IsCollection(PG_FUNCTION_ARGS)
 	geom = (PG_LWGEOM*)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0),
 	        0, VARHDRSZ + 1);
 
-	type = lwgeom_getType(SERIALIZED_FORM(geom)[0]);
+	type = pglwgeom_get_type(geom);
 	PG_RETURN_BOOL(lwtype_is_collection(type));
 }
 

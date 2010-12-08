@@ -1606,8 +1606,8 @@ Datum centroid(PG_FUNCTION_ARGS)
  */
 void errorIfGeometryCollection(PG_LWGEOM *g1, PG_LWGEOM *g2)
 {
-	int t1 = lwgeom_getType(g1->type);
-	int t2 = lwgeom_getType(g2->type);
+	int t1 = pglwgeom_get_type(g1);
+	int t2 = pglwgeom_get_type(g2);
 
 	char* hintmsg;
 	char* hintwkt;
@@ -1963,8 +1963,8 @@ Datum contains(PG_FUNCTION_ARGS)
 	** short-circuit 2: if geom2 is a point and geom1 is a polygon
 	** call the point-in-polygon function.
 	*/
-	type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
-	type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
+	type1 = pglwgeom_get_type(geom1);
+	type2 = pglwgeom_get_type(geom2);
 	if ((type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE) && type2 == POINTTYPE)
 	{
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
@@ -2197,8 +2197,8 @@ Datum covers(PG_FUNCTION_ARGS)
 	 * short-circuit 2: if geom2 is a point and geom1 is a polygon
 	 * call the point-in-polygon function.
 	 */
-	type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
-	type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
+	type1 = pglwgeom_get_type(geom1);
+	type2 = pglwgeom_get_type(geom2);
 	if ((type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE) && type2 == POINTTYPE)
 	{
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
@@ -2350,8 +2350,8 @@ Datum within(PG_FUNCTION_ARGS)
 	 * short-circuit 2: if geom1 is a point and geom2 is a polygon
 	 * call the point-in-polygon function.
 	 */
-	type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
-	type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
+	type1 = pglwgeom_get_type(geom1);
+	type2 = pglwgeom_get_type(geom2);
 	if ((type2 == POLYGONTYPE || type2 == MULTIPOLYGONTYPE) && type1 == POINTTYPE)
 	{
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
@@ -2493,8 +2493,8 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	 * short-circuit 2: if geom1 is a point and geom2 is a polygon
 	 * call the point-in-polygon function.
 	 */
-	type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
-	type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
+	type1 = pglwgeom_get_type(geom1);
+	type2 = pglwgeom_get_type(geom2);
 	if ((type2 == POLYGONTYPE || type2 == MULTIPOLYGONTYPE) && type1 == POINTTYPE)
 	{
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
@@ -2708,8 +2708,8 @@ Datum intersects(PG_FUNCTION_ARGS)
 	 * short-circuit 2: if the geoms are a point and a polygon,
 	 * call the point_outside_polygon function.
 	 */
-	type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
-	type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
+	type1 = pglwgeom_get_type(geom1);
+	type2 = pglwgeom_get_type(geom2);
 	if ( (type1 == POINTTYPE && (type2 == POLYGONTYPE || type2 == MULTIPOLYGONTYPE)) ||
 	        (type2 == POINTTYPE && (type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE)))
 	{
@@ -3247,7 +3247,7 @@ Datum isring(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	if (lwgeom_getType(geom->type) != LINETYPE)
+	if (pglwgeom_get_type(geom) != LINETYPE)
 	{
 		elog(ERROR,"isring() should only be called on a LINE");
 	}

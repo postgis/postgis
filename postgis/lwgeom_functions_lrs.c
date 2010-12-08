@@ -489,7 +489,7 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 	 * Raise an error if input is a polygon, a multipolygon
 	 * or a collection
 	 */
-	type=lwgeom_getType(gin->type);
+	type = pglwgeom_get_type(gin);
 
 	if ( type == POLYGONTYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE )
 	{
