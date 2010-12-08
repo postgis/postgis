@@ -605,7 +605,7 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 	** retrieval function, which will calculate the box from scratch.
 	*/
 	serialized_lwgeom = SERIALIZED_FORM(query);
-	if ( lwgeom_hasBBOX(serialized_lwgeom[0]) )
+	if ( pglwgeom_has_bbox(query) )
 	{
 		memcpy(&box, serialized_lwgeom + 1, sizeof(BOX2DFLOAT4));
 	}

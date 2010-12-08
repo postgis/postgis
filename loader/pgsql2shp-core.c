@@ -2012,9 +2012,9 @@ int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 		}
 	
 		/* Call the relevant method depending upon the geometry type */
-		LWDEBUGF(4, "geomtype: %d\n", lwgeom_getType(lwgeom->type));
+		LWDEBUGF(4, "geomtype: %s\n", lwtype_name(lwgeom->type));
 	
-		switch (lwgeom_getType(lwgeom->type))
+		switch (lwgeom->type)
 		{
 		case POINTTYPE:
 			obj = create_point(state, lwgeom_as_lwpoint(lwgeom));
@@ -2041,7 +2041,7 @@ int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 			break;
 	
 		default:
-			snprintf(state->message, SHPDUMPERMSGLEN, _("Unknown WKB type (%8.8x) for record %d"), lwgeom_getType(lwgeom->type), state->currow);
+			snprintf(state->message, SHPDUMPERMSGLEN, _("Unknown WKB type (%d) for record %d"), lwgeom->type, state->currow);
 			PQclear(state->fetchres);
 			SHPDestroyObject(obj);
 			return SHPDUMPERERR;

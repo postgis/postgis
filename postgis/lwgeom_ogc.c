@@ -95,7 +95,7 @@ Datum LWGEOM_set_srid(PG_FUNCTION_ARGS)
 	PG_LWGEOM *result;
 
 	result = PG_LWGEOM_construct(SERIALIZED_FORM(geom), new_srid,
-	                             lwgeom_hasBBOX(geom->type));
+	                             pglwgeom_has_bbox(geom));
 
 	PG_FREE_IF_COPY(geom, 0);
 

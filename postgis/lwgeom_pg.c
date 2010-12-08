@@ -389,7 +389,7 @@ pglwgeom_set_srid(PG_LWGEOM *lwgeom, int32 new_srid)
  * none present => -1
  */
 int
-pglwgeom_get_srid(const PG_LWGEOM *lwgeom)
+pglwgeom_get_srid(PG_LWGEOM *lwgeom)
 {
 	uchar type = lwgeom->type;
 	uchar *loc = lwgeom->data;
@@ -410,3 +410,32 @@ pglwgeom_get_type(const PG_LWGEOM *lwgeom)
 	return TYPE_GETTYPE(lwgeom->type);
 }
 
+int
+pglwgeom_has_bbox(const PG_LWGEOM *lwgeom)
+{
+	return TYPE_HASBBOX(lwgeom->type);
+}
+
+PG_LWGEOM* pglwgeom_drop_bbox(PG_LWGEOM *geom)
+{
+	size_t size = VARSIZE(geom);
+	size_t newsize = size;
+	bool hasbox = pglwgeom_has_bbox(geom);
+	PG_LWGEOM *geomout;
+	uchar type = geom->type;
+	
+	if ( hasbox )
+		newsize = size - sizeof(BOX2DFLOAT4);
+		
+	geomout = palloc(newsize);
+	SET_VARSIZE(geomout, newsize);
+	TYPE_SETHASBBOX(type, 0);
+	geomout->type = type;
+	
+	if ( ! hasbox ) 
+		memcpy(VARDATA(geomout),VARDATA(geom),newsize - VARHDRSZ);
+	else
+		memcpy(VARDATA(geomout)+1,VARDATA(geom)+1+sizeof(BOX2DFLOAT4),newsize - VARHDRSZ - 1);
+	
+	return geomout;
+}

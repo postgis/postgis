@@ -2099,13 +2099,9 @@ Datum LWGEOM_hasm(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_hasBBOX);
 Datum LWGEOM_hasBBOX(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *in;
-	char res;
-
-	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	res=lwgeom_hasBBOX(in->type);
+	PG_LWGEOM *in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char res = pglwgeom_has_bbox(in);
 	PG_FREE_IF_COPY(in, 0);
-
 	PG_RETURN_BOOL(res);
 }
 

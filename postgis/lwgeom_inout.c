@@ -444,42 +444,13 @@ is_worth_caching_lwgeom_bbox(const LWGEOM *in)
 PG_FUNCTION_INFO_V1(LWGEOM_dropBBOX);
 Datum LWGEOM_dropBBOX(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	PG_LWGEOM *result;
-	uchar old_type;
-	int size;
+	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	POSTGIS_DEBUG(2, "in LWGEOM_dropBBOX");
-
-	if (!lwgeom_hasBBOX( lwgeom->type ) )
-	{
-		POSTGIS_DEBUG(3, "LWGEOM_dropBBOX  -- doesnt have a bbox already");
-
-		result = palloc (VARSIZE(lwgeom));
-		SET_VARSIZE(result, VARSIZE(lwgeom));
-		memcpy(VARDATA(result), VARDATA(lwgeom), VARSIZE(lwgeom)-VARHDRSZ);
-		PG_RETURN_POINTER(result);
-	}
-
-	POSTGIS_DEBUG(3, "LWGEOM_dropBBOX  -- dropping the bbox");
-
-	/* construct new one */
-	old_type = lwgeom->type;
-
-	size = VARSIZE(lwgeom)-sizeof(BOX2DFLOAT4);
-
-	result = palloc(size); /* 16 for bbox2d */
-	SET_VARSIZE(result, size);
-
-	result->type = lwgeom_makeType_full(
-	                   TYPE_HASZ(old_type),
-	                   TYPE_HASM(old_type),
-	                   lwgeom_hasSRID(old_type), lwgeom_getType(old_type), 0);
-
-	/* everything but the type and length */
-	memcpy((char *)VARDATA(result)+1, ((char *)(lwgeom->data))+sizeof(BOX2DFLOAT4), size-VARHDRSZ-1);
-
-	PG_RETURN_POINTER(result);
+	/* No box? we're done already! */
+	if ( ! pglwgeom_has_bbox(geom) )
+		PG_RETURN_POINTER(geom);
+	
+	PG_RETURN_POINTER(pglwgeom_drop_bbox(geom));
 }
 
 

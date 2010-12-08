@@ -105,7 +105,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	line = lwline_deserialize(SERIALIZED_FORM(geom));
+	line = lwgeom_as_lwline(pglwgeom_deserialize(geom));
 	ipa = line->points;
 
 	/* If distance is one of the two extremes, return the point on that
@@ -528,7 +528,7 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 		PG_RETURN_POINTER(in_geom);
 	}
 
-	in_lwgeom = lwgeom_deserialize(SERIALIZED_FORM(in_geom));
+	in_lwgeom = pglwgeom_deserialize(in_geom);
 
 	POSTGIS_DEBUGF(3, "SnapToGrid got a %s", lwtype_name(in_lwgeom->type));
 
@@ -593,7 +593,7 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 	if ( PG_ARGISNULL(1) ) PG_RETURN_NULL();
 	datum = PG_GETARG_DATUM(1);
 	in_point = (PG_LWGEOM *)PG_DETOAST_DATUM(datum);
-	in_lwpoint = lwpoint_deserialize(SERIALIZED_FORM(in_point));
+	in_lwpoint = lwgeom_as_lwpoint(pglwgeom_deserialize(in_point));
 	if ( in_lwpoint == NULL )
 	{
 		lwerror("Offset geometry must be a point");
@@ -630,7 +630,7 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 		PG_RETURN_POINTER(in_geom);
 	}
 
-	in_lwgeom = lwgeom_deserialize(SERIALIZED_FORM(in_geom));
+	in_lwgeom = pglwgeom_deserialize(in_geom);
 
 	POSTGIS_DEBUGF(3, "SnapToGrid got a %s", lwtype_name(in_lwgeom->type));
 
@@ -717,8 +717,8 @@ Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	l1 = lwline_deserialize(SERIALIZED_FORM(geom1));
-	l2 = lwline_deserialize(SERIALIZED_FORM(geom2));
+	l1 = lwgeom_as_lwline(pglwgeom_deserialize(geom1));
+	l2 = lwgeom_as_lwline(pglwgeom_deserialize(geom2));
 
 	rv = lwline_crossing_direction(l1, l2);
 
@@ -839,7 +839,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 		LWGEOM **geoms = NULL;
 		double length = 0.0, sublength = 0.0, minprop = 0.0, maxprop = 0.0;
 
-		iline = lwmline_deserialize(SERIALIZED_FORM(geom));
+		iline = lwgeom_as_lwmline(pglwgeom_deserialize(geom));
 
 		if ( lwgeom_is_empty((LWGEOM*)iline) )
 		{
@@ -955,8 +955,8 @@ Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	lwline = lwline_deserialize(SERIALIZED_FORM(geom1));
-	lwpoint = lwpoint_deserialize(SERIALIZED_FORM(geom2));
+	lwline = lwgeom_as_lwline(pglwgeom_deserialize(geom1));
+	lwpoint = lwgeom_as_lwpoint(pglwgeom_deserialize(geom2));
 
 	pa = lwline->points;
 	lwpoint_getPoint2d_p(lwpoint, &p);
