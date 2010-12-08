@@ -332,7 +332,7 @@ static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 			dlist[i] = double_from_wkb_state(s);
 		}
 	}
-		
+
 	return pa;
 }
 

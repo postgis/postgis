@@ -510,9 +510,8 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 		PG_RETURN_POINTER(geom);
 	}
 
-
 	/* deserialize into lwgeoms[0] */
-	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
+	lwgeom = pglwgeom_deserialize(geom);
 	ogeom = lwgeom_as_multi(lwgeom);
 
 	result = pglwgeom_serialize(ogeom);
@@ -529,28 +528,31 @@ Returns the point in first input geometry that is closest to the second input ge
 PG_FUNCTION_INFO_V1(LWGEOM_closestpoint);
 Datum LWGEOM_closestpoint(PG_FUNCTION_ARGS)
 {
-	int srid;
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	PG_LWGEOM *result;
+	PG_LWGEOM *geom1 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *geom2 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	LWGEOM *lwgeom1 = pglwgeom_deserialize(geom1);
+	LWGEOM *lwgeom2 = pglwgeom_deserialize(geom2);
 	LWGEOM *point;
 
-	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
-	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
-
-	if (geom1->srid != geom2->srid)
+	if (lwgeom1->srid != lwgeom2->srid)
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
 
-	srid = geom1->srid;
+	point = lw_dist2d_distancepoint(lwgeom1, lwgeom2, lwgeom1->srid, DIST_MIN);
 
-	point = lw_dist2d_distancepoint(geom1, geom2, srid, DIST_MIN);
 	if (lwgeom_is_empty(point))
-	{
 		PG_RETURN_NULL();
-	}
-	PG_RETURN_POINTER(pglwgeom_serialize(point));
+
+	result = pglwgeom_serialize(point);
+	lwgeom_free(lwgeom1);
+	lwgeom_free(lwgeom2);
+
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+	PG_RETURN_POINTER(result);
 }
 
 /**
@@ -559,28 +561,31 @@ Returns the shortest line between two geometries
 PG_FUNCTION_INFO_V1(LWGEOM_shortestline2d);
 Datum LWGEOM_shortestline2d(PG_FUNCTION_ARGS)
 {
-	int srid;
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	PG_LWGEOM *result;
+	PG_LWGEOM *geom1 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *geom2 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	LWGEOM *lwgeom1 = pglwgeom_deserialize(geom1);
+	LWGEOM *lwgeom2 = pglwgeom_deserialize(geom2);
 	LWGEOM *theline;
 
-	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
-	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
 
-	if (geom1->srid != geom2->srid)
+	if (lwgeom1->srid != lwgeom2->srid)
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
 
-	srid = geom1->srid;
-
-	theline = lw_dist2d_distanceline(geom1, geom2, srid, DIST_MIN);
+	theline = lw_dist2d_distanceline(lwgeom1, lwgeom2, lwgeom1->srid, DIST_MIN);
 	if (lwgeom_is_empty(theline))
-	{
 		PG_RETURN_NULL();
-	}
-	PG_RETURN_POINTER(pglwgeom_serialize(theline));
+
+	result = pglwgeom_serialize(theline);
+	lwgeom_free(lwgeom1);
+	lwgeom_free(lwgeom2);
+
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+	PG_RETURN_POINTER(result);
 }
 
 /**
@@ -589,28 +594,30 @@ Returns the longest line between two geometries
 PG_FUNCTION_INFO_V1(LWGEOM_longestline2d);
 Datum LWGEOM_longestline2d(PG_FUNCTION_ARGS)
 {
-	int srid;
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	PG_LWGEOM *result;
+	PG_LWGEOM *geom1 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *geom2 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	LWGEOM *lwgeom1 = pglwgeom_deserialize(geom1);
+	LWGEOM *lwgeom2 = pglwgeom_deserialize(geom2);
 	LWGEOM *theline;
 
-	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
-	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
-
-	if (geom1->srid != geom2->srid)
+	if (lwgeom1->srid != lwgeom2->srid)
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
 
-	srid = geom1->srid;
-
-	theline = lw_dist2d_distanceline(geom1, geom2, srid, DIST_MAX);
+	theline = lw_dist2d_distanceline(lwgeom1, lwgeom2, lwgeom1->srid, DIST_MAX);
 	if (lwgeom_is_empty(theline))
-	{
 		PG_RETURN_NULL();
-	}
-	PG_RETURN_POINTER(pglwgeom_serialize(theline));
+
+	result = pglwgeom_serialize(theline);
+	lwgeom_free(lwgeom1);
+	lwgeom_free(lwgeom2);
+
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+	PG_RETURN_POINTER(result);
 }
 /**
  Minimum 2d distance between objects in geom1 and geom2.

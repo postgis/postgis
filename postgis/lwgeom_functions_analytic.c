@@ -46,8 +46,9 @@ int point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int ringCount,
 PG_FUNCTION_INFO_V1(LWGEOM_simplify2d);
 Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom = (PG_LWGEOM *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM *in = lwgeom_deserialize(SERIALIZED_FORM(geom));
+	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *result;
+	LWGEOM *in = pglwgeom_deserialize(geom);
 	LWGEOM *out;
 	double dist = PG_GETARG_FLOAT8(1);
 
@@ -57,7 +58,10 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 	/* COMPUTE_BBOX TAINTING */
 	if ( in->bbox ) lwgeom_add_bbox(out);
 
-	PG_RETURN_POINTER(pglwgeom_serialize(out));
+	result = pglwgeom_serialize(out);
+	lwgeom_free(out);
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_POINTER(result);
 }
 
 /***********************************************************************
