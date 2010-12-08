@@ -404,3 +404,9 @@ pglwgeom_get_srid(PG_LWGEOM *lwgeom)
 	return lw_get_int32(loc);
 }
 
+int
+pglwgeom_get_type(PG_LWGEOM *lwgeom)
+{
+	return TYPE_GETTYPE(lwgeom->type);
+}
+

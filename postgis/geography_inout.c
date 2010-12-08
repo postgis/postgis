@@ -960,13 +960,13 @@ Datum geography_typmod_type(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_from_geometry);
 Datum geography_from_geometry(PG_FUNCTION_ARGS)
 {
+	PG_LWGEOM *geom = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	LWGEOM *lwgeom = NULL;
 	GSERIALIZED *g_ser = NULL;
-	uchar *lwgeom_serialized = (uchar*)VARDATA(PG_DETOAST_DATUM(PG_GETARG_DATUM(0)));
 
-	geography_valid_type(TYPE_GETTYPE(lwgeom_serialized[0]));
+	geography_valid_type(pglwgeom_get_type(geom));
 
-	lwgeom = lwgeom_deserialize(lwgeom_serialized);
+	lwgeom = pglwgeom_deserialize(geom);
 
 	/* Force default SRID */
 	if ( (int)lwgeom->srid <= 0 )
