@@ -224,6 +224,10 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 		<pgis:gset ID="Empty Geometries" GeometryType="GEOMETRY" createtable="false">(SELECT ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326) As the_geom
 			UNION ALL SELECT ST_GeomFromText('POLYGON EMPTY',4326) As the_geom
 			UNION ALL SELECT ST_GeomFromText('POINT EMPTY',4326) As the_geom
+			UNION ALL SELECT ST_GeomFromText('MULTIPOINT EMPTY',4326) As the_geom
+			UNION ALL SELECT ST_GeomFromText('MULTIPOLYGON EMPTY',4326) As the_geom
+			UNION ALL SELECT ST_GeomFromText('LINESTRING EMPTY',4326) As the_geom
+			UNION ALL SELECT ST_GeomFromText('MULTILINESTRING EMPTY',4326) As the_geom
 		)
 		</pgis:gset>
 		
