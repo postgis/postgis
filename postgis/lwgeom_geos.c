@@ -3510,17 +3510,12 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 
 	POSTGIS_DEBUGF(4, "LWGEOM2GEOS got a %s", lwtype_name(lwgeom->type));
 
-	if (has_arc(lwgeom))
+	if (lwgeom_has_arc(lwgeom))
 	{
-		POSTGIS_DEBUG(3, "LWGEOM2GEOS_c: arced geometry found.");
+		POSTGIS_DEBUG(3, "LWGEOM2GEOS: arced geometry found.");
 
 		lwerror("Exception in LWGEOM2GEOS: curved geometry not supported.");
 		return NULL;
-		/*
-		tmp = lwgeom;
-		lwgeom = lwgeom_segmentize(tmp, 32);
-		POSTGIS_DEBUGF(3, "LWGEOM2GEOM_c: was %p, is %p", tmp, lwgeom);
-		*/
 	}
 
 	switch (lwgeom->type)
@@ -3620,9 +3615,6 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 #if POSTGIS_DEBUG_LEVEL >= 4
 	wkt = GEOSGeomToWKT(g);
 	POSTGIS_DEBUGF(4, "LWGEOM2GEOS: GEOSGeom: %s", wkt);
-	/*
-	if(tmp != NULL) lwgeom_release(tmp);
-	*/
 	free(wkt);
 #endif
 
@@ -3847,14 +3839,24 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 {
 	int is3d = 0;
 	PG_LWGEOM *result;
+	PG_LWGEOM *geom;
 	GEOSGeometry* geos_in;
 	GEOSGeometry* geos_out;
+	LWGEOM *lwgeom;
 	int srid=SRID_UNKNOWN;
 #if POSTGIS_DEBUG_LEVEL >= 3
 	static int call=1;
 #endif
 
-	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	lwgeom = pglwgeom_deserialize(geom);
+
+	/* Can't build an area from an empty! */
+	if ( lwgeom_is_empty(lwgeom) )
+	{
+		lwgeom_free(lwgeom);
+		PG_RETURN_POINTER(geom);
+	}
 
 #if POSTGIS_DEBUG_LEVEL >= 3
 	call++;
@@ -3868,7 +3870,9 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	geos_in = POSTGIS2GEOS(geom);
+	geos_in = LWGEOM2GEOS(lwgeom);
+	lwgeom_free(lwgeom);
+	
 	if ( 0 == geos_in )   /* exception thrown at construction */
 	{
 		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
