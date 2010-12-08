@@ -363,6 +363,19 @@ static void out_gml_test_dims(void)
 
 static void out_gml_test_geoms(void)
 {
+	/* GML2 - LINESTRING EMPTY 
+	do_gml2_test(
+	    "LINESTRING EMPTY",
+	    "<gml:Polygon></gml:Polygon>",
+	    NULL, 0);
+		*/
+
+	/* GML2 - POLYGON EMPTY */
+	do_gml2_test(
+	    "POLYGON EMPTY",
+	    "<gml:Polygon></gml:Polygon>",
+	    NULL, 0);
+
 	/* GML2 - Linestring */
 	do_gml2_test(
 	    "LINESTRING(0 1,2 3,4 5)",

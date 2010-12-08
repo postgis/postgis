@@ -186,6 +186,8 @@ asgml2_poly_size(const LWPOLY *poly, char *srs, int precision, const char *prefi
 	size_t prefixlen = strlen(prefix);
 
 	size = sizeof("<polygon></polygon>") + prefixlen*2;
+	if ( lwpoly_is_empty(poly) ) 
+		return size;
 	size += ( sizeof("<outerboundaryis><linearring><coordinates>/") + ( prefixlen*3) ) * 2;
 	size += ( sizeof("<innerboundaryis><linearring><coordinates>/") + ( prefixlen*2) ) * 2 * poly->nrings;
 	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
@@ -211,15 +213,18 @@ asgml2_poly_buf(const LWPOLY *poly, char *srs, char *output, int precision,
 	{
 		ptr += sprintf(ptr, "<%sPolygon>", prefix);
 	}
-	ptr += sprintf(ptr, "<%souterBoundaryIs><%sLinearRing><%scoordinates>",
-	               prefix, prefix, prefix);
-	ptr += pointArray_toGML2(poly->rings[0], ptr, precision);
-	ptr += sprintf(ptr, "</%scoordinates></%sLinearRing></%souterBoundaryIs>", prefix, prefix, prefix);
-	for (i=1; i<poly->nrings; i++)
+	if ( ! lwpoly_is_empty(poly) )
 	{
-		ptr += sprintf(ptr, "<%sinnerBoundaryIs><%sLinearRing><%scoordinates>", prefix, prefix, prefix);
-		ptr += pointArray_toGML2(poly->rings[i], ptr, precision);
-		ptr += sprintf(ptr, "</%scoordinates></%sLinearRing></%sinnerBoundaryIs>", prefix, prefix, prefix);
+		ptr += sprintf(ptr, "<%souterBoundaryIs><%sLinearRing><%scoordinates>",
+		               prefix, prefix, prefix);
+		ptr += pointArray_toGML2(poly->rings[0], ptr, precision);
+		ptr += sprintf(ptr, "</%scoordinates></%sLinearRing></%souterBoundaryIs>", prefix, prefix, prefix);
+		for (i=1; i<poly->nrings; i++)
+		{
+			ptr += sprintf(ptr, "<%sinnerBoundaryIs><%sLinearRing><%scoordinates>", prefix, prefix, prefix);
+			ptr += pointArray_toGML2(poly->rings[i], ptr, precision);
+			ptr += sprintf(ptr, "</%scoordinates></%sLinearRing></%sinnerBoundaryIs>", prefix, prefix, prefix);
+		}
 	}
 	ptr += sprintf(ptr, "</%sPolygon>", prefix);
 
