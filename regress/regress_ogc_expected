@@ -161,3 +161,4 @@ ST_PointN3|
 ST_PointN4|
 ST_PointN5|POINT(0 0)
 ST_PointN6|
+ST_Buffer(empty)|POLYGON EMPTY

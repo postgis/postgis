@@ -1060,6 +1060,7 @@ PG_FUNCTION_INFO_V1(buffer);
 Datum buffer(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM	*geom1;
+	LWGEOM *lwgeom1;
 	double	size;
 	GEOSGeometry *g1, *g3;
 	PG_LWGEOM *result;
@@ -1091,7 +1092,15 @@ Datum buffer(PG_FUNCTION_ARGS)
 	PROFSTART(PROF_QRUN);
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	lwgeom1 = pglwgeom_deserialize(geom1);
 	size = PG_GETARG_FLOAT8(1);
+	
+	/* We can't buffer EMPTY geometries, just mirror them back */
+	if ( lwgeom_is_empty(lwgeom1) )
+	{
+		lwgeom_free(lwgeom1);
+		PG_RETURN_POINTER(geom1);
+	}
 
 	nargs = PG_NARGS();
 

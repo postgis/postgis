@@ -271,3 +271,6 @@ select 'ST_PointN3',  astext(pointn('LINESTRING(0 0, 1 1, 2 2)',4));
 select 'ST_PointN4', astext(pointn('LINESTRING(0 0, 1 1, 2 2)',0));
 select 'ST_PointN5', astext(pointn('LINESTRING(0 0, 1 1, 2 2)',1));
 select 'ST_PointN6', astext(pointn('POLYGON((0 0, 1 1, 0 1, 0 0))',1));
+
+-- issues with EMPTY --
+select 'ST_Buffer(empty)', ST_AsText(ST_Buffer('POLYGON EMPTY', 0.5));
