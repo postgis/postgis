@@ -313,7 +313,7 @@ asgeojson_multipoint_size(const LWMPOINT *mpoint, char *srs, GBOX *bbox, int pre
 
 	size = sizeof("{'type':'MultiPoint',");
 	if (srs) size += asgeojson_srs_size(srs);
-	if (bbox) size += asgeojson_bbox_size(TYPE_HASZ(mpoint->type), precision);
+	if (bbox) size += asgeojson_bbox_size(FLAGS_GET_Z(mpoint->flags), precision);
 	size += sizeof("'coordinates':[]}");
 
 	for (i=0; i<mpoint->ngeoms; i++)
@@ -335,7 +335,7 @@ asgeojson_multipoint_buf(const LWMPOINT *mpoint, char *srs, char *output, GBOX *
 
 	ptr += sprintf(ptr, "{\"type\":\"MultiPoint\",");
 	if (srs) ptr += asgeojson_srs_buf(ptr, srs);
-	if (bbox) ptr += asgeojson_bbox_buf(ptr, bbox, TYPE_HASZ(mpoint->type), precision);
+	if (bbox) ptr += asgeojson_bbox_buf(ptr, bbox, FLAGS_GET_Z(mpoint->flags), precision);
 	ptr += sprintf(ptr, "\"coordinates\":[");
 
 	for (i=0; i<mpoint->ngeoms; i++)
@@ -377,7 +377,7 @@ asgeojson_multiline_size(const LWMLINE *mline, char *srs, GBOX *bbox, int precis
 
 	size = sizeof("{'type':'MultiLineString',");
 	if (srs) size += asgeojson_srs_size(srs);
-	if (bbox) size += asgeojson_bbox_size(TYPE_HASZ(mline->type), precision);
+	if (bbox) size += asgeojson_bbox_size(FLAGS_GET_Z(mline->flags), precision);
 	size += sizeof("'coordinates':[]}");
 
 	for (i=0 ; i<mline->ngeoms; i++)
@@ -400,7 +400,7 @@ asgeojson_multiline_buf(const LWMLINE *mline, char *srs, char *output, GBOX *bbo
 
 	ptr += sprintf(ptr, "{\"type\":\"MultiLineString\",");
 	if (srs) ptr += asgeojson_srs_buf(ptr, srs);
-	if (bbox) ptr += asgeojson_bbox_buf(ptr, bbox, TYPE_HASZ(mline->type), precision);
+	if (bbox) ptr += asgeojson_bbox_buf(ptr, bbox, FLAGS_GET_Z(mline->flags), precision);
 	ptr += sprintf(ptr, "\"coordinates\":[");
 
 	for (i=0; i<mline->ngeoms; i++)
@@ -445,7 +445,7 @@ asgeojson_multipolygon_size(const LWMPOLY *mpoly, char *srs, GBOX *bbox, int pre
 
 	size = sizeof("{'type':'MultiPolygon',");
 	if (srs) size += asgeojson_srs_size(srs);
-	if (bbox) size += asgeojson_bbox_size(TYPE_HASZ(mpoly->type), precision);
+	if (bbox) size += asgeojson_bbox_size(FLAGS_GET_Z(mpoly->flags), precision);
 	size += sizeof("'coordinates':[]}");
 
 	for (i=0; i < mpoly->ngeoms; i++)
@@ -473,7 +473,7 @@ asgeojson_multipolygon_buf(const LWMPOLY *mpoly, char *srs, char *output, GBOX *
 
 	ptr += sprintf(ptr, "{\"type\":\"MultiPolygon\",");
 	if (srs) ptr += asgeojson_srs_buf(ptr, srs);
-	if (bbox) ptr += asgeojson_bbox_buf(ptr, bbox, TYPE_HASZ(mpoly->type), precision);
+	if (bbox) ptr += asgeojson_bbox_buf(ptr, bbox, FLAGS_GET_Z(mpoly->flags), precision);
 	ptr += sprintf(ptr, "\"coordinates\":[");
 	for (i=0; i<mpoly->ngeoms; i++)
 	{
@@ -522,7 +522,7 @@ asgeojson_collection_size(const LWCOLLECTION *col, char *srs, GBOX *bbox, int pr
 
 	size = sizeof("{'type':'GeometryCollection',");
 	if (srs) size += asgeojson_srs_size(srs);
-	if (bbox) size += asgeojson_bbox_size(TYPE_HASZ(col->type), precision);
+	if (bbox) size += asgeojson_bbox_size(FLAGS_GET_Z(col->flags), precision);
 	size += sizeof("'geometries':");
 
 	for (i=0; i<col->ngeoms; i++)
@@ -545,7 +545,7 @@ asgeojson_collection_buf(const LWCOLLECTION *col, char *srs, char *output, GBOX 
 
 	ptr += sprintf(ptr, "{\"type\":\"GeometryCollection\",");
 	if (srs) ptr += asgeojson_srs_buf(ptr, srs);
-	if (col->ngeoms && bbox) ptr += asgeojson_bbox_buf(ptr, bbox, TYPE_HASZ(col->type), precision);
+	if (col->ngeoms && bbox) ptr += asgeojson_bbox_buf(ptr, bbox, FLAGS_GET_Z(col->flags), precision);
 	ptr += sprintf(ptr, "\"geometries\":[");
 
 	for (i=0; i<col->ngeoms; i++)

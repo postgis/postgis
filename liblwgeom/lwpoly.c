@@ -308,7 +308,7 @@ lwgeom_size_poly(const uchar *serialized_poly)
 
 
 	type = (uchar) serialized_poly[0];
-	ndims = lwgeom_ndims(type);
+	ndims = TYPE_NDIMS(type);
 
 	if ( lwgeom_getType(type) != POLYGONTYPE)
 		return -9999;

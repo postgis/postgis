@@ -357,7 +357,7 @@ Datum LWGEOM_force_2d(PG_FUNCTION_ARGS)
 	LWGEOM *lwg_in, *lwg_out;
 
 	/* already 2d */
-	if ( lwgeom_ndims(pg_geom_in->type) == 2 ) PG_RETURN_POINTER(pg_geom_in);
+	if ( pglwgeom_ndims(pg_geom_in) == 2 ) PG_RETURN_POINTER(pg_geom_in);
 
 	lwg_in = pglwgeom_deserialize(pg_geom_in);
 	lwg_out = lwgeom_force_2d(lwg_in);
@@ -378,7 +378,7 @@ Datum LWGEOM_force_3dz(PG_FUNCTION_ARGS)
 	LWGEOM *lwg_in, *lwg_out;
 
 	/* already 3d */
-	if ( lwgeom_ndims(pg_geom_in->type) == 3 && TYPE_HASZ(pg_geom_in->type) ) 
+	if ( pglwgeom_ndims(pg_geom_in) == 3 && pglwgeom_has_z(pg_geom_in) ) 
 		PG_RETURN_POINTER(pg_geom_in);
 
 	lwg_in = pglwgeom_deserialize(pg_geom_in);
@@ -400,7 +400,7 @@ Datum LWGEOM_force_3dm(PG_FUNCTION_ARGS)
 	LWGEOM *lwg_in, *lwg_out;
 
 	/* already 3d */
-	if ( lwgeom_ndims(pg_geom_in->type) == 3 && TYPE_HASM(pg_geom_in->type) ) 
+	if ( pglwgeom_ndims(pg_geom_in) == 3 && pglwgeom_has_m(pg_geom_in) ) 
 		PG_RETURN_POINTER(pg_geom_in);
 
 	lwg_in = pglwgeom_deserialize(pg_geom_in);
@@ -422,7 +422,7 @@ Datum LWGEOM_force_4d(PG_FUNCTION_ARGS)
 	LWGEOM *lwg_in, *lwg_out;
 
 	/* already 4d */
-	if ( lwgeom_ndims(pg_geom_in->type) == 4 ) 
+	if ( pglwgeom_ndims(pg_geom_in) == 4 ) 
 		PG_RETURN_POINTER(pg_geom_in);
 
 	lwg_in = pglwgeom_deserialize(pg_geom_in);

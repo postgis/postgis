@@ -123,8 +123,8 @@ ptarray_append_point(POINTARRAY *pa, POINT4D *pt, int repeated_points)
 
 		/* Return LW_SUCCESS and do nothing else if previous point in list is equal to this one */
 		if ( (pt->x == tmp.x) && (pt->y == tmp.y) &&
-		     (TYPE_HASZ(pa->flags) ? pt->z == tmp.z : 1) &&
-		     (TYPE_HASM(pa->flags) ? pt->m == tmp.m : 1) )
+		     (FLAGS_GET_Z(pa->flags) ? pt->z == tmp.z : 1) &&
+		     (FLAGS_GET_M(pa->flags) ? pt->m == tmp.m : 1) )
 		{
 			return LW_SUCCESS;
 		}

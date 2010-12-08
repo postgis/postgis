@@ -613,7 +613,7 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int srid)
 
 		LWDEBUG(3, "append_segment: line to line");
 
-		newPoints = ptarray_construct(TYPE_HASZ(pts->flags), TYPE_HASM(pts->flags), pts->npoints + line->points->npoints - 1);
+		newPoints = ptarray_construct(FLAGS_GET_Z(pts->flags), FLAGS_GET_M(pts->flags), pts->npoints + line->points->npoints - 1);
 		for (i=0; i<line->points->npoints; i++)
 		{
 			getPoint4d_p(line->points, i, &pt);

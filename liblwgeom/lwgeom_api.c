@@ -792,13 +792,6 @@ lwgeom_hasSRID(uchar type)
 	return TYPE_HASSRID(type);
 }
 
-/* Returns either 2,3, or 4 -- 2=2D, 3=3D, 4=4D */
-int
-lwgeom_ndims(uchar type)
-{
-	return TYPE_NDIMS(type);
-}
-
 /* has M ? */
 int lwgeom_hasM(uchar type)
 {
@@ -1895,11 +1888,6 @@ printMULTI(uchar *serialized)
 	lwinspected_release(inspected);
 }
 
-void
-printType(uchar type)
-{
-	lwnotice("type 0x%x ==> hasBBOX=%i, has_srid=%i, ndims=%i, type=%i",(uint32) type, lwgeom_hasBBOX(type), lwgeom_hasSRID(type),lwgeom_ndims(type), lwgeom_getType(type));
-}
 
 /**
  * Get the srid from the LWGEOM.

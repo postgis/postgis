@@ -920,7 +920,6 @@ extern LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist);
 
 extern char lwgeom_hasSRID(uchar type); /* true iff S bit is set */
 extern char lwgeom_hasBBOX(uchar type); /* true iff B bit set     */
-extern int  lwgeom_ndims(uchar type);   /* returns 2,3 or 4       */
 extern int  lwgeom_hasZ(uchar type);    /* has Z ?                */
 extern int  lwgeom_hasM(uchar type);    /* has M ?                */
 extern int  lwgeom_getType(uchar type); /* returns the tttt value */
@@ -1488,7 +1487,6 @@ extern void printLWPSURFACE(LWPSURFACE *psurf);
 extern void printLWTIN(LWTIN *tin);
 extern void printBYTES(uchar *a, int n);
 extern void printMULTI(uchar *serialized);
-extern void printType(uchar str);
 
 
 extern float LWGEOM_Minf(float a, float b);

@@ -416,7 +416,7 @@ lwgeom_size_point(const uchar *serialized_point)
 		result +=4;
 	}
 
-	result += lwgeom_ndims(type)*sizeof(double);
+	result += TYPE_NDIMS(type)*sizeof(double);
 
 	return result;
 }

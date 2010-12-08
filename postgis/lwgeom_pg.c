@@ -410,10 +410,22 @@ pglwgeom_get_type(const PG_LWGEOM *lwgeom)
 	return TYPE_GETTYPE(lwgeom->type);
 }
 
-int
+bool
 pglwgeom_has_bbox(const PG_LWGEOM *lwgeom)
 {
 	return TYPE_HASBBOX(lwgeom->type);
+}
+
+bool
+pglwgeom_has_z(const PG_LWGEOM *lwgeom)
+{
+	return TYPE_HASZ(lwgeom->type);
+}
+
+bool
+pglwgeom_has_m(const PG_LWGEOM *lwgeom)
+{
+	return TYPE_HASM(lwgeom->type);
 }
 
 PG_LWGEOM* pglwgeom_drop_bbox(PG_LWGEOM *geom)
@@ -444,3 +456,9 @@ size_t pglwgeom_size(const PG_LWGEOM *geom)
 {
 	return serialized_lwgeom_size(SERIALIZED_FORM(geom));	
 };
+
+int pglwgeom_ndims(const PG_LWGEOM *geom)
+{
+	return TYPE_NDIMS(geom->type);
+}
+
