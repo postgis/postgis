@@ -232,7 +232,7 @@ PG_LWGEOM_construct(uchar *ser, int srid, int wantbbox)
 		wantbbox=1;
 	}
 
-	size = lwgeom_size(ser);
+	size = serialized_lwgeom_size(ser);
 	eptr = ser+size; /* end of subgeom */
 
 	iptr = ser+1; /* skip type */
@@ -439,3 +439,8 @@ PG_LWGEOM* pglwgeom_drop_bbox(PG_LWGEOM *geom)
 	
 	return geomout;
 }
+
+size_t pglwgeom_size(const PG_LWGEOM *geom)
+{
+	return serialized_lwgeom_size(SERIALIZED_FORM(geom));	
+};

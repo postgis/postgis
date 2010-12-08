@@ -972,7 +972,7 @@ char is_worth_caching_lwgeom_bbox(const LWGEOM *);
  * This function computes the size in bytes
  * of the serialized geometries.
  */
-extern size_t lwgeom_size(const uchar *serialized_form);
+extern size_t serialized_lwgeom_size(const uchar *serialized_form);
 extern size_t lwgeom_size_subgeom(const uchar *serialized_form, int geom_number);
 extern size_t lwgeom_size_line(const uchar *serialized_line);
 extern size_t lwgeom_size_circstring(const uchar *serialized_curve);

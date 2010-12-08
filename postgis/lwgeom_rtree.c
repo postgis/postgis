@@ -466,7 +466,7 @@ void populateCache(RTREE_POLY_CACHE *currentCache, LWGEOM *lwgeom, uchar *serial
 	** Copy the serialized form of the polygon into the cache so
 	** we can test for equality against subsequent polygons.
 	*/
-	length = lwgeom_size(serializedPoly);
+	length = serialized_lwgeom_size(serializedPoly);
 	currentCache->poly = lwalloc(length);
 	memcpy(currentCache->poly, serializedPoly, length);
 	LWDEBUGF(3, "populateCache returning %p", currentCache);
@@ -500,9 +500,9 @@ RTREE_POLY_CACHE *retrieveCache(LWGEOM *lwgeom, uchar *serializedPoly, RTREE_POL
 		return currentCache;
 	}
 
-	length = lwgeom_size(serializedPoly);
+	length = serialized_lwgeom_size(serializedPoly);
 
-	if (lwgeom_size(currentCache->poly) != length)
+	if (serialized_lwgeom_size(currentCache->poly) != length)
 	{
 		LWDEBUG(3, "Polygon size mismatch, creating new cache.");
 		clearCache(currentCache);

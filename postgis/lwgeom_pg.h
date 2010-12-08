@@ -78,6 +78,7 @@ extern int pglwgeom_get_srid(PG_LWGEOM *pglwgeom);
 extern int pglwgeom_get_type(const PG_LWGEOM *lwgeom);
 extern int pglwgeom_has_bbox(const PG_LWGEOM *lwgeom);
 extern PG_LWGEOM* pglwgeom_drop_bbox(PG_LWGEOM *geom);
+extern size_t pglwgeom_size(const PG_LWGEOM *geom);
 
 extern Oid getGeometryOID(void);
 

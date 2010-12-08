@@ -1521,7 +1521,7 @@ lwgeom_constructempty_buf(int srid, char hasz, char hasm,
  * take a geometry, and find its length
  */
 size_t
-lwgeom_size(const uchar *serialized_form)
+serialized_lwgeom_size(const uchar *serialized_form)
 {
 	uchar type = lwgeom_getType((uchar) serialized_form[0]);
 	int t;
@@ -1609,7 +1609,7 @@ lwgeom_size(const uchar *serialized_form)
 
 	for (t=0; t<ngeoms; t++)
 	{
-		sub_size = lwgeom_size(loc);
+		sub_size = serialized_lwgeom_size(loc);
 
 		LWDEBUGF(3, " subsize %d", sub_size);
 
@@ -1627,9 +1627,9 @@ lwgeom_size_subgeom(const uchar *serialized_form, int geom_number)
 {
 	if (geom_number == -1)
 	{
-		return lwgeom_size(serialized_form);
+		return serialized_lwgeom_size(serialized_form);
 	}
-	return lwgeom_size( lwgeom_getsubgeometry(serialized_form,geom_number));
+	return serialized_lwgeom_size( lwgeom_getsubgeometry(serialized_form,geom_number));
 }
 
 
@@ -1764,7 +1764,7 @@ compute_serialized_box3d(uchar *srl)
 			}
 		}
 
-		sub_size = lwgeom_size(loc);
+		sub_size = serialized_lwgeom_size(loc);
 		loc += sub_size;
 	}
 
