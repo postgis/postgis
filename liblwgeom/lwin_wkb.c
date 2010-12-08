@@ -666,7 +666,7 @@ LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 
 		/* Unknown type! */
 		default:
-			lwerror("Unsupported geometry type: %s [%d]", lwtype_name(s->lwtype), TYPE_GETTYPE(s->lwtype));
+			lwerror("Unsupported geometry type: %s [%d]", lwtype_name(s->lwtype), s->lwtype);
 	}
 
 	/* Return value to keep compiler happy. */

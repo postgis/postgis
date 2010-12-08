@@ -275,8 +275,8 @@ int
 lw_dist3d_distribute_bruteforce(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS3D *dl)
 {
 
-	int	t1 = TYPE_GETTYPE(lwg1->type);
-	int	t2 = TYPE_GETTYPE(lwg2->type);
+	int	t1 = lwg1->type;
+	int	t2 = lwg2->type;
 
 	LWDEBUGF(2, "lw_dist3d_distribute_bruteforce is called with typ1=%d, type2=%d", TYPE_GETTYPE(lwg1->type), TYPE_GETTYPE(lwg2->type));
 
