@@ -849,18 +849,15 @@ Datum geography_as_binary(PG_FUNCTION_ARGS)
 	size_t wkb_size = 0;
 	GSERIALIZED *g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	/* Drop SRID so that WKB does not contain SRID. */
-	gserialized_set_srid(g, 0);
-
 	/* Get our lwgeom form */
 	lwgeom = lwgeom_from_gserialized(g);
-	
+
 	if ( FLAGS_NDIMS(lwgeom->flags) > 2 )
 	{
 		/* Strip out the higher dimensions */
 		LWGEOM *tmp = lwgeom_force_2d(lwgeom);
-		lwgeom = tmp;
 		lwgeom_free(lwgeom);
+		lwgeom = tmp;
 	}
 	
 	/* Create WKB */
