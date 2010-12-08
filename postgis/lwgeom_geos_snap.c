@@ -45,8 +45,8 @@ Datum ST_Snap(PG_FUNCTION_ARGS)
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	tolerance = PG_GETARG_FLOAT8(2);
 
-	is3d = ( TYPE_HASZ(geom1->type) ) ||
-	       ( TYPE_HASZ(geom2->type) );
+	is3d = ( pglwgeom_has_z(geom1) ) ||
+	       ( pglwgeom_has_z(geom2) );
 
 	srid = pglwgeom_get_srid(geom1);
 	error_if_srid_mismatch(srid, pglwgeom_get_srid(geom2));

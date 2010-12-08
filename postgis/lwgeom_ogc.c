@@ -153,7 +153,7 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 	else
 		strcpy(result,"UNKNOWN");
 
-	if ( TYPE_HASM(lwgeom->type) && ! TYPE_HASZ(lwgeom->type) )
+	if ( pglwgeom_has_m(lwgeom) && ! pglwgeom_has_z(lwgeom) )
 		strcat(result, "M");
 
 	size = strlen(result) + VARHDRSZ ;
@@ -614,7 +614,7 @@ Datum LWGEOM_z_point(PG_FUNCTION_ARGS)
 	point = lwgeom_getpoint(SERIALIZED_FORM(geom), 0);
 
 	/* no Z in input */
-	if ( ! TYPE_HASZ(geom->type) ) PG_RETURN_NULL();
+	if ( ! pglwgeom_has_z(geom) ) PG_RETURN_NULL();
 
 	getPoint3dz_p(point->point, 0, &p);
 
@@ -780,7 +780,7 @@ Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS)
 	geom = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
 	                                        LWGEOMFromWKB, PG_GETARG_DATUM(0)));
 
-	if ( pglwgeom_get_srid(geom) != SRID_UNKNOWN || TYPE_GETZM(geom->type) != 0 )
+	if ( pglwgeom_get_srid(geom) != SRID_UNKNOWN || pglwgeom_has_z(geom) != 0 )
 	{
 		elog(WARNING, "OGC WKB expected, EWKB provided - use GeometryFromEWKB() for this");
 	}

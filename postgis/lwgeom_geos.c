@@ -425,7 +425,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 			{
 				srid = pglwgeom_get_srid(pggeom);
 				gotsrid = 1;
-				if ( TYPE_HASZ(pggeom->type) ) is3d = 1;
+				if ( pglwgeom_has_z(pggeom) ) is3d = 1;
 			}
 			else
 			{
@@ -585,7 +585,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 				POSTGIS_DEBUGF(3, "geom %d @ %p", i, geom);
 
 				/* Check is3d flag */
-				if ( TYPE_HASZ(geom->type) ) is3d = 1;
+				if ( pglwgeom_has_z(geom) ) is3d = 1;
 
 				/* Check SRID homogeneity and initialize geos result */
 				if ( ! geos_result )
@@ -691,8 +691,8 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	is3d = ( TYPE_HASZ(geom1->type) ) ||
-	       ( TYPE_HASZ(geom2->type) );
+	is3d = ( pglwgeom_has_z(geom1) ) ||
+	       ( pglwgeom_has_z(geom2) );
 
 	srid = pglwgeom_get_srid(geom1);
 	error_if_srid_mismatch(srid, pglwgeom_get_srid(geom2));
@@ -783,8 +783,8 @@ Datum symdifference(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	is3d = ( TYPE_HASZ(geom1->type) ) ||
-	       ( TYPE_HASZ(geom2->type) );
+	is3d = ( pglwgeom_has_z(geom1) ) ||
+	       ( pglwgeom_has_z(geom2) );
 
 	srid = pglwgeom_get_srid(geom1);
 	error_if_srid_mismatch(srid, pglwgeom_get_srid(geom2));
@@ -896,7 +896,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 	GEOSSetSRID(g3, srid);
 
 	PROFSTART(PROF_G2P);
-	result = GEOS2POSTGIS(g3, TYPE_HASZ(geom1->type));
+	result = GEOS2POSTGIS(g3, pglwgeom_has_z(geom1));
 
 	PROFSTART(PROF_P2G1);
 
@@ -965,7 +965,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	GEOSSetSRID(g3, srid);
 
 	PROFSTART(PROF_G2P);
-	lwout = GEOS2LWGEOM(g3, TYPE_HASZ(geom1->type));
+	lwout = GEOS2LWGEOM(g3, pglwgeom_has_z(geom1));
 	PROFSTOP(PROF_G2P);
 
 	if (lwout == NULL)
@@ -1040,7 +1040,7 @@ Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 
 	GEOSSetSRID(g3, pglwgeom_get_srid(geom1));
 
-	result = GEOS2POSTGIS(g3, TYPE_HASZ(geom1->type));
+	result = GEOS2POSTGIS(g3, pglwgeom_has_z(geom1));
 
 	if (result == NULL)
 	{
@@ -1262,7 +1262,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 	GEOSSetSRID(g3, pglwgeom_get_srid(geom1));
 
 	PROFSTART(PROF_G2P);
-	result = GEOS2POSTGIS(g3, TYPE_HASZ(geom1->type));
+	result = GEOS2POSTGIS(g3, pglwgeom_has_z(geom1));
 	PROFSTOP(PROF_G2P);
 
 	if (result == NULL)
@@ -1301,8 +1301,8 @@ Datum intersection(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	is3d = ( TYPE_HASZ(geom1->type) ) ||
-	       ( TYPE_HASZ(geom2->type) );
+	is3d = ( pglwgeom_has_z(geom1) ) ||
+	       ( pglwgeom_has_z(geom2) );
 
 	srid = pglwgeom_get_srid(geom1);
 	error_if_srid_mismatch(srid, pglwgeom_get_srid(geom2));
@@ -1400,8 +1400,8 @@ Datum difference(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	is3d = ( TYPE_HASZ(geom1->type) ) ||
-	       ( TYPE_HASZ(geom2->type) );
+	is3d = ( pglwgeom_has_z(geom1) ) ||
+	       ( pglwgeom_has_z(geom2) );
 
 	srid = pglwgeom_get_srid(geom1);
 	error_if_srid_mismatch(srid, pglwgeom_get_srid(geom2));
@@ -1513,7 +1513,7 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 	GEOSSetSRID(g3, pglwgeom_get_srid(geom1));
 
 	PROFSTART(PROF_G2P);
-	result = GEOS2POSTGIS(g3, TYPE_HASZ(geom1->type));
+	result = GEOS2POSTGIS(g3, pglwgeom_has_z(geom1));
 	PROFSTOP(PROF_G2P);
 
 	if (result == NULL)
@@ -1572,7 +1572,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 	GEOSSetSRID(geosresult, pglwgeom_get_srid(geom));
 
 	PROFSTART(PROF_G2P);
-	result = GEOS2POSTGIS(geosresult, TYPE_HASZ(geom->type));
+	result = GEOS2POSTGIS(geosresult, pglwgeom_has_z(geom));
 	PROFSTOP(PROF_G2P);
 
 	if (result == NULL)
@@ -3664,7 +3664,7 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	PROFSTART(PROF_GRUN);
 	PROFSTOP(PROF_GRUN);
 
-	lwgeom_result = GEOS2POSTGIS(geosgeom, TYPE_HASZ(geom->type));
+	lwgeom_result = GEOS2POSTGIS(geosgeom, pglwgeom_has_z(geom));
 	GEOSGeom_destroy(geosgeom);
 
 
@@ -3803,7 +3803,7 @@ Datum linemerge(PG_FUNCTION_ARGS)
 	GEOSSetSRID(g3, pglwgeom_get_srid(geom1));
 
 	PROFSTART(PROF_G2P);
-	result = GEOS2POSTGIS(g3, TYPE_HASZ(geom1->type));
+	result = GEOS2POSTGIS(g3, pglwgeom_has_z(geom1));
 	PROFSTOP(PROF_G2P);
 
 	if (result == NULL)
@@ -3864,7 +3864,7 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 #endif
 
 	srid = pglwgeom_get_srid(geom);
-	is3d = TYPE_HASZ(geom->type);
+	is3d = pglwgeom_has_z(geom);
 
 	POSTGIS_DEBUGF(3, "LWGEOM_buildarea got geom @ %p", geom);
 
