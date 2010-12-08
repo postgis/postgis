@@ -259,36 +259,36 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
-				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>gj_version</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
-				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>gj_version</parameter></paramdef>
 				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
-				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>gj_version</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>max_decimal_digits</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
-				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>gj_version</parameter></paramdef>
 				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>max_decimal_digits</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
-				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>gj_version</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>max_decimal_digits</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>options</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
-				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>gj_version</parameter></paramdef>
 				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>max_decimal_digits</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>options</parameter></paramdef>
@@ -305,7 +305,8 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 			supported. GeoJSON only support SFS 1.1 geometry type (no curve
 			support for example).</para>
 
-			<para>The version parameter, if specified, must be 1.</para>
+		  <para>The gj_version parameter is the major version of the GeoJSON spec. If specified, must be 1.</para>
+
 
 			<para>The third argument may be used to reduce the maximum number
 			of decimal places used in output (defaults to 15).</para>
