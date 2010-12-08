@@ -451,7 +451,7 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	 * in input. If bbox cache is not there we'll need to handle
 	 * automatic bbox addition FOR_COMPLEX_GEOMS.
 	 */
-	if ( TYPE_GETTYPE(geom->type) == COLLECTIONTYPE &&
+	if ( pglwgeom_get_type(geom) == COLLECTIONTYPE &&
 	        TYPE_HASBBOX(geom->type) )
 	{
 		PG_RETURN_POINTER(geom);
@@ -504,7 +504,7 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 	** in input. If bbox cache is not there we'll need to handle
 	** automatic bbox addition FOR_COMPLEX_GEOMS.
 	*/
-	if ( lwtype_is_collection(TYPE_GETTYPE(geom->type)) && 
+	if ( lwtype_is_collection(pglwgeom_get_type(geom)) && 
 	     TYPE_HASBBOX(geom->type) )
 	{
 		PG_RETURN_POINTER(geom);
@@ -1126,7 +1126,7 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	pglwgeom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	pglwgeom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	POSTGIS_DEBUGF(3, "LWGEOM_collect(%s, %s): call", lwtype_name(TYPE_GETTYPE(pglwgeom1->type)), lwtype_name(TYPE_GETTYPE(pglwgeom2->type)));
+	POSTGIS_DEBUGF(3, "LWGEOM_collect(%s, %s): call", lwtype_name(pglwgeom_get_type(pglwgeom1)), lwtype_name(pglwgeom_get_type(pglwgeom2)));
 
 #if 0
 	if ( pglwgeom_get_srid(pglwgeom1) != pglwgeom_get_srid(pglwgeom2) )
@@ -1389,7 +1389,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 		if ((bitmap && (*bitmap & bitmask) != 0) || !bitmap)
 		{
 			PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
-			uint32 intype = TYPE_GETTYPE(geom->type);
+			uint32 intype = pglwgeom_get_type(geom);
 
 			offset += INTALIGN(VARSIZE(geom));
 
@@ -1505,7 +1505,7 @@ Datum LWGEOM_line_from_mpoint(PG_FUNCTION_ARGS)
 	/* Get input PG_LWGEOM and deserialize it */
 	ingeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	if ( TYPE_GETTYPE(ingeom->type) != MULTIPOINTTYPE )
+	if ( pglwgeom_get_type(ingeom) != MULTIPOINTTYPE )
 	{
 		elog(ERROR, "makeline: input must be a multipoint");
 		PG_RETURN_NULL(); /* input is not a multipoint */
@@ -1599,7 +1599,7 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 			PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
 			offset += INTALIGN(VARSIZE(geom));
 
-			if ( TYPE_GETTYPE(geom->type) != POINTTYPE ) continue;
+			if ( pglwgeom_get_type(geom) != POINTTYPE ) continue;
 
 			lwpoints[npoints++] =
 			    lwpoint_deserialize(SERIALIZED_FORM(geom));
@@ -1670,8 +1670,8 @@ Datum LWGEOM_makeline(PG_FUNCTION_ARGS)
 	pglwg1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	pglwg2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	if ( ! TYPE_GETTYPE(pglwg1->type) == POINTTYPE ||
-	        ! TYPE_GETTYPE(pglwg2->type) == POINTTYPE )
+	if ( ! pglwgeom_get_type(pglwg1) == POINTTYPE ||
+	     ! pglwgeom_get_type(pglwg2) == POINTTYPE )
 	{
 		elog(ERROR, "Input geometries must be points");
 		PG_RETURN_NULL();
@@ -1715,7 +1715,7 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 
 	/* Get input shell */
 	pglwg1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	if ( ! TYPE_GETTYPE(pglwg1->type) == LINETYPE )
+	if ( ! pglwgeom_get_type(pglwg1) == LINETYPE )
 	{
 		lwerror("Shell is not a line");
 	}
@@ -1732,7 +1732,7 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 			PG_LWGEOM *g = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
 			LWLINE *hole;
 			offset += INTALIGN(VARSIZE(g));
-			if ( TYPE_GETTYPE(g->type) != LINETYPE )
+			if ( pglwgeom_get_type(g) != LINETYPE )
 			{
 				lwerror("Hole %d is not a line", i);
 			}
@@ -1975,8 +1975,8 @@ Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS)
 	dist = PG_GETARG_FLOAT8(1);
 
 	/* Avoid deserialize/serialize steps */
-	if ( (TYPE_GETTYPE(ingeom->type) == POINTTYPE) ||
-	        (TYPE_GETTYPE(ingeom->type) == MULTIPOINTTYPE) )
+	if ( (pglwgeom_get_type(ingeom) == POINTTYPE) ||
+	     (pglwgeom_get_type(ingeom) == MULTIPOINTTYPE) )
 		PG_RETURN_POINTER(ingeom);
 
 	inlwgeom = lwgeom_deserialize(SERIALIZED_FORM(ingeom));
@@ -2131,7 +2131,7 @@ Datum LWGEOM_same(PG_FUNCTION_ARGS)
 	LWGEOM *lwg1, *lwg2;
 	bool result;
 
-	if ( TYPE_GETTYPE(g1->type) != TYPE_GETTYPE(g2->type) )
+	if ( pglwgeom_get_type(g1) != pglwgeom_get_type(g2) )
 	{
 		PG_FREE_IF_COPY(g1, 0);
 		PG_FREE_IF_COPY(g2, 1);
@@ -2304,13 +2304,13 @@ Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
 		where = PG_GETARG_INT32(2);
 	}
 
-	if ( ! TYPE_GETTYPE(pglwg1->type) == LINETYPE )
+	if ( ! pglwgeom_get_type(pglwg1) == LINETYPE )
 	{
 		elog(ERROR, "First argument must be a LINESTRING");
 		PG_RETURN_NULL();
 	}
 
-	if ( ! TYPE_GETTYPE(pglwg2->type) == POINTTYPE )
+	if ( ! pglwgeom_get_type(pglwg2) == POINTTYPE )
 	{
 		elog(ERROR, "Second argument must be a POINT");
 		PG_RETURN_NULL();
@@ -2357,7 +2357,7 @@ Datum LWGEOM_removepoint(PG_FUNCTION_ARGS)
 	pglwg1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	which = PG_GETARG_INT32(1);
 
-	if ( ! TYPE_GETTYPE(pglwg1->type) == LINETYPE )
+	if ( ! pglwgeom_get_type(pglwg1) == LINETYPE )
 	{
 		elog(ERROR, "First argument must be a LINESTRING");
 		PG_RETURN_NULL();

@@ -419,7 +419,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		if ((bitmap && (*bitmap & bitmask) != 0) || !bitmap)
 		{
 			PG_LWGEOM *pggeom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
-			int pgtype = TYPE_GETTYPE(pggeom->type);
+			int pgtype = pglwgeom_get_type(pggeom);
 			offset += INTALIGN(VARSIZE(pggeom));
 			if ( ! gotsrid ) /* Initialize SRID */
 			{
@@ -475,7 +475,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 			if ((bitmap && (*bitmap & bitmask) != 0) || !bitmap)
 			{
 				PG_LWGEOM *pggeom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
-				int pgtype = TYPE_GETTYPE(pggeom->type);
+				int pgtype = pglwgeom_get_type(pggeom);
 				offset += INTALIGN(VARSIZE(pggeom));
 				if ( pgtype == POLYGONTYPE )
 				{
@@ -597,7 +597,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 						PG_RETURN_NULL();
 					}
 					srid = pglwgeom_get_srid(geom);
-					POSTGIS_DEBUGF(3, "first geom is a %s", lwtype_name(TYPE_GETTYPE(geom->type)));
+					POSTGIS_DEBUGF(3, "first geom is a %s", lwtype_name(pglwgeom_get_type(geom)));
 				}
 				else
 				{
@@ -613,7 +613,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 					}
 
 					POSTGIS_DEBUGF(3, "unite_garray(%d): adding geom %d to union (%s)",
-					               call, i, lwtype_name(TYPE_GETTYPE(geom->type)));
+					               call, i, lwtype_name(pglwgeom_get_type(geom)));
 
 					g2 = GEOSUnion(g1, geos_result);
 					if ( g2 == NULL )

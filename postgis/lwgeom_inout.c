@@ -159,7 +159,7 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
 	char * formatted_text;
 
 	/* Only supports points. */
-	uchar geom_type = TYPE_GETTYPE(pg_lwgeom->type);
+	uchar geom_type = pglwgeom_get_type(pg_lwgeom);
 	if (POINTTYPE != geom_type)
 	{
 		lwerror("Only points are supported, you tried type %s.", lwtype_name(geom_type));
@@ -452,7 +452,7 @@ is_worth_caching_pglwgeom_bbox(const PG_LWGEOM *in)
 #if ! POSTGIS_AUTOCACHE_BBOX
 	return false;
 #endif
-	if ( TYPE_GETTYPE(in->type) == POINTTYPE ) return false;
+	if ( pglwgeom_get_type(in) == POINTTYPE ) return false;
 	return true;
 }
 

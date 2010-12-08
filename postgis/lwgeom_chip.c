@@ -1012,7 +1012,7 @@ chip_draw_lwgeom(CHIP *chip, LWGEOM *lwgeom, PIXEL *pixel, int op)
 		if ( chip->bvol.ymin > lwgeom->bbox->ymax ) return;
 	}
 
-	switch (TYPE_GETTYPE(lwgeom->type) )
+	switch (lwgeom->type)
 	{
 	case POINTTYPE:
 		chip_draw_lwpoint(chip, (LWPOINT*)lwgeom, pixel, op);
@@ -1022,7 +1022,7 @@ chip_draw_lwgeom(CHIP *chip, LWGEOM *lwgeom, PIXEL *pixel, int op)
 		return;
 	case POLYGONTYPE:
 		lwerror("%s geometry unsupported by draw operation",
-		        lwtype_name(TYPE_GETTYPE(lwgeom->type)));
+		        lwtype_name(lwgeom->type));
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:

@@ -532,7 +532,7 @@ Datum ST_AddMeasure(PG_FUNCTION_ARGS)
 	double start_measure = PG_GETARG_FLOAT8(1);
 	double end_measure = PG_GETARG_FLOAT8(2);
 	LWGEOM *lwin, *lwout;
-	int type = TYPE_GETTYPE(gin->type);
+	int type = pglwgeom_get_type(gin);
 
 	/* Raise an error if input is not a linestring or multilinestring */
 	if ( type != LINETYPE && type != MULTILINETYPE )

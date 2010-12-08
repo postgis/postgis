@@ -334,14 +334,15 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "LWGEOM_exteriorring_polygon called.");
 
-	if ( TYPE_GETTYPE(geom->type) != POLYGONTYPE &&
-	        TYPE_GETTYPE(geom->type) != CURVEPOLYTYPE &&
-	        TYPE_GETTYPE(geom->type) != TRIANGLETYPE)
+	if ( pglwgeom_get_type(geom) != POLYGONTYPE &&
+	     pglwgeom_get_type(geom) != CURVEPOLYTYPE &&
+	     pglwgeom_get_type(geom) != TRIANGLETYPE)
 	{
 		elog(ERROR, "ExteriorRing: geom is not a polygon");
 		PG_RETURN_NULL();
 	}
-	if (lwgeom_getType((uchar)SERIALIZED_FORM(geom)[0]) == POLYGONTYPE)
+	
+	if ( pglwgeom_get_type(geom) == POLYGONTYPE )
 	{
 		poly = lwpoly_deserialize(SERIALIZED_FORM(geom));
 
@@ -455,14 +456,14 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	if ( TYPE_GETTYPE(geom->type) != POLYGONTYPE &&
-	        TYPE_GETTYPE(geom->type) != CURVEPOLYTYPE )
+	if ( pglwgeom_get_type(geom) != POLYGONTYPE &&
+	     pglwgeom_get_type(geom) != CURVEPOLYTYPE )
 	{
 		PG_FREE_IF_COPY(geom, 0);
 		elog(ERROR, "InteriorRingN: geom is not a polygon");
 		PG_RETURN_NULL();
 	}
-	if ( TYPE_GETTYPE(geom->type) == POLYGONTYPE)
+	if ( pglwgeom_get_type(geom) == POLYGONTYPE)
 	{
 		poly = lwpoly_deserialize(SERIALIZED_FORM(geom));
 
@@ -556,7 +557,7 @@ Datum LWGEOM_x_point(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	if ( TYPE_GETTYPE(geom->type) != POINTTYPE )
+	if ( pglwgeom_get_type(geom) != POINTTYPE )
 		lwerror("Argument to X() must be a point");
 
 	point = lwgeom_getpoint(SERIALIZED_FORM(geom), 0);
@@ -581,7 +582,7 @@ Datum LWGEOM_y_point(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	if ( TYPE_GETTYPE(geom->type) != POINTTYPE )
+	if ( pglwgeom_get_type(geom) != POINTTYPE )
 		lwerror("Argument to Y() must be a point");
 
 	point = lwgeom_getpoint(SERIALIZED_FORM(geom), 0);
@@ -607,7 +608,7 @@ Datum LWGEOM_z_point(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	if ( TYPE_GETTYPE(geom->type) != POINTTYPE )
+	if ( pglwgeom_get_type(geom) != POINTTYPE )
 		lwerror("Argument to Z() must be a point");
 
 	point = lwgeom_getpoint(SERIALIZED_FORM(geom), 0);
@@ -635,7 +636,7 @@ Datum LWGEOM_m_point(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	if ( TYPE_GETTYPE(geom->type) != POINTTYPE )
+	if ( pglwgeom_get_type(geom) != POINTTYPE )
 		lwerror("Argument to M() must be a point");
 
 	point = lwgeom_getpoint(SERIALIZED_FORM(geom), 0);

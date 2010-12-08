@@ -222,7 +222,7 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 		oldcontext = MemoryContextSwitchTo(newcontext);
 
 		pglwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
-		if ( TYPE_GETTYPE(pglwgeom->type) != POLYGONTYPE )
+		if ( pglwgeom_get_type(pglwgeom) != POLYGONTYPE )
 		{
 			lwerror("Input is not a polygon");
 		}

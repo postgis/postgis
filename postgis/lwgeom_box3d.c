@@ -441,11 +441,11 @@ Datum BOX3D_construct(PG_FUNCTION_ARGS)
 	LWGEOM *minpoint, *maxpoint;
 	POINT3DZ minp, maxp;
 
-	minpoint = lwgeom_deserialize(SERIALIZED_FORM(min));
-	maxpoint = lwgeom_deserialize(SERIALIZED_FORM(max));
+	minpoint = pglwgeom_deserialize(min);
+	maxpoint = pglwgeom_deserialize(max);
 
-	if ( TYPE_GETTYPE(minpoint->type) != POINTTYPE ||
-	        TYPE_GETTYPE(maxpoint->type) != POINTTYPE )
+	if ( minpoint->type != POINTTYPE ||
+	     maxpoint->type != POINTTYPE )
 	{
 		elog(ERROR, "BOX3D_construct: args must be points");
 		PG_RETURN_NULL();

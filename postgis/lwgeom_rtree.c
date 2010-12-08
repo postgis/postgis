@@ -252,12 +252,12 @@ LWMLINE *findLineSegments(RTREE_NODE *root, double value)
 	/* If there is a segment defined for this node, include it. */
 	if (root->segment)
 	{
-		LWDEBUGF(3, "findLineSegments %p: adding segment %p %d.", root, root->segment, TYPE_GETTYPE(root->segment->type));
+		LWDEBUGF(3, "findLineSegments %p: adding segment %p %d.", root, root->segment, root->segment->type);
 
 		lwgeoms = lwalloc(sizeof(LWGEOM *));
 		lwgeoms[0] = (LWGEOM *)root->segment;
 
-		LWDEBUGF(3, "Found geom %p, type %d, dim %d", root->segment, TYPE_GETTYPE(root->segment->type), TYPE_GETZM(root->segment->type));
+		LWDEBUGF(3, "Found geom %p, type %d, dim %d", root->segment, root->segment->type, FLAGS_GET_Z(root->segment->flags));
 
 		result = (LWMLINE *)lwcollection_construct(lwgeom_makeType_full(0, 0, 0, MULTILINETYPE, 0), -1, NULL, 1, lwgeoms);
 	}
@@ -270,7 +270,7 @@ LWMLINE *findLineSegments(RTREE_NODE *root, double value)
 		tmp = findLineSegments(root->leftNode, value);
 		if (tmp)
 		{
-			LWDEBUGF(3, "Found geom %p, type %d, dim %d", tmp, TYPE_GETTYPE(tmp->type), TYPE_GETZM(tmp->type));
+			LWDEBUGF(3, "Found geom %p, type %d, dim %d", tmp, tmp->type, FLAGS_GET_Z(tmp->flags));
 
 			if (result)
 				result = mergeMultiLines(result, tmp);
@@ -287,7 +287,7 @@ LWMLINE *findLineSegments(RTREE_NODE *root, double value)
 		tmp = findLineSegments(root->rightNode, value);
 		if (tmp)
 		{
-			LWDEBUGF(3, "Found geom %p, type %d, dim %d", tmp, TYPE_GETTYPE(tmp->type), TYPE_GETZM(tmp->type));
+			LWDEBUGF(3, "Found geom %p, type %d, dim %d", tmp, tmp->type, FLAGS_GET_Z(tmp->flags));
 
 			if (result)
 				result = mergeMultiLines(result, tmp);
@@ -306,7 +306,7 @@ LWMLINE *mergeMultiLines(LWMLINE *line1, LWMLINE *line2)
 	LWCOLLECTION *col;
 	int i, j, ngeoms;
 
-	LWDEBUGF(2, "mergeMultiLines called on %p, %d, %d; %p, %d, %d", line1, line1->ngeoms, TYPE_GETTYPE(line1->type), line2, line2->ngeoms, TYPE_GETTYPE(line2->type));
+	LWDEBUGF(2, "mergeMultiLines called on %p, %d, %d; %p, %d, %d", line1, line1->ngeoms, line1->type, line2, line2->ngeoms, line2->type);
 
 	ngeoms = line1->ngeoms + line2->ngeoms;
 	geoms = lwalloc(sizeof(LWGEOM *) * ngeoms);
@@ -322,7 +322,7 @@ LWMLINE *mergeMultiLines(LWMLINE *line1, LWMLINE *line2)
 	}
 	col = lwcollection_construct(MULTILINETYPE, -1, NULL, ngeoms, geoms);
 
-	LWDEBUGF(3, "mergeMultiLines returning %p, %d, %d", col, col->ngeoms, TYPE_GETTYPE(col->type));
+	LWDEBUGF(3, "mergeMultiLines returning %p, %d, %d", col, col->ngeoms, col->type);
 
 	return (LWMLINE *)col;
 }
@@ -353,7 +353,7 @@ Datum LWGEOM_polygon_index(PG_FUNCTION_ARGS)
 	igeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	yval = PG_GETARG_FLOAT8(1);
 	geom = lwgeom_deserialize(SERIALIZED_FORM(igeom));
-	if (TYPE_GETTYPE(geom->type) != POLYGONTYPE)
+	if (geom->type != POLYGONTYPE)
 	{
 		lwgeom_release(geom);
 		PG_FREE_IF_COPY(igeom, 0);
@@ -365,10 +365,10 @@ Datum LWGEOM_polygon_index(PG_FUNCTION_ARGS)
 	mline = findLineSegments(root, yval);
 
 #if POSTGIS_DEBUG_LEVEL >= 3
-	POSTGIS_DEBUGF(3, "mline returned %p %d", mline, TYPE_GETTYPE(mline->type));
+	POSTGIS_DEBUGF(3, "mline returned %p %d", mline, mline->type);
 	for (i = 0; i < mline->ngeoms; i++)
 	{
-		POSTGIS_DEBUGF(3, "geom[%d] %p %d", i, mline->geoms[i], TYPE_GETTYPE(mline->geoms[i]->type));
+		POSTGIS_DEBUGF(3, "geom[%d] %p %d", i, mline->geoms[i], mline->geoms[i]->type);
 	}
 #endif
 
@@ -407,7 +407,7 @@ void populateCache(RTREE_POLY_CACHE *currentCache, LWGEOM *lwgeom, uchar *serial
 
 	LWDEBUGF(2, "populateCache called with cache %p geom %p", currentCache, lwgeom);
 
-	if (TYPE_GETTYPE(lwgeom->type) == MULTIPOLYGONTYPE)
+	if (lwgeom->type == MULTIPOLYGONTYPE)
 	{
 		LWDEBUG(2, "populateCache MULTIPOLYGON");
 		mpoly = (LWMPOLY *)lwgeom;
@@ -441,7 +441,7 @@ void populateCache(RTREE_POLY_CACHE *currentCache, LWGEOM *lwgeom, uchar *serial
 			}
 		}
 	}
-	else if ( TYPE_GETTYPE(lwgeom->type) == POLYGONTYPE )
+	else if ( lwgeom->type == POLYGONTYPE )
 	{
 		LWDEBUG(2, "populateCache POLYGON");
 		poly = (LWPOLY *)lwgeom;

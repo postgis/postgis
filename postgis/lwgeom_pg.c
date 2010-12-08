@@ -389,7 +389,7 @@ pglwgeom_set_srid(PG_LWGEOM *lwgeom, int32 new_srid)
  * none present => -1
  */
 int
-pglwgeom_get_srid(PG_LWGEOM *lwgeom)
+pglwgeom_get_srid(const PG_LWGEOM *lwgeom)
 {
 	uchar type = lwgeom->type;
 	uchar *loc = lwgeom->data;
@@ -405,7 +405,7 @@ pglwgeom_get_srid(PG_LWGEOM *lwgeom)
 }
 
 int
-pglwgeom_get_type(PG_LWGEOM *lwgeom)
+pglwgeom_get_type(const PG_LWGEOM *lwgeom)
 {
 	return TYPE_GETTYPE(lwgeom->type);
 }

@@ -737,9 +737,7 @@ Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS)
 	double to = PG_GETARG_FLOAT8(2);
 	LWCOLLECTION *geom_out = NULL;
 	LWGEOM *line_in = NULL;
-	uchar type = (uchar)SERIALIZED_FORM(geom_in)[0];
-	char geomtype = TYPE_GETTYPE(type);
-	char hasz = TYPE_HASZ(type);
+	char geomtype = pglwgeom_get_type(geom_in);
 	static int ordinate = 2; /* Z */
 
 	if ( ! ( geomtype == LINETYPE || geomtype == MULTILINETYPE ) )
@@ -748,13 +746,14 @@ Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if ( ! hasz )
+	line_in = pglwgeom_deserialize(geom_in);
+
+	if ( ! FLAGS_GET_Z(line_in->flags) )
 	{
 		elog(ERROR,"This function only accepts LINESTRING or MULTILINESTRING with Z values as arguments.");
 		PG_RETURN_NULL();
 	}
 
-	line_in = lwgeom_deserialize(SERIALIZED_FORM(geom_in));
 	if ( geomtype == LINETYPE )
 	{
 		geom_out = lwline_clip_to_ordinate_range((LWLINE*)line_in, ordinate, from, to);
@@ -790,7 +789,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 	LWGEOM *olwgeom;
 	POINTARRAY *ipa, *opa;
 	PG_LWGEOM *ret;
-	uchar type = geom->type;
+	int type = pglwgeom_get_type(geom);
 
 	if ( from < 0 || from > 1 )
 	{
@@ -810,11 +809,9 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if ( TYPE_GETTYPE(type) == LINETYPE )
+	if ( type == LINETYPE )
 	{
-		LWLINE *iline;
-
-		iline = lwline_deserialize(SERIALIZED_FORM(geom));
+		LWLINE *iline = lwgeom_as_lwline(pglwgeom_deserialize(geom));
 
 		if ( lwgeom_is_empty((LWGEOM*)iline) )
 		{
@@ -834,7 +831,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 			olwgeom = (LWGEOM *)lwline_construct(iline->srid, NULL, opa);
 
 	}
-	else if ( TYPE_GETTYPE(type) == MULTILINETYPE )
+	else if ( type == MULTILINETYPE )
 	{
 		LWMLINE *iline;
 		int i = 0, g = 0;
@@ -912,9 +909,9 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 		}
 		/* If we got any points, we need to return a GEOMETRYCOLLECTION */
 		if ( ! homogeneous )
-			TYPE_SETTYPE(type,COLLECTIONTYPE);
+			type = COLLECTIONTYPE;
 
-		olwgeom = (LWGEOM*)lwcollection_construct(TYPE_GETTYPE(type), iline->srid, NULL, g, geoms);
+		olwgeom = (LWGEOM*)lwcollection_construct(type, iline->srid, NULL, g, geoms);
 	}
 	else
 	{
@@ -923,8 +920,8 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 	}
 
 	ret = pglwgeom_serialize(olwgeom);
+	lwgeom_free(olwgeom);
 	PG_FREE_IF_COPY(geom, 0);
-	lwgeom_release(olwgeom);
 	PG_RETURN_POINTER(ret);
 
 }
