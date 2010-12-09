@@ -197,7 +197,7 @@ drawGeometry(char *output, LWGEOM *lwgeom, LAYERSTYLE *styles )
 {
 	char *ptr = output;
 	int i;
-	int type = lwgeom_getType(lwgeom->type);
+	int type = lwgeom->type;
 
 	switch (type)
 	{
