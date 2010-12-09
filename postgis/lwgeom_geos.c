@@ -249,6 +249,9 @@ Datum hausdorffdistance(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
+	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
+		PG_RETURN_NULL();
+
 	initGEOS(lwnotice, lwgeom_geos_error);
 
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
@@ -304,6 +307,9 @@ Datum hausdorffdistancedensify(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	densifyFrac = PG_GETARG_FLOAT8(2);
+
+	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
+		PG_RETURN_NULL();
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
@@ -376,6 +382,8 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 #endif
 
 	datum = PG_GETARG_DATUM(0);
+
+	/* TODO handle empties */
 
 	/* Null array, null geometry (should be empty?) */
 	if ( (Pointer *)datum == NULL ) PG_RETURN_NULL();
@@ -688,8 +696,15 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	is3d = ( pglwgeom_has_z(geom1) ) ||
-	       ( pglwgeom_has_z(geom2) );
+	/* A.Union(empty) == A */
+	if ( pglwgeom_is_empty(geom1) )
+		PG_RETURN_POINTER(geom2);
+
+	/* B.Union(empty) == B */
+	if ( pglwgeom_is_empty(geom2) )
+		PG_RETURN_POINTER(geom1);
+
+	is3d = ( pglwgeom_has_z(geom1) || pglwgeom_has_z(geom2) );
 
 	srid = pglwgeom_get_srid(geom1);
 	error_if_srid_mismatch(srid, pglwgeom_get_srid(geom2));
@@ -780,6 +795,15 @@ Datum symdifference(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
+	/* A.SymDifference(Empty) == A */
+	if ( pglwgeom_is_empty(geom2) )
+		PG_RETURN_POINTER(geom1);
+
+	/* Empty.DymDifference(B) == Empty */
+	if ( pglwgeom_is_empty(geom1) )
+		PG_RETURN_POINTER(geom1);
+
+
 	is3d = ( pglwgeom_has_z(geom1) ) ||
 	       ( pglwgeom_has_z(geom2) );
 
@@ -864,6 +888,10 @@ Datum boundary(PG_FUNCTION_ARGS)
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
+	/* Empty.Boundary() == Empty */
+	if ( pglwgeom_is_empty(geom1) )
+		PG_RETURN_POINTER(geom1);
+
 	srid = pglwgeom_get_srid(geom1);
 
 	initGEOS(lwnotice, lwgeom_geos_error);
@@ -932,6 +960,11 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	PROFSTART(PROF_QRUN);
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	/* Empty.ConvexHull() == Empty */
+	if ( pglwgeom_is_empty(geom1) )
+		PG_RETURN_POINTER(geom1);
+
 	srid = pglwgeom_get_srid(geom1);
 
 	initGEOS(lwnotice, lwgeom_geos_error);
@@ -1014,6 +1047,10 @@ Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	tolerance = PG_GETARG_FLOAT8(1);
 
+	/* Empty.Simplify() == Empty */
+	if ( pglwgeom_is_empty(geom1) )
+		PG_RETURN_POINTER(geom1);
+
 	initGEOS(lwnotice, lwgeom_geos_error);
 
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
@@ -1057,7 +1094,6 @@ PG_FUNCTION_INFO_V1(buffer);
 Datum buffer(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM	*geom1;
-	LWGEOM *lwgeom1;
 	double	size;
 	GEOSGeometry *g1, *g3;
 	PG_LWGEOM *result;
@@ -1089,16 +1125,12 @@ Datum buffer(PG_FUNCTION_ARGS)
 	PROFSTART(PROF_QRUN);
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	lwgeom1 = pglwgeom_deserialize(geom1);
 	size = PG_GETARG_FLOAT8(1);
 	
-	/* We can't buffer EMPTY geometries, just mirror them back */
-	if ( lwgeom_is_empty(lwgeom1) )
-	{
-		lwgeom_free(lwgeom1);
+	/* Empty.Buffer() == Empty */
+	if ( pglwgeom_is_empty(geom1) )
 		PG_RETURN_POINTER(geom1);
-	}
-
+	
 	nargs = PG_NARGS();
 
 	initGEOS(lwnotice, lwgeom_geos_error);
@@ -1298,6 +1330,14 @@ Datum intersection(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
+	/* A.Intersection(Empty) == Empty */
+	if ( pglwgeom_is_empty(geom2) )
+		PG_RETURN_POINTER(geom2);
+
+	/* Empty.Intersection(A) == Empty */
+	if ( pglwgeom_is_empty(geom1) )
+		PG_RETURN_POINTER(geom1);
+
 	is3d = ( pglwgeom_has_z(geom1) ) ||
 	       ( pglwgeom_has_z(geom2) );
 
@@ -1397,6 +1437,14 @@ Datum difference(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
+	/* A.Difference(Empty) == A */
+	if ( pglwgeom_is_empty(geom2) )
+		PG_RETURN_POINTER(geom1);
+
+	/* Empty.Intersection(A) == Empty */
+	if ( pglwgeom_is_empty(geom1) )
+		PG_RETURN_POINTER(geom1);
+
 	is3d = ( pglwgeom_has_z(geom1) ) ||
 	       ( pglwgeom_has_z(geom2) );
 
@@ -1483,6 +1531,10 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
+	/* Empty.PointOnSurface == Empty */
+	if ( pglwgeom_is_empty(geom1) )
+		PG_RETURN_POINTER(geom1);
+
 	initGEOS(lwnotice, lwgeom_geos_error);
 
 	PROFSTART(PROF_P2G1);
@@ -1544,8 +1596,9 @@ Datum centroid(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
+	/* Empty.Centroid() == Empty */
 	if ( pglwgeom_is_empty(geom) )
-		PG_RETURN_NULL();
+		PG_RETURN_POINTER(geom);
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
@@ -1654,6 +1707,10 @@ Datum isvalid(PG_FUNCTION_ARGS)
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
+	/* Empty.IsValid() == TRUE */
+	if ( pglwgeom_is_empty(geom1) )
+		PG_RETURN_BOOL(true);
+
 	initGEOS(lwnotice, lwgeom_geos_error);
 
 	PROFSTART(PROF_P2G1);
@@ -1705,8 +1762,7 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = NULL;
 	char *reason_str = NULL;
-	int len = 0;
-	char *result = NULL;
+	text *result = NULL;
 	const GEOSGeometry *g1 = NULL;
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -1731,10 +1787,9 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 		elog(ERROR,"GEOS isvalidreason() threw an error!");
 		PG_RETURN_NULL(); /* never get here */
 	}
-	len = strlen(reason_str);
-	result = palloc(VARHDRSZ + len);
-	SET_VARSIZE(result, VARHDRSZ + len);
-	memcpy(VARDATA(result), reason_str, len);
+	
+	result = cstring2text(reason_str);
+	/* No pfree because GEOS did a standard malloc on the reason_str */
 	free(reason_str);
 
 	PG_FREE_IF_COPY(geom, 0);
@@ -1862,6 +1917,10 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
 
+	/* A.Overlaps(Empty) == FALSE */
+	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
+		PG_RETURN_BOOL(false);
+
 	/*
 	 * short-circuit 1: if geom2 bounding box does not overlap
 	 * geom1 bounding box we can prematurely return FALSE.
@@ -1941,6 +2000,10 @@ Datum contains(PG_FUNCTION_ARGS)
 
 	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
+
+	/* A.Contains(Empty) == FALSE */
+	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
+		PG_RETURN_BOOL(false);
 
 	POSTGIS_DEBUG(3, "contains called.");
 
@@ -2088,6 +2151,10 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
 
+	/* A.ContainsProperly(Empty) == FALSE */
+	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
+		PG_RETURN_BOOL(false);
+
 	/*
 	* short-circuit: if geom2 bounding box is not completely inside
 	* geom1 bounding box we can prematurely return FALSE.
@@ -2175,6 +2242,10 @@ Datum covers(PG_FUNCTION_ARGS)
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	/* A.Covers(Empty) == FALSE */
+	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
+		PG_RETURN_BOOL(false);
 
 	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
@@ -2332,6 +2403,10 @@ Datum within(PG_FUNCTION_ARGS)
 	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
 
+	/* A.Within(Empty) == FALSE */
+	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
+		PG_RETURN_BOOL(false);
+
 	/*
 	 * short-circuit 1: if geom1 bounding box is not completely inside
 	 * geom2 bounding box we can prematurely return FALSE.
@@ -2473,6 +2548,10 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
 
+	/* A.CoveredBy(Empty) == FALSE */
+	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
+		PG_RETURN_BOOL(false);
+
 	/*
 	 * short-circuit 1: if geom1 bounding box is not completely inside
 	 * geom2 bounding box we can prematurely return FALSE.
@@ -2607,6 +2686,10 @@ Datum crosses(PG_FUNCTION_ARGS)
 	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
 
+	/* A.Crosses(Empty) == FALSE */
+	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
+		PG_RETURN_BOOL(false);
+
 	/*
 	 * short-circuit 1: if geom2 bounding box does not overlap
 	 * geom1 bounding box we can prematurely return FALSE.
@@ -2688,6 +2771,10 @@ Datum intersects(PG_FUNCTION_ARGS)
 
 	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
+
+	/* A.Intersects(Empty) == FALSE */
+	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
+		PG_RETURN_BOOL(false);
 
 	/*
 	 * short-circuit 1: if geom2 bounding box does not overlap
@@ -2854,6 +2941,10 @@ Datum touches(PG_FUNCTION_ARGS)
 	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
 
+	/* A.Touches(Empty) == FALSE */
+	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
+		PG_RETURN_BOOL(false);
+
 	/*
 	 * short-circuit 1: if geom2 bounding box does not overlap
 	 * geom1 bounding box we can prematurely return FALSE.
@@ -2930,6 +3021,10 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
 
+	/* A.Disjoint(Empty) == TRUE */
+	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
+		PG_RETURN_BOOL(true);
+
 	/*
 	 * short-circuit 1: if geom2 bounding box does not overlap
 	 * geom1 bounding box we can prematurely return TRUE.
@@ -3002,6 +3097,9 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
+
+	/* TODO handle empty */
+
 	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
 
@@ -3062,6 +3160,8 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	text *result;
 
 	POSTGIS_DEBUG(2, "in relate_full()");
+
+	/* TODO handle empty */
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -3131,8 +3231,17 @@ Datum geomequals(PG_FUNCTION_ARGS)
 	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
 
+	/* Different types can't be equal */
+	if( pglwgeom_get_type(geom1) != pglwgeom_get_type(geom2) )
+		PG_RETURN_BOOL(FALSE);
+		
+	/* Empty == Empty */
+	if ( pglwgeom_is_empty(geom1) && pglwgeom_is_empty(geom2) )
+		PG_RETURN_BOOL(TRUE);
+
+
 	/*
-	 * short-circuit 1: if geom2 bounding box does not equal
+	 * short-circuit: if geom2 bounding box does not equal
 	 * geom1 bounding box we can prematurely return FALSE.
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
@@ -3199,8 +3308,8 @@ Datum issimple(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	if (lwgeom_getnumgeometries(SERIALIZED_FORM(geom)) == 0)
-		PG_RETURN_BOOL(true);
+	if ( pglwgeom_is_empty(geom) )
+		PG_RETURN_BOOL(TRUE);
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
@@ -3238,8 +3347,9 @@ Datum isring(PG_FUNCTION_ARGS)
 		elog(ERROR,"isring() should only be called on a LINE");
 	}
 
-	if (lwgeom_getnumgeometries(SERIALIZED_FORM(geom)) == 0)
-		PG_RETURN_BOOL(false);
+	/* Empty things can't close */
+	if ( pglwgeom_is_empty(geom) )
+		PG_RETURN_BOOL(FALSE);
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
