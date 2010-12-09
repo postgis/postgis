@@ -19,6 +19,29 @@
 PG_MODULE_MAGIC;
 #endif
 
+/**
+* Utility to convert cstrings to textp pointers 
+*/
+text* 
+cstring2text(const char *cstring)
+{
+	text *output;
+	size_t sz;
+	
+	/* Guard against null input */
+	if( !cstring )
+		return NULL;
+		
+	sz = strlen(cstring);
+	output = palloc(sz + VARHDRSZ);
+	if ( ! output ) 
+		return NULL;
+	SET_VARSIZE(output, sz + VARHDRSZ);
+	if ( sz )
+		memcpy(VARDATA(output),cstring,sz);
+	return output;
+}
+
 
 /*
  * Error message parsing functions
@@ -466,5 +489,33 @@ size_t pglwgeom_size(const PG_LWGEOM *geom)
 int pglwgeom_ndims(const PG_LWGEOM *geom)
 {
 	return TYPE_NDIMS(geom->type);
+}
+
+
+int
+pglwgeom_is_empty(const PG_LWGEOM *geom)
+{
+	uchar *serialized_form = SERIALIZED_FORM(geom);
+	int type = pglwgeom_get_type(geom);
+	uchar utype = serialized_form[0];
+	uchar *loc = serialized_form + 1;
+
+	if ( type == POINTTYPE ) return LW_FALSE;
+
+	if ( TYPE_HASBBOX(utype) )
+	{
+		loc += sizeof(BOX2DFLOAT4);
+	}
+
+	if ( TYPE_HASSRID(utype) )
+	{
+		loc += 4;
+	}
+
+	/* For lines this is npoints, for polys it is nrings, for collections it is ngeoms */
+	if ( lw_get_uint32(loc) > 0 )
+		return LW_FALSE;
+	else
+		return LW_TRUE;		
 }
 

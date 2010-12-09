@@ -83,10 +83,16 @@ extern int pglwgeom_ndims(const PG_LWGEOM *geom);
 extern bool pglwgeom_has_bbox(const PG_LWGEOM *lwgeom);
 extern bool pglwgeom_has_z(const PG_LWGEOM *lwgeom);
 extern bool pglwgeom_has_m(const PG_LWGEOM *lwgeom);
+extern int pglwgeom_is_empty(const PG_LWGEOM *geom);
 
 extern Oid getGeometryOID(void);
 
 /* PG-dependant */
+
+/**
+* Utility to convert cstrings to textp pointers 
+*/
+text* cstring2text(const char *cstring);
 
 /*
  * Use this macro to extract the char * required

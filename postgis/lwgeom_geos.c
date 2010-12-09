@@ -220,10 +220,7 @@ PG_FUNCTION_INFO_V1(postgis_geos_version);
 Datum postgis_geos_version(PG_FUNCTION_ARGS)
 {
 	const char *ver = GEOSversion();
-	text *result;
-	result = (text *) palloc(VARHDRSZ  + strlen(ver));
-	SET_VARSIZE(result, VARHDRSZ + strlen(ver));
-	memcpy(VARDATA(result), ver, strlen(ver));
+	text *result = cstring2text(ver);
 	PG_RETURN_POINTER(result);
 }
 
@@ -1547,6 +1544,9 @@ Datum centroid(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
+	if ( pglwgeom_is_empty(geom) )
+		PG_RETURN_NULL();
+
 	initGEOS(lwnotice, lwgeom_geos_error);
 
 	PROFSTART(PROF_P2G1);
@@ -1609,8 +1609,8 @@ void errorIfGeometryCollection(PG_LWGEOM *g1, PG_LWGEOM *g2)
 	int t1 = pglwgeom_get_type(g1);
 	int t2 = pglwgeom_get_type(g2);
 
-	char* hintmsg;
-	char* hintwkt;
+	char *hintmsg;
+	char *hintwkt;
 	size_t hintsz;
 	LWGEOM *lwgeom;
 
@@ -1645,7 +1645,7 @@ void errorIfGeometryCollection(PG_LWGEOM *g1, PG_LWGEOM *g2)
 PG_FUNCTION_INFO_V1(isvalid);
 Datum isvalid(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM	*geom1;
+	PG_LWGEOM *geom1;
 	LWGEOM *lwgeom;
 	bool result;
 	GEOSGeom g1;
@@ -1658,7 +1658,7 @@ Datum isvalid(PG_FUNCTION_ARGS)
 
 	PROFSTART(PROF_P2G1);
 
-	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom1));
+	lwgeom = pglwgeom_deserialize(geom1);
 	if ( ! lwgeom )
 	{
 		lwerror("unable to deserialize input");
@@ -1968,8 +1968,8 @@ Datum contains(PG_FUNCTION_ARGS)
 	if ((type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE) && type2 == POINTTYPE)
 	{
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
-		lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom1));
-		point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
+		lwgeom = pglwgeom_deserialize(geom1);
+		point = lwgeom_as_lwpoint(pglwgeom_deserialize(geom2));
 
 		POSTGIS_DEBUGF(3, "Precall point_in_multipolygon_rtree %p, %p", lwgeom, point);
 
@@ -2203,8 +2203,8 @@ Datum covers(PG_FUNCTION_ARGS)
 	{
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
 
-		lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom1));
-		point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
+		lwgeom = pglwgeom_deserialize(geom1);
+		point = lwgeom_as_lwpoint(pglwgeom_deserialize(geom2));
 
 		POSTGIS_DEBUGF(3, "Precall point_in_multipolygon_rtree %p, %p", lwgeom, point);
 
@@ -2356,8 +2356,8 @@ Datum within(PG_FUNCTION_ARGS)
 	{
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
 
-		point = lwpoint_deserialize(SERIALIZED_FORM(geom1));
-		lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom2));
+		point = lwgeom_as_lwpoint(pglwgeom_deserialize(geom1));
+		lwgeom = pglwgeom_deserialize(geom2);
 
 		/*
 		 * Switch the context to the function-scope context,
@@ -2499,8 +2499,8 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	{
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
 
-		point = lwpoint_deserialize(SERIALIZED_FORM(geom1));
-		lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom2));
+		point = lwgeom_as_lwpoint(pglwgeom_deserialize(geom1));
+		lwgeom = pglwgeom_deserialize(geom2);
 
 		/*
 		 * Switch the context to the function-scope context,
@@ -2717,15 +2717,15 @@ Datum intersects(PG_FUNCTION_ARGS)
 
 		if ( type1 == POINTTYPE )
 		{
-			point = lwpoint_deserialize(SERIALIZED_FORM(geom1));
-			lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom2));
+			point = lwgeom_as_lwpoint(pglwgeom_deserialize(geom1));
+			lwgeom = pglwgeom_deserialize(geom2);
 			serialized_poly = SERIALIZED_FORM(geom2);
 			polytype = type2;
 		}
 		else
 		{
-			point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
-			lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom1));
+			point = lwgeom_as_lwpoint(pglwgeom_deserialize(geom2));
+			lwgeom = pglwgeom_deserialize(geom1);
 			serialized_poly = SERIALIZED_FORM(geom1);
 			polytype = type1;
 		}
@@ -3059,7 +3059,6 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom2;
 	GEOSGeometry *g1, *g2;
 	char *relate_str;
-	int len;
 	text *result;
 
 	POSTGIS_DEBUG(2, "in relate_full()");
@@ -3094,14 +3093,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(3, "%s", GEOSGeomToWKT(g1));
 	POSTGIS_DEBUGF(3, "%s", GEOSGeomToWKT(g2));
 
-	/*POSTGIS_DEBUGF(3, "valid g1 = %i", GEOSisvalid(g1));*/
-	/*POSTGIS_DEBUGF(3, "valid g2 = %i",GEOSisvalid(g2));*/
-
-	POSTGIS_DEBUG(3, "about to relate()");
-
 	relate_str = GEOSRelate(g1, g2);
-
-	POSTGIS_DEBUG(3, "finished relate()");
 
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
@@ -3112,19 +3104,13 @@ Datum relate_full(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); /* never get here */
 	}
 
-	len = strlen(relate_str) + VARHDRSZ;
-
-	result= palloc(len);
-	SET_VARSIZE(result, len);
-
-	memcpy(VARDATA(result), relate_str, len-VARHDRSZ);
-
+	result = cstring2text(relate_str);
 	free(relate_str);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
 
-	PG_RETURN_POINTER(result);
+	PG_RETURN_TEXT_P(result);
 }
 
 
