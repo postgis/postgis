@@ -1675,8 +1675,8 @@ Datum LWGEOM_makeline(PG_FUNCTION_ARGS)
 	pglwg1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	pglwg2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	if ( ! pglwgeom_get_type(pglwg1) == POINTTYPE ||
-	     ! pglwgeom_get_type(pglwg2) == POINTTYPE )
+	if ( pglwgeom_get_type(pglwg1) != POINTTYPE ||
+	     pglwgeom_get_type(pglwg2) != POINTTYPE )
 	{
 		elog(ERROR, "Input geometries must be points");
 		PG_RETURN_NULL();
@@ -2302,13 +2302,13 @@ Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
 		where = PG_GETARG_INT32(2);
 	}
 
-	if ( ! pglwgeom_get_type(pglwg1) == LINETYPE )
+	if ( pglwgeom_get_type(pglwg1) != LINETYPE )
 	{
 		elog(ERROR, "First argument must be a LINESTRING");
 		PG_RETURN_NULL();
 	}
 
-	if ( ! pglwgeom_get_type(pglwg2) == POINTTYPE )
+	if ( pglwgeom_get_type(pglwg2) != POINTTYPE )
 	{
 		elog(ERROR, "Second argument must be a POINT");
 		PG_RETURN_NULL();
@@ -2717,11 +2717,8 @@ Datum ST_CollectionExtract(PG_FUNCTION_ARGS)
 	/* Mirror non-collections right back */
 	if ( ! lwtype_is_collection(lwgeom->type) )
 	{
-		output = palloc(VARSIZE(input));
-		memcpy(VARDATA(output), VARDATA(input), VARSIZE(input) - VARHDRSZ);
-		SET_VARSIZE(output, VARSIZE(input));
 		lwgeom_free(lwgeom);
-		PG_RETURN_POINTER(output);
+		PG_RETURN_POINTER(input);
 	}
 
 	lwcol = lwcollection_extract((LWCOLLECTION*)lwgeom, type);
