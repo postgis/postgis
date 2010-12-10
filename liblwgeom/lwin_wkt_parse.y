@@ -122,6 +122,7 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 %token <integervalue> SRID_TOK
 
 %type <ptarrayvalue> ring
+%type <ptarrayvalue> patchring
 %type <ptarrayvalue> ptarray
 %type <coordinatevalue> coordinate
 %type <geometryvalue> circularstring
@@ -143,6 +144,9 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 %type <geometryvalue> multipoint
 %type <geometryvalue> multipolygon
 %type <geometryvalue> multisurface
+%type <geometryvalue> patch
+%type <geometryvalue> patch_list
+%type <geometryvalue> patchring_list
 %type <geometryvalue> point
 %type <geometryvalue> point_list
 %type <geometryvalue> point_untagged
@@ -161,14 +165,18 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 /* These clean up memory on errors and parser aborts. */ 
 %destructor { ptarray_freeall($$); } ptarray 
 %destructor { ptarray_freeall($$); } ring
+%destructor { ptarray_freeall($$); } patchring
 %destructor { lwgeom_free($$); } curvering_list
 %destructor { lwgeom_free($$); } triangle_list
 %destructor { lwgeom_free($$); } surface_list
 %destructor { lwgeom_free($$); } polygon_list
+%destructor { lwgeom_free($$); } patch_list
 %destructor { lwgeom_free($$); } point_list
 %destructor { lwgeom_free($$); } linestring_list
 %destructor { lwgeom_free($$); } curve_list
 %destructor { lwgeom_free($$); } compound_list
+%destructor { lwgeom_free($$); } ring_list
+%destructor { lwgeom_free($$); } patchring_list
 %destructor { lwgeom_free($$); } circularstring
 %destructor { lwgeom_free($$); } compoundcurve
 %destructor { lwgeom_free($$); } curvepolygon
@@ -185,6 +193,7 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 %destructor { lwgeom_free($$); } point
 %destructor { lwgeom_free($$); } point_untagged
 %destructor { lwgeom_free($$); } polygon
+%destructor { lwgeom_free($$); } patch
 %destructor { lwgeom_free($$); } polygon_untagged
 %destructor { lwgeom_free($$); } polyhedralsurface
 %destructor { lwgeom_free($$); } tin
@@ -267,9 +276,9 @@ tin :
 		{ $$ = wkt_parser_collection_finalize(TINTYPE, NULL, NULL); WKT_ERROR(); } ;
 
 polyhedralsurface :
-	POLYHEDRALSURFACE_TOK LBRACKET_TOK polygon_list RBRACKET_TOK
+	POLYHEDRALSURFACE_TOK LBRACKET_TOK patch_list RBRACKET_TOK
 		{ $$ = wkt_parser_collection_finalize(POLYHEDRALSURFACETYPE, $3, NULL); WKT_ERROR(); } |
-	POLYHEDRALSURFACE_TOK DIMENSIONALITY_TOK LBRACKET_TOK polygon_list RBRACKET_TOK
+	POLYHEDRALSURFACE_TOK DIMENSIONALITY_TOK LBRACKET_TOK patch_list RBRACKET_TOK
 		{ $$ = wkt_parser_collection_finalize(POLYHEDRALSURFACETYPE, $4, $2); WKT_ERROR(); } |
 	POLYHEDRALSURFACE_TOK DIMENSIONALITY_TOK EMPTY_TOK
 		{ $$ = wkt_parser_collection_finalize(POLYHEDRALSURFACETYPE, NULL, $2); WKT_ERROR(); } |
@@ -292,6 +301,12 @@ polygon_list :
 	polygon_untagged 
 		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } ;
 
+patch_list :
+	patch_list COMMA_TOK patch 
+		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
+	patch 
+		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } ;
+
 polygon : 
 	POLYGON_TOK LBRACKET_TOK ring_list RBRACKET_TOK 
 		{ $$ = wkt_parser_polygon_finalize($3, NULL); WKT_ERROR(); } |
@@ -304,6 +319,9 @@ polygon :
 
 polygon_untagged : 
 	LBRACKET_TOK ring_list RBRACKET_TOK { $$ = $2; } ;
+
+patch : 
+	LBRACKET_TOK patchring_list RBRACKET_TOK { $$ = $2; } ;
 
 curvepolygon :
 	CURVEPOLYGON_TOK LBRACKET_TOK curvering_list RBRACKET_TOK
@@ -327,11 +345,20 @@ curvering :
 	compoundcurve { $$ = $1; } |
 	circularstring { $$ = $1; } ;
 
+patchring_list :
+	patchring_list COMMA_TOK patchring 
+		{ $$ = wkt_parser_polygon_add_ring($1,$3,'Z'); WKT_ERROR(); } |
+	patchring 
+		{ $$ = wkt_parser_polygon_new($1,'Z'); WKT_ERROR(); } ;
+
 ring_list :
 	ring_list COMMA_TOK ring 
-		{ $$ = wkt_parser_polygon_add_ring($1,$3); WKT_ERROR(); } |
+		{ $$ = wkt_parser_polygon_add_ring($1,$3,'2'); WKT_ERROR(); } |
 	ring 
-		{ $$ = wkt_parser_polygon_new($1); WKT_ERROR(); } ;
+		{ $$ = wkt_parser_polygon_new($1,'2'); WKT_ERROR(); } ;
+
+patchring :
+	LBRACKET_TOK ptarray RBRACKET_TOK { $$ = $2; } ;
 
 ring :
 	LBRACKET_TOK ptarray RBRACKET_TOK { $$ = $2; } ;

@@ -900,6 +900,7 @@ extern POINTARRAY *ptarray_merge(POINTARRAY *pa1, POINTARRAY *pa2);
 extern int ptarray_isclosed(const POINTARRAY *pa);
 extern int ptarray_isclosed2d(const POINTARRAY *pa);
 extern int ptarray_isclosed3d(const POINTARRAY *pa);
+extern int ptarray_isclosedz(const POINTARRAY *pa);
 extern void ptarray_longitude_shift(POINTARRAY *pa);
 extern void ptarray_reverse(POINTARRAY *pa);
 extern POINTARRAY* ptarray_flip_coordinates(POINTARRAY *pa);
@@ -1968,6 +1969,7 @@ extern LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g);
 #define PARSER_CHECK_MINPOINTS  1
 #define PARSER_CHECK_ODD        2
 #define PARSER_CHECK_CLOSURE    4
+#define PARSER_CHECK_ZCLOSURE   8
 
 #define PARSER_CHECK_NONE   0
 #define PARSER_CHECK_ALL	(PARSER_CHECK_MINPOINTS | PARSER_CHECK_ODD | PARSER_CHECK_CLOSURE)

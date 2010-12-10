@@ -527,6 +527,12 @@ static LWTRIANGLE* lwtriangle_from_wkb_state(wkb_parse_state *s)
 		return NULL;
 	}
 
+	if( s->check & PARSER_CHECK_ZCLOSURE && ! ptarray_isclosedz(pa) )
+	{
+		lwerror("%s must have closed rings", lwtype_name(s->lwtype));
+		return NULL;
+	}
+
 	tri->points = pa;	
 	return tri;
 }
@@ -556,8 +562,12 @@ static LWCURVEPOLY* lwcurvepoly_from_wkb_state(wkb_parse_state *s)
 }
 
 /**
+* POLYHEDRALSURFACETYPE
+*/
+
+/**
 * COLLECTION, MULTIPOINTTYPE, MULTILINETYPE, MULTIPOLYGONTYPE, COMPOUNDTYPE,
-* MULTICURVETYPE, MULTISURFACETYPE, POLYHEDRALSURFACETYPE,
+* MULTICURVETYPE, MULTISURFACETYPE, 
 * TINTYPE
 */
 static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
@@ -570,6 +580,10 @@ static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
 	/* Empty collection? */
 	if ( ngeoms == 0 )
 		return col;
+
+	/* Be strict in polyhedral surface closures */
+	if ( s->lwtype == POLYHEDRALSURFACETYPE )
+		s->check |= PARSER_CHECK_ZCLOSURE;
 
 	for ( i = 0; i < ngeoms; i++ )
 	{
