@@ -8,3 +8,6 @@ SCRIPTS = \
 
 all:
 	chmod +x $(SCRIPTS)
+
+# We don't install utils (why?)
+install:
