@@ -12,8 +12,9 @@
 # Available at http://trac.osgeo.org/gdal/wiki/GdalOgrInPython
 #
 ################################################################################
-# Copyright (C) 2009 Mateusz Loskot <mateusz@loskot.net>, Pierre Racine <pierre.racine@sbf.ulaval.ca>,
-# Jorge Arevalo <jorge.arevalo@deimos-space.com>
+# Copyright (C) 2009-2010 Mateusz Loskot <mateusz@loskot.net>
+# Copyright (C) 2009 Pierre Racine <pierre.racine@sbf.ulaval.ca>
+# Copyright (C) 2009-2010 Jorge Arevalo <jorge.arevalo@deimos-space.com>
 # 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -247,8 +248,8 @@ def fmt2printfmt(fmt):
         'H': '%d', # PT_16BUI
         'i': '%d', # PT_32BSI
         'I': '%d', # PT_32BUI
-        'f': '%f', # PT_32BF
-        'd': '%f', # PT_64BF
+        'f': '%.15f', # PT_32BF
+        'd': '%.15f', # PT_64BF
         's': '%s'
         }
     return fmttypes.get(fmt, 'f')
@@ -392,12 +393,12 @@ def make_sql_addrastercolumn(options, pixeltypes, nodata, pixelsize, blocksize, 
         assert len(extent[0]) == len(extent[3]) == 2, "Invalid extent, pair of X and Y pair expected"
         rb = 'true'
         bs = ( blocksize[0], blocksize[1] )
-        extgeom = "ST_Envelope(ST_SetSRID('POLYGON((%f %f,%f %f,%f %f,%f %f,%f %f))'::geometry, %d))" % \
+        extgeom = "ST_Envelope(ST_SetSRID('POLYGON((%.15f %.15f,%.15f %.15f,%.15f %.15f,%.15f %.15f,%.15f %.15f))'::geometry, %d))" % \
                   (extent[0][0], extent[0][1], extent[1][0], extent[1][1],
                    extent[2][0], extent[2][1], extent[3][0], extent[3][1],
                    extent[0][0], extent[0][1], options.srid)
 
-    sql = "SELECT AddRasterColumn('%s','%s','%s',%d, %s, %s, %s, %s, %f, %f, %s, %s, %s);\n" % \
+    sql = "SELECT AddRasterColumn('%s','%s','%s',%d, %s, %s, %s, %s, %.15f, %.15f, %s, %s, %s);\n" % \
            (ts[0], ts[1], options.column, options.srid, pt, odb, rb, nd,
             pixelsize[0], pixelsize[1], bs[0], bs[1], extgeom)
 
