@@ -1,3 +1,4 @@
+*.a
 .svn
 *.o
 *.so
@@ -40,3 +41,15 @@ config.guess
 config.log
 config.status
 config.sub
+raster/rt_pg/rtpostgis.sql
+raster/rt_pg/rtpostgis.sql.in
+raster/scripts/python/Makefile
+topology/topology.sql
+topology/topology.sql.in
+st_*.png
+de9i*.png
+doc/html/image_src/generator
+doc/html/postgis.html
+doc/postgis-out.xml
+doc/postgis_aggs_mm.xml
+raster/raster_config.h
