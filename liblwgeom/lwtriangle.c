@@ -221,10 +221,12 @@ lwtriangle_serialize_buf(LWTRIANGLE *triangle, uchar *buf, size_t *retsize)
 	         triangle->points->npoints);
 
 	/*copy in points */
-	size = triangle->points->npoints*ptsize;
-	memcpy(loc, getPoint_internal(triangle->points, 0), size);
-	loc += size;
-
+	if ( triangle->points->npoints > 0 )
+	{
+		size = triangle->points->npoints*ptsize;
+		memcpy(loc, getPoint_internal(triangle->points, 0), size);
+		loc += size;
+	}
 	LWDEBUGF(3, "lwtriangle_serialize_buf copied serialized_pointlist (%d bytes)",
 	         ptsize * triangle->points->npoints);
 

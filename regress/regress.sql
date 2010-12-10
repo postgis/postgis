@@ -290,6 +290,22 @@ select '162', ST_MakeLine(ST_GeomFromText('POINT(-11.1111111 40)'),ST_GeomFromTe
 select '163', ST_AsEWKT('POLYGON((0 0 0, 1 0 0, 1 1 0, 0 1 0, 0 0 0))');
 select '164', ST_AsEWKT('POLYGON((0 0 0, 1 0 0, 1 1 0, 0 1 0, 0 0 1))');
 select '165', ST_AsEWKT('POLYGON((0 0 0, 1 0 0, 1 1 0, 0 1 0, 0 0.1 1))');
+select '166', ST_AsText('POINT EMPTY');
+select '167', ST_AsText('LINESTRING EMPTY');
+select '168', ST_AsText('POLYGON EMPTY');
+select '169', ST_AsText('CIRCULARSTRING EMPTY');
+select '170', ST_AsText('COMPOUNDCURVE EMPTY');
+select '171', ST_AsText('CURVEPOLYGON EMPTY');
+select '172', ST_AsText('MULTIPOINT EMPTY');
+select '173', ST_AsText('MULTILINESTRING EMPTY');
+select '174', ST_AsText('MULTIPOLYGON EMPTY');
+select '175', ST_AsText('TRIANGLE EMPTY');
+select '176', ST_AsText('TIN EMPTY');
+select '177', ST_AsText('POLYHEDRALSURFACE EMPTY');
+select '178', ST_AsText('MULTISURFACE EMPTY');
+select '179', ST_AsText('MULTICURVE EMPTY');
+select '180', ST_AsText('GEOMETRYCOLLECTION EMPTY');
+select '181', ST_AsText('GEOMETRYCOLLECTION(TRIANGLE EMPTY,TIN EMPTY)');
 
 
 -- Drop test table
