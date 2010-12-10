@@ -471,14 +471,10 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 {
 	text *wkt_text = PG_GETARG_TEXT_P(0);
 	char *wkt;
-	size_t wkt_size;
 	Datum result;
 
 	/* Unwrap the PgSQL text type into a cstring */
-	wkt_size = VARSIZE(wkt_text)-VARHDRSZ; /* size of VARDATA only */
-	wkt = palloc(wkt_size+1); /* +1 for null terminator */
-	memcpy(wkt, VARDATA(wkt_text), wkt_size );
-	wkt[wkt_size] = 0; /* null terminator */
+	wkt = text2cstring(wkt_text); 
 	
 	/* Now we call over to the geometry_in function */
 	result = DirectFunctionCall1(LWGEOM_in, CStringGetDatum(wkt));

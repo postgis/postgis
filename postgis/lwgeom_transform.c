@@ -982,10 +982,7 @@ PG_FUNCTION_INFO_V1(postgis_proj_version);
 Datum postgis_proj_version(PG_FUNCTION_ARGS)
 {
 	const char *ver = pj_get_release();
-	text *result;
-	result = (text *) palloc(VARHDRSZ  + strlen(ver));
-	SET_VARSIZE(result, VARHDRSZ + strlen(ver));
-	memcpy(VARDATA(result), ver, strlen(ver));
+	text *result = cstring2text(ver);
 	PG_RETURN_POINTER(result);
 }
 
