@@ -80,9 +80,9 @@ Datum LWGEOM_isclosed(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(LWGEOM_get_srid);
 Datum LWGEOM_get_srid(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *pglwgeom=(PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	int srid = pglwgeom_get_srid (pglwgeom);
-	PG_FREE_IF_COPY(pglwgeom,0);
+	PG_LWGEOM *geom=(PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	int srid = pglwgeom_get_srid (geom);
+	PG_FREE_IF_COPY(geom,0);
 	PG_RETURN_INT32(srid);
 }
 
@@ -90,15 +90,14 @@ Datum LWGEOM_get_srid(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_set_srid);
 Datum LWGEOM_set_srid(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	int new_srid = PG_GETARG_INT32(1);
 	PG_LWGEOM *result;
-
-	result = PG_LWGEOM_construct(SERIALIZED_FORM(geom), new_srid,
-	                             pglwgeom_has_bbox(geom));
-
+	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	int srid = PG_GETARG_INT32(1);
+	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
+	lwgeom_set_srid(lwgeom, srid);
+	result = pglwgeom_serialize(lwgeom);
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
-
 	PG_RETURN_POINTER(result);
 }
 
@@ -223,22 +222,18 @@ PG_FUNCTION_INFO_V1(LWGEOM_numgeometries_collection);
 Datum LWGEOM_numgeometries_collection(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	int type;
-	int32 ret;
-	uchar *serialized = SERIALIZED_FORM(geom);
+	LWGEOM *lwgeom;
+	int32 ret = 1;
 
-	type = pglwgeom_get_type(geom);
-	if (type==MULTIPOINTTYPE || type==MULTILINETYPE ||
-	        type==MULTICURVETYPE || type==MULTIPOLYGONTYPE ||
-	        type==MULTISURFACETYPE || type==POLYHEDRALSURFACETYPE ||
-	        type==TINTYPE || type==COLLECTIONTYPE)
+	lwgeom = pglwgeom_deserialize(geom);
+	if ( lwgeom_is_collection(lwgeom) )
 	{
-		ret = lwgeom_getnumgeometries(serialized);
-		PG_FREE_IF_COPY(geom, 0);
-		PG_RETURN_INT32(ret);
+		LWCOLLECTION *col = lwgeom_as_lwcollection(lwgeom);
+		ret = col->ngeoms;
 	}
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_INT32(1);
+	PG_RETURN_INT32(ret);
 }
 
 /** 1-based offset */
@@ -268,7 +263,7 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	coll = (LWCOLLECTION *)lwgeom_deserialize(SERIALIZED_FORM(geom));
+	coll = lwgeom_as_lwcollection(pglwgeom_deserialize(geom));
 
 	if ( idx < 0 ) PG_RETURN_NULL();
 	if ( idx >= coll->ngeoms ) PG_RETURN_NULL();
@@ -344,7 +339,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	
 	if ( pglwgeom_get_type(geom) == POLYGONTYPE )
 	{
-		poly = lwpoly_deserialize(SERIALIZED_FORM(geom));
+		poly = lwgeom_as_lwpoly(pglwgeom_deserialize(geom));
 
 		/* Ok, now we have a polygon. Here is its exterior ring. */
 		extring = poly->rings[0];
@@ -364,7 +359,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	}
 	else if (pglwgeom_get_type(geom) == TRIANGLETYPE)
 	{
-		triangle = lwtriangle_deserialize(SERIALIZED_FORM(geom));
+		triangle = lwgeom_as_lwtriangle(pglwgeom_deserialize(geom));
 
 		/*
 		* This is a LWLINE constructed by exterior ring POINTARRAY
@@ -381,7 +376,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	}
 	else
 	{
-		curvepoly = lwcurvepoly_deserialize(SERIALIZED_FORM(geom));
+		curvepoly = lwgeom_as_lwcurvepoly(pglwgeom_deserialize(geom));
 		ring = curvepoly->rings[0];
 		result = pglwgeom_serialize(ring);
 		lwgeom_release(ring);
@@ -465,7 +460,7 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	}
 	if ( pglwgeom_get_type(geom) == POLYGONTYPE)
 	{
-		poly = lwpoly_deserialize(SERIALIZED_FORM(geom));
+		poly = lwgeom_as_lwpoly(pglwgeom_deserialize(geom));
 
 		/* Ok, now we have a polygon. Let's see if it has enough holes */
 		if ( wanted_index >= poly->nrings )
@@ -492,7 +487,7 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	}
 	else
 	{
-		curvepoly = lwcurvepoly_deserialize(SERIALIZED_FORM(geom));
+		curvepoly = lwgeom_as_lwcurvepoly(pglwgeom_deserialize(geom));
 
 		if (wanted_index >= curvepoly->nrings)
 		{
