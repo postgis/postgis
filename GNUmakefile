@@ -4,10 +4,19 @@
 #
 #-----------------------------------------------------
 
-all: postgis loaderdumper utils raster
-	@echo "PostGIS was built successfully. Ready to install." 
+# todo: add all subdirs
+SUBDIRS = postgis loader utils raster 
 
-install: all postgis-install loaderdumper-install raster-install
+# todo: add more rules here, like uninstall, clean...
+all install:
+	for s in $(SUBDIRS); do \
+		$(MAKE) -C $${s} $@; \
+	done;
+	@if test x"$@" = xall; then \
+		echo "PostGIS was built successfully. Ready to install."; \
+	fi
+
+install: all
 
 uninstall: postgis-uninstall loaderdumper-uninstall docs-uninstall comments-uninstall
 
