@@ -450,7 +450,7 @@ LWGEOM* wkt_parser_polygon_add_ring(LWGEOM *poly, POINTARRAY *pa)
 	}
 	
 	/* Apply check for not closed rings, if requested. */	
-	if( (global_parser_result.parser_check_flags & PARSER_CHECK_CLOSURE) && ! ptarray_isclosed(pa) )
+	if( (global_parser_result.parser_check_flags & PARSER_CHECK_CLOSURE) && ! ptarray_isclosed2d(pa) )
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_UNCLOSED);
 		return NULL;
