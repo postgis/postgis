@@ -1720,7 +1720,7 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 
 	/* Get input shell */
 	pglwg1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	if ( ! pglwgeom_get_type(pglwg1) == LINETYPE )
+	if ( pglwgeom_get_type(pglwg1) != LINETYPE )
 	{
 		lwerror("Shell is not a line");
 	}
@@ -2355,7 +2355,7 @@ Datum LWGEOM_removepoint(PG_FUNCTION_ARGS)
 	pglwg1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	which = PG_GETARG_INT32(1);
 
-	if ( ! pglwgeom_get_type(pglwg1) == LINETYPE )
+	if ( pglwgeom_get_type(pglwg1) != LINETYPE )
 	{
 		elog(ERROR, "First argument must be a LINESTRING");
 		PG_RETURN_NULL();
