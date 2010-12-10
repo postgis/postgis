@@ -1017,7 +1017,7 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom_in, *lwgeom_out;
 
 	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	lwgeom_in = lwgeom_deserialize(SERIALIZED_FORM(in));
+	lwgeom_in = pglwgeom_deserialize(in);
 
 	switch ( lwgeom_in->type )
 	{
@@ -1060,7 +1060,7 @@ Datum ST_CleanGeometry(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom_in, *lwgeom_out;
 
 	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	lwgeom_in = lwgeom_deserialize(SERIALIZED_FORM(in));
+	lwgeom_in = pglwgeom_deserialize(in);
 
 	/* Short-circuit: empty geometry are the cleanest ! */
 #if 0

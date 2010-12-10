@@ -127,23 +127,17 @@ Datum LWGEOM_summary(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	char *result;
-	size_t result_size;
 	text *mytext;
 	LWGEOM *lwgeom;
 
 	lwgeom = pglwgeom_deserialize(geom);
-
 	result = lwgeom_summary(lwgeom, 0);
-	result_size = strlen(result);
 	lwgeom_free(lwgeom);
 
 	/* create a text obj to return */
-	mytext = (text *) palloc(VARHDRSZ  + result_size + 1);
-	SET_VARSIZE(mytext, VARHDRSZ + result_size + 1);
-	VARDATA(mytext)[0] = '\n';
-	memcpy(VARDATA(mytext)+1, result, result_size );
-
+	mytext = cstring2text(result);
 	pfree(result);
+	
 	PG_FREE_IF_COPY(geom,0);
 	PG_RETURN_TEXT_P(mytext);
 }
@@ -152,10 +146,7 @@ PG_FUNCTION_INFO_V1(postgis_version);
 Datum postgis_version(PG_FUNCTION_ARGS)
 {
 	char *ver = POSTGIS_VERSION;
-	text *result;
-	result = lwalloc(VARHDRSZ  + strlen(ver));
-	SET_VARSIZE(result, VARHDRSZ + strlen(ver));
-	memcpy(VARDATA(result), ver, strlen(ver));
+	text *result = cstring2text(ver);
 	PG_RETURN_TEXT_P(result);
 }
 
@@ -163,10 +154,7 @@ PG_FUNCTION_INFO_V1(postgis_lib_version);
 Datum postgis_lib_version(PG_FUNCTION_ARGS)
 {
 	char *ver = POSTGIS_LIB_VERSION;
-	text *result;
-	result = lwalloc(VARHDRSZ  + strlen(ver));
-	SET_VARSIZE(result, VARHDRSZ + strlen(ver));
-	memcpy(VARDATA(result), ver, strlen(ver));
+	text *result = cstring2text(ver);
 	PG_RETURN_TEXT_P(result);
 }
 
@@ -174,10 +162,7 @@ PG_FUNCTION_INFO_V1(postgis_lib_build_date);
 Datum postgis_lib_build_date(PG_FUNCTION_ARGS)
 {
 	char *ver = POSTGIS_BUILD_DATE;
-	text *result;
-	result = lwalloc(VARHDRSZ  + strlen(ver));
-	SET_VARSIZE(result, VARHDRSZ + strlen(ver));
-	memcpy(VARDATA(result), ver, strlen(ver));
+	text *result = cstring2text(ver);
 	PG_RETURN_TEXT_P(result);
 }
 
@@ -185,10 +170,7 @@ PG_FUNCTION_INFO_V1(postgis_scripts_released);
 Datum postgis_scripts_released(PG_FUNCTION_ARGS)
 {
 	char *ver = POSTGIS_SCRIPTS_VERSION;
-	text *result;
-	result = lwalloc(VARHDRSZ  + strlen(ver));
-	SET_VARSIZE(result, VARHDRSZ + strlen(ver));
-	memcpy(VARDATA(result), ver, strlen(ver));
+	text *result = cstring2text(ver);
 	PG_RETURN_TEXT_P(result);
 }
 
@@ -213,10 +195,7 @@ PG_FUNCTION_INFO_V1(postgis_libxml_version);
 Datum postgis_libxml_version(PG_FUNCTION_ARGS)
 {
 	char *ver = POSTGIS_LIBXML2_VERSION;
-	text *result;
-	result = lwalloc(VARHDRSZ  + strlen(ver));
-	SET_VARSIZE(result, VARHDRSZ + strlen(ver));
-	memcpy(VARDATA(result), ver, strlen(ver));
+	text *result = cstring2text(ver);
 	PG_RETURN_TEXT_P(result);
 }
 
@@ -626,14 +605,16 @@ Datum LWGEOM_longestline2d(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_mindistance2d);
 Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	LWGEOM *geom1, *geom2;
+	PG_LWGEOM *pg1, *pg2;
 	double mindist;
 
 	PROFSTART(PROF_QRUN);
 
-	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
-	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
+	pg1 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pg2 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = pglwgeom_deserialize(pg1);
+	geom2 = pglwgeom_deserialize(pg2);
 
 	if (geom1->srid != geom2->srid)
 	{
@@ -646,8 +627,8 @@ Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS)
 	PROFSTOP(PROF_QRUN);
 	PROFREPORT("dist",geom1, geom2, NULL);
 
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
+	PG_FREE_IF_COPY(pg1, 0);
+	PG_FREE_IF_COPY(pg2, 1);
 	/*if called with empty geometries the ingoing mindistance is untouched, and makes us return NULL*/
 	if (mindist<MAXFLOAT)
 	{
@@ -664,14 +645,16 @@ geom1 and geom2 is shorter than tolerance
 PG_FUNCTION_INFO_V1(LWGEOM_dwithin);
 Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	LWGEOM *geom1, *geom2;
+	PG_LWGEOM *pg1, *pg2;
 	double mindist, tolerance;
 
 	PROFSTART(PROF_QRUN);
 
-	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
-	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
+	pg1 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pg2 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = pglwgeom_deserialize(pg1);
+	geom2 = pglwgeom_deserialize(pg2);
 	tolerance = PG_GETARG_FLOAT8(2);
 
 	if ( tolerance < 0 )
@@ -691,8 +674,8 @@ Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
 	PROFSTOP(PROF_QRUN);
 	PROFREPORT("dist",geom1, geom2, NULL);
 
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
+	PG_FREE_IF_COPY(pg1, 0);
+	PG_FREE_IF_COPY(pg2, 1);
 	/*empty geometries cases should be right handled since return from underlying
 	 functions should be MAXFLOAT which causes false as answer*/
 	PG_RETURN_BOOL(tolerance >= mindist);
@@ -706,14 +689,16 @@ geom1 and geom2 is shorter than tolerance
 PG_FUNCTION_INFO_V1(LWGEOM_dfullywithin);
 Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	LWGEOM *geom1, *geom2;
+	PG_LWGEOM *pg1, *pg2;
 	double maxdist, tolerance;
 
 	PROFSTART(PROF_QRUN);
 
-	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
-	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
+	pg1 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pg2 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = pglwgeom_deserialize(pg1);
+	geom2 = pglwgeom_deserialize(pg2);
 	tolerance = PG_GETARG_FLOAT8(2);
 
 	if ( tolerance < 0 )
@@ -731,8 +716,8 @@ Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS)
 	PROFSTOP(PROF_QRUN);
 	PROFREPORT("dist",geom1, geom2, NULL);
 
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
+	PG_FREE_IF_COPY(pg1, 0);
+	PG_FREE_IF_COPY(pg2, 1);
 	/*If function is feed with empty geometries we should return false*/
 	if (maxdist>-1)
 	{
@@ -747,14 +732,16 @@ Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_maxdistance2d_linestring);
 Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	LWGEOM *geom1, *geom2;
+	PG_LWGEOM *pg1, *pg2;
 	double maxdist;
 
 	PROFSTART(PROF_QRUN);
 
-	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
-	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
+	pg1 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pg2 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = pglwgeom_deserialize(pg1);
+	geom2 = pglwgeom_deserialize(pg2);
 
 	if (geom1->srid != geom2->srid)
 	{
@@ -768,8 +755,8 @@ Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS)
 	PROFSTOP(PROF_QRUN);
 	PROFREPORT("maxdist",geom1, geom2, NULL);
 
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
+	PG_FREE_IF_COPY(pg1, 0);
+	PG_FREE_IF_COPY(pg2, 1);
 	/*if called with empty geometries the ingoing mindistance is untouched, and makes us return NULL*/
 	if (maxdist>-1)
 	{
@@ -785,13 +772,15 @@ Returns the point in first input geometry that is closest to the second input ge
 PG_FUNCTION_INFO_V1(LWGEOM_closestpoint3d);
 Datum LWGEOM_closestpoint3d(PG_FUNCTION_ARGS)
 {
-	int srid;
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	LWGEOM *geom1, *geom2;
+	PG_LWGEOM *pg1, *pg2;
 	LWGEOM *point;
+	int srid;
 
-	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
-	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
+	pg1 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pg2 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = pglwgeom_deserialize(pg1);
+	geom2 = pglwgeom_deserialize(pg2);
 
 	if (geom1->srid != geom2->srid)
 	{
@@ -816,13 +805,15 @@ Returns the shortest line between two geometries in 3D
 PG_FUNCTION_INFO_V1(LWGEOM_shortestline3d);
 Datum LWGEOM_shortestline3d(PG_FUNCTION_ARGS)
 {
-	int srid;
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	LWGEOM *geom1, *geom2;
+	PG_LWGEOM *pg1, *pg2;
 	LWGEOM *theline;
+	int srid;
 
-	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
-	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
+	pg1 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pg2 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = pglwgeom_deserialize(pg1);
+	geom2 = pglwgeom_deserialize(pg2);
 
 	if (geom1->srid != geom2->srid)
 	{
@@ -846,13 +837,15 @@ Returns the longest line between two geometries in 3D
 PG_FUNCTION_INFO_V1(LWGEOM_longestline3d);
 Datum LWGEOM_longestline3d(PG_FUNCTION_ARGS)
 {
-	int srid;
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	LWGEOM *geom1, *geom2;
+	PG_LWGEOM *pg1, *pg2;
 	LWGEOM *theline;
+	int srid;
 
-	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
-	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
+	pg1 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pg2 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = pglwgeom_deserialize(pg1);
+	geom2 = pglwgeom_deserialize(pg2);
 
 	if (geom1->srid != geom2->srid)
 	{
@@ -875,14 +868,16 @@ Datum LWGEOM_longestline3d(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_mindistance3d);
 Datum LWGEOM_mindistance3d(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	LWGEOM *geom1, *geom2;
+	PG_LWGEOM *pg1, *pg2;
 	double mindist;
 
 	PROFSTART(PROF_QRUN);
 
-	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
-	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
+	pg1 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pg2 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = pglwgeom_deserialize(pg1);
+	geom2 = pglwgeom_deserialize(pg2);
 
 	if (geom1->srid != geom2->srid)
 	{
@@ -895,8 +890,8 @@ Datum LWGEOM_mindistance3d(PG_FUNCTION_ARGS)
 	PROFSTOP(PROF_QRUN);
 	PROFREPORT("dist",geom1, geom2, NULL);
 
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
+	PG_FREE_IF_COPY(pg1, 0);
+	PG_FREE_IF_COPY(pg2, 1);
 	/*if called with empty geometries the ingoing mindistance is untouched, and makes us return NULL*/
 	if (mindist<MAXFLOAT)
 	{
@@ -913,14 +908,16 @@ geom1 and geom2 is shorter than tolerance
 PG_FUNCTION_INFO_V1(LWGEOM_dwithin3d);
 Datum LWGEOM_dwithin3d(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	LWGEOM *geom1, *geom2;
+	PG_LWGEOM *pg1, *pg2;
 	double mindist, tolerance;
 
 	PROFSTART(PROF_QRUN);
 
-	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
-	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
+	pg1 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pg2 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = pglwgeom_deserialize(pg1);
+	geom2 = pglwgeom_deserialize(pg2);
 	tolerance = PG_GETARG_FLOAT8(2);
 
 	if ( tolerance < 0 )
@@ -940,8 +937,8 @@ Datum LWGEOM_dwithin3d(PG_FUNCTION_ARGS)
 	PROFSTOP(PROF_QRUN);
 	PROFREPORT("dist",geom1, geom2, NULL);
 
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
+	PG_FREE_IF_COPY(pg1, 0);
+	PG_FREE_IF_COPY(pg2, 1);
 	/*empty geometries cases should be right handled since return from underlying
 	 functions should be MAXFLOAT which causes false as answer*/
 	PG_RETURN_BOOL(tolerance >= mindist);
@@ -955,14 +952,16 @@ geom1 and geom2 is shorter than tolerance
 PG_FUNCTION_INFO_V1(LWGEOM_dfullywithin3d);
 Datum LWGEOM_dfullywithin3d(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	LWGEOM *geom1, *geom2;
+	PG_LWGEOM *pg1, *pg2;
 	double maxdist, tolerance;
 
 	PROFSTART(PROF_QRUN);
 
-	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
-	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
+	pg1 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pg2 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = pglwgeom_deserialize(pg1);
+	geom2 = pglwgeom_deserialize(pg2);
 	tolerance = PG_GETARG_FLOAT8(2);
 
 	if ( tolerance < 0 )
@@ -980,8 +979,8 @@ Datum LWGEOM_dfullywithin3d(PG_FUNCTION_ARGS)
 	PROFSTOP(PROF_QRUN);
 	PROFREPORT("dist",geom1, geom2, NULL);
 
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
+	PG_FREE_IF_COPY(pg1, 0);
+	PG_FREE_IF_COPY(pg2, 1);
 	/*If function is feed with empty geometries we should return false*/
 	if (maxdist>-1)
 	{
@@ -996,14 +995,16 @@ Datum LWGEOM_dfullywithin3d(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_maxdistance3d);
 Datum LWGEOM_maxdistance3d(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	LWGEOM *geom1, *geom2;
+	PG_LWGEOM *pg1, *pg2;
 	double maxdist;
 
 	PROFSTART(PROF_QRUN);
 
-	geom1 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0))));
-	geom2 = lwgeom_deserialize(SERIALIZED_FORM((PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1))));
+	pg1 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pg2 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = pglwgeom_deserialize(pg1);
+	geom2 = pglwgeom_deserialize(pg2);
 
 	if (geom1->srid != geom2->srid)
 	{
@@ -1017,8 +1018,8 @@ Datum LWGEOM_maxdistance3d(PG_FUNCTION_ARGS)
 	PROFSTOP(PROF_QRUN);
 	PROFREPORT("maxdist",geom1, geom2, NULL);
 
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
+	PG_FREE_IF_COPY(pg1, 0);
+	PG_FREE_IF_COPY(pg2, 1);
 	/*if called with empty geometries the ingoing mindistance is untouched, and makes us return NULL*/
 	if (maxdist>-1)
 	{
@@ -1189,10 +1190,11 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 
 	result = pglwgeom_serialize(outlwg);
 
-	PG_FREE_IF_COPY(pglwgeom1, 0);
-	PG_FREE_IF_COPY(pglwgeom2, 1);
 	lwgeom_release(lwgeoms[0]);
 	lwgeom_release(lwgeoms[1]);
+
+	PG_FREE_IF_COPY(pglwgeom1, 0);
+	PG_FREE_IF_COPY(pglwgeom2, 1);
 
 	PG_RETURN_POINTER(result);
 }
@@ -2473,9 +2475,7 @@ Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom);
 
 	/* Write to text and free the WKT */
-	result = palloc(wkt_size - 1 + VARHDRSZ);
-	memcpy(VARDATA(result), wkt, wkt_size - 1);
-	SET_VARSIZE(result, wkt_size - 1 + VARHDRSZ);
+	result = cstring2text(wkt);
 	pfree(wkt);
 
 	/* Return the text */

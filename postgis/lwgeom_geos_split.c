@@ -487,10 +487,10 @@ Datum ST_Split(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom_in, *lwblade_in, *lwgeom_out;
 
 	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	lwgeom_in = lwgeom_deserialize(SERIALIZED_FORM(in));
+	lwgeom_in = pglwgeom_deserialize(in);
 
 	blade_in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	lwblade_in = lwgeom_deserialize(SERIALIZED_FORM(blade_in));
+	lwblade_in = pglwgeom_deserialize(blade_in);
 
 	error_if_srid_mismatch(lwgeom_in->srid, lwblade_in->srid);
 
