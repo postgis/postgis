@@ -1,3 +1,4 @@
+.svn
 *.o
 *.so
 configure
