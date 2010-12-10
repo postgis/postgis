@@ -42,6 +42,16 @@ cstring2text(const char *cstring)
 	return output;
 }
 
+char*
+text2cstring(const text *textptr)
+{
+	size_t size = VARSIZE(textptr) - VARHDRSZ;
+	char *str = lwalloc(size+1);
+	memcpy(str, VARDATA(textptr), size);
+	str[size]='\0';
+	return str;
+}
+
 
 /*
  * Error message parsing functions

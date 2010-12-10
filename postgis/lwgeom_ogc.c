@@ -717,29 +717,12 @@ PG_FUNCTION_INFO_V1(LWGEOM_from_text);
 Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 {
 	text *wkttext = PG_GETARG_TEXT_P(0);
-	char *wkt;
-	size_t size;
+	char *wkt = text2cstring(wkttext);
 	LWGEOM_PARSER_RESULT lwg_parser_result;
 	PG_LWGEOM *geom_result = NULL;
 	LWGEOM *lwgeom;
 
 	POSTGIS_DEBUG(2, "LWGEOM_from_text");
-
-	size = VARSIZE(wkttext)-VARHDRSZ;
-
-	POSTGIS_DEBUGF(3, "size: %d", (int)size);
-
-	if ( size < 10 )
-	{
-		lwerror("Invalid OGC WKT (too short)");
-		PG_RETURN_NULL();
-	}
-
-	/* Create c-string from PgSQL text */
-	wkt = lwalloc(size+1);
-	memcpy(wkt, VARDATA(wkttext), size);
-	wkt[size]='\0';
-
 	POSTGIS_DEBUGF(3, "wkt: [%s]", wkt);
 
 	if (lwgeom_parse_wkt(&lwg_parser_result, wkt, PARSER_CHECK_ALL) == LW_FAILURE)

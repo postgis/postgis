@@ -93,6 +93,7 @@ extern Oid getGeometryOID(void);
 * Utility to convert cstrings to textp pointers 
 */
 text* cstring2text(const char *cstring);
+char* text2cstring(const text *textptr);
 
 /*
  * Use this macro to extract the char * required
