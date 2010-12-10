@@ -1971,16 +1971,23 @@ Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS)
 	PG_LWGEOM *outgeom, *ingeom;
 	double dist;
 	LWGEOM *inlwgeom, *outlwgeom;
+	int type;
 
 	POSTGIS_DEBUG(2, "LWGEOM_segmentize2d called");
 
 	ingeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	dist = PG_GETARG_FLOAT8(1);
+	type = pglwgeom_get_type(ingeom); 
 
-	/* Avoid deserialize/serialize steps */
-	if ( (pglwgeom_get_type(ingeom) == POINTTYPE) ||
-	     (pglwgeom_get_type(ingeom) == MULTIPOINTTYPE) )
+	/* Avoid types we cannot segmentize. */
+	if ( (type == POINTTYPE) || 
+	     (type == MULTIPOINTTYPE) || 
+	     (type == TRIANGLETYPE) || 
+	     (type == TINTYPE) || 
+	     (type == POLYHEDRALSURFACETYPE) )
+	{
 		PG_RETURN_POINTER(ingeom);
+	}
 
 	inlwgeom = pglwgeom_deserialize(ingeom);
 	outlwgeom = lwgeom_segmentize2d(inlwgeom, dist);
