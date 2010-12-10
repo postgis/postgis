@@ -11,3 +11,4 @@ all:
 
 # We don't install utils (why?)
 install:
+uninstall:

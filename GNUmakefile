@@ -8,7 +8,7 @@
 SUBDIRS = liblwgeom postgis loader utils raster 
 
 # todo: add more rules here, like uninstall, clean...
-all install:
+all install uninstall:
 	for s in $(SUBDIRS); do \
 		echo "Making $@ in $${s}"; \
 		$(MAKE) -C $${s} $@; \
@@ -19,7 +19,7 @@ all install:
 
 install: all
 
-uninstall: postgis-uninstall loaderdumper-uninstall docs-uninstall comments-uninstall
+uninstall: docs-uninstall comments-uninstall
 
 clean: liblwgeom-clean postgis-clean loaderdumper-clean docs-clean test-clean raster-clean
 	rm -f postgis.sql postgis_upgrade.sql
