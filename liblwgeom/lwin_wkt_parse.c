@@ -1504,12 +1504,12 @@ yydestruct (yymsg, yytype, yyvaluep, yylocationp)
 	break;
       case 46: /* "patchring" */
 #line 168 "lwin_wkt_parse.y"
-	{ ptarray_freeall((yyvaluep->ptarrayvalue)); };
+	{ ptarray_free((yyvaluep->ptarrayvalue)); };
 #line 1509 "lwin_wkt_parse.c"
 	break;
       case 47: /* "ring" */
 #line 167 "lwin_wkt_parse.y"
-	{ ptarray_freeall((yyvaluep->ptarrayvalue)); };
+	{ ptarray_free((yyvaluep->ptarrayvalue)); };
 #line 1514 "lwin_wkt_parse.c"
 	break;
       case 48: /* "compoundcurve" */
@@ -1594,7 +1594,7 @@ yydestruct (yymsg, yytype, yyvaluep, yylocationp)
 	break;
       case 64: /* "ptarray" */
 #line 166 "lwin_wkt_parse.y"
-	{ ptarray_freeall((yyvaluep->ptarrayvalue)); };
+	{ ptarray_free((yyvaluep->ptarrayvalue)); };
 #line 1599 "lwin_wkt_parse.c"
 	break;
 

@@ -349,7 +349,9 @@ lwpoint_deserialize(uchar *serialized_form)
 
 void lwpoint_free(LWPOINT *pt)
 {
-	if (pt->point)
+	if ( pt->bbox )
+		lwfree(pt->bbox);
+	if ( pt->point )
 		ptarray_free(pt->point);
 	lwfree(pt);
 }

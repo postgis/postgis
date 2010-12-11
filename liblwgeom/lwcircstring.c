@@ -532,7 +532,10 @@ lwcircstring_compute_box2d_p(const LWCIRCSTRING *curve, BOX2DFLOAT4 *result)
 
 void lwcircstring_free(LWCIRCSTRING *curve)
 {
-	lwfree(curve->points);
+	if ( curve->bbox )
+		lwfree(curve->bbox);
+	if ( curve->points )
+		ptarray_free(curve->points);
 	lwfree(curve);
 }
 

@@ -209,12 +209,17 @@ ptarray_remove_point(POINTARRAY *pa, int where)
 	return LW_SUCCESS;
 }
 
+/**
+* Build a new #POINTARRAY, but on top of someone else's ordinate array. 
+* Flag as read-only, so that ptarray_free() does not free the serialized_ptlist
+*/
 POINTARRAY* ptarray_construct_reference_data(char hasz, char hasm, uint32 npoints, uchar *ptlist)
 {
 	POINTARRAY *pa = lwalloc(sizeof(POINTARRAY));
 	LWDEBUGF(5, "hasz = %d, hasm = %d, npoints = %d, ptlist = %p", hasz, hasm, npoints, ptlist);
 	FLAGS_SET_Z(pa->flags, hasz?1:0);
 	FLAGS_SET_M(pa->flags, hasm?1:0);
+	FLAGS_SET_READONLY(pa->flags, 1); /* We don't own this memory, so we can't alter or free it. */
 	pa->npoints = npoints;
 	pa->maxpoints = npoints;
 	pa->serialized_pointlist = ptlist;
@@ -247,20 +252,9 @@ ptarray_construct_copy_data(char hasz, char hasm, uint32 npoints, const uchar *p
 
 void ptarray_free(POINTARRAY *pa)
 {
-	/**
-	*  	TODO: \todo	Turn this on after retrofitting all calls to lwfree_ in /lwgeom
-	*		if( pa->serialized_pointlist )
-	*		lwfree(pa->serialized_pointlist);
-	 */
-
-	lwfree(pa);
-}
-
-void ptarray_freeall(POINTARRAY *pa)
-{
 	if(pa)
 	{
-		if(pa->serialized_pointlist)
+		if(pa->serialized_pointlist && ( ! FLAGS_GET_READONLY(pa->flags) ) )
 			lwfree(pa->serialized_pointlist);	
 		lwfree(pa);
 	}

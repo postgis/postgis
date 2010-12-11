@@ -89,20 +89,15 @@ void lwtin_free(LWTIN *tin)
 	int i;
 
 	if ( tin->bbox )
-	{
 		lwfree(tin->bbox);
-	}
+
 	for ( i = 0; i < tin->ngeoms; i++ )
-	{
-		if ( tin->geoms[i] )
-		{
-			lwtriangle_free((LWTRIANGLE *) tin->geoms[i]);
-		}
-	}
+		if ( tin->geoms && tin->geoms[i] )
+			lwtriangle_free(tin->geoms[i]);
+
 	if ( tin->geoms )
-	{
 		lwfree(tin->geoms);
-	}
+
 	lwfree(tin);
 }
 

@@ -163,9 +163,9 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 
 
 /* These clean up memory on errors and parser aborts. */ 
-%destructor { ptarray_freeall($$); } ptarray 
-%destructor { ptarray_freeall($$); } ring
-%destructor { ptarray_freeall($$); } patchring
+%destructor { ptarray_free($$); } ptarray 
+%destructor { ptarray_free($$); } ring
+%destructor { ptarray_free($$); } patchring
 %destructor { lwgeom_free($$); } curvering_list
 %destructor { lwgeom_free($$); } triangle_list
 %destructor { lwgeom_free($$); } surface_list

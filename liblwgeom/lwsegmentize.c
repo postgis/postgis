@@ -319,7 +319,7 @@ lwcircstring_segmentize(const LWCIRCSTRING *icurve, uint32 perQuad)
 				getPoint4d_p(tmp, j, &p4);
 				ptarray_append_point(ptarray, &p4, REPEATED_POINTS_OK);
 			}
-			ptarray_freeall(tmp);
+			ptarray_free(tmp);
 		}
 		else
 		{

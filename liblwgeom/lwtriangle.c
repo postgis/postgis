@@ -310,11 +310,14 @@ lwtriangle_serialize_size(LWTRIANGLE *triangle)
 	return size;
 }
 
-
 void lwtriangle_free(LWTRIANGLE  *triangle)
 {
-	if (triangle->bbox) lwfree(triangle->bbox);
-	ptarray_free(triangle->points);
+	if (triangle->bbox)
+		lwfree(triangle->bbox);
+		
+	if (triangle->points)
+		ptarray_free(triangle->points);
+		
 	lwfree(triangle);
 }
 

@@ -103,21 +103,15 @@ void lwmpoly_free(LWMPOLY *mpoly)
 {
 	int i;
 	if ( mpoly->bbox )
-	{
 		lwfree(mpoly->bbox);
-	}
-	for ( i = 0; i < mpoly->ngeoms; i++ )
-	{
-		if ( mpoly->geoms[i] )
-		{
-			lwpoly_free(mpoly->geoms[i]);
-		}
-	}
-	if ( mpoly->geoms )
-	{
-		lwfree(mpoly->geoms);
-	}
-	lwfree(mpoly);
 
+	for ( i = 0; i < mpoly->ngeoms; i++ )
+		if ( mpoly->geoms && mpoly->geoms[i] )
+			lwpoly_free(mpoly->geoms[i]);
+
+	if ( mpoly->geoms )
+		lwfree(mpoly->geoms);
+
+	lwfree(mpoly);
 }
 

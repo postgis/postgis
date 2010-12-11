@@ -104,22 +104,16 @@ void lwmpoint_free(LWMPOINT *mpt)
 {
 	int i;
 	if ( mpt->bbox )
-	{
 		lwfree(mpt->bbox);
-	}
-	for ( i = 0; i < mpt->ngeoms; i++ )
-	{
-		if ( mpt->geoms[i] )
-		{
-			lwpoint_free(mpt->geoms[i]);
-		}
-	}
-	if ( mpt->geoms )
-	{
-		lwfree(mpt->geoms);
-	}
-	lwfree(mpt);
 
+	for ( i = 0; i < mpt->ngeoms; i++ )
+		if ( mpt->geoms && mpt->geoms[i] )
+			lwpoint_free(mpt->geoms[i]);
+
+	if ( mpt->geoms )
+		lwfree(mpt->geoms);
+
+	lwfree(mpt);
 }
 
 LWGEOM*

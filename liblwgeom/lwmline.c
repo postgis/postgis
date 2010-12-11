@@ -161,20 +161,14 @@ void lwmline_free(LWMLINE *mline)
 {
 	int i;
 	if ( mline->bbox )
-	{
 		lwfree(mline->bbox);
-	}
-	for ( i = 0; i < mline->ngeoms; i++ )
-	{
-		if ( mline->geoms[i] )
-		{
-			lwline_free(mline->geoms[i]);
-		}
-	}
-	if ( mline->geoms )
-	{
-		lwfree(mline->geoms);
-	}
-	lwfree(mline);
 
+	for ( i = 0; i < mline->ngeoms; i++ )
+		if ( mline->geoms && mline->geoms[i] )
+			lwline_free(mline->geoms[i]);
+
+	if ( mline->geoms )
+		lwfree(mline->geoms);
+
+	lwfree(mline);
 }

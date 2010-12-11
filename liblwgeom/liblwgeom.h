@@ -1434,7 +1434,6 @@ char box2d_same(BOX2DFLOAT4 *box1, BOX2DFLOAT4 *box2);
  */
 
 extern void ptarray_free(POINTARRAY *pa);
-extern void ptarray_freeall(POINTARRAY *pa);
 extern void lwpoint_free(LWPOINT *pt);
 extern void lwline_free(LWLINE *line);
 extern void lwpoly_free(LWPOLY *poly);

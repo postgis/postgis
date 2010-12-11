@@ -90,20 +90,15 @@ void lwpsurface_free(LWPSURFACE *psurf)
 	int i;
 
 	if ( psurf->bbox )
-	{
 		lwfree(psurf->bbox);
-	}
+
 	for ( i = 0; i < psurf->ngeoms; i++ )
-	{
-		if ( psurf->geoms[i] )
-		{
-			lwpoly_free((LWPOLY *) psurf->geoms[i]);
-		}
-	}
+		if ( psurf->geoms && psurf->geoms[i] )
+			lwpoly_free(psurf->geoms[i]);
+
 	if ( psurf->geoms )
-	{
 		lwfree(psurf->geoms);
-	}
+
 	lwfree(psurf);
 }
 

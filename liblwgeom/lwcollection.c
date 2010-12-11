@@ -441,33 +441,8 @@ void lwcollection_free(LWCOLLECTION *col)
 	for ( i = 0; i < col->ngeoms; i++ )
 	{
 		LWDEBUGF(4,"freeing geom[%d]", i);
-		if ( col->geoms[i] )
-		{
-			switch ( col->geoms[i]->type )
-			{
-			case POINTTYPE:
-				lwpoint_free((LWPOINT*)col->geoms[i]);
-				break;
-			case LINETYPE:
-				lwline_free((LWLINE*)col->geoms[i]);
-				break;
-			case POLYGONTYPE:
-				lwpoly_free((LWPOLY*)col->geoms[i]);
-				break;
-			case MULTIPOINTTYPE:
-				lwmpoint_free((LWMPOINT*)col->geoms[i]);
-				break;
-			case MULTILINETYPE:
-				lwmline_free((LWMLINE*)col->geoms[i]);
-				break;
-			case MULTIPOLYGONTYPE:
-				lwmpoly_free((LWMPOLY*)col->geoms[i]);
-				break;
-			case COLLECTIONTYPE:
-				lwcollection_free((LWCOLLECTION*)col->geoms[i]);
-				break;
-			}
-		}
+		if ( col->geoms && col->geoms[i] )
+			lwgeom_free(col->geoms[i]);
 	}
 	if ( col->geoms )
 	{

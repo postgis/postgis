@@ -1162,6 +1162,9 @@ void lwgeom_free(LWGEOM *lwgeom)
 	case POLYGONTYPE:
 		lwpoly_free((LWPOLY *)lwgeom);
 		break;
+	case CIRCSTRINGTYPE:
+		lwcircstring_free((LWCIRCSTRING *)lwgeom);
+		break;
 	case TRIANGLETYPE:
 		lwtriangle_free((LWTRIANGLE *)lwgeom);
 		break;
@@ -1180,12 +1183,17 @@ void lwgeom_free(LWGEOM *lwgeom)
 	case TINTYPE:
 		lwtin_free((LWTIN *)lwgeom);
 		break;
+	case CURVEPOLYTYPE:
+	case COMPOUNDTYPE:
+	case MULTICURVETYPE:
+	case MULTISURFACETYPE:
 	case COLLECTIONTYPE:
 		lwcollection_free((LWCOLLECTION *)lwgeom);
 		break;
+	default:
+		lwerror("lwgeom_free called with unknown type (%d) %s", lwgeom->type, lwtype_name(lwgeom->type));
 	}
 	return;
-
 }
 
 int lwgeom_needs_bbox(const LWGEOM *geom)
