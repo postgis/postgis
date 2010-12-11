@@ -167,7 +167,9 @@
 #define _VOLATILE_STRICT VOLATILE STRICT 
 #define _VOLATILE VOLATILE 
 
-DROP SCHEMA topology CASCADE;
+-- Uninstalling previous installation isn't really a good habit ...
+-- Let people decide about that
+-- DROP SCHEMA topology CASCADE;
 
 BEGIN;
 
