@@ -250,10 +250,21 @@ SELECT '3dDistancetest4',
 							ST_ASEWKT(ST_3DLongestline(a,b)) FROM (
 	SELECT  'LINESTRING(1 1 3, 5 7 8)'::geometry  as a, 'POINT(1 1 1)'::geometry as b
 	) as foo;
+	
+	SELECT '3dDistancetest5',
+	ST_3DDistance(a,b),
+		ST_3DMaxDistance(a,b),
+			ST_3DDWithin(a,b,5),
+				ST_3DDFullyWithin(a,b,5),
+					ST_ASEWKT(ST_3DShortestline(a,b)),
+						ST_ASEWKT(ST_3DClosestpoint(a,b)),
+							ST_ASEWKT(ST_3DLongestline(a,b)) FROM (
+	SELECT  'LINESTRING(1 0 5, 11 0 5)'::geometry  as a, 'LINESTRING(5 2 0, 5 2 10, 5 0 13)'::geometry as b
+	) as foo;
 
 SELECT 'unsupported_test1',
 	ST_3DDistance(a,b) FROM (
-	SELECT 'LINESTRING(1 1 1 , 2 2 2)'::geometry as a, 'LINESTRING(0 0 0, 2 2 2)'::geometry as b) as foo;	
+	SELECT 'LINESTRING(1 1 1 , 2 2 2)'::geometry as a, 'POLYGON((0 0 0, 2 2 2, 3 3 3, 0 0 0))'::geometry as b) as foo;	
 
 -- Area of an empty polygon
 select 'emptyPolyArea', st_area('POLYGON EMPTY');

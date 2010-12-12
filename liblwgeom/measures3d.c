@@ -311,7 +311,8 @@ lw_dist3d_distribute_bruteforce(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS3D *dl)
 		}
 		else if ( t2 == LINETYPE )
 		{
-			lwerror("Linestring to Linestring distance measures is not yet supported for 3d");
+			dl->twisted=1;
+			return lw_dist3d_line_line((LWLINE *)lwg1,(LWLINE *)lwg2,dl);
 		}
 		else if ( t2 == POLYGONTYPE )
 		{
@@ -424,16 +425,6 @@ lw_dist3d_pt_ptarray(POINT3DZ *p, POINTARRAY *pa,DISTPTS3D *dl)
 }
 
 
-/*------------------------------------------------------------------------------------------------------------
-End of Brute force functions
---------------------------------------------------------------------------------------------------------------*/
-
-
-
-/*------------------------------------------------------------------------------------------------------------
-Functions in common for Brute force and new calculation
---------------------------------------------------------------------------------------------------------------*/
-
 /**
 
 This one is sending every occation to lw_dist3d_pt_pt
@@ -522,12 +513,194 @@ lw_dist3d_pt_pt(POINT3DZ *thep1, POINT3DZ *thep2,DISTPTS3D *dl)
 
 
 
+int
+lw_dist3d_line_line(LWLINE *line1, LWLINE *line2, DISTPTS3D *dl)
+{
+	POINTARRAY *pa1 = line1->points;
+	POINTARRAY *pa2 = line2->points;
+	LWDEBUG(2, "lw_dist3d_line_line is called");
+	return lw_dist3d_ptarray_ptarray(pa1, pa2, dl);
+}
+
+
+/**
+
+Finds all combinationes of segments between two pointarrays
+*/
+int
+lw_dist3d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS3D *dl)
+{
+	int t,u;
+	POINT3DZ	start, end;
+	POINT3DZ	start2, end2;
+	int twist = dl->twisted;
+
+	LWDEBUGF(2, "lw_dist3d_ptarray_ptarray called (points: %d-%d)",l1->npoints, l2->npoints);
+
+	if (dl->mode == DIST_MAX)/*If we are searching for maxdistance we go straight to point-point calculation since the maxdistance have to be between two vertexes*/
+	{
+		for (t=0; t<l1->npoints; t++) /*for each segment in L1 */
+		{
+			getPoint3dz_p(l1, t, &start);
+			for (u=0; u<l2->npoints; u++) /*for each segment in L2 */
+			{
+				getPoint3dz_p(l2, u, &start2);
+				lw_dist3d_pt_pt(&start,&start2,dl);
+				LWDEBUGF(4, "maxdist_ptarray_ptarray; seg %i * seg %i, dist = %g\n",t,u,dl->distance);
+				LWDEBUGF(3, " seg%d-seg%d dist: %f, mindist: %f",
+				         t, u, dl->distance, dl->tolerance);
+			}
+		}
+	}
+	else
+	{
+		getPoint3dz_p(l1, 0, &start);
+		for (t=1; t<l1->npoints; t++) /*for each segment in L1 */
+		{
+			getPoint3dz_p(l1, t, &end);
+			getPoint3dz_p(l2, 0, &start2);
+			for (u=1; u<l2->npoints; u++) /*for each segment in L2 */
+			{
+				getPoint3dz_p(l2, u, &end2);
+				dl->twisted=twist;
+				lw_dist3d_seg_seg(&start, &end, &start2, &end2,dl);
+				LWDEBUGF(4, "mindist_ptarray_ptarray; seg %i * seg %i, dist = %g\n",t,u,dl->distance);
+				LWDEBUGF(3, " seg%d-seg%d dist: %f, mindist: %f",
+				         t, u, dl->distance, dl->tolerance);
+				if (dl->distance<=dl->tolerance && dl->mode == DIST_MIN) return LW_TRUE; /*just a check if  the answer is already given*/
+				start2 = end2;
+			}
+			start = end;
+		}
+	}
+	return LW_TRUE;
+}
+
+/**
+
+Finds the two closest points on two linesegments
+*/
+int 
+lw_dist3d_seg_seg(POINT3DZ *s1p1, POINT3DZ *s1p2, POINT3DZ *s2p1, POINT3DZ *s2p2, DISTPTS3D *dl)
+{
+	/*s1p1 and s1p2 are the same point */
+	if (  ( s1p1->x == s1p2->x) && (s1p1->y == s1p2->y) && (s1p1->z == s1p2->y) )
+	{
+		return lw_dist3d_pt_seg(s1p1,s2p1,s2p2,dl);
+	}
+	/*s2p1 and s2p2 are the same point */
+	if (  ( s2p1->x == s2p2->x) && (s2p1->y == s2p2->y) && (s2p1->z == s2p2->y) )
+	{
+		dl->twisted= ((dl->twisted) * (-1));
+		return lw_dist3d_pt_seg(s2p1,s1p1,s1p2,dl);
+	}
+	
+	
+/*
+	Here we use algorithm from softsurfer.com
+	that can be found here
+	http://softsurfer.com/Archive/algorithm_0106/algorithm_0106.htm
+*/
+	
+	
+	VECTOR3D v1, v2, vl;
+	double s1k, s2k; /*two variables representing where on Line 1 (s1k) and where on Line 2 (s2k) a connecting line between the two lines is perpendicular to both lines*/
+	POINT3DZ p1, p2;
+			
+	if (!get_3dvector_from_points(s1p1, s1p2, &v1))
+		return LW_FALSE;	
+
+	if (!get_3dvector_from_points(s2p1, s2p2, &v2))
+		return LW_FALSE;	
+
+	if (!get_3dvector_from_points(s2p1, s1p1, &vl))
+		return LW_FALSE;	
+
+	double    a = DOT(&v1,&v1);
+	double    b = DOT(&v1,&v2);
+	double    c = DOT(&v2,&v2);
+	double    d = DOT(&v1,&vl);
+	double    e = DOT(&v2,&vl);
+	double    D = a*c - b*b; 
+
+
+	if (D <0.000000001) 
+	{        /* the lines are almost parallel*/
+		s1k = 0.0; /*If the lines are paralell we try by using the startpoint of first segment. If that gives a projected point on the second line outside segment 2 it wil be found that s2k is >1 or <0.*/
+		if(b>c)   /* use the largest denominator*/
+		{
+			s2k=d/b;
+		}
+		else
+		{
+			s2k =e/c;
+		}
+	}
+	else 
+	{
+		s1k = (b*e - c*d) / D;
+		s2k = (a*e - b*d) / D;
+	}
+
+	/* Now we check if the projected closest point on the infinite lines is outside our segments. If so the combinations with start and end points will be tested*/
+	if(s1k<0.0||s1k>1.0||s2k<0.0||s2k>1.0)
+	{
+		if(s1k<0.0) 
+		{
+
+			if (!lw_dist3d_pt_seg(s1p1, s2p1, s2p2, dl))
+			{
+				return LW_FALSE;
+			}
+		}
+		if(s1k>1.0)
+		{
+
+			if (!lw_dist3d_pt_seg(s1p2, s2p1, s2p2, dl))
+			{
+				return LW_FALSE;
+			}
+		}
+		if(s2k<0.0)
+		{
+			dl->twisted= ((dl->twisted) * (-1));
+			if (!lw_dist3d_pt_seg(s2p1, s1p1, s1p2, dl))
+			{
+				return LW_FALSE;
+			}
+		}
+		if(s2k>1.0)
+		{
+			dl->twisted= ((dl->twisted) * (-1));
+			if (!lw_dist3d_pt_seg(s2p2, s1p1, s1p2, dl))
+			{
+				return LW_FALSE;
+			}
+		}
+	}
+	else
+	{/*Find the closest point on the edges of both segments*/
+		p1.x=s1p1->x+s1k*(s1p2->x-s1p1->x);
+		p1.y=s1p1->y+s1k*(s1p2->y-s1p1->y);
+		p1.z=s1p1->z+s1k*(s1p2->z-s1p1->z);
+
+		p2.x=s2p1->x+s2k*(s2p2->x-s2p1->x);
+		p2.y=s2p1->y+s2k*(s2p2->y-s2p1->y);
+		p2.z=s2p1->z+s2k*(s2p2->z-s2p1->z);
+
+		if (!lw_dist3d_pt_pt(&p1,&p2,dl))/* Send the closest points to point-point calculation*/
+		{
+			return LW_FALSE;
+		}
+	}
+	return LW_TRUE;
+}
+
+
 
 /*------------------------------------------------------------------------------------------------------------
-End of Functions in common for Brute force and new calculation
+End of Brute force functions
 --------------------------------------------------------------------------------------------------------------*/
-
-
 
 
 

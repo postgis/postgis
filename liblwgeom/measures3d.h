@@ -15,6 +15,7 @@
 
 #include "liblwgeom_internal.h"
 
+#define DOT(u,v)   ((u)->x * (v)->x + (u)->y * (v)->y + (u)->z * (v)->z)
 
 /**
 
@@ -30,7 +31,11 @@ typedef struct
 	double tolerance; /*the tolerance for 3ddwithin and 3ddfullywithin*/
 } DISTPTS3D;
 
-
+typedef struct
+{
+	double	x,y,z;  
+}
+VECTOR3D; 
 /*
 Preprocessing functions
 */
@@ -44,9 +49,24 @@ Brute force functions
 int lw_dist3d_pt_ptarray(POINT3DZ *p, POINTARRAY *pa, DISTPTS3D *dl);
 int lw_dist3d_point_point(LWPOINT *point1, LWPOINT *point2, DISTPTS3D *dl);
 int lw_dist3d_point_line(LWPOINT *point, LWLINE *line, DISTPTS3D *dl);
-
-/*
-Functions in common for Brute force and new calculation
-*/
+int lw_dist3d_line_line(LWLINE *line1,LWLINE *line2 , DISTPTS3D *dl);
+int lw_dist3d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS3D *dl);
+int lw_dist3d_seg_seg(POINT3DZ *A, POINT3DZ *B, POINT3DZ *C, POINT3DZ *D, DISTPTS3D *dl);
 int lw_dist3d_pt_pt(POINT3DZ *p1, POINT3DZ *p2, DISTPTS3D *dl);
 int lw_dist3d_pt_seg(POINT3DZ *p, POINT3DZ *A, POINT3DZ *B, DISTPTS3D *dl);
+
+/*
+Helper functions
+*/
+int get_3dvector_from_points(POINT3DZ *p1,POINT3DZ *p2, VECTOR3D *v);
+
+
+int
+get_3dvector_from_points(POINT3DZ *p1,POINT3DZ *p2, VECTOR3D *v)
+{
+	v->x=p2->x-p1->x;
+	v->y=p2->y-p1->y;
+	v->z=p2->z-p1->z;
+
+	return LW_TRUE;
+}
