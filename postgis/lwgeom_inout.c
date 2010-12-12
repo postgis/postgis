@@ -165,7 +165,7 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
 		lwerror("Only points are supported, you tried type %s.", lwtype_name(geom_type));
 	}
 	/* Convert to LWGEOM type */
-	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(pg_lwgeom));
+	lwgeom = pglwgeom_deserialize(pg_lwgeom);
 
 	if (format_text != NULL)
 	{

@@ -160,7 +160,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 		}
 	}
 
-	srid = lwgeom_getsrid(SERIALIZED_FORM(geom));
+	srid = pglwgeom_get_srid(geom);
 	if (srid == SRID_UNKNOWN)      srs = NULL;
 	else if (option & 1) srs = getSRSbySRID(srid, false);
 	else                 srs = getSRSbySRID(srid, true);
@@ -321,7 +321,7 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 
 	if (option & 2 || option & 4)
 	{
-		srid = lwgeom_getsrid(SERIALIZED_FORM(geom));
+		srid = pglwgeom_get_srid(geom);
 		if ( srid != SRID_UNKNOWN )
 		{
 			if (option & 2) srs = getSRSbySRID(srid, true);

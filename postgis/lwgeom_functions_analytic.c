@@ -686,27 +686,12 @@ PG_FUNCTION_INFO_V1(ST_LineCrossingDirection);
 Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS)
 {
 	int type1, type2, rv;
-	BOX2DFLOAT4 box1, box2;
 	LWLINE *l1 = NULL;
 	LWLINE *l2 = NULL;
 	PG_LWGEOM *geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_LWGEOM *geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
-
-	/*
-	** If the bounding boxes don't interact, then there can't be any
-	** crossing, return right away.
-	*/
-	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
-	{
-		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
-		        ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
-		{
-			PG_RETURN_INT32(LINE_NO_CROSS);
-		}
-	}
 
 	type1 = pglwgeom_get_type(geom1);
 	type2 = pglwgeom_get_type(geom2);
