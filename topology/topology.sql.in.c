@@ -1624,10 +1624,39 @@ CREATE SCHEMA '' || quote_ident(atopology) || '';
 	-- edge standard view (select rule)
 	EXECUTE ''CREATE VIEW '' || quote_ident(atopology)
 		|| ''.edge AS SELECT ''
-		|| '' edge_id,start_node, end_node, next_left_edge, ''
+		|| '' edge_id, start_node, end_node, next_left_edge, ''
 		|| '' next_right_edge, ''
 		|| '' left_face, right_face, geom FROM ''
 		|| quote_ident(atopology) || ''.edge_data'';
+
+	-- edge standard view description
+	EXECUTE ''COMMENT ON VIEW '' || quote_ident(atopology)
+		|| ''.edge IS ''
+		|| ''''''Contains edge topology primitives'''''';
+	EXECUTE ''COMMENT ON COLUMN '' || quote_ident(atopology)
+		|| ''.edge.edge_id IS ''
+		|| ''''''Unique identifier of the edge'''''';
+	EXECUTE ''COMMENT ON COLUMN '' || quote_ident(atopology)
+		|| ''.edge.start_node IS ''
+		|| ''''''Unique identifier of the node at the start of the edge'''''';
+	EXECUTE ''COMMENT ON COLUMN '' || quote_ident(atopology)
+		|| ''.edge.end_node IS ''
+		|| ''''''Unique identifier of the node at the end of the edge'''''';
+	EXECUTE ''COMMENT ON COLUMN '' || quote_ident(atopology)
+		|| ''.edge.next_left_edge IS ''
+		|| ''''''Unique identifier of the next edge of the face on the left (when looking in the direction from START_NODE to END_NODE), moving counterclockwise around the face boundary'''''';
+	EXECUTE ''COMMENT ON COLUMN '' || quote_ident(atopology)
+		|| ''.edge.next_right_edge IS ''
+		|| ''''''Unique identifier of the next edge of the face on the right (when looking in the direction from START_NODE to END_NODE), moving counterclockwise around the face boundary'''''';
+	EXECUTE ''COMMENT ON COLUMN '' || quote_ident(atopology)
+		|| ''.edge.left_face IS ''
+		|| ''''''Unique identifier of the face on the left side of the edge when looking in the direction from START_NODE to END_NODE'''''';
+	EXECUTE ''COMMENT ON COLUMN '' || quote_ident(atopology)
+		|| ''.edge.right_face IS ''
+		|| ''''''Unique identifier of the face on the right side of the edge when looking in the direction from START_NODE to END_NODE'''''';
+	EXECUTE ''COMMENT ON COLUMN '' || quote_ident(atopology)
+		|| ''.edge.geom IS ''
+		|| ''''''The geometry of the edge'''''';
 
 	-- edge standard view (insert rule)
 	EXECUTE ''CREATE RULE edge_insert_rule AS ON INSERT ''
