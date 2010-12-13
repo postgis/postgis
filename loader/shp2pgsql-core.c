@@ -1587,6 +1587,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 	char *geometry=NULL, *ret;
 	char *utf8str;
 	int res, i;
+	int rv;
 
 	/* Clear the stringbuffers */
 	sbwarn = stringbuffer_create();
@@ -1655,7 +1656,8 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 			{
 			case FTInteger:
 			case FTDouble:
-				if (-1 == snprintf(val, MAXVALUELEN, "%s", DBFReadStringAttribute(state->hDBFHandle, item, i)))
+				rv = snprintf(val, MAXVALUELEN, "%s", DBFReadStringAttribute(state->hDBFHandle, item, i));
+				if (rv >= MAXVALUELEN || rv == -1)
 				{
 					vasbappend(sbwarn, "Warning: field %d name truncated\n", i);
 					val[MAXVALUELEN - 1] = '\0';
@@ -1676,7 +1678,8 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 			case FTString:
 			case FTLogical:
 			case FTDate:
-				if (-1 == snprintf(val, MAXVALUELEN, "%s", DBFReadStringAttribute(state->hDBFHandle, item, i)))
+				rv = snprintf(val, MAXVALUELEN, "%s", DBFReadStringAttribute(state->hDBFHandle, item, i));
+				if (rv >= MAXVALUELEN || rv == -1)
 				{
 					vasbappend(sbwarn, "Warning: field %d name truncated\n", i);
 					val[MAXVALUELEN - 1] = '\0';
