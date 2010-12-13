@@ -86,7 +86,7 @@ void stringbuffer_clear(stringbuffer_t *s)
 * If necessary, expand the stringbuffer_t internal buffer to accomodate the
 * specified additional size.
 */
-static void stringbuffer_makeroom(stringbuffer_t *s, size_t size_to_add)
+static inline void stringbuffer_makeroom(stringbuffer_t *s, size_t size_to_add)
 {
 	size_t current_size = (s->str_end - s->str_start);
 	size_t capacity = s->capacity;
@@ -212,6 +212,9 @@ static int stringbuffer_avprintf(stringbuffer_t *s, const char *fmt, va_list ap)
 		/* Too long still? Error! */
 		if ( len >= maxlen ) return -1;
 	}
+
+	/* Finish up with our copy of the variadic arguments */
+	va_end(ap2);
 
 	/* Move end pointer forward and return. */
 	s->str_end += len;
