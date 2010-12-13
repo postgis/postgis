@@ -400,11 +400,15 @@ multicurve :
 curve_list :
 	curve_list COMMA_TOK circularstring
 		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
+	curve_list COMMA_TOK compoundcurve
+		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
 	curve_list COMMA_TOK linestring
 		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
 	curve_list COMMA_TOK linestring_untagged
 		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
 	circularstring
+		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } |
+	compoundcurve
 		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } |
 	linestring
 		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } |

@@ -241,6 +241,11 @@ static void test_wkt_in_curvpolygon(void)
 
 static void test_wkt_in_multicurve(void)
 {
+	s = "SRID=4326;MULTICURVE(COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,0 1)))";
+	r = cu_wkt_in(s, WKT_EXTENDED);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	lwfree(r);
 }
 
 static void test_wkt_in_multisurface(void)
