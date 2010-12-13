@@ -52,13 +52,15 @@ typedef struct
 }
 stringbuffer_t;
 
-extern stringbuffer_t *stringbuffer_create_size(size_t size);
+extern stringbuffer_t *stringbuffer_create_with_size(size_t size);
 extern stringbuffer_t *stringbuffer_create(void);
 extern void stringbuffer_destroy(stringbuffer_t *sb);
 extern void stringbuffer_clear(stringbuffer_t *sb);
 void stringbuffer_set(stringbuffer_t *sb, const char *s);
 void stringbuffer_copy(stringbuffer_t *sb, stringbuffer_t *src);
 extern void stringbuffer_append(stringbuffer_t *sb, const char *s);
+extern void stringbuffer_append_char(stringbuffer_t *s, const char *a);
+extern void stringbuffer_append_with_size(stringbuffer_t *sb, const char *s, size_t s_size);
 extern int stringbuffer_aprintf(stringbuffer_t *sb, const char *fmt, ...);
 extern const char *stringbuffer_getstring(stringbuffer_t *sb);
 extern char *stringbuffer_getstringcopy(stringbuffer_t *sb);

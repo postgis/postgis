@@ -44,13 +44,13 @@
 */
 stringbuffer_t* stringbuffer_create(void)
 {
-	return stringbuffer_create_size(STRINGBUFFER_STARTSIZE);
+	return stringbuffer_create_with_size(STRINGBUFFER_STARTSIZE);
 }
 
 /**
 * Allocate a new stringbuffer_t. Use stringbuffer_destroy to free.
 */
-stringbuffer_t* stringbuffer_create_size(size_t size)
+stringbuffer_t* stringbuffer_create_with_size(size_t size)
 {
 	stringbuffer_t *s;
 
@@ -97,7 +97,7 @@ static inline void stringbuffer_makeroom(stringbuffer_t *s, size_t size_to_add)
 
 	if ( capacity > s->capacity )
 	{
-		s->str_start = lwrealloc(s->str_start, sizeof(char) * capacity);
+		s->str_start = lwrealloc(s->str_start, capacity);
 		s->capacity = capacity;
 		s->str_end = s->str_start + current_size;
 	}
@@ -114,6 +114,16 @@ char stringbuffer_lastchar(stringbuffer_t *s)
 	return *(s->str_end - 1);
 }
 
+/**
+* Append the specified string to the stringbuffer_t, using the given length 
+*/
+void stringbuffer_append_with_size(stringbuffer_t *s, const char *a, size_t alen)
+{
+	int alen0 = alen + 1; /* Length including null terminator */
+	stringbuffer_makeroom(s, alen0);
+	memcpy(s->str_end, a, alen0);
+	s->str_end += alen;
+}
 
 /**
 * Append the specified string to the stringbuffer_t.
@@ -121,11 +131,15 @@ char stringbuffer_lastchar(stringbuffer_t *s)
 void stringbuffer_append(stringbuffer_t *s, const char *a)
 {
 	int alen = strlen(a); /* Length of string to append */
-	int alen0 = alen + 1; /* Length including null terminator */
+	stringbuffer_append_with_size(s, a, alen);
+}
 
-	stringbuffer_makeroom(s, alen0);
-	memcpy(s->str_end, a, alen0);
-	s->str_end += alen;
+/**
+* Append the specified single character to the stringbuffer_t.
+*/
+void stringbuffer_append_char(stringbuffer_t *s, const char *a)
+{
+	stringbuffer_append_with_size(s, a, 1);
 }
 
 /**
