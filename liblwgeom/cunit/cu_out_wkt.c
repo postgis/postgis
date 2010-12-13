@@ -48,6 +48,11 @@ static char* cu_wkt(char *wkt, uchar variant)
 {
 	LWGEOM *g = lwgeom_from_ewkt(wkt, PARSER_CHECK_NONE);
 	if ( s ) free(s);
+	if ( ! g ) 
+	{
+		printf("error converting '%s' to lwgeom\n", wkt);
+		exit(0);
+	}
 	s = lwgeom_to_wkt(g, variant, 8, NULL);
 	lwgeom_free(g);
 	return s;
@@ -178,6 +183,10 @@ static void test_wkt_out_multicurve(void)
 	CU_ASSERT_STRING_EQUAL(
 	    cu_wkt("MULTICURVE((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0))",WKT_ISO),
 	    "MULTICURVE ZM ((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING ZM (1 2 3 4,4 5 6 7,7 8 9 0))"
+	);
+	CU_ASSERT_STRING_EQUAL(
+	    cu_wkt("MULTICURVE(COMPOUNDCURVE((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING(7 8 9 0,1 2 3 4,4 5 6 7,7 8 9 0)),(1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING(1 2 3 4,4 5 6 7,7 8 9 0))",WKT_ISO),
+	    "MULTICURVE ZM (COMPOUNDCURVE ZM ((1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING ZM (7 8 9 0,1 2 3 4,4 5 6 7,7 8 9 0)),(1 2 3 4,4 5 6 7,7 8 9 0),CIRCULARSTRING ZM (1 2 3 4,4 5 6 7,7 8 9 0))"
 	);
 }
 

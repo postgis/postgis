@@ -53,8 +53,8 @@ static void cu_wkb_out(char *wkt)
 	LWGEOM *g = lwgeom_from_ewkt(wkt, PARSER_CHECK_NONE);
 	if ( s ) free(s);
 	if ( t ) free(t);
-	s = lwgeom_to_wkb(g, WKB_HEX | WKB_NDR | WKB_EXTENDED, NULL);
-	t = lwgeom_to_hexwkb_old(g, PARSER_CHECK_NONE, NDR);
+	s = lwgeom_to_wkb(g, WKB_HEX | WKB_XDR | WKB_EXTENDED, NULL);
+	t = lwgeom_to_hexwkb_old(g, PARSER_CHECK_NONE, XDR);
 	lwgeom_free(g);
 }
 
