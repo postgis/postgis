@@ -63,3 +63,12 @@ NOTICE:  No points in input array
 #277|<gml:Point><gml:coordinates>1,1e+308</gml:coordinates></gml:Point>
 #299|2
 #304
+#457.1|POINT(0 0)
+#457.2|
+#457.3|
+#457.4|
+#457.5|LINESTRING(0 0,1 1)
+#457.6|
+#457.7|
+#457.8|
+#457.9|POLYGON((0 0,1 0,1 1,0 1,0 0))

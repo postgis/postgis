@@ -3617,11 +3617,17 @@ Datum ST_CollectionExtract(PG_FUNCTION_ARGS)
 	/* Mirror non-collections right back */
 	if ( ! lwgeom_is_collection(lwgeom_type) )
 	{
-		output = palloc(VARSIZE(input));
-		memcpy(VARDATA(output), VARDATA(input), VARSIZE(input) - VARHDRSZ);
-		SET_VARSIZE(output, VARSIZE(input));
-		lwgeom_free(lwgeom);
-		PG_RETURN_POINTER(output);
+		if( lwgeom_type == type )
+		{
+			lwgeom_free(lwgeom);
+			PG_RETURN_POINTER(input);
+		}
+		else
+		{
+			lwgeom_free(lwgeom);
+			PG_RETURN_NULL();
+		}
+		
 	}
 
 	lwcol = lwcollection_extract((LWCOLLECTION*)lwgeom, type);

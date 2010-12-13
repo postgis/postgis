@@ -268,5 +268,16 @@ LIMIT 10;
 
 DROP FUNCTION utmzone(geometry);
 
+-- #457 --
+SELECT '#457.1', st_astext(st_collectionExtract('POINT(0 0)', 1));
+SELECT '#457.2', st_astext(st_collectionExtract('POINT(0 0)', 2));
+SELECT '#457.3', st_astext(st_collectionExtract('POINT(0 0)', 3));
+SELECT '#457.4', st_astext(st_collectionExtract('LINESTRING(0 0, 1 1)', 1));
+SELECT '#457.5', st_astext(st_collectionExtract('LINESTRING(0 0, 1 1)', 2));
+SELECT '#457.6', st_astext(st_collectionExtract('LINESTRING(0 0, 1 1)', 3));
+SELECT '#457.7', st_astext(st_collectionExtract('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))', 1));
+SELECT '#457.8', st_astext(st_collectionExtract('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))', 2));
+SELECT '#457.9', st_astext(st_collectionExtract('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))', 3));
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
