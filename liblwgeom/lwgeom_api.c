@@ -904,7 +904,7 @@ lwgeom_inspect(const uchar *serialized_form)
 
 	result->serialized_form = serialized_form;
 	result->type = (uchar) serialized_form[0];
-	result->srid = -1; /* assume */
+	result->srid = SRID_UNKNOWN; /* assume */
 
 	type = lwgeom_getType(typefl);
 

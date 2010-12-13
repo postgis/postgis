@@ -215,7 +215,7 @@ lwcollection_homogenize_subgeom(LWGEOM_HOMOGENIZE *hgeoms, LWGEOM *geom)
 	if (!geom) lwerror("lwcollection_homogenize: Sub geometry is Null");
 
 	/* We manage the srid in lwcollection_homogenize */
-	geom->srid = -1;
+	geom->srid = SRID_UNKNOWN;
 
 	if (geom->type == POINTTYPE)
 	{

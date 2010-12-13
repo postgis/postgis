@@ -1142,7 +1142,7 @@ rt_raster_new(rt_context ctx, uint16_t width, uint16_t height) {
     ret->ipY = 0.0;
     ret->skewX = 0.0;
     ret->skewY = 0.0;
-    ret->srid = -1;
+    ret->srid = SRID_UNKNOWN;
 
     ret->numBands = 0;
     ret->bands = 0;

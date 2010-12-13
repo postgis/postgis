@@ -648,7 +648,7 @@ Datum RASTER_makeEmpty(PG_FUNCTION_ARGS)
         skewy = PG_GETARG_FLOAT8(7);
 
     if (PG_ARGISNULL(8))
-        srid = -1;
+        srid = SRID_UNKNOWN;
     else
         srid = PG_GETARG_INT32(8);
 

@@ -123,7 +123,7 @@ lwtriangle_deserialize(uchar *serialized_form)
 	}
 	else
 	{
-		result->srid = -1;
+		result->srid = SRID_UNKNOWN;
 	}
 
 	npoints = lw_get_uint32(loc);

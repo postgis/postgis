@@ -217,8 +217,7 @@ POINTARRAY* ptarray_construct_reference_data(char hasz, char hasm, uint32 npoint
 {
 	POINTARRAY *pa = lwalloc(sizeof(POINTARRAY));
 	LWDEBUGF(5, "hasz = %d, hasm = %d, npoints = %d, ptlist = %p", hasz, hasm, npoints, ptlist);
-	FLAGS_SET_Z(pa->flags, hasz?1:0);
-	FLAGS_SET_M(pa->flags, hasm?1:0);
+	pa->flags = gflags(hasz, hasm, 0);
 	FLAGS_SET_READONLY(pa->flags, 1); /* We don't own this memory, so we can't alter or free it. */
 	pa->npoints = npoints;
 	pa->maxpoints = npoints;

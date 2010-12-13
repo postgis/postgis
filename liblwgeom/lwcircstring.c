@@ -143,7 +143,7 @@ lwcircstring_deserialize(uchar *serialized_form)
 	{
 		LWDEBUG(3, "lwcircstring_deserialize: input lacks srid");
 
-		result->srid = -1;
+		result->srid = SRID_UNKNOWN;
 	}
 
 	/* we've read the type (1 byte) and SRID (4 bytes, if present) */

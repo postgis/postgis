@@ -387,7 +387,7 @@ static gmlSrs* parse_gml_srs(xmlNodePtr xnode)
 		if (node->parent == NULL)
 		{
 			srs = (gmlSrs*) lwalloc(sizeof(gmlSrs));
-			srs->srid = -1;
+			srs->srid = SRID_UNKNOWN;
 			srs->reverse_axis = false;
 			return srs;
 		}
@@ -447,7 +447,7 @@ static gmlSrs* parse_gml_srs(xmlNodePtr xnode)
 
 	/* Check into spatial_ref_sys that this SRID really exist */
 	is_planar = gml_is_srid_planar(srs->srid);
-	if (srs->srid == -1 || is_planar == -1)
+	if (srs->srid == SRID_UNKNOWN || is_planar == -1)
 		lwerror("unknown spatial reference system");
 
 	/* About lat/lon issue, Cf: http://tinyurl.com/yjpr55z */

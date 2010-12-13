@@ -297,7 +297,7 @@ lwpoint_deserialize(uchar *serialized_form)
 	result = (LWPOINT*) lwalloc(sizeof(LWPOINT)) ;
 
 	type = (uchar) serialized_form[0];
-	geom_type = lwgeom_getType(type);
+	geom_type = TYPE_GETTYPE(type);
 
 	if ( geom_type != POINTTYPE)
 	{
@@ -309,17 +309,15 @@ lwpoint_deserialize(uchar *serialized_form)
 
 	loc = serialized_form+1;
 
-	if (lwgeom_hasBBOX(serialized_form[0]))
+	if (TYPE_HASBBOX(type))
 	{
-		BOX2DFLOAT4 *box2df;
+		BOX2DFLOAT4 box2df;
 
 		LWDEBUG(3, "lwpoint_deserialize: input has bbox");
 
 		FLAGS_SET_BBOX(result->flags, 1);
-		box2df = lwalloc(sizeof(BOX2DFLOAT4));
-		memcpy(box2df, loc, sizeof(BOX2DFLOAT4));
-		result->bbox = gbox_from_box2df(result->flags, box2df);
-		lwfree(box2df);
+		memcpy(&box2df, loc, sizeof(BOX2DFLOAT4));
+		result->bbox = gbox_from_box2df(result->flags, &box2df);
 		loc += sizeof(BOX2DFLOAT4);
 	}
 	else
@@ -327,7 +325,7 @@ lwpoint_deserialize(uchar *serialized_form)
 		result->bbox = NULL;
 	}
 
-	if ( lwgeom_hasSRID(serialized_form[0]))
+	if ( TYPE_HASSRID(type))
 	{
 		LWDEBUG(3, "lwpoint_deserialize: input has SRID");
 
@@ -336,7 +334,7 @@ lwpoint_deserialize(uchar *serialized_form)
 	}
 	else
 	{
-		result->srid = -1;
+		result->srid = SRID_UNKNOWN;
 	}
 
 	/* we've read the type (1 byte) and SRID (4 bytes, if present) */

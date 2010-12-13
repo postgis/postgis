@@ -639,7 +639,7 @@ static LWPOINT* lwpoint_from_gserialized_buffer(uchar *data_ptr, uchar g_flags, 
 	assert(data_ptr);
 
 	point = (LWPOINT*)lwalloc(sizeof(LWPOINT));
-	point->srid = -1; /* Default */
+	point->srid = SRID_UNKNOWN; /* Default */
 	point->bbox = NULL;
 	point->type = POINTTYPE;
 	point->flags = g_flags;
@@ -670,7 +670,7 @@ static LWLINE* lwline_from_gserialized_buffer(uchar *data_ptr, uchar g_flags, si
 	assert(data_ptr);
 
 	line = (LWLINE*)lwalloc(sizeof(LWLINE));
-	line->srid = -1; /* Default */
+	line->srid = SRID_UNKNOWN; /* Default */
 	line->bbox = NULL;
 	line->type = LINETYPE;
 	line->flags = g_flags;
@@ -704,7 +704,7 @@ static LWPOLY* lwpoly_from_gserialized_buffer(uchar *data_ptr, uchar g_flags, si
 	assert(data_ptr);
 
 	poly = (LWPOLY*)lwalloc(sizeof(LWPOLY));
-	poly->srid = -1; /* Default */
+	poly->srid = SRID_UNKNOWN; /* Default */
 	poly->bbox = NULL;
 	poly->type = POLYGONTYPE;
 	poly->flags = g_flags;
@@ -757,7 +757,7 @@ static LWTRIANGLE* lwtriangle_from_gserialized_buffer(uchar *data_ptr, uchar g_f
 	assert(data_ptr);
 
 	triangle = (LWTRIANGLE*)lwalloc(sizeof(LWTRIANGLE));
-	triangle->srid = -1; /* Default */
+	triangle->srid = SRID_UNKNOWN; /* Default */
 	triangle->bbox = NULL;
 	triangle->type = TRIANGLETYPE;
 	triangle->flags = g_flags;
@@ -788,7 +788,7 @@ static LWCIRCSTRING* lwcircstring_from_gserialized_buffer(uchar *data_ptr, uchar
 	assert(data_ptr);
 
 	circstring = (LWCIRCSTRING*)lwalloc(sizeof(LWCIRCSTRING));
-	circstring->srid = -1; /* Default */
+	circstring->srid = SRID_UNKNOWN; /* Default */
 	circstring->bbox = NULL;
 	circstring->type = CIRCSTRINGTYPE;
 	circstring->flags = g_flags;
@@ -860,7 +860,7 @@ static LWCOLLECTION* lwcollection_from_gserialized_buffer(uchar *data_ptr, uchar
 	data_ptr += 4; /* Skip past the type. */
 
 	collection = (LWCOLLECTION*)lwalloc(sizeof(LWCOLLECTION));
-	collection->srid = -1; /* Default */
+	collection->srid = SRID_UNKNOWN; /* Default */
 	collection->bbox = NULL;
 	collection->type = type;
 	collection->flags = g_flags;
@@ -1005,7 +1005,7 @@ LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g)
 	if ( has_srid )
 		lwgeom->srid = g_srid;
 	else
-		lwgeom->srid = -1;
+		lwgeom->srid = SRID_UNKNOWN;
 
 	return lwgeom;
 }

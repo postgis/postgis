@@ -567,7 +567,7 @@ void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 			MemoryContextDelete(PROJ4Cache->PROJ4SRSCache[i].projection_mcxt);
 			PROJ4Cache->PROJ4SRSCache[i].projection = NULL;
 			PROJ4Cache->PROJ4SRSCache[i].projection_mcxt = NULL;
-			PROJ4Cache->PROJ4SRSCache[i].srid = -1;
+			PROJ4Cache->PROJ4SRSCache[i].srid = SRID_UNKNOWN;
 		}
 	}
 }
@@ -769,7 +769,7 @@ Datum transform(PG_FUNCTION_ARGS)
 
 
 	result_srid = PG_GETARG_INT32(1);
-	if (result_srid == -1)
+	if (result_srid == SRID_UNKNOWN)
 	{
 		elog(ERROR,"-1 is an invalid target SRID");
 		PG_RETURN_NULL();
@@ -817,7 +817,7 @@ Datum transform(PG_FUNCTION_ARGS)
 			/* Put in any required defaults */
 			for (i = 0; i < PROJ4_CACHE_ITEMS; i++)
 			{
-				PROJ4Cache->PROJ4SRSCache[i].srid = -1;
+				PROJ4Cache->PROJ4SRSCache[i].srid = SRID_UNKNOWN;
 				PROJ4Cache->PROJ4SRSCache[i].projection = NULL;
 				PROJ4Cache->PROJ4SRSCache[i].projection_mcxt = NULL;
 			}
@@ -892,7 +892,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 
 
 	result_srid = PG_GETARG_INT32(3);
-	if (result_srid == -1)
+	if (result_srid == SRID_UNKNOWN)
 	{
 		elog(ERROR,"tranform: destination SRID = -1");
 		PG_RETURN_NULL();

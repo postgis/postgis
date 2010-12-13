@@ -377,7 +377,7 @@ pglwgeom_set_srid(PG_LWGEOM *lwgeom, int32 new_srid)
 	else
 	{
 		/* just copy input, already w/out a SRID */
-		if ( new_srid == -1 )
+		if ( new_srid == SRID_UNKNOWN )
 		{
 			result = lwalloc(len);
 			memcpy(result, lwgeom, len);

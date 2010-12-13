@@ -621,8 +621,11 @@ Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS)
 
 	mindist = lwgeom_mindistance2d(lwgeom1, lwgeom2);
 
+	lwgeom_free(lwgeom1);
+	lwgeom_free(lwgeom2);
+
 	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom1, 1);
+	PG_FREE_IF_COPY(geom2, 1);
 	
 	/*if called with empty geometries the ingoing mindistance is untouched, and makes us return NULL*/
 	if (mindist<MAXFLOAT)
@@ -1250,7 +1253,7 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 		POSTGIS_DEBUGF(3, " %d bytes allocated for array", (int)nbytes);
 
 		POSTGIS_DEBUGF(3, " array start  @ %p", (void*)result);
-		POSTGIS_DEBUGF(3, " ARR_DATA_PTR @ %p (%d)",
+		POSTGIS_DEBUGF(3, " ARR_DATA_PTR @ %p (%ld)",
 		               ARR_DATA_PTR(result), (uchar *)ARR_DATA_PTR(result)-(uchar *)result);
 		POSTGIS_DEBUGF(3, " next element @ %p", (uchar *)result+oldsize);
 

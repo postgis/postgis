@@ -117,7 +117,7 @@ lwline_deserialize(uchar *serialized_form)
 	else
 	{
 		/*lwnotice("line has NO srid"); */
-		result->srid = -1;
+		result->srid = SRID_UNKNOWN;
 	}
 
 	/* we've read the type (1 byte) and SRID (4 bytes, if present) */

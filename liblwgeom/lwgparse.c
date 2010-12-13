@@ -1152,7 +1152,7 @@ write_type(tuple* this,output_state* out)
 	{
 		/* Only the first geometry will have a srid attached */
 		WRITE_INT4(out,the_geom.srid);
-		the_geom.srid = -1;
+		the_geom.srid = SRID_UNKNOWN;
 	}
 }
 
@@ -1627,7 +1627,7 @@ parse_wkb(const char **b)
 		localsrid = read_wkb_int(b);
 		if ( localsrid != SRID_UNKNOWN )
 		{
-			if ( the_geom.srid == -1 ) the_geom.alloc_size += 4;
+			if ( the_geom.srid == SRID_UNKNOWN ) the_geom.alloc_size += 4;
 			the_geom.srid = localsrid;
 		}
 	}

@@ -22,7 +22,7 @@
 LWGEOM *
 lwgeom_deserialize(uchar *srl)
 {
-	int type = lwgeom_getType(srl[0]);
+	int type = TYPE_GETTYPE(srl[0]);
 
 	LWDEBUGF(2, "lwgeom_deserialize got %d - %s", type, lwtype_name(type));
 
@@ -59,9 +59,7 @@ lwgeom_deserialize(uchar *srl)
 	case TINTYPE:
 		return (LWGEOM *)lwtin_deserialize(srl);
 	default:
-		lwerror("lwgeom_deserialize: Unknown geometry type: %s",
-		        lwtype_name(type));
-
+		lwerror("lwgeom_deserialize: Unknown geometry type: %s", lwtype_name(type));
 		return NULL;
 	}
 
@@ -549,7 +547,7 @@ lwgeom_as_multi(const LWGEOM *lwgeom)
 		/* Sub-geometries are not allowed to have bboxes or SRIDs, move the bbox to the collection */
 		box = ogeoms[0]->bbox;
 		ogeoms[0]->bbox = NULL;
-		ogeoms[0]->srid = -1;
+		ogeoms[0]->srid = SRID_UNKNOWN;
 
 		ogeom = (LWGEOM *)lwcollection_construct(MULTITYPE[type], lwgeom->srid, box, 1, ogeoms);
 	}
@@ -923,7 +921,7 @@ lwgeom_add_bbox(LWGEOM *lwgeom)
 void
 lwgeom_drop_srid(LWGEOM *lwgeom)
 {
-	lwgeom->srid = -1;	/* TODO: To be changed to SRID_UNKNOWN */
+	lwgeom->srid = SRID_UNKNOWN;	/* TODO: To be changed to SRID_UNKNOWN */
 }
 
 LWGEOM *

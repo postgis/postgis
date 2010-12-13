@@ -177,7 +177,7 @@ lwline_split_by_point(LWLINE* lwline_in, LWPOINT* blade_in)
 		{
 			/* No intersection */
 			components[0] = (LWGEOM*)lwline_clone(lwline_in);
-			components[0]->srid = -1;
+			components[0]->srid = SRID_UNKNOWN;
 			break;
 		}
 
@@ -186,7 +186,7 @@ lwline_split_by_point(LWLINE* lwline_in, LWPOINT* blade_in)
 		{
 			/* Intersection is on the boundary or outside */
 			components[0] = (LWGEOM*)lwline_clone(lwline_in);
-			components[0]->srid = -1;
+			components[0]->srid = SRID_UNKNOWN;
 			break;
 		}
 
@@ -427,7 +427,7 @@ lwcollection_split(LWCOLLECTION* lwcoll_in, LWGEOM* blade_in)
 
 		for (j=0; j<col->ngeoms; ++j)
 		{
-			col->geoms[j]->srid = -1; /* strip srid */
+			col->geoms[j]->srid = SRID_UNKNOWN; /* strip srid */
 			split_vector[split_vector_size++] = col->geoms[j];
 		}
 	}

@@ -415,8 +415,8 @@ tgeom_from_lwgeom(const LWGEOM *lwgeom)
 
 	tgeom = tgeom_new(0, FLAGS_GET_Z(lwgeom->flags), FLAGS_GET_M(lwgeom->flags));
 
-	if (lwgeom->srid == -1) tgeom->srid = 0;
-	else 			tgeom->srid = lwgeom->srid;
+	if (lwgeom->srid < 1) tgeom->srid = SRID_UNKNOWN;
+	else tgeom->srid = lwgeom->srid;
 
 	if (lwgeom_is_empty(lwgeom)) return tgeom;
 
@@ -580,7 +580,7 @@ lwgeom_from_tgeom(TGEOM *tgeom)
 		        tgeom->type, lwtype_name(tgeom->type));
 	}
 
-	if (geom->srid == 0) geom->srid = -1;
+	if (geom->srid == 0) geom->srid = SRID_UNKNOWN;
 
 	return geom;
 }
