@@ -70,3 +70,12 @@ NOTICE:  IllegalArgumentException: point array must contain 0 or >1 elements
 NOTICE:  IllegalArgumentException: Invalid number of points in LinearRing found 2 - must be 0 or >= 4
 #408.3|f
 #408.4|IllegalArgumentException: Invalid number of points in LinearRing found 2 - must be 0 or >= 4
+#457.1|POINT(0 0)
+#457.2|
+#457.3|
+#457.4|
+#457.5|LINESTRING(0 0,1 1)
+#457.6|
+#457.7|
+#457.8|
+#457.9|POLYGON((0 0,1 0,1 1,0 1,0 0))

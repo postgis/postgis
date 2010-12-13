@@ -2664,6 +2664,7 @@ Datum ST_CollectionExtract(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom = pglwgeom_deserialize(input);
 	LWCOLLECTION *lwcol = NULL;
 	int type = PG_GETARG_INT32(1);
+	int lwgeom_type = lwgeom->type;
 
 	/* Ensure the right type was input */
 	if ( ! ( type == POINTTYPE || type == LINETYPE || type == POLYGONTYPE ) )
@@ -2674,10 +2675,19 @@ Datum ST_CollectionExtract(PG_FUNCTION_ARGS)
 	}
 
 	/* Mirror non-collections right back */
-	if ( ! lwtype_is_collection(lwgeom->type) )
+	if ( ! lwgeom_is_collection(lwgeom) )
 	{
 		lwgeom_free(lwgeom);
-		PG_RETURN_POINTER(input);
+		/* Non-collections of the matching type go back */
+		if(lwgeom_type == type)
+		{
+			PG_RETURN_POINTER(input);
+		}
+		/* Others go back as NULL */
+		else
+		{
+			PG_RETURN_NULL();
+		}
 	}
 
 	lwcol = lwcollection_extract((LWCOLLECTION*)lwgeom, type);
