@@ -190,7 +190,7 @@ geometry types to be 'POINT' and 'LINESTRING' respectively.
 One of the things that the ValidateTopology is required to
 check is SRID consistency: all geometry value must be in
 the same SRID. I avoided that check as any SRID mismatch
-would be cought by spacial predicates and will result
+would be cought by spatial predicates and will result
 in an exception being thrown.
 
 We might add the check as a constraint on the topology tables
