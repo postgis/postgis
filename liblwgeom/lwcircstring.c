@@ -274,9 +274,37 @@ lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3)
 
 	LWDEBUG(2, "lwcircle_compute_box3d called.");
 
-	center = lwalloc(sizeof(POINT4D));
 	radius = lwcircle_center(p1, p2, p3, &center);
-	if (radius < 0.0) return NULL;
+	if (radius < 0.0) 
+	{
+		LWDEBUG(3, "lwcircle_compute_box3d: zero radius");
+
+		/* 
+		 * We've got a straight line here.  Look to the end points for extents. 
+		 * It's worth noting that when lwcircle_center returns < 0, center hasn't been allocated.
+		 */
+
+		x1 = (FP_LT(p1->x, p3->x)) ? p1->x : p3->x;
+		x2 = (FP_GT(p1->x, p3->x)) ? p1->x : p3->x;
+		y1 = (FP_LT(p1->y, p3->y)) ? p1->y : p3->y;
+		y2 = (FP_GT(p1->y, p3->y)) ? p1->y : p3->y;
+		z1 = (FP_LT(p1->z, p2->z)) ? p1->z : p2->z;
+		z1 = (FP_LT(z1, p3->z)) ? z1 : p3->z;
+		z2 = (FP_GT(p1->z, p2->z)) ? p1->z : p2->z;
+		z2 = (FP_GT(z2, p3->z)) ? z2 : p3->z;
+
+		box = lwalloc(sizeof(BOX3D));
+		box->xmin = x1;
+		box->xmax = x2;
+		box->ymin = y1;
+		box->ymax = y2;
+		box->zmin = z1;
+		box->zmax = z2;
+
+		LWDEBUGF(3, "lwcircle_compute_box3d: extents %.16f %.16f %.16f, %.16f %.16f %.16f", x1, y1, z1, x2, y2, z2);
+
+		return box;
+	}
 
 	/*
 	top = center->y + radius;
@@ -297,6 +325,9 @@ lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3)
 	/* Rotate a2 and a3 such that a1 = 0 */
 	r2 = a2 - a1;
 	r3 = a3 - a1;
+
+	LWDEBUGF(4, "a1 %.16f, a2 %.16f, a3 %.16f", a1, a2, a3);
+	LWDEBUGF(4, "r2 %.16f, r3 %.16f", r2, r3);
 
 	/*
 	 * There are six cases here I'm interested in
