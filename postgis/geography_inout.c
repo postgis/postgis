@@ -820,21 +820,13 @@ PG_FUNCTION_INFO_V1(geography_from_text);
 Datum geography_from_text(PG_FUNCTION_ARGS)
 {
 	text *wkt_text = PG_GETARG_TEXT_P(0);
-	size_t size = VARSIZE(wkt_text) - VARHDRSZ;
 	/* Extract the cstring from the varlena */
-	char *wkt = palloc(size + 1);
-	memcpy(wkt, VARDATA(wkt_text), size);
-	/* Null terminate it */
-	wkt[size] = '\0';
-
-	if ( size < 10 )
-	{
-		lwerror("Invalid OGC WKT (too short)");
-		PG_RETURN_NULL();
-	}
-
+	char *wkt = text2cstring(wkt_text);
 	/* Pass the cstring to the input parser, and magic occurs! */
-	PG_RETURN_DATUM(DirectFunctionCall3(geography_in, PointerGetDatum(wkt), Int32GetDatum(0), Int32GetDatum(-1)));
+	Datum rv = DirectFunctionCall3(geography_in, PointerGetDatum(wkt), Int32GetDatum(0), Int32GetDatum(-1));
+	/* Clean up and return */
+	pfree(wkt);
+	PG_RETURN_DATUM(rv);
 }
 
 /*
