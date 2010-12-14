@@ -768,7 +768,7 @@ Datum geography_from_text(PG_FUNCTION_ARGS)
 	char *wkt = palloc(size+1);
 	memcpy(wkt, VARDATA(wkt_text), size);
 	/* Null terminate it */
-	wkt[size+1] = '\0';
+	wkt[size] = '\0';
 	/* Pass the cstring to the input parser, and magic occurs! */
 	r = DirectFunctionCall3(geography_in, PointerGetDatum(wkt), Int32GetDatum(0), Int32GetDatum(-1));
 	/* Clean up and return */
