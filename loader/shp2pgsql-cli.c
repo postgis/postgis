@@ -33,7 +33,7 @@ usage()
 	          "     -p  Prepare mode, only creates the table.\n" ));
 	printf(_( "  -g <geocolumn> Specify the name of the geometry/geography column\n"
 	          "      (mostly useful in append mode).\n" ));
-	printf(_( "  -D  Use postgresql dump format (defaults to SQL insert statments.\n" ));
+	printf(_( "  -D  Use postgresql dump format (defaults to SQL insert statments).\n" ));
 	printf(_( "  -G  Use geography type (requires lon/lat data).\n" ));
 	printf(_( "  -k  Keep postgresql identifiers case.\n" ));
 	printf(_( "  -i  Use int4 type for all integer dbf fields.\n" ));
@@ -41,7 +41,7 @@ usage()
 	printf(_( "  -S  Generate simple geometries instead of MULTI geometries.\n" ));
 	printf(_( "  -W <encoding> Specify the character encoding of Shape's\n"
 	          "      attribute column. (default: \"UTF-8\")\n" ));
-	printf(_( "  -N <policy> NULL geometries handling policy (insert*,skip,abort)\n" ));
+	printf(_( "  -N <policy> NULL geometries handling policy (insert*,skip,abort).\n" ));
 	printf(_( "  -n  Only import DBF file.\n" ));
 	printf(_( "  -?  Display this help screen.\n" ));
 }
