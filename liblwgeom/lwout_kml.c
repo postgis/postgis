@@ -75,7 +75,7 @@ lwgeom_to_kml2_sb(const LWGEOM *geom, int precision, const char *prefix, stringb
 		return lwcollection_to_kml2_sb((LWCOLLECTION*)geom, precision, prefix, sb);
 
 	default:
-		lwerror("lwgeom_to_kml2_sb: '%s' geometry type not supported", lwtype_name(geom->type));
+		lwerror("lwgeom_to_kml2: '%s' geometry type not supported", lwtype_name(geom->type));
 		return LW_FAILURE;
 	}
 }
@@ -83,21 +83,29 @@ lwgeom_to_kml2_sb(const LWGEOM *geom, int precision, const char *prefix, stringb
 static int 
 ptarray_to_kml2_sb(const POINTARRAY *pa, int precision, stringbuffer_t *sb)
 {
-	int i;
-	int rv;
+	int i, j;
+	int dims = FLAGS_GET_Z(pa->flags) ? 3 : 2;
 	POINT4D pt;
+	double *d;
 	
 	for ( i = 0; i < pa->npoints; i++ )
 	{
 		getPoint4d_p(pa, i, &pt);
-		if ( i )
-			stringbuffer_append(sb, " ");
-		if ( FLAGS_GET_Z(pa->flags) )
-			rv = stringbuffer_aprintf(sb, "%.*g,%.*g,%.*g", precision, pt.x, pt.y, pt.z);
-		else
-			rv = stringbuffer_aprintf(sb, "%.*g,%.*g,%.*g", precision, pt.x, pt.y);
-		if ( rv < 0 )
-			return LW_FAILURE;
+		d = (double*)(&pt);
+		if ( i ) stringbuffer_append(sb," ");
+		for (j = 0; j < dims; j++)
+		{
+			if ( j ) stringbuffer_append(sb,",");
+			if( fabs(d[j]) < OUT_MAX_DOUBLE )
+			{
+				if ( stringbuffer_aprintf(sb, "%.*f", precision, d[j]) < 0 ) return LW_FAILURE;
+			}
+			else 
+			{
+				if ( stringbuffer_aprintf(sb, "%g", d[j]) < 0 ) return LW_FAILURE;
+			}
+			stringbuffer_trim_trailing_zeroes(sb);
+		}
 	}
 	return LW_SUCCESS;
 }
@@ -164,7 +172,7 @@ static int
 lwcollection_to_kml2_sb(const LWCOLLECTION *col, int precision, const char *prefix, stringbuffer_t *sb)
 {
 	int i, rv;
-	
+		
 	/* Open geometry */
 	if ( stringbuffer_aprintf(sb, "<%sMultiGeometry>", prefix) < 0 ) return LW_FAILURE;
 	for ( i = 0; i < col->ngeoms; i++ )

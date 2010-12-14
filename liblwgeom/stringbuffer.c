@@ -42,7 +42,8 @@
 /**
 * Allocate a new stringbuffer_t. Use stringbuffer_destroy to free.
 */
-stringbuffer_t* stringbuffer_create(void)
+stringbuffer_t* 
+stringbuffer_create(void)
 {
 	return stringbuffer_create_with_size(STRINGBUFFER_STARTSIZE);
 }
@@ -50,7 +51,8 @@ stringbuffer_t* stringbuffer_create(void)
 /**
 * Allocate a new stringbuffer_t. Use stringbuffer_destroy to free.
 */
-stringbuffer_t* stringbuffer_create_with_size(size_t size)
+stringbuffer_t* 
+stringbuffer_create_with_size(size_t size)
 {
 	stringbuffer_t *s;
 
@@ -65,7 +67,8 @@ stringbuffer_t* stringbuffer_create_with_size(size_t size)
 /**
 * Free the stringbuffer_t and all memory managed within it.
 */
-void stringbuffer_destroy(stringbuffer_t *s)
+void 
+stringbuffer_destroy(stringbuffer_t *s)
 {
 	if ( s->str_start ) lwfree(s->str_start);
 	if ( s ) lwfree(s);
@@ -76,7 +79,8 @@ void stringbuffer_destroy(stringbuffer_t *s)
 * without the expense of freeing and re-allocating a new
 * stringbuffer_t.
 */
-void stringbuffer_clear(stringbuffer_t *s)
+void 
+stringbuffer_clear(stringbuffer_t *s)
 {
 	s->str_start[0] = '\0';
 	s->str_end = s->str_start;
@@ -86,7 +90,8 @@ void stringbuffer_clear(stringbuffer_t *s)
 * If necessary, expand the stringbuffer_t internal buffer to accomodate the
 * specified additional size.
 */
-static inline void stringbuffer_makeroom(stringbuffer_t *s, size_t size_to_add)
+static inline void 
+stringbuffer_makeroom(stringbuffer_t *s, size_t size_to_add)
 {
 	size_t current_size = (s->str_end - s->str_start);
 	size_t capacity = s->capacity;
@@ -106,7 +111,8 @@ static inline void stringbuffer_makeroom(stringbuffer_t *s, size_t size_to_add)
 /**
 * Return the last character in the buffer.
 */
-char stringbuffer_lastchar(stringbuffer_t *s)
+char 
+stringbuffer_lastchar(stringbuffer_t *s)
 {
 	if( s->str_end == s->str_start ) 
 		return 0;
@@ -117,7 +123,8 @@ char stringbuffer_lastchar(stringbuffer_t *s)
 /**
 * Append the specified string to the stringbuffer_t.
 */
-void stringbuffer_append(stringbuffer_t *s, const char *a)
+void 
+stringbuffer_append(stringbuffer_t *s, const char *a)
 {
 	int alen = strlen(a); /* Length of string to append */
 	int alen0 = alen + 1; /* Length including null terminator */
@@ -131,7 +138,8 @@ void stringbuffer_append(stringbuffer_t *s, const char *a)
 * the stringbuffer. The current string will be null-terminated
 * within the internal string.
 */
-const char* stringbuffer_getstring(stringbuffer_t *s)
+const char* 
+stringbuffer_getstring(stringbuffer_t *s)
 {
 	return s->str_start;
 }
@@ -141,7 +149,8 @@ const char* stringbuffer_getstring(stringbuffer_t *s)
 * current state of the string. Caller is responsible for
 * freeing the return value.
 */
-char* stringbuffer_getstringcopy(stringbuffer_t *s)
+char* 
+stringbuffer_getstringcopy(stringbuffer_t *s)
 {
 	size_t size = (s->str_end - s->str_start) + 1;
 	char *str = lwalloc(size);
@@ -154,7 +163,8 @@ char* stringbuffer_getstringcopy(stringbuffer_t *s)
 * Returns the length of the current string, not including the
 * null terminator (same behavior as strlen()).
 */
-int stringbuffer_getlength(stringbuffer_t *s)
+int 
+stringbuffer_getlength(stringbuffer_t *s)
 {
 	return (s->str_end - s->str_start);
 }
@@ -162,7 +172,8 @@ int stringbuffer_getlength(stringbuffer_t *s)
 /**
 * Clear the stringbuffer_t and re-start it with the specified string.
 */
-void stringbuffer_set(stringbuffer_t *s, const char *str)
+void 
+stringbuffer_set(stringbuffer_t *s, const char *str)
 {
 	stringbuffer_clear(s);
 	stringbuffer_append(s, str);
@@ -171,7 +182,8 @@ void stringbuffer_set(stringbuffer_t *s, const char *str)
 /**
 * Copy the contents of src into dst.
 */
-void stringbuffer_copy(stringbuffer_t *dst, stringbuffer_t *src)
+void 
+stringbuffer_copy(stringbuffer_t *dst, stringbuffer_t *src)
 {
 	stringbuffer_set(dst, stringbuffer_getstring(src));
 }
@@ -181,7 +193,8 @@ void stringbuffer_copy(stringbuffer_t *dst, stringbuffer_t *src)
 * using the format and argument list provided. Returns -1 on error,
 * check errno for reasons, documented in the printf man page.
 */
-static int stringbuffer_avprintf(stringbuffer_t *s, const char *fmt, va_list ap)
+static int 
+stringbuffer_avprintf(stringbuffer_t *s, const char *fmt, va_list ap)
 {
 	int maxlen = (s->capacity - (s->str_end - s->str_start));
 	int len = 0; /* Length of the output */
@@ -225,7 +238,8 @@ static int stringbuffer_avprintf(stringbuffer_t *s, const char *fmt, va_list ap)
 * Returns -1 on error, check errno for reasons,
 * as documented in the printf man page.
 */
-int stringbuffer_aprintf(stringbuffer_t *s, const char *fmt, ...)
+int 
+stringbuffer_aprintf(stringbuffer_t *s, const char *fmt, ...)
 {
 	int r;
 	va_list ap;
@@ -234,3 +248,82 @@ int stringbuffer_aprintf(stringbuffer_t *s, const char *fmt, ...)
 	va_end(ap);
 	return r;
 }
+
+int 
+stringbuffer_trim_trailing_white(stringbuffer_t *s)
+{
+	char c;
+	char *before = s->str_end;
+	while(1)
+	{	
+		c = *(s->str_end - 1);
+		if( c == ' ' || c == '\t' )
+		{
+			s->str_end--;
+		}
+		else
+		{
+			*(s->str_end) = '\0';
+			break;
+		}
+	}
+	return (before - s->str_end);	
+}
+
+
+int 
+stringbuffer_trim_trailing_zeroes(stringbuffer_t *s)
+{
+	char *ptr = s->str_end;
+	char *decimal_ptr = NULL;
+	int dist;
+	
+	if ( s->str_end - s->str_start < 2) 
+		return 0;
+
+	/* First find the decimal for this number */
+	while( ptr > s->str_start )
+	{	
+		ptr--;
+		if ( *ptr == '.' )
+		{
+			decimal_ptr = ptr;
+			break;
+		}
+		if ( (*ptr >= '0') && (*ptr <= '9' ) )
+			continue;
+		else
+			break;
+	}
+
+	/* No decimal? Nothing to trim */
+	if ( ! decimal_ptr )
+		return 0;
+	
+	ptr = s->str_end;
+	
+	/* Now go back until you get to the decimal, trimming zeros */
+	while( ptr >= decimal_ptr )
+	{
+		ptr--;
+		if ( *ptr == '0' )
+			continue;
+		else
+			break;
+	}
+	
+	/* We didn't move */
+	if ( ptr == s->str_end )
+		return 0;
+
+	/* Don't null out non-zeros, but do null out trailing dots */
+	if ( *ptr != '.' )
+		ptr++;
+
+	/* Null out and re-set the end */
+	*ptr = '\0';
+	dist = s->str_end - ptr;
+	s->str_end = ptr;
+	return dist;
+}
+
