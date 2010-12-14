@@ -201,7 +201,6 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 	char *kml;
 	text *result;
-	int len;
 	int version;
 	int precision = OUT_MAX_DOUBLE_PRECISION;
 	static const char* default_prefix = ""; /* default prefix */
@@ -254,17 +253,13 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 
 	lwgeom = pglwgeom_deserialize(geom);
 	kml = lwgeom_to_kml2(lwgeom, precision, prefix);
-
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 1);
+	
+	if( ! kml ) 
+		PG_RETURN_NULL();	
 
-	len = strlen(kml) + VARHDRSZ;
-
-	result = palloc(len);
-	SET_VARSIZE(result, len);
-
-	memcpy(VARDATA(result), kml, len-VARHDRSZ);
-
+	result = cstring2text(kml);
 	lwfree(kml);
 
 	PG_RETURN_POINTER(result);
