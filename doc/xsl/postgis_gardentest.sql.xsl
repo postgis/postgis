@@ -217,12 +217,17 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 			
 		<!-- replacing crasher with a more harmless curve polygon and circular string -->
 		<pgis:gset ID='CURVEPOLYGON' GeometryType='CURVEPOLYGON'>(SELECT ST_GeomFromEWKT('SRID=4326;CURVEPOLYGON(CIRCULARSTRING(-71.0821 42.3036, -71.4821 42.3036, -71.7821 42.7036, -71.0821 42.7036, -71.0821 42.3036),(-71.1821 42.4036, -71.3821 42.6036, -71.3821 42.4036, -71.1821 42.4036) ) ') As the_geom)</pgis:gset>
+		
+		<pgis:gset ID='CURVEPOLYGON2' GeometryType='CURVEPOLYGON'>(SELECT ST_LineToCurve(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j))  As the_geom 
+		        FROM generate_series(-10,50,10) As i
+					CROSS JOIN generate_series(40,70, 20) As j
+					ORDER BY i, j, i*j)
+		</pgis:gset>
 
 		<pgis:gset ID='CIRCULARSTRING' GeometryType='CIRCULARSTRING'>(SELECT ST_GeomFromEWKT('SRID=4326;CIRCULARSTRING(-71.0821 42.3036,-71.4821 42.3036,-71.7821 42.7036,-71.0821 42.7036,-71.0821 42.3036)') As the_geom)</pgis:gset>
 		<pgis:gset ID='MULTISURFACE' GeometryType='MULTISURFACE'>(SELECT ST_GeomFromEWKT('SRID=4326;MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-71.0821 42.3036, -71.4821 42.3036, -71.7821 42.7036, -71.0821 42.7036, -71.0821 42.3036),(-71.1821 42.4036, -71.3821 42.6036, -71.3821 42.4036, -71.1821 42.4036) ))') As the_geom)</pgis:gset>
 		<!--These are special case geometries -->
-		<pgis:gset ID="Typed Empty Geometries" GeometryType="GEOMETRY" createtable="false">(SELECT 
-			UNION ALL SELECT ST_GeomFromText('POLYGON EMPTY',4326) As the_geom
+		<pgis:gset ID="Typed Empty Geometries" GeometryType="GEOMETRY" createtable="false">(SELECT ST_GeomFromText('POLYGON EMPTY',4326) As the_geom
 			UNION ALL SELECT ST_GeomFromText('POINT EMPTY',4326) As the_geom
 			UNION ALL SELECT ST_GeomFromText('MULTIPOINT EMPTY',4326) As the_geom
 			UNION ALL SELECT ST_GeomFromText('MULTIPOLYGON EMPTY',4326) As the_geom
@@ -232,7 +237,7 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 		</pgis:gset>
 		
 		<pgis:gset ID="Empty Geometry Collection" GeometryType="GEOMETRY" createtable="false">
-		 (ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326) As the_geom )
+		 (SELECT ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326) As the_geom )
 		</pgis:gset>
 			
 		<pgis:gset ID="Single NULL" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom)</pgis:gset>
