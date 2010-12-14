@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
 	CU_pSuite suite_to_run;
 	char *test_name;
 	CU_pTest test_to_run;
-	CU_ErrorCode errCode;
+	CU_ErrorCode errCode = 0;
 	CU_pTestRegistry registry;
 	int num_run;
 	int num_failed;
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 	CU_basic_set_mode(CU_BRM_VERBOSE);
 	if (argc <= 1)
 	{
-		CU_basic_run_tests();
+		errCode = CU_basic_run_tests();
 	}
 	else
 	{
@@ -181,8 +181,9 @@ int main(int argc, char *argv[])
 		CU_basic_show_failures(CU_get_failure_list());
 		printf("\n\n"); /* basic_show_failures leaves off line breaks. */
 	}
+	num_failed = CU_get_number_of_failures();
 	CU_cleanup_registry();
-	return CU_get_error();
+	return num_failed;
 }
 /**
  * CUnit error handler
