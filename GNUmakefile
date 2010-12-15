@@ -4,12 +4,22 @@
 #
 #-----------------------------------------------------
 
-all: postgis loaderdumper utils raster
-	@echo "PostGIS was built successfully. Ready to install." 
+# todo: add all subdirs
+SUBDIRS = liblwgeom postgis loader utils raster 
 
-install: all postgis-install loaderdumper-install raster-install
+# todo: add more rules here, like uninstall, clean...
+all install uninstall:
+	for s in $(SUBDIRS); do \
+		echo "Making $@ in $${s}"; \
+		$(MAKE) -C $${s} $@; \
+	done;
+	@if test x"$@" = xall; then \
+		echo "PostGIS was built successfully. Ready to install."; \
+	fi
 
-uninstall: postgis-uninstall loaderdumper-uninstall docs-uninstall comments-uninstall
+install: all
+
+uninstall: docs-uninstall comments-uninstall
 
 clean: liblwgeom-clean postgis-clean loaderdumper-clean docs-clean test-clean raster-clean
 	rm -f postgis.sql postgis_upgrade.sql
