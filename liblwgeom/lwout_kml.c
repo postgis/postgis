@@ -71,7 +71,6 @@ lwgeom_to_kml2_sb(const LWGEOM *geom, int precision, const char *prefix, stringb
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
-	case COLLECTIONTYPE:
 		return lwcollection_to_kml2_sb((LWCOLLECTION*)geom, precision, prefix, sb);
 
 	default:

@@ -656,6 +656,9 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
     lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(g, 1);
 
+	if ( ! kml )
+		PG_RETURN_NULL();
+
 	result = cstring2text(kml);
 	lwfree(kml);
 

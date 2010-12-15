@@ -249,28 +249,46 @@ stringbuffer_aprintf(stringbuffer_t *s, const char *fmt, ...)
 	return r;
 }
 
+/**
+* Trims whitespace off the end of the stringbuffer. Returns
+* the number of characters trimmed.
+*/
 int 
 stringbuffer_trim_trailing_white(stringbuffer_t *s)
 {
-	char c;
-	char *before = s->str_end;
-	while(1)
+	char *ptr = s->str_end;
+	int dist = 0;
+	
+	/* Roll backwards until we hit a non-space. */
+	while( ptr > s->str_start )
 	{	
-		c = *(s->str_end - 1);
-		if( c == ' ' || c == '\t' )
+		ptr--;
+		if( (*ptr == ' ') || (*ptr == '\t') )
 		{
-			s->str_end--;
+			continue;
 		}
 		else
 		{
-			*(s->str_end) = '\0';
-			break;
+			ptr++;
+			dist = s->str_end - ptr;
+			*ptr = '\0';
+			s->str_end = ptr;
+			return dist;
 		}
 	}
-	return (before - s->str_end);	
+	return dist;	
 }
 
-
+/**
+* Trims zeroes off the end of the last number in the stringbuffer.
+* The number has to be the very last thing in the buffer. Only the
+* last number will be trimmed. Returns the number of characters
+* trimmed.
+* 
+* eg: 1.22000 -> 1.22
+*     1.0 -> 1
+*     0.0 -> 0
+*/
 int 
 stringbuffer_trim_trailing_zeroes(stringbuffer_t *s)
 {
@@ -281,7 +299,7 @@ stringbuffer_trim_trailing_zeroes(stringbuffer_t *s)
 	if ( s->str_end - s->str_start < 2) 
 		return 0;
 
-	/* First find the decimal for this number */
+	/* Roll backwards to find the decimal for this number */
 	while( ptr > s->str_start )
 	{	
 		ptr--;
@@ -296,13 +314,13 @@ stringbuffer_trim_trailing_zeroes(stringbuffer_t *s)
 			break;
 	}
 
-	/* No decimal? Nothing to trim */
+	/* No decimal? Nothing to trim! */
 	if ( ! decimal_ptr )
 		return 0;
 	
 	ptr = s->str_end;
 	
-	/* Now go back until you get to the decimal, trimming zeros */
+	/* Roll backwards again, with the decimal as stop point, trimming contiguous zeroes */
 	while( ptr >= decimal_ptr )
 	{
 		ptr--;
@@ -312,15 +330,17 @@ stringbuffer_trim_trailing_zeroes(stringbuffer_t *s)
 			break;
 	}
 	
-	/* We didn't move */
+	/* Huh, we get anywhere. Must not have trimmed anything. */
 	if ( ptr == s->str_end )
 		return 0;
 
-	/* Don't null out non-zeros, but do null out trailing dots */
+	/* If we stopped at the decimal, we want to null that out. 
+	   It we stopped on a numeral, we want to preserve that, so push the 
+	   pointer forward one space. */
 	if ( *ptr != '.' )
 		ptr++;
 
-	/* Null out and re-set the end */
+	/* Add null terminator re-set the end of the stringbuffer. */
 	*ptr = '\0';
 	dist = s->str_end - ptr;
 	s->str_end = ptr;
