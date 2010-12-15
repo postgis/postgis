@@ -1,0 +1,171 @@
+psql:load_topology.sql:24: ERROR:  schema "features" does not exist
+BEGIN
+Topology 'city_data' dropped
+psql:load_topology.sql:30: NOTICE:  CREATE TABLE will create implicit sequence "face_face_id_seq" for serial column "face.face_id"
+PL/pgSQL function "createtopology" line 26 at EXECUTE statement
+psql:load_topology.sql:30: NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "face_primary_key" for table "face"
+PL/pgSQL function "createtopology" line 26 at EXECUTE statement
+psql:load_topology.sql:30: NOTICE:  CREATE TABLE will create implicit sequence "node_node_id_seq" for serial column "node.node_id"
+PL/pgSQL function "createtopology" line 37 at EXECUTE statement
+psql:load_topology.sql:30: NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "node_primary_key" for table "node"
+PL/pgSQL function "createtopology" line 37 at EXECUTE statement
+psql:load_topology.sql:30: NOTICE:  CREATE TABLE will create implicit sequence "edge_data_edge_id_seq" for serial column "edge_data.edge_id"
+PL/pgSQL function "createtopology" line 64 at EXECUTE statement
+psql:load_topology.sql:30: NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "edge_data_pkey" for table "edge_data"
+PL/pgSQL function "createtopology" line 64 at EXECUTE statement
+psql:load_topology.sql:30: NOTICE:  CREATE TABLE / UNIQUE will create implicit index "relation_layer_id_key" for table "relation"
+PL/pgSQL function "createtopology" line 168 at EXECUTE statement
+2
+8
+22
+26
+psql:load_topology.sql:203: NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "land_parcels_pkey" for table "land_parcels"
+psql:load_topology.sql:205: NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "city_streets_pkey" for table "city_streets"
+psql:load_topology.sql:207: NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "traffic_signs_pkey" for table "traffic_signs"
+1
+2
+3
+features.land_parcels.the_geom SRID:-1 TYPE:MULTIPOLYGON DIMS:2 
+features.city_streets.the_geom SRID:-1 TYPE:MULTILINESTRING DIMS:2 
+features.traffic_signs.the_geom SRID:-1 TYPE:MULTIPOINT DIMS:2 
+P1|1|POLYGON((21 14,21 6,9 6,9 14,9 22,21 22,21 14))
+P2|2|POLYGON((35 14,35 6,21 6,21 14,21 22,35 22,35 14))
+P3|3|POLYGON((47 14,47 6,35 6,35 14,35 22,47 22,47 14))
+P4|4|POLYGON((25 30,17 30,17 40,31 40,31 30,25 30))
+P5|5|POLYGON((8 30,3 30,3 38,16 38,16 30,8 30),(4 31,7 31,7 34,4 34,4 31))
+S1|1|POINT(21 14)
+S2|2|POINT(35 14)
+S3|3|POINT(57 33)
+S4|4|POINT(20 37)
+R1|1|LINESTRING(9 14,21 14,35 14)
+R2|2|LINESTRING(36 38,38 35,41 34,42 33,45 32,47 28,50 28,52 32,57 33,57 36,59 39,61 38,62 41,47 42,45 40,41 40)
+R3|3|LINESTRING(9 35,13 35)
+R4|4|LINESTRING(25 30,25 35)
+COMMIT
+psql:hierarchy.sql:11: NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "big_parcels_pkey" for table "big_parcels"
+4
+features.big_parcels.the_geom SRID:-1 TYPE:MULTIPOLYGON DIMS:2 
+P1P2|POLYGON((21 6,9 6,9 14,9 22,21 22,35 22,35 14,35 6,21 6))
+P3P4|MULTIPOLYGON(((47 14,47 6,35 6,35 14,35 22,47 22,47 14)),((25 30,17 30,17 40,31 40,31 30,25 30)))
+F3F6|POLYGON((21 14,21 6,9 6,9 14,9 22,21 22,21 14))
+P1|F3F6
+psql:hierarchy.sql:53: NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "big_signs_pkey" for table "big_signs"
+5
+features.big_signs.the_geom SRID:-1 TYPE:MULTIPOINT DIMS:2 
+S1S2|MULTIPOINT(21 14,35 14)
+BEGIN
+POINT/POINT INTERSECTS
+S1|N1N6N14
+S3|N1N6N14
+S4|N3N4
+S4|N4
+N1N2N3|N1N6N14
+N1N2N3|N3N4
+N3N4|N4
+POINT/LINE INTERSECTS
+S1|R1
+S1|E20E19
+S1|R1a
+S2|R1
+S2|R1a
+S3|R2
+N1N2N3|R4
+N1N6N14|R1
+N1N6N14|R2
+N1N6N14|E20E19
+N1N6N14|R1a
+N3N4|R4
+LINE/LINE INTERSECTS
+R1|E20E19
+R1|R1a
+R3|E25
+E7E8|E20E19
+E20E19|R1a
+POINT/POLY INTERSECTS
+S1|P1
+S1|P2
+S1|F3
+S1|F6
+S1|F3F4
+S2|P2
+S2|P3
+S2|F3F4
+S4|P4
+N1N2N3|P4
+N1N2N3|P5
+N1N2N3|F1
+N1N6N14|P1
+N1N6N14|P2
+N1N6N14|P5
+N1N6N14|F3
+N1N6N14|F6
+N1N6N14|F3F4
+N1N6N14|F1
+N3N4|P4
+N4|P4
+LINE/POLY INTERSECTS
+R1|P1
+R1|P2
+R1|P3
+R1|F3
+R1|F6
+R1|F3F4
+R3|P5
+R3|F1
+R4|P4
+E7E8|P1
+E7E8|P2
+E7E8|P3
+E7E8|F3
+E7E8|F3F4
+E20E19|P1
+E20E19|P2
+E20E19|F3
+E20E19|F6
+E20E19|F3F4
+E25|P5
+E25|F1
+R1a|P1
+R1a|P2
+R1a|P3
+R1a|F3
+R1a|F6
+R1a|F3F4
+POLY/POLY INTERSECTS
+P1|P2
+P1|F3
+P1|F6
+P1|F3F4
+P2|P3
+P2|F3
+P2|F6
+P2|F3F4
+P3|F3F4
+P5|F1
+F3|F6
+F3|F3F4
+F6|F3F4
+POINT/POINT EQUALS
+S4|N4
+LINE/LINE EQUALS
+R1|R1a
+R3|E25
+POLYGON/POLYGON EQUALS
+P5|F1
+COMMIT
+NOTICE:  Dropping all layers from topology city_data (2)
+NOTICE:  drop cascades to 6 other objects
+DETAIL:  drop cascades to table city_data.face
+drop cascades to table city_data.node
+drop cascades to table city_data.edge_data
+drop cascades to view city_data.edge
+drop cascades to sequence city_data.layer_id_seq
+drop cascades to table city_data.relation
+PL/pgSQL function "droptopology" line 41 at EXECUTE statement
+Topology 'city_data' dropped
+NOTICE:  drop cascades to 5 other objects
+DETAIL:  drop cascades to table features.land_parcels
+drop cascades to table features.city_streets
+drop cascades to table features.traffic_signs
+drop cascades to table features.big_parcels
+drop cascades to table features.big_signs

@@ -1,5 +1,7 @@
 DATABASE=postgis_topo_regress
 
+PSQL=psql
+
 all: 
 	@echo
 	@echo "make test - create the database, run all tests except sqlmm"
@@ -34,37 +36,37 @@ test: inittopo load loadmore hier cache pred invalid edit
 initdb:
 	createdb $(DATABASE)
 	createlang plpgsql $(DATABASE)
-	psql -f ../../postgis/postgis.sql $(DATABASE)
+	$(PSQL) -X -f ../../postgis/postgis.sql $(DATABASE)
 
 inittopo:
-	psql -f ../topology.sql $(DATABASE)
+	$(PSQL) -X -f ../topology.sql $(DATABASE)
 
 load: 
-	psql -f load_topology.sql $(DATABASE)
+	$(PSQL) -X -f load_topology.sql $(DATABASE)
 
 loadmore:
-	psql -f more_features.sql $(DATABASE)
+	$(PSQL) -X -f more_features.sql $(DATABASE)
 
 hier:
-	psql -f hierarchy.sql $(DATABASE)
+	$(PSQL) -X -f hierarchy.sql $(DATABASE)
 
 validate: 
-	psql -f validate_topology.sql $(DATABASE)
+	$(PSQL) -X -f validate_topology.sql $(DATABASE)
 
 cache:
-	psql -f cache_geometries.sql $(DATABASE)
+	$(PSQL) -X -f cache_geometries.sql $(DATABASE)
 
 invalid: 
-	psql -f invalid_topology.sql $(DATABASE)
+	$(PSQL) -X -f invalid_topology.sql $(DATABASE)
 
 sqlmm:
-	psql -f sqlmm_topology.sql $(DATABASE)
+	$(PSQL) -X -f sqlmm_topology.sql $(DATABASE)
 
 topopred: topo_predicates.sql
-	@psql --no-psqlrc -tf topo_predicates.sql $(DATABASE)
+	@$(PSQL) -X -tf topo_predicates.sql $(DATABASE)
 
 geompred: geom_predicates.sql 
-	@psql --no-psqlrc -tf geom_predicates.sql $(DATABASE)
+	@$(PSQL) -X -tf geom_predicates.sql $(DATABASE)
 
 topo_predicates.sql: predicates.sql.in
 	@cpp -P -traditional-cpp predicates.sql.in | sed -e 's:@COLUMN@:feature:g;s:@SCHEMA@:topology.:g' > topo_predicates.sql
@@ -73,8 +75,14 @@ geom_predicates.sql: predicates.sql.in
 	@cpp -P -traditional-cpp predicates.sql.in | sed -e 's:@COLUMN@:the_geom:g;s:@SCHEMA@::g' > geom_predicates.sql
 
 edit:
-	psql -f edit_topology.sql $(DATABASE)
+	$(PSQL) -X -f edit_topology.sql $(DATABASE)
 
 clean distclean:
 	rm -f geom_predicates.sql topo_predicates.sql
 	-dropdb $(DATABASE)
+
+TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql
+
+check: 
+	$(MAKE) -C ../../regress postgis.sql staged-install
+	@USE_VERSION=$(POSTGIS_PGSQL_VERSION) ../../regress/run_test --topology $(TESTS)
