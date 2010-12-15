@@ -1445,7 +1445,7 @@ LANGUAGE 'plpgsql' _VOLATILE;
 --{
 --  TopoGeo_addLinestring
 --
---  Add a Point (node) into a topology 
+--  Add a LineString into a topology 
 --
 CREATEFUNCTION topology.TopoGeo_addLinestring(varchar, geometry)
 	RETURNS int AS
@@ -1461,8 +1461,16 @@ DECLARE
 	lastnode int;
 	edgeid int;
 BEGIN
+	RAISE DEBUG ''Line: %'', ST_asEWKT(aline);
+
+	ngeoms := ST_NumGeometries(aline);
+
 	firstpoint = StartPoint(aline);
 	lastpoint = EndPoint(aline);
+
+	RAISE DEBUG ''First point: %, Last point: %'',
+		ST_asEWKT(firstpoint),
+		ST_asEWKT(lastpoint);
 
 	-- Add first and last point nodes (contained in NO face)
 	SELECT topology.ST_AddIsoNode(atopology, NULL, firstpoint) INTO firstnode;
@@ -1474,7 +1482,7 @@ BEGIN
 	SELECT topology.ST_AddIsoEdge(atopology, firstnode, lastnode, aline)
 		INTO edgeid;
 
-	RAISE NOTICE ''Edge: %'', edgeid;
+	RAISE DEBUG ''Edge: %'', edgeid;
 
 	RETURN edgeid;
 END
