@@ -3,27 +3,25 @@ DATABASE=postgis_topo_regress
 PSQL=psql
 
 all: 
-	@echo
-	@echo "make test - create the database, run all tests except sqlmm"
-	@echo
-	@echo "make initdb - create the regress database"
-	@echo "make inittopo - create topology routines"
-	@echo
-	@echo "make load - load 'city_data' topology and feature tables"
-	@echo "make loadmore - define more TopoGeoms from the topology"
-	@echo "make validate - validate 'city_data' loaded topology"
-	@echo 
-	@echo "make hier - define some hierarchical TopoGeoms"
-	@echo 
-	@echo "make edit - test sqlmm editing functions"
-	@echo
-	@echo "make cache - create geom caches for features tables"
-	@echo "make topopred - run predicates on topogeoms"
-	@echo "make geompred - run predicates on geometries"
-	@echo
-	@echo "make invalid - create an invalid topology, and validate it"
-	@echo "make sqlmm - test SQL/MM functions (exceptions are expected)"
-	@echo
+	@echo "Use 'make check' to run all tests"
+#	@echo "make initdb - create the regress database"
+#	@echo "make inittopo - create topology routines"
+#	@echo
+#	@echo "make load - load 'city_data' topology and feature tables"
+#	@echo "make loadmore - define more TopoGeoms from the topology"
+#	@echo "make validate - validate 'city_data' loaded topology"
+#	@echo 
+#	@echo "make hier - define some hierarchical TopoGeoms"
+#	@echo 
+#	@echo "make edit - test sqlmm editing functions"
+#	@echo
+#	@echo "make cache - create geom caches for features tables"
+#	@echo "make topopred - run predicates on topogeoms"
+#	@echo "make geompred - run predicates on geometries"
+#	@echo
+#	@echo "make invalid - create an invalid topology, and validate it"
+#	@echo "make sqlmm - test SQL/MM functions (exceptions are expected)"
+#	@echo
 
 pred:
 	@make geompred | grep -v make > /tmp/geompred.out
@@ -59,9 +57,6 @@ cache:
 invalid: 
 	$(PSQL) -X -f invalid_topology.sql $(DATABASE)
 
-sqlmm:
-	$(PSQL) -X -f sqlmm_topology.sql $(DATABASE)
-
 topopred: topo_predicates.sql
 	@$(PSQL) -X -tf topo_predicates.sql $(DATABASE)
 
@@ -82,7 +77,7 @@ clean distclean:
 	-dropdb $(DATABASE)
 
 TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
-	regress/legacy_invalid.sql
+	regress/legacy_invalid.sql regress/sqlmm.sql
 
 check: 
 	$(MAKE) -C ../../regress postgis.sql staged-install

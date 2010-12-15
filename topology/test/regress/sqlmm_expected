@@ -1,0 +1,77 @@
+Topology 'sqlmm_topology' dropped
+NOTICE:  CREATE TABLE will create implicit sequence "face_face_id_seq" for serial column "face.face_id"
+PL/pgSQL function "createtopology" line 26 at EXECUTE statement
+PL/pgSQL function "st_inittopogeo" line 15 at FOR over EXECUTE statement
+NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "face_primary_key" for table "face"
+PL/pgSQL function "createtopology" line 26 at EXECUTE statement
+PL/pgSQL function "st_inittopogeo" line 15 at FOR over EXECUTE statement
+NOTICE:  CREATE TABLE will create implicit sequence "node_node_id_seq" for serial column "node.node_id"
+PL/pgSQL function "createtopology" line 37 at EXECUTE statement
+PL/pgSQL function "st_inittopogeo" line 15 at FOR over EXECUTE statement
+NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "node_primary_key" for table "node"
+PL/pgSQL function "createtopology" line 37 at EXECUTE statement
+PL/pgSQL function "st_inittopogeo" line 15 at FOR over EXECUTE statement
+NOTICE:  CREATE TABLE will create implicit sequence "edge_data_edge_id_seq" for serial column "edge_data.edge_id"
+PL/pgSQL function "createtopology" line 64 at EXECUTE statement
+PL/pgSQL function "st_inittopogeo" line 15 at FOR over EXECUTE statement
+NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "edge_data_pkey" for table "edge_data"
+PL/pgSQL function "createtopology" line 64 at EXECUTE statement
+PL/pgSQL function "st_inittopogeo" line 15 at FOR over EXECUTE statement
+NOTICE:  CREATE TABLE / UNIQUE will create implicit index "relation_layer_id_key" for table "relation"
+PL/pgSQL function "createtopology" line 168 at EXECUTE statement
+PL/pgSQL function "st_inittopogeo" line 15 at FOR over EXECUTE statement
+Topology-Geometry 'sqlmm_topology' (id:4) created. 
+-- ST_AddIsoNode ------------------------
+ERROR:  SQL/MM Spatial exception - null argument
+ERROR:  SQL/MM Spatial exception - null argument
+ERROR:  SQL/MM Spatial exception - null argument
+1
+2
+3
+4
+5
+6
+ERROR:  SQL/MM Spatial exception - coincident node
+ERROR:  SQL/MM Spatial exception - coincident node
+7
+8
+ERROR:  SQL/MM Spatial exception - non-existent face
+ERROR:  SQL/MM Spatial exception - invalid point
+ERROR:  SQL/MM Spatial exception - coincident node
+ERROR:  SQL/MM Spatial exception - coincident node
+ERROR:  SQL/MM Spatial exception - coincident node
+-- ST_AddIsoEdge ------------------------
+ERROR:  SQL/MM Spatial exception - null argument
+ERROR:  SQL/MM Spatial exception - null argument
+ERROR:  SQL/MM Spatial exception - null argument
+ERROR:  SQL/MM Spatial exception - null argument
+ERROR:  SQL/MM Spatial exception - invalid curve
+ERROR:  SQL/MM Spatial exception - curve not simple
+ERROR:  SQL/MM Spatial exception - non-existent node
+ERROR:  SQL/MM Spatial exception - end node not geometry end point.
+ERROR:  SQL/MM Spatial exception - start node not geometry start point.
+ERROR:  SQL/MM Spatial exception - geometry crosses a node
+1
+2
+ERROR:  SQL/MM Spatial exception - not isolated node
+ERROR:  SQL/MM Spatial exception - not isolated node
+ERROR:  SQL/MM Spatial exception - not isolated node
+-- ST_AddIsoNode(2) ------------------------
+ERROR:  SQL/MM Spatial exception - edge crosses node.
+-- ST_ChangeEdgeGeom ------------------------
+Edge 1 changed
+ERROR:  SQL/MM Spatial exception - start node not geometry start point.
+ERROR:  SQL/MM Spatial exception - end node not geometry end point.
+ERROR:  SQL/MM Spatial exception - geometry crosses a node
+-- ST_RemoveIsoNode  ------------------------
+ERROR:  SQL/MM Spatial exception - not isolated node
+ERROR:  SQL/MM Spatial exception - not isolated node
+-- ST_MoveIsoNode  ------------------------
+ERROR:  SQL/MM Spatial exception - not isolated node
+ERROR:  SQL/MM Spatial exception - not isolated node
+ERROR:  SQL/MM Spatial exception - not isolated node
+ERROR:  SQL/MM Spatial exception - invalid point
+-- ST_RemoveIsoEdge ---------------------
+Isolated edge 1 removed
+-- ST_NewEdgesSplit  ---------------------
+9
