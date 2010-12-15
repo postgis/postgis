@@ -74,11 +74,10 @@ edit:
 
 clean distclean:
 	rm -f geom_predicates.sql topo_predicates.sql
-	-dropdb $(DATABASE)
 
 TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/legacy_invalid.sql regress/sqlmm.sql
 
-check: 
+check: topo_predicates.sql
 	$(MAKE) -C ../../regress postgis.sql staged-install
 	@USE_VERSION=$(POSTGIS_PGSQL_VERSION) ../../regress/run_test --topology $(TESTS)
