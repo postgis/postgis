@@ -910,18 +910,13 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	if (!IsPROJ4LibPathSet)
 		SetPROJ4LibPath();
 
+	/* Read the arguments */
 	input_proj4_text  = (PG_GETARG_TEXT_P(1));
 	output_proj4_text = (PG_GETARG_TEXT_P(2));
 
-	input_proj4 = (char *)palloc(VARSIZE(input_proj4_text)+1-4);
-	memcpy(input_proj4, VARDATA(input_proj4_text),
-	       VARSIZE(input_proj4_text)-VARHDRSZ);
-	input_proj4[VARSIZE(input_proj4_text)-VARHDRSZ] = 0; /* null terminate */
-
-	output_proj4 = (char *) palloc(VARSIZE(output_proj4_text) +1-VARHDRSZ);
-	memcpy(output_proj4, VARDATA(output_proj4_text),
-	       VARSIZE(output_proj4_text)-VARHDRSZ);
-	output_proj4[VARSIZE(output_proj4_text)-VARHDRSZ] = 0; /* null terminate */
+	/* Convert from text to cstring for libproj */
+	input_proj4 = text2cstring(input_proj4_text);
+	output_proj4 = text2cstring(output_proj4_text);
 
 	/* make input and output projection objects */
 	input_pj = make_project(input_proj4);

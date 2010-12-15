@@ -169,9 +169,8 @@ PG_FUNCTION_INFO_V1(geometry_geometrytype);
 Datum geometry_geometrytype(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *lwgeom;
-	char *type_text;
+	text *type_text;
 	char *type_str = palloc(32);
-	size_t size;
 
 	lwgeom = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
@@ -181,15 +180,13 @@ Datum geometry_geometrytype(PG_FUNCTION_ARGS)
 	/* Build up the output string */
 	strncat(type_str, "ST_", 32);
 	strncat(type_str, lwtype_name(pglwgeom_get_type(lwgeom)), 32);
-	size = strlen(type_str) + VARHDRSZ;
-
+	
 	/* Build a text type to store things in */
-	type_text = lwalloc(size);
-	memcpy(VARDATA(type_text),type_str, size - VARHDRSZ);
+	type_text = cstring2text(type_str);
 	pfree(type_str);
-	SET_VARSIZE(type_text, size);
+
 	PG_FREE_IF_COPY(lwgeom, 0);
-	PG_RETURN_POINTER(type_text);
+	PG_RETURN_TEXT_P(type_text);
 }
 
 
@@ -808,9 +805,7 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom);
 
 	/* Write to text and free the WKT */
-	result = palloc(wkt_size - 1 + VARHDRSZ);
-	memcpy(VARDATA(result), wkt, wkt_size - 1);
-	SET_VARSIZE(result, wkt_size - 1 + VARHDRSZ);
+	result = cstring2text(wkt);
 	pfree(wkt);
 
 	/* Return the text */

@@ -166,7 +166,7 @@ lwgeom_make_geos_friendly(LWGEOM *geom)
 	case MULTISURFACETYPE:
 	case MULTICURVETYPE:
 	default:
-		lwerror("unsupported input geometry type: %d", geom->type);
+		lwerror("unsupported input geometry type: %s (%d)", lwtype_name(geom->type), geom->type);
 		break;
 	}
 	return 0;
