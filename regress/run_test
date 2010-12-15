@@ -47,6 +47,7 @@ mkdir -p ${TMPDIR}
 VERBOSE=0
 OPT_DROP=yes
 OPT_CREATE=yes
+OPT_WITH_TOPO=no
 
 if echo '\c' | grep c >/dev/null 2>&1; then
 	ECHO_N='echo -n'
@@ -378,13 +379,17 @@ while [ -n "$1" ]; do
 		OPT_CREATE=no
 		shift
 		continue
+	elif test "$1" = "--topology"; then
+		OPT_WITH_TOPO=yes
+		shift
+		continue
 	else
 		break
 	fi
 done
 
 if [ -z "$1" ]; then
-	echo "Usage: $0 [-v] [--nocreate] [--nodrop] <test> [<test>]" >&2
+	echo "Usage: $0 [-v] [--topology] [--nocreate] [--nodrop] <test> [<test>]" >&2
 	exit 1
 fi
 
@@ -404,6 +409,14 @@ if test -z "$db_exists"; then
 		createdb "${DB}" > ${TMPDIR}/regress_log
 		createlang plpgsql "${DB}" >> ${TMPDIR}/regress_log
 		${PSQL} -f postgis.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1
+		if test x"$OPT_WITH_TOPO" = "xyes"; then
+			if test -e ../topology/topology.sql; then
+				echo "Adding topology support" 
+				${PSQL} -f ../topology/topology.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1
+			else
+				echo "Topology support skipped (topology.sql  not found)" 
+			fi
+		fi
 	else
 
 		echo "Database ${DB} does not exist" >&2
