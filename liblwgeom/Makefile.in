@@ -79,8 +79,8 @@ SA_HEADERS = \
 
 all: liblwgeom.a
 
-# nothing to install 
-install:
+# nothing to install or uninstall
+install uninstall:
 
 liblwgeom.a: $(SA_OBJS) $(NM_OBJS) $(SA_HEADERS)
 	ar rs liblwgeom.a $(SA_OBJS) $(NM_OBJS) 
