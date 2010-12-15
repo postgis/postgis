@@ -1007,7 +1007,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	}
 
 	/* Copy input bbox if any */
-	if ( getbox2d_p(SERIALIZED_FORM(geom1), &bbox) )
+	if ( pglwgeom_getbox2d_p(geom1, &bbox) )
 	{
 		lwout->bbox = gbox_from_box2df(lwout->flags, &bbox);
 	}
@@ -1926,8 +1926,8 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	 * geom1 bounding box we can prematurely return FALSE.
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
-	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	if ( pglwgeom_getbox2d_p(geom1, &box1) &&
+	        pglwgeom_getbox2d_p(geom2, &box2) )
 	{
 		if ( box2.xmax < box1.xmin ) PG_RETURN_BOOL(FALSE);
 		if ( box2.xmin > box1.xmax ) PG_RETURN_BOOL(FALSE);
@@ -2012,8 +2012,8 @@ Datum contains(PG_FUNCTION_ARGS)
 	** geom1 bounding box we can prematurely return FALSE.
 	** Do the test IFF BOUNDING BOX AVAILABLE.
 	*/
-	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	if ( pglwgeom_getbox2d_p(geom1, &box1) &&
+	        pglwgeom_getbox2d_p(geom2, &box2) )
 	{
 		if ( ( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
 		        ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ) )
@@ -2160,8 +2160,8 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 	* geom1 bounding box we can prematurely return FALSE.
 	* Do the test IFF BOUNDING BOX AVAILABLE.
 	*/
-	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	if ( pglwgeom_getbox2d_p(geom1, &box1) &&
+	        pglwgeom_getbox2d_p(geom2, &box2) )
 	{
 		if (( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
 		        ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
@@ -2255,8 +2255,8 @@ Datum covers(PG_FUNCTION_ARGS)
 	 * geom1 bounding box we can prematurely return FALSE.
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
-	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	if ( pglwgeom_getbox2d_p(geom1, &box1) &&
+	        pglwgeom_getbox2d_p(geom2, &box2) )
 	{
 		if (( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
 		        ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
@@ -2412,8 +2412,8 @@ Datum within(PG_FUNCTION_ARGS)
 	 * geom2 bounding box we can prematurely return FALSE.
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
-	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	if ( pglwgeom_getbox2d_p(geom1, &box1) &&
+	        pglwgeom_getbox2d_p(geom2, &box2) )
 	{
 		if ( ( box1.xmin < box2.xmin ) || ( box1.xmax > box2.xmax ) ||
 		        ( box1.ymin < box2.ymin ) || ( box1.ymax > box2.ymax ) )
@@ -2557,8 +2557,8 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	 * geom2 bounding box we can prematurely return FALSE.
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
-	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	if ( pglwgeom_getbox2d_p(geom1, &box1) &&
+	        pglwgeom_getbox2d_p(geom2, &box2) )
 	{
 		if ( ( box1.xmin < box2.xmin ) || ( box1.xmax > box2.xmax ) ||
 		        ( box1.ymin < box2.ymin ) || ( box1.ymax > box2.ymax ) )
@@ -2695,8 +2695,8 @@ Datum crosses(PG_FUNCTION_ARGS)
 	 * geom1 bounding box we can prematurely return FALSE.
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
-	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	if ( pglwgeom_getbox2d_p(geom1, &box1) &&
+	        pglwgeom_getbox2d_p(geom2, &box2) )
 	{
 		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
 		        ( box2.ymax < box1.ymin ) || ( box2.ymin > box2.ymax ) )
@@ -2781,8 +2781,8 @@ Datum intersects(PG_FUNCTION_ARGS)
 	 * geom1 bounding box we can prematurely return FALSE.
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
-	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	if ( pglwgeom_getbox2d_p(geom1, &box1) &&
+	        pglwgeom_getbox2d_p(geom2, &box2) )
 	{
 		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
 		        ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
@@ -2950,8 +2950,8 @@ Datum touches(PG_FUNCTION_ARGS)
 	 * geom1 bounding box we can prematurely return FALSE.
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
-	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	if ( pglwgeom_getbox2d_p(geom1, &box1) &&
+	        pglwgeom_getbox2d_p(geom2, &box2) )
 	{
 		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
 		        ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
@@ -3030,8 +3030,8 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	 * geom1 bounding box we can prematurely return TRUE.
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
-	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	if ( pglwgeom_getbox2d_p(geom1, &box1) &&
+	        pglwgeom_getbox2d_p(geom2, &box2) )
 	{
 		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
 		        ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
@@ -3245,8 +3245,8 @@ Datum geomequals(PG_FUNCTION_ARGS)
 	 * geom1 bounding box we can prematurely return FALSE.
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
-	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	        getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	if ( pglwgeom_getbox2d_p(geom1, &box1) &&
+	        pglwgeom_getbox2d_p(geom2, &box2) )
 	{
 		if ( box2.xmax != box1.xmax ) PG_RETURN_BOOL(FALSE);
 		if ( box2.xmin != box1.xmin ) PG_RETURN_BOOL(FALSE);
@@ -3721,7 +3721,7 @@ GEOSGeometry *
 POSTGIS2GEOS(PG_LWGEOM *pglwgeom)
 {
 	GEOSGeometry *ret;
-	LWGEOM *lwgeom = lwgeom_deserialize(SERIALIZED_FORM(pglwgeom));
+	LWGEOM *lwgeom = pglwgeom_deserialize(pglwgeom);
 	if ( ! lwgeom )
 	{
 		lwerror("POSTGIS2GEOS: unable to deserialize input");

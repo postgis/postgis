@@ -325,7 +325,7 @@ Datum LWGEOM_to_BOX3D(PG_FUNCTION_ARGS)
 	PG_LWGEOM *lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	BOX3D *result;
 
-	result = compute_serialized_box3d(SERIALIZED_FORM(lwgeom));
+	result = pglwgeom_compute_serialized_box3d(lwgeom);
 	if ( ! result ) PG_RETURN_NULL();
 
 	PG_RETURN_POINTER(result);
@@ -393,7 +393,7 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 	if (box3d_ptr == NULL)
 	{
 		lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-		box = compute_serialized_box3d(SERIALIZED_FORM(lwgeom));
+		box = pglwgeom_compute_serialized_box3d(lwgeom);
 		if ( ! box )
 		{
 			PG_FREE_IF_COPY(lwgeom, 1);
@@ -411,7 +411,7 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 	}
 
 	lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	box = compute_serialized_box3d(SERIALIZED_FORM(lwgeom));
+	box = pglwgeom_compute_serialized_box3d(lwgeom);
 	if ( ! box ) /* must be the empty geom */
 	{
 		PG_FREE_IF_COPY(lwgeom, 1);

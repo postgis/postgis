@@ -501,6 +501,21 @@ int pglwgeom_ndims(const PG_LWGEOM *geom)
 	return TYPE_NDIMS(geom->type);
 }
 
+int pglwgeom_getbox2d_p(const PG_LWGEOM *geom, BOX2DFLOAT4 *box)
+{
+	return getbox2d_p(SERIALIZED_FORM(geom), box);
+}
+
+BOX3D *pglwgeom_compute_serialized_box3d(const PG_LWGEOM *geom)
+{
+	return compute_serialized_box3d(SERIALIZED_FORM(geom));
+}
+
+int pglwgeom_compute_serialized_box3d_p(const PG_LWGEOM *geom, BOX3D *box3d)
+{
+	return compute_serialized_box3d_p(SERIALIZED_FORM(geom), box3d);	
+}
+
 
 int
 pglwgeom_is_empty(const PG_LWGEOM *geom)

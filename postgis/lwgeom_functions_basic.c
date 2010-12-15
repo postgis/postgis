@@ -1733,7 +1733,7 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUG(2, "LWGEOM_expand called.");
 
 	/* get geometry box  */
-	if ( ! compute_serialized_box3d_p(SERIALIZED_FORM(geom), &box3d) )
+	if ( ! pglwgeom_compute_serialized_box3d_p(geom, &box3d) )
 	{
 		/* must be an EMPTY geometry */
 		PG_RETURN_POINTER(geom);
@@ -1815,7 +1815,7 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 
 
 	/* get bounding box  */
-	if ( ! compute_serialized_box3d_p(SERIALIZED_FORM(geom), &box) )
+	if ( ! pglwgeom_compute_serialized_box3d_p(geom, &box) )
 	{
 		/* must be the EMPTY geometry */
 		PG_RETURN_POINTER(geom);
@@ -2552,7 +2552,7 @@ Datum optimistic_overlap(PG_FUNCTION_ARGS)
 
 	/*bbox check */
 
-	getbox2d_p( SERIALIZED_FORM(pg_geom1), &g1_bvol );
+	pglwgeom_getbox2d_p(pg_geom1, &g1_bvol );
 
 
 	g1_bvol.xmin = g1_bvol.xmin - dist;

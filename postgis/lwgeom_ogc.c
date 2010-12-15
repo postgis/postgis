@@ -555,7 +555,7 @@ Datum LWGEOM_x_point(PG_FUNCTION_ARGS)
 	if ( pglwgeom_get_type(geom) != POINTTYPE )
 		lwerror("Argument to X() must be a point");
 
-	point = lwgeom_getpoint(SERIALIZED_FORM(geom), 0);
+	point = lwgeom_as_lwpoint(pglwgeom_deserialize(geom));
 
 	getPoint2d_p(point->point, 0, &p);
 
@@ -580,7 +580,7 @@ Datum LWGEOM_y_point(PG_FUNCTION_ARGS)
 	if ( pglwgeom_get_type(geom) != POINTTYPE )
 		lwerror("Argument to Y() must be a point");
 
-	point = lwgeom_getpoint(SERIALIZED_FORM(geom), 0);
+	point = lwgeom_as_lwpoint(pglwgeom_deserialize(geom));
 
 	getPoint2d_p(point->point, 0, &p);
 
@@ -606,7 +606,7 @@ Datum LWGEOM_z_point(PG_FUNCTION_ARGS)
 	if ( pglwgeom_get_type(geom) != POINTTYPE )
 		lwerror("Argument to Z() must be a point");
 
-	point = lwgeom_getpoint(SERIALIZED_FORM(geom), 0);
+	point = lwgeom_as_lwpoint(pglwgeom_deserialize(geom));
 
 	/* no Z in input */
 	if ( ! pglwgeom_has_z(geom) ) PG_RETURN_NULL();
@@ -634,7 +634,7 @@ Datum LWGEOM_m_point(PG_FUNCTION_ARGS)
 	if ( pglwgeom_get_type(geom) != POINTTYPE )
 		lwerror("Argument to M() must be a point");
 
-	point = lwgeom_getpoint(SERIALIZED_FORM(geom), 0);
+	point = lwgeom_as_lwpoint(pglwgeom_deserialize(geom));
 
 	/* no M in input */
 	if ( ! FLAGS_GET_M(point->flags) ) PG_RETURN_NULL();

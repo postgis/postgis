@@ -53,8 +53,8 @@ Datum lwgeom_lt(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(3, "lwgeom_lt passed getSRID test");
 
-	getbox2d_p(SERIALIZED_FORM(geom1), &box1);
-	getbox2d_p(SERIALIZED_FORM(geom2), &box2);
+	pglwgeom_getbox2d_p(geom1, &box1);
+	pglwgeom_getbox2d_p(geom2, &box2);
 
 	POSTGIS_DEBUG(3, "lwgeom_lt getbox2d_p passed");
 
@@ -106,8 +106,8 @@ Datum lwgeom_le(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	getbox2d_p(SERIALIZED_FORM(geom1), &box1);
-	getbox2d_p(SERIALIZED_FORM(geom2), &box2);
+	pglwgeom_getbox2d_p(geom1, &box1);
+	pglwgeom_getbox2d_p(geom2, &box2);
 
 	if  ( ! FPeq(box1.xmin , box2.xmin) )
 	{
@@ -188,8 +188,8 @@ Datum lwgeom_eq(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	getbox2d_p(SERIALIZED_FORM(geom1), &box1);
-	getbox2d_p(SERIALIZED_FORM(geom2), &box2);
+	pglwgeom_getbox2d_p(geom1, &box1);
+	pglwgeom_getbox2d_p(geom2, &box2);
 
 	if  ( ! FPeq(box1.xmin , box2.xmin) )
 	{
@@ -246,8 +246,8 @@ Datum lwgeom_ge(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	getbox2d_p(SERIALIZED_FORM(geom1), &box1);
-	getbox2d_p(SERIALIZED_FORM(geom2), &box2);
+	pglwgeom_getbox2d_p(geom1, &box1);
+	pglwgeom_getbox2d_p(geom2, &box2);
 
 	if  ( ! FPeq(box1.xmin , box2.xmin) )
 	{
@@ -320,8 +320,8 @@ Datum lwgeom_gt(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	getbox2d_p(SERIALIZED_FORM(geom1), &box1);
-	getbox2d_p(SERIALIZED_FORM(geom2), &box2);
+	pglwgeom_getbox2d_p(geom1, &box1);
+	pglwgeom_getbox2d_p(geom2, &box2);
 
 	if  ( ! FPeq(box1.xmin , box2.xmin) )
 	{
@@ -390,8 +390,8 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	getbox2d_p(SERIALIZED_FORM(geom1), &box1);
-	getbox2d_p(SERIALIZED_FORM(geom2), &box2);
+	pglwgeom_getbox2d_p(geom1, &box1);
+	pglwgeom_getbox2d_p(geom2, &box2);
 
 	if  ( ! FPeq(box1.xmin , box2.xmin) )
 	{

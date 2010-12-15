@@ -854,7 +854,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 
 		geom = (PG_LWGEOM *)PG_DETOAST_DATUM(datum);
 
-		if ( ! getbox2d_p(SERIALIZED_FORM(geom), &box) )
+		if ( ! pglwgeom_getbox2d_p(geom, &box) )
 		{
 			/* Skip empty geometry */
 			POSTGIS_DEBUGF(3, " skipped empty geometry %d", i);
