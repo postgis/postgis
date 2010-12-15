@@ -2309,11 +2309,14 @@ LANGUAGE 'plpgsql' _VOLATILE_STRICT;
 
 --=} POSTGIS-SPECIFIC topology predicates
 
+--  Editing
+#include "sql/populate.sql"
 
 --=}  POSTGIS-SPECIFIC block
 
 --  SQL/MM block
 #include "sql/sqlmm.sql"
+
 
 --COMMIT;
 

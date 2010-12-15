@@ -26,3 +26,4 @@ include $(PGXS)
 $(SQL_OBJS): %.in: %.in.c
 	$(CPP) -traditional-cpp $< | grep -v '^#' > $@
 
+topology.sql.in: sql/sqlmm.sql sql/populate.sql
