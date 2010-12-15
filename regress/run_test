@@ -34,7 +34,8 @@ if [ -n "$USE_VERSION" ]; then
 	fi
 fi
 
-
+REGDIR=`dirname $0`
+REGDIR=`cd "${REGDIR}" && pwd`
 
 PSQL="psql"
 
@@ -408,11 +409,11 @@ if test -z "$db_exists"; then
 
 		createdb "${DB}" > ${TMPDIR}/regress_log
 		createlang plpgsql "${DB}" >> ${TMPDIR}/regress_log
-		${PSQL} -Xf postgis.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1
+		${PSQL} -Xf ${REGDIR}/postgis.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1
 		if test x"$OPT_WITH_TOPO" = "xyes"; then
-			if test -e ../topology/topology.sql; then
+			if test -e ${REGDIR}/../topology/topology.sql; then
 				echo "Adding topology support" 
-				${PSQL} -Xf ../topology/topology.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1
+				${PSQL} -Xf ${REGDIR}/../topology/topology.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1
 			else
 				echo "Topology support skipped (topology.sql  not found)" 
 			fi
