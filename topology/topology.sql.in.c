@@ -3781,16 +3781,17 @@ BEGIN
 	END IF;
 
 	-- Verify existance of the topology schema 
-	FOR rec in EXECUTE ''SELECT oid,count(*) FROM pg_namespace WHERE ''
+	FOR rec in EXECUTE ''SELECT oid FROM pg_namespace WHERE ''
 		|| '' nspname = '' || quote_literal(atopology)
 		|| '' GROUP BY oid''
 		
 	LOOP
-		IF rec.count < 1 THEN
-	RAISE EXCEPTION ''SQL/MM Spatial exception - non-existent schema'';
-		END IF;
 		schemaoid := rec.oid;
 	END LOOP;
+
+	IF schemaoid IS NULL THEN
+	RAISE EXCEPTION ''SQL/MM Spatial exception - non-existent schema'';
+	END IF;
 
 	-- Verify existance of the topology views in the topology schema 
 	FOR rec in EXECUTE ''SELECT count(*) FROM pg_class WHERE ''
