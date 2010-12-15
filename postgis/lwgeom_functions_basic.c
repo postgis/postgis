@@ -63,7 +63,6 @@ Datum LWGEOM_dfullywithin3d(PG_FUNCTION_ARGS);
 
 Datum LWGEOM_inside_circle_point(PG_FUNCTION_ARGS);
 Datum LWGEOM_collect(PG_FUNCTION_ARGS);
-Datum LWGEOM_accum(PG_FUNCTION_ARGS);
 Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS);
 Datum LWGEOM_expand(PG_FUNCTION_ARGS);
 Datum LWGEOM_to_BOX(PG_FUNCTION_ARGS);
@@ -1150,127 +1149,6 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/**
- * @brief This is a geometry array constructor
- * 		for use as aggregates sfunc.
- * 		Will have as input an array of Geometry pointers and a Geometry.
- * 		Will DETOAST given geometry and put a pointer to it
- * 			in the given array. DETOASTED value is first copied
- * 		to a safe memory context to avoid premature deletion.
- */
-PG_FUNCTION_INFO_V1(LWGEOM_accum);
-Datum LWGEOM_accum(PG_FUNCTION_ARGS)
-{
-	ArrayType *array = NULL;
-	int nelems;
-	int lbs=1;
-	size_t nbytes, oldsize;
-	Datum datum;
-	PG_LWGEOM *geom;
-	ArrayType *result;
-	Oid oid = get_fn_expr_argtype(fcinfo->flinfo, 1);
-
-	POSTGIS_DEBUG(2, "LWGEOM_accum called");
-
-	datum = PG_GETARG_DATUM(0);
-	if ( (Pointer *)datum == NULL )
-	{
-		array = NULL;
-		nelems = 0;
-
-		POSTGIS_DEBUG(3, "geom_accum: NULL array");
-	}
-	else
-	{
-		array = DatumGetArrayTypePCopy(datum);
-		/*array = PG_GETARG_ARRAYTYPE_P(0); */
-		nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
-
-		POSTGIS_DEBUGF(3, "geom_accum: array of nelems=%d", nelems);
-	}
-
-	datum = PG_GETARG_DATUM(1);
-	/* Do nothing, return state array */
-	if ( (Pointer *)datum == NULL )
-	{
-		POSTGIS_DEBUGF(3, "geom_accum: NULL geom, nelems=%d", nelems);
-
-		if ( array == NULL ) PG_RETURN_NULL();
-		PG_RETURN_ARRAYTYPE_P(array);
-	}
-
-	/* Make a DETOASTED copy of input geometry */
-	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(datum);
-
-	POSTGIS_DEBUGF(3, "geom_accum: detoasted geom: %p", (void*)geom);
-
-	/*
-	 * Might use a more optimized version instead of lwrealloc'ing
-	 * at every iteration. This is not the bottleneck anyway.
-	 * 		--strk(TODO);
-	 */
-	++nelems;
-	if ( nelems == 1 || ! array )
-	{
-		nbytes = ARR_OVERHEAD_NONULLS(1)+INTALIGN(VARSIZE(geom));
-
-		POSTGIS_DEBUGF(3, "geom_accum: adding %p (nelems=%d; nbytes=%d)",
-		               (void*)geom, nelems, (int)nbytes);
-
-		result = lwalloc(nbytes);
-		if ( ! result )
-		{
-			elog(ERROR, "Out of virtual memory");
-			PG_RETURN_NULL();
-		}
-
-		SET_VARSIZE(result, nbytes);
-		result->ndim = 1;
-		result->elemtype = oid;
-		result->dataoffset = 0;
-
-		memcpy(ARR_DIMS(result), &nelems, sizeof(int));
-		memcpy(ARR_LBOUND(result), &lbs, sizeof(int));
-		memcpy(ARR_DATA_PTR(result), geom, VARSIZE(geom));
-
-		POSTGIS_DEBUGF(3, " %d bytes memcopied", VARSIZE(geom));
-
-	}
-	else
-	{
-		oldsize = VARSIZE(array);
-		nbytes = oldsize + INTALIGN(VARSIZE(geom));
-
-		POSTGIS_DEBUGF(3, "geom_accum: old array size: %d, adding %ld bytes (nelems=%d; nbytes=%u)", ARR_SIZE(array), INTALIGN(VARSIZE(geom)), nelems, (int)nbytes);
-
-		result = (ArrayType *) lwrealloc(array, nbytes);
-		if ( ! result )
-		{
-			elog(ERROR, "Out of virtual memory");
-			PG_RETURN_NULL();
-		}
-
-		POSTGIS_DEBUGF(3, " %d bytes allocated for array", (int)nbytes);
-
-		POSTGIS_DEBUGF(3, " array start  @ %p", (void*)result);
-		POSTGIS_DEBUGF(3, " ARR_DATA_PTR @ %p (%ld)",
-		               ARR_DATA_PTR(result), (uchar *)ARR_DATA_PTR(result)-(uchar *)result);
-		POSTGIS_DEBUGF(3, " next element @ %p", (uchar *)result+oldsize);
-
-		SET_VARSIZE(result, nbytes);
-		memcpy(ARR_DIMS(result), &nelems, sizeof(int));
-
-		POSTGIS_DEBUGF(3, " writing next element starting @ %p",
-		               (void*)(result+oldsize));
-
-		memcpy((uchar *)result+oldsize, geom, VARSIZE(geom));
-	}
-
-	POSTGIS_DEBUG(3, " returning");
-
-	PG_RETURN_ARRAYTYPE_P(result);
-
-}
 
 /**
  * @brief collect_garray ( GEOMETRY[] ) returns a geometry which contains
