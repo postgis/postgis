@@ -1044,8 +1044,6 @@ Datum LWGEOM_inside_circle_point(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_collect);
 Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 {
-	Pointer geom1_ptr = PG_GETARG_POINTER(0);
-	Pointer geom2_ptr =  PG_GETARG_POINTER(1);
 	PG_LWGEOM *pglwgeom1, *pglwgeom2, *result;
 	LWGEOM *lwgeoms[2], *outlwg;
 	uint32 type1, type2, outtype;
@@ -1055,38 +1053,21 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUG(2, "LWGEOM_collect called.");
 
 	/* return null if both geoms are null */
-	if ( (geom1_ptr == NULL) && (geom2_ptr == NULL) )
-	{
+	if ( PG_ARGISNULL(0) && PG_ARGISNULL(1) )
 		PG_RETURN_NULL();
-	}
 
-	/* return a copy of the second geom if only first geom is null */
-	if (geom1_ptr == NULL)
-	{
-		result = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(1));
-		PG_RETURN_POINTER(result);
-	}
+	/* Return the second geom if the first geom is null */
+	if (PG_ARGISNULL(0))
+		PG_RETURN_DATUM(PG_GETARG_DATUM(1));
 
-	/* return a copy of the first geom if only second geom is null */
-	if (geom2_ptr == NULL)
-	{
-		result = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
-		PG_RETURN_POINTER(result);
-	}
-
+	/* Return the first geom if the second geom is null */
+	if (PG_ARGISNULL(1))
+		PG_RETURN_DATUM(PG_GETARG_DATUM(0));
 
 	pglwgeom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	pglwgeom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	POSTGIS_DEBUGF(3, "LWGEOM_collect(%s, %s): call", lwtype_name(pglwgeom_get_type(pglwgeom1)), lwtype_name(pglwgeom_get_type(pglwgeom2)));
-
-#if 0
-	if ( pglwgeom_get_srid(pglwgeom1) != pglwgeom_get_srid(pglwgeom2) )
-	{
-		elog(ERROR, "Operation on two GEOMETRIES with different SRIDs\n");
-		PG_RETURN_NULL();
-	}
-#endif
 
 	srid = pglwgeom_get_srid(pglwgeom1);
 	error_if_srid_mismatch(srid, pglwgeom_get_srid(pglwgeom2));
