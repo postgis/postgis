@@ -164,10 +164,9 @@ static void out_kml_test_geoms(void)
 	    0);
 
 	/* GeometryCollection */
-	do_kml_test(
+	do_kml_unsupported(
 	    "GEOMETRYCOLLECTION(POINT(0 1))",
-	    "<MultiGeometry><Point><coordinates>0,1</coordinates></Point></MultiGeometry>",
-		0);
+	    "lwgeom_to_kml2: 'GeometryCollection' geometry type not supported");
 
 	/* CircularString */
 	do_kml_unsupported(
