@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  xmlns:pgis="http://postgis.refractions.net/pgis">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  xmlns:pgis="http://www.postgis.org/pgis">
 <!-- ********************************************************************
  * $Id$
  ********************************************************************
@@ -11,7 +11,7 @@
 	<xsl:output method="text" />
 	<xsl:variable name='testversion'>2.0.0</xsl:variable>
 	<xsl:variable name='fnexclude14'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
-	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable Populate_Geometry_Columns ST_AddPoint ST_AsKML ST_ConcaveHull ST_DumpPoints ST_ExteriorRing ST_ForceRHR ST_GeoHash ST_IsValidDetail ST_IsValidReason ST_MinimumBoundingCircle</xsl:variable>
+	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable Populate_Geometry_Columns ST_AddPoint ST_AsKML ST_MinimumBoundingCircle</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 or tested separately -->
 
 	<xsl:variable name='var_srid'>3395</xsl:variable>
@@ -227,8 +227,7 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 		<pgis:gset ID='CIRCULARSTRING' GeometryType='CIRCULARSTRING'>(SELECT ST_GeomFromEWKT('SRID=4326;CIRCULARSTRING(-71.0821 42.3036,-71.4821 42.3036,-71.7821 42.7036,-71.0821 42.7036,-71.0821 42.3036)') As the_geom)</pgis:gset>
 		<pgis:gset ID='MULTISURFACE' GeometryType='MULTISURFACE'>(SELECT ST_GeomFromEWKT('SRID=4326;MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-71.0821 42.3036, -71.4821 42.3036, -71.7821 42.7036, -71.0821 42.7036, -71.0821 42.3036),(-71.1821 42.4036, -71.3821 42.6036, -71.3821 42.4036, -71.1821 42.4036) ))') As the_geom)</pgis:gset>
 		<!--These are special case geometries -->
-		<pgis:gset ID="Typed Empty Geometries" GeometryType="GEOMETRY" createtable="false">(SELECT ST_GeomFromText('POLYGON EMPTY',4326) As the_geom
-			UNION ALL SELECT ST_GeomFromText('POINT EMPTY',4326) As the_geom
+		<pgis:gset ID="Typed Empty Geometries" GeometryType="GEOMETRY" createtable="false">(SELECT ST_GeomFromText('POINT EMPTY',4326) As the_geom
 			UNION ALL SELECT ST_GeomFromText('MULTIPOINT EMPTY',4326) As the_geom
 			UNION ALL SELECT ST_GeomFromText('MULTIPOLYGON EMPTY',4326) As the_geom
 			UNION ALL SELECT ST_GeomFromText('LINESTRING EMPTY',4326) As the_geom
@@ -236,6 +235,7 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 		)
 		</pgis:gset>
 		
+	
 		<pgis:gset ID="Empty Geometry Collection" GeometryType="GEOMETRY" createtable="false">
 		 (SELECT ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326) As the_geom )
 		</pgis:gset>
@@ -261,6 +261,8 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 			UNION ALL SELECT ST_COLLECT(ST_GeomFromText('POLYGON EMPTY',4326),ST_GeomFromText('TRIANGLE EMPTY',4326))  As the_geom
 			UNION ALL SELECT ST_Collect(ST_GeomFromText('POINT EMPTY',4326), ST_GeomFromText('MULTIPOINT EMPTY',4326)) As the_geom
 		)</pgis:gset>
+		<pgis:gset ID="POLYGON EMPTY" GeometryType="POLYGON" createtable="false">(SELECT ST_GeomFromText('POLYGON EMPTY',4326) As the_geom)</pgis:gset>
+		
 
 	<pgis:gardencrashers>
 
