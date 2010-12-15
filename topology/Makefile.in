@@ -2,6 +2,10 @@
 # PostGIS PGXS build system
 #
 
+# NOTE: we can't use MODULE_big or PGXS insists in building a library...
+PGIS_MODULE_big=postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
+MODULEDIR=contrib/$(PGIS_MODULE_big)
+
 # Files to be copied to the contrib/ directory
 DATA_built=topology.sql
 
@@ -12,9 +16,20 @@ SQL_OBJS=topology.sql.in
 EXTRA_CLEAN=$(SQL_OBJS)
 
 # PGXS information
-PG_CONFIG = @PGCONFIG@ 
 PGXS := @PGXS@
 include $(PGXS)
+
+# PGXS override feature. The ability to allow PostGIS to install itself
+# in a versioned directory is only available in PostgreSQL >= 8.5. To
+# do this by default on older PostgreSQL versions, we need to override
+# the existing PGXS targets.
+#
+# Once PostgreSQL 8.5 becomes the minimum supported version, this entire
+# section and its associated Makefile.pgxs should be removed.
+PGXSOVERRIDE = @PGXSOVERRIDE@
+ifeq ($(PGXSOVERRIDE),1)
+	include ../postgis/Makefile.pgxs
+endif
 
 
 # Unfortunately we have to copy this from the PGXS Makefile as it only gets picked up
