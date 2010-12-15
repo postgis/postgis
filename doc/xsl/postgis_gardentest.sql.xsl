@@ -11,7 +11,7 @@
 	<xsl:output method="text" />
 	<xsl:variable name='testversion'>2.0.0</xsl:variable>
 	<xsl:variable name='fnexclude14'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
-	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable Populate_Geometry_Columns ST_AddPoint ST_AsKML ST_ConcaveHull ST_DumpPoints ST_ExteriorRing ST_ForceRHR ST_GeoHash ST_MinimumBoundingCircle</xsl:variable>
+	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable Populate_Geometry_Columns ST_AddPoint ST_AsKML ST_ConcaveHull ST_DumpPoints ST_ExteriorRing ST_ForceRHR ST_GeoHash ST_IsValidDetail ST_IsValidReason ST_MinimumBoundingCircle</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 or tested separately -->
 
 	<xsl:variable name='var_srid'>3395</xsl:variable>
