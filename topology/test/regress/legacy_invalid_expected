@@ -1,0 +1,41 @@
+BEGIN
+Topology 'invalid_topology' dropped
+psql:invalid_topology.sql:5: NOTICE:  CREATE TABLE will create implicit sequence "face_face_id_seq" for serial column "face.face_id"
+PL/pgSQL function "createtopology" line 26 at EXECUTE statement
+psql:invalid_topology.sql:5: NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "face_primary_key" for table "face"
+PL/pgSQL function "createtopology" line 26 at EXECUTE statement
+psql:invalid_topology.sql:5: NOTICE:  CREATE TABLE will create implicit sequence "node_node_id_seq" for serial column "node.node_id"
+PL/pgSQL function "createtopology" line 37 at EXECUTE statement
+psql:invalid_topology.sql:5: NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "node_primary_key" for table "node"
+PL/pgSQL function "createtopology" line 37 at EXECUTE statement
+psql:invalid_topology.sql:5: NOTICE:  CREATE TABLE will create implicit sequence "edge_data_edge_id_seq" for serial column "edge_data.edge_id"
+PL/pgSQL function "createtopology" line 64 at EXECUTE statement
+psql:invalid_topology.sql:5: NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "edge_data_pkey" for table "edge_data"
+PL/pgSQL function "createtopology" line 64 at EXECUTE statement
+psql:invalid_topology.sql:5: NOTICE:  CREATE TABLE / UNIQUE will create implicit index "relation_layer_id_key" for table "relation"
+PL/pgSQL function "createtopology" line 168 at EXECUTE statement
+3
+coincident nodes|1|23
+edge crosses node|23|1
+edge crosses node|14|27
+edge not simple|28|
+edge crosses edge|2|28
+edge crosses edge|2|29
+edge crosses edge|2|32
+edge crosses edge|28|31
+edge start node geometry mis-match|30|4
+edge end node geometry mis-match|30|3
+face without edges|10|
+face overlaps face|2|12
+face within face|11|2
+COMMIT
+NOTICE:  Dropping all layers from topology invalid_topology (3)
+NOTICE:  drop cascades to 6 other objects
+DETAIL:  drop cascades to table invalid_topology.face
+drop cascades to table invalid_topology.node
+drop cascades to table invalid_topology.edge_data
+drop cascades to view invalid_topology.edge
+drop cascades to sequence invalid_topology.layer_id_seq
+drop cascades to table invalid_topology.relation
+PL/pgSQL function "droptopology" line 41 at EXECUTE statement
+Topology 'invalid_topology' dropped
