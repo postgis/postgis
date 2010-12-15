@@ -700,6 +700,31 @@ AC_SUBST([SHLIB_LINK])
 dnl AC_MSG_RESULT([SHLIB_LINK: $SHLIB_LINK])
 
 dnl ====================================
+dnl topology stuff
+dnl ====================================
+AC_ARG_WITH([topology],
+    [AS_HELP_STRING([--with-topology],
+                    [compile the topology extension @<:@default=no@:>@])],
+    [TOPOLOGY="topology"], [TOPOLOGY=""])
+
+if test "x$TOPOLOGY" = "xtopology"; then
+    AC_MSG_RESULT([TOPOLOGY: Topology support requested])
+fi
+
+dnl
+dnl Topology Version Information imported from topology/Version.config 
+dnl
+POSTGIS_TOPOLOGY_MAJOR_VERSION=`cat topology/Version.config | grep POSTGIS_TOPOLOGY_MAJOR_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
+POSTGIS_TOPOLOGY_MINOR_VERSION=`cat topology/Version.config | grep POSTGIS_TOPOLOGY_MINOR_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
+POSTGIS_TOPOLOGY_MICRO_VERSION=`cat topology/Version.config | grep POSTGIS_TOPOLOGY_MICRO_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
+
+POSTGIS_TOPOLOGY_VERSION="$POSTGIS_TOPOLOGY_MAJOR_VERSION.$POSTGIS_TOPOLOGY_MINOR_VERSION.$POSTGIS_TOPOLOGY_MICRO_VERSION"
+
+AC_SUBST([POSTGIS_TOPOLOGY_VERSION])
+AC_SUBST([TOPOLOGY])
+
+
+dnl ====================================
 dnl raster stuff
 dnl ====================================
 AC_ARG_WITH([raster],
@@ -843,7 +868,8 @@ fi
 
 
 dnl Output the relevant files
-AC_OUTPUT([liblwgeom/Makefile liblwgeom/cunit/Makefile postgis/Makefile
+AC_OUTPUT([GNUmakefile 
+        liblwgeom/Makefile liblwgeom/cunit/Makefile postgis/Makefile
         postgis/sqldefines.h loader/Makefile loader/cunit/Makefile
         topology/Makefile regress/Makefile doc/Makefile doc/Makefile.comments
         doc/html/image_src/Makefile $RT_MAKEFILE_LIST])
@@ -872,9 +898,14 @@ AC_MSG_RESULT([  PROJ4 version:        ${POSTGIS_PROJ_VERSION}])
 AC_MSG_RESULT([  Libxml2 config:       ${XML2CONFIG}])
 AC_MSG_RESULT([  Libxml2 version:      ${POSTGIS_LIBXML2_VERSION}])
 AC_MSG_RESULT([  PostGIS debug level:  ${POSTGIS_DEBUG_LEVEL}])
-if test "x$RASTER" = "xyes"; then
+if test "x$RASTER" = "xyes" -o "x$TOPOLOGY" = "xtopology"; then
     AC_MSG_RESULT([ -------------- Extensions -------------- ])
+if test "x$RASTER" = "xyes"; then
     AC_MSG_RESULT([  PostGIS Raster:       ${POSTGIS_RASTER_LIB_VERSION}])
+fi
+if test "x$TOPOLOGY" = "xtopology"; then
+    AC_MSG_RESULT([  PostGIS Topology:     ${POSTGIS_TOPOLOGY_VERSION}])
+fi
 fi
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------- Documentation Generation -------- ])

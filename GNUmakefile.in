@@ -5,12 +5,12 @@
 #-----------------------------------------------------
 
 # todo: add all subdirs
-SUBDIRS = liblwgeom postgis loader utils raster 
+SUBDIRS = liblwgeom postgis loader utils raster @TOPOLOGY@
 
 # todo: add more rules here, like uninstall, clean...
-all install uninstall:
+all install uninstall noop:
 	for s in $(SUBDIRS); do \
-		echo "Making $@ in $${s}"; \
+		echo "---- Making $@ in $${s}"; \
 		$(MAKE) -C $${s} $@; \
 	done;
 	@if test x"$@" = xall; then \
