@@ -4,7 +4,9 @@
 --
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.refractions.net
--- Copyright 2005 Refractions Research Inc.
+--
+-- Copyright (C) 2010 Sandro Santilli <strk@keybit.net>
+-- Copyright (C) 2005 Refractions Research Inc.
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
@@ -171,7 +173,9 @@
 -- Let people decide about that
 -- DROP SCHEMA topology CASCADE;
 
-BEGIN;
+-- Doing everything outside of a transaction helps
+-- upgrading in the best case.
+-- BEGIN;
 
 CREATE SCHEMA topology;
 
@@ -1462,8 +1466,6 @@ DECLARE
 	edgeid int;
 BEGIN
 	RAISE DEBUG ''Line: %'', ST_asEWKT(aline);
-
-	ngeoms := ST_NumGeometries(aline);
 
 	firstpoint = StartPoint(aline);
 	lastpoint = EndPoint(aline);
@@ -3866,5 +3868,5 @@ LANGUAGE 'plpgsql' _VOLATILE;
 
 --=}  SQL/MM block
 
-COMMIT;
+--COMMIT;
 
