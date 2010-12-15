@@ -950,7 +950,6 @@ PG_LWGEOM;
  * If you request bbox (wantbbox=1) it will be extracted or computed
  * from the serialized form.
  */
-extern PG_LWGEOM *PG_LWGEOM_construct(uchar *serialized, int srid, int wantbbox);
 
 /*
  * Compute bbox of serialized geom
@@ -963,7 +962,6 @@ extern int compute_serialized_box3d_p(uchar *serialized_form, BOX3D *box);
  * Evaluate with an heuristic if the provided PG_LWGEOM is worth
  * caching a bbox
  */
-char is_worth_caching_pglwgeom_bbox(const PG_LWGEOM *);
 char is_worth_caching_serialized_bbox(const uchar *);
 char is_worth_caching_lwgeom_bbox(const LWGEOM *);
 

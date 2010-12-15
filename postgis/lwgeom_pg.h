@@ -68,9 +68,19 @@ extern void pg_unparser_errhint(LWGEOM_UNPARSER_RESULT *lwg_unparser_result);
         } while(0);
 
 
+/*
+* Temporary changeover defines for PG_LWGEOM and GSERIALIZED
+*/
+#undef GSERIALIZED_ON
+#ifdef GSERIALIZED_ON
+#define PG_LWGEOM GSERIALIZED
+#endif
+
+
 /* Serialize/deserialize a PG_LWGEOM (postgis datatype) */
 extern PG_LWGEOM *pglwgeom_serialize(LWGEOM *lwgeom);
 extern LWGEOM *pglwgeom_deserialize(PG_LWGEOM *pglwgeom);
+extern PG_LWGEOM *PG_LWGEOM_construct(uchar *serialized, int srid, int wantbbox);
 
 /* PG_LWGEOM SRID get/set */
 extern PG_LWGEOM *pglwgeom_set_srid(PG_LWGEOM *pglwgeom, int32 newSRID);
@@ -87,8 +97,7 @@ extern int pglwgeom_is_empty(const PG_LWGEOM *geom);
 extern int pglwgeom_getbox2d_p(const PG_LWGEOM *geom, BOX2DFLOAT4 *box);
 extern BOX3D *pglwgeom_compute_serialized_box3d(const PG_LWGEOM *geom);
 extern int pglwgeom_compute_serialized_box3d_p(const PG_LWGEOM *geom, BOX3D *box3d);
-
-extern Oid getGeometryOID(void);
+extern char is_worth_caching_pglwgeom_bbox(const PG_LWGEOM *);
 
 /* PG-dependant */
 

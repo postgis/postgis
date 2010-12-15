@@ -1892,11 +1892,9 @@ PG_FUNCTION_INFO_V1(LWGEOM_zmflag);
 Datum LWGEOM_zmflag(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *in;
-	uchar type;
 	int ret = 0;
 
 	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	type = in->type;
 	if ( pglwgeom_has_z(in) ) ret += 2;
 	if ( pglwgeom_has_m(in) ) ret += 1;
 	PG_FREE_IF_COPY(in, 0);

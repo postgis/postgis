@@ -468,6 +468,8 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 	double start_measure = PG_GETARG_FLOAT8(1);
 	double end_measure = PG_GETARG_FLOAT8(2);
 	LWGEOM *lwin, *lwout;
+	int hasz = pglwgeom_has_z(gin);
+	int hasm = pglwgeom_has_m(gin);
 	int type;
 
 	if ( end_measure < start_measure )
@@ -475,11 +477,11 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 		lwerror("locate_between_m: 2nd arg must be bigger then 1st arg");
 		PG_RETURN_NULL();
 	}
-
+	
 	/*
 	 * Return error if input doesn't have a measure
 	 */
-	if ( ! lwgeom_hasM(gin->type) )
+	if ( ! hasm )
 	{
 		lwerror("Geometry argument does not have an 'M' ordinate");
 		PG_RETURN_NULL();
@@ -507,8 +509,7 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 	if ( lwout == NULL )
 	{
 		lwout = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, 
-		            pglwgeom_get_srid(gin), lwgeom_hasZ(gin->type),
-		            lwgeom_hasM(gin->type));
+		            pglwgeom_get_srid(gin), hasz, hasm);
 	}
 
 	gout = pglwgeom_serialize(lwout);

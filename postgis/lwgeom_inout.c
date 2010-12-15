@@ -411,16 +411,6 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 }
 
 char
-is_worth_caching_pglwgeom_bbox(const PG_LWGEOM *in)
-{
-#if ! POSTGIS_AUTOCACHE_BBOX
-	return false;
-#endif
-	if ( pglwgeom_get_type(in) == POINTTYPE ) return false;
-	return true;
-}
-
-char
 is_worth_caching_serialized_bbox(const uchar *in)
 {
 #if ! POSTGIS_AUTOCACHE_BBOX
