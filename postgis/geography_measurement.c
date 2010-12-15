@@ -182,10 +182,8 @@ Datum geography_expand(PG_FUNCTION_ARGS)
 	   input is an EMPTY geometry. */
 	if ( geography_gidx(g, gidx) == LW_FAILURE )
 	{
-		g_out = palloc(VARSIZE(g));
-		memcpy(g_out, g, VARSIZE(g));
 		pfree(gidx);
-		PG_RETURN_POINTER(g_out);
+		PG_RETURN_POINTER(g);
 	}
 
 	/* Read our distance value and normalize to unit-sphere. */

@@ -1375,9 +1375,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 	if ( txnsp )
 	{
-		nsp = palloc(VARSIZE(txnsp)+1);
-		memcpy(nsp, VARDATA(txnsp), VARSIZE(txnsp)-VARHDRSZ);
-		nsp[VARSIZE(txnsp)-VARHDRSZ]='\0';
+		nsp = text2cstring(txnsp);
 		querysize += VARSIZE(txnsp);
 	}
 	else
@@ -1385,13 +1383,8 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 		querysize += 32; /* current_schema() */
 	}
 
-	tbl = palloc(VARSIZE(txtbl)+1);
-	memcpy(tbl, VARDATA(txtbl), VARSIZE(txtbl)-VARHDRSZ);
-	tbl[VARSIZE(txtbl)-VARHDRSZ]='\0';
-
-	col = palloc(VARSIZE(txcol)+1);
-	memcpy(col, VARDATA(txcol), VARSIZE(txcol)-VARHDRSZ);
-	col[VARSIZE(txcol)-VARHDRSZ]='\0';
+	tbl = text2cstring(txtbl);
+	col = text2cstring(txcol);
 
 #if POSTGIS_DEBUG_LEVEL > 0
 	if ( txnsp )

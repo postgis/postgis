@@ -480,11 +480,7 @@ Datum geography_as_text(PG_FUNCTION_ARGS)
 	wkt = lwgeom_to_wkt(lwgeom, WKT_ISO, DBL_DIG, &len);
 
 	/* Copy into text obect */
-	len = len - 1 + VARHDRSZ;
-	result = palloc(len);
-	SET_VARSIZE(result, len);
-	memcpy(VARDATA(result), wkt, len - VARHDRSZ);
-
+	result = cstring2text(wkt);
 	pfree(wkt);
 	lwgeom_free(lwgeom);
 
@@ -502,7 +498,6 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	GSERIALIZED *g = NULL;
 	char *gml;
 	text *result;
-	int len;
 	int version;
 	char *srs;
 	int srid = SRID_DEFAULT;
@@ -586,16 +581,10 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
     lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(g, 1);
 
-	len = strlen(gml) + VARHDRSZ;
-
-	result = palloc(len);
-	SET_VARSIZE(result, len);
-
-	memcpy(VARDATA(result), gml, len-VARHDRSZ);
-
+	result = cstring2text(gml);
 	lwfree(gml);
 
-	PG_RETURN_POINTER(result);
+	PG_RETURN_TEXT_P(result);
 }
 
 
@@ -609,7 +598,6 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom = NULL;
 	char *kml;
 	text *result;
-	int len;
 	int version;
 	int precision = OUT_MAX_DOUBLE_PRECISION;
 	static const char *default_prefix = "";
@@ -668,16 +656,10 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
     lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(g, 1);
 
-	len = strlen(kml) + VARHDRSZ;
-
-	result = palloc(len);
-	SET_VARSIZE(result, len);
-
-	memcpy(VARDATA(result), kml, len-VARHDRSZ);
-
+	result = cstring2text(kml);
 	lwfree(kml);
 
-	PG_RETURN_POINTER(result);
+	PG_RETURN_TEXT_P(result);
 }
 
 
@@ -691,7 +673,6 @@ Datum geography_as_svg(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom = NULL;
 	char *svg;
 	text *result;
-	int len;
 	int relative = 0;
 	int precision=OUT_MAX_DOUBLE_PRECISION;
 
@@ -719,14 +700,10 @@ Datum geography_as_svg(PG_FUNCTION_ARGS)
     lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(g, 0);
 
-	len = strlen(svg) + VARHDRSZ;
-	result = palloc(len);
-	SET_VARSIZE(result, len);
-	memcpy(VARDATA(result), svg, len-VARHDRSZ);
-
+	result = cstring2text(svg);
 	lwfree(svg);
 
-	PG_RETURN_POINTER(result);
+	PG_RETURN_TEXT_P(result);
 }
 
 
@@ -740,7 +717,6 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 	GSERIALIZED *g = NULL;
 	char *geojson;
 	text *result;
-	int len;
 	int version;
 	int option = 0;
 	int has_bbox = 0;
@@ -800,14 +776,10 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(g, 1);
 	if (srs) pfree(srs);
 
-	len = strlen(geojson) + VARHDRSZ;
-	result = palloc(len);
-	SET_VARSIZE(result, len);
-	memcpy(VARDATA(result), geojson, len-VARHDRSZ);
-
+	result = cstring2text(geojson);
 	lwfree(geojson);
 
-	PG_RETURN_POINTER(result);
+	PG_RETURN_TEXT_P(result);
 }
 
 
@@ -874,21 +846,17 @@ PG_FUNCTION_INFO_V1(geography_from_binary);
 Datum geography_from_binary(PG_FUNCTION_ARGS)
 {
 	char *wkb_cstring = NULL;
-	char *wkb_hex = NULL;
+	text *wkb_hex = NULL;
 	char *wkb_bytea = (char*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	char *hexarg = palloc(4 + VARHDRSZ);
-	size_t wkb_hex_size;
 
 	/* Create our second argument to binary_encode */
 	SET_VARSIZE(hexarg, 4 + VARHDRSZ);
 	memcpy(VARDATA(hexarg), "hex", 4);
 
 	/* Convert the bytea into a hex representation cstring */
-	wkb_hex = DatumGetPointer(DirectFunctionCall2(binary_encode, PointerGetDatum(wkb_bytea), PointerGetDatum(hexarg)));
-	wkb_hex_size = VARSIZE(wkb_hex) - VARHDRSZ;
-	wkb_cstring = palloc(wkb_hex_size + 1);
-	memcpy(wkb_cstring, VARDATA(wkb_hex), wkb_hex_size);
-	wkb_cstring[wkb_hex_size] = '\0'; /* Null terminate the cstring */
+	wkb_hex = (text*)DatumGetPointer(DirectFunctionCall2(binary_encode, PointerGetDatum(wkb_bytea), PointerGetDatum(hexarg)));
+	wkb_cstring = text2cstring(wkb_hex);
 	pfree(hexarg);
 
 	/* Pass the cstring to the input parser, and magic occurs! */
@@ -924,29 +892,26 @@ Datum geography_typmod_type(PG_FUNCTION_ARGS)
 	int32 typmod = PG_GETARG_INT32(0);
 	int32 type = TYPMOD_GET_TYPE(typmod);
 	char *s = (char*)palloc(64);
-	char *str = s;
-	int slen = 0;
+	char *ptr = s;
+	text *stext;
 
 	/* Has type? */
 	if ( typmod < 0 || type == 0 )
-		str += sprintf(str, "Geometry");
+		ptr += sprintf(ptr, "Geometry");
 	else
-		str += sprintf(str, "%s", lwtype_name(type));
+		ptr += sprintf(ptr, "%s", lwtype_name(type));
 
 	/* Has Z? */
 	if ( typmod >= 0 && TYPMOD_GET_Z(typmod) )
-		str += sprintf(str, "%s", "Z");
+		ptr += sprintf(ptr, "%s", "Z");
 
 	/* Has M? */
 	if ( typmod >= 0 && TYPMOD_GET_M(typmod) )
-		str += sprintf(str, "%s", "M");
+		ptr += sprintf(ptr, "%s", "M");
 
-	slen = strlen(s) + 1;
-	str = palloc(slen + VARHDRSZ);
-	SET_VARSIZE(str, slen + VARHDRSZ);
-	memcpy(VARDATA(str), s, slen);
+	stext = cstring2text(s);
 	pfree(s);
-	PG_RETURN_POINTER(str);
+	PG_RETURN_TEXT_P(stext);
 }
 
 PG_FUNCTION_INFO_V1(geography_from_geometry);

@@ -101,7 +101,6 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 	char *gml;
 	text *result;
-	int len;
 	int version;
 	char *srs;
 	int srid;
@@ -178,16 +177,10 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 1);
 
-	len = strlen(gml) + VARHDRSZ;
-
-	result = palloc(len);
-	SET_VARSIZE(result, len);
-
-	memcpy(VARDATA(result), gml, len-VARHDRSZ);
-
+	result = cstring2text(gml);
 	lwfree(gml);
 
-	PG_RETURN_POINTER(result);
+	PG_RETURN_TEXT_P(result);
 }
 
 
@@ -277,7 +270,6 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 	char *geojson;
 	text *result;
 	int srid;
-	int len;
 	int version;
 	int option = 0;
 	int has_bbox = 0;
@@ -340,14 +332,11 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom, 1);
 	if (srs) pfree(srs);
 
-	len = strlen(geojson) + VARHDRSZ;
-	result = palloc(len);
-	SET_VARSIZE(result, len);
-	memcpy(VARDATA(result), geojson, len-VARHDRSZ);
+	result = cstring2text(geojson);
 
 	lwfree(geojson);
 
-	PG_RETURN_POINTER(result);
+	PG_RETURN_TEXT_P(result);
 }
 
 
@@ -361,7 +350,6 @@ Datum LWGEOM_asSVG(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 	char *svg;
 	text *result;
-	int len;
 	int relative = 0;
 	int precision=OUT_MAX_DOUBLE_PRECISION;
 
@@ -383,15 +371,10 @@ Datum LWGEOM_asSVG(PG_FUNCTION_ARGS)
 
 	lwgeom = pglwgeom_deserialize(geom);
 	svg = lwgeom_to_svg(lwgeom, precision, relative);
+	result = cstring2text(svg);
 	lwgeom_free(lwgeom);
+	pfree(svg);
 	PG_FREE_IF_COPY(geom, 0);
 
-	len = strlen(svg) + VARHDRSZ;
-	result = palloc(len);
-	SET_VARSIZE(result, len);
-	memcpy(VARDATA(result), svg, len-VARHDRSZ);
-
-	lwfree(svg);
-
-	PG_RETURN_POINTER(result);
+	PG_RETURN_TEXT_P(result);
 }
