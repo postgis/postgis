@@ -14,3 +14,6 @@ install uninstall:
 
 # There's nothing to clean
 clean:
+
+# And there's nothing to check
+check:

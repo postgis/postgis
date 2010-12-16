@@ -8,7 +8,7 @@
 SUBDIRS = liblwgeom postgis loader utils raster @TOPOLOGY@
 
 # todo: add more rules here, like uninstall, clean...
-all install uninstall noop clean:
+all install uninstall noop clean check:
 	for s in $(SUBDIRS); do \
 		echo "---- Making $@ in $${s}"; \
 		$(MAKE) -C $${s} $@ || exit 1; \
@@ -25,6 +25,16 @@ clean: docs-clean test-clean clean-local
 
 clean-local:
 	rm -f postgis.sql postgis_upgrade.sql
+
+# TODO: drop 'test' target..
+test: check
+
+check: all check-local
+
+# TODO: move to a 'check' rule under regress dir?
+check-local:
+	$(MAKE) -C regress check
+
 
 distclean: clean
 	rm -Rf autom4te.cache
@@ -52,10 +62,6 @@ garden:
 	@echo 'Launch regression Test'
 	@echo '------------------------------------------------------'
 	$(MAKE) -C regress garden
-
-test check: postgis
-	$(MAKE) -C liblwgeom/cunit check
-	$(MAKE) -C regress check
 
 test-clean:
 	$(MAKE) -C regress clean
