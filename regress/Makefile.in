@@ -102,8 +102,6 @@ endif
 
 all install uninstall distclean:
 
-check: test 
-
 postgis.sql: ../postgis/postgis.sql
 	sed 's,$$libdir,$(REGRESS_INSTALLDIR)/lib,g' ../postgis/postgis.sql > postgis.sql
 
