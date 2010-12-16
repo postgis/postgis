@@ -8,7 +8,7 @@
 SUBDIRS = liblwgeom postgis loader utils raster @TOPOLOGY@
 
 # todo: add more rules here, like uninstall, clean...
-all install uninstall noop clean check:
+all install uninstall noop clean distclean check:
 	for s in $(SUBDIRS); do \
 		echo "---- Making $@ in $${s}"; \
 		$(MAKE) -C $${s} $@ || exit 1; \
@@ -35,8 +35,9 @@ check: all check-local
 check-local:
 	$(MAKE) -C regress check
 
+distclean: clean distclean-local
 
-distclean: clean
+distclean-local: clean
 	rm -Rf autom4te.cache
 	rm -f config.log config.cache config.status 
 	rm -f postgis_config.h

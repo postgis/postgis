@@ -13,7 +13,7 @@ all:
 install uninstall:
 
 # There's nothing to clean
-clean:
+clean distclean:
 
 # And there's nothing to check
 check:
