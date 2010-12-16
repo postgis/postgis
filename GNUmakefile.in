@@ -8,7 +8,7 @@
 SUBDIRS = liblwgeom postgis loader utils raster @TOPOLOGY@
 
 # todo: add more rules here, like uninstall, clean...
-all install uninstall noop:
+all install uninstall noop clean:
 	for s in $(SUBDIRS); do \
 		echo "---- Making $@ in $${s}"; \
 		$(MAKE) -C $${s} $@ || exit 1; \
@@ -21,7 +21,9 @@ install: all
 
 uninstall: docs-uninstall comments-uninstall
 
-clean: liblwgeom-clean postgis-clean loaderdumper-clean docs-clean test-clean raster-clean
+clean: docs-clean test-clean clean-local
+
+clean-local:
 	rm -f postgis.sql postgis_upgrade.sql
 
 distclean: clean

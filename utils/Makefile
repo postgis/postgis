@@ -10,5 +10,7 @@ all:
 	chmod +x $(SCRIPTS)
 
 # We don't install utils (why?)
-install:
-uninstall:
+install uninstall:
+
+# There's nothing to clean
+clean:
