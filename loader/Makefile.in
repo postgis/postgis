@@ -128,7 +128,9 @@ uninstall:
 	@rm -f $(DESTDIR)$(bindir)/$(SHP2PGSQL-CLI)
 
 check:
+ifdef gtk_build
 	make -C cunit check
+endif
 
 clean:
 	@rm -f *.o $(SHP2PGSQL-CLI) $(PGSQL2SHP-CLI) $(GTK_WIN32_RES)
