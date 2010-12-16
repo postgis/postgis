@@ -100,7 +100,9 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 33),1)
 	TESTS += snap
 endif
 
-all: test 
+all install uninstall distclean:
+
+check: test 
 
 postgis.sql: ../postgis/postgis.sql
 	sed 's,$$libdir,$(REGRESS_INSTALLDIR)/lib,g' ../postgis/postgis.sql > postgis.sql

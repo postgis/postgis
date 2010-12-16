@@ -5,7 +5,7 @@
 #-----------------------------------------------------
 
 # todo: add all subdirs
-SUBDIRS = liblwgeom postgis loader utils raster @TOPOLOGY@
+SUBDIRS = liblwgeom regress postgis loader utils raster @TOPOLOGY@
 
 # todo: add more rules here, like uninstall, clean...
 all install uninstall noop clean distclean check:
@@ -21,7 +21,7 @@ install: all
 
 uninstall: docs-uninstall comments-uninstall
 
-clean: docs-clean test-clean clean-local
+clean: docs-clean clean-local
 
 clean-local:
 	rm -f postgis.sql postgis_upgrade.sql
@@ -29,11 +29,7 @@ clean-local:
 # TODO: drop 'test' target..
 test: check
 
-check: all check-local
-
-# TODO: move to a 'check' rule under regress dir?
-check-local:
-	$(MAKE) -C regress check
+check: all
 
 distclean: clean distclean-local
 
@@ -64,8 +60,8 @@ garden:
 	@echo '------------------------------------------------------'
 	$(MAKE) -C regress garden
 
-test-clean:
-	$(MAKE) -C regress clean
+#test-clean:
+#	$(MAKE) -C regress clean
 
 #liblwgeom:
 #	$(MAKE) -C liblwgeom 
