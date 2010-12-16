@@ -53,3 +53,6 @@ doc/html/postgis.html
 doc/postgis-out.xml
 doc/postgis_aggs_mm.xml
 raster/raster_config.h
+loader/cunit/cu_tester
+loader/shp2pgsql-gui
+GNUmakefile
