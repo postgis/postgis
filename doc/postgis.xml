@@ -43,6 +43,8 @@
 <!ENTITY reference_exception SYSTEM "reference_exception.xml">
 <!ENTITY reference_raster SYSTEM "reference_raster.xml">
 <!ENTITY faq_raster SYSTEM "faq_raster.xml">
+<!ENTITY reference SYSTEM "extras.xml">
+<!ENTITY reference SYSTEM "extras_topology.xml">
 
 <!ENTITY sfs_compliant 
 "<inlinemediaobject>
@@ -135,6 +137,7 @@
   &reference_raster;
   &faq_raster;
   &postgis_aggs_mm;
+  &extras;
   &reporting;
   &release_notes;
 

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="extras">
+  <title>PostGIS Exras</title>
+
+  <para>This chapter covers additional modules that are packaged with PostGIS, but not installed
+  	by default. </para>
+
+  &extras_topology;
+  
+</chapter>
