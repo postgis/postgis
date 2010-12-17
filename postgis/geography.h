@@ -90,21 +90,25 @@ typedef struct
 #define GIDX_SIZE(dimensions) (sizeof(int32) + 2*(dimensions)*sizeof(float))
 /* Allocate a new gidx */
 GIDX* gidx_new(int ndims);
-/* Pull out the gidx bounding box with a absolute minimum system overhead */
-int geography_datum_gidx(Datum geography_datum, GIDX *gidx);
-/* Pull out the gidx bounding box from an already de-toasted geography */
-int geography_gidx(GSERIALIZED *g, GIDX *gidx);
 /* Convert a gidx to a gbox */
 void gbox_from_gidx(GIDX *gidx, GBOX *gbox);
 /* Convert a gbox to a new gidx */
 GIDX* gidx_from_gbox(GBOX box);
-/* Copy a new bounding box into an existing gserialized */
-GSERIALIZED* gidx_insert_into_gserialized(GSERIALIZED *g, GIDX *gidx);
 
-/* Pull out the gidx bounding box as fast as possible */
-int gserialized_datum_to_gidx_p(Datum gsdatum, GIDX *gidx);
-/* Pull out a gbox bounding box as fast as possible */
-int gserialized_datum_to_gbox_p(Datum gsdatum, GBOX *gbox);
+
+/* Pull out the gidx bounding box with a absolute minimum system overhead */
+int gserialized_datum_get_gidx_p(Datum gserialized_datum, GIDX *gidx);
+/* Pull out the gidx bounding box from an already de-toasted geography */
+int gserialized_get_gidx_p(GSERIALIZED *g, GIDX *gidx);
+/* Copy a new bounding box into an existing gserialized */
+GSERIALIZED* gserialized_set_gidx(GSERIALIZED *g, GIDX *gidx);
+/* Expand the embedded bounding box in a #GSERIALIZED */
+GSERIALIZED* gserialized_expand(GSERIALIZED *g, double distance);
+
+/* Pull out a gbox bounding box as fast as possible. */
+int gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox);
+/* Given two datums, do they overlap? Computed very fast using embedded boxes. */
+int gserialized_overlaps(Datum gs1, Datum gs2);
 
 
 

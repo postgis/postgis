@@ -63,6 +63,7 @@ NOTICE:  No points in input array
 #277|<gml:Point><gml:coordinates>1,1e+308</gml:coordinates></gml:Point>
 #299|2
 #304
+#304.a|21
 #408|IllegalArgumentException: point array must contain 0 or >1 elements
 NOTICE:  IllegalArgumentException: point array must contain 0 or >1 elements
 #408.1|f

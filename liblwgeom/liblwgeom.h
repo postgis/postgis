@@ -1895,6 +1895,12 @@ void gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside);
 extern GBOX* gbox_new(uchar flags);
 
 /**
+* Zero out all the entries in the #GBOX. Useful for cleaning
+* statically allocated gboxes.
+*/
+extern void gbox_init(GBOX *gbox);
+
+/**
 * Update the merged #GBOX to be large enough to include itself and the new box.
 */
 extern int gbox_merge(const GBOX *new_box, GBOX *merged_box);

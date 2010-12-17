@@ -257,16 +257,20 @@ END;
 $BODY$ LANGUAGE 'plpgsql' IMMUTABLE
   COST 100;
 
-SELECT ST_AsText(the_geog) as the_pt, ST_Area(ST_Buffer(the_geog,10)) As the_area, 
-	ST_Area(geography(ST_Transform(ST_Buffer(ST_Transform(geometry(the_geog),utm_srid),10),4326))) As geog_utm_area
-FROM (SELECT geography(ST_SetSRID(ST_Point(i*10,j*10),4326)) As the_geog, utmzone(ST_SetSRID(ST_Point(i*10,j*10),4326)) As utm_srid
-	FROM generate_series(-17,17) As i 
-	CROSS JOIN generate_series(-8,8) As j
-) As foo
+CREATE TABLE utm_dots ( the_geog geography, utm_srid integer);
+INSERT INTO utm_dots SELECT geography(ST_SetSRID(ST_Point(i*10,j*10),4326)) As the_geog, utmzone(ST_SetSRID(ST_Point(i*10,j*10),4326)) As utm_srid FROM generate_series(-17,17) As i CROSS JOIN generate_series(-8,8) As j;
+
+SELECT ST_AsText(the_geog) as the_pt, 
+       ST_Area(ST_Buffer(the_geog,10)) As the_area, 
+       ST_Area(geography(ST_Transform(ST_Buffer(ST_Transform(geometry(the_geog),utm_srid),10),4326))) As geog_utm_area
+FROM utm_dots 
 WHERE ST_Area(ST_Buffer(the_geog,10)) NOT between 310 and 314
 LIMIT 10;
 
+SELECT '#304.a', Count(*) FROM utm_dots WHERE ST_DWithin(the_geog, 'POINT(0 0)'::geography, 3000000);
+
 DROP FUNCTION utmzone(geometry);
+DROP TABLE utm_dots;
 
 -- #408 --
 SELECT '#408', st_isvalidreason('0105000020E0670000010000000102000020E06700000100000016DA52BA62A04141FFF3AD290B735241');

@@ -16,8 +16,14 @@
 GBOX* gbox_new(uchar flags)
 {
 	GBOX *g = (GBOX*)lwalloc(sizeof(GBOX));
+	gbox_init(g);
 	g->flags = flags;
 	return g;
+}
+
+void gbox_init(GBOX *gbox)
+{
+	memset(gbox, 0, sizeof(GBOX));
 }
 
 /* TODO to be removed */

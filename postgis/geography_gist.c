@@ -351,75 +351,6 @@ static int gidx_from_gbox_p(GBOX box, GIDX *a)
 	return LW_SUCCESS;
 }
 
-GIDX* gidx_from_gbox(GBOX box)
-{
-	int	ndims;
-	GIDX *a;
-
-	ndims = (FLAGS_GET_GEODETIC(box.flags) ? 3 : FLAGS_NDIMS(box.flags));
-	a = gidx_new(ndims);
-	gidx_from_gbox_p(box, a);
-	return a;
-}
-
-
-void gbox_from_gidx(GIDX *a, GBOX *gbox)
-{
-	gbox->xmin = (double)GIDX_GET_MIN(a,0);
-	gbox->ymin = (double)GIDX_GET_MIN(a,1);
-	gbox->zmin = (double)GIDX_GET_MIN(a,2);
-	gbox->xmax = (double)GIDX_GET_MAX(a,0);
-	gbox->ymax = (double)GIDX_GET_MAX(a,1);
-	gbox->zmax = (double)GIDX_GET_MAX(a,2);
-}
-
-/*
-** Make a copy of a GSERIALIZED, with a new bounding box value embedded.
-*/
-GSERIALIZED* gidx_insert_into_gserialized(GSERIALIZED *g, GIDX *gidx)
-{
-	int g_ndims = (FLAGS_GET_GEODETIC(g->flags) ? 3 : FLAGS_NDIMS(g->flags));
-	int box_ndims = GIDX_NDIMS(gidx);
-	GSERIALIZED *g_out = NULL;
-	size_t box_size = 2 * g_ndims * sizeof(float);
-
-	/* The dimensionality of the inputs has to match or we are SOL. */
-	if ( g_ndims != box_ndims )
-	{
-		return NULL;
-	}
-
-	/* Serialized already has room for a box. We just need to copy it and
-	   write the new values into place. */
-	if ( FLAGS_GET_BBOX(g->flags) )
-	{
-		g_out = palloc(VARSIZE(g));
-		memcpy(g_out, g, VARSIZE(g));
-	}
-	/* Serialized has no box. We need to allocate enough space for the old
-	   data plus the box, and leave a gap in the memory segment to write
-	   the new values into.
-	*/
-	else
-	{
-		size_t varsize_new = VARSIZE(g) + box_size;
-		uchar *ptr;
-		g_out = palloc(varsize_new);
-		/* Copy the head of g into place */
-		memcpy(g_out, g, 8);
-		/* Copy the body of g into place after leaving space for the box */
-		ptr = g_out->data;
-		ptr += box_size;
-		memcpy(ptr, g->data, VARSIZE(g) - 8);
-		FLAGS_SET_BBOX(g_out->flags, 1);
-		SET_VARSIZE(g_out, varsize_new);
-	}
-
-	/* Now write the gidx values into the memory segement */
-	memcpy(g_out->data, gidx->c, box_size);
-
-	return g_out;
-}
 
 
 /*
@@ -457,6 +388,24 @@ static bool gidx_overlaps(GIDX *a, GIDX *b)
 			return FALSE;
 	}
 	return TRUE;
+}
+
+/*
+** GIDX expansion, make d units bigger in all dimensions.
+*/
+static void gidx_expand(GIDX *a, float d)
+{
+	int i;
+
+	POSTGIS_DEBUG(5, "entered function");
+
+	if ( a == NULL ) return;
+
+	for (i = 0; i < GIDX_NDIMS(a); i++)
+	{
+		GIDX_SET_MIN(a, i, GIDX_GET_MIN(a, i) - d);
+		GIDX_SET_MAX(a, i, GIDX_GET_MAX(a, i) + d);
+	}
 }
 
 /*
@@ -501,6 +450,7 @@ static bool gidx_contains(GIDX *a, GIDX *b)
 
 	return TRUE;
 }
+
 /*
 ** Equality GIDX test.
 **
@@ -537,83 +487,37 @@ static bool gidx_equals(GIDX *a, GIDX *b)
 	return TRUE;
 }
 
-/*
-** Peak into a geography (gserialized) datum to find the bounding box. If the
-** box is there, copy it out and return it. If not, calculate the box from the
-** full geography and return the box based on that. If no box is available,
-** return LW_FAILURE, otherwise LW_SUCCESS.
-*/
-int geography_datum_gidx(Datum geography_datum, GIDX *gidx)
+GIDX* gidx_from_gbox(GBOX box)
 {
-	GSERIALIZED *gpart;
-	int result = LW_SUCCESS;
+	int	ndims;
+	GIDX *a;
 
-	POSTGIS_DEBUG(4, "entered function");
-
-	/*
-	** The most info we need is the 8 bytes of serialized header plus the 24 bytes
-	** of floats necessary to hold the 6 floats of the geocentric index
-	** bounding box, so 32 bytes.
-	*/
-	gpart = (GSERIALIZED*)PG_DETOAST_DATUM_SLICE(geography_datum, 0, 32);
-
-	POSTGIS_DEBUGF(4, "got flags %d", gpart->flags);
-
-	if ( FLAGS_GET_BBOX(gpart->flags) && FLAGS_GET_GEODETIC(gpart->flags) )
-	{
-		const size_t size = 2 * 3 * sizeof(float);
-		POSTGIS_DEBUG(4, "copying box out of serialization");
-		memcpy(gidx->c, gpart->data, size);
-		SET_VARSIZE(gidx, VARHDRSZ + size);
-	}
-	else
-	{
-		/* No, we need to calculate it from the full object. */
-		GSERIALIZED *g = (GSERIALIZED*)PG_DETOAST_DATUM(geography_datum);
-		LWGEOM *lwgeom = lwgeom_from_gserialized(g);
-		GBOX gbox;
-		if ( lwgeom_calculate_gbox(lwgeom, &gbox) == LW_FAILURE )
-		{
-			POSTGIS_DEBUG(4, "could not calculate bbox, returning failure");
-			lwgeom_free(lwgeom);
-			return LW_FAILURE;
-		}
-		lwgeom_free(lwgeom);
-		result = gidx_from_gbox_p(gbox, gidx);
-	}
-	if ( result == LW_SUCCESS )
-	{
-		POSTGIS_DEBUGF(4, "got gidx %s", gidx_to_string(gidx));
-	}
-
-	return result;
+	ndims = (FLAGS_GET_GEODETIC(box.flags) ? 3 : FLAGS_NDIMS(box.flags));
+	a = gidx_new(ndims);
+	gidx_from_gbox_p(box, a);
+	return a;
 }
+
+
+void gbox_from_gidx(GIDX *a, GBOX *gbox)
+{
+	gbox->xmin = (double)GIDX_GET_MIN(a,0);
+	gbox->ymin = (double)GIDX_GET_MIN(a,1);
+	gbox->zmin = (double)GIDX_GET_MIN(a,2);
+	gbox->xmax = (double)GIDX_GET_MAX(a,0);
+	gbox->ymax = (double)GIDX_GET_MAX(a,1);
+	gbox->zmax = (double)GIDX_GET_MAX(a,2);
+}
+
 
 /**
-* Given a #GSERIALIZED datum, as quickly as possible (peaking into the top
-* of the memory) return the gbox extents. Does not deserialize the geometry,
-* but *WARNING* returns a slightly larger bounding box than actually
-* exists.
+* Peak into a #GSERIALIZED datum to find the bounding box. If the
+* box is there, copy it out and return it. If not, calculate the box from the
+* full object and return the box based on that. If no box is available,
+* return #LW_FAILURE, otherwise #LW_SUCCESS.
 */
-int gserialized_datum_to_gbox_p(Datum gsdatum, GBOX *gbox)
-{
-	char gboxmem[GIDX_MAX_SIZE];
-	GIDX *gidx = (GIDX*)gboxmem;
-	
-	if( LW_FAILURE == gserialized_datum_to_gidx_p(gsdatum, gidx) )
-		return LW_FAILURE;
-		
-	gbox_from_gidx(gidx, gbox);
-	return LW_SUCCESS;
-}
-
-/*
-** Peak into a gserialized datum to find the bounding box. If the
-** box is there, copy it out and return it. If not, calculate the box from the
-** full object and return the box based on that. If no box is available,
-** return LW_FAILURE, otherwise LW_SUCCESS.
-*/
-int gserialized_datum_to_gidx_p(Datum gsdatum, GIDX *gidx)
+int 
+gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 {
 	GSERIALIZED *gpart;
 	uchar flags;
@@ -664,13 +568,35 @@ int gserialized_datum_to_gidx_p(Datum gsdatum, GIDX *gidx)
 
 	return result;
 }
+
+/**
+* Given a #GSERIALIZED datum, as quickly as possible (peaking into the top
+* of the memory) return the gbox extents. Does not deserialize the geometry,
+* but <em>WARNING</em> returns a slightly larger bounding box than actually
+* encompasses the objects. For geography objects returns geocentric bounding
+* box, for geometry objects returns cartesian bounding box.
+*/
+int 
+gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox)
+{
+	char gboxmem[GIDX_MAX_SIZE];
+	GIDX *gidx = (GIDX*)gboxmem;
+	
+	if( LW_FAILURE == gserialized_datum_get_gidx_p(gsdatum, gidx) )
+		return LW_FAILURE;
+		
+	gbox_from_gidx(gidx, gbox);
+	return LW_SUCCESS;
+}
+
+
 /*
 ** Peak into a geography to find the bounding box. If the
 ** box is there, copy it out and return it. If not, calculate the box from the
 ** full geography and return the box based on that. If no box is available,
 ** return LW_FAILURE, otherwise LW_SUCCESS.
 */
-int geography_gidx(GSERIALIZED *g, GIDX *gidx)
+int gserialized_get_gidx_p(GSERIALIZED *g, GIDX *gidx)
 {
 	int result = LW_SUCCESS;
 
@@ -707,6 +633,107 @@ int geography_gidx(GSERIALIZED *g, GIDX *gidx)
 	return result;
 }
 
+/**
+* Update the bounding box of a #GSERIALIZED, allocating a fresh one
+* if there is not enough space to just write the new box in. 
+* <em>WARNING</em> if a new object needs to be created, the 
+* input pointer will have to be freed by the caller! Check
+* to see if input == output. Returns null if there's a problem
+* like mismatched dimensions.
+*/
+GSERIALIZED* gserialized_set_gidx(GSERIALIZED *g, GIDX *gidx)
+{
+	int g_ndims = (FLAGS_GET_GEODETIC(g->flags) ? 3 : FLAGS_NDIMS(g->flags));
+	int box_ndims = GIDX_NDIMS(gidx);
+	GSERIALIZED *g_out = NULL;
+	size_t box_size = 2 * g_ndims * sizeof(float);
+
+	/* The dimensionality of the inputs has to match or we are SOL. */
+	if ( g_ndims != box_ndims )
+	{
+		return NULL;
+	}
+
+	/* Serialized already has room for a box. */
+	if ( FLAGS_GET_BBOX(g->flags) )
+	{
+		g_out = g;
+	}
+	/* Serialized has no box. We need to allocate enough space for the old
+	   data plus the box, and leave a gap in the memory segment to write
+	   the new values into.
+	*/
+	else
+	{
+		size_t varsize_new = VARSIZE(g) + box_size;
+		uchar *ptr;
+		g_out = palloc(varsize_new);
+		/* Copy the head of g into place */
+		memcpy(g_out, g, 8);
+		/* Copy the body of g into place after leaving space for the box */
+		ptr = g_out->data;
+		ptr += box_size;
+		memcpy(ptr, g->data, VARSIZE(g) - 8);
+		FLAGS_SET_BBOX(g_out->flags, 1);
+		SET_VARSIZE(g_out, varsize_new);
+	}
+
+	/* Now write the gidx values into the memory segement */
+	memcpy(g_out->data, gidx->c, box_size);
+
+	return g_out;
+}
+
+/**
+* Support function. Based on two datums return true if
+* they overlap and false otherwise. Useful for fast exiting
+* in functions doing geocalculation.
+*/
+int 
+gserialized_overlaps(Datum gs1, Datum gs2)
+{
+	/* Put aside some stack memory and use it for GIDX pointers. */
+	char boxmem1[GIDX_MAX_SIZE];
+	char boxmem2[GIDX_MAX_SIZE];
+	GIDX *gidx1 = (GIDX*)boxmem1;
+	GIDX *gidx2 = (GIDX*)boxmem2;
+
+	/* Must be able to build box for each arguement (ie, not empty geometry)
+	   and overlap boxes to return true. */
+	if ( (gserialized_datum_get_gidx_p(gs1, gidx1) == LW_SUCCESS) &&
+	     (gserialized_datum_get_gidx_p(gs2, gidx2) == LW_SUCCESS) &&
+	      gidx_overlaps(gidx1, gidx2) )
+	{
+		return LW_TRUE;
+	}
+
+	return LW_FALSE;
+}
+
+/**
+* Return a GSERIALIZED with an expanded bounding box.
+*/
+GSERIALIZED* 
+gserialized_expand(GSERIALIZED *g, double distance)
+{
+	char boxmem[GIDX_MAX_SIZE];
+	GIDX *gidx = (GIDX*)boxmem;
+	float fdistance = (float)distance;
+
+	/* Get our bounding box out of the geography, return right away if
+	   input is an EMPTY geometry. */
+	if ( gserialized_get_gidx_p(g, gidx) == LW_FAILURE )
+	{
+		return g;
+	}
+	
+	gidx_expand(gidx, fdistance);
+
+	return gserialized_set_gidx(g, gidx);
+}
+
+
+
 /***********************************************************************
 * GiST Support Functions
 */
@@ -726,9 +753,9 @@ Datum geography_overlaps(PG_FUNCTION_ARGS)
 
 	/* Must be able to build box for each arguement (ie, not empty geometry)
 	   and overlap boxes to return true. */
-	if ( geography_datum_gidx(PG_GETARG_DATUM(0), gbox1) &&
-	        geography_datum_gidx(PG_GETARG_DATUM(1), gbox2) &&
-	        gidx_overlaps(gbox1, gbox2) )
+	if ( (gserialized_datum_get_gidx_p(PG_GETARG_DATUM(0), gbox1) == LW_SUCCESS) &&
+	     (gserialized_datum_get_gidx_p(PG_GETARG_DATUM(1), gbox2) == LW_SUCCESS) &&
+	      gidx_overlaps(gbox1, gbox2) )
 	{
 		PG_RETURN_BOOL(TRUE);
 	}
@@ -782,7 +809,7 @@ Datum geography_gist_compress(PG_FUNCTION_ARGS)
 	}
 
 	/* Extract our index key from the GiST entry. */
-	result = geography_datum_gidx(entry_in->key, bbox_out);
+	result = gserialized_datum_get_gidx_p(entry_in->key, bbox_out);
 
 	/* Is the bounding box valid (non-empty, non-infinite)? If not, return input uncompressed. */
 	if ( result == LW_FAILURE )
@@ -935,7 +962,7 @@ Datum geography_gist_consistent(PG_FUNCTION_ARGS)
 	}
 
 	/* Null box should never make this far. */
-	if ( geography_datum_gidx(PG_GETARG_DATUM(1), query_gbox_index) == LW_FAILURE )
+	if ( gserialized_datum_get_gidx_p(PG_GETARG_DATUM(1), query_gbox_index) == LW_FAILURE )
 	{
 		POSTGIS_DEBUG(4, "[GIST] null query_gbox_index!");
 		PG_RETURN_BOOL(FALSE);

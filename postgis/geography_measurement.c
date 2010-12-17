@@ -168,44 +168,30 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_expand);
 Datum geography_expand(PG_FUNCTION_ARGS)
 {
-	GIDX *gidx = gidx_new(3);
 	GSERIALIZED *g = NULL;
 	GSERIALIZED *g_out = NULL;
 	double distance;
-	float fdistance;
-	int i;
 
-	/* Get a pointer to the geography */
-	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-
-	/* Get our bounding box out of the geography, return right away if
-	   input is an EMPTY geometry. */
-	if ( geography_gidx(g, gidx) == LW_FAILURE )
-	{
-		pfree(gidx);
-		PG_RETURN_POINTER(g);
-	}
+	/* Get a wholly-owned pointer to the geography */
+	g = (GSERIALIZED*)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 
 	/* Read our distance value and normalize to unit-sphere. */
 	distance = PG_GETARG_FLOAT8(1) / WGS84_RADIUS;
-	fdistance = (float)distance;
 
-	for ( i = 0; i < 3; i++ )
-	{
-		GIDX_SET_MIN(gidx, i, GIDX_GET_MIN(gidx, i) - fdistance);
-		GIDX_SET_MAX(gidx, i, GIDX_GET_MAX(gidx, i) + fdistance);
-	}
+	/* Try the expansion */
+	g_out = gserialized_expand(g, distance);
 
-	g_out = gidx_insert_into_gserialized(g, gidx);
-	pfree(gidx);
-
+	/* If the expansion fails, the return our input */
 	if ( g_out == NULL )
 	{
-		elog(ERROR, "gidx_insert_into_gserialized tried to insert mismatched dimensionality box into geography");
-		PG_RETURN_NULL();
+		PG_RETURN_POINTER(g);
+	}
+	
+	if ( g_out != g )
+	{
+		pfree(g);
 	}
 
-	PG_FREE_IF_COPY(g, 0);
 	PG_RETURN_POINTER(g_out);
 }
 
