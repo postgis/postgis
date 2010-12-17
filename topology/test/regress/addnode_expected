@@ -3,4 +3,6 @@ p1|1
 p1b|1
 p2|2
 p2b|2
+1||POINT(0 0)
+2||POINT(1 0)
 Topology 'nodes' dropped
