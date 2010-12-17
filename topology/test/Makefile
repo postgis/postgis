@@ -77,7 +77,8 @@ clean distclean:
 
 TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/legacy_invalid.sql regress/sqlmm.sql \
-	regress/legacy_query.sql regress/addnode.sql
+	regress/legacy_query.sql regress/addnode.sql \
+	regress/addedge.sql
 
 check: topo_predicates.sql
 	$(MAKE) -C ../../regress postgis.sql staged-install
