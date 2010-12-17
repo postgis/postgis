@@ -381,7 +381,7 @@ static double ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *sphero
 		return 0.0;
 
 	/* Get the raw min/max values for the latitudes */
-	ptarray_calculate_gbox(pa, &gbox2d);
+	ptarray_calculate_gbox_cartesian(pa, &gbox2d);
 
 	if ( signum(gbox2d.ymin) != signum(gbox2d.ymax) )
 		lwerror("ptarray_area_spheroid: cannot handle ptarray that crosses equator");

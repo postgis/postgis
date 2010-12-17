@@ -729,55 +729,7 @@ ptarray_set_point4d(POINTARRAY *pa, int n, POINT4D *p4d)
 }
 
 
-/*
- * Get a pointer to nth point of a POINTARRAY.
- * You cannot safely cast this to a real POINT, due to memory alignment
- * constraints. Use getPoint*_p for that.
- */
-uchar *
-getPoint_internal(const POINTARRAY *pa, int n)
-{
-	size_t size;
-	uchar *ptr;
 
-#if PARANOIA_LEVEL > 0
-	if ( pa == NULL )
-	{
-		lwerror("getPoint got NULL pointarray");
-		return NULL;
-	}
-	
-	LWDEBUGF(5, "(n=%d, pa.npoints=%d, pa.maxpoints=%d)",n,pa->npoints,pa->maxpoints);
-
-	if ( ( n < 0 ) || 
-	     ( n > pa->npoints ) ||
-	     ( n >= pa->maxpoints ) )
-	{
-		lwerror("getPoint_internal called outside of ptarray range (n=%d, pa.npoints=%d, pa.maxpoints=%d)",n,pa->npoints,pa->maxpoints);
-		return NULL; /*error */
-	}
-#endif
-
-	size = ptarray_point_size(pa);
-	
-	ptr = pa->serialized_pointlist + size * n;
-	LWDEBUGF(5, "point = %g %g %g", *((double*)(ptr)), *((double*)(ptr+8)), *((double*)(ptr+16)));
-
-	return ptr;
-}
-
-
-/*
- * Size of point represeneted in the POINTARRAY
- * 16 for 2d, 24 for 3d, 32 for 4d
- */
-int
-ptarray_point_size(const POINTARRAY *pa)
-{
-	LWDEBUGF(2, "ptarray_point_size: FLAGS_NDIMS(pa->flags)=%x",FLAGS_NDIMS(pa->flags));
-
-	return sizeof(double)*FLAGS_NDIMS(pa->flags);
-}
 
 
 /***************************************************************************

@@ -30,9 +30,7 @@ lwtriangle_construct(int srid, GBOX *bbox, POINTARRAY *points)
 	result = (LWTRIANGLE*) lwalloc(sizeof(LWTRIANGLE));
 	result->type = TRIANGLETYPE;
 
-	result->flags = 0;
-	FLAGS_SET_Z(result->flags, FLAGS_GET_Z(points->flags));
-	FLAGS_SET_M(result->flags, FLAGS_GET_M(points->flags));
+	result->flags = points->flags;
 	FLAGS_SET_BBOX(result->flags, bbox?1:0);
 	
 	result->srid = srid;

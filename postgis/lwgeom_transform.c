@@ -995,6 +995,8 @@ transform_point(POINT4D *pt, projPJ srcpj, projPJ dstpj)
 
 	if (pj_is_latlong(srcpj)) to_rad(pt);
 
+	LWDEBUGF(4, "transforming POINT(%f %f) from '%s' to '%s'", orig_pt.x, orig_pt.y, pj_get_def(srcpj,0), pj_get_def(dstpj,0));
+	
 	/* Perform the transform */
 	pj_transform(srcpj, dstpj, 1, 0, &(pt->x), &(pt->y), &(pt->z));
 

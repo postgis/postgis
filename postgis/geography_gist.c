@@ -568,14 +568,17 @@ int geography_datum_gidx(Datum geography_datum, GIDX *gidx)
 	}
 	else
 	{
+		/* No, we need to calculate it from the full object. */
 		GSERIALIZED *g = (GSERIALIZED*)PG_DETOAST_DATUM(geography_datum);
+		LWGEOM *lwgeom = lwgeom_from_gserialized(g);
 		GBOX gbox;
-		POSTGIS_DEBUG(4, "calculating new box from scratch");
-		if ( gserialized_calculate_gbox_geocentric_p(g, &gbox) == LW_FAILURE )
+		if ( lwgeom_calculate_gbox(lwgeom, &gbox) == LW_FAILURE )
 		{
-			POSTGIS_DEBUG(4, "calculated null bbox, returning null");
+			POSTGIS_DEBUG(4, "could not calculate bbox, returning failure");
+			lwgeom_free(lwgeom);
 			return LW_FAILURE;
 		}
+		lwgeom_free(lwgeom);
 		result = gidx_from_gbox_p(gbox, gidx);
 	}
 	if ( result == LW_SUCCESS )
@@ -586,6 +589,81 @@ int geography_datum_gidx(Datum geography_datum, GIDX *gidx)
 	return result;
 }
 
+/**
+* Given a #GSERIALIZED datum, as quickly as possible (peaking into the top
+* of the memory) return the gbox extents. Does not deserialize the geometry,
+* but *WARNING* returns a slightly larger bounding box than actually
+* exists.
+*/
+int gserialized_datum_to_gbox_p(Datum gsdatum, GBOX *gbox)
+{
+	char gboxmem[GIDX_MAX_SIZE];
+	GIDX *gidx = (GIDX*)gboxmem;
+	
+	if( LW_FAILURE == gserialized_datum_to_gidx_p(gsdatum, gidx) )
+		return LW_FAILURE;
+		
+	gbox_from_gidx(gidx, gbox);
+	return LW_SUCCESS;
+}
+
+/*
+** Peak into a gserialized datum to find the bounding box. If the
+** box is there, copy it out and return it. If not, calculate the box from the
+** full object and return the box based on that. If no box is available,
+** return LW_FAILURE, otherwise LW_SUCCESS.
+*/
+int gserialized_datum_to_gidx_p(Datum gsdatum, GIDX *gidx)
+{
+	GSERIALIZED *gpart;
+	uchar flags;
+	int result = LW_SUCCESS;
+
+	POSTGIS_DEBUG(4, "entered function");
+
+	/*
+	** The most info we need is the 8 bytes of serialized header plus the 32 bytes
+	** of floats necessary to hold the 8 floats of the largest XYZM index
+	** bounding box, so 40 bytes.
+	*/
+	gpart = (GSERIALIZED*)PG_DETOAST_DATUM_SLICE(gsdatum, 0, 40);
+	flags = gpart->flags;
+
+	POSTGIS_DEBUGF(4, "got flags %d", gpart->flags);
+
+	/* Do we even have a serialized bounding box? */
+	if ( FLAGS_GET_BBOX(flags) )
+	{
+		/* Yes! Copy it out into the GIDX! */
+		const size_t size = gbox_serialized_size(flags);
+		POSTGIS_DEBUG(4, "copying box out of serialization");
+		memcpy(gidx->c, gpart->data, size);
+		SET_VARSIZE(gidx, VARHDRSZ + size);
+		result = LW_SUCCESS;
+	}
+	else
+	{
+		/* No, we need to calculate it from the full object. */
+		GSERIALIZED *g = (GSERIALIZED*)PG_DETOAST_DATUM(gsdatum);
+		LWGEOM *lwgeom = lwgeom_from_gserialized(g);
+		GBOX gbox;
+		if ( lwgeom_calculate_gbox(lwgeom, &gbox) == LW_FAILURE )
+		{
+			POSTGIS_DEBUG(4, "could not calculate bbox, returning failure");
+			lwgeom_free(lwgeom);
+			return LW_FAILURE;
+		}
+		lwgeom_free(lwgeom);
+		result = gidx_from_gbox_p(gbox, gidx);
+	}
+	
+	if ( result == LW_SUCCESS )
+	{
+		POSTGIS_DEBUGF(4, "got gidx %s", gidx_to_string(gidx));
+	}
+
+	return result;
+}
 /*
 ** Peak into a geography to find the bounding box. If the
 ** box is there, copy it out and return it. If not, calculate the box from the
@@ -609,13 +687,16 @@ int geography_gidx(GSERIALIZED *g, GIDX *gidx)
 	}
 	else
 	{
+		/* No, we need to calculate it from the full object. */
+		LWGEOM *lwgeom = lwgeom_from_gserialized(g);
 		GBOX gbox;
-		POSTGIS_DEBUG(4, "calculating new box from scratch");
-		if ( gserialized_calculate_gbox_geocentric_p(g, &gbox) == LW_FAILURE )
+		if ( lwgeom_calculate_gbox(lwgeom, &gbox) == LW_FAILURE )
 		{
-			POSTGIS_DEBUG(4, "calculated null bbox, returning null");
+			POSTGIS_DEBUG(4, "could not calculate bbox, returning failure");
+			lwgeom_free(lwgeom);
 			return LW_FAILURE;
 		}
+		lwgeom_free(lwgeom);
 		result = gidx_from_gbox_p(gbox, gidx);
 	}
 	if ( result == LW_SUCCESS )

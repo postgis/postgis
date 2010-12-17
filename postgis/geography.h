@@ -101,6 +101,10 @@ GIDX* gidx_from_gbox(GBOX box);
 /* Copy a new bounding box into an existing gserialized */
 GSERIALIZED* gidx_insert_into_gserialized(GSERIALIZED *g, GIDX *gidx);
 
+/* Pull out the gidx bounding box as fast as possible */
+int gserialized_datum_to_gidx_p(Datum gsdatum, GIDX *gidx);
+/* Pull out a gbox bounding box as fast as possible */
+int gserialized_datum_to_gbox_p(Datum gsdatum, GBOX *gbox);
 
 
 

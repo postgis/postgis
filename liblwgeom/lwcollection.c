@@ -580,8 +580,10 @@ LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type)
 
 	if ( geomlistlen > 0 )
 	{
+		GBOX gbox;
 		outcol = lwcollection_construct(outtype, col->srid, NULL, geomlistlen, geomlist);
-		lwgeom_calculate_gbox((LWGEOM *) outcol, outcol->bbox);
+		lwgeom_calculate_gbox((LWGEOM *) outcol, &gbox);
+		outcol->bbox = gbox_copy(&gbox);
 	}
 	else
 	{

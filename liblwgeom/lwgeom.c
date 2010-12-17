@@ -912,10 +912,24 @@ lwgeom_add_bbox(LWGEOM *lwgeom)
 {
 	if ( lwgeom->bbox ) return;
 	lwgeom->bbox = lwalloc(sizeof(GBOX));
-	FLAGS_SET_Z(lwgeom->bbox->flags, FLAGS_GET_Z(lwgeom->flags));
-	FLAGS_SET_M(lwgeom->bbox->flags, FLAGS_GET_M(lwgeom->flags));
+	lwgeom->bbox->flags = lwgeom->flags;
+	printf("\n\nFLAGS_GET_GEODETIC %d", FLAGS_GET_GEODETIC(lwgeom->flags));
+	printf("type %s\n\n", lwtype_name(lwgeom->type));
 	lwgeom_calculate_gbox(lwgeom, lwgeom->bbox);
 	FLAGS_SET_BBOX(lwgeom->flags, 1);
+}
+
+/**
+* Calculate the gbox for this goemetry, a cartesian box or
+* geodetic box, depending on how it is flagged.
+*/
+int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox)
+{
+	gbox->flags = lwgeom->flags;
+	if( FLAGS_GET_GEODETIC(lwgeom->flags) )
+		return lwgeom_calculate_gbox_geodetic(lwgeom, gbox);
+	else
+		return lwgeom_calculate_gbox_cartesian(lwgeom, gbox);	
 }
 
 void
@@ -997,6 +1011,47 @@ lwgeom_force_dims(const LWGEOM *geom, int hasz, int hasm)
 		default:
 			lwerror("lwgeom_force_2d: unsupported geom type: %s", lwtype_name(geom->type));
 			return NULL;
+	}
+}
+
+void
+lwgeom_set_geodetic(LWGEOM *geom, int value)
+{
+	LWPOINT *pt;
+	LWLINE *ln;
+	LWPOLY *ply;
+	LWCOLLECTION *col;
+	int i;
+	
+	FLAGS_SET_GEODETIC(geom->flags, value);
+	switch(geom->type)
+	{
+		case POINTTYPE:
+			pt = (LWPOINT*)geom;
+			if ( pt->point )
+				FLAGS_SET_GEODETIC(pt->point->flags, value);
+			break;
+		case LINETYPE:
+			ln = (LWLINE*)geom;
+			if ( ln->points )
+				FLAGS_SET_GEODETIC(ln->points->flags, value);
+			break;
+		case POLYGONTYPE:
+			ply = (LWPOLY*)geom;
+			for ( i = 0; i < ply->nrings; i++ )
+				FLAGS_SET_GEODETIC(ply->rings[i]->flags, value);
+			break;
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+			col = (LWCOLLECTION*)geom;
+			for ( i = 0; i < col->ngeoms; i++ )
+				lwgeom_set_geodetic(col->geoms[i], value);
+			break;
+		default:
+			lwerror("lwgeom_set_geodetic: unsupported geom type: %s", lwtype_name(geom->type));
+			return;
 	}
 }
 

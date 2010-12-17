@@ -81,6 +81,11 @@
 #define SPLICE_LINES_YES 1
 #define SPLICE_LINES_NO 1
 
+/**
+* Reference System Type
+*/
+#define CARTESIAN 1
+#define GEODETIC 2
 
 /**
 * Largest float value. TODO: Should this be from math.h instead?
@@ -1837,6 +1842,11 @@ extern GSERIALIZED* gserialized_copy(const GSERIALIZED *g);
 extern int lwgeom_check_geodetic(const LWGEOM *geom);
 
 /**
+* Set the FLAGS geodetic bit on geometry an all sub-geometries and pointlists
+*/
+extern void lwgeom_set_geodetic(LWGEOM *geom, int value);
+
+/**
 * Calculate the geodetic bounding box for an LWGEOM. Z/M coordinates are 
 * ignored for this calculation. Pass in non-null, geodetic bounding box for function
 * to fill out. LWGEOM must have been built from a GSERIALIZED to provide
@@ -1848,6 +1858,12 @@ extern int lwgeom_calculate_gbox_geodetic(const LWGEOM *geom, GBOX *gbox);
 * Calculate the 2-4D bounding box of a geometry. Z/M coordinates are honored 
 * for this calculation, though for curves they are not included in calculations
 * of curvature.
+*/
+extern int lwgeom_calculate_gbox_cartesian(const LWGEOM *lwgeom, GBOX *gbox);
+
+/**
+* Calculate bounding box of a geometry, automatically taking into account
+* whether it is cartesian or geodetic.
 */
 extern int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox);
 
@@ -1865,7 +1881,7 @@ extern int ptarray_calculate_gbox_geodetic(const POINTARRAY *pa, GBOX *gbox);
 /**
 * Calculate box (x/y) and add values to gbox. Return #LW_SUCCESS on success.
 */
-extern int ptarray_calculate_gbox(const POINTARRAY *pa, GBOX *gbox );
+extern int ptarray_calculate_gbox_cartesian(const POINTARRAY *pa, GBOX *gbox );
 
 /**
 * Calculate a spherical point that falls outside the geocentric gbox
@@ -1907,11 +1923,6 @@ extern GBOX* gbox_copy(const GBOX *gbox);
 * Warning, do not use this function, it is very particular about inputs.
 */
 extern GBOX* gbox_from_string(const char *str);
-
-/**
-* Given a serialized form, extract the box if it exists, calculate it if it does not.
-*/
-extern int gbox_from_gserialized(const GSERIALIZED *g, GBOX *gbox);
 
 /**
 * Return #LW_TRUE if the #GBOX overlaps, #LW_FALSE otherwise. 
@@ -1961,6 +1972,13 @@ extern GSERIALIZED* gserialized_from_lwgeom(const LWGEOM *geom, int is_geodetic,
 * that are double aligned and suitable for direct reading using getPoint2d_p_ro
 */
 extern LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g);
+
+/**
+* Pull a #GBOX from the header of a #GSERIALIZED, if one is available. If
+* it is not, return LW_FAILURE.
+*/
+extern int gserialized_get_gbox_p(const GSERIALIZED *g, GBOX *gbox);
+
 
 /* Parser check flags */
 #define PARSER_CHECK_MINPOINTS  1

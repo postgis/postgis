@@ -269,17 +269,16 @@ static void test_on_gser_lwgeom_count_vertices(void)
 	lwgeom = lwgeom_from_ewkt("MULTIPOINT(-1 -1,-1 2.5,2 2,2 -1,1 1,2 2,4 5)", PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(lwgeom_count_vertices(lwgeom),7);
 	g_ser1 = gserialized_from_lwgeom(lwgeom, 1, &ret_size);
-	FLAGS_SET_GEODETIC(g_ser1->flags, 1);
 	lwgeom_free(lwgeom);
 
 	lwgeom = lwgeom_from_gserialized(g_ser1);
 	CU_ASSERT_EQUAL(lwgeom_count_vertices(lwgeom),7);
-	lwgeom_release(lwgeom);
+	lwgeom_free(lwgeom);
 
 	lwgeom = lwgeom_from_gserialized(g_ser1);
 
 	CU_ASSERT_EQUAL(lwgeom_count_vertices(lwgeom),7);
-	lwgeom_release(lwgeom);
+	lwgeom_free(lwgeom);
 
 	lwfree(g_ser1);
 

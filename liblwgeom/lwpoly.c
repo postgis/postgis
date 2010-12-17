@@ -99,16 +99,15 @@ lwpoly_deserialize(uchar *serialized_form)
 		return NULL;
 	}
 
-	result = (LWPOLY*) lwalloc(sizeof(LWPOLY));
-
 	type = serialized_form[0];
-	result->type = TYPE_GETTYPE(type);
-
 	ndims = TYPE_NDIMS(type);
 	hasz = TYPE_HASZ(type);
 	hasm = TYPE_HASM(type);
-	FLAGS_SET_Z(result->flags, hasz?1:0);
-	FLAGS_SET_M(result->flags, hasm?1:0);
+
+	result = (LWPOLY*) lwalloc(sizeof(LWPOLY));
+	result->type = TYPE_GETTYPE(type);
+	result->flags = gflags(hasz, hasm, 0);
+
 	loc = serialized_form;
 
 	if ( TYPE_GETTYPE(type) != POLYGONTYPE)

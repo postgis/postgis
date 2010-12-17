@@ -253,67 +253,13 @@ size_t gbox_serialized_size(uchar flags)
 		return 2 * FLAGS_NDIMS(flags) * sizeof(float);
 }
 
-int gbox_from_gserialized(const GSERIALIZED *g, GBOX *gbox)
-{
-
-	/* Null input! */
-	if ( ! g ) return LW_FAILURE;
-
-	/* Initialize the flags on the box */
-	gbox->flags = g->flags;
-
-	if ( FLAGS_GET_BBOX(g->flags) )
-	{
-		int i = 0;
-		float *fbox = (float*)(g->data);
-		gbox->xmin = fbox[i];
-		i++;
-		gbox->xmax = fbox[i];
-		i++;
-		gbox->ymin = fbox[i];
-		i++;
-		gbox->ymax = fbox[i];
-		i++;
-		if ( FLAGS_GET_GEODETIC(g->flags) )
-		{
-			gbox->zmin = fbox[i];
-			i++;
-			gbox->zmax = fbox[i];
-			i++;
-			return LW_SUCCESS;
-		}
-		if ( FLAGS_GET_Z(g->flags) )
-		{
-			gbox->zmin = fbox[i];
-			i++;
-			gbox->zmax = fbox[i];
-			i++;
-		}
-		if ( FLAGS_GET_M(g->flags) )
-		{
-			gbox->mmin = fbox[i];
-			i++;
-			gbox->mmax = fbox[i];
-			i++;
-		}
-		return LW_SUCCESS;
-	}
-
-	LWDEBUG(4, "calculating new box from scratch");
-	if ( gserialized_calculate_gbox_geocentric_p(g, gbox) == LW_FAILURE )
-	{
-		LWDEBUG(4, "calculated null bbox, returning failure");
-		return LW_FAILURE;
-	}
-	return LW_SUCCESS;
-}
 
 
 /* ********************************************************************************
 ** Compute cartesian bounding GBOX boxes from LWGEOM.
 */
 
-static int lwcircle_calculate_gbox(POINT4D p1, POINT4D p2, POINT4D p3, GBOX *gbox)
+static int lwcircle_calculate_gbox_cartesian(POINT4D p1, POINT4D p2, POINT4D p3, GBOX *gbox)
 {
 	double x1, x2, y1, y2, z1, z2, m1, m2;
 	double angle, radius, sweep;
@@ -499,7 +445,7 @@ static int lwcircle_calculate_gbox(POINT4D p1, POINT4D p2, POINT4D p3, GBOX *gbo
 	return LW_SUCCESS;
 }
 
-int ptarray_calculate_gbox(const POINTARRAY *pa, GBOX *gbox )
+int ptarray_calculate_gbox_cartesian(const POINTARRAY *pa, GBOX *gbox )
 {
 	int i;
 	POINT4D p;
@@ -542,7 +488,7 @@ int ptarray_calculate_gbox(const POINTARRAY *pa, GBOX *gbox )
 	return LW_SUCCESS;
 }
 
-static int lwcircstring_calculate_gbox(LWCIRCSTRING *curve, GBOX *gbox)
+static int lwcircstring_calculate_gbox_cartesian(LWCIRCSTRING *curve, GBOX *gbox)
 {
 	uchar flags = gflags(FLAGS_GET_Z(curve->flags), FLAGS_GET_M(curve->flags), 0);
 	GBOX tmp;
@@ -564,7 +510,7 @@ static int lwcircstring_calculate_gbox(LWCIRCSTRING *curve, GBOX *gbox)
 		getPoint4d_p(curve->points, i-1, &p2);
 		getPoint4d_p(curve->points, i, &p3);
 
-		if (lwcircle_calculate_gbox(p1, p2, p3, &tmp) == LW_FAILURE)
+		if (lwcircle_calculate_gbox_cartesian(p1, p2, p3, &tmp) == LW_FAILURE)
 			continue;
 
 		gbox_merge(&tmp, gbox);
@@ -573,33 +519,33 @@ static int lwcircstring_calculate_gbox(LWCIRCSTRING *curve, GBOX *gbox)
 	return LW_SUCCESS;
 }
 
-static int lwpoint_calculate_gbox(LWPOINT *point, GBOX *gbox)
+static int lwpoint_calculate_gbox_cartesian(LWPOINT *point, GBOX *gbox)
 {
 	if ( ! point ) return LW_FAILURE;
-	return ptarray_calculate_gbox( point->point, gbox );
+	return ptarray_calculate_gbox_cartesian( point->point, gbox );
 }
 
-static int lwline_calculate_gbox(LWLINE *line, GBOX *gbox)
+static int lwline_calculate_gbox_cartesian(LWLINE *line, GBOX *gbox)
 {
 	if ( ! line ) return LW_FAILURE;
-	return ptarray_calculate_gbox( line->points, gbox );
+	return ptarray_calculate_gbox_cartesian( line->points, gbox );
 }
 
-static int lwtriangle_calculate_gbox(LWTRIANGLE *triangle, GBOX *gbox)
+static int lwtriangle_calculate_gbox_cartesian(LWTRIANGLE *triangle, GBOX *gbox)
 {
 	if ( ! triangle ) return LW_FAILURE;
-	return ptarray_calculate_gbox( triangle->points, gbox );
+	return ptarray_calculate_gbox_cartesian( triangle->points, gbox );
 }
 
-static int lwpoly_calculate_gbox(LWPOLY *poly, GBOX *gbox)
+static int lwpoly_calculate_gbox_cartesian(LWPOLY *poly, GBOX *gbox)
 {
 	if ( ! poly ) return LW_FAILURE;
 	if ( poly->nrings == 0 ) return LW_FAILURE;
 	/* Just need to check outer ring */
-	return ptarray_calculate_gbox( poly->rings[0], gbox );
+	return ptarray_calculate_gbox_cartesian( poly->rings[0], gbox );
 }
 
-static int lwcollection_calculate_gbox(LWCOLLECTION *coll, GBOX *gbox)
+static int lwcollection_calculate_gbox_cartesian(LWCOLLECTION *coll, GBOX *gbox)
 {
 	GBOX subbox;
 	int i;
@@ -613,7 +559,7 @@ static int lwcollection_calculate_gbox(LWCOLLECTION *coll, GBOX *gbox)
 
 	for ( i = 0; i < coll->ngeoms; i++ )
 	{
-		if ( lwgeom_calculate_gbox((LWGEOM*)(coll->geoms[i]), &subbox) == LW_FAILURE )
+		if ( lwgeom_calculate_gbox_cartesian((LWGEOM*)(coll->geoms[i]), &subbox) == LW_FAILURE )
 		{
 			continue;
 		}
@@ -634,7 +580,7 @@ static int lwcollection_calculate_gbox(LWCOLLECTION *coll, GBOX *gbox)
 	return result;
 }
 
-int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox)
+int lwgeom_calculate_gbox_cartesian(const LWGEOM *lwgeom, GBOX *gbox)
 {
 	if ( ! lwgeom ) return LW_FAILURE;
 	LWDEBUGF(4, "lwgeom_calculate_gbox got type (%d) - %s",
@@ -643,15 +589,15 @@ int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox)
 	switch (lwgeom->type)
 	{
 	case POINTTYPE:
-		return lwpoint_calculate_gbox((LWPOINT *)lwgeom, gbox);
+		return lwpoint_calculate_gbox_cartesian((LWPOINT *)lwgeom, gbox);
 	case LINETYPE:
-		return lwline_calculate_gbox((LWLINE *)lwgeom, gbox);
+		return lwline_calculate_gbox_cartesian((LWLINE *)lwgeom, gbox);
 	case CIRCSTRINGTYPE:
-		return lwcircstring_calculate_gbox((LWCIRCSTRING *)lwgeom, gbox);
+		return lwcircstring_calculate_gbox_cartesian((LWCIRCSTRING *)lwgeom, gbox);
 	case POLYGONTYPE:
-		return lwpoly_calculate_gbox((LWPOLY *)lwgeom, gbox);
+		return lwpoly_calculate_gbox_cartesian((LWPOLY *)lwgeom, gbox);
 	case TRIANGLETYPE:
-		return lwtriangle_calculate_gbox((LWTRIANGLE *)lwgeom, gbox);
+		return lwtriangle_calculate_gbox_cartesian((LWTRIANGLE *)lwgeom, gbox);
 	case COMPOUNDTYPE:
 	case CURVEPOLYTYPE:
 	case MULTIPOINTTYPE:
@@ -662,7 +608,7 @@ int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox)
 	case POLYHEDRALSURFACETYPE:
 	case TINTYPE:
 	case COLLECTIONTYPE:
-		return lwcollection_calculate_gbox((LWCOLLECTION *)lwgeom, gbox);
+		return lwcollection_calculate_gbox_cartesian((LWCOLLECTION *)lwgeom, gbox);
 	}
 	/* Never get here, please. */
 	lwerror("unsupported type (%d) - %s", lwgeom->type, lwtype_name(lwgeom->type));

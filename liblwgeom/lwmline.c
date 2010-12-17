@@ -34,7 +34,7 @@ lwmline_deserialize(uchar *srl)
 	LWMLINE *result;
 	LWGEOM_INSPECTED *insp;
 	uchar type = (uchar)srl[0];
-	int geomtype = lwgeom_getType(srl[0]);
+	int geomtype = TYPE_GETTYPE(srl[0]);
 	int i;
 
 	if ( geomtype != MULTILINETYPE )

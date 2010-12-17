@@ -451,8 +451,8 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	if ( pglwgeom_get_type(geom) != POLYGONTYPE &&
 	     pglwgeom_get_type(geom) != CURVEPOLYTYPE )
 	{
-		PG_FREE_IF_COPY(geom, 0);
 		elog(ERROR, "InteriorRingN: geom is not a polygon");
+		PG_FREE_IF_COPY(geom, 0);
 		PG_RETURN_NULL();
 	}
 	if ( pglwgeom_get_type(geom) == POLYGONTYPE)
@@ -462,25 +462,27 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 		/* Ok, now we have a polygon. Let's see if it has enough holes */
 		if ( wanted_index >= poly->nrings )
 		{
+			lwgeom_free((LWGEOM *)poly);
 			PG_FREE_IF_COPY(geom, 0);
-			lwgeom_release((LWGEOM *)poly);
 			PG_RETURN_NULL();
 		}
 
 		ring = poly->rings[wanted_index];
 
 		/* COMPUTE_BBOX==TAINTING */
-		if ( poly->bbox ) ptarray_calculate_gbox(ring, bbox);
+		if ( poly->bbox ) 
+		{
+			bbox = lwalloc(sizeof(GBOX));
+			ptarray_calculate_gbox_cartesian(ring, bbox);
+		}
 
 		/* This is a LWLINE constructed by interior ring POINTARRAY */
 		line = lwline_construct(poly->srid, bbox, ring);
 
-		/* Copy SRID from polygon */
-		line->srid = poly->srid;
 
 		result = pglwgeom_serialize((LWGEOM *)line);
-		lwgeom_release((LWGEOM *)line);
-		lwgeom_release((LWGEOM *)poly);
+		lwpoly_free(poly);
+		lwline_release(line);
 	}
 	else
 	{
@@ -494,12 +496,10 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 		}
 
 		result = pglwgeom_serialize(curvepoly->rings[wanted_index]);
-		lwgeom_release((LWGEOM *)curvepoly);
+		lwgeom_free((LWGEOM *)curvepoly);
 	}
 
-
 	PG_FREE_IF_COPY(geom, 0);
-
 	PG_RETURN_POINTER(result);
 }
 

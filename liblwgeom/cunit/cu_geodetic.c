@@ -74,14 +74,13 @@ static void test_gbox_from_spherical_coordinates(void)
 	const int loops = RANDOM_TEST;
 	int i;
 	double ll[64];
-	GBOX *gbox;
-	GBOX *gbox_slow;
+	GBOX gbox;
+	GBOX gbox_slow;
 	int rndlat;
 	int rndlon;
 
 	POINTARRAY *pa;
-	LWLINE *lwline;
-	GSERIALIZED *g;
+	LWGEOM *lwline;
 
 	ll[0] = -3.083333333333333333333333333333333;
 	ll[1] = 9.83333333333333333333333333333333;
@@ -90,7 +89,8 @@ static void test_gbox_from_spherical_coordinates(void)
 
 	pa = ptarray_construct_reference_data(0, 0, 2, (uchar*)ll);
 	
-	lwline = lwline_construct(-1, 0, pa);
+	lwline = lwline_as_lwgeom(lwline_construct(-1, 0, pa));
+	FLAGS_SET_GEODETIC(lwline->flags, 1);
 
 	srandomdev();
 
@@ -106,22 +106,19 @@ static void test_gbox_from_spherical_coordinates(void)
 		ll[2] = (double)rndlon;
 		ll[3] = (double)rndlat;
 
-		g = gserialized_from_lwgeom((LWGEOM*)lwline, 1, 0);
-		FLAGS_SET_GEODETIC(g->flags, 1);
 		gbox_geocentric_slow = LW_FALSE;
-		gbox = gserialized_calculate_gbox_geocentric(g);
+		lwgeom_calculate_gbox_geocentric(lwline, gbox);
 		gbox_geocentric_slow = LW_TRUE;
-		gbox_slow = gserialized_calculate_gbox_geocentric(g);
+		lwgeom_calculate_gbox_geocentric(lwline, gbox_slow);
 		gbox_geocentric_slow = LW_FALSE;
-		lwfree(g);
 
 		if (
-		    ( fabs( gbox->xmin - gbox_slow->xmin ) > gtolerance ) ||
-		    ( fabs( gbox->xmax - gbox_slow->xmax ) > gtolerance ) ||
-		    ( fabs( gbox->ymin - gbox_slow->ymin ) > gtolerance ) ||
-		    ( fabs( gbox->ymax - gbox_slow->ymax ) > gtolerance ) ||
-		    ( fabs( gbox->zmin - gbox_slow->zmin ) > gtolerance ) ||
-		    ( fabs( gbox->zmax - gbox_slow->zmax ) > gtolerance ) )
+		    ( fabs( gbox.xmin - gbox_slow.xmin ) > gtolerance ) ||
+		    ( fabs( gbox.xmax - gbox_slow.xmax ) > gtolerance ) ||
+		    ( fabs( gbox.ymin - gbox_slow.ymin ) > gtolerance ) ||
+		    ( fabs( gbox.ymax - gbox_slow.ymax ) > gtolerance ) ||
+		    ( fabs( gbox.zmin - gbox_slow.zmin ) > gtolerance ) ||
+		    ( fabs( gbox.zmax - gbox_slow.zmax ) > gtolerance ) )
 		{
 			printf("\n-------\n");
 			printf("If you are seeing this, cut and paste it, it is a randomly generated test case!\n");
@@ -133,12 +130,9 @@ static void test_gbox_from_spherical_coordinates(void)
 			CU_FAIL_FATAL(Slow (GOOD) and fast (CALC) box calculations returned different values!!);
 		}
 
-		lwfree(gbox);
-		lwfree(gbox_slow);
 	}
 
-	lwfree(lwline);
-	lwfree(pa);
+	lwgeom_free(lwline);
 #endif /* RANDOM_TEST */
 }
 
@@ -147,8 +141,7 @@ static void test_gbox_from_spherical_coordinates(void)
 static void test_gserialized_get_gbox_geocentric(void)
 {
 	LWGEOM *lwg;
-	GSERIALIZED *g;
-	GBOX *gbox, *gbox_slow;
+	GBOX gbox, gbox_slow;
 	int i;
 
 	for ( i = 0; i < gbox_data_length; i++ )
@@ -159,29 +152,25 @@ static void test_gserialized_get_gbox_geocentric(void)
 		printf("%s\n", gbox_data[i]);
 #endif
 		lwg = lwgeom_from_ewkt(gbox_data[i], PARSER_CHECK_NONE);
-		g = gserialized_from_lwgeom(lwg, 1, 0);
-		FLAGS_SET_GEODETIC(g->flags, 1);
-		lwgeom_free(lwg);
+		FLAGS_SET_GEODETIC(lwg->flags, 1);
 		gbox_geocentric_slow = LW_FALSE;
-		gbox = gserialized_calculate_gbox_geocentric(g);
+		lwgeom_calculate_gbox(lwg, &gbox);
 		gbox_geocentric_slow = LW_TRUE;
-		gbox_slow = gserialized_calculate_gbox_geocentric(g);
+		lwgeom_calculate_gbox(lwg, &gbox_slow);
 		gbox_geocentric_slow = LW_FALSE;
+		lwgeom_free(lwg);
 #if 0
 		printf("\nCALC: %s\n", gbox_to_string(gbox));
 		printf("GOOD: %s\n", gbox_to_string(gbox_slow));
 		printf("line %d: diff %.9g\n", i, fabs(gbox->xmin - gbox_slow->xmin)+fabs(gbox->ymin - gbox_slow->ymin)+fabs(gbox->zmin - gbox_slow->zmin));
 		printf("------------\n");
 #endif
-		CU_ASSERT_DOUBLE_EQUAL(gbox->xmin, gbox_slow->xmin, 0.000001);
-		CU_ASSERT_DOUBLE_EQUAL(gbox->ymin, gbox_slow->ymin, 0.000001);
-		CU_ASSERT_DOUBLE_EQUAL(gbox->zmin, gbox_slow->zmin, 0.000001);
-		CU_ASSERT_DOUBLE_EQUAL(gbox->xmax, gbox_slow->xmax, 0.000001);
-		CU_ASSERT_DOUBLE_EQUAL(gbox->ymax, gbox_slow->ymax, 0.000001);
-		CU_ASSERT_DOUBLE_EQUAL(gbox->zmax, gbox_slow->zmax, 0.000001);
-		lwfree(g);
-		lwfree(gbox);
-		lwfree(gbox_slow);
+		CU_ASSERT_DOUBLE_EQUAL(gbox.xmin, gbox_slow.xmin, 0.000001);
+		CU_ASSERT_DOUBLE_EQUAL(gbox.ymin, gbox_slow.ymin, 0.000001);
+		CU_ASSERT_DOUBLE_EQUAL(gbox.zmin, gbox_slow.zmin, 0.000001);
+		CU_ASSERT_DOUBLE_EQUAL(gbox.xmax, gbox_slow.xmax, 0.000001);
+		CU_ASSERT_DOUBLE_EQUAL(gbox.ymax, gbox_slow.ymax, 0.000001);
+		CU_ASSERT_DOUBLE_EQUAL(gbox.zmax, gbox_slow.zmax, 0.000001);
 	}
 
 }
@@ -477,6 +466,7 @@ static LWGEOM* lwgeom_over_gserialized(char *wkt)
 	GSERIALIZED *g;
 
 	lwg = lwgeom_from_ewkt(wkt, PARSER_CHECK_NONE);
+	FLAGS_SET_GEODETIC(lwg->flags, 1);
 	g = gserialized_from_lwgeom(lwg, 1, 0);
 	lwgeom_free(lwg);
 	return lwgeom_from_gserialized(g);
@@ -550,7 +540,7 @@ static void test_gbox_calculation(void)
 	for ( i = 0; i < 6; i++ )
 	{
 		geom = lwgeom_over_gserialized(ewkt[i]);
-		lwgeom_calculate_gbox(geom, gbox);
+		lwgeom_calculate_gbox_cartesian(geom, gbox);
 		box3d = lwgeom_compute_box3d(geom);
 		//printf("%g %g\n", gbox->xmin, box3d->xmin);
 		CU_ASSERT_EQUAL(gbox->xmin, box3d->xmin);
@@ -570,6 +560,7 @@ static void test_gserialized_from_lwgeom(void)
 	double *inspect; /* To poke right into the blob. */
 
 	geom = lwgeom_from_ewkt("POINT(0 0.2)", PARSER_CHECK_NONE);
+	FLAGS_SET_GEODETIC(geom->flags, 1);
 	g = gserialized_from_lwgeom(geom, 1, 0);
 	type = gserialized_get_type(g);
 	CU_ASSERT_EQUAL( type, POINTTYPE );
@@ -579,6 +570,7 @@ static void test_gserialized_from_lwgeom(void)
 	lwfree(g);
 
 	geom = lwgeom_from_ewkt("POLYGON((-1 -1, -1 2.5, 2 2, 2 -1, -1 -1), (0 0, 0 1, 1 1, 1 0, 0 0))", PARSER_CHECK_NONE);
+	FLAGS_SET_GEODETIC(geom->flags, 1);
 	g = gserialized_from_lwgeom(geom, 1, 0);
 	type = gserialized_get_type(g);
 	CU_ASSERT_EQUAL( type, POLYGONTYPE );
@@ -588,6 +580,7 @@ static void test_gserialized_from_lwgeom(void)
 	lwfree(g);
 
 	geom = lwgeom_from_ewkt("MULTILINESTRING((0 0, 1 1),(0 0.1, 1 1))", PARSER_CHECK_NONE);
+	FLAGS_SET_GEODETIC(geom->flags, 1);
 	g = gserialized_from_lwgeom(geom, 1, 0);
 	type = gserialized_get_type(g);
 	CU_ASSERT_EQUAL( type, MULTILINETYPE );

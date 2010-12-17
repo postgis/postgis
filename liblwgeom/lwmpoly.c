@@ -35,7 +35,7 @@ lwmpoly_deserialize(uchar *srl)
 	LWMPOLY *result;
 	LWGEOM_INSPECTED *insp;
 	uchar type = (uchar)srl[0];
-	int geomtype = lwgeom_getType(type);
+	int geomtype = TYPE_GETTYPE(type);
 	int i;
 
 	LWDEBUG(2, "lwmpoly_deserialize called");

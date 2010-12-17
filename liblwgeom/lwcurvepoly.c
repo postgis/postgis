@@ -89,8 +89,7 @@ lwcurvepoly_construct_empty(int srid, char hasz, char hasm)
 
 	ret = lwalloc(sizeof(LWCURVEPOLY));
 	ret->type = CURVEPOLYTYPE;
-	FLAGS_SET_Z(ret->flags, hasz);
-	FLAGS_SET_M(ret->flags, hasm);
+	ret->flags = gflags(hasz, hasm, 0);
 	ret->srid = srid;
 	ret->nrings = 0;
 	ret->maxrings = 1; /* Allocate room for sub-members, just in case. */

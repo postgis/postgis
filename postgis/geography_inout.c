@@ -220,7 +220,7 @@ Datum geography_in(PG_FUNCTION_ARGS)
 	}
 
 	/* Set geodetic flag */
-	FLAGS_SET_GEODETIC(lwgeom->flags,1);
+	lwgeom_set_geodetic(lwgeom, true);
 
 	/* Check that this is a type we can handle */
 	geography_valid_type(lwgeom->type);
@@ -252,7 +252,6 @@ Datum geography_in(PG_FUNCTION_ARGS)
 	** functions do the right thing.
 	*/
 	g_ser = geography_serialize(lwgeom);
-	FLAGS_SET_GEODETIC(g_ser->flags, 1);
 
 	/* Clean up temporary object */
 	lwgeom_free(lwgeom);
@@ -942,19 +941,6 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 		            errmsg("Only SRID %d is currently supported in geography.", SRID_DEFAULT)));
 	}
 
-	/*
-	** Serialize our lwgeom and set the geodetic flag so subsequent
-	** functions do the right thing.
-	*/
-	g_ser = geography_serialize(lwgeom);
-	FLAGS_SET_GEODETIC(g_ser->flags, 1);
-
-	/*
-	** Replace the unaligned lwgeom with a new aligned one based on GSERIALIZED.
-	*/
-	lwgeom_release(lwgeom);
-	lwgeom = lwgeom_from_gserialized(g_ser);
-
 	/* Check if the geography has valid coordinate range. */
 	if ( lwgeom_check_geodetic(lwgeom) == LW_FALSE )
 	{
@@ -963,6 +949,19 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 		            errmsg("Coordinate values are out of range [-180 -90, 180 90] for GEOGRAPHY type" )));
 	}
 
+	/*
+	** Serialize our lwgeom and set the geodetic flag so subsequent
+	** functions do the right thing.
+	*/
+	lwgeom_set_geodetic(lwgeom, true);
+	g_ser = geography_serialize(lwgeom);
+
+	/*
+	** Replace the unaligned lwgeom with a new aligned one based on GSERIALIZED.
+	*/
+	lwgeom_free(lwgeom);
+
+	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(g_ser);
 
 }
@@ -975,6 +974,7 @@ Datum geometry_from_geography(PG_FUNCTION_ARGS)
 	GSERIALIZED *g_ser = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	lwgeom = lwgeom_from_gserialized(g_ser);
+	lwgeom_set_geodetic(lwgeom, false);	
 
 	if ( lwgeom_needs_bbox(lwgeom) )
 		lwgeom_add_bbox(lwgeom);
@@ -985,7 +985,7 @@ Datum geometry_from_geography(PG_FUNCTION_ARGS)
 		lwgeom->srid = SRID_DEFAULT;
 
 	ret = pglwgeom_serialize(lwgeom);
-	lwgeom_release(lwgeom);
+	lwgeom_free(lwgeom);
 
 	PG_RETURN_POINTER(ret);
 }

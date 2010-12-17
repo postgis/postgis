@@ -350,13 +350,20 @@ Datum geography_point_outside(PG_FUNCTION_ARGS)
 
 	/* Get our geometry object loaded into memory. */
 	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-
+	
 	/* We need the bounding box to get an outside point for area algorithm */
-	if ( ! gbox_from_gserialized(g, &gbox) )
+	if ( gserialized_get_gbox_p(g, &gbox) == LW_FAILURE )
 	{
-		elog(ERROR, "Error in gbox_from_gserialized calculation.");
-		PG_RETURN_NULL();
+		LWGEOM *lwgeom = lwgeom_from_gserialized(g);
+		LWDEBUGF(4,"unable to read gbox from gserialized, calculating from lwgeom (%p)", lwgeom);
+		if ( lwgeom_calculate_gbox(lwgeom, &gbox) == LW_FAILURE )
+		{
+			LWDEBUG(4,"lwgeom_calculate_gbox returned LW_FAILURE");
+			elog(ERROR, "Error in lwgeom_calculate_gbox calculation.");
+			PG_RETURN_NULL();
+		}
 	}
+	LWDEBUGF(4, "got gbox %s", gbox_to_string(&gbox));
 
 	/* Get an exterior point, based on this gbox */
 	gbox_pt_outside(&gbox, &pt);
@@ -464,8 +471,10 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	/* Calculate if the geometry is empty. */
 	empty1 = lwgeom_is_empty(lwgeom1);
 	/* Calculate a naive cartesian bounds for the objects */
-	if ( ! empty1 && lwgeom_calculate_gbox(lwgeom1, &gbox1) == LW_FAILURE )
+	if ( ! empty1 && lwgeom_calculate_gbox_cartesian(lwgeom1, &gbox1) == LW_FAILURE )
 		elog(ERROR, "Error in geography_bestsrid calling lwgeom_calculate_gbox(lwgeom1, &gbox1)");
+
+	LWDEBUGF(4, "calculated gbox = %s", gbox_to_string(&gbox1));
 
 	/* If we have a unique second argument, fill in all the necessarily variables. */
 	if ( d1 != d2 )
@@ -475,7 +484,7 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 		gbox2.flags = g2->flags;
 		lwgeom2 = lwgeom_from_gserialized(g2);
 		empty2 = lwgeom_is_empty(lwgeom2);
-		if ( ! empty2 && lwgeom_calculate_gbox(lwgeom2, &gbox2) == LW_FAILURE )
+		if ( ! empty2 && lwgeom_calculate_gbox_cartesian(lwgeom2, &gbox2) == LW_FAILURE )
 			elog(ERROR, "Error in geography_bestsrid calling lwgeom_calculate_gbox(lwgeom2, &gbox2)");
 	}
 	/*
