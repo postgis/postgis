@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sect1 id="Topology">
+<chapter id="Topology">
 	<title>Topology</title>
 	<para>The PostGIS Topology types and functions are used to manged topological objects such as faces, edges and nodes.</para>
 	<para>Details of this project can be found at <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiPostgisTopology">PostGIS Tology Wiki</ulink></para>
 	<para>All functions and tables associated with this module are installed in a schema called <varname>topology</varname>.</para>
 	<para>Functions that are defined in SQL/MM standard are prefixed with ST_ and functions specific to PostGIS are not prefixed.</para>
 	
-	<sect2 id="Topology_ManagementFunctions">
+	<sect1 id="Topology_ManagementFunctions">
 		<refentry id="CreateTopology">
 			<refnamediv>
-			<refname>CreateTopology</refname>
-		
-			<refpurpose>Creates a new topology schema and registers this new schema in the topology.topology table.</refpurpose>
+				<refname>CreateTopology</refname>
+			
+				<refpurpose>Creates a new topology schema and registers this new schema in the topology.topology table.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -57,5 +57,5 @@
 				<para></para>
 			</refsection>
 		</refentry>
-	</sect2>
-</sect1>
+	</sect1>
+</chapter>
