@@ -316,7 +316,7 @@ geometry
 		</listitem>
 		<!-- TODO: Add other examples -->
 		</itemizedlist>
-		<para>The new geography fields don't get registered in the geometry_columns.  They get registered in a new view called
+		<para>The new geography fields don't get registered in the <varname>geometry_columns</varname>.  They get registered in a new view called
 				geography_columns which is a view against the system catalogs so is always automatically kept up to date without need
 					for an AddGeom... like function.</para>
 
@@ -594,7 +594,7 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 	  </variablelist>
 	</sect2>
 
-	<sect2>
+	<sect2 id="geometry_columns">
 	  <title>The GEOMETRY_COLUMNS Table</title>
 
 	  <para>The <varname>GEOMETRY_COLUMNS</varname> table definition is as
@@ -603,7 +603,7 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 	  <programlisting>CREATE TABLE geometry_columns (
   f_table_catalog    VARRCHAR(256) NOT NULL,
   f_table_schema     VARCHAR(256) NOT NULL,
-  f_table_nam        VARCHAR(256) NOT NULL,
+  f_table_name        VARCHAR(256) NOT NULL,
   f_geometry_column  VARCHAR(256) NOT NULL,
   coord_dimension    INTEGER NOT NULL,
   srid               INTEGER NOT NULL,

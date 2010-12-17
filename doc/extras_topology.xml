@@ -54,7 +54,48 @@
 			<refsection>
 				<title>See Also</title>
 			
-				<para></para>
+				<para><xref linkend="spatial_ref_sys"/></para>
+			</refsection>
+		</refentry>
+		<refentry id="DropTopology">
+			<refnamediv>
+				<refname>DropTopology</refname>
+			
+				<refpurpose>Use with caution: Drops a topology schema and deletes its reference from  topology.topology table and references to tables in that schema from the geometry_columns table.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+				<funcdef>integer <function>DropTopology</function></funcdef>
+				<paramdef><type>text </type> <parameter>topology_schema_name</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+			<title>Description</title>
+		
+			<para>Drops a topology schema and deletes its reference from topology.topology table and references to tables in that schema from the geometry_columns table.
+			This function should be USED WITH CAUTION, as it could destroy data you care about.  If the schema does not exist, it just removes reference entries the named schema.</para>
+	
+			<!-- use this format if new function -->
+			<para>Availability: 2.0.0</para>
+			
+			</refsection>
+		
+		
+			<refsection>
+				<title>Examples</title>
+				<para>Cascade drops the ma_topo schema and removes all references to it in topology.topology and geometry_columns.</para>
+				<programlisting>SELECT topology.DropTopology('ma_topo');</programlisting>
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+			
+				<para><xref linkend="geometry_columns"/></para>
 			</refsection>
 		</refentry>
 	</sect1>
