@@ -136,8 +136,8 @@
   &reference;
   &reference_raster;
   &faq_raster;
-  &postgis_aggs_mm;
   &extras;
+  &postgis_aggs_mm;
   &reporting;
   &release_notes;
 
