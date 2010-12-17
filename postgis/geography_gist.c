@@ -690,7 +690,7 @@ GSERIALIZED* gserialized_set_gidx(GSERIALIZED *g, GIDX *gidx)
 * in functions doing geocalculation.
 */
 int 
-gserialized_overlaps(Datum gs1, Datum gs2)
+gserialized_datum_overlaps(Datum gs1, Datum gs2)
 {
 	/* Put aside some stack memory and use it for GIDX pointers. */
 	char boxmem1[GIDX_MAX_SIZE];
@@ -711,7 +711,7 @@ gserialized_overlaps(Datum gs1, Datum gs2)
 }
 
 /**
-* Return a GSERIALIZED with an expanded bounding box.
+* Return a #GSERIALIZED with an expanded bounding box.
 */
 GSERIALIZED* 
 gserialized_expand(GSERIALIZED *g, double distance)
@@ -745,17 +745,7 @@ gserialized_expand(GSERIALIZED *g, double distance)
 PG_FUNCTION_INFO_V1(geography_overlaps);
 Datum geography_overlaps(PG_FUNCTION_ARGS)
 {
-	/* Put aside some stack memory and use it for GIDX pointers. */
-	char gboxmem1[GIDX_MAX_SIZE];
-	char gboxmem2[GIDX_MAX_SIZE];
-	GIDX *gbox1 = (GIDX*)gboxmem1;
-	GIDX *gbox2 = (GIDX*)gboxmem2;
-
-	/* Must be able to build box for each arguement (ie, not empty geometry)
-	   and overlap boxes to return true. */
-	if ( (gserialized_datum_get_gidx_p(PG_GETARG_DATUM(0), gbox1) == LW_SUCCESS) &&
-	     (gserialized_datum_get_gidx_p(PG_GETARG_DATUM(1), gbox2) == LW_SUCCESS) &&
-	      gidx_overlaps(gbox1, gbox2) )
+	if ( gserialized_datum_overlaps(PG_GETARG_DATUM(0),PG_GETARG_DATUM(1)) == LW_TRUE )
 	{
 		PG_RETURN_BOOL(TRUE);
 	}
@@ -896,10 +886,8 @@ static inline bool geography_gist_consistent_internal(GIDX *key, GIDX *query, St
 {
 	bool		retval;
 
-	POSTGIS_DEBUGF(4, "[GIST] internal consistent, strategy [%d], count[%i], bounds[%.12g %.12g %.12g, %.12g %.12g %.12g]",
-	               strategy, geog_counter_internal++,
-	               GIDX_GET_MIN(query, 0), GIDX_GET_MIN(query, 1), GIDX_GET_MIN(query, 2),
-	               GIDX_GET_MAX(query, 0), GIDX_GET_MAX(query, 1), GIDX_GET_MAX(query, 2) );
+	POSTGIS_DEBUGF(4, "[GIST] internal consistent, strategy [%d], count[%i], query[%s], key[%s]",
+	               strategy, geog_counter_internal++, gidx_to_string(query), gidx_to_string(key) );
 
 	switch (strategy)
 	{
@@ -1109,7 +1097,7 @@ static int geography_gist_picksplit_badratio(int x, int y)
 {
 	POSTGIS_DEBUGF(4, "[GIST] checking split ratio (%d, %d)", x, y);
 	if ( (y == 0) || (((float)x / (float)y) < LIMIT_RATIO) ||
-	        (x == 0) || (((float)y / (float)x) < LIMIT_RATIO) )
+	     (x == 0) || (((float)y / (float)x) < LIMIT_RATIO) )
 		return TRUE;
 
 	return FALSE;
@@ -1501,15 +1489,15 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gidx_in);
 Datum gidx_in(PG_FUNCTION_ARGS)
 {
-//	char *str = PG_GETARG_CSTRING(0);
+	ereport(ERROR,(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+	               errmsg("function gidx_in not implemented")));
 	PG_RETURN_POINTER(NULL);
 }
 
 PG_FUNCTION_INFO_V1(gidx_out);
 Datum gidx_out(PG_FUNCTION_ARGS)
 {
-	char *str = palloc(5);
-	SET_VARSIZE(str, 1);
-	str[4] = '\0';
-	PG_RETURN_POINTER(str);
+	ereport(ERROR,(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+	               errmsg("function gidx_out not implemented")));
+	PG_RETURN_POINTER(NULL);
 }

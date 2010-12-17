@@ -64,6 +64,7 @@ NOTICE:  No points in input array
 #299|2
 #304
 #304.a|21
+#304.b|1
 #408|IllegalArgumentException: point array must contain 0 or >1 elements
 NOTICE:  IllegalArgumentException: point array must contain 0 or >1 elements
 #408.1|f

@@ -269,6 +269,9 @@ LIMIT 10;
 
 SELECT '#304.a', Count(*) FROM utm_dots WHERE ST_DWithin(the_geog, 'POINT(0 0)'::geography, 3000000);
 
+CREATE INDEX utm_dots_gix ON utm_dots USING GIST (the_geog);
+SELECT '#304.b', Count(*) FROM utm_dots WHERE ST_DWithin(the_geog, 'POINT(0 0)'::geography, 300000);
+
 DROP FUNCTION utmzone(geometry);
 DROP TABLE utm_dots;
 

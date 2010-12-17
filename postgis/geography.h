@@ -108,7 +108,7 @@ GSERIALIZED* gserialized_expand(GSERIALIZED *g, double distance);
 /* Pull out a gbox bounding box as fast as possible. */
 int gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox);
 /* Given two datums, do they overlap? Computed very fast using embedded boxes. */
-int gserialized_overlaps(Datum gs1, Datum gs2);
+int gserialized_datum_overlaps(Datum gs1, Datum gs2);
 
 
 
