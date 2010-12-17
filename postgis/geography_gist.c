@@ -52,13 +52,13 @@ static int geog_counter_internal = 0;
 /*
 ** GiST prototypes
 */
-Datum geography_gist_consistent(PG_FUNCTION_ARGS);
-Datum geography_gist_compress(PG_FUNCTION_ARGS);
-Datum geography_gist_decompress(PG_FUNCTION_ARGS);
-Datum geography_gist_penalty(PG_FUNCTION_ARGS);
-Datum geography_gist_picksplit(PG_FUNCTION_ARGS);
-Datum geography_gist_union(PG_FUNCTION_ARGS);
-Datum geography_gist_same(PG_FUNCTION_ARGS);
+Datum gserialized_gist_consistent(PG_FUNCTION_ARGS);
+Datum gserialized_gist_compress(PG_FUNCTION_ARGS);
+Datum gserialized_gist_decompress(PG_FUNCTION_ARGS);
+Datum gserialized_gist_penalty(PG_FUNCTION_ARGS);
+Datum gserialized_gist_picksplit(PG_FUNCTION_ARGS);
+Datum gserialized_gist_union(PG_FUNCTION_ARGS);
+Datum gserialized_gist_same(PG_FUNCTION_ARGS);
 
 /*
 ** Index key type stub prototypes
@@ -759,8 +759,8 @@ Datum geography_overlaps(PG_FUNCTION_ARGS)
 ** bounding box. If the geography already has the box embedded in it
 ** we pull that out and hand it back.
 */
-PG_FUNCTION_INFO_V1(geography_gist_compress);
-Datum geography_gist_compress(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(gserialized_gist_compress);
+Datum gserialized_gist_compress(PG_FUNCTION_ARGS)
 {
 	GISTENTRY *entry_in = (GISTENTRY*)PG_GETARG_POINTER(0);
 	GISTENTRY *entry_out = NULL;
@@ -837,8 +837,8 @@ Datum geography_gist_compress(PG_FUNCTION_ARGS)
 ** GiST support function.
 ** Decompress an entry. Unused for geography, so we return.
 */
-PG_FUNCTION_INFO_V1(geography_gist_decompress);
-Datum geography_gist_decompress(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(gserialized_gist_decompress);
+Datum gserialized_gist_decompress(PG_FUNCTION_ARGS)
 {
 	POSTGIS_DEBUG(5, "[GIST] 'decompress' function called");
 	/* We don't decompress. Just return the input. */
@@ -846,9 +846,9 @@ Datum geography_gist_decompress(PG_FUNCTION_ARGS)
 }
 
 /*
-** GiST support function. Called from geography_gist_consistent below.
+** GiST support function. Called from gserialized_gist_consistent below.
 */
-static inline bool geography_gist_consistent_leaf(GIDX *key, GIDX *query, StrategyNumber strategy)
+static inline bool gserialized_gist_consistent_leaf(GIDX *key, GIDX *query, StrategyNumber strategy)
 {
 	bool		retval;
 
@@ -880,9 +880,9 @@ static inline bool geography_gist_consistent_leaf(GIDX *key, GIDX *query, Strate
 }
 
 /*
-** GiST support function. Called from geography_gist_consistent below.
+** GiST support function. Called from gserialized_gist_consistent below.
 */
-static inline bool geography_gist_consistent_internal(GIDX *key, GIDX *query, StrategyNumber strategy)
+static inline bool gserialized_gist_consistent_internal(GIDX *key, GIDX *query, StrategyNumber strategy)
 {
 	bool		retval;
 
@@ -913,8 +913,8 @@ static inline bool geography_gist_consistent_internal(GIDX *key, GIDX *query, St
 ** GiST support function. Take in a query and an entry and see what the
 ** relationship is, based on the query strategy.
 */
-PG_FUNCTION_INFO_V1(geography_gist_consistent);
-Datum geography_gist_consistent(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(gserialized_gist_consistent);
+Datum gserialized_gist_consistent(PG_FUNCTION_ARGS)
 {
 	GISTENTRY *entry = (GISTENTRY*) PG_GETARG_POINTER(0);
 	StrategyNumber strategy = (StrategyNumber) PG_GETARG_UINT16(2);
@@ -959,13 +959,13 @@ Datum geography_gist_consistent(PG_FUNCTION_ARGS)
 	/* Treat leaf node tests different from internal nodes */
 	if (GIST_LEAF(entry))
 	{
-		result = geography_gist_consistent_leaf(
+		result = gserialized_gist_consistent_leaf(
 		             (GIDX*)DatumGetPointer(entry->key),
 		             query_gbox_index, strategy);
 	}
 	else
 	{
-		result = geography_gist_consistent_internal(
+		result = gserialized_gist_consistent_internal(
 		             (GIDX*)DatumGetPointer(entry->key),
 		             query_gbox_index, strategy);
 	}
@@ -979,8 +979,8 @@ Datum geography_gist_consistent(PG_FUNCTION_ARGS)
 ** Calculate the change in volume of the old entry once the new entry is added.
 ** TODO: Re-evaluate this in light of R*Tree penalty approaches.
 */
-PG_FUNCTION_INFO_V1(geography_gist_penalty);
-Datum geography_gist_penalty(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(gserialized_gist_penalty);
+Datum gserialized_gist_penalty(PG_FUNCTION_ARGS)
 {
 	GISTENTRY *origentry = (GISTENTRY*) PG_GETARG_POINTER(0);
 	GISTENTRY *newentry = (GISTENTRY*) PG_GETARG_POINTER(1);
@@ -1027,8 +1027,8 @@ Datum geography_gist_penalty(PG_FUNCTION_ARGS)
 /*
 ** GiST support function. Merge all the boxes in a page into one master box.
 */
-PG_FUNCTION_INFO_V1(geography_gist_union);
-Datum geography_gist_union(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(gserialized_gist_union);
+Datum gserialized_gist_union(PG_FUNCTION_ARGS)
 {
 	GistEntryVector	*entryvec = (GistEntryVector *) PG_GETARG_POINTER(0);
 	int *sizep = (int *) PG_GETARG_POINTER(1); /* Size of the return value */
@@ -1060,8 +1060,8 @@ Datum geography_gist_union(PG_FUNCTION_ARGS)
 /*
 ** GiST support function. Test equality of keys.
 */
-PG_FUNCTION_INFO_V1(geography_gist_same);
-Datum geography_gist_same(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(gserialized_gist_same);
+Datum gserialized_gist_same(PG_FUNCTION_ARGS)
 {
 	GIDX *b1 = (GIDX*)PG_GETARG_POINTER(0);
 	GIDX *b2 = (GIDX*)PG_GETARG_POINTER(1);
@@ -1079,7 +1079,7 @@ Datum geography_gist_same(PG_FUNCTION_ARGS)
 ** Utility function to add entries to the axis partition lists in the
 ** picksplit function.
 */
-static void geography_gist_picksplit_addlist(OffsetNumber *list, GIDX **box_union, GIDX *box_current, int *pos, int num)
+static void gserialized_gist_picksplit_addlist(OffsetNumber *list, GIDX **box_union, GIDX *box_current, int *pos, int num)
 {
 	if ( *pos )
 		gidx_merge(box_union,  box_current);
@@ -1093,7 +1093,7 @@ static void geography_gist_picksplit_addlist(OffsetNumber *list, GIDX **box_unio
 ** Utility function check whether the number of entries two halves of the
 ** space constitute a "bad ratio" (poor balance).
 */
-static int geography_gist_picksplit_badratio(int x, int y)
+static int gserialized_gist_picksplit_badratio(int x, int y)
 {
 	POSTGIS_DEBUGF(4, "[GIST] checking split ratio (%d, %d)", x, y);
 	if ( (y == 0) || (((float)x / (float)y) < LIMIT_RATIO) ||
@@ -1103,12 +1103,12 @@ static int geography_gist_picksplit_badratio(int x, int y)
 	return FALSE;
 }
 
-static bool geography_gist_picksplit_badratios(int *pos, int dims)
+static bool gserialized_gist_picksplit_badratios(int *pos, int dims)
 {
 	int i;
 	for ( i = 0; i < dims; i++ )
 	{
-		if ( geography_gist_picksplit_badratio(pos[2*i],pos[2*i+1]) == FALSE )
+		if ( gserialized_gist_picksplit_badratio(pos[2*i],pos[2*i+1]) == FALSE )
 			return FALSE;
 	}
 	return TRUE;
@@ -1119,7 +1119,7 @@ static bool geography_gist_picksplit_badratios(int *pos, int dims)
 ** Where the picksplit algorithm cannot find any basis for splitting one way
 ** or another, we simply split the overflowing node in half.
 */
-static void geography_gist_picksplit_fallback(GistEntryVector *entryvec, GIST_SPLITVEC *v)
+static void gserialized_gist_picksplit_fallback(GistEntryVector *entryvec, GIST_SPLITVEC *v)
 {
 	OffsetNumber i, maxoff;
 	GIDX *unionL = NULL;
@@ -1181,7 +1181,7 @@ static void geography_gist_picksplit_fallback(GistEntryVector *entryvec, GIST_SP
 
 
 
-static void geography_gist_picksplit_constructsplit(GIST_SPLITVEC *v, OffsetNumber *list1, int nlist1, GIDX **union1, OffsetNumber *list2, int nlist2, GIDX **union2)
+static void gserialized_gist_picksplit_constructsplit(GIST_SPLITVEC *v, OffsetNumber *list1, int nlist1, GIDX **union1, OffsetNumber *list2, int nlist2, GIDX **union2)
 {
 	bool		firstToLeft = true;
 
@@ -1220,9 +1220,9 @@ static void geography_gist_picksplit_constructsplit(GIST_SPLITVEC *v, OffsetNumb
 			              NULL, NULL, InvalidOffsetNumber, FALSE);
 
 			gistentryinit(addon, PointerGetDatum(*union1), NULL, NULL, InvalidOffsetNumber, FALSE);
-			DirectFunctionCall3(geography_gist_penalty, PointerGetDatum(&oldUnion), PointerGetDatum(&addon), PointerGetDatum(&p1));
+			DirectFunctionCall3(gserialized_gist_penalty, PointerGetDatum(&oldUnion), PointerGetDatum(&addon), PointerGetDatum(&p1));
 			gistentryinit(addon, PointerGetDatum(*union2), NULL, NULL, InvalidOffsetNumber, FALSE);
-			DirectFunctionCall3(geography_gist_penalty, PointerGetDatum(&oldUnion), PointerGetDatum(&addon), PointerGetDatum(&p2));
+			DirectFunctionCall3(gserialized_gist_penalty, PointerGetDatum(&oldUnion), PointerGetDatum(&addon), PointerGetDatum(&p2));
 
 			POSTGIS_DEBUGF(4, "[GIST] p1 / p2 == %.12g / %.12g", p1, p2);
 
@@ -1274,8 +1274,8 @@ static void geography_gist_picksplit_constructsplit(GIST_SPLITVEC *v, OffsetNumb
 ** entries between the new nodes.
 ** TODO: Re-evaluate this in light of R*Tree picksplit approaches.
 */
-PG_FUNCTION_INFO_V1(geography_gist_picksplit);
-Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(gserialized_gist_picksplit);
+Datum gserialized_gist_picksplit(PG_FUNCTION_ARGS)
 {
 
 	GistEntryVector	*entryvec = (GistEntryVector*) PG_GETARG_POINTER(0);
@@ -1323,7 +1323,7 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 	if ( all_entries_equal )
 	{
 		POSTGIS_DEBUG(4, "[GIST] picksplit finds all entries equal!");
-		geography_gist_picksplit_fallback(entryvec, v);
+		gserialized_gist_picksplit_fallback(entryvec, v);
 		PG_RETURN_POINTER(v);
 	}
 
@@ -1358,11 +1358,11 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 		{
 			if ( GIDX_GET_MIN(box_current,d)-GIDX_GET_MIN(box_pageunion,d) < GIDX_GET_MAX(box_pageunion,d)-GIDX_GET_MAX(box_current,d) )
 			{
-				geography_gist_picksplit_addlist(list[BELOW(d)], &(box_union[BELOW(d)]), box_current, &(pos[BELOW(d)]), i);
+				gserialized_gist_picksplit_addlist(list[BELOW(d)], &(box_union[BELOW(d)]), box_current, &(pos[BELOW(d)]), i);
 			}
 			else
 			{
-				geography_gist_picksplit_addlist(list[ABOVE(d)], &(box_union[ABOVE(d)]), box_current, &(pos[ABOVE(d)]), i);
+				gserialized_gist_picksplit_addlist(list[ABOVE(d)], &(box_union[ABOVE(d)]), box_current, &(pos[ABOVE(d)]), i);
 			}
 
 		}
@@ -1376,7 +1376,7 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 	** sides of the page union box can occasionally all end up in one place, leading
 	** to this condition.
 	*/
-	if ( geography_gist_picksplit_badratios(pos,ndims_pageunion) == TRUE )
+	if ( gserialized_gist_picksplit_badratios(pos,ndims_pageunion) == TRUE )
 	{
 		/*
 		** Instead we split on center points and see if we do better.
@@ -1416,23 +1416,23 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 			{
 				center = (GIDX_GET_MIN(box_current,d)+GIDX_GET_MAX(box_current,d))/2.0;
 				if ( center < avgCenter[d] )
-					geography_gist_picksplit_addlist(list[BELOW(d)], &(box_union[BELOW(d)]), box_current, &(pos[BELOW(d)]), i);
+					gserialized_gist_picksplit_addlist(list[BELOW(d)], &(box_union[BELOW(d)]), box_current, &(pos[BELOW(d)]), i);
 				else if ( FPeq(center, avgCenter[d]) )
 					if ( pos[BELOW(d)] > pos[ABOVE(d)] )
-						geography_gist_picksplit_addlist(list[ABOVE(d)], &(box_union[ABOVE(d)]), box_current, &(pos[ABOVE(d)]), i);
+						gserialized_gist_picksplit_addlist(list[ABOVE(d)], &(box_union[ABOVE(d)]), box_current, &(pos[ABOVE(d)]), i);
 					else
-						geography_gist_picksplit_addlist(list[BELOW(d)], &(box_union[BELOW(d)]), box_current, &(pos[BELOW(d)]), i);
+						gserialized_gist_picksplit_addlist(list[BELOW(d)], &(box_union[BELOW(d)]), box_current, &(pos[BELOW(d)]), i);
 				else
-					geography_gist_picksplit_addlist(list[ABOVE(d)], &(box_union[ABOVE(d)]), box_current, &(pos[ABOVE(d)]), i);
+					gserialized_gist_picksplit_addlist(list[ABOVE(d)], &(box_union[ABOVE(d)]), box_current, &(pos[ABOVE(d)]), i);
 			}
 
 		}
 
 		/* Do we have a good disposition now? If not, screw it, just cut the node in half. */
-		if ( geography_gist_picksplit_badratios(pos,ndims_pageunion) == TRUE )
+		if ( gserialized_gist_picksplit_badratios(pos,ndims_pageunion) == TRUE )
 		{
 			POSTGIS_DEBUG(4, "[GIST] picksplit still cannot find a good split! just cutting the node in half");
-			geography_gist_picksplit_fallback(entryvec, v);
+			gserialized_gist_picksplit_fallback(entryvec, v);
 			PG_RETURN_POINTER(v);
 		}
 
@@ -1462,7 +1462,7 @@ Datum geography_gist_picksplit(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "[GIST] 'picksplit' splitting on axis %d", direction);
 
-	geography_gist_picksplit_constructsplit(v, list[BELOW(direction)],
+	gserialized_gist_picksplit_constructsplit(v, list[BELOW(direction)],
 	                                        pos[BELOW(direction)],
 	                                        &(box_union[BELOW(direction)]),
 	                                        list[ABOVE(direction)],

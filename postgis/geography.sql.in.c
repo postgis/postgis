@@ -195,43 +195,43 @@ CREATE CAST (geography AS geometry) WITH FUNCTION geometry(geography) ;
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_gist_consistent(internal,geometry,int4) 
 	RETURNS bool 
-	AS 'MODULE_PATHNAME' ,'geography_gist_consistent'
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_consistent'
 	LANGUAGE 'C';
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_gist_compress(internal) 
 	RETURNS internal 
-	AS 'MODULE_PATHNAME','geography_gist_compress'
+	AS 'MODULE_PATHNAME','gserialized_gist_compress'
 	LANGUAGE 'C';
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_gist_penalty(internal,internal,internal) 
 	RETURNS internal 
-	AS 'MODULE_PATHNAME' ,'geography_gist_penalty'
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_penalty'
 	LANGUAGE 'C';
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_gist_picksplit(internal, internal) 
 	RETURNS internal 
-	AS 'MODULE_PATHNAME' ,'geography_gist_picksplit'
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_picksplit'
 	LANGUAGE 'C';
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_gist_union(bytea, internal) 
 	RETURNS internal 
-	AS 'MODULE_PATHNAME' ,'geography_gist_union'
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_union'
 	LANGUAGE 'C';
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_gist_same(box2d, box2d, internal) 
 	RETURNS internal 
-	AS 'MODULE_PATHNAME' ,'geography_gist_same'
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_same'
 	LANGUAGE 'C';
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_gist_decompress(internal) 
 	RETURNS internal 
-	AS 'MODULE_PATHNAME' ,'geography_gist_decompress'
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_decompress'
 	LANGUAGE 'C';
 
 -- Availability: 1.5.0
@@ -243,7 +243,7 @@ CREATE OR REPLACE FUNCTION geography_gist_selectivity (internal, oid, internal, 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_gist_join_selectivity(internal, oid, internal, smallint)
 	RETURNS float8
-	AS 'MODULE_PATHNAME', 'geography_gist_join_selectivity'
+	AS 'MODULE_PATHNAME', 'geography_gist_selectivity'
 	LANGUAGE 'C';
 
 -- Availability: 1.5.0
