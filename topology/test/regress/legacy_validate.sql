@@ -3,4 +3,3 @@
 
 -- clean up
 SELECT topology.DropTopology('city_data');
-DROP SCHEMA features CASCADE;
