@@ -118,10 +118,12 @@ LANGUAGE 'plpgsql';
 -- AddEdge(atopology, line)
 --
 -- Add an edge primitive to a topology and get it's identifier.
--- Edge endpoints will also be added as nodes. 
+-- Edge endpoints will be added as nodes if missing.
 --
 -- An exception is raised if the given line crosses an existing
 -- node or interects with an existing edge on anything but endnodes.
+-- TODO: for symmetry with AddNode, it might be useful to return the
+--       id of an equal existing edge (currently raising an exception)
 --
 -- The newly added edge has "universe" face on both sides
 -- and links to itself.
