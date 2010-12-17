@@ -1,3 +1,5 @@
+set client_min_messages to WARNING;
+
 \i load_topology.sql
 \i load_features.sql
 \i more_features.sql

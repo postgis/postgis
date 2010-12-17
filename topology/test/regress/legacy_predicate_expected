@@ -1,27 +1,10 @@
 BEGIN
-psql:load_topology.sql:22: NOTICE:  CREATE TABLE will create implicit sequence "face_face_id_seq" for serial column "face.face_id"
-PL/pgSQL function "createtopology" line 26 at EXECUTE statement
-psql:load_topology.sql:22: NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "face_primary_key" for table "face"
-PL/pgSQL function "createtopology" line 26 at EXECUTE statement
-psql:load_topology.sql:22: NOTICE:  CREATE TABLE will create implicit sequence "node_node_id_seq" for serial column "node.node_id"
-PL/pgSQL function "createtopology" line 37 at EXECUTE statement
-psql:load_topology.sql:22: NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "node_primary_key" for table "node"
-PL/pgSQL function "createtopology" line 37 at EXECUTE statement
-psql:load_topology.sql:22: NOTICE:  CREATE TABLE will create implicit sequence "edge_data_edge_id_seq" for serial column "edge_data.edge_id"
-PL/pgSQL function "createtopology" line 64 at EXECUTE statement
-psql:load_topology.sql:22: NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "edge_data_pkey" for table "edge_data"
-PL/pgSQL function "createtopology" line 64 at EXECUTE statement
-psql:load_topology.sql:22: NOTICE:  CREATE TABLE / UNIQUE will create implicit index "relation_layer_id_key" for table "relation"
-PL/pgSQL function "createtopology" line 168 at EXECUTE statement
-2
+t
 8
 22
 26
 COMMIT
 BEGIN
-psql:load_features.sql:28: NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "land_parcels_pkey" for table "land_parcels"
-psql:load_features.sql:30: NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "city_streets_pkey" for table "city_streets"
-psql:load_features.sql:32: NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "traffic_signs_pkey" for table "traffic_signs"
 1
 2
 3
@@ -29,14 +12,12 @@ features.land_parcels.the_geom SRID:-1 TYPE:MULTIPOLYGON DIMS:2
 features.city_streets.the_geom SRID:-1 TYPE:MULTILINESTRING DIMS:2 
 features.traffic_signs.the_geom SRID:-1 TYPE:MULTIPOINT DIMS:2 
 COMMIT
-psql:hierarchy.sql:11: NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "big_parcels_pkey" for table "big_parcels"
 4
 features.big_parcels.the_geom SRID:-1 TYPE:MULTIPOLYGON DIMS:2 
 P1P2|POLYGON((21 6,9 6,9 14,9 22,21 22,35 22,35 14,35 6,21 6))
 P3P4|MULTIPOLYGON(((47 14,47 6,35 6,35 14,35 22,47 22,47 14)),((25 30,17 30,17 40,31 40,31 30,25 30)))
 F3F6|POLYGON((21 14,21 6,9 6,9 14,9 22,21 22,21 14))
 P1|F3F6
-psql:hierarchy.sql:53: NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "big_signs_pkey" for table "big_signs"
 5
 features.big_signs.the_geom SRID:-1 TYPE:MULTIPOINT DIMS:2 
 S1S2|MULTIPOINT(21 14,35 14)
@@ -140,19 +121,4 @@ R3|E25
 POLYGON/POLYGON EQUALS
 P5|F1
 COMMIT
-NOTICE:  Dropping all layers from topology city_data (2)
-NOTICE:  drop cascades to 6 other objects
-DETAIL:  drop cascades to table city_data.face
-drop cascades to table city_data.node
-drop cascades to table city_data.edge_data
-drop cascades to view city_data.edge
-drop cascades to sequence city_data.layer_id_seq
-drop cascades to table city_data.relation
-PL/pgSQL function "droptopology" line 41 at EXECUTE statement
 Topology 'city_data' dropped
-NOTICE:  drop cascades to 5 other objects
-DETAIL:  drop cascades to table features.land_parcels
-drop cascades to table features.city_streets
-drop cascades to table features.traffic_signs
-drop cascades to table features.big_parcels
-drop cascades to table features.big_signs

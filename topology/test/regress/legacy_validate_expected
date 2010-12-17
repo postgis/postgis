@@ -1,32 +1,9 @@
 BEGIN
-psql:load_topology.sql:22: NOTICE:  CREATE TABLE will create implicit sequence "face_face_id_seq" for serial column "face.face_id"
-PL/pgSQL function "createtopology" line 26 at EXECUTE statement
-psql:load_topology.sql:22: NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "face_primary_key" for table "face"
-PL/pgSQL function "createtopology" line 26 at EXECUTE statement
-psql:load_topology.sql:22: NOTICE:  CREATE TABLE will create implicit sequence "node_node_id_seq" for serial column "node.node_id"
-PL/pgSQL function "createtopology" line 37 at EXECUTE statement
-psql:load_topology.sql:22: NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "node_primary_key" for table "node"
-PL/pgSQL function "createtopology" line 37 at EXECUTE statement
-psql:load_topology.sql:22: NOTICE:  CREATE TABLE will create implicit sequence "edge_data_edge_id_seq" for serial column "edge_data.edge_id"
-PL/pgSQL function "createtopology" line 64 at EXECUTE statement
-psql:load_topology.sql:22: NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "edge_data_pkey" for table "edge_data"
-PL/pgSQL function "createtopology" line 64 at EXECUTE statement
-psql:load_topology.sql:22: NOTICE:  CREATE TABLE / UNIQUE will create implicit index "relation_layer_id_key" for table "relation"
-PL/pgSQL function "createtopology" line 168 at EXECUTE statement
-1
+t
 8
 22
 26
 COMMIT
 Topology validation errors follow:
 End of topology validation errors
-NOTICE:  Dropping all layers from topology city_data (1)
-NOTICE:  drop cascades to 6 other objects
-DETAIL:  drop cascades to table city_data.face
-drop cascades to table city_data.node
-drop cascades to table city_data.edge_data
-drop cascades to view city_data.edge
-drop cascades to sequence city_data.layer_id_seq
-drop cascades to table city_data.relation
-PL/pgSQL function "droptopology" line 41 at EXECUTE statement
 Topology 'city_data' dropped

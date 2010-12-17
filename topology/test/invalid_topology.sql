@@ -1,8 +1,11 @@
 BEGIN;
 
 -- Create the topology. 
-SELECT topology.DropTopology('invalid_topology'); -- get rid of the old one
-SELECT topology.CreateTopology('invalid_topology');
+-- NOTE:
+--  Returns topology id... which depend on how many
+--  topologies where created in the regress database
+--  so we just check it's a number greater than 0
+SELECT topology.CreateTopology('invalid_topology') > 0;
 
 -- Insert faces
 INSERT INTO invalid_topology.face(face_id) VALUES(1); -- F1

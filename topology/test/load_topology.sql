@@ -19,7 +19,13 @@
 BEGIN;
 
 -- 1. Create the topology. 
-SELECT topology.CreateTopology('city_data');
+-- 
+-- NOTE:
+--  Returns topology id... which depend on how many
+--  topologies where created in the regress database
+--  so we just check it's a number greater than 0
+-- 
+SELECT topology.CreateTopology('city_data') > 0;
 
 -- 2. Load topology data (node, edge, and face tables).
 -- Use INSERT statements here instead of a bulk-load utility.
