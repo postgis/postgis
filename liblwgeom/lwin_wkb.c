@@ -716,9 +716,10 @@ LWGEOM* lwgeom_from_wkb(const uchar *wkb, const size_t wkb_size, const char chec
 	s.pos = wkb;
 	
 	/* Hand the check catch-all values */
-	if ( check & PARSER_CHECK_NONE ) s.check = 0;
-	if ( check & PARSER_CHECK_ALL ) s.check = PARSER_CHECK_MINPOINTS | PARSER_CHECK_ODD | PARSER_CHECK_CLOSURE;
-	
+	if ( check & PARSER_CHECK_NONE ) 
+		s.check = 0;
+	else
+		s.check = check;
 
 	return lwgeom_from_wkb_state(&s);
 }

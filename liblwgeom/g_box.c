@@ -461,9 +461,10 @@ int ptarray_calculate_gbox_cartesian(const POINTARRAY *pa, GBOX *gbox )
 	if ( ! gbox ) return LW_FAILURE;
 	if ( pa->npoints < 1 ) return LW_FAILURE;
 
-	has_z = FLAGS_GET_Z(gbox->flags);
-	has_m = FLAGS_GET_M(gbox->flags);
-	LWDEBUGF(4, "ptarray_calculate_gbox Z: %d M: %d", has_z?1:0, has_m?1:0);
+	has_z = FLAGS_GET_Z(pa->flags);
+	has_m = FLAGS_GET_M(pa->flags);
+	gbox->flags = gflags(has_z, has_m, 0);
+	LWDEBUGF(4, "ptarray_calculate_gbox Z: %d M: %d", has_z, has_m);
 
 	getPoint4d_p(pa, 0, &p);
 	gbox->xmin = gbox->xmax = p.x;
@@ -561,7 +562,7 @@ static int lwcollection_calculate_gbox_cartesian(LWCOLLECTION *coll, GBOX *gbox)
 	if ( coll->ngeoms == 0 || !gbox)
 		return LW_FAILURE;
 
-	subbox.flags = gbox->flags;
+	subbox.flags = coll->flags;
 
 	for ( i = 0; i < coll->ngeoms; i++ )
 	{

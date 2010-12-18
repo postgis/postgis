@@ -61,6 +61,7 @@
 */
 #define LW_TRUE 1
 #define LW_FALSE 0
+#define LW_UNKNOWN 2
 #define LW_FAILURE 0
 #define LW_SUCCESS 1
 

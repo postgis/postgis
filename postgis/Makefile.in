@@ -118,3 +118,4 @@ postgis_upgrade_13_to_15.sql: postgis.sql
 $(SQL_OBJS): %.in: %.in.c
 	$(CPP) -traditional-cpp $< | grep -v '^#' > $@
 
+postgis.sql.in: geography.sql.in.c

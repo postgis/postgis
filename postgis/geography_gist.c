@@ -69,7 +69,7 @@ Datum gidx_in(PG_FUNCTION_ARGS);
 /*
 ** Operator prototypes
 */
-Datum geography_overlaps(PG_FUNCTION_ARGS);
+Datum gserialized_overlaps(PG_FUNCTION_ARGS);
 
 
 /*********************************************************************************
@@ -742,8 +742,8 @@ gserialized_expand(GSERIALIZED *g, double distance)
 ** GiST support function. Based on two geographies return true if
 ** they overlap and false otherwise.
 */
-PG_FUNCTION_INFO_V1(geography_overlaps);
-Datum geography_overlaps(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(gserialized_overlaps);
+Datum gserialized_overlaps(PG_FUNCTION_ARGS)
 {
 	if ( gserialized_datum_overlaps(PG_GETARG_DATUM(0),PG_GETARG_DATUM(1)) == LW_TRUE )
 	{

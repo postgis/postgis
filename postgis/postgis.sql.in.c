@@ -617,7 +617,6 @@ CREATE OPERATOR CLASS btree_geometry_ops
 	FUNCTION	1	geometry_cmp (geometry, geometry);
 
 
-
 -------------------------------------------------------------------
 -- GiST indexes
 -------------------------------------------------------------------
