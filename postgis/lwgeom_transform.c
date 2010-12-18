@@ -737,6 +737,7 @@ lwgeom_transform(LWGEOM *geom, projPJ inpj, projPJ outpj)
 			{
 				lwgeom_transform(g->geoms[i], inpj, outpj);
 			}
+			break;
 		}
 		default:
 		{
