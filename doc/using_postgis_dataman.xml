@@ -576,7 +576,7 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 	  </variablelist>
 	</sect2>
 
-	<sect2>
+	<sect2 id="geometry_columns">
 	  <title>The GEOMETRY_COLUMNS Table</title>
 
 	  <para>The <varname>GEOMETRY_COLUMNS</varname> table definition is as
@@ -585,7 +585,7 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 	  <programlisting>CREATE TABLE geometry_columns (
   f_table_catalog    VARRCHAR(256) NOT NULL,
   f_table_schema     VARCHAR(256) NOT NULL,
-  f_table_nam        VARCHAR(256) NOT NULL,
+  f_table_name        VARCHAR(256) NOT NULL,
   f_geometry_column  VARCHAR(256) NOT NULL,
   coord_dimension    INTEGER NOT NULL,
   srid               INTEGER NOT NULL,
