@@ -913,8 +913,6 @@ lwgeom_add_bbox(LWGEOM *lwgeom)
 	if ( lwgeom->bbox ) return;
 	lwgeom->bbox = lwalloc(sizeof(GBOX));
 	lwgeom->bbox->flags = lwgeom->flags;
-	printf("\n\nFLAGS_GET_GEODETIC %d", FLAGS_GET_GEODETIC(lwgeom->flags));
-	printf("type %s\n\n", lwtype_name(lwgeom->type));
 	lwgeom_calculate_gbox(lwgeom, lwgeom->bbox);
 	FLAGS_SET_BBOX(lwgeom->flags, 1);
 }

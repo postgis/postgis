@@ -228,26 +228,7 @@ GBOX* gbox_copy(const GBOX *box)
 void gbox_duplicate(const GBOX *original, GBOX *duplicate)
 {
 	assert(duplicate);
-
-	if ( original->flags != duplicate->flags )
-		lwerror("gbox_duplicate: geometries have inconsistent dimensionality");
-
-	duplicate->xmin = original->xmin;
-	duplicate->ymin = original->ymin;
-	duplicate->xmax = original->xmax;
-	duplicate->ymax = original->ymax;
-
-	if ( FLAGS_GET_GEODETIC(original->flags) || FLAGS_GET_Z(original->flags) )
-	{
-		duplicate->zmin = original->zmin;
-		duplicate->zmax = original->zmax;
-	}
-	if ( FLAGS_GET_M(original->flags) )
-	{
-		duplicate->mmin = original->mmin;
-		duplicate->mmax = original->mmax;
-	}
-	return;
+	memcpy(duplicate, original, sizeof(GBOX));
 }
 
 size_t gbox_serialized_size(uchar flags)
@@ -559,18 +540,14 @@ static int lwcollection_calculate_gbox_cartesian(LWCOLLECTION *coll, GBOX *gbox)
 	int result = LW_FAILURE;
 	int first = LW_TRUE;
 	assert(coll);
-	if ( coll->ngeoms == 0 || !gbox)
+	if ( (coll->ngeoms == 0) || !gbox)
 		return LW_FAILURE;
 
 	subbox.flags = coll->flags;
 
 	for ( i = 0; i < coll->ngeoms; i++ )
 	{
-		if ( lwgeom_calculate_gbox_cartesian((LWGEOM*)(coll->geoms[i]), &subbox) == LW_FAILURE )
-		{
-			continue;
-		}
-		else
+		if ( lwgeom_calculate_gbox_cartesian((LWGEOM*)(coll->geoms[i]), &subbox) == LW_SUCCESS )
 		{
 			if ( first )
 			{
