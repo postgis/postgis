@@ -616,7 +616,7 @@ CREATE OPERATOR CLASS btree_geometry_ops
 	OPERATOR	5	> ,
 	FUNCTION	1	geometry_cmp (geometry, geometry);
 
-
+#ifndef GSERIALIZED_ON
 -------------------------------------------------------------------
 -- GiST indexes
 -------------------------------------------------------------------
@@ -912,7 +912,7 @@ CREATE OR REPLACE FUNCTION LWGEOM_gist_decompress(internal)
 CREATE OPERATOR CLASS gist_geometry_ops
 	DEFAULT FOR TYPE geometry USING gist AS
 	STORAGE 	box2d,
-	OPERATOR        1        << 	,
+	OPERATOR        1        << ,
 	OPERATOR        2        &<	,
 	OPERATOR        3        &&	,
 	OPERATOR        4        &>	,
@@ -931,6 +931,8 @@ CREATE OPERATOR CLASS gist_geometry_ops
 	FUNCTION        5        LWGEOM_gist_penalty (internal, internal, internal),
 	FUNCTION        6        LWGEOM_gist_picksplit (internal, internal),
 	FUNCTION        7        LWGEOM_gist_same (box2d, box2d, internal);
+
+#endif
 
 -------------------------------------------
 -- other lwgeom functions

@@ -807,23 +807,50 @@ CREATE OR REPLACE FUNCTION geometry_gist_decompress(internal)
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_decompress'
 	LANGUAGE 'C';
 
+-----------------------------------------------------------------------------
+-- GEOMETRY Operators
+-----------------------------------------------------------------------------
+
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_overlaps(geometry, geometry) 
 	RETURNS boolean 
 	AS 'MODULE_PATHNAME' ,'gserialized_overlaps'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Availability: 2.0.0
-CREATE OPERATOR &&& (
+CREATE OPERATOR && (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overlaps,
-	COMMUTATOR = '&&&'
+	COMMUTATOR = '&&'
+-- 	,RESTRICT = geometry_gist_sel, JOIN = geometry_gist_joinsel	
 );
 
+CREATE OR REPLACE FUNCTION geometry_contains(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'gserialized_contains'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OPERATOR ~ (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_contains,
+	COMMUTATOR = '@',
+	RESTRICT = contsel, JOIN = contjoinsel
+);
+
+CREATE OR REPLACE FUNCTION geometry_within(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'gserialized_within'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OPERATOR @ (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_within,
+	COMMUTATOR = '~',
+	RESTRICT = contsel, JOIN = contjoinsel
+);
+
+
 -- Availability: 2.0.0
-CREATE OPERATOR CLASS gist_geometry_ops_new
-	FOR TYPE geometry USING GIST AS
+CREATE OPERATOR CLASS gist_geometry_ops
+	DEFAULT FOR TYPE geometry USING GIST AS
 	STORAGE 	gidx,
-	OPERATOR        3        &&&,
+	OPERATOR        3        &&,
 --	OPERATOR        6        ~=	,
 --	OPERATOR        7        ~	,
 --	OPERATOR        8        @	,

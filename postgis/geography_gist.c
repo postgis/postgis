@@ -70,6 +70,8 @@ Datum gidx_in(PG_FUNCTION_ARGS);
 ** Operator prototypes
 */
 Datum gserialized_overlaps(PG_FUNCTION_ARGS);
+Datum gserialized_contains(PG_FUNCTION_ARGS);
+Datum gserialized_within(PG_FUNCTION_ARGS);
 
 
 /*********************************************************************************
@@ -711,6 +713,31 @@ gserialized_datum_overlaps(Datum gs1, Datum gs2)
 }
 
 /**
+* Support function. Based on two datums return true if
+* gs1 contains gs2 and false otherwise.
+*/
+static int 
+gserialized_datum_contains(Datum gs1, Datum gs2)
+{
+	/* Put aside some stack memory and use it for GIDX pointers. */
+	char boxmem1[GIDX_MAX_SIZE];
+	char boxmem2[GIDX_MAX_SIZE];
+	GIDX *gidx1 = (GIDX*)boxmem1;
+	GIDX *gidx2 = (GIDX*)boxmem2;
+
+	/* Must be able to build box for each arguement (ie, not empty geometry)
+	   and overlap boxes to return true. */
+	if ( (gserialized_datum_get_gidx_p(gs1, gidx1) == LW_SUCCESS) &&
+	     (gserialized_datum_get_gidx_p(gs2, gidx2) == LW_SUCCESS) &&
+	      gidx_contains(gidx1, gidx2) )
+	{
+		return LW_TRUE;
+	}
+
+	return LW_FALSE;
+}
+
+/**
 * Return a #GSERIALIZED with an expanded bounding box.
 */
 GSERIALIZED* 
@@ -733,13 +760,43 @@ gserialized_expand(GSERIALIZED *g, double distance)
 }
 
 
-
 /***********************************************************************
-* GiST Support Functions
+* GiST Index Operator Functions
 */
 
 /*
-** GiST support function. Based on two geographies return true if
+** '~' and operator function. Based on two serialized return true if
+** the first is contained by the second.
+*/
+PG_FUNCTION_INFO_V1(gserialized_within);
+Datum gserialized_within(PG_FUNCTION_ARGS)
+{
+	if ( gserialized_datum_contains(PG_GETARG_DATUM(1),PG_GETARG_DATUM(0)) == LW_TRUE )
+	{
+		PG_RETURN_BOOL(TRUE);
+	}
+
+	PG_RETURN_BOOL(FALSE);
+}
+
+
+/*
+** '@' and operator function. Based on two serialized return true if
+** the first contains the second.
+*/
+PG_FUNCTION_INFO_V1(gserialized_contains);
+Datum gserialized_contains(PG_FUNCTION_ARGS)
+{
+	if ( gserialized_datum_contains(PG_GETARG_DATUM(0),PG_GETARG_DATUM(1)) == LW_TRUE )
+	{
+		PG_RETURN_BOOL(TRUE);
+	}
+
+	PG_RETURN_BOOL(FALSE);
+}
+
+/*
+** '&&' operator function. Based on two serialized return true if
 ** they overlap and false otherwise.
 */
 PG_FUNCTION_INFO_V1(gserialized_overlaps);
@@ -752,6 +809,10 @@ Datum gserialized_overlaps(PG_FUNCTION_ARGS)
 
 	PG_RETURN_BOOL(FALSE);
 }
+
+/***********************************************************************
+* GiST Index  Support Functions
+*/
 
 /*
 ** GiST support function. Given a geography, return a "compressed"
