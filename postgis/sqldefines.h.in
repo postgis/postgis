@@ -20,3 +20,6 @@
 #define _POSTGIS_SQL_SELECT_POSTGIS_SCRIPTS_VERSION 'SELECT ''@POSTGIS_SCRIPTS_VERSION@''::text AS version'
 
 #endif /* _LWPGIS_DEFINES */
+
+#include "gserialized.h"
+

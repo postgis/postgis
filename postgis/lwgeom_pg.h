@@ -71,7 +71,7 @@ extern void pg_unparser_errhint(LWGEOM_UNPARSER_RESULT *lwg_unparser_result);
 /*
 * Temporary changeover defines for PG_LWGEOM and GSERIALIZED
 */
-#undef GSERIALIZED_ON
+#include "gserialized.h"
 #ifdef GSERIALIZED_ON
 #define PG_LWGEOM GSERIALIZED
 #endif

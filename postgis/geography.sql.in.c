@@ -757,83 +757,81 @@ CREATE OR REPLACE FUNCTION ST_Intersection(text, text)
 	$$ SELECT ST_Intersection($1::geometry, $2::geometry);  $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-----------------------------------------------------------------------------
+
+#ifdef GSERIALIZED_ON
+-----------------------------------------------------------------------------
+-- GiST GEOMETRY-over-GSERIALIZED
+-----------------------------------------------------------------------------
 
 
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_consistent(internal,geometry,int4) 
+	RETURNS bool 
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_consistent'
+	LANGUAGE 'C';
 
-#ifdef 0
-	-------------------------------------------------------------------
-	-- GiST GEOMETRY-over-GSERIALIZED
-	-------------------------------------------------------------------
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_compress(internal) 
+	RETURNS internal 
+	AS 'MODULE_PATHNAME','gserialized_gist_compress'
+	LANGUAGE 'C';
 
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_penalty(internal,internal,internal) 
+	RETURNS internal 
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_penalty'
+	LANGUAGE 'C';
 
-	-- Availability: 2.0.0
-	CREATE OR REPLACE FUNCTION geometry_gist_consistent(internal,geometry,int4) 
-		RETURNS bool 
-		AS 'MODULE_PATHNAME' ,'gserialized_gist_consistent'
-		LANGUAGE 'C';
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_picksplit(internal, internal) 
+	RETURNS internal 
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_picksplit'
+	LANGUAGE 'C';
 
-	-- Availability: 2.0.0
-	CREATE OR REPLACE FUNCTION geometry_gist_compress(internal) 
-		RETURNS internal 
-		AS 'MODULE_PATHNAME','gserialized_gist_compress'
-		LANGUAGE 'C';
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_union(bytea, internal) 
+	RETURNS internal 
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_union'
+	LANGUAGE 'C';
 
-	-- Availability: 2.0.0
-	CREATE OR REPLACE FUNCTION geometry_gist_penalty(internal,internal,internal) 
-		RETURNS internal 
-		AS 'MODULE_PATHNAME' ,'gserialized_gist_penalty'
-		LANGUAGE 'C';
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_same(box2d, box2d, internal) 
+	RETURNS internal 
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_same'
+	LANGUAGE 'C';
 
-	-- Availability: 2.0.0
-	CREATE OR REPLACE FUNCTION geometry_gist_picksplit(internal, internal) 
-		RETURNS internal 
-		AS 'MODULE_PATHNAME' ,'gserialized_gist_picksplit'
-		LANGUAGE 'C';
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_decompress(internal) 
+	RETURNS internal 
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_decompress'
+	LANGUAGE 'C';
 
-	-- Availability: 2.0.0
-	CREATE OR REPLACE FUNCTION geometry_gist_union(bytea, internal) 
-		RETURNS internal 
-		AS 'MODULE_PATHNAME' ,'gserialized_gist_union'
-		LANGUAGE 'C';
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_overlaps(geometry, geometry) 
+	RETURNS boolean 
+	AS 'MODULE_PATHNAME' ,'gserialized_overlaps'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 
-	-- Availability: 2.0.0
-	CREATE OR REPLACE FUNCTION geometry_gist_same(box2d, box2d, internal) 
-		RETURNS internal 
-		AS 'MODULE_PATHNAME' ,'gserialized_gist_same'
-		LANGUAGE 'C';
+-- Availability: 2.0.0
+CREATE OPERATOR &&& (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overlaps,
+	COMMUTATOR = '&&&'
+);
 
-	-- Availability: 2.0.0
-	CREATE OR REPLACE FUNCTION geometry_gist_decompress(internal) 
-		RETURNS internal 
-		AS 'MODULE_PATHNAME' ,'gserialized_gist_decompress'
-		LANGUAGE 'C';
-
-	-- Availability: 2.0.0
-	CREATE OR REPLACE FUNCTION geometry_overlaps(geometry, geometry) 
-		RETURNS boolean 
-		AS 'MODULE_PATHNAME' ,'gserialized_overlaps'
-		LANGUAGE 'C' IMMUTABLE STRICT;
-
-	-- Availability: 2.0.0
-	CREATE OPERATOR &&& (
-		LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overlaps,
-		COMMUTATOR = '&&&'
-	);
-
-	-- Availability: 2.0.0
-	CREATE OPERATOR CLASS gist_geometry_ops_new
-		FOR TYPE geometry USING GIST AS
-		STORAGE 	gidx,
-		OPERATOR        3        &&&,
-	--	OPERATOR        6        ~=	,
-	--	OPERATOR        7        ~	,
-	--	OPERATOR        8        @	,
-		FUNCTION        1        geometry_gist_consistent (internal, geometry, int4),
-		FUNCTION        2        geometry_gist_union (bytea, internal),
-		FUNCTION        3        geometry_gist_compress (internal),
-		FUNCTION        4        geometry_gist_decompress (internal),
-		FUNCTION        5        geometry_gist_penalty (internal, internal, internal),
-		FUNCTION        6        geometry_gist_picksplit (internal, internal),
-		FUNCTION        7        geometry_gist_same (box2d, box2d, internal);
+-- Availability: 2.0.0
+CREATE OPERATOR CLASS gist_geometry_ops_new
+	FOR TYPE geometry USING GIST AS
+	STORAGE 	gidx,
+	OPERATOR        3        &&&,
+--	OPERATOR        6        ~=	,
+--	OPERATOR        7        ~	,
+--	OPERATOR        8        @	,
+	FUNCTION        1        geometry_gist_consistent (internal, geometry, int4),
+	FUNCTION        2        geometry_gist_union (bytea, internal),
+	FUNCTION        3        geometry_gist_compress (internal),
+	FUNCTION        4        geometry_gist_decompress (internal),
+	FUNCTION        5        geometry_gist_penalty (internal, internal, internal),
+	FUNCTION        6        geometry_gist_picksplit (internal, internal),
+	FUNCTION        7        geometry_gist_same (box2d, box2d, internal);
 #endif
