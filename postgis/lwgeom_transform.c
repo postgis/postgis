@@ -856,7 +856,7 @@ Datum transform(PG_FUNCTION_ARGS)
 	lwgeom->srid = result_srid;
 
 	/* Re-compute bbox if input had one (COMPUTE_BBOX TAINTING) */
-	if ( FLAGS_GET_BBOX(lwgeom->flags) )
+	if ( lwgeom->bbox )
 	{
 		lwgeom_drop_bbox(lwgeom);
 		lwgeom_add_bbox(lwgeom);
@@ -959,7 +959,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	pj_free(output_pj);
 
 	/* Re-compute bbox if input had one (COMPUTE_BBOX TAINTING) */
-	if ( FLAGS_GET_BBOX(lwgeom->flags) )
+	if ( lwgeom->bbox )
 	{
 		lwgeom_drop_bbox(lwgeom);
 		lwgeom_add_bbox(lwgeom);

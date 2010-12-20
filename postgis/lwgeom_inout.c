@@ -397,16 +397,10 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 
 	lwgeom = pglwgeom_deserialize(geom);
-	
-	if ( FLAGS_GET_BBOX(lwgeom->flags) )
-	{
-		PG_RETURN_POINTER(geom);
-	}
-
-	lwgeom_calculate_gbox(lwgeom, lwgeom->bbox);
-
+	lwgeom_add_bbox(lwgeom);
 	result = pglwgeom_serialize(lwgeom);
 	
+	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(result);
 }
 
