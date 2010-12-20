@@ -954,6 +954,9 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 	** functions do the right thing.
 	*/
 	lwgeom_set_geodetic(lwgeom, true);
+	/* Recalculate the boxes after re-setting the geodetic bit */
+	lwgeom_drop_bbox(lwgeom);
+	lwgeom_add_bbox(lwgeom);
 	g_ser = geography_serialize(lwgeom);
 
 	/*
@@ -974,10 +977,11 @@ Datum geometry_from_geography(PG_FUNCTION_ARGS)
 	GSERIALIZED *g_ser = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	lwgeom = lwgeom_from_gserialized(g_ser);
-	lwgeom_set_geodetic(lwgeom, false);	
 
-	if ( lwgeom_needs_bbox(lwgeom) )
-		lwgeom_add_bbox(lwgeom);
+	/* Recalculate the boxes after re-setting the geodetic bit */
+	lwgeom_set_geodetic(lwgeom, false);	
+	lwgeom_drop_bbox(lwgeom);
+	lwgeom_add_bbox(lwgeom);
 
 	/* We want "geometry" to think all our "geography" has an SRID, and the
 	   implied SRID is the default, so we fill that in if our SRID is actually unknown. */
