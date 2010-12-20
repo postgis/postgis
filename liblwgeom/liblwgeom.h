@@ -1980,7 +1980,7 @@ extern size_t gserialized_from_lwgeom_size(const LWGEOM *geom);
 * will contain the size of the final output, which is useful for setting the PgSQL 
 * VARSIZE information.
 */
-extern GSERIALIZED* gserialized_from_lwgeom(const LWGEOM *geom, int is_geodetic, size_t *size);
+extern GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, int is_geodetic, size_t *size);
 
 /**
 * Allocate a new #LWGEOM from a #GSERIALIZED. The resulting #LWGEOM will have coordinates

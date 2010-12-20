@@ -911,10 +911,9 @@ void
 lwgeom_add_bbox(LWGEOM *lwgeom)
 {
 	if ( lwgeom->bbox ) return;
-	lwgeom->bbox = lwalloc(sizeof(GBOX));
-	lwgeom->bbox->flags = lwgeom->flags;
-	lwgeom_calculate_gbox(lwgeom, lwgeom->bbox);
 	FLAGS_SET_BBOX(lwgeom->flags, 1);
+	lwgeom->bbox = gbox_new(lwgeom->flags);
+	lwgeom_calculate_gbox(lwgeom, lwgeom->bbox);
 }
 
 /**
@@ -1022,6 +1021,9 @@ lwgeom_set_geodetic(LWGEOM *geom, int value)
 	int i;
 	
 	FLAGS_SET_GEODETIC(geom->flags, value);
+	if ( geom->bbox )
+		FLAGS_SET_GEODETIC(geom->bbox->flags, value);
+	
 	switch(geom->type)
 	{
 		case POINTTYPE:

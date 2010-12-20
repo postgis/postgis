@@ -460,6 +460,33 @@ static void test_lwgeom_flip_coordinates(void)
 	);
 }
 
+static void test_f2d(void)
+{
+	double d = 1000000.123456789123456789;
+	float f;
+	double e;
+	
+	f = next_float_down(d);
+	d = next_float_down(f);	
+	CU_ASSERT_DOUBLE_EQUAL(f,d, 0.0000001);
+	
+	e = (double)f;
+	CU_ASSERT_DOUBLE_EQUAL(f,e, 0.0000001);
+	
+	f = next_float_down(d);
+	d = next_float_down(f);
+	CU_ASSERT_DOUBLE_EQUAL(f,d, 0.0000001);
+
+	f = next_float_up(d);
+	d = next_float_up(f);
+	CU_ASSERT_DOUBLE_EQUAL(f,d, 0.0000001);
+
+	f = next_float_up(d);
+	d = next_float_up(f);
+	CU_ASSERT_DOUBLE_EQUAL(f,d, 0.0000001);
+}
+
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -477,6 +504,7 @@ CU_TestInfo libgeom_tests[] =
 	PG_TEST(test_lwcollection_extract),
 	PG_TEST(test_lwgeom_free),
 	PG_TEST(test_lwgeom_flip_coordinates),
+	PG_TEST(test_f2d),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo libgeom_suite = {"LibGeom Suite",  NULL,  NULL, libgeom_tests};

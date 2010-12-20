@@ -20,7 +20,10 @@ uint32 gserialized_get_type(const GSERIALIZED *s)
 	uint32 *ptr;
 	assert(s);
 	ptr = (uint32*)(s->data);
-	ptr += (gbox_serialized_size(s->flags) / sizeof(uint32));
+	if ( FLAGS_GET_BBOX(s->flags) )
+	{
+		ptr += (gbox_serialized_size(s->flags) / sizeof(uint32));
+	}
 	return *ptr;
 }
 
@@ -246,8 +249,13 @@ size_t gserialized_from_lwgeom_size(const LWGEOM *geom)
 {
 	size_t size = 8; /* Header overhead. */
 	assert(geom);
+	
+	if ( geom->bbox )
+		size += gbox_serialized_size(geom->flags);	
+		
 	size += gserialized_from_any_size(geom);
 	LWDEBUGF(3, "g_serialize size = %d", size);
+	
 	return size;
 }
 
@@ -605,37 +613,25 @@ static size_t gserialized_from_gbox(const GBOX *gbox, uchar *buf)
 
 /* Public function */
 
-GSERIALIZED* gserialized_from_lwgeom(const LWGEOM *geom, int is_geodetic, size_t *size)
+GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, int is_geodetic, size_t *size)
 {
-	size_t expected_box_size = 0;
 	size_t expected_size = 0;
 	size_t return_size = 0;
 	uchar *serialized = NULL;
 	uchar *ptr = NULL;
 	GSERIALIZED *g = NULL;
-	GBOX gbox;
 	assert(geom);
 
-	/* Carry forward the flags! */
-	gbox.flags = geom->flags;
-
 	/*
-	** We need room for a bounding box in the serialized form.
-	** Calculate the box and allocate enough size for it.
+	** See if we need a bounding box, add one if we don't have one.
 	*/
-	if ( ! lwgeom_is_empty(geom) && lwgeom_needs_bbox(geom) )
+	if ( (!geom->bbox) && lwgeom_needs_bbox(geom) && (!lwgeom_is_empty(geom)) )
 	{
-		int result = lwgeom_calculate_gbox(geom, &gbox);
-		LWDEBUGF(3, "calculated gbox, %s", gbox_to_string(&gbox));
-		if ( result == LW_SUCCESS )
-		{
-			FLAGS_SET_BBOX(gbox.flags, 1);
-			expected_box_size = gbox_serialized_size(gbox.flags);
-		}
+		lwgeom_add_bbox(geom);
 	}
 
 	/* Set up the uchar buffer into which we are going to write the serialized geometry. */
-	expected_size = gserialized_from_lwgeom_size(geom) + expected_box_size;
+	expected_size = gserialized_from_lwgeom_size(geom);
 	serialized = lwalloc(expected_size);
 	ptr = serialized;
 
@@ -643,8 +639,8 @@ GSERIALIZED* gserialized_from_lwgeom(const LWGEOM *geom, int is_geodetic, size_t
 	ptr += 8;
 
 	/* Write in the serialized form of the gbox, if necessary. */
-	if ( FLAGS_GET_BBOX(gbox.flags) )
-		ptr += gserialized_from_gbox(&gbox, ptr);
+	if ( geom->bbox )
+		ptr += gserialized_from_gbox(geom->bbox, ptr);
 
 	/* Write in the serialized form of the geometry. */
 	ptr += gserialized_from_lwgeom_any(geom, ptr);
@@ -674,7 +670,7 @@ GSERIALIZED* gserialized_from_lwgeom(const LWGEOM *geom, int is_geodetic, size_t
 	else
 		gserialized_set_srid(g, geom->srid);
 
-	g->flags = gbox.flags;
+	g->flags = geom->flags;
 
 	return g;
 }
@@ -949,7 +945,6 @@ static LWCOLLECTION* lwcollection_from_gserialized_buffer(uchar *data_ptr, uchar
 
 	return collection;
 }
-
 
 LWGEOM* lwgeom_from_gserialized_buffer(uchar *data_ptr, uchar g_flags, size_t *g_size)
 {

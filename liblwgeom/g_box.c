@@ -35,9 +35,9 @@ GBOX* gbox_from_box2df(int flags, const BOX2DFLOAT4 *box)
 	g = gbox_new(flags);
 
 	g->xmin = next_float_down(box->xmin);
-        g->ymin = next_float_down(box->ymin);
-        g->xmax = next_float_up(box->xmax);
-        g->ymax = next_float_up(box->ymax);
+	g->ymin = next_float_down(box->ymin);
+	g->xmax = next_float_up(box->xmax);
+	g->ymax = next_float_up(box->ymax);
 
 	/* CAUTION Inconsistent GBOX if Z or M Dim present ! */
 	g->zmin = g->zmax = NO_Z_VALUE;
@@ -278,7 +278,6 @@ void gbox_duplicate(const GBOX *original, GBOX *duplicate)
 
 size_t gbox_serialized_size(uchar flags)
 {
-	if ( ! FLAGS_GET_BBOX(flags) ) return 0;
 	if ( FLAGS_GET_GEODETIC(flags) )
 		return 6 * sizeof(float);
 	else

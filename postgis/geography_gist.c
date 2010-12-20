@@ -354,6 +354,29 @@ static int gidx_from_gbox_p(GBOX box, GIDX *a)
 }
 
 
+GIDX* gidx_from_gbox(GBOX box)
+{
+	int	ndims;
+	GIDX *a;
+
+	ndims = (FLAGS_GET_GEODETIC(box.flags) ? 3 : FLAGS_NDIMS(box.flags));
+	a = gidx_new(ndims);
+	gidx_from_gbox_p(box, a);
+	return a;
+}
+
+
+void gbox_from_gidx(GIDX *a, GBOX *gbox)
+{
+	gbox->xmin = (double)GIDX_GET_MIN(a,0);
+	gbox->ymin = (double)GIDX_GET_MIN(a,1);
+	gbox->zmin = (double)GIDX_GET_MIN(a,2);
+	gbox->xmax = (double)GIDX_GET_MAX(a,0);
+	gbox->ymax = (double)GIDX_GET_MAX(a,1);
+	gbox->zmax = (double)GIDX_GET_MAX(a,2);
+}
+
+
 
 /*
 ** Overlapping GIDX box test.
@@ -487,28 +510,6 @@ static bool gidx_equals(GIDX *a, GIDX *b)
 			return FALSE;
 	}
 	return TRUE;
-}
-
-GIDX* gidx_from_gbox(GBOX box)
-{
-	int	ndims;
-	GIDX *a;
-
-	ndims = (FLAGS_GET_GEODETIC(box.flags) ? 3 : FLAGS_NDIMS(box.flags));
-	a = gidx_new(ndims);
-	gidx_from_gbox_p(box, a);
-	return a;
-}
-
-
-void gbox_from_gidx(GIDX *a, GBOX *gbox)
-{
-	gbox->xmin = (double)GIDX_GET_MIN(a,0);
-	gbox->ymin = (double)GIDX_GET_MIN(a,1);
-	gbox->zmin = (double)GIDX_GET_MIN(a,2);
-	gbox->xmax = (double)GIDX_GET_MAX(a,0);
-	gbox->ymax = (double)GIDX_GET_MAX(a,1);
-	gbox->zmax = (double)GIDX_GET_MAX(a,2);
 }
 
 
