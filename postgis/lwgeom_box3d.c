@@ -322,11 +322,16 @@ Datum BOX3D_expand(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_to_BOX3D);
 Datum LWGEOM_to_BOX3D(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
+	GBOX gbox;
 	BOX3D *result;
+	int rv = lwgeom_calculate_gbox(lwgeom, &gbox);
 
-	result = pglwgeom_compute_serialized_box3d(lwgeom);
-	if ( ! result ) PG_RETURN_NULL();
+	if ( rv == LW_FAILURE )
+		PG_RETURN_NULL();
+		
+	result = box3d_from_gbox(&gbox);
 
 	PG_RETURN_POINTER(result);
 }
@@ -380,47 +385,54 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 	Pointer box3d_ptr = PG_GETARG_POINTER(0);
 	Pointer geom_ptr = PG_GETARG_POINTER(1);
 	BOX3D *a,*b;
-	PG_LWGEOM *lwgeom;
-	BOX3D *box, *result;
+	PG_LWGEOM *geom;
+	LWGEOM *lwgeom;
+	BOX3D *result;
+	GBOX gbox;
+	int rv;
 
 	if  ( (box3d_ptr == NULL) && (geom_ptr == NULL) )
 	{
 		PG_RETURN_NULL();
 	}
 
-	result = (BOX3D *)palloc(sizeof(BOX3D));
 
 	if (box3d_ptr == NULL)
 	{
-		lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-		box = pglwgeom_compute_serialized_box3d(lwgeom);
-		if ( ! box )
+		geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+		lwgeom = pglwgeom_deserialize(geom);
+		rv = lwgeom_calculate_gbox(lwgeom, &gbox);
+		if ( rv == LW_FAILURE )
 		{
-			PG_FREE_IF_COPY(lwgeom, 1);
+			lwgeom_free(lwgeom);
+			PG_FREE_IF_COPY(geom, 1);
 			PG_RETURN_NULL(); /* must be the empty geom */
 		}
-		memcpy(result, box, sizeof(BOX3D));
+		result = box3d_from_gbox(&gbox);
 		PG_RETURN_POINTER(result);
 	}
 
 	/* combine_bbox(BOX3D, null) => BOX3D */
 	if (geom_ptr == NULL)
 	{
+		result = palloc(sizeof(BOX3D));
 		memcpy(result, (char *)PG_GETARG_DATUM(0), sizeof(BOX3D));
 		PG_RETURN_POINTER(result);
 	}
 
-	lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	box = pglwgeom_compute_serialized_box3d(lwgeom);
-	if ( ! box ) /* must be the empty geom */
+	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	lwgeom = pglwgeom_deserialize(geom);
+	rv = lwgeom_calculate_gbox(lwgeom, &gbox);
+	result = palloc(sizeof(BOX3D));
+	if ( rv == LW_FAILURE )
 	{
-		PG_FREE_IF_COPY(lwgeom, 1);
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(geom, 1);
 		memcpy(result, (char *)PG_GETARG_DATUM(0), sizeof(BOX3D));
 		PG_RETURN_POINTER(result);
 	}
-
-	a = (BOX3D *)PG_GETARG_DATUM(0);
-	b = box;
+	a = (BOX3D *)PG_GETARG_POINTER(0);
+	b = box3d_from_gbox(&gbox);
 
 	result->xmax = LWGEOM_Maxd(a->xmax, b->xmax);
 	result->ymax = LWGEOM_Maxd(a->ymax, b->ymax);

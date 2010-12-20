@@ -54,12 +54,57 @@ BOX2DFLOAT4* box2df_from_gbox(const GBOX *gbox)
 	
 	b = lwalloc(sizeof(BOX2DFLOAT4));
 
-        b->xmin = next_float_down(gbox->xmin);
-        b->ymin = next_float_down(gbox->ymin);
-        b->xmax = next_float_up(gbox->xmax);
-        b->ymax = next_float_up(gbox->ymax);
-	
+	b->xmin = next_float_down(gbox->xmin);
+	b->ymin = next_float_down(gbox->ymin);
+	b->xmax = next_float_up(gbox->xmax);
+	b->ymax = next_float_up(gbox->ymax);
+
  	return b;	
+}
+
+/* TODO to be removed */
+BOX3D* box3d_from_gbox(const GBOX *gbox)
+{
+	BOX3D *b;
+	assert(gbox);
+	
+	b = lwalloc(sizeof(BOX3D));
+
+	b->xmin = gbox->xmin;
+	b->xmax = gbox->xmax;
+	b->ymin = gbox->ymin;
+	b->ymax = gbox->ymax;
+
+	if ( FLAGS_GET_Z(gbox->flags) )
+	{
+		b->zmin = gbox->zmin;
+		b->zmax = gbox->zmax;
+	}
+	else
+	{
+		b->zmin = b->zmax = 0.0;
+	}
+
+ 	return b;	
+}
+
+
+void gbox_expand(GBOX *g, double d)
+{
+	g->xmin -= d;
+	g->xmax += d;
+	g->ymin -= d;
+	g->ymax += d;
+	if ( FLAGS_GET_Z(g->flags) )
+	{
+		g->zmin -= d;
+		g->zmax += d;
+	}
+	if ( FLAGS_GET_M(g->flags) )
+	{
+		g->mmin -= d;
+		g->mmax += d;
+	}
 }
 
 int gbox_same(const GBOX *g1, const GBOX *g2)

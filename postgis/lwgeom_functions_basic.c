@@ -1580,58 +1580,75 @@ PG_FUNCTION_INFO_V1(LWGEOM_expand);
 Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
 	double d = PG_GETARG_FLOAT8(1);
-	BOX3D box3d;
 	POINT4D pt;
-	POINTARRAY *pa = ptarray_construct_empty(0, 0, 5);
-	POINTARRAY **ppa = lwalloc(sizeof(POINTARRAY*));
+	POINTARRAY *pa;
+	POINTARRAY **ppa;
 	LWPOLY *poly;
-	int srid;
 	PG_LWGEOM *result;
+	GBOX gbox;
 
 	POSTGIS_DEBUG(2, "LWGEOM_expand called.");
 
-	/* get geometry box  */
-	if ( ! pglwgeom_compute_serialized_box3d_p(geom, &box3d) )
+	/* Can't expand an empty */
+	if ( lwgeom_is_empty(lwgeom) )
 	{
-		/* must be an EMPTY geometry */
+		lwgeom_free(lwgeom);
 		PG_RETURN_POINTER(geom);
 	}
 
-	/* get geometry SRID */
-	srid = pglwgeom_get_srid(geom);
+	/* Can't expand something with no gbox! */
+	if ( LW_FAILURE == lwgeom_calculate_gbox(lwgeom, &gbox) )
+	{
+		lwgeom_free(lwgeom);
+		PG_RETURN_POINTER(geom);
+	}
 
-	/* expand it */
-	expand_box3d(&box3d, d);
+	gbox_expand(&gbox, d);
 
+	pa = ptarray_construct_empty(FLAGS_GET_Z(lwgeom->flags), FLAGS_GET_M(lwgeom->flags), 5);
+	
 	/* Assign coordinates to POINT2D array */
-	pt.x = box3d.xmin;
-	pt.y = box3d.ymin;
+	pt.x = gbox.xmin;
+	pt.y = gbox.ymin;
+	pt.z = gbox.zmin;
+	pt.m = gbox.mmin;
 	ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
-	pt.x = box3d.xmin;
-	pt.y = box3d.ymax;
+	pt.x = gbox.xmin;
+	pt.y = gbox.ymax;
+	pt.z = gbox.zmin;
+	pt.m = gbox.mmin;
 	ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
-	pt.x = box3d.xmax;
-	pt.y = box3d.ymax;
+	pt.x = gbox.xmax;
+	pt.y = gbox.ymax;
+	pt.z = gbox.zmax;
+	pt.m = gbox.mmax;
 	ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
-	pt.x = box3d.xmax;
-	pt.y = box3d.ymin;
+	pt.x = gbox.xmax;
+	pt.y = gbox.ymin;
+	pt.z = gbox.zmax;
+	pt.m = gbox.mmax;
 	ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
-	pt.x = box3d.xmin;
-	pt.y = box3d.ymin;
+	pt.x = gbox.xmin;
+	pt.y = gbox.ymin;
+	pt.z = gbox.zmin;
+	pt.m = gbox.mmin;
 	ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
 
 	/* Construct point array */
+	ppa = lwalloc(sizeof(POINTARRAY*));
 	ppa[0] = pa;
 
 	/* Construct polygon  */
-	poly = lwpoly_construct(srid, NULL, 1, ppa);
-	lwgeom_add_bbox((LWGEOM *)poly);
+	poly = lwpoly_construct(lwgeom->srid, NULL, 1, ppa);
+	lwgeom_add_bbox(lwpoly_as_lwgeom(poly));
 
 	/* Construct PG_LWGEOM  */
 	result = pglwgeom_serialize(lwpoly_as_lwgeom(poly));
-	lwgeom_free(lwpoly_as_lwgeom(poly));
 
+	lwgeom_free(lwpoly_as_lwgeom(poly));
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(result);

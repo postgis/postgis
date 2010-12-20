@@ -1401,6 +1401,9 @@ extern void box2df_to_box3d_p(BOX2DFLOAT4 *box, BOX3D *box3d);
 extern BOX3D *box3d_union(BOX3D *b1, BOX3D *b2);
 extern int box3d_union_p(BOX3D *b1, BOX3D *b2, BOX3D *ubox);
 
+
+extern BOX3D* box3d_from_gbox(const GBOX *gbox);
+
 /*
  * Returns a pointer to the BBOX internal to the serialized form.
  * READ-ONLY!
@@ -1905,6 +1908,11 @@ extern void gbox_init(GBOX *gbox);
 * Update the merged #GBOX to be large enough to include itself and the new box.
 */
 extern int gbox_merge(const GBOX *new_box, GBOX *merged_box);
+
+/**
+* Move the box minimums down and the maximums up by the distance provided.
+*/
+extern void gbox_expand(GBOX *g, double d);
 
 /**
 * Update the #GBOX to be large enough to include itself and the new point.
