@@ -38,6 +38,8 @@ SELECT 'e4',  topology.addEdge('tt', 'LINESTRING(8 10, 0 10)');
 
 SELECT 'e5',  topology.addEdge('tt', 'LINESTRING(8 -10, 0 -10)');
 
+-- this one touches the same edge (e5) at both endpoints
+SELECT 'e6',  topology.addEdge('tt', 'LINESTRING(8 -10, 4 -20, 0 -10)');
 
 SELECT edge_id, left_face, right_face,
 	next_left_edge, next_right_edge,

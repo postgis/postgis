@@ -174,17 +174,25 @@ BEGIN
 	-- Following DE-9 Intersection Matrix represent
 	-- the only relation we accept. 
 	--
-	--    FF1
-	--    F*0
-	--    102
+	--    F F 1
+	--    F * *
+	--    1 * 2
 	--
-	FOR rec IN EXECUTE 'SELECT edge_id FROM '
+	-- Example1: linestrings touching at one endpoint
+	--    FF1F00102
+	--    FF1F**1*2 <-- our match
+	--
+	-- Example2: linestrings touching at both endpoints
+	--    FF1F0F1F2
+	--    FF1F**1*2 <-- our match
+	--
+	FOR rec IN EXECUTE 'SELECT edge_id, geom FROM '
 		|| quote_ident(atopology) || '.edge '
 		|| 'WHERE '
 		|| quote_literal(aline::text) || '::geometry && geom'
 		|| ' AND NOT ST_Relate('
 		|| quote_literal(aline::text)
-		|| '::geometry, geom, ''FF1F*0102'''
+		|| '::geometry, geom, ''FF1F**1*2'''
 		|| ')'
 
 	LOOP
