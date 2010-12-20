@@ -296,7 +296,7 @@ SELECT '#457.9', st_astext(st_collectionExtract('POLYGON((0 0, 1 0, 1 1, 0 1, 0 
 
 SELECT '#720', ST_AsText(ST_SnapTogrid(ST_Transform(ST_GeomFromText('MULTIPOINT(-10 40,-10 55,-10 70,5 40,5 55,5 70,20 40,20 55,20 70,35 40,35 55,35 70,50 40,50 55,50 70)',4326), 3395), 0.01));
 
-
+SELECT '#723',ST_Intersection(a.geog, b.geog) As result FROM (VALUES (ST_GeogFromText('SRID=4326;POINT(-11.1111111 40)') ), (ST_GeogFromText('SRID=4326;POINT(-11.1111111 55)') ) ) As  a(geog) CROSS JOIN ( VALUES (ST_GeogFromText('SRID=4326;POINT(-11.1111111 40)') ), (ST_GeogFromText('SRID=4326;POINT(-11.1111111 55)') )) As b(geog);	
 
 -- Clean up
 DELETE FROM spatial_ref_sys;
