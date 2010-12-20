@@ -504,7 +504,7 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 			</xsl:for-each>
 		</xsl:for-each>
 		<!-- flag primary grouping the functions belong in -->
-		UPDATE <xsl:value-of select="$var_logtable" /> SET spatial_class = 'geography' WHERE log_label ILIKE '%geography%' AND spatial_class IS NULL;
+		UPDATE <xsl:value-of select="$var_logtable" /> SET spatial_class = 'geography' WHERE (log_label ILIKE '%geography%' or log_sql ILIKE '%geography%') AND spatial_class IS NULL;
 		UPDATE <xsl:value-of select="$var_logtable" /> SET spatial_class = 'geometry' WHERE log_label ILIKE '%geometry%' or log_label ILIKE '%other%' AND spatial_class IS NULL;
 
 	</xsl:template>
