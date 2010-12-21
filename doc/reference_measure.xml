@@ -3311,8 +3311,7 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 				using a relationship pattern that requires intersection, then include the &amp;&amp;
 				index call.</para></note>
 			
-			<para>Version 2: Takes geomA and geomB and returns the <ulink url="http://docs.codehaus.org/display/GEOTDOC/Point+Set+Theory+and+the+DE-9IM+Matrix#PointSetTheoryandtheDE-9IMMatrix-9IntersectionMatrix">DE-9IM (dimensionally extended nine-intersection
-			matrix)</ulink></para>
+			<para>Version 2: Takes geomA and geomB and returns the <xref linkend="DE-9IM" /></para>
 			
 			<note><para>Do not call with a GeometryCollection as an argument</para></note>
 			
@@ -3362,7 +3361,7 @@ t
 	<refsection>
 		<title>See Also</title>
 		
-		<para><xref linkend="ST_Crosses" />, <xref linkend="ST_Disjoint" />, <xref linkend="ST_Intersects" />, <xref linkend="ST_Touches" /></para>
+		<para><xref linkend="ST_Crosses" />, <xref linkend="DE-9IM" />, <xref linkend="ST_Disjoint" />, <xref linkend="ST_Intersects" />, <xref linkend="ST_Touches" /></para>
 	</refsection>
 </refentry>
 
@@ -3387,9 +3386,7 @@ t
 		<title>Description</title>
 		
 		<para> Takes intersectionMatrix and intersectionMatrixPattern and Returns true if the intersectionMatrix satisfies
-		the intersectionMatrixPattern.
-				 <ulink url="http://docs.codehaus.org/display/GEOTDOC/Point+Set+Theory+and+the+DE-9IM+Matrix#PointSetTheoryandtheDE-9IMMatrix-9IntersectionMatrix">intersectionMatrixPattern</ulink>.</para>
-		
+		the intersectionMatrixPattern. For more information refer to <xref linkend="DE-9IM" />.	
 
 		<para>Availability: 2.0.0 - requires GEOS &gt;= 3.3.0. </para>
 	</refsection>
@@ -3398,21 +3395,22 @@ t
 	<refsection>
 		<title>Examples</title>
 		<programlisting>
-			-- 
-			SELECT ST_RelateMatch('101202FFF', 'TTTTTTFFF') ;
-			
-			--example of common intersection matrix patterns and example matrices
-			-- comparing relationships of involving one invalid geometry and ( a line and polygon that intersect at interior and boundary)
-			SELECT mat.name, pat.name, ST_RelateMatch(mat.val, pat.val) As satisfied
-				FROM 
-					( VALUES ('Equality', 'T1FF1FFF1'),
-							('Overlaps', 'T*T***T**'),
-							('Within', 'T*F**F***') ) As pat(name,val)
-					CROSS JOIN 
-						(	VALUES ('topologically invalid', '111111111'),
-								('IntExt2_BoundInt1_BoundExt1_ExtInt1_ExtExt2', 'FF2101102'),
-								('IntExt1_BoundInt1_BoundExt1_ExtInt1_ExtExt2', 'F11F00212 ')
-						) As mat;
+SELECT ST_RelateMatch('101202FFF', 'TTTTTTFFF') ;
+-- result --
+t
+--example of common intersection matrix patterns and example matrices
+-- comparing relationships of involving one invalid geometry and ( a line and polygon that intersect at interior and boundary)
+SELECT mat.name, pat.name, ST_RelateMatch(mat.val, pat.val) As satisfied
+    FROM 
+        ( VALUES ('Equality', 'T1FF1FFF1'),
+                ('Overlaps', 'T*T***T**'),
+                ('Within', 'T*F**F***'),
+                ('Disjoint', 'FF*FF****') As pat(name,val)
+        CROSS JOIN 
+            (	VALUES ('Self intersections (invalid)', '111111111'),
+                    ('IE2_BI1_BB0_BE1_EI1_EE2', 'FF2101102'),
+                    ('IB1_IE1_BB0_BE0_EI2_EI1_EE2', 'F11F00212')
+            ) As mat(name,val);
 							
 		</programlisting>
 	</refsection>
@@ -3420,8 +3418,7 @@ t
 	<!-- Optionally add a "See Also" section -->
 	<refsection>
 		<title>See Also</title>
-		
-		<para><xref linkend="ST_Relate" /></para>
+		<para><xref linkend="DE-9IM" />, <xref linkend="ST_Relate" /></para>
 	</refsection>
 </refentry>
 
