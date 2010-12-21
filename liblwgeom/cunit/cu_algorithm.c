@@ -647,7 +647,7 @@ static void test_lwmline_clip(void)
 static void test_lwline_clip_big(void)
 {
 	POINTARRAY *pa = ptarray_construct(1, 0, 3);
-	LWLINE *line = lwline_construct(-1, NULL, pa);
+	LWLINE *line = lwline_construct(SRID_UNKNOWN, NULL, pa);
 	LWCOLLECTION *c;
 	char *ewkt;
 	POINT4D p;

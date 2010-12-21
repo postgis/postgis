@@ -119,9 +119,9 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 
 	/* LWGEOM_HOMOGENIZE struct setup */
 	geoms = lwalloc(sizeof(LWGEOM_HOMOGENIZE));
-	geoms->points = lwmpoint_construct_empty(-1, hasz, hasm);
-	geoms->lines = lwmline_construct_empty(-1, hasz, hasm);
-	geoms->polys = lwmpoly_construct_empty(-1, hasz, hasm);
+	geoms->points = lwmpoint_construct_empty(SRID_UNKNOWN, hasz, hasm);
+	geoms->lines = lwmline_construct_empty(SRID_UNKNOWN, hasz, hasm);
+	geoms->polys = lwmpoly_construct_empty(SRID_UNKNOWN, hasz, hasm);
 
 	LWDEBUGF(4, "geoms->points %p", geoms->points);
 

@@ -206,6 +206,10 @@ static void lwtype_from_wkb_state(wkb_parse_state *s, uint32 wkb_type)
 			lwerror("Unknown WKB type (%d)! Full WKB type number was (%d).", wkb_simple_type, wkb_type);
 			break;	
 	}
+
+	LWDEBUGF(4,"Got lwtype %s (%u)", lwtype_name(s->lwtype), s->lwtype);
+	LWDEBUGF(4,"s->has_srid=%d s->srid=%d", s->has_srid, s->srid);
+
 	return;
 }
 
@@ -634,9 +638,8 @@ LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 
 	/* Read the type number */
 	wkb_type = integer_from_wkb_state(s);
-	LWDEBUGF(4,"Got type number: 0x%X", wkb_type);
+	LWDEBUGF(4,"Got WKB type number: 0x%X", wkb_type);
 	lwtype_from_wkb_state(s, wkb_type);
-	LWDEBUGF(4,"Found lwtype: %u", s->lwtype);
 	
 	/* Read the SRID, if necessary */
 	if( s->has_srid )
