@@ -4159,6 +4159,23 @@ CREATE OR REPLACE FUNCTION ST_Snap(geometry, geometry, float8)
        LANGUAGE 'C' IMMUTABLE STRICT
        COST 100;
 
+--------------------------------------------------------------------------------
+-- ST_RelateMatch
+--------------------------------------------------------------------------------
+
+-- ST_RelateMatch(matrix text, pattern text)
+--
+-- Returns true if pattern 'pattern' matches DE9 intersection matrix 'matrix'
+--
+-- Availability: 2.0.0
+-- Requires GEOS >= 3.3.0
+--
+CREATE OR REPLACE FUNCTION ST_RelateMatch(text, text)
+       RETURNS bool
+       AS 'MODULE_PATHNAME', 'ST_RelateMatch'
+       LANGUAGE 'C' IMMUTABLE STRICT
+       COST 100;
+
 
 --------------------------------------------------------------------------------
 -- Aggregates and their supporting functions

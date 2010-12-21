@@ -43,6 +43,7 @@ PG_OBJS=lwgeom_pg.o \
 	lwgeom_geos_sharedpaths.o \
 	lwgeom_geos_snap.o \
 	lwgeom_geos_split.o \
+	lwgeom_geos_relatematch.o \
 	lwgeom_export.o \
 	lwgeom_in_gml.o \
 	lwgeom_in_kml.o \

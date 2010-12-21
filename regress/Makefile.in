@@ -73,7 +73,8 @@ TESTS = \
 	wmsservers \
 	tickets \
 	remove_repeated_points \
-	split
+	split \
+	relatematch 
 
 # Styled buffer only if GEOS >= 3.2
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 32),1)
