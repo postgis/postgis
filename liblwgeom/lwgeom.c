@@ -1640,7 +1640,8 @@ void lwgeom_set_srid(LWGEOM *geom, int srid)
 
 	if ( lwgeom_is_collection(geom) )
 	{
-		/* All the children are set to the unknown SRID value */
+		/* All the children are set to the unknown SRID value 
+		   TODO: change this so the children have a known SRID? */
 		LWCOLLECTION *col = lwgeom_as_lwcollection(geom);
 		for ( i = 0; i < col->ngeoms; i++ )
 		{

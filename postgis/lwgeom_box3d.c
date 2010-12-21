@@ -211,9 +211,8 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
 	POINTARRAY *pa;
-	int wantbbox = 0;
 	PG_LWGEOM *result;
-	uchar *ser;
+	POINT4D pt;
 
 
 	/**
@@ -227,61 +226,55 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 	 *     - Otherwise return a POLYGON
 	 */
 
-	if (box->xmin == box->xmax &&
-	        box->ymin == box->ymax)
+	pa = ptarray_construct_empty(0, 0, 5);
+
+	if ( (box->xmin == box->xmax) && (box->ymin == box->ymax) )
 	{
-		/* Construct and serialize point */
-		LWPOINT *point = make_lwpoint2d(-1, box->xmin, box->ymin);
-		ser = lwpoint_serialize(point);
+		LWPOINT *lwpt = lwpoint_construct(SRID_UNKNOWN, NULL, pa);
+
+		pt.x = box->xmin;
+		pt.y = box->ymin;
+		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+
+		result = pglwgeom_serialize(lwpoint_as_lwgeom(lwpt));
 	}
 	else if (box->xmin == box->xmax ||
 	         box->ymin == box->ymax)
 	{
-		LWLINE *line;
-		POINT2D *pts = palloc(sizeof(POINT2D)*2);
+		LWLINE *lwline = lwline_construct(SRID_UNKNOWN, NULL, pa);
 
-		/* Assign coordinates to POINT2D array */
-		pts[0].x = box->xmin;
-		pts[0].y = box->ymin;
-		pts[1].x = box->xmax;
-		pts[1].y = box->ymax;
+		pt.x = box->xmin;
+		pt.y = box->ymin;
+		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		pt.x = box->xmax;
+		pt.y = box->ymax;
+		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
 
-		/* Construct point array */
-		pa = ptarray_construct_reference_data(0, 0, 5, (uchar*)pts);
-
-		/* Construct and serialize linestring */
-		line = lwline_construct(-1, NULL, pa);
-		ser = lwline_serialize(line);
+		result = pglwgeom_serialize(lwline_as_lwgeom(lwline));
 	}
 	else
 	{
-		LWPOLY *poly;
-		POINT2D *pts = palloc(sizeof(POINT2D)*5);
+		LWPOLY *lwpoly = lwpoly_construct(SRID_UNKNOWN, NULL, 1, &pa);
 
-		/* Assign coordinates to POINT2D array */
-		pts[0].x = box->xmin;
-		pts[0].y = box->ymin;
-		pts[1].x = box->xmin;
-		pts[1].y = box->ymax;
-		pts[2].x = box->xmax;
-		pts[2].y = box->ymax;
-		pts[3].x = box->xmax;
-		pts[3].y = box->ymin;
-		pts[4].x = box->xmin;
-		pts[4].y = box->ymin;
+		pt.x = box->xmin;
+		pt.y = box->ymin;
+		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		pt.x = box->xmin;
+		pt.y = box->ymax;
+		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		pt.x = box->xmax;
+		pt.y = box->ymax;
+		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		pt.x = box->xmax;
+		pt.y = box->ymin;
+		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		pt.x = box->xmin;
+		pt.y = box->ymin;
+		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
 
-		/* Construct point array */
-		pa = ptarray_construct_reference_data(0, 0, 5, (uchar*)pts);
-
-		/* Construct polygon */
-		poly = lwpoly_construct(-1, NULL, 1, &pa);
-
-		/* Serialize polygon */
-		ser = lwpoly_serialize(poly);
+		result = pglwgeom_serialize(lwpoly_as_lwgeom(lwpoly));
+		
 	}
-
-	/* Construct PG_LWGEOM  */
-	result = PG_LWGEOM_construct(ser, -1, wantbbox);
 
 	PG_RETURN_POINTER(result);
 }

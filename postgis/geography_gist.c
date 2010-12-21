@@ -607,9 +607,10 @@ int gserialized_get_gidx_p(GSERIALIZED *g, GIDX *gidx)
 
 	POSTGIS_DEBUGF(4, "got flags %d", g->flags);
 
-	if ( FLAGS_GET_BBOX(g->flags) && FLAGS_GET_GEODETIC(g->flags) )
+	if ( FLAGS_GET_BBOX(g->flags) )
 	{
-		const size_t size = 2 * 3 * sizeof(float);
+		int ndims = FLAGS_NDIMS_BOX(g->flags);
+		const size_t size = 2 * ndims * sizeof(float);
 		POSTGIS_DEBUG(4, "copying box out of serialization");
 		memcpy(gidx->c, g->data, size);
 		SET_VARSIZE(gidx, VARHDRSZ + size);
@@ -686,6 +687,40 @@ GSERIALIZED* gserialized_set_gidx(GSERIALIZED *g, GIDX *gidx)
 
 	return g_out;
 }
+
+/**
+* Remove the bounding box from a #GSERIALIZED.
+*/
+GSERIALIZED* gserialized_drop_gidx(GSERIALIZED *g)
+{
+	int g_ndims = (FLAGS_GET_GEODETIC(g->flags) ? 3 : FLAGS_NDIMS(g->flags));
+	size_t box_size = 2 * g_ndims * sizeof(float);
+	size_t g_out_size = VARSIZE(g) - box_size;
+	GSERIALIZED *g_out = palloc(g_out_size);
+
+	/* Copy the contents while omitting the box */
+	if ( FLAGS_GET_BBOX(g->flags) )
+	{
+		uchar *outptr = (uchar*)g_out;
+		uchar *inptr = (uchar*)g;
+		/* Copy the header (size+type) of g into place */
+		memcpy(outptr, inptr, 8);
+		outptr += 8;
+		inptr += 8 + box_size;
+		/* Copy parts after the box into place */
+		memcpy(outptr, inptr, g_out_size - 8);
+		FLAGS_SET_BBOX(g_out->flags, 0);
+		SET_VARSIZE(g_out, g_out_size);
+	}
+	/* No box? Nothing to do but copy and return. */
+	else
+	{
+		memcpy(g_out, g, g_out_size);
+	}
+
+	return g_out;
+}
+
 
 /**
 * Support function. Based on two datums return true if

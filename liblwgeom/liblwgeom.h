@@ -146,7 +146,7 @@
 */
 #define FLAGS_GET_Z(flags) ((flags) & 0x01)
 #define FLAGS_GET_M(flags) (((flags) & 0x02)>>1)
-#define FLAGS_GET_BBOX(flags) (((flags) & 0x4)>>2)
+#define FLAGS_GET_BBOX(flags) (((flags) & 0x04)>>2)
 #define FLAGS_GET_GEODETIC(flags) (((flags) & 0x08)>>3)
 #define FLAGS_GET_READONLY(flags) (((flags) & 0x10)>>4)
 #define FLAGS_GET_SOLID(flags) (((flags) & 0x20)>>5)
@@ -158,6 +158,7 @@
 #define FLAGS_SET_SOLID(flags, value) ((flags) = (value) ? ((flags) | 0x20) : ((flags) & 0xDF))
 #define FLAGS_NDIMS(flags) (2 + FLAGS_GET_Z(flags) + FLAGS_GET_M(flags))
 #define FLAGS_GET_ZM(flags) (FLAGS_GET_M(flags) + FLAGS_GET_Z(flags) * 2)
+#define FLAGS_NDIMS_BOX(flags) (FLAGS_GET_GEODETIC(flags) ? 3 : FLAGS_NDIMS(flags))
 
 /**
 * Macros for manipulating the 'typemod' int. An int32 used as follows:

@@ -20,8 +20,10 @@ uint32 gserialized_get_type(const GSERIALIZED *s)
 	uint32 *ptr;
 	assert(s);
 	ptr = (uint32*)(s->data);
+	LWDEBUG(4,"entered");
 	if ( FLAGS_GET_BBOX(s->flags) )
 	{
+		LWDEBUGF(4,"skipping forward past bbox (%d bytes)",gbox_serialized_size(s->flags));
 		ptr += (gbox_serialized_size(s->flags) / sizeof(uint32));
 	}
 	return *ptr;
@@ -558,13 +560,11 @@ static size_t gserialized_from_lwgeom_any(const LWGEOM *geom, uchar *buf)
 
 static size_t gserialized_from_gbox(const GBOX *gbox, uchar *buf)
 {
-	uchar *loc;
+	uchar *loc = buf;
 	float f;
 	size_t return_size;
 
 	assert(buf);
-
-	loc = buf;
 
 	f = next_float_down(gbox->xmin);
 	memcpy(loc, &f, sizeof(float));
@@ -638,10 +638,16 @@ GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, int is_geodetic, size_t *size
 	/*
 	** See if we need a bounding box, add one if we don't have one.
 	*/
-	if ( (!geom->bbox) && lwgeom_needs_bbox(geom) && (!lwgeom_is_empty(geom)) )
+	if ( (! geom->bbox) && lwgeom_needs_bbox(geom) && (!lwgeom_is_empty(geom)) )
 	{
 		lwgeom_add_bbox(geom);
 	}
+	
+	/*
+	** Harmonize the flags to the state of the lwgeom 
+	*/
+	if ( geom->bbox )
+		FLAGS_SET_BBOX(geom->flags, 1);
 
 	/* Set up the uchar buffer into which we are going to write the serialized geometry. */
 	expected_size = gserialized_from_lwgeom_size(geom);
@@ -1030,7 +1036,7 @@ LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g)
 	{
 		lwgeom->bbox = gbox_copy(&bbox);
 	}
-	else if ( lwgeom_calculate_gbox(lwgeom, &bbox) == LW_SUCCESS )
+	else if ( lwgeom_needs_bbox(lwgeom) && (lwgeom_calculate_gbox(lwgeom, &bbox) == LW_SUCCESS) )
 	{
 		lwgeom->bbox = gbox_copy(&bbox);
 	}
@@ -1039,10 +1045,7 @@ LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g)
 		lwgeom->bbox = NULL;
 	}
 
-	if ( g_srid > 0 )
-		lwgeom->srid = g_srid;
-	else
-		lwgeom->srid = SRID_UNKNOWN;
+	lwgeom_set_srid(lwgeom, g_srid);
 
 	return lwgeom;
 }

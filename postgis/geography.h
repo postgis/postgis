@@ -109,6 +109,8 @@ GSERIALIZED* gserialized_expand(GSERIALIZED *g, double distance);
 int gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox);
 /* Given two datums, do they overlap? Computed very fast using embedded boxes. */
 int gserialized_datum_overlaps(Datum gs1, Datum gs2);
+/* Remove the box from a disk serialization */
+GSERIALIZED* gserialized_drop_gidx(GSERIALIZED *g);
 
 
 

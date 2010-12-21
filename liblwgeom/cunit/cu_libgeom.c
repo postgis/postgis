@@ -140,7 +140,7 @@ static void test_gserialized_from_lwgeom_size(void)
 static void test_gbox_serialized_size(void)
 {
 	uchar flags = gflags(0, 0, 0);
-	CU_ASSERT_EQUAL(gbox_serialized_size(flags),0);
+	CU_ASSERT_EQUAL(gbox_serialized_size(flags),16);
 	FLAGS_SET_BBOX(flags, 1);
 	CU_ASSERT_EQUAL(gbox_serialized_size(flags),16);
 	FLAGS_SET_Z(flags, 1);

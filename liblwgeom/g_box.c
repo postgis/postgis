@@ -278,7 +278,6 @@ void gbox_duplicate(const GBOX *original, GBOX *duplicate)
 
 size_t gbox_serialized_size(uchar flags)
 {
-	if ( ! FLAGS_GET_BBOX(flags) ) return 0;
 	if ( FLAGS_GET_GEODETIC(flags) )
 		return 6 * sizeof(float);
 	else

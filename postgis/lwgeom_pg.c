@@ -481,11 +481,12 @@ pglwgeom_has_m(const PG_LWGEOM *lwgeom)
 #endif
 }
 
+GSERIALIZED* gserialized_drop_gidx(GSERIALIZED *g);
+
 PG_LWGEOM* pglwgeom_drop_bbox(PG_LWGEOM *geom)
 {
 #ifdef GSERIALIZED_ON
-	lwerror("pglwgeom_drop_bbox called!");
-	return NULL;
+	return gserialized_drop_gidx(geom);
 #else
 	size_t size = VARSIZE(geom);
 	size_t newsize = size;
@@ -567,7 +568,8 @@ pglwgeom_is_empty(const PG_LWGEOM *geom)
 	int i;
 	p = (uchar*)VARDATA(geom);
 	p += 4; /* Skip srid/flags */
-	p += gbox_serialized_size(geom->flags); /* Skip the box */
+	if( FLAGS_GET_BBOX(geom->flags) )
+		p += gbox_serialized_size(geom->flags); /* Skip the box */
 	p += 4; /* Skip type number */
 	memcpy(&i, p, sizeof(int));
 	if ( i > 0 )
