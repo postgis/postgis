@@ -16,8 +16,8 @@
 
 
 /*
- * Known limitation: not (yet ?) support SQL/MM Curves.
- */
+** Known limitation: not (yet ?) support SQL/MM Curves.
+*/
 
 
 /*

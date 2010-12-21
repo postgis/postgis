@@ -1634,9 +1634,10 @@ void lwgeom_set_srid(LWGEOM *geom, int srid)
 {
 	int i;
 
-	geom->srid = srid;
+	LWDEBUGF(4,"entered with srid=%d",srid);
 
-	LWDEBUG(4,"entered");
+	geom->srid = (uint32)srid;
+
 	if ( lwgeom_is_collection(geom) )
 	{
 		/* All the children are set to the unknown SRID value */

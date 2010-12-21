@@ -77,19 +77,19 @@ static void test_flags_macros(void)
 static void test_serialized_srid(void)
 {
 	GSERIALIZED s;
-	uint32 srid = 4326;
-	uint32 rv;
+	uint32 srid, rv;
 
+	srid = 4326;
 	gserialized_set_srid(&s, srid);
 	rv = gserialized_get_srid(&s);
 	CU_ASSERT_EQUAL(rv, srid);
 
-	srid = 0;
+	srid = SRID_UNKNOWN;
 	gserialized_set_srid(&s, srid);
 	rv = gserialized_get_srid(&s);
 	CU_ASSERT_EQUAL(rv, srid);
 
-	srid = 1000000;
+	srid = 100000;
 	gserialized_set_srid(&s, srid);
 	rv = gserialized_get_srid(&s);
 	CU_ASSERT_EQUAL(rv, srid);

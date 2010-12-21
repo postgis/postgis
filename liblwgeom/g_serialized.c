@@ -33,12 +33,25 @@ uint32 gserialized_get_srid(const GSERIALIZED *s)
 	srid = srid | (s->srid[0] << 16);
 	srid = srid | (s->srid[1] << 8);
 	srid = srid | s->srid[2];
-	return srid;
+	
+	/* 0 is our internal unknown value. We'll map back and forth here for now */
+	if ( srid == 0 ) 
+		return SRID_UNKNOWN;
+	else
+		return srid;
 }
 
 void gserialized_set_srid(GSERIALIZED *s, uint32 srid)
 {
 	LWDEBUGF(3, "Called with srid = %d", srid);
+
+	/* 0 is our internal unknown value. We'll map back and forth here for now */
+	if ( srid == SRID_UNKNOWN )
+		srid = 0;
+		
+	if ( srid > SRID_MAXIMUM )
+		lwerror("gserialized_set_srid called with value (%d) > SRID_MAXIMUM (%d)",srid,SRID_MAXIMUM);
+		
 	s->srid[0] = (srid & 0x000F0000) >> 16;
 	s->srid[1] = (srid & 0x0000FF00) >> 8;
 	s->srid[2] = (srid & 0x000000FF);
@@ -665,10 +678,8 @@ GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, int is_geodetic, size_t *size
 	*/
 	g->size = return_size << 2;
 
-	if ( geom->srid == 0 || geom->srid == (uint32)(-1) ) /* Zero is the no-SRID value now. */
-		gserialized_set_srid(g, 0);
-	else
-		gserialized_set_srid(g, geom->srid);
+	/* Set the SRID! */
+	gserialized_set_srid(g, geom->srid);
 
 	g->flags = geom->flags;
 
