@@ -3265,107 +3265,165 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 	</refentry>
 
 	<refentry id="ST_Relate">
-	  <refnamediv>
-		<refname>ST_Relate</refname>
+		<refnamediv>
+			<refname>ST_Relate</refname>
+			
+			<refpurpose>Returns true if this Geometry is spatially related to
+					anotherGeometry, by testing for intersections between the
+					Interior, Boundary and Exterior of the two geometries as specified
+					by the values in the intersectionMatrixPattern.  If no intersectionMatrixPattern
+					is passed in, then returns the maximum intersectionMatrixPattern that relates the 2 geometries.</refpurpose>
+		</refnamediv>
 
-		<refpurpose>Returns true if this Geometry is spatially related to
-				anotherGeometry, by testing for intersections between the
-				Interior, Boundary and Exterior of the two geometries as specified
-				by the values in the intersectionMatrixPattern.  If no intersectionMatrixPattern
-				is passed in, then returns the maximum intersectionMatrixPattern that relates the 2 geometries.</refpurpose>
-	  </refnamediv>
+		<refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>ST_Relate</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
+				<paramdef><type>text </type> <parameter>intersectionMatrixPattern</parameter></paramdef>
+			  </funcprototype>
+			
+			  <funcprototype>
+				<funcdef>text <function>ST_Relate</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
 
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>boolean <function>ST_Relate</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
-			<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
-			<paramdef><type>text </type> <parameter>intersectionMatrixPattern</parameter></paramdef>
-		  </funcprototype>
-
-		  <funcprototype>
-			<funcdef>text <function>ST_Relate</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
-			<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
-		  </funcprototype>
-
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Version 1: Takes geomA, geomB, intersectionMatrix and Returns 1 (TRUE) if this Geometry is spatially related to
-				anotherGeometry, by testing for intersections between the
-				Interior, Boundary and Exterior of the two geometries as specified
-				by the values in the <ulink url="http://docs.codehaus.org/display/GEOTDOC/Point+Set+Theory+and+the+DE-9IM+Matrix#PointSetTheoryandtheDE-9IMMatrix-9IntersectionMatrix">intersectionMatrixPattern</ulink>.</para>
-
-		<para>This is especially useful for testing compound checks of intersection, crosses, etc in one step.</para>
-		<para>Do not call with a GeometryCollection as an argument</para>
-
-		<note><para>This is the "allowable" version that returns a
-		boolean, not an integer.  This is defined in OGC spec</para></note>
-
-		<note><para>This DOES NOT automagically include an index call.  The reason for that
-			is some relationships are anti e.g. Disjoint.  If you are
-			using a relationship pattern that requires intersection, then include the &amp;&amp;
-			index call.</para></note>
-
-		<para>Version 2: Takes geomA and geomB and returns the <ulink url="http://docs.codehaus.org/display/GEOTDOC/Point+Set+Theory+and+the+DE-9IM+Matrix#PointSetTheoryandtheDE-9IMMatrix-9IntersectionMatrix">DE-9IM (dimensionally extended nine-intersection
-		matrix)</ulink></para>
-
-		<note><para>Do not call with a GeometryCollection as an argument</para></note>
-
-		<para>not in OGC spec, but implied. see s2.1.13.2</para>
-
-		<para>Both Performed by the GEOS module</para>
-
-		<para>&sfs_compliant; s2.1.1.2 // s2.1.13.3</para>
-		<para>&sqlmm_compliant; SQL-MM 3: 5.1.25</para>
-	  </refsection>
+		<refsection>
+			<title>Description</title>
+			
+			<para>Version 1: Takes geomA, geomB, intersectionMatrix and Returns 1 (TRUE) if this Geometry is spatially related to
+					anotherGeometry, by testing for intersections between the
+					Interior, Boundary and Exterior of the two geometries as specified
+					by the values in the <ulink url="http://docs.codehaus.org/display/GEOTDOC/Point+Set+Theory+and+the+DE-9IM+Matrix#PointSetTheoryandtheDE-9IMMatrix-9IntersectionMatrix">intersectionMatrixPattern</ulink>.</para>
+			
+			<para>This is especially useful for testing compound checks of intersection, crosses, etc in one step.</para>
+			<para>Do not call with a GeometryCollection as an argument</para>
+			
+			<note><para>This is the "allowable" version that returns a
+			boolean, not an integer.  This is defined in OGC spec</para></note>
+			
+			<note><para>This DOES NOT automagically include an index call.  The reason for that
+				is some relationships are anti e.g. Disjoint.  If you are
+				using a relationship pattern that requires intersection, then include the &amp;&amp;
+				index call.</para></note>
+			
+			<para>Version 2: Takes geomA and geomB and returns the <ulink url="http://docs.codehaus.org/display/GEOTDOC/Point+Set+Theory+and+the+DE-9IM+Matrix#PointSetTheoryandtheDE-9IMMatrix-9IntersectionMatrix">DE-9IM (dimensionally extended nine-intersection
+			matrix)</ulink></para>
+			
+			<note><para>Do not call with a GeometryCollection as an argument</para></note>
+			
+			<para>not in OGC spec, but implied. see s2.1.13.2</para>
+			
+			<para>Both Performed by the GEOS module</para>
+			
+			<para>&sfs_compliant; s2.1.1.2 // s2.1.13.3</para>
+			<para>&sqlmm_compliant; SQL-MM 3: 5.1.25</para>
+		</refsection>
 
 
-	  <refsection>
+		<refsection>
 		<title>Examples</title>
 		<programlisting>
 --Find all compounds that intersect and not touch a poly (interior intersects)
 SELECT l.* , b.name As poly_name
-FROM polys As b
-	INNER JOIN compounds As l
-	ON (p.the_geom &amp;&amp; b.the_geom
-	AND ST_Relate(l.the_geom, b.the_geom,'T********'));
+	FROM polys As b
+INNER JOIN compounds As l
+ON (p.the_geom &amp;&amp; b.the_geom
+AND ST_Relate(l.the_geom, b.the_geom,'T********'));
 
 SELECT ST_Relate(ST_GeometryFromText('POINT(1 2)'), ST_Buffer(ST_GeometryFromText('POINT(1 2)'),2));
- st_relate
+st_relate
 -----------
- 0FFFFF212
+0FFFFF212
 
 SELECT ST_Relate(ST_GeometryFromText('LINESTRING(1 2, 3 4)'), ST_GeometryFromText('LINESTRING(5 6, 7 8)'));
- st_relate
+st_relate
 -----------
- FF1FF0102
+FF1FF0102
 
 
 SELECT ST_Relate(ST_GeometryFromText('POINT(1 2)'), ST_Buffer(ST_GeometryFromText('POINT(1 2)'),2), '0FFFFF212');
- st_relate
+st_relate
 -----------
- t
+t
 
 SELECT ST_Relate(ST_GeometryFromText('POINT(1 2)'), ST_Buffer(ST_GeometryFromText('POINT(1 2)'),2), '*FF*FF212');
- st_relate
+st_relate
 -----------
- t
+t
 		</programlisting>
-	  </refsection>
-
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
+	</refsection>
+		
+	<!-- Optionally add a "See Also" section -->
+	<refsection>
 		<title>See Also</title>
-
+		
 		<para><xref linkend="ST_Crosses" />, <xref linkend="ST_Disjoint" />, <xref linkend="ST_Intersects" />, <xref linkend="ST_Touches" /></para>
-	  </refsection>
-	</refentry>
+	</refsection>
+</refentry>
+
+<refentry id="ST_RelateMatch">
+	<refnamediv>
+		<refname>ST_RelateMatch</refname>
+		
+		<refpurpose>Returns true if intersectionMattrixPattern1 implies intersectionMatrixPattern2</refpurpose>
+	</refnamediv>
+
+	<refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_RelateMatch</function></funcdef>
+			<paramdef><type>text </type> <parameter>intersectionMatrix</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>intersectionMatrixPattern</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	</refsynopsisdiv>
+
+	<refsection>
+		<title>Description</title>
+		
+		<para> Takes intersectionMatrix and intersectionMatrixPattern and Returns true if the intersectionMatrix satisfies
+		the intersectionMatrixPattern.
+				 <ulink url="http://docs.codehaus.org/display/GEOTDOC/Point+Set+Theory+and+the+DE-9IM+Matrix#PointSetTheoryandtheDE-9IMMatrix-9IntersectionMatrix">intersectionMatrixPattern</ulink>.</para>
+		
+
+		<para>Availability: 2.0.0 - requires GEOS &gt;= 3.3.0. </para>
+	</refsection>
+
+
+	<refsection>
+		<title>Examples</title>
+		<programlisting>
+			-- 
+			SELECT ST_RelateMatch('101202FFF', 'TTTTTTFFF') ;
+			
+			--example of common intersection matrix patterns and example matrices
+			-- comparing relationships of involving one invalid geometry and ( a line and polygon that intersect at interior and boundary)
+			SELECT mat.name, pat.name, ST_RelateMatch(mat.val, pat.val) As satisfied
+				FROM 
+					( VALUES ('Equality', 'T1FF1FFF1'),
+							('Overlaps', 'T*T***T**'),
+							('Within', 'T*F**F***') ) As pat(name,val)
+					CROSS JOIN 
+						(	VALUES ('topologically invalid', '111111111'),
+								('IntExt2_BoundInt1_BoundExt1_ExtInt1_ExtExt2', 'FF2101102'),
+								('IntExt1_BoundInt1_BoundExt1_ExtInt1_ExtExt2', 'F11F00212 ')
+						) As mat;
+							
+		</programlisting>
+	</refsection>
+		
+	<!-- Optionally add a "See Also" section -->
+	<refsection>
+		<title>See Also</title>
+		
+		<para><xref linkend="ST_Relate" /></para>
+	</refsection>
+</refentry>
 
 <refentry id="ST_ShortestLine">
 	  <refnamediv>
