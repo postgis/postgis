@@ -52,8 +52,8 @@ Datum ST_RelateMatch(PG_FUNCTION_ARGS)
         pat_text = (PG_GETARG_TEXT_P(1));
 
         /* Convert from text to cstring */
-        mat = text2cstring(mat_text); pfree(mat_text);
-        pat = text2cstring(pat_text); pfree(pat_text);
+        mat = text2cstring(mat_text);
+        pat = text2cstring(pat_text);
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
