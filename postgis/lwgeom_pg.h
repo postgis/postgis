@@ -74,7 +74,17 @@ extern void pg_unparser_errhint(LWGEOM_UNPARSER_RESULT *lwg_unparser_result);
 #include "gserialized.h"
 #ifdef GSERIALIZED_ON
 #define PG_LWGEOM GSERIALIZED
+#define BOX2DFLOAT4 GBOX
 #endif
+
+/*
+** GSERIALIED prototypes used outside the index functions
+*/
+
+/* Remove the embedded bounding box */
+GSERIALIZED* gserialized_drop_gidx(GSERIALIZED *g);
+
+
 
 
 /* Serialize/deserialize a PG_LWGEOM (postgis datatype) */

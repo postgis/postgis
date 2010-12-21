@@ -1121,9 +1121,6 @@ Datum buffer(PG_FUNCTION_ARGS)
 	char *param;
 	char *params = NULL;
 
-
-	PROFSTART(PROF_QRUN);
-
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	size = PG_GETARG_FLOAT8(1);
 	
@@ -1135,9 +1132,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
-	PROFSTOP(PROF_P2G1);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
 		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
@@ -1255,10 +1250,8 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 #if POSTGIS_GEOS_VERSION >= 32
 
-	PROFSTART(PROF_GRUN);
 	g3 = GEOSBufferWithStyle(g1, size, quadsegs,
 	                         endCapStyle, joinStyle, mitreLimit);
-	PROFSTOP(PROF_GRUN);
 
 #else /* POSTGIS_GEOS_VERSION < 32 */
 
@@ -1273,9 +1266,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 		        DEFAULT_MITRE_LIMIT, POSTGIS_GEOS_VERSION);
 	}
 
-	PROFSTART(PROF_GRUN);
 	g3 = GEOSBuffer(g1,size,quadsegs);
-	PROFSTOP(PROF_GRUN);
 
 #endif /* POSTGIS_GEOS_VERSION < 32 */
 
@@ -1290,9 +1281,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 	GEOSSetSRID(g3, pglwgeom_get_srid(geom1));
 
-	PROFSTART(PROF_G2P);
 	result = GEOS2POSTGIS(g3, pglwgeom_has_z(geom1));
-	PROFSTOP(PROF_G2P);
 
 	if (result == NULL)
 	{
@@ -1303,12 +1292,6 @@ Datum buffer(PG_FUNCTION_ARGS)
 	}
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g3);
-
-
-	/* compressType(result); */
-
-	PROFSTOP(PROF_QRUN);
-	PROFREPORT("geos",geom1, NULL, result);
 
 	PG_FREE_IF_COPY(geom1, 0);
 

@@ -94,9 +94,9 @@ select 'transscale', ST_asewkt(ST_snapToGrid(transscale('POINT(1 1)'::geometry,2
 select 'transscale', ST_asewkt(ST_snapToGrid(transscale('POINT(1 1 1)'::geometry,2, 3, 5, 7), 0.1));
 
 -- postgis-users/2006-May/012119.html
-select 'transl_bbox', ST_box2d(ST_translate('LINESTRING(0 0, 1 1)'::geometry, 1, 0, 0));
-select 'scale_bbox', ST_box2d(ST_scale('LINESTRING(1 0, 2 1)'::geometry, 2, 0));
-select 'tscale_bbox', ST_box2d(ST_transscale('LINESTRING(1 0, 2 1)'::geometry, 2, 1, 1, 1));
+select 'transl_bbox', box2d(ST_translate('LINESTRING(0 0, 1 1)'::geometry, 1, 0, 0));
+select 'scale_bbox', box2d(ST_scale('LINESTRING(1 0, 2 1)'::geometry, 2, 0));
+select 'tscale_bbox', box2d(ST_transscale('LINESTRING(1 0, 2 1)'::geometry, 2, 1, 1, 1));
 
-select 'rotZ_bbox', ST_box2d(ST_SnapToGrid(rotateZ('LINESTRING(0 0, 1 0)'::geometry, pi()), 0.1));
-select 'rotY_bbox', ST_box2d(ST_SnapToGrid(rotateY('LINESTRING(0 0, 1 0)'::geometry, pi()), 0.1));
+select 'rotZ_bbox', box2d(ST_SnapToGrid(rotateZ('LINESTRING(0 0, 1 0)'::geometry, pi()), 0.1));
+select 'rotY_bbox', box2d(ST_SnapToGrid(rotateY('LINESTRING(0 0, 1 0)'::geometry, pi()), 0.1));

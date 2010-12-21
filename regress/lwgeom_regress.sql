@@ -101,19 +101,19 @@ SELECT mem_size(collect(force_2d(force_4d(force_3dm(force_3dz(force_2d(geometry(
 
 --
 SELECT id,wkt FROM test_data WHERE
-       ST_asEWKT(ST_geometry(wkt)) != wkt  OR
-       ST_asEWKT(ST_geometry(wkb_xdr)) != wkt OR 
-       ST_asEWKT(ST_geometry(wkb_ndr)) != wkt OR
-       ST_asBinary(ST_geometry(wkb_ndr)) != ST_asBinary(ST_geometry(wkb_xdr)) OR
-       ST_asBinary(ST_geometry(wkt)) != ST_asBinary(ST_geometry(wkb_xdr));
+       ST_asEWKT(geometry(wkt)) != wkt  OR
+       ST_asEWKT(geometry(wkb_xdr)) != wkt OR 
+       ST_asEWKT(geometry(wkb_ndr)) != wkt OR
+       ST_asBinary(geometry(wkb_ndr)) != ST_asBinary(geometry(wkb_xdr)) OR
+       ST_asBinary(geometry(wkt)) != ST_asBinary(geometry(wkb_xdr));
 
 
-SELECT ST_extent(ST_geometry(wkb_ndr)) from test_data;
-SELECT ST_extent3d(ST_geometry(wkb_ndr)) from test_data;
-SELECT ST_mem_size(ST_collect(ST_force_2d(ST_geometry(wkb_ndr)))) from test_data;
-SELECT ST_mem_size(ST_collect(ST_force_3dz(ST_geometry(wkb_ndr)))) from test_data;
-SELECT ST_mem_size(ST_collect(ST_force_4d(ST_force_2d(ST_geometry(wkb_ndr))))) from test_data;
-SELECT ST_mem_size(ST_collect(ST_force_3dm(ST_geometry(wkb_ndr)))) from test_data;
-SELECT ST_mem_size(ST_collect(ST_force_2d(ST_force_4d(ST_force_3dm(ST_force_3dz(ST_force_2d(ST_geometry(wkb_ndr)))))))) from test_data;
+SELECT ST_extent(geometry(wkb_ndr)) from test_data;
+SELECT ST_extent3d(geometry(wkb_ndr)) from test_data;
+SELECT ST_mem_size(ST_collect(ST_force_2d(geometry(wkb_ndr)))) from test_data;
+SELECT ST_mem_size(ST_collect(ST_force_3dz(geometry(wkb_ndr)))) from test_data;
+SELECT ST_mem_size(ST_collect(ST_force_4d(ST_force_2d(geometry(wkb_ndr))))) from test_data;
+SELECT ST_mem_size(ST_collect(ST_force_3dm(geometry(wkb_ndr)))) from test_data;
+SELECT ST_mem_size(ST_collect(ST_force_2d(ST_force_4d(ST_force_3dm(ST_force_3dz(ST_force_2d(geometry(wkb_ndr)))))))) from test_data;
 
 DROP TABLE test_data;

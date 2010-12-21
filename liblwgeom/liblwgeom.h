@@ -733,6 +733,14 @@ extern uint32 gserialized_get_srid(const GSERIALIZED *g);
 extern void gserialized_set_srid(GSERIALIZED *g, uint32 srid);
 
 /**
+* Check if a #GSERIALIZED is empty without deserializing first.
+* Only checks if the number of elements of the parent geometry
+* is zero, will not catch collections of empty, eg: 
+* GEOMETRYCOLLECTION(POINT EMPTY) 
+*/
+int gserialized_is_empty(const GSERIALIZED *g);
+
+/**
 * Call this function to drop BBOX and SRID
 * from LWGEOM. If LWGEOM type is *not* flagged
 * with the HASBBOX flag and has a bbox, it

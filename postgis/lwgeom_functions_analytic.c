@@ -89,7 +89,6 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 	LWPOINT *point;
 	POINTARRAY *ipa, *opa;
 	POINT4D pt;
-	uchar *srl;
 	int nsegs, i;
 	double length, slength, tlength;
 
@@ -120,11 +119,8 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 
 		opa = ptarray_construct_reference_data(FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags), 1, (uchar*)&pt);
 		
-		point = lwpoint_construct(line->srid, 0, opa);
-		srl = lwpoint_serialize(point);
-		/* We shouldn't need this, the memory context is getting freed on the next line.
-		lwpoint_free(point); */
-		PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->srid, 0));
+		point = lwpoint_construct(line->srid, NULL, opa);
+		PG_RETURN_POINTER(pglwgeom_serialize(lwpoint_as_lwgeom(point)));
 	}
 
 	/* Interpolate a point on the line */
@@ -153,11 +149,8 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 			double dseg = (distance - tlength) / slength;
 			interpolate_point4d(&p1, &p2, &pt, dseg);
 			opa = ptarray_construct_reference_data(FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags), 1, (uchar*)&pt);
-			point = lwpoint_construct(line->srid, 0, opa);
-			srl = lwpoint_serialize(point);
-			/* We shouldn't need this, the memory context is getting freed on the next line
-			lwpoint_free(point); */
-			PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->srid, 0));
+			point = lwpoint_construct(line->srid, NULL, opa);
+			PG_RETURN_POINTER(pglwgeom_serialize(lwpoint_as_lwgeom(point)));
 		}
 		tlength += slength;
 	}
@@ -166,11 +159,8 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 	 * could if there's some floating point rounding errors. */
 	getPoint4d_p(ipa, ipa->npoints-1, &pt);
 	opa = ptarray_construct_reference_data(FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags), 1, (uchar*)&pt);
-	point = lwpoint_construct(line->srid, 0, opa);
-	srl = lwpoint_serialize(point);
-	/* We shouldn't need this, the memory context is getting freed on the next line
-	lwpoint_free(point); */
-	PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->srid, 0));
+	point = lwpoint_construct(line->srid, NULL, opa);
+	PG_RETURN_POINTER(pglwgeom_serialize(lwpoint_as_lwgeom(point)));
 }
 /***********************************************************************
  * --jsunday@rochgrp.com;

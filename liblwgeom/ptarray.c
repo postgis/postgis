@@ -22,7 +22,7 @@
 int inline
 ptarray_point_size(const POINTARRAY *pa)
 {
-	LWDEBUGF(2, "ptarray_point_size: FLAGS_NDIMS(pa->flags)=%x",FLAGS_NDIMS(pa->flags));
+	LWDEBUGF(5, "ptarray_point_size: FLAGS_NDIMS(pa->flags)=%x",FLAGS_NDIMS(pa->flags));
 
 	return sizeof(double)*FLAGS_NDIMS(pa->flags);
 }

@@ -515,20 +515,20 @@ SELECT 'asewkt04', ST_asewkt(the_geom_4d) FROM public.multisurface;
 --SELECT 'asewkb03', encode(ST_asewkb(the_geom_3dz), 'hex') FROM public.multisurface;
 --SELECT 'asewkb04', encode(ST_asewkb(the_geom_4d), 'hex') FROM public.multisurface;
 
-SELECT 'box2d01', ST_box2d(the_geom_2d) FROM public.multisurface;
-SELECT 'box2d02', ST_box2d(the_geom_3dm) FROM public.multisurface;
-SELECT 'box2d03', ST_box2d(the_geom_3dz) FROM public.multisurface;
-SELECT 'box2d04', ST_box2d(the_geom_4d) FROM public.multisurface;
+SELECT 'box2d01', box2d(the_geom_2d) FROM public.multisurface;
+SELECT 'box2d02', box2d(the_geom_3dm) FROM public.multisurface;
+SELECT 'box2d03', box2d(the_geom_3dz) FROM public.multisurface;
+SELECT 'box2d04', box2d(the_geom_4d) FROM public.multisurface;
 
-SELECT 'box3d01', ST_box3d(the_geom_2d) FROM public.multisurface;
-SELECT 'box3d02', ST_box3d(the_geom_3dm) FROM public.multisurface;
-SELECT 'box3d03', ST_box3d(the_geom_3dz) FROM public.multisurface;
-SELECT 'box3d04', ST_box3d(the_geom_4d) FROM public.multisurface;
+SELECT 'box3d01', box3d(the_geom_2d) FROM public.multisurface;
+SELECT 'box3d02', box3d(the_geom_3dm) FROM public.multisurface;
+SELECT 'box3d03', box3d(the_geom_3dz) FROM public.multisurface;
+SELECT 'box3d04', box3d(the_geom_4d) FROM public.multisurface;
 
-SELECT 'isValid01', ST_isValid(the_geom_2d) FROM public.multisurface;
-SELECT 'isValid02', ST_isValid(the_geom_3dm) FROM public.multisurface;
-SELECT 'isValid03', ST_isValid(the_geom_3dz) FROM public.multisurface;
-SELECT 'isValid04', ST_isValid(the_geom_4d) FROM public.multisurface;
+SELECT 'isValid01', ST_IsValid(the_geom_2d) FROM public.multisurface;
+SELECT 'isValid02', ST_IsValid(the_geom_3dm) FROM public.multisurface;
+SELECT 'isValid03', ST_IsValid(the_geom_3dz) FROM public.multisurface;
+SELECT 'isValid04', ST_IsValid(the_geom_4d) FROM public.multisurface;
 
 SELECT 'dimension01', ST_dimension(the_geom_2d) FROM public.multisurface;
 SELECT 'dimension02', ST_dimension(the_geom_3dm) FROM public.multisurface;

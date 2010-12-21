@@ -481,8 +481,6 @@ pglwgeom_has_m(const PG_LWGEOM *lwgeom)
 #endif
 }
 
-GSERIALIZED* gserialized_drop_gidx(GSERIALIZED *g);
-
 PG_LWGEOM* pglwgeom_drop_bbox(PG_LWGEOM *geom)
 {
 #ifdef GSERIALIZED_ON
@@ -532,8 +530,7 @@ int pglwgeom_ndims(const PG_LWGEOM *geom)
 int pglwgeom_getbox2d_p(const PG_LWGEOM *geom, BOX2DFLOAT4 *box)
 {
 #ifdef GSERIALIZED_ON
-	lwerror("pglwgeom_getbox2d_p called!");
-	return 0;
+	return gserialized_get_gbox_p(geom, box);
 #else
 	return getbox2d_p(SERIALIZED_FORM(geom), box);
 #endif
@@ -564,18 +561,7 @@ int
 pglwgeom_is_empty(const PG_LWGEOM *geom)
 {
 #ifdef GSERIALIZED_ON
-	uchar *p;
-	int i;
-	p = (uchar*)VARDATA(geom);
-	p += 4; /* Skip srid/flags */
-	if( FLAGS_GET_BBOX(geom->flags) )
-		p += gbox_serialized_size(geom->flags); /* Skip the box */
-	p += 4; /* Skip type number */
-	memcpy(&i, p, sizeof(int));
-	if ( i > 0 )
-		return true;
-	else
-		return false;
+	return gserialized_is_empty(geom);
 #else
 	uchar *serialized_form = SERIALIZED_FORM(geom);
 	int type = pglwgeom_get_type(geom);

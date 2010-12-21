@@ -350,11 +350,6 @@ CREATE OR REPLACE FUNCTION box3d_extent(box3d_extent)
 	AS 'MODULE_PATHNAME', 'BOX3D_extent_to_BOX3D'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION box2d(box3d_extent)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME', 'BOX3D_to_BOX2DFLOAT4'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 CREATE OR REPLACE FUNCTION geometry(box3d_extent)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','BOX3D_to_LWGEOM'
@@ -472,19 +467,6 @@ CREATE TYPE chip (
 -- BOX2D
 -----------------------------------------------------------------------
 
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_box2d_in(cstring)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME','BOX2DFLOAT4_in'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_box2d_out(box2d)
-	RETURNS cstring
-	AS 'MODULE_PATHNAME','BOX2DFLOAT4_out'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-	
 CREATE OR REPLACE FUNCTION box2d_in(cstring)
 	RETURNS box2d
 	AS 'MODULE_PATHNAME','BOX2DFLOAT4_in'
@@ -502,6 +484,157 @@ CREATE TYPE box2d (
 	storage = plain
 );
 
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION expand(box2d,float8)
+	RETURNS box2d
+	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_expand'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_expand(box2d,float8)
+	RETURNS box2d
+	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_expand'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION getbbox(geometry)
+	RETURNS box2d
+	AS 'MODULE_PATHNAME','LWGEOM_to_BOX2DFLOAT4'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION postgis_getbbox(geometry)
+	RETURNS box2d
+	AS 'MODULE_PATHNAME','LWGEOM_to_BOX2DFLOAT4'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION box2d(box3d_extent)
+	RETURNS box2d
+	AS 'MODULE_PATHNAME', 'BOX3D_to_BOX2DFLOAT4'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION MakeBox2d(geometry, geometry)
+	RETURNS box2d
+	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_construct'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_MakeBox2d(geometry, geometry)
+	RETURNS box2d
+	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_construct'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION combine_bbox(box2d,geometry)
+	RETURNS box2d
+	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_combine'
+	LANGUAGE 'C' IMMUTABLE;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Combine_BBox(box2d,geometry)
+	RETURNS box2d
+	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_combine'
+	LANGUAGE 'C' IMMUTABLE;
+
+-----------------------------------------------------------------------
+-- ESTIMATED_EXTENT( <schema name>, <table name>, <column name> )
+-----------------------------------------------------------------------
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION estimated_extent(text,text,text) RETURNS box2d AS
+	'MODULE_PATHNAME', 'LWGEOM_estimated_extent'
+	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text,text) RETURNS box2d AS
+	'MODULE_PATHNAME', 'LWGEOM_estimated_extent'
+	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
+
+-----------------------------------------------------------------------
+-- ESTIMATED_EXTENT( <table name>, <column name> )
+-----------------------------------------------------------------------
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION estimated_extent(text,text) RETURNS box2d AS
+	'MODULE_PATHNAME', 'LWGEOM_estimated_extent'
+	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text) RETURNS box2d AS
+	'MODULE_PATHNAME', 'LWGEOM_estimated_extent'
+	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
+
+-----------------------------------------------------------------------
+-- FIND_EXTENT( <schema name>, <table name>, <column name> )
+-----------------------------------------------------------------------
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION find_extent(text,text,text) RETURNS box2d AS
+$$
+DECLARE
+	schemaname alias for $1;
+	tablename alias for $2;
+	columnname alias for $3;
+	myrec RECORD;
+
+BEGIN
+	FOR myrec IN EXECUTE 'SELECT extent("' || columnname || '") FROM "' || schemaname || '"."' || tablename || '"' LOOP
+		return myrec.extent;
+	END LOOP;
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_find_extent(text,text,text) RETURNS box2d AS
+$$
+DECLARE
+	schemaname alias for $1;
+	tablename alias for $2;
+	columnname alias for $3;
+	myrec RECORD;
+
+BEGIN
+	FOR myrec IN EXECUTE 'SELECT extent("' || columnname || '") FROM "' || schemaname || '"."' || tablename || '"' LOOP
+		return myrec.extent;
+	END LOOP;
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+
+-----------------------------------------------------------------------
+-- FIND_EXTENT( <table name>, <column name> )
+-----------------------------------------------------------------------
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION find_extent(text,text) RETURNS box2d AS
+$$
+DECLARE
+	tablename alias for $1;
+	columnname alias for $2;
+	myrec RECORD;
+
+BEGIN
+	FOR myrec IN EXECUTE 'SELECT extent("' || columnname || '") FROM "' || tablename || '"' LOOP
+		return myrec.extent;
+	END LOOP;
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_find_extent(text,text) RETURNS box2d AS
+$$
+DECLARE
+	tablename alias for $1;
+	columnname alias for $2;
+	myrec RECORD;
+
+BEGIN
+	FOR myrec IN EXECUTE 'SELECT extent("' || columnname || '") FROM "' || tablename || '"' LOOP
+		return myrec.extent;
+	END LOOP;
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
 -------------------------------------------------------------------
 -- BTREE indexes
@@ -964,18 +1097,6 @@ CREATE OR REPLACE FUNCTION postgis_dropbbox(geometry)
 CREATE OR REPLACE FUNCTION getsrid(geometry)
 	RETURNS int4
 	AS 'MODULE_PATHNAME','LWGEOM_get_srid'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION getbbox(geometry)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME','LWGEOM_to_BOX2DFLOAT4'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION postgis_getbbox(geometry)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME','LWGEOM_to_BOX2DFLOAT4'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
@@ -1461,18 +1582,6 @@ CREATE OR REPLACE FUNCTION ST_Expand(box3d,float8)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION expand(box2d,float8)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_expand'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_expand(box2d,float8)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_expand'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION expand(geometry,float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_expand'
@@ -1708,18 +1817,6 @@ CREATE OR REPLACE FUNCTION MakePointM(float8, float8, float8)
 CREATE OR REPLACE FUNCTION ST_MakePointM(float8, float8, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint3dm'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MakeBox2d(geometry, geometry)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_construct'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_MakeBox2d(geometry, geometry)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_construct'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
@@ -2044,17 +2141,6 @@ $$ LANGUAGE SQL;
 -- Aggregate functions
 --
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION combine_bbox(box2d,geometry)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_combine'
-	LANGUAGE 'C' IMMUTABLE;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Combine_BBox(box2d,geometry)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_combine'
-	LANGUAGE 'C' IMMUTABLE;
 
 -- Temporary hack function
 CREATE OR REPLACE FUNCTION combine_bbox(box3d_extent,geometry)
@@ -2108,104 +2194,7 @@ CREATE AGGREGATE ST_Extent3d(
 	stype = box3d
 	);
 
------------------------------------------------------------------------
--- ESTIMATED_EXTENT( <schema name>, <table name>, <column name> )
------------------------------------------------------------------------
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION estimated_extent(text,text,text) RETURNS box2d AS
-	'MODULE_PATHNAME', 'LWGEOM_estimated_extent'
-	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
 
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text,text) RETURNS box2d AS
-	'MODULE_PATHNAME', 'LWGEOM_estimated_extent'
-	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
-
------------------------------------------------------------------------
--- ESTIMATED_EXTENT( <table name>, <column name> )
------------------------------------------------------------------------
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION estimated_extent(text,text) RETURNS box2d AS
-	'MODULE_PATHNAME', 'LWGEOM_estimated_extent'
-	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text) RETURNS box2d AS
-	'MODULE_PATHNAME', 'LWGEOM_estimated_extent'
-	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
-
------------------------------------------------------------------------
--- FIND_EXTENT( <schema name>, <table name>, <column name> )
------------------------------------------------------------------------
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION find_extent(text,text,text) RETURNS box2d AS
-$$
-DECLARE
-	schemaname alias for $1;
-	tablename alias for $2;
-	columnname alias for $3;
-	myrec RECORD;
-
-BEGIN
-	FOR myrec IN EXECUTE 'SELECT extent("' || columnname || '") FROM "' || schemaname || '"."' || tablename || '"' LOOP
-		return myrec.extent;
-	END LOOP;
-END;
-$$
-LANGUAGE 'plpgsql' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_find_extent(text,text,text) RETURNS box2d AS
-$$
-DECLARE
-	schemaname alias for $1;
-	tablename alias for $2;
-	columnname alias for $3;
-	myrec RECORD;
-
-BEGIN
-	FOR myrec IN EXECUTE 'SELECT extent("' || columnname || '") FROM "' || schemaname || '"."' || tablename || '"' LOOP
-		return myrec.extent;
-	END LOOP;
-END;
-$$
-LANGUAGE 'plpgsql' IMMUTABLE STRICT;
-
-
------------------------------------------------------------------------
--- FIND_EXTENT( <table name>, <column name> )
------------------------------------------------------------------------
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION find_extent(text,text) RETURNS box2d AS
-$$
-DECLARE
-	tablename alias for $1;
-	columnname alias for $2;
-	myrec RECORD;
-
-BEGIN
-	FOR myrec IN EXECUTE 'SELECT extent("' || columnname || '") FROM "' || tablename || '"' LOOP
-		return myrec.extent;
-	END LOOP;
-END;
-$$
-LANGUAGE 'plpgsql' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_find_extent(text,text) RETURNS box2d AS
-$$
-DECLARE
-	tablename alias for $1;
-	columnname alias for $2;
-	myrec RECORD;
-
-BEGIN
-	FOR myrec IN EXECUTE 'SELECT extent("' || columnname || '") FROM "' || tablename || '"' LOOP
-		return myrec.extent;
-	END LOOP;
-END;
-$$
-LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
 -------------------------------------------------------------------
 -- SPATIAL_REF_SYS
@@ -3498,106 +3487,6 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 ---------------------------------------------------------------
 -- CASTS
 ---------------------------------------------------------------
-
--- Legacy ST_ variants of casts, to be removed in 2.0
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_box2d(geometry)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME','LWGEOM_to_BOX2DFLOAT4'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_box3d(geometry)
-	RETURNS box3d
-	AS 'MODULE_PATHNAME','LWGEOM_to_BOX3D'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_box(geometry)
-	RETURNS box
-	AS 'MODULE_PATHNAME','LWGEOM_to_BOX'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_box2d(box3d)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME','BOX3D_to_BOX2DFLOAT4'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_box3d(box2d)
-	RETURNS box3d
-	AS 'MODULE_PATHNAME','BOX2DFLOAT4_to_BOX3D'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_box(box3d)
-	RETURNS box
-	AS 'MODULE_PATHNAME','BOX3D_to_BOX'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_text(geometry)
-	RETURNS text
-	AS 'MODULE_PATHNAME','LWGEOM_to_text'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_geometry(box2d)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','BOX2DFLOAT4_to_LWGEOM'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_geometry(box3d)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','BOX3D_to_LWGEOM'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_geometry(text)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','parse_WKT_lwgeom'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_geometry(chip)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','CHIP_to_LWGEOM'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_geometry(bytea)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','LWGEOM_from_bytea'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_bytea(geometry)
-	RETURNS bytea
-	AS 'MODULE_PATHNAME','LWGEOM_to_bytea'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_box3d_extent(box3d_extent)
-	RETURNS box3d
-	AS 'MODULE_PATHNAME', 'BOX3D_extent_to_BOX3D'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_box2d(box3d_extent)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME', 'BOX3D_to_BOX2DFLOAT4'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_geometry(box3d_extent)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','BOX3D_to_LWGEOM'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-	
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 	
 		
 CREATE OR REPLACE FUNCTION box2d(geometry)
 	RETURNS box2d

@@ -68,6 +68,29 @@ GSERIALIZED* gserialized_copy(const GSERIALIZED *g)
 	return g_out;
 }
 
+int gserialized_is_empty(const GSERIALIZED *g)
+{
+	uchar *p = (uchar*)g;
+	int i;
+	assert(g);
+
+	p += 8; /* Skip varhdr and srid/flags */
+	if( FLAGS_GET_BBOX(g->flags) )
+		p += gbox_serialized_size(g->flags); /* Skip the box */
+	p += 4; /* Skip type number */
+	
+	/* For point/line/circstring this is npoints */
+	/* For polygons this is nrings */
+	/* For collections this is ngeoms */
+	memcpy(&i, p, sizeof(int));
+	
+	/* If it is non-zero, it's not empty */
+	if ( i > 0 )
+		return LW_FALSE;
+	else
+		return LW_TRUE;	
+}
+
 char* gserialized_to_string(const GSERIALIZED *g)
 {
 	return lwgeom_to_wkt(lwgeom_from_gserialized(g), WKT_ISO, 12, 0);
@@ -389,6 +412,7 @@ static size_t gserialized_from_lwpoly(const LWPOLY *poly, uchar *buf)
 	/* Add in padding if necessary to remain double aligned. */
 	if ( poly->nrings % 2 )
 	{
+		memset(loc, 0, sizeof(uint32));
 		loc += sizeof(uint32);
 	}
 

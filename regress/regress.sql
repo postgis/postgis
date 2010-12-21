@@ -95,33 +95,33 @@ select '64',ST_asewkt('MULTIPOINT(1 1, 2 2'::GEOMETRY);
 --- is_same() testing
 
 select '65','POINT(1 1)'::GEOMETRY ~= 'POINT(1 1)'::GEOMETRY as bool;
-select '65a',st_orderingequals('POINT(1 1)'::GEOMETRY,'POINT(1 1)'::GEOMETRY) as bool;
+select '65a',ST_OrderingEquals('POINT(1 1)'::GEOMETRY,'POINT(1 1)'::GEOMETRY) as bool;
 select '66','POINT(1 1 0)'::GEOMETRY ~= 'POINT(1 1)'::GEOMETRY as bool;
-select '66a',st_orderingequals('POINT(1 1 0)'::GEOMETRY,'POINT(1 1)'::GEOMETRY) as bool;
+select '66a',ST_OrderingEquals('POINT(1 1 0)'::GEOMETRY,'POINT(1 1)'::GEOMETRY) as bool;
 select '67','POINT(1 1 0)'::GEOMETRY ~= 'POINT(1 1 0)'::GEOMETRY as bool;
-select '67a',st_orderingequals('POINT(1 1 0)'::GEOMETRY,'POINT(1 1 0)'::GEOMETRY) as bool;
+select '67a',ST_OrderingEquals('POINT(1 1 0)'::GEOMETRY,'POINT(1 1 0)'::GEOMETRY) as bool;
 
 select '68','MULTIPOINT(1 1,2 2)'::GEOMETRY ~= 'MULTIPOINT(1 1,2 2)'::GEOMETRY as bool;
-select '68a',st_orderingequals('MULTIPOINT(1 1,2 2)'::GEOMETRY,'MULTIPOINT(1 1,2 2)'::GEOMETRY) as bool;
+select '68a',ST_OrderingEquals('MULTIPOINT(1 1,2 2)'::GEOMETRY,'MULTIPOINT(1 1,2 2)'::GEOMETRY) as bool;
 select '69','MULTIPOINT(2 2, 1 1)'::GEOMETRY ~= 'MULTIPOINT(1 1,2 2)'::GEOMETRY as bool;
-select '69a',st_orderingequals('MULTIPOINT(2 2, 1 1)'::GEOMETRY,'MULTIPOINT(1 1,2 2)'::GEOMETRY) as bool;
+select '69a',ST_OrderingEquals('MULTIPOINT(2 2, 1 1)'::GEOMETRY,'MULTIPOINT(1 1,2 2)'::GEOMETRY) as bool;
 
 select '70','GEOMETRYCOLLECTION(POINT( 1 2 3),POINT(4 5 6))'::GEOMETRY ~= 'GEOMETRYCOLLECTION(POINT( 4 5 6),POINT(1 2 3))'::GEOMETRY as bool;
-select '70a',st_orderingequals('GEOMETRYCOLLECTION(POINT( 1 2 3),POINT(4 5 6))'::GEOMETRY,'GEOMETRYCOLLECTION(POINT( 4 5 6),POINT(1 2 3))'::GEOMETRY) as bool;
+select '70a',ST_OrderingEquals('GEOMETRYCOLLECTION(POINT( 1 2 3),POINT(4 5 6))'::GEOMETRY,'GEOMETRYCOLLECTION(POINT( 4 5 6),POINT(1 2 3))'::GEOMETRY) as bool;
 select '71','MULTIPOINT(4 5 6, 1 2 3)'::GEOMETRY ~= 'GEOMETRYCOLLECTION(POINT( 4 5 6),POINT(1 2 3))'::GEOMETRY as bool;
-select '71a',st_orderingequals('MULTIPOINT(4 5 6, 1 2 3)'::GEOMETRY,'GEOMETRYCOLLECTION(POINT( 4 5 6),POINT(1 2 3))'::GEOMETRY) as bool;
+select '71a',ST_OrderingEquals('MULTIPOINT(4 5 6, 1 2 3)'::GEOMETRY,'GEOMETRYCOLLECTION(POINT( 4 5 6),POINT(1 2 3))'::GEOMETRY) as bool;
 select '72','MULTIPOINT(1 2 3, 4 5 6)'::GEOMETRY ~= 'GEOMETRYCOLLECTION(POINT( 4 5 6),POINT(1 2 3))'::GEOMETRY as bool;
-select '72a',st_orderingequals('MULTIPOINT(1 2 3, 4 5 6)'::GEOMETRY,'GEOMETRYCOLLECTION(POINT( 4 5 6),POINT(1 2 3))'::GEOMETRY) as bool;
+select '72a',ST_OrderingEquals('MULTIPOINT(1 2 3, 4 5 6)'::GEOMETRY,'GEOMETRYCOLLECTION(POINT( 4 5 6),POINT(1 2 3))'::GEOMETRY) as bool;
 select '73','MULTIPOINT(1 2 3, 4 5 6)'::GEOMETRY ~= 'GEOMETRYCOLLECTION(MULTIPOINT(1 2 3, 4 5 6))'::GEOMETRY as bool;
-select '73a',st_orderingequals('MULTIPOINT(1 2 3, 4 5 6)'::GEOMETRY,'GEOMETRYCOLLECTION(MULTIPOINT(1 2 3, 4 5 6))'::GEOMETRY) as bool;
+select '73a',ST_OrderingEquals('MULTIPOINT(1 2 3, 4 5 6)'::GEOMETRY,'GEOMETRYCOLLECTION(MULTIPOINT(1 2 3, 4 5 6))'::GEOMETRY) as bool;
 
 
 select '74','LINESTRING(1 1,2 2)'::GEOMETRY ~= 'POINT(1 1)'::GEOMETRY as bool;
-select '74a',st_orderingequals('LINESTRING(1 1,2 2)'::GEOMETRY,'POINT(1 1)'::GEOMETRY) as bool;
+select '74a',ST_OrderingEquals('LINESTRING(1 1,2 2)'::GEOMETRY,'POINT(1 1)'::GEOMETRY) as bool;
 select '75','LINESTRING(1 1, 2 2)'::GEOMETRY ~= 'LINESTRING(2 2, 1 1)'::GEOMETRY as bool;
-select '75a',st_orderingequals('LINESTRING(1 1, 2 2)'::GEOMETRY,'LINESTRING(2 2, 1 1)'::GEOMETRY) as bool;
+select '75a',ST_OrderingEquals('LINESTRING(1 1, 2 2)'::GEOMETRY,'LINESTRING(2 2, 1 1)'::GEOMETRY) as bool;
 select '76','LINESTRING(1 1, 2 2)'::GEOMETRY ~= 'LINESTRING(1 1, 2 2, 3 3)'::GEOMETRY as bool;
-select '76a',st_orderingequals('LINESTRING(1 1, 2 2)'::GEOMETRY,'LINESTRING(1 1, 2 2, 3 3)'::GEOMETRY) as bool;
+select '76a',ST_OrderingEquals('LINESTRING(1 1, 2 2)'::GEOMETRY,'LINESTRING(1 1, 2 2, 3 3)'::GEOMETRY) as bool;
 
 --- operator testing (testing is on the BOUNDING BOX (2d), not the actual geometries)
 
@@ -174,28 +174,21 @@ select '105','MULTIPOINT(-0.0001 0, 7 7)'::GEOMETRY @ 'MULTIPOINT(0 0, 10 10)'::
 --- function testing
 --- conversion function
 
-select '106',ST_box3d('MULTIPOINT(0 0, 7 7)'::GEOMETRY) as bvol;
-select '106_',box3d('MULTIPOINT(0 0, 7 7)'::GEOMETRY) as bvol;
+select '106',box3d('MULTIPOINT(0 0, 7 7)'::GEOMETRY) as bvol;
 
 -- box3d only type is only used for indexing -- NEVER use one yourself
-select '107',ST_asewkt(ST_geometry('BOX3D(0 0 0, 7 7 7 )'::BOX3D));
+select '107',ST_AsEWKT(geometry('BOX3D(0 0 0, 7 7 7 )'::BOX3D));
 
 --- debug function testing
 
-select '108',ST_npoints('MULTIPOINT(0 0, 7 7)'::GEOMETRY) as value;
-select '108_',npoints('MULTIPOINT(0 0, 7 7)'::GEOMETRY) as value;
-select '109',ST_npoints('GEOMETRYCOLLECTION(POINT(1 1), LINESTRING( 1 1 , 2 2, 3 3))'::GEOMETRY) as value;
-select '109_',npoints('GEOMETRYCOLLECTION(POINT(1 1), LINESTRING( 1 1 , 2 2, 3 3))'::GEOMETRY) as value;
+select '108',ST_NPoints('MULTIPOINT(0 0, 7 7)'::GEOMETRY) as value;
+select '109',ST_NPoints('GEOMETRYCOLLECTION(POINT(1 1), LINESTRING( 1 1 , 2 2, 3 3))'::GEOMETRY) as value;
 
-select '110', ST_nrings('MULTIPOLYGON( ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) ,( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7, 5 7, 5 5),(1 1,2 1, 2 2, 1 2, 1 1) ) )'::GEOMETRY) as value;
-select '110_', nrings('MULTIPOLYGON( ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) ,( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7, 5 7, 5 5),(1 1,2 1, 2 2, 1 2, 1 1) ) )'::GEOMETRY) as value;
+select '110', ST_NRings('MULTIPOLYGON( ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) ,( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7, 5 7, 5 5),(1 1,2 1, 2 2, 1 2, 1 1) ) )'::GEOMETRY) as value;
 
 select '111', ST_mem_size(dropBBOX('MULTIPOLYGON( ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) ,( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7, 5 7, 5 5),(1 1,2 1, 2 2, 1 2, 1 1) ) )'::GEOMETRY)) as value;
-select '111_', mem_size(dropBBOX('MULTIPOLYGON( ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) ,( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7, 5 7, 5 5),(1 1,2 1, 2 2, 1 2, 1 1) ) )'::GEOMETRY)) as value;
 
-
-select '112',ST_numgeometries('GEOMETRYCOLLECTION(POINT(1 1), LINESTRING( 1 1 , 2 2, 3 3),MULTIPOINT(1 1, 2 2))'::GEOMETRY) as value;
-select '112_',numgeometries('GEOMETRYCOLLECTION(POINT(1 1), LINESTRING( 1 1 , 2 2, 3 3),MULTIPOINT(1 1, 2 2))'::GEOMETRY) as value;
+select '112',ST_NumGeometries('GEOMETRYCOLLECTION(POINT(1 1), LINESTRING( 1 1 , 2 2, 3 3),MULTIPOINT(1 1, 2 2))'::GEOMETRY) as value;
 
 ---selection
 
@@ -210,8 +203,7 @@ create table TEST(a GEOMETRY, b GEOMETRY);
 
 ---test basic ops on this 
 
-select '121',ST_box3d(a) as box3d_a, ST_box3d(b) as box3d_b from TEST;
-select '121_',box3d(a) as box3d_a, box3d(b) as box3d_b from TEST;
+select '121',box3d(a) as box3d_a, box3d(b) as box3d_b from TEST;
 
 select '122',a <<b from TEST;
 select '123',a &<b from TEST;
@@ -225,54 +217,33 @@ select '128',a ~ b from TEST;
 select '129', ST_mem_size(dropBBOX(a)), ST_mem_size(dropBBOX(b)) from TEST;
 
 select '131', ST_X('POINT(1 2)');
-select '131_', ST_X('POINT(1 2)');
 select '132', ST_Y('POINT(1 2)');
-select '132_', ST_Y('POINT(1 2)');
 select '133', ST_Z('POINT(1 2)');
-select '133_', ST_Z('POINT(1 2)');
 select '133a', ST_Z('POINT(1 2 3)');
-select '133a_', ST_Z('POINT(1 2 3)');
 select '133b', ST_Z('POINTM(1 2 3)');
-select '133b_', ST_Z('POINTM(1 2 3)');
 select '133c', ST_M('POINT(1 2)');
-select '133c_', ST_M('POINT(1 2)');
 select '133d', ST_M('POINTM(1 2 4)');
-select '133d_', ST_M('POINTM(1 2 4)');
 select '133e', ST_M('POINT(1 2 4)');
-select '133e_', ST_M('POINT(1 2 4)');
 
-select '137', ST_box3d('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION EMPTY)'::geometry);
-select '137_', box3d('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION EMPTY)'::geometry);
-select '138', ST_box3d('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION EMPTY, POINT(0 0))'::geometry);
-select '138_', box3d('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION EMPTY, POINT(0 0))'::geometry);
+select '137', box3d('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION EMPTY)'::geometry);
+select '138', box3d('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION EMPTY, POINT(0 0))'::geometry);
 
-select '139', ST_asewkt(ST_multi(ST_setsrid('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION EMPTY, POINT(0 0))'::geometry, 2)));
-select '139_', asewkt(multi(setsrid('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION EMPTY, POINT(0 0))'::geometry, 2)));
-select '140', ST_asewkt(ST_multi(ST_setsrid('POINT(2 2)'::geometry, 3)));
-select '140_', asewkt(multi(setsrid('POINT(2 2)'::geometry, 3)));
-select '141', ST_asewkt(ST_multi(ST_setsrid('LINESTRING(2 2, 3 3)'::geometry, 4)));
-select '141_', asewkt(multi(setsrid('LINESTRING(2 2, 3 3)'::geometry, 4)));
-select '142', ST_asewkt(ST_multi(ST_setsrid('LINESTRING(2 2, 3 3)'::geometry, 5)));
-select '142_', asewkt(multi(setsrid('LINESTRING(2 2, 3 3)'::geometry, 5)));
-select '143', ST_asewkt(ST_multi(ST_setsrid('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'::geometry, 6)));
-select '143_', asewkt(multi(setsrid('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'::geometry, 6)));
-select '143c1', ST_asewkt(ST_multi('CIRCULARSTRING(0 0, 1 1, 2 2)'::geometry));
-select '144', ST_asewkt(ST_force_3dm('POINT(1 2 3)'));
-select '144_', asewkt(force_3dm('POINT(1 2 3)'));
-select '145', ST_asewkt(ST_force_3dz('POINTM(1 2 3)'));
-select '145_', asewkt(force_3dz('POINTM(1 2 3)'));
-select '146', ST_asewkt(ST_force_4d('POINTM(1 2 3)'));
-select '146_', asewkt(force_4d('POINTM(1 2 3)'));
-select '147', ST_asewkt(ST_force_4d('POINT(1 2 3)'));
-select '147_', asewkt(force_4d('POINT(1 2 3)'));
+select '139', ST_AsEWKT(ST_multi(ST_setsrid('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION EMPTY, POINT(0 0))'::geometry, 2)));
+select '140', ST_AsEWKT(ST_multi(ST_setsrid('POINT(2 2)'::geometry, 3)));
+select '141', ST_AsEWKT(ST_multi(ST_setsrid('LINESTRING(2 2, 3 3)'::geometry, 4)));
+select '142', ST_AsEWKT(ST_multi(ST_setsrid('LINESTRING(2 2, 3 3)'::geometry, 5)));
+select '143', ST_AsEWKT(ST_multi(ST_setsrid('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'::geometry, 6)));
+select '143c1', ST_AsEWKT(ST_multi('CIRCULARSTRING(0 0, 1 1, 2 2)'::geometry));
+select '144', ST_AsEWKT(ST_force_3dm('POINT(1 2 3)'));
+select '145', ST_AsEWKT(ST_force_3dz('POINTM(1 2 3)'));
+select '146', ST_AsEWKT(ST_force_4d('POINTM(1 2 3)'));
+select '147', ST_AsEWKT(ST_force_4d('POINT(1 2 3)'));
 
-select '148', ST_astext(ST_segmentize('LINESTRING(0 0, 10 0)', 5));
-select '148_', astext(segmentize('LINESTRING(0 0, 10 0)', 5));
+select '148', ST_AsText(ST_segmentize('LINESTRING(0 0, 10 0)', 5));
 
-select '149', ST_astext(segmentize('GEOMETRYCOLLECTION EMPTY', 0.5));
+select '149', ST_AsText(segmentize('GEOMETRYCOLLECTION EMPTY', 0.5));
 
-select '150', ST_asewkt(ST_force_collection(ST_setsrid('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'::geometry, 6)));
-select '150_', asewkt(force_collection(setsrid('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'::geometry, 6)));
+select '150', ST_AsEWKT(ST_force_collection(ST_setsrid('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'::geometry, 6)));
 
 select '151', ST_MakeEnvelope(0, 0, 1, 1, 4326);
 select '152', ST_SRID(ST_MakeEnvelope(0, 0, 1, 1, 4326));

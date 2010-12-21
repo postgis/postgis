@@ -689,7 +689,8 @@ GSERIALIZED* gserialized_set_gidx(GSERIALIZED *g, GIDX *gidx)
 }
 
 /**
-* Remove the bounding box from a #GSERIALIZED.
+* Remove the bounding box from a #GSERIALIZED. Returns a freshly
+* allocated #GSERIALIZED every time.
 */
 GSERIALIZED* gserialized_drop_gidx(GSERIALIZED *g)
 {
