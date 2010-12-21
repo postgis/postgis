@@ -2918,8 +2918,7 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 			using a relationship pattern that requires intersection, then include the &amp;&amp;
 			index call.</para></note>
 
-		<para>Version 2: Takes geomA and geomB and returns the <ulink url="http://docs.codehaus.org/display/GEOTDOC/Point+Set+Theory+and+the+DE-9IM+Matrix#PointSetTheoryandtheDE-9IMMatrix-9IntersectionMatrix">DE-9IM (dimensionally extended nine-intersection
-		matrix)</ulink></para>
+		<para>Version 2: Takes geomA and geomB and returns the <xref linkend="DE-9IM" /></para>
 
 		<note><para>Do not call with a GeometryCollection as an argument</para></note>
 
@@ -2969,7 +2968,7 @@ SELECT ST_Relate(ST_GeometryFromText('POINT(1 2)'), ST_Buffer(ST_GeometryFromTex
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Crosses" />, <xref linkend="ST_Disjoint" />, <xref linkend="ST_Intersects" />, <xref linkend="ST_Touches" /></para>
+		<para><xref linkend="ST_Crosses" />, <xref linkend="DE-9IM" />, <xref linkend="ST_Disjoint" />, <xref linkend="ST_Intersects" />, <xref linkend="ST_Touches" /></para>
 	  </refsection>
 	</refentry>
 
