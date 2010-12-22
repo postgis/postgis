@@ -1707,10 +1707,10 @@ extern LWCOLLECTION* lwcollection_construct_empty(uchar type, int srid, char has
 
 
 /* Other constructors */
-extern LWPOINT *make_lwpoint2d(int srid, double x, double y);
-extern LWPOINT *make_lwpoint3dz(int srid, double x, double y, double z);
-extern LWPOINT *make_lwpoint3dm(int srid, double x, double y, double m);
-extern LWPOINT *make_lwpoint4d(int srid, double x, double y, double z, double m);
+extern LWPOINT *lwpoint_make2d(int srid, double x, double y);
+extern LWPOINT *lwpoint_make3dz(int srid, double x, double y, double z);
+extern LWPOINT *lwpoint_make3dm(int srid, double x, double y, double m);
+extern LWPOINT *lwpoint_make4d(int srid, double x, double y, double z, double m);
 extern LWLINE *lwline_from_lwpointarray(int srid, uint32 npoints, LWPOINT **points);
 extern LWLINE *lwline_from_lwmpoint(int srid, LWMPOINT *mpoint);
 extern LWLINE *lwline_addpoint(LWLINE *line, LWPOINT *point, uint32 where);
@@ -1718,6 +1718,14 @@ extern LWLINE *lwline_removepoint(LWLINE *line, uint32 which);
 extern void lwline_setPoint4d(LWLINE *line, uint32 which, POINT4D *newpoint);
 extern LWPOLY *lwpoly_from_lwlines(const LWLINE *shell, uint32 nholes, const LWLINE **holes);
 extern LWTRIANGLE *lwtriangle_from_lwline(const LWLINE *shell);
+
+
+/* Some point accessors */
+extern double lwpoint_get_x(const LWPOINT *point);
+extern double lwpoint_get_y(const LWPOINT *point);
+extern double lwpoint_get_z(const LWPOINT *point);
+extern double lwpoint_get_m(const LWPOINT *point);
+
 
 /* Return a char string with ASCII versionf of type flags */
 extern const char *lwgeom_typeflags(uchar type);

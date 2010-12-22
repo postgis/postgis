@@ -179,6 +179,50 @@ lwpoint_getPoint4d_p(const LWPOINT *point, POINT4D *out)
 	return getPoint4d_p(point->point,0,out);
 }
 
+double
+lwpoint_get_x(const LWPOINT *point)
+{
+	POINT4D pt;
+	if ( lwpoint_is_empty(point) )
+		lwerror("lwpoint_get_x called with empty geometry");
+	getPoint4d_p(point->point, 0, &pt);
+	return pt.x;
+}
+
+double
+lwpoint_get_y(const LWPOINT *point)
+{
+	POINT4D pt;
+	if ( lwpoint_is_empty(point) )
+		lwerror("lwpoint_get_y called with empty geometry");
+	getPoint4d_p(point->point, 0, &pt);
+	return pt.y;
+}
+
+double
+lwpoint_get_z(const LWPOINT *point)
+{
+	POINT4D pt;
+	if ( lwpoint_is_empty(point) )
+		lwerror("lwpoint_get_z called with empty geometry");
+	if ( ! FLAGS_GET_Z(point->flags) )
+		lwerror("lwpoint_get_z called without z dimension");
+	getPoint4d_p(point->point, 0, &pt);
+	return pt.z;
+}
+
+double
+lwpoint_get_m(const LWPOINT *point)
+{
+	POINT4D pt;
+	if ( lwpoint_is_empty(point) )
+		lwerror("lwpoint_get_m called with empty geometry");
+	if ( ! FLAGS_GET_M(point->flags) )
+		lwerror("lwpoint_get_m called without m dimension");
+	getPoint4d_p(point->point, 0, &pt);
+	return pt.m;
+}
+
 /*
  * Construct a new point.  point will not be copied
  * use SRID=SRID_UNKNOWN for unknown SRID (will have 8bit type's S = 0)
@@ -218,61 +262,44 @@ lwpoint_construct_empty(int srid, char hasz, char hasm)
 }
 
 LWPOINT *
-make_lwpoint2d(int srid, double x, double y)
+lwpoint_make2d(int srid, double x, double y)
 {
-	POINT2D p;
-	POINTARRAY *pa = ptarray_construct(0, 0, 1);
+	POINT4D p = {x, y, 0.0, 0.0};
+	POINTARRAY *pa = ptarray_construct_empty(0, 0, 1);
 
-	p.x = x;
-	p.y = y;
+	ptarray_append_point(pa, &p, REPEATED_POINTS_OK);
+	return lwpoint_construct(srid, NULL, pa);
+}
 
-	memcpy(getPoint_internal(pa, 0), &p, sizeof(POINT2D));
+LWPOINT *
+lwpoint_make3dz(int srid, double x, double y, double z)
+{
+	POINT4D p = {x, y, z, 0.0};
+	POINTARRAY *pa = ptarray_construct_empty(1, 0, 1);
+
+	ptarray_append_point(pa, &p, REPEATED_POINTS_OK);
 
 	return lwpoint_construct(srid, NULL, pa);
 }
 
 LWPOINT *
-make_lwpoint3dz(int srid, double x, double y, double z)
+lwpoint_make3dm(int srid, double x, double y, double m)
 {
-	POINT3DZ p;
-	POINTARRAY *pa = ptarray_construct(1, 0, 1);
+	POINT4D p = {x, y, 0.0, m};
+	POINTARRAY *pa = ptarray_construct_empty(0, 1, 1);
 
-	p.x = x;
-	p.y = y;
-	p.z = z;
-
-	memcpy(getPoint_internal(pa, 0), &p, sizeof(POINT3DZ));
+	ptarray_append_point(pa, &p, REPEATED_POINTS_OK);
 
 	return lwpoint_construct(srid, NULL, pa);
 }
 
 LWPOINT *
-make_lwpoint3dm(int srid, double x, double y, double m)
+lwpoint_make4d(int srid, double x, double y, double z, double m)
 {
-	POINTARRAY *pa = ptarray_construct(0, 1, 1);
-	POINT3DM p;
+	POINT4D p = {x, y, z, m};
+	POINTARRAY *pa = ptarray_construct_empty(1, 1, 1);
 
-	p.x = x;
-	p.y = y;
-	p.m = m;
-
-	memcpy(getPoint_internal(pa, 0), &p, sizeof(POINT3DM));
-
-	return lwpoint_construct(srid, NULL, pa);
-}
-
-LWPOINT *
-make_lwpoint4d(int srid, double x, double y, double z, double m)
-{
-	POINTARRAY *pa = ptarray_construct(1, 1, 1);
-	POINT4D p;
-
-	p.x = x;
-	p.y = y;
-	p.z = z;
-	p.m = m;
-
-	memcpy(getPoint_internal(pa, 0), &p, sizeof(POINT4D));
+	ptarray_append_point(pa, &p, REPEATED_POINTS_OK);
 
 	return lwpoint_construct(srid, NULL, pa);
 }

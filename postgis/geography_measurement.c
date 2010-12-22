@@ -354,7 +354,7 @@ Datum geography_point_outside(PG_FUNCTION_ARGS)
 	/* Get an exterior point, based on this gbox */
 	gbox_pt_outside(&gbox, &pt);
 
-	lwpoint = make_lwpoint2d(4326, pt.x, pt.y);
+	lwpoint = lwpoint_make2d(4326, pt.x, pt.y);
 
 	g_out = gserialized_from_lwgeom((LWGEOM*)lwpoint, 1, &g_out_size);
 	SET_VARSIZE(g_out, g_out_size);

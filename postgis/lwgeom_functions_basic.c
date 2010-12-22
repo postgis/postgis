@@ -1717,7 +1717,7 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 	        box.ymin == box.ymax)
 	{
 		/* Construct and serialize point */
-		LWPOINT *point = make_lwpoint2d(srid, box.xmin, box.ymin);
+		LWPOINT *point = lwpoint_make2d(srid, box.xmin, box.ymin);
 		ser = lwpoint_serialize(point);
 	}
 	else if (box.xmin == box.xmax ||
@@ -2076,17 +2076,17 @@ Datum LWGEOM_makepoint(PG_FUNCTION_ARGS)
 	x = PG_GETARG_FLOAT8(0);
 	y = PG_GETARG_FLOAT8(1);
 
-	if ( PG_NARGS() == 2 ) point = make_lwpoint2d(-1, x, y);
+	if ( PG_NARGS() == 2 ) point = lwpoint_make2d(-1, x, y);
 	else if ( PG_NARGS() == 3 )
 	{
 		z = PG_GETARG_FLOAT8(2);
-		point = make_lwpoint3dz(-1, x, y, z);
+		point = lwpoint_make3dz(-1, x, y, z);
 	}
 	else if ( PG_NARGS() == 4 )
 	{
 		z = PG_GETARG_FLOAT8(2);
 		m = PG_GETARG_FLOAT8(3);
-		point = make_lwpoint4d(-1, x, y, z, m);
+		point = lwpoint_make4d(-1, x, y, z, m);
 	}
 	else
 	{
@@ -2113,7 +2113,7 @@ Datum LWGEOM_makepoint3dm(PG_FUNCTION_ARGS)
 	y = PG_GETARG_FLOAT8(1);
 	m = PG_GETARG_FLOAT8(2);
 
-	point = make_lwpoint3dm(-1, x, y, m);
+	point = lwpoint_make3dm(-1, x, y, m);
 	result = pglwgeom_serialize((LWGEOM *)point);
 
 	PG_RETURN_POINTER(result);

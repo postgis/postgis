@@ -63,8 +63,8 @@ lw_dist3d_distanceline(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode)
 		z2=thedl.p2.z;
 
 
-		lwpoints[0] = make_lwpoint3dz(srid, x1, y1, z1);
-		lwpoints[1] = make_lwpoint3dz(srid, x2, y2, z2);
+		lwpoints[0] = lwpoint_make3dz(srid, x1, y1, z1);
+		lwpoints[1] = lwpoint_make3dz(srid, x2, y2, z2);
 
 		result = (LWGEOM *)lwline_from_lwpointarray(srid, 2, lwpoints);
 	}
@@ -106,7 +106,7 @@ lw_dist3d_distancepoint(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode)
 		x=thedl.p1.x;
 		y=thedl.p1.y;
 		z=thedl.p1.z;
-		result = (LWGEOM *)make_lwpoint3dz(srid, x, y, z);
+		result = (LWGEOM *)lwpoint_make3dz(srid, x, y, z);
 	}
 
 	return result;

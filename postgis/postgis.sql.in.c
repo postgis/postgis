@@ -478,7 +478,11 @@ CREATE OR REPLACE FUNCTION box2d_out(box2d)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 CREATE TYPE box2d (
+#ifdef GSERIALIZED_ON
+	internallength = 65,
+#else
 	internallength = 16,
+#endif
 	input = box2d_in,
 	output = box2d_out,
 	storage = plain

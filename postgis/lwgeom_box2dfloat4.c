@@ -29,13 +29,43 @@ Datum BOX2DFLOAT4_construct(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(BOX2DFLOAT4_in);
 Datum BOX2DFLOAT4_in(PG_FUNCTION_ARGS)
 {
+#ifdef GSERIALIZED_ON
+	char *str = PG_GETARG_CSTRING(0);
+	int nitems;
+	double tmp;
+	GBOX box;
+	
+	gbox_init(&box);
+
+	if (strstr(str,"BOX(") !=  str )
+	{
+		elog(ERROR,"box2d parser - doesnt start with BOX(");
+		PG_RETURN_NULL();
+	}
+	nitems = sscanf(str,"BOX(%f %f,%f %f)", box.xmin, box.ymin, box.xmax, box.ymax);
+	if (nitems != 4)
+	{
+		elog(ERROR,"box2d parser - couldnt parse.  It should look like: BOX(xmin ymin,xmax ymax)");
+		PG_RETURN_NULL();
+	}
+
+	if (box.xmin > box.xmax)
+	{
+		tmp = box.xmin;
+		box.xmin = box.xmax;
+		box.xmax = tmp;
+	}
+	if (box.ymin > box.ymax)
+	{
+		tmp = box.ymin;
+		box.ymin = box.ymax;
+		box.ymax = tmp;
+	}
+	PG_RETURN_POINTER(gbox_copy(&box));
+#else
 	char *str = PG_GETARG_CSTRING(0);
 	int nitems;
 	BOX2DFLOAT4 *box = (BOX2DFLOAT4 *) palloc(sizeof(BOX2DFLOAT4));
-
-
-
-	/*printf( "box3d_in gets '%s'\n",str); */
 
 	if (strstr(str,"BOX(") !=  str )
 	{
@@ -64,6 +94,7 @@ Datum BOX2DFLOAT4_in(PG_FUNCTION_ARGS)
 		box->ymax = tmp;
 	}
 	PG_RETURN_POINTER(box);
+#endif
 }
 
 /*writer  "BOX(xmin ymin,xmax ymax)" */
@@ -79,8 +110,9 @@ Datum BOX2DFLOAT4_out(PG_FUNCTION_ARGS)
 	                box->xmin, box->ymin, box->xmax, box->ymax);
 
 	result= palloc(size+1); /* +1= null term */
-
 	memcpy(result,tmp,size+1);
+	result[size] = '\0';
+
 	PG_RETURN_CSTRING(result);
 }
 
@@ -89,6 +121,25 @@ Datum BOX2DFLOAT4_out(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_to_BOX2DFLOAT4);
 Datum LWGEOM_to_BOX2DFLOAT4(PG_FUNCTION_ARGS)
 {
+#ifdef GSERIALIZED_ON
+	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
+	GBOX gbox;
+
+	/* Cannot box empty! */
+	if ( lwgeom_is_empty(lwgeom) )
+		PG_RETURN_NULL(); 
+
+	/* Cannot calculate box? */
+	if ( lwgeom_calculate_gbox(lwgeom, &gbox) == LW_FAILURE )
+		PG_RETURN_NULL();
+		
+	/* Strip out higher dimensions */
+	FLAGS_SET_Z(gbox.flags, 0);
+	FLAGS_SET_M(gbox.flags, 0);
+
+	PG_RETURN_POINTER(gbox_copy(&gbox));
+#else
 	PG_LWGEOM *lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	BOX2DFLOAT4 *result;
 
@@ -99,6 +150,7 @@ Datum LWGEOM_to_BOX2DFLOAT4(PG_FUNCTION_ARGS)
 	}
 
 	PG_RETURN_POINTER(result);
+#endif
 }
 
 /*----------------------------------------------------------
@@ -453,10 +505,9 @@ PG_FUNCTION_INFO_V1(BOX2DFLOAT4_to_LWGEOM);
 Datum BOX2DFLOAT4_to_LWGEOM(PG_FUNCTION_ARGS)
 {
 	BOX2DFLOAT4 *box = (BOX2DFLOAT4 *)PG_GETARG_POINTER(0);
-	POINTARRAY *pa;
-	int wantbbox = 0;
+	POINTARRAY *pa = ptarray_construct_empty(0, 0, 5);
+	POINT4D pt;
 	PG_LWGEOM *result;
-	uchar *ser;
 
 
 	/*
@@ -470,61 +521,58 @@ Datum BOX2DFLOAT4_to_LWGEOM(PG_FUNCTION_ARGS)
 	 *     - Otherwise return a POLYGON
 	 */
 
-	if (box->xmin == box->xmax &&
-	        box->ymin == box->ymax)
+	if ( (box->xmin == box->xmax) && (box->ymin == box->ymax) )
 	{
 		/* Construct and serialize point */
-		LWPOINT *point = make_lwpoint2d(-1, box->xmin, box->ymin);
-		ser = lwpoint_serialize(point);
+		LWPOINT *point = lwpoint_make2d(SRID_UNKNOWN, box->xmin, box->ymin);
+		result = pglwgeom_serialize(lwpoint_as_lwgeom(point));
+		lwpoint_free(point);
 	}
-	else if (box->xmin == box->xmax ||
-	         box->ymin == box->ymax)
+	else if ( (box->xmin == box->xmax) || (box->ymin == box->ymax) )
 	{
 		LWLINE *line;
-		POINT2D *pts = palloc(sizeof(POINT2D)*2);
 
-		/* Assign coordinates to POINT2D array */
-		pts[0].x = box->xmin;
-		pts[0].y = box->ymin;
-		pts[1].x = box->xmax;
-		pts[1].y = box->ymax;
+		/* Assign coordinates to point array */
+		pt.x = box->xmin;
+		pt.y = box->ymin;
+		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		pt.x = box->xmax;
+		pt.y = box->ymax;
+		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
 
-		/* Construct point array */
-		pa = ptarray_construct_reference_data(0, 0, 2, (uchar*)pts);
-		
 		/* Construct and serialize linestring */
-		line = lwline_construct(-1, NULL, pa);
-		ser = lwline_serialize(line);
+		line = lwline_construct(SRID_UNKNOWN, NULL, pa);
+		result = pglwgeom_serialize(lwline_as_lwgeom(line));
+		lwline_free(line);
 	}
 	else
 	{
 		LWPOLY *poly;
-		POINT2D *pts = palloc(sizeof(POINT2D)*5);
+		POINTARRAY **ppa = lwalloc(sizeof(POINTARRAY*));
 
-		/* Assign coordinates to POINT2D array */
-		pts[0].x = box->xmin;
-		pts[0].y = box->ymin;
-		pts[1].x = box->xmin;
-		pts[1].y = box->ymax;
-		pts[2].x = box->xmax;
-		pts[2].y = box->ymax;
-		pts[3].x = box->xmax;
-		pts[3].y = box->ymin;
-		pts[4].x = box->xmin;
-		pts[4].y = box->ymin;
-
-		/* Construct point array */
-		pa = ptarray_construct_reference_data(0, 0, 5, (uchar*)pts);
+		/* Assign coordinates to point array */
+		pt.x = box->xmin;
+		pt.y = box->ymin;
+		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		pt.x = box->xmin;
+		pt.y = box->ymax;
+		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		pt.x = box->xmax;
+		pt.y = box->ymax;
+		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		pt.x = box->xmax;
+		pt.y = box->ymin;
+		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		pt.x = box->xmin;
+		pt.y = box->ymin;
+		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
 
 		/* Construct polygon */
-		poly = lwpoly_construct(-1, NULL, 1, &pa);
-
-		/* Serialize polygon */
-		ser = lwpoly_serialize(poly);
+		ppa[0] = pa;
+		poly = lwpoly_construct(SRID_UNKNOWN, NULL, 1, ppa);
+		result = pglwgeom_serialize(lwpoly_as_lwgeom(poly));
+		lwpoly_free(poly);
 	}
-
-	/* Construct PG_LWGEOM  */
-	result = PG_LWGEOM_construct(ser, -1, wantbbox);
 
 	PG_RETURN_POINTER(result);
 }
@@ -534,14 +582,13 @@ Datum BOX2DFLOAT4_construct(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *min = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_LWGEOM *max = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	BOX2DFLOAT4 *result = palloc(sizeof(BOX2DFLOAT4));
+	BOX2DFLOAT4 *result;
 	LWGEOM *minpoint, *maxpoint;
-	POINT2D minp, maxp;
 
 	minpoint = pglwgeom_deserialize(min);
 	maxpoint = pglwgeom_deserialize(max);
 
-	if ( minpoint->type != POINTTYPE || maxpoint->type != POINTTYPE )
+	if ( (minpoint->type != POINTTYPE) || (maxpoint->type != POINTTYPE) )
 	{
 		elog(ERROR, "BOX2DFLOAT4_construct: args must be points");
 		PG_RETURN_NULL();
@@ -549,14 +596,11 @@ Datum BOX2DFLOAT4_construct(PG_FUNCTION_ARGS)
 
 	error_if_srid_mismatch(minpoint->srid, maxpoint->srid);
 
-	getPoint2d_p(((LWPOINT *)minpoint)->point, 0, &minp);
-	getPoint2d_p(((LWPOINT *)maxpoint)->point, 0, &maxp);
-
-	result->xmax = maxp.x;
-	result->ymax = maxp.y;
-
-	result->xmin = minp.x;
-	result->ymin = minp.y;
+	result = palloc(sizeof(BOX2DFLOAT4));
+	result->xmin = lwpoint_get_x(lwgeom_as_lwpoint(minpoint));
+	result->ymin = lwpoint_get_y(lwgeom_as_lwpoint(minpoint));
+	result->xmax = lwpoint_get_x(lwgeom_as_lwpoint(maxpoint));
+	result->ymax = lwpoint_get_y(lwgeom_as_lwpoint(maxpoint));
 
 	PG_RETURN_POINTER(result);
 }
