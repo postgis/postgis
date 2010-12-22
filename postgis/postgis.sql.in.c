@@ -345,40 +345,6 @@ CREATE OR REPLACE FUNCTION ST_ZMax(box3d)
 	AS 'MODULE_PATHNAME','BOX3D_zmax'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--------------------------------------------------------------------
---  CHIP TYPE
--------------------------------------------------------------------
-
-CREATE OR REPLACE FUNCTION chip_in(cstring)
-	RETURNS chip
-	AS 'MODULE_PATHNAME','CHIP_in'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION chip_out(chip)
-	RETURNS cstring
-	AS 'MODULE_PATHNAME','CHIP_out'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION ST_chip_in(cstring)
-	RETURNS chip
-	AS 'MODULE_PATHNAME','CHIP_in'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION ST_chip_out(chip)
-	RETURNS cstring
-	AS 'MODULE_PATHNAME','CHIP_out'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE TYPE chip (
-	alignment = double,
-	internallength = variable,
-	input = chip_in,
-	output = chip_out,
-	storage = extended
-);
-
 -----------------------------------------------------------------------
 -- BOX2D
 -----------------------------------------------------------------------
@@ -1014,99 +980,6 @@ CREATE OR REPLACE FUNCTION postgis_hasbbox(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_hasBBOX'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--------------------------------------------
---- CHIP functions
--------------------------------------------
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION srid(chip)
-	RETURNS int4
-	AS 'MODULE_PATHNAME','CHIP_getSRID'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_srid(chip)
-	RETURNS int4
-	AS 'MODULE_PATHNAME','CHIP_getSRID'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION height(chip)
-	RETURNS int4
-	AS 'MODULE_PATHNAME','CHIP_getHeight'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_height(chip)
-	RETURNS int4
-	AS 'MODULE_PATHNAME','CHIP_getHeight'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION factor(chip)
-	RETURNS FLOAT4
-	AS 'MODULE_PATHNAME','CHIP_getFactor'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_factor(chip)
-	RETURNS FLOAT4
-	AS 'MODULE_PATHNAME','CHIP_getFactor'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION width(chip)
-	RETURNS int4
-	AS 'MODULE_PATHNAME','CHIP_getWidth'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_width(chip)
-	RETURNS int4
-	AS 'MODULE_PATHNAME','CHIP_getWidth'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION datatype(chip)
-	RETURNS int4
-	AS 'MODULE_PATHNAME','CHIP_getDatatype'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_datatype(chip)
-	RETURNS int4
-	AS 'MODULE_PATHNAME','CHIP_getDatatype'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION compression(chip)
-	RETURNS int4
-	AS 'MODULE_PATHNAME','CHIP_getCompression'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_compression(chip)
-	RETURNS int4
-	AS 'MODULE_PATHNAME','CHIP_getCompression'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION setSRID(chip,int4)
-	RETURNS chip
-	AS 'MODULE_PATHNAME','CHIP_setSRID'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION setFactor(chip,float4)
-	RETURNS chip
-	AS 'MODULE_PATHNAME','CHIP_setFactor'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_setFactor(chip,float4)
-	RETURNS chip
-	AS 'MODULE_PATHNAME','CHIP_setFactor'
-	LANGUAGE 'C' IMMUTABLE STRICT;
 
 ------------------------------------------------------------------------
 -- DEBUG
@@ -3448,11 +3321,6 @@ CREATE OR REPLACE FUNCTION geometry(text)
 	AS 'MODULE_PATHNAME','parse_WKT_lwgeom'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION geometry(chip)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','CHIP_to_LWGEOM'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 CREATE OR REPLACE FUNCTION geometry(bytea)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_from_bytea'
@@ -3474,7 +3342,6 @@ CREATE CAST (box3d AS box) WITH FUNCTION box(box3d) AS IMPLICIT;
 CREATE CAST (box3d AS geometry) WITH FUNCTION geometry(box3d) AS IMPLICIT;
 CREATE CAST (text AS geometry) WITH FUNCTION geometry(text) AS IMPLICIT;
 CREATE CAST (geometry AS text) WITH FUNCTION text(geometry) AS IMPLICIT;
-CREATE CAST (chip AS geometry) WITH FUNCTION geometry(chip) AS IMPLICIT;
 CREATE CAST (bytea AS geometry) WITH FUNCTION geometry(bytea) AS IMPLICIT;
 CREATE CAST (geometry AS bytea) WITH FUNCTION bytea(geometry) AS IMPLICIT;
 

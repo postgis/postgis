@@ -202,3 +202,140 @@ CREATE OR REPLACE FUNCTION shift_longitude(geometry)
 	LANGUAGE 'C' IMMUTABLE STRICT;	
 -- end old ogc names that have been replaced with new SQL-MM names --
 
+
+-------------------------------------------------------------------
+--  CHIP TYPE
+-------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION chip_in(cstring)
+	RETURNS chip
+	AS 'MODULE_PATHNAME','CHIP_in'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION chip_out(chip)
+	RETURNS cstring
+	AS 'MODULE_PATHNAME','CHIP_out'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION ST_chip_in(cstring)
+	RETURNS chip
+	AS 'MODULE_PATHNAME','CHIP_in'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION ST_chip_out(chip)
+	RETURNS cstring
+	AS 'MODULE_PATHNAME','CHIP_out'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE TYPE chip (
+	alignment = double,
+	internallength = variable,
+	input = chip_in,
+	output = chip_out,
+	storage = extended
+);
+--- End CHIP TYPE --
+-------------------------------------------
+--- Begin CHIP functions
+-------------------------------------------
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION srid(chip)
+	RETURNS int4
+	AS 'MODULE_PATHNAME','CHIP_getSRID'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_srid(chip)
+	RETURNS int4
+	AS 'MODULE_PATHNAME','CHIP_getSRID'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION height(chip)
+	RETURNS int4
+	AS 'MODULE_PATHNAME','CHIP_getHeight'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_height(chip)
+	RETURNS int4
+	AS 'MODULE_PATHNAME','CHIP_getHeight'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION factor(chip)
+	RETURNS FLOAT4
+	AS 'MODULE_PATHNAME','CHIP_getFactor'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_factor(chip)
+	RETURNS FLOAT4
+	AS 'MODULE_PATHNAME','CHIP_getFactor'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION width(chip)
+	RETURNS int4
+	AS 'MODULE_PATHNAME','CHIP_getWidth'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_width(chip)
+	RETURNS int4
+	AS 'MODULE_PATHNAME','CHIP_getWidth'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION datatype(chip)
+	RETURNS int4
+	AS 'MODULE_PATHNAME','CHIP_getDatatype'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_datatype(chip)
+	RETURNS int4
+	AS 'MODULE_PATHNAME','CHIP_getDatatype'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION compression(chip)
+	RETURNS int4
+	AS 'MODULE_PATHNAME','CHIP_getCompression'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_compression(chip)
+	RETURNS int4
+	AS 'MODULE_PATHNAME','CHIP_getCompression'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION setSRID(chip,int4)
+	RETURNS chip
+	AS 'MODULE_PATHNAME','CHIP_setSRID'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION setFactor(chip,float4)
+	RETURNS chip
+	AS 'MODULE_PATHNAME','CHIP_setFactor'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_setFactor(chip,float4)
+	RETURNS chip
+	AS 'MODULE_PATHNAME','CHIP_setFactor'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+CREATE OR REPLACE FUNCTION geometry(chip)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','CHIP_to_LWGEOM'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+CREATE CAST (chip AS geometry) WITH FUNCTION geometry(chip) AS IMPLICIT;
+-- END CHIP --
+
