@@ -2,7 +2,7 @@
 # this file copied and adapted from PostgreSQL source
 # to allow easy build on BSD systems
 
-all install uninstall clean distclean maintainer-clean test check docs docs-install docs-uninstall utils:
+all install uninstall clean distclean maintainer-clean test check docs docs-install docs-uninstall utils: GNUmakefile
 	@IFS=':' ; \
 	 for dir in $$PATH; do \
 	   for prog in gmake gnumake make; do \
@@ -20,3 +20,9 @@ all install uninstall clean distclean maintainer-clean test check docs docs-inst
 	   echo "You must use GNU make to build PostGIS." ; \
 	   false; \
 	 fi
+
+configure: configure.in
+	./autogen.sh
+
+GNUmakefile: GNUmakefile.in
+	./configure
