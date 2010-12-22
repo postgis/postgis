@@ -1,4 +1,22 @@
---- start functions that in theory should never have been used
+--- start functions that in theory should never have been used or internal like stuff deprecated
+
+-- these were superceded by PostGIS_AddBBOX , PostGIS_DropBBOX, PostGIS_HasBBOX in 1.5 --
+CREATE OR REPLACE FUNCTION addbbox(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','LWGEOM_addBBOX'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+CREATE OR REPLACE FUNCTION dropbbox(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','LWGEOM_dropBBOX'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION hasbbox(geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_hasBBOX'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
 --- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_box2d(geometry)
 	RETURNS box2d
@@ -96,6 +114,7 @@ CREATE OR REPLACE FUNCTION st_geometry(box3d_extent)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 --- end functions that in theory should never have been used
+
 
 -- begin old ogc (and non-ST) names that have been replaced with new SQL-MM and SQL Like names --
 

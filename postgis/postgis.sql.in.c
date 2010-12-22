@@ -990,21 +990,10 @@ CREATE OPERATOR CLASS gist_geometry_ops
 -------------------------------------------
 -- other lwgeom functions
 -------------------------------------------
-
-CREATE OR REPLACE FUNCTION addbbox(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','LWGEOM_addBBOX'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION postgis_addbbox(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_addBBOX'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION dropbbox(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','LWGEOM_dropBBOX'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
@@ -1017,12 +1006,6 @@ CREATE OR REPLACE FUNCTION postgis_dropbbox(geometry)
 CREATE OR REPLACE FUNCTION getsrid(geometry)
 	RETURNS int4
 	AS 'MODULE_PATHNAME','LWGEOM_get_srid'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION hasbbox(geometry)
-	RETURNS bool
-	AS 'MODULE_PATHNAME', 'LWGEOM_hasBBOX'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0

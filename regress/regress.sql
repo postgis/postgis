@@ -186,7 +186,7 @@ select '109',ST_NPoints('GEOMETRYCOLLECTION(POINT(1 1), LINESTRING( 1 1 , 2 2, 3
 
 select '110', ST_NRings('MULTIPOLYGON( ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) ,( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7, 5 7, 5 5),(1 1,2 1, 2 2, 1 2, 1 1) ) )'::GEOMETRY) as value;
 
-select '111', ST_mem_size(dropBBOX('MULTIPOLYGON( ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) ,( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7, 5 7, 5 5),(1 1,2 1, 2 2, 1 2, 1 1) ) )'::GEOMETRY)) as value;
+select '111', ST_mem_size(PostGIS_DropBBOX('MULTIPOLYGON( ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) ,( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7, 5 7, 5 5),(1 1,2 1, 2 2, 1 2, 1 1) ) )'::GEOMETRY)) as value;
 
 select '112',ST_NumGeometries('GEOMETRYCOLLECTION(POINT(1 1), LINESTRING( 1 1 , 2 2, 3 3),MULTIPOINT(1 1, 2 2))'::GEOMETRY) as value;
 
@@ -214,7 +214,7 @@ select '126',a ~= b from TEST;
 select '127',a @ b from TEST;
 select '128',a ~ b from TEST; 
 
-select '129', ST_mem_size(dropBBOX(a)), ST_mem_size(dropBBOX(b)) from TEST;
+select '129', ST_mem_size(PostGIS_DropBBOX(a)), ST_mem_size(PostGIS_DropBBOX(b)) from TEST;
 
 select '131', ST_X('POINT(1 2)');
 select '132', ST_Y('POINT(1 2)');
@@ -241,7 +241,7 @@ select '147', ST_AsEWKT(ST_force_4d('POINT(1 2 3)'));
 
 select '148', ST_AsText(ST_segmentize('LINESTRING(0 0, 10 0)', 5));
 
-select '149', ST_AsText(segmentize('GEOMETRYCOLLECTION EMPTY', 0.5));
+select '149', ST_AsText(ST_segmentize('GEOMETRYCOLLECTION EMPTY', 0.5));
 
 select '150', ST_AsEWKT(ST_force_collection(ST_setsrid('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'::geometry, 6)));
 
