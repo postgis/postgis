@@ -420,24 +420,28 @@ BEGIN
 	--
 	-- Update all edges having this face on the left
 	--
-	EXECUTE 'UPDATE '
-		|| quote_ident(atopology)
-		|| '.edge_data SET left_face = '
-		|| quote_literal(faceid)
-		|| ' WHERE edge_id = ANY('
-		|| quote_literal(left_edges)
-		|| ') ';
+	IF left_edges IS NOT NULL THEN
+		EXECUTE 'UPDATE '
+			|| quote_ident(atopology)
+			|| '.edge_data SET left_face = '
+			|| quote_literal(faceid)
+			|| ' WHERE edge_id = ANY('
+			|| quote_literal(left_edges)
+			|| ') ';
+	END IF;
 
 	--
 	-- Update all edges having this face on the right
 	--
-	EXECUTE 'UPDATE '
-		|| quote_ident(atopology)
-		|| '.edge_data SET right_face = '
-		|| quote_literal(faceid)
-		|| ' WHERE edge_id = ANY('
-		|| quote_literal(right_edges)
-		|| ') ';
+	IF right_edges IS NOT NULL THEN
+		EXECUTE 'UPDATE '
+			|| quote_ident(atopology)
+			|| '.edge_data SET right_face = '
+			|| quote_literal(faceid)
+			|| ' WHERE edge_id = ANY('
+			|| quote_literal(right_edges)
+			|| ') ';
+	END IF;
 
 
 	RETURN faceid;

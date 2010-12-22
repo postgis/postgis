@@ -23,6 +23,16 @@ SELECT 'f1',  topology.addFace('tt', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');
 -- Register the _same_ face  again
 SELECT 'f1*',  topology.addFace('tt', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');
 
+-- Add 3 more edges closing a squre to the right,
+-- all edges with same direction
+
+SELECT 'e6',  topology.addEdge('tt', 'LINESTRING(10 10, 20 10)');
+SELECT 'e7',  topology.addEdge('tt', 'LINESTRING(20 10, 20 0)');
+SELECT 'e8',  topology.addEdge('tt', 'LINESTRING(20 0, 10 0)');
+
+-- Register a face with no holes matching all edges in the same direction
+SELECT 'f2',  topology.addFace('tt', 'POLYGON((10 10, 20 10, 20 0, 10 0, 10 10))');
+
 -- Check added faces
 SELECT face_id, mbr from tt.face ORDER by face_id;
 
