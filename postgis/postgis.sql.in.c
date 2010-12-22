@@ -997,34 +997,16 @@ CREATE OR REPLACE FUNCTION ST_mem_size(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_mem_size'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION summary(geometry)
-	RETURNS text
-	AS 'MODULE_PATHNAME', 'LWGEOM_summary'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_summary(geometry)
 	RETURNS text
 	AS 'MODULE_PATHNAME', 'LWGEOM_summary'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION npoints(geometry)
-	RETURNS int4
-	AS 'MODULE_PATHNAME', 'LWGEOM_npoints'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_npoints(geometry)
+CREATE OR REPLACE FUNCTION ST_Npoints(geometry)
 	RETURNS int4
 	AS 'MODULE_PATHNAME', 'LWGEOM_npoints'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION nrings(geometry)
-	RETURNS int4
-	AS 'MODULE_PATHNAME', 'LWGEOM_nrings'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -1097,24 +1079,10 @@ CREATE OR REPLACE FUNCTION ST_length2d_spheroid(geometry, spheroid)
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
 
--- this is a fake (for back-compatibility)
--- uses 3d if 3d is available, 2d otherwise
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION perimeter3d(geometry)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME', 'LWGEOM_perimeter_poly'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_perimeter3d(geometry)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME', 'LWGEOM_perimeter_poly'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION perimeter2d(geometry)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME', 'LWGEOM_perimeter2d_poly'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2

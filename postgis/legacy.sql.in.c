@@ -218,7 +218,40 @@ CREATE OR REPLACE FUNCTION length2d(geometry)
 CREATE OR REPLACE FUNCTION length(geometry)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME', 'LWGEOM_length_linestring'
-	LANGUAGE 'C' IMMUTABLE STRICT;	
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION npoints(geometry)
+	RETURNS int4
+	AS 'MODULE_PATHNAME', 'LWGEOM_npoints'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION nrings(geometry)
+	RETURNS int4
+	AS 'MODULE_PATHNAME', 'LWGEOM_nrings'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- this is a fake (for back-compatibility)
+-- uses 3d if 3d is available, 2d otherwise
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION perimeter3d(geometry)
+	RETURNS FLOAT8
+	AS 'MODULE_PATHNAME', 'LWGEOM_perimeter_poly'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION perimeter2d(geometry)
+	RETURNS FLOAT8
+	AS 'MODULE_PATHNAME', 'LWGEOM_perimeter2d_poly'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION summary(geometry)
+	RETURNS text
+	AS 'MODULE_PATHNAME', 'LWGEOM_summary'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
 	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Simplify(geometry, float8)
