@@ -1630,13 +1630,13 @@ LWGEOM* lwgeom_flip_coordinates(LWGEOM *in)
 	return NULL;
 }
 
-void lwgeom_set_srid(LWGEOM *geom, int srid)
+void lwgeom_set_srid(LWGEOM *geom, int32 srid)
 {
 	int i;
 
 	LWDEBUGF(4,"entered with srid=%d",srid);
 
-	geom->srid = (uint32)srid;
+	geom->srid = srid;
 
 	if ( lwgeom_is_collection(geom) )
 	{

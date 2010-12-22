@@ -398,7 +398,7 @@ RTREE_POLY_CACHE * createCache()
 	return result;
 }
 
-void populateCache(RTREE_POLY_CACHE *currentCache, LWGEOM *lwgeom, uchar *serializedPoly)
+void populateCache(RTREE_POLY_CACHE *currentCache, LWGEOM *lwgeom, PG_LWGEOM *serializedPoly)
 {
 	int i, j, k, length;
 	LWMPOLY *mpoly;
@@ -466,7 +466,7 @@ void populateCache(RTREE_POLY_CACHE *currentCache, LWGEOM *lwgeom, uchar *serial
 	** Copy the serialized form of the polygon into the cache so
 	** we can test for equality against subsequent polygons.
 	*/
-	length = serialized_lwgeom_size(serializedPoly);
+	length = VARSIZE(serializedPoly);
 	currentCache->poly = lwalloc(length);
 	memcpy(currentCache->poly, serializedPoly, length);
 	LWDEBUGF(3, "populateCache returning %p", currentCache);
@@ -479,7 +479,7 @@ void populateCache(RTREE_POLY_CACHE *currentCache, LWGEOM *lwgeom, uchar *serial
  * method.	The method will allocate memory for the cache it creates,
  * as well as freeing the memory of any cache that is no longer applicable.
  */
-RTREE_POLY_CACHE *retrieveCache(LWGEOM *lwgeom, uchar *serializedPoly, RTREE_POLY_CACHE *currentCache)
+RTREE_POLY_CACHE *retrieveCache(LWGEOM *lwgeom, PG_LWGEOM *serializedPoly, RTREE_POLY_CACHE *currentCache)
 {
 	int length;
 
@@ -500,9 +500,9 @@ RTREE_POLY_CACHE *retrieveCache(LWGEOM *lwgeom, uchar *serializedPoly, RTREE_POL
 		return currentCache;
 	}
 
-	length = serialized_lwgeom_size(serializedPoly);
+	length = VARSIZE(serializedPoly);
 
-	if (serialized_lwgeom_size(currentCache->poly) != length)
+	if (VARSIZE(currentCache->poly) != length)
 	{
 		LWDEBUG(3, "Polygon size mismatch, creating new cache.");
 		clearCache(currentCache);

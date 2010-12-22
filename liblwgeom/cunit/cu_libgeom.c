@@ -20,12 +20,32 @@
 
 static void test_typmod_macros(void)
 {
-	uint32 typmod = 0;
+	int32 typmod = 0;
 	int srid = 4326;
 	int type = 6;
 	int z = 1;
 	int rv;
 
+	TYPMOD_SET_SRID(typmod,srid);
+	rv = TYPMOD_GET_SRID(typmod);
+	CU_ASSERT_EQUAL(rv, srid);
+
+	srid = -5005;
+	TYPMOD_SET_SRID(typmod,srid);
+	rv = TYPMOD_GET_SRID(typmod);
+	CU_ASSERT_EQUAL(rv, srid);
+
+	srid = -1;
+	TYPMOD_SET_SRID(typmod,srid);
+	rv = TYPMOD_GET_SRID(typmod);
+	CU_ASSERT_EQUAL(rv, srid);
+
+	srid = 0;
+	TYPMOD_SET_SRID(typmod,srid);
+	rv = TYPMOD_GET_SRID(typmod);
+	CU_ASSERT_EQUAL(rv, srid);
+
+	srid = 1;
 	TYPMOD_SET_SRID(typmod,srid);
 	rv = TYPMOD_GET_SRID(typmod);
 	CU_ASSERT_EQUAL(rv, srid);
@@ -77,9 +97,20 @@ static void test_flags_macros(void)
 static void test_serialized_srid(void)
 {
 	GSERIALIZED s;
-	uint32 srid, rv;
+	int32 srid, rv;
 
 	srid = 4326;
+	gserialized_set_srid(&s, srid);
+	rv = gserialized_get_srid(&s);
+	CU_ASSERT_EQUAL(rv, srid);
+
+	srid = -3005;
+	gserialized_set_srid(&s, srid);
+	rv = gserialized_get_srid(&s);
+	//printf("srid=%d rv=%d\n",srid,rv);
+	CU_ASSERT_EQUAL(rv, srid);
+
+	srid = -1;
 	gserialized_set_srid(&s, srid);
 	rv = gserialized_get_srid(&s);
 	CU_ASSERT_EQUAL(rv, srid);

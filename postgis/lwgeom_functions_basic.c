@@ -1683,24 +1683,26 @@ PG_FUNCTION_INFO_V1(LWGEOM_envelope);
 Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	BOX3D box;
-	int srid;
+	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
+	int srid = lwgeom->srid;
+	POINT4D pt;
+	GBOX box;
 	POINTARRAY *pa;
 	PG_LWGEOM *result;
-	uchar *ser = NULL;
 
 
-	/* get bounding box  */
-	if ( ! pglwgeom_compute_serialized_box3d_p(geom, &box) )
+	if ( lwgeom_is_empty(lwgeom) )
 	{
 		/* must be the EMPTY geometry */
 		PG_RETURN_POINTER(geom);
 	}
-
-	/* get geometry SRID */
-	srid = pglwgeom_get_srid(geom);
-
-
+	
+	if ( lwgeom_calculate_gbox(lwgeom, &box) == LW_FAILURE )
+	{
+		/* must be the EMPTY geometry */
+		PG_RETURN_POINTER(geom);
+	}
+	
 	/*
 	 * Alter envelope type so that a valid geometry is always
 	 * returned depending upon the size of the geometry. The
@@ -1712,65 +1714,63 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 	 *     - Otherwise return a POLYGON
 	 */
 
-
-	if (box.xmin == box.xmax &&
-	        box.ymin == box.ymax)
+	if ( (box.xmin == box.xmax) && (box.ymin == box.ymax) )
 	{
 		/* Construct and serialize point */
 		LWPOINT *point = lwpoint_make2d(srid, box.xmin, box.ymin);
-		ser = lwpoint_serialize(point);
+		result = pglwgeom_serialize(lwpoint_as_lwgeom(point));
+		lwpoint_free(point);
 	}
-	else if (box.xmin == box.xmax ||
-	         box.ymin == box.ymax)
+	else if ( (box.xmin == box.xmax) || (box.ymin == box.ymax) )
 	{
 		LWLINE *line;
-		POINT2D *pts = palloc(sizeof(POINT2D)*2);
+		/* Construct point array */
+		pa = ptarray_construct_empty(0, 0, 2);
 
 		/* Assign coordinates to POINT2D array */
-		pts[0].x = box.xmin;
-		pts[0].y = box.ymin;
-		pts[1].x = box.xmax;
-		pts[1].y = box.ymax;
-
-		/* Construct point array */
-		pa = ptarray_construct_reference_data(0, 0, 2, (uchar*)pts);
+		pt.x = box.xmin;
+		pt.y = box.ymin;
+		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		pt.x = box.xmax;
+		pt.y = box.ymax;
+		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
 
 		/* Construct and serialize linestring */
 		line = lwline_construct(srid, NULL, pa);
-		ser = lwline_serialize(line);
+		result = pglwgeom_serialize(lwline_as_lwgeom(line));
+		lwline_free(line);
 	}
 	else
 	{
 		LWPOLY *poly;
-		POINT2D *pts = lwalloc(sizeof(POINT2D)*5);
+		POINTARRAY **ppa = lwalloc(sizeof(POINTARRAY*));
+		pa = ptarray_construct_empty(0, 0, 5);
+		ppa[0] = pa;
 
 		/* Assign coordinates to POINT2D array */
-		pts[0].x = box.xmin;
-		pts[0].y = box.ymin;
-		pts[1].x = box.xmin;
-		pts[1].y = box.ymax;
-		pts[2].x = box.xmax;
-		pts[2].y = box.ymax;
-		pts[3].x = box.xmax;
-		pts[3].y = box.ymin;
-		pts[4].x = box.xmin;
-		pts[4].y = box.ymin;
-
-		/* Construct point array */
-		pa = ptarray_construct_reference_data(0, 0, 5, (uchar*)pts);
+		pt.x = box.xmin;
+		pt.y = box.ymin;
+		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		pt.x = box.xmin;
+		pt.y = box.ymax;
+		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		pt.x = box.xmax;
+		pt.y = box.ymax;
+		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		pt.x = box.xmax;
+		pt.y = box.ymin;
+		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		pt.x = box.xmin;
+		pt.y = box.ymin;
+		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
 
 		/* Construct polygon  */
-		poly = lwpoly_construct(srid, NULL, 1, &pa);
-		lwgeom_add_bbox((LWGEOM *)poly);
-
-		/* Serialize polygon */
-		ser = lwpoly_serialize(poly);
+		poly = lwpoly_construct(srid, NULL, 1, ppa);
+		result = pglwgeom_serialize(lwpoly_as_lwgeom(poly));
+		lwpoly_free(poly);
 	}
 
 	PG_FREE_IF_COPY(geom, 0);
-
-	/* Construct PG_LWGEOM  */
-	result = PG_LWGEOM_construct(ser, srid, 1);
 
 	PG_RETURN_POINTER(result);
 }
@@ -2052,13 +2052,18 @@ Datum ST_MakeEnvelope(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(ST_IsCollection);
 Datum ST_IsCollection(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM* geom;
+	PG_LWGEOM *geom;
 	int type;
+	size_t size;
 
 	/* Pull only a small amount of the tuple,
 	* enough to get the type. size = header + type */
-	geom = (PG_LWGEOM*)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0),
-	        0, VARHDRSZ + 1);
+#ifdef GSERIALIZED_ON
+	size = VARHDRSZ + 8 + 32 + 4;  /* header + srid/flags + bbox? + type number */
+#else 
+	size = VARHDRSZ + 1; /* header + type numer */
+#endif
+	geom = (PG_LWGEOM*)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, size);
 
 	type = pglwgeom_get_type(geom);
 	PG_RETURN_BOOL(lwtype_is_collection(type));

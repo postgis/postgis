@@ -29,12 +29,15 @@ uint32 gserialized_get_type(const GSERIALIZED *s)
 	return *ptr;
 }
 
-uint32 gserialized_get_srid(const GSERIALIZED *s)
+int32 gserialized_get_srid(const GSERIALIZED *s)
 {
-	uint32 srid = 0;
+	int32 srid = 0;
 	srid = srid | (s->srid[0] << 16);
 	srid = srid | (s->srid[1] << 8);
 	srid = srid | s->srid[2];
+	/* Only the first 21 bits are set. Slide up and back to pull
+	   the negative bits down, if we need them. */
+	srid = (srid<<11)>>11;
 	
 	/* 0 is our internal unknown value. We'll map back and forth here for now */
 	if ( srid == 0 ) 
@@ -43,7 +46,7 @@ uint32 gserialized_get_srid(const GSERIALIZED *s)
 		return srid;
 }
 
-void gserialized_set_srid(GSERIALIZED *s, uint32 srid)
+void gserialized_set_srid(GSERIALIZED *s, int32 srid)
 {
 	LWDEBUGF(3, "Called with srid = %d", srid);
 
@@ -54,7 +57,7 @@ void gserialized_set_srid(GSERIALIZED *s, uint32 srid)
 	if ( srid > SRID_MAXIMUM )
 		lwerror("gserialized_set_srid called with value (%d) > SRID_MAXIMUM (%d)",srid,SRID_MAXIMUM);
 		
-	s->srid[0] = (srid & 0x000F0000) >> 16;
+	s->srid[0] = (srid & 0x001F0000) >> 16;
 	s->srid[1] = (srid & 0x0000FF00) >> 8;
 	s->srid[2] = (srid & 0x000000FF);
 }
@@ -1030,7 +1033,7 @@ LWGEOM* lwgeom_from_gserialized_buffer(uchar *data_ptr, uchar g_flags, size_t *g
 LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g)
 {
 	uchar g_flags = 0;
-	uint32 g_srid = 0;
+	int32 g_srid = 0;
 	uint32 g_type = 0;
 	uchar *data_ptr = NULL;
 	LWGEOM *lwgeom = NULL;

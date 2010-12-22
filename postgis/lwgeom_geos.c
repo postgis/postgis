@@ -1009,7 +1009,11 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	/* Copy input bbox if any */
 	if ( pglwgeom_getbox2d_p(geom1, &bbox) )
 	{
+#ifdef GSERIALIZED_ON
+		lwout->bbox = gbox_copy(&bbox);
+#else
 		lwout->bbox = gbox_from_box2df(lwout->flags, &bbox);
+#endif
 	}
 
 	result = pglwgeom_serialize(lwout);
@@ -2025,7 +2029,7 @@ Datum contains(PG_FUNCTION_ARGS)
 		 * future use, then switch back to the local context.
 		 */
 		old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-		poly_cache = retrieveCache(lwgeom, SERIALIZED_FORM(geom1), fcinfo->flinfo->fn_extra);
+		poly_cache = retrieveCache(lwgeom, geom1, fcinfo->flinfo->fn_extra);
 		fcinfo->flinfo->fn_extra = poly_cache;
 		MemoryContextSwitchTo(old_context);
 
@@ -2268,7 +2272,7 @@ Datum covers(PG_FUNCTION_ARGS)
 		 * future use, then switch back to the local context.
 		 */
 		old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-		poly_cache = retrieveCache(lwgeom, SERIALIZED_FORM(geom1), fcinfo->flinfo->fn_extra);
+		poly_cache = retrieveCache(lwgeom, geom1, fcinfo->flinfo->fn_extra);
 		fcinfo->flinfo->fn_extra = poly_cache;
 		MemoryContextSwitchTo(old_context);
 
@@ -2423,7 +2427,7 @@ Datum within(PG_FUNCTION_ARGS)
 		 * future use, then switch back to the local context.
 		 */
 		old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-		poly_cache = retrieveCache(lwgeom, SERIALIZED_FORM(geom2), fcinfo->flinfo->fn_extra);
+		poly_cache = retrieveCache(lwgeom, geom2, fcinfo->flinfo->fn_extra);
 		fcinfo->flinfo->fn_extra = poly_cache;
 		MemoryContextSwitchTo(old_context);
 
@@ -2570,7 +2574,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 		 * future use, then switch back to the local context.
 		 */
 		old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-		poly_cache = retrieveCache(lwgeom, SERIALIZED_FORM(geom2), fcinfo->flinfo->fn_extra);
+		poly_cache = retrieveCache(lwgeom, geom2, fcinfo->flinfo->fn_extra);
 		fcinfo->flinfo->fn_extra = poly_cache;
 		MemoryContextSwitchTo(old_context);
 
@@ -2737,7 +2741,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom1;
 	PG_LWGEOM *geom2;
-	uchar *serialized_poly;
+	PG_LWGEOM *serialized_poly;
 	bool result;
 	BOX2DFLOAT4 box1, box2;
 	int type1, type2, polytype;
@@ -2789,14 +2793,14 @@ Datum intersects(PG_FUNCTION_ARGS)
 		{
 			point = lwgeom_as_lwpoint(pglwgeom_deserialize(geom1));
 			lwgeom = pglwgeom_deserialize(geom2);
-			serialized_poly = SERIALIZED_FORM(geom2);
+			serialized_poly = geom2;
 			polytype = type2;
 		}
 		else
 		{
 			point = lwgeom_as_lwpoint(pglwgeom_deserialize(geom2));
 			lwgeom = pglwgeom_deserialize(geom1);
-			serialized_poly = SERIALIZED_FORM(geom1);
+			serialized_poly = geom1;
 			polytype = type1;
 		}
 		/*

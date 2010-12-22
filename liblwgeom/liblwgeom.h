@@ -163,13 +163,14 @@
 /**
 * Macros for manipulating the 'typemod' int. An int32 used as follows:
 * Plus/minus = Top bit.
-* Spare bits = Next 3 bits.
-* SRID = Next 20 bits.
+* Spare bits = Next 2 bits.
+* SRID = Next 21 bits.
 * TYPE = Next 6 bits.
 * ZM Flags = Bottom 2 bits.
 */
-#define TYPMOD_GET_SRID(typmod) ((typmod & 0x0FFFFF00)>>8)
-#define TYPMOD_SET_SRID(typmod, srid) ((typmod) = (typmod & 0x000000FF) | ((srid & 0x000FFFFF)<<8))
+
+#define TYPMOD_GET_SRID(typmod) ((((typmod) & 0x1FFFFF00)<<3)>>11)
+#define TYPMOD_SET_SRID(typmod, srid) ((typmod) = (((typmod) & 0xE00000FF) | ((srid & 0x001FFFFF)<<8)))
 #define TYPMOD_GET_TYPE(typmod) ((typmod & 0x000000FC)>>2)
 #define TYPMOD_SET_TYPE(typmod, type) ((typmod) = (typmod & 0xFFFFFF03) | ((type & 0x0000003F)<<2))
 #define TYPMOD_GET_Z(typmod) ((typmod & 0x00000002)>>1)
@@ -472,7 +473,7 @@ typedef struct
 	uchar type;
 	uchar flags;
 	GBOX *bbox;
-	uint32 srid;
+	int32 srid;
 	void *data;
 }
 LWGEOM;
@@ -483,7 +484,7 @@ typedef struct
 	uchar type; /* POINTTYPE */
 	uchar flags;
 	GBOX *bbox;
-	uint32 srid;
+	int32 srid;
 	POINTARRAY *point;  /* hide 2d/3d (this will be an array of 1 point) */
 }
 LWPOINT; /* "light-weight point" */
@@ -494,7 +495,7 @@ typedef struct
 	uchar type; /* LINETYPE */
 	uchar flags;
 	GBOX *bbox;
-	uint32 srid;
+	int32 srid;
 	POINTARRAY *points; /* array of POINT3D */
 }
 LWLINE; /* "light-weight line" */
@@ -505,7 +506,7 @@ typedef struct
 	uchar type;
 	uchar flags;
 	GBOX *bbox;
-	uint32 srid;
+	int32 srid;
 	POINTARRAY *points;
 }
 LWTRIANGLE;
@@ -516,7 +517,7 @@ typedef struct
 	uchar type; /* CIRCSTRINGTYPE */
 	uchar flags;
 	GBOX *bbox;
-	uint32 srid;
+	int32 srid;
 	POINTARRAY *points; /* array of POINT(3D/3DM) */
 }
 LWCIRCSTRING; /* "light-weight circularstring" */
@@ -527,7 +528,7 @@ typedef struct
 	uchar type; /* POLYGONTYPE */
 	uchar flags;
 	GBOX *bbox;
-	uint32 srid;
+	int32 srid;
 	int nrings;   /* how many rings we are currently storing */
 	int maxrings; /* how many rings we have space for in **rings */
 	POINTARRAY **rings; /* list of rings (list of points) */
@@ -540,7 +541,7 @@ typedef struct
 	uchar type;
 	uchar flags;
 	GBOX *bbox;
-	uint32 srid;
+	int32 srid;
 	int ngeoms;   /* how many geometries we are currently storing */
 	int maxgeoms; /* how many geometries we have space for in **geoms */
 	LWPOINT **geoms;
@@ -553,7 +554,7 @@ typedef struct
 	uchar type;
 	uchar flags;
 	GBOX *bbox;
-	uint32 srid;
+	int32 srid;
 	int ngeoms;   /* how many geometries we are currently storing */
 	int maxgeoms; /* how many geometries we have space for in **geoms */
 	LWLINE **geoms;
@@ -566,7 +567,7 @@ typedef struct
 	uchar type;
 	uchar flags;
 	GBOX *bbox;
-	uint32 srid;
+	int32 srid;
 	int ngeoms;   /* how many geometries we are currently storing */
 	int maxgeoms; /* how many geometries we have space for in **geoms */
 	LWPOLY **geoms;
@@ -579,7 +580,7 @@ typedef struct
 	uchar type;
 	uchar flags;
 	GBOX *bbox;
-	uint32 srid;
+	int32 srid;
 	int ngeoms;   /* how many geometries we are currently storing */
 	int maxgeoms; /* how many geometries we have space for in **geoms */
 	LWGEOM **geoms;
@@ -592,7 +593,7 @@ typedef struct
 	uchar type; /* COMPOUNDTYPE */
 	uchar flags;
 	GBOX *bbox;
-	uint32 srid;
+	int32 srid;
 	int ngeoms;   /* how many geometries we are currently storing */
 	int maxgeoms; /* how many geometries we have space for in **geoms */
 	LWGEOM **geoms;
@@ -605,7 +606,7 @@ typedef struct
 	uchar type; /* CURVEPOLYTYPE */
 	uchar flags;
 	GBOX *bbox;
-	uint32 srid;
+	int32 srid;
 	int nrings;    /* how many rings we are currently storing */
 	int maxrings;  /* how many rings we have space for in **rings */
 	LWGEOM **rings; /* list of rings (list of points) */
@@ -618,7 +619,7 @@ typedef struct
 	uchar type;
 	uchar flags;
 	GBOX *bbox;
-	uint32 srid;
+	int32 srid;
 	int ngeoms;   /* how many geometries we are currently storing */
 	int maxgeoms; /* how many geometries we have space for in **geoms */
 	LWGEOM **geoms;
@@ -631,7 +632,7 @@ typedef struct
 	uchar type;
 	uchar flags;
 	GBOX *bbox;
-	uint32 srid;
+	int32 srid;
 	int ngeoms;   /* how many geometries we are currently storing */
 	int maxgeoms; /* how many geometries we have space for in **geoms */
 	LWGEOM **geoms;
@@ -644,7 +645,7 @@ typedef struct
 	uchar type;
 	uchar flags;
 	GBOX *bbox;
-	uint32 srid;
+	int32 srid;
 	int ngeoms;   /* how many geometries we are currently storing */
 	int maxgeoms; /* how many geometries we have space for in **geoms */
 	LWPOLY **geoms;
@@ -657,7 +658,7 @@ typedef struct
 	uchar type;
 	uchar flags;
 	GBOX *bbox;
-	uint32 srid;
+	int32 srid;
 	int ngeoms;   /* how many geometries we are currently storing */
 	int maxgeoms; /* how many geometries we have space for in **geoms */
 	LWTRIANGLE **geoms;
@@ -724,13 +725,13 @@ extern uint32 gserialized_get_type(const GSERIALIZED *g);
 * Extract the SRID from the serialized form (it is packed into
 * three bytes so this is a handy function).
 */
-extern uint32 gserialized_get_srid(const GSERIALIZED *g);
+extern int32 gserialized_get_srid(const GSERIALIZED *g);
 
 /**
 * Write the SRID into the serialized form (it is packed into
 * three bytes so this is a handy function).
 */
-extern void gserialized_set_srid(GSERIALIZED *g, uint32 srid);
+extern void gserialized_set_srid(GSERIALIZED *g, int32 srid);
 
 /**
 * Check if a #GSERIALIZED is empty without deserializing first.
