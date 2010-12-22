@@ -259,3 +259,190 @@ END
 $$
 LANGUAGE 'plpgsql';
 --} AddEdge
+
+--{
+--
+-- AddFace(atopology, poly)
+--
+-- Add a face primitive to a topology and get it's identifier.
+-- Returns an existing face at the same location, if any.
+--
+-- For a newly added face, its edges will be appropriately
+-- linked (marked as left-face or right-face).
+--
+-- The target topology is assumed to be valid (containing no
+-- self-intersecting edges).
+--
+-- An exception is raised if:
+--  o The polygon boundary is not fully defined by existing edges.
+--  o The polygon overlaps an existing face.
+--
+-- 
+CREATE OR REPLACE FUNCTION topology.AddFace(varchar, geometry)
+	RETURNS int
+AS
+$$
+DECLARE
+	atopology ALIAS FOR $1;
+	apoly ALIAS FOR $2;
+	bounds geometry;
+	symdif geometry;
+	faceid int;
+	rec RECORD;
+	relate text;
+	right_edges int[];
+	left_edges int[];
+	all_edges geometry;
+	old_faceid int;
+	old_edgeid int;
+BEGIN
+	--
+	-- Atopology and apoly are required
+	-- 
+	IF atopology IS NULL OR apoly IS NULL THEN
+		RAISE EXCEPTION 'Invalid null argument';
+	END IF;
+
+	--
+	-- Aline must be a polygon
+	--
+	IF substring(geometrytype(apoly), 1, 4) != 'POLY'
+	THEN
+		RAISE EXCEPTION 'Face geometry must be a polygon';
+	END IF;
+
+	--
+	-- Find all bounds edges, forcing right-hand-rule
+	-- to know what's left and what's right...
+	--
+	bounds = ST_Boundary(ST_ForceRHR(apoly));
+
+	FOR rec IN EXECUTE 'SELECT geom, edge_id, '
+		|| 'left_face, right_face, '
+		|| '(st_dump(st_sharedpaths(geom, '
+		|| quote_literal(bounds::text)
+		|| '))).path[1] as side FROM '
+		|| quote_ident(atopology) || '.edge '
+		|| 'WHERE '
+		|| quote_literal(bounds::text)
+		|| '::geometry && geom AND ST_Relate(geom, '
+		|| quote_literal(bounds::text)
+		|| ', ''1FF******'')'
+	LOOP
+		RAISE DEBUG 'Edge % (left:%, right:%) - side : %',
+			rec.edge_id, rec.left_face, rec.right_face, rec.side;
+
+		IF rec.side = 1 THEN
+			-- This face is on the right
+			right_edges := array_append(right_edges, rec.edge_id);
+			old_faceid = rec.right_face;
+		ELSE
+			-- This face is on the left
+			left_edges := array_append(left_edges, rec.edge_id);
+			old_faceid = rec.left_face;
+		END IF;
+
+		IF faceid IS NULL OR faceid = 0 THEN
+			faceid = old_faceid;
+			old_edgeid = rec.edge_id;
+		ELSIF faceid != old_faceid THEN
+			RAISE EXCEPTION 'Edge % has face % registered on the side of this face, while edge % has face % on the same side', rec.edge_id, old_faceid, old_edgeid, faceid;
+		END IF;
+
+		-- Collect all edges for final full coverage check
+		all_edges = ST_Collect(all_edges, rec.geom);
+
+	END LOOP;
+
+	IF all_edges IS NULL THEN
+		RAISE EXCEPTION 'Found no edges on the polygon boundary';
+	END IF;
+
+	RAISE DEBUG 'Left edges: %', left_edges;
+	RAISE DEBUG 'Right edges: %', right_edges;
+
+	--
+	-- Check that all edges found, taken togheter,
+	-- fully match the polygon boundary and nothing more
+	--
+	-- If the test fail either we need to add more edges
+	-- from the polygon boundary or we need to split
+	-- some of the existing ones.
+	-- 
+	IF NOT ST_isEmpty(ST_SymDifference(bounds, all_edges)) THEN
+	  IF NOT ST_isEmpty(ST_Difference(bounds, all_edges)) THEN
+	    RAISE EXCEPTION 'Polygon boundary is not fully defined by existing edges';
+	  ELSE
+	    RAISE EXCEPTION 'Existing edges cover polygon boundary and more! (invalid topology?)';
+	  END IF;
+	END IF;
+
+--	EXECUTE 'SELECT ST_Collect(geom) FROM'
+--		|| quote_ident(atopology)
+--		|| '.edge_data '
+--		|| ' WHERE edge_id = ANY('
+--		|| quote_literal(array_append(left_edges, right_edges))
+--		|| ') ';
+
+	--
+	-- TODO:
+	-- Check that NO edge is contained in the face ?
+	--
+	RAISE WARNING 'Not checking if face contains any edge';
+ 
+
+	IF faceid IS NOT NULL AND faceid != 0 THEN
+		RAISE DEBUG 'Face already known as %', faceid;
+		RETURN faceid;
+	END IF;
+
+	--
+	-- Get new face id from sequence
+	--
+	FOR rec IN EXECUTE 'SELECT nextval(''' ||
+		atopology || '.face_face_id_seq'')'
+	LOOP
+		faceid = rec.nextval;
+	END LOOP;
+
+	--
+	-- Insert new face 
+	--
+	EXECUTE 'INSERT INTO '
+		|| quote_ident(atopology)
+		|| '.face(face_id, mbr) VALUES('
+		-- face_id
+		|| faceid || ','
+		-- minimum bounding rectangle
+		|| quote_literal(Box2d(apoly))
+		|| ')';
+
+	--
+	-- Update all edges having this face on the left
+	--
+	EXECUTE 'UPDATE '
+		|| quote_ident(atopology)
+		|| '.edge_data SET left_face = '
+		|| quote_literal(faceid)
+		|| ' WHERE edge_id = ANY('
+		|| quote_literal(left_edges)
+		|| ') ';
+
+	--
+	-- Update all edges having this face on the right
+	--
+	EXECUTE 'UPDATE '
+		|| quote_ident(atopology)
+		|| '.edge_data SET right_face = '
+		|| quote_literal(faceid)
+		|| ' WHERE edge_id = ANY('
+		|| quote_literal(right_edges)
+		|| ') ';
+
+
+	RETURN faceid;
+	
+END
+$$
+LANGUAGE 'plpgsql';
+--} AddFace

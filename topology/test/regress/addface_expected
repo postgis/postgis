@@ -1,0 +1,19 @@
+t
+ERROR:  Found no edges on the polygon boundary
+e1|1
+e2|2
+e3|3
+e4|4
+e5|5
+WARNING:  Not checking if face contains any edge
+f1|1
+WARNING:  Not checking if face contains any edge
+f1*|1
+0|
+1|BOX(0 0,10 10)
+1|1|0
+2|1|0
+3|0|1
+4|0|1
+5|0|0
+Topology 'tt' dropped
