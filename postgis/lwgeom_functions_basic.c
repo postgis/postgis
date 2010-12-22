@@ -1047,7 +1047,6 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	PG_LWGEOM *pglwgeom1, *pglwgeom2, *result;
 	LWGEOM *lwgeoms[2], *outlwg;
 	uint32 type1, type2, outtype;
-	GBOX *box=NULL;
 	int srid;
 
 	POSTGIS_DEBUG(2, "LWGEOM_collect called.");
@@ -1069,6 +1068,14 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "LWGEOM_collect(%s, %s): call", lwtype_name(pglwgeom_get_type(pglwgeom1)), lwtype_name(pglwgeom_get_type(pglwgeom2)));
 
+#ifdef GSERIALIZED_ON
+	if ( FLAGS_GET_ZM(pglwgeom1->flags) != FLAGS_GET_ZM(pglwgeom2->flags) )
+	{
+		elog(ERROR,"Cannot ST_Collect geometries with differing dimensionality.");
+		PG_RETURN_NULL();
+	}
+#endif
+
 	srid = pglwgeom_get_srid(pglwgeom1);
 	error_if_srid_mismatch(srid, pglwgeom_get_srid(pglwgeom2));
 
@@ -1078,36 +1085,12 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	type1 = lwgeoms[0]->type;
 	type2 = lwgeoms[1]->type;
 	
-	if ( type1 == type2 && ! lwgeom_is_collection(lwgeoms[0]) ) 
+	if ( (type1 == type2) && (!lwgeom_is_collection(lwgeoms[0])) ) 
 		outtype = lwtype_get_collectiontype(type1);
-	else outtype = COLLECTIONTYPE;
+	else 
+		outtype = COLLECTIONTYPE;
 
 	POSTGIS_DEBUGF(3, " outtype = %d", outtype);
-
-	/* COMPUTE_BBOX WHEN_SIMPLE */
-	if ( lwgeoms[0]->bbox && lwgeoms[1]->bbox )
-	{
-		int hasz=(FLAGS_GET_Z(lwgeoms[0]->flags) && FLAGS_GET_Z(lwgeoms[1]->flags));
-		int hasm=(FLAGS_GET_M(lwgeoms[0]->flags) && FLAGS_GET_M(lwgeoms[1]->flags));
-
-		box = palloc(sizeof(GBOX));
-		FLAGS_SET_Z(box->flags, hasz?1:0);
-		FLAGS_SET_M(box->flags, hasm?1:0);
-		box->xmin = LW_MIN(lwgeoms[0]->bbox->xmin, lwgeoms[1]->bbox->xmin);
-		box->ymin = LW_MIN(lwgeoms[0]->bbox->ymin, lwgeoms[1]->bbox->ymin);
-		box->xmax = LW_MAX(lwgeoms[0]->bbox->xmax, lwgeoms[1]->bbox->xmax);
-		box->ymax = LW_MAX(lwgeoms[0]->bbox->ymax, lwgeoms[1]->bbox->ymax);
-		if (hasz)
-		{
-			box->zmin = LW_MIN(lwgeoms[0]->bbox->zmin, lwgeoms[1]->bbox->zmin);
-			box->zmax = LW_MAX(lwgeoms[0]->bbox->zmax, lwgeoms[1]->bbox->zmax);
-		}
-		if (hasm)
-		{
-			box->mmin = LW_MIN(lwgeoms[0]->bbox->mmin, lwgeoms[1]->bbox->mmin);
-			box->mmax = LW_MAX(lwgeoms[0]->bbox->mmax, lwgeoms[1]->bbox->mmax);
-		}
-	}
 
 	/* Drop input geometries bbox and SRID */
 	lwgeom_drop_bbox(lwgeoms[0]);
@@ -1115,14 +1098,11 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	lwgeom_drop_bbox(lwgeoms[1]);
 	lwgeom_drop_srid(lwgeoms[1]);
 
-	outlwg = (LWGEOM *)lwcollection_construct(
-	             outtype, srid,
-	             box, 2, lwgeoms);
-
+	outlwg = (LWGEOM *)lwcollection_construct(outtype, srid, NULL, 2, lwgeoms);
 	result = pglwgeom_serialize(outlwg);
 
-	lwgeom_release(lwgeoms[0]);
-	lwgeom_release(lwgeoms[1]);
+	lwgeom_free(lwgeoms[0]);
+	lwgeom_free(lwgeoms[1]);
 
 	PG_FREE_IF_COPY(pglwgeom1, 0);
 	PG_FREE_IF_COPY(pglwgeom2, 1);

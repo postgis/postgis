@@ -408,9 +408,12 @@ PG_FUNCTION_INFO_V1(BOX2DFLOAT4_to_BOX3D);
 Datum BOX2DFLOAT4_to_BOX3D(PG_FUNCTION_ARGS)
 {
 	BOX2DFLOAT4 *box = (BOX2DFLOAT4 *)PG_GETARG_POINTER(0);
+#ifdef GSERIALIZED_ON
+	BOX3D *result = box3d_from_gbox(box);
+#else
 	BOX3D *result = palloc(sizeof(BOX3D));
-
 	box2df_to_box3d_p(box, result);
+#endif
 
 	PG_RETURN_POINTER(result);
 }
@@ -580,27 +583,51 @@ Datum BOX2DFLOAT4_to_LWGEOM(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(BOX2DFLOAT4_construct);
 Datum BOX2DFLOAT4_construct(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *min = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	PG_LWGEOM *max = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	PG_LWGEOM *pgmin = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *pgmax = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	BOX2DFLOAT4 *result;
-	LWGEOM *minpoint, *maxpoint;
+	LWPOINT *minpoint, *maxpoint;
+	double min, max, tmp;
 
-	minpoint = pglwgeom_deserialize(min);
-	maxpoint = pglwgeom_deserialize(max);
+	minpoint = lwgeom_as_lwpoint(pglwgeom_deserialize(pgmin));
+	maxpoint = lwgeom_as_lwpoint(pglwgeom_deserialize(pgmax));
 
 	if ( (minpoint->type != POINTTYPE) || (maxpoint->type != POINTTYPE) )
 	{
-		elog(ERROR, "BOX2DFLOAT4_construct: args must be points");
+		elog(ERROR, "BOX2DFLOAT4_construct: arguments must be points");
 		PG_RETURN_NULL();
 	}
 
 	error_if_srid_mismatch(minpoint->srid, maxpoint->srid);
 
+#ifdef GSERIALIZED_ON
+	result = gbox_new(gflags(0, 0, 0));
+#else
 	result = palloc(sizeof(BOX2DFLOAT4));
-	result->xmin = lwpoint_get_x(lwgeom_as_lwpoint(minpoint));
-	result->ymin = lwpoint_get_y(lwgeom_as_lwpoint(minpoint));
-	result->xmax = lwpoint_get_x(lwgeom_as_lwpoint(maxpoint));
-	result->ymax = lwpoint_get_y(lwgeom_as_lwpoint(maxpoint));
+#endif
+	/* Process X min/max */
+	min = lwpoint_get_x(minpoint);
+	max = lwpoint_get_x(maxpoint);
+	if ( min > max ) 
+	{
+		tmp = min;
+		min = max;
+		max = tmp;
+	}
+	result->xmin = min;
+	result->xmax = max;
+
+	/* Process Y min/max */
+	min = lwpoint_get_y(minpoint);
+	max = lwpoint_get_y(maxpoint);
+	if ( min > max ) 
+	{
+		tmp = min;
+		min = max;
+		max = tmp;
+	}
+	result->ymin = min;
+	result->ymax = max;
 
 	PG_RETURN_POINTER(result);
 }

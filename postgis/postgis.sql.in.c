@@ -3789,7 +3789,7 @@ CREATE OR REPLACE FUNCTION collect(geometry, geometry)
 	LANGUAGE 'C' IMMUTABLE;
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_collect(geometry, geometry)
+CREATE OR REPLACE FUNCTION ST_Collect(geometry, geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_collect'
 	LANGUAGE 'C' IMMUTABLE;
@@ -3802,14 +3802,14 @@ CREATE AGGREGATE memcollect(
 	);
 
 -- Availability: 1.2.2
-CREATE AGGREGATE ST_memcollect(
+CREATE AGGREGATE ST_MemCollect(
 	sfunc = ST_collect,
 	basetype = geometry,
 	stype = geometry
 	);
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_collect (geometry[])
+CREATE OR REPLACE FUNCTION ST_Collect(geometry[])
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_collect_garray'
 	LANGUAGE 'C' IMMUTABLE STRICT;

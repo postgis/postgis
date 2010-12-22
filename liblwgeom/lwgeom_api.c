@@ -226,7 +226,6 @@ box3d_to_box2df_p(BOX3D *box, BOX2DFLOAT4 *result)
 }
 
 
-
 /*
  * Convert BOX2D to BOX3D
  * zmin and zmax are set to NO_Z_VALUE
