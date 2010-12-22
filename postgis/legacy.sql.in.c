@@ -1,4 +1,4 @@
-
+--- start functions that in theory should never have been used
 --- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_box2d(geometry)
 	RETURNS box2d
@@ -94,4 +94,92 @@ CREATE OR REPLACE FUNCTION st_geometry(box3d_extent)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','BOX3D_to_LWGEOM'
 	LANGUAGE 'C' IMMUTABLE STRICT;
+
+--- end functions that in theory should never have been used
+
+-- begin old ogc (and non-ST) names that have been replaced with new SQL-MM and SQL Like names --
+
+-- Availability: 1.1.2
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION Affine(geometry,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_affine'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Availability: 1.1.2
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION Affine(geometry,float8,float8,float8,float8,float8,float8)
+	RETURNS geometry
+	AS 'SELECT affine($1,  $2, $3, 0,  $4, $5, 0,  0, 0, 1,  $6, $7, 0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Availability: 1.1.2
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION RotateZ(geometry,float8)
+	RETURNS geometry
+	AS 'SELECT affine($1,  cos($2), -sin($2), 0,  sin($2), cos($2), 0,  0, 0, 1,  0, 0, 0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Availability: 1.1.2
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION Rotate(geometry,float8)
+	RETURNS geometry
+	AS 'SELECT rotateZ($1, $2)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Availability: 1.1.2
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION RotateX(geometry,float8)
+	RETURNS geometry
+	AS 'SELECT affine($1, 1, 0, 0, 0, cos($2), -sin($2), 0, sin($2), cos($2), 0, 0, 0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Availability: 1.1.2
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION RotateY(geometry,float8)
+	RETURNS geometry
+	AS 'SELECT affine($1,  cos($2), 0, sin($2),  0, 1, 0,  -sin($2), 0, cos($2), 0,  0, 0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION Translate(geometry,float8,float8,float8)
+	RETURNS geometry
+	AS 'SELECT affine($1, 1, 0, 0, 0, 1, 0, 0, 0, 1, $2, $3, $4)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION Translate(geometry,float8,float8)
+	RETURNS geometry
+	AS 'SELECT translate($1, $2, $3, 0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Availability: 1.1.0
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION Scale(geometry,float8,float8,float8)
+	RETURNS geometry
+	AS 'SELECT affine($1,  $2, 0, 0,  0, $3, 0,  0, 0, $4,  0, 0, 0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Availability: 1.1.0
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION Scale(geometry,float8,float8)
+	RETURNS geometry
+	AS 'SELECT scale($1, $2, $3, 1)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Availability: 1.1.0
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION transscale(geometry,float8,float8,float8,float8)
+	RETURNS geometry
+	AS 'SELECT affine($1,  $4, 0, 0,  0, $5, 0,
+		0, 0, 1,  $2 * $4, $3 * $5, 0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Availability: 1.1.0
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION shift_longitude(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_longitude_shift'
+	LANGUAGE 'C' IMMUTABLE STRICT;	
+-- end old ogc names that have been replaced with new SQL-MM names --
 

@@ -134,159 +134,75 @@ CREATE TYPE geometry (
 -------------------------------------------
 -- Affine transforms
 -------------------------------------------
-
--- Availability: 1.1.2
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION Affine(geometry,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_affine'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Affine(geometry,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_affine'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Availability: 1.1.2
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION Affine(geometry,float8,float8,float8,float8,float8,float8)
-	RETURNS geometry
-	AS 'SELECT affine($1,  $2, $3, 0,  $4, $5, 0,  0, 0, 1,  $6, $7, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Affine(geometry,float8,float8,float8,float8,float8,float8)
 	RETURNS geometry
-	AS 'SELECT affine($1,  $2, $3, 0,  $4, $5, 0,  0, 0, 1,  $6, $7, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Availability: 1.1.2
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION RotateZ(geometry,float8)
-	RETURNS geometry
-	AS 'SELECT affine($1,  cos($2), -sin($2), 0,  sin($2), cos($2), 0,  0, 0, 1,  0, 0, 0)'
+	AS 'SELECT ST_Affine($1,  $2, $3, 0,  $4, $5, 0,  0, 0, 1,  $6, $7, 0)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_RotateZ(geometry,float8)
 	RETURNS geometry
-	AS 'SELECT affine($1,  cos($2), -sin($2), 0,  sin($2), cos($2), 0,  0, 0, 1,  0, 0, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Availability: 1.1.2
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION Rotate(geometry,float8)
-	RETURNS geometry
-	AS 'SELECT rotateZ($1, $2)'
+	AS 'SELECT ST_Affine($1,  cos($2), -sin($2), 0,  sin($2), cos($2), 0,  0, 0, 1,  0, 0, 0)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Rotate(geometry,float8)
 	RETURNS geometry
-	AS 'SELECT rotateZ($1, $2)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Availability: 1.1.2
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION RotateX(geometry,float8)
-	RETURNS geometry
-	AS 'SELECT affine($1, 1, 0, 0, 0, cos($2), -sin($2), 0, sin($2), cos($2), 0, 0, 0)'
+	AS 'SELECT ST_RotateZ($1, $2)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_RotateX(geometry,float8)
 	RETURNS geometry
-	AS 'SELECT affine($1, 1, 0, 0, 0, cos($2), -sin($2), 0, sin($2), cos($2), 0, 0, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Availability: 1.1.2
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION RotateY(geometry,float8)
-	RETURNS geometry
-	AS 'SELECT affine($1,  cos($2), 0, sin($2),  0, 1, 0,  -sin($2), 0, cos($2), 0,  0, 0)'
+	AS 'SELECT ST_Affine($1, 1, 0, 0, 0, cos($2), -sin($2), 0, sin($2), cos($2), 0, 0, 0)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_RotateY(geometry,float8)
 	RETURNS geometry
-	AS 'SELECT affine($1,  cos($2), 0, sin($2),  0, 1, 0,  -sin($2), 0, cos($2), 0,  0, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION Translate(geometry,float8,float8,float8)
-	RETURNS geometry
-	AS 'SELECT affine($1, 1, 0, 0, 0, 1, 0, 0, 0, 1, $2, $3, $4)'
+	AS 'SELECT ST_Affine($1,  cos($2), 0, sin($2),  0, 1, 0,  -sin($2), 0, cos($2), 0,  0, 0)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Translate(geometry,float8,float8,float8)
 	RETURNS geometry
-	AS 'SELECT affine($1, 1, 0, 0, 0, 1, 0, 0, 0, 1, $2, $3, $4)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION Translate(geometry,float8,float8)
-	RETURNS geometry
-	AS 'SELECT translate($1, $2, $3, 0)'
+	AS 'SELECT ST_Affine($1, 1, 0, 0, 0, 1, 0, 0, 0, 1, $2, $3, $4)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Translate(geometry,float8,float8)
 	RETURNS geometry
-	AS 'SELECT translate($1, $2, $3, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Availability: 1.1.0
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION Scale(geometry,float8,float8,float8)
-	RETURNS geometry
-	AS 'SELECT affine($1,  $2, 0, 0,  0, $3, 0,  0, 0, $4,  0, 0, 0)'
+	AS 'SELECT ST_Translate($1, $2, $3, 0)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Scale(geometry,float8,float8,float8)
 	RETURNS geometry
-	AS 'SELECT affine($1,  $2, 0, 0,  0, $3, 0,  0, 0, $4,  0, 0, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Availability: 1.1.0
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION Scale(geometry,float8,float8)
-	RETURNS geometry
-	AS 'SELECT scale($1, $2, $3, 1)'
+	AS 'SELECT ST_Affine($1,  $2, 0, 0,  0, $3, 0,  0, 0, $4,  0, 0, 0)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Scale(geometry,float8,float8)
 	RETURNS geometry
-	AS 'SELECT scale($1, $2, $3, 1)'
+	AS 'SELECT ST_Scale($1, $2, $3, 1)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Availability: 1.1.0
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION transscale(geometry,float8,float8,float8,float8)
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Transscale(geometry,float8,float8,float8,float8)
 	RETURNS geometry
-	AS 'SELECT affine($1,  $4, 0, 0,  0, $5, 0,
+	AS 'SELECT ST_Affine($1,  $4, 0, 0,  0, $5, 0,
 		0, 0, 1,  $2 * $4, $3 * $5, 0)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_transscale(geometry,float8,float8,float8,float8)
-	RETURNS geometry
-	AS 'SELECT affine($1,  $4, 0, 0,  0, $5, 0,
-		0, 0, 1,  $2 * $4, $3 * $5, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Availability: 1.1.0
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION shift_longitude(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_longitude_shift'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_shift_longitude(geometry)
+CREATE OR REPLACE FUNCTION ST_Shift_Longitude(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_longitude_shift'
 	LANGUAGE 'C' IMMUTABLE STRICT;
