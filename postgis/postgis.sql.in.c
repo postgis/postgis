@@ -3354,12 +3354,6 @@ CREATE CAST (box3d_extent AS geometry) WITH FUNCTION geometry(box3d_extent) AS I
 -- Algorithms
 ---------------------------------------------------------------
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION Simplify(geometry, float8)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_simplify2d'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Simplify(geometry, float8)
 	RETURNS geometry
@@ -3383,7 +3377,7 @@ CREATE OR REPLACE FUNCTION ST_SnapToGrid(geometry, float8, float8, float8, float
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION SnapToGrid(geometry, float8, float8)
 	RETURNS geometry
-	AS 'SELECT SnapToGrid($1, 0, 0, $2, $3)'
+	AS 'SELECT ST_SnapToGrid($1, 0, 0, $2, $3)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -3396,7 +3390,7 @@ CREATE OR REPLACE FUNCTION ST_SnapToGrid(geometry, float8, float8)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION SnapToGrid(geometry, float8)
 	RETURNS geometry
-	AS 'SELECT SnapToGrid($1, 0, 0, $2, $2)'
+	AS 'SELECT ST_SnapToGrid($1, 0, 0, $2, $2)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -4045,7 +4039,7 @@ CREATE OR REPLACE FUNCTION relate(geometry,geometry)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_relate(geometry,geometry)
+CREATE OR REPLACE FUNCTION ST_Relate(geometry,geometry)
 	RETURNS text
 	AS 'MODULE_PATHNAME','relate_full'
 	LANGUAGE 'C' IMMUTABLE STRICT;

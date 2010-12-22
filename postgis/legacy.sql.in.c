@@ -200,6 +200,12 @@ CREATE OR REPLACE FUNCTION shift_longitude(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_longitude_shift'
 	LANGUAGE 'C' IMMUTABLE STRICT;	
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION Simplify(geometry, float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_simplify2d'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 -- end old ogc names that have been replaced with new SQL-MM names --
 
 
