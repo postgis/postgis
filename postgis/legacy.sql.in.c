@@ -199,6 +199,25 @@ CREATE OR REPLACE FUNCTION transscale(geometry,float8,float8,float8,float8)
 CREATE OR REPLACE FUNCTION shift_longitude(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_longitude_shift'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- this is a fake (for back-compatibility)
+-- uses 3d if 3d is available, 2d otherwise
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION length3d(geometry)
+	RETURNS FLOAT8
+	AS 'MODULE_PATHNAME', 'LWGEOM_length_linestring'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION length2d(geometry)
+	RETURNS FLOAT8
+	AS 'MODULE_PATHNAME', 'LWGEOM_length2d_linestring'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION length(geometry)
+	RETURNS FLOAT8
+	AS 'MODULE_PATHNAME', 'LWGEOM_length_linestring'
 	LANGUAGE 'C' IMMUTABLE STRICT;	
 	
 -- Deprecation in 1.2.3

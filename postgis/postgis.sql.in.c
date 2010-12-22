@@ -1036,36 +1036,16 @@ CREATE OR REPLACE FUNCTION ST_nrings(geometry)
 ------------------------------------------------------------------------
 -- Misures
 ------------------------------------------------------------------------
-
--- this is a fake (for back-compatibility)
--- uses 3d if 3d is available, 2d otherwise
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION length3d(geometry)
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Length3d(geometry)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME', 'LWGEOM_length_linestring'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_length3d(geometry)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME', 'LWGEOM_length_linestring'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION length2d(geometry)
+CREATE OR REPLACE FUNCTION ST_Length2d(geometry)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME', 'LWGEOM_length2d_linestring'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_length2d(geometry)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME', 'LWGEOM_length2d_linestring'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION length(geometry)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME', 'LWGEOM_length_linestring'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: length2d(geometry)
