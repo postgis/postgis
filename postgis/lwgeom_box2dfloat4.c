@@ -589,8 +589,8 @@ Datum BOX2DFLOAT4_construct(PG_FUNCTION_ARGS)
 	LWPOINT *minpoint, *maxpoint;
 	double min, max, tmp;
 
-	minpoint = lwgeom_as_lwpoint(pglwgeom_deserialize(pgmin));
-	maxpoint = lwgeom_as_lwpoint(pglwgeom_deserialize(pgmax));
+	minpoint = (LWPOINT*)pglwgeom_deserialize(pgmin);
+	maxpoint = (LWPOINT*)pglwgeom_deserialize(pgmax);
 
 	if ( (minpoint->type != POINTTYPE) || (maxpoint->type != POINTTYPE) )
 	{
