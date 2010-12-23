@@ -21,6 +21,7 @@ macros/ltoptions.m4
 macros/ltsugar.m4
 macros/ltversion.m4
 macros/lt~obsolete.m4
+postgis/Makefile
 postgis/postgis.sql
 postgis/postgis.sql.in
 postgis/postgis_upgrade_13_to_15.sql
@@ -44,6 +45,7 @@ config.sub
 raster/rt_pg/rtpostgis.sql
 raster/rt_pg/rtpostgis.sql.in
 raster/scripts/python/Makefile
+topology/test/topo_predicates.sql
 topology/topology.sql
 topology/topology.sql.in
 st_*.png
