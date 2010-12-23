@@ -3386,7 +3386,7 @@ t
 		<title>Description</title>
 		
 		<para> Takes intersectionMatrix and intersectionMatrixPattern and Returns true if the intersectionMatrix satisfies
-		the intersectionMatrixPattern. For more information refer to <xref linkend="DE-9IM" />.	
+		the intersectionMatrixPattern. For more information refer to <xref linkend="DE-9IM" />.	</para>
 
 		<para>Availability: 2.0.0 - requires GEOS &gt;= 3.3.0. </para>
 	</refsection>
@@ -3764,4 +3764,4 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
 		<para><xref linkend="ST_Contains"/>, <xref linkend="ST_Equals"/>,<xref linkend="ST_IsValid"/></para>
 	  </refsection>
 	</refentry>
-  </sect1>
+</sect1>
