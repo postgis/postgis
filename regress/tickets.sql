@@ -294,9 +294,40 @@ SELECT '#457.7', st_astext(st_collectionExtract('POLYGON((0 0, 1 0, 1 1, 0 1, 0 
 SELECT '#457.8', st_astext(st_collectionExtract('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))', 2));
 SELECT '#457.9', st_astext(st_collectionExtract('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))', 3));
 
+-- #662 --
+SELECT '#662', ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_SetSRID(ST_MakePointM(i+m,j,m),4326),ST_SetSRID(ST_MakePointM(j+m,i-m,m),4326)),ST_SetSRID(ST_MakePointM(i,j,m),4326)),ST_SetSRID(ST_MakePointM(i+m,j,m),4326))) As the_geom FROM generate_series(-10,50,20) As i CROSS JOIN generate_series(50,70, 20) As j CROSS JOIN generate_series(1,2) As m ORDER BY i, j, m, i*j*m LIMIT 1;
+
+-- #667 --
+SELECT '#667', ST_AsEWKT(ST_LineToCurve(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j))) As the_geom FROM generate_series(-10,50,10) As i CROSS JOIN generate_series(40,70, 20) As j ORDER BY i, j, i*j LIMIT 1;
+
+-- #680 --
+SELECT '#680', encode(ST_AsBinary(geography(foo1.the_geom)),'hex') As result FROM ((SELECT ST_SetSRID(ST_MakePointM(i,j,m),4326) As the_geom FROM generate_series(-10,50,10) As i CROSS JOIN generate_series(50,70, 20) AS j CROSS JOIN generate_series(1,2) As m ORDER BY i, j, i*j*m)) As foo1 LIMIT 1;
+
+-- #682 --
+SELECT '#682', ST_Buffer(ST_GeomFromText('POLYGON EMPTY',4326) , 0.5);
+
+-- #683 --
+--SELECT '#683', ST_BuildArea(ST_GeomFromText('POINT EMPTY',4326));
+
+-- #684 --
+SELECT '#684', ST_Centroid(ST_GeomFromText('POLYGON EMPTY',4326));
+
+-- #685 --
+SELECT '#685', ST_ConvexHull(ST_GeomFromText('POLYGON EMPTY',4326));
+
+-- #686 --
+SELECT '#686', ST_COLLECT(ST_GeomFromText('POLYGON EMPTY',4326),ST_GeomFromText('TRIANGLE EMPTY',4326));
+
+-- #687 --
+SELECT '#687', ST_DFullyWithin(ST_GeomFromText('LINESTRING(-10 50,50 -10)',4326), ST_GeomFromText('POLYGON EMPTY',4326),5);
+
+-- #720 --
 SELECT '#720', ST_AsText(ST_SnapTogrid(ST_Transform(ST_GeomFromText('MULTIPOINT(-10 40,-10 55,-10 70,5 40,5 55,5 70,20 40,20 55,20 70,35 40,35 55,35 70,50 40,50 55,50 70)',4326), 3395), 0.01));
 
+-- #723 --
 SELECT '#723',ST_Intersection(a.geog, b.geog) As result FROM (VALUES (ST_GeogFromText('SRID=4326;POINT(-11.1111111 40)') ), (ST_GeogFromText('SRID=4326;POINT(-11.1111111 55)') ) ) As  a(geog) CROSS JOIN ( VALUES (ST_GeogFromText('SRID=4326;POINT(-11.1111111 40)') ), (ST_GeogFromText('SRID=4326;POINT(-11.1111111 55)') )) As b(geog);	
+
+
 
 -- Clean up
 DELETE FROM spatial_ref_sys;
