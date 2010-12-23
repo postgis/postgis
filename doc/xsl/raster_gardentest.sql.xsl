@@ -253,11 +253,14 @@ COMMIT;<xsl:text>
 				<xsl:choose>
 <!--Test functions that take no arguments or take no geometries -->
 	<xsl:when test="$numparamrasts = '0' and not(contains($fnexclude,funcdef/function))">SELECT  'Starting <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)';
-INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, log_start) 
-			  	VALUES('<xsl:value-of select="$log_label" />','<xsl:value-of select="$fnname" />', clock_timestamp());
+	<xsl:variable name='var_sql'>SELECT  <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnfakeparams" />);</xsl:variable>
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, log_start, log_sql) 
+			  	VALUES('<xsl:value-of select="$log_label" />','<xsl:value-of select="$fnname" />', clock_timestamp(),
+			  	'<xsl:call-template name="escapesinglequotes"><xsl:with-param name="arg1"><xsl:value-of select="$var_sql" /></xsl:with-param></xsl:call-template>');
 	
 	BEGIN;
-		SELECT  <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnfakeparams" />);
+		<!--  log query result to output table -->
+		<xsl:value-of select="$var_logresultsasxml" />
 		<!-- log completion -->
 		<xsl:value-of select="$var_logupdatesql" />
 	COMMIT;
@@ -268,22 +271,27 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 	<xsl:when test="$numparamrasts = '1' and $numparamgeoms = '0'  and not(contains($fnexclude,funcdef/function))" >
 		<xsl:for-each select="document('')//pgis:pixeltypes/pgis:pixeltype">
 		SELECT '<xsl:value-of select="$geoftype" /> <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@PixType" />';
-	INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
-			  	VALUES('<xsl:value-of select="$log_label" /> <xsl:value-of select="$geoftype" /> <xsl:text> </xsl:text><xsl:value-of select="@ID" /><xsl:text> </xsl:text><xsl:value-of select="@PixType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="@PixType" />', clock_timestamp());
-		BEGIN;
 			<xsl:choose>
 			  <xsl:when test="contains(paramdef, 'raster ')">
 	 <!-- If output is raster show ewkt convexhull rep -->
-	SELECT ST_AsEWKT(ST_ConvexHull(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)))
+	 		INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start, log_sql) 
+			  	VALUES('<xsl:value-of select="$log_label" /> <xsl:value-of select="$geoftype" /> <xsl:text> </xsl:text><xsl:value-of select="@ID" /><xsl:text> </xsl:text><xsl:value-of select="@PixType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="@PixType" />', clock_timestamp(),
+			  		'<xsl:call-template name="escapesinglequotes"><xsl:with-param name="arg1">SELECT ST_AsEWKT(ST_ConvexHull(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />))) FROM (<xsl:value-of select="." />) As rast1 LIMIT 3;</xsl:with-param></xsl:call-template>'
+			  	);
 			  </xsl:when>
 			  <xsl:otherwise>
 				SELECT 'Other <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@GeometryType" />';
 				 <!-- If output is geometry show ewkt rep -->
-				SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)
+				INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start, log_sql) 
+			  	VALUES('<xsl:value-of select="$log_label" /> <xsl:value-of select="$geoftype" /> <xsl:text> </xsl:text><xsl:value-of select="@ID" /><xsl:text> </xsl:text><xsl:value-of select="@PixType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="@PixType" />', clock_timestamp(),
+			  		'<xsl:call-template name="escapesinglequotes"><xsl:with-param name="arg1">SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />) FROM (<xsl:value-of select="." />) As rast1 LIMIT 3;</xsl:with-param></xsl:call-template>'
+			  	);
 			  </xsl:otherwise>
 			</xsl:choose>
-					FROM (<xsl:value-of select="." />) As rast1
-					LIMIT 3;
+		
+		BEGIN;
+		<!--  log query result to output table -->
+		<xsl:value-of select="$var_logresultsasxml" />		
 			<!-- log completion -->
 		<xsl:value-of select="$var_logupdatesql" />
 		  COMMIT;
