@@ -81,13 +81,12 @@ BEGIN
 	--
 	-- Construct face 
 	-- 
-	FOR rec IN EXECUTE ''SELECT polygonize(geom) FROM ( SELECT geom FROM ''
+	FOR rec IN EXECUTE ''SELECT ST_BuildArea(ST_Collect(geom)) FROM ''
 		|| quote_ident(atopology)
 		|| ''.edge WHERE left_face = '' || aface || 
-		'' OR right_face = '' || aface || '') as foo''
+		'' OR right_face = '' || aface 
 	LOOP
-		RETURN geometryN(rec.polygonize, 1);
-		--RETURN rec.polygonize;
+		RETURN rec.st_buildarea;
 	END LOOP;
 
 

@@ -1,0 +1,4 @@
+t
+f1 (with hole)|POLYGON((0 0,0 10,10 10,10 0,0 0),(2 2,8 2,8 8,2 8,2 2))
+f2 (fill hole)|POLYGON((2 2,2 8,8 8,8 2,2 2))
+Topology 'tt' dropped

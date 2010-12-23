@@ -21,16 +21,10 @@ COPY tt.edge_data(
 2	2	2	2	2	2	2	0	1	LINESTRING(0 0, 0 10, 10 10, 10 0, 0 0)
 \.
 
---INSERT INTO tt.edge(edge_id,
---	start_node, end_node,
---	next_left_edge, next_right_edge,
---	left_face, right_face, geom)
---VALUES(2,2,2,2,2,
---	0,1,'LINESTRING(0 0, 0 10, 10 10,  10 0, 0 0)');
-
--- SELECT * FROM topology.ValidateTopology('tt');
+SELECT * FROM topology.ValidateTopology('tt');
 
 -- F1 should have an hole !
+-- See http://trac.osgeo.org/postgis/ticket/726
 SELECT 'f1 (with hole)', ST_asText(topology.st_getfacegeometry('tt', 1));
 SELECT 'f2 (fill hole)', ST_asText(topology.st_getfacegeometry('tt', 2));
 
