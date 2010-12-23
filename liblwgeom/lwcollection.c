@@ -291,6 +291,32 @@ lwcollection_clone(const LWCOLLECTION *g)
 }
 
 /**
+* @brief Deep clone #LWCOLLECTION object. #POINTARRAY are copied.
+*/
+LWCOLLECTION *
+lwcollection_clone_deep(const LWCOLLECTION *g)
+{
+	uint32 i;
+	LWCOLLECTION *ret = lwalloc(sizeof(LWCOLLECTION));
+	memcpy(ret, g, sizeof(LWCOLLECTION));
+	if ( g->ngeoms > 0 )
+	{
+		ret->geoms = lwalloc(sizeof(LWGEOM *)*g->ngeoms);
+		for (i=0; i<g->ngeoms; i++)
+		{
+			ret->geoms[i] = lwgeom_clone_deep(g->geoms[i]);
+		}
+		if ( g->bbox ) ret->bbox = gbox_copy(g->bbox);
+	}
+	else
+	{
+		ret->bbox = NULL; /* empty collection */
+		ret->geoms = NULL;
+	}
+	return ret;
+}
+
+/**
 * Appends geom to the collection managed by col. Does not copy or
 * clone, simply takes a reference on the passed geom.
 */

@@ -1664,20 +1664,16 @@ char lwtriangle_same(const LWTRIANGLE *p1, const LWTRIANGLE *p2);
 char lwcollection_same(const LWCOLLECTION *p1, const LWCOLLECTION *p2);
 
 
-/*
- * Clone an LWGEOM
- * pointarray are not copied.
- * BBOXes are copied
- */
+/**
+* Clone an LWGEOM. #POINTARRAY are not copied. #GBOX are copied
+*/
 extern LWGEOM *lwgeom_clone(const LWGEOM *lwgeom);
-extern LWPOINT *lwpoint_clone(const LWPOINT *lwgeom);
-extern LWLINE *lwline_clone(const LWLINE *lwgeom);
-extern LWPOLY *lwpoly_clone(const LWPOLY *lwgeom);
-extern LWTRIANGLE *lwtriangle_clone(const LWTRIANGLE *lwgeom);
-extern LWCOLLECTION *lwcollection_clone(const LWCOLLECTION *lwgeom);
-extern LWCIRCSTRING *lwcircstring_clone(const LWCIRCSTRING *curve);
-extern BOX2DFLOAT4 *box2d_clone(const BOX2DFLOAT4 *lwgeom);
-extern POINTARRAY *ptarray_clone(const POINTARRAY *ptarray);
+
+/**
+* Deep clone an LWGEOM, everything is copied
+*/
+extern LWGEOM *lwgeom_clone_deep(const LWGEOM *lwgeom);
+
 
 /*
 * Geometry constructors. These constructors to not copy the point arrays

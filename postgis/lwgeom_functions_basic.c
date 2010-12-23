@@ -2109,7 +2109,7 @@ Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *pglwg1, *pglwg2, *result;
 	LWPOINT *point;
-	LWLINE *line;
+	LWLINE *line, *linecopy;
 	int where = -1;
 
 	POSTGIS_DEBUG(2, "LWGEOM_addpoint called.");
@@ -2144,20 +2144,21 @@ Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
 	}
 
 	point = lwgeom_as_lwpoint(pglwgeom_deserialize(pglwg2));
-
-	if ( lwline_add_lwpoint(line, point, where) == LW_FAILURE )
+	linecopy = lwgeom_as_lwline(lwgeom_clone_deep(lwline_as_lwgeom(line)));
+	lwline_free(line);
+	
+	if ( lwline_add_lwpoint(linecopy, point, where) == LW_FAILURE )
 	{
 		elog(ERROR, "Point insert failed");
 		PG_RETURN_NULL();
 	}
 
-	result = pglwgeom_serialize(lwline_as_lwgeom(line));
+	result = pglwgeom_serialize(lwline_as_lwgeom(linecopy));
 
 	/* Release memory */
 	PG_FREE_IF_COPY(pglwg1, 0);
 	PG_FREE_IF_COPY(pglwg2, 1);
-	lwgeom_release((LWGEOM *)point);
-	lwgeom_release((LWGEOM *)line);
+	lwpoint_free(point);
 
 	PG_RETURN_POINTER(result);
 

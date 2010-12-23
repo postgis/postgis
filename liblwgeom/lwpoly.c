@@ -458,6 +458,23 @@ lwpoly_clone(const LWPOLY *g)
 	return ret;
 }
 
+/* Deep clone LWPOLY object. POINTARRAY are copied, as is ring array */
+LWPOLY *
+lwpoly_clone_deep(const LWPOLY *g)
+{
+	int i;
+	LWPOLY *ret = lwalloc(sizeof(LWPOLY));
+	memcpy(ret, g, sizeof(LWPOLY));
+	if ( g->bbox ) ret->bbox = gbox_copy(g->bbox);
+	ret->rings = lwalloc(sizeof(POINTARRAY *)*g->nrings);
+	for ( i = 0; i < ret->nrings; i++ )
+	{
+		ret->rings[i] = ptarray_clone(g->rings[i]);
+	}
+	FLAGS_SET_READONLY(ret->flags,0);
+	return ret;
+}
+
 /**
 * Add a ring to a polygon. Point array will be referenced, not copied.
 */

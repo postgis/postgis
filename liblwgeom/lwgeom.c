@@ -596,7 +596,9 @@ lwgeom_release(LWGEOM *lwgeom)
 }
 
 
-/** Clone an LWGEOM object. POINTARRAY are not copied. **/
+/** 
+* Clone an #LWGEOM object. #POINTARRAY are not copied. 
+*/
 LWGEOM *
 lwgeom_clone(const LWGEOM *lwgeom)
 {
@@ -627,6 +629,42 @@ lwgeom_clone(const LWGEOM *lwgeom)
 	case COLLECTIONTYPE:
 		return (LWGEOM *)lwcollection_clone((LWCOLLECTION *)lwgeom);
 	default:
+		lwerror("lwgeom_clone: Unknown geometry type: %s", lwtype_name(lwgeom->type));
+		return NULL;
+	}
+}
+
+/** 
+* Deep-clone an #LWGEOM object. #POINTARRAY <em>are</em> copied. 
+*/
+LWGEOM *
+lwgeom_clone_deep(const LWGEOM *lwgeom)
+{
+	LWDEBUGF(2, "lwgeom_clone called with %p, %s",
+	         lwgeom, lwtype_name(lwgeom->type));
+
+	switch (lwgeom->type)
+	{
+	case POINTTYPE:
+	case LINETYPE:
+	case CIRCSTRINGTYPE:
+	case TRIANGLETYPE:
+		return (LWGEOM *)lwline_clone_deep((LWLINE *)lwgeom);
+	case POLYGONTYPE:
+		return (LWGEOM *)lwpoly_clone_deep((LWPOLY *)lwgeom);
+	case COMPOUNDTYPE:
+	case CURVEPOLYTYPE:
+	case MULTICURVETYPE:
+	case MULTISURFACETYPE:
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
+	case COLLECTIONTYPE:
+		return (LWGEOM *)lwcollection_clone_deep((LWCOLLECTION *)lwgeom);
+	default:
+		lwerror("lwgeom_clone_deep: Unknown geometry type: %s", lwtype_name(lwgeom->type));
 		return NULL;
 	}
 }

@@ -69,6 +69,12 @@ ptarray_insert_point(POINTARRAY *pa, POINT4D *p, int where)
 	LWDEBUGF(5,"pa = %p; p = %p; where = %d", pa, p, where);
 	LWDEBUGF(5,"pa->npoints = %d; pa->maxpoints = %d", pa->npoints, pa->maxpoints);
 	
+	if ( FLAGS_GET_READONLY(pa->flags) ) 
+	{
+		lwerror("ptarray_insert_point: called on read-only point array");
+		return LW_FAILURE;
+	}
+	
 	/* Error on invalid offset value */
 	if ( where > pa->npoints || where < 0)
 	{
@@ -618,6 +624,8 @@ ptarray_clone(const POINTARRAY *in)
 	out->flags = in->flags;
 	out->npoints = in->npoints;
 	out->maxpoints = in->maxpoints;
+
+	FLAGS_SET_READONLY(out->flags, 0);
 
 	size = in->npoints * ptarray_point_size(in);
 	out->serialized_pointlist = lwalloc(size);

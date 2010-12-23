@@ -343,6 +343,22 @@ lwline_clone(const LWLINE *g)
 	return ret;
 }
 
+/* Deep clone LWLINE object. POINTARRAY *is* copied. */
+LWLINE *
+lwline_clone_deep(const LWLINE *g)
+{
+	LWLINE *ret = lwalloc(sizeof(LWLINE));
+
+	LWDEBUGF(2, "lwline_clone_deep called with %p", g);
+	memcpy(ret, g, sizeof(LWLINE));
+
+	if ( g->bbox ) ret->bbox = gbox_copy(g->bbox);
+	if ( g->points ) ret->points = ptarray_clone(g->points);
+	FLAGS_SET_READONLY(ret->flags,0);
+
+	return ret;
+}
+
 
 void
 lwline_release(LWLINE *lwline)
