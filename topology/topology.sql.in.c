@@ -164,11 +164,6 @@
 
 #include "../postgis/sqldefines.h"
 
-/* These were dropped from sqldefines.h... */
-#define CREATEFUNCTION CREATE OR REPLACE FUNCTION
-#define _VOLATILE_STRICT VOLATILE STRICT 
-#define _VOLATILE VOLATILE 
-
 -- Uninstalling previous installation isn't really a good habit ...
 -- Let people decide about that
 -- DROP SCHEMA topology CASCADE;
@@ -201,7 +196,7 @@ CREATE TABLE topology.topology (
 --
 -- Layer integrity trigger
 --
-CREATEFUNCTION topology.LayerTrigger()
+CREATE OR REPLACE FUNCTION topology.LayerTrigger()
 	RETURNS trigger
 AS
 '
@@ -277,7 +272,7 @@ BEGIN
 	RETURN OLD;
 END;
 '
-LANGUAGE 'plpgsql' _VOLATILE_STRICT;
+LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} LayerTrigger()
 
 
@@ -364,7 +359,7 @@ CREATE DOMAIN topology.TopoGeomElementArray AS integer[][]
 --
 -- Relation integrity trigger
 --
-CREATEFUNCTION topology.RelationTrigger()
+CREATE OR REPLACE FUNCTION topology.RelationTrigger()
 	RETURNS trigger
 AS
 '
@@ -509,7 +504,7 @@ BEGIN
 	RETURN NEW;
 END;
 '
-LANGUAGE 'plpgsql' _VOLATILE_STRICT;
+LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} RelationTrigger()
 
 --{
@@ -519,7 +514,7 @@ LANGUAGE 'plpgsql' _VOLATILE_STRICT;
 --  Returns created layer id.
 --
 --
-CREATEFUNCTION topology.AddTopoGeometryColumn(varchar, varchar, varchar, varchar, varchar, integer)
+CREATE OR REPLACE FUNCTION topology.AddTopoGeometryColumn(varchar, varchar, varchar, varchar, varchar, integer)
 	RETURNS integer
 AS '
 DECLARE
@@ -685,14 +680,14 @@ BEGIN
 	RETURN layer_id;
 END;
 '
-LANGUAGE 'plpgsql' _VOLATILE;
+LANGUAGE 'plpgsql' VOLATILE;
 
-CREATEFUNCTION topology.AddTopoGeometryColumn(varchar, varchar, varchar, varchar, varchar)
+CREATE OR REPLACE FUNCTION topology.AddTopoGeometryColumn(varchar, varchar, varchar, varchar, varchar)
 	RETURNS integer
 AS '
 	SELECT topology.AddTopoGeometryColumn($1, $2, $3, $4, $5, NULL);
 '
-LANGUAGE 'sql' _VOLATILE;
+LANGUAGE 'sql' VOLATILE;
 
 --
 --} AddTopoGeometryColumn
@@ -704,7 +699,7 @@ LANGUAGE 'sql' _VOLATILE;
 --  cleanup the relation table.
 --
 --
-CREATEFUNCTION topology.DropTopoGeometryColumn(varchar, varchar, varchar)
+CREATE OR REPLACE FUNCTION topology.DropTopoGeometryColumn(varchar, varchar, varchar)
 	RETURNS text
 AS '
 DECLARE
@@ -793,7 +788,7 @@ BEGIN
 	RETURN result;
 END;
 '
-LANGUAGE 'plpgsql' _VOLATILE;
+LANGUAGE 'plpgsql' VOLATILE;
 --
 --} DropTopoGeometryColumn
 
@@ -811,7 +806,7 @@ LANGUAGE 'plpgsql' _VOLATILE;
 -- 
 -- Return a topology.TopoGeometry object.
 --
-CREATEFUNCTION topology.CreateTopoGeom(varchar, integer, integer, topology.TopoElementArray)
+CREATE OR REPLACE FUNCTION topology.CreateTopoGeom(varchar, integer, integer, topology.TopoElementArray)
 	RETURNS topology.TopoGeometry
 AS '
 DECLARE
@@ -919,13 +914,13 @@ BEGIN
 
 END
 '
-LANGUAGE 'plpgsql' _VOLATILE_STRICT;
+LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} CreateTopoGeom(toponame,topogeom_type, TopoObject[])
 
 --{
 -- GetTopologyName(topology_id)
 --
-CREATEFUNCTION topology.GetTopologyName(integer)
+CREATE OR REPLACE FUNCTION topology.GetTopologyName(integer)
 	RETURNS varchar
 AS
 '
@@ -938,13 +933,13 @@ BEGIN
 	RETURN ret;
 END
 '
-LANGUAGE 'plpgsql' _VOLATILE_STRICT;
+LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} GetTopologyName(topoid)
 
 --{
 -- GetTopologyId(toponame)
 --
-CREATEFUNCTION topology.GetTopologyId(varchar)
+CREATE OR REPLACE FUNCTION topology.GetTopologyId(varchar)
 	RETURNS integer
 AS
 '
@@ -957,7 +952,7 @@ BEGIN
 	RETURN ret;
 END
 '
-LANGUAGE 'plpgsql' _VOLATILE_STRICT;
+LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} GetTopologyId(toponame)
 	
 
@@ -968,7 +963,7 @@ LANGUAGE 'plpgsql' _VOLATILE_STRICT;
 --
 -- Returns a set of element_id,element_type
 --
-CREATEFUNCTION topology.GetTopoGeomElementArray(varchar, integer, integer)
+CREATE OR REPLACE FUNCTION topology.GetTopoGeomElementArray(varchar, integer, integer)
 	RETURNS topology.TopoElementArray
 AS
 '
@@ -1007,9 +1002,9 @@ BEGIN
 	RETURN tg_objs;
 END;
 '
-LANGUAGE 'plpgsql' _VOLATILE_STRICT;
+LANGUAGE 'plpgsql' VOLATILE STRICT;
 
-CREATEFUNCTION topology.GetTopoGeomElementArray(topology.TopoGeometry)
+CREATE OR REPLACE FUNCTION topology.GetTopoGeomElementArray(topology.TopoGeometry)
 	RETURNS topology.TopoElementArray
 AS
 '
@@ -1023,7 +1018,7 @@ BEGIN
 	RETURN ret;
 END;
 '
-LANGUAGE 'plpgsql' _VOLATILE_STRICT;
+LANGUAGE 'plpgsql' VOLATILE STRICT;
 
 --} GetTopoGeomElementArray()
 
@@ -1033,7 +1028,7 @@ LANGUAGE 'plpgsql' _VOLATILE_STRICT;
 --
 -- Returns a set of element_id,element_type
 --
-CREATEFUNCTION topology.GetTopoGeomElements(varchar, integer, integer)
+CREATE OR REPLACE FUNCTION topology.GetTopoGeomElements(varchar, integer, integer)
 	RETURNS SETOF topology.TopoElement
 AS
 '
@@ -1097,9 +1092,9 @@ BEGIN
 	RETURN;
 END;
 '
-LANGUAGE 'plpgsql' _VOLATILE_STRICT;
+LANGUAGE 'plpgsql' VOLATILE STRICT;
 
-CREATEFUNCTION topology.GetTopoGeomElements(topology.TopoGeometry)
+CREATE OR REPLACE FUNCTION topology.GetTopoGeomElements(topology.TopoGeometry)
 	RETURNS SETOF topology.TopoElement
 AS
 '
@@ -1117,7 +1112,7 @@ BEGIN
 	RETURN;
 END;
 '
-LANGUAGE 'plpgsql' _VOLATILE_STRICT;
+LANGUAGE 'plpgsql' VOLATILE STRICT;
 
 --} GetTopoGeomElements()
 
@@ -1253,7 +1248,7 @@ CREATE CAST (topology.TopoGeometry AS Geometry) WITH FUNCTION topology.Geometry(
 --  Return a Set of ValidateTopology_ReturnType containing
 --  informations on all topology inconsistencies
 --
-CREATEFUNCTION topology.ValidateTopology(varchar)
+CREATE OR REPLACE FUNCTION topology.ValidateTopology(varchar)
 	RETURNS setof topology.ValidateTopology_ReturnType
 AS
 '
@@ -1417,7 +1412,7 @@ BEGIN
 	RETURN;
 END
 '
-LANGUAGE 'plpgsql' _VOLATILE_STRICT;
+LANGUAGE 'plpgsql' VOLATILE STRICT;
 -- } ValidateTopology(toponame)
 
 --{
@@ -1425,7 +1420,7 @@ LANGUAGE 'plpgsql' _VOLATILE_STRICT;
 --
 --  Add a Point (node) into a topology 
 --
-CREATEFUNCTION topology.TopoGeo_AddPoint(varchar, geometry, integer, integer)
+CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPoint(varchar, geometry, integer, integer)
 	RETURNS int AS
 '
 DECLARE
@@ -1443,7 +1438,7 @@ BEGIN
 
 END
 '
-LANGUAGE 'plpgsql' _VOLATILE;
+LANGUAGE 'plpgsql' VOLATILE;
 --} TopoGeo_AddPoint
 
 --{
@@ -1451,7 +1446,7 @@ LANGUAGE 'plpgsql' _VOLATILE;
 --
 --  Add a LineString into a topology 
 --
-CREATEFUNCTION topology.TopoGeo_addLinestring(varchar, geometry)
+CREATE OR REPLACE FUNCTION topology.TopoGeo_addLinestring(varchar, geometry)
 	RETURNS int AS
 '
 DECLARE
@@ -1497,7 +1492,7 @@ LANGUAGE 'plpgsql';
 --
 --  Add a Polygon into a topology 
 --
-CREATEFUNCTION topology.TopoGeo_AddPolygon(varchar, geometry)
+CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPolygon(varchar, geometry)
 	RETURNS int AS
 '
 DECLARE
@@ -1518,7 +1513,7 @@ LANGUAGE 'plpgsql';
 -- in the topology.topology relation, return it's numeric
 -- id. 
 --
-CREATEFUNCTION topology.CreateTopology(varchar, integer, float8)
+CREATE OR REPLACE FUNCTION topology.CreateTopology(varchar, integer, float8)
 RETURNS integer
 AS '
 DECLARE
@@ -1728,19 +1723,19 @@ CREATE SCHEMA '' || quote_ident(atopology) || '';
 	RETURN topology_id;
 END
 '
-LANGUAGE 'plpgsql' _VOLATILE_STRICT;
+LANGUAGE 'plpgsql' VOLATILE STRICT;
 
 -- wrappers for unspecified srid or precision
 
-CREATEFUNCTION topology.CreateTopology(varchar, integer)
+CREATE OR REPLACE FUNCTION topology.CreateTopology(varchar, integer)
 RETURNS integer AS
 ' SELECT topology.CreateTopology($1, $2, -1); '
-LANGUAGE 'SQL' _VOLATILE_STRICT;
+LANGUAGE 'SQL' VOLATILE STRICT;
 
-CREATEFUNCTION topology.CreateTopology(varchar)
+CREATE OR REPLACE FUNCTION topology.CreateTopology(varchar)
 RETURNS integer AS
 ' SELECT topology.CreateTopology($1, -1, -1); '
-LANGUAGE 'SQL' _VOLATILE_STRICT;
+LANGUAGE 'SQL' VOLATILE STRICT;
 
 --} CreateTopology
 
@@ -1749,7 +1744,7 @@ LANGUAGE 'SQL' _VOLATILE_STRICT;
 --
 -- Drops a topology schema getting rid of every dependent object.
 --
-CREATEFUNCTION topology.DropTopology(varchar)
+CREATE OR REPLACE FUNCTION topology.DropTopology(varchar)
 RETURNS text
 AS '
 DECLARE
@@ -1802,7 +1797,7 @@ BEGIN
 	RETURN ''Topology '' || quote_literal(atopology) || '' dropped'';
 END
 '
-LANGUAGE 'plpgsql' _VOLATILE_STRICT;
+LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} DropTopology
 
 --={ ----------------------------------------------------------------
@@ -1815,7 +1810,7 @@ LANGUAGE 'plpgsql' _VOLATILE_STRICT;
 --{
 -- Intersects(TopoGeometry, TopoGeometry)
 --
-CREATEFUNCTION topology.intersects(topology.TopoGeometry, topology.TopoGeometry)
+CREATE OR REPLACE FUNCTION topology.intersects(topology.TopoGeometry, topology.TopoGeometry)
 	RETURNS bool
 AS
 '
@@ -2240,13 +2235,13 @@ BEGIN
 	END IF;
 END
 '
-LANGUAGE 'plpgsql' _VOLATILE_STRICT;
+LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} intersects(TopoGeometry, TopoGeometry)
 
 --{
 --  equals(TopoGeometry, TopoGeometry)
 --
-CREATEFUNCTION topology.equals(topology.TopoGeometry, topology.TopoGeometry)
+CREATE OR REPLACE FUNCTION topology.equals(topology.TopoGeometry, topology.TopoGeometry)
 	RETURNS bool
 AS
 '
@@ -2304,7 +2299,7 @@ BEGIN
 	RETURN TRUE;
 END
 '
-LANGUAGE 'plpgsql' _VOLATILE_STRICT;
+LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} equals(TopoGeometry, TopoGeometry)
 
 --=} POSTGIS-SPECIFIC topology predicates
