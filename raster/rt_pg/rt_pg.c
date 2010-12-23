@@ -393,10 +393,18 @@ Datum RASTER_convex_hull(PG_FUNCTION_ARGS)
     }
 
     {
+#ifdef GSERIALIZED_ON
+		size_t gser_size;
+		GSERIALIZED *gser;
+		gser = gserialized_from_lwgeom(lwpoly_as_lwgeom(convexhull), 0, &gser_size);
+		SET_VARSIZE(gser, gser_size);
+		pglwgeom = (uchar*)gser;
+#else
         size_t sz = lwpoly_serialize_size(convexhull);
         pglwgeom = palloc(VARHDRSZ+sz);
         lwpoly_serialize_buf(convexhull, (uchar*)VARDATA(pglwgeom), &sz);
         SET_VARSIZE(pglwgeom, VARHDRSZ+sz);
+#endif
     }
 
     /* PG_FREE_IF_COPY(pgraster, 0); */
