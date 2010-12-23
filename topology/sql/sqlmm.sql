@@ -29,7 +29,7 @@
 --
 --
 -- 
-CREATEFUNCTION topology.ST_GetFaceEdges(varchar, integer)
+CREATE OR REPLACE FUNCTION topology.ST_GetFaceEdges(varchar, integer)
 	RETURNS setof topology.GetFaceEdges_ReturnType
 AS
 '
@@ -52,7 +52,7 @@ BEGIN
 
 END
 '
-LANGUAGE 'plpgsql' _VOLATILE;
+LANGUAGE 'plpgsql' VOLATILE;
 --} ST_GetFaceEdges
 
 
@@ -62,7 +62,7 @@ LANGUAGE 'plpgsql' _VOLATILE;
 --
 --  ST_GetFaceGeometry(atopology, aface)
 -- 
-CREATEFUNCTION topology.ST_GetFaceGeometry(varchar, integer)
+CREATE OR REPLACE FUNCTION topology.ST_GetFaceGeometry(varchar, integer)
 	RETURNS GEOMETRY AS
 '
 DECLARE
@@ -97,7 +97,7 @@ BEGIN
 	''SQL/MM Spatial exception - non-existent face.'';
 END
 ' 
-LANGUAGE 'plpgsql' _VOLATILE;
+LANGUAGE 'plpgsql' VOLATILE;
 --} ST_GetFaceGeometry
 
 
@@ -107,7 +107,7 @@ LANGUAGE 'plpgsql' _VOLATILE;
 --
 --  ST_AddIsoNode(atopology, aface, apoint)
 --
-CREATEFUNCTION topology.ST_AddIsoNode(varchar, integer, geometry)
+CREATE OR REPLACE FUNCTION topology.ST_AddIsoNode(varchar, integer, geometry)
 	RETURNS INTEGER AS
 '
 DECLARE
@@ -215,7 +215,7 @@ BEGIN
 	RETURN nodeid;
 END
 '
-LANGUAGE 'plpgsql' _VOLATILE;
+LANGUAGE 'plpgsql' VOLATILE;
 --} ST_AddIsoNode
 
 --{
@@ -224,7 +224,7 @@ LANGUAGE 'plpgsql' _VOLATILE;
 --
 --  ST_MoveIsoNode(atopology, anode, apoint)
 --
-CREATEFUNCTION topology.ST_MoveIsoNode(varchar, integer, geometry)
+CREATE OR REPLACE FUNCTION topology.ST_MoveIsoNode(varchar, integer, geometry)
 	RETURNS TEXT AS
 '
 DECLARE
@@ -303,7 +303,7 @@ BEGIN
 		|| x(apoint) || '','' || y(apoint);
 END
 '
-LANGUAGE 'plpgsql' _VOLATILE;
+LANGUAGE 'plpgsql' VOLATILE;
 --} ST_MoveIsoNode
 
 --{
@@ -312,7 +312,7 @@ LANGUAGE 'plpgsql' _VOLATILE;
 --
 --  ST_RemoveIsoNode(atopology, anode)
 --
-CREATEFUNCTION topology.ST_RemoveIsoNode(varchar, integer)
+CREATE OR REPLACE FUNCTION topology.ST_RemoveIsoNode(varchar, integer)
 	RETURNS TEXT AS
 '
 DECLARE
@@ -347,7 +347,7 @@ BEGIN
 	RETURN ''Isolated node '' || anode || '' removed'';
 END
 '
-LANGUAGE 'plpgsql' _VOLATILE;
+LANGUAGE 'plpgsql' VOLATILE;
 --} ST_RemoveIsoNode
 
 --{
@@ -356,7 +356,7 @@ LANGUAGE 'plpgsql' _VOLATILE;
 --
 --  ST_RemoveIsoEdge(atopology, anedge)
 --
-CREATEFUNCTION topology.ST_RemoveIsoEdge(varchar, integer)
+CREATE OR REPLACE FUNCTION topology.ST_RemoveIsoEdge(varchar, integer)
 	RETURNS TEXT AS
 '
 DECLARE
@@ -420,7 +420,7 @@ BEGIN
 	RETURN ''Isolated edge '' || anedge || '' removed'';
 END
 '
-LANGUAGE 'plpgsql' _VOLATILE;
+LANGUAGE 'plpgsql' VOLATILE;
 --} ST_RemoveIsoEdge
 
 --{
@@ -429,7 +429,7 @@ LANGUAGE 'plpgsql' _VOLATILE;
 --
 --  ST_NewEdgesSplit(atopology, anedge, apoint)
 --
-CREATEFUNCTION topology.ST_NewEdgesSplit(varchar, integer, geometry)
+CREATE OR REPLACE FUNCTION topology.ST_NewEdgesSplit(varchar, integer, geometry)
 	RETURNS INTEGER AS
 '
 DECLARE
@@ -681,7 +681,7 @@ BEGIN
 	RETURN nodeid; 
 END
 '
-LANGUAGE 'plpgsql' _VOLATILE;
+LANGUAGE 'plpgsql' VOLATILE;
 --} ST_NewEdgesSplit
 
 --{
@@ -690,7 +690,7 @@ LANGUAGE 'plpgsql' _VOLATILE;
 --
 --  ST_ModEdgesSplit(atopology, anedge, apoint)
 --
-CREATEFUNCTION topology.ST_ModEdgesSplit(varchar, integer, geometry)
+CREATE OR REPLACE FUNCTION topology.ST_ModEdgesSplit(varchar, integer, geometry)
 	RETURNS INTEGER AS
 '
 DECLARE
@@ -890,7 +890,7 @@ BEGIN
 	RETURN nodeid; 
 END
 '
-LANGUAGE 'plpgsql' _VOLATILE;
+LANGUAGE 'plpgsql' VOLATILE;
 --} ST_ModEdgesSplit
 
 --{
@@ -899,7 +899,7 @@ LANGUAGE 'plpgsql' _VOLATILE;
 --
 --  ST_AddIsoEdge(atopology, anode, anothernode, acurve)
 -- 
-CREATEFUNCTION topology.ST_AddIsoEdge(varchar, integer, integer, geometry)
+CREATE OR REPLACE FUNCTION topology.ST_AddIsoEdge(varchar, integer, integer, geometry)
 	RETURNS INTEGER AS
 '
 DECLARE
@@ -1095,7 +1095,7 @@ BEGIN
 
 END
 '
-LANGUAGE 'plpgsql' _VOLATILE;
+LANGUAGE 'plpgsql' VOLATILE;
 --} ST_AddIsoEdge
 
 --{
@@ -1104,7 +1104,7 @@ LANGUAGE 'plpgsql' _VOLATILE;
 --
 --  ST_ChangeEdgeGeom(atopology, anedge, acurve)
 -- 
-CREATEFUNCTION topology.ST_ChangeEdgeGeom(varchar, integer, geometry)
+CREATE OR REPLACE FUNCTION topology.ST_ChangeEdgeGeom(varchar, integer, geometry)
 	RETURNS TEXT AS
 '
 DECLARE
@@ -1225,7 +1225,7 @@ BEGIN
 
 END
 '
-LANGUAGE 'plpgsql' _VOLATILE;
+LANGUAGE 'plpgsql' VOLATILE;
 --} ST_ChangeEdgeGeom
 
 --{
@@ -1234,7 +1234,7 @@ LANGUAGE 'plpgsql' _VOLATILE;
 --
 --  ST_AddEdgeNewFaces(atopology, anode, anothernode, acurve)
 --
-CREATEFUNCTION topology.ST_AddEdgeNewFaces(varchar, integer, integer, geometry)
+CREATE OR REPLACE FUNCTION topology.ST_AddEdgeNewFaces(varchar, integer, integer, geometry)
 	RETURNS INTEGER AS
 '
 DECLARE
@@ -1430,7 +1430,7 @@ BEGIN
 	RAISE EXCEPTION ''Not implemented yet'';
 END
 '
-LANGUAGE 'plpgsql' _VOLATILE;
+LANGUAGE 'plpgsql' VOLATILE;
 --} ST_AddEdgeNewFaces
 
 --{
@@ -1439,7 +1439,7 @@ LANGUAGE 'plpgsql' _VOLATILE;
 --
 --  ST_InitTopoGeo(atopology)
 --
-CREATEFUNCTION topology.ST_InitTopoGeo(varchar)
+CREATE OR REPLACE FUNCTION topology.ST_InitTopoGeo(varchar)
 RETURNS text
 AS '
 DECLARE
@@ -1466,7 +1466,7 @@ BEGIN
 		|| '' (id:'' || topology_id || '') created. '';
 END
 '
-LANGUAGE 'plpgsql' _VOLATILE;
+LANGUAGE 'plpgsql' VOLATILE;
 --} ST_InitTopoGeo
 
 --{
@@ -1475,7 +1475,7 @@ LANGUAGE 'plpgsql' _VOLATILE;
 --
 --  ST_CreateTopoGeo(atopology, acollection)
 --
-CREATEFUNCTION topology.ST_CreateTopoGeo(varchar, geometry)
+CREATE OR REPLACE FUNCTION topology.ST_CreateTopoGeo(varchar, geometry)
 RETURNS text
 AS '
 DECLARE
@@ -1563,7 +1563,7 @@ BEGIN
 	RAISE EXCEPTION ''ST_CreateTopoGeo not implemente yet'';
 END
 '
-LANGUAGE 'plpgsql' _VOLATILE;
+LANGUAGE 'plpgsql' VOLATILE;
 --} ST_CreateTopoGeo
 
 --=}  SQL/MM block
