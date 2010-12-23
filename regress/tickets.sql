@@ -321,6 +321,28 @@ SELECT '#686', ST_COLLECT(ST_GeomFromText('POLYGON EMPTY',4326),ST_GeomFromText(
 -- #687 --
 SELECT '#687', ST_DFullyWithin(ST_GeomFromText('LINESTRING(-10 50,50 -10)',4326), ST_GeomFromText('POLYGON EMPTY',4326),5);
 
+-- #689 --
+SELECT '#689', ST_CoveredBy(ST_GeomFromText('POLYGON EMPTY'), ST_GeomFromText('LINESTRING(-10 50,50 -10)'));
+
+-- #690 --
+SELECT '#690';
+SELECT ST_MakeLine(ST_GeomFromText('POINT(-11.1111111 40)'), ST_GeomFromText('LINESTRING(-11.1111111 70,70 -11.1111111)')) As result;
+
+-- #693 --
+SELECT '#693a', ST_GeomFromEWKT('SRID=4326;POLYGONM((-71.1319 42.2503 1,-71.132 42.2502 3,-71.1323 42.2504 -2,-71.1322 42.2505 1,-71.1319 42.2503 0))');
+SELECT '#693b', ST_GeomFromEWKT('SRID=4326;POLYGONM((-71.1319 42.2512 0,-71.1318 42.2511 20,-71.1317 42.2511 -20,-71.1317 42.251 5,-71.1317 42.2509 4,-71.132 42.2511 6,-71.1319 42.2512 30))');
+
+-- #694 --
+SELECT '#694';
+SELECT ST_MakePolygon('POINT(1 2)'::geometry);
+
+-- #695 --
+SELECT '#695';
+SELECT ST_RemovePoint('POINT(-11.1111111 40)'::geometry, 1);
+
+-- #696 --
+SELECT '#696',ST_Segmentize(ST_GeomFromEWKT('PolyhedralSurface( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'), 0.5);
+
 -- #720 --
 SELECT '#720', ST_AsText(ST_SnapTogrid(ST_Transform(ST_GeomFromText('MULTIPOINT(-10 40,-10 55,-10 70,5 40,5 55,5 70,20 40,20 55,20 70,35 40,35 55,35 70,50 40,50 55,50 70)',4326), 3395), 0.01));
 
