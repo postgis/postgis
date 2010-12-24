@@ -15,15 +15,24 @@ Comments welcome --strk(2005-10-13);
 
         * schema-aware postgresql (7.3 and up)
         * PostGIS-1.1.x 
-        * Geos-2.1 or up
+        * Geos-2.1 or up (GEOS-3.3.0 up recommended)
+
+=Build
+
+To build the topology script:
+
+	$ make
 
 =Install, upgrade, uninstall
 
 To enable topology support:
 
-	$ make
 	$ psql -f topology.sql <your_postgis_enabled_db>
 
+	It will create a 'topology' schema in <your_postgis_enabled_db>
+	hosting all the topology functions. To be run with db-owner perms.
+	Remember to grant execute to users.
+	
 To uninstall:
 
 	psql -c 'drop schema topology cascade'
@@ -38,10 +47,27 @@ name is the name of the SCHEMA containing its data.
 A catalogue of avalable topologies is kept under the
 "topology"."topology" table.
 
-To create/destroy a topology:
+==Creating a topology
 
-	SELECT topology.CreateTopology(name, [srid], [tolerance]);
-	SELECT topology.DropTopology(name);
+To create a topology:
+
+	SELECT topology.CreateTopology(<name>, [srid], [tolerance]);
+
+Example:
+
+	SELECT topology.CreateTopology('test_schema', 4326 , 0.0001);
+	or
+	-- unknown srid, 0 tolerance
+	SELECT topology.CreateTopology('test_schema');
+
+	NOTE: the new schema ('test_schema' in example) will be create
+	      so it must not exist before.
+
+==Destroying a topology
+
+To destroy a topology:
+		
+	SELECT topology.DropTopology(<name>);
 
 ==Loading topology data
 
