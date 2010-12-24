@@ -12,6 +12,7 @@
 
 	<!-- We deal only with the reference chapter -->
         <xsl:template match="/">
+set search_path=topology,public,pg_catalog;
                 <xsl:apply-templates select="/book/chapter[@id='Topology']" />
         </xsl:template>
 

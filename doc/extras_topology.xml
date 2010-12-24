@@ -51,7 +51,7 @@
                         <paramdef><type>varchar </type>
                         <parameter>feature_type</parameter></paramdef>
                         
-                        <paramdef><type>varchar </type>
+                        <paramdef><type>integer </type>
                         <parameter>child_layar</parameter></paramdef>
                     </funcprototype>
                 </funcsynopsis>
@@ -96,12 +96,12 @@
 				<funcsynopsis>
 					<funcprototype>
 						<funcdef>integer <function>CreateTopology</function></funcdef>
-						<paramdef><type>text </type> <parameter>topology_schema_name</parameter></paramdef>
+						<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></paramdef>
 					</funcprototype>
 		
 					<funcprototype>
 						<funcdef>integer <function>CreateTopology</function></funcdef>
-						<paramdef><type>text </type> <parameter>topology_schema_name</parameter></paramdef>
+						<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
 						<paramdef><type>double precision </type> <parameter>tolerance</parameter></paramdef>
 					</funcprototype>
@@ -146,7 +146,7 @@
 				<funcsynopsis>
 					<funcprototype>
 					<funcdef>integer <function>DropTopology</function></funcdef>
-					<paramdef><type>text </type> <parameter>topology_schema_name</parameter></paramdef>
+					<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
