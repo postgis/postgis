@@ -7,6 +7,85 @@
 	<para>Functions that are defined in SQL/MM standard are prefixed with ST_ and functions specific to PostGIS are not prefixed.</para>
 	
 	<sect1 id="Topology_ManagementFunctions">
+	    <title>Topology Management Functions</title>
+	    <refentry id="AddTopoGeometryColumn">
+			<refnamediv>
+				<refname>AddTopoGeometryColumn</refname>
+				<refpurpose>Adds a topogeometry column to an existing table (feature).</refpurpose>
+			</refnamediv>
+		
+            <refsynopsisdiv>
+                <funcsynopsis>
+                     <funcprototype>
+                        <funcdef>text <function>AddTopoGeometryColumn</function></funcdef>
+                        <paramdef><type>varchar </type>
+                        <parameter>topology_name</parameter></paramdef>
+                        
+                        <paramdef><type>varchar </type>
+                        <parameter>schema_name</parameter></paramdef>
+                        
+                        <paramdef><type>varchar </type>
+                        <parameter>table_name</parameter></paramdef>
+                        
+                        <paramdef><type>varchar </type>
+                        <parameter>column_name</parameter></paramdef>
+                        
+                        <paramdef><type>varchar </type>
+                        <parameter>feature_type</parameter></paramdef>
+                    </funcprototype>
+                    <funcprototype>
+                        <funcdef>text <function>AddTopoGeometryColumn</function></funcdef>
+                        
+                        <paramdef><type>varchar </type>
+                        <parameter>topology_name</parameter></paramdef>
+                        
+                        <paramdef><type>varchar </type>
+                        <parameter>schema_name</parameter></paramdef>
+                        
+                        <paramdef><type>varchar </type>
+                        <parameter>table_name</parameter></paramdef>
+                        
+                        <paramdef><type>varchar </type>
+                        <parameter>column_name</parameter></paramdef>
+                        
+                        <paramdef><type>varchar </type>
+                        <parameter>feature_type</parameter></paramdef>
+                        
+                        <paramdef><type>varchar </type>
+                        <parameter>child_layar</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+		
+			<refsection>
+			<title>Description</title>
+		
+			<para>Each TopoGeometry object belongs to a specific Layer of a specific Topology. Before creating a TopoGeometry object you need to create its TopologyLayer. 
+			    A Topology Layer is an association of a feature-table with the topology. It also contain type and hierarchy information. We create a layer using the AddTopoGeometryColumn() function: </para>
+			<para>This function will both add the requested column to the table and add a record to the topology.layer table with all the given info.</para>
+			<para>If you don't specify [child_layer] (or set it to NULL) this layer would contain Basic TopoGeometries (composed by primitive topology elements). 
+			    Otherwise this layer will contain hierarchical TopoGeometries (composed by TopoGeometries from the child_layer).</para>
+
+			<para>Once the layer is created (it's id is returned by the AddTopoGeometryColumn function) you're ready to construct TopoGeometry objects in it</para>
+	
+			<!-- use this format if new function -->
+			<para>Availability: 2.0.0</para>
+			
+			</refsection>
+		
+		
+			<refsection>
+				<title>Examples</title>
+				<!-- TODO: Add some examples -->
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+			
+				<para><xref linkend="CreateTopology"/></para>
+			</refsection>
+		</refentry>
 		<refentry id="CreateTopology">
 			<refnamediv>
 				<refname>CreateTopology</refname>
