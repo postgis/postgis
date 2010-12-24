@@ -36,7 +36,6 @@ DROP FUNCTION IF EXISTS st_text(geometry);
 DROP FUNCTION IF EXISTS st_geometry(box2d);
 DROP FUNCTION IF EXISTS st_geometry(box3d);
 DROP FUNCTION IF EXISTS st_geometry(text);
-DROP FUNCTION IF EXISTS st_geometry(chip);
 DROP FUNCTION IF EXISTS st_geometry(bytea);
 DROP FUNCTION IF EXISTS st_bytea(geometry);
 DROP FUNCTION IF EXISTS st_box3d_extent(box3d_extent);
