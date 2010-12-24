@@ -766,6 +766,12 @@ CREATE OR REPLACE FUNCTION ST_Intersection(text, text)
 
 
 -- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_consistent_2d(internal,geometry,int4) 
+	RETURNS bool 
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_consistent_2d'
+	LANGUAGE 'C';
+
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_consistent(internal,geometry,int4) 
 	RETURNS bool 
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_consistent'
@@ -812,49 +818,155 @@ CREATE OR REPLACE FUNCTION geometry_gist_decompress(internal)
 -----------------------------------------------------------------------------
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_overlaps(geometry, geometry) 
+CREATE OR REPLACE FUNCTION geometry_2d_overlaps(geometry, geometry) 
 	RETURNS boolean 
-	AS 'MODULE_PATHNAME' ,'gserialized_overlaps'
+	AS 'MODULE_PATHNAME' ,'gserialized_2d_overlaps'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 CREATE OPERATOR && (
-	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overlaps,
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_2d_overlaps,
 	COMMUTATOR = '&&'
+	,RESTRICT = contsel, JOIN = contjoinsel
 -- 	,RESTRICT = geometry_gist_sel, JOIN = geometry_gist_joinsel	
 );
 
-CREATE OR REPLACE FUNCTION geometry_contains(geometry, geometry)
+CREATE OR REPLACE FUNCTION geometry_2d_same(geometry, geometry) 
+	RETURNS boolean 
+	AS 'MODULE_PATHNAME' ,'gserialized_2d_same'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OPERATOR ~= (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_2d_same,
+	RESTRICT = contsel, JOIN = contjoinsel
+);
+
+CREATE OR REPLACE FUNCTION geometry_2d_contains(geometry, geometry)
 	RETURNS bool
-	AS 'MODULE_PATHNAME', 'gserialized_contains'
+	AS 'MODULE_PATHNAME', 'gserialized_2d_contains'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION geometry_2d_within(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'gserialized_2d_within'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 CREATE OPERATOR ~ (
-	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_contains,
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_2d_within,
 	COMMUTATOR = '@',
 	RESTRICT = contsel, JOIN = contjoinsel
 );
 
-CREATE OR REPLACE FUNCTION geometry_within(geometry, geometry)
-	RETURNS bool
-	AS 'MODULE_PATHNAME', 'gserialized_within'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 CREATE OPERATOR @ (
-	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_within,
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_2d_contains,
 	COMMUTATOR = '~',
 	RESTRICT = contsel, JOIN = contjoinsel
 );
 
+CREATE OR REPLACE FUNCTION geometry_2d_left(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'gserialized_2d_left'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OPERATOR << (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_2d_left,
+	COMMUTATOR = '>>',
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OR REPLACE FUNCTION geometry_2d_overleft(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'gserialized_2d_overleft'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OPERATOR &< (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_2d_overleft,
+	COMMUTATOR = '&>',
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OR REPLACE FUNCTION geometry_2d_below(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'gserialized_2d_below'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OPERATOR <<| (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_2d_below,
+	COMMUTATOR = '|>>',
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OR REPLACE FUNCTION geometry_2d_overbelow(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'gserialized_2d_overbelow'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OPERATOR &<| (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_2d_overbelow,
+	COMMUTATOR = '|&>',
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OR REPLACE FUNCTION geometry_2d_overright(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'gserialized_2d_overright'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OPERATOR &> (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_2d_overright,
+	COMMUTATOR = '&<',
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OR REPLACE FUNCTION geometry_2d_right(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'gserialized_2d_right'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OPERATOR >> (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_2d_right,
+	COMMUTATOR = '<<',
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OR REPLACE FUNCTION geometry_2d_overabove(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'gserialized_2d_overabove'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OPERATOR |&> (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_2d_overabove,
+	COMMUTATOR = '&<|',
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OR REPLACE FUNCTION geometry_2d_above(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'gserialized_2d_above'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OPERATOR |>> (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_2d_above,
+	COMMUTATOR = '<<|',
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
 
 -- Availability: 2.0.0
 CREATE OPERATOR CLASS gist_geometry_ops
 	DEFAULT FOR TYPE geometry USING GIST AS
-	STORAGE 	gidx,
-	OPERATOR        3        &&,
---	OPERATOR        6        ~=	,
-	OPERATOR        7        ~	,
-	OPERATOR        8        @	,
-	FUNCTION        1        geometry_gist_consistent (internal, geometry, int4),
+	STORAGE gidx,
+	OPERATOR        1        <<  ,
+	OPERATOR        2        &<	 ,
+	OPERATOR        3        &&  ,
+	OPERATOR        4        &>	 ,
+	OPERATOR        5        >>	 ,
+--	OPERATOR        6        ~=	 ,
+	OPERATOR        7        ~	 ,
+	OPERATOR        8        @	 ,
+	OPERATOR        9        &<| ,
+	OPERATOR        10       <<| ,
+	OPERATOR        11       |>> ,
+	OPERATOR        12       |&> ,
+	FUNCTION        1        geometry_gist_consistent_2d (internal, geometry, int4),
 	FUNCTION        2        geometry_gist_union (bytea, internal),
 	FUNCTION        3        geometry_gist_compress (internal),
 	FUNCTION        4        geometry_gist_decompress (internal),
@@ -862,3 +974,4 @@ CREATE OPERATOR CLASS gist_geometry_ops
 	FUNCTION        6        geometry_gist_picksplit (internal, internal),
 	FUNCTION        7        geometry_gist_same (box2d, box2d, internal);
 #endif
+
