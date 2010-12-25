@@ -67,6 +67,7 @@
                     Otherwise this layer will contain hierarchical TopoGeometries (composed by TopoGeometries from the child_layer).</para>
     
                 <para>Once the layer is created (it's id is returned by the AddTopoGeometryColumn function) you're ready to construct TopoGeometry objects in it</para>
+                <para>Valid <varname>feature_type</varname>s are: POINT, LINE, POLYGON, COLLECTION</para> 
         
                 <!-- use this format if new function -->
                 <para>Availability: 2.0.0</para>
