@@ -11,7 +11,7 @@
 	    <refentry id="AddTopoGeometryColumn">
 			<refnamediv>
 				<refname>AddTopoGeometryColumn</refname>
-				<refpurpose>Adds a topogeometry column to an existing table (feature).</refpurpose>
+				<refpurpose>Adds a topogeometry column to an existing feature table, registers this new column as a layer in topology.layer and returns the new layer_id.</refpurpose>
 			</refnamediv>
 		
             <refsynopsisdiv>
@@ -58,25 +58,28 @@
             </refsynopsisdiv>
 		
 			<refsection>
-			<title>Description</title>
-		
-			<para>Each TopoGeometry object belongs to a specific Layer of a specific Topology. Before creating a TopoGeometry object you need to create its TopologyLayer. 
-			    A Topology Layer is an association of a feature-table with the topology. It also contain type and hierarchy information. We create a layer using the AddTopoGeometryColumn() function: </para>
-			<para>This function will both add the requested column to the table and add a record to the topology.layer table with all the given info.</para>
-			<para>If you don't specify [child_layer] (or set it to NULL) this layer would contain Basic TopoGeometries (composed by primitive topology elements). 
-			    Otherwise this layer will contain hierarchical TopoGeometries (composed by TopoGeometries from the child_layer).</para>
-
-			<para>Once the layer is created (it's id is returned by the AddTopoGeometryColumn function) you're ready to construct TopoGeometry objects in it</para>
-	
-			<!-- use this format if new function -->
-			<para>Availability: 2.0.0</para>
+                <title>Description</title>
+            
+                <para>Each TopoGeometry object belongs to a specific Layer of a specific Topology. Before creating a TopoGeometry object you need to create its TopologyLayer. 
+                    A Topology Layer is an association of a feature-table with the topology. It also contain type and hierarchy information. We create a layer using the AddTopoGeometryColumn() function: </para>
+                <para>This function will both add the requested column to the table and add a record to the topology.layer table with all the given info.</para>
+                <para>If you don't specify [child_layer] (or set it to NULL) this layer would contain Basic TopoGeometries (composed by primitive topology elements). 
+                    Otherwise this layer will contain hierarchical TopoGeometries (composed by TopoGeometries from the child_layer).</para>
+    
+                <para>Once the layer is created (it's id is returned by the AddTopoGeometryColumn function) you're ready to construct TopoGeometry objects in it</para>
+        
+                <!-- use this format if new function -->
+                <para>Availability: 2.0.0</para>
 			
 			</refsection>
 		
 		
 			<refsection>
 				<title>Examples</title>
-				<!-- TODO: Add some examples -->
+				-- Note for this example we created our new table in the ma_topo schema 
+				-- though we could have created it in a different schema -- in shich case topology_name and schema_name would be different 
+				CREATE TABLE ma_topo.parcel_topo(tid serial, parcel_id varchar(20) PRIMARY KEY);
+				SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma_topo', 'parcel_topo', 'topo', 'POLYGON');
 			</refsection>
 		
 			<!-- Optionally add a "See Also" section -->
