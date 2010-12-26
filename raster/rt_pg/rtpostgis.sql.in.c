@@ -71,9 +71,9 @@ CREATE OR REPLACE FUNCTION st_convexhull(raster)
     AS 'MODULE_PATHNAME','RASTER_convex_hull'
     LANGUAGE 'C' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_box2d(raster)
+CREATE OR REPLACE FUNCTION box2d(raster)
     RETURNS box2d
-    AS 'select st_box2d(st_convexhull($1))'
+    AS 'select box2d(st_convexhull($1))'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_envelope(raster)
@@ -944,7 +944,7 @@ CREATE OR REPLACE FUNCTION st_bytea(raster)
 ------------------------------------------------------------------------------
 
 CREATE CAST (raster AS box2d)
-    WITH FUNCTION st_box2d(raster) AS IMPLICIT;
+    WITH FUNCTION box2d(raster) AS IMPLICIT;
 
 CREATE CAST (raster AS geometry)
     WITH FUNCTION st_convexhull(raster) AS IMPLICIT;
