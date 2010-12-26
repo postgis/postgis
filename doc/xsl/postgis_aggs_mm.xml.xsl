@@ -440,6 +440,7 @@
 				<title>PostGIS Functions new, behavior changed, or enhanced in 2.0</title>
 				<para>The functions given below are PostGIS functions that were added, enhanced, or have breaking changes in 2.0 releases.</para>
 				<para>New geometry types: TIN and Polyhedral surfaces was introduced in 2.0</para>
+				<note><para>Greatly improved support for Topology.  Please refer to <xref linkend="Topology" /> for more details.</para></note>
 				<note><para>In PostGIS 2.0, raster type and raster functionality has been integrated.  There are way too many new raster functions to list here and all are new so 
 					please refer to <xref linkend="RT_reference" /> for more details of the raster functions available.</para></note>
 				<itemizedlist>
