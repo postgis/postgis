@@ -77,10 +77,11 @@
 		
 			<refsection>
 				<title>Examples</title>
+<programlisting>
 -- Note for this example we created our new table in the ma_topo schema 
 -- though we could have created it in a different schema -- in shich case topology_name and schema_name would be different 
 CREATE TABLE ma_topo.parcel_topo(tid serial, parcel_id varchar(20) PRIMARY KEY);
-SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma_topo', 'parcel_topo', 'topo', 'POLYGON');
+SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma_topo', 'parcel_topo', 'topo', 'POLYGON');</programlisting>
 			</refsection>
 		
 			<!-- Optionally add a "See Also" section -->
@@ -113,15 +114,14 @@ SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma_topo', 'parcel_topo', 'topo
 			</refsynopsisdiv>
 		
 			<refsection>
-			<title>Description</title>
-		
-			<para>Creates a new schema with name <varname>topology_name</varname> consisting of tables (<varname>edge_data</varname>,<varname>face</varname>,<varname>node</varname>, <varname>relation</varname>
-				and registers this new topology in the topology.topology table. It returns the id of the topology in the topology table. The srid is the spatial reference identified as 
-			defined in spatial_ref_sys table for that topology.  Toplogies must be uniquely named.  The tolerance is measured in the units of the spatial reference system.</para>
-	
-			<!-- use this format if new function -->
-			<para>Availability: 2.0.0</para>
-			
+                <title>Description</title>
+            
+                <para>Creates a new schema with name <varname>topology_name</varname> consisting of tables (<varname>edge_data</varname>,<varname>face</varname>,<varname>node</varname>, <varname>relation</varname>
+                    and registers this new topology in the topology.topology table. It returns the id of the topology in the topology table. The srid is the spatial reference identified as 
+                defined in spatial_ref_sys table for that topology.  Toplogies must be uniquely named.  The tolerance is measured in the units of the spatial reference system.</para>
+        
+                <!-- use this format if new function -->
+                <para>Availability: 2.0.0</para>
 			</refsection>
 		
 		
@@ -156,14 +156,13 @@ SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma_topo', 'parcel_topo', 'topo
 			</refsynopsisdiv>
 		
 			<refsection>
-			<title>Description</title>
-		
-			<para>Drops a topology schema and deletes its reference from topology.topology table and references to tables in that schema from the geometry_columns table.
-			This function should be USED WITH CAUTION, as it could destroy data you care about.  If the schema does not exist, it just removes reference entries the named schema.</para>
-	
-			<!-- use this format if new function -->
-			<para>Availability: 2.0.0</para>
-			
+                <title>Description</title>
+            
+                <para>Drops a topology schema and deletes its reference from topology.topology table and references to tables in that schema from the geometry_columns table.
+                This function should be USED WITH CAUTION, as it could destroy data you care about.  If the schema does not exist, it just removes reference entries the named schema.</para>
+        
+                <!-- use this format if new function -->
+                <para>Availability: 2.0.0</para>
 			</refsection>
 		
 		
@@ -176,8 +175,7 @@ SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma_topo', 'parcel_topo', 'topo
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-			
-				<para><xref linkend="geometry_columns"/></para>
+				<para></para>
 			</refsection>
 		</refentry>
 		<refentry id="DropTopoGeometryColumn">
@@ -199,14 +197,13 @@ SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma_topo', 'parcel_topo', 'topo
 			</refsynopsisdiv>
 		
 			<refsection>
-			<title>Description</title>
-		
-			<para>Drops the topogeometry column from the table named <varname>table_name</varname> in schema <varname>schema_name</varname> and unregisters the columns from topology.layer table. Returns summary
-			of drop status.  NOTE: it first sets all values to NULL before dropping to bypass referential integrity checks.</para>
-	
-			<!-- use this format if new function -->
-			<para>Availability: 2.0.0</para>
-			
+                <title>Description</title>
+            
+                <para>Drops the topogeometry column from the table named <varname>table_name</varname> in schema <varname>schema_name</varname> and unregisters the columns from topology.layer table. Returns summary
+                of drop status.  NOTE: it first sets all values to NULL before dropping to bypass referential integrity checks.</para>
+        
+                <!-- use this format if new function -->
+                <para>Availability: 2.0.0</para>
 			</refsection>
 		
 		
@@ -218,7 +215,6 @@ SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma_topo', 'parcel_topo', 'topo
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-			
 				<para><xref linkend="AddTopoGeometryColumn"/></para>
 			</refsection>
 		</refentry>
