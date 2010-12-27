@@ -1,25 +1,4 @@
 Topology 'sqlmm_topology' dropped
-NOTICE:  CREATE TABLE will create implicit sequence "face_face_id_seq" for serial column "face.face_id"
-PL/pgSQL function "createtopology" line 26 at EXECUTE statement
-PL/pgSQL function "st_inittopogeo" line 15 at FOR over EXECUTE statement
-NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "face_primary_key" for table "face"
-PL/pgSQL function "createtopology" line 26 at EXECUTE statement
-PL/pgSQL function "st_inittopogeo" line 15 at FOR over EXECUTE statement
-NOTICE:  CREATE TABLE will create implicit sequence "node_node_id_seq" for serial column "node.node_id"
-PL/pgSQL function "createtopology" line 37 at EXECUTE statement
-PL/pgSQL function "st_inittopogeo" line 15 at FOR over EXECUTE statement
-NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "node_primary_key" for table "node"
-PL/pgSQL function "createtopology" line 37 at EXECUTE statement
-PL/pgSQL function "st_inittopogeo" line 15 at FOR over EXECUTE statement
-NOTICE:  CREATE TABLE will create implicit sequence "edge_data_edge_id_seq" for serial column "edge_data.edge_id"
-PL/pgSQL function "createtopology" line 64 at EXECUTE statement
-PL/pgSQL function "st_inittopogeo" line 15 at FOR over EXECUTE statement
-NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "edge_data_pkey" for table "edge_data"
-PL/pgSQL function "createtopology" line 64 at EXECUTE statement
-PL/pgSQL function "st_inittopogeo" line 15 at FOR over EXECUTE statement
-NOTICE:  CREATE TABLE / UNIQUE will create implicit index "relation_layer_id_key" for table "relation"
-PL/pgSQL function "createtopology" line 168 at EXECUTE statement
-PL/pgSQL function "st_inittopogeo" line 15 at FOR over EXECUTE statement
 Topology-Geometry 'sqlmm_topology' (id:4) created. 
 -- ST_AddIsoNode ------------------------
 ERROR:  SQL/MM Spatial exception - null argument
