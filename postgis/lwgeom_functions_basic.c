@@ -1417,8 +1417,7 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 				}
 			}
 
-			POSTGIS_DEBUGF(3, "LWGEOM_makeline_garray: element %d deserialized",
-			               i);
+			POSTGIS_DEBUGF(3, "LWGEOM_makeline_garray: element %d deserialized", i);
 		}
 
 		/* Advance NULL bitmap */

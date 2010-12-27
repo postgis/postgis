@@ -349,7 +349,8 @@ SELECT '#720', ST_AsText(ST_SnapTogrid(ST_Transform(ST_GeomFromText('MULTIPOINT(
 -- #723 --
 SELECT '#723',ST_Intersection(a.geog, b.geog) As result FROM (VALUES (ST_GeogFromText('SRID=4326;POINT(-11.1111111 40)') ), (ST_GeogFromText('SRID=4326;POINT(-11.1111111 55)') ) ) As  a(geog) CROSS JOIN ( VALUES (ST_GeogFromText('SRID=4326;POINT(-11.1111111 40)') ), (ST_GeogFromText('SRID=4326;POINT(-11.1111111 55)') )) As b(geog);	
 
-
+-- #729 --
+SELECT '#729',ST_MakeLine(foo1.the_geom) As result FROM ((SELECT ST_GeomFromText('POINT EMPTY',4326) As the_geom UNION ALL SELECT ST_GeomFromText('MULTIPOINT EMPTY',4326) As the_geom UNION ALL SELECT ST_GeomFromText('MULTIPOLYGON EMPTY',4326) As the_geom UNION ALL SELECT ST_GeomFromText('LINESTRING EMPTY',4326) As the_geom UNION ALL SELECT ST_GeomFromText('MULTILINESTRING EMPTY',4326) As the_geom ) ) As foo1;
 
 -- Clean up
 DELETE FROM spatial_ref_sys;

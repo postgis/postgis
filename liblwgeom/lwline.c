@@ -393,11 +393,12 @@ lwline_same(const LWLINE *l1, const LWLINE *l2)
 LWLINE *
 lwline_from_lwpointarray(int srid, uint32 npoints, LWPOINT **points)
 {
-	int zmflag=0;
-	uint32 i;
+ 	int i;
+	int hasz = LW_TRUE;
+	int hasm = LW_TRUE;
 	POINTARRAY *pa;
-	uchar *newpoints, *ptr;
-	size_t ptsize, size;
+	LWLINE *line;
+	POINT4D pt;
 
 	/*
 	 * Find output dimensions, check integrity
@@ -406,37 +407,31 @@ lwline_from_lwpointarray(int srid, uint32 npoints, LWPOINT **points)
 	{
 		if ( points[i]->type != POINTTYPE )
 		{
-			lwerror("lwline_from_lwpointarray: invalid input type: %s",
-			        lwtype_name(points[i]->type));
+			lwerror("lwline_from_lwpointarray: invalid input type: %s", lwtype_name(points[i]->type));
 			return NULL;
 		}
-		if ( FLAGS_GET_Z(points[i]->flags) ) zmflag |= 2;
-		if ( FLAGS_GET_M(points[i]->flags) ) zmflag |= 1;
-		if ( zmflag == 3 ) break;
+		if ( FLAGS_GET_Z(points[i]->flags) ) hasz = LW_TRUE;
+		if ( FLAGS_GET_M(points[i]->flags) ) hasm = LW_TRUE;
+		if ( hasz && hasm ) break; /* Nothing more to learn! */
 	}
 
-	if ( zmflag == 0 ) ptsize=2*sizeof(double);
-	else if ( zmflag == 3 ) ptsize=4*sizeof(double);
-	else ptsize=3*sizeof(double);
-
-	/*
-	 * Allocate output points array
-	 */
-	size = ptsize*npoints;
-	newpoints = lwalloc(size);
-	memset(newpoints, 0, size);
-
-	ptr=newpoints;
-	for (i=0; i<npoints; i++)
-	{
-		size=ptarray_point_size(points[i]->point);
-		memcpy(ptr, getPoint_internal(points[i]->point, 0), size);
-		ptr+=ptsize;
-	}
-
-	pa = ptarray_construct_reference_data(zmflag&2, zmflag&1, npoints, newpoints);
+	pa = ptarray_construct_empty(hasz, hasm, npoints);
 	
-	return lwline_construct(srid, NULL, pa);
+	for ( i=0; i < npoints; i++ )
+	{
+		if ( ! lwpoint_is_empty(points[i]) )
+		{
+			lwpoint_getPoint4d_p(points[i], &pt);
+			ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		}
+	}
+
+	if ( pa->npoints > 0 )
+		line = lwline_construct(srid, NULL, pa);
+	else 
+		line = lwline_construct_empty(srid, hasz, hasm);
+	
+	return line;
 }
 
 /*

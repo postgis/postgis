@@ -2161,3 +2161,6 @@ interpolate_point4d(POINT4D *A, POINT4D *B, POINT4D *I, double F)
 	I->z=A->z+((B->z-A->z)*F);
 	I->m=A->m+((B->m-A->m)*F);
 }
+
+
+
