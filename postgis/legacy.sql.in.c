@@ -116,8 +116,8 @@ CREATE OR REPLACE FUNCTION st_geometry(box3d_extent)
 --- end functions that in theory should never have been used
 
 
--- begin old ogc (and non-ST) names that have been replaced with new SQL-MM and SQL Like names --
-
+-- begin old ogc (and non-ST) names that have been replaced with new SQL-MM and SQL ST_ Like names --
+-- AFFINE Functions --
 -- Availability: 1.1.2
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Affine(geometry,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8)
@@ -194,6 +194,32 @@ CREATE OR REPLACE FUNCTION transscale(geometry,float8,float8,float8,float8)
 		0, 0, 1,  $2 * $4, $3 * $5, 0)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
+-- END Affine functions
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION combine_bbox(box2d,geometry)
+	RETURNS box2d
+	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_combine'
+	LANGUAGE 'C' IMMUTABLE;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION expand(box2d,float8)
+	RETURNS box2d
+	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_expand'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Availability: 1.5.0  -- replaced with postgis_getbbox
+CREATE OR REPLACE FUNCTION getbbox(geometry)
+	RETURNS box2d
+	AS 'MODULE_PATHNAME','LWGEOM_to_BOX2DFLOAT4'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION length3d_spheroid(geometry, spheroid)
+	RETURNS FLOAT8
+	AS 'MODULE_PATHNAME','LWGEOM_length_ellipsoid_linestring'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
 -- Availability: 1.1.0
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION shift_longitude(geometry)

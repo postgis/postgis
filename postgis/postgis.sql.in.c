@@ -370,22 +370,10 @@ CREATE TYPE box2d (
 	storage = plain
 );
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION expand(box2d,float8)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_expand'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_expand(box2d,float8)
 	RETURNS box2d
 	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_expand'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION getbbox(geometry)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME','LWGEOM_to_BOX2DFLOAT4'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
@@ -411,11 +399,6 @@ CREATE OR REPLACE FUNCTION ST_MakeBox2d(geometry, geometry)
 	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_construct'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION combine_bbox(box2d,geometry)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_combine'
-	LANGUAGE 'C' IMMUTABLE;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Combine_BBox(box2d,geometry)
@@ -462,7 +445,7 @@ DECLARE
 	myrec RECORD;
 
 BEGIN
-	FOR myrec IN EXECUTE 'SELECT extent("' || columnname || '") FROM "' || schemaname || '"."' || tablename || '"' LOOP
+	FOR myrec IN EXECUTE 'SELECT ST_Extent("' || columnname || '") FROM "' || schemaname || '"."' || tablename || '"' LOOP
 		return myrec.extent;
 	END LOOP;
 END;
@@ -479,7 +462,7 @@ DECLARE
 	myrec RECORD;
 
 BEGIN
-	FOR myrec IN EXECUTE 'SELECT extent("' || columnname || '") FROM "' || schemaname || '"."' || tablename || '"' LOOP
+	FOR myrec IN EXECUTE 'SELECT ST_Extent("' || columnname || '") FROM "' || schemaname || '"."' || tablename || '"' LOOP
 		return myrec.extent;
 	END LOOP;
 END;
@@ -1038,12 +1021,6 @@ CREATE OR REPLACE FUNCTION ST_Length(geometry)
 
 -- this is a fake (for back-compatibility)
 -- uses 3d if 3d is available, 2d otherwise
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION length3d_spheroid(geometry, spheroid)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','LWGEOM_length_ellipsoid_linestring'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_length3d_spheroid(geometry, spheroid)
 	RETURNS FLOAT8
@@ -1089,12 +1066,6 @@ CREATE OR REPLACE FUNCTION ST_perimeter3d(geometry)
 CREATE OR REPLACE FUNCTION ST_perimeter2d(geometry)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME', 'LWGEOM_perimeter2d_poly'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION perimeter(geometry)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME', 'LWGEOM_perimeter_poly'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: perimeter2d(geometry)
