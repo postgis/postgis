@@ -2522,7 +2522,7 @@ FROM dummy_rast WHERE rid=1;
 	
 	<sect1 id="Raster_Processing">
 		<title>Raster Processing Functions</title>
-		<refentry id="RT_ST_Box2D">
+		<refentry id="RT_Box2D">
 			<refnamediv>
 				<refname>ST_Box2D</refname>
 				<refpurpose>Returns the box 2d representation of the enclosing box of the raster</refpurpose>
@@ -2531,7 +2531,7 @@ FROM dummy_rast WHERE rid=1;
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>box2d <function>ST_Box2D</function></funcdef>
+					<funcdef>box2d <function>Box2D</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
