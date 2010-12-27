@@ -13,6 +13,8 @@ YYYY/MM/DD
   - ST_GeometryN and ST_NumGeometries support for non-collections
     (Sandro Santilli)
   - ST_isCollection (Sandro Santilli, Maxime van Noppen)
+  - ST_SharedPaths (Sandro Santilli / Faunalia for RT-SIGTA)
+  - ST_Snap (Sandro Santilli)
 
  * Enhancements *
 
