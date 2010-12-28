@@ -77,8 +77,7 @@
 		
 			<refsection>
 				<title>Examples</title>
-<programlisting>
--- Note for this example we created our new table in the ma_topo schema 
+				<programlisting>-- Note for this example we created our new table in the ma_topo schema 
 -- though we could have created it in a different schema -- in shich case topology_name and schema_name would be different 
 CREATE TABLE ma_topo.parcel_topo(tid serial, parcel_id varchar(20) PRIMARY KEY);
 SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma_topo', 'parcel_topo', 'topo', 'POLYGON');</programlisting>
