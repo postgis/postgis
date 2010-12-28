@@ -439,6 +439,7 @@ static bool gidx_2d_contains(GIDX *a, GIDX *b)
 
 static bool gidx_2d_within(GIDX *a, GIDX *b)
 {
+	POSTGIS_DEBUG(5, "entered function");
 	return gidx_2d_contains(b,a);
 }
 
@@ -894,7 +895,7 @@ gserialized_datum_predicate(Datum gs1, Datum gs2, gidx_predicate predicate)
 	GIDX *gidx1 = (GIDX*)boxmem1;
 	GIDX *gidx2 = (GIDX*)boxmem2;
 
-	POSTGIS_DEBUG(3, "testing");
+	POSTGIS_DEBUG(3, "entered function");
 
 	/* Must be able to build box for each arguement (ie, not empty geometry)
 	   and overlap boxes to return true. */
@@ -937,7 +938,7 @@ gserialized_expand(GSERIALIZED *g, double distance)
 PG_FUNCTION_INFO_V1(gserialized_2d_same);
 Datum gserialized_2d_same(PG_FUNCTION_ARGS)
 {
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(1), PG_GETARG_DATUM(0), gidx_2d_equals) == LW_TRUE )
+	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_2d_equals) == LW_TRUE )
 		PG_RETURN_BOOL(TRUE);
 
 	PG_RETURN_BOOL(FALSE);
@@ -946,7 +947,8 @@ Datum gserialized_2d_same(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gserialized_2d_within);
 Datum gserialized_2d_within(PG_FUNCTION_ARGS)
 {
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(1), PG_GETARG_DATUM(0), gidx_2d_within) == LW_TRUE )
+	POSTGIS_DEBUG(3, "entered function");
+	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_2d_within) == LW_TRUE )
 		PG_RETURN_BOOL(TRUE);
 
 	PG_RETURN_BOOL(FALSE);
@@ -955,7 +957,8 @@ Datum gserialized_2d_within(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gserialized_2d_contains);
 Datum gserialized_2d_contains(PG_FUNCTION_ARGS)
 {
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(1), PG_GETARG_DATUM(0), gidx_2d_contains) == LW_TRUE )
+	POSTGIS_DEBUG(3, "entered function");
+	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_2d_contains) == LW_TRUE )
 		PG_RETURN_BOOL(TRUE);
 
 	PG_RETURN_BOOL(FALSE);
@@ -964,7 +967,7 @@ Datum gserialized_2d_contains(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gserialized_2d_overlaps);
 Datum gserialized_2d_overlaps(PG_FUNCTION_ARGS)
 {
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(1), PG_GETARG_DATUM(0), gidx_2d_overlaps) == LW_TRUE )
+	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_2d_overlaps) == LW_TRUE )
 		PG_RETURN_BOOL(TRUE);
 
 	PG_RETURN_BOOL(FALSE);
@@ -973,7 +976,7 @@ Datum gserialized_2d_overlaps(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gserialized_2d_left);
 Datum gserialized_2d_left(PG_FUNCTION_ARGS)
 {
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(1), PG_GETARG_DATUM(0), gidx_2d_left) == LW_TRUE )
+	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_2d_left) == LW_TRUE )
 		PG_RETURN_BOOL(TRUE);
 
 	PG_RETURN_BOOL(FALSE);
@@ -982,7 +985,7 @@ Datum gserialized_2d_left(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gserialized_2d_right);
 Datum gserialized_2d_right(PG_FUNCTION_ARGS)
 {
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(1), PG_GETARG_DATUM(0), gidx_2d_right) == LW_TRUE )
+	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_2d_right) == LW_TRUE )
 		PG_RETURN_BOOL(TRUE);
 
 	PG_RETURN_BOOL(FALSE);
@@ -991,7 +994,7 @@ Datum gserialized_2d_right(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gserialized_2d_above);
 Datum gserialized_2d_above(PG_FUNCTION_ARGS)
 {
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(1), PG_GETARG_DATUM(0), gidx_2d_above) == LW_TRUE )
+	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_2d_above) == LW_TRUE )
 		PG_RETURN_BOOL(TRUE);
 
 	PG_RETURN_BOOL(FALSE);
@@ -1000,7 +1003,7 @@ Datum gserialized_2d_above(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gserialized_2d_below);
 Datum gserialized_2d_below(PG_FUNCTION_ARGS)
 {
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(1), PG_GETARG_DATUM(0), gidx_2d_below) == LW_TRUE )
+	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_2d_below) == LW_TRUE )
 		PG_RETURN_BOOL(TRUE);
 
 	PG_RETURN_BOOL(FALSE);
@@ -1009,7 +1012,7 @@ Datum gserialized_2d_below(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gserialized_2d_overleft);
 Datum gserialized_2d_overleft(PG_FUNCTION_ARGS)
 {
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(1), PG_GETARG_DATUM(0), gidx_2d_overleft) == LW_TRUE )
+	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_2d_overleft) == LW_TRUE )
 		PG_RETURN_BOOL(TRUE);
 
 	PG_RETURN_BOOL(FALSE);
@@ -1018,7 +1021,7 @@ Datum gserialized_2d_overleft(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gserialized_2d_overright);
 Datum gserialized_2d_overright(PG_FUNCTION_ARGS)
 {
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(1), PG_GETARG_DATUM(0), gidx_2d_overright) == LW_TRUE )
+	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_2d_overright) == LW_TRUE )
 		PG_RETURN_BOOL(TRUE);
 
 	PG_RETURN_BOOL(FALSE);
@@ -1027,7 +1030,7 @@ Datum gserialized_2d_overright(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gserialized_2d_overabove);
 Datum gserialized_2d_overabove(PG_FUNCTION_ARGS)
 {
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(1), PG_GETARG_DATUM(0), gidx_2d_overabove) == LW_TRUE )
+	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_2d_overabove) == LW_TRUE )
 		PG_RETURN_BOOL(TRUE);
 
 	PG_RETURN_BOOL(FALSE);
@@ -1036,7 +1039,7 @@ Datum gserialized_2d_overabove(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gserialized_2d_overbelow);
 Datum gserialized_2d_overbelow(PG_FUNCTION_ARGS)
 {
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(1), PG_GETARG_DATUM(0), gidx_2d_overbelow) == LW_TRUE )
+	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_2d_overbelow) == LW_TRUE )
 		PG_RETURN_BOOL(TRUE);
 
 	PG_RETURN_BOOL(FALSE);

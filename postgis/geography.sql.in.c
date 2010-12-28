@@ -850,15 +850,15 @@ CREATE OR REPLACE FUNCTION geometry_2d_within(geometry, geometry)
 	AS 'MODULE_PATHNAME', 'gserialized_2d_within'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
-CREATE OPERATOR ~ (
+CREATE OPERATOR @ (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_2d_within,
-	COMMUTATOR = '@',
+	COMMUTATOR = '~',
 	RESTRICT = contsel, JOIN = contjoinsel
 );
 
-CREATE OPERATOR @ (
+CREATE OPERATOR ~ (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_2d_contains,
-	COMMUTATOR = '~',
+	COMMUTATOR = '@',
 	RESTRICT = contsel, JOIN = contjoinsel
 );
 
