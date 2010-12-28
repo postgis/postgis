@@ -593,10 +593,10 @@ static int lwcollection_calculate_gbox_cartesian(LWCOLLECTION *coll, GBOX *gbox)
 	{
 		if ( lwgeom_calculate_gbox_cartesian((LWGEOM*)(coll->geoms[i]), &subbox) == LW_SUCCESS )
 		{
-			/* Keep a copy of the sub-bounding box for later */
+			/* Keep a copy of the sub-bounding box for later 
 			if ( coll->geoms[i]->bbox ) 
 				lwfree(coll->geoms[i]->bbox);
-			coll->geoms[i]->bbox = gbox_copy(&subbox);
+			coll->geoms[i]->bbox = gbox_copy(&subbox); */
 			if ( first )
 			{
 				gbox_duplicate(&subbox, gbox);
