@@ -394,8 +394,8 @@ LWLINE *
 lwline_from_lwpointarray(int srid, uint32 npoints, LWPOINT **points)
 {
  	int i;
-	int hasz = LW_TRUE;
-	int hasm = LW_TRUE;
+	int hasz = LW_FALSE;
+	int hasm = LW_FALSE;
 	POINTARRAY *pa;
 	LWLINE *line;
 	POINT4D pt;
