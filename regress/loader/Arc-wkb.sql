@@ -1,4 +1,4 @@
 
-select ashexewkb(the_geom, 'NDR') from loadedshp;
-select ashexewkb(the_geom, 'XDR') from loadedshp;
-select asewkt(the_geom) from loadedshp;
+select ST_Ashexewkb(the_geom, 'NDR') from loadedshp;
+select ST_Ashexewkb(the_geom, 'XDR') from loadedshp;
+select ST_Asewkt(the_geom) from loadedshp;
