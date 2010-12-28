@@ -2,7 +2,7 @@
  * $Id: pgsql2shp.c 5450 2010-03-22 19:38:14Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://www.postgis.org
  * Copyright 2001-2003 Refractions Research Inc.
  *
  * This is free software; you can redistribute and/or modify it under
@@ -888,14 +888,14 @@ int getTableInfo(SHPDUMPERSTATE *state)
 		{
 			query = malloc(150 + 4 * strlen(state->geo_col_name) + strlen(state->schema) + strlen(state->table));
 	
-			sprintf(query, "SELECT count(\"%s\"), max(zmflag(\"%s\"::geometry)), geometrytype(\"%s\"::geometry) FROM \"%s\".\"%s\" GROUP BY geometrytype(\"%s\"::geometry)",
+			sprintf(query, "SELECT count(\"%s\"), max(ST_zmflag(\"%s\"::geometry)), geometrytype(\"%s\"::geometry) FROM \"%s\".\"%s\" GROUP BY geometrytype(\"%s\"::geometry)",
 			state->geo_col_name, state->geo_col_name, state->geo_col_name, state->schema, state->table, state->geo_col_name);
 		}
 		else
 		{
 			query = malloc(150 + 4 * strlen(state->geo_col_name) + strlen(state->table));
 	
-			sprintf(query, "SELECT count(\"%s\"), max(zmflag(\"%s\"::geometry)), geometrytype(\"%s\"::geometry) FROM \"%s\" GROUP BY geometrytype(\"%s\"::geometry)",
+			sprintf(query, "SELECT count(\"%s\"), max(ST_zmflag(\"%s\"::geometry)), geometrytype(\"%s\"::geometry) FROM \"%s\" GROUP BY geometrytype(\"%s\"::geometry)",
 			state->geo_col_name, state->geo_col_name, state->geo_col_name, state->table, state->geo_col_name);
 		}
 	}
@@ -1790,7 +1790,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		{
 			if (state->pgis_major_version > 0)
 			{
-				sprintf(buf, "asEWKB(setSRID(\"%s\"::geometry, -1), 'XDR')", state->geo_col_name);
+				sprintf(buf, "ST_asEWKB(ST_SetSRID(\"%s\"::geometry, -1), 'XDR')", state->geo_col_name);
 			}
 			else
 			{
@@ -1802,7 +1802,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		{
 			if (state->pgis_major_version > 0)
 			{
-				sprintf(buf, "asEWKB(setSRID(\"%s\"::geometry, -1), 'NDR') AS _geoX", state->geo_col_name);
+				sprintf(buf, "ST_AsEWKB(ST_SetSRID(\"%s\"::geometry, -1), 'NDR') AS _geoX", state->geo_col_name);
 			}
 			else
 			{
