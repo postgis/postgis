@@ -174,9 +174,9 @@ int gbox_overlaps(const GBOX *g1, const GBOX *g2)
 {
 
 	/* Make sure our boxes have the same dimensionality */
-	if ( ! (FLAGS_GET_Z(g1->flags) == FLAGS_GET_Z(g2->flags) &&
-	        FLAGS_GET_M(g1->flags) == FLAGS_GET_M(g2->flags) &&
-	        FLAGS_GET_GEODETIC(g1->flags) == FLAGS_GET_GEODETIC(g2->flags) ) )
+	if ( (FLAGS_GET_Z(g1->flags) != FLAGS_GET_Z(g2->flags)) ||
+	     (FLAGS_GET_M(g1->flags) != FLAGS_GET_M(g2->flags)) ||
+	     (FLAGS_GET_GEODETIC(g1->flags) != FLAGS_GET_GEODETIC(g2->flags)) )
 	{
 		lwerror("gbox_overlaps: geometries have mismatched dimensionality");
 	}
@@ -593,6 +593,10 @@ static int lwcollection_calculate_gbox_cartesian(LWCOLLECTION *coll, GBOX *gbox)
 	{
 		if ( lwgeom_calculate_gbox_cartesian((LWGEOM*)(coll->geoms[i]), &subbox) == LW_SUCCESS )
 		{
+			/* Keep a copy of the sub-bounding box for later */
+			if ( coll->geoms[i]->bbox ) 
+				lwfree(coll->geoms[i]->bbox);
+			coll->geoms[i]->bbox = gbox_copy(&subbox);
 			if ( first )
 			{
 				gbox_duplicate(&subbox, gbox);
@@ -611,8 +615,7 @@ static int lwcollection_calculate_gbox_cartesian(LWCOLLECTION *coll, GBOX *gbox)
 int lwgeom_calculate_gbox_cartesian(const LWGEOM *lwgeom, GBOX *gbox)
 {
 	if ( ! lwgeom ) return LW_FAILURE;
-	LWDEBUGF(4, "lwgeom_calculate_gbox got type (%d) - %s",
-		lwgeom->type, lwtype_name(lwgeom->type));
+	LWDEBUGF(4, "lwgeom_calculate_gbox got type (%d) - %s", lwgeom->type, lwtype_name(lwgeom->type));
 
 	switch (lwgeom->type)
 	{

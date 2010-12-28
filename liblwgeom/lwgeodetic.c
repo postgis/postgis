@@ -1791,8 +1791,10 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 	int type1, type2;
 	int check_intersection = LW_FALSE;
 	GBOX gbox1, gbox2;
-	gbox1.flags = gbox2.flags = 0;
 
+	gbox_init(&gbox1);
+	gbox_init(&gbox2);
+	
 	assert(lwgeom1);
 	assert(lwgeom2);
 	
@@ -2306,6 +2308,10 @@ static int lwcollection_calculate_gbox_geodetic(const LWCOLLECTION *coll, GBOX *
 	{
 		if ( lwgeom_calculate_gbox_geodetic((LWGEOM*)(coll->geoms[i]), &subbox) == LW_SUCCESS )
 		{
+			/* Keep a copy of the sub-bounding box for later */
+			if ( coll->geoms[i]->bbox ) 
+				lwfree(coll->geoms[i]->bbox);
+			coll->geoms[i]->bbox = gbox_copy(&subbox);
 			if ( first )
 			{
 				gbox_duplicate(&subbox, gbox);
@@ -2326,6 +2332,7 @@ int lwgeom_calculate_gbox_geodetic(const LWGEOM *geom, GBOX *gbox)
 	int result = LW_FAILURE;
 	LWDEBUGF(4, "got type %d", geom->type);
 
+	/* Add a geodetic flag to the incoming gbox */
 	gbox->flags = gflags(FLAGS_GET_Z(geom->flags),FLAGS_GET_M(geom->flags),1);
 
 	switch (geom->type)
