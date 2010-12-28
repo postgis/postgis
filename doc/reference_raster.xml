@@ -1159,7 +1159,7 @@ FROM dummy_rast;
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_UpperLeftY" />, <xref linkend="RT_ST_GeoReference" />, <xref linkend="RT_ST_Box2D" /></para>
+				<para><xref linkend="RT_ST_UpperLeftY" />, <xref linkend="RT_ST_GeoReference" />, <xref linkend="RT_Box2D" /></para>
 			</refsection>
 		</refentry>
 		
@@ -1201,7 +1201,7 @@ FROM dummy_rast;
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_UpperLeftX" />, <xref linkend="RT_ST_GeoReference" />, <xref linkend="RT_ST_Box2D" /></para>
+				<para><xref linkend="RT_ST_UpperLeftX" />, <xref linkend="RT_ST_GeoReference" />, <xref linkend="RT_Box2D" /></para>
 			</refsection>
 		</refentry>
 		
@@ -2203,7 +2203,7 @@ WHERE rid = 2;
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_PixelSizeX" />, <xref linkend="RT_ST_PixelSizeY" />, <xref linkend="RT_ST_Box2D" /></para>
+				<para><xref linkend="RT_ST_PixelSizeX" />, <xref linkend="RT_ST_PixelSizeY" />, <xref linkend="RT_Box2D" /></para>
 			</refsection>
 		</refentry>
 
