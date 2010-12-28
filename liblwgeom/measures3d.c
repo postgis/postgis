@@ -4,7 +4,7 @@
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
- * Copyright 2001-2006 Refractions Research Inc.
+ * Copyright 2010 Nicklas Avén
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -269,7 +269,7 @@ int lw_dist3d_recursive(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS3D *dl)
 
 /**
 
-This function distributes the "old-type" brut-force for 3D so far the only type, tasks depending on type
+This function distributes the brut-force for 3D so far the only type, tasks depending on type
 */
 int
 lw_dist3d_distribute_bruteforce(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS3D *dl)
@@ -294,7 +294,8 @@ lw_dist3d_distribute_bruteforce(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS3D *dl)
 		}
 		else if  ( t2 == POLYGONTYPE )
 		{
-			lwerror("Polygons are not yet supported for 3d distance calculations");
+			dl->twisted=1;
+			return lw_dist3d_point_poly((LWPOINT *)lwg1, (LWPOLY *)lwg2,dl);
 		}
 		else
 		{
@@ -316,7 +317,8 @@ lw_dist3d_distribute_bruteforce(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS3D *dl)
 		}
 		else if ( t2 == POLYGONTYPE )
 		{
-			lwerror("Polygons are not yet supported for 3d distance calculations");
+			dl->twisted=1;
+			return lw_dist3d_line_poly((LWLINE *)lwg1,(LWPOLY *)lwg2,dl);
 		}
 		else
 		{
@@ -328,15 +330,18 @@ lw_dist3d_distribute_bruteforce(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS3D *dl)
 	{
 		if ( t2 == POLYGONTYPE )
 		{
-			lwerror("Polygons are not yet supported for 3d distance calculations");
+			dl->twisted=1;
+			return lw_dist3d_poly_poly((LWPOLY *)lwg1, (LWPOLY *)lwg2,dl);
 		}
 		else if ( t2 == POINTTYPE )
 		{
-			lwerror("Polygons are not yet supported for 3d distance calculations");
+			dl->twisted=-1;
+			return lw_dist3d_point_poly((LWPOINT *)lwg2, (LWPOLY *)lwg1,dl);
 		}
 		else if ( t2 == LINETYPE )
 		{
-			lwerror("Polygons are not yet supported for 3d distance calculations");
+			dl->twisted=-1;
+			return lw_dist3d_line_poly((LWLINE *)lwg2,(LWPOLY *)lwg1,dl);
 		}
 		else
 		{
@@ -373,6 +378,7 @@ point to point calculation
 int
 lw_dist3d_point_point(LWPOINT *point1, LWPOINT *point2, DISTPTS3D *dl)
 {
+	LWDEBUG(2, "lw_dist3d_point_point is called");
 	POINT3DZ p1;
 	POINT3DZ p2;
 
@@ -388,17 +394,109 @@ point to line calculation
 int
 lw_dist3d_point_line(LWPOINT *point, LWLINE *line, DISTPTS3D *dl)
 {
+	LWDEBUG(2, "lw_dist3d_point_line is called");
 	POINT3DZ p;
 	POINTARRAY *pa = line->points;
-	LWDEBUG(2, "lw_dist3d_point_line is called");
+
 	getPoint3dz_p(point->point, 0, &p);
 	return lw_dist3d_pt_ptarray(&p, pa, dl);
 }
 
 /**
 
- * search all the segments of pointarray to see which one is closest to p1
- * Returns minimum distance between point and pointarray
+point to polygon calculation
+*/
+int
+lw_dist3d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS3D *dl)
+{
+	LWDEBUG(2, "lw_dist3d_point_poly is called");
+	POINT3DZ p, projp;/*pointp is "point projected on plane"*/
+	PLANE3D plane;
+	getPoint3dz_p(point->point, 0, &p);
+	
+	if (dl->mode == DIST_MAX)
+	{
+		LWDEBUG(3, "looking for maxdistance");
+		return lw_dist3d_pt_ptarray(&p, poly->rings[0], dl);
+	}
+	
+	if(!define_plane(poly->rings[0], &plane))
+		return LW_FALSE;
+	
+	project_point_on_plane(&p, &plane, &projp);
+	
+	return lw_dist3d_pt_poly(&p, poly,&plane, &projp, dl);
+}
+
+
+/**
+
+line to line calculation
+*/
+int
+lw_dist3d_line_line(LWLINE *line1, LWLINE *line2, DISTPTS3D *dl)
+{
+	LWDEBUG(2, "lw_dist3d_line_line is called");
+	POINTARRAY *pa1 = line1->points;
+	POINTARRAY *pa2 = line2->points;
+
+	return lw_dist3d_ptarray_ptarray(pa1, pa2, dl);
+}
+
+/**
+
+line to polygon calculation
+*/
+int lw_dist3d_line_poly(LWLINE *line, LWPOLY *poly, DISTPTS3D *dl)
+{
+	LWDEBUG(2, "lw_dist3d_line_poly is called");	
+	PLANE3D plane;	
+		
+	if (dl->mode == DIST_MAX)
+	{
+		return lw_dist3d_ptarray_ptarray(line->points, poly->rings[0], dl);
+	}
+	
+	if(!define_plane(poly->rings[0], &plane))
+		return LW_FALSE;
+	
+	return lw_dist3d_ptarray_poly(line->points, poly,&plane, dl);
+}
+
+/**
+
+polygon to polygon calculation
+*/
+int lw_dist3d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS3D *dl)
+{		
+	LWDEBUG(2, "lw_dist3d_poly_poly is called");
+	PLANE3D plane;		
+	if (dl->mode == DIST_MAX)
+	{
+		return lw_dist3d_ptarray_ptarray(poly1->rings[0], poly2->rings[0], dl);
+	}
+	
+	if(!define_plane(poly2->rings[0], &plane))
+		return LW_FALSE;
+	
+	/*What we do here is to compare the bondary of one polygon with the other polygon 
+	and then take the second boudary comparing with the first polygon*/
+	dl->twisted=1;
+	if(!lw_dist3d_ptarray_poly(poly1->rings[0], poly2,&plane, dl))
+		return LW_FALSE;
+	if(dl->distance==0.0) /*Just check if the answer already is given*/
+		return LW_TRUE;
+	
+	if(!define_plane(poly1->rings[0], &plane))
+		return LW_FALSE;
+	dl->twisted=-1; /*because we swithc the order of geometries we swithch "twisted" to -1 which will give the right order of points in shortest line.*/
+	return lw_dist3d_ptarray_poly(poly2->rings[0], poly1,&plane, dl);
+}
+
+/**
+
+ * search all the segments of pointarray to see which one is closest to p
+ * Returns distance between point and pointarray
  */
 int
 lw_dist3d_pt_ptarray(POINT3DZ *p, POINTARRAY *pa,DISTPTS3D *dl)
@@ -427,7 +525,8 @@ lw_dist3d_pt_ptarray(POINT3DZ *p, POINTARRAY *pa,DISTPTS3D *dl)
 
 /**
 
-This one is sending every occation to lw_dist3d_pt_pt
+If searching for min distance, this one finds the closest point on segment A-B from p.
+if searching for max distance it just sends p-A and p-B to pt-pt calculation
 */
 int
 lw_dist3d_pt_seg(POINT3DZ *p, POINT3DZ *A, POINT3DZ *B, DISTPTS3D *dl)
@@ -488,6 +587,7 @@ depending on dl->mode (max or min)
 int
 lw_dist3d_pt_pt(POINT3DZ *thep1, POINT3DZ *thep2,DISTPTS3D *dl)
 {
+	LWDEBUGF(2, "lw_dist3d_pt_pt called (with points: p1.x=%f, p1.y=%f,p1.z=%f,p2.x=%f, p2.y=%f,p2.z=%f)",thep1->x,thep1->y,thep1->z,thep2->x,thep2->y,thep2->z );
 	double dx = thep2->x - thep1->x;
 	double dy = thep2->y - thep1->y;
 	double dz = thep2->z - thep1->z;
@@ -512,17 +612,6 @@ lw_dist3d_pt_pt(POINT3DZ *thep1, POINT3DZ *thep2,DISTPTS3D *dl)
 }
 
 
-
-int
-lw_dist3d_line_line(LWLINE *line1, LWLINE *line2, DISTPTS3D *dl)
-{
-	POINTARRAY *pa1 = line1->points;
-	POINTARRAY *pa2 = line2->points;
-	LWDEBUG(2, "lw_dist3d_line_line is called");
-	return lw_dist3d_ptarray_ptarray(pa1, pa2, dl);
-}
-
-
 /**
 
 Finds all combinationes of segments between two pointarrays
@@ -530,12 +619,13 @@ Finds all combinationes of segments between two pointarrays
 int
 lw_dist3d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS3D *dl)
 {
+	LWDEBUGF(2, "lw_dist3d_ptarray_ptarray called (points: %d-%d)",l1->npoints, l2->npoints);
 	int t,u;
 	POINT3DZ	start, end;
 	POINT3DZ	start2, end2;
 	int twist = dl->twisted;
 
-	LWDEBUGF(2, "lw_dist3d_ptarray_ptarray called (points: %d-%d)",l1->npoints, l2->npoints);
+
 
 	if (dl->mode == DIST_MAX)/*If we are searching for maxdistance we go straight to point-point calculation since the maxdistance have to be between two vertexes*/
 	{
@@ -616,11 +706,11 @@ lw_dist3d_seg_seg(POINT3DZ *s1p1, POINT3DZ *s1p2, POINT3DZ *s2p1, POINT3DZ *s2p2
 	if (!get_3dvector_from_points(s2p1, s1p1, &vl))
 		return LW_FALSE;	
 
-	double    a = DOT(&v1,&v1);
-	double    b = DOT(&v1,&v2);
-	double    c = DOT(&v2,&v2);
-	double    d = DOT(&v1,&vl);
-	double    e = DOT(&v2,&vl);
+	double    a = DOT(v1,v1);
+	double    b = DOT(v1,v2);
+	double    c = DOT(v2,v2);
+	double    d = DOT(v1,vl);
+	double    e = DOT(v2,vl);
 	double    D = a*c - b*b; 
 
 
@@ -694,6 +784,352 @@ lw_dist3d_seg_seg(POINT3DZ *s1p1, POINT3DZ *s1p2, POINT3DZ *s2p1, POINT3DZ *s2p2
 		}
 	}
 	return LW_TRUE;
+}
+
+/**
+
+Computes point to polygon distance
+For mindistance that means:
+1)projecting the point to the plane of the polygon
+2)finding if that projected point is inside the polygon, if so the distance is measured to that point
+3) if not in polygon above, check the distance against the boundary of the polygon
+*/
+int
+lw_dist3d_pt_poly(POINT3DZ *p, LWPOLY *poly, PLANE3D *plane,POINT3DZ *projp, DISTPTS3D *dl)
+{	
+	int i;
+	
+	LWDEBUG(2, "lw_dist3d_point_poly called");
+
+	
+	if(pt_in_ring_3d(projp, poly->rings[0], plane))
+	{
+		for (i=1; i<poly->nrings; i++)
+		{
+			/* Inside a hole. Distance = pt -> ring */
+			if ( pt_in_ring_3d(projp, poly->rings[i], plane ))
+			{
+				LWDEBUG(3, " inside an hole");
+				return lw_dist3d_pt_ptarray(p, poly->rings[i], dl);
+			}
+		}		
+		
+		return lw_dist3d_pt_pt(p,projp,dl);/* If the projected point is inside the polygon the shortest distance is between that point and the inputed point*/
+	}
+	else
+	{
+		return lw_dist3d_pt_ptarray(p, poly->rings[0], dl); /*If the projected point is outside the polygon we search for the closest distance against the boundarry instead*/
+	}	
+	
+	return LW_TRUE;
+	
+}
+
+/**
+
+Computes pointarray to polygon distance
+*/
+int lw_dist3d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly,PLANE3D *plane, DISTPTS3D *dl)
+{
+	
+
+	int i,j,k;
+	double f, s1, s2;
+	VECTOR3D projp1_projp2;
+	POINT3DZ p1, p2,projp1, projp2, intersectionp;
+	
+	getPoint3dz_p(pa, 0, &p1);
+	
+	s1=project_point_on_plane(&p1, plane, &projp1); /*the sign of s1 tells us on which side of the plane the point is. */
+	lw_dist3d_pt_poly(&p1, poly, plane,&projp1, dl);	
+	
+	for (i=1;i<pa->npoints;i++)
+	{		
+		getPoint3dz_p(pa, i, &p2);
+		s2=project_point_on_plane(&p2, plane, &projp2);	
+		lw_dist3d_pt_poly(&p2, poly, plane,&projp2, dl);
+		
+		/*If s1and s2 has different signs that means they are on different sides of the plane of the polygon.
+		That means that the edge between the points crosses the plane and might intersect with the polygon*/
+		if((s1*s2)<=0) 
+		{
+			f=fabs(s1)/(fabs(s1)+fabs(s2)); /*The size of s1 and s2 is the distance from the point to the plane.*/
+			get_3dvector_from_points(&projp1, &projp2,&projp1_projp2);
+			
+			/*get the point where the line segment crosses the plane*/
+			intersectionp.x=projp1.x+f*projp1_projp2.x;
+			intersectionp.y=projp1.y+f*projp1_projp2.y;
+			intersectionp.z=projp1.z+f*projp1_projp2.z;
+			
+			int intersects = LW_TRUE; /*We set intersects to true until the opposite is proved*/
+			
+			if(pt_in_ring_3d(&intersectionp, poly->rings[0], plane)) /*Inside outer ring*/
+			{
+				for (k=1;k<poly->nrings; k++)
+				{
+					/* Inside a hole, so no intersection with the polygon*/
+					if ( pt_in_ring_3d(&intersectionp, poly->rings[k], plane ))
+					{
+						intersects=LW_FALSE;
+						break;
+					}
+				}		
+				if(intersects) 
+				{
+					dl->distance=0.0;
+					dl->p1.x=intersectionp.x;
+					dl->p1.y=intersectionp.y;
+					dl->p1.z=intersectionp.z;
+					
+					dl->p2.x=intersectionp.x;
+					dl->p2.y=intersectionp.y;
+					dl->p2.z=intersectionp.z;
+					return LW_TRUE;
+					
+				}					
+			}			
+		}
+		
+		projp2=projp1;
+		s2=s1;
+		p2=p1;
+	}	
+	
+	/*check or pointarray against boundary and inner boundaries of the polygon*/
+	for (j=0;j<poly->nrings;j++)
+	{
+		lw_dist3d_ptarray_ptarray(pa, poly->rings[j], dl);
+	}
+	
+return LW_TRUE;
+}	
+
+
+/**
+
+Here we define the plane of a polygon (boundary pointarray of a polygon)
+the plane is stored as a pont in plane (plane.pop) and a normal vector (plane.pv)
+*/
+int
+define_plane(POINTARRAY *pa, PLANE3D *pl)
+{
+	int i,j, numberofvectors, pointsinslice;
+	POINT3DZ p, p1, p2;
+
+	double sumx=0;
+	double sumy=0;
+	double sumz=0;
+	double vl; /*vector length*/
+
+	VECTOR3D v1, v2, v;
+	
+	if((pa->npoints-1)==3) /*Triangle is special case*/
+	{
+		pointsinslice=1;		
+	}
+	else
+	{
+		pointsinslice=(int) floor((pa->npoints-1)/4); /*divide the pointarray into 4 slices*/
+	}
+	
+	/*find the avg point*/
+	for (i=0;i<(pa->npoints-1);i++)
+	{
+		getPoint3dz_p(pa, i, &p);
+		sumx+=p.x;
+		sumy+=p.y;
+		sumz+=p.z;		
+	}	
+	pl->pop.x=(sumx/(pa->npoints-1));
+	pl->pop.y=(sumy/(pa->npoints-1));
+	pl->pop.z=(sumz/(pa->npoints-1));
+	
+	sumx=0;
+	sumy=0;
+	sumz=0;
+	numberofvectors= floor((pa->npoints-1)/pointsinslice); /*the number of vectors we try can be 3, 4 or 5*/
+	
+	getPoint3dz_p(pa, 0, &p1);
+	for (j=pointsinslice;j<pa->npoints;j+=pointsinslice)
+	{
+		getPoint3dz_p(pa, j, &p2);	
+		
+		if (!get_3dvector_from_points(&(pl->pop), &p1, &v1) || !get_3dvector_from_points(&(pl->pop), &p2, &v2))
+			return LW_FALSE;	
+		/*perpendicular vector is cross product of v1 and v2*/
+		if (!get_3dcross_product(&v1,&v2, &v))
+			return LW_FALSE;		
+		vl=VECTORLENGTH(v);
+		sumx+=(v.x/vl);
+		sumy+=(v.y/vl);
+		sumz+=(v.z/vl);	
+		p1=p2;
+	}
+	pl->pv.x=(sumx/numberofvectors);
+	pl->pv.y=(sumy/numberofvectors);
+	pl->pv.z=(sumz/numberofvectors);
+	
+	return 1;
+}
+
+/**
+
+Finds a point on a plane from where the original point is perpendicular to the plane
+*/
+double 
+project_point_on_plane(POINT3DZ *p,  PLANE3D *pl, POINT3DZ *p0)
+{
+/*In our plane definition we have a point on the plane and a normal vektor (pl.pv), perpendicular to the plane
+this vector will be paralell to the line between our inputted point above the plane and the point we are searching for on the plane.
+So, we already have a direction from p to find p0, but we don't know the distance.
+*/
+
+	VECTOR3D v1;
+	double f;
+	
+	if (!get_3dvector_from_points(&(pl->pop), p, &v1))
+	return LW_FALSE;	
+	
+	f=-(DOT(pl->pv,v1)/DOT(pl->pv,pl->pv));
+	
+	p0->x=p->x+pl->pv.x*f;
+	p0->y=p->y+pl->pv.y*f;
+	p0->z=p->z+pl->pv.z*f;      
+	
+	return f;		
+}
+
+
+
+
+/**
+ * pt_in_ring_3d(): crossing number test for a point in a polygon
+ *      input:   p = a point,
+ *               pa = vertex points of a ring V[n+1] with V[n]=V[0]
+*		plane=the plane that the vertex points are lying on
+ *      returns: 0 = outside, 1 = inside
+ *
+ *	Our polygons have first and last point the same,
+ *
+*	The difference in 3D variant is that we exclude the dimension that faces the plane least.
+*	That is the dimension with the highest number in pv
+ */
+int
+pt_in_ring_3d(const POINT3DZ *p, const POINTARRAY *ring,PLANE3D *plane)
+{
+	
+	int cn = 0;    /* the crossing number counter */
+	int i;
+	POINT3DZ v1, v2;
+
+	POINT3DZ	first, last;
+
+	getPoint3dz_p(ring, 0, &first);
+	getPoint3dz_p(ring, ring->npoints-1, &last);
+	if ( memcmp(&first, &last, sizeof(POINT3DZ)) )
+	{
+		lwerror("pt_in_ring_3d: V[n] != V[0] (%g %g %g!= %g %g %g)",
+		        first.x, first.y, first.z, last.x, last.y, last.z);
+		return LW_FALSE;
+	}
+
+	LWDEBUGF(2, "pt_in_ring_3d called with point: %g %g %g", p->x, p->y, p->z);
+	/* printPA(ring); */
+
+	/* loop through all edges of the polygon */
+	getPoint3dz_p(ring, 0, &v1);
+	
+	
+	if(fabs(plane->pv.z)>fabs(plane->pv.x)&&fabs(plane->pv.z)>fabs(plane->pv.y))	/*If the z vector of the normal vector to the plane is larger than x and y vector we project the ring to the xy-plane*/
+	{
+		for (i=0; i<ring->npoints-1; i++)
+		{
+			double vt;
+			getPoint3dz_p(ring, i+1, &v2);
+
+			/* edge from vertex i to vertex i+1 */
+			if
+			(
+			    /* an upward crossing */
+			    ((v1.y <= p->y) && (v2.y > p->y))
+			    /* a downward crossing */
+			    || ((v1.y > p->y) && (v2.y <= p->y))
+			)
+			{
+
+				vt = (double)(p->y - v1.y) / (v2.y - v1.y);
+
+				/* P.x <intersect */
+				if (p->x < v1.x + vt * (v2.x - v1.x))
+				{
+					/* a valid crossing of y=p.y right of p.x */
+					++cn;
+				}
+			}
+			v1 = v2;
+		}
+	}
+	else if(fabs(plane->pv.y)>fabs(plane->pv.x)&&fabs(plane->pv.z)>fabs(plane->pv.z))	/*If the y vector of the normal vector to the plane is larger than x and z vector we project the ring to the xz-plane*/
+	{
+		for (i=0; i<ring->npoints-1; i++)
+			{
+				double vt;
+				getPoint3dz_p(ring, i+1, &v2);
+
+				/* edge from vertex i to vertex i+1 */
+				if
+				(
+				    /* an upward crossing */
+				    ((v1.z <= p->z) && (v2.z > p->z))
+				    /* a downward crossing */
+				    || ((v1.z > p->z) && (v2.z <= p->z))
+				)
+				{
+
+					vt = (double)(p->z - v1.z) / (v2.z - v1.z);
+
+					/* P.x <intersect */
+					if (p->x < v1.x + vt * (v2.x - v1.x))
+					{
+						/* a valid crossing of y=p.y right of p.x */
+						++cn;
+					}
+				}
+				v1 = v2;
+			}
+	}
+	else	/*Hopefully we only have the cases where x part of the normal vector is largest left*/
+	{
+		for (i=0; i<ring->npoints-1; i++)
+			{
+				double vt;
+				getPoint3dz_p(ring, i+1, &v2);
+
+				/* edge from vertex i to vertex i+1 */
+				if
+				(
+				    /* an upward crossing */
+				    ((v1.z <= p->z) && (v2.z > p->z))
+				    /* a downward crossing */
+				    || ((v1.z > p->z) && (v2.z <= p->z))
+				)
+				{
+
+					vt = (double)(p->z - v1.z) / (v2.z - v1.z);
+
+					/* P.x <intersect */
+					if (p->y < v1.y + vt * (v2.y - v1.y))
+					{
+						/* a valid crossing of y=p.y right of p.x */
+						++cn;
+					}
+				}
+				v1 = v2;
+			}
+	}
+	LWDEBUGF(3, "pt_in_ring_3d returning %d", cn&1);
+
+	return (cn&1);    /* 0 if even (out), and 1 if odd (in) */
 }
 
 
