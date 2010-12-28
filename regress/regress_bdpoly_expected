@@ -9,14 +9,3 @@ ERROR:  Input is not a MultiLinestring
 ERROR:  Input is not a MultiLinestring
 ERROR:  Input returns more then a single polygon, try using BdMPolyFromText instead
 BdMPolyFromText|SRID=3;MULTIPOLYGON(((0 0,0 10,10 10,10 0,0 0),(2 2,4 2,4 4,2 4,2 2),(5 5,7 5,7 7,5 7,5 5)))
-BuildArea|SRID=2;POLYGON((0 0 10,0 10 8,10 10 6,10 0 4,0 0 2))
-BuildArea|SRID=3;POLYGON((0 0 10,0 10 8,10 10 6,10 0 4,0 0 2),(2 2 5,4 2 4,4 4 3,2 4 2,2 2 1),(5 5 6,7 5 7,7 7 8,5 7 9,5 5 10))
-BuildArea|SRID=3;POLYGON((0 0,0 10,10 10,10 0,0 0),(2 2,4 2,4 4,2 4,2 2),(5 5,7 5,7 7,5 7,5 5))
-BuildArea|SRID=3;POLYGON((0 0 10,0 10 8,10 10 6,10 0 4,0 0 2),(2 2 5,4 2 4,4 4 3,2 4 2,2 2 1),(5 5 6,7 5 7,7 7 8,5 7 9,5 5 10))
-BuildArea|SRID=3;MULTIPOLYGON(((0 0 10,0 10 8,10 10 6,10 0 4,0 0 2),(2 2 5,4 2 4,4 4 3,2 4 2,2 2 1),(5 5 6,7 5 7,7 7 8,5 7 9,5 5 10)),((20 0 10,20 10 8,30 10 6,30 0 4,20 0 2),(22 2 5,24 2 4,24 4 3,22 4 2,22 2 1),(25 5 6,27 5 7,27 7 8,25 7 9,25 5 10)))
-BdMPolyFromText|SRID=3;MULTIPOLYGON(((0 0,0 10,10 10,10 0,0 0),(2 2,4 2,4 4,2 4,2 2),(5 5,7 5,7 7,5 7,5 5)),((20 0,20 10,30 10,30 0,20 0),(22 2,24 2,24 4,22 4,22 2),(25 5,27 5,27 7,25 7,25 5)))
-BdPolyFromText|SRID=3;POLYGON((0 0,0 10,10 10,10 0,0 0),(2 2,4 2,4 4,2 4,2 2),(5 5,7 5,7 7,5 7,5 5))
-ERROR:  Input is not a MultiLinestring
-ERROR:  Input is not a MultiLinestring
-ERROR:  Input returns more then a single polygon, try using BdMPolyFromText instead
-BdMPolyFromText|SRID=3;MULTIPOLYGON(((0 0,0 10,10 10,10 0,0 0),(2 2,4 2,4 4,2 4,2 2),(5 5,7 5,7 7,5 7,5 5)))
