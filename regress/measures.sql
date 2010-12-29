@@ -252,7 +252,7 @@ SELECT '3dDistancetest4',
 	SELECT  'LINESTRING(1 0 5, 11 0 5)'::geometry  as a, 'LINESTRING(5 2 0, 5 2 10, 5 0 13)'::geometry as b
 	) as foo;
 
-SELECT 'unsupported_test1',
+SELECT '3dDistancetest6',
 	ST_3DDistance(a,b) FROM (
 	SELECT 'LINESTRING(1 1 1 , 2 2 2)'::geometry as a, 'POLYGON((0 0 0, 2 2 2, 3 3 3, 0 0 0))'::geometry as b) as foo;	
 
