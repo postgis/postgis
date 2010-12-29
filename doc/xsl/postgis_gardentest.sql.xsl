@@ -193,11 +193,7 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 		)
 		</pgis:gset>
 		
-		<pgis:gset ID="Collection of Empties" GeometryType="GEOMETRY" createtable="false">(SELECT ST_Collect(ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326), ST_GeomFromText('POLYGON EMPTY',4326)) As the_geom
-			UNION ALL SELECT ST_COLLECT(ST_GeomFromText('POLYGON EMPTY',4326),ST_GeomFromText('TRIANGLE EMPTY',4326))  As the_geom
-			UNION ALL SELECT ST_Collect(ST_GeomFromText('POINT EMPTY',4326), ST_GeomFromText('MULTIPOINT EMPTY',4326)) As the_geom
-		)
-		</pgis:gset>
+		
 		
 		<pgis:gset ID="Single NULL" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom)</pgis:gset>
 		<pgis:gset ID="Multiple NULLs" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom FROM generate_series(1,4) As foo)</pgis:gset>
@@ -205,7 +201,10 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 
 	<!-- TODO: Finish off MULTI list -->
 	</pgis:gardens>
-	<!--This is just a placeholder to hold geometries that will crash server when hitting against some functions
+	
+
+	<pgis:gardencrashers>
+<!--This is just a placeholder to hold geometries that will crash server when hitting against some functions
 		We'll fix these crashers in 1.4 -->
 		<pgis:gset ID='CurvePolySet' GeometryType='CURVEPOLYGON'>(SELECT ST_LineToCurve(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j))  As the_geom
 				FROM generate_series(-10,50,10) As i
@@ -215,9 +214,12 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 				FROM generate_series(-10,50,10) As i
 					CROSS JOIN generate_series(40,70, 20) As j
 					ORDER BY i, j, i*j)</pgis:gset>
-
-	<pgis:gardencrashers>
-
+					
+		<pgis:gset ID="Collection of Empties" GeometryType="GEOMETRY" createtable="false">(SELECT ST_Collect(ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326), ST_GeomFromText('POLYGON EMPTY',4326)) As the_geom
+			UNION ALL SELECT ST_COLLECT(ST_GeomFromText('POLYGON EMPTY',4326),ST_GeomFromText('TRIANGLE EMPTY',4326))  As the_geom
+			UNION ALL SELECT ST_Collect(ST_GeomFromText('POINT EMPTY',4326), ST_GeomFromText('MULTIPOINT EMPTY',4326)) As the_geom
+		)
+		</pgis:gset>
 
 	</pgis:gardencrashers>
 
