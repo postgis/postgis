@@ -102,6 +102,12 @@ SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma_topo', 'parcel_topo', 'topo
 						<funcdef>integer <function>CreateTopology</function></funcdef>
 						<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></paramdef>
 					</funcprototype>
+					
+					<funcprototype>
+						<funcdef>integer <function>CreateTopology</function></funcdef>
+						<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+					</funcprototype>
 		
 					<funcprototype>
 						<funcdef>integer <function>CreateTopology</function></funcdef>
@@ -117,7 +123,7 @@ SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma_topo', 'parcel_topo', 'topo
             
                 <para>Creates a new schema with name <varname>topology_name</varname> consisting of tables (<varname>edge_data</varname>,<varname>face</varname>,<varname>node</varname>, <varname>relation</varname>
                     and registers this new topology in the topology.topology table. It returns the id of the topology in the topology table. The srid is the spatial reference identified as 
-                defined in spatial_ref_sys table for that topology.  Toplogies must be uniquely named.  The tolerance is measured in the units of the spatial reference system.</para>
+                defined in spatial_ref_sys table for that topology.  Toplogies must be uniquely named.  The tolerance is measured in the units of the spatial reference system.  If the tolerance is not specified defaults to 0.</para>
         
                 <!-- use this format if new function -->
                 <para>Availability: 2.0.0</para>
@@ -209,6 +215,49 @@ SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma_topo', 'parcel_topo', 'topo
 			<refsection>
 				<title>Examples</title>
 				<programlisting>SELECT topology.DropTopoGeometryColumn('ma_topo', 'parcel_topo', 'topo');</programlisting>
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="AddTopoGeometryColumn"/></para>
+			</refsection>
+		</refentry>
+	</sect1>
+	<sect1 id="Topology_Constructors">
+	  <title>TopoGeometry and other Topology Object Constructors</title>
+	  	<refentry id="DropTopoGeometryColumn">
+			<refnamediv>
+				<refname>CreateTopoGeom</refname>
+			
+				<refpurpose>Creates a new topo geometry object from topo element array</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>topogeometry <function>CreateTopoGeom</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					<paramdef><type>varchar </type> <parameter>tg_type</parameter></paramdef>
+					<paramdef><type>integer</type> <parameter>layer_id</parameter></paramdef>
+					<paramdef><type>topoelementarray</type> <parameter>tg_objs</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>Creates a topo geometry object for layer denoted by layer_id and registers it in the relations table in tho <varname>toponame</varname> schema.</para>
+        
+                <!-- use this format if new function -->
+                <para>Availability: 2.0.0</para>
+			</refsection>
+		
+		
+			<refsection>
+				<title>Examples</title>
+				<!-- TO DO: -->
 			</refsection>
 		
 			<!-- Optionally add a "See Also" section -->
