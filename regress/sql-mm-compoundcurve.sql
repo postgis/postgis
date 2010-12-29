@@ -1,53 +1,53 @@
-SELECT 'ndims01', ndims(geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
+SELECT 'ndims01', ST_NDims(ST_Geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
                 0 0 0 0, 
                 0.26794919243112270647255365849413 1 3 -2, 
                 0.5857864376269049511983112757903 1.4142135623730950488016887242097 1 2),
                 (0.5857864376269049511983112757903 1.4142135623730950488016887242097 1 2,
                 2 0 0 0,
                 0 0 0 0))'));
-SELECT 'geometrytype01', geometrytype(geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
+SELECT 'geometrytype01', geometrytype(ST_Geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
                 0 0 0 0, 
                 0.26794919243112270647255365849413 1 3 -2, 
                 0.5857864376269049511983112757903 1.4142135623730950488016887242097 1 2),
                 (0.5857864376269049511983112757903 1.4142135623730950488016887242097 1 2,
                 2 0 0 0,
                 0 0 0 0))'));
-SELECT 'ndims02', ndims(geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
+SELECT 'ndims02', ST_NDims(ST_Geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
                 0 0 0, 
                 0.26794919243112270647255365849413 1 3, 
                 0.5857864376269049511983112757903 1.4142135623730950488016887242097 1),
                 (0.5857864376269049511983112757903 1.4142135623730950488016887242097 1,
                 2 0 0,
                 0 0 0))'));
-SELECT 'geometrytype02', geometrytype(geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
+SELECT 'geometrytype02', geometrytype(ST_Geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
                 0 0 0, 
                 0.26794919243112270647255365849413 1 3, 
                 0.5857864376269049511983112757903 1.4142135623730950488016887242097 1),
                 (0.5857864376269049511983112757903 1.4142135623730950488016887242097 1,
                 2 0 0,
                 0 0 0))'));
-SELECT 'ndims03', ndims(geomfromewkt('COMPOUNDCURVEM(CIRCULARSTRING(
+SELECT 'ndims03', ST_NDims(ST_Geomfromewkt('COMPOUNDCURVEM(CIRCULARSTRING(
                 0 0 0, 
                 0.26794919243112270647255365849413 1 -2, 
                 0.5857864376269049511983112757903 1.4142135623730950488016887242097 2),
                 (0.5857864376269049511983112757903 1.4142135623730950488016887242097 2,
                 2 0 0,
                 0 0 0))'));
-SELECT 'geometrytype03', geometrytype(geomfromewkt('COMPOUNDCURVEM(CIRCULARSTRING(
+SELECT 'geometrytype03', geometrytype(ST_Geomfromewkt('COMPOUNDCURVEM(CIRCULARSTRING(
                 0 0 0, 
                 0.26794919243112270647255365849413 1 -2, 
                 0.5857864376269049511983112757903 1.4142135623730950488016887242097 2),
                 (0.5857864376269049511983112757903 1.4142135623730950488016887242097 2,
                 2 0 0,
                 0 0 0))'));
-SELECT 'ndims04', ndims(geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
+SELECT 'ndims04', ST_NDims(ST_Geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
                 0 0, 
                 0.26794919243112270647255365849413 1, 
                 0.5857864376269049511983112757903 1.4142135623730950488016887242097),
                 (0.5857864376269049511983112757903 1.4142135623730950488016887242097,
                 2 0,
                 0 0))'));
-SELECT 'geometrytype04', geometrytype(geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
+SELECT 'geometrytype04', geometrytype(ST_Geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
                 0 0, 
                 0.26794919243112270647255365849413 1, 
                 0.5857864376269049511983112757903 1.4142135623730950488016887242097),
@@ -56,7 +56,7 @@ SELECT 'geometrytype04', geometrytype(geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING
                 0 0))'));
 
 -- Repeat tests with new function names.
-SELECT 'ndims01', ST_ndims(ST_geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
+SELECT 'ndims01', ST_NDims(ST_geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
                 0 0 0 0, 
                 0.26794919243112270647255365849413 1 3 -2, 
                 0.5857864376269049511983112757903 1.4142135623730950488016887242097 1 2),
@@ -70,7 +70,7 @@ SELECT 'geometrytype01', geometrytype(ST_geomfromewkt('COMPOUNDCURVE(CIRCULARSTR
                 (0.5857864376269049511983112757903 1.4142135623730950488016887242097 1 2,
                 2 0 0 0,
                 0 0 0 0))'));
-SELECT 'ndims02', ST_ndims(ST_geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
+SELECT 'ndims02', ST_NDims(ST_geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
                 0 0 0, 
                 0.26794919243112270647255365849413 1 3, 
                 0.5857864376269049511983112757903 1.4142135623730950488016887242097 1),
@@ -84,7 +84,7 @@ SELECT 'geometrytype02', geometrytype(ST_geomfromewkt('COMPOUNDCURVE(CIRCULARSTR
                 (0.5857864376269049511983112757903 1.4142135623730950488016887242097 1,
                 2 0 0,
                 0 0 0))'));
-SELECT 'ndims03', ST_ndims(ST_geomfromewkt('COMPOUNDCURVEM(CIRCULARSTRING(
+SELECT 'ndims03', ST_NDims(ST_geomfromewkt('COMPOUNDCURVEM(CIRCULARSTRING(
                 0 0 0, 
                 0.26794919243112270647255365849413 1 -2, 
                 0.5857864376269049511983112757903 1.4142135623730950488016887242097 2),
@@ -98,7 +98,7 @@ SELECT 'geometrytype03', geometrytype(ST_geomfromewkt('COMPOUNDCURVEM(CIRCULARST
                 (0.5857864376269049511983112757903 1.4142135623730950488016887242097 2,
                 2 0 0,
                 0 0 0))'));
-SELECT 'ndims04', ST_ndims(ST_geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
+SELECT 'ndims04', ST_NDims(ST_geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
                 0 0, 
                 0.26794919243112270647255365849413 1, 
                 0.5857864376269049511983112757903 1.4142135623730950488016887242097),
@@ -126,7 +126,7 @@ INSERT INTO public.compoundcurve (
                 2,
                 'compoundcurve');
 UPDATE public.compoundcurve
-                SET the_geom_4d = geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
+                SET the_geom_4d = ST_Geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
                         0 0 0 0, 
                         0.26794919243112270647255365849413 1 3 -2, 
                         0.5857864376269049511983112757903 1.4142135623730950488016887242097 1 2),
@@ -134,7 +134,7 @@ UPDATE public.compoundcurve
                         2 0 0 0,
                         0 0 0 0))');
 UPDATE public.compoundcurve
-                SET the_geom_3dz = geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
+                SET the_geom_3dz = ST_Geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
                         0 0 0, 
                         0.26794919243112270647255365849413 1 3, 
                         0.5857864376269049511983112757903 1.4142135623730950488016887242097 1),
@@ -142,7 +142,7 @@ UPDATE public.compoundcurve
                         2 0 0,
                         0 0 0))');
 UPDATE public.compoundcurve
-                SET the_geom_3dm = geomfromewkt('COMPOUNDCURVEM(CIRCULARSTRING(
+                SET the_geom_3dm = ST_Geomfromewkt('COMPOUNDCURVEM(CIRCULARSTRING(
                         0 0 0, 
                         0.26794919243112270647255365849413 1 -2, 
                         0.5857864376269049511983112757903 1.4142135623730950488016887242097 2),
@@ -150,7 +150,7 @@ UPDATE public.compoundcurve
                         2 0 0,
                         0 0 0))');
 UPDATE public.compoundcurve
-                SET the_geom_2d = geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
+                SET the_geom_2d = ST_Geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
                         0 0, 
                         0.26794919243112270647255365849413 1, 
                         0.5857864376269049511983112757903 1.4142135623730950488016887242097),
@@ -158,15 +158,15 @@ UPDATE public.compoundcurve
                         2 0,
                         0 0))');
 
-SELECT 'astext01', astext(the_geom_2d) FROM public.compoundcurve;
-SELECT 'astext02', astext(the_geom_3dm) FROM public.compoundcurve;
-SELECT 'astext03', astext(the_geom_3dz) FROM public.compoundcurve;
-SELECT 'astext04', astext(the_geom_4d) FROM public.compoundcurve;
+SELECT 'astext01', ST_Astext(the_geom_2d) FROM public.compoundcurve;
+SELECT 'astext02', ST_Astext(the_geom_3dm) FROM public.compoundcurve;
+SELECT 'astext03', ST_Astext(the_geom_3dz) FROM public.compoundcurve;
+SELECT 'astext04', ST_Astext(the_geom_4d) FROM public.compoundcurve;
 
-SELECT 'asewkt01', asewkt(the_geom_2d) FROM public.compoundcurve;
-SELECT 'asewkt02', asewkt(the_geom_3dm) FROM public.compoundcurve;
-SELECT 'asewkt03', asewkt(the_geom_3dz) FROM public.compoundcurve;
-SELECT 'asewkt04', asewkt(the_geom_4d) FROM public.compoundcurve;
+SELECT 'asewkt01', ST_Asewkt(the_geom_2d) FROM public.compoundcurve;
+SELECT 'asewkt02', ST_Asewkt(the_geom_3dm) FROM public.compoundcurve;
+SELECT 'asewkt03', ST_Asewkt(the_geom_3dz) FROM public.compoundcurve;
+SELECT 'asewkt04', ST_Asewkt(the_geom_4d) FROM public.compoundcurve;
 
 -- These tests will fail on different architectures
 -- We need a way to handle multiple byte orderings
@@ -180,20 +180,20 @@ SELECT 'asewkt04', asewkt(the_geom_4d) FROM public.compoundcurve;
 --SELECT 'asewkb03', encode(asewkb(the_geom_3dz), 'hex') FROM public.compoundcurve;
 --SELECT 'asewkb04', encode(asewkb(the_geom_4d), 'hex') FROM public.compoundcurve;
 
-SELECT 'ST_CurveToLine-201', asewkt(snapToGrid(ST_CurveToLine(the_geom_2d, 2), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
-SELECT 'ST_CurveToLine-202', asewkt(snapToGrid(ST_CurveToLine(the_geom_3dm, 2), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
-SELECT 'ST_CurveToLine-203', asewkt(snapToGrid(ST_CurveToLine(the_geom_3dz, 2), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
-SELECT 'ST_CurveToLine-204', asewkt(snapToGrid(ST_CurveToLine(the_geom_4d, 2), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
+SELECT 'ST_CurveToLine-201', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_2d, 2), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
+SELECT 'ST_CurveToLine-202', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_3dm, 2), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
+SELECT 'ST_CurveToLine-203', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_3dz, 2), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
+SELECT 'ST_CurveToLine-204', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_4d, 2), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
 
-SELECT 'ST_CurveToLine-401', asewkt(snapToGrid(ST_CurveToLine(the_geom_2d, 4), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
-SELECT 'ST_CurveToLine-402', asewkt(snapToGrid(ST_CurveToLine(the_geom_3dm, 4), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
-SELECT 'ST_CurveToLine-403', asewkt(snapToGrid(ST_CurveToLine(the_geom_3dz, 4), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
-SELECT 'ST_CurveToLine-404', asewkt(snapToGrid(ST_CurveToLine(the_geom_4d, 4), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
+SELECT 'ST_CurveToLine-401', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_2d, 4), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
+SELECT 'ST_CurveToLine-402', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_3dm, 4), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
+SELECT 'ST_CurveToLine-403', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_3dz, 4), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
+SELECT 'ST_CurveToLine-404', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_4d, 4), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
 
-SELECT 'ST_CurveToLine01', asewkt(snapToGrid(ST_CurveToLine(the_geom_2d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
-SELECT 'ST_CurveToLine02', asewkt(snapToGrid(ST_CurveToLine(the_geom_3dm), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
-SELECT 'ST_CurveToLine03', asewkt(snapToGrid(ST_CurveToLine(the_geom_3dz), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
-SELECT 'ST_CurveToLine04', asewkt(snapToGrid(ST_CurveToLine(the_geom_4d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
+SELECT 'ST_CurveToLine01', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_2d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
+SELECT 'ST_CurveToLine02', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_3dm), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
+SELECT 'ST_CurveToLine03', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_3dz), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
+SELECT 'ST_CurveToLine04', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_4d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
 
 -- Removed due to discrepencies between hardware
 --SELECT 'box2d01', box2d(the_geom_2d) FROM public.compoundcurve;
@@ -216,28 +216,28 @@ SELECT 'dimension02', dimension(the_geom_3dm) FROM public.compoundcurve;
 SELECT 'dimension03', dimension(the_geom_3dz) FROM public.compoundcurve;
 SELECT 'dimension04', dimension(the_geom_4d) FROM public.compoundcurve;
 
-SELECT 'SRID01', SRID(the_geom_2d) FROM public.compoundcurve;
-SELECT 'SRID02', SRID(the_geom_3dm) FROM public.compoundcurve;
-SELECT 'SRID03', SRID(the_geom_3dz) FROM public.compoundcurve;
-SELECT 'SRID04', SRID(the_geom_4d) FROM public.compoundcurve;
+SELECT 'SRID01', ST_SRID(the_geom_2d) FROM public.compoundcurve;
+SELECT 'SRID02', ST_SRID(the_geom_3dm) FROM public.compoundcurve;
+SELECT 'SRID03', ST_SRID(the_geom_3dz) FROM public.compoundcurve;
+SELECT 'SRID04', ST_SRID(the_geom_4d) FROM public.compoundcurve;
 
 SELECT 'accessor01', isEmpty(the_geom_2d), isSimple(the_geom_2d), isClosed(the_geom_2d), isRing(the_geom_2d) FROM public.compoundcurve;
 SELECT 'accessor02', isEmpty(the_geom_3dm), isSimple(the_geom_3dm), isClosed(the_geom_3dm), isRing(the_geom_3dm) FROM public.compoundcurve;
 SELECT 'accessor03', isEmpty(the_geom_3dz), isSimple(the_geom_3dz), isClosed(the_geom_3dz), isRing(the_geom_3dz) FROM public.compoundcurve;
 SELECT 'accessor04', isEmpty(the_geom_4d), isSimple(the_geom_4d), isClosed(the_geom_4d), isRing(the_geom_4d) FROM public.compoundcurve;
 
-SELECT 'envelope01', asText(snapToGrid(envelope(the_geom_2d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
-SELECT 'envelope02', asText(snapToGrid(envelope(the_geom_3dm), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
-SELECT 'envelope03', asText(snapToGrid(envelope(the_geom_3dz), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
-SELECT 'envelope04', asText(snapToGrid(envelope(the_geom_4d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
+SELECT 'envelope01', ST_AsText(ST_SnapToGrid(envelope(the_geom_2d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
+SELECT 'envelope02', ST_AsText(ST_SnapToGrid(envelope(the_geom_3dm), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
+SELECT 'envelope03', ST_AsText(ST_SnapToGrid(envelope(the_geom_3dz), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
+SELECT 'envelope04', ST_AsText(ST_SnapToGrid(envelope(the_geom_4d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
 
 -- TODO: ST_SnapToGrid is required to remove platform dependent precision
 -- issues.  Until ST_SnapToGrid is updated to work against curves, these
 -- tests cannot be run.
---SELECT 'ST_LineToCurve', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_2d))) FROM public.compoundcurve;
---SELECT 'ST_LineToCurve', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_3dm))) FROM public.compoundcurve;
---SELECT 'ST_LineToCurve', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_3dz))) FROM public.compoundcurve;
---SELECT 'ST_LineToCurve', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_4d))) FROM public.compoundcurve;
+--SELECT 'ST_LineToCurve', ST_Asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_2d))) FROM public.compoundcurve;
+--SELECT 'ST_LineToCurve', ST_Asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_3dm))) FROM public.compoundcurve;
+--SELECT 'ST_LineToCurve', ST_Asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_3dz))) FROM public.compoundcurve;
+--SELECT 'ST_LineToCurve', ST_Asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_4d))) FROM public.compoundcurve;
 
 -- Repeat tests on new function names.
 SELECT 'astext01', ST_astext(the_geom_2d) FROM public.compoundcurve;
@@ -316,8 +316,8 @@ SELECT 'valid wkb compound curve 3', ST_asEWKT(ST_GeomFromEWKB(decode('010900000
 SELECT 'valid wkb compound curve 4', ST_asEWKT(ST_GeomFromEWKB(decode('0109000000020000000102000000030000009FE5797057376340E09398B1B2373BC05AAE0A165F0963409F6760A2493D3DC0DB6286DFB057634082D8A1B32F843EC0010800000005000000DB6286DFB057634082D8A1B32F843EC0DB6286DFB057634082D8A1B32F843EC075B4E4D0C60C634031FA5D1A371540C0D7197CED9B636340A3CB59A7630A41C050F4A72AC0FB6240974769FCE3CF41C0', 'hex')));
 SELECT 'valid wkb compound curve 5', ST_asEWKT(ST_GeomFromEWKB(decode('010900000003000000010800000003000000468280E724BC6340BF4B46210B973BC0F890AEA18D8063402D9664151D483CC0EED64BB6EE726340903CA5BDA0863AC0010200000004000000EED64BB6EE726340903CA5BDA0863AC09FE5797057376340E09398B1B2373BC05AAE0A165F0963409F6760A2493D3DC0DB6286DFB057634082D8A1B32F843EC0010800000005000000DB6286DFB057634082D8A1B32F843EC0DB6286DFB057634082D8A1B32F843EC075B4E4D0C60C634031FA5D1A371540C0D7197CED9B636340A3CB59A7630A41C050F4A72AC0FB6240974769FCE3CF41C0', 'hex')));
 SELECT 'null response', ST_NumPoints(ST_GeomFromEWKT('COMPOUNDCURVE(CIRCULARSTRING(0 0,2 0, 2 1, 2 3, 4 3),(4 3, 4 5, 1 4, 0 0))'));
-SELECT 'minpoints issues - pass', GeomFromText('COMPOUNDCURVE((0 0,1 1))');
-SELECT 'minpoints issues - pass', GeomFromText('COMPOUNDCURVE(CIRCULARSTRING(0 0,0 1,1 1))');
-SELECT 'minpoints issues - fail', GeomFromText('COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1))');
-SELECT 'minpoints issues - fail', GeomFromText('COMPOUNDCURVE(CIRCULARSTRING(0 0))');
-SELECT 'minpoints issues - fail', GeomFromText('COMPOUNDCURVE((0 0),(0 0,1 1))');
+SELECT 'minpoints issues - pass', ST_GeomFromText('COMPOUNDCURVE((0 0,1 1))');
+SELECT 'minpoints issues - pass', ST_GeomFromText('COMPOUNDCURVE(CIRCULARSTRING(0 0,0 1,1 1))');
+SELECT 'minpoints issues - fail', ST_GeomFromText('COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1))');
+SELECT 'minpoints issues - fail', ST_GeomFromText('COMPOUNDCURVE(CIRCULARSTRING(0 0))');
+SELECT 'minpoints issues - fail', ST_GeomFromText('COMPOUNDCURVE((0 0),(0 0,1 1))');

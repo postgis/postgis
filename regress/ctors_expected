@@ -6,11 +6,3 @@ BOX(0 0,1 1)
 ERROR:  Operation on mixed SRID geometries
 BOX3D(0 0 0,1 1 0)
 ERROR:  Operation on mixed SRID geometries
-32749
-ERROR:  Operation on mixed SRID geometries
-SRID=3;LINESTRING(0 0,1 1)
-ERROR:  Operation on mixed SRID geometries
-BOX(0 0,1 1)
-ERROR:  Operation on mixed SRID geometries
-BOX3D(0 0 0,1 1 0)
-ERROR:  Operation on mixed SRID geometries
