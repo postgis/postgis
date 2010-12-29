@@ -42,7 +42,7 @@ VECTOR3D;
 typedef struct
 {
 	POINT3DZ		pop;  /*Point On Plane*/
-	VECTOR3D	pv;  /*Perpendicular Point*/
+	VECTOR3D	pv;  /*Perpendicular normal vector*/
 }
 PLANE3D; 
 
