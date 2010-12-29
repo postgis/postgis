@@ -315,28 +315,35 @@ PG_FUNCTION_INFO_V1(LWGEOM_exteriorring_polygon);
 Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWPOLY *poly = NULL;
-	LWCURVEPOLY *curvepoly = NULL;
-	LWTRIANGLE *triangle = NULL;
-	POINTARRAY *extring;
-	LWGEOM *ring;
-	LWLINE *line;
 	PG_LWGEOM *result;
+	POINTARRAY *extring;
+	LWGEOM *lwgeom;
+	LWLINE *line;
 	GBOX *bbox=NULL;
+	int type = pglwgeom_get_type(geom);
 
 	POSTGIS_DEBUG(2, "LWGEOM_exteriorring_polygon called.");
 
-	if ( pglwgeom_get_type(geom) != POLYGONTYPE &&
-	     pglwgeom_get_type(geom) != CURVEPOLYTYPE &&
-	     pglwgeom_get_type(geom) != TRIANGLETYPE)
+	if ( (type != POLYGONTYPE) &&
+	     (type != CURVEPOLYTYPE) &&
+	     (type != TRIANGLETYPE))
 	{
 		elog(ERROR, "ExteriorRing: geom is not a polygon");
 		PG_RETURN_NULL();
 	}
 	
-	if ( pglwgeom_get_type(geom) == POLYGONTYPE )
+	lwgeom = pglwgeom_deserialize(geom);
+	
+	if( lwgeom_is_empty(lwgeom) )
 	{
-		poly = lwgeom_as_lwpoly(pglwgeom_deserialize(geom));
+		PG_RETURN_NULL();
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(geom, 0);
+	}
+	
+	if ( lwgeom->type == POLYGONTYPE )
+	{
+		LWPOLY *poly = lwgeom_as_lwpoly(lwgeom);
 
 		/* Ok, now we have a polygon. Here is its exterior ring. */
 		extring = poly->rings[0];
@@ -346,41 +353,39 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 		* If the input geom has a bbox, use it for
 		* the output geom, as exterior ring makes it up !
 		*/
-		if ( poly->bbox ) bbox=gbox_copy(poly->bbox);
-		line = lwline_construct(poly->srid, bbox, extring);
+		if ( poly->bbox ) 
+			bbox = gbox_copy(poly->bbox);
 
+		line = lwline_construct(poly->srid, bbox, extring);
 		result = pglwgeom_serialize((LWGEOM *)line);
 
 		lwgeom_release((LWGEOM *)line);
-		lwgeom_release((LWGEOM *)poly);
 	}
-	else if (pglwgeom_get_type(geom) == TRIANGLETYPE)
+	else if ( lwgeom->type == TRIANGLETYPE )
 	{
-		triangle = lwgeom_as_lwtriangle(pglwgeom_deserialize(geom));
+		LWTRIANGLE *triangle = lwgeom_as_lwtriangle(lwgeom);
 
 		/*
 		* This is a LWLINE constructed by exterior ring POINTARRAY
 		* If the input geom has a bbox, use it for
 		* the output geom, as exterior ring makes it up !
 		*/
-		if ( triangle->bbox ) bbox=gbox_copy(triangle->bbox);
+		if ( triangle->bbox ) 
+			bbox = gbox_copy(triangle->bbox);
 		line = lwline_construct(triangle->srid, bbox, triangle->points);
 
 		result = pglwgeom_serialize((LWGEOM *)line);
 
 		lwgeom_release((LWGEOM *)line);
-		lwgeom_release((LWGEOM *)triangle);
 	}
 	else
 	{
-		curvepoly = lwgeom_as_lwcurvepoly(pglwgeom_deserialize(geom));
-		ring = curvepoly->rings[0];
-		result = pglwgeom_serialize(ring);
-		lwgeom_release(ring);
+		LWCURVEPOLY *curvepoly = lwgeom_as_lwcurvepoly(lwgeom);
+		result = pglwgeom_serialize(curvepoly->rings[0]);
 	}
 
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
-
 	PG_RETURN_POINTER(result);
 }
 
@@ -434,8 +439,10 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	LWPOLY *poly = NULL;
 	POINTARRAY *ring;
 	LWLINE *line;
+	LWGEOM *lwgeom;
 	PG_LWGEOM *result;
 	GBOX *bbox = NULL;
+	int type;
 
 	POSTGIS_DEBUG(2, "LWGEOM_interierringn_polygon called.");
 
@@ -447,15 +454,24 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	}
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	type = pglwgeom_get_type(geom);
 
-	if ( pglwgeom_get_type(geom) != POLYGONTYPE &&
-	     pglwgeom_get_type(geom) != CURVEPOLYTYPE )
+	if ( (type != POLYGONTYPE) && (type != CURVEPOLYTYPE) )
 	{
 		elog(ERROR, "InteriorRingN: geom is not a polygon");
 		PG_FREE_IF_COPY(geom, 0);
 		PG_RETURN_NULL();
 	}
-	if ( pglwgeom_get_type(geom) == POLYGONTYPE)
+	
+	lwgeom = pglwgeom_deserialize(geom);
+	if( lwgeom_is_empty(lwgeom) )
+	{
+		lwgeom_free((LWGEOM *)poly);
+		PG_FREE_IF_COPY(geom, 0);
+		PG_RETURN_NULL();
+	}
+	
+	if ( type == POLYGONTYPE)
 	{
 		poly = lwgeom_as_lwpoly(pglwgeom_deserialize(geom));
 
@@ -544,6 +560,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_x_point);
 Datum LWGEOM_x_point(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
+	LWGEOM *lwgeom;
 	LWPOINT *point = NULL;
 	POINT2D p;
 
@@ -552,12 +569,15 @@ Datum LWGEOM_x_point(PG_FUNCTION_ARGS)
 	if ( pglwgeom_get_type(geom) != POINTTYPE )
 		lwerror("Argument to X() must be a point");
 
-	point = lwgeom_as_lwpoint(pglwgeom_deserialize(geom));
+	lwgeom = pglwgeom_deserialize(geom);
+	point = lwgeom_as_lwpoint(lwgeom);
+	
+	if ( lwgeom_is_empty(lwgeom) )
+		PG_RETURN_NULL();
 
 	getPoint2d_p(point->point, 0, &p);
 
 	PG_FREE_IF_COPY(geom, 0);
-
 	PG_RETURN_FLOAT8(p.x);
 }
 
@@ -570,6 +590,7 @@ Datum LWGEOM_y_point(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
 	LWPOINT *point = NULL;
+	LWGEOM *lwgeom;
 	POINT2D p;
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -577,7 +598,11 @@ Datum LWGEOM_y_point(PG_FUNCTION_ARGS)
 	if ( pglwgeom_get_type(geom) != POINTTYPE )
 		lwerror("Argument to Y() must be a point");
 
-	point = lwgeom_as_lwpoint(pglwgeom_deserialize(geom));
+	lwgeom = pglwgeom_deserialize(geom);
+	point = lwgeom_as_lwpoint(lwgeom);
+	
+	if ( lwgeom_is_empty(lwgeom) )
+		PG_RETURN_NULL();
 
 	getPoint2d_p(point->point, 0, &p);
 
@@ -596,6 +621,7 @@ Datum LWGEOM_z_point(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
 	LWPOINT *point = NULL;
+	LWGEOM *lwgeom;
 	POINT3DZ p;
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -603,7 +629,11 @@ Datum LWGEOM_z_point(PG_FUNCTION_ARGS)
 	if ( pglwgeom_get_type(geom) != POINTTYPE )
 		lwerror("Argument to Z() must be a point");
 
-	point = lwgeom_as_lwpoint(pglwgeom_deserialize(geom));
+	lwgeom = pglwgeom_deserialize(geom);
+	point = lwgeom_as_lwpoint(lwgeom);
+	
+	if ( lwgeom_is_empty(lwgeom) )
+		PG_RETURN_NULL();
 
 	/* no Z in input */
 	if ( ! pglwgeom_has_z(geom) ) PG_RETURN_NULL();
@@ -624,6 +654,7 @@ Datum LWGEOM_m_point(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
 	LWPOINT *point = NULL;
+	LWGEOM *lwgeom;
 	POINT3DM p;
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -631,7 +662,11 @@ Datum LWGEOM_m_point(PG_FUNCTION_ARGS)
 	if ( pglwgeom_get_type(geom) != POINTTYPE )
 		lwerror("Argument to M() must be a point");
 
-	point = lwgeom_as_lwpoint(pglwgeom_deserialize(geom));
+	lwgeom = pglwgeom_deserialize(geom);
+	point = lwgeom_as_lwpoint(lwgeom);
+	
+	if ( lwgeom_is_empty(lwgeom) )
+		PG_RETURN_NULL();
 
 	/* no M in input */
 	if ( ! FLAGS_GET_M(point->flags) ) PG_RETURN_NULL();
