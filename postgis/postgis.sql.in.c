@@ -1074,25 +1074,11 @@ CREATE OR REPLACE FUNCTION ST_Perimeter(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_perimeter2d_poly'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- this is an alias for 'area(geometry)'
--- there is nothing such an 'area3d'...
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION area2d(geometry)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME', 'LWGEOM_area_polygon'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 -- Deprecation in 1.3.4
 CREATE OR REPLACE FUNCTION ST_area2d(geometry)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME', 'LWGEOM_area_polygon'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION area(geometry)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','LWGEOM_area_polygon'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: area(geometry)
@@ -1101,12 +1087,6 @@ CREATE OR REPLACE FUNCTION ST_Area(geometry)
 	AS 'MODULE_PATHNAME','LWGEOM_area_polygon'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION distance_spheroid(geometry,geometry,spheroid)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','LWGEOM_distance_ellipsoid'
-	LANGUAGE 'C' IMMUTABLE STRICT
-	COST 100;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_distance_spheroid(geometry,geometry,spheroid)
@@ -1115,12 +1095,6 @@ CREATE OR REPLACE FUNCTION ST_distance_spheroid(geometry,geometry,spheroid)
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION distance_sphere(geometry,geometry)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','LWGEOM_distance_sphere'
-	LANGUAGE 'C' IMMUTABLE STRICT
-	COST 100;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_distance_sphere(geometry,geometry)
@@ -1130,12 +1104,6 @@ CREATE OR REPLACE FUNCTION ST_distance_sphere(geometry,geometry)
 	COST 100;
 
 -- Minimum distance. 2d only.
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION distance(geometry,geometry)
-	RETURNS float8
-	AS 'MODULE_PATHNAME', 'LWGEOM_mindistance2d'
-	LANGUAGE 'C' IMMUTABLE STRICT
-	COST 100;
 
 -- PostGIS equivalent function: distance(geometry,geometry)
 CREATE OR REPLACE FUNCTION ST_Distance(geometry,geometry)
@@ -1143,12 +1111,6 @@ CREATE OR REPLACE FUNCTION ST_Distance(geometry,geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_mindistance2d'
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION point_inside_circle(geometry,float8,float8,float8)
-	RETURNS bool
-	AS 'MODULE_PATHNAME', 'LWGEOM_inside_circle_point'
-	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_point_inside_circle(geometry,float8,float8,float8)
@@ -1171,23 +1133,10 @@ CREATE OR REPLACE FUNCTION ST_azimuth(geometry,geometry)
 ------------------------------------------------------------------------
 -- MISC
 ------------------------------------------------------------------------
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION force_2d(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_force_2d'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_force_2d(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_2d'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION force_3dz(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dz'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -1196,23 +1145,11 @@ CREATE OR REPLACE FUNCTION ST_force_3dz(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dz'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- an alias for force_3dz
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION force_3d(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dz'
-	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_force_3d(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dz'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION force_3dm(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dm'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -1221,22 +1158,10 @@ CREATE OR REPLACE FUNCTION ST_force_3dm(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dm'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION force_4d(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_force_4d'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_force_4d(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_4d'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION force_collection(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_force_collection'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -1251,23 +1176,10 @@ CREATE OR REPLACE FUNCTION ST_CollectionExtract(geometry, integer)
 	AS 'MODULE_PATHNAME', 'ST_CollectionExtract'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION multi(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_force_multi'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_multi(geometry)
+CREATE OR REPLACE FUNCTION ST_Multi(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_multi'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION expand(box3d,float8)
-	RETURNS box3d
-	AS 'MODULE_PATHNAME', 'BOX3D_expand'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -1276,14 +1188,8 @@ CREATE OR REPLACE FUNCTION ST_Expand(box3d,float8)
 	AS 'MODULE_PATHNAME', 'BOX3D_expand'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION expand(geometry,float8)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_expand'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_expand(geometry,float8)
+CREATE OR REPLACE FUNCTION ST_Expand(geometry,float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_expand'
 	LANGUAGE 'C' IMMUTABLE STRICT;
@@ -1312,23 +1218,11 @@ CREATE OR REPLACE FUNCTION ST_Reverse(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_reverse'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION ForceRHR(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_force_clockwise_poly'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_ForceRHR(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_clockwise_poly'
 	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION noop(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_noop'
-	LANGUAGE 'C' VOLATILE STRICT;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION postgis_noop(geometry)
@@ -1341,7 +1235,7 @@ CREATE OR REPLACE FUNCTION zmflag(geometry)
 	RETURNS smallint
 	AS 'MODULE_PATHNAME', 'LWGEOM_zmflag'
 	LANGUAGE 'C' IMMUTABLE STRICT;
-
+	
 -- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION ST_zmflag(geometry)
 	RETURNS smallint
@@ -1360,22 +1254,10 @@ CREATE OR REPLACE FUNCTION ST_NDims(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_ndims'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsEWKT(geometry)
-	RETURNS TEXT
-	AS 'MODULE_PATHNAME','LWGEOM_asEWKT'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsEWKT(geometry)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asEWKT'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsEWKB(geometry)
-	RETURNS BYTEA
-	AS 'MODULE_PATHNAME','WKBFromLWGEOM'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -1384,20 +1266,8 @@ CREATE OR REPLACE FUNCTION ST_AsEWKB(geometry)
 	AS 'MODULE_PATHNAME','WKBFromLWGEOM'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsHEXEWKB(geometry)
-	RETURNS TEXT
-	AS 'MODULE_PATHNAME','LWGEOM_asHEXEWKB'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsHEXEWKB(geometry)
-	RETURNS TEXT
-	AS 'MODULE_PATHNAME','LWGEOM_asHEXEWKB'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsHEXEWKB(geometry, text)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asHEXEWKB'
 	LANGUAGE 'C' IMMUTABLE STRICT;
@@ -1406,12 +1276,6 @@ CREATE OR REPLACE FUNCTION AsHEXEWKB(geometry, text)
 CREATE OR REPLACE FUNCTION ST_AsHEXEWKB(geometry, text)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asHEXEWKB'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsEWKB(geometry,text)
-	RETURNS bytea
-	AS 'MODULE_PATHNAME','WKBFromLWGEOM'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -5658,32 +5522,12 @@ CREATE OR REPLACE FUNCTION ST_MPolyFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MPolyFromWKB(bytea)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOLYGON''
-	THEN GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MPolyFromWKB(bytea)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1)) = ''MULTIPOLYGON''
 	THEN ST_GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MultiPolyFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTIPOLYGON''
-	THEN GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -5698,15 +5542,6 @@ CREATE OR REPLACE FUNCTION ST_MultiPolyFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MultiPolyFromWKB(bytea)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOLYGON''
-	THEN GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MultiPolyFromWKB(bytea)
@@ -5714,17 +5549,6 @@ CREATE OR REPLACE FUNCTION ST_MultiPolyFromWKB(bytea)
 	AS '
 	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1)) = ''MULTIPOLYGON''
 	THEN ST_GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION GeomCollFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE
-	WHEN geometrytype(GeomFromWKB($1, $2)) = ''GEOMETRYCOLLECTION''
-	THEN GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -5740,16 +5564,6 @@ CREATE OR REPLACE FUNCTION ST_GeomCollFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION GeomCollFromWKB(bytea)
-	RETURNS geometry
-	AS '
-	SELECT CASE
-	WHEN geometrytype(GeomFromWKB($1)) = ''GEOMETRYCOLLECTION''
-	THEN GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_GeomCollFromWKB(bytea)
@@ -5919,7 +5733,7 @@ BEGIN
 		RAISE EXCEPTION 'Input is not a MultiLinestring';
 	END IF;
 
-	geom := multi(BuildArea(mline));
+	geom := ST_Multi(BuildArea(mline));
 
 	RETURN geom;
 END;
@@ -5943,7 +5757,7 @@ BEGIN
 		RAISE EXCEPTION 'Input is not a MultiLinestring';
 	END IF;
 
-	geom := multi(ST_BuildArea(mline));
+	geom := ST_Multi(ST_BuildArea(mline));
 
 	RETURN geom;
 END;

@@ -17,6 +17,12 @@ CREATE OR REPLACE FUNCTION hasbbox(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_hasBBOX'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION noop(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_noop'
+	LANGUAGE 'C' VOLATILE STRICT;
+	
 --- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_box2d(geometry)
 	RETURNS box2d
@@ -195,7 +201,60 @@ CREATE OR REPLACE FUNCTION transscale(geometry,float8,float8,float8,float8)
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- END Affine functions
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION area(geometry)
+	RETURNS FLOAT8
+	AS 'MODULE_PATHNAME','LWGEOM_area_polygon'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- this is an alias for 'area(geometry)'
+-- there is nothing such an 'area3d'...
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION area2d(geometry)
+	RETURNS FLOAT8
+	AS 'MODULE_PATHNAME', 'LWGEOM_area_polygon'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION AsEWKB(geometry)
+	RETURNS BYTEA
+	AS 'MODULE_PATHNAME','WKBFromLWGEOM'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
 
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION AsEWKB(geometry,text)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME','WKBFromLWGEOM'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION AsEWKT(geometry)
+	RETURNS TEXT
+	AS 'MODULE_PATHNAME','LWGEOM_asEWKT'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION AsHEXEWKB(geometry)
+	RETURNS TEXT
+	AS 'MODULE_PATHNAME','LWGEOM_asHEXEWKB'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION AsHEXEWKB(geometry, text)
+	RETURNS TEXT
+	AS 'MODULE_PATHNAME','LWGEOM_asHEXEWKB'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION distance(geometry,geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'LWGEOM_mindistance2d'
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
+	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION combine_bbox(box2d,geometry)
 	RETURNS box2d
@@ -203,10 +262,102 @@ CREATE OR REPLACE FUNCTION combine_bbox(box2d,geometry)
 	LANGUAGE 'C' IMMUTABLE;
 	
 -- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION distance_sphere(geometry,geometry)
+	RETURNS FLOAT8
+	AS 'MODULE_PATHNAME','LWGEOM_distance_sphere'
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION distance_spheroid(geometry,geometry,spheroid)
+	RETURNS FLOAT8
+	AS 'MODULE_PATHNAME','LWGEOM_distance_ellipsoid'
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
+	
+-- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION expand(box2d,float8)
 	RETURNS box2d
 	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_expand'
 	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION expand(box3d,float8)
+	RETURNS box3d
+	AS 'MODULE_PATHNAME', 'BOX3D_expand'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION expand(geometry,float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_expand'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION force_2d(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_force_2d'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- an alias for force_3dz
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION force_3d(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dz'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION force_3dm(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dm'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION force_3dz(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dz'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION force_4d(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_force_4d'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION force_collection(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_force_collection'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION ForceRHR(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_force_clockwise_poly'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION GeomCollFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE
+	WHEN geometrytype(GeomFromWKB($1, $2)) = ''GEOMETRYCOLLECTION''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+	-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION GeomCollFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE
+	WHEN geometrytype(GeomFromWKB($1)) = ''GEOMETRYCOLLECTION''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
 	
 -- Availability: 1.5.0  -- replaced with postgis_getbbox
 CREATE OR REPLACE FUNCTION getbbox(geometry)
@@ -220,6 +371,42 @@ CREATE OR REPLACE FUNCTION length3d_spheroid(geometry, spheroid)
 	AS 'MODULE_PATHNAME','LWGEOM_length_ellipsoid_linestring'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION MPolyFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOLYGON''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+		
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION multi(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_force_multi'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION MultiPolyFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTIPOLYGON''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION MultiPolyFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOLYGON''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+		
 -- Availability: 1.1.0
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION shift_longitude(geometry)
@@ -245,7 +432,7 @@ CREATE OR REPLACE FUNCTION length(geometry)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME', 'LWGEOM_length_linestring'
 	LANGUAGE 'C' IMMUTABLE STRICT;
-
+	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION npoints(geometry)
 	RETURNS int4
@@ -273,6 +460,12 @@ CREATE OR REPLACE FUNCTION perimeter2d(geometry)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION point_inside_circle(geometry,float8,float8,float8)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_inside_circle_point'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION summary(geometry)
 	RETURNS text
 	AS 'MODULE_PATHNAME', 'LWGEOM_summary'
@@ -284,6 +477,7 @@ CREATE OR REPLACE FUNCTION Simplify(geometry, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_simplify2d'
 	LANGUAGE 'C' IMMUTABLE STRICT;
+	
 -- end old ogc names that have been replaced with new SQL-MM names --
 
 
