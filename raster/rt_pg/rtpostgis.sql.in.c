@@ -958,62 +958,62 @@ CREATE CAST (raster AS bytea)
 
 CREATE OR REPLACE FUNCTION st_overleft(raster, raster)
     RETURNS bool
-    AS 'select geometry_overleft($1::geometry, $2::geometry)'
+    AS 'select $1::geometry &< $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_overright(raster, raster)
     RETURNS bool
-    AS 'select geometry_overright($1::geometry, $2::geometry)'
+    AS 'select $1::geometry &> $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_left(raster, raster)
     RETURNS bool
-    AS 'select geometry_left($1::geometry, $2::geometry)'
+    AS 'select $1::geometry << $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_right(raster, raster)
     RETURNS bool
-    AS 'select geometry_right($1::geometry, $2::geometry)'
+    AS 'select $1::geometry >> $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_overabove(raster, raster)
     RETURNS bool
-    AS 'select geometry_overabove($1::geometry, $2::geometry)'
+    AS 'select $1::geometry |&> $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_overbelow(raster, raster)
     RETURNS bool
-    AS 'select geometry_overbelow($1::geometry, $2::geometry)'
+    AS 'select $1::geometry &<| $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_above(raster, raster)
     RETURNS bool
-    AS 'select geometry_above($1::geometry, $2::geometry)'
+    AS 'select $1::geometry |>> $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_below(raster, raster)
     RETURNS bool
-    AS 'select geometry_below($1::geometry, $2::geometry)'
+    AS 'select $1::geometry <<| $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_same(raster, raster)
     RETURNS bool
-    AS 'select geometry_same($1::geometry, $2::geometry)'
+    AS 'select $1::geometry ~= $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_contained(raster, raster)
     RETURNS bool
-    AS 'select geometry_contained($1::geometry, $2::geometry)'
+    AS 'select $1::geometry @ $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_contain(raster, raster)
     RETURNS bool
-    AS 'select geometry_contain($1::geometry, $2::geometry)'
+    AS 'select $1::geometry ~ $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_overlap(raster, raster)
     RETURNS bool
-    AS 'select geometry_overlap($1::geometry, $2::geometry)'
+    AS 'select $1::geometry && $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 ------------------------------------------------------------------------------
