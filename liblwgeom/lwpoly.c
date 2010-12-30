@@ -527,7 +527,7 @@ void
 lwpoly_reverse(LWPOLY *poly)
 {
 	int i;
-
+	if ( lwpoly_is_empty(poly) ) return;
 	for (i=0; i<poly->nrings; i++)
 		ptarray_reverse(poly->rings[i]);
 }

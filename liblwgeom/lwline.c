@@ -369,6 +369,7 @@ lwline_release(LWLINE *lwline)
 void
 lwline_reverse(LWLINE *line)
 {
+	if ( lwline_is_empty(line) ) return;
 	ptarray_reverse(line->points);
 }
 

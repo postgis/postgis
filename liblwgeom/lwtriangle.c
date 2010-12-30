@@ -358,6 +358,7 @@ lwtriangle_force_clockwise(LWTRIANGLE *triangle)
 void
 lwtriangle_reverse(LWTRIANGLE *triangle)
 {
+	if( lwtriangle_is_empty(triangle) ) return;
 	ptarray_reverse(triangle->points);
 }
 
