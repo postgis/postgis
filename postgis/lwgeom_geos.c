@@ -957,8 +957,6 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	int srid;
 	BOX2DFLOAT4 bbox;
 
-	PROFSTART(PROF_QRUN);
-
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	/* Empty.ConvexHull() == Empty */
@@ -969,18 +967,15 @@ Datum convexhull(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	PROFSTART(PROF_P2G1);
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
-	PROFSTOP(PROF_P2G1);
+
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
 		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
-	PROFSTART(PROF_GRUN);
 	g3 = (GEOSGeometry *)GEOSConvexHull(g1);
-	PROFSTOP(PROF_GRUN);
 
 	if (g3 == NULL)
 	{
@@ -994,9 +989,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 
 	GEOSSetSRID(g3, srid);
 
-	PROFSTART(PROF_G2P);
 	lwout = GEOS2LWGEOM(g3, pglwgeom_has_z(geom1));
-	PROFSTOP(PROF_G2P);
 
 	if (lwout == NULL)
 	{
@@ -1010,6 +1003,8 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	if ( pglwgeom_getbox2d_p(geom1, &bbox) )
 	{
 #ifdef GSERIALIZED_ON
+		/* Force the box to have the same dimensionality as the lwgeom */
+		bbox.flags = lwout->flags;
 		lwout->bbox = gbox_copy(&bbox);
 #else
 		lwout->bbox = gbox_from_box2df(lwout->flags, &bbox);
@@ -1017,6 +1012,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	}
 
 	result = pglwgeom_serialize(lwout);
+
 	if (result == NULL)
 	{
 		GEOSGeom_destroy(g1);
@@ -1029,15 +1025,8 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(g3);
 
 
-	/* compressType(result);   */
-
-	PROFSTOP(PROF_QRUN);
-	PROFREPORT("geos",geom1, NULL, result);
-
 	PG_FREE_IF_COPY(geom1, 0);
-
 	PG_RETURN_POINTER(result);
-
 }
 
 PG_FUNCTION_INFO_V1(topologypreservesimplify);
@@ -3421,7 +3410,7 @@ GEOS2LWGEOM(const GEOSGeometry *geom, char want3d)
 	bool hasZ;
 	int SRID = GEOSGetSRID(geom);
 
-	/* GEOS's 0 is equivalent to our -1 as for SRID values */
+	/* GEOS's 0 is equivalent to our unknown as for SRID values */
 	if ( SRID == 0 ) SRID = SRID_UNKNOWN;
 
 	if ( want3d )
