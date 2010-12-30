@@ -107,8 +107,10 @@ select
 select  'distancetest2',
 	ST_Distance(a, b),
 	st_maxdistance(a, b),
-	st_astext(st_shortestline(a,b)),
-	st_astext(st_shortestline(b,a)),
+	round(st_x(st_startpoint(st_shortestline(a,b)))::numeric, 10),
+	round(st_y(st_startpoint(st_shortestline(a,b)))::numeric, 10),
+	round(st_x(st_endpoint(st_shortestline(a,b)))::numeric, 10),
+	round(st_y(st_endpoint(st_shortestline(a,b)))::numeric, 10),	
 	st_astext(st_longestline(a,b)),
 	st_astext(st_longestline(b,a)) from (
 select 
