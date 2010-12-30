@@ -1143,6 +1143,9 @@ lwgeom_is_closed(const LWGEOM *geom)
 {
 	int type = geom->type;
 	
+	if( lwgeom_is_empty(geom) )
+		return LW_FALSE;
+	
 	/* Test linear types for closure */
 	switch (type)
 	{
