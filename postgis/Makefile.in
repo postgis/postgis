@@ -57,7 +57,8 @@ PG_OBJS=lwgeom_pg.o \
 	geography_gist.o \
 	geography_btree.o \
 	geography_estimate.o \
-	geography_measurement.o 
+	geography_measurement.o \
+	geometry_gist_selectivity.o 
 
 # Objects to build using PGXS
 OBJS=$(PG_OBJS)

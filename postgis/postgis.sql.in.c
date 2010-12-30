@@ -80,7 +80,11 @@ CREATE OR REPLACE FUNCTION st_geometry_out(geometry)
 -- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_geometry_analyze(internal)
 	RETURNS bool
+#ifdef GSERIALIZED_ON
+	AS 'MODULE_PATHNAME', 'geometry_analyze'
+#else
 	AS 'MODULE_PATHNAME', 'LWGEOM_analyze'
+#endif
 	LANGUAGE 'C' VOLATILE STRICT;
 
 -- Deprecation in 1.5.0
@@ -107,7 +111,11 @@ CREATE OR REPLACE FUNCTION geometry_out(geometry)
 
 CREATE OR REPLACE FUNCTION geometry_analyze(internal)
 	RETURNS bool
+#ifdef GSERIALIZED_ON
+	AS 'MODULE_PATHNAME', 'geometry_analyze'
+#else
 	AS 'MODULE_PATHNAME', 'LWGEOM_analyze'
+#endif
 	LANGUAGE 'C' VOLATILE STRICT;
 
 CREATE OR REPLACE FUNCTION geometry_recv(internal)
@@ -411,12 +419,20 @@ CREATE OR REPLACE FUNCTION ST_Combine_BBox(box2d,geometry)
 -----------------------------------------------------------------------
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION estimated_extent(text,text,text) RETURNS box2d AS
+#ifdef GSERIALIZED_ON
+	'MODULE_PATHNAME', 'geometry_estimated_extent'
+#else
 	'MODULE_PATHNAME', 'LWGEOM_estimated_extent'
+#endif
 	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text,text) RETURNS box2d AS
+#ifdef GSERIALIZED_ON
+	'MODULE_PATHNAME', 'geometry_estimated_extent'
+#else
 	'MODULE_PATHNAME', 'LWGEOM_estimated_extent'
+#endif
 	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
 
 -----------------------------------------------------------------------
@@ -424,12 +440,20 @@ CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text,text) RETURNS box2d AS
 -----------------------------------------------------------------------
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION estimated_extent(text,text) RETURNS box2d AS
+#ifdef GSERIALIZED_ON
+	'MODULE_PATHNAME', 'geometry_estimated_extent'
+#else
 	'MODULE_PATHNAME', 'LWGEOM_estimated_extent'
+#endif
 	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text) RETURNS box2d AS
+#ifdef GSERIALIZED_ON
+	'MODULE_PATHNAME', 'geometry_estimated_extent'
+#else
 	'MODULE_PATHNAME', 'LWGEOM_estimated_extent'
+#endif
 	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
 
 -----------------------------------------------------------------------

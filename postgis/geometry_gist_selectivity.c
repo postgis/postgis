@@ -1,9 +1,9 @@
 /**********************************************************************
- * $Id$
+ * $Id: geometry_gist_selectivity.c 6385 2010-12-15 00:57:35Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
- * Copyright 2001-2006 Refractions Research Inc.
+ * Copyright 2010 Paul Ramsey <pramsey@cleverelephant.ca>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -23,7 +23,11 @@
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 
-#ifndef GSERIALIZED_ON
+#ifdef GSERIALIZED_ON
+/* TODO Remove this prototype and reordganize code */
+int gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox);
+
+
 
 #include <math.h>
 #if HAVE_IEEEFP_H
@@ -82,7 +86,7 @@ typedef struct GEOM_STATS_T
 }
 GEOM_STATS;
 
-static float8 estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats);
+static float8 estimate_selectivity(GBOX *box, GEOM_STATS *geomstats);
 
 
 #define SHOW_DIGS_DOUBLE 15
@@ -106,10 +110,10 @@ static float8 estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats);
  */
 #define REALLY_DO_JOINSEL 1
 
-Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS);
-Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS);
-Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS);
-Datum LWGEOM_analyze(PG_FUNCTION_ARGS);
+Datum geometry_gist_sel(PG_FUNCTION_ARGS);
+Datum geometry_gist_joinsel(PG_FUNCTION_ARGS);
+Datum geometry_analyze(PG_FUNCTION_ARGS);
+Datum geometry_estimated_extent(PG_FUNCTION_ARGS);
 
 
 #if ! REALLY_DO_JOINSEL
@@ -118,9 +122,9 @@ Datum LWGEOM_analyze(PG_FUNCTION_ARGS);
  * for all PG versions
  */
 PG_FUNCTION_INFO_V1(LWGEOM_gist_joinsel);
-Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
+Datum geometry_gist_joinsel(PG_FUNCTION_ARGS)
 {
-	POSTGIS_DEBUGF(2, "LWGEOM_gist_joinsel called (returning %f)",
+	POSTGIS_DEBUGF(2, "geometry_gist_joinsel called (returning %f)",
 	               DEFAULT_GEOMETRY_JOINSEL);
 
 	PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_JOINSEL);
@@ -128,10 +132,10 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 
 #else /* REALLY_DO_JOINSEL */
 
-int calculate_column_intersection(BOX2DFLOAT4 *search_box, GEOM_STATS *geomstats1, GEOM_STATS *geomstats2);
+int calculate_column_intersection(GBOX *search_box, GEOM_STATS *geomstats1, GEOM_STATS *geomstats2);
 
 int
-calculate_column_intersection(BOX2DFLOAT4 *search_box, GEOM_STATS *geomstats1, GEOM_STATS *geomstats2)
+calculate_column_intersection(GBOX *search_box, GEOM_STATS *geomstats1, GEOM_STATS *geomstats2)
 {
 	/**
 	* Calculate the intersection of two columns from their geomstats extents - return true
@@ -145,7 +149,7 @@ calculate_column_intersection(BOX2DFLOAT4 *search_box, GEOM_STATS *geomstats1, G
 
 	/* If the rectangles don't intersect, return false */
 	if (i_xmin > i_xmax || i_ymin > i_ymax)
-		return 0;
+		return FALSE;
 
 	/* Otherwise return the rectangle in search_box */
 	search_box->xmin = i_xmin;
@@ -153,15 +157,15 @@ calculate_column_intersection(BOX2DFLOAT4 *search_box, GEOM_STATS *geomstats1, G
 	search_box->xmax = i_xmax;
 	search_box->ymax = i_ymax;
 
-	return -1;
+	return TRUE;
 }
 
 /**
 * JOIN selectivity in the GiST && operator
 * for all PG versions
 */
-PG_FUNCTION_INFO_V1(LWGEOM_gist_joinsel);
-Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geometry_gist_joinsel);
+Datum geometry_gist_joinsel(PG_FUNCTION_ARGS)
 {
 	PlannerInfo *root = (PlannerInfo *) PG_GETARG_POINTER(0);
 
@@ -185,7 +189,7 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 	float8 selectivity1 = 0.0, selectivity2 = 0.0;
 	float4 num1_tuples = 0.0, num2_tuples = 0.0;
 	float4 total_tuples = 0.0, rows_returned = 0.0;
-	BOX2DFLOAT4 search_box;
+	GBOX search_box;
 
 
 	/**
@@ -197,14 +201,14 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 	*/
 
 
-	POSTGIS_DEBUGF(3, "LWGEOM_gist_joinsel called with jointype %d", jointype);
+	POSTGIS_DEBUGF(3, "geometry_gist_joinsel called with jointype %d", jointype);
 
 	/*
 	* We'll only respond to an inner join/unknown context join
 	*/
 	if (jointype != JOIN_INNER)
 	{
-		elog(NOTICE, "LWGEOM_gist_joinsel called with incorrect join type");
+		elog(NOTICE, "geometry_gist_joinsel called with incorrect join type");
 		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_JOINSEL);
 	}
 
@@ -216,7 +220,7 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 
 	if (!IsA(arg1, Var) || !IsA(arg2, Var))
 	{
-		elog(DEBUG1, "LWGEOM_gist_joinsel called with arguments that are not column references");
+		elog(DEBUG1, "geometry_gist_joinsel called with arguments that are not column references");
 		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_JOINSEL);
 	}
 
@@ -240,7 +244,7 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 
 
 	if ( ! get_attstatsslot(stats1_tuple, 0, 0, STATISTIC_KIND_GEOMETRY, InvalidOid, NULL, NULL,
-#if POSTGIS_PGSQL_VERSION >= 85
+#if POSTGIS_PGSQL_VERSION > 84
 	                        NULL,
 #endif
 	                        (float4 **)gs1ptr, &geomstats1_nvalues) )
@@ -266,7 +270,7 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 
 
 	if ( ! get_attstatsslot(stats2_tuple, 0, 0, STATISTIC_KIND_GEOMETRY, InvalidOid, NULL, NULL,
-#if POSTGIS_PGSQL_VERSION >= 85
+#if POSTGIS_PGSQL_VERSION > 84
 	                        NULL,
 #endif
 	                        (float4 **)gs2ptr, &geomstats2_nvalues) )
@@ -351,9 +355,9 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 	rows_returned = 2 * ((num1_tuples * selectivity1) +
 	                     (num2_tuples * selectivity2));
 
-	POSTGIS_DEBUGF(3, "Rows from rel1: %f", num1_tuples * selectivity1);
-	POSTGIS_DEBUGF(3, "Rows from rel2: %f", num2_tuples * selectivity2);
-	POSTGIS_DEBUGF(3, "Estimated rows returned: %f", rows_returned);
+	POSTGIS_DEBUGF(3, "Rows from rel1: %g", num1_tuples * selectivity1);
+	POSTGIS_DEBUGF(3, "Rows from rel2: %g", num2_tuples * selectivity2);
+	POSTGIS_DEBUGF(3, "Estimated rows returned: %g", rows_returned);
 
 	/*
 	* One (or both) tuple count is zero...
@@ -391,7 +395,7 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 * dimensions)
 */
 static float8
-estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats)
+estimate_selectivity(GBOX *box, GEOM_STATS *geomstats)
 {
 	int x, y;
 	int x_idx_min, x_idx_max, y_idx_min, y_idx_max;
@@ -622,8 +626,8 @@ estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats)
  * This is the one used for PG version >= 7.5
  *
  */
-PG_FUNCTION_INFO_V1(LWGEOM_gist_sel);
-Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geometry_gist_sel);
+Datum geometry_gist_sel(PG_FUNCTION_ARGS)
 {
 	PlannerInfo *root = (PlannerInfo *) PG_GETARG_POINTER(0);
 
@@ -642,16 +646,15 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 	int geomstats_nvalues=0;
 	Node *other;
 	Var *self;
-	uchar *in;
-	BOX2DFLOAT4 search_box;
+	GBOX search_box;
 	float8 selectivity=0;
 
-	POSTGIS_DEBUG(2, "LWGEOM_gist_sel called");
+	POSTGIS_DEBUG(2, "geometry_gist_sel called");
 
 	/* Fail if not a binary opclause (probably shouldn't happen) */
 	if (list_length(args) != 2)
 	{
-		POSTGIS_DEBUG(3, "LWGEOM_gist_sel: not a binary opclause");
+		POSTGIS_DEBUG(3, "geometry_gist_sel: not a binary opclause");
 
 		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
 	}
@@ -695,11 +698,9 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 	 * Convert the constant to a BOX
 	 */
 
-	in = (uchar *)PG_DETOAST_DATUM( ((Const*)other)->constvalue );
-	if ( ! getbox2d_p(in+4, &search_box) )
+	if( ! gserialized_datum_get_gbox_p(((Const*)other)->constvalue, &search_box) )
 	{
 		POSTGIS_DEBUG(3, "search box is EMPTY");
-
 		PG_RETURN_FLOAT8(0.0);
 	}
 
@@ -782,11 +783,11 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	MemoryContext old_context;
 	int i;
 	int geom_stats_size;
-	BOX2DFLOAT4 **sampleboxes;
+	GBOX **sampleboxes;
 	GEOM_STATS *geomstats;
 	bool isnull;
 	int null_cnt=0, notnull_cnt=0, examinedsamples=0;
-	BOX2DFLOAT4 *sample_extent=NULL;
+	GBOX *sample_extent=NULL;
 	double total_width=0;
 	double total_boxes_area=0;
 	int total_boxes_cells=0;
@@ -798,12 +799,12 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	double avgLOWx, avgLOWy, avgHIGx, avgHIGy;
 	double sumLOWx=0, sumLOWy=0, sumHIGx=0, sumHIGy=0;
 	double sdLOWx=0, sdLOWy=0, sdHIGx=0, sdHIGy=0;
-	BOX2DFLOAT4 *newhistobox=NULL;
+	GBOX *newhistobox=NULL;
 #endif
 	double geow, geoh; /* width and height of histogram */
 	int histocells;
 	int cols, rows; /* histogram grid size */
-	BOX2DFLOAT4 histobox;
+	GBOX histobox;
 
 	/*
 	 * This is where geometry_analyze
@@ -827,7 +828,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	 * We might need less space, but don't think
 	 * its worth saving...
 	 */
-	sampleboxes = palloc(sizeof(BOX2DFLOAT4 *)*samplerows);
+	sampleboxes = palloc(sizeof(GBOX *)*samplerows);
 
 	/*
 	 * First scan:
@@ -841,7 +842,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	{
 		Datum datum;
 		PG_LWGEOM *geom;
-		BOX2DFLOAT4 box;
+		GBOX box;
 
 		datum = fetchfunc(stats, i, &isnull);
 
@@ -854,9 +855,9 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 			continue;
 		}
 
-		geom = (PG_LWGEOM *)PG_DETOAST_DATUM(datum);
+		geom = (GSERIALIZED *)PG_DETOAST_DATUM(datum);
 
-		if ( ! pglwgeom_getbox2d_p(geom, &box) )
+		if ( LW_FAILURE == gserialized_datum_get_gbox_p(datum, &box) )
 		{
 			/* Skip empty geometry */
 			POSTGIS_DEBUGF(3, " skipped empty geometry %d", i);
@@ -881,16 +882,16 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		 * Cache bounding box
 		 * TODO: reduce BOX2DFLOAT4 copies
 		 */
-		sampleboxes[notnull_cnt] = palloc(sizeof(BOX2DFLOAT4));
-		memcpy(sampleboxes[notnull_cnt], &box, sizeof(BOX2DFLOAT4));
+		sampleboxes[notnull_cnt] = palloc(sizeof(GBOX));
+		memcpy(sampleboxes[notnull_cnt], &box, sizeof(GBOX));
 
 		/*
 		 * Add to sample extent union
 		 */
 		if ( ! sample_extent )
 		{
-			sample_extent = palloc(sizeof(BOX2DFLOAT4));
-			memcpy(sample_extent, &box, sizeof(BOX2DFLOAT4));
+			sample_extent = palloc(sizeof(GBOX));
+			memcpy(sample_extent, &box, sizeof(GBOX));
 		}
 		else
 		{
@@ -950,8 +951,8 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	avgHIGy = sumHIGy/notnull_cnt;
 	for (i=0; i<notnull_cnt; i++)
 	{
-		BOX2DFLOAT4 *box;
-		box = (BOX2DFLOAT4 *)sampleboxes[i];
+		GBOX *box;
+		box = (GBOX *)sampleboxes[i];
 
 		sdLOWx += (box->xmin - avgLOWx) * (box->xmin - avgLOWx);
 		sdLOWy += (box->ymin - avgLOWy) * (box->ymin - avgLOWy);
@@ -990,8 +991,8 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	 */
 	for (i=0; i<notnull_cnt; i++)
 	{
-		BOX2DFLOAT4 *box;
-		box = (BOX2DFLOAT4 *)sampleboxes[i];
+		GBOX *box;
+		box = (GBOX *)sampleboxes[i];
 
 		if ( box->xmin > histobox.xmax ||
 		        box->xmax < histobox.xmin ||
@@ -1005,8 +1006,8 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		}
 		if ( ! newhistobox )
 		{
-			newhistobox = palloc(sizeof(BOX2DFLOAT4));
-			memcpy(newhistobox, box, sizeof(BOX2DFLOAT4));
+			newhistobox = palloc(sizeof(GBOX));
+			memcpy(newhistobox, box, sizeof(GBOX));
 		}
 		else
 		{
@@ -1135,12 +1136,12 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	 */
 	for (i=0; i<notnull_cnt; i++)
 	{
-		BOX2DFLOAT4 *box;
+		GBOX *box;
 		int x_idx_min, x_idx_max, x;
 		int y_idx_min, y_idx_max, y;
 		int numcells=0;
 
-		box = (BOX2DFLOAT4 *)sampleboxes[i];
+		box = (GBOX *)sampleboxes[i];
 		if ( ! box ) continue; /* hard deviant.. */
 
 		/* give backend a chance of interrupting us */
@@ -1288,13 +1289,13 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
  * value for now.
  *
  */
-PG_FUNCTION_INFO_V1(LWGEOM_analyze);
-Datum LWGEOM_analyze(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geometry_analyze);
+Datum geometry_analyze(PG_FUNCTION_ARGS)
 {
 	VacAttrStats *stats = (VacAttrStats *)PG_GETARG_POINTER(0);
 	Form_pg_attribute attr = stats->attr;
 
-	POSTGIS_DEBUG(2, "lwgeom_analyze called");
+	POSTGIS_DEBUG(2, "geometry_analyze called");
 
 	/* If the attstattarget column is negative, use the default value */
 	/* NB: it is okay to scribble on stats->attr since it's a copy */
@@ -1302,15 +1303,6 @@ Datum LWGEOM_analyze(PG_FUNCTION_ARGS)
 		attr->attstattarget = default_statistics_target;
 
 	POSTGIS_DEBUGF(3, " attribute stat target: %d", attr->attstattarget);
-
-	/*
-	 * There might be a reason not to analyze this column
-	 * (can we detect the absence of an index?)
-	 */
-#if 0
-	elog(NOTICE, "compute_geometry_stats not implemented yet");
-	PG_RETURN_BOOL(false);
-#endif
 
 	/* Setup the minimum rows and the algorithm function */
 	stats->minrows = 300 * stats->attr->attstattarget;
@@ -1327,8 +1319,8 @@ Datum LWGEOM_analyze(PG_FUNCTION_ARGS)
  * looking at gathered statistics (or NULL if
  * no statistics have been gathered).
  */
-PG_FUNCTION_INFO_V1(LWGEOM_estimated_extent);
-Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geometry_estimated_extent);
+Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 {
 	text *txnsp = NULL;
 	text *txtbl = NULL;
@@ -1343,7 +1335,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 	TupleDesc tupdesc ;
 	HeapTuple tuple ;
 	bool isnull;
-	BOX2DFLOAT4 *box;
+	GBOX *box;
 	size_t querysize;
 
 	if ( PG_NARGS() == 3 )
@@ -1363,13 +1355,13 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	POSTGIS_DEBUG(2, "LWGEOM_estimated_extent called");
+	POSTGIS_DEBUG(2, "geomtery_estimated_extent called");
 
 	/* Connect to SPI manager */
 	SPIcode = SPI_connect();
 	if (SPIcode != SPI_OK_CONNECT)
 	{
-		elog(ERROR, "LWGEOM_estimated_extent: couldnt open a connection to SPI");
+		elog(ERROR, "geometry_estimated_extent: couldnt open a connection to SPI");
 		PG_RETURN_NULL() ;
 	}
 
@@ -1420,7 +1412,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 	if (SPIcode != SPI_OK_SELECT)
 	{
 		SPI_finish();
-		elog(ERROR, "LWGEOM_estimated_extent: couldn't execute permission check sql via SPI");
+		elog(ERROR, "geometry_estimated_extent: couldn't execute permission check sql via SPI");
 		PG_RETURN_NULL();
 	}
 
@@ -1431,7 +1423,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 	if (!DatumGetBool(SPI_getbinval(tuple, tupdesc, 1, &isnull)))
 	{
 		SPI_finish();
-		elog(ERROR, "LWGEOM_estimated_extent: permission denied for relation %s", tbl);
+		elog(ERROR, "geometry_estimated_extent: permission denied for relation %s", tbl);
 		PG_RETURN_NULL();
 	}
 
@@ -1452,7 +1444,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 	if (SPIcode != SPI_OK_SELECT )
 	{
 		SPI_finish();
-		elog(ERROR,"LWGEOM_estimated_extent: couldnt execute sql via SPI");
+		elog(ERROR,"geometry_estimated_extent: couldnt execute sql via SPI");
 		PG_RETURN_NULL();
 	}
 	if (SPI_processed != 1)
@@ -1461,7 +1453,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 		POSTGIS_DEBUGF(3, " %d stat rows", SPI_processed);
 
-		elog(ERROR, "LWGEOM_estimated_extent: couldn't locate table within current schema");
+		elog(ERROR, "geometry_estimated_extent: couldn't locate table within current schema");
 
 		PG_RETURN_NULL() ;
 	}
@@ -1476,7 +1468,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 		POSTGIS_DEBUG(3, " stats are NULL");
 
-		elog(ERROR, "LWGEOM_estimated_extent: couldn't locate statistics for table");
+		elog(ERROR, "geometry_estimated_extent: couldn't locate statistics for table");
 
 		PG_RETURN_NULL();
 	}
@@ -1493,10 +1485,10 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 	 * Must allocate this in upper executor context
 	 * to keep it alive after SPI_finish().
 	 */
-	box = SPI_palloc(sizeof(BOX2DFLOAT4));
+	box = SPI_palloc(sizeof(GBOX));
 
 	/* Construct the box */
-	memcpy(box, ARR_DATA_PTR(array), sizeof(BOX2DFLOAT4));
+	memcpy(box, ARR_DATA_PTR(array), sizeof(GBOX));
 
 	POSTGIS_DEBUGF(3, " histogram extent = %g %g, %g %g", box->xmin,
 	               box->ymin, box->xmax, box->ymax);
@@ -1504,7 +1496,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 	SPIcode = SPI_finish();
 	if (SPIcode != SPI_OK_FINISH )
 	{
-		elog(ERROR, "LWGEOM_estimated_extent: couldnt disconnect from SPI");
+		elog(ERROR, "geometry_estimated_extent: couldnt disconnect from SPI");
 	}
 
 	/* TODO: enlarge the box by some factor */
@@ -1512,4 +1504,4 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(box);
 }
 
-#endif /* ! GSERIALIZED_ON */
+#endif /* GSERIALIZED_ON */

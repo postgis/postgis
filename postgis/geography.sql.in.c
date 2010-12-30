@@ -813,9 +813,22 @@ CREATE OR REPLACE FUNCTION geometry_gist_decompress(internal)
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_decompress'
 	LANGUAGE 'C';
 
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_sel (internal, oid, internal, int4)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'geometry_gist_sel'
+	LANGUAGE 'C';
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_joinsel(internal, oid, internal, smallint)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'geometry_gist_joinsel'
+	LANGUAGE 'C';
+
 -----------------------------------------------------------------------------
 -- GEOMETRY Operators
 -----------------------------------------------------------------------------
+
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_2d_overlaps(geometry, geometry) 
