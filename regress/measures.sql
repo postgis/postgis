@@ -110,18 +110,19 @@ select 'distancetest1',
 	) as foo;
 
 
-
 select  'distancetest2',
-		st_distance(a, b),
-			st_maxdistance(a, b),
-				st_astext(st_shortestline(a,b)),
-					st_astext(st_shortestline(b,a)),
-						st_astext(st_longestline(a,b)),
-							st_astext(st_longestline(b,a)) from (
-	select geomfromtext('LINESTRING(-40 -20 , 4 2)') as a,
-		geomfromtext('LINESTRING(-10 20, 1 -2)') as b
-	) as foo;
-
+	ST_Distance(a, b),
+	st_maxdistance(a, b),
+	round(st_x(st_startpoint(st_shortestline(a,b)))::numeric, 10),
+	round(st_y(st_startpoint(st_shortestline(a,b)))::numeric, 10),
+	round(st_x(st_endpoint(st_shortestline(a,b)))::numeric, 10),
+	round(st_y(st_endpoint(st_shortestline(a,b)))::numeric, 10),	
+	st_astext(st_longestline(a,b)),
+	st_astext(st_longestline(b,a)) from (
+select 
+	geomfromtext('LINESTRING(-40 -20 , 4 2)') as a,
+	geomfromtext('LINESTRING(-10 20, 1 -2)') as b
+) as foo;
 	
 
 select 'distancepoly1',		
