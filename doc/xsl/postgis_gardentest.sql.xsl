@@ -42,8 +42,8 @@
 				    FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC LIMIT 1;</xsl:variable>
 	<pgis:gardens>
 		<pgis:gset ID='POINT' GeometryType='POINT'>(SELECT ST_SetSRID(ST_Point(i,j),4326) As the_geom
-		FROM (SELECT a*1.11111111 FROM generate_series(-10,50,10) As a) As i(i)
-			CROSS JOIN generate_series(40,70, 15) j
+		FROM (SELECT a*1.11111111 FROM generate_series(-10,50,2) As a) As i(i)
+			CROSS JOIN generate_series(40,70, 5) j
 			ORDER BY i,j
 			)</pgis:gset>
 		<pgis:gset ID='LINESTRING' GeometryType='LINESTRING'>(SELECT ST_MakeLine(ST_SetSRID(ST_Point(i,j),4326),ST_SetSRID(ST_Point(j,i),4326))  As the_geom
@@ -306,8 +306,12 @@ BEGIN;
 COMMIT;
 SELECT '<xsl:value-of select="$log_label" /> geometry index: End Testing <xsl:value-of select="@ID" />';
 
-INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
-VALUES('<xsl:value-of select="$log_label" /> insert data Geometry','insert data', '<xsl:value-of select="@ID" />', clock_timestamp());
+
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start, log_sql) 
+VALUES('<xsl:value-of select="$log_label" /> insert data Geometry','insert data', '<xsl:value-of select="@ID" />', clock_timestamp(), '<xsl:call-template name="escapesinglequotes">
+ <xsl:with-param name="arg1">INSERT INTO pgis_garden(the_geom, the_geom_multi)
+	SELECT the_geom, ST_Multi(the_geom)
+	FROM (<xsl:value-of select="." />) As foo;</xsl:with-param></xsl:call-template>');
 
 BEGIN;
 	INSERT INTO pgis_garden(the_geom, the_geom_multi)
@@ -315,6 +319,17 @@ BEGIN;
 	FROM (<xsl:value-of select="." />) As foo;
 	<xsl:value-of select="$var_logupdatesql" />
 COMMIT;	
+
+
+SELECT '<xsl:value-of select="$log_label" /> Geometry index overlaps: Start Testing <xsl:value-of select="@ID" />';
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start, log_sql) VALUES('<xsl:value-of select="$log_label" /> gist index Geometry overlaps test','Gist index overlap', '<xsl:value-of select="@ID" />', clock_timestamp(),
+    'SELECT count(*) As result FROM pgis_garden As foo1 INNER JOIN pgis_garden As foo2 ON foo1.the_geom &amp;&amp; foo2.the_geom');
+BEGIN;
+	<xsl:value-of select="$var_logresultsasxml" />
+	<xsl:value-of select="$var_logupdatesql" />
+COMMIT;
+
+SELECT '<xsl:value-of select="$log_label" /> geometry index overlaps: End Testing <xsl:value-of select="@ID" />';
 		
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
 VALUES('<xsl:value-of select="$log_label" /> UpdateGeometrySRID','UpdateGeometrySRID', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
