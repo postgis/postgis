@@ -26,7 +26,7 @@
 		<listitem>
 		  <para>Coordinates bug fixing and maintenance effort, alignment of
 		  PostGIS with PostgreSQL releases, spatial index selectivity and binding, loader/dumper, and Shapefile GUI Loader, integration of new
-		  GEOS functionality, and new function enhancements.</para>
+		   and new function enhancements.</para>
 		</listitem>
 	  </varlistentry>
 
@@ -63,7 +63,7 @@
 		<term>Sandro Santilli</term>
 
 		<listitem>
-		  <para>Bug fixes and maintenance and integration of new GEOS functionality and alignment with GEOS releases. Raster support.</para>
+		  <para>Bug fixes and maintenance and integration of new GEOS functionality and alignment with GEOS releases, Raster support, and Topology support.</para>
 		</listitem>
 	  </varlistentry>
 	  
@@ -124,7 +124,7 @@
 		<term>Nicklas Avén</term>
 
 		<listitem>
-		  <para>Distance function enhancements and additions, Windows testing, and general user support</para>
+		  <para>Distance function enhancements (including 3D distance and relationship functions) and additions, Windows testing, and general user support</para>
 		</listitem>
 	  </varlistentry>
 	  
