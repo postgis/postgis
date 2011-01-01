@@ -1,3 +1,4 @@
+#include "../../postgis/gserialized.h"
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
 -- $Id$
@@ -1044,11 +1045,20 @@ CREATE OPERATOR &<| (
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
+#ifdef GSERIALIZED_ON
+CREATE OPERATOR && (
+    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = st_overlap,
+    COMMUTATOR = '&&',
+    RESTRICT = geometry_gist_sel, JOIN = geometry_gist_joinsel
+    );
+
+#else
 CREATE OPERATOR && (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = st_overlap,
     COMMUTATOR = '&&',
     RESTRICT = postgis_gist_sel, JOIN = postgis_gist_joinsel
     );
+#endif
 
 CREATE OPERATOR &> (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = st_overright,
