@@ -214,7 +214,7 @@ get_rt_context(FunctionCallInfoData *fcinfo)
 PG_FUNCTION_INFO_V1(RASTER_lib_version);
 Datum RASTER_lib_version(PG_FUNCTION_ARGS)
 {
-    char *ver = POSTGIS_RASTER_LIB_VERSION;
+    char *ver = POSTGIS_LIB_VERSION;
     text *result;
     result = palloc(VARHDRSZ  + strlen(ver));
     SET_VARSIZE(result, VARHDRSZ + strlen(ver));
@@ -225,7 +225,7 @@ Datum RASTER_lib_version(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_lib_build_date);
 Datum RASTER_lib_build_date(PG_FUNCTION_ARGS)
 {
-    char *ver = POSTGIS_RASTER_BUILD_DATE;
+    char *ver = POSTGIS_BUILD_DATE;
     text *result;
     result = palloc(VARHDRSZ  + strlen(ver));
     SET_VARSIZE(result, VARHDRSZ + strlen(ver));
