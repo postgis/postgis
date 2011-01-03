@@ -236,6 +236,40 @@ CREATE OR REPLACE FUNCTION AsEWKT(geometry)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION AsGML(geometry, int4)
+	RETURNS TEXT
+	AS 'SELECT _ST_AsGML(2, $1, $2, 0, null)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	
+-- AsGML(geom) / precision=15 version=2
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION AsGML(geometry)
+	RETURNS TEXT
+	AS 'SELECT _ST_AsGML(2, $1, 15, 0, null)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	
+-- AsKML(geom, precision) / version=2
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION AsKML(geometry, int4)
+	RETURNS TEXT
+	AS 'SELECT _ST_AsKML(2, transform($1,4326), $2, null)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	
+-- AsKML(geom) / precision=15 version=2
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION AsKML(geometry)
+	RETURNS TEXT
+	AS 'SELECT _ST_AsKML(2, transform($1,4326), 15, null)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	
+-- AsKML(version, geom, precision)
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION AsKML(int4, geometry, int4)
+	RETURNS TEXT
+	AS 'SELECT _ST_AsKML($1, transform($2,4326), $3, null)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsHEXEWKB(geometry)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asHEXEWKB'
@@ -245,6 +279,23 @@ CREATE OR REPLACE FUNCTION AsHEXEWKB(geometry)
 CREATE OR REPLACE FUNCTION AsHEXEWKB(geometry, text)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asHEXEWKB'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION AsSVG(geometry,int4,int4)
+	RETURNS TEXT
+	AS 'MODULE_PATHNAME','LWGEOM_asSVG'
+	LANGUAGE 'C' IMMUTABLE STRICT;	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION AsSVG(geometry,int4)
+	RETURNS TEXT
+	AS 'MODULE_PATHNAME','LWGEOM_asSVG'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION AsSVG(geometry)
+	RETURNS TEXT
+	AS 'MODULE_PATHNAME','LWGEOM_asSVG'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
@@ -450,13 +501,12 @@ CREATE OR REPLACE FUNCTION MultiPolyFromWKB(bytea)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 		
--- Availability: 1.1.0
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION shift_longitude(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_longitude_shift'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
+	-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION IsValid(geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'isvalid'
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 -- this is a fake (for back-compatibility)
 -- uses 3d if 3d is available, 2d otherwise
 -- Deprecation in 1.2.3
@@ -493,6 +543,14 @@ CREATE OR REPLACE FUNCTION makeline_garray (geometry[])
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_makeline_garray'
 	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE AGGREGATE makeline (
+	BASETYPE = geometry,
+	SFUNC = pgis_geometry_accum_transfn,
+	STYPE = pgis_abs,
+	FINALFUNC = pgis_geometry_makeline_finalfn
+	);
 	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION MakeLine(geometry, geometry)
@@ -536,6 +594,12 @@ CREATE OR REPLACE FUNCTION nrings(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_nrings'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION overlaps(geometry,geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
 -- this is a fake (for back-compatibility)
 -- uses 3d if 3d is available, 2d otherwise
 -- Deprecation in 1.2.3
@@ -567,6 +631,13 @@ CREATE OR REPLACE FUNCTION Segmentize(geometry, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_segmentize2d'
 	LANGUAGE 'C' IMMUTABLE STRICT;	
+	
+-- Availability: 1.1.0
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION shift_longitude(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_longitude_shift'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Simplify(geometry, float8)

@@ -3711,14 +3711,6 @@ CREATE AGGREGATE ST_Polygonize (
 	FINALFUNC = pgis_geometry_polygonize_finalfn
 	);
 
--- Deprecation in 1.2.3
-CREATE AGGREGATE makeline (
-	BASETYPE = geometry,
-	SFUNC = pgis_geometry_accum_transfn,
-	STYPE = pgis_abs,
-	FINALFUNC = pgis_geometry_makeline_finalfn
-	);
-
 -- Availability: 1.2.2
 CREATE AGGREGATE ST_MakeLine (
 	BASETYPE = geometry,
@@ -3921,12 +3913,6 @@ CREATE OR REPLACE FUNCTION ST_ContainsProperly(geometry,geometry)
 	AS 'SELECT $1 && $2 AND _ST_ContainsProperly($1,$2)'
 	LANGUAGE 'SQL' IMMUTABLE;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION overlaps(geometry,geometry)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function: overlaps(geometry,geometry)
 CREATE OR REPLACE FUNCTION _ST_Overlaps(geometry,geometry)
 	RETURNS boolean
@@ -3940,13 +3926,6 @@ CREATE OR REPLACE FUNCTION ST_Overlaps(geometry,geometry)
 	RETURNS boolean
 	AS 'SELECT $1 && $2 AND _ST_Overlaps($1,$2)'
 	LANGUAGE 'SQL' IMMUTABLE;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION IsValid(geometry)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME', 'isvalid'
-	LANGUAGE 'C' IMMUTABLE STRICT
-	COST 100;
 
 -- PostGIS equivalent function: IsValid(geometry)
 -- TODO: change null returns to true
@@ -4053,32 +4032,14 @@ CREATE OR REPLACE FUNCTION ST_GeomFromKML(text)
 -----------------------------------------------------------------------
 -- SVG OUTPUT
 -----------------------------------------------------------------------
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsSVG(geometry,int4,int4)
-	RETURNS TEXT
-	AS 'MODULE_PATHNAME','LWGEOM_asSVG'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsSVG(geometry,int4,int4)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asSVG'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsSVG(geometry,int4)
-	RETURNS TEXT
-	AS 'MODULE_PATHNAME','LWGEOM_asSVG'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsSVG(geometry,int4)
-	RETURNS TEXT
-	AS 'MODULE_PATHNAME','LWGEOM_asSVG'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsSVG(geometry)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asSVG'
 	LANGUAGE 'C' IMMUTABLE STRICT;
@@ -4098,26 +4059,14 @@ CREATE OR REPLACE FUNCTION _ST_AsGML(int4, geometry, int4, int4, text)
 	AS 'MODULE_PATHNAME','LWGEOM_asGML'
 	LANGUAGE 'C' IMMUTABLE;
 
--- AsGML(geom, precision) / version=2
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsGML(geometry, int4)
-	RETURNS TEXT
-	AS 'SELECT _ST_AsGML(2, $1, $2, 0, null)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
+-- ST_AsGML(geom, precision) / version=2
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsGML(geometry, int4)
 	RETURNS TEXT
 	AS 'SELECT _ST_AsGML(2, $1, $2, 0, null)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- AsGML(geom) / precision=15 version=2
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsGML(geometry)
-	RETURNS TEXT
-	AS 'SELECT _ST_AsGML(2, $1, 15, 0, null)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
+-- ST_AsGML(geom) / precision=15 version=2
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsGML(geometry)
 	RETURNS TEXT
@@ -4169,31 +4118,10 @@ CREATE OR REPLACE FUNCTION _ST_AsKML(int4, geometry, int4, text)
 	AS 'MODULE_PATHNAME','LWGEOM_asKML'
 	LANGUAGE 'C' IMMUTABLE;
 
--- AsKML(geom, precision) / version=2
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsKML(geometry, int4)
-	RETURNS TEXT
-	AS 'SELECT _ST_AsKML(2, transform($1,4326), $2, null)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsKML(geometry, int4)
 	RETURNS TEXT
 	AS 'SELECT _ST_AsKML(2, ST_Transform($1,4326), $2, null)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- AsKML(geom) / precision=15 version=2
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsKML(geometry)
-	RETURNS TEXT
-	AS 'SELECT _ST_AsKML(2, transform($1,4326), 15, null)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- AsKML(version, geom, precision)
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsKML(int4, geometry, int4)
-	RETURNS TEXT
-	AS 'SELECT _ST_AsKML($1, transform($2,4326), $3, null)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2

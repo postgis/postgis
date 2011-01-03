@@ -206,30 +206,30 @@ SELECT 'ST_CurveToLine04', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_4d), 
 --SELECT 'box3d03', box3d(the_geom_3dz) FROM public.compoundcurve;
 --SELECT 'box3d04', box3d(the_geom_4d) FROM public.compoundcurve;
 
-SELECT 'isValid01', isValid(the_geom_2d) FROM public.compoundcurve;
-SELECT 'isValid02', isValid(the_geom_3dm) FROM public.compoundcurve;
-SELECT 'isValid03', isValid(the_geom_3dz) FROM public.compoundcurve;
-SELECT 'isValid04', isValid(the_geom_4d) FROM public.compoundcurve;
+-- SELECT 'isValid01', isValid(the_geom_2d) FROM public.compoundcurve;
+-- SELECT 'isValid02', isValid(the_geom_3dm) FROM public.compoundcurve;
+-- SELECT 'isValid03', isValid(the_geom_3dz) FROM public.compoundcurve;
+-- SELECT 'isValid04', isValid(the_geom_4d) FROM public.compoundcurve;
 
-SELECT 'dimension01', dimension(the_geom_2d) FROM public.compoundcurve;
-SELECT 'dimension02', dimension(the_geom_3dm) FROM public.compoundcurve;
-SELECT 'dimension03', dimension(the_geom_3dz) FROM public.compoundcurve;
-SELECT 'dimension04', dimension(the_geom_4d) FROM public.compoundcurve;
+-- SELECT 'dimension01', dimension(the_geom_2d) FROM public.compoundcurve;
+-- SELECT 'dimension02', dimension(the_geom_3dm) FROM public.compoundcurve;
+-- SELECT 'dimension03', dimension(the_geom_3dz) FROM public.compoundcurve;
+-- SELECT 'dimension04', dimension(the_geom_4d) FROM public.compoundcurve;
 
-SELECT 'SRID01', ST_SRID(the_geom_2d) FROM public.compoundcurve;
-SELECT 'SRID02', ST_SRID(the_geom_3dm) FROM public.compoundcurve;
-SELECT 'SRID03', ST_SRID(the_geom_3dz) FROM public.compoundcurve;
-SELECT 'SRID04', ST_SRID(the_geom_4d) FROM public.compoundcurve;
+-- SELECT 'SRID01', ST_SRID(the_geom_2d) FROM public.compoundcurve;
+-- SELECT 'SRID02', ST_SRID(the_geom_3dm) FROM public.compoundcurve;
+-- SELECT 'SRID03', ST_SRID(the_geom_3dz) FROM public.compoundcurve;
+-- SELECT 'SRID04', ST_SRID(the_geom_4d) FROM public.compoundcurve;
 
-SELECT 'accessor01', isEmpty(the_geom_2d), isSimple(the_geom_2d), isClosed(the_geom_2d), isRing(the_geom_2d) FROM public.compoundcurve;
-SELECT 'accessor02', isEmpty(the_geom_3dm), isSimple(the_geom_3dm), isClosed(the_geom_3dm), isRing(the_geom_3dm) FROM public.compoundcurve;
-SELECT 'accessor03', isEmpty(the_geom_3dz), isSimple(the_geom_3dz), isClosed(the_geom_3dz), isRing(the_geom_3dz) FROM public.compoundcurve;
-SELECT 'accessor04', isEmpty(the_geom_4d), isSimple(the_geom_4d), isClosed(the_geom_4d), isRing(the_geom_4d) FROM public.compoundcurve;
+-- SELECT 'accessor01', isEmpty(the_geom_2d), isSimple(the_geom_2d), isClosed(the_geom_2d), isRing(the_geom_2d) FROM public.compoundcurve;
+-- SELECT 'accessor02', isEmpty(the_geom_3dm), isSimple(the_geom_3dm), isClosed(the_geom_3dm), isRing(the_geom_3dm) FROM public.compoundcurve;
+-- SELECT 'accessor03', isEmpty(the_geom_3dz), isSimple(the_geom_3dz), isClosed(the_geom_3dz), isRing(the_geom_3dz) FROM public.compoundcurve;
+-- SELECT 'accessor04', isEmpty(the_geom_4d), isSimple(the_geom_4d), isClosed(the_geom_4d), isRing(the_geom_4d) FROM public.compoundcurve;
 
-SELECT 'envelope01', ST_AsText(ST_SnapToGrid(envelope(the_geom_2d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
-SELECT 'envelope02', ST_AsText(ST_SnapToGrid(envelope(the_geom_3dm), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
-SELECT 'envelope03', ST_AsText(ST_SnapToGrid(envelope(the_geom_3dz), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
-SELECT 'envelope04', ST_AsText(ST_SnapToGrid(envelope(the_geom_4d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
+-- SELECT 'envelope01', ST_AsText(ST_SnapToGrid(envelope(the_geom_2d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
+-- SELECT 'envelope02', ST_AsText(ST_SnapToGrid(envelope(the_geom_3dm), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
+-- SELECT 'envelope03', ST_AsText(ST_SnapToGrid(envelope(the_geom_3dz), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
+-- SELECT 'envelope04', ST_AsText(ST_SnapToGrid(envelope(the_geom_4d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
 
 -- TODO: ST_SnapToGrid is required to remove platform dependent precision
 -- issues.  Until ST_SnapToGrid is updated to work against curves, these
