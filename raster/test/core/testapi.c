@@ -987,7 +987,24 @@ main()
     ctx = rt_context_new(0, 0, 0);
     raster = rt_raster_new(ctx, 256, 256);
     assert(raster); /* or we're out of virtual memory */
+	
+	printf("Checking empty and hasnoband functions...\n");
+	{ /* Check isEmpty and hasnoband */
+		CHECK(!rt_raster_is_empty(ctx, raster));
+		
+		/* Create a dummy empty raster to test the opposite
+		 * to the previous sentence
+		 */
+		rt_raster emptyraster = rt_raster_new(ctx, 0, 0);
+		CHECK(rt_raster_is_empty(ctx, emptyraster));
+		rt_raster_destroy(ctx, emptyraster);
+		
+		/* Once we add a band to this raster, we'll check the opposite */
+		CHECK(rt_raster_has_no_band(ctx, raster, 1));
+	}
 
+	
+	printf("Checking raster properties...\n");
     { /* Check scale */
         float scale;
         scale = rt_raster_get_x_scale(ctx, raster);
@@ -1097,6 +1114,9 @@ main()
     {   /* Check ST_AsPolygon */
         printf("Testing polygonize function\n");
         rt_raster rt = fillRasterToPolygonize(ctx);
+				
+		/* We can check rt_raster_has_no_band here too */
+		CHECK(!rt_raster_has_no_band(ctx, rt, 1));
 
         /**
          * Need to define again, to access the struct fields

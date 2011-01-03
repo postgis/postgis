@@ -210,6 +210,25 @@ CREATE OR REPLACE FUNCTION st_addband(rast raster, index int, pixeltype text, in
     RETURNS raster
     AS 'select st_addband($1, $2, $3, $4, NULL)'
     LANGUAGE 'SQL' IMMUTABLE;
+	
+	
+-----------------------------------------------------------------------
+-- Get information about the raster
+-----------------------------------------------------------------------	
+CREATE OR REPLACE FUNCTION st_isempty(rast raster)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'RASTER_isEmpty'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+CREATE OR REPLACE FUNCTION st_hasnoband(rast raster, nband int)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'RASTER_hasNoBand'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+CREATE OR REPLACE FUNCTION st_hasnoband(rast raster)
+	RETURNS boolean
+	AS 'select st_hasnoband($1, 1)'
+	LANGUAGE 'SQL' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- Raster Band Accessors

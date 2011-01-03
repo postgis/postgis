@@ -35,6 +35,8 @@ TEST_PROPS = \
 	rt_rotation.sql \
 	rt_georeference.sql \
 	rt_set_properties.sql \
+	create_rt_empty_raster_test.sql \
+	rt_isempty.sql \
 	$(NULL)
 
 TEST_BANDPROPS = \

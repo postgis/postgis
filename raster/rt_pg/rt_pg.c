@@ -105,6 +105,8 @@ Datum RASTER_getBandPath(PG_FUNCTION_ARGS);
 Datum RASTER_getPixelValue(PG_FUNCTION_ARGS);
 Datum RASTER_setPixelValue(PG_FUNCTION_ARGS);
 Datum RASTER_addband(PG_FUNCTION_ARGS);
+Datum RASTER_isEmpty(PG_FUNCTION_ARGS);
+Datum RASTER_hasNoBand(PG_FUNCTION_ARGS);
 
 
 static void *
@@ -1848,6 +1850,62 @@ Datum RASTER_addband(PG_FUNCTION_ARGS)
     SET_VARSIZE(pgraster, pgraster->size);
     PG_RETURN_POINTER(pgraster);
 }
+
+/**
+ * Check if raster is empty or not
+ */
+PG_FUNCTION_INFO_V1(RASTER_isEmpty);
+Datum RASTER_isEmpty(PG_FUNCTION_ARGS)
+{
+    rt_pgraster *pgraster = NULL;
+    rt_raster raster = NULL;
+    rt_band band = NULL;
+    rt_context ctx = NULL;
+	
+	/* Deserialize raster */
+    pgraster = (rt_pgraster *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+    ctx = get_rt_context(fcinfo);
+	raster = rt_raster_deserialize(ctx, pgraster);
+	if ( ! raster ) 
+	{
+		ereport(ERROR,
+			(errcode(ERRCODE_OUT_OF_MEMORY), 
+				errmsg("Could not deserialize raster")));
+		PG_RETURN_NULL();
+	}
+	
+	PG_RETURN_BOOL(rt_raster_is_empty(ctx, raster));
+}
+
+/**
+ * Check if the raster has a given band or not
+ */
+PG_FUNCTION_INFO_V1(RASTER_hasNoBand);
+Datum RASTER_hasNoBand(PG_FUNCTION_ARGS)
+{
+    rt_pgraster *pgraster = NULL;
+    rt_raster raster = NULL;
+    int nBand = 0;
+    rt_context ctx = NULL;
+	
+	/* Deserialize raster */
+    pgraster = (rt_pgraster *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+    ctx = get_rt_context(fcinfo);
+	raster = rt_raster_deserialize(ctx, pgraster);
+	if ( ! raster ) 
+	{
+		ereport(ERROR,
+			(errcode(ERRCODE_OUT_OF_MEMORY), 
+				errmsg("Could not deserialize raster")));
+		PG_RETURN_NULL();
+	}
+	
+	/* Get band number */
+	nBand = PG_GETARG_INT32(1);
+	
+	PG_RETURN_BOOL(rt_raster_has_no_band(ctx, raster, nBand));
+}
+
 
 /* ---------------------------------------------------------------- */
 /*  Memory allocation / error reporting hooks                       */
