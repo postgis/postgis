@@ -1142,12 +1142,6 @@ CREATE OR REPLACE FUNCTION ST_point_inside_circle(geometry,float8,float8,float8)
 	AS 'MODULE_PATHNAME', 'LWGEOM_inside_circle_point'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION azimuth(geometry,geometry)
-	RETURNS float8
-	AS 'MODULE_PATHNAME', 'LWGEOM_azimuth'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_azimuth(geometry,geometry)
 	RETURNS float8
@@ -1228,12 +1222,6 @@ CREATE OR REPLACE FUNCTION envelope(geometry)
 CREATE OR REPLACE FUNCTION ST_Envelope(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_envelope'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION reverse(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_reverse'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -1354,20 +1342,8 @@ CREATE OR REPLACE FUNCTION postgis_cache_bbox()
 -- CONSTRUCTORS
 ------------------------------------------------------------------------
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MakePoint(float8, float8)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MakePoint(float8, float8)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MakePoint(float8, float8, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint'
 	LANGUAGE 'C' IMMUTABLE STRICT;
@@ -1378,22 +1354,11 @@ CREATE OR REPLACE FUNCTION ST_MakePoint(float8, float8, float8)
 	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MakePoint(float8, float8, float8, float8)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint'
-	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MakePoint(float8, float8, float8, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MakePointM(float8, float8, float8)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint3dm'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.3.4
@@ -1402,40 +1367,17 @@ CREATE OR REPLACE FUNCTION ST_MakePointM(float8, float8, float8)
 	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint3dm'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MakeBox3d(geometry, geometry)
-	RETURNS box3d
-	AS 'MODULE_PATHNAME', 'BOX3D_construct'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MakeBox3d(geometry, geometry)
 	RETURNS box3d
 	AS 'MODULE_PATHNAME', 'BOX3D_construct'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION makeline_garray (geometry[])
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_makeline_garray'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_MakeLine_GArray (geometry[])
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_makeline_garray'
-	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION ST_MakeLine (geometry[])
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_makeline_garray'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION LineFromMultiPoint(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_line_from_mpoint'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -1444,12 +1386,12 @@ CREATE OR REPLACE FUNCTION ST_LineFromMultiPoint(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_line_from_mpoint'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MakeLine(geometry, geometry)
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_MakeLine_GArray (geometry[])
 	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_makeline'
+	AS 'MODULE_PATHNAME', 'LWGEOM_makeline_garray'
 	LANGUAGE 'C' IMMUTABLE STRICT;
-
+	
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MakeLine(geometry, geometry)
 	RETURNS geometry
@@ -1596,12 +1538,6 @@ CREATE OR REPLACE FUNCTION Dump(geometry)
 CREATE OR REPLACE FUNCTION ST_Dump(geometry)
 	RETURNS SETOF geometry_dump
 	AS 'MODULE_PATHNAME', 'LWGEOM_dump'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION DumpRings(geometry)
-	RETURNS SETOF geometry_dump
-	AS 'MODULE_PATHNAME', 'LWGEOM_dump_rings'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -1751,24 +1687,11 @@ CREATE AGGREGATE ST_Extent(
 	stype = box3d_extent
 	);
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION combine_bbox(box3d,geometry)
-	RETURNS box3d
-	AS 'MODULE_PATHNAME', 'BOX3D_combine'
-	LANGUAGE 'C' IMMUTABLE;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Combine_BBox(box3d,geometry)
 	RETURNS box3d
 	AS 'MODULE_PATHNAME', 'BOX3D_combine'
 	LANGUAGE 'C' IMMUTABLE;
-
--- Deprecation in 1.2.3
-CREATE AGGREGATE Extent3d(
-	sfunc = combine_bbox,
-	basetype = geometry,
-	stype = box3d
-	);
 
 -- Availability: 1.2.2
 CREATE AGGREGATE ST_Extent3d(
@@ -3219,12 +3142,6 @@ CREATE OR REPLACE FUNCTION ST_SnapToGrid(geometry, geometry, float8, float8, flo
 	AS 'MODULE_PATHNAME', 'LWGEOM_snaptogrid_pointoff'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION Segmentize(geometry, float8)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_segmentize2d'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Segmentize(geometry, float8)
 	RETURNS geometry
@@ -3318,13 +3235,6 @@ CREATE OR REPLACE FUNCTION ST_Intersection(geometry,geometry)
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION buffer(geometry,float8)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','buffer'
-	LANGUAGE 'C' IMMUTABLE STRICT
-	COST 100;
-
 -- PostGIS equivalent function: buffer(geometry,float8)
 CREATE OR REPLACE FUNCTION ST_Buffer(geometry,float8)
 	RETURNS geometry
@@ -3348,19 +3258,13 @@ CREATE OR REPLACE FUNCTION ST_Buffer(geometry,float8,integer)
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_buffer(geometry,float8,text)
+CREATE OR REPLACE FUNCTION ST_Buffer(geometry,float8,text)
 	RETURNS geometry
 	AS $$ SELECT _ST_Buffer($1, $2,
 		CAST( regexp_replace($3, '^[0123456789]+$',
 			'quad_segs='||$3) AS cstring)
 		)
 	   $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION buffer(geometry,float8,integer)
-	RETURNS geometry
-	AS 'SELECT ST_Buffer($1, $2, $3)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
@@ -3446,12 +3350,6 @@ CREATE OR REPLACE FUNCTION ST_HausdorffDistance(geometry, geometry, float8)
 	COST 100;
 #endif
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION difference(geometry,geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','difference'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function: difference(geometry,geometry)
 CREATE OR REPLACE FUNCTION ST_Difference(geometry,geometry)
 	RETURNS geometry
@@ -3468,12 +3366,6 @@ CREATE OR REPLACE FUNCTION boundary(geometry)
 CREATE OR REPLACE FUNCTION ST_Boundary(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','boundary'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION symdifference(geometry,geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','symdifference'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: symdifference(geometry,geometry)
