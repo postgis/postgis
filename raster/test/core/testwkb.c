@@ -67,8 +67,8 @@ main()
     raster = rt_raster_from_hexwkb(ctx, hexwkb, strlen(hexwkb));
     CHECK(raster);
     CHECK_EQUALS(rt_raster_get_num_bands(ctx, raster), 0);
-    CHECK_EQUALS(rt_raster_get_pixel_width(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_pixel_height(ctx, raster), 2);
+    CHECK_EQUALS(rt_raster_get_x_scale(ctx, raster), 1);
+    CHECK_EQUALS(rt_raster_get_y_scale(ctx, raster), 2);
     CHECK_EQUALS(rt_raster_get_x_offset(ctx, raster), 3);
     CHECK_EQUALS(rt_raster_get_y_offset(ctx, raster), 4);
     CHECK_EQUALS(rt_raster_get_x_skew(ctx, raster), 5);
@@ -125,8 +125,8 @@ main()
     raster = rt_raster_from_hexwkb(ctx, hexwkb, strlen(hexwkb));
     CHECK(raster);
     CHECK_EQUALS(rt_raster_get_num_bands(ctx, raster), 0);
-    CHECK_EQUALS(rt_raster_get_pixel_width(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_pixel_height(ctx, raster), 2);
+    CHECK_EQUALS(rt_raster_get_x_scale(ctx, raster), 1);
+    CHECK_EQUALS(rt_raster_get_y_scale(ctx, raster), 2);
     CHECK_EQUALS(rt_raster_get_x_offset(ctx, raster), 3);
     CHECK_EQUALS(rt_raster_get_y_offset(ctx, raster), 4);
     CHECK_EQUALS(rt_raster_get_x_skew(ctx, raster), 5);
@@ -173,8 +173,8 @@ main()
     raster = rt_raster_from_hexwkb(ctx, hexwkb, strlen(hexwkb));
     CHECK(raster);
     CHECK_EQUALS(rt_raster_get_num_bands(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_pixel_width(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_pixel_height(ctx, raster), 2);
+    CHECK_EQUALS(rt_raster_get_x_scale(ctx, raster), 1);
+    CHECK_EQUALS(rt_raster_get_y_scale(ctx, raster), 2);
     CHECK_EQUALS(rt_raster_get_x_offset(ctx, raster), 3);
     CHECK_EQUALS(rt_raster_get_y_offset(ctx, raster), 4);
     CHECK_EQUALS(rt_raster_get_x_skew(ctx, raster), 5);
@@ -237,8 +237,8 @@ main()
     raster = rt_raster_from_hexwkb(ctx, hexwkb, strlen(hexwkb));
     CHECK(raster);
     CHECK_EQUALS(rt_raster_get_num_bands(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_pixel_width(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_pixel_height(ctx, raster), 2);
+    CHECK_EQUALS(rt_raster_get_x_scale(ctx, raster), 1);
+    CHECK_EQUALS(rt_raster_get_y_scale(ctx, raster), 2);
     CHECK_EQUALS(rt_raster_get_x_offset(ctx, raster), 3);
     CHECK_EQUALS(rt_raster_get_y_offset(ctx, raster), 4);
     CHECK_EQUALS(rt_raster_get_x_skew(ctx, raster), 5);
@@ -336,8 +336,8 @@ main()
     raster = rt_raster_from_hexwkb(ctx, hexwkb, strlen(hexwkb));
     CHECK(raster);
     CHECK_EQUALS(rt_raster_get_num_bands(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_pixel_width(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_pixel_height(ctx, raster), 2);
+    CHECK_EQUALS(rt_raster_get_x_scale(ctx, raster), 1);
+    CHECK_EQUALS(rt_raster_get_y_scale(ctx, raster), 2);
     CHECK_EQUALS(rt_raster_get_x_offset(ctx, raster), 3);
     CHECK_EQUALS(rt_raster_get_y_offset(ctx, raster), 4);
     CHECK_EQUALS(rt_raster_get_x_skew(ctx, raster), 5);
@@ -421,8 +421,8 @@ main()
     raster = rt_raster_from_hexwkb(ctx, hexwkb, strlen(hexwkb));
     CHECK(raster);
     CHECK_EQUALS(rt_raster_get_num_bands(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_pixel_width(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_pixel_height(ctx, raster), 2);
+    CHECK_EQUALS(rt_raster_get_x_scale(ctx, raster), 1);
+    CHECK_EQUALS(rt_raster_get_y_scale(ctx, raster), 2);
     CHECK_EQUALS(rt_raster_get_x_offset(ctx, raster), 3);
     CHECK_EQUALS(rt_raster_get_y_offset(ctx, raster), 4);
     CHECK_EQUALS(rt_raster_get_x_skew(ctx, raster), 5);
@@ -503,8 +503,8 @@ main()
     raster = rt_raster_from_hexwkb(ctx, hexwkb, strlen(hexwkb));
     CHECK(raster);
     CHECK_EQUALS(rt_raster_get_num_bands(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_pixel_width(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_pixel_height(ctx, raster), 2);
+    CHECK_EQUALS(rt_raster_get_x_scale(ctx, raster), 1);
+    CHECK_EQUALS(rt_raster_get_y_scale(ctx, raster), 2);
     CHECK_EQUALS(rt_raster_get_x_offset(ctx, raster), 3);
     CHECK_EQUALS(rt_raster_get_y_offset(ctx, raster), 4);
     CHECK_EQUALS(rt_raster_get_x_skew(ctx, raster), 5);
@@ -563,8 +563,8 @@ main()
     raster = rt_raster_from_hexwkb(ctx, hexwkb, strlen(hexwkb));
     CHECK(raster);
     CHECK_EQUALS(rt_raster_get_num_bands(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_pixel_width(ctx, raster), 90);
-    CHECK_EQUALS(rt_raster_get_pixel_height(ctx, raster), -90);
+    CHECK_EQUALS(rt_raster_get_x_scale(ctx, raster), 90);
+    CHECK_EQUALS(rt_raster_get_y_scale(ctx, raster), -90);
     CHECK_EQUALS(rt_raster_get_x_offset(ctx, raster), 969870.0);
     CHECK_EQUALS(rt_raster_get_y_offset(ctx, raster), 642930.0);
     CHECK_EQUALS(rt_raster_get_x_skew(ctx, raster), 0);
@@ -657,8 +657,8 @@ main()
     raster = rt_raster_from_hexwkb(ctx, hexwkb, strlen(hexwkb));
     CHECK(raster);
     CHECK_EQUALS(rt_raster_get_num_bands(ctx, raster), 3);
-    CHECK_EQUALS_DOUBLE(rt_raster_get_pixel_width(ctx, raster), 0.05);
-    CHECK_EQUALS_DOUBLE(rt_raster_get_pixel_height(ctx, raster), -0.05);
+    CHECK_EQUALS_DOUBLE(rt_raster_get_x_scale(ctx, raster), 0.05);
+    CHECK_EQUALS_DOUBLE(rt_raster_get_y_scale(ctx, raster), -0.05);
     CHECK_EQUALS_DOUBLE(rt_raster_get_x_offset(ctx, raster), 3427927.75);
     CHECK_EQUALS_DOUBLE(rt_raster_get_y_offset(ctx, raster), 5793244.00);
     CHECK_EQUALS_DOUBLE(rt_raster_get_x_skew(ctx, raster), 0.0);

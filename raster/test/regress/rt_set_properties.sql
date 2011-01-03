@@ -25,28 +25,28 @@ WHERE (srid+1) != st_srid(st_setsrid(rast,srid+1));
 
 
 -----------------------------------------------------------------------
---- ST_SetPixelSize
+--- ST_SetScale
 -----------------------------------------------------------------------
 
 SELECT
     (scalex+2) AS expectedx,
     (scaley+3) AS expectedy,
-    st_pixelsizex(st_setpixelsize(rast,scalex+2,scaley)) AS obtainedx,
-    st_pixelsizey(st_setpixelsize(rast,scalex,scaley+3)) AS obtainedy
+    st_scalex(st_setscale(rast,scalex+2,scaley)) AS obtainedx,
+    st_scaley(st_setscale(rast,scalex,scaley+3)) AS obtainedy
  FROM rt_properties_test
 WHERE
-    (scalex+2) != st_pixelsizex(st_setpixelsize(rast,scalex+2,scaley)) OR
-    (scaley+3) != st_pixelsizey(st_setpixelsize(rast,scalex,scaley+3));
+    (scalex+2) != st_scalex(st_setscale(rast,scalex+2,scaley)) OR
+    (scaley+3) != st_scaley(st_setscale(rast,scalex,scaley+3));
 
 SELECT
     (scalex+2) AS expectedx,
     (scaley+3) AS expectedy,
-    st_pixelsizex(st_setpixelsize(rast,scalex+2)) AS obtainedx,
-    st_pixelsizey(st_setpixelsize(rast,scaley+3)) AS obtainedy
+    st_scalex(st_setscale(rast,scalex+2)) AS obtainedx,
+    st_scaley(st_setscale(rast,scaley+3)) AS obtainedy
  FROM rt_properties_test
 WHERE
-    (scalex+2) != st_pixelsizex(st_setpixelsize(rast,scalex+2)) OR
-    (scaley+3) != st_pixelsizey(st_setpixelsize(rast,scaley+3));
+    (scalex+2) != st_scalex(st_setscale(rast,scalex+2)) OR
+    (scaley+3) != st_scaley(st_setscale(rast,scaley+3));
 
 -----------------------------------------------------------------------
 --- ST_SetSkew

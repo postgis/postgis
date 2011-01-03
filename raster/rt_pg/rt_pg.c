@@ -84,10 +84,10 @@ Datum RASTER_getSRID(PG_FUNCTION_ARGS);
 Datum RASTER_getWidth(PG_FUNCTION_ARGS);
 Datum RASTER_getHeight(PG_FUNCTION_ARGS);
 Datum RASTER_getNumBands(PG_FUNCTION_ARGS);
-Datum RASTER_getXPixelSize(PG_FUNCTION_ARGS);
-Datum RASTER_getYPixelSize(PG_FUNCTION_ARGS);
-Datum RASTER_setPixelSize(PG_FUNCTION_ARGS);
-Datum RASTER_setPixelSizeXY(PG_FUNCTION_ARGS);
+Datum RASTER_getXScale(PG_FUNCTION_ARGS);
+Datum RASTER_getYScale(PG_FUNCTION_ARGS);
+Datum RASTER_setScale(PG_FUNCTION_ARGS);
+Datum RASTER_setScaleXY(PG_FUNCTION_ARGS);
 Datum RASTER_getXSkew(PG_FUNCTION_ARGS);
 Datum RASTER_getYSkew(PG_FUNCTION_ARGS);
 Datum RASTER_setSkew(PG_FUNCTION_ARGS);
@@ -671,7 +671,7 @@ Datum RASTER_makeEmpty(PG_FUNCTION_ARGS)
         PG_RETURN_NULL(); /* error was supposedly printed already */
     }
 
-    rt_raster_set_pixel_sizes(ctx, raster, scalex, scaley);
+    rt_raster_set_scale(ctx, raster, scalex, scaley);
     rt_raster_set_offsets(ctx, raster, ipx, ipy);
     rt_raster_set_skews(ctx, raster, skewx, skewy);
     rt_raster_set_srid(ctx, raster, srid);
@@ -799,10 +799,10 @@ Datum RASTER_getNumBands(PG_FUNCTION_ARGS)
 }
 
 /**
- * Return X size of pixel from georeference of the raster.
+ * Return X scale from georeference of the raster.
  */
-PG_FUNCTION_INFO_V1(RASTER_getXPixelSize);
-Datum RASTER_getXPixelSize(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(RASTER_getXScale);
+Datum RASTER_getXScale(PG_FUNCTION_ARGS)
 {
     rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
     rt_raster raster;
@@ -816,15 +816,15 @@ Datum RASTER_getXPixelSize(PG_FUNCTION_ARGS)
         PG_RETURN_NULL();
     }
 
-    xsize = rt_raster_get_pixel_width(ctx, raster);
+    xsize = rt_raster_get_x_scale(ctx, raster);
     PG_RETURN_FLOAT8(xsize);
 }
 
 /**
- * Return Y size of pixel from georeference of the raster.
+ * Return Y scale from georeference of the raster.
  */
-PG_FUNCTION_INFO_V1(RASTER_getYPixelSize);
-Datum RASTER_getYPixelSize(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(RASTER_getYScale);
+Datum RASTER_getYScale(PG_FUNCTION_ARGS)
 {
     rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
     rt_raster raster;
@@ -838,15 +838,15 @@ Datum RASTER_getYPixelSize(PG_FUNCTION_ARGS)
         PG_RETURN_NULL();
     }
 
-    ysize = rt_raster_get_pixel_height(ctx, raster);
+    ysize = rt_raster_get_y_scale(ctx, raster);
     PG_RETURN_FLOAT8(ysize);
 }
 
 /**
- * Set the pixel size of the raster.
+ * Set the scale of the raster.
  */
-PG_FUNCTION_INFO_V1(RASTER_setPixelSize);
-Datum RASTER_setPixelSize(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(RASTER_setScale);
+Datum RASTER_setScale(PG_FUNCTION_ARGS)
 {
     rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
     rt_raster raster;
@@ -859,7 +859,7 @@ Datum RASTER_setPixelSize(PG_FUNCTION_ARGS)
         PG_RETURN_NULL();
     }
 
-    rt_raster_set_pixel_sizes(ctx, raster, size, size);
+    rt_raster_set_scale(ctx, raster, size, size);
 
     pgraster = rt_raster_serialize(ctx, raster);
     if ( ! pgraster ) PG_RETURN_NULL();
@@ -871,14 +871,14 @@ Datum RASTER_setPixelSize(PG_FUNCTION_ARGS)
 /**
  * Set the pixel size of the raster.
  */
-PG_FUNCTION_INFO_V1(RASTER_setPixelSizeXY);
-Datum RASTER_setPixelSizeXY(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(RASTER_setScaleXY);
+Datum RASTER_setScaleXY(PG_FUNCTION_ARGS)
 {
     rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
     rt_raster raster;
     rt_context ctx = get_rt_context(fcinfo);
-    double xsize = PG_GETARG_FLOAT8(1);
-    double ysize = PG_GETARG_FLOAT8(2);
+    double xscale = PG_GETARG_FLOAT8(1);
+    double yscale = PG_GETARG_FLOAT8(2);
 
     raster = rt_raster_deserialize(ctx, pgraster);
     if (! raster ) {
@@ -886,7 +886,7 @@ Datum RASTER_setPixelSizeXY(PG_FUNCTION_ARGS)
         PG_RETURN_NULL();
     }
 
-    rt_raster_set_pixel_sizes(ctx, raster, xsize, ysize);
+    rt_raster_set_scale(ctx, raster, xscale, yscale);
 
     pgraster = rt_raster_serialize(ctx, raster);
     if ( ! pgraster ) PG_RETURN_NULL();

@@ -476,37 +476,37 @@ uint16_t rt_raster_get_height(rt_context ctx, rt_raster raster);
 int32_t rt_raster_add_band(rt_context ctx, rt_raster raster, rt_band band, int index);
 
 /**
- * Set pixel size in projection units
+ * Set scale in projection units
  *
  * @param ctx : context, for thread safety
  * @param raster : the raster to set georeference of
- * @param scaleX : pixel width in projection units
- * @param scaleY : pixel height in projection units
+ * @param scaleX : scale X in projection units
+ * @param scaleY : scale Y height in projection units
  *
  * NOTE: doesn't recompute offsets
  */
-void rt_raster_set_pixel_sizes(rt_context ctx, rt_raster raster,
+void rt_raster_set_scale(rt_context ctx, rt_raster raster,
                                double scaleX, double scaleY);
 
 /**
- * Get pixel width in projection units
+ * Get scale X in projection units
  *
  * @param ctx : context, for thread safety
  * @param raster : the raster to get georeference of
  *
- * @return pixel width in projection units
+ * @return scale X in projection units
  */
-double rt_raster_get_pixel_width(rt_context ctx, rt_raster raster);
+double rt_raster_get_x_scale(rt_context ctx, rt_raster raster);
 
 /**
- * Get pixel height in projection units
+ * Get scale Y in projection units
  *
  * @param ctx : context, for thread safety
  * @param raster : the raster to get georeference of
  *
- * @return pixel height in projection units
+ * @return scale Y in projection units
  */
-double rt_raster_get_pixel_height(rt_context ctx, rt_raster raster);
+double rt_raster_get_y_scale(rt_context ctx, rt_raster raster);
 
 /**
  * Set insertion points in projection units

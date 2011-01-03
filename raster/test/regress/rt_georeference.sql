@@ -141,10 +141,10 @@ WHERE id = 0;
 -----------------------------------------------------------------------
 
 SELECT
-	st_pixelsizex(rast) = 2,
-	st_pixelsizey(rast) = 3,
-	st_pixelsizex(st_setgeoreference(rast,'4.0000000000 0.0000000000 0.0000000000 6.0000000000 1.5000000000 2.0000000000')) = 4,
-	st_pixelsizey(st_setgeoreference(rast,'4.0000000000 0.0000000000 0.0000000000 6.0000000000 1.5000000000 2.0000000000')) = 6
+	st_scalex(rast) = 2,
+	st_scaley(rast) = 3,
+	st_scalex(st_setgeoreference(rast,'4.0000000000 0.0000000000 0.0000000000 6.0000000000 1.5000000000 2.0000000000')) = 4,
+	st_scaley(st_setgeoreference(rast,'4.0000000000 0.0000000000 0.0000000000 6.0000000000 1.5000000000 2.0000000000')) = 6
 FROM rt_properties_test 
 WHERE id = 0;
 
@@ -169,10 +169,10 @@ WHERE id = 2;
 -----------------------------------------------------------------------
 
 SELECT
-	st_pixelsizex(rast) = 2,
-	st_pixelsizey(rast) = 3,
-	st_pixelsizex(st_setgeoreference(rast,'4.0000000000 0.0000000000 0.0000000000 6.0000000000 1.5000000000 2.0000000000','GDAL')) = 4,
-	st_pixelsizey(st_setgeoreference(rast,'4.0000000000 0.0000000000 0.0000000000 6.0000000000 1.5000000000 2.0000000000','GDAL')) = 6
+	st_scalex(rast) = 2,
+	st_scaley(rast) = 3,
+	st_scalex(st_setgeoreference(rast,'4.0000000000 0.0000000000 0.0000000000 6.0000000000 1.5000000000 2.0000000000','GDAL')) = 4,
+	st_scaley(st_setgeoreference(rast,'4.0000000000 0.0000000000 0.0000000000 6.0000000000 1.5000000000 2.0000000000','GDAL')) = 6
 FROM rt_properties_test 
 WHERE id = 0;
 
@@ -197,10 +197,10 @@ WHERE id = 2;
 -----------------------------------------------------------------------
 
 SELECT
-	st_pixelsizex(rast) = 2,
-	st_pixelsizey(rast) = 3,
-	st_pixelsizex(st_setgeoreference(rast,'4.0000000000 0.0000000000 0.0000000000 6.0000000000 1.5000000000 2.0000000000','ESRI')) = 4,
-	st_pixelsizey(st_setgeoreference(rast,'4.0000000000 0.0000000000 0.0000000000 6.0000000000 1.5000000000 2.0000000000','ESRI')) = 6
+	st_scalex(rast) = 2,
+	st_scaley(rast) = 3,
+	st_scalex(st_setgeoreference(rast,'4.0000000000 0.0000000000 0.0000000000 6.0000000000 1.5000000000 2.0000000000','ESRI')) = 4,
+	st_scaley(st_setgeoreference(rast,'4.0000000000 0.0000000000 0.0000000000 6.0000000000 1.5000000000 2.0000000000','ESRI')) = 6
 FROM rt_properties_test 
 WHERE id = 0;
 

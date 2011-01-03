@@ -8,17 +8,17 @@
 -----------------------------------------------------------------------
 
 -----------------------------------------------------------------------
--- st_pixelsizex
+-- st_scalex
 -----------------------------------------------------------------------
 
 SELECT id, name, scalex
     FROM rt_properties_test
-    WHERE st_pixelsizex(rast) != scalex;
+    WHERE st_scalex(rast) != scalex;
 
 -----------------------------------------------------------------------
--- st_pixelsizex
+-- st_scalex
 -----------------------------------------------------------------------
 
 SELECT id, name, scaley
     FROM rt_properties_test
-    WHERE st_pixelsizey(rast) != scaley;
+    WHERE st_scaley(rast) != scaley;

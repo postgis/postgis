@@ -31,5 +31,5 @@ symbol		"+"|"-"|"*"|"/"|"^"|"("|")"
 {integer}	{yylval.integer = atoi(yytext); return TKN_INTEGER;}
 {real}		{yylval.real = atof(yytext); return TKN_REAL;}
 {symbol}	{return yytext[0];}
-.		;
+.			;
 %%

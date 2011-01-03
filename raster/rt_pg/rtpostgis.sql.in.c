@@ -92,14 +92,14 @@ CREATE OR REPLACE FUNCTION st_numbands(raster)
     AS 'MODULE_PATHNAME','RASTER_getNumBands'
     LANGUAGE 'C' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_pixelsizex(raster)
+CREATE OR REPLACE FUNCTION st_scalex(raster)
     RETURNS float8
-    AS 'MODULE_PATHNAME','RASTER_getXPixelSize'
+    AS 'MODULE_PATHNAME','RASTER_getXScale'
     LANGUAGE 'C' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_pixelsizey(raster)
+CREATE OR REPLACE FUNCTION st_scaley(raster)
     RETURNS float8
-    AS 'MODULE_PATHNAME','RASTER_getYPixelSize'
+    AS 'MODULE_PATHNAME','RASTER_getYScale'
     LANGUAGE 'C' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_skewx(raster)
@@ -137,8 +137,8 @@ CREATE OR REPLACE FUNCTION st_metadata(rast raster,
                                        OUT upperlefty float8,
                                        OUT width int,
                                        OUT height int,
-                                       OUT pixelsizex float8,
-                                       OUT pixelsizey float8,
+                                       OUT scalex float8,
+                                       OUT scaley float8,
                                        OUT skewx float8,
                                        OUT skewy float8,
                                        OUT srid int,
@@ -149,8 +149,8 @@ CREATE OR REPLACE FUNCTION st_metadata(rast raster,
            st_upperlefty($1),
            st_width($1),
            st_height($1),
-           st_pixelsizex($1),
-           st_pixelsizey($1),
+           st_scalex($1),
+           st_scaley($1),
            st_skewx($1),
            st_skewy($1),
            st_srid($1),
@@ -161,24 +161,24 @@ CREATE OR REPLACE FUNCTION st_metadata(rast raster,
 -----------------------------------------------------------------------
 -- Constructors ST_MakeEmptyRaster and ST_AddBand
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_makeemptyraster(width int, height int, upperleftx float8, upperlefty float8, pixelsizex float8, pixelsizey float8, skewx float8, skewy float8, srid int4)
+CREATE OR REPLACE FUNCTION st_makeemptyraster(width int, height int, upperleftx float8, upperlefty float8, scalex float8, scaley float8, skewx float8, skewy float8, srid int4)
     RETURNS RASTER
     AS 'MODULE_PATHNAME', 'RASTER_makeEmpty'
     LANGUAGE 'C' IMMUTABLE;
     
-CREATE OR REPLACE FUNCTION st_makeemptyraster(width int, height int, upperleftx float8, upperlefty float8, pixelsize float8) 
+CREATE OR REPLACE FUNCTION st_makeemptyraster(width int, height int, upperleftx float8, upperlefty float8, scale float8) 
     RETURNS raster
     AS 'select st_makeemptyraster($1, $2, $3, $4, $5, $5, 0, 0, -1)'
     LANGUAGE 'SQL' IMMUTABLE;    
     
-CREATE OR REPLACE FUNCTION st_makeemptyraster(width int, height int, upperleftx float8, upperlefty float8, pixelsizex float8, pixelsizey float8, skewx float8, skewy float8) 
+CREATE OR REPLACE FUNCTION st_makeemptyraster(width int, height int, upperleftx float8, upperlefty float8, scalex float8, scaley float8, skewx float8, skewy float8) 
     RETURNS raster
     AS 'select st_makeemptyraster($1, $2, $3, $4, $5, $6, $7, $8, -1)'
     LANGUAGE 'SQL' IMMUTABLE;    
 
 CREATE OR REPLACE FUNCTION st_makeemptyraster(rast raster) 
     RETURNS raster
-    AS 'select st_makeemptyraster(st_width($1), st_height($1), st_upperleftx($1), st_upperlefty($1), st_pixelsizex($1), st_pixelsizey($1), st_skewx($1), st_skewy($1), st_srid($1))'
+    AS 'select st_makeemptyraster(st_width($1), st_height($1), st_upperleftx($1), st_upperlefty($1), st_scalex($1), st_scaley($1), st_skewx($1), st_skewy($1), st_srid($1))'
     LANGUAGE 'SQL' IMMUTABLE STRICT;    
 
 CREATE OR REPLACE FUNCTION st_addband(rast raster, index int, pixeltype text, initialvalue float8, nodataval float8)
@@ -338,7 +338,7 @@ CREATE OR REPLACE FUNCTION st_georeference(rast raster, format text)
         x numeric;
         result text;
     BEGIN
-            x := st_pixelsizex(rast)::numeric;
+            x := st_scalex(rast)::numeric;
             result := trunc(x, 10) || E'\n';
 
             x := st_skewy(rast)::numeric;
@@ -347,14 +347,14 @@ CREATE OR REPLACE FUNCTION st_georeference(rast raster, format text)
             x := st_skewx(rast)::numeric;
             result := result || trunc(x, 10) || E'\n';
 
-            x := st_pixelsizey(rast)::numeric;
+            x := st_scaley(rast)::numeric;
             result := result || trunc(x, 10) || E'\n';
 
         IF format = 'ESRI' THEN
-            x := (st_upperleftx(rast) + st_pixelsizex(rast)*0.5)::numeric;
+            x := (st_upperleftx(rast) + st_scalex(rast)*0.5)::numeric;
             result := result || trunc(x, 10) || E'\n';
 
-            x := (st_upperlefty(rast) + st_pixelsizey(rast)*0.5)::numeric;
+            x := (st_upperlefty(rast) + st_scaley(rast)*0.5)::numeric;
             result = result || trunc(x, 10) || E'\n';
         ELSE -- IF format = 'GDAL' THEN
             x := st_upperleftx(rast)::numeric;
@@ -378,14 +378,14 @@ CREATE OR REPLACE FUNCTION st_georeference(raster)
 -- Raster Editors
 -----------------------------------------------------------------------
 
-CREATE OR REPLACE FUNCTION st_setpixelsize(rast raster, pixelsize float8)
+CREATE OR REPLACE FUNCTION st_setscale(rast raster, scale float8)
     RETURNS raster
-    AS 'MODULE_PATHNAME','RASTER_setPixelSize'
+    AS 'MODULE_PATHNAME','RASTER_setScale'
     LANGUAGE 'C' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_setpixelsize(rast raster, pixelsizex float8, pixelsizey float8)
+CREATE OR REPLACE FUNCTION st_setscale(rast raster, scalex float8, scaley float8)
     RETURNS raster
-    AS 'MODULE_PATHNAME','RASTER_setPixelSizeXY'
+    AS 'MODULE_PATHNAME','RASTER_setScaleXY'
     LANGUAGE 'C' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_setskew(rast raster, skew float8)
@@ -433,8 +433,8 @@ CREATE OR REPLACE FUNCTION st_setgeoreference(rast raster, georef text, format t
 
         IF format = 'ESRI' THEN
             -- params array is now:
-            -- {pixelsizex, skewy, skewx, pixelsizey, upperleftx, upperlefty}
-            rastout := st_setpixelsize(rast, params[1]::float8, params[4]::float8);
+            -- {scalex, skewy, skewx, scaley, upperleftx, upperlefty}
+            rastout := st_setscale(rast, params[1]::float8, params[4]::float8);
             rastout := st_setskew(rastout, params[3]::float8, params[2]::float8);
             rastout := st_setupperleft(rastout, 
                                    params[5]::float8 - (params[1]::float8 * 0.5),
@@ -444,9 +444,9 @@ CREATE OR REPLACE FUNCTION st_setgeoreference(rast raster, georef text, format t
                 RAISE WARNING E'Format \'%\' is not recognized, defaulting to GDAL format.', format;
             END IF;
             -- params array is now:
-            -- {pixelsizex, skewy, skewx, pixelsizey, upperleftx, upperlefty}
+            -- {scalex, skewy, skewx, scaley, upperleftx, upperlefty}
 
-            rastout := st_setpixelsize(rast, params[1]::float8, params[4]::float8);
+            rastout := st_setscale(rast, params[1]::float8, params[4]::float8);
             rastout := st_setskew( rastout, params[3]::float8, params[2]::float8);
             rastout := st_setupperleft(rastout, params[5]::float8, params[6]::float8);
         END IF;
@@ -587,8 +587,8 @@ CREATE OR REPLACE FUNCTION st_pixelaspolygon(rast raster, band integer, x intege
     DECLARE
         w integer;
         h integer;
-        pxsizex float8;
-        pxsizey float8;
+        scalex float8;
+        scaley float8;
         skewx float8;
         skewy float8;
         x1 float8;
@@ -600,18 +600,18 @@ CREATE OR REPLACE FUNCTION st_pixelaspolygon(rast raster, band integer, x intege
         x4 float8;
         y4 float8;
     BEGIN
-        pxsizex := st_pixelsizex(rast);
+        scalex := st_scalex(rast);
         skewx := st_skewy(rast);
         skewy := st_skewx(rast);
-        pxsizey := st_pixelsizey(rast);
-        x1 := pxsizex * (x - 1) + skewx * (y - 1) + st_upperleftx(rast);
-        y1 := pxsizey * (y - 1) + skewy * (x - 1) + st_upperlefty(rast);
-        x2 := x1 + pxsizex;
+        scaley := st_scaley(rast);
+        x1 := scalex * (x - 1) + skewx * (y - 1) + st_upperleftx(rast);
+        y1 := scaley * (y - 1) + skewy * (x - 1) + st_upperlefty(rast);
+        x2 := x1 + scalex;
         y2 := y1 + skewy;
-        x3 := x1 + pxsizex + skewx;
-        y3 := y1 + pxsizey + skewy;
+        x3 := x1 + scalex + skewx;
+        y3 := y1 + scaley + skewy;
         x4 := x1 + skewx;
-        y4 := y1 + pxsizey;
+        y4 := y1 + scaley;
         RETURN st_setsrid(st_makepolygon(st_makeline(ARRAY[st_makepoint(x1, y1), 
                                                            st_makepoint(x2, y2), 
                                                            st_makepoint(x3, y3), 
@@ -655,14 +655,14 @@ CREATE OR REPLACE FUNCTION st_world2rastercoordx(rast raster, xw float8, yw floa
         f float8 := 0.0;
         xr numeric := 0.0;
     BEGIN
-        a := st_pixelsizex(rast); 
+        a := st_scalex(rast); 
         d := st_skewy(rast); 
         b := st_skewx(rast); 
-        e := st_pixelsizey(rast); 
+        e := st_scaley(rast); 
         c := st_upperleftx(rast); 
         f := st_upperlefty(rast);
         IF ( b * d - a * e = 0 ) THEN
-            RAISE EXCEPTION 'Attempting to compute raster coordinate on a raster with pixel size equal to 0';
+            RAISE EXCEPTION 'Attempting to compute raster coordinate on a raster with scale equal to 0';
         END IF;
         xr := (b * (yw - f) - e * (xw - c)) / (b * d - a * e);
         RETURN floor(xr) + 1;
@@ -690,14 +690,14 @@ CREATE OR REPLACE FUNCTION st_world2rastercoordx(rast raster, xw float8)
         f float8 := 0.0;
         xr numeric := 0.0;
     BEGIN
-        a := st_pixelsizex(rast); 
+        a := st_scalex(rast); 
         d := st_skewy(rast); 
         b := st_skewx(rast); 
-        e := st_pixelsizey(rast); 
+        e := st_scaley(rast); 
         c := st_upperleftx(rast); 
         f := st_upperlefty(rast);
         IF ( b * d - a * e = 0 ) THEN
-            RAISE EXCEPTION 'Attempting to compute raster coordinate on a raster with pixel size equal to 0';
+            RAISE EXCEPTION 'Attempting to compute raster coordinate on a raster with scale equal to 0';
         END IF;
         IF ( b != 0 OR d != 0) THEN
             RAISE EXCEPTION 'Attempting to compute raster coordinate on a raster with rotation providing x only. A y must also be provided';
@@ -744,14 +744,14 @@ CREATE OR REPLACE FUNCTION st_world2rastercoordy(rast raster, xw float8, yw floa
         f float8 := 0.0;
         yr numeric := 0.0;
     BEGIN
-        a := st_pixelsizex(rast); 
+        a := st_scalex(rast); 
         d := st_skewy(rast); 
         b := st_skewx(rast); 
-        e := st_pixelsizey(rast); 
+        e := st_scaley(rast); 
         c := st_upperleftx(rast); 
         f := st_upperlefty(rast);
         IF ( b * d - a * e = 0 ) THEN
-            RAISE EXCEPTION 'Attempting to compute raster coordinate on a raster with pixel size equal to 0';
+            RAISE EXCEPTION 'Attempting to compute raster coordinate on a raster with scale equal to 0';
         END IF;
         yr := (a * (yw - f) + d * (c - xw)) / (a * e - b * d);
         RETURN floor(yr) + 1;
@@ -779,14 +779,14 @@ CREATE OR REPLACE FUNCTION st_world2rastercoordy(rast raster, yw float8)
         f float8 := 0.0;
         yr numeric := 0.0;
     BEGIN
-        a := st_pixelsizex(rast); 
+        a := st_scalex(rast); 
         d := st_skewy(rast); 
         b := st_skewx(rast); 
-        e := st_pixelsizey(rast); 
+        e := st_scaley(rast); 
         c := st_upperleftx(rast); 
         f := st_upperlefty(rast);
         IF ( b * d - a * e = 0 ) THEN
-            RAISE EXCEPTION 'Attempting to compute raster coordinate on a raster with pixel size equal to 0';
+            RAISE EXCEPTION 'Attempting to compute raster coordinate on a raster with scale equal to 0';
         END IF;
         IF ( b != 0 OR d != 0) THEN
             RAISE EXCEPTION 'Attempting to compute raster coordinate on a raster with rotation providing y only. A x must also be provided';
@@ -831,7 +831,7 @@ CREATE OR REPLACE FUNCTION st_raster2worldcoordx(rast raster, xr int, yr int)
         c float8 := 0.0;
         xw numeric := 0.0;
     BEGIN
-        a := st_pixelsizex(rast); 
+        a := st_scalex(rast); 
         b := st_skewx(rast);
         c := st_upperleftx(rast);
         xw := (a::numeric * (xr::numeric - 1.0) + b::numeric * (yr::numeric - 1.0) + c::numeric)::numeric;
@@ -858,7 +858,7 @@ CREATE OR REPLACE FUNCTION st_raster2worldcoordx(rast raster, xr int)
         c float8 := 0.0;
         xw numeric := 0.0;
     BEGIN
-        a := st_pixelsizex(rast); 
+        a := st_scalex(rast); 
         b := st_skewx(rast);
         c := st_upperleftx(rast);
         IF ( b != 0 ) THEN
@@ -887,7 +887,7 @@ CREATE OR REPLACE FUNCTION st_raster2worldcoordy(rast raster, xr int, yr int)
         yw numeric := 0.0;
     BEGIN
         d := st_skewy(rast);
-        e := st_pixelsizey(rast); 
+        e := st_scaley(rast); 
         f := st_upperlefty(rast);
         yw := (d::numeric * (xr::numeric - 1.0) + e::numeric * (yr::numeric - 1.0) + f::numeric)::numeric;
         RETURN yw;
@@ -914,7 +914,7 @@ CREATE OR REPLACE FUNCTION st_raster2worldcoordy(rast raster, yr int)
         yw numeric := 0.0;
     BEGIN
         d := st_skewy(rast);
-        e := st_pixelsizey(rast); 
+        e := st_scaley(rast); 
         f := st_upperlefty(rast);
         IF ( d != 0 ) THEN
             RAISE EXCEPTION 'Attempting to compute raster coordinates on a raster with rotation providing Y only. An X coordinate must also be provided';
@@ -1137,7 +1137,7 @@ CREATE OR REPLACE FUNCTION _st_intersects(geomin geometry, rast raster, band int
         pixelval double precision;
         bintersect boolean := FALSE;
         gtype text;
-        psize float8;
+        scale float8;
     BEGIN
     
         -- Get the intersection between with the geometry. 
@@ -1158,8 +1158,8 @@ CREATE OR REPLACE FUNCTION _st_intersects(geomin geometry, rast raster, band int
 
         -- We create a minimalistic buffer around the intersection in order to scan every pixels 
         -- that would touch the edge or intersect with the geometry
-        psize := st_pixelsizex(rast) + st_skewy(rast);
-        geomintersect := st_buffer(geomintersect, psize / 1000000);
+        scale := st_scalex(rast) + st_skewy(rast);
+        geomintersect := st_buffer(geomintersect, scale / 1000000);
 
 --RAISE NOTICE 'geomintersect2=%', astext(geomintersect);
         
@@ -1348,8 +1348,8 @@ CREATE TABLE raster_columns (
     out_db boolean not null,
     regular_blocking boolean not null,
     nodata_values double precision[],
-    pixelsize_x double precision,
-    pixelsize_y double precision,
+    scale_x double precision,
+    scale_y double precision,
     blocksize_x integer,
     blocksize_y integer,
     extent geometry,
@@ -1397,8 +1397,8 @@ CREATE OR REPLACE FUNCTION AddRasterColumn(p_catalog_name varchar,
                                            p_out_db boolean,
                                            p_regular_blocking boolean,
                                            p_nodata_values double precision[],
-                                           p_pixelsize_x double precision,
-                                           p_pixelsize_y double precision,
+                                           p_scale_x double precision,
+                                           p_scale_y double precision,
                                            p_blocksize_x integer,
                                            p_blocksize_y integer,
                                            p_extent geometry)
@@ -1417,8 +1417,8 @@ CREATE OR REPLACE FUNCTION AddRasterColumn(p_catalog_name varchar,
 
     BEGIN
 
-        RAISE DEBUG 'Parameters: catalog=%, schema=%, table=%, column=%, srid=%, pixel_types=%, out_db=%, regular_blocking=%, nodata_values=%, pixelsize_x=%, pixelsize_y=%, blocksize_x=%, blocksize_y=%',
-                     p_catalog_name, p_schema_name, p_table_name, p_column_name, p_srid, p_pixel_types, p_out_db, p_regular_blocking, p_nodata_values, p_pixelsize_x, p_pixelsize_y, p_blocksize_x, p_blocksize_y;
+        RAISE DEBUG 'Parameters: catalog=%, schema=%, table=%, column=%, srid=%, pixel_types=%, out_db=%, regular_blocking=%, nodata_values=%, scale_x=%, scale_y=%, blocksize_x=%, blocksize_y=%',
+                     p_catalog_name, p_schema_name, p_table_name, p_column_name, p_srid, p_pixel_types, p_out_db, p_regular_blocking, p_nodata_values, p_scale_x, p_scale_y, p_blocksize_x, p_blocksize_y;
 
         -- Validate required parametersa and combinations
         IF ( (p_catalog_name IS NULL) OR (p_schema_name IS NULL)
@@ -1607,7 +1607,7 @@ CREATE OR REPLACE FUNCTION AddRasterColumn(p_catalog_name varchar,
         sql := 'INSERT INTO raster_columns '
             || '(r_table_catalog, r_table_schema, r_table_name, r_column, srid, '
             || 'pixel_types, out_db, regular_blocking, nodata_values, '
-            || 'pixelsize_x, pixelsize_y, blocksize_x, blocksize_y, extent) '
+            || 'scale_x, scale_y, blocksize_x, blocksize_y, extent) '
             || 'VALUES ('
             || quote_literal('') || ','
             || quote_literal(real_schema) || ','
@@ -1618,8 +1618,8 @@ CREATE OR REPLACE FUNCTION AddRasterColumn(p_catalog_name varchar,
             || p_out_db::text || ','
             || p_regular_blocking::text || ','
             || COALESCE(quote_literal(p_nodata_values::text), 'NULL') || ','
-            || COALESCE(quote_literal(p_pixelsize_x), 'NULL') || ','
-            || COALESCE(quote_literal(p_pixelsize_y), 'NULL') || ','
+            || COALESCE(quote_literal(p_scale_x), 'NULL') || ','
+            || COALESCE(quote_literal(p_scale_y), 'NULL') || ','
             || COALESCE(quote_literal(p_blocksize_x), 'NULL') || ','
             || COALESCE(quote_literal(p_blocksize_y), 'NULL') || ','
             || COALESCE(quote_literal(p_extent::text), 'NULL') || ')';
@@ -1640,7 +1640,7 @@ CREATE OR REPLACE FUNCTION AddRasterColumn(p_catalog_name varchar,
 
         -- TODO: Add more CHECKs
         -- - Add CHECK for pixel types
-        -- - Add CHECK for pixel size
+        -- - Add CHECK for scale
         -- - Do we need CHECK for NODATA values?
 
 
@@ -1650,8 +1650,8 @@ CREATE OR REPLACE FUNCTION AddRasterColumn(p_catalog_name varchar,
             || ' out_db:' || p_out_db::text
             || ' regular_blocking:' || p_regular_blocking::text
             || ' nodata_values:' || COALESCE(quote_literal(p_nodata_values::text), 'NULL')
-            || ' pixelsize_x:' || COALESCE(quote_literal(p_pixelsize_x), 'NULL')
-            || ' pixelsize_y:' || COALESCE(quote_literal(p_pixelsize_y), 'NULL')
+            || ' scale_x:' || COALESCE(quote_literal(p_scale_x), 'NULL')
+            || ' scale_y:' || COALESCE(quote_literal(p_scale_y), 'NULL')
             || ' blocksize_x:' || COALESCE(quote_literal(p_blocksize_x), 'NULL')
             || ' blocksize_y:' || COALESCE(quote_literal(p_blocksize_y), 'NULL')
             || ' extent:' || COALESCE(ST_AsText(p_extent), 'NULL');
@@ -1672,8 +1672,8 @@ CREATE OR REPLACE FUNCTION AddRasterColumn(schema varchar,
                                            p_out_db boolean, 
                                            p_regular_blocking boolean, 
                                            p_nodata_values double precision[],
-                                           p_pixelsize_x double precision, 
-                                           p_pixelsize_y double precision,
+                                           p_scale_x double precision, 
+                                           p_scale_y double precision,
                                            p_blocksize_x integer, 
                                            p_blocksize_y integer, 
                                            p_extent geometry)
@@ -1699,8 +1699,8 @@ CREATE OR REPLACE FUNCTION AddRasterColumn(p_table varchar,
                                            p_out_db boolean, 
                                            p_regular_blocking boolean, 
                                            p_nodata_values double precision[],
-                                           p_pixelsize_x double precision, 
-                                           p_pixelsize_y double precision,
+                                           p_scale_x double precision, 
+                                           p_scale_y double precision,
                                            p_blocksize_x integer, 
                                            p_blocksize_y integer, 
                                            p_extent geometry)

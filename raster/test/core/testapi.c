@@ -990,9 +990,9 @@ main()
 
     { /* Check scale */
         float scale;
-        scale = rt_raster_get_pixel_width(ctx, raster);
+        scale = rt_raster_get_x_scale(ctx, raster);
         CHECK_EQUALS(scale, 1);
-        scale = rt_raster_get_pixel_height(ctx, raster);
+        scale = rt_raster_get_y_scale(ctx, raster);
         CHECK_EQUALS(scale, 1);
     }
 

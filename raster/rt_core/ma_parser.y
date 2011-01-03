@@ -28,15 +28,15 @@ void yyerror(char *);
 
 calc:
 	| calc line
-        ;
+    ;
 
 line:
 	integer_exp { printf("%d\n", $1); }
 	| real_exp { printf("%f\n", $1); }
-        ;
+    ;
 
 integer_exp:
-                TKN_INTEGER                     { $$ = $1;          }
+        TKN_INTEGER                     { $$ = $1;          }
 		| integer_exp '+' integer_exp   { $$ = $1 + $3;     }
 		| integer_exp '-' integer_exp   { $$ = $1 - $3;     }
 		| integer_exp '*' integer_exp   { $$ = $1 * $3;     }               
@@ -45,7 +45,7 @@ integer_exp:
 		;
 
 real_exp:
-                TKN_REAL                        { $$ = $1;          }
+        TKN_REAL                        { $$ = $1;          }
 		| real_exp '+' real_exp         { $$ = $1 + $3;     }
 		| real_exp '-' real_exp         { $$ = $1 - $3;     }
 		| real_exp '*' real_exp         { $$ = $1 * $3;     }

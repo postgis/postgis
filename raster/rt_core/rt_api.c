@@ -1177,7 +1177,7 @@ rt_raster_get_height(rt_context ctx, rt_raster raster) {
 }
 
 void
-rt_raster_set_pixel_sizes(rt_context ctx, rt_raster raster,
+rt_raster_set_scale(rt_context ctx, rt_raster raster,
         double scaleX, double scaleY) {
     assert(NULL != ctx);
     assert(NULL != raster);
@@ -1187,7 +1187,7 @@ rt_raster_set_pixel_sizes(rt_context ctx, rt_raster raster,
 }
 
 double
-rt_raster_get_pixel_width(rt_context ctx, rt_raster raster) {
+rt_raster_get_x_scale(rt_context ctx, rt_raster raster) {
     assert(NULL != ctx);
     assert(NULL != raster);
 
@@ -1195,7 +1195,7 @@ rt_raster_get_pixel_width(rt_context ctx, rt_raster raster) {
 }
 
 double
-rt_raster_get_pixel_height(rt_context ctx, rt_raster raster) {
+rt_raster_get_y_scale(rt_context ctx, rt_raster raster) {
     assert(NULL != ctx);
     assert(NULL != raster);
 
@@ -1476,11 +1476,11 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
      */
     double adfGeoTransform[6] = {0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
     adfGeoTransform[0] = rt_raster_get_x_offset(ctx, raster);
-    adfGeoTransform[1] = rt_raster_get_pixel_width(ctx, raster);
+    adfGeoTransform[1] = rt_raster_get_x_scale(ctx, raster);
     adfGeoTransform[2] = rt_raster_get_x_skew(ctx, raster);
     adfGeoTransform[3] = rt_raster_get_y_offset(ctx, raster);
     adfGeoTransform[4] = rt_raster_get_y_skew(ctx, raster);
-    adfGeoTransform[5] = rt_raster_get_pixel_height(ctx, raster);
+    adfGeoTransform[5] = rt_raster_get_y_scale(ctx, raster);
     GDALSetGeoTransform(memdataset, adfGeoTransform);
 
     RASTER_DEBUG(3, "Adding GDAL MEM raster band");

@@ -30,7 +30,7 @@ TEST_FUNC = \
 TEST_PROPS = \
 	create_rt_properties_test.sql \
 	rt_dimensions.sql \
-	rt_pixelsize.sql \
+	rt_scale.sql \
 	rt_upperleft.sql \
 	rt_rotation.sql \
 	rt_georeference.sql \

@@ -21,23 +21,23 @@ WHERE
 SELECT
 	id,
 	env as expected,
-	st_box2d(rast) as obtained
+	box2d(rast) as obtained
 FROM rt_box2d_test
 WHERE
-	st_box2d(rast)::text != env::text;
+	box2d(rast)::text != env::text;
 
 SELECT
 	id,
 	env as expected,
-	st_box2d(st_convexhull(rast)) as obtained
+	box2d(st_convexhull(rast)) as obtained
 FROM rt_box2d_test
 WHERE
-	st_box2d(st_convexhull(rast))::text != env::text;
+	box2d(st_convexhull(rast))::text != env::text;
 
 SELECT
 	id,
 	env as expected,
-	st_box2d(st_envelope(rast)) as obtained
+	box2d(st_envelope(rast)) as obtained
 FROM rt_box2d_test
 WHERE
-	st_box2d(st_envelope(rast))::text != env::text;
+	box2d(st_envelope(rast))::text != env::text;
