@@ -79,10 +79,10 @@ VALUES (1,
 			<parameter>no_data_values</parameter></paramdef>
 			
 			<paramdef><type>double precision </type>
-			<parameter>pixelsize_x</parameter></paramdef>
+			<parameter>scale_x</parameter></paramdef>
 			
 			<paramdef><type>double precision </type>
-			<parameter>pixelsize_y</parameter></paramdef>
+			<parameter>scale_y</parameter></paramdef>
 			
 			<paramdef><type>integer </type>
 			<parameter>blocksize_x</parameter></paramdef>
@@ -121,10 +121,10 @@ VALUES (1,
 			<parameter>no_data_values</parameter></paramdef>
 			
 			<paramdef><type>double precision </type>
-			<parameter>pixelsize_x</parameter></paramdef>
+			<parameter>scale_x</parameter></paramdef>
 			
 			<paramdef><type>double precision </type>
-			<parameter>pixelsize_y</parameter></paramdef>
+			<parameter>scale_y</parameter></paramdef>
 			
 			<paramdef><type>integer </type>
 			<parameter>blocksize_x</parameter></paramdef>
@@ -167,10 +167,10 @@ VALUES (1,
 			<parameter>no_data_values</parameter></paramdef>
 			
 			<paramdef><type>double precision </type>
-			<parameter>pixelsize_x</parameter></paramdef>
+			<parameter>scale_x</parameter></paramdef>
 			
 			<paramdef><type>double precision </type>
-			<parameter>pixelsize_y</parameter></paramdef>
+			<parameter>scale_y</parameter></paramdef>
 			
 			<paramdef><type>integer </type>
 			<parameter>blocksize_x</parameter></paramdef>
@@ -217,8 +217,8 @@ srid:4326 pixel_types:{8BUI,8BUI,8BUI,8BUI}
 out_db:false 
 regular_blocking:true 
 nodata_values:'{255,255,255,255}' 
-pixelsize_x:'0.25' 
-pixelsize_y:'-0.25' blocksize_x:'200' blocksize_y:'300' extent:NULL
+scale_x:'0.25' 
+scale_y:'-0.25' blocksize_x:'200' blocksize_y:'300' extent:NULL
 
 --- After loading the data, you can currect the geometry column
 UPDATE raster_columns SET extent = (SELECT ST_Union(ST_Envelope(rast)) FROM myrasters)
@@ -499,14 +499,14 @@ postgis_raster_lib_version
 					<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>upperleftx</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>upperlefty</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>pixelsize</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>scale</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns an empty raster of given dimensions, pixel width in spatial coordinates x (ipx), pixel height y in spatial coordinates (ipy), (pixelsize - uses same size for pixel height (ipy) and width (ipx)), skew and spatial reference system with no bands.  If an existing raster is passed in,
+				<para>Returns an empty raster of given dimensions, pixel width in spatial coordinates x (ipx), pixel height y in spatial coordinates (ipy), (scale - uses same size for pixel height (ipy) and width (ipx)), skew and spatial reference system with no bands.  If an existing raster is passed in,
 				it returns a new raster with the same meta data settings (minus number of bands and band types). If no srid is specified it defaults to -1, though this may change to 0 in future.
 				After you create an empty raster you 
 				    probably want to add bands to it and hmm maybe edit it.  Refer to <xref linkend="RT_ST_AddBand" /> to define bands and <xref linkend="RT_ST_SetValue" /> to set pixel values.</para>
@@ -531,7 +531,7 @@ FROM (SELECT rid, ST_MetaData(rast) As md
 	WHERE rid IN(3,4)) As foo;
 	
 -- output --
- rid | upperleftx | upperlefty | width | height | pixelsizex | pixelsizey | skewx | skewy | srid | numbands
+ rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
 -----+------------+------------+-------+--------+------------+------------+-------+-------+------+----------
    3 |     0.0005 |     0.0005 |   100 |    100 |          1 |          1 |    0  |     0 | 4326 |        0
    4 |     0.0005 |     0.0005 |   100 |    100 |          1 |          1 |    0  |     0 | 4326 |        0
@@ -541,7 +541,7 @@ FROM (SELECT rid, ST_MetaData(rast) As md
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_AddBand" />, <xref linkend="RT_ST_MetaData" />, <xref linkend="RT_ST_PixelSizeX" />, <xref linkend="RT_ST_PixelSizeY" />, <xref linkend="RT_ST_SetValue" />, <xref linkend="RT_ST_SkewX" />, , <xref linkend="RT_ST_SkewY" /></para>
+				<para><xref linkend="RT_ST_AddBand" />, <xref linkend="RT_ST_MetaData" />, <xref linkend="RT_ST_ScaleX" />, <xref linkend="RT_ST_ScaleY" />, <xref linkend="RT_ST_SetValue" />, <xref linkend="RT_ST_SkewX" />, , <xref linkend="RT_ST_SkewY" /></para>
 			</refsection>
 		</refentry>
   	</sect1>
@@ -574,19 +574,19 @@ FROM (SELECT rid, ST_MetaData(rast) As md
 					 </para>
 				<para>Difference between format representations is as follows:</para>
 				<para><varname>GDAL</varname>: 
-<programlisting>pixelsizex 
+<programlisting>scalex 
 skewy 
 skewx
-pixelsizey
+scaley
 upperleftx
 upperlefty</programlisting></para>
 				<para><varname>ESRI</varname>: 
-<programlisting>pixelsizex 
+<programlisting>scalex 
 skewy 
 skewx
-pixelsizey
-upperleftx + pixelsizex*0.5
-upperlefty + pixelsizey*0.5</programlisting></para>
+scaley
+upperleftx + scalex*0.5
+upperlefty + scaley*0.5</programlisting></para>
 			</refsection>
 				
 			<refsection>
@@ -608,7 +608,7 @@ upperlefty + pixelsizey*0.5</programlisting></para>
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_SetGeoReference" />, <xref linkend="RT_ST_PixelSizeX" />, <xref linkend="RT_ST_PixelSizeY" /></para>
+				<para><xref linkend="RT_ST_SetGeoReference" />, <xref linkend="RT_ST_ScaleX" />, <xref linkend="RT_ST_ScaleY" /></para>
 			</refsection>
 		</refentry>
 		
@@ -672,7 +672,7 @@ FROM dummy_rast;
 				<title>Description</title>
 				
 				<para>Returns basic meta data about a raster object such as skew, rotation, upper,lower left etc. Columns returned
-					upperleftx | upperlefty | width | height | pixelsizex | pixelsizey | skewx | skewy | srid | numbands</para>
+					upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands</para>
 			</refsection>
 				
 			<refsection>
@@ -682,7 +682,7 @@ FROM dummy_rast;
  FROM (SELECT rid, ST_MetaData(rast) As md
 FROM dummy_rast) As foo;
 
- rid | upperleftx | upperlefty | width | height | pixelsizex | pixelsizey | skewx | skewy | srid | numbands
+ rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
  -----+------------+------------+-------+--------+-----------+-----------+-------+-------+------+----------
    1 |        0.5 |        0.5 |    10 |     20 |          2 |          3 |		0 |     0 |    0 |        0
    2 | 3427927.75 |    5793244 |     5 |      5 |       0.05 |      -0.05 |		0 |     0 |   -1 |        3
@@ -737,16 +737,16 @@ rid | numbands
 			</refsection>
 		</refentry>
 		
-		<refentry id="RT_ST_PixelSizeX">
+		<refentry id="RT_ST_ScaleX">
 			<refnamediv>
-				<refname>ST_PixelSizeX</refname>
+				<refname>ST_ScaleX</refname>
 				<refpurpose>Returns the x size of pixels in units of coordinate reference system?</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>float8 <function>ST_PixelSizeX</function></funcdef>
+					<funcdef>float8 <function>ST_ScaleX</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
@@ -761,7 +761,7 @@ rid | numbands
 				<refsection>
 					<title>Examples</title>
 				
-					<programlisting>SELECT rid, ST_PixelSizeX(rast) As rastpixwidth
+					<programlisting>SELECT rid, ST_ScaleX(rast) As rastpixwidth
 FROM dummy_rast;
 
  rid | rastpixwidth
@@ -779,16 +779,16 @@ FROM dummy_rast;
 			</refsection>
 		</refentry>
 		
-		<refentry id="RT_ST_PixelSizeY">
+		<refentry id="RT_ST_ScaleY">
 			<refnamediv>
-				<refname>ST_PixelSizeY</refname>
+				<refname>ST_ScaleY</refname>
 				<refpurpose>Returns the y size of pixels in units of coordinate reference system?</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>float8 <function>ST_PixelSizeY</function></funcdef>
+					<funcdef>float8 <function>ST_ScaleY</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
@@ -804,7 +804,7 @@ FROM dummy_rast;
 				<refsection>
 					<title>Examples</title>
 				
-					<programlisting>SELECT rid, ST_PixelSizeY(rast) As rastpixheight
+					<programlisting>SELECT rid, ST_ScaleY(rast) As rastpixheight
 FROM dummy_rast;
 
  rid | rastpixheight
@@ -854,7 +854,7 @@ FROM dummy_rast;
 					coordinates outside of the raster file to left or right with the assumption that the 
 					skew and pixel sizes are same as selected raster. </para>
 				<note><para>For non-skewed rasters, providing the x column is sufficient.  For skewed rasters,
-						the georeferenced coordinate is a function of the ST_PixelSizeX and SkewX and row and column.
+						the georeferenced coordinate is a function of the ST_ScaleX and SkewX and row and column.
 						An error will be raised if you give just the x column for a skewed raster.</para></note>
 				</refsection>
 				
@@ -865,7 +865,7 @@ FROM dummy_rast;
 -- non-skewed raster providing column is sufficient					
 SELECT rid, ST_Raster2WorldCoordX(rast,1) As x1coord, 
 	ST_Raster2WorldCoordX(rast,2) As x2coord,
-	ST_PixelSizeX(rast) As pixelx
+	ST_ScaleX(rast) As pixelx
 FROM dummy_rast;
 
  rid |  x1coord   |  x2coord  | pixelx
@@ -878,7 +878,7 @@ FROM dummy_rast;
 -- for fun lets skew it				
 SELECT rid, ST_Raster2WorldCoordX(rast,1,1) As x1coord, 
 	ST_Raster2WorldCoordX(rast,2,3) As x2coord,
-	ST_PixelSizeX(rast) As pixelx
+	ST_ScaleX(rast) As pixelx
 FROM (SELECT rid, ST_SetSkew(rast,100.5,0) As rast FROM dummy_rast) As foo;
 
  rid |  x1coord   |  x2coord  | pixelx
@@ -892,7 +892,7 @@ FROM (SELECT rid, ST_SetSkew(rast,100.5,0) As rast FROM dummy_rast) As foo;
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_PixelSizeX" />, <xref linkend="RT_ST_Raster2WorldCoordY" />, <xref linkend="RT_ST_SetSkew" />, <xref linkend="RT_ST_SkewX" /></para>
+				<para><xref linkend="RT_ST_ScaleX" />, <xref linkend="RT_ST_Raster2WorldCoordY" />, <xref linkend="RT_ST_SetSkew" />, <xref linkend="RT_ST_SkewX" /></para>
 			</refsection>
 		</refentry>
 
@@ -928,7 +928,7 @@ FROM (SELECT rid, ST_SetSkew(rast,100.5,0) As rast FROM dummy_rast) As foo;
 					coordinates outside of the raster file to left or right with the assumption that the 
 					skew and pixel sizes are same as selected raster tile. </para>
 				<note><para>For non-skewed rasters, providing the y column is sufficient.  For skewed rasters,
-						the georeferenced coordinate is a function of the ST_PixelSizeY and SkewY and row and column.
+						the georeferenced coordinate is a function of the ST_ScaleY and SkewY and row and column.
 						An error will be raised if you give just the y row for a skewed raster.</para></note>
 				</refsection>
 				
@@ -939,7 +939,7 @@ FROM (SELECT rid, ST_SetSkew(rast,100.5,0) As rast FROM dummy_rast) As foo;
 -- non-skewed raster providing row is sufficient					
 SELECT rid, ST_Raster2WorldCoordY(rast,1) As y1coord, 
 	ST_Raster2WorldCoordY(rast,3) As y2coord,
-	ST_PixelSizeY(rast) As pixely
+	ST_ScaleY(rast) As pixely
 FROM dummy_rast;
 
  rid | y1coord |  y2coord  | pixely
@@ -952,7 +952,7 @@ FROM dummy_rast;
 -- for fun lets skew it				
 SELECT rid, ST_Raster2WorldCoordY(rast,1,1) As y1coord, 
 	ST_Raster2WorldCoordY(rast,2,3) As y2coord,
-	ST_PixelSizeY(rast) As pixely
+	ST_ScaleY(rast) As pixely
 FROM (SELECT rid, ST_SetSkew(rast,0,100.5) As rast FROM dummy_rast) As foo;
 
  rid | y1coord |  y2coord  | pixely
@@ -966,7 +966,7 @@ FROM (SELECT rid, ST_SetSkew(rast,0,100.5) As rast FROM dummy_rast) As foo;
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_PixelSizeY" />, <xref linkend="RT_ST_Raster2WorldCoordX" />, <xref linkend="RT_ST_SetSkew" />, <xref linkend="RT_ST_SkewY" /></para>
+				<para><xref linkend="RT_ST_ScaleY" />, <xref linkend="RT_ST_Raster2WorldCoordX" />, <xref linkend="RT_ST_SetSkew" />, <xref linkend="RT_ST_SkewY" /></para>
 			</refsection>
 		</refentry>
 		
@@ -1455,7 +1455,7 @@ SELECT  (rmd).width, (rmd).height, (rmd).numbands
 FROM (SELECT ST_MetaData(rast) As rmd 
     FROM dummy_rast WHERE rid = 10) AS foo;
 -- result --
- upperleftx | upperlefty | width | height | pixelsizex | pixelsizey | skewx | skewy | srid | numbands
+ upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
 ------------+------------+-------+--------+------------+------------+-------+-------+------+----------
           0 |          0 |   100 |    100 |          1 |         -1 |     0 |  0 |   -1 |        2
 					</programlisting>
@@ -1847,7 +1847,7 @@ WHERE rid=2;
 						you can get that by the following relationship.</para>
 					<para>Coordinate upper left ppoint of a row column 
 						is:
-					ST_SetSRID(ST_Point(ST_UpperLeftX(rast) + ST_PixelSizeX(rast)*columnx, ST_UpperLeftY(rast) + ST_PixelSizeY(rast)*columny), ST_SRID(rast))
+					ST_SetSRID(ST_Point(ST_UpperLeftX(rast) + ST_ScaleX(rast)*columnx, ST_UpperLeftY(rast) + ST_ScaleY(rast)*columny), ST_SRID(rast))
 					</para>
 					<para>If you want the pixel box instead of the upper left point, you can use the ST_MakeEnvelope function and
 						translate it every x,y.</para>
@@ -1909,8 +1909,8 @@ WHERE rid =  2 AND x &lt;= ST_Width(rast) AND y &lt;= ST_Height(rast);
 				<programlisting>
 --- Get all values in bands 1,2,3 of each pixel same as above but returning the upper left point point of each pixel --
 SELECT ST_AsText(ST_SetSRID(
-	ST_Point(ST_UpperLeftX(rast) + ST_PixelSizeX(rast)*x, 
-		ST_UpperLeftY(rast) + ST_PixelSizeY(rast)*y), 
+	ST_Point(ST_UpperLeftX(rast) + ST_ScaleX(rast)*x, 
+		ST_UpperLeftY(rast) + ST_ScaleY(rast)*y), 
 		ST_SRID(rast))) As uplpt
     , ST_Value(rast, 1, x, y) As b1val, 
 	ST_Value(rast, 2, x, y) As b2val, ST_Value(rast, 3, x, y) As b3val
@@ -1931,9 +1931,9 @@ WHERE rid =  2 AND x &lt;= ST_Width(rast) AND y &lt;= ST_Height(rast);
 SELECT ST_AsText(ST_Union(pixpolyg)) As shadow
 FROM (SELECT ST_Translate(ST_MakeEnvelope(
 		ST_UpperLeftX(rast), ST_UpperLeftY(rast), 
-			ST_UpperLeftX(rast) + ST_PixelSizeX(rast),
-			ST_UpperLeftY(rast) + ST_PixelSizeY(rast), 0
-			), ST_PixelSizeX(rast)*x, ST_PixelSizeY(rast)*y
+			ST_UpperLeftX(rast) + ST_ScaleX(rast),
+			ST_UpperLeftY(rast) + ST_ScaleY(rast), 0
+			), ST_ScaleX(rast)*x, ST_ScaleY(rast)*y
 		) As pixpolyg, ST_Value(rast, 2, x, y) As b2val
 	FROM dummy_rast CROSS JOIN
 generate_series(1,1000) As x CROSS JOIN generate_series(1,1000) As y
@@ -1970,9 +1970,9 @@ WHERE
 SELECT ST_AsText(ST_Union(pixpolyg)) As shadow
 FROM (SELECT ST_Translate(ST_MakeEnvelope(
 		ST_UpperLeftX(rast), ST_UpperLeftY(rast), 
-			ST_UpperLeftX(rast) + ST_PixelSizeX(rast)*2,
-			ST_UpperLeftY(rast) + ST_PixelSizeY(rast)*2, 0
-			), ST_PixelSizeX(rast)*x, ST_PixelSizeY(rast)*y
+			ST_UpperLeftX(rast) + ST_ScaleX(rast)*2,
+			ST_UpperLeftY(rast) + ST_ScaleY(rast)*2, 0
+			), ST_ScaleX(rast)*x, ST_ScaleY(rast)*y
 		) As pixpolyg, ST_Value(rast, 2, x, y) As b2val
 	FROM dummy_rast CROSS JOIN
 generate_series(1,1000,2) As x CROSS JOIN generate_series(1,1000,2) As y
@@ -1995,8 +1995,8 @@ WHERE
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_DumpAsPolygons" />, <xref linkend="RT_ST_NumBands" />, <xref linkend="RT_ST_PixelSizeX" />,
-					, <xref linkend="RT_ST_PixelSizeY" />, <xref linkend="RT_ST_UpperLeftX" />, 
+				<para><xref linkend="RT_ST_DumpAsPolygons" />, <xref linkend="RT_ST_NumBands" />, <xref linkend="RT_ST_ScaleX" />,
+					, <xref linkend="RT_ST_ScaleY" />, <xref linkend="RT_ST_UpperLeftX" />, 
 					<xref linkend="RT_ST_UpperLeftY" />, <xref linkend="RT_ST_SRID" />, <xref linkend="ST_AsText" />,
 					, <xref linkend="ST_Point" />, <xref linkend="ST_MakeEnvelope" />, 
 					<xref linkend="ST_Intersects" /></para>
@@ -2118,9 +2118,9 @@ GROUP BY (foo.geomval).val;
 				<para>Set Georefence 6 georeference parameters in a single call.  Accepts inputs in 'GDAL' or 'ESRI' format.  Default is GDAL. If 6 coordinates are not provided will return null.</para>
 				<para>Difference between format representations is as follows:</para>
 				<para><varname>GDAL</varname>: 
-<programlisting>pixelsizex skewy skewx pixelsizey upperleftx upperlefty</programlisting></para>
+<programlisting>scalex skewy skewx scaley upperleftx upperlefty</programlisting></para>
 				<para><varname>ESRI</varname>: 
-<programlisting>pixelsizex skewy skewx pixelsizey upperleftx + pixelsizex*0.5 upperlefty + pixelsizey*0.5</programlisting></para>
+<programlisting>scalex skewy skewx scaley upperleftx + scalex*0.5 upperlefty + scaley*0.5</programlisting></para>
 			</refsection>
 				
 			<refsection>
@@ -2137,26 +2137,26 @@ UPDATE dummy_rast SET rast = ST_SetGeoReference(rast, '2 0 0 3 1.5 2','ESRI')
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_GeoReference" />, <xref linkend="RT_ST_PixelSizeX" />, <xref linkend="RT_ST_PixelSizeY" />, <xref linkend="RT_ST_UpperLeftX" />, <xref linkend="RT_ST_UpperLeftY" /></para>
+				<para><xref linkend="RT_ST_GeoReference" />, <xref linkend="RT_ST_ScaleX" />, <xref linkend="RT_ST_ScaleY" />, <xref linkend="RT_ST_UpperLeftX" />, <xref linkend="RT_ST_UpperLeftY" /></para>
 			</refsection>
 		</refentry>
 		
-		<refentry id="RT_ST_SetPixelSize">
+		<refentry id="RT_ST_SetScale">
 			<refnamediv>
-				<refname>ST_SetPixelSize</refname>
+				<refname>ST_SetScale</refname>
 				<refpurpose>Sets the x and y size of pixels in units of coordinate reference system. Number units/pixel width/height</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>raster <function>ST_SetPixelSize</function></funcdef>
+					<funcdef>raster <function>ST_SetScale</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>float8 </type> <parameter>xy</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
-					<funcdef>raster <function>ST_SetPixelSize</function></funcdef>
+					<funcdef>raster <function>ST_SetScale</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>float8 </type> <parameter>x</parameter></paramdef>
 					<paramdef><type>float8 </type> <parameter>y</parameter></paramdef>
@@ -2175,10 +2175,10 @@ UPDATE dummy_rast SET rast = ST_SetGeoReference(rast, '2 0 0 3 1.5 2','ESRI')
 					<title>Examples</title>
 				
 					<programlisting>UPDATE dummy_rast 
-	SET rast = ST_SetPixelSize(rast,1.5)
+	SET rast = ST_SetScale(rast,1.5)
 WHERE rid = 2;
 
-SELECT ST_PixelSizeX(rast) As pixx, ST_PixelSizeY(rast) As pixy, ST_Box2D(rast) As newbox
+SELECT ST_ScaleX(rast) As pixx, ST_ScaleY(rast) As pixy, Box2D(rast) As newbox
 FROM dummy_rast
 WHERE rid = 2;
 
@@ -2187,10 +2187,10 @@ WHERE rid = 2;
   1.5 |  1.5 | BOX(3427927.75 5793244,3427935.25 5793251.5)
 				</programlisting>
 				<programlisting>UPDATE dummy_rast 
-	SET rast = ST_SetPixelSize(rast,1.5,0.55)
+	SET rast = ST_SetScale(rast,1.5,0.55)
 WHERE rid = 2;
 
-SELECT ST_PixelSizeX(rast) As pixx, ST_PixelSizeY(rast) As pixy, ST_Box2D(rast) As newbox
+SELECT ST_ScaleX(rast) As pixx, ST_ScaleY(rast) As pixy, Box2D(rast) As newbox
 FROM dummy_rast
 WHERE rid = 2;
 
@@ -2203,7 +2203,7 @@ WHERE rid = 2;
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_PixelSizeX" />, <xref linkend="RT_ST_PixelSizeY" />, <xref linkend="RT_Box2D" /></para>
+				<para><xref linkend="RT_ST_ScaleX" />, <xref linkend="RT_ST_ScaleY" />, <xref linkend="RT_Box2D" /></para>
 			</refsection>
 		</refentry>
 
@@ -2524,7 +2524,7 @@ FROM dummy_rast WHERE rid=1;
 		<title>Raster Processing Functions</title>
 		<refentry id="RT_Box2D">
 			<refnamediv>
-				<refname>ST_Box2D</refname>
+				<refname>Box2D</refname>
 				<refpurpose>Returns the box 2d representation of the enclosing box of the raster</refpurpose>
 			</refnamediv>
 		
@@ -2549,7 +2549,7 @@ FROM dummy_rast WHERE rid=1;
 			<refsection>
 				<title>Examples</title>
 			
-				<programlisting>SELECT rid, ST_Box2D(rast) As rastbox
+				<programlisting>SELECT rid, Box2D(rast) As rastbox
 FROM dummy_rast;
 
 rid |        rastbox
