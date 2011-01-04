@@ -112,12 +112,63 @@ CREATE OR REPLACE FUNCTION st_box2d(box3d_extent)
 	RETURNS box2d
 	AS 'MODULE_PATHNAME', 'BOX3D_to_BOX2DFLOAT4'
 	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_box3d_in(cstring)
+	RETURNS box3d
+	AS 'MODULE_PATHNAME', 'BOX3D_in'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_box3d_out(box3d)
+	RETURNS cstring
+	AS 'MODULE_PATHNAME', 'BOX3D_out'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 
 --- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_geometry(box3d_extent)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','BOX3D_to_LWGEOM'
 	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_in(cstring)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','LWGEOM_in'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_out(geometry)
+	RETURNS cstring
+	AS 'MODULE_PATHNAME','LWGEOM_out'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_recv(internal)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','LWGEOM_recv'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_send(geometry)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME','LWGEOM_send'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_spheroid_in(cstring)
+	RETURNS spheroid
+	AS 'MODULE_PATHNAME','ellipsoid_in'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_spheroid_out(spheroid)
+	RETURNS cstring
+	AS 'MODULE_PATHNAME','ellipsoid_out'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+
 
 --- end functions that in theory should never have been used
 

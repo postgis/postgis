@@ -31,19 +31,6 @@ BEGIN;
 -------------------------------------------------------------------
 --  SPHEROID TYPE
 -------------------------------------------------------------------
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_spheroid_in(cstring)
-	RETURNS spheroid
-	AS 'MODULE_PATHNAME','ellipsoid_in'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_spheroid_out(spheroid)
-	RETURNS cstring
-	AS 'MODULE_PATHNAME','ellipsoid_out'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 CREATE OR REPLACE FUNCTION spheroid_in(cstring)
 	RETURNS spheroid
 	AS 'MODULE_PATHNAME','ellipsoid_in'
@@ -64,19 +51,6 @@ CREATE TYPE spheroid (
 -------------------------------------------------------------------
 --  GEOMETRY TYPE (lwgeom)
 -------------------------------------------------------------------
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_geometry_in(cstring)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','LWGEOM_in'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_geometry_out(geometry)
-	RETURNS cstring
-	AS 'MODULE_PATHNAME','LWGEOM_out'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_geometry_analyze(internal)
 	RETURNS bool
@@ -86,18 +60,6 @@ CREATE OR REPLACE FUNCTION st_geometry_analyze(internal)
 	AS 'MODULE_PATHNAME', 'LWGEOM_analyze'
 #endif
 	LANGUAGE 'C' VOLATILE STRICT;
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_geometry_recv(internal)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','LWGEOM_recv'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_geometry_send(geometry)
-	RETURNS bytea
-	AS 'MODULE_PATHNAME','LWGEOM_send'
-	LANGUAGE 'C' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION geometry_in(cstring)
 	RETURNS geometry
@@ -218,18 +180,6 @@ CREATE OR REPLACE FUNCTION ST_Shift_Longitude(geometry)
 -------------------------------------------------------------------
 --  BOX3D TYPE
 -------------------------------------------------------------------
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_box3d_in(cstring)
-	RETURNS box3d
-	AS 'MODULE_PATHNAME', 'BOX3D_in'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_box3d_out(box3d)
-	RETURNS cstring
-	AS 'MODULE_PATHNAME', 'BOX3D_out'
-	LANGUAGE 'C' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION box3d_in(cstring)
 	RETURNS box3d
