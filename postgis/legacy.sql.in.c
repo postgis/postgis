@@ -203,6 +203,18 @@ CREATE OR REPLACE FUNCTION transscale(geometry,float8,float8,float8,float8)
 -- END Affine functions
 	
 -- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION AddPoint(geometry, geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_addpoint'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION AddPoint(geometry, geometry, integer)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_addpoint'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION area(geometry)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','LWGEOM_area_polygon'
@@ -587,6 +599,12 @@ CREATE OR REPLACE FUNCTION MakePointM(float8, float8, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint3dm'
 	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION ndims(geometry)
+	RETURNS smallint
+	AS 'MODULE_PATHNAME', 'LWGEOM_ndims'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION npoints(geometry)
@@ -598,6 +616,18 @@ CREATE OR REPLACE FUNCTION npoints(geometry)
 CREATE OR REPLACE FUNCTION nrings(geometry)
 	RETURNS int4
 	AS 'MODULE_PATHNAME', 'LWGEOM_nrings'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION NumGeometries(geometry)
+	RETURNS int4
+	AS 'MODULE_PATHNAME', 'LWGEOM_numgeometries_collection'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION NumPoints(geometry)
+	RETURNS int4
+	AS 'MODULE_PATHNAME', 'LWGEOM_numpoints_linestring'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
@@ -625,6 +655,12 @@ CREATE OR REPLACE FUNCTION point_inside_circle(geometry,float8,float8,float8)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'LWGEOM_inside_circle_point'
 	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION RemovePoint(geometry, integer)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_removepoint'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION reverse(geometry)
@@ -637,6 +673,12 @@ CREATE OR REPLACE FUNCTION Segmentize(geometry, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_segmentize2d'
 	LANGUAGE 'C' IMMUTABLE STRICT;	
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION SetPoint(geometry, integer, geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_setpoint_linestring'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Availability: 1.1.0
 -- Deprecation in 1.2.3

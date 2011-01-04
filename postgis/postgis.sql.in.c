@@ -1248,12 +1248,6 @@ CREATE OR REPLACE FUNCTION ST_zmflag(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_zmflag'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION ndims(geometry)
-	RETURNS smallint
-	AS 'MODULE_PATHNAME', 'LWGEOM_ndims'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_NDims(geometry)
 	RETURNS smallint
@@ -1392,20 +1386,8 @@ CREATE OR REPLACE FUNCTION ST_MakeLine(geometry, geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_makeline'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AddPoint(geometry, geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_addpoint'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AddPoint(geometry, geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_addpoint'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AddPoint(geometry, geometry, integer)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_addpoint'
 	LANGUAGE 'C' IMMUTABLE STRICT;
@@ -1416,22 +1398,10 @@ CREATE OR REPLACE FUNCTION ST_AddPoint(geometry, geometry, integer)
 	AS 'MODULE_PATHNAME', 'LWGEOM_addpoint'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION RemovePoint(geometry, integer)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_removepoint'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_RemovePoint(geometry, integer)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_removepoint'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION SetPoint(geometry, integer, geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_setpoint_linestring'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -4211,23 +4181,10 @@ CREATE OR REPLACE FUNCTION ST_GeoHash(geometry)
 ------------------------------------------------------------------------
 -- OGC defined
 ------------------------------------------------------------------------
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION NumPoints(geometry)
-	RETURNS int4
-	AS 'MODULE_PATHNAME', 'LWGEOM_numpoints_linestring'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function: NumPoints(geometry)
 CREATE OR REPLACE FUNCTION ST_NumPoints(geometry)
 	RETURNS int4
 	AS 'MODULE_PATHNAME', 'LWGEOM_numpoints_linestring'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION NumGeometries(geometry)
-	RETURNS int4
-	AS 'MODULE_PATHNAME', 'LWGEOM_numgeometries_collection'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: NumGeometries(geometry)
