@@ -361,6 +361,12 @@ CREATE OR REPLACE FUNCTION DumpRings(geometry)
 	RETURNS SETOF geometry_dump
 	AS 'MODULE_PATHNAME', 'LWGEOM_dump_rings'
 	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION envelope(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_envelope'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION expand(box2d,float8)

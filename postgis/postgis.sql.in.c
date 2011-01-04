@@ -1212,12 +1212,6 @@ CREATE OR REPLACE FUNCTION ST_Expand(geometry,float8)
 	AS 'MODULE_PATHNAME', 'LWGEOM_expand'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION envelope(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_envelope'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function: envelope(geometry)
 CREATE OR REPLACE FUNCTION ST_Envelope(geometry)
 	RETURNS geometry

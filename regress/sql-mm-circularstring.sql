@@ -265,10 +265,10 @@ SELECT 'accessors02', ST_IsEmpty(the_geom_3dm), ST_isSimple(the_geom_3dm), ST_is
 SELECT 'accessors03', ST_IsEmpty(the_geom_3dz), ST_isSimple(the_geom_3dz), ST_isClosed(the_geom_3dz), ST_isRing(the_geom_3dz) FROM public.circularstring;
 SELECT 'accessors04', ST_IsEmpty(the_geom_4d), ST_isSimple(the_geom_4d), ST_isClosed(the_geom_4d), ST_isRing(the_geom_4d) FROM public.circularstring;
 
-SELECT 'envelope01', ST_AsText(ST_SnapToGrid(envelope(the_geom_2d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.circularstring;
-SELECT 'envelope02', ST_AsText(ST_SnapToGrid(envelope(the_geom_3dm), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.circularstring;
-SELECT 'envelope03', ST_AsText(ST_SnapToGrid(envelope(the_geom_3dz), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.circularstring;
-SELECT 'envelope04', ST_AsText(ST_SnapToGrid(envelope(the_geom_4d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.circularstring;
+SELECT 'envelope01', ST_AsText(ST_SnapToGrid(ST_Envelope(the_geom_2d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.circularstring;
+SELECT 'envelope02', ST_AsText(ST_SnapToGrid(ST_Envelope(the_geom_3dm), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.circularstring;
+SELECT 'envelope03', ST_AsText(ST_SnapToGrid(ST_Envelope(the_geom_3dz), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.circularstring;
+SELECT 'envelope04', ST_AsText(ST_SnapToGrid(ST_Envelope(the_geom_4d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.circularstring;
 
 SELECT DropGeometryColumn('public', 'circularstring', 'the_geom_4d');
 SELECT DropGeometryColumn('public', 'circularstring', 'the_geom_3dz');
