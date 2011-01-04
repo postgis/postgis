@@ -355,6 +355,12 @@ CREATE OR REPLACE FUNCTION difference(geometry,geometry)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION Dimension(geometry)
+	RETURNS int4
+	AS 'MODULE_PATHNAME', 'LWGEOM_dimension'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION distance_sphere(geometry,geometry)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','LWGEOM_distance_sphere'
@@ -404,6 +410,12 @@ CREATE AGGREGATE Extent3d(
 	basetype = geometry,
 	stype = box3d
 	);
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION ExteriorRing(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','LWGEOM_exteriorring_polygon'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION force_2d(geometry)
@@ -471,6 +483,12 @@ CREATE OR REPLACE FUNCTION GeomCollFromWKB(bytea)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION GeometryN(geometry,integer)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_geometryn_collection'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
 -- Availability: 1.5.0  -- replaced with postgis_getbbox
 CREATE OR REPLACE FUNCTION getbbox(geometry)
 	RETURNS box2d
@@ -518,8 +536,26 @@ CREATE OR REPLACE FUNCTION MultiPolyFromWKB(bytea)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
-		
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION InteriorRingN(geometry,integer)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','LWGEOM_interiorringn_polygon'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
 	-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION IsClosed(geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'LWGEOM_isclosed'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION IsEmpty(geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'LWGEOM_isempty'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION IsValid(geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'isvalid'
@@ -548,6 +584,12 @@ CREATE OR REPLACE FUNCTION length(geometry)
 CREATE OR REPLACE FUNCTION LineFromMultiPoint(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_line_from_mpoint'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION M(geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME','LWGEOM_m_point'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
@@ -605,6 +647,18 @@ CREATE OR REPLACE FUNCTION ndims(geometry)
 	RETURNS smallint
 	AS 'MODULE_PATHNAME', 'LWGEOM_ndims'
 	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION NumInteriorRing(geometry)
+	RETURNS integer
+	AS 'MODULE_PATHNAME','LWGEOM_numinteriorrings_polygon'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION NumInteriorRings(geometry)
+	RETURNS integer
+	AS 'MODULE_PATHNAME','LWGEOM_numinteriorrings_polygon'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION npoints(geometry)
@@ -655,6 +709,13 @@ CREATE OR REPLACE FUNCTION point_inside_circle(geometry,float8,float8,float8)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'LWGEOM_inside_circle_point'
 	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION PointN(geometry,integer)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','LWGEOM_pointn_linestring'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION RemovePoint(geometry, integer)
@@ -703,6 +764,24 @@ CREATE OR REPLACE FUNCTION symdifference(geometry,geometry)
 CREATE OR REPLACE FUNCTION summary(geometry)
 	RETURNS text
 	AS 'MODULE_PATHNAME', 'LWGEOM_summary'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION X(geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME','LWGEOM_x_point'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION Y(geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME','LWGEOM_y_point'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION Z(geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME','LWGEOM_z_point'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- end old ogc names that have been replaced with new SQL-MM names --

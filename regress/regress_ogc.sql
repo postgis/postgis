@@ -135,13 +135,13 @@ select 'ST_GeometryN', ST_asewkt(ST_GeometryN('LINESTRING(0 0, 1 1)'::geometry, 
 select 'ST_NumGeometries', ST_NumGeometries('LINESTRING(0 0, 1 1)'::geometry);
 select 'ST_Union1', ST_AsText(ST_Union(ARRAY['POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'::geometry, 'POLYGON((0.5 0.5, 1.5 0.5, 1.5 1.5, 0.5 1.5, 0.5 0.5))'::geometry]));
 select 'ST_StartPoint1',ST_AsText(ST_StartPoint('LINESTRING(0 0, 1 1, 2 2)'));
-select 'ST_EndPoint1', astext(endpoint('LINESTRING(0 0, 1 1, 2 2)'));
-select 'ST_PointN1', astext(pointn('LINESTRING(0 0, 1 1, 2 2)',2));
-select 'ST_PointN2', astext(pointn('LINESTRING(0 0, 1 1, 2 2)',3));
-select 'ST_PointN3',  astext(pointn('LINESTRING(0 0, 1 1, 2 2)',4));
-select 'ST_PointN4', astext(pointn('LINESTRING(0 0, 1 1, 2 2)',0));
-select 'ST_PointN5', astext(pointn('LINESTRING(0 0, 1 1, 2 2)',1));
-select 'ST_PointN6', astext(pointn('POLYGON((0 0, 1 1, 0 1, 0 0))',1));
+select 'ST_EndPoint1', ST_AsText(ST_Endpoint('LINESTRING(0 0, 1 1, 2 2)'));
+select 'ST_PointN1', ST_AsText(ST_PointN('LINESTRING(0 0, 1 1, 2 2)',2));
+select 'ST_PointN2', ST_AsText(ST_PointN('LINESTRING(0 0, 1 1, 2 2)',3));
+select 'ST_PointN3',  ST_AsText(ST_PointN('LINESTRING(0 0, 1 1, 2 2)',4));
+select 'ST_PointN4', ST_AsText(ST_PointN('LINESTRING(0 0, 1 1, 2 2)',0));
+select 'ST_PointN5', ST_AsText(ST_PointN('LINESTRING(0 0, 1 1, 2 2)',1));
+select 'ST_PointN6', ST_AsText(ST_PointN('POLYGON((0 0, 1 1, 0 1, 0 0))',1));
 
 -- issues with EMPTY --
 select 'ST_Buffer(empty)', ST_AsText(ST_Buffer('POLYGON EMPTY', 0.5));

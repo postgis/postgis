@@ -4193,22 +4193,10 @@ CREATE OR REPLACE FUNCTION ST_NumGeometries(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_numgeometries_collection'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION GeometryN(geometry,integer)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_geometryn_collection'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function: GeometryN(geometry)
 CREATE OR REPLACE FUNCTION ST_GeometryN(geometry,integer)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_geometryn_collection'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION Dimension(geometry)
-	RETURNS int4
-	AS 'MODULE_PATHNAME', 'LWGEOM_dimension'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: Dimension(geometry)
@@ -4217,32 +4205,14 @@ CREATE OR REPLACE FUNCTION ST_Dimension(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_dimension'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION ExteriorRing(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','LWGEOM_exteriorring_polygon'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function: ExteriorRing(geometry)
 CREATE OR REPLACE FUNCTION ST_ExteriorRing(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_exteriorring_polygon'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION NumInteriorRings(geometry)
-	RETURNS integer
-	AS 'MODULE_PATHNAME','LWGEOM_numinteriorrings_polygon'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function: NumInteriorRings(geometry)
 CREATE OR REPLACE FUNCTION ST_NumInteriorRings(geometry)
-	RETURNS integer
-	AS 'MODULE_PATHNAME','LWGEOM_numinteriorrings_polygon'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION NumInteriorRing(geometry)
 	RETURNS integer
 	AS 'MODULE_PATHNAME','LWGEOM_numinteriorrings_polygon'
 	LANGUAGE 'C' IMMUTABLE STRICT;
@@ -4253,19 +4223,13 @@ CREATE OR REPLACE FUNCTION ST_NumInteriorRing(geometry)
 	AS 'MODULE_PATHNAME','LWGEOM_numinteriorrings_polygon'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION InteriorRingN(geometry,integer)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','LWGEOM_interiorringn_polygon'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function: InteriorRingN(geometry)
 CREATE OR REPLACE FUNCTION ST_InteriorRingN(geometry,integer)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_interiorringn_polygon'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
+-- Deprecation in 1.2.3 -- this should not be deprecated (2010-01-04 robe)
 CREATE OR REPLACE FUNCTION GeometryType(geometry)
 	RETURNS text
 	AS 'MODULE_PATHNAME', 'LWGEOM_getTYPE'
@@ -4275,12 +4239,6 @@ CREATE OR REPLACE FUNCTION GeometryType(geometry)
 CREATE OR REPLACE FUNCTION ST_GeometryType(geometry)
 	RETURNS text
 	AS 'MODULE_PATHNAME', 'geometry_geometrytype'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION PointN(geometry,integer)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','LWGEOM_pointn_linestring'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: PointN(geometry,integer)
@@ -4309,23 +4267,10 @@ CREATE OR REPLACE FUNCTION ST_PatchN(geometry, integer)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION X(geometry)
-	RETURNS float8
-	AS 'MODULE_PATHNAME','LWGEOM_x_point'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function: X(geometry)
 CREATE OR REPLACE FUNCTION ST_X(geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME','LWGEOM_x_point'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION Y(geometry)
-	RETURNS float8
-	AS 'MODULE_PATHNAME','LWGEOM_y_point'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: Y(geometry)
@@ -4334,22 +4279,10 @@ CREATE OR REPLACE FUNCTION ST_Y(geometry)
 	AS 'MODULE_PATHNAME','LWGEOM_y_point'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION Z(geometry)
-	RETURNS float8
-	AS 'MODULE_PATHNAME','LWGEOM_z_point'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Z(geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME','LWGEOM_z_point'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION M(geometry)
-	RETURNS float8
-	AS 'MODULE_PATHNAME','LWGEOM_m_point'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -4382,22 +4315,10 @@ CREATE OR REPLACE FUNCTION ST_EndPoint(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_endpoint_linestring'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION IsClosed(geometry)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME', 'LWGEOM_isclosed'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function: IsClosed(geometry)
 CREATE OR REPLACE FUNCTION ST_IsClosed(geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'LWGEOM_isclosed'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION IsEmpty(geometry)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME', 'LWGEOM_isempty'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: IsEmpty(geometry)
