@@ -317,6 +317,59 @@ CREATE OR REPLACE FUNCTION azimuth(geometry,geometry)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION BdPolyFromText(text, integer)
+RETURNS geometry
+AS $$
+DECLARE
+	geomtext alias for $1;
+	srid alias for $2;
+	mline geometry;
+	geom geometry;
+BEGIN
+	mline := MultiLineStringFromText(geomtext, srid);
+
+	IF mline IS NULL
+	THEN
+		RAISE EXCEPTION 'Input is not a MultiLinestring';
+	END IF;
+
+	geom := BuildArea(mline);
+
+	IF GeometryType(geom) != 'POLYGON'
+	THEN
+		RAISE EXCEPTION 'Input returns more then a single polygon, try using BdMPolyFromText instead';
+	END IF;
+
+	RETURN geom;
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION BdMPolyFromText(text, integer)
+RETURNS geometry
+AS $$
+DECLARE
+	geomtext alias for $1;
+	srid alias for $2;
+	mline geometry;
+	geom geometry;
+BEGIN
+	mline := MultiLineStringFromText(geomtext, srid);
+
+	IF mline IS NULL
+	THEN
+		RAISE EXCEPTION 'Input is not a MultiLinestring';
+	END IF;
+
+	geom := ST_Multi(BuildArea(mline));
+
+	RETURN geom;
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION buffer(geometry,float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','buffer'
@@ -335,19 +388,7 @@ CREATE OR REPLACE FUNCTION distance(geometry,geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_mindistance2d'
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
-	
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION combine_bbox(box2d,geometry)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_combine'
-	LANGUAGE 'C' IMMUTABLE;
-	
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION combine_bbox(box3d,geometry)
-	RETURNS box3d
-	AS 'MODULE_PATHNAME', 'BOX3D_combine'
-	LANGUAGE 'C' IMMUTABLE;
-	
+		
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION difference(geometry,geometry)
 	RETURNS geometry
@@ -358,6 +399,12 @@ CREATE OR REPLACE FUNCTION difference(geometry,geometry)
 CREATE OR REPLACE FUNCTION Dimension(geometry)
 	RETURNS int4
 	AS 'MODULE_PATHNAME', 'LWGEOM_dimension'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION disjoint(geometry,geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
@@ -404,13 +451,6 @@ CREATE OR REPLACE FUNCTION expand(geometry,float8)
 	AS 'MODULE_PATHNAME', 'LWGEOM_expand'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
--- Deprecation in 1.2.3
-CREATE AGGREGATE Extent3d(
-	sfunc = combine_bbox,
-	basetype = geometry,
-	stype = box3d
-	);
-
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION ExteriorRing(geometry)
 	RETURNS geometry
@@ -786,6 +826,59 @@ CREATE OR REPLACE FUNCTION Z(geometry)
 	
 -- end old ogc names that have been replaced with new SQL-MM names --
 
+--- Start Aggregates and supporting functions --
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION collect(geometry, geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_collect'
+	LANGUAGE 'C' IMMUTABLE;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION combine_bbox(box2d,geometry)
+	RETURNS box2d
+	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_combine'
+	LANGUAGE 'C' IMMUTABLE;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION combine_bbox(box3d,geometry)
+	RETURNS box3d
+	AS 'MODULE_PATHNAME', 'BOX3D_combine'
+	LANGUAGE 'C' IMMUTABLE;
+
+-- Deprecation in 1.4.0
+CREATE OR REPLACE FUNCTION ST_unite_garray (geometry[])
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','pgis_union_geometry_array'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION unite_garray (geometry[])
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'pgis_union_geometry_array'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE AGGREGATE Extent3d(
+	sfunc = combine_bbox,
+	basetype = geometry,
+	stype = box3d
+	);
+	
+-- Deprecation in 1.2.3
+CREATE AGGREGATE memcollect(
+	sfunc = ST_collect,
+	basetype = geometry,
+	stype = geometry
+	);
+
+-- Deprecation in 1.2.3
+CREATE AGGREGATE MemGeomUnion (
+	basetype = geometry,
+	sfunc = geomunion,
+	stype = geometry
+	);
+
+-- End Aggregates and supporting functions --
 
 -------------------------------------------------------------------
 --  CHIP TYPE

@@ -1,8 +1,8 @@
 -- Repeat all tests with the new function names.
 -- postgis-users/2006-July/012764.html
-SELECT ST_SRID(collect('SRID=32749;POINT(0 0)', 'SRID=32749;POINT(1 1)'));
+SELECT ST_SRID(ST_Collect('SRID=32749;POINT(0 0)', 'SRID=32749;POINT(1 1)'));
 
-SELECT ST_collect('SRID=32749;POINT(0 0)', 'SRID=32740;POINT(1 1)');
+SELECT ST_Collect('SRID=32749;POINT(0 0)', 'SRID=32740;POINT(1 1)');
 
 select ST_asewkt(ST_makeline('SRID=3;POINT(0 0)', 'SRID=3;POINT(1 1)'));
 select ST_makeline('POINT(0 0)', 'SRID=3;POINT(1 1)');

@@ -3497,24 +3497,11 @@ CREATE OR REPLACE FUNCTION ST_RelateMatch(text, text)
 -- Aggregates and their supporting functions
 --------------------------------------------------------------------------------
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION collect(geometry, geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_collect'
-	LANGUAGE 'C' IMMUTABLE;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Collect(geometry, geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_collect'
 	LANGUAGE 'C' IMMUTABLE;
-
--- Deprecation in 1.2.3
-CREATE AGGREGATE memcollect(
-	sfunc = ST_collect,
-	basetype = geometry,
-	stype = geometry
-	);
 
 -- Availability: 1.2.2
 CREATE AGGREGATE ST_MemCollect(
@@ -3528,13 +3515,6 @@ CREATE OR REPLACE FUNCTION ST_Collect(geometry[])
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_collect_garray'
 	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE AGGREGATE MemGeomUnion (
-	basetype = geometry,
-	sfunc = geomunion,
-	stype = geometry
-	);
 
 -- Availability: 1.2.2
 CREATE AGGREGATE ST_MemUnion (
@@ -3617,18 +3597,6 @@ CREATE AGGREGATE ST_Accum (
 	finalfunc = pgis_geometry_accum_finalfn
 	);
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION unite_garray (geometry[])
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'pgis_union_geometry_array'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.4.0
-CREATE OR REPLACE FUNCTION ST_unite_garray (geometry[])
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','pgis_union_geometry_array'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION ST_Union (geometry[])
 	RETURNS geometry
@@ -3709,12 +3677,6 @@ CREATE OR REPLACE FUNCTION relate(geometry,geometry,text)
 CREATE OR REPLACE FUNCTION ST_Relate(geometry,geometry,text)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','relate_pattern'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION disjoint(geometry,geometry)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: disjoint(geometry,geometry)
@@ -5362,34 +5324,6 @@ CREATE OR REPLACE FUNCTION ST_FlipCoordinates(geometry)
 -- and another to actual return, in a CASE WHEN construct).
 -- Also, we profit from plpgsql to RAISE exceptions.
 --
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION BdPolyFromText(text, integer)
-RETURNS geometry
-AS $$
-DECLARE
-	geomtext alias for $1;
-	srid alias for $2;
-	mline geometry;
-	geom geometry;
-BEGIN
-	mline := MultiLineStringFromText(geomtext, srid);
-
-	IF mline IS NULL
-	THEN
-		RAISE EXCEPTION 'Input is not a MultiLinestring';
-	END IF;
-
-	geom := BuildArea(mline);
-
-	IF GeometryType(geom) != 'POLYGON'
-	THEN
-		RAISE EXCEPTION 'Input returns more then a single polygon, try using BdMPolyFromText instead';
-	END IF;
-
-	RETURN geom;
-END;
-$$
-LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_BdPolyFromText(text, integer)
@@ -5432,29 +5366,6 @@ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 -- This is a PLPGSQL function rather then an SQL function
 -- To raise an exception in case of invalid input.
 --
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION BdMPolyFromText(text, integer)
-RETURNS geometry
-AS $$
-DECLARE
-	geomtext alias for $1;
-	srid alias for $2;
-	mline geometry;
-	geom geometry;
-BEGIN
-	mline := MultiLineStringFromText(geomtext, srid);
-
-	IF mline IS NULL
-	THEN
-		RAISE EXCEPTION 'Input is not a MultiLinestring';
-	END IF;
-
-	geom := ST_Multi(BuildArea(mline));
-
-	RETURN geom;
-END;
-$$
-LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_BdMPolyFromText(text, integer)
