@@ -383,6 +383,12 @@ CREATE OR REPLACE FUNCTION buffer(geometry,float8,integer)
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION crosses(geometry,geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION distance(geometry,geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'LWGEOM_mindistance2d'
@@ -683,6 +689,56 @@ CREATE OR REPLACE FUNCTION MakePointM(float8, float8, float8)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION MPolyFromText(text, int4)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''MULTIPOLYGON''
+	THEN GeomFromText($1,$2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION MPolyFromText(text)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''MULTIPOLYGON''
+	THEN GeomFromText($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION MultiPointFromText(text)
+	RETURNS geometry
+	AS 'SELECT MPointFromText($1)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION MultiPointFromText(text)
+	RETURNS geometry
+	AS 'SELECT MPointFromText($1)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION MultiPointFromText(text, int4)
+	RETURNS geometry
+	AS 'SELECT MPointFromText($1, $2)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION MultiPolygonFromText(text, int4)
+	RETURNS geometry
+	AS 'SELECT MPolyFromText($1, $2)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION MultiPolygonFromText(text)
+	RETURNS geometry
+	AS 'SELECT MPolyFromText($1)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION ndims(geometry)
 	RETURNS smallint
 	AS 'MODULE_PATHNAME', 'LWGEOM_ndims'
@@ -804,6 +860,12 @@ CREATE OR REPLACE FUNCTION symdifference(geometry,geometry)
 CREATE OR REPLACE FUNCTION summary(geometry)
 	RETURNS text
 	AS 'MODULE_PATHNAME', 'LWGEOM_summary'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION within(geometry,geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3

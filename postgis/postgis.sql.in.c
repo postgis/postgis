@@ -3738,12 +3738,6 @@ CREATE OR REPLACE FUNCTION ST_Intersects(geometry,geometry)
 	AS 'SELECT $1 && $2 AND _ST_Intersects($1,$2)'
 	LANGUAGE 'SQL' IMMUTABLE;
 	
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION crosses(geometry,geometry)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function: crosses(geometry,geometry)
 CREATE OR REPLACE FUNCTION _ST_Crosses(geometry,geometry)
 	RETURNS boolean
@@ -3757,12 +3751,6 @@ CREATE OR REPLACE FUNCTION ST_Crosses(geometry,geometry)
 	RETURNS boolean
 	AS 'SELECT $1 && $2 AND _ST_Crosses($1,$2)'
 	LANGUAGE 'SQL' IMMUTABLE;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION within(geometry,geometry)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME'
-	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: within(geometry,geometry)
 CREATE OR REPLACE FUNCTION _ST_Within(geometry,geometry)
@@ -4658,16 +4646,10 @@ CREATE OR REPLACE FUNCTION ST_MPointFromText(text)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MultiPointFromText(text, int4)
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_MultiPointFromText(text)
 	RETURNS geometry
-	AS 'SELECT MPointFromText($1, $2)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MultiPointFromText(text)
-	RETURNS geometry
-	AS 'SELECT MPointFromText($1)'
+	AS 'SELECT ST_MPointFromText($1)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -4676,44 +4658,12 @@ CREATE OR REPLACE FUNCTION ST_MultiPointFromText(text)
 	AS 'SELECT ST_MPointFromText($1)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MultiPointFromText(text)
-	RETURNS geometry
-	AS 'SELECT MPointFromText($1)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_MultiPointFromText(text)
-	RETURNS geometry
-	AS 'SELECT MPointFromText($1)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MPolyFromText(text, int4)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''MULTIPOLYGON''
-	THEN GeomFromText($1,$2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function: MPolyFromText(text, int4)
 CREATE OR REPLACE FUNCTION ST_MPolyFromText(text, int4)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(ST_GeomFromText($1, $2)) = ''MULTIPOLYGON''
 	THEN ST_GeomFromText($1,$2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MPolyFromText(text)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''MULTIPOLYGON''
-	THEN GeomFromText($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -4728,28 +4678,16 @@ CREATE OR REPLACE FUNCTION ST_MPolyFromText(text)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MultiPolygonFromText(text, int4)
-	RETURNS geometry
-	AS 'SELECT MPolyFromText($1, $2)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MultiPolygonFromText(text, int4)
 	RETURNS geometry
-	AS 'SELECT MPolyFromText($1, $2)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MultiPolygonFromText(text)
-	RETURNS geometry
-	AS 'SELECT MPolyFromText($1)'
+	AS 'SELECT ST_MPolyFromText($1, $2)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MultiPolygonFromText(text)
 	RETURNS geometry
-	AS 'SELECT MPolyFromText($1)'
+	AS 'SELECT ST_MPolyFromText($1)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
