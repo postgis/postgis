@@ -301,17 +301,17 @@ CREATE OR REPLACE FUNCTION SE_EnvelopesIntersect(geometry,geometry)
 -- ST_Buffer(geometry, float8) - already defined.
 -- ST_ConvexHull(geometry) already defined.
 
--- PostGIS equivalent function: locate_along_measure(geometry, float8)
-CREATE OR REPLACE FUNCTION SE_LocateAlong(geometry, float8)
-	RETURNS geometry
-	AS $$ SELECT locate_between_measures($1, $2, $2) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function: locate_between_measures(geometry, float8, float8)
 CREATE OR REPLACE FUNCTION SE_LocateBetween(geometry, float8, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_locate_between_m'
 	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- PostGIS equivalent function: locate_along_measure(geometry, float8)
+CREATE OR REPLACE FUNCTION SE_LocateAlong(geometry, float8)
+	RETURNS geometry
+	AS $$ SELECT SE_LocateBetween($1, $2, $2) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 
 

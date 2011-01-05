@@ -581,6 +581,12 @@ CREATE OR REPLACE FUNCTION buffer(geometry,float8,integer)
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION Contains(geometry,geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION crosses(geometry,geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME'
@@ -859,6 +865,12 @@ CREATE OR REPLACE FUNCTION InteriorRingN(geometry,integer)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_interiorringn_polygon'
 	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION intersection(geometry,geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','intersection'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 
 	-- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION IsClosed(geometry)
@@ -895,6 +907,24 @@ CREATE OR REPLACE FUNCTION length2d(geometry)
 CREATE OR REPLACE FUNCTION length(geometry)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME', 'LWGEOM_length_linestring'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION line_interpolate_point(geometry, float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_line_interpolate_point'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION line_locate_point(geometry, geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'LWGEOM_line_locate_point'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION line_substring(geometry, float8, float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_line_substring'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
@@ -943,6 +973,7 @@ CREATE OR REPLACE FUNCTION LineFromWKB(bytea)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 	
+	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION LineStringFromText(text)
 	RETURNS geometry
@@ -975,6 +1006,11 @@ CREATE OR REPLACE FUNCTION LinestringFromWKB(bytea)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION locate_between_measures(geometry, float8, float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_locate_between_m'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION M(geometry)

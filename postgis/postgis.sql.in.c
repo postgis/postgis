@@ -2882,22 +2882,10 @@ CREATE OR REPLACE FUNCTION ST_Segmentize(geometry, float8)
 -- LRS
 ---------------------------------------------------------------
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION line_interpolate_point(geometry, float8)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_line_interpolate_point'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_line_interpolate_point(geometry, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_line_interpolate_point'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION line_substring(geometry, float8, float8)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_line_substring'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -2906,22 +2894,10 @@ CREATE OR REPLACE FUNCTION ST_line_substring(geometry, float8, float8)
 	AS 'MODULE_PATHNAME', 'LWGEOM_line_substring'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION line_locate_point(geometry, geometry)
-	RETURNS float8
-	AS 'MODULE_PATHNAME', 'LWGEOM_line_locate_point'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_line_locate_point(geometry, geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'LWGEOM_line_locate_point'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION locate_between_measures(geometry, float8, float8)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_locate_between_m'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -2934,7 +2910,7 @@ CREATE OR REPLACE FUNCTION ST_locate_between_measures(geometry, float8, float8)
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_locate_along_measure(geometry, float8)
 	RETURNS geometry
-	AS $$ SELECT locate_between_measures($1, $2, $2) $$
+	AS $$ SELECT ST_locate_between_measures($1, $2, $2) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
@@ -2946,12 +2922,6 @@ CREATE OR REPLACE FUNCTION ST_AddMeasure(geometry, float8, float8)
 ---------------------------------------------------------------
 -- GEOS
 ---------------------------------------------------------------
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION intersection(geometry,geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','intersection'
-	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: intersection(geometry,geometry)
 CREATE OR REPLACE FUNCTION ST_Intersection(geometry,geometry)
@@ -3484,12 +3454,6 @@ CREATE OR REPLACE FUNCTION ST_Within(geometry,geometry)
 	RETURNS boolean
 	AS 'SELECT $1 && $2 AND _ST_Within($1,$2)'
 	LANGUAGE 'SQL' IMMUTABLE;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION Contains(geometry,geometry)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME'
-	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: contains(geometry,geometry)
 CREATE OR REPLACE FUNCTION _ST_Contains(geometry,geometry)
