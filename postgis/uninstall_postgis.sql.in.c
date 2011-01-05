@@ -708,35 +708,11 @@ DROP FUNCTION mem_size(geometry);
 
 
 -------------------------------------------
---- CHIP functions
--------------------------------------------
-
-DROP FUNCTION ST_setFactor(chip,float4);
-DROP FUNCTION setFactor(chip,float4);
-DROP FUNCTION setSRID(chip,int4);
-DROP FUNCTION ST_compression(chip);
-DROP FUNCTION compression(chip);
-DROP FUNCTION ST_datatype(chip);
-DROP FUNCTION datatype(chip);
-DROP FUNCTION ST_width(chip);
-DROP FUNCTION width(chip);
-DROP FUNCTION ST_factor(chip);
-DROP FUNCTION factor(chip);
-DROP FUNCTION ST_height(chip);
-DROP FUNCTION height(chip);
-DROP FUNCTION ST_srid(chip);
-DROP FUNCTION srid(chip);
-
-
--------------------------------------------
 -- other lwgeom functions
 -------------------------------------------
 
 DROP FUNCTION getBBOX(geometry);
 DROP FUNCTION getSRID(geometry);
-DROP FUNCTION dropBBOX(geometry);
-DROP FUNCTION addBBOX(geometry);
-
 
 -------------------------------------------
 -- GIST opclass index binding entries.
@@ -819,18 +795,11 @@ DROP OPERATOR < (geometry,geometry);
 -- BTREE indexes
 -------------------------------------------------------------------
 
-
-DROP FUNCTION ST_geometry_cmp(geometry, geometry);
 DROP FUNCTION geometry_cmp(geometry, geometry);
-DROP FUNCTION ST_geometry_eq(geometry, geometry);
 DROP FUNCTION geometry_eq(geometry, geometry);
-DROP FUNCTION ST_geometry_ge(geometry, geometry);
 DROP FUNCTION geometry_ge(geometry, geometry);
-DROP FUNCTION ST_geometry_gt(geometry, geometry);
 DROP FUNCTION geometry_gt(geometry, geometry);
-DROP FUNCTION ST_geometry_le(geometry, geometry);
 DROP FUNCTION geometry_le(geometry, geometry);
-DROP FUNCTION ST_geometry_lt(geometry, geometry);
 DROP FUNCTION geometry_lt(geometry, geometry);
 
 
@@ -839,18 +808,9 @@ DROP FUNCTION geometry_lt(geometry, geometry);
 -- BOX2D
 -----------------------------------------------------------------------
 
-DROP FUNCTION ST_box2d(box3d_extent);
-
 -- This drops ST_box2d_in, ST_box2d_out, box2d_in, box2d_out and the type in an atomic fashion
 DROP TYPE box2d CASCADE;
 
-
--------------------------------------------------------------------
---  CHIP TYPE
--------------------------------------------------------------------
-
--- This drops ST_chip_in, ST_chip_out, chip_in, chip_out and the type in an atomic fashion
-DROP TYPE chip CASCADE;
 
 
 -------------------------------------------------------------------
@@ -870,9 +830,6 @@ DROP FUNCTION ST_YMin(box3d);
 DROP FUNCTION ymin(box3d);
 DROP FUNCTION ST_XMin(box3d);
 DROP FUNCTION xmin(box3d);
-
-DROP FUNCTION ST_geometry(box3d_extent);
-DROP FUNCTION ST_box3d_extent(box3d_extent);
 
 -- This drops box3d_extent_in, box3d_extent_out and the type in an atomic fashion
 DROP TYPE box3d_extent CASCADE;
@@ -925,7 +882,6 @@ DROP TYPE geometry_dump CASCADE;
 
 DROP TYPE geometry CASCADE;
 
-DROP FUNCTION ST_geometry_analyze(internal);
 DROP FUNCTION geometry_analyze(internal);
 DROP FUNCTION geometry_gist_sel (internal, oid, internal, int4);
 DROP FUNCTION geometry_gist_joinsel(internal, oid, internal, smallint);
