@@ -1267,24 +1267,10 @@ CREATE OR REPLACE FUNCTION Polygonize_GArray (geometry[])
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
 
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION ST_Polygonize_GArray (geometry[])
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'polygonize_garray'
-	LANGUAGE 'C' IMMUTABLE STRICT
-	COST 100;
-
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION ST_Polygonize (geometry[])
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'polygonize_garray'
-	LANGUAGE 'C' IMMUTABLE STRICT
-	COST 100;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION LineMerge(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'linemerge'
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
 
@@ -4189,15 +4175,6 @@ CREATE OR REPLACE FUNCTION ST_GeomFromText(text, int4)
 	AS 'MODULE_PATHNAME','LWGEOM_from_text'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION PointFromText(text)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''POINT''
-	THEN GeomFromText($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_PointFromText(text)
@@ -4209,15 +4186,6 @@ CREATE OR REPLACE FUNCTION ST_PointFromText(text)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION PointFromText(text, int4)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''POINT''
-	THEN GeomFromText($1,$2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: PointFromText(text, int4)
 -- TODO: improve this ... by not duplicating constructor time.
@@ -4226,16 +4194,6 @@ CREATE OR REPLACE FUNCTION ST_PointFromText(text, int4)
 	AS '
 	SELECT CASE WHEN geometrytype(ST_GeomFromText($1, $2)) = ''POINT''
 	THEN ST_GeomFromText($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION LineFromText(text)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''LINESTRING''
-	THEN GeomFromText($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -4250,44 +4208,12 @@ CREATE OR REPLACE FUNCTION ST_LineFromText(text)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION LineFromText(text, int4)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''LINESTRING''
-	THEN GeomFromText($1,$2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function: LineFromText(text, int4)
 CREATE OR REPLACE FUNCTION ST_LineFromText(text, int4)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''LINESTRING''
 	THEN GeomFromText($1,$2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION LineStringFromText(text)
-	RETURNS geometry
-	AS 'SELECT LineFromText($1)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION LineStringFromText(text, int4)
-	RETURNS geometry
-	AS 'SELECT LineFromText($1, $2)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION PolyFromText(text)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''POLYGON''
-	THEN GeomFromText($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -4302,16 +4228,6 @@ CREATE OR REPLACE FUNCTION ST_PolyFromText(text)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION PolyFromText(text, int4)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''POLYGON''
-	THEN GeomFromText($1,$2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function: ST_PolygonFromText(text, int4)
 CREATE OR REPLACE FUNCTION ST_PolyFromText(text, int4)
 	RETURNS geometry
@@ -4322,22 +4238,10 @@ CREATE OR REPLACE FUNCTION ST_PolyFromText(text, int4)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION PolygonFromText(text, int4)
-	RETURNS geometry
-	AS 'SELECT PolyFromText($1, $2)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_PolygonFromText(text, int4)
 	RETURNS geometry
-	AS 'SELECT PolyFromText($1, $2)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION PolygonFromText(text)
-	RETURNS geometry
-	AS 'SELECT PolyFromText($1)'
+	AS 'SELECT ST_PolyFromText($1, $2)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -4346,34 +4250,13 @@ CREATE OR REPLACE FUNCTION ST_PolygonFromText(text)
 	AS 'SELECT ST_PolyFromText($1)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MLineFromText(text, int4)
-	RETURNS geometry
-	AS '
-	SELECT CASE
-	WHEN geometrytype(GeomFromText($1, $2)) = ''MULTILINESTRING''
-	THEN GeomFromText($1,$2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function: MLineFromText(text, int4)
 CREATE OR REPLACE FUNCTION ST_MLineFromText(text, int4)
 	RETURNS geometry
 	AS '
 	SELECT CASE
-	WHEN geometrytype(GeomFromText($1, $2)) = ''MULTILINESTRING''
+	WHEN geometrytype(ST_GeomFromText($1, $2)) = ''MULTILINESTRING''
 	THEN GeomFromText($1,$2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MLineFromText(text)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''MULTILINESTRING''
-	THEN GeomFromText($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -4388,11 +4271,6 @@ CREATE OR REPLACE FUNCTION ST_MLineFromText(text)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MultiLineStringFromText(text)
-	RETURNS geometry
-	AS 'SELECT ST_MLineFromText($1)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MultiLineStringFromText(text)
@@ -4400,44 +4278,18 @@ CREATE OR REPLACE FUNCTION ST_MultiLineStringFromText(text)
 	AS 'SELECT ST_MLineFromText($1)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MultiLineStringFromText(text, int4)
-	RETURNS geometry
-	AS 'SELECT MLineFromText($1, $2)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MultiLineStringFromText(text, int4)
 	RETURNS geometry
-	AS 'SELECT MLineFromText($1, $2)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MPointFromText(text, int4)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1,$2)) = ''MULTIPOINT''
-	THEN GeomFromText($1,$2)
-	ELSE NULL END
-	'
+	AS 'SELECT ST_MLineFromText($1, $2)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: MPointFromText(text, int4)
 CREATE OR REPLACE FUNCTION ST_MPointFromText(text, int4)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''MULTIPOINT''
+	SELECT CASE WHEN geometrytype(ST_GeomFromText($1, $2)) = ''MULTIPOINT''
 	THEN GeomFromText($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MPointFromText(text)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''MULTIPOINT''
-	THEN GeomFromText($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -4496,17 +4348,6 @@ CREATE OR REPLACE FUNCTION ST_MultiPolygonFromText(text)
 	AS 'SELECT ST_MPolyFromText($1)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION GeomCollFromText(text, int4)
-	RETURNS geometry
-	AS '
-	SELECT CASE
-	WHEN geometrytype(GeomFromText($1, $2)) = ''GEOMETRYCOLLECTION''
-	THEN GeomFromText($1,$2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_GeomCollFromText(text, int4)
 	RETURNS geometry
@@ -4514,17 +4355,6 @@ CREATE OR REPLACE FUNCTION ST_GeomCollFromText(text, int4)
 	SELECT CASE
 	WHEN geometrytype(ST_GeomFromText($1, $2)) = ''GEOMETRYCOLLECTION''
 	THEN ST_GeomFromText($1,$2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION GeomCollFromText(text)
-	RETURNS geometry
-	AS '
-	SELECT CASE
-	WHEN geometrytype(GeomFromText($1)) = ''GEOMETRYCOLLECTION''
-	THEN GeomFromText($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -4584,32 +4414,12 @@ CREATE OR REPLACE FUNCTION ST_PointFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION PointFromWKB(bytea)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''POINT''
-	THEN GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_PointFromWKB(bytea)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1)) = ''POINT''
 	THEN ST_GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION LineFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''LINESTRING''
-	THEN GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -4624,32 +4434,12 @@ CREATE OR REPLACE FUNCTION ST_LineFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION LineFromWKB(bytea)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''LINESTRING''
-	THEN GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_LineFromWKB(bytea)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1)) = ''LINESTRING''
 	THEN ST_GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION LinestringFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''LINESTRING''
-	THEN GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -4664,32 +4454,12 @@ CREATE OR REPLACE FUNCTION ST_LinestringFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION LinestringFromWKB(bytea)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''LINESTRING''
-	THEN GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_LinestringFromWKB(bytea)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''LINESTRING''
 	THEN GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION PolyFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''POLYGON''
-	THEN GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -4704,32 +4474,12 @@ CREATE OR REPLACE FUNCTION ST_PolyFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION PolyFromWKB(bytea)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''POLYGON''
-	THEN GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_PolyFromWKB(bytea)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1)) = ''POLYGON''
 	THEN ST_GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION PolygonFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1,$2)) = ''POLYGON''
-	THEN GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -4744,32 +4494,12 @@ CREATE OR REPLACE FUNCTION ST_PolygonFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION PolygonFromWKB(bytea)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''POLYGON''
-	THEN GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_PolygonFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''POLYGON''
+	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1)) = ''POLYGON''
 	THEN GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MPointFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1,$2)) = ''MULTIPOINT''
-	THEN GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -4778,21 +4508,12 @@ CREATE OR REPLACE FUNCTION MPointFromWKB(bytea, int)
 CREATE OR REPLACE FUNCTION ST_MPointFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTIPOINT''
+	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1, $2)) = ''MULTIPOINT''
 	THEN GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MPointFromWKB(bytea)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOINT''
-	THEN GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MPointFromWKB(bytea)
@@ -4800,16 +4521,6 @@ CREATE OR REPLACE FUNCTION ST_MPointFromWKB(bytea)
 	AS '
 	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1)) = ''MULTIPOINT''
 	THEN ST_GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MultiPointFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1,$2)) = ''MULTIPOINT''
-	THEN GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -4824,52 +4535,12 @@ CREATE OR REPLACE FUNCTION ST_MultiPointFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MultiPointFromWKB(bytea)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOINT''
-	THEN GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MultiPointFromWKB(bytea)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1)) = ''MULTIPOINT''
 	THEN ST_GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MultiLineFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTILINESTRING''
-	THEN GeomFromWKB($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION MultiLineFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTILINESTRING''
-	THEN GeomFromWKB($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MultiLineFromWKB(bytea)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTILINESTRING''
-	THEN GeomFromWKB($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -4884,32 +4555,12 @@ CREATE OR REPLACE FUNCTION ST_MultiLineFromWKB(bytea)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MLineFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTILINESTRING''
-	THEN GeomFromWKB($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function: MLineFromWKB(text, int)
 CREATE OR REPLACE FUNCTION ST_MLineFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1, $2)) = ''MULTILINESTRING''
 	THEN ST_GeomFromWKB($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MLineFromWKB(bytea)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTILINESTRING''
-	THEN GeomFromWKB($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -4924,16 +4575,7 @@ CREATE OR REPLACE FUNCTION ST_MLineFromWKB(bytea)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MPolyFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTIPOLYGON''
-	THEN GeomFromWKB($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
+-- Availability: 1.2.2
 -- PostGIS equivalent function: MPolyFromWKB(bytea, int)
 CREATE OR REPLACE FUNCTION ST_MPolyFromWKB(bytea, int)
 	RETURNS geometry
@@ -5001,7 +4643,7 @@ CREATE OR REPLACE FUNCTION ST_GeomCollFromWKB(bytea)
 --New functions
 
 -- Maximum distance between linestrings.
-
+-- This should really be deprecated -- 2011-01-04 robe
 CREATE OR REPLACE FUNCTION max_distance(geometry,geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'LWGEOM_maxdistance2d_linestring'
