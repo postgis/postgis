@@ -10,7 +10,7 @@
 
 -- Note: this script is dependent on 
 --   _MapAlgebraParts(r1x int, r1y int, r1w int, r1h int, r2x int, r2y int, r2w int, r2h int) 
---   ST_SameAlignment(rast1ulx float8, rast1uly float8, rast1pixsizex float8, rast1pixsizey float8, rast1skewx float8, rast1skewy float8, rast2ulx float8, rast2uly float8, rast2pixsizex float8, rast2pixsizey float8, rast2skewx float8, rast2skewy float8)
+--   ST_SameAlignment(rast1ulx float8, rast1uly float8, rast1scalex float8, rast1scaley float8, rast1skewx float8, rast1skewy float8, rast2ulx float8, rast2uly float8, rast2scalex float8, rast2scaley float8, rast2skewx float8, rast2skewy float8)
 --   ST_IsEmpty(raster)
 --   ST_HasNoBand(raster, int)
 --   ST_BandIsNoData(raster, int)
@@ -66,8 +66,8 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra2(rast1 raster,
         rast1uly float8;
         rast1width int;
         rast1height int;
-        rast1pixsizex float8;
-        rast1pixsizey float8;
+        rast1scalex float8;
+        rast1scaley float8;
         rast1skewx float8;
         rast1skewy float8;
         rast1nodataval float8;
@@ -80,8 +80,8 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra2(rast1 raster,
         rast2uly float8;
         rast2width int;
         rast2height int;
-        rast2pixsizex float8;
-        rast2pixsizey float8;
+        rast2scalex float8;
+        rast2scaley float8;
         rast2skewx float8;
         rast2skewy float8;
         rast2nodataval float8;
@@ -218,8 +218,8 @@ RAISE NOTICE 'ST_MapAlgebra2 000';
         rast1uly := ST_UpperLeftY(rast1);
         rast1width := ST_Width(rast1);
         rast1height := ST_Height(rast1);
-        rast1pixsizex := ST_ScaleX(rast1);
-        rast1pixsizey := ST_ScaleY(rast1);
+        rast1scalex := ST_ScaleX(rast1);
+        rast1scaley := ST_ScaleY(rast1);
         rast1skewx := ST_SkewX(rast1);
         rast1skewy := ST_SkewY(rast1);
         rast1srid := ST_SRID(rast1);
@@ -228,8 +228,8 @@ RAISE NOTICE 'ST_MapAlgebra2 000';
         rast2uly := ST_UpperLeftY(rast2);
         rast2width := ST_Width(rast2);
         rast2height := ST_Height(rast2);
-        rast2pixsizex := ST_ScaleX(rast2);
-        rast2pixsizey := ST_ScaleY(rast2);
+        rast2scalex := ST_ScaleX(rast2);
+        rast2scaley := ST_ScaleY(rast2);
         rast2skewx := ST_SkewX(rast2);
         rast2skewy := ST_SkewY(rast2);
         rast2srid := ST_SRID(rast2);
@@ -240,8 +240,8 @@ RAISE NOTICE 'ST_MapAlgebra2 000';
             rast1uly := rast2uly;
             rast1width := rast2width;
             rast1height := rast2height;
-            rast1pixsizex := rast2pixsizex;
-            rast1pixsizey := rast2pixsizey;
+            rast1scalex := rast2scalex;
+            rast1scaley := rast2scaley;
             rast1skewx := rast2skewx;
             rast1skewy := rast2skewy;
             rast1srid := rast2srid;
@@ -252,8 +252,8 @@ RAISE NOTICE 'ST_MapAlgebra2 000';
             rast2uly := rast1uly;
             rast2width := rast1width;
             rast2height := rast1height;
-            rast2pixsizex := rast1pixsizex;
-            rast2pixsizey := rast1pixsizey;
+            rast2scalex := rast1scalex;
+            rast2scaley := rast1scaley;
             rast2skewx := rast1skewx;
             rast2skewy := rast1skewy;
             rast2srid := rast1srid;
@@ -266,15 +266,15 @@ RAISE NOTICE 'ST_MapAlgebra2 000';
         newsrid := rast1srid;
 
         -- Check for alignment. (Rotation problem here)
-        IF NOT ST_SameAlignment(rast1ulx, rast1uly, rast1pixsizex, rast1pixsizey, rast1skewx, rast1skewy, rast2ulx, rast2uly, rast2pixsizex, rast2pixsizey, rast2skewx, rast2skewy) THEN
+        IF NOT ST_SameAlignment(rast1ulx, rast1uly, rast1scalex, rast1scaley, rast1skewx, rast1skewy, rast2ulx, rast2uly, rast2scalex, rast2scaley, rast2skewx, rast2skewy) THEN
             -- For now print an error message, but a more robust implementation should resample the second raster to the alignment of the first raster.
             RAISE EXCEPTION 'ST_MapAlgebra: Provided raster do not have the same alignment. Aborting';
         END IF;
 
         -- Set new pixel size and skew. We set it to the rast1 scale and skew 
         -- since both rasters are aligned and thus have the same scale and skew
-        newscalex := rast1pixsizex; 
-        newscaley := rast1pixsizey;
+        newscalex := rast1scalex; 
+        newscaley := rast1scaley;
         newskewx := rast1skewx;
         newskewy := rast1skewx;
 
@@ -353,7 +353,7 @@ RAISE NOTICE 'ST_MapAlgebra2 000';
             -- Check if rast1 has the required band
             IF ST_HasNoBand(rast1, band1) THEN 
                 RAISE NOTICE 'ST_MapAlgebra: FIRST raster has no band. Returning a raster without band';
-                RETURN ST_MakeEmptyRaster(rast1width, rast1height, rast1ulx, rast1uly, rast1pixsizex, rast1pixsizey, rast1skewx, rast1skewy, rast1srid);
+                RETURN ST_MakeEmptyRaster(rast1width, rast1height, rast1ulx, rast1uly, rast1scalex, rast1scaley, rast1skewx, rast1skewy, rast1srid);
             END IF;
             
             newulx := rast1ulx;
@@ -385,7 +385,7 @@ RAISE NOTICE 'ST_MapAlgebra2 000';
             -- Check if rast2 has the required band
             IF ST_HasNoBand(rast2, band2) THEN 
                 RAISE NOTICE 'ST_MapAlgebra: SECOND raster has no band. Returning an empty raster';
-                RETURN ST_MakeEmptyRaster(rast2width, rast2height, rast2ulx, rast2uly, rast2pixsizex, rast2pixsizey, rast2skewx, rast2skewy, rast2srid);
+                RETURN ST_MakeEmptyRaster(rast2width, rast2height, rast2ulx, rast2uly, rast2scalex, rast2scaley, rast2skewx, rast2skewy, rast2srid);
             END IF;
 
             newulx := rast2ulx;
