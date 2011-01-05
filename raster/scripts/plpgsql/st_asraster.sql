@@ -25,7 +25,7 @@ CREATE OR REPLACE FUNCTION ST_AsRaster(geom geometry, rast raster, pixeltype tex
         newy1w float8 := ST_Raster2WorldCoordY(rast, x1r, y1r);
         newwidth int := abs(x2r - x1r) + 1;
         newheight int := abs(y2r - y1r) + 1;
-        newrast raster := ST_AddBand(ST_MakeEmptyRaster(newwidth, newheight, newx1w, newy1w, ST_PixelSizeX(rast), ST_PixelSizeY(rast), ST_SkewX(rast), ST_SkewY(rast), ST_SRID(rast)), pixeltype, nodatavalue, nodatavalue);
+        newrast raster := ST_AddBand(ST_MakeEmptyRaster(newwidth, newheight, newx1w, newy1w, ST_ScaleX(rast), ST_ScaleY(rast), ST_SkewX(rast), ST_SkewY(rast), ST_SRID(rast)), pixeltype, nodatavalue, nodatavalue);
     BEGIN
 	FOR x IN 1..newwidth LOOP
 		FOR y IN 1..newheight LOOP

@@ -103,8 +103,8 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra2(rast1 raster,
         tmprast raster;
         newsrid int;
         
-        newpixelsizex float8;
-        newpixelsizey float8;
+        newscalex float8;
+        newscaley float8;
         newskewx float8;
         newskewy float8;
         newnodatavalue float8;
@@ -218,8 +218,8 @@ RAISE NOTICE 'ST_MapAlgebra2 000';
         rast1uly := ST_UpperLeftY(rast1);
         rast1width := ST_Width(rast1);
         rast1height := ST_Height(rast1);
-        rast1pixsizex := ST_PixelSizeX(rast1);
-        rast1pixsizey := ST_PixelSizeY(rast1);
+        rast1pixsizex := ST_ScaleX(rast1);
+        rast1pixsizey := ST_ScaleY(rast1);
         rast1skewx := ST_SkewX(rast1);
         rast1skewy := ST_SkewY(rast1);
         rast1srid := ST_SRID(rast1);
@@ -228,8 +228,8 @@ RAISE NOTICE 'ST_MapAlgebra2 000';
         rast2uly := ST_UpperLeftY(rast2);
         rast2width := ST_Width(rast2);
         rast2height := ST_Height(rast2);
-        rast2pixsizex := ST_PixelSizeX(rast2);
-        rast2pixsizey := ST_PixelSizeY(rast2);
+        rast2pixsizex := ST_ScaleX(rast2);
+        rast2pixsizey := ST_ScaleY(rast2);
         rast2skewx := ST_SkewX(rast2);
         rast2skewy := ST_SkewY(rast2);
         rast2srid := ST_SRID(rast2);
@@ -271,10 +271,10 @@ RAISE NOTICE 'ST_MapAlgebra2 000';
             RAISE EXCEPTION 'ST_MapAlgebra: Provided raster do not have the same alignment. Aborting';
         END IF;
 
-        -- Set new pixel size and skew. We set it to the rast1 pixelsize and skew 
-        -- since both rasters are aligned and thus have the same pixelsize and skew
-        newpixelsizex := rast1pixsizex; 
-        newpixelsizey := rast1pixsizey;
+        -- Set new pixel size and skew. We set it to the rast1 scale and skew 
+        -- since both rasters are aligned and thus have the same scale and skew
+        newscalex := rast1pixsizex; 
+        newscaley := rast1pixsizey;
         newskewx := rast1skewx;
         newskewy := rast1skewx;
 
@@ -471,7 +471,7 @@ RAISE NOTICE 'ST_MapAlgebra2 000';
         -- Check if both rasters do not have the specified band.
         IF ST_HasNoband(rast1, band1) AND ST_HasNoband(rast2, band2) THEN
             RAISE NOTICE 'ST_MapAlgebra: Both raster do not have the specified band. Returning a no band raster with the correct extent';
-            RETURN ST_MakeEmptyRaster(newwidth, newheight, newulx, newuly, newpixelsizex, newpixelsizey, newskewx, newskewy, newsrid);
+            RETURN ST_MakeEmptyRaster(newwidth, newheight, newulx, newuly, newscalex, newscaley, newskewx, newskewy, newsrid);
         END IF;
         
         -- Check newpixeltype
@@ -532,7 +532,7 @@ RAISE NOTICE 'ST_MapAlgebra2 000';
 
         -------------------------------------------------------------------
         --Create the raster receiving all the computed values. Initialize it to the new nodatavalue.
-        newrast := ST_AddBand(ST_MakeEmptyRaster(newwidth, newheight, newulx, newuly, newpixelsizex, newpixelsizey, newskewx, newskewy, newsrid), newpixeltype, newnodatavalue, newnodatavalue);
+        newrast := ST_AddBand(ST_MakeEmptyRaster(newwidth, newheight, newulx, newuly, newscalex, newscaley, newskewx, newskewy, newsrid), newpixeltype, newnodatavalue, newnodatavalue);
         -------------------------------------------------------------------
 
 RAISE NOTICE 'ST_MapAlgebra2 111 z11x=%, z11y=%, z11w=%, z11h=%', z11x, z11y, z11w, z11h;

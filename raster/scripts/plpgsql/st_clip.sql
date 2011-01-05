@@ -13,7 +13,7 @@ CREATE OR REPLACE FUNCTION ST_Clip(rast raster, x int, y int, width int, height 
     $$
     DECLARE
         newrast raster := ST_MakeEmptyRaster(width, height, ST_UpperLeftX(rast), ST_UpperLeftY(rast), 
-                          ST_PixelSizeX(rast), ST_PixelSizeY(rast), ST_SkewX(rast), ST_SkewY(rast), ST_SRID(rast));
+                          ST_ScaleX(rast), ST_ScaleY(rast), ST_SkewX(rast), ST_SkewY(rast), ST_SRID(rast));
         numband int := ST_Numbands(rast);
     band int;
     cx int;
