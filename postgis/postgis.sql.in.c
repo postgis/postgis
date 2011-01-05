@@ -51,16 +51,6 @@ CREATE TYPE spheroid (
 -------------------------------------------------------------------
 --  GEOMETRY TYPE (lwgeom)
 -------------------------------------------------------------------
--- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_geometry_analyze(internal)
-	RETURNS bool
-#ifdef GSERIALIZED_ON
-	AS 'MODULE_PATHNAME', 'geometry_analyze'
-#else
-	AS 'MODULE_PATHNAME', 'LWGEOM_analyze'
-#endif
-	LANGUAGE 'C' VOLATILE STRICT;
-
 CREATE OR REPLACE FUNCTION geometry_in(cstring)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_in'
