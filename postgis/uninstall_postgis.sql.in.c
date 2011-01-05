@@ -749,33 +749,19 @@ DROP OPERATOR << (geometry,geometry);
 -- GiST indexes
 -------------------------------------------------------------------
 
-DROP FUNCTION ST_geometry_same(geometry, geometry);
 DROP FUNCTION geometry_same(geometry, geometry);
-DROP FUNCTION ST_geometry_overlap(geometry, geometry);
 DROP FUNCTION geometry_overlap(geometry, geometry);
-DROP FUNCTION ST_geometry_contained(geometry, geometry);
 DROP FUNCTION geometry_contained(geometry, geometry);
-DROP FUNCTION ST_geometry_contain(geometry, geometry);
 DROP FUNCTION geometry_contain(geometry, geometry);
-DROP FUNCTION ST_geometry_below(geometry, geometry);
 DROP FUNCTION geometry_below(geometry, geometry);
-DROP FUNCTION ST_geometry_above(geometry, geometry);
 DROP FUNCTION geometry_above(geometry, geometry);
-DROP FUNCTION ST_geometry_right(geometry, geometry);
 DROP FUNCTION geometry_right(geometry, geometry);
-DROP FUNCTION ST_geometry_left(geometry, geometry);
 DROP FUNCTION geometry_left(geometry, geometry);
-DROP FUNCTION ST_geometry_overbelow(geometry, geometry);
 DROP FUNCTION geometry_overbelow(geometry, geometry);
-DROP FUNCTION ST_geometry_overabove(geometry, geometry);
 DROP FUNCTION geometry_overabove(geometry, geometry);
-DROP FUNCTION ST_geometry_overright(geometry, geometry);
 DROP FUNCTION geometry_overright(geometry, geometry);
-DROP FUNCTION ST_geometry_overleft(geometry, geometry);
 DROP FUNCTION geometry_overleft(geometry, geometry);
-DROP FUNCTION ST_postgis_gist_joinsel(internal, oid, internal, smallint);
 DROP FUNCTION postgis_gist_joinsel(internal, oid, internal, smallint);
-DROP FUNCTION ST_postgis_gist_sel (internal, oid, internal, int4);
 DROP FUNCTION postgis_gist_sel (internal, oid, internal, int4);
 
 
