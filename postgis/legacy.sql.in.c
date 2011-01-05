@@ -179,6 +179,137 @@ CREATE OR REPLACE FUNCTION st_spheroid_out(spheroid)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_lt(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'lwgeom_lt'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_le(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'lwgeom_le'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_gt(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'lwgeom_gt'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_ge(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'lwgeom_ge'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_eq(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'lwgeom_eq'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_cmp(geometry, geometry)
+	RETURNS integer
+	AS 'MODULE_PATHNAME', 'lwgeom_cmp'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+#ifndef GSERIALIZED_ON
+-------------------------------------------------------------------
+-- GiST indexes
+-------------------------------------------------------------------
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION postgis_gist_sel (internal, oid, internal, int4)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'LWGEOM_gist_sel'
+	LANGUAGE 'C';
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION postgis_gist_joinsel(internal, oid, internal, smallint)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'LWGEOM_gist_joinsel'
+	LANGUAGE 'C';
+	
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_postgis_gist_sel (internal, oid, internal, int4)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'LWGEOM_gist_sel'
+	LANGUAGE 'C';
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_postgis_gist_joinsel(internal, oid, internal, smallint)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'LWGEOM_gist_joinsel'
+	LANGUAGE 'C';
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_overleft(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_overleft'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_overright(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_overright'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_overabove(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_overabove'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_left(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_left'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_right(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_right'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_above(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_above'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_below(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_below'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_contain(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_contain'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_contained(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_contained'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_overlap(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_overlap'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.5.0
+CREATE OR REPLACE FUNCTION st_geometry_same(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_samebox'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+#endif
 
 --- end functions that in theory should never have been used
 
