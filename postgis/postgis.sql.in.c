@@ -858,24 +858,10 @@ CREATE OR REPLACE FUNCTION ST_length3d_spheroid(geometry, spheroid)
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION length_spheroid(geometry, spheroid)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','LWGEOM_length_ellipsoid_linestring'
-	LANGUAGE 'C' IMMUTABLE STRICT
-	COST 100;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_length_spheroid(geometry, spheroid)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','LWGEOM_length_ellipsoid_linestring'
-	LANGUAGE 'C' IMMUTABLE STRICT
-	COST 100;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION length2d_spheroid(geometry, spheroid)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','LWGEOM_length2d_ellipsoid'
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
 
@@ -2872,26 +2858,14 @@ CREATE OR REPLACE FUNCTION ST_SnapToGrid(geometry, float8, float8)
 	AS 'SELECT ST_SnapToGrid($1, 0, 0, $2, $3)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- SnapToGrid(input, size) # xsize=ysize=size, offsets=0
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION SnapToGrid(geometry, float8)
-	RETURNS geometry
-	AS 'SELECT ST_SnapToGrid($1, 0, 0, $2, $2)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
+-- ST_SnapToGrid(input, size) # xsize=ysize=size, offsets=0
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_SnapToGrid(geometry, float8)
 	RETURNS geometry
 	AS 'SELECT ST_SnapToGrid($1, 0, 0, $2, $2)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- SnapToGrid(input, point_offsets, xsize, ysize, zsize, msize)
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION SnapToGrid(geometry, geometry, float8, float8, float8, float8)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_snaptogrid_pointoff'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
+-- ST_SnapToGrid(input, point_offsets, xsize, ysize, zsize, msize)
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_SnapToGrid(geometry, geometry, float8, float8, float8, float8)
 	RETURNS geometry
@@ -2956,11 +2930,6 @@ CREATE OR REPLACE FUNCTION ST_locate_between_measures(geometry, float8, float8)
 	AS 'MODULE_PATHNAME', 'LWGEOM_locate_between_m'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION locate_along_measure(geometry, float8)
-	RETURNS geometry
-	AS $$ SELECT locate_between_measures($1, $2, $2) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_locate_along_measure(geometry, float8)
@@ -3112,12 +3081,6 @@ CREATE OR REPLACE FUNCTION ST_Difference(geometry,geometry)
 	AS 'MODULE_PATHNAME','difference'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION boundary(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','boundary'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function: boundary(geometry)
 CREATE OR REPLACE FUNCTION ST_Boundary(geometry)
 	RETURNS geometry
@@ -3130,22 +3093,10 @@ CREATE OR REPLACE FUNCTION ST_SymDifference(geometry,geometry)
 	AS 'MODULE_PATHNAME','symdifference'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION symmetricdifference(geometry,geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','symdifference'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_symmetricdifference(geometry,geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','symdifference'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION GeomUnion(geometry,geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','geomunion'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: GeomUnion(geometry,geometry)
@@ -3447,22 +3398,10 @@ CREATE AGGREGATE ST_MakeLine (
 
 --------------------------------------------------------------------------------
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION relate(geometry,geometry)
-	RETURNS text
-	AS 'MODULE_PATHNAME','relate_full'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Relate(geometry,geometry)
 	RETURNS text
 	AS 'MODULE_PATHNAME','relate_full'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION relate(geometry,geometry,text)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME','relate_pattern'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: relate(geometry,geometry,text)
@@ -3475,12 +3414,6 @@ CREATE OR REPLACE FUNCTION ST_Relate(geometry,geometry,text)
 CREATE OR REPLACE FUNCTION ST_Disjoint(geometry,geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','disjoint'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION touches(geometry,geometry)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: touches(geometry,geometry)
@@ -3509,12 +3442,6 @@ CREATE OR REPLACE FUNCTION ST_DWithin(geometry, geometry, float8)
 	RETURNS boolean
 	AS 'SELECT $1 && ST_Expand($2,$3) AND $2 && ST_Expand($1,$3) AND _ST_DWithin($1, $2, $3)'
 	LANGUAGE 'SQL' IMMUTABLE;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION intersects(geometry,geometry)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME'
-	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: intersects(geometry,geometry)
 CREATE OR REPLACE FUNCTION _ST_Intersects(geometry,geometry)
@@ -3653,22 +3580,10 @@ CREATE OR REPLACE FUNCTION ST_Centroid(geometry)
 	AS 'MODULE_PATHNAME', 'centroid'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION IsRing(geometry)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function: IsRing(geometry)
 CREATE OR REPLACE FUNCTION ST_IsRing(geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'isring'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION PointOnSurface(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: PointOnSurface(geometry)
@@ -3677,12 +3592,6 @@ CREATE OR REPLACE FUNCTION ST_PointOnSurface(geometry)
 	AS 'MODULE_PATHNAME', 'pointonsurface'
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION IsSimple(geometry)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME', 'issimple'
-	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: IsSimple(geometry)
 CREATE OR REPLACE FUNCTION ST_IsSimple(geometry)

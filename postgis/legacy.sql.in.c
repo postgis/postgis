@@ -562,6 +562,12 @@ $$
 LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION boundary(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','boundary'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION buffer(geometry,float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','buffer'
@@ -749,11 +755,49 @@ CREATE OR REPLACE FUNCTION GeometryN(geometry,integer)
 	AS 'MODULE_PATHNAME', 'LWGEOM_geometryn_collection'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION GeomUnion(geometry,geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','geomunion'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
 -- Availability: 1.5.0  -- replaced with postgis_getbbox
 CREATE OR REPLACE FUNCTION getbbox(geometry)
 	RETURNS box2d
 	AS 'MODULE_PATHNAME','LWGEOM_to_BOX2DFLOAT4'
 	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION intersects(geometry,geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION IsRing(geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION IsSimple(geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'issimple'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION length_spheroid(geometry, spheroid)
+	RETURNS FLOAT8
+	AS 'MODULE_PATHNAME','LWGEOM_length_ellipsoid_linestring'
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION length2d_spheroid(geometry, spheroid)
+	RETURNS FLOAT8
+	AS 'MODULE_PATHNAME','LWGEOM_length2d_ellipsoid'
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION length3d_spheroid(geometry, spheroid)
@@ -767,6 +811,12 @@ CREATE OR REPLACE FUNCTION LineMerge(geometry)
 	AS 'MODULE_PATHNAME', 'linemerge'
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION locate_along_measure(geometry, float8)
+	RETURNS geometry
+	AS $$ SELECT locate_between_measures($1, $2, $2) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION MPolyFromWKB(bytea)
@@ -1360,6 +1410,23 @@ CREATE OR REPLACE FUNCTION PointN(geometry,integer)
 	AS 'MODULE_PATHNAME','LWGEOM_pointn_linestring'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION PointOnSurface(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION relate(geometry,geometry)
+	RETURNS text
+	AS 'MODULE_PATHNAME','relate_full'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION relate(geometry,geometry,text)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME','relate_pattern'
+	LANGUAGE 'C' IMMUTABLE STRICT;	
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION RemovePoint(geometry, integer)
@@ -1398,8 +1465,28 @@ CREATE OR REPLACE FUNCTION Simplify(geometry, float8)
 	AS 'MODULE_PATHNAME', 'LWGEOM_simplify2d'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
+-- SnapToGrid(input, size) # xsize=ysize=size, offsets=0
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION SnapToGrid(geometry, float8)
+	RETURNS geometry
+	AS 'SELECT ST_SnapToGrid($1, 0, 0, $2, $2)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	
+-- SnapToGrid(input, point_offsets, xsize, ysize, zsize, msize)
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION SnapToGrid(geometry, geometry, float8, float8, float8, float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_snaptogrid_pointoff'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION symdifference(geometry,geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','symdifference'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION symmetricdifference(geometry,geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','symdifference'
 	LANGUAGE 'C' IMMUTABLE STRICT;
@@ -1408,6 +1495,12 @@ CREATE OR REPLACE FUNCTION symdifference(geometry,geometry)
 CREATE OR REPLACE FUNCTION summary(geometry)
 	RETURNS text
 	AS 'MODULE_PATHNAME', 'LWGEOM_summary'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION touches(geometry,geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
