@@ -716,7 +716,8 @@ BEGIN
 	ok = false;
 	FOR rec IN EXECUTE ''SELECT t.name as toponame, l.* FROM ''
 		|| ''topology.topology t, topology.layer l ''
-		|| '' WHERE l.schema_name = '' || quote_literal(schema)
+		|| '' WHERE l.topology_id = t.id''
+		|| '' AND l.schema_name = '' || quote_literal(schema)
 		|| '' AND l.table_name = '' || quote_literal(tbl)
 		|| '' AND l.feature_column = '' || quote_literal(col)
 	LOOP
