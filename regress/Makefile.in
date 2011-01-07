@@ -70,7 +70,7 @@ TESTS = \
 	regress_proj \
 	dump \
 	dumppoints \
-	wmsservers_old \
+	#wmsservers_old \
 	wmsservers_new \
 	tickets \
 	remove_repeated_points \
