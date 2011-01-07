@@ -2309,6 +2309,9 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 --  Editing
 #include "sql/populate.sql"
 
+--  TopoElement
+#include "sql/topoelement/topoelement_agg.sql"
+
 --=}  POSTGIS-SPECIFIC block
 
 --  SQL/MM block
