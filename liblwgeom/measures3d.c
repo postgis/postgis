@@ -1040,7 +1040,7 @@ pt_in_ring_3d(const POINT3DZ *p, const POINTARRAY *ring,PLANE3D *plane)
 	getPoint3dz_p(ring, 0, &v1);
 	
 	
-	if(fabs(plane->pv.z)>fabs(plane->pv.x)&&fabs(plane->pv.z)>fabs(plane->pv.y))	/*If the z vector of the normal vector to the plane is larger than x and y vector we project the ring to the xy-plane*/
+	if(fabs(plane->pv.z)>=fabs(plane->pv.x)&&fabs(plane->pv.z)>=fabs(plane->pv.y))	/*If the z vector of the normal vector to the plane is larger than x and y vector we project the ring to the xy-plane*/
 	{
 		for (i=0; i<ring->npoints-1; i++)
 		{
@@ -1069,7 +1069,7 @@ pt_in_ring_3d(const POINT3DZ *p, const POINTARRAY *ring,PLANE3D *plane)
 			v1 = v2;
 		}
 	}
-	else if(fabs(plane->pv.y)>fabs(plane->pv.x)&&fabs(plane->pv.z)>fabs(plane->pv.z))	/*If the y vector of the normal vector to the plane is larger than x and z vector we project the ring to the xz-plane*/
+	else if(fabs(plane->pv.y)>=abs(plane->pv.x)&&fabs(plane->pv.y)>=fabs(plane->pv.z))	/*If the y vector of the normal vector to the plane is larger than x and z vector we project the ring to the xz-plane*/
 	{
 		for (i=0; i<ring->npoints-1; i++)
 			{
