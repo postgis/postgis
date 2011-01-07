@@ -477,7 +477,7 @@ rt_band_get_ext_path(rt_context ctx, rt_band band) {
     assert(NULL != band);
 
     if (!band->offline) {
-        RASTER_DEBUGf(3, "rt_band_get_ext_path: non-offline band doesn't have "
+        RASTER_DEBUGF(3, "rt_band_get_ext_path: non-offline band doesn't have "
                 "an associated path");
         return 0;
     }
