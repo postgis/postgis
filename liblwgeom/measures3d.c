@@ -404,25 +404,35 @@ lw_dist3d_point_line(LWPOINT *point, LWLINE *line, DISTPTS3D *dl)
 
 /**
 
-point to polygon calculation
+Computes point to polygon distance
+For mindistance that means:
+1)find the plane of the polygon 
+2)projecting the point to the plane of the polygon 
+3)finding if that projected point is inside the polygon, if so the distance is measured to that projected point
+4) if not in polygon above, check the distance against the boundary of the polygon
+for max distance it is always point against boundary
+
 */
 int
 lw_dist3d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS3D *dl)
 {
 	LWDEBUG(2, "lw_dist3d_point_poly is called");
-	POINT3DZ p, projp;/*pointp is "point projected on plane"*/
+	POINT3DZ p, projp;/*projp is "point projected on plane"*/
 	PLANE3D plane;
 	getPoint3dz_p(point->point, 0, &p);
 	
+	/*If we are lookig for max distance, longestline or dfullywithin*/
 	if (dl->mode == DIST_MAX)
 	{
 		LWDEBUG(3, "looking for maxdistance");
 		return lw_dist3d_pt_ptarray(&p, poly->rings[0], dl);
 	}
 	
+	/*Find the plane of the polygon, the "holes" have to be on the same plane. so we only care about the boudary*/
 	if(!define_plane(poly->rings[0], &plane))
 		return LW_FALSE;
 	
+	/*get our point projected on the plane of the polygon*/
 	project_point_on_plane(&p, &plane, &projp);
 	
 	return lw_dist3d_pt_poly(&p, poly,&plane, &projp, dl);
@@ -788,11 +798,10 @@ lw_dist3d_seg_seg(POINT3DZ *s1p1, POINT3DZ *s1p2, POINT3DZ *s2p1, POINT3DZ *s2p2
 
 /**
 
-Computes point to polygon distance
-For mindistance that means:
-1)projecting the point to the plane of the polygon
-2)finding if that projected point is inside the polygon, if so the distance is measured to that point
-3) if not in polygon above, check the distance against the boundary of the polygon
+Checking if the point projected on the plane of the polygon actually is inside that polygon. 
+If so the mindistance is between that projected point and our original point.
+If not we check from original point to the bounadary.
+If the projected point is inside a hole of the polygon we check the distance to the boudary of that hole.
 */
 int
 lw_dist3d_pt_poly(POINT3DZ *p, LWPOLY *poly, PLANE3D *plane,POINT3DZ *projp, DISTPTS3D *dl)
@@ -1069,7 +1078,7 @@ pt_in_ring_3d(const POINT3DZ *p, const POINTARRAY *ring,PLANE3D *plane)
 			v1 = v2;
 		}
 	}
-	else if(fabs(plane->pv.y)>=abs(plane->pv.x)&&fabs(plane->pv.y)>=fabs(plane->pv.z))	/*If the y vector of the normal vector to the plane is larger than x and z vector we project the ring to the xz-plane*/
+	else if(fabs(plane->pv.y)>=fabs(plane->pv.x)&&fabs(plane->pv.y)>=fabs(plane->pv.z))	/*If the y vector of the normal vector to the plane is larger than x and z vector we project the ring to the xz-plane*/
 	{
 		for (i=0; i<ring->npoints-1; i++)
 			{
