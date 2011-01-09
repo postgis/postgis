@@ -962,7 +962,8 @@ rt_band_get_nodata(rt_context ctx, rt_band band) {
     assert(NULL != band);
 
     if (!band->hasnodata)
-        ctx->warn("Getting NODATA value for a band without NODATA values. Using %g", band->nodataval);
+        RASTER_DEBUGF(3, "Getting NODATA value for a band without NODATA values. Using %g", band->nodataval);
+        
 
     return band->nodataval;
 }
