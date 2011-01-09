@@ -1842,16 +1842,8 @@ WHERE rid=2;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the value of a given band in a given columnx, rowy pixel. Band numbers start at 1.</para>
-				<note><para>Note that although the X and Ys of these are not in coordinates of the spatial system, 
-						you can get that by the following relationship.</para>
-					<para>Coordinate upper left ppoint of a row column 
-						is:
-					ST_SetSRID(ST_Point(ST_UpperLeftX(rast) + ST_ScaleX(rast)*columnx, ST_UpperLeftY(rast) + ST_ScaleY(rast)*columny), ST_SRID(rast))
-					</para>
-					<para>If you want the pixel box instead of the upper left point, you can use the ST_MakeEnvelope function and
-						translate it every x,y.</para>
-				</note>	
+				<para>Returns the value of a given band in a given columnx, rowy pixel or at a given geometry point. Band numbers start at 1 and band is assumed to be 1 if not specified.</para>
+
 				
 				</refsection>
 				
@@ -1995,7 +1987,7 @@ WHERE
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_DumpAsPolygons" />, <xref linkend="RT_ST_NumBands" />, <xref linkend="RT_ST_ScaleX" />,
+				<para><xref linkend="RT_ST_DumpAsPolygons" />, <xref linkend="RT_ST_NumBands" />, <xref linkend="RT_ST_PixelAsPolygon" />, <xref linkend="RT_ST_ScaleX" />,
 					, <xref linkend="RT_ST_ScaleY" />, <xref linkend="RT_ST_UpperLeftX" />, 
 					<xref linkend="RT_ST_UpperLeftY" />, <xref linkend="RT_ST_SRID" />, <xref linkend="ST_AsText" />,
 					, <xref linkend="ST_Point" />, <xref linkend="ST_MakeEnvelope" />, 
