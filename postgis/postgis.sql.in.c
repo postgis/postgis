@@ -221,22 +221,10 @@ CREATE OR REPLACE FUNCTION geometry(box3d_extent)
 
 -- End of temporary hack
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION xmin(box3d)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','BOX3D_xmin'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_XMin(box3d)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','BOX3D_xmin'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION ymin(box3d)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','BOX3D_ymin'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -245,22 +233,10 @@ CREATE OR REPLACE FUNCTION ST_YMin(box3d)
 	AS 'MODULE_PATHNAME','BOX3D_ymin'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION zmin(box3d)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','BOX3D_zmin'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_ZMin(box3d)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','BOX3D_zmin'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION xmax(box3d)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','BOX3D_xmax'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -269,22 +245,10 @@ CREATE OR REPLACE FUNCTION ST_XMax(box3d)
 	AS 'MODULE_PATHNAME','BOX3D_xmax'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION ymax(box3d)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','BOX3D_ymax'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_YMax(box3d)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','BOX3D_ymax'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION zmax(box3d)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','BOX3D_zmax'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -797,13 +761,6 @@ CREATE OR REPLACE FUNCTION postgis_hasbbox(geometry)
 ------------------------------------------------------------------------
 -- DEBUG
 ------------------------------------------------------------------------
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION mem_size(geometry)
-	RETURNS int4
-	AS 'MODULE_PATHNAME', 'LWGEOM_mem_size'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_mem_size(geometry)
 	RETURNS int4
@@ -1027,12 +984,6 @@ CREATE OR REPLACE FUNCTION postgis_noop(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_noop'
 	LANGUAGE 'C' VOLATILE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION zmflag(geometry)
-	RETURNS smallint
-	AS 'MODULE_PATHNAME', 'LWGEOM_zmflag'
-	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION ST_zmflag(geometry)
