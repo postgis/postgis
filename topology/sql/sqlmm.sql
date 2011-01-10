@@ -143,8 +143,8 @@ BEGIN
 	FOR rec IN EXECUTE ''SELECT node_id FROM ''
 		|| quote_ident(atopology) || ''.node '' ||
 		''WHERE geom && '' || quote_literal(apoint::text) || ''::geometry''
-		||'' AND x(geom) = x(''||quote_literal(apoint::text)||''::geometry)''
-		||'' AND y(geom) = y(''||quote_literal(apoint::text)||''::geometry)''
+		||'' AND ST_X(geom) = ST_X(''||quote_literal(apoint::text)||''::geometry)''
+		||'' AND ST_Y(geom) = ST_Y(''||quote_literal(apoint::text)||''::geometry)''
 	LOOP
 		RAISE EXCEPTION
 		 ''SQL/MM Spatial exception - coincident node'';
@@ -157,7 +157,7 @@ BEGIN
 	FOR rec IN EXECUTE ''SELECT edge_id FROM ''
 		|| quote_ident(atopology) || ''.edge '' 
 		|| ''WHERE geom && '' || quote_literal(apoint::text) 
-		|| '' AND intersects(geom, '' || quote_literal(apoint::text)
+		|| '' AND ST_Intersects(geom, '' || quote_literal(apoint::text)
 		|| '')''
 	LOOP
 		RAISE EXCEPTION
@@ -171,11 +171,11 @@ BEGIN
 	--
 	IF aface IS NOT NULL THEN
 
-	FOR rec IN EXECUTE ''SELECT within(''
+	FOR rec IN EXECUTE ''SELECT ST_Within(''
 		|| quote_literal(apoint::text) || ''::geometry, 
 		topology.ST_GetFaceGeometry(''
 		|| quote_literal(atopology) || '', '' || aface ||
-		''))''
+		'')) As within''
 	LOOP
 		IF rec.within = ''f'' THEN
 			RAISE EXCEPTION
@@ -271,8 +271,8 @@ BEGIN
 	FOR rec IN EXECUTE ''SELECT node_id FROM ''
 		|| quote_ident(atopology) || ''.node '' ||
 		''WHERE geom && '' || quote_literal(apoint::text) || ''::geometry''
-		||'' AND x(geom) = x(''||quote_literal(apoint::text)||''::geometry)''
-		||'' AND y(geom) = y(''||quote_literal(apoint::text)||''::geometry)''
+		||'' AND ST_X(geom) = ST_X(''||quote_literal(apoint::text)||''::geometry)''
+		||'' AND ST_Y(geom) = ST_Y(''||quote_literal(apoint::text)||''::geometry)''
 	LOOP
 		RAISE EXCEPTION
 		 ''SQL/MM Spatial exception - coincident node'';
@@ -285,7 +285,7 @@ BEGIN
 	FOR rec IN EXECUTE ''SELECT edge_id FROM ''
 		|| quote_ident(atopology) || ''.edge '' 
 		|| ''WHERE geom && '' || quote_literal(apoint::text) 
-		|| '' AND intersects(geom, '' || quote_literal(apoint::text)
+		|| '' AND ST_Intersects(geom, '' || quote_literal(apoint::text)
 		|| '')''
 	LOOP
 		RAISE EXCEPTION
@@ -300,7 +300,7 @@ BEGIN
 		|| '' WHERE node_id = '' || anode;
 
 	RETURN ''Isolated Node '' || anode || '' moved to location ''
-		|| x(apoint) || '','' || y(apoint);
+		|| ST_X(apoint) || '','' || ST_Y(apoint);
 END
 '
 LANGUAGE 'plpgsql' VOLATILE;
@@ -475,7 +475,7 @@ BEGIN
 	--
 	-- Check that given point is Within(anedge.geom)
 	-- 
-	IF NOT within(apoint, oldedge.geom) THEN
+	IF NOT ST_Within(apoint, oldedge.geom) THEN
 		RAISE EXCEPTION
 		  ''SQL/MM Spatial exception - point not on edge'';
 	END IF;
@@ -487,9 +487,9 @@ BEGIN
 		|| quote_ident(atopology) || ''.node ''
 		|| ''WHERE geom && ''
 		|| quote_literal(apoint::text) || ''::geometry''
-		|| '' AND x(geom) = x(''
+		|| '' AND ST_X(geom) = ST_X(''
 		|| quote_literal(apoint::text) || ''::geometry)''
-		|| '' AND y(geom) = y(''
+		|| '' AND ST_Y(geom) = ST_Y(''
 		|| quote_literal(apoint::text) || ''::geometry)''
 	LOOP
 		RAISE EXCEPTION
@@ -525,9 +525,9 @@ BEGIN
 	--
 	-- Compute new edges
 	--
-	nodepos = line_locate_point(oldedge.geom, apoint);
-	edge1 = line_substring(oldedge.geom, 0, nodepos);
-	edge2 = line_substring(oldedge.geom, nodepos, 1);
+	nodepos = ST_Line_locate_point(oldedge.geom, apoint);
+	edge1 = ST_Line_substring(oldedge.geom, 0, nodepos);
+	edge2 = ST_Line_substring(oldedge.geom, nodepos, 1);
 
 	--
 	-- Get ids for the new edges 
@@ -736,7 +736,7 @@ BEGIN
 	--
 	-- Check that given point is Within(anedge.geom)
 	-- 
-	IF NOT within(apoint, oldedge.geom) THEN
+	IF NOT ST_Within(apoint, oldedge.geom) THEN
 		RAISE EXCEPTION
 		  ''SQL/MM Spatial exception - point not on edge'';
 	END IF;
@@ -748,9 +748,9 @@ BEGIN
 		|| quote_ident(atopology) || ''.node '' ||
 		''WHERE geom && ''
 		|| quote_literal(apoint::text) || ''::geometry''
-		||'' AND x(geom) = x(''
+		||'' AND ST_X(geom) = ST_X(''
 		|| quote_literal(apoint::text) || ''::geometry)''
-		||'' AND y(geom) = y(''
+		||'' AND ST_Y(geom) = ST_Y(''
 		||quote_literal(apoint::text)||''::geometry)''
 	LOOP
 		RAISE EXCEPTION
@@ -940,7 +940,7 @@ BEGIN
 	--
 	-- Acurve must be a simple
 	--
-	IF NOT issimple(acurve)
+	IF NOT ST_IsSimple(acurve)
 	THEN
 		RAISE EXCEPTION
 		 ''SQL/MM Spatial exception - curve not simple'';
@@ -1017,7 +1017,7 @@ BEGIN
 		--
 		-- Check acurve to be within face
 		--
-		IF ! within(acurve, face) THEN
+		IF ! ST_Within(acurve, face) THEN
 	RAISE EXCEPTION
 	''SQL/MM Spatial exception - geometry not within face.'';
 		END IF;
@@ -1028,8 +1028,8 @@ BEGIN
 	-- l) Check that start point of acurve match start node
 	-- geoms.
 	-- 
-	IF x(snodegeom) != x(StartPoint(acurve)) OR
-	   y(snodegeom) != y(StartPoint(acurve)) THEN
+	IF ST_X(snodegeom) != ST_X(ST_StartPoint(acurve)) OR
+	   ST_Y(snodegeom) != ST_Y(ST_StartPoint(acurve)) THEN
   RAISE EXCEPTION
   ''SQL/MM Spatial exception - start node not geometry start point.'';
 	END IF;
@@ -1038,8 +1038,8 @@ BEGIN
 	-- m) Check that end point of acurve match end node
 	-- geoms.
 	-- 
-	IF x(enodegeom) != x(EndPoint(acurve)) OR
-	   y(enodegeom) != y(EndPoint(acurve)) THEN
+	IF ST_X(enodegeom) != ST_X(ST_EndPoint(acurve)) OR
+	   ST_Y(enodegeom) != ST_Y(ST_EndPoint(acurve)) THEN
   RAISE EXCEPTION
   ''SQL/MM Spatial exception - end node not geometry end point.'';
 	END IF;
@@ -1051,7 +1051,7 @@ BEGIN
 	FOR rec IN EXECUTE ''SELECT node_id FROM ''
 		|| quote_ident(atopology) || ''.node ''
 		|| '' WHERE geom && '' || quote_literal(acurve::text) 
-		|| '' AND contains('' || quote_literal(acurve::text)
+		|| '' AND ST_Contains('' || quote_literal(acurve::text)
 		|| '',geom)''
 	LOOP
 		RAISE EXCEPTION
@@ -1064,7 +1064,7 @@ BEGIN
 	FOR rec IN EXECUTE ''SELECT * FROM ''
 		|| quote_ident(atopology) || ''.edge_data
 		WHERE geom && '' || quote_literal(acurve::text) || ''::geometry
-		AND intersects(geom, '' || quote_literal(acurve::text) || ''::geometry)''
+		AND ST_Intersects(geom, '' || quote_literal(acurve::text) || ''::geometry)''
 	LOOP
 		RAISE EXCEPTION
 		''SQL/MM Spatial exception - geometry intersects an edge'';
@@ -1144,7 +1144,7 @@ BEGIN
 	--
 	-- Acurve must be a simple
 	--
-	IF NOT issimple(acurve)
+	IF NOT ST_IsSimple(acurve)
 	THEN
 		RAISE EXCEPTION
 		 ''SQL/MM Spatial exception - curve not simple'';
@@ -1158,10 +1158,10 @@ BEGIN
 		|| quote_ident(atopology) || ''.node n ''
 		|| '' WHERE e.edge_id = '' || anedge
 		|| '' AND n.node_id = e.start_node ''
-		|| '' AND ( x(n.geom) != ''
-		|| x(StartPoint(acurve))
-		|| '' OR y(n.geom) != ''
-		|| y(StartPoint(acurve))
+		|| '' AND ( ST_X(n.geom) != ''
+		|| ST_X(ST_StartPoint(acurve))
+		|| '' OR ST_Y(n.geom) != ''
+		|| ST_Y(ST_StartPoint(acurve))
 		|| '')''
 	LOOP 
 		RAISE EXCEPTION
@@ -1176,10 +1176,10 @@ BEGIN
 		|| quote_ident(atopology) || ''.node n ''
 		|| '' WHERE e.edge_id = '' || anedge
 		|| '' AND n.node_id = e.end_node ''
-		|| '' AND ( x(n.geom) != ''
-		|| x(EndPoint(acurve))
-		|| '' OR y(n.geom) != ''
-		|| y(EndPoint(acurve))
+		|| '' AND ( ST_X(n.geom) != ''
+		|| ST_X(ST_EndPoint(acurve))
+		|| '' OR ST_Y(n.geom) != ''
+		|| ST_Y(ST_EndPoint(acurve))
 		|| '')''
 	LOOP 
 		RAISE EXCEPTION
@@ -1193,7 +1193,7 @@ BEGIN
 	FOR rec IN EXECUTE ''SELECT node_id FROM ''
 		|| quote_ident(atopology) || ''.node
 		WHERE geom && '' || quote_literal(acurve::text) || ''::geometry
-		AND within(geom, '' || quote_literal(acurve::text) || ''::geometry)''
+		AND ST_Within(geom, '' || quote_literal(acurve::text) || ''::geometry)''
 	LOOP
 		RAISE EXCEPTION
 		''SQL/MM Spatial exception - geometry crosses a node'';
@@ -1207,7 +1207,7 @@ BEGIN
 		|| '' WHERE edge_id != '' || anedge
 		|| '' AND geom && ''
 		|| quote_literal(acurve::text) || ''::geometry ''
-		|| '' AND intersects(geom, ''
+		|| '' AND ST_Intersects(geom, ''
 		|| quote_literal(acurve::text) || ''::geometry)''
 	LOOP
 		RAISE EXCEPTION
@@ -1275,7 +1275,7 @@ BEGIN
 	--
 	-- Curve must be simple
 	--
-	IF NOT issimple(acurve) THEN
+	IF NOT ST_IsSimple(acurve) THEN
 		RAISE EXCEPTION
 		 ''SQL/MM Spatial exception - curve not simple'';
 	END IF;
@@ -1295,13 +1295,13 @@ BEGIN
 		|| '')''
 	LOOP
 		IF rec.start THEN
-			IF NOT Equals(rec.geom, StartPoint(acurve))
+			IF NOT Equals(rec.geom, ST_StartPoint(acurve))
 			THEN
 	RAISE EXCEPTION
 	''SQL/MM Spatial exception - start node not geometry start point.'';
 			END IF;
 		ELSE
-			IF NOT Equals(rec.geom, EndPoint(acurve))
+			IF NOT Equals(rec.geom, ST_EndPoint(acurve))
 			THEN
 	RAISE EXCEPTION
 	''SQL/MM Spatial exception - end node not geometry end point.'';
@@ -1322,7 +1322,7 @@ BEGIN
 	FOR rec IN EXECUTE ''SELECT node_id FROM ''
 		|| quote_ident(atopology) || ''.node
 		WHERE geom && '' || quote_literal(acurve::text) || ''::geometry
-		AND within(geom, '' || quote_literal(acurve::text) || ''::geometry)''
+		AND ST_Within(geom, '' || quote_literal(acurve::text) || ''::geometry)''
 	LOOP
 		RAISE EXCEPTION
 		''SQL/MM Spatial exception - geometry crosses a node'';
@@ -1388,7 +1388,7 @@ BEGIN
 	-- this edge last segment.
 	--
 
-	myaz = azimuth(EndPoint(acurve), PointN(acurve, NumPoints(acurve)-1));
+	myaz = azimuth(ST_EndPoint(acurve), ST_PointN(acurve, NumPoints(acurve)-1));
 	RAISE NOTICE ''My end-segment azimuth: %'', myaz;
 	FOR rec IN EXECUTE ''SELECT ''
 		|| ''edge_id, end_node, start_node, geom''
@@ -1406,8 +1406,8 @@ BEGIN
 			-- Edge starts at our node, we compute
 			-- azimuth from node to its second point
 			--
-			az = azimuth(EndPoint(acurve),
-				PointN(rec.geom, 2));
+			az = ST_Azimuth(ST_EndPoint(acurve),
+				ST_PointN(rec.geom, 2));
 
 			RAISE NOTICE ''Edge % starts at node % - azimuth %'',
 				rec.edge_id, rec.start_node, az;
@@ -1418,8 +1418,8 @@ BEGIN
 			-- Edge ends at our node, we compute
 			-- azimuth from node to its second-last point
 			--
-			az = azimuth(EndPoint(acurve),
-				PointN(rec.geom, NumPoints(rec.geom)-1));
+			az = ST_Azimuth(ST_EndPoint(acurve),
+				ST_PointN(rec.geom, ST_NumPoints(rec.geom)-1));
 
 			RAISE NOTICE ''Edge % ends at node % - azimuth %'',
 				rec.edge_id, rec.end_node, az;

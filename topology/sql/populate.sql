@@ -70,8 +70,8 @@ BEGIN
 	FOR rec IN EXECUTE 'SELECT node_id FROM '
 		|| quote_ident(atopology) || '.node ' ||
 		'WHERE geom && ' || quote_literal(apoint::text) || '::geometry'
-		||' AND x(geom) = x('||quote_literal(apoint::text)||'::geometry)'
-		||' AND y(geom) = y('||quote_literal(apoint::text)||'::geometry)'
+		||' AND ST_X(geom) = ST_X('||quote_literal(apoint::text)||'::geometry)'
+		||' AND ST_Y(geom) = ST_Y('||quote_literal(apoint::text)||'::geometry)'
 	LOOP
 		RETURN  rec.node_id;
 	END LOOP;
