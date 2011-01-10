@@ -1206,7 +1206,7 @@ BEGIN
 		END LOOP;
 
 	ELSIF topogeom.type = 2 THEN -- [multi]line
-		FOR rec IN EXECUTE ''SELECT linemerge(collect(e.geom)) as g FROM ''
+		FOR rec IN EXECUTE ''SELECT ST_LineMerge(ST_Collect(e.geom)) as g FROM ''
 			|| quote_ident(toponame) || ''.edge e, ''
 			|| quote_ident(toponame) || ''.relation r ''
 			|| '' WHERE r.topogeo_id = '' || topogeom.id
@@ -1279,7 +1279,7 @@ BEGIN
 		|| ''WHERE e.start_node != n.node_id ''
 		|| ''AND e.end_node != n.node_id ''
 		|| ''AND n.geom && e.geom ''
-		|| ''AND intersects(n.geom, e.geom)''
+		|| ''AND ST_Intersects(n.geom, e.geom)''
 	LOOP
 		retrec.error = ''edge crosses node'';
 		retrec.id1 = rec.id1;
@@ -1290,7 +1290,7 @@ BEGIN
 	-- Check for non-simple edges
 	FOR rec IN EXECUTE ''SELECT e.edge_id as id1 FROM ''
 		|| quote_ident(toponame) || ''.edge e ''
-		|| ''WHERE not issimple(e.geom)''
+		|| ''WHERE not ST_IsSimple(e.geom)''
 	LOOP
 		retrec.error = ''edge not simple'';
 		retrec.id1 = rec.id1;
@@ -1304,7 +1304,7 @@ BEGIN
 		|| quote_ident(toponame) || ''.edge e2 ''
 		|| ''WHERE e1.edge_id < e2.edge_id ''
 		|| ''AND e1.geom && e2.geom ''
-		|| ''AND crosses(e1.geom, e2.geom)''
+		|| ''AND ST_Crosses(e1.geom, e2.geom)''
 	LOOP
 		retrec.error = ''edge crosses edge'';
 		retrec.id1 = rec.id1;
@@ -1317,7 +1317,7 @@ BEGIN
 		|| quote_ident(toponame) || ''.edge e, ''
 		|| quote_ident(toponame) || ''.node n ''
 		|| ''WHERE e.start_node = n.node_id ''
-		|| ''AND NOT Equals(StartPoint(e.geom), n.geom)''
+		|| ''AND NOT ST_Equals(ST_StartPoint(e.geom), n.geom)''
 	LOOP
 		retrec.error = ''edge start node geometry mis-match'';
 		retrec.id1 = rec.id1;
@@ -1330,7 +1330,7 @@ BEGIN
 		|| quote_ident(toponame) || ''.edge e, ''
 		|| quote_ident(toponame) || ''.node n ''
 		|| ''WHERE e.end_node = n.node_id ''
-		|| ''AND NOT Equals(EndPoint(e.geom), n.geom)''
+		|| ''AND NOT ST_Equals(ST_EndPoint(e.geom), n.geom)''
 	LOOP
 		retrec.error = ''edge end node geometry mis-match'';
 		retrec.id1 = rec.id1;
@@ -1361,7 +1361,7 @@ BEGIN
 		|| quote_ident(toponame) || ''.face f1, ''
 		|| quote_ident(toponame) || ''.face f2 ''
 		|| ''WHERE f1.face_id > 0 AND f1.face_id < f2.face_id AND ''
-		|| '' Overlaps(topology.ST_GetFaceGeometry(''
+		|| '' ST_Overlaps(topology.ST_GetFaceGeometry(''
 		|| quote_literal(toponame) || '', f1.face_id), ''
 		|| '' topology.ST_GetFaceGeometry(''
 		|| quote_literal(toponame) || '', f2.face_id))''
@@ -1381,7 +1381,7 @@ BEGIN
 		|| quote_ident(toponame) || ''.face f2 ''
 		|| ''WHERE f1.face_id != 0 AND f2.face_id != 0 ''
 		|| ''AND f1.face_id != f2.face_id ''
-		|| ''AND Within(topology.ST_GetFaceGeometry(''
+		|| ''AND ST_Within(topology.ST_GetFaceGeometry(''
 		|| quote_literal(toponame) || '', f1.face_id), ''
 		|| '' topology.ST_GetFaceGeometry(''
 		|| quote_literal(toponame) || '', f2.face_id))''
@@ -1463,8 +1463,8 @@ DECLARE
 BEGIN
 	RAISE DEBUG ''Line: %'', ST_asEWKT(aline);
 
-	firstpoint = StartPoint(aline);
-	lastpoint = EndPoint(aline);
+	firstpoint = ST_StartPoint(aline);
+	lastpoint = ST_EndPoint(aline);
 
 	RAISE DEBUG ''First point: %, Last point: %'',
 		ST_asEWKT(firstpoint),
