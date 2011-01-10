@@ -1388,7 +1388,7 @@ BEGIN
 	-- this edge last segment.
 	--
 
-	myaz = azimuth(ST_EndPoint(acurve), ST_PointN(acurve, NumPoints(acurve)-1));
+	myaz = ST_Azimuth(ST_EndPoint(acurve), ST_PointN(acurve, ST_NumPoints(acurve)-1));
 	RAISE NOTICE ''My end-segment azimuth: %'', myaz;
 	FOR rec IN EXECUTE ''SELECT ''
 		|| ''edge_id, end_node, start_node, geom''
