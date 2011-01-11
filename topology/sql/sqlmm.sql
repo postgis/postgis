@@ -158,7 +158,7 @@ BEGIN
 		|| quote_ident(atopology) || ''.edge '' 
 		|| ''WHERE geom && '' || quote_literal(apoint::text) 
 		|| '' AND ST_Intersects(geom, '' || quote_literal(apoint::text)
-		|| '')''
+		|| ''::geometry)''
 	LOOP
 		RAISE EXCEPTION
 		''SQL/MM Spatial exception - edge crosses node.'';
