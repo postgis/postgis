@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter>
+<chapter id="postgis_installation">
   <title>Installation</title>
 
   <para>
@@ -13,7 +13,7 @@
 		of your PostgreSQL install</para>
 	<programlisting>tar xvfz postgis-&last_release_version;.tar.gz
 cd postgis-&last_release_version;
-./configure --with-raster
+./configure --with-raster --with-topology --with-gui
 make
 make install
 createdb yourdatabase
@@ -22,6 +22,7 @@ psql -d yourdatabase -f postgis.sql
 psql -d yourdatabase -f postgis_comments.sql
 psql -d yourdatabase -f spatial_ref_sys.sql
 psql -d yourdatabase -f rtpostgis.sql
+psql -d yourdatabase -f topology/topology.sql
 </programlisting>
 
 	<para>
@@ -378,6 +379,24 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 			<para>
 			  Compile the data import GUI (requires GTK+2.0).  This will create shp2pgsql-gui graphical interface
 			  to shp2pgsql.
+			</para>
+		  </listitem>
+		</varlistentry>
+		<varlistentry>
+		  <term><command>--with-raster</command></term>
+		  <listitem>
+			<para>
+			  Compile with raster support.  This will build rtpostgis-&last_release_version; library and rtpostgis.sql file.  This may not
+			  be required in final release as plan is to build in raster support by default. 
+			</para>
+		  </listitem>
+		</varlistentry>
+		<varlistentry>
+		  <term><command>--with-topology</command></term>
+		  <listitem>
+			<para>
+			  Compile with topology support.  This will build the topology.sql file.  There is no corresponding library
+			  as all logic needed for topology is in rtpostgis-&last_release_version; library.
 			</para>
 		  </listitem>
 		</varlistentry>

@@ -33,7 +33,7 @@ set search_path=topology,public,pg_catalog;
 		</xsl:variable>
 		<xsl:choose>
 <!-- If this is a postgis type grab the ref entry summary and refname to make type comment -->
-<xsl:when test="parent::sect1[@id='PostGIS_Types'] and not(contains(refnamediv/refname, 'raster') or contains(refnamediv/refname, 'geomval'))">
+<xsl:when test="parent::sect1[@id='Topology_Types']">
 	COMMENT ON TYPE <xsl:value-of select="refnamediv/refname" /> IS 'postgis type: <xsl:value-of select='$comment' />';
 </xsl:when>
 		</xsl:choose>
