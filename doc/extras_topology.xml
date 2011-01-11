@@ -230,7 +230,7 @@ SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma_topo', 'parcel_topo', 'topo
 			<refnamediv>
 				<refname>CreateTopoGeom</refname>
 			
-				<refpurpose>Creates a new topo geometry object from topo element array</refpurpose>
+				<refpurpose>Creates a new topo geometry object from topo element array - tg_type: 1:[multi]point, 2:[multi]line, 3:[multi]poly, 4:collection</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -238,7 +238,7 @@ SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma_topo', 'parcel_topo', 'topo
 					<funcprototype>
 					<funcdef>topogeometry <function>CreateTopoGeom</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
-					<paramdef><type>varchar </type> <parameter>tg_type</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>tg_type</parameter></paramdef>
 					<paramdef><type>integer</type> <parameter>layer_id</parameter></paramdef>
 					<paramdef><type>topoelementarray</type> <parameter>tg_objs</parameter></paramdef>
 					</funcprototype>
@@ -249,6 +249,7 @@ SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma_topo', 'parcel_topo', 'topo
                 <title>Description</title>
             
                 <para>Creates a topo geometry object for layer denoted by layer_id and registers it in the relations table in tho <varname>toponame</varname> schema.</para>
+                <para>tg_type is an integer: 1:[multi]point, 2:[multi]line, 3:[multi]poly, 4:collection. layer_id is the layer id in the topology.layer table.</para>
         
                 <!-- use this format if new function -->
                 <para>Availability: 2.0.0</para>
