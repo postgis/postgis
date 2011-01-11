@@ -70,13 +70,13 @@ TESTS = \
 	regress_proj \
 	dump \
 	dumppoints \
-	#wmsservers_old \
 	wmsservers_new \
 	tickets \
 	remove_repeated_points \
 	split \
 	relatematch 
 
+# TESTS += wmsservers_old
 # Styled buffer only if GEOS >= 3.2
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 32),1)
 	TESTS += regress_buffer_params

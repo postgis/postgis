@@ -396,7 +396,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		  <listitem>
 			<para>
 			  Compile with topology support.  This will build the topology.sql file.  There is no corresponding library
-			  as all logic needed for topology is in rtpostgis-&last_release_version; library.
+			  as all logic needed for topology is in postgis-&last_release_version; library.
 			</para>
 		  </listitem>
 		</varlistentry>
@@ -507,35 +507,59 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 	 http://cunit.sourceforge.net/
 
 
+Suite: print_suite
+  Test: test_lwprint_default_format ... passed
+  Test: test_lwprint_format_orders ... passed
+  Test: test_lwprint_optional_format ... passed
+  Test: test_lwprint_oddball_formats ... passed
+  Test: test_lwprint_bad_formats ... passed
+Suite: Misc Suite
+  Test: test_misc_force_2d ... passed
+  Test: test_misc_simplify ... passed
+  Test: test_misc_count_vertices ... passed
+  Test: test_misc_area ... passed
+  Test: test_misc_wkb ... passed
+Suite: PointArray Suite
+  Test: test_ptarray_append_point ... passed
+  Test: test_ptarray_append_ptarray ... passed
 Suite: PostGIS Computational Geometry Suite
-  Test: test_lw_segment_side() ... passed
-  Test: test_lw_segment_intersects() ... passed
-  Test: test_lwline_crossing_short_lines() ... passed
-  Test: test_lwline_crossing_long_lines() ... passed
-  Test: test_lwpoint_set_ordinate() ... passed
-  Test: test_lwpoint_get_ordinate() ... passed
-  Test: test_lwpoint_interpolate() ... passed
-  Test: test_lwline_clip() ... passed
-  Test: test_lwline_clip_big() ... passed
-  Test: test_lwmline_clip() ... passed
-  Test: test_geohash_point() ... passed
-  Test: test_geohash_precision() ... passed
-  Test: test_geohash() ... passed
+  Test: test_lw_segment_side ... passed
+  Test: test_lw_segment_intersects ... passed
+  Test: test_lwline_crossing_short_lines ... passed
+  Test: test_lwline_crossing_long_lines ... passed
+  Test: test_lwline_crossing_bugs ... passed
+  Test: test_lwpoint_set_ordinate ... passed
+  Test: test_lwpoint_get_ordinate ... passed
+  Test: test_lwpoint_interpolate ... passed
+  Test: test_lwline_clip ... passed
+  Test: test_lwline_clip_big ... passed
+  Test: test_lwmline_clip ... passed
+  Test: test_geohash_point ... passed
+  Test: test_geohash_precision ... passed
+  Test: test_geohash ... passed
+  Test: test_isclosed ... passed
 Suite: PostGIS Measures Suite
-  Test: test_mindistance2d_recursive_tolerance() ... passed
-
+  Test: test_mindistance2d_tolerance ... passed
+  Test: test_rect_tree_contains_point ... passed
+  Test: test_rect_tree_intersects_tree ... passed
+  Test: test_lwgeom_segmentize2d ... passed
+Suite: WKT Out Suite
+  Test: test_wkt_out_point ... passed
+  Test: test_wkt_out_linestring ... passed
+  Test: test_wkt_out_polygon ... passed
+  Test: test_wkt_out_multipoint ... passed
+  Test: test_wkt_out_multilinestring ... passed
+:
+:
 --Run Summary: Type      Total     Ran  Passed  Failed
-			   suites        2       2     n/a       0
-			   tests        14      14      14       0
-			   asserts      84      84      84       0
+               suites       17      17     n/a       0
+               tests       143     143     143       0
+               asserts    1228    1228    1228       0
 
 
 Creating spatial db postgis_reg
-TMPDIR is /tmp/pgis_reg_15328
-
- PostgreSQL 8.3.7 on i686-pc-linux-gnu, compiled by GCC gcc (GCC) 4.1.2 20080704 (Red Hat 4.1.2-44)
- Postgis 1.4.0SVN - 2009-05-25 20:21:55
-   GEOS: 3.1.0-CAPI-1.5.0
+ Postgis 2.0.0SVN - 2011-01-11 15:33:37
+   GEOS: 3.3.0-CAPI-1.7.0
    PROJ: Rel. 4.6.1, 21 August 2008
 
 Running tests
@@ -562,7 +586,6 @@ Running tests
  simplify. ok
  snaptogrid. ok
  affine. ok
- wkt. ok
  measures. ok
  long_xact. ok
  ctors. ok
@@ -573,18 +596,33 @@ Running tests
  sql-mm-general. ok
  sql-mm-multicurve. ok
  sql-mm-multisurface. ok
- geojson. ok
- gml. ok
- svg. ok
- kml. ok
+ polyhedralsurface. ok
+ out_geometry. ok
+ out_geography. ok
+ in_gml. ok
+ in_kml. ok
+ iscollection. ok
  regress_ogc. ok
- regress_bdpoly. ok
- regress_proj. ok
  regress_ogc_cover. ok
  regress_ogc_prep. ok
+ regress_bdpoly. ok
+ regress_proj. ok
+ dump. ok
+ dumppoints. ok
+ wmsservers_new. ok
+ tickets. ok
+ remove_repeated_points. ok
+ split. ok
+ relatematch. ok
+ regress_buffer_params. ok
+ hausdorff. ok
+ clean. ok
+ sharedpaths. ok
+ snap. ok
 
-Run tests: 42
-Failed: 0</programlisting>
+Run tests: 55
+Failed: 0
+</programlisting>
 	</sect2>
 
 	<sect2>
