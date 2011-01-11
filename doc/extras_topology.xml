@@ -226,7 +226,7 @@ SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma_topo', 'parcel_topo', 'topo
 	</sect1>
 	<sect1 id="Topology_Constructors">
 	  <title>TopoGeometry and other Topology Object Constructors</title>
-	  	<refentry id="DropTopoGeometryColumn">
+	  	<refentry id="CreateTopoGeom">
 			<refnamediv>
 				<refname>CreateTopoGeom</refname>
 			
