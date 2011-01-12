@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="Topology">
 	<title>Topology</title>
-	<para>The PostGIS Topology types and functions are used to manged topological objects such as faces, edges and nodes.</para>
+	<para>The PostGIS Topology types and functions are used to manged topological objects such as faces, edges and nodes.  This module has existed in prior versions of PostGIS but was never part of the documentation.
+	    In PostGIS 2.0.0 major cleanup is going on to remove use of all deprecated functions in it, fix known usability issues and enhance to closer conform to SQL-MM standards.</para>
 	<para>Details of this project can be found at <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiPostgisTopology">PostGIS Tology Wiki</ulink></para>
 	<para>All functions and tables associated with this module are installed in a schema called <varname>topology</varname>.</para>
 	<para>Functions that are defined in SQL/MM standard are prefixed with ST_ and functions specific to PostGIS are not prefixed.</para>
@@ -112,8 +113,47 @@
                 <para><xref linkend="ValidateTopology"/></para>
             </refsection>
 		</refentry>
-		
 	</sect1>
+	
+	<sect1 id="Topology_Domains">
+        <sect1info>
+            <abstract>
+                <para>This section lists the PostgreSQL domains installed by PostGIS Topology.  Domains can be used like object types as return objects of functions or table columns. The distinction between
+                    a domain and a type is that a domain is an existing type with a check constraint bound to it.
+                </para>	
+            </abstract>
+        </sect1info>
+        <title>PostgreSQL PostGIS Topology Domains</title>
+		
+		<refentry id="topoelement">
+		  <refnamediv>
+			<refname>topoelement</refname>
+			<refpurpose>An array of 2 integers generally used to return the element id and element type of a topology relation. </refpurpose>
+		  </refnamediv>
+		  <refsection>
+			<title>Description</title>
+			<para>An array of 2 integers generally used to return the element id and element type of a topology relation.</para>
+		  </refsection>
+            <refsection>
+                <title>Examples</title>
+                 <programlisting>SELECT ARRAY[1,2]::topology.topoelement;
+  te
+-------
+ {1,2}
+                 </programlisting>
+                 <programlisting>SELECT ARRAY[1,2,3]::topology.topoelement;
+ERROR:  value for domain topology.topoelement violates check constraint "dimensions"
+                 </programlisting>
+            </refsection>
+            <!-- Optionally add a "See Also" section -->
+            <refsection>
+                <title>See Also</title>
+                <para><xref linkend="GetTopoGeomElements"/></para>
+            </refsection>
+		 
+		</refentry>
+	</sect1>
+	
 	<sect1 id="Topology_ManagementFunctions">
 	    <title>Topology Management Functions</title>
 	    <refentry id="AddTopoGeometryColumn">
@@ -178,7 +218,7 @@
                 <para>Valid <varname>feature_type</varname>s are: POINT, LINE, POLYGON, COLLECTION</para> 
         
                 <!-- use this format if new function -->
-                <para>Availability: 2.0.0</para>
+                <para>Availability: 1.?</para>
 			
 			</refsection>
 		
@@ -187,8 +227,9 @@
 				<title>Examples</title>
 				<programlisting>-- Note for this example we created our new table in the ma_topo schema 
 -- though we could have created it in a different schema -- in shich case topology_name and schema_name would be different 
-CREATE TABLE ma_topo.parcel_topo(tid serial, parcel_id varchar(20) PRIMARY KEY);
-SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma_topo', 'parcel_topo', 'topo', 'POLYGON');</programlisting>
+CREATE SCHEMA ma;
+CREATE TABLE ma.parcels(gid serial, parcel_id varchar(20) PRIMARY KEY, address text);
+SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma', 'parcels', 'topo', 'POLYGON');</programlisting>
 			</refsection>
 		
 			<!-- Optionally add a "See Also" section -->
@@ -234,7 +275,7 @@ SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma_topo', 'parcel_topo', 'topo
                 defined in spatial_ref_sys table for that topology.  Toplogies must be uniquely named.  The tolerance is measured in the units of the spatial reference system.  If the tolerance is not specified defaults to 0.</para>
         
                 <!-- use this format if new function -->
-                <para>Availability: 2.0.0</para>
+                <para>Availability: 1.?</para>
 			</refsection>
 		
 		
@@ -275,7 +316,7 @@ SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma_topo', 'parcel_topo', 'topo
                 This function should be USED WITH CAUTION, as it could destroy data you care about.  If the schema does not exist, it just removes reference entries the named schema.</para>
         
                 <!-- use this format if new function -->
-                <para>Availability: 2.0.0</para>
+                <para>Availability: 1.?</para>
 			</refsection>
 		
 		
@@ -316,7 +357,7 @@ SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma_topo', 'parcel_topo', 'topo
                 of drop status.  NOTE: it first sets all values to NULL before dropping to bypass referential integrity checks.</para>
         
                 <!-- use this format if new function -->
-                <para>Availability: 2.0.0</para>
+                <para>Availability: 1.?</para>
 			</refsection>
 		
 		
@@ -355,7 +396,7 @@ SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma_topo', 'parcel_topo', 'topo
                    <xref linkend="validatetopology_returntype"/> for listing of possible errors.</para>
         
                 <!-- use this format if new function -->
-                <para>Availability: 2.0.0</para>
+                <para>Availability: 1.?</para>
 			</refsection>
 		
 		
@@ -403,19 +444,69 @@ face without edges |   0 |
                 <para>tg_type is an integer: 1:[multi]point, 2:[multi]line, 3:[multi]poly, 4:collection. layer_id is the layer id in the topology.layer table.</para>
         
                 <!-- use this format if new function -->
-                <para>Availability: 2.0.0</para>
+                <para>Availability: 1.?</para>
 			</refsection>
 		
 		
 			<refsection>
 				<title>Examples</title>
-				<!-- TO DO: -->
+				<programlisting></programlisting>
 			</refsection>
 		
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="AddTopoGeometryColumn"/></para>
+			</refsection>
+		</refentry>
+	</sect1>
+	
+	<sect1 id="Topology_Accessors">
+	  <title>TopoGeometry and other Topology Object Accessors</title>
+	  	<refentry id="GetTopoGeomElements">
+			<refnamediv>
+				<refname>GetTopoGeomElements</refname>
+			
+				<refpurpose>Returns a set of <varname>topoelement</varname> objects containing the topological elements of the given TopoGeometry (primitive elements)</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>setof topoelement <function>GetTopoGeomElements</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>layer_id</parameter></paramdef>
+					<paramdef><type>integer</type> <parameter>tg_id</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>setof topoelement <function>GetTopoGeomElements</function></funcdef>
+					<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>Returns a set of element_id,element_type (topoelements) for a given topogeometry object in <varname>toponame</varname> schema.</para>
+                <para>tg_id is the topogeometry id of the topogeometry object in the topology in the layer denoted by <varname>layer_id</varname> in the topology.layer table.</para>
+        
+                <!-- use this format if new function -->
+                <para>Availability: 1.?</para>
+			</refsection>
+		
+		
+			<refsection>
+				<title>Examples</title>
+				<!-- TODO: -->
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="topoelement"/></para>
 			</refsection>
 		</refentry>
 	</sect1>
