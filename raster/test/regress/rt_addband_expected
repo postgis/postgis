@@ -45,8 +45,8 @@ WARNING:  Initial pixel value for 8BUI band got truncated from 410.460000 to 154
 154
 WARNING:  Initial pixel value for 8BUI band got truncated from 256.000000 to 255
 255
-WARNING:  Initial pixel value for 16BSI band got truncated from -32769.000000 to 32767
-32767
+WARNING:  Initial pixel value for 16BSI band got truncated from -32769.000000 to -32768
+-32768
 -32768
 0
 32767
@@ -54,8 +54,8 @@ WARNING:  Initial pixel value for 16BSI band got truncated from 32768.000000 to 
 -32768
 WARNING:  Initial pixel value for 16BSI band got truncated from 21.460000 to 21
 21
-WARNING:  Initial pixel value for 16BSI band got truncated from 210000.460000 to 13392
-13392
+WARNING:  Initial pixel value for 16BSI band got truncated from 210000.460000 to -32768
+-32768
 WARNING:  Initial pixel value for 16BUI band got truncated from -1.000000 to 65535
 65535
 0
