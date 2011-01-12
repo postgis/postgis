@@ -509,5 +509,85 @@ face without edges |   0 |
 				<para><xref linkend="topoelement"/></para>
 			</refsection>
 		</refentry>
+		
+		<refentry id="GetTopologyID">
+			<refnamediv>
+				<refname>GetTopologyID</refname>
+			
+				<refpurpose>Returns the id of a topology in the topology.topology table given the name of the topology.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>integer <function>GetTopologyID</function></funcdef>
+					<paramdef><type>varchar</type> <parameter>toponame</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>Returns the id of a topology in the topology.topology table given the name of the topology.</para>
+              <!-- use this format if new function -->
+                <para>Availability: 1.?</para>
+			</refsection>
+		
+		
+			<refsection>
+				<title>Examples</title>
+				<programlisting>SELECT topology.GetTopologyID('ma_topo') As topo_id;
+ topo_id
+---------
+       1</programlisting>
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="CreateTopology"/>, <xref linkend="DropTopology"/>, <xref linkend="GetTopologyName"/></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="GetTopologyName">
+			<refnamediv>
+				<refname>GetTopologyName</refname>
+			
+				<refpurpose>Returns the name of a topology (schema) given the id of the topology.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>varchar <function>GetTopologyName</function></funcdef>
+					<paramdef><type>integer</type> <parameter>topology_id</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>Returns the topology name (schema) of a topology from the topology.topology table given the topology id of the topology.</para>
+              <!-- use this format if new function -->
+                <para>Availability: 1.?</para>
+			</refsection>
+		
+		
+			<refsection>
+				<title>Examples</title>
+				<programlisting>SELECT topology.GetTopologyName(1) As topo_name;
+ topo_name
+-----------
+ ma_topo</programlisting>
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="CreateTopology"/>, <xref linkend="DropTopology"/>,<xref linkend="GetTopologyID"/></para>
+			</refsection>
+		</refentry>
 	</sect1>
 </chapter>
