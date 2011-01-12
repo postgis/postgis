@@ -91,7 +91,7 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
 		  <refsection>
 			<title>See Also</title>
 	
-			<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_ClosestPoint"/>,, <xref linkend="ST_Distance"/></para>
+			<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_ClosestPoint"/>,, <xref linkend="ST_3DDistance"/></para>
 		  </refsection>
 	</refentry>
 	<refentry id="ST_3DDistance">
@@ -148,6 +148,7 @@ SELECT ST_3DDistance(
 </programlisting>
 <programlisting>
 -- Multilinestring and polygon both 3d and 2d distance
+-- Same example as 3D closest point example
 SELECT ST_3DDistance(poly, mline) As dist3d,
     ST_Distance(poly, mline) As dist2d 
         FROM (SELECT  ST_GeomFromEWKT('POLYGON((175 150 5, 20 40 5, 35 45 5, 50 60 5, 100 100 5, 175 150 5))') As poly,
@@ -162,7 +163,7 @@ SELECT ST_3DDistance(poly, mline) As dist3d,
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Distance"/>,<xref linkend="ST_3DDWithin"/>,<xref linkend="ST_3DMaxDistance" />, <xref linkend="ST_Transform" /></para>
+		<para><xref linkend="ST_Distance"/>,<xref linkend="ST_3DClosestPoint"/>,<xref linkend="ST_3DDWithin"/>,<xref linkend="ST_3DMaxDistance" />, <xref linkend="ST_Transform" /></para>
 	  </refsection>
 	</refentry>
 	
