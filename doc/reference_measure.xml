@@ -27,7 +27,7 @@
 			<title>Description</title>
 	
 			<para>Returns the 3-dimensional point on g1 that is closest to g2.  This is the first point of 
-				the shortest line. 
+				the shortest line. The length of the shortest line is the 3D distance.
 			</para>
 			<para>&Z_support;</para>
 			<para>Availability: 2.0.0</para>
@@ -36,7 +36,7 @@
 		  <refsection>
 			<title>Examples</title>
 				<informaltable>
-					  <tgroup cols="2">
+					  <tgroup cols="1">
 						<tbody>
 						  <row>
 							<entry><para>linestring and point -- both 3d and 2d closest point
@@ -49,11 +49,12 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
 	
 		
  cp3d_line_pt                        						|               cp2d_line_pt
-------------------------------------------------------------+------------------------------------------
- POINT(54.6993798867619 128.935022917228 11.5475869506606)  | POINT(73.0769230769231 115.384615384615)
+-----------------------------------------------------------+------------------------------------------
+ POINT(54.6993798867619 128.935022917228 11.5475869506606) | POINT(73.0769230769231 115.384615384615)
 					</programlisting>
 							  </para></entry>
-							  
+						    </row>
+						    <row>
 							<entry><para>linestring and multipoint -- both 3d and 2d closest point
 					<programlisting>SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt, 
 		ST_AsEWKT(ST_ClosestPoint(line,pt)) As cp2d_line_pt
@@ -70,15 +71,14 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
 						  </row>
 						  <row>
 						  <entry><para>Multilinestring and polygon both 3d and 2d closest point
-					<programlisting>SELECT ST_AsEWKT(ST_3DClosestPoint(poly, mline)) As pt3dcp,
-    ST_AsEWKT(ST_ClosestPoint(poly, mline)) As pt2dcp 
+					<programlisting>SELECT ST_AsEWKT(ST_3DClosestPoint(poly, mline)) As cp3d,
+    ST_AsEWKT(ST_ClosestPoint(poly, mline)) As cp2d 
         FROM (SELECT  ST_GeomFromEWKT('POLYGON((175 150 5, 20 40 5, 35 45 5, 50 60 5, 100 100 5, 175 150 5))') As poly,
-                ST_GeomFromEWKT('MULTILINESTRING((175 155 2, 20 40 3, 50 60 -2, 125 100 1, 175 155 1),
-                (175 155 4, 20 40 3, 50 60 10, 125 100 5, 175 155 5))') As mline
-             ) As foo;
-                   pt3dcp                   |    pt2dcp
---------------------------------------------+--------------
- POINT(162.190082644628 140.909090909091 5) | POINT(20 40)             
+                ST_GeomFromEWKT('MULTILINESTRING((175 155 2, 20 40 20, 50 60 -2, 125 100 1, 175 155 1),
+                (1 10 2, 5 20 1))') As mline ) As foo;
+                   cp3d                    |     cp2d
+-------------------------------------------+--------------
+ POINT(39.993580415989 54.1889925532825 5) | POINT(20 40)            
              </programlisting>
 							  </para></entry>
 						  </row>
@@ -91,7 +91,7 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
 		  <refsection>
 			<title>See Also</title>
 	
-			<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_ClosestPoint"/></para>
+			<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_ClosestPoint"/>,, <xref linkend="ST_Distance"/></para>
 		  </refsection>
 	</refentry>
 	<refentry id="ST_3DDistance">
@@ -119,7 +119,7 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
 		<title>Description</title>
 
 		<para>For geometry type returns the 3-dimensional minimum cartesian distance between two geometries in
-		projected units (spatial ref units). Currently only supported for 3D points and linestrings.</para>
+		projected units (spatial ref units).</para>
 
 		<para>&Z_support;</para>
 		<para>&sqlmm_compliant; SQL-MM ?</para>
@@ -145,6 +145,17 @@ SELECT ST_3DDistance(
      dist_3d      |     dist_2d
 ------------------+-----------------
  127.295059324629 | 126.66425605671
+</programlisting>
+<programlisting>
+-- Multilinestring and polygon both 3d and 2d distance
+SELECT ST_3DDistance(poly, mline) As dist3d,
+    ST_Distance(poly, mline) As dist2d 
+        FROM (SELECT  ST_GeomFromEWKT('POLYGON((175 150 5, 20 40 5, 35 45 5, 50 60 5, 100 100 5, 175 150 5))') As poly,
+                ST_GeomFromEWKT('MULTILINESTRING((175 155 2, 20 40 20, 50 60 -2, 125 100 1, 175 155 1),
+                (1 10 2, 5 20 1))') As mline ) As foo;
+      dist3d       | dist2d
+-------------------+--------
+ 0.716635696066337 |      0          
 </programlisting>
 	  </refsection>
 
