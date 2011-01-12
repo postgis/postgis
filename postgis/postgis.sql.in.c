@@ -1490,7 +1490,7 @@ BEGIN
 			AND f_geometry_column::name = a.attname
 
 			AND sridcheck.conrelid = c.oid
-		AND sridcheck.consrc LIKE '(srid(% = %)'
+		AND sridcheck.consrc LIKE '(%srid(% = %)'
 			AND sridcheck.consrc ~ textcat(' = ', srid::text)
 
 			AND typecheck.conrelid = c.oid
@@ -1691,7 +1691,7 @@ BEGIN
 		 AND s.consrc LIKE '%srid(% = %');
 	IF (gsrid IS NULL) THEN
 		-- Try to find srid from the geometry itself
-		EXECUTE 'SELECT srid(' || quote_ident(gcs.attname) || ')
+		EXECUTE 'SELECT st_srid(' || quote_ident(gcs.attname) || ') As srid
 				 FROM ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
 				 WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1'
 			INTO gc;
@@ -1702,10 +1702,10 @@ BEGIN
 			BEGIN
 				EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
 						 ADD CONSTRAINT ' || quote_ident('enforce_srid_' || gcs.attname) || '
-						 CHECK (srid(' || quote_ident(gcs.attname) || ') = ' || gsrid || ')';
+						 CHECK (st_srid(' || quote_ident(gcs.attname) || ') = ' || gsrid || ')';
 			EXCEPTION
 				WHEN check_violation THEN
-					RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not apply constraint CHECK (srid(%) = %)', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), quote_ident(gcs.attname), gsrid;
+					RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not apply constraint CHECK (st_srid(%) = %)', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), quote_ident(gcs.attname), gsrid;
 					gc_is_valid := false;
 			END;
 		END IF;
@@ -1725,7 +1725,7 @@ BEGIN
 		 AND s.consrc LIKE '%ndims(% = %');
 	IF (gndims IS NULL) THEN
 		-- Try to find ndims from the geometry itself
-		EXECUTE 'SELECT ndims(' || quote_ident(gcs.attname) || ')
+		EXECUTE 'SELECT st_ndims(' || quote_ident(gcs.attname) || ') As ndims
 				 FROM ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
 				 WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1'
 			INTO gc;
@@ -1739,7 +1739,7 @@ BEGIN
 						 CHECK (ndims(' || quote_ident(gcs.attname) || ') = '||gndims||')';
 			EXCEPTION
 				WHEN check_violation THEN
-					RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not apply constraint CHECK (ndims(%) = %)', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), quote_ident(gcs.attname), gndims;
+					RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not apply constraint CHECK (st_ndims(%) = %)', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), quote_ident(gcs.attname), gndims;
 					gc_is_valid := false;
 			END;
 		END IF;
@@ -1816,13 +1816,13 @@ BEGIN
 	LOOP
 		RAISE DEBUG 'Processing view %.%.%', gcs.nspname, gcs.relname, gcs.attname;
 
-		EXECUTE 'SELECT ndims(' || quote_ident(gcs.attname) || ')
+		EXECUTE 'SELECT st_ndims(' || quote_ident(gcs.attname) || ') As ndims
 				 FROM ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
 				 WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1'
 			INTO gc;
 		gndims := gc.ndims;
 
-		EXECUTE 'SELECT srid(' || quote_ident(gcs.attname) || ')
+		EXECUTE 'SELECT st_srid(' || quote_ident(gcs.attname) || ') As srid
 				 FROM ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
 				 WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1'
 			INTO gc;
@@ -1893,7 +1893,7 @@ BEGIN
 		AND sridcheck.connamespace = n.oid
 		AND typecheck.connamespace = n.oid
 		AND sridcheck.conrelid = c.oid
-		AND sridcheck.consrc LIKE '(srid('||a.attname||') = %)'
+		AND sridcheck.consrc LIKE '(%srid('||a.attname||') = %)'
 		AND typecheck.conrelid = c.oid
 		AND typecheck.consrc LIKE
 		'((geometrytype('||a.attname||') = ''%''::text) OR (% IS NULL))'
@@ -1923,7 +1923,7 @@ BEGIN
 		AND sridcheck.connamespace = n.oid
 		AND typecheck.connamespace = n.oid
 		AND sridcheck.conrelid = c.oid
-		AND sridcheck.consrc LIKE '(st_srid('||a.attname||') = %)'
+		AND sridcheck.consrc LIKE '(%srid('||a.attname||') = %)'
 		AND typecheck.conrelid = c.oid
 		AND typecheck.consrc LIKE
 		'((geometrytype('||a.attname||') = ''%''::text) OR (% IS NULL))'
@@ -2133,7 +2133,7 @@ BEGIN
 		quote_ident(real_schema) || '.' || quote_ident(table_name)
 		|| ' ADD CONSTRAINT '
 		|| quote_ident('enforce_srid_' || column_name)
-		|| ' CHECK (ST_SRID(' || quote_ident(column_name) ||
+		|| ' CHECK (st_srid(' || quote_ident(column_name) ||
 		') = ' || new_srid::text || ')' ;
 	RAISE DEBUG '%', sql;
 	EXECUTE sql;
@@ -2142,7 +2142,7 @@ BEGIN
 		quote_ident(real_schema) || '.' || quote_ident(table_name)
 		|| ' ADD CONSTRAINT '
 		|| quote_ident('enforce_dims_' || column_name)
-		|| ' CHECK (ST_NDims(' || quote_ident(column_name) ||
+		|| ' CHECK (st_ndims(' || quote_ident(column_name) ||
 		') = ' || new_dim::text || ')' ;
 	RAISE DEBUG '%', sql;
 	EXECUTE sql;
@@ -2462,14 +2462,14 @@ BEGIN
 	EXECUTE 'UPDATE ' || quote_ident(real_schema) ||
 		'.' || quote_ident(table_name) ||
 		' SET ' || quote_ident(column_name) ||
-		' = setSRID(' || quote_ident(column_name) ||
+		' = ST_SetSRID(' || quote_ident(column_name) ||
 		', ' || new_srid::text || ')';
 
 	-- Reset enforce_srid constraint
 	EXECUTE 'ALTER TABLE ' || quote_ident(real_schema) ||
 		'.' || quote_ident(table_name) ||
 		' ADD constraint ' || quote_ident(cname) ||
-		' CHECK (srid(' || quote_ident(column_name) ||
+		' CHECK (st_srid(' || quote_ident(column_name) ||
 		') = ' || new_srid::text || ')';
 
 	RETURN real_schema || '.' || table_name || '.' || column_name ||' SRID changed to ' || new_srid::text;
@@ -4209,7 +4209,7 @@ CREATE OR REPLACE FUNCTION ST_GeomFromWKB(bytea)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION GeomFromWKB(bytea, int)
 	RETURNS geometry
-	AS 'SELECT setSRID(GeomFromWKB($1), $2)'
+	AS 'SELECT ST_SetSRID(GeomFromWKB($1), $2)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: GeomFromWKB(bytea, int)
