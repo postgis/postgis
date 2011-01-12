@@ -682,7 +682,10 @@ def wkblify_raster_header(options, ds, level, ulp, xsize = None, ysize = None):
     ### Version
     hexwkb += wkblify('H', options.version)
     ### Number of bands
-    hexwkb += wkblify('H', ds.RasterCount)
+    if options.band is not None and options.band > 0:
+        hexwkb += wkblify('H', 1)
+    else:
+        hexwkb += wkblify('H', ds.RasterCount)
     check_hex(hexwkb, 5)
     ### Georeference
     hexwkb += wkblify('d', rt_scale[0])
