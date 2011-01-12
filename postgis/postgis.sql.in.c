@@ -1736,7 +1736,7 @@ BEGIN
 			BEGIN
 				EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
 						 ADD CONSTRAINT ' || quote_ident('enforce_dims_' || gcs.attname) || '
-						 CHECK (ndims(' || quote_ident(gcs.attname) || ') = '||gndims||')';
+						 CHECK (st_ndims(' || quote_ident(gcs.attname) || ') = '||gndims||')';
 			EXCEPTION
 				WHEN check_violation THEN
 					RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not apply constraint CHECK (st_ndims(%) = %)', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), quote_ident(gcs.attname), gndims;
