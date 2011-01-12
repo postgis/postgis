@@ -4,8 +4,11 @@
  * WKTRaster - Raster Types for PostGIS
  * http://www.postgis.org/support/wiki/index.php?WKTRasterHomePage
  *
- * Copyright (C) 2009  Sandro Santilli <strk@keybit.net>, Pierre Racine <pierre.racine@sbf.ulaval.ca>,
- * Jorge Arevalo <jorge.arevalo@deimos-space.com>
+ * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
+ * Copyright (C) 2010-2011 David Zwarg <dzwarg@avencia.com>
+ * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
+ * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
+ * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
