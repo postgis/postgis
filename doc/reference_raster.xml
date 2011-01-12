@@ -756,6 +756,7 @@ rid | numbands
 				<title>Description</title>
 				
 				<para>Returns the x size of pixels in units of coordinate reference system?</para>
+				<para>Changed: 2.0.0. In WKTRaster versions this was called ST_PixelSizeX.</para>
 				</refsection>
 				
 				<refsection>
@@ -799,6 +800,8 @@ FROM dummy_rast;
 				
 				<para>Returns the y size of pixels in units of coordinate reference system.  May be negative.  Refer to <ulink url="http://en.wikipedia.org/wiki/World_file">World File</ulink>
 				for more details.</para>
+				
+				<para>Changed: 2.0.0. In WKTRaster versions this was called ST_PixelSizeY.</para>
 				</refsection>
 				
 				<refsection>
@@ -2161,6 +2164,7 @@ UPDATE dummy_rast SET rast = ST_SetGeoReference(rast, '2 0 0 3 1.5 2','ESRI')
 				
 				<para>Sets the x and y size of pixels in units of coordinate reference system. Number units/pixel width/height.  If
 				only one unit passed in, assumed x and y are the same number.</para>
+				<para>Changed: 2.0.0 In WKTRaster versions this was called ST_SetPixelSize.  This was changed in 2.0.0.</para>
 				</refsection>
 				
 				<refsection>
