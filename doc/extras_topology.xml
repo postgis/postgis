@@ -7,17 +7,36 @@
 	<para>Functions that are defined in SQL/MM standard are prefixed with ST_ and functions specific to PostGIS are not prefixed.</para>
 	<para>To build PostGIS 2.0 with topology support, compile with the --with-topology option as described in <xref linkend="postgis_installation"/></para>
 	
-		<sect1 id="Topology_Types">
-			<sect1info>
-				<abstract>
-					<para>This section lists the PostgreSQL data types installed by PostGIS Topology.  Note we describe the casting behavior of these which is very 
-						important especially when designing your own functions.  
-					</para>	
-				</abstract>
-			</sect1info>
-			<title>PostgreSQL PostGIS Topology Types</title>
+	<sect1 id="Topology_Types">
+        <sect1info>
+            <abstract>
+                <para>This section lists the PostgreSQL data types installed by PostGIS Topology.  Note we describe the casting behavior of these which is very 
+                    important especially when designing your own functions.  
+                </para>	
+            </abstract>
+        </sect1info>
+        <title>PostgreSQL PostGIS Topology Types</title>
 		
-			<refentry id="topogeometry">
+		<refentry id="getfaceedges_returntype">
+		  <refnamediv>
+			<refname>getfaceedges_returntype</refname>
+			<refpurpose>A composite type that consists of a sequence number and edge number.  This is the return type for <varname>ST_GetFaceEdges</varname></refpurpose>
+		  </refnamediv>
+		  <refsection>
+			<title>Description</title>
+			<para>A composite type that consists of a sequence number and edge number.  This is the return type for <varname>ST_GetFaceEdges</varname> function.</para>
+			<orderedlist>
+			  <listitem>
+				<para><varname>sequence</varname> is an integer:  Refers to a topology defined in the topology.topology table which defines the topology schema and srid.</para>
+			  </listitem>
+			  <listitem>
+				<para><varname>edge</varname> is an integer: The identifier of an edge.</para>
+			  </listitem>
+			</orderedlist>
+		  </refsection>
+		</refentry>
+		
+		<refentry id="topogeometry">
 			  <refnamediv>
 				<refname>topogeometry</refname>
 				<refpurpose>A composite type that refers to a topology geometry in a specific topology, layer, having specific type (1:[multi]point, 2:[multi]line, 3:[multi]poly, 4:collection) with specific identifier id in the topology. The id uniquely defines the topogeometry in the topology.</refpurpose>
@@ -66,24 +85,34 @@
 			</refsection>
 		</refentry>
 		
-		<refentry id="getfaceedges_returntype">
-		  <refnamediv>
-			<refname>getfaceedges_returntype</refname>
-			<refpurpose>A composite type that consists of a sequence number and edge number.  This is the return type for <varname>ST_GetFaceEdges</varname></refpurpose>
-		  </refnamediv>
-		  <refsection>
-			<title>Description</title>
-			<para>A composite type that consists of a sequence number and edge number.  This is the return type for <varname>ST_GetFaceEdges</varname> function.</para>
-			<orderedlist>
-			  <listitem>
-				<para><varname>sequence</varname> is an integer:  Refers to a topology defined in the topology.topology table which defines the topology schema and srid.</para>
-			  </listitem>
-			  <listitem>
-				<para><varname>edge</varname> is an integer: The identifier of an edge.</para>
-			  </listitem>
-			</orderedlist>
-		  </refsection>
+		<refentry id="validatetopology_returntype">
+            <refnamediv>
+                <refname>validatetopology_returntype</refname>
+                    <refpurpose>A composite type that consists of an error message and id1 and id2 to denote location of error.  This is the return type for <varname>ST_ValidateTopology</varname></refpurpose>
+                </refnamediv>
+            <refsection>
+            <title>Description</title>
+            <para>A composite type that consists of an error message and two integers.  The <xref linkend="ValidateTopology" /> function returns a set of these to denote validation errors and the id1 and id2 to denote the ids of the topology objects involved in the error.</para>
+                <orderedlist>
+                  <listitem>
+                    <para><varname>error</varname> is varchar:  Denotes type of error. </para>
+                    <para>Current error descriptors are: coincident nodes, edge crosses node, edge not simple, edge end node geometry mis-match, edge start node geometry mismatch, face overlaps face,face within face,  </para>
+                  </listitem>
+                  <listitem>
+                    <para><varname>id1</varname> is an integer: Denotes identifier of edge / face / nodes in error.</para>
+                  </listitem>
+                 <listitem>
+                    <para><varname>id2</varname> is an integer: For errors that involve 2 objects denotes the secondary edge / or node</para>
+                  </listitem>
+                </orderedlist>
+            </refsection>
+		  <!-- Optionally add a "See Also" section -->
+            <refsection>
+                <title>See Also</title>
+                <para><xref linkend="ValidateTopology"/></para>
+            </refsection>
 		</refentry>
+		
 	</sect1>
 	<sect1 id="Topology_ManagementFunctions">
 	    <title>Topology Management Functions</title>
@@ -300,6 +329,49 @@ SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma_topo', 'parcel_topo', 'topo
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="AddTopoGeometryColumn"/></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="ValidateTopology">
+			<refnamediv>
+				<refname>ValidateTopology</refname>
+			
+				<refpurpose>Returns a set of validatetopology_returntype objects detailing issues with topology</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>setof validatetopology_returntype <function>ValidateTopology</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>Returns a set of <xref linkend="validatetopology_returntype"/> objects detailing issues with topology. Refer to 
+                   <xref linkend="validatetopology_returntype"/> for listing of possible errors.</para>
+        
+                <!-- use this format if new function -->
+                <para>Availability: 2.0.0</para>
+			</refsection>
+		
+		
+			<refsection>
+				<title>Examples</title>
+				<programlisting>SELECT * FROM  topology.ValidateTopology('ma_topo');
+      error        | id1 | id2
+-------------------+-----+-----
+face without edges |   0 |				
+				</programlisting>
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="validatetopology_returntype"/></para>
 			</refsection>
 		</refentry>
 	</sect1>
