@@ -518,7 +518,7 @@ face without edges |   0 |
           	<refsection>
                 <title>Description</title>
             
-                <para>Used to create a <xref linkend="topolementarray" /> from a set of <xref linkend="topoelements" />.</para>
+                <para>Used to create a <xref linkend="topolementarray" /> from a set of <xref linkend="topoelement" />.</para>
                 
                 <!-- use this format if new function -->
                 <para>Availability: 1.?</para>
