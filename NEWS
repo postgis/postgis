@@ -15,6 +15,7 @@ YYYY/MM/DD
   - ST_isCollection (Sandro Santilli, Maxime van Noppen)
   - ST_SharedPaths (Sandro Santilli / Faunalia for RT-SIGTA)
   - ST_Snap (Sandro Santilli)
+  - ST_RelateMatch (Sandro Santilli / Faunalia for RT-SIGTA)
 
  * Enhancements *
 
