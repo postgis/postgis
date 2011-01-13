@@ -458,7 +458,7 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 		<refname>ST_GeometryN</refname>
 
 		<refpurpose>Return the 1-based Nth geometry if the geometry is a
-			GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE or MULTIPOLYGON.
+			GEOMETRYCOLLECTION, (MULTI)POINT, (MULTI)LINESTRING, MULTICURVE or (MULTI)POLYGON, POLYHEDRALSURFACE
 			Otherwise, return NULL.</refpurpose>
 	  </refnamediv>
 
@@ -476,8 +476,8 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 		<title>Description</title>
 
 		<para>Return the 1-based Nth geometry if the geometry is a
-			GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE or MULTIPOLYGON.
-			Otherwise, return NULL.</para>
+			GEOMETRYCOLLECTION, (MULTI)POINT, (MULTI)LINESTRING, MULTICURVE or (MULTI)POLYGON, POLYHEDRALSURFACE
+			Otherwise, return NULL</para>
 
 		<note>
 		  <para>Index is 1-based as for OGC specs since version 0.8.0.
