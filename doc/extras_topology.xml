@@ -150,7 +150,40 @@ ERROR:  value for domain topology.topoelement violates check constraint "dimensi
                 <title>See Also</title>
                 <para><xref linkend="GetTopoGeomElements"/></para>
             </refsection>
-		 
+		</refentry>
+		
+		<refentry id="topoelementarray">
+		  <refnamediv>
+			<refname>topoelementarray</refname>
+			<refpurpose>An array of element_id,element_type values. a bidimensional array of integers: '{{id,type}, {id,type}, ...}'</refpurpose>
+		  </refnamediv>
+		  <refsection>
+			<title>Description</title>
+			<para>An array of 1 or more topoelemetns ( a bidimensional array of integers: '{{id,type}, {id,type}, ...}').  So an array of 1 or more arrays each having 2 integers generally used to return an array of sets of element id and element type of a topology relation.</para>
+		  </refsection>
+            <refsection>
+                <title>Examples</title>
+                 <programlisting>SELECT '{{1,2},{3,4}}'::topology.topoelementarray As tea;
+  tea
+-------
+{{1,2},{3,4}}
+
+-- more verbose equivalent --
+SELECT ARRAY[ARRAY[1,2], ARRAY[3,4]]::topology.topoelementarray As tea;
+
+  tea
+-------
+{{1,2},{3,4}}
+                 </programlisting>
+                 <programlisting>SELECT '{{1,2,4},{3,4,5}}'::topology.topoelementarray As tea;
+ERROR:  value for domain topology.topoelementarray violates check constraint "dimensions"
+                 </programlisting>
+            </refsection>
+            <!-- Optionally add a "See Also" section -->
+            <refsection>
+                <title>See Also</title>
+                <para><xref linkend="GetTopoGeomElementArray"/></para>
+            </refsection>
 		</refentry>
 	</sect1>
 	
@@ -463,11 +496,58 @@ face without edges |   0 |
 	
 	<sect1 id="Topology_Accessors">
 	  <title>TopoGeometry and other Topology Object Accessors</title>
+	      <refentry id="GetTopoGeomElementArray">
+			<refnamediv>
+				<refname>GetTopoGeomElementArray</refname>
+			
+				<refpurpose>Returns a <varname>topoelementarray</varname> (an array of topoelements) containing the topological elements and type of the given TopoGeometry (primitive elements)</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>topoelementarray <function>GetTopoGeomElementArray</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>layer_id</parameter></paramdef>
+					<paramdef><type>integer</type> <parameter>tg_id</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>topoelementarray topoelement <function>GetTopoGeomElementArray</function></funcdef>
+					<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>Returns a <xref linkend="topoelementarray"/> containing the topological elements and type of the given TopoGeometry (primitive elements).  This is similar to GetTopoGeomElements except it returns the elements as an array rather
+                than as a dataset.</para>
+                <para>tg_id is the topogeometry id of the topogeometry object in the topology in the layer denoted by <varname>layer_id</varname> in the topology.layer table.</para>
+        
+                <!-- use this format if new function -->
+                <para>Availability: 1.?</para>
+			</refsection>
+		
+		
+			<refsection>
+				<title>Examples</title>
+				<!-- TODO: -->
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="GetTopoGeomElements"/>,<xref linkend="topoelementarray"/></para>
+			</refsection>
+		</refentry>
 	  	<refentry id="GetTopoGeomElements">
 			<refnamediv>
 				<refname>GetTopoGeomElements</refname>
 			
-				<refpurpose>Returns a set of <varname>topoelement</varname> objects containing the topological elements of the given TopoGeometry (primitive elements)</refpurpose>
+				<refpurpose>Returns a set of <varname>topoelement</varname> objects containing the topological  element_id,element_type of the given TopoGeometry (primitive elements)</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -506,7 +586,7 @@ face without edges |   0 |
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="topoelement"/></para>
+				<para><xref linkend="GetTopoGeomElementArray"/>,<xref linkend="topoelement"/></para>
 			</refsection>
 		</refentry>
 		
