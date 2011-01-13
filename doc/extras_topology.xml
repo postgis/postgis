@@ -189,7 +189,7 @@ ERROR:  value for domain topology.topoelementarray violates check constraint "di
             <!-- Optionally add a "See Also" section -->
             <refsection>
                 <title>See Also</title>
-                <para><xref linkend="GetTopoGeomElementArray"/></para>
+                <para><xref linkend="GetTopoGeomElementArray"/>, <xref linkend="TopoElementArray_Agg" /></para>
             </refsection>
 		</refentry>
 	</sect1>
@@ -521,7 +521,7 @@ face without edges |   0 |
                 <para>Used to create a <xref linkend="topoelementarray" /> from a set of <xref linkend="topoelement" />.</para>
                 
                 <!-- use this format if new function -->
-                <para>Availability: 1.?</para>
+                <para>Availability: 2.0.0</para>
 			</refsection>
 		
 		
