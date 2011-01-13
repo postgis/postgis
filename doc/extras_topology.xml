@@ -174,6 +174,13 @@ SELECT ARRAY[ARRAY[1,2], ARRAY[3,4]]::topology.topoelementarray As tea;
   tea
 -------
 {{1,2},{3,4}}
+
+--using the arraya agg function packaged with topology --
+SELECT topology.TopoElementArray_Agg(ARRAY[e,t]) As tea
+  FROM generate_series(1,3) As e CROSS JOIN generate_series(1,4) As t;
+  tea
+--------------------------------------------------------------------------
+{{1,1},{1,2},{1,3},{1,4},{2,1},{2,2},{2,3},{2,4},{3,1},{3,2},{3,3},{3,4}}
                  </programlisting>
                  <programlisting>SELECT '{{1,2,4},{3,4,5}}'::topology.topoelementarray As tea;
 ERROR:  value for domain topology.topoelementarray violates check constraint "dimensions"
@@ -492,6 +499,45 @@ face without edges |   0 |
 				<para><xref linkend="AddTopoGeometryColumn"/></para>
 			</refsection>
 		</refentry>
+		
+		<refentry id="TopoElementArray_Agg">
+          <refnamediv>
+            <refname>TopoElementArray_Agg</refname>
+            <refpurpose>Returns a <varname>topoelementarray</varname> for a set of element_id, type arrays (topoelements)</refpurpose>
+          </refnamediv>
+        
+          <refsynopsisdiv>
+            <funcsynopsis>
+              <funcprototype>
+                <funcdef>topoelementarray <function>TopoElementArray_Agg</function></funcdef>
+                <paramdef><type>topoelement set</type> <parameter>tefield</parameter></paramdef>
+              </funcprototype>
+            </funcsynopsis>
+          </refsynopsisdiv>
+          
+          	<refsection>
+                <title>Description</title>
+            
+                <para>Used to create a <xref linkend="topolementarray" /> from a set of <xref linkend="topoelements" />.</para>
+                
+                <!-- use this format if new function -->
+                <para>Availability: 1.?</para>
+			</refsection>
+		
+		
+			<refsection>
+				<title>Examples</title>
+				<programlisting>SELECT topology.TopoElementArray_Agg(ARRAY[e,t]) As tea
+  FROM generate_series(1,3) As e CROSS JOIN generate_series(1,4) As t;
+  tea
+--------------------------------------------------------------------------
+{{1,1},{1,2},{1,3},{1,4},{2,1},{2,2},{2,3},{2,4},{3,1},{3,2},{3,3},{3,4}}</programlisting>
+			</refsection>
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="topoelement"/>,<xref linkend="topoelementarray"/></para>
+			</refsection>
+          </refentry>
 	</sect1>
 	
 	<sect1 id="Topology_Accessors">

@@ -43,8 +43,8 @@ set search_path=topology,public,pg_catalog;
 <!-- For each function prototype generate the DDL comment statement
 	If its input is a geometry set - we know it is an aggregate function rather than a regular function -->
 		<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
-COMMENT ON <xsl:choose><xsl:when test="contains(paramdef/type,'geometry set')">AGGREGATE</xsl:when><xsl:otherwise>FUNCTION</xsl:otherwise></xsl:choose><xsl:text> </xsl:text> <xsl:value-of select="funcdef/function" />(<xsl:for-each select="paramdef"><xsl:choose><xsl:when test="count(parameter) &gt; 0"> 
-<xsl:choose><xsl:when test="contains(type,'geometry set')">geometry</xsl:when><xsl:otherwise><xsl:value-of select="type" /></xsl:otherwise></xsl:choose><xsl:if test="position()&lt;last()"><xsl:text>, </xsl:text></xsl:if></xsl:when>
+COMMENT ON <xsl:choose><xsl:when test="contains(paramdef/type,' set')">AGGREGATE</xsl:when><xsl:otherwise>FUNCTION</xsl:otherwise></xsl:choose><xsl:text> </xsl:text> <xsl:value-of select="funcdef/function" />(<xsl:for-each select="paramdef"><xsl:choose><xsl:when test="count(parameter) &gt; 0"> 
+<xsl:choose><xsl:when test="contains(type,'topoelement set')">topoelement</xsl:when><xsl:otherwise><xsl:value-of select="type" /></xsl:otherwise></xsl:choose><xsl:if test="position()&lt;last()"><xsl:text>, </xsl:text></xsl:if></xsl:when>
 </xsl:choose></xsl:for-each>) IS '<xsl:call-template name="listparams"><xsl:with-param name="func" select="." /></xsl:call-template> <xsl:value-of select='$comment' />';
 			</xsl:for-each>
 		</xsl:for-each>
