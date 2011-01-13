@@ -458,6 +458,46 @@ face without edges |   0 |
 	</sect1>
 	<sect1 id="Topology_Constructors">
 	  <title>TopoGeometry and other Topology Object Constructors</title>
+	     <refentry id="AddEdge">
+			<refnamediv>
+				<refname>AddEdge</refname>
+			
+				<refpurpose>Adds an linestring edge to the edge table and associated nodes to the nodes table of the specified topology schema using the specified linestring geometry and returns the edgeid of the new record.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>integer <function>AddEdge</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>aline</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>Adds an edge to the edge table and associated nodes to the nodes table of the specified <varname>toponame</varname> schema using the specified linestring geometry and returns the edgeid of the new record.</para>
+                <note><para>If the <varname>aline</varname> geometry crosses an existing linestring edge, or intersects an existing not at the endpoints, then an error is thrown and the edge is not added.</para></note>
+        
+                <!-- use this format if new function -->
+                <para>Availability: 2.0.0</para>
+			</refsection>
+		
+		
+			<refsection>
+				<title>Examples</title>
+				<programlisting><!-- TODO --></programlisting>
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para></para>
+			</refsection>
+		</refentry>
+		
 	  	<refentry id="CreateTopoGeom">
 			<refnamediv>
 				<refname>CreateTopoGeom</refname>
