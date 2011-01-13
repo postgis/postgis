@@ -21,18 +21,3 @@ SELECT
     st_bandnodatavalue(st_setbandnodatavalue(rast, 1, b1nodatavalue+1),1) AS obtained
  FROM rt_band_properties_test
 WHERE (b1nodatavalue+1) != st_bandnodatavalue(st_setbandnodatavalue(rast, 1, b1nodatavalue+1),1);
-
-
------------------------------------------------------------------------
---- ST_SetBandHasNoDataValue
------------------------------------------------------------------------
-
-SELECT
-    (not b1hasnodatavalue) AS expected,
-    st_bandhasnodatavalue(st_setbandhasnodatavalue(rast, 1, not b1hasnodatavalue),1) AS obtained
- FROM rt_band_properties_test
-WHERE (not b1hasnodatavalue) != st_bandhasnodatavalue(st_setbandhasnodatavalue(rast, 1, not b1hasnodatavalue),1);
-
-
-
-

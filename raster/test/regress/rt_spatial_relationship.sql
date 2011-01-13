@@ -281,11 +281,11 @@ SELECT 'test 1.2', rid, geomid, st_intersects(geom, rast) AS intersect
 	FROM rt_spatial_relationship_test, rt_spatial_relationship_test_geom
 	WHERE forrast = rid AND ST_Intersects(geom, rast, 1) ORDER BY rid, geomid;
 	
-SELECT 'test 1.3', rid, geomid, st_intersects(geom, st_setbandhasnodatavalue(rast, FALSE))
+SELECT 'test 1.3', rid, geomid, st_intersects(geom, st_setbandnodatavalue(rast, NULL))
 	FROM rt_spatial_relationship_test, rt_spatial_relationship_test_geom
 	WHERE forrast = rid ORDER BY rid, geomid;
 
-SELECT 'test 1.4', rid, geomid, st_intersects(geom, st_setbandhasnodatavalue(rast, FALSE))
+SELECT 'test 1.4', rid, geomid, st_intersects(geom, st_setbandnodatavalue(rast, NULL))
 	FROM rt_spatial_relationship_test, rt_spatial_relationship_test_geom
 	WHERE forrast = rid AND ST_Intersects(geom, rast, 1) ORDER BY rid, geomid;
 
@@ -305,14 +305,14 @@ FROM (SELECT *, ST_Intersection(geom, rast) gv
      ) foo;
 
 SELECT 'test 2.3', rid, geomid, astext((gv).geom), (gv).val
-FROM (SELECT *, ST_Intersection(geom, st_setbandhasnodatavalue(rast, FALSE)) gv
+FROM (SELECT *, ST_Intersection(geom, st_setbandnodatavalue(rast, NULL)) gv
       FROM rt_spatial_relationship_test, rt_spatial_relationship_test_geom
       WHERE forrast = rid
      ) foo;
      
 SELECT 'test 2.4', rid, geomid, astext((gv).geom), (gv).val
-FROM (SELECT *, ST_Intersection(geom, st_setbandhasnodatavalue(rast, FALSE)) gv
+FROM (SELECT *, ST_Intersection(geom, st_setbandnodatavalue(rast, NULL)) gv
       FROM rt_spatial_relationship_test, rt_spatial_relationship_test_geom
-      WHERE forrast = rid AND ST_Intersects(geom, st_setbandhasnodatavalue(rast, FALSE))
+      WHERE forrast = rid AND ST_Intersects(geom, st_setbandnodatavalue(rast, NULL))
      ) foo;
 

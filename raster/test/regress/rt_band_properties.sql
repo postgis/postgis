@@ -31,18 +31,3 @@ SELECT
     st_bandnodatavalue(rast, 1) AS b1obtained, b2nodatavalue != st_bandnodatavalue(rast, 2)
  FROM rt_band_properties_test
 WHERE b1nodatavalue != st_bandnodatavalue(rast, 1) or b2nodatavalue != st_bandnodatavalue(rast, 2);
-
-
------------------------------------------------------------------------
---- ST_BandHasNoDataValue
------------------------------------------------------------------------
-
-SELECT
-    b1hasnodatavalue AS b1expected, b2hasnodatavalue AS b2expected,
-    st_bandhasnodatavalue(rast, 1) AS b1obtained, st_bandhasnodatavalue(rast, 2) AS b2obtained
- FROM rt_band_properties_test
-WHERE b1hasnodatavalue != st_bandhasnodatavalue(rast, 1) or b2hasnodatavalue != st_bandhasnodatavalue(rast, 2);
-
-
-
-

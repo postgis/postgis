@@ -233,16 +233,6 @@ CREATE OR REPLACE FUNCTION st_hasnoband(rast raster)
 -- Raster Band Accessors
 -----------------------------------------------------------------------
 
-CREATE OR REPLACE FUNCTION st_bandhasnodatavalue(rast raster, band integer)
-    RETURNS boolean
-    AS 'MODULE_PATHNAME','RASTER_getBandHasNoDataValue'
-    LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_bandhasnodatavalue(raster)
-    RETURNS boolean
-    AS $$ SELECT st_bandhasnodatavalue($1, 1) $$
-    LANGUAGE SQL;
-
 CREATE OR REPLACE FUNCTION st_bandnodatavalue(rast raster, band integer)
     RETURNS float4
     AS 'MODULE_PATHNAME','RASTER_getBandNoDataValue'
@@ -281,8 +271,8 @@ CREATE OR REPLACE FUNCTION st_bandmetadata(rast raster,
                                            OUT isoutdb boolean, 
                                            OUT path text)
     AS $$
-    SELECT st_bandpixeltype($1, $2), 
-       st_bandhasnodatavalue($1, $2), 
+    SELECT st_bandpixeltype($1, $2),
+       st_bandnodatavalue($1, $2) IS NOT NULL,
        st_bandnodatavalue($1, $2), 
        st_bandpath($1, $2) IS NOT NULL, 
        st_bandpath($1, $2)
@@ -297,7 +287,7 @@ CREATE OR REPLACE FUNCTION st_bandmetadata(rast raster,
                                            OUT path text)
     AS $$
     SELECT st_bandpixeltype($1, 1), 
-       st_bandhasnodatavalue($1, 1), 
+       st_bandnodatavalue($1, 1) IS NOT NULL,
        st_bandnodatavalue($1, 1), 
        st_bandpath($1, 1) IS NOT NULL, 
        st_bandpath($1, 1)
@@ -484,20 +474,11 @@ CREATE OR REPLACE FUNCTION st_setgeoreference(rast raster, georef text)
 -- Raster Band Editors
 -----------------------------------------------------------------------
 
-CREATE OR REPLACE FUNCTION st_setbandhasnodatavalue(rast raster, band integer, hasnodatavalue boolean)
-    RETURNS raster
-    AS 'MODULE_PATHNAME','RASTER_setBandHasNoDataValue'
-    LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_setbandhasnodatavalue(rast raster, hasnodatavalue boolean)
-    RETURNS raster
-    AS $$ SELECT st_setbandhasnodatavalue($1, 1, $2) $$
-    LANGUAGE SQL;
-
+-- The function can not be strict, because allows NULL as nodata
 CREATE OR REPLACE FUNCTION st_setbandnodatavalue(rast raster, band integer, nodatavalue float8)
     RETURNS raster
     AS 'MODULE_PATHNAME','RASTER_setBandNoDataValue'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'C' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_setbandnodatavalue(rast raster, nodatavalue float8)
     RETURNS raster
@@ -643,7 +624,7 @@ CREATE OR REPLACE FUNCTION st_pixelaspolygon(rast raster, band integer, x intege
     $$
     LANGUAGE 'plpgsql';
 
-CREATE FUNCTION st_pixelaspolygon(rast raster, x integer, y integer) 
+CREATE OR REPLACE FUNCTION st_pixelaspolygon(rast raster, x integer, y integer)
     RETURNS geometry AS 
     $$
         SELECT st_pixelaspolygon($1, 1, $2, $3)
@@ -1161,7 +1142,7 @@ CREATE OR REPLACE FUNCTION _st_intersects(geomin geometry, rast raster, band int
         END IF;
 
         -- If the band does not have a nodatavalue, there is no need to search for with value pixels
-        IF NOT hasnodata OR NOT st_bandhasnodatavalue(rast, band) THEN
+        IF NOT hasnodata OR st_bandnodatavalue(rast, band) IS NULL THEN
             RETURN TRUE;
         END IF;
 
