@@ -1,11 +1,33 @@
 PostGIS 2.0.0
 YYYY/MM/DD
 
-  * Important Changes *
+  * Important / Breaking Changes *
+  -- #722, #302 Most deprecated functions removed  (Regina Obe, Paul Ramsey)
+     (most deprecated in 1.2) removed 
+     non-ST variants buffer, 
+     length, intersects 
+     (and internal functions renamed) etc. 
+     If you have been using these - CHANGE your apps or suffer the consequences
+     If you don't see a function documented -- it ain't supported
+     Some of constraints in older tables were built with deprecated function
+     If you restore you may need to rebuild these 
+     with populate_geometry_columns()
+  -- #548 (sorta), ST_NumGeometries,ST_GeometryN now returns 1 (or the geometry) instead of null 
+     for single geometries (Sandro Santilli, Maxime van Noppen)
 
   * New Features *
-
+  
   - Support for TIN and PolyHedralSurface (Olivier Courtin)
+  - Raster support integrated and documented
+  	(Pierre Racine, Jorge Arevalo, Mateuz Losktot, 
+  	 Sandro Santilli, Regina Obe)
+  - Making spatial indexes 3D aware
+     in progress (Paul Ramsey, Mark Cave-Ayland)
+  - Topology support improved, documented, testing 
+  	(Sandro Santilli / Faunalia for RT-SIGTA, Regina Obe, Andrea Peri)
+  - 3D relationship support functions (Nicklas Avén)
+  		ST_3DDistance, ST_3DClosestPoint, ST_3DIntersects, 
+  		ST_3DShortestLine and more ..
   - ST_Split (Sandro Santilli / Faunalia for RT-SIGTA)
   - ST_isValidDetail (Sandro Santilli / Faunalia for RT-SIGTA)
   - ST_MakeValid (Sandro Santilli / Faunalia for RT-SIGTA)

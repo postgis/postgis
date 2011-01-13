@@ -2,10 +2,51 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
-
+      <sect1>
+        <title>Release 2.0.0</title>
+        <para>Release date: 2011/MM/DD</para>
+        <para>This is a major release.  A full dump reload is required. Refer to <xref linkend="NewFunctions_2_0" /> for more details.</para>
+        <simplesect>
+        	<title>Important / Breaking Changes</title>
+        	<para>#722, #302, Most deprecated functions removed  (Regina Obe, Paul Ramsey)</para>
+        	<para> (most deprecated in 1.2) removed non-ST variants buffer, length, intersects 
+        	 (and internal functions renamed) etc. 
+     If you have been using the CHANGE your apps 
+       or suffer the consequences
+     If you don't see a function documented -- it ain't supported
+     Some of constraints in older tables were built with deprecated function
+     If you restore you may need to rebuild these with populate_geometry_columns()</para>
+     		<para>#548 (sorta), ST_NumGeometries,ST_GeometryN now returns 1 (or the geometry) instead of null 
+     for single geometries (Sandro Santilli, Maxime van Noppen)</para>
+        </simplesect>
+        <simplesect>
+          <title>New Features</title>
+          <para>Support for TIN and PolyHedralSurface (Olivier Courtin)</para>
+          <para>Raster support integrated and documented
+          		(Pierre Racine, Jorge Arevalo, Mateuz Losktot, Sandro Santilli, Regina Obe)</para>
+          <para>Making spatial indexes 3D aware - in progress (Paul Ramsey, Mark Cave-Ayland)</para>
+          <para>Topology support improved, documented, testing (Sandro Santilli / Faunalia for RT-SIGTA, Regina Obe, Andrea Peri)</para>
+          <para>3D relationship support functions  (Nicklas Avén)</para>
+          <para>   ST_3DDistance, ST_3DClosestPoint, ST_3DIntersects, ST_3DShortestLine and more ..</para>
+          <para>ST_Split (Sandro Santilli / Faunalia for RT-SIGTA)</para>
+          <para>ST_isValidDetail (Sandro Santilli / Faunalia for RT-SIGTA)</para>
+          <para>ST_MakeValid (Sandro Santilli / Faunalia for RT-SIGTA)</para>
+          <para>ST_RemoveRepeatedPoints (Sandro Santilli / Faunalia for RT-SIGTA)</para>
+          <para>ST_GeometryN and ST_NumGeometries support for non-collections (Sandro Santilli)</para>
+          <para>ST_isCollection (Sandro Santilli, Maxime van Noppen)</para>
+          <para>ST_SharedPaths (Sandro Santilli / Faunalia for RT-SIGTA)</para>
+          <para>ST_Snap (Sandro Santilli)</para>
+          <para>ST_RelateMatch (Sandro Santilli / Faunalia for RT-SIGTA)</para>
+        </simplesect>
+        <simplesect>
+        	<title>Enhancements</title>
+        	<para>Made loader tolerant of truncated multibyte values found in some free worldwide shapefiles (Sandro Santilli)</para>
+        </simplesect>
+      </sect1>
+      
       <sect1>
         <title>Release 1.5.2</title>
-        <para>Release date: 2010/09/xx (not yet released)</para>
+        <para>Release date: 2010/09/27</para>
         <para>This is a bug fix release, addressing issues that have been filed since the 1.5.1 release.</para>
         <simplesect>
           <title>Bug Fixes</title>
