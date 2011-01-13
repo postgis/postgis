@@ -361,7 +361,7 @@ ST_DWithin(
 		<refname>ST_3DMaxDistance</refname>
 
 		<refpurpose>For geometry type Returns the 3-dimensional cartesian maximum distance (based on spatial ref) between two geometries in
-		projected units.  Currently only supported for 3d points and linestrings.</refpurpose>
+		projected units.  </refpurpose>
 	  </refnamediv>
 	  <refsynopsisdiv>
 		<funcsynopsis>
@@ -381,7 +381,7 @@ ST_DWithin(
 		<title>Description</title>
 
 		<para>For geometry type returns the 3-dimensional maximum cartesian distance between two geometries in
-		projected units (spatial ref units). Currently only supported for 3D points and linestrings.  (combo one geometry is a point and one is a linestring)</para>
+		projected units (spatial ref units). </para>
 
 		<para>&Z_support;</para>
 
@@ -446,7 +446,7 @@ SELECT ST_3DMaxDistance(
 		If g1 and g2 are intersecting with more than one point the function will return a line with start
 		and end in the same point but it can be any of the intersecting points.
 		The line returned will always start in g1 and end in g2.
-		The 3D length of the line this function returns will always be the same as st_3DDistance returns for g1 and g2.	
+		The 3D length of the line this function returns will always be the same as <xref linkend="ST_3DDistance" /> returns for g1 and g2.	
 		</para>
 
 		<para>Availability: 2.0.0</para>
@@ -467,8 +467,8 @@ SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,
 		) As foo;
 	
 		
- shl3d_line_pt                        						|               shl2d_line_pt
------------------------------------------------------------+------------------------------------------
+ shl3d_line_pt                        						                |               shl2d_line_pt
+---------------------------------------------------------------------------+------------------------------------------------------
  LINESTRING(54.6993798867619 128.935022917228 11.5475869506606,100 100 30) | LINESTRING(73.0769230769231 115.384615384615,100 100)
 					</programlisting>
 							  </para></entry>
@@ -482,21 +482,21 @@ SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,
 		) As foo;
 	
 		
-                       shl3d_line_pt                        | shl2d_line_pt
------------------------------------------------------------+--------------
+                       shl3d_line_pt                                       | shl2d_line_pt
+---------------------------------------------------------------------------+------------------------
  LINESTRING(54.6993798867619 128.935022917228 11.5475869506606,100 100 30) | LINESTRING(50 75,50 74)
 					</programlisting>
 							  </para></entry>
 						  </row>
 						  <row>
-						  <entry><para>Multilinestring and polygon both 3d and 2d closest point
+						  <entry><para>Multilinestring and polygon both 3d and 2d shortest line
 					<programlisting>SELECT ST_AsEWKT(ST_3DShortestLine(poly, mline)) As shl3d,
     ST_AsEWKT(ST_ShortestLine(poly, mline)) As shl2d 
         FROM (SELECT  ST_GeomFromEWKT('POLYGON((175 150 5, 20 40 5, 35 45 5, 50 60 5, 100 100 5, 175 150 5))') As poly,
                 ST_GeomFromEWKT('MULTILINESTRING((175 155 2, 20 40 20, 50 60 -2, 125 100 1, 175 155 1),
                 (1 10 2, 5 20 1))') As mline ) As foo;
-                   shl3d                    |     shl2d
--------------------------------------------+--------------
+                   shl3d                                                                           |     shl2d
+---------------------------------------------------------------------------------------------------+--------------
  LINESTRING(39.993580415989 54.1889925532825 5,40.4078575708294 53.6052383805529 5.03423778139177) | LINESTRING(20 40,20 40)            
              </programlisting>
 							  </para></entry>
