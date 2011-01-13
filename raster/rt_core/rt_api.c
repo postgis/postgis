@@ -480,7 +480,7 @@ rt_band_get_ext_path(rt_context ctx, rt_band band) {
     assert(NULL != band);
 
     if (!band->offline) {
-        RASTER_DEBUGF(3, "rt_band_get_ext_path: non-offline band doesn't have "
+        RASTER_DEBUG(3, "rt_band_get_ext_path: non-offline band doesn't have "
                 "an associated path");
         return 0;
     }
@@ -493,7 +493,7 @@ rt_band_get_ext_band_num(rt_context ctx, rt_band band) {
     assert(NULL != band);
 
     if (!band->offline) {
-        RASTER_DEBUGF(3, "rt_band_get_ext_path: non-offline band doesn't have "
+        RASTER_DEBUG(3, "rt_band_get_ext_path: non-offline band doesn't have "
                 "an associated band number");
         return 0;
     }
@@ -506,7 +506,7 @@ rt_band_get_data(rt_context ctx, rt_band band) {
     assert(NULL != band);
 
     if (band->offline) {
-        RASTER_DEBUGF(3, "rt_band_get_data: "
+        RASTER_DEBUG(3, "rt_band_get_data: "
                 "offline band doesn't have associated data");
         return 0;
     }
