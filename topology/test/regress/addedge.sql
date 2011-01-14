@@ -6,7 +6,7 @@ SELECT 'e1',  topology.addEdge('tt', 'LINESTRING(0 0, 8 0)');
 
 -- Failing cases (should all raise exceptions) -------
 
--- Equals
+-- Equals [ TODO: turn this into a success ]
 SELECT 'e*1', topology.addEdge('tt', 'LINESTRING(0 0, 8 0)');
 -- Contained with endpoint contact 
 SELECT 'e*2', topology.addEdge('tt', 'LINESTRING(1 0, 8 0)');
@@ -35,11 +35,23 @@ SELECT 'e3',  topology.addEdge('tt', 'LINESTRING(0 0, 0 10)');
 SELECT 'e4',  topology.addEdge('tt', 'LINESTRING(8 10, 0 10)');
 
 -- Disjoint case (should succeed) ------
-
 SELECT 'e5',  topology.addEdge('tt', 'LINESTRING(8 -10, 0 -10)');
 
 -- this one touches the same edge (e5) at both endpoints
 SELECT 'e6',  topology.addEdge('tt', 'LINESTRING(8 -10, 4 -20, 0 -10)');
+
+--
+-- See http://trac.osgeo.org/postgis/ticket/770
+--
+-- Closed edge shares endpoint with existing open edge
+SELECT '#770-1', topology.addEdge('tt', 'LINESTRING(8 10, 10 10, 10 12, 8 10)');
+-- Closed edge shares endpoint with existing closed edge (and open one)
+SELECT '#770-2', topology.addEdge('tt', 'LINESTRING(8 10, 9 8, 10 9, 8 10)');
+-- boundary has puntual intersection with "interior" of closed edge 770-1,
+-- but not _only_ on endpoint !
+SELECT '#770-*', topology.addEdge('tt', 'LINESTRING(8 10, 8 12, 10 12)');
+-- same as above, but this time the new edge is closed too
+SELECT '#770-*', topology.addEdge('tt', 'LINESTRING(8 10, 7 13, 10 12, 8 12, 10 12)');
 
 SELECT edge_id, left_face, right_face,
 	next_left_edge, next_right_edge,

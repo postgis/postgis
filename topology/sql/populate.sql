@@ -179,25 +179,105 @@ BEGIN
 	--    1 * 2
 	--
 	-- Example1: linestrings touching at one endpoint
-	--    FF1F00102
-	--    FF1F**1*2 <-- our match
+	--    FF1 F00 102
+	--    FF1 F** 1*2 <-- our match
 	--
 	-- Example2: linestrings touching at both endpoints
-	--    FF1F0F1F2
-	--    FF1F**1*2 <-- our match
+	--    FF1 F0F 1F2
+	--    FF1 F** 1*2 <-- our match
 	--
-	FOR rec IN EXECUTE 'SELECT edge_id, geom FROM '
+	FOR rec IN EXECUTE 'SELECT edge_id, geom, ST_Relate('
+		|| quote_literal(aline::text)
+		|| '::geometry, geom) as im'
+		|| ' FROM '
 		|| quote_ident(atopology) || '.edge '
 		|| 'WHERE '
 		|| quote_literal(aline::text) || '::geometry && geom'
-		|| ' AND NOT ST_Relate('
-		|| quote_literal(aline::text)
-		|| '::geometry, geom, ''FF1F**1*2'''
-		|| ')'
 
 	LOOP
-		-- TODO: reuse an EQUAL edge ?
-		RAISE EXCEPTION 'Edge intersects (not on endpoints) with existing edge % ', rec.edge_id;
+
+	  IF ST_RelateMatch(rec.im, 'FF1F**1*2') THEN
+	    CONTINUE; -- no interior intersection
+	  END IF;
+
+	  --
+	  -- Closed lines have no boundary, so endpoint
+	  -- intersection would be considered interior
+	  -- See http://trac.osgeo.org/postgis/ticket/770
+	  --
+	  -- Possible relate patterns:
+	  --  FF1 0F0 1F2  : first line is open, second is closed
+	  --  F01 FFF 102  : first line is closed, second is open
+	  --  0F1 FFF 1F2  : both first and second line are closed
+	  --
+	  -- Note that the boundary of closed line never intersects
+	  -- (_F_ _F_ _F_ for first, ___ FFF ___ for second) so we
+	  -- can use that pattern to tell that a line is closed
+	  -- (only exceptional case would be in presence of an empty
+	  -- line operand, which we should deal with before anyway)
+	  -- 
+	  -- The problem here is that we have interior/interior (last case)
+	  -- or interior/boundary (first 2 cases) intersection,
+	  -- we can tell if it's puntual (dimension 0) but can't tell if
+	  -- it is _only_ on an endpoint w/out
+	  -- _computing_
+	  -- the actual intersection and comparing.
+	  --
+	  -- For sure we know that if we are facing such a case, such
+	  -- intersection will have dimension 0 and there would be NO
+	  -- intersections on the closed line boundary
+	  --
+
+	  IF ST_RelateMatch(rec.im, 'FF10F01F2') THEN
+	    -- first line (aline) is open, second (rec.geom) is closed
+	    -- first boundary has puntual intersection with second interior
+	    --
+	    -- compute intersection, check it equals second endpoint
+	    IF ST_Equals(ST_Intersection(rec.geom, aline),
+	                 ST_StartPoint(rec.geom))
+	    THEN
+	      RAISE DEBUG 'Edge shares boundary with existing closed edge %',
+	        rec.edge_id;
+	      CONTINUE;
+	    END IF;
+	  END IF;
+
+	  IF ST_RelateMatch(rec.im, 'F01FFF102') THEN
+	    -- second line (rec.geom) is open, first (aline) is closed
+	    -- second boundary has puntual intersection with first interior
+	    -- 
+	    -- compute intersection, check it equals first endpoint
+	    IF ST_Equals(ST_Intersection(rec.geom, aline),
+	                 ST_StartPoint(aline))
+	    THEN
+	      RAISE DEBUG 'Closed edge shares boundary with existing edge %',
+	        rec.edge_id;
+	      CONTINUE;
+	    END IF;
+	  END IF;
+
+	  IF ST_RelateMatch(rec.im, '0F1FFF1F2') THEN
+	    -- both lines are closed (boundary intersects nothing)
+	    -- they have puntual intersection between interiors
+	    -- 
+	    -- compute intersection, check it's a single point
+	    -- and equals first StartPoint _and_ second StartPoint
+	    IF ST_Equals(ST_Intersection(rec.geom, aline),
+	                 ST_StartPoint(aline)) OR
+	       ST_Equals(ST_Intersection(rec.geom, aline),
+	                 ST_EndPoint(aline))
+	    THEN
+	      RAISE DEBUG
+	        'Closed edge shares boundary with existing closed edge %',
+	        rec.edge_id;
+	      CONTINUE;
+	    END IF;
+	  END IF;
+
+	  -- TODO: reuse an EQUAL edge ?
+
+	  RAISE EXCEPTION 'Edge intersects (not on endpoints) with existing edge % ', rec.edge_id;
+
 	END LOOP;
 
 	--
