@@ -1470,52 +1470,6 @@ FROM (SELECT ST_MetaData(rast) As rmd
 				<para><xref linkend="RT_ST_BandMetaData" />, <xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_MakeEmptyRaster" />, <xref linkend="RT_ST_MetaData" />, <xref linkend="RT_ST_NumBands" /></para>
 			</refsection>
 		</refentry>
-		<refentry id="RT_ST_BandHasNoDataValue">
-			<refnamediv>
-				<refname>ST_BandHasNoDataValue</refname>
-				<refpurpose>Returns whether or not a band has a value that should be considered no data. If no band number provided 1 is assumed.</refpurpose>
-			</refnamediv>
-		
-			<refsynopsisdiv>
-				<funcsynopsis>
-				  <funcprototype>
-					<funcdef>boolean <function>ST_BandHasNoDataValue</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>boolean <function>ST_BandHasNoDataValue</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
-				  </funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-		
-			<refsection>
-				<title>Description</title>
-				
-				<para>Returns true or false whether or not a band has a value that should be considered no data. If no band number provided 1 is assumed.</para>
-				</refsection>
-				
-				<refsection>
-					<title>Examples</title>
-				
-					<programlisting>-- change just first band no data value
-SELECT ST_BandHasNoDataValue(rast,1)  As hasnodataval
-FROM dummy_rast
-WHERE rid = 2;
-
-hasnodataval
-------------
-f
-					</programlisting>
-			
-			</refsection>
-
-			<refsection>
-				<title>See Also</title>
-				<para><xref linkend="RT_ST_SetBandNoDataValue" />,, <xref linkend="RT_ST_BandNoDataValue" />,<xref linkend="RT_ST_SetBandNoDataValue" /></para>
-			</refsection>
-		</refentry>
 		
 		<refentry id="RT_ST_BandMetaData">
 			<refnamediv>
@@ -2364,55 +2318,11 @@ WHERE rid = 2;
 	</sect1>
 	<sect1 id="RasterBand_Editors">
 		<title>Raster Band Editors</title>
-		<refentry id="RT_ST_SetBandHasNoDataValue">
-			<refnamediv>
-				<refname>ST_SetBandHasNoDataValue</refname>
-				<refpurpose>Sets whether or not a band has a value that should be considered no data. Band defaults to 1.</refpurpose>
-			</refnamediv>
-		
-			<refsynopsisdiv>
-				<funcsynopsis>
-				<funcprototype>
-					<funcdef>raster <function>ST_SetBandHasNoDataValue</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>has_nodatavalue</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>raster <function>ST_SetBandHasNoDataValue</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>has_nodatavalue</parameter></paramdef>
-				  </funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-		
-			<refsection>
-				<title>Description</title>
-				
-				<para>Sets whether or not a band has a value that should be considered no data. Band num defaults to 1.</para>
-				</refsection>
-				
-				<refsection>
-					<title>Examples</title>
-				
-					<programlisting>-- change just first band no data value
-UPDATE dummy_rast 
-	SET rast = ST_SetBandHasNoDataValue(rast,1, false)  
-WHERE rid = 2;
-					</programlisting>
-			
-			</refsection>
-
-			<refsection>
-				<title>See Also</title>
-				<para><xref linkend="RT_ST_BandNoDataValue" />,<xref linkend="RT_ST_SetBandNoDataValue" /></para>
-			</refsection>
-		</refentry>
 		
 		<refentry id="RT_ST_SetBandNoDataValue">
 			<refnamediv>
 				<refname>ST_SetBandNoDataValue</refname>
-				<refpurpose>Sets the value for the given band that represents no data. Band 1 is assumed if no band is specified.</refpurpose>
+				<refpurpose>Sets the value for the given band that represents no data. Band 1 is assumed if no band is specified.  To mark a band as having no nodata value, set the nodata value = NULL</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -2455,6 +2365,11 @@ UPDATE dummy_rast
 				,2,99),
 				3,108)  
 		WHERE rid = 2;
+		
+-- wipe out the nodata value this will ensure all pixels are considered for all processing functions
+UPDATE dummy_rast 
+	SET rast = ST_SetBandNoDataValue(rast,1, NULL)  
+WHERE rid = 2;
 					</programlisting>
 			
 			</refsection>
