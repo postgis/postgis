@@ -121,7 +121,6 @@ clean:
 	@rm -f postgis-out.xml postgis_aggs_mm.xml
 
 maintainer-clean: clean
-	make -C html/image_src clean
 	@rm -f html/*.html \
 		postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
 
