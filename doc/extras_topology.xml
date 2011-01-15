@@ -551,12 +551,14 @@ edgeid
 			<refsection>
 				<title>Examples</title>
 				<programlisting>
--- first add the edges we use generate_series as an iterator (the below will only work for polygons with &lt; 10000 points because of our max in gs) 
+-- first add the edges we use generate_series as an iterator (the below 
+-- will only work for polygons with &lt; 10000 points because of our max in gs) 
 SELECT topology.AddEdge('ma_topo', ST_MakeLine(ST_PointN(geom,i), ST_PointN(geom, i + 1) )) As edgeid
     FROM (SELECT  ST_NPoints(geom) AS npt, geom
             FROM 
-                (SELECT ST_Boundary(ST_GeomFromText('POLYGON((234896.5 899456.7,234914 899436.4,234946.6 899356.9,234872.5 899328.7,234891 899285.4,234992.5 899145,
-    234890.6 899069,234755.2 899255.4,234612.7 899379.4,234776.9 899563.7,234896.5 899456.7))', 26986) )  As geom
+                (SELECT ST_Boundary(ST_GeomFromText('POLYGON((234896.5 899456.7,234914 899436.4,234946.6 899356.9,234872.5 899328.7,
+                234891 899285.4,234992.5 899145, 234890.6 899069,234755.2 899255.4,
+                234612.7 899379.4,234776.9 899563.7,234896.5 899456.7))', 26986) )  As geom
             )  As geoms) As facen CROSS JOIN generate_series(1,10000) As i
          WHERE i &lt; npt;
 -- result --
@@ -682,6 +684,58 @@ nodeid
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="AddTopoGeometryColumn"/></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="ST_GetFaceGeometry">
+			<refnamediv>
+				<refname>ST_GetFaceGeometry</refname>
+			
+				<refpurpose>Returns the polygon in the given topology with the specified face id.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>geometry <function>ST_GetFaceGeometry</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>faceid</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>Returns the polygon in the given topology with the specified face id. Builds the polygon from the edges making up the face.</para>
+             
+                
+                <!-- use this format if new function -->
+                <para>Availability: 1.? </para>
+                	<para>&sqlmm_compliant; SQL-MM: X.3.16?</para>
+			</refsection>
+		
+		
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+-- Returns the wkt of the polygon added with AddFace
+SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) As facegeomwkt;
+-- result --
+               facegeomwkt
+
+--------------------------------------------------------------------------------
+ POLYGON((234776.9 899563.7,234896.5 899456.7,234914 899436.4,234946.6 899356.9,
+234872.5 899328.7,234891 899285.4,234992.5 899145,234890.6 899069,
+234755.2 899255.4,234612.7 899379.4,234776.9 899563.7))
+ 
+</programlisting>
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="AddFace"/></para>
 			</refsection>
 		</refentry>
 		
