@@ -408,6 +408,7 @@ BEGIN
 		|| '::geometry && geom AND ST_Relate(geom, '
 		|| quote_literal(bounds::text)
 		|| ', ''1FF******'')'
+		|| ' GROUP BY geom, edge_id, left_face, right_face, side'
 	LOOP
 		RAISE DEBUG 'Edge % (left:%, right:%) - side : %',
 			rec.edge_id, rec.left_face, rec.right_face, rec.side;
