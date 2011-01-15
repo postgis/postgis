@@ -523,7 +523,7 @@ edgeid
 				<refname>AddFace</refname>
 			
 				<refpurpose>Adds a polygon to the faces table in the specified topology schema and returns the faceid of new face. 
-				    If face already exists the id of the existing face is returned. Edges of the polygon must already otherwise an error is thrown.</refpurpose>
+				    If face already exists the id of the existing face is returned. Edges of the polygon must already exist otherwise an error is thrown.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -531,7 +531,7 @@ edgeid
 					<funcprototype>
 					<funcdef>integer <function>AddFace</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
-					<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>apolygon</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
