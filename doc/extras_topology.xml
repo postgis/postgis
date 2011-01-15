@@ -464,7 +464,7 @@ face without edges |   0 |
 			<refnamediv>
 				<refname>AddEdge</refname>
 			
-				<refpurpose>Adds an linestring edge to the edge table and associated nodes to the nodes table of the specified topology schema using the specified linestring geometry and returns the edgeid of the new record.</refpurpose>
+				<refpurpose>Adds a linestring edge to the edge table and associated nodes to the point nodes table of the specified topology schema using the specified linestring geometry and returns the edgeid of the new record.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -514,6 +514,55 @@ edgeid
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="CreateTopology"/></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="AddNode">
+			<refnamediv>
+				<refname>AddNode</refname>
+			
+				<refpurpose>Adds a point node to the nodes table in the specified topology schema and returns the nodeid of new node. If point already exists as node, the existing nodeid is returned.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>integer <function>AddNode</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>Adds a point node to the nodes table in the specified topology schema.  The <xref linkend="AddEdge" /> function automatically adds start and end points of an edge when called so not necessary to explicitly add nodes of an edge.</para>
+                <note><para>If the <varname>apoint</varname> geometry already exists as a node, the node is not added but the existing nodeid is returned.</para></note>
+                
+                <!-- use this format if new function -->
+                <para>Availability: 2.0.0</para>
+			</refsection>
+		
+		
+			<refsection>
+				<title>Examples</title>
+				<programlisting>SELECT topology.AddNode('ma_topo', ST_GeomFromText('POINT(227641.6 893816.5)', 26986) ) As nodeid;
+
+				
+SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227591.9 893900.4,227622.6 893844.2,227641.6 893816.5,227704.5 893778.5)', 26986) ) As edgeid;
+-- result --
+nodeid
+--------
+ 4
+ 
+</programlisting>
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="AddEdge"/>, <xref linkend="CreateTopology"/></para>
 			</refsection>
 		</refentry>
 		
