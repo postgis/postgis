@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="Topology">
 	<title>Topology</title>
-	<para>The PostGIS Topology types and functions are used to manged topological objects such as faces, edges and nodes.  This module has existed in prior versions of PostGIS but was never part of the documentation.
-	    In PostGIS 2.0.0 major cleanup is going on to remove use of all deprecated functions in it, fix known usability issues and enhance to closer conform to SQL-MM standards.</para>
+	<para>The PostGIS Topology types and functions are used to manage topological objects such as faces, edges and nodes.  
+	An example of a topologically based GIS database is the <ulink url="http://www.census.gov/geo/www/tiger/overview.html">US Census Topologically Integrated Geographic Encoding and Reference System (TIGER)</ulink> database.
+	The PostGIS topology module has existed in prior versions of PostGIS but was never part of the documentation.
+	    In PostGIS 2.0.0 major cleanup is going on to remove use of all deprecated functions in it, fix known usability issues, add new functions and enhance to closer conform to SQL-MM standards.</para>
 	<para>Details of this project can be found at <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiPostgisTopology">PostGIS Tology Wiki</ulink></para>
 	<para>All functions and tables associated with this module are installed in a schema called <varname>topology</varname>.</para>
 	<para>Functions that are defined in SQL/MM standard are prefixed with ST_ and functions specific to PostGIS are not prefixed.</para>
@@ -480,6 +482,8 @@ face without edges |   0 |
             
                 <para>Adds an edge to the edge table and associated nodes to the nodes table of the specified <varname>toponame</varname> schema using the specified linestring geometry and returns the edgeid of the new record.</para>
                 <note><para>If the <varname>aline</varname> geometry crosses an existing linestring edge, or intersects an existing not at the endpoints, then an error is thrown and the edge is not added.</para></note>
+                 <note><para>The geometry of <varname>aline</varname> must be have the same <varname>srid</varname> as defined for the topology otherwise an invalid spatial reference sys error will be thrown.</para></note>
+        
         
                 <!-- use this format if new function -->
                 <para>Availability: 2.0.0</para>
@@ -488,13 +492,28 @@ face without edges |   0 |
 		
 			<refsection>
 				<title>Examples</title>
-				<programlisting><!-- TODO --></programlisting>
+				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227575.8 893917.2,227591.9 893900.4)', 26986) ) As edgeid;
+-- result-
+edgeid
+--------
+ 1
+				
+SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227591.9 893900.4,227622.6 893844.2,227641.6 893816.5,227704.5 893778.5)', 26986) ) As edgeid;
+-- result --
+edgeid
+--------
+ 2
+ 
+ SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227591.2 893900, 227591.9 893900.4,227704.5 893778.5)', 26986) ) As edgeid;
+ -- gives error --
+ ERROR:  Edge intersects (not on endpoints) with existing edge 1
+</programlisting>
 			</refsection>
 		
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para></para>
+				<para><xref linkend="CreateTopology"/></para>
 			</refsection>
 		</refentry>
 		
