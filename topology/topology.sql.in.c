@@ -345,16 +345,6 @@ CREATE DOMAIN topology.TopoElementArray AS integer[][]
 		AND array_upper(VALUE, 3) IS NULL
 	);
 
---
--- TopoGeomElementArray domain
---
-CREATE DOMAIN topology.TopoGeomElementArray AS integer[][]
-	CONSTRAINT DIMENSIONS CHECK (
-		array_upper(VALUE, 2) IS NOT NULL
-		AND array_upper(VALUE, 2) = 2
-		AND array_upper(VALUE, 3) IS NULL
-	);
-
 --{ RelationTrigger()
 --
 -- Relation integrity trigger
