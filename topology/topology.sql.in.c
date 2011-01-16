@@ -1255,6 +1255,7 @@ BEGIN
 		|| quote_ident(toponame) || ''.node a, ''
 		|| quote_ident(toponame) || ''.node b ''
 		|| ''WHERE a.node_id < b.node_id AND a.geom && b.geom''
+		|| '' AND ST_Distance(a.geom, b.geom) = 0''
 	LOOP
 		retrec.error = ''coincident nodes'';
 		retrec.id1 = rec.id1;
