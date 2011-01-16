@@ -1542,7 +1542,7 @@ BEGIN
 	-- 
 	-- LOOP through the elements invoking the specific function
 	-- 
-	FOR rec IN SELECT geom(dump(acollection))
+	FOR rec IN SELECT geom(ST_Dump(acollection))
 	LOOP
 		typ := substring(geometrytype(rec.geom), 1, 3);
 
