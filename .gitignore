@@ -6,6 +6,8 @@ configure
 doc/Makefile
 doc/Makefile.comments
 doc/html/image_src/Makefile
+doc/postgis_comments.sql
+doc/raster_comments.sql
 liblwgeom/Makefile
 liblwgeom/cunit/Makefile
 liblwgeom/cunit/cu_tester
