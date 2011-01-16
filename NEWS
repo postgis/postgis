@@ -7,13 +7,13 @@ YYYY/MM/DD
      non-ST variants buffer, 
      length, intersects 
      (and internal functions renamed) etc. 
-     If you have been using these - CHANGE your apps or suffer the consequences
-     If you don't see a function documented -- it ain't supported
-     Some of constraints in older tables were built with deprecated function
-     If you restore you may need to rebuild these 
-     with populate_geometry_columns()
-  -- #548 (sorta), ST_NumGeometries,ST_GeometryN now returns 1 (or the geometry) instead of null 
-     for single geometries (Sandro Santilli, Maxime van Noppen)
+     If you have been using these - CHANGE your apps or suffer the consequences.
+     If you don't see a function documented -- it ain't supported.
+     Some constraints in older tables were built with deprecated functions.
+       If you restore you may need to rebuild these 
+       with populate_geometry_columns().
+  -- #548 (sorta), ST_NumGeometries,ST_GeometryN now returns 1 (or the geometry) 
+     instead of null for single geometries (Sandro Santilli, Maxime van Noppen)
 
   * New Features *
   
@@ -43,7 +43,8 @@ YYYY/MM/DD
 
   - Made loader tolerant of truncated multibyte values found
     in some free worldwide shapefiles (Sandro Santilli)
-
+  - Shp-pgsql GUI loader - support loading multiple 
+    files at a time. (Mark Leslie)    
 PostGIS 1.5.2
 2010/09/27
 
