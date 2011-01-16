@@ -1159,20 +1159,8 @@ CREATE OR REPLACE FUNCTION ST_MakeEnvelope(float8, float8, float8, float8, integ
 	AS 'MODULE_PATHNAME', 'ST_MakeEnvelope'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MakePolygon(geometry, geometry[])
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_makepoly'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MakePolygon(geometry, geometry[])
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_makepoly'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MakePolygon(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_makepoly'
 	LANGUAGE 'C' IMMUTABLE STRICT;
@@ -1182,13 +1170,6 @@ CREATE OR REPLACE FUNCTION ST_MakePolygon(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_makepoly'
 	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION BuildArea(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_buildarea'
-	LANGUAGE 'C' IMMUTABLE STRICT
-	COST 100;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_BuildArea(geometry)

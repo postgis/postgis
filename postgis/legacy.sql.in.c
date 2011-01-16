@@ -554,7 +554,7 @@ BEGIN
 		RAISE EXCEPTION 'Input is not a MultiLinestring';
 	END IF;
 
-	geom := ST_Multi(BuildArea(mline));
+	geom := ST_Multi(ST_BuildArea(mline));
 
 	RETURN geom;
 END;
@@ -571,6 +571,13 @@ CREATE OR REPLACE FUNCTION boundary(geometry)
 CREATE OR REPLACE FUNCTION buffer(geometry,float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','buffer'
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION BuildArea(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_buildarea'
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
 	
@@ -823,6 +830,18 @@ CREATE OR REPLACE FUNCTION locate_along_measure(geometry, float8)
 	RETURNS geometry
 	AS $$ SELECT locate_between_measures($1, $2, $2) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION MakePolygon(geometry, geometry[])
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_makepoly'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION MakePolygon(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_makepoly'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION MPolyFromWKB(bytea)
