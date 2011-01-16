@@ -30,6 +30,8 @@
 				the 3D shortest line. The 3D length of the 3D shortest line is the 3D distance.
 			</para>
 			<para>&Z_support;</para>
+			<!-- Optionally mention supports Polyhedral Surface  -->
+			<para>&P_support;</para>
 			<para>Availability: 2.0.0</para>
 		  </refsection>
 	
@@ -122,6 +124,8 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
 		projected units (spatial ref units).</para>
 
 		<para>&Z_support;</para>
+		<!-- Optionally mention supports Polyhedral Surface  -->
+		<para>&P_support;</para>
 		<para>&sqlmm_compliant; SQL-MM ?</para>
 
 		<para>Availability: 2.0.0</para>
@@ -196,7 +200,9 @@ SELECT ST_3DDistance(poly, mline) As dist3d,
 		<para>For geometry type returns true if the 3d distance between two objects is within distance_of_srid specified 
 		projected units (spatial ref units). </para>
 
-		<para>&Z_support;</para>
+        <para>&Z_support;</para>
+        <!-- Optionally mention supports Polyhedral Surface  -->
+        <para>&P_support;</para>
 		<para>&sqlmm_compliant; SQL-MM ?</para>
 
 		<para>Availability: 2.0.0</para>
@@ -273,7 +279,9 @@ ST_DWithin(
 		</note>
 
 		<para>Availability: 2.0.0</para>
-		<para>&Z_support;</para>
+        <para>&Z_support;</para>
+        <!-- Optionally mention supports Polyhedral Surface  -->
+        <para>&P_support;</para>
 
 	  </refsection>
 
@@ -337,6 +345,8 @@ ST_DWithin(
 			  geometries.</para>
 			</note>
 			<para>&Z_support;</para>
+			<!-- Optionally mention supports Polyhedral Surface  -->
+			<para>&P_support;</para>
 			<para>&sqlmm_compliant; SQL-MM 3: ?</para>
 		</refsection>
 		<refsection>
@@ -354,6 +364,104 @@ ST_DWithin(
 			<title>See Also</title>
 			<para><xref linkend="ST_Intersects"/></para>
 		</refsection>
+	</refentry>
+	
+	<refentry id="ST_3DLongestLine">
+	  <refnamediv>
+		<refname>ST_3DLongestLine</refname>
+
+		<refpurpose>Returns the 3-dimensional longest line between two geometries</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_3DLongestLine</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the 3-dimensional longest line between two geometries. The function will
+		only return the first longest line if more than one.
+		The line returned will always start in g1 and end in g2.
+		The 3D length of the line this function returns will always be the same as <xref linkend="ST_3DMaxDistance" /> returns for g1 and g2.	
+		</para>
+
+		<para>Availability: 2.0.0</para>
+		<para>&Z_support;</para>
+		<!-- Optionally mention supports Polyhedral Surface  -->
+		<para>&P_support;</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+				<informaltable>
+					  <tgroup cols="1">
+						<tbody>
+						  <row>
+							<entry><para>linestring and point -- both 3d and 2d longest line
+					<programlisting>
+SELECT ST_AsEWKT(ST_3DLongestLine(line,pt)) AS lol3d_line_pt, 
+		ST_AsEWKT(ST_LongestLine(line,pt)) As lol2d_line_pt
+	FROM (SELECT 'POINT(100 100 30)'::geometry As pt, 
+			'LINESTRING (20 80 20, 98 190 1, 110 180 3, 50 75 1000)'::geometry As line
+		) As foo;
+	
+		
+           lol3d_line_pt           |       lol2d_line_pt
+-----------------------------------+----------------------------
+ LINESTRING(50 75 1000,100 100 30) | LINESTRING(98 190,100 100)
+					</programlisting>
+							  </para></entry>
+						    </row>
+						    <row>
+							<entry><para>linestring and multipoint -- both 3d and 2d longest line
+					<programlisting>SELECT ST_AsEWKT(ST_3DLongestLine(line,pt)) AS lol3d_line_pt, 
+		ST_AsEWKT(ST_LongestLine(line,pt)) As lol2d_line_pt
+	FROM (SELECT 'MULTIPOINT(100 100 30, 50 74 1000)'::geometry As pt, 
+			'LINESTRING (20 80 20, 98 190 1, 110 180 3, 50 75 900)'::geometry As line
+		) As foo;
+	
+		
+          lol3d_line_pt          |      lol2d_line_pt
+---------------------------------+--------------------------
+ LINESTRING(98 190 1,50 74 1000) | LINESTRING(98 190,50 74)
+					</programlisting>
+							  </para></entry>
+						  </row>
+						  <row>
+						  <entry><para>Multilinestring and polygon both 3d and 2d longest line
+					<programlisting>SELECT ST_AsEWKT(ST_3DLongestLine(poly, mline)) As lol3d,
+    ST_AsEWKT(ST_LongestLine(poly, mline)) As lol2d 
+        FROM (SELECT  ST_GeomFromEWKT('POLYGON((175 150 5, 20 40 5, 35 45 5, 50 60 5, 100 100 5, 175 150 5))') As poly,
+                ST_GeomFromEWKT('MULTILINESTRING((175 155 2, 20 40 20, 50 60 -2, 125 100 1, 175 155 1),
+                (1 10 2, 5 20 1))') As mline ) As foo;
+            lol3d             |          lol2d
+------------------------------+--------------------------
+ LINESTRING(175 150 5,1 10 2) | LINESTRING(175 150,1 10)        
+             </programlisting>
+							  </para></entry>
+						  </row>
+			</tbody>
+		</tgroup>
+	</informaltable>
+	
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_3DClosestPoint"/>, <xref linkend="ST_3DDistance"/>, <xref linkend="ST_LongestLine"/>, <xref linkend="ST_3DShortestLine"/>, <xref linkend="ST_3DMaxDistance"/></para>
+	  </refsection>
 	</refentry>
 	
 	<refentry id="ST_3DMaxDistance">
@@ -383,7 +491,9 @@ ST_DWithin(
 		<para>For geometry type returns the 3-dimensional maximum cartesian distance between two geometries in
 		projected units (spatial ref units). </para>
 
-		<para>&Z_support;</para>
+        <para>&Z_support;</para>
+        <!-- Optionally mention supports Polyhedral Surface  -->
+        <para>&P_support;</para>
 
 		<para>Availability: 2.0.0</para>
 	  </refsection>
@@ -450,6 +560,9 @@ SELECT ST_3DMaxDistance(
 		</para>
 
 		<para>Availability: 2.0.0</para>
+		<para>&Z_support;</para>
+		<!-- Optionally mention supports Polyhedral Surface  -->
+		<para>&P_support;</para>
 	  </refsection>
 
 	  <refsection>
