@@ -464,7 +464,7 @@ face without edges |   0 |
 			<refnamediv>
 				<refname>AddEdge</refname>
 			
-				<refpurpose>Adds a linestring edge to the edge table and associated nodes to the point nodes table of the specified topology schema using the specified linestring geometry and returns the edgeid of the new record.</refpurpose>
+				<refpurpose>Adds a linestring edge to the edge table and associated start and end points to the point nodes table of the specified topology schema using the specified linestring geometry and returns the edgeid of the new edge.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -483,7 +483,7 @@ face without edges |   0 |
                 <para>Adds an edge to the edge table and associated nodes to the nodes table of the specified <varname>toponame</varname> schema using the specified linestring geometry and returns the edgeid of the new record. 
                 The newly added edge has "universe" face on both sides and links to itself.</para>
                 <note><para>If the <varname>aline</varname> geometry crosses an existing linestring edge, or intersects an existing not at the endpoints, then an error is thrown and the edge is not added.</para></note>
-                 <note><para>The geometry of <varname>aline</varname> must be have the same <varname>srid</varname> as defined for the topology otherwise an invalid spatial reference sys error will be thrown.</para></note>
+                <note><para>The geometry of <varname>aline</varname> must have the same <varname>srid</varname> as defined for the topology otherwise an invalid spatial reference sys error will be thrown.</para></note>
         
         
                 <!-- use this format if new function -->
@@ -499,13 +499,15 @@ edgeid
 --------
  1
 				
-SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227591.9 893900.4,227622.6 893844.2,227641.6 893816.5,227704.5 893778.5)', 26986) ) As edgeid;
+SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227591.9 893900.4,227622.6 893844.2,227641.6 893816.5,
+ 227704.5 893778.5)', 26986) ) As edgeid;
 -- result --
 edgeid
 --------
  2
  
- SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227591.2 893900, 227591.9 893900.4,227704.5 893778.5)', 26986) ) As edgeid;
+ SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227591.2 893900, 227591.9 893900.4,
+  227704.5 893778.5)', 26986) ) As edgeid;
  -- gives error --
  ERROR:  Edge intersects (not on endpoints) with existing edge 1
 </programlisting>
@@ -514,7 +516,7 @@ edgeid
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="CreateTopology"/></para>
+				<para><xref linkend="CreateTopology"/>, <xref linkend="spatial_ref_sys"/></para>
 			</refsection>
 		</refentry>		
 		
@@ -542,6 +544,7 @@ edgeid
                 <para>Add a face primitive to a topology and get it's identifier. For a newly added face, its edges will be appropriately linked (marked as left-face or right-face).</para>
                 <para>The target topology is assumed to be valid (containing no self-intersecting edges). An exception is raised if: The polygon boundary is not fully defined by existing edges or the polygon overlaps an existing face.</para>
                 <note><para>If the <varname>apolygon</varname> geometry already exists as a face the face id of the existing face is returned.</para></note>
+                <note><para>The <varname>apolygon</varname> geometry must have the same <varname>srid</varname> as defined for the topology otherwise an invalid spatial reference sys error will be thrown.</para></note>
                 
                 <!-- use this format if new function -->
                 <para>Availability: 2.0.0</para>
@@ -578,8 +581,9 @@ SELECT topology.AddEdge('ma_topo', ST_MakeLine(ST_PointN(geom,i), ST_PointN(geom
 -- then add the face -
 				
 SELECT topology.AddFace('ma_topo', 
-    ST_GeomFromText('POLYGON((234896.5 899456.7,234914 899436.4,234946.6 899356.9,234872.5 899328.7,234891 899285.4,234992.5 899145,
-    234890.6 899069,234755.2 899255.4,234612.7 899379.4,234776.9 899563.7,234896.5 899456.7))', 26986) ) As faceid;
+    ST_GeomFromText('POLYGON((234896.5 899456.7,234914 899436.4,234946.6 899356.9,234872.5 899328.7,
+    234891 899285.4,234992.5 899145, 234890.6 899069,234755.2 899255.4,
+    234612.7 899379.4,234776.9 899563.7,234896.5 899456.7))', 26986) ) As faceid;
 -- result --
 faceid
 --------
@@ -591,7 +595,7 @@ faceid
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="AddEdge"/>, <xref linkend="CreateTopology"/></para>
+				<para><xref linkend="AddEdge"/>, <xref linkend="CreateTopology"/>, <xref linkend="spatial_ref_sys"/></para>
 			</refsection>
 		</refentry>
 		
@@ -599,7 +603,7 @@ faceid
 			<refnamediv>
 				<refname>AddNode</refname>
 			
-				<refpurpose>Adds a point node to the nodes table in the specified topology schema and returns the nodeid of new node. If point already exists as node, the existing nodeid is returned.</refpurpose>
+				<refpurpose>Adds a point node to the node table in the specified topology schema and returns the nodeid of new node. If point already exists as node, the existing nodeid is returned.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -615,7 +619,7 @@ faceid
 			<refsection>
                 <title>Description</title>
             
-                <para>Adds a point node to the nodes table in the specified topology schema.  The <xref linkend="AddEdge" /> function automatically adds start and end points of an edge when called so not necessary to explicitly add nodes of an edge.
+                <para>Adds a point node to the node table in the specified topology schema.  The <xref linkend="AddEdge" /> function automatically adds start and end points of an edge when called so not necessary to explicitly add nodes of an edge.
                 When adding a new node it checks for the existance of any edge crossing the given point, raising an exception if found.</para>
                 <note><para>If the <varname>apoint</varname> geometry already exists as a node, the node is not added but the existing nodeid is returned.</para></note>
                 
@@ -627,9 +631,6 @@ faceid
 			<refsection>
 				<title>Examples</title>
 				<programlisting>SELECT topology.AddNode('ma_topo', ST_GeomFromText('POINT(227641.6 893816.5)', 26986) ) As nodeid;
-
-				
-SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227591.9 893900.4,227622.6 893844.2,227641.6 893816.5,227704.5 893778.5)', 26986) ) As edgeid;
 -- result --
 nodeid
 --------
@@ -684,6 +685,51 @@ nodeid
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="AddTopoGeometryColumn"/></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="ST_CreateTopoGeo">
+			<refnamediv>
+				<refname>ST_CreateTopoGeo</refname>
+			
+				<refpurpose>Adds a collection of geometries to a given topology and returns a message detailing success.  If collection contains anything but points and linestrings, an error is thrown. Will also 
+				throw an error if there are already edges and nodes in the topology. polygon support not implemented yet.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>text <function>ST_CreateTopoGeo</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>acollection</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>Adds a collection of geometries to a given topology and returns a message detailing success.  If collection contains anything butn points and linestrings an error is thrown. Will also 
+				throw an error if there are already edges and nodes in the topology or coincident nodes etc.  Support for polygons not yet implemented.</para>
+				
+				<para>Useful for populating an empty topology.</para>
+             
+                
+                <!-- use this format if new function -->
+                <para>Availability: 1.? </para>
+                	<para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details -- X.3.18</para>
+			</refsection>
+		
+		
+			<refsection>
+				<title>Examples</title>
+				 <!-- TODO -->
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="CreateTopology"/>, <xref linkend="DropTopology"/></para>
 			</refsection>
 		</refentry>
 		
