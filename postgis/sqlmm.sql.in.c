@@ -227,11 +227,11 @@ CREATE OR REPLACE FUNCTION SE_M(geometry)
 -- SQL/MM (ArcSDE subset) - SQL Functions on type ST_Polygon
 -------------------------------------------------------------------------------
 
--- PostGIS equivalent function: MakePolygon(geometry)
+-- PostGIS equivalent function: ST_MakePolygon(geometry)
 CREATE OR REPLACE FUNCTION ST_Polygon(geometry, int)
 	RETURNS geometry
 	AS $$ 
-	SELECT setSRID(makepolygon($1), $2)
+	SELECT ST_SetSRID(ST_MakePolygon($1), $2)
 	$$	
 	LANGUAGE 'SQL' IMMUTABLE STRICT; 
 
