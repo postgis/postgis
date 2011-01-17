@@ -19,7 +19,7 @@ YYYY/MM/DD
   
   - Support for TIN and PolyHedralSurface (Olivier Courtin)
   - Raster support integrated and documented
-  	(Pierre Racine, Jorge Arevalo, Mateuz Losktot, 
+  	(Pierre Racine, Jorge Arevalo, Mateusz Loskot, 
   	 Sandro Santilli, Regina Obe)
   - Making spatial indexes 3D aware
      in progress (Paul Ramsey, Mark Cave-Ayland)
