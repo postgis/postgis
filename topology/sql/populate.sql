@@ -82,11 +82,15 @@ BEGIN
 	--
 	FOR rec IN EXECUTE 'SELECT edge_id FROM '
 		|| quote_ident(atopology) || '.edge ' 
-		|| 'WHERE ST_Crosses(' || quote_literal(apoint::text) 
-		|| ', geom)'
+		|| 'WHERE ST_DWithin('
+		|| quote_literal(apoint::text) 
+		|| ', geom, 0) AND NOT ST_Equals('
+		|| quote_literal(apoint::text)
+		|| ', ST_StartPoint(geom)) AND NOT ST_Equals('
+		|| quote_literal(apoint::text)
+		|| ', ST_EndPoint(geom))'
 	LOOP
-		RAISE EXCEPTION
-		'An edge crosses the given node.';
+		RAISE EXCEPTION 'An edge crosses the given node.';
 	END LOOP;
 
 	--

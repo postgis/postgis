@@ -3,6 +3,13 @@ p1|1
 p1b|1
 p2|2
 p2b|2
+ERROR:  An edge crosses the given node.
+p3|3
+p4|4
+p5|5
 1||POINT(0 0)
 2||POINT(1 0)
+3||POINT(0 10)
+4||POINT(10 10)
+5||POINT(0 20)
 Topology 'nodes' dropped
