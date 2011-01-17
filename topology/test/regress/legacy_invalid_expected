@@ -15,7 +15,7 @@ edge crosses edge|30|32
 edge start node geometry mis-match|30|4
 edge end node geometry mis-match|30|3
 face without edges|10|
-face overlaps face|2|12
 face within face|11|2
+face overlaps face|2|12
 COMMIT
 Topology 'invalid_topology' dropped

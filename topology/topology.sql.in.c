@@ -1247,6 +1247,7 @@ DECLARE
 	toponame alias for $1;
 	retrec topology.ValidateTopology_ReturnType;
 	rec RECORD;
+	rec2 RECORD;
 	i integer;
 BEGIN
 
@@ -1393,44 +1394,66 @@ BEGIN
 		RETURN NEXT retrec;
 	END LOOP;
 
-	-- Check for overlapping faces 
+	-- Check for overlap and containment between faces 
+	-- TODO: try to use the spatial index
 	-- TODO: this check requires some thinking, do we really
-	--       have to construct face geometry to detect overlap with
-	--       another face ??
-	FOR rec IN EXECUTE 'SELECT f1.face_id as id1, f2.face_id as id2 FROM '
-		|| quote_ident(toponame) || '.face f1, '
-		|| quote_ident(toponame) || '.face f2 '
-		|| 'WHERE f1.face_id > 0 AND f1.face_id < f2.face_id AND '
-		|| ' ST_Overlaps(topology.ST_GetFaceGeometry('
+	--       have to construct full face geometry to detect these ?
+	FOR rec IN EXECUTE
+		'SELECT f1.face_id as id1, f2.face_id as id2, '
+		|| ' ST_Relate(topology.ST_GetFaceGeometry('
 		|| quote_literal(toponame) || ', f1.face_id), '
 		|| ' topology.ST_GetFaceGeometry('
-		|| quote_literal(toponame) || ', f2.face_id))'
+		|| quote_literal(toponame) || ', f2.face_id)) as im'
+		|| ' FROM '
+		|| quote_ident(toponame) || '.face f1, '
+		|| quote_ident(toponame) || '.face f2 '
+		|| 'WHERE f1.face_id > 0 AND f1.face_id < f2.face_id'
 	LOOP
+	  -- Face overlap
+	  IF ST_RelateMatch(rec.im, 'T*T***T**') THEN
 		retrec.error = 'face overlaps face';
 		retrec.id1 = rec.id1;
 		retrec.id2 = rec.id2;
 		RETURN NEXT retrec;
+	  END IF;
+
+	  -- Face 1 is within face 2 
+	  IF ST_RelateMatch(rec.im, 'T*F**F***') THEN
+		retrec.error = 'face within face';
+		retrec.id1 = rec.id1;
+		retrec.id2 = rec.id2;
+		RETURN NEXT retrec;
+	  END IF;
+
+	  -- Face 1 contains face 2
+	  IF ST_RelateMatch(rec.im, 'T*****FF*') THEN
+		retrec.error = 'face within face';
+		retrec.id1 = rec.id2;
+		retrec.id2 = rec.id1;
+		RETURN NEXT retrec;
+	  END IF;
+
 	END LOOP;
 
 	-- Check for face within face
 	-- TODO: this check requires some thinking, do we really
 	--       have to construct face geometry to detect within condition
 	--       another face ??
-	FOR rec IN EXECUTE 'SELECT f1.face_id as id1, f2.face_id as id2 FROM '
-		|| quote_ident(toponame) || '.face f1, '
-		|| quote_ident(toponame) || '.face f2 '
-		|| 'WHERE f1.face_id != 0 AND f2.face_id != 0 '
-		|| 'AND f1.face_id != f2.face_id '
-		|| 'AND ST_Within(topology.ST_GetFaceGeometry('
-		|| quote_literal(toponame) || ', f1.face_id), '
-		|| ' topology.ST_GetFaceGeometry('
-		|| quote_literal(toponame) || ', f2.face_id))'
-	LOOP
-		retrec.error = 'face within face';
-		retrec.id1 = rec.id1;
-		retrec.id2 = rec.id2;
-		RETURN NEXT retrec;
-	END LOOP;
+--	FOR rec IN EXECUTE 'SELECT f1.face_id as id1, f2.face_id as id2 FROM '
+--		|| quote_ident(toponame) || '.face f1, '
+--		|| quote_ident(toponame) || '.face f2 '
+--		|| 'WHERE f1.face_id != 0 AND f2.face_id != 0 '
+--		|| 'AND f1.face_id != f2.face_id '
+--		|| 'AND ST_Within(topology.ST_GetFaceGeometry('
+--		|| quote_literal(toponame) || ', f1.face_id), '
+--		|| ' topology.ST_GetFaceGeometry('
+--		|| quote_literal(toponame) || ', f2.face_id))'
+--	LOOP
+--		retrec.error = 'face within face';
+--		retrec.id1 = rec.id1;
+--		retrec.id2 = rec.id2;
+--		RETURN NEXT retrec;
+--	END LOOP;
 
 #if 0
 	-- Check SRID consistency
