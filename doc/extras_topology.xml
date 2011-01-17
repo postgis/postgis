@@ -415,6 +415,49 @@ SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma', 'parcels', 'topo', 'POLYG
 			</refsection>
 		</refentry>
 		
+		<refentry id="ST_InitTopoGeo">
+			<refnamediv>
+				<refname>ST_InitTopoGeo</refname>
+				<refpurpose>Creates a new topology schema and registers this new schema in the topology.topology table and details summary of process.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>text <function>ST_InitTopoGeo</function></funcdef>
+						<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>This is an SQL-MM equvalent of CreateTopology but lacks the spatial reference and tolerance options of CreateTopology and outputs a text description of creation instead of topology id.</para>
+        
+                <!-- use this format if new function -->
+                <para>Availability: 1.?</para>
+                <para>&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.17</para>
+			</refsection>
+		
+		
+			<refsection>
+				<title>Examples</title>
+				<programlisting>SELECT topology.ST_InitTopoGeo('topo_schema_to_create') AS topocreation;
+                      astopocreation
+------------------------------------------------------------
+ Topology-Geometry 'topo_schema_to_create' (id:7) created.
+				</programlisting>
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+			
+				<para><xref linkend="CreateTopology"/></para>
+			</refsection>
+		</refentry>
+		
 		<refentry id="ValidateTopology">
 			<refnamediv>
 				<refname>ValidateTopology</refname>
@@ -718,7 +761,7 @@ nodeid
 			
                 <!-- use this format if new function -->
                 <para>Availability: 1.? </para>
-                	<para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details -- X.3.1 </para>
+                	<para>&sqlmm_compliant; SQL-MM: Topo-Net Routines:  X+1.3.1</para>
 			</refsection>
 		
 		
@@ -730,7 +773,7 @@ nodeid
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para>><xref linkend="AddNode"/>, <xref linkend="CreateTopology"/>, <xref linkend="DropTopology"/></para>
+				<para><xref linkend="AddNode"/>, <xref linkend="CreateTopology"/>, <xref linkend="DropTopology"/></para>
 			</refsection>
 		</refentry>
 		
@@ -804,7 +847,7 @@ nodeid
                 
                 <!-- use this format if new function -->
                 <para>Availability: 1.? </para>
-                	<para>&sqlmm_compliant; SQL-MM: X.3.16?</para>
+                	<para>&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.16</para>
 			</refsection>
 		
 		
