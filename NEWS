@@ -2,7 +2,7 @@ PostGIS 2.0.0
 YYYY/MM/DD
 
   * Important / Breaking Changes *
-  -- #722, #302 Most deprecated functions removed  (Regina Obe, Paul Ramsey)
+  -- #722, #302 Most deprecated functions removed (over 230 functions)  (Regina Obe, Paul Ramsey)
      (most deprecated in 1.2) removed 
      non-ST variants buffer, 
      length, intersects 

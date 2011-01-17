@@ -8,10 +8,10 @@
         <para>This is a major release.  A full dump reload is required. Refer to <xref linkend="NewFunctions_2_0" /> for more details.</para>
         <simplesect>
         	<title>Important / Breaking Changes</title>
-        	<para>#722, #302, Most deprecated functions removed  (Regina Obe, Paul Ramsey)</para>
-        	<para> (most deprecated in 1.2) removed non-ST variants buffer, length, intersects 
+        	<para>#722, #302, Most deprecated functions removed (over 230 functions) (Regina Obe, Paul Ramsey)</para>
+        	<para> -- (most deprecated in 1.2) removed non-ST variants buffer, length, intersects 
         	 (and internal functions renamed) etc. </para>
-        	<para>If you have been using deprecated functions CHANGE your apps or suffer the consequences.
+        	<para>-- If you have been using deprecated functions CHANGE your apps or suffer the consequences.
      If you don't see a function documented -- it ain't supported or it is an internal function.
      Some constraints in older tables were built with deprecated functions.
      If you restore you may need to rebuild table constraints with populate_geometry_columns().</para>
