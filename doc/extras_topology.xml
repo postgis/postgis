@@ -439,6 +439,8 @@ SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma', 'parcels', 'topo', 'POLYG
         
                 <!-- use this format if new function -->
                 <para>Availability: 1.?</para>
+                	<!-- use this format if not a new function but functionality enhanced -->
+                	<para>Enhanced: 2.0.0 more efficient edge crossing detection and fixes for false positives that were existent in prior versions.</para>
 			</refsection>
 		
 		
@@ -685,6 +687,50 @@ nodeid
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="AddTopoGeometryColumn"/></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="ST_AddIsoNode">
+			<refnamediv>
+				<refname>ST_AddIsoNode</refname>
+			
+				<refpurpose>Adds an isolated node to a face in a topology and returns the nodeid of the new node. If face is null, the node is still created.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>integer <function>ST_AddIsoNode</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>aface</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>Adds an isolated node with point location <varname>apoint</varname> to an existing face with faceid <varname>aface</varname> to a topology <varname>toponame</varname> and returns the nodeid of the new node.</para>
+                <para>If the spatial reference system (srid) of the point geometry is not the same as the topology, the <varname>apoint</varname> is not a point geometry, the point is null, or the point intersects an existing edge (even at the boundaries) then an exception is thrown. If the point already
+                    exists as a node, an exception is thrown. </para>
+                <para>If <varname>aface</varname> is not null and the <varname>apoint</varname> is not within the face, then an exception is thrown.</para>
+			
+                <!-- use this format if new function -->
+                <para>Availability: 1.? </para>
+                	<para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details -- X.3.1 </para>
+			</refsection>
+		
+		
+			<refsection>
+				<title>Examples</title>
+				 <!-- TODO -->
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para>><xref linkend="AddNode"/>, <xref linkend="CreateTopology"/>, <xref linkend="DropTopology"/></para>
 			</refsection>
 		</refentry>
 		
@@ -1001,4 +1047,5 @@ SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) As facegeomwkt;
 			</refsection>
 		</refentry>
 	</sect1>
+
 </chapter>
