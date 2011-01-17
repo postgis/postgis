@@ -1254,7 +1254,7 @@ BEGIN
 	FOR rec IN EXECUTE 'SELECT a.node_id as id1, b.node_id as id2 FROM '
 		|| quote_ident(toponame) || '.node a, '
 		|| quote_ident(toponame) || '.node b '
-		|| 'WHERE a.node_id < b.node_id AND a.geom && b.geom'
+		|| 'WHERE a.node_id < b.node_id '
 		|| ' AND ST_DWithin(a.geom, b.geom, 0)'
 	LOOP
 		retrec.error = 'coincident nodes';
@@ -1269,7 +1269,6 @@ BEGIN
 		|| quote_ident(toponame) || '.edge e '
 		|| 'WHERE e.start_node != n.node_id '
 		|| 'AND e.end_node != n.node_id '
-		|| 'AND n.geom && e.geom '
 		|| 'AND ST_DWithin(n.geom, e.geom, 0)'
 	LOOP
 		retrec.error = 'edge crosses node';
