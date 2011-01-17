@@ -524,6 +524,14 @@ BEGIN
 			|| ') ';
 	END IF;
 
+	--
+	-- TODO:
+	-- Set next_left_face and next_right_face !
+	-- These are required by the model, but not really used
+	-- by this implementation...
+	--
+	RAISE WARNING 'Not updating next_{left,right}_face fields of face boundary edges';
+
 
 	RETURN faceid;
 	

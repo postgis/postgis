@@ -6,6 +6,7 @@ e3|3
 e4|4
 e5|5
 WARNING:  Not checking if face contains any edge
+WARNING:  Not updating next_{left,right}_face fields of face boundary edges
 f1|1
 WARNING:  Not checking if face contains any edge
 f1*|1
@@ -13,6 +14,7 @@ e6|6
 e7|7
 e8|8
 WARNING:  Not checking if face contains any edge
+WARNING:  Not updating next_{left,right}_face fields of face boundary edges
 f2|2
 0|
 1|BOX(0 0,10 10)
