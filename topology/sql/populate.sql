@@ -261,11 +261,10 @@ BEGIN
 	    -- they have puntual intersection between interiors
 	    -- 
 	    -- compute intersection, check it's a single point
-	    -- and equals first StartPoint _and_ second StartPoint
+	    -- and equals first's StartPoint _and_ second's StartPoint
 	    IF ST_Equals(ST_Intersection(rec.geom, aline),
-	                 ST_StartPoint(aline)) OR
-	       ST_Equals(ST_Intersection(rec.geom, aline),
-	                 ST_EndPoint(aline))
+	                 ST_StartPoint(aline)) AND
+	       ST_Equals(ST_StartPoint(aline), ST_StartPoint(rec.geom))
 	    THEN
 	      RAISE DEBUG
 	        'Closed edge shares boundary with existing closed edge %',

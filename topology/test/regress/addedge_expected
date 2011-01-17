@@ -19,6 +19,7 @@ e6|6
 #770-2|8
 ERROR:  Edge intersects (not on endpoints) with existing edge 7 
 ERROR:  Edge intersects (not on endpoints) with existing edge 7 
+ERROR:  Edge intersects (not on endpoints) with existing edge 7 
 1|0|0|1|1|LINESTRING(0 0,8 0)
 2|0|0|2|2|LINESTRING(8 0,8 10)
 3|0|0|3|3|LINESTRING(0 0,0 10)

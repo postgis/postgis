@@ -52,6 +52,9 @@ SELECT '#770-2', topology.addEdge('tt', 'LINESTRING(8 10, 9 8, 10 9, 8 10)');
 SELECT '#770-*', topology.addEdge('tt', 'LINESTRING(8 10, 8 12, 10 12)');
 -- same as above, but this time the new edge is closed too
 SELECT '#770-*', topology.addEdge('tt', 'LINESTRING(8 10, 7 13, 10 12, 8 12, 10 12)');
+-- once again, but the intersection is now at the new edge endpoint
+-- (not the existing edge endpoint)
+SELECT '#770-*', topology.addEdge('tt', 'LINESTRING(10 12, 11 12, 10 13, 10 12)');
 
 SELECT edge_id, left_face, right_face,
 	next_left_edge, next_right_edge,
