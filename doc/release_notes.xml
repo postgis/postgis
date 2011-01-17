@@ -22,7 +22,7 @@
           <title>New Features</title>
           <para>Support for TIN and PolyHedralSurface (Olivier Courtin)</para>
           <para>Raster support integrated and documented
-          		(Pierre Racine, Jorge Arevalo, Mateusz Loskot, Sandro Santilli, Regina Obe)</para>
+          		(Pierre Racine, Jorge Arévalo, Mateusz Loskot, Sandro Santilli, Regina Obe)</para>
           <para>Making spatial indexes 3D aware - in progress (Paul Ramsey, Mark Cave-Ayland)</para>
           <para>Topology support improved, documented, testing (Sandro Santilli / Faunalia for RT-SIGTA, Regina Obe, Andrea Peri)</para>
           <para>3D relationship support functions  (Nicklas Avén)</para>
