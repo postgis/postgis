@@ -34,7 +34,7 @@
 			<!-- For each function prototype if it takes a geometry set then catalog it as an aggregate function  -->
 				<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
 					<xsl:choose>
-						<xsl:when test="contains(paramdef/type,'geometry set') or contains(paramdef/type,'geography set') or contains(paramdef/type,'raster set')">
+						<xsl:when test="contains(paramdef/type,' set') or contains(paramdef/type,'geography set') or contains(paramdef/type,'raster set')">
 							 <listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
 						</xsl:when>
 					</xsl:choose>
