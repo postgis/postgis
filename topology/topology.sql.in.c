@@ -1242,7 +1242,7 @@ CREATE CAST (topology.TopoGeometry AS Geometry) WITH FUNCTION topology.Geometry(
 CREATE OR REPLACE FUNCTION topology.ValidateTopology(varchar)
 	RETURNS setof topology.ValidateTopology_ReturnType
 AS
-'
+$$
 DECLARE
 	toponame alias for $1;
 	retrec topology.ValidateTopology_ReturnType;
@@ -1251,94 +1251,144 @@ DECLARE
 BEGIN
 
 	-- Check for coincident nodes
-	FOR rec IN EXECUTE ''SELECT a.node_id as id1, b.node_id as id2 FROM ''
-		|| quote_ident(toponame) || ''.node a, ''
-		|| quote_ident(toponame) || ''.node b ''
-		|| ''WHERE a.node_id < b.node_id AND a.geom && b.geom''
-		|| '' AND ST_DWithin(a.geom, b.geom, 0)''
+	FOR rec IN EXECUTE 'SELECT a.node_id as id1, b.node_id as id2 FROM '
+		|| quote_ident(toponame) || '.node a, '
+		|| quote_ident(toponame) || '.node b '
+		|| 'WHERE a.node_id < b.node_id AND a.geom && b.geom'
+		|| ' AND ST_DWithin(a.geom, b.geom, 0)'
 	LOOP
-		retrec.error = ''coincident nodes'';
+		retrec.error = 'coincident nodes';
 		retrec.id1 = rec.id1;
 		retrec.id2 = rec.id2;
 		RETURN NEXT retrec;
 	END LOOP;
 
 	-- Check for edge crossed nodes
-	FOR rec IN EXECUTE ''SELECT n.node_id as id1, e.edge_id as id2 FROM ''
-		|| quote_ident(toponame) || ''.node n, ''
-		|| quote_ident(toponame) || ''.edge e ''
-		|| ''WHERE e.start_node != n.node_id ''
-		|| ''AND e.end_node != n.node_id ''
-		|| ''AND n.geom && e.geom ''
-		|| ''AND ST_DWithin(n.geom, e.geom, 0)''
+	FOR rec IN EXECUTE 'SELECT n.node_id as id1, e.edge_id as id2 FROM '
+		|| quote_ident(toponame) || '.node n, '
+		|| quote_ident(toponame) || '.edge e '
+		|| 'WHERE e.start_node != n.node_id '
+		|| 'AND e.end_node != n.node_id '
+		|| 'AND n.geom && e.geom '
+		|| 'AND ST_DWithin(n.geom, e.geom, 0)'
 	LOOP
-		retrec.error = ''edge crosses node'';
+		retrec.error = 'edge crosses node';
 		retrec.id1 = rec.id1;
 		retrec.id2 = rec.id2;
 		RETURN NEXT retrec;
 	END LOOP;
 
 	-- Check for non-simple edges
-	FOR rec IN EXECUTE ''SELECT e.edge_id as id1 FROM ''
-		|| quote_ident(toponame) || ''.edge e ''
-		|| ''WHERE not ST_IsSimple(e.geom)''
+	FOR rec IN EXECUTE 'SELECT e.edge_id as id1 FROM '
+		|| quote_ident(toponame) || '.edge e '
+		|| 'WHERE not ST_IsSimple(e.geom)'
 	LOOP
-		retrec.error = ''edge not simple'';
+		retrec.error = 'edge not simple';
 		retrec.id1 = rec.id1;
 		retrec.id2 = NULL;
 		RETURN NEXT retrec;
 	END LOOP;
 
 	-- Check for edge crossing
-	FOR rec IN EXECUTE ''SELECT e1.edge_id as id1, e2.edge_id as id2 FROM ''
-		|| quote_ident(toponame) || ''.edge e1, ''
-		|| quote_ident(toponame) || ''.edge e2 ''
-		|| ''WHERE e1.edge_id < e2.edge_id ''
-		|| ''AND e1.geom && e2.geom ''
-		|| ''AND ST_Crosses(e1.geom, e2.geom)''
+	FOR rec IN EXECUTE 'SELECT e1.edge_id as id1, e2.edge_id as id2, '
+		|| ' e1.geom as g1, e2.geom as g2, '
+		|| 'ST_Relate(e1.geom, e2.geom) as im FROM '
+		|| quote_ident(toponame) || '.edge e1, '
+		|| quote_ident(toponame) || '.edge e2 '
+		|| 'WHERE e1.edge_id < e2.edge_id '
+		|| 'AND e1.geom && e2.geom '
 	LOOP
-		retrec.error = ''edge crosses edge'';
-		retrec.id1 = rec.id1;
-		retrec.id2 = rec.id2;
-		RETURN NEXT retrec;
+	  IF ST_RelateMatch(rec.im, 'FF1F**1*2') THEN
+	    CONTINUE; -- no interior intersection
+	  END IF;
+
+	  --
+	  -- Closed lines have no boundary, so endpoint
+	  -- intersection would be considered interior
+	  -- See http://trac.osgeo.org/postgis/ticket/770
+	  -- See also full explanation in topology.AddEdge
+	  --
+
+	  IF ST_RelateMatch(rec.im, 'FF10F01F2') THEN
+	    -- first line (g1) is open, second (g2) is closed
+	    -- first boundary has puntual intersection with second interior
+	    --
+	    -- compute intersection, check it equals second endpoint
+	    IF ST_Equals(ST_Intersection(rec.g2, rec.g1),
+	                 ST_StartPoint(rec.g2))
+	    THEN
+	      CONTINUE;
+	    END IF;
+	  END IF;
+
+	  IF ST_RelateMatch(rec.im, 'F01FFF102') THEN
+	    -- second line (g2) is open, first (g1) is closed
+	    -- second boundary has puntual intersection with first interior
+	    -- 
+	    -- compute intersection, check it equals first endpoint
+	    IF ST_Equals(ST_Intersection(rec.g2, rec.g1),
+	                 ST_StartPoint(rec.g1))
+	    THEN
+	      CONTINUE;
+	    END IF;
+	  END IF;
+
+	  IF ST_RelateMatch(rec.im, '0F1FFF1F2') THEN
+	    -- both lines are closed (boundary intersects nothing)
+	    -- they have puntual intersection between interiors
+	    -- 
+	    -- compute intersection, check it's a single point
+	    -- and equals first StartPoint _and_ second StartPoint
+	    IF ST_Equals(ST_Intersection(rec.g1, rec.g2),
+	                 ST_StartPoint(rec.g1)) AND
+	       ST_Equals(ST_StartPoint(rec.g1), ST_StartPoint(rec.g2))
+	    THEN
+	      CONTINUE;
+	    END IF;
+	  END IF;
+
+	  retrec.error = 'edge crosses edge';
+	  retrec.id1 = rec.id1;
+	  retrec.id2 = rec.id2;
+	  RETURN NEXT retrec;
 	END LOOP;
 
 	-- Check for edge start_node geometry mis-match
-	FOR rec IN EXECUTE ''SELECT e.edge_id as id1, n.node_id as id2 FROM ''
-		|| quote_ident(toponame) || ''.edge e, ''
-		|| quote_ident(toponame) || ''.node n ''
-		|| ''WHERE e.start_node = n.node_id ''
-		|| ''AND NOT ST_Equals(ST_StartPoint(e.geom), n.geom)''
+	FOR rec IN EXECUTE 'SELECT e.edge_id as id1, n.node_id as id2 FROM '
+		|| quote_ident(toponame) || '.edge e, '
+		|| quote_ident(toponame) || '.node n '
+		|| 'WHERE e.start_node = n.node_id '
+		|| 'AND NOT ST_Equals(ST_StartPoint(e.geom), n.geom)'
 	LOOP
-		retrec.error = ''edge start node geometry mis-match'';
+		retrec.error = 'edge start node geometry mis-match';
 		retrec.id1 = rec.id1;
 		retrec.id2 = rec.id2;
 		RETURN NEXT retrec;
 	END LOOP;
 
 	-- Check for edge end_node geometry mis-match
-	FOR rec IN EXECUTE ''SELECT e.edge_id as id1, n.node_id as id2 FROM ''
-		|| quote_ident(toponame) || ''.edge e, ''
-		|| quote_ident(toponame) || ''.node n ''
-		|| ''WHERE e.end_node = n.node_id ''
-		|| ''AND NOT ST_Equals(ST_EndPoint(e.geom), n.geom)''
+	FOR rec IN EXECUTE 'SELECT e.edge_id as id1, n.node_id as id2 FROM '
+		|| quote_ident(toponame) || '.edge e, '
+		|| quote_ident(toponame) || '.node n '
+		|| 'WHERE e.end_node = n.node_id '
+		|| 'AND NOT ST_Equals(ST_EndPoint(e.geom), n.geom)'
 	LOOP
-		retrec.error = ''edge end node geometry mis-match'';
+		retrec.error = 'edge end node geometry mis-match';
 		retrec.id1 = rec.id1;
 		retrec.id2 = rec.id2;
 		RETURN NEXT retrec;
 	END LOOP;
 
 	-- Check for faces w/out edges
-	FOR rec IN EXECUTE ''SELECT face_id as id1 FROM ''
-		|| quote_ident(toponame) || ''.face ''
-		|| ''EXCEPT ( SELECT left_face FROM ''
-		|| quote_ident(toponame) || ''.edge ''
-		|| '' UNION SELECT right_face FROM ''
-		|| quote_ident(toponame) || ''.edge ''
-		|| '')''
+	FOR rec IN EXECUTE 'SELECT face_id as id1 FROM '
+		|| quote_ident(toponame) || '.face '
+		|| 'EXCEPT ( SELECT left_face FROM '
+		|| quote_ident(toponame) || '.edge '
+		|| ' UNION SELECT right_face FROM '
+		|| quote_ident(toponame) || '.edge '
+		|| ')'
 	LOOP
-		retrec.error = ''face without edges'';
+		retrec.error = 'face without edges';
 		retrec.id1 = rec.id1;
 		retrec.id2 = NULL;
 		RETURN NEXT retrec;
@@ -1348,16 +1398,16 @@ BEGIN
 	-- TODO: this check requires some thinking, do we really
 	--       have to construct face geometry to detect overlap with
 	--       another face ??
-	FOR rec IN EXECUTE ''SELECT f1.face_id as id1, f2.face_id as id2 FROM ''
-		|| quote_ident(toponame) || ''.face f1, ''
-		|| quote_ident(toponame) || ''.face f2 ''
-		|| ''WHERE f1.face_id > 0 AND f1.face_id < f2.face_id AND ''
-		|| '' ST_Overlaps(topology.ST_GetFaceGeometry(''
-		|| quote_literal(toponame) || '', f1.face_id), ''
-		|| '' topology.ST_GetFaceGeometry(''
-		|| quote_literal(toponame) || '', f2.face_id))''
+	FOR rec IN EXECUTE 'SELECT f1.face_id as id1, f2.face_id as id2 FROM '
+		|| quote_ident(toponame) || '.face f1, '
+		|| quote_ident(toponame) || '.face f2 '
+		|| 'WHERE f1.face_id > 0 AND f1.face_id < f2.face_id AND '
+		|| ' ST_Overlaps(topology.ST_GetFaceGeometry('
+		|| quote_literal(toponame) || ', f1.face_id), '
+		|| ' topology.ST_GetFaceGeometry('
+		|| quote_literal(toponame) || ', f2.face_id))'
 	LOOP
-		retrec.error = ''face overlaps face'';
+		retrec.error = 'face overlaps face';
 		retrec.id1 = rec.id1;
 		retrec.id2 = rec.id2;
 		RETURN NEXT retrec;
@@ -1367,17 +1417,17 @@ BEGIN
 	-- TODO: this check requires some thinking, do we really
 	--       have to construct face geometry to detect within condition
 	--       another face ??
-	FOR rec IN EXECUTE ''SELECT f1.face_id as id1, f2.face_id as id2 FROM ''
-		|| quote_ident(toponame) || ''.face f1, ''
-		|| quote_ident(toponame) || ''.face f2 ''
-		|| ''WHERE f1.face_id != 0 AND f2.face_id != 0 ''
-		|| ''AND f1.face_id != f2.face_id ''
-		|| ''AND ST_Within(topology.ST_GetFaceGeometry(''
-		|| quote_literal(toponame) || '', f1.face_id), ''
-		|| '' topology.ST_GetFaceGeometry(''
-		|| quote_literal(toponame) || '', f2.face_id))''
+	FOR rec IN EXECUTE 'SELECT f1.face_id as id1, f2.face_id as id2 FROM '
+		|| quote_ident(toponame) || '.face f1, '
+		|| quote_ident(toponame) || '.face f2 '
+		|| 'WHERE f1.face_id != 0 AND f2.face_id != 0 '
+		|| 'AND f1.face_id != f2.face_id '
+		|| 'AND ST_Within(topology.ST_GetFaceGeometry('
+		|| quote_literal(toponame) || ', f1.face_id), '
+		|| ' topology.ST_GetFaceGeometry('
+		|| quote_literal(toponame) || ', f2.face_id))'
 	LOOP
-		retrec.error = ''face within face'';
+		retrec.error = 'face within face';
 		retrec.id1 = rec.id1;
 		retrec.id2 = rec.id2;
 		RETURN NEXT retrec;
@@ -1386,14 +1436,14 @@ BEGIN
 #if 0
 	-- Check SRID consistency
 	FOR rec in EXECUTE
-		''SELECT count(*) FROM ( getSRID(geom) FROM ''
-		|| quote_ident(toponame) || ''.edge ''
-		|| '' UNION ''
-		''SELECT getSRID(geom) FROM ''
-		|| quote_ident(toponame) || ''.node )''
+		'SELECT count(*) FROM ( getSRID(geom) FROM '
+		|| quote_ident(toponame) || '.edge '
+		|| ' UNION '
+		'SELECT getSRID(geom) FROM '
+		|| quote_ident(toponame) || '.node )'
 	LOOP
 		IF rec.count > 1 THEN
-			retrec.error = ''mixed SRIDs'';
+			retrec.error = 'mixed SRIDs';
 			retrec.id1 = NULL;
 			retrec.id2 = NULL;
 			RETURN NEXT retrec;
@@ -1403,7 +1453,7 @@ BEGIN
 
 	RETURN;
 END
-'
+$$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 -- } ValidateTopology(toponame)
 

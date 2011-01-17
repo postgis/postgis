@@ -7,7 +7,11 @@ edge not simple|28|
 edge crosses edge|2|28
 edge crosses edge|2|29
 edge crosses edge|2|32
-edge crosses edge|28|31
+edge crosses edge|9|27
+edge crosses edge|10|27
+edge crosses edge|19|27
+edge crosses edge|20|27
+edge crosses edge|30|32
 edge start node geometry mis-match|30|4
 edge end node geometry mis-match|30|3
 face without edges|10|
