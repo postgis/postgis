@@ -224,9 +224,9 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 --  ST_MoveIsoNode(atopology, anode, apoint)
 --
-CREATE OR REPLACE FUNCTION topology.ST_MoveIsoNode(varchar, integer, geometry)
-	RETURNS TEXT AS
-'
+CREATE OR REPLACE FUNCTION topology.ST_MoveIsoNode(character varying, integer, geometry)
+  RETURNS text AS
+$$
 DECLARE
 	atopology ALIAS FOR $1;
 	anode ALIAS FOR $2;
@@ -239,28 +239,28 @@ BEGIN
 	-- 
 	IF atopology IS NULL OR anode IS NULL OR apoint IS NULL THEN
 		RAISE EXCEPTION
-		 ''SQL/MM Spatial exception - null argument'';
+		 'SQL/MM Spatial exception - null argument';
 	END IF;
 
 	--
 	-- Apoint must be a point
 	--
-	IF substring(geometrytype(apoint), 1, 5) != ''POINT''
+	IF substring(geometrytype(apoint), 1, 5) != 'POINT'
 	THEN
 		RAISE EXCEPTION
-		 ''SQL/MM Spatial exception - invalid point'';
+		 'SQL/MM Spatial exception - invalid point';
 	END IF;
 
 	--
 	-- Check node isolation.
 	-- 
-	FOR rec IN EXECUTE ''SELECT edge_id FROM ''
-		|| quote_ident(atopology) || ''.edge '' ||
-		'' WHERE start_node =  '' || anode ||
-		'' OR end_node = '' || anode 
+	FOR rec IN EXECUTE 'SELECT edge_id FROM '
+		|| quote_ident(atopology) || '.edge ' ||
+		' WHERE start_node =  ' || anode ||
+		' OR end_node = ' || anode 
 	LOOP
 		RAISE EXCEPTION
-		 ''SQL/MM Spatial exception - not isolated node'';
+		 'SQL/MM Spatial exception - not isolated node';
 	END LOOP;
 
 	--
@@ -268,42 +268,42 @@ BEGIN
 	-- 
 	-- We use index AND x/y equality
 	--
-	FOR rec IN EXECUTE ''SELECT node_id FROM ''
-		|| quote_ident(atopology) || ''.node '' ||
-		''WHERE geom && '' || quote_literal(apoint::text) || ''::geometry''
-		||'' AND ST_X(geom) = ST_X(''||quote_literal(apoint::text)||''::geometry)''
-		||'' AND ST_Y(geom) = ST_Y(''||quote_literal(apoint::text)||''::geometry)''
+	FOR rec IN EXECUTE 'SELECT node_id FROM '
+		|| quote_ident(atopology) || '.node ' ||
+		'WHERE geom && ' || quote_literal(apoint::text) || '::geometry'
+		||' AND ST_X(geom) = ST_X('||quote_literal(apoint::text)||'::geometry)'
+		||' AND ST_Y(geom) = ST_Y('||quote_literal(apoint::text)||'::geometry)'
 	LOOP
 		RAISE EXCEPTION
-		 ''SQL/MM Spatial exception - coincident node'';
+		 'SQL/MM Spatial exception - coincident node';
 	END LOOP;
 
 	--
 	-- Check if any edge crosses (intersects) this node
 	-- I used _intersects_ here to include boundaries (endpoints)
 	--
-	FOR rec IN EXECUTE ''SELECT edge_id FROM ''
-		|| quote_ident(atopology) || ''.edge '' 
-		|| ''WHERE geom && '' || quote_literal(apoint::text) 
-		|| '' AND ST_Intersects(geom, '' || quote_literal(apoint::text)
-		|| '')''
+	FOR rec IN EXECUTE 'SELECT edge_id FROM '
+		|| quote_ident(atopology) || '.edge ' 
+		|| 'WHERE geom && ' || quote_literal(apoint::text) 
+		|| ' AND ST_Intersects(geom, ' || quote_literal(apoint::text)
+		|| '::geometry)'
 	LOOP
 		RAISE EXCEPTION
-		''SQL/MM Spatial exception - edge crosses node.'';
+		'SQL/MM Spatial exception - edge crosses node.';
 	END LOOP;
 
 	--
 	-- Update node point
 	--
-	EXECUTE ''UPDATE '' || quote_ident(atopology) || ''.node ''
-		|| '' SET geom = '' || quote_literal(apoint::text) 
-		|| '' WHERE node_id = '' || anode;
+	EXECUTE 'UPDATE ' || quote_ident(atopology) || '.node '
+		|| ' SET geom = ' || quote_literal(apoint::text) 
+		|| ' WHERE node_id = ' || anode;
 
-	RETURN ''Isolated Node '' || anode || '' moved to location ''
-		|| ST_X(apoint) || '','' || ST_Y(apoint);
+	RETURN 'Isolated Node ' || anode || ' moved to location '
+		|| ST_X(apoint) || ',' || ST_Y(apoint);
 END
-'
-LANGUAGE 'plpgsql' VOLATILE;
+$$
+  LANGUAGE plpgsql VOLATILE;
 --} ST_MoveIsoNode
 
 --{
