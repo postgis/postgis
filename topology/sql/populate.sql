@@ -160,6 +160,18 @@ BEGIN
 	END IF;
 
 	--
+	-- Check there's no face registered in the topology
+	--
+	FOR rec IN EXECUTE 'SELECT count(face_id) FROM '
+		|| quote_ident(atopology) || '.face '
+		|| ' WHERE face_id != 0 LIMIT 1'
+	LOOP
+		IF rec.count > 0 THEN
+			RAISE EXCEPTION 'AddEdge can only be used against topologies with no faces defined';
+		END IF;
+	END LOOP;
+
+	--
 	-- Check if the edge crosses an existing node
 	--
 	FOR rec IN EXECUTE 'SELECT node_id FROM '
