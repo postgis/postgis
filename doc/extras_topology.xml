@@ -777,7 +777,7 @@ nodeid
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="ST_AddIsoEdge"/>,  <xref linkend="ST_IsSimple"/>, <xref linkend="ST_Within"/>, <xref linkend="ST_AddIsoEdge"/></para>
+				<para><xref linkend="ST_AddIsoNode"/>,  <xref linkend="ST_IsSimple"/>, <xref linkend="ST_Within"/></para>
 			</refsection>
 		</refentry>
 		
@@ -1135,6 +1135,65 @@ SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) As facegeomwkt;
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="CreateTopology"/>, <xref linkend="DropTopology"/>,<xref linkend="GetTopologyID"/></para>
+			</refsection>
+		</refentry>
+	</sect1>
+	
+	<sect1 id="Topology_Processing">
+	    	  <title>Topology Processing Functions</title>
+	    	  <refentry id="ST_NewEdgesSplit">
+			<refnamediv>
+				<refname>ST_NewEdgesSplit</refname>
+			
+				<refpurpose>Split an edge by creating a new node along an existing edge, deleting the original edge and replacing it with two new edges.  Returns the id of the new node created that joins the new edges.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>integer <function>ST_NewEdgesSplit</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>Split an edge with edge id <varname>anedge</varname> by creating a new node with point location <varname>apoint</varname> along current edge, deleting the original edge and replacing it with two new edges.  Returns the id of the new node created that joins the new edges.
+                    Updates all existing joined edges and relationships with the new ones.</para>
+                <para>If the spatial reference system (srid) of the point geometry is not the same as the topology, the <varname>apoint</varname> is not a point geometry, the point is null, the point already exists as a node, or the edge does not correspond to an existing edge then an exception is thrown. If the point already
+                    exists as a node, an exception is thrown. </para>
+              
+			
+                <!-- use this format if new function -->
+                <para>Availability: 1.? </para>
+                	<para>&sqlmm_compliant; SQL-MM: Topo-Net Routines:  X.3.8</para>
+			</refsection>
+		
+		
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+-- Add an edge  --
+SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227575 893917,227592 893900)', 26986) ) As edgeid;
+-- result-
+edgeid
+------
+	2
+-- Split the new edge --
+SELECT topology.ST_NewEdgesSplit('ma_topo', 2,  ST_GeomFromText('POINT(227578.5 893913.5)', 26986) ) As newnodeid; 
+ newnodeid
+---------
+       6</programlisting>
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="AddEdge"/></para>
 			</refsection>
 		</refentry>
 	</sect1>
