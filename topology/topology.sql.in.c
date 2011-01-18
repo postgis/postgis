@@ -1397,7 +1397,7 @@ BEGIN
 	-- Now create a temporary table to construct all face geometries
 	-- for checking their consistency
 
-	EXECUTE 'CREATE TEMP TABLE face_check AS '
+	EXECUTE 'CREATE TEMP TABLE face_check ON COMMIT DROP AS '
 	  || 'SELECT face_id, topology.ST_GetFaceGeometry('
 	  || quote_literal(toponame) || ', face_id) as geom, mbr FROM '
 	  || quote_ident(toponame) || '.face';
