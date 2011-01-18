@@ -1164,8 +1164,7 @@ SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) As facegeomwkt;
             
                 <para>Split an edge with edge id <varname>anedge</varname> by creating a new node with point location <varname>apoint</varname> along current edge, deleting the original edge and replacing it with two new edges.  Returns the id of the new node created that joins the new edges.
                     Updates all existing joined edges and relationships with the new ones.</para>
-                <para>If the spatial reference system (srid) of the point geometry is not the same as the topology, the <varname>apoint</varname> is not a point geometry, the point is null, the point already exists as a node, or the edge does not correspond to an existing edge then an exception is thrown. If the point already
-                    exists as a node, an exception is thrown. </para>
+                <para>If the spatial reference system (srid) of the point geometry is not the same as the topology, the <varname>apoint</varname> is not a point geometry, the point is null, the point already exists as a node, the edge does not correspond to an existing edge or the point is not within the edge then an exception is thrown.</para>
               
 			
                 <!-- use this format if new function -->
