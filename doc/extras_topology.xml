@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="Topology">
 	<title>Topology</title>
-	<para>The PostGIS Topology types and functions are used to manage topological objects such as faces, edges and nodes.  
-	An example of a topologically based GIS database is the <ulink url="http://www.census.gov/geo/www/tiger/overview.html">US Census Topologically Integrated Geographic Encoding and Reference System (TIGER)</ulink> database.
+	<para>The PostGIS Topology types and functions are used to manage topological objects such as faces, edges and nodes. </para>
+	<para>Vincent Picavet provides a good synopsis and overview of what is Topology, how is it used, and various FOSS4G tools that support it in <ulink url="http://2010.foss4g.org/presentations/3555.pdf">State of the art of FOSS4G for topology and network analysis</ulink>.</para>
+	<para>An example of a topologically based GIS database is the <ulink url="http://www.census.gov/geo/www/tiger/overview.html">US Census Topologically Integrated Geographic Encoding and Reference System (TIGER)</ulink> database.
 	The PostGIS topology module has existed in prior versions of PostGIS but was never part of the documentation.
-	    In PostGIS 2.0.0 major cleanup is going on to remove use of all deprecated functions in it, fix known usability issues, add new functions and enhance to closer conform to SQL-MM standards.</para>
+	    In PostGIS 2.0.0 major cleanup is going on to remove use of all deprecated functions in it, fix known usability issues, better document, add new functions and enhance to closer conform to SQL-MM standards.</para>
 	<para>Details of this project can be found at <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiPostgisTopology">PostGIS Tology Wiki</ulink></para>
 	<para>All functions and tables associated with this module are installed in a schema called <varname>topology</varname>.</para>
 	<para>Functions that are defined in SQL/MM standard are prefixed with ST_ and functions specific to PostGIS are not prefixed.</para>
