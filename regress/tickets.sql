@@ -131,7 +131,7 @@ SELECT '#178a', ST_XMin(ST_MakeBox2D(ST_Point(5, 5), ST_Point(0, 0)));
 SELECT '#178b', ST_XMax(ST_MakeBox2D(ST_Point(5, 5), ST_Point(0, 0)));
 
 -- #179 --
-SELECT '#179a', ST_MakeLine_GArray(ARRAY[NULL,NULL,NULL,NULL]);
+SELECT '#179a', ST_MakeLine(ARRAY[NULL,NULL,NULL,NULL]);
 SELECT '#179b', ST_MakeLine(ARRAY[NULL,NULL,NULL,NULL]);
 
 -- #183 --

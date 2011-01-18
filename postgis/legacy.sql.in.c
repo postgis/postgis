@@ -1087,6 +1087,12 @@ CREATE OR REPLACE FUNCTION MakePointM(float8, float8, float8)
 	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint3dm'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
+-- This should really be deprecated -- 2011-01-04 robe
+CREATE OR REPLACE FUNCTION max_distance(geometry,geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'LWGEOM_maxdistance2d_linestring'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
+	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION mem_size(geometry)
 	RETURNS int4
@@ -1363,7 +1369,7 @@ CREATE OR REPLACE FUNCTION point_inside_circle(geometry,float8,float8,float8)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'LWGEOM_inside_circle_point'
 	LANGUAGE 'C' IMMUTABLE STRICT;
-
+	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION PointFromText(text)
 	RETURNS geometry
@@ -1393,6 +1399,30 @@ CREATE OR REPLACE FUNCTION PointFromWKB(bytea)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION PointFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1, $2)) = ''POINT''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION PointN(geometry,integer)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','LWGEOM_pointn_linestring'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION PointOnSurface(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
 	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION PolyFromText(text)
@@ -1466,16 +1496,11 @@ CREATE OR REPLACE FUNCTION PolygonFromWKB(bytea)
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION PointN(geometry,integer)
+CREATE OR REPLACE FUNCTION Polygonize_GArray (geometry[])
 	RETURNS geometry
-	AS 'MODULE_PATHNAME','LWGEOM_pointn_linestring'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-	
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION PointOnSurface(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	AS 'MODULE_PATHNAME', 'polygonize_garray'
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION relate(geometry,geometry)
@@ -1538,6 +1563,12 @@ CREATE OR REPLACE FUNCTION SnapToGrid(geometry, float8)
 CREATE OR REPLACE FUNCTION SnapToGrid(geometry, geometry, float8, float8, float8, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_snaptogrid_pointoff'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Availability: 1.2.2 -- this should be deprecated (do not think anyone has ever used it)
+CREATE OR REPLACE FUNCTION ST_MakeLine_GArray (geometry[])
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_makeline_garray'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3

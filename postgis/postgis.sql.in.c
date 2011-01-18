@@ -1116,12 +1116,6 @@ CREATE OR REPLACE FUNCTION ST_LineFromMultiPoint(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_line_from_mpoint'
 	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_MakeLine_GArray (geometry[])
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_makeline_garray'
-	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MakeLine(geometry, geometry)
@@ -1175,13 +1169,6 @@ CREATE OR REPLACE FUNCTION ST_MakePolygon(geometry)
 CREATE OR REPLACE FUNCTION ST_BuildArea(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_buildarea'
-	LANGUAGE 'C' IMMUTABLE STRICT
-	COST 100;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION Polygonize_GArray (geometry[])
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'polygonize_garray'
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
 
@@ -3776,7 +3763,7 @@ CREATE OR REPLACE FUNCTION ST_InteriorRingN(geometry,integer)
 	AS 'MODULE_PATHNAME','LWGEOM_interiorringn_polygon'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3 -- this should not be deprecated (2010-01-04 robe)
+-- Deprecation in 1.2.3 -- this should not be deprecated (2011-01-04 robe)
 CREATE OR REPLACE FUNCTION GeometryType(geometry)
 	RETURNS text
 	AS 'MODULE_PATHNAME', 'LWGEOM_getTYPE'
@@ -4199,16 +4186,6 @@ CREATE OR REPLACE FUNCTION ST_GeomFromWKB(bytea, int)
 	AS 'SELECT ST_SetSRID(ST_GeomFromWKB($1), $2)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION PointFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''POINT''
-	THEN GeomFromWKB($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function: PointFromWKB(bytea, int)
 CREATE OR REPLACE FUNCTION ST_PointFromWKB(bytea, int)
 	RETURNS geometry
@@ -4448,11 +4425,6 @@ CREATE OR REPLACE FUNCTION ST_GeomCollFromWKB(bytea)
 --New functions
 
 -- Maximum distance between linestrings.
--- This should really be deprecated -- 2011-01-04 robe
-CREATE OR REPLACE FUNCTION max_distance(geometry,geometry)
-	RETURNS float8
-	AS 'MODULE_PATHNAME', 'LWGEOM_maxdistance2d_linestring'
-	LANGUAGE 'C' IMMUTABLE STRICT; 
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION _ST_MaxDistance(geometry,geometry)
