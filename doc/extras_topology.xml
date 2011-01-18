@@ -1151,7 +1151,7 @@ SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) As facegeomwkt;
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>text <function>ST_NewEdgesSplit</function></funcdef>
+					<funcdef>text <function>ST_MoveIsoNode</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
