@@ -3,9 +3,9 @@
 	<title>Topology</title>
 	<para>The PostGIS Topology types and functions are used to manage topological objects such as faces, edges and nodes. </para>
 	<para>Vincent Picavet provides a good synopsis and overview of what is Topology, how is it used, and various FOSS4G tools that support it in <ulink url="http://2010.foss4g.org/presentations/3555.pdf">State of the art of FOSS4G for topology and network analysis</ulink>.</para>
-	<para>An example of a topologically based GIS database is the <ulink url="http://www.census.gov/geo/www/tiger/overview.html">US Census Topologically Integrated Geographic Encoding and Reference System (TIGER)</ulink> database.
-	The PostGIS topology module has existed in prior versions of PostGIS but was never part of the documentation.
-	    In PostGIS 2.0.0 major cleanup is going on to remove use of all deprecated functions in it, fix known usability issues, better document, add new functions and enhance to closer conform to SQL-MM standards.</para>
+	<para>An example of a topologically based GIS database is the <ulink url="http://www.census.gov/geo/www/tiger/overview.html">US Census Topologically Integrated Geographic Encoding and Reference System (TIGER)</ulink> database.</para>
+	<para>The PostGIS topology module has existed in prior versions of PostGIS but was never part of the Official PostGIS documentation.
+	    In PostGIS 2.0.0 major cleanup is going on to remove use of all deprecated functions in it, fix known usability issues, better document the features and functions, add new functions, and enhance to closer conform to SQL-MM standards.</para>
 	<para>Details of this project can be found at <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiPostgisTopology">PostGIS Tology Wiki</ulink></para>
 	<para>All functions and tables associated with this module are installed in a schema called <varname>topology</varname>.</para>
 	<para>Functions that are defined in SQL/MM standard are prefixed with ST_ and functions specific to PostGIS are not prefixed.</para>
@@ -198,6 +198,11 @@ ERROR:  value for domain topology.topoelementarray violates check constraint "di
 	</sect1>
 	
 	<sect1 id="Topology_ManagementFunctions">
+	     <sect1info>
+            <abstract>
+                <para>This section lists the Topology functions for building new Topology schemas, validating topologies, and managing TopoGeometry Columns</para>
+            </abstract>
+        </sect1info>
 	    <title>Topology Management Functions</title>
 	    <refentry id="AddTopoGeometryColumn">
 			<refnamediv>
@@ -507,6 +512,11 @@ face without edges |   0 |
 		</refentry>
 	</sect1>
 	<sect1 id="Topology_Constructors">
+	    	     <sect1info>
+            <abstract>
+                <para>This section covers the topology functions for creating new topogeometries, edges, faces, and nodes.</para>
+            </abstract>
+        </sect1info>
 	  <title>TopoGeometry and other Topology Object Constructors</title>
 	     <refentry id="AddEdge">
 			<refnamediv>
@@ -1141,6 +1151,11 @@ SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) As facegeomwkt;
 	</sect1>
 	
 	<sect1 id="Topology_Processing">
+	    <sect1info>
+            <abstract>
+                <para>This section covers topology functions for moving, deleting, and splitting edges, faces, and nodes.</para>
+            </abstract>
+        </sect1info>
 	    	  <title>Topology Processing Functions</title>
 	    	  <refentry id="ST_MoveIsoNode">
 			<refnamediv>
