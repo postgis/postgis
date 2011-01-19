@@ -91,13 +91,14 @@ def parse_command_line():
     grp_r.add_option("-s", "--srid", dest="srid", action="store", type="int", default=-1, 
           help="assign output raster with specified SRID")
     grp_r.add_option("-b", "--band", dest="band", action="store", type="int", default=None,
-                     help="specify number of band to be extracted from raster file")
+                     help="specify number of the band to be extracted from raster file")
     grp_r.add_option("-k", "--block-size", dest="block_size", action="store", default=None,
-                     help="uses regular blocking mode with size of block used to tile input raster, specified as WIDTHxHEIGHT")
+                     help="cut raster(s) into tiles to be inserted one by table row."
+                     "BLOCK_SIZE is expressed as WIDTHxHEIGHT. Incomplete tiles are completed with nodata values")
     grp_r.add_option("-R", "--register", dest="register", action="store_true", default=False, 
                      help="register the raster as a filesystem (out-db) raster")
     grp_r.add_option("-l", "--overview-level", dest="overview_level", action="store", type="int", default=1,
-                     help='Create overview tables named as o_<LEVEL>_<RASTER_TABLE> and '
+                     help='create overview tables named as o_<LEVEL>_<RASTER_TABLE> and '
                      'populate with GDAL-provided overviews (regular blocking only)')
     prs.add_option_group(grp_r);
 
@@ -109,11 +110,11 @@ def parse_command_line():
     grp_t.add_option('-a', '--append', dest='append_table', action='store_true', default=False, 
                      help='append raster(s) to an existing table')
     grp_t.add_option("-d", "--drop", dest="drop_table", action="store_true", default=False, 
-                     help="drop table, create new one and populate with raster(s)")
+                     help="drop table, create new one and populate it with raster(s)")
     grp_t.add_option("-f", "--field", dest="column", action="store", default=g_rt_column, 
-                     help="specify name of raster data column, default is 'rast'")
+                     help="specify name of destination raster column, default is 'rast'")
     grp_t.add_option("-F", "--filename", dest="filename", action="store_true", default=False, 
-                     help="insert a column with the name of the file")
+                     help="add a column with the name of the file")
     grp_t.add_option("-I", "--index", dest="index", action="store_true", default=False, 
                      help="create a GiST index on the raster column")
     grp_t.add_option("-M", "--vacuum", dest="vacuum", action="store_true", default=False, 
@@ -131,12 +132,12 @@ def parse_command_line():
                      "only NDR output is supported now")
     grp_u.add_option("-w", "--raster-version", dest="version",
                      action="store", type="int", default=g_rt_version, 
-                     help="specify version of Raster protocol, default is 0; "
+                     help="specify version of raster protocol, default is 0; "
                      "only value of zero is supported now")
     grp_u.add_option("-o", "--output", dest="output", action="store", default=sys.stdout,
-                     help="specify file for conversion output, otherwise send to stdout")
+                     help="specify output file, otherwise send to stdout")
     grp_u.add_option("-v", "--verbose", dest="verbose", action="store_true", default=False,
-                     help="be excessively verbose and useful for debugging")
+                     help="verbose mode. Useful for debugging")
     prs.add_option_group(grp_u);
     
     (opts, args) = prs.parse_args()
