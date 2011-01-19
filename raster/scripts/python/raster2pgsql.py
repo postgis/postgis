@@ -13,7 +13,7 @@
 #
 ################################################################################
 # Copyright (C) 2009-2010 Mateusz Loskot <mateusz@loskot.net>
-# Copyright (C) 2009 Pierre Racine <pierre.racine@sbf.ulaval.ca>
+# Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
 # Copyright (C) 2009-2010 Jorge Arevalo <jorge.arevalo@deimos-space.com>
 # 
 # This program is free software; you can redistribute it and/or modify
@@ -104,8 +104,10 @@ def parse_command_line():
     # Optional parameters - database/table manipulation
     grp_t = OptionGroup(prs, 'Database processing',
                         'Optional parameters used to manipulate database objects')
-    grp_t.add_option('-c', '--create', dest='create_table', action='store_true', default=True, 
+    grp_t.add_option('-c', '--create', dest='create_table', action='store_true', default=False, 
                      help='create new table and populate it with raster(s), this is the default mode')
+    grp_t.add_option('-a', '--append', dest='append_table', action='store_true', default=False, 
+                     help='append raster(s) to an existing table')
     grp_t.add_option("-d", "--drop", dest="drop_table", action="store_true", default=False, 
                      help="drop table, create new one and populate with raster(s)")
     grp_t.add_option("-f", "--field", dest="column", action="store", default=g_rt_column, 
@@ -140,9 +142,15 @@ def parse_command_line():
     (opts, args) = prs.parse_args()
 
     # Validate options
+    if opts.create_table and opts.drop_table and opts.append_table:
+        prs.error("options -c, -a and -d are mutually exclusive")
     if opts.create_table and opts.drop_table:
         prs.error("options -c and -d are mutually exclusive")
-    if not opts.create_table and not opts.drop_table:
+    if opts.create_table and opts.append_table:
+        prs.error("options -c and -a are mutually exclusive")
+    if opts.append_table and opts.drop_table:
+        prs.error("options -a and -d are mutually exclusive")
+    if (not opts.create_table and not opts.drop_table and not opts.append_table) or opts.drop_table:
         opts.create_table = True
 
     if opts.raster is None:
@@ -838,7 +846,7 @@ def wkblify_raster_level(options, ds, level, band_range, infile, i):
 
     # Register base raster in RASTER_COLUMNS - SELECT AddRasterColumn();
     if level == 1:
-        if i == 0:
+        if i == 0 and options.create_table:
             gt = get_gdal_geotransform(ds)
             pixel_size = ( gt[1], gt[5] )
             pixel_types = collect_pixel_types(ds, band_from, band_to)
