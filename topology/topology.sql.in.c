@@ -335,6 +335,16 @@ CREATE DOMAIN topology.TopoElement AS integer[]
 		array_upper(VALUE, 2) IS NULL
 		AND array_upper(VALUE, 1) = 2
 	);
+ALTER DOMAIN topology.TopoElement ADD
+        CONSTRAINT lower_dimension CHECK (
+		array_lower(VALUE, 1) = 1
+	);
+ALTER DOMAIN topology.TopoElement ADD
+        CONSTRAINT type_range CHECK (
+		VALUE[2] > 0 AND
+		VALUE[2] < 4
+	);
+
 --
 -- TopoElementArray domain
 --
