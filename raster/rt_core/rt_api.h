@@ -117,14 +117,14 @@ typedef void  (*rt_message_handler)(const char* string, ...);
 #define RASTER_DEBUG(level, msg) \
     do { \
         if (POSTGIS_DEBUG_LEVEL >= level) \
-            default_info_handler("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__); \
+            ctx->warn("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__); \
     } while (0);
 
 /* Display a formatted message at NOTICE level (like printf, with variadic arguments) */
 #define RASTER_DEBUGF(level, msg, ...) \
     do { \
         if (POSTGIS_DEBUG_LEVEL >= level) \
-        default_info_handler("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__, __VA_ARGS__); \
+        ctx->warn("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__, __VA_ARGS__); \
     } while (0);
  
 #else
@@ -305,6 +305,22 @@ int rt_band_get_hasnodata_flag(rt_context ctx, rt_band band);
  * @param flag : the new hasnodata flag value. Must be 1 or 0.
  */
 void rt_band_set_hasnodata_flag(rt_context ctx, rt_band band, int flag);
+
+/**
+ * Set isnodata flag value
+ * @param ctx : context, for thread safety
+ * @param band : the band on which to set the isnodata flag
+ * @param flag : the new isnodata flag value. Must be 1 or 0
+ */
+void rt_band_set_isnodata_flag(rt_context ctx, rt_band band, int flag);
+
+/**
+ * Get hasnodata flag value
+ * @param ctx : context, for thread safety
+ * @param band : the band on which to check the isnodata flag
+ * @return the hasnodata flag.
+ */
+int rt_band_get_isnodata_flag(rt_context ctx, rt_band band);
 
 /**
  * Set nodata value

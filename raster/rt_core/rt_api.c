@@ -149,7 +149,8 @@ rt_context_new(rt_allocator allocator, rt_reallocator reallocator,
         return 0;
     }
 
-    RASTER_DEBUGF(3, "Created rt_context @ %p", ret);
+    // Can not be used here
+    //RASTER_DEBUGF(3, "Created rt_context @ %p", ret);
 
     ret->alloc = allocator;
     ret->realloc = reallocator;
@@ -374,6 +375,8 @@ struct rt_band_t {
     uint16_t width;
     uint16_t height;
     int32_t hasnodata; /* a flag indicating if this band contains nodata values */
+    int32_t isnodata;   /* a flag indicating if this band is filled only with
+                           nodata values */
     double nodataval; /* int will be converted ... */
     int32_t ownsData; /* XXX mloskot: its behaviour needs to be documented */
 
@@ -411,6 +414,7 @@ rt_band_new_inline(rt_context ctx, uint16_t width, uint16_t height,
     band->nodataval = nodataval;
     band->data.mem = data;
     band->ownsData = 0;
+    band->isnodata = FALSE;
 
     return band;
 }
@@ -451,6 +455,8 @@ rt_band_new_offline(rt_context ctx, uint16_t width, uint16_t height,
      */
     band->ownsData = 0;
 
+    band->isnodata = FALSE;
+
     return band;
 }
 
@@ -469,7 +475,7 @@ rt_band_destroy(rt_context ctx, rt_band band) {
 
     /* band->data content is externally owned */
     /* XXX jorgearevalo: not really... rt_band_from_wkb allocates memory for
-     * data.me
+     * data.mem
      */
     ctx->dealloc(band);
 }
@@ -610,9 +616,26 @@ rt_band_set_hasnodata_flag(rt_context ctx, rt_band band, int flag) {
     band->hasnodata = (flag) ? 1 : 0;
 }
 
+void
+rt_band_set_isnodata_flag(rt_context ctx, rt_band band, int flag) {
+    assert(NULL != ctx);
+    assert(NULL != band);
+
+    band->isnodata = (flag) ? 1 : 0;
+}
+
+int
+rt_band_get_isnodata_flag(rt_context ctx, rt_band band) {
+    assert(NULL != ctx);
+    assert(NULL != band);
+
+    return band->isnodata;
+}
+
 int
 rt_band_set_nodata(rt_context ctx, rt_band band, double val) {
     rt_pixtype pixtype = PT_END;
+    double oldnodataval = band->nodataval;
 
     assert(NULL != ctx);
     assert(NULL != band);
@@ -692,7 +715,7 @@ rt_band_set_nodata(rt_context ctx, rt_band band, double val) {
             break;
         }
         default:
-        {
+            {
             ctx->err("Unknown pixeltype %d", pixtype);
             band->hasnodata = 0;
             return -1;
@@ -706,7 +729,7 @@ rt_band_set_nodata(rt_context ctx, rt_band band, double val) {
     // the NODATA value was just set, so this band has NODATA
     rt_band_set_hasnodata_flag(ctx, band, 1);
 
-    if (fabs(band->nodataval - val) > 0.0001) {
+    if (fabs(band->nodataval - val) > FLT_EPSILON) {
 #ifdef POSTGIS_RASTER_WARN_ON_TRUNCATION
         ctx->warn("rt_band_set_nodata: NODATA value for %s band got truncated"
                 " from %g to %g",
@@ -715,6 +738,16 @@ rt_band_set_nodata(rt_context ctx, rt_band band, double val) {
 #endif
         return -1;
     }
+
+    /* If the nodata value is different from the previous one, we need to check
+     * again if the band is a NODATA band
+     * TODO: NO, THAT'S TOO SLOW!!!
+     */
+
+    /*
+    if (fabs(band->nodataval - oldnodataval) > FLT_EPSILON)
+        rt_band_check_is_nodata(ctx, band);
+    */
 
     return 0;
 }
@@ -826,7 +859,7 @@ rt_band_set_pixel(rt_context ctx, rt_band band, uint16_t x, uint16_t y,
     }
 
     /* Overflow checking */
-    if (fabs(checkval - val) > 0.0001) {
+    if (fabs(checkval - val) > FLT_EPSILON) {
 #ifdef POSTGIS_RASTER_WARN_ON_TRUNCATION
         ctx->warn("Pixel value for %s band got truncated"
                 " from %g to %g",
@@ -835,6 +868,23 @@ rt_band_set_pixel(rt_context ctx, rt_band band, uint16_t x, uint16_t y,
 #endif /* POSTGIS_RASTER_WARN_ON_TRUNCATION */
         return -1;
     }
+
+    /* If the stored value is different from no data, reset the isnodata flag */
+    if (fabs(checkval - band->nodataval) > FLT_EPSILON) {
+        band->isnodata = FALSE;
+    }
+
+    /*
+     * If the pixel was a NODATA value, now the band may be NODATA band)
+     * TODO: NO, THAT'S TOO SLOW!!!
+     */
+
+    /*
+    else {
+        rt_band_check_is_nodata(ctx, band);
+    }
+    */
+    
 
     return 0;
 }
@@ -1030,7 +1080,7 @@ double rt_band_get_min_value(rt_context ctx, rt_band band) {
  * @param band: the band to get info from
  * @return TRUE if the band is only nodata values, FALSE otherwise
  */
-int rt_band_is_nodata(rt_context ctx, rt_band band)
+int rt_band_check_is_nodata(rt_context ctx, rt_band band)
 {
     int i, j;
     double pxValue = band->nodataval;
@@ -1042,8 +1092,15 @@ int rt_band_is_nodata(rt_context ctx, rt_band band)
     /* Check if band has nodata value */
     if (!band->hasnodata)
     {
-        ctx->err("Unknown NODATA value for band");
+        ctx->warn("Unknown NODATA value for band");
+        band->isnodata = FALSE;
         return FALSE;
+    }
+    
+    /* TODO: How to know it in case of offline bands? */
+    if (band->offline) {
+        RASTER_DEBUG(3, "Unknown NODATA value for OFFDB band");
+        band->isnodata = FALSE;
     }
 
     /* Check all pixels */
@@ -1053,11 +1110,14 @@ int rt_band_is_nodata(rt_context ctx, rt_band band)
         {
             rt_band_get_pixel(ctx, band, i, j, &pxValue);
             dEpsilon = fabs(pxValue - band->nodataval);
-            if (dEpsilon > FLT_EPSILON)
+            if (dEpsilon > FLT_EPSILON) {
+                band->isnodata = FALSE;                
                 return FALSE;
+            }
         }
     }
 
+    band->isnodata = TRUE;
     return TRUE;
 }
 
@@ -1286,7 +1346,7 @@ rt_raster_get_band(rt_context ctx, rt_raster raster, int n) {
     assert(NULL != ctx);
     assert(NULL != raster);
 
-    if (n >= raster->numBands) return 0;
+    if (n >= raster->numBands || n < 0) return 0;
     return raster->bands[n];
 }
 
@@ -1757,7 +1817,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
             strcpy(pols[nCont].geom, pszSrcText);
 
             RASTER_DEBUGF(4, "Feature %d, Polygon: %s", j, pols[nCont].geom);
-            RASTER_DEBUGF(4, "Feature %d, value: %d", j, (int) (pols[nCont].val));
+            RASTER_DEBUGF(4, "Feature %d, value: %f", j, (int) (pols[nCont].val));
             RASTER_DEBUGF(4, "Feature %d, srid: %d", j, pols[nCont].srid);
 
             nCont++;
@@ -2140,12 +2200,13 @@ write_float64(uint8_t** to, uint8_t littleEndian, double v)
 #define BANDTYPE_PIXTYPE_MASK 0x0F
 #define BANDTYPE_FLAG_OFFDB     (1<<7)
 #define BANDTYPE_FLAG_HASNODATA (1<<6)
-#define BANDTYPE_FLAG_RESERVED2 (1<<5)
+#define BANDTYPE_FLAG_ISNODATA  (1<<5)
 #define BANDTYPE_FLAG_RESERVED3 (1<<4)
 
 #define BANDTYPE_PIXTYPE(x) ((x)&BANDTYPE_PIXTYPE_MASK)
 #define BANDTYPE_IS_OFFDB(x) ((x)&BANDTYPE_FLAG_OFFDB)
 #define BANDTYPE_HAS_NODATA(x) ((x)&BANDTYPE_FLAG_HASNODATA)
+#define BANDTYPE_IS_NODATA(x) ((x)&BANDTYPE_FLAG_ISNODATA)
 
 /* Read band from WKB as at start of band */
 static rt_band
@@ -2185,6 +2246,7 @@ rt_band_from_wkb(rt_context ctx, uint16_t width, uint16_t height,
     band->pixtype = type & BANDTYPE_PIXTYPE_MASK;
     band->offline = BANDTYPE_IS_OFFDB(type) ? 1 : 0;
     band->hasnodata = BANDTYPE_HAS_NODATA(type) ? 1 : 0;
+    band->isnodata = BANDTYPE_IS_NODATA(type) ? 1 : 0;
     band->width = width;
     band->height = height;
 
@@ -2300,6 +2362,9 @@ rt_band_from_wkb(rt_context ctx, uint16_t width, uint16_t height,
                     band->data.offline.path, sz);
 
             *ptr += sz + 1;
+
+            /* TODO: How could we know if the offline band is a NODATA band? */
+            band->isnodata = FALSE;
         }
         return band;
     }
@@ -2373,6 +2438,10 @@ rt_band_from_wkb(rt_context ctx, uint16_t width, uint16_t height,
             }
         }
     }
+
+    /* And we should check if the band is a nodata band */
+    /* TODO: No!! This is too slow */
+    //rt_band_check_is_nodata(ctx, band);
 
     return band;
 }
@@ -2654,6 +2723,7 @@ rt_raster_to_wkb(rt_context ctx, rt_raster raster, uint32_t *wkbsize) {
         *ptr = band->pixtype;
         if (band->offline) *ptr |= BANDTYPE_FLAG_OFFDB;
         if (band->hasnodata) *ptr |= BANDTYPE_FLAG_HASNODATA;
+        if (band->isnodata) *ptr |= BANDTYPE_FLAG_ISNODATA;
         ptr += 1;
 
 #if 0 // no padding required for WKB
@@ -2918,6 +2988,10 @@ rt_raster_serialize(rt_context ctx, rt_raster raster) {
             *ptr |= BANDTYPE_FLAG_HASNODATA;
         }
 
+        if (band->isnodata) {
+            *ptr |= BANDTYPE_FLAG_ISNODATA;
+        }
+
 #if POSTGIS_DEBUG_LEVEL > 2
         d_print_binary_hex(ctx, "PIXTYPE", dbg_ptr, size);
 #endif
@@ -3100,7 +3174,8 @@ rt_raster_deserialize(rt_context ctx, void* serialized) {
         RASTER_DEBUGF(3, "rt_raster_deserialize: band %d with pixel type %s", i, rt_pixtype_name(ctx, band->pixtype));
 
         band->offline = BANDTYPE_IS_OFFDB(type) ? 1 : 0;
-        band->hasnodata = BANDTYPE_HAS_NODATA(type) ? 1 : 0;
+        band->hasnodata = BANDTYPE_HAS_NODATA(type) ? 1 : 0;        
+        band->isnodata = BANDTYPE_IS_NODATA(type) ? 1 : 0;
         band->width = rast->width;
         band->height = rast->height;
         band->ownsData = 0;

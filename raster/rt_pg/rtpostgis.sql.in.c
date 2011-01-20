@@ -243,6 +243,27 @@ CREATE OR REPLACE FUNCTION st_bandnodatavalue(raster)
     AS $$ SELECT st_bandnodatavalue($1, 1) $$
     LANGUAGE SQL;
 
+CREATE OR REPLACE FUNCTION st_bandisnodata(rast raster, band integer,
+        forceChecking boolean)
+    RETURNS boolean
+    AS 'MODULE_PATHNAME', 'RASTER_bandIsNoData'
+    LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_bandisnodata(rast raster, forceChecking boolean)
+    RETURNS boolean
+    AS $$ SELECT st_bandisnodata($1, 1, $2) $$
+    LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION st_bandisnodata(rast raster, band integer)
+    RETURNS boolean
+    AS $$ SELECT st_bandisnodata($1, $2, FALSE) $$
+    LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION st_bandisnodata(rast raster)
+    RETURNS boolean
+    AS $$ SELECT st_bandisnodata($1, 1, FALSE) $$
+    LANGUAGE SQL;
+
 CREATE OR REPLACE FUNCTION st_bandpath(rast raster, band integer)
     RETURNS text
     AS 'MODULE_PATHNAME','RASTER_getBandPath'
@@ -475,14 +496,20 @@ CREATE OR REPLACE FUNCTION st_setgeoreference(rast raster, georef text)
 -----------------------------------------------------------------------
 
 -- The function can not be strict, because allows NULL as nodata
-CREATE OR REPLACE FUNCTION st_setbandnodatavalue(rast raster, band integer, nodatavalue float8)
+CREATE OR REPLACE FUNCTION st_setbandnodatavalue(rast raster, band integer,
+        nodatavalue float8, forceChecking boolean)
     RETURNS raster
     AS 'MODULE_PATHNAME','RASTER_setBandNoDataValue'
     LANGUAGE 'C' IMMUTABLE;
 
+CREATE OR REPLACE FUNCTION st_setbandnodatavalue(rast raster, band integer, nodatavalue float8)
+    RETURNS raster
+    AS $$ SELECT st_setbandnodatavalue($1, $2, $3, FALSE) $$
+    LANGUAGE SQL;
+
 CREATE OR REPLACE FUNCTION st_setbandnodatavalue(rast raster, nodatavalue float8)
     RETURNS raster
-    AS $$ SELECT st_setbandnodatavalue($1, 1, $2) $$
+    AS $$ SELECT st_setbandnodatavalue($1, 1, $2, FALSE) $$
     LANGUAGE SQL;
    
 -----------------------------------------------------------------------
