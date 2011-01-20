@@ -319,17 +319,27 @@ CREATE OR REPLACE FUNCTION st_bandmetadata(rast raster,
 -- Raster Pixel Accessors
 -----------------------------------------------------------------------
 
-CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, x integer, y integer)
+CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, x integer, y integer, hasnodata boolean)
     RETURNS float8
     AS 'MODULE_PATHNAME','RASTER_getPixelValue'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'C' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, x integer, y integer)
+    RETURNS float8
+    AS $$ SELECT st_value($1, $2, $3, $4, NULL) $$
+    LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION st_value(rast raster, x integer, y integer, hasnodata boolean)
+    RETURNS float8
+    AS $$ SELECT st_value($1, 1, $2, $3, $4) $$
+    LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION st_value(rast raster, x integer, y integer)
     RETURNS float8
-    AS $$ SELECT st_value($1, 1, $2, $3) $$
+    AS $$ SELECT st_value($1, 1, $2, $3, NULL) $$
     LANGUAGE SQL;
     
-CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, pt geometry) 
+CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, pt geometry, hasnodata boolean) 
     RETURNS float8 AS
     $$
     DECLARE
@@ -346,14 +356,25 @@ CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, pt geometry)
         RETURN st_value(rast, 
                         band, 
                         st_world2rastercoordx(rast, x, y), 
-                        st_world2rastercoordy(rast, x, y));
+                        st_world2rastercoordy(rast, x, y),
+                        hasnodata);
     END;
     $$
-    LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+    LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, pt geometry)
+    RETURNS float8
+    AS $$ SELECT st_value($1, $2, $3, NULL) $$
+    LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION st_value(rast raster, pt geometry, hasnodata boolean)
+    RETURNS float8
+    AS $$ SELECT st_value($1, 1, $2, $3) $$
+    LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION st_value(rast raster, pt geometry)
     RETURNS float8
-    AS $$ SELECT st_value($1, 1, $2) $$
+    AS $$ SELECT st_value($1, 1, $2, NULL) $$
     LANGUAGE SQL;
 
 -----------------------------------------------------------------------
@@ -519,7 +540,7 @@ CREATE OR REPLACE FUNCTION st_setbandnodatavalue(rast raster, nodatavalue float8
 CREATE OR REPLACE FUNCTION st_setvalue(rast raster, band integer, x integer, y integer, newvalue float8)
     RETURNS raster
     AS 'MODULE_PATHNAME','RASTER_setPixelValue'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'C' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_setvalue(rast raster, x integer, y integer, newvalue float8)
     RETURNS raster
@@ -547,7 +568,7 @@ CREATE OR REPLACE FUNCTION st_setvalue(rast raster, band integer, pt geometry, n
                            newvalue);
     END;
     $$
-    LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+    LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_setvalue(rast raster, pt geometry, newvalue float8)
     RETURNS raster
@@ -1124,9 +1145,9 @@ CREATE OPERATOR ~ (
 -----------------------------------------------------------------------
 
 -----------------------------------------------------------------------
--- _st_intersects(geomin geometry, rast raster, band integer)
--- Check for the presence of withvalue pixels in the area shared by the 
--- raster and the geometry. If only nodatavalue pixel are found, the 
+-- _st_intersects(geomin geometry, rast raster, band integer, hasnodata boolean)
+-- If hasnodata is true, check for the presence of withvalue pixels in the area 
+-- shared by the raster and the geometry. If only nodata value pixels are found, the 
 -- geometry does not intersect with the raster.
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION _st_intersects(geomin geometry, rast raster, band integer, hasnodata boolean) 

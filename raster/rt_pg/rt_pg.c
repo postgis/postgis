@@ -1458,7 +1458,7 @@ Datum RASTER_getBandPath(PG_FUNCTION_ARGS)
  * Pixel location is specified by 1-based index of Nth band of raster and
  * X,Y coordinates (X <= RT_Width(raster) and Y <= RT_Height(raster)).
  *
- * TODO: Should we returen NUMERIC instead of FLOAT8 ?
+ * TODO: Should we return NUMERIC instead of FLOAT8 ?
  */
 PG_FUNCTION_INFO_V1(RASTER_getPixelValue);
 Datum RASTER_getPixelValue(PG_FUNCTION_ARGS)
@@ -1472,6 +1472,7 @@ Datum RASTER_getPixelValue(PG_FUNCTION_ARGS)
     int32_t x = 0;
     int32_t y = 0;
     int result = 0;
+    bool hasnodata = TRUE;
 
     /* Index is 1-based */
     nband = PG_GETARG_INT32(1);
@@ -1482,8 +1483,20 @@ Datum RASTER_getPixelValue(PG_FUNCTION_ARGS)
     assert(0 <= (nband - 1));
 
     /* Validate pixel coordinates are in range */
+    if (PG_ARGISNULL(2)) {
+        elog(NOTICE, "x coordinate can not be NULL. Returning NULL");
+        PG_RETURN_NULL();
+    }
     x = PG_GETARG_INT32(2);
+
+    if (PG_ARGISNULL(3)) {
+        elog(NOTICE, "y coordinate can not be NULL. Returning NULL");
+        PG_RETURN_NULL();
+    }
     y = PG_GETARG_INT32(3);
+
+    if (!PG_ARGISNULL(4))
+        hasnodata = PG_GETARG_BOOL(4);
 
     POSTGIS_RT_DEBUGF(3, "Pixel coordinates (%d, %d)", x, y);
 
@@ -1492,21 +1505,24 @@ Datum RASTER_getPixelValue(PG_FUNCTION_ARGS)
     ctx = get_rt_context(fcinfo);
 
     raster = rt_raster_deserialize(ctx, pgraster);
-    if ( ! raster ) {
+    if (!raster) {
         elog(ERROR, "Could not deserialize raster");
         PG_RETURN_NULL();
     }
 
     /* Fetch Nth band using 0-based internal index */
     band = rt_raster_get_band(ctx, raster, nband - 1);
-    if ( ! band ) {
+    if (! band) {
         elog(NOTICE, "Could not find raster band of index %d. Returning NULL", nband);
         PG_RETURN_NULL();
     }
-
     /* Fetch pixel using 0-based coordiantes */
     result = rt_band_get_pixel(ctx, band, x - 1, y - 1, &pixvalue);
-    if ( result == -1 ) PG_RETURN_NULL();
+    if (result == -1 || (hasnodata && rt_band_get_hasnodata_flag(ctx, band) && pixvalue == rt_band_get_nodata(ctx, band))) {
+        //elog(WARNING, "Raster band %d does not have a NODATA value", index);
+        PG_RETURN_NULL();
+    }
+
     PG_RETURN_FLOAT8(pixvalue);
 }
 
@@ -1539,9 +1555,6 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS)
     
     POSTGIS_RT_DEBUGF(3, "Pixel coordinates (%d, %d)", x, y);
 
-    /* Get the pixel value */
-    pixvalue = PG_GETARG_FLOAT8(4);
-
     /* Deserialize raster */
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
     ctx = get_rt_context(fcinfo);
@@ -1559,8 +1572,20 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS)
         PG_RETURN_NULL();
     }
 
-    /* Set the band's pixel value */
-    rt_band_set_pixel(ctx, band, x - 1, y - 1, pixvalue);
+    /* Set the pixel value */
+    if (PG_ARGISNULL(4)) {
+        if (!rt_band_get_hasnodata_flag(ctx, band)) {
+            elog(NOTICE, "Raster do not have a nodata value defined. Pixel value not set. Returning raster");
+        }
+        else {
+            pixvalue = rt_band_get_nodata(ctx, band);
+            rt_band_set_pixel(ctx, band, x - 1, y - 1, pixvalue);
+        }
+    }
+    else {
+        pixvalue = PG_GETARG_FLOAT8(4);
+        rt_band_set_pixel(ctx, band, x - 1, y - 1, pixvalue);
+    }
 
     pgraster = rt_raster_serialize(ctx, raster);
     if ( ! pgraster ) PG_RETURN_NULL();
@@ -1856,7 +1881,6 @@ Datum RASTER_isEmpty(PG_FUNCTION_ARGS)
 {
     rt_pgraster *pgraster = NULL;
     rt_raster raster = NULL;
-    rt_band band = NULL;
     rt_context ctx = NULL;
 	
 	/* Deserialize raster */
