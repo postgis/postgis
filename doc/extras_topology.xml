@@ -881,58 +881,6 @@ nodeid
 			</refsection>
 		</refentry>
 		
-		<refentry id="ST_GetFaceGeometry">
-			<refnamediv>
-				<refname>ST_GetFaceGeometry</refname>
-			
-				<refpurpose>Returns the polygon in the given topology with the specified face id.</refpurpose>
-			</refnamediv>
-		
-			<refsynopsisdiv>
-				<funcsynopsis>
-					<funcprototype>
-					<funcdef>geometry <function>ST_GetFaceGeometry</function></funcdef>
-					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>faceid</parameter></paramdef>
-					</funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-		
-			<refsection>
-                <title>Description</title>
-            
-                <para>Returns the polygon in the given topology with the specified face id. Builds the polygon from the edges making up the face.</para>
-             
-                
-                <!-- use this format if new function -->
-                <para>Availability: 1.? </para>
-                	<para>&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.16</para>
-			</refsection>
-		
-		
-			<refsection>
-				<title>Examples</title>
-				<programlisting>
--- Returns the wkt of the polygon added with AddFace
-SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) As facegeomwkt;
--- result --
-               facegeomwkt
-
---------------------------------------------------------------------------------
- POLYGON((234776.9 899563.7,234896.5 899456.7,234914 899436.4,234946.6 899356.9,
-234872.5 899328.7,234891 899285.4,234992.5 899145,234890.6 899069,
-234755.2 899255.4,234612.7 899379.4,234776.9 899563.7))
- 
-</programlisting>
-			</refsection>
-		
-			<!-- Optionally add a "See Also" section -->
-			<refsection>
-				<title>See Also</title>
-				<para><xref linkend="AddFace"/></para>
-			</refsection>
-		</refentry>
-		
 		<refentry id="TopoElementArray_Agg">
           <refnamediv>
             <refname>TopoElementArray_Agg</refname>
@@ -1148,6 +1096,103 @@ SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) As facegeomwkt;
 				<para><xref linkend="CreateTopology"/>, <xref linkend="DropTopology"/>,<xref linkend="GetTopologyID"/></para>
 			</refsection>
 		</refentry>
+		
+		<refentry id="ST_GetFaceEdges">
+			<refnamediv>
+				<refname>ST_GetFaceEdges</refname>
+			
+				<refpurpose>NOT YET IMPLEMENTED: Returns a set of ordered edges that bound <varname>aface</varname> includes the sequence order.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>getfaceedges_returntype <function>ST_GetFaceEdges</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>aface</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>Returns a set of ordered edges that bound <varname>aface</varname> includes the sequence order.  Each output consists of a sequence and edgeid</para>
+                <note><para>This is currently a stub function and not yet implemented.  Will either throw a NOT YET IMPLEMENTED message or SQL/MM if no topology or face is passed in.</para></note>
+                
+                <!-- use this format if new function -->
+                <para>Availability: Not yet implemented </para>
+                	<para>&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.5</para>
+			</refsection>
+		
+		
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+<!-- TODO once implemented -->
+ 
+</programlisting>
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="AddFace"/></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="ST_GetFaceGeometry">
+			<refnamediv>
+				<refname>ST_GetFaceGeometry</refname>
+			
+				<refpurpose>Returns the polygon in the given topology with the specified face id.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>geometry <function>ST_GetFaceGeometry</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>aface</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>Returns the polygon in the given topology with the specified face id. Builds the polygon from the edges making up the face.</para>
+             
+                
+                <!-- use this format if new function -->
+                <para>Availability: 1.? </para>
+                	<para>&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.16</para>
+			</refsection>
+		
+		
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+-- Returns the wkt of the polygon added with AddFace
+SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) As facegeomwkt;
+-- result --
+               facegeomwkt
+
+--------------------------------------------------------------------------------
+ POLYGON((234776.9 899563.7,234896.5 899456.7,234914 899436.4,234946.6 899356.9,
+234872.5 899328.7,234891 899285.4,234992.5 899145,234890.6 899069,
+234755.2 899255.4,234612.7 899379.4,234776.9 899563.7))
+ 
+</programlisting>
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="AddFace"/></para>
+			</refsection>
+		</refentry>
+		
 	</sect1>
 	
 	<sect1 id="Topology_Processing">
