@@ -1160,12 +1160,11 @@ BEGIN
 	-- in fact recursing.
 	--
 	IF plyr.level > 0 THEN
+
 		-- Get child layer info
-		FOR rec IN EXECUTE ''SELECT * FROM topology.layer''
-			|| '' WHERE layer_id = '' || plyr.child_id
-		LOOP
-			clyr = rec;
-		END LOOP;
+		SELECT * INTO STRICT clyr FROM topology.layer
+			WHERE layer_id = plyr.child_id
+			AND topology_id = topogeom.topology_id;
 
 		query = ''SELECT st_union(topology.Geometry(''
 			|| quote_ident(clyr.feature_column)
@@ -1183,7 +1182,7 @@ BEGIN
 			|| '' AND ''
 			|| ''layer_id(''||quote_ident(clyr.feature_column)
 			|| '') = pr.element_type '';
-		--RAISE NOTICE ''%'', query;
+		--RAISE DEBUG ''%'', query;
 		FOR rec IN EXECUTE query
 		LOOP
 			RETURN rec.geom;
