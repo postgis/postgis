@@ -130,12 +130,12 @@
 		
 		<refentry id="topoelement">
 		  <refnamediv>
-			<refname>topoelement</refname>
-			<refpurpose>An array of 2 integers generally used to return the element id and element type of a topology relation. </refpurpose>
+			<refname>TopoElement</refname>
+			<refpurpose>An array of 2 integers generally used to identify a TopoGeometry component. </refpurpose>
 		  </refnamediv>
 		  <refsection>
 			<title>Description</title>
-			<para>An array of 2 integers generally used to return the element id and element type of a topology relation.</para>
+			<para>An array of 2 integers used to represent the id and type of a topology primitive or the id and layer of a TopoGeometry. Sets of such pairs are used to define TopoGeometry objects (either simple or hierarchical).</para>
 		  </refsection>
             <refsection>
                 <title>Examples</title>

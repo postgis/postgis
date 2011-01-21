@@ -329,6 +329,19 @@ CREATE TYPE topology.TopoGeometry AS (
 
 --
 -- TopoElement domain
+-- 
+-- This is an array of two elements: element_id and element_type.
+--
+-- When used to define _simple_ TopoGeometries,
+-- element_type can be:
+--  0: a node
+--  1: an edge
+--  2: a face
+-- and element_id will be the node, edge or face identifier
+--
+-- When used to define _hierarchical_ TopoGeometries,
+-- element_type will be the child layer identifier and
+-- element_id will be composing TopoGoemetry identifier
 --
 CREATE DOMAIN topology.TopoElement AS integer[]
 	CONSTRAINT DIMENSIONS CHECK (
@@ -339,10 +352,10 @@ ALTER DOMAIN topology.TopoElement ADD
         CONSTRAINT lower_dimension CHECK (
 		array_lower(VALUE, 1) = 1
 	);
+ALTER DOMAIN topology.TopoElement DROP CONSTRAINT type_range;
 ALTER DOMAIN topology.TopoElement ADD
         CONSTRAINT type_range CHECK (
-		VALUE[2] > 0 AND
-		VALUE[2] < 4
+		VALUE[2] > 0 
 	);
 
 --
