@@ -90,8 +90,7 @@ BEGIN
   gml = gml || '</gml:directedNode>';
 
   IF line IS NOT NULL THEN
-    gml = gml || '>'
-              || '<gml:curveProperty>'
+    gml = gml || '<gml:curveProperty>'
               || ST_AsGML(2, line)
               || '</gml:curveProperty>';
   END IF;
