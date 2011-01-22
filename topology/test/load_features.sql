@@ -46,13 +46,6 @@ SELECT topology.AddTopoGeometryColumn('city_data', 'features', 'city_streets','f
 --NOTYET---- 5. Initialize topology metadata.
 --NOTYET--EXECUTE topology.INITIALIZE_METADATA('CITY_DATA');
 
--- 4bis. Add geometry columns, for caching Geometries from TopoGeometries
-
-SELECT AddGeometryColumn('features','land_parcels','the_geom',-1,'MULTIPOLYGON',2);
-SELECT AddGeometryColumn('features','city_streets','the_geom',-1,'MULTILINESTRING',2);
-SELECT AddGeometryColumn('features','traffic_signs','the_geom',-1,'MULTIPOINT',2);
-
-
 
 -- 6. Load feature tables using the CreateTopoGeom constructor.
 -- Each topology feature can consist of one or more objects (face, edge, node)
