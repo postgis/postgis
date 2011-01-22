@@ -41,7 +41,7 @@ BEGIN
   IF point IS NOT NULL THEN
     gml = gml || '>'
               || '<gml:pointProperty>'
-              || ST_AsGML(3, point)
+              || ST_AsGML(3, point, 15, 1)
               || '</gml:pointProperty>'
               || '</gml:Node>';
   ELSE
@@ -91,7 +91,7 @@ BEGIN
 
   IF line IS NOT NULL THEN
     gml = gml || '<gml:curveProperty>'
-              || ST_AsGML(3, line)
+              || ST_AsGML(3, line, 15, 1)
               || '</gml:curveProperty>';
   END IF;
 
