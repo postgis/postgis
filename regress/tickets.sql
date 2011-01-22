@@ -3,9 +3,12 @@
 -- referenced by bug number for historical interest.
 --
 
+-- NOTE: some tests _require_ spatial_ref_sys entries.
+-- In particular, the GML output ones want auth_name and auth_srid too,
+-- so we provide one for EPSG:4326
 DELETE FROM spatial_ref_sys;
 INSERT INTO spatial_ref_sys ( srid, proj4text ) VALUES ( 32611, '+proj=utm +zone=11 +ellps=WGS84 +datum=WGS84 +units=m +no_defs' );
-INSERT INTO spatial_ref_sys ( srid, proj4text ) VALUES ( 4326, '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' );
+INSERT INTO spatial_ref_sys ( auth_name, auth_srid, srid, proj4text ) VALUES ( 'EPSG', 4326, 4326, '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' );
 INSERT INTO spatial_ref_sys ( srid, proj4text ) VALUES ( 32602, '+proj=utm +zone=2 +ellps=WGS84 +datum=WGS84 +units=m +no_defs ' );
 INSERT INTO spatial_ref_sys ( srid, proj4text ) VALUES ( 32702, '+proj=utm +zone=2 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs ' );
 INSERT INTO spatial_ref_sys ( srid, proj4text ) VALUES ( 3395, '+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs ' );
@@ -354,6 +357,9 @@ SELECT '#723',ST_Intersection(a.geog, b.geog) As result FROM (VALUES (ST_GeogFro
 
 -- #729 --
 --SELECT '#729',ST_MakeLine(foo1.the_geom) As result FROM ((SELECT ST_GeomFromText('POINT EMPTY',4326) As the_geom UNION ALL SELECT ST_GeomFromText('MULTIPOINT EMPTY',4326) As the_geom UNION ALL SELECT ST_GeomFromText('MULTIPOLYGON EMPTY',4326) As the_geom UNION ALL SELECT ST_GeomFromText('LINESTRING EMPTY',4326) As the_geom UNION ALL SELECT ST_GeomFromText('MULTILINESTRING EMPTY',4326) As the_geom ) ) As foo1;
+
+-- #804
+SELECT '#804', ST_AsGML(3, 'SRID=4326;POINT(0 0)'::geometry, 0, 1);
 
 -- Clean up
 DELETE FROM spatial_ref_sys;
