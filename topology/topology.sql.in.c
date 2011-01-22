@@ -1138,7 +1138,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 --
 CREATE OR REPLACE FUNCTION topology.Geometry(topology.TopoGeometry)
 	RETURNS Geometry
-AS '
+AS $$
 DECLARE
 	topogeom alias for $1;
 	toponame varchar;
@@ -1155,16 +1155,16 @@ BEGIN
 
 	-- Get layer info
 	ok = false;
-	FOR rec IN EXECUTE ''SELECT * FROM topology.layer ''
-		|| '' WHERE topology_id = '' || topogeom.topology_id
-		|| '' AND layer_id = '' || topogeom.layer_id
+	FOR rec IN EXECUTE 'SELECT * FROM topology.layer '
+		|| ' WHERE topology_id = ' || topogeom.topology_id
+		|| ' AND layer_id = ' || topogeom.layer_id
 	LOOP
 		ok = true;
 		plyr = rec;
 	END LOOP;
 
 	IF NOT ok THEN
-		RAISE EXCEPTION ''Could not find TopoGeometry layer % in topology %'', topogeom.layer_id, topogeom.topology_id;
+		RAISE EXCEPTION 'Could not find TopoGeometry layer % in topology %', topogeom.layer_id, topogeom.topology_id;
 	END IF;
 
 	--
@@ -1179,23 +1179,23 @@ BEGIN
 			WHERE layer_id = plyr.child_id
 			AND topology_id = topogeom.topology_id;
 
-		query = ''SELECT st_union(topology.Geometry(''
+		query = 'SELECT st_union(topology.Geometry('
 			|| quote_ident(clyr.feature_column)
-			|| '')) as geom FROM ''
-			|| quote_ident(clyr.schema_name) || ''.''
+			|| ')) as geom FROM '
+			|| quote_ident(clyr.schema_name) || '.'
 			|| quote_ident(clyr.table_name)
-			|| '', '' || quote_ident(toponame) || ''.relation pr''
-			|| '' WHERE ''
-			|| '' pr.topogeo_id = '' || topogeom.id
-			|| '' AND ''
-			|| '' pr.layer_id = '' || topogeom.layer_id
-			|| '' AND ''
-			|| '' id(''||quote_ident(clyr.feature_column)
-			|| '') = pr.element_id ''
-			|| '' AND ''
-			|| ''layer_id(''||quote_ident(clyr.feature_column)
-			|| '') = pr.element_type '';
-		--RAISE DEBUG ''%'', query;
+			|| ', ' || quote_ident(toponame) || '.relation pr'
+			|| ' WHERE '
+			|| ' pr.topogeo_id = ' || topogeom.id
+			|| ' AND '
+			|| ' pr.layer_id = ' || topogeom.layer_id
+			|| ' AND '
+			|| ' id('||quote_ident(clyr.feature_column)
+			|| ') = pr.element_id '
+			|| ' AND '
+			|| 'layer_id('||quote_ident(clyr.feature_column)
+			|| ') = pr.element_type ';
+		--RAISE DEBUG '%', query;
 		FOR rec IN EXECUTE query
 		LOOP
 			RETURN rec.geom;
@@ -1205,50 +1205,50 @@ BEGIN
 	
 
 	IF topogeom.type = 3 THEN -- [multi]polygon
-		FOR rec IN EXECUTE ''SELECT st_union(''
-			|| ''topology.ST_GetFaceGeometry(''
-			|| quote_literal(toponame) || '',''
-			|| ''element_id)) as g FROM '' 
+		FOR rec IN EXECUTE 'SELECT st_union('
+			|| 'topology.ST_GetFaceGeometry('
+			|| quote_literal(toponame) || ','
+			|| 'element_id)) as g FROM ' 
 			|| quote_ident(toponame)
-			|| ''.relation WHERE topogeo_id = ''
-			|| topogeom.id || '' AND layer_id = ''
-			|| topogeom.layer_id || '' AND element_type = 3 ''
+			|| '.relation WHERE topogeo_id = '
+			|| topogeom.id || ' AND layer_id = '
+			|| topogeom.layer_id || ' AND element_type = 3 '
 		LOOP
 			geom := rec.g;
 		END LOOP;
 
 	ELSIF topogeom.type = 2 THEN -- [multi]line
-		FOR rec IN EXECUTE ''SELECT ST_LineMerge(ST_Collect(e.geom)) as g FROM ''
-			|| quote_ident(toponame) || ''.edge e, ''
-			|| quote_ident(toponame) || ''.relation r ''
-			|| '' WHERE r.topogeo_id = '' || topogeom.id
-			|| '' AND r.layer_id = '' || topogeom.layer_id
-			|| '' AND r.element_type = 2 ''
-			|| '' AND abs(r.element_id) = e.edge_id''
+		FOR rec IN EXECUTE 'SELECT ST_LineMerge(ST_Collect(e.geom)) as g FROM '
+			|| quote_ident(toponame) || '.edge e, '
+			|| quote_ident(toponame) || '.relation r '
+			|| ' WHERE r.topogeo_id = ' || topogeom.id
+			|| ' AND r.layer_id = ' || topogeom.layer_id
+			|| ' AND r.element_type = 2 '
+			|| ' AND abs(r.element_id) = e.edge_id'
 		LOOP
 			geom := rec.g;
 		END LOOP;
 	
 	ELSIF topogeom.type = 1 THEN -- [multi]point
-		FOR rec IN EXECUTE ''SELECT st_union(n.geom) as g FROM ''
-			|| quote_ident(toponame) || ''.node n, ''
-			|| quote_ident(toponame) || ''.relation r ''
-			|| '' WHERE r.topogeo_id = '' || topogeom.id
-			|| '' AND r.layer_id = '' || topogeom.layer_id
-			|| '' AND r.element_type = 1 ''
-			|| '' AND r.element_id = n.node_id''
+		FOR rec IN EXECUTE 'SELECT st_union(n.geom) as g FROM '
+			|| quote_ident(toponame) || '.node n, '
+			|| quote_ident(toponame) || '.relation r '
+			|| ' WHERE r.topogeo_id = ' || topogeom.id
+			|| ' AND r.layer_id = ' || topogeom.layer_id
+			|| ' AND r.element_type = 1 '
+			|| ' AND r.element_id = n.node_id'
 		LOOP
 			geom := rec.g;
 		END LOOP;
 
 	ELSE
-		RAISE NOTICE ''Geometry from TopoGeometry does not support TopoGeometries of type % so far'', topogeom.type;
-		geom := ''GEOMETRYCOLLECTION EMPTY'';
+		RAISE NOTICE 'Geometry from TopoGeometry does not support TopoGeometries of type % so far', topogeom.type;
+		geom := 'GEOMETRYCOLLECTION EMPTY';
 	END IF;
 
 	RETURN geom;
 END
-'
+$$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} Geometry(TopoGeometry)
 
