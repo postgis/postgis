@@ -11,7 +11,7 @@
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
 --
--- Author: Sandro Santilli <strk@refractions.net>
+-- Author: Sandro Santilli <strk@keybit.net>
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
