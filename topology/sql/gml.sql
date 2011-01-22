@@ -144,6 +144,7 @@ DECLARE
   rec RECORD;
   rec2 RECORD;
   bounds geometry;
+  side int;
 BEGIN
 
   nsprefix := 'gml:';
@@ -214,9 +215,11 @@ BEGIN
         gml = gml || '<' || nsprefix || 'directedFace orientation="-">';
       END IF;
 
+      -- TODO: make all this block in a specialized _AsGMLRing function ?
+
       -- Contents of a directed face are the list of edges
       -- that cover the specific ring
-      bounds = ST_Boundary(rec.geom);
+      bounds = ST_Boundary(ST_ForceRHR(rec.geom));
 
       -- TODO: figure out a way to express an id for a face
       --       and use a reference for an already-seen face ?
@@ -226,11 +229,30 @@ BEGIN
         || ', e.geom)'
         -- TODO: add left_face/right_face to the conditional, to reduce load ?
       LOOP
-        -- TODO: pass the 'visited' table over
+
+        gml = gml || '<' || nsprefix || 'directedEdge';
+
+        -- if this edge goes in opposite direction to the
+        --       ring bounds, make it with negative orientation
+        SELECT DISTINCT (ST_Dump(
+                          ST_SharedPaths(rec2.geom, bounds))
+                        ).path[1] into side;
+        IF side = 2 THEN -- edge goes in opposite direction
+          gml = gml || ' orientation="-"';
+        END IF;
+
+        -- TODO: use the 'visited' table !
+        --       adding an xlink and closing the tag here if
+        --       this edge (rec2.edge_id) is already visited
+
+        gml = gml || '>';
+
         gml = gml || topology._AsGMLEdge(rec2.edge_id,
                                         rec2.start_node,
                                         rec2.end_node, rec2.geom,
                                         nsprefix_in);
+        gml = gml || '</' || nsprefix || 'directedEdge>';
+
       END LOOP;
       gml = gml || '</' || nsprefix || 'Face>';
       gml = gml || '</' || nsprefix || 'directedFace>';
