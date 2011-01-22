@@ -25,25 +25,37 @@
 
 --{
 --
--- text AsGMLNode(id, point)
+-- text AsGMLNode(id, point, nsprefix)
 --
 -- 
-CREATE OR REPLACE FUNCTION topology.AsGMLNode(int, geometry)
+CREATE OR REPLACE FUNCTION topology.AsGMLNode(int, geometry, text)
   RETURNS text
 AS
 $$
 DECLARE
   id ALIAS FOR $1;
   point ALIAS FOR $2;
+  nsprefix_in ALIAS FOR $3;
+  nsprefix text;
   gml text;
 BEGIN
-  gml := '<gml:Node gml:id="N' || id || '"';
+
+  nsprefix := 'gml:';
+  IF NOT nsprefix_in IS NULL THEN
+    IF nsprefix_in = '' THEN
+      nsprefix = nsprefix_in;
+    ELSE
+      nsprefix = nsprefix_in || ':';
+    END IF;
+  END IF;
+
+  gml := '<' || nsprefix || 'Node ' || nsprefix || 'id="N' || id || '"';
   IF point IS NOT NULL THEN
     gml = gml || '>'
-              || '<gml:pointProperty>'
-              || ST_AsGML(3, point, 15, 1)
-              || '</gml:pointProperty>'
-              || '</gml:Node>';
+              || '<' || nsprefix || 'pointProperty>'
+              || ST_AsGML(3, point, 15, 1, nsprefix_in)
+              || '</' || nsprefix || 'pointProperty>'
+              || '</' || nsprefix || 'Node>';
   ELSE
     gml = gml || '/>';
   END IF;
@@ -51,20 +63,26 @@ BEGIN
 END
 $$
 LANGUAGE 'plpgsql';
+--} AsGMLNode(id, point, nsprefix)
+
+--{ AsGMLNode(id, point)
+CREATE OR REPLACE FUNCTION topology.AsGMLNode(int, geometry) RETURNS text
+AS $$ SELECT topology.AsGMLNode($1, $2, 'gml'); $$
+LANGUAGE 'sql';
 --} AsGMLNode(id, point)
 
 --{ AsGMLNode(id)
 CREATE OR REPLACE FUNCTION topology.AsGMLNode(int) RETURNS text
-AS $$ SELECT topology.AsGMLNode($1, NULL); $$
+AS $$ SELECT topology.AsGMLNode($1, NULL, 'gml'); $$
 LANGUAGE 'sql';
 --} AsGMLNode(id)
 
 --{
 --
--- text AsGMLEdge(edge_id, start_node, end_node, line)
+-- text AsGMLEdge(edge_id, start_node, end_node, line, nsprefix)
 --
 -- 
-CREATE OR REPLACE FUNCTION topology.AsGMLEdge(int, int, int, geometry)
+CREATE OR REPLACE FUNCTION topology.AsGMLEdge(int, int, int, geometry, text)
   RETURNS text
 AS
 $$
@@ -73,47 +91,70 @@ DECLARE
   start_node ALIAS FOR $2;
   end_node ALIAS for $3;
   line ALIAS FOR $4;
+  nsprefix_in ALIAS FOR $5;
+  nsprefix text;
   gml text;
 BEGIN
-  gml := '<gml:Edge gml:id="E' || edge_id || '">';
+
+  nsprefix := 'gml:';
+  IF nsprefix_in IS NOT NULL THEN
+    IF nsprefix_in = '' THEN
+      nsprefix = nsprefix_in;
+    ELSE
+      nsprefix = nsprefix_in || ':';
+    END IF;
+  END IF;
+
+  gml := '<' || nsprefix || 'Edge ' || nsprefix || 'id="E' || edge_id || '">';
 
   -- Start node
   -- TODO: optionally output the directedNode as xlink, using a visited map
-  gml = gml || '<gml:directedNode orientation="-">';
-  gml = gml || topology.AsGMLNode(start_node);
-  gml = gml || '</gml:directedNode>';
+  gml = gml || '<' || nsprefix || 'directedNode orientation="-">';
+  gml = gml || topology.AsGMLNode(start_node, NULL, nsprefix_in);
+  gml = gml || '</' || nsprefix || 'directedNode>';
 
   -- End node
   -- TODO: optionally output the directedNode as xlink, using a visited map
-  gml = gml || '<gml:directedNode>';
-  gml = gml || topology.AsGMLNode(end_node);
-  gml = gml || '</gml:directedNode>';
+  gml = gml || '<' || nsprefix || 'directedNode>';
+  --gml = gml || topology.AsGMLNode(end_node, NULL, nsprefix_in);
+  gml = gml || '</' || nsprefix || 'directedNode>';
 
   IF line IS NOT NULL THEN
-    gml = gml || '<gml:curveProperty>'
-              || ST_AsGML(3, line, 15, 1)
-              || '</gml:curveProperty>';
+    gml = gml || '<' || nsprefix || 'curveProperty>'
+              || ST_AsGML(3, line, 15, 1, nsprefix_in)
+              || '</' || nsprefix || 'curveProperty>';
   END IF;
 
-  gml = gml || '</gml:Edge>';
+  gml = gml || '</' || nsprefix || 'Edge>';
 
   RETURN gml;
 END
 $$
 LANGUAGE 'plpgsql';
+--} AsGMLEdge(id, start_node, end_node, line, nsprefix)
+
+--{ AsGMLEdge(id, start_node, end_node, line)
+CREATE OR REPLACE FUNCTION topology.AsGMLEdge(int, int, int, geometry)
+RETURNS text AS $$
+  SELECT topology.AsGMLEdge($1, $2, $3, $4, 'gml');
+$$ LANGUAGE 'sql';
 --} AsGMLEdge(id, start_node, end_node, line)
+
+
 
 --{
 --
--- text AsGML(TopoGeometry)
+-- text AsGML(TopoGeometry, nsprefix)
 --
 -- 
-CREATE OR REPLACE FUNCTION topology.AsGML(topology.TopoGeometry)
+CREATE OR REPLACE FUNCTION topology.AsGML(topology.TopoGeometry, text)
   RETURNS text
 AS
 $$
 DECLARE
   tg ALIAS FOR $1;
+  nsprefix_in ALIAS FOR $2;
+  nsprefix text;
   toponame text;
   gml text;
   sql text;
@@ -122,13 +163,22 @@ DECLARE
   bounds geometry;
 BEGIN
 
+  nsprefix := 'gml:';
+  IF nsprefix_in IS NOT NULL THEN
+    IF nsprefix_in = '' THEN
+      nsprefix = nsprefix_in;
+    ELSE
+      nsprefix = nsprefix_in || ':';
+    END IF;
+  END IF;
+
   -- Get topology name (for subsequent queries)
   SELECT name FROM topology.topology into toponame
               WHERE id = tg.topology_id;
 
   -- Puntual TopoGeometry
   IF tg.type = 1 THEN
-    gml = '<gml:TopoPoint>';
+    gml = '<' || nsprefix || 'TopoPoint>';
     -- For each defining node, print a directedNode
     FOR rec IN  EXECUTE 'SELECT r.element_id, n.geom from '
       || quote_ident(toponame) || '.relation r LEFT JOIN '
@@ -136,15 +186,15 @@ BEGIN
       || ' WHERE r.layer_id = ' || tg.layer_id
       || ' AND r.topogeo_id = ' || tg.id
     LOOP
-      gml = gml || '<gml:directedNode>';
-      gml = gml || topology.AsGMLNode(rec.element_id, rec.geom);
-      gml = gml || '</gml:directedNode>';
+      gml = gml || '<' || nsprefix || 'directedNode>';
+      gml = gml || topology.AsGMLNode(rec.element_id, rec.geom, nsprefix_in);
+      gml = gml || '</' || nsprefix || 'directedNode>';
     END LOOP;
-    gml = gml || '</gml:TopoPoint>';
+    gml = gml || '</' || nsprefix || 'TopoPoint>';
     RETURN gml;
 
   ELSIF tg.type = 2 THEN -- lineal
-    gml = '<gml:TopoCurve>';
+    gml = '<' || nsprefix || 'TopoCurve>';
     -- For each defining edge, print a directedEdge
     FOR rec IN  EXECUTE
       'SELECT r.element_id as rid, e.edge_id, e.geom, '
@@ -155,19 +205,19 @@ BEGIN
       || ' AND r.topogeo_id = ' || tg.id
     LOOP
       IF rec.rid < 0 THEN
-        gml = gml || '<gml:directedEdge orientation="-">';
+        gml = gml || '<' || nsprefix || 'directedEdge orientation="-">';
       ELSE
-        gml = gml || '<gml:directedEdge>';
+        gml = gml || '<' || nsprefix || 'directedEdge>';
       END IF;
       gml = gml || topology.AsGMLEdge(rec.edge_id, rec.start_node,
-                                      rec.end_node, rec.geom);
-      gml = gml || '</gml:directedEdge>';
+                                      rec.end_node, rec.geom, nsprefix_in);
+      gml = gml || '</' || nsprefix || 'directedEdge>';
     END LOOP;
-    gml = gml || '</gml:TopoCurve>';
+    gml = gml || '</' || nsprefix || 'TopoCurve>';
     return gml;
 
   ELSIF tg.type = 3 THEN -- areal
-    gml = '<gml:TopoSurface>';
+    gml = '<' || nsprefix || 'TopoSurface>';
 
     -- Construct the geometry, then for each polygon:
     FOR rec IN SELECT (ST_DumpRings((ST_Dump(topology.Geometry(tg))).geom)).*
@@ -176,9 +226,9 @@ BEGIN
       -- and a negative directedFace for
       -- each interior ring.
       IF rec.path[1] = 0 THEN
-        gml = gml || '<gml:directedFace>';
+        gml = gml || '<' || nsprefix || 'directedFace>';
       ELSE
-        gml = gml || '<gml:directedFace orientation="-">';
+        gml = gml || '<' || nsprefix || 'directedFace orientation="-">';
       END IF;
 
       -- Contents of a directed face are the list of edges
@@ -187,7 +237,7 @@ BEGIN
 
       -- TODO: figure out a way to express an id for a face
       --       and use a reference for an already-seen face ?
-      gml = gml || '<gml:Face>';
+      gml = gml || '<' || nsprefix || 'Face>';
       FOR rec2 IN EXECUTE 'SELECT e.* FROM ' || quote_ident(toponame)
         || '.edge e WHERE ST_Covers(' || quote_literal(bounds::text)
         || ', e.geom)'
@@ -196,13 +246,14 @@ BEGIN
         -- TODO: pass the 'visited' table over
         gml = gml || topology.AsGMLEdge(rec2.edge_id,
                                         rec2.start_node,
-                                        rec2.end_node, rec2.geom);
+                                        rec2.end_node, rec2.geom,
+                                        nsprefix_in);
       END LOOP;
-      gml = gml || '</gml:Face>';
-      gml = gml || '</gml:directedFace>';
+      gml = gml || '</' || nsprefix || 'Face>';
+      gml = gml || '</' || nsprefix || 'directedFace>';
     END LOOP;
   
-    gml = gml || '</gml:TopoSurface>';
+    gml = gml || '</' || nsprefix || 'TopoSurface>';
     RETURN gml;
 
   ELSIF tg.type = 4 THEN -- collection
@@ -216,4 +267,17 @@ BEGIN
 END
 $$
 LANGUAGE 'plpgsql';
---} AsGML(TopoGeometry)
+--} AsGML(TopoGeometry, nsprefix)
+
+--{
+--
+-- text AsGML(TopoGeometry)
+--
+-- 
+CREATE OR REPLACE FUNCTION topology.AsGML(topology.TopoGeometry)
+  RETURNS text
+AS
+$$
+  SELECT topology.AsGML($1, 'gml');
+$$ LANGUAGE 'sql';
+-- } AsGML(TopoGeometry)
