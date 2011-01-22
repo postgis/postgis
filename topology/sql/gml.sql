@@ -184,6 +184,10 @@ BEGIN
       -- Contents of a directed face are the list of edges
       -- that cover the specific ring
       bounds = ST_Boundary(rec.geom);
+
+      -- TODO: figure out a way to express an id for a face
+      --       and use a reference for an already-seen face ?
+      gml = gml || '<gml:Face>';
       FOR rec2 IN EXECUTE 'SELECT e.* FROM ' || quote_ident(toponame)
         || '.edge e WHERE ST_Covers(' || quote_literal(bounds::text)
         || ', e.geom)'
@@ -194,7 +198,7 @@ BEGIN
                                         rec2.start_node,
                                         rec2.end_node, rec2.geom);
       END LOOP;
-
+      gml = gml || '</gml:Face>';
       gml = gml || '</gml:directedFace>';
     END LOOP;
   
