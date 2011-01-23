@@ -278,13 +278,18 @@ ERROR:  value for domain topology.topoelementarray violates check constraint "di
 CREATE SCHEMA ma;
 CREATE TABLE ma.parcels(gid serial, parcel_id varchar(20) PRIMARY KEY, address text);
 SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma', 'parcels', 'topo', 'POLYGON');</programlisting>
+<programlisting>
+CREATE SCHEMA ri;
+CREATE TABLE ri.roads(gid serial PRIMARY KEY, road_name text);
+SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
+</programlisting>
 			</refsection>
 		
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
 			
-				<para><xref linkend="CreateTopology"/></para>
+				<para><xref linkend="CreateTopology"/>, <xref linkend="CreateTopoGeom"/></para>
 			</refsection>
 		</refentry>
 		<refentry id="CreateTopology">
@@ -334,6 +339,12 @@ SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma', 'parcels', 'topo', 'POLYG
 				<para>This example creates a new schema called ma_topo that will store edges, faces, and relations in Massachusetts State Plane meters.
 					The tolerance represents 1/2 meter since the spatial reference system is a meter based spatial reference system</para>
 				<programlisting>SELECT topology.CreateTopology('ma_topo',26986, 0.5);</programlisting>
+				
+				<para>Create Rhode Island topology in State Plane ft</para>
+<programlisting>SELECT topology.CreateTopology('ri_topo',3438) As topoid;
+topoid
+------
+2</programlisting>
 			</refsection>
 		
 			<!-- Optionally add a "See Also" section -->
@@ -736,13 +747,14 @@ nodeid
 		
 			<refsection>
 				<title>Examples</title>
-				<programlisting></programlisting>
+				<para>Create a topogeom in ri_topo schema for layer 2 (our ri_roads), of type (2) LINE, for the first edge (we loaded in <varname>ST_CreateTopoGeo</varname>.</para> 
+				<programlisting>INSERT INTO ri.ri_roads(road_name, topo) VALUES('Unknown', topology.CreateTopoGeom('ri_topo',2,2,'{{1,2}}'::topology.topoelementarray);</programlisting>
 			</refsection>
 		
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="AddTopoGeometryColumn"/></para>
+				<para><xref linkend="AddTopoGeometryColumn"/>, <xref linkend="ST_CreateTopoGeo" />, <xref linkend="topoelementarray" /></para>
 			</refsection>
 		</refentry>
 		
@@ -871,13 +883,37 @@ nodeid
 		
 			<refsection>
 				<title>Examples</title>
-				 <!-- TODO -->
+				<programlisting>
+-- Populate topology --
+SELECT topology.ST_CreateTopoGeo('ri_topo', 
+ ST_GeomFromText('MULTILINESTRING((384744 236928,384750 236923,384769 236911,384799 236895,384811 236890,384833 236884,
+  384844 236882,384866 236881,384879 236883,384954 236898,385087 236932,385117 236938,
+  385167 236938,385203 236941,385224 236946,385233 236950,385241 236956,385254 236971,
+  385260 236979,385268 236999,385273 237018,385273 237037,385271 237047,385267 237057,
+  385225 237125,385210 237144,385192 237161,385167 237192,385162 237202,385159 237214,
+  385159 237227,385162 237241,385166 237256,385196 237324,385209 237345,385234 237375,
+  385237 237383,385238 237399,385236 237407,385227 237419,385213 237430,385193 237439,
+  385174 237451,385170 237455,385169 237460,385171 237475,385181 237503,385190 237521,
+  385200 237533,385206 237538,385213 237541,385221 237542,385235 237540,385242 237541,
+  385249 237544,385260 237555,385270 237570,385289 237584,385292 237589,385291 237596,385284 237630))',3438) 
+  );
+
+      st_createtopogeo
+----------------------------
+ Topology ri_topo populated
+ 
+ 
+-- create tables and topo geometries --
+CREATE TABLE ri.roads(gid serial PRIMARY KEY, road_name text);
+
+SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
+				</programlisting>
 			</refsection>
 		
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="CreateTopology"/>, <xref linkend="DropTopology"/></para>
+				<para><xref linkend="AddTopoGeometryColumn"/>, <xref linkend="CreateTopology"/>, <xref linkend="DropTopology"/></para>
 			</refsection>
 		</refentry>
 		
@@ -1357,5 +1393,118 @@ SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
 			</refsection>
 		</refentry>
 	</sect1>
-
+	
+	<sect1 id="Topology_Outputs">
+	  <title>Topology Outputs</title>
+	  <refentry id="AsGML">
+	  	    <refnamediv>
+				<refname>AsGML</refname>
+			
+				<refpurpose>Returns the GML representation of a topogeometry in version GML3 format. If no <varname>nsprefix_in</varname> is specified then <varname>gml</varname> is used. Pass in an empty string for nsprefix to get a non-qualified name space.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				    	<funcprototype>
+                        <funcdef>text <function>AsGML</function></funcdef>
+                        <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+					</funcprototype>
+					<funcprototype>
+                        <funcdef>text <function>AsGML</function></funcdef>
+                        <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+                        <paramdef><type>text </type> <parameter>nsprefix_in</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>Returns the GML representation of a topogeometry in version GML3 format. If no <varname>nsprefix_in</varname> is specified then <varname>gml</varname> is used. Pass in an empty string for nsprefix to get a non-qualified name space.</para>
+              
+			
+                <!-- use this format if new function -->
+                <para>Availability: 2.0.0 </para>
+			</refsection>
+		
+		
+			<refsection>
+				<title>Examples</title>
+				<para>This uses the topo geometry we created in <xref linkend="CreateTopoGeom" /></para>
+				<programlisting>SELECT topology.AsGML(topo) As rdgml 
+  FROM ri.roads 
+  WHERE road_name = 'Unknown';
+  
+-- rdgml--
+<![CDATA[<gml:TopoCurve>
+    <gml:directedEdge>
+        <gml:Edge gml:id="E1">
+            <gml:directedNode orientation="-">
+                <gml:Node gml:id="N1"/>
+            </gml:directedNode>
+            <gml:directedNode></gml:directedNode>
+            <gml:curveProperty>
+                <gml:Curve srsName="urn:ogc:def:crs:EPSG::3438">
+                    <gml:segments>
+                        <gml:LineStringSegment>
+                            <gml:posList srsDimension="2">384744 236928 384750 236923 384769 236911 384799 236895 384811 236890 
+                            384833 236884 384844 236882 384866 236881 384879 236883 384954 236898 385087 236932 385117 236938 
+                            385167 236938 385203 236941 385224 236946 385233 236950 385241 236956 385254 236971 
+                            385260 236979 385268 236999 385273 237018 385273 237037 385271 237047 385267 237057 385225 237125 
+                            385210 237144 385192 237161 385167 237192 385162 237202 385159 237214 385159 237227 385162 237241 
+                            385166 237256 385196 237324 385209 237345 385234 237375 385237 237383 385238 237399 385236 237407 
+                            385227 237419 385213 237430 385193 237439 385174 237451 385170 237455 385169 237460 385171 237475 
+                            385181 237503 385190 237521 385200 237533 385206 237538 385213 237541 385221 237542 385235 237540 385242 237541 
+                            385249 237544 385260 237555 385270 237570 385289 237584 385292 237589 385291 237596 385284 237630</gml:posList>
+                        </gml:LineStringSegment>
+                    </gml:segments>
+                </gml:Curve>
+            </gml:curveProperty>
+        </gml:Edge>
+    </gml:directedEdge>
+</gml:TopoCurve>]]>		
+</programlisting>
+<para>Same exercise as previous without namespace</para>
+<programlisting>SELECT topology.AsGML(topo,'') As rdgml 
+  FROM ri.roads 
+  WHERE road_name = 'Unknown';
+  
+-- rdgml--
+<![CDATA[<TopoCurve>
+    <directedEdge>
+        <Edge id="E1">
+            <directedNode orientation="-">
+                <Node id="N1"/>
+            </directedNode>
+            <directedNode></directedNode>
+            <curveProperty>
+                <Curve srsName="urn:ogc:def:crs:EPSG::3438">
+                    <segments>
+                        <LineStringSegment>
+                            <posList srsDimension="2">384744 236928 384750 236923 384769 236911 384799 236895 384811 236890 
+                            384833 236884 384844 236882 384866 236881 384879 236883 384954 236898 385087 236932 385117 236938 
+                            385167 236938 385203 236941 385224 236946 385233 236950 385241 236956 385254 236971 
+                            385260 236979 385268 236999 385273 237018 385273 237037 385271 237047 385267 237057 385225 237125 
+                            385210 237144 385192 237161 385167 237192 385162 237202 385159 237214 385159 237227 385162 237241 
+                            385166 237256 385196 237324 385209 237345 385234 237375 385237 237383 385238 237399 385236 237407 
+                            385227 237419 385213 237430 385193 237439 385174 237451 385170 237455 385169 237460 385171 237475 
+                            385181 237503 385190 237521 385200 237533 385206 237538 385213 237541 385221 237542 385235 237540 385242 237541 
+                            385249 237544 385260 237555 385270 237570 385289 237584 385292 237589 385291 237596 385284 237630</posList>
+                         </LineStringSegment>
+                    </segments>
+                </Curve>
+            </curveProperty>
+        </Edge>
+    </directedEdge>
+</TopoCurve>]]>		
+</programlisting>
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="CreateTopoGeom"/>, <xref linkend="ST_CreateTopoGeo" /></para>
+			</refsection>
+	  </refentry>
+</sect1>
 </chapter>
