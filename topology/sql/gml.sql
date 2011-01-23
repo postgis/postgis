@@ -106,7 +106,7 @@ BEGIN
   -- End node
   -- TODO: optionally output the directedNode as xlink, using a visited map
   gml = gml || '<' || nsprefix || 'directedNode>';
-  --gml = gml || topology._AsGMLNode(end_node, NULL, nsprefix_in);
+  gml = gml || topology._AsGMLNode(end_node, NULL, nsprefix_in);
   gml = gml || '</' || nsprefix || 'directedNode>';
 
   IF line IS NOT NULL THEN
