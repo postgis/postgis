@@ -5,9 +5,9 @@ INSERT INTO spatial_ref_sys ( auth_name, auth_srid, srid, proj4text ) VALUES ( '
 \i load_topology-4326.sql
 \i load_features.sql
 
---- Puntual outputs {
+--- Puntual single element {
 
--- Output simple puntual features (single-geom)
+-- Output simple puntual features (composed by single topo-element)
 SELECT feature_name||'-vanilla', topology.AsGML(feature)
  FROM features.traffic_signs
  WHERE feature_name IN ('S1', 'S2', 'S3', 'S4' )
@@ -21,13 +21,37 @@ SELECT feature_name||'-noprefix', topology.AsGML(feature, '')
 SELECT feature_name||'-customprefix', topology.AsGML(feature, 'cstm')
  FROM features.traffic_signs WHERE feature_name = 'S1';
 
---- } Puntual outputs 
+--- } Puntual single-element 
 
---- Lineal outputs (TODO) {
---- } Lineal outputs 
+--- Puntual multi element (TODO) {
+--- } Puntual multi-element 
 
---- Areal outputs (TODO) {
---- } Areal outputs 
+--- Lineal single element {
+
+-- Output simple lineal features (composed by single topo element)
+SELECT feature_name||'-vanilla', topology.AsGML(feature)
+ FROM features.city_streets
+ WHERE feature_name IN ('R3', 'R4' )
+ ORDER BY feature_name;
+
+-- Output again but with no prefix
+SELECT feature_name||'-noprefix', topology.AsGML(feature, '')
+ FROM features.city_streets WHERE feature_name = 'R3';
+
+-- Output again with custom prefix
+SELECT feature_name||'-customprefix', topology.AsGML(feature, 'cstm')
+ FROM features.city_streets WHERE feature_name = 'R3';
+
+--- } Lineal single-element
+
+--- Lineal multi-element (TODO) {
+--- } Lineal multi-element
+
+--- Areal single-element (TODO) {
+--- } Areal single-element 
+
+--- Areal multi-element (TODO) {
+--- } Areal multi-element 
 
 SELECT topology.DropTopology('city_data');
 DROP SCHEMA features CASCADE;
