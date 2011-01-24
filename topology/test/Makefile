@@ -16,6 +16,9 @@ topo_predicates.sql: predicates.sql.in
 load_topology.sql: load_topology.sql.in
 	@cpp -P -traditional-cpp load_topology.sql.in | sed -e 's:@SRID@:-1:g' > load_topology.sql
 
+load_topology-4326.sql: load_topology.sql.in
+	@cpp -P -traditional-cpp load_topology.sql.in | sed -e 's:@SRID@:4326:g' > load_topology-4326.sql
+
 clean distclean:
 	rm -f topo_predicates.sql load_topology.sql
 
@@ -26,8 +29,9 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/st_getfacegeometry.sql \
 	regress/topoelement.sql \
 	regress/topoelementarray_agg.sql \
-	regress/droptopology.sql
+	regress/droptopology.sql \
+	regress/gml.sql
 
-check: topo_predicates.sql load_topology.sql
+check: topo_predicates.sql load_topology.sql load_topology-4326.sql
 	$(MAKE) -C ../../regress postgis.sql staged-install
 	@USE_VERSION=$(POSTGIS_PGSQL_VERSION) ../../regress/run_test --topology $(TESTS)

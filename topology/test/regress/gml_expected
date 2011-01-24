@@ -1,0 +1,18 @@
+BEGIN
+t
+8
+22
+26
+COMMIT
+BEGIN
+1
+2
+3
+COMMIT
+S1-vanilla|<gml:TopoPoint><gml:directedNode><gml:Node gml:id="N14"><gml:pointProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos srsDimension="2">21 14</gml:pos></gml:Point></gml:pointProperty></gml:Node></gml:directedNode></gml:TopoPoint>
+S2-vanilla|<gml:TopoPoint><gml:directedNode><gml:Node gml:id="N13"><gml:pointProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos srsDimension="2">35 14</gml:pos></gml:Point></gml:pointProperty></gml:Node></gml:directedNode></gml:TopoPoint>
+S3-vanilla|<gml:TopoPoint><gml:directedNode><gml:Node gml:id="N6"><gml:pointProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos srsDimension="2">57 33</gml:pos></gml:Point></gml:pointProperty></gml:Node></gml:directedNode></gml:TopoPoint>
+S4-vanilla|<gml:TopoPoint><gml:directedNode><gml:Node gml:id="N4"><gml:pointProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos srsDimension="2">20 37</gml:pos></gml:Point></gml:pointProperty></gml:Node></gml:directedNode></gml:TopoPoint>
+S1-noprefix|<TopoPoint><directedNode><Node id="N14"><pointProperty><Point srsName="urn:ogc:def:crs:EPSG::4326"><pos srsDimension="2">21 14</pos></Point></pointProperty></Node></directedNode></TopoPoint>
+S1-customprefix|<cstm:TopoPoint><cstm:directedNode><cstm:Node cstm:id="N14"><cstm:pointProperty><cstm:Point srsName="urn:ogc:def:crs:EPSG::4326"><cstm:pos srsDimension="2">21 14</cstm:pos></cstm:Point></cstm:pointProperty></cstm:Node></cstm:directedNode></cstm:TopoPoint>
+Topology 'city_data' dropped
