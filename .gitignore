@@ -48,6 +48,8 @@ raster/rt_pg/rtpostgis.sql
 raster/rt_pg/rtpostgis.sql.in
 raster/scripts/python/Makefile
 topology/test/topo_predicates.sql
+topology/test/load_topology-4326.sql
+topology/test/load_topology.sql
 topology/topology.sql
 topology/topology.sql.in
 st_*.png
