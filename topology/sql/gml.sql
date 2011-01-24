@@ -219,7 +219,7 @@ BEGIN
 
       -- Contents of a directed face are the list of edges
       -- that cover the specific ring
-      bounds = ST_Boundary(ST_ForceRHR(rec.geom));
+      bounds = ST_Boundary(rec.geom);
 
       -- TODO: figure out a way to express an id for a face
       --       and use a reference for an already-seen face ?
