@@ -224,9 +224,14 @@ BEGIN
       -- TODO: figure out a way to express an id for a face
       --       and use a reference for an already-seen face ?
       gml = gml || '<' || nsprefix || 'Face>';
-      FOR rec2 IN EXECUTE 'SELECT e.* FROM ' || quote_ident(toponame)
-        || '.edge e WHERE ST_Covers(' || quote_literal(bounds::text)
-        || ', e.geom)'
+      FOR rec2 IN EXECUTE
+        'SELECT e.*, ST_Line_Locate_Point('
+        || quote_literal(bounds::text)
+        || ', ST_Line_Interpolate_Point(e.geom, 0.2)) as pos FROM '
+        || quote_ident(toponame)
+        || '.edge e WHERE ST_Covers('
+        || quote_literal(bounds::text)
+        || ', e.geom) ORDER BY pos'
         -- TODO: add left_face/right_face to the conditional, to reduce load ?
       LOOP
 
