@@ -15,11 +15,15 @@ SELECT feature_name||'-vanilla', topology.AsGML(feature)
 
 -- Output again but with no prefix
 SELECT feature_name||'-noprefix', topology.AsGML(feature, '')
- FROM features.traffic_signs WHERE feature_name = 'S1';
+ FROM features.traffic_signs 
+ WHERE feature_name IN ('S1', 'S2', 'S3', 'S4' )
+ ORDER BY feature_name;
 
 -- Output again with custom prefix
 SELECT feature_name||'-customprefix', topology.AsGML(feature, 'cstm')
- FROM features.traffic_signs WHERE feature_name = 'S1';
+ FROM features.traffic_signs 
+ WHERE feature_name IN ('S1', 'S2', 'S3', 'S4' )
+ ORDER BY feature_name;
 
 --- } Puntual single-element 
 
@@ -36,11 +40,15 @@ SELECT feature_name||'-vanilla', topology.AsGML(feature)
 
 -- Output again but with no prefix
 SELECT feature_name||'-noprefix', topology.AsGML(feature, '')
- FROM features.city_streets WHERE feature_name = 'R3';
+ FROM features.city_streets 
+ WHERE feature_name IN ('R3', 'R4' )
+ ORDER BY feature_name;
 
 -- Output again with custom prefix
 SELECT feature_name||'-customprefix', topology.AsGML(feature, 'cstm')
- FROM features.city_streets WHERE feature_name = 'R3';
+ FROM features.city_streets 
+ WHERE feature_name IN ('R3', 'R4' )
+ ORDER BY feature_name;
 
 --- } Lineal single-element
 
