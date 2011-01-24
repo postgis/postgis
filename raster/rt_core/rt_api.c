@@ -1091,8 +1091,8 @@ int rt_band_check_is_nodata(rt_context ctx, rt_band band)
 
     /* Check if band has nodata value */
     if (!band->hasnodata)
-    {
-        ctx->warn("Unknown NODATA value for band");
+    {        
+        RASTER_DEBUG(3, "Unknown NODATA value for band");
         band->isnodata = FALSE;
         return FALSE;
     }

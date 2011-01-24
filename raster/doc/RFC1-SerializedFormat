@@ -121,7 +121,7 @@ will be of 7 bytes.
 
  #define BANDTYPE_FLAG_OFFDB     (1<<7)
  #define BANDTYPE_FLAG_HASNODATA (1<<6)
- #define BANDTYPE_FLAG_RESERVED2 (1<<5)
+ #define BANDTYPE_FLAG_ISNODATA  (1<<5)
  #define BANDTYPE_FLAG_RESERVED3 (1<<4)
 
  Data padding

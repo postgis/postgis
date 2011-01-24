@@ -427,6 +427,11 @@ def make_sql_insert_raster(table, rast, hexwkb, insert_filename, file):
     #logit("SQL: %s" % sql)
     return sql
 
+def make_sql_check_bands(table, band_number, column_name):
+    sql = "SELECT ST_BandIsNodata(%s, %d, TRUE) FROM %s;\n" \
+    % (column_name, band_number, make_sql_full_table_name(table)) 
+
+    return sql
 
 def make_sql_create_raster_overviews(options):
     schema = make_sql_schema_table_names(options.table)[0]
@@ -905,6 +910,11 @@ def wkblify_raster_level(options, ds, level, band_range, infile, i):
             check_hex(hexwkb) # TODO: Remove to not to decrease performance
             sql = make_sql_insert_raster(gen_table, options.column, hexwkb, options.filename, infile)
             options.output.write(sql)
+
+            # CHECK IF THE BAND IS A NODATA BAND
+            sql = make_sql_check_bands(gen_table, b, options.column)
+            options.output.write(sql)
+            
             tile_count = tile_count + 1
 
     return (gen_table, tile_count)

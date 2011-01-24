@@ -70,9 +70,17 @@ input/output.
  | hasNodataValue| 1bit         | If true, stored nodata value is   |
  |               |              | a true nodata value. Otherwise    |
  |               |              | the value stored as a nodata      |
- |               |              | value should be ignored.          |
+ |               |              | value should be ignored.          | 
  +---------------+--------------+-----------------------------------+
- | reserved      | 2bits        | unused in this version            |
+ | isNodataValue | 1bit         | If true, all the values of the    |
+ |               |              | band are expected to be nodata    |
+ |               |              | values. This is a dirty flag.     |
+ |               |              | To set the flag to its real value |
+ |               |              | the function st_bandisnodata must |
+ |               |              | must be called for the band with  | 
+ |               |              | 'TRUE' as last argument.          |
+ +---------------+--------------+-----------------------------------+
+ | reserved      | 1bit         | unused in this version            |
  +---------------+--------------+-----------------------------------+
  | pixtype       | 4bits        | 0: 1-bit boolean                  |
  |               |              | 1: 2-bit unsigned integer         |
