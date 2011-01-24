@@ -179,24 +179,47 @@ BEGIN
 
   ELSIF tg.type = 2 THEN -- lineal
     gml = '<' || nsprefix || 'TopoCurve>';
-    -- For each defining edge, print a directedEdge
-    FOR rec IN  EXECUTE
-      'SELECT r.element_id as rid, e.edge_id, e.geom, '
-      || 'e.start_node, e.end_node from '
-      || quote_ident(toponame) || '.relation r LEFT JOIN '
-      || quote_ident(toponame) || '.edge e ON (abs(r.element_id) = e.edge_id)'
-      || ' WHERE r.layer_id = ' || tg.layer_id
-      || ' AND r.topogeo_id = ' || tg.id
+
+    FOR rec IN SELECT (ST_Dump(topology.Geometry(tg))).geom
     LOOP
-      IF rec.rid < 0 THEN
-        gml = gml || '<' || nsprefix || 'directedEdge orientation="-">';
-      ELSE
-        gml = gml || '<' || nsprefix || 'directedEdge>';
-      END IF;
-      gml = gml || topology._AsGMLEdge(rec.edge_id, rec.start_node,
-                                      rec.end_node, rec.geom, nsprefix_in);
-      gml = gml || '</' || nsprefix || 'directedEdge>';
+      FOR rec2 IN EXECUTE
+        'SELECT e.*, ST_Line_Locate_Point('
+        || quote_literal(rec.geom::text)
+        || ', ST_Line_Interpolate_Point(e.geom, 0.2)) as pos FROM '
+        || quote_ident(toponame)
+        || '.edge e WHERE ST_Covers('
+        || quote_literal(rec.geom::text)
+        || ', e.geom) ORDER BY pos'
+        -- TODO: add relation to the conditional, to reduce load ?
+      LOOP
+
+        gml = gml || '<' || nsprefix || 'directedEdge';
+
+        -- if this edge goes in opposite direction to the
+        --       line, make it with negative orientation
+        SELECT DISTINCT (ST_Dump(
+                          ST_SharedPaths(rec2.geom, rec.geom))
+                        ).path[1] into side;
+        IF side = 2 THEN -- edge goes in opposite direction
+          gml = gml || ' orientation="-"';
+        END IF;
+
+        -- TODO: use the 'visited' table !
+        --       adding an xlink and closing the tag here if
+        --       this edge (rec2.edge_id) is already visited
+
+        gml = gml || '>';
+
+        gml = gml || topology._AsGMLEdge(rec2.edge_id,
+                                        rec2.start_node,
+                                        rec2.end_node, rec2.geom,
+                                        nsprefix_in);
+
+
+        gml = gml || '</' || nsprefix || 'directedEdge>';
+      END LOOP;
     END LOOP;
+
     gml = gml || '</' || nsprefix || 'TopoCurve>';
     return gml;
 
