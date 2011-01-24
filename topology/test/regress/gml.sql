@@ -47,7 +47,24 @@ SELECT feature_name||'-customprefix', topology.AsGML(feature, 'cstm')
 --- Lineal multi-element (TODO) {
 --- } Lineal multi-element
 
---- Areal single-element (TODO) {
+--- Areal single-element {
+
+-- Output simple lineal features (composed by single topo element)
+SELECT feature_name||'-vanilla', topology.AsGML(feature)
+ FROM features.land_parcels
+ WHERE feature_name IN ('P4', 'P5' )
+ ORDER BY feature_name;
+
+-- Output again but with no prefix
+SELECT feature_name||'-noprefix', topology.AsGML(feature, '')
+ FROM features.land_parcels WHERE feature_name IN ('P4', 'P5')
+ ORDER BY feature_name;
+
+-- Output again with custom prefix
+SELECT feature_name||'-customprefix', topology.AsGML(feature, 'cstm')
+ FROM features.land_parcels WHERE feature_name IN ('P4', 'P5')
+ ORDER BY feature_name;
+
 --- } Areal single-element 
 
 --- Areal multi-element (TODO) {
