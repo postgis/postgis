@@ -11,6 +11,8 @@
 	<note><para>The raster support is currently optional, but in final release it will be required.</para></note>
 	<para>All the .sql files once installed will be installed in share/contrib/postgis-&last_release_version; folder
 		of your PostgreSQL install</para>
+	<para>The <varname>postgis_comments.sql</varname>, <varname>raster_comments.sql</varname>, <varname>topology_comments.sql</varname>
+		generate quick help tips for each function that can be accessed via pgAdmin III or psql. In psql with a command of the form e.g.<varname>\dd ST_SetPoint</varname></para>
 	<programlisting>tar xvfz postgis-&last_release_version;.tar.gz
 cd postgis-&last_release_version;
 ./configure --with-raster --with-topology --with-gui
@@ -22,8 +24,14 @@ psql -d yourdatabase -f postgis.sql
 psql -d yourdatabase -f postgis_comments.sql
 psql -d yourdatabase -f spatial_ref_sys.sql
 psql -d yourdatabase -f rtpostgis.sql
+psql -d yourdatabase -f raster_comments.sql
 psql -d yourdatabase -f topology/topology.sql
+psql -d yourdatabase -f doc/topology_comments.sql
+
 </programlisting>
+<note><para>topology_comments.sql since its an optional feature is not installed by make install or make comments install. However if
+you do a <varname>make comments</varname> or <varname>make topology_comments.sql</varname>, it will be generated in the docs folder</para>
+</note>
 
 	<para>
 	  The rest of this chapter goes into detail each of the above installation
@@ -667,7 +675,7 @@ Failed: 0
 
 	  <para>
 		If you previously ran the <command>make comments</command> command to
-		generate the <filename>postgis_comments.sql</filename> file, install the
+		generate the <filename>postgis_comments.sql</filename>, <filename>raster_comments.sql</filename> file, install the
 		sql file by running
 	  </para>
 
@@ -677,7 +685,7 @@ Failed: 0
 
 	  <note>
 		<para>
-		  <filename>postgis_comments.sql</filename> was separated from the
+		  <filename>postgis_comments.sql</filename> and <filename>raster_comments.sql</filename> was separated from the
 		  typical build and installation targets since with it comes the extra
 		  dependency of <command>xsltproc</command>.
 		</para>
