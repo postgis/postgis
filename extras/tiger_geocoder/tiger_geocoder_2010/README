@@ -1,0 +1,42 @@
+INSTALLING THE Tiger Geocoder
+This is a customized version of Steve Frost's tiger geocoder revisions (http://www.snowman.net/git/tiger_geocoder/).  
+This version includes a loader that is portable between Linux and Windows but loads a full state of data.  The loader helper tables
+and functions are prefixed with loader and stored in the tiger schema.  If you only want to load a county, then
+revise the wget call that is generated for the state to just download the state wide and specific counties.  The loader will only
+process files that exists.
+
+If you are on windows -- you will need 7zip and wget.
+7zip you can get from http://www.7-zip.org/  and wget you can get from http://gnuwin32.sourceforge.net/packages/wget.htm
+
+Steps to install and load:
+1.  Create a PostGIS enabled db if you don't have one already
+2.	From command line, cd into the tiger_geocoder_2010 folder
+3.  Edit the tiger_loader.sql to the paths of your executables server etc.
+4.	Edit the create_geocode.bat or create_geocode.sh and run
+(NOTE: if you installed soundex in its own schema -- you will need to add it to the set path of the create_geocode.sql file
+and also have it in the search_path of your database)
+
+5.	Now add tiger schema to your database search path by doing something like 
+ALTER DATABASE geocoder SET search_path=public, tiger;
+6.	Create a folder called gisdata on root of server or your local pc if you have a fast network connection to the server.  
+7. Create a folder called temp in the gisdata folder.  This will be the folder where we download the necessary tiger data.
+
+
+8. Run this command at psql or pgAdmin III query window to generate the script.  
+Replacing 'DC', 'RI'  with list of states you want and save contents to a .bat or sh file in the gisdata folder you created.
+
+This will generate a script for each state
+--To generate a windows script
+SELECT loader_generate_script(ARRAY['DC','RI'], 'windows');
+
+--To generate a linux script (We haven't tested the linux script yet so may need some changes)
+SELECT loader_generate_script(ARRAY['DC','RI'], 'linux');
+
+9. Copy and paste the generated script into a .bat or .sh file and put in gisdata folder you created and then run it.
+
+10. Test out the geocoder run this query
+
+SELECT g.rating, 
+	ST_X(geomout) As lon, 
+	ST_Y(geomout) As lat, (addy).* 
+FROM geocode('1731 New Hampshire Avenue Northwest, Washington, DC 20010') As g;
