@@ -25,6 +25,12 @@ SELECT feature_name||'-customprefix', topology.AsGML(feature, 'cstm')
  WHERE feature_name IN ('S1', 'S2', 'S3', 'S4' )
  ORDER BY feature_name;
 
+-- Again with no prefix, no srsDimension (opt+=2)
+-- and swapped lat/lon (opt+=16) and short CRS
+SELECT feature_name||'-latlon', topology.AsGML(feature, '', 15, 18)
+ FROM features.traffic_signs 
+ WHERE feature_name IN ('S4');
+
 --- } Puntual single-element 
 
 --- Puntual multi element (TODO) {
