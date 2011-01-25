@@ -1414,13 +1414,20 @@ SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
                         <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
                         <paramdef><type>text </type> <parameter>nsprefix_in</parameter></paramdef>
 					</funcprototype>
+					<funcprototype>
+                        <funcdef>text <function>AsGML</function></funcdef>
+                        <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+                        <paramdef><type>text </type> <parameter>nsprefix_in</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>options</parameter></paramdef>
+					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 		
 			<refsection>
                 <title>Description</title>
             
-                <para>Returns the GML representation of a topogeometry in version GML3 format. If no <varname>nsprefix_in</varname> is specified then <varname>gml</varname> is used. Pass in an empty string for nsprefix to get a non-qualified name space.</para>
+                <para>Returns the GML representation of a topogeometry in version GML3 format. If no <varname>nsprefix_in</varname> is specified then <varname>gml</varname> is used. Pass in an empty string for nsprefix to get a non-qualified name space. The precision (default: 15) and options (default 1) parameters, if given, are passed untouched to the underlying call to ST_AsGML.</para>
               
 			
                 <!-- use this format if new function -->
