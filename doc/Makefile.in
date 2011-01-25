@@ -69,6 +69,9 @@ postgis_comments.sql: ./xsl/postgis_comments.sql.xsl postgis.xml postgis_aggs_mm
 	
 raster_comments.sql: ./xsl/raster_comments.sql.xsl postgis.xml postgis_aggs_mm.xml
 	$(XSLTPROC) ./xsl/raster_comments.sql.xsl postgis.xml > $@
+	
+topology_comments.sql: ./xsl/topology_comments.sql.xsl postgis.xml postgis_aggs_mm.xml
+	$(XSLTPROC) ./xsl/topology_comments.sql.xsl postgis.xml > $@
 
 postgis-out.xml: postgis.xml introduction.xml installation.xml faq.xml using_postgis_dataman.xml  using_postgis_app.xml performance_tips.xml reference.xml reference_management.xml reference_constructor.xml reference_accessor.xml reference_editor.xml reference_output.xml reference_operator.xml reference_measure.xml reference_processing.xml reference_lrs.xml reference_transaction.xml reference_misc.xml reference_exception.xml extras.xml extras_topology.xml postgis_aggs_mm.xml reference_raster.xml faq_raster.xml reporting.xml release_notes.xml ../Version.config
 	cat $< | sed "s/@@LAST_RELEASE_VERSION@@/${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}/g" > $@
@@ -124,7 +127,7 @@ maintainer-clean: clean
 	@rm -f html/*.html \
 		postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
 
-comments: postgis_comments.sql raster_comments.sql
+comments: postgis_comments.sql raster_comments.sql topology_comments.sql
 
 comments-install: comments
 	make -f Makefile.comments install
