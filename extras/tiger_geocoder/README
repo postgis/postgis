@@ -1,16 +1,16 @@
 TIGER Geocoder
 
-  2004/10/28
+  2011/01/23
 
   A plpgsql based geocoder written for TIGER census data.
 
 Design:
 
 There are two components to the geocoder, the address normalizer and the
-address geocoder.  These two components are described seperatly below.
+address geocoder.  These two components are described separately.
 
 The goal of this project is to build a fully functional geocoder that can 
-process an arbitrary address string and, using normalized TIGER censes data,
+process an arbitrary address string and, using normalized TIGER census data,
 produce a point geometry reflecting the location of the given address.
 
 - The geocoder should be simple for anyone familiar with PostGIS to install
@@ -22,11 +22,16 @@ produce a point geometry reflecting the location of the given address.
 
 Installation:
 
-	Refer to the INSTALL file for installation instructions.
+	Refer to the README in the respective year tiger folder for installation and example usage.  The latest scripts as of this writing are for tiger_2010.
+	
 
 Usage:
 
-	refcursor geocode(refcursor, 'address string');
+	SELECT g.rating, g.geomout, (addy).* FROM geocode('address string') As g;
+	
+e.g: SELECT g.rating, 
+	ST_X(geomout) As lon, 
+	ST_Y(geomout) As lat, (addy).*  FROM geocode('1731 New Hampshire Avenue Northwest, Washington, DC 20010') As g;
 
 Notes:
 
@@ -48,302 +53,9 @@ has been designed to be reasonably extensible to other data sets and localities.
 Usage:
 
 	normalize_address('address string');
-
-Support functions:
-
-	location_extract_countysub_exact('partial address string', 'state abbreviation')
-	location_extract_countysub_fuzzy('partial address string', 'state abbreviation')
-	location_extract_place_exact('partial address string', 'state abbreviation')
-	location_extract_place_fuzzy('partial address string', 'state abbreviation')
-	cull_null('string')
-	count_words('string')
-	get_last_words('string')
-	state_extract('partial address string')
-	levenshtein_ignore_case('string', 'string')
-
-Notes:
-
-- A set of lookup tables, listed below, is used to provide street type,
-  secondary unit and direction abbreviation standards for a given set
-  of data.  These are provided with the geocoder, but will need to be
-  customized for the data used.
-
-	direction_lookup
-	secondary_unit_lookup
-	street_type_lookup
-
-- Additional lookup tables are required to perform matching for state
-  and location extraction.  The state lookup is derived from the
-  US Postal Service standards, while the place and county subdivision
-  lookups are generated from the dataset.  The creation statements for
-  the place and countysub tables are given in the INSTALL file.
-
-	state_lookup
-	place_lookup
-	countysub_lookup
-
-- The use of lookup tables is intended to provide a versatile way of applying
-  the normalizer to data sets and localities other than the US Census TIGER
-  data.  However, due to the need for matching based extraction in the event
-  of poorly formatted or incomplete address strings, assumptions are made about
-  the data available.  Most notably the division of place and county
-  subdivision.  For data sets without exactly two logical divisions in location
-  precision, code changes will be required.
-
-- The normalizer will perform better the more information is provided.
-
-- The process for normalization is roughly as follows:
-
-	Extract the address from the beginning.
-	Extract the zipCode from the end.
-	Extract the state, using a fuzzy search if exact matching fails.
-	Attempt to extract the location by parsing the punctuation 
-			of the address.
-	Find and remove any internal address.
-	If internal address was found:
-		Set location as everything between internal address and state.
-	Extract the street type from the string.
-	If multiple potential street types are found:
-	    If internal address was found:
-			Extract the last street type that preceeds the internal address.
-		Else:
-			Extract the last street type.
-	If street type was found:
-		If a word beginning with a number follows the street type.
-			This indicates the street type is part of the street name,
-					eg. 'State Hwy 92a'.
-			Set street type to NULL.
-		Else if location not yet found:
-			Set location as everything between street type and state.
-		Extract direction prefix from start of street name.
-		If internal address was found:
-			Extract direction suffix from end of street name.
-		Else:
-			Extract direction suffix from start of location.
-		Set street name as everything that is not the address, direction
-				prefix or suffix, internal address, location, state or
-				zip code.
-	Else:
-		If internal address was found:
-			Extract direction prefix from beginning of string.
-			Extract direction suffix before internal address.
-			Set street name as everything that is not the address, direction
-					prefix or suffix, internal address, location, state or
-					zip code.
-		Else:
-			Extract direction suffix.
-			If direction suffix is found:
-				Set location as everything between direction suffix and state,
-						zip or end of string as appropriate.
-				Extract direction prefix from beginning of string.
-				Set street name as everything that is not the address, direction
-						prefix or suffix, internal address, location, state or
-						zip code.
-			Else:
-				Attempt to determine the location via exact comparison against 
-						the places lookup.
-				Attempt to determine the location via exact comparison against
-						the countysub lookup.
-				Attempt to determine the location via fuzzy comparison against
-						the places lookup.
-				Attempt to determine the location via fuzzy comparison against
-						the countysub lookup.
-				Extract direction prefix.
-				Set street name as everything that is not the address, direction
-						prefix or suffix, internal address, location, state or
-						zip code.
-
-
-
-Address Geocoder:
-
-The goal of the address geocoder is to provide a robust means of searching
-the database for a match to whatever data the user provides.  To accomplish
-this, the coder uses a series of checks and fallthrough cases.  Starting with
-the most specific combination of parameters, the algorithm works outwards
-towards the most vague combination, until valid results are found.  The result
-of this is that the more accurate information that is provided, the faster the
-algorithm will return.
-
-Usage:
-
-	normalize_address('address string');
-
-Support functions:
-
-	geocode_address(cursor, address, 'dirPrefix', 'streetName', 'streetType',
-			'dirSuffix', 'location', 'state', zipCode)
-	geocode_address_zip(cursor, address, 'dirPrefix', 'streetName',
-			'streetType', 'dirSuffix', zipCode)
-	geocode_address_countysub_exact(cursor, address, 'dirPrefix', 'streetName',
-			'streetType', 'dirSuffix', 'location', 'state')
-	geocode_address_countysub_fuzzy(cursor, address, 'dirPrefix', 'streetName',
-			'streetType', 'dirSuffix', 'location', 'state')	
-	geocode_address_place_exact(cursor, address, 'dirPrefix', 'streetName',
-			'streetType', 'dirSuffix', 'location', 'state')
-	geocode_address_place_fuzzy(cursor, address, 'dirPrefix', 'streetName',
-			'streetType', 'dirSuffix', 'location', 'state')
-	rate_attributes('dirPrefixA', 'dirPrefixB', 'streetNameA', 'streetNameB',
-			'streetTypeA', 'streetTypeB', 'dirSuffixA', 'dirSuffixB')
-	rate_attributes('dirPrefixA', 'dirPrefixB', 'streetNameA', 'streetNameB',
-			'streetTypeA', 'streetTypeB', 'dirSuffixA', 'dirSuffixB',
-			'locationA', 'locationB')
-	location_extract_countysub_exact('partial address string', 'state abbreviation')
-	location_extract_countysub_fuzzy('partial address string', 'state abbreviation')
-	location_extract_place_exact('partial address string', 'state abbreviation')
-	location_extract_place_fuzzy('partial address string', 'state abbreviation')
-	cull_null('string')
-	count_words('string')
-	get_last_words('string')
-	state_extract('partial address string')
-	levenshtein_ignore_case('string', 'string')
-	interpolate_from_address(given address, from address L, to address L,
-			from address R, to address R, street segment)
-	interpolate_from_address(given address, 'from address L', 'to address L',
-			'from address R', 'to address R', street segment)
-	includes_address(given address, from address L, to address L,
-			from address R, to address R)
-	includes_address(given address, 'from address L', 'to address L',
-			'from address R', 'to address R')
-
-Notes:
-
-- The geocoder is quite dependent on the address normalizer.  The direction
-  prefix and suffix, streetType and state are all expected to be standard
-  abbreviations that will match exactly to the database.
-
-- Either a zip code, or a location must be provided.  No exception will be
-  thrown, but the result will be null.  If the zip code or location cannot
-  be matched, with the other information provided, against the database
-  the result is null.
-
-- The process is as follows:
-
-	If a zipCode is provided:
-		Check if the zipCode, streetName and optionally state match any roads.
-		If they do:
-			Check if the given address fits any of the roads.
-			If it does:
-				Return the matching road segment information, rating and
-						interpolated geographic point.
-	If location exactly matches a place:
-		Check if the place, streetName and optionally state match any roads.
-		If they do:
-			Check if the given address fits any of the roads.
-			If it does:
-				Return the matching road segment information, rating and
-						interpolated geographic point.
-	If location exactly matches a countySubdivision:
-		Check if the countySubdivision, streetName and optionally state
-				match any roads.
-		If they do:
-			Check if the given address fits any of the roads.
-			If it does:
-				Return the matching road segment information, rating and
-						interpolated geographic point.
-	If location approximately matches a place:
-		Check if the place, streetName and optionally state match any roads.
-		If they do:
-			Check if the given address fits any of the roads.
-			If it does:
-				Return the matching road segment information, rating and
-						interpolated geographic point.
-	If location approximately matches a countySubdivision:
-		Check if the countySubdivision, streetName and optionally state
-				match any roads.
-		If they do:
-			Check if the given address fits any of the roads.
-			If it does:
-				Return the matching road segment information, rating and
-						interpolated geographic point.
-
-
-Current Issues / Known Failures:
-
-- If a location starts with a direction, eg. East Seattle, and no suffix
-  direction is given, the direction from the location will be interpreted
-  as the streets suffix direction.
-
-		'18196 68th Ave East Seattle Washington'
-			address = 18196
-			dirPrefix = NULL
-			streetName = '68th'
-			streetType = 'Ave'
-			dirSuffix = 'E'
-			location = 'Seattle'
-			state = 'WA'
-			zip = NULL
-
-- The last possible street type in the string is interpreted as the street type
-  to allow street names to contain type words.  As a result, any location
-  containing a street type will have the type interpreted as the street type.
-
-		'29645 7th Street SW Federal Way 98023'
-			address = 29645
-			dirPrefix = NULL
-			streetName = 7th Street SW Federal
-			streetType = Way
-			dirSuffix = NULL
-			location = NULL
-			state = NULL
-			zip = 98023
-
-- While some state misspellings will be picked up by the fuzzy searches,
-  misspelled or non-standard abbreviations may not be picked up, due to
-  the length (soundex uses an intial character plus three codeable
-  characters)
-
-		'2554 E Highland Dr Seatel Wash'
-			address = 2554
-			dirPrefix = 'E'
-			streetName = 'Highland'
-			streetType = 'Dr'
-			dirSuffix = NULL
-			location = 'Seatel Wash'
-			state = NULL
-			zip = NULL
-
-- If neither a location or a zip code are found by the normalizer, no search
-  is performed.
-
-- If neither street type, direction suffix nor location are given in the
-  address string, the street name is generally misclassified as the
-  location.
-
-			'98 E Main Washington 98012'
-				address = 98
-				dirPrefix = 'E'
-				streetName = NULL
-				streetType = NULL
-				dirSuffix = NULL
-				location = 'Main'
-				state = 'WA'
-				zip = 98012
-
-- If no street type is given and the street name contains a type word, then the
-  type in the street name is interpreted as the street type.
-
-			'1348 SW Orchard Seattle wa 98106'
-				1348::SW:Orch::Seattle:WA:98106
-				address = 1348
-				dirPrefix = NULL
-				streetName = SW
-				streetType = Orch
-				dirSuffix = NULL
-				location = Seattle
-				state = WA
-				zip = 98106
-
-- Misspellings of words are only handled so far as their soundex values match.
-
-			'Hiland' will not be matched with 'Highland'
-				soundex('Hiland') = 'H453'
-				soundex('Highland') = 'H245'
-
-- Missing words in location or street name are not handled.
-
-			'Redmond Fall' will not be matched with 'Redmond Fall City'
-
-- Unacceptable failure cases:
-		The street name is parsed out as 'West Central Park'
-		'500 South West Central Park Ave Chicago Illinois 60624'
+	
+	e.g.: SELECT naddy.* FROM normalize_address('29645 7th Street SW Federal Way 98023') AS naddy;
+	
+	 address | predirabbrev |      streetname       | streettypeabbrev | postdirabbrev | internal | location | stateabbrev |  zip  | parsed
+	 ---------+-------------+-----------------------+------------------+---------------+----------+----------+-------------+-------+--------
+     29645 |               | 7th Street SW Federal  | Way              |               |          |          |             | 98023 | 
