@@ -38,6 +38,7 @@ YYYY/MM/DD
   - ST_SharedPaths (Sandro Santilli / Faunalia for RT-SIGTA)
   - ST_Snap (Sandro Santilli)
   - ST_RelateMatch (Sandro Santilli / Faunalia for RT-SIGTA)
+  - ST_ConcaveHull (Regina Obe and Leo Hsu)
 
  * Enhancements *
 

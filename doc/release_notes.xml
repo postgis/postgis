@@ -36,6 +36,7 @@
           <para>ST_SharedPaths (Sandro Santilli / Faunalia for RT-SIGTA)</para>
           <para>ST_Snap (Sandro Santilli)</para>
           <para>ST_RelateMatch (Sandro Santilli / Faunalia for RT-SIGTA)</para>
+          <para>ST_ConcaveHull (Regina Obe and Leo Hsu)</para>
         </simplesect>
         <simplesect>
         	<title>Enhancements</title>
