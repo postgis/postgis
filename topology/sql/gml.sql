@@ -85,6 +85,7 @@ DECLARE
   end_node ALIAS for $3;
   line ALIAS FOR $4;
   visitedTable ALIAS FOR $5;
+  visited bool;
   nsprefix_in ALIAS FOR $6;
   nsprefix text;
   precision ALIAS FOR $7;
@@ -104,18 +105,54 @@ BEGIN
   gml := '<' || nsprefix || 'Edge ' || nsprefix || 'id="E' || edge_id || '">';
 
   -- Start node
-  -- TODO: optionally output the directedNode as xlink, using a visited map
-  gml = gml || '<' || nsprefix || 'directedNode orientation="-">';
-  gml = gml || topology._AsGMLNode(start_node, NULL, nsprefix_in,
-                                   precision, options);
-  gml = gml || '</' || nsprefix || 'directedNode>';
+  gml = gml || '<' || nsprefix || 'directedNode orientation="-"';
+  -- Do visited bookkeeping if visitedTable was given
+  visited = NULL;
+  IF visitedTable IS NOT NULL THEN
+    EXECUTE 'SELECT true FROM '
+            || visitedTable::text
+            || ' WHERE element_type = 1 AND element_id = '
+            || start_node LIMIT 1 INTO visited;
+    IF visited IS NOT NULL THEN
+      gml = gml || ' xlink:xref="N' || start_node || '" />';
+    ELSE
+      -- Mark as visited 
+      EXECUTE 'INSERT INTO ' || visitedTable::text
+        || '(element_type, element_id) VALUES (1, '
+        || start_node || ')';
+    END IF;
+  END IF;
+  IF visited IS NULL THEN
+    gml = gml || '>';
+    gml = gml || topology._AsGMLNode(start_node, NULL, nsprefix_in,
+                                     precision, options);
+    gml = gml || '</' || nsprefix || 'directedNode>';
+  END IF;
 
   -- End node
-  -- TODO: optionally output the directedNode as xlink, using a visited map
-  gml = gml || '<' || nsprefix || 'directedNode>';
-  gml = gml || topology._AsGMLNode(end_node, NULL, nsprefix_in,
-                                   precision, options);
-  gml = gml || '</' || nsprefix || 'directedNode>';
+  gml = gml || '<' || nsprefix || 'directedNode';
+  -- Do visited bookkeeping if visitedTable was given
+  visited = NULL;
+  IF visitedTable IS NOT NULL THEN
+    EXECUTE 'SELECT true FROM '
+            || visitedTable::text
+            || ' WHERE element_type = 1 AND element_id = '
+            || end_node LIMIT 1 INTO visited;
+    IF visited IS NOT NULL THEN
+      gml = gml || ' xlink:xref="N' || end_node || '" />';
+    ELSE
+      -- Mark as visited 
+      EXECUTE 'INSERT INTO ' || visitedTable::text
+        || '(element_type, element_id) VALUES (1, '
+        || end_node || ')';
+    END IF;
+  END IF;
+  IF visited IS NULL THEN
+    gml = gml || '>';
+    gml = gml || topology._AsGMLNode(end_node, NULL, nsprefix_in,
+                                     precision, options);
+    gml = gml || '</' || nsprefix || 'directedNode>';
+  END IF;
 
   IF line IS NOT NULL THEN
     gml = gml || '<' || nsprefix || 'curveProperty>'
@@ -195,7 +232,24 @@ BEGIN
       || ' WHERE r.layer_id = ' || tg.layer_id
       || ' AND r.topogeo_id = ' || tg.id
     LOOP
-      gml = gml || '<' || nsprefix || 'directedNode>';
+      gml = gml || '<' || nsprefix || 'directedNode';
+      -- Do visited bookkeeping if visitedTable was given
+      IF visitedTable IS NOT NULL THEN
+        EXECUTE 'SELECT true FROM '
+                || visitedTable::text
+                || ' WHERE element_type = 1 AND element_id = '
+                || rec.element_id LIMIT 1 INTO visited;
+        IF visited IS NOT NULL THEN
+          gml = gml || ' xlink:xref="N' || rec.element_id || '" />';
+          CONTINUE;
+        ELSE
+          -- Mark as visited 
+          EXECUTE 'INSERT INTO ' || visitedTable::text
+            || '(element_type, element_id) VALUES (1, '
+            || rec.element_id || ')';
+        END IF;
+      END IF;
+      gml = gml || '>';
       gml = gml || topology._AsGMLNode(rec.element_id, rec.geom, nsprefix_in, precision, options);
       gml = gml || '</' || nsprefix || 'directedNode>';
     END LOOP;
