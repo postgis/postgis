@@ -71,11 +71,11 @@ LANGUAGE 'plpgsql';
 --{
 --
 -- INTERNAL FUNCTION
--- text _AsGMLEdge(edge_id, start_node, end_node, line, nsprefix,
---                 precision, options)
+-- text _AsGMLEdge(edge_id, start_node, end_node, line, visitedTable,
+--                 nsprefix, precision, options)
 --
 -- }{
-CREATE OR REPLACE FUNCTION topology._AsGMLEdge(int, int, int, geometry, text, int, int)
+CREATE OR REPLACE FUNCTION topology._AsGMLEdge(int, int, int, geometry, regclass, text, int, int)
   RETURNS text
 AS
 $$
@@ -84,10 +84,11 @@ DECLARE
   start_node ALIAS FOR $2;
   end_node ALIAS for $3;
   line ALIAS FOR $4;
-  nsprefix_in ALIAS FOR $5;
+  visitedTable ALIAS FOR $5;
+  nsprefix_in ALIAS FOR $6;
   nsprefix text;
-  precision ALIAS FOR $6;
-  options ALIAS FOR $7;
+  precision ALIAS FOR $7;
+  options ALIAS FOR $8;
   gml text;
 BEGIN
 
@@ -128,16 +129,17 @@ BEGIN
 END
 $$
 LANGUAGE 'plpgsql';
---} _AsGMLEdge(id, start_node, end_node, line, nsprefix, precision, options)
+--} _AsGMLEdge(id, start_node, end_node, line, visitedTable, nsprefix, precision, options)
 
 --{
 --
 -- API FUNCTION
 --
--- text AsGML(TopoGeometry, nsprefix, precision, options)
+-- text AsGML(TopoGeometry, nsprefix, precision, options, visitedTable)
 --
 -- }{
-CREATE OR REPLACE FUNCTION topology.AsGML(topology.TopoGeometry, text, int, int)
+CREATE OR REPLACE FUNCTION topology.AsGML(topology.TopoGeometry,
+    text, int, int, regclass)
   RETURNS text
 AS
 $$
@@ -149,6 +151,8 @@ DECLARE
   precision int;
   options_in ALIAS FOR $4;
   options int;
+  visitedTable ALIAS FOR $5;
+  visited bool;
   toponame text;
   gml text;
   sql text;
@@ -225,15 +229,33 @@ BEGIN
           gml = gml || ' orientation="-"';
         END IF;
 
-        -- TODO: use the 'visited' table !
-        --       adding an xlink and closing the tag here if
-        --       this edge (rec2.edge_id) is already visited
+        -- Do visited bookkeeping if visitedTable was given
+        IF visitedTable IS NOT NULL THEN
+
+          EXECUTE 'SELECT true FROM '
+            || visitedTable::text
+            || ' WHERE element_type = 2 AND element_id = '
+            || rec2.edge_id LIMIT 1 INTO visited;
+          IF visited THEN
+            -- Use xlink:xref if visited
+            gml = gml || ' xlink:xref="#E' || rec2.edge_id || '" />';
+            CONTINUE;
+          ELSE
+            -- Mark as visited otherwise
+            EXECUTE 'INSERT INTO ' || visitedTable::text
+              || '(element_type, element_id) VALUES (2, '
+              || rec2.edge_id || ')';
+          END IF;
+
+        END IF;
+
 
         gml = gml || '>';
 
         gml = gml || topology._AsGMLEdge(rec2.edge_id,
                                         rec2.start_node,
                                         rec2.end_node, rec2.geom,
+                                        visitedTable,
                                         nsprefix_in, precision,
                                         options);
 
@@ -291,15 +313,32 @@ BEGIN
           gml = gml || ' orientation="-"';
         END IF;
 
-        -- TODO: use the 'visited' table !
-        --       adding an xlink and closing the tag here if
-        --       this edge (rec2.edge_id) is already visited
+        -- Do visited bookkeeping if visitedTable was given
+        IF visitedTable IS NOT NULL THEN
+
+          EXECUTE 'SELECT true FROM '
+            || visitedTable::text
+            || ' WHERE element_type = 2 AND element_id = '
+            || rec2.edge_id LIMIT 1 INTO visited;
+          IF visited THEN
+            -- Use xlink:xref if visited
+            gml = gml || ' xlink:xref="#E' || rec2.edge_id || '" />';
+            CONTINUE;
+          ELSE
+            -- Mark as visited otherwise
+            EXECUTE 'INSERT INTO ' || visitedTable::text
+              || '(element_type, element_id) VALUES (2, '
+              || rec2.edge_id || ')';
+          END IF;
+
+        END IF;
 
         gml = gml || '>';
 
         gml = gml || topology._AsGMLEdge(rec2.edge_id,
                                         rec2.start_node,
                                         rec2.end_node, rec2.geom,
+                                        visitedTable,
                                         nsprefix_in,
                                         precision, options);
         gml = gml || '</' || nsprefix || 'directedEdge>';
@@ -323,11 +362,25 @@ BEGIN
 END
 $$
 LANGUAGE 'plpgsql';
---} AsGML(TopoGeometry, nsprefix, precision, options)
+--} AsGML(TopoGeometry, nsprefix, precision, options, visitedTable)
 
 --{
 --
--- API FUNCTION (?)
+-- API FUNCTION 
+--
+-- text AsGML(TopoGeometry, nsprefix, precision, options)
+--
+-- }{
+CREATE OR REPLACE FUNCTION topology.AsGML(topology.TopoGeometry, text, int, int)
+  RETURNS text AS
+$$
+ SELECT topology.AsGML($1, $2, $3, $4, NULL);
+$$ LANGUAGE 'sql';
+-- } AsGML(TopoGeometry, nsprefix, precision, options)
+
+--{
+--
+-- API FUNCTION 
 --
 -- text AsGML(TopoGeometry, nsprefix)
 --
@@ -335,13 +388,27 @@ LANGUAGE 'plpgsql';
 CREATE OR REPLACE FUNCTION topology.AsGML(topology.TopoGeometry, text)
   RETURNS text AS
 $$
- SELECT topology.AsGML($1, $2, 15, 1);
+ SELECT topology.AsGML($1, $2, 15, 1, NULL);
 $$ LANGUAGE 'sql';
--- } AsGML(TopoGeometry)
+-- } AsGML(TopoGeometry, nsprefix)
 
 --{
 --
--- API FUNCTION (?)
+-- API FUNCTION
+--
+-- text AsGML(TopoGeometry, visited_table)
+--
+-- }{
+CREATE OR REPLACE FUNCTION topology.AsGML(topology.TopoGeometry, regclass)
+  RETURNS text AS
+$$
+ SELECT topology.AsGML($1, 'gml', 15, 1, $2);
+$$ LANGUAGE 'sql';
+-- } AsGML(TopoGeometry, visited_table)
+
+--{
+--
+-- API FUNCTION
 --
 -- text AsGML(TopoGeometry)
 --
@@ -352,3 +419,4 @@ $$
  SELECT topology.AsGML($1, 'gml');
 $$ LANGUAGE 'sql';
 -- } AsGML(TopoGeometry)
+
