@@ -3,11 +3,11 @@ set client_min_messages to WARNING;
 SELECT topology.CreateTopology('tt') > 0;
 
 SELECT 'e1',  topology.addEdge('tt', 'LINESTRING(0 0, 8 0)');
+-- Equal edge 
+SELECT 'e*1', topology.addEdge('tt', 'LINESTRING(0 0, 8 0)');
 
 -- Failing cases (should all raise exceptions) -------
 
--- Equals [ TODO: turn this into a success ]
-SELECT 'e*1', topology.addEdge('tt', 'LINESTRING(0 0, 8 0)');
 -- Contained with endpoint contact 
 SELECT 'e*2', topology.addEdge('tt', 'LINESTRING(1 0, 8 0)');
 -- Contained with no endpoint contact 
@@ -55,6 +55,9 @@ SELECT '#770-*', topology.addEdge('tt', 'LINESTRING(8 10, 7 13, 10 12, 8 12, 10 
 -- once again, but the intersection is now at the new edge endpoint
 -- (not the existing edge endpoint)
 SELECT '#770-*', topology.addEdge('tt', 'LINESTRING(10 12, 11 12, 10 13, 10 12)');
+
+-- Another equals case, this time a closed edge
+SELECT '#770-1*', topology.addEdge('tt', 'LINESTRING(8 10, 10 10, 10 12, 8 10)');
 
 SELECT edge_id, left_face, right_face,
 	next_left_edge, next_right_edge,

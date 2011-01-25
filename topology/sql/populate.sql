@@ -123,11 +123,10 @@ LANGUAGE 'plpgsql';
 --
 -- Add an edge primitive to a topology and get it's identifier.
 -- Edge endpoints will be added as nodes if missing.
+-- Returns an existing edge at the same location, if any.
 --
 -- An exception is raised if the given line crosses an existing
 -- node or interects with an existing edge on anything but endnodes.
--- TODO: for symmetry with AddNode, it might be useful to return the
---       id of an equal existing edge (currently raising an exception)
 --
 -- The newly added edge has "universe" face on both sides
 -- and links to itself.
@@ -289,7 +288,11 @@ BEGIN
 	    END IF;
 	  END IF;
 
-	  -- TODO: reuse an EQUAL edge ?
+	  -- Reuse an EQUAL edge (be it closed or not)
+	  IF ST_RelateMatch(rec.im, '1FFF*FFF2') THEN
+	      RAISE DEBUG 'Edge already known as %', rec.edge_id;
+        RETURN rec.edge_id;
+    END IF;
 
 	  RAISE EXCEPTION 'Edge intersects (not on endpoints) with existing edge % ', rec.edge_id;
 
