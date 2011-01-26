@@ -103,6 +103,7 @@ Datum RASTER_getBandPixelTypeName(PG_FUNCTION_ARGS);
 Datum RASTER_getBandNoDataValue(PG_FUNCTION_ARGS);
 Datum RASTER_setBandNoDataValue(PG_FUNCTION_ARGS);
 Datum RASTER_bandIsNoData(PG_FUNCTION_ARGS);
+Datum RASTER_setBandIsNoData(PG_FUNCTION_ARGS);
 Datum RASTER_getBandPath(PG_FUNCTION_ARGS);
 Datum RASTER_getPixelValue(PG_FUNCTION_ARGS);
 Datum RASTER_setPixelValue(PG_FUNCTION_ARGS);
