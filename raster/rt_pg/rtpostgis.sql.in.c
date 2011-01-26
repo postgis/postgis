@@ -532,6 +532,16 @@ CREATE OR REPLACE FUNCTION st_setbandnodatavalue(rast raster, nodatavalue float8
     RETURNS raster
     AS $$ SELECT st_setbandnodatavalue($1, 1, $2, FALSE) $$
     LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION st_setbandisnodata(rast raster, band integer)
+    RETURNS raster
+    AS 'MODULE_PATHNAME', 'RASTER_setBandIsNoData'
+    LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_setbandisnodata(rast raster)
+    RETURNS raster
+    AS  $$ SELECT st_setbandisnodata($1, 1) $$
+    LANGUAGE SQL;
    
 -----------------------------------------------------------------------
 -- Raster Pixel Editors

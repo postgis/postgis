@@ -1580,23 +1580,12 @@ WHERE rid = 2;
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
-				 <funcprototype>
-					<funcdef>boolean <function>ST_BandIsNoData</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>forceChecking</parameter></paramdef>
-				  </funcprototype>
 				  <funcprototype>
 					<funcdef>boolean <function>ST_BandIsNoData</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
 				  </funcprototype>
-                  <funcprototype>
-					<funcdef>boolean <function>ST_BandIsNoData</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>forceChecking</parameter></paramdef>
-				  </funcprototype>
-                  <funcprototype>
+                 <funcprototype>
 					<funcdef>boolean <function>ST_BandIsNoData</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 				  </funcprototype>
@@ -1606,16 +1595,14 @@ WHERE rid = 2;
 			<refsection>
 				<title>Description</title>
 				<para>Returns true if the band is filled with only nodata
-                values. Band 1 is assumed if not specified. The forceChecking
-                parameter forces the function to check the band data pixel by
-                pixel when is true. Otherwise, the value is fetched from a raster
-                internal flag. The default value for forceChecking parameter is false</para>
+                values. Band 1 is assumed if not specified.</para>
 
 				<note>
-					<para>The flag may be dirty, so, to be sure, you must
-                force checking unless one time. This checking is automatically
-                done when loading raster data with the loader script,
-                raster2pgsql.py.</para>
+					<para>The flag may be dirty, so, to be sure, you should call
+                    ST_SetBandIsNodata function, or call ST_SetBandNodataValue 
+                    with TRUE as last argument, to force band checking. The
+                    loader (raster2pgsql.py) currently can not properly set the
+                    flag while loading raster data.</para>
 				</note>
 			</refsection>
 				
@@ -1654,7 +1641,7 @@ insert into dummy_rast values(1,
 ||
 '0100' -- height (uint16 1)
 ||
-'4' -- hasnodatavalue set to true, isnodata set to false. (We'll need the forceChecking parameter in ST_BandIsNoData)
+'6' -- hasnodatavalue and isnodata value set to true.
 ||
 '2' -- first band type (4BUI) 
 ||
@@ -1672,16 +1659,18 @@ insert into dummy_rast values(1,
 )::raster
 );
 
-select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected false
+select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected true
 select st_bandisnodata(rast, 2) from dummy_rast where rid = 1; -- Expected false
-select st_bandisnodata(rast, 1, TRUE) from dummy_rast where rid = 1; -- Expected true
 			</programlisting>
 			
 			</refsection>
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_BandNoDataValue" />,<xref linkend="RT_ST_NumBands" />, <xref linkend="RT_ST_SetBandNoDataValue" /></para>
+				<para><xref linkend="RT_ST_BandNoDataValue" />,<xref
+                linkend="RT_ST_NumBands" />, <xref
+                linkend="RT_ST_SetBandNoDataValue" />, <xref
+                linkend="RT_ST_SetBandIsNoData" /></para>
 			</refsection>
 		</refentry>		
 		
@@ -2493,6 +2482,126 @@ WHERE rid = 2;
 				<para><xref linkend="RT_ST_BandNoDataValue" />,<xref linkend="RT_ST_NumBands" /></para>
 			</refsection>
 		</refentry>
+
+		<refentry id="RT_ST_SetBandIsNoData">
+			<refnamediv>
+				<refname>ST_SetBandIsNoData</refname>
+				<refpurpose>Sets the isnodata flag of the band to TRUE. You may
+                want to call this function if ST_BandIsNoData(rast, band) !=
+                ST_BandIsNodata(rast, band, TRUE). This is, if the isnodata flag
+                is dirty. Band 1 is assumed if no band is specified.
+                </refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				 <funcprototype>
+					<funcdef>integer <function>ST_SetBandIsNoData</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>integer <function>ST_SetBandIsNoData</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Sets the isnodata flag for the band to true. Band 1 is
+                assumed if not specified. This function should be called only
+                when the flag is considered dirty. This is, when the result
+                calling <xref linkend="RT_ST_BandIsNoData" /> is different using
+                TRUE as last argument and without using it</para>
+
+                 
+				<note><para>Currently, the loader (raster2pgsql.py) is not able
+                to set the isnodata flag for bands. So, this is the fastest way
+                to set it to TRUE, without changing any other band value</para></note>
+               
+				</refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>
+-- Create dummy table with one raster column
+create table dummy_rast (rid integer, rast raster);
+
+-- Add raster with two bands, one pixel/band. In the first band, nodatavalue = pixel value = 3.
+-- In the second band, nodatavalue = 13, pixel value = 4
+insert into dummy_rast values(1,
+(
+'01' -- little endian (uint8 ndr)
+|| 
+'0000' -- version (uint16 0)
+||
+'0200' -- nBands (uint16 0)
+||
+'17263529ED684A3F' -- scaleX (float64 0.000805965234044584)
+||
+'F9253529ED684ABF' -- scaleY (float64 -0.00080596523404458)
+||
+'1C9F33CE69E352C0' -- ipX (float64 -75.5533328537098)
+||
+'718F0E9A27A44840' -- ipY (float64 49.2824585505576)
+||
+'ED50EB853EC32B3F' -- skewX (float64 0.000211812383858707)
+||
+'7550EB853EC32B3F' -- skewY (float64 0.000211812383858704)
+||
+'E6100000' -- SRID (int32 4326)
+||
+'0100' -- width (uint16 1)
+||
+'0100' -- height (uint16 1)
+||
+'4' -- hasnodatavalue set to true, isnodata value set to false (when it should be true)
+||
+'2' -- first band type (4BUI) 
+||
+'03' -- novalue==3
+||
+'03' -- pixel(0,0)==3 (same that nodata)
+||
+'0' -- hasnodatavalue set to false
+||
+'5' -- second band type (16BSI)
+||
+'0D00' -- novalue==13
+||
+'0400' -- pixel(0,0)==4
+)::raster
+);
+
+select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected false
+select st_bandisnodata(rast, 1, TRUE) from dummy_rast where rid = 1; -- Expected true
+
+-- The isnodata flag is dirty. We are going to set it to true
+update dummy_rast set rast = st_setbandisnodata(rast, 1) where rid = 1;
+
+
+select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected true
+
+                    </programlisting>
+			
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_BandNoDataValue" />,<xref
+                linkend="RT_ST_NumBands" />, <xref
+                linkend="RT_ST_SetBandNoDataValue"/>, <xref
+                linkend="RT_ST_BandIsNoData"/></para>
+			</refsection>
+		</refentry>
+
+
+
+
+
 	</sect1>
 	
 	<sect1 id="Raster_Outputs">

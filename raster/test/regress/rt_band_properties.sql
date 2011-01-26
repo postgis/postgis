@@ -42,13 +42,30 @@ SELECT
 WHERE id = 3;
 
 SELECT
-    st_bandisnodata(rast, 1, TRUE)
-  FROM rt_band_properties_test
-WHERE id = 3;
-
-SELECT
     st_bandisnodata(rast, 2)
   FROM rt_band_properties_test
 WHERE id = 3;
 
+
+-----------------------------------------------------------------------
+--- ST_SetBandIsNoData
+-----------------------------------------------------------------------
+SELECT
+    st_bandisnodata(rast, 1)
+  FROM rt_band_properties_test
+WHERE id = 4;
+
+SELECT
+    st_bandisnodata(rast, 1, TRUE)
+  FROM rt_band_properties_test
+WHERE id = 4;
+
+UPDATE rt_band_properties_test
+    SET rast = st_setbandisnodata(rast, 1)
+    WHERE id = 4;
+
+SELECT
+    st_bandisnodata(rast, 1)
+  FROM rt_band_properties_test
+WHERE id = 4;
 

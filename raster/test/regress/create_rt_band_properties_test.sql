@@ -156,7 +156,7 @@ VALUES ( 3, '1x1, nbband:2 b1pixeltype:4BUI b1hasnodatavalue:true b1nodatavalue:
 ||
 '0100' -- height (uint16 1)
 ||
-'4' -- hasnodatavalue set to true
+'6' -- hasnodatavalue and isnodata set to true
 ||
 '2' -- first band type (4BUI) 
 ||
@@ -173,3 +173,53 @@ VALUES ( 3, '1x1, nbband:2 b1pixeltype:4BUI b1hasnodatavalue:true b1nodatavalue:
 '0400' -- pixel(0,0)==4
 )::raster
 );
+
+INSERT INTO rt_band_properties_test 
+VALUES ( 4, '1x1, nbband:2 b1pixeltype:4BUI b1hasnodatavalue:true b1nodatavalue:3 b2pixeltype:16BSI b2hasnodatavalue:false b2nodatavalue:13',
+        2, --- nbband
+        '4BUI', true, 3, 3,   --- b1pixeltype, b1hasnodatavalue, b1nodatavalue, b1val
+        '16BSI', false, 13, 4, --- b2pixeltype, b2hasnodatavalue, b2nodatavalue, b2val
+        'POLYGON((-75.5533328537098 49.2824585505576,-75.5525268884758 49.2826703629415,-75.5523150760919 49.2818643977075,-75.553121041326 49.2816525853236,-75.5533328537098 49.2824585505576))',
+(
+'01' -- little endian (uint8 ndr)
+|| 
+'0000' -- version (uint16 0)
+||
+'0200' -- nBands (uint16 0)
+||
+'17263529ED684A3F' -- scaleX (float64 0.000805965234044584)
+||
+'F9253529ED684ABF' -- scaleY (float64 -0.00080596523404458)
+||
+'1C9F33CE69E352C0' -- ipX (float64 -75.5533328537098)
+||
+'718F0E9A27A44840' -- ipY (float64 49.2824585505576)
+||
+'ED50EB853EC32B3F' -- skewX (float64 0.000211812383858707)
+||
+'7550EB853EC32B3F' -- skewY (float64 0.000211812383858704)
+||
+'E6100000' -- SRID (int32 4326)
+||
+'0100' -- width (uint16 1)
+||
+'0100' -- height (uint16 1)
+||
+'4' -- hasnodatavalue set to true and isnodata set to false (should be updated)
+||
+'2' -- first band type (4BUI) 
+||
+'03' -- novalue==3
+||
+'03' -- pixel(0,0)==3 (same that nodata)
+||
+'0' -- hasnodatavalue set to false
+||
+'5' -- second band type (16BSI)
+||
+'0D00' -- novalue==13
+||
+'0400' -- pixel(0,0)==4
+)::raster
+);
+

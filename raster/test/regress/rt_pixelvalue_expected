@@ -1,9 +1,12 @@
 NOTICE:  y coordinate can not be NULL. Returning NULL
 NOTICE:  y coordinate can not be NULL. Returning NULL
 NOTICE:  y coordinate can not be NULL. Returning NULL
+NOTICE:  y coordinate can not be NULL. Returning NULL
 NOTICE:  x coordinate can not be NULL. Returning NULL
 NOTICE:  x coordinate can not be NULL. Returning NULL
 NOTICE:  x coordinate can not be NULL. Returning NULL
+NOTICE:  x coordinate can not be NULL. Returning NULL
+NOTICE:  Raster do not have a nodata value defined. Pixel value not set. Returning raster
 NOTICE:  Raster do not have a nodata value defined. Pixel value not set. Returning raster
 NOTICE:  Raster do not have a nodata value defined. Pixel value not set. Returning raster
 NOTICE:  Raster do not have a nodata value defined. Pixel value not set. Returning raster
