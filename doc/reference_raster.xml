@@ -1584,8 +1584,19 @@ WHERE rid = 2;
 					<funcdef>boolean <function>ST_BandIsNoData</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>forceChecking</parameter></paramdef>
 				  </funcprototype>
                  <funcprototype>
+					<funcdef>boolean <function>ST_BandIsNoData</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+                 </funcprototype>
+                 <funcprototype>
+					<funcdef>boolean <function>ST_BandIsNoData</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>forceChecking</parameter></paramdef>
+				  </funcprototype>
+                  <funcprototype>
 					<funcdef>boolean <function>ST_BandIsNoData</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 				  </funcprototype>
@@ -1595,14 +1606,20 @@ WHERE rid = 2;
 			<refsection>
 				<title>Description</title>
 				<para>Returns true if the band is filled with only nodata
-                values. Band 1 is assumed if not specified.</para>
+                values. Band 1 is assumed if not specified. If the last argument
+                is TRUE, the entire band is checked pixel by pixel. Otherwise,
+                the function simply returns the value of the isnodata flag for
+                the band. The default value for this parameter is FALSE, if not
+                specified.</para>
 
 				<note>
-					<para>The flag may be dirty, so, to be sure, you should call
-                    ST_SetBandIsNodata function, or call ST_SetBandNodataValue 
-                    with TRUE as last argument, to force band checking. The
+					<para>If the flag is dirty (this is, the result is different
+                    using TRUE as last parameter and not using it) you should
+                    update the raster to set this flag to true, by using ST_SetBandIsNodata function, 
+                    or ST_SetBandNodataValue function with TRUE as last argument. The
                     loader (raster2pgsql.py) currently can not properly set the
-                    flag while loading raster data.</para>
+                    flag while loading raster data. See <xref
+                    linkend="RT_ST_SetBandIsNoData" />.</para>
 				</note>
 			</refsection>
 				
