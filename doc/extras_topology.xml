@@ -1417,9 +1417,22 @@ SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
 					<funcprototype>
                         <funcdef>text <function>AsGML</function></funcdef>
                         <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+                        <paramdef><type>regclass </type> <parameter>visitedTable</parameter></paramdef>
+					</funcprototype>
+					<funcprototype>
+                        <funcdef>text <function>AsGML</function></funcdef>
+                        <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
                         <paramdef><type>text </type> <parameter>nsprefix_in</parameter></paramdef>
                         <paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
                         <paramdef><type>integer </type> <parameter>options</parameter></paramdef>
+					</funcprototype>
+					<funcprototype>
+                        <funcdef>text <function>AsGML</function></funcdef>
+                        <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+                        <paramdef><type>text </type> <parameter>nsprefix_in</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>options</parameter></paramdef>
+                        <paramdef><type>regclass </type> <parameter>visitedTable</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -1428,6 +1441,8 @@ SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
                 <title>Description</title>
             
                 <para>Returns the GML representation of a topogeometry in version GML3 format. If no <varname>nsprefix_in</varname> is specified then <varname>gml</varname> is used. Pass in an empty string for nsprefix to get a non-qualified name space. The precision (default: 15) and options (default 1) parameters, if given, are passed untouched to the underlying call to ST_AsGML.</para>
+
+		<para>The <varname>visitedTable</varname> parameter, if given, is used for keeping track of the visited Node and Edge elements so to use cross-references (xlink:xref) rather than duplicating definitions. The table is expected to have (at least) two integer fields: 'element_type' and 'element_id'. The calling user must have both read and write privileges on the given table.</para>
               
 			
                 <!-- use this format if new function -->
