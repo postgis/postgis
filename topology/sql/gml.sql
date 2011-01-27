@@ -114,7 +114,7 @@ BEGIN
             || ' WHERE element_type = 1 AND element_id = '
             || start_node LIMIT 1 INTO visited;
     IF visited IS NOT NULL THEN
-      gml = gml || ' xlink:xref="N' || start_node || '" />';
+      gml = gml || ' xlink:href="#N' || start_node || '" />';
     ELSE
       -- Mark as visited 
       EXECUTE 'INSERT INTO ' || visitedTable::text
@@ -139,7 +139,7 @@ BEGIN
             || ' WHERE element_type = 1 AND element_id = '
             || end_node LIMIT 1 INTO visited;
     IF visited IS NOT NULL THEN
-      gml = gml || ' xlink:xref="N' || end_node || '" />';
+      gml = gml || ' xlink:href="#N' || end_node || '" />';
     ELSE
       -- Mark as visited 
       EXECUTE 'INSERT INTO ' || visitedTable::text
@@ -240,7 +240,7 @@ BEGIN
                 || ' WHERE element_type = 1 AND element_id = '
                 || rec.element_id LIMIT 1 INTO visited;
         IF visited IS NOT NULL THEN
-          gml = gml || ' xlink:xref="N' || rec.element_id || '" />';
+          gml = gml || ' xlink:href="#N' || rec.element_id || '" />';
           CONTINUE;
         ELSE
           -- Mark as visited 
@@ -291,8 +291,8 @@ BEGIN
             || ' WHERE element_type = 2 AND element_id = '
             || rec2.edge_id LIMIT 1 INTO visited;
           IF visited THEN
-            -- Use xlink:xref if visited
-            gml = gml || ' xlink:xref="#E' || rec2.edge_id || '" />';
+            -- Use xlink:href if visited
+            gml = gml || ' xlink:href="#E' || rec2.edge_id || '" />';
             CONTINUE;
           ELSE
             -- Mark as visited otherwise
@@ -375,8 +375,8 @@ BEGIN
             || ' WHERE element_type = 2 AND element_id = '
             || rec2.edge_id LIMIT 1 INTO visited;
           IF visited THEN
-            -- Use xlink:xref if visited
-            gml = gml || ' xlink:xref="#E' || rec2.edge_id || '" />';
+            -- Use xlink:href if visited
+            gml = gml || ' xlink:href="#E' || rec2.edge_id || '" />';
             CONTINUE;
           ELSE
             -- Mark as visited otherwise
