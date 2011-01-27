@@ -41,6 +41,7 @@ CREATE TYPE norm_addy AS (
 
 ---- Geocoder functions
 -- General helpers
+\i geocode/other_helper_functions.sql
 \i geocode/rate_attributes.sql
 \i geocode/includes_address.sql
 \i geocode/interpolate_from_address.sql

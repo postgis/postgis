@@ -1,4 +1,5 @@
-﻿set search_path = tiger,public;
+SET search_path TO tiger,public;
+
 DROP AGGREGATE IF EXISTS array_accum(anyelement);
 CREATE AGGREGATE array_accum(anyelement) (
   SFUNC=array_append,
@@ -159,15 +160,17 @@ ${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_zip_lookup_base_city
 	
 INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process,columns_exclude )
 VALUES(9, 'addr', 'addr', true, true, false,false, 'a', 
-	'${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_${table_name}(CONSTRAINT pk_${state_abbrev}_${table_name} PRIMARY KEY (gid)) INHERITS(${table_name});" ',
-	'${psql} -c "UPDATE ${data_schema}.${state_abbrev}_${table_name} SET statefp = ''${state_fips}'' WHERE statefp IS NULL;"
-	${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${table_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
+	'${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_${lookup_name}(CONSTRAINT pk_${state_abbrev}_${table_name} PRIMARY KEY (gid)) INHERITS(${table_name});" ',
+	'${psql} -c "UPDATE ${data_schema}.${state_abbrev}_${lookup_name} SET statefp = ''${state_fips}'' WHERE statefp IS NULL;"
+	${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
+	${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${lookup_name}_least_address ON tiger_data.ma_addr USING btree (least_hn(fromhn,tohn) )
 	${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${table_name}_tlid_statefp ON ${data_schema}.${state_abbrev}_${table_name} USING btree (tlid, statefp);"
 	${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${table_name}_zip ON ${data_schema}.${state_abbrev}_${table_name} USING btree (zip);"
 	${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_zip_state(CONSTRAINT pk_${state_abbrev}_zip_state PRIMARY KEY(zip,stusps)) INHERITS(zip_state); "
 	${psql} -c "INSERT INTO ${data_schema}.${state_abbrev}_zip_state(zip,stusps,statefp) SELECT DISTINCT zip, ''${state_abbrev}'', ''${state_fips}'' FROM ${data_schema}.${state_abbrev}_${lookup_name} WHERE zip is not null;"
 	${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_zip_state ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
 	${psql} -c "vacuum analyze ${data_schema}.${state_abbrev}_${lookup_name};"',  ARRAY['gid','statefp','fromarmid', 'toarmid']);
+
 
 CREATE OR REPLACE FUNCTION loader_generate_script(param_states text[], os text)
   RETURNS SETOF text AS

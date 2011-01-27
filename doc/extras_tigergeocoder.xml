@@ -6,10 +6,10 @@
 		<abstract>
 			<para>A plpgsql based geocoder written for <ulink url="http://www.census.gov/geo/www/tiger/index.html">TIGER census data</ulink>.</para>
 			<para>Design:</para>
-			<para>There are two components to the geocoder, the address normalizer and the address geocoder. </para>
+			<para>There are three components to the geocoder, the data loader functions, the address normalizer and the address geocoder. </para>
 			<para>The goal of this project is to build a fully functional geocoder that can process an arbitrary 
 			address string and, using normalized TIGER census data, produce a point geometry and rating reflecting the location of the given address.</para>
-			<para>The geocoder should be simple for anyone familiar with PostGIS to install and use.</para>
+			<para>The geocoder should be simple for anyone familiar with PostGIS to install and use, and should be easily installable and usable on all platforms supported by PostGIS.</para>
 			<para>It should be robust enough to function properly despite formatting and spelling errors.</para>
 			<para>It should be extensible enough to be used with future data updates, or alternate data sources with a minimum of coding changes.</para>
 		</abstract>
@@ -19,25 +19,25 @@
 	  <refnamediv>
 		<refname>Geocode</refname>
 
-		<refpurpose>Takes in an address as a string and outputs a set of possible locations which include a point geometry in NAD 83 long lat, a normalized address for each, and the rating.  The lower the rating the more likely the match.  
+		<refpurpose>Takes in an address as a string (or other normalized address) and outputs a set of possible locations which include a point geometry in NAD 83 long lat, a normalized address for each, and the rating.  The lower the rating the more likely the match.  
 			Results are sorted by lowest rating first.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>setof record<function>geocode</function></funcdef>
+			<funcdef>setof record <function>geocode</function></funcdef>
 			<paramdef><type>address </type> <parameter>varchar</parameter></paramdef>
-			<paramdef><type>OUT addy</type> <parameter>norm_addy</parameter></paramdef>
-			<paramdef><type>OUT geomout</type> <parameter>geometry</parameter></paramdef>
-			<paramdef><type>OUT rating</type> <parameter>integer</parameter></paramdef>
+			<paramdef><type>OUT addy </type> <parameter>norm_addy</parameter></paramdef>
+			<paramdef><type>OUT geomout </type> <parameter>geometry</parameter></paramdef>
+			<paramdef><type>OUT rating </type> <parameter>integer</parameter></paramdef>
 		  </funcprototype>
 		  <funcprototype>
-			<funcdef>setof record<function>geocode</function></funcdef>
+			<funcdef>setof record <function>geocode</function></funcdef>
 			<paramdef><type>in_addy </type> <parameter>norm_addy</parameter></paramdef>
-			<paramdef><type>OUT addy</type> <parameter>norm_addy</parameter></paramdef>
-			<paramdef><type>OUT geomout</type> <parameter>geometry</parameter></paramdef>
-			<paramdef><type>OUT rating</type> <parameter>integer</parameter></paramdef>
+			<paramdef><type>OUT addy </type> <parameter>norm_addy</parameter></paramdef>
+			<paramdef><type>OUT geomout </type> <parameter>geometry</parameter></paramdef>
+			<paramdef><type>OUT rating </type> <parameter>integer</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -45,8 +45,8 @@
 	  <refsection>
 		<title>Description</title>
 
-		<para>Takes in an address as a string and outputs a set of possible locations which include a point geometry in NAD 83 long lat, a <varname>normalized_address</varname> (addy) for each, and the rating.  The lower the rating the more likely the match.  
-			Results are sorted by lowest rating first.  The higher the rating the less likely the geocode is right.</para>
+		<para>Takes in an address as a string (or already normalized address) and outputs a set of possible locations which include a point geometry in NAD 83 long lat, a <varname>normalized_address</varname> (addy) for each, and the rating.  The lower the rating the more likely the match.  
+			Results are sorted by lowest rating first.  Uses Tiger data (edges,faces,addr), PostgreSQL fuzzy string matching (soundex,levenshtein) and PostGIS line interpolation functions to interpolate address along the Tiger edges. The higher the rating the less likely the geocode is right.</para>
 
 		<para>Enhanced: 2.0.0 to support Tiger 2010 structured data and revised some logic to improve speed.</para>
 
@@ -56,8 +56,10 @@
 
 	  <refsection>
 		<title>Examples</title>
-		<para>Exact matches are fairly fast (205ms)</para>
-		<programlisting>SELECT g.rating, ST_X(g.geomout) As lon, ST_Y(g.geomout) As lat, (addy).address As stno, (addy).streetname As street, 
+		<para>The below examples timings are on a fairly old 1.9 GHZ single processor Windows XP machine with 3GB ram running PostgreSQL 9/PostGIS 2.0 loaded with all of Massachusetts state Tiger data.</para>
+		<para>Exact matches are faster to compute (205ms)</para>
+		<programlisting>SELECT g.rating, ST_X(g.geomout) As lon, ST_Y(g.geomout) As lat, 
+	(addy).address As stno, (addy).streetname As street, 
 	(addy).streettypeabbrev As styp, (addy).location As city, (addy).stateabbrev As st,(addy).zip 
 	FROM geocode('75 State Street, Boston MA 02109') As g;  
  rating |        lon        |       lat        | stno | street | styp |  city   |st  |  zip
@@ -65,15 +67,17 @@
       0 | -71.0556974285714 | 42.3590795714286 |   75 | State  | St   | Boston  | MA | 02109
 </programlisting>
 		<para>Even if zip is not passed in the geocoder can guess (took about 450 ms)</para>
-		<programlisting>SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat, (addy).address As stno, (addy).streetname As street, 
+		<programlisting>SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat, 
+	(addy).address As stno, (addy).streetname As street, 
 	(addy).streettypeabbrev As styp, (addy).location As city, (addy).stateabbrev As st,(addy).zip 
 	FROM geocode('226 Hanover Street, Boston, MA') As g;  
  rating |         wktlonlat         | stno | street  | styp |  city  | st |  zip
 --------+---------------------------+------+---------+------+--------+----+-------
       0 | POINT(-71.05518 42.36311) |  226 | Hanover | St   | Boston | MA | 02113
 </programlisting>     
-<para>Can handle misspellings and provides more than one possible solution with rankings and takes longer (4 seconds).</para>
-<programlisting>SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat, (addy).address As stno, (addy).streetname As street, 
+<para>Can handle misspellings and provides more than one possible solution with ratings and takes longer (4 seconds).</para>
+<programlisting>SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat, 
+    (addy).address As stno, (addy).streetname As street, 
 	(addy).streettypeabbrev As styp, (addy).location As city, (addy).stateabbrev As st,(addy).zip 
 	FROM geocode('31 - 37 Stewart Street, Boston, MA 02116') As g; 
  rating |         wktlonlat         | stno | street  | styp |     city      | st|  zip
@@ -90,6 +94,48 @@
      60 | POINT(-71.14573 41.72036) |   31 | Stewart | St   | Fall River    | MA | 02720
      70 | POINT(-71.0646 42.35105)  |   31 | Stuart  | St   | Boston        | MA | 02116
 (11 rows)	</programlisting>
+
+<para>Using to do a batch geocode of addresses</para>
+<programlisting>CREATE TABLE addresses_to_geocode(addid serial PRIMARY KEY, address text,
+		lon numeric, lat numeric, new_address text, rating integer);
+
+INSERT INTO addresses_to_geocode(address)
+VALUES ('529 Main Street, Boston MA, 02129'),
+ ('77 Massachusetts Avenue, Cambridge, MA 02139'),
+ ('28 Capen Street, Medford, MA'),
+ ('124 Mount Auburn St, Cambridge, Massachusetts 02138'),
+ ('950 Main Street, Worcester, MA 01610');
+ 
+-- only update the first two addresses --
+-- for large numbers of addresses you don't want to update all at once
+-- since the whole geocode must commit at once (828 ms)
+UPDATE addresses_to_geocode
+  SET  (rating, new_address, lon, lat) 
+	= (g.rating, COALESCE( (g.addy).address::text, '')
+	|| COALESCE(' ' || trim((g.addy).predirabbrev ) , '') 
+	|| COALESCE(' ' || trim((g.addy).streetname ),'') 
+        || COALESCE(' ' || trim((g.addy).streettypeabbrev ), '') 
+	|| COALESCE(' ' || (g.addy).location , '')
+	|| COALESCE(', ' || (g.addy).stateabbrev, '') 
+    || COALESCE(' ' || (g.addy).zip, ''),
+		ST_X(g.geomout), ST_Y(g.geomout) )
+FROM (SELECT DISTINCT ON (addid) addid, (g1.geo).*
+	FROM (SELECT addid,  (geocode(address)) As geo
+FROM addresses_to_geocode As ag
+	WHERE ag.rating IS NULL ) As g1
+ORDER BY addid, rating LIMIT 2) As g
+WHERE g.addid = addresses_to_geocode.addid;
+
+result
+-----
+2 rows affected, 850 ms execution time.
+
+SELECT * FROM addresses_to_geocode WHERE rating is not null;
+
+ addid |                   address                    |    lon    |   lat    |             new_address                  | rating
+-------+----------------------------------------------+-----------+----------+------------------------------------------+--------
+     1 | 529 Main Street, Boston MA, 02129            | -71.07187 | 42.38351 | 529 Main St Boston, MA 02129             |      0
+     2 | 77 Massachusetts Avenue, Cambridge, MA 02139 | -71.09436 | 42.35981 | 77 Massachusetts Ave Cambridge, MA 02139 |      0</programlisting>
 
 	  </refsection>
 
