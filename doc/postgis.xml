@@ -45,6 +45,7 @@
 <!ENTITY faq_raster SYSTEM "faq_raster.xml">
 <!ENTITY extras SYSTEM "extras.xml">
 <!ENTITY extras_topology SYSTEM "extras_topology.xml">
+<!ENTITY extras_tigergeocoder SYSTEM "extras_tigergeocoder.xml">
 
 <!ENTITY sfs_compliant 
 "<inlinemediaobject>

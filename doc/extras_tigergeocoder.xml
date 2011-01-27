@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+  <sect1 id="Tiger_Geocoder">
+	<title>Tiger Geocoder</title>
+	 <sect1info>
+		<abstract>
+			<para>A plpgsql based geocoder written for <ulink url="http://www.census.gov/geo/www/tiger/index.html">TIGER census data</ulink>.</para>
+			<para>Design:</para>
+			<para>There are two components to the geocoder, the address normalizer and the address geocoder. </para>
+			<para>The goal of this project is to build a fully functional geocoder that can process an arbitrary 
+			address string and, using normalized TIGER census data, produce a point geometry and rating reflecting the location of the given address.</para>
+			<para>The geocoder should be simple for anyone familiar with PostGIS to install and use.</para>
+			<para>It should be robust enough to function properly despite formatting and spelling errors.</para>
+			<para>It should be extensible enough to be used with future data updates, or alternate data sources with a minimum of coding changes.</para>
+		</abstract>
+     </sect1info>
+	
+	<refentry id="Geocode">
+	  <refnamediv>
+		<refname>Geocode</refname>
+
+		<refpurpose>Takes in an address as a string and outputs a set of possible locations which include a point geometry in NAD 83 long lat, a normalized address for each, and the rating.  The lower the rating the more likely the match.  
+			Results are sorted by lowest rating first.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>setof record<function>geocode</function></funcdef>
+			<paramdef><type>address </type> <parameter>varchar</parameter></paramdef>
+			<paramdef><type>OUT addy</type> <parameter>norm_addy</parameter></paramdef>
+			<paramdef><type>OUT geomout</type> <parameter>geometry</parameter></paramdef>
+			<paramdef><type>OUT rating</type> <parameter>integer</parameter></paramdef>
+		  </funcprototype>
+		  <funcprototype>
+			<funcdef>setof record<function>geocode</function></funcdef>
+			<paramdef><type>in_addy </type> <parameter>norm_addy</parameter></paramdef>
+			<paramdef><type>OUT addy</type> <parameter>norm_addy</parameter></paramdef>
+			<paramdef><type>OUT geomout</type> <parameter>geometry</parameter></paramdef>
+			<paramdef><type>OUT rating</type> <parameter>integer</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Takes in an address as a string and outputs a set of possible locations which include a point geometry in NAD 83 long lat, a <varname>normalized_address</varname> (addy) for each, and the rating.  The lower the rating the more likely the match.  
+			Results are sorted by lowest rating first.  The higher the rating the less likely the geocode is right.</para>
+
+		<para>Enhanced: 2.0.0 to support Tiger 2010 structured data and revised some logic to improve speed.</para>
+
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+		<para>Exact matches are fairly fast (205ms)</para>
+		<programlisting>SELECT g.rating, ST_X(g.geomout) As lon, ST_Y(g.geomout) As lat, (addy).address As stno, (addy).streetname As street, 
+	(addy).streettypeabbrev As styp, (addy).location As city, (addy).stateabbrev As st,(addy).zip 
+	FROM geocode('75 State Street, Boston MA 02109') As g;  
+ rating |        lon        |       lat        | stno | street | styp |  city   |st  |  zip
+ --------+-------------------+------------------+------+--------+------+--------+----+-------
+      0 | -71.0556974285714 | 42.3590795714286 |   75 | State  | St   | Boston  | MA | 02109
+</programlisting>
+		<para>Even if zip is not passed in the geocoder can guess (took about 450 ms)</para>
+		<programlisting>SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat, (addy).address As stno, (addy).streetname As street, 
+	(addy).streettypeabbrev As styp, (addy).location As city, (addy).stateabbrev As st,(addy).zip 
+	FROM geocode('226 Hanover Street, Boston, MA') As g;  
+ rating |         wktlonlat         | stno | street  | styp |  city  | st |  zip
+--------+---------------------------+------+---------+------+--------+----+-------
+      0 | POINT(-71.05518 42.36311) |  226 | Hanover | St   | Boston | MA | 02113
+</programlisting>     
+<para>Can handle misspellings and provides more than one possible solution with rankings and takes longer (4 seconds).</para>
+<programlisting>SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat, (addy).address As stno, (addy).streetname As street, 
+	(addy).streettypeabbrev As styp, (addy).location As city, (addy).stateabbrev As st,(addy).zip 
+	FROM geocode('31 - 37 Stewart Street, Boston, MA 02116') As g; 
+ rating |         wktlonlat         | stno | street  | styp |     city      | st|  zip
+--------+---------------------------+------+---------+------+---------------+----+-------
+     55 | POINT(-71.36934 42.68158) |   31 | Stewart | St   | Lowell        | MA | 01826
+     55 | POINT(-71.34825 42.63324) |   31 | Stewart | St   | Lowell        | MA | 01851
+     55 | POINT(-71.59109 42.22556) |   31 | Stewart | St   | Hopkinton     | MA | 01748
+     56 | POINT(-71.26747 42.54075) |   31 | Stewart | St   | Burlington    | MA | 01821
+     56 | POINT(-71.20324 42.53543) |   31 | Stewart | St   | Burlington    | MA | 01803
+     57 | POINT(-72.57319 42.22111) |   31 | Stewart | St   | Chicopee      | MA | 01075
+     57 | POINT(-72.59728 42.16919) |   31 | Stewart | St   | Chicopee      | MA | 01020
+     59 | POINT(-71.08627 42.78109) |   31 | Stewart | St   | Haverhill     | MA | 01830
+     60 | POINT(-71.36752 42.09772) |   31 | Stewart | St   | Franklin Town | MA | 02038
+     60 | POINT(-71.14573 41.72036) |   31 | Stewart | St   | Fall River    | MA | 02720
+     70 | POINT(-71.0646 42.35105)  |   31 | Stuart  | St   | Boston        | MA | 02116
+(11 rows)	</programlisting>
+
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_AsText"/>,<xref linkend="ST_SnapToGrid"/>, <xref linkend="ST_X"/>, <xref linkend="ST_Y"/></para>
+	  </refsection>
+	</refentry>
+
+  </sect1>
