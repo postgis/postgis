@@ -118,7 +118,7 @@ UPDATE addresses_to_geocode
 	|| COALESCE(' ' || (g.addy).location , '')
 	|| COALESCE(', ' || (g.addy).stateabbrev, '') 
     || COALESCE(' ' || (g.addy).zip, ''),
-		ST_X(g.geomout), ST_Y(g.geomout) )
+		ST_X(g.geomout)::numeric(8,5), ST_Y(g.geomout)::numeric(8,5) )
 FROM (SELECT DISTINCT ON (addid) addid, (g1.geo).*
 	FROM (SELECT addid,  (geocode(address)) As geo
 FROM addresses_to_geocode As ag
