@@ -142,6 +142,7 @@ DECLARE
 	aline ALIAS FOR $2;
 	edgeid int;
 	rec RECORD;
+  ix geometry; 
 BEGIN
 	--
 	-- Atopology and apoint are required
@@ -294,9 +295,18 @@ BEGIN
         RETURN rec.edge_id;
     END IF;
 
-	  RAISE EXCEPTION 'Edge intersects (not on endpoints) with existing edge % ', rec.edge_id;
+    -- WARNING: the constructive operation might throw an exception
+    BEGIN
+      ix = ST_Intersection(rec.geom, aline);
+    EXCEPTION
+      WHEN OTHERS THEN
+        RAISE NOTICE 'Could not compute intersection between input edge (%) and edge % (%)', aline::text, rec.edge_id, rec.geom::text;
+      
+    END;
 
-	END LOOP;
+	  RAISE EXCEPTION 'Edge intersects (not on endpoints) with existing edge % at or near point %', rec.edge_id, ST_AsText(ST_PointOnSurface(ix));
+
+  END LOOP;
 
 	--
 	-- Get new edge id from sequence
