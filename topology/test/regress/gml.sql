@@ -156,6 +156,13 @@ SELECT feature_name||'-visited', topology.AsGML(feature,
 
 -- TODO: we'd need to query a street taking E14 and E13, to find E14 visited ..
 
+-- Test custom identifier prefix
+-- P3 visits (E18),(E17),E8,E15,E16,E14
+--           (N10),(N13),(N18),N19,N12,N11
+SELECT feature_name||'-visited-idprefix', topology.AsGML(feature,
+       '', 15, 2, 'visited'::regclass, 'cd-') FROM features.land_parcels
+       WHERE feature_name IN ('P3');
+
 --- } Visited table bookkeeping
 
 SELECT topology.DropTopology('city_data');
