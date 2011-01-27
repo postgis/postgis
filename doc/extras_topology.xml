@@ -1434,6 +1434,15 @@ SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
                         <paramdef><type>integer </type> <parameter>options</parameter></paramdef>
                         <paramdef><type>regclass </type> <parameter>visitedTable</parameter></paramdef>
 					</funcprototype>
+					<funcprototype>
+                        <funcdef>text <function>AsGML</function></funcdef>
+                        <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+                        <paramdef><type>text </type> <parameter>nsprefix_in</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>options</parameter></paramdef>
+                        <paramdef><type>regclass </type> <parameter>visitedTable</parameter></paramdef>
+                        <paramdef><type>text </type> <parameter>idprefix</parameter></paramdef>
+					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 		
@@ -1444,6 +1453,7 @@ SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
 
 		<para>The <varname>visitedTable</varname> parameter, if given, is used for keeping track of the visited Node and Edge elements so to use cross-references (xlink:xref) rather than duplicating definitions. The table is expected to have (at least) two integer fields: 'element_type' and 'element_id'. The calling user must have both read and write privileges on the given table.</para>
               
+		<para>The <varname>idprefix</varname> parameter, if given, will be prepended to Edge and Node tag identifiers.</para>
 			
                 <!-- use this format if new function -->
                 <para>Availability: 2.0.0 </para>
