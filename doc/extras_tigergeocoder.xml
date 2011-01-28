@@ -137,6 +137,7 @@ SELECT * FROM addresses_to_geocode WHERE rating is not null;
  ------+----------------------------------------------+-----------+----------+-------------------------------------------+--------
      1 | 529 Main Street, Boston MA, 02129            | -71.07187 | 42.38351 | 529 Main St, Boston, MA 02129             |      0
      2 | 77 Massachusetts Avenue, Cambridge, MA 02139 | -71.09436 | 42.35981 | 77 Massachusetts Ave, Cambridge, MA 02139 |      0
+</programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
