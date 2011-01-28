@@ -1,3 +1,4 @@
+--$Id$
 SET search_path TO tiger, public;
 -- Create direction lookup table
 DROP TABLE IF EXISTS direction_lookup;

@@ -1,3 +1,4 @@
+--$Id$
 CREATE OR REPLACE FUNCTION geocode_address(IN parsed norm_addy, OUT addy norm_addy, OUT geomout geometry, OUT rating integer)
   RETURNS SETOF record AS
 $$

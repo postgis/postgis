@@ -1,9 +1,10 @@
-INSTALLING THE Tiger Geocoder
+$Id$
+INSTALLING The Tiger Geocoder
 This is a customized version of Steve Frost's tiger geocoder revisions (http://www.snowman.net/git/tiger_geocoder/).  
 This version includes a loader that is portable between Linux and Windows but loads a full state of data.  The loader helper tables
 and functions are prefixed with loader and stored in the tiger schema.  If you only want to load a county, then
-revise the wget call that is generated for the state to just download the state wide and specific counties.  The loader will only
-process files that exists.
+revise the wget call that is generated for the state to just download the state wide and specific counties or just download them by hand.  The loader will only
+process files that exist.
 
 If you are on windows -- you will need 7zip and wget.
 7zip you can get from http://www.7-zip.org/  and wget you can get from http://gnuwin32.sourceforge.net/packages/wget.htm

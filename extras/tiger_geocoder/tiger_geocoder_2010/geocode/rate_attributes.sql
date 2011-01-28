@@ -1,3 +1,4 @@
+--$Id$
 -- rate_attributes(dirpA, dirpB, streetNameA, streetNameB, streetTypeA,
 -- streetTypeB, dirsA, dirsB, locationA, locationB)
 -- Rates the street based on the given attributes.  The locations must be

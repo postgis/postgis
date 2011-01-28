@@ -169,6 +169,7 @@ SELECT * FROM addresses_to_geocode WHERE rating is not null;
 
 		<para>Given a textual street address, returns a composite <varname>norm_addy</varname> type that has road suffix, prefix and type standardized, street, streetname etc. broken into separate fields.  This is the first step in the geocoding process to 
 		    get all addresses into normalized postal form. No other data is required aside from what is packaged with the geocoder.</para>
+		<para>It uses various control lookup tables located in <varname>tiger</varname> schema to normalize the input address.</para>
 		<para>Fields in the <varname>norm_addy</varname> type object returned by this function in this order where  () indicates a field required by the geocoder, [] indicates an optional field:</para>
 		<para>(address) [dirPrefix] (streetName) [streetType] [dirSuffix][internal] [location] [state] [zipCode]</para>
          <orderedlist>
@@ -194,7 +195,7 @@ SELECT * FROM addresses_to_geocode WHERE rating is not null;
             <para><varname>location</varname> varchar usually a city or governing province.</para>
           </listitem>
            <listitem>
-            <para><varname>state</varname> varchar two character US State.  e.g MA, NY, MI</para>
+            <para><varname>state</varname> varchar two character US State.  e.g MA, NY, MI.  These are controlled by the <varname>state_lookup</varname> table.</para>
           </listitem>
           <listitem>
             <para><varname>zip</varname> varchar 5-digit zipcode. e.g. 02109.</para>
