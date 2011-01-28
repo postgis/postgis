@@ -4,8 +4,10 @@
 	<title>Tiger Geocoder</title>
 	 <sect1info>
 		<abstract>
-			<para>A plpgsql based geocoder written for <ulink url="http://www.census.gov/geo/www/tiger/index.html">TIGER census data</ulink>.</para>
+			<para>A plpgsql based geocoder written to work with the <ulink url="http://www.census.gov/geo/www/tiger/index.html">TIGER (Topologically Integrated Geographic Encoding and Referencing system ) / Line and Master Address database export</ulink> released by the US Census Bureau.  In prior versions the TIGER files were
+			released in ASCII format.  The older geocoder used to work with that format is in <varname>extras/tiger_geocoder/tiger_2006andbefore</varname>. What we have documented for the 2010 files located in <varname>extras/tiger_geocoder/tiger_2010</varname>.</para>
 			<para>There are three components to the geocoder: the data loader functions, the address normalizer and the address geocoder. The lastest version updated to use the TIGER 2010 census data is located in the extras/tiger_geocoder/tiger_2010 folder.</para>
+			<para>Although it is designed specifically for the US, a lot of the concepts and functions are applicable and can be adapted to work with other country address and road networks.</para>
 			<para>The script builds a schema called <varname>tiger</varname>: to house all the tiger related functions, reusable lookup data such as road type prefixes, suffixes, states, and skeleton base tables from which all the tiger loaded tables inherit from.</para>
 			<para>Another schema called <varname>tiger_data</varname> is also created which houses all the census data for each state that the loader downloads from Census site and loads into the database. In the current model, each set of state tables is
 			    prefixed with the state code e.g ma_addr, ca_edges etc with constraints to enforce only that state data.  Each of these tables inherits from the base addr, faces, egdes, etc located in the tiger schema. </para>
