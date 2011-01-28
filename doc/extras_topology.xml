@@ -1443,6 +1443,16 @@ SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
                         <paramdef><type>regclass </type> <parameter>visitedTable</parameter></paramdef>
                         <paramdef><type>text </type> <parameter>idprefix</parameter></paramdef>
 					</funcprototype>
+					<funcprototype>
+                        <funcdef>text <function>AsGML</function></funcdef>
+                        <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+                        <paramdef><type>text </type> <parameter>nsprefix_in</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>options</parameter></paramdef>
+                        <paramdef><type>regclass </type> <parameter>visitedTable</parameter></paramdef>
+                        <paramdef><type>text </type> <parameter>idprefix</parameter></paramdef>
+                        <paramdef><type>int </type> <parameter>gmlversion</parameter></paramdef>
+					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 		
@@ -1455,6 +1465,8 @@ SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
               
 		<para>The <varname>idprefix</varname> parameter, if given, will be prepended to Edge and Node tag identifiers.</para>
 			
+		<para>The <varname>gmlver</varname> parameter, if given, will be passed to the underlying ST_AsGML. Defaults to 3.</para>
+
                 <!-- use this format if new function -->
                 <para>Availability: 2.0.0 </para>
 			</refsection>

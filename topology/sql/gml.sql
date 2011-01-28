@@ -26,11 +26,11 @@
 --{
 --
 -- INTERNAL FUNCTION
--- text _AsGMLNode(id, point, nsprefix, precision, options, idprefix)
+-- text _AsGMLNode(id, point, nsprefix, precision, options, idprefix, gmlver)
 --
 -- }{
 CREATE OR REPLACE FUNCTION topology._AsGMLNode(int, geometry, text, int, int,
-  text)
+  text, int)
   RETURNS text
 AS
 $$
@@ -42,6 +42,7 @@ DECLARE
   precision ALIAS FOR $4;
   options ALIAS FOR $5;
   idprefix ALIAS FOR $6;
+  gmlver ALIAS FOR $7;
   gml text;
 BEGIN
 
@@ -59,7 +60,7 @@ BEGIN
   IF point IS NOT NULL THEN
     gml = gml || '>'
               || '<' || nsprefix || 'pointProperty>'
-              || ST_AsGML(3, point, precision, options, nsprefix_in)
+              || ST_AsGML(gmlver, point, precision, options, nsprefix_in)
               || '</' || nsprefix || 'pointProperty>'
               || '</' || nsprefix || 'Node>';
   ELSE
@@ -69,16 +70,16 @@ BEGIN
 END
 $$
 LANGUAGE 'plpgsql';
---} _AsGMLNode(id, point, nsprefix, precision, options, idprefix)
+--} _AsGMLNode(id, point, nsprefix, precision, options, idprefix, gmlVersion)
 
 --{
 --
 -- INTERNAL FUNCTION
 -- text _AsGMLEdge(edge_id, start_node, end_node, line, visitedTable,
---                 nsprefix, precision, options, idprefix)
+--                 nsprefix, precision, options, idprefix, gmlVersion)
 --
 -- }{
-CREATE OR REPLACE FUNCTION topology._AsGMLEdge(int, int, int, geometry, regclass, text, int, int, text)
+CREATE OR REPLACE FUNCTION topology._AsGMLEdge(int, int, int, geometry, regclass, text, int, int, text, int)
   RETURNS text
 AS
 $$
@@ -94,6 +95,7 @@ DECLARE
   precision ALIAS FOR $7;
   options ALIAS FOR $8;
   idprefix ALIAS FOR $9;
+  gmlver ALIAS FOR $10;
   gml text;
 BEGIN
 
@@ -130,7 +132,7 @@ BEGIN
   IF visited IS NULL THEN
     gml = gml || '>';
     gml = gml || topology._AsGMLNode(start_node, NULL, nsprefix_in,
-                                     precision, options, idprefix);
+                                     precision, options, idprefix, gmlver);
     gml = gml || '</' || nsprefix || 'directedNode>';
   END IF;
 
@@ -155,13 +157,13 @@ BEGIN
   IF visited IS NULL THEN
     gml = gml || '>';
     gml = gml || topology._AsGMLNode(end_node, NULL, nsprefix_in,
-                                     precision, options, idprefix);
+                                     precision, options, idprefix, gmlver);
     gml = gml || '</' || nsprefix || 'directedNode>';
   END IF;
 
   IF line IS NOT NULL THEN
     gml = gml || '<' || nsprefix || 'curveProperty>'
-              || ST_AsGML(3, line, precision, options, nsprefix_in)
+              || ST_AsGML(gmlver, line, precision, options, nsprefix_in)
               || '</' || nsprefix || 'curveProperty>';
   END IF;
 
@@ -171,17 +173,17 @@ BEGIN
 END
 $$
 LANGUAGE 'plpgsql';
---} _AsGMLEdge(id, start_node, end_node, line, visitedTable, nsprefix, precision, options, idprefix)
+--} _AsGMLEdge(id, start_node, end_node, line, visitedTable, nsprefix, precision, options, idprefix, gmlver)
 
 --{
 --
 -- API FUNCTION
 --
--- text AsGML(TopoGeometry, nsprefix, precision, options, visitedTable, idprefix)
+-- text AsGML(TopoGeometry, nsprefix, precision, options, visitedTable, idprefix, gmlver)
 --
 -- }{
 CREATE OR REPLACE FUNCTION topology.AsGML(topology.TopoGeometry,
-    text, int, int, regclass, text)
+    text, int, int, regclass, text, int)
   RETURNS text
 AS
 $$
@@ -196,6 +198,7 @@ DECLARE
   visitedTable ALIAS FOR $5;
   visited bool;
   idprefix ALIAS FOR $6;
+  gmlver ALIAS FOR $7;
   toponame text;
   gml text;
   sql text;
@@ -256,7 +259,7 @@ BEGIN
         END IF;
       END IF;
       gml = gml || '>';
-      gml = gml || topology._AsGMLNode(rec.element_id, rec.geom, nsprefix_in, precision, options, idprefix);
+      gml = gml || topology._AsGMLNode(rec.element_id, rec.geom, nsprefix_in, precision, options, idprefix, gmlver);
       gml = gml || '</' || nsprefix || 'directedNode>';
     END LOOP;
     gml = gml || '</' || nsprefix || 'TopoPoint>';
@@ -317,7 +320,7 @@ BEGIN
                                         rec2.end_node, rec2.geom,
                                         visitedTable,
                                         nsprefix_in, precision,
-                                        options, idprefix);
+                                        options, idprefix, gmlver);
 
 
         gml = gml || '</' || nsprefix || 'directedEdge>';
@@ -395,12 +398,10 @@ BEGIN
 
         gml = gml || '>';
 
-        gml = gml || topology._AsGMLEdge(rec2.edge_id,
-                                        rec2.start_node,
+        gml = gml || topology._AsGMLEdge(rec2.edge_id, rec2.start_node,
                                         rec2.end_node, rec2.geom,
-                                        visitedTable,
-                                        nsprefix_in,
-                                        precision, options, idprefix);
+                                        visitedTable, nsprefix_in,
+                                        precision, options, idprefix, gmlver);
         gml = gml || '</' || nsprefix || 'directedEdge>';
 
       END LOOP;
@@ -422,6 +423,24 @@ BEGIN
 END
 $$
 LANGUAGE 'plpgsql';
+--} AsGML(TopoGeometry, nsprefix, precision, options, visitedTable, idprefix, gmlver)
+
+--{
+--
+-- API FUNCTION
+--
+-- text AsGML(TopoGeometry, nsprefix, precision, options, visitedTable,
+--            idprefix)
+--
+-- }{
+CREATE OR REPLACE FUNCTION topology.AsGML(topology.TopoGeometry,
+    text, int, int, regclass, text)
+  RETURNS text
+AS
+$$
+ SELECT topology.AsGML($1, $2, $3, $4, $5, $6, 3);
+$$
+LANGUAGE 'sql';
 --} AsGML(TopoGeometry, nsprefix, precision, options, visitedTable, idprefix)
 
 --{

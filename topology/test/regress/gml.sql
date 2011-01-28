@@ -165,6 +165,19 @@ SELECT feature_name||'-visited-idprefix', topology.AsGML(feature,
 
 --- } Visited table bookkeeping
 
+--- { GML2 output
+
+-- Output in GML2
+SELECT feature_name||'-gml2' as name, topology.AsGML(feature,'',0,2,NULL,'',2)
+ FROM features.city_streets 
+UNION
+SELECT feature_name||'-gml2', topology.AsGML(feature,'',0,2,NULL,'',2)
+ FROM features.traffic_signs
+ORDER BY name;
+
+--- } GML2 output
+
+
 SELECT topology.DropTopology('city_data');
 DROP SCHEMA features CASCADE;
 DELETE FROM spatial_ref_sys where srid = 4326;
