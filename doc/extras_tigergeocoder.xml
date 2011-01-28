@@ -5,8 +5,13 @@
 	 <sect1info>
 		<abstract>
 			<para>A plpgsql based geocoder written for <ulink url="http://www.census.gov/geo/www/tiger/index.html">TIGER census data</ulink>.</para>
+			<para>There are three components to the geocoder: the data loader functions, the address normalizer and the address geocoder. The lastest version updated to use the TIGER 2010 census data is located in the extras/tiger_geocoder/tiger_2010 folder.</para>
+			<para>The script builds a schema called <varname>tiger</varname>: to house all the tiger related functions, reusable lookup data such as road type prefixes, suffixes, states, and skeleton base tables from which all the tiger loaded tables inherit from.</para>
+			<para>Another schema called <varname>tiger_data</varname> is also created which houses all the census data for each state that the loader downloads from Census site and loads into the database. In the current model, each set of state tables is
+			    prefixed with the state code e.g ma_addr, ca_edges etc with constraints to enforce only that state data.  Each of these tables inherits from the base addr, faces, egdes, etc located in the tiger schema. </para>
+			<para>All the geocode functions only reference the base tables, so there is no requirement that the data schema be called <varname>tiger_data</varname> or that data can't be further partitioned into other schemas -- e.g a different schema
+			for each state, as long as all the tables inherit from the tables in the <varname>tiger</varname> schema.</para>
 			<para>Design:</para>
-			<para>There are three components to the geocoder, the data loader functions, the address normalizer and the address geocoder. </para>
 			<para>The goal of this project is to build a fully functional geocoder that can process an arbitrary 
 			address string and, using normalized TIGER census data, produce a point geometry and rating reflecting the location of the given address.</para>
 			<para>The geocoder should be simple for anyone familiar with PostGIS to install and use, and should be easily installable and usable on all platforms supported by PostGIS.</para>
@@ -95,7 +100,7 @@
      70 | POINT(-71.0646 42.35105)  |   31 | Stuart  | St   | Boston        | MA | 02116
 (11 rows)	</programlisting>
 
-<para>Using to do a batch geocode of addresses</para>
+<para>Using to do a batch geocode of addresses.  Note you can get a similar output if you use <xref linkend="Pprint_Addy" /> to glue the parts together.  E.g <varname>pprint_addy((g.addy))</varname></para>
 <programlisting>CREATE TABLE addresses_to_geocode(addid serial PRIMARY KEY, address text,
 		lon numeric, lat numeric, new_address text, rating integer);
 
@@ -142,7 +147,146 @@ SELECT * FROM addresses_to_geocode WHERE rating is not null;
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_AsText"/>,<xref linkend="ST_SnapToGrid"/>, <xref linkend="ST_X"/>, <xref linkend="ST_Y"/></para>
+		<para><xref linkend="Normalize_Address" />,<xref linkend="Pprint_Addy" />,<xref linkend="ST_AsText"/>,<xref linkend="ST_SnapToGrid"/>, <xref linkend="ST_X"/>, <xref linkend="ST_Y"/></para>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="Normalize_Address">
+	  <refnamediv>
+		<refname>Normalize_Address</refname>
+
+		<refpurpose>Given a textual street address, returns a composite <varname>norm_addy</varname> type that has road suffix, prefix and type standardized, street, streetname etc. broken into separate fields.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>norm_addy <function>normalize_address</function></funcdef>
+			<paramdef><type>address </type> <parameter>varchar</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Given a textual street address, returns a composite <varname>norm_addy</varname> type that has road suffix, prefix and type standardized, street, streetname etc. broken into separate fields.  This is the first step in the geocoding process to 
+		    get all addresses into normalized postal form. No other data is required aside from what is packaged with the geocoder.</para>
+		<para>Fields in the <varname>norm_addy</varname> type object returned by this function in this order where  () indicates a field required by the geocoder, [] indicates an optional field:</para>
+		<para>(address) [dirPrefix] (streetName) [streetType] [dirSuffix][internal] [location] [state] [zipCode]</para>
+         <orderedlist>
+          <listitem>
+            <para><varname>address</varname> is an integer:  The street number</para>
+          </listitem>
+          <listitem>
+            <para><varname>dirPrefix</varname> is varchar: Directional prefix of road such as N, S, E, W etc.  These are controlled using the <varname>direction_lookup</varname> table.</para>
+          </listitem>
+          <listitem>
+            <para><varname>streetName</varname> varchar</para>
+          </listitem>
+          <listitem>
+            <para><varname>streetType</varname> varchar abbreviated version of street type: e.g. St, Ave, Cir.  These are controlled using the <varname>street_type_lookup</varname> table.</para>
+          </listitem>
+          <listitem>
+            <para><varname>dirSuffix</varname> varchar abbreviated version of street suffix. These are controlled using the <varname>direction_lookup</varname> table.</para>
+          </listitem>
+          <listitem>
+            <para><varname>internal</varname> varchar internal address such as an apartment or suite number.</para>
+          </listitem>
+          <listitem>
+            <para><varname>location</varname> varchar usually a city or governing province.</para>
+          </listitem>
+           <listitem>
+            <para><varname>state</varname> varchar two character US State.  e.g MA, NY, MI</para>
+          </listitem>
+          <listitem>
+            <para><varname>zip</varname> varchar 5-digit zipcode. e.g. 02109.</para>
+          </listitem>
+        </orderedlist>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+		<para>Output select fields.  Use <xref linkend="Pprint_Addy" /> if you want a pretty textual output.</para>
+		<programlisting>SELECT address As orig, (g.na).streetname, (g.na).streettypeabbrev
+ FROM (SELECT address, normalize_address(address) As na
+        FROM addresses_to_geocode) As g;
+        
+                        orig                         |  streetname   | streettypeabbrev
+-----------------------------------------------------+---------------+------------------
+ 529 Main Street, Boston MA, 02129                   | Main          | St
+ 77 Massachusetts Avenue, Cambridge, MA 02139        | Massachusetts | Ave
+ 28 Capen Street, Medford, MA                        | Capen         | St
+ 124 Mount Auburn St, Cambridge, Massachusetts 02138 | Mount Auburn  | St
+ 950 Main Street, Worcester, MA 01610                | Main          | St
+		</programlisting>
+		
+		
+
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="Geocode"/>, <xref linkend="Pprint_Addy"/></para>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="Pprint_Addy">
+	  <refnamediv>
+		<refname>Pprint_Addy</refname>
+
+		<refpurpose>Given a <varname>norm_addy</varname> composite type object, returns a pretty print representation of it. Usually used in conjunction with normalize_address.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>varchar <function>pprint_addy</function></funcdef>
+			<paramdef><type>address </type> <parameter>varchar</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>>Given a <varname>norm_addy</varname> composite type object, returns a pretty print representation of it. No other data is required aside from what is packaged with the geocoder.</para>
+		<para>Usually used in conjunction with <xref linkend="Normalize_Address"/>.</para>
+		
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+		<para>Pretty print a single address</para>
+		<programlisting>SELECT pprint_addy(normalize_address('202 East Fremont Street, Las Vegas, Nevada 89101')) As pretty_address;
+            pretty_address
+---------------------------------------
+ 202 E Fremont St, Las Vegas, NV 89101
+		</programlisting>
+		
+		<para>Pretty print address a table of addresses</para>
+		<programlisting>SELECT address As orig, pprint_addy(normalize_address(address)) As pretty_address;
+        FROM addresses_to_geocode;
+        
+                        orig                         |              pretty_address
+-----------------------------------------------------+-------------------------------------------
+ 529 Main Street, Boston MA, 02129                   | 529 Main St, Boston MA, 02129
+ 77 Massachusetts Avenue, Cambridge, MA 02139        | 77 Massachusetts Ave, Cambridge, MA 02139
+ 28 Capen Street, Medford, MA                        | 28 Capen St, Medford, MA
+ 124 Mount Auburn St, Cambridge, Massachusetts 02138 | 124 Mount Auburn St, Cambridge, MA 02138
+ 950 Main Street, Worcester, MA 01610                | 950 Main St, Worcester, MA 01610</programlisting>
+
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="Normalize_Address"/></para>
 	  </refsection>
 	</refentry>
 
