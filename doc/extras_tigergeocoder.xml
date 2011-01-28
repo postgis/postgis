@@ -102,7 +102,7 @@
      70 | POINT(-71.0646 42.35105)  |   31 | Stuart  | St   | Boston        | MA | 02116
 (11 rows)	</programlisting>
 
-<para>Using to do a batch geocode of addresses.  Note you can get a similar output if you use <xref linkend="Pprint_Addy" /> to glue the parts together.  E.g <varname>pprint_addy((g.addy))</varname></para>
+<para>Using to do a batch geocode of addresses. USE DISTINCT ON to return the best address match (lowest rating), when more than one match is returned. Only process those not yet geocoded (have no rating).</para>
 <programlisting>CREATE TABLE addresses_to_geocode(addid serial PRIMARY KEY, address text,
 		lon numeric, lat numeric, new_address text, rating integer);
 
@@ -113,19 +113,13 @@ VALUES ('529 Main Street, Boston MA, 02129'),
  ('124 Mount Auburn St, Cambridge, Massachusetts 02138'),
  ('950 Main Street, Worcester, MA 01610');
  
--- only update the first two addresses --
+-- only update the first two addresses (850 ms) --
 -- for large numbers of addresses you don't want to update all at once
--- since the whole geocode must commit at once (828 ms)
+-- since the whole geocode must commit at once 
 UPDATE addresses_to_geocode
   SET  (rating, new_address, lon, lat) 
-	= (g.rating, COALESCE( (g.addy).address::text, '')
-	|| COALESCE(' ' || trim((g.addy).predirabbrev ) , '') 
-	|| COALESCE(' ' || trim((g.addy).streetname ),'') 
-        || COALESCE(' ' || trim((g.addy).streettypeabbrev ), '') 
-	|| COALESCE(' ' || (g.addy).location , '')
-	|| COALESCE(', ' || (g.addy).stateabbrev, '') 
-    || COALESCE(' ' || (g.addy).zip, ''),
-		ST_X(g.geomout)::numeric(8,5), ST_Y(g.geomout)::numeric(8,5) )
+	= (g.rating, pprint_addy(g.addy),
+	   ST_X(g.geomout)::numeric(8,5), ST_Y(g.geomout)::numeric(8,5) )
 FROM (SELECT DISTINCT ON (addid) addid, (g1.geo).*
 	FROM (SELECT addid,  (geocode(address)) As geo
 FROM addresses_to_geocode As ag
@@ -139,11 +133,10 @@ result
 
 SELECT * FROM addresses_to_geocode WHERE rating is not null;
 
- addid |                   address                    |    lon    |   lat    |             new_address                  | rating
--------+----------------------------------------------+-----------+----------+------------------------------------------+--------
-     1 | 529 Main Street, Boston MA, 02129            | -71.07187 | 42.38351 | 529 Main St Boston, MA 02129             |      0
-     2 | 77 Massachusetts Avenue, Cambridge, MA 02139 | -71.09436 | 42.35981 | 77 Massachusetts Ave Cambridge, MA 02139 |      0</programlisting>
-
+ addid |                   address                    |    lon    |   lat    |              new_address                  | rating
+ ------+----------------------------------------------+-----------+----------+-------------------------------------------+--------
+     1 | 529 Main Street, Boston MA, 02129            | -71.07187 | 42.38351 | 529 Main St, Boston, MA 02129             |      0
+     2 | 77 Massachusetts Avenue, Cambridge, MA 02139 | -71.09436 | 42.35981 | 77 Massachusetts Ave, Cambridge, MA 02139 |      0
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
