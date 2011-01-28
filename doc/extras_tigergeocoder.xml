@@ -6,20 +6,21 @@
 		<abstract>
 			<para>A plpgsql based geocoder written to work with the <ulink url="http://www.census.gov/geo/www/tiger/index.html">TIGER (Topologically Integrated Geographic Encoding and Referencing system ) / Line and Master Address database export</ulink> released by the US Census Bureau.  In prior versions the TIGER files were
 			released in ASCII format.  The older geocoder used to work with that format is in <varname>extras/tiger_geocoder/tiger_2006andbefore</varname>. </para>
-			<para>There are three components to the geocoder: the data loader functions, the address normalizer and the address geocoder. The lastest version updated to use the TIGER 2010 census data is located in the <varname>extras/tiger_geocoder/tiger_2010</varname> folder.</para>
+			<para>There are three components to the geocoder: the data loader functions, the address normalizer and the address geocoder. The latest version updated to use the TIGER 2010 census data is located in the <varname>extras/tiger_geocoder/tiger_2010</varname> folder.</para>
 			<para>Although it is designed specifically for the US, a lot of the concepts and functions are applicable and can be adapted to work with other country address and road networks.</para>
-			<para>The script builds a schema called <varname>tiger</varname>: to house all the tiger related functions, reusable lookup data such as road type prefixes, suffixes, states, and skeleton base tables from which all the tiger loaded tables inherit from.</para>
+			<para>The script builds a schema called <varname>tiger</varname> to house all the tiger related functions, reusable lookup data such as road type prefixes, suffixes, states, various control tables for managing data load, and skeleton base tables from which all the tiger loaded tables inherit from.</para>
 			<para>Another schema called <varname>tiger_data</varname> is also created which houses all the census data for each state that the loader downloads from Census site and loads into the database. In the current model, each set of state tables is
 			    prefixed with the state code e.g ma_addr, ca_edges etc with constraints to enforce only that state data.  Each of these tables inherits from the base addr, faces, egdes, etc located in the tiger schema. </para>
 			<para>All the geocode functions only reference the base tables, so there is no requirement that the data schema be called <varname>tiger_data</varname> or that data can't be further partitioned into other schemas -- e.g a different schema
 			for each state, as long as all the tables inherit from the tables in the <varname>tiger</varname> schema.</para>
 			<para>Design:</para>
 			<para>The goal of this project is to build a fully functional geocoder that can process an arbitrary 
-			address string and, using normalized TIGER census data, produce a point geometry and rating reflecting the location of the given address.</para>
+			address string and using normalized TIGER census data, produce a point geometry and rating reflecting the location of the given address and likeliness of the location.</para>
 			<para>The geocoder should be simple for anyone familiar with PostGIS to install and use, and should be easily installable and usable on all platforms supported by PostGIS.</para>
 			<para>It should be robust enough to function properly despite formatting and spelling errors.</para>
 			<para>It should be extensible enough to be used with future data updates, or alternate data sources with a minimum of coding changes.</para>
 		</abstract>
+		<note><para>The <varname>tiger</varname> schema must be added to the database search path for the functions to work properly.</para></note>
      </sect1info>
 	
 	<refentry id="Geocode">
