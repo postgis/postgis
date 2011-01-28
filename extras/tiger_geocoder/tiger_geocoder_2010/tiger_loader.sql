@@ -1,3 +1,4 @@
+--$Id$
 SET search_path TO tiger,public;
 
 DROP AGGREGATE IF EXISTS array_accum(anyelement);
