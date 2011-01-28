@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter>
-  <title>Frequently Asked Questions</title>
+<chapter id="PostGIS_FAQ">
+  <title>PostGIS Frequently Asked Questions</title>
 
   <qandaset>
     <qandaentry>
@@ -22,6 +22,24 @@
         <para>If upgrading your PostgreSQL driver is not an option, then you can set the default back to the old behavior  with the following change:</para>
         <programlisting>ALTER DATABASE mypostgisdb SET bytea_output='escape';</programlisting>
         
+      </answer>
+    </qandaentry>
+    
+    <qandaentry>
+      <question>
+        <para>I tried to use PgAdmin to view my geometry column and it is blank, what gives?</para>
+      </question>
+
+      <answer>
+        <para>PgAdmin doesn't show anything for large geometries.  The best ways to verify you do have day in your geometry columns are?</para>
+        
+        
+        <programlisting>-- this should return no records if all your geom fields are filled in        
+SELECT somefield FROM mytable WHERE geom IS NULL;</programlisting>
+      
+        <programlisting>-- To tell just how large your geometry is do a query of the form
+--which will tell you the most number of points you have in any of your geometry columns
+SELECT MAX(ST_NPoints(geom)) FROM sometable;</programlisting>
       </answer>
     </qandaentry>
     
