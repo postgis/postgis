@@ -523,7 +523,7 @@ BEGIN
 		-- face_id
 		|| faceid || ','
 		-- minimum bounding rectangle
-		|| quote_literal(Box2d(apoly))
+		|| quote_literal(ST_Envelope(apoly)::text)
 		|| ')';
 
 	--

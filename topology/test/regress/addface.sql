@@ -35,7 +35,7 @@ SELECT 'f1*',  topology.addFace('tt', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');
 SELECT 'f2',  topology.addFace('tt', 'POLYGON((10 10, 20 10, 20 0, 10 0, 10 10))');
 
 -- Check added faces
-SELECT face_id, mbr from tt.face ORDER by face_id;
+SELECT face_id, Box2d(mbr) from tt.face ORDER by face_id;
 
 -- Check linking
 SELECT edge_id, left_face, right_face from tt.edge ORDER by edge_id;

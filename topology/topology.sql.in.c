@@ -1623,9 +1623,15 @@ CREATE SCHEMA '' || quote_ident(atopology) || '';
 	EXECUTE 
 	''CREATE TABLE '' || quote_ident(atopology) || ''.face (''
 	|| ''face_id SERIAL,''
-	|| ''mbr BOX2D,''
 	|| '' CONSTRAINT face_primary_key PRIMARY KEY(face_id)''
 	|| '');'';
+
+	-- Add mbr column to the face table 
+	EXECUTE
+	''SELECT AddGeometryColumn(''||quote_literal(atopology)
+	||'',''''face'''',''''mbr'''',''||quote_literal(srid)
+	||'',''''POLYGON'''',''''2'''')'';
+
 	-------------} END OF face CREATION
 
 
@@ -1781,6 +1787,11 @@ CREATE SCHEMA '' || quote_ident(atopology) || '';
 	
 	------- Default (world) face
 	EXECUTE ''INSERT INTO '' || quote_ident(atopology) || ''.face(face_id) VALUES(0);'';
+
+	------- GiST index on face
+	EXECUTE ''CREATE INDEX face_gist ON ''
+		|| quote_ident(atopology)
+		|| ''.face using gist (mbr gist_geometry_ops);'';
 
 	------- GiST index on node
 	EXECUTE ''CREATE INDEX node_gist ON ''
