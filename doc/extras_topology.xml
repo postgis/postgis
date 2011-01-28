@@ -1400,7 +1400,7 @@ SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
 	  	    <refnamediv>
 				<refname>AsGML</refname>
 			
-				<refpurpose>Returns the GML representation of a topogeometry in version GML3 format. If no <varname>nsprefix_in</varname> is specified then <varname>gml</varname> is used. Pass in an empty string for nsprefix to get a non-qualified name space.</refpurpose>
+				<refpurpose>Returns the GML representation of a topogeometry.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
