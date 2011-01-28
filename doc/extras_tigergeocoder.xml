@@ -36,16 +36,16 @@
 		  <funcprototype>
 			<funcdef>setof record <function>geocode</function></funcdef>
 			<paramdef><type>address </type> <parameter>varchar</parameter></paramdef>
-			<paramdef><type>OUT addy </type> <parameter>norm_addy</parameter></paramdef>
-			<paramdef><type>OUT geomout </type> <parameter>geometry</parameter></paramdef>
-			<paramdef><type>OUT rating </type> <parameter>integer</parameter></paramdef>
+			<paramdef><type>norm_addy </type> <parameter>OUT addy</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>OUT geomout</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>OUT rating</parameter></paramdef>
 		  </funcprototype>
 		  <funcprototype>
 			<funcdef>setof record <function>geocode</function></funcdef>
-			<paramdef><type>in_addy </type> <parameter>norm_addy</parameter></paramdef>
-			<paramdef><type>OUT addy </type> <parameter>norm_addy</parameter></paramdef>
-			<paramdef><type>OUT geomout </type> <parameter>geometry</parameter></paramdef>
-			<paramdef><type>OUT rating </type> <parameter>integer</parameter></paramdef>
+			<paramdef><type>norm_addy </type> <parameter>in_addy</parameter></paramdef>
+			<paramdef><type>norm_addy </type> <parameter>OUT addy</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>OUT geomout</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>OUT rating</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -159,7 +159,7 @@ SELECT * FROM addresses_to_geocode WHERE rating is not null;
 		<funcsynopsis>
 		  <funcprototype>
 			<funcdef>norm_addy <function>normalize_address</function></funcdef>
-			<paramdef><type>address </type> <parameter>varchar</parameter></paramdef>
+			<paramdef><type>varchar </type> <parameter>in_address</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -243,7 +243,7 @@ SELECT * FROM addresses_to_geocode WHERE rating is not null;
 		<funcsynopsis>
 		  <funcprototype>
 			<funcdef>varchar <function>pprint_addy</function></funcdef>
-			<paramdef><type>address </type> <parameter>varchar</parameter></paramdef>
+			<paramdef><type>norm_addy </type> <parameter>in_addy</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
