@@ -251,7 +251,7 @@ SELECT * FROM addresses_to_geocode WHERE rating is not null;
 	  <refsection>
 		<title>Description</title>
 
-		<para>>Given a <varname>norm_addy</varname> composite type object, returns a pretty print representation of it. No other data is required aside from what is packaged with the geocoder.</para>
+		<para>Given a <varname>norm_addy</varname> composite type object, returns a pretty print representation of it. No other data is required aside from what is packaged with the geocoder.</para>
 		<para>Usually used in conjunction with <xref linkend="Normalize_Address"/>.</para>
 		
 
