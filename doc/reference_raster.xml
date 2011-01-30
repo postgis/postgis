@@ -1884,7 +1884,7 @@ WHERE rid=2;
 	    <refentry id="RT_ST_Value">
 			<refnamediv>
 				<refname>ST_Value</refname>
-				<refpurpose>Returns the value of a given band in a given columnx, rowy pixel or at a particular geometric point. Band numbers start at 1 and assumed to be 1 if not specified.</refpurpose>
+				<refpurpose>Returns the value of a given band in a given columnx, rowy pixel or at a particular geometric point. Band numbers start at 1 and assumed to be 1 if not specified. If <varname>hasnodata</varname> is set to true, then only non <varname>nodata</varname> pixels are considered. If <varname>hasnodata</varname> is not passed in then reads it from metadata of raster.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -1894,12 +1894,25 @@ WHERE rid=2;
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
 				  </funcprototype>
+				   <funcprototype>
+					<funcdef>double precision <function>ST_Value</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>hasnodata</parameter></paramdef>
+				  </funcprototype>
 				  <funcprototype>
 					<funcdef>double precision <function>ST_Value</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
 				  </funcprototype>
+				 <funcprototype>
+					<funcdef>double precision <function>ST_Value</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>hasnodata</parameter></paramdef>
+				  </funcprototype>
 				  <funcprototype>
 					<funcdef>double precision <function>ST_Value</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
@@ -1909,9 +1922,24 @@ WHERE rid=2;
 				  <funcprototype>
 					<funcdef>double precision <function>ST_Value</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>hasnodata</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>double precision <function>ST_Value</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>double precision <function>ST_Value</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>hasnodata</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -1919,9 +1947,10 @@ WHERE rid=2;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the value of a given band in a given columnx, rowy pixel or at a given geometry point. Band numbers start at 1 and band is assumed to be 1 if not specified.</para>
+				<para>Returns the value of a given band in a given columnx, rowy pixel or at a given geometry point. Band numbers start at 1 and band is assumed to be 1 if not specified. 	
+				If <varname>hasnodata</varname> is set to true, then only non <varname>nodata</varname> pixels are considered.  If <varname>hasnodata</varname> is set to false, then all pixels are considered.</para>
 
-				
+				<para>Changed: 2.0.0 hasnodata optional argument was added.</para>
 				</refsection>
 				
 				<refsection>
@@ -2068,7 +2097,7 @@ WHERE
 					, <xref linkend="RT_ST_ScaleY" />, <xref linkend="RT_ST_UpperLeftX" />, 
 					<xref linkend="RT_ST_UpperLeftY" />, <xref linkend="RT_ST_SRID" />, <xref linkend="ST_AsText" />,
 					, <xref linkend="ST_Point" />, <xref linkend="ST_MakeEnvelope" />, 
-					<xref linkend="ST_Intersects" /></para>
+					<xref linkend="ST_Intersects" />, <xref linkend="ST_Intersection" /></para>
 			</refsection>
 		</refentry>
 		
