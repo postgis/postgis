@@ -1818,6 +1818,55 @@ WHERE rid = 2;
 			</refsection>
 		</refentry>
 		
+		<refentry id="RT_ST_HasNoBand">
+			<refnamediv>
+				<refname>ST_HasNoBand</refname>
+				<refpurpose>Returns true if there is no band with given band number.  If no band number is specified, then band number 1 is assumed.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				<funcprototype>
+					<funcdef>boolean <function>ST_HasNoBand</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>boolean <function>ST_HasNoBand</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns true if there is no band with given band number.  If no band number is specified, then band number 1 is assumed.</para>
+				
+				<para>Availability: 2.0.0</para>
+				</refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>SELECT rid, ST_HasNoBand(rast) As hb1, ST_HasNoBand(rast,2) as hb2, 
+ST_HasNoBand(rast,4) as hb4, ST_NumBands(rast) As numbands 
+FROM dummy_rast;
+
+ rid | hb1 | hb2 | hb4 | numbands
+-----+-----+-----+-----+----------
+   1 | t   | t   | t   |        0
+   2 | f   | f   | t   |        3
+				</programlisting>
+			
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_NumBands" /></para>
+			</refsection>
+		</refentry>
+		
 	</sect1>
 	
 	<sect1 id="Raster_Pixel_Accessors">
@@ -1950,7 +1999,7 @@ WHERE rid=2;
 				<para>Returns the value of a given band in a given columnx, rowy pixel or at a given geometry point. Band numbers start at 1 and band is assumed to be 1 if not specified. 	
 				If <varname>hasnodata</varname> is set to true, then only non <varname>nodata</varname> pixels are considered.  If <varname>hasnodata</varname> is set to false, then all pixels are considered.</para>
 
-				<para>Changed: 2.0.0 hasnodata optional argument was added.</para>
+				<para>Enahnced: 2.0.0 hasnodata optional argument was added.</para>
 				</refsection>
 				
 				<refsection>
