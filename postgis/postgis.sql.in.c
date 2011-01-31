@@ -2881,13 +2881,6 @@ CREATE OR REPLACE FUNCTION ST_Buffer(geometry,float8,text)
 	   $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION convexhull(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','convexhull'
-	LANGUAGE 'C' IMMUTABLE STRICT
-	COST 100;
-
 -- PostGIS equivalent function: convexhull(geometry)
 CREATE OR REPLACE FUNCTION ST_ConvexHull(geometry)
 	RETURNS geometry

@@ -592,6 +592,13 @@ CREATE OR REPLACE FUNCTION Contains(geometry,geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION convexhull(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','convexhull'
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION crosses(geometry,geometry)

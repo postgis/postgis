@@ -1844,20 +1844,20 @@ WHERE rid = 2;
 				<para>Returns true if there is no band with given band number.  If no band number is specified, then band number 1 is assumed.</para>
 				
 				<para>Availability: 2.0.0</para>
-				</refsection>
+			</refsection>
 				
-				<refsection>
-					<title>Examples</title>
-				
-					<programlisting>SELECT rid, ST_HasNoBand(rast) As hb1, ST_HasNoBand(rast,2) as hb2, 
+			<refsection>
+				<title>Examples</title>
+			
+				<programlisting>SELECT rid, ST_HasNoBand(rast) As hb1, ST_HasNoBand(rast,2) as hb2, 
 ST_HasNoBand(rast,4) as hb4, ST_NumBands(rast) As numbands 
 FROM dummy_rast;
 
- rid | hb1 | hb2 | hb4 | numbands
+rid | hb1 | hb2 | hb4 | numbands
 -----+-----+-----+-----+----------
-   1 | t   | t   | t   |        0
-   2 | f   | f   | t   |        3
-				</programlisting>
+1 | t   | t   | t   |        0
+2 | f   | f   | t   |        3
+			</programlisting>
 			
 			</refsection>
 
@@ -1866,7 +1866,6 @@ FROM dummy_rast;
 				<para><xref linkend="RT_ST_NumBands" /></para>
 			</refsection>
 		</refentry>
-		
 	</sect1>
 	
 	<sect1 id="Raster_Pixel_Accessors">
@@ -2692,11 +2691,6 @@ select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected true
                 linkend="RT_ST_BandIsNoData"/></para>
 			</refsection>
 		</refentry>
-
-
-
-
-
 	</sect1>
 	
 	<sect1 id="Raster_Outputs">
