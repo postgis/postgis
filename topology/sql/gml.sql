@@ -163,6 +163,112 @@ LANGUAGE 'plpgsql';
 
 --{
 --
+-- INTERNAL FUNCTION
+-- text _AsGMLFace(toponame, face_id, visitedTable,
+--                 nsprefix, precision, options, idprefix, gmlVersion)
+--
+-- }{
+CREATE OR REPLACE FUNCTION topology._AsGMLFace(toponame text, face_id int, 
+    visitedTable regclass, nsprefix_in text,
+    prec int, options int, idprefix text, gmlver int)
+  RETURNS text
+AS
+$$
+DECLARE
+  visited bool;
+  nsprefix text;
+  gml text;
+  rec RECORD;
+  rec2 RECORD;
+  bounds geometry;
+  side int;
+BEGIN
+
+  nsprefix := 'gml:';
+  IF nsprefix_in IS NOT NULL THEN
+    IF nsprefix_in = '' THEN
+      nsprefix = nsprefix_in;
+    ELSE
+      nsprefix = nsprefix_in || ':';
+    END IF;
+  END IF;
+
+  gml := '<' || nsprefix || 'Face ' || nsprefix
+    || 'id="' || idprefix || 'F' || face_id || '">';
+
+  -- Construct the face geometry, then for each polygon:
+  FOR rec IN SELECT (ST_DumpRings((ST_Dump(ST_ForceRHR(
+    topology.ST_GetFaceGeometry(toponame, face_id)))).geom)).*
+  LOOP
+
+      -- Contents of a directed face are the list of edges
+      -- that cover the specific ring
+      bounds = ST_Boundary(rec.geom);
+
+      FOR rec2 IN EXECUTE
+        'SELECT e.*, ST_Line_Locate_Point('
+        || quote_literal(bounds::text)
+        || ', ST_Line_Interpolate_Point(e.geom, 0.2)) as pos FROM '
+        || quote_ident(toponame)
+        || '.edge e WHERE ST_Covers('
+        || quote_literal(bounds::text)
+        || ', e.geom) ORDER BY pos'
+        -- TODO: add left_face/right_face to the conditional, to reduce load 
+      LOOP
+
+        gml = gml || '<' || nsprefix || 'directedEdge';
+
+        -- if this edge goes in same direction to the
+        --       ring bounds, make it with negative orientation
+        SELECT DISTINCT (ST_Dump(
+                          ST_SharedPaths(rec2.geom, bounds))
+                        ).path[1] into side;
+        IF side = 1 THEN -- edge goes in same direction
+          gml = gml || ' orientation="-"';
+        END IF;
+
+        -- Do visited bookkeeping if visitedTable was given
+        IF visitedTable IS NOT NULL THEN
+
+          EXECUTE 'SELECT true FROM '
+            || visitedTable::text
+            || ' WHERE element_type = 2 AND element_id = '
+            || rec2.edge_id LIMIT 1 INTO visited;
+          IF visited THEN
+            -- Use xlink:href if visited
+            gml = gml || ' xlink:href="#' || idprefix || 'E'
+                      || rec2.edge_id || '" />';
+            CONTINUE;
+          ELSE
+            -- Mark as visited otherwise
+            EXECUTE 'INSERT INTO ' || visitedTable::text
+              || '(element_type, element_id) VALUES (2, '
+              || rec2.edge_id || ')';
+          END IF;
+
+        END IF;
+
+        gml = gml || '>';
+
+        gml = gml || topology._AsGMLEdge(rec2.edge_id, rec2.start_node,
+                                        rec2.end_node, rec2.geom,
+                                        visitedTable, nsprefix_in,
+                                        prec, options, idprefix, gmlver);
+        gml = gml || '</' || nsprefix || 'directedEdge>';
+
+      END LOOP;
+    END LOOP;
+
+  gml = gml || '</' || nsprefix || 'Face>';
+
+  RETURN gml;
+END
+$$
+LANGUAGE 'plpgsql';
+--} _AsGMLFace(toponame, id, visitedTable, nsprefix, precision, options, idprefix, gmlver)
+
+--{
+--
 -- API FUNCTION
 --
 -- text AsGML(TopoGeometry, nsprefix, precision, options, visitedTable, idprefix, gmlver)
@@ -184,7 +290,7 @@ DECLARE
   sql text;
   rec RECORD;
   rec2 RECORD;
-  bounds geometry;
+  --bounds geometry;
   side int;
 BEGIN
 
@@ -313,82 +419,36 @@ BEGIN
   ELSIF tg.type = 3 THEN -- areal
     gml = '<' || nsprefix || 'TopoSurface>';
 
-    -- Construct the geometry, then for each polygon:
-    FOR rec IN SELECT (ST_DumpRings((ST_Dump(topology.Geometry(tg))).geom)).*
+    -- For each defining face, print a directedFace
+    FOR rec IN  EXECUTE 'SELECT f.face_id from '
+      || quote_ident(toponame) || '.relation r LEFT JOIN '
+      || quote_ident(toponame) || '.face f ON (r.element_id = f.face_id)'
+      || ' WHERE r.layer_id = ' || tg.layer_id
+      || ' AND r.topogeo_id = ' || tg.id
     LOOP
-      -- print a directedFace for each exterior ring
-      -- and a negative directedFace for
-      -- each interior ring.
-      IF rec.path[1] = 0 THEN
-        gml = gml || '<' || nsprefix || 'directedFace>';
-      ELSE
-        gml = gml || '<' || nsprefix || 'directedFace orientation="-">';
+      gml = gml || '<' || nsprefix || 'directedFace';
+      -- Do visited bookkeeping if visitedTable was given
+      IF visitedTable IS NOT NULL THEN
+        EXECUTE 'SELECT true FROM '
+                || visitedTable::text
+                || ' WHERE element_type = 3 AND element_id = '
+                || rec.face_id LIMIT 1 INTO visited;
+        IF visited IS NOT NULL THEN
+          gml = gml || ' xlink:href="#' || idprefix || 'F' || rec.face_id || '" />';
+          CONTINUE;
+        ELSE
+          -- Mark as visited 
+          EXECUTE 'INSERT INTO ' || visitedTable::text
+            || '(element_type, element_id) VALUES (3, '
+            || rec.face_id || ')';
+        END IF;
       END IF;
-
-      -- TODO: make all this block in a specialized _AsGMLRing function ?
-
-      -- Contents of a directed face are the list of edges
-      -- that cover the specific ring
-      bounds = ST_Boundary(rec.geom);
-
-      -- TODO: figure out a way to express an id for a face
-      --       and use a reference for an already-seen face ?
-      gml = gml || '<' || nsprefix || 'Face>';
-      FOR rec2 IN EXECUTE
-        'SELECT e.*, ST_Line_Locate_Point('
-        || quote_literal(bounds::text)
-        || ', ST_Line_Interpolate_Point(e.geom, 0.2)) as pos FROM '
-        || quote_ident(toponame)
-        || '.edge e WHERE ST_Covers('
-        || quote_literal(bounds::text)
-        || ', e.geom) ORDER BY pos'
-        -- TODO: add left_face/right_face to the conditional, to reduce load ?
-      LOOP
-
-        gml = gml || '<' || nsprefix || 'directedEdge';
-
-        -- if this edge goes in opposite direction to the
-        --       ring bounds, make it with negative orientation
-        SELECT DISTINCT (ST_Dump(
-                          ST_SharedPaths(rec2.geom, bounds))
-                        ).path[1] into side;
-        IF side = 2 THEN -- edge goes in opposite direction
-          gml = gml || ' orientation="-"';
-        END IF;
-
-        -- Do visited bookkeeping if visitedTable was given
-        IF visitedTable IS NOT NULL THEN
-
-          EXECUTE 'SELECT true FROM '
-            || visitedTable::text
-            || ' WHERE element_type = 2 AND element_id = '
-            || rec2.edge_id LIMIT 1 INTO visited;
-          IF visited THEN
-            -- Use xlink:href if visited
-            gml = gml || ' xlink:href="#' || idprefix || 'E' || rec2.edge_id || '" />';
-            CONTINUE;
-          ELSE
-            -- Mark as visited otherwise
-            EXECUTE 'INSERT INTO ' || visitedTable::text
-              || '(element_type, element_id) VALUES (2, '
-              || rec2.edge_id || ')';
-          END IF;
-
-        END IF;
-
-        gml = gml || '>';
-
-        gml = gml || topology._AsGMLEdge(rec2.edge_id, rec2.start_node,
-                                        rec2.end_node, rec2.geom,
-                                        visitedTable, nsprefix_in,
-                                        precision, options, idprefix, gmlver);
-        gml = gml || '</' || nsprefix || 'directedEdge>';
-
-      END LOOP;
-      gml = gml || '</' || nsprefix || 'Face>';
+      gml = gml || '>';
+      gml = gml || topology._AsGMLFace(toponame, rec.face_id, visitedTable,
+                                       nsprefix_in, precision,
+                                       options, idprefix, gmlver);
       gml = gml || '</' || nsprefix || 'directedFace>';
     END LOOP;
-  
     gml = gml || '</' || nsprefix || 'TopoSurface>';
     RETURN gml;
 
@@ -481,6 +541,21 @@ $$
  SELECT topology.AsGML($1, 'gml', 15, 1, $2);
 $$ LANGUAGE 'sql';
 -- } AsGML(TopoGeometry, visited_table)
+
+--{
+--
+-- API FUNCTION
+--
+-- text AsGML(TopoGeometry, visited_table, nsprefix)
+--
+-- }{
+CREATE OR REPLACE FUNCTION topology.AsGML(tg topology.TopoGeometry, visitedTable regclass, nsprefix text)
+  RETURNS text AS
+$$
+ SELECT topology.AsGML($1, $3, 15, 1, $2);
+$$ LANGUAGE 'sql';
+-- } AsGML(TopoGeometry, visited_table, nsprefix)
+
 
 --{
 --
