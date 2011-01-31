@@ -1999,7 +1999,7 @@ WHERE rid=2;
 				<para>Returns the value of a given band in a given columnx, rowy pixel or at a given geometry point. Band numbers start at 1 and band is assumed to be 1 if not specified. 	
 				If <varname>hasnodata</varname> is set to true, then only non <varname>nodata</varname> pixels are considered.  If <varname>hasnodata</varname> is set to false, then all pixels are considered.</para>
 
-				<para>Enahnced: 2.0.0 hasnodata optional argument was added.</para>
+				<para>Enhanced: 2.0.0 hasnodata optional argument was added.</para>
 				</refsection>
 				
 				<refsection>
