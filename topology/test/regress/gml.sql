@@ -4,6 +4,7 @@ INSERT INTO spatial_ref_sys ( auth_name, auth_srid, srid, proj4text ) VALUES ( '
 
 \i load_topology-4326.sql
 \i load_features.sql
+\i more_features.sql
 
 --- Puntual single element {
 
@@ -33,7 +34,12 @@ SELECT feature_name||'-latlon', topology.AsGML(feature, '', 15, 18)
 
 --- } Puntual single-element 
 
---- Puntual multi element (TODO) {
+--- Puntual multi element {
+
+SELECT feature_name||'-noprefix', topology.AsGML(feature, '')
+ FROM features.traffic_signs 
+ WHERE feature_name IN ('N1N2N3');
+
 --- } Puntual multi-element 
 
 --- Lineal single element {
@@ -145,6 +151,12 @@ SELECT feature_name||'-visited', topology.AsGML(feature,
        '', 15, 2, 'visited'::regclass) FROM features.city_streets
        WHERE feature_name IN ('R1');
 
+-- N1N6N14 visits N1,(N6),(N14)
+SELECT feature_name||'-visited', topology.AsGML(feature,
+       '', 15, 2, 'visited'::regclass) FROM features.traffic_signs
+       WHERE feature_name IN ('N1N6N14')
+       ORDER BY feature_name;
+
 -- P2 visits E7,E17,E18,E13,E20,E19 
 --           N17,N18,(N13),N10,N9,(N14),N17
 -- P1 visits E22,E21,E6,(E19),(E20),E12
@@ -170,9 +182,11 @@ SELECT feature_name||'-visited-idprefix', topology.AsGML(feature,
 -- Output in GML2
 SELECT feature_name||'-gml2' as name, topology.AsGML(feature,'',0,2,NULL,'',2)
  FROM features.city_streets 
+ WHERE feature_name IN ('R1', 'R2', 'R3', 'R4' )
 UNION
 SELECT feature_name||'-gml2', topology.AsGML(feature,'',0,2,NULL,'',2)
  FROM features.traffic_signs
+ WHERE feature_name IN ('S1', 'S2', 'S3', 'S4' )
 ORDER BY name;
 
 --- } GML2 output
