@@ -1455,13 +1455,18 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 		elog(ERROR,"LWGEOM_estimated_extent: couldnt execute sql via SPI");
 		PG_RETURN_NULL();
 	}
-	if (SPI_processed != 1)
+	if (SPI_processed < 1)
 	{
 		SPI_finish();
 
 		POSTGIS_DEBUGF(3, " %d stat rows", SPI_processed);
 
-		elog(ERROR, "LWGEOM_estimated_extent: couldn't locate table within current schema");
+		/*
+		 * Would be nice to be able to distinguish between
+		 * empty and missing analyze, as in the empty case
+		 * we'd have an informed estimate of an empty box...
+		 */
+		elog(ERROR, "LWGEOM_estimated_extent: no statistics for \"%s\".\"%s\".\"%s\" (empty table ? did you run ANALYZE ?)", nsp ? nsp : "(current_schema)", tbl, col);
 
 		PG_RETURN_NULL() ;
 	}
@@ -1476,7 +1481,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 		POSTGIS_DEBUG(3, " stats are NULL");
 
-		elog(ERROR, "LWGEOM_estimated_extent: couldn't locate statistics for table");
+		elog(ERROR, "LWGEOM_estimated_extent: NULL statistics for \"%s\".\"%s\".\"%s\" (should not happen, consider filing a bug)", nsp ? nsp : "(current_schema)", tbl, col);
 
 		PG_RETURN_NULL();
 	}
