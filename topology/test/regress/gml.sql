@@ -157,13 +157,24 @@ SELECT feature_name||'-visited', topology.AsGML(feature,
        WHERE feature_name IN ('N1N6N14')
        ORDER BY feature_name;
 
--- P2 visits E7,E17,E18,E13,E20,E19 
+-- P2 visits F4,F7
+--           E7,E17,E18,E13,E20,E19 
 --           N17,N18,(N13),N10,N9,(N14),N17
--- P1 visits E22,E21,E6,(E19),(E20),E12
---           N8,(N15),N16,(N17),(N14),(N9)
+-- P1 visits F3,F6
+--           F3-> E6,(E19),(E9),(E21)
+--           F4-> E22,(E9),(E20),E12
+--           E6-> N16,(N17)
+--           E22-> N8,(N15)
+--           E12-> (N8),(N9)
 SELECT feature_name||'-visited', topology.AsGML(feature,
        '', 15, 2, 'visited'::regclass) FROM features.land_parcels
        WHERE feature_name IN ('P1', 'P2')
+       ORDER BY feature_name DESC;
+
+-- F3F4 visits (F3),(F4)
+SELECT feature_name||'-visited', topology.AsGML(feature,
+       '', 15, 2, 'visited'::regclass) FROM features.land_parcels
+       WHERE feature_name IN ('F3F4')
        ORDER BY feature_name DESC;
 
 -- E7E8 visits: (E7),E8
