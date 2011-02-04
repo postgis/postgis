@@ -152,7 +152,7 @@ SELECT * FROM addresses_to_geocode WHERE rating is not null;
 	  <refnamediv>
 		<refname>Loader_Generate_Script</refname>
 
-		<refpurpose>Generates a script for the specified platform for the specified states that will download Tiger data, stage and load into tiger_data schema. Each state script is returned as a separate record. Latest version supports Tiger 2010 structural changes.</refpurpose>
+		<refpurpose>Generates a shell script for the specified platform for the specified states that will download Tiger data, stage and load into tiger_data schema. Each state script is returned as a separate record. Latest version supports Tiger 2010 structural changes.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -168,7 +168,7 @@ SELECT * FROM addresses_to_geocode WHERE rating is not null;
 	  <refsection>
 		<title>Description</title>
 
-		<para>Generates a script for the specified platform for the specified states that will download Tiger data, stage and load into tiger_schema.  Each state script is returned as a separate record.</para>
+		<para>Generates a shell script for the specified platform for the specified states that will download Tiger data, stage and load into tiger_schema.  Each state script is returned as a separate record.</para>
 		<para>It uses unzip on Linux (7-zip on Windows by default) and wget to do the downloading. It uses <varname>shp2pgsql</varname> to load in the data. Note the smallest unit it does is a whole state, but you can overwrite this by downloading the files yourself.  It will only
 		process the files in the staging and temp folders.</para>
 		<para>It uses the following control tables to control the process and different OS shell syntax variations.</para>
