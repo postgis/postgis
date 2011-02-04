@@ -883,8 +883,10 @@ BEGIN
 	--
 	-- Get new TopoGeo id from sequence
 	--
-	FOR rec IN EXECUTE ''SELECT nextval('''''' ||
-		toponame || ''.topogeo_s_'' || layer_id || '''''')''
+	FOR rec IN EXECUTE ''SELECT nextval('' ||
+		quote_literal(
+			quote_ident(toponame) || ''.topogeo_s_'' || layer_id
+		) || '')''
 	LOOP
 		ret.id = rec.nextval;
 	END LOOP;

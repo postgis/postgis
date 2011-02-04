@@ -30,6 +30,7 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/topoelement.sql \
 	regress/topoelementarray_agg.sql \
 	regress/droptopology.sql \
+	regress/createtopogeom.sql \
 	regress/gml.sql
 
 check: topo_predicates.sql load_topology.sql load_topology-4326.sql
