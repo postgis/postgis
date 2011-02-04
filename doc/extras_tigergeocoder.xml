@@ -148,6 +148,76 @@ SELECT * FROM addresses_to_geocode WHERE rating is not null;
 	  </refsection>
 	</refentry>
 	
+	<refentry id="Loader_Generate_Script">
+	  <refnamediv>
+		<refname>Loader_Generate_Script</refname>
+
+		<refpurpose>Generates a script for the specified platform for the specified states that will download Tiger data, stage and load into tiger_schema. Each state script is returned as a separate record.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>setof text <function>loader_generate_script</function></funcdef>
+			<paramdef><type>text[]</type> <parameter>param_states</parameter></paramdef>
+			<paramdef><type>text</type> <parameter>os</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Generates a script for the specified platform for the specified states that will download Tiger data, stage and load into tiger_schema.  Each state script is returned as a separate record.</para>
+		<para>It uses unzip on Linux (7-zip on Windows by default) and wget to do the downloading. Note the smallest unit it does is a whole state, but you can overwrite this by downloading the files yourself.  It will only
+		process the files in the staging and temp folders.</para>
+		<para>It uses the following control tables to control the process and different OS shell syntax variations.</para>
+
+		<orderedlist>
+          <listitem>
+            <para><varname>loader_variables</varname> keeps track of various variables such as census site, year, data and staging schemas</para>
+          </listitem>
+          <listitem>
+            <para><varname>loader_platform</varname> profiles of various platforms and where the varous executables are located.  Comes with windows and linux. More can be added.</para>
+          </listitem>
+          <listitem>
+            <para><varname>loader_lookuptables</varname> each record defines a kind of table (state, county), whether to process records in it and how to load them in.  IT adds and removes fields from these as needed.</para>
+          </listitem>
+        </orderedlist> 
+		<para>Enhanced: 2.0.0 to support Tiger 2010 structured data.</para>
+
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+		<para>Generate script to load up data for 2 states in Windows shell script format.</para>
+		<programlisting>SELECT loader_generate_script(ARRAY['MA','RI'], 'windows') AS result;
+set STATEDIR="\gisdata\www2.census.gov\geo\pvs\tiger2010st\25_Massachusetts"
+set TMPDIR=\gisdata\temp\
+set UNZIPTOOL="C:\Program Files\7-Zip\7z.exe"
+set WGETTOOL="C:\wget\wget.exe"
+:
+:</programlisting>
+		<para>Generate Linux script</para>
+		<programlisting>SELECT loader_generate_script(ARRAY['MA','RI'], 'linux') AS result;
+-- result --
+STATEDIR="/gisdata/www2.census.gov/geo/pvs/tiger2010st/25_Massachusetts" 
+TMPDIR="/gisdata/temp/
+UNZIPTOOL=unzip
+:
+:</programlisting>
+
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+		<para></para>
+	  </refsection>
+	</refentry>
+	
 	<refentry id="Normalize_Address">
 	  <refnamediv>
 		<refname>Normalize_Address</refname>
