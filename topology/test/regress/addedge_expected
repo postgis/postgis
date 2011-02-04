@@ -30,3 +30,6 @@ ERROR:  Edge intersects (not on endpoints) with existing edge 7 at or near point
 7|0|0|7|7|LINESTRING(8 10,10 10,10 12,8 10)
 8|0|0|8|8|LINESTRING(8 10,9 8,10 9,8 10)
 Topology 'tt' dropped
+t
+MiX|1
+Topology 'Ul' dropped

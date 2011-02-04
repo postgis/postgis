@@ -29,3 +29,8 @@ SELECT node_id, containing_face, st_astext(geom) from nodes.node
 ORDER by node_id;
 
 SELECT topology.DropTopology('nodes');
+
+-- Test topology with MixedCase
+SELECT topology.CreateTopology('Ul') > 0;
+SELECT 'MiX',  topology.addNode('Ul', 'POINT(0 0)');
+SELECT topology.DropTopology('Ul');

@@ -41,3 +41,12 @@ SELECT face_id, Box2d(mbr) from tt.face ORDER by face_id;
 SELECT edge_id, left_face, right_face from tt.edge ORDER by edge_id;
 
 SELECT topology.DropTopology('tt');
+
+-- Test topology with MixedCase
+SELECT topology.CreateTopology('Ul') > 0;
+SELECT 'MiX-e1',  topology.addEdge('Ul', 'LINESTRING(0 0, 10 0)');
+SELECT 'MiX-e2',  topology.addEdge('Ul', 'LINESTRING(10 0, 10 10)');
+SELECT 'MiX-e3',  topology.addEdge('Ul', 'LINESTRING(0 10, 10 10)');
+SELECT 'MiX-e4',  topology.addEdge('Ul', 'LINESTRING(0 0, 0 10)');
+SELECT 'MiX-f1',  topology.addFace('Ul', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');
+SELECT topology.DropTopology('Ul');

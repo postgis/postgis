@@ -28,3 +28,12 @@ f2|2
 7|0|2
 8|0|2
 Topology 'tt' dropped
+t
+MiX-e1|1
+MiX-e2|2
+MiX-e3|3
+MiX-e4|4
+WARNING:  Not checking if face contains any edge
+WARNING:  Not updating next_{left,right}_face fields of face boundary edges
+MiX-f1|1
+Topology 'Ul' dropped

@@ -64,3 +64,8 @@ SELECT edge_id, left_face, right_face,
 	st_astext(geom) from tt.edge ORDER by edge_id;
 
 SELECT topology.DropTopology('tt');
+
+-- Test topology with MixedCase
+SELECT topology.CreateTopology('Ul') > 0;
+SELECT 'MiX',  topology.addEdge('Ul', 'LINESTRING(0 0, 8 0)');
+SELECT topology.DropTopology('Ul');

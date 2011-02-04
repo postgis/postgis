@@ -96,8 +96,10 @@ BEGIN
 	--
 	-- Get new node id from sequence
 	--
-	FOR rec IN EXECUTE 'SELECT nextval(''' ||
-		atopology || '.node_node_id_seq'')'
+	FOR rec IN EXECUTE 'SELECT nextval(' ||
+		quote_literal(
+			quote_ident(atopology) || '.node_node_id_seq'
+		) || ')'
 	LOOP
 		nodeid = rec.nextval;
 	END LOOP;
@@ -311,8 +313,10 @@ BEGIN
 	--
 	-- Get new edge id from sequence
 	--
-	FOR rec IN EXECUTE 'SELECT nextval(''' ||
-		atopology || '.edge_data_edge_id_seq'')'
+	FOR rec IN EXECUTE 'SELECT nextval(' ||
+		quote_literal(
+			quote_ident(atopology) || '.edge_data_edge_id_seq'
+		) || ')'
 	LOOP
 		edgeid = rec.nextval;
 	END LOOP;
@@ -508,8 +512,10 @@ BEGIN
 	--
 	-- Get new face id from sequence
 	--
-	FOR rec IN EXECUTE 'SELECT nextval(''' ||
-		atopology || '.face_face_id_seq'')'
+	FOR rec IN EXECUTE 'SELECT nextval(' ||
+		quote_literal(
+			quote_ident(atopology) || '.face_face_id_seq'
+		) || ')'
 	LOOP
 		faceid = rec.nextval;
 	END LOOP;
