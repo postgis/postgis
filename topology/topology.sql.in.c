@@ -556,8 +556,10 @@ BEGIN
 	--
 	-- Get new layer id from sequence
 	--
-	FOR rec IN EXECUTE ''SELECT nextval('''''' ||
-		quote_ident(toponame) || ''.layer_id_seq'''')''
+	FOR rec IN EXECUTE ''SELECT nextval('' ||
+		quote_literal(
+			quote_ident(toponame) || ''.layer_id_seq''
+		) || '')''
 	LOOP
 		layer_id = rec.nextval;
 	END LOOP;
