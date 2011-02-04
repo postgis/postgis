@@ -152,7 +152,7 @@ SELECT * FROM addresses_to_geocode WHERE rating is not null;
 	  <refnamediv>
 		<refname>Loader_Generate_Script</refname>
 
-		<refpurpose>Generates a script for the specified platform for the specified states that will download Tiger data, stage and load into tiger_schema. Each state script is returned as a separate record.</refpurpose>
+		<refpurpose>Generates a script for the specified platform for the specified states that will download Tiger data, stage and load into tiger_data schema. Each state script is returned as a separate record. Latest version supports Tiger 2010 structural changes.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -169,7 +169,7 @@ SELECT * FROM addresses_to_geocode WHERE rating is not null;
 		<title>Description</title>
 
 		<para>Generates a script for the specified platform for the specified states that will download Tiger data, stage and load into tiger_schema.  Each state script is returned as a separate record.</para>
-		<para>It uses unzip on Linux (7-zip on Windows by default) and wget to do the downloading. Note the smallest unit it does is a whole state, but you can overwrite this by downloading the files yourself.  It will only
+		<para>It uses unzip on Linux (7-zip on Windows by default) and wget to do the downloading. It uses <varname>shp2pgsql</varname> to load in the data. Note the smallest unit it does is a whole state, but you can overwrite this by downloading the files yourself.  It will only
 		process the files in the staging and temp folders.</para>
 		<para>It uses the following control tables to control the process and different OS shell syntax variations.</para>
 
@@ -181,10 +181,10 @@ SELECT * FROM addresses_to_geocode WHERE rating is not null;
             <para><varname>loader_platform</varname> profiles of various platforms and where the varous executables are located.  Comes with windows and linux. More can be added.</para>
           </listitem>
           <listitem>
-            <para><varname>loader_lookuptables</varname> each record defines a kind of table (state, county), whether to process records in it and how to load them in.  IT adds and removes fields from these as needed.</para>
+            <para><varname>loader_lookuptables</varname> each record defines a kind of table (state, county), whether to process records in it and how to load them in.  Defines the steps to import data, stage data, add, removes columns, indexes, and constraints for each.  Each table is prefixed with the state and inherits from a table in the tiger schema. e.g. creates <varname>tiger_data.ma_faces</varname> which inherits from <varname>tiger.faces</varname></para>
           </listitem>
         </orderedlist> 
-		<para>Enhanced: 2.0.0 to support Tiger 2010 structured data.</para>
+		<para>Availability: 2.0.0 to support Tiger 2010 structured data.</para>
 
 
 	  </refsection>
