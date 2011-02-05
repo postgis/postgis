@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter>
-  <title id="using_postgis_dbmanagement">Using PostGIS: Data Management and Queries</title>
+<chapter id="using_postgis_dbmanagement">
+  <title>Using PostGIS: Data Management and Queries</title>
 
   <sect1 id="RefObject">
 	<title>GIS Objects</title>
@@ -1759,6 +1759,14 @@ COMMIT;</programlisting>
       <listitem>
         <para>
           Create a GiST index on the geometry column.
+        </para>
+      </listitem>
+    </varlistentry>
+        <varlistentry>
+      <term>-S </term>
+      <listitem>
+        <para>
+          Generate simple geometries instead of MULTI geometries.
         </para>
       </listitem>
     </varlistentry>
