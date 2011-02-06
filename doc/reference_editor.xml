@@ -1277,7 +1277,7 @@ SRID=3785;POINT(-13732990.8753491 6178458.96425423)
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_AsEWKT"/>, <xref linkend="ST_SRID"/>, <xref linkend="ST_Point" />, <xref linkend="ST_Transform"/>, <xref linkend="UpdateGeometrySRID"/></para>
+		<para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_AsEWKT"/>,  <xref linkend="ST_Point" />, <xref linkend="ST_SRID"/>,<xref linkend="ST_Transform"/>, <xref linkend="UpdateGeometrySRID"/></para>
 	  </refsection>
 
 	</refentry>
