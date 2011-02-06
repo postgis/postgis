@@ -1251,19 +1251,33 @@ LINESTRING(-1 2 3,-1 3 4,-1 1 3)
 		Useful in constructing bounding boxes for queries.</para>
 
 		<note>
-		  <para>This function does not transform the geometry is any way -
-		  it simply sets the projection the geometry that it's currently in.
+		  <para>This function does not transform the geometry coordinates in any way -
+		  it simply sets the meta data defining the spatial reference system the geometry is assumed to be in.
 		  Use <xref linkend="ST_Transform"/> if you want to transform the
 		  geometry into a new projection.</para>
 		</note>
 		<para>&sfs_compliant;</para>
 		<para>&curve_support;</para>
 	  </refsection>
+	  
+	  <refsection>
+			<title>Examples</title>
+			<para>-- Mark a point as WGS 84 long lat --</para>
+			<programlisting>SELECT ST_SetSRID(ST_Point(-123.365556, 48.428611),4326) As wgs84long_lat;
+-- the ewkt representation (wrap with ST_AsEWKT) -
+SRID=4326;POINT(-123.365556 48.428611)
+			</programlisting>
+			<para>-- Mark a point as WGS 84 long lat and then transform to web mercator (Spherical Mercator) --</para>
+			<programlisting>SELECT ST_Transform(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326),3785) As spere_merc;
+-- the ewkt representation (wrap with ST_AsEWKT) -
+SRID=3785;POINT(-13732990.8753491 6178458.96425423)
+			</programlisting>
+		</refsection>
 
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_SRID"/>, <xref linkend="ST_Transform"/>, <xref linkend="UpdateGeometrySRID"/></para>
+		<para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_AsEWKT"/>, <xref linkend="ST_SRID"/>, <xref linkend="ST_Point" />, <xref linkend="ST_Transform"/>, <xref linkend="UpdateGeometrySRID"/></para>
 	  </refsection>
 
 	</refentry>
