@@ -25,7 +25,9 @@ PGSQL2SHP=00-regress-install/bin/pgsql2shp
 # Set the locale to "C" so error messages match
 # Save original locale to set back
 ORIG_LC_ALL=$LC_ALL
+ORIG_LANG=$LANG
 export LC_ALL=C
+export LANG=C
 
 if [ -n "$USE_VERSION" ]; then
 	if [ "$USE_VERSION" -gt 74 ]; then
@@ -532,5 +534,6 @@ fi
 
 # Set the locale back to the original
 export LC_ALL=$ORIG_LC_ALL
+export LANG=$ORIG_LANG
 
 exit $FAIL
