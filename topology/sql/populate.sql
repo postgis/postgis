@@ -116,7 +116,7 @@ BEGIN
 	
 END
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 --} AddNode
 
 --{
@@ -369,7 +369,7 @@ BEGIN
 	
 END
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 --} AddEdge
 
 --{
@@ -571,5 +571,5 @@ BEGIN
 	
 END
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 --} AddFace
