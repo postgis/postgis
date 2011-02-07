@@ -50,6 +50,7 @@
 				<funcsynopsis>
 					<funcprototype>
 						<funcdef>void <function>Postgis_Install_History</function></funcdef>
+						<paramdef></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
