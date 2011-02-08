@@ -64,13 +64,16 @@ pg_parser_errhint(LWGEOM_PARSER_RESULT *lwg_parser_result)
 {
 	char *hintbuffer;
 
-	/* Return a copy of the input string start truncated at the error location */
-	hintbuffer = lwmessage_truncate((char *)lwg_parser_result->wkinput, 0, lwg_parser_result->errlocation - 1, 40, 0);
-
 	/* Only display the parser position if the location is > 0; this provides a nicer output when the first token
 	   within the input stream cannot be matched */
 	if (lwg_parser_result->errlocation > 0)
 	{
+		/* Return a copy of the input string start truncated
+		 * at the error location */
+		hintbuffer = lwmessage_truncate(
+			(char *)lwg_parser_result->wkinput, 0,
+			lwg_parser_result->errlocation - 1, 40, 0);
+
 		ereport(ERROR,
 		        (errmsg("%s", lwg_parser_result->message),
 		         errhint("\"%s\" <-- parse error at position %d within geometry", hintbuffer, lwg_parser_result->errlocation))
