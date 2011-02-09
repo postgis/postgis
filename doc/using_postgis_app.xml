@@ -242,7 +242,7 @@ postgis# VACUUM ANALYZE;</programlisting>
             the <varname>USING UNIQUE</varname> clause in your
             <varname>DATA</varname> line:</para>
 
-            <programlisting>DATA "the_geom FROM geotable USING UNIQUE gid"</programlisting>
+            <programlisting>DATA "geom FROM geotable USING UNIQUE gid"</programlisting>
 
           </answer>
         </qandaentry>
@@ -259,7 +259,7 @@ postgis# VACUUM ANALYZE;</programlisting>
             a "using srid=4326" clause in your <varname>DATA</varname> statement. Everything else 
             works exactly the same as with geometry.</para>
 
-            <programlisting>DATA "the_geog FROM geogtable USING SRID=4326 USING UNIQUE gid"</programlisting>
+            <programlisting>DATA "geog FROM geogtable USING SRID=4326 USING UNIQUE gid"</programlisting>
 
           </answer>
         </qandaentry>
@@ -280,9 +280,9 @@ postgis# VACUUM ANALYZE;</programlisting>
       SRID for the table. The <varname>USING</varname> clause can provide
       mapserver with these two pieces of information as follows:</para>
 
-      <programlisting>DATA "the_geom FROM (
+      <programlisting>DATA "geom FROM (
   SELECT 
-    table1.the_geom AS the_geom, 
+    table1.geom AS geom, 
     table1.oid AS oid, 
     table2.data AS data 
   FROM table1 
@@ -342,7 +342,7 @@ postgis# VACUUM ANALYZE;</programlisting>
   CONNECTIONTYPE postgis 
   NAME "roads"
   CONNECTION "user=theuser password=thepass dbname=thedb host=theserver" 
-  DATA "the_geom from roads" 
+  DATA "geom from roads" 
   STATUS ON 
   TYPE LINE 
   CLASS 
@@ -363,7 +363,7 @@ END</programlisting>
   CONNECTIONTYPE postgis 
   CONNECTION "user=theuser password=thepass dbname=thedb host=theserver" 
   PROCESSING "CLOSE_CONNECTION=DEFER"
-  DATA "the_geom from roads"
+  DATA "geom from roads"
   MINSCALE 100000 
   STATUS ON 
   TYPE LINE 
@@ -376,7 +376,7 @@ LAYER
   CONNECTIONTYPE postgis 
   CONNECTION "user=theuser password=thepass dbname=thedb host=theserver"
   PROCESSING "CLOSE_CONNECTION=DEFER"
-  DATA "the_geom from roads" 
+  DATA "geom from roads" 
   MAXSCALE 100000 
   STATUS ON 
   TYPE LINE
@@ -413,7 +413,7 @@ END</programlisting>
       <programlisting>LAYER 
   CONNECTIONTYPE postgis
   CONNECTION "user=theuser password=thepass dbname=thedb host=theserver" 
-  DATA "the_geom FROM (SELECT roads.oid AS oid, roads.the_geom AS the_geom, 
+  DATA "geom FROM (SELECT roads.oid AS oid, roads.geom AS geom, 
         road_names.name as name FROM roads LEFT JOIN road_names ON 
         roads.road_name_id = road_names.road_name_id) 
         AS named_roads USING UNIQUE oid USING SRID=-1" 
