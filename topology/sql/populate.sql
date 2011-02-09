@@ -484,9 +484,9 @@ BEGIN
 	-- 
 	IF NOT ST_isEmpty(ST_SymDifference(bounds, all_edges)) THEN
 	  IF NOT ST_isEmpty(ST_Difference(bounds, all_edges)) THEN
-	    RAISE EXCEPTION 'Polygon boundary is not fully defined by existing edges';
+	    RAISE EXCEPTION 'Polygon boundary is not fully defined by existing edges at or near point %', ST_AsText(ST_PointOnSurface(ST_Difference(bounds, all_edges)));
 	  ELSE
-	    RAISE EXCEPTION 'Existing edges cover polygon boundary and more! (invalid topology?)';
+	    RAISE EXCEPTION 'Existing edges cover polygon boundary and more at or near point % (invalid topology?)', ST_AsText(ST_PointOnSurface(ST_Difference(all_edges, bounds)));
 	  END IF;
 	END IF;
 
