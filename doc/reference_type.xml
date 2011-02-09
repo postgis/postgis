@@ -42,7 +42,7 @@
       </refsection>
       
       <refsection>
-		<title>Casting Behavor</title>
+		<title>Casting Behavior</title>
 		<para>This section lists the automatic as well as explicit casts allowed for this data type</para>
 		<informaltable rowsep="1" frame="all">
 		<tgroup cols="2">
@@ -81,7 +81,7 @@
       </refsection>
       
 	  <refsection>
-		<title>Casting Behavor</title>
+		<title>Casting Behavior</title>
 		<para>This section lists the automatic as well as explicit casts allowed for this data type</para>
 		<informaltable rowsep="1" frame="all">
 		<tgroup cols="2">
@@ -125,7 +125,7 @@
 		</refsection>
 		
 		<refsection>
-		<title>Casting Behavor</title>
+		<title>Casting Behavior</title>
 		<para>This section lists the automatic as well as explicit casts allowed for this data type</para>
 		<informaltable rowsep="1" frame="all">
 		<tgroup cols="2">
@@ -200,7 +200,7 @@
 		<title>Description</title>
 		<para>geomval is a compound data type consisting of a geometry object referenced by the .geom field 
 			and val, a double precision value that represents the pixel value at a particular geometric location in a raster band.
-			It is used by the ST_DumpAsPolygon and Raster intersectoin family of functions as an output type to explode a raster band into
+			It is used by the ST_DumpAsPolygon and Raster intersection family of functions as an output type to explode a raster band into
 			geometry polygons.</para>
 		</refsection>
 		<refsection>
@@ -221,7 +221,7 @@
 		</refsection>
 		
 		<refsection>
-		<title>Casting Behavor</title>
+		<title>Casting Behavior</title>
 		<para>This section lists the automatic as well as explicit casts allowed for this data type</para>
 		<informaltable rowsep="1" frame="all">
 		<tgroup cols="2">
@@ -262,7 +262,7 @@
 		</refsection>
 		
 		<refsection>
-		<title>Casting Behavor</title>
+		<title>Casting Behavior</title>
 		<para>This section lists the automatic as well as explicit casts allowed for this data type</para>
 		<informaltable rowsep="1" frame="all">
 		<tgroup cols="2">

@@ -30,7 +30,7 @@
 			<title>Description</title>
 
 			<para>Returns the Well-Known Binary representation of the geometry.  There are 2 variants of the function.  The first
-			variant takes no endian encoding paramater and defaults to little endian.  The second variant takes a second argument
+			variant takes no endian encoding parameter and defaults to little endian.  The second variant takes a second argument
 			denoting the encoding - using little-endian ('NDR') or big-endian ('XDR') encoding.</para>
 			<para>This is useful in binary cursors to pull data out of the
 			database without converting it to a string representation.</para>
@@ -114,7 +114,7 @@
 		  <refsection>
 			<title>Description</title>
 			<para>Returns the Well-Known Binary representation of the geometry with SRID metadata.  There are 2 variants of the function.  The first
-			variant takes no endian encoding paramater and defaults to little endian.  The second variant takes a second argument
+			variant takes no endian encoding parameter and defaults to little endian.  The second variant takes a second argument
 			denoting the encoding - using little-endian ('NDR') or big-endian ('XDR') encoding.</para>
 			<para>This is useful in binary cursors to pull data out of the
 			database without converting it to a string representation.</para>

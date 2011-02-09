@@ -530,7 +530,7 @@ MULTILINESTRING((1 2,3 4),(3 4,4 5))
 
 		<para>The target_percent is the target percent of area of convex hull the PostGIS solution will try to approach before giving up or exiting.
 		One can think of the concave hull as the geometry you get by vacuum sealing a set of geometries. The
-			targe_percent of 1 will give you the same answer as the convex hull.  A target_percent 
+			target_percent of 1 will give you the same answer as the convex hull.  A target_percent 
 				between 0 and 0.99 will give you something that should have a smaller area than the convex ull.  This is different from a convex hull which is more like wrapping a rubber band around the set of geometries.</para>
 
 			<para>It is usually used with MULTI and Geometry Collections.
@@ -546,7 +546,7 @@ MULTILINESTRING((1 2,3 4),(3 4,4 5))
 			it may fail with invalid geometries.</para></note>
 			
 		<note><para>Note - The smaller you make the target percent, the longer it takes to process the concave hull and more likely to run into topological exceptions. Also the more 
-			floating points and number of points you acrue.  First try a 0.99 which does a first hop, is usually very fast, sometimes as fast as computing the convex hull, and usually gives much better than 99% of shrink since it almost always overshoots. Second hope of 0.98 it slower, others get slower usually quadratically.
+			floating points and number of points you accrue.  First try a 0.99 which does a first hop, is usually very fast, sometimes as fast as computing the convex hull, and usually gives much better than 99% of shrink since it almost always overshoots. Second hope of 0.98 it slower, others get slower usually quadratically.
 			To reduce precision and float points, use <xref linkend="ST_SimplifyPreserveTopology" /> or <xref linkend="ST_SnapToGrid" /> after ST_ConcaveHull. ST_SnapToGrid is a bit faster, but
 				could result in invalid geometries where as ST_SimplifyPreserveTopology almost always preserves the validity of the geometry.</para></note>
 			
@@ -2392,7 +2392,7 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
 
   <refsection>
 	<title>Description</title>
-	<para> Output type can be a MULTI* , single geometry, or Geometry Collection. Comes in 2 variants.  Variant 1 unions 2 geometries resulting in a new geomety with no intersecting regions.
+	<para> Output type can be a MULTI* , single geometry, or Geometry Collection. Comes in 2 variants.  Variant 1 unions 2 geometries resulting in a new geometry with no intersecting regions.
 		Variant 2 is an aggregate function that takes a set of geometries and unions
 		them into a single ST_Geometry resulting in no intersecting regions.</para>
 

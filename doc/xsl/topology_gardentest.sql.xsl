@@ -341,7 +341,7 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 		<xsl:sort select="@id"/>
 
 			<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
-<!--Create dummy paramaters to be used later -->
+<!--Create dummy parameters to be used later -->
 				<xsl:variable name='fnfakeparams'><xsl:call-template name="replaceparams"><xsl:with-param name="func" select="." /></xsl:call-template></xsl:variable>
 				<xsl:variable name='fnargs'><xsl:call-template name="listparams"><xsl:with-param name="func" select="." /></xsl:call-template></xsl:variable>
 				<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>

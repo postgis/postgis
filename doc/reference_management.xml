@@ -843,7 +843,7 @@ the_geom IS NULL)
 
 		<para>If a table <varname>oid</varname> is provided, this function
 		tries to determine the srid, dimension, and geometry type of all
-		geometry columns in the table, adding contraints as necessary. If
+		geometry columns in the table, adding constraints as necessary. If
 		successful, an appropriate row is inserted into the geometry_columns
 		table, otherwise, the exception is caught and an error notice is raised
 		describing the problem.</para>

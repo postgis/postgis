@@ -82,7 +82,7 @@
 		<refentry id="Postgis_Enable_History">
 			<refnamediv>
 				<refname>Postgis_Enable_History</refname>
-				<refpurpose>Registers a table geometrty column in the history_information table for tracking and also adds in side line history table and insert, update, delete rules on the table.</refpurpose>
+				<refpurpose>Registers a table geometry column in the history_information table for tracking and also adds in side line history table and insert, update, delete rules on the table.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>

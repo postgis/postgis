@@ -288,8 +288,8 @@ ST_DWithin(
 	  <refsection>
 		<title>Examples</title>
 		<programlisting>
-		-- This compares the difference betwee fully within and distanct within as well a
-		-- as well as the distance full within for the 2D footprint of the line/point vs. the 3d fully within
+		-- This compares the difference between fully within and distance within as well
+		-- as the distance fully within for the 2D footprint of the line/point vs. the 3d fully within
 		SELECT ST_3DDFullyWithin(geom_a, geom_b, 10) as D3DFullyWithin10, ST_3DDWithin(geom_a, geom_b, 10) as D3DWithin10, 
 	ST_DFullyWithin(geom_a, geom_b, 20) as D2DFullyWithin20, 
 	ST_3DDFullyWithin(geom_a, geom_b, 20) as D3DFullyWithin20 from 
@@ -2369,7 +2369,7 @@ FROM
 		of one another.</para>
 		<para>For Geometries: The distance is specified in units defined by the
 		spatial reference system of the geometries.  For this function to make
-		sense, the source geometries must both be of the same coorindate projection,
+		sense, the source geometries must both be of the same coordinate projection,
 		having the same SRID.</para>
 		
 		<para>For geography units are in meters and measurement is
@@ -2980,7 +2980,7 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 			for ST_Length_Spheroid. </para>
 
 		<note><para>Will return 0 for anything that is not a MULTILINESTRING or LINESTRING</para></note>
-		<note><para>This functionis just an alias for ST_Length_Spheroid. </para></note>
+		<note><para>This function is just an alias for ST_Length_Spheroid. </para></note>
 
 		<para>&Z_support;</para>
 	  </refsection>

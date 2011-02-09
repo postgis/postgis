@@ -316,7 +316,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 
 			<caution>
 			  <para>
-				This paramater is currently broken, as the package will only
+				This parameter is currently broken, as the package will only
 				install into the PostgreSQL installation directory. Visit
 				<ulink url="http://trac.osgeo.org/postgis/ticket/160">
 				  http://trac.osgeo.org/postgis/ticket/160
@@ -424,7 +424,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 
 		<para>
 		  This script will generate the <command>configure</command> script that
-		  in turn is used to customize the intallation of PostGIS.
+		  in turn is used to customize the installation of PostGIS.
 		</para>
 
 		<para>
@@ -495,7 +495,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		  <code>PATH</code> and <code>PGPORT</code> environment variables when
 		  performing the checks - it does <emphasis>not</emphasis> use the
 		  PostgreSQL version that may have been specified using the
-		  configuration paramter <command>--with-pgconfig</command>. So make
+		  configuration parameter <command>--with-pgconfig</command>. So make
 		  sure to modify your PATH to match the detected PostgreSQL installation
 		  during configuration or be prepared to deal with the impending
 		  headaches. Visit
@@ -507,7 +507,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 	  </caution>
 
 	  <para>
-		If successful, the output of the test should be similiar to the
+		If successful, the output of the test should be similar to the
 		following:
 	  </para>
 

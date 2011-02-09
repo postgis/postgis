@@ -1370,7 +1370,7 @@ FROM dummy_rast;
 	</sect1>
 	
 	<sect1 id="RasterBand_Accessors">
-		<title>Raster Band Accessors and Contructors</title>
+		<title>Raster Band Accessors and Constructors</title>
 		<refentry id="RT_ST_AddBand">
 			<refnamediv>
 				<refname>ST_AddBand</refname>
@@ -1424,8 +1424,8 @@ FROM dummy_rast;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns a raster with a new band added in given position (band number), of given type, of given intial value, and of given nodata value.  If no index is specified, the band is added to the end.  Pixel type is a string representation
-				    of one of the pixel types specified in <xref linkend="RT_ST_BandPixelType" />.  If an existing index is specfied all subsequent bands >= that index are incremented by 1.
+				<para>Returns a raster with a new band added in given position (band number), of given type, of given initial value, and of given nodata value.  If no index is specified, the band is added to the end.  Pixel type is a string representation
+				    of one of the pixel types specified in <xref linkend="RT_ST_BandPixelType" />.  If an existing index is specified all subsequent bands >= that index are incremented by 1.
 				    If an initial value greater than the max of the pixel type is specified, then the initial value is set to the highest value allowed by the pixel type. </para>
 				</refsection>
 				
@@ -2190,7 +2190,7 @@ WHERE
 			
 			<refsection>
 				<title>Description</title>
-				<para>Returns modified raster resulting from setting the specified pixel value to new value for the designed band given the row column location or a goemetric point location.
+				<para>Returns modified raster resulting from setting the specified pixel value to new value for the designed band given the row column location or a geometric point location.
 					If no band is specified, then band 1 is assumed.
 				</para>
 				<note><para>Setting by geometry currently only works for points.</para></note>
@@ -2239,7 +2239,7 @@ GROUP BY (foo.geomval).val;
 		<refentry id="RT_ST_SetGeoReference">
 			<refnamediv>
 				<refname>ST_SetGeoReference</refname>
-				<refpurpose>Set Georefence 6 georeference parameters  in a single call. Numbers should be separated by white space.  Accepts inputs in GDAL or ESRI format.  Default is GDAL.</refpurpose>
+				<refpurpose>Set Georeference 6 georeference parameters  in a single call. Numbers should be separated by white space.  Accepts inputs in GDAL or ESRI format.  Default is GDAL.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -2261,7 +2261,7 @@ GROUP BY (foo.geomval).val;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Set Georefence 6 georeference parameters in a single call.  Accepts inputs in 'GDAL' or 'ESRI' format.  Default is GDAL. If 6 coordinates are not provided will return null.</para>
+				<para>Set Georeference 6 georeference parameters in a single call.  Accepts inputs in 'GDAL' or 'ESRI' format.  Default is GDAL. If 6 coordinates are not provided will return null.</para>
 				<para>Difference between format representations is as follows:</para>
 				<para><varname>GDAL</varname>: 
 <programlisting>scalex skewy skewx scaley upperleftx upperlefty</programlisting></para>
@@ -2714,7 +2714,7 @@ select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected true
 				<title>Description</title>
 				
 				<para>Returns the Binary representation of the raster.  There are 2 variants of the function.  The first
-				variant takes no endian encoding paramater and defaults to little endian.  The second variant takes a second argument
+				variant takes no endian encoding parameter and defaults to little endian.  The second variant takes a second argument
 				denoting the encoding - using little-endian ('NDR') or big-endian ('XDR') encoding.</para>
 				<para>This is useful in binary cursors to pull data out of the
 				database without converting it to a string representation.</para>
@@ -2813,7 +2813,7 @@ rid |        rastbox
 				rasters, this gives more or less the same answer as ST_Envelope 
 				so only useful for irregularly shaped or skewed rasters.</para>
 				
-				<note><para>ST_Envelope floors the coordinates and hence add a little buffer around the raster so the answer is subtley 
+				<note><para>ST_Envelope floors the coordinates and hence add a little buffer around the raster so the answer is subtly 
 					different from ST_ConvexHull which does not floor.</para>
 				</note>
 			</refsection>
@@ -2954,7 +2954,7 @@ ORDER BY val;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the polygon representation of the extent of the raster in spatial coordinate units defiend by srid. It is a float8 minimum bounding box represented as a polygon. </para>
+				<para>Returns the polygon representation of the extent of the raster in spatial coordinate units defined by srid. It is a float8 minimum bounding box represented as a polygon. </para>
 				<para>The polygon is defined by the corner points of the bounding box
 			((<varname>MINX</varname>, <varname>MINY</varname>),
 			(<varname>MINX</varname>, <varname>MAXY</varname>),

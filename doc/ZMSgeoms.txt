@@ -59,7 +59,7 @@ to the type specifies the presence of Z coordinate:
 	wkbZ = 0x80000000
 
 This proposal suggest the use of an M-presence flag (wkbM) to
-allow for XY, XYM, XYZ and XYZM geometryes, and SRID-presence
+allow for XY, XYM, XYZ and XYZM geometries, and SRID-presence
 flag to allow for embedded SRID:
 
 	wkbM = 0x40000000

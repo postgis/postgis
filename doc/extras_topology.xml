@@ -65,7 +65,7 @@
 			  </refsection>
 			  
 			  <refsection>
-				<title>Casting Behavor</title>
+				<title>Casting Behavior</title>
 				<para>This section lists the automatic as well as explicit casts allowed for this data type</para>
 				<informaltable rowsep="1" frame="all">
 					<tgroup cols="2">
@@ -162,7 +162,7 @@ ERROR:  value for domain topology.topoelement violates check constraint "dimensi
 		  </refnamediv>
 		  <refsection>
 			<title>Description</title>
-			<para>An array of 1 or more topoelemetns ( a bidimensional array of integers: '{{id,type}, {id,type}, ...}').  So an array of 1 or more arrays each having 2 integers generally used to return an array of sets of element id and element type of a topology relation.</para>
+			<para>An array of 1 or more topoelements ( a bidimensional array of integers: '{{id,type}, {id,type}, ...}').  So an array of 1 or more arrays each having 2 integers generally used to return an array of sets of element id and element type of a topology relation.</para>
 		  </refsection>
             <refsection>
                 <title>Examples</title>
@@ -178,7 +178,7 @@ SELECT ARRAY[ARRAY[1,2], ARRAY[3,4]]::topology.topoelementarray As tea;
 -------
 {{1,2},{3,4}}
 
---using the arraya agg function packaged with topology --
+--using the array agg function packaged with topology --
 SELECT topology.TopoElementArray_Agg(ARRAY[e,t]) As tea
   FROM generate_series(1,3) As e CROSS JOIN generate_series(1,4) As t;
   tea
@@ -274,7 +274,7 @@ ERROR:  value for domain topology.topoelementarray violates check constraint "di
 			<refsection>
 				<title>Examples</title>
 				<programlisting>-- Note for this example we created our new table in the ma_topo schema 
--- though we could have created it in a different schema -- in shich case topology_name and schema_name would be different 
+-- though we could have created it in a different schema -- in which case topology_name and schema_name would be different 
 CREATE SCHEMA ma;
 CREATE TABLE ma.parcels(gid serial, parcel_id varchar(20) PRIMARY KEY, address text);
 SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma', 'parcels', 'topo', 'POLYGON');</programlisting>
@@ -325,7 +325,7 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
             
                 <para>Creates a new schema with name <varname>topology_name</varname> consisting of tables (<varname>edge_data</varname>,<varname>face</varname>,<varname>node</varname>, <varname>relation</varname>
                     and registers this new topology in the topology.topology table. It returns the id of the topology in the topology table. The srid is the spatial reference identified as 
-                defined in spatial_ref_sys table for that topology.  Toplogies must be uniquely named.  The tolerance is measured in the units of the spatial reference system.  If the tolerance is not specified defaults to 0.</para>
+                defined in spatial_ref_sys table for that topology.  Topologies must be uniquely named.  The tolerance is measured in the units of the spatial reference system.  If the tolerance is not specified defaults to 0.</para>
                 
                 <para>This is similar to the SQL/MM <xref linkend="ST_InitTopoGeo" /> but a bit more functional.</para>
         
@@ -452,7 +452,7 @@ topoid
 			<refsection>
                 <title>Description</title>
             
-                <para>This is an SQL-MM equvalent of CreateTopology but lacks the spatial reference and tolerance options of CreateTopology and outputs a text description of creation instead of topology id.</para>
+                <para>This is an SQL-MM equivalent of CreateTopology but lacks the spatial reference and tolerance options of CreateTopology and outputs a text description of creation instead of topology id.</para>
         
                 <!-- use this format if new function -->
                 <para>Availability: 1.?</para>
@@ -689,7 +689,7 @@ faceid
                 <title>Description</title>
             
                 <para>Adds a point node to the node table in the specified topology schema.  The <xref linkend="AddEdge" /> function automatically adds start and end points of an edge when called so not necessary to explicitly add nodes of an edge.
-                When adding a new node it checks for the existance of any edge crossing the given point, raising an exception if found.</para>
+                When adding a new node it checks for the existence of any edge crossing the given point, raising an exception if found.</para>
                 <note><para>If the <varname>apoint</varname> geometry already exists as a node, the node is not added but the existing nodeid is returned.</para></note>
                 
                 <!-- use this format if new function -->
@@ -737,7 +737,7 @@ nodeid
 			<refsection>
                 <title>Description</title>
             
-                <para>Creates a topo geometry object for layer denoted by layer_id and registers it in the relations table in tho <varname>toponame</varname> schema.</para>
+                <para>Creates a topogeometry object for layer denoted by layer_id and registers it in the relations table in tho <varname>toponame</varname> schema.</para>
                 <para>tg_type is an integer: 1:[multi]point, 2:[multi]line, 3:[multi]poly, 4:collection. layer_id is the layer id in the topology.layer table.</para>
         
                 <!-- use this format if new function -->
@@ -869,7 +869,7 @@ nodeid
 			<refsection>
                 <title>Description</title>
             
-                <para>Adds a collection of geometries to a given topology and returns a message detailing success.  If collection contains anything butn points and linestrings an error is thrown. Will also 
+                <para>Adds a collection of geometries to a given topology and returns a message detailing success.  If collection contains anything but points and linestrings an error is thrown. Will also 
 				throw an error if there are already edges and nodes in the topology or coincident nodes etc.  Support for polygons not yet implemented.</para>
 				
 				<para>Useful for populating an empty topology.</para>
