@@ -595,7 +595,7 @@ fulltable_size geomsize  pergeom
 	  <refnamediv>
 		<refname>ST_Point_Inside_Circle</refname>
 
-		<refpurpose>Is the point geometry insert circle defined by center_x, center_y , radius</refpurpose>
+		<refpurpose>Is the point geometry insert circle defined by center_x, center_y, radius</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>

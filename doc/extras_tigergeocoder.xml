@@ -83,7 +83,7 @@
 --------+---------------------------+------+---------+------+--------+----+-------
       0 | POINT(-71.05518 42.36311) |  226 | Hanover | St   | Boston | MA | 02113
 </programlisting>     
-<para>Can handle misspellings and provides more than one possible solution with ratings and takes longer (4 seconds on fairly crappy single processor 3GIG RAM XP box, but 453 ms on windows 2003 8 GIG ram 2 processor quad core server) .</para>
+<para>Can handle misspellings and provides more than one possible solution with ratings and takes longer (4 seconds on fairly crappy single processor 3GIG RAM XP box, but 453 ms on windows 2003 8 GIG ram 2 processor quad core server).</para>
 <programlisting>SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat, 
     (addy).address As stno, (addy).streetname As street, 
 	(addy).streettypeabbrev As styp, (addy).location As city, (addy).stateabbrev As st,(addy).zip 

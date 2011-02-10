@@ -828,7 +828,7 @@ FROM dummy_rast;
 		<refentry id="RT_ST_Raster2WorldCoordX">
 			<refnamediv>
 				<refname>ST_Raster2WorldCoordX</refname>
-				<refpurpose>Returns the geometric x coordinate upper left of a raster , column and row. Numbering of columns
+				<refpurpose>Returns the geometric x coordinate upper left of a raster, column and row. Numbering of columns
 					and rows starts at 1. </refpurpose>
 			</refnamediv>
 		
@@ -902,7 +902,7 @@ FROM (SELECT rid, ST_SetSkew(rast,100.5,0) As rast FROM dummy_rast) As foo;
 		<refentry id="RT_ST_Raster2WorldCoordY">
 			<refnamediv>
 				<refname>ST_Raster2WorldCoordY</refname>
-				<refpurpose>Returns the geometric y coordinate upper left corner of a raster , column and row. Numbering of columns
+				<refpurpose>Returns the geometric y coordinate upper left corner of a raster, column and row. Numbering of columns
 					and rows starts at 1. </refpurpose>
 			</refnamediv>
 		

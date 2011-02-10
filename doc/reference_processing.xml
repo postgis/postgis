@@ -2392,7 +2392,7 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
 
   <refsection>
 	<title>Description</title>
-	<para> Output type can be a MULTI* , single geometry, or Geometry Collection. Comes in 2 variants.  Variant 1 unions 2 geometries resulting in a new geometry with no intersecting regions.
+	<para> Output type can be a MULTI*, single geometry, or Geometry Collection. Comes in 2 variants.  Variant 1 unions 2 geometries resulting in a new geometry with no intersecting regions.
 		Variant 2 is an aggregate function that takes a set of geometries and unions
 		them into a single ST_Geometry resulting in no intersecting regions.</para>
 
@@ -2403,7 +2403,7 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
 		functions do.</para>
 
 	<para>Non-Aggregate version: This function returns a geometry being a union of two
-		input geometries. Output type can be a MULTI* ,NON-MULTI or
+		input geometries. Output type can be a MULTI*, NON-MULTI or
 		GEOMETRYCOLLECTION.</para>
 
 	<note><para>ST_Collect and ST_Union are often interchangeable.

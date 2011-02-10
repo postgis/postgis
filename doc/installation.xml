@@ -796,7 +796,7 @@ Failed: 0
 	</para>
 
 	<para>
-	  Before attempting to upgrade postgis, it is always worth to backup your
+	  Before attempting to upgrade PostGIS, it is always worth to backup your
 	  data. If you use the -Fc flag to pg_dump you will always be able to
 	  restore the dump with an HARD UPGRADE.
 	</para>
@@ -807,7 +807,7 @@ Failed: 0
 	  <para>
 		After compiling you should find several <filename>postgis_upgrade*.sql</filename> files.  Install the one
 		for your version of PostGIS.  For example <filename>postgis_upgrade_13_to_15.sql</filename> should be used if you are upgrading 
-		from postgis 1.3 to 1.5.
+		from PostGIS 1.3 to 1.5.
 	  </para>
 
 	  <programlisting>$ psql -f postgis_upgrade_13_to_15.sql -d your_spatial_database</programlisting>
@@ -834,7 +834,7 @@ Failed: 0
 
 	  <para>
 		By HARD UPGRADE we intend full dump/reload of postgis-enabled databases.
-		You need an HARD UPGRADE when postgis objects' internal storage changes
+		You need an HARD UPGRADE when PostGIS objects' internal storage changes
 		or when SOFT UPGRADE is not possible. The
 		<link linkend="release_notes">Release Notes</link>
 		appendix reports for each version whether you need a dump/reload (HARD
@@ -855,7 +855,7 @@ Failed: 0
 	  <programlisting>$ pg_dump -Fc olddb &gt; olddb.dump</programlisting>
 
 	  <para>
-		Restore the dump contextually upgrading postgis into a new database. The
+		Restore the dump contextually upgrading PostGIS into a new database. The
 		new database doesn't have to exist. postgis_restore accepts createdb
 		parameters after the dump file name, and that can for instance be used
 		if you are using a non-default character encoding for your database.

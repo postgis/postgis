@@ -39,7 +39,7 @@
 
       <answer>
         <para>The easiest is to download binaries for PostGIS and Raster which are currently available for windows and latest versions of Mac OSX. 
-        	First you need a working PostGIS 1.3.5 or above and be running PostgreSQL 8.3, 8.4, or 9.0. Note in POstGIS 2.0 PostGIS Raster is fully integrated, so it will be compiled when you compile PostGIS.</para>
+        	First you need a working PostGIS 1.3.5 or above and be running PostgreSQL 8.3, 8.4, or 9.0. Note in PostGIS 2.0 PostGIS Raster is fully integrated, so it will be compiled when you compile PostGIS.</para>
         <para>
 			If you are on windows, you can compile yourself, or use the <ulink
             url="http://www.postgis.org/download/windows/experimental.php#wktraster">pre-compiled
@@ -90,8 +90,8 @@
       </question>
 
       <answer>
-        <para>Any that your gdal library supports. GDAL supported formats are documented <ulink url="http://www.gdal.org/formats_list.html">GDAL File Formats</ulink>.</para>
-		<para>Your particular gdal install may not support all formats.  To verify the ones supported by your particular gdal install, you can use</para> 
+        <para>Any that your GDAL library supports. GDAL supported formats are documented <ulink url="http://www.gdal.org/formats_list.html">GDAL File Formats</ulink>.</para>
+		<para>Your particular GDAL install may not support all formats.  To verify the ones supported by your particular GDAL install, you can use</para> 
 		<programlisting>gdalinfo --formats</programlisting>
       </answer>
     </qandaentry>
@@ -109,13 +109,13 @@
 		<para>If you are compiling from source, you need to include in your configure 
 		 <programlisting>--with-pg=path/to/pg_config</programlisting>  to enable the driver.
 		 Refer to <ulink url="http://trac.osgeo.org/gdal/wiki/BuildHints">GDAL Build Hints</ulink> for tips
-		 on building gdal against in various OS platforms.
+		 on building GDAL against in various OS platforms.
 		 </para>
 		 <para>If your version of GDAL is compiled with the PostGIS Raster driver 
 		 you should see PostGIS Raster in list when you do 
 		 <programlisting>gdalinfo --formats</programlisting></para>
 		 
-		 <para>To get a summary about your raster via gdal use gdalinfo:
+		 <para>To get a summary about your raster via GDAL use gdalinfo:
 		 <programlisting>gdalinfo  "PG:host=localhost port=5432 dbname='mygisdb' user='postgres' password='whatever' schema='someschema' table=sometable"</programlisting>
 		 </para>
 		
@@ -142,7 +142,7 @@
     		<para>We know for sure the following windows binaries have PostGIS Raster built in.</para>
     		<para><ulink url="http://fwtools.maptools.org/">FWTools latest stable version for Windows is compiled with Raster support</ulink>.</para>
     		<para>PostGIS Raster is undergoing many changes.  If you want to get the latest nightly build for Windows -- then check out 
-		 the Tamas Szekeres  nightly builds built with Visual Studio which contain GDAL trunk, Python Bindings and Mapserver executables and PostGIS Raster driver built-in.  Just
+		 the Tamas Szekeres  nightly builds built with Visual Studio which contain GDAL trunk, Python Bindings and MapServer executables and PostGIS Raster driver built-in.  Just
 		 	click the SDK bat and run your commands from there.  <ulink url="http://vbkto.dyndns.org/sdk/">http://vbkto.dyndns.org/sdk/</ulink>.
 		 	Also available are VS project files.</para>
     	</answer>
@@ -162,16 +162,16 @@
     
     <qandaentry>
       <question>
-        <para>How can I add a PostGIS raster layer to my Mapserver map?</para>
+        <para>How can I add a PostGIS raster layer to my MapServer map?</para>
       </question>
 
       <answer>
         <para>You can much like you can with any other raster.  
-        Refer to <ulink url="http://mapserver.org/input/raster.html">Mapserver Raster processing options</ulink>
-        for list of various processing functions you can use with Mapserver raster layers.</para>
+        Refer to <ulink url="http://mapserver.org/input/raster.html">MapServer Raster processing options</ulink>
+        for list of various processing functions you can use with MapServer raster layers.</para>
         <para>What makes PostGIS raster data particularly interesting, is that since 
         	each tile can have various standard database columns, you can segment it in your data source</para>
-        <para>Below is an example of how you would define a PostGIS raster layer in Mapserver.</para>
+        <para>Below is an example of how you would define a PostGIS raster layer in MapServer.</para>
         <programlisting>
 -- displaying raster with standard raster options
 LAYER

@@ -323,7 +323,7 @@
 						  </row>
 						</thead>
 						<tbody>
-						<!-- Exclude PostGIS types ,management functions, long transaction support, or exceptional functions from consideration  -->
+						<!-- Exclude PostGIS types, management functions, long transaction support, or exceptional functions from consideration  -->
 						<!-- leaving out operators in an effor to try to fit on one page -->
 						<xsl:for-each select="sect1[not(@id='PostGIS_Types' or @id='Management_Functions' or @id='Long_Transactions_Support' or @id='Exceptional_Functions')]/refentry">
 							<xsl:sort select="@id"/>

@@ -140,7 +140,7 @@ You can also add SRID restrictions to a column, though at this point (with only 
 Using Input/Output Functions
 ============================
 
-There are only four intput/output functions at this time supporting the OGC well-known text (WKT) and well-known binary (WKB) formats. Adding further output formats (GML, GeoJSON) should be straight-forward, borrowing code from the geometry implementations.
+There are only four input/output functions at this time supporting the OGC well-known text (WKT) and well-known binary (WKB) formats. Adding further output formats (GML, GeoJSON) should be straight-forward, borrowing code from the geometry implementations.
 
 * ST_AsText(geography) returns text
 * ST_AsBinary(geography) returns bytea

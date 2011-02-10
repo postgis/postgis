@@ -827,7 +827,7 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 			geometries are delimited by semicolons (";").</para>
 
 		<note>
-		  <para>Availability: 1.2.2 . Availability: 1.4.0  Changed in PostGIS 1.4.0 to include L command in absolute path to conform to <ulink
+		  <para>Availability: 1.2.2. Availability: 1.4.0  Changed in PostGIS 1.4.0 to include L command in absolute path to conform to <ulink
 			url="http://www.w3.org/TR/SVG/paths.html#PathDataBNF">http://www.w3.org/TR/SVG/paths.html#PathDataBNF</ulink></para>
 		</note>
 	  </refsection>

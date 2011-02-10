@@ -85,7 +85,7 @@ SELECT MAX(ST_NPoints(geom)) FROM sometable;</programlisting>
       </question>
       <answer>
         <para>Your questions are too deep and complex to be adequately answered in this section. Please refer to our
-			<xref linkend="PostGIS_Geography_AdvancedFAQ" /> .</para>
+			<xref linkend="PostGIS_Geography_AdvancedFAQ" />.</para>
       </answer>
     </qandaentry>
 

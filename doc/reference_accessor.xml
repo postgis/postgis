@@ -845,7 +845,7 @@ postgis=# SELECT ST_IsCollection('GEOMETRYCOLLECTION(POINT(0 0))'::geometry);
 	  <refnamediv>
 		<refname>ST_IsEmpty</refname>
 
-		<refpurpose>Returns true if this Geometry is an empty geometry . If
+		<refpurpose>Returns true if this Geometry is an empty geometry. If
 				true, then this Geometry represents the empty point set - i.e.
 				GEOMETRYCOLLECTION(EMPTY).</refpurpose>
 
@@ -863,7 +863,7 @@ postgis=# SELECT ST_IsCollection('GEOMETRYCOLLECTION(POINT(0 0))'::geometry);
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns true if this Geometry is an empty geometry . If
+		<para>Returns true if this Geometry is an empty geometry. If
 				true, then this Geometry represents an empty geometry collection, polygon, point etc.</para>
 		<note>
 			<para>SQL-MM defines the result of ST_IsEmpty(NULL) to be 0, while

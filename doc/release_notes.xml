@@ -26,7 +26,7 @@
           <para>Making spatial indexes 3D aware - in progress (Paul Ramsey, Mark Cave-Ayland)</para>
           <para>Topology support improved, documented, testing (Sandro Santilli / Faunalia for RT-SIGTA, Regina Obe, Andrea Peri)</para>
           <para>3D relationship support functions  (Nicklas Avén)</para>
-          <para>   ST_3DDistance, ST_3DClosestPoint, ST_3DIntersects, ST_3DShortestLine and more ..</para>
+          <para>   ST_3DDistance, ST_3DClosestPoint, ST_3DIntersects, ST_3DShortestLine and more...</para>
           <para>ST_Split (Sandro Santilli / Faunalia for RT-SIGTA)</para>
           <para>ST_isValidDetail (Sandro Santilli / Faunalia for RT-SIGTA)</para>
           <para>ST_MakeValid (Sandro Santilli / Faunalia for RT-SIGTA)</para>
@@ -236,7 +236,7 @@
         <para>Release date: 2008/12/15</para>
         <para>This release is a bug fix release to address a failure
         in ST_Force_Collection and related functions that critically
-        affects using Mapserver with LINE layers.</para>
+        affects using MapServer with LINE layers.</para>
       </sect1>
 
      <sect1>
