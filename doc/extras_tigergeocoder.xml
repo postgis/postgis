@@ -222,7 +222,8 @@ UNZIPTOOL=unzip
 	  <refnamediv>
 		<refname>Normalize_Address</refname>
 
-		<refpurpose>Given a textual street address, returns a composite <varname>norm_addy</varname> type that has road suffix, prefix and type standardized, street, streetname etc. broken into separate fields.</refpurpose>
+		<refpurpose>Given a textual street address, returns a composite <varname>norm_addy</varname> type that has road suffix, prefix and type standardized, street, streetname etc. broken into separate fields.  This function 
+		will work with just the lookup data packaged with the tiger_geocoder (no need for tiger census data).</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -239,6 +240,8 @@ UNZIPTOOL=unzip
 
 		<para>Given a textual street address, returns a composite <varname>norm_addy</varname> type that has road suffix, prefix and type standardized, street, streetname etc. broken into separate fields.  This is the first step in the geocoding process to 
 		    get all addresses into normalized postal form. No other data is required aside from what is packaged with the geocoder.</para>
+		<para>This function just uses the various direction/state/suffix lookup tables preloaded with the tiger_geocoder and located in the <varname>tiger</varname> schema, so it doesn't need you to download tiger census data or any other additional data to make use of it.
+		 You may find the need to add more abbreviations or alternative namings to the various lookup tables in the  <varname>tiger</varname> schema.</para>
 		<para>It uses various control lookup tables located in <varname>tiger</varname> schema to normalize the input address.</para>
 		<para>Fields in the <varname>norm_addy</varname> type object returned by this function in this order where  () indicates a field required by the geocoder, [] indicates an optional field:</para>
 		<para>(address) [dirPrefix] (streetName) [streetType] [dirSuffix][internal] [location] [state] [zipCode]</para>
