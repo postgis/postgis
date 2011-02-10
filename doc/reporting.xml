@@ -66,7 +66,7 @@
 
         <para><command>vim trunk/doc/postgis.xml</command></para>
 
-        <para>Note that the documentation is written in SGML rather than HTML,
+        <para>Note that the documentation is written in DocBook XML rather than HTML,
         so if you are not familiar with it please follow the example of the
         rest of the documentation.</para>
       </listitem>
