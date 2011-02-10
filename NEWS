@@ -45,7 +45,9 @@ YYYY/MM/DD
   - Made loader tolerant of truncated multibyte values found
     in some free worldwide shapefiles (Sandro Santilli)
   - Shp-pgsql GUI loader - support loading multiple 
-    files at a time. (Mark Leslie)    
+    files at a time. (Mark Leslie)  
+  - Extras - revised tiger_geocoder to work with 
+    TIGER census 2010 data. (Regina Obe, Leo Hsu)
 
 PostGIS 1.5.2
 2010/09/27

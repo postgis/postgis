@@ -40,8 +40,9 @@
         </simplesect>
         <simplesect>
         	<title>Enhancements</title>
-        	<para>Made loader tolerant of truncated multibyte values found in some free worldwide shapefiles (Sandro Santilli)</para>
-        	<para>Shp-pgsql GUI loader - support loading multiple files at a time.  (Mark Leslie)</para>    
+        	<para>Made shape file loader tolerant of truncated multibyte values found in some free worldwide shapefiles (Sandro Santilli)</para>
+        	<para>Shp-pgsql GUI loader - support loading multiple files at a time.  (Mark Leslie)</para>  
+        	<para>Extras - revised tiger_geocoder to work with TIGER census 2010 data. (Regina Obe, Leo Hsu)</para>  
         </simplesect>
       </sect1>
       
