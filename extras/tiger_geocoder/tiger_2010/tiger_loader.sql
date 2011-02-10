@@ -58,16 +58,14 @@ PGDATABASE=geocoder
 ', E'rm -f ${TMPDIR}/*.*
 %PGBIN%\psql -c "DROP SCHEMA tiger_staging CASCADE;"
 %PGBIN%\psql -c "CREATE SCHEMA tiger_staging;"
-cd $STATEDIR		
-for z in */*.zip do $UNZIPTOOL -o -d $TMPDIR 
+cd $STATEDIR
+for z in *.zip do $UNZIPTOOL -o -d $TMPDIR $z
+for z in */*.zip do $UNZIPTOOL -o -d $TMPDIR $z 
 cd $TMPDIR', 'psql', '/', 'shp2pgsql', 'export ',
 'for z in ${table_name}.dbf do 
-${loader}  -s 4269 -g the_geom -W "latin1" %%z ${staging_schema}.${state_abbrev}_${table_name} | ${psql} 
+${loader}  -s 4269 -g the_geom -W "latin1" $z ${staging_schema}.${state_abbrev}_${table_name} | ${psql} 
 ${psql} -c "SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}''));"
 done');
-
-
-
 -- variables table
 DROP TABLE IF EXISTS loader_variables;
 CREATE TABLE loader_variables(tiger_year varchar(4) PRIMARY KEY, website_root text, staging_fold text, data_schema text, staging_schema text);

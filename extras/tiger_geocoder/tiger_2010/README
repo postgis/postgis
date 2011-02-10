@@ -19,8 +19,8 @@ and also have it in the search_path of your database)
 
 5.	Now add tiger schema to your database search path by doing something like 
 ALTER DATABASE geocoder SET search_path=public, tiger;
-6.	Create a folder called gisdata on root of server or your local pc if you have a fast network connection to the server.  
-7. Create a folder called temp in the gisdata folder.  This will be the folder where we download the necessary tiger data.
+6.	Create a folder called gisdata on root of server or your local pc if you have a fast network connection to the server this is where the tiger files will be downloaded to.  
+7. Create a folder called temp in the gisdata folder.  This will be the folder where we extract the downloaded tiger data.
 
 
 8. Run this command at psql or pgAdmin III query window to generate the script.  
