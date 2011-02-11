@@ -9,6 +9,10 @@
   <para><varname>raster</varname> is a new PostGIS type for storing and analyzing raster data. </para>
   <para>For more information about Raster, please refer to <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster">PostGIS Raster Home Page</ulink>.</para>  
  
+  <sect1 id="RT_Loading_Rasters"> 
+    <title>Loading and Creating Rasters</title>
+    <para>For most use cases, you will create PostGIS rasters by loading existing raster files using the packaged <varname>raster2pgsql</varname> raster loader.</para>
+  </sect1>
   <sect1 id="Raster_Management_Functions">
   	<title>Raster Management Functions</title>
   	<refentry id="RT_AddRasterColumn">
