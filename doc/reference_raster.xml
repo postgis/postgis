@@ -12,6 +12,41 @@
   <sect1 id="RT_Loading_Rasters"> 
     <title>Loading and Creating Rasters</title>
     <para>For most use cases, you will create PostGIS rasters by loading existing raster files using the packaged <varname>raster2pgsql</varname> raster loader.</para>
+    <sect2 id="Raster_Creation">
+       <para>For the examples in this reference we will be using a raster table of dummy rasters - Formed with the following code </para>
+<programlisting>CREATE TABLE dummy_rast(rid integer, rast raster);
+INSERT INTO dummy_rast(rid, rast)
+VALUES (1,
+('01' -- little endian (uint8 ndr)
+|| 
+'0000' -- version (uint16 0)
+||
+'0000' -- nBands (uint16 0)
+||
+'0000000000000040' -- scaleX (float64 2)
+||
+'0000000000000840' -- scaleY (float64 3)
+||
+'000000000000E03F' -- ipX (float64 0.5)
+||
+'000000000000E03F' -- ipY (float64 0.5)
+||
+'0000000000000000' -- skewX (float64 0)
+||
+'0000000000000000' -- skewY (float64 0)
+||
+'00000000' -- SRID (int32 0)
+||
+'0A00' -- width (uint16 10)
+||
+'1400' -- height (uint16 20)
+)::raster
+),
+-- Raster: 5 x 5 pixels, 3 bands, PT_8BUI pixel type, NODATA = 0
+(2,  ('01000003009A9999999999A93F9A9999999999A9BF000000E02B274A' ||
+'41000000007719564100000000000000000000000000000000FFFFFFFF050005000400FDFEFDFEFEFDFEFEFDF9FAFEF' ||
+'EFCF9FBFDFEFEFDFCFAFEFEFE04004E627AADD16076B4F9FE6370A9F5FE59637AB0E54F58617087040046566487A1506CA2E3FA5A6CAFFBFE4D566DA4CB3E454C5665')::raster);</programlisting>
+    </sect2>
   </sect1>
   <sect1 id="Raster_Management_Functions">
   	<title>Raster Management Functions</title>
