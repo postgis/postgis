@@ -18,7 +18,17 @@
         <para>
             The <varname>raster2pgsql.py</varname> is a raster loader python script that utilizes Python, PyGDAL, and NumPy to convert any GDAL supported raster format into sql suitable for loading into a PostGIS raster table.
             It is capable of loading folders of raster files as well as creating overviews of rasters.
-        </para>  
+        </para>
+        
+        
+        <para>An example session using the loader to create an input file and uploading it might look like this:</para>
+        
+        <programlisting>python raster2pgsql.py -s 4269 -I -r *.tif -F myschema.demelevation -o elev.sql
+psql -d gisdb -f elev.sql</programlisting>
+        
+          <para>A conversion and upload can be done all in one step using UNIX pipes:</para>
+        
+          <programlisting>python raster2pgsql.py -s 4269 -I -r *.tif -F myschema.demelevation | psql -d gisdb</programlisting>
     </sect2>
     
     <sect2 id="Raster_Creation">
