@@ -12,6 +12,15 @@
   <sect1 id="RT_Loading_Rasters"> 
     <title>Loading and Creating Rasters</title>
     <para>For most use cases, you will create PostGIS rasters by loading existing raster files using the packaged <varname>raster2pgsql</varname> raster loader.</para>
+    
+    <sect2 id="raster2pgsql_usage">
+        <title>Using the raster2pgsql Raster Loader</title>
+        <para>
+            The <varname>raster2pgsql.py</varname> is a raster loader python script that utilizes Python, PyGDAL, and NumPy to convert any GDAL supported raster format into sql suitable for loading into a PostGIS raster table.
+            It is capable of loading folders of raster files as well as creating overviews of rasters.
+        </para>  
+    </sect2>
+    
     <sect2 id="Raster_Creation">
        <para>For the examples in this reference we will be using a raster table of dummy rasters - Formed with the following code </para>
 <programlisting>CREATE TABLE dummy_rast(rid integer, rast raster);
