@@ -15,7 +15,7 @@
 
     <para>
         The <varname>raster2pgsql.py</varname> is a raster loader python script that utilizes Python, PyGDAL, and NumPy to convert any GDAL supported raster format into sql suitable for loading into a PostGIS raster table.
-        It is capable of loading folders of raster files as well as creating overviews of rasters.
+        It is capable of loading folders of raster files as well as creating overviews of rasters. More usage examples can be found at <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html">GDAL PostGIS Raster Driver Usage</ulink> 
     </para>
         
     <variablelist>
@@ -79,7 +79,7 @@
         </varlistentry>
         
         <varlistentry>
-          <term>Mandatory paramters:</term>
+          <term>Mandatory parameters:</term>
           <listitem>
             <para>
               <variablelist>
@@ -157,7 +157,7 @@
         </varlistentry>
         
         <varlistentry>
-          <term>  Optional parameters used to manipulate database objects</term>
+          <term>Optional parameters used to manipulate database objects</term>
           <listitem>
             <para>
               <variablelist>            

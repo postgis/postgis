@@ -80,7 +80,7 @@
             PostGIS Raster experimental builds</ulink>.</para>
 		<para>Once you have a functioning Python with GDAL and NumPy, you can
         use the raster2pgsql.py script packaged with PostGIS Raster.</para>
-		<para>Please refer to <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html">raster2pgsql.py usage</ulink> for more details.</para>
+		<para>Please refer to <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html">raster2pgsql.py usage</ulink> and <xref linkend="RT_Loading_Rasters" /> for more details.</para>
       </answer>
     </qandaentry>
 	
