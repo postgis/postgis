@@ -1263,7 +1263,7 @@ SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) As facegeomwkt;
                 <para>Add a new edge and, if in doing so it splits a face, delete the original face and replace it with two new faces.</para>
                 <para>If any arguments are null (meaning the nodes must already exist in the <varname>node</varname> table of the topology schema) , the <varname>acurve</varname> is not a <varname>LINESTRING</varname>, the <varname>anode<varname> and <varname>anothernode<varname> are not the start and endpoints of <varname>acurve</varname> then an error is thrown.</para>
                 <para>If the spatial reference system (srid) of the <varname>acurve</varname> geometry is not the same as the topology an exception is thrown.</para>
-              
+                <note><para>This is not completely implemented yet and currently always throws a NOT YET IMPLEMENTED error</para></note>
 			
                 <!-- use this format if new function -->
                 <para>Availability: 1.? </para>
