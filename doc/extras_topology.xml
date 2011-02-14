@@ -1237,7 +1237,7 @@ SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) As facegeomwkt;
                 <para>This section covers topology functions for moving, deleting, and splitting edges, faces, and nodes.</para>
             </abstract>
         </sect1info>
-	    	  <title>Topology Processing Functions</title>
+	    <title>Topology Processing Functions</title>
 	    	  <refentry id="ST_AddEdgeNewFaces">
 			<refnamediv>
 				<refname>ST_AddEdgeNewFaces</refname>
@@ -1261,7 +1261,9 @@ SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) As facegeomwkt;
                 <title>Description</title>
             
                 <para>Add a new edge and, if in doing so it splits a face, delete the original face and replace it with two new faces.</para>
-                <para>If any arguments are null (meaning the nodes must already exist in the <varname>node</varname> table of the topology schema) , the <varname>acurve</varname> is not a <varname>LINESTRING</varname>, the <varname>anode<varname> and <varname>anothernode<varname> are not the start and endpoints of <varname>acurve</varname> then an error is thrown.</para>
+                <para>If any arguments are null (meaning the nodes must already exist in the <varname>node</varname> table of the topology schema) ,
+                    the <varname>acurve</varname> is not a <varname>LINESTRING</varname>, the <varname>anode<varname> and <varname>anothernode<varname> are not the start 
+                    and endpoints of <varname>acurve</varname> then an error is thrown.</para>
                 <para>If the spatial reference system (srid) of the <varname>acurve</varname> geometry is not the same as the topology an exception is thrown.</para>
                 <note><para>This is not completely implemented yet and currently always throws a NOT YET IMPLEMENTED error</para></note>
 			
@@ -1281,7 +1283,7 @@ SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) As facegeomwkt;
 				<title>See Also</title>
 			</refsection>
 		</refentry>
-	    	  <refentry id="ST_MoveIsoNode">
+	    	<refentry id="ST_MoveIsoNode">
 			<refnamediv>
 				<refname>ST_MoveIsoNode</refname>
 			
