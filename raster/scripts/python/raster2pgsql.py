@@ -529,7 +529,7 @@ def collect_nodata_values(ds, band_from, band_to):
     for i in range(band_from, band_to):
         band = ds.GetRasterBand(i)
         nodata = band.GetNoDataValue()
-        if nodata is not None:
+        if nodata is not None and not math.isnan(nodata):
             nd.append(nodata)
 
     return nd
