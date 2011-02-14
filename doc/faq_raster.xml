@@ -172,6 +172,7 @@
         <para>What makes PostGIS raster data particularly interesting, is that since 
         	each tile can have various standard database columns, you can segment it in your data source</para>
         <para>Below is an example of how you would define a PostGIS raster layer in MapServer.</para>
+        <note><para>The mode=2 is required for tiled rasters and was added in PostGIS 2.0 and GDAL 1.8 drivers.  This does not exist in GDAL 1.7 drivers.</para></note>
         <programlisting>
 -- displaying raster with standard raster options
 LAYER
@@ -179,7 +180,7 @@ LAYER
 	TYPE raster
 	STATUS ON
 	DATA "PG:host=localhost port=5432 dbname='somedb' user='someuser' password='whatever' 
-		schema='someschema' table='cooltable'"	
+		schema='someschema' table='cooltable' mode='2'"	
 	PROCESSING "NODATA=0"
 	PROCESSING "SCALE=AUTO"
 	#... other standard raster processing functions here
@@ -209,9 +210,8 @@ LAYER
 	TYPE raster
 	STATUS ON
 	DATA "PG:host=localhost port=5432 dbname='somedb' user='someuser' password='whatever' 
-		schema='someschema' table='cooltable' where='survey_year=2009'"	
+		schema='someschema' table='cooltable' where='survey_year=2009' mode='2'"	
 	PROCESSING "NODATA=0"
-	PROCESSING "SCALE=AUTO"
 	#... other standard raster processing functions here
 	#... classes are optional but useful for 1 band data
 END
