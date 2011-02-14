@@ -2987,6 +2987,13 @@ CREATE OR REPLACE FUNCTION ST_Union(geometry,geometry)
 	AS 'MODULE_PATHNAME','geomunion'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
+-- Availability: 2.0.0
+-- Requires: GEOS-3.3.0
+CREATE OR REPLACE FUNCTION ST_UnaryUnion(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','ST_UnaryUnion'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
 -- ST_RemoveRepeatedPoints(in geometry)
 --
 -- Removes duplicate vertices in input.

@@ -4,7 +4,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
  *
- * Copyright 2009-2010 Sandro Santilli <strk@keybit.net>
+ * Copyright 2009-2011 Sandro Santilli <strk@keybit.net>
  * Copyright 2008 Paul Ramsey <pramsey@cleverelephant.ca>
  * Copyright 2001-2003 Refractions Research Inc.
  *
@@ -52,6 +52,7 @@ Datum difference(PG_FUNCTION_ARGS);
 Datum boundary(PG_FUNCTION_ARGS);
 Datum symdifference(PG_FUNCTION_ARGS);
 Datum geomunion(PG_FUNCTION_ARGS);
+Datum ST_UnaryUnion(PG_FUNCTION_ARGS);
 Datum issimple(PG_FUNCTION_ARGS);
 Datum isring(PG_FUNCTION_ARGS);
 Datum geomequals(PG_FUNCTION_ARGS);
@@ -669,6 +670,96 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(result);
 
+}
+
+/**
+ * @example ST_UnaryUnion {@link #geomunion} SELECT ST_UnaryUnion(
+ *      'POLYGON((0 0, 10 0, 0 10, 10 10, 0 0))'
+ * );
+ *
+ */
+PG_FUNCTION_INFO_V1(ST_UnaryUnion);
+Datum ST_UnaryUnion(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 33
+	PG_RETURN_NULL();
+	lwerror("The GEOS version this postgis binary "
+	        "was compiled against (%d) doesn't support "
+	        "'GEOSUnaryUnion' function (3.3.0+ required)",
+	        POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_GEOS_VERSION >= 33 */
+	PG_LWGEOM *geom1;
+	int is3d;
+	int srid;
+	GEOSGeometry *g1, *g3;
+	PG_LWGEOM *result;
+
+	POSTGIS_DEBUG(2, "in ST_UnaryUnion");
+
+	PROFSTART(PROF_QRUN);
+
+	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	/* UnaryUnion(empty) == (empty) */
+	if ( pglwgeom_is_empty(geom1) )
+		PG_RETURN_POINTER(geom1);
+
+	is3d = ( pglwgeom_has_z(geom1) );
+
+	srid = pglwgeom_get_srid(geom1);
+
+	initGEOS(lwnotice, lwgeom_geos_error);
+
+	PROFSTART(PROF_P2G1);
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
+	PROFSTOP(PROF_P2G1);
+	if ( 0 == g1 )   /* exception thrown at construction */
+	{
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
+		PG_RETURN_NULL();
+	}
+
+	POSTGIS_DEBUGF(3, "g1=%s", GEOSGeomToWKT(g1));
+
+	PROFSTART(PROF_GRUN);
+	g3 = GEOSUnaryUnion(g1);
+	PROFSTOP(PROF_GRUN);
+
+	POSTGIS_DEBUGF(3, "g3=%s", GEOSGeomToWKT(g3));
+
+	GEOSGeom_destroy(g1);
+
+	if (g3 == NULL)
+	{
+		lwerror("GEOSUnion: %s", lwgeom_geos_errmsg);
+		PG_RETURN_NULL(); /* never get here */
+	}
+
+
+	GEOSSetSRID(g3, srid);
+
+	PROFSTART(PROF_G2P);
+	result = GEOS2POSTGIS(g3, is3d);
+	PROFSTOP(PROF_G2P);
+
+	GEOSGeom_destroy(g3);
+
+	if (result == NULL)
+	{
+		elog(ERROR, "ST_UnaryUnion failed converting GEOS result Geometry to PostGIS format");
+		PG_RETURN_NULL(); /*never get here */
+	}
+
+	/* compressType(result); */
+
+	PROFSTOP(PROF_QRUN);
+	PROFREPORT("geos",geom1, NULL, result);
+
+	PG_FREE_IF_COPY(geom1, 0);
+
+	PG_RETURN_POINTER(result);
+#endif /* POSTGIS_GEOS_VERSION >= 33 */
 }
 
 
