@@ -1807,6 +1807,17 @@ CREATE SCHEMA '' || quote_ident(atopology) || '';
 		|| quote_ident(atopology)
 		|| ''.edge_data using gist (geom gist_geometry_ops);'';
 
+	------- Indexes on left_face and right_face of edge_data
+	------- NOTE: these indexes speed up GetFaceGeometry (and thus
+	-------       TopoGeometry::Geometry) by a factor of 10 !
+	-------       See http://trac.osgeo.org/postgis/ticket/806
+	EXECUTE ''CREATE INDEX edge_left_face_idx ON ''
+		|| quote_ident(atopology)
+		|| ''.edge_data (left_face);'';
+	EXECUTE ''CREATE INDEX edge_right_face_idx ON ''
+		|| quote_ident(atopology)
+		|| ''.edge_data (right_face);'';
+
 	------- Add record to the "topology" metadata table
 	EXECUTE ''INSERT INTO topology.topology (id, name, srid, precision) ''
 		|| '' VALUES ('' || quote_literal(topology_id) || '',''
