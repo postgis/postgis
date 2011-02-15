@@ -1,4 +1,8 @@
 --$Id$
+ /*** 
+ * 
+ * Copyright (C) 2011 Regina Obe and Leo Hsu (Paragon Corporation)
+ **/
 -- Note we are wrapping this in a function so we can make it immutable and those useable in an index
 -- It also allows us to shorten and possibly better cache the repetitive pattern in the code 
 -- greatest(to_number(b.fromhn,''99999999''),to_number(b.tohn,''99999999'')) 

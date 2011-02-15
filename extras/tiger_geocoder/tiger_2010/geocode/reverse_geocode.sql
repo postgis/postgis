@@ -5,20 +5,23 @@
  **/
 -- This function given a point try to determine the approximate street address (norm_addy form)
 -- and array of cross streets, as well as interpolated points along the streets
--- Use case example: SELECT pprint_addy(r.addy[1]) As st1, array_to_string(r.street, ',') FROM reverse_geocode(ST_GeomFromText('POINT(-71.057811 42.358274)',4269)) As r;
-set search_path=tiger,public;
+-- Use case example an address at the intersection of 3 streets: SELECT pprint_addy(r.addy[1]) As st1, pprint_addy(r.addy[2]) As st2, pprint_addy(r.addy[3]) As st3, array_to_string(r.street, ',') FROM reverse_geocode(ST_GeomFromText('POINT(-71.057811 42.358274)',4269)) As r;
+--set search_path=tiger,public;
 CREATE OR REPLACE FUNCTION reverse_geocode(
     IN pt geometry,
     IN include_strnum_range boolean,
     OUT intpt geometry[],
     OUT addy NORM_ADDY[],
-    OUT street text[]
+    OUT street varchar[]
 ) RETURNS RECORD
 AS $_$
 DECLARE
   var_redge RECORD;
   var_states text[];
   var_addy NORM_ADDY;
+  var_strnum varchar;
+  var_primary_line geometry := NULL;
+  var_primary_dist numeric(10,2) ;
 BEGIN
   IF pt IS NULL THEN
     RETURN;
@@ -31,29 +34,43 @@ BEGIN
   	RETURN;
   END IF;
   
-  -- Find the street edges that this point is closest to with tolerance of 500 meters (width of road)
+  -- Find the street edges that this point is closest to with tolerance of 0.005 but only consider the edge if the point is contained in the right or left face
+  -- Then order addresses by proximity to road
   FOR var_redge IN
-        SELECT DISTINCT ON(fullname) foo.gid, foo.fullname, foo.stusps, foo.zip, 
+        SELECT * 
+        FROM (SELECT DISTINCT ON(fullname)  foo.fullname, foo.stusps, foo.zip, 
                (SELECT z.place FROM zip_state_loc AS z WHERE z.zip = foo.zip and z.statefp = foo.statefp LIMIT 1) As place, foo.intpt,
-              side, fromhn, tohn
+              side, to_number(fromhn, '999999') As fromhn, to_number(tohn, '999999') As tohn, ST_GeometryN(ST_Multi(line),1) As line, foo.dist
         FROM 
-          (SELECT e.gid, e.fullname, a.zip, s.stusps, ST_ClosestPoint(e.the_geom, pt) As intpt, e.statefp, a.side, a.fromhn, a.tohn
+          (SELECT e.the_geom As line, e.fullname, a.zip, s.stusps, ST_ClosestPoint(e.the_geom, pt) As intpt, e.statefp, a.side, a.fromhn, a.tohn, ST_Distance_Sphere(e.the_geom, pt) As dist
           		FROM edges AS e INNER JOIN state As s ON (e.statefp = s.statefp AND s.statefp = ANY(var_states) )
           			INNER JOIN faces As fl ON (e.tfidl = fl.tfid AND e.statefp = fl.statefp)
           			INNER JOIN faces As fr ON (e.tfidr = fr.tfid AND e.statefp = fr.statefp)
           			INNER JOIN addr As a ON ( e.tlid = a.tlid AND e.statefp = a.statefp AND  
-          			   ( ( ST_Contains(fl.the_geom, pt) AND a.side = 'L') OR  ( ST_Contains(fr.the_geom, pt) AND a.side = 'R' ) ) )
+          			   ( ( ST_Contains(fl.the_geom, pt) AND a.side = 'L') OR ( ST_Contains(fr.the_geom, pt) AND a.side = 'R' ) ) )
           			-- INNER JOIN zip_state_loc As z ON (a.statefp =  z.statefp AND a.zip = z.zip) /** really slow with this join **/
           		WHERE e.statefp = ANY(var_states) AND a.statefp = ANY(var_states) AND ST_DWithin(e.the_geom, pt, 0.005)
-          		ORDER BY ST_Distance(e.the_geom, pt) LIMIT 4) As foo 
-          		WHERE ST_Distance_Sphere(foo.intpt, pt) < 150 --less than 150 m
-          		ORDER BY foo.fullname, ST_Distance_Sphere(foo.intpt, pt) LOOP
-       intpt := array_append(intpt,var_redge.intpt); 
-       IF var_redge.fullname IS NOT NULL THEN
-       		street := array_append(street, CASE WHEN include_strnum_range THEN COALESCE(var_redge.fromhn, '')::text || ' - ' || COALESCE(var_redge.tohn,'')::text || ' '::text  ELSE '' END::text ||  var_redge.fullname::text);
-       		var_addy := normalize_address(var_redge.fullname || ', ' || var_redge.place || ', ' || var_redge.stusps || ' ' || var_redge.zip);
-       		addy := array_append(addy, var_addy);
+          		ORDER BY ST_Distance_Sphere(e.the_geom, pt) LIMIT 4) As foo 
+          		WHERE dist < 150 --less than 150 m
+          		ORDER BY foo.fullname, foo.dist) As f ORDER BY f.dist LOOP
+       IF var_primary_line IS NULL THEN --this is the first time in the loop and our primary guess
+            var_primary_line := var_redge.line;
+            var_primary_dist := var_redge.dist;
        END IF;
+       -- We only consider other edges as matches if they intersect our primary edge -- that would mean we are at a corner place
+       IF ST_Intersects(var_redge.line, var_primary_line) THEN
+           intpt := array_append(intpt,var_redge.intpt); 
+           IF var_redge.fullname IS NOT NULL THEN
+                street := array_append(street, (CASE WHEN include_strnum_range THEN COALESCE(var_redge.fromhn::varchar, '')::varchar || ' - ' || COALESCE(var_redge.tohn::varchar,'')::varchar || ' '::varchar  ELSE '' END::varchar ||  var_redge.fullname::varchar)::varchar);
+                --interploate the number -- note that if fromhn > tohn we will be subtracting which is what we want
+                -- We only consider differential distances are reeally close from our primary pt
+                IF var_redge.dist < var_primary_dist*1.1 THEN 
+                    var_strnum := (var_redge.fromhn + ST_Line_Locate_Point(var_redge.line, pt)*(var_redge.tohn - var_redge.fromhn))::numeric(10)::varchar;
+                    var_addy := normalize_address( COALESCE(var_strnum::varchar || ' ', '') || var_redge.fullname || ', ' || var_redge.place || ', ' || var_redge.stusps || ' ' || var_redge.zip);
+                    addy := array_append(addy, var_addy);
+                END IF;
+           END IF;
+        END IF;
   END LOOP;
           		
   RETURN;   
@@ -62,7 +79,7 @@ $_$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION reverse_geocode(IN pt geometry, OUT intpt geometry[],
     OUT addy NORM_ADDY[],
-    OUT street text[]) RETURNS RECORD
+    OUT street varchar[]) RETURNS RECORD
 AS 
 $$
 -- default to not including street range in cross streets
