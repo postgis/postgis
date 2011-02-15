@@ -360,5 +360,92 @@ UNZIPTOOL=unzip
 		<para><xref linkend="Normalize_Address"/></para>
 	  </refsection>
 	</refentry>
+	
+	<refentry id="Reverse_Geocode">
+      <refnamediv>
+        <refname>Reverse_Geocode</refname>
+    
+        <refpurpose>Takes a geometry point in a known spatial ref sys and returns a record containing an array of possible addresses and an array of cross streets.  If include_strnum_range = true, includes the street range in the cross streets.</refpurpose>
+      </refnamediv>
+    
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>record <function>Reverse_Gecode</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
+            <paramdef><type>geometry[] </type> <parameter>OUT intpt</parameter></paramdef>
+            <paramdef><type>norm_addy[] </type> <parameter>OUT addy</parameter></paramdef>
+            <paramdef><type>varchar[] </type> <parameter>OUT street</parameter></paramdef>
+          </funcprototype>
+    
+          <!-- an optional second method prototype -->
+          <funcprototype>
+            <funcdef>record <function>Reverse_Gecode</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
+            <paramdef><type>boolean </type> <parameter>include_strnum_range</parameter></paramdef>
+            <paramdef><type>geometry[] </type> <parameter>OUT intpt</parameter></paramdef>
+            <paramdef><type>norm_addy[] </type> <parameter>OUT addy</parameter></paramdef>
+            <paramdef><type>varchar[] </type> <parameter>OUT street</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+    
+      <refsection>
+        <title>Description</title>
+    
+        <para>Takes a geometry point in a known spatial ref and returns a record containing an array of possible addresses and an array of cross streets.  If include_strnum_range = true, includes the street range in the cross streets.
+        include_strnum_range defaults to false if not passed in. Addresses are sorted according to which road a point is closest to so first address is most likely the right one.</para>
+    
+      
+        <!-- use this format if new function -->
+        <para>Availability: 2.0.0 </para>
+      </refsection>
+    
+    
+      <refsection>
+        <title>Examples</title>
+        <para>Example of a point at the corner of two streets, but closest to one.  This is approximate location of MIT: 77 Massachusetts Ave, Cambridge, MA 02139  
+            Note that although we don't have 3 streets, PostgreSQL will just return null for entries above our upper bound so safe to use.  This includes street ranges</para> 
+        <programlisting>SELECT pprint_addy(r.addy[1]) As st1, pprint_addy(r.addy[2]) As st2, pprint_addy(r.addy[3]) As st3, array_to_string(r.street, ',') As cross_streets 
+        FROM reverse_geocode(ST_GeomFromText('POINT(-71.093902 42.359446)',4269),true) As r;
+       
+ result
+ ------
+      st1                                  | st2 | st3 |               cross_streets
+-------------------------------------------+-----+-----+----------------------------------------------
+ 67 Massachusetts Ave, Cambridge, MA 02139 |     |     | 67 - 127 Massachusetts Ave,32 - 88 Vassar St</programlisting>
+            
+         <para>Here we choose not to include the address ranges for the cross streets and picked a location 
+really really close to a corner of 2 streets thus could be known by two different addresses.</para>
+<programlisting>SELECT pprint_addy(r.addy[1]) As st1, pprint_addy(r.addy[2]) As st2, pprint_addy(r.addy[3]) As st3,
+array_to_string(r.street, ',') As cross_str
+FROM reverse_geocode(ST_GeomFromText('POINT(-71.06941 42.34225)',4269)) As r;
+
+result
+--------
+               st1               |               st2               | st3 | cross_str
+---------------------------------+---------------------------------+-----+------------------------
+ 4 Bradford St, Boston, MA 02118 | 48 Waltham St, Boston, MA 02118 |     | Bradford St,Waltham St
+</programlisting>
+
+<para>For this one we reuse our geocoded example from <xref linkend="Geocode" /> and we only want the primary address and at most 2 cross streets.</para>
+<programlisting>SELECT actual_addr, lon, lat, pprint_addy((rg).addy[1]) As int_addr1, (rg).street[1] As cross1, (rg).street[2] As cross2
+FROM (SELECT address As actual_addr, 
+    reverse_geocode( ST_SetSRID(ST_Point(lon,lat),4326) ) As rg
+    FROM addresses_to_geocode WHERE rating IS NOT NULL) As foo;
+
+                 actual_addr                  |                 int_addr1                 |      cross1       |    cross2
+----------------------------------------------+-------------------------------------------+-------------------+--------------
+ 529 Main Street, Boston MA, 02129            | 538 Main St, Boston, MA 02129             | Main St           |
+ 77 Massachusetts Avenue, Cambridge, MA 02139 | 59 Massachusetts Ave, Cambridge, MA 02139 | Massachusetts Ave | Wellesley St</programlisting>
+      </refsection>
+    
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+    
+        <para><xref linkend="Pprint_Addy" />, <xref linkend="Geocode" /></para>
+      </refsection>
+    </refentry>
 
   </sect1>
