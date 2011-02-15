@@ -1891,6 +1891,7 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 	TupleDesc tupdesc;
 	HeapTuple tuple;
 	AttInMetadata *attinmeta;
+	int flags = 0;
 
 	/*
 	 * Build a tuple description for a
@@ -1911,13 +1912,18 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
+	if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) ) {
+		flags = PG_GETARG_INT32(1);
+	}
+
 	initGEOS(lwnotice, lwgeom_geos_error);
 
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom);
 
 	if ( g1 )
 	{
-		valid = GEOSisValidDetail(g1, &geos_reason, &geos_location);
+		valid = GEOSisValidDetail(g1, flags,
+			&geos_reason, &geos_location);
 		GEOSGeom_destroy((GEOSGeometry *)g1);
 		if ( geos_reason )
 		{
