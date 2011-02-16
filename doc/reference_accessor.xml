@@ -1190,6 +1190,11 @@ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)'
 			<funcdef>valid_detail <function>ST_IsValidDetail</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 		  </funcprototype>
+		  <funcprototype>
+			<funcdef>valid_detail <function>ST_IsValidDetail</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>flags</parameter></paramdef>
+		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
@@ -1199,6 +1204,20 @@ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)'
 		<para>Returns a valid_detail row, formed by a boolean (valid) stating if a geometry is valid, a varchar (reason) stating a reason why it is invalid and a geometry (location) pointing out where it is invalid.</para>
 
 		<para>Useful to substitute and improve the combination of ST_IsValid and ST_IsValidReason to generate a detailed report of invalid geometries.</para>
+
+		<para>
+The 'flags' argument is a bitfield. It can have the following values:
+			<itemizedlist>
+				<listitem>
+<para>
+1: Consider self-intersecting rings forming holes as valid.
+   This is also know as "the ESRI flag".
+   Note that this is against the OGC model.
+</para>
+				</listitem>
+			</itemizedlist>
+		</para>
+
 		<para>Availability: 2.0.0 - requires GEOS &gt;= 3.3.0.</para>
 
 	  </refsection>
