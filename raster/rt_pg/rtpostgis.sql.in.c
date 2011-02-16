@@ -210,6 +210,11 @@ CREATE OR REPLACE FUNCTION st_addband(rast raster, index int, pixeltype text, in
     AS 'select st_addband($1, $2, $3, $4, NULL)'
     LANGUAGE 'SQL' IMMUTABLE;
 
+CREATE OR REPLACE FUNCTION st_addband(raster1 raster, raster2 raster, nband1 int, nband2 int)
+    RETURNS RASTER
+    AS 'MODULE_PATHNAME', 'RASTER_copyband'
+    LANGUAGE 'C' IMMUTABLE STRICT;
+
 
 -----------------------------------------------------------------------
 -- MapAlgebra
@@ -1953,7 +1958,7 @@ CREATE OR REPLACE FUNCTION DropRasterTable(schema_name varchar,
     END;
     $$
     LANGUAGE 'plpgsql' VOLATILE STRICT; -- WITH (isstrict);
-
+	
 -----------------------------------------------------------------------
 -- DropRasterTable (with default catalog and schema name)
 -- Drop a table and all its references in raster_columns
@@ -1976,4 +1981,3 @@ CREATE OR REPLACE FUNCTION DropRasterTable(table_name varchar)
 -------------------------------------------------------------------
 
 -- COMMIT;
-

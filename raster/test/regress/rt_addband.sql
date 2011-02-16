@@ -108,3 +108,4 @@ SELECT St_Value(ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 10, 10, 2, 2, 0, 0, -1
 SELECT St_Value(ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 10, 10, 2, 2, 0, 0, -1), 1, '64BF', 1234.567, NULL), 3, 3);
 SELECT St_Value(ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 10, 10, 2, 2, 0, 0, -1), 1, '64BF', 210000.4645643647457, NULL), 3, 3);
 SELECT St_Value(ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 10, 10, 2, 2, 0, 0, -1), 1, '64BF', 1234.4645643647457, NULL), 3, 3);
+SELECT St_Value(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 10, 10, 2, 2, 0, 0,-1), 1, '64BF', 1234.5678, NULL), ST_MakeEmptyRaster(1000, 1000, 10, 10, 2, 2, 0, 0, -1), 1, 1), 3, 3);
