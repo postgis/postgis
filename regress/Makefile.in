@@ -73,43 +73,29 @@ TESTS = \
 	wmsservers_new \
 	tickets \
 	remove_repeated_points \
-	split \
-	isvaliddetail
+	split
 
 # TESTS += wmsservers_old
-# Styled buffer only if GEOS >= 3.2
+
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 32),1)
-	TESTS += regress_buffer_params
+	# GEOS-3.3 adds:
+	# ST_HausdorffDistance, ST_Buffer(params)
+	TESTS += \
+		hausdorff \
+		regress_buffer_params
 endif
 
-# Hausdorff only if GEOS >= 3.2
-ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 32),1)
-	TESTS += hausdorff
-endif
-
-# ST_MakeClean if GEOS > 3.2
-ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">" 32),1)
-	TESTS += clean
-endif
-
-# ST_RelateMatch if GEOS >= 3.3
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 33),1)
-	TESTS += relatematch 
-endif
-
-# ST_SharedPaths if GEOS >= 3.3
-ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 33),1)
-	TESTS += sharedpaths
-endif
-
-# ST_Snap if GEOS >= 3.3
-ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 33),1)
-	TESTS += snap
-endif
-
-# ST_UnaryUnion if GEOS >= 3.3
-ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 33),1)
-	TESTS += unaryunion
+	# GEOS-3.3 adds:
+	# ST_RelateMatch, ST_IsValidDetail, ST_SharedPaths ,
+	# ST_Snap, ST_UnaryUnion, ST_MakeClean 
+	TESTS += \
+		relatematch  \
+		isvaliddetail \
+		sharedpaths \
+		snap \
+		unaryunion \
+		clean
 endif
 
 all install uninstall distclean:
