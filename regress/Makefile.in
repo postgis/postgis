@@ -73,7 +73,8 @@ TESTS = \
 	wmsservers_new \
 	tickets \
 	remove_repeated_points \
-	split
+	split \
+	isvaliddetail
 
 # TESTS += wmsservers_old
 # Styled buffer only if GEOS >= 3.2

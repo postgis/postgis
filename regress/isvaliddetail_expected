@@ -1,0 +1,6 @@
+1|t||
+2|f|Too few points in geometry component|POINT(70 250)
+3|f|Self-intersection|POINT(70 400)
+4|f|Self-intersection|POINT(70 400)
+5|f|Ring Self-intersection|POINT(70 250)
+6|t||
