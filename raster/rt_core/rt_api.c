@@ -1382,8 +1382,6 @@ rt_raster_add_band(rt_context ctx, rt_raster raster, rt_band band, int index) {
             sizeof (rt_band)*(raster->numBands + 1)
             );
 
-    RASTER_DEBUGF(4, "realloc returned %p", raster->bands);
-
     if (!raster->bands) {
         ctx->err("Out of virtual memory "
                 "reallocating band pointers");
@@ -1391,6 +1389,8 @@ rt_raster_add_band(rt_context ctx, rt_raster raster, rt_band band, int index) {
         return -1;
     }
 
+    RASTER_DEBUGF(4, "realloc returned %p", raster->bands);
+    
     for (i = 0; i <= raster->numBands; ++i) {
         if (i == index) {
             oldband = raster->bands[i];
@@ -1403,8 +1403,220 @@ rt_raster_add_band(rt_context ctx, rt_raster raster, rt_band band, int index) {
     }
 
     raster->numBands++;
+
+    RASTER_DEBUGF(4, "now raster has %d bands", raster->numBands);
+
     return index;
 }
+
+
+int32_t
+rt_raster_generate_new_band(rt_context ctx, rt_raster raster, rt_pixtype pixtype, 
+        double initialvalue, uint32_t hasnodata, double nodatavalue, int index)
+{    
+    rt_band band = NULL;
+    int width = 0;
+    int height = 0;
+    int numval = 0;
+    int datasize = 0;
+    int oldnumbands = 0;
+    int numbands = 0;
+    void * mem = NULL;
+    int32_t checkvalint = 0;
+    uint32_t checkvaluint = 0;
+    double checkvaldouble = 0;
+    float checkvalfloat = 0;
+    int i;
+ 
+    
+    assert(NULL != ctx);
+    assert(NULL != raster);
+
+    /* Make sure index is in a valid range */
+    oldnumbands = rt_raster_get_num_bands(ctx, raster);
+    if (index < 0)
+        index = 0;
+    else if (index > rt_raster_get_num_bands(ctx, raster) + 1)
+        index = rt_raster_get_num_bands(ctx, raster) + 1;
+
+    /* Determine size of memory block to allocate and allocate it */
+    width = rt_raster_get_width(ctx, raster);
+    height = rt_raster_get_height(ctx, raster);
+    numval = width * height;
+    datasize = rt_pixtype_size(ctx, pixtype) * numval;
+
+    mem = (int *)ctx->alloc(datasize);
+    if (!mem) {
+        ctx->err("Could not allocate memory for band");
+        return -1;
+    }
+
+    if (fabs(initialvalue - 0.0) < FLT_EPSILON)
+        memset(mem, 0, datasize);
+    else {
+        switch (pixtype)
+        {
+            case PT_1BB:
+            {
+                uint8_t *ptr = mem;
+                for (i = 0; i < numval; i++)
+                    ptr[i] = (uint8_t) initialvalue&0x01;
+                checkvalint = ptr[0];
+                break;
+            }
+            case PT_2BUI:
+            {
+                uint8_t *ptr = mem;
+                for (i = 0; i < numval; i++)
+                    ptr[i] = (uint8_t) initialvalue&0x03;
+                checkvalint = ptr[0];
+                break;
+            }
+            case PT_4BUI:
+            {
+                uint8_t *ptr = mem;
+                for (i = 0; i < numval; i++)
+                    ptr[i] = (uint8_t) initialvalue&0x0F;
+                checkvalint = ptr[0];
+                break;
+            }
+            case PT_8BSI:
+            {
+                int8_t *ptr = mem;
+                for (i = 0; i < numval; i++)
+                    ptr[i] = (int8_t) initialvalue;
+                checkvalint = ptr[0];
+                break;
+            }
+            case PT_8BUI:
+            {
+                uint8_t *ptr = mem;
+                for (i = 0; i < numval; i++)
+                    ptr[i] = (uint8_t) initialvalue;
+                checkvalint = ptr[0];
+                break;
+            }
+            case PT_16BSI:
+            {
+                int16_t *ptr = mem;
+                for (i = 0; i < numval; i++)
+                    ptr[i] = (int16_t) initialvalue;
+                checkvalint = ptr[0];
+                break;
+            }
+            case PT_16BUI:
+            {
+                uint16_t *ptr = mem;
+                for (i = 0; i < numval; i++)
+                    ptr[i] = (uint16_t) initialvalue;
+                checkvalint = ptr[0];
+                break;
+            }
+            case PT_32BSI:
+            {
+                int32_t *ptr = mem;
+                for (i = 0; i < numval; i++)
+                    ptr[i] = (int32_t) initialvalue;
+                checkvalint = ptr[0];
+                break;
+            }
+            case PT_32BUI:
+            {
+                uint32_t *ptr = mem;
+                for (i = 0; i < numval; i++)
+                    ptr[i] = (uint32_t) initialvalue;
+                checkvaluint = ptr[0];
+                break;
+            }
+            case PT_32BF:
+            {
+                float *ptr = mem;
+                for (i = 0; i < numval; i++)
+                    ptr[i] = (float) initialvalue;
+                checkvalfloat = ptr[0];
+                break;
+            }
+            case PT_64BF:
+            {
+                double *ptr = mem;
+                for (i = 0; i < numval; i++)
+                    ptr[i] = initialvalue;
+                checkvaldouble = ptr[0];
+                break;
+            }
+            default:
+            {
+                ctx->err("Unknown pixeltype %d", pixtype);
+                ctx->dealloc(mem);
+                return -1;
+            }
+        }
+    }
+
+#ifdef POSTGIS_RASTER_WARN_ON_TRUNCATION
+    /* Overflow checking */
+    switch (pixtype)
+    {
+        case PT_1BB:
+        case PT_2BUI:
+        case PT_4BUI:
+        case PT_8BSI:
+        case PT_8BUI:
+        case PT_16BSI:
+        case PT_16BUI:
+        case PT_32BSI:
+        {
+            if (fabs(checkvalint - initialvalue) > FLT_EPSILON)
+                ctx->warn("Initial pixel value for %s band got truncated from %f to %d",
+                    rt_pixtype_name(ctx, pixtype),
+                    initialvalue, checkvalint);
+            break;
+        }
+        case PT_32BUI:
+        {
+            if (fabs(checkvaluint - initialvalue) > FLT_EPSILON)
+                ctx->warn("Initial pixel value for %s band got truncated from %f to %u",
+                    rt_pixtype_name(ctx, pixtype),
+                    initialvalue, checkvaluint);
+            break;
+        }
+        case PT_32BF:
+        {
+            /* For float, because the initial value is a double, 
+            there is very often a difference between the desired value and the obtained one */
+            if (fabs(checkvalfloat - initialvalue) > FLT_EPSILON)
+                ctx->warn("Initial pixel value for %s band got truncated from %f to %g",
+                    rt_pixtype_name(ctx, pixtype),
+                    initialvalue, checkvalfloat);
+            break;
+        }
+        case PT_64BF:
+        {
+            if (fabs(checkvaldouble - initialvalue) > FLT_EPSILON)
+                ctx->warn("Initial pixel value for %s band got truncated from %f to %g",
+                    rt_pixtype_name(ctx, pixtype),
+                    initialvalue, checkvaldouble);
+            break;
+        }
+    }
+#endif /* POSTGIS_RASTER_WARN_ON_TRUNCATION */
+
+    band = rt_band_new_inline(ctx, width, height, pixtype, hasnodata, nodatavalue, mem);
+    if (! band) {
+        ctx->err("Could not add band to raster. Aborting");
+        ctx->dealloc(mem);
+        return -1;
+    }
+    index = rt_raster_add_band(ctx, raster, band, index);
+    numbands = rt_raster_get_num_bands(ctx, raster);
+    if (numbands == oldnumbands || index == -1) {
+        ctx->err("Could not add band to raster. Aborting");
+        rt_band_destroy(ctx, band);
+    }
+    
+    return index;
+}
+
 
 void
 rt_raster_cell_to_geopoint(rt_context ctx, rt_raster raster,
@@ -3319,9 +3531,9 @@ int rt_raster_has_no_band(rt_context ctx, rt_raster raster, int nband) {
  * @param ctx: context, for thread safety
  * @param raster1: raster to copy band to
  * @param raster2: raster to copy band from
- * @param nband1: band index of destination raster
- * @param nband2: band index of source raster
- * @return The band index of the first raster where the new band is copied.
+ * @param nband1: band index of source raster
+ * @param nband2: band index of destination raster
+ * @return The band index of the second raster where the new band is copied.
  */
 int32_t rt_raster_copy_band(rt_context ctx, rt_raster raster1,
         rt_raster raster2, int nband1, int nband2)
@@ -3339,21 +3551,21 @@ int32_t rt_raster_copy_band(rt_context ctx, rt_raster raster1,
     }
 
     /* Check bands limits */
-    if (nband1 < 1)
-        nband1 = 1;
-    else if (nband1 > raster1->numBands)
-        nband1 = raster1->numBands;
+    if (nband1 < 0)
+        nband1 = 0;
+    else if (nband1 >= raster1->numBands)
+        nband1 = raster1->numBands - 1;
 
-    if (nband2 < 1)
-        nband2 = 1;
+    if (nband2 < 0)
+        nband2 = 0;
     else if (nband2 > raster2->numBands)
         nband2 = raster2->numBands;
 
-    /* Get band from second raster */
-    newband = raster2->bands[nband2];
+    /* Get band from first raster */
+    newband = rt_raster_get_band(ctx, raster1, nband1);
 
-    /* Add band to the first raster */
-    return rt_raster_add_band(ctx, raster1, newband, nband1);    
+    /* Add band to the second raster */
+    return rt_raster_add_band(ctx, raster2, newband, nband2);    
 }
 
 /**

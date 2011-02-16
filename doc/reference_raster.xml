@@ -2741,12 +2741,12 @@ WHERE rid = 2;
 			<refsynopsisdiv>
 				<funcsynopsis>
 				 <funcprototype>
-					<funcdef>integer <function>ST_SetBandNoDataValue</function></funcdef>
+					<funcdef>raster <function>ST_SetBandNoDataValue</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>val</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
-					<funcdef>integer <function>ST_SetBandNoDataValue</function></funcdef>
+					<funcdef>raster <function>ST_SetBandNoDataValue</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>val</parameter></paramdef>

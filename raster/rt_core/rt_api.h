@@ -494,6 +494,24 @@ uint16_t rt_raster_get_height(rt_context ctx, rt_raster raster);
  */
 int32_t rt_raster_add_band(rt_context ctx, rt_raster raster, rt_band band, int index);
 
+
+
+/**
+ * Generate a new band data and add it to a raster.
+ *
+ * @param ctx : context, for thread safety
+ * @param raster : the raster to add a band to
+ * @param pixtype: the pixel type for the new band
+ * @param initialvalue: initial value for pixels
+ * @param hasnodata: indicates if the band has a nodata value
+ * @param nodatavalue: nodata value for the new band
+ * @param index: position to add the new band in the raster
+ *
+ * @return identifier (position) for the just-added raster, or -1 on error
+ */
+int32_t rt_raster_generate_new_band(rt_context ctx, rt_raster raster, rt_pixtype pixtype, 
+        double initialvalue, uint32_t hasnodata, double nodatavalue, int index);
+
 /**
  * Set scale in projection units
  *

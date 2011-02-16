@@ -53,6 +53,8 @@ TEST_PIXEL = \
 TEST_UTILITY = \
 	create_rt_utility_test.sql \
 	rt_utility.sql \
+    create_rt_mapalgebra_test.sql \
+    rt_mapalgebra.sql \
 	$(NULL)
 
 TEST_GIST = \

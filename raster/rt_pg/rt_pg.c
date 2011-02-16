@@ -38,6 +38,8 @@
 #include <access/itup.h>
 #include <fmgr.h>
 #include <utils/elog.h>
+#include <utils/builtins.h>
+#include <executor/spi.h>
 #include <funcapi.h>
 
 /*#include "lwgeom_pg.h"*/
@@ -61,7 +63,9 @@ static rt_context get_rt_context(FunctionCallInfoData *fcinfo);
 static void *rt_pgalloc(size_t size);
 static void *rt_pgrealloc(void *mem, size_t size);
 static void rt_pgfree(void *mem);
-
+static char * replace(const char *str, const char *oldstr, const char *newstr,
+        int *count);
+static char *strtoupper(char *str);
 
 /* Prototypes */
 
@@ -108,8 +112,77 @@ Datum RASTER_getBandPath(PG_FUNCTION_ARGS);
 Datum RASTER_getPixelValue(PG_FUNCTION_ARGS);
 Datum RASTER_setPixelValue(PG_FUNCTION_ARGS);
 Datum RASTER_addband(PG_FUNCTION_ARGS);
+Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS);
 Datum RASTER_isEmpty(PG_FUNCTION_ARGS);
 Datum RASTER_hasNoBand(PG_FUNCTION_ARGS);
+
+
+/* Replace function taken from http://ubuntuforums.org/showthread.php?s=aa6f015109fd7e4c7e30d2fd8b717497&t=141670&page=3 */
+/* ---------------------------------------------------------------------------
+  Name       : replace - Search & replace a substring by another one. 
+  Creation   : Thierry Husson, Sept 2010
+  Parameters :
+      str    : Big string where we search
+      oldstr : Substring we are looking for
+      newstr : Substring we want to replace with
+      count  : Optional pointer to int (input / output value). NULL to ignore.  
+               Input:  Maximum replacements to be done. NULL or < 1 to do all.
+               Output: Number of replacements done or -1 if not enough memory.
+  Returns    : Pointer to the new string or NULL if error.
+  Notes      : 
+     - Case sensitive - Otherwise, replace functions "strstr" by "strcasestr"
+     - Always allocates memory for the result.
+--------------------------------------------------------------------------- */
+static char* 
+replace(const char *str, const char *oldstr, const char *newstr, int *count)
+{
+   const char *tmp = str;
+   char *result;
+   int   found = 0;
+   int   length, reslen;
+   int   oldlen = strlen(oldstr);
+   int   newlen = strlen(newstr);
+   int   limit = (count != NULL && *count > 0) ? *count : -1; 
+
+   tmp = str;
+   while ((tmp = strstr(tmp, oldstr)) != NULL && found != limit)
+      found++, tmp += oldlen;
+   
+   length = strlen(str) + found * (newlen - oldlen);
+   if ( (result = (char *)palloc(length+1)) == NULL) {
+      fprintf(stderr, "Not enough memory\n");
+      found = -1;
+   } else {
+      tmp = str;
+      limit = found; /* Countdown */
+      reslen = 0; /* length of current result */ 
+      /* Replace each old string found with new string  */
+      while ((limit-- > 0) && (tmp = strstr(tmp, oldstr)) != NULL) {
+         length = (tmp - str); /* Number of chars to keep intouched */
+         strncpy(result + reslen, str, length); /* Original part keeped */ 
+         strcpy(result + (reslen += length), newstr); /* Insert new string */
+         reslen += newlen;
+         tmp += oldlen;
+         str = tmp;
+      }
+      strcpy(result + reslen, str); /* Copies last part and ending nul char */
+   }
+   if (count != NULL) *count = found;
+   return result;
+}
+
+
+static char *
+strtoupper(char * str)
+{
+    int j;
+
+    for(j = 0; j < strlen(str); j++)
+        str[j] = toupper(str[j]);
+
+    return str;
+
+}
 
 
 static void *
@@ -1281,7 +1354,7 @@ Datum RASTER_setBandNoDataValue(PG_FUNCTION_ARGS)
     bool forceChecking = FALSE;
 
     /* Check index is not NULL */
-    if ((Pointer *)PG_GETARG_DATUM(1) == NULL) {
+    if (PG_ARGISNULL(1)) {
         /* Simply return NULL */
         PG_RETURN_NULL();
     }
@@ -1295,7 +1368,7 @@ Datum RASTER_setBandNoDataValue(PG_FUNCTION_ARGS)
     assert(0 <= (index - 1));
 
     /* Deserialize raster */
-    if ((Pointer *)PG_GETARG_DATUM(0) == NULL) {
+    if (PG_ARGISNULL(0)) {
         /* Simply return NULL */
         PG_RETURN_NULL();
     }
@@ -1319,7 +1392,7 @@ Datum RASTER_setBandNoDataValue(PG_FUNCTION_ARGS)
     forceChecking = PG_GETARG_BOOL(3);
 
 
-    if ((Pointer *)PG_GETARG_DATUM(2) == NULL) {
+    if (PG_ARGISNULL(2)) {
         /* Set the hasnodata flag to FALSE */
         rt_band_set_hasnodata_flag(ctx, band, FALSE);
 
@@ -1737,178 +1810,11 @@ Datum RASTER_addband(PG_FUNCTION_ARGS)
             index = oldnumbands + 1;
         }
     }
-    
-    /* Determine size of memory block to allocate and allocate*/
-    width = rt_raster_get_width(ctx, raster);
-    height = rt_raster_get_height(ctx, raster);
-    numval = width * height;
-    datasize = rt_pixtype_size(ctx, pixtype) * numval;
-    
-    
-    mem = palloc((int) datasize);
-    if (!mem)
-    {
-        elog(ERROR, "Could not allocate memory for band");
-        PG_RETURN_NULL();
-    }
-        
-    /* Initialize block of memory to 0 or to the provided initial value */
-    if (initialvalue == 0)
-        memset(mem, 0, datasize);
-    else
-    {
-        switch (pixtype)
-        {
-            case PT_1BB:
-            {
-                uint8_t *ptr = mem;
-                for (i = 0; i < numval; i++)
-                    ptr[i] = (uint8_t) initialvalue&0x01;
-                checkvalint = ptr[0];
-                break;
-            }
-            case PT_2BUI:
-            {
-                uint8_t *ptr = mem;
-                for (i = 0; i < numval; i++)
-                    ptr[i] = (uint8_t) initialvalue&0x03;
-                checkvalint = ptr[0];
-                break;
-            }
-            case PT_4BUI:
-            {
-                uint8_t *ptr = mem;
-                for (i = 0; i < numval; i++)
-                    ptr[i] = (uint8_t) initialvalue&0x0F;
-                checkvalint = ptr[0];
-                break;
-            }
-            case PT_8BSI:
-            {
-                int8_t *ptr = mem;
-                for (i = 0; i < numval; i++)
-                    ptr[i] = (int8_t) initialvalue;
-                checkvalint = ptr[0];
-                break;
-            }
-            case PT_8BUI:
-            {
-                uint8_t *ptr = mem;
-                for (i = 0; i < numval; i++)
-                    ptr[i] = (uint8_t) initialvalue;
-                checkvalint = ptr[0];
-                break;
-            }
-            case PT_16BSI:
-            {
-                int16_t *ptr = mem;
-                for (i = 0; i < numval; i++)
-                    ptr[i] = (int16_t) initialvalue;
-                checkvalint = ptr[0];
-                break;
-            }
-            case PT_16BUI:
-            {
-                uint16_t *ptr = mem;
-                for (i = 0; i < numval; i++)
-                    ptr[i] = (uint16_t) initialvalue;
-                checkvalint = ptr[0];
-                break;
-            }
-            case PT_32BSI:
-            {
-                int32_t *ptr = mem;
-                for (i = 0; i < numval; i++)
-                    ptr[i] = (int32_t) initialvalue;
-                checkvalint = ptr[0];
-                break;
-            }
-            case PT_32BUI:
-            {
-                uint32_t *ptr = mem;
-                for (i = 0; i < numval; i++)
-                    ptr[i] = (uint32_t) initialvalue;
-                checkvaluint = ptr[0];
-                break;
-            }
-            case PT_32BF:
-            {
-                float *ptr = mem;
-                for (i = 0; i < numval; i++)
-                    ptr[i] = (float) initialvalue;
-                checkvalfloat = ptr[0];
-                break;
-            }
-            case PT_64BF:
-            {
-                double *ptr = mem;
-                for (i = 0; i < numval; i++)
-                    ptr[i] = initialvalue;
-                checkvaldouble = ptr[0];
-                break;
-            }
-            default:
-            {
-                elog(ERROR, "Unknown pixeltype %d", pixtype);
-                PG_RETURN_NULL();
-            }
-        }
-    }
 
-#ifdef POSTGIS_RASTER_WARN_ON_TRUNCATION
-    /* Overflow checking */
-    switch (pixtype)
-    {
-        case PT_1BB:
-        case PT_2BUI:
-        case PT_4BUI:
-        case PT_8BSI:
-        case PT_8BUI:
-        case PT_16BSI:
-        case PT_16BUI:
-        case PT_32BSI:
-        {
-            if (fabs(checkvalint - initialvalue) > 0.0001)
-                elog(WARNING, "Initial pixel value for %s band got truncated from %f to %d",
-                    rt_pixtype_name(ctx, pixtype),
-                    initialvalue, checkvalint);
-            break;
-        }
-        case PT_32BUI:
-        {
-            if (fabs(checkvaluint - initialvalue) > 0.0001)
-                elog(WARNING, "Initial pixel value for %s band got truncated from %f to %u",
-                    rt_pixtype_name(ctx, pixtype),
-                    initialvalue, checkvaluint);
-            break;
-        }
-        case PT_32BF:
-        {
-            /* For float, because the initial value is a double, 
-            there is very often a difference between the desired value and the obtained one */
-            if (checkvalfloat != initialvalue)
-                elog(WARNING, "Initial pixel value for %s band got truncated from %f to %g",
-                    rt_pixtype_name(ctx, pixtype),
-                    initialvalue, checkvalfloat);
-            break;
-        }
-        case PT_64BF:
-        {
-            if (checkvaldouble != initialvalue)
-                elog(WARNING, "Initial pixel value for %s band got truncated from %f to %g",
-                    rt_pixtype_name(ctx, pixtype),
-                    initialvalue, checkvaldouble);
-            break;
-        }
-    }
-#endif /* POSTGIS_RASTER_WARN_ON_TRUNCATION */
+    
+    index = rt_raster_generate_new_band(ctx, raster, pixtype, initialvalue,
+            hasnodata, nodatavalue, index - 1);
 
-    band = rt_band_new_inline(ctx, width, height, pixtype, hasnodata, nodatavalue, mem);
-    if (! band) {
-        elog(ERROR, "Could not add band to raster. Returning NULL");
-        PG_RETURN_NULL();
-    }
-    index = rt_raster_add_band(ctx, raster, band, index - 1);
     numbands = rt_raster_get_num_bands(ctx, raster);
     if (numbands == oldnumbands || index == -1) {
         elog(ERROR, "Could not add band to raster. Returning NULL");
@@ -1975,6 +1881,445 @@ Datum RASTER_hasNoBand(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(rt_raster_has_no_band(ctx, raster, nBand));
 }
 
+PG_FUNCTION_INFO_V1(RASTER_mapAlgebra);
+Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
+{
+    rt_pgraster *pgraster = NULL;
+    rt_raster raster = NULL;
+    rt_raster newrast = NULL;
+    rt_context ctx = NULL;
+    rt_band band = NULL;
+    rt_band newband = NULL;
+    int x, y, nband, width, height;
+    double r;
+    double newnodatavalue, newinitialvalue, newval;
+    char *newexpr = NULL;
+    char *initexpr = NULL;
+    char *initndvexpr = NULL;
+    char *expression = NULL;
+    char *nodatavalueexpr = NULL;
+    rt_pixtype newpixeltype, pixeltype;
+    int skipcomputation = 0;
+    bool newhasnodatavalue = FALSE;
+    char strnewnodatavalue[50];
+    char strnewval[50];
+    int count = 0;
+    char *command = NULL;
+    int len = 0;
+    int ret = -1;
+    int proc;
+    TupleDesc tupdesc;
+    SPITupleTable * tuptable = NULL;
+    HeapTuple tuple;
+
+    POSTGIS_RT_DEBUG(2, "RASTER_mapAlgebra: STARTING...");
+
+    /* Check raster */
+    if (PG_ARGISNULL(0)) {
+        elog(WARNING, "MapAlgebra: Raster is NULL. Returning NULL");
+        PG_RETURN_NULL();
+    }
+
+
+    /* Deserialize raster */
+    pgraster = (rt_pgraster *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+    ctx = get_rt_context(fcinfo);
+    raster = rt_raster_deserialize(ctx, pgraster);
+    if ( ! raster )
+    {
+ 		ereport(ERROR,
+			(errcode(ERRCODE_OUT_OF_MEMORY), 
+				errmsg("MapAlgebra: Could not deserialize raster")));
+		PG_RETURN_NULL();    
+    }
+
+    POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebra: GETTING ARGUMENTS...");
+
+    /* Get the rest of the arguments */
+
+    if (PG_ARGISNULL(1))
+        nband = 1;
+    else
+        nband = PG_GETARG_INT32(1);
+
+    if (nband < 1)
+        nband = 1;
+    
+    POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebra: CREATING NEW RASTER...");
+
+    /** 
+     * Create a new empty raster with having the same georeference as the
+     * provided raster
+     **/
+    width = rt_raster_get_width(ctx, raster);
+    height = rt_raster_get_height(ctx, raster);
+
+    newrast = rt_raster_new(ctx,
+            rt_raster_get_width(ctx, raster), 
+            rt_raster_get_height(ctx, raster));
+
+    if ( ! newrast ) {
+        elog(ERROR, "MapAlgebra: Could not create a new raster");
+        PG_RETURN_NULL();
+    }
+
+    rt_raster_set_scale(ctx, newrast, 
+            rt_raster_get_x_scale(ctx, raster),
+            rt_raster_get_y_scale(ctx, raster));
+
+    rt_raster_set_offsets(ctx, newrast,
+            rt_raster_get_x_offset(ctx, raster),
+            rt_raster_get_y_offset(ctx, raster));
+
+    rt_raster_set_skews(ctx, newrast,
+            rt_raster_get_x_skew(ctx, raster),
+            rt_raster_get_y_skew(ctx, raster));
+
+    rt_raster_set_srid(ctx, newrast, rt_raster_get_srid(ctx, raster));            
+
+
+
+    /**
+     * If this new raster is empty (width = 0 OR height = 0) then there is
+     * nothing to compute and we return it right now
+     **/
+    if (rt_raster_is_empty(ctx, newrast)) {        
+        elog(WARNING, "MapAlgebra: Raster is empty. Returning an empty raster");
+        pgraster = rt_raster_serialize(ctx, newrast);
+        if (!pgraster) PG_RETURN_NULL();
+
+        SET_VARSIZE(pgraster, pgraster->size);
+        PG_RETURN_POINTER(pgraster);
+    }
+
+    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebra: GETTING RASTER BAND %d...", nband);
+
+   
+    /**
+     * Check if the raster has the required band. Otherwise, return a raster
+     * without band
+     **/
+    if (rt_raster_has_no_band(ctx, raster, nband)) {
+        elog(WARNING, "Mapalgebra: Raster do not have the required band. "
+                "Returning a raster without a band");
+        pgraster = rt_raster_serialize(ctx, newrast);
+        if (!pgraster) PG_RETURN_NULL();
+
+        SET_VARSIZE(pgraster, pgraster->size);
+        PG_RETURN_POINTER(pgraster);
+    }
+
+    /* Get the raster band */
+    band = rt_raster_get_band(ctx, raster, nband - 1);
+    if ( ! band ) {
+        elog(ERROR, "MapAlgebra: Could not get band %d for raster", nband);
+        PG_RETURN_NULL();
+    }
+
+    /* Check for nodata value */
+    if (rt_band_get_hasnodata_flag(ctx, band)) {
+        newnodatavalue = rt_band_get_nodata(ctx, band);
+    }
+
+    else {
+        newnodatavalue = rt_band_get_min_value(ctx, band);
+    }
+
+    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebra: NODATA VALUE FOR BAND: %f...",
+            newnodatavalue);
+    /**
+     * We set the initial value of the future band to nodata value. If nodata
+     * value is null, then the raster will be initialized to
+     * rt_band_get_min_value but all the values should be recomputed anyway
+     **/
+    newinitialvalue = newnodatavalue;
+
+    POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebra: SETTING PIXELTYPE...");
+
+    /**
+     * Set the new pixeltype
+     **/    
+    if (PG_ARGISNULL(4)) {
+        newpixeltype = rt_band_get_pixtype(ctx, band);
+    }
+
+    else {
+        newpixeltype = rt_pixtype_index_from_name(ctx,
+                text_to_cstring(PG_GETARG_TEXT_P(4)));    
+        if (newpixeltype == PT_END)
+            newpixeltype = rt_band_get_pixtype(ctx, band);
+    }
+    
+    if (newpixeltype == PT_END) {
+        elog(ERROR, "MapAlgebra: Invalid pixeltype. Aborting");
+        PG_RETURN_NULL();
+    }    
+    
+    /* Connect with SPI manager */
+    SPI_connect();
+
+    /* Construct expression for raster values */
+
+    if (!PG_ARGISNULL(2)) {
+        expression = text_to_cstring(PG_GETARG_TEXT_P(2));
+        len = strlen("SELECT ") + strlen(expression);
+        initexpr = (char *)palloc(len + 1);
+    
+        strncpy(initexpr, "SELECT ", strlen("SELECT "));
+        strncpy(initexpr + strlen("SELECT "), strtoupper(expression),
+            strlen(expression));
+        initexpr[len] = '\0';        
+
+        POSTGIS_RT_DEBUGF(3, "MapAlgebra: Expression is %s", initexpr);
+
+    }    
+
+    /**
+     * Optimization: If a nodatavalueexpr is provided, recompute the initial
+     * value. Then, we can initialize the raster with this value and skip the
+     * computation of nodata values one by one in the main computing loop
+     **/        
+    if (!PG_ARGISNULL(3)) {        
+        nodatavalueexpr = text_to_cstring(PG_GETARG_TEXT_P(3));
+        len = strlen("SELECT ") + strlen(nodatavalueexpr);
+        initndvexpr = (char *)palloc(len + 1);
+        strncpy(initndvexpr, "SELECT ", strlen("SELECT "));
+        strncpy(initndvexpr + strlen("SELECT "), strtoupper(nodatavalueexpr),
+                strlen(nodatavalueexpr));
+        initndvexpr[len] = '\0';
+        sprintf(strnewnodatavalue, "%f", newnodatavalue);
+
+        newexpr = replace(initndvexpr, "RAST", strnewnodatavalue, &count);
+
+        POSTGIS_RT_DEBUGF(3, "MapAlgebra: initndvexpr = %s", initndvexpr);
+
+        /** 
+         * Execute the expression for nodata value and store the result as new
+         * initial value
+         **/
+        ret = SPI_execute(newexpr, FALSE, 0);
+
+        if (ret != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
+            elog(ERROR, "MapAlgebra: invalid construction for NODATA "
+                    "expression. Aborting");
+            SPI_finish();
+            PG_RETURN_NULL();
+        }
+
+        tupdesc = SPI_tuptable->tupdesc;
+        tuptable = SPI_tuptable;
+
+        tuple = tuptable->vals[0];
+        newinitialvalue = atof(SPI_getvalue(tuple, tupdesc, 1));
+
+        POSTGIS_RT_DEBUGF(3, "MapAlgebra: new initial value = %f",
+                newinitialvalue);       
+        
+    }
+
+
+    /**
+     * Optimization: If the raster is only filled with nodata values return
+     * right now a raster filled with the nodatavalueexpr
+     * TODO: Call rt_band_check_isnodata instead?
+     **/
+    if (rt_band_get_isnodata_flag(ctx, band)) {
+
+        POSTGIS_RT_DEBUG(3, "MapAlgebra: Band is a nodata band, returning "
+                "a raster filled with nodata");
+
+        ret = rt_raster_generate_new_band(ctx, newrast, newpixeltype,
+                newinitialvalue, TRUE, newnodatavalue, 0);
+
+        /* Serialize created raster */
+        pgraster = rt_raster_serialize(ctx, newrast);
+        if (!pgraster) PG_RETURN_NULL();
+
+        SET_VARSIZE(pgraster, pgraster->size);
+        
+        /* Disconnect function from SPI manager */
+        SPI_finish();
+        
+        PG_RETURN_POINTER(pgraster);               
+    }
+
+
+    /**
+     * Optimization: If expression resume to 'RAST' and nodatavalueexpr is NULL
+     * or also equal to 'RAST', we can just return the band from the original
+     * raster 
+     **/
+    if (initexpr != NULL && !strcmp(initexpr, "SELECT RAST") && 
+            (nodatavalueexpr == NULL || !strcmp(initndvexpr, "SELECT RAST"))) {
+
+        POSTGIS_RT_DEBUGF(3, "MapAlgebra: Expression resumes to RAST. Returning "
+               "raster with band %d from original raster", nband); 
+
+        POSTGIS_RT_DEBUGF(4, "MapAlgebra: New raster has %d bands",
+                rt_raster_get_num_bands(ctx, newrast));
+
+        rt_raster_copy_band(ctx, raster, newrast, nband - 1, 0);
+        
+        POSTGIS_RT_DEBUGF(4, "MapAlgebra: New raster now has %d bands",
+                rt_raster_get_num_bands(ctx, newrast));
+
+        /* Serialize created raster */
+        pgraster = rt_raster_serialize(ctx, newrast);
+        if (!pgraster) PG_RETURN_NULL();
+
+        SET_VARSIZE(pgraster, pgraster->size);
+        
+        /* Disconnect function from SPI manager */
+        SPI_finish();
+        
+        PG_RETURN_POINTER(pgraster);      
+    }
+
+    /**
+     * Optimization: If expression resume to a constant (it does not contain
+     * RAST)
+     **/
+    if (initexpr != NULL && strstr(initexpr, "RAST") == NULL) {
+        /* Execute the expresion into newval */
+        ret = SPI_execute(initexpr, FALSE, 0);
+
+        if (ret != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
+            elog(ERROR, "MapAlgebra: invalid construction for expression. Aborting");
+            SPI_finish();
+            PG_RETURN_NULL();
+        }
+
+        tupdesc = SPI_tuptable->tupdesc;
+        tuptable = SPI_tuptable;
+
+        tuple = tuptable->vals[0];
+        newval = atof(SPI_getvalue(tuple, tupdesc, 1));
+
+        POSTGIS_RT_DEBUGF(3, "MapAlgebra: new raster value = %f",
+                newval);       
+
+        skipcomputation = 1;
+
+        /**
+         * Compute the new value, set it and we will return after creating the 
+         * new raster
+         **/
+        if (nodatavalueexpr == NULL) {
+            newinitialvalue = newval;
+            skipcomputation = 2;            
+        }
+
+        /* Return the new raster as it will be before computing pixel by pixel */
+        else if (fabs(newval - newinitialvalue) > FLT_EPSILON) {
+            skipcomputation = 2;
+        }
+    }
+
+    /**
+     * Create the raster receiving all the computed values. Initialize it to the
+     * new initial value
+     **/
+    ret = rt_raster_generate_new_band(ctx, newrast, newpixeltype,
+            newinitialvalue, TRUE, newnodatavalue, 0);
+
+    /**
+     * Optimization: If expression is NULL, or all the pixels could be set in
+     * one step, return the initialized raster now
+     **/
+    if (expression == NULL || skipcomputation == 2) {
+        /* Serialize created raster */
+        pgraster = rt_raster_serialize(ctx, newrast);
+        if (!pgraster) PG_RETURN_NULL();
+
+        SET_VARSIZE(pgraster, pgraster->size);
+
+        /* Disconnect function from SPI manager */
+        SPI_finish();
+        
+        PG_RETURN_POINTER(pgraster);      
+    }
+
+    /* Get the new raster band */
+    newband = rt_raster_get_band(ctx, newrast, 0);
+    if ( ! newband ) {
+        elog(WARNING, "MapAlgebra: Could not modify band for new raster. "
+                "Returning new raster with the original band");
+
+        /* Serialize created raster */
+        pgraster = rt_raster_serialize(ctx, newrast);
+        if (!pgraster) PG_RETURN_NULL();
+
+        SET_VARSIZE(pgraster, pgraster->size);
+
+        /* Disconnect function from SPI manager */
+        SPI_finish();
+        
+        PG_RETURN_POINTER(pgraster);      
+    }
+
+    
+    POSTGIS_RT_DEBUGF(3, "MapAlgebra: Main computing loop (%d x %d)",
+            width, height);
+
+    for (x = 0; x < width; x++) {
+        for(y = 0; y < height; y++) {
+            ret = rt_band_get_pixel(ctx, band, x, y, &r);
+
+            /**
+             * We compute a value only for the withdata value pixel since the
+             * nodata value has already been set by the first optimization
+             **/
+            if (ret != -1 && fabs(r - newnodatavalue) > FLT_EPSILON) {
+                if (skipcomputation == 0) {
+                    sprintf(strnewval, "%f", r);
+                    
+                    if (initexpr != NULL) {                        
+                        newexpr = replace(initexpr, "RAST", strnewval, &count);
+
+                        POSTGIS_RT_DEBUGF(3, "MapAlgebra: (%dx%d), r = %s, newexpr = %s",
+                                x, y, strnewval, newexpr);
+                    
+                        ret = SPI_execute(newexpr, FALSE, 0);
+
+                        if (ret != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
+                            elog(ERROR, "MapAlgebra: invalid construction for expression. Aborting");
+                            SPI_finish();
+                            PG_RETURN_NULL();
+                        }
+
+                        tupdesc = SPI_tuptable->tupdesc;
+                        tuptable = SPI_tuptable;
+    
+                        tuple = tuptable->vals[0];
+                        newval = atof(SPI_getvalue(tuple, tupdesc, 1));
+                    }
+
+                    else
+                        newval = newinitialvalue;
+
+                    POSTGIS_RT_DEBUGF(3, "MapAlgebra: new value = %f", newval);
+                }
+
+                
+                rt_band_set_pixel(ctx, newband, x, y, newval);
+            }
+
+        }
+    }
+    
+    /* The newrast band has been modified */
+
+    /* Serialize created raster */
+    pgraster = rt_raster_serialize(ctx, newrast);
+    if (!pgraster) PG_RETURN_NULL();
+
+    SET_VARSIZE(pgraster, pgraster->size);    
+    
+    /* Disconnect function from SPI manager */
+    SPI_finish();
+
+    PG_RETURN_POINTER(pgraster);
+}
 
 /* ---------------------------------------------------------------- */
 /*  Memory allocation / error reporting hooks                       */

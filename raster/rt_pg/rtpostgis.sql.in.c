@@ -209,8 +209,54 @@ CREATE OR REPLACE FUNCTION st_addband(rast raster, index int, pixeltype text, in
     RETURNS raster
     AS 'select st_addband($1, $2, $3, $4, NULL)'
     LANGUAGE 'SQL' IMMUTABLE;
+
+
+-----------------------------------------------------------------------
+-- MapAlgebra
+-----------------------------------------------------------------------	
+CREATE OR REPLACE FUNCTION st_mapalgebra(rast raster, band integer, 
+        expression text, nodatavalueexpr text, pixeltype text)
+    RETURNS raster
+    AS 'MODULE_PATHNAME', 'RASTER_mapAlgebra'
+    LANGUAGE 'C' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_mapalgebra(rast raster, band integer,
+        expression text)
+    RETURNS raster
+    AS $$ SELECT st_mapalgebra($1, $2, $3, NULL, NULL) $$
+    LANGUAGE SQL;
+ 
+CREATE OR REPLACE FUNCTION st_mapalgebra(rast raster, expression text, 
+        pixeltype text)
+    RETURNS raster
+    AS $$ SELECT st_mapalgebra($1, 1, $2, NULL, $3) $$
+    LANGUAGE SQL;
+ 
+CREATE OR REPLACE FUNCTION st_mapalgebra(rast raster, expression text)
+    RETURNS raster
+    AS $$ SELECT st_mapalgebra($1, 1, $2, NULL, NULL) $$
+    LANGUAGE SQL;
+ 
+CREATE OR REPLACE FUNCTION st_mapalgebra(rast raster, band integer,
+        expression text, nodatavalueexpr text)
+    RETURNS raster
+    AS $$ SELECT st_mapalgebra($1, $2, $3, $4, NULL) $$
+    LANGUAGE SQL;
+ 
+
+CREATE OR REPLACE FUNCTION st_mapalgebra(rast raster, expression text,
+        nodatavalueexpr text, pixeltype text)
+    RETURNS raster
+    AS $$ SELECT st_mapalgebra($1, 1, $2, $3, $4) $$
+    LANGUAGE SQL;
 	
-	
+CREATE OR REPLACE FUNCTION st_mapalgebra(rast raster, expression text,
+        nodatavalueexpr text)
+    RETURNS raster
+    AS $$ SELECT st_mapalgebra($1, 1, $2, $3, NULL) $$
+    LANGUAGE SQL;
+
+
 -----------------------------------------------------------------------
 -- Get information about the raster
 -----------------------------------------------------------------------	
