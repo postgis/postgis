@@ -2496,9 +2496,69 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_Collect" /></para>
+		<para>
+			<xref linkend="ST_Collect" />
+			<xref linkend="ST_UnaryUnion" />
+		</para>
 	  </refsection>
 	</refentry>
+
+	<refentry id="ST_UnaryUnion">
+	  <refnamediv>
+		<refname>ST_UnaryUnion</refname>
+
+		<refpurpose>Like ST_Union, but working at the geometry component level.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_UnaryUnion</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+		  </funcprototype>
+
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>
+		Unlike ST_Union, ST_UnaryUnion does dissolve boundaries
+		between components of a multipolygon (invalid)
+		and does perform union between the components of a
+		geometrycollection.
+		Each components of the input geometry is assumed to be
+		valid, so you won't get a valid multipolygon out of a
+		bow-tie polygon (invalid).
+		</para>
+
+		<para>
+		You may use this function to node a set of linestrings.
+		You may mix ST_UnaryUnion with ST_Collect to fine-tune
+		how many geometries at once you want to dissolve to
+		be nice on both memory size and CPU time, finding the
+		balance between ST_Union and ST_MemUnion.
+		</para>
+
+		<para>&Z_support;</para>
+
+		<para>Availability: 2.0.0 - requires GEOS &gt;= 3.3.0.</para>
+	  </refsection>
+
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para>
+			<xref linkend="ST_Union" />
+			<xref linkend="ST_MemUnion" />
+			<xref linkend="ST_Collect" />
+		</para>
+	  </refsection>
+	</refentry>
+
 
 
 </sect1>
