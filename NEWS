@@ -39,6 +39,7 @@ YYYY/MM/DD
   - ST_Snap (Sandro Santilli)
   - ST_RelateMatch (Sandro Santilli / Faunalia for RT-SIGTA)
   - ST_ConcaveHull (Regina Obe and Leo Hsu)
+  - ST_UnaryUnion (Sandro Santilli)
 
  * Enhancements *
 
