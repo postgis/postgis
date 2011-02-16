@@ -1057,6 +1057,12 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
 
 			<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
 		  </funcprototype>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_IsValid</function></funcdef>
+
+			<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>flags</parameter></paramdef>
+		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
@@ -1066,14 +1072,23 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
 		<para>Test if an ST_Geometry value is well formed.  For geometries that are invalid,
 			the PostgreSQL NOTICE will provide details of why it is not valid.  For more
 			information on the OGC's definition of geometry simplicity and validity, refer
-			to <link linkend="OGC_Validity">"Ensuring OpenGIS compliancy of geometries"</link></para>
+			to <link linkend="OGC_Validity">"Ensuring OpenGIS compliancy of geometries"</link>
+		</para>
 		<note>
 			<para>SQL-MM defines the result of ST_IsValid(NULL) to be 0, while
 			PostGIS returns NULL.</para>
 		</note>
 
+		<para>
+The version accepting flags is available starting with 2.0.0
+and requires GEOS &gt;= 3.3.0. Such version does not print a NOTICE
+explaining the invalidity.
+Allowed <varname>flags</varname> are documented in <xref linkend="ST_IsValidDetail" />.
+		</para>
+
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.9</para>
+
 
 	  </refsection>
 
@@ -1115,6 +1130,11 @@ NOTICE:  Self-intersection at or near point 0 0
 			<funcdef>text <function>ST_IsValidReason</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 		  </funcprototype>
+		  <funcprototype>
+			<funcdef>text <function>ST_IsValidReason</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>flags</parameter></paramdef>
+		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
@@ -1124,7 +1144,13 @@ NOTICE:  Self-intersection at or near point 0 0
 		<para>Returns text stating if a geometry is valid or not an if not valid, a reason why.</para>
 
 		<para>Useful in combination with ST_IsValid to generate a detailed report of invalid geometries and reasons.</para>
+
+		<para>
+Allowed <varname>flags</varname> are documented in <xref linkend="ST_IsValidDetail" />.
+		</para>
+
 		<para>Availability: 1.4 - requires GEOS &gt;= 3.1.0.</para>
+		<para>Availability: 2.0 - requires GEOS &gt;= 3.3.0 for the version taking flags.</para>
 
 	  </refsection>
 
