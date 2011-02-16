@@ -409,13 +409,16 @@ if test -z "$db_exists"; then
 	if test x"$OPT_CREATE" = "xyes"; then
 		echo "Creating spatial db ${DB} " 
 
+		# ON_ERROR_STOP is used by psql to return non-0 on an error
+		_psql_opts="--no-psqlrc --variable ON_ERROR_STOP=true"
+
 		createdb "${DB}" > ${TMPDIR}/regress_log
 		createlang plpgsql "${DB}" >> ${TMPDIR}/regress_log
-		${PSQL} -Xf ${REGDIR}/postgis.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1
+		${PSQL} ${_psql_opts} -Xf ${REGDIR}/postgis.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1
 		if test x"$OPT_WITH_TOPO" = "xyes"; then
 			if test -e ${REGDIR}/../topology/topology.sql; then
 				echo "Adding topology support" 
-				${PSQL} -Xf ${REGDIR}/../topology/topology.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1
+				${PSQL} ${_psql_opts} -Xf ${REGDIR}/../topology/topology.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1
 			else
 				echo "Topology support skipped (topology.sql  not found)" 
 			fi
