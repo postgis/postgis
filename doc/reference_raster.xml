@@ -1634,6 +1634,14 @@ FROM dummy_rast;
 					<paramdef><type>double precision </type> <parameter>initialvalue</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>nodataval</parameter></paramdef>
 				  </funcprototype>
+                  <funcprototype>
+					<funcdef>raster <function>ST_AddBand</function></funcdef>
+					<paramdef><type>raster </type> <parameter>raster1</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband1</parameter></paramdef>
+					<paramdef><type>raster </type> <parameter>raster2</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband2</parameter></paramdef>
+				  </funcprototype>
+
 				</funcsynopsis>
 			</refsynopsisdiv>
 		
@@ -1642,7 +1650,10 @@ FROM dummy_rast;
 				
 				<para>Returns a raster with a new band added in given position (band number), of given type, of given initial value, and of given nodata value.  If no index is specified, the band is added to the end.  Pixel type is a string representation
 				    of one of the pixel types specified in <xref linkend="RT_ST_BandPixelType" />.  If an existing index is specified all subsequent bands >= that index are incremented by 1.
-				    If an initial value greater than the max of the pixel type is specified, then the initial value is set to the highest value allowed by the pixel type. </para>
+				    If an initial value greater than the max of the pixel type
+                    is specified, then the initial value is set to the highest
+                    value allowed by the pixel type. The last version add the
+                    nband1 from raster1 to raster2 in position nband2.</para>
 				</refsection>
 				
 				<refsection>
