@@ -11,7 +11,7 @@
 
 	<!-- We deal only with the reference chapter -->
 	<xsl:template match="/">
-		<xsl:apply-templates select="/book/chapter[@id='reference' or @id='RT_references']" />
+		<xsl:apply-templates select="/book/chapter[@id='reference' or @id='RT_reference']" />
 	</xsl:template>
 
 	<xsl:template match="//chapter">
