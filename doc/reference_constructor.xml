@@ -476,9 +476,10 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 		</para>
 
 		<para>Availability: 1.5</para>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para>Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
 		<para>&Z_support;</para>
-			<para>&P_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
 		<para>GML allow mixed dimensions (2D and 3D inside the same MultiGeometry for instance). As PostGIS geometries don't, ST_GeomFromGML convert the whole geometry to 2D if a missing Z dimension is found once.</para>
 		
 		<para>GML support mixed SRS inside the same MultiGeometry. As PostGIS geometries don't, ST_GeomFromGML, in this case, reproject all subgeometries to the SRS root node. If no srsName attribute available for the GML root node, the function throw an error.</para>

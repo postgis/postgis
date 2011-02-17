@@ -516,13 +516,14 @@ namespace prefix or no prefix (if empty). If null or omitted 'gml' prefix is use
 
 		  <para>Availability: 1.3.2</para>
 		  <para>Availability: 1.5.0 geography support was introduced.</para>
-		  <para>Enhanced: 2.0.0 prefix support was introduced. Support for Polyhedral surfaces was introduced.</para>
+		  <para>Enhanced: 2.0.0 prefix support was introduced. GML3 Support for Polyhedral surfaces and TINS was introduced.</para>
 		 
 
 
-		<note><para>Only version 3 of ST_AsGML supports Polyhedral Surfaces.</para></note>
+		<note><para>Only version 3 of ST_AsGML supports Polyhedral Surfaces and TINS.</para></note>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
+		<para>&T_support;</para>
 	  </refsection>
 
 	  <refsection>
