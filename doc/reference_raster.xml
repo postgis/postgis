@@ -3377,8 +3377,9 @@ WHERE rid = 2;
 				</programlisting>
 				<para>Create a new 1 band raster of pixel-type 2BUI from our original that is reclassified.</para>
 				<programlisting>ALTER TABLE dummy_rast ADD COLUMN map_rast2 raster;
-UPDATE dummy_rast SET map_rast2 = ST_MapAlgebra(rast,'CASE WHEN rast 
-  BETWEEN 100 and 250 THEN 1 WHEN rast = 252 THEN 2 WHEN rast BETWEEN 253 and 254 THEN 3 ELSE 0 END', '2BUI') WHERE rid = 2;
+UPDATE dummy_rast SET map_rast2 = ST_MapAlgebra(rast,'CASE WHEN rast BETWEEN 100 and 250 THEN 1 
+WHEN rast = 252 THEN 2 
+WHEN rast BETWEEN 253 and 254 THEN 3 ELSE 0 END', '2BUI') WHERE rid = 2;
 
 SELECT DISTINCT ST_Value(rast,1,i,j) As origval, ST_Value(map_rast2, 1, i, j) As mapval
 FROM dummy_rast CROSS JOIN generate_series(1, 5) AS i CROSS JOIN generate_series(1,5) AS j
