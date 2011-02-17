@@ -3292,6 +3292,77 @@ WHERE A.rid =2 ) As foo;
 			</refsection>
 		</refentry>
 		
+		<refentry id="RT_ST_MapAlgebra">
+			<refnamediv>
+				<refname>ST_MapAlgebra</refname>
+				<refpurpose>Creates a new raster formed by applying algebraic operations defined by the expression on the input raster and of pixeeltype provided.  band 1 is assumed if no band is specified.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>raster <function>ST_MapAlgebra</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>expression</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>nodatavalueexpr</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_MapAlgebra</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>expression</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>nodatavalueexpr</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_MapAlgebra</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>expression</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>nodatavalueexpr</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_MapAlgebra</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>expression</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_MapAlgebra</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>expression</parameter></paramdef>
+				  </funcprototype>
+				  
+				 
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Creates a new raster formed by applying algebraic operations defined by the expression on the input raster. If no band number is specified
+        band 1 is assumed.</para>
+			
+                 <para>Availability: 2.0.0 </para>
+             </refsection>
+				
+             <refsection>
+				<title>Examples</title>
+				
+				<!-- TODO -->
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para></para>
+			</refsection>
+		</refentry>
+		
 		<refentry id="RT_ST_Polygon">
 		  <refnamediv>
 			<refname>ST_Polygon</refname>
