@@ -3295,7 +3295,7 @@ WHERE A.rid =2 ) As foo;
 		<refentry id="RT_ST_MapAlgebra">
 			<refnamediv>
 				<refname>ST_MapAlgebra</refname>
-				<refpurpose>Creates a new one band raster formed by applying a valid PostgreSQL algebraic operations on the input raster band and of pixeeltype provided.  band 1 is assumed if no band is specified.</refpurpose>
+				<refpurpose>Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation on the input raster band and of pixeeltype provided.  band 1 is assumed if no band is specified.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -3343,11 +3343,11 @@ WHERE A.rid =2 ) As foo;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Creates a new one band raster formed by applying algebraic operations defined by the <varname>expression</varname> on the input raster (<varname>rast</varname>). If no <varname>band</varname> is specified
+				<para>Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation defined by the <varname>expression</varname> on the input raster (<varname>rast</varname>). If no <varname>band</varname> is specified
         band 1 is assumed.  The new raster will have the same georeference, width, and height as the original raster but will only have one band.</para>
         
                  <para>If <varname>pixeltype</varname> is passed in, then the new raster will have a band of that pixeltype.  If no pixeltype is passed in, then the new raster band will have the same pixeltype as the input <varname>rast</varname></para>
-                 <para>Use the term <varname>rast</varname> to refer to the band you are changing.</para>
+                 <para>Use the term <varname>rast</varname> to refer to the pixel value of the original.</para>
 			
                  <para>Availability: 2.0.0 </para>
              </refsection>
