@@ -3336,16 +3336,14 @@ WHERE A.rid =2 ) As foo;
 					<funcdef>raster <function>ST_MapAlgebra</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>expression</parameter></paramdef>
-				  </funcprototype>
-				  
-				 
+				  </funcprototype> 
 				</funcsynopsis>
 			</refsynopsisdiv>
 		
 			<refsection>
 				<title>Description</title>
 				
-				<para>Creates a new one band raster formed by applying algebraic operations defined by the <varname>expression</varname> on the input raster (<varname>rast</varname>). If no <varnum>band</varnum> is specified
+				<para>Creates a new one band raster formed by applying algebraic operations defined by the <varname>expression</varname> on the input raster (<varname>rast</varname>). If no <varname>band</varname> is specified
         band 1 is assumed.  The new raster will have the same georeference, width, and height as the original raster but will only have one band.</para>
         
                  <para>If <varname>pixeltype</varname> is passed in, then the new raster will have a band of that pixeltype.  If no pixeltype is passed in, then the new raster band will have the same pixeltype as the input <varname>rast</varname></para>
@@ -3381,7 +3379,7 @@ WHERE rid = 2;
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_GeoReference" />, <xref linkend="RT_ST_BandPixelType" /></para>
+				<para><xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_GeoReference" />,  <xref linkend="RT_ST_Value" /></para>
 			</refsection>
 		</refentry>
 		
