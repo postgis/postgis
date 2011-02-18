@@ -7,5 +7,5 @@ ERROR:  A Layer of type 1 cannot contain a TopoGeometry of type 4
 ERROR:  Node 78 does not exist in topology MiX
 PL/pgSQL function "createtopogeom" line 91 at EXECUTE statement
 n1|1
-(15,1,2,1)
+(16,1,2,1)
 Topology 'MiX' dropped
