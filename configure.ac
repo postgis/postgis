@@ -827,8 +827,40 @@ if test "x$RASTER" = "xyes"; then
     dnl Ensure that we are using GDAL >= 1.6.0
     AC_MSG_RESULT([checking GDAL version... $GDAL_FULL_VERSION])
     if test ! "$GDAL_NUMERIC_VERSION" -ge 160; then
-	    AC_MSG_ERROR([POSTGIS requires GDAL >= 1.6.0])
+	    AC_MSG_ERROR([PostGIS requires GDAL >= 1.6.0])
     fi
+
+	dnl Determine if GDAL Python bindings are available
+	AC_MSG_CHECKING([for GDAL Python bindings])
+	GDAL_PYTHON_TEST='try:
+  from osgeo import gdal
+  print 1
+except ImportError:
+  pass'
+
+	GDAL_PYTHON_FOUND=`python -c "$GDAL_PYTHON_TEST"`
+	if test "$GDAL_PYTHON_FOUND" = "1"; then
+	    AC_MSG_RESULT([found])
+	else	
+		AC_MSG_RESULT([not found])
+	    AC_MSG_ERROR([GDAL Python bindings required by raster2pgsql.py loader])
+  	fi
+
+	dnl Determine if GDAL Python bindings come with NumPy support
+	AC_MSG_CHECKING([for NumPy array support in GDAL Python bindings])
+	GDAL_NUMPY_TEST='try:
+  from osgeo import gdal_array
+  print 1
+except ImportError:
+  pass'
+
+	GDAL_NUMPY_FOUND=`python -c "$GDAL_NUMPY_TEST"`
+	if test "$GDAL_NUMPY_FOUND" = "1"; then
+	    AC_MSG_RESULT([found])
+	else	
+		AC_MSG_RESULT([not found])
+	    AC_MSG_ERROR([GDAL Python bindings with NumPy array support required by raster2pgsql.py loader])
+  	fi
 
     dnl Extract the linker and include flags 
     LIBGDAL_LDFLAGS=`$GDAL_CONFIG --libs`
@@ -858,7 +890,6 @@ if test "x$RASTER" = "xyes"; then
                     raster/test/core/Makefile \ 
                     raster/test/regress/Makefile \ 
                     raster/scripts/python/Makefile"
-
 
 else
     BUILD_RASTER=no
