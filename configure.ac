@@ -797,38 +797,45 @@ if test "x$RASTER" = "xyes"; then
     LIBGDAL_CFLAGS=""
     LIBGDAL_LDFLAGS=""
 
-    AC_MSG_CHECKING([for GDAL])
+	dnl GDAL version constants, update here
+	GDAL_MIN_VERSION=1.6.0
+	GDAL_MIN_VERSION_NUMBER=160 dnl TODO: Use GDAL version calculation MAJOR*1000+MINOR*100+REV*10+BUILD
+
     AC_ARG_WITH([gdal],
-	    AC_HELP_STRING([--with-gdalconfig=@<:@ARG@:>@],[specify location of gdal-config (ARG=path)]),
+		AC_HELP_STRING([--with-gdalconfig=@<:@ARG@:>@],[specify location of gdal-config (ARG=path)]),
         	[GDAL_CONFIG="$withval"], [GDAL_CONFIG=""])
 
+    AC_MSG_CHECKING([for GDAL >= $GDAL_MIN_VERSION])
     if test "x$GDAL_CONFIG" = "x"; then
-	    dnl If GDAL_CONFIG path not provided, try to find it
+	   	dnl If GDAL_CONFIG path not provided, try to find it
         GDAL_CONFIG_TMP=`which gdal-config`
         if test "`basename xx/${GDAL_CONFIG_TMP}`" = "gdal-config" ; then
-            AC_MSG_RESULT([yes])
             GDAL_CONFIG=${GDAL_CONFIG_TMP}
-        else
-            AC_MSG_ERROR([gdal-config not found. Try --with-gdalconfig=<path to gdal-config>])
         fi
     fi
 
-    dnl Extract the version information from gdal-config
-    dnl Note: we extract the major & minor separately, ensure they are numeric,
-    dnl and then combine to give the final version.
-    dnl This is to guard against user error...
-    GDAL_MAJOR_VERSION=`$GDAL_CONFIG --version | cut -d. -f1 | sed 's/[[^0-9]]//g'`
-    GDAL_MINOR_VERSION=`$GDAL_CONFIG --version | cut -d. -f2 | sed 's/[[^0-9]]//g'`
-    GDAL_PATCH_VERSION=`$GDAL_CONFIG --version | cut -d. -f3 | sed 's/[[^0-9]]//g'`
-    GDAL_FULL_VERSION=`$GDAL_CONFIG --version`
-    POSTGIS_GDAL_VERSION="$GDAL_MAJOR_VERSION$GDAL_MINOR_VERSION"
-    GDAL_NUMERIC_VERSION="$GDAL_MAJOR_VERSION$GDAL_MINOR_VERSION$GDAL_PATCH_VERSION"
+    if test -x "$GDAL_CONFIG"; then
+       dnl Extract the version information from gdal-config
+       dnl Note: we extract the major & minor separately, ensure they are numeric,
+       dnl and then combine to give the final version.
+       dnl This is to guard against user error...
+       GDAL_MAJOR_VERSION=`$GDAL_CONFIG --version | cut -d. -f1 | sed 's/[[^0-9]]//g'`
+       GDAL_MINOR_VERSION=`$GDAL_CONFIG --version | cut -d. -f2 | sed 's/[[^0-9]]//g'`
+       GDAL_PATCH_VERSION=`$GDAL_CONFIG --version | cut -d. -f3 | sed 's/[[^0-9]]//g'`
+       GDAL_FULL_VERSION=`$GDAL_CONFIG --version`
+       POSTGIS_GDAL_VERSION="$GDAL_MAJOR_VERSION$GDAL_MINOR_VERSION"
+       GDAL_VERSION_NUMBER="$GDAL_MAJOR_VERSION$GDAL_MINOR_VERSION$GDAL_PATCH_VERSION"
 
-    dnl Ensure that we are using GDAL >= 1.6.0
-    AC_MSG_RESULT([checking GDAL version... $GDAL_FULL_VERSION])
-    if test ! "$GDAL_NUMERIC_VERSION" -ge 160; then
-	    AC_MSG_ERROR([PostGIS requires GDAL >= 1.6.0])
-    fi
+       dnl Ensure we are using minimum required version of GDAL
+       if test ! "$GDAL_VERSION_NUMBER" -ge "$GDAL_MIN_VERSION_NUMBER" ; then
+	   	  AC_MSG_RESULT([not found])
+	   	  AC_MSG_ERROR([PostGIS requires GDAL >= $GDAL_MIN_VERSION])
+	   fi
+	else
+		AC_MSG_RESULT([not found])
+		AC_MSG_ERROR([gdal-config not found. Try --with-gdalconfig=<path to gdal-config>])
+	fi
+	AC_MSG_RESULT([found])
 
 	dnl Determine if GDAL Python bindings are available
 	AC_MSG_CHECKING([for GDAL Python bindings])
