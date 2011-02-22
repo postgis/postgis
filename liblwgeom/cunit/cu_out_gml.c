@@ -53,6 +53,22 @@ static void do_gml2_test_prefix(char * in, char * out, char * srs, int precision
 	lwfree(h);
 }
 
+static void do_gml3_test_opts(char * in, char * out, char * srs, int precision, int opts)
+{
+	LWGEOM *g;
+	char *h;
+
+	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
+	h = lwgeom_to_gml3(g, srs, precision, opts, "gml:");
+
+	if (strcmp(h, out))
+		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
+
+	CU_ASSERT_STRING_EQUAL(h, out);
+
+	lwgeom_free(g);
+	lwfree(h);
+}
 
 static void do_gml3_test(char * in, char * out, char * srs, int precision, int is_geodetic)
 {
@@ -234,6 +250,12 @@ static void out_gml_test_srid(void)
 	    "<gml:Curve srsName=\"EPSG:4326\"><gml:segments><gml:LineStringSegment><gml:posList srsDimension=\"2\">0 1 2 3 4 5</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve>",
 	    "EPSG:4326", 0, 0);
 
+	/* GML3 - Linestring with SRID and short tag*/
+	do_gml3_test_opts(
+	    "LINESTRING(0 1,2 3,4 5)",
+	    "<gml:LineString srsName=\"EPSG:4326\"><gml:posList>0 1 2 3 4 5</gml:posList></gml:LineString>",
+	    "EPSG:4326", 0, LW_GML_SHORTLINE);
+
 
 	/* GML2 Polygon with SRID */
 	do_gml2_test(
@@ -273,6 +295,12 @@ static void out_gml_test_srid(void)
 	    "MULTILINESTRING((0 1,2 3,4 5),(6 7,8 9,10 11))",
 	    "<gml:MultiCurve srsName=\"EPSG:4326\"><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension=\"2\">0 1 2 3 4 5</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension=\"2\">6 7 8 9 10 11</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve>",
 	    "EPSG:4326", 0, 0);
+
+	/* GML3 Multiline with SRID and LineString tag */
+	do_gml3_test_opts(
+	    "MULTILINESTRING((0 1,2 3,4 5),(6 7,8 9,10 11))",
+	    "<gml:MultiCurve srsName=\"EPSG:4326\"><gml:curveMember><gml:LineString><gml:posList>0 1 2 3 4 5</gml:posList></gml:LineString></gml:curveMember><gml:curveMember><gml:LineString><gml:posList>6 7 8 9 10 11</gml:posList></gml:LineString></gml:curveMember></gml:MultiCurve>",
+	    "EPSG:4326", 0, LW_GML_SHORTLINE);
 
 
 	/* GML2 MultiPolygon with SRID */
