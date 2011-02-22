@@ -650,7 +650,20 @@ asgml3_line_size(const LWLINE *line, char *srs, int precision, int opts, const c
 	size_t prefixlen = strlen(prefix);
 
 	size = pointArray_GMLsize(line->points, precision);
-	size += ( sizeof("<Curve><segments><LineStringSegment><posList>/") + ( prefixlen * 4 ) ) * 2;
+	if ( opts & LW_GML_SHORTLINE )
+	{
+		size += (
+		  sizeof("<LineString><posList>/") +
+		  ( prefixlen * 2 )
+		) * 2;
+	}
+	else
+	{
+		size += (
+		  sizeof("<Curve><segments><LineStringSegment><posList>/") +
+		  ( prefixlen * 4 )
+		) * 2;
+	}
 	if (srs)     size += strlen(srs) + sizeof(" srsName=..");
 	if (IS_DIMS(opts)) size += sizeof(" srsDimension='x'");
 	return size;
@@ -661,24 +674,45 @@ asgml3_line_buf(const LWLINE *line, char *srs, char *output, int precision, int 
 {
 	char *ptr=output;
 	int dimension=2;
+	int shortline = ( opts & LW_GML_SHORTLINE );
 
 	if (FLAGS_GET_Z(line->flags)) dimension = 3;
-	if ( srs )
-	{
-		ptr += sprintf(ptr, "<%sCurve srsName=\"%s\">", prefix, srs);
+
+	if ( shortline ) {
+		ptr += sprintf(ptr, "<%sLineString", prefix);
+	} else {
+		ptr += sprintf(ptr, "<%sCurve", prefix);
 	}
-	else
-	{
-		ptr += sprintf(ptr, "<%sCurve>", prefix);
+
+	if ( srs ) {
+		ptr += sprintf(ptr, " srsName=\"%s\">", srs);
+	} else {
+		ptr += sprintf(ptr, ">");
 	}
-	ptr += sprintf(ptr, "<%ssegments>", prefix);
-	ptr += sprintf(ptr, "<%sLineStringSegment>", prefix);
-	if (IS_DIMS(opts)) ptr += sprintf(ptr, "<%sposList srsDimension=\"%d\">", prefix, dimension);
-	else         ptr += sprintf(ptr, "<%sposList>", prefix);
+
+	if ( ! shortline ) {
+		ptr += sprintf(ptr, "<%ssegments>", prefix);
+		ptr += sprintf(ptr, "<%sLineStringSegment>", prefix);
+	}
+
+	if (IS_DIMS(opts)) {
+		ptr += sprintf(ptr, "<%sposList srsDimension=\"%d\">",
+			prefix, dimension);
+	} else {
+		ptr += sprintf(ptr, "<%sposList>", prefix);
+	}
+
 	ptr += pointArray_toGML3(line->points, ptr, precision, opts);
-	ptr += sprintf(ptr, "</%sposList></%sLineStringSegment>", prefix, prefix);
-	ptr += sprintf(ptr, "</%ssegments>", prefix);
-	ptr += sprintf(ptr, "</%sCurve>", prefix);
+
+	ptr += sprintf(ptr, "</%sposList>", prefix);
+
+	if ( shortline ) {
+		ptr += sprintf(ptr, "</%sLineString>", prefix);
+	} else {
+		ptr += sprintf(ptr, "</%sLineStringSegment>", prefix);
+		ptr += sprintf(ptr, "</%ssegments>", prefix);
+		ptr += sprintf(ptr, "</%sCurve>", prefix);
+	}
 
 	return (ptr-output);
 }

@@ -1788,9 +1788,11 @@ extern LWCOLLECTION *lwcollection_segmentize2d(LWCOLLECTION *coll, double dist);
  * @{
  */
 /** For GML3 only, include srsDimension attribute in output */
-#define LW_GML_IS_DIMS   (1<<0)
+#define LW_GML_IS_DIMS     (1<<0)
 /** For GML3 only, declare that datas are lat/lon. Swaps axis order */
-#define LW_GML_IS_DEGREE (1<<1)
+#define LW_GML_IS_DEGREE   (1<<1)
+/** For GML3, use <LineString> rather than <Curve> for lines */
+#define LW_GML_SHORTLINE   (1<<2)
 
 #define IS_DIMS(x) ((x) & LW_GML_IS_DIMS)
 #define IS_DEGREE(x) ((x) & LW_GML_IS_DEGREE)
