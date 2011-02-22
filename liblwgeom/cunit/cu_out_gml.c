@@ -3,6 +3,7 @@
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
+ *
  * Copyright 2010 Olivier Courtin <olivier.courtin@oslandia.com>
  *
  * This is free software; you can redistribute and/or modify it under
@@ -57,9 +58,11 @@ static void do_gml3_test(char * in, char * out, char * srs, int precision, int i
 {
 	LWGEOM *g;
 	char *h;
+	int opts = LW_GML_IS_DIMS;
+	if ( is_geodetic ) opts |= LW_GML_IS_DEGREE;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_gml3(g, srs, precision, is_geodetic, 1, "gml:");
+	h = lwgeom_to_gml3(g, srs, precision, opts, "gml:");
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
@@ -74,9 +77,12 @@ static void do_gml3_test_prefix(char * in, char * out, char * srs, int precision
 {
 	LWGEOM *g;
 	char *h;
+	int opts = LW_GML_IS_DIMS;
+
+	if ( is_geodetic ) opts |= LW_GML_IS_DEGREE;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_gml3(g, srs, precision, is_geodetic, 1, prefix);
+	h = lwgeom_to_gml3(g, srs, precision, opts, prefix);
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
@@ -91,9 +97,13 @@ static void do_gml3_test_nodims(char * in, char * out, char * srs, int precision
 {
 	LWGEOM *g;
 	char *h;
+	int opts = 0;
+
+	if ( is_geodetic ) opts |= LW_GML_IS_DEGREE;
+	if ( is_dims ) opts |= LW_GML_IS_DIMS;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_gml3(g, srs, precision, is_geodetic, is_dims, prefix);
+	h = lwgeom_to_gml3(g, srs, precision, opts, prefix);
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
@@ -126,9 +136,10 @@ static void do_gml3_unsupported(char * in, char * out)
 {
 	LWGEOM *g;
 	char *h;
+	int opts = LW_GML_IS_DIMS;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
-	h = lwgeom_to_gml3(g, NULL, 0, 0, 1, "");
+	h = lwgeom_to_gml3(g, NULL, 0, opts, "");
 
 	if (strcmp(cu_error_msg, out))
 		fprintf(stderr, "\nGML 3 - In:   %s\nOut:  %s\nTheo: %s\n",

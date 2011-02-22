@@ -3,9 +3,11 @@
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
- * Copyright 2001-2006 Refractions Research Inc.
- * Copyright 2007-2008 Mark Cave-Ayland
+ *
+ * Copyright 2011 Sandro Santilli <strk@keybit.net>
  * Copyright 2008 Paul Ramsey <pramsey@cleverelephant.ca>
+ * Copyright 2007-2008 Mark Cave-Ayland
+ * Copyright 2001-2006 Refractions Research Inc.
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -1781,8 +1783,24 @@ extern LWCOLLECTION *lwcollection_segmentize2d(LWCOLLECTION *coll, double dist);
 #define OUT_MAX_DOUBLE_PRECISION 15
 #define OUT_MAX_DIGS_DOUBLE (OUT_SHOW_DIGS_DOUBLE + 2) /* +2 mean add dot and sign */
 
+/**
+ * Macros for specifying GML options. 
+ * @{
+ */
+/** For GML3 only, include srsDimension attribute in output */
+#define LW_GML_IS_DIMS   (1<<0)
+/** For GML3 only, declare that datas are lat/lon. Swaps axis order */
+#define LW_GML_IS_DEGREE (1<<1)
+
+#define IS_DIMS(x) ((x) & LW_GML_IS_DIMS)
+#define IS_DEGREE(x) ((x) & LW_GML_IS_DEGREE)
+/** @} */
+
 extern char* lwgeom_to_gml2(const LWGEOM *geom, char *srs, int precision, const char *prefix);
-extern char* lwgeom_to_gml3(const LWGEOM *geom, char *srs, int precision, int is_deegree, int is_dims, const char *prefix);
+/**
+ * @param opts output options bitfield, see LW_GML macros for meaning
+ */
+extern char* lwgeom_to_gml3(const LWGEOM *geom, char *srs, int precision, int opts, const char *prefix);
 extern char* lwgeom_to_kml2(const LWGEOM *geom, int precision, const char *prefix);
 extern char* lwgeom_to_geojson(const LWGEOM *geo, char *srs, int precision, int has_bbox);
 extern char* lwgeom_to_svg(const LWGEOM *geom, int precision, int relative);
