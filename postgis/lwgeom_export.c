@@ -164,6 +164,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	else                 srs = getSRSbySRID(srid, true);
 
 	if (option & 2)  lwopts &= ~LW_GML_IS_DIMS; 
+	if (option & 4)  lwopts |= LW_GML_SHORTLINE;
 	if (option & 16) lwopts |= LW_GML_IS_DEGREE;
 
 	lwgeom = pglwgeom_deserialize(geom);

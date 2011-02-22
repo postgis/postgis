@@ -505,6 +505,10 @@ st_asgeojson
 								</listitem>
 
 								<listitem>
+								  <para>4: For GML 3 only, use &lt;LineString&gt; rather than &lt;Curve&gt; tag for lines.</para>
+								</listitem>
+
+								<listitem>
 								  <para>16: Declare that datas are lat/lon (e.g srid=4326). Default is to assume that data are planars. This option is usefull for GML 3.1.1 output only, related to axis order.</para>
 								</listitem>
 						  </itemizedlist>

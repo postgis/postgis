@@ -43,6 +43,12 @@ SELECT 'gml_prefix_02', ST_AsGML(3, GeomFromEWKT('SRID=4326;POINT(1 2)'), 0, 16,
 SELECT 'gml_prefix_03', ST_AsGML(2, GeomFromEWKT('SRID=4326;POINT(1 2)'), 0, 16, 'foo');
 SELECT 'gml_prefix_04', ST_AsGML(3, GeomFromEWKT('SRID=4326;POINT(1 2)'), 0, 16, 'foo');
 
+-- LineString
+SELECT 'gml_shortline_01', ST_AsGML(3, GeomFromEWKT('LINESTRING(1 2, 3 4)'), 0, 6, '');
+SELECT 'gml_shortline_02', ST_AsGML(3, GeomFromEWKT('LINESTRING(1 2, 3 4)'), 0, 2, '');
+SELECT 'gml_shortline_03', ST_AsGML(3, GeomFromEWKT('MULTILINESTRING((1 2, 3 4), (5 6, 7 8))'), 0, 6, '');
+SELECT 'gml_shortline_04', ST_AsGML(3, GeomFromEWKT('MULTILINESTRING((1 2, 3 4), (5 6, 7 8))'), 0, 2, '');
+
 --
 -- KML
 --

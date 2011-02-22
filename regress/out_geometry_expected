@@ -18,6 +18,10 @@ gml_prefix_01|<Point srsName="EPSG:4326"><coordinates>1,2</coordinates></Point>
 gml_prefix_02|<Point srsName="EPSG:4326"><pos srsDimension="2">2 1</pos></Point>
 gml_prefix_03|<foo:Point srsName="EPSG:4326"><foo:coordinates>1,2</foo:coordinates></foo:Point>
 gml_prefix_04|<foo:Point srsName="EPSG:4326"><foo:pos srsDimension="2">2 1</foo:pos></foo:Point>
+gml_shortline_01|<LineString><posList>1 2 3 4</posList></LineString>
+gml_shortline_02|<Curve><segments><LineStringSegment><posList>1 2 3 4</posList></LineStringSegment></segments></Curve>
+gml_shortline_03|<MultiCurve><curveMember><LineString><posList>1 2 3 4</posList></LineString></curveMember><curveMember><LineString><posList>5 6 7 8</posList></LineString></curveMember></MultiCurve>
+gml_shortline_04|<MultiCurve><curveMember><Curve><segments><LineStringSegment><posList>1 2 3 4</posList></LineStringSegment></segments></Curve></curveMember><curveMember><Curve><segments><LineStringSegment><posList>5 6 7 8</posList></LineStringSegment></segments></Curve></curveMember></MultiCurve>
 ERROR:  GetProj4StringSPI: Cannot find SRID (10) in spatial_ref_sys
 ERROR:  Input geometry has unknown (-1) SRID
 kml_empty_geom|
