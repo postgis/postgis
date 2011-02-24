@@ -1139,12 +1139,13 @@ int point_in_ring(POINTARRAY *pts, POINT2D *point)
 				return 0;
 			}
 		}
+
 		/*
 		 * If the point is to the left of the line, and it's rising,
 		 * then the line is to the right of the point and
 		 * circling counter-clockwise, so incremement.
 		 */
-		else if (FP_CONTAINS_BOTTOM(seg1.y,point->y,seg2.y) && side>0)
+		if (FP_CONTAINS_BOTTOM(seg1.y,point->y,seg2.y) && side>0)
 		{
 			LWDEBUG(3, "incrementing winding number.");
 
