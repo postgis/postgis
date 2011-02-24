@@ -909,7 +909,7 @@ def wkblify_raster_level(options, ds, level, band_range, infile, i):
 
     return (gen_table, tile_count)
 
-def wkblify_raster(options, infile, i):
+def wkblify_raster(options, infile, i, previous_gt = None):
     """Writes given raster dataset using GDAL features into HEX-encoded of
     WKB for WKT Raster output."""
     
@@ -931,6 +931,12 @@ def wkblify_raster(options, infile, i):
     else:
         band_range = ( 1, ds.RasterCount + 1 )
 
+    # Compare this px size with previous one
+    current_gt = get_gdal_geotransform(ds)
+    if previous_gt is not None:
+        if previous_gt[1] != current_gt[1] or previous_gt[5] != current_gt[5]:
+            sys.exit('Error: Cannot load raster with different pixel size in the same raster table')
+
     # Generate requested overview level (base raster if level = 1)
     summary = wkblify_raster_level(options, ds, options.overview_level, band_range, infile, i)
     SUMMARY.append( summary )
@@ -938,6 +944,8 @@ def wkblify_raster(options, infile, i):
     # Cleanup
     ds = None
 
+    return current_gt
+       
 ################################################################################
 
 def main():
@@ -979,6 +987,7 @@ def main():
     i = 0
 
     # Burn all specified input raster files into single WKTRaster table
+    gt = None
     for infile in opts.raster:
         filelist = glob.glob(infile)
         assert len(filelist) > 0, "No input raster files found for '" + str(infile) + "'"
@@ -987,7 +996,7 @@ def main():
             logit("MSG: Dataset #%d: %s\n" % (i + 1, filename))
             
             # Write raster data to WKB and send it to opts.output
-            wkblify_raster(opts, filename.replace( '\\', '/') , i)
+            gt = wkblify_raster(opts, filename.replace( '\\', '/') , i, gt)
             i += 1
 
     # INDEX
@@ -1008,7 +1017,7 @@ def main():
         sys.stdout = saved_out
 
         print "------------------------------------------------------------"
-        print " Summary of GDAL to WKT Raster processing:"
+        print " Summary of GDAL to PostGIS Raster processing:"
         print "------------------------------------------------------------"
         if i == 1:
             m = '%d (%s)' % (i, infile)
