@@ -1,13 +1,19 @@
-CREDITS: 2009/07/01
+CREDITS: 2011/02/24
 
 The core team of PostGIS is:
  
  Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
  Paul Ramsey <pramsey@cleverelephant.ca>
  Regina Obe <lr@pcorp.us>
- Kevin Neufeld <kneufeld@refractions.net>
+ Kevin Neufeld 
  Olivier Courtin <olivier.courtin@camptocamp.com>
  Sandro Santilli <strk@keybit.net>
+ Pierre Racine
+ Jorge Arévalo
+ Mark Leslie
+ Nicklas Avén
+ Mateusz Loskot
+ Chris Hodgson
 
 All versions include substantial contributions from the 
 core team.
@@ -30,7 +36,7 @@ Version 1.2.1 of PostGIS includes patches from:
   short circuit.
 
 Version 1.1.0 of PostGIS includes patches from:
-  Obe, Regina <robe.dnd@cityofboston.gov> with -k switch for pgsql2shp.
+  Obe, Regina with -k switch for pgsql2shp.
 
 Version 1.0.0 of PostGIS includes code from:
   Mark Cave-Ayland <m.cave-ayland@webbased.co.uk> with new positional
