@@ -24,7 +24,7 @@
 		<note><para>The <varname>tiger</varname> schema must be added to the database search path for the functions to work properly.</para></note>
      </sect1info>
      
-     <para>There is another geocoder for PostGIS gaining in popularity and more suitable for international use.  It is called <ulink url="http://wiki.openstreetmap.org/wiki/Nominatim">Nomatim</ulink>
+     <para>There is another geocoder for PostGIS gaining in popularity and more suitable for international use.  It is called <ulink url="http://wiki.openstreetmap.org/wiki/Nominatim">Nominatim</ulink>
      and uses OpenStreetMap gazeteer formatted data.  It requires osm2pgsql for loading the data, PostgreSQL 8.4+ and PostGIS 1.5+ to function.  It also a webservice interface and was more designed to be call as a webservice.
      Just like the tiger geocoder, it has both a geocoder and reverse geocoder component.  From the documentation, it is unclear if it has a pure SQL interface like the tiger geocoder, or if a good deal of the logic is implemented in the web interface.</para>
 	
