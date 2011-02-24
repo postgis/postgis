@@ -2,18 +2,18 @@ CREDITS: 2011/02/24
 
 The core team of PostGIS is:
  
- Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
- Paul Ramsey <pramsey@cleverelephant.ca>
- Regina Obe <lr@pcorp.us>
- Kevin Neufeld 
- Olivier Courtin <olivier.courtin@camptocamp.com>
- Sandro Santilli <strk@keybit.net>
- Pierre Racine
- Jorge Arévalo
- Mark Leslie
- Nicklas Avén
- Mateusz Loskot
- Chris Hodgson
+ mcayland (Mark Cave-Ayland) <mark.cave-ayland@siriusit.co.uk> - index support, PostgreSQL/PostGIS integration issues
+ pramsey (Paul Ramsey) <pramsey@cleverelephant.ca> - index, geodetic, shapefile gui loader
+ robe (Regina Obe) <lr@pcorp.us> - documentation, windows experimental and production builds, QA testing, plpgsql functions
+ kneufeld (Kevin Neufeld) - documentation, plpgsql functions, document and buildbot, website administration (past)
+ colivier (Olivier Courtin) <olivier.courtin@camptocamp.com> - output functions, 3D support
+ strk (Sandro Santilli) <strk@keybit.net> - GEOS integration, topology, raster
+ pracine (Pierre Racine) <Pierre.Racine@sbf.ulaval.ca> - raster
+ jorgearevalo (Jorge Arévalo) <jorge.arevalo at deimos-space.com> - raster 
+ mleslie (Mark Leslie) <mark.leslie@lisasoft.com> - curve support, shp2pgsql gui loader 
+ nicklas (Nicklas Avén) <nicklas.aven@jordogskog.no> - measurement functions (2D and 3D)
+ mloskot (Mateusz Loskot) - raster
+ chodson (Chris Hodgson) - core website maintenance and build bot 
 
 All versions include substantial contributions from the 
 core team.
