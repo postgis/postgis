@@ -959,6 +959,109 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
 	
 	<sect1 id="Topology_Accessors">
 	  <title>TopoGeometry and other Topology Object Accessors</title>
+        <refentry id="GetEdgeByPoint">
+          <refnamediv>
+            <refname>GetEdgeByPoint</refname>
+        
+            <refpurpose>Find the edge-id of an edge that intersects a given point</refpurpose>
+          </refnamediv>
+        
+          <refsynopsisdiv>
+            <funcsynopsis>
+              <funcprototype>
+                <funcdef>integer <function>GetEdgeByPoint</function></funcdef>
+                <paramdef><type>text </type> <parameter>atopology</parameter></paramdef>
+                <paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
+                <paramdef><type>float8 </type> <parameter>tol</parameter></paramdef>
+              </funcprototype>
+        
+            </funcsynopsis>
+          </refsynopsisdiv>
+        
+          <refsection>
+            <title>Retrieve the id of an edge that intersects a Point</title>
+        
+            <para>The function returns an integer (id-edge) given a topology, a POINT and a tolerance. If tolerance = 0 then the point has to intersect the edge.</para>
+            <para>If the point is the location of a node, then an exception is thrown. To avoid this run the GetNodeByPoint function.</para>
+            <para>If there isn't any edge available in the Point, it returns 0 (zero).</para>
+            <para>If use tolerance > 0 and there is more than one edge near the point then an exception is thrown.</para>
+        
+        
+            <!-- optionally mention that this function uses indexes if appropriate -->
+            <note>
+              <para>If tolerance = 0, the function use ST_Intersect otherwise use the ST_DWithin.</para>
+            </note>
+            <!-- use this format if new function -->
+            <para>Availability: 2.0.0 - requires GEOS &gt;= 3.3.0. </para>
+          </refsection>
+        
+        
+          <refsection>
+            <title>Examples</title>
+        
+                <programlisting>SELECT topology.GetEdgeByPoint('ma_topo',ST_GeomFromEWKT('SRID=26986;POINT(227591.9 893900)'), 0.001::float8) As result;</programlisting>
+                <programlisting>SELECT topology.GetEdgeByPoint('ma_topo',ST_GeomFromEWKT('SRID=26986;POINT(227622.6 893844.2)'), 0::float8) As result;</programlisting>
+          </refsection>
+        
+          <!-- Optionally add a "See Also" section -->
+          <refsection>
+            <title>See Also</title>
+        
+            <para><xref linkend="GetNodeByPoint" /></para>
+          </refsection>
+        </refentry>
+        
+        <refentry id="GetNodeByPoint">
+          <refnamediv>
+            <refname>GetNodeByPoint</refname>
+        
+            <refpurpose>Find the id of a node at a point location</refpurpose>
+          </refnamediv>
+        
+          <refsynopsisdiv>
+            <funcsynopsis>
+              <funcprototype>
+                <funcdef>integer <function>GetNodeByPoint</function></funcdef>
+                <paramdef><type>text </type> <parameter>atopology</parameter></paramdef>
+                <paramdef><type>geometry </type> <parameter>point</parameter></paramdef>
+                <paramdef><type>float8 </type> <parameter>tol</parameter></paramdef>
+              </funcprototype>
+        
+            </funcsynopsis>
+          </refsynopsisdiv>
+        
+          <refsection>
+            <title>Retrieve the id of a node at a point location</title>
+        
+            <para>The function return an integer (id-node) given a topology, a POINT and a tolerance. If tolerance = 0 mean exactly intersection otherwise retrieve the node from an interval.</para>
+            <para>If there isn't a node at the point, it return 0 (zero).</para>
+            <para>If use tolerance > 0 and near the point there are more than one node it throw an exception.</para>
+        
+        
+            <!-- optionally mention that this function uses indexes if appropriate -->
+            <note>
+              <para>If tolerance = 0, the function use ST_Intersect otherwise use the ST_DWithin.</para>
+            </note>
+            <!-- use this format if new function -->
+            <para>Availability: 2.0.0 - requires GEOS &gt;= 3.3.0. </para>
+          </refsection>
+        
+        
+          <refsection>
+            <title>Examples</title>
+        
+            <programlisting>SELECT topology.GetNodeByPoint('ma_topo',ST_GeomFromEWKT('SRID=26986;POINT(227575.8 893917.4)'), 1)  As result;</programlisting>
+            <programlisting>SELECT topology.GetNodeByPoint('ma_topo',ST_GeomFromEWKT('SRID=26986;POINT(1 4)'), 0) As result;</programlisting>
+          </refsection>
+        
+          <!-- Optionally add a "See Also" section -->
+          <refsection>
+            <title>See Also</title>
+        
+            <para><xref linkend="GetEdgeByPoint" />GetEdgeByPoint</para>
+          </refsection>
+        </refentry>
+          
 	      <refentry id="GetTopoGeomElementArray">
 			<refnamediv>
 				<refname>GetTopoGeomElementArray</refname>
