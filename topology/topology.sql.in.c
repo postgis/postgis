@@ -2413,6 +2413,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 
 --  Querying
 #include "sql/query/getnodebypoint.sql"
+#include "sql/query/getedgebypoint.sql"
 
 --  Editing
 #include "sql/populate.sql"

@@ -32,7 +32,8 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/droptopology.sql \
 	regress/createtopogeom.sql \
 	regress/gml.sql \
-	regress/getnodebypoint.sql
+	regress/getnodebypoint.sql \
+	regress/getedgebypoint.sql
 
 check: topo_predicates.sql load_topology.sql load_topology-4326.sql
 	$(MAKE) -C ../../regress postgis.sql staged-install
