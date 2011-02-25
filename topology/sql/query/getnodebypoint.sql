@@ -1,0 +1,89 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- 
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.refractions.net
+--
+-- Copyright (C) 2011 Andrea Peri
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+-- {
+--
+-- Andrea Peri (19 Jan 2011) creation
+-- Andrea Peri (14 Feb 2011) minor issues
+--
+-- getnodebypoint(atopology, point, tolerance)
+--
+-- Retrieve a Node ID given a POINT and a tolerance
+-- tolerance = 0 mean exactly intersection
+--
+-- Returns the integer ID if there is a Node on the Point.
+--
+-- If there isn't any node in the Point, GetNodeByPoint return 0.
+--
+-- if near the point there are two or more nodes it throw an exception.
+--
+CREATE OR REPLACE FUNCTION topology.GetNodeByPoint(atopology varchar, apoint geometry, tol1 float8)
+	RETURNS int
+AS
+$$
+DECLARE
+	sql text;
+	idnode int;
+BEGIN
+	--
+	-- Atopology and apoint are required
+	-- 
+	IF atopology IS NULL OR apoint IS NULL THEN
+		RAISE EXCEPTION 'Invalid null argument';
+	END IF;
+
+	--
+	-- Apoint must be a point
+	--
+	IF substring(geometrytype(apoint), 1, 5) != 'POINT'
+	THEN
+		RAISE EXCEPTION 'Node geometry must be a point';
+	END IF;
+
+	--
+	-- Tolerance must be >= 0
+	--
+	IF tol1 < 0
+	THEN
+		RAISE EXCEPTION 'Tolerance must be >=0';
+	END IF;
+
+
+    if tol1 = 0 then
+    	sql := 'SELECT a.node_id FROM ' 
+        || quote_ident(atopology) 
+        || '.node as a WHERE '
+        || '(a.geom && ' || quote_literal(apoint::text)||'::geometry) '
+        || ' AND (ST_Intersects(a.geom,' || quote_literal(apoint::text)||'::geometry) );';
+    else
+    	sql := 'SELECT a.node_id FROM ' 
+        || quote_ident(atopology) 
+        || '.node as a WHERE '
+        || '(ST_DWithin(a.geom,' || quote_literal(apoint::text)||'::geometry,' || tol1::text || ') );';
+    end if;
+
+    BEGIN
+    EXECUTE sql INTO STRICT idnode;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            idnode = 0;
+        WHEN TOO_MANY_ROWS THEN
+            RAISE EXCEPTION 'Two or more nodes founded';
+    END;
+
+	RETURN idnode;
+	
+END
+$$
+LANGUAGE 'plpgsql' STRICT;
+--} GetNodeByPoint
+

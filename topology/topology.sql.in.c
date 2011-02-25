@@ -2411,6 +2411,9 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 
 --=} POSTGIS-SPECIFIC topology predicates
 
+--  Querying
+#include "sql/query/getnodebypoint.sql"
+
 --  Editing
 #include "sql/populate.sql"
 
