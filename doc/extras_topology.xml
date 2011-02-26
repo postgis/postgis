@@ -983,7 +983,7 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
         
             <para>The function returns an integer (id-edge) given a topology, a POINT and a tolerance. If tolerance = 0 then the point has to intersect the edge.</para>
             <para>If the point is the location of a node, then an exception is thrown. To avoid this run the GetNodeByPoint function.</para>
-            <para>If there isn't any edge available in the Point, it returns 0 (zero).</para>
+            <para>If the point doesn't intersect an edge, returns 0 (zero).</para>
             <para>If use tolerance > 0 and there is more than one edge near the point then an exception is thrown.</para>
         
         
@@ -1040,7 +1040,7 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
         
             <!-- optionally mention that this function uses indexes if appropriate -->
             <note>
-              <para>If tolerance = 0, the function use ST_Intersect otherwise use the ST_DWithin.</para>
+              <para>If tolerance = 0, the function use ST_Intersects otherwise will use ST_DWithin.</para>
             </note>
             <!-- use this format if new function -->
             <para>Availability: 2.0.0 - requires GEOS &gt;= 3.3.0. </para>
