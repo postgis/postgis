@@ -970,7 +970,7 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
             <funcsynopsis>
               <funcprototype>
                 <funcdef>integer <function>GetEdgeByPoint</function></funcdef>
-                <paramdef><type>text </type> <parameter>atopology</parameter></paramdef>
+                <paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
                 <paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
                 <paramdef><type>float8 </type> <parameter>tol</parameter></paramdef>
               </funcprototype>
@@ -998,16 +998,25 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
         
           <refsection>
             <title>Examples</title>
-        
-                <programlisting>SELECT topology.GetEdgeByPoint('ma_topo',ST_GeomFromEWKT('SRID=26986;POINT(227591.9 893900)'), 0.001::float8) As result;</programlisting>
-                <programlisting>SELECT topology.GetEdgeByPoint('ma_topo',ST_GeomFromEWKT('SRID=26986;POINT(227622.6 893844.2)'), 0::float8) As result;</programlisting>
+                <para>These examples use edges we created in <xref linkend="AddEdge" /></para>
+                <programlisting>SELECT topology.GetEdgeByPoint('ma_topo',geom, 1) As with1mtol, topology.GetEdgeByPoint('ma_topo',geom,0) As withnotol
+FROM ST_GeomFromEWKT('SRID=26986;POINT(227622.6 893843)') As geom;
+ with1mtol | withnotol
+-----------+-----------
+         2 |         0
+</programlisting>
+                <programlisting>SELECT topology.GetEdgeByPoint('ma_topo',geom, 1) As nearnode
+FROM ST_GeomFromEWKT('SRID=26986;POINT(227591.9 893900.4)') As geom;
+
+-- get error --
+ERROR:  Two or more edges founded</programlisting>
           </refsection>
         
           <!-- Optionally add a "See Also" section -->
           <refsection>
             <title>See Also</title>
         
-            <para><xref linkend="GetNodeByPoint" /></para>
+            <para><xref linkend="AddEdge" />,<xref linkend="GetNodeByPoint" /></para>
           </refsection>
         </refentry>
         
@@ -1022,7 +1031,7 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
             <funcsynopsis>
               <funcprototype>
                 <funcdef>integer <function>GetNodeByPoint</function></funcdef>
-                <paramdef><type>text </type> <parameter>atopology</parameter></paramdef>
+                <paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
                 <paramdef><type>geometry </type> <parameter>point</parameter></paramdef>
                 <paramdef><type>float8 </type> <parameter>tol</parameter></paramdef>
               </funcprototype>
@@ -1049,16 +1058,26 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
         
           <refsection>
             <title>Examples</title>
-        
-            <programlisting>SELECT topology.GetNodeByPoint('ma_topo',ST_GeomFromEWKT('SRID=26986;POINT(227575.8 893917.4)'), 1)  As result;</programlisting>
-            <programlisting>SELECT topology.GetNodeByPoint('ma_topo',ST_GeomFromEWKT('SRID=26986;POINT(1 4)'), 0) As result;</programlisting>
+             <para>These examples use edges we created in <xref linkend="AddEdge" /></para>
+            <programlisting>SELECT topology.GetNodeByPoint('ma_topo',geom, 1) As nearnode 
+ FROM ST_GeomFromEWKT('SRID=26986;POINT(227591.9 893900.4)') As geom;
+  nearnode
+----------
+        2
+ </programlisting>
+            <programlisting>SELECT topology.GetNodeByPoint('ma_topo',geom, 1000) As too_much_tolerance
+ FROM ST_GeomFromEWKT('SRID=26986;POINT(227591.9 893900.4)') As geom;
+ 
+ ----get error--
+ ERROR:  Two or more nodes founded
+ </programlisting>
           </refsection>
         
           <!-- Optionally add a "See Also" section -->
           <refsection>
             <title>See Also</title>
         
-            <para><xref linkend="GetEdgeByPoint" />GetEdgeByPoint</para>
+            <para><xref linkend="AddEdge" />, <xref linkend="GetEdgeByPoint" /></para>
           </refsection>
         </refentry>
           
