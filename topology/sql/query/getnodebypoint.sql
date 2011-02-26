@@ -77,7 +77,7 @@ BEGIN
         WHEN NO_DATA_FOUND THEN
             idnode = 0;
         WHEN TOO_MANY_ROWS THEN
-            RAISE EXCEPTION 'Two or more nodes founded';
+            RAISE EXCEPTION 'Two or more nodes found';
     END;
 
 	RETURN idnode;

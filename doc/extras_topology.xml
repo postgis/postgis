@@ -1009,7 +1009,7 @@ FROM ST_GeomFromEWKT('SRID=26986;POINT(227622.6 893843)') As geom;
 FROM ST_GeomFromEWKT('SRID=26986;POINT(227591.9 893900.4)') As geom;
 
 -- get error --
-ERROR:  Two or more edges founded</programlisting>
+ERROR:  Two or more edges found</programlisting>
           </refsection>
         
           <!-- Optionally add a "See Also" section -->
@@ -1069,7 +1069,7 @@ ERROR:  Two or more edges founded</programlisting>
  FROM ST_GeomFromEWKT('SRID=26986;POINT(227591.9 893900.4)') As geom;
  
  ----get error--
- ERROR:  Two or more nodes founded
+ ERROR:  Two or more nodes found
  </programlisting>
           </refsection>
         

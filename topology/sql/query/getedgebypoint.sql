@@ -80,7 +80,7 @@ BEGIN
         WHEN NO_DATA_FOUND THEN
             idedge = 0;
         WHEN TOO_MANY_ROWS THEN
-            RAISE EXCEPTION 'Two or more edges founded';
+            RAISE EXCEPTION 'Two or more edges found';
     END;
 
 	RETURN idedge;
