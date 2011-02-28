@@ -210,10 +210,11 @@ BEGIN
         || quote_literal(bounds::text)
         || ', ST_Line_Interpolate_Point(e.geom, 0.2)) as pos FROM '
         || quote_ident(toponame)
-        || '.edge e WHERE ST_Covers('
+        || '.edge e WHERE ( e.left_face = ' || face_id
+        || ' OR e.right_face = ' || face_id
+        || ') AND ST_Covers('
         || quote_literal(bounds::text)
         || ', e.geom) ORDER BY pos'
-        -- TODO: add left_face/right_face to the conditional, to reduce load 
       LOOP
 
         gml = gml || '<' || nsprefix || 'directedEdge';
