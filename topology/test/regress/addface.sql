@@ -100,6 +100,11 @@ SELECT 't2.f5',  topology.addFace('t2',
 'POLYGON((12 2,12 4,14 4,14 2,12 2))'
 );
 
+-- Attempt to register a not-fully-defined face 
+SELECT topology.addFace('t2',
+'POLYGON((12 2,12 5,14 5,14 2,12 2))'
+);
+
 -- Check added faces
 SELECT face_id, Box2d(mbr) from t2.face ORDER by face_id;
 
