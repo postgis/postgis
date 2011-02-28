@@ -8,6 +8,6 @@ t
 t
 t
 t
-ERROR:  Two or more edges founded
-ERROR:  Two or more edges founded
+ERROR:  Two or more edges found
+ERROR:  Two or more edges found
 Topology 'schema_topo' dropped
