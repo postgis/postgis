@@ -1038,7 +1038,7 @@ MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)
 	  </refsection>
 
 	  <refsection>
-		<title>Examples</title>
+		<title>Standard Examples</title>
 	<programlisting>SELECT sometable.field1, sometable.field1,
       (ST_Dump(sometable.the_geom)).geom AS the_geom
 FROM sometable;
@@ -1053,9 +1053,9 @@ SELECT ST_AsEWKT(a.geom), ST_HasArc(a.geom)
  CIRCULARSTRING(0 0,1 1,1 0) | t
  LINESTRING(1 0,0 1)         | f
 (2 rows)</programlisting>
-
-<programlisting>
--- Polyhedral surface example
+</refsection>
+<refsection><title>Polyhedral Surfaces, TIN and Triangle Examples</title>
+<programlisting>-- Polyhedral surface example
 -- Break a Polyhedral surface into its faces
 SELECT (a.p_geom).path[1] As path, ST_AsEWKT((a.p_geom).geom) As geom_ewkt
   FROM (SELECT ST_Dump(ST_GeomFromEWKT('POLYHEDRALSURFACE( 
@@ -1072,6 +1072,30 @@ SELECT (a.p_geom).path[1] As path, ST_AsEWKT((a.p_geom).geom) As geom_ewkt
     4 | POLYGON((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0))
     5 | POLYGON((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0))
     6 | POLYGON((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1))</programlisting>
+    
+<programlisting>-- TIN --		
+SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
+  FROM
+    (SELECT 
+       ST_Dump( ST_GeomFromEWKT('TIN (((
+                0 0 0, 
+                0 0 1, 
+                0 1 0, 
+                0 0 0
+            )), ((
+                0 0 0, 
+                0 1 0, 
+                1 1 0, 
+                0 0 0
+            ))
+            )') ) AS gdump
+    ) AS g;
+-- result --
+ path |                 wkt
+------+-------------------------------------
+ {1}  | TRIANGLE((0 0 0,0 0 1,0 1 0,0 0 0))
+ {2}  | TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))
+</programlisting>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>

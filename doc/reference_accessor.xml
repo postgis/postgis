@@ -499,10 +499,9 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 
 
 	  <refsection>
-		<title>Examples</title>
+		<title>Standard Examples</title>
 
-		<programlisting>
---Extracting a subset of points from a 3d multipoint
+		<programlisting>--Extracting a subset of points from a 3d multipoint
 SELECT n, ST_AsEWKT(ST_GeometryN(the_geom, n)) As geomewkt
 FROM (
 VALUES (ST_GeomFromEWKT('MULTIPOINT(1 2 7, 3 4 7, 5 6 7, 8 9 10)') ),
@@ -524,10 +523,47 @@ WHERE n &lt;= ST_NumGeometries(the_geom);
 --Extracting all geometries (useful when you want to assign an id)
 SELECT gid, n, ST_GeometryN(the_geom, n)
 FROM sometable CROSS JOIN generate_series(1,100) n
-WHERE n &lt;= ST_NumGeometries(the_geom);
+WHERE n &lt;= ST_NumGeometries(the_geom);</programlisting>
+	  </refsection>
+	  
+<refsection><title>Polyhedral Surfaces, TIN and Triangle Examples</title>
+<programlisting>-- Polyhedral surface example
+-- Break a Polyhedral surface into its faces
+SELECT ST_AsEWKT(ST_GeometryN(p_geom,3)) As geom_ewkt
+  FROM (SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE( 
+((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),  
+((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), 
+((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
+((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),  
+((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  
+((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) 
+)')  AS p_geom )  AS a;
 
-
-</programlisting>
+                geom_ewkt
+------------------------------------------
+ POLYGON((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0))</programlisting>
+    
+<programlisting>-- TIN --		
+SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
+  FROM
+    (SELECT 
+       ST_GeomFromEWKT('TIN (((
+                0 0 0, 
+                0 0 1, 
+                0 1 0, 
+                0 0 0
+            )), ((
+                0 0 0, 
+                0 1 0, 
+                1 1 0, 
+                0 0 0
+            ))
+            )')  AS geom
+    ) AS g;
+-- result --
+                 wkt
+-------------------------------------
+ TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))</programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
