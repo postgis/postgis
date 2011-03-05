@@ -1185,7 +1185,7 @@ FROM (
 	<refsection>
 			<title>Polyhedral Surfaces, TIN and Triangle Examples</title>
 			<programlisting>-- Polyhedral surface cube --		
-SELECT (g.gdump).path, ST_AsText((g.gdump).geom) as wkt
+SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
   FROM
     (SELECT 
        ST_DumpPoints(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
@@ -1194,40 +1194,39 @@ SELECT (g.gdump).path, ST_AsText((g.gdump).geom) as wkt
 ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )') ) AS gdump
     ) AS g;
 -- result --
-  path   |    wkt
----------+------------
- {1,1,1} | POINT(0 0)
- {1,1,2} | POINT(0 0)
- {1,1,3} | POINT(0 1)
- {1,1,4} | POINT(0 1)
- {1,1,5} | POINT(0 0)
- {2,1,1} | POINT(0 0)
- {2,1,2} | POINT(0 1)
- {2,1,3} | POINT(1 1)
- {2,1,4} | POINT(1 0)
- {2,1,5} | POINT(0 0)
- {3,1,1} | POINT(0 0)
- {3,1,2} | POINT(1 0)
- {3,1,3} | POINT(1 0)
- {3,1,4} | POINT(0 0)
- {3,1,5} | POINT(0 0)
- {4,1,1} | POINT(1 1)
- {4,1,2} | POINT(1 1)
- {4,1,3} | POINT(1 0)
- {4,1,4} | POINT(1 0)
- {4,1,5} | POINT(1 1)
- {5,1,1} | POINT(0 1)
- {5,1,2} | POINT(0 1)
- {5,1,3} | POINT(1 1)
- {5,1,4} | POINT(1 1)
- {5,1,5} | POINT(0 1)
- {6,1,1} | POINT(0 0)
- {6,1,2} | POINT(1 0)
- {6,1,3} | POINT(1 1)
- {6,1,4} | POINT(0 1)
- {6,1,5} | POINT(0 0)
- (30 rows)
-</programlisting>
+  path   |     wkt
+---------+--------------
+ {1,1,1} | POINT(0 0 0)
+ {1,1,2} | POINT(0 0 1)
+ {1,1,3} | POINT(0 1 1)
+ {1,1,4} | POINT(0 1 0)
+ {1,1,5} | POINT(0 0 0)
+ {2,1,1} | POINT(0 0 0)
+ {2,1,2} | POINT(0 1 0)
+ {2,1,3} | POINT(1 1 0)
+ {2,1,4} | POINT(1 0 0)
+ {2,1,5} | POINT(0 0 0)
+ {3,1,1} | POINT(0 0 0)
+ {3,1,2} | POINT(1 0 0)
+ {3,1,3} | POINT(1 0 1)
+ {3,1,4} | POINT(0 0 1)
+ {3,1,5} | POINT(0 0 0)
+ {4,1,1} | POINT(1 1 0)
+ {4,1,2} | POINT(1 1 1)
+ {4,1,3} | POINT(1 0 1)
+ {4,1,4} | POINT(1 0 0)
+ {4,1,5} | POINT(1 1 0)
+ {5,1,1} | POINT(0 1 0)
+ {5,1,2} | POINT(0 1 1)
+ {5,1,3} | POINT(1 1 1)
+ {5,1,4} | POINT(1 1 0)
+ {5,1,5} | POINT(0 1 0)
+ {6,1,1} | POINT(0 0 1)
+ {6,1,2} | POINT(1 0 1)
+ {6,1,3} | POINT(1 1 1)
+ {6,1,4} | POINT(0 1 1)
+ {6,1,5} | POINT(0 0 1)
+(30 rows)</programlisting>
 <programlisting>-- Triangle --		
 SELECT (g.gdump).path, ST_AsText((g.gdump).geom) as wkt
   FROM
@@ -1248,7 +1247,7 @@ SELECT (g.gdump).path, ST_AsText((g.gdump).geom) as wkt
  {4}  | POINT(0 0)
 </programlisting>
 <programlisting>-- TIN --		
-SELECT (g.gdump).path, ST_AsText((g.gdump).geom) as wkt
+SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
   FROM
     (SELECT 
        ST_DumpPoints( ST_GeomFromEWKT('TIN (((
@@ -1265,16 +1264,16 @@ SELECT (g.gdump).path, ST_AsText((g.gdump).geom) as wkt
             )') ) AS gdump
     ) AS g;
 -- result --
- path  |    wkt
--------+------------
- {1,1} | POINT(0 0)
- {1,2} | POINT(0 0)
- {1,3} | POINT(0 1)
- {1,4} | POINT(0 0)
- {2,1} | POINT(0 0)
- {2,2} | POINT(0 1)
- {2,3} | POINT(1 1)
- {2,4} | POINT(0 0)
+  path   |     wkt
+---------+--------------
+ {1,1,1} | POINT(0 0 0)
+ {1,1,2} | POINT(0 0 1)
+ {1,1,3} | POINT(0 1 0)
+ {1,1,4} | POINT(0 0 0)
+ {2,1,1} | POINT(0 0 0)
+ {2,1,2} | POINT(0 1 0)
+ {2,1,3} | POINT(1 1 0)
+ {2,1,4} | POINT(0 0 0)
 (8 rows)
 </programlisting>
 		</refsection>
