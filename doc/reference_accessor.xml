@@ -40,6 +40,7 @@
 		<para>&curve_support;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
+		<para>&T_support;</para>
 
 	  </refsection>
 
@@ -59,6 +60,25 @@
 			--result
 			POLYHEDRALSURFACE
 			</programlisting>
+<programlisting>SELECT GeometryType(geom) as result
+  FROM
+    (SELECT 
+       ST_GeomFromEWKT('TIN (((
+                0 0 0, 
+                0 0 1, 
+                0 1 0, 
+                0 0 0
+            )), ((
+                0 0 0, 
+                0 1 0, 
+                1 1 0, 
+                0 0 0
+            ))
+            )')  AS geom
+    ) AS g;
+ result
+--------
+ TIN    </programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -166,7 +186,8 @@ MULTIPOINT(-1 1 1,1 1 0.75)
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.3</para>
 		<para>&curve_support;</para>
 		<para>&Z_support;</para>
-
+		<para>&P_support;</para>
+		<para>&T_support;</para>
 	  </refsection>
 
 
@@ -222,9 +243,10 @@ MULTIPOINT(-1 1 1,1 1 0.75)
 		</para>
 
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.2</para>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced. No longer throws an exception if given empty geometry.</para>
+		<para>Enhanced: 2.0.0 support for Polyhedral surfaces and TINs was introduced. No longer throws an exception if given empty geometry.</para>
 		<note> <para>Prior to 2.0.0, this function throws an exception if used with empty geometry. </para></note>
 		<para>&P_support;</para>
+		<para>&T_support;</para>
 	  </refsection>
 
 	  <refsection>
@@ -605,16 +627,41 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 
 			<programlisting>SELECT ST_GeometryType(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));
 			--result
-			ST_LineString
-			</programlisting>
+			ST_LineString</programlisting>
 			
 			<programlisting>SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
 		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
 		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
 		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
 			--result
-			ST_PolyhedralSurface
-			</programlisting>
+			ST_PolyhedralSurface</programlisting>
+			
+		<programlisting>SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
+		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
+		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
+		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
+			--result
+			ST_PolyhedralSurface</programlisting>
+			
+		<programlisting>SELECT ST_GeometryType(geom) as result
+  FROM
+    (SELECT 
+       ST_GeomFromEWKT('TIN (((
+                0 0 0, 
+                0 0 1, 
+                0 1 0, 
+                0 0 0
+            )), ((
+                0 0 0, 
+                0 1 0, 
+                1 1 0, 
+                0 0 0
+            ))
+            )')  AS geom
+    ) AS g;
+ result
+--------
+ ST_Tin    </programlisting>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
