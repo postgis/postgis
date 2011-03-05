@@ -70,6 +70,12 @@ g_rt_schema = 'public'
 VERBOSE = False
 SUMMARY = []
 
+def is_nan(x):
+    if sys.hexversion < 0x02060000:
+        return str(float(x)).lower() == 'nan'
+    else:
+        return math.isnan(x)
+
 def parse_command_line():
     """Collects, parses and validates command line arguments."""
 
@@ -529,7 +535,7 @@ def collect_nodata_values(ds, band_from, band_to):
     for i in range(band_from, band_to):
         band = ds.GetRasterBand(i)
         nodata = band.GetNoDataValue()
-        if nodata is not None and not math.isnan(nodata):
+        if nodata is not None and not is_nan(nodata):
             nd.append(nodata)
 
     return nd
