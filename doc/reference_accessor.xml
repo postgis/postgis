@@ -35,7 +35,7 @@
 		  <para>This function also indicates if the geometry is measured,
 		  by returning a string of the form 'POINTM'.</para>
 		</note>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>&sfs_compliant;</para>
 		<para>&curve_support;</para>
 		<para>&Z_support;</para>
@@ -509,13 +509,14 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 		<note>
 		  <para>If you want to extract all geometries, of a geometry, ST_Dump is more efficient and will also work for singular geoms.</para>
 		</note>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces and singular geometries was introduced.</para>
+		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>Changed: 2.0.0 Prior versions would return NULL for singular geometries.  This was changed to return the geometry for ST_GeometryN(..,1) case.</para>
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 9.1.5</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
+		<para>&T_support;</para>
 
 	  </refsection>
 
@@ -1592,12 +1593,13 @@ SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 
 			<para>Returns the number of Geometries. If geometry is a GEOMETRYCOLLECTION (or MULTI*) return the
 			number of geometries, for single geometries will return 1, otherwise return NULL.</para>
 
-			<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+			<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 			<para>Changed: 2.0.0 In prior versions this would return NULL if the geometry was not a collection/MULTI type. 
 				2.0.0+ now returns 1 for single geometries e.g POLYGON, LINESTRING, POINT.</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 9.1.4</para>
 			<para>&Z_support;</para>
 			<para>&P_support;</para>
+			<para>&T_support;</para>
 
 		</refsection>
 
