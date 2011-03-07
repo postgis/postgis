@@ -208,7 +208,10 @@ BEGIN
       FOR rec2 IN EXECUTE
         'SELECT e.*, ST_Line_Locate_Point('
         || quote_literal(bounds::text)
-        || ', ST_Line_Interpolate_Point(e.geom, 0.2)) as pos FROM '
+        || ', ST_Line_Interpolate_Point(e.geom, 0.2)) as pos'
+        || ', ST_Line_Locate_Point('
+        || quote_literal(bounds::text)
+        || ', ST_Line_Interpolate_Point(e.geom, 0.8)) as pos2 FROM '
         || quote_ident(toponame)
         || '.edge e WHERE ( e.left_face = ' || face_id
         || ' OR e.right_face = ' || face_id
@@ -221,10 +224,7 @@ BEGIN
 
         -- if this edge goes in same direction to the
         --       ring bounds, make it with negative orientation
-        SELECT DISTINCT (ST_Dump(
-                          ST_SharedPaths(rec2.geom, bounds))
-                        ).path[1] into side;
-        IF side = 1 THEN -- edge goes in same direction
+        IF rec2.pos2 > rec2.pos THEN -- edge goes in same direction
           gml = gml || ' orientation="-"';
         END IF;
 
@@ -360,7 +360,10 @@ BEGIN
       FOR rec2 IN EXECUTE
         'SELECT e.*, ST_Line_Locate_Point('
         || quote_literal(rec.geom::text)
-        || ', ST_Line_Interpolate_Point(e.geom, 0.2)) as pos FROM '
+        || ', ST_Line_Interpolate_Point(e.geom, 0.2)) as pos'
+        || ', ST_Line_Locate_Point('
+        || quote_literal(rec.geom::text)
+        || ', ST_Line_Interpolate_Point(e.geom, 0.8)) as pos2 FROM '
         || quote_ident(toponame)
         || '.edge e WHERE ST_Covers('
         || quote_literal(rec.geom::text)
@@ -372,10 +375,7 @@ BEGIN
 
         -- if this edge goes in opposite direction to the
         --       line, make it with negative orientation
-        SELECT DISTINCT (ST_Dump(
-                          ST_SharedPaths(rec2.geom, rec.geom))
-                        ).path[1] into side;
-        IF side = 2 THEN -- edge goes in opposite direction
+        IF rec2.pos2 < rec2.pos THEN -- edge goes in opposite direction
           gml = gml || ' orientation="-"';
         END IF;
 
