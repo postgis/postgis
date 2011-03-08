@@ -206,7 +206,7 @@ BEGIN
 	--
 	FOR rec IN EXECUTE 'SELECT edge_id, geom, ST_Relate('
 		|| quote_literal(aline::text)
-		|| '::geometry, geom) as im'
+		|| '::geometry, geom, 2) as im'
 		|| ' FROM '
 		|| quote_ident(atopology) || '.edge '
 		|| 'WHERE '
@@ -218,97 +218,23 @@ BEGIN
 	    CONTINUE; -- no interior intersection
 	  END IF;
 
-	  --
-	  -- Closed lines have no boundary, so endpoint
-	  -- intersection would be considered interior
-	  -- See http://trac.osgeo.org/postgis/ticket/770
-	  --
-	  -- Possible relate patterns:
-	  --  FF1 0F0 1F2  : first line is open, second is closed
-	  --  F01 FFF 102  : first line is closed, second is open
-	  --  0F1 FFF 1F2  : both first and second line are closed
-	  --
-	  -- Note that the boundary of closed line never intersects
-	  -- (_F_ _F_ _F_ for first, ___ FFF ___ for second) so we
-	  -- can use that pattern to tell that a line is closed
-	  -- (only exceptional case would be in presence of an empty
-	  -- line operand, which we should deal with before anyway)
-	  -- 
-	  -- The problem here is that we have interior/interior (last case)
-	  -- or interior/boundary (first 2 cases) intersection,
-	  -- we can tell if it's puntual (dimension 0) but can't tell if
-	  -- it is _only_ on an endpoint w/out
-	  -- _computing_
-	  -- the actual intersection and comparing.
-	  --
-	  -- For sure we know that if we are facing such a case, such
-	  -- intersection will have dimension 0 and there would be NO
-	  -- intersections on the closed line boundary
-	  --
-
-	  IF ST_RelateMatch(rec.im, 'FF10F01F2') THEN
-	    -- first line (aline) is open, second (rec.geom) is closed
-	    -- first boundary has puntual intersection with second interior
-	    --
-	    -- compute intersection, check it equals second endpoint
-	    IF ST_Equals(ST_Intersection(rec.geom, aline),
-	                 ST_StartPoint(rec.geom))
-	    THEN
-	      RAISE DEBUG 'Edge shares boundary with existing closed edge %',
-	        rec.edge_id;
-	      CONTINUE;
-	    END IF;
-	  END IF;
-
-	  IF ST_RelateMatch(rec.im, 'F01FFF102') THEN
-	    -- second line (rec.geom) is open, first (aline) is closed
-	    -- second boundary has puntual intersection with first interior
-	    -- 
-	    -- compute intersection, check it equals first endpoint
-	    IF ST_Equals(ST_Intersection(rec.geom, aline),
-	                 ST_StartPoint(aline))
-	    THEN
-	      RAISE DEBUG 'Closed edge shares boundary with existing edge %',
-	        rec.edge_id;
-	      CONTINUE;
-	    END IF;
-	  END IF;
-
-	  IF ST_RelateMatch(rec.im, '0F1FFF1F2') THEN
-	    -- both lines are closed (boundary intersects nothing)
-	    -- they have puntual intersection between interiors
-	    -- 
-	    -- compute intersection, check it's a single point
-	    -- and equals first's StartPoint _and_ second's StartPoint
-	    IF ST_Equals(ST_Intersection(rec.geom, aline),
-	                 ST_StartPoint(aline)) AND
-	       ST_Equals(ST_StartPoint(aline), ST_StartPoint(rec.geom))
-	    THEN
-	      RAISE DEBUG
-	        'Closed edge shares boundary with existing closed edge %',
-	        rec.edge_id;
-	      CONTINUE;
-	    END IF;
-	  END IF;
-
 	  -- Reuse an EQUAL edge (be it closed or not)
 	  IF ST_RelateMatch(rec.im, '1FFF*FFF2') THEN
 	      RAISE DEBUG 'Edge already known as %', rec.edge_id;
-        RETURN rec.edge_id;
-    END IF;
+	      RETURN rec.edge_id;
+	  END IF;
 
-    -- WARNING: the constructive operation might throw an exception
-    BEGIN
-      ix = ST_Intersection(rec.geom, aline);
-    EXCEPTION
-      WHEN OTHERS THEN
-        RAISE NOTICE 'Could not compute intersection between input edge (%) and edge % (%)', aline::text, rec.edge_id, rec.geom::text;
-      
-    END;
+	  -- WARNING: the constructive operation might throw an exception
+	  BEGIN
+	    ix = ST_Intersection(rec.geom, aline);
+	  EXCEPTION
+	  WHEN OTHERS THEN
+	    RAISE NOTICE 'Could not compute intersection between input edge (%) and edge % (%)', aline::text, rec.edge_id, rec.geom::text;
+	  END;
 
 	  RAISE EXCEPTION 'Edge intersects (not on endpoints) with existing edge % at or near point %', rec.edge_id, ST_AsText(ST_PointOnSurface(ix));
 
-  END LOOP;
+	END LOOP;
 
 	--
 	-- Get new edge id from sequence
