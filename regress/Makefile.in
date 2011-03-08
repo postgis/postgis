@@ -73,7 +73,8 @@ TESTS = \
 	wmsservers_new \
 	tickets \
 	remove_repeated_points \
-	split
+	split \
+	relate
 
 # TESTS += wmsservers_old
 
