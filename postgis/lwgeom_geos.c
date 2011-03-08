@@ -3231,6 +3231,9 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	GEOSGeometry *g1, *g2;
 	char *relate_str;
 	text *result;
+#if POSTGIS_GEOS_VERSION >= 33
+	int bnr = GEOSRELATE_BNR_OGC;
+#endif
 
 	POSTGIS_DEBUG(2, "in relate_full()");
 
@@ -3238,6 +3241,19 @@ Datum relate_full(PG_FUNCTION_ARGS)
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	if ( PG_NARGS() > 2 ) {
+#if POSTGIS_GEOS_VERSION >= 33
+		bnr = PG_GETARG_INT32(2);
+#else
+		lwerror("The GEOS version this postgis binary "
+			"was compiled against (%d) doesn't support "
+			"specifying a boundary node rule with ST_Relate"
+			" (3.3.0+ required)",
+			POSTGIS_GEOS_VERSION);
+		PG_RETURN_NULL();
+#endif
+	}
 
 	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
@@ -3266,7 +3282,11 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(3, "%s", GEOSGeomToWKT(g1));
 	POSTGIS_DEBUGF(3, "%s", GEOSGeomToWKT(g2));
 
+#if POSTGIS_GEOS_VERSION >= 33
+	relate_str = GEOSRelateBoundaryNodeRule(g1, g2, bnr);
+#else
 	relate_str = GEOSRelate(g1, g2);
+#endif
 
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);

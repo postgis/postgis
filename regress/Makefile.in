@@ -96,7 +96,8 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 33),1)
 		sharedpaths \
 		snap \
 		unaryunion \
-		clean
+		clean \
+		relate_bnr
 endif
 
 all install uninstall distclean:

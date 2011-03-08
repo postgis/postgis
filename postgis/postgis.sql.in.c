@@ -3326,6 +3326,13 @@ CREATE OR REPLACE FUNCTION ST_Relate(geometry,geometry)
 	AS 'MODULE_PATHNAME','relate_full'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
+-- Availability: 2.0.0
+-- Requires GEOS >= 3.3.0
+CREATE OR REPLACE FUNCTION ST_Relate(geometry, geometry, int4)
+	RETURNS text
+	AS 'MODULE_PATHNAME','relate_full'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
 -- PostGIS equivalent function: relate(geometry,geometry,text)
 CREATE OR REPLACE FUNCTION ST_Relate(geometry,geometry,text)
 	RETURNS boolean
