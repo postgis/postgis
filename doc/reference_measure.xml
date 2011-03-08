@@ -3524,6 +3524,13 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 				<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
 			  </funcprototype>
+
+			  <funcprototype>
+				<funcdef>text <function>ST_Relate</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
+				<paramdef><type>int </type> <parameter>BoundaryNodeRule</parameter></paramdef>
+			  </funcprototype>
 			</funcsynopsis>
 		</refsynopsisdiv>
 
@@ -3547,15 +3554,19 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 				index call.</para></note>
 			
 			<para>Version 2: Takes geomA and geomB and returns the <xref linkend="DE-9IM" /></para>
+
+			<para>Version 3: same as version 2 bu allows to specify a boundary node rule (1:OGC/MOD2, 2:Endpoint, 3:MultivalentEndpoint, 4:MonovalentEndpoint)</para>
 			
 			<note><para>Do not call with a GeometryCollection as an argument</para></note>
 			
 			<para>not in OGC spec, but implied. see s2.1.13.2</para>
 			
-			<para>Both Performed by the GEOS module</para>
+			<para>Performed by the GEOS module</para>
 			
 			<para>&sfs_compliant; s2.1.1.2 // s2.1.13.3</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.25</para>
+		  	<para>Enhanced: 2.0.0 - added support for specifying boundary node rule (requires GEOS &gt;= 3.0).</para>
+
 		</refsection>
 
 
