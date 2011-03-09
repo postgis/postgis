@@ -25,6 +25,8 @@ SELECT topology.CreateTopoGeom( 'MiX', 1, 1, '{{78,1}}');
 SELECT 'n1',  topology.addNode('MiX', 'POINT(0 0)');
 
 -- Success !
-SELECT topology.CreateTopoGeom( 'MiX', 1, 1, '{{1,1}}'); 
+SELECT layer_id(tg), id(tg), type(tg) FROM (
+ SELECT topology.CreateTopoGeom( 'MiX', 1, 1, '{{1,1}}') as tg
+) foo; 
 
 SELECT topology.DropTopology('MiX');
