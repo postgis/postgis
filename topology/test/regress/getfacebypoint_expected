@@ -1,0 +1,43 @@
+t
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+WARNING:  Not checking if face contains any edge
+WARNING:  Not updating next_{left,right}_face fields of face boundary edges
+1
+WARNING:  Not checking if face contains any edge
+WARNING:  Not updating next_{left,right}_face fields of face boundary edges
+2
+WARNING:  Not checking if face contains any edge
+WARNING:  Not updating next_{left,right}_face fields of face boundary edges
+3
+WARNING:  Not checking if face contains any edge
+WARNING:  Not updating next_{left,right}_face fields of face boundary edges
+4
+4
+4
+4
+0
+0
+3
+4
+ERROR:  Two or more faces found
+ERROR:  Two or more faces found
+Topology 'schema_topo' dropped
