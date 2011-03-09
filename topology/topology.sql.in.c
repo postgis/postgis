@@ -1907,6 +1907,8 @@ END
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} DropTopology
 
+#include "sql/manage/TopologySummary.sql"
+
 --={ ----------------------------------------------------------------
 --  POSTGIS-SPECIFIC topology predicates
 --
