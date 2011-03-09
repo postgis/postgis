@@ -393,6 +393,54 @@ topoid
 				<para></para>
 			</refsection>
 		</refentry>
+		<refentry id="CopyTopology">
+			<refnamediv>
+				<refname>CopyTopology</refname>
+				<refpurpose>Makes a copy of a topology structure (nodes, edges, faces, layers and TopoGeometries).</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>integer <function>CopyTopology</function></funcdef>
+						<paramdef><type>varchar </type> <parameter>existing_topology_name</parameter></paramdef>
+						<paramdef><type>varchar </type> <parameter>new_name</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>
+Creates a new topology with name <varname>new_topology_name</varname> and SRID and precision taken from <varname>existing_topology_name</varname>, copies all nodes, edges and faces in there, copies layers and their TopoGeometries too.
+		</para>
+                
+                <note><para>
+The new rows in topology.layer will contain synthetized values for schema_name, table_name and feature_column. This is because the TopoGeometry will only exist as a definition but won't be available in any user-level table yet.
+		</para></note>
+        
+                <!-- use this format if new function -->
+                <para>Availability: 2.0.0</para>
+			</refsection>
+		
+		
+			<refsection>
+				<title>Examples</title>
+				<para>
+This example makes a backup of a topology called ma_topo 
+				</para>
+				<programlisting>SELECT topology.CopyTopology('ma_topo', 'ma_topo_bakup');</programlisting>
+				
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+			
+				<para><xref linkend="spatial_ref_sys"/>, <xref linkend="CreateTopology" /></para>
+			</refsection>
+		</refentry>
 		<refentry id="DropTopoGeometryColumn">
 			<refnamediv>
 				<refname>DropTopoGeometryColumn</refname>

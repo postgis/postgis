@@ -30,6 +30,7 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/topoelement.sql \
 	regress/topoelementarray_agg.sql \
 	regress/droptopology.sql \
+	regress/copytopology.sql \
 	regress/createtopogeom.sql \
 	regress/gml.sql \
 	regress/getnodebypoint.sql \
