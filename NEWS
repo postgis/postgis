@@ -40,6 +40,7 @@ YYYY/MM/DD
   - ST_RelateMatch (Sandro Santilli / Faunalia for RT-SIGTA)
   - ST_ConcaveHull (Regina Obe and Leo Hsu)
   - ST_UnaryUnion (Sandro Santilli)
+  - ST_Relate with boundary node rule (Sandro Santilli / Faunalia for RT-SIGTA)
 
  * Enhancements *
 
