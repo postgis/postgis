@@ -40,6 +40,7 @@
       <answer>
         <para>The easiest is to download binaries for PostGIS and Raster which are currently available for windows and latest versions of Mac OSX. 
         	First you need a working PostGIS 1.3.5 or above and be running PostgreSQL 8.3, 8.4, or 9.0. Note in PostGIS 2.0 PostGIS Raster is fully integrated, so it will be compiled when you compile PostGIS.</para>
+        	<para>Instructions for installing and running under windows are available at <ulink url="http://gis4free.wordpress.com/2011/03/10/how-to-install-and-configure-postgis-raster-on-windows/">How to Install and Configure PostGIS raster on windows</ulink></para>
         <para>
 			If you are on windows, you can compile yourself, or use the <ulink
             url="http://www.postgis.org/download/windows/experimental.php#wktraster">pre-compiled
