@@ -86,11 +86,15 @@ BEGIN
                 || ', child layer ' || rec.child_id || E'\n';
     END IF;
 
-    ret = ret || ' Deploy: '
-              || quote_ident(rec.schema_name) || '.'
-              || quote_ident(rec.table_name) || '.'
-              || quote_ident(rec.feature_column)
-              || E'\n';
+    ret = ret || ' Deploy: ';
+    IF rec.feature_column != '' THEN
+      ret = ret || quote_ident(rec.schema_name) || '.'
+                || quote_ident(rec.table_name) || '.'
+                || quote_ident(rec.feature_column)
+                || E'\n';
+    ELSE
+      ret = ret || E'NONE (detached)\n';
+    END IF;
   END LOOP;
 
   RETURN ret;
