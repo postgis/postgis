@@ -51,6 +51,7 @@ VERBOSE=0
 OPT_DROP=yes
 OPT_CREATE=yes
 OPT_WITH_TOPO=no
+OPT_WITH_RASTER=no
 
 if echo '\c' | grep c >/dev/null 2>&1; then
 	ECHO_N='echo -n'
@@ -386,6 +387,10 @@ while [ -n "$1" ]; do
 		OPT_WITH_TOPO=yes
 		shift
 		continue
+	elif test "$1" = "--raster"; then
+		OPT_WITH_RASTER=yes
+		shift
+		continue
 	else
 		break
 	fi
@@ -421,6 +426,14 @@ if test -z "$db_exists"; then
 				${PSQL} ${_psql_opts} -Xf ${REGDIR}/../topology/topology.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1
 			else
 				echo "Topology support skipped (topology.sql  not found)" 
+			fi
+		fi
+		if test x"$OPT_WITH_RASTER" = "xyes"; then
+			if test -e ${REGDIR}/../raster/rt_pg/rtpostgis.sql; then
+				echo "Adding topology support" 
+				${PSQL} ${_psql_opts} -Xf ${REGDIR}/../raster/rt_pg/rtpostgis.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1
+			else
+				echo "Raster support skipped (rtpostgis.sql  not found)" 
 			fi
 		fi
 	else
