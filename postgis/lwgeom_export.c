@@ -25,7 +25,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS);
 Datum LWGEOM_asKML(PG_FUNCTION_ARGS);
 Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS);
 Datum LWGEOM_asSVG(PG_FUNCTION_ARGS);
-
+Datum LWGEOM_asX3D(PG_FUNCTION_ARGS);
 
 /*
  * Retrieve an SRS from a given SRID
@@ -375,6 +375,96 @@ Datum LWGEOM_asSVG(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom);
 	pfree(svg);
 	PG_FREE_IF_COPY(geom, 0);
+
+	PG_RETURN_TEXT_P(result);
+}
+
+/**
+ * Encode feature as X3D
+ */
+PG_FUNCTION_INFO_V1(LWGEOM_asX3D);
+Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *geom;
+	LWGEOM *lwgeom;
+	char *x3d;
+	text *result;
+	int version;
+	char *srs;
+	int srid;
+	int option = 0;
+	int is_deegree = 0;
+	int is_dims = 1;
+	int precision = OUT_MAX_DOUBLE_PRECISION;
+	static const char* default_defid = "x3d:"; /* default defid */
+	char *defidbuf;
+	const char* defid = default_defid;
+	text *defid_text;
+
+	/* Get the version */
+	version = PG_GETARG_INT32(0);
+	if (  version != 3 )
+	{
+		elog(ERROR, "Only X3D version 3 are supported");
+		PG_RETURN_NULL();
+	}
+
+	/* Get the geometry */
+	if ( PG_ARGISNULL(1) ) PG_RETURN_NULL();
+	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	/* Retrieve precision if any (default is max) */
+	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
+	{
+		precision = PG_GETARG_INT32(2);
+		if ( precision > OUT_MAX_DOUBLE_PRECISION )
+			precision = OUT_MAX_DOUBLE_PRECISION;
+		else if ( precision < 0 ) precision = 0;
+	}
+
+	/* retrieve option */
+	if (PG_NARGS() >3 && !PG_ARGISNULL(3))
+		option = PG_GETARG_INT32(3);
+
+	/* retrieve defid */
+	if (PG_NARGS() >4 && !PG_ARGISNULL(4))
+	{
+		defid_text = PG_GETARG_TEXT_P(4);
+		if ( VARSIZE(defid_text)-VARHDRSZ == 0 )
+		{
+			defid = "";
+		}
+		else
+		{
+			/* +2 is one for the ':' and one for term null */
+			defidbuf = palloc(VARSIZE(defid_text)-VARHDRSZ+2);
+			memcpy(defidbuf, VARDATA(defid_text),
+			       VARSIZE(defid_text)-VARHDRSZ);
+			/* add colon and null terminate */
+			defidbuf[VARSIZE(defid_text)-VARHDRSZ] = ':';
+			defidbuf[VARSIZE(defid_text)-VARHDRSZ+1] = '\0';
+			defid = defidbuf;
+		}
+	}
+
+	srid = pglwgeom_get_srid(geom);
+	if (srid == SRID_UNKNOWN)      srs = NULL;
+	else if (option & 1) srs = getSRSbySRID(srid, false);
+	else                 srs = getSRSbySRID(srid, true);
+
+	if (option & 2)  is_dims = 0;
+	if (option & 16) is_deegree = 1;
+
+	lwgeom = pglwgeom_deserialize(geom);
+
+
+	x3d = lwgeom_to_x3d3(lwgeom, srs, precision,option, defid);
+
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(geom, 1);
+
+	result = cstring2text(x3d);
+	lwfree(x3d);
 
 	PG_RETURN_TEXT_P(result);
 }

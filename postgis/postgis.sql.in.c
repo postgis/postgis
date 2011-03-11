@@ -5060,6 +5060,21 @@ $$
 $$
 LANGUAGE 'sql' IMMUTABLE STRICT;
 -- ST_ConcaveHull and Helper functions end here --
+
+-----------------------------------------------------------------------
+-- X3D OUTPUT
+-----------------------------------------------------------------------
+-- _ST_AsX3D(version, geom, precision, option, attribs)
+CREATE OR REPLACE FUNCTION _ST_AsX3D(int4, geometry, int4, int4, text)
+	RETURNS TEXT
+	AS 'MODULE_PATHNAME','LWGEOM_asX3D'
+	LANGUAGE 'C' IMMUTABLE;
+	
+-- ST_AsX3D(geom, precision)
+CREATE OR REPLACE FUNCTION ST_AsX3D(geom geometry, prec int4)
+	RETURNS TEXT
+	AS $$SELECT _ST_AsX3D(3,$1,$2,1,'');$$
+	LANGUAGE 'sql' IMMUTABLE;
 COMMIT;
 
 #include "postgis_drop.sql.in.c"
