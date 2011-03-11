@@ -1838,6 +1838,8 @@ WHERE rid = 2;
                 the function simply returns the value of the isnodata flag for
                 the band. The default value for this parameter is FALSE, if not
                 specified.</para>
+                
+                <para>Availability: 2.0.0</para>
 
 				<note>
 					<para>If the flag is dirty (this is, the result is different
@@ -2837,7 +2839,7 @@ WHERE rid = 2;
                 calling <xref linkend="RT_ST_BandIsNoData" /> is different using
                 TRUE as last argument and without using it</para>
 
-                 
+                <para>Availability: 2.0.0</para>
 				<note><para>Currently, the loader (raster2pgsql.py) is not able
                 to set the isnodata flag for bands. So, this is the fastest way
                 to set it to TRUE, without changing any other band value</para></note>
