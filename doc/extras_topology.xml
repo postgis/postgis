@@ -1084,7 +1084,7 @@ ERROR:  Two or more edges found</programlisting>
 			</funcsynopsis>
 		</refsynopsisdiv>
 		<refsection>
-			<title>Retrieve the id of a face that intersects a Point</title>
+			<para>Retrieve the id of a face that intersects a Point.</para>
 			<para>The function returns an integer (id-face) given a topology, a POINT and a tolerance. If tolerance = 0 then the point has to intersect the face.</para>
 			<para>If the point is the location of a node, then an exception is thrown. To avoid this run the GetNodeByPoint function.</para>
 			<para>If the point doesn't intersect a face, returns 0 (zero).</para>
