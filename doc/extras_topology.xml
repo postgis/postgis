@@ -1037,7 +1037,7 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
         
             <!-- optionally mention that this function uses indexes if appropriate -->
             <note>
-              <para>If tolerance = 0, the function use ST_Intersect otherwise use the ST_DWithin.</para>
+              <para>If tolerance = 0, the function use ST_Intersects otherwise uses ST_DWithin.</para>
             </note>
             <!-- use this format if new function -->
             <para>Availability: 2.0.0 - requires GEOS &gt;= 3.3.0. </para>
@@ -1067,6 +1067,57 @@ ERROR:  Two or more edges found</programlisting>
             <para><xref linkend="AddEdge" />,<xref linkend="GetNodeByPoint" /></para>
           </refsection>
         </refentry>
+        
+        <refentry id="GetFaceByPoint">
+		<refnamediv>
+			<refname>GetFaceByPoint</refname>
+			<refpurpose>Find the face-id of a face that intersects a given point</refpurpose>
+		</refnamediv>
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>integer <function>GetFaceByPoint</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
+					<paramdef><type>float8 </type> <parameter>tol</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+		<refsection>
+			<title>Retrieve the id of a face that intersects a Point</title>
+			<para>The function returns an integer (id-face) given a topology, a POINT and a tolerance. If tolerance = 0 then the point has to intersect the face.</para>
+			<para>If the point is the location of a node, then an exception is thrown. To avoid this run the GetNodeByPoint function.</para>
+			<para>If the point doesn't intersect a face, returns 0 (zero).</para>
+			<para>If use tolerance > 0 and there is more than one face near the point then an exception is thrown.</para>
+			
+			<!-- optionally mention that this function uses indexes if appropriate -->
+			<note>
+				<para>If tolerance = 0, the function uses ST_Intersects otherwise uses ST_DWithin.</para>
+			</note>
+			<!-- use this format if new function -->
+			<para>Availability: 2.0.0 - requires GEOS &gt;= 3.3.0. </para>
+		</refsection>
+		<refsection>
+			<title>Examples</title>
+			<para>These examples use edges faces created in <xref linkend="AddFace" /></para>
+			<programlisting>SELECT topology.GetFaceByPoint('ma_topo',geom, 10) As with1mtol, topology.GetFaceByPoint('ma_topo',geom,0) As withnotol
+	FROM ST_GeomFromEWKT('SRID=-1;POINT(234604.6 899382.0)') As geom;
+	
+	 with1mtol | withnotol
+	-----------+-----------
+			 1 |         0</programlisting>
+			<programlisting>SELECT topology.GetFaceByPoint('ma_topo',geom, 1) As nearnode
+	FROM ST_GeomFromEWKT('SRID=-1;POINT(227591.9 893900.4)') As geom;
+	
+-- get error --
+ERROR:  Two or more faces found</programlisting>
+		</refsection>
+		<!-- Optionally add a "See Also" section -->
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="AddFace" />,<xref linkend="GetNodeByPoint" />,<xref linkend="GetEdgeByPoint" /></para>
+		</refsection>
+	</refentry>
         
         <refentry id="GetNodeByPoint">
           <refnamediv>

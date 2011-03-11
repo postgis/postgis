@@ -24,7 +24,7 @@
           <para>Raster support integrated and documented
           		(Pierre Racine, Jorge Arévalo, Mateusz Loskot, Sandro Santilli, Regina Obe)</para>
           <para>Making spatial indexes 3D aware - in progress (Paul Ramsey, Mark Cave-Ayland)</para>
-          <para>Topology support improved, documented, testing (Sandro Santilli / Faunalia for RT-SIGTA, Regina Obe, Andrea Peri)</para>
+          <para>Topology support improved (more functions), documented, testing (Sandro Santilli / Faunalia for RT-SIGTA), Andrea Peri, Regina Obe)</para>
           <para>3D relationship support functions  (Nicklas Avén)</para>
           <para>   ST_3DDistance, ST_3DClosestPoint, ST_3DIntersects, ST_3DShortestLine and more...</para>
           <para>ST_Split (Sandro Santilli / Faunalia for RT-SIGTA)</para>
@@ -32,7 +32,7 @@
           <para>ST_MakeValid (Sandro Santilli / Faunalia for RT-SIGTA)</para>
           <para>ST_RemoveRepeatedPoints (Sandro Santilli / Faunalia for RT-SIGTA)</para>
           <para>ST_GeometryN and ST_NumGeometries support for non-collections (Sandro Santilli)</para>
-          <para>ST_isCollection (Sandro Santilli, Maxime van Noppen)</para>
+          <para>ST_IssCollection (Sandro Santilli, Maxime van Noppen)</para>
           <para>ST_SharedPaths (Sandro Santilli / Faunalia for RT-SIGTA)</para>
           <para>ST_Snap (Sandro Santilli)</para>
           <para>ST_RelateMatch (Sandro Santilli / Faunalia for RT-SIGTA)</para>
