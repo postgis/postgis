@@ -49,7 +49,7 @@ YYYY/MM/DD
   - Shp-pgsql GUI loader - support loading multiple 
     files at a time. (Mark Leslie)  
   - Extras - revised tiger_geocoder to work with 
-    TIGER census 2010 data. (Regina Obe, Leo Hsu)
+    TIGER census 2010 data and addition of reverse geocoder function. (Regina Obe, Leo Hsu)
 
 PostGIS 1.5.2
 2010/09/27
