@@ -201,7 +201,7 @@ asx3d3_poly_size(const LWPOLY *poly,  char *srs, int precision, int opts, const 
 	size_t defidlen = strlen(defid);
 	int i;
 
-	size = ( sizeof("<IndexedFaceSet></IndexedFaceSet>") + (defidlen*3) ) * 2;
+	size = ( sizeof("<IndexedFaceSet></IndexedFaceSet>") + (defidlen*3) ) * 2 + 6 * (poly->nrings - 1);
 	//size += ( sizeof("<interior><LinearRing>//") + (defidlen*2) ) * 2 * (poly->nrings - 1);
 	//size += ( sizeof("<posList></posList>") + (defidlen*2) ) * poly->nrings;
 	//if (srs)     size += strlen(srs) + sizeof(" srsName=..");
@@ -669,8 +669,7 @@ asx3d3_collection(const LWCOLLECTION *col, char *srs, int precision, int opts, c
 }
 
 
-/* In X3D3, inside <posList> or <pos>, coordinates are separated by a space separator
- * In X3D3 also, lat/lon are reversed for geocentric data
+/* In X3D3, coordinates are separated by a space separator
  */
 static size_t
 pointArray_toX3D3(POINTARRAY *pa, char *output, int precision, int opts, int type)
