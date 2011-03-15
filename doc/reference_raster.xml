@@ -1583,6 +1583,51 @@ FROM dummy_rast;
 				<para><xref linkend="RT_ST_Raster2WorldCoordX" />, <xref linkend="RT_ST_Raster2WorldCoordY" />, <xref linkend="RT_ST_SRID" /></para>
 			</refsection>
 		</refentry>
+
+		<refentry id="RT_ST_IsEmpty">
+			<refnamediv>
+				<refname>ST_IsEmpty</refname>
+				<refpurpose>Returns true if the raster is empty (width = 0 and height = 0). Otherwise, returns false.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>boolean <function>ST_IsEmpty</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+				  </funcprototype>
+			    </funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns true if the raster is empty (width = 0 and height = 0). Otherwise, returns false.</para>
+			</refsection>
+				
+			<refsection>
+				<title>Examples</title>
+			
+				<programlisting>SELECT ST_IsEmpty(ST_MakeEmptyRaster(100, 100, 0, 0, 0, 0, 0, 0))
+st_isempty |
+-----------+
+f          |
+                       
+                        
+SELECT ST_IsEmpty(ST_MakeEmptyRaster(0, 0, 0, 0, 0, 0, 0, 0))
+st_isempty |
+-----------+
+t          |
+
+                </programlisting>	
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_HasNoBand" /></para>
+			</refsection>
+		</refentry>
 	</sect1>
 	
 	<sect1 id="RasterBand_Accessors">
