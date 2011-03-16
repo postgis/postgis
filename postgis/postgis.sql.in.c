@@ -5075,6 +5075,12 @@ CREATE OR REPLACE FUNCTION ST_AsX3D(geom geometry, prec int4)
 	RETURNS TEXT
 	AS $$SELECT _ST_AsX3D(3,$1,$2,1,'');$$
 	LANGUAGE 'sql' IMMUTABLE;
+	
+-- ST_AsX3D(geom, precision)
+CREATE OR REPLACE FUNCTION ST_AsX3D(geom geometry)
+	RETURNS TEXT
+	AS $$SELECT _ST_AsX3D(3,$1,15,1,'');$$
+	LANGUAGE 'sql' IMMUTABLE;
 COMMIT;
 
 #include "postgis_drop.sql.in.c"

@@ -458,6 +458,9 @@ asx3d3_psurface_buf(const LWPSURFACE *psur, char *srs, char *output, int precisi
 	for (i=0; i<psur->ngeoms; i++)
 	{
 		ptr += asx3d3_poly_buf(psur->geoms[i], 0, ptr, precision, opts, 1, defid);
+		if (i < (psur->ngeoms - 1) ){
+	        ptr += sprintf(ptr, " "); //only add a trailing space if its not the last polygon in the set
+	    }
 	}
 
 	/* Close outmost tag */
