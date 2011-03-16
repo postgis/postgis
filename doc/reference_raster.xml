@@ -722,9 +722,11 @@ postgis_raster_lib_version
 			</refsynopsisdiv>
 			<refsection>
 				<title>Description</title>
-				<para>Returns an empty raster (having no band) of given dimensions (width & height) and georeferenced in spatial (or world) coordinates with upper left x (upperleftx), upper left y (upperlefty), pixel size expressed as scalex, scaley, skewx, skewy and reference system (srid). 
+				<para>Returns an empty raster (having no band) of given dimensions (width &amp; height) and georeferenced in spatial (or world) coordinates with upper left x (upperleftx), upper left y (upperlefty), 
+				pixel size expressed as scalex, scaley, skewx, skewy and reference system (srid). 
 				The last version use a single parameter to specify the pixel size (pixelsize). 
-				In this case scalex and scaley are set to this parameter and skewx and skewy are set to 0. If an existing raster is passed in, it returns a new raster with the same meta data settings (without the bands). </para>
+				In this case scalex and scaley are set to this parameter and skewx and skewy are set to 0. 
+				If an existing raster is passed in, it returns a new raster with the same meta data settings (without the bands). </para>
 				<para>If no srid is specified it defaults to -1, though this may change to 0 in future. After you create an empty raster you probably want to add bands to it and maybe edit it. Refer to <xref linkend="RT_ST_AddBand" /> to define bands and <xref linkend="RT_ST_SetValue" /> to set pixel values.</para>
 				
 				</refsection>
