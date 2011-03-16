@@ -53,6 +53,12 @@ Use the PostgreSQL "dump" format for the output data. This can be combined
 with -a, -c and -d. It is much faster to load than the default "insert" SQL
 format. Use this for very large data sets.
 .TP 
+\fB\-e\fR
+Execute each statement on its own, without using a transaction.
+This allows loading of the majority of good data when there are some bad
+geometries that generate errors.  Note that this cannot be used with the
+-D flag as the "dump" format always uses a transaction.
+.TP 
 \fB\-s\fR <\fISRID\fR>
 Creates and populates the geometry tables with the specified SRID.
 .TP 
@@ -74,11 +80,6 @@ MULTILINESTRINGs by default. This switch will produce LINESTRINGs instead,
 but shp2pgsql will fail when it hits a real MULTILINESTRING. The same works
 for POLYGONs vs. MULTIPOLYGONs.
 .TP 
-\fB\-w\fR
-Output WKT format, for use with older (0.x) versions of PostGIS.
-Note that this will introduce coordinate drifts and will drop
-M values from shapefiles.
-.TP 
 \fB\-W\fR <\fIencoding\fR>
 Specify the character \fIencoding\fR of Shapefile's attributes.
 If this option is used the output will be encoded in UTF-8.
@@ -88,6 +89,15 @@ Create a GiST index on the geometry column.
 .TP 
 \fB\-N\fR <\fIpolicy\fR>
 Specify NULL geometries handling policy (insert,skip,abort).
+.TP 
+\fB\-T\fR <\fItablespace\fR>
+Specify the tablespace for the new table.  Indexes will still use the
+default tablespace unless the -X parameter is also used.  The PostgreSQL
+documentation has a good description on when to use custom tablespaces.
+.TP 
+\fB\-X\fR <\fItablespace\fR>
+Specify the tablespace for the new table's indexes.  This applies to
+the primary key index, and the GIST spatial index if -I is also used.
 .TP 
 \fB\-?\fR
 Display version and usage information.
