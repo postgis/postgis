@@ -96,6 +96,40 @@ fail ()
 }
 
 #
+#  run_simple_sql 
+#
+#  Run an sql script and hide results unless it fails.
+#
+#  SQL input file name is $1
+#
+run_simple_sql ()
+{
+	_sql="$1"
+
+	if [ ! -r "$_sql" ]; then
+		fail "can't read $_sql"
+		return 1
+	fi
+
+	TMPFILE="${TMPDIR}/test_${RUN}_tmp"
+
+	# Dump output to a temp file.
+	${PSQL} -tXA < "${_sql}" ${DB} > ${TMPFILE} 2>&1
+	# Check if psql errored out.
+	if [ $? -gt 0 ]; then
+		fail "Unable to run sql script $_sql" "${TMPFILE}"
+		return 1
+	fi
+	# Check if psql produced any error output.
+	grep "^ERROR:" "${TMPFILE}"
+	if [ $? -eq 0 ]; then
+		fail "Errors while running sql script $_sql" "${TMPFILE}"
+		return 1
+	fi
+	rm ${TMPFILE}
+}
+
+#
 #  run_simple_test 
 #
 #  Run an sql script and compare results with the given expected output
@@ -165,7 +199,7 @@ run_simple_test ()
 #  Load a shapefile with different methods, create a 'select *' SQL
 #  test and run simple test with provided expected output. 
 #
-#  SHP input is ${TEST}.shp, expected output is {$TEST}_expected
+#  SHP input is ${TEST}.shp, expected output is {$TEST}.expected
 #
 run_loader_test ()
 {
@@ -516,6 +550,28 @@ while [ -n "$1" ]; do
 
 	RUN=`expr $RUN + 1`
 
+	# Check for a "-pre.sh" file in case there are non-SQL setup tasks needed before
+	# the test can be run.
+        if [ -r "${TEST}-pre.sh" ]; then
+		"${TEST}-pre.sh"
+		if [ $? -gt 0 ]; then
+			fail " setup script failed"
+			continue
+		else
+			show_progress
+		fi
+        fi
+
+	# Check for a "-pre.sql" file in case there is setup SQL needed before
+	# the test can be run.
+        if [ -r "${TEST}-pre.sql" ]; then
+		if run_simple_sql "${TEST}-pre.sql"; then
+			show_progress
+		else
+			continue
+		fi
+        fi
+
 	# Check .shp *before* .sql as loader test would
 	# create the .sql
 	if [ -r "${TEST}.shp" ]; then
@@ -532,6 +588,22 @@ while [ -n "$1" ]; do
 		continue
 	fi
 
+	# Check for a "-post.sql" file in case there is teardown SQL needed after
+	# the test has been run.
+        if [ -r "${TEST}-post.sql" ]; then
+		if ! run_simple_sql "${TEST}-post.sql"; then
+			echo " ... but cleanup sql failed!"
+		fi
+        fi
+
+	# Check for a "-post.sh" file in case there are non-SQL teardown tasks needed after
+	# the test has been run.
+        if [ -r "${TEST}-post.sh" ]; then
+		"${TEST}-post.sh"
+		if [ $? -gt 0 ]; then
+			echo " ... but cleanup script failed!"
+		fi
+        fi
 
 done
 

@@ -15,6 +15,15 @@ How to add a regression test
 3. Edit regress/Makefile adding <testname> to the TESTS variable.
    Any _expected.in files need to be added to the PREPROC variable.
 
+Optional:
+   If your test has unusual setup or teardown requirements, you may create
+   any of the following optional files (they will run in this order):
+        /regress/<testname>-pre.sh
+        /regress/<testname>-pre.sql   (run via psql)
+                 (The test itself is run here.)
+        /regress/<testname>-post.sql  (run via psql)
+        /regress/<testname>-post.sh
+
 Notes about changes in regression tests introduces with PostGIS 1.1.0
 ---------------------------------------------------------------------
 
