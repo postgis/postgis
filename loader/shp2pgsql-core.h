@@ -123,6 +123,12 @@ typedef struct shp_loader_config
 	/* iconv encoding name */
 	char *encoding;
 
+	/* tablespace name for the table */
+	char *tablespace;
+
+	/* tablespace name for the indexes */
+	char *idxtablespace;
+
 	/* how to handle nulls */
 	int null_policy;
 

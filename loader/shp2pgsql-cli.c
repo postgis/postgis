@@ -43,6 +43,12 @@ usage()
 	          "      attribute column. (default: \"UTF-8\")\n" ));
 	printf(_( "  -N <policy> NULL geometries handling policy (insert*,skip,abort).\n" ));
 	printf(_( "  -n  Only import DBF file.\n" ));
+	printf(_( "  -T <tablespace> Specify the tablespace for the new table.\n" 
+                  "      Note that indexes will still use the default tablespace unless the"
+                  "      -X flag is also used."));
+	printf(_( "  -X <tablespace> Specify the tablespace for the table's indexes.\n"
+                  "      This applies to the primary key, and the spatial index if"
+                  "      the -I flag is used." ));
 	printf(_( "  -?  Display this help screen.\n" ));
 }
 
@@ -73,7 +79,7 @@ main (int argc, char **argv)
 	config = malloc(sizeof(SHPLOADERCONFIG));
 	set_config_defaults(config);
 
-	while ((c = pgis_getopt(argc, argv, "kcdapGDs:Sg:iW:wIN:n")) != EOF)
+	while ((c = pgis_getopt(argc, argv, "kcdapGDs:Sg:iW:wIN:nT:X:")) != EOF)
 	{
 		switch (c)
 		{
@@ -153,6 +159,14 @@ main (int argc, char **argv)
 				fprintf(stderr, "Unsupported NULL geometry handling policy.\nValid policies: insert, skip, abort\n");
 				exit(1);
 			}
+			break;
+
+		case 'T':
+			config->tablespace = pgis_optarg;
+			break;
+
+		case 'X':
+			config->idxtablespace = pgis_optarg;
 			break;
 
 		case '?':

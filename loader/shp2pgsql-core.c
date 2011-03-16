@@ -797,6 +797,8 @@ set_config_defaults(SHPLOADERCONFIG *config)
 	config->null_policy = POLICY_NULL_INSERT;
 	config->sr_id = -1;
 	config->hwgeom = 0;
+	config->tablespace = NULL;
+	config->idxtablespace = NULL;
 }
 
 /* Create a new shapefile state object */
@@ -1249,12 +1251,12 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		*/
 		if (state->config->schema)
 		{
-			stringbuffer_aprintf(sb, "CREATE TABLE \"%s\".\"%s\" (gid serial PRIMARY KEY",
+			stringbuffer_aprintf(sb, "CREATE TABLE \"%s\".\"%s\" (gid serial",
 			                     state->config->schema, state->config->table);
 		}
 		else
 		{
-			stringbuffer_aprintf(sb, "CREATE TABLE \"%s\" (gid serial PRIMARY KEY", state->config->table);
+			stringbuffer_aprintf(sb, "CREATE TABLE \"%s\" (gid serial", state->config->table);
 		}
 
 		/* Generate the field types based upon the shapefile information */
@@ -1334,7 +1336,47 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 			stringbuffer_aprintf(sb, ",\n\"%s\" geography(%s%s,%d)", state->config->geom, state->pgtype, dimschar, 4326);
 		}
 
-		stringbuffer_aprintf(sb, ");\n");
+		stringbuffer_aprintf(sb, ")");
+		/* Tablespace is optional. */
+		if (state->config->tablespace != NULL)
+		{
+			stringbuffer_aprintf(sb, " TABLESPACE \"%s\"", state->config->tablespace);
+		}
+		stringbuffer_aprintf(sb, ";\n");
+
+		/* Create the primary key.  This is done separately because the index for the PK needs
+                 * to be in the correct tablespace. */
+
+		/* TODO: Currently PostgreSQL does not allow specifying an index to use for a PK (so you get
+                 *       a default one called table_pkey) and it does not provide a way to create a PK index
+                 *       in a specific tablespace.  So as a hacky solution we create the PK, then move the
+                 *       index to the correct tablespace.  Eventually this should be:
+		 *           CREATE INDEX table_pkey on table(gid) TABLESPACE tblspc;
+                 *           ALTER TABLE table ADD PRIMARY KEY (gid) USING INDEX table_pkey;
+		 *       A patch has apparently been submitted to PostgreSQL to enable this syntax, see this thread:
+		 *           http://archives.postgresql.org/pgsql-hackers/2011-01/msg01405.php */
+		stringbuffer_aprintf(sb, "ALTER TABLE ");
+		/* Schema is optional, include if present. */
+		if (state->config->schema)
+		{
+			stringbuffer_aprintf(sb, "\"%s\".",state->config->schema);
+		}
+		stringbuffer_aprintf(sb, "\"%s\" ADD PRIMARY KEY (gid);\n", state->config->table);
+		/* Tablespace is optional for the index. */
+		if (state->config->idxtablespace != NULL)
+		{
+			stringbuffer_aprintf(sb, "ALTER INDEX ");
+			if (state->config->schema)
+			{
+				stringbuffer_aprintf(sb, "\"%s\".",state->config->schema);
+			}
+			/* WARNING: We're assuming the default "table_pkey" name for the primary
+			 *          key index.  PostgreSQL may use "table_pkey1" or similar in the
+			 *          case of a name conflict, so you may need to edit the produced
+			 *          SQL in this rare case. */
+			stringbuffer_aprintf(sb, "\"%s_pkey\" SET TABLESPACE \"%s\";\n",
+						state->config->table, state->config->idxtablespace);
+		}
 
 		/* Create the geometry column with an addgeometry call */
 		if (state->config->readshape == 1 && (!state->config->geography))
@@ -1754,15 +1796,19 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 	/* Create gist index if specified and not in "prepare" mode */
 	if (state->config->createindex)
 	{
+		stringbuffer_aprintf(sb, "CREATE INDEX \"%s_%s_gist\" ON ", state->config->table, state->config->geom);
+		/* Schema is optional, include if present. */
 		if (state->config->schema)
 		{
-			stringbuffer_aprintf(sb, "CREATE INDEX \"%s_%s_gist\" ON \"%s\".\"%s\" using gist (\"%s\" %s);\n", state->config->table, state->config->geom,
-			                     state->config->schema, state->config->table, state->config->geom, ops);
+			stringbuffer_aprintf(sb, "\"%s\".",state->config->schema);
 		}
-		else
+		stringbuffer_aprintf(sb, "\"%s\" USING GIST (\"%s\" %s)", state->config->table, state->config->geom, ops);
+		/* Tablespace is also optional. */
+		if (state->config->idxtablespace != NULL)
 		{
-			stringbuffer_aprintf(sb, "CREATE INDEX \"%s_%s_gist\" ON \"%s\" using gist (\"%s\" %s);\n", state->config->table, state->config->geom, state->config->table, state->config->geom, ops);
+			stringbuffer_aprintf(sb, " TABLESPACE \"%s\"", state->config->idxtablespace);
 		}
+		stringbuffer_aprintf(sb, ";\n");
 	}
 
 	/* End the transaction */
