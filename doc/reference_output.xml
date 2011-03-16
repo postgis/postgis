@@ -846,7 +846,100 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 		M 0 0 L 0 -1 1 -1 1 0 Z</programlisting>
 	  </refsection>
 	</refentry>
+	
+	<refentry id="ST_AsX3D">
+	  <refnamediv>
+		<refname>ST_AsX3D</refname>
 
+		<refpurpose>Returns a Geometry in X3D (spec 3.0) data given a geometry</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>text <function>ST_AsX3D</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsX3D</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>prec</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns an X3D fragment in X3D 3.0 spec format <ulink url="http://www.web3d.org/specifications/x3d-3.0.xsd">http://www.web3d.org/specifications/x3d-3.0.xsd</ulink>.  If <varname>prec</varname> (precision) is not specified then defaults to 15. TINs are modeled as IndexedTriangleSet, MultiPoints as PointSet, LineString As LineSets, Polyhedral surfaces as IndexedFaceSet </para>
+		<para>Lots of advancements happening in 3D space particularly with <ulink url="http://www.web3d.org/x3d/wiki/index.php/X3D_and_HTML5#Goals:_X3D_and_HTML5">X3D Integration with HTML5</ulink></para>
+		<para>There is also a nice open source X3D viewer you can use to view rendered geometries. Free Wrl <ulink url="http://freewrl.sourceforge.net/">http://freewrl.sourceforge.net/</ulink> binaries available for Mac, Linux, and Windows.</para>
+		<para>Availability: 2.0.0</para>	
+		<!-- Optionally mention 3d support -->
+		<para>&Z_support;</para>
+        <!-- Optionally mention supports Polyhedral Surface  -->
+        <para>&P_support;</para>
+        
+        <!-- Optionally mention support for Triangles and TINS  -->
+        <para>&T_support;</para>
+		
+	  </refsection>
+
+	  <refsection>
+		<title>Example: Create a fully functional X3D document</title>
+		<programlisting><![CDATA[SELECT '<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.0//EN" "http://www.web3d.org/specifications/x3d-3.0.dtd">
+<X3D>
+  <Scene>
+    <Transform>
+      <Shape>
+       <Appearance>
+            <Material emissiveColor=''0 0 1''/>   
+       </Appearance> ' || 
+       ST_AsX3D( ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
+((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
+((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
+((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )')) ||
+      '</Shape>
+    </Transform>
+  </Scene>
+</X3D>' As x3ddoc;]]>
+
+		x3ddoc
+		--------
+<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.0//EN" "http://www.web3d.org/specifications/x3d-3.0.dtd">
+<X3D>
+  <Scene>
+    <Transform>
+      <Shape>
+       <Appearance>
+            <Material emissiveColor='0 0 1'/>   
+       </Appearance> <IndexedFaceSet  coordIndex='0 1 2 3 -1 4 5 6 7 -1 8 9 10 11 -1 12 13 14 15 -1 16 17 18 19 -1 20 21 22 23'><Coordinate point='0 0 0 0 0 1 0 1 1 0 1 0 0 0 0 0 1 0 1 1 0 1 0 0 0 0 0 1 0 0 1 0 1 0 0 1 1 1 0 1 1 1 1 0 1 1 0 0 0 1 0 0 1 1 1 1 1 1 1 0 0 0 1 1 0 1 1 1 1 0 1 1' /></IndexedFaceSet></Shape>
+    </Transform>
+  </Scene>
+</X3D>]]></programlisting>
+	  </refsection>
+	  <refsection>
+	  	<title>Example: TIN</title>
+		<programlisting><![CDATA[SELECT ST_AsX3D(ST_GeomFromEWKT('TIN (((
+                0 0 0, 
+                0 0 1, 
+                0 1 0, 
+                0 0 0
+            )), ((
+                0 0 0, 
+                0 1 0, 
+                1 1 0, 
+                0 0 0
+            ))
+            )')) As x3dfrag;]]>
+
+		x3dfrag
+		--------
+<![CDATA[<IndexedTriangleSet  index='0 1 2 3 4 5'><Coordinate point='0 0 0 0 0 1 0 1 0 0 0 0 0 1 0 1 1 0'/></IndexedTriangleSet>]]></programlisting>
+	  </refsection>
+	</refentry>
 
 	<refentry id="ST_GeoHash">
 	  <refnamediv>
