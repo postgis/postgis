@@ -36,7 +36,7 @@ static char *asx3d3_psurface(const LWPSURFACE *psur, char *srs, int precision, i
 static char *asx3d3_tin(const LWTIN *tin, char *srs, int precision, int opts, const char *defid);
 static size_t asx3d3_collection_size(const LWCOLLECTION *col, char *srs, int precision, int opts, const char *defid);
 static char *asx3d3_collection(const LWCOLLECTION *col, char *srs, int precision, int opts, const char *defid);
-static size_t pointArray_toX3D3(POINTARRAY *pa, char *buf, int precision, int opts, int type);
+static size_t pointArray_toX3D3(POINTARRAY *pa, char *buf, int precision, int opts, int is_closed);
 
 static size_t pointArray_X3Dsize(POINTARRAY *pa, int precision);
 
@@ -113,7 +113,7 @@ asx3d3_point_buf(const LWPOINT *point, char *srs, char *output, int precision, i
 	//ptr += sprintf(ptr, "%s", defid);
 	
 	//ptr += sprintf(ptr, "<%spos>", defid);
-	ptr += pointArray_toX3D3(point->point, ptr, precision, opts, point->type);
+	ptr += pointArray_toX3D3(point->point, ptr, precision, opts, 0);
 	//ptr += sprintf(ptr, "</%spos></%sPoint>", defid, defid);
 
 	return (ptr-output);
@@ -163,7 +163,7 @@ asx3d3_line_buf(const LWLINE *line, char *srs, char *output, int precision, int 
 
 
 	ptr += sprintf(ptr, "<Coordinate point='");
-	ptr += pointArray_toX3D3(line->points, ptr, precision, opts, line->type);
+	ptr += pointArray_toX3D3(line->points, ptr, precision, opts, lwline_is_closed(line));
 
 	ptr += sprintf(ptr, "' />");
 
@@ -177,17 +177,17 @@ asx3d3_line_coords(const LWLINE *line, char *output, int precision, int opts)
 	char *ptr=output;
 	
 	ptr += sprintf(ptr, "");
-	ptr += pointArray_toX3D3(line->points, ptr, precision, opts, line->type);
+	ptr += pointArray_toX3D3(line->points, ptr, precision, opts, lwline_is_closed(line));
 	return (ptr-output);
 }
 
 /* Calculate the coordIndex property of the IndexedLineSet for the multilinestring */
 static size_t
-asx3d3_mline_coordindex(const LWCOLLECTION *mgeom, char *output)
+asx3d3_mline_coordindex(const LWMLINE *mgeom, char *output)
 {
 	char *ptr=output;
 	LWLINE *geom;
-	int i, j, k;
+	int i, j, k, si;
 	POINTARRAY *pa;
 	int np;
 	
@@ -197,17 +197,26 @@ asx3d3_mline_coordindex(const LWCOLLECTION *mgeom, char *output)
 	{
 		geom = (LWLINE *) mgeom->geoms[i];
 		pa = geom->points;
-		np = pa->npoints - 1;
+		np = pa->npoints;
+		si = j; //start index of first point of linestring
 		for(k=0; k < np ; k++){
             if (k) {
                 ptr += sprintf(ptr, " ");    
             }
-            ptr += sprintf(ptr, "%d", (j + k));
+            /** if the linestring is closed, we put the start point index 
+            *   for the last vertex to denote use first point
+            *    and don't increment the index **/
+            if (!lwline_is_closed(geom) || k < (np -1) ){
+                ptr += sprintf(ptr, "%d", j);
+                j += 1;
+            }
+            else { 
+                ptr += sprintf(ptr,"%d", si);
+            }
 		}
 		if (i < (mgeom->ngeoms - 1) ){
-				ptr += sprintf(ptr, " -1 "); //separator for each subgeom
+		    ptr += sprintf(ptr, " -1 "); //separator for each linestring
 		}
-		j += k;
 	}
 	return (ptr-output);
 }
@@ -250,10 +259,10 @@ asx3d3_poly_buf(const LWPOLY *poly, char *srs, char *output, int precision, int 
 	int dimension=2;
 
 	if (FLAGS_GET_Z(poly->flags)) dimension = 3;
-	ptr += pointArray_toX3D3(poly->rings[0], ptr, precision, opts, poly->type);
+	ptr += pointArray_toX3D3(poly->rings[0], ptr, precision, opts, 1);
 	for (i=1; i<poly->nrings; i++)
 	{
-		ptr += pointArray_toX3D3(poly->rings[i], ptr, precision, opts, poly->type);
+		ptr += pointArray_toX3D3(poly->rings[i], ptr, precision, opts,1);
 		ptr += sprintf(ptr, " ");
 	}
 	return (ptr-output);
@@ -289,7 +298,7 @@ static size_t
 asx3d3_triangle_buf(const LWTRIANGLE *triangle, char *srs, char *output, int precision, int opts, const char *defid)
 {
 	char *ptr=output;
-	ptr += pointArray_toX3D3(triangle->points, ptr, precision, opts, triangle->type);
+	ptr += pointArray_toX3D3(triangle->points, ptr, precision, opts, 1);
 
 	return (ptr-output);
 }
@@ -704,7 +713,7 @@ asx3d3_collection(const LWCOLLECTION *col, char *srs, int precision, int opts, c
 /* In X3D3, coordinates are separated by a space separator
  */
 static size_t
-pointArray_toX3D3(POINTARRAY *pa, char *output, int precision, int opts, int type)
+pointArray_toX3D3(POINTARRAY *pa, char *output, int precision, int opts, int is_closed)
 {
 	int i;
 	char *ptr;
@@ -719,7 +728,7 @@ pointArray_toX3D3(POINTARRAY *pa, char *output, int precision, int opts, int typ
 		for (i=0; i<pa->npoints; i++)
 		{
 			/** Only output the point if it is not the last point of a closed object or it is a non-closed type **/
-			if (!(type == POLYGONTYPE || type == TRIANGLETYPE) || i < (pa->npoints - 1) ){
+			if ( !is_closed || i < (pa->npoints - 1) ){
 				POINT2D pt;
 				getPoint2d_p(pa, i, &pt);
 	
@@ -745,7 +754,7 @@ pointArray_toX3D3(POINTARRAY *pa, char *output, int precision, int opts, int typ
 		for (i=0; i<pa->npoints; i++)
 		{
 			/** Only output the point if it is not the last point of a closed object or it is a non-closed type **/
-			if (!(type == POLYGONTYPE || type == TRIANGLETYPE) || i < (pa->npoints - 1) ){
+			if ( !is_closed || i < (pa->npoints - 1) ){
 				POINT4D pt;
 				getPoint4d_p(pa, i, &pt);
 	
