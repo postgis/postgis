@@ -677,7 +677,8 @@ postgis_raster_lib_version
   		<refentry id="RT_ST_MakeEmptyRaster">
 			<refnamediv>
 				<refname>ST_MakeEmptyRaster</refname>
-				<refpurpose>Returns an empty raster of given dimensions, pixel x y, skew and spatial reference system with no bands.  If a raster is passed in, returns a new raster with same meta data properties.</refpurpose>
+				<refpurpose>Returns an empty raster (having no bands) of given dimensions, with upperleft x y, pixel size expressed as scalex, scaley, skewx, skewy and reference system (srid).  
+				If a raster is passed in, returns a new raster with same meta data properties.</refpurpose>
 			</refnamediv>
 			<refsynopsisdiv>
 				<funcsynopsis>
@@ -689,8 +690,8 @@ postgis_raster_lib_version
 					<funcdef>raster <function>ST_MakeEmptyRaster</function></funcdef>
 					<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
-					<paramdef><type>float8 </type> <parameter>ipx</parameter></paramdef>
-					<paramdef><type>float8 </type> <parameter>ipy</parameter></paramdef>
+					<paramdef><type>float8 </type> <parameter>upperleftx</parameter></paramdef>
+					<paramdef><type>float8 </type> <parameter>upperlefty</parameter></paramdef>
 					<paramdef><type>float8 </type> <parameter>scalex</parameter></paramdef>
 					<paramdef><type>float8 </type> <parameter>scaley</parameter></paramdef>
 					<paramdef><type>float8 </type> <parameter>skewx</parameter></paramdef>
@@ -700,8 +701,8 @@ postgis_raster_lib_version
 					<funcdef>raster <function>ST_MakeEmptyRaster</function></funcdef>
 					<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
-					<paramdef><type>float8 </type> <parameter>ipx</parameter></paramdef>
-					<paramdef><type>float8 </type> <parameter>ipy</parameter></paramdef>
+					<paramdef><type>float8 </type> <parameter>upperleftx</parameter></paramdef>
+					<paramdef><type>float8 </type> <parameter>upperlefty</parameter></paramdef>
 					<paramdef><type>float8 </type> <parameter>scalex</parameter></paramdef>
 					<paramdef><type>float8 </type> <parameter>scaley</parameter></paramdef>
 					<paramdef><type>float8 </type> <parameter>skewx</parameter></paramdef>
@@ -713,19 +714,19 @@ postgis_raster_lib_version
 					<funcdef>raster <function>ST_MakeEmptyRaster</function></funcdef>
 					<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>upperleftx</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>upperlefty</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>scale</parameter></paramdef>
+					<paramdef><type>float8  </type> <parameter>upperleftx</parameter></paramdef>
+					<paramdef><type>float8  </type> <parameter>upperlefty</parameter></paramdef>
+					<paramdef><type>float8  </type> <parameter>scale</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 			<refsection>
 				<title>Description</title>
+				<para>Returns an empty raster (having no band) of given dimensions (width & height) and georeferenced in spatial (or world) coordinates with upper left x (upperleftx), upper left y (upperlefty), pixel size expressed as scalex, scaley, skewx, skewy and reference system (srid). 
+				The last version use a single parameter to specify the pixel size (pixelsize). 
+				In this case scalex and scaley are set to this parameter and skewx and skewy are set to 0. If an existing raster is passed in, it returns a new raster with the same meta data settings (without the bands). </para>
+				<para>If no srid is specified it defaults to -1, though this may change to 0 in future. After you create an empty raster you probably want to add bands to it and maybe edit it. Refer to <xref linkend="RT_ST_AddBand" /> to define bands and <xref linkend="RT_ST_SetValue" /> to set pixel values.</para>
 				
-				<para>Returns an empty raster of given dimensions, pixel width in spatial coordinates x (ipx), pixel height y in spatial coordinates (ipy), (scale - uses same size for pixel height (ipy) and width (ipx)), skew and spatial reference system with no bands.  If an existing raster is passed in,
-				it returns a new raster with the same meta data settings (minus number of bands and band types). If no srid is specified it defaults to -1, though this may change to 0 in future.
-				After you create an empty raster you 
-				    probably want to add bands to it and hmm maybe edit it.  Refer to <xref linkend="RT_ST_AddBand" /> to define bands and <xref linkend="RT_ST_SetValue" /> to set pixel values.</para>
 				</refsection>
 				
 				<refsection>
