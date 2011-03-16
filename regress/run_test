@@ -255,35 +255,37 @@ run_loader_test ()
 
 
 	#
-	# Run in HEXWKB dump mode
+	# Test in HEXWKB dump mode for all "normal" (no custom parameters) test cases.
+	# Some custom parameters can be incompatible with -D.
 	#
+	if [ -z "$_custom_opts" ]; then
+		show_progress
 
-	show_progress
+		${SHP2PGSQL} -g the_geom -D ${TEST}.shp $_tblname \
+			> ${TMPDIR}/loader \
+			2> ${TMPDIR}/loader.err
 
-	${SHP2PGSQL} -g the_geom -D ${TEST}.shp $_tblname \
-		> ${TMPDIR}/loader \
-		2> ${TMPDIR}/loader.err
-
-	if [ $? -gt 0 ]; then
-		fail "running shp2pgsql -D" "${TMPDIR}/loader.err"
-		return 1
-
-	fi
-
-	show_progress
-
-	${PSQL} -c "DROP table ${_tblname}" "${DB}" >> ${TMPDIR}/regress_log 2>&1
-	${PSQL} ${_psql_opts} -f ${TMPDIR}/loader "${DB}" > ${TMPDIR}/loader.err 2>&1
-	if [ $? -gt 0 ]; then
-		fail "sourcing shp2pgsql -D output" "${TMPDIR}/loader.err"
-		return 1
-	fi
-
-	if [ -f "${TEST}-wkb.sql" ]; then
-		if run_simple_test ${TEST}-wkb.sql ${TEST}-wkb.expected "wkb dump"; then
-			:
-		else
+		if [ $? -gt 0 ]; then
+			fail "running shp2pgsql -D" "${TMPDIR}/loader.err"
 			return 1
+
+		fi
+
+		show_progress
+
+		${PSQL} -c "DROP table ${_tblname}" "${DB}" >> ${TMPDIR}/regress_log 2>&1
+		${PSQL} ${_psql_opts} -f ${TMPDIR}/loader "${DB}" > ${TMPDIR}/loader.err 2>&1
+		if [ $? -gt 0 ]; then
+			fail "sourcing shp2pgsql -D output" "${TMPDIR}/loader.err"
+			return 1
+		fi
+
+		if [ -f "${TEST}-wkb.sql" ]; then
+			if run_simple_test ${TEST}-wkb.sql ${TEST}-wkb.expected "wkb dump"; then
+				:
+			else
+				return 1
+			fi
 		fi
 	fi
 
@@ -338,7 +340,7 @@ run_loader_test ()
 
 	show_progress
 
-	${SHP2PGSQL} -g the_geom -w ${TEST}.shp $_tblname \
+	${SHP2PGSQL} $_custom_opts -g the_geom -w ${TEST}.shp $_tblname \
 		> ${TMPDIR}/loader \
 		2> ${TMPDIR}/loader.err
 
@@ -365,35 +367,38 @@ run_loader_test ()
 	fi
 
 	#
-	# Run in WKT dump mode
+	# Test in WKT dump mode for all "normal" (no custom parameters) test cases.
+	# Some custom parameters can be incompatible with -D.
 	#
+	if [ -z "$_custom_opts" ]; then
 
-	show_progress
+		show_progress
 
-	${SHP2PGSQL} -g the_geom -D -w ${TEST}.shp $_tblname \
-		> ${TMPDIR}/loader \
-		2> ${TMPDIR}/loader.err
+		${SHP2PGSQL} -g the_geom -D -w ${TEST}.shp $_tblname \
+			> ${TMPDIR}/loader \
+			2> ${TMPDIR}/loader.err
 
-	if [ $? -gt 0 ]; then
-		fail "running shp2pgsql -D -w" "${TMPDIR}/loader.err"
-		return 1
-
-	fi
-
-	show_progress
-
-	${PSQL} -c "DROP table ${_tblname}" "${DB}" >> ${TMPDIR}/regress_log 2>&1
-	${PSQL} ${_psql_opts} -f ${TMPDIR}/loader "${DB}" > ${TMPDIR}/loader.err 2>&1
-	if [ $? -gt 0 ]; then
-		fail "sourcing shp2pgsql -D -w output" "${TMPDIR}/loader.err"
-		return 1
-	fi
-
-	if [ -f "${TEST}-wkt.sql" ]; then
-		if run_simple_test ${TEST}-wkt.sql ${TEST}-wkt.expected "wkt dump"; then
-			:
-		else
+		if [ $? -gt 0 ]; then
+			fail "running shp2pgsql -D -w" "${TMPDIR}/loader.err"
 			return 1
+
+		fi
+
+		show_progress
+
+		${PSQL} -c "DROP table ${_tblname}" "${DB}" >> ${TMPDIR}/regress_log 2>&1
+		${PSQL} ${_psql_opts} -f ${TMPDIR}/loader "${DB}" > ${TMPDIR}/loader.err 2>&1
+		if [ $? -gt 0 ]; then
+			fail "sourcing shp2pgsql -D -w output" "${TMPDIR}/loader.err"
+			return 1
+		fi
+
+		if [ -f "${TEST}-wkt.sql" ]; then
+			if run_simple_test ${TEST}-wkt.sql ${TEST}-wkt.expected "wkt dump"; then
+				:
+			else
+				return 1
+			fi
 		fi
 	fi
 
