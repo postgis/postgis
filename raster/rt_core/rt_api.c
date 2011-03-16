@@ -3568,25 +3568,3 @@ int32_t rt_raster_copy_band(rt_context ctx, rt_raster raster1,
     return rt_raster_add_band(ctx, raster2, newband, nband2);    
 }
 
-/**
- * Return a raster which values are the result of an SQL expression involving
- * pixel value from the input raster band.
- * @param ctx: context, for thread safety
- * @param raster: raster on which the expression is evaluated.
- * @param nband: band number of the raster to be evaluated. Default to 1.
- * @param expr: SQL expression to apply to with value pixels. Ex.: "rast + 2"
- * @param nodatavalueexpr: SQL expression to apply to nodata value pixels. Ex.:
- *  "2"
- * @param pixtype: pixeltype assigned to the resulting raster. Expression
- *  results are truncated to this type. Default to the pixeltype of the first
- *  raster.
- * @return a raster which values are the result of an SQL expression involving
- *  pixel value from the input raster band.
- */
-rt_raster rt_raster_map_algebra(rt_context ctx, rt_raster raster, int nband,
-        const char * expr, const char * nodatavalueexpr, rt_pixtype pixtype)
-{
-    rt_raster newraster = NULL;
-
-    return newraster;
-}
