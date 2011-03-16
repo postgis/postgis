@@ -181,6 +181,38 @@ asx3d3_line_coords(const LWLINE *line, char *output, int precision, int opts)
 	return (ptr-output);
 }
 
+/* Calculate the coordIndex property of the IndexedLineSet for the multilinestring */
+static size_t
+asx3d3_mline_coordindex(const LWCOLLECTION *mgeom, char *output)
+{
+	char *ptr=output;
+	LWLINE *geom;
+	int i, j, k;
+	POINTARRAY *pa;
+	int np;
+	
+	ptr += sprintf(ptr, "");
+	j = 0;
+	for (i=0; i < mgeom->ngeoms; i++)
+	{
+		geom = (LWLINE *) mgeom->geoms[i];
+		pa = geom->points;
+		np = pa->npoints - 1;
+		for(k=0; k < np ; k++){
+            if (k) {
+                ptr += sprintf(ptr, " ");    
+            }
+            ptr += sprintf(ptr, "%d", (j + k));
+		}
+		if (i < (mgeom->ngeoms - 1) ){
+				ptr += sprintf(ptr, " -1 "); //separator for each subgeom
+		}
+		j += k;
+	}
+	return (ptr-output);
+}
+
+/* Return the linestring as an X3D LineSet */
 static char *
 asx3d3_line(const LWLINE *line, char *srs, int precision, int opts, const char *defid)
 {
@@ -193,7 +225,7 @@ asx3d3_line(const LWLINE *line, char *srs, int precision, int opts, const char *
 	return output;
 }
 
-
+/* Compute the string space needed for the IndexedFaceSet representation of the polygon **/
 static size_t
 asx3d3_poly_size(const LWPOLY *poly,  char *srs, int precision, int opts, const char *defid)
 {
@@ -202,10 +234,6 @@ asx3d3_poly_size(const LWPOLY *poly,  char *srs, int precision, int opts, const 
 	int i;
 
 	size = ( sizeof("<IndexedFaceSet></IndexedFaceSet>") + (defidlen*3) ) * 2 + 6 * (poly->nrings - 1);
-	//size += ( sizeof("<interior><LinearRing>//") + (defidlen*2) ) * 2 * (poly->nrings - 1);
-	//size += ( sizeof("<posList></posList>") + (defidlen*2) ) * poly->nrings;
-	//if (srs)     size += strlen(srs) + sizeof(" srsName=..");
-	//if (IS_DIMS(opts)) size += sizeof(" srsDimension='x'") * poly->nrings;
 
 	for (i=0; i<poly->nrings; i++)
 		size += pointArray_X3Dsize(poly->rings[i], precision);
@@ -213,6 +241,7 @@ asx3d3_poly_size(const LWPOLY *poly,  char *srs, int precision, int opts, const 
 	return size;
 }
 
+/** Compute the X3D coordinates of the polygon **/
 static size_t
 asx3d3_poly_buf(const LWPOLY *poly, char *srs, char *output, int precision, int opts, int is_patch, const char *defid)
 {
@@ -327,15 +356,13 @@ asx3d3_multi_buf(const LWCOLLECTION *col, char *srs, char *output, int precision
 {
 	int type = col->type;
 	char *ptr, *x3dtype, *coordIndex;
-	int i, size;
+	int i;
 	//int numvertices;
 	LWGEOM *subgeom;
 	POINTARRAY *pa;
 
 	ptr = output;
 	x3dtype="";
-	//numvertices = lwcollection_count_vertices(col)*col->ngeoms*20;
-	//size = 1000;
 	coordIndex = lwalloc(1000);
 
 	for (i=0; i<col->ngeoms; i++){
@@ -349,7 +376,9 @@ asx3d3_multi_buf(const LWCOLLECTION *col, char *srs, char *output, int precision
 	}
 	else if (type == MULTILINETYPE) {
 		x3dtype = "IndexedLineSet";
-		ptr += sprintf(ptr, "<%s %s coordIndex='%s'>", x3dtype, defid, coordIndex);
+		ptr += sprintf(ptr, "<%s %s coordIndex='", x3dtype, defid);
+		ptr += asx3d3_mline_coordindex(col, ptr);
+		ptr += sprintf(ptr, "'>");
 	}
 	else if (type == MULTIPOLYGONTYPE) {
 		x3dtype = "IndexedFaceSet";
