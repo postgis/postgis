@@ -37,6 +37,10 @@ TESTS = \
 	loader/Polygon \
 	loader/PolygonM \
 	loader/PolygonZ \
+	loader/TSTPolygon \
+	loader/TSIPolygon \
+	loader/TSTIPolygon \
+	loader/NoTransPoint \
 	regress \
 	regress_index \
 	regress_index_nulls \

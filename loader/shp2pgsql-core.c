@@ -799,6 +799,7 @@ set_config_defaults(SHPLOADERCONFIG *config)
 	config->hwgeom = 0;
 	config->tablespace = NULL;
 	config->idxtablespace = NULL;
+	config->usetransaction = 1;
 }
 
 /* Create a new shapefile state object */
@@ -1239,8 +1240,11 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		}
 	}
 
-	/* Start of transaction */
-	stringbuffer_aprintf(sb, "BEGIN;\n");
+	/* Start of transaction if we are using one */
+	if (state->config->usetransaction)
+	{
+		stringbuffer_aprintf(sb, "BEGIN;\n");
+	}
 
 	/* If not in 'append' mode create the spatial table */
 	if (state->config->opt != 'a')
@@ -1811,8 +1815,11 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 		stringbuffer_aprintf(sb, ";\n");
 	}
 
-	/* End the transaction */
-	stringbuffer_aprintf(sb, "COMMIT;\n");
+	/* End the transaction if there is one. */
+	if (state->config->usetransaction)
+	{
+		stringbuffer_aprintf(sb, "COMMIT;\n");
+	}
 
 	/* Copy the string buffer into a new string, destroying the string buffer */
 	ret = (char *)malloc(strlen((char *)stringbuffer_getstring(sb)) + 1);

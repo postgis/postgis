@@ -23,7 +23,7 @@ usage()
 	printf(_( "USAGE: shp2pgsql [<options>] <shapefile> [<schema>.]<table>\n"
 	          "OPTIONS:\n" ));
 	printf(_( "  -s <srid>  Set the SRID field. Defaults to -1.\n"
-	          "     (-d|a|c|p) These are mutually exclusive options:\n"
+	          " (-d|a|c|p) These are mutually exclusive options:\n"
 	          "     -d  Drops the table, then recreates it and populates\n"
 	          "         it with current shape file data.\n"
 	          "     -a  Appends shape file into current table, must be\n"
@@ -34,6 +34,8 @@ usage()
 	printf(_( "  -g <geocolumn> Specify the name of the geometry/geography column\n"
 	          "      (mostly useful in append mode).\n" ));
 	printf(_( "  -D  Use postgresql dump format (defaults to SQL insert statments).\n" ));
+	printf(_( "  -e  Execute each statement individually, do not use a transaction.\n"
+	          "      Not compatible with -D.\n" ));
 	printf(_( "  -G  Use geography type (requires lon/lat data).\n" ));
 	printf(_( "  -k  Keep postgresql identifiers case.\n" ));
 	printf(_( "  -i  Use int4 type for all integer dbf fields.\n" ));
@@ -44,11 +46,11 @@ usage()
 	printf(_( "  -N <policy> NULL geometries handling policy (insert*,skip,abort).\n" ));
 	printf(_( "  -n  Only import DBF file.\n" ));
 	printf(_( "  -T <tablespace> Specify the tablespace for the new table.\n" 
-                  "      Note that indexes will still use the default tablespace unless the"
-                  "      -X flag is also used."));
+                  "      Note that indexes will still use the default tablespace unless the\n"
+                  "      -X flag is also used.\n"));
 	printf(_( "  -X <tablespace> Specify the tablespace for the table's indexes.\n"
-                  "      This applies to the primary key, and the spatial index if"
-                  "      the -I flag is used." ));
+                  "      This applies to the primary key, and the spatial index if\n"
+                  "      the -I flag is used.\n" ));
 	printf(_( "  -?  Display this help screen.\n" ));
 }
 
@@ -79,7 +81,8 @@ main (int argc, char **argv)
 	config = malloc(sizeof(SHPLOADERCONFIG));
 	set_config_defaults(config);
 
-	while ((c = pgis_getopt(argc, argv, "kcdapGDs:Sg:iW:wIN:nT:X:")) != EOF)
+	/* Keep the flag list alphabetic so it's easy to see what's left. */
+	while ((c = pgis_getopt(argc, argv, "acdeg:iknps:wDGIN:ST:W:X:")) != EOF)
 	{
 		switch (c)
 		{
@@ -92,6 +95,11 @@ main (int argc, char **argv)
 
 		case 'D':
 			config->dump_format = 1;
+			if (!config->usetransaction)
+			{
+				fprintf(stderr, "Cannot use both -D and -e.\n");
+				exit(1);
+			}
 			break;
 
 		case 'G':
@@ -167,6 +175,15 @@ main (int argc, char **argv)
 
 		case 'X':
 			config->idxtablespace = pgis_optarg;
+			break;
+
+		case 'e':
+			config->usetransaction = 0;
+			if (config->dump_format)
+			{
+				fprintf(stderr, "Cannot use both -D and -e.\n");
+				exit(1);
+			}
 			break;
 
 		case '?':

@@ -138,6 +138,9 @@ typedef struct shp_loader_config
 	/* 0 = new style (PostGIS 1.x) geometries, 1 = old style (PostGIS 0.9.x) geometries */
 	int hwgeom;
 
+	/* whether to do a single transaction or run each statement on its own */
+	int usetransaction;
+
 } SHPLOADERCONFIG;
 
 
