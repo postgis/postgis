@@ -210,6 +210,11 @@ run_loader_test ()
 
 	#echo "SELECT * from ${_tblname}" > ${TEST}.sql
 
+	# See if there is a custom command-line options file
+	if [ -r ${TEST}.opts ]; then
+		_custom_opts=`grep -v -m1 ^\s*# ${TEST}.opts`
+	fi
+
 
 	#
 	# Run in HEXWKB insert mode
@@ -217,7 +222,7 @@ run_loader_test ()
 
 	show_progress
 
-	${SHP2PGSQL} -g the_geom ${TEST}.shp $_tblname \
+	${SHP2PGSQL} $_custom_opts -g the_geom ${TEST}.shp $_tblname \
 		> ${TMPDIR}/loader \
 		2> ${TMPDIR}/loader.err
 

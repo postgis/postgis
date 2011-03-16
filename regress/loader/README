@@ -11,3 +11,9 @@ We need two separate tests for WKB and WKT as the WKT mode will not support M va
 Also, the tester script will dump the WKB loaded table and compare the resulting
 shapefile with the original one (only .shp, .dbf is not compared as field sizes are not
 retained, we might use a dbf viewer for that, but that's not currently implemented)
+
+Optional:
+  You may provide a <name>.opts file to set custom command line options for shp2pgsql.
+  The first line that does not begin with a # is used.
+
+  Also see ../README for a description of optional setup/teardown script files.
