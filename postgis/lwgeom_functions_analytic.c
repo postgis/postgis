@@ -246,7 +246,7 @@ POINTARRAY *ptarray_grid(POINTARRAY *pa, gridspec *grid);
 Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS);
 Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS);
 static int grid_isNull(const gridspec *grid);
-#if POSTGIS_DEBUG_LEVEL > 0
+#if POSTGIS_DEBUG_LEVEL >=4
 static void grid_print(const gridspec *grid);
 #endif
 
@@ -261,7 +261,7 @@ grid_isNull(const gridspec *grid)
 	else return 0;
 }
 
-#if POSTGIS_DEBUG_LEVEL > 0
+#if POSTGIS_DEBUG_LEVEL >= 4
 /* Print grid using given reporter */
 static void
 grid_print(const gridspec *grid)

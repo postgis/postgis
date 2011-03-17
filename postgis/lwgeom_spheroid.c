@@ -194,7 +194,7 @@ distance_ellipse(double lat1, double long1,
                  double lat2, double long2, SPHEROID *sphere)
 {
 	double result = 0;
-#if POSTGIS_DEBUG_LEVEL > 0
+#if POSTGIS_DEBUG_LEVEL >= 4
 	double result2 = 0;
 #endif
 

@@ -478,10 +478,6 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 
 	PG_LWGEOM *in; /* lwgeom serialized */
 	BOX2DFLOAT4 *rr;
-#if POSTGIS_DEBUG_LEVEL > 0
-	int result;
-	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
-#endif
 
 	POSTGIS_DEBUG(2, "GIST: LWGEOM_gist_compress called");
 

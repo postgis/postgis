@@ -343,7 +343,7 @@ Datum LWGEOM_polygon_index(PG_FUNCTION_ARGS)
 	LWMLINE *mline;
 	RTREE_NODE *root;
 	double yval;
-#if POSTGIS_DEBUG_LEVEL > 0
+#if POSTGIS_DEBUG_LEVEL >= 3
 	int i = 0;
 #endif
 
