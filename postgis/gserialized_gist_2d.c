@@ -619,7 +619,7 @@ static inline bool gserialized_gist_consistent_leaf_2d(BOX2DF *key, BOX2DF *quer
 	bool retval;
 
 	POSTGIS_DEBUGF(4, "[GIST] leaf consistent, strategy [%d], count[%i]",
-	               strategy, geog_counter_leaf++);
+	               strategy, g2d_counter_leaf++);
 
 	switch (strategy)
 	{
@@ -652,7 +652,7 @@ static inline bool gserialized_gist_consistent_internal_2d(BOX2DF *key, BOX2DF *
 	bool retval;
 
 	POSTGIS_DEBUGF(4, "[GIST] internal consistent, strategy [%d], count[%i], query[%s], key[%s]",
-	               strategy, geog_counter_internal++, box2df_to_string(query), box2df_to_string(key) );
+	               strategy, g2d_counter_internal++, box2df_to_string(query), box2df_to_string(key) );
 
 	switch (strategy)
 	{
