@@ -333,7 +333,7 @@ DECLARE
   old_faceid int;
   old_edgeid int;
   sql text;
-  side int;
+  right_side bool;
 BEGIN
   --
   -- Atopology and apoly are required
@@ -371,19 +371,18 @@ BEGIN
     LOOP -- {
 
       -- Find the side of the edge on the face
-      -- TODO: can probably be optimized further
-      SELECT DISTINCT (st_dump(st_sharedpaths(rec.geom, bounds))).path[1]
-        INTO STRICT side;
+      right_side := ST_Line_Locate_Point(bounds,
+                ST_Line_Interpolate_Point(rec.geom, 0.2)) <
+              ST_Line_Locate_Point(bounds,
+                ST_Line_Interpolate_Point(rec.geom, 0.8));
 
-      RAISE DEBUG 'Edge % (left:%, right:%) - ring : % - side : %',
-        rec.edge_id, rec.left_face, rec.right_face, rrec.path, side;
+      RAISE DEBUG 'Edge % (left:%, right:%) - ring : % - right_side : %',
+        rec.edge_id, rec.left_face, rec.right_face, rrec.path, right_side;
 
-      IF side = 1 THEN
-        -- This face is on the right
+      IF right_side THEN
         right_edges := array_append(right_edges, rec.edge_id);
         old_faceid = rec.right_face;
       ELSE
-        -- This face is on the left
         left_edges := array_append(left_edges, rec.edge_id);
         old_faceid = rec.left_face;
       END IF;
