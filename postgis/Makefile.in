@@ -54,7 +54,9 @@ PG_OBJS=lwgeom_pg.o \
 	lwgeom_sqlmm.o \
 	lwgeom_rtree.o \
 	geography_inout.o \
-	geography_gist.o \
+	gserialized_gist.o \
+	gserialized_gist_2d.o \
+	gserialized_gist_nd.o \
 	geography_btree.o \
 	geography_estimate.o \
 	geography_measurement.o \

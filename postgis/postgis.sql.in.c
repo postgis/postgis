@@ -509,9 +509,256 @@ CREATE OPERATOR CLASS btree_geometry_ops
 	OPERATOR	5	> ,
 	FUNCTION	1	geometry_cmp (geometry, geometry);
 
-#ifndef GSERIALIZED_ON
+
+
+#ifdef GSERIALIZED_ON
+-----------------------------------------------------------------------------
+-- GiST GEOMETRY-over-GSERIALIZED
+-----------------------------------------------------------------------------
+--
+-- Box2Df type is used by the GiST index bindings. 
+-- In/out functions are stubs, as all access should be internal.
+---
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION box2df_in(cstring)
+	RETURNS box2df
+	AS 'MODULE_PATHNAME','box2df_in'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
+
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION box2df_out(box2df)
+	RETURNS cstring
+	AS 'MODULE_PATHNAME','box2df_out'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
+
+-- Availability: 1.5.0
+CREATE TYPE box2df (
+	internallength = 16,
+	input = box2df_in,
+	output = box2df_out,
+	storage = plain,
+	alignment = double
+);
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_consistent_2d(internal,geometry,int4) 
+	RETURNS bool 
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_consistent_2d'
+	LANGUAGE 'C';
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_compress_2d(internal) 
+	RETURNS internal 
+	AS 'MODULE_PATHNAME','gserialized_gist_compress_2d'
+	LANGUAGE 'C';
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_penalty_2d(internal,internal,internal) 
+	RETURNS internal 
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_penalty_2d'
+	LANGUAGE 'C';
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_picksplit_2d(internal, internal) 
+	RETURNS internal 
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_picksplit_2d'
+	LANGUAGE 'C';
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_union_2d(bytea, internal) 
+	RETURNS internal 
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_union_2d'
+	LANGUAGE 'C';
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_same_2d(geometry, geometry, internal) 
+	RETURNS internal 
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_same_2d'
+	LANGUAGE 'C';
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_decompress_2d(internal) 
+	RETURNS internal 
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_decompress_2d'
+	LANGUAGE 'C';
+
+-- Availability: 2.0.0
+--CREATE OR REPLACE FUNCTION geometry_gist_sel_2d (internal, oid, internal, int4)
+--	RETURNS float8
+--	AS 'MODULE_PATHNAME', 'gserialized_gist_sel_2d'
+--	LANGUAGE 'C';
+
+-- Availability: 2.0.0
+--CREATE OR REPLACE FUNCTION geometry_gist_joinsel_2d(internal, oid, internal, smallint)
+--	RETURNS float8
+--	AS 'MODULE_PATHNAME', 'gserialized_gist_joinsel_2d'
+--	LANGUAGE 'C';
+
+-----------------------------------------------------------------------------
+-- GEOMETRY Operators
+-----------------------------------------------------------------------------
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_overlaps(geometry, geometry) 
+	RETURNS boolean 
+	AS 'MODULE_PATHNAME' ,'gserialized_overlaps_2d'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OPERATOR && (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overlaps,
+	COMMUTATOR = '&&'
+	,RESTRICT = contsel, JOIN = contjoinsel
+-- 	,RESTRICT = geometry_gist_sel, JOIN = geometry_gist_joinsel	
+);
+
+CREATE OR REPLACE FUNCTION geometry_same(geometry, geometry) 
+	RETURNS boolean 
+	AS 'MODULE_PATHNAME' ,'gserialized_same_2d'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OPERATOR ~= (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_same,
+	RESTRICT = contsel, JOIN = contjoinsel
+);
+
+CREATE OR REPLACE FUNCTION geometry_contains(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'gserialized_contains_2d'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION geometry_within(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'gserialized_within'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OPERATOR @ (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_within,
+	COMMUTATOR = '~',
+	RESTRICT = contsel, JOIN = contjoinsel
+);
+
+CREATE OPERATOR ~ (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_contains,
+	COMMUTATOR = '@',
+	RESTRICT = contsel, JOIN = contjoinsel
+);
+
+CREATE OR REPLACE FUNCTION geometry_left(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'gserialized_left_2d'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OPERATOR << (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_left,
+	COMMUTATOR = '>>',
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OR REPLACE FUNCTION geometry_overleft(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'gserialized_overleft_2d'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OPERATOR &< (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overleft,
+	COMMUTATOR = '&>',
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OR REPLACE FUNCTION geometry_below(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'gserialized_below_2d'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OPERATOR <<| (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_below,
+	COMMUTATOR = '|>>',
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OR REPLACE FUNCTION geometry_overbelow(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'gserialized_overbelow_2d'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OPERATOR &<| (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overbelow,
+	COMMUTATOR = '|&>',
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OR REPLACE FUNCTION geometry_overright(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'gserialized_overright_2d'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OPERATOR &> (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overright,
+	COMMUTATOR = '&<',
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OR REPLACE FUNCTION geometry_right(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'gserialized_right_2d'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OPERATOR >> (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_right,
+	COMMUTATOR = '<<',
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OR REPLACE FUNCTION geometry_overabove(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'gserialized_overabove_2d'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OPERATOR |&> (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overabove,
+	COMMUTATOR = '&<|',
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OR REPLACE FUNCTION geometry_above(geometry, geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'gserialized_above_2d'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OPERATOR |>> (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_above,
+	COMMUTATOR = '<<|',
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+-- Availability: 2.0.0
+CREATE OPERATOR CLASS gist_geometry_ops
+	DEFAULT FOR TYPE geometry USING GIST AS
+	STORAGE box2df,
+	OPERATOR        1        <<  ,
+	OPERATOR        2        &<	 ,
+	OPERATOR        3        &&  ,
+	OPERATOR        4        &>	 ,
+	OPERATOR        5        >>	 ,
+--	OPERATOR        6        ~=	 ,
+	OPERATOR        7        ~	 ,
+	OPERATOR        8        @	 ,
+	OPERATOR        9        &<| ,
+	OPERATOR        10       <<| ,
+	OPERATOR        11       |>> ,
+	OPERATOR        12       |&> ,
+	FUNCTION        1        geometry_gist_consistent_2d (internal, geometry, int4),
+	FUNCTION        2        geometry_gist_union_2d (bytea, internal),
+	FUNCTION        3        geometry_gist_compress_2d (internal),
+	FUNCTION        4        geometry_gist_decompress_2d (internal),
+	FUNCTION        5        geometry_gist_penalty_2d (internal, internal, internal),
+	FUNCTION        6        geometry_gist_picksplit_2d (internal, internal),
+	FUNCTION        7        geometry_gist_same_2d (geometry, geometry, internal);
+	
+#else
+
 -------------------------------------------------------------------
--- GiST indexes
+-- Original geometry GiST indexes
 -------------------------------------------------------------------
 -- Deprecation in 1.5.0 -- is this deprecated? 2011-01-05 robe
 CREATE OR REPLACE FUNCTION geometry_same(geometry, geometry)
@@ -1103,7 +1350,6 @@ CREATE OR REPLACE FUNCTION ST_MakeBox3d(geometry, geometry)
 	RETURNS box3d
 	AS 'MODULE_PATHNAME', 'BOX3D_construct'
 	LANGUAGE 'C' IMMUTABLE STRICT;
-
 
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION ST_MakeLine (geometry[])

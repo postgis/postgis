@@ -1806,7 +1806,7 @@ extern char* lwgeom_to_gml3(const LWGEOM *geom, char *srs, int precision, int op
 extern char* lwgeom_to_kml2(const LWGEOM *geom, int precision, const char *prefix);
 extern char* lwgeom_to_geojson(const LWGEOM *geo, char *srs, int precision, int has_bbox);
 extern char* lwgeom_to_svg(const LWGEOM *geom, int precision, int relative);
-
+extern char* lwgeom_to_x3d3(const LWGEOM *geom, char *srs, int precision, int opts, const char *defid);
 
 
 /**

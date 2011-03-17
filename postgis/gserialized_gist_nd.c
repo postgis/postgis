@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: gserialized_gist_nd.c 6519 2010-12-28 00:54:19Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>
@@ -31,7 +31,8 @@
 
 #include "liblwgeom.h"         /* For standard geometry types. */
 #include "lwgeom_pg.h"       /* For debugging macros. */
-#include "geography.h"	     /* For utility functions. */
+#include "gserialized_gist.h"	     /* For utility functions. */
+#include "geography.h"
 
 /*
 ** When is a node split not so good? If more than 90% of the entries
@@ -48,10 +49,15 @@ static int geog_counter_internal = 0;
 #endif
 
 /*
-** GiST prototypes
+** ND Index key type stub prototypes
+*/
+Datum gidx_out(PG_FUNCTION_ARGS);
+Datum gidx_in(PG_FUNCTION_ARGS);
+
+/*
+** ND GiST prototypes
 */
 Datum gserialized_gist_consistent(PG_FUNCTION_ARGS);
-Datum gserialized_gist_consistent_2d(PG_FUNCTION_ARGS);
 Datum gserialized_gist_compress(PG_FUNCTION_ARGS);
 Datum gserialized_gist_decompress(PG_FUNCTION_ARGS);
 Datum gserialized_gist_penalty(PG_FUNCTION_ARGS);
@@ -60,69 +66,21 @@ Datum gserialized_gist_union(PG_FUNCTION_ARGS);
 Datum gserialized_gist_same(PG_FUNCTION_ARGS);
 
 /*
-** Index key type stub prototypes
-*/
-Datum gidx_out(PG_FUNCTION_ARGS);
-Datum gidx_in(PG_FUNCTION_ARGS);
-
-/*
-** Operator prototypes
+** ND Operator prototypes
 */
 Datum gserialized_overlaps(PG_FUNCTION_ARGS);
 Datum gserialized_contains(PG_FUNCTION_ARGS);
 Datum gserialized_within(PG_FUNCTION_ARGS);
 
 /*
-** 2D Operator prototypes
-*/
-Datum gserialized_2d_same(PG_FUNCTION_ARGS);
-Datum gserialized_2d_within(PG_FUNCTION_ARGS);
-Datum gserialized_2d_contains(PG_FUNCTION_ARGS);
-Datum gserialized_2d_overlaps(PG_FUNCTION_ARGS);
-Datum gserialized_2d_left(PG_FUNCTION_ARGS);
-Datum gserialized_2d_right(PG_FUNCTION_ARGS);
-Datum gserialized_2d_above(PG_FUNCTION_ARGS);
-Datum gserialized_2d_below(PG_FUNCTION_ARGS);
-Datum gserialized_2d_overleft(PG_FUNCTION_ARGS);
-Datum gserialized_2d_overright(PG_FUNCTION_ARGS);
-Datum gserialized_2d_overabove(PG_FUNCTION_ARGS);
-Datum gserialized_2d_overbelow(PG_FUNCTION_ARGS);
-
-
-/*
-** GIDX true/fast test function type
+** GIDX true/false test function type
 */
 typedef bool (*gidx_predicate)(GIDX *a, GIDX *b);
 
 
-/*********************************************************************************
-** GIDX support functions.
-**
-** We put the GIDX support here rather than liblwgeom because it is a 
-** specialized type only used for indexing purposes. It also makes use 
-** of some PgSQL infrastructure like the VARSIZE() macros.
-*/
-
-/*
-** Inline some of the most common and simplest utility functions.
-*/
-
-/* Returns number of dimensions for this GIDX */
-#define GIDX_NDIMS(gidx) ((VARSIZE((gidx)) - VARHDRSZ) / (2 * sizeof(float)))
-/* Minimum accessor. */
-#define GIDX_GET_MIN(gidx, dimension) ((gidx)->c[2*(dimension)])
-/* Maximum accessor. */
-#define GIDX_GET_MAX(gidx, dimension) ((gidx)->c[2*(dimension)+1])
-/* Minimum setter. */
-#define GIDX_SET_MIN(gidx, dimension, value) ((gidx)->c[2*(dimension)] = (value))
-/* Maximum setter. */
-#define GIDX_SET_MAX(gidx, dimension, value) ((gidx)->c[2*(dimension)+1] = (value))
-/* Returns the size required to store a GIDX of requested dimension */
-#define GIDX_SIZE(dimensions) (sizeof(int32) + 2*(dimensions)*sizeof(float))
-
 
 /* Allocates a new GIDX on the heap of the requested dimensionality */
-GIDX* gidx_new(int ndims)
+static GIDX* gidx_new(int ndims)
 {
 	size_t size = GIDX_SIZE(ndims);
 	GIDX *g = (GIDX*)palloc(size);
@@ -165,6 +123,7 @@ static GIDX* gidx_copy(GIDX *b)
 	memcpy((void*)c, (void*)b, VARSIZE(b));
 	return c;
 }
+
 
 /* Ensure all minimums are below maximums. */
 static inline void gidx_validate(GIDX *b)
@@ -232,7 +191,7 @@ static float gidx_volume(GIDX *a)
 	result = GIDX_GET_MAX(a,0) - GIDX_GET_MIN(a,0);
 	for ( i = 1; i < GIDX_NDIMS(a); i++ )
 		result *= (GIDX_GET_MAX(a,i) - GIDX_GET_MIN(a,i));
-	POSTGIS_DEBUGF(5, "calculated volume of %s as %.12g", gidx_to_string(a), result);
+	POSTGIS_DEBUGF(5, "calculated volume of %s as %.8g", gidx_to_string(a), result);
 	return result;
 }
 
@@ -246,6 +205,8 @@ static void gidx_dimensionality_check(GIDX **a, GIDX **b)
 		*a = tmp;
 	}
 }
+
+
 
 /* Calculate the volume of the union of the boxes. Avoids creating an intermediate box. */
 static float gidx_union_volume(GIDX *a, GIDX *b)
@@ -386,7 +347,6 @@ GIDX* gidx_from_gbox(GBOX box)
 	return a;
 }
 
-
 void gbox_from_gidx(GIDX *a, GBOX *gbox)
 {
 	gbox->xmin = (double)GIDX_GET_MIN(a,0);
@@ -396,120 +356,6 @@ void gbox_from_gidx(GIDX *a, GBOX *gbox)
 	gbox->ymax = (double)GIDX_GET_MAX(a,1);
 	gbox->zmax = (double)GIDX_GET_MAX(a,2);
 }
-
-
-/***********************************************************************
-** GIDX tests for 2D index operators.
-*/
-
-static bool gidx_2d_overlaps(GIDX *a, GIDX *b)
-{
-	int i;
-	POSTGIS_DEBUG(5, "entered function");
-	if ( (a == NULL) || (b == NULL) ) return FALSE;
-
-	for ( i = 0; i < 2; i++ )
-	{
-		if ( GIDX_GET_MIN(a,i) > GIDX_GET_MAX(b,i) )
-			return FALSE;
-		if ( GIDX_GET_MIN(b,i) > GIDX_GET_MAX(a,i) )
-			return FALSE;
-	}
-
-	return TRUE;
-}
-
-static bool gidx_2d_contains(GIDX *a, GIDX *b)
-{
-	int i;
-	POSTGIS_DEBUG(5, "entered function");
-	if ( (a == NULL) || (b == NULL) ) return FALSE;
-
-	/* a must be beyond b in all dimensions and directions */
-	for ( i = 0; i < 2; i++ )
-	{
-		if ( GIDX_GET_MIN(a,i) > GIDX_GET_MIN(b,i) )
-			return FALSE;
-		if ( GIDX_GET_MAX(a,i) < GIDX_GET_MAX(b,i) )
-			return FALSE;
-	}
-
-	return TRUE;
-}
-
-static bool gidx_2d_within(GIDX *a, GIDX *b)
-{
-	POSTGIS_DEBUG(5, "entered function");
-	return gidx_2d_contains(b,a);
-}
-
-static bool gidx_2d_equals(GIDX *a, GIDX *b)
-{
-	int i;
-	POSTGIS_DEBUG(5, "entered function");
-	if ( (a == NULL) || (b == NULL) ) return FALSE;
-
-	/* a must be beyond b in all dimensions and directions */
-	for ( i = 0; i < 2; i++ )
-	{
-		if ( GIDX_GET_MIN(a,i) != GIDX_GET_MIN(b,i) )
-			return FALSE;
-		if ( GIDX_GET_MAX(a,i) != GIDX_GET_MAX(b,i) )
-			return FALSE;
-	}
-
-	return TRUE;
-}
-
-static bool gidx_2d_overleft(GIDX *a, GIDX *b)
-{
-	/* a.xmax <= b.xmax */
-	return GIDX_GET_MAX(a,0) <= GIDX_GET_MAX(b,0);
-}
-
-static bool gidx_2d_left(GIDX *a, GIDX *b)
-{
-	/* a.xmax < b.xmin */
-	return GIDX_GET_MAX(a,0) < GIDX_GET_MIN(b,0);
-}
-
-static bool gidx_2d_right(GIDX *a, GIDX *b)
-{
-	/* a.xmin > b.xmax */
-	return GIDX_GET_MIN(a,0) > GIDX_GET_MAX(b,0);
-}
-
-static bool gidx_2d_overright(GIDX *a, GIDX *b)
-{
-	/* a.xmin >= b.xmin */
-	return GIDX_GET_MIN(a,0) >= GIDX_GET_MIN(b,0);
-}
-
-static bool gidx_2d_overbelow(GIDX *a, GIDX *b)
-{
-	/* a.ymax <= b.ymax */
-	return GIDX_GET_MAX(a,1) <= GIDX_GET_MAX(b,1);
-}
-
-static bool gidx_2d_below(GIDX *a, GIDX *b)
-{
-	/* a.ymax < b.ymin */
-	return GIDX_GET_MAX(a,1) < GIDX_GET_MIN(b,1);
-}
-
-static bool gidx_2d_above(GIDX *a, GIDX *b)
-{
-	/* a.ymin > b.ymax */
-	return GIDX_GET_MIN(a,1) > GIDX_GET_MAX(b,1);
-}
-
-static bool gidx_2d_overabove(GIDX *a, GIDX *b)
-{
-	/* a.ymin >= b.ymin */
-	return GIDX_GET_MIN(a,1) >= GIDX_GET_MIN(b,1);
-}
-
-
 
 /*
 ** Overlapping GIDX box test.
@@ -551,7 +397,7 @@ static bool gidx_overlaps(GIDX *a, GIDX *b)
 /*
 ** GIDX expansion, make d units bigger in all dimensions.
 */
-static void gidx_expand(GIDX *a, float d)
+void gidx_expand(GIDX *a, float d)
 {
 	int i;
 
@@ -645,6 +491,82 @@ static bool gidx_equals(GIDX *a, GIDX *b)
 	return TRUE;
 }
 
+/**
+* Support function. Based on two datums return true if
+* they satisfy the predicate and false otherwise.
+*/
+static int 
+gserialized_datum_predicate(Datum gs1, Datum gs2, gidx_predicate predicate)
+{
+	/* Put aside some stack memory and use it for GIDX pointers. */
+	char boxmem1[GIDX_MAX_SIZE];
+	char boxmem2[GIDX_MAX_SIZE];
+	GIDX *gidx1 = (GIDX*)boxmem1;
+	GIDX *gidx2 = (GIDX*)boxmem2;
+
+	POSTGIS_DEBUG(3, "entered function");
+
+	/* Must be able to build box for each arguement (ie, not empty geometry)
+	   and overlap boxes to return true. */
+	if ( (gserialized_datum_get_gidx_p(gs1, gidx1) == LW_SUCCESS) &&
+	     (gserialized_datum_get_gidx_p(gs2, gidx2) == LW_SUCCESS) &&
+	      predicate(gidx1, gidx2) )
+	{
+		POSTGIS_DEBUGF(3, "got boxes %s and %s", gidx_to_string(gidx1), gidx_to_string(gidx2));
+		return LW_TRUE;
+	}
+	return LW_FALSE;
+}
+
+/**
+* Support function. Based on two datums return true if
+* they overlap and false otherwise. Useful for fast exiting
+* in functions doing geocalculation.
+*/
+int 
+gserialized_datum_overlaps(Datum gs1, Datum gs2)
+{
+	/* Put aside some stack memory and use it for GIDX pointers. */
+	char boxmem1[GIDX_MAX_SIZE];
+	char boxmem2[GIDX_MAX_SIZE];
+	GIDX *gidx1 = (GIDX*)boxmem1;
+	GIDX *gidx2 = (GIDX*)boxmem2;
+
+	/* Must be able to build box for each arguement (ie, not empty geometry)
+	   and overlap boxes to return true. */
+	if ( (gserialized_datum_get_gidx_p(gs1, gidx1) == LW_SUCCESS) &&
+	     (gserialized_datum_get_gidx_p(gs2, gidx2) == LW_SUCCESS) &&
+	      gidx_overlaps(gidx1, gidx2) )
+	{
+		return LW_TRUE;
+	}
+
+	return LW_FALSE;
+}
+
+
+
+/**
+* Return a #GSERIALIZED with an expanded bounding box.
+*/
+GSERIALIZED* 
+gserialized_expand(GSERIALIZED *g, double distance)
+{
+	char boxmem[GIDX_MAX_SIZE];
+	GIDX *gidx = (GIDX*)boxmem;
+	float fdistance = (float)distance;
+
+	/* Get our bounding box out of the geography, return right away if
+	   input is an EMPTY geometry. */
+	if ( gserialized_get_gidx_p(g, gidx) == LW_FAILURE )
+	{
+		return g;
+	}
+	
+	gidx_expand(gidx, fdistance);
+
+	return gserialized_set_gidx(g, gidx);
+}
 
 /**
 * Peak into a #GSERIALIZED datum to find the bounding box. If the
@@ -705,26 +627,6 @@ gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 	return result;
 }
 
-/**
-* Given a #GSERIALIZED datum, as quickly as possible (peaking into the top
-* of the memory) return the gbox extents. Does not deserialize the geometry,
-* but <em>WARNING</em> returns a slightly larger bounding box than actually
-* encompasses the objects. For geography objects returns geocentric bounding
-* box, for geometry objects returns cartesian bounding box.
-*/
-int 
-gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox)
-{
-	char gboxmem[GIDX_MAX_SIZE];
-	GIDX *gidx = (GIDX*)gboxmem;
-	
-	if( LW_FAILURE == gserialized_datum_get_gidx_p(gsdatum, gidx) )
-		return LW_FAILURE;
-		
-	gbox_from_gidx(gidx, gbox);
-	return LW_SUCCESS;
-}
-
 
 /*
 ** Peak into a geography to find the bounding box. If the
@@ -769,282 +671,6 @@ int gserialized_get_gidx_p(GSERIALIZED *g, GIDX *gidx)
 
 	return result;
 }
-
-/**
-* Update the bounding box of a #GSERIALIZED, allocating a fresh one
-* if there is not enough space to just write the new box in. 
-* <em>WARNING</em> if a new object needs to be created, the 
-* input pointer will have to be freed by the caller! Check
-* to see if input == output. Returns null if there's a problem
-* like mismatched dimensions.
-*/
-GSERIALIZED* gserialized_set_gidx(GSERIALIZED *g, GIDX *gidx)
-{
-	int g_ndims = (FLAGS_GET_GEODETIC(g->flags) ? 3 : FLAGS_NDIMS(g->flags));
-	int box_ndims = GIDX_NDIMS(gidx);
-	GSERIALIZED *g_out = NULL;
-	size_t box_size = 2 * g_ndims * sizeof(float);
-
-	/* The dimensionality of the inputs has to match or we are SOL. */
-	if ( g_ndims != box_ndims )
-	{
-		return NULL;
-	}
-
-	/* Serialized already has room for a box. */
-	if ( FLAGS_GET_BBOX(g->flags) )
-	{
-		g_out = g;
-	}
-	/* Serialized has no box. We need to allocate enough space for the old
-	   data plus the box, and leave a gap in the memory segment to write
-	   the new values into.
-	*/
-	else
-	{
-		size_t varsize_new = VARSIZE(g) + box_size;
-		uchar *ptr;
-		g_out = palloc(varsize_new);
-		/* Copy the head of g into place */
-		memcpy(g_out, g, 8);
-		/* Copy the body of g into place after leaving space for the box */
-		ptr = g_out->data;
-		ptr += box_size;
-		memcpy(ptr, g->data, VARSIZE(g) - 8);
-		FLAGS_SET_BBOX(g_out->flags, 1);
-		SET_VARSIZE(g_out, varsize_new);
-	}
-
-	/* Now write the gidx values into the memory segement */
-	memcpy(g_out->data, gidx->c, box_size);
-
-	return g_out;
-}
-
-/**
-* Remove the bounding box from a #GSERIALIZED. Returns a freshly
-* allocated #GSERIALIZED every time.
-*/
-GSERIALIZED* gserialized_drop_gidx(GSERIALIZED *g)
-{
-	int g_ndims = (FLAGS_GET_GEODETIC(g->flags) ? 3 : FLAGS_NDIMS(g->flags));
-	size_t box_size = 2 * g_ndims * sizeof(float);
-	size_t g_out_size = VARSIZE(g) - box_size;
-	GSERIALIZED *g_out = palloc(g_out_size);
-
-	/* Copy the contents while omitting the box */
-	if ( FLAGS_GET_BBOX(g->flags) )
-	{
-		uchar *outptr = (uchar*)g_out;
-		uchar *inptr = (uchar*)g;
-		/* Copy the header (size+type) of g into place */
-		memcpy(outptr, inptr, 8);
-		outptr += 8;
-		inptr += 8 + box_size;
-		/* Copy parts after the box into place */
-		memcpy(outptr, inptr, g_out_size - 8);
-		FLAGS_SET_BBOX(g_out->flags, 0);
-		SET_VARSIZE(g_out, g_out_size);
-	}
-	/* No box? Nothing to do but copy and return. */
-	else
-	{
-		memcpy(g_out, g, g_out_size);
-	}
-
-	return g_out;
-}
-
-
-/**
-* Support function. Based on two datums return true if
-* they overlap and false otherwise. Useful for fast exiting
-* in functions doing geocalculation.
-*/
-int 
-gserialized_datum_overlaps(Datum gs1, Datum gs2)
-{
-	/* Put aside some stack memory and use it for GIDX pointers. */
-	char boxmem1[GIDX_MAX_SIZE];
-	char boxmem2[GIDX_MAX_SIZE];
-	GIDX *gidx1 = (GIDX*)boxmem1;
-	GIDX *gidx2 = (GIDX*)boxmem2;
-
-	/* Must be able to build box for each arguement (ie, not empty geometry)
-	   and overlap boxes to return true. */
-	if ( (gserialized_datum_get_gidx_p(gs1, gidx1) == LW_SUCCESS) &&
-	     (gserialized_datum_get_gidx_p(gs2, gidx2) == LW_SUCCESS) &&
-	      gidx_overlaps(gidx1, gidx2) )
-	{
-		return LW_TRUE;
-	}
-
-	return LW_FALSE;
-}
-
-/**
-* Support function. Based on two datums return true if
-* they satisfy the predicate and false otherwise.
-*/
-static int 
-gserialized_datum_predicate(Datum gs1, Datum gs2, gidx_predicate predicate)
-{
-	/* Put aside some stack memory and use it for GIDX pointers. */
-	char boxmem1[GIDX_MAX_SIZE];
-	char boxmem2[GIDX_MAX_SIZE];
-	GIDX *gidx1 = (GIDX*)boxmem1;
-	GIDX *gidx2 = (GIDX*)boxmem2;
-
-	POSTGIS_DEBUG(3, "entered function");
-
-	/* Must be able to build box for each arguement (ie, not empty geometry)
-	   and overlap boxes to return true. */
-	if ( (gserialized_datum_get_gidx_p(gs1, gidx1) == LW_SUCCESS) &&
-	     (gserialized_datum_get_gidx_p(gs2, gidx2) == LW_SUCCESS) &&
-	      predicate(gidx1, gidx2) )
-	{
-		POSTGIS_DEBUGF(3, "got boxes %s and %s", gidx_to_string(gidx1), gidx_to_string(gidx2));
-		return LW_TRUE;
-	}
-	return LW_FALSE;
-}
-
-/**
-* Return a #GSERIALIZED with an expanded bounding box.
-*/
-GSERIALIZED* 
-gserialized_expand(GSERIALIZED *g, double distance)
-{
-	char boxmem[GIDX_MAX_SIZE];
-	GIDX *gidx = (GIDX*)boxmem;
-	float fdistance = (float)distance;
-
-	/* Get our bounding box out of the geography, return right away if
-	   input is an EMPTY geometry. */
-	if ( gserialized_get_gidx_p(g, gidx) == LW_FAILURE )
-	{
-		return g;
-	}
-	
-	gidx_expand(gidx, fdistance);
-
-	return gserialized_set_gidx(g, gidx);
-}
-
-/***********************************************************************
-* GiST 2-D Index Operator Functions
-*/
-
-PG_FUNCTION_INFO_V1(gserialized_2d_same);
-Datum gserialized_2d_same(PG_FUNCTION_ARGS)
-{
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_2d_equals) == LW_TRUE )
-		PG_RETURN_BOOL(TRUE);
-
-	PG_RETURN_BOOL(FALSE);
-}
-
-PG_FUNCTION_INFO_V1(gserialized_2d_within);
-Datum gserialized_2d_within(PG_FUNCTION_ARGS)
-{
-	POSTGIS_DEBUG(3, "entered function");
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_2d_within) == LW_TRUE )
-		PG_RETURN_BOOL(TRUE);
-
-	PG_RETURN_BOOL(FALSE);
-}
-
-PG_FUNCTION_INFO_V1(gserialized_2d_contains);
-Datum gserialized_2d_contains(PG_FUNCTION_ARGS)
-{
-	POSTGIS_DEBUG(3, "entered function");
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_2d_contains) == LW_TRUE )
-		PG_RETURN_BOOL(TRUE);
-
-	PG_RETURN_BOOL(FALSE);
-}
-
-PG_FUNCTION_INFO_V1(gserialized_2d_overlaps);
-Datum gserialized_2d_overlaps(PG_FUNCTION_ARGS)
-{
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_2d_overlaps) == LW_TRUE )
-		PG_RETURN_BOOL(TRUE);
-
-	PG_RETURN_BOOL(FALSE);
-}
-
-PG_FUNCTION_INFO_V1(gserialized_2d_left);
-Datum gserialized_2d_left(PG_FUNCTION_ARGS)
-{
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_2d_left) == LW_TRUE )
-		PG_RETURN_BOOL(TRUE);
-
-	PG_RETURN_BOOL(FALSE);
-}
-
-PG_FUNCTION_INFO_V1(gserialized_2d_right);
-Datum gserialized_2d_right(PG_FUNCTION_ARGS)
-{
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_2d_right) == LW_TRUE )
-		PG_RETURN_BOOL(TRUE);
-
-	PG_RETURN_BOOL(FALSE);
-}
-
-PG_FUNCTION_INFO_V1(gserialized_2d_above);
-Datum gserialized_2d_above(PG_FUNCTION_ARGS)
-{
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_2d_above) == LW_TRUE )
-		PG_RETURN_BOOL(TRUE);
-
-	PG_RETURN_BOOL(FALSE);
-}
-
-PG_FUNCTION_INFO_V1(gserialized_2d_below);
-Datum gserialized_2d_below(PG_FUNCTION_ARGS)
-{
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_2d_below) == LW_TRUE )
-		PG_RETURN_BOOL(TRUE);
-
-	PG_RETURN_BOOL(FALSE);
-}
-
-PG_FUNCTION_INFO_V1(gserialized_2d_overleft);
-Datum gserialized_2d_overleft(PG_FUNCTION_ARGS)
-{
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_2d_overleft) == LW_TRUE )
-		PG_RETURN_BOOL(TRUE);
-
-	PG_RETURN_BOOL(FALSE);
-}
-
-PG_FUNCTION_INFO_V1(gserialized_2d_overright);
-Datum gserialized_2d_overright(PG_FUNCTION_ARGS)
-{
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_2d_overright) == LW_TRUE )
-		PG_RETURN_BOOL(TRUE);
-
-	PG_RETURN_BOOL(FALSE);
-}
-
-PG_FUNCTION_INFO_V1(gserialized_2d_overabove);
-Datum gserialized_2d_overabove(PG_FUNCTION_ARGS)
-{
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_2d_overabove) == LW_TRUE )
-		PG_RETURN_BOOL(TRUE);
-
-	PG_RETURN_BOOL(FALSE);
-}
-
-PG_FUNCTION_INFO_V1(gserialized_2d_overbelow);
-Datum gserialized_2d_overbelow(PG_FUNCTION_ARGS)
-{
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_2d_overbelow) == LW_TRUE )
-		PG_RETURN_BOOL(TRUE);
-
-	PG_RETURN_BOOL(FALSE);
-}
-
 
 /***********************************************************************
 * GiST N-D Index Operator Functions
@@ -1178,7 +804,6 @@ Datum gserialized_gist_compress(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(entry_out);
 }
 
-
 /*
 ** GiST support function.
 ** Decompress an entry. Unused for geography, so we return.
@@ -1194,112 +819,64 @@ Datum gserialized_gist_decompress(PG_FUNCTION_ARGS)
 /*
 ** GiST support function. Called from gserialized_gist_consistent below.
 */
-static inline bool gserialized_gist_consistent_leaf(GIDX *key, GIDX *query, StrategyNumber strategy, int dims)
+static inline bool gserialized_gist_consistent_leaf(GIDX *key, GIDX *query, StrategyNumber strategy)
 {
-	bool		retval;
+	bool retval;
 
-	POSTGIS_DEBUGF(4, "[GIST] leaf consistent, strategy [%d], count[%i], bounds[%.12g %.12g %.12g, %.12g %.12g %.12g]",
-	               strategy, geog_counter_leaf++,
-	               GIDX_GET_MIN(query, 0), GIDX_GET_MIN(query, 1), GIDX_GET_MIN(query, 2),
-	               GIDX_GET_MAX(query, 0), GIDX_GET_MAX(query, 1), GIDX_GET_MAX(query, 2) );
+	POSTGIS_DEBUGF(4, "[GIST] leaf consistent, strategy [%d], count[%i]",
+	               strategy, geog_counter_leaf++);
 
-	if ( dims == 2 )
+	switch (strategy)
 	{
-		switch (strategy)
-		{
-		case RTOverlapStrategyNumber:
-			retval = (bool) gidx_2d_overlaps(key, query);
-			break;
-		case RTSameStrategyNumber:
-			retval = (bool) gidx_2d_equals(key, query);
-			break;
-		case RTContainsStrategyNumber:
-		case RTOldContainsStrategyNumber:
-			retval = (bool) gidx_2d_contains(key, query);
-			break;
-		case RTContainedByStrategyNumber:
-		case RTOldContainedByStrategyNumber:
-			retval = (bool) gidx_2d_contains(query, key);
-			break;
-		default:
-			retval = FALSE;
-		}
+	case RTOverlapStrategyNumber:
+		retval = (bool) gidx_overlaps(key, query);
+		break;
+	case RTSameStrategyNumber:
+		retval = (bool) gidx_equals(key, query);
+		break;
+	case RTContainsStrategyNumber:
+	case RTOldContainsStrategyNumber:
+		retval = (bool) gidx_contains(key, query);
+		break;
+	case RTContainedByStrategyNumber:
+	case RTOldContainedByStrategyNumber:
+		retval = (bool) gidx_contains(query, key);
+		break;
+	default:
+		retval = FALSE;
 	}
-	else
-	{
-		switch (strategy)
-		{
-		case RTOverlapStrategyNumber:
-			retval = (bool) gidx_overlaps(key, query);
-			break;
-		case RTSameStrategyNumber:
-			retval = (bool) gidx_equals(key, query);
-			break;
-		case RTContainsStrategyNumber:
-		case RTOldContainsStrategyNumber:
-			retval = (bool) gidx_contains(key, query);
-			break;
-		case RTContainedByStrategyNumber:
-		case RTOldContainedByStrategyNumber:
-			retval = (bool) gidx_contains(query, key);
-			break;
-		default:
-			retval = FALSE;
-		}
-	}
+
 	return (retval);
 }
 
 /*
 ** GiST support function. Called from gserialized_gist_consistent below.
 */
-static inline bool gserialized_gist_consistent_internal(GIDX *key, GIDX *query, StrategyNumber strategy, int dims)
+static inline bool gserialized_gist_consistent_internal(GIDX *key, GIDX *query, StrategyNumber strategy)
 {
 	bool		retval;
 
 	POSTGIS_DEBUGF(4, "[GIST] internal consistent, strategy [%d], count[%i], query[%s], key[%s]",
 	               strategy, geog_counter_internal++, gidx_to_string(query), gidx_to_string(key) );
 
-	if ( dims == 2 )
+	switch (strategy)
 	{
-		switch (strategy)
-		{
-		case RTOverlapStrategyNumber:
-			retval = (bool) gidx_2d_overlaps(key, query);
-			break;
-		case RTSameStrategyNumber:
-		case RTContainsStrategyNumber:
-		case RTOldContainsStrategyNumber:
-			retval = (bool) gidx_2d_contains(key, query);
-			break;
-		case RTContainedByStrategyNumber:
-		case RTOldContainedByStrategyNumber:
-			retval = (bool) gidx_2d_overlaps(key, query);
-			break;
-		default:
-			retval = FALSE;
-		}
-	}
-	else
-	{
-		switch (strategy)
-		{
-		case RTOverlapStrategyNumber:
-			retval = (bool) gidx_overlaps(key, query);
-			break;
-		case RTSameStrategyNumber:
-		case RTContainsStrategyNumber:
-		case RTOldContainsStrategyNumber:
-			retval = (bool) gidx_contains(key, query);
-			break;
-		case RTContainedByStrategyNumber:
-		case RTOldContainedByStrategyNumber:
-			retval = (bool) gidx_overlaps(key, query);
-			break;
-		default:
-			retval = FALSE;
-		}	
-	}
+	case RTOverlapStrategyNumber:
+		retval = (bool) gidx_overlaps(key, query);
+		break;
+	case RTSameStrategyNumber:
+	case RTContainsStrategyNumber:
+	case RTOldContainsStrategyNumber:
+		retval = (bool) gidx_contains(key, query);
+		break;
+	case RTContainedByStrategyNumber:
+	case RTOldContainedByStrategyNumber:
+		retval = (bool) gidx_overlaps(key, query);
+		break;
+	default:
+		retval = FALSE;
+	}	
+
 	return (retval);
 }
 
@@ -1355,82 +932,18 @@ Datum gserialized_gist_consistent(PG_FUNCTION_ARGS)
 	{
 		result = gserialized_gist_consistent_leaf(
 		             (GIDX*)DatumGetPointer(entry->key),
-		             query_gbox_index, strategy, 0);
+		             query_gbox_index, strategy);
 	}
 	else
 	{
 		result = gserialized_gist_consistent_internal(
 		             (GIDX*)DatumGetPointer(entry->key),
-		             query_gbox_index, strategy, 0);
+		             query_gbox_index, strategy);
 	}
 
 	PG_RETURN_BOOL(result);
 }
 
-
-/*
-** GiST support function. Take in a query and an entry and see what the
-** relationship is, based on the query strategy.
-*/
-PG_FUNCTION_INFO_V1(gserialized_gist_consistent_2d);
-Datum gserialized_gist_consistent_2d(PG_FUNCTION_ARGS)
-{
-	GISTENTRY *entry = (GISTENTRY*) PG_GETARG_POINTER(0);
-	StrategyNumber strategy = (StrategyNumber) PG_GETARG_UINT16(2);
-	bool result;
-	char gidxmem[GIDX_MAX_SIZE];
-	GIDX *query_gbox_index = (GIDX*)gidxmem;
-
-#if POSTGIS_PGSQL_VERSION >= 84
-	/* PostgreSQL 8.4 and later require the RECHECK flag to be set here,
-	   rather than being supplied as part of the operator class definition */
-	bool *recheck = (bool *) PG_GETARG_POINTER(4);
-
-	/* We set recheck to false to avoid repeatedly pulling every "possibly matched" geometry
-	   out during index scans. For cases when the geometries are large, rechecking
-	   can make things twice as slow. */
-	*recheck = false;
-#endif
-
-	POSTGIS_DEBUG(4, "[GIST] 'consistent' function called");
-
-	/* Quick sanity check on query argument. */
-	if ( DatumGetPointer(PG_GETARG_DATUM(1)) == NULL )
-	{
-		POSTGIS_DEBUG(4, "[GIST] null query pointer (!?!), returning false");
-		PG_RETURN_BOOL(FALSE); /* NULL query! This is screwy! */
-	}
-
-	/* Quick sanity check on entry key. */
-	if ( DatumGetPointer(entry->key) == NULL )
-	{
-		POSTGIS_DEBUG(4, "[GIST] null index entry, returning false");
-		PG_RETURN_BOOL(FALSE); /* NULL entry! */
-	}
-
-	/* Null box should never make this far. */
-	if ( gserialized_datum_get_gidx_p(PG_GETARG_DATUM(1), query_gbox_index) == LW_FAILURE )
-	{
-		POSTGIS_DEBUG(4, "[GIST] null query_gbox_index!");
-		PG_RETURN_BOOL(FALSE);
-	}
-
-	/* Treat leaf node tests different from internal nodes */
-	if (GIST_LEAF(entry))
-	{
-		result = gserialized_gist_consistent_leaf(
-		             (GIDX*)DatumGetPointer(entry->key),
-		             query_gbox_index, strategy, 2);
-	}
-	else
-	{
-		result = gserialized_gist_consistent_internal(
-		             (GIDX*)DatumGetPointer(entry->key),
-		             query_gbox_index, strategy, 2);
-	}
-
-	PG_RETURN_BOOL(result);
-}
 
 /*
 ** GiST support function. Calculate the "penalty" cost of adding this entry into an existing entry.
@@ -1515,6 +1028,8 @@ Datum gserialized_gist_union(PG_FUNCTION_ARGS)
 
 }
 
+
+
 /*
 ** GiST support function. Test equality of keys.
 */
@@ -1531,6 +1046,7 @@ Datum gserialized_gist_same(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(result);
 }
+
 
 
 /*
@@ -1944,7 +1460,7 @@ Datum gserialized_gist_picksplit(PG_FUNCTION_ARGS)
 ** The GIDX key must be defined as a PostgreSQL type, even though it is only
 ** ever used internally. These no-op stubs are used to bind the type.
 */
-PG_FUNCTION_INFO_V1(gidx_in);
+PG_FUNCTION_INFO_V1(gidx_in); 
 Datum gidx_in(PG_FUNCTION_ARGS)
 {
 	ereport(ERROR,(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
@@ -1952,7 +1468,7 @@ Datum gidx_in(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(NULL);
 }
 
-PG_FUNCTION_INFO_V1(gidx_out);
+PG_FUNCTION_INFO_V1(gidx_out); 
 Datum gidx_out(PG_FUNCTION_ARGS)
 {
 	ereport(ERROR,(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),

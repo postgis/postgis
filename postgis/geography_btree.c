@@ -16,6 +16,7 @@
 
 #include "liblwgeom.h"         /* For standard geometry types. */
 #include "lwgeom_pg.h"       /* For debugging macros. */
+#include "gserialized_gist.h"
 #include "geography.h"	     /* For utility functions. */
 
 Datum geography_lt(PG_FUNCTION_ARGS);
