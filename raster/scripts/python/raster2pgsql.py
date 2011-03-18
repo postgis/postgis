@@ -647,8 +647,8 @@ def fetch_band_nodata(band, default = 0):
     if band.GetNoDataValue() is not None:
         nodata = band.GetNoDataValue()
     else:
-        logit("WARNING: No NODATA flagged in raster_columns metadata. "
-              "In serialized raster, NODATA bytes will have value of 0.\n")
+        logit("WARNING: No nodata flagged in raster_columns metadata. "
+              "In serialized raster, nodata bytes will have value of 0.\n")
     return nodata
 
 def wkblify(fmt, data):
@@ -742,7 +742,7 @@ def wkblify_band_header(options, band):
     pixtype = gdt2pt(band.DataType)['id']
     hexwkb += wkblify('B', pixtype + first4bits)
     
-    # Encode NODATA value (or Zero, if NODATA unavailable) 
+    # Encode nodata value (or Zero, if nodata unavailable) 
     hexwkb += wkblify(pt2fmt(pixtype), nodata)
 
     check_hex(hexwkb)

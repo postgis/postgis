@@ -50,7 +50,7 @@ CREATE OR REPLACE FUNCTION ST_Reclass(rast raster,
     		END IF;
     		-- Split the range to reclassify into two
     		fromstr := string_to_array(reclassstr[1], '-');
-    		-- Replace NODATA with the nodata value
+    		-- Replace nodata with the nodata value
     		IF upper(reclassstr[2]) = 'NODATA' THEN
     			reclassstr[2] = nodataval::text;
     		END IF;

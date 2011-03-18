@@ -174,8 +174,8 @@ CREATE OR REPLACE FUNCTION _MapAlgebraParts(r1x int,
 
 --DROP FUNCTION _MapAlgebraPartsGeom(r1x int, r1y int, r1w int, r1h int, r2x int, r2y int, r2w int, r2h int);
 CREATE OR REPLACE FUNCTION _MapAlgebraPartsGeom(nx int,
-						ny int,
-						r1x int,
+                                                ny int,
+                                                r1x int,
                                                 r1y int,
                                                 r1w int,
                                                 r1h int,
