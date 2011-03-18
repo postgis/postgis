@@ -337,6 +337,13 @@ run_loader_test ()
 	else
 		return 1
 	fi
+	# If we have some expected files to compare with, run in geography mode.
+	if run_loader_and_check_output "geog test" "loadedshp" "${TEST}-G.sql.expected" "${TEST}-G.select.expected" \
+		"-G $_custom_opts"; then
+		:
+	else
+		return 1
+	fi
 	# Always run in wkb ("normal") mode, even if there are no expected files to compare with.
 	if run_loader_and_check_output "wkb test" "loadedshp" "${TEST}.sql.expected" "${TEST}.select.expected" \
 		"$_custom_opts" "true"; then
@@ -349,6 +356,13 @@ run_loader_test ()
 		# If we have some expected files to compare with, run in wkt dump mode.
 		if run_loader_and_check_output "wkt dump test" "loadedshp" "${TEST}-wD.sql.expected" \
 			"${TEST}-w.select.expected" "-w -D"; then
+			:
+		else
+			return 1
+		fi
+		# If we have some expected files to compare with, run in wkt dump mode.
+		if run_loader_and_check_output "geog dump test" "loadedshp" "${TEST}-GD.sql.expected" \
+			"${TEST}-G.select.expected" "-G -D"; then
 			:
 		else
 			return 1
