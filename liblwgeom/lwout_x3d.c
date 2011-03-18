@@ -221,6 +221,38 @@ asx3d3_mline_coordindex(const LWMLINE *mgeom, char *output)
 	return (ptr-output);
 }
 
+/* Calculate the coordIndex property of the IndexedLineSet for a multipolygon 
+    This is not ideal -- would be really nice to just share this function with psurf, 
+    but I'm not smart enough to do that yet*/
+static size_t
+asx3d3_mpoly_coordindex(const LWMPOLY *psur, char *output)
+{
+	char *ptr=output;
+	LWPOLY *patch;
+	int i, j, k, si;
+	POINTARRAY *pa;
+	int np;
+	
+	ptr += sprintf(ptr, "");
+	j = 0;
+	for (i=0; i<psur->ngeoms; i++)
+	{
+		patch = (LWPOLY *) psur->geoms[i];
+		np = patch->rings[0]->npoints - 1;
+	    for(k=0; k < np ; k++){
+	        if (k) {
+	            ptr += sprintf(ptr, " ");    
+	        }
+	        ptr += sprintf(ptr, "%d", (j + k));
+	    }
+	    if (i < (psur->ngeoms - 1) ){
+	        ptr += sprintf(ptr, " -1 "); //separator for each subgeom
+	    }
+	    j += k;
+	}
+	return (ptr-output);
+}
+
 /* Return the linestring as an X3D LineSet */
 static char *
 asx3d3_line(const LWLINE *line, char *srs, int precision, int opts, const char *defid)
@@ -364,20 +396,14 @@ static size_t
 asx3d3_multi_buf(const LWCOLLECTION *col, char *srs, char *output, int precision, int opts, const char *defid)
 {
 	int type = col->type;
-	char *ptr, *x3dtype, *coordIndex;
+	char *ptr, *x3dtype;
 	int i;
-	//int numvertices;
 	LWGEOM *subgeom;
 	POINTARRAY *pa;
 
 	ptr = output;
 	x3dtype="";
-	coordIndex = lwalloc(1000);
 
-	for (i=0; i<col->ngeoms; i++){
-		/** TODO: This is wrong, but haven't quite figured out how to correct. Involves ring order and bunch of other stuff **/
-		coordIndex += sprintf(coordIndex, "-1 ");
-	}
 			
 	if 	(type == MULTIPOINTTYPE) {
 		x3dtype = "PointSet";
@@ -391,7 +417,9 @@ asx3d3_multi_buf(const LWCOLLECTION *col, char *srs, char *output, int precision
 	}
 	else if (type == MULTIPOLYGONTYPE) {
 		x3dtype = "IndexedFaceSet";
-		ptr += sprintf(ptr, "<%s %s coordIndex='%s'>", x3dtype, defid, coordIndex);
+		ptr += sprintf(ptr, "<%s %s coordIndex='", x3dtype, defid);
+		ptr += asx3d3_mpoly_coordindex(col,ptr);
+		ptr += sprintf(ptr, "'>");
 	}
 
 	ptr += sprintf(ptr, "<Coordinate point='");
