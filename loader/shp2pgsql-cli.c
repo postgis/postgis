@@ -65,7 +65,7 @@ main (int argc, char **argv)
 	SHPLOADERCONFIG *config;
 	SHPLOADERSTATE *state;
 	char *header, *footer, *record;
-	char c;
+	int c;
 	int ret, i;
 
 #ifdef USE_NLS
