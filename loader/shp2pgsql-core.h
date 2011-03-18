@@ -93,8 +93,8 @@ typedef struct shp_loader_config
 	/* schema to load into */
 	char *schema;
 
-	/* geometry column name to use */
-	char *geom; 
+	/* geometry/geography column name specified by the user, may be null. */
+	char *geo_col; 
 
 	/* the shape file (without the .shp extension) */
 	char *shp_file;
@@ -135,8 +135,11 @@ typedef struct shp_loader_config
 	/* SRID specified */
 	int sr_id;
 
-	/* 0 = new style (PostGIS 1.x) geometries, 1 = old style (PostGIS 0.9.x) geometries */
-	int hwgeom;
+	/* SRID of the shape file */
+	int shp_sr_id;
+
+	/* 0 = WKB (more precise), 1 = WKT (may have coordinate drift). */
+	int use_wkt;
 
 	/* whether to do a single transaction or run each statement on its own */
 	int usetransaction;
@@ -186,8 +189,10 @@ typedef struct shp_loader_state
 	/* String containing the PostGIS geometry type, e.g. POINT, POLYGON etc. */
 	char *pgtype;
 
-	/* PostGIS geometry type (numeric version) */
-	uint32 wkbtype;
+	/* Flag for whether the geometry has Z coordinates or not. */
+	int has_z;
+	/* Flag for whether the geometry has M coordinates or not. */
+	int has_m;
 
 	/* Number of dimensions to output */
 	int pgdims;
@@ -197,6 +202,16 @@ typedef struct shp_loader_state
 
 	/* Last (error) message */
 	char message[SHPLOADERMSGLEN];
+
+	/* SRID of the shape file.  If not reprojecting, will be the same as to_srid. */
+	int from_srid;
+
+	/* SRID of the table.  If not reprojecting, will be the same as from_srid. */
+	int to_srid;
+
+	/* geometry/geography column name to use.  Will be set to the default if the config did
+	   not specify a column name. */
+	char *geo_col; 
 
 } SHPLOADERSTATE;
 

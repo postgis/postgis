@@ -1735,6 +1735,19 @@ COMMIT;</programlisting>
     </varlistentry>
 
     <varlistentry>
+      <term>-r &lt;SRID&gt;</term>
+      <listitem>
+        <para>
+          Specifies that the input shapefile uses the given SRID.  If -s is not
+          specified, this SRID will be used to populate the geometry table. If
+          -s is specified, the geometries will be reprojected to the SRID given
+          in the -s parameter.  If -G is specified, but -s is not, the geometries
+          will be reprojected to 4326.  This parameter cannot be used with -D.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
       <term>-k</term>
       <listitem>
         <para>
@@ -1766,7 +1779,9 @@ COMMIT;</programlisting>
       <term>-S </term>
       <listitem>
         <para>
-          Generate simple geometries instead of MULTI geometries.
+          Generate simple geometries instead of MULTI geometries.  Will only succeed if
+          all the geometries are actually single (I.E. a MULTIPOLYGON with a single shell, or
+          or a MULTIPOINT with a single vertex).
         </para>
       </listitem>
     </varlistentry>
@@ -1775,8 +1790,20 @@ COMMIT;</programlisting>
       <term>-w</term>
       <listitem>
         <para>
-          Output WKT format, for use with older (0.x) versions of PostGIS. Note that this will
-          introduce coordinate drifts and will drop M values from shapefiles.
+          Output WKT format, instead of WKB.  Note that this can
+          introduce coordinate drifts due to loss of precision.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>-e</term>
+      <listitem>
+        <para>
+          Execute each statement on its own, without using a transaction.
+          This allows loading of the majority of good data when there are some bad
+          geometries that generate errors.  Note that this cannot be used with the
+          -D flag as the "dump" format always uses a transaction.
         </para>
       </listitem>
     </varlistentry>
@@ -1819,6 +1846,25 @@ COMMIT;</programlisting>
 		</para>
 	  </listitem>
 	</varlistentry>
+    <varlistentry>
+      <term>-T &lt;tablespace&gt;</term>
+      <listitem>
+        <para>
+          Specify the tablespace for the new table.  Indexes will still use the
+          default tablespace unless the -X parameter is also used.  The PostgreSQL
+          documentation has a good description on when to use custom tablespaces.
+        </para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term>-X &lt;tablespace&gt;</term>
+      <listitem>
+        <para>
+          Specify the tablespace for the new table's indexes.  This applies to
+          the primary key index, and the GIST spatial index if -I is also used.
+        </para>
+      </listitem>
+    </varlistentry>
   </variablelist>
 
   <para>

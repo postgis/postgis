@@ -41,6 +41,10 @@ TESTS = \
 	loader/TSIPolygon \
 	loader/TSTIPolygon \
 	loader/NoTransPoint \
+	loader/NotReallyMultiPoint \
+	loader/MultiToSinglePoint \
+	loader/ReprojectPts \
+	loader/ReprojectPtsGeog \
 	regress \
 	regress_index \
 	regress_index_nulls \

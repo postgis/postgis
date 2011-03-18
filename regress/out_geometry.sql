@@ -1,6 +1,7 @@
 --
 -- spatial_ref_sys data
 --
+DELETE FROM "spatial_ref_sys";
 INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","proj4text") VALUES (4326,'EPSG',4326,'+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ');
 
 --- EPSG 1021892 : Bogota 1975 / Colombia Bogota zone (deprecated)

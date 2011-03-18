@@ -718,8 +718,8 @@ pgui_set_config_from_options_ui()
 				                   current_node->tree_iterator,
 				                   GEOMETRY_COLUMN,
 				                   GEOGRAPHY_DEFAULT, -1);
-				free(config->geom);
-				config->geom = strdup(GEOGRAPHY_DEFAULT);
+				free(config->geo_col);
+				config->geo_col = strdup(GEOGRAPHY_DEFAULT);
 			}
 			current_node = get_next_node(current_node);
 		}
@@ -739,8 +739,8 @@ pgui_set_config_from_options_ui()
 				                   current_node->tree_iterator,
 				                   GEOMETRY_COLUMN,
 				                   GEOMETRY_DEFAULT, -1);
-				free(config->geom);
-				config->geom = strdup(GEOMETRY_DEFAULT);
+				free(config->geo_col);
+				config->geo_col = strdup(GEOMETRY_DEFAULT);
 			}
 			current_node = get_next_node(current_node);
 		}
@@ -814,9 +814,9 @@ pgui_set_config_from_ui(FILENODE *file_node)
 		config->schema = strdup(file_node->schema);
 
 	if (strlen(file_node->geom_column) == 0)
-		config->geom = strdup(GEOMETRY_DEFAULT);
+		config->geo_col = strdup(GEOMETRY_DEFAULT);
 	else
-		config->geom = strdup(file_node->geom_column);
+		config->geo_col = strdup(file_node->geom_column);
 
 	/* Set the destination filename: note the shp2pgsql core engine simply wants the file
 	   without the .shp extension */
@@ -1229,7 +1229,7 @@ pgui_validate_config()
 		return 0;
 	}
 
-	if ( ! config->geom || strlen(config->geom) == 0 )
+	if ( ! config->geo_col || strlen(config->geo_col) == 0 )
 	{
 		pgui_seterr(_("Fill in the destination column."));
 		return 0;
@@ -1746,7 +1746,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		}
 
 		pgui_logf("\n==============================");
-		pgui_logf("Importing with configuration: %s, %s, %s, %s, mode=%c, dump=%d, simple=%d, geography=%d, index=%d, shape=%d, srid=%d", config->table, config->schema, config->geom, config->shp_file, config->opt, config->dump_format, config->simple_geometries, config->geography, config->createindex, config->readshape, config->sr_id);
+		pgui_logf("Importing with configuration: %s, %s, %s, %s, mode=%c, dump=%d, simple=%d, geography=%d, index=%d, shape=%d, srid=%d", config->table, config->schema, config->geo_col, config->shp_file, config->opt, config->dump_format, config->simple_geometries, config->geography, config->createindex, config->readshape, config->sr_id);
 
 		/* Log what we know so far */
 		connection_sanitized = strdup(connection_string);

@@ -53,6 +53,10 @@ Use the PostgreSQL "dump" format for the output data. This can be combined
 with -a, -c and -d. It is much faster to load than the default "insert" SQL
 format. Use this for very large data sets.
 .TP 
+\fB\-w\fR
+Output WKT format, instead of WKB.  Note that this can
+introduce coordinate drifts due to loss of precision.
+.TP 
 \fB\-e\fR
 Execute each statement on its own, without using a transaction.
 This allows loading of the majority of good data when there are some bad
@@ -61,6 +65,17 @@ geometries that generate errors.  Note that this cannot be used with the
 .TP 
 \fB\-s\fR <\fISRID\fR>
 Creates and populates the geometry tables with the specified SRID.
+.TP 
+\fB\-r\fR <\fISRID\fR>
+Specifies that the input shapefile uses the given SRID.  If -s is not
+specified, this SRID will be used to populate the geometry table. If
+-s is specified, the geometries will be reprojected to the SRID given
+in the -s parameter.  If -G is specified, but -s is not, the geometries
+will be reprojected to 4326.  This parameter cannot be used with -D.
+.TP 
+\fB\-G\fR
+Use the geography type instead of geometry.  Geography is used to store
+lat/lon data.  At the moment the only spatial reference supported is 4326.
 .TP 
 \fB\-g\fR <\fIgeometry_column\fR>
 Specify the name of the geometry column (mostly useful in append mode).

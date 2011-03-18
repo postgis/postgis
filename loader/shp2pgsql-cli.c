@@ -22,8 +22,10 @@ usage()
 	printf(_( "RELEASE: %s (r%s)\n" ), POSTGIS_VERSION, RCSID);
 	printf(_( "USAGE: shp2pgsql [<options>] <shapefile> [<schema>.]<table>\n"
 	          "OPTIONS:\n" ));
-	printf(_( "  -s <srid>  Set the SRID field. Defaults to -1.\n"
-	          " (-d|a|c|p) These are mutually exclusive options:\n"
+	printf(_( "  -s <srid>  Set the SRID field. Defaults to %d.\n"
+	          "  -r <srid>  Specify the SRID to reproject from (if -s or -G is also used).\n"
+	          "      Cannot be used with -D.\n"), SRID_UNKNOWN);
+	printf(_( " (-d|a|c|p) These are mutually exclusive options:\n"
 	          "     -d  Drops the table, then recreates it and populates\n"
 	          "         it with current shape file data.\n"
 	          "     -a  Appends shape file into current table, must be\n"
@@ -36,11 +38,13 @@ usage()
 	printf(_( "  -D  Use postgresql dump format (defaults to SQL insert statments).\n" ));
 	printf(_( "  -e  Execute each statement individually, do not use a transaction.\n"
 	          "      Not compatible with -D.\n" ));
-	printf(_( "  -G  Use geography type (requires lon/lat data).\n" ));
+	printf(_( "  -G  Use geography type (requires lon/lat data or -r to reproject).\n" ));
 	printf(_( "  -k  Keep postgresql identifiers case.\n" ));
 	printf(_( "  -i  Use int4 type for all integer dbf fields.\n" ));
 	printf(_( "  -I  Create a spatial index on the geocolumn.\n" ));
 	printf(_( "  -S  Generate simple geometries instead of MULTI geometries.\n" ));
+	printf(_( "  -w  Output WKT instead of WKB.  Note that this can result in\n"
+	          "      coordinate drift.\n" ));
 	printf(_( "  -W <encoding> Specify the character encoding of Shape's\n"
 	          "      attribute column. (default: \"UTF-8\")\n" ));
 	printf(_( "  -N <policy> NULL geometries handling policy (insert*,skip,abort).\n" ));
@@ -82,7 +86,7 @@ main (int argc, char **argv)
 	set_config_defaults(config);
 
 	/* Keep the flag list alphabetic so it's easy to see what's left. */
-	while ((c = pgis_getopt(argc, argv, "acdeg:iknps:wDGIN:ST:W:X:")) != EOF)
+	while ((c = pgis_getopt(argc, argv, "acdeg:iknpr:s:wDGIN:ST:W:X:")) != EOF)
 	{
 		switch (c)
 		{
@@ -98,6 +102,11 @@ main (int argc, char **argv)
 			if (!config->usetransaction)
 			{
 				fprintf(stderr, "Cannot use both -D and -e.\n");
+				exit(1);
+			}
+			if (config->shp_sr_id != SRID_UNKNOWN)
+			{
+				fprintf(stderr, "Cannot use both -D and -r.\n");
 				exit(1);
 			}
 			break;
@@ -122,9 +131,26 @@ main (int argc, char **argv)
 				exit(0);
 			}
 			break;
+		case 'r':
+			if (config->dump_format)
+			{
+				fprintf(stderr, "Cannot use both -D and -r.\n");
+				exit(1);
+			}
+			if (pgis_optarg)
+			{
+				sscanf(pgis_optarg, "%d", &(config->shp_sr_id));
+			}
+			else
+			{
+				/* With -r, user must specify SRID */
+				usage();
+				exit(0);
+			}
+			break;
 
 		case 'g':
-			config->geom = pgis_optarg;
+			config->geo_col = pgis_optarg;
 			break;
 
 		case 'k':
@@ -140,7 +166,7 @@ main (int argc, char **argv)
 			break;
 
 		case 'w':
-			config->hwgeom = 1;
+			config->use_wkt = 1;
 			break;
 
 		case 'n':
@@ -262,14 +288,6 @@ main (int argc, char **argv)
 		if ( config->schema )
 			strtolower(config->schema);
 	}
-
-	/* Make the geocolumn name consistent with the load type (geometry or geography) */
-	if ( config->geography )
-	{
-		if (config->geom) free(config->geom);
-		config->geom = strdup(GEOGRAPHY_DEFAULT);
-	}
-
 
 	/* Create the shapefile state object */
 	state = ShpLoaderCreate(config);

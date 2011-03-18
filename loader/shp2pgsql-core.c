@@ -49,7 +49,7 @@ int utf8(const char *fromcode, char *inputbuf, char **outputbuf);
 char *escape_copy_string(char *str);
 char *escape_insert_string(char *str);
 
-int GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry);
+int GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry, int force_multi);
 int GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry);
 int PIP(Point P, Point *V, int n);
 int FindPolygons(SHPObject *obj, Ring ***Out);
@@ -243,33 +243,24 @@ escape_insert_string(char *str)
 
 /**
  * @brief Generate an allocated geometry string for shapefile object obj using the state parameters
+ * if "force_multi" is true, single points will instead be created as multipoints with a single vertice.
  */
 int
-GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
+GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry, int force_multi)
 {
 	LWGEOM **lwmultipoints;
 	LWGEOM *lwgeom = NULL;
 
 	POINT4D point4d;
 
-	int dims = 0, hasz = 0, hasm = 0;
+	int dims = 0;
 	int u;
 
 	char *mem;
 	size_t mem_length;
 
-
-	/* Determine the correct dimensions: note that in hwgeom-compatible mode we cannot use
-	   the M coordinate */
-	if (state->wkbtype & WKBZOFFSET)
-		hasz = 1;
-
-	if (!state->config->hwgeom)
-		if (state->wkbtype & WKBMOFFSET)
-			hasm = 1;
-
-	FLAGS_SET_Z(dims, hasz?1:0);
-	FLAGS_SET_M(dims, hasm?1:0);
+	FLAGS_SET_Z(dims, state->has_z);
+	FLAGS_SET_M(dims, state->has_m);
 
 	/* Allocate memory for our array of LWPOINTs and our dynptarrays */
 	lwmultipoints = malloc(sizeof(LWPOINT *) * obj->nVertices);
@@ -278,29 +269,29 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 	for (u = 0; u < obj->nVertices; u++)
 	{
 		/* Create a ptarray containing a single point */
-		POINTARRAY *pa = ptarray_construct_empty(hasz, hasm, 1);
+		POINTARRAY *pa = ptarray_construct_empty(state->has_z, state->has_m, 1);
 		
 		/* Generate the point */
 		point4d.x = obj->padfX[u];
 		point4d.y = obj->padfY[u];
 
-		if (state->wkbtype & WKBZOFFSET)
+		if (state->has_z)
 			point4d.z = obj->padfZ[u];
-		if (state->wkbtype & WKBMOFFSET)
+		if (state->has_m)
 			point4d.m = obj->padfM[u];
 
 		/* Add in the point! */
 		ptarray_append_point(pa, &point4d, REPEATED_POINTS_OK);
 
 		/* Generate the LWPOINT */
-		lwmultipoints[u] = lwpoint_as_lwgeom(lwpoint_construct(state->config->sr_id, NULL, pa));
+		lwmultipoints[u] = lwpoint_as_lwgeom(lwpoint_construct(state->from_srid, NULL, pa));
 	}
 
 	/* If we have more than 1 vertex then we are working on a MULTIPOINT and so generate a MULTIPOINT
 	rather than a POINT */
-	if (obj->nVertices > 1)
+	if ((obj->nVertices > 1) || force_multi)
 	{
-		lwgeom = lwcollection_as_lwgeom(lwcollection_construct(MULTIPOINTTYPE, state->config->sr_id, NULL, obj->nVertices, lwmultipoints));
+		lwgeom = lwcollection_as_lwgeom(lwcollection_construct(MULTIPOINTTYPE, state->from_srid, NULL, obj->nVertices, lwmultipoints));
 	}
 	else
 	{
@@ -308,14 +299,12 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 		lwfree(lwmultipoints);
 	}
 
-	if (state->config->hwgeom)
+	if (state->config->use_wkt)
 	{
-		/* Old style "heavy" geometries (PostGIS < 1.0) */
 		mem = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, 12, &mem_length);
 	}
 	else
 	{
-		/* New "lightweight" geometries (PostGIS >= 1.0) */
 		mem = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, &mem_length);
 	}
 
@@ -345,23 +334,14 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 	LWGEOM **lwmultilinestrings;
 	LWGEOM *lwgeom = NULL;
 	POINT4D point4d;
-	int dims = 0, hasz = 0, hasm = 0;
+	int dims = 0;
 	int u, v, start_vertex, end_vertex;
 	char *mem;
 	size_t mem_length;
 
 
-	/* Determine the correct dimensions: note that in hwgeom-compatible mode we cannot use
-	   the M coordinate */
-	if (state->wkbtype & WKBZOFFSET)
-		hasz = 1;
-
-	if (!state->config->hwgeom)
-		if (state->wkbtype & WKBMOFFSET)
-			hasm = 1;
-
-	FLAGS_SET_Z(dims, hasz?1:0);
-	FLAGS_SET_M(dims, hasm?1:0);
+	FLAGS_SET_Z(dims, state->has_z);
+	FLAGS_SET_M(dims, state->has_m);
 
 	if (state->config->simple_geometries == 1 && obj->nParts > 1)
 	{
@@ -377,7 +357,7 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 	for (u = 0; u < obj->nParts; u++)
 	{
 		/* Create a ptarray containing the line points */
-		POINTARRAY *pa = ptarray_construct_empty(hasz, hasm, obj->nParts);
+		POINTARRAY *pa = ptarray_construct_empty(state->has_z, state->has_m, obj->nParts);
 
 		/* Set the start/end vertices depending upon whether this is
 		a MULTILINESTRING or not */
@@ -394,22 +374,22 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 			point4d.x = obj->padfX[v];
 			point4d.y = obj->padfY[v];
 
-			if (state->wkbtype & WKBZOFFSET)
+			if (state->has_z)
 				point4d.z = obj->padfZ[v];
-			if (state->wkbtype & WKBMOFFSET)
+			if (state->has_m)
 				point4d.m = obj->padfM[v];
 
 			ptarray_append_point(pa, &point4d, REPEATED_POINTS_NOT_OK);
 		}
 
 		/* Generate the LWLINE */
-		lwmultilinestrings[u] = lwline_as_lwgeom(lwline_construct(state->config->sr_id, NULL, pa));
+		lwmultilinestrings[u] = lwline_as_lwgeom(lwline_construct(state->from_srid, NULL, pa));
 	}
 
 	/* If using MULTILINESTRINGs then generate the serialized collection, otherwise just a single LINESTRING */
 	if (state->config->simple_geometries == 0)
 	{
-		lwgeom = lwcollection_as_lwgeom(lwcollection_construct(MULTILINETYPE, state->config->sr_id, NULL, obj->nParts, lwmultilinestrings));
+		lwgeom = lwcollection_as_lwgeom(lwcollection_construct(MULTILINETYPE, state->from_srid, NULL, obj->nParts, lwmultilinestrings));
 	}
 	else
 	{
@@ -417,7 +397,7 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 		lwfree(lwmultilinestrings);
 	}
 
-	if (!state->config->hwgeom)
+	if (!state->config->use_wkt)
 		mem = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, &mem_length);
 	else
 		mem = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, 12, &mem_length);
@@ -647,22 +627,13 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 
 	POINT4D point4d;
 
-	int dims = 0, hasz = 0, hasm = 0;
+	int dims = 0;
 
 	char *mem;
 	size_t mem_length;
 
-	/* Determine the correct dimensions: note that in hwgeom-compatible mode we cannot use
-	   the M coordinate */
-	if (state->wkbtype & WKBZOFFSET)
-		hasz = 1;
-
-	if (!state->config->hwgeom)
-		if (state->wkbtype & WKBMOFFSET)
-			hasm = 1;
-
-	FLAGS_SET_Z(dims, hasz?1:0);
-	FLAGS_SET_M(dims, hasm?1:0);
+	FLAGS_SET_Z(dims, state->has_z);
+	FLAGS_SET_M(dims, state->has_m);
 
 	polygon_total = FindPolygons(obj, &Outer);
 
@@ -679,7 +650,7 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 	/* Cycle through each individual polygon */
 	for (pi = 0; pi < polygon_total; pi++)
 	{
-		LWPOLY *lwpoly = lwpoly_construct_empty(state->config->sr_id, hasz, hasm);
+		LWPOLY *lwpoly = lwpoly_construct_empty(state->from_srid, state->has_z, state->has_m);
 		
 		Ring *polyring;
 		int ring_index = 0;
@@ -699,7 +670,7 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 		while (polyring)
 		{
 			/* Create a POINTARRAY containing the points making up the ring */
-			POINTARRAY *pa = ptarray_construct_empty(hasz, hasm, polyring->n);
+			POINTARRAY *pa = ptarray_construct_empty(state->has_z, state->has_m, polyring->n);
 
 			for (vi = 0; vi < polyring->n; vi++)
 			{
@@ -707,9 +678,9 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 				point4d.x = polyring->list[vi].x;
 				point4d.y = polyring->list[vi].y;
 
-				if (state->wkbtype & WKBZOFFSET)
+				if (state->has_z)
 					point4d.z = polyring->list[vi].z;
-				if (state->wkbtype & WKBMOFFSET)
+				if (state->has_m)
 					point4d.m = polyring->list[vi].m;
 
 				ptarray_append_point(pa, &point4d, REPEATED_POINTS_OK);
@@ -729,7 +700,7 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 	/* If using MULTIPOLYGONS then generate the serialized collection, otherwise just a single POLYGON */
 	if (state->config->simple_geometries == 0)
 	{
-		lwgeom = lwcollection_as_lwgeom(lwcollection_construct(MULTIPOLYGONTYPE, state->config->sr_id, NULL, polygon_total, lwpolygons));
+		lwgeom = lwcollection_as_lwgeom(lwcollection_construct(MULTIPOLYGONTYPE, state->from_srid, NULL, polygon_total, lwpolygons));
 	}
 	else
 	{
@@ -737,7 +708,7 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 		lwfree(lwpolygons);
 	}
 
-	if (!state->config->hwgeom)
+	if (!state->config->use_wkt)
 		mem = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, &mem_length);
 	else
 		mem = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, 12, &mem_length);
@@ -784,7 +755,7 @@ set_config_defaults(SHPLOADERCONFIG *config)
 	config->opt = 'c';
 	config->table = NULL;
 	config->schema = NULL;
-	config->geom = strdup(GEOMETRY_DEFAULT);
+	config->geo_col = NULL;
 	config->shp_file = NULL;
 	config->dump_format = 0;
 	config->simple_geometries = 0;
@@ -795,8 +766,9 @@ set_config_defaults(SHPLOADERCONFIG *config)
 	config->readshape = 1;
 	config->encoding = strdup(ENCODING_DEFAULT);
 	config->null_policy = POLICY_NULL_INSERT;
-	config->sr_id = -1;
-	config->hwgeom = 0;
+	config->sr_id = SRID_UNKNOWN;
+	config->shp_sr_id = SRID_UNKNOWN;
+	config->use_wkt = 0;
 	config->tablespace = NULL;
 	config->idxtablespace = NULL;
 	config->usetransaction = 1;
@@ -815,11 +787,38 @@ ShpLoaderCreate(SHPLOADERCONFIG *config)
 	/* Set any state defaults */
 	state->hSHPHandle = NULL;
 	state->hDBFHandle = NULL;
-	state->wkbtype = 0;
+	state->has_z = 0;
+	state->has_m = 0;
 	state->types = NULL;
 	state->widths = NULL;
 	state->precisions = NULL;
 	state->col_names = NULL;
+
+	state->from_srid = config->shp_sr_id;
+	state->to_srid = config->sr_id;
+	/* If only one has a valid SRID, use it for both. */
+	if (state->to_srid == SRID_UNKNOWN)
+	{
+		if (config->geography)
+		{
+			state->to_srid = 4326;
+		}
+		else
+		{
+			state->to_srid = state->from_srid;
+		}
+	}
+	if (state->from_srid == SRID_UNKNOWN)
+	{
+		state->from_srid = state->to_srid;
+	}
+
+	/* If the geo col name is not set, use one of the defaults. */
+	state->geo_col = config->geo_col;
+	if (!state->geo_col)
+	{
+		state->geo_col = strdup(config->geography ? GEOGRAPHY_DEFAULT : GEOMETRY_DEFAULT);
+	}
 
 	return state;
 }
@@ -892,155 +891,114 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		}
 
 		/* Check the shapefile type */
+		int geomtype = 0;
 		switch (state->shpfiletype)
 		{
 		case SHPT_POINT:
 			/* Point */
 			state->pgtype = "POINT";
-			state->wkbtype = POINTTYPE;
+			geomtype = POINTTYPE;
 			state->pgdims = 2;
 			break;
 
 		case SHPT_ARC:
 			/* PolyLine */
 			state->pgtype = "MULTILINESTRING";
-			state->wkbtype = MULTILINETYPE ;
+			geomtype = MULTILINETYPE ;
 			state->pgdims = 2;
 			break;
 
 		case SHPT_POLYGON:
 			/* Polygon */
 			state->pgtype = "MULTIPOLYGON";
-			state->wkbtype = MULTIPOLYGONTYPE;
+			geomtype = MULTIPOLYGONTYPE;
 			state->pgdims = 2;
 			break;
 
 		case SHPT_MULTIPOINT:
 			/* MultiPoint */
 			state->pgtype = "MULTIPOINT";
-			state->wkbtype = MULTIPOINTTYPE;
+			geomtype = MULTIPOINTTYPE;
 			state->pgdims = 2;
 			break;
 
 		case SHPT_POINTM:
 			/* PointM */
-			state->wkbtype = POINTTYPE | WKBMOFFSET;
-
-			if (!state->config->hwgeom)
-			{
-				state->pgtype = "POINTM";
-				state->pgdims = 3;
-				state->istypeM = 1;
-			}
-			else
-			{
-				state->pgtype = "POINT";
-				state->pgdims = 2;
-			}
+			geomtype = POINTTYPE;
+			state->has_m = 1;
+			state->pgtype = "POINTM";
+			state->pgdims = 3;
+			state->istypeM = 1;
 			break;
 
 		case SHPT_ARCM:
 			/* PolyLineM */
-			state->wkbtype = MULTILINETYPE | WKBMOFFSET;
-
-			if (!state->config->hwgeom)
-			{
-				state->pgtype = "MULTILINESTRINGM";
-				state->pgdims = 3;
-				state->istypeM = 1;
-			}
-			else
-			{
-				state->pgtype = "MULTILINESTRING";
-				state->pgdims = 2;
-			}
+			geomtype = MULTILINETYPE;
+			state->has_m = 1;
+			state->pgtype = "MULTILINESTRINGM";
+			state->pgdims = 3;
+			state->istypeM = 1;
 			break;
 
 		case SHPT_POLYGONM:
 			/* PolygonM */
-			state->wkbtype = MULTIPOLYGONTYPE | WKBMOFFSET;
-
-			if (!state->config->hwgeom)
-			{
-				state->pgtype = "MULTIPOLYGONM";
-				state->pgdims = 3;
-				state->istypeM = 1;
-			}
-			else
-			{
-				state->pgtype = "MULTIPOLYGON";
-				state->pgdims = 2;
-			}
+			geomtype = MULTIPOLYGONTYPE;
+			state->has_m = 1;
+			state->pgtype = "MULTIPOLYGONM";
+			state->pgdims = 3;
+			state->istypeM = 1;
 			break;
 
 		case SHPT_MULTIPOINTM:
 			/* MultiPointM */
-			state->wkbtype = MULTIPOINTTYPE | WKBMOFFSET;
-
-			if (!state->config->hwgeom)
-			{
-				state->pgtype = "MULTIPOINTM";
-				state->pgdims = 3;
-				state->istypeM = 1;
-			}
-			else
-			{
-				state->pgtype = "MULTIPOINT";
-				state->pgdims = 2;
-			}
+			geomtype = MULTIPOINTTYPE;
+			state->has_m = 1;
+			state->pgtype = "MULTIPOINTM";
+			state->pgdims = 3;
+			state->istypeM = 1;
 			break;
 
 		case SHPT_POINTZ:
 			/* PointZ */
-			state->wkbtype = POINTTYPE | WKBMOFFSET | WKBZOFFSET;
+			geomtype = POINTTYPE;
+			state->has_m = 1;
+			state->has_z = 1;
 			state->pgtype = "POINT";
-
-			if (!state->config->hwgeom)
-				state->pgdims = 4;
-			else
-				state->pgdims = 3;
-
+			state->pgdims = 4;
 			break;
 
 		case SHPT_ARCZ:
 			/* PolyLineZ */
 			state->pgtype = "MULTILINESTRING";
-			state->wkbtype = MULTILINETYPE | WKBZOFFSET | WKBMOFFSET;
-
-			if (!state->config->hwgeom)
-				state->pgdims = 4;
-			else
-				state->pgdims = 3;
-
+			geomtype = MULTILINETYPE;
+			state->has_z = 1;
+			state->has_m = 1;
+			state->pgdims = 4;
 			break;
 
 		case SHPT_POLYGONZ:
 			/* MultiPolygonZ */
 			state->pgtype = "MULTIPOLYGON";
-			state->wkbtype = MULTIPOLYGONTYPE | WKBZOFFSET | WKBMOFFSET;
-
-			if (!state->config->hwgeom)
-				state->pgdims = 4;
-			else
-				state->pgdims = 3;
-
+			geomtype = MULTIPOLYGONTYPE;
+			state->has_z = 1;
+			state->has_m = 1;
+			state->pgdims = 4;
 			break;
 
 		case SHPT_MULTIPOINTZ:
 			/* MultiPointZ */
 			state->pgtype = "MULTIPOINT";
-			state->wkbtype = MULTIPOINTTYPE | WKBZOFFSET | WKBMOFFSET;
-
-			if (!state->config->hwgeom)
-				state->pgdims = 4;
-			else
-				state->pgdims = 3;
-
+			geomtype = MULTIPOINTTYPE;
+			state->has_z = 1;
+			state->has_m = 1;
+			state->pgdims = 4;
 			break;
 
 		default:
 			state->pgtype = "GEOMETRY";
-			state->wkbtype = COLLECTIONTYPE | WKBZOFFSET | WKBMOFFSET;
+			geomtype = COLLECTIONTYPE;
+			state->has_z = 1;
+			state->has_m = 1;
 			state->pgdims = 4;
 
 			snprintf(state->message, SHPLOADERMSGLEN, _("Unknown geometry type: %d\n"), state->shpfiletype);
@@ -1052,11 +1010,11 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		/* If in simple geometry mode, alter names for CREATE TABLE by skipping MULTI */
 		if (state->config->simple_geometries)
 		{
-			if ((state->wkbtype & 0x7) == MULTIPOLYGONTYPE)
+			if ((geomtype == MULTIPOLYGONTYPE) || (geomtype == MULTILINETYPE) || (geomtype == MULTIPOINTTYPE))
+			{
+				/* Chop off the "MULTI" from the string. */
 				state->pgtype += 5;
-
-			if ((state->wkbtype & 0x7) == MULTILINETYPE)
-				state->pgtype += 5;
+			}
 		}
 
 	}
@@ -1172,7 +1130,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 
 	/* Append the geometry column if required */
 	if (state->config->readshape == 1)
-		strcat(state->col_names, state->config->geom);
+		strcat(state->col_names, state->geo_col);
 
 	strcat(state->col_names, ")");
 
@@ -1222,7 +1180,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 			if (state->config->readshape == 1 && (! state->config->geography) )
 			{
 				stringbuffer_aprintf(sb, "SELECT DropGeometryColumn('%s','%s','%s');\n",
-				                     state->config->schema, state->config->table, state->config->geom);
+				                     state->config->schema, state->config->table, state->geo_col);
 			}
 
 			stringbuffer_aprintf(sb, "DROP TABLE \"%s\".\"%s\";\n", state->config->schema,
@@ -1233,7 +1191,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 			if (state->config->readshape == 1  && (! state->config->geography) )
 			{
 				stringbuffer_aprintf(sb, "SELECT DropGeometryColumn('','%s','%s');\n",
-				                     state->config->table, state->config->geom);
+				                     state->config->table, state->geo_col);
 			}
 
 			stringbuffer_aprintf(sb, "DROP TABLE \"%s\";\n", state->config->table);
@@ -1331,13 +1289,13 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 				dimschar = "ZM";
 			else
 				dimschar = "";
-			if (state->config->sr_id != SRID_UNKNOWN && state->config->sr_id != 4326)
+			if (state->to_srid != SRID_UNKNOWN && state->to_srid != 4326)
 			{
-				snprintf(state->message, SHPLOADERMSGLEN, _("Invalid SRID for geography type: %x"), state->config->sr_id);
+				snprintf(state->message, SHPLOADERMSGLEN, _("Invalid SRID for geography type: %x"), state->to_srid);
 				stringbuffer_destroy(sb);
 				return SHPLOADERERR;
 			}
-			stringbuffer_aprintf(sb, ",\n\"%s\" geography(%s%s,%d)", state->config->geom, state->pgtype, dimschar, 4326);
+			stringbuffer_aprintf(sb, ",\n\"%s\" geography(%s%s,%d)", state->geo_col, state->pgtype, dimschar, 4326);
 		}
 
 		stringbuffer_aprintf(sb, ")");
@@ -1385,15 +1343,17 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		/* Create the geometry column with an addgeometry call */
 		if (state->config->readshape == 1 && (!state->config->geography))
 		{
+			/* If they didn't specify a target SRID, see if they specified a source SRID. */
+			int srid = state->to_srid;
 			if (state->config->schema)
 			{
 				stringbuffer_aprintf(sb, "SELECT AddGeometryColumn('%s','%s','%s','%d',",
-				                     state->config->schema, state->config->table, state->config->geom, state->config->sr_id);
+				                     state->config->schema, state->config->table, state->geo_col, srid);
 			}
 			else
 			{
 				stringbuffer_aprintf(sb, "SELECT AddGeometryColumn('','%s','%s','%d',",
-				                     state->config->table, state->config->geom, state->config->sr_id);
+				                     state->config->table, state->geo_col, srid);
 			}
 
 			stringbuffer_aprintf(sb, "'%s',%d);\n", state->pgtype, state->pgdims);
@@ -1649,53 +1609,40 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 			case SHPT_POLYGONM:
 			case SHPT_POLYGONZ:
 				res = GeneratePolygonGeometry(state, obj, &geometry);
-				if (res != SHPLOADEROK)
-				{
-					/* Error message has already been set */
-					SHPDestroyObject(obj);
-					stringbuffer_destroy(sbwarn);
-					stringbuffer_destroy(sb);
-
-					return SHPLOADERERR;
-				}
 				break;
 
 			case SHPT_POINT:
 			case SHPT_POINTM:
 			case SHPT_POINTZ:
+				res = GeneratePointGeometry(state, obj, &geometry, 0);
+				break;
+
 			case SHPT_MULTIPOINT:
 			case SHPT_MULTIPOINTM:
 			case SHPT_MULTIPOINTZ:
-				res = GeneratePointGeometry(state, obj, &geometry);
-				if (res != SHPLOADEROK)
-				{
-					/* Error message has already been set */
-					SHPDestroyObject(obj);
-					stringbuffer_destroy(sbwarn);
-					stringbuffer_destroy(sb);
-
-					return SHPLOADERERR;
-				}
+				/* Force it to multi unless using -S */
+				res = GeneratePointGeometry(state, obj, &geometry,
+					state->config->simple_geometries ? 0 : 1);
 				break;
 
 			case SHPT_ARC:
 			case SHPT_ARCM:
 			case SHPT_ARCZ:
 				res = GenerateLineStringGeometry(state, obj, &geometry);
-				if (res != SHPLOADEROK)
-				{
-					/* Error message has already been set */
-					SHPDestroyObject(obj);
-					stringbuffer_destroy(sbwarn);
-					stringbuffer_destroy(sb);
-
-					return SHPLOADERERR;
-				}
 				break;
 
 			default:
 				snprintf(state->message, SHPLOADERMSGLEN, _("Shape type is not supported, type id = %d"), obj->nSHPType);
+				SHPDestroyObject(obj);
+				stringbuffer_destroy(sbwarn);
+				stringbuffer_destroy(sb);
 
+				return SHPLOADERERR;
+			}
+			/* The default returns out of the function, so res will always have been set. */
+			if (res != SHPLOADEROK)
+			{
+				/* Error message has already been set */
 				SHPDestroyObject(obj);
 				stringbuffer_destroy(sbwarn);
 				stringbuffer_destroy(sb);
@@ -1703,43 +1650,27 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 				return SHPLOADERERR;
 			}
 
-
 			/* Now generate the geometry string according to the current configuration */
-			if (state->config->hwgeom)
+			if (!state->config->dump_format)
 			{
-				/* Old-style hwgeom (WKT) */
-				if (!state->config->dump_format)
-					stringbuffer_aprintf(sb, "GeomFromText('");
-				else
+				if (state->to_srid != state->from_srid)
 				{
-					/* Output SRID if relevant */
-					if (state->config->sr_id != 0)
-						stringbuffer_aprintf(sb, "SRID=%d;", state->config->sr_id);
+					stringbuffer_aprintf(sb, "ST_Transform(");
 				}
-
-				stringbuffer_aprintf(sb, "%s", geometry);
-
-				if (!state->config->dump_format)
-				{
-					stringbuffer_aprintf(sb, "'");
-
-					/* Output SRID if relevant */
-					if (state->config->sr_id != 0)
-						stringbuffer_aprintf(sb, ", %d)", state->config->sr_id);
-					else
-						stringbuffer_aprintf(sb, ")");
-				}
+				stringbuffer_aprintf(sb, "'");
 			}
-			else
+
+			stringbuffer_aprintf(sb, "%s", geometry);
+
+			if (!state->config->dump_format)
 			{
-				/* New style lwgeom (HEXEWKB) */
-				if (!state->config->dump_format)
-					stringbuffer_aprintf(sb, "'");
+				stringbuffer_aprintf(sb, "'");
 
-				stringbuffer_aprintf(sb, "%s", geometry);
-
-				if (!state->config->dump_format)
-					stringbuffer_aprintf(sb, "'");
+				/* Close the ST_Transform if reprojecting. */
+				if (state->to_srid != state->from_srid)
+				{
+					stringbuffer_aprintf(sb, ", %d)", state->to_srid);
+				}
 			}
 
 			free(geometry);
@@ -1800,13 +1731,13 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 	/* Create gist index if specified and not in "prepare" mode */
 	if (state->config->createindex)
 	{
-		stringbuffer_aprintf(sb, "CREATE INDEX \"%s_%s_gist\" ON ", state->config->table, state->config->geom);
+		stringbuffer_aprintf(sb, "CREATE INDEX \"%s_%s_gist\" ON ", state->config->table, state->geo_col);
 		/* Schema is optional, include if present. */
 		if (state->config->schema)
 		{
 			stringbuffer_aprintf(sb, "\"%s\".",state->config->schema);
 		}
-		stringbuffer_aprintf(sb, "\"%s\" USING GIST (\"%s\" %s)", state->config->table, state->config->geom, ops);
+		stringbuffer_aprintf(sb, "\"%s\" USING GIST (\"%s\" %s)", state->config->table, state->geo_col, ops);
 		/* Tablespace is also optional. */
 		if (state->config->idxtablespace != NULL)
 		{
