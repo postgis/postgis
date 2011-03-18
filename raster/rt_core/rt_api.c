@@ -2948,7 +2948,7 @@ rt_raster_wkb_size(rt_context ctx, rt_raster raster) {
 
 uint8_t *
 rt_raster_to_wkb(rt_context ctx, rt_raster raster, uint32_t *wkbsize) {
-#if POSTGIS_DEBUG_LEVEL > 2
+#if POSTGIS_DEBUG_LEVEL > 0
     const uint8_t *wkbend = NULL;
 #endif
     uint8_t *wkb = NULL;
@@ -3562,7 +3562,7 @@ rt_raster_deserialize(rt_context ctx, void* serialized) {
         }
 
         /* Skip bytes of padding up to 8-bytes boundary */
-#if POSTGIS_DEBUG_LEVEL > 2
+#if POSTGIS_DEBUG_LEVEL > 0
         const uint8_t *padbeg = ptr;
 #endif
         while (0 != ((ptr - beg) % 8))
