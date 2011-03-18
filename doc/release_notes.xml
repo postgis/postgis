@@ -36,12 +36,14 @@
           <para>ST_SharedPaths (Sandro Santilli / Faunalia for RT-SIGTA)</para>
           <para>ST_Snap (Sandro Santilli)</para>
           <para>ST_RelateMatch (Sandro Santilli / Faunalia for RT-SIGTA)</para>
-          <para>ST_ConcaveHull (Regina Obe and Leo Hsu)</para>
-            <para>ST_UnaryUnion (Sandro Santilli / Faunalia for RT-SIGTA)</para>
+          <para>ST_ConcaveHull (Regina Obe and Leo Hsu / Paragon Corporation)</para>
+          <para>ST_UnaryUnion (Sandro Santilli / Faunalia for RT-SIGTA)</para>
+           <para>ST_AsX3D (Regina Obe / Arrival 3D)</para>
         </simplesect>
         <simplesect>
         	<title>Enhancements</title>
         	<para>Made shape file loader tolerant of truncated multibyte values found in some free worldwide shapefiles (Sandro Santilli)</para>
+        	<para>Bug Fixes, Enhancements and addition of more regression tests for shp2pgsql (Jeff Adams / Azavea)</para>
         	<para>Shp-pgsql GUI loader - support loading multiple files at a time.  (Mark Leslie)</para>  
         	<para>Extras - revised tiger_geocoder to work with TIGER census 2010 data and addition of reverse geocoder function. (Regina Obe, Leo Hsu)</para>  
         </simplesect>

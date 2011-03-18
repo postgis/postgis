@@ -41,11 +41,14 @@ YYYY/MM/DD
   - ST_ConcaveHull (Regina Obe and Leo Hsu)
   - ST_UnaryUnion (Sandro Santilli)
   - ST_Relate with boundary node rule (Sandro Santilli / Faunalia for RT-SIGTA)
+  - ST_AsX3D (Regina Obe / Arrival 3D)
 
  * Enhancements *
 
   - Made loader tolerant of truncated multibyte values found
     in some free worldwide shapefiles (Sandro Santilli)
+  - Lots of bug fixes and enhancements to shp2pgsql
+    Beefing up regression tests for loaders (Jeff Adams - Azavea)
   - Shp-pgsql GUI loader - support loading multiple 
     files at a time. (Mark Leslie)  
   - Extras - revised tiger_geocoder to work with 
