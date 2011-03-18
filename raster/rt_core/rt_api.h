@@ -30,43 +30,43 @@
 #define RT_API_H_INCLUDED
 
 /* define the systems */
-#if defined(__linux__)	/* (predefined) */
+#if defined(__linux__)  /* (predefined) */
 #if !defined(LINUX)
-#define	LINUX
+#define LINUX
 #endif
 #if !defined(UNIX)
-#define	UNIX		/* make sure this is defined */
+#define UNIX        /* make sure this is defined */
 #endif
 #endif
 
 
-#if defined(__FreeBSD__) || defined(__OpenBSD__)	/* seems to work like Linux... */
+#if defined(__FreeBSD__) || defined(__OpenBSD__)    /* seems to work like Linux... */
 #if !defined(LINUX)
-#define	LINUX
+#define LINUX
 #endif
 #if !defined(UNIX)
-#define	UNIX		/* make sure this is defined */
+#define UNIX        /* make sure this is defined */
 #endif
 #endif
 
 #if defined(__MSDOS__)
 #if !defined(MSDOS)
-#define	MSDOS		/* make sure this is defined */
+#define MSDOS       /* make sure this is defined */
 #endif
 #endif
 
 #if defined(__WIN32__) || defined(__NT__) || defined(_WIN32)
 #if !defined(WIN32)
-#define	WIN32
+#define WIN32
 #endif
 #if defined(__BORLANDC__) && defined(MSDOS) /* Borland always defines MSDOS */
-#undef	MSDOS
+#undef  MSDOS
 #endif
 #endif
 
 #if defined(__APPLE__)
 #if !defined(UNIX)
-#define	UNIX
+#define UNIX
 #endif
 #endif
 
@@ -75,10 +75,10 @@
 /* does. */
 #if defined(UNIX)
 #if !defined(HAVE_STRICMP)
-#define	stricmp 	strcasecmp
+#define stricmp     strcasecmp
 #endif
 #if !defined(HAVE_STRNICMP)
-#define	strnicmp	strncasecmp
+#define strnicmp    strncasecmp
 #endif
 #endif
 
@@ -112,7 +112,7 @@ typedef void  (*rt_message_handler)(const char* string, ...);
 
 /* Debugging macros */
 #if POSTGIS_DEBUG_LEVEL > 0
- 
+
 /* Display a simple message at NOTICE level */
 #define RASTER_DEBUG(level, msg) \
     do { \
@@ -126,20 +126,20 @@ typedef void  (*rt_message_handler)(const char* string, ...);
         if (POSTGIS_DEBUG_LEVEL >= level) \
         ctx->warn("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__, __VA_ARGS__); \
     } while (0);
- 
+
 #else
 
 /* Empty prototype that can be optimised away by the compiler for non-debug builds */
 #define RASTER_DEBUG(level, msg) \
     ((void) 0)
- 
+
 /* Empty prototype that can be optimised away by the compiler for non-debug builds */
 #define RASTER_DEBUGF(level, msg, ...) \
     ((void) 0)
 
 #endif
 
-
+/*- memory context -------------------------------------------------------*/
 
 /* Initialize a context object
  * @param allocator memory allocator to use, 0 to use malloc
@@ -205,7 +205,7 @@ rt_pixtype rt_pixtype_index_from_name(rt_context ctx, const char* pixname);
  * @param width     : number of pixel columns
  * @param height    : number of pixel rows
  * @param pixtype   : pixel type for the band
- * @param hasnodata : indicates if the band has nodata value 
+ * @param hasnodata : indicates if the band has nodata value
  * @param nodataval : the nodata value, will be appropriately
  *                    truncated to fit the pixtype size.
  * @param data      : pointer to actual band data, required to
@@ -390,6 +390,15 @@ double rt_band_get_min_value(rt_context ctx, rt_band band);
  */
 int rt_band_is_nodata(rt_context ctx, rt_band band);
 
+/**
+ * Returns TRUE if the band is only nodata values
+ * @param ctx: context, for thread safety
+ * @param band: the band to get info from
+ * @return TRUE if the band is only nodata values, FALSE otherwise
+ */
+int rt_band_check_is_nodata(rt_context ctx, rt_band band);
+
+
 
 /*- rt_raster --------------------------------------------------------*/
 
@@ -509,7 +518,7 @@ int32_t rt_raster_add_band(rt_context ctx, rt_raster raster, rt_band band, int i
  *
  * @return identifier (position) for the just-added raster, or -1 on error
  */
-int32_t rt_raster_generate_new_band(rt_context ctx, rt_raster raster, rt_pixtype pixtype, 
+int32_t rt_raster_generate_new_band(rt_context ctx, rt_raster raster, rt_pixtype pixtype,
         double initialvalue, uint32_t hasnodata, double nodatavalue, int index);
 
 /**
@@ -658,13 +667,13 @@ LWPOLY* rt_raster_get_convex_hull(rt_context ctx, rt_raster raster);
 
 
 /**
- * Returns a set of "geomval" value, one for each group of pixel 
+ * Returns a set of "geomval" value, one for each group of pixel
  * sharing the same value for the provided band.
  *
- * A "geomval " value is a complex type composed of a the wkt 
- * representation of a geometry (one for each group of pixel sharing 
+ * A "geomval " value is a complex type composed of a the wkt
+ * representation of a geometry (one for each group of pixel sharing
  * the same value) and the value associated with this geometry.
- * 
+ *
  * @param ctx: context for thread safety.
  * @param raster: the raster to get info from.
  * @param nband: the band to polygonize. From 1 to rt_raster_get_num_bands
@@ -678,7 +687,7 @@ rt_geomval
 rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
         int * pnElements);
 
-    
+
 /**
  * Return this raster in serialized form.
  *
@@ -728,5 +737,52 @@ int rt_raster_has_no_band(rt_context ctx, rt_raster raster, int nband);
 int32_t rt_raster_copy_band(rt_context ctx, rt_raster raster1,
         rt_raster raster2, int nband1, int nband2);
 
-#endif /* RT_API_H_INCLUDED */
+/*- utilities -------------------------------------------------------*/
 
+/* Set of functions to clamp double to int of different size
+ */
+
+#define POSTGIS_RT_1BBMAX 1
+#define POSTGIS_RT_2BUIMAX 3
+#define POSTGIS_RT_4BUIMAX 15
+
+uint8_t
+rt_util_clamp_to_1BB(double value);
+
+uint8_t
+rt_util_clamp_to_2BUI(double value);
+
+uint8_t
+rt_util_clamp_to_4BUI(double value);
+
+int8_t
+rt_util_clamp_to_8BSI(double value);
+
+uint8_t
+rt_util_clamp_to_8BUI(double value);
+
+int16_t
+rt_util_clamp_to_16BSI(double value);
+
+uint16_t
+rt_util_clamp_to_16BUI(double value);
+
+int32_t
+rt_util_clamp_to_32BSI(double value);
+
+uint32_t
+rt_util_clamp_to_32BUI(double value);
+
+float
+rt_util_clamp_to_32F(double value);
+
+int
+rt_util_display_dbl_trunc_warning(rt_context ctx,
+                                  double initialvalue,
+                                  int32_t checkvalint,
+                                  uint32_t checkvaluint,
+                                  float checkvalfloat,
+                                  double checkvaldouble,
+                                  rt_pixtype pixtype);
+
+#endif /* RT_API_H_INCLUDED */
