@@ -513,25 +513,25 @@ CREATE OPERATOR CLASS btree_geometry_ops
 
 #ifdef GSERIALIZED_ON
 -----------------------------------------------------------------------------
--- GiST GEOMETRY-over-GSERIALIZED
+-- GiST 2D GEOMETRY-over-GSERIALIZED
 -----------------------------------------------------------------------------
 --
 -- Box2Df type is used by the GiST index bindings. 
 -- In/out functions are stubs, as all access should be internal.
 ---
--- Availability: 1.5.0
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION box2df_in(cstring)
 	RETURNS box2df
 	AS 'MODULE_PATHNAME','box2df_in'
 	LANGUAGE 'C' IMMUTABLE STRICT; 
 
--- Availability: 1.5.0
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION box2df_out(box2df)
 	RETURNS cstring
 	AS 'MODULE_PATHNAME','box2df_out'
 	LANGUAGE 'C' IMMUTABLE STRICT; 
 
--- Availability: 1.5.0
+-- Availability: 2.0.0
 CREATE TYPE box2df (
 	internallength = 16,
 	input = box2df_in,
@@ -608,9 +608,10 @@ CREATE OPERATOR && (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overlaps,
 	COMMUTATOR = '&&'
 	,RESTRICT = contsel, JOIN = contjoinsel
--- 	,RESTRICT = geometry_gist_sel, JOIN = geometry_gist_joinsel	
+-- 	,RESTRICT = geometry_gist_sel_2d, JOIN = geometry_gist_joinsel_2d	
 );
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_same(geometry, geometry) 
 	RETURNS boolean 
 	AS 'MODULE_PATHNAME' ,'gserialized_same_2d'
@@ -621,11 +622,13 @@ CREATE OPERATOR ~= (
 	RESTRICT = contsel, JOIN = contjoinsel
 );
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_contains(geometry, geometry)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'gserialized_contains_2d'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_within(geometry, geometry)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'gserialized_within'
@@ -643,6 +646,7 @@ CREATE OPERATOR ~ (
 	RESTRICT = contsel, JOIN = contjoinsel
 );
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_left(geometry, geometry)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'gserialized_left_2d'
@@ -654,6 +658,7 @@ CREATE OPERATOR << (
 	RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_overleft(geometry, geometry)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'gserialized_overleft_2d'
@@ -665,6 +670,7 @@ CREATE OPERATOR &< (
 	RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_below(geometry, geometry)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'gserialized_below_2d'
@@ -676,6 +682,7 @@ CREATE OPERATOR <<| (
 	RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_overbelow(geometry, geometry)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'gserialized_overbelow_2d'
@@ -687,6 +694,7 @@ CREATE OPERATOR &<| (
 	RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_overright(geometry, geometry)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'gserialized_overright_2d'
@@ -698,6 +706,7 @@ CREATE OPERATOR &> (
 	RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_right(geometry, geometry)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'gserialized_right_2d'
@@ -709,6 +718,7 @@ CREATE OPERATOR >> (
 	RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_overabove(geometry, geometry)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'gserialized_overabove_2d'
@@ -720,6 +730,7 @@ CREATE OPERATOR |&> (
 	RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_above(geometry, geometry)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'gserialized_above_2d'
@@ -732,7 +743,7 @@ CREATE OPERATOR |>> (
 );
 
 -- Availability: 2.0.0
-CREATE OPERATOR CLASS gist_geometry_ops
+CREATE OPERATOR CLASS gist_geometry_ops_2d
 	DEFAULT FOR TYPE geometry USING GIST AS
 	STORAGE box2df,
 	OPERATOR        1        <<  ,

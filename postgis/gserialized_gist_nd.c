@@ -206,8 +206,6 @@ static void gidx_dimensionality_check(GIDX **a, GIDX **b)
 	}
 }
 
-
-
 /* Calculate the volume of the union of the boxes. Avoids creating an intermediate box. */
 static float gidx_union_volume(GIDX *a, GIDX *b)
 {
@@ -507,7 +505,7 @@ gserialized_datum_predicate(Datum gs1, Datum gs2, gidx_predicate predicate)
 	POSTGIS_DEBUG(3, "entered function");
 
 	/* Must be able to build box for each arguement (ie, not empty geometry)
-	   and overlap boxes to return true. */
+	   and predicate function to return true. */
 	if ( (gserialized_datum_get_gidx_p(gs1, gidx1) == LW_SUCCESS) &&
 	     (gserialized_datum_get_gidx_p(gs2, gidx2) == LW_SUCCESS) &&
 	      predicate(gidx1, gidx2) )
@@ -517,34 +515,6 @@ gserialized_datum_predicate(Datum gs1, Datum gs2, gidx_predicate predicate)
 	}
 	return LW_FALSE;
 }
-
-/**
-* Support function. Based on two datums return true if
-* they overlap and false otherwise. Useful for fast exiting
-* in functions doing geocalculation.
-*/
-int 
-gserialized_datum_overlaps(Datum gs1, Datum gs2)
-{
-	/* Put aside some stack memory and use it for GIDX pointers. */
-	char boxmem1[GIDX_MAX_SIZE];
-	char boxmem2[GIDX_MAX_SIZE];
-	GIDX *gidx1 = (GIDX*)boxmem1;
-	GIDX *gidx2 = (GIDX*)boxmem2;
-
-	/* Must be able to build box for each arguement (ie, not empty geometry)
-	   and overlap boxes to return true. */
-	if ( (gserialized_datum_get_gidx_p(gs1, gidx1) == LW_SUCCESS) &&
-	     (gserialized_datum_get_gidx_p(gs2, gidx2) == LW_SUCCESS) &&
-	      gidx_overlaps(gidx1, gidx2) )
-	{
-		return LW_TRUE;
-	}
-
-	return LW_FALSE;
-}
-
-
 
 /**
 * Return a #GSERIALIZED with an expanded bounding box.
@@ -578,7 +548,6 @@ int
 gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 {
 	GSERIALIZED *gpart;
-	uchar flags;
 	int result = LW_SUCCESS;
 
 	POSTGIS_DEBUG(4, "entered function");
@@ -589,15 +558,14 @@ gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 	** bounding box, so 40 bytes.
 	*/
 	gpart = (GSERIALIZED*)PG_DETOAST_DATUM_SLICE(gsdatum, 0, 40);
-	flags = gpart->flags;
 
 	POSTGIS_DEBUGF(4, "got flags %d", gpart->flags);
 
 	/* Do we even have a serialized bounding box? */
-	if ( FLAGS_GET_BBOX(flags) )
+	if ( FLAGS_GET_BBOX(gpart->flags) )
 	{
 		/* Yes! Copy it out into the GIDX! */
-		const size_t size = gbox_serialized_size(flags);
+		const size_t size = gbox_serialized_size(gpart->flags);
 		POSTGIS_DEBUG(4, "copying box out of serialization");
 		memcpy(gidx->c, gpart->data, size);
 		SET_VARSIZE(gidx, VARHDRSZ + size);
@@ -713,7 +681,7 @@ Datum gserialized_contains(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gserialized_overlaps);
 Datum gserialized_overlaps(PG_FUNCTION_ARGS)
 {
-	if ( gserialized_datum_overlaps(PG_GETARG_DATUM(0),PG_GETARG_DATUM(1)) == LW_TRUE )
+	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0),PG_GETARG_DATUM(1), gidx_contains) == LW_TRUE )
 	{
 		PG_RETURN_BOOL(TRUE);
 	}
