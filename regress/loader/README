@@ -1,10 +1,13 @@
-A loader test requires, at a minimum, a shapefile:
+A loader test requires, at a minimum, a dbf file:
+
+<name>.dbf
+
+Most tests will use a shapefile, so these files as well:
 
 <name>.shp
 <name>.shx
-<name>.dbf
 
-The loader will be run against the shapefile with no command-line flags,
+The loader will be run against the dbf/shapefile with no command-line flags,
 then the output will be run via psql to insert the table into PostGIS.
 
 If there is no <name>.opts file, the loader is then run with the -D flag,

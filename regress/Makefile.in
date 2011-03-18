@@ -46,6 +46,7 @@ TESTS = \
 	loader/MultiToSinglePoint \
 	loader/ReprojectPts \
 	loader/ReprojectPtsGeog \
+	loader/Latin1 \
 	regress \
 	regress_index \
 	regress_index_nulls \

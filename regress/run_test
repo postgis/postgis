@@ -570,9 +570,11 @@ while [ -n "$1" ]; do
 		fi
         fi
 
-	# Check .shp *before* .sql as loader test could
+	# Check .dbf *before* .sql as loader test could
 	# create the .sql
-	if [ -r "${TEST}.shp" ]; then
+	# Check for .dbf not just .shp since the loader can load
+	# .dbf files without a .shp.
+	if [ -r "${TEST}.dbf" ]; then
 		if run_loader_test; then
 			echo " ok"
 		fi
