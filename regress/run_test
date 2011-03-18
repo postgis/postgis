@@ -280,6 +280,7 @@ run_loader_and_check_output()
 #
 # $1 - Description of this run of the dumper, used for error messages.
 # $2 - Table name to dump from.
+# $3 - "Expected" .shp file to compare with.
 # $3 - If you pass true, this will run the loader even if neither
 #      of the expected results files exists (though of course
 #      the results won't be compared with anything).
@@ -288,8 +289,8 @@ run_dumper_and_check_output()
 {
 	_description=$1
 	_tblname=$2
-	_run_always=$3
-	_expected_shp_file="${TEST}.shp.expected"
+	_expected_shp_file=$3
+	_run_always=$4
 
 	if [ -n "$_run_always" -o -r "$_expected_shp_file" ]; then
 		show_progress
@@ -337,6 +338,7 @@ run_loader_test ()
 	else
 		return 1
 	fi
+
 	# If we have some expected files to compare with, run in geography mode.
 	if run_loader_and_check_output "geog test" "loadedshp" "${TEST}-G.sql.expected" "${TEST}-G.select.expected" \
 		"-G $_custom_opts"; then
@@ -344,6 +346,13 @@ run_loader_test ()
 	else
 		return 1
 	fi
+	# If we have some expected files to compare with, run the dumper and compare shape files.
+	if run_dumper_and_check_output "dumper geog test" "loadedshp" "${TEST}-G.shp.expected"; then
+		:
+	else
+		return 1
+	fi
+
 	# Always run in wkb ("normal") mode, even if there are no expected files to compare with.
 	if run_loader_and_check_output "wkb test" "loadedshp" "${TEST}.sql.expected" "${TEST}.select.expected" \
 		"$_custom_opts" "true"; then
@@ -351,6 +360,13 @@ run_loader_test ()
 	else
 		return 1
 	fi
+	# If we have some expected files to compare with, run the dumper and compare shape files.
+	if run_dumper_and_check_output "dumper wkb test" "loadedshp" "${TEST}.shp.expected"; then
+		:
+	else
+		return 1
+	fi
+
 	# Some custom parameters can be incompatible with -D.
 	if [ -z "$_custom_opts" ]; then
 		# If we have some expected files to compare with, run in wkt dump mode.
@@ -374,12 +390,6 @@ run_loader_test ()
 		else
 			return 1
 		fi
-	fi
-	# If we have some expected files to compare with, run the dumper and compare shape files.
-	if run_dumper_and_check_output "dumper test" "loadedshp"; then
-		:
-	else
-		return 1
 	fi
 
 	return 0
