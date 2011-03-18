@@ -43,6 +43,9 @@
 #define RCSID "$Id$"
 
 
+/* Number of digits of precision in WKT produced. */
+#define WKT_PRECISION 15
+
 /* Loader policy constants */
 #define POLICY_NULL_ABORT 	0x0
 #define POLICY_NULL_INSERT 	0x1

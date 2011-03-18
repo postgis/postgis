@@ -301,7 +301,7 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry, in
 
 	if (state->config->use_wkt)
 	{
-		mem = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, 12, &mem_length);
+		mem = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, WKT_PRECISION, &mem_length);
 	}
 	else
 	{
@@ -400,7 +400,7 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 	if (!state->config->use_wkt)
 		mem = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, &mem_length);
 	else
-		mem = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, 12, &mem_length);
+		mem = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, WKT_PRECISION, &mem_length);
 
 	if ( !mem )
 	{
@@ -711,7 +711,7 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 	if (!state->config->use_wkt)
 		mem = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, &mem_length);
 	else
-		mem = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, 12, &mem_length);
+		mem = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, WKT_PRECISION, &mem_length);
 
 	if ( !mem )
 	{
