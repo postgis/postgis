@@ -328,7 +328,7 @@ run_loader_test ()
 	# See if there is a custom command-line options file
 	_custom_opts=""
 	if [ -r ${TEST}.opts ]; then
-		_custom_opts=`grep -v -m1 ^\s*# ${TEST}.opts`
+		_custom_opts=`grep -v ^\s*# ${TEST}.opts`
 	fi
 
 	# If we have some expected files to compare with, run in wkt mode.
