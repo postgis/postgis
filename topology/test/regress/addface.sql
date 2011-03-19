@@ -74,7 +74,7 @@ SELECT 't2.e11',  topology.addEdge('t2', 'LINESTRING(12 2, 12 4, 14 4)');
 
 -- Register left face with two holes
 SELECT 't2.f1',  topology.addFace('t2',
-'POLYGON((0 0,10 0,10 10,0 10,0 0),
+'POLYGON((10 5, 10 10,0 10, 0 0,10 0,10 5),
          (1 1,2 1,2 2,1 2,1 1),
          (3 1,3 2,4 2,4 1,3 1))'
 );

@@ -371,10 +371,8 @@ BEGIN
     LOOP -- {
 
       -- Find the side of the edge on the face
-      right_side := ST_Line_Locate_Point(bounds,
-                ST_Line_Interpolate_Point(rec.geom, 0.2)) <
-              ST_Line_Locate_Point(bounds,
-                ST_Line_Interpolate_Point(rec.geom, 0.8));
+      SELECT DISTINCT (st_dump(st_sharedpaths(rec.geom, bounds))).path[1]
+	= 1 INTO STRICT right_side;
 
       RAISE DEBUG 'Edge % (left:%, right:%) - ring : % - right_side : %',
         rec.edge_id, rec.left_face, rec.right_face, rrec.path, right_side;
