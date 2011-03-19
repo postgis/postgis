@@ -214,7 +214,7 @@ PostGIS 1.4.0
 	 GEOS 3.1+ (Paul Ramsey)
    - ST_ContainsProperly() requires GEOS 3.1+
    - ST_Intersects(), ST_Contains(), ST_Within() use high-speed cached
-	 prepared geometry against GEOS 3.1+ (Paul Ramsey)
+	 prepared geometry against GEOS 3.1+ (Paul Ramsey / funded by Zonar Systems)
    - Vastly improved documentation and reference manual
 	 (Regina Obe & Kevin Neufeld)
    - Figures and diagram examples in the reference manual (Kevin Neufeld)

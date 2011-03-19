@@ -187,7 +187,7 @@
           <para>ST_Union() uses high-speed cascaded union when compiled against
          GEOS 3.1+ (Paul Ramsey)</para>
           <para>ST_ContainsProperly() requires GEOS 3.1+</para>
-          <para>ST_Intersects(), ST_Contains(), ST_Within() use high-speed cached prepared geometry against GEOS 3.1+ (Paul Ramsey)</para>
+          <para>ST_Intersects(), ST_Contains(), ST_Within() use high-speed cached prepared geometry against GEOS 3.1+ (Paul Ramsey / funded by Zonar Systems)</para>
           <para>Vastly improved documentation and reference manual (Regina Obe &amp; Kevin Neufeld)</para>
           <para>Figures and diagram examples in the reference manual (Kevin Neufeld)</para>
           <para>ST_IsValidReason() returns readable explanations for validity failures (Paul Ramsey)</para>
