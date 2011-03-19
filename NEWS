@@ -47,12 +47,14 @@ YYYY/MM/DD
 
   - Made loader tolerant of truncated multibyte values found
     in some free worldwide shapefiles (Sandro Santilli)
-  - Lots of bug fixes and enhancements to shp2pgsql
-    Beefing up regression tests for loaders (Jeff Adams - Azavea)
+  - Lots of bug fixes and enhancements to shp2pgsql (Jeff Adams / Azavea)
+    Beefing up regression tests for loaders 
+    Reproject support for both geometry and geography during import
   - Shp-pgsql GUI loader - support loading multiple 
     files at a time. (Mark Leslie)  
   - Extras - revised tiger_geocoder to work with 
-    TIGER census 2010 data and addition of reverse geocoder function. (Regina Obe, Leo Hsu)
+    TIGER census 2010 data and 
+    addition of reverse geocoder function. (Regina Obe, Leo Hsu)
 
 PostGIS 1.5.2
 2010/09/27
