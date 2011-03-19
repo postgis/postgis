@@ -4,7 +4,7 @@ YYYY/MM/DD
   * Important / Breaking Changes *
 
   - #722, #302 Most deprecated functions removed (over 230 functions) 
-    (Regina Obe, Paul Ramsey)
+    (Regina Obe / Paragon Corporation, Paul Ramsey / OpenGeo)
     (most deprecated in 1.2) removed non-ST variants buffer, 
     length, intersects (and internal functions renamed) etc. 
     If you have been using these - CHANGE your apps or suffer the consequences.
@@ -17,28 +17,32 @@ YYYY/MM/DD
 
   * New Features *
   
-  - Support for TIN and PolyHedralSurface (Olivier Courtin)
+  - Support for TIN and PolyHedralSurface (Olivier Courtin / Oslandia)
   - Raster support integrated and documented
   	(Pierre Racine, Jorge Arévalo, Mateusz Loskot, 
-  	 Sandro Santilli, Regina Obe)
+  	 Sandro Santilli, Regina Obe, David Zwarg)
+  	(Company developer and funding: 
+  	University Laval, Deimos Space, CadCorp, Michigan Tech Research Institute, 
+  	Paragon Corporation, Azavea)
   - Making spatial indexes 3D aware
-     in progress (Paul Ramsey, Mark Cave-Ayland)
+     in progress (Paul Ramsey / OpenGeo, Mark Cave-Ayland / Sirius)
   - Topology support improved, documented, testing 
   	(Sandro Santilli / Faunalia for RT-SIGTA, Regina Obe, Andrea Peri)
   - 3D relationship support functions (Nicklas Avén)
   		ST_3DDistance, ST_3DClosestPoint, ST_3DIntersects, 
   		ST_3DShortestLine and more ..
+  - N-Dimensional spatial indexes (Paul Ramsey / OpenGeo)
   - ST_Split (Sandro Santilli / Faunalia for RT-SIGTA)
   - ST_isValidDetail (Sandro Santilli / Faunalia for RT-SIGTA)
   - ST_MakeValid (Sandro Santilli / Faunalia for RT-SIGTA)
   - ST_RemoveRepeatedPoints (Sandro Santilli / Faunalia for RT-SIGTA)
   - ST_GeometryN and ST_NumGeometries support for non-collections
     (Sandro Santilli)
-  - ST_isCollection (Sandro Santilli, Maxime van Noppen)
+  - ST_IsCollection (Sandro Santilli, Maxime van Noppen)
   - ST_SharedPaths (Sandro Santilli / Faunalia for RT-SIGTA)
   - ST_Snap (Sandro Santilli)
   - ST_RelateMatch (Sandro Santilli / Faunalia for RT-SIGTA)
-  - ST_ConcaveHull (Regina Obe and Leo Hsu)
+  - ST_ConcaveHull (Regina Obe and Leo Hsu / Paragon Corporation)
   - ST_UnaryUnion (Sandro Santilli)
   - ST_Relate with boundary node rule (Sandro Santilli / Faunalia for RT-SIGTA)
   - ST_AsX3D (Regina Obe / Arrival 3D)

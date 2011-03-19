@@ -20,13 +20,15 @@
         </simplesect>
         <simplesect>
           <title>New Features</title>
-          <para>Support for TIN and PolyHedralSurface and enhancement of many functions to support 3D (Olivier Courtin)</para>
+          <para>Support for TIN and PolyHedralSurface and enhancement of many functions to support 3D (Olivier Courtin / Oslandia)</para>
           <para>Raster support integrated and documented
-          		(Pierre Racine, Jorge Arévalo, Mateusz Loskot, Sandro Santilli, Regina Obe)</para>
+          		(Pierre Racine, Jorge Arévalo, Mateusz Loskot, Sandro Santilli, Regina Obe)
+          		(Company developer and funding: University Laval, Deimos Space, CadCorp,  Michigan Tech Research Institute, Paragon Corporation, Azavea)</para>
           <para>Making spatial indexes 3D aware - in progress (Paul Ramsey, Mark Cave-Ayland)</para>
-          <para>Topology support improved (more functions), documented, testing (Sandro Santilli / Faunalia for RT-SIGTA), Andrea Peri, Regina Obe)</para>
+          <para>Topology support improved (more functions), documented, testing (Sandro Santilli / Faunalia for RT-SIGTA), Andrea Peri, Regina Obe</para>
           <para>3D relationship support functions  (Nicklas Avén)</para>
           <para>   ST_3DDistance, ST_3DClosestPoint, ST_3DIntersects, ST_3DShortestLine and more...</para>
+          <para>N-Dimensional spatial indexes (Paul Ramsey / OpenGeo)</para>
           <para>ST_Split (Sandro Santilli / Faunalia for RT-SIGTA)</para>
           <para>ST_IsValidDetail (Sandro Santilli / Faunalia for RT-SIGTA)</para>
           <para>ST_MakeValid (Sandro Santilli / Faunalia for RT-SIGTA)</para>
