@@ -215,6 +215,16 @@ CREATE OR REPLACE FUNCTION st_addband(raster1 raster, raster2 raster, nband1 int
     AS 'MODULE_PATHNAME', 'RASTER_copyband'
     LANGUAGE 'C' IMMUTABLE STRICT;
 
+CREATE OR REPLACE FUNCTION st_addband(raster1 raster, raster2 raster, nband int)
+    RETURNS RASTER
+    AS 'select st_addband($1, $2, st_numbands($1), $3)'
+    LANGUAGE 'SQL' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_addband(raster1 raster, raster2 raster)
+    RETURNS RASTER
+    AS 'select st_addband($1, $2, st_numbands($1), st_numbands($2) + 1)'
+    LANGUAGE 'SQL' IMMUTABLE;
+
 
 -----------------------------------------------------------------------
 -- MapAlgebra

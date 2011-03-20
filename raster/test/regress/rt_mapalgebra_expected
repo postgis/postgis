@@ -1,213 +1,218 @@
-WARNING:  MapAlgebra: Raster is NULL. Returning NULL
+WARNING:  RASTER_mapAlgebra: Raster is NULL. Returning NULL
+WARNING:  Initial pixel value for 32BF band got converted from -1.000000 to 0.000000
 t
-WARNING:  MapAlgebra: Raster is empty. Returning an empty raster
+WARNING:  RASTER_mapAlgebra: Raster is empty. Returning an empty raster
 t
-WARNING:  Mapalgebra: Raster do not have the required band. Returning a raster without a band
+WARNING:  RASTER_mapAlgebra: Raster do not have the required band. Returning a raster without a band
 t
-|19
-|1
-|
-|-1
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-WARNING:  Pixel value for 4BUI band got truncated from 120 to 8
-100|8
+WARNING:  Initial pixel value for 32BF band got converted from -1.000000 to 0.000000
+1.17549435082229e-38|2
+WARNING:  Initial pixel value for 32BF band got converted from -1.000000 to 0.000000
+1.17549435082229e-38|20
+WARNING:  Initial pixel value for 32BF band got converted from -1.000000 to 0.000000
+1.17549435082229e-38|1.17549435082229e-38
+WARNING:  Initial pixel value for 32BF band got converted from -1.000000 to 0.000000
+1.17549435082229e-38|1.17549435082229e-38
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+WARNING:  Initial pixel value for 4BUI band got clamped from 120.000000 to 15
+100|
 100|120
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-WARNING:  Pixel value for 2BUI band got truncated from 121 to 1
-101|1
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+WARNING:  Initial pixel value for 2BUI band got clamped from 121.000000 to 3
+101|
