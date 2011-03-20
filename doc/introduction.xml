@@ -151,7 +151,7 @@
 		  <para>In alphabetical order: Alex Bodnaru, Alex Mayrhofer, Andrea Peri, Barbara
 		  Phillipot, Ben Jubb, Bernhard Reiter, Bruce Rindahl, Bruno Wolff
 		  III, Carl Anderson, Charlie Savage, Dane Springmeyer, David Skea,
-		  David Techer, Eduin Carrillo,  George Silva, Geographic Data BC,
+		  David Techer, Eduin Carrillo,  Frank Warmerdam, George Silva, 
 		  Gerald Fenoy, Gino Lucrezi, Guillaume Lelarge, IIDA Tetsushi, Jeff Adams, Kashif Rasul, Klaus Foerster, Kris Jurka, Leo Hsu, Mark
 		  Sondheim, Markus Schaber, Maxime Guillaud, Maxime van Noppen, Michael Fuhr, Nikita Shulga, Norman Vine,
 		  Ralph Mason, Steffen Macke, Stephen Frost, Vincent Picavet</para>
@@ -163,7 +163,8 @@
 
 		<listitem>
 		  <para>These are corporate entities that have contributed developer time, hosting, or direct monetary funding to the PostGIS project</para>
-		  <para>In alphabetical order: Arrival 3D, Azavea, Cadcorp, CampToCamp, Clever Elephant Solutions, Deimos Space, Faunalia, Geographic Data BC, Lidwala Consulting Engineers, LisaSoft, Michigan Tech Research Institute, OpenGeo, 
+		  <para>In alphabetical order: Arrival 3D, Azavea, Cadcorp, CampToCamp, Clever Elephant Solutions, Deimos Space, Faunalia, Geographic Data BC, Lidwala Consulting Engineers, LisaSoft, 
+		      Logical Tracking &amp; Tracing International AG, Michigan Tech Research Institute, OpenGeo, 
 		      OSGeo, Oslandia, Paragon Corporation, Refractions Research, Regione Toscana-SIGTA, Safe Software, Sirius, University of Laval, Zonar Systems</para>
 		</listitem>
 	  </varlistentry>
