@@ -334,6 +334,13 @@ DECLARE
   old_edgeid int;
   sql text;
   right_side bool;
+  edgeseg geometry;
+  p1 geometry;
+  p2 geometry;
+  p3 geometry;
+  loc float8;
+  segnum int;
+  numsegs int;
 BEGIN
   --
   -- Atopology and apoly are required
@@ -371,8 +378,47 @@ BEGIN
     LOOP -- {
 
       -- Find the side of the edge on the face
-      SELECT DISTINCT (st_dump(st_sharedpaths(rec.geom, bounds))).path[1]
-	= 1 INTO STRICT right_side;
+
+      -- Find first non-empty segment of the edge
+      numsegs = ST_NumPoints(rec.geom);
+      segnum = 1;
+      WHILE segnum < numsegs LOOP
+        p1 = ST_PointN(rec.geom, segnum);
+        p2 = ST_PointN(rec.geom, segnum+1);
+        IF ST_Distance(p1, p2) > 0 THEN
+          EXIT;
+        END IF;
+        segnum = segnum + 1;
+      END LOOP;
+
+      IF segnum = numsegs THEN
+        RAISE WARNING 'Edge % is collapsed', rec.edge_id;
+        CONTINUE; -- we don't want to spend time on it
+      END IF;
+
+      
+      edgeseg = ST_MakeLine(p1, p2);
+      p3 = ST_StartPoint(bounds);
+      IF ST_DWithin(edgeseg, p3, 0) THEN
+        -- Edge segment covers ring endpoint, See bug #874
+        loc = ST_Line_Locate_Point(edgeseg, p3);
+        -- WARNING: this is as robust as length of edgeseg allows...
+        IF loc > 0.9 THEN
+          -- shift last point down 
+          p2 = ST_Line_Interpolate_Point(edgeseg, loc - 0.1);
+        ELSIF loc < 0.1 THEN
+          -- shift first point up
+          p1 = ST_Line_Interpolate_Point(edgeseg, loc + 0.1); 
+        ELSE
+          -- when ring start point is in between, we swap the points
+          p3 = p1; p1 = p2; p2 = p3;
+        END IF;
+      END IF;
+
+      right_side = ST_Line_Locate_Point(bounds, p1) < 
+                   ST_Line_Locate_Point(bounds, p2);
+  
+      --SELECT DISTINCT (st_dump(st_sharedpaths(rec.geom, bounds))).path[1] = 1 INTO STRICT right_side;
 
       RAISE DEBUG 'Edge % (left:%, right:%) - ring : % - right_side : %',
         rec.edge_id, rec.left_face, rec.right_face, rrec.path, right_side;
