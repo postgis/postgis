@@ -68,6 +68,7 @@ TESTS = \
 	sql-mm-multicurve \
 	sql-mm-multisurface \
 	polyhedralsurface \
+	polygonize \
 	out_geometry \
 	out_geography \
 	in_gml \
