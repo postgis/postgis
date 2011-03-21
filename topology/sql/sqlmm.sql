@@ -351,6 +351,17 @@ LANGUAGE 'plpgsql' VOLATILE;
 --} ST_RemoveIsoNode
 
 --{
+-- According to http://trac.osgeo.org/postgis/ticket/798
+-- ST_RemoveIsoNode was renamed to ST_RemIsoNode in the final ISO
+-- document
+--
+CREATE OR REPLACE FUNCTION topology.ST_RemIsoNode(varchar, integer)
+	RETURNS TEXT AS
+$$
+  SELECT topology.ST_RemoveIsoNode($1, $2)
+$$ LANGUAGE 'sql' VOLATILE;
+
+--{
 -- Topo-Geo and Topo-Net 3: Routine Details
 -- X.3.7 
 --
