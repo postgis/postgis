@@ -688,9 +688,9 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- Topo-Geo and Topo-Net 3: Routine Details
 -- X.3.9 
 --
---  ST_ModEdgesSplit(atopology, anedge, apoint)
+--  ST_ModEdgeSplit(atopology, anedge, apoint)
 --
-CREATE OR REPLACE FUNCTION topology.ST_ModEdgesSplit(varchar, integer, geometry)
+CREATE OR REPLACE FUNCTION topology.ST_ModEdgeSplit(varchar, integer, geometry)
 	RETURNS INTEGER AS
 '
 DECLARE

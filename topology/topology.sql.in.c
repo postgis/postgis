@@ -146,7 +146,7 @@
 --	this also updates the Relation table
 --	TODO: add entries to the History table ?
 --
---   ST_ModEdgesSplit
+--   ST_ModEdgeSplit
 --	Complete
 --	this also updates the Relation table
 --	TODO: add entries to the History table ?
