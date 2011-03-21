@@ -21,7 +21,7 @@
 --
 --	We have PostGIS-specific objects and SQL/MM objects.
 --	PostGIS-specific objects have no prefix, SQL/MM ones
---	have the ``ST_'' prefix.
+--	have the ``ST_' prefix.
 --	
 -- [PostGIS-specific]
 --
@@ -162,8 +162,6 @@
 --  
 --  
 
-#include "../postgis/sqldefines.h"
-
 -- Uninstalling previous installation isn't really a good habit ...
 -- Let people decide about that
 -- DROP SCHEMA topology CASCADE;
@@ -199,7 +197,7 @@ CREATE TABLE topology.topology (
 CREATE OR REPLACE FUNCTION topology.LayerTrigger()
 	RETURNS trigger
 AS
-'
+$$
 DECLARE
 	rec RECORD;
 	ok BOOL;
@@ -207,13 +205,13 @@ DECLARE
 	query TEXT;
 BEGIN
 
-	--RAISE NOTICE ''LayerTrigger called % % at % level'', TG_WHEN, TG_OP, TG_LEVEL;
+	--RAISE NOTICE 'LayerTrigger called % % at % level', TG_WHEN, TG_OP, TG_LEVEL;
 
 
-	IF TG_OP = ''INSERT'' THEN
-		RAISE EXCEPTION ''LayerTrigger not meant to be called on INSERT'';
-	ELSIF TG_OP = ''UPDATE'' THEN
-		RAISE EXCEPTION ''The topology.layer table cannot be updated'';
+	IF TG_OP = 'INSERT' THEN
+		RAISE EXCEPTION 'LayerTrigger not meant to be called on INSERT';
+	ELSIF TG_OP = 'UPDATE' THEN
+		RAISE EXCEPTION 'The topology.layer table cannot be updated';
 	END IF;
 
 
@@ -226,17 +224,17 @@ BEGIN
 		AND a.attrelid = c.oid
 		AND text(a.attname) = OLD.feature_column
 	LOOP
-		query = ''SELECT * ''
-			|| '' FROM '' || quote_ident(OLD.schema_name)
-			|| ''.'' || quote_ident(OLD.table_name)
-			|| '' WHERE layer_id(''
-			|| quote_ident(OLD.feature_column)||'') ''
-			|| ''='' || OLD.layer_id
-			|| '' LIMIT 1'';
-		--RAISE NOTICE ''%'', query;
+		query = 'SELECT * '
+			|| ' FROM ' || quote_ident(OLD.schema_name)
+			|| '.' || quote_ident(OLD.table_name)
+			|| ' WHERE layer_id('
+			|| quote_ident(OLD.feature_column)||') '
+			|| '=' || OLD.layer_id
+			|| ' LIMIT 1';
+		--RAISE NOTICE '%', query;
 		FOR rec IN EXECUTE query
 		LOOP
-			RAISE NOTICE ''A feature referencing layer % of topology % still exists in %.%.%'', OLD.layer_id, OLD.topology_id, OLD.schema_name, OLD.table_name, OLD.feature_column;
+			RAISE NOTICE 'A feature referencing layer % of topology % still exists in %.%.%', OLD.layer_id, OLD.topology_id, OLD.schema_name, OLD.table_name, OLD.feature_column;
 			RETURN NULL;
 		END LOOP;
 	END LOOP;
@@ -247,7 +245,7 @@ BEGIN
 		WHERE id = OLD.topology_id;
 
 	IF toponame IS NULL THEN
-		RAISE NOTICE ''Could not find name of topology with id %'',
+		RAISE NOTICE 'Could not find name of topology with id %',
 			OLD.layer_id;
 	END IF;
 
@@ -255,23 +253,23 @@ BEGIN
 	FOR rec IN SELECT * FROM pg_namespace
 		WHERE text(nspname) = toponame
 	LOOP
-		query = ''SELECT * ''
-			|| '' FROM '' || quote_ident(toponame)
-			|| ''.relation ''
-			|| '' WHERE topogeo_id = '' || OLD.topology_id 
-			|| '' AND layer_id = ''|| OLD.layer_id
-			|| '' LIMIT 1'';
-		--RAISE NOTICE ''%'', query;
+		query = 'SELECT * '
+			|| ' FROM ' || quote_ident(toponame)
+			|| '.relation '
+			|| ' WHERE topogeo_id = ' || OLD.topology_id 
+			|| ' AND layer_id = '|| OLD.layer_id
+			|| ' LIMIT 1';
+		--RAISE NOTICE '%', query;
 		FOR rec IN EXECUTE query
 		LOOP
-			RAISE NOTICE ''A record in %.relation still references layer %'', toponame, OLD.layer_id;
+			RAISE NOTICE 'A record in %.relation still references layer %', toponame, OLD.layer_id;
 			RETURN NULL;
 		END LOOP;
 	END LOOP;
 
 	RETURN OLD;
 END;
-'
+$$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} LayerTrigger()
 
@@ -375,7 +373,7 @@ CREATE DOMAIN topology.TopoElementArray AS integer[][]
 CREATE OR REPLACE FUNCTION topology.RelationTrigger()
 	RETURNS trigger
 AS
-'
+$$
 DECLARE
 	toponame varchar;
 	topoid integer;
@@ -385,32 +383,32 @@ DECLARE
 
 BEGIN
 	IF TG_NARGS != 2 THEN
-		RAISE EXCEPTION ''RelationTrigger called with wrong number of arguments'';
+		RAISE EXCEPTION 'RelationTrigger called with wrong number of arguments';
 	END IF;
 
 	topoid = TG_ARGV[0];
 	toponame = TG_ARGV[1];
 
-	--RAISE NOTICE ''RelationTrigger called % % on %.relation for a %'', TG_WHEN, TG_OP, toponame, TG_LEVEL;
+	--RAISE NOTICE 'RelationTrigger called % % on %.relation for a %', TG_WHEN, TG_OP, toponame, TG_LEVEL;
 
 
-	IF TG_OP = ''DELETE'' THEN
-		RAISE EXCEPTION ''RelationTrigger not meant to be called on DELETE'';
+	IF TG_OP = 'DELETE' THEN
+		RAISE EXCEPTION 'RelationTrigger not meant to be called on DELETE';
 	END IF;
 
 	-- Get layer info (and verify it exists)
 	ok = false;
-	FOR plyr IN EXECUTE ''SELECT * FROM topology.layer ''
-		|| ''WHERE ''
-		|| '' topology_id = '' || topoid
-		|| '' AND''
-		|| '' layer_id = '' || NEW.layer_id
+	FOR plyr IN EXECUTE 'SELECT * FROM topology.layer '
+		|| 'WHERE '
+		|| ' topology_id = ' || topoid
+		|| ' AND'
+		|| ' layer_id = ' || NEW.layer_id
 	LOOP
 		ok = true;
 		EXIT;
 	END LOOP;
 	IF NOT ok THEN
-		RAISE EXCEPTION ''Layer % does not exist in topology %'',
+		RAISE EXCEPTION 'Layer % does not exist in topology %',
 			NEW.layer_id, topoid;
 		RETURN NULL;
 	END IF;
@@ -419,22 +417,22 @@ BEGIN
 
 		-- ElementType must be the layer child id
 		IF NEW.element_type != plyr.child_id THEN
-			RAISE EXCEPTION ''Type of elements in layer % must be set to its child layer id %'', plyr.layer_id, plyr.child_id;
+			RAISE EXCEPTION 'Type of elements in layer % must be set to its child layer id %', plyr.layer_id, plyr.child_id;
 			RETURN NULL;
 		END IF;
 
 		-- ElementId must be an existent TopoGeometry in child layer
 		ok = false;
-		FOR rec IN EXECUTE ''SELECT topogeo_id FROM ''
-			|| quote_ident(toponame) || ''.relation ''
-			|| '' WHERE layer_id = '' || plyr.child_id 
-			|| '' AND topogeo_id = '' || NEW.element_id
+		FOR rec IN EXECUTE 'SELECT topogeo_id FROM '
+			|| quote_ident(toponame) || '.relation '
+			|| ' WHERE layer_id = ' || plyr.child_id 
+			|| ' AND topogeo_id = ' || NEW.element_id
 		LOOP
 			ok = true;
 			EXIT;
 		END LOOP;
 		IF NOT ok THEN
-			RAISE EXCEPTION ''TopoGeometry % does not exist in the child layer %'', NEW.element_id, plyr.child_id;
+			RAISE EXCEPTION 'TopoGeometry % does not exist in the child layer %', NEW.element_id, plyr.child_id;
 			RETURN NULL;
 		END IF;
 
@@ -444,7 +442,7 @@ BEGIN
 		IF plyr.feature_type != 4
 			AND plyr.feature_type != NEW.element_type
 		THEN
-			RAISE EXCEPTION ''Element of type % is not compatible with layer of type %'', NEW.element_type, plyr.feature_type;
+			RAISE EXCEPTION 'Element of type % is not compatible with layer of type %', NEW.element_type, plyr.feature_type;
 			RETURN NULL;
 		END IF;
 
@@ -459,15 +457,15 @@ BEGIN
 		IF NEW.element_type = 1 
 		THEN
 			ok = false;
-			FOR rec IN EXECUTE ''SELECT node_id FROM ''
-				|| quote_ident(toponame) || ''.node ''
-				|| '' WHERE node_id = '' || NEW.element_id
+			FOR rec IN EXECUTE 'SELECT node_id FROM '
+				|| quote_ident(toponame) || '.node '
+				|| ' WHERE node_id = ' || NEW.element_id
 			LOOP
 				ok = true;
 				EXIT;
 			END LOOP;
 			IF NOT ok THEN
-				RAISE EXCEPTION ''Node % does not exist in topology %'', NEW.element_id, toponame;
+				RAISE EXCEPTION 'Node % does not exist in topology %', NEW.element_id, toponame;
 				RETURN NULL;
 			END IF;
 
@@ -477,15 +475,15 @@ BEGIN
 		ELSIF NEW.element_type = 2 
 		THEN
 			ok = false;
-			FOR rec IN EXECUTE ''SELECT edge_id FROM ''
-				|| quote_ident(toponame) || ''.edge_data ''
-				|| '' WHERE edge_id = '' || abs(NEW.element_id)
+			FOR rec IN EXECUTE 'SELECT edge_id FROM '
+				|| quote_ident(toponame) || '.edge_data '
+				|| ' WHERE edge_id = ' || abs(NEW.element_id)
 			LOOP
 				ok = true;
 				EXIT;
 			END LOOP;
 			IF NOT ok THEN
-				RAISE EXCEPTION ''Edge % does not exist in topology %'', NEW.element_id, toponame;
+				RAISE EXCEPTION 'Edge % does not exist in topology %', NEW.element_id, toponame;
 				RETURN NULL;
 			END IF;
 
@@ -495,19 +493,19 @@ BEGIN
 		ELSIF NEW.element_type = 3 
 		THEN
 			IF NEW.element_id = 0 THEN
-				RAISE EXCEPTION ''Face % cannot be associated with any feature'', NEW.element_id;
+				RAISE EXCEPTION 'Face % cannot be associated with any feature', NEW.element_id;
 				RETURN NULL;
 			END IF;
 			ok = false;
-			FOR rec IN EXECUTE ''SELECT face_id FROM ''
-				|| quote_ident(toponame) || ''.face ''
-				|| '' WHERE face_id = '' || NEW.element_id
+			FOR rec IN EXECUTE 'SELECT face_id FROM '
+				|| quote_ident(toponame) || '.face '
+				|| ' WHERE face_id = ' || NEW.element_id
 			LOOP
 				ok = true;
 				EXIT;
 			END LOOP;
 			IF NOT ok THEN
-				RAISE EXCEPTION ''Face % does not exist in topology %'', NEW.element_id, toponame;
+				RAISE EXCEPTION 'Face % does not exist in topology %', NEW.element_id, toponame;
 				RETURN NULL;
 			END IF;
 		END IF;
@@ -516,7 +514,7 @@ BEGIN
 	
 	RETURN NEW;
 END;
-'
+$$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} RelationTrigger()
 
@@ -529,7 +527,8 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 --
 CREATE OR REPLACE FUNCTION topology.AddTopoGeometryColumn(varchar, varchar, varchar, varchar, varchar, integer)
 	RETURNS integer
-AS '
+AS
+$$
 DECLARE
 	toponame alias for $1;
 	schema alias for $2;
@@ -550,113 +549,113 @@ BEGIN
                 WHERE name = toponame;
 
 	IF topoid IS NULL THEN
-		RAISE EXCEPTION ''Topology % does not exist'', toponame;
+		RAISE EXCEPTION 'Topology % does not exist', toponame;
 	END IF;
 
 	--
 	-- Get new layer id from sequence
 	--
-	FOR rec IN EXECUTE ''SELECT nextval('' ||
+	FOR rec IN EXECUTE 'SELECT nextval(' ||
 		quote_literal(
-			quote_ident(toponame) || ''.layer_id_seq''
-		) || '')''
+			quote_ident(toponame) || '.layer_id_seq'
+		) || ')'
 	LOOP
 		layer_id = rec.nextval;
 	END LOOP;
 
-	IF ltype = ''POINT'' THEN
+	IF ltype = 'POINT' THEN
 		intltype = 1;
-	ELSIF ltype = ''LINE'' THEN
+	ELSIF ltype = 'LINE' THEN
 		intltype = 2;
-	ELSIF ltype = ''POLYGON'' THEN
+	ELSIF ltype = 'POLYGON' THEN
 		intltype = 3;
-	ELSIF ltype = ''COLLECTION'' THEN
+	ELSIF ltype = 'COLLECTION' THEN
 		intltype = 4;
 	ELSE
-		RAISE EXCEPTION ''Layer type must be one of POINT,LINE,POLYGON,COLLECTION'';
+		RAISE EXCEPTION 'Layer type must be one of POINT,LINE,POLYGON,COLLECTION';
 	END IF;
 
 	--
 	-- See if child id exists and extract its level
 	--
 	IF child IS NULL THEN
-		EXECUTE ''INSERT INTO ''
-			|| ''topology.layer(topology_id, ''
-			|| ''layer_id, schema_name, ''
-			|| ''table_name, feature_column, feature_type) ''
-			|| ''VALUES (''
-			|| topoid || '',''
-			|| layer_id || '','' 
-			|| quote_literal(schema) || '',''
-			|| quote_literal(tbl) || '',''
-			|| quote_literal(col) || '',''
-			|| intltype || '');'';
+		EXECUTE 'INSERT INTO '
+			|| 'topology.layer(topology_id, '
+			|| 'layer_id, schema_name, '
+			|| 'table_name, feature_column, feature_type) '
+			|| 'VALUES ('
+			|| topoid || ','
+			|| layer_id || ',' 
+			|| quote_literal(schema) || ','
+			|| quote_literal(tbl) || ','
+			|| quote_literal(col) || ','
+			|| intltype || ');';
 	ELSE
-		FOR rec IN EXECUTE ''SELECT level FROM topology.layer''
-			|| '' WHERE layer_id = '' || child
+		FOR rec IN EXECUTE 'SELECT level FROM topology.layer'
+			|| ' WHERE layer_id = ' || child
 		LOOP
 			level = rec.level + 1;
 		END LOOP;
 
-		EXECUTE ''INSERT INTO '' 
-			|| ''topology.layer(topology_id, ''
-			|| ''layer_id, level, child_id, schema_name, ''
-			|| ''table_name, feature_column, feature_type) ''
-			|| ''VALUES (''
-			|| topoid || '',''
-			|| layer_id || '','' || level || '',''
-			|| child || '',''
-			|| quote_literal(schema) || '',''
-			|| quote_literal(tbl) || '',''
-			|| quote_literal(col) || '',''
-			|| intltype || '');'';
+		EXECUTE 'INSERT INTO ' 
+			|| 'topology.layer(topology_id, '
+			|| 'layer_id, level, child_id, schema_name, '
+			|| 'table_name, feature_column, feature_type) '
+			|| 'VALUES ('
+			|| topoid || ','
+			|| layer_id || ',' || level || ','
+			|| child || ','
+			|| quote_literal(schema) || ','
+			|| quote_literal(tbl) || ','
+			|| quote_literal(col) || ','
+			|| intltype || ');';
 	END IF;
 
 
 	--
 	-- Create a sequence for TopoGeometries in this new layer
 	--
-	EXECUTE ''CREATE SEQUENCE '' || quote_ident(toponame)
-		|| ''.topogeo_s_'' || layer_id;
+	EXECUTE 'CREATE SEQUENCE ' || quote_ident(toponame)
+		|| '.topogeo_s_' || layer_id;
 
 	--
 	-- Add new TopoGeometry column in schema.table
 	--
-	EXECUTE ''ALTER TABLE '' || quote_ident(schema)
-		|| ''.'' || quote_ident(tbl) 
-		|| '' ADD COLUMN '' || quote_ident(col)
-		|| '' topology.TopoGeometry;'';
+	EXECUTE 'ALTER TABLE ' || quote_ident(schema)
+		|| '.' || quote_ident(tbl) 
+		|| ' ADD COLUMN ' || quote_ident(col)
+		|| ' topology.TopoGeometry;';
 
 	--
 	-- Add constraints on TopoGeom column
 	--
-	EXECUTE ''ALTER TABLE '' || quote_ident(schema)
-		|| ''.'' || quote_ident(tbl) 
-		|| '' ADD CONSTRAINT check_topogeom CHECK (''
-		|| ''topology_id('' || quote_ident(col) || '') = '' || topoid
-		|| '' AND ''
-		|| ''layer_id('' || quote_ident(col) || '') = '' || layer_id
-		|| '' AND ''
-		|| ''type('' || quote_ident(col) || '') = '' || intltype
-		|| '');'';
+	EXECUTE 'ALTER TABLE ' || quote_ident(schema)
+		|| '.' || quote_ident(tbl) 
+		|| ' ADD CONSTRAINT check_topogeom CHECK ('
+		|| 'topology_id(' || quote_ident(col) || ') = ' || topoid
+		|| ' AND '
+		|| 'layer_id(' || quote_ident(col) || ') = ' || layer_id
+		|| ' AND '
+		|| 'type(' || quote_ident(col) || ') = ' || intltype
+		|| ');';
 
 	--
 	-- Add dependency of the feature column on the topology schema
 	--
-	query = ''INSERT INTO pg_catalog.pg_depend SELECT ''
-		|| ''fcat.oid, fobj.oid, fsub.attnum, tcat.oid, ''
-		|| ''tobj.oid, 0, ''''n'''' ''
-		|| ''FROM pg_class fcat, pg_namespace fnsp, ''
-		|| '' pg_class fobj, pg_attribute fsub, ''
-		|| '' pg_class tcat, pg_namespace tobj ''
-		|| '' WHERE fcat.relname = ''''pg_class'''' ''
-		|| '' AND fnsp.nspname = '' || quote_literal(schema)
-		|| '' AND fobj.relnamespace = fnsp.oid ''
-		|| '' AND fobj.relname = '' || quote_literal(tbl)
-		|| '' AND fsub.attrelid = fobj.oid ''
-		|| '' AND fsub.attname = '' || quote_literal(col)
-		|| '' AND tcat.relname = ''''pg_namespace'''' ''
-		|| '' AND tobj.nspname = '' || quote_literal(toponame);
+	query = 'INSERT INTO pg_catalog.pg_depend SELECT '
+		|| 'fcat.oid, fobj.oid, fsub.attnum, tcat.oid, '
+		|| 'tobj.oid, 0, ''n'' '
+		|| 'FROM pg_class fcat, pg_namespace fnsp, '
+		|| ' pg_class fobj, pg_attribute fsub, '
+		|| ' pg_class tcat, pg_namespace tobj '
+		|| ' WHERE fcat.relname = ''pg_class'' '
+		|| ' AND fnsp.nspname = ' || quote_literal(schema)
+		|| ' AND fobj.relnamespace = fnsp.oid '
+		|| ' AND fobj.relname = ' || quote_literal(tbl)
+		|| ' AND fsub.attrelid = fobj.oid '
+		|| ' AND fsub.attname = ' || quote_literal(col)
+		|| ' AND tcat.relname = ''pg_namespace'' '
+		|| ' AND tobj.nspname = ' || quote_literal(toponame);
 
 --
 -- The only reason to add this dependency is to avoid
@@ -669,39 +668,40 @@ BEGIN
 	-- Add dependency of the topogeom sequence on the feature column 
 	-- This is a dirty hack ...
 	--
-	query = ''INSERT INTO pg_catalog.pg_depend SELECT ''
-		|| ''scat.oid, sobj.oid, 0, fcat.oid, ''
-		|| ''fobj.oid, fsub.attnum, ''''n'''' ''
-		|| ''FROM pg_class fcat, pg_namespace fnsp, ''
-		|| '' pg_class fobj, pg_attribute fsub, ''
-		|| '' pg_class scat, pg_class sobj, ''
-		|| '' pg_namespace snsp ''
-		|| '' WHERE fcat.relname = ''''pg_class'''' ''
-		|| '' AND fnsp.nspname = '' || quote_literal(schema)
-		|| '' AND fobj.relnamespace = fnsp.oid ''
-		|| '' AND fobj.relname = '' || quote_literal(tbl)
-		|| '' AND fsub.attrelid = fobj.oid ''
-		|| '' AND fsub.attname = '' || quote_literal(col)
-		|| '' AND scat.relname = ''''pg_class'''' ''
-		|| '' AND snsp.nspname = '' || quote_literal(toponame)
-		|| '' AND sobj.relnamespace = snsp.oid '' 
-		|| '' AND sobj.relname = ''
-		|| '' ''''topogeo_s_'' || layer_id || '''''' '';
+	query = 'INSERT INTO pg_catalog.pg_depend SELECT '
+		|| 'scat.oid, sobj.oid, 0, fcat.oid, '
+		|| 'fobj.oid, fsub.attnum, ''n'' '
+		|| 'FROM pg_class fcat, pg_namespace fnsp, '
+		|| ' pg_class fobj, pg_attribute fsub, '
+		|| ' pg_class scat, pg_class sobj, '
+		|| ' pg_namespace snsp '
+		|| ' WHERE fcat.relname = ''pg_class'' '
+		|| ' AND fnsp.nspname = ' || quote_literal(schema)
+		|| ' AND fobj.relnamespace = fnsp.oid '
+		|| ' AND fobj.relname = ' || quote_literal(tbl)
+		|| ' AND fsub.attrelid = fobj.oid '
+		|| ' AND fsub.attname = ' || quote_literal(col)
+		|| ' AND scat.relname = ''pg_class'' '
+		|| ' AND snsp.nspname = ' || quote_literal(toponame)
+		|| ' AND sobj.relnamespace = snsp.oid ' 
+		|| ' AND sobj.relname = '
+		|| ' ''topogeo_s_' || layer_id || ''' ';
 
-	RAISE NOTICE ''%'', query;
+	RAISE NOTICE '%', query;
 	EXECUTE query;
 #endif
 
 	RETURN layer_id;
 END;
-'
+$$
 LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE OR REPLACE FUNCTION topology.AddTopoGeometryColumn(varchar, varchar, varchar, varchar, varchar)
 	RETURNS integer
-AS '
+AS
+$$
 	SELECT topology.AddTopoGeometryColumn($1, $2, $3, $4, $5, NULL);
-'
+$$
 LANGUAGE 'sql' VOLATILE;
 
 --
@@ -716,7 +716,8 @@ LANGUAGE 'sql' VOLATILE;
 --
 CREATE OR REPLACE FUNCTION topology.DropTopoGeometryColumn(varchar, varchar, varchar)
 	RETURNS text
-AS '
+AS
+$$
 DECLARE
 	schema alias for $1;
 	tbl alias for $2;
@@ -729,12 +730,12 @@ BEGIN
 
         -- Get layer and topology info
 	ok = false;
-	FOR rec IN EXECUTE ''SELECT t.name as toponame, l.* FROM ''
-		|| ''topology.topology t, topology.layer l ''
-		|| '' WHERE l.topology_id = t.id''
-		|| '' AND l.schema_name = '' || quote_literal(schema)
-		|| '' AND l.table_name = '' || quote_literal(tbl)
-		|| '' AND l.feature_column = '' || quote_literal(col)
+	FOR rec IN EXECUTE 'SELECT t.name as toponame, l.* FROM '
+		|| 'topology.topology t, topology.layer l '
+		|| ' WHERE l.topology_id = t.id'
+		|| ' AND l.schema_name = ' || quote_literal(schema)
+		|| ' AND l.table_name = ' || quote_literal(tbl)
+		|| ' AND l.feature_column = ' || quote_literal(col)
 	LOOP
 		ok = true;
 		lyrinfo = rec;
@@ -742,7 +743,7 @@ BEGIN
 
 	-- Layer not found
 	IF NOT ok THEN
-		RAISE EXCEPTION ''No layer registered on %.%.%'',
+		RAISE EXCEPTION 'No layer registered on %.%.%',
 			schema,tbl,col;
 	END IF;
 		
@@ -751,14 +752,14 @@ BEGIN
 		WHERE text(nspname) = lyrinfo.toponame
 	LOOP
 		-- Cleanup the relation table
-		EXECUTE ''DELETE FROM '' || quote_ident(lyrinfo.toponame)
-			|| ''.relation ''
-			|| '' WHERE ''
-			|| ''layer_id = '' || lyrinfo.layer_id;
+		EXECUTE 'DELETE FROM ' || quote_ident(lyrinfo.toponame)
+			|| '.relation '
+			|| ' WHERE '
+			|| 'layer_id = ' || lyrinfo.layer_id;
 
 		-- Drop the sequence for topogeoms in this layer
-		EXECUTE ''DROP SEQUENCE '' || quote_ident(lyrinfo.toponame)
-			|| ''.topogeo_s_'' || lyrinfo.layer_id;
+		EXECUTE 'DROP SEQUENCE ' || quote_ident(lyrinfo.toponame)
+			|| '.topogeo_s_' || lyrinfo.layer_id;
 
 	END LOOP;
 
@@ -778,32 +779,32 @@ BEGIN
 	IF ok THEN
 		-- Set feature column to NULL to bypass referential integrity
 		-- checks
-		EXECUTE ''UPDATE '' || quote_ident(schema) || ''.''
+		EXECUTE 'UPDATE ' || quote_ident(schema) || '.'
 			|| quote_ident(tbl)
-			|| '' SET '' || quote_ident(col)
-			|| '' = NULL'';
+			|| ' SET ' || quote_ident(col)
+			|| ' = NULL';
 	END IF;
 
 	-- Delete the layer record
-	EXECUTE ''DELETE FROM topology.layer ''
-		|| '' WHERE topology_id = '' || lyrinfo.topology_id
-		|| '' AND layer_id = '' || lyrinfo.layer_id;
+	EXECUTE 'DELETE FROM topology.layer '
+		|| ' WHERE topology_id = ' || lyrinfo.topology_id
+		|| ' AND layer_id = ' || lyrinfo.layer_id;
 
 	IF ok THEN
 		-- Drop the layer column
-		EXECUTE ''ALTER TABLE '' || quote_ident(schema) || ''.''
+		EXECUTE 'ALTER TABLE ' || quote_ident(schema) || '.'
 			|| quote_ident(tbl)
-			|| '' DROP '' || quote_ident(col)
-			|| '' cascade'';
+			|| ' DROP ' || quote_ident(col)
+			|| ' cascade';
 	END IF;
 
-	result = ''Layer '' || lyrinfo.layer_id || '' (''
-		|| schema || ''.'' || tbl || ''.'' || col
-		|| '') dropped'';
+	result = 'Layer ' || lyrinfo.layer_id || ' ('
+		|| schema || '.' || tbl || '.' || col
+		|| ') dropped';
 
 	RETURN result;
 END;
-'
+$$
 LANGUAGE 'plpgsql' VOLATILE;
 --
 --} DropTopoGeometryColumn
@@ -824,7 +825,8 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 CREATE OR REPLACE FUNCTION topology.CreateTopoGeom(varchar, integer, integer, topology.TopoElementArray)
 	RETURNS topology.TopoGeometry
-AS '
+AS
+$$
 DECLARE
 	toponame alias for $1;
 	tg_type alias for $2; -- 1:[multi]point
@@ -847,7 +849,7 @@ DECLARE
 BEGIN
 
 	IF tg_type < 1 OR tg_type > 4 THEN
-		RAISE EXCEPTION ''Invalid TopoGeometry type (must be in the range 1..4'';
+		RAISE EXCEPTION 'Invalid TopoGeometry type (must be in the range 1..4';
 	END IF;
 
 	-- Get topology id into return TopoGeometry
@@ -858,9 +860,9 @@ BEGIN
 	-- Get layer info
 	--
 	layertype := NULL;
-	FOR rec IN EXECUTE ''SELECT * FROM topology.layer''
-		|| '' WHERE topology_id = '' || ret.topology_id
-		|| '' AND layer_id = '' || layer_id
+	FOR rec IN EXECUTE 'SELECT * FROM topology.layer'
+		|| ' WHERE topology_id = ' || ret.topology_id
+		|| ' AND layer_id = ' || layer_id
 	LOOP
 		layertype = rec.feature_type;
 		layerlevel = rec.level;
@@ -869,13 +871,13 @@ BEGIN
 
 	-- Check for existence of given layer id
 	IF layertype IS NULL THEN
-		RAISE EXCEPTION ''No layer with id % is registered with topology %'', layer_id, toponame;
+		RAISE EXCEPTION 'No layer with id % is registered with topology %', layer_id, toponame;
 	END IF;
 
 	-- Verify compatibility between layer geometry type and
 	-- TopoGeom requested geometry type
 	IF layertype != 4 and layertype != tg_type THEN
-		RAISE EXCEPTION ''A Layer of type % cannot contain a TopoGeometry of type %'', layertype, tg_type;
+		RAISE EXCEPTION 'A Layer of type % cannot contain a TopoGeometry of type %', layertype, tg_type;
 	END IF;
 
 	-- Set layer id and type in return object
@@ -885,10 +887,10 @@ BEGIN
 	--
 	-- Get new TopoGeo id from sequence
 	--
-	FOR rec IN EXECUTE ''SELECT nextval('' ||
+	FOR rec IN EXECUTE 'SELECT nextval(' ||
 		quote_literal(
-			quote_ident(toponame) || ''.topogeo_s_'' || layer_id
-		) || '')''
+			quote_ident(toponame) || '.topogeo_s_' || layer_id
+		) || ')'
 	LOOP
 		ret.id = rec.nextval;
 	END LOOP;
@@ -900,27 +902,27 @@ BEGIN
 		obj_type = tg_objs[i][2];
 		IF layerlevel = 0 THEN -- array specifies lower-level objects
 			IF tg_type != 4 and tg_type != obj_type THEN
-				RAISE EXCEPTION ''A TopoGeometry of type % cannot contain topology elements of type %'', tg_type, obj_type;
+				RAISE EXCEPTION 'A TopoGeometry of type % cannot contain topology elements of type %', tg_type, obj_type;
 			END IF;
 		ELSE -- array specifies lower-level topogeometries
 			IF obj_type != layerchild THEN
-				RAISE EXCEPTION ''TopoGeom element layer do not match TopoGeom child layer'';
+				RAISE EXCEPTION 'TopoGeom element layer do not match TopoGeom child layer';
 			END IF;
 			-- TODO: verify that the referred TopoGeometry really
 			-- exists in the relation table ?
 		END IF;
 
-		--RAISE NOTICE ''obj:% type:% id:%'', i, obj_type, obj_id;
+		--RAISE NOTICE 'obj:% type:% id:%', i, obj_type, obj_id;
 
 		--
 		-- Insert record into the Relation table
 		--
-		EXECUTE ''INSERT INTO ''||quote_ident(toponame)
-			|| ''.relation(topogeo_id, layer_id, ''
-			|| ''element_id,element_type) ''
-			|| '' VALUES (''||ret.id
-			||'',''||ret.layer_id
-			|| '','' || obj_id || '','' || obj_type || '');'';
+		EXECUTE 'INSERT INTO '||quote_ident(toponame)
+			|| '.relation(topogeo_id, layer_id, '
+			|| 'element_id,element_type) '
+			|| ' VALUES ('||ret.id
+			||','||ret.layer_id
+			|| ',' || obj_id || ',' || obj_type || ');';
 
 		i = i+1;
 		IF i > array_upper(tg_objs, 1) THEN
@@ -931,7 +933,7 @@ BEGIN
 	RETURN ret;
 
 END
-'
+$$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} CreateTopoGeom(toponame,topogeom_type, TopoObject[])
 
@@ -941,7 +943,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 CREATE OR REPLACE FUNCTION topology.GetTopologyName(integer)
 	RETURNS varchar
 AS
-'
+$$
 DECLARE
 	topoid alias for $1;
 	ret varchar;
@@ -950,7 +952,7 @@ BEGIN
                 WHERE id = topoid;
 	RETURN ret;
 END
-'
+$$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} GetTopologyName(topoid)
 
@@ -960,7 +962,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 CREATE OR REPLACE FUNCTION topology.GetTopologyId(varchar)
 	RETURNS integer
 AS
-'
+$$
 DECLARE
 	toponame alias for $1;
 	ret integer;
@@ -969,7 +971,7 @@ BEGIN
                 WHERE name = toponame;
 	RETURN ret;
 END
-'
+$$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} GetTopologyId(toponame)
 	
@@ -984,48 +986,48 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 CREATE OR REPLACE FUNCTION topology.GetTopoGeomElementArray(varchar, integer, integer)
 	RETURNS topology.TopoElementArray
 AS
-'
+$$
 DECLARE
 	toponame alias for $1;
 	layerid alias for $2;
 	tgid alias for $3;
 	rec RECORD;
-	tg_objs varchar := ''{'';
+	tg_objs varchar := '{';
 	i integer;
 	query text;
 BEGIN
 
-	query = ''SELECT * FROM topology.GetTopoGeomElements(''
-		|| quote_literal(toponame) || '',''
-		|| quote_literal(layerid) || '',''
+	query = 'SELECT * FROM topology.GetTopoGeomElements('
+		|| quote_literal(toponame) || ','
+		|| quote_literal(layerid) || ','
 		|| quote_literal(tgid)
-		|| '') as obj ORDER BY obj'';
+		|| ') as obj ORDER BY obj';
 
-	RAISE NOTICE ''Query: %'', query;
+	RAISE NOTICE 'Query: %', query;
 
 	i = 1;
 	FOR rec IN EXECUTE query
 	LOOP
 		IF i > 1 THEN
-			tg_objs = tg_objs || '','';
+			tg_objs = tg_objs || ',';
 		END IF;
-		tg_objs = tg_objs || ''{''
-			|| rec.obj[1] || '','' || rec.obj[2]
-			|| ''}'';
+		tg_objs = tg_objs || '{'
+			|| rec.obj[1] || ',' || rec.obj[2]
+			|| '}';
 		i = i+1;
 	END LOOP;
 
-	tg_objs = tg_objs || ''}'';
+	tg_objs = tg_objs || '}';
 
 	RETURN tg_objs;
 END;
-'
+$$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 
 CREATE OR REPLACE FUNCTION topology.GetTopoGeomElementArray(topology.TopoGeometry)
 	RETURNS topology.TopoElementArray
 AS
-'
+$$
 DECLARE
 	tg alias for $1;
 	toponame varchar;
@@ -1035,7 +1037,7 @@ BEGIN
 	ret = topology.GetTopoGeomElementArray(toponame,tg.layer_id,tg.id);
 	RETURN ret;
 END;
-'
+$$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 
 --} GetTopoGeomElementArray()
@@ -1049,7 +1051,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 CREATE OR REPLACE FUNCTION topology.GetTopoGeomElements(varchar, integer, integer)
 	RETURNS SETOF topology.TopoElement
 AS
-'
+$$
 DECLARE
 	toponame alias for $1;
 	layerid alias for $2;
@@ -1065,43 +1067,43 @@ BEGIN
 
 	-- Get layer info
 	ok = false;
-	FOR rec IN EXECUTE ''SELECT * FROM ''
-		|| '' topology.layer ''
-		|| '' WHERE layer_id = '' || layerid
+	FOR rec IN EXECUTE 'SELECT * FROM '
+		|| ' topology.layer '
+		|| ' WHERE layer_id = ' || layerid
 	LOOP
 		lyr = rec;
 		ok = true;
 	END LOOP;
 
 	IF NOT ok THEN
-		RAISE EXCEPTION ''Layer % does not exist'', layerid;
+		RAISE EXCEPTION 'Layer % does not exist', layerid;
 	END IF;
 
 
-	query = ''SELECT abs(element_id) as element_id, element_type FROM ''
-		|| quote_ident(toponame) || ''.relation WHERE ''
-		|| '' layer_id = '' || layerid
-		|| '' AND topogeo_id = '' || quote_literal(tgid)
-		|| '' ORDER BY element_type, element_id'';
+	query = 'SELECT abs(element_id) as element_id, element_type FROM '
+		|| quote_ident(toponame) || '.relation WHERE '
+		|| ' layer_id = ' || layerid
+		|| ' AND topogeo_id = ' || quote_literal(tgid)
+		|| ' ORDER BY element_type, element_id';
 
-	--RAISE NOTICE ''Query: %'', query;
+	--RAISE NOTICE 'Query: %', query;
 
 	FOR rec IN EXECUTE query
 	LOOP
 		IF lyr.level > 0 THEN
-			query2 = ''SELECT * from topology.GetTopoGeomElements(''
-				|| quote_literal(toponame) || '',''
+			query2 = 'SELECT * from topology.GetTopoGeomElements('
+				|| quote_literal(toponame) || ','
 				|| rec.element_type
-				|| '',''
+				|| ','
 				|| rec.element_id
-				|| '') as ret;'';
-			--RAISE NOTICE ''Query2: %'', query2;
+				|| ') as ret;';
+			--RAISE NOTICE 'Query2: %', query2;
 			FOR rec2 IN EXECUTE query2
 			LOOP
 				RETURN NEXT rec2.ret;
 			END LOOP;
 		ELSE
-			ret = ''{'' || rec.element_id || '','' || rec.element_type || ''}'';
+			ret = '{' || rec.element_id || ',' || rec.element_type || '}';
 			RETURN NEXT ret;
 		END IF;
 	
@@ -1109,13 +1111,13 @@ BEGIN
 
 	RETURN;
 END;
-'
+$$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 
 CREATE OR REPLACE FUNCTION topology.GetTopoGeomElements(topology.TopoGeometry)
 	RETURNS SETOF topology.TopoElement
 AS
-'
+$$
 DECLARE
 	tg alias for $1;
 	toponame varchar;
@@ -1129,7 +1131,7 @@ BEGIN
 	END LOOP;
 	RETURN;
 END;
-'
+$$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 
 --} GetTopoGeomElements()
@@ -1505,7 +1507,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 --
 CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPoint(varchar, geometry, integer, integer)
 	RETURNS int AS
-'
+$$
 DECLARE
 	atopology alias for $1;
 	apoint alias for $2;
@@ -1515,12 +1517,12 @@ BEGIN
 	-- Add nodes (contained in NO face)
 	SELECT topology.ST_AddIsoNode(atopology, NULL, apoint) INTO ret;
 
-	RAISE NOTICE ''TopoGeo_AddPoint: node: %'', ret;
+	RAISE NOTICE 'TopoGeo_AddPoint: node: %', ret;
 
 	RETURN ret;
 
 END
-'
+$$
 LANGUAGE 'plpgsql' VOLATILE;
 --} TopoGeo_AddPoint
 
@@ -1531,7 +1533,7 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 CREATE OR REPLACE FUNCTION topology.TopoGeo_addLinestring(varchar, geometry)
 	RETURNS int AS
-'
+$$
 DECLARE
 	atopology alias for $1;
 	aline alias for $2;
@@ -1543,12 +1545,12 @@ DECLARE
 	lastnode int;
 	edgeid int;
 BEGIN
-	RAISE DEBUG ''Line: %'', ST_asEWKT(aline);
+	RAISE DEBUG 'Line: %', ST_asEWKT(aline);
 
 	firstpoint = ST_StartPoint(aline);
 	lastpoint = ST_EndPoint(aline);
 
-	RAISE DEBUG ''First point: %, Last point: %'',
+	RAISE DEBUG 'First point: %, Last point: %',
 		ST_asEWKT(firstpoint),
 		ST_asEWKT(lastpoint);
 
@@ -1556,17 +1558,17 @@ BEGIN
 	SELECT topology.ST_AddIsoNode(atopology, NULL, firstpoint) INTO firstnode;
 	SELECT topology.ST_AddIsoNode(atopology, NULL, lastpoint) INTO lastnode;
 
-	RAISE NOTICE ''First node: %, Last node: %'', firstnode, lastnode;
+	RAISE NOTICE 'First node: %, Last node: %', firstnode, lastnode;
 
 	-- Add edge 
 	SELECT topology.ST_AddIsoEdge(atopology, firstnode, lastnode, aline)
 		INTO edgeid;
 
-	RAISE DEBUG ''Edge: %'', edgeid;
+	RAISE DEBUG 'Edge: %', edgeid;
 
 	RETURN edgeid;
 END
-'
+$$
 LANGUAGE 'plpgsql';
 --} TopoGeo_addLinestring
 
@@ -1577,15 +1579,15 @@ LANGUAGE 'plpgsql';
 --
 CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPolygon(varchar, geometry)
 	RETURNS int AS
-'
+$$
 DECLARE
 	rec RECORD;
 	query text;
 BEGIN
 
-	RAISE EXCEPTION ''TopoGeo_AddPolygon not implemented yet'';
+	RAISE EXCEPTION 'TopoGeo_AddPolygon not implemented yet';
 END
-'
+$$
 LANGUAGE 'plpgsql';
 --} TopoGeo_AddPolygon
 
@@ -1598,7 +1600,8 @@ LANGUAGE 'plpgsql';
 --
 CREATE OR REPLACE FUNCTION topology.CreateTopology(varchar, integer, float8)
 RETURNS integer
-AS '
+AS
+$$
 DECLARE
 	atopology alias for $1;
 	srid alias for $2;
@@ -1609,32 +1612,32 @@ BEGIN
 
 --	FOR rec IN SELECT * FROM pg_namespace WHERE text(nspname) = atopology
 --	LOOP
---		RAISE EXCEPTION ''SQL/MM Spatial exception - schema already exists'';
+--		RAISE EXCEPTION 'SQL/MM Spatial exception - schema already exists';
 --	END LOOP;
 
 	------ Fetch next id for the new topology
-	FOR rec IN SELECT nextval(''topology.topology_id_seq'')
+	FOR rec IN SELECT nextval('topology.topology_id_seq')
 	LOOP
 		topology_id = rec.nextval;
 	END LOOP;
 
 
-	EXECUTE ''
-CREATE SCHEMA '' || quote_ident(atopology) || '';
-	'';
+	EXECUTE '
+CREATE SCHEMA ' || quote_ident(atopology) || ';
+	';
 
 	-------------{ face CREATION
 	EXECUTE 
-	''CREATE TABLE '' || quote_ident(atopology) || ''.face (''
-	|| ''face_id SERIAL,''
-	|| '' CONSTRAINT face_primary_key PRIMARY KEY(face_id)''
-	|| '');'';
+	'CREATE TABLE ' || quote_ident(atopology) || '.face ('
+	|| 'face_id SERIAL,'
+	|| ' CONSTRAINT face_primary_key PRIMARY KEY(face_id)'
+	|| ');';
 
 	-- Add mbr column to the face table 
 	EXECUTE
-	''SELECT AddGeometryColumn(''||quote_literal(atopology)
-	||'',''''face'''',''''mbr'''',''||quote_literal(srid)
-	||'',''''POLYGON'''',''''2'''')'';
+	'SELECT AddGeometryColumn('||quote_literal(atopology)
+	||',''face'',''mbr'','||quote_literal(srid)
+	||',''POLYGON'',''2'')';
 
 	-------------} END OF face CREATION
 
@@ -1642,26 +1645,26 @@ CREATE SCHEMA '' || quote_ident(atopology) || '';
 	--------------{ node CREATION
 
 	EXECUTE 
-	''CREATE TABLE '' || quote_ident(atopology) || ''.node (''
-	|| ''node_id SERIAL,''
-	--|| ''geom GEOMETRY,''
-	|| ''containing_face INTEGER,''
+	'CREATE TABLE ' || quote_ident(atopology) || '.node ('
+	|| 'node_id SERIAL,'
+	--|| 'geom GEOMETRY,'
+	|| 'containing_face INTEGER,'
 
-	|| ''CONSTRAINT node_primary_key PRIMARY KEY(node_id),''
+	|| 'CONSTRAINT node_primary_key PRIMARY KEY(node_id),'
 
-	--|| ''CONSTRAINT node_geometry_type CHECK ''
-	--|| ''( GeometryType(geom) = ''''POINT'''' ),''
+	--|| 'CONSTRAINT node_geometry_type CHECK '
+	--|| '( GeometryType(geom) = ''POINT'' ),'
 
-	|| ''CONSTRAINT face_exists FOREIGN KEY(containing_face) ''
-	|| ''REFERENCES '' || quote_ident(atopology) || ''.face(face_id)''
+	|| 'CONSTRAINT face_exists FOREIGN KEY(containing_face) '
+	|| 'REFERENCES ' || quote_ident(atopology) || '.face(face_id)'
 
-	|| '');'';
+	|| ');';
 
 	-- Add geometry column to the node table 
 	EXECUTE
-	''SELECT AddGeometryColumn(''||quote_literal(atopology)
-	||'',''''node'''',''''geom'''',''||quote_literal(srid)
-	||'',''''POINT'''',''''2'''')'';
+	'SELECT AddGeometryColumn('||quote_literal(atopology)
+	||',''node'',''geom'','||quote_literal(srid)
+	||',''POINT'',''2'')';
 
 	--------------} END OF node CREATION
 
@@ -1669,165 +1672,165 @@ CREATE SCHEMA '' || quote_ident(atopology) || '';
 
 	-- edge_data table
 	EXECUTE 
-	''CREATE TABLE '' || quote_ident(atopology) || ''.edge_data (''
-	|| ''edge_id SERIAL NOT NULL PRIMARY KEY,''
-	|| ''start_node INTEGER NOT NULL,''
-	|| ''end_node INTEGER NOT NULL,''
-	|| ''next_left_edge INTEGER NOT NULL,''
-	|| ''abs_next_left_edge INTEGER NOT NULL,''
-	|| ''next_right_edge INTEGER NOT NULL,''
-	|| ''abs_next_right_edge INTEGER NOT NULL,''
-	|| ''left_face INTEGER NOT NULL,''
-	|| ''right_face INTEGER NOT NULL,''
-	--|| ''geom GEOMETRY NOT NULL,''
+	'CREATE TABLE ' || quote_ident(atopology) || '.edge_data ('
+	|| 'edge_id SERIAL NOT NULL PRIMARY KEY,'
+	|| 'start_node INTEGER NOT NULL,'
+	|| 'end_node INTEGER NOT NULL,'
+	|| 'next_left_edge INTEGER NOT NULL,'
+	|| 'abs_next_left_edge INTEGER NOT NULL,'
+	|| 'next_right_edge INTEGER NOT NULL,'
+	|| 'abs_next_right_edge INTEGER NOT NULL,'
+	|| 'left_face INTEGER NOT NULL,'
+	|| 'right_face INTEGER NOT NULL,'
+	--|| 'geom GEOMETRY NOT NULL,'
 
-	--|| ''CONSTRAINT edge_geometry_type CHECK ''
-	--|| ''( GeometryType(geom) = ''''LINESTRING'''' ),''
+	--|| 'CONSTRAINT edge_geometry_type CHECK '
+	--|| '( GeometryType(geom) = ''LINESTRING'' ),'
 
-	|| ''CONSTRAINT start_node_exists FOREIGN KEY(start_node)''
-	|| '' REFERENCES '' || quote_ident(atopology) || ''.node(node_id),''
+	|| 'CONSTRAINT start_node_exists FOREIGN KEY(start_node)'
+	|| ' REFERENCES ' || quote_ident(atopology) || '.node(node_id),'
 
-	|| ''CONSTRAINT end_node_exists FOREIGN KEY(end_node) ''
-	|| '' REFERENCES '' || quote_ident(atopology) || ''.node(node_id),''
+	|| 'CONSTRAINT end_node_exists FOREIGN KEY(end_node) '
+	|| ' REFERENCES ' || quote_ident(atopology) || '.node(node_id),'
 
-	|| ''CONSTRAINT left_face_exists FOREIGN KEY(left_face) ''
-	|| ''REFERENCES '' || quote_ident(atopology) || ''.face(face_id),''
+	|| 'CONSTRAINT left_face_exists FOREIGN KEY(left_face) '
+	|| 'REFERENCES ' || quote_ident(atopology) || '.face(face_id),'
 
-	|| ''CONSTRAINT right_face_exists FOREIGN KEY(right_face) ''
-	|| ''REFERENCES '' || quote_ident(atopology) || ''.face(face_id),''
+	|| 'CONSTRAINT right_face_exists FOREIGN KEY(right_face) '
+	|| 'REFERENCES ' || quote_ident(atopology) || '.face(face_id),'
 
-	|| ''CONSTRAINT next_left_edge_exists FOREIGN KEY(abs_next_left_edge)''
-	|| '' REFERENCES '' || quote_ident(atopology)
-	|| ''.edge_data(edge_id)''
-	|| '' DEFERRABLE INITIALLY DEFERRED,''
+	|| 'CONSTRAINT next_left_edge_exists FOREIGN KEY(abs_next_left_edge)'
+	|| ' REFERENCES ' || quote_ident(atopology)
+	|| '.edge_data(edge_id)'
+	|| ' DEFERRABLE INITIALLY DEFERRED,'
 
-	|| ''CONSTRAINT next_right_edge_exists ''
-	|| ''FOREIGN KEY(abs_next_right_edge)''
-	|| '' REFERENCES '' || quote_ident(atopology)
-	|| ''.edge_data(edge_id) ''
-	|| '' DEFERRABLE INITIALLY DEFERRED''
-	|| '');'';
+	|| 'CONSTRAINT next_right_edge_exists '
+	|| 'FOREIGN KEY(abs_next_right_edge)'
+	|| ' REFERENCES ' || quote_ident(atopology)
+	|| '.edge_data(edge_id) '
+	|| ' DEFERRABLE INITIALLY DEFERRED'
+	|| ');';
 
 	-- Add geometry column to the edge_data table 
 	EXECUTE
-	''SELECT AddGeometryColumn(''||quote_literal(atopology)
-	||'',''''edge_data'''',''''geom'''',''||quote_literal(srid)
-	||'',''''LINESTRING'''',''''2'''')'';
+	'SELECT AddGeometryColumn('||quote_literal(atopology)
+	||',''edge_data'',''geom'','||quote_literal(srid)
+	||',''LINESTRING'',''2'')';
 
 
 	-- edge standard view (select rule)
-	EXECUTE ''CREATE VIEW '' || quote_ident(atopology)
-		|| ''.edge AS SELECT ''
-		|| '' edge_id, start_node, end_node, next_left_edge, ''
-		|| '' next_right_edge, ''
-		|| '' left_face, right_face, geom FROM ''
-		|| quote_ident(atopology) || ''.edge_data'';
+	EXECUTE 'CREATE VIEW ' || quote_ident(atopology)
+		|| '.edge AS SELECT '
+		|| ' edge_id, start_node, end_node, next_left_edge, '
+		|| ' next_right_edge, '
+		|| ' left_face, right_face, geom FROM '
+		|| quote_ident(atopology) || '.edge_data';
 
 	-- edge standard view description
-	EXECUTE ''COMMENT ON VIEW '' || quote_ident(atopology)
-		|| ''.edge IS ''
-		|| ''''''Contains edge topology primitives'''''';
-	EXECUTE ''COMMENT ON COLUMN '' || quote_ident(atopology)
-		|| ''.edge.edge_id IS ''
-		|| ''''''Unique identifier of the edge'''''';
-	EXECUTE ''COMMENT ON COLUMN '' || quote_ident(atopology)
-		|| ''.edge.start_node IS ''
-		|| ''''''Unique identifier of the node at the start of the edge'''''';
-	EXECUTE ''COMMENT ON COLUMN '' || quote_ident(atopology)
-		|| ''.edge.end_node IS ''
-		|| ''''''Unique identifier of the node at the end of the edge'''''';
-	EXECUTE ''COMMENT ON COLUMN '' || quote_ident(atopology)
-		|| ''.edge.next_left_edge IS ''
-		|| ''''''Unique identifier of the next edge of the face on the left (when looking in the direction from START_NODE to END_NODE), moving counterclockwise around the face boundary'''''';
-	EXECUTE ''COMMENT ON COLUMN '' || quote_ident(atopology)
-		|| ''.edge.next_right_edge IS ''
-		|| ''''''Unique identifier of the next edge of the face on the right (when looking in the direction from START_NODE to END_NODE), moving counterclockwise around the face boundary'''''';
-	EXECUTE ''COMMENT ON COLUMN '' || quote_ident(atopology)
-		|| ''.edge.left_face IS ''
-		|| ''''''Unique identifier of the face on the left side of the edge when looking in the direction from START_NODE to END_NODE'''''';
-	EXECUTE ''COMMENT ON COLUMN '' || quote_ident(atopology)
-		|| ''.edge.right_face IS ''
-		|| ''''''Unique identifier of the face on the right side of the edge when looking in the direction from START_NODE to END_NODE'''''';
-	EXECUTE ''COMMENT ON COLUMN '' || quote_ident(atopology)
-		|| ''.edge.geom IS ''
-		|| ''''''The geometry of the edge'''''';
+	EXECUTE 'COMMENT ON VIEW ' || quote_ident(atopology)
+		|| '.edge IS '
+		|| '''Contains edge topology primitives''';
+	EXECUTE 'COMMENT ON COLUMN ' || quote_ident(atopology)
+		|| '.edge.edge_id IS '
+		|| '''Unique identifier of the edge''';
+	EXECUTE 'COMMENT ON COLUMN ' || quote_ident(atopology)
+		|| '.edge.start_node IS '
+		|| '''Unique identifier of the node at the start of the edge''';
+	EXECUTE 'COMMENT ON COLUMN ' || quote_ident(atopology)
+		|| '.edge.end_node IS '
+		|| '''Unique identifier of the node at the end of the edge''';
+	EXECUTE 'COMMENT ON COLUMN ' || quote_ident(atopology)
+		|| '.edge.next_left_edge IS '
+		|| '''Unique identifier of the next edge of the face on the left (when looking in the direction from START_NODE to END_NODE), moving counterclockwise around the face boundary''';
+	EXECUTE 'COMMENT ON COLUMN ' || quote_ident(atopology)
+		|| '.edge.next_right_edge IS '
+		|| '''Unique identifier of the next edge of the face on the right (when looking in the direction from START_NODE to END_NODE), moving counterclockwise around the face boundary''';
+	EXECUTE 'COMMENT ON COLUMN ' || quote_ident(atopology)
+		|| '.edge.left_face IS '
+		|| '''Unique identifier of the face on the left side of the edge when looking in the direction from START_NODE to END_NODE''';
+	EXECUTE 'COMMENT ON COLUMN ' || quote_ident(atopology)
+		|| '.edge.right_face IS '
+		|| '''Unique identifier of the face on the right side of the edge when looking in the direction from START_NODE to END_NODE''';
+	EXECUTE 'COMMENT ON COLUMN ' || quote_ident(atopology)
+		|| '.edge.geom IS '
+		|| '''The geometry of the edge''';
 
 	-- edge standard view (insert rule)
-	EXECUTE ''CREATE RULE edge_insert_rule AS ON INSERT ''
-        	|| ''TO '' || quote_ident(atopology)
-		|| ''.edge DO INSTEAD ''
-                || '' INSERT into '' || quote_ident(atopology)
-		|| ''.edge_data ''
-                || '' VALUES (NEW.edge_id, NEW.start_node, NEW.end_node, ''
-		|| '' NEW.next_left_edge, abs(NEW.next_left_edge), ''
-		|| '' NEW.next_right_edge, abs(NEW.next_right_edge), ''
-		|| '' NEW.left_face, NEW.right_face, NEW.geom);'';
+	EXECUTE 'CREATE RULE edge_insert_rule AS ON INSERT '
+        	|| 'TO ' || quote_ident(atopology)
+		|| '.edge DO INSTEAD '
+                || ' INSERT into ' || quote_ident(atopology)
+		|| '.edge_data '
+                || ' VALUES (NEW.edge_id, NEW.start_node, NEW.end_node, '
+		|| ' NEW.next_left_edge, abs(NEW.next_left_edge), '
+		|| ' NEW.next_right_edge, abs(NEW.next_right_edge), '
+		|| ' NEW.left_face, NEW.right_face, NEW.geom);';
 
 	--------------} END OF edge CREATION
 
 	--------------{ layer sequence 
-	EXECUTE ''CREATE SEQUENCE ''
-		|| quote_ident(atopology) || ''.layer_id_seq;'';
+	EXECUTE 'CREATE SEQUENCE '
+		|| quote_ident(atopology) || '.layer_id_seq;';
 	--------------} layer sequence
 
 	--------------{ relation CREATION
 	--
 	EXECUTE 
-	''CREATE TABLE '' || quote_ident(atopology) || ''.relation (''
-	|| '' topogeo_id integer NOT NULL, ''
-	|| '' layer_id integer NOT NULL, '' 
-	|| '' element_id integer NOT NULL, ''
-	|| '' element_type integer NOT NULL, ''
-	|| '' UNIQUE(layer_id,topogeo_id,element_id,element_type));'';
+	'CREATE TABLE ' || quote_ident(atopology) || '.relation ('
+	|| ' topogeo_id integer NOT NULL, '
+	|| ' layer_id integer NOT NULL, ' 
+	|| ' element_id integer NOT NULL, '
+	|| ' element_type integer NOT NULL, '
+	|| ' UNIQUE(layer_id,topogeo_id,element_id,element_type));';
 
 	EXECUTE 
-	''CREATE TRIGGER relation_integrity_checks ''
-	||''BEFORE UPDATE OR INSERT ON ''
-	|| quote_ident(atopology) || ''.relation FOR EACH ROW ''
-	|| '' EXECUTE PROCEDURE topology.RelationTrigger(''
-	||topology_id||'',''||quote_literal(atopology)||'')'';
+	'CREATE TRIGGER relation_integrity_checks '
+	||'BEFORE UPDATE OR INSERT ON '
+	|| quote_ident(atopology) || '.relation FOR EACH ROW '
+	|| ' EXECUTE PROCEDURE topology.RelationTrigger('
+	||topology_id||','||quote_literal(atopology)||')';
 	--------------} END OF relation CREATION
 
 	
 	------- Default (world) face
-	EXECUTE ''INSERT INTO '' || quote_ident(atopology) || ''.face(face_id) VALUES(0);'';
+	EXECUTE 'INSERT INTO ' || quote_ident(atopology) || '.face(face_id) VALUES(0);';
 
 	------- GiST index on face
-	EXECUTE ''CREATE INDEX face_gist ON ''
+	EXECUTE 'CREATE INDEX face_gist ON '
 		|| quote_ident(atopology)
-		|| ''.face using gist (mbr gist_geometry_ops);'';
+		|| '.face using gist (mbr gist_geometry_ops);';
 
 	------- GiST index on node
-	EXECUTE ''CREATE INDEX node_gist ON ''
+	EXECUTE 'CREATE INDEX node_gist ON '
 		|| quote_ident(atopology)
-		|| ''.node using gist (geom gist_geometry_ops);'';
+		|| '.node using gist (geom gist_geometry_ops);';
 
 	------- GiST index on edge
-	EXECUTE ''CREATE INDEX edge_gist ON ''
+	EXECUTE 'CREATE INDEX edge_gist ON '
 		|| quote_ident(atopology)
-		|| ''.edge_data using gist (geom gist_geometry_ops);'';
+		|| '.edge_data using gist (geom gist_geometry_ops);';
 
 	------- Indexes on left_face and right_face of edge_data
 	------- NOTE: these indexes speed up GetFaceGeometry (and thus
 	-------       TopoGeometry::Geometry) by a factor of 10 !
 	-------       See http://trac.osgeo.org/postgis/ticket/806
-	EXECUTE ''CREATE INDEX edge_left_face_idx ON ''
+	EXECUTE 'CREATE INDEX edge_left_face_idx ON '
 		|| quote_ident(atopology)
-		|| ''.edge_data (left_face);'';
-	EXECUTE ''CREATE INDEX edge_right_face_idx ON ''
+		|| '.edge_data (left_face);';
+	EXECUTE 'CREATE INDEX edge_right_face_idx ON '
 		|| quote_ident(atopology)
-		|| ''.edge_data (right_face);'';
+		|| '.edge_data (right_face);';
 
 	------- Add record to the "topology" metadata table
-	EXECUTE ''INSERT INTO topology.topology (id, name, srid, precision) ''
-		|| '' VALUES ('' || quote_literal(topology_id) || '',''
-		|| quote_literal(atopology) || '',''
-		|| quote_literal(srid) || '','' || quote_literal(precision)
-		|| '')'';
+	EXECUTE 'INSERT INTO topology.topology (id, name, srid, precision) '
+		|| ' VALUES (' || quote_literal(topology_id) || ','
+		|| quote_literal(atopology) || ','
+		|| quote_literal(srid) || ',' || quote_literal(precision)
+		|| ')';
 
 	RETURN topology_id;
 END
-'
+$$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 
 -- wrappers for unspecified srid or precision
@@ -1853,7 +1856,8 @@ LANGUAGE 'SQL' VOLATILE STRICT;
 --
 CREATE OR REPLACE FUNCTION topology.DropTopology(varchar)
 RETURNS text
-AS '
+AS
+$$
 DECLARE
 	atopology alias for $1;
 	topoid integer;
@@ -1867,25 +1871,25 @@ BEGIN
 
 	IF topoid IS NOT NULL THEN
 
-		RAISE NOTICE ''Dropping all layers from topology % (%)'',
+		RAISE NOTICE 'Dropping all layers from topology % (%)',
 			atopology, topoid;
 
 		-- Drop all layers in the topology
-		FOR rec IN EXECUTE ''SELECT * FROM topology.layer WHERE ''
-			|| '' topology_id = '' || topoid
+		FOR rec IN EXECUTE 'SELECT * FROM topology.layer WHERE '
+			|| ' topology_id = ' || topoid
 		LOOP
 
-			EXECUTE ''SELECT topology.DropTopoGeometryColumn(''
+			EXECUTE 'SELECT topology.DropTopoGeometryColumn('
 				|| quote_literal(rec.schema_name)
-				|| '',''
+				|| ','
 				|| quote_literal(rec.table_name)
-				|| '',''
+				|| ','
 				|| quote_literal(rec.feature_column)
-				|| '')'';
+				|| ')';
 		END LOOP;
 
 		-- Delete record from topology.topology
-		EXECUTE ''DELETE FROM topology.topology WHERE id = ''
+		EXECUTE 'DELETE FROM topology.topology WHERE id = '
 			|| topoid;
 
 	END IF;
@@ -1894,16 +1898,16 @@ BEGIN
 	-- Drop the schema (if it exists)
 	FOR rec IN SELECT * FROM pg_namespace WHERE text(nspname) = atopology
 	LOOP
-		EXECUTE ''DROP SCHEMA ''||quote_ident(atopology)||'' CASCADE'';
+		EXECUTE 'DROP SCHEMA '||quote_ident(atopology)||' CASCADE';
 	END LOOP;
 
 	-- Drop any reference to the topology schema in geometry_columns
 	DELETE FROM geometry_columns WHERE f_table_schema = atopology;
 
 
-	RETURN ''Topology '' || quote_literal(atopology) || '' dropped'';
+	RETURN 'Topology ' || quote_literal(atopology) || ' dropped';
 END
-'
+$$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} DropTopology
 
@@ -1923,7 +1927,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 CREATE OR REPLACE FUNCTION topology.intersects(topology.TopoGeometry, topology.TopoGeometry)
 	RETURNS bool
 AS
-'
+$$
 DECLARE
 	tg1 alias for $1;
 	tg2 alias for $2;
@@ -1933,7 +1937,7 @@ DECLARE
 	query text;
 BEGIN
 	IF tg1.topology_id != tg2.topology_id THEN
-		RAISE EXCEPTION ''Cannot compute intersection between TopoGeometries from different topologies'';
+		RAISE EXCEPTION 'Cannot compute intersection between TopoGeometries from different topologies';
 	END IF;
 
 	-- Order TopoGeometries so that tg1 has less-or-same
@@ -1944,10 +1948,10 @@ BEGIN
 		tg1 := tgbuf;
 	END IF;
 
-	--RAISE NOTICE ''tg1.id:% tg2.id:%'', tg1.id, tg2.id;
+	--RAISE NOTICE 'tg1.id:% tg2.id:%', tg1.id, tg2.id;
 	-- Geometry collection are not currently supported
 	IF tg2.type = 4 THEN
-		RAISE EXCEPTION ''GeometryCollection are not supported by intersects()'';
+		RAISE EXCEPTION 'GeometryCollection are not supported by intersects()';
 	END IF;
 
         -- Get topology name
@@ -1955,20 +1959,20 @@ BEGIN
                 WHERE id = tg1.topology_id;
 
 	-- Hierarchical TopoGeometries are not currently supported
-	query = ''SELECT level FROM topology.layer''
-		|| '' WHERE ''
-		|| '' topology_id = '' || tg1.topology_id
-		|| '' AND ''
-		|| ''( layer_id = '' || tg1.layer_id
-		|| '' OR layer_id = '' || tg2.layer_id
-		|| '' ) ''
-		|| '' AND level > 0 '';
+	query = 'SELECT level FROM topology.layer'
+		|| ' WHERE '
+		|| ' topology_id = ' || tg1.topology_id
+		|| ' AND '
+		|| '( layer_id = ' || tg1.layer_id
+		|| ' OR layer_id = ' || tg2.layer_id
+		|| ' ) '
+		|| ' AND level > 0 ';
 
-	--RAISE NOTICE ''%'', query;
+	--RAISE NOTICE '%', query;
 
 	FOR rec IN EXECUTE query
 	LOOP
-		RAISE EXCEPTION ''Hierarchical TopoGeometries are not currently supported by intersects()'';
+		RAISE EXCEPTION 'Hierarchical TopoGeometries are not currently supported by intersects()';
 	END LOOP;
 
 	IF tg1.type = 1 THEN -- [multi]point
@@ -1983,18 +1987,18 @@ BEGIN
 	--
 	--
 			query =
-				''SELECT a.topogeo_id FROM ''
+				'SELECT a.topogeo_id FROM '
 				|| quote_ident(toponame) ||
-				''.relation a, ''
+				'.relation a, '
 				|| quote_ident(toponame) ||
-				''.relation b ''
-				|| ''WHERE a.layer_id = '' || tg1.layer_id
-				|| '' AND b.layer_id = '' || tg2.layer_id
-				|| '' AND a.topogeo_id = '' || tg1.id
-				|| '' AND b.topogeo_id = '' || tg2.id
-				|| '' AND a.element_id = b.element_id ''
-				|| '' LIMIT 1'';
-			--RAISE NOTICE ''%'', query;
+				'.relation b '
+				|| 'WHERE a.layer_id = ' || tg1.layer_id
+				|| ' AND b.layer_id = ' || tg2.layer_id
+				|| ' AND a.topogeo_id = ' || tg1.id
+				|| ' AND b.topogeo_id = ' || tg2.id
+				|| ' AND a.element_id = b.element_id '
+				|| ' LIMIT 1';
+			--RAISE NOTICE '%', query;
 			FOR rec IN EXECUTE query
 			LOOP
 				RETURN TRUE; -- they share an element
@@ -2013,25 +2017,25 @@ BEGIN
 	--
 	--
 			query =
-				''SELECT a.topogeo_id FROM ''
+				'SELECT a.topogeo_id FROM '
 				|| quote_ident(toponame) ||
-				''.relation a, ''
+				'.relation a, '
 				|| quote_ident(toponame) ||
-				''.relation b, ''
+				'.relation b, '
 				|| quote_ident(toponame) ||
-				''.edge_data e ''
-				|| ''WHERE a.layer_id = '' || tg1.layer_id
-				|| '' AND b.layer_id = '' || tg2.layer_id
-				|| '' AND a.topogeo_id = '' || tg1.id
-				|| '' AND b.topogeo_id = '' || tg2.id
-				|| '' AND abs(b.element_id) = e.edge_id ''
-				|| '' AND ( ''
-					|| '' e.start_node = a.element_id ''
-					|| '' OR ''
-					|| '' e.end_node = a.element_id ''
-				|| '' )''
-				|| '' LIMIT 1'';
-			--RAISE NOTICE ''%'', query;
+				'.edge_data e '
+				|| 'WHERE a.layer_id = ' || tg1.layer_id
+				|| ' AND b.layer_id = ' || tg2.layer_id
+				|| ' AND a.topogeo_id = ' || tg1.id
+				|| ' AND b.topogeo_id = ' || tg2.id
+				|| ' AND abs(b.element_id) = e.edge_id '
+				|| ' AND ( '
+					|| ' e.start_node = a.element_id '
+					|| ' OR '
+					|| ' e.end_node = a.element_id '
+				|| ' )'
+				|| ' LIMIT 1';
+			--RAISE NOTICE '%', query;
 			FOR rec IN EXECUTE query
 			LOOP
 				RETURN TRUE; -- they share an element
@@ -2056,24 +2060,24 @@ BEGIN
 	--
 			-- Check if any node is contained in a face
 			query =
-				''SELECT n.node_id as id FROM ''
+				'SELECT n.node_id as id FROM '
 				|| quote_ident(toponame) ||
-				''.relation r1, ''
+				'.relation r1, '
 				|| quote_ident(toponame) ||
-				''.relation r2, ''
+				'.relation r2, '
 				|| quote_ident(toponame) ||
-				''.node n ''
-				|| ''WHERE r1.layer_id = '' || tg1.layer_id
-				|| '' AND r2.layer_id = '' || tg2.layer_id
-				|| '' AND r1.topogeo_id = '' || tg1.id
-				|| '' AND r2.topogeo_id = '' || tg2.id
-				|| '' AND n.node_id = r1.element_id ''
-				|| '' AND r2.element_id = n.containing_face ''
-				|| '' LIMIT 1'';
-			--RAISE NOTICE ''%'', query;
+				'.node n '
+				|| 'WHERE r1.layer_id = ' || tg1.layer_id
+				|| ' AND r2.layer_id = ' || tg2.layer_id
+				|| ' AND r1.topogeo_id = ' || tg1.id
+				|| ' AND r2.topogeo_id = ' || tg2.id
+				|| ' AND n.node_id = r1.element_id '
+				|| ' AND r2.element_id = n.containing_face '
+				|| ' LIMIT 1';
+			--RAISE NOTICE '%', query;
 			FOR rec IN EXECUTE query
 			LOOP
-				--RAISE NOTICE ''Node % in polygon face'', rec.id;
+				--RAISE NOTICE 'Node % in polygon face', rec.id;
 				RETURN TRUE; -- one (or more) nodes are
 				             -- contained in a polygon face
 			END LOOP;
@@ -2081,36 +2085,36 @@ BEGIN
 			-- Check if any node is start or end of any polygon
 			-- face edge
 			query =
-				''SELECT n.node_id as nid, e.edge_id as eid ''
-				|| '' FROM ''
+				'SELECT n.node_id as nid, e.edge_id as eid '
+				|| ' FROM '
 				|| quote_ident(toponame) ||
-				''.relation r1, ''
+				'.relation r1, '
 				|| quote_ident(toponame) ||
-				''.relation r2, ''
+				'.relation r2, '
 				|| quote_ident(toponame) ||
-				''.edge_data e, ''
+				'.edge_data e, '
 				|| quote_ident(toponame) ||
-				''.node n ''
-				|| ''WHERE r1.layer_id = '' || tg1.layer_id
-				|| '' AND r2.layer_id = '' || tg2.layer_id
-				|| '' AND r1.topogeo_id = '' || tg1.id
-				|| '' AND r2.topogeo_id = '' || tg2.id
-				|| '' AND n.node_id = r1.element_id ''
-				|| '' AND ( ''
-				|| '' e.left_face = r2.element_id ''
-				|| '' OR ''
-				|| '' e.right_face = r2.element_id ''
-				|| '' ) ''
-				|| '' AND ( ''
-				|| '' e.start_node = r1.element_id ''
-				|| '' OR ''
-				|| '' e.end_node = r1.element_id ''
-				|| '' ) ''
-				|| '' LIMIT 1'';
-			--RAISE NOTICE ''%'', query;
+				'.node n '
+				|| 'WHERE r1.layer_id = ' || tg1.layer_id
+				|| ' AND r2.layer_id = ' || tg2.layer_id
+				|| ' AND r1.topogeo_id = ' || tg1.id
+				|| ' AND r2.topogeo_id = ' || tg2.id
+				|| ' AND n.node_id = r1.element_id '
+				|| ' AND ( '
+				|| ' e.left_face = r2.element_id '
+				|| ' OR '
+				|| ' e.right_face = r2.element_id '
+				|| ' ) '
+				|| ' AND ( '
+				|| ' e.start_node = r1.element_id '
+				|| ' OR '
+				|| ' e.end_node = r1.element_id '
+				|| ' ) '
+				|| ' LIMIT 1';
+			--RAISE NOTICE '%', query;
 			FOR rec IN EXECUTE query
 			LOOP
-				--RAISE NOTICE ''Node % on edge % bound'', rec.nid, rec.eid;
+				--RAISE NOTICE 'Node % on edge % bound', rec.nid, rec.eid;
 				RETURN TRUE; -- one node is start or end
 				             -- of a face edge
 			END LOOP;
@@ -2120,10 +2124,10 @@ BEGIN
 	---------------------------------------------------------
 
 		ELSIF tg2.type = 4 THEN -- point/collection
-			RAISE EXCEPTION ''Intersection point/collection not implemented yet'';
+			RAISE EXCEPTION 'Intersection point/collection not implemented yet';
 
 		ELSE
-			RAISE EXCEPTION ''Invalid TopoGeometry type'', tg2.type;
+			RAISE EXCEPTION 'Invalid TopoGeometry type', tg2.type;
 		END IF;
 
 	ELSIF tg1.type = 2 THEN -- [multi]line
@@ -2136,32 +2140,32 @@ BEGIN
 	--
 	--
 			query =
-				''SELECT e1.start_node FROM ''
+				'SELECT e1.start_node FROM '
 				|| quote_ident(toponame) ||
-				''.relation r1, ''
+				'.relation r1, '
 				|| quote_ident(toponame) ||
-				''.relation r2, ''
+				'.relation r2, '
 				|| quote_ident(toponame) ||
-				''.edge_data e1, ''
+				'.edge_data e1, '
 				|| quote_ident(toponame) ||
-				''.edge_data e2 ''
-				|| ''WHERE r1.layer_id = '' || tg1.layer_id
-				|| '' AND r2.layer_id = '' || tg2.layer_id
-				|| '' AND r1.topogeo_id = '' || tg1.id
-				|| '' AND r2.topogeo_id = '' || tg2.id
-				|| '' AND abs(r1.element_id) = e1.edge_id ''
-				|| '' AND abs(r2.element_id) = e2.edge_id ''
-				|| '' AND ( ''
-					|| '' e1.start_node = e2.start_node ''
-					|| '' OR ''
-					|| '' e1.start_node = e2.end_node ''
-					|| '' OR ''
-					|| '' e1.end_node = e2.start_node ''
-					|| '' OR ''
-					|| '' e1.end_node = e2.end_node ''
-				|| '' )''
-				|| '' LIMIT 1'';
-			--RAISE NOTICE ''%'', query;
+				'.edge_data e2 '
+				|| 'WHERE r1.layer_id = ' || tg1.layer_id
+				|| ' AND r2.layer_id = ' || tg2.layer_id
+				|| ' AND r1.topogeo_id = ' || tg1.id
+				|| ' AND r2.topogeo_id = ' || tg2.id
+				|| ' AND abs(r1.element_id) = e1.edge_id '
+				|| ' AND abs(r2.element_id) = e2.edge_id '
+				|| ' AND ( '
+					|| ' e1.start_node = e2.start_node '
+					|| ' OR '
+					|| ' e1.start_node = e2.end_node '
+					|| ' OR '
+					|| ' e1.end_node = e2.start_node '
+					|| ' OR '
+					|| ' e1.end_node = e2.end_node '
+				|| ' )'
+				|| ' LIMIT 1';
+			--RAISE NOTICE '%', query;
 			FOR rec IN EXECUTE query
 			LOOP
 				RETURN TRUE; -- they share an element
@@ -2184,51 +2188,51 @@ BEGIN
 			-- R2 are polygon relations.
 			-- R2.element_id are FACE ids
 			query =
-				''SELECT e1.edge_id''
-				|| '' FROM ''
+				'SELECT e1.edge_id'
+				|| ' FROM '
 				|| quote_ident(toponame) ||
-				''.relation r1, ''
+				'.relation r1, '
 				|| quote_ident(toponame) ||
-				''.relation r2, ''
+				'.relation r2, '
 				|| quote_ident(toponame) ||
-				''.edge_data e1, ''
+				'.edge_data e1, '
 				|| quote_ident(toponame) ||
-				''.edge_data e2 ''
-				|| ''WHERE r1.layer_id = '' || tg1.layer_id
-				|| '' AND r2.layer_id = '' || tg2.layer_id
-				|| '' AND r1.topogeo_id = '' || tg1.id
-				|| '' AND r2.topogeo_id = '' || tg2.id
+				'.edge_data e2 '
+				|| 'WHERE r1.layer_id = ' || tg1.layer_id
+				|| ' AND r2.layer_id = ' || tg2.layer_id
+				|| ' AND r1.topogeo_id = ' || tg1.id
+				|| ' AND r2.topogeo_id = ' || tg2.id
 
 				-- E1 are line edges
-				|| '' AND e1.edge_id = abs(r1.element_id) ''
+				|| ' AND e1.edge_id = abs(r1.element_id) '
 
 				-- E2 are face edges
-				|| '' AND ( e2.left_face = r2.element_id ''
-				|| ''   OR e2.right_face = r2.element_id ) ''
+				|| ' AND ( e2.left_face = r2.element_id '
+				|| '   OR e2.right_face = r2.element_id ) '
 
-				|| '' AND ( ''
+				|| ' AND ( '
 
 				-- Check if E1 have left-or-right face 
 				-- being part of R2.element_id
-				|| '' e1.left_face = r2.element_id ''
-				|| '' OR ''
-				|| '' e1.right_face = r2.element_id ''
+				|| ' e1.left_face = r2.element_id '
+				|| ' OR '
+				|| ' e1.right_face = r2.element_id '
 
 				-- Check if E1 share start-or-end node
 				-- with any E2.
-				|| '' OR ''
-				|| '' e1.start_node = e2.start_node ''
-				|| '' OR ''
-				|| '' e1.start_node = e2.end_node ''
-				|| '' OR ''
-				|| '' e1.end_node = e2.start_node ''
-				|| '' OR ''
-				|| '' e1.end_node = e2.end_node ''
+				|| ' OR '
+				|| ' e1.start_node = e2.start_node '
+				|| ' OR '
+				|| ' e1.start_node = e2.end_node '
+				|| ' OR '
+				|| ' e1.end_node = e2.start_node '
+				|| ' OR '
+				|| ' e1.end_node = e2.end_node '
 
-				|| '' ) ''
+				|| ' ) '
 
-				|| '' LIMIT 1'';
-			--RAISE NOTICE ''%'', query;
+				|| ' LIMIT 1';
+			--RAISE NOTICE '%', query;
 			FOR rec IN EXECUTE query
 			LOOP
 				RETURN TRUE; -- either common node
@@ -2240,10 +2244,10 @@ BEGIN
 	---------------------------------------------------------
 
 		ELSIF tg2.type = 4 THEN -- line/collection
-			RAISE EXCEPTION ''Intersection line/collection not implemented yet'', tg1.type, tg2.type;
+			RAISE EXCEPTION 'Intersection line/collection not implemented yet', tg1.type, tg2.type;
 
 		ELSE
-			RAISE EXCEPTION ''Invalid TopoGeometry type'', tg2.type;
+			RAISE EXCEPTION 'Invalid TopoGeometry type', tg2.type;
 		END IF;
 
 
@@ -2265,57 +2269,57 @@ BEGIN
 			-- R1.element_id are poly1 FACE ids
 			-- R2.element_id are poly2 FACE ids
 			query =
-				''SELECT e1.edge_id''
-				|| '' FROM ''
+				'SELECT e1.edge_id'
+				|| ' FROM '
 				|| quote_ident(toponame) ||
-				''.relation r1, ''
+				'.relation r1, '
 				|| quote_ident(toponame) ||
-				''.relation r2, ''
+				'.relation r2, '
 				|| quote_ident(toponame) ||
-				''.edge_data e1, ''
+				'.edge_data e1, '
 				|| quote_ident(toponame) ||
-				''.edge_data e2 ''
-				|| ''WHERE r1.layer_id = '' || tg1.layer_id
-				|| '' AND r2.layer_id = '' || tg2.layer_id
-				|| '' AND r1.topogeo_id = '' || tg1.id
-				|| '' AND r2.topogeo_id = '' || tg2.id
+				'.edge_data e2 '
+				|| 'WHERE r1.layer_id = ' || tg1.layer_id
+				|| ' AND r2.layer_id = ' || tg2.layer_id
+				|| ' AND r1.topogeo_id = ' || tg1.id
+				|| ' AND r2.topogeo_id = ' || tg2.id
 
 				-- E1 are poly1 edges
-				|| '' AND ( e1.left_face = r1.element_id ''
-				|| ''   OR e1.right_face = r1.element_id ) ''
+				|| ' AND ( e1.left_face = r1.element_id '
+				|| '   OR e1.right_face = r1.element_id ) '
 
 				-- E2 are poly2 edges
-				|| '' AND ( e2.left_face = r2.element_id ''
-				|| ''   OR e2.right_face = r2.element_id ) ''
+				|| ' AND ( e2.left_face = r2.element_id '
+				|| '   OR e2.right_face = r2.element_id ) '
 
-				|| '' AND ( ''
+				|| ' AND ( '
 
 				-- Check if any edge from a polygon face
 				-- has any of the other polygon face
 				-- on the left or right 
-				|| '' e1.left_face = r2.element_id ''
-				|| '' OR ''
-				|| '' e1.right_face = r2.element_id ''
-				|| '' OR ''
-				|| '' e2.left_face = r1.element_id ''
-				|| '' OR ''
-				|| '' e2.right_face = r1.element_id ''
+				|| ' e1.left_face = r2.element_id '
+				|| ' OR '
+				|| ' e1.right_face = r2.element_id '
+				|| ' OR '
+				|| ' e2.left_face = r1.element_id '
+				|| ' OR '
+				|| ' e2.right_face = r1.element_id '
 
 				-- Check if E1 share start-or-end node
 				-- with any E2.
-				|| '' OR ''
-				|| '' e1.start_node = e2.start_node ''
-				|| '' OR ''
-				|| '' e1.start_node = e2.end_node ''
-				|| '' OR ''
-				|| '' e1.end_node = e2.start_node ''
-				|| '' OR ''
-				|| '' e1.end_node = e2.end_node ''
+				|| ' OR '
+				|| ' e1.start_node = e2.start_node '
+				|| ' OR '
+				|| ' e1.start_node = e2.end_node '
+				|| ' OR '
+				|| ' e1.end_node = e2.start_node '
+				|| ' OR '
+				|| ' e1.end_node = e2.end_node '
 
-				|| '' ) ''
+				|| ' ) '
 
-				|| '' LIMIT 1'';
-			--RAISE NOTICE ''%'', query;
+				|| ' LIMIT 1';
+			--RAISE NOTICE '%', query;
 			FOR rec IN EXECUTE query
 			LOOP
 				RETURN TRUE; -- either common node
@@ -2327,24 +2331,24 @@ BEGIN
 	---------------------------------------------------------
 
 		ELSIF tg2.type = 4 THEN -- polygon/collection
-			RAISE EXCEPTION ''Intersection poly/collection not implemented yet'', tg1.type, tg2.type;
+			RAISE EXCEPTION 'Intersection poly/collection not implemented yet', tg1.type, tg2.type;
 
 		ELSE
-			RAISE EXCEPTION ''Invalid TopoGeometry type'', tg2.type;
+			RAISE EXCEPTION 'Invalid TopoGeometry type', tg2.type;
 		END IF;
 
 	ELSIF tg1.type = 4 THEN -- collection
 		IF tg2.type = 4 THEN -- collection/collection
-			RAISE EXCEPTION ''Intersection collection/collection not implemented yet'', tg1.type, tg2.type;
+			RAISE EXCEPTION 'Intersection collection/collection not implemented yet', tg1.type, tg2.type;
 		ELSE
-			RAISE EXCEPTION ''Invalid TopoGeometry type'', tg2.type;
+			RAISE EXCEPTION 'Invalid TopoGeometry type', tg2.type;
 		END IF;
 
 	ELSE
-		RAISE EXCEPTION ''Invalid TopoGeometry type %'', tg1.type;
+		RAISE EXCEPTION 'Invalid TopoGeometry type %', tg1.type;
 	END IF;
 END
-'
+$$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} intersects(TopoGeometry, TopoGeometry)
 
@@ -2354,7 +2358,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 CREATE OR REPLACE FUNCTION topology.equals(topology.TopoGeometry, topology.TopoGeometry)
 	RETURNS bool
 AS
-'
+$$
 DECLARE
 	tg1 alias for $1;
 	tg2 alias for $2;
@@ -2364,7 +2368,7 @@ DECLARE
 BEGIN
 
 	IF tg1.topology_id != tg2.topology_id THEN
-		RAISE EXCEPTION ''Cannot compare TopoGeometries from different topologies'';
+		RAISE EXCEPTION 'Cannot compare TopoGeometries from different topologies';
 	END IF;
 
 	-- Not the same type, not equal
@@ -2374,7 +2378,7 @@ BEGIN
 
 	-- Geometry collection are not currently supported
 	IF tg2.type = 4 THEN
-		RAISE EXCEPTION ''GeometryCollection are not supported by equals()'';
+		RAISE EXCEPTION 'GeometryCollection are not supported by equals()';
 	END IF;
 
         -- Get topology name
@@ -2383,32 +2387,32 @@ BEGIN
 
 	-- Two geometries are equal if they are composed by 
 	-- the same TopoElements
-	FOR rec IN EXECUTE ''SELECT * FROM ''
-		|| '' topology.GetTopoGeomElements(''
-		|| quote_literal(toponame) || '', ''
-		|| tg1.layer_id || '','' || tg1.id || '') ''
-		|| '' EXCEPT SELECT * FROM ''
-		|| '' topology.GetTopogeomElements(''
-		|| quote_literal(toponame) || '', ''
-		|| tg2.layer_id || '','' || tg2.id || '');''
+	FOR rec IN EXECUTE 'SELECT * FROM '
+		|| ' topology.GetTopoGeomElements('
+		|| quote_literal(toponame) || ', '
+		|| tg1.layer_id || ',' || tg1.id || ') '
+		|| ' EXCEPT SELECT * FROM '
+		|| ' topology.GetTopogeomElements('
+		|| quote_literal(toponame) || ', '
+		|| tg2.layer_id || ',' || tg2.id || ');'
 	LOOP
 		RETURN FALSE;
 	END LOOP;
 
-	FOR rec IN EXECUTE ''SELECT * FROM ''
-		|| '' topology.GetTopoGeomElements(''
-		|| quote_literal(toponame) || '', ''
-		|| tg2.layer_id || '','' || tg2.id || '')''
-		|| '' EXCEPT SELECT * FROM ''
-		|| '' topology.GetTopogeomElements(''
-		|| quote_literal(toponame) || '', ''
-		|| tg1.layer_id || '','' || tg1.id || ''); ''
+	FOR rec IN EXECUTE 'SELECT * FROM '
+		|| ' topology.GetTopoGeomElements('
+		|| quote_literal(toponame) || ', '
+		|| tg2.layer_id || ',' || tg2.id || ')'
+		|| ' EXCEPT SELECT * FROM '
+		|| ' topology.GetTopogeomElements('
+		|| quote_literal(toponame) || ', '
+		|| tg1.layer_id || ',' || tg1.id || '); '
 	LOOP
 		RETURN FALSE;
 	END LOOP;
 	RETURN TRUE;
 END
-'
+$$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} equals(TopoGeometry, TopoGeometry)
 
