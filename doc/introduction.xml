@@ -33,7 +33,7 @@
 	  <varlistentry>
 		<term>Paul Ramsey</term>
 		<listitem>
-		  <para>Co-founder of PostGIS project.  General bug fixing, geography support, 3D, geography, geometry index support, underlying geometry internal structures, GEOS functionality integration and alignment with 
+		  <para>Co-founder of PostGIS project.  General bug fixing, geography support,  geography and geometry index support (2D, 3D, nD index and anything spatial index), underlying geometry internal structures, GEOS functionality integration and alignment with 
 		  GEOS releases, loader/dumper, and Shapefile GUI loader.</para>
 		</listitem>
 	  </varlistentry>
