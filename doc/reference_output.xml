@@ -851,7 +851,7 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 	  <refnamediv>
 		<refname>ST_AsX3D</refname>
 
-		<refpurpose>Returns a Geometry in X3D (spec 3.0) data given a geometry</refpurpose>
+		<refpurpose>Returns a Geometry in X3D xml node element format: ISO-IEC-19776-1.2-X3DEncodings-XML</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -871,10 +871,10 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns an X3D fragment in X3D 3.0 spec format <ulink url="http://www.web3d.org/specifications/x3d-3.0.xsd">http://www.web3d.org/specifications/x3d-3.0.xsd</ulink>.  If <varname>prec</varname> (precision) is not specified then defaults to 15. TINs are modeled as IndexedTriangleSet, MultiPoints as PointSet, LineString As LineSets, Polyhedral surfaces as IndexedFaceSet </para>
+		<para>Returns a geometry as an X3D xml formatted node element  <ulink url="http://web3d.org/x3d/specifications/ISO-IEC-19776-1.2-X3DEncodings-XML/Part01/EncodingOfNodes.html">http://web3d.org/x3d/specifications/ISO-IEC-19776-1.2-X3DEncodings-XML/Part01/EncodingOfNodes.html</ulink>.  If <varname>prec</varname> (precision) is not specified then defaults to 15. TINs are modeled as IndexedTriangleSet, MultiPoints as PointSet, LineString As LineSets, Polyhedral surfaces as IndexedFaceSet </para>
 		<para>Lots of advancements happening in 3D space particularly with <ulink url="http://www.web3d.org/x3d/wiki/index.php/X3D_and_HTML5#Goals:_X3D_and_HTML5">X3D Integration with HTML5</ulink></para>
 		<para>There is also a nice open source X3D viewer you can use to view rendered geometries. Free Wrl <ulink url="http://freewrl.sourceforge.net/">http://freewrl.sourceforge.net/</ulink> binaries available for Mac, Linux, and Windows.</para>
-		<para>Availability: 2.0.0</para>	
+		<para>Availability: 2.0.0: ISO-IEC-19776-1.2-X3DEncodings-XML</para>	
 		<!-- Optionally mention 3d support -->
 		<para>&Z_support;</para>
         <!-- Optionally mention supports Polyhedral Surface  -->
