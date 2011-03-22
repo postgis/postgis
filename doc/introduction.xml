@@ -176,11 +176,15 @@
 		  <para>The <ulink url="http://trac.osgeo.org/geos/">GEOS</ulink>
 		  geometry operations library, and the algorithmic work of Martin
 		  Davis in making it all work, ongoing maintenance and support of
-		  Mateusz Loskot, Paul Ramsey and others.</para>
+		  Mateusz Loskot, Sandro Santilli (strk), Paul Ramsey and others.</para>
 
 		  <para>The <ulink url="http://trac.osgeo.org/proj/">Proj4</ulink>
 		  cartographic projection library, and the work of Gerald Evenden and
 		  Frank Warmerdam in creating and maintaining it.</para>
+		  
+		  <para>Last but not least, the <ulink url="http://www.postgresql.org">PostgreSQL DBMS</ulink>,
+		  The giant that PostGIS stands on.  Much of the speed and flexibility of PostGIS would not be possible without
+		  the extensibility, great query planner, GIST index, and plethora of SQL features provided by PostgreSQL.</para>
 		</listitem>
 	  </varlistentry>
 	</variablelist>
