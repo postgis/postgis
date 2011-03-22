@@ -790,9 +790,9 @@ BEGIN
 	--
 	-- Compute new edge
 	--
-	nodepos = line_locate_point(oldedge.geom, apoint);
-	newedge1 = line_substring(oldedge.geom, 0, nodepos);
-	newedge2 = line_substring(oldedge.geom, nodepos, 1);
+	nodepos = ST_Line_Locate_Point(oldedge.geom, apoint);
+	newedge1 = ST_Line_Substring(oldedge.geom, 0, nodepos);
+	newedge2 = ST_Line_Substring(oldedge.geom, nodepos, 1);
 
 
 	--
