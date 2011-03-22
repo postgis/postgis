@@ -49,7 +49,7 @@
 	  <varlistentry>
 		<term>Regina Obe</term>
 		<listitem>
-		  <para>Documentation, general user support on PostGIS newsgroup, windows production and experimental builds, and 
+		  <para>Documentation, general user support on PostGIS newsgroup, windows production and experimental builds, X3D support, Tiger Geocoder Support, and 
 		  smoke testing new functionality or major code changes.</para>
 		</listitem>
 	  </varlistentry>
