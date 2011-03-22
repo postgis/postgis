@@ -5,6 +5,12 @@
 -- Copyright (c) 2009-2010 Pierre Racine <pierre.racine@sbf.ulaval.ca>
 --
 ----------------------------------------------------------------------
+CREATE TYPE geomvalxy AS (
+    geom geometry,
+    val double precision,
+    x int,
+    y int
+);
 
 -----------------------------------------------------------------------
 -- ST_PixelAsPolygons
@@ -13,7 +19,7 @@
 -- SELECT (gv).geom, (gv).val FROM (SELECT ST_PixelAsPolygons(rast) gv FROM mytable) foo
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION ST_PixelAsPolygons(rast raster, band integer) 
-    RETURNS SETOF geomval AS 
+    RETURNS SETOF geomvalxy AS 
     $$
     DECLARE
         rast alias for $1;
@@ -21,13 +27,13 @@ CREATE OR REPLACE FUNCTION ST_PixelAsPolygons(rast raster, band integer)
         h integer;
         x integer;
         y integer;
-        result geomval;
+        result geomvalxy;
     BEGIN
         SELECT st_width(rast), st_height(rast)
         INTO w, h;
         FOR x IN 1..w LOOP
              FOR y IN 1..h LOOP
-                 SELECT ST_PixelAsPolygon(rast, band, x, y), ST_Value(rast, band, x, y) INTO result;
+                 SELECT ST_PixelAsPolygon(rast, band, x, y), ST_Value(rast, band, x, y), x, y INTO result;
             RETURN NEXT result;
          END LOOP;
         END LOOP;
@@ -36,7 +42,7 @@ CREATE OR REPLACE FUNCTION ST_PixelAsPolygons(rast raster, band integer)
     $$
     LANGUAGE 'plpgsql';
 
-CREATE FUNCTION ST_PixelAsPolygons(raster) RETURNS SETOF geomval AS 
+CREATE FUNCTION ST_PixelAsPolygons(raster) RETURNS SETOF geomvalxy AS 
 $$
     SELECT ST_PixelAsPolygons($1, 1);
 $$
