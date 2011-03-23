@@ -3100,6 +3100,7 @@ rt_raster_to_wkb(rt_context ctx, rt_raster raster, uint32_t *wkbsize) {
             /* Write data */
             {
                 uint32_t datasize = raster->width * raster->height * pixbytes;
+                RASTER_DEBUGF(4, "rt_raster_to_wkb: Copying %d bytes", datasize);
                 memcpy(ptr, band->data.mem, datasize);
                 ptr += datasize;
             }
