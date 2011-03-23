@@ -2540,7 +2540,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
     //SPI_finish();
     
 
-    POSTGIS_RT_DEBUG(4, "RASTER_mapAlgebra: returning raster")
+    POSTGIS_RT_DEBUG(4, "RASTER_mapAlgebra: returning raster");
 
     PG_RETURN_POINTER(pgraster);
 }
