@@ -728,14 +728,14 @@ int rt_raster_has_no_band(rt_context ctx, rt_raster raster, int nband);
 /**
  * Copy one band from one raster to another
  * @param ctx: context, for thread safety
- * @param raster1: raster to copy band to
- * @param raster2: raster to copy band from
- * @param nband1: band index of destination raster
- * @param nband2: band index of source raster
- * @return The band index of the first raster where the new band is copied.
+ * @param torast: raster to copy band to
+ * @param fromrast: raster to copy band from
+ * @param fromindex: index of band in source raster
+ * @param toindex: index of new band in destination raster
+ * @return The band index of the second raster where the new band is copied.
  */
-int32_t rt_raster_copy_band(rt_context ctx, rt_raster raster1,
-        rt_raster raster2, int nband1, int nband2);
+int32_t rt_raster_copy_band(rt_context ctx, rt_raster torast,
+        rt_raster fromrast, int fromindex, int toindex);
 
 /*- utilities -------------------------------------------------------*/
 

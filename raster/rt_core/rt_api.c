@@ -3580,70 +3580,65 @@ rt_raster_deserialize(rt_context ctx, void* serialized) {
     return rast;
 }
 
-/**
- * Return TRUE if the raster is empty. i.e. is NULL, width = 0 or height = 0
- * @param ctx: context for thread safety
- * @param raster: the raster to get info from
- * @return TRUE if the raster is empty, FALSE otherwise
- */
 int rt_raster_is_empty(rt_context ctx, rt_raster raster) {
     assert(NULL != ctx);
 
     return (NULL == raster || raster->height <= 0 || raster->width <= 0);
 }
 
-/**
- * Return TRUE if the raster do not have a band of this number.
- * @param ctx: context for thread safety
- * @param raster: the raster to get info from
- * @param nband: the band number.
- * @return TRUE if the raster do not have a band of this number, FALSE otherwise
- */
 int rt_raster_has_no_band(rt_context ctx, rt_raster raster, int nband) {
     assert(NULL != ctx);
 
     return (NULL == raster || raster->numBands < nband);
 }
 
-/**
- * Copy one band from one raster to another
- * @param ctx: context, for thread safety
- * @param raster1: raster to copy band to
- * @param raster2: raster to copy band from
- * @param nband1: band index of source raster
- * @param nband2: band index of destination raster
- * @return The band index of the second raster where the new band is copied.
- */
-int32_t rt_raster_copy_band(rt_context ctx, rt_raster raster1,
-        rt_raster raster2, int nband1, int nband2)
+int32_t rt_raster_copy_band(rt_context ctx, rt_raster torast,
+        rt_raster fromrast, int fromindex, int toindex)
 {
     rt_band newband = NULL;
     assert(NULL != ctx);
-    assert(NULL != raster1);
-    assert(NULL != raster2);
+    assert(NULL != torast);
+    assert(NULL != fromrast);
 
     /* Check raster dimensions */
-    if (raster1->height != raster2->height || raster1->width != raster2->width)
+    if (torast->height != fromrast->height || torast->width != fromrast->width)
     {
         ctx->err("rt_raster_copy_band: Attempting to add a band with different width or height");
         return -1;
     }
 
     /* Check bands limits */
-    if (nband1 < 0)
-        nband1 = 0;
-    else if (nband1 >= raster1->numBands)
-        nband1 = raster1->numBands - 1;
+    if (fromrast->numBands < 1)
+    {
+        ctx->warn("rt_raster_copy_band: Second raster has no band");
+        return -1;
+    }
+    else if (fromindex < 0)
+    {
+        ctx->warn("rt_raster_copy_band: Band index for second raster < 0. Defaulted to 1");
+        fromindex = 0;
+    }
+    else if (fromindex >= fromrast->numBands)
+    {
+        ctx->warn("rt_raster_copy_band: Band index for second raster > number of bands, truncated from %u to %u", fromindex - 1, fromrast->numBands);
+        fromindex = fromrast->numBands - 1;
+    }
 
-    if (nband2 < 0)
-        nband2 = 0;
-    else if (nband2 > raster2->numBands)
-        nband2 = raster2->numBands;
+    if (toindex < 0)
+    {
+        ctx->warn("rt_raster_copy_band: Band index for first raster < 0. Defaulted to 1");
+        toindex = 0;
+    }
+    else if (toindex > torast->numBands)
+    {
+        ctx->warn("rt_raster_copy_band: Band index for first raster > number of bands, truncated from %u to %u", toindex - 1, torast->numBands);
+        toindex = torast->numBands;
+    }
 
-    /* Get band from first raster */
-    newband = rt_raster_get_band(ctx, raster1, nband1);
+    /* Get band from source raster */
+    newband = rt_raster_get_band(ctx, fromrast, fromindex);
 
     /* Add band to the second raster */
-    return rt_raster_add_band(ctx, raster2, newband, nband2);
+    return rt_raster_add_band(ctx, torast, newband, toindex);
 }
 

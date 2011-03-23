@@ -339,7 +339,6 @@ Datum RASTER_in(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_out);
 Datum RASTER_out(PG_FUNCTION_ARGS)
 {
-    elog(WARNING, "RASTER_out: Starting...");
     rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
     rt_raster raster = NULL;
     uint32_t hexwkbsize = 0;
@@ -1603,21 +1602,11 @@ Datum RASTER_getPixelValue(PG_FUNCTION_ARGS)
     }
     assert(0 <= (nband - 1));
 
-    /* Validate pixel coordinates are in range */
-    if (PG_ARGISNULL(2)) {
-        elog(NOTICE, "X coordinate can not be NULL when getting pixel value. Returning NULL");
-        PG_RETURN_NULL();
-    }
     x = PG_GETARG_INT32(2);
 
-    if (PG_ARGISNULL(3)) {
-        elog(NOTICE, "Y coordinate can not be NULL when getting pixel value. Returning NULL");
-        PG_RETURN_NULL();
-    }
     y = PG_GETARG_INT32(3);
 
-    if (!PG_ARGISNULL(4))
-        hasnodata = PG_GETARG_BOOL(4);
+    hasnodata = PG_GETARG_BOOL(4);
 
     POSTGIS_RT_DEBUGF(3, "Pixel coordinates (%d, %d)", x, y);
 
@@ -1696,7 +1685,7 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS)
     /* Set the pixel value */
     if (PG_ARGISNULL(4)) {
         if (!rt_band_get_hasnodata_flag(ctx, band)) {
-            elog(NOTICE, "Raster do not have a nodata value defined. Pixel value not set. Returning raster");
+            elog(NOTICE, "Raster do not have a nodata value defined. Nodata value not set. Returning raster");
         }
         else {
             pixvalue = rt_band_get_nodata(ctx, band);
@@ -1823,68 +1812,62 @@ PG_FUNCTION_INFO_V1(RASTER_copyband);
 Datum RASTER_copyband(PG_FUNCTION_ARGS)
 {
     rt_pgraster *pgraster = NULL;
-    rt_raster raster1 = NULL;
-    rt_raster raster2 = NULL;
-    int nband1 = 0;
-    int nband2 = 0;
-    int oldnumbands = 0;
-    int numbands = 0;
+    rt_raster torast = NULL;
+    rt_raster fromrast = NULL;
+    int toindex = 0;
+    int fromband = 0;
+    int oldtorastnumbands = 0;
+    int newtorastnumbands = 0;
     int index = 0;
-    int max = 0;
     rt_context ctx = NULL;
 
-    /* Get band numbers */
-    nband1 = PG_GETARG_UINT16(2);
-    nband2 = PG_GETARG_UINT16(3);
-
-    if (nband1 < 1 || nband2 < 1) {
-        elog(ERROR, "RASTER_copyband: Invalid band index (must be 1-based)");
+    /* Deserialize torast */
+    if (PG_ARGISNULL(0))
         PG_RETURN_NULL();
-    }
-
-    /* Check if raster1 has the given band */
-
-    /* Deserialize raster1 */
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
     ctx = get_rt_context(fcinfo);
 
-    raster1 = rt_raster_deserialize(ctx, pgraster);
-    if ( ! raster1 ) {
-        elog(ERROR, "RASTER_copyband: Could not deserialize raster");
+    torast = rt_raster_deserialize(ctx, pgraster);
+    if ( ! torast ) {
+        elog(ERROR, "RASTER_copyband: Could not deserialize first raster");
         PG_RETURN_NULL();
     }
 
-    /* Make sure index (1 based) is in range */
-    max = rt_raster_get_num_bands(ctx, raster1);
-    if (nband1 > max) {
-        elog(WARNING, "RASTER_copyband: Band index number exceed possible values, truncated to "
-                "number of band (%u) + 1", max);
-        nband1 = max;
+    /* Deserialize fromrast */
+    if (!PG_ARGISNULL(1)) {
+        pgraster = (rt_pgraster *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(1));
+        ctx = get_rt_context(fcinfo);
+
+        fromrast = rt_raster_deserialize(ctx, pgraster);
+        if ( ! fromrast ) {
+            elog(ERROR, "RASTER_copyband: Could not deserialize second raster");
+            PG_RETURN_NULL();
+        }
+
+        oldtorastnumbands = rt_raster_get_num_bands(ctx, torast);
+
+        if (PG_ARGISNULL(2))
+            fromband = 1;
+        else
+            fromband = PG_GETARG_UINT16(2);
+
+        if (PG_ARGISNULL(3))
+            toindex = oldtorastnumbands + 1;
+        else
+            toindex = PG_GETARG_UINT16(2);
+
+        /* Copy band fromrast torast */
+        index = rt_raster_copy_band(ctx, torast, fromrast, fromband - 1, toindex - 1);
+
+        newtorastnumbands = rt_raster_get_num_bands(ctx, torast);
+        if (newtorastnumbands == oldtorastnumbands || index == -1) {
+            elog(NOTICE, "RASTER_copyband: Could not add band to raster. Returning original raster.");
+        }
     }
-
-    /* Deserialize raster2 */
-    pgraster = (rt_pgraster *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(1));
-    ctx = get_rt_context(fcinfo);
-
-    raster2 = rt_raster_deserialize(ctx, pgraster);
-    if ( ! raster2 ) {
-        elog(ERROR, "RASTER_copyband: Could not deserialize raster");
-        PG_RETURN_NULL();
-    }
-
-    /* Copy band from raster1 to raster2 */
-    oldnumbands = rt_raster_get_num_bands(ctx, raster2);
-
-    index = rt_raster_copy_band(ctx, raster1, raster2, nband1, nband2);
-
-    numbands = rt_raster_get_num_bands(ctx, raster2);
-    if (numbands == oldnumbands || index == -1) {
-        elog(ERROR, "RASTER_copyband: Could not add band to raster. Returning NULL");
-        PG_RETURN_NULL();
-    }
-
-    /* Serialize and return raster2 */
-    pgraster = rt_raster_serialize(ctx, raster2);
+    else
+        elog(NOTICE, "RASTER_copyband: Second raster is NULL. Returning original raster.");
+    /* Serialize and return torast */
+    pgraster = rt_raster_serialize(ctx, torast);
     if (!pgraster) PG_RETURN_NULL();
 
     SET_VARSIZE(pgraster, pgraster->size);
