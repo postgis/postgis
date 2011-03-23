@@ -1770,6 +1770,11 @@ Datum RASTER_addband(PG_FUNCTION_ARGS)
     }
 
     /* Deserialize raster */
+    if (PG_ARGISNULL(0)) {
+        /* Simply return NULL */
+        elog(NOTICE, "Raster can not be NULL. Returning NULL");
+        PG_RETURN_NULL();
+    }
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
     ctx = get_rt_context(fcinfo);
 
@@ -1850,8 +1855,11 @@ Datum RASTER_copyband(PG_FUNCTION_ARGS)
     rt_context ctx = NULL;
 
     /* Deserialize torast */
-    if (PG_ARGISNULL(0))
+    if (PG_ARGISNULL(0)) {
+        /* Simply return NULL */
+        elog(NOTICE, "First raster can not be NULL. Returning NULL");
         PG_RETURN_NULL();
+    }
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
     ctx = get_rt_context(fcinfo);
 
