@@ -1650,18 +1650,32 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS)
     int32_t nband = 0;
     int32_t x = 0;
     int32_t y = 0;
+    bool skipset = FALSE;
 
     /* nband is 1-based */
-    nband = PG_GETARG_INT32(1);
+    if (PG_ARGISNULL(1))
+        nband = -1;
+    else
+        nband = PG_GETARG_INT32(1);
     if ( nband < 1 ) {
-        elog(ERROR, "RASTER_setPixelValue: Invalid band index (must use 1-based)");
-        PG_RETURN_NULL();
+        elog(NOTICE, "Invalid band index (must use 1-based). Value not set. Returning original raster");
+        skipset = TRUE;
     }
-    assert(0 <= (nband - 1));
 
-    /* Validate pixel coordinates are in range */
-    x = PG_GETARG_INT32(2);
-    y = PG_GETARG_INT32(3);
+    /* Validate pixel coordinates are not null */
+    if (PG_ARGISNULL(2)) {
+        elog(NOTICE, "X coordinate can not be NULL when getting pixel value. Value not set. Returning original raster");
+        skipset = TRUE;
+    }
+    else
+        x = PG_GETARG_INT32(2);
+
+    if (PG_ARGISNULL(3)) {
+        elog(NOTICE, "Y coordinate can not be NULL when getting pixel value. Value not set. Returning original raster");
+        skipset = TRUE;
+    }
+    else 
+        y = PG_GETARG_INT32(3);
 
     POSTGIS_RT_DEBUGF(3, "Pixel coordinates (%d, %d)", x, y);
 
@@ -1675,28 +1689,30 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS)
         PG_RETURN_NULL();
     }
 
-    /* Fetch requested band */
-    band = rt_raster_get_band(ctx, raster, nband - 1);
-    if ( ! band ) {
-        elog(NOTICE, "Could not find raster band of index %d when setting pixel value. Returning NULL", nband);
-        PG_RETURN_NULL();
-    }
-
-    /* Set the pixel value */
-    if (PG_ARGISNULL(4)) {
-        if (!rt_band_get_hasnodata_flag(ctx, band)) {
-            elog(NOTICE, "Raster do not have a nodata value defined. Nodata value not set. Returning raster");
+    if (! skipset) {
+        /* Fetch requested band */
+        assert(0 <= (nband - 1));
+        band = rt_raster_get_band(ctx, raster, nband - 1);
+        if ( ! band ) {
+            elog(NOTICE, "Could not find raster band of index %d when setting pixel value. Value not set. Returning original raster", nband);
         }
         else {
-            pixvalue = rt_band_get_nodata(ctx, band);
-            rt_band_set_pixel(ctx, band, x - 1, y - 1, pixvalue);
+            /* Set the pixel value */
+            if (PG_ARGISNULL(4)) {
+                if (!rt_band_get_hasnodata_flag(ctx, band)) {
+                    elog(NOTICE, "Raster do not have a nodata value defined. Set band nodata value first. Nodata value not set. Returning original raster");
+                }
+                else {
+                    pixvalue = rt_band_get_nodata(ctx, band);
+                    rt_band_set_pixel(ctx, band, x - 1, y - 1, pixvalue);
+                }
+            }
+            else {
+                pixvalue = PG_GETARG_FLOAT8(4);
+                rt_band_set_pixel(ctx, band, x - 1, y - 1, pixvalue);
+            }
         }
     }
-    else {
-        pixvalue = PG_GETARG_FLOAT8(4);
-        rt_band_set_pixel(ctx, band, x - 1, y - 1, pixvalue);
-    }
-
     pgraster = rt_raster_serialize(ctx, raster);
     if ( ! pgraster ) PG_RETURN_NULL();
 

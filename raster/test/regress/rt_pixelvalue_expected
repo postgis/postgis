@@ -1,4 +1,4 @@
-NOTICE:  Raster do not have a nodata value defined. Nodata value not set. Returning raster
-NOTICE:  Raster do not have a nodata value defined. Nodata value not set. Returning raster
-NOTICE:  Raster do not have a nodata value defined. Nodata value not set. Returning raster
-NOTICE:  Raster do not have a nodata value defined. Nodata value not set. Returning raster
+NOTICE:  Raster do not have a nodata value defined. Use ST_SetBandNodataValue first. Nodata value not set and returning original raster
+NOTICE:  Raster do not have a nodata value defined. Use ST_SetBandNodataValue first. Nodata value not set and returning original raster
+NOTICE:  Raster do not have a nodata value defined. Use ST_SetBandNodataValue first. Nodata value not set and returning original raster
+NOTICE:  Raster do not have a nodata value defined. Use ST_SetBandNodataValue first. Nodata value not set and returning original raster
