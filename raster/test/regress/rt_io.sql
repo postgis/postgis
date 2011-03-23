@@ -863,8 +863,8 @@ VALUES ( 12, '1x1 single band (64BF external) no transform',
 ) );
 
 SELECT name,
-    hexwkb_ndr::raster::text = hexwkb_ndr                                        or hexwkb_ndr::raster::text = hexwkb_xdr as ndr_io,
-    hexwkb_xdr::raster::text = hexwkb_ndr                                        or hexwkb_xdr::raster::text = hexwkb_xdr as xdr_io
+    hexwkb_ndr::raster::text = hexwkb_ndr or hexwkb_ndr::raster::text = hexwkb_xdr as ndr_io,
+    hexwkb_xdr::raster::text = hexwkb_ndr or hexwkb_xdr::raster::text = hexwkb_xdr as xdr_io
 FROM rt_io_test;
 
 -- Out of range value for 1BB pixeltype
