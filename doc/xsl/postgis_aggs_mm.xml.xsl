@@ -15,7 +15,7 @@
 	</xsl:template>
 
 	<xsl:template match="//chapter">
-	<chapter>
+	<chapter id="PostGIS_Special_Functions_Index">
 		<title>PostGIS Special Functions Index</title>
 		<sect1 id="PostGIS_Aggregate_Functions">
 			<title>PostGIS Aggregate Functions</title>
