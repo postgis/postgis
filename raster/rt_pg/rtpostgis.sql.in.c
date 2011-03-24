@@ -188,18 +188,18 @@ CREATE OR REPLACE FUNCTION st_addband(rast raster, index int, pixeltype text, in
 
 CREATE OR REPLACE FUNCTION st_addband(rast raster, pixeltype text)
     RETURNS raster
-    AS 'select st_addband($1, 1, $2, 0, NULL)'
+    AS 'select st_addband($1, NULL, $2, 0, NULL)'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_addband(rast raster, pixeltype text, initialvalue float8)
     RETURNS raster
-    AS 'select st_addband($1, 1, $2, $3, NULL)'
+    AS 'select st_addband($1, NULL, $2, $3, NULL)'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- This function can not be STRICT, because nodataval can be NULL indicating that no nodata value should be set
 CREATE OR REPLACE FUNCTION st_addband(rast raster, pixeltype text, initialvalue float8, nodataval float8)
     RETURNS raster
-    AS 'select st_addband($1, 1, $2, $3, $4)'
+    AS 'select st_addband($1, NULL, $2, $3, $4)'
     LANGUAGE 'SQL' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_addband(rast raster, index int, pixeltype text)
