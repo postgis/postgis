@@ -109,7 +109,6 @@ Datum RASTER_getBandPixelType(PG_FUNCTION_ARGS);
 Datum RASTER_getBandPixelTypeName(PG_FUNCTION_ARGS);
 Datum RASTER_getBandNoDataValue(PG_FUNCTION_ARGS);
 Datum RASTER_getBandPath(PG_FUNCTION_ARGS);
-Datum RASTER_getPixelValue(PG_FUNCTION_ARGS);
 Datum RASTER_bandIsNoData(PG_FUNCTION_ARGS);
 Datum RASTER_isEmpty(PG_FUNCTION_ARGS);
 Datum RASTER_hasNoBand(PG_FUNCTION_ARGS);
@@ -117,6 +116,9 @@ Datum RASTER_hasNoBand(PG_FUNCTION_ARGS);
 /* Set all the properties of a raster band */
 Datum RASTER_setBandIsNoData(PG_FUNCTION_ARGS);
 Datum RASTER_setBandNoDataValue(PG_FUNCTION_ARGS);
+
+/* Get pixel value */
+Datum RASTER_getPixelValue(PG_FUNCTION_ARGS);
 
 /* Set pixel value */
 Datum RASTER_setPixelValue(PG_FUNCTION_ARGS);
@@ -1890,7 +1892,7 @@ Datum RASTER_copyband(PG_FUNCTION_ARGS)
         if (PG_ARGISNULL(3))
             toindex = oldtorastnumbands + 1;
         else
-            toindex = PG_GETARG_UINT16(2);
+            toindex = PG_GETARG_UINT16(3);
 
         /* Copy band fromrast torast */
         newbandindex = rt_raster_copy_band(ctx, torast, fromrast, fromband - 1, toindex - 1);
