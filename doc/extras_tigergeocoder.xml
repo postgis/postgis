@@ -183,7 +183,7 @@ SELECT * FROM addresses_to_geocode WHERE rating is not null;
             <para><varname>loader_variables</varname> keeps track of various variables such as census site, year, data and staging schemas</para>
           </listitem>
           <listitem>
-            <para><varname>loader_platform</varname> profiles of various platforms and where the varous executables are located.  Comes with windows and linux. More can be added.</para>
+            <para><varname>loader_platform</varname> profiles of various platforms and where the various executables are located.  Comes with windows and linux. More can be added.</para>
           </listitem>
           <listitem>
             <para><varname>loader_lookuptables</varname> each record defines a kind of table (state, county), whether to process records in it and how to load them in.  Defines the steps to import data, stage data, add, removes columns, indexes, and constraints for each.  Each table is prefixed with the state and inherits from a table in the tiger schema. e.g. creates <varname>tiger_data.ma_faces</varname> which inherits from <varname>tiger.faces</varname></para>
@@ -199,18 +199,38 @@ SELECT * FROM addresses_to_geocode WHERE rating is not null;
 		<title>Examples</title>
 		<para>Generate script to load up data for 2 states in Windows shell script format.</para>
 		<programlisting>SELECT loader_generate_script(ARRAY['MA','RI'], 'windows') AS result;
-set STATEDIR="\gisdata\www2.census.gov\geo\pvs\tiger2010st\25_Massachusetts"
+-- result --
+set STATEDIR="\gisdata\www2.census.gov\geo\pvs\tiger2010st\44_Rhode_Island"
 set TMPDIR=\gisdata\temp\
 set UNZIPTOOL="C:\Program Files\7-Zip\7z.exe"
 set WGETTOOL="C:\wget\wget.exe"
+set PGBIN=C:\Program Files\PostgreSQL\8.4\bin\
+set PGPORT=5432
+set PGHOST=localhost
+set PGUSER=postgres
+set PGPASSWORD=yourpasswordhere
+set PGDATABASE=geocoder
+set PSQL="%PGBIN%psql"
+set SHP2PGSQL="%PGBIN%shp2pgsql"
+
+%WGETTOOL% http://www2.census.gov/geo/pvs/tiger2010st/44_Rhode_Island/ --no-parent --relative --recursive --level=2 --accept=zip,txt --mirror --reject=html
 :
 :</programlisting>
-		<para>Generate Linux script</para>
-		<programlisting>SELECT loader_generate_script(ARRAY['MA','RI'], 'linux') AS result;
+		<para>Generate sh script</para>
+		<programlisting>SELECT loader_generate_script(ARRAY['MA','RI'], 'sh') AS result;
 -- result --
-STATEDIR="/gisdata/www2.census.gov/geo/pvs/tiger2010st/25_Massachusetts" 
-TMPDIR="/gisdata/temp/
+STATEDIR="/gisdata/www2.census.gov/geo/pvs/tiger2010st/44_Rhode_Island" 
+TMPDIR="/gisdata/temp/"
 UNZIPTOOL=unzip
+PGPORT=5432
+PGHOST=localhost
+PGUSER=postgres
+PGPASSWORD=yourpasswordhere
+PGDATABASE=geocoder
+PSQL=psql
+SHP2PGSQ=shp2pgsql
+
+wget http://www2.census.gov/geo/pvs/tiger2010st/44_Rhode_Island/ --no-parent --relative --recursive --level=2 --accept=zip,txt --mirror --reject=html
 :
 :</programlisting>
 
