@@ -59,7 +59,7 @@ PGUSER=postgres
 PGPASSWORD=yourpasswordhere
 PGDATABASE=geocoder
 PSQL=psql
-SHP2PGSQ=shp2pgsql
+SHP2PGSQL=shp2pgsql
 ', E'rm -f ${TMPDIR}/*.*
 ${PSQL} -c "DROP SCHEMA tiger_staging CASCADE;"
 ${PSQL} -c "CREATE SCHEMA tiger_staging;"
