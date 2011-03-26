@@ -4,7 +4,7 @@ PGHOST=localhost
 PGUSER=postgres
 PGPASSWORD=yourpasswordhere
 THEDB=geocoder
-PSQL_CMD="psql"
+PSQL_CMD=psql
 PGCONTRIB=/usr/share/contrib
 ${PSQL_CMD} -d "${THEDB}" -f "${PGCONTRIB}/fuzzystrmatch.sql"
 ${PSQL_CMD} -d "${THEDB}" -c "CREATE SCHEMA tiger"
