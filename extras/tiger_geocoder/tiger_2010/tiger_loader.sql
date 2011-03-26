@@ -1,6 +1,7 @@
 --$Id$
 SET search_path TO tiger,public;
-
+SET standard_conforming_string on;
+BEGIN;
 DROP AGGREGATE IF EXISTS array_accum(anyelement);
 CREATE AGGREGATE array_accum(anyelement) (
   SFUNC=array_append,
@@ -29,42 +30,46 @@ E'set STATEDIR="${staging_fold}\\${website_root}\\${state_fold}"
 set TMPDIR=${staging_fold}\\temp\\
 set UNZIPTOOL="C:\\Program Files\\7-Zip\\7z.exe"
 set WGETTOOL="C:\\wget\\wget.exe"
-set PGBIN="C:\\Program Files\\PostgreSQL\\8.4\\bin\\"
+set PGBIN=C:\\Program Files\\PostgreSQL\\8.4\\bin\\
 set PGPORT=5432
 set PGHOST=localhost
 set PGUSER=postgres
 set PGPASSWORD=yourpasswordhere
 set PGDATABASE=geocoder
+set PSQL="%PGBIN%psql"
+set SHP2PGSQL="%PGBIN%shp2pgsql"
 ', E'del %TMPDIR%\\*.* /Q
-%PGBIN%\psql -c "DROP SCHEMA ${staging_schema} CASCADE;"
-%PGBIN%\psql -c "CREATE SCHEMA ${staging_schema};"
+%PSQL% -c "DROP SCHEMA ${staging_schema} CASCADE;"
+%PSQL% -c "CREATE SCHEMA ${staging_schema};"
 cd %STATEDIR%
 for /r %%z in (*.zip) do %UNZIPTOOL% e %%z  -o%TMPDIR% 
-cd %TMPDIR%', E'%PGBIN%\\psql', E'\\', E'%PGBIN%\\shp2pgsql', 'set ', 
+cd %TMPDIR%', E'%PSQL%', E'\\', E'%SHP2PGSQL%', 'set ', 
 'for /r %%z in (*${table_name}.dbf) do (${loader}  -s 4269 -g the_geom -W "latin1" %%z tiger_staging.${state_abbrev}_${table_name} | ${psql} & ${psql} -c "SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}''));")'
 );
 
 
 INSERT INTO loader_platform(os, wget, pgbin, declare_sect, unzip_command, psql, path_sep, loader, environ_set_command, county_process_command)
-VALUES('linux', 'wget', '', 
+VALUES('sh', 'wget', '', 
 E'STATEDIR="${staging_fold}/${website_root}/${state_fold}" 
-TMPDIR="${staging_fold}/temp/
+TMPDIR="${staging_fold}/temp/"
 UNZIPTOOL=unzip
 PGPORT=5432
 PGHOST=localhost
 PGUSER=postgres
 PGPASSWORD=yourpasswordhere
 PGDATABASE=geocoder
+PSQL=psql
+SHP2PGSQ=shp2pgsql
 ', E'rm -f ${TMPDIR}/*.*
-%PGBIN%\psql -c "DROP SCHEMA tiger_staging CASCADE;"
-%PGBIN%\psql -c "CREATE SCHEMA tiger_staging;"
+${PSQL} -c "DROP SCHEMA tiger_staging CASCADE;"
+${PSQL} -c "CREATE SCHEMA tiger_staging;"
 cd $STATEDIR
 for z in *.zip do $UNZIPTOOL -o -d $TMPDIR $z
 for z in */*.zip do $UNZIPTOOL -o -d $TMPDIR $z 
-cd $TMPDIR', 'psql', '/', 'shp2pgsql', 'export ',
-'for z in ${table_name}.dbf do 
+cd $TMPDIR', '${PSQL}', '/', '${SHP2PGSQL}', 'export ',
+'for z in *${table_name}.dbf do 
 ${loader}  -s 4269 -g the_geom -W "latin1" $z ${staging_schema}.${state_abbrev}_${table_name} | ${psql} 
-${psql} -c "SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}''));"
+${PSQL} -c "SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}''));"
 done');
 -- variables table
 DROP TABLE IF EXISTS loader_variables;
@@ -101,7 +106,7 @@ INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, le
 VALUES(3, 'place', 'place10', true, false, true,false, 'c', 
 	'${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_${lookup_name}(CONSTRAINT pk_${state_abbrev}_${table_name} PRIMARY KEY (plcidfp) ) INHERITS(place);" ',
 	'${psql} -c "ALTER TABLE ${staging_schema}.${state_abbrev}_${table_name} RENAME geoid10 TO plcidfp;SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}'')); ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT uidx_${state_abbrev}_${lookup_name}_gid UNIQUE (gid);"
-${psql} -c "CREATE INDEX idx_${state_abbrev}_${lookup_name}_soundex_name ON ${data_schema}.${state_abbrev}_${lookup_name} USING btree (soundex(name));'  
+${psql} -c "CREATE INDEX idx_${state_abbrev}_${lookup_name}_soundex_name ON ${data_schema}.${state_abbrev}_${lookup_name} USING btree (soundex(name));" '  
 	);
 
 INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process )
@@ -124,7 +129,6 @@ VALUES(6, 'faces', 'faces', true, true, false,false, 'c',
 	${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${lookup_name}_tfid ON ${data_schema}.${state_abbrev}_${lookup_name} USING btree (tfid);"
 	${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
 	${psql} -c "vacuum analyze ${data_schema}.${state_abbrev}_${lookup_name};" ');
-
 
 INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process, columns_exclude )
 VALUES(7, 'featnames', 'featnames', true, true, false,false, 'a', 
@@ -155,7 +159,7 @@ ${psql} -c "vacuum analyze ${data_schema}.${state_abbrev}_zip_state_loc;"
 ${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_zip_lookup_base(CONSTRAINT pk_${state_abbrev}_zip_state_loc_city PRIMARY KEY(zip,state, county, city, statefp)) INHERITS(zip_lookup_base);"
 ${psql} -c "INSERT INTO ${data_schema}.${state_abbrev}_zip_lookup_base(zip,state,county,city, statefp) SELECT DISTINCT e.zipl, ''${state_abbrev}'', c.name,p.name,''${state_fips}''  FROM ${data_schema}.${state_abbrev}_edges AS e INNER JOIN ${data_schema}.${state_abbrev}_county As c  ON (e.countyfp = c.countyfp AND e.statefp = c.statefp AND e.statefp = ''${state_fips}'') INNER JOIN ${data_schema}.${state_abbrev}_faces AS f ON (e.tfidl = f.tfid OR e.tfidr = f.tfid) INNER JOIN ${data_schema}.${state_abbrev}_place As p ON(f.statefp = p.statefp AND f.placefp = p.placefp ) WHERE e.zipl IS NOT NULL;"
 ${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_zip_lookup_base ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
-${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_zip_lookup_base_citysnd ON ${data_schema}.${state_abbrev}_zip_lookup_base USING btree(soundex(city));');
+${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_zip_lookup_base_citysnd ON ${data_schema}.${state_abbrev}_zip_lookup_base USING btree(soundex(city));" ');
 	
 INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process,columns_exclude )
 VALUES(9, 'addr', 'addr', true, true, false,false, 'a', 
@@ -256,3 +260,4 @@ $$
    SELECT  loader_load_staged_data($1, $2,(SELECT COALESCE(columns_exclude,ARRAY['gid', 'geoid10','cpi','suffix1ce']) FROM loader_lookuptables WHERE $2 LIKE '%' || lookup_name))
 $$
 language 'sql' VOLATILE;
+COMMIT;

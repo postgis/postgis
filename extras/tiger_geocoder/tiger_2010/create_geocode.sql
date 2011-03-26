@@ -2,7 +2,7 @@
 -- Tiger is where we're going to create the functions, but we need
 -- the PostGIS functions/types which are in public.
 SET search_path TO tiger,public;
-
+BEGIN;
 -- Type used to pass around a normalized address between functions
 DROP TYPE IF EXISTS norm_addy CASCADE;
 CREATE TYPE norm_addy AS (
@@ -53,3 +53,4 @@ CREATE TYPE norm_addy AS (
 
 -- Reverse Geocode API, called by user
 \i geocode/reverse_geocode.sql
+COMMIT;

@@ -30,8 +30,15 @@ This will generate a script for each state
 --To generate a windows script
 SELECT loader_generate_script(ARRAY['DC','RI'], 'windows');
 
+If you script disappears without loading anything, most likely one of your path settings is wrong.  To troubleshoot run the batch script by 
+first opening up a commandline and executing the file.
+
+That will keep the window open for you to see the error.
+
 --To generate a linux script (We haven't tested the linux script yet so may need some changes)
-SELECT loader_generate_script(ARRAY['DC','RI'], 'linux');
+SELECT loader_generate_script(ARRAY['DC','RI'], 'sh');
+
+
 
 9. Copy and paste the generated script into a .bat or .sh file and put in gisdata folder you created and then run it.
 

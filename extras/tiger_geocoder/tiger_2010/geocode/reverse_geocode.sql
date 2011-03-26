@@ -1,4 +1,4 @@
-﻿--$Id$
+--$Id$
  /*** 
  * 
  * Copyright (C) 2011 Regina Obe and Leo Hsu (Paragon Corporation)
@@ -6,7 +6,7 @@
 -- This function given a point try to determine the approximate street address (norm_addy form)
 -- and array of cross streets, as well as interpolated points along the streets
 -- Use case example an address at the intersection of 3 streets: SELECT pprint_addy(r.addy[1]) As st1, pprint_addy(r.addy[2]) As st2, pprint_addy(r.addy[3]) As st3, array_to_string(r.street, ',') FROM reverse_geocode(ST_GeomFromText('POINT(-71.057811 42.358274)',4269)) As r;
-set search_path=tiger,public;
+--set search_path=tiger,public;
 CREATE OR REPLACE FUNCTION reverse_geocode(
     IN pt geometry,
     IN include_strnum_range boolean,
