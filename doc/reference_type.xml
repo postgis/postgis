@@ -38,7 +38,7 @@
 
       <refsection>
         <title>Description</title>
-        <para>box3d is a postgis spatial data type used to represent the enclosing box of a geometry or set of geometries. ST_Extent3D returns a box3d object.</para>
+        <para>box3d is a postgis spatial data type used to represent the enclosing box of a geometry or set of geometries. ST_3DExtent returns a box3d object.</para>
       </refsection>
       
       <refsection>

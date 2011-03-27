@@ -11,5 +11,5 @@ select ST_makeline('POINT(0 0)', 'SRID=3;POINT(1 1)');
 select ST_makebox2d('SRID=3;POINT(0 0)', 'SRID=3;POINT(1 1)');
 select ST_makebox2d('POINT(0 0)', 'SRID=3;POINT(1 1)');
 
-select ST_makebox3d('SRID=3;POINT(0 0)', 'SRID=3;POINT(1 1)');
-select ST_makebox3d('POINT(0 0)', 'SRID=3;POINT(1 1)');
+select ST_3DMakeBox('SRID=3;POINT(0 0)', 'SRID=3;POINT(1 1)');
+select ST_3DMakeBox('POINT(0 0)', 'SRID=3;POINT(1 1)');

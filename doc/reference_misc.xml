@@ -350,7 +350,7 @@ SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' As bo
 		</note>
 
 		<note>
-		  <para>ST_Extent will return boxes with only an x and y component even with (x,y,z) coordinate geometries.  To maintain x,y,z use ST_Extent3D instead.</para>
+		  <para>ST_Extent will return boxes with only an x and y component even with (x,y,z) coordinate geometries.  To maintain x,y,z use ST_3DExtent instead.</para>
 		</note>
 		
 		<note>
@@ -398,20 +398,20 @@ SELECT ST_SetSRID(ST_Extent(the_geom),2249) as bextent FROM sometable;
 
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_Extent3D" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
+		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_3DExtent" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Extent3D">
+	<refentry id="ST_3DExtent">
 	  <refnamediv>
-		<refname>ST_Extent3D</refname>
+		<refname>ST_3DExtent</refname>
 		<refpurpose>an aggregate function that returns the box3D bounding box that bounds rows of geometries.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>box3d <function>ST_Extent3D</function></funcdef>
+			<funcdef>box3d <function>ST_3DExtent</function></funcdef>
 			<paramdef><type>geometry set</type> <parameter>geomfield</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -420,13 +420,13 @@ SELECT ST_SetSRID(ST_Extent(the_geom),2249) as bextent FROM sometable;
 	  <refsection>
 		<title>Description</title>
 
-		<para>ST_Extent3D returns a box3d (includes Z coordinate) bounding box that encloses a set of geometries. The ST_Extent3D function is an "aggregate" function in the
+		<para>ST_3DExtent returns a box3d (includes Z coordinate) bounding box that encloses a set of geometries. The ST_3DExtent function is an "aggregate" function in the
 			terminology of SQL. That means that it operates on lists
 			of data, in the same way the SUM() and AVG() functions do.</para>
 		<para>Since it returns a bounding box, the spatial Units are in the units of the spatial reference system in use denoted by the SRID</para>
 
 		<note>
-		  <para>Since ST_Extent3D returns a bounding box, the SRID meta-data is lost.  Use ST_SetSRID to force it back into
+		  <para>Since ST_3DExtent returns a bounding box, the SRID meta-data is lost.  Use ST_SetSRID to force it back into
 			a geometry with SRID meta data.  The coordinates are in the units of the spatial ref of the orginal geometries.</para>
 		</note>
 
@@ -440,7 +440,7 @@ SELECT ST_SetSRID(ST_Extent(the_geom),2249) as bextent FROM sometable;
 	  <refsection>
 		<title>Examples</title>
 		<programlisting>
-SELECT ST_Extent3D(foo.the_geom) As b3extent
+SELECT ST_3DExtent(foo.the_geom) As b3extent
 FROM (SELECT ST_MakePoint(x,y,z) As the_geom
 	FROM generate_series(1,3) As x
 		CROSS JOIN generate_series(1,2) As y
@@ -450,7 +450,7 @@ FROM (SELECT ST_MakePoint(x,y,z) As the_geom
  BOX3D(1 1 0,3 2 2)
 
 --Get the extent of various elevated circular strings
-SELECT ST_Extent3D(foo.the_geom) As b3extent
+SELECT ST_3DExtent(foo.the_geom) As b3extent
 FROM (SELECT ST_Translate(ST_Force_3DZ(ST_LineToCurve(ST_Buffer(ST_MakePoint(x,y),1))),0,0,z) As the_geom
 	FROM generate_series(1,3) As x
 		CROSS JOIN generate_series(1,2) As y

@@ -1106,9 +1106,9 @@ WHERE the_geom &amp;&amp; ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_MakeBox3D">
+	<refentry id="ST_3DMakeBox">
 	  <refnamediv>
-		<refname>ST_MakeBox3D</refname>
+		<refname>ST_3DMakeBox</refname>
 
 		<refpurpose>Creates a BOX3D defined by the given 3d point
 			geometries.</refpurpose>
@@ -1117,7 +1117,7 @@ WHERE the_geom &amp;&amp; ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>box3d <function>ST_MakeBox3D</function></funcdef>
+			<funcdef>box3d <function>ST_3DMakeBox</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>point3DLowLeftBottom</parameter></paramdef>
 			<paramdef><type>geometry </type> <parameter>point3DUpRightTop</parameter></paramdef>
 		  </funcprototype>
@@ -1143,7 +1143,7 @@ WHERE the_geom &amp;&amp; ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.
 		<title>Examples</title>
 
 		<programlisting>
-SELECT ST_MakeBox3D(ST_MakePoint(-989502.1875, 528439.5625, 10),
+SELECT ST_3DMakeBox(ST_MakePoint(-989502.1875, 528439.5625, 10),
 	ST_MakePoint(-987121.375 ,529933.1875, 10)) As abb3d
 
 --bb3d--

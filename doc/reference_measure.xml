@@ -2743,13 +2743,13 @@ FROM (SELECT ST_GeographyFromText(
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Length" />, <xref linkend="ST_Length3D" /></para>
+		<para><xref linkend="ST_Length" />, <xref linkend="ST_3DLength" /></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Length3D">
+	<refentry id="ST_3DLength">
 	  <refnamediv>
-		<refname>ST_Length3D</refname>
+		<refname>ST_3DLength</refname>
 
 		<refpurpose>Returns the 3-dimensional or 2-dimensional length of the geometry if it is a
 			linestring or multi-linestring. </refpurpose>
@@ -2758,7 +2758,7 @@ FROM (SELECT ST_GeographyFromText(
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>float <function>ST_Length3D</function></funcdef>
+			<funcdef>float <function>ST_3DLength</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>a_3dlinestring</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -2780,9 +2780,9 @@ FROM (SELECT ST_GeographyFromText(
 		<para>Return length in feet for a 3D cable. Note this is in feet because 2249 is
 				Mass State Plane Feet</para>
 		<programlisting>
-SELECT ST_Length3D(ST_GeomFromText('LINESTRING(743238 2967416 1,743238 2967450 1,743265 2967450 3,
+SELECT ST_3DLength(ST_GeomFromText('LINESTRING(743238 2967416 1,743238 2967450 1,743265 2967450 3,
 743265.625 2967416 3,743238 2967416 3)',2249));
-st_length3d
+ST_3DLength
 -----------
 122.704716741457
 		</programlisting>
@@ -2871,7 +2871,7 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeometryN" />, <xref linkend="ST_Length" />, <xref linkend="ST_Length3D_Spheroid" /></para>
+		<para><xref linkend="ST_GeometryN" />, <xref linkend="ST_Length" />, <xref linkend="ST_3DLength_Spheroid" /></para>
 	  </refsection>
 	</refentry>
 
@@ -2909,7 +2909,7 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 
 		<literallayout>SPHEROID["GRS_1980",6378137,298.257222101]</literallayout>
 		<note><para>Will return 0 for anything that is not a MULTILINESTRING or LINESTRING</para></note>
-		<note><para>This is much like <xref linkend="ST_Length_Spheroid" /> and <xref linkend="ST_Length3D_Spheroid" /> except it will throw away the Z coordinate in calculations.</para></note>
+		<note><para>This is much like <xref linkend="ST_Length_Spheroid" /> and <xref linkend="ST_3DLength_Spheroid" /> except it will throw away the Z coordinate in calculations.</para></note>
 
 	  </refsection>
 
@@ -2950,13 +2950,13 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeometryN" />, <xref linkend="ST_Length_Spheroid" />, <xref linkend="ST_Length3D_Spheroid" /></para>
+		<para><xref linkend="ST_GeometryN" />, <xref linkend="ST_Length_Spheroid" />, <xref linkend="ST_3DLength_Spheroid" /></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Length3D_Spheroid">
+	<refentry id="ST_3DLength_Spheroid">
 	  <refnamediv>
-		<refname>ST_Length3D_Spheroid</refname>
+		<refname>ST_3DLength_Spheroid</refname>
 
 		<refpurpose>Calculates the length of a geometry on an ellipsoid,
 			taking the elevation into account. This is just an alias for ST_Length_Spheroid. </refpurpose>
@@ -2965,7 +2965,7 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>float <function>ST_Length3D_Spheroid</function></funcdef>
+			<funcdef>float <function>ST_3DLength_Spheroid</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
 			<paramdef><type>spheroid </type> <parameter>a_spheroid</parameter></paramdef>
 		  </funcprototype>
@@ -3384,9 +3384,9 @@ st_perimeter
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Perimeter3D">
+	<refentry id="ST_3DPerimeter">
 	  <refnamediv>
-		<refname>ST_Perimeter3D</refname>
+		<refname>ST_3DPerimeter</refname>
 
 		<refpurpose>Returns the 3-dimensional perimeter of the geometry, if it
 			is a polygon or multi-polygon.</refpurpose>
@@ -3395,7 +3395,7 @@ st_perimeter
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>float <function>ST_Perimeter3D</function></funcdef>
+			<funcdef>float <function>ST_3DPerimeter</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -3414,11 +3414,11 @@ st_perimeter
 	  <refsection>
 		<title>Examples</title>
 		<para>Perimeter of a slightly elevated polygon in the air in Massachusetts state plane feet</para>
-		<programlisting>SELECT ST_Perimeter3D(the_geom), ST_Perimeter2d(the_geom), ST_Perimeter(the_geom) FROM
+		<programlisting>SELECT ST_3DPerimeter(the_geom), ST_Perimeter2d(the_geom), ST_Perimeter(the_geom) FROM
 			(SELECT ST_GeomFromEWKT('SRID=2249;POLYGON((743238 2967416 2,743238 2967450 1,
 743265.625 2967416 1,743238 2967416 2))') As the_geom) As foo;
 
-  st_perimeter3d  |  st_perimeter2d  |   st_perimeter
+  ST_3DPerimeter  |  st_perimeter2d  |   st_perimeter
 ------------------+------------------+------------------
  105.465793597674 | 105.432997272188 | 105.432997272188
 
