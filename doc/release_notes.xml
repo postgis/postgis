@@ -22,8 +22,8 @@
           <title>New Features</title>
           <para>Support for TIN and PolyHedralSurface and enhancement of many functions to support 3D (Olivier Courtin / Oslandia)</para>
           <para>Raster support integrated and documented
-          		(Pierre Racine, Jorge Arévalo, Mateusz Loskot, Sandro Santilli, Regina Obe)
-          		(Company developer and funding: University Laval, Deimos Space, CadCorp,  Michigan Tech Research Institute, Paragon Corporation, Azavea)</para>
+          		(Pierre Racine, Jorge Arévalo, Mateusz Loskot, Sandro Santilli, David Zwarg, Regina Obe)
+          		(Company developer and funding: University Laval, Deimos Space, CadCorp,  Michigan Tech Research Institute, Azavea, Paragon Corporation)</para>
           <para>Making spatial indexes 3D aware - in progress (Paul Ramsey, Mark Cave-Ayland)</para>
           <para>Topology support improved (more functions), documented, testing (Sandro Santilli / Faunalia for RT-SIGTA), Andrea Peri, Regina Obe</para>
           <para>3D relationship support functions  (Nicklas Avén)</para>
@@ -47,6 +47,7 @@
         	<para>Made shape file loader tolerant of truncated multibyte values found in some free worldwide shapefiles (Sandro Santilli)</para>
         	<para>Bug Fixes, Enhancements and addition of more regression tests for shp2pgsql. Reproject support for both geometry and geography during import. (Jeff Adams / Azavea)</para>
         	<para>Shp-pgsql GUI loader - support loading multiple files at a time.  (Mark Leslie)</para>  
+        	<para>Extras - upgraded tiger_geocoder from using old TIGER format to use new TIGER shp and file structure format (Stephen Frost)</para>
         	<para>Extras - revised tiger_geocoder to work with TIGER census 2010 data and addition of reverse geocoder function. (Regina Obe, Leo Hsu)</para>  
         </simplesect>
       </sect1>

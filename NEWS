@@ -56,9 +56,13 @@ YYYY/MM/DD
     Reproject support for both geometry and geography during import
   - Shp-pgsql GUI loader - support loading multiple 
     files at a time. (Mark Leslie)  
+  - Extras - upgraded tiger_geocoder from using old TIGER format 
+     to use new TIGER shp and file structure format (Stephen Frost)
   - Extras - revised tiger_geocoder to work with 
     TIGER census 2010 data and 
-    addition of reverse geocoder function. (Regina Obe, Leo Hsu)
+    addition of reverse geocoder function,
+    include in Official documentation. 
+    (Regina Obe, Leo Hsu / Paragon Corporation)
 
 PostGIS 1.5.2
 2010/09/27
