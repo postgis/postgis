@@ -122,7 +122,7 @@ rt_util_clamp_to_32BUI(double value) {
 
 float
 rt_util_clamp_to_32F(double value) {
-    return (float)fmin(fmax((value), FLT_MIN), FLT_MAX);
+    return (float)fmin(fmax((value), -FLT_MAX), FLT_MAX);
 }
 
 /*- rt_context -------------------------------------------------------*/
