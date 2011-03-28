@@ -129,12 +129,12 @@ WARNING:  Value set for 32BF band got converted from 210000.464564 to 210000.468
 1234.567
 210000.464564365
 1234.46456436475
-WARNING:  Second raster has no band to copy
+WARNING:  rt_raster_copy_band: Second raster has no band
 NOTICE:  RASTER_copyband: Could not add band to raster. Returning original raster.
 1234.5678
-WARNING:  Second raster has no band to copy
+WARNING:  rt_raster_copy_band: Second raster has no band
 NOTICE:  RASTER_copyband: Could not add band to raster. Returning original raster.
 1234.5678
-WARNING:  Second raster has no band to copy
+WARNING:  rt_raster_copy_band: Second raster has no band
 NOTICE:  RASTER_copyband: Could not add band to raster. Returning original raster.
 1234.5678
