@@ -10,7 +10,7 @@
 static rt_band addBand(rt_context ctx, rt_raster raster, rt_pixtype pixtype, int hasnodata, double nodataval);
 static void deepRelease(rt_context ctx, rt_raster raster);
 static void testBand1BB(rt_context ctx, rt_band band);
-static rt_raster fillRasterToPolygonize(rt_context ctx);
+static rt_raster fillRasterToPolygonize(rt_context ctx, int hasnodata, double nodatavalue);
 
 static rt_band
 addBand(rt_context ctx, rt_raster raster, rt_pixtype pixtype, int hasnodata, double nodataval)
@@ -48,7 +48,7 @@ deepRelease(rt_context ctx, rt_raster raster)
 
 
 static rt_raster
-fillRasterToPolygonize(rt_context ctx)
+fillRasterToPolygonize(rt_context ctx, int hasnodata, double nodatavalue)
 {
     /* Create raster */
 
@@ -82,7 +82,7 @@ fillRasterToPolygonize(rt_context ctx)
     
 
     /* Fill raster. Option 2: 9x9, 1 band */    
-    rt_band band = addBand(ctx, raster, PT_32BUI, 1, 0);
+    rt_band band = addBand(ctx, raster, PT_32BUI, hasnodata, nodatavalue);
     
     {
         int x, y;
@@ -1113,8 +1113,12 @@ main()
 
     {   /* Check ST_AsPolygon */
         printf("Testing polygonize function\n");
-        rt_raster rt = fillRasterToPolygonize(ctx);
+
+		/* First test: NODATA value = -1 */
+        rt_raster rt = fillRasterToPolygonize(ctx, 1, -1.0);
 				
+		printf("*** POLYGONIZE WITH NODATA = -1.0\n");
+
 		/* We can check rt_raster_has_no_band here too */
 		CHECK(!rt_raster_has_no_band(ctx, rt, 1));
 
@@ -1132,14 +1136,105 @@ main()
         
         rt_geomval gv = (rt_geomval) rt_raster_dump_as_wktpolygons(ctx, rt, 1, &nPols);
 
-
         CHECK_EQUALS_DOUBLE(gv[0].val, 1.0);
-        CHECK(!strcmp(gv[0].geom,"POLYGON ((3 1,3 2,2 2,2 3,1 3,1 6,2 6,2 7,3 7,3 8,5 8,5 6,3 6,3 3,4 3,5 3,5 1,3 1))"));
+        CHECK(!strcmp(gv[0].geom, "POLYGON ((3 1,3 2,2 2,2 3,1 3,1 6,2 6,2 7,3 7,3 8,5 8,5 6,3 6,3 3,4 3,5 3,5 1,3 1))"));
 
-        CHECK_EQUALS_DOUBLE(gv[1].val, 2.0);
-        CHECK(!strcmp(gv[1].geom,"POLYGON ((5 1,5 3,6 3,6 6,5 6,5 8,6 8,6 7,7 7,7 6,8 6,8 3,7 3,7 2,6 2,6 1,5 1))"));   
+		CHECK_EQUALS_DOUBLE(gv[1].val, 0.0);
+		CHECK(!strcmp(gv[1].geom, "POLYGON ((3 3,3 6,6 6,6 3,3 3))"));
+
+        CHECK_EQUALS_DOUBLE(gv[2].val, 2.0);
+        CHECK(!strcmp(gv[2].geom, "POLYGON ((5 1,5 3,6 3,6 6,5 6,5 8,6 8,6 7,7 7,7 6,8 6,8 3,7 3,7 2,6 2,6 1,5 1))"));   
+
+		CHECK_EQUALS_DOUBLE(gv[3].val, 0.0);
+		CHECK(!strcmp(gv[3].geom, "POLYGON ((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))"));
+		
         
         rt_raster_destroy(ctx, rt);
+
+	
+		/* Second test: NODATA value = 1 */
+        rt = fillRasterToPolygonize(ctx, 1, 1.0);
+				
+		/* We can check rt_raster_has_no_band here too */
+		CHECK(!rt_raster_has_no_band(ctx, rt, 1));
+
+        nPols = 0;
+        
+        gv = (rt_geomval) rt_raster_dump_as_wktpolygons(ctx, rt, 1, &nPols);
+
+
+		CHECK_EQUALS_DOUBLE(gv[0].val, 0.0);
+		CHECK(!strcmp(gv[0].geom, "POLYGON ((3 3,3 6,6 6,6 3,3 3))"));
+
+        CHECK_EQUALS_DOUBLE(gv[1].val, 2.0);
+        CHECK(!strcmp(gv[1].geom, "POLYGON ((5 1,5 3,6 3,6 6,5 6,5 8,6 8,6 7,7 7,7 6,8 6,8 3,7 3,7 2,6 2,6 1,5 1))"));   
+
+		CHECK_EQUALS_DOUBLE(gv[2].val, 0.0);
+		CHECK(!strcmp(gv[2].geom, "POLYGON ((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))"));
+        rt_raster_destroy(ctx, rt);
+ 
+		/* Third test: NODATA value = 2 */
+        rt = fillRasterToPolygonize(ctx, 1, 2.0);
+				
+		/* We can check rt_raster_has_no_band here too */
+		CHECK(!rt_raster_has_no_band(ctx, rt, 1));
+
+        nPols = 0;
+        
+        gv = (rt_geomval) rt_raster_dump_as_wktpolygons(ctx, rt, 1, &nPols);
+
+        CHECK_EQUALS_DOUBLE(gv[0].val, 1.0);
+        CHECK(!strcmp(gv[0].geom, "POLYGON ((3 1,3 2,2 2,2 3,1 3,1 6,2 6,2 7,3 7,3 8,5 8,5 6,3 6,3 3,4 3,5 3,5 1,3 1))"));
+
+		CHECK_EQUALS_DOUBLE(gv[1].val, 0.0);
+		CHECK(!strcmp(gv[1].geom, "POLYGON ((3 3,3 6,6 6,6 3,3 3))"));
+
+		CHECK_EQUALS_DOUBLE(gv[2].val, 0.0);
+		CHECK(!strcmp(gv[2].geom, "POLYGON ((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))"));
+        rt_raster_destroy(ctx, rt);
+ 
+
+		/* Fourth test: NODATA value = 0 */
+        rt = fillRasterToPolygonize(ctx, 1, 0.0);
+				
+		/* We can check rt_raster_has_no_band here too */
+		CHECK(!rt_raster_has_no_band(ctx, rt, 1));
+
+        nPols = 0;
+        
+        gv = (rt_geomval) rt_raster_dump_as_wktpolygons(ctx, rt, 1, &nPols);
+		
+        CHECK_EQUALS_DOUBLE(gv[0].val, 1.0);
+        CHECK(!strcmp(gv[0].geom, "POLYGON ((3 1,3 2,2 2,2 3,1 3,1 6,2 6,2 7,3 7,3 8,5 8,5 6,3 6,3 3,4 3,5 3,5 1,3 1))"));
+        
+		CHECK_EQUALS_DOUBLE(gv[1].val, 2.0);
+        CHECK(!strcmp(gv[1].geom, "POLYGON ((5 1,5 3,6 3,6 6,5 6,5 8,6 8,6 7,7 7,7 6,8 6,8 3,7 3,7 2,6 2,6 1,5 1))"));   
+
+		rt_raster_destroy(ctx, rt);
+ 
+		/* Last test: There is no NODATA value (all values are valid) */
+        rt = fillRasterToPolygonize(ctx, 0, 1.0);
+		
+		/* We can check rt_raster_has_no_band here too */
+		CHECK(!rt_raster_has_no_band(ctx, rt, 1));
+
+        nPols = 0;
+        
+        gv = (rt_geomval) rt_raster_dump_as_wktpolygons(ctx, rt, 1, &nPols);
+
+        CHECK_EQUALS_DOUBLE(gv[0].val, 1.0);
+        CHECK(!strcmp(gv[0].geom, "POLYGON ((3 1,3 2,2 2,2 3,1 3,1 6,2 6,2 7,3 7,3 8,5 8,5 6,3 6,3 3,4 3,5 3,5 1,3 1))"));
+
+		CHECK_EQUALS_DOUBLE(gv[1].val, 0.0);
+		CHECK(!strcmp(gv[1].geom, "POLYGON ((3 3,3 6,6 6,6 3,3 3))"));
+
+        CHECK_EQUALS_DOUBLE(gv[2].val, 2.0);
+        CHECK(!strcmp(gv[2].geom, "POLYGON ((5 1,5 3,6 3,6 6,5 6,5 8,6 8,6 7,7 7,7 6,8 6,8 3,7 3,7 2,6 2,6 1,5 1))"));   
+
+		CHECK_EQUALS_DOUBLE(gv[3].val, 0.0);
+		CHECK(!strcmp(gv[3].geom, "POLYGON ((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))"));
+		rt_raster_destroy(ctx, rt);
+
     }
 
     printf("Testing 1BB band\n");
