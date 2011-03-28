@@ -1472,7 +1472,7 @@ rt_raster_add_band(rt_context ctx, rt_raster raster, rt_band band, int index) {
 
     RASTER_DEBUGF(3, "Adding band %p to raster %p", band, raster);
 
-    if (band->width != raster->width) {
+    if (band->width != raster->width || band->height != raster->height) {
         ctx->err("rt_raster_add_band: Can't add a %dx%d band to a %dx%d raster",
                 band->width, band->height, raster->width, raster->height);
         return -1;
