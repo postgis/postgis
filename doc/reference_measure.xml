@@ -2769,8 +2769,8 @@ FROM (SELECT ST_GeographyFromText(
 
 		<para>Returns the 3-dimensional or 2-dimensional length of the geometry if it is a
 			linestring or multi-linestring. For 2-d lines it will just return the 2-d length (same as ST_Length and ST_Length2D)</para>
-
 		<para>&Z_support;</para>
+		<para>Changed: 2.0.0 In prior versions this used to be called ST_Length3D</para>
 	  </refsection>
 
 
@@ -2981,8 +2981,8 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 
 		<note><para>Will return 0 for anything that is not a MULTILINESTRING or LINESTRING</para></note>
 		<note><para>This function is just an alias for ST_Length_Spheroid. </para></note>
-
 		<para>&Z_support;</para>
+		<para>Changed: 2.0.0 In prior versions this used to be called ST_Length_Spheroid3D</para>
 	  </refsection>
 
 
@@ -3406,8 +3406,8 @@ st_perimeter
 
 		<para>Returns the 3-dimensional perimeter of the geometry, if it
 			is a polygon or multi-polygon. If the geometry is 2-dimensional, then the 2-dimensional perimeter is returned.  </para>
-
 		<para>&Z_support;</para>
+		<para>Changed: 2.0.0 In prior versions this used to be called ST_Perimeter3D</para>
 	  </refsection>
 
 

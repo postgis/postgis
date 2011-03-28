@@ -1046,7 +1046,7 @@ CREATE OR REPLACE FUNCTION ST_nrings(geometry)
 ------------------------------------------------------------------------
 -- Misures
 ------------------------------------------------------------------------
--- Availability: 1.2.2
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_3DLength(geometry)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME', 'LWGEOM_length_linestring'
@@ -1066,7 +1066,7 @@ CREATE OR REPLACE FUNCTION ST_Length(geometry)
 
 -- this is a fake (for back-compatibility)
 -- uses 3d if 3d is available, 2d otherwise
--- Availability: 1.2.2
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_3DLength_spheroid(geometry, spheroid)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','LWGEOM_length_ellipsoid_linestring'
@@ -1087,7 +1087,7 @@ CREATE OR REPLACE FUNCTION ST_length2d_spheroid(geometry, spheroid)
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
 
--- Availability: 1.2.2
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_3DPerimeter(geometry)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME', 'LWGEOM_perimeter_poly'
@@ -1356,7 +1356,7 @@ CREATE OR REPLACE FUNCTION ST_MakePointM(float8, float8, float8)
 	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint3dm'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Availability: 1.2.2
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_3DMakeBox(geometry, geometry)
 	RETURNS box3d
 	AS 'MODULE_PATHNAME', 'BOX3D_construct'
@@ -1611,7 +1611,7 @@ CREATE OR REPLACE FUNCTION ST_Combine_BBox(box3d,geometry)
 	AS 'MODULE_PATHNAME', 'BOX3D_combine'
 	LANGUAGE 'C' IMMUTABLE;
 
--- Availability: 1.2.2
+-- Availability: 2.0.0
 CREATE AGGREGATE ST_3DExtent(
 	sfunc = ST_combine_bbox,
 	basetype = geometry,

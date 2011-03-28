@@ -431,6 +431,7 @@ SELECT ST_SetSRID(ST_Extent(the_geom),2249) as bextent FROM sometable;
 		</note>
 
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para>Changed: 2.0.0 In prior versions this used to be called ST_Extent3D</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 		<para>&P_support;</para>

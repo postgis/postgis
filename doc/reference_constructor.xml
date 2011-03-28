@@ -1113,7 +1113,6 @@ WHERE the_geom &amp;&amp; ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.
 		<refpurpose>Creates a BOX3D defined by the given 3d point
 			geometries.</refpurpose>
 	  </refnamediv>
-
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
@@ -1136,6 +1135,7 @@ WHERE the_geom &amp;&amp; ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.
 			  <imagedata fileref="images/check.png" />
 			</imageobject>
 		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+		 <para>Changed: 2.0.0 In prior versions this used to be called ST_MakeBox3D</para>
 	  </refsection>
 
 
