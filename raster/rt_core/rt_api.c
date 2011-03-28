@@ -895,12 +895,12 @@ rt_band_set_pixel(rt_context ctx, rt_band band, uint16_t x, uint16_t y,
     pixtype = band->pixtype;
 
     if (x >= band->width || y >= band->height) {
-        ctx->err("rt_band_set_pixel: Coordinates out of range");
+        ctx->warn("Coordinates out of range while setting pixel value");
         return -1;
     }
 
     if (band->offline) {
-        ctx->err("rt_band_set_pixel not implemented yet for OFFDB bands");
+        ctx->warn("rt_band_set_pixel not implemented yet for OFFDB bands");
         return -1;
     }
 
@@ -1031,7 +1031,7 @@ rt_band_get_pixel(rt_context ctx, rt_band band, uint16_t x, uint16_t y, double *
     }
 
     if (band->offline) {
-        ctx->err("rt_band_get_pixel not implemented yet for OFFDB bands");
+        ctx->warn("rt_band_get_pixel not implemented yet for OFFDB bands");
         return -1;
     }
 
@@ -1472,8 +1472,8 @@ rt_raster_add_band(rt_context ctx, rt_raster raster, rt_band band, int index) {
 
     RASTER_DEBUGF(3, "Adding band %p to raster %p", band, raster);
 
-    if (band->width != raster->width) {
-        ctx->err("rt_raster_add_band: Can't add a %dx%d band to a %dx%d raster",
+    if (band->width != raster->width || band->height != raster->height) {
+        ctx->warn("Can't add a %dx%d band to a %dx%d raster",
                 band->width, band->height, raster->width, raster->height);
         return -1;
     }
@@ -1788,7 +1788,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
     memdatasource = OGR_Dr_CreateDataSource(ogr_drv, "", NULL);
 
     if (NULL == memdatasource) {
-        ctx->err("rt_raster_dump_as_wktpolygons: Couldn't create a OGR Datasource to store pols\n");
+        ctx->err("rt_raster_dump_as_wktpolygons: Couldn't create a OGR Datasource to store polygons\n");
         return 0;
     }
 
@@ -3571,28 +3571,28 @@ int32_t rt_raster_copy_band(rt_context ctx, rt_raster torast,
     /* Check bands limits */
     if (fromrast->numBands < 1)
     {
-        ctx->warn("rt_raster_copy_band: Second raster has no band");
+        ctx->warn("Second raster has no band to copy");
         return -1;
     }
     else if (fromindex < 0)
     {
-        ctx->warn("rt_raster_copy_band: Band index for second raster < 0. Defaulted to 1");
+        ctx->warn("Band index for second raster to copy is smaller than 0. Defaulted to 1");
         fromindex = 0;
     }
     else if (fromindex >= fromrast->numBands)
     {
-        ctx->warn("rt_raster_copy_band: Band index for second raster > number of bands, truncated from %u to %u", fromindex - 1, fromrast->numBands);
+        ctx->warn("Band index for second raster to copy is greater than number of raster bands. Truncated from %u to %u", fromindex - 1, fromrast->numBands);
         fromindex = fromrast->numBands - 1;
     }
 
     if (toindex < 0)
     {
-        ctx->warn("rt_raster_copy_band: Band index for first raster < 0. Defaulted to 1");
+        ctx->warn("Band index for first raster to copy band to is smaller than 0. Defaulted to 1");
         toindex = 0;
     }
     else if (toindex > torast->numBands)
     {
-        ctx->warn("rt_raster_copy_band: Band index for first raster > number of bands, truncated from %u to %u", toindex - 1, torast->numBands);
+        ctx->warn("Band index for first raster to copy to is greater than number of bands. Truncated from %u to %u", toindex - 1, torast->numBands);
         toindex = torast->numBands;
     }
 

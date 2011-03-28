@@ -129,12 +129,12 @@ WARNING:  Initial pixel value for 32BF band got converted from 210000.464564 to 
 1234.567
 210000.464564365
 1234.46456436475
-WARNING:  rt_raster_copy_band: Second raster has no band
+WARNING:  Second raster has no band to copy
 NOTICE:  RASTER_copyband: Could not add band to raster. Returning original raster.
 1234.5678
-WARNING:  rt_raster_copy_band: Second raster has no band
+WARNING:  Second raster has no band to copy
 NOTICE:  RASTER_copyband: Could not add band to raster. Returning original raster.
 1234.5678
-WARNING:  rt_raster_copy_band: Second raster has no band
+WARNING:  Second raster has no band to copy
 NOTICE:  RASTER_copyband: Could not add band to raster. Returning original raster.
 1234.5678
