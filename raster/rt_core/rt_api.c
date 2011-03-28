@@ -260,13 +260,13 @@ rt_util_display_dbl_trunc_warning(rt_context ctx,
         case PT_32BSI:
         {
             if (fabs(checkvalint - initialvalue) >= 1) {
-                ctx->warn("Initial pixel value for %s band got clamped from %f to %d",
+                ctx->warn("Value set for %s band got clamped from %f to %d",
                     rt_pixtype_name(ctx, pixtype),
                     initialvalue, checkvalint);
                 result = -1;
             }
             else if (fabs(checkvalint - initialvalue) > FLT_EPSILON) {
-                ctx->warn("Initial pixel value for %s band got truncated from %f to %d",
+                ctx->warn("Value set for %s band got truncated from %f to %d",
                     rt_pixtype_name(ctx, pixtype),
                     initialvalue, checkvalint);
                 result = -1;
@@ -276,13 +276,13 @@ rt_util_display_dbl_trunc_warning(rt_context ctx,
         case PT_32BUI:
         {
             if (fabs(checkvaluint - initialvalue) >= 1) {
-                ctx->warn("Initial pixel value for %s band got clamped from %f to %u",
+                ctx->warn("Value set for %s band got clamped from %f to %u",
                     rt_pixtype_name(ctx, pixtype),
                     initialvalue, checkvaluint);
                 result = -1;
             }
             else if (fabs(checkvaluint - initialvalue) > FLT_EPSILON) {
-                ctx->warn("Initial pixel value for %s band got truncated from %f to %u",
+                ctx->warn("Value set for %s band got truncated from %f to %u",
                     rt_pixtype_name(ctx, pixtype),
                     initialvalue, checkvaluint);
                 result = -1;
@@ -294,7 +294,7 @@ rt_util_display_dbl_trunc_warning(rt_context ctx,
             /* For float, because the initial value is a double,
             there is very often a difference between the desired value and the obtained one */
             if (fabs(checkvalfloat - initialvalue) > FLT_EPSILON)
-                ctx->warn("Initial pixel value for %s band got converted from %f to %f",
+                ctx->warn("Value set for %s band got converted from %f to %f",
                     rt_pixtype_name(ctx, pixtype),
                     initialvalue, checkvalfloat);
             break;
@@ -302,7 +302,7 @@ rt_util_display_dbl_trunc_warning(rt_context ctx,
         case PT_64BF:
         {
             if (fabs(checkvaldouble - initialvalue) > FLT_EPSILON)
-                ctx->warn("Initial pixel value for %s band got converted from %f to %f",
+                ctx->warn("Value set for %s band got converted from %f to %f",
                     rt_pixtype_name(ctx, pixtype),
                     initialvalue, checkvaldouble);
             break;
