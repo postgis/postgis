@@ -1728,6 +1728,7 @@ rt_geomval
 rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
         int * pnElements) {
 
+	char * pszQuery;
     char * pszDataPointer;
     char szGdalOption[50];
     long j;
@@ -1749,7 +1750,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
     rt_band band = NULL;
     int iPixVal = -1;
     int nValidPols = 0;
-    double dValueToCompare = 0.0;
+    double dValue = 0.0;
     int iBandHasNodataValue = FALSE;
     double dBandNoData = 0.0;
     double dEpsilon = 0.0;
@@ -1942,7 +1943,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
      * created on the output layer, with polygon geometries representing
      * the polygons". So,the WKB geometry type should be "wkbPolygon"
      **/
-    hLayer = OGR_DS_CreateLayer(memdatasource, "Polygonized layer", NULL,
+    hLayer = OGR_DS_CreateLayer(memdatasource, "PolygonizedLayer", NULL,
             wkbPolygon, NULL);
 
     if (NULL == hLayer) {
@@ -1959,7 +1960,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
      */
 
     /* First, create a field definition to create the field */
-    hFldDfn = OGR_Fld_Create("Pixel value", OFTInteger);
+    hFldDfn = OGR_Fld_Create("PixelValue", OFTInteger);
 
     /* Second, create the field */
     if (OGR_L_CreateField(hLayer, hFldDfn, TRUE) !=
@@ -1996,10 +1997,29 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
             ctx->warn("Couldn't set nodata value for band.");
     }
 
+
     /**
      * We don't need a raster mask band. Each band has a nodata value.
      **/
     GDALPolygonize(gdal_band, NULL, hLayer, iPixVal, NULL, NULL, NULL);
+
+	/**
+	 * Optimization: Apply a OGR SQL filter to the layer to select the
+ 	 * features different from NODATA value.
+ 	 *
+ 	 * Thanks to David Zwarg.
+ 	 **/
+	if (iBandHasNodataValue) {
+		pszQuery = (char *) ctx->alloc(50 * sizeof (char));
+		sprintf(pszQuery, "PixelValue != %f", &dBandNoData );		
+		OGR_L_SetAttributeFilter(hLayer, pszQuery);
+	}
+
+	else {
+		pszQuery = NULL;
+	}
+
+
 
     /*********************************************************************
      * Transform OGR layers in WKT polygons
@@ -2012,71 +2032,15 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
     nFeatureCount = OGR_L_GetFeatureCount(hLayer, TRUE);
 
 
-    /*********************************************************************
-     * Now, we need to:
-     *  1.- Count the number of polygons with a field's value distinct
-     *      from nodata value for this band.
-     *  2.- Allocate memory for this number of rt_geomval structures.
-     *  3.- Fill these structures with the needed values of the selected
-     *      polygons.
-     *
-     * We can do it in, at least, 2 ways:
-     *  a) 2 loops. The first one to count the number of polygons and the
-     *     second one to fill the structures using only valid polygons
-     *  b) Allocate memory for one structure. Then, in a loop, for each
-     *     valid polygon, reallocate memory for one additional structure
-     *
-     * I think the b) option is less efficient, because too much sys calls
-     * and the memory fragmentation (as result of many realloactions).
-     * I choose a), for this reason
-     *********************************************************************/
-
-    RASTER_DEBUG(3, "counting valid polygons");
-
-    /*********************************************************************
-     * Count the "valid" polygons. This is, the polygons with the "Pixel
-     * Value" field value distinct from raster nodata value
-     *********************************************************************/
-    nValidPols = nFeatureCount;
-    if (iBandHasNodataValue) {
-        dBandNoData = GDALGetRasterNoDataValue(gdal_band, NULL);
-        for (j = 0; j < nFeatureCount; j++) {
-            hFeature = OGR_L_GetFeature(hLayer, j);
-
-
-            /**
-             * The field was stored as int, but we can use this function
-             * because uses "atof" to transform the string representation of
-             * the number into a double. We shouldn't have problems
-             **/
-            dValueToCompare = OGR_F_GetFieldAsDouble(hFeature, iPixVal);
-
-
-            /**
-             * Compare value obtained and nodata from band. If aren't equal,
-             * the associated polygon is discarded
-             **/
-            dEpsilon = fabs(dValueToCompare - dBandNoData);
-            if (dEpsilon <= FLT_EPSILON)
-                nValidPols--;
-
-            OGR_F_Destroy(hFeature);
-        }
-    }
-
-
-
-    /* Only allocate for valid pols!!! */
-
-    pols = (rt_geomval) ctx->alloc(nValidPols *
-            sizeof (struct rt_geomval_t));
+    /* Allocate memory for pols */
+    pols = (rt_geomval) ctx->alloc(nFeatureCount * sizeof (struct rt_geomval_t));
 
     if (NULL == pols) {
         ctx->err("rt_raster_dump_as_wktpolygons: Couldn't allocate memory for geomval structure");
         GDALClose(memdataset);
         GDALDeregisterDriver(gdal_drv);
         GDALDestroyDriver(gdal_drv);
-
+	
         OGR_Fld_Destroy(hFldDfn);
         OGR_DS_DeleteLayer(memdatasource, 0);
         OGRReleaseDataSource(memdatasource);
@@ -2086,43 +2050,40 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
 
     RASTER_DEBUGF(3, "storing polygons (%d)", nFeatureCount);
 
-    nCont = 0;
     if (pnElements)
         *pnElements = 0;
 
+	/* Reset feature reading to start in the first feature */
+	OGR_L_ResetReading(hLayer);
+
     for (j = 0; j < nFeatureCount; j++) {
 
-        hFeature = OGR_L_GetFeature(hLayer, j);
-        dValueToCompare = OGR_F_GetFieldAsDouble(hFeature, iPixVal);
-        dEpsilon = fabs(dValueToCompare - dBandNoData);
+        hFeature = OGR_L_GetNextFeature(hLayer);
+        dValue = OGR_F_GetFieldAsDouble(hFeature, iPixVal);
 
-        if (dEpsilon > FLT_EPSILON || !iBandHasNodataValue) {
-            hGeom = OGR_F_GetGeometryRef(hFeature);
-            OGR_G_ExportToWkt(hGeom, &pszSrcText);
+		hGeom = OGR_F_GetGeometryRef(hFeature);
+     	OGR_G_ExportToWkt(hGeom, &pszSrcText);
 
-            pols[nCont].val = dValueToCompare;
-            pols[nCont].srid = rt_raster_get_srid(ctx, raster);
-            pols[nCont].geom = (char *) ctx->alloc((1 + strlen(pszSrcText))
+      	pols[j].val = dValue;
+       	pols[j].srid = rt_raster_get_srid(ctx, raster);
+     	pols[j].geom = (char *) ctx->alloc((1 + strlen(pszSrcText))
                     * sizeof (char));
-            strcpy(pols[nCont].geom, pszSrcText);
+     	strcpy(pols[j].geom, pszSrcText);
 
-            RASTER_DEBUGF(4, "Feature %d, Polygon: %s", j, pols[nCont].geom);
-            RASTER_DEBUGF(4, "Feature %d, value: %f", j, (int) (pols[nCont].val));
-            RASTER_DEBUGF(4, "Feature %d, srid: %d", j, pols[nCont].srid);
-
-            nCont++;
-
-            /**
-             * We can't use deallocator from rt_context, because it comes from
-             * postgresql backend, that uses pfree. This function needs a
-             * postgresql memory context to work with, and the memory created
-             * for pszSrcText is created outside this context.
-             **/
-            //ctx->dealloc(pszSrcText);
-            free(pszSrcText);
-            pszSrcText = NULL;
-        }
-
+     	RASTER_DEBUGF(4, "Feature %d, Polygon: %s", j, pols[nCont].geom);
+     	RASTER_DEBUGF(4, "Feature %d, value: %f", j, pols[nCont].val);
+     	RASTER_DEBUGF(4, "Feature %d, srid: %d", j, pols[nCont].srid);
+	
+		/**
+         * We can't use deallocator from rt_context, because it comes from
+         * postgresql backend, that uses pfree. This function needs a
+         * postgresql memory context to work with, and the memory created
+         * for pszSrcText is created outside this context.
+         **/
+         //ctx->dealloc(pszSrcText);
+        free(pszSrcText);
+        pszSrcText = NULL;
+        
         OGR_F_Destroy(hFeature);
     }
 
