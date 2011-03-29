@@ -112,3 +112,38 @@ SELECT face_id, Box2d(mbr) from t2.face ORDER by face_id;
 SELECT edge_id, left_face, right_face from t2.edge ORDER by edge_id;
 
 SELECT topology.DropTopology('t2');
+
+--
+-- Test edge touching face ring on both endpoints but not covered
+-- (E1 with F1)
+--
+--         
+--   N2 +-------.
+--      |\  F1  |
+--   E1 | \     | E3
+--      |F2\    |
+--      |  /    |
+--      | /E2   |
+--      |/      |
+--   N1 +-------'
+-- 
+SELECT topology.CreateTopology('t3') > 0;
+
+SELECT 't3.e1',  topology.addEdge('t3', 'LINESTRING(0 0, 0 10)');
+SELECT 't3.e2',  topology.addEdge('t3', 'LINESTRING(0 10, 5 5, 0 0)');
+SELECT 't3.e3',  topology.addEdge('t3', 'LINESTRING(0 10, 10 10, 10 0, 0 0)');
+
+-- Register F1
+SELECT 't3.f1',  topology.addFace('t3',
+'POLYGON((5 5, 0 10, 10 10, 10 0, 0 0, 5 5))');
+
+-- Register F2
+SELECT 't3.f2',  topology.addFace('t3', 'POLYGON((0 0, 5 5, 0 10, 0 0))');
+
+-- Check added faces
+SELECT face_id, Box2d(mbr) from t3.face ORDER by face_id;
+
+-- Check linking
+SELECT edge_id, left_face, right_face from t3.edge ORDER by edge_id;
+
+SELECT topology.DropTopology('t3');
