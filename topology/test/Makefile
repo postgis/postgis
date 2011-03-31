@@ -29,9 +29,11 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/st_getfacegeometry.sql \
 	regress/topoelement.sql \
 	regress/topoelementarray_agg.sql \
+	regress/topo2.5d.sql \
 	regress/droptopology.sql \
 	regress/copytopology.sql \
 	regress/createtopogeom.sql \
+	regress/createtopology.sql \
 	regress/gml.sql \
 	regress/getnodebypoint.sql \
 	regress/getedgebypoint.sql \

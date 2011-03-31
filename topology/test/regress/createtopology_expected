@@ -1,0 +1,16 @@
+t
+t
+t
+ERROR:  schema "3d" already exists
+2d|-1|0|f
+2dAgain|-1|0|f
+3d|-1|0|t
+ERROR:  new row for relation "node" violates check constraint "enforce_dims_geom"
+ERROR:  new row for relation "node" violates check constraint "enforce_geotype_geom"
+3
+ERROR:  new row for relation "node" violates check constraint "enforce_geotype_geom"
+ERROR:  new row for relation "node" violates check constraint "enforce_dims_geom"
+3
+Topology '2d' dropped
+Topology '2dAgain' dropped
+Topology '3d' dropped

@@ -190,6 +190,8 @@ CREATE TABLE topology.topology (
 	precision FLOAT8 NOT NULL
 );
 
+ALTER TABLE topology.topology ADD hasz BOOLEAN NOT NULL DEFAULT false;
+
 --{ LayerTrigger()
 --
 -- Layer integrity trigger
@@ -1592,28 +1594,29 @@ LANGUAGE 'plpgsql';
 --} TopoGeo_AddPolygon
 
 --{
---  CreateTopology(name, SRID, precision)
+--  CreateTopology(name, SRID, precision, hasZ)
 --
 -- Create a topology schema, add a topology info record
 -- in the topology.topology relation, return it's numeric
 -- id. 
 --
-CREATE OR REPLACE FUNCTION topology.CreateTopology(varchar, integer, float8)
+CREATE OR REPLACE FUNCTION topology.CreateTopology(atopology varchar, srid integer, prec float8, hasZ boolean)
 RETURNS integer
 AS
 $$
 DECLARE
-	atopology alias for $1;
-	srid alias for $2;
-	precision alias for $3;
 	rec RECORD;
 	topology_id integer;
+	ndims integer;
 BEGIN
 
 --	FOR rec IN SELECT * FROM pg_namespace WHERE text(nspname) = atopology
 --	LOOP
 --		RAISE EXCEPTION 'SQL/MM Spatial exception - schema already exists';
 --	END LOOP;
+
+	ndims = 2;
+	IF hasZ THEN ndims = 3; END IF;
 
 	------ Fetch next id for the new topology
 	FOR rec IN SELECT nextval('topology.topology_id_seq')
@@ -1637,7 +1640,7 @@ CREATE SCHEMA ' || quote_ident(atopology) || ';
 	EXECUTE
 	'SELECT AddGeometryColumn('||quote_literal(atopology)
 	||',''face'',''mbr'','||quote_literal(srid)
-	||',''POLYGON'',''2'')';
+	||',''POLYGON'',' || ndims || ')';
 
 	-------------} END OF face CREATION
 
@@ -1664,7 +1667,7 @@ CREATE SCHEMA ' || quote_ident(atopology) || ';
 	EXECUTE
 	'SELECT AddGeometryColumn('||quote_literal(atopology)
 	||',''node'',''geom'','||quote_literal(srid)
-	||',''POINT'',''2'')';
+	||',''POINT'',' || ndims || ')';
 
 	--------------} END OF node CREATION
 
@@ -1715,7 +1718,7 @@ CREATE SCHEMA ' || quote_ident(atopology) || ';
 	EXECUTE
 	'SELECT AddGeometryColumn('||quote_literal(atopology)
 	||',''edge_data'',''geom'','||quote_literal(srid)
-	||',''LINESTRING'',''2'')';
+	||',''LINESTRING'',' || ndims || ')';
 
 
 	-- edge standard view (select rule)
@@ -1822,10 +1825,12 @@ CREATE SCHEMA ' || quote_ident(atopology) || ';
 		|| '.edge_data (right_face);';
 
 	------- Add record to the "topology" metadata table
-	EXECUTE 'INSERT INTO topology.topology (id, name, srid, precision) '
-		|| ' VALUES (' || quote_literal(topology_id) || ','
+	EXECUTE 'INSERT INTO topology.topology '
+		|| '(id, name, srid, precision, hasZ) VALUES ('
+		|| quote_literal(topology_id) || ','
 		|| quote_literal(atopology) || ','
-		|| quote_literal(srid) || ',' || quote_literal(precision)
+		|| quote_literal(srid) || ',' || quote_literal(prec)
+		|| ',' || hasZ
 		|| ')';
 
 	RETURN topology_id;
@@ -1833,7 +1838,15 @@ END
 $$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 
--- wrappers for unspecified srid or precision
+--} CreateTopology
+
+--{ CreateTopology wrappers for unspecified srid or precision or hasZ
+
+--  CreateTopology(name, SRID, precision) -- hasZ = false
+CREATE OR REPLACE FUNCTION topology.CreateTopology(toponame varchar, srid integer, prec float8)
+RETURNS integer AS
+' SELECT topology.CreateTopology($1, $2, $3, false);'
+LANGUAGE 'SQL' VOLATILE STRICT;
 
 --  CreateTopology(name, SRID) -- precision = 0
 CREATE OR REPLACE FUNCTION topology.CreateTopology(varchar, integer)
