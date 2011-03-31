@@ -34,7 +34,9 @@ BEGIN
   ret := 'Topology ' || quote_ident(atopology) 
       || ' (' || rec.id || '), ';
   ret := ret || 'SRID ' || rec.srid || ', '
-             || 'precision: ' || rec.precision || E'\n';
+             || 'precision ' || rec.precision;
+  IF rec.hasz THEN ret := ret || ', has Z'; END IF;
+  ret := ret || E'\n';
 
   EXECUTE 'SELECT count(node_id) FROM ' || quote_ident(atopology)
     || '.node ' INTO STRICT n;
