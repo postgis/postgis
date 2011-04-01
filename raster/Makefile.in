@@ -10,60 +10,38 @@
 #
 #############################################################################
 
-BUILD_RASTER=@BUILD_RASTER@
 
 all: @RT_CORE_LIB@ @RT_PG_LIB@ @RT_POSTGIS_SQL@ 
 
 corelib:
-ifeq ($(BUILD_RASTER), yes)
 	$(MAKE) -C rt_core
-endif
 
 pglib:
-ifeq ($(BUILD_RASTER), yes)
 	$(MAKE) -C rt_pg
-endif
 
 rtpostgis.sql:
-ifeq ($(BUILD_RASTER), yes)
 	$(MAKE) -C rt_pg rtpostgis.sql
-endif
 
 install: all
-ifeq ($(BUILD_RASTER), yes)
 	$(MAKE) -C rt_pg install
 	$(MAKE) -C scripts/python install
-endif
 
 uninstall:
-ifeq ($(BUILD_RASTER), yes)
 	$(MAKE) -C rt_pg uninstall
 	$(MAKE) -C scripts/python uninstall
-endif
 
 clean:
-ifeq ($(BUILD_RASTER), yes)
 	$(MAKE) -C rt_core $@
 	$(MAKE) -C rt_pg $@
 	$(MAKE) -C test $@
 	$(MAKE) -C scripts/python $@
-endif
 
 distclean: clean
-ifeq ($(BUILD_RASTER), yes)
 	$(RM) -R autom4te.cache
 	$(RM) config.status
-endif
 
-check:
-ifeq ($(BUILD_RASTER), yes)
+core-check:
 	$(MAKE) -C test $@
-	@echo 
-	@echo "Consider also running make post-install-check after installation"
-	@echo 
-endif
 
-post-install-check: 
-ifeq ($(BUILD_RASTER), yes)
+check: core-check
 	$(MAKE) -C test $@
-endif

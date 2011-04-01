@@ -730,9 +730,9 @@ dnl ====================================
 AC_ARG_WITH([raster],
     [AS_HELP_STRING([--with-raster],
                     [compile the raster extension (requires GDAL >= 1.6.0) @<:@default=no@:>@])],
-    [RASTER="yes"], [RASTER="no"])
+    [RASTER="raster"], [RASTER=""])
 
-if test "x$RASTER" = "xyes"; then
+if test "x$RASTER" = "xraster"; then
     AC_MSG_RESULT([RASTER: Raster support requested])
 
     AC_CONFIG_HEADERS([raster/raster_config.h])
@@ -883,6 +883,9 @@ except ImportError:
 
     dnl Activates raster stuff construction.
     BUILD_RASTER=yes
+
+    dnl just in case...
+    AC_SUBST([RASTER])
 
     AC_SUBST([RT_CORE_LIB])
     AC_SUBST([RT_PG_LIB])

@@ -5,7 +5,7 @@
 #-----------------------------------------------------
 
 # todo: add all subdirs
-SUBDIRS = liblwgeom regress postgis loader utils raster @TOPOLOGY@
+SUBDIRS = liblwgeom regress postgis loader utils @RASTER@ @TOPOLOGY@
 
 # todo: add more rules here, like uninstall, clean...
 all install uninstall noop clean distclean check:

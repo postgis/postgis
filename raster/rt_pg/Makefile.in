@@ -57,6 +57,15 @@ ifeq ($(PGXSOVERRIDE),1)
 	include Makefile.pgxs
 endif
 
+# If REGRESS=1 passed as a parameter, change the default install paths
+# so that no prefix is included. This allows us to relocate to a temporary
+# directory for regression testing.
+ifeq ($(REGRESS),1)
+        bindir=/bin
+        pkglibdir=/lib
+        datadir=/share
+endif
+
 # Borrow the $libdir substitution from PGXS but customise by adding the version number
 %.sql: %.sql.in
 	sed 's,MODULE_PATHNAME,$$libdir/rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@,g' $< >$@

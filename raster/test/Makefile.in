@@ -12,10 +12,10 @@ RT_CORE=../rt_core
 
 all: check
 
-check: $(RT_CORE)/librtcore.a
+core-check: $(RT_CORE)/librtcore.a
 	$(MAKE) -C core check
 
-post-install-check: $(RT_CORE)/librtcore.a
+check: core-check
 	$(MAKE) -C regress check
 
 $(RT_CORE)/librtcore.a:

@@ -1116,8 +1116,6 @@ main()
 
 		/* First test: NODATA value = -1 */
         rt_raster rt = fillRasterToPolygonize(ctx, 1, -1.0);
-				
-		printf("*** POLYGONIZE WITH NODATA = -1.0\n");
 
 		/* We can check rt_raster_has_no_band here too */
 		CHECK(!rt_raster_has_no_band(ctx, rt, 1));

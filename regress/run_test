@@ -462,7 +462,7 @@ if test -z "$db_exists"; then
 		fi
 		if test x"$OPT_WITH_RASTER" = "xyes"; then
 			if test -e ${REGDIR}/../raster/rt_pg/rtpostgis.sql; then
-				echo "Adding topology support" 
+				echo "Adding raster support"
 				${PSQL} ${_psql_opts} -Xf ${REGDIR}/../raster/rt_pg/rtpostgis.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1
 			else
 				echo "Raster support skipped (rtpostgis.sql  not found)" 

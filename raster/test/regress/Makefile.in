@@ -2,6 +2,7 @@
 # $Id$
 #
 # Copyright (c) 2009 Sandro Santilli <strk@keybit.net>, Pierre Racine <pierre.racine@sbf.ulaval.ca>
+# Copyright (c) 2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
 #
 # This is free software; you can redistribute and/or modify it under
 # the terms of the GNU General Public Licence. See the COPYING file.
@@ -9,6 +10,21 @@
 #############################################################################
 
 POSTGIS_SRC=@POSTGIS_SRCDIR@
+
+# MingW hack: rather than use PGSQL_BINDIR directly, we change
+# to the directory and then use "pwd" to return the path. This
+# ensures that the returned path is in MSYS format, otherwise
+# colons in drive letters will break PATH.
+PGSQL_BINDIR=$(shell cd "@PGSQL_BINDIR@" && pwd)
+
+# Where we put our regression installation
+REGRESS_INSTALLDIR=$(POSTGIS_SRC)/regress/00-regress-install
+
+#
+# Put path from pg_config into front of search path
+#
+PATH := $(PGSQL_BINDIR):$(PATH)
+export PATH
 
 TEST_METADATA = \
 	check_raster_columns.sql \
@@ -53,8 +69,8 @@ TEST_PIXEL = \
 TEST_UTILITY = \
 	create_rt_utility_test.sql \
 	rt_utility.sql \
-    create_rt_mapalgebra_test.sql \
-    rt_mapalgebra.sql \
+	create_rt_mapalgebra_test.sql \
+	rt_mapalgebra.sql \
 	$(NULL)
 
 TEST_GIST = \
@@ -85,14 +101,29 @@ TESTS = $(TEST_METADATA) $(TEST_IO) $(TEST_FUNC) \
 		$(TEST_UTILITY) $(TEST_GIST) $(TEST_SREL) \
 		$(TEST_BUGS)
 
-all: run_test
+all:
+	@echo "Use 'make check' to run all tests"
 
-run_test: run_test.in Makefile
-	sed -e "s#@POSTGIS_SRC@#$(POSTGIS_SRC)#" $< > $@
-	chmod +x $@
+clean distclean:
+	$(RM) -f rtpostgis.sql
 
-post-install-check check: run_test
-	./run_test $(TESTS)
+rtpostgis.sql: ../../rt_pg/rtpostgis.sql
+	sed 's,$$libdir,$(REGRESS_INSTALLDIR)/lib,g' ../../rt_pg/rtpostgis.sql > rtpostgis.sql
 
-clean:
-	$(RM) run_test
+
+check: rtpostgis.sql
+	$(MAKE) -C ../../../regress postgis.sql staged-install
+	$(MAKE) -C ../../rt_pg REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
+	@USE_VERSION=$(POSTGIS_PGSQL_VERSION) ../../../regress/run_test --raster $(TESTS)
+
+#all: run_test
+
+#run_test: run_test.in Makefile
+#	sed -e "s#@POSTGIS_SRC@#$(POSTGIS_SRC)#" $< > $@
+#	chmod +x $@
+
+#post-install-check check: run_test
+#	./run_test $(TESTS)
+
+#clean:
+#	$(RM) run_test
