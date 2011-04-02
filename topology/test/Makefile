@@ -26,6 +26,7 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/legacy_invalid.sql regress/sqlmm.sql \
 	regress/legacy_query.sql regress/addnode.sql \
 	regress/addedge.sql regress/addface.sql \
+	regress/addface2.5d.sql \
 	regress/st_getfacegeometry.sql \
 	regress/topoelement.sql \
 	regress/topoelementarray_agg.sql \
@@ -37,7 +38,7 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/gml.sql \
 	regress/getnodebypoint.sql \
 	regress/getedgebypoint.sql \
-  regress/getfacebypoint.sql
+	regress/getfacebypoint.sql
 
 check: topo_predicates.sql load_topology.sql load_topology-4326.sql
 	$(MAKE) -C ../../regress postgis.sql staged-install

@@ -1640,7 +1640,7 @@ CREATE SCHEMA ' || quote_ident(atopology) || ';
 	EXECUTE
 	'SELECT AddGeometryColumn('||quote_literal(atopology)
 	||',''face'',''mbr'','||quote_literal(srid)
-	||',''POLYGON'',' || ndims || ')';
+	||',''POLYGON'',2)'; -- 2d only mbr is good enough
 
 	-------------} END OF face CREATION
 
