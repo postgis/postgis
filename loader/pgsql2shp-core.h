@@ -95,6 +95,7 @@ typedef struct shp_dumper_config
 	/* Number of rows to fetch in a cursor batch */
 	int fetchsize;
 
+	char *geo_map_filename;
 } SHPDUMPERCONFIG;
 
 
@@ -184,6 +185,9 @@ typedef struct shp_dumper_state
 
 	/* Last (error) message */
 	char message[SHPDUMPERMSGLEN];
+
+	char **geo_map;
+	int geo_map_size;
 
 } SHPDUMPERSTATE;
 

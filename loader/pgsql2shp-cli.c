@@ -41,6 +41,12 @@ usage()
 	         "     the loader. This would not unescape attribute names\n" 
 	         "     and will not skip the 'gid' attribute.\n" ));
 	printf(_("  -k Keep postgresql identifiers case.\n" ));
+	printf(_("  -m <filename> Remap identifiers to ten digit names.\n"
+	         "     The content of the file is lines of two symbols separated by\n"
+	         "     a single white space and no trailing or leading space:\n"
+	         "     VERYLONGSYMBOL SHORTONE\n"
+	         "     ANOTHERVERYLONGSYMBOL SHORTER\n"
+	         "     etc.\n" ));
 	printf(_("  -? Display this help screen.\n\n" ));
 }
 
@@ -63,7 +69,7 @@ main(int argc, char **argv)
 	config = malloc(sizeof(SHPDUMPERCONFIG));
 	set_config_defaults(config);
 
-	while ((c = pgis_getopt(argc, argv, "bf:h:du:p:P:g:rk")) != EOF)
+	while ((c = pgis_getopt(argc, argv, "bf:h:du:p:P:g:rkm:")) != EOF)
 	{
 		switch (c)
 		{
@@ -94,6 +100,9 @@ main(int argc, char **argv)
 			break;
 		case 'g':
 			config->geo_col_name = pgis_optarg;
+			break;
+		case 'm':
+			config->geo_map_filename = pgis_optarg;
 			break;
 		case 'k':
 			config->keep_fieldname_case = 1;

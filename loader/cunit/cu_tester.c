@@ -33,6 +33,11 @@ int main()
 		CU_cleanup_registry();
 		return CU_get_error();
 	}
+	if (NULL == register_pgsql2shp_suite())
+	{
+		CU_cleanup_registry();
+		return CU_get_error();
+	}
 
 	/* Run all tests using the CUnit Basic interface */
 	CU_basic_set_mode(CU_BRM_VERBOSE);

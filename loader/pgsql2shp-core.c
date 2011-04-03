@@ -28,6 +28,7 @@
 #include <ctype.h>
 #include <math.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 /* Solaris9 does not provide stdint.h */
 /* #include <stdint.h> */
 #include <inttypes.h>
@@ -1140,8 +1141,92 @@ set_config_defaults(SHPDUMPERCONFIG *config)
 	config->geo_col_name = NULL;
 	config->keep_fieldname_case = 0;
 	config->fetchsize = 100;
+	config->geo_map_filename = 0;
 }
 
+/**
+ * Read the content of filename into a symbol map stored
+ * at state->geo_map.
+ *
+ * The content of the file is lines of two symbols separated by
+ * a single white space and no trailing or leading space:
+ *
+ *    VERYLONGSYMBOL SHORTONE\n
+ *    ANOTHERVERYLONGSYMBOL SHORTER\n
+ *
+ *    etc.
+ *
+ * The file is read in core (one large malloc'd area), each
+ * space and newline is replaced by a null character. A pointer
+ * to the start of each line is stored in the state->geo_map
+ * table.
+ *
+ * It is the reponsibility of the caller to reclaim the allocated space
+ * as follows:
+ *
+ * free(*state->geo_map) to free the file content
+ * free(state->geo_map) to free the pointer list
+ *
+ * @param filename : path to a readable map file in the format
+ *                   described above.
+ * @param state : container of state->geo_map where the malloc'd
+ *                symbol map will be stored.
+ *
+ * @return state->geo_map : NULL on error, symbol map pointer on
+ *                          success.
+ */
+void
+ShpDumperGeoMapRead(char* filename, SHPDUMPERSTATE *state)
+{
+	struct stat stat_buf;
+	static char* content = 0;
+	{
+		FILE* fp = 0;
+		if(stat(filename, &stat_buf) < 0)
+		{
+			perror(filename);
+			return;
+		}
+		content = malloc(stat_buf.st_size);
+		fp = fopen(filename, "r");
+		if(stat_buf.st_size != fread(content, 1, stat_buf.st_size, fp))
+		{
+			free(content);
+			fprintf(stderr, "fread did not return the expected amount of chars");
+			fclose(fp);
+			return;
+		}
+		fclose(fp);
+	}
+	{
+		int i;
+		state->geo_map_size = 0;
+
+		for(i = 0; i < stat_buf.st_size; i++)
+		{
+			if(content[i] == '\n')
+			{
+				state->geo_map_size++;
+			}
+		}
+		state->geo_map = (char**)malloc(sizeof(char*)*state->geo_map_size);
+		{
+			char** map = state->geo_map;
+			*map = content;
+			map++;
+			for(i = 0; i < stat_buf.st_size; i++)
+			{
+				if(content[i] == '\n' && i + 1 < stat_buf.st_size)
+				{
+					*map = content + i + 1;
+					map++;
+				}
+				if(content[i] == '\n' || content[i] == ' ')
+					content[i] = '\0';
+			}
+		}
+	}
+}
 
 /* Create a new shapefile state object */
 SHPDUMPERSTATE *
@@ -1161,6 +1246,15 @@ ShpDumperCreate(SHPDUMPERCONFIG *config)
 	state->table = NULL;
 	state->geo_col_name = NULL;
 
+	if(config->geo_map_filename)
+	{
+		ShpDumperGeoMapRead(config->geo_map_filename, state);
+	}
+	else
+	{
+		state->geo_map = NULL;
+		state->geo_map_size = 0;
+	}
 	return state;
 }
 
@@ -1302,6 +1396,40 @@ ShpDumperConnectDatabase(SHPDUMPERSTATE *state)
 	return SHPDUMPEROK;
 }
 
+/**
+ * Map a symbol into its 10 chars equivalent according to a map.
+ * The map is found in state->geo_map and loaded with the -m option.
+ *
+ * @param ptr : null terminated string containing the symbol to
+ *              be mapped
+ * @param state : non null state->geo_map container
+ *
+ * @return a malloc'd 10 chars symbol that is either the corresponding
+ *         symbol found in the state->geo_map or the symbol truncated
+ *         to its first 10 chars. The string is null terminated.
+ */
+char*
+ShpDumperFieldnameLimit(char* ptr, SHPDUMPERSTATE *state)
+{
+	/* Limit dbf field name to 10-digits */
+	char* dbffieldname = malloc(11);
+	if(state->geo_map)
+	{
+		int i;
+		for(i=0; i<state->geo_map_size; i++)
+		{
+			if(!strcasecmp(state->geo_map[i], ptr))
+			{
+				/* the replacement follows the terminating null */
+				ptr = state->geo_map[i] + strlen(state->geo_map[i]) + 1;
+				break;
+			}
+		}
+	}
+	strncpy(dbffieldname, ptr, 10);
+	dbffieldname[10] = '\0';
+	return dbffieldname;
+}
 
 /* Open the specified table in preparation for extracting rows */
 int
@@ -1476,9 +1604,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		 */
 
 		/* Limit dbf field name to 10-digits */
-		dbffieldname = malloc(11);
-		strncpy(dbffieldname, ptr, 10);
-		dbffieldname[10] = '\0';
+		dbffieldname = ShpDumperFieldnameLimit(ptr, state);
 
 		/*
 		 * make sure the fields all have unique names,

@@ -15,6 +15,6 @@
 #define __cu_tester_h__
 
 CU_pSuite register_list_suite(void);
-
+CU_pSuite register_pgsql2shp_suite(void);
 
 #endif /* __cu_tester_h__ */
