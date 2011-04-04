@@ -366,7 +366,7 @@ wget http://www2.census.gov/geo/pvs/tiger2010st/44_Rhode_Island/ --no-parent --r
 		</programlisting>
 		
 		<para>Pretty print address a table of addresses</para>
-		<programlisting>SELECT address As orig, pprint_addy(normalize_address(address)) As pretty_address;
+		<programlisting>SELECT address As orig, pprint_addy(normalize_address(address)) As pretty_address
         FROM addresses_to_geocode;
         
                         orig                         |              pretty_address

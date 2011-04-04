@@ -18,14 +18,21 @@ DECLARE
   rec RECORD;
   test BOOLEAN;
   ws VARCHAR;
+  var_verbose boolean := false;
 BEGIN
   ws := E'[ ,.\t\n\f\r]';
 
+  -- If there is a trailing space or , get rid of it
+  -- this is to handle case where people use , instead of space to separate state and zip
+  -- such as '2450 N COLORADO ST, PHILADELPHIA, PA, 19132' instead of '2450 N COLORADO ST, PHILADELPHIA, PA 19132'
+  
+  tempString := regexp_replace(rawInput, E'(.*)' || ws || '+', E'\\1');
   -- Separate out the last word of the state, and use it to compare to
   -- the state lookup table to determine the entire name, as well as the
   -- abbreviation associated with it.  The zip code may or may not have
   -- been found.
-  tempString := substring(rawInput from ws || E'+([^ ,.\t\n\f\r0-9]*?)$');
+  tempString := substring(tempString from ws || E'+([^ ,.\t\n\f\r0-9]*?)$');
+  IF var_verbose THEN RAISE NOTICE 'state_extract rawInput: % tempString: %', rawInput, tempString; END IF;
   SELECT INTO tempInt count(*) FROM (select distinct abbrev from state_lookup
       WHERE upper(abbrev) = upper(tempString)) as blah;
   IF tempInt = 1 THEN

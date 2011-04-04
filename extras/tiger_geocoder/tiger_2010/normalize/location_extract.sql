@@ -33,6 +33,7 @@ BEGIN
   IF stateAbbrev IS NOT NULL THEN
     lstate := statefp FROM state WHERE state.stusps = stateAbbrev;
   END IF;
+  lstate := COALESCE(lstate,'');
 
   street_array := regexp_split_to_array(fullStreet,ws);
   word_count := array_upper(street_array,1);
@@ -41,7 +42,7 @@ BEGIN
   FOR i IN 1..word_count LOOP
     CONTINUE WHEN street_array[word_count-i+1] IS NULL OR street_array[word_count-i+1] = '';
 
-    tempString := street_array[word_count-i+1] || tempString;
+    tempString := COALESCE(street_array[word_count-i+1],'') || tempString;
 
     stmt := ' SELECT'
          || '   1,'
