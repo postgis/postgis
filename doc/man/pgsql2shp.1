@@ -65,8 +65,19 @@ from old (pre\-1.0.0) postgis databases (the default is to write a
 dimensions are fully encoded. 
 .TP 
 \fB\-k\fR
-Keep idendifiers case (don't uppercase field names). 
+Keep identifiers case (don't uppercase field names). 
 .TP 
+\fB\-m\fR <\fIfilename\fR>
+Remap identifiers to ten digit names. The content of the file is lines
+of two symbols separated by a single white space and no trailing
+or leading space:
+
+VERYLONGSYMBOL SHORTONE\\n
+.br
+ANOTHERVERYLONGSYMBOL SHORTER\\n
+
+etc.
+.TP
 \fB\-?\fR
 Display version and usage information.
 
