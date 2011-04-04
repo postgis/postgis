@@ -370,14 +370,12 @@ BEGIN
       || quote_ident(atopology) || '.edge e, (SELECT '
       || quote_literal(bounds::text)
       || '::geometry as geom) r WHERE '
-      || 'r.geom && e.geom AND ST_Relate(e.geom, r.geom'
-      || ', ''1FF******'')'
+      || 'r.geom && e.geom'
     ;
     -- RAISE DEBUG 'SQL: %', sql;
     FOR rec IN EXECUTE sql
     LOOP -- {
-
-      -- Find the side of the edge on the face
+      --RAISE DEBUG 'Edge % has bounding box intersection', rec.edge_id;
 
       -- Find first non-empty segment of the edge
       numsegs = ST_NumPoints(rec.geom);
@@ -396,8 +394,24 @@ BEGIN
         CONTINUE; -- we don't want to spend time on it
       END IF;
 
-      
       edgeseg = ST_MakeLine(p1, p2);
+
+      -- Skip non-covered edges
+      IF NOT ST_Equals(p2, ST_EndPoint(rec.geom)) THEN
+        IF NOT ( _ST_Intersects(bounds, p1) AND _ST_Intersects(bounds, p2) )
+        THEN
+          --RAISE DEBUG 'Edge % has points % and % not intersecting with ring bounds', rec.edge_id, st_astext(p1), st_astext(p2);
+          CONTINUE;
+        END IF;
+      ELSE
+        -- must be a 2-points only edge, let's use Covers (more expensive)
+        IF NOT _ST_Covers(bounds, edgeseg) THEN
+          --RAISE DEBUG 'Edge % is not covered by ring', rec.edge_id;
+          CONTINUE;
+        END IF;
+      END IF;
+
+
       p3 = ST_StartPoint(bounds);
       IF ST_DWithin(edgeseg, p3, 0) THEN
         -- Edge segment covers ring endpoint, See bug #874
@@ -418,8 +432,6 @@ BEGIN
       right_side = ST_Line_Locate_Point(bounds, p1) < 
                    ST_Line_Locate_Point(bounds, p2);
   
-      --SELECT DISTINCT (st_dump(st_sharedpaths(rec.geom, bounds))).path[1] = 1 INTO STRICT right_side;
-
       RAISE DEBUG 'Edge % (left:%, right:%) - ring : % - right_side : %',
         rec.edge_id, rec.left_face, rec.right_face, rrec.path, right_side;
 
