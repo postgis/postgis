@@ -835,7 +835,7 @@ CREATE OR REPLACE FUNCTION LineMerge(geometry)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION locate_along_measure(geometry, float8)
 	RETURNS geometry
-	AS $$ SELECT locate_between_measures($1, $2, $2) $$
+	AS $$ SELECT ST_locate_between_measures($1, $2, $2) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
