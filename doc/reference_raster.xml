@@ -1686,6 +1686,11 @@ t          |
 					<funcdef>raster <function>ST_AddBand</function></funcdef>
 					<paramdef><type>raster </type> <parameter>torast</parameter></paramdef>
 					<paramdef><type>raster </type> <parameter>fromrast</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>raster <function>ST_AddBand</function></funcdef>
+					<paramdef><type>raster </type> <parameter>torast</parameter></paramdef>
+					<paramdef><type>raster </type> <parameter>fromrast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>fromband</parameter></paramdef>
 				  </funcprototype>
                   <funcprototype>
@@ -1702,7 +1707,8 @@ t          |
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns a raster with a new band added in given position (index), of given type, of given initial value, and of given nodata value.  If no index is specified, the band is added to the end.  Pixel type is a string representation
+				<para>Returns a raster with a new band added in given position (index), of given type, of given initial value, and of given nodata value.  If no index is specified, the band is added to the end. 
+				If no <varname>fromband</varname> is specified, band 1 is assumed. Pixel type is a string representation
 				    of one of the pixel types specified in <xref linkend="RT_ST_BandPixelType" />.  If an existing index is specified all subsequent bands >= that index are incremented by 1.
 				    If an initial value greater than the max of the pixel type
                     is specified, then the initial value is set to the highest
