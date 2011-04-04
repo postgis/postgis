@@ -55,6 +55,7 @@ YYYY/MM/DD
   - Lots of bug fixes and enhancements to shp2pgsql (Jeff Adams / Azavea)
     Beefing up regression tests for loaders 
     Reproject support for both geometry and geography during import
+  - pgsql2shp conversion from predefined list (Loic Dachary)
   - Shp-pgsql GUI loader - support loading multiple 
     files at a time. (Mark Leslie)  
   - Extras - upgraded tiger_geocoder from using old TIGER format 
