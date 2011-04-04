@@ -1638,7 +1638,7 @@ t          |
 		<refentry id="RT_ST_AddBand">
 			<refnamediv>
 				<refname>ST_AddBand</refname>
-				<refpurpose>Returns a raster with the new band of given type added with given initial value</refpurpose>
+				<refpurpose>Returns a raster with the new band of given type added with given initial value in the given index location.  If no index is specified, the band is added to the end.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -1670,24 +1670,30 @@ t          |
 				  <funcprototype>
 					<funcdef>raster <function>ST_AddBand</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>band_num</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>index</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>initialvalue</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>raster <function>ST_AddBand</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>band_num</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>index</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>initialvalue</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>nodataval</parameter></paramdef>
 				  </funcprototype>
+				  <funcprototype>
+					<funcdef>raster <function>ST_AddBand</function></funcdef>
+					<paramdef><type>raster </type> <parameter>torast</parameter></paramdef>
+					<paramdef><type>raster </type> <parameter>fromrast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>fromband</parameter></paramdef>
+				  </funcprototype>
                   <funcprototype>
 					<funcdef>raster <function>ST_AddBand</function></funcdef>
-					<paramdef><type>raster </type> <parameter>raster1</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>nband1</parameter></paramdef>
-					<paramdef><type>raster </type> <parameter>raster2</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>nband2</parameter></paramdef>
+					<paramdef><type>raster </type> <parameter>torast</parameter></paramdef>
+					<paramdef><type>raster </type> <parameter>fromrast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>fromband</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>torastindex</parameter></paramdef>
 				  </funcprototype>
 
 				</funcsynopsis>
@@ -1696,12 +1702,12 @@ t          |
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns a raster with a new band added in given position (band number), of given type, of given initial value, and of given nodata value.  If no index is specified, the band is added to the end.  Pixel type is a string representation
+				<para>Returns a raster with a new band added in given position (index), of given type, of given initial value, and of given nodata value.  If no index is specified, the band is added to the end.  Pixel type is a string representation
 				    of one of the pixel types specified in <xref linkend="RT_ST_BandPixelType" />.  If an existing index is specified all subsequent bands >= that index are incremented by 1.
 				    If an initial value greater than the max of the pixel type
                     is specified, then the initial value is set to the highest
                     value allowed by the pixel type. The last version add the
-                    nband1 from raster1 to raster2 in position nband2.</para>
+                    <varname>fromband</varname> from <varname>fromrast</varname> raster to <varname>torast</varname> in position <varname>torastindex</varname>.</para>
 				</refsection>
 				
 				<refsection>
