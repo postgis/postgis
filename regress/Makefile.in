@@ -86,7 +86,8 @@ TESTS = \
 	tickets \
 	remove_repeated_points \
 	split \
-	relate
+	relate \
+	concave_hull
 
 # TESTS += wmsservers_old
 

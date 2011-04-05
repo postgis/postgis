@@ -5087,23 +5087,26 @@ CREATE OR REPLACE FUNCTION ST_MinimumBoundingCircle(geometry)
 -- Contributed by Regina Obe and Leo Hsu
 -- Availability: 2.0.0
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION _ST_ConcaveHull(param_inputgeom geometry)
+CREATE OR REPLACE FUNCTION _st_concavehull(param_inputgeom geometry)
   RETURNS geometry AS
 $$
 	DECLARE     
 	vexhull GEOMETRY;
 	var_resultgeom geometry;
+	var_inputgeom geometry;
 	vexring GEOMETRY;
 	cavering GEOMETRY;
 	cavept geometry[];
 	seglength double precision;
 	var_tempgeom geometry;
+	scale_factor integer := 1;
 	i integer;
 	
 	BEGIN
 
 		-- First compute the ConvexHull of the geometry
 		vexhull := ST_ConvexHull(param_inputgeom);
+		var_inputgeom := param_inputgeom;
 		--A point really has no concave hull
 		IF ST_GeometryType(vexhull) = 'ST_Point' OR ST_GeometryType(vexHull) = 'ST_LineString' THEN
 			RETURN vexhull;
@@ -5111,6 +5114,12 @@ $$
 
 		-- convert the hull perimeter to a linestring so we can manipulate individual points
 		vexring := CASE WHEN ST_GeometryType(vexhull) = 'ST_LineString' THEN vexhull ELSE ST_ExteriorRing(vexhull) END;
+		IF abs(ST_X(ST_PointN(vexring,1))) < 1 THEN --scale the geometry to prevent stupid precision errors - not sure it works so make low for now
+			scale_factor := 100;
+			vexring := ST_Scale(vexring, scale_factor,scale_factor);
+			var_inputgeom := ST_Scale(var_inputgeom, scale_factor, scale_factor);
+			--RAISE NOTICE 'Scaling';
+		END IF;
 		seglength := ST_Length(vexring)/least(ST_NPoints(vexring)*2,1000) ;
 
 		vexring := ST_Segmentize(vexring, seglength);
@@ -5119,7 +5128,7 @@ $$
 			ARRAY(
 
 				SELECT 
-					ST_ClosestPoint(param_inputgeom, pt ) As the_geom
+					ST_ClosestPoint(var_inputgeom, pt ) As the_geom
 					FROM (
 						SELECT  ST_PointN(vexring, n ) As pt, n
 							FROM 
@@ -5129,34 +5138,27 @@ $$
 				)
 			)
 		; 
-
-		var_resultgeom := ST_MakePolygon(ST_MakeLine(geom)) 
-			FROM ST_Dump(cavering) As foo;
 		
-		IF NOT ST_IsValid(var_resultgeom) THEN
-		    --RAISE NOTICE '_ST_Concavehull invalid %', ST_AsText(var_resultgeom);
-		    var_tempgeom := ST_BuildArea(var_resultgeom); -- try to make valid
-		    IF NOT ST_IsValid(var_tempgeom) THEN
-				var_resultgeom := ST_Buffer(var_resultgeom,ST_Length(cavering)/1000, 'quad_segs=3'); -- try to make valid
-		    END IF;
-		     --if still invalid or doens't  contain the geometry just return convex hull
-		    IF NOT ST_IsValid(var_resultgeom) or ST_GeometryType(var_resultgeom) <> 'ST_Polygon' THEN
-				var_resultgeom := ST_ConvexHull(param_inputgeom);
-		    ELSIF ST_GeometryType(param_inputgeom) ILIKE '%Geometry%' THEN
-				IF EXISTS(SELECT geom FROM ST_Dump(param_inputgeom) WHERE NOT ST_Covers(var_resultgeom,geom) ) THEN 
-				--we have to explode inputgeom since geos doesn't support geometrycollections for containment check
-				   var_resultgeom := ST_ConvexHull(param_inputgeom);
-				END IF;
-			ELSIF NOT ST_Contains(var_resultgeom, param_inputgeom) THEN
-				var_resultgeom := ST_ConvexHull(param_inputgeom);
-			END IF;
+
+		var_resultgeom := ST_MakeLine(geom) 
+			FROM ST_Dump(cavering) As foo;
+
+		IF ST_IsSimple(var_resultgeom) THEN
+			var_resultgeom := ST_MakePolygon(var_resultgeom);
+			--RAISE NOTICE 'is Simple: %', var_resultgeom;
+		ELSE /** will not result in a valid polygon -- just return convex hull **/
+			--RAISE NOTICE 'is not Simple: %', var_resultgeom;
+			var_resultgeom := ST_ConvexHull(var_resultgeom);
+		END IF;
+		
+		IF scale_factor > 1 THEN -- scale the result back
+			var_resultgeom := ST_Scale(var_resultgeom, 1/scale_factor, 1/scale_factor);
 		END IF;
 		RETURN var_resultgeom;
 	
 	END;
 $$
-  LANGUAGE 'plpgsql' IMMUTABLE STRICT
-  COST 100;
+  LANGUAGE plpgsql IMMUTABLE STRICT;
   
 CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex float, param_allow_holes boolean) RETURNS geometry AS
 $$
