@@ -681,7 +681,7 @@ Datum gserialized_contains(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gserialized_overlaps);
 Datum gserialized_overlaps(PG_FUNCTION_ARGS)
 {
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0),PG_GETARG_DATUM(1), gidx_contains) == LW_TRUE )
+	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0),PG_GETARG_DATUM(1), gidx_overlaps) == LW_TRUE )
 	{
 		PG_RETURN_BOOL(TRUE);
 	}
