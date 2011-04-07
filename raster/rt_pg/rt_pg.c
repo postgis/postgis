@@ -1663,8 +1663,13 @@ Datum RASTER_getPixelValue(PG_FUNCTION_ARGS)
     
     /* If the result is -1 or the value is nodata and we take nodata into account then return nodata = NULL */
     if (result == -1 || (hasnodata && rt_band_get_hasnodata_flag(ctx, band) && pixvalue == rt_band_get_nodata(ctx, band))) {
+        rt_raster_destroy(ctx, raster);
+        rt_context_destroy(ctx);        
         PG_RETURN_NULL();
     }
+
+    rt_raster_destroy(ctx, raster);
+    rt_context_destroy(ctx);        
 
     PG_RETURN_FLOAT8(pixvalue);
 }
@@ -2073,6 +2078,8 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
 
     if ( ! newrast ) {
         elog(ERROR, "RASTER_mapAlgebra: Could not create a new raster");
+        rt_raster_destroy(ctx, raster);
+        rt_context_destroy(ctx);
         PG_RETURN_NULL();
     }
 
