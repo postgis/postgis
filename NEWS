@@ -20,18 +20,17 @@ YYYY/MM/DD
   
   - Support for TIN and PolyHedralSurface (Olivier Courtin / Oslandia)
   - Raster support integrated and documented
-  	(Pierre Racine, Jorge Arévalo, Mateusz Loskot, 
-  	 Sandro Santilli, Regina Obe, David Zwarg)
-  	(Company developer and funding: 
-  	University Laval, Deimos Space, CadCorp, Michigan Tech Research Institute, 
-  	Paragon Corporation, Azavea)
+    (Pierre Racine, Jorge Arévalo, Mateusz Loskot, Sandro Santilli,
+    Regina Obe, David Zwarg)
+    (Company developer and funding: University Laval, Deimos Space, CadCorp,
+    Michigan Tech Research Institute, Paragon Corporation, Azavea)
   - Making spatial indexes 3D aware
-     in progress (Paul Ramsey / OpenGeo, Mark Cave-Ayland / Sirius)
+    in progress (Paul Ramsey / OpenGeo, Mark Cave-Ayland / Sirius)
   - Topology support improved, documented, testing 
-  	(Sandro Santilli / Faunalia for RT-SIGTA, Regina Obe, Andrea Peri)
+    (Sandro Santilli / Faunalia for RT-SIGTA, Regina Obe, Andrea Peri)
   - 3D relationship support functions (Nicklas Avén)
-  		ST_3DDistance, ST_3DClosestPoint, ST_3DIntersects, 
-  		ST_3DShortestLine and more ..
+    ST_3DDistance, ST_3DClosestPoint, ST_3DIntersects, 
+    ST_3DShortestLine and more ..
   - N-Dimensional spatial indexes (Paul Ramsey / OpenGeo)
   - ST_Split (Sandro Santilli / Faunalia for RT-SIGTA)
   - ST_isValidDetail (Sandro Santilli / Faunalia for RT-SIGTA)
@@ -59,7 +58,7 @@ YYYY/MM/DD
   - Shp-pgsql GUI loader - support loading multiple 
     files at a time. (Mark Leslie)  
   - Extras - upgraded tiger_geocoder from using old TIGER format 
-     to use new TIGER shp and file structure format (Stephen Frost)
+    to use new TIGER shp and file structure format (Stephen Frost)
   - Extras - revised tiger_geocoder to work with 
     TIGER census 2010 data and 
     addition of reverse geocoder function,
