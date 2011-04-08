@@ -525,6 +525,54 @@ This example makes a backup of a topology called ma_topo
 			</refsection>
 		</refentry>
 		
+		<refentry id="TopologySummary">
+			<refnamediv>
+				<refname>TopologySummary</refname>
+			
+				<refpurpose>Takes a topology name and provides summary totals of types of objects in topology</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>text <function>TopologySummary</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>Takes a topology name and provides summary totals of types of objects in topology.</para>
+        
+                <!-- use this format if new function -->
+                <para>Availability: 2.0.0</para>
+			</refsection>
+		
+		
+			<refsection>
+				<title>Examples</title>
+				<programlisting>SELECT topology.topologysummary('city_data');
+                    topologysummary                     
+--------------------------------------------------------
+ Topology city_data (329), SRID 4326, precision: 0
+ 22 nodes, 24 edges, 10 faces, 29 topogeoms in 5 layers
+ Layer 1, type Polygonal (3), 9 topogeoms
+  Deploy: features.land_parcels.feature
+ Layer 2, type Puntal (1), 8 topogeoms
+  Deploy: features.traffic_signs.feature
+ Layer 3, type Lineal (2), 8 topogeoms
+  Deploy: features.city_streets.feature
+ Layer 4, type Polygonal (3), 3 topogeoms
+  Hierarchy level 1, child layer 1
+  Deploy: features.big_parcels.feature
+ Layer 5, type Puntal (1), 1 topogeoms
+  Hierarchy level 1, child layer 2
+  Deploy: features.big_signs.feature</programlisting>
+			</refsection>
+		</refentry>
+		
 		<refentry id="ValidateTopology">
 			<refnamediv>
 				<refname>ValidateTopology</refname>
