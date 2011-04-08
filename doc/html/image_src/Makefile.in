@@ -19,6 +19,8 @@ CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I../../../liblwgeom
 IMAGES= \
 	../images/de9im01.png \
 	../images/de9im02.png \
+	../images/st_azimuth01.png \
+	../images/st_azimuth02.png \
 	../images/st_buffer01.png \
 	../images/st_buffer02.png \
 	../images/st_buffer03.png \
