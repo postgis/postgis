@@ -748,16 +748,16 @@ SELECT ST_Area(the_geog)/POWER(0.3048,2) As sqft_spheroid,  ST_Area(the_geog,fal
 			value is in radians. Angle is computed clockwise from down-to-up: on the clock: 12=0; 3=PI/2; 6=PI; 9=3PI/4 </para>
 
 			<para>The Azimuth is mathematical concept defined as the angle, in this case measured in radian, between a reference plane
-				and a point</para>
+				and a point. </para>
 
 			<para>Availability: 1.1.0</para>
 			<para>Azimuth is especially useful in conjunction with ST_Translate for shifting an object along its perpendicular axis. See
-				 upgis_lineshift <ulink url="http://www.postgis.org/support/wiki/index.php?plpgsqlfunctions">Plpgsqlfunctions PostGIS wiki section</ulink> for example of this.</para>
+				 upgis_lineshift <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions">Plpgsqlfunctions PostGIS wiki section</ulink> for example of this.</para>
 		</refsection>
 
 		<refsection>
 		<title>Examples</title>
-		<para>--Azimuth in degrees </para>
+		<para>Azimuth in degrees </para>
 <programlisting>
 SELECT ST_Azimuth(ST_Point(25,45), ST_Point(75,100))/(2*pi())*360 as degAz,
 	ST_Azimuth(ST_Point(75,100), ST_Point(25,45))/(2*pi())*360 As degAzrev;
@@ -775,7 +775,8 @@ SELECT ST_Azimuth(ST_Point(25,45), ST_Point(75,100))/(2*pi())*360 as degAz,
 					  <imageobject>
 						<imagedata fileref="images/st_azimuth01.png" />
 					  </imageobject>
-					  <caption><para>degAz is curve shown with horizontal and points</para></caption>
+					  <caption><para>degAz is path to travel (azimuth), horizontal line (which starts at the start point and ends where we want the end point to fall)
+					      and points (start point: 25,45 is in green)</para></caption>
 					</mediaobject>
 				  </informalfigure>
 				</para></entry>
@@ -784,7 +785,8 @@ SELECT ST_Azimuth(ST_Point(25,45), ST_Point(75,100))/(2*pi())*360 as degAz,
 					  <imageobject>
 						<imagedata fileref="images/st_azimuth02.png" />
 					  </imageobject>
-					  <caption><para>degAzrev is azimuth curve shown with horizontal and points</para></caption>
+					  <caption><para>degAzrev is azimuth curve shown, horizontal line (which starts at the start point and ends where we want the end point to fall)
+					      and points (start point: 75,100 is in green)</para></caption>
 					</mediaobject>
 				  </informalfigure>
 				</para></entry>
