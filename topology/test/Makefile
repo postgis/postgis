@@ -42,4 +42,4 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 
 check: topo_predicates.sql load_topology.sql load_topology-4326.sql
 	$(MAKE) -C ../../regress postgis.sql staged-install
-	@USE_VERSION=$(POSTGIS_PGSQL_VERSION) ../../regress/run_test --topology $(TESTS)
+	@USE_VERSION=$(POSTGIS_PGSQL_VERSION) ../../regress/run_test $(RUNTESTFLAGS) --topology $(TESTS)

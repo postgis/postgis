@@ -114,7 +114,7 @@ rtpostgis.sql: ../../rt_pg/rtpostgis.sql
 check: rtpostgis.sql
 	$(MAKE) -C ../../../regress postgis.sql staged-install
 	$(MAKE) -C ../../rt_pg REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
-	@USE_VERSION=$(POSTGIS_PGSQL_VERSION) ../../../regress/run_test --raster $(TESTS)
+	@USE_VERSION=$(POSTGIS_PGSQL_VERSION) ../../../regress/run_test $(RUNTESTFLAGS) --raster $(TESTS)
 
 #all: run_test
 
