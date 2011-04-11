@@ -2578,9 +2578,9 @@ BEGIN
 		' f_table_name = ' || quote_literal(table_name);
 
 	-- Remove table
-	EXECUTE 'DROP TABLE '
+	EXECUTE 'DROP TABLE IF EXISTS '
 		|| quote_ident(real_schema) || '.' ||
-		quote_ident(table_name);
+		quote_ident(table_name) || ' RESTRICT';
 
 	RETURN
 		real_schema || '.' ||
