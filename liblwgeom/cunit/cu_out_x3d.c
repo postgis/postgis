@@ -2,8 +2,8 @@
  * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
- * Copyright 2010 Olivier Courtin <olivier.courtin@oslandia.com>
+ * http://www.postgis.org
+ * Copyright 2011 Regina Obe
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
