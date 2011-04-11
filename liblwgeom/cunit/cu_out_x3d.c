@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id: cu_out_geojson.c 6212 2010-11-30 20:11:13Z pramsey $
+ * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
