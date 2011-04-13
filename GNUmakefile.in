@@ -165,4 +165,8 @@ astyle:
 commit:
 	$(MAKE) astyle && $(MAKE) clean && $(MAKE) check && svn commit
 
+svnrebase:
+	git svn rebase --authors-prog author.sh
+
+
 .PHONY: utils liblwgeom ChangeLog.svn raster
