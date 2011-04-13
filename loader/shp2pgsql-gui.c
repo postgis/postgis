@@ -1610,8 +1610,14 @@ pgui_action_open_file_dialog(GtkWidget *widget, gpointer data)
 
 	file_filter_shape = gtk_file_filter_new();
 	gtk_file_filter_add_pattern(GTK_FILE_FILTER(file_filter_shape), "*.shp");
-	gtk_file_filter_set_name(GTK_FILE_FILTER(file_filter_shape), _("Shapefiles (*.shp)"));
+	gtk_file_filter_set_name(GTK_FILE_FILTER(file_filter_shape), _("Shape Files (*.shp)"));
 
+	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(file_chooser_dialog_shape), file_filter_shape);
+
+	/* Filter for .dbf files */
+	file_filter_shape = gtk_file_filter_new();
+	gtk_file_filter_add_pattern(GTK_FILE_FILTER(file_filter_shape), "*.dbf");
+	gtk_file_filter_set_name(GTK_FILE_FILTER(file_filter_shape), _("DBF Files (*.dbf)"));
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(file_chooser_dialog_shape), file_filter_shape);
 
 	if (gtk_dialog_run(GTK_DIALOG(file_chooser_dialog_shape))
