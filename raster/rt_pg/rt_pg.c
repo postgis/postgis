@@ -2138,7 +2138,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
         SET_VARSIZE(pgraster, pgraster->size);
         rt_raster_destroy(ctx, newrast);
 
-        // XXX jorgearevalo: Dont destroy context. I think we need it here...
+        rt_context_destroy(ctx);
         PG_RETURN_POINTER(pgraster);
     }
 
