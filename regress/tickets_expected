@@ -106,3 +106,4 @@ ERROR:  First argument must be a LINESTRING
 #723|0101000020E61000007975D98DE33826C060FBFFFFFF7F4B40
 #804|<gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos srsDimension="2">0 0</gml:pos></gml:Point>
 #845|t
+#834|GEOMETRYCOLLECTION(POINT(0 0 5),LINESTRING(10 10 5,10 0 5))
