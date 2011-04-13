@@ -69,3 +69,4 @@ topology/test/load_topology.sql
 topology/test/topo_predicates.sql
 topology/topology.sql
 topology/topology.sql.in
+authors.git

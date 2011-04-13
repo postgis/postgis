@@ -165,8 +165,11 @@ astyle:
 commit:
 	$(MAKE) astyle && $(MAKE) clean && $(MAKE) check && svn commit
 
-svnrebase:
-	git svn rebase --authors-prog author.sh
+authors.git: authors.svn
+	sed -e 's/:/ = /' authors.svn > authors.git
+
+svnrebase: authors.git
+	git svn rebase --authors-file authors.git
 
 
 .PHONY: utils liblwgeom ChangeLog.svn raster
