@@ -191,7 +191,22 @@ replace(const char *str, const char *oldstr, const char *newstr, int *count)
       found++, tmp += oldlen;
 
    length = strlen(str) + found * (newlen - oldlen);
-   if ( (result = (char *)palloc(length+1)) == NULL) {
+
+   /**
+    * From: http://www.postgresql.org/docs/8.4/static/spi-memory.html
+    * "(...) if your procedure needs to return an object in allocated memory
+    * (such as a value of a pass-by-reference data type), you cannot allocate
+    * that memory using palloc, at least not while you are connected to SPI.
+    * If you try, the object will be deallocated by SPI_finish, and your
+    * procedure will not work reliably. To solve this problem, use SPI_palloc to
+    * allocate memory for your return object. SPI_palloc allocates memory in the
+    * "upper executor context", that is, the memory context that was current
+    * when SPI_connect was called, which is precisely the right context for a
+    * value returned from your procedure."
+    *
+    * So, we use SPI_palloc for allocating memory.
+    */
+   if ( (result = (char *)SPI_palloc(length+1)) == NULL) {
       fprintf(stderr, "Not enough memory\n");
       found = -1;
    } else {
@@ -382,11 +397,14 @@ Datum RASTER_in(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_out);
 Datum RASTER_out(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+    rt_pgraster *pgraster = NULL;
     rt_raster raster = NULL;
     uint32_t hexwkbsize = 0;
     char *hexwkb = NULL;
-    rt_context ctx = get_rt_context(fcinfo);
+    rt_context ctx = NULL;
+    
+    pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+    ctx = get_rt_context(fcinfo);
 
     raster = rt_raster_deserialize(ctx, pgraster);
     if ( ! raster ) {
@@ -2027,8 +2045,9 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
     POSTGIS_RT_DEBUG(2, "RASTER_mapAlgebra: Starting...");
 
     /* Check raster */
-    if (PG_ARGISNULL(0)) {
-        elog(WARNING, "RASTER_mapAlgebra: Raster is NULL. Returning NULL");
+    if (PG_ARGISNULL(0)) 
+    {
+        elog(NOTICE, "Raster is NULL. Returning NULL");
         PG_RETURN_NULL();
     }
 
@@ -2036,19 +2055,16 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
     /* Deserialize raster */
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
     ctx = get_rt_context(fcinfo);
-    if (!ctx)
+    if (NULL == ctx)
     {
-        ereport(ERROR,
-            (errcode(ERRCODE_OUT_OF_MEMORY),
-                errmsg("RASTER_mapAlgebra: Could not deserialize raster")));
+        elog(ERROR, "RASTER_mapAlgebra: Could not get memory context. Returning"
+                " NULL");
         PG_RETURN_NULL();
     }
     raster = rt_raster_deserialize(ctx, pgraster);
-    if (!raster)
+    if (NULL == raster)
     {
-        ereport(ERROR,
-            (errcode(ERRCODE_OUT_OF_MEMORY),
-                errmsg("RASTER_mapAlgebra: Could not deserialize raster")));
+        elog(ERROR, "RASTER_mapAlgebra: Could not deserialize raster");
         rt_context_destroy(ctx);
         PG_RETURN_NULL();
     }
@@ -2076,8 +2092,10 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
 
     newrast = rt_raster_new(ctx, width, height);
 
-    if ( ! newrast ) {
-        elog(ERROR, "RASTER_mapAlgebra: Could not create a new raster");
+    if ( NULL == newrast ) 
+    {
+        elog(ERROR, "RASTER_mapAlgebra: Could not create a new raster. "
+                "Returning NULL");
         rt_raster_destroy(ctx, raster);
         rt_context_destroy(ctx);
         PG_RETURN_NULL();
@@ -2103,15 +2121,24 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
      * If this new raster is empty (width = 0 OR height = 0) then there is
      * nothing to compute and we return it right now
      **/
-    if (rt_raster_is_empty(ctx, newrast)) {
-        elog(WARNING, "RASTER_mapAlgebra: Raster is empty. Returning an empty raster");
+    if (rt_raster_is_empty(ctx, newrast)) 
+    {
+        elog(NOTICE, "Raster is empty. Returning an empty raster");
+        rt_raster_destroy(ctx, raster);
+        
         pgraster = rt_raster_serialize(ctx, newrast);
-        if (!pgraster) PG_RETURN_NULL();
+        if (NULL == pgraster) {
+            rt_raster_destroy(ctx, newrast);
+            rt_context_destroy(ctx);
+            elog(ERROR, "RASTER_mapAlgebra: Could not serialize raster. "
+                    "Returning NULL");
+            PG_RETURN_NULL();
+        }
 
         SET_VARSIZE(pgraster, pgraster->size);
+        rt_raster_destroy(ctx, newrast);
 
-        rt_raster_destroy(ctx, raster);
-        rt_context_destroy(ctx);
+        // XXX jorgearevalo: Dont destroy context. I think we need it here...
         PG_RETURN_POINTER(pgraster);
     }
 
@@ -2122,26 +2149,50 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
      * Check if the raster has the required band. Otherwise, return a raster
      * without band
      **/
-    if (rt_raster_has_no_band(ctx, raster, nband)) {
-        elog(WARNING, "RASTER_mapAlgebra: Raster do not have the required band. "
-                "Returning a raster without a band");
+    if (rt_raster_has_no_band(ctx, raster, nband)) 
+    {
+        elog(NOTICE, "Raster do not have the required band. Returning a raster "
+                "without a band");
+        rt_raster_destroy(ctx, raster);
+
         pgraster = rt_raster_serialize(ctx, newrast);
-        if (!pgraster) PG_RETURN_NULL();
+        if (NULL == pgraster) {
+            rt_raster_destroy(ctx, newrast);
+            rt_context_destroy(ctx);
+            elog(ERROR, "RASTER_mapAlgebra: Could not serialize raster. "
+                    "Returning NULL");
+            PG_RETURN_NULL();
+        }
 
         SET_VARSIZE(pgraster, pgraster->size);
-        
-        rt_raster_destroy(ctx, raster);
+        rt_raster_destroy(ctx, newrast);
         rt_context_destroy(ctx);
+        
         PG_RETURN_POINTER(pgraster);
     }
 
     /* Get the raster band */
     band = rt_raster_get_band(ctx, raster, nband - 1);
-    if ( ! band ) {
-        elog(ERROR, "RASTER_mapAlgebra: Could not get band %d for raster", nband);
+    if ( NULL == band )
+    {
+        elog(NOTICE, "Could not get the required band. Returning a raster "
+                "without a band");
         rt_raster_destroy(ctx, raster);
+
+        pgraster = rt_raster_serialize(ctx, newrast);
+        if (NULL == pgraster) {
+            rt_raster_destroy(ctx,newrast);
+            rt_context_destroy(ctx);
+            elog(ERROR, "RASTER_mapAlgebra: Could not serialize raster. "
+                    "Returning NULL");
+            PG_RETURN_NULL();
+        }
+
+        SET_VARSIZE(pgraster, pgraster->size);
+        rt_raster_destroy(ctx, newrast);
         rt_context_destroy(ctx);
-        PG_RETURN_NULL();
+        
+        PG_RETURN_POINTER(pgraster); 
     }
 
     /* Check for nodata value */
@@ -2167,11 +2218,13 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
     /**
      * Set the new pixeltype
      **/
-    if (PG_ARGISNULL(4)) {
+    if (PG_ARGISNULL(4))
+    {
         newpixeltype = rt_band_get_pixtype(ctx, band);
     }
 
-    else {
+    else
+    {
         strFromText = text_to_cstring(PG_GETARG_TEXT_P(4));
         newpixeltype = rt_pixtype_index_from_name(ctx,strFromText);
         lwfree(strFromText);
@@ -2179,10 +2232,12 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
             newpixeltype = rt_band_get_pixtype(ctx, band);
     }
 
-    if (newpixeltype == PT_END) {
-        elog(ERROR, "RASTER_mapAlgebra: Invalid pixeltype. Aborting");
+    if (newpixeltype == PT_END)
+    {
+        elog(ERROR, "RASTER_mapAlgebra: Invalid pixeltype. Returning NULL");
         
         rt_raster_destroy(ctx, raster);
+        rt_raster_destroy(ctx, newrast);
         rt_context_destroy(ctx);
         
         PG_RETURN_NULL();
@@ -2193,7 +2248,8 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
 
     /* Construct expression for raster values */
 
-    if (!PG_ARGISNULL(2)) {
+    if (!PG_ARGISNULL(2))
+    {
         expression = text_to_cstring(PG_GETARG_TEXT_P(2));
         len = strlen("SELECT ") + strlen(expression);
         initexpr = (char *)palloc(len + 1);
@@ -2212,7 +2268,8 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
      * value. Then, we can initialize the raster with this value and skip the
      * computation of nodata values one by one in the main computing loop
      **/
-    if (!PG_ARGISNULL(3)) {
+    if (!PG_ARGISNULL(3))
+    {
         nodatavalueexpr = text_to_cstring(PG_GETARG_TEXT_P(3));
         len = strlen("SELECT ") + strlen(nodatavalueexpr);
         initndvexpr = (char *)palloc(len + 1);
@@ -2232,7 +2289,8 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
          **/
         ret = SPI_execute(newexpr, FALSE, 0);
 
-        if (ret != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
+        if (ret != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1)
+        {
             elog(ERROR, "RASTER_mapAlgebra: Invalid construction for nodata "
                     "expression. Aborting");
 
@@ -2241,14 +2299,17 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
                 lwfree(expression);
             if (nodatavalueexpr)
                 lwfree(nodatavalueexpr);
+
             rt_raster_destroy(ctx, raster);
+            rt_raster_destroy(ctx, newrast);
+
             rt_context_destroy(ctx);
 
             if (SPI_tuptable)
                 SPI_freetuptable(tuptable);
             
             /* TODO: make postgres to crash when dealing with BIG rasters */
-            //SPI_finish();
+            SPI_finish();
             PG_RETURN_NULL();
         }
 
@@ -2271,7 +2332,8 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
      * right now a raster filled with the nodatavalueexpr
      * TODO: Call rt_band_check_isnodata instead?
      **/
-    if (rt_band_get_isnodata_flag(ctx, band)) {
+    if (rt_band_get_isnodata_flag(ctx, band))
+    {
 
         POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebra: Band is a nodata band, returning "
                 "a raster filled with nodata");
@@ -2281,7 +2343,15 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
 
         /* Serialize created raster */
         pgraster = rt_raster_serialize(ctx, newrast);
-        if (!pgraster) PG_RETURN_NULL();
+        if (NULL == pgraster)
+        {
+            rt_raster_destroy(ctx, newrast);
+            rt_raster_destroy(ctx, raster);
+            rt_context_destroy(ctx);
+            elog(ERROR, "RASTER_mapAlgebra: Could not serialize raster. "
+                    "Returning NULL");
+            PG_RETURN_NULL();
+        }
 
         SET_VARSIZE(pgraster, pgraster->size);
 
@@ -2291,11 +2361,11 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
         if (nodatavalueexpr)
             lwfree(nodatavalueexpr);
         rt_raster_destroy(ctx, raster);
-        rt_context_destroy(ctx);
+        rt_raster_destroy(ctx, newrast);
 
         /* Disconnect function from SPI manager */
         /* TODO: make postgres to crash when dealing with BIG rasters */
-        //SPI_finish();
+        SPI_finish();
 
         PG_RETURN_POINTER(pgraster);
     }
@@ -2322,7 +2392,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
 
         /* Serialize created raster */
         pgraster = rt_raster_serialize(ctx, newrast);
-        if (!pgraster) 
+        if (NULL == pgraster)
         {
             /* Free memory allocated out of the current context */
             if (expression)
@@ -2330,6 +2400,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
             if (nodatavalueexpr)
                 lwfree(nodatavalueexpr);
             rt_raster_destroy(ctx, raster);
+            rt_raster_destroy(ctx, newrast);
             rt_context_destroy(ctx);
             
             PG_RETURN_NULL();
@@ -2343,11 +2414,11 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
         if (nodatavalueexpr)
             lwfree(nodatavalueexpr);
         rt_raster_destroy(ctx, raster);
+        rt_raster_destroy(ctx, newrast);
         rt_context_destroy(ctx);
 
-        /* Disconnect function from SPI manager */
-        /* TODO: make postgres to crash when dealing with BIG rasters */
-        //SPI_finish();
+        /* Disconnect function from SPI manager */        
+        SPI_finish();
 
         PG_RETURN_POINTER(pgraster);
     }
@@ -2356,12 +2427,15 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
      * Optimization: If expression resume to a constant (it does not contain
      * RAST)
      **/
-    if (initexpr != NULL && strstr(initexpr, "RAST") == NULL) {
+    if (initexpr != NULL && strstr(initexpr, "RAST") == NULL)
+    {
         /* Execute the expresion into newval */
         ret = SPI_execute(initexpr, FALSE, 0);
 
-        if (ret != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
-            elog(ERROR, "RASTER_mapAlgebra: Invalid construction for expression. Aborting");
+        if (ret != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1)
+        {
+            elog(ERROR, "RASTER_mapAlgebra: Invalid construction for expression."
+                    " Aborting");
 
             /* Free memory allocated out of the current context */
             if (expression)
@@ -2369,13 +2443,14 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
             if (nodatavalueexpr)
                 lwfree(nodatavalueexpr);
             rt_raster_destroy(ctx, raster);
+            rt_raster_destroy(ctx,newrast);
             rt_context_destroy(ctx);
 
             if (SPI_tuptable)
                 SPI_freetuptable(tuptable);
 
             /* TODO: make postgres to crash when dealing with BIG rasters */
-            //SPI_finish();
+            SPI_finish();
             PG_RETURN_NULL();
         }
 
@@ -2421,7 +2496,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
     if (expression == NULL || skipcomputation == 2) {
         /* Serialize created raster */
         pgraster = rt_raster_serialize(ctx, newrast);
-        if (!pgraster)
+        if (NULL == pgraster)
         {
             /* Free memory allocated out of the current context */
             if (expression)
@@ -2429,6 +2504,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
             if (nodatavalueexpr)
                 lwfree(nodatavalueexpr);
             rt_raster_destroy(ctx, raster);
+            rt_raster_destroy(ctx, newrast);
             rt_context_destroy(ctx);
             
             PG_RETURN_NULL();
@@ -2446,16 +2522,17 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
 
         /* Disconnect function from SPI manager */
         /* TODO: make postgres to crash when dealing with BIG rasters */
-        //SPI_finish();
+        SPI_finish();
 
         PG_RETURN_POINTER(pgraster);
     }
 
     /* Get the new raster band */
     newband = rt_raster_get_band(ctx, newrast, 0);
-    if ( ! newband ) {
-        elog(WARNING, "RASTER_mapAlgebra: Could not modify band for new raster. "
-                "Returning new raster with the original band");
+    if ( ! newband )
+    {
+        elog(NOTICE, "Could not modify band for new raster. Returning new "
+                "raster with the original band");
 
         /* Serialize created raster */
         pgraster = rt_raster_serialize(ctx, newrast);
@@ -2467,6 +2544,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
             if (nodatavalueexpr)
                 lwfree(nodatavalueexpr);
             rt_raster_destroy(ctx, raster);
+            rt_raster_destroy(ctx, newrast);
             rt_context_destroy(ctx);
             
             PG_RETURN_NULL();
@@ -2480,11 +2558,11 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
         if (nodatavalueexpr)
             lwfree(nodatavalueexpr);
         rt_raster_destroy(ctx, raster);
+        rt_raster_destroy(ctx, newrast);
         rt_context_destroy(ctx);
 
         /* Disconnect function from SPI manager */
-        /* TODO: make postgres to crash when dealing with BIG rasters */
-        //SPI_finish();
+        SPI_finish();
 
         PG_RETURN_POINTER(pgraster);
     }
@@ -2508,13 +2586,17 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
                     if (initexpr != NULL) {
                         newexpr = replace(initexpr, "RAST", strnewval, &count);
 
-                        POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebra: (%dx%d), r = %s, newexpr = %s",
+                        POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebra: (%dx%d), "
+                                "r = %s, newexpr = %s",
                                 x, y, strnewval, newexpr);
 
                         ret = SPI_execute(newexpr, FALSE, 0);
 
-                        if (ret != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
-                            elog(ERROR, "RASTER_mapAlgebra: Invalid construction for expression. Aborting");
+                        if (ret != SPI_OK_SELECT || SPI_tuptable == NULL || 
+                                SPI_processed != 1)
+                        {
+                            elog(ERROR, "RASTER_mapAlgebra: Invalid construction"
+                                    " for expression. Aborting");
 
                             /* Free memory allocated out of the current context */
                             if (expression)
@@ -2522,13 +2604,14 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
                             if (nodatavalueexpr)
                                 lwfree(nodatavalueexpr);
                             rt_raster_destroy(ctx, raster);
+                            rt_raster_destroy(ctx, newrast);
                             rt_context_destroy(ctx);
 
                             if (SPI_tuptable)
                                 SPI_freetuptable(tuptable);
 
                             /* TODO: make postgres to crash when dealing with BIG rasters */
-                            //SPI_finish();
+                            SPI_finish();
                             PG_RETURN_NULL();
                         }
 
@@ -2544,7 +2627,8 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
                     else
                         newval = newinitialvalue;
 
-                    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebra: new value = %f", newval);
+                    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebra: new value = %f",
+                        newval);
                 }
 
 
@@ -2559,7 +2643,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
     POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebra: raster modified, serializing it.");
     /* Serialize created raster */
     pgraster = rt_raster_serialize(ctx, newrast);
-    if (!pgraster) 
+    if (NULL == pgraster)
     {
         /* Free memory allocated out of the current context */
         if (expression)
@@ -2567,6 +2651,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
         if (nodatavalueexpr)
             lwfree(nodatavalueexpr);
         rt_raster_destroy(ctx, raster);
+        rt_raster_destroy(ctx, newrast);
         rt_context_destroy(ctx);
         
         PG_RETURN_NULL();
@@ -2582,14 +2667,15 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
     if (nodatavalueexpr)
         lwfree(nodatavalueexpr);
     rt_raster_destroy(ctx, raster);
+    rt_raster_destroy(ctx, newrast);
     rt_context_destroy(ctx);
 
     /* Disconnect function from SPI manager */
-    /* TODO: make postgres to crash when dealing with BIG rasters */
-    //SPI_finish();
+    SPI_finish();
     
 
     POSTGIS_RT_DEBUG(4, "RASTER_mapAlgebra: returning raster");
+
 
     PG_RETURN_POINTER(pgraster);
 }

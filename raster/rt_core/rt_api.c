@@ -3162,7 +3162,11 @@ rt_raster_serialized_size(rt_context ctx, rt_raster raster) {
         RASTER_DEBUGF(3, "Size before alignment is %d", size);
 
         /* Align size to 8-bytes boundary (trailing padding) */
-        size += 8 - (size % 8);
+        /* XXX jorgearevalo: bug here. If the size is actually 8-bytes aligned,
+         this line will add 8 bytes trailing padding, and it's not necessary */
+        //size += 8 - (size % 8);
+        if (size % 8)
+            size += 8 - (size % 8);
 
         RASTER_DEBUGF(3, "Size after alignment is %d", size);
     }
@@ -3313,7 +3317,7 @@ rt_raster_serialize(rt_context ctx, rt_raster raster) {
             }
             default:
                 ctx->err("rt_raster_serialize: Fatal error caused by unknown pixel type. Aborting.");
-                abort(); /* shoudn't happen */
+                abort(); /* shouldn't happen */
                 return 0;
         }
 
@@ -3375,12 +3379,16 @@ rt_raster_deserialize(rt_context ctx, void* serialized) {
     assert(NULL != ctx);
     assert(NULL != serialized);
 
+    RASTER_DEBUG(2, "rt_raster_deserialize: Entering...");
+
     /* NOTE: Value of rt_raster.size may be different
      * than actual size of raster data being read.
      * See note on SET_VARSIZE in rt_raster_serialize function above.
      */
 
     /* Allocate memory for deserialized raster header */
+
+    RASTER_DEBUG(3, "rt_raster_deserialize: Allocationg memory for deserialized raster header");
     rast = (rt_raster) ctx->alloc(sizeof (struct rt_raster_t));
     if (!rast) {
         ctx->err("rt_raster_deserialize: Out of memory allocating raster for deserialization");
@@ -3388,14 +3396,16 @@ rt_raster_deserialize(rt_context ctx, void* serialized) {
     }
 
     /* Deserialize raster header */
+    RASTER_DEBUG(3, "rt_raster_deserialize: Deserialize raster header");
     memcpy(rast, serialized, sizeof (struct rt_raster_serialized_t));
 
-    if (!rast->numBands) {
+    if (0 == rast->numBands) {
         rast->bands = 0;
         return rast;
     }
     beg = (const uint8_t*) serialized;
 
+    RASTER_DEBUG(3, "rt_raster_deserialize: Allocating memory for bands");
     /* Allocate registry of raster bands */
     rast->bands = ctx->alloc(rast->numBands * sizeof (rt_band));
 
