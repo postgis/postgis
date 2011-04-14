@@ -71,7 +71,7 @@ $(OBJS): %.o: %.c
 
 # Clean target
 clean:
-	@rm $(OBJS)
+	@rm -f $(OBJS)
 	@rm -f cu_tester.exe
 
 # Requirements message
