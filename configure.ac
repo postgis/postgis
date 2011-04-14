@@ -732,7 +732,7 @@ AC_ARG_WITH([raster],
                     [compile the raster extension (requires GDAL >= 1.6.0) @<:@default=no@:>@])],
     [RASTER="raster"], [RASTER=""])
 
-if test "x$RASTER" = "xraster"; then
+if test "x$RASTER" = "xraster"; then dnl # {
     AC_MSG_RESULT([RASTER: Raster support requested])
 
     AC_CONFIG_HEADERS([raster/raster_config.h])
@@ -881,16 +881,10 @@ except ImportError:
     RT_PG_LIB=pglib
     RT_POSTGIS_SQL=rtpostgis.sql
 
-    dnl Activates raster stuff construction.
-    BUILD_RASTER=yes
-
-    dnl just in case...
     AC_SUBST([RASTER])
-
     AC_SUBST([RT_CORE_LIB])
     AC_SUBST([RT_PG_LIB])
     AC_SUBST([RT_POSTGIS_SQL])
-    AC_SUBST([BUILD_RASTER])
 
     RT_MAKEFILE_LIST="
                     raster/Makefile \
@@ -901,11 +895,9 @@ except ImportError:
                     raster/test/regress/Makefile \ 
                     raster/scripts/python/Makefile"
 
-else
-    BUILD_RASTER=no
-    AC_SUBST([BUILD_RASTER])
+else dnl # }{
     RT_MAKEFILE_LIST="raster/Makefile"
-fi
+fi dnl # }
 
 
 dnl Output the relevant files
@@ -929,7 +921,7 @@ AC_MSG_RESULT()
 AC_MSG_RESULT([ -------------- Dependencies -------------- ])
 AC_MSG_RESULT([  GEOS config:          ${GEOSCONFIG}])
 AC_MSG_RESULT([  GEOS version:         ${GEOS_FULL_VERSION}])
-if test "x$RASTER" = "xyes"; then
+if test "x$RASTER" = "xraster"; then
     AC_MSG_RESULT([  GDAL config:          ${GDAL_CONFIG}])
     AC_MSG_RESULT([  GDAL version:         ${GDAL_FULL_VERSION}])
 fi
@@ -939,9 +931,9 @@ AC_MSG_RESULT([  PROJ4 version:        ${POSTGIS_PROJ_VERSION}])
 AC_MSG_RESULT([  Libxml2 config:       ${XML2CONFIG}])
 AC_MSG_RESULT([  Libxml2 version:      ${POSTGIS_LIBXML2_VERSION}])
 AC_MSG_RESULT([  PostGIS debug level:  ${POSTGIS_DEBUG_LEVEL}])
-if test "x$RASTER" = "xyes" -o "x$TOPOLOGY" = "xtopology"; then
+if test "x$RASTER" = "xraster" -o "x$TOPOLOGY" = "xtopology"; then
     AC_MSG_RESULT([ -------------- Extensions -------------- ])
-if test "x$RASTER" = "xyes"; then
+if test "x$RASTER" = "xraster"; then
     AC_MSG_RESULT([  PostGIS Raster:       ${POSTGIS_RASTER_LIB_VERSION}])
 fi
 if test "x$TOPOLOGY" = "xtopology"; then
