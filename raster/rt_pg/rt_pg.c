@@ -1288,10 +1288,10 @@ Datum RASTER_getBandPixelTypeName(PG_FUNCTION_ARGS)
     pixtype = rt_band_get_pixtype(ctx, band);
 
     result = palloc(VARHDRSZ + name_size);
-    if ( ! result ) {
-        elog(ERROR, "RASTER_getBandPixelTypeName: Could not allocate memory for output text object");
-        PG_RETURN_NULL();
-    }
+    /* We don't need to check for NULL pointer, because if out of memory, palloc
+     * exit via elog(ERROR). It never returns NULL.
+     */
+
     memset(VARDATA(result), 0, name_size);
     ptr = (char *)result + VARHDRSZ;
 
@@ -1612,10 +1612,7 @@ Datum RASTER_getBandPath(PG_FUNCTION_ARGS)
     }
 
     result = (text *) palloc(VARHDRSZ + strlen(bandpath) + 1);
-    if ( ! result ) {
-        elog(ERROR, "RASTER_getBandPath: Could not allocate memory for output text object");
-        PG_RETURN_NULL();
-    }
+    
     SET_VARSIZE(result, VARHDRSZ + strlen(bandpath) + 1);
 
     strcpy((char *) VARDATA(result), bandpath);
@@ -2691,11 +2688,6 @@ rt_pg_alloc(size_t size)
 
     result = palloc(size);
 
-    if ( ! result )
-    {
-        ereport(ERROR, (errmsg_internal("Out of virtual memory")));
-        return NULL;
-    }
     return result;
 }
 
