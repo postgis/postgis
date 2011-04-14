@@ -134,6 +134,7 @@ endif
 
 clean:
 	@rm -f *.o $(SHP2PGSQL-CLI) $(PGSQL2SHP-CLI) $(GTK_WIN32_RES)
+	$(MAKE) -C cunit clean
 
 
 #
