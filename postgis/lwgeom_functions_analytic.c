@@ -242,6 +242,7 @@ LWCOLLECTION *lwcollection_grid(LWCOLLECTION *coll, gridspec *grid);
 LWPOINT * lwpoint_grid(LWPOINT *point, gridspec *grid);
 LWPOLY * lwpoly_grid(LWPOLY *poly, gridspec *grid);
 LWLINE *lwline_grid(LWLINE *line, gridspec *grid);
+LWCIRCSTRING *lwcirc_grid(LWCIRCSTRING *line, gridspec *grid);
 POINTARRAY *ptarray_grid(POINTARRAY *pa, gridspec *grid);
 Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS);
 Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS);
@@ -332,6 +333,23 @@ lwline_grid(LWLINE *line, gridspec *grid)
 
 	/* TODO: grid bounding box... */
 	oline = lwline_construct(line->srid, NULL, opa);
+
+	return oline;
+}
+
+LWCIRCSTRING *
+lwcirc_grid(LWCIRCSTRING *line, gridspec *grid)
+{
+	LWCIRCSTRING *oline;
+	POINTARRAY *opa;
+
+	opa = ptarray_grid(line->points, grid);
+
+	/* Skip line3d with less then 2 points */
+	if ( opa->npoints < 2 ) return NULL;
+
+	/* TODO: grid bounding box... */
+	oline = lwcircstring_construct(line->srid, NULL, opa);
 
 	return oline;
 }
@@ -474,7 +492,10 @@ lwgeom_grid(LWGEOM *lwgeom, gridspec *grid)
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
 	case COLLECTIONTYPE:
+	case COMPOUNDTYPE:
 		return (LWGEOM *)lwcollection_grid((LWCOLLECTION *)lwgeom, grid);
+	case CIRCSTRINGTYPE:
+		return (LWGEOM *)lwcirc_grid((LWCIRCSTRING *)lwgeom, grid);
 	default:
 		elog(ERROR, "lwgeom_grid: Unsupported geometry type: %s",
 		     lwtype_name(lwgeom->type));
