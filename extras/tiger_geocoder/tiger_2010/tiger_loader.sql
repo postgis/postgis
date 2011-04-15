@@ -50,9 +50,12 @@ cd %TMPDIR%', E'%PSQL%', E'\\', E'%SHP2PGSQL%', 'set ',
 
 INSERT INTO loader_platform(os, wget, pgbin, declare_sect, unzip_command, psql, path_sep, loader, environ_set_command, county_process_command)
 VALUES('sh', 'wget', '', 
-E'STATEDIR="${staging_fold}/${website_root}/${state_fold}" 
+E'#!/bin/bash
+STATEDIR="${staging_fold}/${website_root}/${state_fold}" 
 TMPDIR="${staging_fold}/temp/"
 UNZIPTOOL=unzip
+WGETTOOL="/usr/bin/wget"
+PGBIN="/usr/bin"
 PGPORT=5432
 PGHOST=localhost
 PGUSER=postgres
@@ -192,21 +195,21 @@ SELECT
 	'	
 	' ||
 	-- State level files
-	array_to_string( ARRAY(SELECT loader_macro_replace(COALESCE(lu.pre_load_process || E'\r', '') || platform.loader || ' -' ||  lu.insert_mode || ' -s 4269 -g the_geom ' 
+	array_to_string( ARRAY(SELECT loader_macro_replace(COALESCE(lu.pre_load_process || E'\n', '') || platform.loader || ' -' ||  lu.insert_mode || ' -s 4269 -g the_geom ' 
 		|| CASE WHEN lu.single_geom_mode THEN ' -S ' ELSE ' ' END::text || ' -W "latin1" tl_' || variables.tiger_year || '_' || s.state_fips 
 	|| '_' || lu.table_name || '.dbf tiger_staging.' || lower(s.state_abbrev) || '_' || lu.table_name || ' | '::text || platform.psql 
-		|| COALESCE(E'\r' || 
+		|| COALESCE(E'\n' || 
 			lu.post_load_process , '') , ARRAY['loader','table_name', 'lookup_name'], ARRAY[platform.loader, lu.table_name, lu.lookup_name ])
 				FROM loader_lookuptables AS lu
 				WHERE level_state = true AND load = true
-				ORDER BY process_order, lookup_name), E'\r') ::text 
+				ORDER BY process_order, lookup_name), E'\n') ::text 
 	-- County Level files
-	|| E'\r' ||
-		array_to_string( ARRAY(SELECT loader_macro_replace(COALESCE(lu.pre_load_process || E'\r', '') || COALESCE(county_process_command || E'\r','')
-				|| COALESCE(E'\r' ||lu.post_load_process , '') , ARRAY['loader','table_name','lookup_name'], ARRAY[platform.loader, lu.table_name, lu.lookup_name ]) 
+	|| E'\n' ||
+		array_to_string( ARRAY(SELECT loader_macro_replace(COALESCE(lu.pre_load_process || E'\n', '') || COALESCE(county_process_command || E'\n','')
+				|| COALESCE(E'\n' ||lu.post_load_process , '') , ARRAY['loader','table_name','lookup_name'], ARRAY[platform.loader, lu.table_name, lu.lookup_name ]) 
 				FROM loader_lookuptables AS lu
 				WHERE level_county = true AND load = true
-				ORDER BY process_order, lookup_name), E'\r') ::text 
+				ORDER BY process_order, lookup_name), E'\n') ::text 
 	, ARRAY['psql', 'data_schema','staging_schema', 'staging_fold', 'state_fold', 'website_root', 'state_abbrev','state_fips'], 
 	ARRAY[platform.psql,  variables.data_schema, variables.staging_schema, variables.staging_fold, s.state_fold,variables.website_root, s.state_abbrev, s.state_fips::text])
 			AS shell_code
