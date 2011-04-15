@@ -165,7 +165,7 @@ CREATE OR REPLACE FUNCTION st_makeemptyraster(width int, height int, upperleftx 
     AS 'MODULE_PATHNAME', 'RASTER_makeEmpty'
     LANGUAGE 'C' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_makeemptyraster(width int, height int, upperleftx float8, upperlefty float8, scale float8)
+CREATE OR REPLACE FUNCTION st_makeemptyraster(width int, height int, upperleftx float8, upperlefty float8, pixelsize float8)
     RETURNS raster
     AS 'select st_makeemptyraster($1, $2, $3, $4, $5, $5, 0, 0, -1)'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
