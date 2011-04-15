@@ -1156,7 +1156,10 @@ rt_band_get_min_value(rt_context ctx, rt_band band) {
     pixtype = band->pixtype;
 
     switch (pixtype) {
-        case PT_1BB: case PT_2BUI: case PT_4BUI: case PT_8BUI:
+        case PT_1BB: 
+        case PT_2BUI: 
+        case PT_4BUI: 
+        case PT_8BUI:
         {
             return (double)CHAR_MIN;
         }
@@ -1164,21 +1167,23 @@ rt_band_get_min_value(rt_context ctx, rt_band band) {
         {
             return (double)SCHAR_MIN;
         }
-        case PT_16BSI: case PT_16BUI:
+        case PT_16BSI: 
+        case PT_16BUI:
         {
             return (double)SHRT_MIN;
         }
-        case PT_32BSI: case PT_32BUI:
+        case PT_32BSI: 
+        case PT_32BUI:
         {
             return (double)INT_MIN;
         }
         case PT_32BF:
         {
-            return (double)FLT_MIN;
+            return (double)-FLT_MAX;
         }
         case PT_64BF:
         {
-            return (double)DBL_MIN;
+            return (double)-DBL_MAX;
         }
         default:
         {
