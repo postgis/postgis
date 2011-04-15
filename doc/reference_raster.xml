@@ -716,7 +716,7 @@ postgis_raster_lib_version
 					<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
 					<paramdef><type>float8  </type> <parameter>upperleftx</parameter></paramdef>
 					<paramdef><type>float8  </type> <parameter>upperlefty</parameter></paramdef>
-					<paramdef><type>float8  </type> <parameter>scale</parameter></paramdef>
+					<paramdef><type>float8  </type> <parameter>pixelsize</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
