@@ -457,12 +457,11 @@ def make_sql_register_overview(options, ov_table, ov_factor):
     assert len(ov_table) > 0
     assert ov_factor > 0
     
-    catalog = quote_sql_value('')    
+    catalog = quote_sql_value('')
     schema = make_sql_schema_table_names(options.table)[0]
-    raster_overviews = make_sql_full_table_name(schema + '.raster_overviews')
     r_table = make_sql_table_name(options.table)
 
-    sql = "INSERT INTO " + raster_overviews + " ( " \
+    sql = "INSERT INTO public.raster_overviews( " \
           "o_table_catalog, o_table_schema, o_table_name, o_column, " \
           "r_table_catalog, r_table_schema, r_table_name, r_column, out_db, overview_factor) " \
           "VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', FALSE, %d);\n" % \
@@ -864,7 +863,6 @@ def wkblify_raster_level(options, ds, level, band_range, infile, i):
         gen_table = options.table
         
     else:
-        assert level > 1
         # Create overview table and register in RASTER_OVERVIEWS
 
         # CREATE TABLE o_<LEVEL>_<NAME> ( rid serial, options.column RASTER )
