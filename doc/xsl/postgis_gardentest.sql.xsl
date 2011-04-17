@@ -26,6 +26,7 @@
 	<xsl:variable name='var_gj_version'>1</xsl:variable> <!-- GeoJSON version -->
 	<xsl:variable name='var_NDRXDR'>XDR</xsl:variable>
 	<xsl:variable name='var_text'>'monkey'</xsl:variable>
+	<xsl:variable name='var_buffer_style'>'quad_segs=1 endcap=square join=mitre mitre_limit=1.1'</xsl:variable>
 	<xsl:variable name='var_varchar'>'test'</xsl:variable>
 	<xsl:variable name='var_spheroid'>'SPHEROID["GRS_1980",6378137,298.257222101]'</xsl:variable>
 	<xsl:variable name='var_matrix'>'FF1FF0102'</xsl:variable>
@@ -578,6 +579,9 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 		<xsl:for-each select="$func">
 			<xsl:for-each select="paramdef">
 				<xsl:choose>
+				    	<xsl:when test="contains(parameter, 'buffer_style_parameters') or contains(parameter, 'buffer_style_parameters')">
+						<xsl:value-of select="$var_buffer_style" />
+					</xsl:when>
 					<xsl:when test="contains(parameter, 'matrix') or contains(parameter, 'Matrix')">
 						<xsl:value-of select="$var_matrix" />
 					</xsl:when>
