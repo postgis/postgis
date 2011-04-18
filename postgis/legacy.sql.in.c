@@ -27,7 +27,7 @@ CREATE OR REPLACE FUNCTION noop(geometry)
 --- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_box2d(geometry)
 	RETURNS box2d
-	AS 'MODULE_PATHNAME','geometry2box2d'
+	AS 'MODULE_PATHNAME','LWGEOM_to_BOX2DFLOAT4'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 --- Deprecation in 1.5.0
