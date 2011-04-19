@@ -763,6 +763,38 @@ faceid
 				<para><xref linkend="AddEdge"/>, <xref linkend="CreateTopology"/>, <xref linkend="spatial_ref_sys"/></para>
 			</refsection>
 		</refentry>
+
+		<refentry id="TopologyPolygonize">
+			<refnamediv>
+				<refname>Polygonize</refname>
+				<refpurpose>Find and register all faces defined by topology edges</refpurpose>
+			</refnamediv>
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>text <function>Polygonize</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>Register all faces that can be built out a topology edge primitives.</para>
+                <para>The target topology is assumed to contain no self-intersecting edges.</para>
+                <note><para>Already known faces are recognized, so it is safe to call Polygonize multiple times on the same topology.</para></note>
+                
+                <!-- use this format if new function -->
+                <para>Availability: 2.0.0</para>
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="AddFace"/>, <xref linkend="ST_Polygonize"/></para>
+			</refsection>
+		</refentry>
 		
 		<refentry id="AddNode">
 			<refnamediv>
