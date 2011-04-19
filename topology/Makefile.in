@@ -42,7 +42,7 @@ endif
 $(SQL_OBJS): %.in: %.in.c
 	$(CPP) -traditional-cpp $< | grep -v '^#' > $@
 
-topology.sql.in: sql/sqlmm.sql sql/populate.sql sql/gml.sql sql/query/getnodebypoint.sql sql/query/getedgebypoint.sql sql/query/getfacebypoint.sql sql/manage/TopologySummary.sql sql/manage/CopyTopology.sql
+topology.sql.in: sql/sqlmm.sql sql/populate.sql sql/polygonize.sql sql/gml.sql sql/query/getnodebypoint.sql sql/query/getedgebypoint.sql sql/query/getfacebypoint.sql sql/manage/TopologySummary.sql sql/manage/CopyTopology.sql
 
 check: topology.sql
 	$(MAKE) -C test $@

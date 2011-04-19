@@ -2436,8 +2436,9 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 #include "sql/query/getedgebypoint.sql"
 #include "sql/query/getfacebypoint.sql"
 
---  Editing
+--  Populating
 #include "sql/populate.sql"
+#include "sql/polygonize.sql"
 
 --  TopoElement
 #include "sql/topoelement/topoelement_agg.sql"
