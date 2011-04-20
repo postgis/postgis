@@ -1896,9 +1896,9 @@ BEGIN
 	RAISE DEBUG 'Processing table %.%.%', gcs.nspname, gcs.relname, gcs.attname;
 
 	DELETE FROM geometry_columns
-	  WHERE f_table_schema = quote_ident(gcs.nspname)
-	  AND f_table_name = quote_ident(gcs.relname)
-	  AND f_geometry_column = quote_ident(gcs.attname);
+	  WHERE f_table_schema = gcs.nspname
+	  AND f_table_name = gcs.relname
+	  AND f_geometry_column = gcs.attname;
 
 	gc_is_valid := true;
 
@@ -2039,6 +2039,12 @@ BEGIN
 		AND n.nspname NOT ILIKE 'pg_temp%'
 		AND c.oid = tbl_oid
 	LOOP
+	
+	DELETE FROM geometry_columns
+	  WHERE f_table_schema = gcs.nspname
+	  AND f_table_name = gcs.relname
+	  AND f_geometry_column = gcs.attname;
+	  
 		RAISE DEBUG 'Processing view %.%.%', gcs.nspname, gcs.relname, gcs.attname;
 
 		EXECUTE 'SELECT st_ndims(' || quote_ident(gcs.attname) || ') As ndims
