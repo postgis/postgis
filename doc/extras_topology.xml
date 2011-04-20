@@ -619,11 +619,11 @@ face without edges |   0 |
 		</refentry>
 	</sect1>
 	<sect1 id="Topology_Constructors">
-	    	     <sect1info>
-            <abstract>
-                <para>This section covers the topology functions for creating new topogeometries, edges, faces, and nodes.</para>
-            </abstract>
-        </sect1info>
+    <sect1info>
+        <abstract>
+            <para>This section covers the topology functions for creating new topogeometries, edges, faces, and nodes.</para>
+        </abstract>
+    </sect1info>
 	  <title>TopoGeometry and other Topology Object Constructors</title>
 	     <refentry id="AddEdge">
 			<refnamediv>
