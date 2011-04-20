@@ -231,11 +231,9 @@
 	  </listitem>
 
 	  <listitem>
-		<para>The "<ulink
-		url="http://www.opengeospatial.org/standards/sfs">Simple Features for
-		Specification for SQL</ulink>" is available at the OpenGIS Consortium
-		web site: <ulink
-		url="http://www.opengeospatial.org/">http://www.opengeospatial.org/</ulink>.</para>
+		<para>The &quot;<ulink url="http://www.opengeospatial.org/standards/sfs">Simple Features for
+		Specification for SQL</ulink>&quot; is available at the OpenGIS Consortium
+		web site: <ulink url="http://www.opengeospatial.org/">http://www.opengeospatial.org/</ulink>.</para>
 	  </listitem>
 	</itemizedlist>
   </sect1>
