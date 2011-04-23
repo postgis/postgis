@@ -3397,6 +3397,13 @@ WHERE A.rid =2 ) As foo;
 				  <funcprototype>
 					<funcdef>raster <function>ST_MapAlgebra</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>expression</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_MapAlgebra</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>expression</parameter></paramdef>
 				  </funcprototype> 
 				</funcsynopsis>
