@@ -3,6 +3,22 @@
   <title>PostGIS Frequently Asked Questions</title>
 
   <qandaset>
+     <qandaentry id="legacy_faq">
+      <question>
+        <para>My applications and desktop tools worked with PostGIS 1.5,but they don't work with PostGIS 2.0.  How do I fix this?</para>
+      </question>
+
+      <answer>
+        <para>A lot of deprecated functions were removed from the PostGIS code base in PostGIS 2.0.  This has affected applications in addition to third-party tools such as
+            Geoserver, MapServer, QuantumGIS, and OpenJump to name a few.  There are a couple of ways to resolve this. For the third-party apps, you can try to upgrade to the latest versions
+                of these which have many of these issues fixed.  For your own code, you can change your code to not use the functions removed.  Most of these functions are non ST_ aliases of ST_Union, ST_Length etc.
+               and as a last resort, install the whole of legacy.sql or just the 
+                portions of legacy.sql you need.</para>
+        
+         <para>The legacy.sql file is located in the same folder as postgis.sql.  You can install this file after you have installed postgis.sql and spatial_ref_sys.sql
+            to get back all the 200 some-odd old functions we removed.</para>
+      </answer>
+    </qandaentry>
     <qandaentry>
       <question>
         <para>I'm running PostgreSQL 9.0 and I can no longer read/view geometries in OpenJump, Safe FME, and some other tools?</para>
