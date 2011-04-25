@@ -1389,7 +1389,7 @@ lwgeom_serialized_construct(int srid, int finalType, char hasz, char hasm,
 
 
 /*
- * Construct the empty geometry (GEOMETRYCOLLECTION(EMPTY)).
+ * Construct the empty geometry (GEOMETRYCOLLECTION EMPTY).
  *
  * Returns serialized form
  */
@@ -1430,7 +1430,7 @@ lwgeom_empty_length(int srid)
 }
 
 /**
- * Construct the empty geometry (GEOMETRYCOLLECTION(EMPTY))
+ * Construct the empty geometry (GEOMETRYCOLLECTION EMPTY)
  * writing it into the provided buffer.
  */
 void
