@@ -502,7 +502,8 @@
 				<para>The functions given below are PostGIS functions that have changed behavior in PostGIS 2.0.</para>
 				<note><para>Most deprecated functions have been removed.  These are functions that haven't been documented since 1.2
 					or some internal functions that were never documented.  If you are using a function that you don't see documented,
-					it's probably deprecated, about to be deprecated, or internal and should be avoided.</para></note>
+					it's probably deprecated, about to be deprecated, or internal and should be avoided.  If you have applications or tools
+					that rely on deprecated functions, please refer to <link linked="legacy_faq" /> for more details.</para></note>
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry   -->
 					<xsl:for-each select='//refentry'>

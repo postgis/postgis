@@ -14,7 +14,8 @@
         	<para>-- If you have been using deprecated functions CHANGE your apps or suffer the consequences.
      If you don't see a function documented -- it ain't supported or it is an internal function.
      Some constraints in older tables were built with deprecated functions.
-     If you restore you may need to rebuild table constraints with populate_geometry_columns().</para>
+     If you restore you may need to rebuild table constraints with populate_geometry_columns().  If you have applications or tools
+					that rely on deprecated functions, please refer to <link linked="legacy_faq" /> for more details.</para>
         <para>#817 Renaming old 3D functions to the convention ST_3D (Nicklas Avén)</para>
         <para>#548 (sorta), ST_NumGeometries,ST_GeometryN now returns 1 (or the geometry) instead of null 
      for single geometries (Sandro Santilli, Maxime van Noppen)</para>
