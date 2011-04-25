@@ -13,7 +13,7 @@ The core team of PostGIS is:
  mleslie (Mark Leslie) <mark.leslie@lisasoft.com> - curve support, shp2pgsql gui loader 
  nicklas (Nicklas Avén) <nicklas.aven@jordogskog.no> - measurement functions (2D and 3D)
  mloskot (Mateusz Loskot) - raster
- chodson (Chris Hodgson) - core website maintenance and build bot 
+ chodgson (Chris Hodgson) - core website maintenance and build bot 
 
 All versions include substantial contributions from the 
 core team.
