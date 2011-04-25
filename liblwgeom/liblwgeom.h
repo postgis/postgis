@@ -1378,7 +1378,7 @@ extern int lwgeom_getnumgeometries_inspected(LWGEOM_INSPECTED *inspected);
 extern uchar *lwgeom_serialized_construct(int srid, int finalType, char hasz, char hasm, int nsubgeometries, uchar **serialized_subs);
 
 
-/* construct the empty geometry (GEOMETRYCOLLECTION(EMPTY)) */
+/* construct the empty geometry (GEOMETRYCOLLECTION EMPTY) */
 extern uchar *lwgeom_constructempty(int srid, char hasz, char hasm);
 extern void lwgeom_constructempty_buf(int srid, char hasz, char hasm, uchar *buf, size_t *size);
 size_t lwgeom_empty_length(int srid);
