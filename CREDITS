@@ -36,7 +36,7 @@ Version 1.2.1 of PostGIS includes patches from:
   short circuit.
 
 Version 1.1.0 of PostGIS includes patches from:
-  Obe, Regina with -k switch for pgsql2shp.
+  Obe, Regina with -k switch for pgsql2shp (for City of Boston (DND) ).
 
 Version 1.0.0 of PostGIS includes code from:
   Mark Cave-Ayland <m.cave-ayland@webbased.co.uk> with new positional
