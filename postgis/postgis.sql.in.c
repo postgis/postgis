@@ -299,12 +299,6 @@ CREATE OR REPLACE FUNCTION box2d(box3d_extent)
 	AS 'MODULE_PATHNAME', 'BOX3D_to_BOX2DFLOAT4'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MakeBox2d(geometry, geometry)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_construct'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MakeBox2d(geometry, geometry)
 	RETURNS box2d
@@ -321,15 +315,6 @@ CREATE OR REPLACE FUNCTION ST_Combine_BBox(box2d,geometry)
 -----------------------------------------------------------------------
 -- ESTIMATED_EXTENT( <schema name>, <table name>, <column name> )
 -----------------------------------------------------------------------
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION estimated_extent(text,text,text) RETURNS box2d AS
-#ifdef GSERIALIZED_ON
-	'MODULE_PATHNAME', 'geometry_estimated_extent'
-#else
-	'MODULE_PATHNAME', 'LWGEOM_estimated_extent'
-#endif
-	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text,text) RETURNS box2d AS
 #ifdef GSERIALIZED_ON
@@ -342,15 +327,6 @@ CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text,text) RETURNS box2d AS
 -----------------------------------------------------------------------
 -- ESTIMATED_EXTENT( <table name>, <column name> )
 -----------------------------------------------------------------------
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION estimated_extent(text,text) RETURNS box2d AS
-#ifdef GSERIALIZED_ON
-	'MODULE_PATHNAME', 'geometry_estimated_extent'
-#else
-	'MODULE_PATHNAME', 'LWGEOM_estimated_extent'
-#endif
-	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text) RETURNS box2d AS
 #ifdef GSERIALIZED_ON
@@ -363,23 +339,6 @@ CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text) RETURNS box2d AS
 -----------------------------------------------------------------------
 -- FIND_EXTENT( <schema name>, <table name>, <column name> )
 -----------------------------------------------------------------------
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION find_extent(text,text,text) RETURNS box2d AS
-$$
-DECLARE
-	schemaname alias for $1;
-	tablename alias for $2;
-	columnname alias for $3;
-	myrec RECORD;
-
-BEGIN
-	FOR myrec IN EXECUTE 'SELECT ST_Extent("' || columnname || '") FROM "' || schemaname || '"."' || tablename || '"' LOOP
-		return myrec.extent;
-	END LOOP;
-END;
-$$
-LANGUAGE 'plpgsql' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_find_extent(text,text,text) RETURNS box2d AS
 $$
@@ -390,7 +349,7 @@ DECLARE
 	myrec RECORD;
 
 BEGIN
-	FOR myrec IN EXECUTE 'SELECT ST_Extent("' || columnname || '") FROM "' || schemaname || '"."' || tablename || '"' LOOP
+	FOR myrec IN EXECUTE 'SELECT ST_Extent("' || columnname || '") As extent FROM "' || schemaname || '"."' || tablename || '"' LOOP
 		return myrec.extent;
 	END LOOP;
 END;
@@ -401,22 +360,6 @@ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 -----------------------------------------------------------------------
 -- FIND_EXTENT( <table name>, <column name> )
 -----------------------------------------------------------------------
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION find_extent(text,text) RETURNS box2d AS
-$$
-DECLARE
-	tablename alias for $1;
-	columnname alias for $2;
-	myrec RECORD;
-
-BEGIN
-	FOR myrec IN EXECUTE 'SELECT extent("' || columnname || '") FROM "' || tablename || '"' LOOP
-		return myrec.extent;
-	END LOOP;
-END;
-$$
-LANGUAGE 'plpgsql' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_find_extent(text,text) RETURNS box2d AS
 $$
@@ -426,7 +369,7 @@ DECLARE
 	myrec RECORD;
 
 BEGIN
-	FOR myrec IN EXECUTE 'SELECT extent("' || columnname || '") FROM "' || tablename || '"' LOOP
+	FOR myrec IN EXECUTE 'SELECT ST_Extent("' || columnname || '") As extent FROM "' || tablename || '"' LOOP
 		return myrec.extent;
 	END LOOP;
 END;
@@ -1577,26 +1520,11 @@ $$ LANGUAGE SQL;
 --
 -- Aggregate functions
 --
-
-
--- Temporary hack function
-CREATE OR REPLACE FUNCTION combine_bbox(box3d_extent,geometry)
-	RETURNS box3d_extent
-	AS 'MODULE_PATHNAME', 'BOX3D_combine'
-	LANGUAGE 'C' IMMUTABLE;
-
 -- Temporary hack function
 CREATE OR REPLACE FUNCTION ST_Combine_BBox(box3d_extent,geometry)
 	RETURNS box3d_extent
 	AS 'MODULE_PATHNAME', 'BOX3D_combine'
 	LANGUAGE 'C' IMMUTABLE;
-
--- Deprecation in 1.2.3
-CREATE AGGREGATE Extent(
-	sfunc = ST_combine_bbox,
-	basetype = geometry,
-	stype = box3d_extent
-	);
 
 -- Availability: 1.2.2
 CREATE AGGREGATE ST_Extent(
@@ -4128,25 +4056,13 @@ CREATE OR REPLACE FUNCTION ST_M(geometry)
 	AS 'MODULE_PATHNAME','LWGEOM_m_point'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION StartPoint(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_startpoint_linestring'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- PostGIS equivalent function: StartPoint(geometry))
+-- PostGIS equivalent function of old StartPoint(geometry))
 CREATE OR REPLACE FUNCTION ST_StartPoint(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_startpoint_linestring'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION EndPoint(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_endpoint_linestring'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- PostGIS equivalent function: EndPoint(geometry)
+-- PostGIS equivalent function of old EndPoint(geometry)
 CREATE OR REPLACE FUNCTION ST_EndPoint(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_endpoint_linestring'

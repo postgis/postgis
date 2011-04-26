@@ -654,6 +654,24 @@ CREATE OR REPLACE FUNCTION envelope(geometry)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION estimated_extent(text,text,text) RETURNS box2d AS
+#ifdef GSERIALIZED_ON
+	'MODULE_PATHNAME', 'geometry_estimated_extent'
+#else
+	'MODULE_PATHNAME', 'LWGEOM_estimated_extent'
+#endif
+	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION estimated_extent(text,text) RETURNS box2d AS
+#ifdef GSERIALIZED_ON
+	'MODULE_PATHNAME', 'geometry_estimated_extent'
+#else
+	'MODULE_PATHNAME', 'LWGEOM_estimated_extent'
+#endif
+	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
+	
+-- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION expand(box2d,float8)
 	RETURNS box2d
 	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_expand'
@@ -669,6 +687,58 @@ CREATE OR REPLACE FUNCTION expand(box3d,float8)
 CREATE OR REPLACE FUNCTION expand(geometry,float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_expand'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+-- Temporary hack function
+CREATE OR REPLACE FUNCTION combine_bbox(box3d_extent,geometry)
+	RETURNS box3d_extent
+	AS 'MODULE_PATHNAME', 'BOX3D_combine'
+	LANGUAGE 'C' IMMUTABLE;
+	
+CREATE AGGREGATE Extent(
+	sfunc = ST_combine_bbox,
+	basetype = geometry,
+	stype = box3d_extent
+	);
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION find_extent(text,text) RETURNS box2d AS
+$$
+DECLARE
+	tablename alias for $1;
+	columnname alias for $2;
+	myrec RECORD;
+
+BEGIN
+	FOR myrec IN EXECUTE 'SELECT ST_Extent("' || columnname || '") As extent FROM "' || tablename || '"' LOOP
+		return myrec.extent;
+	END LOOP;
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION find_extent(text,text,text) RETURNS box2d AS
+$$
+DECLARE
+	schemaname alias for $1;
+	tablename alias for $2;
+	columnname alias for $3;
+	myrec RECORD;
+
+BEGIN
+	FOR myrec IN EXECUTE 'SELECT ST_Extent("' || columnname || '") FROM "' || schemaname || '"."' || tablename || '" As extent ' LOOP
+		return myrec.extent;
+	END LOOP;
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION EndPoint(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_endpoint_linestring'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
@@ -833,6 +903,12 @@ CREATE OR REPLACE FUNCTION locate_along_measure(geometry, float8)
 	RETURNS geometry
 	AS $$ SELECT ST_locate_between_measures($1, $2, $2) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION MakeBox2d(geometry, geometry)
+	RETURNS box2d
+	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_construct'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION MakePolygon(geometry, geometry[])
@@ -1572,6 +1648,12 @@ CREATE OR REPLACE FUNCTION SnapToGrid(geometry, geometry, float8, float8, float8
 CREATE OR REPLACE FUNCTION ST_MakeLine_GArray (geometry[])
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_makeline_garray'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION StartPoint(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_startpoint_linestring'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
