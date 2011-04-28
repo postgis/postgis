@@ -11,7 +11,7 @@ PostGIS General
 In general PostGIS is licensed under GPL Version 2 terms except on files
 where expressly stated otherwise.  Please refer to the COPYING file for licensing details.
 
-PostGIS has dependencies on other libraries which are not under GPL and that are commonly ditributed with PostGIS core libraries.
+PostGIS has dependencies on other libraries which are not under GPL and that are commonly distributed with PostGIS core libraries.
 In general these are dynamically linked libraries. 
 Libraries are as follows:
 
