@@ -95,7 +95,7 @@ CREATE OR REPLACE FUNCTION reverse_geocode(IN pt geometry, OUT intpt geometry[],
     OUT street varchar[]) RETURNS RECORD
 AS 
 $$
--- default to not including street range in cross streets
--- Example use: SELECT reverse_geocode($1,false);
+-- default to not include street range in cross streets
+    SELECT reverse_geocode($1,false);
 $$
 language sql STABLE;
