@@ -452,6 +452,11 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 			<funcdef>geometry <function>ST_GeomFromGML</function></funcdef>
 			<paramdef><type>text </type> <parameter>geomgml</parameter></paramdef>
 		  </funcprototype>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomFromGML</function></funcdef>
+			<paramdef><type>text </type> <parameter>geomgml</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
@@ -477,6 +482,7 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 
 		<para>Availability: 1.5</para>
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
+		<para>Enhanced: 2.0.0 default srid optional parameter added.</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -639,12 +645,19 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 				<funcdef>geometry <function>ST_GMLToSQL</function></funcdef>
 				<paramdef><type>text </type> <parameter>geomgml</parameter></paramdef>
 		  	</funcprototype>
+		  	<funcprototype>
+				<funcdef>geometry <function>ST_GMLToSQL</function></funcdef>
+				<paramdef><type>text </type> <parameter>geomgml</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+		  	</funcprototype>
 			</funcsynopsis>
 	  	</refsynopsisdiv>
 		  <refsection>
 			<title>Description</title>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.50 (except for curves support).</para>
 			<para>Availability: 1.5</para>
+		        <para>Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
+		        <para>Enhanced: 2.0.0 default srid optional parameter added.</para>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>

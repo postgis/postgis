@@ -3741,18 +3741,37 @@ CREATE OR REPLACE FUNCTION ST_Equals(geometry,geometry)
 
 -----------------------------------------------------------------------
 -- GML & KML INPUT
--- Availability: 1.5.0
 -----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION _ST_GeomFromGML(text, int4)
+        RETURNS geometry
+        AS 'MODULE_PATHNAME','geom_from_gml'
+        LANGUAGE 'C' IMMUTABLE;
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_GeomFromGML(text, int4)
+        RETURNS geometry
+        AS 'MODULE_PATHNAME','geom_from_gml'
+        LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_GeomFromGML(text)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','geom_from_gml'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+        RETURNS geometry
+        AS 'SELECT _ST_GeomFromGML($1, 0)'
+        LANGUAGE 'SQL' IMMUTABLE STRICT;
 
+-- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_GMLToSQL(text)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','geom_from_gml'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+        RETURNS geometry
+        AS 'SELECT _ST_GeomFromGML($1, 0)'
+        LANGUAGE 'SQL' IMMUTABLE STRICT;
 
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_GMLToSQL(text, int4)
+        RETURNS geometry
+        AS 'MODULE_PATHNAME','geom_from_gml'
+        LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_GeomFromKML(text)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','geom_from_kml'

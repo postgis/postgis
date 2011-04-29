@@ -603,7 +603,9 @@ SELECT 'srs_4', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:ogc:def:crs:EP
 SELECT 'srs_5', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:ogc:def:crs:EPSG:6.6:4326"><gml:pos>1 2</gml:pos></gml:Point>'));
 SELECT 'srs_6', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:x-ogc:def:crs:EPSG:6.6:4326"><gml:pos>1 2</gml:pos></gml:Point>'));
 SELECT 'srs_7', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="http://www.opengis.net/gml/srs/epsg.xml#4326"><gml:pos>1 2</gml:pos></gml:Point>'));
-SELECT 'srs_8', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="http://www.epsg.org/6.11.2/4326"><gml:pos>1 2</gml:pos></gml:Point>'));
+
+-- Use default srsName
+SELECT 'srs_8', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 2</gml:pos></gml:Point>', 4326));
 
 -- ERROR not a valid pattern
 SELECT 'srs_9', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="a:wrong:pattern:4326"><gml:pos>1 2</gml:pos></gml:Point>'));

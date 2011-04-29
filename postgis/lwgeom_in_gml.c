@@ -81,8 +81,8 @@ Datum geom_from_gml(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 	int xml_size;
 	char *xml;
+	int root_srid;
 	bool hasz=true;
-	int root_srid=0;
 	xmlNodePtr xmlroot=NULL;
 
 
@@ -91,6 +91,8 @@ Datum geom_from_gml(PG_FUNCTION_ARGS)
 	xml_input = PG_GETARG_TEXT_P(0);
 	xml = text2cstring(xml_input);
 	xml_size = VARSIZE(xml_input) - VARHDRSZ;
+
+	root_srid = PG_GETARG_INT32(1);
 
 	/* Begin to Parse XML doc */
 	xmlInitParser();
@@ -102,8 +104,10 @@ Datum geom_from_gml(PG_FUNCTION_ARGS)
 		lwerror("invalid GML representation");
 	}
 
+
 	lwgeom = parse_gml(xmlroot, &hasz, &root_srid);
 	lwgeom_add_bbox(lwgeom);
+        if (root_srid && lwgeom->srid == -1) lwgeom->srid = root_srid;
 
 	xmlFreeDoc(xmldoc);
 	xmlCleanupParser();
@@ -303,8 +307,8 @@ static POINTARRAY* gml_reproject_pa(POINTARRAY *pa, int srid_in, int srid_out)
 	projPJ in_pj, out_pj;
 	char *text_in, *text_out;
 
-	if (srid_in == -1 || srid_out == -1)
-		lwerror("invalid GML representation");
+	if (srid_in == 0 || srid_in == -1) return pa; /* nothing to do */
+	if (srid_out == 0 || srid_out == -1) lwerror("invalid GML representation");
 
 	text_in = GetProj4StringSPI(srid_in);
 	text_out = GetProj4StringSPI(srid_out);
@@ -426,11 +430,6 @@ static gmlSrs* parse_gml_srs(xmlNodePtr xnode)
 	                  "http://www.opengis.net/gml/srs/epsg.xml#", 40))
 	{
 		sep = '#';
-		latlon = false;
-	}
-	else if (!strncmp((char *) srsname, "http://www.epsg.org/", 20))
-	{
-		sep = '/';
 		latlon = false;
 	}
 	else lwerror("unknown spatial reference system");
@@ -1116,6 +1115,45 @@ static LWGEOM* parse_gml_curve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		if (srs->srid != *root_srid)
 			gml_reproject_pa(pa, srs->srid, *root_srid);
 		geom = (LWGEOM *) lwline_construct(-1, NULL, pa);
+	}
+	lwfree(srs);
+
+	return geom;
+}
+
+
+/**
+ * Parse GML LinearRing (3.1.1)
+ */
+static LWGEOM* parse_gml_linearring(xmlNodePtr xnode, bool *hasz, int *root_srid)
+{
+	gmlSrs *srs;
+	LWGEOM *geom;
+	POINTARRAY **ppa = NULL;
+
+	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+	srs = parse_gml_srs(xnode);
+
+	ppa = (POINTARRAY**) lwalloc(sizeof(POINTARRAY*));
+	ppa[0] = parse_gml_data(xnode->children, hasz, root_srid);
+
+	if (ppa[0]->npoints < 4
+            || (!*hasz && !ptarray_isclosed2d(ppa[0]))
+            ||  (*hasz && !ptarray_isclosed3d(ppa[0])))
+	    lwerror("invalid GML representation");
+
+	if (srs->reverse_axis) ppa[0] = ptarray_flip_coordinates(ppa[0]);
+	
+
+	if (!*root_srid)
+	{
+		*root_srid = srs->srid;
+		geom = (LWGEOM *) lwpoly_construct(*root_srid, NULL, 1, ppa);
+	}
+	else
+	{
+		if (srs->srid != *root_srid) gml_reproject_pa(ppa[0], srs->srid, *root_srid);
+		geom = (LWGEOM *) lwpoly_construct(-1, NULL, 1, ppa);
 	}
 	lwfree(srs);
 
@@ -1811,6 +1849,9 @@ static LWGEOM* parse_gml(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 	if (!strcmp((char *) xa->name, "Curve"))
 		return parse_gml_curve(xa, hasz, root_srid);
+
+	if (!strcmp((char *) xa->name, "LinearRing"))
+		return parse_gml_linearring(xa, hasz, root_srid);
 
 	if (!strcmp((char *) xa->name, "Polygon"))
 		return parse_gml_polygon(xa, hasz, root_srid);
