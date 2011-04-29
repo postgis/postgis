@@ -179,6 +179,32 @@ SELECT 'polygon_19', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon><gml:exterior><gml:L
 
 
 
+-- 
+-- LinearRing
+-- 
+
+-- 2D LinearRing
+SELECT 'linearring_1', ST_AsEWKT(ST_GeomFromGML('<gml:LinearRing><gml:posList>1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing>'));
+
+-- srsName handle
+SELECT 'linearring_2', ST_AsEWKT(ST_GeomFromGML('<gml:LinearRing srsName="EPSG:4326"><gml:posList>1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing>'));
+
+-- ERROR: Last point is not the same as the first one 
+SELECT 'linearring_3', ST_AsEWKT(ST_GeomFromGML('<gml:LinearRing><gml:posList>1 2 3 4 5 6 1 3</gml:posList></gml:LinearRing>'));
+
+-- ERROR: Last point is not the same as the first one in Z
+SELECT 'linearring_4', ST_AsEWKT(ST_GeomFromGML('<gml:LinearRing><gml:posList>1 2 3 4 5 6 1 3</gml:posList></gml:LinearRing>'));
+
+-- ERROR: Only 3 points
+SELECT 'linearring_5', ST_AsEWKT(ST_GeomFromGML('<gml:LinearRing><gml:posList>1 2 3 4 1 3</gml:posList></gml:LinearRing>'));
+
+-- ERROR: Empty coordinates 
+SELECT 'linearring_6', ST_AsEWKT(ST_GeomFromGML('<gml:LinearRing><gml:posList></gml:posList></gml:LinearRing>'));
+SELECT 'linearring_7', ST_AsEWKT(ST_GeomFromGML('<gml:LinearRing></gml:LinearRing>'));
+
+-- XML not elements handle
+SELECT 'linearring_8', ST_AsEWKT(ST_GeomFromGML(' <!-- --> <gml:LinearRing> <!-- --> <gml:posList>1 2 3 4 5 6 1 2</gml:posList> <!-- --> </gml:LinearRing>'));
+
 
 --
 -- Triangle

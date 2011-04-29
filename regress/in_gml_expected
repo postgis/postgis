@@ -47,6 +47,14 @@ polygon_16|POLYGON((1 2,3 4,5 6,1 2),(7 8,9 10,11 12,7 8),(13 14,15 16,17 18,13 
 polygon_17|POLYGON((1 2,3 4,5 6,1 2),(7 8,9 10,11 12,7 8))
 polygon_18|POLYGON((1 2,4 5,7 8,1 2),(10 11,12 13,14 15,10 11))
 polygon_19|POLYGON((1 2,3 4,5 6,1 2),(7 8,10 11,13 14,7 8))
+linearring_1|POLYGON((1 2,3 4,5 6,1 2))
+linearring_2|SRID=4326;POLYGON((1 2,3 4,5 6,1 2))
+ERROR:  invalid GML representation
+ERROR:  invalid GML representation
+ERROR:  invalid GML representation
+ERROR:  invalid GML representation
+ERROR:  invalid GML representation
+linearring_8|POLYGON((1 2,3 4,5 6,1 2))
 triangle_1|TRIANGLE((1 2,3 4,5 6,1 2))
 triangle_2|SRID=4326;TRIANGLE((1 2,3 4,5 6,1 2))
 ERROR:  invalid GML representation
