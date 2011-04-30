@@ -148,31 +148,34 @@ static bool is_gml_namespace(xmlNodePtr xnode, bool is_strict)
 	 * (because we work only on GML fragment, we don't want to
 	 *  'oblige' to add namespace on the geometry root node)
 	 */
-	if (ns == NULL) return !is_strict;
+       if (ns == NULL) { return !is_strict; }
 
-	/*
-	 * Handle namespaces:
-	 *  - http://www.opengis.net/gml      (GML 3.1.1 and priors)
-	 *  - http://www.opengis.net/gml/3.2  (GML 3.2.1)
-	 */
-	for (p=ns ; *p ; p++)
-	{
-		if ((*p)->href == NULL) continue;
-		if (!strcmp((char *) (*p)->href, GML_NS) ||
-		        !strcmp((char *) (*p)->href, GML32_NS))
-		{
-			if (	(*p)->prefix == NULL ||
-			        !xmlStrcmp(xnode->ns->prefix, (*p)->prefix))
-			{
+        /*
+         * Handle namespaces:
+         *  - http://www.opengis.net/gml      (GML 3.1.1 and priors)
+         *  - http://www.opengis.net/gml/3.2  (GML 3.2.1)
+         */
+        for (p=ns ; *p ; p++)
+        {
+                if ((*p)->href == NULL || (*p)->prefix == NULL ||
+                     xnode->ns == NULL || xnode->ns->prefix == NULL) continue;
 
-				xmlFree(ns);
-				return true;
-			}
-		}
-	}
+                if (!xmlStrcmp(xnode->ns->prefix, (*p)->prefix))
+                {
+                        if (    !strcmp((char *) (*p)->href, GML_NS)
+                             || !strcmp((char *) (*p)->href, GML32_NS))
+                        {
+                                xmlFree(ns);
+                                return true;
+                        } else {
+                                xmlFree(ns);
+                                return false;
+                        }
+                }
+        }
 
-	xmlFree(ns);
-	return false;
+        xmlFree(ns);
+        return !is_strict; /* Same reason here to not return false */
 }
 
 
@@ -435,7 +438,6 @@ static gmlSrs* parse_gml_srs(xmlNodePtr xnode)
 	  			urn:ogc:def:crs:EPSG:6.6:4326
 	   			urn:x-ogc:def:crs:EPSG:6.6:4326
 				http://www.opengis.net/gml/srs/epsg.xml#4326
-				http://www.epsg.org/6.11.2/4326
 	*/
 
 	if (!strncmp((char *) srsname, "EPSG:", 5))
@@ -454,11 +456,6 @@ static gmlSrs* parse_gml_srs(xmlNodePtr xnode)
 	                  "http://www.opengis.net/gml/srs/epsg.xml#", 40))
 	{
 		sep = '#';
-		latlon = false;
-	}
-	else if (!strncmp((char *) srsname, "http://www.epsg.org/", 20))
-	{
-		sep = '/';
 		latlon = false;
 	}
 	else lwerror("unknown spatial reference system");
