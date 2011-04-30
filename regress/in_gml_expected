@@ -216,6 +216,8 @@ ns_8|SRID=4326;POINT(1 2)
 ns_9|SRID=4326;POINT(1 2)
 ns_10|SRID=4326;POINT(1 2)
 ns_11|POINT(1 2)
+ERROR:  invalid GML representation
+ns_13|SRID=4326;POINT(1 2)
 coordinates_1|POINT(1 2)
 ERROR:  invalid GML representation
 coordinates_3|POINT(1 2 3)

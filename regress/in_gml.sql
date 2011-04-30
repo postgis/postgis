@@ -698,6 +698,11 @@ SELECT 'ns_10', ST_AsEWKT(ST_GeomFromGML('<gml:Point foo:srsName="EPSG:4326" xml
 -- Ignore other namespace attribute
 SELECT 'ns_11', ST_AsEWKT(ST_GeomFromGML('<gml:Point foo:srsName="EPSG:4326" xmlns:foo="http://foo.net" xmlns:gml="http://www.opengis.net/gml"><gml:coordinates>1,2</gml:coordinates><foo:coordinates>3,4</foo:coordinates></gml:Point>'));
 
+-- ERROR Attribute with explicit prefix but unqualified namespace
+SELECT 'ns_12', ST_AsEWKT(ST_GeomFromGML('<gml:Point foo:srsName="EPSG:4326" xmlns:gml="http://foo.net"><gml:coordinates>1,2</gml:coordinates></gml:Point>'));
+
+-- Explicit GML namespace (no prefix)
+SELECT 'ns_13', ST_AsEWKT(ST_GeomFromGML('<Point srsName="EPSG:4326" xmlns="http://www.opengis.net/gml"><coordinates>1,2</coordinates></Point>'));
 
 
 --
