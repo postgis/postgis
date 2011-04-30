@@ -1793,15 +1793,20 @@ extern LWCOLLECTION *lwcollection_segmentize2d(LWCOLLECTION *coll, double dist);
 #define LW_GML_IS_DEGREE   (1<<1)
 /** For GML3, use <LineString> rather than <Curve> for lines */
 #define LW_GML_SHORTLINE   (1<<2)
+/** For GML2 and GML3, output only extent of geometry */
+#define LW_GML_EXTENT      (1<<4)
+
 
 #define IS_DIMS(x) ((x) & LW_GML_IS_DIMS)
 #define IS_DEGREE(x) ((x) & LW_GML_IS_DEGREE)
 /** @} */
 
 extern char* lwgeom_to_gml2(const LWGEOM *geom, char *srs, int precision, const char *prefix);
+extern char* lwgeom_extent_to_gml2(const LWGEOM *geom, char *srs, int precision, const char *prefix);
 /**
  * @param opts output options bitfield, see LW_GML macros for meaning
  */
+extern char* lwgeom_extent_to_gml3(const LWGEOM *geom, char *srs, int precision, int opts, const char *prefix);
 extern char* lwgeom_to_gml3(const LWGEOM *geom, char *srs, int precision, int opts, const char *prefix);
 extern char* lwgeom_to_kml2(const LWGEOM *geom, int precision, const char *prefix);
 extern char* lwgeom_to_geojson(const LWGEOM *geo, char *srs, int precision, int has_bbox);

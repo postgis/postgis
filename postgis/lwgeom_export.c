@@ -2,7 +2,7 @@
  * $Id:$
  *
  * PostGIS - Export functions for PostgreSQL/PostGIS
- * Copyright 2009-2010 Olivier Courtin <olivier.courtin@oslandia.com>
+ * Copyright 2009-2011 Olivier Courtin <olivier.courtin@oslandia.com>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -166,12 +166,17 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	if (option & 2)  lwopts &= ~LW_GML_IS_DIMS; 
 	if (option & 4)  lwopts |= LW_GML_SHORTLINE;
 	if (option & 16) lwopts |= LW_GML_IS_DEGREE;
+        if (option & 32) lwopts |= LW_GML_EXTENT;
 
 	lwgeom = pglwgeom_deserialize(geom);
 
-	if (version == 2)
+             if (version == 2 && lwopts & LW_GML_EXTENT)
+		gml = lwgeom_extent_to_gml2(lwgeom, srs, precision, prefix);
+	else if (version == 2)
 		gml = lwgeom_to_gml2(lwgeom, srs, precision, prefix);
-	else
+        else if (version == 3 && lwopts & LW_GML_EXTENT)
+		gml = lwgeom_extent_to_gml3(lwgeom, srs, precision, lwopts, prefix);
+	else if (version == 3)
 		gml = lwgeom_to_gml3(lwgeom, srs, precision, lwopts, prefix);
 
 	lwgeom_free(lwgeom);

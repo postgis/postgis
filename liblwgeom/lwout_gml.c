@@ -5,7 +5,7 @@
  * http://postgis.refractions.net
  *
  * Copyright 2011 Sandro Santilli <strk@keybit.net>
- * Copyright 2010 Oslandia
+ * Copyright 2010-2011 Oslandia
  * Copyright 2001-2003 Refractions Research Inc.
  *
  * This is free software; you can redistribute and/or modify it under
@@ -56,6 +56,125 @@ static size_t pointArray_GMLsize(POINTARRAY *pa, int precision);
 
 
 
+extern char *
+lwgeom_extent_to_gml2(const LWGEOM *geom, char *srs, int precision, const char *prefix)
+{
+	int size;
+        POINT4D pt;
+        POINTARRAY *pa;
+	char *ptr, *output;
+	size_t prefixlen = strlen(prefix);
+
+	switch (geom->type)
+	{
+	case POINTTYPE:
+	case LINETYPE:
+	case POLYGONTYPE:
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+	case COLLECTIONTYPE:
+		break;
+
+	default:
+		lwerror("lwgeom_extent_to_gml2: '%s' geometry type not supported", lwtype_name(geom->type));
+		return NULL;
+        }
+
+        pa = ptarray_construct_empty(FLAGS_GET_Z(geom->flags), 0, 2);
+
+        pt.x = geom->bbox->xmin; 
+        pt.y = geom->bbox->ymin; 
+        if (FLAGS_GET_Z(geom->flags)) pt.z = geom->bbox->zmin; 
+        ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+    
+        pt.x = geom->bbox->xmax; 
+        pt.y = geom->bbox->ymax; 
+        if (FLAGS_GET_Z(geom->flags)) pt.z = geom->bbox->zmax; 
+        ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+
+	size = pointArray_GMLsize(pa, precision);
+	size += ( sizeof("<Box><coordinates>/") + (prefixlen*2) ) * 2;
+	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
+
+	ptr = output = lwalloc(size);
+
+	if ( srs ) ptr += sprintf(ptr, "<%sBox srsName=\"%s\">", prefix, srs);
+	else       ptr += sprintf(ptr, "<%sBox>", prefix);
+
+	ptr += sprintf(ptr, "<%scoordinates>", prefix);
+	ptr += pointArray_toGML2(pa, ptr, precision);
+	ptr += sprintf(ptr, "</%scoordinates></%sBox>", prefix, prefix);
+
+        ptarray_free(pa);
+
+	return output;
+}
+	
+
+extern char *
+lwgeom_extent_to_gml3(const LWGEOM *geom, char *srs, int precision, int opts, const char *prefix)
+{
+	int size;
+        POINT4D pt;
+        POINTARRAY *pa;
+	char *ptr, *output;
+	size_t prefixlen = strlen(prefix);
+
+	switch (geom->type)
+	{
+	case POINTTYPE:
+	case LINETYPE:
+	case POLYGONTYPE:
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+	case COLLECTIONTYPE:
+		break;
+
+	default:
+		lwerror("lwgeom_extent_to_gml3: '%s' geometry type not supported", lwtype_name(geom->type));
+		return NULL;
+        }
+
+        pa = ptarray_construct_empty(FLAGS_GET_Z(geom->flags), 0, 1);
+
+        pt.x = geom->bbox->xmin;
+        pt.y = geom->bbox->ymin; 
+        if (FLAGS_GET_Z(geom->flags)) pt.z = geom->bbox->zmin; 
+        ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+
+	size = pointArray_GMLsize(pa, precision) * 2;
+	size += ( sizeof("<Envelope><lowerCorner><upperCorner>//") + (prefixlen*3) ) * 2;
+	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
+
+	ptr = output = lwalloc(size);
+
+	if ( srs ) ptr += sprintf(ptr, "<%sEnvelope srsName=\"%s\">", prefix, srs);
+	else       ptr += sprintf(ptr, "<%sEnvelope>", prefix);
+
+	ptr += sprintf(ptr, "<%slowerCorner>", prefix);
+	ptr += pointArray_toGML3(pa, ptr, precision, opts);
+	ptr += sprintf(ptr, "</%slowerCorner>", prefix);
+
+        ptarray_remove_point(pa, 0);
+        pt.x = geom->bbox->xmax;
+        pt.y = geom->bbox->ymax; 
+        if (FLAGS_GET_Z(geom->flags)) pt.z = geom->bbox->zmax; 
+        ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+
+	ptr += sprintf(ptr, "<%supperCorner>", prefix);
+	ptr += pointArray_toGML3(pa, ptr, precision, opts);
+	ptr += sprintf(ptr, "</%supperCorner>", prefix);
+
+	ptr += sprintf(ptr, "</%sEnvelope>", prefix);
+
+        ptarray_free(pa);
+
+	return output;
+}
+	
+	
 /**
  *  @brief VERSION GML 2
  *  	takes a GEOMETRY and returns a GML2 representation
@@ -1290,8 +1409,7 @@ static size_t
 pointArray_GMLsize(POINTARRAY *pa, int precision)
 {
 	if (FLAGS_NDIMS(pa->flags) == 2)
-		return (OUT_MAX_DIGS_DOUBLE + precision + sizeof(", "))
-		       * 2 * pa->npoints;
+		return (OUT_MAX_DIGS_DOUBLE + precision + sizeof(", ")) * 2 * pa->npoints;
 
 	return (OUT_MAX_DIGS_DOUBLE + precision + sizeof(", ")) * 3 * pa->npoints;
 }
