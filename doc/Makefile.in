@@ -127,7 +127,7 @@ maintainer-clean: clean
 	@rm -f html/*.html \
 		postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
 
-comments: postgis_comments.sql raster_comments.sql
+comments: postgis_comments.sql raster_comments.sql topology_comments.sql
 
 comments-install: comments
 	make -f Makefile.comments install
