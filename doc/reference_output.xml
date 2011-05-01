@@ -871,9 +871,15 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns a geometry as an X3D xml formatted node element  <ulink url="http://web3d.org/x3d/specifications/ISO-IEC-19776-1.2-X3DEncodings-XML/Part01/EncodingOfNodes.html">http://web3d.org/x3d/specifications/ISO-IEC-19776-1.2-X3DEncodings-XML/Part01/EncodingOfNodes.html</ulink>.  If <varname>prec</varname> (precision) is not specified then defaults to 15. TINs are modeled as IndexedTriangleSet, MultiPoints as PointSet, LineString As LineSets, Polyhedral surfaces as IndexedFaceSet </para>
+		<para>Returns a geometry as an X3D xml formatted node element  <ulink url="http://web3d.org/x3d/specifications/ISO-IEC-19776-1.2-X3DEncodings-XML/Part01/EncodingOfNodes.html">http://web3d.org/x3d/specifications/ISO-IEC-19776-1.2-X3DEncodings-XML/Part01/EncodingOfNodes.html</ulink>.  If <varname>prec</varname> (precision) is not specified then defaults to 15. </para>
+		<note>
+		    <para>There are various options for translating PostGIS geometries to X3D since X3D geometry types don't map directly to PostGIS geometry types and some newer X3D types that might be better mappings we ahve avoided since most rendering tools don't currently support them.  
+		        These are the mappings we have settled on.  Feel free to post a bug ticket if you have thoughts on the idea or ways we can allow people to denote their preferred mappings.</para>
+		    <para>TINs are IndexedTriangleSets. MultiPoints are a PointSets. LineStrings are LineSets. Polyhedral Surfaces, Polygons, and Multipolygon as IndexedFaceSets.  </para>
+		</note>
+		<note><para>Using with any 2D geometries or 3D geometries with holes currently results in invalid X3D.  We are working on fixing this.</para></note>
 		<para>Lots of advancements happening in 3D space particularly with <ulink url="http://www.web3d.org/x3d/wiki/index.php/X3D_and_HTML5#Goals:_X3D_and_HTML5">X3D Integration with HTML5</ulink></para>
-		<para>There is also a nice open source X3D viewer you can use to view rendered geometries. Free Wrl <ulink url="http://freewrl.sourceforge.net/">http://freewrl.sourceforge.net/</ulink> binaries available for Mac, Linux, and Windows.</para>
+		<para>There is also a nice open source X3D viewer you can use to view rendered geometries. Free Wrl <ulink url="http://freewrl.sourceforge.net/">http://freewrl.sourceforge.net/</ulink> binaries available for Mac, Linux, and Windows. Use the FreeWRL_Launcher packaged to view the geometries.</para>
 		<para>Availability: 2.0.0: ISO-IEC-19776-1.2-X3DEncodings-XML</para>	
 		<!-- Optionally mention 3d support -->
 		<para>&Z_support;</para>
@@ -886,7 +892,7 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 	  </refsection>
 
 	  <refsection>
-		<title>Example: Create a fully functional X3D document</title>
+		<title>Example: Create a fully functional X3D document - This will generate a cube that is viewable in FreeWrl and other X3D viewers.</title>
 		<programlisting><![CDATA[SELECT '<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.0//EN" "http://www.web3d.org/specifications/x3d-3.0.dtd">
 <X3D>
@@ -923,6 +929,21 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
     </Transform>
   </Scene>
 </X3D>]]></programlisting>
+	  </refsection>
+	   <refsection>
+	  	<title>Example: An Octagon elevated 3 Units and decimal precision of 6</title>
+		<programlisting>SELECT ST_AsX3D(
+ST_Translate(
+    ST_Force_3d(
+        ST_Buffer(ST_Point(10,10),5, 'quad_segs=2')), 0,0,
+    3)
+  ,6) As x3dfrag;
+
+x3dfrag
+--------
+<![CDATA[<IndexedFaceSet coordIndex="0 1 2 3 4 5 6 7">
+    <Coordinate point="15 10 3 13.535534 6.464466 3 10 5 3 6.464466 6.464466 3 5 10 3 6.464466 13.535534 3 10 15 3 13.535534 13.535534 3 " />
+</IndexedFaceSet>]]></programlisting>
 	  </refsection>
 	  <refsection>
 	  	<title>Example: TIN</title>

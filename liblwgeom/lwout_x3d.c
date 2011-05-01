@@ -61,7 +61,10 @@ lwgeom_to_x3d3(const LWGEOM *geom, char *srs, int precision, int opts, const cha
 		return asx3d3_line((LWLINE*)geom, srs, precision, opts, defid);
 
 	case POLYGONTYPE:
-		return asx3d3_poly((LWPOLY*)geom, srs, precision, opts, 0, defid);
+	    /** We might change this later, but putting a polygon in an indexed face set 
+	    * seems like the simplest way to go so treat just like a mulitpolygon 
+	    */
+		return asx3d3_multi((LWCOLLECTION*)lwgeom_as_multi(geom), srs, precision, opts, defid);
 
 	case TRIANGLETYPE:
 		return asx3d3_triangle((LWTRIANGLE*)geom, srs, precision, opts, defid);
@@ -299,19 +302,6 @@ asx3d3_poly_buf(const LWPOLY *poly, char *srs, char *output, int precision, int 
 	}
 	return (ptr-output);
 }
-
-static char *
-asx3d3_poly(const LWPOLY *poly, char *srs, int precision, int opts, int is_patch, const char *defid)
-{
-	char *output;
-	int size;
-
-	size = asx3d3_poly_size(poly, srs, precision, opts, defid);
-	output = lwalloc(size);
-	asx3d3_poly_buf(poly, srs, output, precision, opts, is_patch, defid);
-	return output;
-}
-
 
 static size_t
 asx3d3_triangle_size(const LWTRIANGLE *triangle, char *srs, int precision, int opts, const char *defid)
