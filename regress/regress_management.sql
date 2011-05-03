@@ -1,5 +1,6 @@
 -- $Id$
 -- Test the populate_geometry_columns,DropGeometryTable etc --
+\set VERBOSITY terse
 DELETE FROM spatial_ref_sys WHERE srid = 4326;
 INSERT INTO spatial_ref_sys ( srid, proj4text ) VALUES( 4326, '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs');
 CREATE TABLE test_pt(gid SERIAL PRIMARY KEY, geom geometry);

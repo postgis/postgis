@@ -3,5 +3,4 @@ NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "test_pt_pkey" fo
 1
 The result: public.test_pt dropped.
 NOTICE:  table "unexistent" does not exist, skipping
-PL/pgSQL function "dropgeometrytable" line 22 at EXECUTE statement
 Unexistant: public.unexistent dropped.
