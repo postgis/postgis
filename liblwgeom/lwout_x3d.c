@@ -11,7 +11,6 @@
  * the terms of the GNU General Public Licence. See the COPYING file.
  *
  **********************************************************************/
-
 /**
 * @file X3D output routines.
 *
@@ -27,7 +26,6 @@ static char *asx3d3_point(const LWPOINT *point, char *srs, int precision, int op
 static size_t asx3d3_line_size(const LWLINE *line, char *srs, int precision, int opts, const char *defid);
 static char *asx3d3_line(const LWLINE *line, char *srs, int precision, int opts, const char *defid);
 static size_t asx3d3_poly_size(const LWPOLY *poly, char *srs, int precision, int opts, const char *defid);
-static char *asx3d3_poly(const LWPOLY *poly, char *srs, int precision, int opts, int is_patch, const char *defid);
 static size_t asx3d3_triangle_size(const LWTRIANGLE *triangle, char *srs, int precision, int opts, const char *defid);
 static char *asx3d3_triangle(const LWTRIANGLE *triangle, char *srs, int precision, int opts, const char *defid);
 static size_t asx3d3_multi_size(const LWCOLLECTION *col, char *srs, int precision, int opts, const char *defid);
@@ -48,7 +46,7 @@ static size_t pointArray_X3Dsize(POINTARRAY *pa, int precision);
 
 /* takes a GEOMETRY and returns an X3D representation */
 extern char *
-lwgeom_to_x3d3(const LWGEOM *geom, char *srs, int precision, int opts, const char *defid)
+	lwgeom_to_x3d3(const LWGEOM *geom, char *srs, int precision, int opts, const char *defid)
 {
 	int type = geom->type;
 
@@ -61,9 +59,9 @@ lwgeom_to_x3d3(const LWGEOM *geom, char *srs, int precision, int opts, const cha
 		return asx3d3_line((LWLINE*)geom, srs, precision, opts, defid);
 
 	case POLYGONTYPE:
-	    /** We might change this later, but putting a polygon in an indexed face set 
-	    * seems like the simplest way to go so treat just like a mulitpolygon 
-	    */
+		/** We might change this later, but putting a polygon in an indexed face set
+		* seems like the simplest way to go so treat just like a mulitpolygon 
+		*/
 		return asx3d3_multi((LWCOLLECTION*)lwgeom_as_multi(geom), srs, precision, opts, defid);
 
 	case TRIANGLETYPE:
@@ -108,13 +106,13 @@ asx3d3_point_buf(const LWPOINT *point, char *srs, char *output, int precision, i
 	//int dimension=2;
 
 	//if (FLAGS_GET_Z(point->flags)) dimension = 3;
-/*	if ( srs )
-	{
-		ptr += sprintf(ptr, "<%sPoint srsName=\"%s\">", defid, srs);
-	}
-	else*/
+	/*	if ( srs )
+		{
+			ptr += sprintf(ptr, "<%sPoint srsName=\"%s\">", defid, srs);
+		}
+		else*/
 	//ptr += sprintf(ptr, "%s", defid);
-	
+
 	//ptr += sprintf(ptr, "<%spos>", defid);
 	ptr += pointArray_toX3D3(point->point, ptr, precision, opts, 0);
 	//ptr += sprintf(ptr, "</%spos></%sPoint>", defid, defid);
@@ -144,9 +142,9 @@ asx3d3_line_size(const LWLINE *line, char *srs, int precision, int opts, const c
 	size = pointArray_X3Dsize(line->points, precision)*2;
 
 	size += (
-		sizeof("<LineSet vertexCount=''><Coordinate point='' /></LineSet>")  + defidlen  
-	) * 2;
-	
+				sizeof("<LineSet vertexCount=''><Coordinate point='' /></LineSet>")  + defidlen
+			) * 2;
+
 	//if (srs)     size += strlen(srs) + sizeof(" srsName=..");
 	return size;
 }
@@ -178,8 +176,7 @@ static size_t
 asx3d3_line_coords(const LWLINE *line, char *output, int precision, int opts)
 {
 	char *ptr=output;
-	
-	ptr += sprintf(ptr, "");
+	//ptr += sprintf(ptr, "");
 	ptr += pointArray_toX3D3(line->points, ptr, precision, opts, lwline_is_closed(line));
 	return (ptr-output);
 }
@@ -193,7 +190,7 @@ asx3d3_mline_coordindex(const LWMLINE *mgeom, char *output)
 	int i, j, k, si;
 	POINTARRAY *pa;
 	int np;
-	
+
 	ptr += sprintf(ptr, "");
 	j = 0;
 	for (i=0; i < mgeom->ngeoms; i++)
@@ -202,29 +199,34 @@ asx3d3_mline_coordindex(const LWMLINE *mgeom, char *output)
 		pa = geom->points;
 		np = pa->npoints;
 		si = j; //start index of first point of linestring
-		for(k=0; k < np ; k++){
-            if (k) {
-                ptr += sprintf(ptr, " ");    
-            }
-            /** if the linestring is closed, we put the start point index 
-            *   for the last vertex to denote use first point
-            *    and don't increment the index **/
-            if (!lwline_is_closed(geom) || k < (np -1) ){
-                ptr += sprintf(ptr, "%d", j);
-                j += 1;
-            }
-            else { 
-                ptr += sprintf(ptr,"%d", si);
-            }
+		for(k=0; k < np ; k++)
+		{
+			if (k)
+			{
+				ptr += sprintf(ptr, " ");
+			}
+			/** if the linestring is closed, we put the start point index
+			*   for the last vertex to denote use first point
+			*    and don't increment the index **/
+			if (!lwline_is_closed(geom) || k < (np -1) )
+			{
+				ptr += sprintf(ptr, "%d", j);
+				j += 1;
+			}
+			else
+			{
+				ptr += sprintf(ptr,"%d", si);
+			}
 		}
-		if (i < (mgeom->ngeoms - 1) ){
-		    ptr += sprintf(ptr, " -1 "); //separator for each linestring
+		if (i < (mgeom->ngeoms - 1) )
+		{
+			ptr += sprintf(ptr, " -1 "); //separator for each linestring
 		}
 	}
 	return (ptr-output);
 }
 
-/* Calculate the coordIndex property of the IndexedLineSet for a multipolygon 
+/* Calculate the coordIndex property of the IndexedLineSet for a multipolygon
     This is not ideal -- would be really nice to just share this function with psurf, 
     but I'm not smart enough to do that yet*/
 static size_t
@@ -232,26 +234,32 @@ asx3d3_mpoly_coordindex(const LWMPOLY *psur, char *output)
 {
 	char *ptr=output;
 	LWPOLY *patch;
-	int i, j, k, si;
-	POINTARRAY *pa;
+	int i, j, k, l, si;
 	int np;
-	
-	ptr += sprintf(ptr, "");
 	j = 0;
 	for (i=0; i<psur->ngeoms; i++)
 	{
 		patch = (LWPOLY *) psur->geoms[i];
-		np = patch->rings[0]->npoints - 1;
-	    for(k=0; k < np ; k++){
-	        if (k) {
-	            ptr += sprintf(ptr, " ");    
-	        }
-	        ptr += sprintf(ptr, "%d", (j + k));
-	    }
-	    if (i < (psur->ngeoms - 1) ){
-	        ptr += sprintf(ptr, " -1 "); //separator for each subgeom
-	    }
-	    j += k;
+		for (l=0; l < patch->nrings; l++){
+			np = patch->rings[l]->npoints - 1;
+			for(k=0; k < np ; k++)
+			{
+				if (k)
+				{
+					ptr += sprintf(ptr, " ");
+				}
+				ptr += sprintf(ptr, "%d", (j + k));
+			}
+			j += k;
+			if (l < (patch->nrings - 1) )
+			{
+				ptr += sprintf(ptr, " -1 "); //separator for each inner ring I know its probably wrong - place holder for now
+			}
+		}
+		if (i < (psur->ngeoms - 1) )
+		{
+			ptr += sprintf(ptr, " -1 "); //separator for each subgeom
+		}
 	}
 	return (ptr-output);
 }
@@ -293,12 +301,13 @@ asx3d3_poly_buf(const LWPOLY *poly, char *srs, char *output, int precision, int 
 	char *ptr=output;
 	int dimension=2;
 
-	if (FLAGS_GET_Z(poly->flags)) dimension = 3;
+	if (FLAGS_GET_Z(poly->flags))
+		dimension = 3;
 	ptr += pointArray_toX3D3(poly->rings[0], ptr, precision, opts, 1);
 	for (i=1; i<poly->nrings; i++)
 	{
+		ptr += sprintf(ptr, " "); //inner ring points start
 		ptr += pointArray_toX3D3(poly->rings[i], ptr, precision, opts,1);
-		ptr += sprintf(ptr, " ");
 	}
 	return (ptr-output);
 }
@@ -309,8 +318,8 @@ asx3d3_triangle_size(const LWTRIANGLE *triangle, char *srs, int precision, int o
 	size_t size;
 	size_t defidlen = strlen(defid);
 
-	/** 6 for the 3 sides and space to separate each side **/ 
-	size = sizeof("<IndexedTriangleSet index=''></IndexedTriangleSet>") + defidlen + 6; 
+	/** 6 for the 3 sides and space to separate each side **/
+	size = sizeof("<IndexedTriangleSet index=''></IndexedTriangleSet>") + defidlen + 6;
 	size += pointArray_X3Dsize(triangle->points, precision);
 
 	return size;
@@ -394,18 +403,21 @@ asx3d3_multi_buf(const LWCOLLECTION *col, char *srs, char *output, int precision
 	ptr = output;
 	x3dtype="";
 
-			
-	if 	(type == MULTIPOINTTYPE) {
+
+	if 	(type == MULTIPOINTTYPE)
+	{
 		x3dtype = "PointSet";
 		ptr += sprintf(ptr, "<%s %s>", x3dtype, defid);
 	}
-	else if (type == MULTILINETYPE) {
+	else if (type == MULTILINETYPE)
+	{
 		x3dtype = "IndexedLineSet";
 		ptr += sprintf(ptr, "<%s %s coordIndex='", x3dtype, defid);
 		ptr += asx3d3_mline_coordindex(col, ptr);
 		ptr += sprintf(ptr, "'>");
 	}
-	else if (type == MULTIPOLYGONTYPE) {
+	else if (type == MULTIPOLYGONTYPE)
+	{
 		x3dtype = "IndexedFaceSet";
 		ptr += sprintf(ptr, "<%s %s coordIndex='", x3dtype, defid);
 		ptr += asx3d3_mpoly_coordindex(col,ptr);
@@ -464,7 +476,7 @@ asx3d3_psurface_size(const LWPSURFACE *psur, char *srs, int precision, int opts,
 	size_t defidlen = strlen(defid);
 
 	size = sizeof("<IndexedFaceSet coordIndex=''><Coordinate point='' />") + defidlen;
-	
+
 	for (i=0; i<psur->ngeoms; i++)
 	{
 		size += asx3d3_poly_size(psur->geoms[i], 0, precision, opts, defid)*5; /** need to make space for coordIndex values too including -1 separating each poly**/
@@ -491,32 +503,36 @@ asx3d3_psurface_buf(const LWPSURFACE *psur, char *srs, char *output, int precisi
 
 	/* Open outmost tag */
 	ptr += sprintf(ptr, "<IndexedFaceSet %s coordIndex='",defid);
-	
+
 	j = 0;
 	for (i=0; i<psur->ngeoms; i++)
 	{
 		patch = (LWPOLY *) psur->geoms[i];
 		np = patch->rings[0]->npoints - 1;
-	    for(k=0; k < np ; k++){
-	        if (k) {
-	            ptr += sprintf(ptr, " ");    
-	        }
-	        ptr += sprintf(ptr, "%d", (j + k));
-	    }
-	    if (i < (psur->ngeoms - 1) ){
-	        ptr += sprintf(ptr, " -1 "); //separator for each subgeom
-	    }
-	    j += k;
+		for(k=0; k < np ; k++)
+		{
+			if (k)
+			{
+				ptr += sprintf(ptr, " ");
+			}
+			ptr += sprintf(ptr, "%d", (j + k));
+		}
+		if (i < (psur->ngeoms - 1) )
+		{
+			ptr += sprintf(ptr, " -1 "); //separator for each subgeom
+		}
+		j += k;
 	}
-	
+
 	ptr += sprintf(ptr, "'><Coordinate point='");
 
 	for (i=0; i<psur->ngeoms; i++)
 	{
 		ptr += asx3d3_poly_buf(psur->geoms[i], 0, ptr, precision, opts, 1, defid);
-		if (i < (psur->ngeoms - 1) ){
-	        ptr += sprintf(ptr, " "); //only add a trailing space if its not the last polygon in the set
-	    }
+		if (i < (psur->ngeoms - 1) )
+		{
+			ptr += sprintf(ptr, " "); //only add a trailing space if its not the last polygon in the set
+		}
 	}
 
 	/* Close outmost tag */
@@ -549,7 +565,7 @@ asx3d3_tin_size(const LWTIN *tin, char *srs, int precision, int opts, const char
 	size_t defidlen = strlen(defid);
 	//int dimension=2;
 
-	/** Need to make space for size of additional attributes, 
+	/** Need to make space for size of additional attributes,
 	** the coordIndex has a value for each edge for each triangle plus a space to separate so we need at least that much extra room ***/
 	size = sizeof("<IndexedTriangleSet coordIndex=''></IndexedTriangleSet>") + defidlen + tin->ngeoms*12;
 
@@ -581,26 +597,28 @@ asx3d3_tin_buf(const LWTIN *tin, char *srs, char *output, int precision, int opt
 	for (i=0; i<tin->ngeoms; i++)
 	{
 		ptr += sprintf(ptr, "%d %d %d", k, (k+1), (k+2));
-		if (i < (tin->ngeoms - 1) ){
-		    ptr += sprintf(ptr, " ");
+		if (i < (tin->ngeoms - 1) )
+		{
+			ptr += sprintf(ptr, " ");
 		}
 		k += 3;
 	}
-	
+
 	ptr += sprintf(ptr, "'><Coordinate point='");
 	for (i=0; i<tin->ngeoms; i++)
 	{
 		ptr += asx3d3_triangle_buf(tin->geoms[i], 0, ptr, precision,
-		                           opts, defid);
-		if (i < (tin->ngeoms - 1) ){
-		    ptr += sprintf(ptr, " ");
+								   opts, defid);
+		if (i < (tin->ngeoms - 1) )
+		{
+			ptr += sprintf(ptr, " ");
 		}
 	}
 
 	/* Close outmost tag */
 
 	ptr += sprintf(ptr, "'/></IndexedTriangleSet>");
-	
+
 	return (ptr-output);
 }
 
@@ -629,7 +647,8 @@ asx3d3_collection_size(const LWCOLLECTION *col, char *srs, int precision, int op
 
 	size = sizeof("<MultiGeometry></MultiGeometry>") + defidlen*2;
 
-	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
+	if ( srs )
+		size += strlen(srs) + sizeof(" srsName=..");
 
 	for (i=0; i<col->ngeoms; i++)
 	{
@@ -700,9 +719,9 @@ asx3d3_collection_buf(const LWCOLLECTION *col, char *srs, char *output, int prec
 			else
 				ptr += asx3d3_multi_buf((LWCOLLECTION*)subgeom, 0, ptr, precision, opts, defid);
 		}
-		else 
+		else
 			lwerror("asx3d3_collection_buf: unknown geometry type");
-			
+
 		ptr += sprintf(ptr, "</%sgeometryMember>", defid);
 	}
 
@@ -746,23 +765,25 @@ pointArray_toX3D3(POINTARRAY *pa, char *output, int precision, int opts, int is_
 		for (i=0; i<pa->npoints; i++)
 		{
 			/** Only output the point if it is not the last point of a closed object or it is a non-closed type **/
-			if ( !is_closed || i < (pa->npoints - 1) ){
+			if ( !is_closed || i < (pa->npoints - 1) )
+			{
 				POINT2D pt;
 				getPoint2d_p(pa, i, &pt);
-	
+
 				if (fabs(pt.x) < OUT_MAX_DOUBLE)
 					sprintf(x, "%.*f", precision, pt.x);
 				else
 					sprintf(x, "%g", pt.x);
 				trim_trailing_zeros(x);
-	
+
 				if (fabs(pt.y) < OUT_MAX_DOUBLE)
 					sprintf(y, "%.*f", precision, pt.y);
 				else
 					sprintf(y, "%g", pt.y);
 				trim_trailing_zeros(y);
-	
-				if ( i ) ptr += sprintf(ptr, " ");
+
+				if ( i )
+					ptr += sprintf(ptr, " ");
 				ptr += sprintf(ptr, "%s %s", x, y);
 			}
 		}
@@ -772,30 +793,32 @@ pointArray_toX3D3(POINTARRAY *pa, char *output, int precision, int opts, int is_
 		for (i=0; i<pa->npoints; i++)
 		{
 			/** Only output the point if it is not the last point of a closed object or it is a non-closed type **/
-			if ( !is_closed || i < (pa->npoints - 1) ){
+			if ( !is_closed || i < (pa->npoints - 1) )
+			{
 				POINT4D pt;
 				getPoint4d_p(pa, i, &pt);
-	
+
 				if (fabs(pt.x) < OUT_MAX_DOUBLE)
 					sprintf(x, "%.*f", precision, pt.x);
 				else
 					sprintf(x, "%g", pt.x);
 				trim_trailing_zeros(x);
-	
+
 				if (fabs(pt.y) < OUT_MAX_DOUBLE)
 					sprintf(y, "%.*f", precision, pt.y);
 				else
 					sprintf(y, "%g", pt.y);
 				trim_trailing_zeros(y);
-	
+
 				if (fabs(pt.z) < OUT_MAX_DOUBLE)
 					sprintf(z, "%.*f", precision, pt.z);
 				else
 					sprintf(z, "%g", pt.z);
 				trim_trailing_zeros(z);
-	
-				if ( i ) ptr += sprintf(ptr, " ");
-				
+
+				if ( i )
+					ptr += sprintf(ptr, " ");
+
 				ptr += sprintf(ptr, "%s %s %s", x, y, z);
 			}
 		}
@@ -814,7 +837,7 @@ pointArray_X3Dsize(POINTARRAY *pa, int precision)
 {
 	if (FLAGS_NDIMS(pa->flags) == 2)
 		return (OUT_MAX_DIGS_DOUBLE + precision + sizeof(" "))
-		       * 2 * pa->npoints;
+			   * 2 * pa->npoints;
 
 	return (OUT_MAX_DIGS_DOUBLE + precision + sizeof(" ")) * 3 * pa->npoints;
 }
