@@ -300,14 +300,6 @@ ON topology.layer FOR EACH ROW EXECUTE PROCEDURE topology.LayerTrigger();
 --} Layer table.
 
 --
--- Type returned by ST_GetFaceEdges
---
-CREATE TYPE topology.GetFaceEdges_ReturnType AS (
-	sequence integer,
-	edge integer
-);
-
---
 -- Type returned by ValidateTopology 
 --
 CREATE TYPE topology.ValidateTopology_ReturnType AS (

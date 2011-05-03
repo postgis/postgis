@@ -20,6 +20,14 @@
 --
 ---------------------------------------------------------------------
 
+--
+-- Type returned by ST_GetFaceEdges
+--
+CREATE TYPE topology.GetFaceEdges_ReturnType AS (
+	sequence integer,
+	edge integer
+);
+
 
 --{
 -- Topo-Geo and Topo-Net 3: Routine Details
