@@ -1438,7 +1438,7 @@ ERROR:  Two or more faces found</programlisting>
 			<refnamediv>
 				<refname>ST_GetFaceEdges</refname>
 			
-				<refpurpose>NOT YET IMPLEMENTED: Returns a set of ordered edges that bound <varname>aface</varname> includes the sequence order.</refpurpose>
+				<refpurpose>Returns a set of ordered edges that bound <varname>aface</varname> includes the sequence order.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -1455,10 +1455,8 @@ ERROR:  Two or more faces found</programlisting>
                 <title>Description</title>
             
                 <para>Returns a set of ordered edges that bound <varname>aface</varname> includes the sequence order.  Each output consists of a sequence and edgeid</para>
-                <note><para>This is currently a stub function and not yet implemented.  Will either throw a NOT YET IMPLEMENTED message or SQL/MM if no topology or face is passed in.</para></note>
-                
                 <!-- use this format if new function -->
-                <para>Availability: Not yet implemented </para>
+                <para>Availability: 2.0 </para>
                 	<para>&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.5</para>
 			</refsection>
 		
@@ -1466,7 +1464,19 @@ ERROR:  Two or more faces found</programlisting>
 			<refsection>
 				<title>Examples</title>
 				<programlisting>
-<!-- TODO once implemented -->
+-- Returns the edges bounding face 1
+SELECT (topology.ST_GetFaceEdges('tt', 1)).*;
+-- result --
+ sequence | edge
+----------+------
+        1 |    5
+        2 |   -4
+        3 |   -6
+        4 |    7
+        5 |    3
+        6 |    2
+        7 |    1
+(7 rows)
  
 </programlisting>
 			</refsection>
