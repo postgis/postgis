@@ -29,6 +29,7 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/addface2.5d.sql \
 	regress/polygonize.sql \
 	regress/st_getfacegeometry.sql \
+	regress/st_getfaceedges.sql \
 	regress/topoelement.sql \
 	regress/topoelementarray_agg.sql \
 	regress/topo2.5d.sql \

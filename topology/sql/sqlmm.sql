@@ -37,27 +37,66 @@ CREATE TYPE topology.GetFaceEdges_ReturnType AS (
 --
 --
 -- 
-CREATE OR REPLACE FUNCTION topology.ST_GetFaceEdges(varchar, integer)
-	RETURNS setof topology.GetFaceEdges_ReturnType
+CREATE OR REPLACE FUNCTION topology.ST_GetFaceEdges(toponame varchar, face_id integer)
+  RETURNS SETOF topology.GetFaceEdges_ReturnType
 AS
 $$
 DECLARE
-	atopology ALIAS FOR $1;
-	aface ALIAS FOR $2;
-	rec RECORD;
+  rec RECORD;
+  bounds geometry;
+  retrec topology.GetFaceEdges_ReturnType;
+  n int;
 BEGIN
-	--
-	-- Atopology and aface are required
-	-- 
-	IF atopology IS NULL OR aface IS NULL THEN
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - null argument';
-	END IF;
+  --
+  -- toponame and face_id are required
+  -- 
+  IF toponame IS NULL OR face_id IS NULL THEN
+    RAISE EXCEPTION 'SQL/MM Spatial exception - null argument';
+  END IF;
 
-	RAISE EXCEPTION
-		 'ST_GetFaceEdges: not implemented yet';
+  n := 1;
 
+  -- Construct the face geometry, then for each polygon:
+  FOR rec IN SELECT (ST_DumpRings((ST_Dump(ST_ForceRHR(
+    topology.ST_GetFaceGeometry(toponame, face_id)))).geom)).*
+  LOOP -- {
 
+    -- Contents of a directed face are the list of edges
+    -- that cover the specific ring
+    bounds = ST_Boundary(rec.geom);
+
+    FOR rec IN EXECUTE
+      'SELECT e.*, ST_Line_Locate_Point('
+      || quote_literal(bounds::text)
+      || ', ST_Line_Interpolate_Point(e.geom, 0.2)) as pos'
+      || ', ST_Line_Locate_Point('
+      || quote_literal(bounds::text)
+      || ', ST_Line_Interpolate_Point(e.geom, 0.8)) as pos2 FROM '
+      || quote_ident(toponame)
+      || '.edge e WHERE ( e.left_face = ' || face_id
+      || ' OR e.right_face = ' || face_id
+      || ') AND ST_Covers('
+      || quote_literal(bounds::text)
+      || ', e.geom) ORDER BY pos DESC'
+    LOOP
+
+      retrec.sequence = n;
+      retrec.edge = rec.edge_id;
+
+      -- if this edge goes in same direction to the
+      --       ring bounds, make it with negative orientation
+      IF rec.pos2 > rec.pos THEN -- edge goes in same direction
+        retrec.edge = -retrec.edge;
+      END IF;
+
+      RETURN NEXT retrec;
+
+      n = n+1;
+
+    END LOOP;
+  END LOOP; -- }
+
+  RETURN;
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE;

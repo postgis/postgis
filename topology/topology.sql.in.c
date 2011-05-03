@@ -155,7 +155,7 @@
 --	Being working on. TODO: continue
 --  
 --   ST_GetFaceEdges
---  	Unimplemented (C seems appropriate)
+--  	Complete
 --  
 --   ST_GetFaceGeometry
 --  	Implemented using polygonize()
