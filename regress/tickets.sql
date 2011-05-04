@@ -297,6 +297,9 @@ SELECT '#457.7', st_astext(st_collectionExtract('POLYGON((0 0, 1 0, 1 1, 0 1, 0 
 SELECT '#457.8', st_astext(st_collectionExtract('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))', 2));
 SELECT '#457.9', st_astext(st_collectionExtract('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))', 3));
 
+-- #650 --
+SELECT '#650', ST_AsText(ST_Collect(ARRAY[ST_MakePoint(0,0), ST_MakePoint(1,1), null, ST_MakePoint(2,2)]));
+
 -- #662 --
 --SELECT '#662', ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_SetSRID(ST_MakePointM(i+m,j,m),4326),ST_SetSRID(ST_MakePointM(j+m,i-m,m),4326)),ST_SetSRID(ST_MakePointM(i,j,m),4326)),ST_SetSRID(ST_MakePointM(i+m,j,m),4326))) As the_geom FROM generate_series(-10,50,20) As i CROSS JOIN generate_series(50,70, 20) As j CROSS JOIN generate_series(1,2) As m ORDER BY i, j, m, i*j*m LIMIT 1;
 

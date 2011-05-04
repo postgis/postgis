@@ -1252,19 +1252,20 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 				outtype = COLLECTIONTYPE;
 			}
 
-			/* Advance NULL bitmap */
-			if (bitmap)
-			{
-				bitmask <<= 1;
-				if (bitmask == 0x100)
-				{
-					bitmap++;
-					bitmask = 1;
-				}
-			}
-
 			count++;
 		}
+
+		/* Advance NULL bitmap */
+		if (bitmap)
+		{
+			bitmask <<= 1;
+			if (bitmask == 0x100)
+			{
+				bitmap++;
+				bitmask = 1;
+			}
+		}
+		
 	}
 
 	POSTGIS_DEBUGF(3, "LWGEOM_collect_garray: outtype = %d", outtype);
