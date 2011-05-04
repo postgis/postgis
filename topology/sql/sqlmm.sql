@@ -112,6 +112,9 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- * Returns the id of the node being removed
 -- * Refuses to heal two edges if any of the two is closed 
 -- * Raise an exception when trying to heal an edge with itself
+-- * Raise an exception if any TopoGeometry is defined by only one
+--   of the two edges
+-- * Update references in the Relation table.
 -- 
 CREATE OR REPLACE FUNCTION topology.ST_ModEdgeHeal(toponame varchar, e1id integer, e2id integer)
   RETURNS int
@@ -123,8 +126,10 @@ DECLARE
   rec RECORD;
   commonnode int;
   caseno int;
+  topoid int;
   sql text;
   e2sign int;
+  eidary int[];
 BEGIN
   --
   -- toponame and face_id are required
@@ -138,10 +143,42 @@ BEGIN
     RAISE EXCEPTION 'Cannot heal edge % with itself, try with another', e1id;
   END IF;
 
-  -- NOT IN THE SPECS: check toponame is not empty
-  IF toponame = '' THEN
-    RAISE EXCEPTION 'Invalid (empty) topology name';
-  END IF;
+	-- Get topology id
+  BEGIN
+    SELECT id FROM topology.topology
+      INTO STRICT topoid WHERE name = toponame;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        RAISE EXCEPTION 'unknown topology "%"', toponame;
+  END;
+
+  -- NOT IN THE SPECS:
+  -- check if any topo_geom is defined only by one of the
+  -- input edges. In such case there would be no way to adapt
+  -- the definition in case of healing, so we'd have to bail out
+  eidary = ARRAY[e1id, e2id];
+  sql := 'SELECT t.* from ('
+    || 'SELECT r.topogeo_id, r.layer_id'
+    || ', l.schema_name, l.table_name, l.feature_column'
+    || ', array_agg(abs(r.element_id)) as elems '
+    || 'FROM topology.layer l INNER JOIN '
+    || quote_ident(toponame)
+    || '.relation r ON (l.layer_id = r.layer_id) '
+    || 'WHERE l.level = 0 AND l.feature_type = 2 '
+    || ' AND l.topology_id = ' || topoid
+    || ' AND abs(r.element_id) IN (' || e1id || ',' || e2id || ') '
+    || 'group by r.topogeo_id, r.layer_id, l.schema_name, l.table_name, '
+    || ' l.feature_column ) t WHERE t.elems && '
+    || quote_literal(eidary) 
+    || ' AND NOT t.elems @> '
+    || quote_literal(eidary);
+  RAISE DEBUG 'SQL: %', sql;
+  FOR rec IN EXECUTE sql LOOP
+    RAISE EXCEPTION 'TopoGeom % in layer % (%.%.%) cannot be represented healing edges % and %',
+          rec.topogeo_id, rec.layer_id,
+          rec.schema_name, rec.table_name, rec.feature_column,
+          e1id, e2id;
+  END LOOP;
 
   BEGIN
     EXECUTE 'SELECT * FROM ' || quote_ident(toponame)
@@ -151,9 +188,9 @@ BEGIN
       WHEN NO_DATA_FOUND THEN
         RAISE EXCEPTION 'SQL/MM Spatial exception – non-existent edge %', e1id;
       WHEN INVALID_SCHEMA_NAME THEN
-        RAISE EXCEPTION 'non-existent topology "%"', toponame;
+        RAISE EXCEPTION 'non-existent topology schema "%"', toponame;
       WHEN UNDEFINED_TABLE THEN
-        RAISE EXCEPTION 'Invalid topology "%" (missing edge_data table)',
+        RAISE EXCEPTION 'corrupted topology "%" (missing edge_data table)',
           toponame;
   END;
 
@@ -282,9 +319,20 @@ BEGIN
             || '.node WHERE node_id = ' || commonnode;
     EXCEPTION
       WHEN UNDEFINED_TABLE THEN
-        RAISE EXCEPTION 'Invalid topology "%" (missing node table)',
+        RAISE EXCEPTION 'corrupted topology "%" (missing node table)',
           toponame;
   END;
+
+	--
+  -- NOT IN THE SPECS:
+	-- Update references in the Relation table.
+	-- We only take into considerations non-hierarchical
+	-- TopoGeometry here, for obvious reasons.
+	--
+
+  -- Now we can safely drop composition rows involving second
+  -- edge, as the first edge took its space.
+
 
 	RETURN commonnode;
 END
@@ -677,6 +725,9 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 --  ST_NewEdgesSplit(atopology, anedge, apoint)
 --
+-- Not in the specs:
+-- * Update references in the Relation table.
+--
 CREATE OR REPLACE FUNCTION topology.ST_NewEdgesSplit(varchar, integer, geometry)
 	RETURNS INTEGER AS
 $$
@@ -937,6 +988,9 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- X.3.9 
 --
 --  ST_ModEdgeSplit(atopology, anedge, apoint)
+--
+-- Not in the specs:
+-- * Update references in the Relation table.
 --
 CREATE OR REPLACE FUNCTION topology.ST_ModEdgeSplit(varchar, integer, geometry)
 	RETURNS INTEGER AS

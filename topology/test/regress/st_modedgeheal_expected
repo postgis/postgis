@@ -7,9 +7,7 @@ COMMIT
 ERROR:  SQL/MM Spatial exception - null argument
 ERROR:  SQL/MM Spatial exception - null argument
 ERROR:  SQL/MM Spatial exception - null argument
-ERROR:  Invalid (empty) topology name
-ERROR:  non-existent topology "  "
-ERROR:  Invalid topology "public" (missing edge_data table)
+ERROR:  unknown topology ""
 ERROR:  SQL/MM Spatial exception – non-connected edges
 ERROR:  SQL/MM Spatial exception – other edges connected (ie: 19)
 ERROR:  Edge 2 is closed, cannot heal to edge 3
