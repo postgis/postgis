@@ -124,6 +124,7 @@ DECLARE
   commonnode int;
   caseno int;
   sql text;
+  e2sign int;
 BEGIN
   --
   -- toponame and face_id are required
@@ -137,6 +138,11 @@ BEGIN
     RAISE EXCEPTION 'Cannot heal edge % with itself, try with another', e1id;
   END IF;
 
+  -- NOT IN THE SPECS: check toponame is not empty
+  IF toponame = '' THEN
+    RAISE EXCEPTION 'Invalid (empty) topology name';
+  END IF;
+
   BEGIN
     EXECUTE 'SELECT * FROM ' || quote_ident(toponame)
       || '.edge_data WHERE edge_id = ' || e1id
@@ -144,6 +150,11 @@ BEGIN
     EXCEPTION
       WHEN NO_DATA_FOUND THEN
         RAISE EXCEPTION 'SQL/MM Spatial exception – non-existent edge %', e1id;
+      WHEN INVALID_SCHEMA_NAME THEN
+        RAISE EXCEPTION 'non-existent topology "%"', toponame;
+      WHEN UNDEFINED_TABLE THEN
+        RAISE EXCEPTION 'Invalid topology "%" (missing edge_data table)',
+          toponame;
   END;
 
   BEGIN
@@ -153,6 +164,7 @@ BEGIN
     EXCEPTION
       WHEN NO_DATA_FOUND THEN
         RAISE EXCEPTION 'SQL/MM Spatial exception – non-existent edge %', e2id;
+    -- NOTE: checks for INVALID_SCHEMA_NAME or UNDEFINED_TABLE done before
   END;
 
   -- NOT IN THE SPECS: See if any of the two edges are closed.
@@ -183,18 +195,98 @@ BEGIN
   -- Check if any other edge is connected to the common node
   FOR rec IN EXECUTE 'SELECT edge_id FROM ' || quote_ident(toponame)
     || '.edge_data WHERE ( edge_id != ' || e1id
-    || ' AND edge_id != ' || e2id || ') AND ( start_node = 2 OR end_node = 2 )'
+    || ' AND edge_id != ' || e2id || ') AND ( start_node = '
+    || commonnode || ' OR end_node = ' || commonnode || ' )'
   LOOP
     RAISE EXCEPTION
       'SQL/MM Spatial exception – other edges connected (ie: %)', rec.edge_id;
   END LOOP;
 
-  -- Now: delete the common node (expect panic!)
-  EXECUTE 'DELETE FROM ' || quote_ident(toponame)
-          || '.node WHERE node_id = ' || commonnode;
-  
+  -- Update data of the first edge {
+  rec := e1rec;
+  rec.geom = ST_LineMerge(ST_Collect(e1rec.geom, e2rec.geom));
+  IF caseno = 1 THEN -- e1.end = e2.start
+    IF NOT ST_Equals(ST_StartPoint(rec.geom), ST_StartPoint(e1rec.geom)) THEN
+      RAISE DEBUG 'caseno=1: LineMerge did not maintain startpoint';
+      rec.geom = ST_Reverse(rec.geom);
+    END IF;
+    rec.end_node = e2rec.end_node;
+    rec.next_left_edge = e2rec.next_left_edge;
+    e2sign = 1;
+  ELSIF caseno = 2 THEN -- e1.end = e2.end
+    IF NOT ST_Equals(ST_StartPoint(rec.geom), ST_StartPoint(e1rec.geom)) THEN
+      RAISE DEBUG 'caseno=2: LineMerge did not maintain startpoint';
+      rec.geom = ST_Reverse(rec.geom);
+    END IF;
+    rec.end_node = e2rec.start_node;
+    rec.next_left_edge = e2rec.next_right_edge;
+    e2sign = -1;
+  ELSIF caseno = 3 THEN -- e1.start = e2.start
+    IF NOT ST_Equals(ST_EndPoint(rec.geom), ST_EndPoint(e1rec.geom)) THEN
+      RAISE DEBUG 'caseno=4: LineMerge did not maintain endpoint';
+      rec.geom = ST_Reverse(rec.geom);
+    END IF;
+    rec.start_node = e2rec.end_node;
+    rec.next_right_edge = e2rec.next_left_edge;
+    e2sign = -1;
+  ELSIF caseno = 4 THEN -- e1.start = e2.end
+    IF NOT ST_Equals(ST_EndPoint(rec.geom), ST_EndPoint(e1rec.geom)) THEN
+      RAISE DEBUG 'caseno=4: LineMerge did not maintain endpoint';
+      rec.geom = ST_Reverse(rec.geom);
+    END IF;
+    rec.start_node = e2rec.start_node;
+    rec.next_right_edge = e2rec.next_right_edge;
+    e2sign = 1;
+  END IF;
+  EXECUTE 'UPDATE ' || quote_ident(toponame)
+    || '.edge_data SET geom = ' || quote_literal(rec.geom::text)
+    || ', start_node = ' || rec.start_node
+    || ', end_node = ' || rec.end_node
+    || ', next_left_edge = ' || rec.next_left_edge
+    || ', abs_next_left_edge = ' || abs(rec.next_left_edge)
+    || ', next_right_edge = ' || rec.next_right_edge
+    || ', abs_next_right_edge = ' || abs(rec.next_right_edge)
+    || ' WHERE edge_id = ' || e1id;
+  -- End of first edge update }
 
-	RAISE EXCEPTION 'Not implemented yet';
+  -- Update next_left_edge/next_right_edge for
+  -- any edge having them still pointing at the edge being removed (e2id)
+  --
+  -- NOTE:
+  -- *(next_XXX_edge/e2id) serves the purpose of extracting existing
+  -- sign from the value, while *e2sign changes that sign again if we
+  -- reverted edge2 direction
+  --
+  sql := 'UPDATE ' || quote_ident(toponame)
+    || '.edge_data SET abs_next_left_edge = ' || e1id
+    || ', next_left_edge = ' || e2sign*e1id
+    || '*(next_left_edge/'
+    || e2id || ')  WHERE abs_next_left_edge = ' || e2id;
+  --RAISE DEBUG 'SQL: %', sql;
+  EXECUTE sql;
+  sql := 'UPDATE ' || quote_ident(toponame)
+    || '.edge_data SET abs_next_right_edge = ' || e1id
+    || ', next_right_edge = ' || e2sign*e1id
+    || '*(next_right_edge/'
+    || e2id || ') WHERE abs_next_right_edge = ' || e2id;
+  --RAISE DEBUG 'SQL: %', sql;
+  EXECUTE sql;
+
+  -- Delete the second edge
+  EXECUTE 'DELETE FROM ' || quote_ident(toponame)
+    || '.edge_data WHERE edge_id = ' || e2id;
+
+  -- Delete the common node 
+  BEGIN
+    EXECUTE 'DELETE FROM ' || quote_ident(toponame)
+            || '.node WHERE node_id = ' || commonnode;
+    EXCEPTION
+      WHEN UNDEFINED_TABLE THEN
+        RAISE EXCEPTION 'Invalid topology "%" (missing node table)',
+          toponame;
+  END;
+
+	RETURN commonnode;
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE;
