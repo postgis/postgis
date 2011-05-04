@@ -1647,7 +1647,57 @@ SELECT topology.ST_ModEdgeSplit('ma_topo',  3, ST_SetSRID(ST_Point(227594,893910
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="AddEdge"/></para>
+				<para>
+				<xref linkend="ST_NewEdgesSplit"/>
+				<xref linkend="ST_ModEdgeHeal"/>
+				<xref linkend="AddEdge"/>
+				</para>
+			</refsection>
+		</refentry>
+
+		<refentry id="ST_ModEdgeHeal">
+			<refnamediv>
+				<refname>ST_ModEdgeHeal</refname>
+			
+				<refpurpose>
+Heal two edges by deleting the node connecting them, modifying the first edge
+and deleting the second edge.
+				</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>text <function>ST_ModEdgeHeal</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>anotheredge</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>
+Heal two edges by deleting the node connecting them, modifying the first edge
+and deleting the second edge.
+		</para>
+              
+			
+                <!-- use this format if new function -->
+                <para>Availability: 2.0</para>
+                <para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X.3.9</para>
+			</refsection>
+		
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para>
+				<xref linkend="ST_ModEdgeSplit"/>
+				<xref linkend="ST_NewEdgesSplit"/>
+				</para>
 			</refsection>
 		</refentry>
 		
@@ -1755,7 +1805,11 @@ SELECT topology.ST_NewEdgesSplit('ma_topo', 2,  ST_GeomFromText('POINT(227578.5 
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="AddEdge"/></para>
+				<para>
+				<xref linkend="ST_ModEdgeSplit"/>
+				<xref linkend="ST_ModEdgeHeal"/>
+				<xref linkend="AddEdge"/>
+				</para>
 			</refsection>
 		</refentry>
 		
