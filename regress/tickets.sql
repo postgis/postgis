@@ -279,6 +279,8 @@ SELECT '#457.7', st_astext(st_collectionExtract('POLYGON((0 0, 1 0, 1 1, 0 1, 0 
 SELECT '#457.8', st_astext(st_collectionExtract('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))', 2));
 SELECT '#457.9', st_astext(st_collectionExtract('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))', 3));
 
+-- #650 --
+SELECT '#650', ST_AsText(ST_Collect(ARRAY[ST_MakePoint(0,0), ST_MakePoint(1,1), null, ST_MakePoint(2,2)]));
 
 -- #845
 SELECT '#845', ST_Intersects('POINT(169.69960846592 -46.5061209281002)'::geometry, 'POLYGON((169.699607857174 -46.5061218662,169.699607857174 -46.5061195965597,169.699608806526 -46.5061195965597,169.699608806526 -46.5061218662,169.699607857174 -46.5061218662))'::geometry);

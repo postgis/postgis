@@ -72,4 +72,5 @@ NOTICE:  No points in input array
 #457.7|
 #457.8|
 #457.9|POLYGON((0 0,1 0,1 1,0 1,0 0))
+#650|MULTIPOINT(0 0,1 1,2 2)
 #845|t
