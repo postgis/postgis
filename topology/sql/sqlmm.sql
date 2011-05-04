@@ -323,15 +323,20 @@ BEGIN
 
 	--
   -- NOT IN THE SPECS:
-	-- Update references in the Relation table.
-	-- We only take into considerations non-hierarchical
-	-- TopoGeometry here, for obvious reasons.
-	--
-  -- Now we can safely drop composition rows involving second
-  -- edge, as the first edge took its space.
+  -- Drop composition rows involving second
+  -- edge, as the first edge took its space,
+  -- and all affected TopoGeom have been previously checked
+  -- for being composed by both edges.
+  sql := 'DELETE FROM ' || quote_ident(toponame)
+    || '.relation r USING topology.layer l '
+    || 'WHERE l.level = 0 AND l.feature_type = 2'
+    || ' AND l.topology_id = ' || topoid
+    || ' AND l.layer_id = r.layer_id AND abs(r.element_id) = '
+    || e2id;
+  --RAISE DEBUG 'SQL: %', sql;
+  EXECUTE sql;
 
-
-	RETURN commonnode;
+  RETURN commonnode;
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE;

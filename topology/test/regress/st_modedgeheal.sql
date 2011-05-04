@@ -78,27 +78,29 @@ SELECT 'MH(2,1)', topology.ST_ModEdgeHeal('t', 2, 1);
 
 -- Now see how signed edges are updated
 
---SELECT 'E'||topology.AddEdge('t', 'LINESTRING(0 0, 5 0)');         -- 3
---SELECT 'E'||topology.AddEdge('t', 'LINESTRING(10 0, 5 0)');        -- 4
---
---INSERT INTO t.f VALUES ('F+E3-E4',
---  topology.CreateTopoGeom('t', 2, 1, '{{3,2},{-4,2}}')); 
---INSERT INTO t.f VALUES ('F-E3+E4',
---  topology.CreateTopoGeom('t', 2, 1, '{{-3,2},{4,2}}')); 
---
---SELECT r.topogeo_id, r.element_id
---  FROM t.relation r, t.f f WHERE 
---  r.layer_id = layer_id(f.g) AND r.topogeo_id = id(f.g)
---  ORDER BY r.layer_id, r.topogeo_id;
---
----- This is fine, but will have to tweak definition of
----- 'F+E3-E4' and 'F-E3+E4'
---SELECT 'MH(3,4)', topology.ST_ModEdgeHeal('t', 3, 4);
---
---SELECT r.topogeo_id, r.element_id
---  FROM t.relation r, t.f f WHERE 
---  r.layer_id = layer_id(f.g) AND r.topogeo_id = id(f.g)
---  ORDER BY r.layer_id, r.topogeo_id;
+SELECT 'E'||topology.AddEdge('t', 'LINESTRING(0 0, 5 0)');         -- 3
+SELECT 'E'||topology.AddEdge('t', 'LINESTRING(10 0, 5 0)');        -- 4
+
+INSERT INTO t.f VALUES ('F+E3-E4',
+  topology.CreateTopoGeom('t', 2, 1, '{{3,2},{-4,2}}')); 
+INSERT INTO t.f VALUES ('F-E3+E4',
+  topology.CreateTopoGeom('t', 2, 1, '{{-3,2},{4,2}}')); 
+
+SELECT r.topogeo_id, r.element_id
+  FROM t.relation r, t.f f WHERE 
+  r.layer_id = layer_id(f.g) AND r.topogeo_id = id(f.g)
+  AND r.topogeo_id in (2,3)
+  ORDER BY r.layer_id, r.topogeo_id;
+
+-- This is fine, but will have to tweak definition of
+-- 'F+E3-E4' and 'F-E3+E4'
+SELECT 'MH(3,4)', topology.ST_ModEdgeHeal('t', 3, 4);
+
+SELECT r.topogeo_id, r.element_id
+  FROM t.relation r, t.f f WHERE 
+  r.layer_id = layer_id(f.g) AND r.topogeo_id = id(f.g)
+  AND r.topogeo_id in (2,3)
+  ORDER BY r.layer_id, r.topogeo_id;
 
 SELECT topology.DropTopology('t');
 
