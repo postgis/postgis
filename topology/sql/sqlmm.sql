@@ -168,11 +168,9 @@ BEGIN
     || ' AND l.topology_id = ' || topoid
     || ' AND abs(r.element_id) IN (' || e1id || ',' || e2id || ') '
     || 'group by r.topogeo_id, r.layer_id, l.schema_name, l.table_name, '
-    || ' l.feature_column ) t WHERE t.elems && '
-    || quote_literal(eidary) 
-    || ' AND NOT t.elems @> '
+    || ' l.feature_column ) t WHERE NOT t.elems @> '
     || quote_literal(eidary);
-  RAISE DEBUG 'SQL: %', sql;
+  --RAISE DEBUG 'SQL: %', sql;
   FOR rec IN EXECUTE sql LOOP
     RAISE EXCEPTION 'TopoGeom % in layer % (%.%.%) cannot be represented healing edges % and %',
           rec.topogeo_id, rec.layer_id,
@@ -329,7 +327,6 @@ BEGIN
 	-- We only take into considerations non-hierarchical
 	-- TopoGeometry here, for obvious reasons.
 	--
-
   -- Now we can safely drop composition rows involving second
   -- edge, as the first edge took its space.
 

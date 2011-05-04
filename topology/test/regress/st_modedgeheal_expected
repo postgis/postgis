@@ -101,3 +101,10 @@ N20
 N21
 N22
 Topology 'city_data' dropped
+t
+1
+E1
+E2
+ERROR:  TopoGeom 1 in layer 1 (t.f.g) cannot be represented healing edges 1 and 2
+ERROR:  TopoGeom 1 in layer 1 (t.f.g) cannot be represented healing edges 2 and 1
+Topology 't' dropped
