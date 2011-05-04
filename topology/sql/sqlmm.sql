@@ -102,6 +102,104 @@ $$
 LANGUAGE 'plpgsql' VOLATILE;
 --} ST_GetFaceEdges
 
+--{
+-- Topo-Geo and Topo-Net 3: Routine Details
+-- X.3.11
+--
+--  ST_ModEdgeHeal(atopology, anedge, anotheredge)
+--
+-- Not in the specs:
+-- * Returns the id of the node being removed
+-- * Refuses to heal two edges if any of the two is closed 
+-- * Raise an exception when trying to heal an edge with itself
+-- 
+CREATE OR REPLACE FUNCTION topology.ST_ModEdgeHeal(toponame varchar, e1id integer, e2id integer)
+  RETURNS int
+AS
+$$
+DECLARE
+  e1rec RECORD;
+  e2rec RECORD;
+  rec RECORD;
+  commonnode int;
+  caseno int;
+  sql text;
+BEGIN
+  --
+  -- toponame and face_id are required
+  -- 
+  IF toponame IS NULL OR e1id IS NULL OR e2id IS NULL THEN
+    RAISE EXCEPTION 'SQL/MM Spatial exception - null argument';
+  END IF;
+
+  -- NOT IN THE SPECS: see if the same edge is given twice..
+  IF e1id = e2id THEN
+    RAISE EXCEPTION 'Cannot heal edge % with itself, try with another', e1id;
+  END IF;
+
+  BEGIN
+    EXECUTE 'SELECT * FROM ' || quote_ident(toponame)
+      || '.edge_data WHERE edge_id = ' || e1id
+      INTO STRICT e1rec;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        RAISE EXCEPTION 'SQL/MM Spatial exception – non-existent edge %', e1id;
+  END;
+
+  BEGIN
+    EXECUTE 'SELECT * FROM ' || quote_ident(toponame)
+      || '.edge_data WHERE edge_id = ' || e2id
+      INTO STRICT e2rec;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        RAISE EXCEPTION 'SQL/MM Spatial exception – non-existent edge %', e2id;
+  END;
+
+  -- NOT IN THE SPECS: See if any of the two edges are closed.
+  IF e1rec.start_node = e1rec.end_node THEN
+    RAISE EXCEPTION 'Edge % is closed, cannot heal to edge %', e1id, e2id;
+  END IF;
+  IF e2rec.start_node = e2rec.end_node THEN
+    RAISE EXCEPTION 'Edge % is closed, cannot heal to edge %', e2id, e1id;
+  END IF;
+
+  -- Find common node
+  IF e1rec.end_node = e2rec.start_node THEN
+    commonnode = e1rec.end_node;
+    caseno = 1;
+  ELSIF e1rec.end_node = e2rec.end_node THEN
+    commonnode = e1rec.end_node;
+    caseno = 2;
+  ELSIF e1rec.start_node = e2rec.start_node THEN
+    commonnode = e1rec.start_node;
+    caseno = 3;
+  ELSIF e1rec.start_node = e2rec.end_node THEN
+    commonnode = e1rec.start_node;
+    caseno = 4;
+  ELSE
+    RAISE EXCEPTION 'SQL/MM Spatial exception – non-connected edges';
+  END IF;
+
+  -- Check if any other edge is connected to the common node
+  FOR rec IN EXECUTE 'SELECT edge_id FROM ' || quote_ident(toponame)
+    || '.edge_data WHERE ( edge_id != ' || e1id
+    || ' AND edge_id != ' || e2id || ') AND ( start_node = 2 OR end_node = 2 )'
+  LOOP
+    RAISE EXCEPTION
+      'SQL/MM Spatial exception – other edges connected (ie: %)', rec.edge_id;
+  END LOOP;
+
+  -- Now: delete the common node (expect panic!)
+  EXECUTE 'DELETE FROM ' || quote_ident(toponame)
+          || '.node WHERE node_id = ' || commonnode;
+  
+
+	RAISE EXCEPTION 'Not implemented yet';
+END
+$$
+LANGUAGE 'plpgsql' VOLATILE;
+--} ST_ModEdgeHeal
+
 
 --{
 -- Topo-Geo and Topo-Net 3: Routine Details

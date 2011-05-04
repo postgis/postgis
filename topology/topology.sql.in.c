@@ -152,10 +152,13 @@
 --	TODO: add entries to the History table ?
 --
 --   ST_AddEdgeNewFaces
---	Being working on. TODO: continue
+--    Being working on. TODO: continue
 --  
 --   ST_GetFaceEdges
 --  	Complete
+--
+--   ST_ModEdgeHeal
+--    Being working on. TODO: continue
 --  
 --   ST_GetFaceGeometry
 --  	Implemented using polygonize()
