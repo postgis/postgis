@@ -873,15 +873,17 @@ output_wkb_polygon_ring_collection(uchar* geom,outwkbfunc func)
 	int cnt;
 	int orig_cnt;
 
-	first_point = lwalloc(dims * sizeof(double));
-	last_point = lwalloc(dims * sizeof(double));
-
 	cnt = read_int(&geom);
 	orig_cnt = cnt;
 
 	LWDEBUGF(2, "output_wkb_polygon_ring_collection: %d iterations loop", cnt);
 
 	write_wkb_int(cnt);
+
+	if ( ! cnt ) return geom;
+
+	first_point = lwalloc(dims * sizeof(double));
+	last_point = lwalloc(dims * sizeof(double));
 
 	/* Store the first point of the ring (use a temp var since read_double alters
 	   the pointer after use) */
