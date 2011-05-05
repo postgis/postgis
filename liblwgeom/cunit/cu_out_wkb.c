@@ -48,6 +48,16 @@ static int clean_wkb_out_suite(void)
 	return 0;
 }
 
+static void cu_wkb_out_from_hexwkb(char *hexwkb)
+{
+	LWGEOM *g = lwgeom_from_hexwkb(hexwkb, PARSER_CHECK_NONE);
+	if ( s ) free(s);
+	if ( t ) free(t);
+	s = lwgeom_to_wkb(g, WKB_HEX | WKB_XDR | WKB_EXTENDED, NULL);
+	t = lwgeom_to_hexwkb_old(g, PARSER_CHECK_NONE, XDR);
+	lwgeom_free(g);
+}
+
 static void cu_wkb_out(char *wkt)
 {
 	LWGEOM *g = lwgeom_from_ewkt(wkt, PARSER_CHECK_NONE);
@@ -96,6 +106,13 @@ static void test_wkb_out_polygon(void)
 
 	cu_wkb_out("POLYGON EMPTY");
 //	printf("new: %s\nold: %s\n",s,t);
+	CU_ASSERT_STRING_EQUAL(s, t);
+
+	/*
+	 * POLYGON with EMPTY shell
+	 * See http://http://trac.osgeo.org/postgis/ticket/937
+	 */
+	cu_wkb_out_from_hexwkb("01030000000100000000000000");
 	CU_ASSERT_STRING_EQUAL(s, t);
 }
 
