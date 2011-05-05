@@ -60,6 +60,7 @@ raster/test/core/testapi
 raster/test/core/testwkb
 raster/test/Makefile
 raster/test/regress/Makefile
+raster/test/regress/rtpostgis.sql
 regress/00-regress-install/
 regress/Makefile
 regress/postgis.sql
