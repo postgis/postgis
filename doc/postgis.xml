@@ -125,6 +125,10 @@
       objects to be stored in the database. PostGIS includes support for
       GiST-based R-Tree spatial indexes, and functions for analysis and
       processing of GIS objects.</para>
+      
+      <para><inlinemediaobject><imageobject><imagedata fileref='images/PostGIS_logo.png' /></imageobject></inlinemediaobject>
+            <inlinemediaobject><imageobject><imagedata fileref='images/osgeo_logo.png' /></imageobject></inlinemediaobject>     
+      </para>
       <para>This is the manual for version &last_release_version;</para>
     </abstract>
   </bookinfo>
