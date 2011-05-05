@@ -47,7 +47,7 @@
       </question>
 
       <answer>
-        <para>PgAdmin doesn't show anything for large geometries.  The best ways to verify you do have day in your geometry columns are?</para>
+        <para>PgAdmin doesn't show anything for large geometries.  The best ways to verify you do have data in your geometry columns are?</para>
         
         
         <programlisting>-- this should return no records if all your geom fields are filled in        
@@ -66,11 +66,13 @@ SELECT MAX(ST_NPoints(geom)) FROM sometable;</programlisting>
 
       <answer>
         <para>You can store point, line, polygon, multipoint, multiline,
-        multipolygon, and geometrycollections. These are specified in the Open
-        GIS Well Known Text Format (with XYZ,XYM,XYZM extensions).  There are two data types currently supported.
-		The standard OGC geometry data type which uses a planar coordinate system for measurement and the 
-		geography data type which uses a geodetic coordinate system.  Only WGS 84 long lat (SRID:4326) is supported
-		by the geography data type.</para>
+        multipolygon, and geometrycollections. In PostGIS 2.0 and above you can also store TINS and Polyhedral Surfaces in the basic geometry type.
+        These are specified in the Open
+        GIS Well Known Text Format (with XYZ,XYM,XYZM extensions).  There are three data types currently supported.
+		The standard OGC geometry data type which uses a planar coordinate system for measurement, the 
+		geography data type which uses a geodetic coordinate system (not OGC, but you'll find a similar type in Microsoft SQL Server 2008+).  Only WGS 84 long lat (SRID:4326) is supported
+		by the geography data type.  The newest family member of the PostGIS spatial type family is raster for storing and analyzing raster data. Raster has its very own FAQ. Refer to <xref linkend="RT_FAQ"/>
+		and <xref linkend="RT_reference" /> for more details.</para>
       </answer>
     </qandaentry>
 	
