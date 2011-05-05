@@ -2,7 +2,7 @@
 <chapter>
   <title>Introduction</title>
 
-  <para>PostGIS is developed by Refractions Research Inc, as a spatial
+  <para>PostGIS was developed by Refractions Research Inc, as a spatial
   database technology research project. Refractions is a GIS and database
   consulting company in Victoria, British Columbia, Canada, specializing in
   data integration and custom software development. We plan on supporting and
@@ -10,6 +10,12 @@
   including full OpenGIS support, advanced topological constructs (coverages,
   surfaces, networks), desktop user interface tools for viewing and editing
   GIS data, and web-based access tools.</para>
+  
+  <para><![CDATA[<inlinemediaobject><imageobject><imagedata fileref='images/osgeo_logo.png' /></imageobject></inlinemediaobject>]]></para>
+  <para>PostGIS is an incubation project of the OSGeo Foundation. PostGIS is being continually improved and funded by many FOSS4G Developers as well
+    as corporations all over the world that gain great benefit from its functionality and versatility.</para>
+  
+  
 
   <sect1 id="psc">
 	<title>Project Steering Committee</title>
