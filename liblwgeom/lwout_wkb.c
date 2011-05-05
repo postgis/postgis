@@ -310,11 +310,6 @@ static size_t ptarray_to_wkb_size(const POINTARRAY *pa, uchar variant)
 {
 	int dims = 2;
 	size_t size = 0;
-#if 0
-/* see http://trac.osgeo.org/postgis/ticket/937 */
-	if ( pa->npoints < 1 )
-		return 0;
-#endif
 
 	if ( variant & (WKB_ISO | WKB_EXTENDED) )
 		dims = FLAGS_NDIMS(pa->flags);
@@ -334,16 +329,6 @@ static uchar* ptarray_to_wkb_buf(const POINTARRAY *pa, uchar *buf, uchar variant
 	int dims = 2;
 	int i, j;
 	double *dbl_ptr;
-
-#if 0
-/* see http://trac.osgeo.org/postgis/ticket/937 */
-	/* Nothing to do with a pointarray with no ordinates */
-	if ( pa->npoints < 1 )
-	{
-		lwnotice("Point array has < 1 ordinates!");
-		return buf;
-	}
-#endif
 
 	/* SFSQL is always 2-d. Extended and ISO use all available dimensions */
 	if ( (variant & WKB_ISO) || (variant & WKB_EXTENDED) )
