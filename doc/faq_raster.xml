@@ -23,9 +23,9 @@
         <para>There is a full length beginner tutorial <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRasterTutorial01"> Intersecting vector buffers with large raster coverage using PostGIS Raster</ulink>.
         Jorge has a series of blog articles on PostGIS Raster that demonstrate how to load raster data as well as cross compare to same tasks in Oracle GeoRaster. Check out
             <ulink url="http://gis4free.wordpress.com/category/postgis-raster/">Jorge's PostGIS Raster / Oracle GeoRaster Series</ulink>.
-        There is a whole chapter (more than 35 pages of content) dedicated to Raster with free code and data downloads at <ulink url="http://www.postgis.us/chapter_13">PostGIS in Action - Raster chapter</ulink>.
-        You can <ulink url="http://www.postgis.us/page_buy_book">buy PostGIS in Action</ulink>  now from Manning and get all draft chapters NOW and as they are revised (note: all chapters are completed but undergoing revision) and completed book once out.  
-        You can also buy from Amazon now at a significant discount and lock in lowest price sold before publication, but have to wait for the book to come out to receive your copy.
+        There is a whole chapter (more than 35 pages of content) dedicated to PostGIS Raster with free code and data downloads at <ulink url="http://www.postgis.us/chapter_13">PostGIS in Action - Raster chapter</ulink>.
+        You can <ulink url="http://www.postgis.us/page_buy_book">buy PostGIS in Action</ulink>  now from Manning in hard-copy (significant discounts for bulk purchases) or just the E-book format. 
+        You can also buy from Amazon and various other book distributors. All hard-copy books come with a free coupon to download the E-book version.
         </para>
         <para>Here is a review from a PostGIS Raster user <ulink url="http://fuzzytolerance.info/code/postgis-raster-ftw/">PostGIS raster applied to land classification urban forestry</ulink></para>
       </answer>
