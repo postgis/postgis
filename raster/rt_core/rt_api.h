@@ -82,8 +82,6 @@
 #endif
 #endif
 
-
-
 #include <stdlib.h> /* For size_t */
 #include <stdint.h> /* For C99 int types */
 
@@ -95,19 +93,93 @@
 #include "ogr_api.h"
 #include "../../postgis_config.h"
 
+/**
+ * @file rt_api.h
+ *
+ * This library is the generic raster handling section of PostGIS. The raster
+ * objects, constructors, destructors, and a set of spatial processing functions
+ * are implemented here.
+ * 
+ * The library is designed for use in non-PostGIS applications if necessary. The
+ * units tests at test/core (and the future loader/dumper programs) are examples
+ * of non-PostGIS applications using rt_core.
+ *
+ * Programs using this library should set up the default memory managers and error
+ * handlers by implementing an rt_init_allocators() function, which can be as
+ * a wrapper around the rt_install_default_allocators() function if you want
+ * no special handling for memory management and error reporting.
+ *
+ **/
 
-typedef struct rt_context_t* rt_context;
+
+/**
+ * Types definitions
+ */
 typedef struct rt_raster_t* rt_raster;
 typedef struct rt_band_t* rt_band;
 typedef struct rt_geomval_t* rt_geomval;
-
-
-/*- rt_context -------------------------------------------------------*/
-
+ 
+/**
+* Global functions for memory/logging handlers.
+*/
 typedef void* (*rt_allocator)(size_t size);
 typedef void* (*rt_reallocator)(void *mem, size_t size);
 typedef void  (*rt_deallocator)(void *mem);
-typedef void  (*rt_message_handler)(const char* string, ...);
+typedef void  (*rt_message_handler)(const char* string, va_list ap);
+
+/****************************************************************************
+ * Functions that must be implemented for the raster core function's caller
+ * (for example: rt_pg functions, test functions, future loader/exporter)
+ ****************************************************************************/
+
+/**
+ * Supply the memory management and error handling functions you want your
+ * application to use
+ */
+extern void rt_init_allocators(void);
+
+/*********************************************************************/
+
+
+/*******************************************************************
+ * Functions that may be used by the raster core function's caller
+ * (for example: rt_pg functions, test functions, future loader/exporter)
+ *******************************************************************/
+/**
+ * Apply the default memory management (malloc() and free()) and error handlers.
+ * Called inside rt_init_allocators() generally.
+ */
+extern void rt_install_default_allocators(void);
+
+
+/**
+ * Wrappers used for managing memory. They simply call the functions defined by 
+ * the caller
+ **/
+extern void* rtalloc(size_t size);
+extern void* rtrealloc(void* mem, size_t size);
+extern void rtdealloc(void* mem);
+
+/******************************************************************/
+
+
+/**
+ * Wrappers used for reporting errors and info.
+ **/
+void rterror(const char *fmt, ...);
+void rtinfo(const char *fmt, ...);
+void rtwarn(const char *fmt, ...);
+
+
+/**
+* The default memory/logging handlers installed by lwgeom_install_default_allocators()
+*/
+void * default_rt_allocator(size_t size);
+void * default_rt_reallocator(void * mem, size_t size);
+void default_rt_deallocator(void * mem);
+void default_rt_error_handler(const char * fmt, va_list ap);
+void default_rt_warning_handler(const char * fmt, va_list ap);
+void default_rt_info_handler(const char * fmt, va_list ap);
 
 
 /* Debugging macros */
@@ -117,14 +189,14 @@ typedef void  (*rt_message_handler)(const char* string, ...);
 #define RASTER_DEBUG(level, msg) \
     do { \
         if (POSTGIS_DEBUG_LEVEL >= level) \
-            ctx->warn("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__); \
+            rtinfo("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__); \
     } while (0);
 
 /* Display a formatted message at NOTICE level (like printf, with variadic arguments) */
 #define RASTER_DEBUGF(level, msg, ...) \
     do { \
         if (POSTGIS_DEBUG_LEVEL >= level) \
-        ctx->warn("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__, __VA_ARGS__); \
+            rtinfo("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__, __VA_ARGS__); \
     } while (0);
 
 #else
@@ -139,26 +211,14 @@ typedef void  (*rt_message_handler)(const char* string, ...);
 
 #endif
 
+
 /*- memory context -------------------------------------------------------*/
 
-/* Initialize a context object
- * @param allocator memory allocator to use, 0 to use malloc
- * @param reallocator memory reallocator to use, 0 to use realloc
- * @param deallocator memory deallocator to use, 0 to use free
- * @return an opaque rt_context, or 0 on failure (out of memory)
- */
-rt_context rt_context_new(rt_allocator allocator,
-                          rt_reallocator reallocator,
-                          rt_deallocator deallocator);
+void rt_set_handlers(rt_allocator allocator, rt_reallocator reallocator,
+        rt_deallocator deallocator, rt_message_handler error_handler, 
+        rt_message_handler info_handler, rt_message_handler warning_handler);
 
-/* Destroy context */
-void rt_context_destroy(rt_context ctx);
 
-/* Set message handlers */
-void rt_context_set_message_handlers(rt_context ctx,
-                                    rt_message_handler error_handler,
-                                    rt_message_handler warning_handler,
-                                    rt_message_handler info_handler);
 
 /*- rt_pixtype --------------------------------------------------------*/
 
@@ -181,27 +241,26 @@ typedef enum {
 /**
  * Return size in bytes of a value in the given pixtype
  */
-int rt_pixtype_size(rt_context ctx, rt_pixtype pixtype);
+int rt_pixtype_size(rt_pixtype pixtype);
 
 /**
  * Return alignment requirements for data in the given pixel type.
  * Fast access to pixel values of this type must be aligned to as
  * many bytes as returned by this function.
  */
-int rt_pixtype_alignment(rt_context ctx, rt_pixtype pixtype);
+int rt_pixtype_alignment(rt_pixtype pixtype);
 
 /* Return human-readable name of pixel type */
-const char* rt_pixtype_name(rt_context ctx, rt_pixtype pixtype);
+const char* rt_pixtype_name(rt_pixtype pixtype);
 
 /* Return pixel type index from human-readable name */
-rt_pixtype rt_pixtype_index_from_name(rt_context ctx, const char* pixname);
+rt_pixtype rt_pixtype_index_from_name(const char* pixname);
 
 /*- rt_band ----------------------------------------------------------*/
 
 /**
  * Create an in-buffer rt_band with no data
  *
- * @param ctx       : context, for thread safety
  * @param width     : number of pixel columns
  * @param height    : number of pixel rows
  * @param pixtype   : pixel type for the band
@@ -219,15 +278,13 @@ rt_pixtype rt_pixtype_index_from_name(rt_context ctx, const char* pixname);
  *
  * @return an rt_band, or 0 on failure
  */
-rt_band rt_band_new_inline(rt_context ctx,
-                           uint16_t width, uint16_t height,
+rt_band rt_band_new_inline(uint16_t width, uint16_t height,
                            rt_pixtype pixtype, uint32_t hasnodata,
                            double nodataval, uint8_t* data);
 
 /**
  * Create an on-disk rt_band
  *
- * @param ctx       : context, for thread safety
  * @param width     : number of pixel columns
  * @param height    : number of pixel rows
  * @param pixtype   : pixel type for the band
@@ -243,8 +300,7 @@ rt_band rt_band_new_inline(rt_context ctx,
  *
  * @return an rt_band, or 0 on failure
  */
-rt_band rt_band_new_offline(rt_context ctx,
-                            uint16_t width, uint16_t height,
+rt_band rt_band_new_offline(uint16_t width, uint16_t height,
                             rt_pixtype pixtype, uint32_t hasnodata,
                             double nodataval, uint8_t bandNum, const char* path);
 
@@ -252,79 +308,73 @@ rt_band rt_band_new_offline(rt_context ctx,
  * Return non-zero if the given band data is on
  * the filesystem.
  *
- * @param ctx : context, for thread safety
  * @param band : the band
  *
  * @return non-zero if the given band data is on
  *         the filesystem.
  */
-int rt_band_is_offline(rt_context ctx, rt_band band);
+int rt_band_is_offline(rt_band band);
 
 /**
  * Return bands' external path (only valid when rt_band_is_offline
  * returns non-zero).
  */
-const char* rt_band_get_ext_path(rt_context ctx, rt_band band);
+const char* rt_band_get_ext_path(rt_band band);
 
 /**
  * Return bands' external band number (only valid when
  * rt_band_is_offline returns non-zero).
  */
-uint8_t rt_band_get_ext_band_num(rt_context ctx, rt_band band);
+uint8_t rt_band_get_ext_band_num(rt_band band);
 
 
 /* Get pixeltype of this band */
-rt_pixtype rt_band_get_pixtype(rt_context ctx, rt_band band);
+rt_pixtype rt_band_get_pixtype(rt_band band);
 
 /* Get width of this band */
-uint16_t rt_band_get_width(rt_context ctx, rt_band band);
+uint16_t rt_band_get_width(rt_band band);
 
 /* Get height of this band */
-uint16_t rt_band_get_height(rt_context ctx, rt_band band);
+uint16_t rt_band_get_height(rt_band band);
 
 /* Get pointer to inline raster band data
  * @@deprecate ?
  */
-void* rt_band_get_data(rt_context ctx, rt_band band);
+void* rt_band_get_data(rt_band band);
 
 /* Destroy a raster band */
-void rt_band_destroy(rt_context ctx, rt_band band);
+void rt_band_destroy(rt_band band);
 
 /**
  * Get hasnodata flag value
- * @param ctx : context, for thread safety
  * @param band : the band on which to check the hasnodata flag
  * @return the hasnodata flag.
  */
-int rt_band_get_hasnodata_flag(rt_context ctx, rt_band band);
+int rt_band_get_hasnodata_flag(rt_band band);
 
 /**
  * Set hasnodata flag value
- * @param ctx : context, for thread safety
  * @param band : the band on which to set the hasnodata flag
  * @param flag : the new hasnodata flag value. Must be 1 or 0.
  */
-void rt_band_set_hasnodata_flag(rt_context ctx, rt_band band, int flag);
+void rt_band_set_hasnodata_flag(rt_band band, int flag);
 
 /**
  * Set isnodata flag value
- * @param ctx : context, for thread safety
  * @param band : the band on which to set the isnodata flag
  * @param flag : the new isnodata flag value. Must be 1 or 0
  */
-void rt_band_set_isnodata_flag(rt_context ctx, rt_band band, int flag);
+void rt_band_set_isnodata_flag(rt_band band, int flag);
 
 /**
  * Get hasnodata flag value
- * @param ctx : context, for thread safety
  * @param band : the band on which to check the isnodata flag
  * @return the hasnodata flag.
  */
-int rt_band_get_isnodata_flag(rt_context ctx, rt_band band);
+int rt_band_get_isnodata_flag(rt_band band);
 
 /**
  * Set nodata value
- * @param ctx : context, for thread safety
  * @param band : the band to set nodata value to
  * @param val : the nodata value, must be in the range
  *              of values supported by this band's pixeltype
@@ -334,19 +384,17 @@ int rt_band_get_isnodata_flag(rt_context ctx, rt_band band);
  * @return 0 on success, -1 on error (value out of valid range).
  *
  */
-int rt_band_set_nodata(rt_context ctx, rt_band band, double val);
+int rt_band_set_nodata(rt_band band, double val);
 
 /**
  * Get nodata value
- * @param ctx : context, for thread safety
  * @param band : the band to set nodata value to
  * @return nodata value
  */
-double rt_band_get_nodata(rt_context ctx, rt_band band);
+double rt_band_get_nodata(rt_band band);
 
 /**
  * Set pixel value
- * @param ctx : context, for thread safety
  * @param band : the band to set nodata value to
  * @param x : x ordinate
  * @param y : x ordinate
@@ -357,46 +405,42 @@ double rt_band_get_nodata(rt_context ctx, rt_band band);
  *
  * @return 0 on success, -1 on error (value out of valid range).
  */
-int rt_band_set_pixel(rt_context ctx, rt_band band,
+int rt_band_set_pixel(rt_band band,
                       uint16_t x, uint16_t y, double val);
 
 /**
  * Get pixel value
  *
- * @param ctx : context, for thread safety
  * @param band : the band to set nodata value to
  * @param x : x ordinate
  * @param y : x ordinate
  * @param *result: result if there is a value
  * @return the pixel value, as a double.
  */
-int rt_band_get_pixel(rt_context ctx, rt_band band,
+int rt_band_get_pixel(rt_band band,
                          uint16_t x, uint16_t y, double *result );
 
 
 /**
  * Returns the minimal possible value for the band according to the pixel type.
- * @param ctx: context, for thread safety
  * @param band: the band to get info from
  * @return the minimal possible value for the band.
  */
-double rt_band_get_min_value(rt_context ctx, rt_band band);
+double rt_band_get_min_value(rt_band band);
 
 /**
  * Returns TRUE if the band is only nodata values
- * @param ctx: context, for thread safety
  * @param band: the band to get info from
  * @return TRUE if the band is only nodata values, FALSE otherwise
  */
-int rt_band_is_nodata(rt_context ctx, rt_band band);
+int rt_band_is_nodata(rt_band band);
 
 /**
  * Returns TRUE if the band is only nodata values
- * @param ctx: context, for thread safety
  * @param band: the band to get info from
  * @return TRUE if the band is only nodata values, FALSE otherwise
  */
-int rt_band_check_is_nodata(rt_context ctx, rt_band band);
+int rt_band_check_is_nodata(rt_band band);
 
 
 
@@ -408,18 +452,16 @@ int rt_band_check_is_nodata(rt_context ctx, rt_band band);
  * Transform will be set to identity.
  * Will contain no bands.
  *
- * @param ctx : context, for thread safety
  * @param width : number of pixel columns
  * @param height : number of pixel rows
  *
  * @return an rt_raster or 0 if out of memory
  */
-rt_raster rt_raster_new(rt_context ctx, uint16_t width, uint16_t height);
+rt_raster rt_raster_new(uint16_t width, uint16_t height);
 
 /**
  * Construct an rt_raster from a binary WKB representation
  *
- * @param ctx : context, for thread safety
  * @param wkb : an octet stream
  * @param wkbsize : size (in bytes) of the wkb octet stream
  *
@@ -427,13 +469,12 @@ rt_raster rt_raster_new(rt_context ctx, uint16_t width, uint16_t height);
  *         malformed WKB).
  *
  */
-rt_raster rt_raster_from_wkb(rt_context ctx, const uint8_t* wkb,
+rt_raster rt_raster_from_wkb(const uint8_t* wkb,
                              uint32_t wkbsize);
 
 /**
  * Construct an rt_raster from a text HEXWKB representation
  *
- * @param ctx : context, for thread safety
  * @param hexwkb : an hex-encoded stream
  * @param hexwkbsize : size (in bytes) of the hexwkb stream
  *
@@ -441,28 +482,26 @@ rt_raster rt_raster_from_wkb(rt_context ctx, const uint8_t* wkb,
  *         malformed WKB).
  *
  */
-rt_raster rt_raster_from_hexwkb(rt_context ctx, const char* hexwkb,
+rt_raster rt_raster_from_hexwkb(const char* hexwkb,
                              uint32_t hexwkbsize);
 
 /**
  * Return this raster in WKB form
  *
- * @param ctx : context, for thread safety
  * @param raster : the raster
  * @param wkbsize : will be set to the size of returned wkb form
  */
-uint8_t *rt_raster_to_wkb(rt_context ctx, rt_raster raster,
+uint8_t *rt_raster_to_wkb(rt_raster raster,
                                     uint32_t *wkbsize);
 
 /**
  * Return this raster in HEXWKB form (null-terminated hex)
  *
- * @param ctx : context, for thread safety
  * @param raster : the raster
  * @param hexwkbsize : will be set to the size of returned wkb form,
  *                     not including the null termination
  */
-char *rt_raster_to_hexwkb(rt_context ctx, rt_raster raster,
+char *rt_raster_to_hexwkb(rt_raster raster,
                                     uint32_t *hexwkbsize);
 
 /**
@@ -473,27 +512,26 @@ char *rt_raster_to_hexwkb(rt_context ctx, rt_raster raster,
  * the one associated with the pointers pointing
  * at them).
  *
- * @param ctx : context, for thread safety
+
  * @param raster : the raster to destroy
  */
-void rt_raster_destroy(rt_context ctx, rt_raster raster);
+void rt_raster_destroy(rt_raster raster);
 
 /* Get number of bands */
-int rt_raster_get_num_bands(rt_context ctx, rt_raster raster);
+int rt_raster_get_num_bands(rt_raster raster);
 
 /* Return Nth band, or 0 if unavailable */
-rt_band rt_raster_get_band(rt_context ctx, rt_raster raster, int bandNum);
+rt_band rt_raster_get_band(rt_raster raster, int bandNum);
 
 /* Get number of rows */
-uint16_t rt_raster_get_width(rt_context ctx, rt_raster raster);
+uint16_t rt_raster_get_width(rt_raster raster);
 
 /* Get number of columns */
-uint16_t rt_raster_get_height(rt_context ctx, rt_raster raster);
+uint16_t rt_raster_get_height(rt_raster raster);
 
 /**
  * Add band data to a raster.
  *
- * @param ctx : context, for thread safety
  * @param raster : the raster to add a band to
  * @param band : the band to add, ownership left to caller.
  *               Band dimensions are required to match with raster ones.
@@ -501,14 +539,13 @@ uint16_t rt_raster_get_height(rt_context ctx, rt_raster raster);
  *
  * @return identifier (position) for the just-added raster, or -1 on error
  */
-int32_t rt_raster_add_band(rt_context ctx, rt_raster raster, rt_band band, int index);
+int32_t rt_raster_add_band(rt_raster raster, rt_band band, int index);
 
 
 
 /**
  * Generate a new band data and add it to a raster.
  *
- * @param ctx : context, for thread safety
  * @param raster : the raster to add a band to
  * @param pixtype: the pixel type for the new band
  * @param initialvalue: initial value for pixels
@@ -518,135 +555,123 @@ int32_t rt_raster_add_band(rt_context ctx, rt_raster raster, rt_band band, int i
  *
  * @return identifier (position) for the just-added raster, or -1 on error
  */
-int32_t rt_raster_generate_new_band(rt_context ctx, rt_raster raster, rt_pixtype pixtype,
+int32_t rt_raster_generate_new_band(rt_raster raster, rt_pixtype pixtype,
         double initialvalue, uint32_t hasnodata, double nodatavalue, int index);
 
 /**
  * Set scale in projection units
  *
- * @param ctx : context, for thread safety
  * @param raster : the raster to set georeference of
  * @param scaleX : scale X in projection units
  * @param scaleY : scale Y height in projection units
  *
  * NOTE: doesn't recompute offsets
  */
-void rt_raster_set_scale(rt_context ctx, rt_raster raster,
+void rt_raster_set_scale(rt_raster raster,
                                double scaleX, double scaleY);
 
 /**
  * Get scale X in projection units
  *
- * @param ctx : context, for thread safety
  * @param raster : the raster to get georeference of
  *
  * @return scale X in projection units
  */
-double rt_raster_get_x_scale(rt_context ctx, rt_raster raster);
+double rt_raster_get_x_scale(rt_raster raster);
 
 /**
  * Get scale Y in projection units
  *
- * @param ctx : context, for thread safety
  * @param raster : the raster to get georeference of
  *
  * @return scale Y in projection units
  */
-double rt_raster_get_y_scale(rt_context ctx, rt_raster raster);
+double rt_raster_get_y_scale(rt_raster raster);
 
 /**
  * Set insertion points in projection units
  *
- * @param ctx : context, for thread safety
  * @param raster : the raster to set georeference of
  * @param x : x ordinate of the upper-left corner of upper-left pixel,
  *            in projection units
  * @param y : y ordinate of the upper-left corner of upper-left pixel,
  *            in projection units
  */
-void rt_raster_set_offsets(rt_context ctx, rt_raster raster,
+void rt_raster_set_offsets(rt_raster raster,
                            double x, double y);
 
 /**
  * Get raster x offset, in projection units
  *
- * @param ctx : context, for thread safety
  * @param raster : the raster to get georeference of
  *
  * @return  x ordinate of the upper-left corner of upper-left pixel,
  *          in projection units
  */
-double rt_raster_get_x_offset(rt_context ctx, rt_raster raster);
+double rt_raster_get_x_offset(rt_raster raster);
 
 /**
  * Get raster y offset, in projection units
  *
- * @param ctx : context, for thread safety
  * @param raster : the raster to get georeference of
  *
  * @return  y ordinate of the upper-left corner of upper-left pixel,
  *          in projection units
  */
-double rt_raster_get_y_offset(rt_context ctx, rt_raster raster);
+double rt_raster_get_y_offset(rt_raster raster);
 
 /**
  * Set skews about the X and Y axis
  *
- * @param ctx : context, for thread safety
  * @param raster : the raster to set georeference of
  * @param skewX : skew about the x axis
  * @param skewY : skew about the y axis
  */
-void rt_raster_set_skews(rt_context ctx, rt_raster raster,
+void rt_raster_set_skews(rt_raster raster,
                              double skewX, double skewY);
 
 /**
  * Get skew about the X axis
  *
- * @param ctx : context, for thread safety
  * @param raster : the raster to set georeference of
  * @return skew about the Y axis
  */
-double rt_raster_get_x_skew(rt_context ctx, rt_raster raster);
+double rt_raster_get_x_skew(rt_raster raster);
 
 /**
  * Get skew about the Y axis
  *
- * @param ctx : context, for thread safety
  * @param raster : the raster to set georeference of
  * @return skew about the Y axis
  */
-double rt_raster_get_y_skew(rt_context ctx, rt_raster raster);
+double rt_raster_get_y_skew(rt_raster raster);
 
 /**
  * Set raster's SRID
  *
- * @param ctx : context, for thread safety
  * @param raster : the raster to set SRID of
  * @param srid : the SRID to set for the raster
  */
-void rt_raster_set_srid(rt_context ctx, rt_raster raster, int32_t srid);
+void rt_raster_set_srid(rt_raster raster, int32_t srid);
 
 /**
  * Get raster's SRID
- * @param ctx : context, for thread safety
  * @param raster : the raster to set SRID of
  *
  * @return the raster's SRID
  */
-int32_t rt_raster_get_srid(rt_context ctx, rt_raster raster);
+int32_t rt_raster_get_srid(rt_raster raster);
 
 /**
  * Convert an x,y raster point to an x1,y1 point on map
  *
- * @param ctx : context for thread safety
  * @param raster : the raster to get info from
  * @param x : the pixel's column
  * @param y : the pixel's row
  * @param x1 : output parameter, X ordinate of the geographical point
  * @param y1 : output parameter, Y ordinate of the geographical point
  */
-void rt_raster_cell_to_geopoint(rt_context ctx, rt_raster raster,
+void rt_raster_cell_to_geopoint(rt_raster raster,
                                 double x, double y,
                                 double* x1, double* y1);
 
@@ -657,13 +682,12 @@ void rt_raster_cell_to_geopoint(rt_context ctx, rt_raster raster,
  * ring polygon bearing the raster's rotation
  * and using projection coordinates
  *
- * @param ctx : context for thread safety
  * @param raster : the raster to get info from
  *
  * @return the convex hull, or NULL on error.
  *
  */
-LWPOLY* rt_raster_get_convex_hull(rt_context ctx, rt_raster raster);
+LWPOLY* rt_raster_get_convex_hull(rt_raster raster);
 
 
 /**
@@ -674,7 +698,6 @@ LWPOLY* rt_raster_get_convex_hull(rt_context ctx, rt_raster raster);
  * representation of a geometry (one for each group of pixel sharing
  * the same value) and the value associated with this geometry.
  *
- * @param ctx: context for thread safety.
  * @param raster: the raster to get info from.
  * @param nband: the band to polygonize. From 1 to rt_raster_get_num_bands
  *
@@ -684,7 +707,7 @@ LWPOLY* rt_raster_get_convex_hull(rt_context ctx, rt_raster raster);
  * future, and the function returns real geometries)
  */
 rt_geomval
-rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
+rt_raster_dump_as_wktpolygons(rt_raster raster, int nband,
         int * pnElements);
 
 
@@ -694,7 +717,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
  * Serialized form is documented in doc/RFC1-SerializedFormat.
  *
  */
-void* rt_raster_serialize(rt_context ctx, rt_raster raster);
+void* rt_raster_serialize(rt_raster raster);
 
 /**
  * Return a raster from a serialized form.
@@ -704,40 +727,46 @@ void* rt_raster_serialize(rt_context ctx, rt_raster raster);
  * NOTE: the raster will contain pointer to the serialized
  *       form, which must be kept alive.
  */
-rt_raster rt_raster_deserialize(rt_context ctx, void* serialized);
+rt_raster rt_raster_deserialize(void* serialized);
 
 
 /**
  * Return TRUE if the raster is empty. i.e. is NULL, width = 0 or height = 0
- * @param ctx: context, for thread safety
  * @param raster: the raster to get info from
  * @return TRUE if the raster is empty, FALSE otherwise
  */
-int rt_raster_is_empty(rt_context ctx, rt_raster raster);
+int rt_raster_is_empty(rt_raster raster);
 
 /**
  * Return TRUE if the raster do not have a band of this number.
- * @param ctx: context, for thread safety
  * @param raster: the raster to get info from
  * @param nband: the band number.
  * @return TRUE if the raster do not have a band of this number, FALSE otherwise
  */
-int rt_raster_has_no_band(rt_context ctx, rt_raster raster, int nband);
+int rt_raster_has_no_band(rt_raster raster, int nband);
 
 
 /**
  * Copy one band from one raster to another
- * @param ctx: context, for thread safety
  * @param torast: raster to copy band to
  * @param fromrast: raster to copy band from
  * @param fromindex: index of band in source raster
  * @param toindex: index of new band in destination raster
  * @return The band index of the second raster where the new band is copied.
  */
-int32_t rt_raster_copy_band(rt_context ctx, rt_raster torast,
+int32_t rt_raster_copy_band(rt_raster torast,
         rt_raster fromrast, int fromindex, int toindex);
 
 /*- utilities -------------------------------------------------------*/
+
+/*
+ * rt_core memory functions
+ */
+extern void *rtalloc(size_t size);
+extern void *rtrealloc(void *mem, size_t size);
+extern void rtdealloc(void *mem);
+
+
 
 /* Set of functions to clamp double to int of different size
  */
@@ -777,8 +806,7 @@ float
 rt_util_clamp_to_32F(double value);
 
 int
-rt_util_display_dbl_trunc_warning(rt_context ctx,
-                                  double initialvalue,
+rt_util_display_dbl_trunc_warning(double initialvalue,
                                   int32_t checkvalint,
                                   uint32_t checkvaluint,
                                   float checkvalfloat,

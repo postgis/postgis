@@ -37,6 +37,7 @@
 
 #define POSTGIS_RASTER_WARN_ON_TRUNCATION
 
+
 /*--- Utilities -------------------------------------------------*/
 
 static void
@@ -125,56 +126,91 @@ rt_util_clamp_to_32F(double value) {
     return (float)fmin(fmax((value), -FLT_MAX), FLT_MAX);
 }
 
+
 /*- rt_context -------------------------------------------------------*/
 
-static void
-default_error_handler(const char *fmt, ...) {
-    va_list ap;
+/* Functions definitions */
+void * init_rt_allocator(size_t size);
+void * init_rt_reallocator(void * mem, size_t size);
+void init_rt_deallocator(void * mem);
+void init_rt_errorreporter(const char * fmt, va_list ap);
+void init_rt_warnreporter(const char * fmt, va_list ap);
+void init_rt_inforeporter(const char * fmt, va_list ap);
+
+
+
+/*
+ * Default allocators
+ *
+ * We include some default allocators that use malloc/free/realloc
+ * along with stdout/stderr since this is the most common use case
+ *
+ */
+void *
+default_rt_allocator(size_t size)
+{
+    void *mem = malloc(size);
+    return mem;
+}
+
+void *
+default_rt_reallocator(void *mem, size_t size)
+{
+    void *ret = realloc(mem, size);
+    return ret;
+}
+
+void
+default_rt_deallocator(void *mem)
+{
+    free(mem);
+}
+
+
+void
+default_rt_error_handler(const char *fmt, va_list ap) {
 
     static const char *label = "ERROR: ";
     char newfmt[1024] = {0};
     snprintf(newfmt, 1024, "%s%s\n", label, fmt);
     newfmt[1023] = '\0';
 
-    va_start(ap, fmt);
-
     vprintf(newfmt, ap);
 
     va_end(ap);
 }
-
-static void
-default_warning_handler(const char *fmt, ...) {
-    va_list ap;
-
+	
+void
+default_rt_warning_handler(const char *fmt, va_list ap) {
+	
     static const char *label = "WARNING: ";
     char newfmt[1024] = {0};
     snprintf(newfmt, 1024, "%s%s\n", label, fmt);
     newfmt[1023] = '\0';
-
-    va_start(ap, fmt);
-
+	
     vprintf(newfmt, ap);
-
+	
     va_end(ap);
 }
 
-static void
-default_info_handler(const char *fmt, ...) {
-    va_list ap;
+
+void
+default_rt_info_handler(const char *fmt, va_list ap) {
 
     static const char *label = "INFO: ";
     char newfmt[1024] = {0};
     snprintf(newfmt, 1024, "%s%s\n", label, fmt);
     newfmt[1023] = '\0';
-
-    va_start(ap, fmt);
-
+	
     vprintf(newfmt, ap);
 
     va_end(ap);
 }
 
+
+/**
+ * Struct definition here
+ */
 struct rt_context_t {
     rt_allocator alloc;
     rt_reallocator realloc;
@@ -184,70 +220,200 @@ struct rt_context_t {
     rt_message_handler info;
 };
 
-rt_context
-rt_context_new(rt_allocator allocator, rt_reallocator reallocator,
-        rt_deallocator deallocator) {
-    rt_context ret;
+/* Static variable, to be used for all rt_core functions */
+static struct rt_context_t ctx_t = {
+    .alloc = init_rt_allocator,
+    .realloc = init_rt_reallocator,
+    .dealloc = init_rt_deallocator,
+    .err = init_rt_errorreporter,
+    .warn = init_rt_warnreporter,
+    .info = init_rt_inforeporter
+};
 
-    if (!allocator) allocator = malloc;
-    if (!reallocator) reallocator = realloc;
-    if (!deallocator) deallocator = free;
 
-    ret = (rt_context) allocator(sizeof (struct rt_context_t));
-    if (!ret) {
-        default_error_handler("Out of virtual memory creating an rt_context");
-        return 0;
-    }
+/**
+ * This function is normally called by rt_init_allocators when no special memory
+ * management is needed. Useful in raster core testing and in the (future)
+ * loader, when we need to use raster core functions but we don't have
+ * PostgreSQL backend behind. We must take care of memory by ourselves in those
+ * situations
+ */
+void
+rt_install_default_allocators(void)
+{
+    ctx_t.alloc = default_rt_allocator;
+    ctx_t.realloc = default_rt_reallocator;
+    ctx_t.dealloc = default_rt_deallocator;
+    ctx_t.err = default_rt_error_handler;
+    ctx_t.info = default_rt_info_handler;
+    ctx_t.warn = default_rt_warning_handler;    
+}
 
-    // Can not be used here
-    //RASTER_DEBUGF(3, "Created rt_context @ %p", ret);
 
-    ret->alloc = allocator;
-    ret->realloc = reallocator;
-    ret->dealloc = deallocator;
-    ret->err = default_error_handler;
-    ret->warn = default_warning_handler;
-    ret->info = default_info_handler;
+/**
+ * This function is called by rt_init_allocators when the PostgreSQL backend is
+ * taking care of the memory and we want to use palloc family
+ */
+void
+rt_set_handlers(rt_allocator allocator, rt_reallocator reallocator,
+        rt_deallocator deallocator, rt_message_handler error_handler, 
+        rt_message_handler info_handler, rt_message_handler warning_handler) {
 
-    assert(NULL != ret->alloc);
-    assert(NULL != ret->realloc);
-    assert(NULL != ret->dealloc);
-    assert(NULL != ret->err);
-    assert(NULL != ret->warn);
-    assert(NULL != ret->info);
-    return ret;
+    ctx_t.alloc = allocator;
+    ctx_t.realloc = reallocator;
+    ctx_t.dealloc = deallocator;
+
+    ctx_t.err = error_handler;
+    ctx_t.info = info_handler;
+    ctx_t.warn = warning_handler;
+}
+
+
+	
+/**
+ * Initialisation allocators
+ *
+ * These are used the first time any of the allocators are called to enable 
+ * executables/libraries that link into raster to be able to set up their own 
+ * allocators. This is mainly useful for older PostgreSQL versions that don't 
+ * have functions that are called upon startup.
+ **/
+void *
+init_rt_allocator(size_t size)
+{
+    rt_init_allocators();
+
+    return ctx_t.alloc(size);
+}
+	
+void
+init_rt_deallocator(void *mem)
+{
+    rt_init_allocators();
+	
+    ctx_t.dealloc(mem);
+}
+
+	
+void *
+init_rt_reallocator(void *mem, size_t size)
+{
+    rt_init_allocators();
+
+    return ctx_t.realloc(mem, size);
+}
+	
+void
+init_rt_inforeporter(const char *fmt, va_list ap)
+{
+    rt_init_allocators();
+	
+    (*ctx_t.info)(fmt, ap);
+}
+	
+void
+init_rt_warnreporter(const char *fmt, va_list ap)
+{
+    rt_init_allocators();
+	
+    (*ctx_t.warn)(fmt, ap);
+}
+
+    
+void
+init_rt_errorreporter(const char *fmt, va_list ap)
+{
+    rt_init_allocators();
+
+    (*ctx_t.err)(fmt, ap);
+
+}
+
+
+
+/**
+ * Raster core memory management functions. 
+ * 
+ * They use the functions defined by the caller.
+ */ 
+void *
+rtalloc(size_t size) {
+    void * mem = ctx_t.alloc(size);
+    RASTER_DEBUGF(5, "rtalloc called: %d@%p", size, mem);
+    return mem;
+}
+
+
+void *
+rtrealloc(void * mem, size_t size) {
+    void * result = ctx_t.realloc(mem, size);
+    RASTER_DEBUGF(5, "rtrealloc called: %d@%p", size, result);
+    return result;
 }
 
 void
-rt_context_set_message_handlers(rt_context ctx,
-        rt_message_handler error_handler,
-        rt_message_handler warning_handler,
-        rt_message_handler info_handler) {
-    ctx->err = error_handler;
-    ctx->warn = warning_handler;
-    ctx->info = info_handler;
+rtdealloc(void * mem) {
+    ctx_t.dealloc(mem);
+    RASTER_DEBUG(5, "rtdealloc called");
+}
 
-    assert(NULL != ctx->err);
-    assert(NULL != ctx->warn);
-    assert(NULL != ctx->info);
+/**
+ * Raster core error and info handlers
+ *
+ * Since variadic functions cannot pass their parameters directly, we need
+ * wrappers for these functions to convert the arguments into a va_list
+ * structure.
+ */
+void
+rterror(const char *fmt, ...) {
+    va_list ap;
+
+    va_start(ap, fmt);
+
+    /* Call the supplied function */
+    (*ctx_t.err)(fmt, ap);
+
+    va_end(ap);
 }
 
 void
-rt_context_destroy(rt_context ctx) {
-    RASTER_DEBUGF(3, "Destroying rt_context @ %p", ctx);
+rtinfo(const char *fmt, ...) {
+    va_list ap;
 
-    ctx->dealloc(ctx);
+    va_start(ap, fmt);
+
+    /* Call the supplied function */
+    (*ctx_t.info)(fmt, ap);
+
+    va_end(ap);
 }
+
+
+void
+rtwarn(const char *fmt, ...) {
+    va_list ap;
+
+    va_start(ap, fmt);
+
+    /* Call the supplied function */
+    (*ctx_t.warn)(fmt, ap);
+
+    va_end(ap);
+}
+
+
 
 int
-rt_util_display_dbl_trunc_warning(rt_context ctx,
-                                  double initialvalue,
+rt_util_display_dbl_trunc_warning(double initialvalue,
                                   int32_t checkvalint,
                                   uint32_t checkvaluint,
                                   float checkvalfloat,
                                   double checkvaldouble,
                                   rt_pixtype pixtype) {
     int result = 0;
+
+    
+
     switch (pixtype)
     {
         case PT_1BB:
@@ -260,14 +426,14 @@ rt_util_display_dbl_trunc_warning(rt_context ctx,
         case PT_32BSI:
         {
             if (fabs(checkvalint - initialvalue) >= 1) {
-                ctx->warn("Value set for %s band got clamped from %f to %d",
-                    rt_pixtype_name(ctx, pixtype),
+                rtwarn("Value set for %s band got clamped from %f to %d",
+                    rt_pixtype_name(pixtype),
                     initialvalue, checkvalint);
                 result = -1;
             }
             else if (fabs(checkvalint - initialvalue) > FLT_EPSILON) {
-                ctx->warn("Value set for %s band got truncated from %f to %d",
-                    rt_pixtype_name(ctx, pixtype),
+                rtwarn("Value set for %s band got truncated from %f to %d",
+                    rt_pixtype_name(pixtype),
                     initialvalue, checkvalint);
                 result = -1;
             }
@@ -276,14 +442,14 @@ rt_util_display_dbl_trunc_warning(rt_context ctx,
         case PT_32BUI:
         {
             if (fabs(checkvaluint - initialvalue) >= 1) {
-                ctx->warn("Value set for %s band got clamped from %f to %u",
-                    rt_pixtype_name(ctx, pixtype),
+                rtwarn("Value set for %s band got clamped from %f to %u",
+                    rt_pixtype_name(pixtype),
                     initialvalue, checkvaluint);
                 result = -1;
             }
             else if (fabs(checkvaluint - initialvalue) > FLT_EPSILON) {
-                ctx->warn("Value set for %s band got truncated from %f to %u",
-                    rt_pixtype_name(ctx, pixtype),
+                rtwarn("Value set for %s band got truncated from %f to %u",
+                    rt_pixtype_name(pixtype),
                     initialvalue, checkvaluint);
                 result = -1;
             }
@@ -294,16 +460,16 @@ rt_util_display_dbl_trunc_warning(rt_context ctx,
             /* For float, because the initial value is a double,
             there is very often a difference between the desired value and the obtained one */
             if (fabs(checkvalfloat - initialvalue) > FLT_EPSILON)
-                ctx->warn("Value set for %s band got converted from %f to %f",
-                    rt_pixtype_name(ctx, pixtype),
+                rtwarn("Value set for %s band got converted from %f to %f",
+                    rt_pixtype_name(pixtype),
                     initialvalue, checkvalfloat);
             break;
         }
         case PT_64BF:
         {
             if (fabs(checkvaldouble - initialvalue) > FLT_EPSILON)
-                ctx->warn("Value set for %s band got converted from %f to %f",
-                    rt_pixtype_name(ctx, pixtype),
+                rtwarn("Value set for %s band got converted from %f to %f",
+                    rt_pixtype_name(pixtype),
                     initialvalue, checkvaldouble);
             break;
         }
@@ -318,18 +484,19 @@ rt_util_display_dbl_trunc_warning(rt_context ctx,
 #if POSTGIS_DEBUG_LEVEL > 3
 
 static char*
-d_binary_to_hex(rt_context ctx, const uint8_t * const raw, uint32_t size, uint32_t *hexsize) {
+d_binary_to_hex(const uint8_t * const raw, uint32_t size, uint32_t *hexsize) {
     char* hex = NULL;
     uint32_t i = 0;
 
-    assert(NULL != ctx);
+    
     assert(NULL != raw);
     assert(NULL != hexsize);
+    
 
     *hexsize = size * 2; /* hex is 2 times bytes */
-    hex = (char*) ctx->alloc((*hexsize) + 1);
+    hex = (char*) rtalloc((*hexsize) + 1);
     if (!hex) {
-        ctx->err("d_binary_to_hex: Out of memory hexifying raw binary\n");
+        rterror("d_binary_to_hex: Out of memory hexifying raw binary\n");
         return NULL;
     }
     hex[*hexsize] = '\0'; /* Null-terminate */
@@ -344,18 +511,19 @@ d_binary_to_hex(rt_context ctx, const uint8_t * const raw, uint32_t size, uint32
 }
 
 static void
-d_print_binary_hex(rt_context ctx, const char* msg, const uint8_t * const raw, uint32_t size) {
+d_print_binary_hex(const char* msg, const uint8_t * const raw, uint32_t size) {
     char* hex = NULL;
     uint32_t hexsize = 0;
 
-    assert(NULL != ctx);
+    
     assert(NULL != msg);
     assert(NULL != raw);
+    
 
-    hex = d_binary_to_hex(ctx, raw, size, &hexsize);
+    hex = d_binary_to_hex(raw, size, &hexsize);
     if (NULL != hex) {
-        ctx->info("%s\t%s", msg, hex);
-        ctx->dealloc(hex);
+        rtinfo("%s\t%s", msg, hex);
+        rtdealloc(hex);
     }
 }
 
@@ -381,10 +549,10 @@ d_binptr_to_pos(const uint8_t * const ptr, const uint8_t * const end, size_t siz
 /*- rt_pixeltype -----------------------------------------------------*/
 
 int
-rt_pixtype_size(rt_context ctx, rt_pixtype pixtype) {
+rt_pixtype_size(rt_pixtype pixtype) {
     int pixbytes = -1;
-
-    assert(NULL != ctx);
+    
+    
 
     switch (pixtype) {
         case PT_1BB:
@@ -407,26 +575,28 @@ rt_pixtype_size(rt_context ctx, rt_pixtype pixtype) {
             pixbytes = 8;
             break;
         default:
-            ctx->err("rt_pixtype_size: Unknown pixeltype %d", pixtype);
+            rterror("rt_pixtype_size: Unknown pixeltype %d", pixtype);
             pixbytes = -1;
             break;
     }
 
     RASTER_DEBUGF(3, "Pixel type = %s and size = %d bytes",
-            rt_pixtype_name(ctx, pixtype), pixbytes);
+            rt_pixtype_name(pixtype), pixbytes);
 
 
     return pixbytes;
 }
 
 int
-rt_pixtype_alignment(rt_context ctx, rt_pixtype pixtype) {
-    return rt_pixtype_size(ctx, pixtype);
+rt_pixtype_alignment(rt_pixtype pixtype) {
+    
+    return rt_pixtype_size(pixtype);
 }
 
 rt_pixtype
-rt_pixtype_index_from_name(rt_context ctx, const char* pixname) {
-    assert(strlen(pixname) > 0);
+rt_pixtype_index_from_name(const char* pixname) {
+    assert(pixname && strlen(pixname) > 0);
+    
 
     if (strcmp(pixname, "1BB") == 0)
         return PT_1BB;
@@ -454,8 +624,9 @@ rt_pixtype_index_from_name(rt_context ctx, const char* pixname) {
 }
 
 const char*
-rt_pixtype_name(rt_context ctx, rt_pixtype pixtype) {
-    assert(NULL != ctx);
+rt_pixtype_name(rt_pixtype pixtype) {
+    
+    
 
     switch (pixtype) {
         case PT_1BB:
@@ -481,7 +652,7 @@ rt_pixtype_name(rt_context ctx, rt_pixtype pixtype) {
         case PT_64BF:
             return "64BF";
         default:
-            ctx->err("rt_pixtype_name: Unknown pixeltype %d", pixtype);
+            rterror("rt_pixtype_name: Unknown pixeltype %d", pixtype);
             return "Unknown";
     }
 }
@@ -512,22 +683,22 @@ struct rt_band_t {
 };
 
 rt_band
-rt_band_new_inline(rt_context ctx, uint16_t width, uint16_t height,
+rt_band_new_inline(uint16_t width, uint16_t height,
         rt_pixtype pixtype, uint32_t hasnodata, double nodataval,
         uint8_t* data) {
     rt_band band = NULL;
 
-    assert(NULL != ctx);
+    
     assert(NULL != data);
 
-    band = ctx->alloc(sizeof (struct rt_band_t));
+    band = rtalloc(sizeof (struct rt_band_t));
     if (!band) {
-        ctx->err("rt_band_new_inline: Out of memory allocating rt_band");
+        rterror("rt_band_new_inline: Out of memory allocating rt_band");
         return 0;
     }
 
     RASTER_DEBUGF(3, "Created rt_band @ %p with pixtype %s",
-            band, rt_pixtype_name(ctx, pixtype));
+            band, rt_pixtype_name(pixtype));
 
 
     band->pixtype = pixtype;
@@ -544,23 +715,23 @@ rt_band_new_inline(rt_context ctx, uint16_t width, uint16_t height,
 }
 
 rt_band
-rt_band_new_offline(rt_context ctx, uint16_t width, uint16_t height,
+rt_band_new_offline(uint16_t width, uint16_t height,
         rt_pixtype pixtype, uint32_t hasnodata, double nodataval,
         uint8_t bandNum, const char* path) {
     rt_band band = NULL;
-
-    assert(NULL != ctx);
+ 
+    
     assert(NULL != path);
 
-    band = ctx->alloc(sizeof (struct rt_band_t));
+    band = rtalloc(sizeof (struct rt_band_t));
     if (!band) {
-        ctx->err("rt_band_new_offline: Out of memory allocating rt_band");
+        rterror("rt_band_new_offline: Out of memory allocating rt_band");
         return 0;
     }
 
 
     RASTER_DEBUGF(3, "Created rt_band @ %p with pixtype %s",
-            band, rt_pixtype_name(ctx, pixtype));
+            band, rt_pixtype_name(pixtype));
 
     band->pixtype = pixtype;
     band->offline = 1;
@@ -585,29 +756,32 @@ rt_band_new_offline(rt_context ctx, uint16_t width, uint16_t height,
 }
 
 int
-rt_band_is_offline(rt_context ctx, rt_band band) {
-    assert(NULL != ctx);
+rt_band_is_offline(rt_band band) {
+    
     assert(NULL != band);
+    
 
     return band->offline;
 }
 
 void
-rt_band_destroy(rt_context ctx, rt_band band) {
+rt_band_destroy(rt_band band) {
+    
+    
     RASTER_DEBUGF(3, "Destroying rt_band @ %p", band);
-
 
     /* band->data content is externally owned */
     /* XXX jorgearevalo: not really... rt_band_from_wkb allocates memory for
      * data.mem
      */
-    ctx->dealloc(band);
+    rtdealloc(band);
 }
 
 const char*
-rt_band_get_ext_path(rt_context ctx, rt_band band) {
-    assert(NULL != ctx);
+rt_band_get_ext_path(rt_band band) {
+    
     assert(NULL != band);
+    
 
     if (!band->offline) {
         RASTER_DEBUG(3, "rt_band_get_ext_path: non-offline band doesn't have "
@@ -618,9 +792,10 @@ rt_band_get_ext_path(rt_context ctx, rt_band band) {
 }
 
 uint8_t
-rt_band_get_ext_band_num(rt_context ctx, rt_band band) {
-    assert(NULL != ctx);
+rt_band_get_ext_band_num(rt_band band) {
+    
     assert(NULL != band);
+    
 
     if (!band->offline) {
         RASTER_DEBUG(3, "rt_band_get_ext_path: non-offline band doesn't have "
@@ -631,9 +806,10 @@ rt_band_get_ext_band_num(rt_context ctx, rt_band band) {
 }
 
 void *
-rt_band_get_data(rt_context ctx, rt_band band) {
-    assert(NULL != ctx);
+rt_band_get_data(rt_band band) {
+    
     assert(NULL != band);
+    
 
     if (band->offline) {
         RASTER_DEBUG(3, "rt_band_get_data: "
@@ -644,25 +820,28 @@ rt_band_get_data(rt_context ctx, rt_band band) {
 }
 
 rt_pixtype
-rt_band_get_pixtype(rt_context ctx, rt_band band) {
-    assert(NULL != ctx);
+rt_band_get_pixtype(rt_band band) {
+    
     assert(NULL != band);
+    
 
     return band->pixtype;
 }
 
 uint16_t
-rt_band_get_width(rt_context ctx, rt_band band) {
-    assert(NULL != ctx);
+rt_band_get_width(rt_band band) {
+    
     assert(NULL != band);
+    
 
     return band->width;
 }
 
 uint16_t
-rt_band_get_height(rt_context ctx, rt_band band) {
-    assert(NULL != ctx);
+rt_band_get_height(rt_band band) {
+    
     assert(NULL != band);
+    
 
     return band->height;
 }
@@ -687,6 +866,7 @@ setBits(char* ch, double val, int bits, int bitOffset) {
     char mask = 0xFF >> (8 - bits);
     char ival = val;
 
+    
     assert(8 - bitOffset >= bits);
 
     RASTER_DEBUGF(4, "ival:%d bits:%d mask:%hhx bitoffset:%d\n",
@@ -696,7 +876,7 @@ setBits(char* ch, double val, int bits, int bitOffset) {
     ival &= mask;
 #ifdef POSTGIS_RASTER_WARN_ON_TRUNCATION
     if (ival != val) {
-        ctx->warn("Pixel value for %d-bits band got truncated"
+        rtwarn("Pixel value for %d-bits band got truncated"
                 " from %g to %hhu\n", bits, val, ival);
     }
 #endif /* POSTGIS_RASTER_WARN_ON_TRUNCATION */
@@ -725,39 +905,42 @@ setBits(char* ch, double val, int bits, int bitOffset) {
 #endif /* OPTIMIZE_SPACE */
 
 int
-rt_band_get_hasnodata_flag(rt_context ctx, rt_band band) {
-    assert(NULL != ctx);
+rt_band_get_hasnodata_flag(rt_band band) {
+    
     assert(NULL != band);
+    
 
     return band->hasnodata;
 }
 
 void
-rt_band_set_hasnodata_flag(rt_context ctx, rt_band band, int flag) {
-    assert(NULL != ctx);
+rt_band_set_hasnodata_flag(rt_band band, int flag) {
+    
     assert(NULL != band);
+    
 
     band->hasnodata = (flag) ? 1 : 0;
 }
 
 void
-rt_band_set_isnodata_flag(rt_context ctx, rt_band band, int flag) {
-    assert(NULL != ctx);
+rt_band_set_isnodata_flag(rt_band band, int flag) {
+    
     assert(NULL != band);
+    
 
     band->isnodata = (flag) ? 1 : 0;
 }
 
 int
-rt_band_get_isnodata_flag(rt_context ctx, rt_band band) {
-    assert(NULL != ctx);
+rt_band_get_isnodata_flag(rt_band band) {
+    
     assert(NULL != band);
 
     return band->isnodata;
 }
 
 int
-rt_band_set_nodata(rt_context ctx, rt_band band, double val) {
+rt_band_set_nodata(rt_band band, double val) {
     rt_pixtype pixtype = PT_END;
     //double oldnodataval = band->nodataval;
 
@@ -766,12 +949,13 @@ rt_band_set_nodata(rt_context ctx, rt_band band, double val) {
     float checkvalfloat = 0;
     double checkvaldouble = 0;
 
-    assert(NULL != ctx);
+    
+    
     assert(NULL != band);
 
     pixtype = band->pixtype;
 
-    RASTER_DEBUGF(3, "rt_band_set_nodata: setting nodata value %g with band type %s", val, rt_pixtype_name(ctx, pixtype));
+    RASTER_DEBUGF(3, "rt_band_set_nodata: setting nodata value %g with band type %s", val, rt_pixtype_name(pixtype));
 
     /* return -1 on out of range */
     switch (pixtype) {
@@ -843,7 +1027,7 @@ rt_band_set_nodata(rt_context ctx, rt_band band, double val) {
         }
         default:
             {
-            ctx->err("rt_band_set_nodata: Unknown pixeltype %d", pixtype);
+            rterror("rt_band_set_nodata: Unknown pixeltype %d", pixtype);
             band->hasnodata = 0;
             return -1;
         }
@@ -854,10 +1038,10 @@ rt_band_set_nodata(rt_context ctx, rt_band band, double val) {
 
 
     // the nodata value was just set, so this band has NODATA
-    rt_band_set_hasnodata_flag(ctx, band, 1);
+    rt_band_set_hasnodata_flag(band, 1);
 
 #ifdef POSTGIS_RASTER_WARN_ON_TRUNCATION
-    if (rt_util_display_dbl_trunc_warning(ctx, val, checkvalint, checkvaluint, checkvalfloat,
+    if (rt_util_display_dbl_trunc_warning(val, checkvalint, checkvaluint, checkvalfloat,
                                       checkvaldouble, pixtype))
         return -1;
 #endif
@@ -869,14 +1053,14 @@ rt_band_set_nodata(rt_context ctx, rt_band band, double val) {
 
     /*
     if (fabs(band->nodataval - oldnodataval) > FLT_EPSILON)
-        rt_band_check_is_nodata(ctx, band);
+        rt_band_check_is_nodata(band);
     */
 
     return 0;
 }
 
 int
-rt_band_set_pixel(rt_context ctx, rt_band band, uint16_t x, uint16_t y,
+rt_band_set_pixel(rt_band band, uint16_t x, uint16_t y,
         double val) {
     rt_pixtype pixtype = PT_END;
     unsigned char* data = NULL;
@@ -889,22 +1073,23 @@ rt_band_set_pixel(rt_context ctx, rt_band band, uint16_t x, uint16_t y,
 
     double checkval = 0;
 
-    assert(NULL != ctx);
+    
+    
     assert(NULL != band);
 
     pixtype = band->pixtype;
 
     if (x >= band->width || y >= band->height) {
-        ctx->err("rt_band_set_pixel: Coordinates out of range");
+        rterror("rt_band_set_pixel: Coordinates out of range");
         return -1;
     }
 
     if (band->offline) {
-        ctx->err("rt_band_set_pixel not implemented yet for OFFDB bands");
+        rterror("rt_band_set_pixel not implemented yet for OFFDB bands");
         return -1;
     }
 
-    data = rt_band_get_data(ctx, band);
+    data = rt_band_get_data(band);
     offset = x + (y * band->width);
 
     switch (pixtype) {
@@ -982,14 +1167,14 @@ rt_band_set_pixel(rt_context ctx, rt_band band, uint16_t x, uint16_t y,
         }
         default:
         {
-            ctx->err("rt_band_set_pixel: Unknown pixeltype %d", pixtype);
+            rterror("rt_band_set_pixel: Unknown pixeltype %d", pixtype);
             return -1;
         }
     }
 
     /* Overflow checking */
 #ifdef POSTGIS_RASTER_WARN_ON_TRUNCATION
-    if (rt_util_display_dbl_trunc_warning(ctx, val, checkvalint, checkvaluint, checkvalfloat,
+    if (rt_util_display_dbl_trunc_warning(val, checkvalint, checkvaluint, checkvalfloat,
                                       checkvaldouble, pixtype))
        return -1;
 #endif /* POSTGIS_RASTER_WARN_ON_TRUNCATION */
@@ -1006,7 +1191,7 @@ rt_band_set_pixel(rt_context ctx, rt_band band, uint16_t x, uint16_t y,
 
     /*
     else {
-        rt_band_check_is_nodata(ctx, band);
+        rt_band_check_is_nodata(band);
     }
     */
 
@@ -1015,27 +1200,28 @@ rt_band_set_pixel(rt_context ctx, rt_band band, uint16_t x, uint16_t y,
 }
 
 int
-rt_band_get_pixel(rt_context ctx, rt_band band, uint16_t x, uint16_t y, double *result) {
+rt_band_get_pixel(rt_band band, uint16_t x, uint16_t y, double *result) {
     rt_pixtype pixtype = PT_END;
     uint8_t* data = NULL;
     uint32_t offset = 0;
 
-    assert(NULL != ctx);
+    
+    
     assert(NULL != band);
 
     pixtype = band->pixtype;
 
     if (x >= band->width || y >= band->height) {
-        ctx->warn("Attempting to get pixel value with out of range raster coordinates");
+        rterror("Attempting to get pixel value with out of range raster coordinates");
         return -1;
     }
 
     if (band->offline) {
-        ctx->err("rt_band_get_pixel not implemented yet for OFFDB bands");
+        rterror("rt_band_get_pixel not implemented yet for OFFDB bands");
         return -1;
     }
 
-    data = rt_band_get_data(ctx, band);
+    data = rt_band_get_data(band);
     offset = x + (y * band->width); /* +1 for the nodata value */
 
     switch (pixtype) {
@@ -1128,15 +1314,16 @@ rt_band_get_pixel(rt_context ctx, rt_band band, uint16_t x, uint16_t y, double *
         }
         default:
         {
-            ctx->err("rt_band_get_pixel: Unknown pixeltype %d", pixtype);
+            rterror("rt_band_get_pixel: Unknown pixeltype %d", pixtype);
             return -1;
         }
     }
 }
 
 double
-rt_band_get_nodata(rt_context ctx, rt_band band) {
-    assert(NULL != ctx);
+rt_band_get_nodata(rt_band band) {
+    
+    
     assert(NULL != band);
 
     if (!band->hasnodata)
@@ -1147,10 +1334,11 @@ rt_band_get_nodata(rt_context ctx, rt_band band) {
 }
 
 double
-rt_band_get_min_value(rt_context ctx, rt_band band) {
+rt_band_get_min_value(rt_band band) {
     rt_pixtype pixtype = PT_END;
 
-    assert(NULL != ctx);
+    
+    
     assert(NULL != band);
 
     pixtype = band->pixtype;
@@ -1187,7 +1375,7 @@ rt_band_get_min_value(rt_context ctx, rt_band band) {
         }
         default:
         {
-            ctx->err("rt_band_get_min_value: Unknown pixeltype %d", pixtype);
+            rterror("rt_band_get_min_value: Unknown pixeltype %d", pixtype);
             return (double)CHAR_MIN;
         }
     }
@@ -1195,13 +1383,14 @@ rt_band_get_min_value(rt_context ctx, rt_band band) {
 
 
 int
-rt_band_check_is_nodata(rt_context ctx, rt_band band)
+rt_band_check_is_nodata(rt_band band)
 {
     int i, j;
     double pxValue = band->nodataval;
     double dEpsilon = 0.0;
 
-    assert(NULL != ctx);
+    
+    
     assert(NULL != band);
 
     /* Check if band has nodata value */
@@ -1223,7 +1412,7 @@ rt_band_check_is_nodata(rt_context ctx, rt_band band)
     {
         for(j = 0; j < band->height; j++)
         {
-            rt_band_get_pixel(ctx, band, i, j, &pxValue);
+            rt_band_get_pixel(band, i, j, &pxValue);
             dEpsilon = fabs(pxValue - band->nodataval);
             if (dEpsilon > FLT_EPSILON) {
                 band->isnodata = FALSE;
@@ -1296,15 +1485,14 @@ struct rt_raster_t {
 };
 
 rt_raster
-rt_raster_new(rt_context ctx, uint16_t width, uint16_t height) {
+rt_raster_new(uint16_t width, uint16_t height) {
     rt_raster ret = NULL;
 
-    assert(NULL != ctx);
-    assert(NULL != ctx->alloc);
-
-    ret = (rt_raster) ctx->alloc(sizeof (struct rt_raster_t));
+    
+    
+    ret = (rt_raster) rtalloc(sizeof (struct rt_raster_t));
     if (!ret) {
-        ctx->err("rt_raster_new: Out of virtual memory creating an rt_raster");
+        rterror("rt_raster_new: Out of virtual memory creating an rt_raster");
         return 0;
     }
 
@@ -1330,35 +1518,38 @@ rt_raster_new(rt_context ctx, uint16_t width, uint16_t height) {
 }
 
 void
-rt_raster_destroy(rt_context ctx, rt_raster raster) {
-    RASTER_DEBUGF(3, "Destroying rt_raster @ %p", ctx);
+rt_raster_destroy(rt_raster raster) {
+    
+    
+    RASTER_DEBUGF(3, "Destroying rt_raster @ %p", raster);
 
     if (raster->bands) {
-        ctx->dealloc(raster->bands);
+        rtdealloc(raster->bands);
     }
-    ctx->dealloc(raster);
+    rtdealloc(raster);
 }
 
 uint16_t
-rt_raster_get_width(rt_context ctx, rt_raster raster) {
-    assert(NULL != ctx);
+rt_raster_get_width(rt_raster raster) {
+    
     assert(NULL != raster);
 
     return raster->width;
 }
 
 uint16_t
-rt_raster_get_height(rt_context ctx, rt_raster raster) {
-    assert(NULL != ctx);
+rt_raster_get_height(rt_raster raster) {
+    
     assert(NULL != raster);
 
     return raster->height;
 }
 
 void
-rt_raster_set_scale(rt_context ctx, rt_raster raster,
+rt_raster_set_scale(rt_raster raster,
         double scaleX, double scaleY) {
-    assert(NULL != ctx);
+    
+    
     assert(NULL != raster);
 
     raster->scaleX = scaleX;
@@ -1366,25 +1557,28 @@ rt_raster_set_scale(rt_context ctx, rt_raster raster,
 }
 
 double
-rt_raster_get_x_scale(rt_context ctx, rt_raster raster) {
-    assert(NULL != ctx);
+rt_raster_get_x_scale(rt_raster raster) {
+    
+    
     assert(NULL != raster);
 
     return raster->scaleX;
 }
 
 double
-rt_raster_get_y_scale(rt_context ctx, rt_raster raster) {
-    assert(NULL != ctx);
+rt_raster_get_y_scale(rt_raster raster) {
+    
+    
     assert(NULL != raster);
 
     return raster->scaleY;
 }
 
 void
-rt_raster_set_skews(rt_context ctx, rt_raster raster,
+rt_raster_set_skews(rt_raster raster,
         double skewX, double skewY) {
-    assert(NULL != ctx);
+    
+    
     assert(NULL != raster);
 
     raster->skewX = skewX;
@@ -1392,24 +1586,27 @@ rt_raster_set_skews(rt_context ctx, rt_raster raster,
 }
 
 double
-rt_raster_get_x_skew(rt_context ctx, rt_raster raster) {
-    assert(NULL != ctx);
+rt_raster_get_x_skew(rt_raster raster) {
+    
+    
     assert(NULL != raster);
 
     return raster->skewX;
 }
 
 double
-rt_raster_get_y_skew(rt_context ctx, rt_raster raster) {
-    assert(NULL != ctx);
+rt_raster_get_y_skew(rt_raster raster) {
+    
+    
     assert(NULL != raster);
 
     return raster->skewY;
 }
 
 void
-rt_raster_set_offsets(rt_context ctx, rt_raster raster, double x, double y) {
-    assert(NULL != ctx);
+rt_raster_set_offsets(rt_raster raster, double x, double y) {
+    
+    
     assert(NULL != raster);
 
     raster->ipX = x;
@@ -1417,48 +1614,54 @@ rt_raster_set_offsets(rt_context ctx, rt_raster raster, double x, double y) {
 }
 
 double
-rt_raster_get_x_offset(rt_context ctx, rt_raster raster) {
-    assert(NULL != ctx);
+rt_raster_get_x_offset(rt_raster raster) {
+    
+    
     assert(NULL != raster);
 
     return raster->ipX;
 }
 
 double
-rt_raster_get_y_offset(rt_context ctx, rt_raster raster) {
-    assert(NULL != ctx);
+rt_raster_get_y_offset(rt_raster raster) {
+    
+    
     assert(NULL != raster);
 
     return raster->ipY;
 }
 
 int32_t
-rt_raster_get_srid(rt_context ctx, rt_raster raster) {
-    assert(NULL != ctx);
+rt_raster_get_srid(rt_raster raster) {
+    
+    
     assert(NULL != raster);
 
     return raster->srid;
 }
 
 void
-rt_raster_set_srid(rt_context ctx, rt_raster raster, int32_t srid) {
-    assert(NULL != ctx);
+rt_raster_set_srid(rt_raster raster, int32_t srid) {
+    
+    
     assert(NULL != raster);
 
     raster->srid = srid;
 }
 
 int
-rt_raster_get_num_bands(rt_context ctx, rt_raster raster) {
-    assert(NULL != ctx);
+rt_raster_get_num_bands(rt_raster raster) {
+    
+    
     assert(NULL != raster);
 
     return raster->numBands;
 }
 
 rt_band
-rt_raster_get_band(rt_context ctx, rt_raster raster, int n) {
-    assert(NULL != ctx);
+rt_raster_get_band(rt_raster raster, int n) {
+    
+    
     assert(NULL != raster);
 
     if (n >= raster->numBands || n < 0) return 0;
@@ -1466,19 +1669,20 @@ rt_raster_get_band(rt_context ctx, rt_raster raster, int n) {
 }
 
 int32_t
-rt_raster_add_band(rt_context ctx, rt_raster raster, rt_band band, int index) {
+rt_raster_add_band(rt_raster raster, rt_band band, int index) {
     rt_band *oldbands = NULL;
     rt_band oldband = NULL;
     rt_band tmpband = NULL;
     uint16_t i = 0;
 
-    assert(NULL != ctx);
+    
+    
     assert(NULL != raster);
 
     RASTER_DEBUGF(3, "Adding band %p to raster %p", band, raster);
 
     if (band->width != raster->width || band->height != raster->height) {
-        ctx->err("rt_raster_add_band: Can't add a %dx%d band to a %dx%d raster",
+        rterror("rt_raster_add_band: Can't add a %dx%d band to a %dx%d raster",
                 band->width, band->height, raster->width, raster->height);
         return -1;
     }
@@ -1493,12 +1697,14 @@ rt_raster_add_band(rt_context ctx, rt_raster raster, rt_band band, int index) {
 
     RASTER_DEBUGF(3, "Oldbands at %p", oldbands);
 
-    raster->bands = (rt_band*) ctx->realloc(raster->bands,
+    raster->bands = (rt_band*) rtrealloc(raster->bands,
             sizeof (rt_band)*(raster->numBands + 1)
             );
 
-    if (!raster->bands) {
-        ctx->err("rt_raster_add_band: Out of virtual memory "
+    RASTER_DEBUG(3, "Checking bands");
+
+    if (NULL == raster->bands) {
+        rterror("rt_raster_add_band: Out of virtual memory "
                 "reallocating band pointers");
         raster->bands = oldbands;
         return -1;
@@ -1526,7 +1732,7 @@ rt_raster_add_band(rt_context ctx, rt_raster raster, rt_band band, int index) {
 
 
 int32_t
-rt_raster_generate_new_band(rt_context ctx, rt_raster raster, rt_pixtype pixtype,
+rt_raster_generate_new_band(rt_raster raster, rt_pixtype pixtype,
         double initialvalue, uint32_t hasnodata, double nodatavalue, int index)
 {
     rt_band band = NULL;
@@ -1542,27 +1748,26 @@ rt_raster_generate_new_band(rt_context ctx, rt_raster raster, rt_pixtype pixtype
     double checkvaldouble = 0;
     float checkvalfloat = 0;
     int i;
-
-
-    assert(NULL != ctx);
+    
+    
     assert(NULL != raster);
 
     /* Make sure index is in a valid range */
-    oldnumbands = rt_raster_get_num_bands(ctx, raster);
+    oldnumbands = rt_raster_get_num_bands(raster);
     if (index < 0)
         index = 0;
-    else if (index > rt_raster_get_num_bands(ctx, raster) + 1)
-        index = rt_raster_get_num_bands(ctx, raster) + 1;
+    else if (index > rt_raster_get_num_bands(raster) + 1)
+        index = rt_raster_get_num_bands(raster) + 1;
 
     /* Determine size of memory block to allocate and allocate it */
-    width = rt_raster_get_width(ctx, raster);
-    height = rt_raster_get_height(ctx, raster);
+    width = rt_raster_get_width(raster);
+    height = rt_raster_get_height(raster);
     numval = width * height;
-    datasize = rt_pixtype_size(ctx, pixtype) * numval;
+    datasize = rt_pixtype_size(pixtype) * numval;
 
-    mem = (int *)ctx->alloc(datasize);
+    mem = (int *)rtalloc(datasize);
     if (!mem) {
-        ctx->err("rt_raster_generate_new_band: Could not allocate memory for band");
+        rterror("rt_raster_generate_new_band: Could not allocate memory for band");
         return -1;
     }
 
@@ -1671,8 +1876,8 @@ rt_raster_generate_new_band(rt_context ctx, rt_raster raster, rt_pixtype pixtype
             }
             default:
             {
-                ctx->err("rt_raster_generate_new_band: Unknown pixeltype %d", pixtype);
-                ctx->dealloc(mem);
+                rterror("rt_raster_generate_new_band: Unknown pixeltype %d", pixtype);
+                rtdealloc(mem);
                 return -1;
             }
         }
@@ -1680,21 +1885,21 @@ rt_raster_generate_new_band(rt_context ctx, rt_raster raster, rt_pixtype pixtype
 
 #ifdef POSTGIS_RASTER_WARN_ON_TRUNCATION
     /* Overflow checking */
-    rt_util_display_dbl_trunc_warning(ctx, initialvalue, checkvalint, checkvaluint, checkvalfloat,
+    rt_util_display_dbl_trunc_warning(initialvalue, checkvalint, checkvaluint, checkvalfloat,
                                       checkvaldouble, pixtype);
 #endif /* POSTGIS_RASTER_WARN_ON_TRUNCATION */
 
-    band = rt_band_new_inline(ctx, width, height, pixtype, hasnodata, nodatavalue, mem);
+    band = rt_band_new_inline(width, height, pixtype, hasnodata, nodatavalue, mem);
     if (! band) {
-        ctx->err("rt_raster_generate_new_band: Could not add band to raster. Aborting");
-        ctx->dealloc(mem);
+        rterror("rt_raster_generate_new_band: Could not add band to raster. Aborting");
+        rtdealloc(mem);
         return -1;
     }
-    index = rt_raster_add_band(ctx, raster, band, index);
-    numbands = rt_raster_get_num_bands(ctx, raster);
+    index = rt_raster_add_band(raster, band, index);
+    numbands = rt_raster_get_num_bands(raster);
     if (numbands == oldnumbands || index == -1) {
-        ctx->err("rt_raster_generate_new_band: Could not add band to raster. Aborting");
-        rt_band_destroy(ctx, band);
+        rterror("rt_raster_generate_new_band: Could not add band to raster. Aborting");
+        rt_band_destroy(band);
     }
 
     return index;
@@ -1702,10 +1907,11 @@ rt_raster_generate_new_band(rt_context ctx, rt_raster raster, rt_pixtype pixtype
 
 
 void
-rt_raster_cell_to_geopoint(rt_context ctx, rt_raster raster,
+rt_raster_cell_to_geopoint(rt_raster raster,
         double x, double y,
         double* x1, double* y1) {
-    assert(NULL != ctx);
+    
+    
     assert(NULL != raster);
     assert(NULL != x1);
     assert(NULL != y1);
@@ -1730,7 +1936,7 @@ struct rt_geomval_t {
 };
 
 rt_geomval
-rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
+rt_raster_dump_as_wktpolygons(rt_raster raster, int nband,
         int * pnElements) {
 
 	char * pszQuery;
@@ -1759,18 +1965,19 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
     double dBandNoData = 0.0;
 
     /* Checkings */
-    assert(NULL != ctx);
+    
+    
     assert(NULL != raster);
-    assert(nband > 0 && nband <= rt_raster_get_num_bands(ctx, raster));
+    assert(nband > 0 && nband <= rt_raster_get_num_bands(raster));
 
     RASTER_DEBUG(2, "In rt_raster_dump_as_polygons");
 
     /*******************************
      * Get band
      *******************************/
-    band = rt_raster_get_band(ctx, raster, nband - 1);
+    band = rt_raster_get_band(raster, nband - 1);
     if (NULL == band) {
-        ctx->err("rt_raster_dump_as_wktpolygons: Error getting band %d from raster", nband);
+        rterror("rt_raster_dump_as_wktpolygons: Error getting band %d from raster", nband);
         return 0;
     }
 
@@ -1790,7 +1997,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
     memdatasource = OGR_Dr_CreateDataSource(ogr_drv, "", NULL);
 
     if (NULL == memdatasource) {
-        ctx->err("rt_raster_dump_as_wktpolygons: Couldn't create a OGR Datasource to store pols\n");
+        rterror("rt_raster_dump_as_wktpolygons: Couldn't create a OGR Datasource to store pols\n");
         return 0;
     }
 
@@ -1798,7 +2005,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
      * Can MEM driver create new layers?
      **/
     if (!OGR_DS_TestCapability(memdatasource, ODsCCreateLayer)) {
-        ctx->err("rt_raster_dump_as_wktpolygons: MEM driver can't create new layers, aborting\n");
+        rterror("rt_raster_dump_as_wktpolygons: MEM driver can't create new layers, aborting\n");
         /* xxx jorgearevalo: what should we do now? */
         OGRReleaseDataSource(memdatasource);
         return 0;
@@ -1817,11 +2024,11 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
      * First, create a Dataset with no bands using MEM driver
      **/
     gdal_drv = GDALGetDriverByName("MEM");
-    memdataset = GDALCreate(gdal_drv, "", rt_band_get_width(ctx, band),
-            rt_band_get_height(ctx, band), 0, GDT_Byte, NULL);
+    memdataset = GDALCreate(gdal_drv, "", rt_band_get_width(band),
+            rt_band_get_height(band), 0, GDT_Byte, NULL);
 
     if (NULL == memdataset) {
-        ctx->err("rt_raster_dump_as_wktpolygons: Couldn't create a GDALDataset to polygonize it\n");
+        rterror("rt_raster_dump_as_wktpolygons: Couldn't create a GDALDataset to polygonize it\n");
         GDALDeregisterDriver(gdal_drv);
         GDALDestroyDriver(gdal_drv);
         OGRReleaseDataSource(memdatasource);
@@ -1832,12 +2039,12 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
      * Add geotransform
      */
     double adfGeoTransform[6] = {0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
-    adfGeoTransform[0] = rt_raster_get_x_offset(ctx, raster);
-    adfGeoTransform[1] = rt_raster_get_x_scale(ctx, raster);
-    adfGeoTransform[2] = rt_raster_get_x_skew(ctx, raster);
-    adfGeoTransform[3] = rt_raster_get_y_offset(ctx, raster);
-    adfGeoTransform[4] = rt_raster_get_y_skew(ctx, raster);
-    adfGeoTransform[5] = rt_raster_get_y_scale(ctx, raster);
+    adfGeoTransform[0] = rt_raster_get_x_offset(raster);
+    adfGeoTransform[1] = rt_raster_get_x_scale(raster);
+    adfGeoTransform[2] = rt_raster_get_x_skew(raster);
+    adfGeoTransform[3] = rt_raster_get_y_offset(raster);
+    adfGeoTransform[4] = rt_raster_get_y_skew(raster);
+    adfGeoTransform[5] = rt_raster_get_y_scale(raster);
     GDALSetGeoTransform(memdataset, adfGeoTransform);
 
     RASTER_DEBUG(3, "Adding GDAL MEM raster band");
@@ -1845,7 +2052,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
     /**
      * Now, add the raster band
      */
-    pt = rt_band_get_pixtype(ctx, band);
+    pt = rt_band_get_pixtype(band);
 
     switch (pt) {
         case PT_1BB: case PT_2BUI: case PT_4BUI: case PT_8BSI: case PT_8BUI:
@@ -1873,12 +2080,19 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
             break;
 
         default:
-            ctx->warn("Unknown pixel type for band\n");
+            rtwarn("Unknown pixel type for band\n");
             nPixelType = GDT_Unknown;
             break;
     }
 
-    void * pVoid = rt_band_get_data(ctx, band);
+    void * pVoid = rt_band_get_data(band);
+    if (NULL == pVoid) {
+        rterror("rt_raster_dump_as_wktpolygons: Couldn't get raster band data");
+        GDALDeregisterDriver(gdal_drv);
+        GDALDestroyDriver(gdal_drv);
+        OGRReleaseDataSource(memdatasource);
+        return 0;
+    }
 
     RASTER_DEBUGF(4, "Band data is at pos %p", pVoid);
 
@@ -1889,7 +2103,15 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
      * And be careful with size too: 10 characters may be insufficient
      * to store 64bits memory addresses
      */
-    pszDataPointer = (char *) ctx->alloc(20 * sizeof (char));
+    pszDataPointer = (char *)rtalloc(20 * sizeof (char));
+    if (NULL == pszDataPointer) {
+        rterror("rt_raster_dump_as_wktpolygons: Couldn't allocate memory for data");
+        GDALDeregisterDriver(gdal_drv);
+        GDALDestroyDriver(gdal_drv);
+        OGRReleaseDataSource(memdatasource);
+        return 0;
+    }
+
     sprintf(pszDataPointer, "%p", pVoid);
 
     RASTER_DEBUGF(4, "rt_raster_dump_as_polygons: szDatapointer is %p",
@@ -1911,10 +2133,11 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
      * This memory must be deallocated because we own it. The GDALRasterBand
      * destructor will not deallocate it
      **/
-    ctx->dealloc(pszDataPointer);
+    rtdealloc(pszDataPointer);
 
     if (GDALAddBand(memdataset, nPixelType, apszOptions) == CE_Failure) {
-        ctx->err("rt_raster_dump_as_wktpolygons: Couldn't transform raster band in GDALRasterBand format to polygonize it");
+        rterror("rt_raster_dump_as_wktpolygons: Couldn't transform raster band "
+                "in GDALRasterBand format to polygonize it");
         GDALClose(memdataset);
         GDALDeregisterDriver(gdal_drv);
         GDALDestroyDriver(gdal_drv);
@@ -1925,7 +2148,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
 
     /* Checking */
     if (GDALGetRasterCount(memdataset) != 1) {
-        ctx->err("rt_raster_dump_as_wktpolygons: Error creating GDAL MEM raster bands");
+        rterror("rt_raster_dump_as_wktpolygons: Error creating GDAL MEM raster bands");
         GDALClose(memdataset);
         GDALDeregisterDriver(gdal_drv);
         GDALDestroyDriver(gdal_drv);
@@ -1949,7 +2172,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
             wkbPolygon, NULL);
 
     if (NULL == hLayer) {
-        ctx->err("rt_raster_dump_as_wktpolygons: Couldn't create layer to store polygons");
+        rterror("rt_raster_dump_as_wktpolygons: Couldn't create layer to store polygons");
         GDALClose(memdataset);
         GDALDeregisterDriver(gdal_drv);
         GDALDestroyDriver(gdal_drv);
@@ -1967,7 +2190,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
     /* Second, create the field */
     if (OGR_L_CreateField(hLayer, hFldDfn, TRUE) !=
             OGRERR_NONE) {
-        ctx->warn("Couldn't create a field in OGR Layer. The polygons generated won't be able to store the pixel value");
+        rtwarn("Couldn't create a field in OGR Layer. The polygons generated won't be able to store the pixel value");
         iPixVal = -1;
     }
     else {
@@ -1979,7 +2202,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
     /* Get GDAL raster band */
     gdal_band = GDALGetRasterBand(memdataset, 1);
     if (NULL == gdal_band) {
-        ctx->err("rt_raster_dump_as_wktpolygons: Couldn't get GDAL band to polygonize");
+        rterror("rt_raster_dump_as_wktpolygons: Couldn't get GDAL band to polygonize");
         GDALClose(memdataset);
         GDALDeregisterDriver(gdal_drv);
         GDALDestroyDriver(gdal_drv);
@@ -1991,12 +2214,12 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
         return 0;
     }
 
-    iBandHasNodataValue = rt_band_get_hasnodata_flag(ctx, band);
+    iBandHasNodataValue = rt_band_get_hasnodata_flag(band);
     if (iBandHasNodataValue) {
         /* Add nodata value for band */
-        dBandNoData = rt_band_get_nodata(ctx, band);
+        dBandNoData = rt_band_get_nodata(band);
         if (GDALSetRasterNoDataValue(gdal_band, dBandNoData) != CE_None)
-            ctx->warn("Couldn't set nodata value for band.");
+            rtwarn("Couldn't set nodata value for band.");
     }
 
 
@@ -2005,25 +2228,26 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
      **/
     GDALPolygonize(gdal_band, NULL, hLayer, iPixVal, NULL, NULL, NULL);
 
-	/**
-	 * Optimization: Apply a OGR SQL filter to the layer to select the
- 	 * features different from NODATA value.
- 	 *
- 	 * Thanks to David Zwarg.
- 	 **/
-	if (iBandHasNodataValue) {
-		pszQuery = (char *) ctx->alloc(50 * sizeof (char));
-		sprintf(pszQuery, "PixelValue != %f", dBandNoData );		
-		OGRErr e = OGR_L_SetAttributeFilter(hLayer, pszQuery);
-		if (e != OGRERR_NONE) {
-			ctx->warn("Error filtering NODATA values for band. All values will be treated as data values\n");
-		}
-			
-	}
+    /**
+     * Optimization: Apply a OGR SQL filter to the layer to select the
+     * features different from NODATA value.
+     *
+     * Thanks to David Zwarg.
+     **/
+    if (iBandHasNodataValue) {
+            pszQuery = (char *) rtalloc(50 * sizeof (char));
+            sprintf(pszQuery, "PixelValue != %f", dBandNoData );
+            OGRErr e = OGR_L_SetAttributeFilter(hLayer, pszQuery);
+            if (e != OGRERR_NONE) {
+                    rtwarn("Error filtering NODATA values for band. All values"
+                            " will be treated as data values");
+            }
 
-	else {
-		pszQuery = NULL;
-	}
+    }
+
+    else {
+            pszQuery = NULL;
+    }
 
 
 
@@ -2032,16 +2256,16 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
      * XXX jorgearevalo: GDALPolygonize does not set the coordinate system
      * on the output layer. Application code should do this when the layer
      * is created, presumably matching the raster coordinate system.
-     * XXX jorgearevalo: modify GDALPolygonize to directly emit polygons
-     * in WKT format?
+     * TODO: modify GDALPolygonize to directly emit polygons in WKT format?
      *********************************************************************/
     nFeatureCount = OGR_L_GetFeatureCount(hLayer, TRUE);
 
     /* Allocate memory for pols */
-    pols = (rt_geomval) ctx->alloc(nFeatureCount * sizeof (struct rt_geomval_t));
+    pols = (rt_geomval) rtalloc(nFeatureCount * sizeof (struct rt_geomval_t));
 
     if (NULL == pols) {
-        ctx->err("rt_raster_dump_as_wktpolygons: Couldn't allocate memory for geomval structure");
+        rterror("rt_raster_dump_as_wktpolygons: Couldn't allocate memory for "
+                "geomval structure");
         GDALClose(memdataset);
         GDALDeregisterDriver(gdal_drv);
         GDALDestroyDriver(gdal_drv);
@@ -2058,8 +2282,8 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
     if (pnElements)
         *pnElements = 0;
 
-	/* Reset feature reading to start in the first feature */
-	OGR_L_ResetReading(hLayer);
+    /* Reset feature reading to start in the first feature */
+    OGR_L_ResetReading(hLayer);
 
     for (j = 0; j < nFeatureCount; j++) {
 
@@ -2070,8 +2294,8 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
      	OGR_G_ExportToWkt(hGeom, &pszSrcText);
 
       	pols[j].val = dValue;
-       	pols[j].srid = rt_raster_get_srid(ctx, raster);
-     	pols[j].geom = (char *) ctx->alloc((1 + strlen(pszSrcText))
+       	pols[j].srid = rt_raster_get_srid(raster);
+     	pols[j].geom = (char *) rtalloc((1 + strlen(pszSrcText))
                     * sizeof (char));
      	strcpy(pols[j].geom, pszSrcText);
 
@@ -2085,7 +2309,7 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
          * postgresql memory context to work with, and the memory created
          * for pszSrcText is created outside this context.
          **/
-         //ctx->dealloc(pszSrcText);
+         //rtdealloc(pszSrcText);
         free(pszSrcText);
         pszSrcText = NULL;
         
@@ -2111,13 +2335,14 @@ rt_raster_dump_as_wktpolygons(rt_context ctx, rt_raster raster, int nband,
 }
 
 LWPOLY*
-rt_raster_get_convex_hull(rt_context ctx, rt_raster raster) {
+rt_raster_get_convex_hull(rt_raster raster) {
     POINTARRAY **rings = NULL;
     POINTARRAY *pts = NULL;
     LWPOLY* ret = NULL;
     POINT4D p4d;
 
-    assert(NULL != ctx);
+    
+    
     assert(NULL != raster);
 
     RASTER_DEBUGF(3, "rt_raster_get_convex_hull: raster is %dx%d",
@@ -2127,41 +2352,41 @@ rt_raster_get_convex_hull(rt_context ctx, rt_raster raster) {
         return 0;
     }
 
-    rings = (POINTARRAY **) ctx->alloc(sizeof (POINTARRAY*));
+    rings = (POINTARRAY **) rtalloc(sizeof (POINTARRAY*));
     if (!rings) {
-        ctx->err("rt_raster_get_convex_hull: Out of memory [%s:%d]", __FILE__, __LINE__);
+        rterror("rt_raster_get_convex_hull: Out of memory [%s:%d]", __FILE__, __LINE__);
         return 0;
     }
     rings[0] = ptarray_construct(0, 0, 5);
     /* TODO: handle error on ptarray construction */
     /* XXX jorgearevalo: the error conditions aren't managed in ptarray_construct */
     if (!rings[0]) {
-        ctx->err("rt_raster_get_convex_hull: Out of memory [%s:%d]", __FILE__, __LINE__);
+        rterror("rt_raster_get_convex_hull: Out of memory [%s:%d]", __FILE__, __LINE__);
         return 0;
     }
     pts = rings[0];
 
     /* Upper-left corner (first and last points) */
-    rt_raster_cell_to_geopoint(ctx, raster,
+    rt_raster_cell_to_geopoint(raster,
             0, 0,
             &p4d.x, &p4d.y);
     ptarray_set_point4d(pts, 0, &p4d);
     ptarray_set_point4d(pts, 4, &p4d); /* needed for closing it? */
 
     /* Upper-right corner (we go clockwise) */
-    rt_raster_cell_to_geopoint(ctx, raster,
+    rt_raster_cell_to_geopoint(raster,
             raster->width, 0,
             &p4d.x, &p4d.y);
     ptarray_set_point4d(pts, 1, &p4d);
 
     /* Lower-right corner */
-    rt_raster_cell_to_geopoint(ctx, raster,
+    rt_raster_cell_to_geopoint(raster,
             raster->width, raster->height,
             &p4d.x, &p4d.y);
     ptarray_set_point4d(pts, 2, &p4d);
 
     /* Lower-left corner */
-    rt_raster_cell_to_geopoint(ctx, raster,
+    rt_raster_cell_to_geopoint(raster,
             0, raster->height,
             &p4d.x, &p4d.y);
     ptarray_set_point4d(pts, 3, &p4d);
@@ -2466,7 +2691,7 @@ write_float64(uint8_t** to, uint8_t littleEndian, double v)
 
 /* Read band from WKB as at start of band */
 static rt_band
-rt_band_from_wkb(rt_context ctx, uint16_t width, uint16_t height,
+rt_band_from_wkb(uint16_t width, uint16_t height,
         const uint8_t** ptr, const uint8_t* end,
         uint8_t littleEndian) {
     rt_band band = NULL;
@@ -2475,26 +2700,27 @@ rt_band_from_wkb(rt_context ctx, uint16_t width, uint16_t height,
     unsigned long sz = 0;
     uint32_t v = 0;
 
-    assert(NULL != ctx);
+    
+    
     assert(NULL != ptr);
     assert(NULL != end);
 
-    band = ctx->alloc(sizeof (struct rt_band_t));
+    band = rtalloc(sizeof (struct rt_band_t));
     if (!band) {
-        ctx->err("rt_band_from_wkb: Out of memory allocating rt_band during WKB parsing");
+        rterror("rt_band_from_wkb: Out of memory allocating rt_band during WKB parsing");
         return 0;
     }
 
     if (end - *ptr < 1) {
-        ctx->err("rt_band_from_wkb: Premature end of WKB on band reading (%s:%d)",
+        rterror("rt_band_from_wkb: Premature end of WKB on band reading (%s:%d)",
                 __FILE__, __LINE__);
         return 0;
     }
     type = read_uint8(ptr);
 
     if ((type & BANDTYPE_PIXTYPE_MASK) >= PT_END) {
-        ctx->err("rt_band_from_wkb: Invalid pixtype %d", type & BANDTYPE_PIXTYPE_MASK);
-        ctx->dealloc(band);
+        rterror("rt_band_from_wkb: Invalid pixtype %d", type & BANDTYPE_PIXTYPE_MASK);
+        rtdealloc(band);
         return 0;
     }
     assert(NULL != band);
@@ -2507,16 +2733,16 @@ rt_band_from_wkb(rt_context ctx, uint16_t width, uint16_t height,
     band->height = height;
 
     RASTER_DEBUGF(3, " Band pixtype:%s, offline:%d, hasnodata:%d",
-            rt_pixtype_name(ctx, band->pixtype),
+            rt_pixtype_name(band->pixtype),
             band->offline,
             band->hasnodata);
 
     /* Check there's enough bytes to read nodata value */
 
-    pixbytes = rt_pixtype_size(ctx, band->pixtype);
+    pixbytes = rt_pixtype_size(band->pixtype);
     if (((*ptr) + pixbytes) >= end) {
-        ctx->err("rt_band_from_wkb: Premature end of WKB on band novalue reading");
-        ctx->dealloc(band);
+        rterror("rt_band_from_wkb: Premature end of WKB on band novalue reading");
+        rtdealloc(band);
         return 0;
     }
 
@@ -2579,8 +2805,8 @@ rt_band_from_wkb(rt_context ctx, uint16_t width, uint16_t height,
         }
         default:
         {
-            ctx->err("rt_band_from_wkb: Unknown pixeltype %d", band->pixtype);
-            ctx->dealloc(band);
+            rterror("rt_band_from_wkb: Unknown pixeltype %d", band->pixtype);
+            rtdealloc(band);
             return 0;
         }
     }
@@ -2590,10 +2816,10 @@ rt_band_from_wkb(rt_context ctx, uint16_t width, uint16_t height,
 
     if (band->offline) {
         if (((*ptr) + 1) >= end) {
-            ctx->err("rt_band_from_wkb: Premature end of WKB on offline "
+            rterror("rt_band_from_wkb: Premature end of WKB on offline "
                     "band data bandNum reading (%s:%d)",
                     __FILE__, __LINE__);
-            ctx->dealloc(band);
+            rtdealloc(band);
             return 0;
         }
         band->data.offline.bandNum = read_int8(ptr);
@@ -2603,13 +2829,13 @@ rt_band_from_wkb(rt_context ctx, uint16_t width, uint16_t height,
             sz = 0;
             while ((*ptr)[sz] && &((*ptr)[sz]) < end) ++sz;
             if (&((*ptr)[sz]) >= end) {
-                ctx->err("rt_band_from_wkb: Premature end of WKB on band offline path reading");
-                ctx->dealloc(band);
+                rterror("rt_band_from_wkb: Premature end of WKB on band offline path reading");
+                rtdealloc(band);
                 return 0;
             }
 
             band->ownsData = 1;
-            band->data.offline.path = ctx->alloc(sz + 1);
+            band->data.offline.path = rtalloc(sz + 1);
 
             memcpy(band->data.offline.path, *ptr, sz);
             band->data.offline.path[sz] = '\0';
@@ -2628,16 +2854,16 @@ rt_band_from_wkb(rt_context ctx, uint16_t width, uint16_t height,
     /* This is an on-disk band */
     sz = width * height * pixbytes;
     if (((*ptr) + sz) > end) {
-        ctx->err("rt_band_from_wkb: Premature end of WKB on band data reading (%s:%d)",
+        rterror("rt_band_from_wkb: Premature end of WKB on band data reading (%s:%d)",
                 __FILE__, __LINE__);
-        ctx->dealloc(band);
+        rtdealloc(band);
         return 0;
     }
 
-    band->data.mem = ctx->alloc(sz);
+    band->data.mem = rtalloc(sz);
     if (!band->data.mem) {
-        ctx->err("rt_band_from_wkb: Out of memory during band creation in WKB parser");
-        ctx->dealloc(band);
+        rterror("rt_band_from_wkb: Out of memory during band creation in WKB parser");
+        rtdealloc(band);
         return 0;
     }
 
@@ -2656,9 +2882,9 @@ rt_band_from_wkb(rt_context ctx, uint16_t width, uint16_t height,
                 else if (pixbytes == 4) flipper = flip_endian_32;
                 else if (pixbytes == 8) flipper = flip_endian_64;
                 else {
-                    ctx->err("rt_band_from_wkb: Unexpected pix bytes %d", pixbytes);
-                    ctx->dealloc(band);
-                    ctx->dealloc(band->data.mem);
+                    rterror("rt_band_from_wkb: Unexpected pix bytes %d", pixbytes);
+                    rtdealloc(band);
+                    rtdealloc(band->data.mem);
                     return 0;
                 }
 
@@ -2685,10 +2911,10 @@ rt_band_from_wkb(rt_context ctx, uint16_t width, uint16_t height,
             for (v = 0; v < sz; ++v) {
                 val = ((uint8_t*) band->data.mem)[v];
                 if (val > maxVal) {
-                    ctx->err("rt_band_from_wkb: Invalid value %d for pixel of type %s",
-                            val, rt_pixtype_name(ctx, band->pixtype));
-                    ctx->dealloc(band->data.mem);
-                    ctx->dealloc(band);
+                    rterror("rt_band_from_wkb: Invalid value %d for pixel of type %s",
+                            val, rt_pixtype_name(band->pixtype));
+                    rtdealloc(band->data.mem);
+                    rtdealloc(band);
                     return 0;
                 }
             }
@@ -2697,7 +2923,7 @@ rt_band_from_wkb(rt_context ctx, uint16_t width, uint16_t height,
 
     /* And we should check if the band is a nodata band */
     /* TODO: No!! This is too slow */
-    //rt_band_check_is_nodata(ctx, band);
+    //rt_band_check_is_nodata(band);
 
     return band;
 }
@@ -2706,7 +2932,7 @@ rt_band_from_wkb(rt_context ctx, uint16_t width, uint16_t height,
 #define RT_WKB_HDR_SZ (sizeof(struct rt_raster_serialized_t)-4+1)
 
 rt_raster
-rt_raster_from_wkb(rt_context ctx, const uint8_t* wkb, uint32_t wkbsize) {
+rt_raster_from_wkb(const uint8_t* wkb, uint32_t wkbsize) {
     const uint8_t *ptr = wkb;
     const uint8_t *wkbend = NULL;
     rt_raster rast = NULL;
@@ -2714,12 +2940,13 @@ rt_raster_from_wkb(rt_context ctx, const uint8_t* wkb, uint32_t wkbsize) {
     uint16_t version = 0;
     uint16_t i = 0;
 
-    assert(NULL != ctx);
+    
+    
     assert(NULL != ptr);
 
     /* Check that wkbsize is >= sizeof(rt_raster_serialized) */
     if (wkbsize < RT_WKB_HDR_SZ) {
-        ctx->err("rt_raster_from_wkb: wkb size < min size (%d)",
+        rterror("rt_raster_from_wkb: wkb size < min size (%d)",
                 RT_WKB_HDR_SZ);
         return 0;
     }
@@ -2738,14 +2965,14 @@ rt_raster_from_wkb(rt_context ctx, const uint8_t* wkb, uint32_t wkbsize) {
     /* Read version of protocol */
     version = read_uint16(&ptr, endian);
     if (version != 0) {
-        ctx->err("rt_raster_from_wkb: WKB version %d unsupported", version);
+        rterror("rt_raster_from_wkb: WKB version %d unsupported", version);
         return 0;
     }
 
     /* Read other components of raster header */
-    rast = (rt_raster) ctx->alloc(sizeof (struct rt_raster_t));
+    rast = (rt_raster) rtalloc(sizeof (struct rt_raster_t));
     if (!rast) {
-        ctx->err("rt_raster_from_wkb: Out of memory allocating raster for wkb input");
+        rterror("rt_raster_from_wkb: Out of memory allocating raster for wkb input");
         return 0;
     }
     rast->numBands = read_uint16(&ptr, endian);
@@ -2784,20 +3011,20 @@ rt_raster_from_wkb(rt_context ctx, const uint8_t* wkb, uint32_t wkbsize) {
     if (!rast->numBands) {
         /* Here ptr should have been left to right after last used byte */
         if (ptr < wkbend) {
-            ctx->info("%d bytes of WKB remained unparsed", wkbend - ptr);
+            rtwarn("%d bytes of WKB remained unparsed", wkbend - ptr);
         } else if (ptr > wkbend) {
             /* Easier to get a segfault before I guess */
-            ctx->warn("We parsed %d bytes more then available!", ptr - wkbend);
+            rtwarn("We parsed %d bytes more then available!", ptr - wkbend);
         }
         rast->bands = 0;
         return rast;
     }
 
     /* Now read the bands */
-    rast->bands = (rt_band*) ctx->alloc(sizeof (rt_band) * rast->numBands);
+    rast->bands = (rt_band*) rtalloc(sizeof (rt_band) * rast->numBands);
     if (!rast->bands) {
-        ctx->err("rt_raster_from_wkb: Out of memory allocating bands for WKB raster decoding");
-        ctx->dealloc(rast);
+        rterror("rt_raster_from_wkb: Out of memory allocating bands for WKB raster decoding");
+        rtdealloc(rast);
         return 0;
     }
 
@@ -2808,11 +3035,11 @@ rt_raster_from_wkb(rt_context ctx, const uint8_t* wkb, uint32_t wkbsize) {
         RASTER_DEBUGF(3, "Parsing band %d from wkb position %d", i,
                 d_binptr_to_pos(ptr, wkbend, wkbsize));
 
-        rt_band band = rt_band_from_wkb(ctx, rast->width, rast->height,
+        rt_band band = rt_band_from_wkb(rast->width, rast->height,
                 &ptr, wkbend, endian);
         if (!band) {
-            ctx->err("rt_raster_from_wkb: Error reading WKB form of band %d", i);
-            ctx->dealloc(rast);
+            rterror("rt_raster_from_wkb: Error reading WKB form of band %d", i);
+            rtdealloc(rast);
             /* TODO: dealloc any previously allocated band too ! */
             return 0;
         }
@@ -2821,10 +3048,10 @@ rt_raster_from_wkb(rt_context ctx, const uint8_t* wkb, uint32_t wkbsize) {
 
     /* Here ptr should have been left to right after last used byte */
     if (ptr < wkbend) {
-        ctx->info("%d bytes of WKB remained unparsed", wkbend - ptr);
+        rtwarn("%d bytes of WKB remained unparsed", wkbend - ptr);
     } else if (ptr > wkbend) {
         /* Easier to get a segfault before I guess */
-        ctx->warn("We parsed %d bytes more then available!",
+        rtwarn("We parsed %d bytes more then available!",
                 ptr - wkbend);
     }
 
@@ -2833,26 +3060,27 @@ rt_raster_from_wkb(rt_context ctx, const uint8_t* wkb, uint32_t wkbsize) {
 }
 
 rt_raster
-rt_raster_from_hexwkb(rt_context ctx, const char* hexwkb,
+rt_raster_from_hexwkb(const char* hexwkb,
         uint32_t hexwkbsize) {
     uint8_t* wkb = NULL;
     uint32_t wkbsize = 0;
     uint32_t i = 0;
 
-    assert(NULL != ctx);
+    
+    
     assert(NULL != hexwkb);
 
     RASTER_DEBUGF(3, "rt_raster_from_hexwkb: input wkb: %s", hexwkb);
 
     if (hexwkbsize % 2) {
-        ctx->err("rt_raster_from_hexwkb: Raster HEXWKB input must have an even number of characters");
+        rterror("rt_raster_from_hexwkb: Raster HEXWKB input must have an even number of characters");
         return 0;
     }
     wkbsize = hexwkbsize / 2;
 
-    wkb = ctx->alloc(wkbsize);
+    wkb = rtalloc(wkbsize);
     if (!wkb) {
-        ctx->err("rt_raster_from_hexwkb: Out of memory allocating memory for decoding HEXWKB");
+        rterror("rt_raster_from_hexwkb: Out of memory allocating memory for decoding HEXWKB");
         return 0;
     }
 
@@ -2860,19 +3088,20 @@ rt_raster_from_hexwkb(rt_context ctx, const char* hexwkb,
         wkb[i] = parse_hex((char*) & (hexwkb[i * 2]));
     }
 
-    rt_raster ret = rt_raster_from_wkb(ctx, wkb, wkbsize);
+    rt_raster ret = rt_raster_from_wkb(wkb, wkbsize);
 
-    ctx->dealloc(wkb); /* as long as rt_raster_from_wkb copies memory */
+    rtdealloc(wkb); /* as long as rt_raster_from_wkb copies memory */
 
     return ret;
 }
 
 static uint32_t
-rt_raster_wkb_size(rt_context ctx, rt_raster raster) {
+rt_raster_wkb_size(rt_raster raster) {
     uint32_t size = RT_WKB_HDR_SZ;
     uint16_t i = 0;
 
-    assert(NULL != ctx);
+    
+    
     assert(NULL != raster);
 
     RASTER_DEBUGF(3, "rt_raster_wkb_size: computing size for %d bands",
@@ -2881,12 +3110,12 @@ rt_raster_wkb_size(rt_context ctx, rt_raster raster) {
     for (i = 0; i < raster->numBands; ++i) {
         rt_band band = raster->bands[i];
         rt_pixtype pixtype = band->pixtype;
-        int pixbytes = rt_pixtype_size(ctx, pixtype);
+        int pixbytes = rt_pixtype_size(pixtype);
 
         RASTER_DEBUGF(3, "rt_raster_wkb_size: adding size of band %d", i);
 
         if (pixbytes < 1) {
-            ctx->err("rt_raster_wkb_size: Corrupted band: unknown pixtype");
+            rterror("rt_raster_wkb_size: Corrupted band: unknown pixtype");
             return 0;
         }
 
@@ -2913,7 +3142,7 @@ rt_raster_wkb_size(rt_context ctx, rt_raster raster) {
 }
 
 uint8_t *
-rt_raster_to_wkb(rt_context ctx, rt_raster raster, uint32_t *wkbsize) {
+rt_raster_to_wkb(rt_raster raster, uint32_t *wkbsize) {
 #if POSTGIS_DEBUG_LEVEL > 0
     const uint8_t *wkbend = NULL;
 #endif
@@ -2922,19 +3151,20 @@ rt_raster_to_wkb(rt_context ctx, rt_raster raster, uint32_t *wkbsize) {
     uint16_t i = 0;
     uint8_t littleEndian = isMachineLittleEndian();
 
-    assert(NULL != ctx);
+    
+    
     assert(NULL != raster);
     assert(NULL != wkbsize);
 
     RASTER_DEBUG(2, "rt_raster_to_wkb: about to call rt_raster_wkb_size");
 
-    *wkbsize = rt_raster_wkb_size(ctx, raster);
+    *wkbsize = rt_raster_wkb_size(raster);
 
     RASTER_DEBUGF(3, "rt_raster_to_wkb: found size: %d", *wkbsize);
 
-    wkb = (uint8_t*) ctx->alloc(*wkbsize);
+    wkb = (uint8_t*) rtalloc(*wkbsize);
     if (!wkb) {
-        ctx->err("rt_raster_to_wkb: Out of memory allocating WKB for raster");
+        rterror("rt_raster_to_wkb: Out of memory allocating WKB for raster");
         return 0;
     }
 
@@ -2964,14 +3194,14 @@ rt_raster_to_wkb(rt_context ctx, rt_raster raster, uint32_t *wkbsize) {
     for (i = 0; i < raster->numBands; ++i) {
         rt_band band = raster->bands[i];
         rt_pixtype pixtype = band->pixtype;
-        int pixbytes = rt_pixtype_size(ctx, pixtype);
+        int pixbytes = rt_pixtype_size(pixtype);
 
         RASTER_DEBUGF(3, "Writing WKB for band %d", i);
         RASTER_DEBUGF(3, "Writing band pixel type to wkb position %d",
                 d_binptr_to_pos(ptr, wkbend, *wkbsize));
 
         if (pixbytes < 1) {
-            ctx->err("rt_raster_to_wkb: Corrupted band: unknown pixtype");
+            rterror("rt_raster_to_wkb: Corrupted band: unknown pixtype");
             return 0;
         }
 
@@ -3044,7 +3274,7 @@ rt_raster_to_wkb(rt_context ctx, rt_raster raster, uint32_t *wkbsize) {
                 break;
             }
             default:
-                ctx->err("rt_raster_to_wkb: Fatal error caused by unknown pixel type. Aborting.");
+                rterror("rt_raster_to_wkb: Fatal error caused by unknown pixel type. Aborting.");
                 abort(); /* shoudn't happen */
                 return 0;
         }
@@ -3088,27 +3318,28 @@ rt_raster_to_wkb(rt_context ctx, rt_raster raster, uint32_t *wkbsize) {
 }
 
 char *
-rt_raster_to_hexwkb(rt_context ctx, rt_raster raster, uint32_t *hexwkbsize) {
+rt_raster_to_hexwkb(rt_raster raster, uint32_t *hexwkbsize) {
     uint8_t *wkb = NULL;
     char* hexwkb = NULL;
     uint32_t i = 0;
     uint32_t wkbsize = 0;
 
-    assert(NULL != ctx);
+    
+    
     assert(NULL != raster);
     assert(NULL != hexwkbsize);
 
     RASTER_DEBUG(2, "rt_raster_to_hexwkb: calling rt_raster_to_wkb");
 
-    wkb = rt_raster_to_wkb(ctx, raster, &wkbsize);
+    wkb = rt_raster_to_wkb(raster, &wkbsize);
 
     RASTER_DEBUG(3, "rt_raster_to_hexwkb: rt_raster_to_wkb returned");
 
     *hexwkbsize = wkbsize * 2; /* hex is 2 times bytes */
-    hexwkb = (char*) ctx->alloc((*hexwkbsize) + 1);
+    hexwkb = (char*) rtalloc((*hexwkbsize) + 1);
     if (!hexwkb) {
-        ctx->dealloc(wkb);
-        ctx->err("rt_raster_to_hexwkb: Out of memory hexifying raster WKB");
+        rtdealloc(wkb);
+        rterror("rt_raster_to_hexwkb: Out of memory hexifying raster WKB");
         return 0;
     }
     hexwkb[*hexwkbsize] = '\0'; /* Null-terminate */
@@ -3117,7 +3348,7 @@ rt_raster_to_hexwkb(rt_context ctx, rt_raster raster, uint32_t *hexwkbsize) {
         deparse_hex(wkb[i], &(hexwkb[2 * i]));
     }
 
-    ctx->dealloc(wkb); /* we don't need this anymore */
+    rtdealloc(wkb); /* we don't need this anymore */
 
     RASTER_DEBUGF(3, "rt_raster_to_hexwkb: output wkb: %s", hexwkb);
 
@@ -3127,11 +3358,12 @@ rt_raster_to_hexwkb(rt_context ctx, rt_raster raster, uint32_t *hexwkbsize) {
 /*--------- Serializer/Deserializer --------------------------------------*/
 
 static uint32_t
-rt_raster_serialized_size(rt_context ctx, rt_raster raster) {
+rt_raster_serialized_size(rt_raster raster) {
     uint32_t size = sizeof (struct rt_raster_serialized_t);
     uint16_t i = 0;
 
-    assert(NULL != ctx);
+    
+    
     assert(NULL != raster);
 
     RASTER_DEBUGF(3, "Serialized size with just header:%d - now adding size of %d bands",
@@ -3140,10 +3372,10 @@ rt_raster_serialized_size(rt_context ctx, rt_raster raster) {
     for (i = 0; i < raster->numBands; ++i) {
         rt_band band = raster->bands[i];
         rt_pixtype pixtype = band->pixtype;
-        int pixbytes = rt_pixtype_size(ctx, pixtype);
+        int pixbytes = rt_pixtype_size(pixtype);
 
         if (pixbytes < 1) {
-            ctx->err("rt_raster_serialized_size: Corrupted band: unknown pixtype");
+            rterror("rt_raster_serialized_size: Corrupted band: unknown pixtype");
             return 0;
         }
 
@@ -3180,19 +3412,18 @@ rt_raster_serialized_size(rt_context ctx, rt_raster raster) {
 }
 
 void*
-rt_raster_serialize(rt_context ctx, rt_raster raster) {
-    uint32_t size = rt_raster_serialized_size(ctx, raster);
+rt_raster_serialize(rt_raster raster) {
+    uint32_t size = rt_raster_serialized_size(raster);
     uint8_t* ret = NULL;
     uint8_t* ptr = NULL;
     uint16_t i = 0;
 
-    assert(NULL != ctx);
-    assert(NULL != ctx->alloc);
+    
     assert(NULL != raster);
 
-    ret = (uint8_t*) ctx->alloc(size);
+    ret = (uint8_t*) rtalloc(size);
     if (!ret) {
-        ctx->err("rt_raster_serialize: Out of memory allocating %d bytes for serializing a raster",
+        rterror("rt_raster_serialize: Out of memory allocating %d bytes for serializing a raster",
                 size);
         return 0;
     }
@@ -3223,7 +3454,7 @@ rt_raster_serialize(rt_context ctx, rt_raster raster) {
 
 #if POSTGIS_DEBUG_LEVEL > 2
     uint8_t* dbg_ptr = ptr;
-    d_print_binary_hex(ctx, "HEADER", dbg_ptr, size);
+    d_print_binary_hex("HEADER", dbg_ptr, size);
 #endif
 
     ptr += sizeof (struct rt_raster_serialized_t);
@@ -3234,9 +3465,9 @@ rt_raster_serialize(rt_context ctx, rt_raster raster) {
         assert(NULL != band);
 
         rt_pixtype pixtype = band->pixtype;
-        int pixbytes = rt_pixtype_size(ctx, pixtype);
+        int pixbytes = rt_pixtype_size(pixtype);
         if (pixbytes < 1) {
-            ctx->err("rt_raster_serialize: Corrupted band: unknown pixtype");
+            rterror("rt_raster_serialize: Corrupted band: unknown pixtype");
             return 0;
         }
 
@@ -3254,7 +3485,7 @@ rt_raster_serialize(rt_context ctx, rt_raster raster) {
         }
 
 #if POSTGIS_DEBUG_LEVEL > 2
-        d_print_binary_hex(ctx, "PIXTYPE", dbg_ptr, size);
+        d_print_binary_hex("PIXTYPE", dbg_ptr, size);
 #endif
 
         ptr += 1;
@@ -3266,7 +3497,7 @@ rt_raster_serialize(rt_context ctx, rt_raster raster) {
         }
 
 #if POSTGIS_DEBUG_LEVEL > 2
-        d_print_binary_hex(ctx, "PADDING", dbg_ptr, size);
+        d_print_binary_hex("PADDING", dbg_ptr, size);
 #endif
 
         /* Consistency checking (ptr is pixbytes-aligned) */
@@ -3321,7 +3552,7 @@ rt_raster_serialize(rt_context ctx, rt_raster raster) {
                 break;
             }
             default:
-                ctx->err("rt_raster_serialize: Fatal error caused by unknown pixel type. Aborting.");
+                rterror("rt_raster_serialize: Fatal error caused by unknown pixel type. Aborting.");
                 abort(); /* shouldn't happen */
                 return 0;
         }
@@ -3330,7 +3561,7 @@ rt_raster_serialize(rt_context ctx, rt_raster raster) {
         assert(!((uintptr_t) ptr % pixbytes));
 
 #if POSTGIS_DEBUG_LEVEL > 2
-        d_print_binary_hex(ctx, "nodata", dbg_ptr, size);
+        d_print_binary_hex("nodata", dbg_ptr, size);
 #endif
 
         if (band->offline) {
@@ -3349,7 +3580,7 @@ rt_raster_serialize(rt_context ctx, rt_raster raster) {
         }
 
 #if POSTGIS_DEBUG_LEVEL > 2
-        d_print_binary_hex(ctx, "BAND", dbg_ptr, size);
+        d_print_binary_hex("BAND", dbg_ptr, size);
 #endif
 
         /* Pad up to 8-bytes boundary */
@@ -3367,21 +3598,22 @@ rt_raster_serialize(rt_context ctx, rt_raster raster) {
     } /* for-loop over bands */
 
 #if POSTGIS_DEBUG_LEVEL > 2
-    d_print_binary_hex(ctx, "SERIALIZED RASTER", dbg_ptr, size);
+    d_print_binary_hex("SERIALIZED RASTER", dbg_ptr, size);
 #endif
 
     return ret;
 }
 
 rt_raster
-rt_raster_deserialize(rt_context ctx, void* serialized) {
+rt_raster_deserialize(void* serialized) {
     rt_raster rast = NULL;
     const uint8_t *ptr = NULL;
     const uint8_t *beg = NULL;
     uint16_t i = 0;
     uint8_t littleEndian = isMachineLittleEndian();
 
-    assert(NULL != ctx);
+    
+    
     assert(NULL != serialized);
 
     RASTER_DEBUG(2, "rt_raster_deserialize: Entering...");
@@ -3394,9 +3626,9 @@ rt_raster_deserialize(rt_context ctx, void* serialized) {
     /* Allocate memory for deserialized raster header */
 
     RASTER_DEBUG(3, "rt_raster_deserialize: Allocationg memory for deserialized raster header");
-    rast = (rt_raster) ctx->alloc(sizeof (struct rt_raster_t));
+    rast = (rt_raster) rtalloc(sizeof (struct rt_raster_t));
     if (!rast) {
-        ctx->err("rt_raster_deserialize: Out of memory allocating raster for deserialization");
+        rterror("rt_raster_deserialize: Out of memory allocating raster for deserialization");
         return 0;
     }
 
@@ -3412,7 +3644,7 @@ rt_raster_deserialize(rt_context ctx, void* serialized) {
 
     RASTER_DEBUG(3, "rt_raster_deserialize: Allocating memory for bands");
     /* Allocate registry of raster bands */
-    rast->bands = ctx->alloc(rast->numBands * sizeof (rt_band));
+    rast->bands = rtalloc(rast->numBands * sizeof (rt_band));
 
     RASTER_DEBUGF(3, "rt_raster_deserialize: %d bands", rast->numBands);
 
@@ -3426,9 +3658,9 @@ rt_raster_deserialize(rt_context ctx, void* serialized) {
         uint8_t type = 0;
         int pixbytes = 0;
 
-        band = ctx->alloc(sizeof (struct rt_band_t));
+        band = rtalloc(sizeof (struct rt_band_t));
         if (!band) {
-            ctx->err("rt_raster_deserialize: Out of memory allocating rt_band during deserialization");
+            rterror("rt_raster_deserialize: Out of memory allocating rt_band during deserialization");
             return 0;
         }
 
@@ -3438,7 +3670,7 @@ rt_raster_deserialize(rt_context ctx, void* serialized) {
         ptr++;
         band->pixtype = type & BANDTYPE_PIXTYPE_MASK;
 
-        RASTER_DEBUGF(3, "rt_raster_deserialize: band %d with pixel type %s", i, rt_pixtype_name(ctx, band->pixtype));
+        RASTER_DEBUGF(3, "rt_raster_deserialize: band %d with pixel type %s", i, rt_pixtype_name(band->pixtype));
 
         band->offline = BANDTYPE_IS_OFFDB(type) ? 1 : 0;
         band->hasnodata = BANDTYPE_HAS_NODATA(type) ? 1 : 0;
@@ -3448,7 +3680,7 @@ rt_raster_deserialize(rt_context ctx, void* serialized) {
         band->ownsData = 0;
 
         /* Advance by data padding */
-        pixbytes = rt_pixtype_size(ctx, band->pixtype);
+        pixbytes = rt_pixtype_size(band->pixtype);
         ptr += pixbytes - 1;
 
         /* Read nodata value */
@@ -3510,9 +3742,9 @@ rt_raster_deserialize(rt_context ctx, void* serialized) {
             }
             default:
             {
-                ctx->err("rt_raster_deserialize: Unknown pixeltype %d", band->pixtype);
-                ctx->dealloc(band);
-                ctx->dealloc(rast);
+                rterror("rt_raster_deserialize: Unknown pixeltype %d", band->pixtype);
+                rtdealloc(band);
+                rtdealloc(rast);
                 return 0;
             }
         }
@@ -3556,65 +3788,66 @@ rt_raster_deserialize(rt_context ctx, void* serialized) {
     return rast;
 }
 
-int rt_raster_is_empty(rt_context ctx, rt_raster raster) {
-    assert(NULL != ctx);
-
+int rt_raster_is_empty(rt_raster raster) {
+    
+    
     return (NULL == raster || raster->height <= 0 || raster->width <= 0);
 }
 
-int rt_raster_has_no_band(rt_context ctx, rt_raster raster, int nband) {
-    assert(NULL != ctx);
-
+int rt_raster_has_no_band(rt_raster raster, int nband) {
+    
+    
     return (NULL == raster || raster->numBands < nband);
 }
 
-int32_t rt_raster_copy_band(rt_context ctx, rt_raster torast,
+int32_t rt_raster_copy_band(rt_raster torast,
         rt_raster fromrast, int fromindex, int toindex)
 {
     rt_band newband = NULL;
-    assert(NULL != ctx);
+    
+    
     assert(NULL != torast);
     assert(NULL != fromrast);
 
     /* Check raster dimensions */
     if (torast->height != fromrast->height || torast->width != fromrast->width)
     {
-        ctx->err("rt_raster_copy_band: Attempting to add a band with different width or height");
+        rtwarn("rt_raster_copy_band: Attempting to add a band with different width or height");
         return -1;
     }
 
     /* Check bands limits */
     if (fromrast->numBands < 1)
     {
-        ctx->warn("rt_raster_copy_band: Second raster has no band");
+        rtwarn("rt_raster_copy_band: Second raster has no band");
         return -1;
     }
     else if (fromindex < 0)
     {
-        ctx->warn("rt_raster_copy_band: Band index for second raster < 0. Defaulted to 1");
+        rtwarn("rt_raster_copy_band: Band index for second raster < 0. Defaulted to 1");
         fromindex = 0;
     }
     else if (fromindex >= fromrast->numBands)
     {
-        ctx->warn("rt_raster_copy_band: Band index for second raster > number of bands, truncated from %u to %u", fromindex - 1, fromrast->numBands);
+        rtwarn("rt_raster_copy_band: Band index for second raster > number of bands, truncated from %u to %u", fromindex - 1, fromrast->numBands);
         fromindex = fromrast->numBands - 1;
     }
 
     if (toindex < 0)
     {
-        ctx->warn("rt_raster_copy_band: Band index for first raster < 0. Defaulted to 1");
+        rtwarn("rt_raster_copy_band: Band index for first raster < 0. Defaulted to 1");
         toindex = 0;
     }
     else if (toindex > torast->numBands)
     {
-        ctx->warn("rt_raster_copy_band: Band index for first raster > number of bands, truncated from %u to %u", toindex - 1, torast->numBands);
+        rtwarn("rt_raster_copy_band: Band index for first raster > number of bands, truncated from %u to %u", toindex - 1, torast->numBands);
         toindex = torast->numBands;
     }
 
     /* Get band from source raster */
-    newband = rt_raster_get_band(ctx, fromrast, fromindex);
+    newband = rt_raster_get_band(fromrast, fromindex);
 
     /* Add band to the second raster */
-    return rt_raster_add_band(ctx, torast, newband, toindex);
+    return rt_raster_add_band(torast, newband, toindex);
 }
 

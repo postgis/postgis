@@ -36,14 +36,11 @@ int
 main()
 {
     /* will use default allocators and message handlers */
-    rt_context ctx = NULL;
     rt_raster raster = NULL;
     const char *hexwkb = NULL;
     const char *out = NULL;
     uint32_t len = 0;
     int i = 0;
-
-    ctx = rt_context_new(NULL, NULL, NULL);
 
     /* ------------------------------------------------------ */
     /* No bands, 7x8 - little endian                          */
@@ -64,20 +61,20 @@ main()
 "0800"             /* height (uint16 8) */
     ;
 
-    raster = rt_raster_from_hexwkb(ctx, hexwkb, strlen(hexwkb));
+    raster = rt_raster_from_hexwkb(hexwkb, strlen(hexwkb));
     CHECK(raster);
-    CHECK_EQUALS(rt_raster_get_num_bands(ctx, raster), 0);
-    CHECK_EQUALS(rt_raster_get_x_scale(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_y_scale(ctx, raster), 2);
-    CHECK_EQUALS(rt_raster_get_x_offset(ctx, raster), 3);
-    CHECK_EQUALS(rt_raster_get_y_offset(ctx, raster), 4);
-    CHECK_EQUALS(rt_raster_get_x_skew(ctx, raster), 5);
-    CHECK_EQUALS(rt_raster_get_y_skew(ctx, raster), 6);
-    CHECK_EQUALS(rt_raster_get_srid(ctx, raster), 10);
-    CHECK_EQUALS(rt_raster_get_width(ctx, raster), 7);
-    CHECK_EQUALS(rt_raster_get_height(ctx, raster), 8);
+    CHECK_EQUALS(rt_raster_get_num_bands(raster), 0);
+    CHECK_EQUALS(rt_raster_get_x_scale(raster), 1);
+    CHECK_EQUALS(rt_raster_get_y_scale(raster), 2);
+    CHECK_EQUALS(rt_raster_get_x_offset(raster), 3);
+    CHECK_EQUALS(rt_raster_get_y_offset(raster), 4);
+    CHECK_EQUALS(rt_raster_get_x_skew(raster), 5);
+    CHECK_EQUALS(rt_raster_get_y_skew(raster), 6);
+    CHECK_EQUALS(rt_raster_get_srid(raster), 10);
+    CHECK_EQUALS(rt_raster_get_width(raster), 7);
+    CHECK_EQUALS(rt_raster_get_height(raster), 8);
 
-    out  = rt_raster_to_hexwkb(ctx, raster, &len);
+    out  = rt_raster_to_hexwkb(raster, &len);
 /*
     printf(" in hexwkb len: %d\n", strlen(hexwkb));
     printf("out hexwkb len: %d\n", len);
@@ -94,14 +91,14 @@ main()
         void *serialized;
         rt_raster rast2;
 
-        serialized = rt_raster_serialize(ctx, raster);
-        rast2 = rt_raster_deserialize(ctx, serialized);
+        serialized = rt_raster_serialize(raster);
+        rast2 = rt_raster_deserialize(serialized);
 
-        rt_raster_destroy(ctx, rast2);
+        rt_raster_destroy(rast2);
         free(serialized);
     }
 
-    rt_raster_destroy(ctx, raster);
+    rt_raster_destroy(raster);
 
     /* ------------------------------------------------------ */
     /* No bands, 7x8 - big endian                             */
@@ -122,20 +119,20 @@ main()
 "0008"             /* height (uint16 8) */
     ;
 
-    raster = rt_raster_from_hexwkb(ctx, hexwkb, strlen(hexwkb));
+    raster = rt_raster_from_hexwkb(hexwkb, strlen(hexwkb));
     CHECK(raster);
-    CHECK_EQUALS(rt_raster_get_num_bands(ctx, raster), 0);
-    CHECK_EQUALS(rt_raster_get_x_scale(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_y_scale(ctx, raster), 2);
-    CHECK_EQUALS(rt_raster_get_x_offset(ctx, raster), 3);
-    CHECK_EQUALS(rt_raster_get_y_offset(ctx, raster), 4);
-    CHECK_EQUALS(rt_raster_get_x_skew(ctx, raster), 5);
-    CHECK_EQUALS(rt_raster_get_y_skew(ctx, raster), 6);
-    CHECK_EQUALS(rt_raster_get_srid(ctx, raster), 10);
-    CHECK_EQUALS(rt_raster_get_width(ctx, raster), 7);
-    CHECK_EQUALS(rt_raster_get_height(ctx, raster), 8);
+    CHECK_EQUALS(rt_raster_get_num_bands(raster), 0);
+    CHECK_EQUALS(rt_raster_get_x_scale(raster), 1);
+    CHECK_EQUALS(rt_raster_get_y_scale(raster), 2);
+    CHECK_EQUALS(rt_raster_get_x_offset(raster), 3);
+    CHECK_EQUALS(rt_raster_get_y_offset(raster), 4);
+    CHECK_EQUALS(rt_raster_get_x_skew(raster), 5);
+    CHECK_EQUALS(rt_raster_get_y_skew(raster), 6);
+    CHECK_EQUALS(rt_raster_get_srid(raster), 10);
+    CHECK_EQUALS(rt_raster_get_width(raster), 7);
+    CHECK_EQUALS(rt_raster_get_height(raster), 8);
 
-    out  = rt_raster_to_hexwkb(ctx, raster, &len);
+    out  = rt_raster_to_hexwkb(raster, &len);
     printf(" in hexwkb len: %u\n", strlen(hexwkb));
     printf("out hexwkb len: %u\n", len);
     printf(" in hexwkb: %s\n", hexwkb);
@@ -145,7 +142,7 @@ main()
     CHECK( ! strcmp(hexwkb, out) );
 */
 
-    rt_raster_destroy(ctx, raster);
+    rt_raster_destroy(raster);
     free((/*no const*/ void*)out);
 
     /* ------------------------------------------------------ */
@@ -170,33 +167,33 @@ main()
 "01"               /* pix(0,0) == 1 */
     ;
 
-    raster = rt_raster_from_hexwkb(ctx, hexwkb, strlen(hexwkb));
+    raster = rt_raster_from_hexwkb(hexwkb, strlen(hexwkb));
     CHECK(raster);
-    CHECK_EQUALS(rt_raster_get_num_bands(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_x_scale(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_y_scale(ctx, raster), 2);
-    CHECK_EQUALS(rt_raster_get_x_offset(ctx, raster), 3);
-    CHECK_EQUALS(rt_raster_get_y_offset(ctx, raster), 4);
-    CHECK_EQUALS(rt_raster_get_x_skew(ctx, raster), 5);
-    CHECK_EQUALS(rt_raster_get_y_skew(ctx, raster), 6);
-    CHECK_EQUALS(rt_raster_get_srid(ctx, raster), 10);
-    CHECK_EQUALS(rt_raster_get_width(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_height(ctx, raster), 1);
+    CHECK_EQUALS(rt_raster_get_num_bands(raster), 1);
+    CHECK_EQUALS(rt_raster_get_x_scale(raster), 1);
+    CHECK_EQUALS(rt_raster_get_y_scale(raster), 2);
+    CHECK_EQUALS(rt_raster_get_x_offset(raster), 3);
+    CHECK_EQUALS(rt_raster_get_y_offset(raster), 4);
+    CHECK_EQUALS(rt_raster_get_x_skew(raster), 5);
+    CHECK_EQUALS(rt_raster_get_y_skew(raster), 6);
+    CHECK_EQUALS(rt_raster_get_srid(raster), 10);
+    CHECK_EQUALS(rt_raster_get_width(raster), 1);
+    CHECK_EQUALS(rt_raster_get_height(raster), 1);
     {
         double val;
         int failure;
-        rt_band band = rt_raster_get_band(ctx, raster, 0);
+        rt_band band = rt_raster_get_band(raster, 0);
         CHECK(band);
-        CHECK_EQUALS(rt_band_get_pixtype(ctx, band), PT_1BB);
-        CHECK(!rt_band_is_offline(ctx, band));
-        CHECK(rt_band_get_hasnodata_flag(ctx, band));
-        CHECK_EQUALS(rt_band_get_nodata(ctx, band), 0);
-        failure = rt_band_get_pixel(ctx, band, 0, 0, &val);
+        CHECK_EQUALS(rt_band_get_pixtype(band), PT_1BB);
+        CHECK(!rt_band_is_offline(band));
+        CHECK(rt_band_get_hasnodata_flag(band));
+        CHECK_EQUALS(rt_band_get_nodata(band), 0);
+        failure = rt_band_get_pixel(band, 0, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 1);
     }
 
-    out  = rt_raster_to_hexwkb(ctx, raster, &len);
+    out  = rt_raster_to_hexwkb(raster, &len);
     printf(" in hexwkb len: %u\n", strlen(hexwkb));
     printf("out hexwkb len: %u\n", len);
     CHECK_EQUALS(len, strlen(hexwkb));
@@ -204,7 +201,7 @@ main()
     CHECK( ! strcmp(hexwkb, out) );
 */
 
-    rt_raster_destroy(ctx, raster);
+    rt_raster_destroy(raster);
     free((/*no const*/ void*)out);
 
     /* ------------------------------------------------------ */
@@ -234,55 +231,55 @@ main()
 "02"               /* pix(2,1) == 2 */
     ;
 
-    raster = rt_raster_from_hexwkb(ctx, hexwkb, strlen(hexwkb));
+    raster = rt_raster_from_hexwkb(hexwkb, strlen(hexwkb));
     CHECK(raster);
-    CHECK_EQUALS(rt_raster_get_num_bands(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_x_scale(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_y_scale(ctx, raster), 2);
-    CHECK_EQUALS(rt_raster_get_x_offset(ctx, raster), 3);
-    CHECK_EQUALS(rt_raster_get_y_offset(ctx, raster), 4);
-    CHECK_EQUALS(rt_raster_get_x_skew(ctx, raster), 5);
-    CHECK_EQUALS(rt_raster_get_y_skew(ctx, raster), 6);
-    CHECK_EQUALS(rt_raster_get_srid(ctx, raster), 10);
-    CHECK_EQUALS(rt_raster_get_width(ctx, raster), 3);
-    CHECK_EQUALS(rt_raster_get_height(ctx, raster), 2);
+    CHECK_EQUALS(rt_raster_get_num_bands(raster), 1);
+    CHECK_EQUALS(rt_raster_get_x_scale(raster), 1);
+    CHECK_EQUALS(rt_raster_get_y_scale(raster), 2);
+    CHECK_EQUALS(rt_raster_get_x_offset(raster), 3);
+    CHECK_EQUALS(rt_raster_get_y_offset(raster), 4);
+    CHECK_EQUALS(rt_raster_get_x_skew(raster), 5);
+    CHECK_EQUALS(rt_raster_get_y_skew(raster), 6);
+    CHECK_EQUALS(rt_raster_get_srid(raster), 10);
+    CHECK_EQUALS(rt_raster_get_width(raster), 3);
+    CHECK_EQUALS(rt_raster_get_height(raster), 2);
     {
         double val;
         int failure;
         
-        rt_band band = rt_raster_get_band(ctx, raster, 0);
+        rt_band band = rt_raster_get_band(raster, 0);
         CHECK(band);
-        CHECK_EQUALS(rt_band_get_pixtype(ctx, band), PT_8BSI);
-        CHECK(!rt_band_is_offline(ctx, band));
-        CHECK(rt_band_get_hasnodata_flag(ctx,band));
-        CHECK_EQUALS(rt_band_get_nodata(ctx, band), -1);
+        CHECK_EQUALS(rt_band_get_pixtype(band), PT_8BSI);
+        CHECK(!rt_band_is_offline(band));
+        CHECK(rt_band_get_hasnodata_flag(band));
+        CHECK_EQUALS(rt_band_get_nodata(band), -1);
 
-        failure = rt_band_get_pixel(ctx, band, 0, 0, &val);
+        failure = rt_band_get_pixel(band, 0, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, -1);
 
-        failure = rt_band_get_pixel(ctx, band, 1, 0, &val);
+        failure = rt_band_get_pixel(band, 1, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 0);
 
-        failure = rt_band_get_pixel(ctx, band, 2, 0, &val);
+        failure = rt_band_get_pixel(band, 2, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 1);
 
-        failure = rt_band_get_pixel(ctx, band, 0, 1, &val);
+        failure = rt_band_get_pixel(band, 0, 1, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 127);
 
-        failure = rt_band_get_pixel(ctx, band, 1, 1, &val);
+        failure = rt_band_get_pixel(band, 1, 1, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 10);
 
-        failure = rt_band_get_pixel(ctx, band, 2, 1, &val);
+        failure = rt_band_get_pixel(band, 2, 1, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 2);
     }
 
-    out  = rt_raster_to_hexwkb(ctx, raster, &len);
+    out  = rt_raster_to_hexwkb(raster, &len);
     printf(" in hexwkb len: %u\n", strlen(hexwkb));
     printf("out hexwkb len: %u\n", len);
     CHECK_EQUALS(len, strlen(hexwkb));
@@ -296,15 +293,15 @@ main()
         void *serialized;
         rt_raster rast2;
 
-        serialized = rt_raster_serialize(ctx, raster);
-        rast2 = rt_raster_deserialize(ctx, serialized);
+        serialized = rt_raster_serialize(raster);
+        rast2 = rt_raster_deserialize(serialized);
 
-        rt_raster_destroy(ctx, rast2);
+        rt_raster_destroy(rast2);
         free(serialized);
     
     }
 
-    rt_raster_destroy(ctx, raster);
+    rt_raster_destroy(raster);
 
     /* ------------------------------------------------------ */
     /* 3x2, little endian, band0(16BSI)                       */
@@ -333,54 +330,54 @@ main()
 "0200"               /* pix(2,1) == 2 */
     ;
 
-    raster = rt_raster_from_hexwkb(ctx, hexwkb, strlen(hexwkb));
+    raster = rt_raster_from_hexwkb(hexwkb, strlen(hexwkb));
     CHECK(raster);
-    CHECK_EQUALS(rt_raster_get_num_bands(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_x_scale(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_y_scale(ctx, raster), 2);
-    CHECK_EQUALS(rt_raster_get_x_offset(ctx, raster), 3);
-    CHECK_EQUALS(rt_raster_get_y_offset(ctx, raster), 4);
-    CHECK_EQUALS(rt_raster_get_x_skew(ctx, raster), 5);
-    CHECK_EQUALS(rt_raster_get_y_skew(ctx, raster), 6);
-    CHECK_EQUALS(rt_raster_get_srid(ctx, raster), 10);
-    CHECK_EQUALS(rt_raster_get_width(ctx, raster), 3);
-    CHECK_EQUALS(rt_raster_get_height(ctx, raster), 2);
+    CHECK_EQUALS(rt_raster_get_num_bands(raster), 1);
+    CHECK_EQUALS(rt_raster_get_x_scale(raster), 1);
+    CHECK_EQUALS(rt_raster_get_y_scale(raster), 2);
+    CHECK_EQUALS(rt_raster_get_x_offset(raster), 3);
+    CHECK_EQUALS(rt_raster_get_y_offset(raster), 4);
+    CHECK_EQUALS(rt_raster_get_x_skew(raster), 5);
+    CHECK_EQUALS(rt_raster_get_y_skew(raster), 6);
+    CHECK_EQUALS(rt_raster_get_srid(raster), 10);
+    CHECK_EQUALS(rt_raster_get_width(raster), 3);
+    CHECK_EQUALS(rt_raster_get_height(raster), 2);
     {
         double val;
         int failure;
-        rt_band band = rt_raster_get_band(ctx, raster, 0);
+        rt_band band = rt_raster_get_band(raster, 0);
         CHECK(band);
-        CHECK_EQUALS(rt_band_get_pixtype(ctx, band), PT_16BSI);
-        CHECK(!rt_band_is_offline(ctx, band));
-        CHECK(!rt_band_get_hasnodata_flag(ctx, band));
-        CHECK_EQUALS(rt_band_get_nodata(ctx, band), -1);
+        CHECK_EQUALS(rt_band_get_pixtype(band), PT_16BSI);
+        CHECK(!rt_band_is_offline(band));
+        CHECK(!rt_band_get_hasnodata_flag(band));
+        CHECK_EQUALS(rt_band_get_nodata(band), -1);
         
-        failure = rt_band_get_pixel(ctx, band, 0, 0, &val);
+        failure = rt_band_get_pixel(band, 0, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, -1);
 
-        failure = rt_band_get_pixel(ctx, band, 1, 0, &val);
+        failure = rt_band_get_pixel(band, 1, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 0);
         
-        failure = rt_band_get_pixel(ctx, band, 2, 0, &val);
+        failure = rt_band_get_pixel(band, 2, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, -16);
         
-        failure = rt_band_get_pixel(ctx, band, 0, 1, &val);
+        failure = rt_band_get_pixel(band, 0, 1, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 127);
         
-        failure = rt_band_get_pixel(ctx, band, 1, 1, &val);
+        failure = rt_band_get_pixel(band, 1, 1, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 10);
         
-        failure = rt_band_get_pixel(ctx, band, 2, 1, &val);
+        failure = rt_band_get_pixel(band, 2, 1, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 2);
     }
 
-    out  = rt_raster_to_hexwkb(ctx, raster, &len);
+    out  = rt_raster_to_hexwkb(raster, &len);
     printf(" in hexwkb len: %u\n", strlen(hexwkb));
     printf("out hexwkb len: %u\n", len);
     CHECK_EQUALS(len, strlen(hexwkb));
@@ -388,7 +385,7 @@ main()
     CHECK( ! strcmp(hexwkb, out) );
 */
 
-    rt_raster_destroy(ctx, raster);
+    rt_raster_destroy(raster);
     free((/*no const*/ void*)out);
 
     /* ------------------------------------------------------ */
@@ -418,54 +415,54 @@ main()
 "0002"               /* pix(2,1) == 2 */
     ;
 
-    raster = rt_raster_from_hexwkb(ctx, hexwkb, strlen(hexwkb));
+    raster = rt_raster_from_hexwkb(hexwkb, strlen(hexwkb));
     CHECK(raster);
-    CHECK_EQUALS(rt_raster_get_num_bands(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_x_scale(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_y_scale(ctx, raster), 2);
-    CHECK_EQUALS(rt_raster_get_x_offset(ctx, raster), 3);
-    CHECK_EQUALS(rt_raster_get_y_offset(ctx, raster), 4);
-    CHECK_EQUALS(rt_raster_get_x_skew(ctx, raster), 5);
-    CHECK_EQUALS(rt_raster_get_y_skew(ctx, raster), 6);
-    CHECK_EQUALS(rt_raster_get_srid(ctx, raster), 10);
-    CHECK_EQUALS(rt_raster_get_width(ctx, raster), 3);
-    CHECK_EQUALS(rt_raster_get_height(ctx, raster), 2);
+    CHECK_EQUALS(rt_raster_get_num_bands(raster), 1);
+    CHECK_EQUALS(rt_raster_get_x_scale(raster), 1);
+    CHECK_EQUALS(rt_raster_get_y_scale(raster), 2);
+    CHECK_EQUALS(rt_raster_get_x_offset(raster), 3);
+    CHECK_EQUALS(rt_raster_get_y_offset(raster), 4);
+    CHECK_EQUALS(rt_raster_get_x_skew(raster), 5);
+    CHECK_EQUALS(rt_raster_get_y_skew(raster), 6);
+    CHECK_EQUALS(rt_raster_get_srid(raster), 10);
+    CHECK_EQUALS(rt_raster_get_width(raster), 3);
+    CHECK_EQUALS(rt_raster_get_height(raster), 2);
     {
         double val;
         int failure;
-        rt_band band = rt_raster_get_band(ctx, raster, 0);
+        rt_band band = rt_raster_get_band(raster, 0);
         CHECK(band);
-        CHECK_EQUALS(rt_band_get_pixtype(ctx, band), PT_16BSI);
-        CHECK(!rt_band_is_offline(ctx, band));
-        CHECK(!rt_band_get_hasnodata_flag(ctx,band));
-        CHECK_EQUALS(rt_band_get_nodata(ctx, band), -1);
+        CHECK_EQUALS(rt_band_get_pixtype(band), PT_16BSI);
+        CHECK(!rt_band_is_offline(band));
+        CHECK(!rt_band_get_hasnodata_flag(band));
+        CHECK_EQUALS(rt_band_get_nodata(band), -1);
 
-        failure = rt_band_get_pixel(ctx, band, 0, 0, &val);
+        failure = rt_band_get_pixel(band, 0, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, -1);
 
-        failure = rt_band_get_pixel(ctx, band, 1, 0, &val);
+        failure = rt_band_get_pixel(band, 1, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 0);
         
-        failure = rt_band_get_pixel(ctx, band, 2, 0, &val);
+        failure = rt_band_get_pixel(band, 2, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, -16);
         
-        failure = rt_band_get_pixel(ctx, band, 0, 1, &val);
+        failure = rt_band_get_pixel(band, 0, 1, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 127);
         
-        failure = rt_band_get_pixel(ctx, band, 1, 1, &val);
+        failure = rt_band_get_pixel(band, 1, 1, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 10);
         
-        failure = rt_band_get_pixel(ctx, band, 2, 1, &val);
+        failure = rt_band_get_pixel(band, 2, 1, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 2);
     }
 
-    out  = rt_raster_to_hexwkb(ctx, raster, &len);
+    out  = rt_raster_to_hexwkb(raster, &len);
     printf(" in hexwkb len: %u\n", strlen(hexwkb));
     printf("out hexwkb len: %u\n", len);
     CHECK_EQUALS(len, strlen(hexwkb));
@@ -473,7 +470,7 @@ main()
     CHECK( ! strcmp(hexwkb, out) );
 */
 
-    rt_raster_destroy(ctx, raster);
+    rt_raster_destroy(raster);
     free((/*no const*/ void*)out);
 
     /* ------------------------------------------------------ */
@@ -500,32 +497,32 @@ main()
 "2F746D702F742E74696600" 
     ;
 
-    raster = rt_raster_from_hexwkb(ctx, hexwkb, strlen(hexwkb));
+    raster = rt_raster_from_hexwkb(hexwkb, strlen(hexwkb));
     CHECK(raster);
-    CHECK_EQUALS(rt_raster_get_num_bands(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_x_scale(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_y_scale(ctx, raster), 2);
-    CHECK_EQUALS(rt_raster_get_x_offset(ctx, raster), 3);
-    CHECK_EQUALS(rt_raster_get_y_offset(ctx, raster), 4);
-    CHECK_EQUALS(rt_raster_get_x_skew(ctx, raster), 5);
-    CHECK_EQUALS(rt_raster_get_y_skew(ctx, raster), 6);
-    CHECK_EQUALS(rt_raster_get_srid(ctx, raster), 10);
-    CHECK_EQUALS(rt_raster_get_width(ctx, raster), 3);
-    CHECK_EQUALS(rt_raster_get_height(ctx, raster), 2);
+    CHECK_EQUALS(rt_raster_get_num_bands(raster), 1);
+    CHECK_EQUALS(rt_raster_get_x_scale(raster), 1);
+    CHECK_EQUALS(rt_raster_get_y_scale(raster), 2);
+    CHECK_EQUALS(rt_raster_get_x_offset(raster), 3);
+    CHECK_EQUALS(rt_raster_get_y_offset(raster), 4);
+    CHECK_EQUALS(rt_raster_get_x_skew(raster), 5);
+    CHECK_EQUALS(rt_raster_get_y_skew(raster), 6);
+    CHECK_EQUALS(rt_raster_get_srid(raster), 10);
+    CHECK_EQUALS(rt_raster_get_width(raster), 3);
+    CHECK_EQUALS(rt_raster_get_height(raster), 2);
     {
-        rt_band band = rt_raster_get_band(ctx, raster, 0);
+        rt_band band = rt_raster_get_band(raster, 0);
         CHECK(band);
-        CHECK_EQUALS(rt_band_get_pixtype(ctx, band), PT_16BSI);
-        CHECK(rt_band_is_offline(ctx, band));
-        CHECK(rt_band_get_hasnodata_flag(ctx,band));
-        CHECK_EQUALS(rt_band_get_nodata(ctx, band), -1);
-        printf("ext band path: %s\n", rt_band_get_ext_path(ctx, band));
-        printf("ext band  num: %u\n", rt_band_get_ext_band_num(ctx, band));
-        CHECK( ! strcmp(rt_band_get_ext_path(ctx, band), "/tmp/t.tif"));
-        CHECK_EQUALS(rt_band_get_ext_band_num(ctx, band), 3);
+        CHECK_EQUALS(rt_band_get_pixtype(band), PT_16BSI);
+        CHECK(rt_band_is_offline(band));
+        CHECK(rt_band_get_hasnodata_flag(band));
+        CHECK_EQUALS(rt_band_get_nodata(band), -1);
+        printf("ext band path: %s\n", rt_band_get_ext_path(band));
+        printf("ext band  num: %u\n", rt_band_get_ext_band_num(band));
+        CHECK( ! strcmp(rt_band_get_ext_path(band), "/tmp/t.tif"));
+        CHECK_EQUALS(rt_band_get_ext_band_num(band), 3);
     }
 
-    out  = rt_raster_to_hexwkb(ctx, raster, &len);
+    out  = rt_raster_to_hexwkb(raster, &len);
     printf(" in hexwkb len: %u\n", strlen(hexwkb));
     printf("out hexwkb len: %u\n", len);
     CHECK_EQUALS(len, strlen(hexwkb));
@@ -533,7 +530,7 @@ main()
     CHECK( ! strcmp(hexwkb, out) );
 */
 
-    rt_raster_destroy(ctx, raster);
+    rt_raster_destroy(raster);
     free((/*no const*/ void*)out);
 
     /* ------------------------------------------------------ */
@@ -560,42 +557,42 @@ main()
 "AF01"             /* pix(2,0) == 431 */
     ;
 
-    raster = rt_raster_from_hexwkb(ctx, hexwkb, strlen(hexwkb));
+    raster = rt_raster_from_hexwkb(hexwkb, strlen(hexwkb));
     CHECK(raster);
-    CHECK_EQUALS(rt_raster_get_num_bands(ctx, raster), 1);
-    CHECK_EQUALS(rt_raster_get_x_scale(ctx, raster), 90);
-    CHECK_EQUALS(rt_raster_get_y_scale(ctx, raster), -90);
-    CHECK_EQUALS(rt_raster_get_x_offset(ctx, raster), 969870.0);
-    CHECK_EQUALS(rt_raster_get_y_offset(ctx, raster), 642930.0);
-    CHECK_EQUALS(rt_raster_get_x_skew(ctx, raster), 0);
-    CHECK_EQUALS(rt_raster_get_y_skew(ctx, raster), 0);
-    CHECK_EQUALS(rt_raster_get_srid(ctx, raster), -1);
-    CHECK_EQUALS(rt_raster_get_width(ctx, raster), 3);
-    CHECK_EQUALS(rt_raster_get_height(ctx, raster), 1);
+    CHECK_EQUALS(rt_raster_get_num_bands(raster), 1);
+    CHECK_EQUALS(rt_raster_get_x_scale(raster), 90);
+    CHECK_EQUALS(rt_raster_get_y_scale(raster), -90);
+    CHECK_EQUALS(rt_raster_get_x_offset(raster), 969870.0);
+    CHECK_EQUALS(rt_raster_get_y_offset(raster), 642930.0);
+    CHECK_EQUALS(rt_raster_get_x_skew(raster), 0);
+    CHECK_EQUALS(rt_raster_get_y_skew(raster), 0);
+    CHECK_EQUALS(rt_raster_get_srid(raster), -1);
+    CHECK_EQUALS(rt_raster_get_width(raster), 3);
+    CHECK_EQUALS(rt_raster_get_height(raster), 1);
     {
         double val;
         int failure;
-        rt_band band = rt_raster_get_band(ctx, raster, 0);
+        rt_band band = rt_raster_get_band(raster, 0);
         CHECK(band);
-        CHECK_EQUALS(rt_band_get_pixtype(ctx, band), PT_16BSI);
-        CHECK(!rt_band_is_offline(ctx, band));
-        CHECK(rt_band_get_hasnodata_flag(ctx,band));
-        CHECK_EQUALS(rt_band_get_nodata(ctx, band), 1);
+        CHECK_EQUALS(rt_band_get_pixtype(band), PT_16BSI);
+        CHECK(!rt_band_is_offline(band));
+        CHECK(rt_band_get_hasnodata_flag(band));
+        CHECK_EQUALS(rt_band_get_nodata(band), 1);
 
-        failure = rt_band_get_pixel(ctx, band, 0, 0, &val);
+        failure = rt_band_get_pixel(band, 0, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 1);
 
-        failure = rt_band_get_pixel(ctx, band, 1, 0, &val);
+        failure = rt_band_get_pixel(band, 1, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 436);
         
-        failure = rt_band_get_pixel(ctx, band, 2, 0, &val);
+        failure = rt_band_get_pixel(band, 2, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 431);
     }
 
-    out  = rt_raster_to_hexwkb(ctx, raster, &len);
+    out  = rt_raster_to_hexwkb(raster, &len);
 /*
     printf(" in hexwkb len: %d\n", strlen(hexwkb));
     printf("out hexwkb len: %d\n", len);
@@ -612,14 +609,14 @@ main()
         void *serialized;
         rt_raster rast2;
 
-        serialized = rt_raster_serialize(ctx, raster);
-        rast2 = rt_raster_deserialize(ctx, serialized);
+        serialized = rt_raster_serialize(raster);
+        rast2 = rt_raster_deserialize(serialized);
 
-        rt_raster_destroy(ctx, rast2);
+        rt_raster_destroy(rast2);
         free(serialized);
     }
 
-    rt_raster_destroy(ctx, raster);
+    rt_raster_destroy(raster);
 
     /* ------------------------------------------------------ */
     /* 5x5, little endian, 3 x band 8BUI (RGB),               */
@@ -654,46 +651,46 @@ main()
 "46566487A1506CA2E3FA5A6CAFFBFE4D566DA4CB3E454C5665" /* 3rd band pixels */
 ;
 
-    raster = rt_raster_from_hexwkb(ctx, hexwkb, strlen(hexwkb));
+    raster = rt_raster_from_hexwkb(hexwkb, strlen(hexwkb));
     CHECK(raster);
-    CHECK_EQUALS(rt_raster_get_num_bands(ctx, raster), 3);
-    CHECK_EQUALS_DOUBLE(rt_raster_get_x_scale(ctx, raster), 0.05);
-    CHECK_EQUALS_DOUBLE(rt_raster_get_y_scale(ctx, raster), -0.05);
-    CHECK_EQUALS_DOUBLE(rt_raster_get_x_offset(ctx, raster), 3427927.75);
-    CHECK_EQUALS_DOUBLE(rt_raster_get_y_offset(ctx, raster), 5793244.00);
-    CHECK_EQUALS_DOUBLE(rt_raster_get_x_skew(ctx, raster), 0.0);
-    CHECK_EQUALS_DOUBLE(rt_raster_get_y_skew(ctx, raster), 0.0);
-    CHECK_EQUALS(rt_raster_get_srid(ctx, raster), -1);
-    CHECK_EQUALS(rt_raster_get_width(ctx, raster), 5);
-    CHECK_EQUALS(rt_raster_get_height(ctx, raster), 5);
+    CHECK_EQUALS(rt_raster_get_num_bands(raster), 3);
+    CHECK_EQUALS_DOUBLE(rt_raster_get_x_scale(raster), 0.05);
+    CHECK_EQUALS_DOUBLE(rt_raster_get_y_scale(raster), -0.05);
+    CHECK_EQUALS_DOUBLE(rt_raster_get_x_offset(raster), 3427927.75);
+    CHECK_EQUALS_DOUBLE(rt_raster_get_y_offset(raster), 5793244.00);
+    CHECK_EQUALS_DOUBLE(rt_raster_get_x_skew(raster), 0.0);
+    CHECK_EQUALS_DOUBLE(rt_raster_get_y_skew(raster), 0.0);
+    CHECK_EQUALS(rt_raster_get_srid(raster), -1);
+    CHECK_EQUALS(rt_raster_get_width(raster), 5);
+    CHECK_EQUALS(rt_raster_get_height(raster), 5);
     {
         /* Test 1st band */
         double val;
         int failure;
-        rt_band band = rt_raster_get_band(ctx, raster, 0);
+        rt_band band = rt_raster_get_band(raster, 0);
         CHECK(band);
-        CHECK_EQUALS(rt_band_get_pixtype(ctx, band), PT_8BUI);
-        CHECK(!rt_band_is_offline(ctx, band));
-        CHECK(rt_band_get_hasnodata_flag(ctx,band));
-        CHECK_EQUALS(rt_band_get_nodata(ctx, band), 0);
+        CHECK_EQUALS(rt_band_get_pixtype(band), PT_8BUI);
+        CHECK(!rt_band_is_offline(band));
+        CHECK(rt_band_get_hasnodata_flag(band));
+        CHECK_EQUALS(rt_band_get_nodata(band), 0);
 
-        failure = rt_band_get_pixel(ctx, band, 0, 0, &val);
+        failure = rt_band_get_pixel(band, 0, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 253);
 
-        failure = rt_band_get_pixel(ctx, band, 1, 0, &val);
+        failure = rt_band_get_pixel(band, 1, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 254);
         
-        failure = rt_band_get_pixel(ctx, band, 2, 0, &val);
+        failure = rt_band_get_pixel(band, 2, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 253);
         
-        failure = rt_band_get_pixel(ctx, band, 3, 0, &val);
+        failure = rt_band_get_pixel(band, 3, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 254);
         
-        failure = rt_band_get_pixel(ctx, band, 4, 0, &val);
+        failure = rt_band_get_pixel(band, 4, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 254);
     }
@@ -702,30 +699,30 @@ main()
         /* Test 2nd band */
         double val;
         int failure;
-        rt_band band = rt_raster_get_band(ctx, raster, 1);
+        rt_band band = rt_raster_get_band(raster, 1);
         CHECK(band);
-        CHECK_EQUALS(rt_band_get_pixtype(ctx, band), PT_8BUI);
-        CHECK(!rt_band_is_offline(ctx, band));
-        CHECK(rt_band_get_hasnodata_flag(ctx,band));
-        CHECK_EQUALS(rt_band_get_nodata(ctx, band), 0);
+        CHECK_EQUALS(rt_band_get_pixtype(band), PT_8BUI);
+        CHECK(!rt_band_is_offline(band));
+        CHECK(rt_band_get_hasnodata_flag(band));
+        CHECK_EQUALS(rt_band_get_nodata(band), 0);
 
-        failure = rt_band_get_pixel(ctx, band, 0, 0, &val);
+        failure = rt_band_get_pixel(band, 0, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 78);
 
-        failure = rt_band_get_pixel(ctx, band, 1, 0, &val);
+        failure = rt_band_get_pixel(band, 1, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 98);
         
-        failure = rt_band_get_pixel(ctx, band, 2, 0, &val);
+        failure = rt_band_get_pixel(band, 2, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 122);
         
-        failure = rt_band_get_pixel(ctx, band, 3, 0, &val);
+        failure = rt_band_get_pixel(band, 3, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 173);
         
-        failure = rt_band_get_pixel(ctx, band, 4, 0, &val);
+        failure = rt_band_get_pixel(band, 4, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 209);
     }
@@ -734,35 +731,35 @@ main()
         /* Test 3rd band */
         double val;
         int failure;
-        rt_band band = rt_raster_get_band(ctx, raster, 2);
+        rt_band band = rt_raster_get_band(raster, 2);
         CHECK(band);
-        CHECK_EQUALS(rt_band_get_pixtype(ctx, band), PT_8BUI);
-        CHECK(!rt_band_is_offline(ctx, band));
-        CHECK(rt_band_get_hasnodata_flag(ctx,band));
-        CHECK_EQUALS(rt_band_get_nodata(ctx, band), 0);
+        CHECK_EQUALS(rt_band_get_pixtype(band), PT_8BUI);
+        CHECK(!rt_band_is_offline(band));
+        CHECK(rt_band_get_hasnodata_flag(band));
+        CHECK_EQUALS(rt_band_get_nodata(band), 0);
 
-        failure = rt_band_get_pixel(ctx, band, 0, 0, &val);
+        failure = rt_band_get_pixel(band, 0, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 70);
 
-        failure = rt_band_get_pixel(ctx, band, 1, 0, &val);
+        failure = rt_band_get_pixel(band, 1, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 86);
         
-        failure = rt_band_get_pixel(ctx, band, 2, 0, &val);
+        failure = rt_band_get_pixel(band, 2, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 100);
         
-        failure = rt_band_get_pixel(ctx, band, 3, 0, &val);
+        failure = rt_band_get_pixel(band, 3, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 135);
         
-        failure = rt_band_get_pixel(ctx, band, 4, 0, &val);
+        failure = rt_band_get_pixel(band, 4, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 161);
     }
 
-    out  = rt_raster_to_hexwkb(ctx, raster, &len);
+    out  = rt_raster_to_hexwkb(raster, &len);
     printf(" in hexwkb len: %u\n", strlen(hexwkb));
     printf("out hexwkb len: %u\n", len);
     CHECK_EQUALS(len, strlen(hexwkb));
@@ -775,13 +772,13 @@ main()
         void *serialized;
         rt_raster rast2;
 
-        serialized = rt_raster_serialize(ctx, raster);
-        rast2 = rt_raster_deserialize(ctx, serialized);
+        serialized = rt_raster_serialize(raster);
+        rast2 = rt_raster_deserialize(serialized);
 
-        rt_raster_destroy(ctx, rast2);
+        rt_raster_destroy(rast2);
         free(serialized);
     }
-    rt_raster_destroy(ctx, raster);
+    rt_raster_destroy(raster);
     
     } /* for-loop running car5 tests */
 
@@ -807,3 +804,7 @@ lwgeom_init_allocators(void)
     lwgeom_install_default_allocators();
 }
 
+void rt_init_allocators(void)
+{
+    rt_install_default_allocators();
+}

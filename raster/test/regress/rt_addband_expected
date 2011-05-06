@@ -1,124 +1,124 @@
-WARNING:  Value set for 1BB band got clamped from -1.000000 to 0
+NOTICE:  Value set for 1BB band got clamped from -1.000000 to 0
 0
 0
 1
-WARNING:  Value set for 1BB band got clamped from 2.000000 to 1
+NOTICE:  Value set for 1BB band got clamped from 2.000000 to 1
 1
-WARNING:  Value set for 1BB band got clamped from 21.460000 to 1
+NOTICE:  Value set for 1BB band got clamped from 21.460000 to 1
 1
-WARNING:  Value set for 2BUI band got clamped from -1.000000 to 0
+NOTICE:  Value set for 2BUI band got clamped from -1.000000 to 0
 0
 0
 3
-WARNING:  Value set for 2BUI band got clamped from 4.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 4.000000 to 3
 3
-WARNING:  Value set for 2BUI band got clamped from 21.460000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 21.460000 to 3
 3
-WARNING:  Value set for 4BUI band got clamped from -1.000000 to 0
+NOTICE:  Value set for 4BUI band got clamped from -1.000000 to 0
 0
 0
 15
-WARNING:  Value set for 4BUI band got clamped from 16.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 16.000000 to 15
 15
-WARNING:  Value set for 4BUI band got clamped from 21.460000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 21.460000 to 15
 15
-WARNING:  Value set for 8BSI band got clamped from -129.000000 to -128
+NOTICE:  Value set for 8BSI band got clamped from -129.000000 to -128
 -128
 -128
 0
 127
-WARNING:  Value set for 8BSI band got clamped from 128.000000 to 127
+NOTICE:  Value set for 8BSI band got clamped from 128.000000 to 127
 127
-WARNING:  Value set for 8BSI band got truncated from 21.460000 to 21
+NOTICE:  Value set for 8BSI band got truncated from 21.460000 to 21
 21
-WARNING:  Value set for 8BSI band got clamped from 210.460000 to 127
+NOTICE:  Value set for 8BSI band got clamped from 210.460000 to 127
 127
-WARNING:  Value set for 8BUI band got clamped from -1.000000 to 0
+NOTICE:  Value set for 8BUI band got clamped from -1.000000 to 0
 0
 0
 255
-WARNING:  Value set for 8BUI band got clamped from 256.000000 to 255
+NOTICE:  Value set for 8BUI band got clamped from 256.000000 to 255
 255
-WARNING:  Value set for 8BUI band got truncated from 21.460000 to 21
+NOTICE:  Value set for 8BUI band got truncated from 21.460000 to 21
 21
-WARNING:  Value set for 8BUI band got clamped from 410.460000 to 255
+NOTICE:  Value set for 8BUI band got clamped from 410.460000 to 255
 255
-WARNING:  Value set for 8BUI band got truncated from 256.000000 to 255
+NOTICE:  Value set for 8BUI band got truncated from 256.000000 to 255
 255
-WARNING:  Value set for 16BSI band got clamped from -32769.000000 to -32768
+NOTICE:  Value set for 16BSI band got clamped from -32769.000000 to -32768
 -32768
 -32768
 0
 32767
-WARNING:  Value set for 16BSI band got clamped from 32768.000000 to 32767
+NOTICE:  Value set for 16BSI band got clamped from 32768.000000 to 32767
 32767
-WARNING:  Value set for 16BSI band got truncated from 21.460000 to 21
+NOTICE:  Value set for 16BSI band got truncated from 21.460000 to 21
 21
-WARNING:  Value set for 16BSI band got clamped from 210000.460000 to 32767
+NOTICE:  Value set for 16BSI band got clamped from 210000.460000 to 32767
 32767
-WARNING:  Value set for 16BUI band got clamped from -1.000000 to 0
+NOTICE:  Value set for 16BUI band got clamped from -1.000000 to 0
 0
 0
 65535
-WARNING:  Value set for 16BUI band got clamped from 65537.000000 to 65535
+NOTICE:  Value set for 16BUI band got clamped from 65537.000000 to 65535
 65535
-WARNING:  Value set for 16BUI band got truncated from 21.460000 to 21
+NOTICE:  Value set for 16BUI band got truncated from 21.460000 to 21
 21
-WARNING:  Value set for 16BUI band got clamped from 210000.464564 to 65535
+NOTICE:  Value set for 16BUI band got clamped from 210000.464564 to 65535
 65535
-WARNING:  Value set for 32BSI band got clamped from -2147483649.000000 to -2147483648
+NOTICE:  Value set for 32BSI band got clamped from -2147483649.000000 to -2147483648
 -2147483648
 -2147483648
 0
 2147483647
-WARNING:  Value set for 32BSI band got clamped from 2147483648.000000 to 2147483647
+NOTICE:  Value set for 32BSI band got clamped from 2147483648.000000 to 2147483647
 2147483647
-WARNING:  Value set for 32BSI band got truncated from 21.460000 to 21
+NOTICE:  Value set for 32BSI band got truncated from 21.460000 to 21
 21
-WARNING:  Value set for 32BSI band got truncated from 210000.464564 to 210000
+NOTICE:  Value set for 32BSI band got truncated from 210000.464564 to 210000
 210000
-WARNING:  Value set for 32BUI band got clamped from -1.000000 to 0
+NOTICE:  Value set for 32BUI band got clamped from -1.000000 to 0
 0
 0
 4294967295
-WARNING:  Value set for 32BUI band got clamped from 4294967296.000000 to 4294967295
+NOTICE:  Value set for 32BUI band got clamped from 4294967296.000000 to 4294967295
 4294967295
-WARNING:  Value set for 32BUI band got clamped from 214294967296.000000 to 4294967295
+NOTICE:  Value set for 32BUI band got clamped from 214294967296.000000 to 4294967295
 4294967295
-WARNING:  Value set for 32BUI band got truncated from 21.460000 to 21
+NOTICE:  Value set for 32BUI band got truncated from 21.460000 to 21
 21
-WARNING:  Value set for 32BUI band got clamped from 4294967296.000000 to 4294967295
+NOTICE:  Value set for 32BUI band got clamped from 4294967296.000000 to 4294967295
 4294967295
 0
-WARNING:  Value set for 32BF band got converted from 4294967000.000000 to 4294967040.000000
+NOTICE:  Value set for 32BF band got converted from 4294967000.000000 to 4294967040.000000
 4294967040
-WARNING:  Value set for 32BF band got converted from 4294967000.000000 to 4294967040.000000
+NOTICE:  Value set for 32BF band got converted from 4294967000.000000 to 4294967040.000000
 4.29497e+9
-WARNING:  Value set for 32BF band got converted from 4294967295.000000 to 4294967296.000000
+NOTICE:  Value set for 32BF band got converted from 4294967295.000000 to 4294967296.000000
 4294967296
-WARNING:  Value set for 32BF band got converted from 4294967295.000000 to 4294967296.000000
+NOTICE:  Value set for 32BF band got converted from 4294967295.000000 to 4294967296.000000
 4.29497e+9
 4294967296
 4.29497e+9
-WARNING:  Value set for 32BF band got converted from 21.460000 to 21.459999
+NOTICE:  Value set for 32BF band got converted from 21.460000 to 21.459999
 21.4599990844727
-WARNING:  Value set for 32BF band got converted from 21.460000 to 21.459999
+NOTICE:  Value set for 32BF band got converted from 21.460000 to 21.459999
 21.46
-WARNING:  Value set for 32BF band got converted from 21003.100000 to 21003.099609
+NOTICE:  Value set for 32BF band got converted from 21003.100000 to 21003.099609
 21003.099609375
-WARNING:  Value set for 32BF band got converted from 21003.100000 to 21003.099609
+NOTICE:  Value set for 32BF band got converted from 21003.100000 to 21003.099609
 21003.1
-WARNING:  Value set for 32BF band got converted from 123.456000 to 123.456001
+NOTICE:  Value set for 32BF band got converted from 123.456000 to 123.456001
 123.456001281738
-WARNING:  Value set for 32BF band got converted from 123.456000 to 123.456001
+NOTICE:  Value set for 32BF band got converted from 123.456000 to 123.456001
 123.456
-WARNING:  Value set for 32BF band got converted from 1234.567000 to 1234.567017
+NOTICE:  Value set for 32BF band got converted from 1234.567000 to 1234.567017
 1234.56701660156
-WARNING:  Value set for 32BF band got converted from 1234.567000 to 1234.567017
+NOTICE:  Value set for 32BF band got converted from 1234.567000 to 1234.567017
 1234.57
-WARNING:  Value set for 32BF band got converted from 210000.464564 to 210000.468750
+NOTICE:  Value set for 32BF band got converted from 210000.464564 to 210000.468750
 210000.46875
-WARNING:  Value set for 32BF band got converted from 210000.464564 to 210000.468750
+NOTICE:  Value set for 32BF band got converted from 210000.464564 to 210000.468750
 210000
 -1
 0
@@ -129,12 +129,12 @@ WARNING:  Value set for 32BF band got converted from 210000.464564 to 210000.468
 1234.567
 210000.464564365
 1234.46456436475
-WARNING:  rt_raster_copy_band: Second raster has no band
+NOTICE:  rt_raster_copy_band: Second raster has no band
 NOTICE:  RASTER_copyband: Could not add band to raster. Returning original raster.
 1234.5678
-WARNING:  rt_raster_copy_band: Second raster has no band
+NOTICE:  rt_raster_copy_band: Second raster has no band
 NOTICE:  RASTER_copyband: Could not add band to raster. Returning original raster.
 1234.5678
-WARNING:  rt_raster_copy_band: Second raster has no band
+NOTICE:  rt_raster_copy_band: Second raster has no band
 NOTICE:  RASTER_copyband: Could not add band to raster. Returning original raster.
 1234.5678
