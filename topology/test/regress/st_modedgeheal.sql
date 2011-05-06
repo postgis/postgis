@@ -100,6 +100,9 @@ SELECT r.topogeo_id, r.element_id
 -- 'F+E3-E4' and 'F-E3+E4'
 SELECT 'MH(3,4)', topology.ST_ModEdgeHeal('t', 3, 4);
 
+-- This is for ticket #942
+SELECT topology.ST_ModEdgeHeal('t', 1, 3);
+
 SELECT r.topogeo_id, r.element_id
   FROM t.relation r, t.f f WHERE 
   r.layer_id = layer_id(f.g) AND r.topogeo_id = id(f.g)

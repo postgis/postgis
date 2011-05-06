@@ -180,6 +180,32 @@ BEGIN
     -- NOTE: checks for INVALID_SCHEMA_NAME or UNDEFINED_TABLE done before
   END;
 
+
+  -- NOT IN THE SPECS: See if any of the two edges are closed.
+  IF e1rec.start_node = e1rec.end_node THEN
+    RAISE EXCEPTION 'Edge % is closed, cannot heal to edge %', e1id, e2id;
+  END IF;
+  IF e2rec.start_node = e2rec.end_node THEN
+    RAISE EXCEPTION 'Edge % is closed, cannot heal to edge %', e2id, e1id;
+  END IF;
+
+  -- Find common node
+  IF e1rec.end_node = e2rec.start_node THEN
+    commonnode = e1rec.end_node;
+    caseno = 1;
+  ELSIF e1rec.end_node = e2rec.end_node THEN
+    commonnode = e1rec.end_node;
+    caseno = 2;
+  ELSIF e1rec.start_node = e2rec.start_node THEN
+    commonnode = e1rec.start_node;
+    caseno = 3;
+  ELSIF e1rec.start_node = e2rec.end_node THEN
+    commonnode = e1rec.start_node;
+    caseno = 4;
+  ELSE
+    RAISE EXCEPTION 'SQL/MM Spatial exception – non-connected edges';
+  END IF;
+
   -- NOT IN THE SPECS:
   -- check if any topo_geom is defined only by one of the
   -- input edges. In such case there would be no way to adapt
@@ -206,31 +232,6 @@ BEGIN
           e1id, e2id;
   END LOOP;
 
-
-  -- NOT IN THE SPECS: See if any of the two edges are closed.
-  IF e1rec.start_node = e1rec.end_node THEN
-    RAISE EXCEPTION 'Edge % is closed, cannot heal to edge %', e1id, e2id;
-  END IF;
-  IF e2rec.start_node = e2rec.end_node THEN
-    RAISE EXCEPTION 'Edge % is closed, cannot heal to edge %', e2id, e1id;
-  END IF;
-
-  -- Find common node
-  IF e1rec.end_node = e2rec.start_node THEN
-    commonnode = e1rec.end_node;
-    caseno = 1;
-  ELSIF e1rec.end_node = e2rec.end_node THEN
-    commonnode = e1rec.end_node;
-    caseno = 2;
-  ELSIF e1rec.start_node = e2rec.start_node THEN
-    commonnode = e1rec.start_node;
-    caseno = 3;
-  ELSIF e1rec.start_node = e2rec.end_node THEN
-    commonnode = e1rec.start_node;
-    caseno = 4;
-  ELSE
-    RAISE EXCEPTION 'SQL/MM Spatial exception – non-connected edges';
-  END IF;
 
   -- Check if any other edge is connected to the common node
   FOR rec IN EXECUTE 'SELECT edge_id FROM ' || quote_ident(toponame)

@@ -116,6 +116,7 @@ E4
 3|4
 3|-3
 MH(3,4)|5
+ERROR:  SQL/MM Spatial exception – non-connected edges
 2|3
 3|-3
 Topology 't' dropped
