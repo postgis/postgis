@@ -73,8 +73,12 @@ INSERT INTO t.f VALUES ('F+E1',
 
 -- This should be forbidden, as F+E1 above could not be
 -- defined w/out one of the edges
-SELECT 'MH(1,2)', topology.ST_ModEdgeHeal('t', 1, 2);
-SELECT 'MH(2,1)', topology.ST_ModEdgeHeal('t', 2, 1);
+SELECT topology.ST_ModEdgeHeal('t', 1, 2);
+SELECT topology.ST_ModEdgeHeal('t', 2, 1);
+
+-- This is for ticket #941
+SELECT topology.ST_ModEdgeHeal('t', 1, 200);
+SELECT topology.ST_ModEdgeHeal('t', 100, 2);
 
 -- Now see how signed edges are updated
 

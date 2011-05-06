@@ -156,6 +156,30 @@ BEGIN
         RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
   END;
 
+  BEGIN
+    EXECUTE 'SELECT * FROM ' || quote_ident(toponame)
+      || '.edge_data WHERE edge_id = ' || e1id
+      INTO STRICT e1rec;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        RAISE EXCEPTION 'SQL/MM Spatial exception – non-existent edge %', e1id;
+      WHEN INVALID_SCHEMA_NAME THEN
+        RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
+      WHEN UNDEFINED_TABLE THEN
+        RAISE EXCEPTION 'corrupted topology "%" (missing edge_data table)',
+          toponame;
+  END;
+
+  BEGIN
+    EXECUTE 'SELECT * FROM ' || quote_ident(toponame)
+      || '.edge_data WHERE edge_id = ' || e2id
+      INTO STRICT e2rec;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        RAISE EXCEPTION 'SQL/MM Spatial exception – non-existent edge %', e2id;
+    -- NOTE: checks for INVALID_SCHEMA_NAME or UNDEFINED_TABLE done before
+  END;
+
   -- NOT IN THE SPECS:
   -- check if any topo_geom is defined only by one of the
   -- input edges. In such case there would be no way to adapt
@@ -182,29 +206,6 @@ BEGIN
           e1id, e2id;
   END LOOP;
 
-  BEGIN
-    EXECUTE 'SELECT * FROM ' || quote_ident(toponame)
-      || '.edge_data WHERE edge_id = ' || e1id
-      INTO STRICT e1rec;
-    EXCEPTION
-      WHEN NO_DATA_FOUND THEN
-        RAISE EXCEPTION 'SQL/MM Spatial exception – non-existent edge %', e1id;
-      WHEN INVALID_SCHEMA_NAME THEN
-        RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
-      WHEN UNDEFINED_TABLE THEN
-        RAISE EXCEPTION 'corrupted topology "%" (missing edge_data table)',
-          toponame;
-  END;
-
-  BEGIN
-    EXECUTE 'SELECT * FROM ' || quote_ident(toponame)
-      || '.edge_data WHERE edge_id = ' || e2id
-      INTO STRICT e2rec;
-    EXCEPTION
-      WHEN NO_DATA_FOUND THEN
-        RAISE EXCEPTION 'SQL/MM Spatial exception – non-existent edge %', e2id;
-    -- NOTE: checks for INVALID_SCHEMA_NAME or UNDEFINED_TABLE done before
-  END;
 
   -- NOT IN THE SPECS: See if any of the two edges are closed.
   IF e1rec.start_node = e1rec.end_node THEN
