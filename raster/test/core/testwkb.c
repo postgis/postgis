@@ -1,21 +1,21 @@
-/* 
+/*
  * $Id$
  *
  * WKTRaster - Raster Types for PostGIS
  * http://www.postgis.org/support/wiki/index.php?WKTRasterHomePage
  *
  * Copyright (C) 2009  Sandro Santilli <strk@keybit.net>
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -87,7 +87,7 @@ main()
 */
     free((/*no const*/ void*)out);
 
-    { 
+    {
         void *serialized;
         rt_raster rast2;
 
@@ -246,7 +246,7 @@ main()
     {
         double val;
         int failure;
-        
+
         rt_band band = rt_raster_get_band(raster, 0);
         CHECK(band);
         CHECK_EQUALS(rt_band_get_pixtype(band), PT_8BSI);
@@ -289,7 +289,7 @@ main()
 
     free((/*no const*/ void*)out);
 
-    { 
+    {
         void *serialized;
         rt_raster rast2;
 
@@ -298,7 +298,7 @@ main()
 
         rt_raster_destroy(rast2);
         free(serialized);
-    
+
     }
 
     rt_raster_destroy(raster);
@@ -351,7 +351,7 @@ main()
         CHECK(!rt_band_is_offline(band));
         CHECK(!rt_band_get_hasnodata_flag(band));
         CHECK_EQUALS(rt_band_get_nodata(band), -1);
-        
+
         failure = rt_band_get_pixel(band, 0, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, -1);
@@ -359,19 +359,19 @@ main()
         failure = rt_band_get_pixel(band, 1, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 0);
-        
+
         failure = rt_band_get_pixel(band, 2, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, -16);
-        
+
         failure = rt_band_get_pixel(band, 0, 1, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 127);
-        
+
         failure = rt_band_get_pixel(band, 1, 1, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 10);
-        
+
         failure = rt_band_get_pixel(band, 2, 1, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 2);
@@ -444,19 +444,19 @@ main()
         failure = rt_band_get_pixel(band, 1, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 0);
-        
+
         failure = rt_band_get_pixel(band, 2, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, -16);
-        
+
         failure = rt_band_get_pixel(band, 0, 1, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 127);
-        
+
         failure = rt_band_get_pixel(band, 1, 1, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 10);
-        
+
         failure = rt_band_get_pixel(band, 2, 1, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 2);
@@ -494,7 +494,7 @@ main()
 "FFFF"             /* nodata value (-1) */
 "03"               /* ext band num == 3 */
 /* ext band path == /tmp/t.tif */
-"2F746D702F742E74696600" 
+"2F746D702F742E74696600"
     ;
 
     raster = rt_raster_from_hexwkb(hexwkb, strlen(hexwkb));
@@ -586,7 +586,7 @@ main()
         failure = rt_band_get_pixel(band, 1, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 436);
-        
+
         failure = rt_band_get_pixel(band, 2, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 431);
@@ -605,7 +605,7 @@ main()
 */
     free((/*no const*/ void*)out);
 
-    { 
+    {
         void *serialized;
         rt_raster rast2;
 
@@ -622,7 +622,7 @@ main()
     /* 5x5, little endian, 3 x band 8BUI (RGB),               */
     /* nodata 0, srid -1                                      */
     /* Test case completes regress/bug_test_car5.sql          */
-    /* Test case repeated 4 times to mimic 4 tiles insertion  */ 
+    /* Test case repeated 4 times to mimic 4 tiles insertion  */
     /* ------------------------------------------------------ */
     for (i = 0; i < 5; ++i)
     {
@@ -681,20 +681,20 @@ main()
         failure = rt_band_get_pixel(band, 1, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 254);
-        
+
         failure = rt_band_get_pixel(band, 2, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 253);
-        
+
         failure = rt_band_get_pixel(band, 3, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 254);
-        
+
         failure = rt_band_get_pixel(band, 4, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 254);
     }
-    
+
     {
         /* Test 2nd band */
         double val;
@@ -713,20 +713,20 @@ main()
         failure = rt_band_get_pixel(band, 1, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 98);
-        
+
         failure = rt_band_get_pixel(band, 2, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 122);
-        
+
         failure = rt_band_get_pixel(band, 3, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 173);
-        
+
         failure = rt_band_get_pixel(band, 4, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 209);
     }
-    
+
     {
         /* Test 3rd band */
         double val;
@@ -745,15 +745,15 @@ main()
         failure = rt_band_get_pixel(band, 1, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 86);
-        
+
         failure = rt_band_get_pixel(band, 2, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 100);
-        
+
         failure = rt_band_get_pixel(band, 3, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 135);
-        
+
         failure = rt_band_get_pixel(band, 4, 0, &val);
         CHECK(!failure);
         CHECK_EQUALS(val, 161);
@@ -768,7 +768,7 @@ main()
 */
 
     free((/*no const*/ void*)out);
-    { 
+    {
         void *serialized;
         rt_raster rast2;
 
@@ -779,7 +779,7 @@ main()
         free(serialized);
     }
     rt_raster_destroy(raster);
-    
+
     } /* for-loop running car5 tests */
 
     /* ------------------------------------------------------ */

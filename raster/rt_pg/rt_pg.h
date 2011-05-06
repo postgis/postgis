@@ -1,4 +1,4 @@
-/* 
+/*
  * $Id$
  *
  * WKTRaster - Raster Types for PostGIS
@@ -9,17 +9,17 @@
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -37,7 +37,7 @@
 
 /* Debugging macros */
 #if POSTGIS_DEBUG_LEVEL > 0
- 
+
 /* Display a simple message at NOTICE level */
 #define POSTGIS_RT_DEBUG(level, msg) \
     do { \
@@ -51,13 +51,13 @@
         if (POSTGIS_DEBUG_LEVEL >= level) \
         ereport(NOTICE, (errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__, __VA_ARGS__))); \
     } while (0);
- 
+
 #else
 
 /* Empty prototype that can be optimised away by the compiler for non-debug builds */
 #define POSTGIS_RT_DEBUG(level, msg) \
     ((void) 0)
- 
+
 /* Empty prototype that can be optimised away by the compiler for non-debug builds */
 #define POSTGIS_RT_DEBUGF(level, msg, ...) \
     ((void) 0)

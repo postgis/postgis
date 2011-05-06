@@ -99,7 +99,7 @@
  * This library is the generic raster handling section of PostGIS. The raster
  * objects, constructors, destructors, and a set of spatial processing functions
  * are implemented here.
- * 
+ *
  * The library is designed for use in non-PostGIS applications if necessary. The
  * units tests at test/core (and the future loader/dumper programs) are examples
  * of non-PostGIS applications using rt_core.
@@ -118,7 +118,7 @@
 typedef struct rt_raster_t* rt_raster;
 typedef struct rt_band_t* rt_band;
 typedef struct rt_geomval_t* rt_geomval;
- 
+
 /**
 * Global functions for memory/logging handlers.
 */
@@ -153,7 +153,7 @@ extern void rt_install_default_allocators(void);
 
 
 /**
- * Wrappers used for managing memory. They simply call the functions defined by 
+ * Wrappers used for managing memory. They simply call the functions defined by
  * the caller
  **/
 extern void* rtalloc(size_t size);
@@ -215,7 +215,7 @@ void default_rt_info_handler(const char * fmt, va_list ap);
 /*- memory context -------------------------------------------------------*/
 
 void rt_set_handlers(rt_allocator allocator, rt_reallocator reallocator,
-        rt_deallocator deallocator, rt_message_handler error_handler, 
+        rt_deallocator deallocator, rt_message_handler error_handler,
         rt_message_handler info_handler, rt_message_handler warning_handler);
 
 
