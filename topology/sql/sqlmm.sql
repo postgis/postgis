@@ -54,6 +54,10 @@ BEGIN
     RAISE EXCEPTION 'SQL/MM Spatial exception - null argument';
   END IF;
 
+  IF toponame = '' THEN
+        RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
+  END IF;
+
   n := 1;
 
   -- Construct the face geometry, then for each polygon:
@@ -149,7 +153,7 @@ BEGIN
       INTO STRICT topoid WHERE name = toponame;
     EXCEPTION
       WHEN NO_DATA_FOUND THEN
-        RAISE EXCEPTION 'unknown topology "%"', toponame;
+        RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
   END;
 
   -- NOT IN THE SPECS:
@@ -186,7 +190,7 @@ BEGIN
       WHEN NO_DATA_FOUND THEN
         RAISE EXCEPTION 'SQL/MM Spatial exception – non-existent edge %', e1id;
       WHEN INVALID_SCHEMA_NAME THEN
-        RAISE EXCEPTION 'non-existent topology schema "%"', toponame;
+        RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
       WHEN UNDEFINED_TABLE THEN
         RAISE EXCEPTION 'corrupted topology "%" (missing edge_data table)',
           toponame;
@@ -349,32 +353,39 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 --  ST_GetFaceGeometry(atopology, aface)
 -- 
-CREATE OR REPLACE FUNCTION topology.ST_GetFaceGeometry(varchar, integer)
+CREATE OR REPLACE FUNCTION topology.ST_GetFaceGeometry(toponame varchar, aface integer)
 	RETURNS GEOMETRY AS
 $$
 DECLARE
-	atopology ALIAS FOR $1;
-	aface ALIAS FOR $2;
 	rec RECORD;
 BEGIN
-	--
-	-- Atopology and aface are required
-	-- 
-	IF atopology IS NULL OR aface IS NULL THEN
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - null argument';
-	END IF;
 
-	--
-	-- Construct face 
-	-- 
-	FOR rec IN EXECUTE 'SELECT ST_BuildArea(ST_Collect(geom)) FROM '
-		|| quote_ident(atopology)
-		|| '.edge WHERE left_face = ' || aface || 
-		' OR right_face = ' || aface 
-	LOOP
-		RETURN rec.st_buildarea;
-	END LOOP;
+  --
+  -- toponame and aface are required
+  -- 
+  IF toponame IS NULL OR aface IS NULL THEN
+  RAISE EXCEPTION
+    'SQL/MM Spatial exception - null argument';
+  END IF;
+
+    --
+    -- Construct face 
+    -- 
+    BEGIN
+      FOR rec IN EXECUTE 'SELECT ST_BuildArea(ST_Collect(geom)) FROM '
+        || quote_ident(toponame)
+        || '.edge WHERE left_face = ' || aface || 
+        ' OR right_face = ' || aface 
+      LOOP
+        RETURN rec.st_buildarea;
+      END LOOP;
+    EXCEPTION
+      WHEN INVALID_SCHEMA_NAME THEN
+        RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
+      WHEN UNDEFINED_TABLE THEN
+        RAISE EXCEPTION 'corrupted topology "%" (missing edge_data table)',
+          toponame;
+    END;
 
 
 	--

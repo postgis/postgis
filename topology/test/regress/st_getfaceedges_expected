@@ -1,4 +1,9 @@
 t
+ERROR:  SQL/MM Spatial exception - null argument
+ERROR:  SQL/MM Spatial exception - null argument
+ERROR:  SQL/MM Spatial exception - null argument
+ERROR:  SQL/MM Spatial exception - invalid topology name
+ERROR:  SQL/MM Spatial exception - invalid topology name
 E1
 E2
 E3
