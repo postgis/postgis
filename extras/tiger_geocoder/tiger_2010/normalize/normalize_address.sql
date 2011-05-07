@@ -51,10 +51,9 @@
 -- StreetAddress:DirectionPrefixAbbreviation:StreetName:StreetTypeAbbreviation:
 -- DirectionSuffixAbbreviation:Location:StateAbbreviation:ZipCode
 -- This is more standardized and better for use with a geocoder.
-CREATE OR REPLACE FUNCTION normalize_address(
-    in_rawInput VARCHAR
-) RETURNS norm_addy
-AS $_$
+CREATE OR REPLACE FUNCTION normalize_address(in_rawinput character varying)
+  RETURNS norm_addy AS
+$$
 DECLARE
   debug_flag boolean := false;
   result norm_addy;
@@ -83,7 +82,7 @@ BEGIN
   ws := E'[ ,.\t\n\f\r]';
 
   IF debug_flag THEN
-    raise notice 'input: %', rawInput;
+    raise notice '% input: %', clock_timestamp(), rawInput;
   END IF;
 
   -- Assume that the address begins with a digit, and extract it from
@@ -91,7 +90,7 @@ BEGIN
   addressString := substring(rawInput from '^([0-9].*?)[ ,/.]');
 
   IF debug_flag THEN
-    raise notice 'addressString: %', addressString;
+    raise notice '% addressString: %', clock_timestamp(), addressString;
   END IF;
 
   -- There are two formats for zip code, the normal 5 digit, and
@@ -115,7 +114,7 @@ BEGIN
   END IF;
 
   IF debug_flag THEN
-    raise notice 'zipString: %', zipString;
+    raise notice '% zipString: %', clock_timestamp(), zipString;
   END IF;
 
   IF zipString IS NOT NULL THEN
@@ -126,7 +125,7 @@ BEGIN
   END IF;
 
   IF debug_flag THEN
-    raise notice 'fullStreet: %', fullStreet;
+    raise notice '% fullStreet: %', clock_timestamp(), fullStreet;
   END IF;
 
   -- FIXME: state_extract should probably be returning a record so we can
@@ -138,7 +137,7 @@ BEGIN
   END IF;
 
   IF debug_flag THEN
-    raise notice 'stateAbbrev: %', result.stateAbbrev;
+    raise notice '% stateAbbrev: %', clock_timestamp(), result.stateAbbrev;
   END IF;
 
   -- The easiest case is if the address is comma delimited.  There are some
@@ -167,8 +166,8 @@ BEGIN
   END IF;
 
   IF debug_flag THEN
-    raise notice 'fullStreet: %', fullStreet;
-    raise notice 'location: %', result.location;
+    raise notice '% fullStreet: %',  clock_timestamp(), fullStreet;
+    raise notice '% location: %', clock_timestamp(), result.location;
   END IF;
 
   -- Pull out the full street information, defined as everything between the
@@ -193,10 +192,17 @@ BEGIN
     END IF;
 
     IF debug_flag THEN
-      raise notice 'fullStreet: %', fullStreet;
+      raise notice '% fullStreet: %', clock_timestamp(),fullStreet;
     END IF;
 
+    IF debug_flag THEN
+      raise notice '% start location extract', clock_timestamp();
+    END IF;
     result.location := location_extract(fullStreet, result.stateAbbrev);
+
+    IF debug_flag THEN
+      raise notice '% end location extract', clock_timestamp();
+    END IF;
 
     -- A location can't be a street type, sorry.
     IF lower(result.location) IN (SELECT lower(name) FROM street_type_lookup) THEN
@@ -293,7 +299,7 @@ BEGIN
   END IF;
 
   IF debug_flag THEN
-    raise notice 'streetTypeAbbrev: %', result.streetTypeAbbrev;
+    raise notice '% streetTypeAbbrev: %', clock_timestamp(), result.streetTypeAbbrev;
   END IF;
 
   -- There is a little more processing required now.  If the word after the
@@ -559,4 +565,6 @@ BEGIN
   result.parsed := TRUE;
   RETURN result;
 END
-$_$ LANGUAGE plpgsql;
+$$
+  LANGUAGE plpgsql STABLE
+  COST 100;
