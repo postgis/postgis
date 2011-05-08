@@ -390,7 +390,7 @@ wget http://www2.census.gov/geo/pvs/tiger2010st/44_Rhode_Island/ --no-parent --r
       <refnamediv>
         <refname>Reverse_Geocode</refname>
     
-        <refpurpose>Takes a geometry point in a known spatial ref sys and returns a record containing an array of possible addresses and an array of cross streets.  If include_strnum_range = true, includes the street range in the cross streets.</refpurpose>
+        <refpurpose>Takes a geometry point in a known spatial ref sys and returns a record containing an array of theoretically possible addresses and an array of cross streets.  If include_strnum_range = true, includes the street range in the cross streets.</refpurpose>
       </refnamediv>
     
       <refsynopsisdiv>
@@ -418,8 +418,13 @@ wget http://www2.census.gov/geo/pvs/tiger2010st/44_Rhode_Island/ --no-parent --r
       <refsection>
         <title>Description</title>
     
-        <para>Takes a geometry point in a known spatial ref and returns a record containing an array of possible addresses and an array of cross streets.  If include_strnum_range = true, includes the street range in the cross streets.
+        <para>Takes a geometry point in a known spatial ref and returns a record containing an array of theoretically possible addresses and an array of cross streets.  If include_strnum_range = true, includes the street range in the cross streets.
         include_strnum_range defaults to false if not passed in. Addresses are sorted according to which road a point is closest to so first address is most likely the right one.</para>
+        
+        <para>Why do we say theoretical instead of actual addresses.  The Tiger data doesn't have real addresses, but just street ranges.  As such the theoretical address is an interpolated address based on the
+        street ranges. Like for example interpolating one of my addresses returns a 26 Court St. and 26 Court Sq., though there is no such place as 26 Court Sq.  This is because a point may be at a corner of 2
+        streets and thus the logic interpolates along both streets.  The logic also assumes addresses are equally spaced along a street, which of course is wrong since you can have a municipal building taking up
+            a good chunk of the street range and the rest of the buildings are clustered at the end.</para>
     
         <para>Note: Hmm this function relies on Tiger data.  If you have not loaded data covering the region of this point, then hmm you will get a record filled with NULLS.</para>
         <para> Returned elements of the record are as follows:</para>
