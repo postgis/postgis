@@ -48,3 +48,8 @@ SELECT g.rating,
 	ST_X(geomout) As lon, 
 	ST_Y(geomout) As lat, (addy).* 
 FROM geocode('1731 New Hampshire Avenue Northwest, Washington, DC 20010') As g;
+
+Steps to upgrade your install:
+If you need to upgrade the geocoder -- run the create_geocode.sql.  
+CAUTION: The upgrade script will drop any table columns that have a norm_addy type for a column type.  This is rarely if ever done so you should be fine.
+We plan to fix this later.

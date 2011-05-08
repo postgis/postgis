@@ -91,4 +91,4 @@ BEGIN
   -- The address is not within the range
   RETURN FALSE;
 END;
-$_$ LANGUAGE plpgsql;
+$_$ LANGUAGE plpgsql IMMUTABLE COST 100;

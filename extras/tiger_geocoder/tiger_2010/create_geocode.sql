@@ -4,6 +4,8 @@
 SET search_path TO tiger,public;
 BEGIN;
 -- Type used to pass around a normalized address between functions
+-- This is s bit dangerous since it could potentially drop peoples tables
+-- TODO: put in logic to check if any tables have norm_addy and don't drop if they do
 DROP TYPE IF EXISTS norm_addy CASCADE;
 CREATE TYPE norm_addy AS (
     address INTEGER,

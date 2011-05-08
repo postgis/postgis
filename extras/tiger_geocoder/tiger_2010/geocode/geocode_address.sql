@@ -157,6 +157,6 @@ BEGIN
   RETURN;
 END;
 $$
-  LANGUAGE 'plpgsql' VOLATILE;
+  LANGUAGE 'plpgsql' STABLE COST 1000;
 
 

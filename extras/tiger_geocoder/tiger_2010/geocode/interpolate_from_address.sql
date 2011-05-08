@@ -12,7 +12,7 @@ BEGIN
   result = interpolate_from_address(given_address, addr1, addr2, road);
   RETURN result;
 END
-$_$ LANGUAGE plpgsql;
+$_$ LANGUAGE plpgsql IMMUTABLE COST 100;
 
 -- interpolate_from_address(local_address, from_address_l, to_address_l, from_address_r, to_address_r, local_road)
 -- This function returns a point along the given geometry (must be linestring)
@@ -55,4 +55,4 @@ BEGIN
     result = ST_Line_Interpolate_Point(road, part);
     RETURN result;
 END;
-$_$ LANGUAGE plpgsql;
+$_$ LANGUAGE plpgsql IMMUTABLE COST 100;

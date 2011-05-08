@@ -57,4 +57,4 @@ BEGIN
       directionWeight;
   return result;
 END;
-$_$ LANGUAGE plpgsql;
+$_$ LANGUAGE plpgsql STABLE COST 10;
