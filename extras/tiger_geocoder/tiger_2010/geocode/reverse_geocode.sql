@@ -98,4 +98,4 @@ $$
 -- default to not include street range in cross streets
     SELECT reverse_geocode($1,false);
 $$
-language sql STABLE;
+language sql STABLE COST 1000;

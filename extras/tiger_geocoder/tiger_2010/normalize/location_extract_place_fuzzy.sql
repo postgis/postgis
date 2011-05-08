@@ -85,4 +85,4 @@ BEGIN
 
   RETURN location;
 END;
-$_$ LANGUAGE plpgsql;
+$_$ LANGUAGE plpgsql STABLE;

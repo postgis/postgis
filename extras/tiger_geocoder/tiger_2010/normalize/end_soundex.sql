@@ -14,4 +14,4 @@ BEGIN
   END IF;
   return tempString;
 END;
-$_$ LANGUAGE plpgsql;
+$_$ LANGUAGE plpgsql IMMUTABLE;

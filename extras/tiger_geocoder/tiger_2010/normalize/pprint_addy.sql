@@ -33,4 +33,4 @@ BEGIN
   RETURN trim(result);
 
 END;
-$_$ LANGUAGE plpgsql;
+$_$ LANGUAGE plpgsql IMMUTABLE;

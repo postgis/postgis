@@ -5,13 +5,13 @@ DECLARE
     zone int;
     pref int;
 BEGIN
-    geomgeog:=transform($1,4326);
-    IF (y(geomgeog))>0 THEN
+    geomgeog:=ST_Transform($1,4326);
+    IF (ST_Y(geomgeog))>0 THEN
         pref:=32600;
     ELSE
         pref:=32700;
     END IF;
-    zone:=floor((x(geomgeog)+180)/6)+1;
+    zone:=floor((ST_X(geomgeog)+180)/6)+1;
     RETURN zone+pref;
 END;
 $BODY$ LANGUAGE 'plpgsql' immutable;
