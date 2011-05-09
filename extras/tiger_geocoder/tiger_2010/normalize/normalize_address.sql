@@ -223,6 +223,7 @@ BEGIN
 
   -- Determine if any internal address is included, such as apartment
   -- or suite number.
+  -- this count is surprisingly slow by itself but much faster if you add an ILIKE AND clause
   SELECT INTO tempInt count(*) FROM secondary_unit_lookup
       WHERE texticregexeq(fullStreet, '(?i)' || ws || name || '('
           || ws || '|$)');
@@ -264,13 +265,15 @@ BEGIN
   END IF;
 
   -- Pull potential street types from the full street information
+  -- this count is surprisingly slow by itself but much faster if you add an ILIKE AND clause
+  -- difference of 98ms vs 16 ms for example
   tempInt := count(*) FROM street_type_lookup
-      WHERE texticregexeq(fullStreet, '(?i)' || ws || '(' || name
+      WHERE fullStreet ILIKE '%' || name || '%' AND texticregexeq(fullStreet, '(?i)' || ws || '(' || name
       || ')(?:' || ws || '|$)');
   IF tempInt = 1 THEN
     SELECT INTO rec abbrev, substring(fullStreet, '(?i)' || ws || '('
         || name || ')(?:' || ws || '|$)') AS given FROM street_type_lookup
-        WHERE texticregexeq(fullStreet, '(?i)' || ws || '(' || name
+        WHERE fullStreet ILIKE '%' || name || '%' AND texticregexeq(fullStreet, '(?i)' || ws || '(' || name
         || ')(?:' || ws || '|$)');
     streetType := rec.given;
     result.streetTypeAbbrev := rec.abbrev;
@@ -278,7 +281,7 @@ BEGIN
     tempInt := 0;
     FOR rec IN SELECT abbrev, substring(fullStreet, '(?i)' || ws || '('
         || name || ')(?:' || ws || '|$)') AS given FROM street_type_lookup
-        WHERE texticregexeq(fullStreet, '(?i)' || ws || '(' || name
+        WHERE fullStreet ILIKE '%' || name || '%' AND  texticregexeq(fullStreet, '(?i)' || ws || '(' || name
         || ')(?:' || ws || '|$)') LOOP
       -- If we have found an internal address, make sure the type
       -- precedes it.
@@ -337,7 +340,7 @@ BEGIN
     IF tempString IS NOT NULL THEN
       preDir := tempString;
       result.preDirAbbrev := abbrev FROM direction_lookup
-          where texticregexeq(reducedStreet, '(?i)(^' || name || ')' || ws)
+          where reducedStreet ILIKE '%' || name '%' AND texticregexeq(reducedStreet, '(?i)(^' || name || ')' || ws)
           ORDER BY length(name) DESC;
       result.streetName := substring(reducedStreet, '^' || preDir || ws || '(.*)');
     ELSE
@@ -349,7 +352,7 @@ BEGIN
       -- location was given.  We still need to look for post direction.
       SELECT INTO rec abbrev,
           substring(result.location, '(?i)^(' || name || ')' || ws) as value
-          FROM direction_lookup WHERE texticregexeq(result.location, '(?i)^'
+          FROM direction_lookup WHERE result.location ILIKE '%' || name || '%' AND texticregexeq(result.location, '(?i)^'
           || name || ws) ORDER BY length(name) desc;
       IF rec.value IS NOT NULL THEN
         postDir := rec.value;
@@ -374,7 +377,7 @@ BEGIN
         IF tempString IS NOT NULL THEN
           postDir := tempString;
           SELECT INTO result.postDirAbbrev abbrev FROM direction_lookup
-              where texticregexeq(result.location, '(?i)(^' || name || ')' || ws);
+              WHERE result.location ILIKE '%' || name || '%' AND texticregexeq(result.location, '(?i)(^' || name || ')' || ws);
           result.location := substring(result.location, '^' || postDir || ws || '+(.*)');
         END IF;
       END IF;
