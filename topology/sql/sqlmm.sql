@@ -108,6 +108,284 @@ LANGUAGE 'plpgsql' VOLATILE;
 
 --{
 -- Topo-Geo and Topo-Net 3: Routine Details
+-- X.3.10
+--
+--  ST_NewEdgeHeal(atopology, anedge, anotheredge)
+--
+-- Not in the specs:
+-- * Refuses to heal two edges if any of the two is closed 
+-- * Raise an exception when trying to heal an edge with itself
+-- * Raise an exception if any TopoGeometry is defined by only one
+--   of the two edges
+-- * Update references in the Relation table.
+-- 
+CREATE OR REPLACE FUNCTION topology.ST_NewEdgeHeal(toponame varchar, e1id integer, e2id integer)
+  RETURNS int
+AS
+$$
+DECLARE
+  e1rec RECORD;
+  e2rec RECORD;
+  rec RECORD;
+  newedgeid int;
+  commonnode int;
+  caseno int;
+  topoid int;
+  sql text;
+  e2sign int;
+  eidary int[];
+BEGIN
+  --
+  -- toponame and face_id are required
+  -- 
+  IF toponame IS NULL OR e1id IS NULL OR e2id IS NULL THEN
+    RAISE EXCEPTION 'SQL/MM Spatial exception - null argument';
+  END IF;
+
+  -- NOT IN THE SPECS: see if the same edge is given twice..
+  IF e1id = e2id THEN
+    RAISE EXCEPTION 'Cannot heal edge % with itself, try with another', e1id;
+  END IF;
+
+	-- Get topology id
+  BEGIN
+    SELECT id FROM topology.topology
+      INTO STRICT topoid WHERE name = toponame;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
+  END;
+
+  BEGIN
+    EXECUTE 'SELECT * FROM ' || quote_ident(toponame)
+      || '.edge_data WHERE edge_id = ' || e1id
+      INTO STRICT e1rec;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        RAISE EXCEPTION 'SQL/MM Spatial exception – non-existent edge %', e1id;
+      WHEN INVALID_SCHEMA_NAME THEN
+        RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
+      WHEN UNDEFINED_TABLE THEN
+        RAISE EXCEPTION 'corrupted topology "%" (missing edge_data table)',
+          toponame;
+  END;
+
+  BEGIN
+    EXECUTE 'SELECT * FROM ' || quote_ident(toponame)
+      || '.edge_data WHERE edge_id = ' || e2id
+      INTO STRICT e2rec;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        RAISE EXCEPTION 'SQL/MM Spatial exception – non-existent edge %', e2id;
+    -- NOTE: checks for INVALID_SCHEMA_NAME or UNDEFINED_TABLE done before
+  END;
+
+
+  -- NOT IN THE SPECS: See if any of the two edges are closed.
+  IF e1rec.start_node = e1rec.end_node THEN
+    RAISE EXCEPTION 'Edge % is closed, cannot heal to edge %', e1id, e2id;
+  END IF;
+  IF e2rec.start_node = e2rec.end_node THEN
+    RAISE EXCEPTION 'Edge % is closed, cannot heal to edge %', e2id, e1id;
+  END IF;
+
+  -- Find common node
+  IF e1rec.end_node = e2rec.start_node THEN
+    commonnode = e1rec.end_node;
+    caseno = 1;
+  ELSIF e1rec.end_node = e2rec.end_node THEN
+    commonnode = e1rec.end_node;
+    caseno = 2;
+  ELSIF e1rec.start_node = e2rec.start_node THEN
+    commonnode = e1rec.start_node;
+    caseno = 3;
+  ELSIF e1rec.start_node = e2rec.end_node THEN
+    commonnode = e1rec.start_node;
+    caseno = 4;
+  ELSE
+    RAISE EXCEPTION 'SQL/MM Spatial exception – non-connected edges';
+  END IF;
+
+  -- Check if any other edge is connected to the common node
+  FOR rec IN EXECUTE 'SELECT edge_id FROM ' || quote_ident(toponame)
+    || '.edge_data WHERE ( edge_id != ' || e1id
+    || ' AND edge_id != ' || e2id || ') AND ( start_node = '
+    || commonnode || ' OR end_node = ' || commonnode || ' )'
+  LOOP
+    RAISE EXCEPTION
+      'SQL/MM Spatial exception – other edges connected (ie: %)', rec.edge_id;
+  END LOOP;
+
+  -- NOT IN THE SPECS:
+  -- check if any topo_geom is defined only by one of the
+  -- input edges. In such case there would be no way to adapt
+  -- the definition in case of healing, so we'd have to bail out
+  eidary = ARRAY[e1id, e2id];
+  sql := 'SELECT t.* from ('
+    || 'SELECT r.topogeo_id, r.layer_id'
+    || ', l.schema_name, l.table_name, l.feature_column'
+    || ', array_agg(abs(r.element_id)) as elems '
+    || 'FROM topology.layer l INNER JOIN '
+    || quote_ident(toponame)
+    || '.relation r ON (l.layer_id = r.layer_id) '
+    || 'WHERE l.level = 0 AND l.feature_type = 2 '
+    || ' AND l.topology_id = ' || topoid
+    || ' AND abs(r.element_id) IN (' || e1id || ',' || e2id || ') '
+    || 'group by r.topogeo_id, r.layer_id, l.schema_name, l.table_name, '
+    || ' l.feature_column ) t WHERE NOT t.elems @> '
+    || quote_literal(eidary);
+  --RAISE DEBUG 'SQL: %', sql;
+  FOR rec IN EXECUTE sql LOOP
+    RAISE EXCEPTION 'TopoGeom % in layer % (%.%.%) cannot be represented healing edges % and %',
+          rec.topogeo_id, rec.layer_id,
+          rec.schema_name, rec.table_name, rec.feature_column,
+          e1id, e2id;
+  END LOOP;
+
+  -- Create new edge {
+  rec := e1rec;
+  rec.geom = ST_LineMerge(ST_Collect(e1rec.geom, e2rec.geom));
+  IF caseno = 1 THEN -- e1.end = e2.start
+    IF NOT ST_Equals(ST_StartPoint(rec.geom), ST_StartPoint(e1rec.geom)) THEN
+      RAISE DEBUG 'caseno=1: LineMerge did not maintain startpoint';
+      rec.geom = ST_Reverse(rec.geom);
+    END IF;
+    rec.end_node = e2rec.end_node;
+    rec.next_left_edge = e2rec.next_left_edge;
+    e2sign = 1;
+  ELSIF caseno = 2 THEN -- e1.end = e2.end
+    IF NOT ST_Equals(ST_StartPoint(rec.geom), ST_StartPoint(e1rec.geom)) THEN
+      RAISE DEBUG 'caseno=2: LineMerge did not maintain startpoint';
+      rec.geom = ST_Reverse(rec.geom);
+    END IF;
+    rec.end_node = e2rec.start_node;
+    rec.next_left_edge = e2rec.next_right_edge;
+    e2sign = -1;
+  ELSIF caseno = 3 THEN -- e1.start = e2.start
+    IF NOT ST_Equals(ST_EndPoint(rec.geom), ST_EndPoint(e1rec.geom)) THEN
+      RAISE DEBUG 'caseno=4: LineMerge did not maintain endpoint';
+      rec.geom = ST_Reverse(rec.geom);
+    END IF;
+    rec.start_node = e2rec.end_node;
+    rec.next_right_edge = e2rec.next_left_edge;
+    e2sign = -1;
+  ELSIF caseno = 4 THEN -- e1.start = e2.end
+    IF NOT ST_Equals(ST_EndPoint(rec.geom), ST_EndPoint(e1rec.geom)) THEN
+      RAISE DEBUG 'caseno=4: LineMerge did not maintain endpoint';
+      rec.geom = ST_Reverse(rec.geom);
+    END IF;
+    rec.start_node = e2rec.start_node;
+    rec.next_right_edge = e2rec.next_right_edge;
+    e2sign = 1;
+  END IF;
+  -- }
+
+  -- Insert new edge {
+	EXECUTE 'SELECT nextval(' || quote_literal(
+			quote_ident(toponame) || '.edge_data_edge_id_seq'
+		) || ')' INTO STRICT newedgeid;
+	EXECUTE 'INSERT INTO ' || quote_ident(toponame)
+		|| '.edge VALUES(' || newedgeid
+    || ',' || rec.start_node
+		|| ',' || rec.end_node
+		|| ',' || rec.next_left_edge
+		|| ',' || rec.next_right_edge
+		|| ',' || rec.left_face
+		|| ',' || rec.right_face
+		|| ',' || quote_literal(rec.geom::text)
+		|| ')';
+  -- End of new edge insertion }
+
+  -- Update next_left_edge/next_right_edge for
+  -- any edge having them still pointing at the edges being removed
+  -- (e2id)
+  --
+  -- NOTE:
+  -- *(next_XXX_edge/e2id) serves the purpose of extracting existing
+  -- sign from the value, while *e2sign changes that sign again if we
+  -- reverted edge2 direction
+  --
+  sql := 'UPDATE ' || quote_ident(toponame)
+    || '.edge_data SET abs_next_left_edge = ' || newedgeid
+    || ', next_left_edge = ' || e2sign*newedgeid
+    || '*(next_left_edge/'
+    || e2id || ')  WHERE abs_next_left_edge = ' || e2id;
+  --RAISE DEBUG 'SQL: %', sql;
+  EXECUTE sql;
+  sql := 'UPDATE ' || quote_ident(toponame)
+    || '.edge_data SET abs_next_right_edge = ' || newedgeid
+    || ', next_right_edge = ' || e2sign*newedgeid
+    || '*(next_right_edge/'
+    || e2id || ') WHERE abs_next_right_edge = ' || e2id;
+  --RAISE DEBUG 'SQL: %', sql;
+  EXECUTE sql;
+
+  -- New edge has the same direction as old edge 1
+  sql := 'UPDATE ' || quote_ident(toponame)
+    || '.edge_data SET abs_next_left_edge = ' || newedgeid
+    || ', next_left_edge = ' || newedgeid
+    || '*(next_left_edge/'
+    || e1id || ')  WHERE abs_next_left_edge = ' || e1id;
+  --RAISE DEBUG 'SQL: %', sql;
+  EXECUTE sql;
+  sql := 'UPDATE ' || quote_ident(toponame)
+    || '.edge_data SET abs_next_right_edge = ' || newedgeid
+    || ', next_right_edge = ' || newedgeid
+    || '*(next_right_edge/'
+    || e1id || ') WHERE abs_next_right_edge = ' || e1id;
+  --RAISE DEBUG 'SQL: %', sql;
+  EXECUTE sql;
+
+	--
+  -- NOT IN THE SPECS:
+  -- Replace composition rows involving the two
+  -- edges as one involving the new edge.
+  -- It makes a DELETE and an UPDATE to do all
+  sql := 'DELETE FROM ' || quote_ident(toponame)
+    || '.relation r USING topology.layer l '
+    || 'WHERE l.level = 0 AND l.feature_type = 2'
+    || ' AND l.topology_id = ' || topoid
+    || ' AND l.layer_id = r.layer_id AND abs(r.element_id) = '
+    || e2id;
+  --RAISE DEBUG 'SQL: %', sql;
+  EXECUTE sql;
+  sql := 'UPDATE ' || quote_ident(toponame)
+    || '.relation r '
+    || ' SET element_id = ' || newedgeid || '*(element_id/'
+    || e1id
+    || ') FROM topology.layer l WHERE l.level = 0 AND l.feature_type = 2'
+    || ' AND l.topology_id = ' || topoid
+    || ' AND l.layer_id = r.layer_id AND abs(r.element_id) = '
+    || e1id
+  ;
+  RAISE DEBUG 'SQL: %', sql;
+  EXECUTE sql;
+
+
+  -- Delete both edges
+  EXECUTE 'DELETE FROM ' || quote_ident(toponame)
+    || '.edge_data WHERE edge_id = ' || e2id;
+  EXECUTE 'DELETE FROM ' || quote_ident(toponame)
+    || '.edge_data WHERE edge_id = ' || e1id;
+
+  -- Delete the common node 
+  BEGIN
+    EXECUTE 'DELETE FROM ' || quote_ident(toponame)
+            || '.node WHERE node_id = ' || commonnode;
+    EXCEPTION
+      WHEN UNDEFINED_TABLE THEN
+        RAISE EXCEPTION 'corrupted topology "%" (missing node table)',
+          toponame;
+  END;
+
+  RETURN newedgeid;
+END
+$$
+LANGUAGE 'plpgsql' VOLATILE;
+--} ST_NewEdgeHeal
+
+--{
+-- Topo-Geo and Topo-Net 3: Routine Details
 -- X.3.11
 --
 --  ST_ModEdgeHeal(atopology, anedge, anotheredge)
