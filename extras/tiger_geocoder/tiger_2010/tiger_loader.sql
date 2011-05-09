@@ -1,6 +1,5 @@
 --$Id$
 SET search_path TO tiger,public;
-SET standard_conforming_string on;
 BEGIN;
 DROP AGGREGATE IF EXISTS array_accum(anyelement);
 CREATE AGGREGATE array_accum(anyelement) (
@@ -96,6 +95,7 @@ VALUES(2, 'county', 'county10', true, false, true,
 	${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_county_lookup ( CONSTRAINT pk_${state_abbrev}_county_lookup PRIMARY KEY (st_code, co_code)) INHERITS (county_lookup);"
 	${psql} -c "VACUUM ANALYZE ${data_schema}.${state_abbrev}_${lookup_name};"
 	${psql} -c "INSERT INTO ${data_schema}.${state_abbrev}_${lookup_name}_lookup(st_code, state, co_code, name) SELECT CAST(statefp as integer), ''${state_abbrev}'', CAST(countyfp as integer), name FROM ${data_schema}.${state_abbrev}_${lookup_name};"
+	${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
 	${psql} -c "VACUUM ANALYZE ${data_schema}.${state_abbrev}_${lookup_name}_lookup;" ');
 	
 INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process )
@@ -103,13 +103,15 @@ VALUES(1, 'state', 'state10', true, false, true,false, 'c',
 	'${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_state(CONSTRAINT pk_${state_abbrev}_${lookup_name} PRIMARY KEY (gid) ) INHERITS(state); "',
 	'${psql} -c "SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}'')); ALTER TABLE ${data_schema}.${state_abbrev}_state ADD CONSTRAINT uidx_${state_abbrev}_${lookup_name}_stusps UNIQUE (stusps);"
 	${psql} -c "CREATE INDEX ${data_schema}_${state_abbrev}_state_the_geom_gist ON ${data_schema}.${state_abbrev}_${lookup_name} USING gist(the_geom);"
+	${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
 	${psql} -c "VACUUM ANALYZE ${data_schema}.${state_abbrev}_${lookup_name}"' );
 
 INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process )
 VALUES(3, 'place', 'place10', true, false, true,false, 'c', 
 	'${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_${lookup_name}(CONSTRAINT pk_${state_abbrev}_${table_name} PRIMARY KEY (plcidfp) ) INHERITS(place);" ',
 	'${psql} -c "ALTER TABLE ${staging_schema}.${state_abbrev}_${table_name} RENAME geoid10 TO plcidfp;SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}'')); ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT uidx_${state_abbrev}_${lookup_name}_gid UNIQUE (gid);"
-${psql} -c "CREATE INDEX idx_${state_abbrev}_${lookup_name}_soundex_name ON ${data_schema}.${state_abbrev}_${lookup_name} USING btree (soundex(name));" '  
+${psql} -c "CREATE INDEX idx_${state_abbrev}_${lookup_name}_soundex_name ON ${data_schema}.${state_abbrev}_${lookup_name} USING btree (soundex(name));" 
+${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"'  
 	);
 
 INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process )
@@ -169,7 +171,7 @@ VALUES(9, 'addr', 'addr', true, true, false,false, 'a',
 	'${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_${lookup_name}(CONSTRAINT pk_${state_abbrev}_${table_name} PRIMARY KEY (gid)) INHERITS(${table_name});" ',
 	'${psql} -c "UPDATE ${data_schema}.${state_abbrev}_${lookup_name} SET statefp = ''${state_fips}'' WHERE statefp IS NULL;"
 	${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
-	${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${lookup_name}_least_address ON tiger_data.ma_addr USING btree (least_hn(fromhn,tohn) )
+	${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${lookup_name}_least_address ON tiger_data.ma_addr USING btree (least_hn(fromhn,tohn) );"
 	${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${table_name}_tlid_statefp ON ${data_schema}.${state_abbrev}_${table_name} USING btree (tlid, statefp);"
 	${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${table_name}_zip ON ${data_schema}.${state_abbrev}_${table_name} USING btree (zip);"
 	${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_zip_state(CONSTRAINT pk_${state_abbrev}_zip_state PRIMARY KEY(zip,stusps)) INHERITS(zip_state); "
