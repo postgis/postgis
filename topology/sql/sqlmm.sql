@@ -206,6 +206,16 @@ BEGIN
     RAISE EXCEPTION 'SQL/MM Spatial exception – non-connected edges';
   END IF;
 
+  -- Check if any other edge is connected to the common node
+  FOR rec IN EXECUTE 'SELECT edge_id FROM ' || quote_ident(toponame)
+    || '.edge_data WHERE ( edge_id != ' || e1id
+    || ' AND edge_id != ' || e2id || ') AND ( start_node = '
+    || commonnode || ' OR end_node = ' || commonnode || ' )'
+  LOOP
+    RAISE EXCEPTION
+      'SQL/MM Spatial exception – other edges connected (ie: %)', rec.edge_id;
+  END LOOP;
+
   -- NOT IN THE SPECS:
   -- check if any topo_geom is defined only by one of the
   -- input edges. In such case there would be no way to adapt
@@ -230,17 +240,6 @@ BEGIN
           rec.topogeo_id, rec.layer_id,
           rec.schema_name, rec.table_name, rec.feature_column,
           e1id, e2id;
-  END LOOP;
-
-
-  -- Check if any other edge is connected to the common node
-  FOR rec IN EXECUTE 'SELECT edge_id FROM ' || quote_ident(toponame)
-    || '.edge_data WHERE ( edge_id != ' || e1id
-    || ' AND edge_id != ' || e2id || ') AND ( start_node = '
-    || commonnode || ' OR end_node = ' || commonnode || ' )'
-  LOOP
-    RAISE EXCEPTION
-      'SQL/MM Spatial exception – other edges connected (ie: %)', rec.edge_id;
   END LOOP;
 
   -- Update data of the first edge {
