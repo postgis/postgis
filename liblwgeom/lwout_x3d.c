@@ -253,7 +253,15 @@ asx3d3_mpoly_coordindex(const LWMPOLY *psur, char *output)
 			j += k;
 			if (l < (patch->nrings - 1) )
 			{
-				ptr += sprintf(ptr, " -1 "); //separator for each inner ring I know its probably wrong - place holder for now
+			    /** @todo TODO: Decide the best way to render holes
+			    *  Evidentally according to my X3D expert the X3D consortium doesn't really 
+			    *  support holes and it's an issue of argument among many that feel it should. He thinks CAD x3d extensions to spec might.
+			    *  What he has done and others developing X3D exports to simulate a hole is to cut around it.
+			    *  So if you have a donut, you would cut it into half and have 2 solid polygons.  Not really sure the best way to handle this.
+			    *  For now will leave it as polygons stacked on top of each other -- which is what we are doing here and perhaps an option
+			    *  to color differently.  It's not ideal but the alternative sounds complicated.
+			    **/
+				ptr += sprintf(ptr, " -1 "); //separator for each inner ring. Ideally we should probably triangulate and cut around as others do 
 			}
 		}
 		if (i < (psur->ngeoms - 1) )
