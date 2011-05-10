@@ -272,7 +272,7 @@ asx3d3_mpoly_coordindex(const LWMPOLY *psur, char *output)
 	return (ptr-output);
 }
 
-/* Return the linestring as an X3D LineSet */
+/** Return the linestring as an X3D LineSet */
 static char *
 asx3d3_line(const LWLINE *line, char *srs, int precision, int opts, const char *defid)
 {
@@ -285,7 +285,7 @@ asx3d3_line(const LWLINE *line, char *srs, int precision, int opts, const char *
 	return output;
 }
 
-/* Compute the string space needed for the IndexedFaceSet representation of the polygon **/
+/** Compute the string space needed for the IndexedFaceSet representation of the polygon **/
 static size_t
 asx3d3_poly_size(const LWPOLY *poly,  char *srs, int precision, int opts, const char *defid)
 {
@@ -355,7 +355,7 @@ asx3d3_triangle(const LWTRIANGLE *triangle, char *srs, int precision, int opts, 
 }
 
 
-/*
+/**
  * Compute max size required for X3D version of this
  * inspected geometry. Will recurse when needed.
  * Don't call this with single-geoms inspected.
@@ -755,7 +755,7 @@ asx3d3_collection(const LWCOLLECTION *col, char *srs, int precision, int opts, c
 }
 
 
-/* In X3D3, coordinates are separated by a space separator
+/** In X3D3, coordinates are separated by a space separator
  */
 static size_t
 pointArray_toX3D3(POINTARRAY *pa, char *output, int precision, int opts, int is_closed)
@@ -837,7 +837,7 @@ pointArray_toX3D3(POINTARRAY *pa, char *output, int precision, int opts, int is_
 
 
 
-/*
+/**
  * Returns maximum size of rendered pointarray in bytes.
  */
 static size_t
