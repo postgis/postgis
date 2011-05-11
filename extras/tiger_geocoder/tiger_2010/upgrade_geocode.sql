@@ -8,6 +8,7 @@ UPDATE state_lookup SET statefp = lpad(st_code::text,2,'0') WHERE statefp IS NUL
 ALTER TABLE state_lookup ADD CONSTRAINT state_lookup_statefp_key UNIQUE(statefp);
 CREATE INDEX idx_tiger_edges_countyfp ON edges USING btree(countyfp);
 CREATE INDEX idx_tiger_faces_countyfp ON faces USING btree(countyfp);
+CREATE INDEX tiger_place_the_geom_gist ON place USING gist(the_geom);
 
 BEGIN;
 -- Type used to pass around a normalized address between functions
