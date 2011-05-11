@@ -18,6 +18,7 @@ AS $_$
 DECLARE
   var_redge RECORD;
   var_states text[];
+  var_countyfp text[];
   var_addy NORM_ADDY;
   var_strnum varchar;
   var_nstrnum numeric(10);
@@ -47,8 +48,13 @@ BEGIN
 		RAISE NOTICE 'Get matching states end: %', clock_timestamp();
 	END IF;
 	IF array_upper(var_states, 1) IS NULL THEN
-	-- We don't have any data for this state
-	RETURN;
+		-- We don't have any data for this state
+		RETURN;
+	END IF;
+	var_countyfp := ARRAY(SELECT countyfp FROM county WHERE statefp = ANY(var_states) AND ST_Intersects(the_geom, var_pt) );
+	IF array_upper(var_countyfp, 1) IS NULL THEN
+		-- We don't have any data for this county
+		RETURN;
 	END IF;
 	
 	-- Find the street edges that this point is closest to with tolerance of 0.005 but only consider the edge if the point is contained in the right or left face
@@ -63,9 +69,9 @@ BEGIN
 			  side, to_number(fromhn, '999999') As fromhn, to_number(tohn, '999999') As tohn, ST_GeometryN(ST_Multi(line),1) As line, foo.dist
 		FROM 
 		  (SELECT e.the_geom As line, e.fullname, a.zip, s.abbrev As stusps, ST_ClosestPoint(e.the_geom, var_pt) As center_pt, e.statefp, a.side, a.fromhn, a.tohn, ST_Distance_Sphere(e.the_geom, var_pt) As dist
-				FROM (SELECT * FROM edges WHERE statefp = ANY(var_states) ) AS e INNER JOIN (SELECT * FROM state_lookup WHERE statefp = ANY(var_states) ) As s ON (e.statefp = s.statefp )
-					INNER JOIN (SELECT * FROM faces WHERE statefp = ANY(var_states) ) As fl ON (e.tfidl = fl.tfid AND e.statefp = fl.statefp)
-					INNER JOIN (SELECT * FROM faces WHERE statefp = ANY(var_states) ) As fr ON (e.tfidr = fr.tfid AND e.statefp = fr.statefp)
+				FROM (SELECT * FROM edges WHERE statefp = ANY(var_states) AND countyfp = ANY(var_countyfp) ) AS e INNER JOIN (SELECT * FROM state_lookup WHERE statefp = ANY(var_states) ) As s ON (e.statefp = s.statefp )
+					INNER JOIN (SELECT * FROM faces WHERE statefp = ANY(var_states) AND countyfp = ANY(var_countyfp) ) As fl ON (e.tfidl = fl.tfid AND e.statefp = fl.statefp)
+					INNER JOIN (SELECT * FROM faces WHERE statefp = ANY(var_states) AND countyfp = ANY(var_countyfp) ) As fr ON (e.tfidr = fr.tfid AND e.statefp = fr.statefp)
 					INNER JOIN (SELECT * FROM addr WHERE statefp = ANY(var_states) ) As a ON ( e.tlid = a.tlid AND e.statefp = a.statefp AND  
 					   ( ( ST_Covers(fl.the_geom, var_pt) AND a.side = 'L') OR ( ST_Covers(fr.the_geom, var_pt) AND a.side = 'R' ) ) )
 					-- INNER JOIN zip_state_loc As z ON (a.statefp =  z.statefp AND a.zip = z.zip) /** really slow with this join **/

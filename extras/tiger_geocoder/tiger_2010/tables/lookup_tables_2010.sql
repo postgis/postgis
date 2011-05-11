@@ -937,6 +937,7 @@ CREATE TABLE county
   CONSTRAINT enforce_geotype_geom CHECK (geometrytype(the_geom) = 'MULTIPOLYGON'::text OR the_geom IS NULL),
   CONSTRAINT enforce_srid_geom CHECK (st_srid(the_geom) = 4269)
 );
+CREATE INDEX idx_tiger_data_edges ON edges USING btree (countyfp);
 
 DROP TABLE IF EXISTS state;
 CREATE TABLE state
@@ -1082,6 +1083,7 @@ CREATE TABLE edges
   CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4269)
 );
 CREATE INDEX idx_edges_tlid ON edges USING btree(tlid);
+CREATE INDEX idx_tiger_edges_countyfp ON edges USING btree(countyfp);
 
 DROP TABLE IF EXISTS faces;
 
@@ -1162,6 +1164,7 @@ gid serial NOT NULL PRIMARY KEY,
   CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4269)
 );
 CREATE INDEX idx_tiger_faces_tfid ON faces USING btree (tfid);
+CREATE INDEX idx_tiger_faces_countyfp ON faces USING btree(countyfp);
 
 
 -- Index: tiger.faces_the_geom_gist

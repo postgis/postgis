@@ -132,6 +132,7 @@ VALUES(6, 'faces', 'faces', true, true, false,false, 'c',
 	'${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_${lookup_name}(CONSTRAINT pk_${state_abbrev}_${lookup_name} PRIMARY KEY (gid)) INHERITS(${lookup_name});" ',
 	'${psql} -c "CREATE INDEX ${data_schema}_${state_abbrev}_${lookup_name}_the_geom_gist ON ${data_schema}.${state_abbrev}_${lookup_name} USING gist(the_geom);"
 	${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${lookup_name}_tfid ON ${data_schema}.${state_abbrev}_${lookup_name} USING btree (tfid);"
+	${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${table_name}_countyfp ON ${data_schema}.${state_abbrev}_${table_name} USING btree (countyfp);"
 	${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
 	${psql} -c "vacuum analyze ${data_schema}.${state_abbrev}_${lookup_name};" ');
 
@@ -152,6 +153,7 @@ VALUES(8, 'edges', 'edges', true, true, false,false, 'a',
 ${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${table_name}_tlid ON ${data_schema}.${state_abbrev}_${table_name} USING btree (tlid);"
 ${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${table_name}_tfidr ON ${data_schema}.${state_abbrev}_${table_name} USING btree (tfidr);"
 ${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${table_name}_tfidl ON ${data_schema}.${state_abbrev}_${table_name} USING btree (tfidl);"
+${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${table_name}_countyfp ON ${data_schema}.${state_abbrev}_${table_name} USING btree (countyfp);"
 ${psql} -c "CREATE INDEX ${data_schema}_${state_abbrev}_${table_name}_the_geom_gist ON ${data_schema}.${state_abbrev}_${table_name} USING gist(the_geom);"
 ${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
 ${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${lookup_name}_zipl ON ${data_schema}.${state_abbrev}_${lookup_name} USING btree (zipl);"

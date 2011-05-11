@@ -6,6 +6,8 @@ SET search_path TO tiger,public;
 ALTER TABLE state_lookup ADD COLUMN statefp char(2);
 UPDATE state_lookup SET statefp = lpad(st_code::text,2,'0') WHERE statefp IS NULL;
 ALTER TABLE state_lookup ADD CONSTRAINT state_lookup_statefp_key UNIQUE(statefp);
+CREATE INDEX idx_tiger_edges_countyfp ON edges USING btree(countyfp);
+CREATE INDEX idx_tiger_faces_countyfp ON faces USING btree(countyfp);
 
 BEGIN;
 -- Type used to pass around a normalized address between functions
