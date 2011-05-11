@@ -83,7 +83,7 @@ CREATE INDEX secondary_unit_lookup_abbrev_idx ON secondary_unit_lookup (abbrev);
 
 -- Create state lookup table
 DROP TABLE IF EXISTS state_lookup;
-CREATE TABLE state_lookup (st_code INTEGER PRIMARY KEY, name VARCHAR(40) UNIQUE, abbrev VARCHAR(3) UNIQUE);
+CREATE TABLE state_lookup (st_code INTEGER PRIMARY KEY, name VARCHAR(40) UNIQUE, abbrev VARCHAR(3) UNIQUE, statefp char(2) UNIQUE);
 INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Alabama', 'AL', '01');
 INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Alaska', 'AK', '02');
 INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('American Samoa', 'AS', -1);
@@ -143,6 +143,8 @@ INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Washington', 'WA', '53
 INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('West Virginia', 'WV', '54');
 INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Wisconsin', 'WI', '55');
 INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Wyoming', 'WY', '56');
+-- NOTE: fix later -- this is wrong for those - state code ones
+UPDATE state_lookup SET statefp = lpad(st_code::text,2,'0');
 
 
 -- Create street type lookup table

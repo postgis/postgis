@@ -16,7 +16,7 @@ BEGIN
 
   ADDY.internal := parsed.internal;
 
-  in_statefp := statefp FROM state WHERE state.stusps = parsed.stateAbbrev;
+  in_statefp := statefp FROM state_lookup As s WHERE s.abbrev = parsed.stateAbbrev;
 
   -- There are a couple of different things to try, from the highest preference and falling back
   -- to lower-preference options.
