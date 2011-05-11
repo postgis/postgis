@@ -21,11 +21,12 @@ BEGIN
   IF stateAbbrev IS NOT NULL THEN
     lstate := statefp FROM state WHERE stusps = stateAbbrev;
     SELECT INTO tempInt count(*) FROM place
-        WHERE place.statefp = lstate
+        WHERE place.statefp = lstate AND fullStreet ILIKE '%' || name || '%'
         AND texticregexeq(fullStreet, '(?i)' || name || '$');
   ELSE
     SELECT INTO tempInt count(*) FROM place
-        WHERE texticregexeq(fullStreet, '(?i)' || name || '$');
+        WHERE fullStreet ILIKE '%' || name || '%' AND
+        	texticregexeq(fullStreet, '(?i)' || name || '$');
   END IF;
 
   IF tempInt > 0 THEN
@@ -33,7 +34,7 @@ BEGIN
     IF stateAbbrev IS NOT NULL THEN
       FOR rec IN SELECT substring(fullStreet, '(?i)('
           || name || ')$') AS value, name FROM place
-          WHERE place.statefp = lstate
+          WHERE place.statefp = lstate AND fullStreet ILIKE '%' || name || '%'
           AND texticregexeq(fullStreet, '(?i)'
           || name || '$') ORDER BY length(name) DESC LOOP
         -- Since the regex is end of string, only the longest (first) result
@@ -44,7 +45,7 @@ BEGIN
     ELSE
       FOR rec IN SELECT substring(fullStreet, '(?i)('
           || name || ')$') AS value, name FROM place
-          WHERE texticregexeq(fullStreet, '(?i)'
+          WHERE fullStreet ILIKE '%' || name || '%' AND texticregexeq(fullStreet, '(?i)'
           || name || '$') ORDER BY length(name) DESC LOOP
         -- Since the regex is end of string, only the longest (first) result
         -- is useful.

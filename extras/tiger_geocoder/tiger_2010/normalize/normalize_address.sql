@@ -225,14 +225,14 @@ BEGIN
   -- or suite number.
   -- this count is surprisingly slow by itself but much faster if you add an ILIKE AND clause
   SELECT INTO tempInt count(*) FROM secondary_unit_lookup
-      WHERE texticregexeq(fullStreet, '(?i)' || ws || name || '('
+      WHERE fullStreet ILIKE '%' || name || '%' AND texticregexeq(fullStreet, '(?i)' || ws || name || '('
           || ws || '|$)');
   IF tempInt = 1 THEN
     result.internal := substring(fullStreet, '(?i)' || ws || '('
         || name ||  ws || '*#?' || ws
         || '*(?:[0-9][-0-9a-zA-Z]*)?' || ')(?:' || ws || '|$)')
         FROM secondary_unit_lookup
-        WHERE texticregexeq(fullStreet, '(?i)' || ws || name || '('
+        WHERE fullStreet ILIKE '%' || name || '%' AND texticregexeq(fullStreet, '(?i)' || ws || name || '('
         || ws || '|$)');
     ELSIF tempInt > 1 THEN
     -- In the event of multiple matches to a secondary unit designation, we
@@ -242,7 +242,7 @@ BEGIN
         || name || '(?:' || ws || '*#?' || ws
         || '*(?:[0-9][-0-9a-zA-Z]*)?)' || ws || '?|$)')) as value
         FROM secondary_unit_lookup
-        WHERE texticregexeq(fullStreet, '(?i)' || ws || name || '('
+        WHERE fullStreet ILIKE '%' || name || '%' AND  texticregexeq(fullStreet, '(?i)' || ws || name || '('
         || ws || '|$)') LOOP
       IF tempInt < position(rec.value in fullStreet) THEN
         tempInt := position(rec.value in fullStreet);
