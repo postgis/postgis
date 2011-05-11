@@ -24,7 +24,7 @@ DECLARE
   var_primary_line geometry := NULL;
   var_primary_dist numeric(10,2) ;
   var_pt geometry;
-  var_debug boolean = true;
+  var_debug boolean = false;
 BEGIN
 	IF pt IS NULL THEN
 		RETURN;
