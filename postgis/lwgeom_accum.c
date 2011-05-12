@@ -303,7 +303,11 @@ PGISDirectFunctionCall1(PGFunction func, Datum arg1)
 	FunctionCallInfoData fcinfo;
 	Datum           result;
 
-	InitFunctionCallInfoData(fcinfo, NULL, 1, NULL, NULL);
+#if POSTGIS_PGSQL_VERSION > 90
+    InitFunctionCallInfoData(fcinfo, NULL, 1, InvalidOid, NULL, NULL);
+#else
+    InitFunctionCallInfoData(fcinfo, NULL, 1, NULL, NULL);
+#endif 
 
 	fcinfo.arg[0] = arg1;
 	fcinfo.argnull[0] = false;
