@@ -20,7 +20,7 @@ load_topology-4326.sql: load_topology.sql.in
 	@cpp -P -traditional-cpp load_topology.sql.in | sed -e 's:@SRID@:4326:g' > load_topology-4326.sql
 
 clean distclean:
-	rm -f topo_predicates.sql load_topology.sql
+	rm -f topo_predicates.sql load_topology.sql load_topology-4326.sql
 
 TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/legacy_invalid.sql regress/sqlmm.sql \
