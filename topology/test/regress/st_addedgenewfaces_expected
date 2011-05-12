@@ -1,0 +1,17 @@
+BEGIN
+t
+8
+22
+26
+COMMIT
+ERROR:  SQL/MM Spatial exception - start node not geometry start point.
+ERROR:  SQL/MM Spatial exception - end node not geometry end point.
+ERROR:  SQL/MM Spatial exception - geometry crosses a node
+ERROR:  SQL/MM Spatial exception - non-existent node
+ERROR:  SQL/MM Spatial exception - non-existent node
+ERROR:  SQL/MM Spatial exception - curve not simple
+ERROR:  SQL/MM Spatial exception - coincident edge
+ERROR:  SQL/MM Spatial exception - geometry crosses an edge
+ERROR:  SQL/MM Spatial exception - geometry crosses an edge
+ERROR:  Spatial exception - geometry intersects edge 4
+Topology 'city_data' dropped

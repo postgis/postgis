@@ -1828,200 +1828,202 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 --  ST_AddEdgeNewFaces(atopology, anode, anothernode, acurve)
 --
-CREATE OR REPLACE FUNCTION topology.ST_AddEdgeNewFaces(varchar, integer, integer, geometry)
-	RETURNS INTEGER AS
+CREATE OR REPLACE FUNCTION topology.ST_AddEdgeNewFaces(atopology varchar, anode integer, anothernode integer, acurve geometry)
+  RETURNS INTEGER AS
 $$
 DECLARE
-	atopology ALIAS FOR $1;
-	anode ALIAS FOR $2;
-	anothernode ALIAS FOR $3;
-	acurve ALIAS FOR $4;
-	rec RECORD;
-	i INTEGER;
-	az FLOAT8;
-	azdif FLOAT8;
-	myaz FLOAT8;
-	minazimuth FLOAT8;
-	maxazimuth FLOAT8;
-	p2 GEOMETRY;
+  rec RECORD;
+  i INTEGER;
+  az FLOAT8;
+  azdif FLOAT8;
+  myaz FLOAT8;
+  minazimuth FLOAT8;
+  maxazimuth FLOAT8;
+  p2 GEOMETRY;
 BEGIN
 
-	--
-	-- All args required
-	-- 
-	IF atopology IS NULL
-		OR anode IS NULL
-		OR anothernode IS NULL
-		OR acurve IS NULL
-	THEN
-		RAISE EXCEPTION 'SQL/MM Spatial exception - null argument';
-	END IF;
+  --
+  -- All args required
+  -- 
+  IF atopology IS NULL
+    OR anode IS NULL
+    OR anothernode IS NULL
+    OR acurve IS NULL
+  THEN
+    RAISE EXCEPTION 'SQL/MM Spatial exception - null argument';
+  END IF;
 
-	--
-	-- Acurve must be a LINESTRING
-	--
-	IF substring(geometrytype(acurve), 1, 4) != 'LINE'
-	THEN
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - invalid curve';
-	END IF;
-	
-	--
-	-- Curve must be simple
-	--
-	IF NOT ST_IsSimple(acurve) THEN
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - curve not simple';
-	END IF;
+  --
+  -- Acurve must be a LINESTRING
+  --
+  IF substring(geometrytype(acurve), 1, 4) != 'LINE'
+  THEN
+    RAISE EXCEPTION 'SQL/MM Spatial exception - invalid curve';
+  END IF;
+  
+  --
+  -- Curve must be simple
+  --
+  IF NOT ST_IsSimple(acurve) THEN
+    RAISE EXCEPTION 'SQL/MM Spatial exception - curve not simple';
+  END IF;
 
-	-- 
-	-- Check endpoints existance and match with Curve geometry
-	--
-	i=0;
-	FOR rec IN EXECUTE 'SELECT '
-		|| ' CASE WHEN node_id = ' || anode
-		|| ' THEN 1 WHEN node_id = ' || anothernode
-		|| ' THEN 0 END AS start, geom FROM '
-		|| quote_ident(atopology)
-		|| '.node '
-		|| ' WHERE node_id IN ( '
-		|| anode || ',' || anothernode
-		|| ')'
-	LOOP
-		IF rec.start THEN
-			IF NOT Equals(rec.geom, ST_StartPoint(acurve))
-			THEN
-	RAISE EXCEPTION
-	'SQL/MM Spatial exception - start node not geometry start point.';
-			END IF;
-		ELSE
-			IF NOT Equals(rec.geom, ST_EndPoint(acurve))
-			THEN
-	RAISE EXCEPTION
-	'SQL/MM Spatial exception - end node not geometry end point.';
-			END IF;
-		END IF;
+  -- 
+  -- Check endpoints existance and match with Curve geometry
+  --
+  i=0;
+  FOR rec IN EXECUTE 'SELECT '
+    || ' CASE WHEN node_id = ' || anode
+    || ' THEN 1 WHEN node_id = ' || anothernode
+    || ' THEN 0 END AS start, geom FROM '
+    || quote_ident(atopology)
+    || '.node '
+    || ' WHERE node_id IN ( '
+    || anode || ',' || anothernode
+    || ')'
+  LOOP
+    IF rec.start THEN
+      IF NOT Equals(rec.geom, ST_StartPoint(acurve))
+      THEN
+        RAISE EXCEPTION
+          'SQL/MM Spatial exception - start node not geometry start point.';
+      END IF;
+    ELSE
+      IF NOT Equals(rec.geom, ST_EndPoint(acurve))
+      THEN
+        RAISE EXCEPTION
+          'SQL/MM Spatial exception - end node not geometry end point.';
+      END IF;
+    END IF;
 
-		i=i+1;
-	END LOOP;
+    i=i+1;
+  END LOOP;
 
-	IF i < 2 THEN
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - non-existent node';
-	END IF;
+  IF anode != anothernode THEN
+    IF i < 2 THEN
+    RAISE EXCEPTION
+     'SQL/MM Spatial exception - non-existent node';
+    END IF;
+  ELSE
+    IF i < 1 THEN
+    RAISE EXCEPTION
+     'SQL/MM Spatial exception - non-existent node';
+    END IF;
+  END IF;
 
-	--
-	-- Check if this geometry crosses any node
-	--
-	FOR rec IN EXECUTE 'SELECT node_id FROM '
-		|| quote_ident(atopology) || '.node
-		WHERE geom && ' || quote_literal(acurve::text) || '::geometry
-		AND ST_Within(geom, ' || quote_literal(acurve::text) || '::geometry)'
-	LOOP
-		RAISE EXCEPTION
-		'SQL/MM Spatial exception - geometry crosses a node';
-	END LOOP;
+  --
+  -- Check if this geometry crosses any node
+  --
+  FOR rec IN EXECUTE 'SELECT node_id FROM '
+    || quote_ident(atopology)
+    || '.node WHERE geom && '
+    || quote_literal(acurve::text)
+    || '::geometry AND ST_Within(geom, '
+    || quote_literal(acurve::text) || '::geometry)'
+  LOOP
+    RAISE EXCEPTION
+    'SQL/MM Spatial exception - geometry crosses a node';
+  END LOOP;
 
-	--
-	-- Check if this geometry crosses any existing edge
-	--
-	FOR rec IN EXECUTE 'SELECT * FROM '
-		|| quote_ident(atopology) || '.edge_data
-		WHERE geom && ' || quote_literal(acurve::text) || '::geometry
-		AND crosses(geom, ' || quote_literal(acurve::text) || '::geometry)'
-	LOOP
-		RAISE EXCEPTION
-		'SQL/MM Spatial exception - geometry crosses an edge';
-	END LOOP;
+  --
+  -- Check if this geometry has any interaction with any existing edge
+  --
+  FOR rec IN EXECUTE 'SELECT edge_id, ST_Relate(geom,' 
+    || quote_literal(acurve::text)
+    || '::geometry) as im FROM '
+    || quote_ident(atopology)
+    || '.edge_data WHERE geom && '
+    || quote_literal(acurve::text) || '::geometry'
+  LOOP
 
-	--
-	-- Check if another edge share this edge endpoints
-	--
-	FOR rec IN EXECUTE 'SELECT * FROM '
-		|| quote_ident(atopology) || '.edge_data '
-		|| ' WHERE '
-		|| ' geom && ' || quote_literal(acurve::text) || '::geometry '
-		|| ' AND '
-		|| ' ( ('
-		|| ' start_node = ' || anode
-		|| ' AND '
-		|| ' end_node = ' || anothernode
-		|| ' ) OR ( '
-		|| ' end_node = ' || anode
-		|| ' AND '
-		|| ' start_node = ' || anothernode
-		|| ' ) )'
-		|| ' AND '
-		|| 'equals(geom,' || quote_literal(acurve::text) || '::geometry)'
-	LOOP
-		RAISE EXCEPTION
-		'SQL/MM Spatial exception - coincident edge';
-	END LOOP;
+    --RAISE DEBUG 'IM=%',rec.im;
 
-	---------------------------------------------------------------
-	--
-	-- All checks passed, time to extract informations about
-	-- endpoints:
-	--
-	--      next_left_edge
-	--      next_right_edge
-	--	left_face
-	--	right_face
-	--
-	---------------------------------------------------------------
+    IF ST_RelateMatch(rec.im, 'F********') THEN
+      CONTINUE; -- no interior intersection
+    END IF;
 
-	--
-	--
-	-- Compute next_left_edge 
-	--
-	-- We fetch all edges with an endnode equal to
-	-- this edge end_node (anothernode).
-	-- For each edge we compute azimuth of the segment(s).
-	-- Of interest are the edges with closest (smaller
-	-- and bigger) azimuths then the azimuth of
-	-- this edge last segment.
-	--
+    IF ST_RelateMatch(rec.im, '1FFF*FFF2') THEN
+      RAISE EXCEPTION
+        'SQL/MM Spatial exception - coincident edge';
+    END IF;
 
-	myaz = ST_Azimuth(ST_EndPoint(acurve), ST_PointN(acurve, ST_NumPoints(acurve)-1));
-	RAISE NOTICE 'My end-segment azimuth: %', myaz;
-	FOR rec IN EXECUTE 'SELECT '
-		|| 'edge_id, end_node, start_node, geom'
-		|| ' FROM '
-		|| quote_ident(atopology)
-		|| '.edge_data '
-		|| ' WHERE '
-		|| ' end_node = ' || anothernode
-		|| ' OR '
-		|| ' start_node = ' || anothernode
-	LOOP
+    -- NOT IN THE SPECS: geometry touches an edge
+    IF ST_RelateMatch(rec.im, '1********') THEN
+      RAISE EXCEPTION
+        'Spatial exception - geometry intersects edge %', rec.edge_id;
+    END IF;
 
-		IF rec.start_node = anothernode THEN
-			--
-			-- Edge starts at our node, we compute
-			-- azimuth from node to its second point
-			--
-			az = ST_Azimuth(ST_EndPoint(acurve),
-				ST_PointN(rec.geom, 2));
+    IF ST_RelateMatch(rec.im, 'T********') THEN
+      RAISE EXCEPTION
+        'SQL/MM Spatial exception - geometry crosses an edge';
+    END IF;
 
-			RAISE NOTICE 'Edge % starts at node % - azimuth %',
-				rec.edge_id, rec.start_node, az;
-		END IF;
+  END LOOP;
 
-		IF rec.end_node = anothernode THEN
-			--
-			-- Edge ends at our node, we compute
-			-- azimuth from node to its second-last point
-			--
-			az = ST_Azimuth(ST_EndPoint(acurve),
-				ST_PointN(rec.geom, ST_NumPoints(rec.geom)-1));
+  ---------------------------------------------------------------
+  --
+  -- All checks passed, time to extract informations about
+  -- endpoints:
+  --
+  --  next_left_edge
+  --  next_right_edge
+  --  left_face
+  --  right_face
+  --
+  ---------------------------------------------------------------
 
-			RAISE NOTICE 'Edge % ends at node % - azimuth %',
-				rec.edge_id, rec.end_node, az;
-		END IF;
-	END LOOP;
+  --
+  --
+  -- Compute next_left_edge 
+  --
+  -- We fetch all edges with an endnode equal to
+  -- this edge end_node (anothernode).
+  -- For each edge we compute azimuth of the segment(s).
+  -- Of interest are the edges with closest (smaller
+  -- and bigger) azimuths then the azimuth of
+  -- this edge last segment.
+  --
+
+  myaz = ST_Azimuth(ST_EndPoint(acurve), ST_PointN(acurve, ST_NumPoints(acurve)-1));
+  RAISE NOTICE 'My end-segment azimuth: %', myaz;
+  FOR rec IN EXECUTE 'SELECT '
+    || 'edge_id, end_node, start_node, geom'
+    || ' FROM '
+    || quote_ident(atopology)
+    || '.edge_data '
+    || ' WHERE '
+    || ' end_node = ' || anothernode
+    || ' OR '
+    || ' start_node = ' || anothernode
+  LOOP
+
+    IF rec.start_node = anothernode THEN
+      --
+      -- Edge starts at our node, we compute
+      -- azimuth from node to its second point
+      --
+      az = ST_Azimuth(ST_EndPoint(acurve),
+        ST_PointN(rec.geom, 2));
+
+      RAISE NOTICE 'Edge % starts at node % - azimuth %',
+        rec.edge_id, rec.start_node, az;
+    END IF;
+
+    IF rec.end_node = anothernode THEN
+      --
+      -- Edge ends at our node, we compute
+      -- azimuth from node to its second-last point
+      --
+      az = ST_Azimuth(ST_EndPoint(acurve),
+        ST_PointN(rec.geom, ST_NumPoints(rec.geom)-1));
+
+      RAISE NOTICE 'Edge % ends at node % - azimuth %',
+        rec.edge_id, rec.end_node, az;
+    END IF;
+  END LOOP;
 
 
-	RAISE EXCEPTION 'Not implemented yet';
+  RAISE EXCEPTION 'Not implemented yet';
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE;

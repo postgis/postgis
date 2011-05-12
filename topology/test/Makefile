@@ -28,6 +28,7 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/addedge.sql regress/addface.sql \
 	regress/addface2.5d.sql \
 	regress/polygonize.sql \
+	regress/st_addedgenewfaces.sql \
 	regress/st_getfacegeometry.sql \
 	regress/st_getfaceedges.sql \
 	regress/st_modedgeheal.sql \
