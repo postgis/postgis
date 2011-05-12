@@ -16,6 +16,7 @@
 #include "lwgeom_geos.h"
 #include "lwgeom_rtree.h"
 #include "lwgeom_geos_prepared.h"
+#include "lwgeom_functions_analytic.h"
 
 #include <string.h>
 
@@ -68,13 +69,6 @@ Datum hausdorffdistancedensify(PG_FUNCTION_ARGS);
 Datum pgis_union_geometry_array_old(PG_FUNCTION_ARGS);
 Datum pgis_union_geometry_array(PG_FUNCTION_ARGS);
 
-
-/** @todo TODO: move these to a lwgeom_functions_analytic.h
-	*/
-int point_in_polygon_rtree(RTREE_NODE **root, int ringCount, LWPOINT *point);
-int point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int ringCount, LWPOINT *point);
-int point_in_polygon(LWPOLY *polygon, LWPOINT *point);
-int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *pont);
 
 /*
 ** Prototypes end
@@ -1585,7 +1579,7 @@ Datum contains(PG_FUNCTION_ARGS)
 
 		if ( poly_cache->ringIndices )
 		{
-			result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCount, point);
+			result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCounts, point);
 		}
 		else if ( type1 == POLYGONTYPE )
 		{
@@ -1785,7 +1779,7 @@ Datum covers(PG_FUNCTION_ARGS)
 
 		if ( poly_cache->ringIndices )
 		{
-			result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCount, point);
+			result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCounts, point);
 		}
 		else if ( type1 == POLYGONTYPE )
 		{
@@ -1917,7 +1911,7 @@ Datum within(PG_FUNCTION_ARGS)
 
 		if ( poly_cache->ringIndices )
 		{
-			result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCount, point);
+			result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCounts, point);
 		}
 		else if ( type2 == POLYGONTYPE )
 		{
@@ -2049,7 +2043,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 
 		if ( poly_cache->ringIndices )
 		{
-			result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCount, point);
+			result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCounts, point);
 		}
 		else if ( type2 == POLYGONTYPE )
 		{
@@ -2254,7 +2248,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 
 		if ( poly_cache->ringIndices )
 		{
-			result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCount, point);
+			result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCounts, point);
 		}
 		else if ( polytype == POLYGONTYPE )
 		{
