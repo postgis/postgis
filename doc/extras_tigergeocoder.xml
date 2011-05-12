@@ -13,6 +13,9 @@
 			    prefixed with the state code e.g ma_addr, ca_edges etc with constraints to enforce only that state data.  Each of these tables inherits from the base addr, faces, edges, etc located in the tiger schema. </para>
 			<para>All the geocode functions only reference the base tables, so there is no requirement that the data schema be called <varname>tiger_data</varname> or that data can't be further partitioned into other schemas -- e.g a different schema
 			for each state, as long as all the tables inherit from the tables in the <varname>tiger</varname> schema.</para>
+			
+			<note><para>If you are using a prerelease version of PostGIS 2.0.0 tiger geocoder, you can upgrade the scripts using the accompanying upgrade_geocoder.bat / .sh scripts in tiger_2010.  We'll be
+			refining the upgrade scripts until release.</para></note>
 			<para>Design:</para>
 			<para>The goal of this project is to build a fully functional geocoder that can process an arbitrary 
 			address string and using normalized TIGER census data, produce a point geometry and rating reflecting the location of the given address and likeliness of the location.</para>
