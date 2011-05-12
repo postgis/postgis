@@ -49,7 +49,7 @@ typedef struct
 {
 	char type;
 	RTREE_NODE **ringIndices;
-	int ringCount;
+	int* ringCounts;
 	int polyCount;
 	PG_LWGEOM *poly;
 }

@@ -17,6 +17,7 @@
 #include "math.h"
 #include "lwgeom_rtree.h"
 #include "lwalgorithm.h"
+#include "lwgeom_functions_analytic.h"
 
 
 /***********************************************************************
@@ -36,11 +37,7 @@ Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS);
 double determineSide(POINT2D *seg1, POINT2D *seg2, POINT2D *point);
 int isOnSegment(POINT2D *seg1, POINT2D *seg2, POINT2D *point);
 int point_in_ring(POINTARRAY *pts, POINT2D *point);
-int point_in_polygon(LWPOLY *polygon, LWPOINT *point);
-int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *point);
 int point_in_ring_rtree(RTREE_NODE *root, POINT2D *point);
-int point_in_polygon_rtree(RTREE_NODE **root, int ringCount, LWPOINT *point);
-int point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int ringCount, LWPOINT *point);
 
 
 PG_FUNCTION_INFO_V1(LWGEOM_simplify2d);
@@ -1231,54 +1228,65 @@ int point_in_polygon_rtree(RTREE_NODE **root, int ringCount, LWPOINT *point)
  * return 0 if point on boundary
  * return 1 if point inside polygon
  *
- * Expected **root order is all the exterior rings first, then all the holes
- *
- * TODO: this could be made slightly more efficient by ordering the rings in
- * EIIIEIIIEIEI order (exterior/interior) and including list of exterior ring
- * positions on the cache object.
+ * Expected **root order is each exterior ring followed by its holes, eg. EIIEIIEI
  */
-int point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int ringCount, LWPOINT *point)
+int point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int *ringCounts, LWPOINT *point)
 {
-	int i;
+	int i, p, r, in_ring;
 	POINT2D pt;
 	int result = -1;
 
-	LWDEBUGF(2, "point_in_multipolygon_rtree called for %p %d %d %p.", root, polyCount, ringCount, point);
+	LWDEBUGF(2, "point_in_multipolygon_rtree called for %p %d %p.", root, polyCount, point);
 
 	getPoint2d_p(point->point, 0, &pt);
 	/* assume bbox short-circuit has already been attempted */
 
-	/* is the point inside (not outside) any of the exterior rings? */
-	for ( i = 0; i < polyCount; i++ )
+        i = 0; /* the current index into the root array */
+
+	/* is the point inside any of the sub-polygons? */
+	for ( p = 0; p < polyCount; p++ )
 	{
-		int in_ring = point_in_ring_rtree(root[i], &pt);
-		LWDEBUGF(4, "point_in_multipolygon_rtree: exterior ring (%d), point_in_ring returned %d", i, in_ring);
-		if ( in_ring != -1 ) /* not outside this ring */
+		in_ring = point_in_ring_rtree(root[i], &pt);
+		LWDEBUGF(4, "point_in_multipolygon_rtree: exterior ring (%d), point_in_ring returned %d", p, in_ring);
+		if ( in_ring == -1 ) /* outside the exterior ring */
 		{
-			LWDEBUG(3, "point_in_multipolygon_rtree: inside exterior ring.");
-			result = in_ring;
-			break;
+			LWDEBUG(3, "point_in_multipolygon_rtree: outside exterior ring.");
+			continue;
 		}
+                if ( in_ring == 0 ) /* on the boundary */
+                {
+			LWDEBUGF(3, "point_in_multipolygon_rtree: on edge of exterior ring %d", p);
+                        return 0;
+                }
+
+                result = in_ring;
+
+                for(r=1; r<ringCounts[p]; r++)
+                {
+                        in_ring = point_in_ring_rtree(root[i+r], &pt);
+		        LWDEBUGF(4, "point_in_multipolygon_rtree: interior ring (%d), point_in_ring returned %d", r, in_ring);
+                        if (in_ring == 1) /* inside a hole => outside the polygon */
+                        {
+                                LWDEBUGF(3, "point_in_multipolygon_rtree: within hole %d of exterior ring %d", r, p);
+                                result = -1;
+                                break;
+                        }
+                        if (in_ring == 0) /* on the edge of a hole */
+                        {
+			        LWDEBUGF(3, "point_in_multipolygon_rtree: on edge of hole %d of exterior ring %d", r, p);
+                                return 0;
+		        }
+                }
+                /* if we have a positive result, we can short-circuit and return it */
+                if ( result != -1)
+                {
+                        return result;
+                }
+                /* increment the index by the total number of rings in the sub-poly */
+                /* we do this here in case we short-cutted out of the poly before looking at all the rings */ 
+                i += ringCounts[p];
 	}
 
-	if ( result == -1 ) /* strictly outside all rings */
-		return result;
-
-	/* ok, it's in a ring, but if it's in a hole it's still outside */
-	for ( i = polyCount; i < ringCount; i++ )
-	{
-		int in_ring = point_in_ring_rtree(root[i], &pt);
-		LWDEBUGF(4, "point_in_multipolygon_rtree: hole (%d), point_in_ring returned %d", i, in_ring);
-		if ( in_ring == 1 ) /* completely inside hole */
-		{
-			LWDEBUGF(3, "point_in_multipolygon_rtree: within hole %d.", i);
-			return -1;
-		}
-		if ( in_ring == 0 ) /* on the boundary of a hole */
-		{
-			result = 0;
-		}
-	}
 	return result; /* -1 = outside, 0 = boundary, 1 = inside */
 
 }

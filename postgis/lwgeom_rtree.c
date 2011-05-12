@@ -212,17 +212,23 @@ void freeTree(RTREE_NODE *root)
  */
 void clearCache(RTREE_POLY_CACHE *cache)
 {
-	int i;
+	int g, r, i;
 	LWDEBUGF(2, "clearCache called for %p", cache);
-	for (i = 0; i < cache->ringCount; i++)
-	{
-		freeTree(cache->ringIndices[i]);
+        i = 0;
+        for (g = 0; g < cache->polyCount; g++)
+        {
+	        for (r = 0; r < cache->ringCounts; r++)
+	        {
+		        freeTree(cache->ringIndices[i]);
+                        i++;
+                }
 	}
 	lwfree(cache->ringIndices);
+        lwfree(cache->ringCounts);
 	lwfree(cache->poly);
 	cache->poly = 0;
 	cache->ringIndices = 0;
-	cache->ringCount = 0;
+	cache->ringCounts = 0;
 	cache->polyCount = 0;
 }
 
@@ -391,7 +397,7 @@ RTREE_POLY_CACHE * createCache()
 	RTREE_POLY_CACHE *result;
 	result = lwalloc(sizeof(RTREE_POLY_CACHE));
 	result->polyCount = 0;
-	result->ringCount = 0;
+	result->ringCounts = 0;
 	result->ringIndices = 0;
 	result->poly = 0;
 	result->type = 1;
@@ -400,7 +406,7 @@ RTREE_POLY_CACHE * createCache()
 
 void populateCache(RTREE_POLY_CACHE *currentCache, LWGEOM *lwgeom, PG_LWGEOM *serializedPoly)
 {
-	int i, j, k, length;
+	int i, p, r, length;
 	LWMPOLY *mpoly;
 	LWPOLY *poly;
 	int nrings;
@@ -415,28 +421,24 @@ void populateCache(RTREE_POLY_CACHE *currentCache, LWGEOM *lwgeom, PG_LWGEOM *se
 		/*
 		** Count the total number of rings.
 		*/
+		currentCache->polyCount = mpoly->ngeoms;
+		currentCache->ringCounts = lwalloc(sizeof(int) * mpoly->ngeoms);
 		for ( i = 0; i < mpoly->ngeoms; i++ )
 		{
+                        currentCache->ringCounts[i] = mpoly->geoms[i]->nrings;
 			nrings += mpoly->geoms[i]->nrings;
 		}
-		currentCache->polyCount = mpoly->ngeoms;
-		currentCache->ringCount = nrings;
 		currentCache->ringIndices = lwalloc(sizeof(RTREE_NODE *) * nrings);
 		/*
-		** Load the exterior rings onto the ringIndices array first
+		** Load the array in geometry order, each outer ring followed by the inner rings
+                ** associated with that outer ring
 		*/
-		for ( i = 0; i < mpoly->ngeoms; i++ )
+                i = 0;
+		for ( p = 0; p < mpoly->ngeoms; p++ )
 		{
-			currentCache->ringIndices[i] = createTree(mpoly->geoms[i]->rings[0]);
-		}
-		/*
-		** Load the interior rings (holes) onto ringIndices next
-		*/
-		for ( j = 0; j < mpoly->ngeoms; j++ )
-		{
-			for ( k = 1; k < mpoly->geoms[j]->nrings; k++ )
+			for ( r = 0; r < mpoly->geoms[p]->nrings; r++ )
 			{
-				currentCache->ringIndices[i] = createTree(mpoly->geoms[j]->rings[k]);
+				currentCache->ringIndices[i] = createTree(mpoly->geoms[p]->rings[r]);
 				i++;
 			}
 		}
@@ -446,7 +448,8 @@ void populateCache(RTREE_POLY_CACHE *currentCache, LWGEOM *lwgeom, PG_LWGEOM *se
 		LWDEBUG(2, "populateCache POLYGON");
 		poly = (LWPOLY *)lwgeom;
 		currentCache->polyCount = 1;
-		currentCache->ringCount = poly->nrings;
+		currentCache->ringCounts = lwalloc(sizeof(int));
+		currentCache->ringCounts[0] = poly->nrings;
 		/*
 		** Just load the rings on in order
 		*/
