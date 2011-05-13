@@ -4,7 +4,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://www.postgis.org
  * adapted from lwout_asgml.c
- * Copyright 2011 Arrival 3D 
+ * Copyright 2011 Arrival 3D
  * 				Regina Obe with input from Dave Arendash
  *
  * This is free software; you can redistribute and/or modify it under
@@ -46,7 +46,7 @@ static size_t pointArray_X3Dsize(POINTARRAY *pa, int precision);
 
 /* takes a GEOMETRY and returns an X3D representation */
 extern char *
-	lwgeom_to_x3d3(const LWGEOM *geom, char *srs, int precision, int opts, const char *defid)
+lwgeom_to_x3d3(const LWGEOM *geom, char *srs, int precision, int opts, const char *defid)
 {
 	int type = geom->type;
 
@@ -60,7 +60,7 @@ extern char *
 
 	case POLYGONTYPE:
 		/** We might change this later, but putting a polygon in an indexed face set
-		* seems like the simplest way to go so treat just like a mulitpolygon 
+		* seems like the simplest way to go so treat just like a mulitpolygon
 		*/
 		return asx3d3_multi((LWCOLLECTION*)lwgeom_as_multi(geom), srs, precision, opts, defid);
 
@@ -142,8 +142,8 @@ asx3d3_line_size(const LWLINE *line, char *srs, int precision, int opts, const c
 	size = pointArray_X3Dsize(line->points, precision)*2;
 
 	size += (
-				sizeof("<LineSet vertexCount=''><Coordinate point='' /></LineSet>")  + defidlen
-			) * 2;
+	            sizeof("<LineSet vertexCount=''><Coordinate point='' /></LineSet>")  + defidlen
+	        ) * 2;
 
 	//if (srs)     size += strlen(srs) + sizeof(" srsName=..");
 	return size;
@@ -199,7 +199,7 @@ asx3d3_mline_coordindex(const LWMLINE *mgeom, char *output)
 		pa = geom->points;
 		np = pa->npoints;
 		si = j; //start index of first point of linestring
-		for(k=0; k < np ; k++)
+		for (k=0; k < np ; k++)
 		{
 			if (k)
 			{
@@ -227,7 +227,7 @@ asx3d3_mline_coordindex(const LWMLINE *mgeom, char *output)
 }
 
 /* Calculate the coordIndex property of the IndexedLineSet for a multipolygon
-    This is not ideal -- would be really nice to just share this function with psurf, 
+    This is not ideal -- would be really nice to just share this function with psurf,
     but I'm not smart enough to do that yet*/
 static size_t
 asx3d3_mpoly_coordindex(const LWMPOLY *psur, char *output)
@@ -240,9 +240,10 @@ asx3d3_mpoly_coordindex(const LWMPOLY *psur, char *output)
 	for (i=0; i<psur->ngeoms; i++)
 	{
 		patch = (LWPOLY *) psur->geoms[i];
-		for (l=0; l < patch->nrings; l++){
+		for (l=0; l < patch->nrings; l++)
+		{
 			np = patch->rings[l]->npoints - 1;
-			for(k=0; k < np ; k++)
+			for (k=0; k < np ; k++)
 			{
 				if (k)
 				{
@@ -253,15 +254,15 @@ asx3d3_mpoly_coordindex(const LWMPOLY *psur, char *output)
 			j += k;
 			if (l < (patch->nrings - 1) )
 			{
-			    /** @todo TODO: Decide the best way to render holes
-			    *  Evidentally according to my X3D expert the X3D consortium doesn't really 
-			    *  support holes and it's an issue of argument among many that feel it should. He thinks CAD x3d extensions to spec might.
-			    *  What he has done and others developing X3D exports to simulate a hole is to cut around it.
-			    *  So if you have a donut, you would cut it into half and have 2 solid polygons.  Not really sure the best way to handle this.
-			    *  For now will leave it as polygons stacked on top of each other -- which is what we are doing here and perhaps an option
-			    *  to color differently.  It's not ideal but the alternative sounds complicated.
-			    **/
-				ptr += sprintf(ptr, " -1 "); //separator for each inner ring. Ideally we should probably triangulate and cut around as others do 
+				/** @todo TODO: Decide the best way to render holes
+				*  Evidentally according to my X3D expert the X3D consortium doesn't really
+				*  support holes and it's an issue of argument among many that feel it should. He thinks CAD x3d extensions to spec might.
+				*  What he has done and others developing X3D exports to simulate a hole is to cut around it.
+				*  So if you have a donut, you would cut it into half and have 2 solid polygons.  Not really sure the best way to handle this.
+				*  For now will leave it as polygons stacked on top of each other -- which is what we are doing here and perhaps an option
+				*  to color differently.  It's not ideal but the alternative sounds complicated.
+				**/
+				ptr += sprintf(ptr, " -1 "); //separator for each inner ring. Ideally we should probably triangulate and cut around as others do
 			}
 		}
 		if (i < (psur->ngeoms - 1) )
@@ -517,7 +518,7 @@ asx3d3_psurface_buf(const LWPSURFACE *psur, char *srs, char *output, int precisi
 	{
 		patch = (LWPOLY *) psur->geoms[i];
 		np = patch->rings[0]->npoints - 1;
-		for(k=0; k < np ; k++)
+		for (k=0; k < np ; k++)
 		{
 			if (k)
 			{
@@ -616,7 +617,7 @@ asx3d3_tin_buf(const LWTIN *tin, char *srs, char *output, int precision, int opt
 	for (i=0; i<tin->ngeoms; i++)
 	{
 		ptr += asx3d3_triangle_buf(tin->geoms[i], 0, ptr, precision,
-								   opts, defid);
+		                           opts, defid);
 		if (i < (tin->ngeoms - 1) )
 		{
 			ptr += sprintf(ptr, " ");
@@ -845,7 +846,7 @@ pointArray_X3Dsize(POINTARRAY *pa, int precision)
 {
 	if (FLAGS_NDIMS(pa->flags) == 2)
 		return (OUT_MAX_DIGS_DOUBLE + precision + sizeof(" "))
-			   * 2 * pa->npoints;
+		       * 2 * pa->npoints;
 
 	return (OUT_MAX_DIGS_DOUBLE + precision + sizeof(" ")) * 3 * pa->npoints;
 }
