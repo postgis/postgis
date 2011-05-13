@@ -217,7 +217,7 @@ void clearCache(RTREE_POLY_CACHE *cache)
         i = 0;
         for (g = 0; g < cache->polyCount; g++)
         {
-	        for (r = 0; r < cache->ringCounts; r++)
+	        for (r = 0; r < cache->ringCounts[g]; r++)
 	        {
 		        freeTree(cache->ringIndices[i]);
                         i++;
