@@ -135,6 +135,13 @@
 		  <para>Raster development</para>
 		</listitem>
 	  </varlistentry>
+
+	 <varlistentry>
+		<term>BBorie Park</term>
+		<listitem>
+		  <para>Raster image output (JPEG, PNG, etc) and raster analytic functions</para>
+		</listitem>
+	  </varlistentry>
 	  
 	 <varlistentry>
 		<term>Mateusz Loskot</term>
