@@ -1,0 +1,9 @@
+ERROR:  The pixel type of band 1 in the raster is not 8BUI.  The JPEG format can only be used with the 8BUI pixel type.
+f0de16a21de438249ec0bbd28eafe63c
+ERROR:  The pixel type of band 1 in the raster is not 8BUI.  The JPEG format can only be used with the 8BUI pixel type.
+83b6012757444ff7786b5e8473e6cea3
+NOTICE:  The JPEG format only permits one or three bands.  The first band will be used.
+bca07d85db735e4eaf2334969a548b10
+ERROR:  The pixel type of band 1 in the raster is not 8BUI.  The JPEG format can only be used with the 8BUI pixel type.
+ERROR:  The pixel type of band 1 in the raster is not 8BUI.  The JPEG format can only be used with the 8BUI pixel type.
+d687ffc7b8dcb3ef05cd4fe99656e45d
