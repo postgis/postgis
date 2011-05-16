@@ -29,7 +29,7 @@
 #include <math.h>
 #include <stdio.h>  /* for printf (default message handler) */
 #include <stdarg.h> /* for va_list, va_start etc */
-#include <string.h> /* for memcpy */
+#include <string.h> /* for memcpy and strlen */
 #include <assert.h>
 #include <float.h> /* for FLT_EPSILON and float type limits */
 #include <limits.h> /* for integer type limits */
@@ -4948,3 +4948,389 @@ rt_raster_replace_band(rt_raster raster, rt_band band, int index) {
 	return 1;
 }
 
+/**
+ * Return formatted GDAL raster from raster
+ *
+ * @param raster : the raster to convert
+ * @param srs : the raster's coordinate system in OGC WKT or PROJ.4
+ * @param format : format to convert to. GDAL driver short name
+ * @param options : list of format creation options. array of strings
+ * @param gdalsize : will be set to the size of returned bytea
+ *
+ * @return formatted GDAL raster
+ */
+uint8_t*
+rt_raster_to_gdal(rt_raster raster, char *srs,
+	char *format, char **options, uint64_t *gdalsize) {
+	GDALDriverH src_drv = NULL;
+	GDALDatasetH src_ds = NULL;
+
+	vsi_l_offset rtn_lenvsi;
+	uint64_t rtn_len = 0;
+
+	GDALDriverH rtn_drv = NULL;
+	GDALDatasetH rtn_ds = NULL;
+	uint8_t *rtn = NULL;
+
+	assert(NULL != raster);
+
+	/* any supported format is possible */
+	GDALAllRegister();
+	RASTER_DEBUG(3, "rt_raster_to_gdal: loaded all supported GDAL formats");
+
+	/* output format not specified */
+	if (format == NULL || !strlen(format))
+		format = "GTiff";
+	RASTER_DEBUGF(3, "rt_raster_to_gdal: output format is %s", format);
+
+	/* load raster into a GDAL MEM raster */
+	src_ds = rt_raster_to_gdal_mem(raster, srs, &src_drv);
+	if (NULL == src_ds) {
+		rterror("rt_raster_to_gdal: Unable to convert raster to GDAL MEM format\n");
+		if (NULL != src_drv) {
+			GDALDeregisterDriver(src_drv);
+			GDALDestroyDriver(src_drv);
+		}
+		return 0;
+	}
+
+	/* load driver */
+	rtn_drv = GDALGetDriverByName(format);
+	if (NULL == rtn_drv) {
+		rterror("rt_raster_to_gdal: Unable to load the output GDAL driver\n");
+		GDALClose(src_ds);
+		GDALDeregisterDriver(src_drv);
+		GDALDestroyDriver(src_drv);
+		return 0;
+	}
+	RASTER_DEBUG(3, "rt_raster_to_gdal: Output driver loaded");
+
+	/* convert GDAL MEM raster to output format */
+	RASTER_DEBUG(3, "rt_raster_to_gdal: Copying GDAL MEM raster to memory file in output format");
+	rtn_ds = GDALCreateCopy(
+		rtn_drv,
+		"/vsimem/out.dat", /* should be fine assuming this is in a process */
+		src_ds,
+		FALSE, /* should copy be strictly equivelent? */
+		options, /* format options */
+		NULL, /* progress function */
+		NULL /* progress data */
+	);
+	if (NULL == rtn_ds) {
+		rterror("rt_raster_to_gdal: Unable to create the output GDAL dataset\n");
+		GDALClose(src_ds);
+		GDALDeregisterDriver(rtn_drv);
+		GDALDestroyDriver(rtn_drv);
+		GDALDeregisterDriver(src_drv);
+		GDALDestroyDriver(src_drv);
+		return 0;
+	}
+
+	/* close source dataset */
+	GDALClose(src_ds);
+	GDALDeregisterDriver(src_drv);
+	GDALDestroyDriver(src_drv);
+	RASTER_DEBUG(3, "rt_raster_to_gdal: Closed GDAL MEM raster");
+
+	/* close dataset, this also flushes any pending writes */
+	GDALClose(rtn_ds);
+	GDALDeregisterDriver(rtn_drv);
+	GDALDestroyDriver(rtn_drv);
+	RASTER_DEBUG(3, "rt_raster_to_gdal: Closed GDAL output raster");
+
+	RASTER_DEBUG(3, "rt_raster_to_gdal: Done copying GDAL MEM raster to memory file in output format");
+
+	/* from memory file to buffer */
+	RASTER_DEBUG(3, "rt_raster_to_gdal: Copying GDAL memory file to buffer");
+	rtn = VSIGetMemFileBuffer("/vsimem/out.dat", &rtn_lenvsi, TRUE);
+	RASTER_DEBUG(3, "rt_raster_to_gdal: Done copying GDAL memory file to buffer");
+	if (NULL == rtn) {
+		rterror("rt_raster_to_gdal: Unable to create the output GDAL raster\n");
+		return 0;
+	}
+
+	rtn_len = (uint64_t) rtn_lenvsi;
+	*gdalsize = rtn_len;
+
+	return rtn;
+}
+
+struct rt_gdaldriver_t {
+    int idx;
+    char *short_name;
+    char *long_name;
+		char *create_options;
+};
+
+/**
+ * Returns a set of available GDAL drivers
+ *
+ * @param drv_count : number of GDAL drivers available
+ *
+ * @return set of "gdaldriver" values of available GDAL drivers
+ */
+rt_gdaldriver
+rt_raster_gdal_drivers(uint32_t *drv_count) {
+	const char *state;
+	const char *txt;
+	int txt_len;
+	GDALDriverH *drv = NULL;
+	rt_gdaldriver rtn = NULL;
+	int count;
+	int i;
+	uint32_t j;
+
+	GDALAllRegister();
+	count = GDALGetDriverCount();
+	rtn = (rt_gdaldriver) rtalloc(count * sizeof(struct rt_gdaldriver_t));
+	if (NULL == rtn) {
+		rterror("rt_raster_gdal_drivers: Unable to allocate memory for gdaldriver structure");
+		return 0;
+	}
+
+	for (i = 0, j = 0; i < count; i++) {
+		drv = GDALGetDriver(i);
+
+		/* CreateCopy support */
+		state = GDALGetMetadataItem(drv, GDAL_DCAP_CREATECOPY, NULL);
+		if (state == NULL) continue;
+
+		/* VirtualIO support */
+		state = GDALGetMetadataItem(drv, GDAL_DCAP_VIRTUALIO, NULL);
+		if (state == NULL) continue;
+
+		/* index of driver */
+		rtn[j].idx = i;
+
+		/* short name */
+		txt = GDALGetDriverShortName(drv);
+		txt_len = strlen(txt);
+
+		RASTER_DEBUGF(3, "rt_raster_gdal_driver: driver %s (%d) supports CreateCopy() and VirtualIO()", txt, i);
+
+		txt_len = (txt_len + 1) * sizeof(char);
+		rtn[j].short_name = (char *) rtalloc(txt_len);
+		memcpy(rtn[j].short_name, txt, txt_len);
+
+		/* long name */
+		txt = GDALGetDriverLongName(drv);
+		txt_len = strlen(txt);
+
+		txt_len = (txt_len + 1) * sizeof(char);
+		rtn[j].long_name = (char *) rtalloc(txt_len);
+		memcpy(rtn[j].long_name, txt, txt_len);
+
+		/* creation options */
+		txt = GDALGetDriverCreationOptionList(drv);
+		txt_len = strlen(txt);
+
+		txt_len = (txt_len + 1) * sizeof(char);
+		rtn[j].create_options = (char *) rtalloc(txt_len);
+		memcpy(rtn[j].create_options, txt, txt_len);
+
+		j++;
+	}
+
+	/* free unused memory */
+	rtrealloc(rtn, j * sizeof(struct rt_gdaldriver_t));
+	*drv_count = j;
+
+	return rtn;
+}
+
+/**
+ * Return GDAL datasource using GDAL MEM driver from raster
+ *
+ * @param raster : raster to convert to GDAL MEM
+ * @param srs : the raster's coordinate system in OGC WKT or PROJ.4
+ * @param rtn_drv : is set to the GDAL driver object
+ *
+ * @return GDAL datasource using GDAL MEM driver
+ */
+GDALDatasetH
+rt_raster_to_gdal_mem(rt_raster raster, char *srs,
+	GDALDriverH *rtn_drv) {
+	GDALDriverH drv = NULL;
+	int drv_gen = 0;
+	GDALDatasetH ds = NULL;
+	double gt[] = {0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
+	CPLErr cplerr;
+	GDALDataType gdal_pt = GDT_Unknown;
+	GDALRasterBandH band;
+	void *pVoid;
+	char *pszDataPointer;
+	char szGDALOption[50];
+	char *apszOptions[4];
+	double nodata = 0.0;
+
+	int i;
+	int numBands;
+	rt_band rtband = NULL;
+	rt_pixtype pt = PT_END;
+
+	assert(NULL != raster);
+
+	/* store raster in GDAL MEM raster */
+	GDALRegister_MEM();
+	if (NULL == *rtn_drv) {
+		drv = GDALGetDriverByName("MEM");
+		*rtn_drv = drv;
+		drv_gen = 1;
+		if (NULL == drv) {
+			rterror("rt_raster_to_gdal_mem: Unable to load the MEM GDAL driver\n");
+			return 0;
+		}
+	}
+
+	ds = GDALCreate(drv, "", rt_raster_get_width(raster),
+		rt_raster_get_height(raster), 0, GDT_Byte, NULL);
+	if (NULL == ds) {
+		rterror("rt_raster_to_gdal_mem: Couldn't create a GDALDataset to convert it\n");
+		if (drv_gen) {
+			GDALDeregisterDriver(drv);
+			GDALDestroyDriver(drv);
+		}
+		return 0;
+	}
+
+	/* add geotransform */
+	gt[0] = rt_raster_get_x_offset(raster);
+	gt[1] = rt_raster_get_x_scale(raster);
+	gt[2] = rt_raster_get_x_skew(raster);
+	gt[3] = rt_raster_get_y_offset(raster);
+	gt[4] = rt_raster_get_y_skew(raster);
+	gt[5] = rt_raster_get_y_scale(raster);
+	cplerr = GDALSetGeoTransform(ds, gt);
+	if (cplerr != CE_None) {
+		rterror("rt_raster_to_gdal_mem: Unable to set geotransformation\n");
+		GDALClose(ds);
+		if (drv_gen) {
+			GDALDeregisterDriver(drv);
+			GDALDestroyDriver(drv);
+		}
+		return 0;
+	}
+
+	/* set spatial reference */
+	if (NULL != srs && strlen(srs)) {
+		cplerr = GDALSetProjection(ds, srs);
+		if (cplerr != CE_None) {
+			rterror("rt_raster_to_gdal_mem: Unable to set projection\n");
+			GDALClose(ds);
+			if (drv_gen) {
+				GDALDeregisterDriver(drv);
+				GDALDestroyDriver(drv);
+			}
+			return 0;
+		}
+	}
+	
+	/* add band(s) */
+	numBands = rt_raster_get_num_bands(raster);
+	for (i = 0; i < numBands; i++) {
+		rtband = rt_raster_get_band(raster, i);
+		if (0 == rtband) {
+			rterror("rt_raster_to_gdal_mem: Unable to get requested band\n");
+			GDALClose(ds);
+			if (drv_gen) {
+				GDALDeregisterDriver(drv);
+				GDALDestroyDriver(drv);
+			}
+			return 0;
+		}
+
+		pt = rt_band_get_pixtype(rtband);
+		switch (pt) {
+			case PT_1BB: case PT_2BUI: case PT_4BUI: case PT_8BSI: case PT_8BUI:
+				gdal_pt = GDT_Byte;
+				break;
+			case PT_16BSI: case PT_16BUI:
+				if (pt == PT_16BSI)
+					gdal_pt = GDT_Int16;
+				else
+					gdal_pt = GDT_UInt16;
+				break;
+			case PT_32BSI: case PT_32BUI: case PT_32BF:
+				if (pt == PT_32BSI)
+					gdal_pt = GDT_Int32;
+				else if (pt == PT_32BUI)
+					gdal_pt = GDT_UInt32;
+				else
+					gdal_pt = GDT_Float32;
+				break;
+			case PT_64BF:
+				gdal_pt = GDT_Float64;
+				break;
+			default:
+				rtwarn("rt_raster_to_gdal_mem: Unknown pixel type for band\n");
+				gdal_pt = GDT_Unknown;
+				break;
+		}
+
+		pVoid = rt_band_get_data(rtband);
+		RASTER_DEBUGF(4, "Band data is at pos %p", pVoid);
+
+		pszDataPointer = (char *) rtalloc(20 * sizeof (char));
+		sprintf(pszDataPointer, "%p", pVoid);
+		RASTER_DEBUGF(4, "rt_raster_to_gdal_mem: szDatapointer is %p",
+			pszDataPointer);
+
+		if (strnicmp(pszDataPointer, "0x", 2) == 0)
+			sprintf(szGDALOption, "DATAPOINTER=%s", pszDataPointer);
+		else
+			sprintf(szGDALOption, "DATAPOINTER=0x%s", pszDataPointer);
+
+		RASTER_DEBUG(3, "Storing info for GDAL MEM raster band");
+
+		apszOptions[0] = szGDALOption;
+		apszOptions[1] = NULL; /* pixel offset, not needed */
+		apszOptions[2] = NULL; /* line offset, not needed */
+		apszOptions[3] = NULL;
+
+		/* free */
+		rtdealloc(pszDataPointer);
+
+		if (GDALAddBand(ds, gdal_pt, apszOptions) == CE_Failure) {
+			rterror("rt_raster_to_gdal_mem: Couldn't add GDALRasterBand\n");
+			GDALClose(ds);
+			if (drv_gen) {
+				GDALDeregisterDriver(drv);
+				GDALDestroyDriver(drv);
+			}
+			return 0;
+		}
+
+		/* check band count */
+		if (GDALGetRasterCount(ds) != i + 1) {
+			rterror("rt_raster_to_gdal_mem: Error creating GDAL MEM raster band\n");
+			GDALClose(ds);
+			if (drv_gen) {
+				GDALDeregisterDriver(drv);
+				GDALDestroyDriver(drv);
+			}
+			return 0;
+		}
+
+		/* get band to write data to */
+		band = NULL;
+		band = GDALGetRasterBand(ds, i + 1);
+		if (NULL == band) {
+			rterror("rt_raster_to_gdal_mem: Couldn't get GDAL band for additional processing\n");
+			GDALClose(ds);
+			if (drv_gen) {
+				GDALDeregisterDriver(drv);
+				GDALDestroyDriver(drv);
+			}
+			return 0;
+		}
+
+		/* Add nodata value for band */
+		if (rt_band_get_hasnodata_flag(rtband) != FALSE) {
+			nodata = rt_band_get_nodata(rtband);
+			if (GDALSetRasterNoDataValue(band, nodata) != CE_None)
+				rtwarn("rt_raster_to_gdal_mem: Couldn't set nodata value for band\n");
+		}
+	}
+
+	return ds;
+}

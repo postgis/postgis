@@ -1023,6 +1023,65 @@ CREATE OR REPLACE FUNCTION st_reclass(rast raster, reclassexpr text, pixeltype t
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
+-- ST_AsGDALRaster and supporting functions
+-----------------------------------------------------------------------
+-- returns set of available and usable GDAL drivers
+CREATE OR REPLACE FUNCTION st_gdaldrivers(OUT idx int, OUT short_name text, OUT long_name text, OUT create_options text)
+  RETURNS SETOF record
+	AS 'MODULE_PATHNAME', 'RASTER_getGDALDrivers'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- return the srtext or proj4text of an srid
+CREATE OR REPLACE FUNCTION st_srtext(q raster)
+	RETURNS text
+	AS $$
+	DECLARE
+		q_srid int;
+		q_srs text;
+	BEGIN
+		q_srid := st_srid($1);
+
+		IF q_srid != -1 THEN
+			SELECT
+				CASE
+					WHEN length(srtext) > 0
+						THEN srtext
+					WHEN length(proj4text) > 0
+						THEN proj4text
+					ELSE NULL
+				END
+			INTO q_srs
+			FROM spatial_ref_sys
+			WHERE srid = q_srid;
+
+			IF NOT FOUND THEN
+				q_srs := NULL;
+			END IF;
+		ELSE
+			q_srs := NULL;
+		END IF;
+
+		RETURN q_srs;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+-- Cannot be strict as "options" and "srs" can be NULL
+CREATE OR REPLACE FUNCTION st_asgdalraster(rast raster, format text, options text[], srs text)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME', 'RASTER_asGDALRaster'
+	LANGUAGE 'C' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_asgdalraster(rast raster, format text, options text[])
+	RETURNS bytea
+	AS $$ SELECT st_asgdalraster($1, $2, $3, st_srtext($1)) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_asgdalraster(rast raster, format text)
+	RETURNS bytea
+	AS $$ SELECT st_asgdalraster($1, $2, NULL, st_srtext($1)) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
 -- MapAlgebra
 -----------------------------------------------------------------------
 -- This function can not be STRICT, because nodatavalueexpr can be NULL (could be just '' though)

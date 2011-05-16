@@ -91,6 +91,8 @@
 #include "gdal_frmts.h"
 #include "gdal.h"
 #include "ogr_api.h"
+#include "ogr_srs_api.h"
+#include "cpl_vsi.h"
 #include "../../postgis_config.h"
 
 /**
@@ -845,6 +847,41 @@ rt_raster rt_raster_from_band(rt_raster raster, uint32_t *bandNums,
 int rt_raster_replace_band(rt_raster raster, rt_band band,
 	int index);
 
+/**
+ * Return formatted GDAL raster from raster
+ *
+ * @param raster : the raster to convert
+ * @param srs : the raster's coordinate system in OGC WKT or PROJ.4
+ * @param format : format to convert to. GDAL driver short name
+ * @param options : list of format creation options. array of strings
+ * @param gdalsize : will be set to the size of returned bytea
+ *
+ * @return formatted GDAL raster
+ */
+uint8_t *rt_raster_to_gdal(rt_raster raster, char *srs,
+	char *format, char **options, uint64_t *gdalsize);
+
+/**
+ * Returns a set of available GDAL drivers
+ *
+ * @param drv_count : number of GDAL drivers available
+ *
+ * @return set of "gdaldriver" values of available GDAL drivers
+ */
+typedef struct rt_gdaldriver_t* rt_gdaldriver;
+rt_gdaldriver rt_raster_gdal_drivers(uint32_t *drv_count);
+
+/**
+ * Return GDAL datasource using GDAL MEM driver from raster
+ *
+ * @param raster : raster to convert to GDAL MEM
+ * @param srs : the raster's coordinate system in OGC WKT or PROJ.4
+ * @param rtn_drv : is set to the GDAL driver object
+ *
+ * @return GDAL datasource using GDAL MEM driver
+ */
+GDALDatasetH rt_raster_to_gdal_mem(rt_raster raster, char *srs,
+	GDALDriverH *rtn_drv);
 
 /*- utilities -------------------------------------------------------*/
 

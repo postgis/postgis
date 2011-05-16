@@ -72,6 +72,7 @@ static char *strtoupper(char *str);
 static char	*chartrim(char* input, char *remove); /* for RASTER_reclass */
 static char **strsplit(const char *str, const char *delimiter, int *n); /* for RASTER_reclass */
 static char *removespaces(char *str); /* for RASTER_reclass */
+static char *trim(char* input); /* for RASTER_asGDALRaster */
 
 /***************************************************************
  * Some rules for returning NOTICE or ERROR...
@@ -205,6 +206,9 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS);
 /* reclassify specified bands of a raster */
 Datum RASTER_reclass(PG_FUNCTION_ARGS);
 
+/* convert raster to GDAL raster */
+Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS);
+Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS);
 
 /* Replace function taken from
  * http://ubuntuforums.org/showthread.php?s=aa6f015109fd7e4c7e30d2fd8b717497&t=141670&page=3
@@ -385,6 +389,38 @@ removespaces(char *str) {
 	rtn = replace(rtn, "\r", "", NULL);
 
 	return rtn;
+}
+
+static char*
+trim(char *input) {
+	char *start;
+	char *ptr;
+
+	if (!input) {
+		return NULL;
+	}
+	else if (!*input) {
+		return input;
+	}
+
+	start = (char *) palloc(sizeof(char) * strlen(input) + 1);
+	if (NULL == start) {
+		fprintf(stderr, "Not enough memory\n");
+		return NULL;
+	}
+	strcpy(start, input);
+
+	/* trim left */
+	while (isspace(*start)) {
+		start++;
+	}
+
+	/* trim right */
+	ptr = start + strlen(start);
+	while (isspace(*--ptr));
+	*(++ptr) = '\0';
+
+	return start;
 }
 
 PG_FUNCTION_INFO_V1(RASTER_lib_version);
@@ -4115,6 +4151,329 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 	POSTGIS_RT_DEBUG(3, "RASTER_reclass: Finished");
 	SET_VARSIZE(pgrast, pgrast->size);
 	PG_RETURN_POINTER(pgrast);
+}
+
+/**
+ * Returns formatted GDAL raster as bytea object of raster
+ */
+PG_FUNCTION_INFO_V1(RASTER_asGDALRaster);
+Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
+{
+	rt_pgraster *pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	rt_raster raster;
+
+	text *formattext = NULL;
+	char *format = NULL;
+	char **options = NULL;
+	text *optiontext = NULL;
+	char *option = NULL;
+	text *srstext = NULL;
+	char *srs = NULL;
+
+	ArrayType *array;
+	Oid etype;
+	Datum *e;
+	bool *nulls;
+	int16 typlen;
+	bool typbyval;
+	char typalign;
+	int ndims = 1;
+	int *dims;
+	int *lbs;
+	int n = 0;
+	int i = 0;
+	int j = 0;
+
+	uint8_t *gdal = NULL;
+	uint64_t gdal_size = 0;
+	bytea *result = NULL;
+	uint64_t result_size = 0;
+
+	POSTGIS_RT_DEBUG(3, "RASTER_asGDALRaster: Starting");
+
+	raster = rt_raster_deserialize(pgraster);
+	if (!raster) {
+		elog(ERROR, "RASTER_asGDALRaster: Could not deserialize raster");
+		PG_RETURN_NULL();
+	}
+
+	/* format is required */
+	if (PG_ARGISNULL(1)) {
+		elog(NOTICE, "Format must be provided");
+		rt_raster_destroy(raster);
+		PG_RETURN_NULL();
+	}
+	else {
+		formattext = PG_GETARG_TEXT_P(1);
+		format = text_to_cstring(formattext);
+	}
+		
+	POSTGIS_RT_DEBUGF(3, "RASTER_asGDALRaster: Arg 1 (format) is %s", format);
+
+	/* process options */
+	if (!PG_ARGISNULL(2)) {
+		POSTGIS_RT_DEBUG(3, "RASTER_asGDALRaster: Processing Arg 2 (options)");
+		array = PG_GETARG_ARRAYTYPE_P(2);
+		etype = ARR_ELEMTYPE(array);
+		get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
+
+		switch (etype) {
+			case TEXTOID:
+				break;
+			default:
+				elog(ERROR, "RASTER_asGDALRaster: Invalid data type for options");
+				PG_RETURN_NULL();
+				break;
+		}
+
+		ndims = ARR_NDIM(array);
+		dims = ARR_DIMS(array);
+		lbs = ARR_LBOUND(array);
+
+		deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
+			&nulls, &n);
+
+		if (n) {
+			options = (char **) palloc(sizeof(char *) * (n + 1));
+			/* clean each option */
+			for (i = 0, j = 0; i < n; i++) {
+				if (nulls[i]) continue;
+
+				option = NULL;
+				switch (etype) {
+					case TEXTOID:
+						optiontext = (text *) DatumGetPointer(e[i]);
+						if (NULL == optiontext) break;
+						option = text_to_cstring(optiontext);
+
+						/* trim string */
+						option = trim(option);
+						POSTGIS_RT_DEBUGF(3, "RASTER_asGDALRaster: option is '%s'", option);
+						break;
+				}
+
+				if (strlen(option)) {
+					options[j] = (char *) palloc(sizeof(char) * (strlen(option) + 1));
+					options[j] = option;
+					j++;
+				}
+			}
+
+			if (j > 0) {
+				/* add NULL to end */
+				options[j] = (char *) palloc(sizeof(char));
+				options[j] = '\0';
+
+				/* trim allocation */
+				options = repalloc(options, j * sizeof(char *));
+			}
+			else {
+				pfree(options);
+				options = NULL;
+			}
+		}
+	}
+
+	/* process srs */
+	if (!PG_ARGISNULL(3)) {
+		srstext = PG_GETARG_TEXT_P(3);
+		srs = text_to_cstring(srstext);
+		POSTGIS_RT_DEBUGF(3, "RASTER_asGDALRaster: Arg 3 (srs) is %s", srs);
+	}
+
+	POSTGIS_RT_DEBUG(3, "RASTER_asGDALRaster: Generating GDAL raster");
+	gdal = rt_raster_to_gdal(raster, srs, format, options, &gdal_size);
+
+	/* free memory */
+	if (NULL != options) {
+		for (i = j - 1; i >= 0; i--)
+			pfree(options[i]);
+		pfree(options);
+	}
+	rt_raster_destroy(raster);
+
+	if (!gdal) {
+		elog(ERROR, "RASTER_asGDALRaster: Could not allocate and generate GDAL raster");
+		PG_RETURN_NULL();
+	}
+	POSTGIS_RT_DEBUGF(3, "RASTER_asGDALRaster: GDAL raster generated with %d bytes", (int) gdal_size);
+
+	result_size = gdal_size + VARHDRSZ;
+	result = (bytea *) palloc(result_size);
+	if (NULL == result) {
+		elog(ERROR, "RASTER_asGDALRaster: Insufficient virtual memory for GDAL raster");
+		PG_RETURN_NULL();
+	}
+	SET_VARSIZE(result, result_size);
+	memcpy(VARDATA(result), gdal, VARSIZE(result) - VARHDRSZ);
+
+	/* for test output
+	FILE *fh = NULL;
+	fh = fopen("/tmp/out.dat", "w");
+	fwrite(gdal, sizeof(uint8_t), gdal_size, fh);
+	fclose(fh);
+	*/
+
+	POSTGIS_RT_DEBUG(3, "RASTER_asGDALRaster: Returning pointer to GDAL raster");
+	PG_RETURN_POINTER(result);
+}
+
+/**
+ * Needed for sizeof
+ */
+struct rt_gdaldriver_t {
+    int idx;
+    char *short_name;
+    char *long_name;
+		char *create_options;
+};
+
+/**
+ * Returns available GDAL drivers
+ */
+PG_FUNCTION_INFO_V1(RASTER_getGDALDrivers);
+Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
+{
+	FuncCallContext *funcctx;
+	TupleDesc tupdesc;
+	AttInMetadata *attinmeta;
+
+	uint32_t drv_count;
+	rt_gdaldriver drv_set;
+	rt_gdaldriver drv_set2;
+	int call_cntr;
+	int max_calls;
+
+	/* first call of function */
+	if (SRF_IS_FIRSTCALL()) {
+		MemoryContext oldcontext;
+
+		/* create a function context for cross-call persistence */
+		funcctx = SRF_FIRSTCALL_INIT();
+
+		/* switch to memory context appropriate for multiple function calls */
+		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+
+		drv_set = rt_raster_gdal_drivers(&drv_count);
+		if (NULL == drv_set || !drv_count) {
+			elog(NOTICE, "No GDAL drivers found");
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		POSTGIS_RT_DEBUGF(3, "%d drivers returned", (int) drv_count);
+
+		/* Store needed information */
+		funcctx->user_fctx = drv_set;
+
+		/* total number of tuples to be returned */
+		funcctx->max_calls = drv_count;
+
+		/* Build a tuple descriptor for our result type */
+		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
+			ereport(ERROR, (
+				errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+				errmsg(
+					"function returning record called in context "
+					"that cannot accept type record"
+				)
+			));
+		}
+
+		/*
+		 * generate attribute metadata needed later to produce tuples from raw
+		 * C strings
+		 */
+		attinmeta = TupleDescGetAttInMetadata(tupdesc);
+		funcctx->attinmeta = attinmeta;
+		MemoryContextSwitchTo(oldcontext);
+	}
+
+  /* stuff done on every call of the function */
+  funcctx = SRF_PERCALL_SETUP();
+
+	call_cntr = funcctx->call_cntr;
+	max_calls = funcctx->max_calls;
+	attinmeta = funcctx->attinmeta;
+	drv_set2 = funcctx->user_fctx;
+
+	/* do when there is more left to send */
+	if (call_cntr < max_calls) {
+		char **values;
+		HeapTuple tuple;
+		Datum result;
+
+		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
+
+		/*
+		 * Prepare a values array for building the returned tuple.
+		 * This should be an array of C strings which will
+		 * be processed later by the type input functions.
+		 */
+		values = (char **) palloc(4 * sizeof(char *));
+
+		values[0] = (char *) palloc(
+			(snprintf(NULL, 0, "%d", drv_set2[call_cntr].idx) + 1) * sizeof(char)
+		);
+		values[1] = (char *) palloc(
+			(strlen(drv_set2[call_cntr].short_name) + 1) * sizeof(char)
+		);
+		values[2] = (char *) palloc(
+			(strlen(drv_set2[call_cntr].long_name) + 1) * sizeof(char)
+		);
+		values[3] = (char *) palloc(
+			(strlen(drv_set2[call_cntr].create_options) + 1) * sizeof(char)
+		);
+
+		snprintf(
+			values[0],
+			(snprintf(NULL, 0, "%d", drv_set2[call_cntr].idx) + 1) * sizeof(char),
+			"%d",
+			drv_set2[call_cntr].idx
+		);
+		snprintf(
+			values[1],
+			(strlen(drv_set2[call_cntr].short_name) + 1) * sizeof(char),
+			"%s",
+			drv_set2[call_cntr].short_name
+		);
+		snprintf(
+			values[2],
+			(strlen(drv_set2[call_cntr].long_name) + 1) * sizeof(char),
+			"%s",
+			drv_set2[call_cntr].long_name
+		);
+		snprintf(
+			values[3],
+			(strlen(drv_set2[call_cntr].create_options) + 1) * sizeof(char),
+			"%s",
+			drv_set2[call_cntr].create_options
+		);
+
+		POSTGIS_RT_DEBUGF(4, "Result %d, Index %s", call_cntr, values[0]);
+		POSTGIS_RT_DEBUGF(4, "Result %d, Short Name %s", call_cntr, values[1]);
+		POSTGIS_RT_DEBUGF(4, "Result %d, Full Name %s", call_cntr, values[2]);
+		POSTGIS_RT_DEBUGF(5, "Result %d, Create Options %s", call_cntr, values[3]);
+
+		/* build a tuple */
+		tuple = BuildTupleFromCStrings(attinmeta, values);
+
+		/* make the tuple into a datum */
+		result = HeapTupleGetDatum(tuple);
+
+		/* clean up (this is not really necessary) */
+		pfree(values[3]);
+		pfree(values[2]);
+		pfree(values[1]);
+		pfree(values[0]);
+		pfree(values);
+
+		SRF_RETURN_NEXT(funcctx, result);
+	}
+	/* do when there is no more left */
+	else {
+		pfree(drv_set2);
+		SRF_RETURN_DONE(funcctx);
+	}
 }
 
 /* ---------------------------------------------------------------- */

@@ -1261,6 +1261,51 @@ static void testBandReclass() {
 	rt_raster_destroy(raster);
 }
 
+struct rt_gdaldriver_t {
+	int idx;
+	char *short_name;
+	char *long_name;
+	char *create_options;
+};
+static void testGDALDrivers() {
+	int i;
+	uint32_t size;
+	rt_gdaldriver drv;
+
+	drv = (rt_gdaldriver) rt_raster_gdal_drivers(&size);
+	/*printf("size: %d\n", size);*/
+	CHECK(size);
+
+	for (i = 0; i < size; i++) {
+		/*printf("gdal_driver: %s\n", drv[i].short_name);*/
+		CHECK(drv[i].short_name);
+	}
+}
+
+static void testRasterToGDAL(rt_raster raster) {
+	uint32_t bandNums[] = {1};
+	int lenBandNums = 1;
+	uint64_t gdalSize;
+	rt_raster rast;
+	uint8_t *rtn = NULL;
+
+	rast = rt_raster_from_band(raster, bandNums, lenBandNums);
+	assert(rast);
+
+	rtn = rt_raster_to_gdal(rast, NULL, "GTiff", NULL, &gdalSize);
+	/*printf("gdalSize: %d\n", (int) gdalSize);*/
+	CHECK(gdalSize);
+
+	/*
+	FILE *fh = NULL;
+	fh = fopen("/tmp/out.tif", "w");
+	fwrite(rtn, sizeof(uint8_t), gdalSize, fh);
+	fclose(fh);
+	*/
+
+	rt_raster_destroy(rast);
+}
+
 int
 main()
 {
@@ -1583,6 +1628,13 @@ main()
 		testBandReclass();
 		printf("Successfully tested rt_band_reclass\n");
 
+		printf("Testing rt_raster_to_gdal\n");
+		testRasterToGDAL(raster);
+		printf("Successfully tested rt_raster_to_gdal\n");
+
+		printf("Testing rt_raster_gdal_drivers\n");
+		testGDALDrivers();
+		printf("Successfully tested rt_raster_gdal_drivers\n");
 
     deepRelease(raster);
 
