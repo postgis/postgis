@@ -844,11 +844,6 @@ CREATE OR REPLACE FUNCTION st_approxhistogram(rast raster, nband int, sample_per
 	AS $$ SELECT min, max, count, proportion FROM _st_histogram($1, $2, FALSE, $3, $4, NULL, FALSE) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxhistogram(rast raster, nband int, sample_percent double precision)
-	RETURNS SETOF histogram
-	AS $$ SELECT min, max, count, proportion FROM _st_histogram($1, $2, FALSE, $3, 0, NULL, FALSE) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
 -----------------------------------------------------------------------
 -- ST_Quantile and ST_ApproxQuantile
 -----------------------------------------------------------------------
