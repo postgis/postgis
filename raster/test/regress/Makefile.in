@@ -41,6 +41,7 @@ TEST_FUNC = \
 	create_rt_box2d_test.sql \
 	rt_box2d.sql \
 	rt_addband.sql \
+	rt_band.sql \
 	$(NULL)
 
 TEST_PROPS = \

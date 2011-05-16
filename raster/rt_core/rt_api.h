@@ -757,6 +757,21 @@ int rt_raster_has_no_band(rt_raster raster, int nband);
 int32_t rt_raster_copy_band(rt_raster torast,
         rt_raster fromrast, int fromindex, int toindex);
 
+/**
+ * Construct a new rt_raster from an existing rt_raster and an array
+ * of band numbers
+ *
+ * @param raster : the source raster
+ * @param bandNums : array of band numbers to extract from source raster
+ *                   and add to the new raster (0 based)
+ * @param count : number of elements in bandNums
+ *
+ * @return a new rt_raster or 0 on error
+ */
+rt_raster rt_raster_from_band(rt_raster raster, uint32_t *bandNums,
+	int count);
+
+
 /*- utilities -------------------------------------------------------*/
 
 /*

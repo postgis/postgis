@@ -972,6 +972,21 @@ static void testBandHasNoData(rt_band band)
     CHECK_EQUALS(flag, 1);
 }
 
+static void testRasterFromBand(rt_raster raster) {
+	uint32_t bandNums[] = {1,3};
+	int lenBandNums = 2;
+	rt_raster rast;
+
+	rast = rt_raster_from_band(raster, bandNums, lenBandNums);
+	assert(rast);
+
+	CHECK(rast);
+	CHECK(!rt_raster_is_empty(rast));
+	CHECK(!rt_raster_has_no_band(rast, 1));
+
+	rt_raster_destroy(rast);
+}
+
 int
 main()
 {
@@ -1277,6 +1292,11 @@ main()
 
     printf("Testing band hasnodata flag\n");
     testBandHasNoData(band_64BF);
+
+		printf("Testing rt_raster_from_band\n");
+		testRasterFromBand(raster);
+		printf("Successfully tested rt_raster_from_band\n");
+
 
     deepRelease(raster);
 

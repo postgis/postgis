@@ -3850,3 +3850,54 @@ int32_t rt_raster_copy_band(rt_raster torast,
     return rt_raster_add_band(torast, newband, toindex);
 }
 
+/**
+ * Construct a new rt_raster from an existing rt_raster and an array
+ * of band numbers
+ *
+ * @param raster : the source raster
+ * @param bandNums : array of band numbers to extract from source raster
+ *                   and add to the new raster (0 based)
+ * @param count : number of elements in bandNums
+ *
+ * @return a new rt_raster or 0 on error
+ */
+rt_raster
+rt_raster_from_band(rt_raster raster, uint32_t *bandNums, int count) {
+	rt_raster rast = NULL;
+	int i = 0;
+	int idx;
+	int32_t flag;
+
+	assert(NULL != raster);
+	assert(NULL != bandNums);
+
+	RASTER_DEBUGF(3, "rt_raster_from_band: source raster has %d bands",
+		rt_raster_get_num_bands(raster));
+
+	/* create new raster */
+	rast = rt_raster_new(raster->width, raster->height);
+	if (!rast) {
+		rterror("rt_raster_from_band: Out of memory allocating new raster\n");
+		return 0;
+	}
+
+	/* copy bands */
+	for (i = 0; i < count; i++) {
+		idx = bandNums[i];
+		flag = rt_raster_copy_band(rast, raster, idx, i);
+
+		if (flag < 0) {
+			rterror("rt_raster_from_band: Unable to copy band\n");
+			rt_raster_destroy(rast);
+			return 0;
+		}
+
+		RASTER_DEBUGF(3, "rt_raster_from_band: band created at index %d",
+			flag);
+	}
+
+	RASTER_DEBUGF(3, "rt_raster_from_band: new raster has %d bands",
+		rt_raster_get_num_bands(rast));
+	return rast;
+}
+

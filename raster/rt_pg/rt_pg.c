@@ -49,6 +49,10 @@
 #include "rt_api.h"
 #include "../raster_config.h"
 
+#include <utils/lsyscache.h> /* for get_typlenbyvalalign */
+#include <utils/array.h> /* for ArrayType */
+#include <catalog/pg_type.h> /* for INT2OID, INT4OID, FLOAT4OID, FLOAT8OID and TEXTOID */
+
 #define POSTGIS_RASTER_WARN_ON_TRUNCATION
 
 /*
@@ -179,6 +183,9 @@ Datum RASTER_copyband(PG_FUNCTION_ARGS);
 
 /* Raster analysis */
 Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS);
+
+/* create new raster from existing raster's bands */
+Datum RASTER_band(PG_FUNCTION_ARGS);
 
 
 /* Replace function taken from
@@ -2615,6 +2622,127 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
 
 
     PG_RETURN_POINTER(pgraster);
+}
+
+/**
+ * Return new raster from selected bands of existing raster through ST_Band.
+ * second argument is an array of band numbers (1 based)
+ */
+PG_FUNCTION_INFO_V1(RASTER_band);
+Datum RASTER_band(PG_FUNCTION_ARGS)
+{
+	rt_pgraster *pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	rt_pgraster *pgrast;
+	rt_raster raster;
+	rt_raster rast;
+
+	bool skip = FALSE;
+	ArrayType *array;
+	Oid etype;
+	Datum *e;
+	bool *nulls;
+	int16 typlen;
+	bool typbyval;
+	char typalign;
+	int ndims = 1;
+	int *dims;
+	int *lbs;
+
+	uint32_t *bandNums;
+	uint32 idx = 0;
+	int n;
+	int i = 0;
+	int j = 0;
+
+	raster = rt_raster_deserialize(pgraster);
+	if (!raster) {
+		elog(ERROR, "RASTER_band: Could not deserialize raster");
+		PG_RETURN_NULL();
+	}
+
+	/* process bandNums */
+	if (PG_ARGISNULL(1)) {
+		elog(NOTICE, "Band number(s) not provided.  Returning original raster");
+		skip = TRUE;
+	}
+	do {
+		if (skip) break;
+
+		array = PG_GETARG_ARRAYTYPE_P(1);
+		etype = ARR_ELEMTYPE(array);
+		get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
+
+		switch (etype) {
+			case INT2OID:
+			case INT4OID:
+				break;
+			default:
+				elog(ERROR, "RASTER_band: Invalid data type for band number(s)");
+				rt_raster_destroy(raster);
+				PG_RETURN_NULL();
+				break;
+		}
+
+		ndims = ARR_NDIM(array);
+		dims = ARR_DIMS(array);
+		lbs = ARR_LBOUND(array);
+
+		deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
+			&nulls, &n);
+
+		bandNums = (uint32_t *) palloc(sizeof(uint32_t) * n);
+		for (i = 0, j = 0; i < n; i++) {
+			if (nulls[i]) continue;
+
+			switch (etype) {
+				case INT2OID:
+					idx = (uint32_t) DatumGetInt16(e[i]);
+					break;
+				case INT4OID:
+					idx = (uint32_t) DatumGetInt32(e[i]);
+					break;
+			}
+
+			POSTGIS_RT_DEBUGF(3, "band idx (before): %d", idx);
+			if (idx > pgraster->numBands || idx < 1) {
+        elog(NOTICE, "Invalid band index (must use 1-based). Returning original raster");
+				pfree(bandNums);
+				skip = TRUE;
+			}
+			if (skip) break;
+
+			bandNums[j] = idx - 1;
+			POSTGIS_RT_DEBUGF(3, "bandNums[%d] = %d", j, bandNums[j]);
+			j++;
+		}
+
+		if (skip || j < 1) {
+			pfree(bandNums);
+			skip = TRUE;
+		}
+	}
+	while (0);
+
+	if (!skip) {
+		rast = rt_raster_from_band(raster, bandNums, j);
+		pfree(bandNums);
+		rt_raster_destroy(raster);
+		if (!rast) {
+			elog(ERROR, "RASTER_band: Could not create new raster");
+			PG_RETURN_NULL();
+		}
+
+		pgrast = rt_raster_serialize(rast);
+	}
+	else {
+		pgrast = pgraster;
+	}
+
+	if (!pgrast)
+		PG_RETURN_NULL();
+
+	SET_VARSIZE(pgrast, pgrast->size);
+	PG_RETURN_POINTER(pgrast);
 }
 
 /* ---------------------------------------------------------------- */
