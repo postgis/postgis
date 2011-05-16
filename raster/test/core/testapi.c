@@ -987,6 +987,90 @@ static void testRasterFromBand(rt_raster raster) {
 	rt_raster_destroy(rast);
 }
 
+struct rt_bandstats_t {
+	double sample;
+	uint32_t count;
+
+	double min;
+	double max;
+	double mean;
+	double stddev;
+
+	double *values;
+	int sorted;
+};
+static void testBandStats() {
+	rt_bandstats stats = NULL;
+
+	rt_raster raster;
+	rt_band band;
+	uint32_t x;
+	uint32_t xmax = 10000;
+	uint32_t y;
+	uint32_t ymax = 10000;
+	double nodata;
+	int rtn;
+
+	raster = rt_raster_new(xmax, ymax);
+	assert(raster); /* or we're out of virtual memory */
+	band = addBand(raster, PT_32BUI, 0, 0);
+	CHECK(band);
+	rt_band_set_nodata(band, 0);
+
+	for (x = 0; x < xmax; x++) {
+		for (y = 0; y < ymax; y++) {
+			rtn = rt_band_set_pixel(band, x, y, x + y);
+			CHECK((rtn != -1));
+		}
+	}
+
+	nodata = rt_band_get_nodata(band);
+	CHECK_EQUALS(nodata, 0);
+
+	stats = (rt_bandstats) rt_band_get_summary_stats(band, 0, 0, 1);
+	CHECK(stats);
+	CHECK_EQUALS(stats->min, 1);
+	CHECK_EQUALS(stats->max, 19998);
+
+	rtdealloc(stats->values);
+	rtdealloc(stats);
+
+	stats = (rt_bandstats) rt_band_get_summary_stats(band, 0, 0.1, 1);
+	CHECK(stats);
+
+	rtdealloc(stats->values);
+	rtdealloc(stats);
+
+	stats = (rt_bandstats) rt_band_get_summary_stats(band, 0, 0.15, 0);
+	CHECK(stats);
+	rtdealloc(stats);
+
+	stats = (rt_bandstats) rt_band_get_summary_stats(band, 0, 0.2, 0);
+	CHECK(stats);
+	rtdealloc(stats);
+
+	stats = (rt_bandstats) rt_band_get_summary_stats(band, 0, 0.25, 0);
+	CHECK(stats);
+	rtdealloc(stats);
+
+	stats = (rt_bandstats) rt_band_get_summary_stats(band, 1, 0, 1);
+	CHECK(stats);
+	CHECK_EQUALS(stats->min, 0);
+	CHECK_EQUALS(stats->max, 19998);
+
+	rtdealloc(stats->values);
+	rtdealloc(stats);
+
+	stats = (rt_bandstats) rt_band_get_summary_stats(band, 1, 0.1, 1);
+	CHECK(stats);
+
+	rtdealloc(stats->values);
+	rtdealloc(stats);
+
+	rt_band_destroy(band);
+	rt_raster_destroy(raster);
+}
+
 int
 main()
 {
@@ -1296,6 +1380,10 @@ main()
 		printf("Testing rt_raster_from_band\n");
 		testRasterFromBand(raster);
 		printf("Successfully tested rt_raster_from_band\n");
+
+		printf("Testing band stats\n");
+		testBandStats();
+		printf("Successfully tested band stats\n");
 
 
     deepRelease(raster);

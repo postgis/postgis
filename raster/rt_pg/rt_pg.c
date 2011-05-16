@@ -187,6 +187,9 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS);
 /* create new raster from existing raster's bands */
 Datum RASTER_band(PG_FUNCTION_ARGS);
 
+/* Get summary stats */
+Datum RASTER_summaryStats(PG_FUNCTION_ARGS);
+
 
 /* Replace function taken from
  * http://ubuntuforums.org/showthread.php?s=aa6f015109fd7e4c7e30d2fd8b717497&t=141670&page=3
@@ -2743,6 +2746,219 @@ Datum RASTER_band(PG_FUNCTION_ARGS)
 
 	SET_VARSIZE(pgrast, pgrast->size);
 	PG_RETURN_POINTER(pgrast);
+}
+
+struct rt_bandstats_t {
+	double sample;
+	uint32_t count;
+
+	double min;
+	double max;
+	double mean;
+	double stddev;
+
+	double *values;
+	int sorted;
+};
+
+/**
+ * Get summary stats of a band
+ */
+PG_FUNCTION_INFO_V1(RASTER_summaryStats);
+Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
+{
+	FuncCallContext *funcctx;
+	TupleDesc tupdesc;
+	AttInMetadata *attinmeta;
+
+	rt_bandstats stats;
+	rt_bandstats stats2;
+	int call_cntr;
+	int max_calls;
+
+	/* first call of function */
+	if (SRF_IS_FIRSTCALL()) {
+		MemoryContext oldcontext;
+
+		rt_pgraster *pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		rt_raster raster = NULL;
+		rt_band band = NULL;
+		int32_t bandindex = 0;
+		bool hasnodata = FALSE;
+		int num_bands = 0;
+		double sample = 0;
+
+		/* create a function context for cross-call persistence */
+		funcctx = SRF_FIRSTCALL_INIT();
+
+		/* switch to memory context appropriate for multiple function calls */
+		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+
+		raster = rt_raster_deserialize(pgraster);
+		if (!raster) {
+			elog(ERROR, "RASTER_summaryStats: Could not deserialize raster");
+			PG_RETURN_NULL();
+		}
+
+		/* band index is 1-based */
+		bandindex = PG_GETARG_INT32(1);
+		num_bands = rt_raster_get_num_bands(raster);
+		if (bandindex < 1 || bandindex > num_bands) {
+			elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
+			rt_raster_destroy(raster);
+			PG_RETURN_NULL();
+		}
+		assert(0 <= (bandindex - 1));
+
+		/* hasnodata flag */
+		if (!PG_ARGISNULL(2))
+			hasnodata = PG_GETARG_BOOL(2);
+
+		/* sample % */
+		if (!PG_ARGISNULL(3)) {
+			sample = PG_GETARG_FLOAT8(3);
+			if (sample < 0 || sample > 1) {
+				elog(NOTICE, "Invalid sample percentage (must be between 0 and 1). Returning NULL");
+				rt_raster_destroy(raster);
+				PG_RETURN_NULL();
+			}
+			else if (sample == 0)
+				sample = 1;
+		}
+		else
+			sample = 1;
+
+		/* get band */
+		band = rt_raster_get_band(raster, bandindex - 1);
+		if (!band) {
+			elog(NOTICE, "Could not find raster band of index %d. Returning NULL", bandindex);
+			rt_raster_destroy(raster);
+			PG_RETURN_NULL();
+		}
+
+		/* we don't need the raw values, hence the zero parameter */
+		stats = rt_band_get_summary_stats(band, (int) hasnodata, sample, 0);
+		rt_band_destroy(band);
+		rt_raster_destroy(raster);
+		if (NULL == stats) {
+			elog(NOTICE, "Could not retrieve summary statistics of band of index %d. Returning NULL", bandindex);
+			PG_RETURN_NULL();
+		}
+
+		/* store needed data */
+		funcctx->user_fctx = stats;
+
+		/* total number of tuples to return */
+		funcctx->max_calls = 1;
+
+		/* Build a tuple descriptor for our result type */
+		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
+			ereport(ERROR, (
+				errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+				errmsg(
+					"function returning record called in context "
+					"that cannot accept type record"
+				)
+			));
+		}
+
+		/*
+		 * generate attribute metadata needed later to produce tuples from raw
+		 * C strings
+		 */
+		attinmeta = TupleDescGetAttInMetadata(tupdesc);
+		funcctx->attinmeta = attinmeta;
+		MemoryContextSwitchTo(oldcontext);
+
+	}
+
+  /* stuff done on every call of the function */
+  funcctx = SRF_PERCALL_SETUP();
+
+	call_cntr = funcctx->call_cntr;
+	max_calls = funcctx->max_calls;
+	attinmeta = funcctx->attinmeta;
+	stats2 = funcctx->user_fctx;
+
+	/* do when there is more left to send */
+	if (call_cntr < max_calls) {
+		char **values;
+		HeapTuple tuple;
+		Datum result;
+
+		POSTGIS_RT_DEBUGF(3, "tuple #%d", call_cntr);
+
+		/*
+		 * Prepare a values array for building the returned tuple.
+		 * This should be an array of C strings which will
+		 * be processed later by the type input functions.
+		 */
+		values = (char **) palloc(5 * sizeof(char *));
+
+		values[0] = (char *) palloc(
+			(snprintf(NULL, 0, "%d", stats2[call_cntr].count) + 1) * sizeof(char)
+		);
+		values[1] = (char *) palloc(
+			(snprintf(NULL, 0, "%f", stats2[call_cntr].mean) + 1) * sizeof(char)
+		);
+		values[2] = (char *) palloc(
+			(snprintf(NULL, 0, "%f", stats2[call_cntr].stddev) + 1) * sizeof(char)
+		);
+		values[3] = (char *) palloc(
+			(snprintf(NULL, 0, "%f", stats2[call_cntr].min) + 1) * sizeof(char)
+		);
+		values[4] = (char *) palloc(
+			(snprintf(NULL, 0, "%f", stats2[call_cntr].max) + 1) * sizeof(char)
+		);
+
+		snprintf(
+			values[0],
+			(snprintf(NULL, 0, "%d", stats2[call_cntr].count) + 1) * sizeof(char),
+			"%d",
+			stats2[call_cntr].count
+		);
+		snprintf(
+			values[1],
+			(snprintf(NULL, 0, "%f", stats2[call_cntr].mean) + 1) * sizeof(char),
+			"%f",
+			stats2[call_cntr].mean
+		);
+		snprintf(
+			values[2],
+			(snprintf(NULL, 0, "%f", stats2[call_cntr].stddev) + 1) * sizeof(char),
+			"%f",
+			stats2[call_cntr].stddev
+		);
+		snprintf(
+			values[3],
+			(snprintf(NULL, 0, "%f", stats2[call_cntr].min) + 1) * sizeof(char),
+			"%f",
+			stats2[call_cntr].min
+		);
+		snprintf(
+			values[4],
+			(snprintf(NULL, 0, "%f", stats2[call_cntr].max) + 1) * sizeof(char),
+			"%f",
+			stats2[call_cntr].max
+		);
+
+		/* build a tuple */
+		tuple = BuildTupleFromCStrings(attinmeta, values);
+
+		/* make the tuple into a datum */
+		result = HeapTupleGetDatum(tuple);
+
+		/* clean up */
+		pfree(values[1]);
+		pfree(values[0]);
+		pfree(values);
+
+		SRF_RETURN_NEXT(funcctx, result);
+	}
+	else {
+		pfree(stats2);
+		SRF_RETURN_DONE(funcctx);
+	}
 }
 
 /* ---------------------------------------------------------------- */

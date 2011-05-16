@@ -61,6 +61,7 @@ TEST_BANDPROPS = \
 	create_rt_band_properties_test.sql \
 	rt_band_properties.sql \
 	rt_set_band_properties.sql \
+	rt_summarystats.sql \
 	$(NULL)
 
 TEST_PIXEL = \

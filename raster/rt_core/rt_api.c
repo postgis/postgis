@@ -33,6 +33,7 @@
 #include <assert.h>
 #include <float.h> /* for FLT_EPSILON and float type limits */
 #include <limits.h> /* for integer type limits */
+#include <time.h> /* for time */
 #include "rt_api.h"
 
 #define POSTGIS_RASTER_WARN_ON_TRUNCATION
@@ -1423,6 +1424,285 @@ rt_band_check_is_nodata(rt_band band)
 
     band->isnodata = TRUE;
     return TRUE;
+}
+
+struct rt_bandstats_t {
+	double sample;
+	uint32_t count;
+
+	double min;
+	double max;
+	double mean;
+	double stddev;
+
+	double *values;
+	int sorted; /* flag indicating that values is sorted ascending by value */
+};
+
+/**
+ * Compute summary statistics for a band
+ *
+ * @param band: the band to query for minimum and maximum pixel values
+ * @param hasnodata: if zero, ignore nodata value
+ * @param sample: percentage of pixels to sample
+ * @param inc_vals: flag to include values in return struct
+ *
+ * @return the summary statistics for a band
+ */
+rt_bandstats
+rt_band_get_summary_stats(rt_band band, int hasnodata, double sample,
+	int inc_vals) {
+	rt_pixtype pixtype = PT_END;
+	uint8_t *data = NULL;
+	uint32_t x = 0;
+	uint32_t y = 0;
+	uint32_t z = 0;
+	uint32_t offset = 0;
+	uint32_t diff = 0;
+	int rtn;
+	int hasnodata_flag = FALSE;
+	double nodata = 0;
+	double *values = NULL;
+	double value;
+	rt_bandstats stats = NULL;
+
+	uint32_t sample_size = 0;
+	int byY = 0;
+	uint32_t outer = 0;
+	uint32_t inner = 0;
+	uint32_t sample_per = 0;
+	uint32_t sample_int = 0;
+	uint32_t i = 0;
+	uint32_t j = 0;
+	double sum = 0;
+	uint32_t k = 0;
+	double M = 0;
+	double Q = 0;
+
+#if POSTGIS_DEBUG_LEVEL > 0
+	clock_t start, stop;
+	double elapsed = 0;
+#endif
+
+	RASTER_DEBUG(3, "starting");
+#if POSTGIS_DEBUG_LEVEL > 0
+	start = clock();
+#endif
+
+	assert(NULL != band);
+
+	if (band->offline) {
+		rterror("rt_band_get_summary_stats not implemented yet for OFFDB bands");
+		return NULL;
+	}
+
+	data = rt_band_get_data(band);
+	pixtype = band->pixtype;
+
+	hasnodata_flag = rt_band_get_hasnodata_flag(band);
+	if (hasnodata_flag != FALSE) {
+		nodata = rt_band_get_nodata(band);
+	}
+	else {
+		hasnodata = 1;
+	}
+
+	RASTER_DEBUGF(3, "nodata = %f", nodata);
+	RASTER_DEBUGF(3, "hasnodata_flag = %d", hasnodata_flag);
+	RASTER_DEBUGF(3, "user hasnodata = %d", hasnodata);
+
+	/* entire band is nodata */
+	if (rt_band_get_isnodata_flag(band) != FALSE) {
+		if (!hasnodata) {
+			rtwarn("All pixels of band have the NODATA value");
+			return NULL;
+		}
+		else {
+			stats = (rt_bandstats) rtalloc(sizeof(struct rt_bandstats_t));
+			if (NULL == stats) {
+				rterror("rt_band_get_summary_stats: Unable to allocate memory for stats");
+				return NULL;
+			}
+
+			stats->sample = 1;
+			stats->count = band->width * band->height;
+			stats->min = stats->max = nodata;
+			stats->mean = nodata;
+			stats->stddev = 0;
+			stats->values = NULL;
+			stats->sorted = 0;
+
+			return stats;
+		}
+	}
+
+	if (band->height > band->width) {
+		byY = 1;
+		outer = band->height;
+		inner = band->width;
+	}
+	else {
+		byY = 0;
+		outer = band->width;
+		inner = band->height;
+	}
+
+	/* clamp percentage */
+	if (sample <= 0 || sample > 1)
+		sample = 1;
+
+	/* sample all pixels */
+	if (sample == 1) {
+		sample_size = band->width * band->height;
+		sample_per = inner;
+	}
+	/*
+	 randomly sample a percentage of available pixels
+	 sampling method is known as
+	 	"systematic random sample without replacement"
+	*/
+	else {
+		sample_size = round((band->width * band->height) * sample);
+		sample_per = round(sample_size / outer);
+		sample_int = round(inner / sample_per);
+		srand(time(NULL));
+	}
+
+	RASTER_DEBUGF(3, "sampling %d of %d available pixels w/ %d per set"
+		, sample_size, (band->width * band->height), sample_per); 
+
+	if (inc_vals) {
+		values = rtalloc(sizeof(double) * sample_size);
+		if (NULL == values) {
+			rtwarn("Unable to allocate memory for values");
+			inc_vals = 0;
+		}
+	}
+
+	for (x = 0, j = 0, k = 0; x < outer; x++) {
+		y = -1;
+		diff = 0;
+
+		for (i = 0, z = 0; i < sample_per; i++) {
+			if (sample == 1)
+				y = i;
+			else {
+				offset = (rand() % sample_int) + 1;
+				y += diff + offset;
+				diff = sample_int - offset;
+			}
+			RASTER_DEBUGF(5, "(x, y, z) = (%d, %d, %d)", (byY ? y : x), (byY ? x : y), z);
+			if (y >= inner || z > sample_per) break;
+
+			if (byY)
+				rtn = rt_band_get_pixel(band, y, x, &value);
+			else
+				rtn = rt_band_get_pixel(band, x, y, &value);
+
+			j++;
+			if (rtn != -1) {
+				if (
+					hasnodata ||
+					(!hasnodata && (hasnodata_flag != FALSE) && (value != nodata))
+				) {
+
+					/* inc_vals set, collect pixel values */
+					if (inc_vals) {
+						values[k] = value;
+					}
+
+					/* average */
+					k++;
+					sum += value;
+
+					/*
+						one-pass standard deviation
+						http://www.eecs.berkeley.edu/~mhoemmen/cs194/Tutorials/variance.pdf
+					*/
+					if (k == 1) {
+						Q = 0;
+						M = value;
+					}
+					else {
+						Q = Q + (((k  - 1) * pow(value - M, 2)) / k);
+						M = M + ((value - M ) / k);
+					}
+
+					/* min/max */
+					if (NULL == stats) {
+						stats = (rt_bandstats) rtalloc(sizeof(struct rt_bandstats_t));
+						if (NULL == stats) {
+							rterror("rt_band_get_summary_stats: Unable to allocate memory for stats");
+							return NULL;
+						}
+
+						stats->sample = sample;
+						stats->count = 0;
+
+						stats->mean = 0;
+						stats->stddev = -1;
+						stats->min = stats->max = value;
+
+						stats->values = NULL;
+						stats->sorted = 0;
+
+					}
+					else {
+						if (value < stats->min)
+							stats->min = value;
+						if (value > stats->max)
+							stats->max = value;
+					}
+
+				}
+			}
+
+			z++;
+		}
+	}
+
+	RASTER_DEBUG(3, "sampling complete"); 
+
+	if (k > 0) {
+		if (inc_vals) {
+			/* free unused memory */
+			if (sample_size != k) {
+				rtrealloc(values, k * sizeof(double));
+			}
+
+			stats->values = values;
+		}
+
+		stats->count = k;
+		stats->mean = sum / k;
+
+		/* standard deviation */
+		if (sample == 1)
+			stats->stddev = sqrt(Q / k);
+		/* sample deviation */
+		else {
+			if (k < 2)
+				stats->stddev = -1;
+			else
+				stats->stddev = sqrt(Q / (k - 1));
+		}
+	}
+	/* inc_vals thus values allocated but not used */
+	else if (inc_vals) {
+		rtdealloc(values);
+	}
+
+#if POSTGIS_DEBUG_LEVEL > 0
+	if (NULL != stats) {
+		stop = clock();
+		elapsed = ((double) (stop - start)) / CLOCKS_PER_SEC;
+		RASTER_DEBUGF(3, "(time, count, mean, stddev, min, max) = (%0.4f, %d, %f, %f, %f, %f)",
+			elapsed, stats->count, stats->mean, stats->stddev, stats->min, stats->max);
+	}
+#endif
+
+	RASTER_DEBUG(3, "done");
+	return stats;
 }
 
 /*- rt_raster --------------------------------------------------------*/

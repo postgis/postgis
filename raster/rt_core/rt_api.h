@@ -82,7 +82,7 @@
 #endif
 #endif
 
-#include <stdlib.h> /* For size_t */
+#include <stdlib.h> /* For size_t, srand and rand */
 #include <stdint.h> /* For C99 int types */
 
 #include "liblwgeom.h"
@@ -442,6 +442,20 @@ int rt_band_is_nodata(rt_band band);
  */
 int rt_band_check_is_nodata(rt_band band);
 
+
+/**
+ * Compute summary statistics for a band
+ *
+ * @param band: the band to query for minimum and maximum pixel values
+ * @param hasnodata: if zero, ignore nodata value
+ * @param sample: percentage of pixels to sample
+ * @param inc_vals: flag to include values in return struct
+ *
+ * @return the summary statistics for a band
+ */
+typedef struct rt_bandstats_t* rt_bandstats;
+rt_bandstats rt_band_get_summary_stats(rt_band band, int hasnodata,
+	double sample, int inc_vals);
 
 
 /*- rt_raster --------------------------------------------------------*/
