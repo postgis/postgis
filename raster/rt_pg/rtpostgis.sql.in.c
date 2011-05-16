@@ -1329,6 +1329,93 @@ CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, nband int, quality int)
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
+-- ST_AsPNG
+-----------------------------------------------------------------------
+-- Cannot be strict as "options" can be NULL
+CREATE OR REPLACE FUNCTION st_aspng(rast raster, options text[])
+	RETURNS bytea
+	AS $$
+	DECLARE
+		num_bands int;
+		i int;
+		pt text;
+	BEGIN
+		num_bands := st_numbands($1);
+
+		-- PNG only allows 1 or 3 bands
+		IF num_bands > 3 THEN
+			RAISE NOTICE 'The PNG format only permits one or three bands.  The first three bands will be used.';
+			rast := st_band(rast, ARRAY[1, 2, 3]);
+			num_bands := st_numbands(rast);
+		ELSEIF num_bands > 1 THEN
+			RAISE NOTICE 'The PNG format only permits one or three bands.  The first band will be used.';
+			rast := st_band(rast, ARRAY[1]);
+			num_bands := st_numbands(rast);
+		END IF;
+
+		-- PNG only supports 8BUI and 16BUI pixeltype
+		FOR i IN 1..num_bands LOOP
+			pt = st_bandpixeltype(rast, i);
+			IF pt != '8BUI' AND pt != '16BUI' THEN
+				RAISE EXCEPTION 'The pixel type of band % in the raster is not 8BUI or 16BUI.  The PNG format can only be used with 8BUI and 16BUI pixel types.', i;
+			END IF;
+		END LOOP;
+
+		RETURN st_asgdalraster($1, 'PNG', $2, NULL);
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_aspng(rast raster)
+	RETURNS bytea
+	AS $$ SELECT st_aspng($1, NULL::text[]) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_aspng(rast raster, nbands int[], options text[])
+	RETURNS bytea
+	AS $$ SELECT st_aspng(st_band($1, $2), $3) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_aspng(rast raster, nbands int[])
+	RETURNS bytea
+	AS $$ SELECT st_aspng(st_band($1, $2), NULL::text[]) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_aspng(rast raster, nband int)
+	RETURNS bytea
+	AS $$ SELECT st_aspng(st_band($1, $2)) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_aspng(rast raster, nbands int[], compression int)
+	RETURNS bytea
+	AS $$
+	DECLARE
+		options text[];
+	BEGIN
+		IF compression IS NOT NULL THEN
+			IF compression > 9 THEN
+				compression := 9;
+			ELSEIF compression < 1 THEN
+				compression := 1;
+			END IF;
+
+			options := array_append(options, 'ZLEVEL=' || compression);
+		END IF;
+
+		RETURN st_aspng(st_band($1, $2), options);
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_aspng(rast raster, nband int, options text[])
+	RETURNS bytea
+	AS $$ SELECT st_aspng(st_band($1, $2), $3) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_aspng(rast raster, nband int, compression int)
+	RETURNS bytea
+	AS $$ SELECT st_aspng($1, ARRAY[$2], $3) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
 -- MapAlgebra
 -----------------------------------------------------------------------
 -- This function can not be STRICT, because nodatavalueexpr can be NULL (could be just '' though)
