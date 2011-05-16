@@ -457,6 +457,23 @@ typedef struct rt_bandstats_t* rt_bandstats;
 rt_bandstats rt_band_get_summary_stats(rt_band band, int hasnodata,
 	double sample, int inc_vals);
 
+/**
+ * Count the distribution of data
+ *
+ * @param stats: a populated stats struct for processing
+ * @param bin_count: the number of bins to group the data by
+ * @param bin_width: the width of each bin as an array
+ * @param bin_width_count: number of values in bin_width
+ * @param right: evaluate bins by (a,b] rather than default [a,b)
+ * @param rtn_count: set to the number of bins being returned
+ *
+ * @return the histogram of the data
+ */
+typedef struct rt_histogram_t* rt_histogram;
+rt_histogram rt_band_get_histogram(rt_bandstats stats,
+	int bin_count, double *bin_widths, int bin_widths_count,
+	int right, int *rtn_count);
+
 
 /*- rt_raster --------------------------------------------------------*/
 

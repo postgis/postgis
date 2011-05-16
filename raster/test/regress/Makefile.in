@@ -65,6 +65,7 @@ TEST_BANDPROPS = \
 	rt_mean.sql \
 	rt_stddev.sql \
 	rt_minmax.sql \
+	rt_histogram.sql \
 	$(NULL)
 
 TEST_PIXEL = \

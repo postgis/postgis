@@ -999,8 +999,21 @@ struct rt_bandstats_t {
 	double *values;
 	int sorted;
 };
+struct rt_histogram_t {
+	uint32_t count;
+	double proportion;
+
+	double min;
+	double max;
+
+	int inc_min;
+	int inc_max;
+};
 static void testBandStats() {
 	rt_bandstats stats = NULL;
+	rt_histogram histogram = NULL;
+	double bin_width[] = {10000};
+	int count = 0;
 
 	rt_raster raster;
 	rt_band band;
@@ -1032,11 +1045,27 @@ static void testBandStats() {
 	CHECK_EQUALS(stats->min, 1);
 	CHECK_EQUALS(stats->max, 19998);
 
+	histogram = (rt_histogram) rt_band_get_histogram(stats, 0, NULL, 0, 0, &count);
+	CHECK(histogram);
+	rtdealloc(histogram);
+
+	histogram = (rt_histogram) rt_band_get_histogram(stats, 0, NULL, 0, 1, &count);
+	CHECK(histogram);
+	rtdealloc(histogram);
+
+	histogram = (rt_histogram) rt_band_get_histogram(stats, 0, bin_width, 1, 0, &count);
+	CHECK(histogram);
+	rtdealloc(histogram);
+
 	rtdealloc(stats->values);
 	rtdealloc(stats);
 
 	stats = (rt_bandstats) rt_band_get_summary_stats(band, 0, 0.1, 1);
 	CHECK(stats);
+
+	histogram = (rt_histogram) rt_band_get_histogram(stats, 0, NULL, 0, 0, &count);
+	CHECK(histogram);
+	rtdealloc(histogram);
 
 	rtdealloc(stats->values);
 	rtdealloc(stats);

@@ -190,6 +190,9 @@ Datum RASTER_band(PG_FUNCTION_ARGS);
 /* Get summary stats */
 Datum RASTER_summaryStats(PG_FUNCTION_ARGS);
 
+/* get histogram */
+Datum RASTER_histogram(PG_FUNCTION_ARGS);
+
 
 /* Replace function taken from
  * http://ubuntuforums.org/showthread.php?s=aa6f015109fd7e4c7e30d2fd8b717497&t=141670&page=3
@@ -2957,6 +2960,310 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 	}
 	else {
 		pfree(stats2);
+		SRF_RETURN_DONE(funcctx);
+	}
+}
+
+/* get histogram */
+struct rt_histogram_t {
+	uint32_t count;
+	double proportion;
+
+	double min;
+	double max;
+
+	int inc_min;
+	int inc_max;
+};
+
+/**
+ * Returns histogram for a band
+ */
+PG_FUNCTION_INFO_V1(RASTER_histogram);
+Datum RASTER_histogram(PG_FUNCTION_ARGS)
+{
+	FuncCallContext *funcctx;
+	TupleDesc tupdesc;
+	AttInMetadata *attinmeta;
+
+	int count;
+	rt_histogram hist;
+	rt_histogram hist2;
+	int call_cntr;
+	int max_calls;
+
+	/* first call of function */
+	if (SRF_IS_FIRSTCALL()) {
+		MemoryContext oldcontext;
+
+		rt_pgraster *pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		rt_raster raster = NULL;
+		rt_band band = NULL;
+		int32_t bandindex = 0;
+		int num_bands = 0;
+		bool hasnodata = FALSE;
+		double sample = 0;
+		int bin_count = 0;
+		double *bin_width = NULL;
+		int bin_width_count = 0;
+		double width;
+		bool right = FALSE;
+		rt_bandstats stats = NULL;
+
+		int i;
+		int j;
+		int n;
+
+		ArrayType *array;
+		Oid etype;
+		Datum *e;
+		bool *nulls;
+		int16 typlen;
+		bool typbyval;
+		char typalign;
+		int ndims = 1;
+		int *dims;
+		int *lbs;
+
+		/* create a function context for cross-call persistence */
+		funcctx = SRF_FIRSTCALL_INIT();
+
+		/* switch to memory context appropriate for multiple function calls */
+		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+
+		raster = rt_raster_deserialize(pgraster);
+		if (!raster) {
+			elog(ERROR, "RASTER_histogram: Could not deserialize raster");
+			PG_RETURN_NULL();
+		}
+
+		/* band index is 1-based */
+		bandindex = PG_GETARG_INT32(1);
+		num_bands = rt_raster_get_num_bands(raster);
+		if (bandindex < 1 || bandindex > num_bands) {
+			elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
+			rt_raster_destroy(raster);
+			SRF_RETURN_DONE(funcctx);
+		}
+		assert(0 <= (bandindex - 1));
+
+		/* hasnodata flag */
+		if (!PG_ARGISNULL(2))
+			hasnodata = PG_GETARG_BOOL(2);
+
+		/* sample % */
+		if (!PG_ARGISNULL(3)) {
+			sample = PG_GETARG_FLOAT8(3);
+			if (sample < 0 || sample > 1) {
+				elog(NOTICE, "Invalid sample percentage (must be between 0 and 1). Returning NULL");
+				rt_raster_destroy(raster);
+				SRF_RETURN_DONE(funcctx);
+			}
+			else if (sample == 0)
+				sample = 1;
+		}
+		else
+			sample = 1;
+
+		/* bin_count */
+		if (!PG_ARGISNULL(4)) {
+			bin_count = PG_GETARG_INT32(4);
+			if (bin_count < 1) bin_count = 0;
+		}
+
+		/* bin_width */
+		if (!PG_ARGISNULL(5)) {
+			array = PG_GETARG_ARRAYTYPE_P(5);
+			etype = ARR_ELEMTYPE(array);
+			get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
+
+			switch (etype) {
+				case FLOAT4OID:
+				case FLOAT8OID:
+					break;
+				default:
+					elog(ERROR, "RASTER_histogram: Invalid data type for width");
+					rt_raster_destroy(raster);
+					PG_RETURN_NULL();
+					break;
+			}
+
+			ndims = ARR_NDIM(array);
+			dims = ARR_DIMS(array);
+			lbs = ARR_LBOUND(array);
+
+			deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
+				&nulls, &n);
+
+			bin_width = palloc(sizeof(double) * n);
+			for (i = 0, j = 0; i < n; i++) {
+				if (nulls[i]) continue;
+
+				switch (etype) {
+					case FLOAT4OID:
+						width = (double) DatumGetFloat4(e[i]);
+						break;
+					case FLOAT8OID:
+						width = (double) DatumGetFloat8(e[i]);
+						break;
+				}
+
+				if (width < 0) {
+					elog(NOTICE, "Invalid value for width (must be greater than 0). Returning NULL");
+					pfree(bin_width);
+					rt_raster_destroy(raster);
+					SRF_RETURN_DONE(funcctx);
+				}
+
+				bin_width[j] = width;
+				POSTGIS_RT_DEBUGF(5, "bin_width[%d] = %f", j, bin_width[j]);
+				j++;
+			}
+			bin_width_count = j;
+
+			if (j < 1) {
+				pfree(bin_width);
+				bin_width = NULL;
+			}
+		}
+
+		/* right */
+		if (!PG_ARGISNULL(6))
+			right = PG_GETARG_BOOL(6);
+
+		/* get band */
+		band = rt_raster_get_band(raster, bandindex - 1);
+		if (!band) {
+			elog(NOTICE, "Could not find raster band of index %d. Returning NULL", bandindex);
+			rt_raster_destroy(raster);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* get stats */
+		stats = rt_band_get_summary_stats(band, (int) hasnodata, sample, 1);
+		rt_band_destroy(band);
+		rt_raster_destroy(raster);
+		if (NULL == stats || NULL == stats->values) {
+			elog(NOTICE, "Could not retrieve summary statistics of raster band of index %d", bandindex);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* get histogram */
+		hist = rt_band_get_histogram(stats, bin_count, bin_width, bin_width_count, right, &count);
+		if (bin_width_count) pfree(bin_width);
+		pfree(stats);
+		if (NULL == hist || !count) {
+			elog(NOTICE, "Could not retrieve histogram of raster band of index %d", bandindex);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		POSTGIS_RT_DEBUGF(3, "%d bins returned", count);
+
+		/* Store needed information */
+		funcctx->user_fctx = hist;
+
+		/* total number of tuples to be returned */
+		funcctx->max_calls = count;
+
+		/* Build a tuple descriptor for our result type */
+		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
+			ereport(ERROR, (
+				errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+				errmsg(
+					"function returning record called in context "
+					"that cannot accept type record"
+				)
+			));
+		}
+
+		/*
+		 * generate attribute metadata needed later to produce tuples from raw
+		 * C strings
+		 */
+		attinmeta = TupleDescGetAttInMetadata(tupdesc);
+		funcctx->attinmeta = attinmeta;
+		MemoryContextSwitchTo(oldcontext);
+	}
+
+  /* stuff done on every call of the function */
+  funcctx = SRF_PERCALL_SETUP();
+
+	call_cntr = funcctx->call_cntr;
+	max_calls = funcctx->max_calls;
+	attinmeta = funcctx->attinmeta;
+	hist2 = funcctx->user_fctx;
+
+	/* do when there is more left to send */
+	if (call_cntr < max_calls) {
+		char **values;
+		HeapTuple tuple;
+		Datum result;
+
+		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
+
+		/*
+		 * Prepare a values array for building the returned tuple.
+		 * This should be an array of C strings which will
+		 * be processed later by the type input functions.
+		 */
+		values = (char **) palloc(4 * sizeof(char *));
+
+		values[0] = (char *) palloc(
+			(snprintf(NULL, 0, "%f", hist2[call_cntr].min) + 1) * sizeof(char)
+		);
+		values[1] = (char *) palloc(
+			(snprintf(NULL, 0, "%f", hist2[call_cntr].max) + 1) * sizeof(char)
+		);
+		values[2] = (char *) palloc(
+			(snprintf(NULL, 0, "%d", hist2[call_cntr].count) + 1) * sizeof(char)
+		);
+		values[3] = (char *) palloc(
+			(snprintf(NULL, 0, "%f", hist2[call_cntr].proportion) + 1) * sizeof(char)
+		);
+
+		snprintf(
+			values[0],
+			(snprintf(NULL, 0, "%f", hist2[call_cntr].min) + 1) * sizeof(char),
+			"%f",
+			hist2[call_cntr].min
+		);
+		snprintf(
+			values[1],
+			(snprintf(NULL, 0, "%f", hist2[call_cntr].max) + 1) * sizeof(char),
+			"%f",
+			hist2[call_cntr].max
+		);
+		snprintf(
+			values[2],
+			(snprintf(NULL, 0, "%d", hist2[call_cntr].count) + 1) * sizeof(char),
+			"%d",
+			hist2[call_cntr].count
+		);
+		snprintf(
+			values[3],
+			(snprintf(NULL, 0, "%f", hist2[call_cntr].proportion) + 1) * sizeof(char),
+			"%f",
+			hist2[call_cntr].proportion
+		);
+
+		/* build a tuple */
+		tuple = BuildTupleFromCStrings(attinmeta, values);
+
+		/* make the tuple into a datum */
+		result = HeapTupleGetDatum(tuple);
+
+		/* clean up (this is not really necessary) */
+		pfree(values[3]);
+		pfree(values[2]);
+		pfree(values[1]);
+		pfree(values[0]);
+		pfree(values);
+
+		SRF_RETURN_NEXT(funcctx, result);
+	}
+	/* do when there is no more left */
+	else {
+		pfree(hist2);
 		SRF_RETURN_DONE(funcctx);
 	}
 }

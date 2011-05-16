@@ -1705,6 +1705,249 @@ rt_band_get_summary_stats(rt_band band, int hasnodata, double sample,
 	return stats;
 }
 
+struct rt_histogram_t {
+	uint32_t count;
+	double proportion;
+
+	double min;
+	double max;
+
+	int inc_min;
+	int inc_max;
+};
+
+/**
+ * Count the distribution of data
+ *
+ * @param stats: a populated stats struct for processing
+ * @param bin_count: the number of bins to group the data by
+ * @param bin_width: the width of each bin as an array
+ * @param bin_width_count: number of values in bin_width
+ * @param right: evaluate bins by (a,b] rather than default [a,b)
+ * @param rtn_count: set to the number of bins being returned
+ *
+ * @return the histogram of the data
+ */
+rt_histogram
+rt_band_get_histogram(rt_bandstats stats,
+	int bin_count, double *bin_width, int bin_width_count,
+	int right, int *rtn_count) {
+	rt_histogram bins = NULL;
+	int init_width = 0;
+	int i;
+	int j;
+	double tmp;
+	double value;
+	int sum = 0;
+
+#if POSTGIS_DEBUG_LEVEL > 0
+	clock_t start, stop;
+	double elapsed = 0;
+#endif
+
+	RASTER_DEBUG(3, "starting"); 
+#if POSTGIS_DEBUG_LEVEL > 0
+	start = clock();
+#endif
+
+	assert(NULL != stats);
+
+	if (stats->count < 1 || NULL == stats->values) {
+		rterror("rt_util_get_histogram: rt_bandstats object has no value");
+		return NULL;
+	}
+
+	/* bin width must be positive numbers and not zero */
+	if (NULL != bin_width && bin_width_count > 0) {
+		for (i = 0; i < bin_width_count; i++) {
+			if (bin_width[i] <= 0.) {
+				rterror("rt_util_get_histogram: bin_width element is less than or equal to zero");
+				return NULL;
+			}
+		}
+	}
+
+	/* # of bins not provided */
+	if (bin_count <= 0) {
+		/*
+			determine # of bins
+			http://en.wikipedia.org/wiki/Histogram
+
+			all computed bins are assumed to have equal width
+		*/
+		/* Square-root choice for stats->count < 30 */
+		if (stats->count < 30)
+			bin_count = ceil(sqrt(stats->count));
+		/* Sturges' formula for stats->count >= 30 */
+		else
+			bin_count = ceil(log2((double) stats->count) + 1.);
+
+		/* bin_width_count provided and bin_width has value */
+		if (bin_width_count > 0 && NULL != bin_width) {
+			/* user has defined something specific */
+			if (bin_width_count > bin_count)
+				bin_count = bin_width_count;
+			else if (bin_width_count > 1) {
+				tmp = 0;
+				for (i = 0; i < bin_width_count; i++) tmp += bin_width[i];
+				bin_count = ceil((stats->max - stats->min) / tmp) * bin_width_count;
+			}
+			else
+				bin_count = ceil((stats->max - stats->min) / bin_width[0]);
+		}
+		/* set bin width count to zero so that one can be calculated */
+		else {
+			bin_width_count = 0;
+		}
+	}
+
+	/* min and max the same */
+	if (stats->min == stats->max)
+		bin_count = 1;
+
+	RASTER_DEBUGF(3, "bin_count = %d", bin_count); 
+
+	/* bin count = 1, all values are in one bin */
+	if (bin_count < 2) {
+		bins = rtalloc(sizeof(struct rt_histogram_t));
+		if (NULL == bins) {
+			rterror("rt_util_get_histogram: Unable to allocate memory for histogram");
+			return NULL;
+		}
+
+		bins->count = stats->count;
+		bins->proportion = -1;
+		bins->min = stats->min;
+		bins->max = stats->max;
+		bins->inc_min = bins->inc_max = 1;
+
+		*rtn_count = bin_count;
+		return bins;
+	}
+
+	/* establish bin width */
+	if (bin_width_count == 0) {
+		bin_width_count = 1;
+
+		/* bin_width unallocated */
+		if (NULL == bin_width) {
+			bin_width = rtalloc(sizeof(double));
+			if (NULL == bin_width) {
+				rterror("rt_util_get_histogram: Unable to allocate memory for bin widths");
+				return NULL;
+			}
+			init_width = 1;
+		}
+
+		bin_width[0] = (stats->max - stats->min) / bin_count;
+	}
+
+	/* initialize bins */
+	bins = rtalloc(bin_count * sizeof(struct rt_histogram_t));
+	if (NULL == bins) {
+		rterror("rt_util_get_histogram: Unable to allocate memory for histogram");
+		if (init_width) rtdealloc(bin_width);
+		return NULL;
+	}
+	if (!right)
+		tmp = stats->min;
+	else
+		tmp = stats->max;
+	for (i = 0; i < bin_count;) {
+		for (j = 0; j < bin_width_count; j++) {
+			bins[i].count = 0;
+			bins->proportion = -1;
+
+			if (!right) {
+				bins[i].min = tmp;
+				tmp += bin_width[j];
+				bins[i].max = tmp;
+
+				bins[i].inc_min = 1;
+				bins[i].inc_max = 0;
+			}
+			else {
+				bins[i].max = tmp;
+				tmp -= bin_width[j];
+				bins[i].min = tmp;
+
+				bins[i].inc_min = 0;
+				bins[i].inc_max = 1;
+			}
+
+			i++;
+		}
+	}
+	if (!right) {
+		bins[bin_count - 1].inc_max = 1;
+
+		/* align last bin to the max value */
+		if (bins[bin_count - 1].max < stats->max)
+			bins[bin_count - 1].max = stats->max;
+	}
+	else {
+		bins[bin_count - 1].inc_min = 1;
+
+		/* align first bin to the min value */
+		if (bins[bin_count - 1].min > stats->min)
+			bins[bin_count - 1].min = stats->min;
+	}
+
+	/* process the values */
+	for (i = 0; i < stats->count; i++) {
+		value = stats->values[i];
+
+		/* default, [a, b) */
+		if (!right) {
+			for (j = 0; j < bin_count; j++) {
+				if (
+					(!bins[j].inc_max && value < bins[j].max) ||
+					(bins[j].inc_max && value <= bins[j].max)
+				) {
+					bins[j].count++;
+					sum++;
+					break;
+				}
+			}
+		}
+		else {
+			for (j = 0; j < bin_count; j++) {
+				if (
+					(!bins[j].inc_min && value > bins[j].min) ||
+					(bins[j].inc_min && value >= bins[j].min)
+				) {
+					bins[j].count++;
+					sum++;
+					break;
+				}
+			}
+		}
+	}
+
+	/* proportions */
+	for (i = 0; i < bin_count; i++) {
+		bins[i].proportion = ((double) bins[i].count) / sum;
+		if (bin_width_count > 1)
+			bins[i].proportion /= (bins[i].max - bins[i].min);
+	}
+
+#if POSTGIS_DEBUG_LEVEL > 0
+	stop = clock();
+	elapsed = ((double) (stop - start)) / CLOCKS_PER_SEC;
+	RASTER_DEBUGF(3, "elapsed time = %0.4f", elapsed);
+
+	for (j = 0; j < bin_count; j++) {
+		RASTER_DEBUGF(5, "(min, max, inc_min, inc_max, count, sum, proportion) = (%f, %f, %d, %d, %d, %d, %f)",
+			bins[j].min, bins[j].max, bins[j].inc_min, bins[j].inc_max, bins[j].count, sum, bins[j].proportion);
+	}
+#endif
+
+	if (init_width) rtdealloc(bin_width);
+	*rtn_count = bin_count;
+	RASTER_DEBUG(3, "done");
+	return bins;
+}
+
 /*- rt_raster --------------------------------------------------------*/
 
 struct rt_raster_serialized_t {
