@@ -543,6 +543,99 @@ CREATE OR REPLACE FUNCTION st_approxmean(rastertable text, rastercolumn text, OU
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
+-- ST_StdDev and ST_ApproxStdDev
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION st_stddev(rast raster, nband int, hasnodata boolean, OUT stddev double precision)
+	RETURNS double precision
+	AS $$ SELECT stddev FROM _st_summarystats($1, $2, $3, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_stddev(rast raster, nband int, OUT stddev double precision)
+	RETURNS double precision
+	AS $$ SELECT stddev FROM _st_summarystats($1, $2, FALSE, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_stddev(rast raster, hasnodata boolean, OUT stddev double precision)
+	RETURNS double precision
+	AS $$ SELECT stddev FROM _st_summarystats($1, 1, $2, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_stddev(rast raster, OUT stddev double precision)
+	RETURNS double precision
+	AS $$ SELECT stddev FROM _st_summarystats($1, 1, FALSE, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxstddev(rast raster, nband int, hasnodata boolean, sample_percent double precision, OUT stddev double precision)
+	RETURNS double precision
+	AS $$ SELECT stddev FROM _st_summarystats($1, $2, $3, $4) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxstddev(rast raster, nband int, sample_percent double precision, OUT stddev double precision)
+	RETURNS double precision
+	AS $$ SELECT stddev FROM _st_summarystats($1, $2, FALSE, $3) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxstddev(rast raster, hasnodata boolean, sample_percent double precision, OUT stddev double precision)
+	RETURNS double precision
+	AS $$ SELECT stddev FROM _st_summarystats($1, 1, $2, $3) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxstddev(rast raster, sample_percent double precision, OUT stddev double precision)
+	RETURNS double precision
+	AS $$ SELECT stddev FROM _st_summarystats($1, 1, FALSE, $2) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxstddev(rast raster, OUT stddev double precision)
+	RETURNS double precision
+	AS $$ SELECT stddev FROM _st_summarystats($1, 1, FALSE, 0.1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_stddev(rastertable text, rastercolumn text, nband int, hasnodata boolean, OUT stddev double precision)
+	RETURNS double precision
+	AS $$ SELECT stddev FROM _st_summarystats($1, $2, $3, $4, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_stddev(rastertable text, rastercolumn text, nband int, OUT stddev double precision)
+	RETURNS double precision
+	AS $$ SELECT stddev FROM _st_summarystats($1, $2, $3, FALSE, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_stddev(rastertable text, rastercolumn text, hasnodata boolean, OUT stddev double precision)
+	RETURNS double precision
+	AS $$ SELECT stddev FROM _st_summarystats($1, $2, 1, $3, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_stddev(rastertable text, rastercolumn text, OUT stddev double precision)
+	RETURNS double precision
+	AS $$ SELECT stddev FROM _st_summarystats($1, $2, 1, FALSE, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxstddev(rastertable text, rastercolumn text, nband int, hasnodata boolean, sample_percent double precision, OUT stddev double precision)
+	RETURNS double precision
+	AS $$ SELECT stddev FROM _st_summarystats($1, $2, $3, $4, $5) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxstddev(rastertable text, rastercolumn text, nband int, sample_percent double precision, OUT stddev double precision)
+	RETURNS double precision
+	AS $$ SELECT stddev FROM _st_summarystats($1, $2, $3, FALSE, $4) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxstddev(rastertable text, rastercolumn text, hasnodata boolean, sample_percent double precision, OUT stddev double precision)
+	RETURNS double precision
+	AS $$ SELECT stddev FROM _st_summarystats($1, $2, 1, $3, $4) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxstddev(rastertable text, rastercolumn text, sample_percent double precision, OUT stddev double precision)
+	RETURNS double precision
+	AS $$ SELECT stddev FROM _st_summarystats($1, $2, 1, FALSE, $3) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxstddev(rastertable text, rastercolumn text, OUT stddev double precision)
+	RETURNS double precision
+	AS $$ SELECT stddev FROM _st_summarystats($1, $2, 1, FALSE, 0.1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
 -- MapAlgebra
 -----------------------------------------------------------------------
 -- This function can not be STRICT, because nodatavalueexpr can be NULL (could be just '' though)

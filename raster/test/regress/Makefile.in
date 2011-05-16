@@ -63,6 +63,7 @@ TEST_BANDPROPS = \
 	rt_set_band_properties.sql \
 	rt_summarystats.sql \
 	rt_mean.sql \
+	rt_stddev.sql \
 	$(NULL)
 
 TEST_PIXEL = \
