@@ -121,7 +121,7 @@ SELECT setval('city_data.node_node_id_seq', 22);
 INSERT INTO city_data.edge VALUES(1, 1, 1, 1, -1, 1, 0,
   'SRID=@SRID@;LINESTRING(8 30, 16 30, 16 38, 3 38, 3 30, 8 30)');
 -- E2
-INSERT INTO city_data.edge VALUES(2, 2, 2, -3, -2, 2, 0,
+INSERT INTO city_data.edge VALUES(2, 2, 2, 3, -2, 2, 0,
   'SRID=@SRID@;LINESTRING(25 30, 31 30, 31 40, 17 40, 17 30, 25 30)');
 -- E3
 INSERT INTO city_data.edge VALUES(3, 2, 3, -3, 2, 2, 2,

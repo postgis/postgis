@@ -14,7 +14,7 @@ ERROR:  Edge 2 is closed, cannot heal to edge 3
 ERROR:  Edge 2 is closed, cannot heal to edge 3
 ERROR:  Cannot heal edge 25 with itself, try with another
 E1|POINT(8 30)|POINT(8 30)|1|-1|1|1
-E2|POINT(25 30)|POINT(25 30)|-3|-2|2|2
+E2|POINT(25 30)|POINT(25 30)|3|-2|2|2
 E3|POINT(25 30)|POINT(25 35)|-3|2|2|3
 E4|POINT(36 38)|POINT(57 33)|-5|4|5|6
 E5|POINT(41 40)|POINT(57 33)|-4|5|7|6
@@ -65,7 +65,7 @@ MH(8,15)|19
 MH(12,22)|8
 MH(16,14)|11
 E1|POINT(8 30)|POINT(8 30)|1|-1|1|1
-E2|POINT(25 30)|POINT(25 30)|-3|-2|2|2
+E2|POINT(25 30)|POINT(25 30)|3|-2|2|2
 E3|POINT(25 30)|POINT(25 35)|-3|2|2|3
 E4|POINT(36 38)|POINT(41 40)|-4|4|5|7
 E7|POINT(21 22)|POINT(35 22)|8|-19|17|18
