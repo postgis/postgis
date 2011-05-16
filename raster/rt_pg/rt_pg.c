@@ -4,6 +4,8 @@
  * WKTRaster - Raster Types for PostGIS
  * http://www.postgis.org/support/wiki/index.php?WKTRasterHomePage
  *
+ * Copyright (C) 2011 Regents of the University of California
+ *   <bkpark@ucdavis.edu>
  * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@avencia.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
@@ -2946,7 +2948,7 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 		rt_raster raster = NULL;
 		rt_band band = NULL;
 		int32_t bandindex = 0;
-		bool hasnodata = FALSE;
+		bool hasnodata = TRUE;
 		int num_bands = 0;
 		double sample = 0;
 
@@ -3160,7 +3162,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		rt_band band = NULL;
 		int32_t bandindex = 0;
 		int num_bands = 0;
-		bool hasnodata = FALSE;
+		bool hasnodata = TRUE;
 		double sample = 0;
 		int bin_count = 0;
 		double *bin_width = NULL;
@@ -3458,7 +3460,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		rt_band band = NULL;
 		int32_t bandindex = 0;
 		int num_bands = 0;
-		bool hasnodata = FALSE;
+		bool hasnodata = TRUE;
 		double sample = 0;
 		double *quantiles = NULL;
 		int quantiles_count = 0;

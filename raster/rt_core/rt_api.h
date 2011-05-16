@@ -4,6 +4,8 @@
  * WKTRaster - Raster Types for PostGIS
  * http://www.postgis.org/support/wiki/index.php?WKTRasterHomePage
  *
+ * Copyright (C) 2011 Regents of the University of California
+ *   <bkpark@ucdavis.edu>
  * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@avencia.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
@@ -449,7 +451,7 @@ int rt_band_check_is_nodata(rt_band band);
  * Compute summary statistics for a band
  *
  * @param band: the band to query for minimum and maximum pixel values
- * @param hasnodata: if zero, ignore nodata value
+ * @param hasnodata: if non-zero, ignore nodata values
  * @param sample: percentage of pixels to sample
  * @param inc_vals: flag to include values in return struct
  *

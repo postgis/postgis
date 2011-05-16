@@ -42,7 +42,7 @@ SELECT * FROM ST_Histogram(
 		)
 		, 1, 5, 5, 3.14159
 	),
-	1, TRUE, 0, ARRAY[]::double precision[], FALSE
+	1, FALSE, 0, ARRAY[]::double precision[], FALSE
 );
 SELECT * FROM ST_Histogram(
 	ST_SetValue(
@@ -58,7 +58,7 @@ SELECT * FROM ST_Histogram(
 		)
 		, 1, 5, 5, 3.14159
 	),
-	1, TRUE, 1, FALSE
+	1, FALSE, 1, FALSE
 );
 SELECT * FROM ST_Histogram(
 	ST_SetValue(
@@ -74,7 +74,7 @@ SELECT * FROM ST_Histogram(
 		)
 		, 1, 5, 5, 3.14159
 	),
-	1, TRUE, 5
+	1, FALSE, 5
 );
 SELECT * FROM ST_Histogram(
 	ST_SetValue(
@@ -90,7 +90,7 @@ SELECT * FROM ST_Histogram(
 		)
 		, 1, 5, 5, 3.14159
 	),
-	1, TRUE
+	1, FALSE
 );
 SELECT * FROM ST_Histogram(
 	ST_SetValue(

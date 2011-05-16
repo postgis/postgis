@@ -12,7 +12,7 @@ SELECT min, max FROM ST_MinMax(
 		)
 		, 1, 5, 5, 3.14159
 	)
-	, FALSE
+	, TRUE
 );
 SELECT ST_MinMax(
 	ST_SetValue(
@@ -28,7 +28,7 @@ SELECT ST_MinMax(
 		)
 		, 1, 5, 5, 3.14159
 	)
-	, FALSE
+	, TRUE
 );
 SELECT min FROM ST_MinMax(
 	ST_SetValue(
@@ -44,7 +44,7 @@ SELECT min FROM ST_MinMax(
 		)
 		, 1, 5, 5, 3.14159
 	)
-	, FALSE
+	, TRUE
 );
 SELECT max,max FROM ST_MinMax(
 	ST_SetValue(
@@ -60,5 +60,5 @@ SELECT max,max FROM ST_MinMax(
 		)
 		, 1, 5, 5, 3.14159
 	)
-	, FALSE
+	, TRUE
 );

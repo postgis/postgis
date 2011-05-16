@@ -12,7 +12,7 @@ SELECT * FROM ST_Mean(
 		)
 		, 1, 5, 5, 3.14159
 	)
-	, FALSE
+	, TRUE
 );
 SELECT ST_Mean(
 	ST_SetValue(
@@ -28,23 +28,7 @@ SELECT ST_Mean(
 		)
 		, 1, 5, 5, 3.14159
 	)
-	, FALSE
-);
-SELECT mean FROM ST_Mean(
-	ST_SetValue(
-		ST_SetValue(
-			ST_SetValue(
-				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
-					, 1, '64BF', 0, 0
-				)
-				, 1, 1, 1, -10
-			)
-			, 1, 5, 4, 0
-		)
-		, 1, 5, 5, 3.14159
-	)
-	, FALSE
+	, TRUE
 );
 SELECT mean FROM ST_Mean(
 	ST_SetValue(
@@ -61,6 +45,22 @@ SELECT mean FROM ST_Mean(
 		, 1, 5, 5, 3.14159
 	)
 	, TRUE
+);
+SELECT mean FROM ST_Mean(
+	ST_SetValue(
+		ST_SetValue(
+			ST_SetValue(
+				ST_AddBand(
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+					, 1, '64BF', 0, 0
+				)
+				, 1, 1, 1, -10
+			)
+			, 1, 5, 4, 0
+		)
+		, 1, 5, 5, 3.14159
+	)
+	, FALSE
 );
 BEGIN;
 CREATE TEMP TABLE test
@@ -86,8 +86,8 @@ CREATE TEMP TABLE test
 		SELECT generate_series(1, 10) AS id
 	) AS id
 		ON 1 = 1;
-SELECT * FROM ST_Mean('test', 'rast', 1, FALSE);
 SELECT * FROM ST_Mean('test', 'rast', 1, TRUE);
+SELECT * FROM ST_Mean('test', 'rast', 1, FALSE);
 SELECT * FROM ST_Mean('test', 'rast', 1);
 SELECT * FROM ST_Mean('test', 'rast');
 ROLLBACK;

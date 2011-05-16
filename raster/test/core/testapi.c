@@ -1046,7 +1046,7 @@ static void testBandStats() {
 	nodata = rt_band_get_nodata(band);
 	CHECK_EQUALS(nodata, 0);
 
-	stats = (rt_bandstats) rt_band_get_summary_stats(band, 0, 0, 1);
+	stats = (rt_bandstats) rt_band_get_summary_stats(band, 1, 0, 1);
 	CHECK(stats);
 	CHECK_EQUALS(stats->min, 1);
 	CHECK_EQUALS(stats->max, 19998);
@@ -1070,7 +1070,7 @@ static void testBandStats() {
 	rtdealloc(stats->values);
 	rtdealloc(stats);
 
-	stats = (rt_bandstats) rt_band_get_summary_stats(band, 0, 0.1, 1);
+	stats = (rt_bandstats) rt_band_get_summary_stats(band, 1, 0.1, 1);
 	CHECK(stats);
 
 	quantile = (rt_quantile) rt_band_get_quantiles(stats, NULL, 0, &count);
@@ -1089,19 +1089,19 @@ static void testBandStats() {
 	rtdealloc(stats->values);
 	rtdealloc(stats);
 
-	stats = (rt_bandstats) rt_band_get_summary_stats(band, 0, 0.15, 0);
+	stats = (rt_bandstats) rt_band_get_summary_stats(band, 1, 0.15, 0);
 	CHECK(stats);
 	rtdealloc(stats);
 
-	stats = (rt_bandstats) rt_band_get_summary_stats(band, 0, 0.2, 0);
+	stats = (rt_bandstats) rt_band_get_summary_stats(band, 1, 0.2, 0);
 	CHECK(stats);
 	rtdealloc(stats);
 
-	stats = (rt_bandstats) rt_band_get_summary_stats(band, 0, 0.25, 0);
+	stats = (rt_bandstats) rt_band_get_summary_stats(band, 1, 0.25, 0);
 	CHECK(stats);
 	rtdealloc(stats);
 
-	stats = (rt_bandstats) rt_band_get_summary_stats(band, 1, 0, 1);
+	stats = (rt_bandstats) rt_band_get_summary_stats(band, 0, 0, 1);
 	CHECK(stats);
 	CHECK_EQUALS(stats->min, 0);
 	CHECK_EQUALS(stats->max, 19998);
@@ -1113,7 +1113,7 @@ static void testBandStats() {
 	rtdealloc(stats->values);
 	rtdealloc(stats);
 
-	stats = (rt_bandstats) rt_band_get_summary_stats(band, 1, 0.1, 1);
+	stats = (rt_bandstats) rt_band_get_summary_stats(band, 0, 0.1, 1);
 	CHECK(stats);
 
 	quantile = (rt_quantile) rt_band_get_quantiles(stats, NULL, 0, &count);

@@ -11,6 +11,8 @@
 #
 #
 ###############################################################################
+# Copyright (C) 2011 Regents of the University of California
+#   <bkpark@ucdavis.edu>
 # Copyright (C) 2009 Mateusz Loskot <mateusz@loskot.net>
 # 
 # This program is free software; you can redistribute it and/or modify

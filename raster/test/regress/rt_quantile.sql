@@ -12,7 +12,7 @@ SELECT * FROM ST_Quantile(
 		)
 		, 1, 5, 5, 3.14159
 	)
-	, 1, TRUE, ARRAY[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]::double precision[]
+	, 1, FALSE, ARRAY[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]::double precision[]
 );
 SELECT * FROM ST_Quantile(
 	ST_SetValue(
@@ -44,7 +44,7 @@ SELECT * FROM ST_Quantile(
 		)
 		, 1, 5, 5, 3.14159
 	),
-	1, TRUE
+	1, FALSE
 );
 SELECT * FROM ST_Quantile(
 	ST_SetValue(
@@ -107,7 +107,7 @@ SELECT * FROM ST_Quantile(
 		)
 		, 1, 5, 5, 3.14159
 	),
-	1, TRUE, 0.05
+	1, FALSE, 0.05
 );
 SELECT * FROM ST_Quantile(
 	ST_SetValue(
@@ -139,7 +139,7 @@ SELECT * FROM ST_Quantile(
 		)
 		, 1, 5, 5, 3.14159
 	),
-	TRUE, 0.7
+	FALSE, 0.7
 );
 SELECT * FROM ST_Quantile(
 	ST_SetValue(

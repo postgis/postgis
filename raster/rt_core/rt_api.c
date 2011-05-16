@@ -4,6 +4,8 @@
  * WKTRaster - Raster Types for PostGIS
  * http://www.postgis.org/support/wiki/index.php?WKTRasterHomePage
  *
+ * Copyright (C) 2011 Regents of the University of California
+ *   <bkpark@ucdavis.edu>
  * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@avencia.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
@@ -1498,7 +1500,7 @@ struct rt_bandstats_t {
  * Compute summary statistics for a band
  *
  * @param band: the band to query for minimum and maximum pixel values
- * @param hasnodata: if zero, ignore nodata value
+ * @param hasnodata: if non-zero, ignore nodata values
  * @param sample: percentage of pixels to sample
  * @param inc_vals: flag to include values in return struct
  *
@@ -1559,7 +1561,7 @@ rt_band_get_summary_stats(rt_band band, int hasnodata, double sample,
 		nodata = rt_band_get_nodata(band);
 	}
 	else {
-		hasnodata = 1;
+		hasnodata = 0;
 	}
 
 	RASTER_DEBUGF(3, "nodata = %f", nodata);
@@ -1568,7 +1570,7 @@ rt_band_get_summary_stats(rt_band band, int hasnodata, double sample,
 
 	/* entire band is nodata */
 	if (rt_band_get_isnodata_flag(band) != FALSE) {
-		if (!hasnodata) {
+		if (hasnodata) {
 			rtwarn("All pixels of band have the NODATA value");
 			return NULL;
 		}
@@ -1657,8 +1659,8 @@ rt_band_get_summary_stats(rt_band band, int hasnodata, double sample,
 			j++;
 			if (rtn != -1) {
 				if (
-					hasnodata ||
-					(!hasnodata && (hasnodata_flag != FALSE) && (value != nodata))
+					!hasnodata ||
+					(hasnodata && (hasnodata_flag != FALSE) && (value != nodata))
 				) {
 
 					/* inc_vals set, collect pixel values */
