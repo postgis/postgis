@@ -78,6 +78,7 @@ TEST_UTILITY = \
 	rt_utility.sql \
 	create_rt_mapalgebra_test.sql \
 	rt_mapalgebra.sql \
+	rt_reclass.sql \
 	$(NULL)
 
 TEST_GIST = \

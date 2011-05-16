@@ -2119,6 +2119,323 @@ rt_band_get_quantiles(rt_bandstats stats,
 	return rtn;
 }
 
+struct rt_reclassexpr_t {
+	struct rt_reclassrange {
+		double min;
+		double max;
+		int inc_min; /* include min */
+		int inc_max; /* include max */
+		int exc_min; /* exceed min */
+		int exc_max; /* exceed max */
+	} src, dst;
+};
+
+/**
+ * Returns new band with values reclassified
+ * 
+ * @param srcband : the band who's values will be reclassified
+ * @param pixtype : pixel type of the new band
+ * @param hasnodata : indicates if the band has a nodata value
+ * @param nodataval : nodata value for the new band
+ * @param exprset : array of rt_reclassexpr structs
+ * @param exprcount : number of elements in expr
+ *
+ * @return a new rt_band or 0 on error
+ */
+rt_band
+rt_band_reclass(rt_band srcband, rt_pixtype pixtype,
+	uint32_t hasnodata, double nodataval, rt_reclassexpr *exprset,
+	int exprcount) {
+	rt_band band = NULL;
+	int width = 0;
+	int height = 0;
+	int numval = 0;
+	int memsize = 0;
+	void *mem = NULL;
+	uint32_t src_hasnodata = 0;
+	double src_nodataval = 0.0;
+
+	int rtn;
+	int x;
+	int y;
+	int i;
+	double or = 0;
+	double ov = 0;
+	double nr = 0;
+	double nv = 0;
+	int do_nv = 0;
+	rt_reclassexpr expr = NULL;
+
+	assert(NULL != srcband);
+	assert(NULL != exprset);
+
+	/* source nodata */
+	src_hasnodata = rt_band_get_hasnodata_flag(srcband);
+	src_nodataval = rt_band_get_nodata(srcband);
+
+	/* size of memory block to allocate */
+	width = rt_band_get_width(srcband);
+	height = rt_band_get_height(srcband);
+	numval = width * height;
+	memsize = rt_pixtype_size(pixtype) * numval;
+	mem = (int *) rtalloc(memsize);
+	if (!mem) {
+		rterror("rt_band_reclass: Could not allocate memory for band");
+		return 0;
+	}
+
+	/* initialize to zero */
+	if (!hasnodata) {
+		memset(mem, 0, memsize);
+	}
+	/* initialize to nodataval */
+	else {
+		int32_t checkvalint = 0;
+		uint32_t checkvaluint = 0;
+		double checkvaldouble = 0;
+		float checkvalfloat = 0;
+
+		switch (pixtype) {
+			case PT_1BB:
+			{
+				uint8_t *ptr = mem;
+				uint8_t clamped_initval = rt_util_clamp_to_1BB(nodataval);
+				for (i = 0; i < numval; i++)
+					ptr[i] = clamped_initval;
+				checkvalint = ptr[0];
+				break;
+			}
+			case PT_2BUI:
+			{
+				uint8_t *ptr = mem;
+				uint8_t clamped_initval = rt_util_clamp_to_2BUI(nodataval);
+				for (i = 0; i < numval; i++)
+					ptr[i] = clamped_initval;
+				checkvalint = ptr[0];
+				break;
+			}
+			case PT_4BUI:
+			{
+				uint8_t *ptr = mem;
+				uint8_t clamped_initval = rt_util_clamp_to_4BUI(nodataval);
+				for (i = 0; i < numval; i++)
+					ptr[i] = clamped_initval;
+				checkvalint = ptr[0];
+				break;
+			}
+			case PT_8BSI:
+			{
+				int8_t *ptr = mem;
+				int8_t clamped_initval = rt_util_clamp_to_8BSI(nodataval);
+				for (i = 0; i < numval; i++)
+					ptr[i] = clamped_initval;
+				checkvalint = ptr[0];
+				break;
+			}
+			case PT_8BUI:
+			{
+				uint8_t *ptr = mem;
+				uint8_t clamped_initval = rt_util_clamp_to_8BUI(nodataval);
+				for (i = 0; i < numval; i++)
+					ptr[i] = clamped_initval;
+				checkvalint = ptr[0];
+				break;
+			}
+			case PT_16BSI:
+			{
+				int16_t *ptr = mem;
+				int16_t clamped_initval = rt_util_clamp_to_16BSI(nodataval);
+				for (i = 0; i < numval; i++)
+					ptr[i] = clamped_initval;
+				checkvalint = ptr[0];
+				break;
+			}
+			case PT_16BUI:
+			{
+				uint16_t *ptr = mem;
+				uint16_t clamped_initval = rt_util_clamp_to_16BUI(nodataval);
+				for (i = 0; i < numval; i++)
+					ptr[i] = clamped_initval;
+				checkvalint = ptr[0];
+				break;
+			}
+			case PT_32BSI:
+			{
+				int32_t *ptr = mem;
+				int32_t clamped_initval = rt_util_clamp_to_32BSI(nodataval);
+				for (i = 0; i < numval; i++)
+					ptr[i] = clamped_initval;
+				checkvalint = ptr[0];
+				break;
+			}
+			case PT_32BUI:
+			{
+				uint32_t *ptr = mem;
+				uint32_t clamped_initval = rt_util_clamp_to_32BUI(nodataval);
+				for (i = 0; i < numval; i++)
+					ptr[i] = clamped_initval;
+				checkvaluint = ptr[0];
+				break;
+			}
+			case PT_32BF:
+			{
+				float *ptr = mem;
+				float clamped_initval = rt_util_clamp_to_32F(nodataval);
+				for (i = 0; i < numval; i++)
+					ptr[i] = clamped_initval;
+				checkvalfloat = ptr[0];
+				break;
+			}
+			case PT_64BF:
+			{
+				double *ptr = mem;
+				for (i = 0; i < numval; i++)
+					ptr[i] = nodataval;
+				checkvaldouble = ptr[0];
+				break;
+			}
+			default:
+			{
+				rterror("rt_band_reclass: Unknown pixeltype %d", pixtype);
+				rtdealloc(mem);
+				return 0;
+			}
+		}
+
+#ifdef POSTGIS_RASTER_WARN_ON_TRUNCATION
+		/* Overflow checking */
+		rt_util_display_dbl_trunc_warning(nodataval, checkvalint, checkvaluint, checkvalfloat,
+			checkvaldouble, pixtype);
+#endif /* POSTGIS_RASTER_WARN_ON_TRUNCATION */
+	}
+	RASTER_DEBUGF(3, "rt_band_reclass: width = %d height = %d", width, height);
+
+	band = rt_band_new_inline(width, height, pixtype, hasnodata, nodataval, mem);
+	if (!band) {
+		rterror("rt_band_reclass: Could not create new band");
+		rtdealloc(mem);
+		return 0;
+	}
+	RASTER_DEBUGF(3, "rt_band_reclass: new band @ %p", band);
+
+	for (x = 0; x < width; x++) {
+		for (y = 0; y < height; y++) {
+			rtn = rt_band_get_pixel(srcband, x, y, &ov);
+
+			/* error getting value, skip */
+			if (rtn == -1) continue;
+
+			do {
+				do_nv = 0;
+
+				/* no data*/
+				if (src_hasnodata && hasnodata && ov == src_nodataval) {
+					do_nv = 1;
+					break;
+				}
+
+				for (i = 0; i < exprcount; i++) {
+					expr = exprset[i];
+
+					/* ov matches min and max*/
+					if (expr->src.min == ov && ov == expr->src.max) {
+						do_nv = 1;
+						break;
+					}
+
+					/* process min */
+					if (
+						(expr->src.exc_min && expr->src.min >= ov) ||
+						(expr->src.inc_min && expr->src.min <= ov) ||
+						(expr->src.min < ov)
+					) {
+						/* process max */
+						if (
+							(expr->src.exc_max && ov >= expr->src.max) ||
+							(expr->src.inc_max && ov <= expr->src.max) ||
+							(ov < expr->src.max)
+						) {
+							do_nv = 1;
+							break;
+						}
+					}
+				}
+			}
+			while (0);
+
+			/* no expression matched, do not continue */
+			if (!do_nv) continue;
+
+			/* converting a value from one range to another range
+			OldRange = (OldMax - OldMin)
+			NewRange = (NewMax - NewMin)
+			NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin
+			*/
+
+			/* nodata */
+			if (src_hasnodata && hasnodata && ov == src_nodataval) {
+				nv = nodataval;
+			}
+			/*
+				"src" min and max is the same, prevent division by zero
+				set nv to "dst" min, which should be the same as "dst" max
+			*/
+			else if (expr->src.min == expr->src.max) {
+				nv = expr->dst.min;
+			}
+			else {
+				or = expr->src.max - expr->src.min;
+				nr = expr->dst.max - expr->dst.min;
+				nv = (((ov - expr->src.min) * nr) / or) + expr->dst.min;
+
+				if (nv < expr->dst.min)
+					nv = expr->dst.min;
+				else if (nv > expr->dst.max)
+					nv = expr->dst.max;
+			}
+
+			/* round the value for integers */
+			switch (pixtype) {
+				case PT_1BB:
+				case PT_2BUI:
+				case PT_4BUI:
+				case PT_8BSI:
+				case PT_8BUI:
+				case PT_16BSI:
+				case PT_16BUI:
+				case PT_32BSI:
+				case PT_32BUI:
+					nv = round(nv);
+					break;
+				default:
+					break;
+			}
+
+			RASTER_DEBUGF(5, "(%d, %d) ov: %f or: %f - %f nr: %f - %f nv: %f"
+				, x
+				, y
+				, ov
+				, (NULL != expr) ? expr->src.min : 0
+				, (NULL != expr) ? expr->src.max : 0
+				, (NULL != expr) ? expr->dst.min : 0
+				, (NULL != expr) ? expr->dst.max : 0
+				, nv
+			);
+			rtn = rt_band_set_pixel(band, x, y, nv);
+			if (rtn == -1) {
+				rterror("rt_band_reclass: Could not assign value to new band");
+				rt_band_destroy(band);
+				rtdealloc(mem);
+				return 0;
+			}
+
+			expr = NULL;
+		}
+	}
+
+	return band;
+}
+
 /*- rt_raster --------------------------------------------------------*/
 
 struct rt_raster_serialized_t {
@@ -4593,5 +4910,41 @@ rt_raster_from_band(rt_raster raster, uint32_t *bandNums, int count) {
 	RASTER_DEBUGF(3, "rt_raster_from_band: new raster has %d bands",
 		rt_raster_get_num_bands(rast));
 	return rast;
+}
+
+/**
+ * Replace band at provided index with new band
+ * 
+ * @param raster: raster of band to be replaced
+ * @param band : new band to add to raster
+ * @param index : index of band to replace (1-based)
+ *
+ * @return 0 on error or replaced band
+ */
+int
+rt_raster_replace_band(rt_raster raster, rt_band band, int index) {
+	rt_band oldband = NULL;
+	assert(NULL != raster);
+
+	if (band->width != raster->width || band->height != raster->height) {
+		rterror("rt_raster_replace_band: Band does not match raster's dimensions: %dx%d band to %dx%d raster",
+			band->width, band->height, raster->width, raster->height);
+		return 0;
+	}
+
+	if (index > raster->numBands || index < 0) {
+		rterror("rt_raster_replace_band: Band index is not valid");
+		return 0;
+	}
+
+	oldband = rt_raster_get_band(raster, index);
+	RASTER_DEBUGF(3, "rt_raster_replace_band: old band at %p", oldband);
+	RASTER_DEBUGF(3, "rt_raster_replace_band: new band at %p", band);
+
+	raster->bands[index] = band;
+	RASTER_DEBUGF(3, "rt_raster_replace_band: new band at %p", raster->bands[index]);
+
+	rt_band_destroy(oldband);
+	return 1;
 }
 

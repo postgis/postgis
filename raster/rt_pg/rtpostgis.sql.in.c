@@ -974,6 +974,55 @@ CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, hasnodata boolean, qua
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
+-- ST_Reclass
+-----------------------------------------------------------------------
+CREATE TYPE reclassarg AS (
+	nband int,
+	reclassexpr text,
+	pixeltype text,
+	nodataval double precision
+);
+
+CREATE OR REPLACE FUNCTION _st_reclass(rast raster, VARIADIC reclassargset reclassarg[])
+	RETURNS raster
+	AS 'MODULE_PATHNAME', 'RASTER_reclass'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_reclass(rast raster, VARIADIC reclassargset reclassarg[])
+	RETURNS raster
+	AS $$
+	DECLARE
+		i int;
+		expr text;
+	BEGIN
+		-- for each reclassarg, validate elements as all except nodataval cannot be NULL
+		FOR i IN SELECT * FROM generate_subscripts($2, 1) LOOP
+			IF $2[i].nband IS NULL OR $2[i].reclassexpr IS NULL OR $2[i].pixeltype IS NULL THEN
+				RAISE WARNING 'Values are required for the nband, reclassexpr and pixeltype attributes.';
+				RETURN rast;
+			END IF;
+		END LOOP;
+
+		RETURN _st_reclass($1, VARIADIC $2);
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_reclass(rast raster, nband int, reclassexpr text, pixeltype text, nodataval double precision)
+	RETURNS raster
+	AS $$ SELECT st_reclass($1, ROW($2, $3, $4, $5)) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_reclass(rast raster, nband int, reclassexpr text, pixeltype text)
+	RETURNS raster
+	AS $$ SELECT st_reclass($1, ROW($2, $3, $4, NULL)) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_reclass(rast raster, reclassexpr text, pixeltype text)
+	RETURNS raster
+	AS $$ SELECT st_reclass($1, ROW(1, $2, $3, NULL)) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
 -- MapAlgebra
 -----------------------------------------------------------------------
 -- This function can not be STRICT, because nodatavalueexpr can be NULL (could be just '' though)

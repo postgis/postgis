@@ -1127,6 +1127,140 @@ static void testBandStats() {
 	rt_raster_destroy(raster);
 }
 
+static void testRasterReplaceBand() {
+	rt_raster raster;
+	rt_band band;
+	void* mem;
+	size_t datasize;
+	uint16_t width;
+	uint16_t height;
+	double nodata;
+	int rtn;
+
+	raster = rt_raster_new(10, 10);
+	assert(raster); /* or we're out of virtual memory */
+	band = addBand(raster, PT_8BUI, 0, 0);
+	CHECK(band);
+	band = addBand(raster, PT_8BUI, 1, 255);
+	CHECK(band);
+
+	width = rt_raster_get_width(raster);
+	height = rt_raster_get_height(raster);
+
+	datasize = rt_pixtype_size(PT_8BUI) * width * height;
+	mem = malloc(datasize);
+	band = rt_band_new_inline(width, height, PT_8BUI, 1, 1, mem);
+	assert(band);
+
+	rtn = rt_raster_replace_band(raster, band, 0);
+	CHECK(rtn);
+	nodata = rt_band_get_nodata(rt_raster_get_band(raster, 0));
+	CHECK((nodata == 1));
+
+	rt_band_destroy(band);
+	rt_raster_destroy(raster);
+	free(mem);
+}
+
+struct rt_reclassexpr_t {
+	struct rt_reclassrange {
+		double min;
+		double max;
+		int inc_min; /* include min */
+		int inc_max; /* include max */
+		int exc_min; /* exceed min */
+		int exc_max; /* exceed max */
+	} src, dst;
+};
+static void testBandReclass() {
+	rt_reclassexpr *exprset;
+
+	rt_raster raster;
+	rt_band band;
+	uint16_t x;
+	uint16_t y;
+	double nodata;
+	int cnt = 2;
+	int i = 0;
+	int rtn;
+	rt_band newband;
+	double val;
+
+	raster = rt_raster_new(100, 10);
+	assert(raster); /* or we're out of virtual memory */
+	band = addBand(raster, PT_16BUI, 0, 0);
+	CHECK(band);
+	rt_band_set_nodata(band, 0);
+
+	for (x = 0; x < 100; x++) {
+		for (y = 0; y < 10; y++) {
+			rtn = rt_band_set_pixel(band, x, y, x * y + (x + y));
+			CHECK((rtn != -1));
+		}
+	}
+
+	nodata = rt_band_get_nodata(band);
+	CHECK_EQUALS(nodata, 0);
+
+	exprset = malloc(cnt * sizeof(rt_reclassexpr));
+	assert(exprset);
+
+	for (i = 0; i < cnt; i++) {
+		exprset[i] = malloc(sizeof(struct rt_reclassexpr_t));
+		assert(exprset[i]);
+
+		if (i == 0) {
+			/* nodata */
+			exprset[i]->src.min = 0;
+			exprset[i]->src.inc_min = 0;
+			exprset[i]->src.exc_min = 0;
+
+			exprset[i]->src.max = 0;
+			exprset[i]->src.inc_max = 0;
+			exprset[i]->src.exc_max = 0;
+
+			exprset[i]->dst.min = 0;
+			exprset[i]->dst.max = 0;
+		}
+		else {
+			/* range */
+			exprset[i]->src.min = 0;
+			exprset[i]->src.inc_min = 0;
+			exprset[i]->src.exc_min = 0;
+
+			exprset[i]->src.max = 1000;
+			exprset[i]->src.inc_max = 1;
+			exprset[i]->src.exc_max = 0;
+
+			exprset[i]->dst.min = 1;
+			exprset[i]->dst.max = 255;
+		}
+	}
+
+	newband = rt_band_reclass(band, PT_8BUI, 0, 0, exprset, cnt);
+	CHECK(newband);
+
+	rtn = rt_band_get_pixel(newband, 0, 0, &val);
+	CHECK((rtn != -1));
+	CHECK_EQUALS(val, 0);
+
+	rtn = rt_band_get_pixel(newband, 49, 5, &val);
+	CHECK((rtn != -1));
+	CHECK_EQUALS(val, 77);
+
+	rtn = rt_band_get_pixel(newband, 99, 9, &val);
+	CHECK((rtn != -1));
+	CHECK_EQUALS(val, 255);
+
+
+	for (i = cnt - 1; i >= 0; i--)
+		free(exprset[i]);
+	free(exprset);
+	rt_band_destroy(band);
+	rt_band_destroy(newband);
+	rt_raster_destroy(raster);
+}
+
 int
 main()
 {
@@ -1440,6 +1574,14 @@ main()
 		printf("Testing band stats\n");
 		testBandStats();
 		printf("Successfully tested band stats\n");
+
+		printf("Testing rt_raster_replace_band\n");
+		testRasterReplaceBand();
+		printf("Successfully tested rt_raster_replace_band\n");
+
+		printf("Testing rt_band_reclass\n");
+		testBandReclass();
+		printf("Successfully tested rt_band_reclass\n");
 
 
     deepRelease(raster);

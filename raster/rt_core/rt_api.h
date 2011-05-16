@@ -489,6 +489,22 @@ typedef struct rt_quantile_t* rt_quantile;
 rt_quantile rt_band_get_quantiles(rt_bandstats stats,
 	double *quantiles, int quantiles_count, int *rtn_count);
 
+/**
+ * Returns new band with values reclassified
+ * 
+ * @param srcband : the band who's values will be reclassified
+ * @param pixtype : pixel type of the new band
+ * @param hasnodata : indicates if the band has a nodata value
+ * @param nodataval : nodata value for the new band
+ * @param exprset : array of rt_reclassexpr structs
+ * @param exprcount : number of elements in expr
+ *
+ * @return a new rt_band or 0 on error
+ */
+typedef struct rt_reclassexpr_t* rt_reclassexpr;
+rt_band rt_band_reclass(rt_band srcband, rt_pixtype pixtype,
+	uint32_t hasnodata, double nodataval,
+	rt_reclassexpr *exprset, int exprcount);
 
 /*- rt_raster --------------------------------------------------------*/
 
@@ -816,6 +832,18 @@ int32_t rt_raster_copy_band(rt_raster torast,
  */
 rt_raster rt_raster_from_band(rt_raster raster, uint32_t *bandNums,
 	int count);
+
+/**
+ * Replace band at provided index with new band
+ * 
+ * @param raster: raster of band to be replaced
+ * @param band : new band to add to raster
+ * @param index : index of band to replace (1-based)
+ *
+ * @return 0 on error or 1 on success
+ */
+int rt_raster_replace_band(rt_raster raster, rt_band band,
+	int index);
 
 
 /*- utilities -------------------------------------------------------*/

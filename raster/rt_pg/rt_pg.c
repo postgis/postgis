@@ -30,8 +30,10 @@
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h> /* for strtod in RASTER_reclass */
 #include <errno.h>
 #include <assert.h>
+#include <ctype.h> /* for isspace */
 
 #include <postgres.h> /* for palloc */
 #include <access/gist.h>
@@ -40,6 +42,7 @@
 #include <utils/elog.h>
 #include <utils/builtins.h>
 #include <executor/spi.h>
+#include <executor/executor.h> /* for GetAttributeByName in RASTER_reclass */
 #include <funcapi.h>
 
 /*#include "lwgeom_pg.h"*/
@@ -66,6 +69,9 @@ PG_MODULE_MAGIC;
 static char * replace(const char *str, const char *oldstr, const char *newstr,
         int *count);
 static char *strtoupper(char *str);
+static char	*chartrim(char* input, char *remove); /* for RASTER_reclass */
+static char **strsplit(const char *str, const char *delimiter, int *n); /* for RASTER_reclass */
+static char *removespaces(char *str); /* for RASTER_reclass */
 
 /***************************************************************
  * Some rules for returning NOTICE or ERROR...
@@ -196,6 +202,9 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS);
 /* get quantiles */
 Datum RASTER_quantile(PG_FUNCTION_ARGS);
 
+/* reclassify specified bands of a raster */
+Datum RASTER_reclass(PG_FUNCTION_ARGS);
+
 
 /* Replace function taken from
  * http://ubuntuforums.org/showthread.php?s=aa6f015109fd7e4c7e30d2fd8b717497&t=141670&page=3
@@ -265,6 +274,117 @@ strtoupper(char * str)
 
     return str;
 
+}
+
+static char*
+chartrim(char *input, char *remove) {
+	char *start;
+	char *ptr;
+
+	if (!input) {
+		return NULL;
+	}
+	else if (!*input) {
+		return input;
+	}
+
+	start = (char *) palloc(sizeof(char) * strlen(input) + 1);
+	if (NULL == start) {
+		fprintf(stderr, "Not enough memory\n");
+		return NULL;
+	}
+	strcpy(start, input);
+
+	/* trim left */
+	while (strchr(remove, *start) != NULL) {
+		start++;
+	}
+
+	/* trim right */
+	ptr = start + strlen(start);
+	while (strchr(remove, *--ptr) != NULL);
+	*(++ptr) = '\0';
+
+	return start;
+}
+
+/* split a string based on a delimiter */
+static char**
+strsplit(const char *str, const char *delimiter, int *n) {
+	char *tmp = NULL;
+	char **rtn = NULL;
+	char *token = NULL;
+
+	if (!str)
+		return NULL;
+
+	/* copy str to tmp as strtok will mangle the string */
+	tmp = palloc(sizeof(char) * (strlen(str) + 1));
+	if (NULL == tmp) {
+		fprintf(stderr, "Not enough memory\n");
+		return NULL;
+	}
+	strcpy(tmp, str);
+
+	if (!strlen(tmp) || !delimiter || !strlen(delimiter)) {
+		*n = 1;
+		rtn = (char **) palloc(*n * sizeof(char *));
+		if (NULL == rtn) {
+			fprintf(stderr, "Not enough memory\n");
+			return NULL;
+		}
+		rtn[0] = (char *) palloc(sizeof(char) * (strlen(tmp) + 1));
+		if (NULL == rtn[0]) {
+			fprintf(stderr, "Not enough memory\n");
+			return NULL;
+		}
+		strcpy(rtn[0], tmp);
+		pfree(tmp);
+		return rtn;
+	}
+
+	*n = 0;
+	token = strtok(tmp, delimiter);
+	while (token != NULL) {
+		if (*n < 1) {
+			rtn = (char **) palloc(sizeof(char *));
+		}
+		else {
+			rtn = (char **) repalloc(rtn, (*n + 1) * sizeof(char *));
+		}
+		if (NULL == rtn) {
+			fprintf(stderr, "Not enough memory\n");
+			return NULL;
+		}
+
+		rtn[*n] = NULL;
+		rtn[*n] = (char *) palloc(sizeof(char) * (strlen(token) + 1));
+		if (NULL == rtn[*n]) {
+			fprintf(stderr, "Not enough memory\n");
+			return NULL;
+		}
+
+		strcpy(rtn[*n], token);
+		*n = *n + 1;
+
+		token = strtok(NULL, delimiter);
+	}
+
+	pfree(tmp);
+	return rtn;
+}
+
+static char *
+removespaces(char *str) {
+	char *rtn;
+
+	rtn = replace(str, " ", "", NULL);
+	rtn = replace(rtn, "\n", "", NULL);
+	rtn = replace(rtn, "\t", "", NULL);
+	rtn = replace(rtn, "\f", "", NULL);
+	rtn = replace(rtn, "\r", "", NULL);
+
+	return rtn;
 }
 
 PG_FUNCTION_INFO_V1(RASTER_lib_version);
@@ -3535,6 +3655,466 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		pfree(quant2);
 		SRF_RETURN_DONE(funcctx);
 	}
+}
+
+struct rt_reclassexpr_t {
+	struct rt_reclassrange {
+		double min;
+		double max;
+		int inc_min;
+		int inc_max;
+		int exc_min;
+		int exc_max;
+	} src, dst;
+};
+
+/**
+ * Reclassify the specified bands of the raster
+ */
+PG_FUNCTION_INFO_V1(RASTER_reclass);
+Datum RASTER_reclass(PG_FUNCTION_ARGS) {
+	rt_pgraster *pgrast = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	rt_raster raster = NULL;
+	rt_band band = NULL;
+	rt_band newband = NULL;
+	uint32_t numBands = 0;
+
+	ArrayType *array;
+	Oid etype;
+	Datum *e;
+	bool *nulls;
+	int16 typlen;
+	bool typbyval;
+	char typalign;
+	int ndims = 1;
+	int *dims;
+	int *lbs;
+	int n = 0;
+
+	int i = 0;
+	int j = 0;
+	int k = 0;
+
+	int a = 0;
+	int b = 0;
+	int c = 0;
+
+	rt_reclassexpr *exprset = NULL;
+	HeapTupleHeader tup;
+	bool isnull;
+	Datum tupv;
+	uint32_t nband = 0;
+	char *expr = NULL;
+	text *exprtext = NULL;
+	double val = 0;
+	char *junk = NULL;
+	int inc_val = 0;
+	int exc_val = 0;
+	char *pixeltype = NULL;
+	text *pixeltypetext = NULL;
+	rt_pixtype pixtype = PT_END;
+	double nodataval = 0;
+	bool hasnodata = FALSE;
+
+	char **comma_set = NULL;
+	int comma_n = 0;
+	char **colon_set = NULL;
+	int colon_n = 0;
+	char **dash_set = NULL;
+	int dash_n = 0;
+
+	POSTGIS_RT_DEBUG(3, "RASTER_reclass: Starting");
+
+	/* raster */
+	raster = rt_raster_deserialize(pgrast);
+	if (!raster) {
+		elog(ERROR, "RASTER_reclass: Could not deserialize raster");
+		PG_RETURN_NULL();
+	}
+	numBands = rt_raster_get_num_bands(raster);
+	POSTGIS_RT_DEBUGF(3, "RASTER_reclass: %d possible bands to be reclassified", n);
+
+	/* process set of reclassarg */
+	POSTGIS_RT_DEBUG(3, "RASTER_reclass: Processing Arg 1 (reclassargset)");
+	array = PG_GETARG_ARRAYTYPE_P(1);
+	etype = ARR_ELEMTYPE(array);
+	get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
+
+	ndims = ARR_NDIM(array);
+	dims = ARR_DIMS(array);
+	lbs = ARR_LBOUND(array);
+
+	deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
+		&nulls, &n);
+
+	if (!n) {
+		elog(NOTICE, "Invalid argument for reclassargset. Returning original raster");
+		rt_raster_destroy(raster);
+
+		SET_VARSIZE(pgrast, pgrast->size);
+		PG_RETURN_POINTER(pgrast);
+	}
+
+	/*
+		process each element of reclassarg
+		each element is the index of the band to process, the set
+			of reclass ranges and the output band's pixeltype
+	*/
+	for (i = 0; i < n; i++) {
+		if (nulls[i]) continue;
+
+		/* each element is a tuple */
+		tup = (HeapTupleHeader) DatumGetPointer(e[i]);
+		if (NULL == tup) {
+			elog(NOTICE, "Invalid argument for reclassargset. Returning original raster");
+			rt_raster_destroy(raster);
+
+			SET_VARSIZE(pgrast, pgrast->size);
+			PG_RETURN_POINTER(pgrast);
+		}
+
+		/* band index (1-based) */
+		tupv = GetAttributeByName(tup, "nband", &isnull);
+		if (isnull) {
+			elog(NOTICE, "Invalid argument for reclassargset. Missing value of nband for reclassarg of index %d . Returning original raster", i);
+			rt_raster_destroy(raster);
+
+			SET_VARSIZE(pgrast, pgrast->size);
+			PG_RETURN_POINTER(pgrast);
+		}
+		nband = DatumGetInt32(tupv);
+		POSTGIS_RT_DEBUGF(3, "RASTER_reclass: expression for band %d", nband);
+
+		/* valid band index? */
+		if (nband < 1 || nband > numBands) {
+			elog(NOTICE, "Invalid argument for reclassargset. Invalid band index (must use 1-based) for reclassarg of index %d . Returning original raster", i);
+			rt_raster_destroy(raster);
+
+			SET_VARSIZE(pgrast, pgrast->size);
+			PG_RETURN_POINTER(pgrast);
+		}
+
+		/* reclass expr */
+		tupv = GetAttributeByName(tup, "reclassexpr", &isnull);
+		if (isnull) {
+			elog(NOTICE, "Invalid argument for reclassargset. Missing value of reclassexpr for reclassarg of index %d . Returning original raster", i);
+			rt_raster_destroy(raster);
+
+			SET_VARSIZE(pgrast, pgrast->size);
+			PG_RETURN_POINTER(pgrast);
+		}
+		exprtext = (text *) DatumGetPointer(tupv);
+		if (NULL == exprtext) {
+			elog(NOTICE, "Invalid argument for reclassargset. Missing value of reclassexpr for reclassarg of index %d . Returning original raster", i);
+			rt_raster_destroy(raster);
+
+			SET_VARSIZE(pgrast, pgrast->size);
+			PG_RETURN_POINTER(pgrast);
+		}
+		expr = text_to_cstring(exprtext);
+		POSTGIS_RT_DEBUGF(5, "RASTER_reclass: expr (raw) %s", expr);
+		expr = removespaces(expr);
+		POSTGIS_RT_DEBUGF(5, "RASTER_reclass: expr (clean) %s", expr);
+
+		/* split string to its components */
+		/* comma (,) separating rangesets */
+		comma_set = strsplit(expr, ",", &comma_n);
+		if (comma_n < 1) {
+			elog(NOTICE, "Invalid argument for reclassargset. Invalid expression of reclassexpr for reclassarg of index %d . Returning original raster", i);
+			rt_raster_destroy(raster);
+
+			SET_VARSIZE(pgrast, pgrast->size);
+			PG_RETURN_POINTER(pgrast);
+		}
+
+		/* set of reclass expressions */
+		POSTGIS_RT_DEBUGF(5, "RASTER_reclass: %d possible expressions", comma_n);
+		exprset = palloc(comma_n * sizeof(rt_reclassexpr));
+
+		for (a = 0, j = 0; a < comma_n; a++) {
+			POSTGIS_RT_DEBUGF(5, "RASTER_reclass: map %s", comma_set[a]);
+
+			/* colon (:) separating range "src" and "dst" */
+			colon_set = strsplit(comma_set[a], ":", &colon_n);
+			if (colon_n != 2) {
+				elog(NOTICE, "Invalid argument for reclassargset. Invalid expression of reclassexpr for reclassarg of index %d . Returning original raster", i);
+				for (k = 0; k < j; k++) pfree(exprset[k]);
+				pfree(exprset);
+				rt_raster_destroy(raster);
+
+				SET_VARSIZE(pgrast, pgrast->size);
+				PG_RETURN_POINTER(pgrast);
+			}
+
+			/* allocate mem for reclass expression */
+			exprset[j] = palloc(sizeof(struct rt_reclassexpr_t));
+
+			for (b = 0; b < colon_n; b++) {
+				POSTGIS_RT_DEBUGF(5, "RASTER_reclass: range %s", colon_set[b]);
+
+				/* dash (-) separating "min" and "max" */
+				dash_set = strsplit(colon_set[b], "-", &dash_n);
+				if (dash_n < 1 || dash_n > 3) {
+					elog(NOTICE, "Invalid argument for reclassargset. Invalid expression of reclassexpr for reclassarg of index %d . Returning original raster", i);
+					for (k = 0; k < j; k++) pfree(exprset[k]);
+					pfree(exprset);
+					rt_raster_destroy(raster);
+
+					SET_VARSIZE(pgrast, pgrast->size);
+					PG_RETURN_POINTER(pgrast);
+				}
+
+				for (c = 0; c < dash_n; c++) {
+					/* need to handle: (-9999-100 -> "(", "9999", "100" */
+					if (
+						c < 1 && 
+						strlen(dash_set[c]) == 1 && (
+							strchr(dash_set[c], '(') != NULL ||
+							strchr(dash_set[c], '[') != NULL ||
+							strchr(dash_set[c], ')') != NULL ||
+							strchr(dash_set[c], ']') != NULL
+						)
+					) {
+						junk = palloc(sizeof(char) * (strlen(dash_set[c + 1]) + 2));
+						if (NULL == junk) {
+							elog(ERROR, "RASTER_reclass: Insufficient memory. Returning NULL");
+							for (k = 0; k <= j; k++) pfree(exprset[k]);
+							pfree(exprset);
+							rt_raster_destroy(raster);
+
+							PG_RETURN_NULL();
+						}
+
+						sprintf(junk, "%s%s", dash_set[c], dash_set[c + 1]);
+						c++;
+						dash_set[c] = repalloc(dash_set[c], sizeof(char) * (strlen(junk) + 1));
+						strcpy(dash_set[c], junk);
+						pfree(junk);
+
+						/* rebuild dash_set */
+						for (k = 1; k < dash_n; k++) {
+							dash_set[k - 1] = repalloc(dash_set[k - 1], (strlen(dash_set[k]) + 1) * sizeof(char));
+							strcpy(dash_set[k - 1], dash_set[k]);
+						}
+						dash_n--;
+						c--;
+						pfree(dash_set[dash_n]);
+						dash_set = repalloc(dash_set, sizeof(char *) * dash_n);
+					}
+
+					/* there shouldn't be more than two in dash_n */
+					if (c < 1 && dash_n > 2) {
+						elog(NOTICE, "Invalid argument for reclassargset. Invalid expression of reclassexpr for reclassarg of index %d . Returning original raster", i);
+						for (k = 0; k < j; k++) pfree(exprset[k]);
+						pfree(exprset);
+						rt_raster_destroy(raster);
+
+						SET_VARSIZE(pgrast, pgrast->size);
+						PG_RETURN_POINTER(pgrast);
+					}
+
+					/* check interval flags */
+					exc_val = 0;
+					inc_val = 1;
+					/* range */
+					if (dash_n != 1) {
+						/* min */
+						if (c < 1) {
+							if (
+								strchr(dash_set[c], ')') != NULL ||
+								strchr(dash_set[c], ']') != NULL
+							) {
+								exc_val = 1;
+								inc_val = 1;
+							}
+							else if (strchr(dash_set[c], '(') != NULL){
+								inc_val = 0;
+							}
+							else {
+								inc_val = 1;
+							}
+						}
+						/* max */
+						else {
+							if (
+								strrchr(dash_set[c], '(') != NULL ||
+								strrchr(dash_set[c], '[') != NULL
+							) {
+								exc_val = 1;
+								inc_val = 0;
+							}
+							else if (strrchr(dash_set[c], ']') != NULL) {
+								inc_val = 1;
+							}
+							else {
+								inc_val = 0;
+							}
+						}
+					}
+					POSTGIS_RT_DEBUGF(5, "RASTER_reclass: exc_val %d inc_val %d", exc_val, inc_val);
+
+					/* remove interval flags */
+					dash_set[c] = chartrim(dash_set[c], "()[]");
+					POSTGIS_RT_DEBUGF(5, "RASTER_reclass: min/max (char) %s", dash_set[c]);
+
+					/* value from string to double */
+					errno = 0;
+					val = strtod(dash_set[c], &junk);
+					if (errno != 0 || dash_set[c] == junk) {
+						elog(NOTICE, "Invalid argument for reclassargset. Invalid expression of reclassexpr for reclassarg of index %d . Returning original raster", i);
+						for (k = 0; k < j; k++) pfree(exprset[k]);
+						pfree(exprset);
+						rt_raster_destroy(raster);
+
+						SET_VARSIZE(pgrast, pgrast->size);
+						PG_RETURN_POINTER(pgrast);
+					}
+					POSTGIS_RT_DEBUGF(5, "RASTER_reclass: min/max (double) %f", val);
+
+					/* strsplit removes dash (a.k.a. negative sign), compare now to restore */
+					junk = strstr(colon_set[b], dash_set[c]);
+					/* not beginning of string */
+					if (junk != colon_set[b]) {
+						/* prior is a dash */
+						if (*(junk - 1) == '-') {
+							/* prior is beginning of string or prior - 1 char is dash, negative number */
+							if (
+								((junk - 1) == colon_set[b]) ||
+								(*(junk - 2) == '-') ||
+								(*(junk - 2) == '[') ||
+								(*(junk - 2) == '(')
+							) {
+								val *= -1.;
+							}
+						}
+					}
+					POSTGIS_RT_DEBUGF(5, "RASTER_reclass: min/max (double) %f", val);
+
+					/* src */
+					if (b < 1) {
+						/* singular value */
+						if (dash_n == 1) {
+							exprset[j]->src.exc_min = exprset[j]->src.exc_max = exc_val;
+							exprset[j]->src.inc_min = exprset[j]->src.inc_max = inc_val;
+							exprset[j]->src.min = exprset[j]->src.max = val;
+						}
+						/* min */
+						else if (c < 1) {
+							exprset[j]->src.exc_min = exc_val;
+							exprset[j]->src.inc_min = inc_val;
+							exprset[j]->src.min = val;
+						}
+						/* max */
+						else {
+							exprset[j]->src.exc_max = exc_val;
+							exprset[j]->src.inc_max = inc_val;
+							exprset[j]->src.max = val;
+						}
+					}
+					/* dst */
+					else {
+						/* singular value */
+						if (dash_n == 1)
+							exprset[j]->dst.min = exprset[j]->dst.max = val;
+						/* min */
+						else if (c < 1)
+							exprset[j]->dst.min = val;
+						/* max */
+						else
+							exprset[j]->dst.max = val;
+					}
+				}
+			}
+
+			POSTGIS_RT_DEBUGF(3, "RASTER_reclass: or: %f - %f nr: %f - %f"
+				, exprset[j]->src.min
+				, exprset[j]->src.max
+				, exprset[j]->dst.min
+				, exprset[j]->dst.max
+			);
+			j++;
+		}
+
+		/* pixel type */
+		tupv = GetAttributeByName(tup, "pixeltype", &isnull);
+		if (isnull) {
+			elog(NOTICE, "Invalid argument for reclassargset. Missing value of pixeltype for reclassarg of index %d . Returning original raster", i);
+			rt_raster_destroy(raster);
+
+			SET_VARSIZE(pgrast, pgrast->size);
+			PG_RETURN_POINTER(pgrast);
+		}
+		pixeltypetext = (text *) DatumGetPointer(tupv);
+		if (NULL == pixeltypetext) {
+			elog(NOTICE, "Invalid argument for reclassargset. Missing value of pixeltype for reclassarg of index %d . Returning original raster", i);
+			rt_raster_destroy(raster);
+
+			SET_VARSIZE(pgrast, pgrast->size);
+			PG_RETURN_POINTER(pgrast);
+		}
+		pixeltype = text_to_cstring(pixeltypetext);
+		POSTGIS_RT_DEBUGF(3, "RASTER_reclass: pixeltype %s", pixeltype);
+		pixtype = rt_pixtype_index_from_name(pixeltype);
+
+		/* nodata */
+		tupv = GetAttributeByName(tup, "nodataval", &isnull);
+		if (isnull) {
+			nodataval = 0;
+			hasnodata = FALSE;
+		}
+		else {
+			nodataval = DatumGetFloat8(tupv);
+			hasnodata = TRUE;
+		}
+		POSTGIS_RT_DEBUGF(3, "RASTER_reclass: nodataval %f", nodataval);
+		POSTGIS_RT_DEBUGF(3, "RASTER_reclass: hasnodata %d", hasnodata);
+
+		/* do reclass */
+		band = rt_raster_get_band(raster, nband - 1);
+		if (!band) {
+			elog(NOTICE, "Could not find raster band of index %d. Returning original raster", nband);
+			for (k = 0; k < j; k++) pfree(exprset[k]);
+			pfree(exprset);
+			rt_raster_destroy(raster);
+
+			SET_VARSIZE(pgrast, pgrast->size);
+			PG_RETURN_POINTER(pgrast);
+		}
+		newband = rt_band_reclass(band, pixtype, hasnodata, nodataval, exprset, j);
+		if (!newband) {
+			elog(ERROR, "RASTER_reclass: Could not reclassify raster band of index %d. Returning NULL", nband);
+			rt_raster_destroy(raster);
+			for (k = 0; k < j; k++) pfree(exprset[k]);
+			pfree(exprset);
+
+			PG_RETURN_NULL();
+		}
+
+		/* replace old band with new band */
+		if (rt_raster_replace_band(raster, newband, nband - 1) == 0) {
+			elog(ERROR, "RASTER_reclass: Could not replace raster band of index %d with reclassified band. Returning NULL", nband);
+			rt_band_destroy(newband);
+			rt_raster_destroy(raster);
+			for (k = 0; k < j; k++) pfree(exprset[k]);
+			pfree(exprset);
+
+			PG_RETURN_NULL();
+		}
+
+		/* free exprset */
+		for (k = 0; k < j; k++) pfree(exprset[k]);
+		pfree(exprset);
+	}
+
+	pgrast = rt_raster_serialize(raster);
+	rt_raster_destroy(raster);
+
+	if (!pgrast)
+		PG_RETURN_NULL();
+
+	POSTGIS_RT_DEBUG(3, "RASTER_reclass: Finished");
+	SET_VARSIZE(pgrast, pgrast->size);
+	PG_RETURN_POINTER(pgrast);
 }
 
 /* ---------------------------------------------------------------- */
