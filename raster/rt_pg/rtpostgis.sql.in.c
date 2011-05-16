@@ -636,6 +636,99 @@ CREATE OR REPLACE FUNCTION st_approxstddev(rastertable text, rastercolumn text, 
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
+-- ST_MinMax and ST_ApproxMinMax
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION st_minmax(rast raster, nband int, hasnodata boolean, OUT min double precision, OUT max double precision)
+	RETURNS record
+	AS $$ SELECT min, max FROM _st_summarystats($1, $2, $3, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_minmax(rast raster, nband int, OUT min double precision, OUT max double precision)
+	RETURNS record
+	AS $$ SELECT min, max FROM _st_summarystats($1, $2, FALSE, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_minmax(rast raster, hasnodata boolean, OUT min double precision, OUT max double precision)
+	RETURNS record
+	AS $$ SELECT min, max FROM _st_summarystats($1, 1, $2, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_minmax(rast raster, OUT min double precision, OUT max double precision)
+	RETURNS record
+	AS $$ SELECT min, max FROM _st_summarystats($1, 1, FALSE, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxminmax(rast raster, nband int, hasnodata boolean, sample_percent double precision, OUT min double precision, OUT max double precision)
+	RETURNS record
+	AS $$ SELECT min, max FROM _st_summarystats($1, $2, $3, $4) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxminmax(rast raster, nband int, sample_percent double precision, OUT min double precision, OUT max double precision)
+	RETURNS record
+	AS $$ SELECT min, max FROM _st_summarystats($1, $2, FALSE, $3) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxminmax(rast raster, hasnodata boolean, sample_percent double precision, OUT min double precision, OUT max double precision)
+	RETURNS record
+	AS $$ SELECT min, max FROM _st_summarystats($1, 1, $2, $3) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxminmax(rast raster, sample_percent double precision, OUT min double precision, OUT max double precision)
+	RETURNS record
+	AS $$ SELECT min, max FROM _st_summarystats($1, 1, FALSE, $2) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxminmax(rast raster, OUT min double precision, OUT max double precision)
+	RETURNS record
+	AS $$ SELECT min, max FROM _st_summarystats($1, 1, FALSE, 0.1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_minmax(rastertable text, rastercolumn text, nband int, hasnodata boolean, OUT min double precision, OUT max double precision)
+	RETURNS record
+	AS $$ SELECT min, max FROM _st_summarystats($1, $2, $3, $4, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_minmax(rastertable text, rastercolumn text, nband int, OUT min double precision, OUT max double precision)
+	RETURNS record
+	AS $$ SELECT min, max FROM _st_summarystats($1, $2, $3, FALSE, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_minmax(rastertable text, rastercolumn text, hasnodata boolean, OUT min double precision, OUT max double precision)
+	RETURNS record
+	AS $$ SELECT min, max FROM _st_summarystats($1, $2, 1, $3, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_minmax(rastertable text, rastercolumn text, OUT min double precision, OUT max double precision)
+	RETURNS record
+	AS $$ SELECT min, max FROM _st_summarystats($1, $2, 1, FALSE, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxminmax(rastertable text, rastercolumn text, nband int, hasnodata boolean, sample_percent double precision, OUT min double precision, OUT max double precision)
+	RETURNS record
+	AS $$ SELECT min, max FROM _st_summarystats($1, $2, $3, $4, $5) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxminmax(rastertable text, rastercolumn text, nband int, sample_percent double precision, OUT min double precision, OUT max double precision)
+	RETURNS record
+	AS $$ SELECT min, max FROM _st_summarystats($1, $2, $3, FALSE, $4) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxminmax(rastertable text, rastercolumn text, hasnodata boolean, sample_percent double precision, OUT min double precision, OUT max double precision)
+	RETURNS record
+	AS $$ SELECT min, max FROM _st_summarystats($1, $2, 1, $3, $4) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxminmax(rastertable text, rastercolumn text, sample_percent double precision, OUT min double precision, OUT max double precision)
+	RETURNS record
+	AS $$ SELECT min, max FROM _st_summarystats($1, $2, 1, FALSE, $3) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxminmax(rastertable text, rastercolumn text, OUT min double precision, OUT max double precision)
+	RETURNS record
+	AS $$ SELECT min, max FROM _st_summarystats($1, $2, 1, FALSE, 0.1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
 -- MapAlgebra
 -----------------------------------------------------------------------
 -- This function can not be STRICT, because nodatavalueexpr can be NULL (could be just '' though)
