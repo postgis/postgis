@@ -1082,6 +1082,167 @@ CREATE OR REPLACE FUNCTION st_asgdalraster(rast raster, format text)
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
+-- ST_AsTIFF
+-----------------------------------------------------------------------
+-- Cannot be strict as "options" and "srs" can be NULL
+CREATE OR REPLACE FUNCTION st_astiff(rast raster, options text[], srs text)
+	RETURNS bytea
+	AS $$
+	DECLARE
+		i int;
+		num_bands int;
+		nodata int;
+		last_nodata int;
+	BEGIN
+		num_bands := st_numbands($1);
+
+		-- TIFF only allows one NODATA value for ALL bands
+		FOR i IN 1..num_bands LOOP
+			nodata := st_bandnodatavalue($1, i);
+			IF last_nodata IS NULL THEN
+				last_nodata := nodata;
+			ELSEIF nodata != last_nodata THEN
+				RAISE NOTICE 'The TIFF format only permits one NODATA value for all bands.  The value used will be the last band with a NODATA value.';
+			END IF;
+		END LOOP;
+
+		RETURN st_asgdalraster($1, 'GTiff', $2, $3);
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_astiff(rast raster, options text[])
+	RETURNS bytea
+	AS $$ SELECT st_astiff($1, $2, st_srtext($1)) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_astiff(rast raster)
+	RETURNS bytea
+	AS $$ SELECT st_astiff($1, NULL::text[], st_srtext($1)) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[], options text[], srs text)
+	RETURNS bytea
+	AS $$ SELECT st_astiff(st_band($1, $2), $3, $4) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[], options text[])
+	RETURNS bytea
+	AS $$
+	BEGIN
+		rast := st_band($1, $2);
+		RETURN st_astiff(rast, $3, st_srtext(rast));
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[])
+	RETURNS bytea
+	AS $$
+	BEGIN
+		rast := st_band($1, $2);
+		RETURN st_astiff(rast, NULL::text[], st_srtext(rast));
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+-- Cannot be strict as "srs" can be NULL
+CREATE OR REPLACE FUNCTION st_astiff(rast raster, compression text, srs text)
+	RETURNS bytea
+	AS $$
+	DECLARE
+		c_type text;
+		c_level int;
+		i int;
+		num_bands int;
+		options text[];
+	BEGIN
+		compression := trim(both from upper(compression));
+
+		IF length(compression) > 0 THEN
+			-- JPEG
+			IF position('JPEG' in compression) != 0 THEN
+				c_type := 'JPEG';
+				c_level := substring(compression from '[0-9]+$');
+
+				IF c_level IS NOT NULL THEN
+					IF c_level > 100 THEN
+						c_level := 100;
+					ELSEIF c_level < 1 THEN
+						c_level := 1;
+					END IF;
+
+					options := array_append(options, 'JPEG_QUALITY=' || c_level);
+				END IF;
+
+				-- per band pixel type check
+				num_bands := st_numbands($1);
+				FOR i IN 1..num_bands LOOP
+					IF st_bandpixeltype($1, i) != '8BUI' THEN
+						RAISE EXCEPTION 'The pixel type of band % in the raster is not 8BUI.  JPEG compression can only be used with the 8BUI pixel type.', i;
+					END IF;
+				END LOOP;
+
+			-- DEFLATE
+			ELSEIF position('DEFLATE' in compression) != 0 THEN
+				c_type := 'DEFLATE';
+				c_level := substring(compression from '[0-9]+$');
+
+				IF c_level IS NOT NULL THEN
+					IF c_level > 9 THEN
+						c_level := 9;
+					ELSEIF c_level < 1 THEN
+						c_level := 1;
+					END IF;
+
+					options := array_append(options, 'ZLEVEL=' || c_level);
+				END IF;
+
+			ELSE
+				c_type := compression;
+
+				-- CCITT
+				IF position('CCITT' in compression) THEN
+					-- per band pixel type check
+					num_bands := st_numbands($1);
+					FOR i IN 1..num_bands LOOP
+						IF st_bandpixeltype($1, i) != '1BB' THEN
+							RAISE EXCEPTION 'The pixel type of band % in the raster is not 1BB.  CCITT compression can only be used with the 1BB pixel type.', i;
+						END IF;
+					END LOOP;
+				END IF;
+
+			END IF;
+
+			-- compression type check
+			IF ARRAY[c_type] <@ ARRAY['JPEG', 'LZW', 'PACKBITS', 'DEFLATE', 'CCITTRLE', 'CCITTFAX3', 'CCITTFAX4', 'NONE'] THEN
+				options := array_append(options, 'COMPRESS=' || c_type);
+			ELSE
+				RAISE NOTICE 'Unknown compression type: %.  The outputted TIFF will not be COMPRESSED.', c_type;
+			END IF;
+		END IF;
+
+		RETURN st_astiff($1, options, $4);
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_astiff(rast raster, compression text)
+	RETURNS bytea
+	AS $$ SELECT st_astiff($1, $2, st_srtext($1)) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[], compression text, srs text)
+	RETURNS bytea
+	AS $$ SELECT st_astiff(st_band($1, $2), $3, $4) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[], compression text)
+	RETURNS bytea
+	AS $$
+	BEGIN
+		rast := st_band($1, $2);
+		RETURN st_astiff(rast, $3, NULL::text[], st_srtext(rast));
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
 -- MapAlgebra
 -----------------------------------------------------------------------
 -- This function can not be STRICT, because nodatavalueexpr can be NULL (could be just '' though)

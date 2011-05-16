@@ -43,6 +43,7 @@ TEST_FUNC = \
 	rt_addband.sql \
 	rt_band.sql \
 	rt_asgdalraster.sql \
+	rt_astiff.sql \
 	$(NULL)
 
 TEST_PROPS = \

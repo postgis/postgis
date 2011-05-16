@@ -1,0 +1,10 @@
+2fd5de5f94416f2999fc24fbc3974a4b
+4af1ca04adf045690fb60764cc93de75
+81de10108dd8eede75ef47c8f6f09bc5
+915b9a5f0b1baea454eef06a2431891b
+NOTICE:  The TIFF format only permits one NODATA value for all bands.  The value used will be the last band with a NODATA value.
+81de10108dd8eede75ef47c8f6f09bc5
+NOTICE:  The TIFF format only permits one NODATA value for all bands.  The value used will be the last band with a NODATA value.
+NOTICE:  The TIFF format only permits one NODATA value for all bands.  The value used will be the last band with a NODATA value.
+8f6e8ae14b92e32d4cf70c85ef67252e
+ERROR:  The pixel type of band 1 in the raster is not 8BUI.  JPEG compression can only be used with the 8BUI pixel type.
