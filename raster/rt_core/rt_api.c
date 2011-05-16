@@ -127,6 +127,61 @@ rt_util_clamp_to_32F(double value) {
     return (float)fmin(fmax((value), -FLT_MAX), FLT_MAX);
 }
 
+/* quicksort */
+#define   swap(x, y)    { double t; t = x; x = y; y = t; }
+#define   order(x, y)   if (x > y) swap(x, y)
+
+static double pivot(double *left, double *right) {
+	double l, m, r, *p;
+
+	l = *left;
+	m = *(left + (right - left) / 2);
+	r = *right;
+
+	/* order */
+	order(l, m);
+	order(l, r);
+	order(m, r);
+
+	/* pivot is higher of two values */
+	if (l < m) return m;
+	if (m < r) return r;
+
+	/* find pivot that isn't left */
+	for (p = left + 1; p <= right; ++p) {
+		if (*p != *left)
+			return (*p < *left) ? *left : *p;
+	}
+
+	/* all values are same */
+	return -1;
+}
+
+static double *partition(double *left, double *right, double pivot) {
+	while (left <= right) {
+		while (*left < pivot) ++left;
+		while (*right >= pivot) --right;
+
+		if (left < right) {
+			swap(*left, *right);
+			++left;
+			--right;
+		}
+	}
+
+	return left;
+}
+
+static void quicksort(double *left, double *right) {
+	double p = pivot(left, right);
+	double *pos;
+
+	if (p != -1) {
+		pos = partition(left, right, p);
+		quicksort(left, pos - 1);
+		quicksort(pos, right);
+	}
+}
 
 /*- rt_context -------------------------------------------------------*/
 
@@ -1946,6 +2001,122 @@ rt_band_get_histogram(rt_bandstats stats,
 	*rtn_count = bin_count;
 	RASTER_DEBUG(3, "done");
 	return bins;
+}
+
+struct rt_quantile_t {
+	double quantile;
+	double value;
+};
+
+/**
+ * Compute the default set of or requested quantiles for a set of data
+ * the quantile formula used is same as Excel and R default method
+ * 
+ * @param stats: a populated stats struct for processing
+ * @param quantiles: the quantiles to be computed
+ * @param quantiles_count: the number of quantiles to be computed
+ * @param rtn_count: set to the number of quantiles being returned
+ *
+ * @return the default set of or requested quantiles for a band
+ */
+rt_quantile
+rt_band_get_quantiles(rt_bandstats stats,
+	double *quantiles, int quantiles_count, int *rtn_count) {
+	rt_quantile rtn;
+	int init_quantiles = 0;
+	int i = 0;
+	double h;
+	int hl;
+
+#if POSTGIS_DEBUG_LEVEL > 0
+	clock_t start, stop;
+	double elapsed = 0;
+#endif
+
+	RASTER_DEBUG(3, "starting"); 
+#if POSTGIS_DEBUG_LEVEL > 0
+	start = clock();
+#endif
+
+	assert(NULL != stats);
+
+	if (stats->count < 1 || NULL == stats->values) {
+		rterror("rt_util_get_quantile: rt_bandstats object has no value");
+		return NULL;
+	}
+
+	/* quantiles not provided */
+	if (NULL == quantiles) {
+		/* quantile count not specified, default to quartiles */
+		if (quantiles_count < 2)
+			quantiles_count = 5;
+
+		quantiles = rtalloc(sizeof(double) * quantiles_count);
+		init_quantiles = 1;
+		if (NULL == quantiles) {
+			rterror("rt_util_get_quantile: Unable to allocate memory for quantile input");
+			return NULL;
+		}
+
+		quantiles_count--;
+		for (i = 0; i <= quantiles_count; i++)
+			quantiles[i] = ((double) i) / quantiles_count;
+		quantiles_count++;
+	}
+
+	/* check quantiles */
+	for (i = 0; i < quantiles_count; i++) {
+		if (quantiles[i] < 0. || quantiles[i] > 1.) {
+			rterror("rt_util_get_quantile: Quantile value not between 0 and 1");
+			if (init_quantiles) rtdealloc(quantiles);
+			return NULL;
+		}
+	}
+	quicksort(quantiles, quantiles + quantiles_count - 1);
+
+	/* initialize rt_quantile */
+	rtn = rtalloc(sizeof(struct rt_quantile_t) * quantiles_count);
+	if (NULL == rtn) {
+		rterror("rt_util_get_quantile: Unable to allocate memory for quantile output");
+		if (init_quantiles) rtdealloc(quantiles);
+		return NULL;
+	}
+
+	/* sort values */
+	if (!stats->sorted) {
+		quicksort(stats->values, stats->values + stats->count - 1);
+		stats->sorted = 1;
+	}
+
+	/*
+		make quantiles
+
+		formula is that used in R (method 7) and Excel from
+			http://en.wikipedia.org/wiki/Quantile
+	*/
+	for (i = 0; i < quantiles_count; i++) {
+		rtn[i].quantile = quantiles[i];
+
+		h = ((stats->count - 1.) * quantiles[i]) + 1.;
+		hl = floor(h);
+
+		/* h greater than hl, do full equation */
+		if (h > hl)
+			rtn[i].value = stats->values[hl - 1] + ((h - hl) * (stats->values[hl] - stats->values[hl - 1]));
+		/* shortcut as second part of equation is zero */
+		else
+			rtn[i].value = stats->values[hl - 1];
+	}
+
+#if POSTGIS_DEBUG_LEVEL > 0
+	stop = clock();
+	elapsed = ((double) (stop - start)) / CLOCKS_PER_SEC;
+	RASTER_DEBUGF(3, "elapsed time = %0.4f", elapsed);
+#endif
+
+	*rtn_count = quantiles_count;
+	RASTER_DEBUG(3, "done");
+	return rtn;
 }
 
 /*- rt_raster --------------------------------------------------------*/

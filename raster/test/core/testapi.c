@@ -1009,10 +1009,16 @@ struct rt_histogram_t {
 	int inc_min;
 	int inc_max;
 };
+struct rt_quantile_t {
+	double quantile;
+	double value;
+};
 static void testBandStats() {
 	rt_bandstats stats = NULL;
 	rt_histogram histogram = NULL;
 	double bin_width[] = {10000};
+	double quantiles[] = {0.1, 0.3, 0.5, 0.7, 0.9};
+	rt_quantile quantile = NULL;
 	int count = 0;
 
 	rt_raster raster;
@@ -1045,6 +1051,10 @@ static void testBandStats() {
 	CHECK_EQUALS(stats->min, 1);
 	CHECK_EQUALS(stats->max, 19998);
 
+	quantile = (rt_quantile) rt_band_get_quantiles(stats, NULL, 0, &count);
+	CHECK(quantile);
+	rtdealloc(quantile);
+
 	histogram = (rt_histogram) rt_band_get_histogram(stats, 0, NULL, 0, 0, &count);
 	CHECK(histogram);
 	rtdealloc(histogram);
@@ -1062,6 +1072,15 @@ static void testBandStats() {
 
 	stats = (rt_bandstats) rt_band_get_summary_stats(band, 0, 0.1, 1);
 	CHECK(stats);
+
+	quantile = (rt_quantile) rt_band_get_quantiles(stats, NULL, 0, &count);
+	CHECK(quantile);
+	rtdealloc(quantile);
+
+	quantile = (rt_quantile) rt_band_get_quantiles(stats, quantiles, 5, &count);
+	CHECK(quantile);
+	CHECK((count == 5));
+	rtdealloc(quantile);
 
 	histogram = (rt_histogram) rt_band_get_histogram(stats, 0, NULL, 0, 0, &count);
 	CHECK(histogram);
@@ -1087,11 +1106,19 @@ static void testBandStats() {
 	CHECK_EQUALS(stats->min, 0);
 	CHECK_EQUALS(stats->max, 19998);
 
+	quantile = (rt_quantile) rt_band_get_quantiles(stats, NULL, 0, &count);
+	CHECK(quantile);
+	rtdealloc(quantile);
+
 	rtdealloc(stats->values);
 	rtdealloc(stats);
 
 	stats = (rt_bandstats) rt_band_get_summary_stats(band, 1, 0.1, 1);
 	CHECK(stats);
+
+	quantile = (rt_quantile) rt_band_get_quantiles(stats, NULL, 0, &count);
+	CHECK(quantile);
+	rtdealloc(quantile);
 
 	rtdealloc(stats->values);
 	rtdealloc(stats);

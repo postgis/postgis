@@ -474,6 +474,21 @@ rt_histogram rt_band_get_histogram(rt_bandstats stats,
 	int bin_count, double *bin_widths, int bin_widths_count,
 	int right, int *rtn_count);
 
+/**
+ * Compute the default set of or requested quantiles for a set of data
+ * the quantile formula used is same as Excel and R default method
+ *
+ * @param stats: a populated stats struct for processing
+ * @param quantiles: the quantiles to be computed
+ * @param quantiles_count: the number of quantiles to be computed
+ * @param rtn_count: the number of quantiles being returned
+ *
+ * @return the default set of or requested quantiles for a band
+ */
+typedef struct rt_quantile_t* rt_quantile;
+rt_quantile rt_band_get_quantiles(rt_bandstats stats,
+	double *quantiles, int quantiles_count, int *rtn_count);
+
 
 /*- rt_raster --------------------------------------------------------*/
 

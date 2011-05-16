@@ -850,6 +850,130 @@ CREATE OR REPLACE FUNCTION st_approxhistogram(rast raster, nband int, sample_per
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
+-- ST_Quantile and ST_ApproxQuantile
+-----------------------------------------------------------------------
+CREATE TYPE quantile AS (
+	quantile double precision,
+	value double precision
+);
+
+-- Cannot be strict as "quantile" can be NULL
+CREATE OR REPLACE FUNCTION _st_quantile(rast raster, nband int, hasnodata boolean, sample_percent double precision, quantiles double precision[])
+	RETURNS SETOF quantile
+	AS 'MODULE_PATHNAME','RASTER_quantile'
+	LANGUAGE 'C' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_quantile(rast raster, nband int, hasnodata boolean, quantiles double precision[])
+	RETURNS SETOF quantile
+	AS $$ SELECT quantile, value FROM _st_quantile($1, $2, $3, 1, $4) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_quantile(rast raster, nband int, quantiles double precision[])
+	RETURNS SETOF quantile
+	AS $$ SELECT quantile, value FROM _st_quantile($1, $2, FALSE, 1, $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_quantile(rast raster, nband int, hasnodata boolean)
+	RETURNS SETOF quantile
+	AS $$ SELECT quantile, value FROM _st_quantile($1, $2, $3, 1, NULL) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_quantile(rast raster, nband int)
+	RETURNS SETOF quantile
+	AS $$ SELECT quantile, value FROM _st_quantile($1, $2, FALSE, 1, NULL) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_quantile(rast raster, quantiles double precision[])
+	RETURNS SETOF quantile
+	AS $$ SELECT quantile, value FROM _st_quantile($1, 1, FALSE, 1, $2) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_quantile(rast raster)
+	RETURNS SETOF quantile
+	AS $$ SELECT quantile, value FROM _st_quantile($1, 1, FALSE, 1, NULL) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_quantile(rast raster, nband int, hasnodata boolean, quantile double precision)
+	RETURNS quantile
+	AS $$ SELECT quantile, value FROM _st_quantile($1, $2, $3, 1, ARRAY[$4]::double precision[]) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_quantile(rast raster, nband int, quantile double precision)
+	RETURNS quantile
+	AS $$ SELECT quantile, value FROM _st_quantile($1, $2, FALSE, 1, ARRAY[$3]::double precision[]) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_quantile(rast raster, hasnodata boolean, quantile double precision)
+	RETURNS quantile
+	AS $$ SELECT quantile, value FROM _st_quantile($1, 1, $2, 1, ARRAY[$3]::double precision[]) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_quantile(rast raster, quantile double precision)
+	RETURNS quantile
+	AS $$ SELECT quantile, value FROM _st_quantile($1, 1, FALSE, 1, ARRAY[$2]::double precision[]) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, nband int, hasnodata boolean, sample_percent double precision, quantiles double precision[])
+	RETURNS SETOF quantile
+	AS $$ SELECT quantile, value FROM _st_quantile($1, $2, $3, $4, $5) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, nband int, sample_percent double precision, quantiles double precision[])
+	RETURNS SETOF quantile
+	AS $$ SELECT quantile, value FROM _st_quantile($1, $2, FALSE, $3, $4) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, nband int, sample_percent double precision)
+	RETURNS SETOF quantile
+	AS $$ SELECT quantile, value FROM _st_quantile($1, $2, FALSE, $3, NULL) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, sample_percent double precision, quantiles double precision[])
+	RETURNS SETOF quantile
+	AS $$ SELECT quantile, value FROM _st_quantile($1, 1, FALSE, $2, $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, sample_percent double precision)
+	RETURNS SETOF quantile
+	AS $$ SELECT quantile, value FROM _st_quantile($1, 1, FALSE, $2, NULL) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, quantiles double precision[])
+	RETURNS SETOF quantile
+	AS $$ SELECT quantile, value FROM _st_quantile($1, 1, FALSE, 0.1, $2) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, nband int)
+	RETURNS SETOF quantile
+	AS $$ SELECT quantile, value FROM _st_quantile($1, $2, FALSE, 0.1, NULL) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxquantile(rast raster)
+	RETURNS SETOF quantile
+	AS $$ SELECT quantile, value FROM _st_quantile($1, 1, FALSE, 0.1, NULL) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, nband int, hasnodata boolean, sample_percent double precision, quantile double precision)
+	RETURNS quantile
+	AS $$ SELECT quantile, value FROM _st_quantile($1, $2, $3, $4, ARRAY[$5]::double precision[]) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, nband int, sample_percent double precision, quantile double precision)
+	RETURNS quantile
+	AS $$ SELECT quantile, value FROM _st_quantile($1, $2, FALSE, $3, ARRAY[$4]::double precision[]) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, sample_percent double precision, quantile double precision)
+	RETURNS quantile
+	AS $$ SELECT quantile, value FROM _st_quantile($1, 1, FALSE, $2, ARRAY[$3]::double precision[]) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, hasnodata boolean, quantile double precision)
+	RETURNS quantile
+	AS $$ SELECT quantile, value FROM _st_quantile($1, 1, $2, 1, ARRAY[$3]::double precision[]) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
 -- MapAlgebra
 -----------------------------------------------------------------------
 -- This function can not be STRICT, because nodatavalueexpr can be NULL (could be just '' though)
