@@ -147,6 +147,6 @@ BEGIN
   RETURN ret;
 END
 $$
-LANGUAGE 'plpgsql' VOLATILE STRICT;
+LANGUAGE 'plpgsql' STABLE STRICT;
 
 --} TopologySummary

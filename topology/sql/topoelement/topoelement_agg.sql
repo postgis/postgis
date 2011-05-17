@@ -41,7 +41,7 @@ $$
 			topology.TopoElementArray($1::int[][]||$2::int[])
 		END;
 $$
-LANGUAGE 'sql';
+LANGUAGE 'sql' IMMUTABLE;
 --} TopoElementArray_append
 
 --{

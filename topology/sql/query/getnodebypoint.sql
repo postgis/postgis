@@ -84,6 +84,6 @@ BEGIN
 	
 END
 $$
-LANGUAGE 'plpgsql' STRICT;
+LANGUAGE 'plpgsql' STABLE STRICT;
 --} GetNodeByPoint
 
