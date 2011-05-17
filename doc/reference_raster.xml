@@ -3025,6 +3025,83 @@ FROM dummy_rast WHERE rid=1;
 			</refsection>
 		</refentry>
 		
+		<refentry id="RT_ST_AsGDALRaster">
+			<refnamediv>
+				<refname>ST_AsGDALRaster</refname>
+				<refpurpose>Return the raster tile in the designated GDAL Raster format.  Raster formats are one of those supported by your compiled library. Use ST_GDALRasters() to get a list of formats supported by your library.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>bytea <function>ST_AsGDALRaster</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>format</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>bytea <function>ST_AsGDALRaster</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>format</parameter></paramdef>
+					<paramdef><type>text[] </type> <parameter>options</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>bytea <function>ST_AsGDALRaster</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>format</parameter></paramdef>
+					<paramdef><type>text[] </type> <parameter>options</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>srs</parameter></paramdef>
+				  </funcprototype>
+				  
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the raster tile in the designated format. Arguments are itemized below:</para>
+                <itemizedlist>
+                    <listitem>
+                       <varname>format</varname> format to output.  This is dependent on the drivers compiled in your libgdal library.  Generally available are 'JPEG', 'GTIff', 'PNG'. Use ST_GDALRasters() to get a list of formats supported by your library.
+                    </listitem>
+                   <listitem><varname>options</varname> text array of GDAL options. Valid options are dependent on the format. Refer to <ulink url="http://www.gdal.org/frmt_various.html">GDAL Raster format options</ulink> for more details.</listitem>
+                   <listitem><varname>srs</varname> The proj4text or srtext (from spatial_ref_sys) to embed in the image</listitem>
+                </itemizedlist>
+                <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
+			</refsection>
+				
+			<refsection>
+				<title>JPEG Output Examples</title>
+				
+					<programlisting>SELECT ST_AsGDALRaster(rast, 'JPEG') As rastjpg
+FROM dummy_rast WHERE rid=1;
+
+SELECT ST_AsGDALRaster(rast, 'JPEG', ARRAY!['QUALITY=50']) As rastjpg
+FROM dummy_rast WHERE rid=2;
+				</programlisting>
+			
+			</refsection>
+			
+			<refsection>
+					<title>GTIFF Output Examples</title>
+				
+					<programlisting>SELECT ST_AsGDALRaster(rast, 'GTiff') As rastjpg
+FROM dummy_rast WHERE rid=2;
+
+SELECT ST_AsGDALRaster(rast, 'GTiff',  
+  ARRAY['COMPRESS=JPEG', 'JPEG_QUALITY=90'], 
+  '+proj=aea +lat_1=34 +lat_2=40.5 +lat_0=0 +lon_0=-120 +x_0=0 +y_0=-4000000 +ellps=GRS80 +datum=NAD83 +units=m +no_defs') As rasttiff
+FROM dummy_rast WHERE rid=2;
+				</programlisting>
+			
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para></para>
+			</refsection>
+		</refentry>
+		
 		<refentry id="RT_ST_AsPNG">
 			<refnamediv>
 				<refname>ST_AsPNG</refname>
@@ -3091,8 +3168,8 @@ FROM dummy_rast WHERE rid=1;
                         <varname>nbands</varname> is an array of bands to export (note that max is 3 for PNG) and the order of the bands is RGB. e.g ARRAY[3,2,1] means map band 3 to Red, band 2 to greeen and band 1 to blue
                     </listitem>
                    <listitem><varname>compression</varname> number from 1 to 9.  The higher the number the greater the compression.</listitem>
-                   <listitem><varname>options</varname> text Array of GDAL options for PNG valid one is only ZLEVEL (amount of time to spend on compression -- default 6) e.g. ARRAY['ZLEVEL=9']. 
-                    WORLDFILE is not allowed since the function would have to output two outputs. Refer to <ulink url="http://www.gdal.org/frmt_various.html">GDAL Raster format options</ulink> form more details.
+                   <listitem><varname>options</varname> text Array of GDAL options. For PNG valid one is only ZLEVEL (amount of time to spend on compression -- default 6) e.g. ARRAY['ZLEVEL=9']. 
+                    WORLDFILE is not allowed since the function would have to output two outputs. Refer to <ulink url="http://www.gdal.org/frmt_various.html">GDAL Raster format options</ulink> for more details.
                    </listitem>
                 </itemizedlist>
                 <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
@@ -3102,7 +3179,7 @@ FROM dummy_rast WHERE rid=1;
 					<title>Examples</title>
 				
 					<programlisting>SELECT ST_AsPNG(rast) As rastpng
-FROM dummy_rast WHERE rid=1;
+FROM dummy_rast WHERE rid=2;
 				</programlisting>
 			
 			</refsection>
