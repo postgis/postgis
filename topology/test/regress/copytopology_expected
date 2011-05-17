@@ -1,6 +1,6 @@
 BEGIN
 t
-8
+9
 22
 26
 COMMIT
@@ -21,7 +21,7 @@ layers|3
 3|CITY_data_UP_down|LAYER3|
 node_node_id_seq|22|1|1|9223372036854775807|1|1|0|f|t
 edge_data_edge_id_seq|26|1|1|9223372036854775807|1|1|0|f|t
-face_face_id_seq|8|1|1|9223372036854775807|1|1|0|f|t
+face_face_id_seq|9|1|1|9223372036854775807|1|1|0|f|t
 layer_id_seq|1|1|1|9223372036854775807|1|1|1|f|f
 topogeo_s_1|9|1|1|9223372036854775807|1|1|0|f|t
 topogeo_s_2|8|1|1|9223372036854775807|1|1|0|f|t
