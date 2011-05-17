@@ -63,7 +63,7 @@ BEGIN
   RETURN gml;
 END
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 --} _AsGMLNode(id, point, nsprefix, precision, options, idprefix, gmlVersion)
 
 --{
@@ -158,7 +158,7 @@ BEGIN
   RETURN gml;
 END
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE; -- writes into visitedTable
 --} _AsGMLEdge(id, start_node, end_node, line, visitedTable, nsprefix, precision, options, idprefix, gmlver)
 
 --{
@@ -265,7 +265,7 @@ BEGIN
   RETURN gml;
 END
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE; -- writes into visited table
 --} _AsGMLFace(toponame, id, visitedTable, nsprefix, precision, options, idprefix, gmlver)
 
 --{
@@ -463,7 +463,7 @@ BEGIN
 	
 END
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE; -- writes into visited table
 --} AsGML(TopoGeometry, nsprefix, precision, options, visitedTable, idprefix, gmlver)
 
 --{
@@ -481,7 +481,7 @@ AS
 $$
  SELECT topology.AsGML($1, $2, $3, $4, $5, $6, 3);
 $$
-LANGUAGE 'sql';
+LANGUAGE 'sql' VOLATILE; -- writes into visited table
 --} AsGML(TopoGeometry, nsprefix, precision, options, visitedTable, idprefix)
 
 --{
@@ -496,7 +496,7 @@ CREATE OR REPLACE FUNCTION topology.AsGML(tg topology.TopoGeometry,
   RETURNS text AS
 $$
  SELECT topology.AsGML($1, $2, $3, $4, $5, '');
-$$ LANGUAGE 'sql';
+$$ LANGUAGE 'sql' VOLATILE; -- writes into visited table
 -- } AsGML(TopoGeometry, nsprefix, precision, options)
 
 
@@ -512,7 +512,7 @@ CREATE OR REPLACE FUNCTION topology.AsGML(tg topology.TopoGeometry,
   RETURNS text AS
 $$
  SELECT topology.AsGML($1, $2, $3, $4, NULL);
-$$ LANGUAGE 'sql';
+$$ LANGUAGE 'sql' STABLE; -- does NOT write into visited table 
 -- } AsGML(TopoGeometry, nsprefix, precision, options)
 
 --{
@@ -526,7 +526,7 @@ CREATE OR REPLACE FUNCTION topology.AsGML(tg topology.TopoGeometry, nsprefix tex
   RETURNS text AS
 $$
  SELECT topology.AsGML($1, $2, 15, 1, NULL);
-$$ LANGUAGE 'sql';
+$$ LANGUAGE 'sql' STABLE; -- does NOT write into visited table 
 -- } AsGML(TopoGeometry, nsprefix)
 
 --{
@@ -540,7 +540,7 @@ CREATE OR REPLACE FUNCTION topology.AsGML(tg topology.TopoGeometry, visitedTable
   RETURNS text AS
 $$
  SELECT topology.AsGML($1, 'gml', 15, 1, $2);
-$$ LANGUAGE 'sql';
+$$ LANGUAGE 'sql' VOLATILE; -- writes into visited table
 -- } AsGML(TopoGeometry, visited_table)
 
 --{
@@ -554,7 +554,7 @@ CREATE OR REPLACE FUNCTION topology.AsGML(tg topology.TopoGeometry, visitedTable
   RETURNS text AS
 $$
  SELECT topology.AsGML($1, $3, 15, 1, $2);
-$$ LANGUAGE 'sql';
+$$ LANGUAGE 'sql' VOLATILE; -- writes into visited table
 -- } AsGML(TopoGeometry, visited_table, nsprefix)
 
 
@@ -569,6 +569,6 @@ CREATE OR REPLACE FUNCTION topology.AsGML(tg topology.TopoGeometry)
   RETURNS text AS
 $$
  SELECT topology.AsGML($1, 'gml');
-$$ LANGUAGE 'sql';
+$$ LANGUAGE 'sql' STABLE; -- does NOT write into visited table
 -- } AsGML(TopoGeometry)
 
