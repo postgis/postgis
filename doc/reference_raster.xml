@@ -3258,7 +3258,7 @@ FROM dummy_rast WHERE rid=2;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the selected bands of the raster as a single Portable Network Graphics Image (PNG).  There are many variants of the function with many options.  These are itemized below:</para>
+				<para>Returns the selected bands of the raster as a single Portable Network Graphics Image (PNG).  Use <xref linkend="RT_ST_AsGDALRaster" /> if you need to export as less common raster types. There are many variants of the function with many options.  These are itemized below:</para>
                 <itemizedlist>
                     <listitem>
                        <varname>nband</varname> is for single band exports.
@@ -3286,7 +3286,7 @@ FROM dummy_rast WHERE rid=2;
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_GDALDrivers" /></para>
+				<para><xref linkend="RT_ST_GDALDrivers" />, <xref linkend="RT_ST_AsGDALRaster" /></para>
 			</refsection>
 		</refentry>
 	</sect1>
