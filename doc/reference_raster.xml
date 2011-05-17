@@ -3023,6 +3023,88 @@ FROM dummy_rast WHERE rid=1;
 				</programlisting>
 			
 			</refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_AsPNG">
+			<refnamediv>
+				<refname>ST_AsPNG</refname>
+				<refpurpose>Return the raster tile selected bands as a single portable network graphics (PNG) image (byte array).  If no band is specified, band 1 is assumed.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>text[] </type> <parameter>options</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>compression</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+					<paramdef><type>text[] </type> <parameter>options</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer[] </type> <parameter>nbands</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer[] </type> <parameter>nbands</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>compression</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer[] </type> <parameter>nbands</parameter></paramdef>
+					<paramdef><type>text[] </type> <parameter>options</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the selected bands of the raster as a single Portable Network Graphics Image (PNG).  There are many variants of the function with many options.  These are itemized below:</para>
+                <itemizedlist>
+                    <listitem>
+                       <varname>nband</varname> is for single band exports.
+                    </listitem>
+                    <listitem>
+                        <varname>nbands</varname> is an array of bands to export (note that max is 3 for PNG) and the order of the bands is RGB. e.g ARRAY[3,2,1] means map band 3 to Red, band 2 to greeen and band 1 to blue
+                    </listitem>
+                   <listitem><varname>compression</varname> number from 1 to 9.  The higher the number the greater the compression.</listitem>
+                   <listitem><varname>options</varname> text Array of GDAL options for PNG valid one is only ZLEVEL (amount of time to spend on compression -- default 6) e.g. ARRAY['ZLEVEL=9']. 
+                    WORLDFILE is not allowed since the function would have to output two outputs. Refer to <ulink url="http://www.gdal.org/frmt_various.html">GDAL Raster format options</ulink> form more details.
+                   </listitem>
+                </itemizedlist>
+			</refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>SELECT ST_AsPNG(rast) As rastpng
+FROM dummy_rast WHERE rid=1;
+				</programlisting>
+			
+			</refsection>
 		
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
