@@ -1016,7 +1016,7 @@ struct rt_quantile_t {
 static void testBandStats() {
 	rt_bandstats stats = NULL;
 	rt_histogram histogram = NULL;
-	double bin_width[] = {10000};
+	double bin_width[] = {100};
 	double quantiles[] = {0.1, 0.3, 0.5, 0.7, 0.9};
 	rt_quantile quantile = NULL;
 	int count = 0;
@@ -1024,9 +1024,9 @@ static void testBandStats() {
 	rt_raster raster;
 	rt_band band;
 	uint32_t x;
-	uint32_t xmax = 10000;
+	uint32_t xmax = 100;
 	uint32_t y;
-	uint32_t ymax = 10000;
+	uint32_t ymax = 100;
 	double nodata;
 	int rtn;
 
@@ -1049,7 +1049,7 @@ static void testBandStats() {
 	stats = (rt_bandstats) rt_band_get_summary_stats(band, 1, 0, 1);
 	CHECK(stats);
 	CHECK_EQUALS(stats->min, 1);
-	CHECK_EQUALS(stats->max, 19998);
+	CHECK_EQUALS(stats->max, 198);
 
 	quantile = (rt_quantile) rt_band_get_quantiles(stats, NULL, 0, &count);
 	CHECK(quantile);
@@ -1104,7 +1104,7 @@ static void testBandStats() {
 	stats = (rt_bandstats) rt_band_get_summary_stats(band, 0, 0, 1);
 	CHECK(stats);
 	CHECK_EQUALS(stats->min, 0);
-	CHECK_EQUALS(stats->max, 19998);
+	CHECK_EQUALS(stats->max, 198);
 
 	quantile = (rt_quantile) rt_band_get_quantiles(stats, NULL, 0, &count);
 	CHECK(quantile);
