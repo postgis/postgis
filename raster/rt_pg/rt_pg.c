@@ -60,6 +60,10 @@
 
 #define POSTGIS_RASTER_WARN_ON_TRUNCATION
 
+/* maximum char length required to hold any double or long long value */
+#define MAX_DBL_CHARLEN (3 + DBL_MANT_DIG - DBL_MIN_EXP)
+#define MAX_INT_CHARLEN 32
+
 /*
  * This is required for builds against pgsql 8.2
  */
@@ -3059,49 +3063,39 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 		 */
 		values = (char **) palloc(5 * sizeof(char *));
 
-		values[0] = (char *) palloc(
-			(snprintf(NULL, 0, "%d", stats2[call_cntr].count) + 1) * sizeof(char)
-		);
-		values[1] = (char *) palloc(
-			(snprintf(NULL, 0, "%f", stats2[call_cntr].mean) + 1) * sizeof(char)
-		);
-		values[2] = (char *) palloc(
-			(snprintf(NULL, 0, "%f", stats2[call_cntr].stddev) + 1) * sizeof(char)
-		);
-		values[3] = (char *) palloc(
-			(snprintf(NULL, 0, "%f", stats2[call_cntr].min) + 1) * sizeof(char)
-		);
-		values[4] = (char *) palloc(
-			(snprintf(NULL, 0, "%f", stats2[call_cntr].max) + 1) * sizeof(char)
-		);
+		values[0] = (char *) palloc(sizeof(char) * (MAX_INT_CHARLEN + 1));
+		values[1] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
+		values[2] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
+		values[3] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
+		values[4] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
 
 		snprintf(
 			values[0],
-			(snprintf(NULL, 0, "%d", stats2[call_cntr].count) + 1) * sizeof(char),
+			sizeof(char) * (MAX_INT_CHARLEN + 1),
 			"%d",
 			stats2[call_cntr].count
 		);
 		snprintf(
 			values[1],
-			(snprintf(NULL, 0, "%f", stats2[call_cntr].mean) + 1) * sizeof(char),
+			sizeof(char) * (MAX_DBL_CHARLEN + 1),
 			"%f",
 			stats2[call_cntr].mean
 		);
 		snprintf(
 			values[2],
-			(snprintf(NULL, 0, "%f", stats2[call_cntr].stddev) + 1) * sizeof(char),
+			sizeof(char) * (MAX_DBL_CHARLEN + 1),
 			"%f",
 			stats2[call_cntr].stddev
 		);
 		snprintf(
 			values[3],
-			(snprintf(NULL, 0, "%f", stats2[call_cntr].min) + 1) * sizeof(char),
+			sizeof(char) * (MAX_DBL_CHARLEN + 1),
 			"%f",
 			stats2[call_cntr].min
 		);
 		snprintf(
 			values[4],
-			(snprintf(NULL, 0, "%f", stats2[call_cntr].max) + 1) * sizeof(char),
+			sizeof(char) * (MAX_DBL_CHARLEN + 1),
 			"%f",
 			stats2[call_cntr].max
 		);
@@ -3369,40 +3363,32 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		 */
 		values = (char **) palloc(4 * sizeof(char *));
 
-		values[0] = (char *) palloc(
-			(snprintf(NULL, 0, "%f", hist2[call_cntr].min) + 1) * sizeof(char)
-		);
-		values[1] = (char *) palloc(
-			(snprintf(NULL, 0, "%f", hist2[call_cntr].max) + 1) * sizeof(char)
-		);
-		values[2] = (char *) palloc(
-			(snprintf(NULL, 0, "%d", hist2[call_cntr].count) + 1) * sizeof(char)
-		);
-		values[3] = (char *) palloc(
-			(snprintf(NULL, 0, "%f", hist2[call_cntr].proportion) + 1) * sizeof(char)
-		);
+		values[0] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
+		values[1] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
+		values[2] = (char *) palloc(sizeof(char) * (MAX_INT_CHARLEN + 1));
+		values[3] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
 
 		snprintf(
 			values[0],
-			(snprintf(NULL, 0, "%f", hist2[call_cntr].min) + 1) * sizeof(char),
+			sizeof(char) * (MAX_DBL_CHARLEN + 1),
 			"%f",
 			hist2[call_cntr].min
 		);
 		snprintf(
 			values[1],
-			(snprintf(NULL, 0, "%f", hist2[call_cntr].max) + 1) * sizeof(char),
+			sizeof(char) * (MAX_DBL_CHARLEN + 1),
 			"%f",
 			hist2[call_cntr].max
 		);
 		snprintf(
 			values[2],
-			(snprintf(NULL, 0, "%d", hist2[call_cntr].count) + 1) * sizeof(char),
+			sizeof(char) * (MAX_INT_CHARLEN + 1),
 			"%d",
 			hist2[call_cntr].count
 		);
 		snprintf(
 			values[3],
-			(snprintf(NULL, 0, "%f", hist2[call_cntr].proportion) + 1) * sizeof(char),
+			sizeof(char) * (MAX_DBL_CHARLEN + 1),
 			"%f",
 			hist2[call_cntr].proportion
 		);
@@ -3655,22 +3641,18 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		 */
 		values = (char **) palloc(2 * sizeof(char *));
 
-		values[0] = (char *) palloc(
-			(snprintf(NULL, 0, "%f", quant2[call_cntr].quantile) + 1) * sizeof(char)
-		);
-		values[1] = (char *) palloc(
-			(snprintf(NULL, 0, "%f", quant2[call_cntr].value) + 1) * sizeof(char)
-		);
+		values[0] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
+		values[1] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
 
 		snprintf(
 			values[0],
-			(snprintf(NULL, 0, "%f", quant2[call_cntr].quantile) + 1) * sizeof(char),
+			sizeof(char) * (MAX_DBL_CHARLEN + 1),
 			"%f",
 			quant2[call_cntr].quantile
 		);
 		snprintf(
 			values[1],
-			(snprintf(NULL, 0, "%f", quant2[call_cntr].value) + 1) * sizeof(char),
+			sizeof(char) * (MAX_DBL_CHARLEN + 1),
 			"%f",
 			quant2[call_cntr].value
 		);
@@ -4413,9 +4395,7 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 		 */
 		values = (char **) palloc(4 * sizeof(char *));
 
-		values[0] = (char *) palloc(
-			(snprintf(NULL, 0, "%d", drv_set2[call_cntr].idx) + 1) * sizeof(char)
-		);
+		values[0] = (char *) palloc(sizeof(char) * (MAX_INT_CHARLEN + 1));
 		values[1] = (char *) palloc(
 			(strlen(drv_set2[call_cntr].short_name) + 1) * sizeof(char)
 		);
@@ -4428,7 +4408,7 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 
 		snprintf(
 			values[0],
-			(snprintf(NULL, 0, "%d", drv_set2[call_cntr].idx) + 1) * sizeof(char),
+			sizeof(char) * (MAX_INT_CHARLEN + 1),
 			"%d",
 			drv_set2[call_cntr].idx
 		);
