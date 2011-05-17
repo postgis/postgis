@@ -1124,40 +1124,33 @@ CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[], options text[], 
 
 CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[], options text[])
 	RETURNS bytea
-	AS $$
-	BEGIN
-		rast := st_band($1, $2);
-		RETURN st_astiff(rast, $3, st_srtext(rast));
-	END;
-	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+	AS $$ SELECT st_astiff(st_band($1, $2), $3, st_srtext($1)) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[])
 	RETURNS bytea
-	AS $$
-	BEGIN
-		rast := st_band($1, $2);
-		RETURN st_astiff(rast, NULL::text[], st_srtext(rast));
-	END;
-	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+	AS $$ SELECT st_astiff(st_band($1, $2), NULL::text[], st_srtext($1)) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Cannot be strict as "srs" can be NULL
 CREATE OR REPLACE FUNCTION st_astiff(rast raster, compression text, srs text)
 	RETURNS bytea
 	AS $$
 	DECLARE
+		compression2 text;
 		c_type text;
 		c_level int;
 		i int;
 		num_bands int;
 		options text[];
 	BEGIN
-		compression := trim(both from upper(compression));
+		compression2 := trim(both from upper(compression));
 
-		IF length(compression) > 0 THEN
+		IF length(compression2) > 0 THEN
 			-- JPEG
-			IF position('JPEG' in compression) != 0 THEN
+			IF position('JPEG' in compression2) != 0 THEN
 				c_type := 'JPEG';
-				c_level := substring(compression from '[0-9]+$');
+				c_level := substring(compression2 from '[0-9]+$');
 
 				IF c_level IS NOT NULL THEN
 					IF c_level > 100 THEN
@@ -1178,9 +1171,9 @@ CREATE OR REPLACE FUNCTION st_astiff(rast raster, compression text, srs text)
 				END LOOP;
 
 			-- DEFLATE
-			ELSEIF position('DEFLATE' in compression) != 0 THEN
+			ELSEIF position('DEFLATE' in compression2) != 0 THEN
 				c_type := 'DEFLATE';
-				c_level := substring(compression from '[0-9]+$');
+				c_level := substring(compression2 from '[0-9]+$');
 
 				IF c_level IS NOT NULL THEN
 					IF c_level > 9 THEN
@@ -1193,10 +1186,10 @@ CREATE OR REPLACE FUNCTION st_astiff(rast raster, compression text, srs text)
 				END IF;
 
 			ELSE
-				c_type := compression;
+				c_type := compression2;
 
 				-- CCITT
-				IF position('CCITT' in compression) THEN
+				IF position('CCITT' in compression2) THEN
 					-- per band pixel type check
 					num_bands := st_numbands($1);
 					FOR i IN 1..num_bands LOOP
@@ -1232,12 +1225,8 @@ CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[], compression text
 
 CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[], compression text)
 	RETURNS bytea
-	AS $$
-	BEGIN
-		rast := st_band($1, $2);
-		RETURN st_astiff(rast, $3, NULL::text[], st_srtext(rast));
-	END;
-	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+	AS $$ RETURN st_astiff(st_band($1, $2), $3, NULL::text[], st_srtext($1)) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_AsJPEG
@@ -1247,6 +1236,7 @@ CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, options text[])
 	RETURNS bytea
 	AS $$
 	DECLARE
+		rast2 raster;
 		num_bands int;
 		i int;
 	BEGIN
@@ -1263,15 +1253,17 @@ CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, options text[])
 		-- we only use the first
 		IF num_bands > 3 THEN
 			RAISE NOTICE 'The JPEG format only permits one or three bands.  The first three bands will be used.';
-			rast := st_band(rast, ARRAY[1, 2, 3]);
+			rast2 := st_band(rast, ARRAY[1, 2, 3]);
 			num_bands := st_numbands(rast);
 		ELSEIF num_bands > 1 THEN
 			RAISE NOTICE 'The JPEG format only permits one or three bands.  The first band will be used.';
-			rast := st_band(rast, ARRAY[1]);
+			rast2 := st_band(rast, ARRAY[1]);
 			num_bands := st_numbands(rast);
+		ELSE
+			rast2 := rast;
 		END IF;
 
-		RETURN st_asgdalraster($1, 'JPEG', $2, NULL);
+		RETURN st_asgdalraster(rast2, 'JPEG', $2, NULL);
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
@@ -1299,16 +1291,19 @@ CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, nbands int[], quality int)
 	RETURNS bytea
 	AS $$
 	DECLARE
+		quality2 int;
 		options text[];
 	BEGIN
 		IF quality IS NOT NULL THEN
 			IF quality > 100 THEN
-				quality := 100;
+				quality2 := 100;
 			ELSEIF quality < 10 THEN
-				quality := 10;
+				quality2 := 10;
+			ELSE
+				quality2 := quality;
 			END IF;
 
-			options := array_append(options, 'QUALITY=' || quality);
+			options := array_append(options, 'QUALITY=' || quality2);
 		END IF;
 
 		RETURN st_asjpeg(st_band($1, $2), options);
@@ -1333,6 +1328,7 @@ CREATE OR REPLACE FUNCTION st_aspng(rast raster, options text[])
 	RETURNS bytea
 	AS $$
 	DECLARE
+		rast2 raster;
 		num_bands int;
 		i int;
 		pt text;
@@ -1342,12 +1338,14 @@ CREATE OR REPLACE FUNCTION st_aspng(rast raster, options text[])
 		-- PNG only allows 1 or 3 bands
 		IF num_bands > 3 THEN
 			RAISE NOTICE 'The PNG format only permits one or three bands.  The first three bands will be used.';
-			rast := st_band(rast, ARRAY[1, 2, 3]);
-			num_bands := st_numbands(rast);
+			rast2 := st_band($1, ARRAY[1, 2, 3]);
+			num_bands := st_numbands(rast2);
 		ELSEIF num_bands > 1 THEN
 			RAISE NOTICE 'The PNG format only permits one or three bands.  The first band will be used.';
-			rast := st_band(rast, ARRAY[1]);
-			num_bands := st_numbands(rast);
+			rast2 := st_band($1, ARRAY[1]);
+			num_bands := st_numbands(rast2);
+		ELSE
+			rast2 := rast;
 		END IF;
 
 		-- PNG only supports 8BUI and 16BUI pixeltype
@@ -1358,7 +1356,7 @@ CREATE OR REPLACE FUNCTION st_aspng(rast raster, options text[])
 			END IF;
 		END LOOP;
 
-		RETURN st_asgdalraster($1, 'PNG', $2, NULL);
+		RETURN st_asgdalraster(rast2, 'PNG', $2, NULL);
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
@@ -1386,16 +1384,19 @@ CREATE OR REPLACE FUNCTION st_aspng(rast raster, nbands int[], compression int)
 	RETURNS bytea
 	AS $$
 	DECLARE
+		compression2 int;
 		options text[];
 	BEGIN
 		IF compression IS NOT NULL THEN
 			IF compression > 9 THEN
-				compression := 9;
+				compression2 := 9;
 			ELSEIF compression < 1 THEN
-				compression := 1;
+				compression2 := 1;
+			ELSE
+				compression2 := compression;
 			END IF;
 
-			options := array_append(options, 'ZLEVEL=' || compression);
+			options := array_append(options, 'ZLEVEL=' || compression2);
 		END IF;
 
 		RETURN st_aspng(st_band($1, $2), options);
