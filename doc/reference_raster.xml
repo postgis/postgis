@@ -3095,6 +3095,7 @@ FROM dummy_rast WHERE rid=1;
                     WORLDFILE is not allowed since the function would have to output two outputs. Refer to <ulink url="http://www.gdal.org/frmt_various.html">GDAL Raster format options</ulink> form more details.
                    </listitem>
                 </itemizedlist>
+                <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
 			</refsection>
 				
 				<refsection>
