@@ -668,6 +668,105 @@ postgis_raster_lib_version
 		<para> <xref
 		linkend="PostGIS_Lib_Version" /></para>
 	  </refsection>
+	  
+	</refentry>
+	
+	<refentry id="RT_ST_GDALDrivers">
+	  <refnamediv>
+		<refname>ST_GDALDrivers</refname>
+
+		<refpurpose>Returns a list of raster formats supported by your lib gdal.  These are the formats you can output your raster using ST_AsGDALRaster.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>setof record <function>ST_GDALDrivers</function></funcdef>
+			<paramdef><type>integer </type> <parameter>OUT idx</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>OUT short_name</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>OUT long_name</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>OUT create_options</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns a list of raster formats short_name,long_name and creator options of each format supported by your lib gdal.  Use the short_name as input in the <varname>format</varname> parameter of <xref linkend="RT_ST_AsGDALRaster" />.
+		Options vary depending on what drivers your libgdal was compiled with. <varname>create_options</varname> returns and xml formatted list of create_options for the specific driver.</para>
+		
+		 <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT short_name, long_name
+FROM st_gdaldrivers()
+ORDER BY short_name;
+  short_name    |              long_name
+----------------+--------------------------------------
+AAIGrid         | Arc/Info ASCII Grid
+DTED            | DTED Elevation Raster
+EHdr            | ESRI .hdr Labelled
+FIT             | FIT Image
+GIF             | Graphics Interchange Format (.gif)
+GSAG            | Golden Software ASCII Grid (.grd)
+GSBG            | Golden Software Binary Grid (.grd)
+GTiff           | GeoTIFF
+HF2             | HF2/HFZ heightfield raster
+HFA             | Erdas Imagine Images (.img)
+ILWIS           | ILWIS Raster Map
+INGR            | Intergraph Raster
+JPEG            | JPEG JFIF
+KMLSUPEROVERLAY | Kml Super Overlay
+NITF            | National Imagery Transmission Format
+PNG             | Portable Network Graphics
+R               | R Object Data Store
+SAGA            | SAGA GIS Binary Grid (.sdat)
+SRTMHGT         | SRTMHGT File Format
+USGSDEM         | USGS Optional ASCII DEM (and CDED)
+VRT             | Virtual Raster
+XPM             | X11 PixMap Format
+
+</programlisting>
+<programlisting>-- Output the create options XML column of Geo Tiff as a table  --
+-- Note you can use these creator options in ST_AsGDALRaster options argument
+SELECT unnest(xpath('/CreationOptionList/Option/@name', create_options::xml)) As opt_name,
+       unnest(xpath('/CreationOptionList/Option/@description', create_options::xml)) As opt_descrip
+FROM st_gdaldrivers()
+WHERE short_name = 'GTiff';
+
+      opt_name      |                             opt_descrip
+--------------------+----------------------------------------------------------------------
+ COMPRESS           | Predictor Type
+ PREDICTOR          | JPEG quality 1-100
+ JPEG_QUALITY       | DEFLATE compression level 1-9
+ ZLEVEL             | BITS for sub-byte files (1-7), sub-uint16 (9-15), sub-uint 32 (17-31)
+ NBITS              | Switch to tiled format
+ INTERLEAVE         | Write out world file
+ TILED              | Write out .RPB (RPC) file
+ TFW                | Tile Width
+ RPB                | Tile/Strip Height
+ BLOCKXSIZE         | Can newly created files have missing blocks?
+ BLOCKYSIZE         | Mark first extrasample as being alpha
+ PHOTOMETRIC        | Force creation of BigTIFF file
+ SPARSE_OK          | Force endianness of created file. For DEBUG purpose mostly
+ ALPHA              | Force copy of overviews of source dataset (CreateCopy())
+ PROFILE            | Predictor Type
+ PIXELTYPE          | JPEG quality 1-100
+:
+:
+
+</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="RT_ST_AsGDALRaster" /></para>
+	  </refsection>
 	</refentry>
 
   </sect1>
@@ -3061,7 +3160,7 @@ FROM dummy_rast WHERE rid=1;
 				<para>Returns the raster tile in the designated format. Arguments are itemized below:</para>
                 <itemizedlist>
                     <listitem>
-                       <varname>format</varname> format to output.  This is dependent on the drivers compiled in your libgdal library.  Generally available are 'JPEG', 'GTIff', 'PNG'. Use ST_GDALRasters() to get a list of formats supported by your library.
+                       <varname>format</varname> format to output.  This is dependent on the drivers compiled in your libgdal library.  Generally available are 'JPEG', 'GTIff', 'PNG'. Use <xref linkend="RT_ST_GDALDrivers" /> to get a list of formats supported by your library.
                     </listitem>
                    <listitem><varname>options</varname> text array of GDAL options. Valid options are dependent on the format. Refer to <ulink url="http://www.gdal.org/frmt_various.html">GDAL Raster format options</ulink> for more details.</listitem>
                    <listitem><varname>srs</varname> The proj4text or srtext (from spatial_ref_sys) to embed in the image</listitem>
@@ -3098,7 +3197,7 @@ FROM dummy_rast WHERE rid=2;
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para></para>
+				<para><xref linkend="RT_ST_GDALDrivers" /></para>
 			</refsection>
 		</refentry>
 		
