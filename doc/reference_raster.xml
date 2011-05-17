@@ -3264,10 +3264,10 @@ FROM dummy_rast WHERE rid=2;
                        <varname>nband</varname> is for single band exports.
                     </listitem>
                     <listitem>
-                        <varname>nbands</varname> is an array of bands to export (note that max is 3 for PNG) and the order of the bands is RGB. e.g ARRAY[3,2,1] means map band 3 to Red, band 2 to greeen and band 1 to blue
+                        <varname>nbands</varname> is an array of bands to export (note that max is 3 for PNG) and the order of the bands is RGB. e.g ARRAY[3,2,1] means map band 3 to Red, band 2 to green and band 1 to blue
                     </listitem>
                    <listitem><varname>compression</varname> number from 1 to 9.  The higher the number the greater the compression.</listitem>
-                   <listitem><varname>options</varname> text Array of GDAL options. For PNG valid one is only ZLEVEL (amount of time to spend on compression -- default 6) e.g. ARRAY['ZLEVEL=9']. 
+                   <listitem><varname>options</varname> text Array of GDAL options as defined for PNG (look at create_options for PNG of <xref linkend="RT_ST_GDALDrivers" />). For PNG valid one is only ZLEVEL (amount of time to spend on compression -- default 6) e.g. ARRAY['ZLEVEL=9']. 
                     WORLDFILE is not allowed since the function would have to output two outputs. Refer to <ulink url="http://www.gdal.org/frmt_various.html">GDAL Raster format options</ulink> for more details.
                    </listitem>
                 </itemizedlist>
@@ -3286,7 +3286,7 @@ FROM dummy_rast WHERE rid=2;
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para></para>
+				<para><xref linkend="RT_ST_GDALDrivers" /></para>
 			</refsection>
 		</refentry>
 	</sect1>
