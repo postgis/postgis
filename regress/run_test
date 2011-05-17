@@ -172,6 +172,7 @@ run_simple_test ()
 		| grep -v "^UPDATE" \
 		| grep -v "^DROP" \
 		| grep -v "^CREATE" \
+		| grep -v "^SELECT" \
 		| grep -v "^SET" \
 		| grep -v "^LINE [0-9]" \
 		| grep -v "^  *^$" \
