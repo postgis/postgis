@@ -1225,7 +1225,7 @@ CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[], compression text
 
 CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[], compression text)
 	RETURNS bytea
-	AS $$ RETURN st_astiff(st_band($1, $2), $3, NULL::text[], st_srtext($1)) $$
+	AS $$ SELECT st_astiff(st_band($1, $2), $3, st_srtext($1)) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
