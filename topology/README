@@ -96,7 +96,14 @@ under you topology schema:
 	 * face_id integer PRIMARY KEY
 	 * mbr box2d ( can be NULL )
 
-Details on semantic are contained in the SQL/MM specification, which
+The next_*_edge of an edge is the edge you encounter next while going
+around the specified face (right or left) in counterclockwise order
+(so that the face is on your left). Note that due to this definition
+the edge being considered is traversed in reverse order when traversing
+its "right" face. The values are signed to indicate wheter the next edge
+will be traversed in its original or reversed orientation.
+
+More details on semantic are contained in the SQL/MM specification, which
 this implementation follows as for these views structure.
 
 ==Validating topology data
