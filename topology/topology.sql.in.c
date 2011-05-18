@@ -2445,6 +2445,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 
 --  SQL/MM block
 #include "sql/sqlmm.sql"
+#include "sql/query/GetRingEdges.sql" // needs getfaceedges_returntype
 
 
 --COMMIT;
