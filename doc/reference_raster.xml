@@ -3204,7 +3204,7 @@ FROM dummy_rast WHERE rid=2;
 		<refentry id="RT_ST_AsPNG">
 			<refnamediv>
 				<refname>ST_AsPNG</refname>
-				<refpurpose>Return the raster tile selected bands as a single portable network graphics (PNG) image (byte array).  If no band is specified, band 1 is assumed.</refpurpose>
+				<refpurpose>Return the raster tile selected bands as a single portable network graphics (PNG) image (byte array).  If no band is specified, then the first 3 bands are used.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -3258,7 +3258,7 @@ FROM dummy_rast WHERE rid=2;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the selected bands of the raster as a single Portable Network Graphics Image (PNG).  Use <xref linkend="RT_ST_AsGDALRaster" /> if you need to export as less common raster types. There are many variants of the function with many options.  These are itemized below:</para>
+				<para>Returns the selected bands of the raster as a single Portable Network Graphics Image (PNG).  Use <xref linkend="RT_ST_AsGDALRaster" /> if you need to export as less common raster types. If no band is specified, then the first 3 bands are exported.  There are many variants of the function with many options. If no <varname>srs</varname> is specified then then srs of the raster is used.  These are itemized below:</para>
                 <itemizedlist>
                     <listitem>
                        <varname>nband</varname> is for single band exports.
@@ -3278,6 +3278,74 @@ FROM dummy_rast WHERE rid=2;
 					<title>Examples</title>
 				
 					<programlisting>SELECT ST_AsPNG(rast) As rastpng
+FROM dummy_rast WHERE rid=2;
+				</programlisting>
+			
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_GDALDrivers" />, <xref linkend="RT_ST_AsGDALRaster" /></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_AsTIFF">
+			<refnamediv>
+				<refname>ST_AsTIFF</refname>
+				<refpurpose>Return the raster tile selected bands as a single TIFF image (byte array).  If no band is specified, band 1 is assumed.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>bytea <function>ST_AsTIFF</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>text[] </type> <parameter>[options]</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>[srs]</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>bytea <function>ST_AsTIFF</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>[compression]</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>[srs]</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer[] </type> <parameter>nbands</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>[compression]</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>[srs]</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer[] </type> <parameter>nbands</parameter></paramdef>
+					<paramdef><type>text[] </type> <parameter>options</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>[srs]</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the selected bands of the raster as a single Tagged Image File Format (TIFF).  Use <xref linkend="RT_ST_AsGDALRaster" /> if you need to export as less common raster types. There are many variants of the function with many options.  If no spatial reference SRS text is present, the spatial reference of the raster is used. These are itemized below:</para>
+                <itemizedlist>
+                    <listitem>
+                        <varname>nbands</varname> is an array of bands to export (note that max is 3 for PNG) and the order of the bands is RGB. e.g ARRAY[3,2,1] means map band 3 to Red, band 2 to green and band 1 to blue
+                    </listitem>
+                   <listitem><varname>compression</varname> Compression expression -- JPEG90 (or someother percent), LZMA, JPEG, DEFALTE9 </listitem>
+                   <listitem><varname>options</varname> text Array of GDAL create options as defined for GTiff (look at create_options for GTiff of <xref linkend="RT_ST_GDALDrivers" />). or refer to <ulink url="http://www.gdal.org/frmt_various.html">GDAL Raster format options</ulink> for more details.
+                   </listitem>
+                </itemizedlist>
+                <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
+			</refsection>
+				
+				<refsection>
+					<title>Examples: Use jpeg compression 90%</title>
+				
+					<programlisting>SELECT ST_AsTIFF(rast, 'JPEG90') As rasttiff
 FROM dummy_rast WHERE rid=2;
 				</programlisting>
 			
