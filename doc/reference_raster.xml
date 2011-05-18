@@ -3311,14 +3311,14 @@ FROM dummy_rast WHERE rid=2;
 					<paramdef><type>text </type> <parameter>[srs]</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
-					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
+					<funcdef>bytea <function>ST_AsTIFF</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer[] </type> <parameter>nbands</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>[compression]</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>[srs]</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
-					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
+					<funcdef>bytea <function>ST_AsTIFF</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer[] </type> <parameter>nbands</parameter></paramdef>
 					<paramdef><type>text[] </type> <parameter>options</parameter></paramdef>
