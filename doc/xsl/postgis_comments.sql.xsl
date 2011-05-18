@@ -71,19 +71,17 @@ COMMENT ON <xsl:choose><xsl:when test="contains(paramdef/type,'geometry set')">A
 	  </xsl:choose>
 	</xsl:template>
 
-	<!--macro to pull out function parameter names so we can provide a pretty arg list prefix for each function. Put optional arguments in []  -->
+	<!--macro to pull out function parameter names so we can provide a pretty arg list prefix for each function.  -->
 	<xsl:template name="listparams">
 		<xsl:param name="func" />
 		<xsl:for-each select="$func">
 			<xsl:if test="count(paramdef/parameter) &gt; 0">args: </xsl:if>
 			<xsl:for-each select="paramdef">
-			    <xsl:if test="@choice='opt'"><xsl:text>[</xsl:text></xsl:if>
 				<xsl:choose>
 					<xsl:when test="count(parameter) &gt; 0"> 
 						<xsl:value-of select="parameter" />
 					</xsl:when>
 				</xsl:choose>
-				<xsl:if test="@choice='opt'"><xsl:text>]</xsl:text></xsl:if>
 				<xsl:if test="position()&lt;last()"><xsl:text>, </xsl:text></xsl:if>
 			</xsl:for-each>
 			<xsl:if test="count(paramdef/parameter) &gt; 0"> - </xsl:if>
