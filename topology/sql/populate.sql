@@ -411,7 +411,6 @@ BEGIN
         END IF;
       END IF;
 
-
       p3 = ST_StartPoint(bounds);
       IF ST_DWithin(edgeseg, p3, 0) THEN
         -- Edge segment covers ring endpoint, See bug #874
@@ -480,19 +479,6 @@ BEGIN
     END IF;
   END IF;
 
---	EXECUTE 'SELECT ST_Collect(geom) FROM'
---		|| quote_ident(atopology)
---		|| '.edge_data '
---		|| ' WHERE edge_id = ANY('
---		|| quote_literal(array_append(left_edges, right_edges))
---		|| ') ';
-
-  --
-  -- TODO:
-  -- Check that NO edge is contained in the face ?
-  --
-  RAISE WARNING 'Not checking if face contains any edge';
-
   IF faceid IS NOT NULL AND faceid != 0 THEN
     RAISE DEBUG 'Face already known as %', faceid;
     RETURN faceid;
@@ -547,11 +533,38 @@ BEGIN
     || ') ';
   END IF;
 
+
+  --
+  -- Set left_face/right_face of any contained edge 
+  --
+  EXECUTE 'UPDATE '
+    || quote_ident(atopology)
+    || '.edge_data SET right_face = '
+    || quote_literal(faceid)
+    || ', left_face = '
+    || quote_literal(faceid)
+    || ' WHERE ST_Contains('
+    || quote_literal(apoly::text)
+    || ', geom)';
+
+  -- 
+  -- Set containing_face of any contained node 
+  -- 
+  EXECUTE 'UPDATE '
+    || quote_ident(atopology)
+    || '.node SET containing_face = '
+    || quote_literal(faceid)
+    || ' WHERE containing_face IS NOT NULL AND ST_Contains('
+    || quote_literal(apoly::text)
+    || ', geom)';
+
   --
   -- TODO:
   -- Set next_left_face and next_right_face !
   -- These are required by the model, but not really used
   -- by this implementation...
+  -- NOTE: should probably be done when adding edges rather than
+  --       when registering faces
   --
   RAISE WARNING 'Not updating next_{left,right}_face fields of face boundary edges';
 

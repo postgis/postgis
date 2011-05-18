@@ -1,4 +1,4 @@
-set client_min_messages to WARNING;
+set client_min_messages to ERROR;
 
 -- Test with zero tolerance
 
@@ -17,7 +17,7 @@ SELECT 'e4',  topology.addEdge('tt', 'LINESTRING(0 0, 0 10)');
 -- Add one edge only incident on a vertex
 SELECT 'e5',  topology.addEdge('tt', 'LINESTRING(0 0, 0 -10)');
 
--- Add 3 more edges closing a squre to the right,
+-- Add 3 more edges closing a square to the right,
 -- all edges with same direction
 
 SELECT 'e6',  topology.addEdge('tt', 'LINESTRING(10 10, 20 10)');
@@ -147,3 +147,28 @@ SELECT face_id, Box2d(mbr) from t3.face ORDER by face_id;
 SELECT edge_id, left_face, right_face from t3.edge ORDER by edge_id;
 
 SELECT topology.DropTopology('t3');
+
+--
+-- Test proper updating of left/right face for contained edges
+-- and nodes
+--
+SELECT topology.CreateTopology('t4') > 0;
+
+SELECT 'N' || topology.addNode('t4', 'POINT(2 6)');
+UPDATE t4.node set containing_face = 0 WHERE node_id = 1;
+
+SELECT 'E' || topology.addEdge('t4', 'LINESTRING(0 0,10 0)');
+SELECT 'E' || topology.addEdge('t4', 'LINESTRING(10 0,10 10)');
+SELECT 'E' || topology.addEdge('t4', 'LINESTRING(10 10,0 10)');
+SELECT 'E' || topology.addEdge('t4', 'LINESTRING(0 0,0 10)');
+SELECT 'E' || topology.addEdge('t4', 'LINESTRING(0 0,5 5)');
+SELECT 'E' || topology.addEdge('t4', 'LINESTRING(5 5,6 5)');
+SELECT 'E' || topology.addEdge('t4', 'LINESTRING(0 10,8 8,10 0)');
+
+select 'F' || topology.addface('t4','POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');
+
+-- Check edges and nodes
+SELECT 'E'||edge_id, left_face, right_face from t4.edge ORDER by edge_id;
+SELECT 'N'||node_id, containing_face from t4.node ORDER by node_id;
+
+SELECT topology.DropTopology('t4');

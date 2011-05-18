@@ -8,13 +8,8 @@ e5|5
 e6|6
 e7|7
 e8|8
-WARNING:  Not checking if face contains any edge
-WARNING:  Not updating next_{left,right}_face fields of face boundary edges
 f1|1
-WARNING:  Not checking if face contains any edge
 f1*|1
-WARNING:  Not checking if face contains any edge
-WARNING:  Not updating next_{left,right}_face fields of face boundary edges
 f2|2
 0|
 1|BOX(0 0,10 10)
@@ -33,8 +28,6 @@ MiX-e1|1
 MiX-e2|2
 MiX-e3|3
 MiX-e4|4
-WARNING:  Not checking if face contains any edge
-WARNING:  Not updating next_{left,right}_face fields of face boundary edges
 MiX-f1|1
 Topology 'Ul' dropped
 t
@@ -49,20 +42,10 @@ t2.e8|8
 t2.e9|9
 t2.e10|10
 t2.e11|11
-WARNING:  Not checking if face contains any edge
-WARNING:  Not updating next_{left,right}_face fields of face boundary edges
 t2.f1|1
-WARNING:  Not checking if face contains any edge
-WARNING:  Not updating next_{left,right}_face fields of face boundary edges
 t2.f2|2
-WARNING:  Not checking if face contains any edge
-WARNING:  Not updating next_{left,right}_face fields of face boundary edges
 t2.f3|3
-WARNING:  Not checking if face contains any edge
-WARNING:  Not updating next_{left,right}_face fields of face boundary edges
 t2.f4|4
-WARNING:  Not checking if face contains any edge
-WARNING:  Not updating next_{left,right}_face fields of face boundary edges
 t2.f5|5
 ERROR:  Polygon boundary is not fully defined by existing edges at or near point POINT(12 5)
 0|
@@ -87,11 +70,7 @@ t
 t3.e1|1
 t3.e2|2
 t3.e3|3
-WARNING:  Not checking if face contains any edge
-WARNING:  Not updating next_{left,right}_face fields of face boundary edges
 t3.f1|1
-WARNING:  Not checking if face contains any edge
-WARNING:  Not updating next_{left,right}_face fields of face boundary edges
 t3.f2|2
 0|
 1|BOX(0 0,10 10)
@@ -100,3 +79,28 @@ t3.f2|2
 2|1|2
 3|0|1
 Topology 't3' dropped
+t
+N1
+E1
+E2
+E3
+E4
+E5
+E6
+E7
+F1
+E1|1|0
+E2|1|0
+E3|1|0
+E4|0|1
+E5|1|1
+E6|1|1
+E7|1|1
+N1|1
+N2|
+N3|
+N4|
+N5|
+N6|
+N7|
+Topology 't4' dropped

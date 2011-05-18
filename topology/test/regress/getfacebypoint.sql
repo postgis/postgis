@@ -1,4 +1,4 @@
-set client_min_messages to WARNING;
+set client_min_messages to ERROR;
 
 SELECT topology.CreateTopology('schema_topo') > 0;
 
