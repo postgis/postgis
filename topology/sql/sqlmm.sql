@@ -1828,18 +1828,26 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 --  ST_AddEdgeNewFaces(atopology, anode, anothernode, acurve)
 --
+-- Not in the specs:
+-- * Reset containing_face for starting and ending point,
+--   as they stop being isolated nodes
+-- * Update references in the Relation table.
+--
 CREATE OR REPLACE FUNCTION topology.ST_AddEdgeNewFaces(atopology varchar, anode integer, anothernode integer, acurve geometry)
   RETURNS INTEGER AS
 $$
 DECLARE
   rec RECORD;
   i INTEGER;
+  topoid INTEGER;
   az FLOAT8;
-  azdif FLOAT8;
-  myaz FLOAT8;
-  minazimuth FLOAT8;
-  maxazimuth FLOAT8;
-  p2 GEOMETRY;
+  span RECORD; -- start point analysis data
+  epan RECORD; --   end point analysis data
+  fan RECORD; -- face analisys
+  newedge RECORD; -- informations about new edge
+  sql TEXT;
+  newfaces INTEGER[];
+  newface INTEGER;
 BEGIN
 
   --
@@ -1868,20 +1876,56 @@ BEGIN
     RAISE EXCEPTION 'SQL/MM Spatial exception - curve not simple';
   END IF;
 
-  -- 
-  -- Check endpoints existance and match with Curve geometry
   --
-  i=0;
-  FOR rec IN EXECUTE 'SELECT '
+	-- Get topology id
+  --
+  BEGIN
+    SELECT id FROM topology.topology
+      INTO STRICT topoid WHERE name = atopology;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
+  END;
+
+  -- Initialize new edge info (will be filled up more later)
+  SELECT anode as start_node, anothernode as end_node, acurve as geom,
+    NULL::int as next_left_edge, NULL::int as next_right_edge,
+    NULL::int as left_face, NULL::int as right_face, NULL::int as edge_id,
+    NULL::int as prev_left_edge, NULL::int as prev_right_edge, -- convenience
+    anode = anothernode as isclosed, -- convenience
+    false as start_node_isolated, -- convenience
+    false as end_node_isolated -- convenience
+  INTO newedge;
+
+  -- 
+  -- Check endpoints existance, match with Curve geometry
+  -- and get face information (if any)
+  --
+  i := 0;
+  FOR rec IN EXECUTE 'SELECT node_id, '
     || ' CASE WHEN node_id = ' || anode
     || ' THEN 1 WHEN node_id = ' || anothernode
-    || ' THEN 0 END AS start, geom FROM '
+    || ' THEN 0 END AS start, containing_face, geom FROM '
     || quote_ident(atopology)
     || '.node '
     || ' WHERE node_id IN ( '
     || anode || ',' || anothernode
     || ')'
   LOOP
+    IF rec.containing_face IS NOT NULL THEN
+      RAISE DEBUG  'containing_face for node %:%',
+        rec.node_id, rec.containing_face;
+      IF newedge.left_face IS NULL THEN
+        newedge.left_face := rec.containing_face;
+        newedge.right_face := rec.containing_face;
+      ELSE
+        IF newedge.left_face != rec.containing_face THEN
+          RAISE EXCEPTION
+            'SQL/MM Spatial exception - geometry crosses an edge (endnodes in faces % and %)', newedge.left_face, rec.containing_face;
+        END IF;
+      END IF;
+    END IF;
+
     IF rec.start THEN
       IF NOT Equals(rec.geom, ST_StartPoint(acurve))
       THEN
@@ -1896,10 +1940,10 @@ BEGIN
       END IF;
     END IF;
 
-    i=i+1;
+    i := i + 1;
   END LOOP;
 
-  IF anode != anothernode THEN
+  IF NOT newedge.isclosed THEN
     IF i < 2 THEN
     RAISE EXCEPTION
      'SQL/MM Spatial exception - non-existent node';
@@ -1914,15 +1958,17 @@ BEGIN
   --
   -- Check if this geometry crosses any node
   --
-  FOR rec IN EXECUTE 'SELECT node_id FROM '
+  FOR rec IN EXECUTE
+    'SELECT node_id, ST_Relate(geom, '
+    || quote_literal(acurve::text) || '::geometry, 2) as relate FROM '
     || quote_ident(atopology)
     || '.node WHERE geom && '
     || quote_literal(acurve::text)
-    || '::geometry AND ST_Within(geom, '
-    || quote_literal(acurve::text) || '::geometry)'
+    || '::geometry'
   LOOP
-    RAISE EXCEPTION
-    'SQL/MM Spatial exception - geometry crosses a node';
+    IF ST_RelateMatch(rec.relate, 'T********') THEN
+      RAISE EXCEPTION 'SQL/MM Spatial exception - geometry crosses a node';
+    END IF;
   END LOOP;
 
   --
@@ -1930,7 +1976,7 @@ BEGIN
   --
   FOR rec IN EXECUTE 'SELECT edge_id, ST_Relate(geom,' 
     || quote_literal(acurve::text)
-    || '::geometry) as im FROM '
+    || '::geometry, 2) as im FROM '
     || quote_ident(atopology)
     || '.edge_data WHERE geom && '
     || quote_literal(acurve::text) || '::geometry'
@@ -1962,68 +2008,455 @@ BEGIN
 
   ---------------------------------------------------------------
   --
-  -- All checks passed, time to extract informations about
-  -- endpoints:
-  --
-  --  next_left_edge
-  --  next_right_edge
-  --  left_face
-  --  right_face
+  -- All checks passed, time to prepare the new edge
   --
   ---------------------------------------------------------------
 
-  --
-  --
-  -- Compute next_left_edge 
-  --
-  -- We fetch all edges with an endnode equal to
-  -- this edge end_node (anothernode).
-  -- For each edge we compute azimuth of the segment(s).
-  -- Of interest are the edges with closest (smaller
-  -- and bigger) azimuths then the azimuth of
-  -- this edge last segment.
-  --
+	EXECUTE 'SELECT nextval(' || quote_literal(
+			quote_ident(atopology) || '.edge_data_edge_id_seq') || ')'
+  INTO STRICT newedge.edge_id;
 
-  myaz = ST_Azimuth(ST_EndPoint(acurve), ST_PointN(acurve, ST_NumPoints(acurve)-1));
-  RAISE NOTICE 'My end-segment azimuth: %', myaz;
-  FOR rec IN EXECUTE 'SELECT '
-    || 'edge_id, end_node, start_node, geom'
+  -- Compute azimut of first edge end on start node
+  SELECT null::int AS nextCW, null::int AS nextCCW,
+         null::float8 AS minaz, null::float8 AS maxaz,
+         false AS was_isolated,
+         ST_Azimuth(ST_StartPoint(acurve),
+                    ST_PointN(acurve, 2)) AS myaz
+        -- TODO: second point might be equals to first point...
+        --       ... we should check that and find a better candidate
+  INTO span;
+
+  -- Compute azimuth of last edge end on end node
+  SELECT null::int AS nextCW, null::int AS nextCCW,
+         null::float8 AS minaz, null::float8 AS maxaz,
+         false AS was_isolated,
+         ST_Azimuth(ST_EndPoint(acurve),
+                    ST_PointN(acurve, ST_NumPoints(acurve)-1)) AS myaz
+        -- TODO: one-to-last point might be equals to last point...
+        --       ... we should check that and find a better candidate
+  INTO epan;
+
+
+  -- Find links on start node -- {
+
+  RAISE DEBUG 'My start-segment azimuth: %', span.myaz;
+
+  sql :=
+    'SELECT edge_id, -1 AS end_node, start_node, left_face, right_face, geom'
     || ' FROM '
     || quote_ident(atopology)
-    || '.edge_data '
-    || ' WHERE '
-    || ' end_node = ' || anothernode
-    || ' OR '
-    || ' start_node = ' || anothernode
-  LOOP
+    || '.edge_data WHERE start_node = ' || anode
+    || ' UNION SELECT edge_id, end_node, -1, left_face, right_face, geom FROM '
+    || quote_ident(atopology)
+    || '.edge_data WHERE end_node = ' || anode;
+  IF newedge.isclosed THEN
+    sql := sql || ' UNION SELECT '
+      || newedge.edge_id || ',' || newedge.end_node
+      || ',-1,0,0,' -- pretend we start elsewhere
+      || quote_literal(newedge.geom::text);
+  END IF;
+  i := 0;
+  FOR rec IN EXECUTE sql
+  LOOP -- incident edges {
+
+    i := i + 1;
+
+    IF rec.start_node = anode THEN
+      --
+      -- Edge starts at our node, we compute
+      -- azimuth from node to its second point
+      --
+      az := ST_Azimuth(ST_StartPoint(acurve), ST_PointN(rec.geom, 2));
+
+    ELSE
+      --
+      -- Edge ends at our node, we compute
+      -- azimuth from node to its second-last point
+      --
+      az := ST_Azimuth(ST_StartPoint(acurve),
+                       ST_PointN(rec.geom, ST_NumPoints(rec.geom)-1));
+      rec.edge_id := -rec.edge_id;
+
+    END IF;
+
+    RAISE DEBUG 'Edge % - az % (%) - fl:% fr:%',
+      rec.edge_id, az, az - span.myaz, rec.left_face, rec.right_face;
+
+    az = az - span.myaz;
+    IF az < 0 THEN
+      az := az + 2*PI();
+    END IF;
+
+    -- RAISE DEBUG ' normalized az %', az;
+
+    IF span.maxaz IS NULL OR az > span.maxaz THEN
+      span.maxaz := az;
+      span.nextCCW := rec.edge_id;
+      IF abs(rec.edge_id) != newedge.edge_id THEN
+        IF rec.edge_id < 0 THEN
+          -- TODO: check for mismatch ?
+          newedge.left_face := rec.left_face;
+        ELSE
+          -- TODO: check for mismatch ?
+          newedge.left_face := rec.right_face;
+        END IF;
+      END IF;
+    END IF;
+
+    IF span.minaz IS NULL OR az < span.minaz THEN
+      span.minaz := az;
+      span.nextCW := rec.edge_id;
+      IF abs(rec.edge_id) != newedge.edge_id THEN
+        IF rec.edge_id < 0 THEN
+          -- TODO: check for mismatch ?
+          newedge.right_face := rec.right_face;
+        ELSE
+          -- TODO: check for mismatch ?
+          newedge.right_face := rec.left_face;
+        END IF;
+      END IF;
+    END IF;
+
+    --RAISE DEBUG 'Closest edges: CW:%(%) CCW:%(%)', span.nextCW, span.minaz, span.nextCCW, span.maxaz;
+
+  END LOOP; -- incident edges }
+
+  RAISE DEBUG 'span ROW_COUNT: %', i;
+  IF newedge.isclosed THEN
+    IF i < 2 THEN span.was_isolated = true; END IF;
+  ELSE
+    IF i < 1 THEN span.was_isolated = true; END IF;
+  END IF;
+
+  IF span.nextCW IS NULL THEN
+    -- This happens if the destination node is isolated
+    newedge.next_right_edge := newedge.edge_id;
+    newedge.prev_left_edge := -newedge.edge_id;
+  ELSE
+    newedge.next_right_edge := span.nextCW;
+    newedge.prev_left_edge := -span.nextCCW;
+  END IF;
+
+  RAISE DEBUG 'edge:%', newedge.edge_id;
+  RAISE DEBUG ' left:%, next:%, prev:%',
+    newedge.left_face, newedge.next_left_edge, newedge.prev_left_edge;
+  RAISE DEBUG ' right:%, next:%, prev:%',
+    newedge.right_face, newedge.next_right_edge, newedge.prev_right_edge;
+
+  -- } start_node analysis
+
+
+  -- Find links on end_node {
+      
+  RAISE DEBUG 'My end-segment azimuth: %', epan.myaz;
+
+  sql :=
+    'SELECT edge_id, -1 as end_node, start_node, left_face, right_face, geom'
+    || ' FROM '
+    || quote_ident(atopology)
+    || '.edge_data WHERE start_node = ' || anothernode
+    || 'UNION SELECT edge_id, end_node, -1, left_face, right_face, geom'
+    || ' FROM '
+    || quote_ident(atopology)
+    || '.edge_data WHERE end_node = ' || anothernode;
+  IF newedge.isclosed THEN
+    sql := sql || ' UNION SELECT '
+      || newedge.edge_id || ',' || -1 -- pretend we end elsewhere
+      || ',' || newedge.start_node || ',0,0,'
+      || quote_literal(newedge.geom::text);
+  END IF;
+  i := 0;
+  FOR rec IN EXECUTE sql
+  LOOP -- incident edges {
+
+    i := i + 1;
 
     IF rec.start_node = anothernode THEN
       --
       -- Edge starts at our node, we compute
       -- azimuth from node to its second point
       --
-      az = ST_Azimuth(ST_EndPoint(acurve),
-        ST_PointN(rec.geom, 2));
+      az := ST_Azimuth(ST_EndPoint(acurve), ST_PointN(rec.geom, 2));
 
-      RAISE NOTICE 'Edge % starts at node % - azimuth %',
-        rec.edge_id, rec.start_node, az;
-    END IF;
-
-    IF rec.end_node = anothernode THEN
+    ELSE
       --
       -- Edge ends at our node, we compute
       -- azimuth from node to its second-last point
       --
-      az = ST_Azimuth(ST_EndPoint(acurve),
+      az := ST_Azimuth(ST_EndPoint(acurve),
         ST_PointN(rec.geom, ST_NumPoints(rec.geom)-1));
+      rec.edge_id := -rec.edge_id;
 
-      RAISE NOTICE 'Edge % ends at node % - azimuth %',
-        rec.edge_id, rec.end_node, az;
     END IF;
-  END LOOP;
 
+    RAISE DEBUG 'Edge % - az % (%)', rec.edge_id, az, az - epan.myaz;
 
-  RAISE EXCEPTION 'Not implemented yet';
+    az := az - epan.myaz;
+    IF az < 0 THEN
+      az := az + 2*PI();
+    END IF;
+
+    -- RAISE DEBUG ' normalized az %', az;
+
+    IF epan.maxaz IS NULL OR az > epan.maxaz THEN
+      epan.maxaz := az;
+      epan.nextCCW := rec.edge_id;
+      IF abs(rec.edge_id) != newedge.edge_id THEN
+        IF rec.edge_id < 0 THEN
+          -- TODO: check for mismatch ?
+          newedge.right_face := rec.left_face;
+        ELSE
+          -- TODO: check for mismatch ?
+          newedge.right_face := rec.right_face;
+        END IF;
+      END IF;
+    END IF;
+
+    IF epan.minaz IS NULL OR az < epan.minaz THEN
+      epan.minaz := az;
+      epan.nextCW := rec.edge_id;
+      IF abs(rec.edge_id) != newedge.edge_id THEN
+        IF rec.edge_id < 0 THEN
+          -- TODO: check for mismatch ?
+          newedge.left_face := rec.right_face;
+        ELSE
+          -- TODO: check for mismatch ?
+          newedge.left_face := rec.left_face;
+        END IF;
+      END IF;
+    END IF;
+
+    --RAISE DEBUG 'Closest edges: CW:%(%) CCW:%(%)', epan.nextCW, epan.minaz, epan.nextCCW, epan.maxaz;
+
+  END LOOP; -- incident edges }
+
+  RAISE DEBUG 'epan ROW_COUNT: %', i;
+  IF newedge.isclosed THEN
+    IF i < 2 THEN epan.was_isolated = true; END IF;
+  ELSE
+    IF i < 1 THEN epan.was_isolated = true; END IF;
+  END IF;
+
+  IF epan.nextCW IS NULL THEN
+    -- This happens if the destination node is isolated
+    newedge.next_left_edge := -newedge.edge_id;
+    newedge.prev_right_edge := newedge.edge_id;
+  ELSE
+    newedge.next_left_edge := epan.nextCW;
+    newedge.prev_right_edge := -epan.nextCCW;
+  END IF;
+
+  -- } end_node analysis
+
+  RAISE DEBUG 'edge:%', newedge.edge_id;
+  RAISE DEBUG ' left:%, next:%, prev:%',
+    newedge.left_face, newedge.next_left_edge, newedge.prev_left_edge;
+  RAISE DEBUG ' right:%, next:%, prev:%',
+    newedge.right_face, newedge.next_right_edge, newedge.prev_right_edge;
+
+  ----------------------------------------------------------------------
+  --
+  -- If we don't have faces setup by now we must have encountered
+  -- a malformed topology (no containing_face on isolated nodes, no
+  -- left/right faces on adjacent edges or mismatching values)
+  --
+  ----------------------------------------------------------------------
+  IF newedge.left_face != newedge.right_face THEN
+    RAISE EXCEPTION 'Left(%)/right(%) faces mismatch: invalid topology ?', 
+      newedge.left_face, newedge.right_face;
+  END IF;
+  IF newedge.left_face IS NULL THEN
+    RAISE EXCEPTION 'Could not derive edge face from linked primitives: invalid topology ?';
+  END IF;
+
+  ----------------------------------------------------------------------
+  --
+  -- Polygonize the current edges (to see later if the addition
+  -- of the new one created another ring)
+  --
+  ----------------------------------------------------------------------
+
+  SELECT null::geometry as post, null::geometry as pre INTO fan;
+
+  EXECUTE
+    'SELECT ST_Polygonize(geom) FROM '
+    || quote_ident(atopology) || '.edge_data WHERE left_face = '
+    || newedge.left_face || ' OR right_face = ' || newedge.right_face
+    INTO STRICT fan.pre;
+
+  ----------------------------------------------------------------------
+  --
+  -- Insert the new edge, and update all linking
+  --
+  ----------------------------------------------------------------------
+
+  -- Insert the new edge with what we have so far
+  EXECUTE 'INSERT INTO ' || quote_ident(atopology) 
+		|| '.edge VALUES(' || newedge.edge_id
+    || ',' || newedge.start_node
+		|| ',' || newedge.end_node
+		|| ',' || newedge.next_left_edge
+		|| ',' || newedge.next_right_edge
+		|| ',' || newedge.left_face
+		|| ',' || newedge.right_face
+		|| ',' || quote_literal(newedge.geom::geometry::text)
+		|| ')';
+
+  -- Link prev_left_edge to us 
+  -- (if it's not us already)
+  IF abs(newedge.prev_left_edge) != newedge.edge_id THEN
+    IF newedge.prev_left_edge > 0 THEN
+      -- its next_left_edge is us
+      EXECUTE 'UPDATE ' || quote_ident(atopology)
+        || '.edge_data SET next_left_edge = '
+        || newedge.edge_id
+        || ', abs_next_left_edge = '
+        || newedge.edge_id
+        || ' WHERE edge_id = ' 
+        || newedge.prev_left_edge;
+    ELSE
+      -- its next_right_edge is us
+      EXECUTE 'UPDATE ' || quote_ident(atopology)
+        || '.edge_data SET next_right_edge = '
+        || newedge.edge_id
+        || ', abs_next_right_edge = '
+        || newedge.edge_id
+        || ' WHERE edge_id = ' 
+        || -newedge.prev_left_edge;
+    END IF;
+  END IF;
+
+  -- Link prev_right_edge to us 
+  -- (if it's not us already)
+  IF abs(newedge.prev_right_edge) != newedge.edge_id THEN
+    IF newedge.prev_right_edge > 0 THEN
+      -- its next_left_edge is -us
+      EXECUTE 'UPDATE ' || quote_ident(atopology)
+        || '.edge_data SET next_left_edge = '
+        || -newedge.edge_id
+        || ', abs_next_left_edge = '
+        || newedge.edge_id
+        || ' WHERE edge_id = ' 
+        || newedge.prev_right_edge;
+    ELSE
+      -- its next_right_edge is -us
+      EXECUTE 'UPDATE ' || quote_ident(atopology)
+        || '.edge_data SET next_right_edge = '
+        || -newedge.edge_id
+        || ', abs_next_right_edge = '
+        || newedge.edge_id
+        || ' WHERE edge_id = ' 
+        || -newedge.prev_right_edge;
+    END IF;
+  END IF;
+
+  -- NOT IN THE SPECS...
+  -- set containing_face = null for start_node and end_node
+  -- if they where isolated 
+  IF span.was_isolated OR epan.was_isolated THEN
+      EXECUTE 'UPDATE ' || quote_ident(atopology)
+        || '.node SET containing_face = null WHERE node_id IN ('
+        || anode || ',' || anothernode || ')';
+  END IF;
+
+  ----------------------------------------------------------------------
+  --
+  -- Polygonize the new edges and see if the addition created a new ring
+  --
+  ----------------------------------------------------------------------
+
+  EXECUTE 'SELECT ST_Polygonize(geom) FROM '
+    || quote_ident(atopology) || '.edge_data WHERE left_face = '
+    || newedge.left_face || ' OR right_face = ' || newedge.right_face
+    INTO STRICT fan.post;
+
+  IF ST_NumGeometries(fan.pre) = ST_NumGeometries(fan.post) THEN
+    -- all done, I hope
+    RETURN newedge.edge_id;
+  END IF;
+
+  RAISE WARNING 'ST_AddEdgeNewFaces: edge % splitted face %',
+      newedge.edge_id, newedge.left_face;
+
+  IF newedge.left_face != 0 THEN
+
+    -- Set old face edges to zero to let AddFace do something with them
+    EXECUTE 'UPDATE ' || quote_ident(atopology)
+      || '.edge_data SET left_face = 0 WHERE left_face = '
+      || newedge.left_face;
+    EXECUTE 'UPDATE ' || quote_ident(atopology)
+      || '.edge_data SET right_face = 0 WHERE right_face = '
+      || newedge.left_face;
+ 
+    -- Now we call topology.AddFace for each of the two new
+    -- faces. These are the ones that do contain the new edge
+    -- The ORDER serves predictability of which face is added first
+    FOR rec IN SELECT geom FROM ST_Dump(fan.post)
+      ORDER BY ST_XMin(geom), ST_YMin(geom)
+    LOOP -- {
+      RAISE DEBUG 'Adding face %', ST_AsText(rec.geom);
+      sql :=
+        'SELECT topology.AddFace(' || quote_literal(atopology)
+        || ', ' || quote_literal(rec.geom::text) || ')';
+      EXECUTE sql INTO newface;
+      newfaces := array_append(newfaces, newface);
+    END LOOP; --}
+
+    RAISE DEBUG 'Added faces: %', newfaces;
+
+    -- NOT IN THE SPECS:
+    -- update TopoGeometry compositions to substitute oldface with newfaces
+    sql := 'UPDATE '
+      || quote_ident(atopology)
+      || '.relation r set element_id = ' || newfaces[1]
+      || ' FROM topology.layer l '
+      || ' WHERE l.topology_id = ' || topoid
+      || ' AND l.level = 0 '
+      || ' AND l.layer_id = r.layer_id '
+      || ' AND r.element_id = ' || newedge.left_face
+      || ' AND r.element_type = 3 RETURNING r.topogeo_id, r.layer_id';
+    --RAISE DEBUG 'SQL: %', sql;
+    FOR rec IN EXECUTE sql
+    LOOP
+      RAISE DEBUG 'TopoGeometry % in layer % contained the face being split (%) - updating to contain both new faces %', rec.topogeo_id, rec.layer_id, newedge.left_face, newfaces;
+
+      -- Add reference to the other face
+      sql := 'INSERT INTO ' || quote_ident(atopology)
+        || '.relation VALUES( ' || rec.topogeo_id
+        || ',' || rec.layer_id || ',' || newfaces[2] || ', 3)';
+      --RAISE DEBUG 'SQL: %', sql;
+      EXECUTE sql;
+
+    END LOOP;
+
+    -- drop old face from faces table
+    sql := 'DELETE FROM ' || quote_ident(atopology)
+      || '.face WHERE face_id = ' || newedge.left_face;
+    EXECUTE sql;
+
+  ELSE
+
+    FOR rec IN SELECT (ST_Dump(fan.post)).geom
+    LOOP -- {
+      -- skip the polygons whose boundary does not contain
+      -- the newly added edge
+      IF NOT ST_Contains(ST_Boundary(rec.geom), acurve) THEN
+        CONTINUE;
+      END IF;
+
+      RAISE DEBUG 'Adding face %', ST_AsText(rec.geom);
+      sql :=
+        'SELECT topology.AddFace(' || quote_literal(atopology)
+        || ', ' || quote_literal(rec.geom::text) || ')';
+      EXECUTE sql INTO newface;
+      newfaces := array_append(newfaces, newface);
+    END LOOP; --}
+
+    RAISE DEBUG 'Added faces: %', newfaces;
+
+  END IF;
+
+  RETURN newedge.edge_id;
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE;
