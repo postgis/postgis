@@ -3293,7 +3293,7 @@ FROM dummy_rast WHERE rid=2;
 		<refentry id="RT_ST_AsTIFF">
 			<refnamediv>
 				<refname>ST_AsTIFF</refname>
-				<refpurpose>Return the raster tile selected bands as a single TIFF image (byte array).  If no band is specified, band 1 is assumed.</refpurpose>
+				<refpurpose>Return the raster tile selected bands as a single TIFF image (byte array).  If no band is specified, then will try to use all bands?.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -3330,7 +3330,7 @@ FROM dummy_rast WHERE rid=2;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the selected bands of the raster as a single Tagged Image File Format (TIFF).  Use <xref linkend="RT_ST_AsGDALRaster" /> if you need to export as less common raster types. There are many variants of the function with many options.  If no spatial reference SRS text is present, the spatial reference of the raster is used. These are itemized below:</para>
+				<para>Returns the selected bands of the raster as a single Tagged Image File Format (TIFF). If no band is specified, will try to use all bands. This is a wrapper around <xref linkend="RT_ST_AsGDALRaster" />. Use <xref linkend="RT_ST_AsGDALRaster" /> if you need to export as less common raster types. There are many variants of the function with many options.  If no spatial reference SRS text is present, the spatial reference of the raster is used. These are itemized below:</para>
                 <itemizedlist>
                     <listitem>
                         <varname>nbands</varname> is an array of bands to export (note that max is 3 for PNG) and the order of the bands is RGB. e.g ARRAY[3,2,1] means map band 3 to Red, band 2 to green and band 1 to blue
