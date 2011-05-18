@@ -113,6 +113,7 @@ run_simple_test ()
 	${PSQL} -tA < "${_sql}" ${DB} > ${TMPFILE} 2>&1
 	cat ${TMPFILE} \
 		| grep -v "^$" \
+		| grep -v "^SELECT" \
 		| grep -v "^INSERT" \
 		| grep -v "^DELETE" \
 		| grep -v "^CONTEXT" \

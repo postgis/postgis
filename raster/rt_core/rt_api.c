@@ -1489,6 +1489,7 @@ struct rt_bandstats_t {
 
 	double min;
 	double max;
+	double sum;
 	double mean;
 	double stddev;
 
@@ -1584,6 +1585,7 @@ rt_band_get_summary_stats(rt_band band, int hasnodata, double sample,
 			stats->sample = 1;
 			stats->count = band->width * band->height;
 			stats->min = stats->max = nodata;
+			stats->sum = stats->count * nodata;
 			stats->mean = nodata;
 			stats->stddev = 0;
 			stats->values = NULL;
@@ -1696,6 +1698,7 @@ rt_band_get_summary_stats(rt_band band, int hasnodata, double sample,
 						stats->sample = sample;
 						stats->count = 0;
 
+						stats->sum = 0;
 						stats->mean = 0;
 						stats->stddev = -1;
 						stats->min = stats->max = value;
@@ -1731,6 +1734,7 @@ rt_band_get_summary_stats(rt_band band, int hasnodata, double sample,
 		}
 
 		stats->count = k;
+		stats->sum = sum;
 		stats->mean = sum / k;
 
 		/* standard deviation */

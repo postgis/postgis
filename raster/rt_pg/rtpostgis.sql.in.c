@@ -263,6 +263,7 @@ CREATE OR REPLACE FUNCTION st_band(rast raster)
 -----------------------------------------------------------------------
 CREATE TYPE summarystats AS (
 	count integer,
+	sum double precision,
 	mean double precision,
 	stddev double precision,
 	min double precision,
@@ -276,47 +277,47 @@ CREATE OR REPLACE FUNCTION _st_summarystats(rast raster, nband int, hasnodata bo
 
 CREATE OR REPLACE FUNCTION st_summarystats(rast raster, nband int, hasnodata boolean)
 	RETURNS summarystats
-	AS $$ SELECT count, mean, stddev, min, max FROM _st_summarystats($1, $2, $3, 1) $$
+	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, $2, $3, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_summarystats(rast raster, nband int)
 	RETURNS summarystats
-	AS $$ SELECT count, mean, stddev, min, max FROM _st_summarystats($1, $2, TRUE, 1) $$
+	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, $2, TRUE, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_summarystats(rast raster, hasnodata boolean)
 	RETURNS summarystats
-	AS $$ SELECT count, mean, stddev, min, max FROM _st_summarystats($1, 1, $2, 1) $$
+	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, 1, $2, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_summarystats(rast raster)
 	RETURNS summarystats
-	AS $$ SELECT count, mean, stddev, min, max FROM _st_summarystats($1, 1, TRUE, 1) $$
+	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, 1, TRUE, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, nband int, hasnodata boolean, sample_percent double precision)
 	RETURNS summarystats
-	AS $$ SELECT count, mean, stddev, min, max FROM _st_summarystats($1, $2, $3, $4) $$
+	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, $2, $3, $4) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, nband int, sample_percent double precision)
 	RETURNS summarystats
-	AS $$ SELECT count, mean, stddev, min, max FROM _st_summarystats($1, $2, TRUE, $3) $$
+	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, $2, TRUE, $3) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, hasnodata boolean, sample_percent double precision)
 	RETURNS summarystats
-	AS $$ SELECT count, mean, stddev, min, max FROM _st_summarystats($1, 1, $2, $3) $$
+	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, 1, $2, $3) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, sample_percent double precision)
 	RETURNS summarystats
-	AS $$ SELECT count, mean, stddev, min, max FROM _st_summarystats($1, 1, TRUE, $2) $$
+	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, 1, TRUE, $2) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster)
 	RETURNS summarystats
-	AS $$ SELECT count, mean, stddev, min, max FROM _st_summarystats($1, 1, TRUE, 0.1) $$
+	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, 1, TRUE, 0.1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION _st_summarystats(rastertable text, rastercolumn text, nband integer, hasnodata boolean, sample_percent double precision)
@@ -331,7 +332,8 @@ CREATE OR REPLACE FUNCTION _st_summarystats(rastertable text, rastercolumn text,
 		stats summarystats;
 		rtn summarystats;
 
-		mean double precision;
+		avg double precision;
+		wavg double precision;
 		tmp double precision;
 	BEGIN		
 		-- nband
@@ -364,19 +366,21 @@ CREATE OR REPLACE FUNCTION _st_summarystats(rastertable text, rastercolumn text,
 				RETURN NULL;
 		END;
 
-		mean := 0;
+		avg := 0;
+		wavg := 0;
 		tmp := 0;
 		LOOP
 			FETCH curs INTO rast;
 			EXIT WHEN NOT FOUND;
 
-			SELECT * FROM _st_summarystats(rast, nband, hasnodata, sample_percent) INTO stats;
+			SELECT count, sum, mean, stddev, min, max FROM _st_summarystats(rast, nband, hasnodata, sample_percent) INTO stats;
 			IF stats IS NULL OR stats.count < 1 THEN
 				CONTINUE;
 			END IF;
 			--RAISE NOTICE 'stats = %', stats;
 
-			mean := mean + (stats.count * stats.mean); -- not the mean
+			avg := avg + stats.sum; -- not the mean
+			wavg := wavg + (stats.count * stats.mean); -- not the mean
 			-- sum of "sum of squares"
 			IF sample_percent > 0 AND sample_percent < 1 THEN
 				tmp := tmp + (power(stats.stddev, 2) * (stats.count - 1));
@@ -401,9 +405,12 @@ CREATE OR REPLACE FUNCTION _st_summarystats(rastertable text, rastercolumn text,
 
 		CLOSE curs;
 
-		-- weighted mean and cumulative stddev
+		-- mean and cumulative stddev
 		IF rtn.count IS NOT NULL AND rtn.count > 0 THEN
-			rtn.mean := mean / rtn.count;
+			rtn.mean := avg / rtn.count;
+			wavg := wavg / rtn.count;
+			--RAISE NOTICE 'straight avg = %', avg;
+			--RAISE NOTICE 'weighted avg = %', wavg;
 			rtn.stddev := sqrt(tmp / rtn.count);
 		END IF;
 
@@ -413,42 +420,42 @@ CREATE OR REPLACE FUNCTION _st_summarystats(rastertable text, rastercolumn text,
 
 CREATE OR REPLACE FUNCTION st_summarystats(rastertable text, rastercolumn text, nband integer, hasnodata boolean)
 	RETURNS summarystats
-	AS $$ SELECT count, mean, stddev, min, max FROM _st_summarystats($1, $2, $3, $4, 1) $$
+	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, $2, $3, $4, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_summarystats(rastertable text, rastercolumn text, nband integer)
 	RETURNS summarystats
-	AS $$ SELECT count, mean, stddev, min, max FROM _st_summarystats($1, $2, $3, TRUE, 1) $$
+	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, $2, $3, TRUE, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_summarystats(rastertable text, rastercolumn text)
 	RETURNS summarystats
-	AS $$ SELECT count, mean, stddev, min, max FROM _st_summarystats($1, $2, 1, TRUE, 1) $$
+	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, $2, 1, TRUE, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rastertable text, rastercolumn text, nband integer, hasnodata boolean, sample_percent double precision)
 	RETURNS summarystats
-	AS $$ SELECT count, mean, stddev, min, max FROM _st_summarystats($1, $2, $3, $4, $5) $$
+	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, $2, $3, $4, $5) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rastertable text, rastercolumn text, nband integer, sample_percent double precision)
 	RETURNS summarystats
-	AS $$ SELECT count, mean, stddev, min, max FROM _st_summarystats($1, $2, $3, TRUE, $4) $$
+	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, $2, $3, TRUE, $4) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rastertable text, rastercolumn text, nband integer)
 	RETURNS summarystats
-	AS $$ SELECT count, mean, stddev, min, max FROM _st_summarystats($1, $2, $3, TRUE, 0.1) $$
+	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, $2, $3, TRUE, 0.1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rastertable text, rastercolumn text, sample_percent double precision)
 	RETURNS summarystats
-	AS $$ SELECT count, mean, stddev, min, max FROM _st_summarystats($1, $2, 1, TRUE, $3) $$
+	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, $2, 1, TRUE, $3) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rastertable text, rastercolumn text)
 	RETURNS summarystats
-	AS $$ SELECT count, mean, stddev, min, max FROM _st_summarystats($1, $2, 1, TRUE, 0.1) $$
+	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, $2, 1, TRUE, 0.1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------

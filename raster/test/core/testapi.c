@@ -993,6 +993,7 @@ struct rt_bandstats_t {
 
 	double min;
 	double max;
+	double sum;
 	double mean;
 	double stddev;
 
