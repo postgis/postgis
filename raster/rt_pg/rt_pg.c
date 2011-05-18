@@ -1984,11 +1984,7 @@ Datum RASTER_addband(PG_FUNCTION_ARGS)
     }
 
     pixeltypename = PG_GETARG_TEXT_P(2);
-    new_pixeltypename = (char *) palloc(VARSIZE(pixeltypename) + 1 - VARHDRSZ);
-    SET_VARSIZE(new_pixeltypename, VARSIZE(pixeltypename));
-    memcpy(new_pixeltypename, VARDATA(pixeltypename),
-        VARSIZE(pixeltypename) - VARHDRSZ);
-    new_pixeltypename[VARSIZE(pixeltypename) - VARHDRSZ] = 0; /* null terminate */
+		new_pixeltypename = text_to_cstring(pixeltypename);
 
     /* Get the pixel type index */
     pixtype = rt_pixtype_index_from_name(new_pixeltypename);
@@ -2936,7 +2932,7 @@ struct rt_bandstats_t {
 PG_FUNCTION_INFO_V1(RASTER_summaryStats);
 Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 {
-	rt_pgraster *pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	rt_pgraster *pgraster = NULL;
 	rt_raster raster = NULL;
 	rt_band band = NULL;
 	int32_t bandindex = 0;
@@ -2951,6 +2947,10 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 	char **values;
 	HeapTuple tuple;
 	Datum result;
+
+	/* pgraster is null, return null */
+	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	raster = rt_raster_deserialize(pgraster);
 	if (!raster) {
@@ -2980,7 +2980,7 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 			rt_raster_destroy(raster);
 			PG_RETURN_NULL();
 		}
-		else if (sample == 0)
+		else if (fabs(sample - 0.0) < FLT_EPSILON)
 			sample = 1;
 	}
 	else
@@ -3122,7 +3122,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 	if (SRF_IS_FIRSTCALL()) {
 		MemoryContext oldcontext;
 
-		rt_pgraster *pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		rt_pgraster *pgraster = NULL;
 		rt_raster raster = NULL;
 		rt_band band = NULL;
 		int32_t bandindex = 0;
@@ -3157,6 +3157,10 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		/* switch to memory context appropriate for multiple function calls */
 		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
+		/* pgraster is null, return nothing */
+		if (PG_ARGISNULL(0)) SRF_RETURN_DONE(funcctx);
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
 		raster = rt_raster_deserialize(pgraster);
 		if (!raster) {
 			elog(ERROR, "RASTER_histogram: Could not deserialize raster");
@@ -3185,7 +3189,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 				rt_raster_destroy(raster);
 				SRF_RETURN_DONE(funcctx);
 			}
-			else if (sample == 0)
+			else if (fabs(sample - 0.0) < FLT_EPSILON)
 				sample = 1;
 		}
 		else
@@ -3234,7 +3238,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 						break;
 				}
 
-				if (width < 0) {
+				if (width < 0 || fabs(width - 0.0) < FLT_EPSILON) {
 					elog(NOTICE, "Invalid value for width (must be greater than 0). Returning NULL");
 					pfree(bin_width);
 					rt_raster_destroy(raster);
@@ -3412,7 +3416,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 	if (SRF_IS_FIRSTCALL()) {
 		MemoryContext oldcontext;
 
-		rt_pgraster *pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		rt_pgraster *pgraster = NULL;
 		rt_raster raster = NULL;
 		rt_band band = NULL;
 		int32_t bandindex = 0;
@@ -3445,6 +3449,10 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		/* switch to memory context appropriate for multiple function calls */
 		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
+		/* pgraster is null, return nothing */
+		if (PG_ARGISNULL(0)) SRF_RETURN_DONE(funcctx);
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
 		raster = rt_raster_deserialize(pgraster);
 		if (!raster) {
 			elog(ERROR, "RASTER_quantile: Could not deserialize raster");
@@ -3473,7 +3481,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 				rt_raster_destroy(raster);
 				SRF_RETURN_DONE(funcctx);
 			}
-			else if (sample == 0)
+			else if (fabs(sample - 0.0) < FLT_EPSILON)
 				sample = 1;
 		}
 		else
@@ -3664,7 +3672,7 @@ struct rt_reclassexpr_t {
  */
 PG_FUNCTION_INFO_V1(RASTER_reclass);
 Datum RASTER_reclass(PG_FUNCTION_ARGS) {
-	rt_pgraster *pgrast = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	rt_pgraster *pgrast = NULL;
 	rt_raster raster = NULL;
 	rt_band band = NULL;
 	rt_band newband = NULL;
@@ -3715,6 +3723,10 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 	int dash_n = 0;
 
 	POSTGIS_RT_DEBUG(3, "RASTER_reclass: Starting");
+
+	/* pgraster is null, return null */
+	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+	pgrast = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	/* raster */
 	raster = rt_raster_deserialize(pgrast);
@@ -4114,7 +4126,7 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 PG_FUNCTION_INFO_V1(RASTER_asGDALRaster);
 Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 {
-	rt_pgraster *pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	rt_pgraster *pgraster = NULL;
 	rt_raster raster;
 
 	text *formattext = NULL;
@@ -4145,6 +4157,10 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 	uint64_t result_size = 0;
 
 	POSTGIS_RT_DEBUG(3, "RASTER_asGDALRaster: Starting");
+
+	/* pgraster is null, return null */
+	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	raster = rt_raster_deserialize(pgraster);
 	if (!raster) {

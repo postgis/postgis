@@ -1524,6 +1524,7 @@ rt_band_get_summary_stats(rt_band band, int hasnodata, double sample,
 	double value;
 	rt_bandstats stats = NULL;
 
+	uint32_t do_sample = 0;
 	uint32_t sample_size = 0;
 	int byY = 0;
 	uint32_t outer = 0;
@@ -1607,11 +1608,19 @@ rt_band_get_summary_stats(rt_band band, int hasnodata, double sample,
 	}
 
 	/* clamp percentage */
-	if (sample <= 0 || sample > 1)
+	if (
+		(sample < 0 || fabs(sample - 0.0) < FLT_EPSILON) ||
+		(sample > 1 || fabs(sample - 1.0) < FLT_EPSILON)
+	) {
+		do_sample = 0;
 		sample = 1;
+	}
+	else
+		do_sample = 1;
+	RASTER_DEBUGF(3, "do_sample = %d", do_sample);
 
 	/* sample all pixels */
-	if (sample == 1) {
+	if (do_sample != 1) {
 		sample_size = band->width * band->height;
 		sample_per = inner;
 	}
@@ -1643,7 +1652,7 @@ rt_band_get_summary_stats(rt_band band, int hasnodata, double sample,
 		diff = 0;
 
 		for (i = 0, z = 0; i < sample_per; i++) {
-			if (sample == 1)
+			if (do_sample != 1)
 				y = i;
 			else {
 				offset = (rand() % sample_int) + 1;
@@ -1661,14 +1670,15 @@ rt_band_get_summary_stats(rt_band band, int hasnodata, double sample,
 			j++;
 			if (rtn != -1) {
 				if (
-					!hasnodata ||
-					(hasnodata && (hasnodata_flag != FALSE) && (value != nodata))
+					!hasnodata || (
+						hasnodata &&
+						(hasnodata_flag != FALSE) &&
+						(fabs(value - nodata) > FLT_EPSILON)
+					)
 				) {
 
 					/* inc_vals set, collect pixel values */
-					if (inc_vals) {
-						values[k] = value;
-					}
+					if (inc_vals) values[k] = value;
 
 					/* average */
 					k++;
@@ -1738,7 +1748,7 @@ rt_band_get_summary_stats(rt_band band, int hasnodata, double sample,
 		stats->mean = sum / k;
 
 		/* standard deviation */
-		if (sample == 1)
+		if (do_sample != 1)
 			stats->stddev = sqrt(Q / k);
 		/* sample deviation */
 		else {
@@ -1821,7 +1831,7 @@ rt_band_get_histogram(rt_bandstats stats,
 	/* bin width must be positive numbers and not zero */
 	if (NULL != bin_width && bin_width_count > 0) {
 		for (i = 0; i < bin_width_count; i++) {
-			if (bin_width[i] <= 0.) {
+			if (bin_width[i] < 0 || fabs(bin_width[i] - 0.0) < FLT_EPSILON) {
 				rterror("rt_util_get_histogram: bin_width element is less than or equal to zero");
 				return NULL;
 			}
@@ -1863,7 +1873,7 @@ rt_band_get_histogram(rt_bandstats stats,
 	}
 
 	/* min and max the same */
-	if (stats->min == stats->max)
+	if (fabs(stats->max - stats->min) < FLT_EPSILON)
 		bin_count = 1;
 
 	RASTER_DEBUGF(3, "bin_count = %d", bin_count); 
@@ -1962,8 +1972,12 @@ rt_band_get_histogram(rt_bandstats stats,
 		if (!right) {
 			for (j = 0; j < bin_count; j++) {
 				if (
-					(!bins[j].inc_max && value < bins[j].max) ||
-					(bins[j].inc_max && value <= bins[j].max)
+					(!bins[j].inc_max && value < bins[j].max) || (
+						bins[j].inc_max && (
+							(value < bins[j].max) ||
+							(fabs(value - bins[j].max) < FLT_EPSILON)
+						)
+					)
 				) {
 					bins[j].count++;
 					sum++;
@@ -1974,8 +1988,12 @@ rt_band_get_histogram(rt_bandstats stats,
 		else {
 			for (j = 0; j < bin_count; j++) {
 				if (
-					(!bins[j].inc_min && value > bins[j].min) ||
-					(bins[j].inc_min && value >= bins[j].min)
+					(!bins[j].inc_min && value > bins[j].min) || (
+						bins[j].inc_min && (
+							(value > bins[j].min) ||
+							(fabs(value - bins[j].min) < FLT_EPSILON)
+						)
+					)
 				) {
 					bins[j].count++;
 					sum++;
@@ -2344,23 +2362,38 @@ rt_band_reclass(rt_band srcband, rt_pixtype pixtype,
 					expr = exprset[i];
 
 					/* ov matches min and max*/
-					if (expr->src.min == ov && ov == expr->src.max) {
+					if (
+						fabs(expr->src.min - ov) < FLT_EPSILON &&
+						fabs(expr->src.max - ov) < FLT_EPSILON
+					) {
 						do_nv = 1;
 						break;
 					}
 
 					/* process min */
-					if (
-						(expr->src.exc_min && expr->src.min >= ov) ||
-						(expr->src.inc_min && expr->src.min <= ov) ||
-						(expr->src.min < ov)
-					) {
+					if ((
+						expr->src.exc_min && (
+							expr->src.min > ov ||
+							fabs(expr->src.min - ov) < FLT_EPSILON
+						)) || (
+						expr->src.inc_min && (
+							expr->src.min < ov ||
+							fabs(expr->src.min - ov) < FLT_EPSILON
+						)) || (
+						expr->src.min < ov
+					)) {
 						/* process max */
-						if (
-							(expr->src.exc_max && ov >= expr->src.max) ||
-							(expr->src.inc_max && ov <= expr->src.max) ||
-							(ov < expr->src.max)
-						) {
+						if ((
+							expr->src.exc_max && (
+								ov > expr->src.max ||
+								fabs(expr->src.max - ov) < FLT_EPSILON
+							)) || (
+								expr->src.inc_max && (
+								ov < expr->src.max ||
+								fabs(expr->src.max - ov) < FLT_EPSILON
+							)) || (
+							ov < expr->src.max
+						)) {
 							do_nv = 1;
 							break;
 						}
@@ -2379,14 +2412,18 @@ rt_band_reclass(rt_band srcband, rt_pixtype pixtype,
 			*/
 
 			/* nodata */
-			if (src_hasnodata && hasnodata && ov == src_nodataval) {
+			if (
+				src_hasnodata &&
+				hasnodata &&
+				fabs(ov - src_nodataval) < FLT_EPSILON
+			) {
 				nv = nodataval;
 			}
 			/*
 				"src" min and max is the same, prevent division by zero
 				set nv to "dst" min, which should be the same as "dst" max
 			*/
-			else if (expr->src.min == expr->src.max) {
+			else if (fabs(expr->src.max - expr->src.min) < FLT_EPSILON) {
 				nv = expr->dst.min;
 			}
 			else {
@@ -2773,8 +2810,8 @@ rt_raster_generate_new_band(rt_raster raster, rt_pixtype pixtype,
     oldnumbands = rt_raster_get_num_bands(raster);
     if (index < 0)
         index = 0;
-    else if (index > rt_raster_get_num_bands(raster) + 1)
-        index = rt_raster_get_num_bands(raster) + 1;
+    else if (index > oldnumbands + 1)
+        index = oldnumbands + 1;
 
     /* Determine size of memory block to allocate and allocate it */
     width = rt_raster_get_width(raster);
@@ -5235,7 +5272,7 @@ rt_raster_to_gdal_mem(rt_raster raster, char *srs,
 	numBands = rt_raster_get_num_bands(raster);
 	for (i = 0; i < numBands; i++) {
 		rtband = rt_raster_get_band(raster, i);
-		if (0 == rtband) {
+		if (NULL == rtband) {
 			rterror("rt_raster_to_gdal_mem: Unable to get requested band\n");
 			GDALClose(ds);
 			if (drv_gen) {
