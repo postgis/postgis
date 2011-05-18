@@ -3348,27 +3348,27 @@ FROM dummy_rast WHERE rid=2;
 					<funcdef>bytea <function>ST_AsTIFF</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>text[] </type> <parameter>[options]</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>[srs]</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>[srs=sameassource]</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>bytea <function>ST_AsTIFF</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>[compression='']</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>[srs]</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>[srs=sameassource]</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>bytea <function>ST_AsTIFF</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer[] </type> <parameter>nbands</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>[compression='']</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>[srs]</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>[srs=sameassource]</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>bytea <function>ST_AsTIFF</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer[] </type> <parameter>nbands</parameter></paramdef>
 					<paramdef><type>text[] </type> <parameter>options</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>[srs]</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>[srs=sameassource]</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
