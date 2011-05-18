@@ -1441,6 +1441,52 @@ srid
 				<para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_SRID" /></para>
 			</refsection>
 		</refentry>
+		
+		<refentry id="RT_ST_SRText">
+			<refnamediv>
+				<refname>ST_SRText</refname>
+				<refpurpose>Returns the spatial reference srtext from spatial_ref_sys table corresponding to srid of raster.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>text <function>ST_SRText</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the srtext corresponding to the spatial referenceof the raster object as defined in the spatial_ref_sys table. If not
+				defined returns proj4text and if not in spatial_ref_sys returns NULL.</para>
+
+				<para>Availability: 2.0.0 </para>
+			</refsection>
+				
+			<refsection>
+				<title>Examples</title>
+			
+				<programlisting>SELECT ST_SRSText(rast) As srtext
+FROM somerast_table WHERE rid=2;
+
+srtext
+----------------
+"GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,
+AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],
+PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],
+UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]"
+				</programlisting>	
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_SRID" /></para>
+			</refsection>
+		</refentry>
 	
 		<refentry id="RT_ST_UpperLeftX">
 			<refnamediv>
@@ -3335,9 +3381,9 @@ FROM dummy_rast WHERE rid=2;
                     <listitem>
                         <varname>nbands</varname> is an array of bands to export (note that max is 3 for PNG) and the order of the bands is RGB. e.g ARRAY[3,2,1] means map band 3 to Red, band 2 to green and band 1 to blue
                     </listitem>
-                   <listitem><varname>compression</varname> Compression expression -- JPEG90 (or someother percent), LZMA, JPEG, DEFALTE9 </listitem>
-                   <listitem><varname>options</varname> text Array of GDAL create options as defined for GTiff (look at create_options for GTiff of <xref linkend="RT_ST_GDALDrivers" />). or refer to <ulink url="http://www.gdal.org/frmt_various.html">GDAL Raster format options</ulink> for more details.
-                   </listitem>
+                   <listitem><varname>compression</varname> Compression expression -- JPEG90 (or someother percent), LZMA, JPEG, DEFALTE9.  </listitem>
+                   <listitem><varname>options</varname> text Array of GDAL create options as defined for GTiff (look at create_options for GTiff of <xref linkend="RT_ST_GDALDrivers" />). or refer to <ulink url="http://www.gdal.org/frmt_various.html">GDAL Raster format options</ulink> for more details. </listitem>
+                   <listitem><varname>srs</varname> If not specified uses the srtext corresponding to the spatial_ref_sys of the raster. </listitem>
                 </itemizedlist>
                 <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
 			</refsection>
@@ -3354,7 +3400,7 @@ FROM dummy_rast WHERE rid=2;
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_GDALDrivers" />, <xref linkend="RT_ST_AsGDALRaster" /></para>
+				<para><xref linkend="RT_ST_GDALDrivers" />, <xref linkend="RT_ST_AsGDALRaster" />, <xref linkend="RT_ST_SRText" /></para>
 			</refsection>
 		</refentry>
 	</sect1>
