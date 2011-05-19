@@ -405,6 +405,9 @@ asx3d3_multi_buf(const LWCOLLECTION *col, char *srs, char *output, int precision
 {
 	char *ptr, *x3dtype;
 	int i;
+	int dimension=2;
+
+	if (FLAGS_GET_Z(col->flags)) dimension = 3;
 	LWGEOM *subgeom;
 	ptr = output;
 	x3dtype="";
@@ -414,7 +417,13 @@ asx3d3_multi_buf(const LWCOLLECTION *col, char *srs, char *output, int precision
 	{
         case MULTIPOINTTYPE:
             x3dtype = "PointSet";
-            ptr += sprintf(ptr, "<%s %s>", x3dtype, defid);
+            if ( dimension == 2 ){ /** Use Polypoint2D instead **/
+                x3dtype = "Polypoint2D";   
+                ptr += sprintf(ptr, "<%s %s point='", x3dtype, defid);
+            }
+            else {
+                ptr += sprintf(ptr, "<%s %s>", x3dtype, defid);
+            }
             break;
         case MULTILINETYPE:
             x3dtype = "IndexedLineSet";
@@ -432,8 +441,9 @@ asx3d3_multi_buf(const LWCOLLECTION *col, char *srs, char *output, int precision
             lwerror("asx3d3_multi_buf: '%s' geometry type not supported", lwtype_name(col->type));
             return NULL;
     }
-
-	ptr += sprintf(ptr, "<Coordinate point='");
+    if (dimension == 3){
+        ptr += sprintf(ptr, "<Coordinate point='");
+    }
 
 	for (i=0; i<col->ngeoms; i++)
 	{
@@ -456,8 +466,10 @@ asx3d3_multi_buf(const LWCOLLECTION *col, char *srs, char *output, int precision
 	}
 
 	/* Close outmost tag */
-	ptr += sprintf(ptr, "' /></%s>", x3dtype);
-
+	if (dimension == 3){
+	    ptr += sprintf(ptr, "' /></%s>", x3dtype);
+	}
+	else { ptr += sprintf(ptr, "' />"); }    
 	return (ptr-output);
 }
 

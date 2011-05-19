@@ -103,7 +103,18 @@ static void out_x3d3_test_geoms(void)
 	        "",
 	    NULL, 0); **/
 
-	/* Multiline */
+	/* 2D MultiPoint */
+	do_x3d3_test(
+	    "MULTIPOINT(0 1,2 3,4 5)",
+	    "<Polypoint2D  point='0 1 2 3 4 5 ' />",
+	    NULL, 0);
+	
+	/* 3D MultiPoint */
+	do_x3d3_test(
+	    "MULTIPOINT Z(0 1 1,2 3 4,4 5 5)",
+	    "<PointSet ><Coordinate point='0 1 1 2 3 4 4 5 5 ' /></PointSet>",
+	    NULL, 0);
+	/* 3D Multiline */
 	do_x3d3_test(
 	    "MULTILINESTRING Z((0 1 1,2 3 4,4 5 5),(6 7 5,8 9 8,10 11 5))",
 	    "<IndexedLineSet  coordIndex='0 1 2 -1 3 4 5'><Coordinate point='0 1 1 2 3 4 4 5 5 6 7 5 8 9 8 10 11 5 ' /></IndexedLineSet>",
