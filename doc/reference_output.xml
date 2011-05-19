@@ -875,7 +875,7 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 		</note>
 		
 		<informaltable>
-				<tgroup cols="2">
+				<tgroup cols="3">
 					<tbody>
 					  <row>
 						<entry>PostGIS Type</entry>
