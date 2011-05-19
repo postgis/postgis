@@ -6,6 +6,7 @@ PostGIS 1.5.3
    filed since the 1.5.2 release.
 
  - Bug Fixes
+   - #940, support for PostgreSQL 9.1
    - #845, ST_Intersects precision error (Sandro Santilli)
 
 
