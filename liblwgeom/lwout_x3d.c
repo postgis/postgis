@@ -164,7 +164,7 @@ asx3d3_line_buf(const LWLINE *line, char *srs, char *output, int precision, int 
 
 
 	ptr += sprintf(ptr, "<Coordinate point='");
-	ptr += pointArray_toX3D3(line->points, ptr, precision, opts, lwline_is_closed(line));
+	ptr += pointArray_toX3D3(line->points, ptr, precision, opts, lwline_is_closed((LWLINE *) line));
 
 	ptr += sprintf(ptr, "' />");
 
@@ -234,7 +234,7 @@ asx3d3_mpoly_coordindex(const LWMPOLY *psur, char *output)
 {
 	char *ptr=output;
 	LWPOLY *patch;
-	int i, j, k, l, si;
+	int i, j, k, l;
 	int np;
 	j = 0;
 	for (i=0; i<psur->ngeoms; i++)
@@ -403,35 +403,35 @@ asx3d3_multi_size(const LWCOLLECTION *col, char *srs, int precision, int opts, c
 static size_t
 asx3d3_multi_buf(const LWCOLLECTION *col, char *srs, char *output, int precision, int opts, const char *defid)
 {
-	int type = col->type;
 	char *ptr, *x3dtype;
 	int i;
 	LWGEOM *subgeom;
-	POINTARRAY *pa;
-
 	ptr = output;
 	x3dtype="";
 
 
-	if 	(type == MULTIPOINTTYPE)
+	switch (col->type)
 	{
-		x3dtype = "PointSet";
-		ptr += sprintf(ptr, "<%s %s>", x3dtype, defid);
-	}
-	else if (type == MULTILINETYPE)
-	{
-		x3dtype = "IndexedLineSet";
-		ptr += sprintf(ptr, "<%s %s coordIndex='", x3dtype, defid);
-		ptr += asx3d3_mline_coordindex(col, ptr);
-		ptr += sprintf(ptr, "'>");
-	}
-	else if (type == MULTIPOLYGONTYPE)
-	{
-		x3dtype = "IndexedFaceSet";
-		ptr += sprintf(ptr, "<%s %s coordIndex='", x3dtype, defid);
-		ptr += asx3d3_mpoly_coordindex(col,ptr);
-		ptr += sprintf(ptr, "'>");
-	}
+        case MULTIPOINTTYPE:
+            x3dtype = "PointSet";
+            ptr += sprintf(ptr, "<%s %s>", x3dtype, defid);
+            break;
+        case MULTILINETYPE:
+            x3dtype = "IndexedLineSet";
+            ptr += sprintf(ptr, "<%s %s coordIndex='", x3dtype, defid);
+            ptr += asx3d3_mline_coordindex(col, ptr);
+            ptr += sprintf(ptr, "'>");
+            break;
+        case MULTIPOLYGONTYPE:
+            x3dtype = "IndexedFaceSet";
+            ptr += sprintf(ptr, "<%s %s coordIndex='", x3dtype, defid);
+            ptr += asx3d3_mpoly_coordindex(col,ptr);
+            ptr += sprintf(ptr, "'>");
+            break;
+        default:
+            lwerror("asx3d3_multi_buf: '%s' geometry type not supported", lwtype_name(col->type));
+            return NULL;
+    }
 
 	ptr += sprintf(ptr, "<Coordinate point='");
 
