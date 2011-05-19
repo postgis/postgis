@@ -131,7 +131,7 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- node or interects with an existing edge on anything but endnodes.
 --
 -- The newly added edge has "universe" face on both sides
--- and links to itself.
+-- and links to itself as per next left/right edge.
 -- Calling code is expected to do further linking.
 --
 -- 
@@ -276,7 +276,7 @@ BEGIN
 		|| ')) ,'
 
 		-- next_left_edge
-		|| edgeid ||','
+		|| -edgeid ||','
 
 		-- next_right_edge
 		|| edgeid ||','
