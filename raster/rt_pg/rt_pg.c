@@ -2031,7 +2031,7 @@ Datum RASTER_addband(PG_FUNCTION_ARGS)
         }
     }
 
-    PG_FREE_IF_COPY(pgraster, 0);
+    //PG_FREE_IF_COPY(pgraster, 0);
 
     pgraster = rt_raster_serialize(raster);
     if (!pgraster) PG_RETURN_NULL();
@@ -2105,7 +2105,7 @@ Datum RASTER_copyband(PG_FUNCTION_ARGS)
         }
     }
 
-    PG_FREE_IF_COPY(pgraster, 0);
+    //PG_FREE_IF_COPY(pgraster, 0);
 
     /* Serialize and return torast */
     pgraster = rt_raster_serialize(torast);
