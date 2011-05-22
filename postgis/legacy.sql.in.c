@@ -323,68 +323,69 @@ CREATE OR REPLACE FUNCTION Affine(geometry,float8,float8,float8,float8,float8,fl
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Affine(geometry,float8,float8,float8,float8,float8,float8)
 	RETURNS geometry
-	AS 'SELECT affine($1,  $2, $3, 0,  $4, $5, 0,  0, 0, 1,  $6, $7, 0)'
+	AS 'SELECT st_affine($1,  $2, $3, 0,  $4, $5, 0,  0, 0, 1,  $6, $7, 0)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.1.2
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION RotateZ(geometry,float8)
 	RETURNS geometry
-	AS 'SELECT affine($1,  cos($2), -sin($2), 0,  sin($2), cos($2), 0,  0, 0, 1,  0, 0, 0)'
+	AS 'SELECT st_affine($1,  cos($2), -sin($2), 0,  sin($2), cos($2), 0,  0, 0, 1,  0, 0, 0)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.1.2
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Rotate(geometry,float8)
 	RETURNS geometry
-	AS 'SELECT rotateZ($1, $2)'
+	AS 'SELECT st_rotateZ($1, $2)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.1.2
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION RotateX(geometry,float8)
 	RETURNS geometry
-	AS 'SELECT affine($1, 1, 0, 0, 0, cos($2), -sin($2), 0, sin($2), cos($2), 0, 0, 0)'
+	AS 'SELECT st_affine($1, 1, 0, 0, 0, cos($2), -sin($2), 0, sin($2), cos($2), 0, 0, 0)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.1.2
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION RotateY(geometry,float8)
 	RETURNS geometry
-	AS 'SELECT affine($1,  cos($2), 0, sin($2),  0, 1, 0,  -sin($2), 0, cos($2), 0,  0, 0)'
+	AS 'SELECT st_affine($1,  cos($2), 0, sin($2),  0, 1, 0,  -sin($2), 0, cos($2), 0,  0, 0)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION Translate(geometry,float8,float8,float8)
-	RETURNS geometry
-	AS 'SELECT affine($1, 1, 0, 0, 0, 1, 0, 0, 0, 1, $2, $3, $4)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION Translate(geometry,float8,float8)
-	RETURNS geometry
-	AS 'SELECT translate($1, $2, $3, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
+	
 -- Availability: 1.1.0
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Scale(geometry,float8,float8,float8)
 	RETURNS geometry
-	AS 'SELECT affine($1,  $2, 0, 0,  0, $3, 0,  0, 0, $4,  0, 0, 0)'
+	AS 'SELECT st_affine($1,  $2, 0, 0,  0, $3, 0,  0, 0, $4,  0, 0, 0)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.1.0
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Scale(geometry,float8,float8)
 	RETURNS geometry
-	AS 'SELECT scale($1, $2, $3, 1)'
+	AS 'SELECT st_scale($1, $2, $3, 1)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION Translate(geometry,float8,float8,float8)
+	RETURNS geometry
+	AS 'SELECT st_affine($1, 1, 0, 0, 0, 1, 0, 0, 0, 1, $2, $3, $4)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION Translate(geometry,float8,float8)
+	RETURNS geometry
+	AS 'SELECT st_translate($1, $2, $3, 0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
 
 -- Availability: 1.1.0
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION transscale(geometry,float8,float8,float8,float8)
+CREATE OR REPLACE FUNCTION TransScale(geometry,float8,float8,float8,float8)
 	RETURNS geometry
-	AS 'SELECT affine($1,  $4, 0, 0,  0, $5, 0,
+	AS 'SELECT st_affine($1,  $4, 0, 0,  0, $5, 0,
 		0, 0, 1,  $2 * $4, $3 * $5, 0)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
@@ -403,7 +404,7 @@ CREATE OR REPLACE FUNCTION AddPoint(geometry, geometry, integer)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION area(geometry)
+CREATE OR REPLACE FUNCTION Area(geometry)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','LWGEOM_area_polygon'
 	LANGUAGE 'C' IMMUTABLE STRICT;
@@ -411,7 +412,7 @@ CREATE OR REPLACE FUNCTION area(geometry)
 -- this is an alias for 'area(geometry)'
 -- there is nothing such an 'area3d'...
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION area2d(geometry)
+CREATE OR REPLACE FUNCTION Area2D(geometry)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME', 'LWGEOM_area_polygon'
 	LANGUAGE 'C' IMMUTABLE STRICT;

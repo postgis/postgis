@@ -57,3 +57,16 @@ DROP FUNCTION IF EXISTS geosnoop(geometry);
 DROP FUNCTION IF EXISTS jtsnoop(geometry);
 DROP FUNCTION IF EXISTS st_noop(geometry);
 DROP FUNCTION IF EXISTS st_max_distance(geometry, geometry);
+-- Drop internals that should never have existed --
+DROP FUNCTION IF EXISTS st_geometry_analyze(internal);
+DROP FUNCTION IF EXISTS st_geometry_in(cstring);
+DROP FUNCTION IF EXISTS st_geometry_out(geometry);
+DROP FUNCTION IF EXISTS st_geometry_recv(internal);
+DROP FUNCTION IF EXISTS st_geometry_send(geometry);
+DROP FUNCTION IF EXISTS st_spheroid_in(cstring);
+DROP FUNCTION IF EXISTS st_spheroid_out(spheroid);
+DROP FUNCTION IF EXISTS st_geometry_lt(geometry, geometry);
+DROP FUNCTION IF EXISTS st_geometry_gt(geometry, geometry);
+DROP FUNCTION IF EXISTS st_geometry_ge(geometry, geometry);
+DROP FUNCTION IF EXISTS st_geometry_eq(geometry, geometry);
+DROP FUNCTION IF EXISTS st_geometry_cmp(geometry, geometry);
