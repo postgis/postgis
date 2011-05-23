@@ -1611,7 +1611,7 @@ BEGIN
 		--
 		-- Check acurve to be within face
 		--
-		IF ! ST_Within(acurve, face) THEN
+		IF NOT ST_Within(acurve, face) THEN
 	RAISE EXCEPTION
 	'SQL/MM Spatial exception - geometry not within face.';
 		END IF;

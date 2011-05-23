@@ -1,9 +1,5 @@
 set client_min_messages to WARNING;
 
---
---
-SELECT topology.DropTopology('sqlmm_topology');
-
 -- 
 -- ST_InitTopoGeo
 -- 
@@ -158,3 +154,5 @@ SELECT topology.ST_RemoveIsoEdge('sqlmm_topology', 1);
 
 SELECT '-- ST_NewEdgesSplit  ---------------------';
 SELECT topology.ST_NewEdgesSplit('sqlmm_topology', 2, 'POINT(10 2)');
+
+SELECT topology.DropTopology('sqlmm_topology');

@@ -1,0 +1,23 @@
+t
+N1
+N2
+N3
+N4
+N5
+N6
+ERROR:  SQL/MM Spatial exception - null argument
+ERROR:  SQL/MM Spatial exception - null argument
+ERROR:  SQL/MM Spatial exception - null argument
+ERROR:  SQL/MM Spatial exception - null argument
+ERROR:  SQL/MM Spatial exception - invalid curve
+ERROR:  SQL/MM Spatial exception - curve not simple
+ERROR:  SQL/MM Spatial exception - non-existent node
+ERROR:  SQL/MM Spatial exception - end node not geometry end point.
+ERROR:  SQL/MM Spatial exception - start node not geometry start point.
+ERROR:  SQL/MM Spatial exception - geometry crosses a node
+1
+2
+ERROR:  SQL/MM Spatial exception - not isolated node
+ERROR:  SQL/MM Spatial exception - not isolated node
+ERROR:  SQL/MM Spatial exception - not isolated node
+Topology 'sqlmm_topology' dropped

@@ -1,4 +1,3 @@
-Topology 'sqlmm_topology' dropped
 Topology-Geometry 'sqlmm_topology' (id:4) created. 
 -- ST_AddIsoNode ------------------------
 ERROR:  SQL/MM Spatial exception - null argument
@@ -54,3 +53,4 @@ ERROR:  SQL/MM Spatial exception - invalid point
 Isolated edge 1 removed
 -- ST_NewEdgesSplit  ---------------------
 9
+Topology 'sqlmm_topology' dropped
