@@ -320,5 +320,5 @@ SELECT 'F'||face_id, st_astext(mbr) FROM city_data.face ORDER BY face_id;
 -- Cleanups
 ---------------------------------------------------------------------
 
---DROP TABLE newedge;
---SELECT topology.DropTopology('city_data');
+DROP TABLE newedge;
+SELECT topology.DropTopology('city_data');
