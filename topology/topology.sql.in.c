@@ -136,29 +136,36 @@
 --  	Complete
 --
 --   ST_RemoveIsoEdge
---	Complete, exceptions untested
+--    Complete, exceptions untested
 --  
 --   ST_ChangeEdgeGeom
 --  	Complete
 --
 --   ST_NewEdgesSplit
---	Complete
---	this also updates the Relation table
---	TODO: add entries to the History table ?
+--    Complete
+--    Also updates the Relation table
 --
 --   ST_ModEdgeSplit
---	Complete
---	this also updates the Relation table
---	TODO: add entries to the History table ?
+--    Complete
+--    Also updates the Relation table
 --
 --   ST_AddEdgeNewFaces
---    Being working on. TODO: continue
+--  	Complete
+--    Also updates the Relation table
+--
+--   ST_AddEdgeModFace
+--  	Work in progress...
 --  
 --   ST_GetFaceEdges
 --  	Complete
 --
 --   ST_ModEdgeHeal
---    Being working on. TODO: continue
+--  	Complete
+--    Also updates the Relation table
+--
+--   ST_NewEdgeHeal
+--  	Complete
+--    Also updates the Relation table
 --  
 --   ST_GetFaceGeometry
 --  	Implemented using polygonize()
