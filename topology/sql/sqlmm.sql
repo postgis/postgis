@@ -1493,14 +1493,16 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 --  ST_AddIsoEdge(atopology, anode, anothernode, acurve)
 -- 
-CREATE OR REPLACE FUNCTION topology.ST_AddIsoEdge(varchar, integer, integer, geometry)
+-- Not in the specs:
+-- * Reset containing_face for starting and ending point,
+--   as they stop being isolated nodes
+--
+-- }{
+--
+CREATE OR REPLACE FUNCTION topology.ST_AddIsoEdge(atopology varchar, anode integer, anothernode integer, acurve geometry)
 	RETURNS INTEGER AS
 $$
 DECLARE
-	atopology ALIAS FOR $1;
-	anode ALIAS FOR $2;
-	anothernode ALIAS FOR $3;
-	acurve ALIAS FOR $4;
 	aface INTEGER;
 	face GEOMETRY;
 	snodegeom GEOMETRY;
@@ -1673,19 +1675,33 @@ BEGIN
 		edgeid = rec.nextval;
 	END LOOP;
 
+  -- TODO: this should likely be an exception instead !
+  IF aface IS NULL THEN aface := 0; END IF;
+
 	--
 	-- Insert the new row
 	--
-	IF aface IS NULL THEN aface := 0; END IF;
+  EXECUTE 'INSERT INTO ' || quote_ident(atopology)
+    || '.edge VALUES(' || edgeid || ',' || anode
+    || ',' || anothernode || ',' || (-edgeid)
+    || ',' || edgeid || ','
+    || aface || ',' || aface || ','
+    || quote_literal(acurve::text) || ')';
 
-	EXECUTE 'INSERT INTO ' || quote_ident(atopology)
-		|| '.edge VALUES('||edgeid||','||anode||
-			','||anothernode||','
-			||(-edgeid)||','||edgeid||','
-			||aface||','||aface||','
-			||quote_literal(acurve::text)||')';
+  --
+  -- Update Node containing_face values
+  --
+  -- the nodes anode and anothernode are no more isolated
+  -- because now there is an edge connecting them
+  -- 
+  EXECUTE 'UPDATE ' || quote_ident(atopology)
+    || '.node SET containing_face = NULL where (node_id ='
+    || anode
+    || ' OR node_id='
+    || anothernode
+    || ')';
 
-	RETURN edgeid;
+  RETURN edgeid;
 
 END
 $$

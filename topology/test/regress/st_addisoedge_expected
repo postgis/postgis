@@ -15,8 +15,14 @@ ERROR:  SQL/MM Spatial exception - non-existent node
 ERROR:  SQL/MM Spatial exception - end node not geometry end point.
 ERROR:  SQL/MM Spatial exception - start node not geometry start point.
 ERROR:  SQL/MM Spatial exception - geometry crosses a node
-1
-2
+E1
+E2
+N1|
+N2|
+N3|0
+N4|
+N5|
+N6|0
 ERROR:  SQL/MM Spatial exception - not isolated node
 ERROR:  SQL/MM Spatial exception - not isolated node
 ERROR:  SQL/MM Spatial exception - not isolated node
