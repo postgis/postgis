@@ -285,6 +285,17 @@ SELECT 'T17', 'E'||edge_id, next_left_edge, next_right_edge,
 SELECT 'N' || node_id, containing_face
   FROM city_data.node WHERE node_id IN ( 25, 26 );
 
+--
+-- New face in universal face, enclosing isolated edge chain
+--
+INSERT INTO newedge SELECT 18, topology.st_addedgenewfaces('city_data',
+  25, 26,  'LINESTRING(35 28, 35 45, 63 45, 63 25, 39 25, 39 28)');
+SELECT 'T18', 'E'||edge_id, next_left_edge, next_right_edge,
+  left_face, right_face FROM
+  city_data.edge WHERE edge_id IN ( 4, 5, 43, 
+  ( SELECT edge_id FROM newedge WHERE id = 17 ) )
+  ORDER BY edge_id;
+
 ---------------------------------------------------------------------
 -- Check new relations and faces status
 ---------------------------------------------------------------------
@@ -309,5 +320,5 @@ SELECT 'F'||face_id, st_astext(mbr) FROM city_data.face ORDER BY face_id;
 -- Cleanups
 ---------------------------------------------------------------------
 
-DROP TABLE newedge;
-SELECT topology.DropTopology('city_data');
+--DROP TABLE newedge;
+--SELECT topology.DropTopology('city_data');
