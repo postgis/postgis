@@ -193,5 +193,8 @@ INSERT INTO city_data.edge VALUES(26, 20, 20, 26, -26, 9, 1,
 -- UPDATE Edge id sequence
 SELECT setval('city_data.edge_data_edge_id_seq', 26);
 
+-- Set face minimum bounding rectangle
+UPDATE city_data.face set mbr = ST_SetSRID( ( select st_extent(geom) from city_data.edge where left_face = face_id or right_face = face_id ), @SRID@ ) where face_id != 0;
+
 END;
 
