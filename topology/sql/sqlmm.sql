@@ -1575,8 +1575,13 @@ BEGIN
 
 	END LOOP;
 	IF count < 2 THEN
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - non-existent node';
+    IF count = 1 AND anode = anothernode THEN
+      RAISE EXCEPTION
+       'Closed edges would not be isolated, try ST_AddEdgeNewFaces';
+    ELSE
+      RAISE EXCEPTION
+       'SQL/MM Spatial exception - non-existent node';
+    END IF;
 	END IF;
 
 
@@ -1654,17 +1659,15 @@ BEGIN
 		'SQL/MM Spatial exception - geometry crosses a node';
 	END LOOP;
 
-	--
-	-- o) Check if curve intersects any other edge
-	-- 
-	FOR rec IN EXECUTE 'SELECT * FROM '
-		|| quote_ident(atopology) || '.edge_data
-		WHERE geom && ' || quote_literal(acurve::text) || '::geometry
-		AND ST_Intersects(geom, ' || quote_literal(acurve::text) || '::geometry)'
-	LOOP
-		RAISE EXCEPTION
-		'SQL/MM Spatial exception - geometry intersects an edge';
-	END LOOP;
+  --
+  -- o) Check if curve intersects any other edge
+  -- 
+  FOR rec IN EXECUTE 'SELECT * FROM '
+    || quote_ident(atopology) || '.edge_data
+    WHERE ST_Intersects(geom, ' || quote_literal(acurve::text) || '::geometry)'
+  LOOP
+    RAISE EXCEPTION 'SQL/MM Spatial exception - geometry intersects an edge';
+  END LOOP;
 
 	--
 	-- Get new edge id from sequence

@@ -25,5 +25,6 @@ N5|
 N6|0
 ERROR:  SQL/MM Spatial exception - not isolated node
 ERROR:  SQL/MM Spatial exception - not isolated node
-ERROR:  SQL/MM Spatial exception - not isolated node
+ERROR:  Closed edges would not be isolated, try ST_AddEdgeNewFaces
+ERROR:  SQL/MM Spatial exception - geometry intersects an edge
 Topology 'sqlmm_topology' dropped

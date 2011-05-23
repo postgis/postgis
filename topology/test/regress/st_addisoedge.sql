@@ -57,9 +57,13 @@ SELECT topology.ST_AddIsoEdge('sqlmm_topology',
 SELECT topology.ST_AddIsoEdge('sqlmm_topology',
   5, 6, 'LINESTRING(10 10, 20 10)');
 
+-- Not isolated edge (shares endpoint with self)
+SELECT topology.ST_AddIsoEdge('sqlmm_topology',
+  3, 3, 'LINESTRING(5 0, 4 -2, 6 -2, 5 0)');
+
 -- Edge intersection (geometry intersects an edge)
 SELECT topology.ST_AddIsoEdge('sqlmm_topology',
-  1, 2, 'LINESTRING(0 0, 2 20, 10 0)');
+  3, 6, 'LINESTRING(5 0, 20 10)');
 
 -- TODO: check closed edge (not-isolated I guess...)
 -- on different faces (TODO req. nodes contained in face)
