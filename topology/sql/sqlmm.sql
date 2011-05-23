@@ -1496,6 +1496,8 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- Not in the specs:
 -- * Reset containing_face for starting and ending point,
 --   as they stop being isolated nodes
+-- * Refuse to add a closed edge, as it would not be isolated
+--   (ie: would create a ring)
 --
 -- }{
 --
@@ -1503,78 +1505,78 @@ CREATE OR REPLACE FUNCTION topology.ST_AddIsoEdge(atopology varchar, anode integ
 	RETURNS INTEGER AS
 $$
 DECLARE
-	aface INTEGER;
-	face GEOMETRY;
-	snodegeom GEOMETRY;
-	enodegeom GEOMETRY;
-	count INTEGER;
-	rec RECORD;
-	edgeid INTEGER;
+  aface INTEGER;
+  face GEOMETRY;
+  snodegeom GEOMETRY;
+  enodegeom GEOMETRY;
+  count INTEGER;
+  rec RECORD;
+  edgeid INTEGER;
 BEGIN
 
-	--
-	-- All arguments required
-	-- 
-	IF atopology IS NULL
-	   OR anode IS NULL
-	   OR anothernode IS NULL
-	   OR acurve IS NULL
-	THEN
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - null argument';
-	END IF;
+  --
+  -- All arguments required
+  -- 
+  IF atopology IS NULL
+     OR anode IS NULL
+     OR anothernode IS NULL
+     OR acurve IS NULL
+  THEN
+    RAISE EXCEPTION
+     'SQL/MM Spatial exception - null argument';
+  END IF;
 
-	--
-	-- Acurve must be a LINESTRING
-	--
-	IF substring(geometrytype(acurve), 1, 4) != 'LINE'
-	THEN
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - invalid curve';
-	END IF;
+  --
+  -- Acurve must be a LINESTRING
+  --
+  IF substring(geometrytype(acurve), 1, 4) != 'LINE'
+  THEN
+    RAISE EXCEPTION
+     'SQL/MM Spatial exception - invalid curve';
+  END IF;
 
-	--
-	-- Acurve must be a simple
-	--
-	IF NOT ST_IsSimple(acurve)
-	THEN
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - curve not simple';
-	END IF;
+  --
+  -- Acurve must be a simple
+  --
+  IF NOT ST_IsSimple(acurve)
+  THEN
+    RAISE EXCEPTION
+     'SQL/MM Spatial exception - curve not simple';
+  END IF;
 
-	--
-	-- Check for:
-	--    existence of nodes
-	--    nodes faces match
-	-- Extract:
-	--    nodes face id
-	--    nodes geoms
-	--
-	aface := NULL;
-	count := 0;
-	FOR rec IN EXECUTE 'SELECT geom, containing_face, node_id FROM '
-		|| quote_ident(atopology) || '.node
-		WHERE node_id = ' || anode ||
-		' OR node_id = ' || anothernode
-	LOOP 
-		IF count > 0 AND aface != rec.containing_face THEN
-			RAISE EXCEPTION
-			'SQL/MM Spatial exception - nodes in different faces';
-		ELSE
-			aface := rec.containing_face;
-		END IF;
+  --
+  -- Check for:
+  --    existence of nodes
+  --    nodes faces match
+  -- Extract:
+  --    nodes face id
+  --    nodes geoms
+  --
+  aface := NULL;
+  count := 0;
+  FOR rec IN EXECUTE 'SELECT geom, containing_face, node_id FROM '
+    || quote_ident(atopology) || '.node
+    WHERE node_id = ' || anode ||
+    ' OR node_id = ' || anothernode
+  LOOP 
+    IF count > 0 AND aface != rec.containing_face THEN
+      RAISE EXCEPTION
+      'SQL/MM Spatial exception - nodes in different faces';
+    ELSE
+      aface := rec.containing_face;
+    END IF;
 
-		-- Get nodes geom
-		IF rec.node_id = anode THEN
-			snodegeom = rec.geom;
-		ELSE
-			enodegeom = rec.geom;
-		END IF;
+    -- Get nodes geom
+    IF rec.node_id = anode THEN
+      snodegeom = rec.geom;
+    ELSE
+      enodegeom = rec.geom;
+    END IF;
 
-		count = count+1;
+    count = count+1;
 
-	END LOOP;
-	IF count < 2 THEN
+  END LOOP;
+  IF count < 2 THEN
     IF count = 1 AND anode = anothernode THEN
       RAISE EXCEPTION
        'Closed edges would not be isolated, try ST_AddEdgeNewFaces';
@@ -1582,82 +1584,84 @@ BEGIN
       RAISE EXCEPTION
        'SQL/MM Spatial exception - non-existent node';
     END IF;
-	END IF;
+  END IF;
 
 
-	--
-	-- Check nodes isolation.
-	-- 
-	FOR rec IN EXECUTE 'SELECT edge_id FROM '
-		|| quote_ident(atopology) || '.edge_data ' ||
-		' WHERE start_node =  ' || anode ||
-		' OR end_node = ' || anode ||
-		' OR start_node = ' || anothernode ||
-		' OR end_node = ' || anothernode
-	LOOP
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - not isolated node';
-	END LOOP;
+  --
+  -- Check nodes isolation.
+  -- 
+  FOR rec IN EXECUTE 'SELECT edge_id FROM '
+    || quote_ident(atopology) || '.edge_data ' ||
+    ' WHERE start_node =  ' || anode ||
+    ' OR end_node = ' || anode ||
+    ' OR start_node = ' || anothernode ||
+    ' OR end_node = ' || anothernode
+  LOOP
+    RAISE EXCEPTION
+     'SQL/MM Spatial exception - not isolated node';
+  END LOOP;
 
-	--
-	-- Check acurve to be within endpoints containing face 
-	-- (unless it is the world face, I suppose)
-	-- 
-	IF aface IS NOT NULL THEN
+  --
+  -- Check acurve to be within endpoints containing face 
+  -- (unless it is the world face, I suppose)
+  -- 
+  IF aface IS NOT NULL THEN
 
-		--
-		-- Extract endpoints face geometry
-		--
-		FOR rec IN EXECUTE 'SELECT topology.ST_GetFaceGeometry('
-			|| quote_literal(atopology) ||
-			',' || aface || ') as face'
-		LOOP
-			face := rec.face;
-		END LOOP;
+    --
+    -- Extract endpoints face geometry
+    --
+    FOR rec IN EXECUTE 'SELECT topology.ST_GetFaceGeometry('
+      || quote_literal(atopology) ||
+      ',' || aface || ') as face'
+    LOOP
+      face := rec.face;
+    END LOOP;
 
-		--
-		-- Check acurve to be within face
-		--
-		IF NOT ST_Within(acurve, face) THEN
-	RAISE EXCEPTION
-	'SQL/MM Spatial exception - geometry not within face.';
-		END IF;
+    --
+    -- Check acurve to be within face
+    --
+    IF NOT ST_Within(acurve, face) THEN
+      RAISE EXCEPTION
+        'SQL/MM Spatial exception - geometry not within face.';
+    END IF;
 
-	END IF;
+  END IF;
 
-	--
-	-- l) Check that start point of acurve match start node
-	-- geoms.
-	-- 
-	IF ST_X(snodegeom) != ST_X(ST_StartPoint(acurve)) OR
-	   ST_Y(snodegeom) != ST_Y(ST_StartPoint(acurve)) THEN
-  RAISE EXCEPTION
-  'SQL/MM Spatial exception - start node not geometry start point.';
-	END IF;
+  --
+  -- l) Check that start point of acurve match start node
+  -- geoms.
+  -- 
+  IF ST_X(snodegeom) != ST_X(ST_StartPoint(acurve)) OR
+     ST_Y(snodegeom) != ST_Y(ST_StartPoint(acurve))
+  THEN
+    RAISE EXCEPTION
+      'SQL/MM Spatial exception - start node not geometry start point.';
+  END IF;
 
-	--
-	-- m) Check that end point of acurve match end node
-	-- geoms.
-	-- 
-	IF ST_X(enodegeom) != ST_X(ST_EndPoint(acurve)) OR
-	   ST_Y(enodegeom) != ST_Y(ST_EndPoint(acurve)) THEN
-  RAISE EXCEPTION
-  'SQL/MM Spatial exception - end node not geometry end point.';
-	END IF;
+  --
+  -- m) Check that end point of acurve match end node
+  -- geoms.
+  -- 
+  IF ST_X(enodegeom) != ST_X(ST_EndPoint(acurve)) OR
+     ST_Y(enodegeom) != ST_Y(ST_EndPoint(acurve))
+  THEN
+    RAISE EXCEPTION
+      'SQL/MM Spatial exception - end node not geometry end point.';
+  END IF;
 
-	--
-	-- n) Check if curve crosses (contains) any node
-	-- I used _contains_ here to leave endpoints out
-	-- 
-	FOR rec IN EXECUTE 'SELECT node_id FROM '
-		|| quote_ident(atopology) || '.node '
-		|| ' WHERE geom && ' || quote_literal(acurve::text) 
-		|| ' AND ST_Contains(' || quote_literal(acurve::text)
-		|| ',geom)'
-	LOOP
-		RAISE EXCEPTION
-		'SQL/MM Spatial exception - geometry crosses a node';
-	END LOOP;
+  --
+  -- n) Check if curve crosses (contains) any node
+  -- I used _contains_ here to leave endpoints out
+  -- 
+  FOR rec IN EXECUTE 'SELECT node_id FROM '
+    || quote_ident(atopology) || '.node '
+    || ' WHERE geom && ' || quote_literal(acurve::text) 
+    || ' AND ST_Contains(' || quote_literal(acurve::text)
+    || ',geom)'
+  LOOP
+    RAISE EXCEPTION
+      'SQL/MM Spatial exception - geometry crosses a node';
+  END LOOP;
 
   --
   -- o) Check if curve intersects any other edge
@@ -1669,21 +1673,21 @@ BEGIN
     RAISE EXCEPTION 'SQL/MM Spatial exception - geometry intersects an edge';
   END LOOP;
 
-	--
-	-- Get new edge id from sequence
-	--
-	FOR rec IN EXECUTE 'SELECT nextval(''' ||
-		atopology || '.edge_data_edge_id_seq'')'
-	LOOP
-		edgeid = rec.nextval;
-	END LOOP;
+  --
+  -- Get new edge id from sequence
+  --
+  FOR rec IN EXECUTE 'SELECT nextval(''' ||
+    atopology || '.edge_data_edge_id_seq'')'
+  LOOP
+    edgeid = rec.nextval;
+  END LOOP;
 
   -- TODO: this should likely be an exception instead !
   IF aface IS NULL THEN aface := 0; END IF;
 
-	--
-	-- Insert the new row
-	--
+  --
+  -- Insert the new row
+  --
   EXECUTE 'INSERT INTO ' || quote_ident(atopology)
     || '.edge VALUES(' || edgeid || ',' || anode
     || ',' || anothernode || ',' || (-edgeid)
