@@ -1734,6 +1734,11 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- X.3.6
 --
 --  ST_ChangeEdgeGeom(atopology, anedge, acurve)
+--
+-- Not in the specs:
+-- * Raise an exception if given a non-existent edge
+--
+-- TODO: allow changing geometry of a closed edge (#982)
 -- 
 CREATE OR REPLACE FUNCTION topology.ST_ChangeEdgeGeom(atopology varchar, anedge integer, acurve geometry)
   RETURNS TEXT AS
@@ -1786,6 +1791,7 @@ BEGIN
       || ' WHERE edge_id = ' || anedge
     INTO STRICT oldedge;
   EXCEPTION
+    -- NOT IN THE SPECS: check given edge existance
     WHEN NO_DATA_FOUND THEN
       RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent edge %', anedge;
   END;
