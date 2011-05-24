@@ -141,3 +141,10 @@ check: rtpostgis.sql
 
 #clean:
 #	$(RM) run_test
+#	$(RM) testgdalraster
+
+testgdalraster: testgdalraster.in Makefile
+	sed -e "s#@POSTGIS_SRC@#$(POSTGIS_SRC)#" $< > $@
+	chmod +x $@
+	chmod +x ../../scripts/python/rtgdalraster.py
+	./testgdalraster
