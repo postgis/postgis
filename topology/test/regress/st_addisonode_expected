@@ -1,0 +1,42 @@
+t
+ST_AddIsoNode: test NULL exceptions
+ERROR:  SQL/MM Spatial exception - null argument
+ERROR:  SQL/MM Spatial exception - null argument
+ERROR:  SQL/MM Spatial exception - null argument
+ERROR:  SQL/MM Spatial exception - null argument
+ST_AddIsoNode: test wrong topology name
+ERROR:  SQL/MM Spatial exception - invalid topology name
+ST_AddIsoNode: test negative idface
+ERROR:  SQL/MM Spatial exception - not within face
+ST_AddIsoNode: test wrong idface
+ERROR:  SQL/MM Spatial exception - not within face
+ST_AddIsoNode: test smart creation ISO Node (without know idface)
+1
+ST_AddIsoNode: test coincident nodes
+ERROR:  SQL/MM Spatial exception - coincident node
+ERROR:  SQL/MM Spatial exception - coincident node
+ERROR:  SQL/MM Spatial exception - coincident node
+ST_AddIsoNode: test add a node in UniverseFace
+2
+ST_AddIsoNode - prepare to test the creation inside a face
+Topology 'tt' dropped
+t
+1
+2
+3
+4
+5
+6
+7
+8
+0
+0
+BEGIN
+COMMIT
+ST_AddIsoNode: test a node inside a hole
+9
+1
+ST_AddIsoNode: test a node inside a face
+10
+1
+Topology 'tt' dropped

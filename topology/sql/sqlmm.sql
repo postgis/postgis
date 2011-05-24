@@ -693,6 +693,8 @@ DECLARE
 	apoint ALIAS FOR $3;
 	rec RECORD;
 	nodeid integer;
+    sql text;
+    containingface integer;
 BEGIN
 
 	--
@@ -733,7 +735,7 @@ BEGIN
 	--
 	FOR rec IN EXECUTE 'SELECT edge_id FROM '
 		|| quote_ident(atopology) || '.edge ' 
-		|| 'WHERE geom && ' || quote_literal(apoint::text) 
+		|| 'WHERE (geom && ' || quote_literal(apoint::text) ||'::geometry) '
 		|| ' AND ST_Intersects(geom, ' || quote_literal(apoint::text)
 		|| '::geometry)'
 	LOOP
@@ -741,29 +743,72 @@ BEGIN
 		'SQL/MM Spatial exception - edge crosses node.';
 	END LOOP;
 
+	-- retrieve the face that contains (eventually) the point
+	
+	--
+	-- first test is to check if there is inside an mbr (more fast)
+	--
+    	sql := 'SELECT a.face_id FROM ' 
+        || quote_ident(atopology) 
+        || '.face as a WHERE '
+        || '(a.mbr && ' || quote_literal(apoint::text)||'::geometry) '
+        || 'LIMIT 1;';
+--raise notice ' ==>%',sql;
+	BEGIN
+		EXECUTE sql INTO STRICT containingface;
+		EXCEPTION
+			WHEN NO_DATA_FOUND THEN
+				containingface := 0;
+	END;
+
+	IF containingface > 0 THEN
+        --
+        -- probably there is something so now check the exact test
+        --		
+		sql := 'SELECT e.face_id FROM ('
+			|| 'SELECT d.face_id,ST_BuildArea(ST_Union(geom)) as geom FROM ('
+			|| 'SELECT b.edge_id as edge_id,b.left_face as face_id,b.geom as geom FROM '
+			|| quote_ident(atopology) || '.edge_data as b,'
+			|| '(SELECT a.face_id FROM '
+			|| quote_ident(atopology) || '.face as a '
+			|| 'WHERE ST_Intersects(a.mbr,' || quote_literal(apoint::text)||'::geometry)=true'
+			|| ') as c '
+			|| 'WHERE (b.left_face = c.face_id) '
+			|| ' UNION ALL '
+			|| 'SELECT b.edge_id as edge_id, b.right_face as face_id, b.geom as geom FROM '
+			|| quote_ident(atopology) || '.edge_data as b,'
+			|| '(SELECT a.face_id FROM '
+			|| quote_ident(atopology) || '.face as a '
+			|| 'WHERE ST_Intersects(a.mbr,' || quote_literal(apoint::text)||'::geometry)=true'
+			|| ') as c '
+			|| 'WHERE (b.right_face = c.face_id) '
+			|| ') as d '
+			|| 'GROUP BY face_id '
+			|| ') as e '
+			|| 'WHERE ST_Intersects(e.geom, ' || quote_literal(apoint::text)||'::geometry)=true;';
+
+        --raise notice ' ==> %',sql;
+        BEGIN
+            EXECUTE sql INTO STRICT containingface;
+                EXCEPTION
+                    WHEN NO_DATA_FOUND THEN
+                        containingface = 0;
+                    WHEN TOO_MANY_ROWS THEN
+                        RAISE EXCEPTION 'Two or more faces found';
+        END;
+    END IF;
 
 	--
 	-- Verify that aface contains apoint
-	-- if aface is null no check is done
 	--
-	IF aface IS NOT NULL THEN
-
-	FOR rec IN EXECUTE 'SELECT ST_Within('
-		|| quote_literal(apoint::text) || '::geometry, 
-		topology.ST_GetFaceGeometry('
-		|| quote_literal(atopology) || ', ' || aface ||
-		')) As within'
-	LOOP
-		IF rec.within = 'f' THEN
-			RAISE EXCEPTION
-			'SQL/MM Spatial exception - not within face';
-		ELSIF rec.within IS NULL THEN
-			RAISE EXCEPTION
-			'SQL/MM Spatial exception - non-existent face';
+    IF aface IS NOT NULL THEN
+    	-- if aface is 0 (UniverseFace) no check is done
+        IF (aface <> containingface) THEN
+            RAISE EXCEPTION
+                'SQL/MM Spatial exception - not within face';
 		END IF;
-	END LOOP;
-
 	END IF;
+    -- passing last IF mean the containingface is the right value to use.
 
 	--
 	-- Get new node id from sequence
@@ -777,19 +822,18 @@ BEGIN
 	--
 	-- Insert the new row
 	--
-	IF aface IS NOT NULL THEN
-		EXECUTE 'INSERT INTO ' || quote_ident(atopology)
+	sql := 'INSERT INTO ' || quote_ident(atopology)
 			|| '.node(node_id, geom, containing_face) 
 			VALUES('||nodeid||','||quote_literal(apoint::text)||
-			','||aface||')';
-	ELSE
-		EXECUTE 'INSERT INTO ' || quote_ident(atopology)
-			|| '.node(node_id, geom) 
-			VALUES('||nodeid||','||quote_literal(apoint::text)||
-			')';
-	END IF;
+			','||containingface||')';
+	--raise notice 'insert: %',sql;
+
+	EXECUTE sql;
 
 	RETURN nodeid;
+EXCEPTION
+  WHEN INVALID_SCHEMA_NAME THEN
+    RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE;

@@ -13,7 +13,7 @@ ERROR:  SQL/MM Spatial exception - coincident node
 ERROR:  SQL/MM Spatial exception - coincident node
 7
 8
-ERROR:  SQL/MM Spatial exception - non-existent face
+ERROR:  SQL/MM Spatial exception - not within face
 ERROR:  SQL/MM Spatial exception - invalid point
 ERROR:  SQL/MM Spatial exception - coincident node
 ERROR:  SQL/MM Spatial exception - coincident node
