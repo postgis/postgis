@@ -20,17 +20,17 @@ BEGIN;
 
 -- 7. Query the data.
 SELECT a.feature_name, id(a.feature) as tg_id,
-	astext(topology.Geometry(a.feature)) as geom
+	ST_AsText(topology.Geometry(a.feature)) as geom
 FROM features.land_parcels a;
 
 -- Query not in original example --strk;
 SELECT a.feature_name, id(a.feature) as tg_id,
-	astext(topology.Geometry(a.feature)) as geom
+	ST_AsText(topology.Geometry(a.feature)) as geom
 FROM features.traffic_signs a;
 
 -- Query not in original example --strk;
 SELECT a.feature_name, id(a.feature) as tg_id,
-	astext(topology.Geometry(a.feature)) as geom
+	ST_AsText(topology.Geometry(a.feature)) as geom
 FROM features.city_streets a;
 
 --NOTYET--

@@ -38,7 +38,7 @@ INSERT INTO features.big_parcels VALUES ('F3F6', -- Feature name
     (SELECT layer_id FROM topology.layer WHERE table_name = 'big_parcels'),
     '{{6,1},{7,1}}')); -- F3 and F6
 
-SELECT feature_name, astext(topology.geometry(feature)) from features.big_parcels;
+SELECT feature_name,ST_AsText(topology.geometry(feature)) from features.big_parcels;
 
 SELECT a.feature_name, b.feature_name
 	FROM features.land_parcels a, features.big_parcels b
@@ -66,7 +66,7 @@ INSERT INTO features.big_signs VALUES ('S1S2', -- Feature name
     (SELECT layer_id FROM topology.layer WHERE table_name = 'big_signs'),
     '{{1,2},{2,2}}')); -- S1 and S2
 
-SELECT feature_name, astext(topology.geometry(feature)) from features.big_signs;
+SELECT feature_name, ST_AsText(topology.geometry(feature)) from features.big_signs;
 
 SELECT a.feature_name, b.feature_name
 	FROM features.traffic_signs a, features.big_signs b
