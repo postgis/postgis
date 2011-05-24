@@ -418,6 +418,18 @@ CREATE OR REPLACE FUNCTION Area2D(geometry)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION AsBinary(geometry)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME','LWGEOM_asBinary'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION AsBinary(geometry,text)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME','LWGEOM_asBinary'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsEWKB(geometry)
 	RETURNS BYTEA
 	AS 'MODULE_PATHNAME','WKBFromLWGEOM'
@@ -436,12 +448,6 @@ CREATE OR REPLACE FUNCTION AsEWKT(geometry)
 	AS 'MODULE_PATHNAME','LWGEOM_asEWKT'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsGML(geometry, int4)
-	RETURNS TEXT
-	AS 'SELECT _ST_AsGML(2, $1, $2, 0, null)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-	
 -- AsGML(geom) / precision=15 version=2
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsGML(geometry)
@@ -449,25 +455,31 @@ CREATE OR REPLACE FUNCTION AsGML(geometry)
 	AS 'SELECT _ST_AsGML(2, $1, 15, 0, null)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION AsGML(geometry, int4)
+	RETURNS TEXT
+	AS 'SELECT _ST_AsGML(2, $1, $2, 0, null)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	
 -- AsKML(geom, precision) / version=2
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsKML(geometry, int4)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsKML(2, transform($1,4326), $2, null)'
+	AS 'SELECT _ST_AsKML(2, ST_transform($1,4326), $2, null)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 	
 -- AsKML(geom) / precision=15 version=2
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsKML(geometry)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsKML(2, transform($1,4326), 15, null)'
+	AS 'SELECT _ST_AsKML(2, ST_Transform($1,4326), 15, null)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 	
 -- AsKML(version, geom, precision)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsKML(int4, geometry, int4)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsKML($1, transform($2,4326), $3, null)'
+	AS 'SELECT _ST_AsKML($1, ST_Transform($2,4326), $3, null)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
@@ -483,10 +495,11 @@ CREATE OR REPLACE FUNCTION AsHEXEWKB(geometry, text)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsSVG(geometry,int4,int4)
+CREATE OR REPLACE FUNCTION AsSVG(geometry)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asSVG'
-	LANGUAGE 'C' IMMUTABLE STRICT;	
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsSVG(geometry,int4)
 	RETURNS TEXT
@@ -494,10 +507,16 @@ CREATE OR REPLACE FUNCTION AsSVG(geometry,int4)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsSVG(geometry)
+CREATE OR REPLACE FUNCTION AsSVG(geometry,int4,int4)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asSVG'
 	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION AsText(geometry)
+	RETURNS TEXT
+	AS 'MODULE_PATHNAME','LWGEOM_asText'
+	LANGUAGE 'C' IMMUTABLE STRICT;	
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION azimuth(geometry,geometry)
@@ -515,14 +534,14 @@ DECLARE
 	mline geometry;
 	geom geometry;
 BEGIN
-	mline := MultiLineStringFromText(geomtext, srid);
+	mline := ST_MultiLineStringFromText(geomtext, srid);
 
 	IF mline IS NULL
 	THEN
 		RAISE EXCEPTION 'Input is not a MultiLinestring';
 	END IF;
 
-	geom := BuildArea(mline);
+	geom := ST_BuildArea(mline);
 
 	IF GeometryType(geom) != 'POLYGON'
 	THEN
@@ -544,7 +563,7 @@ DECLARE
 	mline geometry;
 	geom geometry;
 BEGIN
-	mline := MultiLineStringFromText(geomtext, srid);
+	mline := ST_MultiLineStringFromText(geomtext, srid);
 
 	IF mline IS NULL
 	THEN

@@ -4122,37 +4122,19 @@ CREATE OR REPLACE FUNCTION ST_SetSRID(geometry,int4)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_set_srid'
 	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsBinary(geometry)
-	RETURNS bytea
-	AS 'MODULE_PATHNAME','LWGEOM_asBinary'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- PostGIS equivalent function: AsBinary(geometry)
-CREATE OR REPLACE FUNCTION ST_AsBinary(geometry)
-	RETURNS bytea
-	AS 'MODULE_PATHNAME','LWGEOM_asBinary'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsBinary(geometry,text)
-	RETURNS bytea
-	AS 'MODULE_PATHNAME','LWGEOM_asBinary'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
+	
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsBinary(geometry,text)
 	RETURNS bytea
 	AS 'MODULE_PATHNAME','LWGEOM_asBinary'
 	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsText(geometry)
-	RETURNS TEXT
-	AS 'MODULE_PATHNAME','LWGEOM_asText'
+	
+-- PostGIS equivalent of old function: AsBinary(geometry)
+CREATE OR REPLACE FUNCTION ST_AsBinary(geometry)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME','LWGEOM_asBinary'
 	LANGUAGE 'C' IMMUTABLE STRICT;
-
+	
 -- PostGIS equivalent function: AsText(geometry)
 CREATE OR REPLACE FUNCTION ST_AsText(geometry)
 	RETURNS TEXT
