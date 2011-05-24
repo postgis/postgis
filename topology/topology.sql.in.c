@@ -1432,7 +1432,7 @@ BEGIN
 	EXECUTE 'CREATE TEMP TABLE face_check ON COMMIT DROP AS '
 	  || 'SELECT face_id, topology.ST_GetFaceGeometry('
 	  || quote_literal(toponame) || ', face_id) as geom, mbr FROM '
-	  || quote_ident(toponame) || '.face';
+	  || quote_ident(toponame) || '.face WHERE face_id > 0';
 
 	-- Build a gist index on geom
 	EXECUTE 'CREATE INDEX "face_check_gist" ON '
@@ -1450,7 +1450,7 @@ BEGIN
 		|| ' FROM '
 		|| 'face_check f1, '
 		|| 'face_check f2 '
-		|| 'WHERE f1.face_id > 0 AND f1.face_id < f2.face_id'
+		|| 'WHERE f1.face_id < f2.face_id'
 		|| ' AND f1.geom && f2.geom'
 	LOOP
 
