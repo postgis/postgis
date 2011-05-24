@@ -36,11 +36,6 @@ ERROR:  SQL/MM Spatial exception - not isolated node
 ERROR:  SQL/MM Spatial exception - not isolated node
 -- ST_AddIsoNode(2) ------------------------
 ERROR:  SQL/MM Spatial exception - edge crosses node.
--- ST_ChangeEdgeGeom ------------------------
-Edge 1 changed
-ERROR:  SQL/MM Spatial exception - start node not geometry start point.
-ERROR:  SQL/MM Spatial exception - end node not geometry end point.
-ERROR:  SQL/MM Spatial exception - geometry crosses a node
 -- ST_RemoveIsoNode  ------------------------
 ERROR:  SQL/MM Spatial exception - not isolated node
 ERROR:  SQL/MM Spatial exception - not isolated node

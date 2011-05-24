@@ -98,22 +98,6 @@ SELECT '-- ST_AddIsoNode(2) ------------------------';
 SELECT topology.ST_AddIsoNode('sqlmm_topology', NULL, 'POINT(5 9.5)');
 
 -------------------------------------------------------------
--- ST_ChangeEdgeGeom
--------------------------------------------------------------
-
-SELECT '-- ST_ChangeEdgeGeom ------------------------';
-
--- good one
-SELECT topology.ST_ChangeEdgeGeom('sqlmm_topology', 1, 'LINESTRING(5 10, 5 8, 10 10)');
-
--- start/end points mismatch
-SELECT topology.ST_ChangeEdgeGeom('sqlmm_topology', 1, 'LINESTRING(5 9, 5 8, 10 10)');
-SELECT topology.ST_ChangeEdgeGeom('sqlmm_topology', 1, 'LINESTRING(5 10, 5 8, 10 9)');
-
--- Node crossing 
-SELECT topology.ST_ChangeEdgeGeom('sqlmm_topology', 1, 'LINESTRING(5 10, 10 10)');
-
--------------------------------------------------------------
 -- ST_RemoveIsoNode
 -------------------------------------------------------------
 

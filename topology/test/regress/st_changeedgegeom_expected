@@ -1,0 +1,11 @@
+BEGIN
+t
+9
+22
+26
+COMMIT
+Edge 25 changed
+ERROR:  SQL/MM Spatial exception - start node not geometry start point.
+ERROR:  SQL/MM Spatial exception - end node not geometry end point.
+ERROR:  SQL/MM Spatial exception - geometry crosses a node
+Topology 'city_data' dropped
