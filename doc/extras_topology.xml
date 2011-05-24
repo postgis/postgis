@@ -1611,7 +1611,7 @@ Updates all existing joined edges and relationships accordingly.
 				<refname>ST_ChangeEdgeGeom</refname>
 			
 				<refpurpose>Changes the linestring that define the specified edge. Will raise an error if the start and end points are not the same as the original or the new linestring
-				crosses an existing edge (not add end points) or new linestring is not simple.</refpurpose>
+				crosses an existing edge (not at end points) or new linestring is not simple.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -1644,10 +1644,10 @@ Updates all existing joined edges and relationships accordingly.
 		
 			<refsection>
 				<title>Examples</title>
-				 SELECT topology.ST_ChangeEdgeGeom('ma_topo', 1,  ST_GeomFromText('LINESTRING(227591.9 893900.4,227622.6 893844.3,227641.6 893816.6,
- 227704.5 893778.5)', 26986) );
+				<programlisting>SELECT topology.ST_ChangeEdgeGeom('ma_topo', 1,  
+		ST_GeomFromText('LINESTRING(227591.9 893900.4,227622.6 893844.3,227641.6 893816.6, 227704.5 893778.5)', 26986) );
  ----
- Edge 1 changed
+ Edge 1 changed</programlisting>
 			</refsection>
 		
 			<!-- Optionally add a "See Also" section -->
