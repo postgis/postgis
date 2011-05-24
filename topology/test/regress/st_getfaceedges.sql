@@ -26,5 +26,7 @@ SELECT 'F' ||
 SELECT 'F1', (topology.ST_GetFaceEdges('tt', 1)).*;
 SELECT 'F2', (topology.ST_GetFaceEdges('tt', 2)).*;
 
+SELECT 'F0', (topology.ST_GetFaceEdges('tt', 0)).*;
+
 
 SELECT topology.DropTopology('tt');

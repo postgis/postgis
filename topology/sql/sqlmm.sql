@@ -46,6 +46,7 @@ DECLARE
   bounds geometry;
   retrec topology.GetFaceEdges_ReturnType;
   n int;
+  sql TEXT;
 BEGIN
   --
   -- toponame and face_id are required
@@ -61,16 +62,18 @@ BEGIN
   n := 1;
 
   -- Construct the face geometry, then for each polygon:
-  FOR rec IN SELECT (ST_DumpRings((ST_Dump(ST_ForceRHR(
-    topology.ST_GetFaceGeometry(toponame, face_id)))).geom)).*
+  sql := 'SELECT (ST_DumpRings((ST_Dump(ST_ForceRHR('
+    || 'ST_BuildArea(ST_Collect(geom))))).geom)).* FROM '
+    || quote_ident(toponame) || '.edge_data WHERE left_face = '
+    || face_id || ' OR right_face = ' || face_id;
+  FOR rec IN EXECUTE sql 
   LOOP -- {
 
     -- Contents of a directed face are the list of edges
     -- that cover the specific ring
     bounds = ST_Boundary(rec.geom);
 
-    FOR rec IN EXECUTE
-      'SELECT e.*, ST_Line_Locate_Point('
+    sql := 'SELECT e.*, ST_Line_Locate_Point('
       || quote_literal(bounds::text)
       || ', ST_Line_Interpolate_Point(e.geom, 0.2)) as pos'
       || ', ST_Line_Locate_Point('
@@ -81,16 +84,31 @@ BEGIN
       || ' OR e.right_face = ' || face_id
       || ') AND ST_Covers('
       || quote_literal(bounds::text)
-      || ', e.geom) ORDER BY pos DESC'
+      || ', e.geom)';
+    IF face_id = 0 THEN
+      sql := sql || ' ORDER BY pos ASC';
+    ELSE
+      sql := sql || ' ORDER BY POS DESC';
+    END IF;
+
+    FOR rec IN EXECUTE sql
     LOOP
 
       retrec.sequence = n;
       retrec.edge = rec.edge_id;
 
-      -- if this edge goes in same direction to the
-      --       ring bounds, make it with negative orientation
-      IF rec.pos2 > rec.pos THEN -- edge goes in same direction
-        retrec.edge = -retrec.edge;
+      IF face_id = 0 THEN
+        -- if this edge goes in opposite direction to the
+        --       ring bounds, make it with negative orientation
+        IF rec.pos2 < rec.pos THEN -- edge goes in opposite direction
+          retrec.edge = -retrec.edge;
+        END IF;
+      ELSE
+        -- if this edge goes in same direction to the
+        --       ring bounds, make it with negative orientation
+        IF rec.pos2 > rec.pos THEN -- edge goes in same direction
+          retrec.edge = -retrec.edge;
+        END IF;
       END IF;
 
       RETURN NEXT retrec;
@@ -101,6 +119,9 @@ BEGIN
   END LOOP; -- }
 
   RETURN;
+EXCEPTION
+  WHEN INVALID_SCHEMA_NAME THEN
+    RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE;
