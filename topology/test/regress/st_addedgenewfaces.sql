@@ -293,7 +293,7 @@ INSERT INTO newedge SELECT 18, topology.st_addedgenewfaces('city_data',
 SELECT 'T18', 'E'||edge_id, next_left_edge, next_right_edge,
   left_face, right_face FROM
   city_data.edge WHERE edge_id IN ( 4, 5, 43, 
-  ( SELECT edge_id FROM newedge WHERE id = 17 ) )
+  ( SELECT edge_id FROM newedge WHERE id = 18 ) )
   ORDER BY edge_id;
 
 --
