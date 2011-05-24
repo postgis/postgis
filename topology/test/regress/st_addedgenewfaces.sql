@@ -296,6 +296,17 @@ SELECT 'T18', 'E'||edge_id, next_left_edge, next_right_edge,
   ( SELECT edge_id FROM newedge WHERE id = 17 ) )
   ORDER BY edge_id;
 
+--
+-- New face in universal face, with both endpoints on same existing edge
+--
+INSERT INTO newedge SELECT 19, topology.st_addedgenewfaces('city_data',
+  9, 8,  'LINESTRING(21 6, 12 0, 9 6)');
+SELECT 'T19', 'E'||edge_id, next_left_edge, next_right_edge,
+  left_face, right_face FROM
+  city_data.edge WHERE edge_id IN ( 12, 35, 22,
+  ( SELECT edge_id FROM newedge WHERE id = 19 ) )
+  ORDER BY edge_id;
+
 ---------------------------------------------------------------------
 -- Check new relations and faces status
 ---------------------------------------------------------------------
