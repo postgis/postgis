@@ -1721,13 +1721,10 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 --  ST_ChangeEdgeGeom(atopology, anedge, acurve)
 -- 
-CREATE OR REPLACE FUNCTION topology.ST_ChangeEdgeGeom(varchar, integer, geometry)
+CREATE OR REPLACE FUNCTION topology.ST_ChangeEdgeGeom(atopology varchar, anedge integer, acurve geometry)
 	RETURNS TEXT AS
 $$
 DECLARE
-	atopology ALIAS FOR $1;
-	anedge ALIAS FOR $2;
-	acurve ALIAS FOR $3;
 	aface INTEGER;
 	face GEOMETRY;
 	snodegeom GEOMETRY;
@@ -1809,8 +1806,7 @@ BEGIN
 	-- 
 	FOR rec IN EXECUTE 'SELECT node_id FROM '
 		|| quote_ident(atopology) || '.node
-		WHERE geom && ' || quote_literal(acurve::text) || '::geometry
-		AND ST_Within(geom, ' || quote_literal(acurve::text) || '::geometry)'
+		WHERE ST_Within(geom, ' || quote_literal(acurve::text) || '::geometry)'
 	LOOP
 		RAISE EXCEPTION
 		'SQL/MM Spatial exception - geometry crosses a node';
@@ -1822,8 +1818,6 @@ BEGIN
 	FOR rec IN EXECUTE 'SELECT * FROM '
 		|| quote_ident(atopology) || '.edge_data '
 		|| ' WHERE edge_id != ' || anedge
-		|| ' AND geom && '
-		|| quote_literal(acurve::text) || '::geometry '
 		|| ' AND ST_Intersects(geom, '
 		|| quote_literal(acurve::text) || '::geometry)'
 	LOOP
