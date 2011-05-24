@@ -24,15 +24,21 @@ COPY tt.edge_data(
 3	3	3	3	3	3	-3	0	3	LINESTRING(12 2, 12 8, 18 8, 18 2, 12 2)
 \.
 
-SELECT * FROM topology.ValidateTopology('tt');
-
 -- F1 should have an hole !
 -- See http://trac.osgeo.org/postgis/ticket/726
 SELECT 'f1 (with hole)', ST_asText(topology.st_getfacegeometry('tt', 1));
 SELECT 'f2 (fill hole)', ST_asText(topology.st_getfacegeometry('tt', 2));
 
--- Universal face is the union of all faces
+-- Universal face has no geometry
 -- See http://trac.osgeo.org/postgis/ticket/973
-SELECT 'f0', ST_AsText(topology.st_getfacegeometry('tt', 0));
+SELECT topology.st_getfacegeometry('tt', 0);
+
+-- Null arguments
+SELECT topology.st_getfacegeometry(null, 1);
+SELECT topology.st_getfacegeometry('tt', null);
+
+-- Invalid topology names
+SELECT topology.st_getfacegeometry('NonExistent', 1);
+SELECT topology.st_getfacegeometry('', 1);
 
 SELECT topology.DropTopology('tt');
