@@ -292,25 +292,25 @@ SELECT 'test 1.4', rid, geomid, st_intersects(geom, st_setbandnodatavalue(rast, 
 -----------------------------------------------------------------------
 -- Test 2 - st_intersection(raster, geometry) 
 -----------------------------------------------------------------------
-SELECT 'test 2.1', rid, geomid, astext((gv).geom), (gv).val
+SELECT 'test 2.1', rid, geomid, ST_AsText((gv).geom), (gv).val
 FROM (SELECT *, ST_Intersection(geom, rast) gv
       FROM rt_spatial_relationship_test, rt_spatial_relationship_test_geom
       WHERE forrast = rid
      ) foo;
 
-SELECT 'test 2.2', rid, geomid, astext((gv).geom), (gv).val
+SELECT 'test 2.2', rid, geomid, ST_AsText((gv).geom), (gv).val
 FROM (SELECT *, ST_Intersection(geom, rast) gv
       FROM rt_spatial_relationship_test, rt_spatial_relationship_test_geom
       WHERE forrast = rid AND ST_Intersects(geom, rast)
      ) foo;
 
-SELECT 'test 2.3', rid, geomid, astext((gv).geom), (gv).val
+SELECT 'test 2.3', rid, geomid, ST_AsText((gv).geom), (gv).val
 FROM (SELECT *, ST_Intersection(geom, st_setbandnodatavalue(rast, NULL)) gv
       FROM rt_spatial_relationship_test, rt_spatial_relationship_test_geom
       WHERE forrast = rid
      ) foo;
      
-SELECT 'test 2.4', rid, geomid, astext((gv).geom), (gv).val
+SELECT 'test 2.4', rid, geomid, ST_AsText((gv).geom), (gv).val
 FROM (SELECT *, ST_Intersection(geom, st_setbandnodatavalue(rast, NULL)) gv
       FROM rt_spatial_relationship_test, rt_spatial_relationship_test_geom
       WHERE forrast = rid AND ST_Intersects(geom, st_setbandnodatavalue(rast, NULL))
