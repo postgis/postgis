@@ -1653,7 +1653,7 @@ Updates all existing joined edges and relationships accordingly.
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="ST_AddEdge"/></para>
+				<para><xref linkend="AddEdge"/></para>
 			</refsection>
 		</refentry>
 		
