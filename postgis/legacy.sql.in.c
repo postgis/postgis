@@ -584,6 +584,12 @@ CREATE OR REPLACE FUNCTION boundary(geometry)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION buffer(geometry,float8,integer)
+	RETURNS geometry
+	AS 'SELECT ST_Buffer($1, $2, $3)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION buffer(geometry,float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','buffer'
@@ -597,12 +603,12 @@ CREATE OR REPLACE FUNCTION BuildArea(geometry)
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
 	
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION buffer(geometry,float8,integer)
+-- This is also available w/out GEOS
+CREATE OR REPLACE FUNCTION Centroid(geometry)
 	RETURNS geometry
-	AS 'SELECT ST_Buffer($1, $2, $3)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-	
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+		
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Contains(geometry,geometry)
 	RETURNS boolean
@@ -660,6 +666,12 @@ CREATE OR REPLACE FUNCTION distance_spheroid(geometry,geometry,spheroid)
 	AS 'MODULE_PATHNAME','LWGEOM_distance_ellipsoid'
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION Dump(geometry)
+	RETURNS SETOF geometry_dump
+	AS 'MODULE_PATHNAME', 'LWGEOM_dump'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION DumpRings(geometry)

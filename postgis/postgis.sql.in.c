@@ -1389,12 +1389,6 @@ CREATE OR REPLACE FUNCTION ST_LineMerge(geometry)
 
 CREATE TYPE geometry_dump AS (path integer[], geom geometry);
 
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION Dump(geometry)
-	RETURNS SETOF geometry_dump
-	AS 'MODULE_PATHNAME', 'LWGEOM_dump'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Dump(geometry)
 	RETURNS SETOF geometry_dump
@@ -3682,12 +3676,6 @@ CREATE OR REPLACE FUNCTION ST_IsValid(geometry)
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
 
--- This is also available w/out GEOS
-CREATE OR REPLACE FUNCTION Centroid(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-	
 -- PostGIS equivalent function: Centroid(geometry)
 CREATE OR REPLACE FUNCTION ST_Centroid(geometry)
 	RETURNS geometry
