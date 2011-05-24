@@ -1877,6 +1877,7 @@ DECLARE
   sql TEXT;
   newfaces INTEGER[];
   newface INTEGER;
+  cleangeom GEOMETRY;
 BEGIN
 
   --
@@ -2045,25 +2046,29 @@ BEGIN
       quote_ident(atopology) || '.edge_data_edge_id_seq') || ')'
   INTO STRICT newedge.edge_id;
 
+  cleangeom := ST_RemoveRepeatedPoints(acurve);
+
   -- Compute azimut of first edge end on start node
   SELECT null::int AS nextCW, null::int AS nextCCW,
          null::float8 AS minaz, null::float8 AS maxaz,
          false AS was_isolated,
-         ST_Azimuth(ST_StartPoint(acurve),
-                    ST_PointN(acurve, 2)) AS myaz
-        -- TODO: second point might be equals to first point...
-        --       ... we should check that and find a better candidate
+         ST_Azimuth(ST_StartPoint(cleangeom),
+                    ST_PointN(cleangeom, 2)) AS myaz
   INTO span;
+  IF span.myaz IS NULL THEN
+    RAISE EXCEPTION 'Invalid edge (no two distinct nodes exist)';
+  END IF;
 
   -- Compute azimuth of last edge end on end node
   SELECT null::int AS nextCW, null::int AS nextCCW,
          null::float8 AS minaz, null::float8 AS maxaz,
          false AS was_isolated,
-         ST_Azimuth(ST_EndPoint(acurve),
-                    ST_PointN(acurve, ST_NumPoints(acurve)-1)) AS myaz
-        -- TODO: one-to-last point might be equals to last point...
-        --       ... we should check that and find a better candidate
+         ST_Azimuth(ST_EndPoint(cleangeom),
+                    ST_PointN(cleangeom, ST_NumPoints(cleangeom)-1)) AS myaz
   INTO epan;
+  IF epan.myaz IS NULL THEN
+    RAISE EXCEPTION 'Invalid edge (no two distinct nodes exist)';
+  END IF;
 
 
   -- Find links on start node -- {
@@ -2090,22 +2095,29 @@ BEGIN
 
     i := i + 1;
 
+    cleangeom := ST_RemoveRepeatedPoints(rec.geom);
+
     IF rec.start_node = anode THEN
       --
       -- Edge starts at our node, we compute
       -- azimuth from node to its second point
       --
-      az := ST_Azimuth(ST_StartPoint(acurve), ST_PointN(rec.geom, 2));
+      az := ST_Azimuth(ST_StartPoint(cleangeom), ST_PointN(cleangeom, 2));
 
     ELSE
       --
       -- Edge ends at our node, we compute
       -- azimuth from node to its second-last point
       --
-      az := ST_Azimuth(ST_StartPoint(acurve),
-                       ST_PointN(rec.geom, ST_NumPoints(rec.geom)-1));
+      az := ST_Azimuth(ST_EndPoint(cleangeom),
+                       ST_PointN(cleangeom, ST_NumPoints(cleangeom)-1));
       rec.edge_id := -rec.edge_id;
 
+    END IF;
+
+    IF az IS NULL THEN
+      RAISE EXCEPTION 'Invalid edge % found (no two distinct nodes exist)',
+        rec.edge_id;
     END IF;
 
     RAISE DEBUG 'Edge % - az % (%) - fl:% fr:%',
@@ -2200,20 +2212,22 @@ BEGIN
 
     i := i + 1;
 
+    cleangeom := ST_RemoveRepeatedPoints(rec.geom);
+
     IF rec.start_node = anothernode THEN
       --
       -- Edge starts at our node, we compute
       -- azimuth from node to its second point
       --
-      az := ST_Azimuth(ST_EndPoint(acurve), ST_PointN(rec.geom, 2));
+      az := ST_Azimuth(ST_StartPoint(cleangeom), ST_PointN(cleangeom, 2));
 
     ELSE
       --
       -- Edge ends at our node, we compute
       -- azimuth from node to its second-last point
       --
-      az := ST_Azimuth(ST_EndPoint(acurve),
-        ST_PointN(rec.geom, ST_NumPoints(rec.geom)-1));
+      az := ST_Azimuth(ST_EndPoint(cleangeom),
+        ST_PointN(cleangeom, ST_NumPoints(cleangeom)-1));
       rec.edge_id := -rec.edge_id;
 
     END IF;
