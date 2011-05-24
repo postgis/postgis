@@ -1779,40 +1779,32 @@ BEGIN
   END IF;
 
   --
+  -- Get data about existing edge
+  --
+  BEGIN
+    EXECUTE 'SELECT * FROM ' || quote_ident(atopology) || '.edge_data  '
+      || ' WHERE edge_id = ' || anedge
+    INTO STRICT oldedge;
+  EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+      RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent edge %', anedge;
+  END;
+
+  --
   -- e) Check StartPoint consistency
   --
-  FOR rec IN EXECUTE 'SELECT * FROM '
-    || quote_ident(atopology) || '.edge_data e, '
-    || quote_ident(atopology) || '.node n '
-    || ' WHERE e.edge_id = ' || anedge
-    || ' AND n.node_id = e.start_node '
-    || ' AND ( ST_X(n.geom) != '
-    || ST_X(ST_StartPoint(acurve))
-    || ' OR ST_Y(n.geom) != '
-    || ST_Y(ST_StartPoint(acurve))
-    || ')'
-  LOOP 
+  IF NOT ST_Equals(ST_StartPoint(acurve), ST_StartPoint(oldedge.geom)) THEN
     RAISE EXCEPTION
-    'SQL/MM Spatial exception - start node not geometry start point.';
-  END LOOP;
+      'SQL/MM Spatial exception - start node not geometry start point.';
+  END IF;
 
   --
   -- f) Check EndPoint consistency
   --
-  FOR rec IN EXECUTE 'SELECT * FROM '
-    || quote_ident(atopology) || '.edge_data e, '
-    || quote_ident(atopology) || '.node n '
-    || ' WHERE e.edge_id = ' || anedge
-    || ' AND n.node_id = e.end_node '
-    || ' AND ( ST_X(n.geom) != '
-    || ST_X(ST_EndPoint(acurve))
-    || ' OR ST_Y(n.geom) != '
-    || ST_Y(ST_EndPoint(acurve))
-    || ')'
-  LOOP 
+  IF NOT ST_Equals(ST_EndPoint(acurve), ST_EndPoint(oldedge.geom)) THEN
     RAISE EXCEPTION
-    'SQL/MM Spatial exception - end node not geometry end point.';
-  END LOOP;
+      'SQL/MM Spatial exception - end node not geometry end point.';
+  END IF;
 
   --
   -- g) Check if curve crosses any node
