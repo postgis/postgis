@@ -24,8 +24,8 @@
 -- Type returned by ST_GetFaceEdges
 --
 CREATE TYPE topology.GetFaceEdges_ReturnType AS (
-	sequence integer,
-	edge integer
+  sequence integer,
+  edge integer
 );
 
 
@@ -147,7 +147,7 @@ BEGIN
     RAISE EXCEPTION 'Cannot heal edge % with itself, try with another', e1id;
   END IF;
 
-	-- Get topology id
+  -- Get topology id
   BEGIN
     SELECT id FROM topology.topology
       INTO STRICT topoid WHERE name = toponame;
@@ -281,19 +281,19 @@ BEGIN
   -- }
 
   -- Insert new edge {
-	EXECUTE 'SELECT nextval(' || quote_literal(
-			quote_ident(toponame) || '.edge_data_edge_id_seq'
-		) || ')' INTO STRICT newedgeid;
-	EXECUTE 'INSERT INTO ' || quote_ident(toponame)
-		|| '.edge VALUES(' || newedgeid
+  EXECUTE 'SELECT nextval(' || quote_literal(
+      quote_ident(toponame) || '.edge_data_edge_id_seq'
+    ) || ')' INTO STRICT newedgeid;
+  EXECUTE 'INSERT INTO ' || quote_ident(toponame)
+    || '.edge VALUES(' || newedgeid
     || ',' || rec.start_node
-		|| ',' || rec.end_node
-		|| ',' || rec.next_left_edge
-		|| ',' || rec.next_right_edge
-		|| ',' || rec.left_face
-		|| ',' || rec.right_face
-		|| ',' || quote_literal(rec.geom::text)
-		|| ')';
+    || ',' || rec.end_node
+    || ',' || rec.next_left_edge
+    || ',' || rec.next_right_edge
+    || ',' || rec.left_face
+    || ',' || rec.right_face
+    || ',' || quote_literal(rec.geom::text)
+    || ')';
   -- End of new edge insertion }
 
   -- Update next_left_edge/next_right_edge for
@@ -336,7 +336,7 @@ BEGIN
   --RAISE DEBUG 'SQL: %', sql;
   EXECUTE sql;
 
-	--
+  --
   -- NOT IN THE SPECS:
   -- Replace composition rows involving the two
   -- edges as one involving the new edge.
@@ -425,7 +425,7 @@ BEGIN
     RAISE EXCEPTION 'Cannot heal edge % with itself, try with another', e1id;
   END IF;
 
-	-- Get topology id
+  -- Get topology id
   BEGIN
     SELECT id FROM topology.topology
       INTO STRICT topoid WHERE name = toponame;
@@ -604,7 +604,7 @@ BEGIN
           toponame;
   END;
 
-	--
+  --
   -- NOT IN THE SPECS:
   -- Drop composition rows involving second
   -- edge, as the first edge took its space,
@@ -633,10 +633,10 @@ LANGUAGE 'plpgsql' VOLATILE;
 --  ST_GetFaceGeometry(atopology, aface)
 -- 
 CREATE OR REPLACE FUNCTION topology.ST_GetFaceGeometry(toponame varchar, aface integer)
-	RETURNS GEOMETRY AS
+  RETURNS GEOMETRY AS
 $$
 DECLARE
-	rec RECORD;
+  rec RECORD;
 BEGIN
 
   --
@@ -667,11 +667,11 @@ BEGIN
     END;
 
 
-	--
-	-- No face found
-	-- 
-	RAISE EXCEPTION
-	'SQL/MM Spatial exception - non-existent face.';
+  --
+  -- No face found
+  -- 
+  RAISE EXCEPTION
+  'SQL/MM Spatial exception - non-existent face.';
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE;
@@ -685,107 +685,107 @@ LANGUAGE 'plpgsql' VOLATILE;
 --  ST_AddIsoNode(atopology, aface, apoint)
 --
 CREATE OR REPLACE FUNCTION topology.ST_AddIsoNode(varchar, integer, geometry)
-	RETURNS INTEGER AS
+  RETURNS INTEGER AS
 $$
 DECLARE
-	atopology ALIAS FOR $1;
-	aface ALIAS FOR $2;
-	apoint ALIAS FOR $3;
-	rec RECORD;
-	nodeid integer;
+  atopology ALIAS FOR $1;
+  aface ALIAS FOR $2;
+  apoint ALIAS FOR $3;
+  rec RECORD;
+  nodeid integer;
     sql text;
     containingface integer;
 BEGIN
 
-	--
-	-- Atopology and apoint are required
-	-- 
-	IF atopology IS NULL OR apoint IS NULL THEN
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - null argument';
-	END IF;
+  --
+  -- Atopology and apoint are required
+  -- 
+  IF atopology IS NULL OR apoint IS NULL THEN
+    RAISE EXCEPTION
+     'SQL/MM Spatial exception - null argument';
+  END IF;
 
-	--
-	-- Apoint must be a point
-	--
-	IF substring(geometrytype(apoint), 1, 5) != 'POINT'
-	THEN
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - invalid point';
-	END IF;
+  --
+  -- Apoint must be a point
+  --
+  IF substring(geometrytype(apoint), 1, 5) != 'POINT'
+  THEN
+    RAISE EXCEPTION
+     'SQL/MM Spatial exception - invalid point';
+  END IF;
 
-	--
-	-- Check if a coincident node already exists
-	-- 
-	-- We use index AND x/y equality
-	--
-	FOR rec IN EXECUTE 'SELECT node_id FROM '
-		|| quote_ident(atopology) || '.node ' ||
-		'WHERE geom && ' || quote_literal(apoint::text) || '::geometry'
-		||' AND ST_X(geom) = ST_X('||quote_literal(apoint::text)||'::geometry)'
-		||' AND ST_Y(geom) = ST_Y('||quote_literal(apoint::text)||'::geometry)'
-	LOOP
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - coincident node';
-	END LOOP;
+  --
+  -- Check if a coincident node already exists
+  -- 
+  -- We use index AND x/y equality
+  --
+  FOR rec IN EXECUTE 'SELECT node_id FROM '
+    || quote_ident(atopology) || '.node ' ||
+    'WHERE geom && ' || quote_literal(apoint::text) || '::geometry'
+    ||' AND ST_X(geom) = ST_X('||quote_literal(apoint::text)||'::geometry)'
+    ||' AND ST_Y(geom) = ST_Y('||quote_literal(apoint::text)||'::geometry)'
+  LOOP
+    RAISE EXCEPTION
+     'SQL/MM Spatial exception - coincident node';
+  END LOOP;
 
-	--
-	-- Check if any edge crosses (intersects) this node
-	-- I used _intersects_ here to include boundaries (endpoints)
-	--
-	FOR rec IN EXECUTE 'SELECT edge_id FROM '
-		|| quote_ident(atopology) || '.edge ' 
-		|| 'WHERE (geom && ' || quote_literal(apoint::text) ||'::geometry) '
-		|| ' AND ST_Intersects(geom, ' || quote_literal(apoint::text)
-		|| '::geometry)'
-	LOOP
-		RAISE EXCEPTION
-		'SQL/MM Spatial exception - edge crosses node.';
-	END LOOP;
+  --
+  -- Check if any edge crosses (intersects) this node
+  -- I used _intersects_ here to include boundaries (endpoints)
+  --
+  FOR rec IN EXECUTE 'SELECT edge_id FROM '
+    || quote_ident(atopology) || '.edge ' 
+    || 'WHERE (geom && ' || quote_literal(apoint::text) ||'::geometry) '
+    || ' AND ST_Intersects(geom, ' || quote_literal(apoint::text)
+    || '::geometry)'
+  LOOP
+    RAISE EXCEPTION
+    'SQL/MM Spatial exception - edge crosses node.';
+  END LOOP;
 
-	-- retrieve the face that contains (eventually) the point
-	
-	--
-	-- first test is to check if there is inside an mbr (more fast)
-	--
-    	sql := 'SELECT a.face_id FROM ' 
+  -- retrieve the face that contains (eventually) the point
+  
+  --
+  -- first test is to check if there is inside an mbr (more fast)
+  --
+      sql := 'SELECT a.face_id FROM ' 
         || quote_ident(atopology) 
         || '.face as a WHERE '
         || '(a.mbr && ' || quote_literal(apoint::text)||'::geometry) '
         || 'LIMIT 1;';
 --raise notice ' ==>%',sql;
-	BEGIN
-		EXECUTE sql INTO STRICT containingface;
-		EXCEPTION
-			WHEN NO_DATA_FOUND THEN
-				containingface := 0;
-	END;
+  BEGIN
+    EXECUTE sql INTO STRICT containingface;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        containingface := 0;
+  END;
 
-	IF containingface > 0 THEN
+  IF containingface > 0 THEN
         --
         -- probably there is something so now check the exact test
-        --		
-		sql := 'SELECT e.face_id FROM ('
-			|| 'SELECT d.face_id,ST_BuildArea(ST_Union(geom)) as geom FROM ('
-			|| 'SELECT b.edge_id as edge_id,b.left_face as face_id,b.geom as geom FROM '
-			|| quote_ident(atopology) || '.edge_data as b,'
-			|| '(SELECT a.face_id FROM '
-			|| quote_ident(atopology) || '.face as a '
-			|| 'WHERE ST_Intersects(a.mbr,' || quote_literal(apoint::text)||'::geometry)=true'
-			|| ') as c '
-			|| 'WHERE (b.left_face = c.face_id) '
-			|| ' UNION ALL '
-			|| 'SELECT b.edge_id as edge_id, b.right_face as face_id, b.geom as geom FROM '
-			|| quote_ident(atopology) || '.edge_data as b,'
-			|| '(SELECT a.face_id FROM '
-			|| quote_ident(atopology) || '.face as a '
-			|| 'WHERE ST_Intersects(a.mbr,' || quote_literal(apoint::text)||'::geometry)=true'
-			|| ') as c '
-			|| 'WHERE (b.right_face = c.face_id) '
-			|| ') as d '
-			|| 'GROUP BY face_id '
-			|| ') as e '
-			|| 'WHERE ST_Intersects(e.geom, ' || quote_literal(apoint::text)||'::geometry)=true;';
+        --    
+    sql := 'SELECT e.face_id FROM ('
+      || 'SELECT d.face_id,ST_BuildArea(ST_Union(geom)) as geom FROM ('
+      || 'SELECT b.edge_id as edge_id,b.left_face as face_id,b.geom as geom FROM '
+      || quote_ident(atopology) || '.edge_data as b,'
+      || '(SELECT a.face_id FROM '
+      || quote_ident(atopology) || '.face as a '
+      || 'WHERE ST_Intersects(a.mbr,' || quote_literal(apoint::text)||'::geometry)=true'
+      || ') as c '
+      || 'WHERE (b.left_face = c.face_id) '
+      || ' UNION ALL '
+      || 'SELECT b.edge_id as edge_id, b.right_face as face_id, b.geom as geom FROM '
+      || quote_ident(atopology) || '.edge_data as b,'
+      || '(SELECT a.face_id FROM '
+      || quote_ident(atopology) || '.face as a '
+      || 'WHERE ST_Intersects(a.mbr,' || quote_literal(apoint::text)||'::geometry)=true'
+      || ') as c '
+      || 'WHERE (b.right_face = c.face_id) '
+      || ') as d '
+      || 'GROUP BY face_id '
+      || ') as e '
+      || 'WHERE ST_Intersects(e.geom, ' || quote_literal(apoint::text)||'::geometry)=true;';
 
         --raise notice ' ==> %',sql;
         BEGIN
@@ -798,39 +798,39 @@ BEGIN
         END;
     END IF;
 
-	--
-	-- Verify that aface contains apoint
-	--
+  --
+  -- Verify that aface contains apoint
+  --
     IF aface IS NOT NULL THEN
-    	-- if aface is 0 (UniverseFace) no check is done
+      -- if aface is 0 (UniverseFace) no check is done
         IF (aface <> containingface) THEN
             RAISE EXCEPTION
                 'SQL/MM Spatial exception - not within face';
-		END IF;
-	END IF;
+    END IF;
+  END IF;
     -- passing last IF mean the containingface is the right value to use.
 
-	--
-	-- Get new node id from sequence
-	--
-	FOR rec IN EXECUTE 'SELECT nextval(''' ||
-		atopology || '.node_node_id_seq'')'
-	LOOP
-		nodeid = rec.nextval;
-	END LOOP;
+  --
+  -- Get new node id from sequence
+  --
+  FOR rec IN EXECUTE 'SELECT nextval(''' ||
+    atopology || '.node_node_id_seq'')'
+  LOOP
+    nodeid = rec.nextval;
+  END LOOP;
 
-	--
-	-- Insert the new row
-	--
-	sql := 'INSERT INTO ' || quote_ident(atopology)
-			|| '.node(node_id, geom, containing_face) 
-			VALUES('||nodeid||','||quote_literal(apoint::text)||
-			','||containingface||')';
-	--raise notice 'insert: %',sql;
+  --
+  -- Insert the new row
+  --
+  sql := 'INSERT INTO ' || quote_ident(atopology)
+      || '.node(node_id, geom, containing_face) 
+      VALUES('||nodeid||','||quote_literal(apoint::text)||
+      ','||containingface||')';
+  --raise notice 'insert: %',sql;
 
-	EXECUTE sql;
+  EXECUTE sql;
 
-	RETURN nodeid;
+  RETURN nodeid;
 EXCEPTION
   WHEN INVALID_SCHEMA_NAME THEN
     RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
@@ -849,79 +849,79 @@ CREATE OR REPLACE FUNCTION topology.ST_MoveIsoNode(character varying, integer, g
   RETURNS text AS
 $$
 DECLARE
-	atopology ALIAS FOR $1;
-	anode ALIAS FOR $2;
-	apoint ALIAS FOR $3;
-	rec RECORD;
+  atopology ALIAS FOR $1;
+  anode ALIAS FOR $2;
+  apoint ALIAS FOR $3;
+  rec RECORD;
 BEGIN
 
-	--
-	-- All arguments are required
-	-- 
-	IF atopology IS NULL OR anode IS NULL OR apoint IS NULL THEN
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - null argument';
-	END IF;
+  --
+  -- All arguments are required
+  -- 
+  IF atopology IS NULL OR anode IS NULL OR apoint IS NULL THEN
+    RAISE EXCEPTION
+     'SQL/MM Spatial exception - null argument';
+  END IF;
 
-	--
-	-- Apoint must be a point
-	--
-	IF substring(geometrytype(apoint), 1, 5) != 'POINT'
-	THEN
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - invalid point';
-	END IF;
+  --
+  -- Apoint must be a point
+  --
+  IF substring(geometrytype(apoint), 1, 5) != 'POINT'
+  THEN
+    RAISE EXCEPTION
+     'SQL/MM Spatial exception - invalid point';
+  END IF;
 
-	--
-	-- Check node isolation.
-	-- 
-	FOR rec IN EXECUTE 'SELECT edge_id FROM '
-		|| quote_ident(atopology) || '.edge ' ||
-		' WHERE start_node =  ' || anode ||
-		' OR end_node = ' || anode 
-	LOOP
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - not isolated node';
-	END LOOP;
+  --
+  -- Check node isolation.
+  -- 
+  FOR rec IN EXECUTE 'SELECT edge_id FROM '
+    || quote_ident(atopology) || '.edge ' ||
+    ' WHERE start_node =  ' || anode ||
+    ' OR end_node = ' || anode 
+  LOOP
+    RAISE EXCEPTION
+     'SQL/MM Spatial exception - not isolated node';
+  END LOOP;
 
-	--
-	-- Check if a coincident node already exists
-	-- 
-	-- We use index AND x/y equality
-	--
-	FOR rec IN EXECUTE 'SELECT node_id FROM '
-		|| quote_ident(atopology) || '.node ' ||
-		'WHERE geom && ' || quote_literal(apoint::text) || '::geometry'
-		||' AND ST_X(geom) = ST_X('||quote_literal(apoint::text)||'::geometry)'
-		||' AND ST_Y(geom) = ST_Y('||quote_literal(apoint::text)||'::geometry)'
-	LOOP
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - coincident node';
-	END LOOP;
+  --
+  -- Check if a coincident node already exists
+  -- 
+  -- We use index AND x/y equality
+  --
+  FOR rec IN EXECUTE 'SELECT node_id FROM '
+    || quote_ident(atopology) || '.node ' ||
+    'WHERE geom && ' || quote_literal(apoint::text) || '::geometry'
+    ||' AND ST_X(geom) = ST_X('||quote_literal(apoint::text)||'::geometry)'
+    ||' AND ST_Y(geom) = ST_Y('||quote_literal(apoint::text)||'::geometry)'
+  LOOP
+    RAISE EXCEPTION
+     'SQL/MM Spatial exception - coincident node';
+  END LOOP;
 
-	--
-	-- Check if any edge crosses (intersects) this node
-	-- I used _intersects_ here to include boundaries (endpoints)
-	--
-	FOR rec IN EXECUTE 'SELECT edge_id FROM '
-		|| quote_ident(atopology) || '.edge ' 
-		|| 'WHERE geom && ' || quote_literal(apoint::text) 
-		|| ' AND ST_Intersects(geom, ' || quote_literal(apoint::text)
-		|| '::geometry)'
-	LOOP
-		RAISE EXCEPTION
-		'SQL/MM Spatial exception - edge crosses node.';
-	END LOOP;
+  --
+  -- Check if any edge crosses (intersects) this node
+  -- I used _intersects_ here to include boundaries (endpoints)
+  --
+  FOR rec IN EXECUTE 'SELECT edge_id FROM '
+    || quote_ident(atopology) || '.edge ' 
+    || 'WHERE geom && ' || quote_literal(apoint::text) 
+    || ' AND ST_Intersects(geom, ' || quote_literal(apoint::text)
+    || '::geometry)'
+  LOOP
+    RAISE EXCEPTION
+    'SQL/MM Spatial exception - edge crosses node.';
+  END LOOP;
 
-	--
-	-- Update node point
-	--
-	EXECUTE 'UPDATE ' || quote_ident(atopology) || '.node '
-		|| ' SET geom = ' || quote_literal(apoint::text) 
-		|| ' WHERE node_id = ' || anode;
+  --
+  -- Update node point
+  --
+  EXECUTE 'UPDATE ' || quote_ident(atopology) || '.node '
+    || ' SET geom = ' || quote_literal(apoint::text) 
+    || ' WHERE node_id = ' || anode;
 
-	RETURN 'Isolated Node ' || anode || ' moved to location '
-		|| ST_X(apoint) || ',' || ST_Y(apoint);
+  RETURN 'Isolated Node ' || anode || ' moved to location '
+    || ST_X(apoint) || ',' || ST_Y(apoint);
 END
 $$
   LANGUAGE plpgsql VOLATILE;
@@ -934,38 +934,38 @@ $$
 --  ST_RemoveIsoNode(atopology, anode)
 --
 CREATE OR REPLACE FUNCTION topology.ST_RemoveIsoNode(varchar, integer)
-	RETURNS TEXT AS
+  RETURNS TEXT AS
 $$
 DECLARE
-	atopology ALIAS FOR $1;
-	anode ALIAS FOR $2;
-	rec RECORD;
+  atopology ALIAS FOR $1;
+  anode ALIAS FOR $2;
+  rec RECORD;
 BEGIN
 
-	--
-	-- Atopology and apoint are required
-	-- 
-	IF atopology IS NULL OR anode IS NULL THEN
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - null argument';
-	END IF;
+  --
+  -- Atopology and apoint are required
+  -- 
+  IF atopology IS NULL OR anode IS NULL THEN
+    RAISE EXCEPTION
+     'SQL/MM Spatial exception - null argument';
+  END IF;
 
-	--
-	-- Check node isolation.
-	-- 
-	FOR rec IN EXECUTE 'SELECT edge_id FROM '
-		|| quote_ident(atopology) || '.edge_data ' ||
-		' WHERE start_node =  ' || anode ||
-		' OR end_node = ' || anode 
-	LOOP
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - not isolated node';
-	END LOOP;
+  --
+  -- Check node isolation.
+  -- 
+  FOR rec IN EXECUTE 'SELECT edge_id FROM '
+    || quote_ident(atopology) || '.edge_data ' ||
+    ' WHERE start_node =  ' || anode ||
+    ' OR end_node = ' || anode 
+  LOOP
+    RAISE EXCEPTION
+     'SQL/MM Spatial exception - not isolated node';
+  END LOOP;
 
-	EXECUTE 'DELETE FROM ' || quote_ident(atopology) || '.node '
-		|| ' WHERE node_id = ' || anode;
+  EXECUTE 'DELETE FROM ' || quote_ident(atopology) || '.node '
+    || ' WHERE node_id = ' || anode;
 
-	RETURN 'Isolated node ' || anode || ' removed';
+  RETURN 'Isolated node ' || anode || ' removed';
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE;
@@ -977,7 +977,7 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- document
 --
 CREATE OR REPLACE FUNCTION topology.ST_RemIsoNode(varchar, integer)
-	RETURNS TEXT AS
+  RETURNS TEXT AS
 $$
   SELECT topology.ST_RemoveIsoNode($1, $2)
 $$ LANGUAGE 'sql' VOLATILE;
@@ -989,67 +989,67 @@ $$ LANGUAGE 'sql' VOLATILE;
 --  ST_RemoveIsoEdge(atopology, anedge)
 --
 CREATE OR REPLACE FUNCTION topology.ST_RemoveIsoEdge(varchar, integer)
-	RETURNS TEXT AS
+  RETURNS TEXT AS
 $$
 DECLARE
-	atopology ALIAS FOR $1;
-	anedge ALIAS FOR $2;
-	edge RECORD;
-	rec RECORD;
-	ok BOOL;
+  atopology ALIAS FOR $1;
+  anedge ALIAS FOR $2;
+  edge RECORD;
+  rec RECORD;
+  ok BOOL;
 BEGIN
 
-	--
-	-- Atopology and anedge are required
-	-- 
-	IF atopology IS NULL OR anedge IS NULL THEN
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - null argument';
-	END IF;
+  --
+  -- Atopology and anedge are required
+  -- 
+  IF atopology IS NULL OR anedge IS NULL THEN
+    RAISE EXCEPTION
+     'SQL/MM Spatial exception - null argument';
+  END IF;
 
-	--
-	-- Check node existance
-	-- 
-	ok = false;
-	FOR edge IN EXECUTE 'SELECT * FROM '
-		|| quote_ident(atopology) || '.edge_data ' ||
-		' WHERE edge_id =  ' || anedge
-	LOOP
-		ok = true;
-	END LOOP;
-	IF NOT ok THEN
-		RAISE EXCEPTION
-		  'SQL/MM Spatial exception - non-existent edge';
-	END IF;
+  --
+  -- Check node existance
+  -- 
+  ok = false;
+  FOR edge IN EXECUTE 'SELECT * FROM '
+    || quote_ident(atopology) || '.edge_data ' ||
+    ' WHERE edge_id =  ' || anedge
+  LOOP
+    ok = true;
+  END LOOP;
+  IF NOT ok THEN
+    RAISE EXCEPTION
+      'SQL/MM Spatial exception - non-existent edge';
+  END IF;
 
-	--
-	-- Check node isolation
-	-- 
-	IF edge.left_face != edge.right_face THEN
-		RAISE EXCEPTION
-		  'SQL/MM Spatial exception - not isolated edge';
-	END IF;
+  --
+  -- Check node isolation
+  -- 
+  IF edge.left_face != edge.right_face THEN
+    RAISE EXCEPTION
+      'SQL/MM Spatial exception - not isolated edge';
+  END IF;
 
-	FOR rec IN EXECUTE 'SELECT * FROM '
-		|| quote_ident(atopology) || '.edge_data ' 
-		|| ' WHERE edge_id !=  ' || anedge
-		|| ' AND ( start_node = ' || edge.start_node
-		|| ' OR start_node = ' || edge.end_node
-		|| ' OR end_node = ' || edge.start_node
-		|| ' OR end_node = ' || edge.end_node
-		|| ' ) '
-	LOOP
-		RAISE EXCEPTION
-		  'SQL/MM Spatial exception - not isolated edge';
-	END LOOP;
+  FOR rec IN EXECUTE 'SELECT * FROM '
+    || quote_ident(atopology) || '.edge_data ' 
+    || ' WHERE edge_id !=  ' || anedge
+    || ' AND ( start_node = ' || edge.start_node
+    || ' OR start_node = ' || edge.end_node
+    || ' OR end_node = ' || edge.start_node
+    || ' OR end_node = ' || edge.end_node
+    || ' ) '
+  LOOP
+    RAISE EXCEPTION
+      'SQL/MM Spatial exception - not isolated edge';
+  END LOOP;
 
-	--
-	-- Delete the edge
-	--
-	EXECUTE 'DELETE FROM ' || quote_ident(atopology) || '.edge_data '
-		|| ' WHERE edge_id = ' || anedge;
+  --
+  -- Delete the edge
+  --
+  EXECUTE 'DELETE FROM ' || quote_ident(atopology) || '.edge_data '
+    || ' WHERE edge_id = ' || anedge;
 
-	RETURN 'Isolated edge ' || anedge || ' removed';
+  RETURN 'Isolated edge ' || anedge || ' removed';
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE;
@@ -1065,255 +1065,255 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- * Update references in the Relation table.
 --
 CREATE OR REPLACE FUNCTION topology.ST_NewEdgesSplit(varchar, integer, geometry)
-	RETURNS INTEGER AS
+  RETURNS INTEGER AS
 $$
 DECLARE
-	atopology ALIAS FOR $1;
-	anedge ALIAS FOR $2;
-	apoint ALIAS FOR $3;
-	oldedge RECORD;
-	rec RECORD;
-	tmp integer;
-	topoid integer;
-	nodeid integer;
-	nodepos float8;
-	edgeid1 integer;
-	edgeid2 integer;
-	edge1 geometry;
-	edge2 geometry;
-	ok BOOL;
+  atopology ALIAS FOR $1;
+  anedge ALIAS FOR $2;
+  apoint ALIAS FOR $3;
+  oldedge RECORD;
+  rec RECORD;
+  tmp integer;
+  topoid integer;
+  nodeid integer;
+  nodepos float8;
+  edgeid1 integer;
+  edgeid2 integer;
+  edge1 geometry;
+  edge2 geometry;
+  ok BOOL;
 BEGIN
 
-	--
-	-- All args required
-	-- 
-	IF atopology IS NULL OR anedge IS NULL OR apoint IS NULL THEN
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - null argument';
-	END IF;
+  --
+  -- All args required
+  -- 
+  IF atopology IS NULL OR anedge IS NULL OR apoint IS NULL THEN
+    RAISE EXCEPTION
+     'SQL/MM Spatial exception - null argument';
+  END IF;
 
-	--
-	-- Check node existance
-	-- 
-	ok = false;
-	FOR oldedge IN EXECUTE 'SELECT * FROM '
-		|| quote_ident(atopology) || '.edge_data ' ||
-		' WHERE edge_id =  ' || anedge
-	LOOP
-		ok = true;
-	END LOOP;
-	IF NOT ok THEN
-		RAISE EXCEPTION
-		  'SQL/MM Spatial exception - non-existent edge';
-	END IF;
+  --
+  -- Check node existance
+  -- 
+  ok = false;
+  FOR oldedge IN EXECUTE 'SELECT * FROM '
+    || quote_ident(atopology) || '.edge_data ' ||
+    ' WHERE edge_id =  ' || anedge
+  LOOP
+    ok = true;
+  END LOOP;
+  IF NOT ok THEN
+    RAISE EXCEPTION
+      'SQL/MM Spatial exception - non-existent edge';
+  END IF;
 
-	--
-	-- Check that given point is Within(anedge.geom)
-	-- 
-	IF NOT ST_Within(apoint, oldedge.geom) THEN
-		RAISE EXCEPTION
-		  'SQL/MM Spatial exception - point not on edge';
-	END IF;
+  --
+  -- Check that given point is Within(anedge.geom)
+  -- 
+  IF NOT ST_Within(apoint, oldedge.geom) THEN
+    RAISE EXCEPTION
+      'SQL/MM Spatial exception - point not on edge';
+  END IF;
 
-	--
-	-- Check if a coincident node already exists
-	--
-	FOR rec IN EXECUTE 'SELECT node_id FROM '
-		|| quote_ident(atopology) || '.node '
-		|| 'WHERE geom && '
-		|| quote_literal(apoint::text) || '::geometry'
-		|| ' AND ST_X(geom) = ST_X('
-		|| quote_literal(apoint::text) || '::geometry)'
-		|| ' AND ST_Y(geom) = ST_Y('
-		|| quote_literal(apoint::text) || '::geometry)'
-	LOOP
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - coincident node';
-	END LOOP;
+  --
+  -- Check if a coincident node already exists
+  --
+  FOR rec IN EXECUTE 'SELECT node_id FROM '
+    || quote_ident(atopology) || '.node '
+    || 'WHERE geom && '
+    || quote_literal(apoint::text) || '::geometry'
+    || ' AND ST_X(geom) = ST_X('
+    || quote_literal(apoint::text) || '::geometry)'
+    || ' AND ST_Y(geom) = ST_Y('
+    || quote_literal(apoint::text) || '::geometry)'
+  LOOP
+    RAISE EXCEPTION
+     'SQL/MM Spatial exception - coincident node';
+  END LOOP;
 
-	--
-	-- Get new node id
-	--
-	FOR rec IN EXECUTE 'SELECT nextval(''' ||
-		atopology || '.node_node_id_seq'')'
-	LOOP
-		nodeid = rec.nextval;
-	END LOOP;
+  --
+  -- Get new node id
+  --
+  FOR rec IN EXECUTE 'SELECT nextval(''' ||
+    atopology || '.node_node_id_seq'')'
+  LOOP
+    nodeid = rec.nextval;
+  END LOOP;
 
-	--RAISE NOTICE 'Next node id = % ', nodeid;
+  --RAISE NOTICE 'Next node id = % ', nodeid;
 
-	--
-	-- Add the new node 
-	--
-	EXECUTE 'INSERT INTO ' || quote_ident(atopology)
-		|| '.node(node_id, geom) 
-		VALUES(' || nodeid || ','
-		|| quote_literal(apoint::text)
-		|| ')';
+  --
+  -- Add the new node 
+  --
+  EXECUTE 'INSERT INTO ' || quote_ident(atopology)
+    || '.node(node_id, geom) 
+    VALUES(' || nodeid || ','
+    || quote_literal(apoint::text)
+    || ')';
 
-	--
-	-- Delete the old edge
-	--
-	EXECUTE 'DELETE FROM ' || quote_ident(atopology) || '.edge_data '
-		|| ' WHERE edge_id = ' || anedge;
+  --
+  -- Delete the old edge
+  --
+  EXECUTE 'DELETE FROM ' || quote_ident(atopology) || '.edge_data '
+    || ' WHERE edge_id = ' || anedge;
 
-	--
-	-- Compute new edges
-	--
-	nodepos = ST_Line_locate_point(oldedge.geom, apoint);
-	edge1 = ST_Line_substring(oldedge.geom, 0, nodepos);
-	edge2 = ST_Line_substring(oldedge.geom, nodepos, 1);
+  --
+  -- Compute new edges
+  --
+  nodepos = ST_Line_locate_point(oldedge.geom, apoint);
+  edge1 = ST_Line_substring(oldedge.geom, 0, nodepos);
+  edge2 = ST_Line_substring(oldedge.geom, nodepos, 1);
 
-	--
-	-- Get ids for the new edges 
-	--
-	FOR rec IN EXECUTE 'SELECT nextval(''' ||
-		atopology || '.edge_data_edge_id_seq'')'
-	LOOP
-		edgeid1 = rec.nextval;
-	END LOOP;
-	FOR rec IN EXECUTE 'SELECT nextval(''' ||
-		atopology || '.edge_data_edge_id_seq'')'
-	LOOP
-		edgeid2 = rec.nextval;
-	END LOOP;
+  --
+  -- Get ids for the new edges 
+  --
+  FOR rec IN EXECUTE 'SELECT nextval(''' ||
+    atopology || '.edge_data_edge_id_seq'')'
+  LOOP
+    edgeid1 = rec.nextval;
+  END LOOP;
+  FOR rec IN EXECUTE 'SELECT nextval(''' ||
+    atopology || '.edge_data_edge_id_seq'')'
+  LOOP
+    edgeid2 = rec.nextval;
+  END LOOP;
 
-	--RAISE NOTICE 'EdgeId1 % EdgeId2 %', edgeid1, edgeid2;
+  --RAISE NOTICE 'EdgeId1 % EdgeId2 %', edgeid1, edgeid2;
 
-	--
-	-- Insert the two new edges
-	--
-	EXECUTE 'INSERT INTO ' || quote_ident(atopology)
-		|| '.edge VALUES('
-		||edgeid1||','||oldedge.start_node
-		||','||nodeid
-		||','||edgeid2
-		||','||oldedge.next_right_edge
-		||','||oldedge.left_face
-		||','||oldedge.right_face
-		||','||quote_literal(edge1::text)
-		||')';
+  --
+  -- Insert the two new edges
+  --
+  EXECUTE 'INSERT INTO ' || quote_ident(atopology)
+    || '.edge VALUES('
+    ||edgeid1||','||oldedge.start_node
+    ||','||nodeid
+    ||','||edgeid2
+    ||','||oldedge.next_right_edge
+    ||','||oldedge.left_face
+    ||','||oldedge.right_face
+    ||','||quote_literal(edge1::text)
+    ||')';
 
-	EXECUTE 'INSERT INTO ' || quote_ident(atopology)
-		|| '.edge VALUES('
-		||edgeid2||','||nodeid
-		||','||oldedge.end_node
-		||','||oldedge.next_left_edge
-		||',-'||edgeid1
-		||','||oldedge.left_face
-		||','||oldedge.right_face
-		||','||quote_literal(edge2::text)
-		||')';
+  EXECUTE 'INSERT INTO ' || quote_ident(atopology)
+    || '.edge VALUES('
+    ||edgeid2||','||nodeid
+    ||','||oldedge.end_node
+    ||','||oldedge.next_left_edge
+    ||',-'||edgeid1
+    ||','||oldedge.left_face
+    ||','||oldedge.right_face
+    ||','||quote_literal(edge2::text)
+    ||')';
 
-	--
-	-- Update all next edge references to match new layout
-	--
+  --
+  -- Update all next edge references to match new layout
+  --
 
-	EXECUTE 'UPDATE ' || quote_ident(atopology)
-		|| '.edge_data SET next_right_edge = '
-		|| edgeid2
-		|| ','
-		|| ' abs_next_right_edge = ' || edgeid2
-		|| ' WHERE next_right_edge = ' || anedge;
-	EXECUTE 'UPDATE ' || quote_ident(atopology)
-		|| '.edge_data SET next_right_edge = '
-		|| -edgeid1
-		|| ','
-		|| ' abs_next_right_edge = ' || edgeid1
-		|| ' WHERE next_right_edge = ' || -anedge;
+  EXECUTE 'UPDATE ' || quote_ident(atopology)
+    || '.edge_data SET next_right_edge = '
+    || edgeid2
+    || ','
+    || ' abs_next_right_edge = ' || edgeid2
+    || ' WHERE next_right_edge = ' || anedge;
+  EXECUTE 'UPDATE ' || quote_ident(atopology)
+    || '.edge_data SET next_right_edge = '
+    || -edgeid1
+    || ','
+    || ' abs_next_right_edge = ' || edgeid1
+    || ' WHERE next_right_edge = ' || -anedge;
 
-	EXECUTE 'UPDATE ' || quote_ident(atopology)
-		|| '.edge_data SET next_left_edge = '
-		|| edgeid1
-		|| ','
-		|| ' abs_next_left_edge = ' || edgeid1
-		|| ' WHERE next_left_edge = ' || anedge;
-	EXECUTE 'UPDATE ' || quote_ident(atopology)
-		|| '.edge_data SET '
-		|| ' next_left_edge = ' || -edgeid2
-		|| ','
-		|| ' abs_next_left_edge = ' || edgeid2
-		|| ' WHERE next_left_edge = ' || -anedge;
+  EXECUTE 'UPDATE ' || quote_ident(atopology)
+    || '.edge_data SET next_left_edge = '
+    || edgeid1
+    || ','
+    || ' abs_next_left_edge = ' || edgeid1
+    || ' WHERE next_left_edge = ' || anedge;
+  EXECUTE 'UPDATE ' || quote_ident(atopology)
+    || '.edge_data SET '
+    || ' next_left_edge = ' || -edgeid2
+    || ','
+    || ' abs_next_left_edge = ' || edgeid2
+    || ' WHERE next_left_edge = ' || -anedge;
 
-	-- Get topology id
+  -- Get topology id
         SELECT id FROM topology.topology into topoid
                 WHERE name = atopology;
-	IF topoid IS NULL THEN
-		RAISE EXCEPTION 'No topology % registered',
-			quote_ident(atopology);
-	END IF;
+  IF topoid IS NULL THEN
+    RAISE EXCEPTION 'No topology % registered',
+      quote_ident(atopology);
+  END IF;
 
-	--
-	-- Update references in the Relation table.
-	-- We only take into considerations non-hierarchical
-	-- TopoGeometry here, for obvious reasons.
-	--
-	FOR rec IN EXECUTE 'SELECT r.* FROM '
-		|| quote_ident(atopology)
-		|| '.relation r, topology.layer l '
-		|| ' WHERE '
-		|| ' l.topology_id = ' || topoid
-		|| ' AND l.level = 0 '
-		|| ' AND l.layer_id = r.layer_id '
-		|| ' AND abs(r.element_id) = ' || anedge
-		|| ' AND r.element_type = 2'
-	LOOP
-		--RAISE NOTICE 'TopoGeometry % in layer % contains the edge being split', rec.topogeo_id, rec.layer_id;
+  --
+  -- Update references in the Relation table.
+  -- We only take into considerations non-hierarchical
+  -- TopoGeometry here, for obvious reasons.
+  --
+  FOR rec IN EXECUTE 'SELECT r.* FROM '
+    || quote_ident(atopology)
+    || '.relation r, topology.layer l '
+    || ' WHERE '
+    || ' l.topology_id = ' || topoid
+    || ' AND l.level = 0 '
+    || ' AND l.layer_id = r.layer_id '
+    || ' AND abs(r.element_id) = ' || anedge
+    || ' AND r.element_type = 2'
+  LOOP
+    --RAISE NOTICE 'TopoGeometry % in layer % contains the edge being split', rec.topogeo_id, rec.layer_id;
 
-		-- Delete old reference
-		EXECUTE 'DELETE FROM ' || quote_ident(atopology)
-			|| '.relation '
-			|| ' WHERE '
-			|| 'layer_id = ' || rec.layer_id
-			|| ' AND '
-			|| 'topogeo_id = ' || rec.topogeo_id
-			|| ' AND '
-			|| 'element_type = ' || rec.element_type
-			|| ' AND '
-			|| 'abs(element_id) = ' || anedge;
+    -- Delete old reference
+    EXECUTE 'DELETE FROM ' || quote_ident(atopology)
+      || '.relation '
+      || ' WHERE '
+      || 'layer_id = ' || rec.layer_id
+      || ' AND '
+      || 'topogeo_id = ' || rec.topogeo_id
+      || ' AND '
+      || 'element_type = ' || rec.element_type
+      || ' AND '
+      || 'abs(element_id) = ' || anedge;
 
-		-- Add new reference to edge1
-		IF rec.element_id < 0 THEN
-			tmp = -edgeid1;
-		ELSE
-			tmp = edgeid1;
-		END IF;
-		EXECUTE 'INSERT INTO ' || quote_ident(atopology)
-			|| '.relation '
-			|| ' VALUES( '
-			|| rec.topogeo_id
-			|| ','
-			|| rec.layer_id
-			|| ','
-			|| tmp
-			|| ','
-			|| rec.element_type
-			|| ')';
+    -- Add new reference to edge1
+    IF rec.element_id < 0 THEN
+      tmp = -edgeid1;
+    ELSE
+      tmp = edgeid1;
+    END IF;
+    EXECUTE 'INSERT INTO ' || quote_ident(atopology)
+      || '.relation '
+      || ' VALUES( '
+      || rec.topogeo_id
+      || ','
+      || rec.layer_id
+      || ','
+      || tmp
+      || ','
+      || rec.element_type
+      || ')';
 
-		-- Add new reference to edge2
-		IF rec.element_id < 0 THEN
-			tmp = -edgeid2;
-		ELSE
-			tmp = edgeid2;
-		END IF;
-		EXECUTE 'INSERT INTO ' || quote_ident(atopology)
-			|| '.relation '
-			|| ' VALUES( '
-			|| rec.topogeo_id
-			|| ','
-			|| rec.layer_id
-			|| ','
-			|| tmp
-			|| ','
-			|| rec.element_type
-			|| ')';
-			
-	END LOOP;
+    -- Add new reference to edge2
+    IF rec.element_id < 0 THEN
+      tmp = -edgeid2;
+    ELSE
+      tmp = edgeid2;
+    END IF;
+    EXECUTE 'INSERT INTO ' || quote_ident(atopology)
+      || '.relation '
+      || ' VALUES( '
+      || rec.topogeo_id
+      || ','
+      || rec.layer_id
+      || ','
+      || tmp
+      || ','
+      || rec.element_type
+      || ')';
+      
+  END LOOP;
 
-	--RAISE NOTICE 'Edge % split in edges % and % by node %',
-	--	anedge, edgeid1, edgeid2, nodeid;
+  --RAISE NOTICE 'Edge % split in edges % and % by node %',
+  --  anedge, edgeid1, edgeid2, nodeid;
 
-	RETURN nodeid; 
+  RETURN nodeid; 
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE;
@@ -1329,203 +1329,203 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- * Update references in the Relation table.
 --
 CREATE OR REPLACE FUNCTION topology.ST_ModEdgeSplit(varchar, integer, geometry)
-	RETURNS INTEGER AS
+  RETURNS INTEGER AS
 $$
 DECLARE
-	atopology ALIAS FOR $1;
-	anedge ALIAS FOR $2;
-	apoint ALIAS FOR $3;
-	oldedge RECORD;
-	rec RECORD;
-	tmp integer;
-	topoid integer;
-	nodeid integer;
-	nodepos float8;
-	newedgeid integer;
-	newedge1 geometry;
-	newedge2 geometry;
-	query text;
-	ok BOOL;
+  atopology ALIAS FOR $1;
+  anedge ALIAS FOR $2;
+  apoint ALIAS FOR $3;
+  oldedge RECORD;
+  rec RECORD;
+  tmp integer;
+  topoid integer;
+  nodeid integer;
+  nodepos float8;
+  newedgeid integer;
+  newedge1 geometry;
+  newedge2 geometry;
+  query text;
+  ok BOOL;
 BEGIN
 
-	--
-	-- All args required
-	-- 
-	IF atopology IS NULL OR anedge IS NULL OR apoint IS NULL THEN
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - null argument';
-	END IF;
+  --
+  -- All args required
+  -- 
+  IF atopology IS NULL OR anedge IS NULL OR apoint IS NULL THEN
+    RAISE EXCEPTION
+     'SQL/MM Spatial exception - null argument';
+  END IF;
 
-	--
-	-- Check node existance
-	-- 
-	ok = false;
-	FOR oldedge IN EXECUTE 'SELECT * FROM '
-		|| quote_ident(atopology) || '.edge_data ' ||
-		' WHERE edge_id =  ' || anedge
-	LOOP
-		ok = true;
-	END LOOP;
-	IF NOT ok THEN
-		RAISE EXCEPTION
-		  'SQL/MM Spatial exception - non-existent edge';
-	END IF;
+  --
+  -- Check node existance
+  -- 
+  ok = false;
+  FOR oldedge IN EXECUTE 'SELECT * FROM '
+    || quote_ident(atopology) || '.edge_data ' ||
+    ' WHERE edge_id =  ' || anedge
+  LOOP
+    ok = true;
+  END LOOP;
+  IF NOT ok THEN
+    RAISE EXCEPTION
+      'SQL/MM Spatial exception - non-existent edge';
+  END IF;
 
-	--
-	-- Check that given point is Within(anedge.geom)
-	-- 
-	IF NOT ST_Within(apoint, oldedge.geom) THEN
-		RAISE EXCEPTION
-		  'SQL/MM Spatial exception - point not on edge';
-	END IF;
+  --
+  -- Check that given point is Within(anedge.geom)
+  -- 
+  IF NOT ST_Within(apoint, oldedge.geom) THEN
+    RAISE EXCEPTION
+      'SQL/MM Spatial exception - point not on edge';
+  END IF;
 
-	--
-	-- Check if a coincident node already exists
-	--
-	FOR rec IN EXECUTE 'SELECT node_id FROM '
-		|| quote_ident(atopology) || '.node ' ||
-		'WHERE geom && '
-		|| quote_literal(apoint::text) || '::geometry'
-		||' AND ST_X(geom) = ST_X('
-		|| quote_literal(apoint::text) || '::geometry)'
-		||' AND ST_Y(geom) = ST_Y('
-		||quote_literal(apoint::text)||'::geometry)'
-	LOOP
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - coincident node';
-	END LOOP;
+  --
+  -- Check if a coincident node already exists
+  --
+  FOR rec IN EXECUTE 'SELECT node_id FROM '
+    || quote_ident(atopology) || '.node ' ||
+    'WHERE geom && '
+    || quote_literal(apoint::text) || '::geometry'
+    ||' AND ST_X(geom) = ST_X('
+    || quote_literal(apoint::text) || '::geometry)'
+    ||' AND ST_Y(geom) = ST_Y('
+    ||quote_literal(apoint::text)||'::geometry)'
+  LOOP
+    RAISE EXCEPTION
+     'SQL/MM Spatial exception - coincident node';
+  END LOOP;
 
-	--
-	-- Get new node id
-	--
-	FOR rec IN EXECUTE 'SELECT nextval(''' ||
-		atopology || '.node_node_id_seq'')'
-	LOOP
-		nodeid = rec.nextval;
-	END LOOP;
+  --
+  -- Get new node id
+  --
+  FOR rec IN EXECUTE 'SELECT nextval(''' ||
+    atopology || '.node_node_id_seq'')'
+  LOOP
+    nodeid = rec.nextval;
+  END LOOP;
 
-	--RAISE NOTICE 'Next node id = % ', nodeid;
+  --RAISE NOTICE 'Next node id = % ', nodeid;
 
-	--
-	-- Add the new node 
-	--
-	EXECUTE 'INSERT INTO ' || quote_ident(atopology)
-		|| '.node(node_id, geom) 
-		VALUES('||nodeid||','||quote_literal(apoint::text)||
-		')';
+  --
+  -- Add the new node 
+  --
+  EXECUTE 'INSERT INTO ' || quote_ident(atopology)
+    || '.node(node_id, geom) 
+    VALUES('||nodeid||','||quote_literal(apoint::text)||
+    ')';
 
-	--
-	-- Compute new edge
-	--
-	nodepos = ST_Line_Locate_Point(oldedge.geom, apoint);
-	newedge1 = ST_Line_Substring(oldedge.geom, 0, nodepos);
-	newedge2 = ST_Line_Substring(oldedge.geom, nodepos, 1);
-
-
-	--
-	-- Get ids for the new edge
-	--
-	FOR rec IN EXECUTE 'SELECT nextval(''' ||
-		atopology || '.edge_data_edge_id_seq'')'
-	LOOP
-		newedgeid = rec.nextval;
-	END LOOP;
-
-	--
-	-- Insert the new edge
-	--
-	EXECUTE 'INSERT INTO ' || quote_ident(atopology)
-		|| '.edge '
-		|| '(edge_id, start_node, end_node,'
-		|| 'next_left_edge, next_right_edge,'
-		|| 'left_face, right_face, geom) '
-		|| 'VALUES('
-		||newedgeid||','||nodeid
-		||','||oldedge.end_node
-		||','||oldedge.next_left_edge
-		||',-'||anedge
-		||','||oldedge.left_face
-		||','||oldedge.right_face
-		||','||quote_literal(newedge2::text)
-		||')';
-
-	--
-	-- Update the old edge
-	--
-	EXECUTE 'UPDATE ' || quote_ident(atopology) || '.edge_data '
-		|| ' SET geom = ' || quote_literal(newedge1::text)
-		|| ','
-		|| ' next_left_edge = ' || newedgeid
-		|| ','
-		|| ' end_node = ' || nodeid
-		|| ' WHERE edge_id = ' || anedge;
+  --
+  -- Compute new edge
+  --
+  nodepos = ST_Line_Locate_Point(oldedge.geom, apoint);
+  newedge1 = ST_Line_Substring(oldedge.geom, 0, nodepos);
+  newedge2 = ST_Line_Substring(oldedge.geom, nodepos, 1);
 
 
-	--
-	-- Update all next edge references to match new layout
-	--
+  --
+  -- Get ids for the new edge
+  --
+  FOR rec IN EXECUTE 'SELECT nextval(''' ||
+    atopology || '.edge_data_edge_id_seq'')'
+  LOOP
+    newedgeid = rec.nextval;
+  END LOOP;
 
-	EXECUTE 'UPDATE ' || quote_ident(atopology)
-		|| '.edge_data SET next_right_edge = '
-		|| -newedgeid 
-		|| ','
-		|| ' abs_next_right_edge = ' || newedgeid
-		|| ' WHERE next_right_edge = ' || -anedge;
+  --
+  -- Insert the new edge
+  --
+  EXECUTE 'INSERT INTO ' || quote_ident(atopology)
+    || '.edge '
+    || '(edge_id, start_node, end_node,'
+    || 'next_left_edge, next_right_edge,'
+    || 'left_face, right_face, geom) '
+    || 'VALUES('
+    ||newedgeid||','||nodeid
+    ||','||oldedge.end_node
+    ||','||oldedge.next_left_edge
+    ||',-'||anedge
+    ||','||oldedge.left_face
+    ||','||oldedge.right_face
+    ||','||quote_literal(newedge2::text)
+    ||')';
 
-	EXECUTE 'UPDATE ' || quote_ident(atopology)
-		|| '.edge_data SET '
-		|| ' next_left_edge = ' || -newedgeid
-		|| ','
-		|| ' abs_next_left_edge = ' || newedgeid
-		|| ' WHERE next_left_edge = ' || -anedge;
+  --
+  -- Update the old edge
+  --
+  EXECUTE 'UPDATE ' || quote_ident(atopology) || '.edge_data '
+    || ' SET geom = ' || quote_literal(newedge1::text)
+    || ','
+    || ' next_left_edge = ' || newedgeid
+    || ','
+    || ' end_node = ' || nodeid
+    || ' WHERE edge_id = ' || anedge;
 
-	-- Get topology id
+
+  --
+  -- Update all next edge references to match new layout
+  --
+
+  EXECUTE 'UPDATE ' || quote_ident(atopology)
+    || '.edge_data SET next_right_edge = '
+    || -newedgeid 
+    || ','
+    || ' abs_next_right_edge = ' || newedgeid
+    || ' WHERE next_right_edge = ' || -anedge;
+
+  EXECUTE 'UPDATE ' || quote_ident(atopology)
+    || '.edge_data SET '
+    || ' next_left_edge = ' || -newedgeid
+    || ','
+    || ' abs_next_left_edge = ' || newedgeid
+    || ' WHERE next_left_edge = ' || -anedge;
+
+  -- Get topology id
         SELECT id FROM topology.topology into topoid
                 WHERE name = atopology;
 
-	--
-	-- Update references in the Relation table.
-	-- We only take into considerations non-hierarchical
-	-- TopoGeometry here, for obvious reasons.
-	--
-	FOR rec IN EXECUTE 'SELECT r.* FROM '
-		|| quote_ident(atopology)
-		|| '.relation r, topology.layer l '
-		|| ' WHERE '
-		|| ' l.topology_id = ' || topoid
-		|| ' AND l.level = 0 '
-		|| ' AND l.layer_id = r.layer_id '
-		|| ' AND abs(r.element_id) = ' || anedge
-		|| ' AND r.element_type = 2'
-	LOOP
-		--RAISE NOTICE 'TopoGeometry % in layer % contains the edge being split (%) - updating to add new edge %', rec.topogeo_id, rec.layer_id, anedge, newedgeid;
+  --
+  -- Update references in the Relation table.
+  -- We only take into considerations non-hierarchical
+  -- TopoGeometry here, for obvious reasons.
+  --
+  FOR rec IN EXECUTE 'SELECT r.* FROM '
+    || quote_ident(atopology)
+    || '.relation r, topology.layer l '
+    || ' WHERE '
+    || ' l.topology_id = ' || topoid
+    || ' AND l.level = 0 '
+    || ' AND l.layer_id = r.layer_id '
+    || ' AND abs(r.element_id) = ' || anedge
+    || ' AND r.element_type = 2'
+  LOOP
+    --RAISE NOTICE 'TopoGeometry % in layer % contains the edge being split (%) - updating to add new edge %', rec.topogeo_id, rec.layer_id, anedge, newedgeid;
 
-		-- Add new reference to edge1
-		IF rec.element_id < 0 THEN
-			tmp = -newedgeid;
-		ELSE
-			tmp = newedgeid;
-		END IF;
-		query = 'INSERT INTO ' || quote_ident(atopology)
-			|| '.relation '
-			|| ' VALUES( '
-			|| rec.topogeo_id
-			|| ','
-			|| rec.layer_id
-			|| ','
-			|| tmp
-			|| ','
-			|| rec.element_type
-			|| ')';
+    -- Add new reference to edge1
+    IF rec.element_id < 0 THEN
+      tmp = -newedgeid;
+    ELSE
+      tmp = newedgeid;
+    END IF;
+    query = 'INSERT INTO ' || quote_ident(atopology)
+      || '.relation '
+      || ' VALUES( '
+      || rec.topogeo_id
+      || ','
+      || rec.layer_id
+      || ','
+      || tmp
+      || ','
+      || rec.element_type
+      || ')';
 
-		--RAISE NOTICE '%', query;
-		EXECUTE query;
-	END LOOP;
+    --RAISE NOTICE '%', query;
+    EXECUTE query;
+  END LOOP;
 
-	--RAISE NOTICE 'Edge % split in edges % and % by node %',
-	--	anedge, anedge, newedgeid, nodeid;
+  --RAISE NOTICE 'Edge % split in edges % and % by node %',
+  --  anedge, anedge, newedgeid, nodeid;
 
-	RETURN nodeid; 
+  RETURN nodeid; 
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE;
@@ -1546,7 +1546,7 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- }{
 --
 CREATE OR REPLACE FUNCTION topology.ST_AddIsoEdge(atopology varchar, anode integer, anothernode integer, acurve geometry)
-	RETURNS INTEGER AS
+  RETURNS INTEGER AS
 $$
 DECLARE
   aface INTEGER;
@@ -1736,117 +1736,117 @@ LANGUAGE 'plpgsql' VOLATILE;
 --  ST_ChangeEdgeGeom(atopology, anedge, acurve)
 -- 
 CREATE OR REPLACE FUNCTION topology.ST_ChangeEdgeGeom(atopology varchar, anedge integer, acurve geometry)
-	RETURNS TEXT AS
+  RETURNS TEXT AS
 $$
 DECLARE
-	aface INTEGER;
-	face GEOMETRY;
-	snodegeom GEOMETRY;
-	enodegeom GEOMETRY;
-	count INTEGER;
-	rec RECORD;
-	edgeid INTEGER;
-	oldedge RECORD;
+  aface INTEGER;
+  face GEOMETRY;
+  snodegeom GEOMETRY;
+  enodegeom GEOMETRY;
+  count INTEGER;
+  rec RECORD;
+  edgeid INTEGER;
+  oldedge RECORD;
 BEGIN
 
-	--
-	-- All arguments required
-	-- 
-	IF atopology IS NULL
-	   OR anedge IS NULL
-	   OR acurve IS NULL
-	THEN
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - null argument';
-	END IF;
+  --
+  -- All arguments required
+  -- 
+  IF atopology IS NULL
+     OR anedge IS NULL
+     OR acurve IS NULL
+  THEN
+    RAISE EXCEPTION
+     'SQL/MM Spatial exception - null argument';
+  END IF;
 
-	--
-	-- Acurve must be a LINESTRING
-	--
-	IF substring(geometrytype(acurve), 1, 4) != 'LINE'
-	THEN
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - invalid curve';
-	END IF;
+  --
+  -- Acurve must be a LINESTRING
+  --
+  IF substring(geometrytype(acurve), 1, 4) != 'LINE'
+  THEN
+    RAISE EXCEPTION
+     'SQL/MM Spatial exception - invalid curve';
+  END IF;
 
-	--
-	-- Acurve must be a simple
-	--
-	IF NOT ST_IsSimple(acurve)
-	THEN
-		RAISE EXCEPTION
-		 'SQL/MM Spatial exception - curve not simple';
-	END IF;
+  --
+  -- Acurve must be a simple
+  --
+  IF NOT ST_IsSimple(acurve)
+  THEN
+    RAISE EXCEPTION
+     'SQL/MM Spatial exception - curve not simple';
+  END IF;
 
-	--
-	-- e) Check StartPoint consistency
-	--
-	FOR rec IN EXECUTE 'SELECT * FROM '
-		|| quote_ident(atopology) || '.edge_data e, '
-		|| quote_ident(atopology) || '.node n '
-		|| ' WHERE e.edge_id = ' || anedge
-		|| ' AND n.node_id = e.start_node '
-		|| ' AND ( ST_X(n.geom) != '
-		|| ST_X(ST_StartPoint(acurve))
-		|| ' OR ST_Y(n.geom) != '
-		|| ST_Y(ST_StartPoint(acurve))
-		|| ')'
-	LOOP 
-		RAISE EXCEPTION
-		'SQL/MM Spatial exception - start node not geometry start point.';
-	END LOOP;
+  --
+  -- e) Check StartPoint consistency
+  --
+  FOR rec IN EXECUTE 'SELECT * FROM '
+    || quote_ident(atopology) || '.edge_data e, '
+    || quote_ident(atopology) || '.node n '
+    || ' WHERE e.edge_id = ' || anedge
+    || ' AND n.node_id = e.start_node '
+    || ' AND ( ST_X(n.geom) != '
+    || ST_X(ST_StartPoint(acurve))
+    || ' OR ST_Y(n.geom) != '
+    || ST_Y(ST_StartPoint(acurve))
+    || ')'
+  LOOP 
+    RAISE EXCEPTION
+    'SQL/MM Spatial exception - start node not geometry start point.';
+  END LOOP;
 
-	--
-	-- f) Check EndPoint consistency
-	--
-	FOR rec IN EXECUTE 'SELECT * FROM '
-		|| quote_ident(atopology) || '.edge_data e, '
-		|| quote_ident(atopology) || '.node n '
-		|| ' WHERE e.edge_id = ' || anedge
-		|| ' AND n.node_id = e.end_node '
-		|| ' AND ( ST_X(n.geom) != '
-		|| ST_X(ST_EndPoint(acurve))
-		|| ' OR ST_Y(n.geom) != '
-		|| ST_Y(ST_EndPoint(acurve))
-		|| ')'
-	LOOP 
-		RAISE EXCEPTION
-		'SQL/MM Spatial exception - end node not geometry end point.';
-	END LOOP;
+  --
+  -- f) Check EndPoint consistency
+  --
+  FOR rec IN EXECUTE 'SELECT * FROM '
+    || quote_ident(atopology) || '.edge_data e, '
+    || quote_ident(atopology) || '.node n '
+    || ' WHERE e.edge_id = ' || anedge
+    || ' AND n.node_id = e.end_node '
+    || ' AND ( ST_X(n.geom) != '
+    || ST_X(ST_EndPoint(acurve))
+    || ' OR ST_Y(n.geom) != '
+    || ST_Y(ST_EndPoint(acurve))
+    || ')'
+  LOOP 
+    RAISE EXCEPTION
+    'SQL/MM Spatial exception - end node not geometry end point.';
+  END LOOP;
 
-	--
-	-- g) Check if curve crosses any node
-	-- _within_ used to let endpoints out
-	-- 
-	FOR rec IN EXECUTE 'SELECT node_id FROM '
-		|| quote_ident(atopology) || '.node
-		WHERE ST_Within(geom, ' || quote_literal(acurve::text) || '::geometry)'
-	LOOP
-		RAISE EXCEPTION
-		'SQL/MM Spatial exception - geometry crosses a node';
-	END LOOP;
+  --
+  -- g) Check if curve crosses any node
+  -- _within_ used to let endpoints out
+  -- 
+  FOR rec IN EXECUTE 'SELECT node_id FROM '
+    || quote_ident(atopology) || '.node
+    WHERE ST_Within(geom, ' || quote_literal(acurve::text) || '::geometry)'
+  LOOP
+    RAISE EXCEPTION
+    'SQL/MM Spatial exception - geometry crosses a node';
+  END LOOP;
 
-	--
-	-- h) Check if curve intersects any other edge
-	-- 
-	FOR rec IN EXECUTE 'SELECT * FROM '
-		|| quote_ident(atopology) || '.edge_data '
-		|| ' WHERE edge_id != ' || anedge
-		|| ' AND ST_Intersects(geom, '
-		|| quote_literal(acurve::text) || '::geometry)'
-	LOOP
-		RAISE EXCEPTION
-		'SQL/MM Spatial exception - geometry intersects an edge';
-	END LOOP;
+  --
+  -- h) Check if curve intersects any other edge
+  -- 
+  FOR rec IN EXECUTE 'SELECT * FROM '
+    || quote_ident(atopology) || '.edge_data '
+    || ' WHERE edge_id != ' || anedge
+    || ' AND ST_Intersects(geom, '
+    || quote_literal(acurve::text) || '::geometry)'
+  LOOP
+    RAISE EXCEPTION
+    'SQL/MM Spatial exception - geometry intersects an edge';
+  END LOOP;
 
-	--
-	-- Update edge geometry
-	--
-	EXECUTE 'UPDATE ' || quote_ident(atopology) || '.edge_data '
-		|| ' SET geom = ' || quote_literal(acurve::text) 
-		|| ' WHERE edge_id = ' || anedge;
+  --
+  -- Update edge geometry
+  --
+  EXECUTE 'UPDATE ' || quote_ident(atopology) || '.edge_data '
+    || ' SET geom = ' || quote_literal(acurve::text) 
+    || ' WHERE edge_id = ' || anedge;
 
-	RETURN 'Edge ' || anedge || ' changed';
+  RETURN 'Edge ' || anedge || ' changed';
 
 END
 $$
@@ -1908,7 +1908,7 @@ BEGIN
   END IF;
 
   --
-	-- Get topology id
+  -- Get topology id
   --
   BEGIN
     SELECT id FROM topology.topology
@@ -2043,8 +2043,8 @@ BEGIN
   --
   ---------------------------------------------------------------
 
-	EXECUTE 'SELECT nextval(' || quote_literal(
-			quote_ident(atopology) || '.edge_data_edge_id_seq') || ')'
+  EXECUTE 'SELECT nextval(' || quote_literal(
+      quote_ident(atopology) || '.edge_data_edge_id_seq') || ')'
   INTO STRICT newedge.edge_id;
 
   -- Compute azimut of first edge end on start node
@@ -2323,15 +2323,15 @@ BEGIN
 
   -- Insert the new edge with what we have so far
   EXECUTE 'INSERT INTO ' || quote_ident(atopology) 
-		|| '.edge VALUES(' || newedge.edge_id
+    || '.edge VALUES(' || newedge.edge_id
     || ',' || newedge.start_node
-		|| ',' || newedge.end_node
-		|| ',' || newedge.next_left_edge
-		|| ',' || newedge.next_right_edge
-		|| ',' || newedge.left_face
-		|| ',' || newedge.right_face
-		|| ',' || quote_literal(newedge.geom::geometry::text)
-		|| ')';
+    || ',' || newedge.end_node
+    || ',' || newedge.next_left_edge
+    || ',' || newedge.next_right_edge
+    || ',' || newedge.left_face
+    || ',' || newedge.right_face
+    || ',' || quote_literal(newedge.geom::geometry::text)
+    || ')';
 
   -- Link prev_left_edge to us 
   -- (if it's not us already)
@@ -2504,27 +2504,27 @@ RETURNS text
 AS
 $$
 DECLARE
-	atopology alias for $1;
-	rec RECORD;
-	topology_id numeric;
+  atopology alias for $1;
+  rec RECORD;
+  topology_id numeric;
 BEGIN
-	IF atopology IS NULL THEN
-		RAISE EXCEPTION 'SQL/MM Spatial exception - null argument';
-	END IF;
+  IF atopology IS NULL THEN
+    RAISE EXCEPTION 'SQL/MM Spatial exception - null argument';
+  END IF;
 
-	FOR rec IN SELECT * FROM pg_namespace WHERE text(nspname) = atopology
-	LOOP
-		RAISE EXCEPTION 'SQL/MM Spatial exception - schema already exists';
-	END LOOP;
+  FOR rec IN SELECT * FROM pg_namespace WHERE text(nspname) = atopology
+  LOOP
+    RAISE EXCEPTION 'SQL/MM Spatial exception - schema already exists';
+  END LOOP;
 
-	FOR rec IN EXECUTE 'SELECT topology.CreateTopology('
-		||quote_literal(atopology)|| ') as id'
-	LOOP
-		topology_id := rec.id;
-	END LOOP;
+  FOR rec IN EXECUTE 'SELECT topology.CreateTopology('
+    ||quote_literal(atopology)|| ') as id'
+  LOOP
+    topology_id := rec.id;
+  END LOOP;
 
-	RETURN 'Topology-Geometry ' || quote_literal(atopology)
-		|| ' (id:' || topology_id || ') created. ';
+  RETURN 'Topology-Geometry ' || quote_literal(atopology)
+    || ' (id:' || topology_id || ') created. ';
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE;
@@ -2541,88 +2541,88 @@ RETURNS text
 AS
 $$
 DECLARE
-	atopology alias for $1;
-	acollection alias for $2;
-	typ char(4);
-	rec RECORD;
-	ret int;
-	schemaoid oid;
+  atopology alias for $1;
+  acollection alias for $2;
+  typ char(4);
+  rec RECORD;
+  ret int;
+  schemaoid oid;
 BEGIN
-	IF atopology IS NULL OR acollection IS NULL THEN
-		RAISE EXCEPTION 'SQL/MM Spatial exception - null argument';
-	END IF;
+  IF atopology IS NULL OR acollection IS NULL THEN
+    RAISE EXCEPTION 'SQL/MM Spatial exception - null argument';
+  END IF;
 
-	-- Verify existance of the topology schema 
-	FOR rec in EXECUTE 'SELECT oid FROM pg_namespace WHERE '
-		|| ' nspname = ' || quote_literal(atopology)
-		|| ' GROUP BY oid'
-		
-	LOOP
-		schemaoid := rec.oid;
-	END LOOP;
+  -- Verify existance of the topology schema 
+  FOR rec in EXECUTE 'SELECT oid FROM pg_namespace WHERE '
+    || ' nspname = ' || quote_literal(atopology)
+    || ' GROUP BY oid'
+    
+  LOOP
+    schemaoid := rec.oid;
+  END LOOP;
 
-	IF schemaoid IS NULL THEN
-	RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent schema';
-	END IF;
+  IF schemaoid IS NULL THEN
+  RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent schema';
+  END IF;
 
-	-- Verify existance of the topology views in the topology schema 
-	FOR rec in EXECUTE 'SELECT count(*) FROM pg_class WHERE '
-		|| ' relnamespace = ' || schemaoid 
-		|| ' and relname = ''node'''
-		|| ' OR relname = ''edge'''
-		|| ' OR relname = ''face'''
-	LOOP
-		IF rec.count < 3 THEN
-	RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent view';
-		END IF;
-	END LOOP;
+  -- Verify existance of the topology views in the topology schema 
+  FOR rec in EXECUTE 'SELECT count(*) FROM pg_class WHERE '
+    || ' relnamespace = ' || schemaoid 
+    || ' and relname = ''node'''
+    || ' OR relname = ''edge'''
+    || ' OR relname = ''face'''
+  LOOP
+    IF rec.count < 3 THEN
+  RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent view';
+    END IF;
+  END LOOP;
 
-	-- Verify the topology views in the topology schema to be empty
-	FOR rec in EXECUTE
-		'SELECT count(*) FROM '
-		|| quote_ident(atopology) || '.edge_data '
-		|| ' UNION ' ||
-		'SELECT count(*) FROM '
-		|| quote_ident(atopology) || '.node '
-	LOOP
-		IF rec.count > 0 THEN
-	RAISE EXCEPTION 'SQL/MM Spatial exception - non-empty view';
-		END IF;
-	END LOOP;
+  -- Verify the topology views in the topology schema to be empty
+  FOR rec in EXECUTE
+    'SELECT count(*) FROM '
+    || quote_ident(atopology) || '.edge_data '
+    || ' UNION ' ||
+    'SELECT count(*) FROM '
+    || quote_ident(atopology) || '.node '
+  LOOP
+    IF rec.count > 0 THEN
+  RAISE EXCEPTION 'SQL/MM Spatial exception - non-empty view';
+    END IF;
+  END LOOP;
 
-	-- face check is separated as it will contain a single (world)
-	-- face record
-	FOR rec in EXECUTE
-		'SELECT count(*) FROM '
-		|| quote_ident(atopology) || '.face '
-	LOOP
-		IF rec.count != 1 THEN
-	RAISE EXCEPTION 'SQL/MM Spatial exception - non-empty face view';
-		END IF;
-	END LOOP;
+  -- face check is separated as it will contain a single (world)
+  -- face record
+  FOR rec in EXECUTE
+    'SELECT count(*) FROM '
+    || quote_ident(atopology) || '.face '
+  LOOP
+    IF rec.count != 1 THEN
+  RAISE EXCEPTION 'SQL/MM Spatial exception - non-empty face view';
+    END IF;
+  END LOOP;
 
-	-- 
-	-- LOOP through the elements invoking the specific function
-	-- 
-	FOR rec IN SELECT geom(ST_Dump(acollection))
-	LOOP
-		typ := substring(geometrytype(rec.geom), 1, 3);
+  -- 
+  -- LOOP through the elements invoking the specific function
+  -- 
+  FOR rec IN SELECT geom(ST_Dump(acollection))
+  LOOP
+    typ := substring(geometrytype(rec.geom), 1, 3);
 
-		IF typ = 'LIN' THEN
-	SELECT topology.TopoGeo_addLinestring(atopology, rec.geom) INTO ret;
-		ELSIF typ = 'POI' THEN
-	SELECT topology.TopoGeo_AddPoint(atopology, rec.geom) INTO ret;
-		ELSIF typ = 'POL' THEN
-	SELECT topology.TopoGeo_AddPolygon(atopology, rec.geom) INTO ret;
-		ELSE
-	RAISE EXCEPTION 'ST_CreateTopoGeo got unknown geometry type: %', typ;
-		END IF;
+    IF typ = 'LIN' THEN
+  SELECT topology.TopoGeo_addLinestring(atopology, rec.geom) INTO ret;
+    ELSIF typ = 'POI' THEN
+  SELECT topology.TopoGeo_AddPoint(atopology, rec.geom) INTO ret;
+    ELSIF typ = 'POL' THEN
+  SELECT topology.TopoGeo_AddPolygon(atopology, rec.geom) INTO ret;
+    ELSE
+  RAISE EXCEPTION 'ST_CreateTopoGeo got unknown geometry type: %', typ;
+    END IF;
 
-	END LOOP;
+  END LOOP;
 
-	RETURN 'Topology ' || atopology || ' populated';
+  RETURN 'Topology ' || atopology || ' populated';
 
-	RAISE EXCEPTION 'ST_CreateTopoGeo not implemente yet';
+  RAISE EXCEPTION 'ST_CreateTopoGeo not implemente yet';
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE;
