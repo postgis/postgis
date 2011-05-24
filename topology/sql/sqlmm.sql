@@ -1570,6 +1570,13 @@ BEGIN
      'SQL/MM Spatial exception - null argument';
   END IF;
 
+  -- NOT IN THE SPECS:
+  -- A closed edge is never isolated (as it forms a face)
+  IF anode = anothernode THEN
+      RAISE EXCEPTION
+       'Closed edges would not be isolated, try ST_AddEdgeNewFaces';
+  END IF;
+
   --
   -- Acurve must be a LINESTRING
   --
@@ -1580,12 +1587,11 @@ BEGIN
   END IF;
 
   --
-  -- Acurve must be a simple
+  -- Acurve must be simple
   --
   IF NOT ST_IsSimple(acurve)
   THEN
-    RAISE EXCEPTION
-     'SQL/MM Spatial exception - curve not simple';
+    RAISE EXCEPTION 'SQL/MM Spatial exception - curve not simple';
   END IF;
 
   --
@@ -1603,11 +1609,17 @@ BEGIN
     WHERE node_id = ' || anode ||
     ' OR node_id = ' || anothernode
   LOOP 
-    IF count > 0 AND aface != rec.containing_face THEN
-      RAISE EXCEPTION
-      'SQL/MM Spatial exception - nodes in different faces';
-    ELSE
+
+    IF rec.containing_face IS NULL THEN
+      RAISE EXCEPTION 'SQL/MM Spatial exception - not isolated node';
+    END IF;
+
+    IF aface IS NULL THEN
       aface := rec.containing_face;
+    ELSE
+      IF aface != rec.containing_face THEN
+        RAISE EXCEPTION 'SQL/MM Spatial exception - nodes in different faces';
+      END IF;
     END IF;
 
     -- Get nodes geom
@@ -1620,56 +1632,12 @@ BEGIN
     count = count+1;
 
   END LOOP;
+
+  -- TODO: don't need count, can do with snodegeom/enodegeom instead..
   IF count < 2 THEN
-    IF count = 1 AND anode = anothernode THEN
-      RAISE EXCEPTION
-       'Closed edges would not be isolated, try ST_AddEdgeNewFaces';
-    ELSE
-      RAISE EXCEPTION
-       'SQL/MM Spatial exception - non-existent node';
-    END IF;
+    RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent node';
   END IF;
 
-
-  --
-  -- Check nodes isolation.
-  -- 
-  FOR rec IN EXECUTE 'SELECT edge_id FROM '
-    || quote_ident(atopology) || '.edge_data ' ||
-    ' WHERE start_node =  ' || anode ||
-    ' OR end_node = ' || anode ||
-    ' OR start_node = ' || anothernode ||
-    ' OR end_node = ' || anothernode
-  LOOP
-    RAISE EXCEPTION
-     'SQL/MM Spatial exception - not isolated node';
-  END LOOP;
-
-  --
-  -- Check acurve to be within endpoints containing face 
-  -- (unless it is the world face, I suppose)
-  -- 
-  IF aface IS NOT NULL THEN
-
-    --
-    -- Extract endpoints face geometry
-    --
-    FOR rec IN EXECUTE 'SELECT topology.ST_GetFaceGeometry('
-      || quote_literal(atopology) ||
-      ',' || aface || ') as face'
-    LOOP
-      face := rec.face;
-    END LOOP;
-
-    --
-    -- Check acurve to be within face
-    --
-    IF NOT ST_Within(acurve, face) THEN
-      RAISE EXCEPTION
-        'SQL/MM Spatial exception - geometry not within face.';
-    END IF;
-
-  END IF;
 
   --
   -- l) Check that start point of acurve match start node
@@ -1727,7 +1695,9 @@ BEGIN
   END LOOP;
 
   -- TODO: this should likely be an exception instead !
-  IF aface IS NULL THEN aface := 0; END IF;
+  IF aface IS NULL THEN
+    aface := 0;
+  END IF;
 
   --
   -- Insert the new row

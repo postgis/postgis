@@ -15,6 +15,8 @@ INSERT INTO tt.node (containing_face, geom) VALUES
   (0, 'POINT(10 10)') RETURNING 'N' || node_id; -- 5
 INSERT INTO tt.node (containing_face, geom) VALUES
   (0, 'POINT(20 10)') RETURNING 'N' || node_id; -- 6
+INSERT INTO tt.node (containing_face, geom) VALUES
+  (null, 'POINT(30 10)') RETURNING 'N' || node_id; -- 7
 
 -- null input
 SELECT topology.ST_AddIsoEdge('tt', 1, 2, NULL);
@@ -60,6 +62,11 @@ SELECT topology.ST_AddIsoEdge('tt',
 -- Not isolated edge (shares endpoint with self)
 SELECT topology.ST_AddIsoEdge('tt',
   3, 3, 'LINESTRING(5 0, 4 -2, 6 -2, 5 0)');
+
+-- Not isolated edge (one of the endpoints has [bogusly] containin_face=null)
+-- See http://trac.osgeo.org/postgis/ticket/978
+SELECT topology.ST_AddIsoEdge('tt', 6, 7, 'LINESTRING(20 10, 30 10)');
+
 
 -- Edge intersection (geometry intersects an edge)
 SELECT topology.ST_AddIsoEdge('tt',
