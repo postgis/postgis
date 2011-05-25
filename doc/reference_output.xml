@@ -874,12 +874,14 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 		
 		<informaltable>
 				<tgroup cols="3">
-					<tbody>
+				    	<thead>
 					  <row>
 						<entry>PostGIS Type</entry>
 						<entry>2D X3D Type</entry>
 						<entry>3D X3D Type</entry>
 					  </row>
+					</thead>
+					<tbody>
 					  <row>
 						<entry>LINESTRING</entry>
 						<entry>not yet implemented - will be PolyLine2D</entry>
