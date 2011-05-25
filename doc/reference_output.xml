@@ -915,7 +915,7 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 				</tbody>
 			</tgroup>
 		</informaltable>
-		<note><para>Using with any 2D geometries or 3D geometries with holes currently results in invalid X3D.  We are working on fixing this.</para></note>
+		<note><para>2D geometry support not yet complete.  Inner rings currently just drawn as separate polygons.  We are working on these.</para></note>
 		<para>Lots of advancements happening in 3D space particularly with <ulink url="http://www.web3d.org/x3d/wiki/index.php/X3D_and_HTML5#Goals:_X3D_and_HTML5">X3D Integration with HTML5</ulink></para>
 		<para>There is also a nice open source X3D viewer you can use to view rendered geometries. Free Wrl <ulink url="http://freewrl.sourceforge.net/">http://freewrl.sourceforge.net/</ulink> binaries available for Mac, Linux, and Windows. Use the FreeWRL_Launcher packaged to view the geometries.</para>
 		<para>Availability: 2.0.0: ISO-IEC-19776-1.2-X3DEncodings-XML</para>	
