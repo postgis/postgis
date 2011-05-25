@@ -3347,8 +3347,10 @@ FROM dummy_rast WHERE rid=2;
 				  <funcprototype>
 					<funcdef>bytea <function>ST_AsTIFF</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef choice='opt'><type>text[] </type> <parameter>[options]</parameter><initializer>''</initializer></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>[srs]</parameter><initializer>sameassource</initializer></paramdef>
+					<group choice="opt"> 
+					<paramdef><type>text[] </type> <parameter>options</parameter><initializer>''</initializer></paramdef>
+					<paramdef><type>text </type> <parameter>srs</parameter><initializer>sameassource</initializer></paramdef>
+					</group>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>bytea <function>ST_AsTIFF</function></funcdef>
