@@ -68,6 +68,8 @@ TEST_BANDPROPS = \
 	rt_band_properties.sql \
 	rt_set_band_properties.sql \
 	rt_summarystats.sql \
+	rt_count.sql \
+	rt_sum.sql \
 	rt_mean.sql \
 	rt_stddev.sql \
 	rt_minmax.sql \

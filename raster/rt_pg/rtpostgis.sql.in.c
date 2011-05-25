@@ -459,6 +459,192 @@ CREATE OR REPLACE FUNCTION st_approxsummarystats(rastertable text, rastercolumn 
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
+-- ST_Count and ST_ApproxCount
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION st_count(rast raster, nband int, hasnodata boolean, OUT count integer)
+	RETURNS integer
+	AS $$ SELECT count FROM _st_summarystats($1, $2, $3, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_count(rast raster, nband int, OUT count integer)
+	RETURNS integer
+	AS $$ SELECT count FROM _st_summarystats($1, $2, TRUE, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_count(rast raster, hasnodata boolean, OUT count integer)
+	RETURNS integer
+	AS $$ SELECT count FROM _st_summarystats($1, 1, $2, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_count(rast raster, OUT count integer)
+	RETURNS integer
+	AS $$ SELECT count FROM _st_summarystats($1, 1, TRUE, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxcount(rast raster, nband int, hasnodata boolean, sample_percent double precision, OUT count integer)
+	RETURNS integer
+	AS $$ SELECT count FROM _st_summarystats($1, $2, $3, $4) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxcount(rast raster, nband int, sample_percent double precision, OUT count integer)
+	RETURNS integer
+	AS $$ SELECT count FROM _st_summarystats($1, $2, TRUE, $3) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxcount(rast raster, hasnodata boolean, sample_percent double precision, OUT count integer)
+	RETURNS integer
+	AS $$ SELECT count FROM _st_summarystats($1, 1, $2, $3) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxcount(rast raster, sample_percent double precision, OUT count integer)
+	RETURNS integer
+	AS $$ SELECT count FROM _st_summarystats($1, 1, TRUE, $2) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxcount(rast raster, OUT count integer)
+	RETURNS integer
+	AS $$ SELECT count FROM _st_summarystats($1, 1, TRUE, 0.1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_count(rastertable text, rastercolumn text, nband int, hasnodata boolean, OUT count integer)
+	RETURNS integer
+	AS $$ SELECT count FROM _st_summarystats($1, $2, $3, $4, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_count(rastertable text, rastercolumn text, nband int, OUT count integer)
+	RETURNS integer
+	AS $$ SELECT count FROM _st_summarystats($1, $2, $3, TRUE, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_count(rastertable text, rastercolumn text, hasnodata boolean, OUT count integer)
+	RETURNS integer
+	AS $$ SELECT count FROM _st_summarystats($1, $2, 1, $3, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_count(rastertable text, rastercolumn text, OUT count integer)
+	RETURNS integer
+	AS $$ SELECT count FROM _st_summarystats($1, $2, 1, TRUE, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, nband int, hasnodata boolean, sample_percent double precision, OUT count integer)
+	RETURNS integer
+	AS $$ SELECT count FROM _st_summarystats($1, $2, $3, $4, $5) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, nband int, sample_percent double precision, OUT count integer)
+	RETURNS integer
+	AS $$ SELECT count FROM _st_summarystats($1, $2, $3, TRUE, $4) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, hasnodata boolean, sample_percent double precision, OUT count integer)
+	RETURNS integer
+	AS $$ SELECT count FROM _st_summarystats($1, $2, 1, $3, $4) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, sample_percent double precision, OUT count integer)
+	RETURNS integer
+	AS $$ SELECT count FROM _st_summarystats($1, $2, 1, TRUE, $3) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, OUT count integer)
+	RETURNS integer
+	AS $$ SELECT count FROM _st_summarystats($1, $2, 1, TRUE, 0.1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
+-- ST_Sum and ST_ApproxSum
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION st_sum(rast raster, nband int, hasnodata boolean, OUT sum double precision)
+	RETURNS double precision
+	AS $$ SELECT sum FROM _st_summarystats($1, $2, $3, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_sum(rast raster, nband int, OUT sum double precision)
+	RETURNS double precision
+	AS $$ SELECT sum FROM _st_summarystats($1, $2, TRUE, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_sum(rast raster, hasnodata boolean, OUT sum double precision)
+	RETURNS double precision
+	AS $$ SELECT sum FROM _st_summarystats($1, 1, $2, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_sum(rast raster, OUT sum double precision)
+	RETURNS double precision
+	AS $$ SELECT sum FROM _st_summarystats($1, 1, TRUE, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxsum(rast raster, nband int, hasnodata boolean, sample_percent double precision, OUT sum double precision)
+	RETURNS double precision
+	AS $$ SELECT sum FROM _st_summarystats($1, $2, $3, $4) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxsum(rast raster, nband int, sample_percent double precision, OUT sum double precision)
+	RETURNS double precision
+	AS $$ SELECT sum FROM _st_summarystats($1, $2, TRUE, $3) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxsum(rast raster, hasnodata boolean, sample_percent double precision, OUT sum double precision)
+	RETURNS double precision
+	AS $$ SELECT sum FROM _st_summarystats($1, 1, $2, $3) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxsum(rast raster, sample_percent double precision, OUT sum double precision)
+	RETURNS double precision
+	AS $$ SELECT sum FROM _st_summarystats($1, 1, TRUE, $2) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxsum(rast raster, OUT sum double precision)
+	RETURNS double precision
+	AS $$ SELECT sum FROM _st_summarystats($1, 1, TRUE, 0.1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_sum(rastertable text, rastercolumn text, nband int, hasnodata boolean, OUT sum double precision)
+	RETURNS double precision
+	AS $$ SELECT sum FROM _st_summarystats($1, $2, $3, $4, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_sum(rastertable text, rastercolumn text, nband int, OUT sum double precision)
+	RETURNS double precision
+	AS $$ SELECT sum FROM _st_summarystats($1, $2, $3, TRUE, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_sum(rastertable text, rastercolumn text, hasnodata boolean, OUT sum double precision)
+	RETURNS double precision
+	AS $$ SELECT sum FROM _st_summarystats($1, $2, 1, $3, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_sum(rastertable text, rastercolumn text, OUT sum double precision)
+	RETURNS double precision
+	AS $$ SELECT sum FROM _st_summarystats($1, $2, 1, TRUE, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxsum(rastertable text, rastercolumn text, nband int, hasnodata boolean, sample_percent double precision, OUT sum double precision)
+	RETURNS double precision
+	AS $$ SELECT sum FROM _st_summarystats($1, $2, $3, $4, $5) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxsum(rastertable text, rastercolumn text, nband int, sample_percent double precision, OUT sum double precision)
+	RETURNS double precision
+	AS $$ SELECT sum FROM _st_summarystats($1, $2, $3, TRUE, $4) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxsum(rastertable text, rastercolumn text, hasnodata boolean, sample_percent double precision, OUT sum double precision)
+	RETURNS double precision
+	AS $$ SELECT sum FROM _st_summarystats($1, $2, 1, $3, $4) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxsum(rastertable text, rastercolumn text, sample_percent double precision, OUT sum double precision)
+	RETURNS double precision
+	AS $$ SELECT sum FROM _st_summarystats($1, $2, 1, TRUE, $3) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxsum(rastertable text, rastercolumn text, OUT sum double precision)
+	RETURNS double precision
+	AS $$ SELECT sum FROM _st_summarystats($1, $2, 1, TRUE, 0.1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
 -- ST_Mean and ST_ApproxMean
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_mean(rast raster, nband int, hasnodata boolean, OUT mean double precision)
