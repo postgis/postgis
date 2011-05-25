@@ -22,7 +22,6 @@ XSLTPROC_COMMONOPTS= \
 	--param chunk.section.depth 0 \
 	--param generate.section.toc.level 1 \
 	--param funcsynopsis.style ansi \
-	--param methodsynopsis.style ansi \
 	--param admon.graphics 1 \
 	--param admon.textlabel 0 \
 	--param simplesect.in.toc 0 \
