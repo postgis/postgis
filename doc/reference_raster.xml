@@ -3347,8 +3347,8 @@ FROM dummy_rast WHERE rid=2;
 				  <funcprototype>
 					<funcdef>bytea <function>ST_AsTIFF</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>text[] </type> <parameter>[options]</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>[srs=sameassource]</parameter></paramdef>
+					<paramdef><type>text[] </type> <parameter>[options]</parameter><initializer>''</initializer></paramdef>
+					<paramdef><type>text </type> <parameter>[srs]</parameter><initializer>sameassource</initializer></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>bytea <function>ST_AsTIFF</function></funcdef>
