@@ -418,7 +418,7 @@ Datum geography_typmod_out(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(3, "Got typmod(srid = %d, type = %d, hasz = %d, hasm = %d)", srid, type, hasz, hasm);
 
 	/* No SRID or type or dimensionality? Then no typmod at all. Return empty string. */
-	if ( ! srid && ! type && ! hasz && ! hasz )
+	if ( ! ( srid || type || hasz || hasz ) )
 	{
 		*str = '\0';
 		PG_RETURN_CSTRING(str);
@@ -430,10 +430,8 @@ Datum geography_typmod_out(PG_FUNCTION_ARGS)
 	/* Has type? */
 	if ( type )
 		str += sprintf(str, "%s", lwtype_name(type));
-
-	/* Need dummy type to append Z/M to? */
-	if ( !type & (hasz || hasz) )
-		str += sprintf(str, "Geometry");
+  else if ( (!type) &&  ( srid || hasz || hasm ) )
+    str += sprintf(str, "Geometry");
 
 	/* Has Z? */
 	if ( hasz )
@@ -444,7 +442,7 @@ Datum geography_typmod_out(PG_FUNCTION_ARGS)
 		str += sprintf(str, "%s", "M");
 
 	/* Comma? */
-	if ( srid && ( type || hasz || hasm ) )
+	if ( srid )
 		str += sprintf(str, ",");
 
 	/* Has SRID? */
