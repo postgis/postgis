@@ -130,8 +130,8 @@ rt_util_clamp_to_32F(double value) {
 }
 
 /* quicksort */
-#define   swap(x, y)    { double t; t = x; x = y; y = t; }
-#define   order(x, y)   if (x > y) swap(x, y)
+#define SWAP(x, y) { double t; t = x; x = y; y = t; }
+#define ORDER(x, y) if (x > y) SWAP(x, y)
 
 static double pivot(double *left, double *right) {
 	double l, m, r, *p;
@@ -141,9 +141,9 @@ static double pivot(double *left, double *right) {
 	r = *right;
 
 	/* order */
-	order(l, m);
-	order(l, r);
-	order(m, r);
+	ORDER(l, m);
+	ORDER(l, r);
+	ORDER(m, r);
 
 	/* pivot is higher of two values */
 	if (l < m) return m;
@@ -165,7 +165,7 @@ static double *partition(double *left, double *right, double pivot) {
 		while (*right >= pivot) --right;
 
 		if (left < right) {
-			swap(*left, *right);
+			SWAP(*left, *right);
 			++left;
 			--right;
 		}
@@ -1500,7 +1500,7 @@ struct rt_bandstats_t {
 /**
  * Compute summary statistics for a band
  *
- * @param band: the band to query for minimum and maximum pixel values
+ * @param band: the band to query for summary stats
  * @param hasnodata: if non-zero, ignore nodata values
  * @param sample: percentage of pixels to sample
  * @param inc_vals: flag to include values in return struct
@@ -1510,7 +1510,6 @@ struct rt_bandstats_t {
 rt_bandstats
 rt_band_get_summary_stats(rt_band band, int hasnodata, double sample,
 	int inc_vals) {
-	rt_pixtype pixtype = PT_END;
 	uint8_t *data = NULL;
 	uint32_t x = 0;
 	uint32_t y = 0;
@@ -1556,15 +1555,12 @@ rt_band_get_summary_stats(rt_band band, int hasnodata, double sample,
 	}
 
 	data = rt_band_get_data(band);
-	pixtype = band->pixtype;
 
 	hasnodata_flag = rt_band_get_hasnodata_flag(band);
-	if (hasnodata_flag != FALSE) {
+	if (hasnodata_flag != FALSE)
 		nodata = rt_band_get_nodata(band);
-	}
-	else {
+	else
 		hasnodata = 0;
-	}
 
 	RASTER_DEBUGF(3, "nodata = %f", nodata);
 	RASTER_DEBUGF(3, "hasnodata_flag = %d", hasnodata_flag);
@@ -2143,6 +2139,273 @@ rt_band_get_quantiles(rt_bandstats stats,
 	return rtn;
 }
 
+/* symmetrical rounding */
+#define ROUND(x, y) (((x > 0.0) ? floor((x * pow(10, y) + 0.5)) : ceil((x * pow(10, y) - 0.5))) / pow(10, y));
+
+struct rt_valuecount_t {
+	double value;
+	uint32_t count;
+	double proportion;
+};
+
+/**
+ * Count the number of times provided value(s) occur in
+ * the band
+ *
+ * @param band: the band to query for minimum and maximum pixel values
+ * @param hasnodata: if non-zero, ignore nodata values
+ * @param search_values: array of values to count
+ * @param search_values_count: the number of search values
+ * @param roundto: the decimal place to round the values to
+ * @param rtn_count: the number of value counts being returned
+ *
+ * @return the default set of or requested quantiles for a band
+ */
+rt_valuecount
+rt_band_get_value_count(rt_band band, int hasnodata,
+	double *search_values, uint32_t search_values_count, double roundto,
+	int *rtn_count) {
+	rt_valuecount vcnts = NULL;
+	rt_pixtype pixtype = PT_END;
+	uint8_t *data = NULL;
+	int hasnodata_flag = FALSE;
+	double nodata = 0;
+
+	int scale = 0;
+	int doround = 0;
+	double tmpd = 0;
+	int i = 0;
+
+	uint32_t x = 0;
+	uint32_t y = 0;
+	int rtn;
+	double pxlval;
+	double rpxlval;
+	uint32_t total = 0;
+	int vcnts_count = 0;
+	int new_valuecount = 0;
+
+#if POSTGIS_DEBUG_LEVEL > 0
+	clock_t start, stop;
+	double elapsed = 0;
+#endif
+
+	RASTER_DEBUG(3, "starting");
+#if POSTGIS_DEBUG_LEVEL > 0
+	start = clock();
+#endif
+
+	assert(NULL != band);
+
+	if (band->offline) {
+		rterror("rt_band_get_count_of_values not implemented yet for OFFDB bands");
+		return NULL;
+	}
+
+	data = rt_band_get_data(band);
+	pixtype = band->pixtype;
+
+	hasnodata_flag = rt_band_get_hasnodata_flag(band);
+	if (hasnodata_flag != FALSE)
+		nodata = rt_band_get_nodata(band);
+	else
+		hasnodata = 0;
+
+	RASTER_DEBUGF(3, "nodata = %f", nodata);
+	RASTER_DEBUGF(3, "hasnodata_flag = %d", hasnodata_flag);
+	RASTER_DEBUGF(3, "user hasnodata = %d", hasnodata);
+
+	/* process roundto */
+	if (roundto < 0 || (fabs(roundto - 0.0) < FLT_EPSILON)) {
+		roundto = 0;
+		scale = 0;
+	}
+	/* tenths, hundredths, thousandths, etc */
+	else if (roundto < 1) {
+    switch (pixtype) {
+			/* integer band types don't have digits after the decimal place */
+			case PT_1BB:
+			case PT_2BUI:
+			case PT_4BUI:
+			case PT_8BSI:
+			case PT_8BUI:
+			case PT_16BSI:
+			case PT_16BUI:
+			case PT_32BSI:
+			case PT_32BUI:
+				roundto = 0;
+				break;
+			/* floating points, check the rounding */
+			case PT_32BF:
+			case PT_64BF:
+				for (scale = 0; scale <= 20; scale++) {
+					tmpd = roundto * pow(10, scale);
+					if (fabs((tmpd - ((int) tmpd)) - 0.0) < FLT_EPSILON) break;
+				}
+				break;
+			case PT_END:
+				break;
+		}
+	}
+	/* ones, tens, hundreds, etc */
+	else {
+		for (scale = 0; scale >= -20; scale--) {
+			tmpd = roundto * pow(10, scale);
+			if (tmpd < 1 || fabs(tmpd - 1.0) < FLT_EPSILON) {
+				if (scale == 0) doround = 1;
+				break;
+			}
+		}
+	}
+
+	if (scale != 0 || doround)
+		doround = 1;
+	else
+		doround = 0;
+	RASTER_DEBUGF(3, "scale = %d", scale);
+	RASTER_DEBUGF(3, "doround = %d", doround);
+
+	/* process search_values */
+	if (search_values_count > 0 && NULL != search_values) {
+		vcnts = (rt_valuecount) rtalloc(sizeof(struct rt_valuecount_t) * search_values_count);
+		if (NULL == vcnts) {
+			rterror("rt_band_get_count_of_values: Unable to allocate memory for value counts");
+			*rtn_count = 0;
+			return NULL;
+		}
+
+		for (i = 0; i < search_values_count; i++) {
+			vcnts[i].count = 0;
+			vcnts[i].proportion = 0;
+			if (!doround)
+				vcnts[i].value = search_values[i];
+			else
+				vcnts[i].value = ROUND(search_values[i], scale);
+		}
+		vcnts_count = i;
+	}
+	else
+		search_values_count = 0;
+	RASTER_DEBUGF(3, "search_values_count = %d", search_values_count);
+
+	/* entire band is nodata */
+	if (rt_band_get_isnodata_flag(band) != FALSE) {
+		if (hasnodata) {
+			rtwarn("All pixels of band have the NODATA value");
+			return NULL;
+		}
+		else {
+			if (search_values_count > 0) {
+				/* check for nodata match */
+				for (i = 0; i < search_values_count; i++) {
+					if (!doround)
+						tmpd = nodata;
+					else
+						tmpd = ROUND(nodata, scale);
+
+					if (fabs(tmpd - vcnts[i].value) > FLT_EPSILON)
+						continue;
+
+					vcnts[i].count = band->width * band->height;
+					vcnts->proportion = 1.0;
+				}
+
+				*rtn_count = vcnts_count;
+			}
+			/* no defined search values */
+			else {
+				vcnts = (rt_valuecount) rtalloc(sizeof(struct rt_valuecount_t));
+				if (NULL == vcnts) {
+					rterror("rt_band_get_count_of_values: Unable to allocate memory for value counts");
+					*rtn_count = 0;
+					return NULL;
+				}
+
+				vcnts->value = nodata;
+				vcnts->count = band->width * band->height;
+				vcnts->proportion = 1.0;
+
+				*rtn_count = 1;
+			}
+
+			return vcnts;
+		}
+	}
+
+	for (x = 0; x < band->width; x++) {
+		for (y = 0; y < band->height; y++) {
+			rtn = rt_band_get_pixel(band, x, y, &pxlval);
+
+			/* error getting value, continue */
+			if (rtn == -1) continue;
+
+			if (
+				!hasnodata || (
+					hasnodata &&
+					(hasnodata_flag != FALSE) &&
+					(fabs(pxlval - nodata) > FLT_EPSILON)
+				)
+			) {
+				total++;
+				if (doround) {
+					rpxlval = ROUND(pxlval, scale);
+				}
+				else
+					rpxlval = pxlval;
+				RASTER_DEBUGF(5, "(pxlval, rpxlval) => (%0.6f, %0.6f)", pxlval, rpxlval);
+
+				new_valuecount = 1;
+				/* search for match in existing valuecounts */
+				for (i = 0; i < vcnts_count; i++) {
+					/* match found */
+					if (fabs(vcnts[i].value - rpxlval) < FLT_EPSILON) {
+						vcnts[i].count++;
+						new_valuecount = 0;
+						RASTER_DEBUGF(5, "(value, count) => (%0.6f, %d)", vcnts[i].value, vcnts[i].count);
+						break;
+					}
+				}
+
+				/*
+					don't add new valuecount either because
+						- no need for new one
+						- user-defined search values
+				*/
+				if (!new_valuecount || search_values_count > 0) continue;
+
+				/* add new valuecount */
+				vcnts = rtrealloc(vcnts, sizeof(struct rt_valuecount_t) * (vcnts_count + 1));
+				if (NULL == vcnts) {
+					rterror("rt_band_get_count_of_values: Unable to allocate memory for value counts");
+					*rtn_count = 0;
+					return NULL;
+				}
+
+				vcnts[vcnts_count].value = rpxlval;
+				vcnts[vcnts_count].count = 1;
+				vcnts[vcnts_count].proportion = 0;
+				RASTER_DEBUGF(5, "(value, count) => (%0.6f, %d)", vcnts[vcnts_count].value, vcnts[vcnts_count].count);
+				vcnts_count++;
+			}
+		}
+	}
+
+#if POSTGIS_DEBUG_LEVEL > 0
+	stop = clock();
+	elapsed = ((double) (stop - start)) / CLOCKS_PER_SEC;
+	RASTER_DEBUGF(3, "elapsed time = %0.4f", elapsed);
+#endif
+
+	for (i = 0; i < vcnts_count; i++) {
+		vcnts[i].proportion = (double) vcnts[i].count / total;
+		RASTER_DEBUGF(5, "(value, count) => (%0.6f, %d)", vcnts[i].value, vcnts[i].count);
+	}
+
+	RASTER_DEBUG(3, "done");
+	*rtn_count = vcnts_count;
+	return vcnts;
+}
+
 struct rt_reclassexpr_t {
 	struct rt_reclassrange {
 		double min;
@@ -2171,8 +2434,8 @@ rt_band_reclass(rt_band srcband, rt_pixtype pixtype,
 	uint32_t hasnodata, double nodataval, rt_reclassexpr *exprset,
 	int exprcount) {
 	rt_band band = NULL;
-	int width = 0;
-	int height = 0;
+	uint32_t width = 0;
+	uint32_t height = 0;
 	int numval = 0;
 	int memsize = 0;
 	void *mem = NULL;
@@ -2180,8 +2443,8 @@ rt_band_reclass(rt_band srcband, rt_pixtype pixtype,
 	double src_nodataval = 0.0;
 
 	int rtn;
-	int x;
-	int y;
+	uint32_t x;
+	uint32_t y;
 	int i;
 	double or = 0;
 	double ov = 0;

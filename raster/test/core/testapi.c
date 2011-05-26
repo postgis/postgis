@@ -1124,8 +1124,7 @@ static void testBandStats() {
 	rtdealloc(stats->values);
 	rtdealloc(stats);
 
-	rt_band_destroy(band);
-	rt_raster_destroy(raster);
+	deepRelease(raster);
 }
 
 static void testRasterReplaceBand() {
@@ -1257,9 +1256,8 @@ static void testBandReclass() {
 	for (i = cnt - 1; i >= 0; i--)
 		free(exprset[i]);
 	free(exprset);
-	rt_band_destroy(band);
 	rt_band_destroy(newband);
-	rt_raster_destroy(raster);
+	deepRelease(raster);
 }
 
 struct rt_gdaldriver_t {
@@ -1305,6 +1303,69 @@ static void testRasterToGDAL(rt_raster raster) {
 	*/
 
 	rt_raster_destroy(rast);
+}
+
+struct rt_valuecount_t {
+	double value;
+	uint32_t count;
+	double proportion;
+};
+static void testValueCount() {
+	rt_valuecount vcnts = NULL;
+
+	rt_raster raster;
+	rt_band band;
+	uint32_t x;
+	uint32_t xmax = 100;
+	uint32_t y;
+	uint32_t ymax = 100;
+	int rtn = 0;
+
+	double count[] = {3, 4, 5};
+
+	raster = rt_raster_new(xmax, ymax);
+	assert(raster); /* or we're out of virtual memory */
+	band = addBand(raster, PT_32BF, 0, 0);
+	CHECK(band);
+	rt_band_set_nodata(band, 0);
+
+	for (x = 0; x < xmax; x++) {
+		for (y = 0; y < ymax; y++) {
+			rtn = rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1));
+			CHECK((rtn != -1));
+		}
+	}
+	vcnts = rt_band_get_value_count(band, 1, NULL, 0, 0, &rtn);
+	CHECK(vcnts);
+	CHECK((rtn > 0));
+	rtdealloc(vcnts);
+
+	vcnts = rt_band_get_value_count(band, 1, NULL, 0, 0.01, &rtn);
+	CHECK(vcnts);
+	CHECK((rtn > 0));
+	rtdealloc(vcnts);
+
+	vcnts = rt_band_get_value_count(band, 1, NULL, 0, 0.1, &rtn);
+	CHECK(vcnts);
+	CHECK((rtn > 0));
+	rtdealloc(vcnts);
+
+	vcnts = rt_band_get_value_count(band, 1, NULL, 0, 1, &rtn);
+	CHECK(vcnts);
+	CHECK((rtn > 0));
+	rtdealloc(vcnts);
+
+	vcnts = rt_band_get_value_count(band, 1, NULL, 0, 10, &rtn);
+	CHECK(vcnts);
+	CHECK((rtn > 0));
+	rtdealloc(vcnts);
+
+	vcnts = rt_band_get_value_count(band, 1, count, 3, 1, &rtn);
+	CHECK(vcnts);
+	CHECK((rtn > 0));
+	rtdealloc(vcnts);
+
+	deepRelease(raster);
 }
 
 int
@@ -1636,6 +1697,10 @@ main()
 		printf("Testing rt_raster_gdal_drivers\n");
 		testGDALDrivers();
 		printf("Successfully tested rt_raster_gdal_drivers\n");
+
+		printf("Testing rt_band_get_value_count\n");
+		testValueCount();
+		printf("Successfully tested rt_band_get_value_count\n");
 
     deepRelease(raster);
 

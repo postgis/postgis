@@ -209,6 +209,9 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS);
 /* get quantiles */
 Datum RASTER_quantile(PG_FUNCTION_ARGS);
 
+/* get counts of values */
+Datum RASTER_valueCount(PG_FUNCTION_ARGS);
+
 /* reclassify specified bands of a raster */
 Datum RASTER_reclass(PG_FUNCTION_ARGS);
 
@@ -3652,6 +3655,250 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 	/* do when there is no more left */
 	else {
 		pfree(quant2);
+		SRF_RETURN_DONE(funcctx);
+	}
+}
+
+struct rt_valuecount_t {
+	double value;
+	uint32_t count;
+	double proportion;
+};
+
+/* get counts of values */
+PG_FUNCTION_INFO_V1(RASTER_valueCount);
+Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
+	FuncCallContext *funcctx;
+	TupleDesc tupdesc;
+	AttInMetadata *attinmeta;
+
+	int count;
+	rt_valuecount vcnts;
+	rt_valuecount vcnts2;
+	int call_cntr;
+	int max_calls;
+
+	/* first call of function */
+	if (SRF_IS_FIRSTCALL()) {
+		MemoryContext oldcontext;
+
+		rt_pgraster *pgraster = NULL;
+		rt_raster raster = NULL;
+		rt_band band = NULL;
+		int32_t bandindex = 0;
+		int num_bands = 0;
+		bool hasnodata = TRUE;
+		double *search_values = NULL;
+		int search_values_count = 0;
+		double roundto = 0;
+
+		int i;
+		int j;
+		int n;
+
+		ArrayType *array;
+		Oid etype;
+		Datum *e;
+		bool *nulls;
+		int16 typlen;
+		bool typbyval;
+		char typalign;
+		int ndims = 1;
+		int *dims;
+		int *lbs;
+
+		/* create a function context for cross-call persistence */
+		funcctx = SRF_FIRSTCALL_INIT();
+
+		/* switch to memory context appropriate for multiple function calls */
+		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+
+		/* pgraster is null, return nothing */
+		if (PG_ARGISNULL(0)) SRF_RETURN_DONE(funcctx);
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+		raster = rt_raster_deserialize(pgraster);
+		if (!raster) {
+			elog(ERROR, "RASTER_valueCount: Could not deserialize raster");
+			PG_RETURN_NULL();
+		}
+
+		/* band index is 1-based */
+		bandindex = PG_GETARG_INT32(1);
+		num_bands = rt_raster_get_num_bands(raster);
+		if (bandindex < 1 || bandindex > num_bands) {
+			elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
+			rt_raster_destroy(raster);
+			SRF_RETURN_DONE(funcctx);
+		}
+		assert(0 <= (bandindex - 1));
+
+		/* hasnodata flag */
+		if (!PG_ARGISNULL(2))
+			hasnodata = PG_GETARG_BOOL(2);
+
+		/* search values */
+		if (!PG_ARGISNULL(3)) {
+			array = PG_GETARG_ARRAYTYPE_P(3);
+			etype = ARR_ELEMTYPE(array);
+			get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
+
+			switch (etype) {
+				case FLOAT4OID:
+				case FLOAT8OID:
+					break;
+				default:
+					elog(ERROR, "RASTER_valueCount: Invalid data type for values");
+					rt_raster_destroy(raster);
+					PG_RETURN_NULL();
+					break;
+			}
+
+			ndims = ARR_NDIM(array);
+			dims = ARR_DIMS(array);
+			lbs = ARR_LBOUND(array);
+
+			deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
+				&nulls, &n);
+
+			search_values = palloc(sizeof(double) * n);
+			for (i = 0, j = 0; i < n; i++) {
+				if (nulls[i]) continue;
+
+				switch (etype) {
+					case FLOAT4OID:
+						search_values[j] = (double) DatumGetFloat4(e[i]);
+						break;
+					case FLOAT8OID:
+						search_values[j] = (double) DatumGetFloat8(e[i]);
+						break;
+				}
+
+				POSTGIS_RT_DEBUGF(5, "search_values[%d] = %f", j, search_values[j]);
+				j++;
+			}
+			search_values_count = j;
+
+			if (j < 1) {
+				pfree(search_values);
+				search_values = NULL;
+			}
+		}
+
+		/* roundto */
+		if (!PG_ARGISNULL(4)) {
+			roundto = PG_GETARG_FLOAT8(4);
+			if (roundto < 0.) roundto = 0;
+		}
+
+		/* get band */
+		band = rt_raster_get_band(raster, bandindex - 1);
+		if (!band) {
+			elog(NOTICE, "Could not find raster band of index %d. Returning NULL", bandindex);
+			rt_raster_destroy(raster);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* get counts of values */
+		vcnts = rt_band_get_value_count(band, (int) hasnodata, search_values, search_values_count, roundto, &count);
+		rt_band_destroy(band);
+		rt_raster_destroy(raster);
+		if (NULL == vcnts || !count) {
+			elog(NOTICE, "Could not count the values of raster band of index %d", bandindex);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		POSTGIS_RT_DEBUGF(3, "%d value counts returned", count);
+
+		/* Store needed information */
+		funcctx->user_fctx = vcnts;
+
+		/* total number of tuples to be returned */
+		funcctx->max_calls = count;
+
+		/* Build a tuple descriptor for our result type */
+		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
+			ereport(ERROR, (
+				errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+				errmsg(
+					"function returning record called in context "
+					"that cannot accept type record"
+				)
+			));
+		}
+
+		/*
+		 * generate attribute metadata needed later to produce tuples from raw
+		 * C strings
+		 */
+		attinmeta = TupleDescGetAttInMetadata(tupdesc);
+		funcctx->attinmeta = attinmeta;
+		MemoryContextSwitchTo(oldcontext);
+	}
+
+  /* stuff done on every call of the function */
+  funcctx = SRF_PERCALL_SETUP();
+
+	call_cntr = funcctx->call_cntr;
+	max_calls = funcctx->max_calls;
+	attinmeta = funcctx->attinmeta;
+	vcnts2 = funcctx->user_fctx;
+
+	/* do when there is more left to send */
+	if (call_cntr < max_calls) {
+		char **values;
+		HeapTuple tuple;
+		Datum result;
+
+		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
+
+		/*
+		 * Prepare a values array for building the returned tuple.
+		 * This should be an array of C strings which will
+		 * be processed later by the type input functions.
+		 */
+		values = (char **) palloc(3 * sizeof(char *));
+
+		values[0] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
+		values[1] = (char *) palloc(sizeof(char) * (MAX_INT_CHARLEN + 1));
+		values[2] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
+
+		snprintf(
+			values[0],
+			sizeof(char) * (MAX_DBL_CHARLEN + 1),
+			"%f",
+			vcnts2[call_cntr].value
+		);
+		snprintf(
+			values[1],
+			sizeof(char) * (MAX_INT_CHARLEN + 1),
+			"%d",
+			vcnts2[call_cntr].count
+		);
+		snprintf(
+			values[2],
+			sizeof(char) * (MAX_DBL_CHARLEN + 1),
+			"%f",
+			vcnts2[call_cntr].proportion
+		);
+
+		/* build a tuple */
+		tuple = BuildTupleFromCStrings(attinmeta, values);
+
+		/* make the tuple into a datum */
+		result = HeapTupleGetDatum(tuple);
+
+		/* clean up (this is not really necessary) */
+		pfree(values[2]);
+		pfree(values[1]);
+		pfree(values[0]);
+		pfree(values);
+
+		SRF_RETURN_NEXT(funcctx, result);
+	}
+	/* do when there is no more left */
+	else {
+		pfree(vcnts2);
 		SRF_RETURN_DONE(funcctx);
 	}
 }
