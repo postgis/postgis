@@ -262,7 +262,7 @@ CREATE OR REPLACE FUNCTION st_band(rast raster)
 -- ST_SummaryStats and ST_ApproxSummaryStats
 -----------------------------------------------------------------------
 CREATE TYPE summarystats AS (
-	count integer,
+	count bigint,
 	sum double precision,
 	mean double precision,
 	stddev double precision,
@@ -461,93 +461,93 @@ CREATE OR REPLACE FUNCTION st_approxsummarystats(rastertable text, rastercolumn 
 -----------------------------------------------------------------------
 -- ST_Count and ST_ApproxCount
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_count(rast raster, nband int, hasnodata boolean, OUT count integer)
-	RETURNS integer
+CREATE OR REPLACE FUNCTION st_count(rast raster, nband int, hasnodata boolean, OUT count bigint)
+	RETURNS bigint
 	AS $$ SELECT count FROM _st_summarystats($1, $2, $3, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_count(rast raster, nband int, OUT count integer)
-	RETURNS integer
+CREATE OR REPLACE FUNCTION st_count(rast raster, nband int, OUT count bigint)
+	RETURNS bigint
 	AS $$ SELECT count FROM _st_summarystats($1, $2, TRUE, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_count(rast raster, hasnodata boolean, OUT count integer)
-	RETURNS integer
+CREATE OR REPLACE FUNCTION st_count(rast raster, hasnodata boolean, OUT count bigint)
+	RETURNS bigint
 	AS $$ SELECT count FROM _st_summarystats($1, 1, $2, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_count(rast raster, OUT count integer)
-	RETURNS integer
+CREATE OR REPLACE FUNCTION st_count(rast raster, OUT count bigint)
+	RETURNS bigint
 	AS $$ SELECT count FROM _st_summarystats($1, 1, TRUE, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxcount(rast raster, nband int, hasnodata boolean, sample_percent double precision, OUT count integer)
-	RETURNS integer
+CREATE OR REPLACE FUNCTION st_approxcount(rast raster, nband int, hasnodata boolean, sample_percent double precision, OUT count bigint)
+	RETURNS bigint
 	AS $$ SELECT count FROM _st_summarystats($1, $2, $3, $4) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxcount(rast raster, nband int, sample_percent double precision, OUT count integer)
-	RETURNS integer
+CREATE OR REPLACE FUNCTION st_approxcount(rast raster, nband int, sample_percent double precision, OUT count bigint)
+	RETURNS bigint
 	AS $$ SELECT count FROM _st_summarystats($1, $2, TRUE, $3) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxcount(rast raster, hasnodata boolean, sample_percent double precision, OUT count integer)
-	RETURNS integer
+CREATE OR REPLACE FUNCTION st_approxcount(rast raster, hasnodata boolean, sample_percent double precision, OUT count bigint)
+	RETURNS bigint
 	AS $$ SELECT count FROM _st_summarystats($1, 1, $2, $3) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxcount(rast raster, sample_percent double precision, OUT count integer)
-	RETURNS integer
+CREATE OR REPLACE FUNCTION st_approxcount(rast raster, sample_percent double precision, OUT count bigint)
+	RETURNS bigint
 	AS $$ SELECT count FROM _st_summarystats($1, 1, TRUE, $2) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxcount(rast raster, OUT count integer)
-	RETURNS integer
+CREATE OR REPLACE FUNCTION st_approxcount(rast raster, OUT count bigint)
+	RETURNS bigint
 	AS $$ SELECT count FROM _st_summarystats($1, 1, TRUE, 0.1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_count(rastertable text, rastercolumn text, nband int, hasnodata boolean, OUT count integer)
-	RETURNS integer
+CREATE OR REPLACE FUNCTION st_count(rastertable text, rastercolumn text, nband int, hasnodata boolean, OUT count bigint)
+	RETURNS bigint
 	AS $$ SELECT count FROM _st_summarystats($1, $2, $3, $4, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_count(rastertable text, rastercolumn text, nband int, OUT count integer)
-	RETURNS integer
+CREATE OR REPLACE FUNCTION st_count(rastertable text, rastercolumn text, nband int, OUT count bigint)
+	RETURNS bigint
 	AS $$ SELECT count FROM _st_summarystats($1, $2, $3, TRUE, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_count(rastertable text, rastercolumn text, hasnodata boolean, OUT count integer)
-	RETURNS integer
+CREATE OR REPLACE FUNCTION st_count(rastertable text, rastercolumn text, hasnodata boolean, OUT count bigint)
+	RETURNS bigint
 	AS $$ SELECT count FROM _st_summarystats($1, $2, 1, $3, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_count(rastertable text, rastercolumn text, OUT count integer)
-	RETURNS integer
+CREATE OR REPLACE FUNCTION st_count(rastertable text, rastercolumn text, OUT count bigint)
+	RETURNS bigint
 	AS $$ SELECT count FROM _st_summarystats($1, $2, 1, TRUE, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, nband int, hasnodata boolean, sample_percent double precision, OUT count integer)
-	RETURNS integer
+CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, nband int, hasnodata boolean, sample_percent double precision, OUT count bigint)
+	RETURNS bigint
 	AS $$ SELECT count FROM _st_summarystats($1, $2, $3, $4, $5) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, nband int, sample_percent double precision, OUT count integer)
-	RETURNS integer
+CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, nband int, sample_percent double precision, OUT count bigint)
+	RETURNS bigint
 	AS $$ SELECT count FROM _st_summarystats($1, $2, $3, TRUE, $4) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, hasnodata boolean, sample_percent double precision, OUT count integer)
-	RETURNS integer
+CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, hasnodata boolean, sample_percent double precision, OUT count bigint)
+	RETURNS bigint
 	AS $$ SELECT count FROM _st_summarystats($1, $2, 1, $3, $4) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, sample_percent double precision, OUT count integer)
-	RETURNS integer
+CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, sample_percent double precision, OUT count bigint)
+	RETURNS bigint
 	AS $$ SELECT count FROM _st_summarystats($1, $2, 1, TRUE, $3) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, OUT count integer)
-	RETURNS integer
+CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, OUT count bigint)
+	RETURNS bigint
 	AS $$ SELECT count FROM _st_summarystats($1, $2, 1, TRUE, 0.1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
