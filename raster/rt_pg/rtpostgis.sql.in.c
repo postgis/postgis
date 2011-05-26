@@ -739,74 +739,42 @@ CREATE TYPE histogram AS (
 );
 
 -- Cannot be strict as "width" can be NULL
-CREATE OR REPLACE FUNCTION _st_histogram(rast raster, nband int, hasnodata boolean, sample_percent double precision, bins int, width double precision[], right boolean)
+CREATE OR REPLACE FUNCTION _st_histogram(rast raster, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1, bins int DEFAULT 0, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE)
 	RETURNS SETOF histogram
 	AS 'MODULE_PATHNAME','RASTER_histogram'
 	LANGUAGE 'C' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_histogram(rast raster, nband int, hasnodata boolean, bins int, width double precision[], right boolean)
+-- Cannot be strict as "width" can be NULL
+CREATE OR REPLACE FUNCTION st_histogram(rast raster, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE, bins int DEFAULT 0, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE)
 	RETURNS SETOF histogram
 	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, $2, $3, 1, $4, $5, $6) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_histogram(rast raster, nband int, hasnodata boolean, bins int, right boolean)
 	RETURNS SETOF histogram
 	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, $2, $3, 1, $4, NULL, $5) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_histogram(rast raster, nband int, hasnodata boolean, bins int)
-	RETURNS SETOF histogram
-	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, $2, $3, 1, $4, NULL, FALSE) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_histogram(rast raster, nband int, hasnodata boolean)
-	RETURNS SETOF histogram
-	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, $2, $3, 1, 0, NULL, FALSE) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_histogram(rast raster, nband int)
-	RETURNS SETOF histogram
-	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, $2, TRUE, 1, 0, NULL, FALSE) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_histogram(rast raster)
-	RETURNS SETOF histogram
-	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, 1, TRUE, 1, 0, NULL, FALSE) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_histogram(rast raster, nband int, bins int, width double precision[], right boolean)
+-- Cannot be strict as "width" can be NULL
+CREATE OR REPLACE FUNCTION st_histogram(rast raster, nband int, bins int, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE)
 	RETURNS SETOF histogram
 	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, $2, TRUE, 1, $3, $4, $5) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_histogram(rast raster, nband int, bins int, right boolean)
 	RETURNS SETOF histogram
 	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, $2, TRUE, 1, $3, NULL, $4) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_histogram(rast raster, nband int, bins int)
-	RETURNS SETOF histogram
-	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, $2, TRUE, 1, $3, NULL, FALSE) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_approxhistogram(rast raster, nband int, hasnodata boolean, sample_percent double precision, bins int, width double precision[], right boolean)
+-- Cannot be strict as "width" can be NULL
+CREATE OR REPLACE FUNCTION st_approxhistogram(rast raster, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1, bins int DEFAULT 0, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE)
 	RETURNS SETOF histogram
 	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, $2, $3, $4, $5, $6, $7) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_approxhistogram(rast raster, nband int, hasnodata boolean, sample_percent double precision, bins int, right boolean)
 	RETURNS SETOF histogram
 	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, $2, $3, $4, $5, NULL, $6) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_approxhistogram(rast raster, nband int, hasnodata boolean, sample_percent double precision, bins int)
-	RETURNS SETOF histogram
-	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, $2, $3, $4, $5, NULL, FALSE) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_approxhistogram(rast raster, nband int, hasnodata boolean, sample_percent double precision)
-	RETURNS SETOF histogram
-	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, $2, $3, $4, 0, NULL, FALSE) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxhistogram(rast raster, nband int, sample_percent double precision)
@@ -814,22 +782,13 @@ CREATE OR REPLACE FUNCTION st_approxhistogram(rast raster, nband int, sample_per
 	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, $2, TRUE, $3, 0, NULL, FALSE) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxhistogram(rast raster, nband int)
-	RETURNS SETOF histogram
-	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, $2, TRUE, 0.1, 0, NULL, FALSE) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
 CREATE OR REPLACE FUNCTION st_approxhistogram(rast raster, sample_percent double precision)
 	RETURNS SETOF histogram
 	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, 1, TRUE, $2, 0, NULL, FALSE) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxhistogram(rast raster)
-	RETURNS SETOF histogram
-	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, 1, TRUE, 0.1, 0, NULL, FALSE) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_approxhistogram(rast raster, nband int, sample_percent double precision, bins int, width double precision[], right boolean)
+-- Cannot be strict as "width" can be NULL
+CREATE OR REPLACE FUNCTION st_approxhistogram(rast raster, nband int, sample_percent double precision, bins int, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE)
 	RETURNS SETOF histogram
 	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, $2, TRUE, $3, $4, $5, $6) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
@@ -837,11 +796,6 @@ CREATE OR REPLACE FUNCTION st_approxhistogram(rast raster, nband int, sample_per
 CREATE OR REPLACE FUNCTION st_approxhistogram(rast raster, nband int, sample_percent double precision, bins int, right boolean)
 	RETURNS SETOF histogram
 	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, $2, TRUE, $3, $4, NULL, $5) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_approxhistogram(rast raster, nband int, sample_percent double precision, bins int)
-	RETURNS SETOF histogram
-	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, $2, TRUE, $3, $4, NULL, FALSE) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
