@@ -3662,7 +3662,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 struct rt_valuecount_t {
 	double value;
 	uint32_t count;
-	double proportion;
+	double percent;
 };
 
 /* get counts of values */
@@ -3879,7 +3879,7 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 			values[2],
 			sizeof(char) * (MAX_DBL_CHARLEN + 1),
 			"%f",
-			vcnts2[call_cntr].proportion
+			vcnts2[call_cntr].percent
 		);
 
 		/* build a tuple */

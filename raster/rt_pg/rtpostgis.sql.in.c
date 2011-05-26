@@ -1164,15 +1164,16 @@ CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, hasnodata boolean, qua
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
--- ST_ValueCount
+-- ST_ValueCount and ST_ValuePercent
 -----------------------------------------------------------------------
 CREATE TYPE valuecount AS (
 	value double precision,
 	count integer,
-	proportion double precision
+	percent double precision
 );
 
--- None of the functions can be strict as "searchvalues" and "roundto" can be NULL
+-- None of the "searchvaleus" functions can be strict as "searchvalues" and "roundto" can be NULL
+-- Allowing "searchvalues" to be NULL instructs the function to count all values
 
 CREATE OR REPLACE FUNCTION _st_valuecount(rast raster, nband integer, hasnodata boolean, searchvalues double precision[], roundto double precision)
 	RETURNS SETOF valuecount
@@ -1204,30 +1205,30 @@ CREATE OR REPLACE FUNCTION st_valuecount(rast raster, searchvalues double precis
 	AS $$ SELECT value, count FROM _st_valuecount($1, 1, TRUE, $2, 0) $$
 	LANGUAGE 'sql' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_valuecount(rast raster, nband integer, hasnodata boolean, searchvalue double precision, roundto double precision, OUT value double precision, OUT count integer)
-	RETURNS record
-	AS $$ SELECT value, count FROM _st_valuecount($1, $2, $3, ARRAY[$4]::double precision[], $5) $$
-	LANGUAGE 'sql' IMMUTABLE;
+CREATE OR REPLACE FUNCTION st_valuecount(rast raster, nband integer, hasnodata boolean, searchvalue double precision, roundto double precision, OUT count integer)
+	RETURNS integer
+	AS $$ SELECT count FROM _st_valuecount($1, $2, $3, ARRAY[$4]::double precision[], $5) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_valuecount(rast raster, nband integer, searchvalue double precision, roundto double precision, OUT value double precision, OUT count integer)
-	RETURNS record
-	AS $$ SELECT value, count FROM _st_valuecount($1, $2, TRUE, ARRAY[$3]::double precision[], $4) $$
-	LANGUAGE 'sql' IMMUTABLE;
+CREATE OR REPLACE FUNCTION st_valuecount(rast raster, nband integer, searchvalue double precision, roundto double precision, OUT count integer)
+	RETURNS integer
+	AS $$ SELECT count FROM _st_valuecount($1, $2, TRUE, ARRAY[$3]::double precision[], $4) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_valuecount(rast raster, nband integer, searchvalue double precision, OUT value double precision, OUT count integer)
-	RETURNS record
-	AS $$ SELECT value, count FROM _st_valuecount($1, $2, TRUE, ARRAY[$3]::double precision[], 0) $$
-	LANGUAGE 'sql' IMMUTABLE;
+CREATE OR REPLACE FUNCTION st_valuecount(rast raster, nband integer, searchvalue double precision, OUT count integer)
+	RETURNS integer
+	AS $$ SELECT count FROM _st_valuecount($1, $2, TRUE, ARRAY[$3]::double precision[], 0) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_valuecount(rast raster, searchvalue double precision, roundto double precision, OUT value double precision, OUT count integer)
-	RETURNS record
-	AS $$ SELECT value, count FROM _st_valuecount($1, 1, TRUE, ARRAY[$2]::double precision[], $3) $$
-	LANGUAGE 'sql' IMMUTABLE;
+CREATE OR REPLACE FUNCTION st_valuecount(rast raster, searchvalue double precision, roundto double precision, OUT count integer)
+	RETURNS integer
+	AS $$ SELECT count FROM _st_valuecount($1, 1, TRUE, ARRAY[$2]::double precision[], $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_valuecount(rast raster, searchvalue double precision, OUT value double precision, OUT count integer)
-	RETURNS record
-	AS $$ SELECT value, count FROM _st_valuecount($1, 1, TRUE, ARRAY[$2]::double precision[], 0) $$
-	LANGUAGE 'sql' IMMUTABLE;
+CREATE OR REPLACE FUNCTION st_valuecount(rast raster, searchvalue double precision, OUT count integer)
+	RETURNS integer
+	AS $$ SELECT count FROM _st_valuecount($1, 1, TRUE, ARRAY[$2]::double precision[], 0) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION _st_valuecount(rastertable text, rastercolumn text, nband integer, hasnodata boolean, searchvalues double precision[], roundto double precision)
 	RETURNS SETOF valuecount
@@ -1320,30 +1321,146 @@ CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, se
 	AS $$ SELECT value, count FROM st_valuecount($1, $2, 1, TRUE, $3, 0) $$
 	LANGUAGE 'sql' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, nband integer, hasnodata boolean, searchvalue double precision, roundto double precision, OUT value double precision, OUT count bigint)
-	RETURNS record
-	AS $$ SELECT value, count FROM st_valuecount($1, $2, $3, $4, ARRAY[$5]::double precision[], $6) $$
+CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, nband integer, hasnodata boolean, searchvalue double precision, roundto double precision, OUT count bigint)
+	RETURNS bigint
+	AS $$ SELECT count FROM st_valuecount($1, $2, $3, $4, ARRAY[$5]::double precision[], $6) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, nband integer, searchvalue double precision, roundto double precision, OUT count bigint)
+	RETURNS bigint
+	AS $$ SELECT count FROM st_valuecount($1, $2, $3, TRUE, ARRAY[$4]::double precision[], $5) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, nband integer, searchvalue double precision, OUT count bigint)
+	RETURNS bigint
+	AS $$ SELECT count FROM st_valuecount($1, $2, $3, TRUE, ARRAY[$4]::double precision[], 0) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, searchvalue double precision, roundto double precision, OUT count bigint)
+	RETURNS bigint
+	AS $$ SELECT count FROM st_valuecount($1, $2, 1, TRUE, ARRAY[$3]::double precision[], $4) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, searchvalue double precision, OUT count bigint)
+	RETURNS bigint
+	AS $$ SELECT count FROM st_valuecount($1, $2, 1, TRUE, ARRAY[$3]::double precision[], 0) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_valuepercent(rast raster, nband integer, hasnodata boolean, searchvalues double precision[], roundto double precision, OUT value double precision, OUT percent double precision)
+	RETURNS SETOF record
+	AS $$ SELECT value, percent FROM _st_valuecount($1, $2, $3, $4, $5) $$
 	LANGUAGE 'sql' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, nband integer, searchvalue double precision, roundto double precision, OUT value double precision, OUT count bigint)
-	RETURNS record
-	AS $$ SELECT value, count FROM st_valuecount($1, $2, $3, TRUE, ARRAY[$4]::double precision[], $5) $$
+CREATE OR REPLACE FUNCTION st_valuepercent(rast raster, nband integer, searchvalues double precision[], roundto double precision, OUT value double precision, OUT percent double precision)
+	RETURNS SETOF record
+	AS $$ SELECT value, percent FROM _st_valuecount($1, $2, TRUE, $3, $4) $$
 	LANGUAGE 'sql' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, nband integer, searchvalue double precision, OUT value double precision, OUT count bigint)
-	RETURNS record
-	AS $$ SELECT value, count FROM st_valuecount($1, $2, $3, TRUE, ARRAY[$4]::double precision[], 0) $$
+CREATE OR REPLACE FUNCTION st_valuepercent(rast raster, nband integer, searchvalues double precision[], OUT value double precision, OUT percent double precision)
+	RETURNS SETOF record
+	AS $$ SELECT value, percent FROM _st_valuecount($1, $2, TRUE, $3, 0) $$
 	LANGUAGE 'sql' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, searchvalue double precision, roundto double precision, OUT value double precision, OUT count bigint)
-	RETURNS record
-	AS $$ SELECT value, count FROM st_valuecount($1, $2, 1, TRUE, ARRAY[$3]::double precision[], $4) $$
+CREATE OR REPLACE FUNCTION st_valuepercent(rast raster, searchvalues double precision[], roundto double precision, OUT value double precision, OUT percent double precision)
+	RETURNS SETOF record
+	AS $$ SELECT value, percent FROM _st_valuecount($1, 1, TRUE, $2, $3) $$
 	LANGUAGE 'sql' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, searchvalue double precision, OUT value double precision, OUT count bigint)
-	RETURNS record
-	AS $$ SELECT value, count FROM st_valuecount($1, $2, 1, TRUE, ARRAY[$3]::double precision[], 0) $$
+CREATE OR REPLACE FUNCTION st_valuepercent(rast raster, searchvalues double precision[], OUT value double precision, OUT percent double precision)
+	RETURNS SETOF record
+	AS $$ SELECT value, percent FROM _st_valuecount($1, 1, TRUE, $2, 0) $$
 	LANGUAGE 'sql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_valuepercent(rast raster, nband integer, hasnodata boolean, searchvalue double precision, roundto double precision, OUT percent double precision)
+	RETURNS double precision
+	AS $$ SELECT percent FROM _st_valuecount($1, $2, $3, ARRAY[$4]::double precision[], $5) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_valuepercent(rast raster, nband integer, searchvalue double precision, roundto double precision, OUT percent double precision)
+	RETURNS double precision
+	AS $$ SELECT percent FROM _st_valuecount($1, $2, TRUE, ARRAY[$3]::double precision[], $4) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_valuepercent(rast raster, nband integer, searchvalue double precision, OUT percent double precision)
+	RETURNS double precision
+	AS $$ SELECT percent FROM _st_valuecount($1, $2, TRUE, ARRAY[$3]::double precision[], 0) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_valuepercent(rast raster, searchvalue double precision, roundto double precision, OUT percent double precision)
+	RETURNS double precision
+	AS $$ SELECT percent FROM _st_valuecount($1, 1, TRUE, ARRAY[$2]::double precision[], $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_valuepercent(rast raster, searchvalue double precision, OUT percent double precision)
+	RETURNS double precision
+	AS $$ SELECT percent FROM _st_valuecount($1, 1, TRUE, ARRAY[$2]::double precision[], 0) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_valuepercent(rastertable text, rastercolumn text, nband integer, hasnodata boolean, searchvalues double precision[], roundto double precision, OUT value double precision, OUT percent double precision)
+	RETURNS SETOF record
+	AS $$
+		SELECT
+			value,
+			CASE
+				WHEN sum(count) != 0
+					THEN sum(count) / sum(
+						CASE
+							WHEN percent != 0
+								THEN (count / percent)
+							ELSE 0
+						END
+					)
+				ELSE 0
+			END AS percent
+		FROM _st_valuecount($1, $2, $3, $4, $5, $6)
+		GROUP BY 1
+		ORDER BY 1
+	$$ LANGUAGE 'sql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_valuepercent(rastertable text, rastercolumn text, nband integer, searchvalues double precision[], roundto double precision, OUT value double precision, OUT percent double precision)
+	RETURNS SETOF record
+	AS $$ SELECT value, percent FROM st_valuepercent($1, $2, $3, TRUE, $4, $5) $$
+	LANGUAGE 'sql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_valuepercent(rastertable text, rastercolumn text, nband integer, searchvalues double precision[], OUT value double precision, OUT percent double precision)
+	RETURNS SETOF record
+	AS $$ SELECT value, percent FROM st_valuepercent($1, $2, $3, TRUE, $4, 0) $$
+	LANGUAGE 'sql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_valuepercent(rastertable text, rastercolumn text, searchvalues double precision[], roundto double precision, OUT value double precision, OUT percent double precision)
+	RETURNS SETOF record
+	AS $$ SELECT value, percent FROM st_valuepercent($1, $2, 1, TRUE, $3, $4) $$
+	LANGUAGE 'sql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_valuepercent(rastertable text, rastercolumn text, searchvalues double precision[], OUT value double precision, OUT percent double precision)
+	RETURNS SETOF record
+	AS $$ SELECT value, percent FROM st_valuepercent($1, $2, 1, TRUE, $3, 0) $$
+	LANGUAGE 'sql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_valuepercent(rastertable text, rastercolumn text, nband integer, hasnodata boolean, searchvalue double precision, roundto double precision, OUT percent double precision)
+	RETURNS double precision
+	AS $$ SELECT percent FROM st_valuepercent($1, $2, $3, $4, ARRAY[$5]::double precision[], $6) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_valuepercent(rastertable text, rastercolumn text, nband integer, searchvalue double precision, roundto double precision, OUT percent double precision)
+	RETURNS double precision
+	AS $$ SELECT percent FROM st_valuepercent($1, $2, $3, TRUE, ARRAY[$4]::double precision[], $5) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_valuepercent(rastertable text, rastercolumn text, nband integer, searchvalue double precision, OUT percent double precision)
+	RETURNS double precision
+	AS $$ SELECT percent FROM st_valuepercent($1, $2, $3, TRUE, ARRAY[$4]::double precision[], 0) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_valuepercent(rastertable text, rastercolumn text, searchvalue double precision, roundto double precision, OUT percent double precision)
+	RETURNS double precision
+	AS $$ SELECT percent FROM st_valuepercent($1, $2, 1, TRUE, ARRAY[$3]::double precision[], $4) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_valuepercent(rastertable text, rastercolumn text, searchvalue double precision, OUT percent double precision)
+	RETURNS double precision
+	AS $$ SELECT percent FROM st_valuepercent($1, $2, 1, TRUE, ARRAY[$3]::double precision[], 0) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_Reclass

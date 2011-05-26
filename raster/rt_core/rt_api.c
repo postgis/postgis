@@ -2145,7 +2145,7 @@ rt_band_get_quantiles(rt_bandstats stats,
 struct rt_valuecount_t {
 	double value;
 	uint32_t count;
-	double proportion;
+	double percent;
 };
 
 /**
@@ -2276,7 +2276,7 @@ rt_band_get_value_count(rt_band band, int hasnodata,
 
 		for (i = 0; i < search_values_count; i++) {
 			vcnts[i].count = 0;
-			vcnts[i].proportion = 0;
+			vcnts[i].percent = 0;
 			if (!doround)
 				vcnts[i].value = search_values[i];
 			else
@@ -2307,7 +2307,7 @@ rt_band_get_value_count(rt_band band, int hasnodata,
 						continue;
 
 					vcnts[i].count = band->width * band->height;
-					vcnts->proportion = 1.0;
+					vcnts->percent = 1.0;
 				}
 
 				*rtn_count = vcnts_count;
@@ -2323,7 +2323,7 @@ rt_band_get_value_count(rt_band band, int hasnodata,
 
 				vcnts->value = nodata;
 				vcnts->count = band->width * band->height;
-				vcnts->proportion = 1.0;
+				vcnts->percent = 1.0;
 
 				*rtn_count = 1;
 			}
@@ -2383,7 +2383,7 @@ rt_band_get_value_count(rt_band band, int hasnodata,
 
 				vcnts[vcnts_count].value = rpxlval;
 				vcnts[vcnts_count].count = 1;
-				vcnts[vcnts_count].proportion = 0;
+				vcnts[vcnts_count].percent = 0;
 				RASTER_DEBUGF(5, "(value, count) => (%0.6f, %d)", vcnts[vcnts_count].value, vcnts[vcnts_count].count);
 				vcnts_count++;
 			}
@@ -2397,7 +2397,7 @@ rt_band_get_value_count(rt_band band, int hasnodata,
 #endif
 
 	for (i = 0; i < vcnts_count; i++) {
-		vcnts[i].proportion = (double) vcnts[i].count / total;
+		vcnts[i].percent = (double) vcnts[i].count / total;
 		RASTER_DEBUGF(5, "(value, count) => (%0.6f, %d)", vcnts[i].value, vcnts[i].count);
 	}
 

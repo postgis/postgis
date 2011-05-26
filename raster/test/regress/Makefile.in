@@ -76,6 +76,7 @@ TEST_BANDPROPS = \
 	rt_histogram.sql \
 	rt_quantile.sql \
 	rt_valuecount.sql \
+	rt_valuepercent.sql \
 	$(NULL)
 
 TEST_PIXEL = \

@@ -1308,7 +1308,7 @@ static void testRasterToGDAL(rt_raster raster) {
 struct rt_valuecount_t {
 	double value;
 	uint32_t count;
-	double proportion;
+	double percent;
 };
 static void testValueCount() {
 	rt_valuecount vcnts = NULL;
