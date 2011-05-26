@@ -1002,7 +1002,7 @@ struct rt_bandstats_t {
 };
 struct rt_histogram_t {
 	uint32_t count;
-	double proportion;
+	double percent;
 
 	double min;
 	double max;

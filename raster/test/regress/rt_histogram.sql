@@ -2,7 +2,7 @@ SELECT
 	round(min::numeric, 3),
 	round(max::numeric, 3),
 	count,
-	round(proportion::numeric, 3)
+	round(percent::numeric, 3)
 FROM ST_Histogram(
 	ST_SetValue(
 		ST_SetValue(
@@ -22,7 +22,7 @@ SELECT
 	round(min::numeric, 3),
 	round(max::numeric, 3),
 	count,
-	round(proportion::numeric, 3)
+	round(percent::numeric, 3)
 FROM ST_Histogram(
 	ST_SetValue(
 		ST_SetValue(
@@ -43,7 +43,7 @@ SELECT
 	round(min::numeric, 3),
 	round(max::numeric, 3),
 	count,
-	round(proportion::numeric, 3)
+	round(percent::numeric, 3)
 FROM ST_Histogram(
 	ST_SetValue(
 		ST_SetValue(
@@ -64,7 +64,7 @@ SELECT
 	round(min::numeric, 3),
 	round(max::numeric, 3),
 	count,
-	round(proportion::numeric, 3)
+	round(percent::numeric, 3)
 FROM ST_Histogram(
 	ST_SetValue(
 		ST_SetValue(
@@ -85,7 +85,7 @@ SELECT
 	round(min::numeric, 3),
 	round(max::numeric, 3),
 	count,
-	round(proportion::numeric, 3)
+	round(percent::numeric, 3)
 FROM ST_Histogram(
 	ST_SetValue(
 		ST_SetValue(
@@ -106,7 +106,7 @@ SELECT
 	round(min::numeric, 3),
 	round(max::numeric, 3),
 	count,
-	round(proportion::numeric, 3)
+	round(percent::numeric, 3)
 FROM ST_Histogram(
 	ST_SetValue(
 		ST_SetValue(
@@ -127,7 +127,7 @@ SELECT
 	round(min::numeric, 3),
 	round(max::numeric, 3),
 	count,
-	round(proportion::numeric, 3)
+	round(percent::numeric, 3)
 FROM ST_Histogram(
 	ST_SetValue(
 		ST_SetValue(
@@ -148,7 +148,7 @@ SELECT
 	round(min::numeric, 3),
 	round(max::numeric, 3),
 	count,
-	round(proportion::numeric, 3)
+	round(percent::numeric, 3)
 FROM ST_Histogram(
 	ST_SetValue(
 		ST_SetValue(
@@ -169,7 +169,7 @@ SELECT
 	round(min::numeric, 3),
 	round(max::numeric, 3),
 	count,
-	round(proportion::numeric, 3)
+	round(percent::numeric, 3)
 FROM ST_Histogram(
 	ST_SetValue(
 		ST_SetValue(

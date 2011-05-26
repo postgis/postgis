@@ -3096,7 +3096,7 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 /* get histogram */
 struct rt_histogram_t {
 	uint32_t count;
-	double proportion;
+	double percent;
 
 	double min;
 	double max;
@@ -3368,7 +3368,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 			values[3],
 			sizeof(char) * (MAX_DBL_CHARLEN + 1),
 			"%f",
-			hist2[call_cntr].proportion
+			hist2[call_cntr].percent
 		);
 
 		/* build a tuple */

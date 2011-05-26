@@ -1774,7 +1774,7 @@ rt_band_get_summary_stats(rt_band band, int hasnodata, double sample,
 
 struct rt_histogram_t {
 	uint32_t count;
-	double proportion;
+	double percent;
 
 	double min;
 	double max;
@@ -1883,7 +1883,7 @@ rt_band_get_histogram(rt_bandstats stats,
 		}
 
 		bins->count = stats->count;
-		bins->proportion = -1;
+		bins->percent = -1;
 		bins->min = stats->min;
 		bins->max = stats->max;
 		bins->inc_min = bins->inc_max = 1;
@@ -1923,7 +1923,7 @@ rt_band_get_histogram(rt_bandstats stats,
 	for (i = 0; i < bin_count;) {
 		for (j = 0; j < bin_width_count; j++) {
 			bins[i].count = 0;
-			bins->proportion = -1;
+			bins->percent = -1;
 
 			if (!right) {
 				bins[i].min = tmp;
@@ -1999,11 +1999,11 @@ rt_band_get_histogram(rt_bandstats stats,
 		}
 	}
 
-	/* proportions */
+	/* percents */
 	for (i = 0; i < bin_count; i++) {
-		bins[i].proportion = ((double) bins[i].count) / sum;
+		bins[i].percent = ((double) bins[i].count) / sum;
 		if (bin_width_count > 1)
-			bins[i].proportion /= (bins[i].max - bins[i].min);
+			bins[i].percent /= (bins[i].max - bins[i].min);
 	}
 
 #if POSTGIS_DEBUG_LEVEL > 0
@@ -2012,8 +2012,8 @@ rt_band_get_histogram(rt_bandstats stats,
 	RASTER_DEBUGF(3, "elapsed time = %0.4f", elapsed);
 
 	for (j = 0; j < bin_count; j++) {
-		RASTER_DEBUGF(5, "(min, max, inc_min, inc_max, count, sum, proportion) = (%f, %f, %d, %d, %d, %d, %f)",
-			bins[j].min, bins[j].max, bins[j].inc_min, bins[j].inc_max, bins[j].count, sum, bins[j].proportion);
+		RASTER_DEBUGF(5, "(min, max, inc_min, inc_max, count, sum, percent) = (%f, %f, %d, %d, %d, %d, %f)",
+			bins[j].min, bins[j].max, bins[j].inc_min, bins[j].inc_max, bins[j].count, sum, bins[j].percent);
 	}
 #endif
 
