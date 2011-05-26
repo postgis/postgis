@@ -1905,7 +1905,6 @@ DECLARE
   sql TEXT;
   newfaces INTEGER[];
   newface INTEGER;
-  cleangeom GEOMETRY;
 BEGIN
 
   --
@@ -1952,8 +1951,33 @@ BEGIN
     NULL::int as prev_left_edge, NULL::int as prev_right_edge, -- convenience
     anode = anothernode as isclosed, -- convenience
     false as start_node_isolated, -- convenience
-    false as end_node_isolated -- convenience
+    false as end_node_isolated, -- convenience
+    ST_RemoveRepeatedPoints(acurve) as cleangeom -- convenience
   INTO newedge;
+
+  -- Compute azimut of first edge end on start node
+  SELECT null::int AS nextCW, null::int AS nextCCW,
+         null::float8 AS minaz, null::float8 AS maxaz,
+         false AS was_isolated,
+         ST_Azimuth(ST_StartPoint(newedge.cleangeom),
+                    ST_PointN(newedge.cleangeom, 2)) AS myaz
+  INTO span;
+  IF span.myaz IS NULL THEN
+    RAISE EXCEPTION 'Invalid edge (no two distinct vertices exist)';
+  END IF;
+
+  -- Compute azimuth of last edge end on end node
+  SELECT null::int AS nextCW, null::int AS nextCCW,
+         null::float8 AS minaz, null::float8 AS maxaz,
+         false AS was_isolated,
+         ST_Azimuth(ST_EndPoint(newedge.cleangeom),
+                    ST_PointN(newedge.cleangeom,
+                              ST_NumPoints(newedge.cleangeom)-1)) AS myaz
+  INTO epan;
+  IF epan.myaz IS NULL THEN
+    RAISE EXCEPTION 'Invalid edge (no two distinct vertices exist)';
+  END IF;
+
 
   -- 
   -- Check endpoints existance, match with Curve geometry
@@ -2074,48 +2098,25 @@ BEGIN
       quote_ident(atopology) || '.edge_data_edge_id_seq') || ')'
   INTO STRICT newedge.edge_id;
 
-  cleangeom := ST_RemoveRepeatedPoints(acurve);
-
-  -- Compute azimut of first edge end on start node
-  SELECT null::int AS nextCW, null::int AS nextCCW,
-         null::float8 AS minaz, null::float8 AS maxaz,
-         false AS was_isolated,
-         ST_Azimuth(ST_StartPoint(cleangeom),
-                    ST_PointN(cleangeom, 2)) AS myaz
-  INTO span;
-  IF span.myaz IS NULL THEN
-    RAISE EXCEPTION 'Invalid edge (no two distinct nodes exist)';
-  END IF;
-
-  -- Compute azimuth of last edge end on end node
-  SELECT null::int AS nextCW, null::int AS nextCCW,
-         null::float8 AS minaz, null::float8 AS maxaz,
-         false AS was_isolated,
-         ST_Azimuth(ST_EndPoint(cleangeom),
-                    ST_PointN(cleangeom, ST_NumPoints(cleangeom)-1)) AS myaz
-  INTO epan;
-  IF epan.myaz IS NULL THEN
-    RAISE EXCEPTION 'Invalid edge (no two distinct nodes exist)';
-  END IF;
-
 
   -- Find links on start node -- {
 
   RAISE DEBUG 'My start-segment azimuth: %', span.myaz;
 
   sql :=
-    'SELECT edge_id, -1 AS end_node, start_node, left_face, right_face, geom'
-    || ' FROM '
+    'SELECT edge_id, -1 AS end_node, start_node, left_face, right_face, '
+    || 'ST_RemoveRepeatedPoints(geom) as geom FROM '
     || quote_ident(atopology)
     || '.edge_data WHERE start_node = ' || anode
-    || ' UNION SELECT edge_id, end_node, -1, left_face, right_face, geom FROM '
+    || ' UNION SELECT edge_id, end_node, -1, left_face, right_face, '
+    || 'ST_RemoveRepeatedPoints(geom) FROM '
     || quote_ident(atopology)
     || '.edge_data WHERE end_node = ' || anode;
   IF newedge.isclosed THEN
     sql := sql || ' UNION SELECT '
       || newedge.edge_id || ',' || newedge.end_node
       || ',-1,0,0,' -- pretend we start elsewhere
-      || quote_literal(newedge.geom::text);
+      || quote_literal(newedge.cleangeom::text);
   END IF;
   i := 0;
   FOR rec IN EXECUTE sql
@@ -2123,22 +2124,20 @@ BEGIN
 
     i := i + 1;
 
-    cleangeom := ST_RemoveRepeatedPoints(rec.geom);
-
     IF rec.start_node = anode THEN
       --
       -- Edge starts at our node, we compute
       -- azimuth from node to its second point
       --
-      az := ST_Azimuth(ST_StartPoint(cleangeom), ST_PointN(cleangeom, 2));
+      az := ST_Azimuth(ST_StartPoint(rec.geom), ST_PointN(rec.geom, 2));
 
     ELSE
       --
       -- Edge ends at our node, we compute
       -- azimuth from node to its second-last point
       --
-      az := ST_Azimuth(ST_EndPoint(cleangeom),
-                       ST_PointN(cleangeom, ST_NumPoints(cleangeom)-1));
+      az := ST_Azimuth(ST_EndPoint(rec.geom),
+                       ST_PointN(rec.geom, ST_NumPoints(rec.geom)-1));
       rec.edge_id := -rec.edge_id;
 
     END IF;
@@ -2220,19 +2219,19 @@ BEGIN
   RAISE DEBUG 'My end-segment azimuth: %', epan.myaz;
 
   sql :=
-    'SELECT edge_id, -1 as end_node, start_node, left_face, right_face, geom'
-    || ' FROM '
+    'SELECT edge_id, -1 as end_node, start_node, left_face, right_face, '
+    || 'ST_RemoveRepeatedPoints(geom) as geom FROM '
     || quote_ident(atopology)
     || '.edge_data WHERE start_node = ' || anothernode
-    || 'UNION SELECT edge_id, end_node, -1, left_face, right_face, geom'
-    || ' FROM '
+    || 'UNION SELECT edge_id, end_node, -1, left_face, right_face, '
+    || 'ST_RemoveRepeatedPoints(geom) FROM '
     || quote_ident(atopology)
     || '.edge_data WHERE end_node = ' || anothernode;
   IF newedge.isclosed THEN
     sql := sql || ' UNION SELECT '
       || newedge.edge_id || ',' || -1 -- pretend we end elsewhere
       || ',' || newedge.start_node || ',0,0,'
-      || quote_literal(newedge.geom::text);
+      || quote_literal(newedge.cleangeom::text);
   END IF;
   i := 0;
   FOR rec IN EXECUTE sql
@@ -2240,22 +2239,21 @@ BEGIN
 
     i := i + 1;
 
-    cleangeom := ST_RemoveRepeatedPoints(rec.geom);
-
     IF rec.start_node = anothernode THEN
       --
       -- Edge starts at our node, we compute
       -- azimuth from node to its second point
       --
-      az := ST_Azimuth(ST_StartPoint(cleangeom), ST_PointN(cleangeom, 2));
+      az := ST_Azimuth(ST_StartPoint(rec.geom),
+                       ST_PointN(rec.geom, 2));
 
     ELSE
       --
       -- Edge ends at our node, we compute
       -- azimuth from node to its second-last point
       --
-      az := ST_Azimuth(ST_EndPoint(cleangeom),
-        ST_PointN(cleangeom, ST_NumPoints(cleangeom)-1));
+      az := ST_Azimuth(ST_EndPoint(rec.geom),
+        ST_PointN(rec.geom, ST_NumPoints(rec.geom)-1));
       rec.edge_id := -rec.edge_id;
 
     END IF;

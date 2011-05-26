@@ -22,6 +22,14 @@ SELECT topology.ST_AddEdgeNewFaces('city_data', 60000, 6,
 SELECT topology.ST_AddEdgeNewFaces('city_data', 5, 5,
  'LINESTRING(36 38, 40 50, 36 38)');
 
+-- Collapsed curve
+SELECT topology.ST_AddEdgeNewFaces('city_data', 5, 5,
+ 'LINESTRING(36 38, 36 38, 36 38)');
+
+-- Empty curve
+SELECT topology.ST_AddEdgeNewFaces('city_data', 5, 5,
+ 'LINESTRING EMPTY');
+
 -- Coincident edge
 SELECT topology.ST_AddEdgeNewFaces('city_data', 18, 19,
  'LINESTRING(35 22,47 22)');
