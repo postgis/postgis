@@ -680,13 +680,13 @@ CREATE OR REPLACE FUNCTION DumpRings(geometry)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION envelope(geometry)
+CREATE OR REPLACE FUNCTION Envelope(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_envelope'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION estimated_extent(text,text,text) RETURNS box2d AS
+CREATE OR REPLACE FUNCTION Estimated_Extent(text,text,text) RETURNS box2d AS
 #ifdef GSERIALIZED_ON
 	'MODULE_PATHNAME', 'geometry_estimated_extent'
 #else
@@ -695,7 +695,7 @@ CREATE OR REPLACE FUNCTION estimated_extent(text,text,text) RETURNS box2d AS
 	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
 	
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION estimated_extent(text,text) RETURNS box2d AS
+CREATE OR REPLACE FUNCTION Estimated_Extent(text,text) RETURNS box2d AS
 #ifdef GSERIALIZED_ON
 	'MODULE_PATHNAME', 'geometry_estimated_extent'
 #else
@@ -704,26 +704,26 @@ CREATE OR REPLACE FUNCTION estimated_extent(text,text) RETURNS box2d AS
 	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
 	
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION expand(box2d,float8)
+CREATE OR REPLACE FUNCTION Expand(box2d,float8)
 	RETURNS box2d
 	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_expand'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION expand(box3d,float8)
+CREATE OR REPLACE FUNCTION Expand(box3d,float8)
 	RETURNS box3d
 	AS 'MODULE_PATHNAME', 'BOX3D_expand'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION expand(geometry,float8)
+CREATE OR REPLACE FUNCTION Expand(geometry,float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_expand'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
 -- Temporary hack function
-CREATE OR REPLACE FUNCTION combine_bbox(box3d_extent,geometry)
+CREATE OR REPLACE FUNCTION Combine_Bbox(box3d_extent,geometry)
 	RETURNS box3d_extent
 	AS 'MODULE_PATHNAME', 'BOX3D_combine'
 	LANGUAGE 'C' IMMUTABLE;
@@ -735,7 +735,7 @@ CREATE AGGREGATE Extent(
 	);
 	
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION find_extent(text,text) RETURNS box2d AS
+CREATE OR REPLACE FUNCTION Find_Extent(text,text) RETURNS box2d AS
 $$
 DECLARE
 	tablename alias for $1;
@@ -751,7 +751,7 @@ $$
 LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION find_extent(text,text,text) RETURNS box2d AS
+CREATE OR REPLACE FUNCTION Find_Extent(text,text,text) RETURNS box2d AS
 $$
 DECLARE
 	schemaname alias for $1;
@@ -780,39 +780,39 @@ CREATE OR REPLACE FUNCTION ExteriorRing(geometry)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION force_2d(geometry)
+CREATE OR REPLACE FUNCTION Force_2d(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_2d'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- an alias for force_3dz
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION force_3d(geometry)
+CREATE OR REPLACE FUNCTION Force_3d(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dz'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION force_3dm(geometry)
+CREATE OR REPLACE FUNCTION Force_3dm(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dm'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION force_3dz(geometry)
+CREATE OR REPLACE FUNCTION Force_3dz(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dz'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION force_4d(geometry)
+CREATE OR REPLACE FUNCTION Force_4d(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_4d'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION force_collection(geometry)
+CREATE OR REPLACE FUNCTION Force_Collection(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_collection'
 	LANGUAGE 'C' IMMUTABLE STRICT;

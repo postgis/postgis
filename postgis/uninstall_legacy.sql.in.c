@@ -46,6 +46,7 @@ DROP FUNCTION IF EXISTS Buffer(geometry,float8,integer);
 DROP FUNCTION IF EXISTS Buffer(geometry,float8);
 DROP FUNCTION IF EXISTS BuildArea(geometry);
 DROP FUNCTION IF EXISTS Centroid(geometry);
+DROP FUNCTION IF EXISTS Combine_Bbox(box3d_extent,geometry);
 DROP FUNCTION IF EXISTS Contains(geometry,geometry);
 DROP FUNCTION IF EXISTS ConvexHull(geometry);
 DROP FUNCTION IF EXISTS Crosses(geometry,geometry);
@@ -58,3 +59,24 @@ DROP FUNCTION IF EXISTS Distance_Spheroid(geometry,geometry,spheroid);
 DROP FUNCTION IF EXISTS DropBBox(geometry);
 DROP FUNCTION IF EXISTS Dump(geometry);
 DROP FUNCTION IF EXISTS DumpRings(geometry);
+DROP FUNCTION IF EXISTS Envelope(geometry);
+-- Extent related functions  --
+DROP FUNCTION IF EXISTS Estimated_Extent(text,text,text);
+DROP FUNCTION IF EXISTS Estimated_Extent(text,text);
+DROP FUNCTION IF EXISTS Expand(box2d,float8);
+DROP FUNCTION IF EXISTS Expand(box3d,float8);
+DROP FUNCTION IF EXISTS Expand(geometry,float8);
+DROP AGGREGATE IF EXISTS Extent(geometry);
+DROP FUNCTION IF EXISTS Find_Extent(text,text);
+DROP FUNCTION IF EXISTS Find_Extent(text,text,text);
+--- End Extent related functions --
+DROP FUNCTION IF EXISTS EndPoint(geometry);
+DROP FUNCTION IF EXISTS ExteriorRing(geometry);
+DROP FUNCTION IF EXISTS Force_2d(geometry);
+DROP FUNCTION IF EXISTS Force_3d(geometry);
+DROP FUNCTION IF EXISTS Force_3dm(geometry);
+DROP FUNCTION IF EXISTS Force_3dz(geometry);
+DROP FUNCTION IF EXISTS Force_4d(geometry);
+DROP FUNCTION IF EXISTS Force_Collection(geometry);
+DROP FUNCTION IF EXISTS ForceRHR(geometry);
+
