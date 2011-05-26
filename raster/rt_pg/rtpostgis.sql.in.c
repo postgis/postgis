@@ -233,7 +233,7 @@ CREATE OR REPLACE FUNCTION st_addband(torast raster, fromrast raster)
 -----------------------------------------------------------------------
 -- Constructor ST_Band
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_band(rast raster, nbands int[])
+CREATE OR REPLACE FUNCTION st_band(rast raster, nbands int[] default ARRAY[1])
 	RETURNS RASTER
 	AS 'MODULE_PATHNAME', 'RASTER_band'
 	LANGUAGE 'C' IMMUTABLE STRICT;
@@ -251,11 +251,6 @@ CREATE OR REPLACE FUNCTION st_band(rast raster, nbands text)
 CREATE OR REPLACE FUNCTION st_band(rast raster, nbands text, delimiter char)
 	RETURNS RASTER
 	AS $$ SELECT st_band($1, regexp_split_to_array(regexp_replace($2, '[[:space:]]', '', 'g'), $3)::int[]) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_band(rast raster)
-	RETURNS RASTER
-	AS $$ SELECT st_band($1, ARRAY[1]) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
