@@ -865,6 +865,69 @@ FROM (SELECT rid, ST_MetaData(rast) As md
   	</sect1>
 	<sect1 id="Raster_Accessors">
 		<title>Raster Accessors</title>
+		<refentry id="RT_ST_Count">
+			<refnamediv>
+				<refname>ST_Count</refname>
+				<refpurpose>Returns the number of pixels in a given band of a raster or raster coverage.  If no band is specified defaults to band 1.  If hasnodata is set to true, will also count pixels with no data.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>text <function>ST_Count</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>hasnodata=true</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>text <function>ST_Count</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>hasnodata</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>text <function>ST_Count</function></funcdef>
+					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>hasnodata=true</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>text <function>ST_Count</function></funcdef>
+					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>hasnodata</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the number of pixels in a given band of a raster or raster coverage.  If no band is specified <varname>nband</varname> defaults to 1. </para> 
+				<note><para>If <varname>hasnodata</varname> is set to true, will also count pixels with no data. Set <varname>hasnodata</varname> to false to get only pixels with data</para></note>
+				<para>Availability: 2.0.0 </para>
+				<warning><para>This currently does the opposite of what I just said. Will be fixed to agree with the documentation or the documentation will be fixed to agee with the behavior.</para></warning>
+			</refsection>
+				
+			<refsection>
+				<title>Examples</title>
+				<!-- TODO: Fix once we confirm the right behavior -->
+				<programlisting>
+				    --example will count all pixels not 249 and one will count all pixels.  Note this behavior may be reversed --
+				    SELECT rid, ST_Count(ST_SetBandNoDataValue(rast,249)) As exclude_nodata, ST_Count(ST_SetBandNoDataValue(rast,249),false) As include_nodata
+				        FROM dummy_rast WHERE rid=2;
+				    
+rid | exclude_nodata | include_nodata
+-----+----------------+----------------
+   2 |             23 |             25
+				</programlisting>	
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_SetBandNoDataValue" /></para>
+			</refsection>
+		</refentry>
 		<refentry id="RT_ST_GeoReference">
 			<refnamediv>
 				<refname>ST_GeoReference</refname>
@@ -3347,30 +3410,28 @@ FROM dummy_rast WHERE rid=2;
 				  <funcprototype>
 					<funcdef>bytea <function>ST_AsTIFF</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<group choice="opt"> 
-					<paramdef><type>text[] </type> <parameter>options</parameter><initializer>''</initializer></paramdef>
-					<paramdef><type>text </type> <parameter>srs</parameter><initializer>sameassource</initializer></paramdef>
-					</group>
+					<paramdef choice="opt"><type>text[] </type> <parameter>options=''</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>srs=sameassource</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>bytea <function>ST_AsTIFF</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>[compression='']</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>[srs=sameassource]</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>compression=''</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>srs=sameassource</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>bytea <function>ST_AsTIFF</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer[] </type> <parameter>nbands</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>[compression='']</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>[srs=sameassource]</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>compression=''</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>srs=sameassource</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>bytea <function>ST_AsTIFF</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer[] </type> <parameter>nbands</parameter></paramdef>
 					<paramdef><type>text[] </type> <parameter>options</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>[srs=sameassource]</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>srs=sameassource</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
