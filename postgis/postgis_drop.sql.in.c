@@ -33,6 +33,7 @@ DROP FUNCTION IF EXISTS st_box3d(box2d);
 DROP FUNCTION IF EXISTS st_box(box3d);
 DROP FUNCTION IF EXISTS st_box3d(geometry);
 DROP FUNCTION IF EXISTS st_box(geometry);
+DROP FUNCTION IF EXISTS ST_ConcaveHull(geometry,float); -- this one changed to use default parameters
 DROP FUNCTION IF EXISTS st_text(geometry);
 DROP FUNCTION IF EXISTS st_geometry(box2d);
 DROP FUNCTION IF EXISTS st_geometry(box3d);

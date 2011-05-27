@@ -507,17 +507,11 @@ MULTILINESTRING((1 2,3 4),(3 4,4 5))
 
 	  <refsynopsisdiv>
 		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_ConcaveHull</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>target_percent</parameter></paramdef>
-		  </funcprototype>
-			
 		 <funcprototype>
 			<funcdef>geometry <function>ST_ConcaveHull</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 			<paramdef><type>float </type> <parameter>target_percent</parameter></paramdef>
-			<paramdef><type>boolean </type> <parameter>allow_holes</parameter></paramdef>
+			<paramdef choice="opt"><type>boolean </type> <parameter>allow_holes=false</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>

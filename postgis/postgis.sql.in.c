@@ -5071,7 +5071,7 @@ $$
 $$
   LANGUAGE plpgsql IMMUTABLE STRICT;
   
-CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex float, param_allow_holes boolean) RETURNS geometry AS
+CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex float, param_allow_holes boolean DEFAULT false) RETURNS geometry AS
 $$
 	DECLARE
 		var_convhull geometry := ST_ConvexHull(param_geom);
@@ -5222,13 +5222,6 @@ $$
 	END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex float)
-	RETURNS geometry AS
-$$
-	SELECT ST_ConcaveHull($1, $2, false);
-$$
-LANGUAGE 'sql' IMMUTABLE STRICT;
 -- ST_ConcaveHull and Helper functions end here --
 
 -----------------------------------------------------------------------
