@@ -30,6 +30,7 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/polygonize.sql \
 	regress/st_addisoedge.sql \
 	regress/st_addisonode.sql \
+	regress/st_addedgemodface.sql \
 	regress/st_addedgenewfaces.sql \
 	regress/st_changeedgegeom.sql \
 	regress/st_getfacegeometry.sql \
