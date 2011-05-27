@@ -2440,44 +2440,35 @@ BEGIN
     INTO STRICT fan.post;
 
   IF ST_NumGeometries(fan.pre) = ST_NumGeometries(fan.post) THEN
-    -- all done, I hope
+    -- No splits, all done
     RETURN newedge.edge_id;
   END IF;
 
   RAISE NOTICE 'ST_AddEdgeNewFaces: edge % splitted face %',
       newedge.edge_id, newedge.left_face;
 
+  -- Call topology.AddFace for every face containing the new edge
+  -- The ORDER serves predictability of which face is added first
+  FOR rec IN SELECT geom FROM ST_Dump(fan.post)
+             WHERE ST_Contains(
+                ST_Boundary(geom),
+                  ST_MakeLine(
+                    ST_StartPoint(newedge.cleangeom),
+                    ST_PointN(newedge.cleangeom, 2)
+                  )
+                )
+             ORDER BY ST_XMin(geom), ST_YMin(geom)
+  LOOP -- {
+    RAISE DEBUG 'Adding face %', ST_AsText(rec.geom);
+    sql :=
+      'SELECT topology.AddFace(' || quote_literal(atopology)
+      || ', ' || quote_literal(rec.geom::text) || ', true)';
+    EXECUTE sql INTO newface;
+    newfaces := array_append(newfaces, newface);
+  END LOOP; --}
+  RAISE DEBUG 'Added faces: %', newfaces;
+
   IF newedge.left_face != 0 THEN -- {
-
-    -- Set old face edges to zero to let AddFace do something with them
-    EXECUTE 'UPDATE ' || quote_ident(atopology)
-      || '.edge_data SET left_face = 0 WHERE left_face = '
-      || newedge.left_face;
-    EXECUTE 'UPDATE ' || quote_ident(atopology)
-      || '.edge_data SET right_face = 0 WHERE right_face = '
-      || newedge.left_face;
- 
-    -- Now we call topology.AddFace for each of the two new
-    -- faces. These are the ones that do contain the new edge
-    -- The ORDER serves predictability of which face is added first
-    FOR rec IN SELECT geom FROM ST_Dump(fan.post)
-      ORDER BY ST_XMin(geom), ST_YMin(geom)
-    LOOP -- {
-      -- skip the polygons whose boundary does not contain
-      -- the newly added edge
-      IF NOT ST_Contains(ST_Boundary(rec.geom), acurve) THEN
-        CONTINUE;
-      END IF;
-
-      RAISE DEBUG 'Adding face %', ST_AsText(rec.geom);
-      sql :=
-        'SELECT topology.AddFace(' || quote_literal(atopology)
-        || ', ' || quote_literal(rec.geom::text) || ')';
-      EXECUTE sql INTO newface;
-      newfaces := array_append(newfaces, newface);
-    END LOOP; --}
-
-    RAISE DEBUG 'Added faces: %', newfaces;
 
     -- NOT IN THE SPECS:
     -- update TopoGeometry compositions to substitute oldface with newfaces
@@ -2508,26 +2499,6 @@ BEGIN
     sql := 'DELETE FROM ' || quote_ident(atopology)
       || '.face WHERE face_id = ' || newedge.left_face;
     EXECUTE sql;
-
-  ELSE -- }{
-
-    FOR rec IN SELECT (ST_Dump(fan.post)).geom
-    LOOP -- {
-      -- skip the polygons whose boundary does not contain
-      -- the newly added edge
-      IF NOT ST_Contains(ST_Boundary(rec.geom), acurve) THEN
-        CONTINUE;
-      END IF;
-
-      RAISE DEBUG 'Adding face %', ST_AsText(rec.geom);
-      sql :=
-        'SELECT topology.AddFace(' || quote_literal(atopology)
-        || ', ' || quote_literal(rec.geom::text) || ')';
-      EXECUTE sql INTO newface;
-      newfaces := array_append(newfaces, newface);
-    END LOOP; --}
-
-    RAISE DEBUG 'Added faces: %', newfaces;
 
   END IF; -- }
 
