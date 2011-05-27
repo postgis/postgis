@@ -2444,10 +2444,10 @@ BEGIN
     RETURN newedge.edge_id;
   END IF;
 
-  RAISE WARNING 'ST_AddEdgeNewFaces: edge % splitted face %',
+  RAISE NOTICE 'ST_AddEdgeNewFaces: edge % splitted face %',
       newedge.edge_id, newedge.left_face;
 
-  IF newedge.left_face != 0 THEN
+  IF newedge.left_face != 0 THEN -- {
 
     -- Set old face edges to zero to let AddFace do something with them
     EXECUTE 'UPDATE ' || quote_ident(atopology)
@@ -2463,6 +2463,12 @@ BEGIN
     FOR rec IN SELECT geom FROM ST_Dump(fan.post)
       ORDER BY ST_XMin(geom), ST_YMin(geom)
     LOOP -- {
+      -- skip the polygons whose boundary does not contain
+      -- the newly added edge
+      IF NOT ST_Contains(ST_Boundary(rec.geom), acurve) THEN
+        CONTINUE;
+      END IF;
+
       RAISE DEBUG 'Adding face %', ST_AsText(rec.geom);
       sql :=
         'SELECT topology.AddFace(' || quote_literal(atopology)
@@ -2503,7 +2509,7 @@ BEGIN
       || '.face WHERE face_id = ' || newedge.left_face;
     EXECUTE sql;
 
-  ELSE
+  ELSE -- }{
 
     FOR rec IN SELECT (ST_Dump(fan.post)).geom
     LOOP -- {
@@ -2523,7 +2529,7 @@ BEGIN
 
     RAISE DEBUG 'Added faces: %', newfaces;
 
-  END IF;
+  END IF; -- }
 
   RETURN newedge.edge_id;
 END

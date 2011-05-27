@@ -340,6 +340,18 @@ SELECT 'T21', 'E'||edge_id, next_left_edge, next_right_edge,
     UNION VALUES (36),(16) )
   ORDER BY edge_id;
 
+--
+-- Split a face containing an hole 
+--
+INSERT INTO newedge SELECT 22, topology.st_addedgenewfaces('city_data',
+  3, 3,  'LINESTRING(25 35, 27 35, 26 34, 25 35)');
+SELECT 'T22', 'E'||edge_id, next_left_edge, next_right_edge,
+  left_face, right_face FROM
+  city_data.edge WHERE edge_id IN ( 
+    SELECT edge_id FROM newedge WHERE id IN (22, 16)
+    UNION VALUES (2),(3) )
+  ORDER BY edge_id;
+
 
 ---------------------------------------------------------------------
 -- Check new relations and faces status
