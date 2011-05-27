@@ -242,5 +242,5 @@ SELECT count FROM st_valuecount('test', 'rast', 1, TRUE, NULL::double precision,
 SELECT count FROM st_valuecount('test', 'rast', 1, 3.14, 1);
 SELECT count FROM st_valuecount('test', 'rast', 1, -1);
 SELECT count FROM st_valuecount('test', 'rast', 3.1, 0.1);
-SELECT count FROM st_valuecount('test', 'rast', -9);
+SELECT count FROM st_valuecount('test', 'rast', -9.);
 ROLLBACK;

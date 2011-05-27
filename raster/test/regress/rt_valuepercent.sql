@@ -242,5 +242,5 @@ SELECT round(percent::numeric, 3) FROM ST_ValuePercent('test', 'rast', 1, TRUE, 
 SELECT round(percent::numeric, 3) FROM ST_ValuePercent('test', 'rast', 1, 3.14, 1);
 SELECT round(percent::numeric, 3) FROM ST_ValuePercent('test', 'rast', 1, -1);
 SELECT round(percent::numeric, 3) FROM ST_ValuePercent('test', 'rast', 3.1, 0.1);
-SELECT round(percent::numeric, 3) FROM ST_ValuePercent('test', 'rast', -9);
+SELECT round(percent::numeric, 3) FROM ST_ValuePercent('test', 'rast', -9.);
 ROLLBACK;
