@@ -906,16 +906,17 @@ FROM (SELECT rid, ST_MetaData(rast) As md
 				<para>Returns the number of pixels in a given band of a raster or raster coverage.  If no band is specified <varname>nband</varname> defaults to 1. </para> 
 				<note><para>If <varname>hasnodata</varname> is set to true, will also count pixels with no data. Set <varname>hasnodata</varname> to false to get only pixels with data</para></note>
 				<para>Availability: 2.0.0 </para>
-				<warning><para>This currently does the opposite of what I just said. Will be fixed to agree with the documentation or the documentation will be fixed to agee with the behavior.</para></warning>
+				<warning><para>This currently does the opposite of what I just said. Will be fixed to agree with the documentation or the documentation will be fixed to agree with the behavior.</para></warning>
 			</refsection>
 				
 			<refsection>
 				<title>Examples</title>
 				<!-- TODO: Fix once we confirm the right behavior -->
 				<programlisting>
-				    --example will count all pixels not 249 and one will count all pixels.  Note this behavior may be reversed --
-				    SELECT rid, ST_Count(ST_SetBandNoDataValue(rast,249)) As exclude_nodata, ST_Count(ST_SetBandNoDataValue(rast,249),false) As include_nodata
-				        FROM dummy_rast WHERE rid=2;
+--example will count all pixels not 249 and one will count all pixels.  Note this behavior may be reversed --
+SELECT rid, ST_Count(ST_SetBandNoDataValue(rast,249)) As exclude_nodata, 
+        ST_Count(ST_SetBandNoDataValue(rast,249),false) As include_nodata
+    FROM dummy_rast WHERE rid=2;
 				    
 rid | exclude_nodata | include_nodata
 -----+----------------+----------------
