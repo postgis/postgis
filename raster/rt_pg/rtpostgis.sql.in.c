@@ -1151,15 +1151,11 @@ CREATE OR REPLACE FUNCTION st_reclass(rast raster, VARIADIC reclassargset reclas
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_reclass(rast raster, nband int, reclassexpr text, pixeltype text, nodataval double precision)
+-- Cannot be strict as "nodataval" can be NULL
+CREATE OR REPLACE FUNCTION st_reclass(rast raster, nband int, reclassexpr text, pixeltype text, nodataval double precision DEFAULT NULL)
 	RETURNS raster
 	AS $$ SELECT st_reclass($1, ROW($2, $3, $4, $5)) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_reclass(rast raster, nband int, reclassexpr text, pixeltype text)
-	RETURNS raster
-	AS $$ SELECT st_reclass($1, ROW($2, $3, $4, NULL)) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'SQL' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_reclass(rast raster, reclassexpr text, pixeltype text)
 	RETURNS raster
