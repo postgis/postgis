@@ -1,4 +1,4 @@
-SELECT round(value::numeric, 3), count FROM st_valuecount(
+SELECT round(value::numeric, 3), count FROM ST_ValueCount(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(
@@ -13,7 +13,7 @@ SELECT round(value::numeric, 3), count FROM st_valuecount(
 		, 1, 5, 5, 3.14159
 	)
 , 1, TRUE, ARRAY[]::double precision[], 0);
-SELECT round(value::numeric, 3), count FROM st_valuecount(
+SELECT round(value::numeric, 3), count FROM ST_ValueCount(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(
@@ -28,7 +28,7 @@ SELECT round(value::numeric, 3), count FROM st_valuecount(
 		, 1, 5, 5, 3.14159
 	)
 , 1, TRUE, NULL::double precision[], 0);
-SELECT round(value::numeric, 3), count FROM st_valuecount(
+SELECT round(value::numeric, 3), count FROM ST_ValueCount(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(
@@ -43,7 +43,7 @@ SELECT round(value::numeric, 3), count FROM st_valuecount(
 		, 1, 5, 5, 3.14159
 	)
 , 1, FALSE, NULL::double precision[], 0);
-SELECT round(value::numeric, 3), count FROM st_valuecount(
+SELECT round(value::numeric, 3), count FROM ST_ValueCount(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(
@@ -58,7 +58,7 @@ SELECT round(value::numeric, 3), count FROM st_valuecount(
 		, 1, 5, 5, 3.14159
 	)
 , 1, TRUE, NULL::double precision[], 0.1);
-SELECT round(value::numeric, 3), count FROM st_valuecount(
+SELECT round(value::numeric, 3), count FROM ST_ValueCount(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(
@@ -73,7 +73,7 @@ SELECT round(value::numeric, 3), count FROM st_valuecount(
 		, 1, 5, 5, 3.14159
 	)
 , 1, ARRAY[3.1], 0.1);
-SELECT round(value::numeric, 3), count FROM st_valuecount(
+SELECT round(value::numeric, 3), count FROM ST_ValueCount(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(
@@ -88,7 +88,7 @@ SELECT round(value::numeric, 3), count FROM st_valuecount(
 		, 1, 5, 5, 3.14159
 	)
 , 1, ARRAY[-10]);
-SELECT round(value::numeric, 3), count FROM st_valuecount(
+SELECT round(value::numeric, 3), count FROM ST_ValueCount(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(
@@ -103,7 +103,7 @@ SELECT round(value::numeric, 3), count FROM st_valuecount(
 		, 1, 5, 5, 3.14159
 	)
 , ARRAY[-10], 0);
-SELECT round(value::numeric, 3), count FROM st_valuecount(
+SELECT round(value::numeric, 3), count FROM ST_ValueCount(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(
@@ -118,7 +118,7 @@ SELECT round(value::numeric, 3), count FROM st_valuecount(
 		, 1, 5, 5, 3.14159
 	)
 , ARRAY[-10, 3]);
-SELECT count FROM st_valuecount(
+SELECT ST_ValueCount(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(
@@ -133,7 +133,7 @@ SELECT count FROM st_valuecount(
 		, 1, 5, 5, 3.14159
 	)
 , 1, TRUE, 3.14, 0.19);
-SELECT count FROM st_valuecount(
+SELECT ST_ValueCount(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(
@@ -148,7 +148,7 @@ SELECT count FROM st_valuecount(
 		, 1, 5, 5, 3.14159
 	)
 , 1, FALSE, 3.14, 0.01);
-SELECT count FROM st_valuecount(
+SELECT ST_ValueCount(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(
@@ -163,7 +163,7 @@ SELECT count FROM st_valuecount(
 		, 1, 5, 5, 3.14159
 	)
 , 1, -10, 0.1);
-SELECT count FROM st_valuecount(
+SELECT ST_ValueCount(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(
@@ -178,7 +178,7 @@ SELECT count FROM st_valuecount(
 		, 1, 5, 5, 3.14159
 	)
 , 1, -10);
-SELECT count FROM st_valuecount(
+SELECT ST_ValueCount(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(
@@ -193,7 +193,7 @@ SELECT count FROM st_valuecount(
 		, 1, 5, 5, 3.14159
 	)
 , -10., 10);
-SELECT count FROM st_valuecount(
+SELECT ST_ValueCount(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(
@@ -232,15 +232,15 @@ CREATE TEMP TABLE test
 		SELECT generate_series(1, 10) AS id
 	) AS id
 		ON 1 = 1;
-SELECT round(value::numeric, 3), count FROM st_valuecount('test', 'rast', 1, FALSE, NULL::double precision[], 0);
-SELECT round(value::numeric, 3), count FROM st_valuecount('test', 'rast', 1, ARRAY[-10]::double precision[], 0);
-SELECT round(value::numeric, 3), count FROM st_valuecount('test', 'rast', 1, ARRAY[1]::double precision[]);
-SELECT round(value::numeric, 3), count FROM st_valuecount('test', 'rast', NULL::double precision[], 0.1);
-SELECT round(value::numeric, 3), count FROM st_valuecount('test', 'rast', ARRAY[-1, 3.1]::double precision[], 0.1);
+SELECT round(value::numeric, 3), count FROM ST_ValueCount('test', 'rast', 1, FALSE, NULL::double precision[], 0);
+SELECT round(value::numeric, 3), count FROM ST_ValueCount('test', 'rast', 1, ARRAY[-10]::double precision[], 0);
+SELECT round(value::numeric, 3), count FROM ST_ValueCount('test', 'rast', 1, ARRAY[1]::double precision[]);
+SELECT round(value::numeric, 3), count FROM ST_ValueCount('test', 'rast', NULL::double precision[], 0.1);
+SELECT round(value::numeric, 3), count FROM ST_ValueCount('test', 'rast', ARRAY[-1, 3.1]::double precision[], 0.1);
 
-SELECT count FROM st_valuecount('test', 'rast', 1, TRUE, NULL::double precision, 0);
-SELECT count FROM st_valuecount('test', 'rast', 1, 3.14, 1);
-SELECT count FROM st_valuecount('test', 'rast', 1, -1);
-SELECT count FROM st_valuecount('test', 'rast', 3.1, 0.1);
-SELECT count FROM st_valuecount('test', 'rast', -9.);
+SELECT ST_ValueCount('test', 'rast', 1, TRUE, NULL::double precision, 0);
+SELECT ST_ValueCount('test', 'rast', 1, 3.14, 1);
+SELECT ST_ValueCount('test', 'rast', 1, -1);
+SELECT ST_ValueCount('test', 'rast', 3.1, 0.1);
+SELECT ST_ValueCount('test', 'rast', -9.);
 ROLLBACK;

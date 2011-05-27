@@ -118,7 +118,7 @@ SELECT round(value::numeric, 3), round(percent::numeric, 3) FROM ST_ValuePercent
 		, 1, 5, 5, 3.14159
 	)
 , ARRAY[-10, 3]);
-SELECT round(percent::numeric, 3) FROM ST_ValuePercent(
+SELECT round(ST_ValuePercent(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(
@@ -132,8 +132,8 @@ SELECT round(percent::numeric, 3) FROM ST_ValuePercent(
 		)
 		, 1, 5, 5, 3.14159
 	)
-, 1, TRUE, 3.14, 0.19);
-SELECT round(percent::numeric, 3) FROM ST_ValuePercent(
+, 1, TRUE, 3.14, 0.19)::numeric, 3);
+SELECT round(ST_ValuePercent(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(
@@ -147,8 +147,8 @@ SELECT round(percent::numeric, 3) FROM ST_ValuePercent(
 		)
 		, 1, 5, 5, 3.14159
 	)
-, 1, FALSE, 3.14, 0.01);
-SELECT round(percent::numeric, 3) FROM ST_ValuePercent(
+, 1, FALSE, 3.14, 0.01)::numeric, 3);
+SELECT round(ST_ValuePercent(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(
@@ -162,8 +162,8 @@ SELECT round(percent::numeric, 3) FROM ST_ValuePercent(
 		)
 		, 1, 5, 5, 3.14159
 	)
-, 1, -10, 0.1);
-SELECT round(percent::numeric, 3) FROM ST_ValuePercent(
+, 1, -10, 0.1)::numeric, 3);
+SELECT round(ST_ValuePercent(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(
@@ -177,8 +177,8 @@ SELECT round(percent::numeric, 3) FROM ST_ValuePercent(
 		)
 		, 1, 5, 5, 3.14159
 	)
-, 1, -10);
-SELECT round(percent::numeric, 3) FROM ST_ValuePercent(
+, 1, -10)::numeric, 3);
+SELECT round(ST_ValuePercent(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(
@@ -192,8 +192,8 @@ SELECT round(percent::numeric, 3) FROM ST_ValuePercent(
 		)
 		, 1, 5, 5, 3.14159
 	)
-, -10., 10);
-SELECT round(percent::numeric, 3) FROM ST_ValuePercent(
+, -10., 10)::numeric, 3);
+SELECT round(ST_ValuePercent(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(
@@ -207,7 +207,7 @@ SELECT round(percent::numeric, 3) FROM ST_ValuePercent(
 		)
 		, 1, 5, 5, 3.14159
 	)
-, 3.14159);
+, 3.14159)::numeric, 3);
 BEGIN;
 CREATE TEMP TABLE test
 	ON COMMIT DROP AS
@@ -238,9 +238,9 @@ SELECT round(value::numeric, 3), round(percent::numeric, 3) FROM ST_ValuePercent
 SELECT round(value::numeric, 3), round(percent::numeric, 3) FROM ST_ValuePercent('test', 'rast', NULL::double precision[], 0.1);
 SELECT round(value::numeric, 3), round(percent::numeric, 3) FROM ST_ValuePercent('test', 'rast', ARRAY[-1, 3.1]::double precision[], 0.1);
 
-SELECT round(percent::numeric, 3) FROM ST_ValuePercent('test', 'rast', 1, TRUE, NULL::double precision, 0);
-SELECT round(percent::numeric, 3) FROM ST_ValuePercent('test', 'rast', 1, 3.14, 1);
-SELECT round(percent::numeric, 3) FROM ST_ValuePercent('test', 'rast', 1, -1);
-SELECT round(percent::numeric, 3) FROM ST_ValuePercent('test', 'rast', 3.1, 0.1);
-SELECT round(percent::numeric, 3) FROM ST_ValuePercent('test', 'rast', -9.);
+SELECT round(ST_ValuePercent('test', 'rast', 1, TRUE, NULL::double precision, 0)::numeric, 3);
+SELECT round(ST_ValuePercent('test', 'rast', 1, 3.14, 1)::numeric, 3);
+SELECT round(ST_ValuePercent('test', 'rast', 1, -1)::numeric, 3);
+SELECT round(ST_ValuePercent('test', 'rast', 3.1, 0.1)::numeric, 3);
+SELECT round(ST_ValuePercent('test', 'rast', -9.)::numeric, 3);
 ROLLBACK;

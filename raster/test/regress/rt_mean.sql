@@ -12,9 +12,9 @@ SELECT round(ST_Mean(
 		)
 		, 1, 5, 5, 3.14159
 	)
-	, TRUE
+	, 1, TRUE
 )::numeric, 3);
-SELECT round(mean::numeric, 3) FROM ST_Mean(
+SELECT round(ST_Mean(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(
@@ -28,9 +28,9 @@ SELECT round(mean::numeric, 3) FROM ST_Mean(
 		)
 		, 1, 5, 5, 3.14159
 	)
-	, TRUE
-);
-SELECT round(mean::numeric, 3) FROM ST_Mean(
+	, 1
+)::numeric, 3);
+SELECT round(ST_Mean(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(
@@ -45,7 +45,22 @@ SELECT round(mean::numeric, 3) FROM ST_Mean(
 		, 1, 5, 5, 3.14159
 	)
 	, FALSE
-);
+)::numeric, 3);
+SELECT round(ST_Mean(
+	ST_SetValue(
+		ST_SetValue(
+			ST_SetValue(
+				ST_AddBand(
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+					, 1, '64BF', 0, 0
+				)
+				, 1, 1, 1, -10
+			)
+			, 1, 5, 4, 0
+		)
+		, 1, 5, 5, 3.14159
+	)
+)::numeric, 3);
 BEGIN;
 CREATE TEMP TABLE test
 	ON COMMIT DROP AS
@@ -70,9 +85,10 @@ CREATE TEMP TABLE test
 		SELECT generate_series(1, 10) AS id
 	) AS id
 		ON 1 = 1;
-SELECT round(mean::numeric, 3) FROM ST_Mean('test', 'rast', 1, TRUE);
-SELECT round(mean::numeric, 3) FROM ST_Mean('test', 'rast', 1, FALSE);
-SELECT round(mean::numeric, 3) FROM ST_Mean('test', 'rast', 1);
-SELECT round(mean::numeric, 3) FROM ST_Mean('test', 'rast');
+SELECT round(ST_Mean('test', 'rast', 1, TRUE)::numeric, 3);
+SELECT round(ST_Mean('test', 'rast', 1, FALSE)::numeric, 3);
+SELECT round(ST_Mean('test', 'rast', 1)::numeric, 3);
+SELECT round(ST_Mean('test', 'rast', FALSE)::numeric, 3);
+SELECT round(ST_Mean('test', 'rast')::numeric, 3);
 ROLLBACK;
 

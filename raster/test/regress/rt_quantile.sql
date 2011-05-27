@@ -111,79 +111,75 @@ FROM ST_Quantile(
 		, 1, 5, 5, 3.14159
 	)
 );
-SELECT
-	round(quantile::numeric, 3),
-	round(value::numeric, 3)
-FROM ST_Quantile(
-	ST_SetValue(
+SELECT round(
+	ST_Quantile(
 		ST_SetValue(
 			ST_SetValue(
-				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
-					, 1, '64BF', 0, 0
+				ST_SetValue(
+					ST_AddBand(
+						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+						, 1, '64BF', 0, 0
+					)
+					, 1, 1, 1, -10
 				)
-				, 1, 1, 1, -10
+				, 1, 5, 4, 0
 			)
-			, 1, 5, 4, 0
-		)
-		, 1, 5, 5, 3.14159
-	),
-	1, FALSE, 0.05
+			, 1, 5, 5, 3.14159
+		),
+		1, FALSE, 0.05
+	)::numeric, 3
 );
-SELECT
-	round(quantile::numeric, 3),
-	round(value::numeric, 3)
-FROM ST_Quantile(
-	ST_SetValue(
+SELECT round(
+	ST_Quantile(
 		ST_SetValue(
 			ST_SetValue(
-				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
-					, 1, '64BF', 0, 0
+				ST_SetValue(
+					ST_AddBand(
+						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+						, 1, '64BF', 0, 0
+					)
+					, 1, 1, 1, -10
 				)
-				, 1, 1, 1, -10
+				, 1, 5, 4, 0
 			)
-			, 1, 5, 4, 0
-		)
-		, 1, 5, 5, 3.14159
-	),
-	1, 0.95
+			, 1, 5, 5, 3.14159
+		),
+		1, 0.95
+	)::numeric, 3
 );
-SELECT
-	round(quantile::numeric, 3),
-	round(value::numeric, 3)
-FROM ST_Quantile(
-	ST_SetValue(
+SELECT round(
+	ST_Quantile(
 		ST_SetValue(
 			ST_SetValue(
-				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
-					, 1, '64BF', 0, 0
+				ST_SetValue(
+					ST_AddBand(
+						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+						, 1, '64BF', 0, 0
+					)
+					, 1, 1, 1, -10
 				)
-				, 1, 1, 1, -10
+				, 1, 5, 4, 0
 			)
-			, 1, 5, 4, 0
-		)
-		, 1, 5, 5, 3.14159
-	),
-	FALSE, 0.7
+			, 1, 5, 5, 3.14159
+		),
+		FALSE, 0.7
+	)::numeric, 3
 );
-SELECT
-	round(quantile::numeric, 3),
-	round(value::numeric, 3)
-FROM ST_Quantile(
-	ST_SetValue(
+SELECT round(
+	ST_Quantile(
 		ST_SetValue(
 			ST_SetValue(
-				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
-					, 1, '64BF', 0, 0
+				ST_SetValue(
+					ST_AddBand(
+						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+						, 1, '64BF', 0, 0
+					)
+					, 1, 1, 1, -10
 				)
-				, 1, 1, 1, -10
+				, 1, 5, 4, 0
 			)
-			, 1, 5, 4, 0
-		)
-		, 1, 5, 5, 3.14159
-	),
-	0.45
+			, 1, 5, 5, 3.14159
+		),
+		0.45
+	)::numeric, 3
 );
