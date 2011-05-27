@@ -689,8 +689,9 @@ edgeid
 			<refnamediv>
 				<refname>AddFace</refname>
 			
-				<refpurpose>Register a polygon as a topology face in the specified topology schema and returns the faceid of new face. 
-				    If face already exists the id of the existing face is returned. Edges of the polygon must already exist otherwise an error is thrown.</refpurpose>
+				<refpurpose>
+Registers a face primitive to a topology and get it's identifier.
+        </refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -699,6 +700,7 @@ edgeid
 					<funcdef>integer <function>AddFace</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>apolygon</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>force_new=false</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -708,14 +710,33 @@ edgeid
             
                 <para>
 Registers a face primitive to a topology and get it's identifier.
+                </para>
+
+                <para>
 For a newly added face, the edges forming its boundaries and the ones 
 contained in the face will be updated to have correct values in the
 left_face and right_face fields.
 Isolated nodes contained in the face will also be updated to have a correct
 containing_face field value.
-		</para>
+                </para>
+
                 <para>The target topology is assumed to be valid (containing no self-intersecting edges). An exception is raised if: The polygon boundary is not fully defined by existing edges or the polygon overlaps an existing face.</para>
-                <note><para>If the <varname>apolygon</varname> geometry already exists as a face the face id of the existing face is returned.</para></note>
+
+                <para>
+If the <varname>apolygon</varname> geometry already exists as a face, then:
+if <varname>force_new</varname> is false (the default) the
+face id of the existing face is returned;
+if <varname>force_new</varname> is true a new id will be assigned to
+the newly registered face.
+                </para>
+
+		<note><para>
+When a new registration of an existing face is performed (force_new=true),
+no action will be taken to resolve dangling references to the existing
+face in the edge, node an relation tables, nor will the MBR field of the
+existing face record be updated. It is up to the caller to deal with that.
+                </para></note>
+
                 <note><para>The <varname>apolygon</varname> geometry must have the same <varname>srid</varname> as defined for the topology otherwise an invalid spatial reference sys error will be thrown.</para></note>
                 
                 <!-- use this format if new function -->

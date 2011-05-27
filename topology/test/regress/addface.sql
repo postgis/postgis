@@ -40,6 +40,13 @@ SELECT face_id, Box2d(mbr) from tt.face ORDER by face_id;
 -- Check linking
 SELECT edge_id, left_face, right_face from tt.edge ORDER by edge_id;
 
+-- Force re-registration of an existing face
+SELECT 'f1-force',  topology.addFace('tt', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', true);
+
+-- re-check added faces and linking
+SELECT face_id, Box2d(mbr) from tt.face ORDER by face_id;
+SELECT edge_id, left_face, right_face from tt.edge ORDER by edge_id;
+
 SELECT topology.DropTopology('tt');
 
 -- Test topology with MixedCase

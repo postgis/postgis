@@ -300,13 +300,22 @@ LANGUAGE 'plpgsql' VOLATILE;
 
 --{
 --
--- AddFace(atopology, poly)
+-- AddFace(atopology, poly, [<force_new>=true])
 --
 -- Add a face primitive to a topology and get it's identifier.
--- Returns an existing face at the same location, if any.
+-- Returns an existing face at the same location, if any, unless
+-- true is passed as the force_new argument
 --
 -- For a newly added face, its edges will be appropriately
--- linked (marked as left-face or right-face).
+-- linked (marked as left-face or right-face), and any contained
+-- edges and nodes would also be marked as such.
+--
+-- When forcing re-registration of an existing face, no action will be
+-- taken to deal with the face being substituted. Which means
+-- a record about the old face and any record in the relation table
+-- referencing the existing face will remain untouched, effectively
+-- leaving the topology in a possibly invalid state.
+-- It is up to the caller to deal with that.
 --
 -- The target topology is assumed to be valid (containing no
 -- self-intersecting edges).
@@ -316,7 +325,7 @@ LANGUAGE 'plpgsql' VOLATILE;
 --  o The polygon overlaps an existing face.
 --
 -- 
-CREATE OR REPLACE FUNCTION topology.AddFace(atopology varchar, apoly geometry)
+CREATE OR REPLACE FUNCTION topology.AddFace(atopology varchar, apoly geometry, force_new boolean DEFAULT FALSE)
 	RETURNS int
 AS
 $$
@@ -480,8 +489,12 @@ BEGIN
   END IF;
 
   IF faceid IS NOT NULL AND faceid != 0 THEN
-    RAISE DEBUG 'Face already known as %', faceid;
-    RETURN faceid;
+    IF NOT force_new THEN
+      RAISE DEBUG 'Face already known as %, not forcing a new face', faceid;
+      RETURN faceid;
+    ELSE
+      RAISE DEBUG 'Face already known as %, forcing a new face', faceid;
+    END IF;
   END IF;
 
   --
