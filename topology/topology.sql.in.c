@@ -150,11 +150,12 @@
 --    Also updates the Relation table
 --
 --   ST_AddEdgeNewFaces
---  	Complete
+--    Complete
 --    Also updates the Relation table
 --
 --   ST_AddEdgeModFace
---  	Work in progress...
+--    Complete
+--    Also updates the Relation table
 --  
 --   ST_GetFaceEdges
 --  	Complete
