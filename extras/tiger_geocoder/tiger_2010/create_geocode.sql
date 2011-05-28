@@ -1,4 +1,18 @@
 --$Id$
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://www.postgis.org
+--
+-- Copyright (C) 2010, 2011 Regina Obe and Leo Hsu
+-- Copyright (C) 2008 Stephen Frost (et al) 
+-- reintegrated back into PostGIS code base from Steven's git (http://www.snowman.net/git/tiger_geocoder/)
+-- Copyright Refractions Research
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+--  
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- Tiger is where we're going to create the functions, but we need
 -- the PostGIS functions/types which are in public.
 SET search_path TO tiger,public;

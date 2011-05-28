@@ -1,4 +1,4 @@
-REM $Id: create_geocode.bat 6774 2011-02-01 13:55:02Z robe $
+REM $Id$
 set PGPORT=5432
 set PGHOST=localhost
 set PGUSER=postgres

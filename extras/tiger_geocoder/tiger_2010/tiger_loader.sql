@@ -1,4 +1,16 @@
 --$Id$
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://www.postgis.org
+--
+-- Copyright (C) 2010, 2011 Regina Obe and Leo Hsu
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- Author: Regina Obe and Leo Hsu <lr@pcorp.us>
+--  
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SET search_path TO tiger,public;
 BEGIN;
 DROP AGGREGATE IF EXISTS array_accum(anyelement);
