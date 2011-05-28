@@ -54,22 +54,22 @@ STATEDIR="${staging_fold}/${website_root}/${state_fold}"
 TMPDIR="${staging_fold}/temp/"
 UNZIPTOOL=unzip
 WGETTOOL="/usr/bin/wget"
-PGBIN="/usr/bin"
-PGPORT=5432
-PGHOST=localhost
-PGUSER=postgres
-PGPASSWORD=yourpasswordhere
-PGDATABASE=geocoder
-PSQL=psql
-SHP2PGSQL=shp2pgsql
+PGBIN="/usr/pgsql-9.0/bin"
+export PGPORT=5432
+export PGHOST=localhost
+export PGUSER=postgres
+export PGPASSWORD=yourpasswordhere
+export PGDATABASE=geocoder
+PSQL=${PGBIN}/psql
+SHP2PGSQL=${PGBIN}/shp2pgsql
 ', E'rm -f ${TMPDIR}/*.*
 ${PSQL} -c "DROP SCHEMA tiger_staging CASCADE;"
 ${PSQL} -c "CREATE SCHEMA tiger_staging;"
 cd $STATEDIR
-for z in *.zip do $UNZIPTOOL -o -d $TMPDIR $z
-for z in */*.zip do $UNZIPTOOL -o -d $TMPDIR $z 
-cd $TMPDIR', '${PSQL}', '/', '${SHP2PGSQL}', 'export ',
-'for z in *${table_name}.dbf do 
+for z in *.zip; do $UNZIPTOOL -o -d $TMPDIR $z; done
+for z in */*.zip; do $UNZIPTOOL -o -d $TMPDIR $z; done
+cd $TMPDIR;\n', '${PSQL}', '/', '${SHP2PGSQL}', 'export ',
+'for z in *${table_name}.dbf; do 
 ${loader}  -s 4269 -g the_geom -W "latin1" $z ${staging_schema}.${state_abbrev}_${table_name} | ${psql} 
 ${PSQL} -c "SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}''));"
 done');
@@ -219,8 +219,8 @@ SELECT
 	ARRAY[platform.psql,  variables.data_schema, variables.staging_schema, variables.staging_fold, s.state_fold,variables.website_root, s.state_abbrev, s.state_fips::text])
 			AS shell_code
 FROM loader_variables As variables
-		CROSS JOIN (SELECT name As state, abbrev As state_abbrev, st_code As state_fips, 
-			 st_code || '_' 
+		CROSS JOIN (SELECT name As state, abbrev As state_abbrev, lpad(st_code::text,2,'0') As state_fips, 
+			 lpad(st_code::text,2,'0') || '_' 
 	|| replace(name, ' ', '_') As state_fold
 FROM state_lookup) As s CROSS JOIN loader_platform As platform
 WHERE $1 @> ARRAY[state_abbrev::text]      -- If state is contained in list of states input generate script for it

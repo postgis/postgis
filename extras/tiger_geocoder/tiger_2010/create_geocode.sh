@@ -7,7 +7,9 @@ PGPASSWORD=yourpasswordhere
 THEDB=geocoder
 PSQL_CMD=/usr/bin/psql
 PGCONTRIB=/usr/share/postgresql/contrib
+#if you are on 9.1+ use the CREATE EXTENSION syntax instead
 ${PSQL_CMD} -d "${THEDB}" -f "${PGCONTRIB}/fuzzystrmatch.sql"
+#${PSQL_CMD} -d "${THEDB}" -c "CREATE EXTENSION fuzzystrmatch" 
 ${PSQL_CMD} -d "${THEDB}" -c "CREATE SCHEMA tiger"
 ${PSQL_CMD} -d "${THEDB}" -f "tables/lookup_tables_2010.sql"
 ${PSQL_CMD} -d "${THEDB}" -c "CREATE SCHEMA tiger_data"
