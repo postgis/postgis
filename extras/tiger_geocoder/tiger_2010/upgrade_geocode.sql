@@ -21,6 +21,8 @@ ALTER TABLE state_lookup ADD CONSTRAINT state_lookup_statefp_key UNIQUE(statefp)
 CREATE INDEX idx_tiger_edges_countyfp ON edges USING btree(countyfp);
 CREATE INDEX idx_tiger_faces_countyfp ON faces USING btree(countyfp);
 CREATE INDEX tiger_place_the_geom_gist ON place USING gist(the_geom);
+CREATE INDEX tiger_edges_the_geom_gist ON edges USING gist(the_geom);
+CREATE INDEX tiger_state_the_geom_gist ON faces USING gist(the_geom);
 
 BEGIN;
 -- Type used to pass around a normalized address between functions
@@ -76,3 +78,4 @@ CREATE TYPE norm_addy AS (
 -- Reverse Geocode API, called by user
 \i geocode/reverse_geocode.sql
 COMMIT;
+CREATE INDEX idx_tiger_addr_least_address ON addr USING btree (least_hn(fromhn,tohn));

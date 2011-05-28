@@ -963,6 +963,7 @@ CREATE TABLE state
   CONSTRAINT enforce_geotype_the_geom CHECK (geometrytype(the_geom) = 'MULTIPOLYGON'::text OR the_geom IS NULL),
   CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4269)
 );
+CREATE INDEX tiger_state_the_geom_gist ON faces USING gist(the_geom);
 
 DROP TABLE IF EXISTS place;
 CREATE TABLE place
@@ -1085,6 +1086,7 @@ CREATE TABLE edges
 );
 CREATE INDEX idx_edges_tlid ON edges USING btree(tlid);
 CREATE INDEX idx_tiger_edges_countyfp ON edges USING btree(countyfp);
+CREATE INDEX tiger_edges_the_geom_gist ON edges USING gist(the_geom);
 
 DROP TABLE IF EXISTS faces;
 
@@ -1166,16 +1168,8 @@ gid serial NOT NULL PRIMARY KEY,
 );
 CREATE INDEX idx_tiger_faces_tfid ON faces USING btree (tfid);
 CREATE INDEX idx_tiger_faces_countyfp ON faces USING btree(countyfp);
+CREATE INDEX tiger_faces_the_geom_gist ON faces USING gist(the_geom);
 
-
--- Index: tiger.faces_the_geom_gist
-
--- DROP INDEX tiger.faces_the_geom_gist;
-
-CREATE INDEX tiger_faces_the_geom_gist
-  ON faces
-  USING gist
-  (the_geom);
 
 CREATE TABLE featnames
 (
