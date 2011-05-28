@@ -18,7 +18,7 @@ BEGIN
     SELECT
         coalesce(zip.city)::varchar as place,
         zip.zip as zip,
-        centroid(zcta500.the_geom) as address_geom,
+        ST_Centroid(zcta500.the_geom) as address_geom,
         stusps as state,
         100::integer + coalesce(levenshtein_ignore_case(coalesce(zip.city), parsed.location),0) as in_rating
     FROM
@@ -53,7 +53,7 @@ BEGIN
   stmt := 'SELECT '
        || ' pl.name as place, '
        || ' state.stusps as stateAbbrev, '
-       || ' centroid(pl.the_geom) as address_geom, '
+       || ' ST_Centroid(pl.the_geom) as address_geom, '
        || ' 100::integer + levenshtein_ignore_case(coalesce(pl.name), ' || quote_literal(coalesce(parsed.location,'')) || ') as in_rating '
        || ' FROM place pl '
        || ' JOIN state USING (statefp)'
