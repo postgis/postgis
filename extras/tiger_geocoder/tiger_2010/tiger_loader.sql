@@ -49,6 +49,7 @@ set PGPASSWORD=yourpasswordhere
 set PGDATABASE=geocoder
 set PSQL="%PGBIN%psql"
 set SHP2PGSQL="%PGBIN%shp2pgsql"
+cd ${staging_fold}
 ', E'del %TMPDIR%\\*.* /Q
 %PSQL% -c "DROP SCHEMA ${staging_schema} CASCADE;"
 %PSQL% -c "CREATE SCHEMA ${staging_schema};"
@@ -61,8 +62,7 @@ cd %TMPDIR%', E'%PSQL%', E'\\', E'%SHP2PGSQL%', 'set ',
 
 INSERT INTO loader_platform(os, wget, pgbin, declare_sect, unzip_command, psql, path_sep, loader, environ_set_command, county_process_command)
 VALUES('sh', 'wget', '', 
-E'#!/bin/bash
-STATEDIR="${staging_fold}/${website_root}/${state_fold}" 
+E'STATEDIR="${staging_fold}/${website_root}/${state_fold}" 
 TMPDIR="${staging_fold}/temp/"
 UNZIPTOOL=unzip
 WGETTOOL="/usr/bin/wget"
@@ -74,6 +74,7 @@ export PGPASSWORD=yourpasswordhere
 export PGDATABASE=geocoder
 PSQL=${PGBIN}/psql
 SHP2PGSQL=${PGBIN}/shp2pgsql
+cd ${staging_fold}
 ', E'rm -f ${TMPDIR}/*.*
 ${PSQL} -c "DROP SCHEMA tiger_staging CASCADE;"
 ${PSQL} -c "CREATE SCHEMA tiger_staging;"
