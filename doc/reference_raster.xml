@@ -3329,7 +3329,7 @@ ORDER BY value, quantile,rid
 		<refentry id="RT_ST_ValueCount">
 			<refnamediv>
 				<refname>ST_ValueCount</refname>
-				<refpurpose>Returns a set of records containing a pixel band valuue  and count of the number of pixels in a given band of a raster (or a raster coverage) that have a given set of values.  If no band is specified defaults to band 1.  BY default nodata value pixels are not counted. 
+				<refpurpose>Returns a set of records containing a pixel band value  and count of the number of pixels in a given band of a raster (or a raster coverage) that have a given set of values.  If no band is specified defaults to band 1.  By default nodata value pixels are not counted. 
 				    and all other values in the pixel are output and pixel band values are rounded to the nearest integer.</refpurpose>
 			</refnamediv>
 		
@@ -3355,7 +3355,7 @@ ORDER BY value, quantile,rid
 					<paramdef><type>double precision </type> <parameter>OUT count</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
-					<funcdef>record <function>ST_ValueCount</function></funcdef>
+					<funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>double precision[] </type> <parameter>searchvalues</parameter></paramdef>
 					<paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
@@ -3369,7 +3369,7 @@ ORDER BY value, quantile,rid
 					<paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
-					<funcdef>record <function>ST_ValueCount</function></funcdef>
+					<funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
 					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
 					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
@@ -3380,7 +3380,7 @@ ORDER BY value, quantile,rid
 					<paramdef><type>double precision </type> <parameter>OUT count</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
-					<funcdef>record <function>ST_ValueCount</function></funcdef>
+					<funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
 					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
 					<paramdef><type>double precision[] </type> <parameter>searchvalues</parameter></paramdef>
@@ -3394,7 +3394,8 @@ ORDER BY value, quantile,rid
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the number of pixels in a given band of a raster or raster coverage.  If no band is specified <varname>nband</varname> defaults to 1. </para> 
+				<para>Returns a set of records with columns <varname>value</varname>  <varname>count</varname> which contain the pixel band value and count of pixels in the raster tile or raster coverage of selected band. </para>
+				<para>If no band is specified <varname>nband</varname> defaults to 1. If no <varname>searchvalues</varname> are specified, will return all pixel values found in the raster or raster coverage.  If one searchvalue is given, will return an integer instead of records denoting the count of pixels having that pixel band value</para> 
 				<note><para>If <varname>exclude_nodata_value</varname> is set to false, will also count pixels with no data.</para></note>
 				<para>Availability: 2.0.0 </para>
 			</refsection>
@@ -3471,7 +3472,23 @@ FROM (SELECT ST_ValueCount(rast,2) As pvc
 -------+-----
     51 | 502
     54 | 521
-</programlisting>	
+</programlisting>
+
+<programlisting>
+-- Just return count of pixels in each raster tile that have value of 100 of tiles that intersect  a specific geometry --
+SELECT rid, ST_ValueCount(rast,2,100) As count
+    FROM o_4_boston 
+        WHERE ST_Intersects(rast, 
+            ST_GeomFromText('POLYGON((224486 892151,224486 892200,224706 892200,224706 892151,224486 892151))',26986)
+             ) ;
+
+ rid | count
+-----+-------
+   1 |    56
+   2 |    95
+  14 |    37
+  15 |    64
+</programlisting>
 			</refsection>
 
 			<refsection>
