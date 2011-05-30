@@ -3738,6 +3738,7 @@ FROM (SELECT ST_SetRotation(rast,0.1,0.1) As rast
 	
 				<para>Availability: Requires GDAL 1.7 or higher.</para>
 				<note><para>If there is a no data value set for a band, pixels with that value will not be returned.</para></note>
+				<note><para>If you only care about count of pixels with a given value in a raster, it is faster to use <xref linkend="RT_ST_ValueCount" />.</para></note>
 		  </refsection>
 	
 		  <refsection>
@@ -3765,7 +3766,7 @@ ORDER BY val;
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="geomval" />,,<xref linkend="RT_ST_Value" />, <xref linkend="RT_ST_Polygon" /></para>
+			<para><xref linkend="geomval" />,<xref linkend="RT_ST_Value" />, <xref linkend="RT_ST_Polygon" />, <xref linkend="RT_ST_ValueCount" /></para>
 		  </refsection>
 		</refentry>
 		
