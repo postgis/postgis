@@ -865,70 +865,7 @@ FROM (SELECT rid, ST_MetaData(rast) As md
   	</sect1>
 	<sect1 id="Raster_Accessors">
 		<title>Raster Accessors</title>
-		<refentry id="RT_ST_Count">
-			<refnamediv>
-				<refname>ST_Count</refname>
-				<refpurpose>Returns the number of pixels in a given band of a raster or raster coverage.  If no band is specified defaults to band 1.  If hasnodata is set to true, will also count pixels with no data.</refpurpose>
-			</refnamediv>
-		
-			<refsynopsisdiv>
-				<funcsynopsis>
-				  <funcprototype>
-					<funcdef>text <function>ST_Count</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
-					<paramdef choice="opt"><type>boolean </type> <parameter>hasnodata=true</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>text <function>ST_Count</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>hasnodata</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>text <function>ST_Count</function></funcdef>
-					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
-					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
-					<paramdef choice="opt"><type>boolean </type> <parameter>hasnodata=true</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>text <function>ST_Count</function></funcdef>
-					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>hasnodata</parameter></paramdef>
-				  </funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-		
-			<refsection>
-				<title>Description</title>
-				
-				<para>Returns the number of pixels in a given band of a raster or raster coverage.  If no band is specified <varname>nband</varname> defaults to 1. </para> 
-				<note><para>If <varname>hasnodata</varname> is set to true, will also count pixels with no data. Set <varname>hasnodata</varname> to false to get only pixels with data</para></note>
-				<para>Availability: 2.0.0 </para>
-				<warning><para>This currently does the opposite of what I just said. Will be fixed to agree with the documentation or the documentation will be fixed to agree with the behavior.</para></warning>
-			</refsection>
-				
-			<refsection>
-				<title>Examples</title>
-				<!-- TODO: Fix once we confirm the right behavior -->
-				<programlisting>
---example will count all pixels not 249 and one will count all pixels.  Note this behavior may be reversed --
-SELECT rid, ST_Count(ST_SetBandNoDataValue(rast,249)) As exclude_nodata, 
-        ST_Count(ST_SetBandNoDataValue(rast,249),false) As include_nodata
-    FROM dummy_rast WHERE rid=2;
-				    
-rid | exclude_nodata | include_nodata
------+----------------+----------------
-   2 |             23 |             25
-				</programlisting>	
-			</refsection>
-
-			<refsection>
-				<title>See Also</title>
-				<para><xref linkend="RT_ST_SetBandNoDataValue" /></para>
-			</refsection>
-		</refentry>
+	
 		<refentry id="RT_ST_GeoReference">
 			<refnamediv>
 				<refname>ST_GeoReference</refname>
@@ -1635,8 +1572,7 @@ FROM dummy_rast;
 				<para><xref linkend="RT_ST_UpperLeftX" />, <xref linkend="RT_ST_GeoReference" />, <xref linkend="RT_Box2D" /></para>
 			</refsection>
 		</refentry>
-		
-		
+				
 		<refentry id="RT_ST_Width">
 			<refnamediv>
 				<refname>ST_Width</refname>
@@ -1943,7 +1879,7 @@ SELECT  (bmd).*
 FROM (SELECT ST_BandMetaData(rast,generate_series(1,2)) As bmd 
     FROM dummy_rast WHERE rid = 10) AS foo;
  --result --   
- pixeltype | hasnodatavalue | nodatavalue | isoutdb | path
+ pixeltype | exclude_nodata_valuevalue | nodatavalue | isoutdb | path
 -----------+----------------+-------------+---------+------
  1BB       | f              |           0 | f       |
  4BUI      | f              |           0 | f       |
@@ -1991,7 +1927,7 @@ FROM (SELECT ST_MetaData(rast) As rmd
 				<title>Description</title>
 				
 				<para>Returns basic meta data about a raster band. Columns returned
-					 pixeltype | hasnodatavalue | nodatavalue | isoutdb | path.
+					 pixeltype | hasnodata | nodatavalue | isoutdb | path.
 				</para>
 				<note>
                                   <para>
@@ -2007,7 +1943,7 @@ FROM (SELECT ST_MetaData(rast) As rmd
  FROM (SELECT rid, ST_BandMetaData(rast,1) As md
 FROM dummy_rast WHERE rid=2) As foo;
 
- rid | pixeltype | hasnodatavalue | nodatavalue | isoutdb | path
+ rid | pixeltype | hasnodata | nodatavalue | isoutdb | path
 -----+-----------+----------------+-------------+---------+------
    2 | 8BUI      | t              |           0 | f       |
 				</programlisting>	
@@ -2430,7 +2366,7 @@ WHERE rid=2;
 	    <refentry id="RT_ST_Value">
 			<refnamediv>
 				<refname>ST_Value</refname>
-				<refpurpose>Returns the value of a given band in a given columnx, rowy pixel or at a particular geometric point. Band numbers start at 1 and assumed to be 1 if not specified. If <varname>hasnodata</varname> is set to true, then only non <varname>nodata</varname> pixels are considered. If <varname>hasnodata</varname> is not passed in then reads it from metadata of raster.</refpurpose>
+				<refpurpose>Returns the value of a given band in a given columnx, rowy pixel or at a particular geometric point. Band numbers start at 1 and assumed to be 1 if not specified. If <varname>exclude_nodata_value</varname> is set to false, then all pixels include <varname>nodata</varname> pixels are considered to intersect and return value. If <varname>exclude_nodata_value</varname> is not passed in then reads it from metadata of raster.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -2444,7 +2380,7 @@ WHERE rid=2;
 					<funcdef>double precision <function>ST_Value</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>hasnodata</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>double precision <function>ST_Value</function></funcdef>
@@ -2457,7 +2393,7 @@ WHERE rid=2;
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>hasnodata</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>double precision <function>ST_Value</function></funcdef>
@@ -2470,14 +2406,7 @@ WHERE rid=2;
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>hasnodata</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>double precision <function>ST_Value</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>double precision <function>ST_Value</function></funcdef>
@@ -2485,7 +2414,14 @@ WHERE rid=2;
 					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>hasnodata</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>double precision <function>ST_Value</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -2494,9 +2430,9 @@ WHERE rid=2;
 				<title>Description</title>
 				
 				<para>Returns the value of a given band in a given columnx, rowy pixel or at a given geometry point. Band numbers start at 1 and band is assumed to be 1 if not specified. 	
-				If <varname>hasnodata</varname> is set to true, then only non <varname>nodata</varname> pixels are considered.  If <varname>hasnodata</varname> is set to false, then all pixels are considered.</para>
+				If <varname>exclude_nodata_value</varname> is set to true, then only non <varname>nodata</varname> pixels are considered.  If <varname>exclude_nodata_value</varname> is set to false, then all pixels are considered.</para>
 
-				<para>Enhanced: 2.0.0 hasnodata optional argument was added.</para>
+				<para>Enhanced: 2.0.0 exclude_nodata_value optional argument was added.</para>
 				</refsection>
 				
 				<refsection>
@@ -3187,6 +3123,177 @@ select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected true
                 linkend="RT_ST_NumBands" />, <xref
                 linkend="RT_ST_SetBandNoDataValue"/>, <xref
                 linkend="RT_ST_BandIsNoData"/></para>
+			</refsection>
+		</refentry>
+	</sect1>
+	
+	<sect1 id="RasterBand_Stats">
+	    <title>Raster Band Statistics and Analytics</title>
+	    	<refentry id="RT_ST_Count">
+			<refnamediv>
+				<refname>ST_Count</refname>
+				<refpurpose>Returns the number of pixels in a given band of a raster or raster coverage.  If no band is specified defaults to band 1.  If exclude_nodata_value is set to true, will only count pixels that are not equal to the nodata value.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>bigint <function>ST_Count</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>bigint <function>ST_Count</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>bigint <function>ST_Count</function></funcdef>
+					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>bigint <function>ST_Count</function></funcdef>
+					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the number of pixels in a given band of a raster or raster coverage.  If no band is specified <varname>nband</varname> defaults to 1. </para> 
+				<note><para>If <varname>exclude_nodata_value</varname> is set to true, will only count pixels with value not equal to the <varname>nodata</varname> value of the raster. Set <varname>exclude_nodata_value</varname> to false to get count all pixels</para></note>
+				<para>Availability: 2.0.0 </para>
+			</refsection>
+				
+			<refsection>
+				<title>Examples</title>
+				<!-- TODO: Fix once we confirm the right behavior -->
+				<programlisting>
+--example will count all pixels not 249 and one will count all pixels.  --
+SELECT rid, ST_Count(ST_SetBandNoDataValue(rast,249)) As exclude_nodata, 
+        ST_Count(ST_SetBandNoDataValue(rast,249),false) As include_nodata
+    FROM dummy_rast WHERE rid=2;
+				    
+rid | exclude_nodata | include_nodata
+-----+----------------+----------------
+   2 |             23 |             25
+				</programlisting>	
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_SetBandNoDataValue" /></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_ValueCount">
+			<refnamediv>
+				<refname>ST_ValueCount</refname>
+				<refpurpose>Returns a set of records containing a pixel band valuue  and count of the number of pixels in a given band of a raster (or a raster coverage) that have a given set of values.  If no band is specified defaults to band 1.  BY default nodata value pixels are not counted. 
+				    and all other values in the pixel are output and pixel band values are rounded to the nearest integer.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>record <function>ST_ValueCount</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision[] </type> <parameter>searchvalues=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>OUT value</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>OUT count</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>record <function>ST_ValueCount</function></funcdef>
+					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision[] </type> <parameter>searchvalues=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>OUT value</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>OUT count</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the number of pixels in a given band of a raster or raster coverage.  If no band is specified <varname>nband</varname> defaults to 1. </para> 
+				<note><para>If <varname>exclude_nodata_value</varname> is set to true, will also count pixels with no data. Set <varname>exclude_nodata_value</varname> to false to get only pixels with data</para></note>
+				<para>Availability: 2.0.0 </para>
+				<warning><para>This currently does the opposite of what I just said. Will be fixed to agree with the documentation or the documentation will be fixed to agree with the behavior.</para></warning>
+			</refsection>
+				
+			<refsection>
+				<title>Examples</title>
+				
+				<programlisting>
+UPDATE dummy_rast SET rast = ST_SetBandNoDataValue(rast,249) WHERE rid=2;
+--Example will count only pixels of band 1 that are not 249. --
+
+SELECT (pvc).*
+FROM (SELECT ST_ValueCount(rast) As pvc
+    FROM dummy_rast WHERE rid=2) As foo
+    ORDER BY (pvc).value;
+				    			    
+ value | count
+-------+-------
+   250 |     2
+   251 |     1
+   252 |     2
+   253 |     6
+   254 |    12
+   
+-- Example will coount all pixels of band 1 including 249 --
+SELECT (pvc).*
+FROM (SELECT ST_ValueCount(rast,1,false) As pvc
+    FROM dummy_rast WHERE rid=2) As foo
+    ORDER BY (pvc).value;
+				    
+ value | count
+-------+-------
+   249 |     2
+   250 |     2
+   251 |     1
+   252 |     2
+   253 |     6
+   254 |    12
+   
+-- Example will count only non-nodata value pixels of band 2
+SELECT (pvc).*
+FROM (SELECT ST_ValueCount(rast,2) As pvc
+    FROM dummy_rast WHERE rid=2) As foo
+    ORDER BY (pvc).value;
+ value | count
+-------+-------
+    78 |     1
+    79 |     1
+    88 |     1
+    89 |     1
+    96 |     1
+    97 |     1
+    98 |     1
+    99 |     2
+   112 |     2
+:				    
+
+				</programlisting>	
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_Count" />, <xref linkend="RT_ST_SetBandNoDataValue" /></para>
 			</refsection>
 		</refentry>
 	</sect1>
@@ -4177,8 +4284,8 @@ a_rid | b_rid | overleft
 		<refnamediv>
 			<refname>ST_Intersects</refname>
 
-			<refpurpose>Returns <varname>TRUE</varname> if rast pixel in a band with non-nodata band value intersects
-				with a geometry/raster. If band  is not specified it defaults to 1. If hasnodata is omitted, reads from band meta data.</refpurpose>
+			<refpurpose>If exclude_nodata_value is omitted returns <varname>TRUE</varname> only if rast pixel in a band with non-nodata band value intersects
+				with a geometry/raster. If band is not specified it defaults to 1. If <varname>exclude_nodata_value</varname> is set to false then <varname>nodata</varname> band values that intersect also return true.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -4246,7 +4353,7 @@ a_rid | b_rid | overleft
 				</paramdef>
 				<paramdef>
 				  <type>boolean </type>
-				  <parameter>hasnodata</parameter>
+				  <parameter>exclude_nodata_value</parameter>
 				</paramdef>
 				<paramdef>
 				  <type>geometry </type>
@@ -4266,7 +4373,7 @@ a_rid | b_rid | overleft
 				</paramdef>
 				<paramdef>
 				  <type>boolean </type>
-				  <parameter>hasnodata</parameter>
+				  <parameter>exclude_nodata_value</parameter>
 				</paramdef>
 			  </funcprototype>
 			  
@@ -4286,7 +4393,7 @@ a_rid | b_rid | overleft
 				</paramdef>
 				<paramdef>
 				  <type>boolean </type>
-				  <parameter>hasnodata</parameter>
+				  <parameter>exclude_nodata_value</parameter>
 				</paramdef>
 			  </funcprototype>
 			  
@@ -4302,7 +4409,7 @@ a_rid | b_rid | overleft
 				</paramdef>
 				<paramdef>
 				  <type>boolean </type>
-				  <parameter>hasnodata</parameter>
+				  <parameter>exclude_nodata_value</parameter>
 				</paramdef>
 				<paramdef>
 				  <type>geometry </type>
@@ -4316,7 +4423,7 @@ a_rid | b_rid | overleft
 			<title>Description</title>
 
 			<para>Returns true if the geometry intersects with the raster. Nodata values  are taken into account so that if the geometry intersects only with nodata  values, the function returns false. 
-			<varname>hasnodata</varname> may modify this behavior: if  set to false, nodata value are not taken into account and the function returns true as soon as the geometry intersects with the convex hull of the raster.</para>
+			<varname>exclude_nodata_value</varname> may modify this behavior: if  set to false, nodata value are not taken into account and the function returns true as soon as the geometry intersects with the convex hull of the raster.</para>
 
 			<note><para>This operand will make use of any indexes that may be available on the
 				geometries / rasters.</para></note>

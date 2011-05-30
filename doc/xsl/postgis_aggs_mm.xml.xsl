@@ -504,6 +504,7 @@
 					or some internal functions that were never documented.  If you are using a function that you don't see documented,
 					it's probably deprecated, about to be deprecated, or internal and should be avoided.  If you have applications or tools
 					that rely on deprecated functions, please refer to <link linked="legacy_faq" /> for more details.</para></note>
+				<note><para>The arguments hasnodata was replaced with exclude_nodata_value which has the same meaning as the older hasnodata but clearer in purpose.</para></note>
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry   -->
 					<xsl:for-each select='//refentry'>
