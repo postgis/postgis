@@ -1879,7 +1879,7 @@ SELECT  (bmd).*
 FROM (SELECT ST_BandMetaData(rast,generate_series(1,2)) As bmd 
     FROM dummy_rast WHERE rid = 10) AS foo;
  --result --   
- pixeltype | exclude_nodata_valuevalue | nodatavalue | isoutdb | path
+ pixeltype | hasnodata      | nodatavalue | isoutdb | path
 -----------+----------------+-------------+---------+------
  1BB       | f              |           0 | f       |
  4BUI      | f              |           0 | f       |
@@ -3129,6 +3129,121 @@ select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected true
 	
 	<sect1 id="RasterBand_Stats">
 	    <title>Raster Band Statistics and Analytics</title>
+	    
+	    		<refentry id="RT_ST_Quantile">
+			<refnamediv>
+				<refname>ST_Quantile</refname>
+				<refpurpose>Compute quantiles in the context of the sample or population. Thus, a value could be examined to be at the raster's 25%, 50%, 75% percentile.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>SETOF quantile <function>ST_Quantile</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef choice='opt'><type>integer </type> <parameter>nband=1</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision[] </type> <parameter>quantiles=NULL</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>double precision <function>ST_Quantile</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>quantile</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>double precision <function>ST_Quantile</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>quantile=NULL</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>double precision <function>ST_Quantile</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>quantile</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>double precision <function>ST_Quantile</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>quantile</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Compute quantiles in the context of the sample or population. Thus, a value could be examined to be at the raster's 25%, 50%, 75% percentile.</para> 
+				<note><para>If <varname>exclude_nodata_value</varname> is set to true, will also count pixels with no data. Set <varname>exclude_nodata_value</varname> to false to get only pixels with data</para></note>
+				<para>Availability: 2.0.0 </para>
+			</refsection>
+				
+			<refsection>
+				<title>Examples</title>
+				
+				<programlisting>
+UPDATE dummy_rast SET rast = ST_SetBandNoDataValue(rast,249) WHERE rid=2;
+--Example will consider only pixels of band 1 that are not 249 and in named quantiles --
+
+SELECT (pvq).*
+FROM (SELECT ST_Quantile(rast, ARRAY[0.25,0.75]) As pvq
+    FROM dummy_rast WHERE rid=2) As foo
+    ORDER BY (pvq).quantile;
+				    			    
+ quantile | value
+----------+-------
+     0.25 |   253
+     0.75 |   254
+   
+SELECT ST_Quantile(rast, 0.75) As value
+    FROM dummy_rast WHERE rid=2;
+    
+value
+------
+  254
+</programlisting>	
+<programlisting>
+--real live example.  Quantile of all pixels in band 2 intersecting a geometry
+SELECT rid, (ST_Quantile(rast,2)).* As pvc
+    FROM o_4_boston 
+        WHERE ST_Intersects(rast, 
+            ST_GeomFromText('POLYGON((224486 892151,224486 892200,224706 892200,224706 892151,224486 892151))',26986)
+            )
+ORDER BY value, quantile,rid
+;
+				
+    
+ rid | quantile | value
+-----+----------+-------
+   1 |        0 |     0
+   2 |        0 |     0
+  14 |        0 |     1
+  15 |        0 |     2
+  14 |     0.25 |    37
+   1 |     0.25 |    42
+  15 |     0.25 |    47
+   2 |     0.25 |    50
+  14 |      0.5 |    56
+   1 |      0.5 |    64
+  15 |      0.5 |    66
+   2 |      0.5 |    77
+  14 |     0.75 |    81
+  15 |     0.75 |    87
+   1 |     0.75 |    94
+   2 |     0.75 |   106
+  14 |        1 |   199
+   1 |        1 |   244
+   2 |        1 |   255
+  15 |        1 |   255
+</programlisting>	
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_Count" />, <xref linkend="RT_ST_SetBandNoDataValue" /></para>
+			</refsection>
+		</refentry>
 	    	<refentry id="RT_ST_Count">
 			<refnamediv>
 				<refname>ST_Count</refname>
@@ -3232,7 +3347,6 @@ rid | exclude_nodata | include_nodata
 				<para>Returns the number of pixels in a given band of a raster or raster coverage.  If no band is specified <varname>nband</varname> defaults to 1. </para> 
 				<note><para>If <varname>exclude_nodata_value</varname> is set to true, will also count pixels with no data. Set <varname>exclude_nodata_value</varname> to false to get only pixels with data</para></note>
 				<para>Availability: 2.0.0 </para>
-				<warning><para>This currently does the opposite of what I just said. Will be fixed to agree with the documentation or the documentation will be fixed to agree with the behavior.</para></warning>
 			</refsection>
 				
 			<refsection>
@@ -3289,6 +3403,25 @@ FROM (SELECT ST_ValueCount(rast,2) As pvc
 :				    
 
 				</programlisting>	
+<programlisting>
+--real live example.  Count all the pixels in an aerial raster tile band 2 intersecting a geometry 
+-- and return only the pixel band values that have a count > 500
+SELECT (pvc).value, SUM((pvc).count) As total
+FROM (SELECT ST_ValueCount(rast,2) As pvc
+    FROM o_4_boston 
+        WHERE ST_Intersects(rast, 
+            ST_GeomFromText('POLYGON((224486 892151,224486 892200,224706 892200,224706 892151,224486 892151))',26986)
+             ) 
+        ) As foo
+    GROUP BY (pvc).value
+    HAVING SUM((pvc).count) > 500
+    ORDER BY (pvc).value;
+    
+ value | total
+-------+-----
+    51 | 502
+    54 | 521
+</programlisting>	
 			</refsection>
 
 			<refsection>
