@@ -3256,7 +3256,7 @@ rid | exclude_nodata | include_nodata
 				<title>Description</title>
 				
 				<para>Compute quantiles in the context of the sample or population. Thus, a value could be examined to be at the raster's 25%, 50%, 75% percentile.</para> 
-				<note><para>If <varname>exclude_nodata_value</varname> is set to true, will also count pixels with no data. Set <varname>exclude_nodata_value</varname> to false to get only pixels with data</para></note>
+				<note><para>If <varname>exclude_nodata_value</varname> is set to false, will also count pixels with no data.</para></note>
 				<para>Availability: 2.0.0 </para>
 			</refsection>
 				
@@ -3395,7 +3395,7 @@ ORDER BY value, quantile,rid
 				<title>Description</title>
 				
 				<para>Returns the number of pixels in a given band of a raster or raster coverage.  If no band is specified <varname>nband</varname> defaults to 1. </para> 
-				<note><para>If <varname>exclude_nodata_value</varname> is set to true, will also count pixels with no data. Set <varname>exclude_nodata_value</varname> to false to get only pixels with data</para></note>
+				<note><para>If <varname>exclude_nodata_value</varname> is set to false, will also count pixels with no data.</para></note>
 				<para>Availability: 2.0.0 </para>
 			</refsection>
 				
