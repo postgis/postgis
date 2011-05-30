@@ -451,14 +451,14 @@ int rt_band_check_is_nodata(rt_band band);
  * Compute summary statistics for a band
  *
  * @param band: the band to query for summary stats 
- * @param hasnodata: if non-zero, ignore nodata values
+ * @param exclude_nodata_value: if non-zero, ignore nodata values
  * @param sample: percentage of pixels to sample
  * @param inc_vals: flag to include values in return struct
  *
  * @return the summary statistics for a band
  */
 typedef struct rt_bandstats_t* rt_bandstats;
-rt_bandstats rt_band_get_summary_stats(rt_band band, int hasnodata,
+rt_bandstats rt_band_get_summary_stats(rt_band band, int exclude_nodata_value,
 	double sample, int inc_vals);
 
 /**
@@ -498,7 +498,7 @@ rt_quantile rt_band_get_quantiles(rt_bandstats stats,
  * the band
  *
  * @param band: the band to query for minimum and maximum pixel values
- * @param hasnodata: if non-zero, ignore nodata values
+ * @param exclude_nodata_value: if non-zero, ignore nodata values
  * @param search_values: array of values to count
  * @param search_values_count: the number of search values
  * @param roundto: the decimal place to round the values to
@@ -507,7 +507,7 @@ rt_quantile rt_band_get_quantiles(rt_bandstats stats,
  * @return the default set of or requested quantiles for a band
  */
 typedef struct rt_valuecount_t* rt_valuecount;
-rt_valuecount rt_band_get_value_count(rt_band band, int hasnodata,
+rt_valuecount rt_band_get_value_count(rt_band band, int exclude_nodata_value,
 	double *search_values, uint32_t search_values_count,
 	double roundto, int *rtn_count);
 

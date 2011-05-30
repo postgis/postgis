@@ -2939,7 +2939,7 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 	rt_raster raster = NULL;
 	rt_band band = NULL;
 	int32_t bandindex = 0;
-	bool hasnodata = TRUE;
+	bool exclude_nodata_value = TRUE;
 	int num_bands = 0;
 	double sample = 0;
 	rt_bandstats stats = NULL;
@@ -2971,9 +2971,9 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 	}
 	assert(0 <= (bandindex - 1));
 
-	/* hasnodata flag */
+	/* exclude_nodata_value flag */
 	if (!PG_ARGISNULL(2))
-		hasnodata = PG_GETARG_BOOL(2);
+		exclude_nodata_value = PG_GETARG_BOOL(2);
 
 	/* sample % */
 	if (!PG_ARGISNULL(3)) {
@@ -2998,7 +2998,7 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 	}
 
 	/* we don't need the raw values, hence the zero parameter */
-	stats = rt_band_get_summary_stats(band, (int) hasnodata, sample, 0);
+	stats = rt_band_get_summary_stats(band, (int) exclude_nodata_value, sample, 0);
 	rt_band_destroy(band);
 	rt_raster_destroy(raster);
 	if (NULL == stats) {
@@ -3130,7 +3130,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		rt_band band = NULL;
 		int32_t bandindex = 0;
 		int num_bands = 0;
-		bool hasnodata = TRUE;
+		bool exclude_nodata_value = TRUE;
 		double sample = 0;
 		int bin_count = 0;
 		double *bin_width = NULL;
@@ -3180,9 +3180,9 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		}
 		assert(0 <= (bandindex - 1));
 
-		/* hasnodata flag */
+		/* exclude_nodata_value flag */
 		if (!PG_ARGISNULL(2))
-			hasnodata = PG_GETARG_BOOL(2);
+			exclude_nodata_value = PG_GETARG_BOOL(2);
 
 		/* sample % */
 		if (!PG_ARGISNULL(3)) {
@@ -3273,7 +3273,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		}
 
 		/* get stats */
-		stats = rt_band_get_summary_stats(band, (int) hasnodata, sample, 1);
+		stats = rt_band_get_summary_stats(band, (int) exclude_nodata_value, sample, 1);
 		rt_band_destroy(band);
 		rt_raster_destroy(raster);
 		if (NULL == stats || NULL == stats->values) {
@@ -3424,7 +3424,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		rt_band band = NULL;
 		int32_t bandindex = 0;
 		int num_bands = 0;
-		bool hasnodata = TRUE;
+		bool exclude_nodata_value = TRUE;
 		double sample = 0;
 		double *quantiles = NULL;
 		int quantiles_count = 0;
@@ -3472,9 +3472,9 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		}
 		assert(0 <= (bandindex - 1));
 
-		/* hasnodata flag */
+		/* exclude_nodata_value flag */
 		if (!PG_ARGISNULL(2))
-			hasnodata = PG_GETARG_BOOL(2);
+			exclude_nodata_value = PG_GETARG_BOOL(2);
 
 		/* sample % */
 		if (!PG_ARGISNULL(3)) {
@@ -3555,7 +3555,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		}
 
 		/* get stats */
-		stats = rt_band_get_summary_stats(band, (int) hasnodata, sample, 1);
+		stats = rt_band_get_summary_stats(band, (int) exclude_nodata_value, sample, 1);
 		rt_band_destroy(band);
 		rt_raster_destroy(raster);
 		if (NULL == stats || NULL == stats->values) {
@@ -3687,7 +3687,7 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 		rt_band band = NULL;
 		int32_t bandindex = 0;
 		int num_bands = 0;
-		bool hasnodata = TRUE;
+		bool exclude_nodata_value = TRUE;
 		double *search_values = NULL;
 		int search_values_count = 0;
 		double roundto = 0;
@@ -3733,9 +3733,9 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 		}
 		assert(0 <= (bandindex - 1));
 
-		/* hasnodata flag */
+		/* exclude_nodata_value flag */
 		if (!PG_ARGISNULL(2))
-			hasnodata = PG_GETARG_BOOL(2);
+			exclude_nodata_value = PG_GETARG_BOOL(2);
 
 		/* search values */
 		if (!PG_ARGISNULL(3)) {
@@ -3800,7 +3800,7 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 		}
 
 		/* get counts of values */
-		vcnts = rt_band_get_value_count(band, (int) hasnodata, search_values, search_values_count, roundto, &count);
+		vcnts = rt_band_get_value_count(band, (int) exclude_nodata_value, search_values, search_values_count, roundto, &count);
 		rt_band_destroy(band);
 		rt_raster_destroy(raster);
 		if (NULL == vcnts || !count) {

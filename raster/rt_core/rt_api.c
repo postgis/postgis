@@ -1501,14 +1501,14 @@ struct rt_bandstats_t {
  * Compute summary statistics for a band
  *
  * @param band: the band to query for summary stats
- * @param hasnodata: if non-zero, ignore nodata values
+ * @param exclude_nodata_value: if non-zero, ignore nodata values
  * @param sample: percentage of pixels to sample
  * @param inc_vals: flag to include values in return struct
  *
  * @return the summary statistics for a band
  */
 rt_bandstats
-rt_band_get_summary_stats(rt_band band, int hasnodata, double sample,
+rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
 	int inc_vals) {
 	uint8_t *data = NULL;
 	uint32_t x = 0;
@@ -1517,7 +1517,7 @@ rt_band_get_summary_stats(rt_band band, int hasnodata, double sample,
 	uint32_t offset = 0;
 	uint32_t diff = 0;
 	int rtn;
-	int hasnodata_flag = FALSE;
+	int hasnodata = FALSE;
 	double nodata = 0;
 	double *values = NULL;
 	double value;
@@ -1556,19 +1556,19 @@ rt_band_get_summary_stats(rt_band band, int hasnodata, double sample,
 
 	data = rt_band_get_data(band);
 
-	hasnodata_flag = rt_band_get_hasnodata_flag(band);
-	if (hasnodata_flag != FALSE)
+	hasnodata = rt_band_get_hasnodata_flag(band);
+	if (hasnodata != FALSE)
 		nodata = rt_band_get_nodata(band);
 	else
-		hasnodata = 0;
+		exclude_nodata_value = 0;
 
 	RASTER_DEBUGF(3, "nodata = %f", nodata);
-	RASTER_DEBUGF(3, "hasnodata_flag = %d", hasnodata_flag);
-	RASTER_DEBUGF(3, "user hasnodata = %d", hasnodata);
+	RASTER_DEBUGF(3, "hasnodata = %d", hasnodata);
+	RASTER_DEBUGF(3, "exclude_nodata_value = %d", exclude_nodata_value);
 
 	/* entire band is nodata */
 	if (rt_band_get_isnodata_flag(band) != FALSE) {
-		if (hasnodata) {
+		if (exclude_nodata_value) {
 			rtwarn("All pixels of band have the NODATA value");
 			return NULL;
 		}
@@ -1666,9 +1666,9 @@ rt_band_get_summary_stats(rt_band band, int hasnodata, double sample,
 			j++;
 			if (rtn != -1) {
 				if (
-					!hasnodata || (
-						hasnodata &&
-						(hasnodata_flag != FALSE) &&
+					!exclude_nodata_value || (
+						exclude_nodata_value &&
+						(hasnodata != FALSE) &&
 						(fabs(value - nodata) > FLT_EPSILON)
 					)
 				) {
@@ -2153,7 +2153,7 @@ struct rt_valuecount_t {
  * the band
  *
  * @param band: the band to query for minimum and maximum pixel values
- * @param hasnodata: if non-zero, ignore nodata values
+ * @param exclude_nodata_value: if non-zero, ignore nodata values
  * @param search_values: array of values to count
  * @param search_values_count: the number of search values
  * @param roundto: the decimal place to round the values to
@@ -2162,13 +2162,13 @@ struct rt_valuecount_t {
  * @return the default set of or requested quantiles for a band
  */
 rt_valuecount
-rt_band_get_value_count(rt_band band, int hasnodata,
+rt_band_get_value_count(rt_band band, int exclude_nodata_value,
 	double *search_values, uint32_t search_values_count, double roundto,
 	int *rtn_count) {
 	rt_valuecount vcnts = NULL;
 	rt_pixtype pixtype = PT_END;
 	uint8_t *data = NULL;
-	int hasnodata_flag = FALSE;
+	int hasnodata = FALSE;
 	double nodata = 0;
 
 	int scale = 0;
@@ -2205,15 +2205,15 @@ rt_band_get_value_count(rt_band band, int hasnodata,
 	data = rt_band_get_data(band);
 	pixtype = band->pixtype;
 
-	hasnodata_flag = rt_band_get_hasnodata_flag(band);
-	if (hasnodata_flag != FALSE)
+	hasnodata = rt_band_get_hasnodata_flag(band);
+	if (hasnodata != FALSE)
 		nodata = rt_band_get_nodata(band);
 	else
-		hasnodata = 0;
+		exclude_nodata_value = 0;
 
 	RASTER_DEBUGF(3, "nodata = %f", nodata);
-	RASTER_DEBUGF(3, "hasnodata_flag = %d", hasnodata_flag);
-	RASTER_DEBUGF(3, "user hasnodata = %d", hasnodata);
+	RASTER_DEBUGF(3, "hasnodata = %d", hasnodata);
+	RASTER_DEBUGF(3, "exclude_nodata_value = %d", exclude_nodata_value);
 
 	/* process roundto */
 	if (roundto < 0 || (fabs(roundto - 0.0) < FLT_EPSILON)) {
@@ -2290,7 +2290,7 @@ rt_band_get_value_count(rt_band band, int hasnodata,
 
 	/* entire band is nodata */
 	if (rt_band_get_isnodata_flag(band) != FALSE) {
-		if (hasnodata) {
+		if (exclude_nodata_value) {
 			rtwarn("All pixels of band have the NODATA value");
 			return NULL;
 		}
@@ -2340,9 +2340,9 @@ rt_band_get_value_count(rt_band band, int hasnodata,
 			if (rtn == -1) continue;
 
 			if (
-				!hasnodata || (
-					hasnodata &&
-					(hasnodata_flag != FALSE) &&
+				!exclude_nodata_value || (
+					exclude_nodata_value &&
+					(hasnodata != FALSE) &&
 					(fabs(pxlval - nodata) > FLT_EPSILON)
 				)
 			) {

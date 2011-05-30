@@ -260,17 +260,17 @@ CREATE TYPE summarystats AS (
 	max double precision
 );
 
-CREATE OR REPLACE FUNCTION st_summarystats(rast raster, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1)
+CREATE OR REPLACE FUNCTION st_summarystats(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1)
 	RETURNS summarystats
 	AS 'MODULE_PATHNAME','RASTER_summaryStats'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_summarystats(rast raster, hasnodata boolean)
+CREATE OR REPLACE FUNCTION st_summarystats(rast raster, exclude_nodata_value boolean)
 	RETURNS summarystats
 	AS $$ SELECT count, sum, mean, stddev, min, max FROM st_summarystats($1, 1, $2, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
+CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
 	RETURNS summarystats
 	AS $$ SELECT count, sum, mean, stddev, min, max FROM st_summarystats($1, $2, $3, $4) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -280,7 +280,7 @@ CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, nband int, sample_
 	AS $$ SELECT count, sum, mean, stddev, min, max FROM st_summarystats($1, $2, TRUE, $3) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, hasnodata boolean, sample_percent double precision DEFAULT 0.1)
+CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, exclude_nodata_value boolean, sample_percent double precision DEFAULT 0.1)
 	RETURNS summarystats
 	AS $$ SELECT count, sum, mean, stddev, min, max FROM st_summarystats($1, 1, $2, $3) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -290,7 +290,7 @@ CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, sample_percent dou
 	AS $$ SELECT count, sum, mean, stddev, min, max FROM st_summarystats($1, 1, TRUE, $2) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_summarystats(rastertable text, rastercolumn text, nband integer DEFAULT 1, hasnodata boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1)
+CREATE OR REPLACE FUNCTION st_summarystats(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1)
 	RETURNS summarystats
 	AS $$
 	DECLARE
@@ -343,7 +343,7 @@ CREATE OR REPLACE FUNCTION st_summarystats(rastertable text, rastercolumn text, 
 			FETCH curs INTO rast;
 			EXIT WHEN NOT FOUND;
 
-			SELECT count, sum, mean, stddev, min, max FROM st_summarystats(rast, nband, hasnodata, sample_percent) INTO stats;
+			SELECT count, sum, mean, stddev, min, max FROM st_summarystats(rast, nband, exclude_nodata_value, sample_percent) INTO stats;
 			IF stats IS NULL OR stats.count < 1 THEN
 				CONTINUE;
 			END IF;
@@ -388,12 +388,12 @@ CREATE OR REPLACE FUNCTION st_summarystats(rastertable text, rastercolumn text, 
 	END;
 	$$ LANGUAGE 'plpgsql' STABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_summarystats(rastertable text, rastercolumn text, hasnodata boolean)
+CREATE OR REPLACE FUNCTION st_summarystats(rastertable text, rastercolumn text, exclude_nodata_value boolean)
 	RETURNS summarystats
 	AS $$ SELECT count, sum, mean, stddev, min, max FROM st_summarystats($1, $2, 1, $3, 1) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxsummarystats(rastertable text, rastercolumn text, nband integer DEFAULT 1, hasnodata boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
+CREATE OR REPLACE FUNCTION st_approxsummarystats(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
 	RETURNS summarystats
 	AS $$ SELECT count, sum, mean, stddev, min, max FROM st_summarystats($1, $2, $3, $4, $5) $$
 	LANGUAGE 'SQL' STABLE STRICT;
@@ -403,7 +403,7 @@ CREATE OR REPLACE FUNCTION st_approxsummarystats(rastertable text, rastercolumn 
 	AS $$ SELECT count, sum, mean, stddev, min, max FROM st_summarystats($1, $2, $3, TRUE, $4) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxsummarystats(rastertable text, rastercolumn text, hasnodata boolean)
+CREATE OR REPLACE FUNCTION st_approxsummarystats(rastertable text, rastercolumn text, exclude_nodata_value boolean)
 	RETURNS summarystats
 	AS $$ SELECT count, sum, mean, stddev, min, max FROM st_summarystats($1, $2, 1, $3, 0.1) $$
 	LANGUAGE 'SQL' STABLE STRICT;
@@ -416,17 +416,17 @@ CREATE OR REPLACE FUNCTION st_approxsummarystats(rastertable text, rastercolumn 
 -----------------------------------------------------------------------
 -- ST_Count and ST_ApproxCount
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_count(rast raster, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE)
+CREATE OR REPLACE FUNCTION st_count(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE)
 	RETURNS bigint
 	AS $$ SELECT count FROM st_summarystats($1, $2, $3, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_count(rast raster, hasnodata boolean)
+CREATE OR REPLACE FUNCTION st_count(rast raster, exclude_nodata_value boolean)
 	RETURNS bigint
 	AS $$ SELECT count FROM st_summarystats($1, 1, $2, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxcount(rast raster, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
+CREATE OR REPLACE FUNCTION st_approxcount(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
 	RETURNS bigint
 	AS $$ SELECT count FROM st_summarystats($1, $2, $3, $4) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -436,7 +436,7 @@ CREATE OR REPLACE FUNCTION st_approxcount(rast raster, nband int, sample_percent
 	AS $$ SELECT count FROM st_summarystats($1, $2, TRUE, $3) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxcount(rast raster, hasnodata boolean, sample_percent double precision DEFAULT 0.1)
+CREATE OR REPLACE FUNCTION st_approxcount(rast raster, exclude_nodata_value boolean, sample_percent double precision DEFAULT 0.1)
 	RETURNS bigint
 	AS $$ SELECT count FROM st_summarystats($1, 1, $2, $3) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -446,17 +446,17 @@ CREATE OR REPLACE FUNCTION st_approxcount(rast raster, sample_percent double pre
 	AS $$ SELECT count FROM st_summarystats($1, 1, TRUE, $2) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_count(rastertable text, rastercolumn text, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE)
+CREATE OR REPLACE FUNCTION st_count(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE)
 	RETURNS bigint
 	AS $$ SELECT count FROM st_summarystats($1, $2, $3, $4, 1) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_count(rastertable text, rastercolumn text, hasnodata boolean)
+CREATE OR REPLACE FUNCTION st_count(rastertable text, rastercolumn text, exclude_nodata_value boolean)
 	RETURNS bigint
 	AS $$ SELECT count FROM st_summarystats($1, $2, 1, $3, 1) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
+CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
 	RETURNS bigint
 	AS $$ SELECT count FROM st_summarystats($1, $2, $3, $4, $5) $$
 	LANGUAGE 'SQL' STABLE STRICT;
@@ -466,7 +466,7 @@ CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, n
 	AS $$ SELECT count FROM st_summarystats($1, $2, $3, TRUE, $4) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, hasnodata boolean, sample_percent double precision DEFAULT 0.1)
+CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, exclude_nodata_value boolean, sample_percent double precision DEFAULT 0.1)
 	RETURNS bigint
 	AS $$ SELECT count FROM st_summarystats($1, $2, 1, $3, $4) $$
 	LANGUAGE 'SQL' STABLE STRICT;
@@ -479,17 +479,17 @@ CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, s
 -----------------------------------------------------------------------
 -- ST_Sum and ST_ApproxSum
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_sum(rast raster, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE)
+CREATE OR REPLACE FUNCTION st_sum(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE)
 	RETURNS double precision
 	AS $$ SELECT sum FROM st_summarystats($1, $2, $3, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_sum(rast raster, hasnodata boolean)
+CREATE OR REPLACE FUNCTION st_sum(rast raster, exclude_nodata_value boolean)
 	RETURNS double precision
 	AS $$ SELECT sum FROM st_summarystats($1, 1, $2, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxsum(rast raster, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
+CREATE OR REPLACE FUNCTION st_approxsum(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
 	RETURNS double precision
 	AS $$ SELECT sum FROM st_summarystats($1, $2, $3, $4) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -499,7 +499,7 @@ CREATE OR REPLACE FUNCTION st_approxsum(rast raster, nband int, sample_percent d
 	AS $$ SELECT sum FROM st_summarystats($1, $2, TRUE, $3) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxsum(rast raster, hasnodata boolean, sample_percent double precision DEFAULT 0.1)
+CREATE OR REPLACE FUNCTION st_approxsum(rast raster, exclude_nodata_value boolean, sample_percent double precision DEFAULT 0.1)
 	RETURNS double precision
 	AS $$ SELECT sum FROM st_summarystats($1, 1, $2, $3) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -509,17 +509,17 @@ CREATE OR REPLACE FUNCTION st_approxsum(rast raster, sample_percent double preci
 	AS $$ SELECT sum FROM st_summarystats($1, 1, TRUE, $2) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_sum(rastertable text, rastercolumn text, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE)
+CREATE OR REPLACE FUNCTION st_sum(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE)
 	RETURNS double precision
 	AS $$ SELECT sum FROM st_summarystats($1, $2, $3, $4, 1) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_sum(rastertable text, rastercolumn text, hasnodata boolean)
+CREATE OR REPLACE FUNCTION st_sum(rastertable text, rastercolumn text, exclude_nodata_value boolean)
 	RETURNS double precision
 	AS $$ SELECT sum FROM st_summarystats($1, $2, 1, $3, 1) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxsum(rastertable text, rastercolumn text, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
+CREATE OR REPLACE FUNCTION st_approxsum(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
 	RETURNS double precision
 	AS $$ SELECT sum FROM st_summarystats($1, $2, $3, $4, $5) $$
 	LANGUAGE 'SQL' STABLE STRICT;
@@ -529,7 +529,7 @@ CREATE OR REPLACE FUNCTION st_approxsum(rastertable text, rastercolumn text, nba
 	AS $$ SELECT sum FROM st_summarystats($1, $2, $3, TRUE, $4) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxsum(rastertable text, rastercolumn text, hasnodata boolean, sample_percent double precision DEFAULT 0.1)
+CREATE OR REPLACE FUNCTION st_approxsum(rastertable text, rastercolumn text, exclude_nodata_value boolean, sample_percent double precision DEFAULT 0.1)
 	RETURNS double precision
 	AS $$ SELECT sum FROM st_summarystats($1, $2, 1, $3, $4) $$
 	LANGUAGE 'SQL' STABLE STRICT;
@@ -542,17 +542,17 @@ CREATE OR REPLACE FUNCTION st_approxsum(rastertable text, rastercolumn text, sam
 -----------------------------------------------------------------------
 -- ST_Mean and ST_ApproxMean
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_mean(rast raster, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE)
+CREATE OR REPLACE FUNCTION st_mean(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE)
 	RETURNS double precision
 	AS $$ SELECT mean FROM st_summarystats($1, $2, $3, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_mean(rast raster, hasnodata boolean)
+CREATE OR REPLACE FUNCTION st_mean(rast raster, exclude_nodata_value boolean)
 	RETURNS double precision
 	AS $$ SELECT mean FROM st_summarystats($1, 1, $2, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxmean(rast raster, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
+CREATE OR REPLACE FUNCTION st_approxmean(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
 	RETURNS double precision
 	AS $$ SELECT mean FROM st_summarystats($1, $2, $3, $4) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -562,7 +562,7 @@ CREATE OR REPLACE FUNCTION st_approxmean(rast raster, nband int, sample_percent 
 	AS $$ SELECT mean FROM st_summarystats($1, $2, TRUE, $3) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxmean(rast raster, hasnodata boolean, sample_percent double precision DEFAULT 0.1)
+CREATE OR REPLACE FUNCTION st_approxmean(rast raster, exclude_nodata_value boolean, sample_percent double precision DEFAULT 0.1)
 	RETURNS double precision
 	AS $$ SELECT mean FROM st_summarystats($1, 1, $2, $3) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -572,17 +572,17 @@ CREATE OR REPLACE FUNCTION st_approxmean(rast raster, sample_percent double prec
 	AS $$ SELECT mean FROM st_summarystats($1, 1, TRUE, $2) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_mean(rastertable text, rastercolumn text, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE)
+CREATE OR REPLACE FUNCTION st_mean(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE)
 	RETURNS double precision
 	AS $$ SELECT mean FROM st_summarystats($1, $2, $3, $4, 1) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_mean(rastertable text, rastercolumn text, hasnodata boolean)
+CREATE OR REPLACE FUNCTION st_mean(rastertable text, rastercolumn text, exclude_nodata_value boolean)
 	RETURNS double precision
 	AS $$ SELECT mean FROM st_summarystats($1, $2, 1, $3, 1) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxmean(rastertable text, rastercolumn text, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
+CREATE OR REPLACE FUNCTION st_approxmean(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
 	RETURNS double precision
 	AS $$ SELECT mean FROM st_summarystats($1, $2, $3, $4, $5) $$
 	LANGUAGE 'SQL' STABLE STRICT;
@@ -592,7 +592,7 @@ CREATE OR REPLACE FUNCTION st_approxmean(rastertable text, rastercolumn text, nb
 	AS $$ SELECT mean FROM st_summarystats($1, $2, $3, TRUE, $4) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxmean(rastertable text, rastercolumn text, hasnodata boolean, sample_percent double precision DEFAULT 0.1)
+CREATE OR REPLACE FUNCTION st_approxmean(rastertable text, rastercolumn text, exclude_nodata_value boolean, sample_percent double precision DEFAULT 0.1)
 	RETURNS double precision
 	AS $$ SELECT mean FROM st_summarystats($1, $2, 1, $3, $4) $$
 	LANGUAGE 'SQL' STABLE STRICT;
@@ -605,17 +605,17 @@ CREATE OR REPLACE FUNCTION st_approxmean(rastertable text, rastercolumn text, sa
 -----------------------------------------------------------------------
 -- ST_StdDev and ST_ApproxStdDev
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_stddev(rast raster, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE)
+CREATE OR REPLACE FUNCTION st_stddev(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE)
 	RETURNS double precision
 	AS $$ SELECT stddev FROM st_summarystats($1, $2, $3, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_stddev(rast raster, hasnodata boolean)
+CREATE OR REPLACE FUNCTION st_stddev(rast raster, exclude_nodata_value boolean)
 	RETURNS double precision
 	AS $$ SELECT stddev FROM st_summarystats($1, 1, $2, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxstddev(rast raster, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
+CREATE OR REPLACE FUNCTION st_approxstddev(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
 	RETURNS double precision
 	AS $$ SELECT stddev FROM st_summarystats($1, $2, $3, $4) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -625,7 +625,7 @@ CREATE OR REPLACE FUNCTION st_approxstddev(rast raster, nband int, sample_percen
 	AS $$ SELECT stddev FROM st_summarystats($1, $2, TRUE, $3) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxstddev(rast raster, hasnodata boolean, sample_percent double precision DEFAULT 0.1)
+CREATE OR REPLACE FUNCTION st_approxstddev(rast raster, exclude_nodata_value boolean, sample_percent double precision DEFAULT 0.1)
 	RETURNS double precision
 	AS $$ SELECT stddev FROM st_summarystats($1, 1, $2, $3) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -635,17 +635,17 @@ CREATE OR REPLACE FUNCTION st_approxstddev(rast raster, sample_percent double pr
 	AS $$ SELECT stddev FROM st_summarystats($1, 1, TRUE, $2) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_stddev(rastertable text, rastercolumn text, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE)
+CREATE OR REPLACE FUNCTION st_stddev(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE)
 	RETURNS double precision
 	AS $$ SELECT stddev FROM st_summarystats($1, $2, $3, $4, 1) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_stddev(rastertable text, rastercolumn text, hasnodata boolean)
+CREATE OR REPLACE FUNCTION st_stddev(rastertable text, rastercolumn text, exclude_nodata_value boolean)
 	RETURNS double precision
 	AS $$ SELECT stddev FROM st_summarystats($1, $2, 1, $3, 1) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxstddev(rastertable text, rastercolumn text, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
+CREATE OR REPLACE FUNCTION st_approxstddev(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
 	RETURNS double precision
 	AS $$ SELECT stddev FROM st_summarystats($1, $2, $3, $4, $5) $$
 	LANGUAGE 'SQL' STABLE STRICT;
@@ -655,7 +655,7 @@ CREATE OR REPLACE FUNCTION st_approxstddev(rastertable text, rastercolumn text, 
 	AS $$ SELECT stddev FROM st_summarystats($1, $2, $3, TRUE, $4) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxstddev(rastertable text, rastercolumn text, hasnodata boolean, sample_percent double precision DEFAULT 0.1)
+CREATE OR REPLACE FUNCTION st_approxstddev(rastertable text, rastercolumn text, exclude_nodata_value boolean, sample_percent double precision DEFAULT 0.1)
 	RETURNS double precision
 	AS $$ SELECT stddev FROM st_summarystats($1, $2, 1, $3, $4) $$
 	LANGUAGE 'SQL' STABLE STRICT;
@@ -668,17 +668,17 @@ CREATE OR REPLACE FUNCTION st_approxstddev(rastertable text, rastercolumn text, 
 -----------------------------------------------------------------------
 -- ST_MinMax and ST_ApproxMinMax
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_minmax(rast raster, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE, OUT min double precision, OUT max double precision)
+CREATE OR REPLACE FUNCTION st_minmax(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, OUT min double precision, OUT max double precision)
 	RETURNS record
 	AS $$ SELECT min, max FROM st_summarystats($1, $2, $3, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_minmax(rast raster, hasnodata boolean, OUT min double precision, OUT max double precision)
+CREATE OR REPLACE FUNCTION st_minmax(rast raster, exclude_nodata_value boolean, OUT min double precision, OUT max double precision)
 	RETURNS record
 	AS $$ SELECT min, max FROM st_summarystats($1, 1, $2, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxminmax(rast raster, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1, OUT min double precision, OUT max double precision)
+CREATE OR REPLACE FUNCTION st_approxminmax(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1, OUT min double precision, OUT max double precision)
 	RETURNS record
 	AS $$ SELECT min, max FROM st_summarystats($1, $2, $3, $4) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -688,7 +688,7 @@ CREATE OR REPLACE FUNCTION st_approxminmax(rast raster, nband int, sample_percen
 	AS $$ SELECT min, max FROM st_summarystats($1, $2, TRUE, $3) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxminmax(rast raster, hasnodata boolean, sample_percent double precision DEFAULT 0.1, OUT min double precision, OUT max double precision)
+CREATE OR REPLACE FUNCTION st_approxminmax(rast raster, exclude_nodata_value boolean, sample_percent double precision DEFAULT 0.1, OUT min double precision, OUT max double precision)
 	RETURNS record
 	AS $$ SELECT min, max FROM st_summarystats($1, 1, $2, $3) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -698,17 +698,17 @@ CREATE OR REPLACE FUNCTION st_approxminmax(rast raster, sample_percent double pr
 	AS $$ SELECT min, max FROM st_summarystats($1, 1, TRUE, $2) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_minmax(rastertable text, rastercolumn text, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE, OUT min double precision, OUT max double precision)
+CREATE OR REPLACE FUNCTION st_minmax(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, OUT min double precision, OUT max double precision)
 	RETURNS record
 	AS $$ SELECT min, max FROM st_summarystats($1, $2, $3, $4, 1) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_minmax(rastertable text, rastercolumn text, hasnodata boolean, OUT min double precision, OUT max double precision)
+CREATE OR REPLACE FUNCTION st_minmax(rastertable text, rastercolumn text, exclude_nodata_value boolean, OUT min double precision, OUT max double precision)
 	RETURNS record
 	AS $$ SELECT min, max FROM st_summarystats($1, $2, 1, $3, 1) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxminmax(rastertable text, rastercolumn text, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1, OUT min double precision, OUT max double precision)
+CREATE OR REPLACE FUNCTION st_approxminmax(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1, OUT min double precision, OUT max double precision)
 	RETURNS record
 	AS $$ SELECT min, max FROM st_summarystats($1, $2, $3, $4, $5) $$
 	LANGUAGE 'SQL' STABLE STRICT;
@@ -718,7 +718,7 @@ CREATE OR REPLACE FUNCTION st_approxminmax(rastertable text, rastercolumn text, 
 	AS $$ SELECT min, max FROM st_summarystats($1, $2, $3, TRUE, $4) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxminmax(rastertable text, rastercolumn text, hasnodata boolean, sample_percent double precision DEFAULT 0.1, OUT min double precision, OUT max double precision)
+CREATE OR REPLACE FUNCTION st_approxminmax(rastertable text, rastercolumn text, exclude_nodata_value boolean, sample_percent double precision DEFAULT 0.1, OUT min double precision, OUT max double precision)
 	RETURNS record
 	AS $$ SELECT min, max FROM st_summarystats($1, $2, 1, $3, $4) $$
 	LANGUAGE 'SQL' STABLE STRICT;
@@ -739,18 +739,18 @@ CREATE TYPE histogram AS (
 );
 
 -- Cannot be strict as "width" can be NULL
-CREATE OR REPLACE FUNCTION _st_histogram(rast raster, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1, bins int DEFAULT 0, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE)
+CREATE OR REPLACE FUNCTION _st_histogram(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1, bins int DEFAULT 0, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE)
 	RETURNS SETOF histogram
 	AS 'MODULE_PATHNAME','RASTER_histogram'
 	LANGUAGE 'C' IMMUTABLE;
 
 -- Cannot be strict as "width" can be NULL
-CREATE OR REPLACE FUNCTION st_histogram(rast raster, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE, bins int DEFAULT 0, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE)
+CREATE OR REPLACE FUNCTION st_histogram(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, bins int DEFAULT 0, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE)
 	RETURNS SETOF histogram
 	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, $2, $3, 1, $4, $5, $6) $$
 	LANGUAGE 'sql' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_histogram(rast raster, nband int, hasnodata boolean, bins int, right boolean)
+CREATE OR REPLACE FUNCTION st_histogram(rast raster, nband int, exclude_nodata_value boolean, bins int, right boolean)
 	RETURNS SETOF histogram
 	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, $2, $3, 1, $4, NULL, $5) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
@@ -767,12 +767,12 @@ CREATE OR REPLACE FUNCTION st_histogram(rast raster, nband int, bins int, right 
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Cannot be strict as "width" can be NULL
-CREATE OR REPLACE FUNCTION st_approxhistogram(rast raster, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1, bins int DEFAULT 0, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE)
+CREATE OR REPLACE FUNCTION st_approxhistogram(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1, bins int DEFAULT 0, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE)
 	RETURNS SETOF histogram
 	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, $2, $3, $4, $5, $6, $7) $$
 	LANGUAGE 'sql' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_approxhistogram(rast raster, nband int, hasnodata boolean, sample_percent double precision, bins int, right boolean)
+CREATE OR REPLACE FUNCTION st_approxhistogram(rast raster, nband int, exclude_nodata_value boolean, sample_percent double precision, bins int, right boolean)
 	RETURNS SETOF histogram
 	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, $2, $3, $4, $5, NULL, $6) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
@@ -807,13 +807,13 @@ CREATE TYPE quantile AS (
 );
 
 -- Cannot be strict as "quantiles" can be NULL
-CREATE OR REPLACE FUNCTION _st_quantile(rast raster, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1, quantiles double precision[] DEFAULT NULL)
+CREATE OR REPLACE FUNCTION _st_quantile(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1, quantiles double precision[] DEFAULT NULL)
 	RETURNS SETOF quantile
 	AS 'MODULE_PATHNAME','RASTER_quantile'
 	LANGUAGE 'C' IMMUTABLE;
 
 -- Cannot be strict as "quantiles" can be NULL
-CREATE OR REPLACE FUNCTION st_quantile(rast raster, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE, quantiles double precision[] DEFAULT NULL)
+CREATE OR REPLACE FUNCTION st_quantile(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, quantiles double precision[] DEFAULT NULL)
 	RETURNS SETOF quantile
 	AS $$ SELECT quantile, value FROM _st_quantile($1, $2, $3, 1, $4) $$
 	LANGUAGE 'sql' IMMUTABLE;
@@ -828,7 +828,7 @@ CREATE OR REPLACE FUNCTION st_quantile(rast raster, quantiles double precision[]
 	AS $$ SELECT quantile, value FROM _st_quantile($1, 1, TRUE, 1, $2) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_quantile(rast raster, nband int, hasnodata boolean, quantile double precision)
+CREATE OR REPLACE FUNCTION st_quantile(rast raster, nband int, exclude_nodata_value boolean, quantile double precision)
 	RETURNS double precision
 	AS $$ SELECT value FROM _st_quantile($1, $2, $3, 1, ARRAY[$4]::double precision[]) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
@@ -839,7 +839,7 @@ CREATE OR REPLACE FUNCTION st_quantile(rast raster, nband int, quantile double p
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Cannot be strict as "quantile" can be NULL
-CREATE OR REPLACE FUNCTION st_quantile(rast raster, hasnodata boolean, quantile double precision DEFAULT NULL)
+CREATE OR REPLACE FUNCTION st_quantile(rast raster, exclude_nodata_value boolean, quantile double precision DEFAULT NULL)
 	RETURNS double precision
 	AS $$ SELECT value FROM _st_quantile($1, 1, $2, 1, ARRAY[$3]::double precision[]) $$
 	LANGUAGE 'sql' IMMUTABLE;
@@ -850,7 +850,7 @@ CREATE OR REPLACE FUNCTION st_quantile(rast raster, quantile double precision)
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Cannot be strict as "quantiles" can be NULL
-CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, nband int DEFAULT 1, hasnodata boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1, quantiles double precision[] DEFAULT NULL)
+CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1, quantiles double precision[] DEFAULT NULL)
 	RETURNS SETOF quantile
 	AS $$ SELECT quantile, value FROM _st_quantile($1, $2, $3, $4, $5) $$
 	LANGUAGE 'sql' IMMUTABLE;
@@ -872,7 +872,7 @@ CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, quantiles double preci
 	AS $$ SELECT quantile, value FROM _st_quantile($1, 1, TRUE, 0.1, $2) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, nband int, hasnodata boolean, sample_percent double precision, quantile double precision)
+CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, nband int, exclude_nodata_value boolean, sample_percent double precision, quantile double precision)
 	RETURNS double precision
 	AS $$ SELECT value FROM _st_quantile($1, $2, $3, $4, ARRAY[$5]::double precision[]) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
@@ -888,7 +888,7 @@ CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, sample_percent double 
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Cannot be strict as "quantile" can be NULL
-CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, hasnodata boolean, quantile double precision DEFAULT NULL)
+CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, exclude_nodata_value boolean, quantile double precision DEFAULT NULL)
 	RETURNS double precision
 	AS $$ SELECT value FROM _st_quantile($1, 1, $2, 1, ARRAY[$3]::double precision[]) $$
 	LANGUAGE 'sql' IMMUTABLE;
@@ -910,12 +910,12 @@ CREATE TYPE valuecount AS (
 -- None of the "searchvaleus" functions can be strict as "searchvalues" and "roundto" can be NULL
 -- Allowing "searchvalues" to be NULL instructs the function to count all values
 
-CREATE OR REPLACE FUNCTION _st_valuecount(rast raster, nband integer DEFAULT 1, hasnodata boolean DEFAULT TRUE, searchvalues double precision[] DEFAULT NULL, roundto double precision DEFAULT 0)
+CREATE OR REPLACE FUNCTION _st_valuecount(rast raster, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, searchvalues double precision[] DEFAULT NULL, roundto double precision DEFAULT 0)
 	RETURNS SETOF valuecount
 	AS 'MODULE_PATHNAME', 'RASTER_valueCount'
 	LANGUAGE 'C' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_valuecount(rast raster, nband integer DEFAULT 1, hasnodata boolean DEFAULT TRUE, searchvalues double precision[] DEFAULT NULL, roundto double precision DEFAULT 0, OUT value double precision, OUT count integer)
+CREATE OR REPLACE FUNCTION st_valuecount(rast raster, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, searchvalues double precision[] DEFAULT NULL, roundto double precision DEFAULT 0, OUT value double precision, OUT count integer)
 	RETURNS SETOF record
 	AS $$ SELECT value, count FROM _st_valuecount($1, $2, $3, $4, $5) $$
 	LANGUAGE 'sql' IMMUTABLE;
@@ -930,7 +930,7 @@ CREATE OR REPLACE FUNCTION st_valuecount(rast raster, searchvalues double precis
 	AS $$ SELECT value, count FROM _st_valuecount($1, 1, TRUE, $2, $3) $$
 	LANGUAGE 'sql' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_valuecount(rast raster, nband integer, hasnodata boolean, searchvalue double precision, roundto double precision DEFAULT 0)
+CREATE OR REPLACE FUNCTION st_valuecount(rast raster, nband integer, exclude_nodata_value boolean, searchvalue double precision, roundto double precision DEFAULT 0)
 	RETURNS integer
 	AS $$ SELECT count FROM _st_valuecount($1, $2, $3, ARRAY[$4]::double precision[], $5) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
@@ -945,7 +945,7 @@ CREATE OR REPLACE FUNCTION st_valuecount(rast raster, searchvalue double precisi
 	AS $$ SELECT count FROM _st_valuecount($1, 1, TRUE, ARRAY[$2]::double precision[], $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION _st_valuecount(rastertable text, rastercolumn text, nband integer DEFAULT 1, hasnodata boolean DEFAULT TRUE, searchvalues double precision[] DEFAULT NULL, roundto double precision DEFAULT 0)
+CREATE OR REPLACE FUNCTION _st_valuecount(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, searchvalues double precision[] DEFAULT NULL, roundto double precision DEFAULT 0)
 	RETURNS SETOF valuecount
 	AS $$
 	DECLARE
@@ -994,7 +994,7 @@ CREATE OR REPLACE FUNCTION _st_valuecount(rastertable text, rastercolumn text, n
 			FETCH curs INTO rast;
 			EXIT WHEN NOT FOUND;
 
-			FOR vcnts IN SELECT * FROM _st_valuecount(rast, nband, hasnodata, searchvalues, roundto) LOOP
+			FOR vcnts IN SELECT * FROM _st_valuecount(rast, nband, exclude_nodata_value, searchvalues, roundto) LOOP
 				IF vcnts IS NULL THEN
 					CONTINUE;
 				END IF;
@@ -1011,7 +1011,7 @@ CREATE OR REPLACE FUNCTION _st_valuecount(rastertable text, rastercolumn text, n
 	END;
 	$$ LANGUAGE 'plpgsql' STABLE;
 
-CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, nband integer DEFAULT 1, hasnodata boolean DEFAULT TRUE, searchvalues double precision[] DEFAULT NULL, roundto double precision DEFAULT 0, OUT value double precision, OUT count bigint)
+CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, searchvalues double precision[] DEFAULT NULL, roundto double precision DEFAULT 0, OUT value double precision, OUT count bigint)
 	RETURNS SETOF record
 	AS $$ SELECT value, sum(count) AS count FROM _st_valuecount($1, $2, $3, $4, $5, $6) GROUP BY 1 ORDER BY 1 $$
 	LANGUAGE 'sql' STABLE;
@@ -1026,7 +1026,7 @@ CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, se
 	AS $$ SELECT value, count FROM st_valuecount($1, $2, 1, TRUE, $3, $4) $$
 	LANGUAGE 'sql' STABLE;
 
-CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, nband integer, hasnodata boolean, searchvalue double precision, roundto double precision DEFAULT 0)
+CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, nband integer, exclude_nodata_value boolean, searchvalue double precision, roundto double precision DEFAULT 0)
 	RETURNS bigint
 	AS $$ SELECT count FROM st_valuecount($1, $2, $3, $4, ARRAY[$5]::double precision[], $6) $$
 	LANGUAGE 'sql' STABLE STRICT;
@@ -1041,7 +1041,7 @@ CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, se
 	AS $$ SELECT count FROM st_valuecount($1, $2, 1, TRUE, ARRAY[$3]::double precision[], $4) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_valuepercent(rast raster, nband integer DEFAULT 1, hasnodata boolean DEFAULT TRUE, searchvalues double precision[] DEFAULT NULL, roundto double precision DEFAULT 0, OUT value double precision, OUT percent double precision)
+CREATE OR REPLACE FUNCTION st_valuepercent(rast raster, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, searchvalues double precision[] DEFAULT NULL, roundto double precision DEFAULT 0, OUT value double precision, OUT percent double precision)
 	RETURNS SETOF record
 	AS $$ SELECT value, percent FROM _st_valuecount($1, $2, $3, $4, $5) $$
 	LANGUAGE 'sql' IMMUTABLE;
@@ -1056,7 +1056,7 @@ CREATE OR REPLACE FUNCTION st_valuepercent(rast raster, searchvalues double prec
 	AS $$ SELECT value, percent FROM _st_valuecount($1, 1, TRUE, $2, $3) $$
 	LANGUAGE 'sql' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_valuepercent(rast raster, nband integer, hasnodata boolean, searchvalue double precision, roundto double precision DEFAULT 0)
+CREATE OR REPLACE FUNCTION st_valuepercent(rast raster, nband integer, exclude_nodata_value boolean, searchvalue double precision, roundto double precision DEFAULT 0)
 	RETURNS double precision
 	AS $$ SELECT percent FROM _st_valuecount($1, $2, $3, ARRAY[$4]::double precision[], $5) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
@@ -1071,7 +1071,7 @@ CREATE OR REPLACE FUNCTION st_valuepercent(rast raster, searchvalue double preci
 	AS $$ SELECT percent FROM _st_valuecount($1, 1, TRUE, ARRAY[$2]::double precision[], $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_valuepercent(rastertable text, rastercolumn text, nband integer DEFAULT 1, hasnodata boolean DEFAULT TRUE, searchvalues double precision[] DEFAULT NULL, roundto double precision DEFAULT 0, OUT value double precision, OUT percent double precision)
+CREATE OR REPLACE FUNCTION st_valuepercent(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, searchvalues double precision[] DEFAULT NULL, roundto double precision DEFAULT 0, OUT value double precision, OUT percent double precision)
 	RETURNS SETOF record
 	AS $$
 		SELECT
@@ -1102,7 +1102,7 @@ CREATE OR REPLACE FUNCTION st_valuepercent(rastertable text, rastercolumn text, 
 	AS $$ SELECT value, percent FROM st_valuepercent($1, $2, 1, TRUE, $3, $4) $$
 	LANGUAGE 'sql' STABLE;
 
-CREATE OR REPLACE FUNCTION st_valuepercent(rastertable text, rastercolumn text, nband integer, hasnodata boolean, searchvalue double precision, roundto double precision DEFAULT 0)
+CREATE OR REPLACE FUNCTION st_valuepercent(rastertable text, rastercolumn text, nband integer, exclude_nodata_value boolean, searchvalue double precision, roundto double precision DEFAULT 0)
 	RETURNS double precision
 	AS $$ SELECT percent FROM st_valuepercent($1, $2, $3, $4, ARRAY[$5]::double precision[], $6) $$
 	LANGUAGE 'sql' STABLE STRICT;
