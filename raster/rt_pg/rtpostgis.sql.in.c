@@ -1211,15 +1211,10 @@ CREATE OR REPLACE FUNCTION st_asgdalraster(rast raster, format text, options tex
 	AS 'MODULE_PATHNAME', 'RASTER_asGDALRaster'
 	LANGUAGE 'C' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_asgdalraster(rast raster, format text, options text[])
+CREATE OR REPLACE FUNCTION st_asgdalraster(rast raster, format text, options text[] DEFAULT NULL)
 	RETURNS bytea
 	AS $$ SELECT st_asgdalraster($1, $2, $3, st_srtext($1)) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_asgdalraster(rast raster, format text)
-	RETURNS bytea
-	AS $$ SELECT st_asgdalraster($1, $2, NULL, st_srtext($1)) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'SQL' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- ST_AsTIFF
