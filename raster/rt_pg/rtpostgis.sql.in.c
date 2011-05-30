@@ -1245,30 +1245,22 @@ CREATE OR REPLACE FUNCTION st_astiff(rast raster, options text[], srs text)
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_astiff(rast raster, options text[])
+-- Cannot be strict as "options" can be NULL
+CREATE OR REPLACE FUNCTION st_astiff(rast raster, options text[] DEFAULT NULL)
 	RETURNS bytea
 	AS $$ SELECT st_astiff($1, $2, st_srtext($1)) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_astiff(rast raster)
-	RETURNS bytea
-	AS $$ SELECT st_astiff($1, NULL::text[], st_srtext($1)) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'SQL' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[], options text[], srs text)
 	RETURNS bytea
 	AS $$ SELECT st_astiff(st_band($1, $2), $3, $4) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[], options text[])
+-- Cannot be strict as "options" can be NULL
+CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[], options text[] DEFAULT NULL)
 	RETURNS bytea
 	AS $$ SELECT st_astiff(st_band($1, $2), $3, st_srtext($1)) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[])
-	RETURNS bytea
-	AS $$ SELECT st_astiff(st_band($1, $2), NULL::text[], st_srtext($1)) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'SQL' IMMUTABLE;
 
 -- Cannot be strict as "srs" can be NULL
 CREATE OR REPLACE FUNCTION st_astiff(rast raster, compression text, srs text)
@@ -1370,7 +1362,7 @@ CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[], compression text
 -- ST_AsJPEG
 -----------------------------------------------------------------------
 -- Cannot be strict as "options" can be NULL
-CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, options text[])
+CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, options text[] DEFAULT NULL)
 	RETURNS bytea
 	AS $$
 	DECLARE
@@ -1401,25 +1393,11 @@ CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, options text[])
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_asjpeg(rast raster)
-	RETURNS bytea
-	AS $$ SELECT st_asjpeg($1, NULL::text[]) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, nbands int[], options text[])
+-- Cannot be strict as "options" can be NULL
+CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, nbands int[], options text[] DEFAULT NULL)
 	RETURNS bytea
 	AS $$ SELECT st_asjpeg(st_band($1, $2), $3) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, nbands int[])
-	RETURNS bytea
-	AS $$ SELECT st_asjpeg(st_band($1, $2), NULL::text[]) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, nband int)
-	RETURNS bytea
-	AS $$ SELECT st_asjpeg(st_band($1, $2)) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'SQL' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, nbands int[], quality int)
 	RETURNS bytea
@@ -1444,10 +1422,11 @@ CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, nbands int[], quality int)
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, nband int, options text[])
+-- Cannot be strict as "options" can be NULL
+CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, nband int, options text[] DEFAULT NULL)
 	RETURNS bytea
 	AS $$ SELECT st_asjpeg(st_band($1, $2), $3) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'SQL' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, nband int, quality int)
 	RETURNS bytea
@@ -1458,7 +1437,7 @@ CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, nband int, quality int)
 -- ST_AsPNG
 -----------------------------------------------------------------------
 -- Cannot be strict as "options" can be NULL
-CREATE OR REPLACE FUNCTION st_aspng(rast raster, options text[])
+CREATE OR REPLACE FUNCTION st_aspng(rast raster, options text[] DEFAULT NULL)
 	RETURNS bytea
 	AS $$
 	DECLARE
@@ -1490,25 +1469,11 @@ CREATE OR REPLACE FUNCTION st_aspng(rast raster, options text[])
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_aspng(rast raster)
-	RETURNS bytea
-	AS $$ SELECT st_aspng($1, NULL::text[]) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_aspng(rast raster, nbands int[], options text[])
+-- Cannot be strict as "options" can be NULL
+CREATE OR REPLACE FUNCTION st_aspng(rast raster, nbands int[], options text[] DEFAULT NULL)
 	RETURNS bytea
 	AS $$ SELECT st_aspng(st_band($1, $2), $3) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_aspng(rast raster, nbands int[])
-	RETURNS bytea
-	AS $$ SELECT st_aspng(st_band($1, $2), NULL::text[]) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_aspng(rast raster, nband int)
-	RETURNS bytea
-	AS $$ SELECT st_aspng(st_band($1, $2)) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'SQL' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_aspng(rast raster, nbands int[], compression int)
 	RETURNS bytea
@@ -1533,10 +1498,10 @@ CREATE OR REPLACE FUNCTION st_aspng(rast raster, nbands int[], compression int)
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_aspng(rast raster, nband int, options text[])
+CREATE OR REPLACE FUNCTION st_aspng(rast raster, nband int, options text[] DEFAULT NULL)
 	RETURNS bytea
 	AS $$ SELECT st_aspng(st_band($1, $2), $3) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'SQL' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_aspng(rast raster, nband int, compression int)
 	RETURNS bytea
