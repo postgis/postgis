@@ -3336,7 +3336,7 @@ ORDER BY value, quantile,rid
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>record <function>ST_ValueCount</function></funcdef>
+					<funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
 					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
@@ -3346,7 +3346,7 @@ ORDER BY value, quantile,rid
 					<paramdef><type>double precision </type> <parameter>OUT count</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
-					<funcdef>record <function>ST_ValueCount</function></funcdef>
+					<funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 					<paramdef><type>double precision[] </type> <parameter>searchvalues</parameter></paramdef>
