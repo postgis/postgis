@@ -317,6 +317,14 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
 						<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
 						<paramdef><type>double precision </type> <parameter>tolerance</parameter></paramdef>
 					</funcprototype>
+					
+					<funcprototype>
+						<funcdef>integer <function>CreateTopology</function></funcdef>
+						<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>tolerance</parameter></paramdef>
+						<paramdef><type>boolean </type> <parameter>hasz</parameter></paramdef>
+					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 		
@@ -327,7 +335,7 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
                     and registers this new topology in the topology.topology table. It returns the id of the topology in the topology table. The srid is the spatial reference identified as 
                 defined in spatial_ref_sys table for that topology.  Topologies must be uniquely named.  The tolerance is measured in the units of the spatial reference system.  If the tolerance is not specified defaults to 0.</para>
                 
-                <para>This is similar to the SQL/MM <xref linkend="ST_InitTopoGeo" /> but a bit more functional.</para>
+                <para>This is similar to the SQL/MM <xref linkend="ST_InitTopoGeo" /> but a bit more functional.  <varname>hasz</varname> defaults to false if not specified.</para>
         
                 <!-- use this format if new function -->
                 <para>Availability: 1.?</para>
