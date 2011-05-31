@@ -5192,11 +5192,21 @@ rt_raster_from_band(rt_raster raster, uint32_t *bandNums, int count) {
 		rt_raster_get_num_bands(raster));
 
 	/* create new raster */
-	rast = rt_raster_new(raster->width, raster->height);
-	if (!rast) {
+	rast = rt_raster_new(rt_raster_get_width(raster), rt_raster_get_height(raster));
+	if (NULL == rast) {
 		rterror("rt_raster_from_band: Out of memory allocating new raster\n");
 		return 0;
 	}
+
+	/* copy raster attributes */
+	/* scale */
+	rt_raster_set_scale(rast, rt_raster_get_x_scale(raster), rt_raster_get_y_scale(raster));
+	/* offset */
+	rt_raster_set_offsets(rast, rt_raster_get_x_offset(raster), rt_raster_get_y_offset(raster));
+	/* skew */
+	rt_raster_set_skews(rast, rt_raster_get_x_skew(raster), rt_raster_get_y_skew(raster));
+	/* srid */
+	rt_raster_set_srid(rast, rt_raster_get_srid(raster));
 
 	/* copy bands */
 	for (i = 0; i < count; i++) {
@@ -5480,12 +5490,13 @@ rt_raster_to_gdal_mem(rt_raster raster, char *srs,
 	GDALRegister_MEM();
 	if (NULL == *rtn_drv) {
 		drv = GDALGetDriverByName("MEM");
-		*rtn_drv = drv;
-		drv_gen = 1;
 		if (NULL == drv) {
 			rterror("rt_raster_to_gdal_mem: Unable to load the MEM GDAL driver\n");
 			return 0;
 		}
+
+		*rtn_drv = drv;
+		drv_gen = 1;
 	}
 
 	ds = GDALCreate(drv, "", rt_raster_get_width(raster),
