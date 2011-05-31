@@ -624,18 +624,11 @@ CREATE OR REPLACE FUNCTION ST_DWithin(text, text, float8)
 	LANGUAGE 'SQL' IMMUTABLE;
 
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_Area(geography, boolean)
+CREATE OR REPLACE FUNCTION ST_Area(geog geography, use_spheroid boolean DEFAULT true)
 	RETURNS float8
 	AS 'MODULE_PATHNAME','geography_area'
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
-
--- Currently defaulting to spheroid calculations
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_Area(geography)
-	RETURNS float8
-	AS 'SELECT ST_Area($1, true)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 -- TODO Remove in 2.0

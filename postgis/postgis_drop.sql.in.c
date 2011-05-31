@@ -14,6 +14,7 @@ DROP FUNCTION IF EXISTS box2d_contained(box2d, box2d);
 DROP FUNCTION IF EXISTS box2d_overlap(box2d, box2d);
 DROP FUNCTION IF EXISTS box2d_same(box2d, box2d);
 DROP FUNCTION IF EXISTS box2d_intersects(box2d, box2d);
+DROP FUNCTION IF EXISTS st_area(geography); -- this one changed to use default parameters
 DROP FUNCTION IF EXISTS st_asx3d(geometry); -- this one changed to use default parameters so full function deals with it
 DROP FUNCTION IF EXISTS st_box2d_overleft(box2d, box2d);
 DROP FUNCTION IF EXISTS st_box2d_overright(box2d, box2d);

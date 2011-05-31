@@ -643,12 +643,7 @@ SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,
 			<funcprototype>
 			  <funcdef>float <function>ST_Area</function></funcdef>
 				<paramdef><type>geography </type><parameter>g1</parameter></paramdef>
-			</funcprototype>
-			
-			<funcprototype>
-			  <funcdef>float <function>ST_Area</function></funcdef>
-				<paramdef><type>geography </type><parameter>g1</parameter></paramdef>
-				<paramdef><type>boolean </type><parameter>use_spheroid</parameter></paramdef>
+				<paramdef choice='opt'><type>boolean </type><parameter>use_spheroid=true</parameter></paramdef>
 			</funcprototype>
 		  </funcsynopsis>
 		</refsynopsisdiv>
