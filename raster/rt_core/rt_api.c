@@ -5192,7 +5192,7 @@ rt_raster_from_band(rt_raster raster, uint32_t *bandNums, int count) {
 		rt_raster_get_num_bands(raster));
 
 	/* create new raster */
-	rast = rt_raster_new(rt_raster_get_width(raster), rt_raster_get_height(raster));
+	rast = rt_raster_new(raster->width, raster->height);
 	if (NULL == rast) {
 		rterror("rt_raster_from_band: Out of memory allocating new raster\n");
 		return 0;
@@ -5200,13 +5200,13 @@ rt_raster_from_band(rt_raster raster, uint32_t *bandNums, int count) {
 
 	/* copy raster attributes */
 	/* scale */
-	rt_raster_set_scale(rast, rt_raster_get_x_scale(raster), rt_raster_get_y_scale(raster));
+	rt_raster_set_scale(rast, raster->scaleX, raster->scaleY);
 	/* offset */
-	rt_raster_set_offsets(rast, rt_raster_get_x_offset(raster), rt_raster_get_y_offset(raster));
+	rt_raster_set_offsets(rast, raster->ipX, raster->ipY);
 	/* skew */
-	rt_raster_set_skews(rast, rt_raster_get_x_skew(raster), rt_raster_get_y_skew(raster));
+	rt_raster_set_skews(rast, raster->skewX, raster->skewY);
 	/* srid */
-	rt_raster_set_srid(rast, rt_raster_get_srid(raster));
+	rt_raster_set_srid(rast, raster->srid);
 
 	/* copy bands */
 	for (i = 0; i < count; i++) {
