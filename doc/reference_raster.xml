@@ -3326,6 +3326,105 @@ ORDER BY value, quantile,rid
 			</refsection>
 		</refentry>
 		
+		<refentry id="RT_ST_SummaryStats">
+			<refnamediv>
+				<refname>ST_SummaryStats</refname>
+				<refpurpose>Returns summary stats consisting of count,sum,mean,stddev,min,max for a given raster band of a raster or raster coverage.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>summarystats <function>ST_SummaryStats</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>sample_percent=1</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>summarystats <function>ST_SummaryStats</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>summarystats <function>ST_SummaryStats</function></funcdef>
+					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>sample_percent=1</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>summarystats <function>ST_SummaryStats</function></funcdef>
+					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+				  </funcprototype>
+				
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns <varname>summarystats</varname> consisting of count, sum, mean, stddev, min, max for a given raster band of a raster or raster coverage..  If no band is specified <varname>nband</varname> defaults to 1. </para> 
+				<note><para>By default only considers pixel values no equal to the <varname>nodata</varname> value . Set <varname>exclude_nodata_value</varname> to false to get count all pixels</para>. By default will sample all pixels. To get faster response, set <varname>sample_percent</varname> to lower than 1</note>
+				<para>Availability: 2.0.0 </para>
+			</refsection>
+				
+			<refsection>
+				<title>Example: Single raster tile</title>
+				<programlisting>
+SELECT rid, band, (stats).*
+FROM (SELECT rid, band, ST_SummaryStats(rast, band) As stats
+    FROM dummy_rast CROSS JOIN generate_series(1,3) As band
+     WHERE rid=2) As foo;
+				    
+ rid | band | count | sum  |    mean    |  stddev   | min | max
+-----+------+-------+------+------------+-----------+-----+-----
+   2 |    1 |    23 | 5821 | 253.086957 |  1.248061 | 250 | 254
+   2 |    2 |    25 | 3682 |     147.28 | 59.862188 |  78 | 254
+   2 |    3 |    25 | 3290 |      131.6 | 61.647384 |  62 | 254
+				</programlisting>	
+			</refsection>
+			
+			<refsection>
+				<title>Example: Raster coverage</title>
+				<programlisting>
+-- stats for each band --
+SELECT band, (stats).*
+FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band) As stats
+    FROM generate_series(1,3) As band) As foo;
+				    
+ band |  count  |  sum   |       mean       |      stddev      | min | max
+------+---------+--------+------------------+------------------+-----+-----
+    1 | 8450000 | 725799 | 82.7064349112426 | 45.6800222638537 |   0 | 255
+    2 | 8450000 | 700487 | 81.4197705325444 | 44.2161184161765 |   0 | 255
+    3 | 8450000 | 575943 |  74.682739408284 | 44.2143885481407 |   0 | 255
+    
+-- For a table -- will get better speed if set sampling to less than 100%
+-- Here we set to 25% and get a much faster answer
+SELECT band, (stats).*
+FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
+    FROM generate_series(1,3) As band) As foo;
+				    
+ band |  count  |  sum   |       mean       |      stddev      | min | max
+------+---------+--------+------------------+------------------+-----+-----
+    1 | 2112500 | 180686 | 82.6890480473373 | 45.6961043857248 |   0 | 255
+    2 | 2112500 | 174571 |  81.448503668639 | 44.2252623171821 |   0 | 255
+    3 | 2112500 | 144364 | 74.6765884023669 | 44.2014869384578 |   0 | 255
+				</programlisting>	
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_Count" /></para>
+			</refsection>
+		</refentry>
+		
 		<refentry id="RT_ST_ValueCount">
 			<refnamediv>
 				<refname>ST_ValueCount</refname>
