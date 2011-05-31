@@ -3652,12 +3652,7 @@ FROM dummy_rast WHERE rid=1;
 					<funcdef>bytea <function>ST_AsGDALRaster</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>format</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>bytea <function>ST_AsGDALRaster</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>format</parameter></paramdef>
-					<paramdef><type>text[] </type> <parameter>options</parameter></paramdef>
+					<paramdef><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>bytea <function>ST_AsGDALRaster</function></funcdef>
