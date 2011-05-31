@@ -3723,16 +3723,7 @@ FROM dummy_rast WHERE rid=2;
 				  <funcprototype>
 					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>text[] </type> <parameter>options</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+					<paramdef choice='opt'><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
@@ -3744,12 +3735,7 @@ FROM dummy_rast WHERE rid=2;
 					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
-					<paramdef><type>text[] </type> <parameter>options</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer[] </type> <parameter>nbands</parameter></paramdef>
+					<paramdef choice='opt'><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
@@ -3761,7 +3747,7 @@ FROM dummy_rast WHERE rid=2;
 					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer[] </type> <parameter>nbands</parameter></paramdef>
-					<paramdef><type>text[] </type> <parameter>options</parameter></paramdef>
+					<paramdef choice='opt'><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
