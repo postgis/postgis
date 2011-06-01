@@ -143,6 +143,10 @@ Datum LWGEOM_to_BOX2DFLOAT4(PG_FUNCTION_ARGS)
 	PG_LWGEOM *lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	BOX2DFLOAT4 *result;
 
+	/* Cannot box empty! */
+	if ( pglwgeom_is_empty(lwgeom) )
+		PG_RETURN_NULL(); 
+
 	result = palloc(sizeof(BOX2DFLOAT4));
 	if ( ! pglwgeom_getbox2d_p(lwgeom, result) )
 	{

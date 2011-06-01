@@ -380,6 +380,8 @@ select '#884', id, ST_Within(
 ST_GeomFromText('POINT (-113.4 35.6)', -1), the_geom
 ) from foo;
 
+select '#938', 'POLYGON EMPTY'::geometry::box2d;
+
 DROP TABLE foo;
 
 -- Clean up
