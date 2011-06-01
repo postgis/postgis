@@ -13,7 +13,7 @@
 	<!-- We deal only with the reference chapter -->
         <xsl:template match="/">
                 <xsl:apply-templates select="/book/chapter[@id='RT_reference']" />
-                <xsl:apply-templates select="/book/chapter[@id='reference']/sect1[@id='PostGIS_Types']" />
+                <xsl:apply-templates select="/book/chapter[@id='RT_reference']/sect1[contains(@id, 'Type')]" />
         </xsl:template>
 
         <xsl:template match="chapter">
@@ -41,27 +41,25 @@ COMMENT ON <xsl:choose><xsl:when test="contains(paramdef/type,'geometry set')">A
 			</xsl:for-each>
 		</xsl:for-each>
 	</xsl:template>
-	<xsl:template match="sect1[@id='PostGIS_Types']">
-	<xsl:for-each select="refentry">
-		<xsl:variable name="ap"><xsl:text>'</xsl:text></xsl:variable>
-		<xsl:choose>
-<!-- If this is a raster type grab the ref entry summary and refname to make type comment -->
-		<xsl:when test="(contains(refnamediv/refname, 'raster') or contains(refnamediv/refname, 'geomval'))">
-		<xsl:variable name='plaincomment'>
-			<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
-		</xsl:variable>
-		<!-- Replace apostrophes with 2 apostrophes needed for escaping in SQL -->
-		<xsl:variable name='comment'>
-			<xsl:call-template name="globalReplace">
-				<xsl:with-param name="outputString" select="$plaincomment"/>
-				<xsl:with-param name="target" select="$ap"/>
-				<xsl:with-param name="replacement" select="''"/>
-			</xsl:call-template>
-		</xsl:variable>
-COMMENT ON TYPE <xsl:value-of select="refnamediv/refname" /> IS 'postgis type: <xsl:value-of select='$comment' />';
-		</xsl:when>
-		</xsl:choose>
-	</xsl:for-each>
+	<xsl:template match="sect1[contains(@id, 'Type')]">
+        <xsl:for-each select="refentry">
+            <xsl:variable name="ap"><xsl:text>'</xsl:text></xsl:variable>
+    <!-- If this is a raster type grab the ref entry summary and refname to make type comment -->
+            
+            <xsl:variable name='plaincomment'>
+                <xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
+            </xsl:variable>
+            <!-- Replace apostrophes with 2 apostrophes needed for escaping in SQL -->
+            <xsl:variable name='comment'>
+                <xsl:call-template name="globalReplace">
+                    <xsl:with-param name="outputString" select="$plaincomment"/>
+                    <xsl:with-param name="target" select="$ap"/>
+                    <xsl:with-param name="replacement" select="''"/>
+                </xsl:call-template>
+            </xsl:variable>
+    COMMENT ON TYPE <xsl:value-of select="refnamediv/refname" /> IS 'postgis raster type: <xsl:value-of select='$comment' />';
+            
+        </xsl:for-each>
 	</xsl:template>
 	
 <!--General replace macro hack to make up for the fact xsl 1.0 does not have a built in one.  

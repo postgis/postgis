@@ -259,6 +259,109 @@ VALUES (1,
 '41000000007719564100000000000000000000000000000000FFFFFFFF050005000400FDFEFDFEFEFDFEFEFDF9FAFEF' ||
 'EFCF9FBFDFEFEFDFCFAFEFEFE04004E627AADD16076B4F9FE6370A9F5FE59637AB0E54F58617087040046566487A1506CA2E3FA5A6CAFFBFE4D566DA4CB3E454C5665')::raster);</programlisting>
   </sect1>
+  
+  <sect1 id="Raster_Types">
+	    <title>Raster Support Data types</title>
+	    <sect1info>
+            <abstract>
+                <para>This section lists the PostgreSQL data types specifically created to support raster functionality.</para>	
+            </abstract>
+        </sect1info>
+        
+        <refentry id="geomval">
+            <refnamediv>
+                <refname>geomval</refname>
+                <refpurpose>A spatial datatype with two fields - geom (holding a geometry object) 
+                    and val (holding a double precision pixel value from a raster band)</refpurpose>
+            </refnamediv>
+            
+            <refsection>
+            <title>Description</title>
+            <para>geomval is a compound data type consisting of a geometry object referenced by the .geom field 
+                and val, a double precision value that represents the pixel value at a particular geometric location in a raster band.
+                It is used by the ST_DumpAsPolygon and Raster intersection family of functions as an output type to explode a raster band into
+                geometry polygons.</para>
+            </refsection>
+            <refsection>
+                <title>See Also</title>
+                <para><xref linkend="PostGIS_Geometry_DumpFunctions" /> </para>
+            </refsection>
+		</refentry>
+		
+		<refentry id="raster">
+            <refnamediv>
+                <refname>raster</refname>
+                <refpurpose>raster spatial data type.</refpurpose>
+            </refnamediv>
+            
+            <refsection>
+            <title>Description</title>
+            <para>raster is a spatial data type used to represent raster data such as those imported from jpegs, tiffs, pngs, digital elevation models.
+                Each raster has 1 or more bands each having a set of pixel values. Rasters can be georeferenced.</para>
+            <note>
+              <para>Requires PostGIS be compiled with GDAL support. Currently rasters can be implicitly converted to geometry type, but the conversion returns the 
+                <xref linkend="RT_ST_ConvexHull" /> of the raster.  This auto casting may be removed in the near future so don't rely on it.</para>
+            </note>
+            </refsection>
+            
+            <refsection>
+            <title>Casting Behavior</title>
+            <para>This section lists the automatic as well as explicit casts allowed for this data type</para>
+            <informaltable rowsep="1" frame="all">
+            <tgroup cols="2">
+                <tbody>
+                  <row>
+                    <entry>Cast To</entry>
+                    <entry>Behavior</entry>
+                  </row>
+                  <row>
+                    <entry>geometry</entry>
+                    <entry>automatic</entry>
+                  </row>
+                </tbody>
+            </tgroup>
+            </informaltable>
+            </refsection>
+            
+            <refsection>
+                <title>See Also</title>
+                <para><xref linkend="RT_reference" /></para>
+            </refsection>
+        </refentry>
+        
+        	<refentry id="reclassarg">
+		  <refnamediv>
+			<refname>reclassarg</refname>
+			<refpurpose>A composite type used as input into the ST_Reclass function defining the behavior of reclassification.</refpurpose>
+		  </refnamediv>
+		  <refsection>
+			<title>Description</title>
+			<para>A composite type used as input into the ST_Reclass function defining the behavior of reclassification.</para>
+			<variablelist>
+			    <varlistentry>
+			        <term><parameter>nband</parameter><type>integer</type></term>
+			        <listitem><para>The band number.</para></listitem>
+			    </varlistentry>
+			    <varlistentry>
+			        <term><parameter>reclassexpr</parameter><type>text</type></term>
+			        <listitem><para>Mathemetical expression defining how to map band to new band.</para></listitem>
+			    </varlistentry>
+			    <varlistentry>
+			        <term><parameter>pixeltype</parameter><type>text</type></term>
+			        <listitem><para>One of defined pixel types as described in <xref linkend="RT_ST_BandPixelType" /></para></listitem>
+			    </varlistentry>
+			</variablelist>
+		  </refsection>
+		  <refsection>
+		      <title>Example: Reclassify band 2 as an 8BUI where 255 is nodata value</title>
+		      <programlisting>SELECT ROW(2, '0-100:1-10, 101-500:11-150,501 - 10000: 151-254', '8BUI', 255)::reclassarg;</programlisting>
+		  </refsection>
+		   <refsection>
+                <title>See Also</title>
+                <para><xref linkend="RT_ST_Reclass" /></para>
+           </refsection>
+		</refentry>
+  </sect1>
   <sect1 id="Raster_Management_Functions">
   	<title>Raster Management Functions</title>
   	<refentry id="RT_AddRasterColumn">
@@ -4383,6 +4486,84 @@ POLYGON((3427928 5793243.85,3427928 5793243.8,3427928 5793243.75,3427927.85 5793
 			<title>See Also</title>
 			<para><xref linkend="RT_ST_Value" />, <xref linkend="RT_ST_DumpAsPolygons" /></para>
 		  </refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_Reclass">
+			<refnamediv>
+				<refname>ST_Reclass</refname>
+				<refpurpose>Creates a new raster composed of band types reclassified from original.  The nband is the band to be changed.  If nband is not specified assumed to be 1.  All other bands are returned unchanged. 
+				    Use case: convert a 16BUI band to a 2 8BUI and so forth for simpler rendering as viewable formats.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>raster <function>ST_Reclass</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>reclassexpr</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=NULL</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_Reclass</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>reclassarg[] </type> <parameter>VARIADIC reclassargset</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_Reclass</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>reclassexpr</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation defined by the <varname>expression</varname> on the input raster (<varname>rast</varname>). If no <varname>band</varname> is specified
+        band 1 is assumed.  The new raster will have the same georeference, width, and height as the original raster but will only have one band.</para>
+        
+                 <para>The bands of the new raster will have pixel type of <varname>pixeltype</varname>.  If <varname>reclassargset</varname> is passed in then each reclassarg defines behavior of each band generated.</para>
+               
+			
+                 <para>Availability: 2.0.0 </para>
+             </refsection>
+				
+             <refsection>
+				<title>Examples</title>
+				
+				<para>Create a new raster from the original where band 2 is converted from 8BUI to 4BUI and all values from 251-255 are set to nodata value.</para>
+				<programlisting>ALTER TABLE dummy_rast ADD COLUMN reclass_rast raster;
+UPDATE dummy_rast SET reclass_rast = ST_Reclass(rast,2,'0-100:1-10, 11-90:11-15, 91-254:0-0', '4BUI',0) WHERE rid = 2;
+
+SELECT i as row, j as col, ST_Value(rast,2,i,j) As origval, 
+    ST_Value(reclass_rast, 2, i, j) As reclassval, 
+    ST_Value(reclass_rast, 2, i, j, false) As reclassval_include_nodata
+FROM dummy_rast CROSS JOIN generate_series(1, 3) AS i CROSS JOIN generate_series(1,3) AS j
+WHERE rid = 2;
+
+ row | col | origval | reclassval | reclassval_include_nodata
+-----+-----+---------+------------+---------------------------
+   1 |   1 |      78 |          8 |                         8
+   2 |   1 |      98 |         10 |                        10
+   3 |   1 |     122 |            |                         0
+   1 |   2 |      96 |         10 |                        10
+   2 |   2 |     118 |            |                         0
+   3 |   2 |     180 |            |                         0
+   1 |   3 |      99 |         10 |                        10
+   2 |   3 |     112 |            |                         0
+   3 |   3 |     169 |            |                         0</programlisting>
+<!-- TODO: Add more examples using reclass arg -->				
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_BandPixelType" />, <xref linkend="reclassarg" /></para>
+			</refsection>
 		</refentry>
 	</sect1>
 	

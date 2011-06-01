@@ -17,7 +17,7 @@
     <para><emphasis>At least as of PostgreSQL 8.3</emphasis> - Everything can be CAST to text (presumably because of the magical unknown type), so no defined CASTS for that need to be present for you to CAST an object to text.</para>
     </abstract>
     </sect1info>
-    <title>PostgreSQL PostGIS Types</title>
+    <title>PostgreSQL PostGIS Geometry/Geography/Box Types</title>
 
 	<refentry id="box2d">
       <refnamediv>
@@ -188,26 +188,6 @@
 			<para><xref linkend="PostGIS_Geometry_DumpFunctions" /> </para>
 		</refsection>
 	</refentry>
-	
-	<refentry id="geomval">
-		<refnamediv>
-			<refname>geomval</refname>
-			<refpurpose>A spatial datatype with two fields - geom (holding a geometry object) 
-				and val (holding a double precision pixel value from a raster band)</refpurpose>
-		</refnamediv>
-		
-		<refsection>
-		<title>Description</title>
-		<para>geomval is a compound data type consisting of a geometry object referenced by the .geom field 
-			and val, a double precision value that represents the pixel value at a particular geometric location in a raster band.
-			It is used by the ST_DumpAsPolygon and Raster intersection family of functions as an output type to explode a raster band into
-			geometry polygons.</para>
-		</refsection>
-		<refsection>
-			<title>See Also</title>
-			<para><xref linkend="PostGIS_Geometry_DumpFunctions" /> </para>
-		</refsection>
-	</refentry>
 
 	<refentry id="geography">
 		<refnamediv>
@@ -242,47 +222,6 @@
 		<refsection>
 			<title>See Also</title>
 			<para><xref linkend="PostGIS_GeographyFunctions" />,<xref linkend="PostGIS_Geography" /></para>
-		</refsection>
-	</refentry>
-	
-	<refentry id="raster">
-		<refnamediv>
-			<refname>raster</refname>
-			<refpurpose>raster spatial data type.</refpurpose>
-		</refnamediv>
-		
-		<refsection>
-		<title>Description</title>
-		<para>raster is a spatial data type used to represent raster data such as those imported from jpegs, tiffs, pngs, digital elevation models.
-			Each raster has 1 or more bands each having a set of pixel values. Rasters can be georeferenced.</para>
-		<note>
-		  <para>Requires PostGIS be compiled with GDAL support. Currently rasters can be implicitly converted to geometry type, but the conversion returns the 
-		  	<xref linkend="RT_ST_ConvexHull" /> of the raster.  This auto casting may be removed in the near future so don't rely on it.</para>
-		</note>
-		</refsection>
-		
-		<refsection>
-		<title>Casting Behavior</title>
-		<para>This section lists the automatic as well as explicit casts allowed for this data type</para>
-		<informaltable rowsep="1" frame="all">
-		<tgroup cols="2">
-			<tbody>
-			  <row>
-				<entry>Cast To</entry>
-				<entry>Behavior</entry>
-			  </row>
-			  <row>
-				<entry>geometry</entry>
-				<entry>automatic</entry>
-			  </row>
-			</tbody>
-		</tgroup>
-		</informaltable>
-		</refsection>
-		
-		<refsection>
-			<title>See Also</title>
-			<para><xref linkend="RT_reference" /></para>
 		</refsection>
 	</refentry>
   </sect1>
