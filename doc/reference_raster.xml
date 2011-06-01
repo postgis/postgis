@@ -339,15 +339,15 @@ VALUES (1,
 			<para>A composite type used as input into the ST_Reclass function defining the behavior of reclassification.</para>
 			<variablelist>
 			    <varlistentry>
-			        <term><parameter>nband</parameter><type>integer</type></term>
+			        <term><parameter>nband </parameter><type>integer</type></term>
 			        <listitem><para>The band number.</para></listitem>
 			    </varlistentry>
 			    <varlistentry>
-			        <term><parameter>reclassexpr</parameter><type>text</type></term>
+			        <term><parameter>reclassexpr </parameter><type>text</type></term>
 			        <listitem><para>Mathemetical expression defining how to map band to new band.</para></listitem>
 			    </varlistentry>
 			    <varlistentry>
-			        <term><parameter>pixeltype</parameter><type>text</type></term>
+			        <term><parameter>pixeltype </parameter><type>text</type></term>
 			        <listitem><para>One of defined pixel types as described in <xref linkend="RT_ST_BandPixelType" /></para></listitem>
 			    </varlistentry>
 			</variablelist>
