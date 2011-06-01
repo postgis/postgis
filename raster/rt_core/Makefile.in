@@ -7,7 +7,7 @@
 # the terms of the GNU General Public Licence. See the COPYING file.
 #
 #############################################################################
- 
+
 AR=ar rs
 
 CC=@CC@
@@ -16,10 +16,10 @@ LIBLWGEOM_CFLAGS=@LIBLWGEOM_CFLAGS@
 LIBGDAL_CFLAGS=@LIBGDAL_CFLAGS@
 LIBGDAL_LDFLAGS=@LIBGDAL_LDFLAGS@
 LDFLAGS=$(LIBLWGEOM_LDFLAGS) $(LIBGDAL_LDFLAGS)
-CFLAGS=@CFLAGS@ @PICFLAGS@ @WARNFLAGS@ $(LIBLWGEOM_CFLAGS) $(LIBGDAL_CFLAGS) 
+CFLAGS=@CFLAGS@ @PICFLAGS@ @WARNFLAGS@ $(LIBLWGEOM_CFLAGS) $(LIBGDAL_CFLAGS)
 
 # Standalone RTCORE objects
-RT_OBJS=rt_api.o 
+RT_OBJS=rt_api.o
 RT_LIB=librtcore.a
 RT_HEADERS=rt_api.h
 
@@ -27,7 +27,7 @@ all: $(RT_LIB)
 
 clean:
 	$(RM) $(RT_OBJS)
-	$(RM) $(RT_LIB) 
+	$(RM) $(RT_LIB)
 
 distclean: clean
 	$(RM) Makefile

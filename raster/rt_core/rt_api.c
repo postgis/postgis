@@ -3253,10 +3253,9 @@ struct rt_geomval_t {
 };
 
 rt_geomval
-rt_raster_dump_as_wktpolygons(rt_raster raster, int nband,
-        int * pnElements) {
-
-	char * pszQuery;
+rt_raster_dump_as_wktpolygons(rt_raster raster, int nband, int * pnElements)
+{
+    char * pszQuery;
     char * pszDataPointer;
     char szGdalOption[50];
     long j;
@@ -3502,7 +3501,7 @@ rt_raster_dump_as_wktpolygons(rt_raster raster, int nband,
      */
 
     /* First, create a field definition to create the field */
-    hFldDfn = OGR_Fld_Create("PixelValue", OFTInteger);
+    hFldDfn = OGR_Fld_Create("PixelValue", OFTReal);
 
     /* Second, create the field */
     if (OGR_L_CreateField(hLayer, hFldDfn, TRUE) !=
@@ -3543,7 +3542,7 @@ rt_raster_dump_as_wktpolygons(rt_raster raster, int nband,
     /**
      * We don't need a raster mask band. Each band has a nodata value.
      **/
-    GDALPolygonize(gdal_band, NULL, hLayer, iPixVal, NULL, NULL, NULL);
+    GDALFPolygonize(gdal_band, NULL, hLayer, iPixVal, NULL, NULL, NULL);
 
     /**
      * Optimization: Apply a OGR SQL filter to the layer to select the
@@ -3552,18 +3551,17 @@ rt_raster_dump_as_wktpolygons(rt_raster raster, int nband,
      * Thanks to David Zwarg.
      **/
     if (iBandHasNodataValue) {
-            pszQuery = (char *) rtalloc(50 * sizeof (char));
-            sprintf(pszQuery, "PixelValue != %f", dBandNoData );
-            OGRErr e = OGR_L_SetAttributeFilter(hLayer, pszQuery);
-            if (e != OGRERR_NONE) {
-                    rtwarn("Error filtering NODATA values for band. All values"
-                            " will be treated as data values");
-            }
-
+        pszQuery = (char *) rtalloc(50 * sizeof (char));
+        sprintf(pszQuery, "PixelValue != %f", dBandNoData );
+        OGRErr e = OGR_L_SetAttributeFilter(hLayer, pszQuery);
+        if (e != OGRERR_NONE) {
+                rtwarn("Error filtering NODATA values for band. All values"
+                        " will be treated as data values");
+        }
     }
 
     else {
-            pszQuery = NULL;
+        pszQuery = NULL;
     }
 
 
@@ -3607,7 +3605,7 @@ rt_raster_dump_as_wktpolygons(rt_raster raster, int nband,
         hFeature = OGR_L_GetNextFeature(hLayer);
         dValue = OGR_F_GetFieldAsDouble(hFeature, iPixVal);
 
-		hGeom = OGR_F_GetGeometryRef(hFeature);
+	hGeom = OGR_F_GetGeometryRef(hFeature);
      	OGR_G_ExportToWkt(hGeom, &pszSrcText);
 
       	pols[j].val = dValue;
@@ -3657,8 +3655,6 @@ rt_raster_get_convex_hull(rt_raster raster) {
     POINTARRAY *pts = NULL;
     LWPOLY* ret = NULL;
     POINT4D p4d;
-
-
 
     assert(NULL != raster);
 
