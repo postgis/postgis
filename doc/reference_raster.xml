@@ -4538,7 +4538,7 @@ POLYGON((3427928 5793243.85,3427928 5793243.8,3427928 5793243.75,3427927.85 5793
 				
 				<para>Create a new raster from the original where band 2 is converted from 8BUI to 4BUI and all values from 251-255 are set to nodata value.</para>
 				<programlisting>ALTER TABLE dummy_rast ADD COLUMN reclass_rast raster;
-UPDATE dummy_rast SET reclass_rast = ST_Reclass(rast,2,'0-100:1-10, 11-90:11-15, 91-254:0-0', '4BUI',0) WHERE rid = 2;
+UPDATE dummy_rast SET reclass_rast = ST_Reclass(rast,2,'0-87:1-10, 88-100:11-15, 101-254:0-0', '4BUI',0) WHERE rid = 2;
 
 SELECT i as row, j as col, ST_Value(rast,2,i,j) As origval, 
     ST_Value(reclass_rast, 2, i, j) As reclassval, 
@@ -4548,13 +4548,13 @@ WHERE rid = 2;
 
  row | col | origval | reclassval | reclassval_include_nodata
 -----+-----+---------+------------+---------------------------
-   1 |   1 |      78 |          8 |                         8
-   2 |   1 |      98 |         10 |                        10
+   1 |   1 |      78 |          9 |                         9
+   2 |   1 |      98 |         14 |                        14
    3 |   1 |     122 |            |                         0
-   1 |   2 |      96 |         10 |                        10
+   1 |   2 |      96 |         14 |                        14
    2 |   2 |     118 |            |                         0
    3 |   2 |     180 |            |                         0
-   1 |   3 |      99 |         10 |                        10
+   1 |   3 |      99 |         15 |                        15
    2 |   3 |     112 |            |                         0
    3 |   3 |     169 |            |                         0</programlisting>
 <!-- TODO: Add more examples using reclass arg -->				
