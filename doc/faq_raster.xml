@@ -167,6 +167,8 @@
       </question>
 
       <answer>
+        <para>First you need GDAL 1.7 or higher compiled with PostGIS raster support.  
+            GDAL 1.8 or above is preferred since many issues have been fixed in 1.8 and more PostGIS raster issues fixed in trunk version.</para>
         <para>You can much like you can with any other raster.  
         Refer to <ulink url="http://mapserver.org/input/raster.html">MapServer Raster processing options</ulink>
         for list of various processing functions you can use with MapServer raster layers.</para>
