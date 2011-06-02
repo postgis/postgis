@@ -344,11 +344,15 @@ VALUES (1,
 			    </varlistentry>
 			    <varlistentry>
 			        <term><parameter>reclassexpr </parameter><type>text</type></term>
-			        <listitem><para>Mathemetical expression defining how to map band to new band.</para></listitem>
+			        <listitem><para>range expression consisting of - (define range) and : to define mapping that defines how to map old band values to new band values. ( means &gt;, ) means less than, ] &lt; or equal, [ means &gt; or equal</para></listitem>
 			    </varlistentry>
 			    <varlistentry>
 			        <term><parameter>pixeltype </parameter><type>text</type></term>
 			        <listitem><para>One of defined pixel types as described in <xref linkend="RT_ST_BandPixelType" /></para></listitem>
+			    </varlistentry>
+			    <varlistentry>
+			        <term><parameter>nodataval </parameter><type>double precision</type></term>
+			        <listitem><para>Value to treat as no data.  For image outputs that support transparency, these will be blank.</para></listitem>
 			    </varlistentry>
 			</variablelist>
 		  </refsection>
@@ -356,9 +360,54 @@ VALUES (1,
 		      <title>Example: Reclassify band 2 as an 8BUI where 255 is nodata value</title>
 		      <programlisting>SELECT ROW(2, '0-100:1-10, 101-500:11-150,501 - 10000: 151-254', '8BUI', 255)::reclassarg;</programlisting>
 		  </refsection>
+		  <refsection>
+		      <title>Example: Reclassify band 1 as an 1BB and no nodata value defined</title>
+		      <programlisting>SELECT ROW(2, '0-100]:0, (100-255:1', '1BB', NULL)::reclassarg;</programlisting>
+		  </refsection>
 		   <refsection>
                 <title>See Also</title>
                 <para><xref linkend="RT_ST_Reclass" /></para>
+           </refsection>
+		</refentry>
+		
+		<refentry id="summarystats">
+		  <refnamediv>
+			<refname>summarystats</refname>
+			<refpurpose>A composite type used as output the ST_SummaryStats function.</refpurpose>
+		  </refnamediv>
+		  <refsection>
+			<title>Description</title>
+			<para>A composite type used as output the ST_SummaryStats function. Note that depending on <varname>exclude_nodata_value</varname> of function, may or may not contain nodata pixels.</para>
+			<variablelist>
+			    <varlistentry>
+			        <term><parameter>count </parameter><type>bigint</type></term>
+			        <listitem><para>count of pixels in raster band. Depending on arguments may or many not include nodata pixel values.</para></listitem>
+			    </varlistentry>
+			    <varlistentry>
+			        <term><parameter>sum </parameter><type>double precision</type></term>
+			        <listitem><para>sum of all pixel values in band</para></listitem>
+			    </varlistentry>
+			    <varlistentry>
+			        <term><parameter>mean </parameter><type>double precision</type></term>
+			        <listitem><para>Mean of pixel values</para></listitem>
+			    </varlistentry>
+			    <varlistentry>
+			        <term><parameter>stddev </parameter><type>double precision</type></term>
+			        <listitem><para>Standard deviation of pixel values.</para></listitem>
+			    </varlistentry>
+			    	<varlistentry>
+			        <term><parameter>min </parameter><type>double precision</type></term>
+			        <listitem><para>Minimum pixel value</para></listitem>
+			    </varlistentry>
+			    	<varlistentry>
+			        <term><parameter>max </parameter><type>double precision</type></term>
+			        <listitem><para>Maximum pixel value</para></listitem>
+			    </varlistentry>
+			</variablelist>
+		  </refsection>
+		   <refsection>
+                <title>See Also</title>
+                <para><xref linkend="RT_ST_SummaryStats" /></para>
            </refsection>
 		</refentry>
   </sect1>
@@ -3524,7 +3573,7 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_Count" /></para>
+				<para><xref linkend="RT_ST_Count" />,  <para><xref linkend="summarystats" /></para></para>
 			</refsection>
 		</refentry>
 		
@@ -4534,19 +4583,19 @@ POLYGON((3427928 5793243.85,3427928 5793243.8,3427928 5793243.75,3427927.85 5793
              </refsection>
 				
              <refsection>
-				<title>Examples</title>
+				<title>Examples Basic</title>
 				
 				<para>Create a new raster from the original where band 2 is converted from 8BUI to 4BUI and all values from 251-255 are set to nodata value.</para>
 				<programlisting>ALTER TABLE dummy_rast ADD COLUMN reclass_rast raster;
 UPDATE dummy_rast SET reclass_rast = ST_Reclass(rast,2,'0-87:1-10, 88-100:11-15, 101-254:0-0', '4BUI',0) WHERE rid = 2;
 
-SELECT i as row, j as col, ST_Value(rast,2,i,j) As origval, 
+SELECT i as col, j as row, ST_Value(rast,2,i,j) As origval, 
     ST_Value(reclass_rast, 2, i, j) As reclassval, 
     ST_Value(reclass_rast, 2, i, j, false) As reclassval_include_nodata
 FROM dummy_rast CROSS JOIN generate_series(1, 3) AS i CROSS JOIN generate_series(1,3) AS j
 WHERE rid = 2;
 
- row | col | origval | reclassval | reclassval_include_nodata
+ col | row | origval | reclassval | reclassval_include_nodata
 -----+-----+---------+------------+---------------------------
    1 |   1 |      78 |          9 |                         9
    2 |   1 |      98 |         14 |                        14
@@ -4559,10 +4608,41 @@ WHERE rid = 2;
    3 |   3 |     169 |            |                         0</programlisting>
 <!-- TODO: Add more examples using reclass arg -->				
 			</refsection>
+			
+			<refsection>
+				<title>Example: Advanced using multiple reclassargs</title>
+				
+				<para>Create a new raster from the original where band 1,2,3 is converted to 1BB,4BUI, 4BUI respectively and reclassified.
+				    Note this uses the variadic <varname>reclassarg</varname> argument which can take as input an indefinite number of reclassargs (theoretically as many bands as you have) </para>
+				<programlisting>UPDATE dummy_rast SET reclass_rast = 
+    ST_Reclass(rast,
+        ROW(2,'0-87]:1-10, (87-100]:11-15, (101-254]:0-0', '4BUI',NULL)::reclassarg,
+        ROW(1,'0-253]:1, 254:0', '1BB', NULL)::reclassarg,
+        ROW(3,'0-70]:1, (70-86:2, [86-150):3, [150-255:4', '4BUI', NULL)::reclassarg
+        ) WHERE rid = 2;
+
+SELECT i as col, j as row,ST_Value(rast,1,i,j) As ov1,  ST_Value(reclass_rast, 1, i, j) As rv1, 
+    ST_Value(rast,2,i,j) As ov2, ST_Value(reclass_rast, 2, i, j) As rv2, 
+    ST_Value(rast,3,i,j) As ov3, ST_Value(reclass_rast, 3, i, j) As rv3
+FROM dummy_rast CROSS JOIN generate_series(1, 3) AS i CROSS JOIN generate_series(1,3) AS j
+WHERE rid = 2;
+
+col | row | ov1 | rv1 | ov2 | rv2 | ov3 | rv3
+----+-----+-----+-----+-----+-----+-----+-----
+  1 |   1 | 253 |   1 |  78 |   9 |  70 |   1
+  2 |   1 | 254 |   0 |  98 |  14 |  86 |   3
+  3 |   1 | 253 |   1 | 122 |   0 | 100 |   3
+  1 |   2 | 253 |   1 |  96 |  14 |  80 |   2
+  2 |   2 | 254 |   0 | 118 |   0 | 108 |   3
+  3 |   2 | 254 |   0 | 180 |   0 | 162 |   4
+  1 |   3 | 250 |   1 |  99 |  15 |  90 |   3
+  2 |   3 | 254 |   0 | 112 |   0 | 108 |   3
+  3 |   3 | 254 |   0 | 169 |   0 | 175 |   4</programlisting>		
+			</refsection>
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_BandPixelType" />, <xref linkend="reclassarg" /></para>
+				<para><xref linkend="RT_ST_BandPixelType" />, <xref linkend="reclassarg" />,  <para><xref linkend="RT_ST_Value" /></para></para>
 			</refsection>
 		</refentry>
 	</sect1>
