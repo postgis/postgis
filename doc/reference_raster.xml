@@ -2055,6 +2055,82 @@ FROM (SELECT ST_MetaData(rast) As rmd
 			</refsection>
 		</refentry>
 		
+		<refentry id="RT_ST_Band">
+			<refnamediv>
+				<refname>ST_Band</refname>
+				<refpurpose>Returns one or more bands of an existing raster as a new raster.  Useful for building new rasters from existing rasters.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				   <funcprototype>
+				   <funcprototype>
+					<funcdef>raster <function>ST_Band</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef choice='opt'><type>integer[] </type> <parameter>nbands = ARRAY[1]</parameter></paramdef>
+				  </funcprototype>
+				  
+					<funcdef>raster <function>ST_Band</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>nbands</parameter></paramdef>
+					<paramdef choice='opt'><type>character </type> <parameter>delimiter=','</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_Band</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns a single band of an existing raster as a new raster.  Useful for building new rasters from existing rasters or export of only selected
+				bands of a raster. If no band is specified, band 1 is assumed. Used as a helper function in various functons suc as for deleting a band.</para>
+                    
+                 <para>Availability: 2.0.0</para>
+			</refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>-- Make 2 new rasters: 1 containing band 1 of dummy, second containing band 2 of dummy and then reclassified as a 2BUI
+SELECT ST_NumBands(rast1) As numb1, ST_BandPixelType(rast1) As pix1, 
+ ST_NumBands(rast2) As numb2,  ST_BandPixelType(rast2) As pix2
+FROM (
+    SELECT ST_Band(rast) As rast1, ST_Reclass(ST_Band(rast,3), '100-200):1, [200-254:2', '2BUI') As rast2
+        FROM dummy_rast
+        WHERE rid = 2) As foo;
+        
+ numb1 | pix1 | numb2 | pix2
+-------+------+-------+------
+     1 | 8BUI |     1 | 2BUI
+					</programlisting>
+					
+					<programlisting>-- Return bands 2 and 3. Use text to define bands
+SELECT ST_NumBands(ST_Band(rast, '2,3')) As num_bands
+    FROM dummy_rast WHERE rid=2;
+    
+num_bands
+----------
+2
+    
+-- Return bands 2 and 3. Use array to define bands
+SELECT ST_NumBands(ST_Band(rast, ARRAY[2,3])) As num_bands
+    FROM dummy_rast 
+WHERE rid=2;
+					</programlisting>
+			
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_AddBand" />, <xref linkend="RT_ST_NumBands" />, , <xref linkend="RT_ST_Reclass" /></para>
+			</refsection>
+		</refentry>
+		
 		<refentry id="RT_ST_BandMetaData">
 			<refnamediv>
 				<refname>ST_BandMetaData</refname>
@@ -4642,7 +4718,7 @@ col | row | ov1 | rv1 | ov2 | rv2 | ov3 | rv3
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_BandPixelType" />, <xref linkend="reclassarg" />, <xref linkend="RT_ST_Value" />/para>
+				<para><xref linkend="RT_ST_Band" />, <xref linkend="RT_ST_BandPixelType" />,  <xref linkend="reclassarg" />, <xref linkend="RT_ST_Value" />/para>
 			</refsection>
 		</refentry>
 	</sect1>
