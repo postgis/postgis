@@ -340,11 +340,11 @@ VALUES (1,
 			<variablelist>
 			    <varlistentry>
 			        <term><parameter>nband </parameter><type>integer</type></term>
-			        <listitem><para>The band number.</para></listitem>
+			        <listitem><para>The band number of band to reclassify.</para></listitem>
 			    </varlistentry>
 			    <varlistentry>
 			        <term><parameter>reclassexpr </parameter><type>text</type></term>
-			        <listitem><para>range expression consisting of - (define range) and : to define mapping that defines how to map old band values to new band values. ( means &gt;, ) means less than, ] &lt; or equal, [ means &gt; or equal</para></listitem>
+			        <listitem><para>range expression consisting of comma delimited range:map_range mappings. : to define mapping that defines how to map old band values to new band values. ( means &gt;, ) means less than, ] &lt; or equal, [ means &gt; or equal</para></listitem>
 			    </varlistentry>
 			    <varlistentry>
 			        <term><parameter>pixeltype </parameter><type>text</type></term>
@@ -362,7 +362,7 @@ VALUES (1,
 		  </refsection>
 		  <refsection>
 		      <title>Example: Reclassify band 1 as an 1BB and no nodata value defined</title>
-		      <programlisting>SELECT ROW(2, '0-100]:0, (100-255:1', '1BB', NULL)::reclassarg;</programlisting>
+		      <programlisting>SELECT ROW(1, '0-100]:0, (100-255:1', '1BB', NULL)::reclassarg;</programlisting>
 		  </refsection>
 		   <refsection>
                 <title>See Also</title>
@@ -373,11 +373,11 @@ VALUES (1,
 		<refentry id="summarystats">
 		  <refnamediv>
 			<refname>summarystats</refname>
-			<refpurpose>A composite type used as output the ST_SummaryStats function.</refpurpose>
+			<refpurpose>A composite type used as output of the ST_SummaryStats function.</refpurpose>
 		  </refnamediv>
 		  <refsection>
 			<title>Description</title>
-			<para>A composite type used as output the ST_SummaryStats function. Note that depending on <varname>exclude_nodata_value</varname> of function, may or may not contain nodata pixels.</para>
+			<para>A composite type used as output the <varname>ST_SummaryStats</varname> function. Note that depending on <varname>exclude_nodata_value</varname> of function, may or may not contain nodata pixels.</para>
 			<variablelist>
 			    <varlistentry>
 			        <term><parameter>count </parameter><type>bigint</type></term>
