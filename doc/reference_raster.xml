@@ -4642,7 +4642,7 @@ col | row | ov1 | rv1 | ov2 | rv2 | ov3 | rv3
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_BandPixelType" />, <xref linkend="reclassarg" />,  <para><xref linkend="RT_ST_Value" /></para></para>
+				<para><xref linkend="RT_ST_BandPixelType" />, <xref linkend="reclassarg" />, <xref linkend="RT_ST_Value" />/para>
 			</refsection>
 		</refentry>
 	</sect1>
