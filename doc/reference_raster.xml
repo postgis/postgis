@@ -2073,7 +2073,7 @@ FROM (SELECT ST_MetaData(rast) As rmd
 					<funcdef>raster <function>ST_Band</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>nbands</parameter></paramdef>
-					<paramdef choice='opt'><type>character </type> <parameter>delimiter=','</parameter></paramdef>
+					<paramdef choice='opt'><type>character </type> <parameter>delimiter=,</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -3714,6 +3714,21 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
 					<paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>OUT value</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>OUT count</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>bigint <function>ST_ValueCount</function></funcdef>
+					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>searchvalue</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>bigint <function>ST_ValueCount</function></funcdef>
+					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>searchvalue</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
