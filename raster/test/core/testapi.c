@@ -1282,28 +1282,43 @@ static void testGDALDrivers() {
 	}
 }
 
-static void testRasterToGDAL(rt_raster raster) {
-	uint32_t bandNums[] = {1};
-	int lenBandNums = 1;
+static void testRasterToGDAL() {
+	rt_raster raster;
+	rt_band band;
+	uint32_t x;
+	uint32_t xmax = 100;
+	uint32_t y;
+	uint32_t ymax = 100;
+	int rtn = 0;
+
 	uint64_t gdalSize;
-	rt_raster rast;
-	uint8_t *rtn = NULL;
+	uint8_t *gdal = NULL;
 
-	rast = rt_raster_from_band(raster, bandNums, lenBandNums);
-	assert(rast);
+	raster = rt_raster_new(xmax, ymax);
+	assert(raster); /* or we're out of virtual memory */
+	band = addBand(raster, PT_32BF, 0, 0);
+	CHECK(band);
+	rt_band_set_nodata(band, 0);
 
-	rtn = rt_raster_to_gdal(rast, NULL, "GTiff", NULL, &gdalSize);
+	for (x = 0; x < xmax; x++) {
+		for (y = 0; y < ymax; y++) {
+			rtn = rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1));
+			CHECK((rtn != -1));
+		}
+	}
+
+	gdal = rt_raster_to_gdal(raster, NULL, "GTiff", NULL, &gdalSize);
 	/*printf("gdalSize: %d\n", (int) gdalSize);*/
 	CHECK(gdalSize);
 
 	/*
 	FILE *fh = NULL;
 	fh = fopen("/tmp/out.tif", "w");
-	fwrite(rtn, sizeof(uint8_t), gdalSize, fh);
+	fwrite(gdal, sizeof(uint8_t), gdalSize, fh);
 	fclose(fh);
 	*/
 
-	rt_raster_destroy(rast);
+	deepRelease(raster);
 }
 
 struct rt_valuecount_t {
@@ -1366,6 +1381,66 @@ static void testValueCount() {
 	CHECK((rtn > 0));
 	rtdealloc(vcnts);
 
+	deepRelease(raster);
+}
+
+static void testGDALToRaster() {
+	rt_raster raster;
+	rt_raster rast;
+	rt_band band;
+	uint32_t x;
+	uint32_t xmax = 100;
+	uint32_t y;
+	uint32_t ymax = 100;
+	int rtn = 0;
+	double value;
+
+	GDALDriverH gddrv = NULL;
+	GDALDatasetH gdds = NULL;
+
+	raster = rt_raster_new(xmax, ymax);
+	assert(raster); /* or we're out of virtual memory */
+	band = addBand(raster, PT_32BF, 0, 0);
+	CHECK(band);
+	rt_band_set_nodata(band, 0);
+
+	for (x = 0; x < xmax; x++) {
+		for (y = 0; y < ymax; y++) {
+			rtn = rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1));
+			CHECK((rtn != -1));
+		}
+	}
+
+	gdds = rt_raster_to_gdal_mem(raster, NULL, &gddrv);
+	CHECK(gddrv);
+	CHECK(gdds);
+	CHECK((GDALGetRasterXSize(gdds) == xmax));
+	CHECK((GDALGetRasterYSize(gdds) == ymax));
+
+	rast = rt_raster_from_gdal_dataset(gdds);
+	CHECK(rast);
+	CHECK((rt_raster_get_num_bands(rast) == 1));
+
+	band = rt_raster_get_band(rast, 0);
+	CHECK(band);
+
+	rtn = rt_band_get_pixel(band, 0, 3, &value);
+	CHECK((rtn != -1));
+	CHECK((fabs(value - 0.75) < FLT_EPSILON));
+
+	rtn = rt_band_get_pixel(band, 99, 0, &value);
+	CHECK((rtn != -1));
+	CHECK((fabs(value - 1.98) < FLT_EPSILON));
+
+	rtn = rt_band_get_pixel(band, 95, 4, &value);
+	CHECK((rtn != -1));
+	CHECK((fabs(value - 9.54) < FLT_EPSILON));
+
+	GDALClose(gdds);
+	GDALDeregisterDriver(gddrv);
+	GDALDestroyDriver(gddrv);
+
+	deepRelease(rast);
 	deepRelease(raster);
 }
 
@@ -1740,7 +1815,7 @@ main()
 		printf("Successfully tested rt_band_reclass\n");
 
 		printf("Testing rt_raster_to_gdal\n");
-		testRasterToGDAL(raster);
+		testRasterToGDAL();
 		printf("Successfully tested rt_raster_to_gdal\n");
 
 		printf("Testing rt_raster_gdal_drivers\n");
@@ -1750,6 +1825,10 @@ main()
 		printf("Testing rt_band_get_value_count\n");
 		testValueCount();
 		printf("Successfully tested rt_band_get_value_count\n");
+
+		printf("Testing rt_raster_from_gdal_dataset\n");
+		testGDALToRaster();
+		printf("Successfully tested rt_raster_from_gdal_dataset\n");
 
     deepRelease(raster);
 
