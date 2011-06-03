@@ -831,11 +831,15 @@ if test "x$RASTER" = "xraster"; then dnl # {
 	   	  AC_MSG_RESULT([not found])
 	   	  AC_MSG_ERROR([PostGIS requires GDAL >= $GDAL_MIN_VERSION])
 	   fi
+
 	else
 		AC_MSG_RESULT([not found])
 		AC_MSG_ERROR([gdal-config not found. Try --with-gdalconfig=<path to gdal-config>])
 	fi
 	AC_MSG_RESULT([found])
+
+	dnl Check if the new polygonize function is present
+	AC_CHECK_LIB([gdal], [GDALFPolygonize], [AC_DEFINE_UNQUOTED([GDALFPOLYGONIZE], [1])], [AC_DEFINE_UNQUOTED([GDALFPOLYGONIZE], [0])], []) 
 
 	dnl Determine if GDAL Python bindings are available
 	AC_MSG_CHECKING([for GDAL Python bindings])
@@ -875,6 +879,7 @@ except ImportError:
 
     AC_SUBST([LIBGDAL_CFLAGS])
     AC_SUBST([LIBGDAL_LDFLAGS])
+	AC_SUBST([GDALFPOLYGONIZE])
 
     dnl Define raster objects, for makefiles
     RT_CORE_LIB=corelib
