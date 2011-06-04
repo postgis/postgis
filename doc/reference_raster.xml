@@ -4664,8 +4664,8 @@ POLYGON((3427928 5793243.85,3427928 5793243.8,3427928 5793243.75,3427927.85 5793
 			<refsection>
 				<title>Description</title>
 				
-				<para>Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation defined by the <varname>expression</varname> on the input raster (<varname>rast</varname>). If no <varname>band</varname> is specified
-        band 1 is assumed.  The new raster will have the same georeference, width, and height as the original raster but will only have one band.</para>
+				<para>Creates a new raster formed by applying a valid PostgreSQL algebraic operation defined by the <varname>expression</varname> on the input raster (<varname>rast</varname>). If no <varname>band</varname> is specified
+        band 1 is assumed.  The new raster will have the same georeference, width, and height as the original raster.  Bands not designated will come back unchanged.</para>
         
                  <para>The bands of the new raster will have pixel type of <varname>pixeltype</varname>.  If <varname>reclassargset</varname> is passed in then each reclassarg defines behavior of each band generated.</para>
                
