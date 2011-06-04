@@ -4632,7 +4632,7 @@ POLYGON((3427928 5793243.85,3427928 5793243.8,3427928 5793243.75,3427927.85 5793
 			<refnamediv>
 				<refname>ST_Reclass</refname>
 				<refpurpose>Creates a new raster composed of band types reclassified from original.  The nband is the band to be changed.  If nband is not specified assumed to be 1.  All other bands are returned unchanged. 
-				    Use case: convert a 16BUI band to a 2 8BUI and so forth for simpler rendering as viewable formats.</refpurpose>
+				    Use case: convert a 16BUI band to a 8 8BUI and so forth for simpler rendering as viewable formats.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -4676,7 +4676,7 @@ POLYGON((3427928 5793243.85,3427928 5793243.8,3427928 5793243.75,3427927.85 5793
              <refsection>
 				<title>Examples Basic</title>
 				
-				<para>Create a new raster from the original where band 2 is converted from 8BUI to 4BUI and all values from 251-255 are set to nodata value.</para>
+				<para>Create a new raster from the original where band 2 is converted from 8BUI to 4BUI and all values from 101-254 are set to nodata value.</para>
 				<programlisting>ALTER TABLE dummy_rast ADD COLUMN reclass_rast raster;
 UPDATE dummy_rast SET reclass_rast = ST_Reclass(rast,2,'0-87:1-10, 88-100:11-15, 101-254:0-0', '4BUI',0) WHERE rid = 2;
 
