@@ -4696,8 +4696,7 @@ WHERE rid = 2;
    3 |   2 |     180 |            |                         0
    1 |   3 |      99 |         15 |                        15
    2 |   3 |     112 |            |                         0
-   3 |   3 |     169 |            |                         0</programlisting>
-<!-- TODO: Add more examples using reclass arg -->				
+   3 |   3 |     169 |            |                         0</programlisting>			
 			</refsection>
 			
 			<refsection>
