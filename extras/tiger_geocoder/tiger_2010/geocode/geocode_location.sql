@@ -23,8 +23,8 @@ BEGIN
         100::integer + coalesce(levenshtein_ignore_case(coalesce(zip.city), parsed.location),0) as in_rating
     FROM
       zip_lookup_base zip
-      JOIN zcta5 ON (zip.zip = zcta5.zcta5ce)
-      JOIN state USING (statefp)
+      JOIN zcta5 ON (zip.zip = zcta5.zcta5ce AND zip.statefp = zcta5.statefp)
+      JOIN state ON (state.statefp=zip.statefp)
     WHERE
       parsed.zip = zip.zip OR
       (soundex(zip.city) = soundex(parsed.location) and zip.statefp = in_statefp)
