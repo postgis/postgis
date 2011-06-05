@@ -877,22 +877,6 @@ CREATE TABLE zip_lookup (
 );
 
 DROP TABLE IF EXISTS zcta500;
-CREATE TABLE zcta500
-(
-  gid serial NOT NULL PRIMARY KEY,
-  zcta5ce character varying(5),
-  classfp character varying(2),
-  mtfcc character varying(5),
-  funcstat character varying(1),
-  aland numeric(14),
-  awater numeric(14),
-  intptlat character varying(11),
-  intptlon character varying(12),
-  the_geom geometry,
-  CONSTRAINT enforce_dims_the_geom CHECK (st_ndims(the_geom) = 2),
-  CONSTRAINT enforce_geotype_the_geom CHECK (geometrytype(the_geom) = 'MULTIPOLYGON'::text OR the_geom IS NULL),
-  CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4269)
-);
 /**
 INSERT INTO zip_lookup
   SELECT
@@ -1221,4 +1205,25 @@ ALTER TABLE addr ADD COLUMN statefp character varying(2);
 CREATE INDEX idx_tiger_addr_tlid_statefp ON addr USING btree(tlid,statefp);
 CREATE INDEX idx_tiger_addr_zip ON addr USING btree (zip);
 
+DROP TABLE IF EXISTS zcta5;
+CREATE TABLE zcta5
+(
+  gid serial NOT NULL,
+  statefp character varying(2),
+  zcta5ce character varying(5),
+  classfp character varying(2),
+  mtfcc character varying(5),
+  funcstat character varying(1),
+  aland double precision,
+  awater double precision,
+  intptlat character varying(11),
+  intptlon character varying(12),
+  partflg character varying(1),
+  the_geom geometry,
+  CONSTRAINT uidx_tiger_zcta5_gid UNIQUE (gid),
+  CONSTRAINT enforce_dims_the_geom CHECK (st_ndims(the_geom) = 2),
+  CONSTRAINT enforce_geotype_the_geom CHECK (geometrytype(the_geom) = 'MULTIPOLYGON'::text OR the_geom IS NULL),
+  CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4269),
+  CONSTRAINT pk_tiger_zcta5_zcta5ce PRIMARY KEY (zcta5ce,statefp)
+ );
 

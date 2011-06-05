@@ -18,12 +18,12 @@ BEGIN
     SELECT
         coalesce(zip.city)::varchar as place,
         zip.zip as zip,
-        ST_Centroid(zcta500.the_geom) as address_geom,
+        ST_Centroid(zcta5.the_geom) as address_geom,
         stusps as state,
         100::integer + coalesce(levenshtein_ignore_case(coalesce(zip.city), parsed.location),0) as in_rating
     FROM
       zip_lookup_base zip
-      JOIN zcta500 ON (zip.zip = zcta500.zcta5ce)
+      JOIN zcta5 ON (zip.zip = zcta5.zcta5ce)
       JOIN state USING (statefp)
     WHERE
       parsed.zip = zip.zip OR

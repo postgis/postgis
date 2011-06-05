@@ -24,6 +24,27 @@ CREATE INDEX tiger_place_the_geom_gist ON place USING gist(the_geom);
 CREATE INDEX tiger_edges_the_geom_gist ON edges USING gist(the_geom);
 CREATE INDEX tiger_state_the_geom_gist ON faces USING gist(the_geom);
 
+CREATE TABLE zcta5
+(
+  gid serial NOT NULL,
+  statefp character varying(2),
+  zcta5ce character varying(5),
+  classfp character varying(2),
+  mtfcc character varying(5),
+  funcstat character varying(1),
+  aland double precision,
+  awater double precision,
+  intptlat character varying(11),
+  intptlon character varying(12),
+  partflg character varying(1),
+  the_geom geometry,
+  CONSTRAINT uidx_tiger_zcta5_gid UNIQUE (gid),
+  CONSTRAINT enforce_dims_the_geom CHECK (st_ndims(the_geom) = 2),
+  CONSTRAINT enforce_geotype_the_geom CHECK (geometrytype(the_geom) = 'MULTIPOLYGON'::text OR the_geom IS NULL),
+  CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4269),
+  CONSTRAINT pk_tiger_zcta5_zcta5ce PRIMARY KEY (zcta5ce,statefp)
+ );
+
 BEGIN;
 -- Type used to pass around a normalized address between functions
 -- This is s bit dangerous since it could potentially drop peoples tables
