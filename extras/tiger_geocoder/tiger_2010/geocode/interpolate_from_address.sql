@@ -55,4 +55,4 @@ BEGIN
     result = ST_Line_Interpolate_Point(road, part);
     RETURN result;
 END;
-$_$ LANGUAGE plpgsql IMMUTABLE COST 100;
+$_$ LANGUAGE plpgsql IMMUTABLE COST 10;
