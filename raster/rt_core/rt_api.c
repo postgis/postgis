@@ -5439,10 +5439,10 @@ rt_raster_to_gdal_mem(rt_raster raster, char *srs,
 	}
 	
 	/* add band(s) */
-	for (i = 0; i < numBands; i++) {
+	for (i = 0; i < count; i++) {
 		rtband = rt_raster_get_band(raster, bandNums[i]);
 		if (NULL == rtband) {
-			rterror("rt_raster_to_gdal_mem: Unable to get requested band\n");
+			rterror("rt_raster_to_gdal_mem: Unable to get requested band index %d\n", bandNums[i]);
 			if (allocBandNums) rtdealloc(bandNums);
 			GDALClose(ds);
 			if (drv_gen) {
