@@ -897,12 +897,15 @@ rt_gdaldriver rt_raster_gdal_drivers(uint32_t *drv_count);
  *
  * @param raster : raster to convert to GDAL MEM
  * @param srs : the raster's coordinate system in OGC WKT or PROJ.4
+ * @param bandNums : array of band numbers to extract from raster
+ *                   and include in the GDAL dataset (0 based)
+ * @param count : number of elements in bandNums
  * @param rtn_drv : is set to the GDAL driver object
  *
  * @return GDAL dataset using GDAL MEM driver
  */
 GDALDatasetH rt_raster_to_gdal_mem(rt_raster raster, char *srs,
-	GDALDriverH *rtn_drv);
+	uint32_t *bandNums, int count, GDALDriverH *rtn_drv);
 
 /**
  * Return a raster from a GDAL dataset

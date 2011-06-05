@@ -3256,17 +3256,12 @@ rt_geomval
 rt_raster_dump_as_wktpolygons(rt_raster raster, int nband, int * pnElements)
 {
     char * pszQuery;
-    char * pszDataPointer;
-    char szGdalOption[50];
     long j;
-    GDALDataType nPixelType = GDT_Unknown;
-    char * apszOptions[4];
     OGRSFDriverH ogr_drv = NULL;
     GDALDriverH gdal_drv = NULL;
     GDALDatasetH memdataset = NULL;
     GDALRasterBandH gdal_band = NULL;
     OGRDataSourceH memdatasource = NULL;
-    rt_pixtype pt = PT_END;
     rt_geomval pols = NULL;
     OGRLayerH hLayer = NULL;
     OGRFeatureH hFeature = NULL;
@@ -3279,6 +3274,8 @@ rt_raster_dump_as_wktpolygons(rt_raster raster, int nband, int * pnElements)
     double dValue = 0.0;
     int iBandHasNodataValue = FALSE;
     double dBandNoData = 0.0;
+
+    uint32_t bandNums[1] = {nband - 1};
 
     /* Checkings */
 
@@ -3297,6 +3294,18 @@ rt_raster_dump_as_wktpolygons(rt_raster raster, int nband, int * pnElements)
         return 0;
     }
 
+    iBandHasNodataValue = rt_band_get_hasnodata_flag(band);
+    if (iBandHasNodataValue) dBandNoData = rt_band_get_nodata(band);
+
+    /*****************************************************
+     * Convert raster to GDAL MEM dataset
+     *****************************************************/
+    memdataset = rt_raster_to_gdal_mem(raster, NULL, bandNums, 1, &gdal_drv);
+		if (NULL == memdataset) {
+				rterror("rt_raster_dump_as_wktpolygons: Couldn't convert raster to GDAL MEM dataset");
+
+				return 0;
+		}
 
     /*****************************
      * Register ogr mem driver
@@ -3314,6 +3323,10 @@ rt_raster_dump_as_wktpolygons(rt_raster raster, int nband, int * pnElements)
 
     if (NULL == memdatasource) {
         rterror("rt_raster_dump_as_wktpolygons: Couldn't create a OGR Datasource to store pols\n");
+        GDALClose(memdataset);
+        GDALDeregisterDriver(gdal_drv);
+        GDALDestroyDriver(gdal_drv);
+
         return 0;
     }
 
@@ -3323,155 +3336,12 @@ rt_raster_dump_as_wktpolygons(rt_raster raster, int nband, int * pnElements)
     if (!OGR_DS_TestCapability(memdatasource, ODsCCreateLayer)) {
         rterror("rt_raster_dump_as_wktpolygons: MEM driver can't create new layers, aborting\n");
         /* xxx jorgearevalo: what should we do now? */
-        OGRReleaseDataSource(memdatasource);
-        return 0;
-    }
-
-    RASTER_DEBUG(3, "creating GDAL MEM raster");
-
-
-    /****************************************************************
-     * Create a GDAL MEM raster with one band, from rt_band object
-     ****************************************************************/
-    GDALRegister_MEM();
-
-
-    /**
-     * First, create a Dataset with no bands using MEM driver
-     **/
-    gdal_drv = GDALGetDriverByName("MEM");
-    memdataset = GDALCreate(gdal_drv, "", rt_band_get_width(band),
-            rt_band_get_height(band), 0, GDT_Byte, NULL);
-
-    if (NULL == memdataset) {
-        rterror("rt_raster_dump_as_wktpolygons: Couldn't create a GDALDataset to polygonize it\n");
-        GDALDeregisterDriver(gdal_drv);
-        GDALDestroyDriver(gdal_drv);
-        OGRReleaseDataSource(memdatasource);
-        return 0;
-    }
-
-    /**
-     * Add geotransform
-     */
-    double adfGeoTransform[6] = {0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
-    adfGeoTransform[0] = rt_raster_get_x_offset(raster);
-    adfGeoTransform[1] = rt_raster_get_x_scale(raster);
-    adfGeoTransform[2] = rt_raster_get_x_skew(raster);
-    adfGeoTransform[3] = rt_raster_get_y_offset(raster);
-    adfGeoTransform[4] = rt_raster_get_y_skew(raster);
-    adfGeoTransform[5] = rt_raster_get_y_scale(raster);
-    GDALSetGeoTransform(memdataset, adfGeoTransform);
-
-    RASTER_DEBUG(3, "Adding GDAL MEM raster band");
-
-    /**
-     * Now, add the raster band
-     */
-    pt = rt_band_get_pixtype(band);
-
-    switch (pt) {
-        case PT_1BB: case PT_2BUI: case PT_4BUI: case PT_8BSI: case PT_8BUI:
-            nPixelType = GDT_Byte;
-            break;
-
-        case PT_16BSI: case PT_16BUI:
-            if (pt == PT_16BSI)
-                nPixelType = GDT_Int16;
-            else
-                nPixelType = GDT_UInt16;
-            break;
-
-        case PT_32BSI: case PT_32BUI: case PT_32BF:
-            if (pt == PT_32BSI)
-                nPixelType = GDT_Int32;
-            else if (pt == PT_32BUI)
-                nPixelType = GDT_UInt32;
-            else
-                nPixelType = GDT_Float32;
-            break;
-
-        case PT_64BF:
-            nPixelType = GDT_Float64;
-            break;
-
-        default:
-            rtwarn("Unknown pixel type for band\n");
-            nPixelType = GDT_Unknown;
-            break;
-    }
-
-    void * pVoid = rt_band_get_data(band);
-    if (NULL == pVoid) {
-        rterror("rt_raster_dump_as_wktpolygons: Couldn't get raster band data");
-        GDALDeregisterDriver(gdal_drv);
-        GDALDestroyDriver(gdal_drv);
-        OGRReleaseDataSource(memdatasource);
-        return 0;
-    }
-
-    RASTER_DEBUGF(4, "Band data is at pos %p", pVoid);
-
-    /**
-     * Be careful!! If this pointer is defined as szDataPointer[20]
-     * the sprintf crash! Probable because the memory is taken from
-     * an invalid memory context for PostgreSQL.
-     * And be careful with size too: 10 characters may be insufficient
-     * to store 64bits memory addresses
-     */
-    pszDataPointer = (char *)rtalloc(20 * sizeof (char));
-    if (NULL == pszDataPointer) {
-        rterror("rt_raster_dump_as_wktpolygons: Couldn't allocate memory for data");
-        GDALDeregisterDriver(gdal_drv);
-        GDALDestroyDriver(gdal_drv);
-        OGRReleaseDataSource(memdatasource);
-        return 0;
-    }
-
-    sprintf(pszDataPointer, "%p", pVoid);
-
-    RASTER_DEBUGF(4, "rt_raster_dump_as_polygons: szDatapointer is %p",
-            pszDataPointer);
-
-    if (strnicmp(pszDataPointer, "0x", 2) == 0)
-        sprintf(szGdalOption, "DATAPOINTER=%s", pszDataPointer);
-    else
-        sprintf(szGdalOption, "DATAPOINTER=0x%s", pszDataPointer);
-
-    RASTER_DEBUG(3, "Storing info for GDAL MEM raster band");
-
-    apszOptions[0] = szGdalOption;
-    apszOptions[1] = NULL; // pixel offset, not needed
-    apszOptions[2] = NULL; // line offset, not needed
-    apszOptions[3] = NULL;
-
-    /**
-     * This memory must be deallocated because we own it. The GDALRasterBand
-     * destructor will not deallocate it
-     **/
-    rtdealloc(pszDataPointer);
-
-    if (GDALAddBand(memdataset, nPixelType, apszOptions) == CE_Failure) {
-        rterror("rt_raster_dump_as_wktpolygons: Couldn't transform raster band "
-                "in GDALRasterBand format to polygonize it");
-        GDALClose(memdataset);
-        GDALDeregisterDriver(gdal_drv);
-        GDALDestroyDriver(gdal_drv);
-        OGRReleaseDataSource(memdatasource);
-
-        return 0;
-    }
-
-    /* Checking */
-    if (GDALGetRasterCount(memdataset) != 1) {
-        rterror("rt_raster_dump_as_wktpolygons: Error creating GDAL MEM raster bands");
         GDALClose(memdataset);
         GDALDeregisterDriver(gdal_drv);
         GDALDestroyDriver(gdal_drv);
         OGRReleaseDataSource(memdatasource);
         return 0;
     }
-
 
     RASTER_DEBUG(3, "polygonizying GDAL MEM raster band");
 
@@ -3529,15 +3399,6 @@ rt_raster_dump_as_wktpolygons(rt_raster raster, int nband, int * pnElements)
 
         return 0;
     }
-
-    iBandHasNodataValue = rt_band_get_hasnodata_flag(band);
-    if (iBandHasNodataValue) {
-        /* Add nodata value for band */
-        dBandNoData = rt_band_get_nodata(band);
-        if (GDALSetRasterNoDataValue(gdal_band, dBandNoData) != CE_None)
-            rtwarn("Couldn't set nodata value for band.");
-    }
-
 
     /**
      * We don't need a raster mask band. Each band has a nodata value.
@@ -5300,7 +5161,7 @@ rt_raster_to_gdal(rt_raster raster, char *srs,
 	RASTER_DEBUGF(3, "rt_raster_to_gdal: output format is %s", format);
 
 	/* load raster into a GDAL MEM raster */
-	src_ds = rt_raster_to_gdal_mem(raster, srs, &src_drv);
+	src_ds = rt_raster_to_gdal_mem(raster, srs, NULL, 0, &src_drv);
 	if (NULL == src_ds) {
 		rterror("rt_raster_to_gdal: Unable to convert raster to GDAL MEM format\n");
 		if (NULL != src_drv) {
@@ -5459,13 +5320,16 @@ rt_raster_gdal_drivers(uint32_t *drv_count) {
  *
  * @param raster : raster to convert to GDAL MEM
  * @param srs : the raster's coordinate system in OGC WKT or PROJ.4
+ * @param bandNums : array of band numbers to extract from raster
+ *                   and include in the GDAL dataset (0 based)
+ * @param count : number of elements in bandNums
  * @param rtn_drv : is set to the GDAL driver object
  *
  * @return GDAL dataset using GDAL MEM driver
  */
 GDALDatasetH
 rt_raster_to_gdal_mem(rt_raster raster, char *srs,
-	GDALDriverH *rtn_drv) {
+	uint32_t *bandNums, int count, GDALDriverH *rtn_drv) {
 	GDALDriverH drv = NULL;
 	int drv_gen = 0;
 	GDALDatasetH ds = NULL;
@@ -5478,6 +5342,7 @@ rt_raster_to_gdal_mem(rt_raster raster, char *srs,
 	char szGDALOption[50];
 	char *apszOptions[4];
 	double nodata = 0.0;
+	int allocBandNums = 0;
 
 	int i;
 	int numBands;
@@ -5541,13 +5406,44 @@ rt_raster_to_gdal_mem(rt_raster raster, char *srs,
 			return 0;
 		}
 	}
+
+	/* process bandNums */
+	numBands = rt_raster_get_num_bands(raster);
+	if (NULL != bandNums && count > 0) {
+		for (i = 0; i < count; i++) {
+			if (bandNums[i] < 0 || bandNums[i] >= numBands) {
+				rterror("rt_raster_to_gdal_mem: The band index %d is invalid\n", bandNums[i]);
+				GDALClose(ds);
+				if (drv_gen) {
+					GDALDeregisterDriver(drv);
+					GDALDestroyDriver(drv);
+				}
+				return 0;
+			}
+		}
+	}
+	else {
+		count = numBands;
+		bandNums = (uint32_t *) rtalloc(sizeof(uint32_t) * count);
+		if (NULL == bandNums) {
+			rterror("rt_raster_to_gdal_mem: Unable to allocate memory for band indices\n");
+			GDALClose(ds);
+			if (drv_gen) {
+				GDALDeregisterDriver(drv);
+				GDALDestroyDriver(drv);
+			}
+			return 0;
+		}
+		allocBandNums = 1;
+		for (i = 0; i < count; i++) bandNums[i] = i;
+	}
 	
 	/* add band(s) */
-	numBands = rt_raster_get_num_bands(raster);
 	for (i = 0; i < numBands; i++) {
-		rtband = rt_raster_get_band(raster, i);
+		rtband = rt_raster_get_band(raster, bandNums[i]);
 		if (NULL == rtband) {
 			rterror("rt_raster_to_gdal_mem: Unable to get requested band\n");
+			if (allocBandNums) rtdealloc(bandNums);
 			GDALClose(ds);
 			if (drv_gen) {
 				GDALDeregisterDriver(drv);
@@ -5609,6 +5505,7 @@ rt_raster_to_gdal_mem(rt_raster raster, char *srs,
 
 		if (GDALAddBand(ds, gdal_pt, apszOptions) == CE_Failure) {
 			rterror("rt_raster_to_gdal_mem: Couldn't add GDALRasterBand\n");
+			if (allocBandNums) rtdealloc(bandNums);
 			GDALClose(ds);
 			if (drv_gen) {
 				GDALDeregisterDriver(drv);
@@ -5620,6 +5517,7 @@ rt_raster_to_gdal_mem(rt_raster raster, char *srs,
 		/* check band count */
 		if (GDALGetRasterCount(ds) != i + 1) {
 			rterror("rt_raster_to_gdal_mem: Error creating GDAL MEM raster band\n");
+			if (allocBandNums) rtdealloc(bandNums);
 			GDALClose(ds);
 			if (drv_gen) {
 				GDALDeregisterDriver(drv);
@@ -5633,6 +5531,7 @@ rt_raster_to_gdal_mem(rt_raster raster, char *srs,
 		band = GDALGetRasterBand(ds, i + 1);
 		if (NULL == band) {
 			rterror("rt_raster_to_gdal_mem: Couldn't get GDAL band for additional processing\n");
+			if (allocBandNums) rtdealloc(bandNums);
 			GDALClose(ds);
 			if (drv_gen) {
 				GDALDeregisterDriver(drv);
@@ -5644,6 +5543,7 @@ rt_raster_to_gdal_mem(rt_raster raster, char *srs,
 		/* Add nodata value for band */
 		if (rt_band_get_hasnodata_flag(rtband) != FALSE) {
 			nodata = rt_band_get_nodata(rtband);
+			RASTER_DEBUGF(3, "Setting nodata value to %f", nodata);
 			if (GDALSetRasterNoDataValue(band, nodata) != CE_None)
 				rtwarn("rt_raster_to_gdal_mem: Couldn't set nodata value for band\n");
 		}
@@ -5723,7 +5623,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 	/* skew */
 	rt_raster_set_skews(rast, gt[2], gt[4]);
 	/* srid */
-	/* CANNOT SET srid AS srid IS NOT AVAILABLE IN gdal dataset */
+	/* CANNOT SET srid AS srid IS NOT AVAILABLE IN GDAL dataset */
 
 	/* copy bands */
 	numBands = GDALGetRasterCount(ds);

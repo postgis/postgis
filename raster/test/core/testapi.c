@@ -1290,6 +1290,7 @@ static void testRasterToGDAL() {
 	uint32_t y;
 	uint32_t ymax = 100;
 	int rtn = 0;
+	char srs[] = "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",6370997,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433]],PROJECTION[\"Lambert_Azimuthal_Equal_Area\"],PARAMETER[\"latitude_of_center\",45],PARAMETER[\"longitude_of_center\",-100],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"Meter\",1],AUTHORITY[\"EPSG\",\"2163\"]]";
 
 	uint64_t gdalSize;
 	uint8_t *gdal = NULL;
@@ -1307,7 +1308,7 @@ static void testRasterToGDAL() {
 		}
 	}
 
-	gdal = rt_raster_to_gdal(raster, NULL, "GTiff", NULL, &gdalSize);
+	gdal = rt_raster_to_gdal(raster, srs, "GTiff", NULL, &gdalSize);
 	/*printf("gdalSize: %d\n", (int) gdalSize);*/
 	CHECK(gdalSize);
 
@@ -1411,7 +1412,7 @@ static void testGDALToRaster() {
 		}
 	}
 
-	gdds = rt_raster_to_gdal_mem(raster, NULL, &gddrv);
+	gdds = rt_raster_to_gdal_mem(raster, NULL, NULL, 0, &gddrv);
 	CHECK(gddrv);
 	CHECK(gdds);
 	CHECK((GDALGetRasterXSize(gdds) == xmax));
