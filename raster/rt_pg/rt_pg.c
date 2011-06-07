@@ -219,6 +219,9 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS);
 Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS);
 Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS);
 
+/* transform a raster to a new projection */
+Datum RASTER_transform(PG_FUNCTION_ARGS);
+
 /* Replace function taken from
  * http://ubuntuforums.org/showthread.php?s=aa6f015109fd7e4c7e30d2fd8b717497&t=141670&page=3
  */
@@ -3135,7 +3138,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		int bin_count = 0;
 		double *bin_width = NULL;
 		int bin_width_count = 0;
-		double width;
+		double width = 0;
 		bool right = FALSE;
 		rt_bandstats stats = NULL;
 
@@ -3428,7 +3431,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		double sample = 0;
 		double *quantiles = NULL;
 		int quantiles_count = 0;
-		double quantile;
+		double quantile = 0;
 		rt_bandstats stats = NULL;
 
 		int i;
@@ -4690,6 +4693,165 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 		pfree(drv_set2);
 		SRF_RETURN_DONE(funcctx);
 	}
+}
+
+/**
+ * Transform a raster to a new projection
+ */
+PG_FUNCTION_INFO_V1(RASTER_transform);
+Datum RASTER_transform(PG_FUNCTION_ARGS)
+{
+	rt_pgraster *pgraster = NULL;
+	rt_pgraster *pgrast = NULL;
+	rt_raster raster = NULL;
+	rt_raster rast = NULL;
+
+	text *algtext = NULL;
+	char *algchar = NULL;
+	GDALResampleAlg alg = GRA_NearestNeighbour;
+
+	int src_srid = -1;
+	char *src_srs = NULL;
+	int dst_srid = -1;
+	char *dst_srs = NULL;
+	double max_err = 0.125;
+
+	int sqllen = 0;
+	char *sql = NULL;
+	int ret;
+	TupleDesc tupdesc;
+	SPITupleTable * tuptable = NULL;
+	HeapTuple tuple;
+
+	POSTGIS_RT_DEBUG(3, "RASTER_transform: Starting");
+
+	/* pgraster is null, return null */
+	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	/* raster */
+	raster = rt_raster_deserialize(pgraster);
+	if (!raster) {
+		elog(ERROR, "RASTER_transform: Could not deserialize raster");
+		PG_RETURN_NULL();
+	}
+
+	/* source srid */
+	src_srid = rt_raster_get_srid(raster);
+	if (src_srid == SRID_UNKNOWN) {
+		elog(ERROR, "RASTER_transform: Input raster has unknown (-1) SRID");
+		rt_raster_destroy(raster);
+		PG_RETURN_NULL();
+	}
+	POSTGIS_RT_DEBUGF(4, "source srid: %d", src_srid);
+
+	/* target srid */
+	if (PG_ARGISNULL(1)) PG_RETURN_NULL();
+	dst_srid = PG_GETARG_UINT32(1);
+	if (dst_srid == SRID_UNKNOWN) {
+		elog(ERROR, "RASTER_transform: -1 is an invalid target SRID");
+		rt_raster_destroy(raster);
+		PG_RETURN_NULL();
+	}
+	POSTGIS_RT_DEBUGF(4, "destination srid: %d", dst_srid);
+
+	/* resampling algorithm */
+	if (!PG_ARGISNULL(2)) {
+		algtext = PG_GETARG_TEXT_P(2);
+		algchar = text_to_cstring(algtext);
+		alg = rt_util_gdal_resample_alg(algchar);
+	}
+	POSTGIS_RT_DEBUGF(4, "Resampling algorithm: %d", alg);
+
+	/* max error */
+	if (!PG_ARGISNULL(3)) {
+		max_err = PG_GETARG_FLOAT8(3);
+		if (max_err < 0.) max_err = 0.;
+	}
+	POSTGIS_RT_DEBUGF(4, "max_err: %f", max_err);
+
+	/* get srses from srids */
+	sqllen = sizeof(char) * (strlen("SELECT _ST_srtext()") + MAX_INT_CHARLEN);
+	sql = (char *) palloc(sqllen);
+	if (NULL == sql) {
+		elog(ERROR, "RASTER_transform: Unable to allocate memory for SRID queries");
+		rt_raster_destroy(raster);
+		PG_RETURN_NULL();
+	}
+
+	SPI_connect();
+
+	/* source srs */
+	snprintf(sql, sqllen, "SELECT _ST_srtext(%d)", src_srid);
+	POSTGIS_RT_DEBUGF(4, "sourse srs sql: %s", sql);
+	ret = SPI_execute(sql, TRUE, 0);
+	if (ret != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
+		elog(ERROR, "RASTER_transform: Input raster has unknown SRID");
+		if (SPI_tuptable) SPI_freetuptable(tuptable);
+		SPI_finish();
+		rt_raster_destroy(raster);
+		pfree(sql);
+		PG_RETURN_NULL();
+	}
+	tupdesc = SPI_tuptable->tupdesc;
+	tuptable = SPI_tuptable;
+	tuple = tuptable->vals[0];
+	src_srs = SPI_getvalue(tuple, tupdesc, 1);
+	if (NULL == src_srs || !strlen(src_srs)) {
+		elog(ERROR, "RASTER_transform: Input raster has invalid SRID");
+		if (SPI_tuptable) SPI_freetuptable(tuptable);
+		SPI_finish();
+		rt_raster_destroy(raster);
+		pfree(sql);
+		PG_RETURN_NULL();
+	}
+	SPI_freetuptable(tuptable);
+
+	/* target srs */
+	sprintf(sql, "SELECT _ST_srtext(%d)", dst_srid);
+	POSTGIS_RT_DEBUGF(4, "destination srs sql: %s", sql);
+	ret = SPI_execute(sql, TRUE, 0);
+	if (ret != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
+		elog(ERROR, "RASTER_transform: Target SRID is unknown");
+		if (SPI_tuptable) SPI_freetuptable(tuptable);
+		SPI_finish();
+		rt_raster_destroy(raster);
+		pfree(sql);
+		PG_RETURN_NULL();
+	}
+	tupdesc = SPI_tuptable->tupdesc;
+	tuptable = SPI_tuptable;
+	tuple = tuptable->vals[0];
+	dst_srs = SPI_getvalue(tuple, tupdesc, 1);
+	if (NULL == dst_srs || !strlen(dst_srs)) {
+		elog(ERROR, "RASTER_transform: Target SRID is unknown");
+		if (SPI_tuptable) SPI_freetuptable(tuptable);
+		SPI_finish();
+		rt_raster_destroy(raster);
+		pfree(sql);
+		PG_RETURN_NULL();
+	}
+	SPI_freetuptable(tuptable);
+
+	SPI_finish();
+	pfree(sql);
+
+	rast = rt_raster_transform(raster, src_srs, dst_srs, alg, max_err);
+	rt_raster_destroy(raster);
+	if (!rast) {
+		elog(ERROR, "RASTER_band: Could not create transformed raster");
+		PG_RETURN_NULL();
+	}
+
+	/* add target srid */
+	rt_raster_set_srid(rast, dst_srid);
+
+	pgrast = rt_raster_serialize(rast);
+	rt_raster_destroy(rast);
+	if (NULL == pgrast) PG_RETURN_NULL();
+
+	SET_VARSIZE(pgrast, pgrast->size);
+	PG_RETURN_POINTER(pgrast);
 }
 
 /* ---------------------------------------------------------------- */

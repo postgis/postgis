@@ -1301,6 +1301,9 @@ static void testRasterToGDAL() {
 	CHECK(band);
 	rt_band_set_nodata(band, 0);
 
+	rt_raster_set_offsets(raster, -500000, 600000);
+	rt_raster_set_scale(raster, 1000, 1000);
+
 	for (x = 0; x < xmax; x++) {
 		for (y = 0; y < ymax; y++) {
 			rtn = rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1));
@@ -1440,6 +1443,62 @@ static void testGDALToRaster() {
 	GDALClose(gdds);
 	GDALDeregisterDriver(gddrv);
 	GDALDestroyDriver(gddrv);
+
+	deepRelease(rast);
+	deepRelease(raster);
+}
+
+static void testTransform() {
+	rt_raster raster;
+	rt_raster rast;
+	rt_band band;
+	uint32_t x;
+	uint32_t xmax = 100;
+	uint32_t y;
+	uint32_t ymax = 100;
+	int rtn = 0;
+	double value = 0;
+
+	char src_srs[] = "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",6370997,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433]],PROJECTION[\"Lambert_Azimuthal_Equal_Area\"],PARAMETER[\"latitude_of_center\",45],PARAMETER[\"longitude_of_center\",-100],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"Meter\",1],AUTHORITY[\"EPSG\",\"2163\"]]";
+
+	char dst_srs[] = "PROJCS[\"NAD83 / California Albers\",GEOGCS[\"NAD83\",DATUM[\"North_American_Datum_1983\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6269\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4269\"]],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],PROJECTION[\"Albers_Conic_Equal_Area\"],PARAMETER[\"standard_parallel_1\",34],PARAMETER[\"standard_parallel_2\",40.5],PARAMETER[\"latitude_of_center\",0],PARAMETER[\"longitude_of_center\",-120],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",-4000000],AUTHORITY[\"EPSG\",\"3310\"],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
+
+	raster = rt_raster_new(xmax, ymax);
+	assert(raster); /* or we're out of virtual memory */
+	band = addBand(raster, PT_32BF, 0, 0);
+	CHECK(band);
+	rt_band_set_nodata(band, 0);
+
+	rt_raster_set_offsets(raster, -500000, 600000);
+	rt_raster_set_scale(raster, 1000, 1000);
+
+	for (x = 0; x < xmax; x++) {
+		for (y = 0; y < ymax; y++) {
+			rtn = rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1));
+			CHECK((rtn != -1));
+		}
+	}
+
+	rast = rt_raster_transform(
+		raster,
+		src_srs,
+		dst_srs,
+		GRA_NearestNeighbour,
+		-1
+	);
+	CHECK(rast);
+	CHECK((rt_raster_get_width(rast) == 124));
+	CHECK((rt_raster_get_height(rast) == 117));
+	CHECK((rt_raster_get_num_bands(rast) != 0));
+
+	band = rt_raster_get_band(rast, 0);
+	CHECK(band);
+
+	CHECK(rt_band_get_hasnodata_flag(band));
+	CHECK((fabs(rt_band_get_nodata(band) - 0.) < FLT_EPSILON));
+
+	CHECK(rt_band_get_pixel(band, 0, 0, &value) == 0);
+	CHECK(fabs(value - 0.) < FLT_EPSILON);
 
 	deepRelease(rast);
 	deepRelease(raster);
@@ -1830,6 +1889,10 @@ main()
 		printf("Testing rt_raster_from_gdal_dataset\n");
 		testGDALToRaster();
 		printf("Successfully tested rt_raster_from_gdal_dataset\n");
+
+		printf("Testing rt_raster_transform\n");
+		testTransform();
+		printf("Successfully tested rt_raster_transform\n");
 
     deepRelease(raster);
 

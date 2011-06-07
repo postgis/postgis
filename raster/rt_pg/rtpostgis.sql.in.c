@@ -1172,15 +1172,12 @@ CREATE OR REPLACE FUNCTION st_gdaldrivers(OUT idx int, OUT short_name text, OUT 
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- return the srtext or proj4text of an srid
-CREATE OR REPLACE FUNCTION st_srtext(q raster)
+CREATE OR REPLACE FUNCTION _st_srtext(q_srid integer)
 	RETURNS text
 	AS $$
 	DECLARE
-		q_srid int;
 		q_srs text;
 	BEGIN
-		q_srid := st_srid($1);
-
 		IF q_srid != -1 THEN
 			SELECT
 				CASE
@@ -1204,6 +1201,11 @@ CREATE OR REPLACE FUNCTION st_srtext(q raster)
 		RETURN q_srs;
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_srtext(q raster)
+	RETURNS text
+	AS $$ SELECT _st_srtext(st_srid($1)) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Cannot be strict as "options" and "srs" can be NULL
 CREATE OR REPLACE FUNCTION st_asgdalraster(rast raster, format text, options text[], srs text)
@@ -1507,6 +1509,14 @@ CREATE OR REPLACE FUNCTION st_aspng(rast raster, nband int, compression int)
 	RETURNS bytea
 	AS $$ SELECT st_aspng($1, ARRAY[$2], $3) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
+-- ST_Transform
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION st_transform(rast raster, srid integer, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
+	RETURNS raster
+	AS 'MODULE_PATHNAME', 'RASTER_transform'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- MapAlgebra

@@ -185,6 +185,27 @@ static void quicksort(double *left, double *right) {
 	}
 }
 
+GDALResampleAlg
+rt_util_gdal_resample_alg(const char *algname) {
+	if (!algname || !strlen(algname))	return GRA_NearestNeighbour;
+
+
+	if (strcmp(algname, "NearestNeighbour") == 0)
+		return GRA_NearestNeighbour;
+	else if (strcmp(algname, "NearestNeighbor") == 0)
+		return GRA_NearestNeighbour;
+	else if (strcmp(algname, "Bilinear") == 0)
+		return GRA_Bilinear;
+	else if (strcmp(algname, "Cubic") == 0)
+		return GRA_Cubic;
+	else if (strcmp(algname, "CubicSpline") == 0)
+		return GRA_CubicSpline;
+	else if (strcmp(algname, "Lanczos") == 0)
+		return GRA_Lanczos;
+
+	return GRA_NearestNeighbour;
+}
+
 /*- rt_context -------------------------------------------------------*/
 
 /* Functions definitions */
@@ -1092,7 +1113,7 @@ rt_band_set_nodata(rt_band band, double val) {
     }
 
     RASTER_DEBUGF(3, "rt_band_set_nodata: band->hasnodata = %d", band->hasnodata);
-    RASTER_DEBUGF(3, "rt_band_set_nodata: band->nodataval = %d", band->nodataval);
+    RASTER_DEBUGF(3, "rt_band_set_nodata: band->nodataval = %f", band->nodataval);
 
 
     // the nodata value was just set, so this band has NODATA
@@ -5543,11 +5564,14 @@ rt_raster_to_gdal_mem(rt_raster raster, char *srs,
 		/* Add nodata value for band */
 		if (rt_band_get_hasnodata_flag(rtband) != FALSE) {
 			nodata = rt_band_get_nodata(rtband);
-			RASTER_DEBUGF(3, "Setting nodata value to %f", nodata);
 			if (GDALSetRasterNoDataValue(band, nodata) != CE_None)
 				rtwarn("rt_raster_to_gdal_mem: Couldn't set nodata value for band\n");
+			RASTER_DEBUGF(3, "nodata value set to %f", GDALGetRasterNoDataValue(band, NULL));
 		}
 	}
+
+	/* necessary??? */
+	GDALFlushCache(ds);
 
 	return ds;
 }
@@ -5568,7 +5592,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 	uint32_t height = 0;
 	uint32_t numBands = 0;
 	int i = 0;
-	int *status = NULL;
+	int status;
 
 	GDALRasterBandH gdband = NULL;
 	GDALDataType gdpixtype = GDT_Unknown;
@@ -5681,8 +5705,8 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 		RASTER_DEBUGF(3, "Band dimensions (width x height): %d x %d", width, height);
 
 		/* nodata */
-		nodataval = GDALGetRasterNoDataValue(gdband, status);
-		if (NULL == status || !*status) {
+		nodataval = GDALGetRasterNoDataValue(gdband, &status);
+		if (!status) {
 			nodataval = 0;
 			hasnodata = 0;
 		}
@@ -5803,6 +5827,143 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 			rtdealloc(values);
 		}
 	}
+
+	return rast;
+}
+
+/**
+ * Return a transformed raster using GDALAutoCreateWarpedVRT()
+ *
+ * @param raster : raster to transform
+ * @param src_srs : the raster's coordinate system in OGC WKT or PROJ.4
+ * @param dst_srs : the transformed raster's coordinate system
+ * @param resample_alg : the resampling algorithm
+ * @param max_err : maximum error measured in input pixels permitted
+ *   (0.0 for exact calculations)
+ *
+ * @return the transformed raster
+ */
+rt_raster
+rt_raster_transform(rt_raster raster, char *src_srs, char *dst_srs,
+	GDALResampleAlg resamplealg, double max_err) {
+	GDALDriverH src_drv = NULL;
+	GDALDatasetH src_ds = NULL;
+	GDALWarpOptions *wopts = NULL;
+	GDALDatasetH dst_ds = NULL;
+
+	rt_raster rast = NULL;
+	rt_band band = NULL;
+	int i = 0;
+	int numBands = 0;
+	int hasnodata = 0;
+
+	RASTER_DEBUG(3, "starting");
+
+	assert(NULL != raster);
+	assert(NULL != src_srs);
+	assert(NULL != dst_srs);
+
+	/*
+		max_err must be gte zero
+
+		the value 0.125 is the default used in gdalwarp.cpp on line 283
+	*/
+	if (max_err < 0.) max_err = 0.125;
+	RASTER_DEBUGF(4, "max_err = %f", max_err);
+
+	/* load raster into a GDAL MEM dataset */
+	src_ds = rt_raster_to_gdal_mem(raster, src_srs, NULL, 0, &src_drv);
+	if (NULL == src_ds) {
+		rterror("rt_raster_transform: Unable to convert raster to GDAL MEM format\n");
+		if (NULL != src_drv) {
+			GDALDeregisterDriver(src_drv);
+			GDALDestroyDriver(src_drv);
+		}
+		return NULL;
+	}
+	RASTER_DEBUG(3, "raster loaded into GDAL MEM dataset");
+
+	/* set nodata mapping */
+	RASTER_DEBUG(3, "Setting nodata mapping");
+	numBands = rt_raster_get_num_bands(raster);
+	wopts = GDALCreateWarpOptions();
+	wopts->padfSrcNoDataReal = (double *) CPLMalloc(numBands * sizeof(double));
+	wopts->padfDstNoDataReal = (double *) CPLMalloc(numBands * sizeof(double));
+	if (NULL == wopts->padfSrcNoDataReal || NULL == wopts->padfDstNoDataReal) {
+		rterror("rt_raster_transform: Out of memory allocating nodata mapping\n");
+		GDALDestroyWarpOptions(wopts);
+		GDALDeregisterDriver(src_drv);
+		GDALDestroyDriver(src_drv);
+		return NULL;
+	}
+	for (i = 0; i < numBands; i++) {
+		band = rt_raster_get_band(raster, i);
+		if (!band) {
+			rterror("rt_raster_transform: Unable to process bands for nodata values\n");
+			GDALDestroyWarpOptions(wopts);
+			GDALDeregisterDriver(src_drv);
+			GDALDestroyDriver(src_drv);
+			return NULL;
+		}
+
+		if (!rt_band_get_hasnodata_flag(band)) {
+			/*
+				based on line 1004 of gdalwarp.cpp
+				the problem is that there is a chance that this number is a legitamate value
+			*/
+			wopts->padfSrcNoDataReal[i] = -123456.789;
+			;
+		}
+		else {
+			hasnodata = 1;
+			wopts->padfSrcNoDataReal[i] = rt_band_get_nodata(band);
+			RASTER_DEBUGF(4, "Added nodata value %f for band %d", wopts->padfSrcNoDataReal[i], i);
+		}
+
+		wopts->padfDstNoDataReal[i] = wopts->padfSrcNoDataReal[i];
+	}
+	if (!hasnodata) {
+		RASTER_DEBUG(3, "No nodata mapping found");
+		GDALDestroyWarpOptions(wopts);
+		wopts = NULL;
+	}
+
+	/*
+		for now, just use GDALAutoCreateWarpedVRT as it gets the job done
+		in the future, it may be better to go down the more flexible but challenging path
+		described in the "Creating the Output File" section of http://gdal.org/warptut.html
+	*/
+	RASTER_DEBUG(3, "Reprojecting raster");
+	dst_ds = GDALAutoCreateWarpedVRT(
+		src_ds,
+		NULL, dst_srs,
+		resamplealg, max_err,
+		wopts
+	);
+	if (NULL != wopts) GDALDestroyWarpOptions(wopts);
+	if (NULL == dst_ds) {
+		rterror("rt_raster_transform: Unable to transform raster\n");
+		GDALClose(src_ds);
+		GDALDeregisterDriver(src_drv);
+		GDALDestroyDriver(src_drv);
+		return NULL;
+	}
+
+	/* convert gdal dataset to raster */
+	RASTER_DEBUG(3, "Converting GDAL dataset to raster");
+	rast = rt_raster_from_gdal_dataset(dst_ds);
+
+	GDALClose(dst_ds);
+	GDALClose(src_ds);
+	GDALDeregisterDriver(src_drv);
+	GDALDestroyDriver(src_drv);
+	
+	if (NULL == rast) {
+		rterror("rt_raster_transform: Unable to transform raster\n");
+		return NULL;
+	}
+
+	RASTER_DEBUG(3, "done");
 
 	return rast;
 }
