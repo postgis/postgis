@@ -310,7 +310,6 @@ VALUES (1,
 			        <term><parameter>count </parameter><type>integer</type></term>
 			        <listitem><para>count of pixels in this bin.</para></listitem>
 			    </varlistentry>
-			 
 			</variablelist>
 		  </refsection>
 		   <refsection>
@@ -3467,7 +3466,7 @@ rid | exclude_nodata | include_nodata
 					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 					<paramdef choice="opt"><type>integer </type> <parameter>bins=0</parameter></paramdef>
 					<paramdef choice="opt"><type>double precision[] </type> <parameter>width=NULL</parameter></paramdef>
-					<paramdef choice="opt"><type>boolean </type> <parameter>right=true</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>right=false</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -3476,7 +3475,7 @@ rid | exclude_nodata | include_nodata
 					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>bins</parameter></paramdef>
 					<paramdef choice="opt"><type>double precision[] </type> <parameter>width=NULL</parameter></paramdef>
-					<paramdef choice="opt"><type>boolean </type> <parameter>right=true</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>right=false</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -3494,7 +3493,24 @@ rid | exclude_nodata | include_nodata
 				<title>Description</title>
 				
 				<para>Returns set of <varname>histogram</varname> records consisting of min,max, count, percent for a given raster band for each bin. If no band is specified <varname>nband</varname> defaults to 1. </para> 
-				<note><para>By default only considers pixel values not equal to the <varname>nodata</varname> value . Set <varname>exclude_nodata_value</varname> to false to get count all pixels</para>. By default will sample all pixels. To get faster response, set <varname>sample_percent</varname> to lower than 1</note>
+				<note><para>By default only considers pixel values not equal to the <varname>nodata</varname> value . Set <varname>exclude_nodata_value</varname> to false to get count all pixels</para>.</note>
+				
+				<variablelist>
+                    <varlistentry>
+                        <term><parameter>width </parameter><type>double precision[]</type></term>
+                        <listitem><para>width: an array indicating the width of each category/bin. If the number of bins is greater than the number of widths, the widths are repeated. </para>
+                        <para>Example: 9 bins, widths are [a, b, c] will have the output be [a, b, c, a, b, c, a, b, c]</para></listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term><parameter>bin </parameter><type>integer</type></term>
+                        <listitem><para>Number of breakouts -- this is the number of records you'll get back from the function if specified. If not specified 
+                            then the number of breakouts is autocomputed.</para></listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term><parameter>right </parameter><type>boolean</type></term>
+                        <listitem><para>compute the histogram from the right rather than from the left (default). This changes the criteria for evaluating a value x from [a, b) to (a, b]</para></listitem>
+                    </varlistentry>
+                </variablelist>
 				<para>Availability: 2.0.0 </para>
 			</refsection>
 				
