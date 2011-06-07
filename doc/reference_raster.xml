@@ -3486,6 +3486,14 @@ rid | exclude_nodata | include_nodata
 					<paramdef><type>integer </type> <parameter>bins</parameter></paramdef>
 					<paramdef><type>boolean </type> <parameter>right</parameter></paramdef>
 				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>SETOF histogram <function>ST_Histogram</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>bins</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>right</parameter></paramdef>
+				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 		
