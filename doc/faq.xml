@@ -12,10 +12,10 @@
         <para>A lot of deprecated functions were removed from the PostGIS code base in PostGIS 2.0.  This has affected applications in addition to third-party tools such as
             Geoserver, MapServer, QuantumGIS, and OpenJump to name a few.  There are a couple of ways to resolve this. For the third-party apps, you can try to upgrade to the latest versions
                 of these which have many of these issues fixed.  For your own code, you can change your code to not use the functions removed.  Most of these functions are non ST_ aliases of ST_Union, ST_Length etc.
-               and as a last resort, install the whole of legacy.sql or just the 
-                portions of legacy.sql you need.</para>
+               and as a last resort, install the whole of <varname>legacy.sql</varname> or just the 
+                portions of <varname>legacy.sql</varname> you need.</para>
         
-         <para>The legacy.sql file is located in the same folder as postgis.sql.  You can install this file after you have installed postgis.sql and spatial_ref_sys.sql
+         <para>The <varname>legacy.sql</varname> file is located in the same folder as postgis.sql.  You can install this file after you have installed postgis.sql and spatial_ref_sys.sql
             to get back all the 200 some-odd old functions we removed.</para>
       </answer>
     </qandaentry>
@@ -82,12 +82,15 @@ SELECT MAX(ST_NPoints(geom)) FROM sometable;</programlisting>
       </question>
 
       <answer>
-        <para>Short Answer: geography is a new data type that supports long range distances measurements.  If
+        <para>Short Answer: geography is a new data type that supports long range distances measurements, but most computations on it are currently
+        slower than they are on geometry.  If
 		 you use geography -- you don't need to learn much about planar coordinate systems. Geography is generally best
 		 if all you care about is measuring distances and lengths and you have data from all over the world.
-		 Geometry datatype is an older data type that has many functions supporting it and enjoys great support from third party tools.
-		 Its best if you are pretty comfortable with spatial reference systems or you are dealing with localized data
+		 Geometry data type is an older data type that has many more functions supporting it, enjoys greater support from third party tools,
+		 and operations on it are generally faster -- sometimes as much as 10 fold faster for larger geometries.
+		 Geometry is best if you are pretty comfortable with spatial reference systems or you are dealing with localized data
 		  where all your data fits in a single <link linkend="spatial_ref_sys">spatial reference system (SRID)</link>, or you need to do a lot of spatial processing.
+		  Note: It is fairly easy to do one-off conversions between the two types to gain the benefits of each.
 		  Refer to <xref linkend="PostGIS_TypeFunctionMatrix" /> to see what is currently supported and what is not.
 		 </para>
 		 <para>
