@@ -3421,6 +3421,119 @@ rid | exclude_nodata | include_nodata
 			</refsection>
 		</refentry>
 		
+		<refentry id="RT_ST_Histogram">
+			<refnamediv>
+				<refname>ST_Histogram</refname>
+				<refpurpose>Returns a set of histogram summarizing a raster's data distribution separate bin ranges. Bin defaults to 1 if not specified.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>SETOF histogram <function>ST_Histogram</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>bins=0</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision[] </type> <parameter>width=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>right=true</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>SETOF histogram <function>ST_Histogram</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>bins</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision[] </type> <parameter>width=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>right=true</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>SETOF histogram <function>ST_Histogram</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>bins</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>right</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns set of <varname>histogram</varname> records consisting of min,max, count, percent for a given raster band for each bin. If no band is specified <varname>nband</varname> defaults to 1. </para> 
+				<note><para>By default only considers pixel values not equal to the <varname>nodata</varname> value . Set <varname>exclude_nodata_value</varname> to false to get count all pixels</para>. By default will sample all pixels. To get faster response, set <varname>sample_percent</varname> to lower than 1</note>
+				<para>Availability: 2.0.0 </para>
+			</refsection>
+				
+			<refsection>
+				<title>Example: Single raster tile - compute histograms for bands 1, 2, 3 and 0 bins</title>
+				<programlisting>SELECT band, (stats).*
+FROM (SELECT rid, band, ST_Histogram(rast, band) As stats
+    FROM dummy_rast CROSS JOIN generate_series(1,3) As band
+     WHERE rid=2) As foo;
+				    
+ band |  min  |  max  | count | percent
+------+-------+-------+-------+---------
+    1 |   249 |   250 |     2 |    0.08
+    1 |   250 |   251 |     2 |    0.08
+    1 |   251 |   252 |     1 |    0.04
+    1 |   252 |   253 |     2 |    0.08
+    1 |   253 |   254 |    18 |    0.72
+    2 |    78 | 113.2 |    11 |    0.44
+    2 | 113.2 | 148.4 |     4 |    0.16
+    2 | 148.4 | 183.6 |     4 |    0.16
+    2 | 183.6 | 218.8 |     1 |    0.04
+    2 | 218.8 |   254 |     5 |     0.2
+    3 |    62 | 100.4 |    11 |    0.44
+    3 | 100.4 | 138.8 |     5 |     0.2
+    3 | 138.8 | 177.2 |     4 |    0.16
+    3 | 177.2 | 215.6 |     1 |    0.04
+    3 | 215.6 |   254 |     4 |    0.16</programlisting>	
+			</refsection>
+			
+			<refsection>
+				<title>Example: Just band 2 but for 10 bins</title>
+				<programlisting>SELECT (stats).*
+FROM (SELECT rid, ST_Histogram(rast, 2,6) As stats
+    FROM dummy_rast 
+     WHERE rid=2) As foo;
+				    
+    min     |    max     | count | percent
+------------+------------+-------+---------
+         78 | 107.333333 |     9 |    0.36
+ 107.333333 | 136.666667 |     6 |    0.24
+ 136.666667 |        166 |     0 |       0
+        166 | 195.333333 |     4 |    0.16
+ 195.333333 | 224.666667 |     1 |    0.04
+ 224.666667 |        254 |     5 |     0.2
+(6 rows)
+    
+-- Same as previous but we explicitly control the pixel value range of each bin.  
+-- buckets with no width specified are evenly distributed
+SELECT (stats).*
+FROM (SELECT rid, ST_Histogram(rast, 2,6,ARRAY[0.5,1,4,100,5]) As stats
+    FROM dummy_rast 
+     WHERE rid=2) As foo;
+     
+  min  |  max  | count | percent
+-------+-------+-------+----------
+    78 |  78.5 |     1 |     0.08
+  78.5 |  79.5 |     1 |     0.04
+  79.5 |  83.5 |     0 |        0
+  83.5 | 183.5 |    17 |   0.0068
+ 183.5 | 188.5 |     0 |        0
+ 188.5 |   254 |     6 | 0.003664
+(6 rows)</programlisting>	
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_Count" />, <xref linkend="RT_ST_SummaryStats" /></para>
+			</refsection>
+		</refentry>
+		
 		<refentry id="RT_ST_Quantile">
 			<refnamediv>
 				<refname>ST_Quantile</refname>
