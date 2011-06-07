@@ -288,6 +288,37 @@ VALUES (1,
             </refsection>
 		</refentry>
 		
+		<refentry id="histogram">
+		  <refnamediv>
+			<refname>histogram</refname>
+			<refpurpose>A composite type used as record output of the ST_Histogram and ST_ApproxHistogram functions. </refpurpose>
+		  </refnamediv>
+		  <refsection>
+			<title>Description</title>
+			<para>A composite type used as record outputs of the <xref linkend="RT_ST_Histogram" /><varname>ST_ApproxHistogram</varname> functions. Note that depending on <varname>exclude_nodata_value</varname> of function, may or may not contain nodata pixels.</para>
+			<para>Each histogram record in results corresponds to a bin for a selected raster band.</para>
+			<variablelist>
+			    <varlistentry>
+			        <term><parameter>min </parameter><type>double precision</type></term>
+			        <listitem><para>minimum pixel value in this bin</para></listitem>
+			    </varlistentry>
+			    <varlistentry>
+			        <term><parameter>max </parameter><type>double precision</type></term>
+			        <listitem><para>Maximum pixel value in this bin.</para></listitem>
+			    </varlistentry>
+			    	<varlistentry>
+			        <term><parameter>count </parameter><type>integer</type></term>
+			        <listitem><para>count of pixels in this bin.</para></listitem>
+			    </varlistentry>
+			 
+			</variablelist>
+		  </refsection>
+		   <refsection>
+                <title>See Also</title>
+                <para><xref linkend="RT_ST_Histogram" /></para>
+           </refsection>
+		</refentry>
+		
 		<refentry id="raster">
             <refnamediv>
                 <refname>raster</refname>
@@ -3530,7 +3561,7 @@ FROM (SELECT rid, ST_Histogram(rast, 2,6,ARRAY[0.5,1,4,100,5]) As stats
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_Count" />, <xref linkend="RT_ST_SummaryStats" /></para>
+				<para><xref linkend="histogram" />, <xref linkend="RT_ST_Count" />, <xref linkend="RT_ST_SummaryStats" /></para>
 			</refsection>
 		</refentry>
 		
