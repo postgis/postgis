@@ -3549,7 +3549,7 @@ FROM (SELECT rid, band, ST_Histogram(rast, band) As stats
 			</refsection>
 			
 			<refsection>
-				<title>Example: Just band 2 but for 10 bins</title>
+				<title>Example: Just band 2 but for 6 bins</title>
 				<programlisting>SELECT (stats).*
 FROM (SELECT rid, ST_Histogram(rast, 2,6) As stats
     FROM dummy_rast 
@@ -3566,7 +3566,6 @@ FROM (SELECT rid, ST_Histogram(rast, 2,6) As stats
 (6 rows)
     
 -- Same as previous but we explicitly control the pixel value range of each bin.  
--- buckets with no width specified are evenly distributed
 SELECT (stats).*
 FROM (SELECT rid, ST_Histogram(rast, 2,6,ARRAY[0.5,1,4,100,5]) As stats
     FROM dummy_rast 
