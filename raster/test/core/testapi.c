@@ -1057,15 +1057,15 @@ static void testBandStats() {
 	CHECK(quantile);
 	rtdealloc(quantile);
 
-	histogram = (rt_histogram) rt_band_get_histogram(stats, 0, NULL, 0, 0, &count);
+	histogram = (rt_histogram) rt_band_get_histogram(stats, 0, NULL, 0, 0, 0, 0, &count);
 	CHECK(histogram);
 	rtdealloc(histogram);
 
-	histogram = (rt_histogram) rt_band_get_histogram(stats, 0, NULL, 0, 1, &count);
+	histogram = (rt_histogram) rt_band_get_histogram(stats, 0, NULL, 0, 1, 0, 0, &count);
 	CHECK(histogram);
 	rtdealloc(histogram);
 
-	histogram = (rt_histogram) rt_band_get_histogram(stats, 0, bin_width, 1, 0, &count);
+	histogram = (rt_histogram) rt_band_get_histogram(stats, 0, bin_width, 1, 0, 0, 0, &count);
 	CHECK(histogram);
 	rtdealloc(histogram);
 
@@ -1084,7 +1084,7 @@ static void testBandStats() {
 	CHECK((count == 5));
 	rtdealloc(quantile);
 
-	histogram = (rt_histogram) rt_band_get_histogram(stats, 0, NULL, 0, 0, &count);
+	histogram = (rt_histogram) rt_band_get_histogram(stats, 0, NULL, 0, 0, 0, 0, &count);
 	CHECK(histogram);
 	rtdealloc(histogram);
 

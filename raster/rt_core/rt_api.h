@@ -471,6 +471,12 @@ rt_bandstats rt_band_get_summary_stats(rt_band band, int exclude_nodata_value,
  * @param bin_width: the width of each bin as an array
  * @param bin_width_count: number of values in bin_width
  * @param right: evaluate bins by (a,b] rather than default [a,b)
+ * @param min: user-defined minimum value of the histogram
+ *   a value less than the minimum value is not counted in any bins
+ *   if min = max, min and max are not used
+ * @param max: user-defined maximum value of the histogram
+ *   a value greater than the max value is not counted in any bins
+ *   if min = max, min and max are not used
  * @param rtn_count: set to the number of bins being returned
  *
  * @return the histogram of the data
@@ -478,7 +484,7 @@ rt_bandstats rt_band_get_summary_stats(rt_band band, int exclude_nodata_value,
 typedef struct rt_histogram_t* rt_histogram;
 rt_histogram rt_band_get_histogram(rt_bandstats stats,
 	int bin_count, double *bin_widths, int bin_widths_count,
-	int right, int *rtn_count);
+	int right, double min, double max, int *rtn_count);
 
 /**
  * Compute the default set of or requested quantiles for a set of data

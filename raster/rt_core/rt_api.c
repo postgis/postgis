@@ -1812,6 +1812,12 @@ struct rt_histogram_t {
  * @param bin_width: the width of each bin as an array
  * @param bin_width_count: number of values in bin_width
  * @param right: evaluate bins by (a,b] rather than default [a,b)
+ * @param min: user-defined minimum value of the histogram
+ *   a value less than the minimum value is not counted in any bins
+ *   if min = max, min and max are not used
+ * @param max: user-defined maximum value of the histogram
+ *   a value greater than the max value is not counted in any bins
+ *   if min = max, min and max are not used
  * @param rtn_count: set to the number of bins being returned
  *
  * @return the histogram of the data
@@ -1819,7 +1825,7 @@ struct rt_histogram_t {
 rt_histogram
 rt_band_get_histogram(rt_bandstats stats,
 	int bin_count, double *bin_width, int bin_width_count,
-	int right, int *rtn_count) {
+	int right, double min, double max, int *rtn_count) {
 	rt_histogram bins = NULL;
 	int init_width = 0;
 	int i;
@@ -1827,6 +1833,9 @@ rt_band_get_histogram(rt_bandstats stats,
 	double tmp;
 	double value;
 	int sum = 0;
+	int user_minmax = 0;
+	double qmin;
+	double qmax;
 
 #if POSTGIS_DEBUG_LEVEL > 0
 	clock_t start, stop;
@@ -1855,6 +1864,21 @@ rt_band_get_histogram(rt_bandstats stats,
 		}
 	}
 
+	/* ignore min and max parameters */
+	if (fabs(max - min) < FLT_EPSILON) {
+		qmin = stats->min;
+		qmax = stats->max;
+	}
+	else {
+		user_minmax = 1;
+		qmin = min;
+		qmax = max;
+		if (qmin > qmax) {
+			qmin = max;
+			qmax = min;
+		}
+	}
+
 	/* # of bins not provided */
 	if (bin_count <= 0) {
 		/*
@@ -1878,10 +1902,10 @@ rt_band_get_histogram(rt_bandstats stats,
 			else if (bin_width_count > 1) {
 				tmp = 0;
 				for (i = 0; i < bin_width_count; i++) tmp += bin_width[i];
-				bin_count = ceil((stats->max - stats->min) / tmp) * bin_width_count;
+				bin_count = ceil((qmax - qmin) / tmp) * bin_width_count;
 			}
 			else
-				bin_count = ceil((stats->max - stats->min) / bin_width[0]);
+				bin_count = ceil((qmax - qmin) / bin_width[0]);
 		}
 		/* set bin width count to zero so that one can be calculated */
 		else {
@@ -1890,7 +1914,7 @@ rt_band_get_histogram(rt_bandstats stats,
 	}
 
 	/* min and max the same */
-	if (fabs(stats->max - stats->min) < FLT_EPSILON)
+	if (fabs(qmax - qmin) < FLT_EPSILON)
 		bin_count = 1;
 
 	RASTER_DEBUGF(3, "bin_count = %d", bin_count); 
@@ -1905,8 +1929,8 @@ rt_band_get_histogram(rt_bandstats stats,
 
 		bins->count = stats->count;
 		bins->percent = -1;
-		bins->min = stats->min;
-		bins->max = stats->max;
+		bins->min = qmin;
+		bins->max = qmax;
 		bins->inc_min = bins->inc_max = 1;
 
 		*rtn_count = bin_count;
@@ -1927,7 +1951,7 @@ rt_band_get_histogram(rt_bandstats stats,
 			init_width = 1;
 		}
 
-		bin_width[0] = (stats->max - stats->min) / bin_count;
+		bin_width[0] = (qmax - qmin) / bin_count;
 	}
 
 	/* initialize bins */
@@ -1938,9 +1962,9 @@ rt_band_get_histogram(rt_bandstats stats,
 		return NULL;
 	}
 	if (!right)
-		tmp = stats->min;
+		tmp = qmin;
 	else
-		tmp = stats->max;
+		tmp = qmax;
 	for (i = 0; i < bin_count;) {
 		for (j = 0; j < bin_width_count; j++) {
 			bins[i].count = 0;
@@ -1970,15 +1994,15 @@ rt_band_get_histogram(rt_bandstats stats,
 		bins[bin_count - 1].inc_max = 1;
 
 		/* align last bin to the max value */
-		if (bins[bin_count - 1].max < stats->max)
-			bins[bin_count - 1].max = stats->max;
+		if (bins[bin_count - 1].max < qmax)
+			bins[bin_count - 1].max = qmax;
 	}
 	else {
 		bins[bin_count - 1].inc_min = 1;
 
 		/* align first bin to the min value */
-		if (bins[bin_count - 1].min > stats->min)
-			bins[bin_count - 1].min = stats->min;
+		if (bins[bin_count - 1].min > qmin)
+			bins[bin_count - 1].min = qmin;
 	}
 
 	/* process the values */
@@ -2002,6 +2026,7 @@ rt_band_get_histogram(rt_bandstats stats,
 				}
 			}
 		}
+		/* (a, b] */
 		else {
 			for (j = 0; j < bin_count; j++) {
 				if (
@@ -2020,11 +2045,22 @@ rt_band_get_histogram(rt_bandstats stats,
 		}
 	}
 
-	/* percents */
+	/*
+		percents or sum if user_minmax
+
+		if user_minmax != 0, bins[i].percent is not a percentage but rather the sum of counts for this histogram
+			as it is the the intent that the min and max parameters are used only when dealing with coverages
+		this may be a complete hack, maybe a better implementation is needed?
+	*/
 	for (i = 0; i < bin_count; i++) {
-		bins[i].percent = ((double) bins[i].count) / sum;
-		if (bin_width_count > 1)
-			bins[i].percent /= (bins[i].max - bins[i].min);
+		if (!user_minmax) {
+			bins[i].percent = ((double) bins[i].count) / sum;
+			if (bin_width_count > 1)
+				bins[i].percent /= (bins[i].max - bins[i].min);
+		}
+		else {
+			bins[i].percent = sum;
+		}
 	}
 
 #if POSTGIS_DEBUG_LEVEL > 0

@@ -734,12 +734,12 @@ CREATE OR REPLACE FUNCTION st_approxminmax(rastertable text, rastercolumn text, 
 CREATE TYPE histogram AS (
 	min double precision,
 	max double precision,
-	count integer,
+	count bigint,
 	percent double precision
 );
 
--- Cannot be strict as "width" can be NULL
-CREATE OR REPLACE FUNCTION _st_histogram(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1, bins int DEFAULT 0, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE)
+-- Cannot be strict as "width", "min" and "max" can be NULL
+CREATE OR REPLACE FUNCTION _st_histogram(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1, bins int DEFAULT 0, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE, min double precision DEFAULT NULL, max double precision DEFAULT NULL)
 	RETURNS SETOF histogram
 	AS 'MODULE_PATHNAME','RASTER_histogram'
 	LANGUAGE 'C' IMMUTABLE;
@@ -797,6 +797,134 @@ CREATE OR REPLACE FUNCTION st_approxhistogram(rast raster, nband int, sample_per
 	RETURNS SETOF histogram
 	AS $$ SELECT min, max, count, percent FROM _st_histogram($1, $2, TRUE, $3, $4, NULL, $5) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-- Cannot be strict as "width" can be NULL
+CREATE OR REPLACE FUNCTION _st_histogram(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1, bins int DEFAULT 0, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE)
+	RETURNS SETOF histogram
+	AS $$
+	DECLARE
+		curs refcursor;
+
+		ctable text;
+		ccolumn text;
+		rast raster;
+
+		covstats summarystats;
+		htgm histogram;
+	BEGIN		
+		-- nband
+		IF nband < 1 THEN
+			RAISE WARNING 'Invalid band index (must use 1-based). Returning NULL';
+			RETURN;
+		END IF;
+
+		-- rastertable and rastercolumn
+		IF rastertable IS NULL THEN
+			RAISE WARNING 'rastertable cannot be NULL. Returning NULL';
+			RETURN;
+		ELSEIF rastercolumn IS NULL THEN
+			RAISE WARNING 'rastercolumn cannot be NULL. Returning NULL';
+			RETURN;
+		END IF;
+
+		-- get coverage stats
+		SELECT count, sum, mean, stddev, min, max FROM st_summarystats(rastertable, rastercolumn, nband, exclude_nodata_value, sample_percent) INTO covstats;
+		IF covstats IS NULL THEN
+			RETURN;
+		END IF;
+
+		-- clean rastertable and rastercolumn
+		ctable := quote_ident(rastertable);
+		ccolumn := quote_ident(rastercolumn);
+
+		BEGIN
+			OPEN curs FOR EXECUTE 'SELECT '
+					|| ccolumn
+					|| ' FROM '
+					|| ctable
+					|| ' WHERE '
+					|| ccolumn
+					|| ' IS NOT NULL';
+		EXCEPTION
+			WHEN OTHERS THEN
+				RAISE WARNING 'Invalid table or column name. Returning NULL';
+				RETURN;
+		END;
+
+		LOOP
+			FETCH curs INTO rast;
+			EXIT WHEN NOT FOUND;
+
+			-- the value in percent is NOT a percent but rather the sum of counts for the histogram
+			FOR htgm IN SELECT * FROM _st_histogram(rast, nband, exclude_nodata_value, sample_percent, bins, width, "right", covstats.min, covstats.max) LOOP
+				IF htgm IS NULL THEN
+					CONTINUE;
+				END IF;
+				RAISE NOTICE 'htgm = %', htgm;
+				
+				RETURN NEXT htgm;
+			END LOOP;
+
+		END LOOP;
+
+		CLOSE curs;
+
+		RETURN;
+	END;
+	$$ LANGUAGE 'plpgsql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_histogram(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, bins int DEFAULT 0, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE)
+	RETURNS SETOF histogram
+	AS $$ SELECT min, max, sum(count)::bigint AS count, CASE WHEN sum(percent) > 0 THEN (sum(count) / sum(percent)) ELSE 0 END AS percent FROM _st_histogram($1, $2, $3, $4, 1, $5, $6, $7) GROUP BY 1, 2 ORDER BY 1, 2 $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_histogram(rastertable text, rastercolumn text, nband int, exclude_nodata_value boolean, bins int, right boolean)
+	RETURNS SETOF histogram
+	AS $$ SELECT min, max, count, percent FROM st_histogram($1, $2, $3, $4, $5, NULL, $6) $$
+	LANGUAGE 'sql' STABLE STRICT;
+
+-- Cannot be strict as "width" can be NULL
+CREATE OR REPLACE FUNCTION st_histogram(rastertable text, rastercolumn text, nband int, bins int, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE)
+	RETURNS SETOF histogram
+	AS $$ SELECT min, max, count, percent FROM st_histogram($1, $2, $3, TRUE, $4, $5, $6) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_histogram(rastertable text, rastercolumn text, nband int, bins int, right boolean)
+	RETURNS SETOF histogram
+	AS $$ SELECT min, max, count, percent FROM st_histogram($1, $2, $3, TRUE, $4, NULL, $5) $$
+	LANGUAGE 'sql' STABLE STRICT;
+
+-- Cannot be strict as "width" can be NULL
+CREATE OR REPLACE FUNCTION st_approxhistogram(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1, bins int DEFAULT 0, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE)
+	RETURNS SETOF histogram
+	AS $$ SELECT min, max, sum(count)::bigint AS count, CASE WHEN sum(percent) > 0 THEN (sum(count) / sum(percent)) ELSE 0 END AS percent FROM _st_histogram($1, $2, $3, $4, $5, $6, $7, $8) GROUP BY 1, 2 ORDER BY 1, 2 $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_approxhistogram(rastertable text, rastercolumn text, nband int, exclude_nodata_value boolean, sample_percent double precision, bins int, right boolean)
+	RETURNS SETOF histogram
+	AS $$ SELECT min, max, count, percent FROM st_approxhistogram($1, $2, $3, $4, $5, $6, NULL, $7) $$
+	LANGUAGE 'sql' STABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxhistogram(rastertable text, rastercolumn text, nband int, sample_percent double precision)
+	RETURNS SETOF histogram
+	AS $$ SELECT min, max, count, percent FROM st_approxhistogram($1, $2, $3, TRUE, $4, 0, NULL, FALSE) $$
+	LANGUAGE 'sql' STABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxhistogram(rastertable text, rastercolumn text, sample_percent double precision)
+	RETURNS SETOF histogram
+	AS $$ SELECT min, max, count, percent FROM st_approxhistogram($1, $2, 1, TRUE, $3, 0, NULL, FALSE) $$
+	LANGUAGE 'sql' STABLE STRICT;
+
+-- Cannot be strict as "width" can be NULL
+CREATE OR REPLACE FUNCTION st_approxhistogram(rastertable text, rastercolumn text, nband int, sample_percent double precision, bins int, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE)
+	RETURNS SETOF histogram
+	AS $$ SELECT min, max, count, percent FROM st_approxhistogram($1, $2, $3, TRUE, $4, $5, $6, $7) $$
+	LANGUAGE 'sql' STABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxhistogram(rastertable text, rastercolumn text, nband int, sample_percent double precision, bins int, right boolean)
+	RETURNS SETOF histogram
+	AS $$ SELECT min, max, count, percent FROM st_approxhistogram($1, $2, $3, TRUE, $4, $5, NULL, $6) $$
+	LANGUAGE 'sql' STABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_Quantile and ST_ApproxQuantile

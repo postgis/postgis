@@ -3140,6 +3140,8 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		int bin_width_count = 0;
 		double width = 0;
 		bool right = FALSE;
+		double min = 0;
+		double max = 0;
 		rt_bandstats stats = NULL;
 
 		int i;
@@ -3267,6 +3269,12 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		if (!PG_ARGISNULL(6))
 			right = PG_GETARG_BOOL(6);
 
+		/* min */
+		if (!PG_ARGISNULL(7)) min = PG_GETARG_FLOAT8(7);
+
+		/* max */
+		if (!PG_ARGISNULL(8)) max = PG_GETARG_FLOAT8(8);
+
 		/* get band */
 		band = rt_raster_get_band(raster, bandindex - 1);
 		if (!band) {
@@ -3285,7 +3293,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		}
 
 		/* get histogram */
-		hist = rt_band_get_histogram(stats, bin_count, bin_width, bin_width_count, right, &count);
+		hist = rt_band_get_histogram(stats, bin_count, bin_width, bin_width_count, right, min, max, &count);
 		if (bin_width_count) pfree(bin_width);
 		pfree(stats);
 		if (NULL == hist || !count) {
