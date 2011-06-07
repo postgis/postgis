@@ -310,6 +310,10 @@ VALUES (1,
 			        <term><parameter>count </parameter><type>integer</type></term>
 			        <listitem><para>count of pixels in this bin.</para></listitem>
 			    </varlistentry>
+			    	<varlistentry>
+			        <term><parameter>percent </parameter><type>double precision</type></term>
+			        <listitem><para>Percent of pixels of the overall population in this bin.</para></listitem>
+			    </varlistentry>
 			</variablelist>
 		  </refsection>
 		   <refsection>
