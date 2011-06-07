@@ -3523,7 +3523,7 @@ rid | exclude_nodata | include_nodata
 			</refsection>
 				
 			<refsection>
-				<title>Example: Single raster tile - compute histograms for bands 1, 2, 3 and 0 bins</title>
+				<title>Example: Single raster tile - compute histograms for bands 1, 2, 3 and autocompute bins</title>
 				<programlisting>SELECT band, (stats).*
 FROM (SELECT rid, band, ST_Histogram(rast, band) As stats
     FROM dummy_rast CROSS JOIN generate_series(1,3) As band
