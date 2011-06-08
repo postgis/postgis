@@ -940,7 +940,7 @@ CREATE OR REPLACE FUNCTION _st_histogram(rastertable text, rastercolumn text, nb
 				IF htgm IS NULL THEN
 					CONTINUE;
 				END IF;
-				RAISE NOTICE 'htgm = %', htgm;
+				--RAISE NOTICE 'htgm = %', htgm;
 				
 				RETURN NEXT htgm;
 			END LOOP;
