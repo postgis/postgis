@@ -1525,12 +1525,15 @@ struct rt_bandstats_t {
  * @param exclude_nodata_value: if non-zero, ignore nodata values
  * @param sample: percentage of pixels to sample
  * @param inc_vals: flag to include values in return struct
+ * @param cK: number of pixels counted thus far in coverage
+ * @param cM: M component of 1-pass stddev for coverage
+ * @param cQ: Q component of 1-pass stddev for coverage
  *
  * @return the summary statistics for a band
  */
 rt_bandstats
 rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
-	int inc_vals) {
+	int inc_vals, uint64_t *cK, double *cM, double *cQ) {
 	uint8_t *data = NULL;
 	uint32_t x = 0;
 	uint32_t y = 0;
@@ -1710,8 +1713,21 @@ rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
 						M = value;
 					}
 					else {
-						Q = Q + (((k  - 1) * pow(value - M, 2)) / k);
-						M = M + ((value - M ) / k);
+						Q += (((k  - 1) * pow(value - M, 2)) / k);
+						M += ((value - M ) / k);
+					}
+
+					/* coverage one-pass standard deviation */
+					if (NULL != cK) {
+						(*cK)++;
+						if (*cK == 1) {
+							*cQ = 0;
+							*cM = value;
+						}
+						else {
+							*cQ += (((*cK  - 1) * pow(value - *cM, 2)) / *cK);
+							*cM += ((value - *cM ) / *cK);
+						}
 					}
 
 					/* min/max */

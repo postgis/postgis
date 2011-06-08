@@ -456,13 +456,16 @@ int rt_band_check_is_nodata(rt_band band);
  * @param exclude_nodata_value: if non-zero, ignore nodata values
  * @param sample: percentage of pixels to sample
  * @param inc_vals: flag to include values in return struct
+ * @param cK: number of pixels counted thus far in coverage
+ * @param cM: M component of 1-pass stddev for coverage
+ * @param cQ: Q component of 1-pass stddev for coverage
  *
  * @return the summary statistics for a band
  */
 typedef struct rt_bandstats_t* rt_bandstats;
 rt_bandstats rt_band_get_summary_stats(rt_band band, int exclude_nodata_value,
-	double sample, int inc_vals);
-
+	double sample, int inc_vals, uint64_t *cK, double *cM, double *cQ);
+	
 /**
  * Count the distribution of data
  *

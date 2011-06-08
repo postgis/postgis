@@ -2945,12 +2945,18 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 	bool exclude_nodata_value = TRUE;
 	int num_bands = 0;
 	double sample = 0;
+	int cstddev = 0;
+	uint64_t cK = 0;
+	double cM = 0;
+	double cQ = 0;
 	rt_bandstats stats = NULL;
 
 	TupleDesc tupdesc;
 	AttInMetadata *attinmeta;
 
-	char **values;
+	int i = 0;
+	char **values = NULL;
+	int values_length = 0;
 	HeapTuple tuple;
 	Datum result;
 
@@ -2992,6 +2998,14 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 	else
 		sample = 1;
 
+	/* one-pass standard deviation variables */
+	if (PG_NARGS()> 4) {
+		cstddev = 1;
+		if (!PG_ARGISNULL(4)) cK = PG_GETARG_INT64(4);
+		if (!PG_ARGISNULL(5)) cM = PG_GETARG_FLOAT8(5);
+		if (!PG_ARGISNULL(6)) cQ = PG_GETARG_FLOAT8(6);
+	}
+
 	/* get band */
 	band = rt_raster_get_band(raster, bandindex - 1);
 	if (!band) {
@@ -3001,7 +3015,10 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 	}
 
 	/* we don't need the raw values, hence the zero parameter */
-	stats = rt_band_get_summary_stats(band, (int) exclude_nodata_value, sample, 0);
+	if (!cstddev)
+		stats = rt_band_get_summary_stats(band, (int) exclude_nodata_value, sample, 0, NULL, NULL, NULL);
+	else
+		stats = rt_band_get_summary_stats(band, (int) exclude_nodata_value, sample, 0, &cK, &cM, &cQ);
 	rt_band_destroy(band);
 	rt_raster_destroy(raster);
 	if (NULL == stats) {
@@ -3031,7 +3048,11 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 	 * This should be an array of C strings which will
 	 * be processed later by the type input functions.
 	 */
-	values = (char **) palloc(6 * sizeof(char *));
+	if (!cstddev)
+		values_length = 6;
+	else
+		values_length = 8;
+	values = (char **) palloc(values_length * sizeof(char *));
 
 	values[0] = (char *) palloc(sizeof(char) * (MAX_INT_CHARLEN + 1));
 	values[1] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
@@ -3039,6 +3060,10 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 	values[3] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
 	values[4] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
 	values[5] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
+	if (cstddev) {
+		values[6] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
+		values[7] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
+	}
 
 	snprintf(
 		values[0],
@@ -3076,6 +3101,20 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 		"%f",
 		stats->max
 	);
+	if (cstddev) {
+		snprintf(
+			values[6],
+			sizeof(char) * (MAX_DBL_CHARLEN + 1),
+			"%f",
+			cM
+		);
+		snprintf(
+			values[7],
+			sizeof(char) * (MAX_DBL_CHARLEN + 1),
+			"%f",
+			cQ
+		);
+	}
 
 	/* build a tuple */
 	tuple = BuildTupleFromCStrings(attinmeta, values);
@@ -3084,12 +3123,7 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 	result = HeapTupleGetDatum(tuple);
 
 	/* clean up */
-	pfree(values[5]);
-	pfree(values[4]);
-	pfree(values[3]);
-	pfree(values[2]);
-	pfree(values[1]);
-	pfree(values[0]);
+	for (i = 0; i < values_length; i++) pfree(values[i]);
 	pfree(values);
 	pfree(stats);
 
@@ -3284,7 +3318,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		}
 
 		/* get stats */
-		stats = rt_band_get_summary_stats(band, (int) exclude_nodata_value, sample, 1);
+		stats = rt_band_get_summary_stats(band, (int) exclude_nodata_value, sample, 1, NULL, NULL, NULL);
 		rt_band_destroy(band);
 		rt_raster_destroy(raster);
 		if (NULL == stats || NULL == stats->values) {
@@ -3566,7 +3600,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		}
 
 		/* get stats */
-		stats = rt_band_get_summary_stats(band, (int) exclude_nodata_value, sample, 1);
+		stats = rt_band_get_summary_stats(band, (int) exclude_nodata_value, sample, 1, NULL, NULL, NULL);
 		rt_band_destroy(band);
 		rt_raster_destroy(raster);
 		if (NULL == stats || NULL == stats->values) {

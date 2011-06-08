@@ -290,6 +290,14 @@ CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, sample_percent dou
 	AS $$ SELECT count, sum, mean, stddev, min, max FROM st_summarystats($1, 1, TRUE, $2) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
+-- "hidden" function for use by ST_SummaryStats for coverage tables
+CREATE OR REPLACE FUNCTION _st_summarystats(
+	rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1, k bigint DEFAULT NULL, M double precision DEFAULT NULL, Q double precision DEFAULT NULL,
+	OUT count bigint, OUT sum double precision, OUT mean double precision, OUT stddev double precision, OUT min double precision, OUT max double precision, OUT "M" double precision, OUT "Q" double precision
+)
+	AS 'MODULE_PATHNAME','RASTER_summaryStats'
+	LANGUAGE 'C' IMMUTABLE;
+
 CREATE OR REPLACE FUNCTION st_summarystats(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1)
 	RETURNS summarystats
 	AS $$
@@ -299,12 +307,21 @@ CREATE OR REPLACE FUNCTION st_summarystats(rastertable text, rastercolumn text, 
 		ctable text;
 		ccolumn text;
 		rast raster;
-		stats summarystats;
 		rtn summarystats;
+
+		tcount bigint;
+		tsum double precision;
+		tmean double precision;
+		tstddev double precision;
+		tmin double precision;
+		tmax double precision;
+
+		cK bigint;
+		cM double precision;
+		cQ double precision;
 
 		avg double precision;
 		wavg double precision;
-		tmp double precision;
 	BEGIN		
 		-- nband
 		IF nband < 1 THEN
@@ -338,51 +355,61 @@ CREATE OR REPLACE FUNCTION st_summarystats(rastertable text, rastercolumn text, 
 
 		avg := 0;
 		wavg := 0;
-		tmp := 0;
+		cK := 0;
+		cM := 0;
+		cQ := 0;
 		LOOP
 			FETCH curs INTO rast;
 			EXIT WHEN NOT FOUND;
 
-			SELECT count, sum, mean, stddev, min, max FROM st_summarystats(rast, nband, exclude_nodata_value, sample_percent) INTO stats;
-			IF stats IS NULL OR stats.count < 1 THEN
+			SELECT count, sum, mean, stddev, min, max, "M", "Q"
+				INTO tcount, tsum, tmean, tstddev, tmin, tmax, cM, cQ
+				FROM _st_summarystats(rast, nband, exclude_nodata_value, sample_percent, cK, cM, cQ);
+			IF tcount < 1 THEN
 				CONTINUE;
 			END IF;
-			--RAISE NOTICE 'stats = %', stats;
 
-			avg := avg + stats.sum; -- not the mean
-			wavg := wavg + (stats.count * stats.mean); -- not the mean
-			-- sum of "sum of squares"
-			IF sample_percent > 0 AND sample_percent < 1 THEN
-				tmp := tmp + (power(stats.stddev, 2) * (stats.count - 1));
-			ELSE
-				tmp := tmp + (power(stats.stddev, 2) * stats.count);
-			END IF;
+			avg := avg + tsum; -- not the mean
+			wavg := wavg + (tcount * tmean); -- not the mean
 
 			IF rtn.count IS NULL THEN
-				rtn := stats;
+				rtn.count := tcount;
+				rtn.sum := tsum;
+				rtn.stddev := -1;
+				rtn.mean := tmean;
+				rtn.min := tmin;
+				rtn.max := tmax;
 			ELSE
-				rtn.count := rtn.count + stats.count;
-				rtn.sum := rtn.sum + stats.sum;
+				rtn.count := rtn.count + tcount;
+				rtn.sum := rtn.sum + tsum;
 				
-				IF stats.min < rtn.min THEN
-					rtn.min := stats.min;
+				IF tmin < rtn.min THEN
+					rtn.min := tmin;
 				END IF;
-				IF stats.max > rtn.max THEN
-					rtn.max := stats.max;
+				IF tmax > rtn.max THEN
+					rtn.max := tmax;
 				END IF;
 			END IF;
 
+			cK := rtn.count;
 		END LOOP;
 
 		CLOSE curs;
 
-		-- mean and cumulative stddev
+		-- mean and stddev
 		IF rtn.count IS NOT NULL AND rtn.count > 0 THEN
 			rtn.mean := avg / rtn.count;
 			wavg := wavg / rtn.count;
 			--RAISE NOTICE 'straight avg = %', avg;
 			--RAISE NOTICE 'weighted avg = %', wavg;
-			rtn.stddev := sqrt(tmp / rtn.count);
+
+			/* sample deviation */
+			IF sample_percent > 0 AND sample_percent < 1 THEN
+				rtn.stddev := sqrt(cQ / (rtn.count - 1));
+			/* standard deviation */
+			ELSE
+				rtn.stddev := sqrt(cQ / rtn.count);
+			END IF;
 		END IF;
 
 		RETURN rtn;
@@ -475,7 +502,7 @@ CREATE OR REPLACE FUNCTION _st_count(rastertable text, rastercolumn text, nband 
 		stats summarystats;
 
 		rtn bigint;
-	BEGIN		
+	BEGIN
 		-- nband
 		IF nband < 1 THEN
 			RAISE WARNING 'Invalid band index (must use 1-based). Returning NULL';
@@ -908,7 +935,7 @@ CREATE OR REPLACE FUNCTION _st_histogram(rastertable text, rastercolumn text, nb
 		END IF;
 
 		-- get coverage stats
-		SELECT count, sum, mean, stddev, min, max FROM st_summarystats(rastertable, rastercolumn, nband, exclude_nodata_value, sample_percent) INTO covstats;
+		SELECT count, sum, mean, stddev, min, max INTO covstats FROM st_summarystats(rastertable, rastercolumn, nband, exclude_nodata_value, sample_percent);
 		IF covstats IS NULL THEN
 			RETURN;
 		END IF;
