@@ -361,7 +361,8 @@ CREATE OR REPLACE FUNCTION st_summarystats(rastertable text, rastercolumn text, 
 			IF rtn.count IS NULL THEN
 				rtn := stats;
 			ELSE
-				rtn.count = rtn.count + stats.count;
+				rtn.count := rtn.count + stats.count;
+				rtn.sum := rtn.sum + stats.sum;
 				
 				IF stats.min < rtn.min THEN
 					rtn.min := stats.min;
@@ -416,64 +417,143 @@ CREATE OR REPLACE FUNCTION st_approxsummarystats(rastertable text, rastercolumn 
 -----------------------------------------------------------------------
 -- ST_Count and ST_ApproxCount
 -----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION _st_count(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1)
+	RETURNS bigint
+	AS $$
+	DECLARE
+		rtn bigint;
+	BEGIN
+		IF exclude_nodata_value IS FALSE THEN
+			rtn := ST_Width(rast) * ST_Height(rast);
+		ELSE
+			SELECT count INTO rtn FROM st_summarystats($1, $2, $3, $4);
+		END IF;
+
+		RETURN rtn;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
 CREATE OR REPLACE FUNCTION st_count(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE)
 	RETURNS bigint
-	AS $$ SELECT count FROM st_summarystats($1, $2, $3, 1) $$
+	AS $$ SELECT _st_count($1, $2, $3, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_count(rast raster, exclude_nodata_value boolean)
 	RETURNS bigint
-	AS $$ SELECT count FROM st_summarystats($1, 1, $2, 1) $$
+	AS $$ SELECT _st_count($1, 1, $2, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxcount(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
 	RETURNS bigint
-	AS $$ SELECT count FROM st_summarystats($1, $2, $3, $4) $$
+	AS $$ SELECT _st_count($1, $2, $3, $4) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxcount(rast raster, nband int, sample_percent double precision)
 	RETURNS bigint
-	AS $$ SELECT count FROM st_summarystats($1, $2, TRUE, $3) $$
+	AS $$ SELECT _st_count($1, $2, TRUE, $3) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxcount(rast raster, exclude_nodata_value boolean, sample_percent double precision DEFAULT 0.1)
 	RETURNS bigint
-	AS $$ SELECT count FROM st_summarystats($1, 1, $2, $3) $$
+	AS $$ SELECT _st_count($1, 1, $2, $3) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxcount(rast raster, sample_percent double precision)
 	RETURNS bigint
-	AS $$ SELECT count FROM st_summarystats($1, 1, TRUE, $2) $$
+	AS $$ SELECT _st_count($1, 1, TRUE, $2) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION _st_count(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1)
+	RETURNS bigint
+	AS $$
+	DECLARE
+		curs refcursor;
+
+		ctable text;
+		ccolumn text;
+		rast raster;
+		stats summarystats;
+
+		rtn bigint;
+	BEGIN		
+		-- nband
+		IF nband < 1 THEN
+			RAISE WARNING 'Invalid band index (must use 1-based). Returning NULL';
+			RETURN NULL;
+		END IF;
+
+		-- sample percent
+		IF sample_percent < 0 OR sample_percent > 1 THEN
+			RAISE WARNING 'Invalid sample percentage (must be between 0 and 1). Returning NULL';
+			RETURN NULL;
+		END IF;
+
+		-- exclude_nodata_value IS TRUE
+		IF exclude_nodata_value IS TRUE THEN
+			SELECT count INTO rtn FROM st_summarystats($1, $2, $3, $4, $5);
+			RETURN rtn;
+		END IF;
+
+		-- clean rastertable and rastercolumn
+		ctable := quote_ident(rastertable);
+		ccolumn := quote_ident(rastercolumn);
+
+		BEGIN
+			OPEN curs FOR EXECUTE 'SELECT '
+					|| ccolumn
+					|| ' FROM '
+					|| ctable
+					|| ' WHERE '
+					|| ccolumn
+					|| ' IS NOT NULL';
+		EXCEPTION
+			WHEN OTHERS THEN
+				RAISE WARNING 'Invalid table or column name. Returning NULL';
+				RETURN NULL;
+		END;
+
+		rtn := 0;
+		LOOP
+			FETCH curs INTO rast;
+			EXIT WHEN NOT FOUND;
+
+			rtn := rtn + (ST_Width(rast) * ST_Height(rast));
+		END LOOP;
+
+		CLOSE curs;
+
+		RETURN rtn;
+	END;
+	$$ LANGUAGE 'plpgsql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_count(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE)
 	RETURNS bigint
-	AS $$ SELECT count FROM st_summarystats($1, $2, $3, $4, 1) $$
+	AS $$ SELECT _st_count($1, $2, $3, $4, 1) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_count(rastertable text, rastercolumn text, exclude_nodata_value boolean)
 	RETURNS bigint
-	AS $$ SELECT count FROM st_summarystats($1, $2, 1, $3, 1) $$
+	AS $$ SELECT _st_count($1, $2, 1, $3, 1) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
 	RETURNS bigint
-	AS $$ SELECT count FROM st_summarystats($1, $2, $3, $4, $5) $$
+	AS $$ SELECT _st_count($1, $2, $3, $4, $5) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, nband int, sample_percent double precision)
 	RETURNS bigint
-	AS $$ SELECT count FROM st_summarystats($1, $2, $3, TRUE, $4) $$
+	AS $$ SELECT _st_count($1, $2, $3, TRUE, $4) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, exclude_nodata_value boolean, sample_percent double precision DEFAULT 0.1)
 	RETURNS bigint
-	AS $$ SELECT count FROM st_summarystats($1, $2, 1, $3, $4) $$
+	AS $$ SELECT _st_count($1, $2, 1, $3, $4) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, sample_percent double precision)
 	RETURNS bigint
-	AS $$ SELECT count FROM st_summarystats($1, $2, 1, TRUE, $3) $$
+	AS $$ SELECT _st_count($1, $2, 1, TRUE, $3) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
 -----------------------------------------------------------------------
