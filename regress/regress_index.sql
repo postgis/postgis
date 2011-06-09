@@ -5,7 +5,7 @@
 
 -- GiST index
 
-CREATE INDEX quick_gist on test using gist (the_geom gist_geometry_ops);
+CREATE INDEX quick_gist on test using gist (the_geom);
 
  select num,ST_astext(the_geom) from test where the_geom && 'BOX3D(125 125,135 135)'::box3d order by num;
 
