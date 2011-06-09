@@ -222,6 +222,9 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS);
 /* transform a raster to a new projection */
 Datum RASTER_transform(PG_FUNCTION_ARGS);
 
+/* get raster's meta data */
+Datum RASTER_metadata(PG_FUNCTION_ARGS);
+
 /* Replace function taken from
  * http://ubuntuforums.org/showthread.php?s=aa6f015109fd7e4c7e30d2fd8b717497&t=141670&page=3
  */
@@ -4946,6 +4949,182 @@ Datum RASTER_transform(PG_FUNCTION_ARGS)
 
 	SET_VARSIZE(pgrast, pgrast->size);
 	PG_RETURN_POINTER(pgrast);
+}
+
+/**
+ * Get raster's meta data
+ */
+PG_FUNCTION_INFO_V1(RASTER_metadata);
+Datum RASTER_metadata(PG_FUNCTION_ARGS) {
+	rt_pgraster *pgraster = NULL;
+	rt_raster raster = NULL;
+
+	uint16_t numBands;
+	double scaleX;
+	double scaleY;
+	double ipX;
+	double ipY;
+	double skewX;
+	double skewY;
+	int32_t srid;
+	uint16_t width;
+	uint16_t height;
+
+	TupleDesc tupdesc;
+	AttInMetadata *attinmeta;
+
+	int i = 0;
+	char **values = NULL;
+	int values_length = 10;
+	HeapTuple tuple;
+	Datum result;
+
+	POSTGIS_RT_DEBUG(3, "RASTER_metadata: Starting");
+
+	/* pgraster is null, return null */
+	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	/* raster */
+	/* TODO: can be optimized to only detoast the header! */
+	raster = rt_raster_deserialize(pgraster);
+	if (!raster) {
+		elog(ERROR, "RASTER_transform: Could not deserialize raster");
+		PG_RETURN_NULL();
+	}
+
+	/* upper left x, y */
+	ipX = rt_raster_get_x_offset(raster);
+	ipY = rt_raster_get_y_offset(raster);
+
+	/* width, height */
+	width = rt_raster_get_width(raster);
+	height = rt_raster_get_height(raster);
+
+	/* scale x, y */
+	scaleX = rt_raster_get_x_scale(raster);
+	scaleY = rt_raster_get_y_scale(raster);
+
+	/* skew x, y */
+	skewX = rt_raster_get_x_skew(raster);
+	skewY = rt_raster_get_y_skew(raster);
+
+	/* srid */
+	srid = rt_raster_get_srid(raster);
+
+	/* numbands */
+	numBands = rt_raster_get_num_bands(raster);
+
+	rt_raster_destroy(raster);
+	PG_FREE_IF_COPY(pgraster, 0);
+
+	/* Build a tuple descriptor for our result type */
+	if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
+		ereport(ERROR, (
+			errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+			errmsg(
+				"function returning record called in context "
+				"that cannot accept type record"
+			)
+		));
+	}
+
+	/*
+	 * generate attribute metadata needed later to produce tuples from raw
+	 * C strings
+	 */
+	attinmeta = TupleDescGetAttInMetadata(tupdesc);
+
+	/*
+	 * Prepare a values array for building the returned tuple.
+	 * This should be an array of C strings which will
+	 * be processed later by the type input functions.
+	 */
+	values = (char **) palloc(values_length * sizeof(char *));
+
+	values[0] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
+	values[1] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
+	values[2] = (char *) palloc(sizeof(char) * (MAX_INT_CHARLEN + 1));
+	values[3] = (char *) palloc(sizeof(char) * (MAX_INT_CHARLEN + 1));
+	values[4] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
+	values[5] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
+	values[6] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
+	values[7] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
+	values[8] = (char *) palloc(sizeof(char) * (MAX_INT_CHARLEN + 1));
+	values[9] = (char *) palloc(sizeof(char) * (MAX_INT_CHARLEN + 1));
+
+	snprintf(
+		values[0],
+		sizeof(char) * (MAX_DBL_CHARLEN + 1),
+		"%f",
+		ipX
+	);
+	snprintf(
+		values[1],
+		sizeof(char) * (MAX_DBL_CHARLEN + 1),
+		"%f",
+		ipY
+	);
+	snprintf(
+		values[2],
+		sizeof(char) * (MAX_INT_CHARLEN + 1),
+		"%d",
+		width
+	);
+	snprintf(
+		values[3],
+		sizeof(char) * (MAX_INT_CHARLEN + 1),
+		"%d",
+		height
+	);
+	snprintf(
+		values[4],
+		sizeof(char) * (MAX_DBL_CHARLEN + 1),
+		"%f",
+		scaleX
+	);
+	snprintf(
+		values[5],
+		sizeof(char) * (MAX_DBL_CHARLEN + 1),
+		"%f",
+		scaleY
+	);
+	snprintf(
+		values[6],
+		sizeof(char) * (MAX_DBL_CHARLEN + 1),
+		"%f",
+		skewX
+	);
+	snprintf(
+		values[7],
+		sizeof(char) * (MAX_DBL_CHARLEN + 1),
+		"%f",
+		skewY
+	);
+	snprintf(
+		values[8],
+		sizeof(char) * (MAX_INT_CHARLEN + 1),
+		"%d",
+		srid
+	);
+	snprintf(
+		values[9],
+		sizeof(char) * (MAX_INT_CHARLEN + 1),
+		"%d",
+		numBands
+	);
+
+	/* build a tuple */
+	tuple = BuildTupleFromCStrings(attinmeta, values);
+
+	/* make the tuple into a datum */
+	result = HeapTupleGetDatum(tuple);
+
+	/* clean up */
+	for (i = 0; i < values_length; i++) pfree(values[i]);
+	pfree(values);
+
+	PG_RETURN_DATUM(result);
 }
 
 /* ---------------------------------------------------------------- */

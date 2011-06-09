@@ -133,31 +133,21 @@ CREATE OR REPLACE FUNCTION st_width(raster)
     AS 'MODULE_PATHNAME','RASTER_getWidth'
     LANGUAGE 'C' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_metadata(rast raster,
-                                       OUT upperleftx float8,
-                                       OUT upperlefty float8,
-                                       OUT width int,
-                                       OUT height int,
-                                       OUT scalex float8,
-                                       OUT scaley float8,
-                                       OUT skewx float8,
-                                       OUT skewy float8,
-                                       OUT srid int,
-                                       OUT numbands int
-                                      )
-    AS $$
-    SELECT st_upperleftx($1),
-           st_upperlefty($1),
-           st_width($1),
-           st_height($1),
-           st_scalex($1),
-           st_scaley($1),
-           st_skewx($1),
-           st_skewy($1),
-           st_srid($1),
-           st_numbands($1)
-    $$
-    LANGUAGE SQL IMMUTABLE STRICT;
+CREATE OR REPLACE FUNCTION st_metadata(
+	rast raster,
+	OUT upperleftx double precision,
+	OUT upperlefty double precision,
+	OUT width int,
+	OUT height int,
+	OUT scalex double precision,
+	OUT scaley double precision,
+	OUT skewx double precision,
+	OUT skewy double precision,
+	OUT srid int,
+	OUT numbands int
+)
+	AS 'MODULE_PATHNAME', 'RASTER_metadata'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- Constructors ST_MakeEmptyRaster and ST_AddBand
@@ -451,7 +441,7 @@ CREATE OR REPLACE FUNCTION _st_count(rast raster, nband int DEFAULT 1, exclude_n
 		rtn bigint;
 	BEGIN
 		IF exclude_nodata_value IS FALSE THEN
-			rtn := ST_Width(rast) * ST_Height(rast);
+			SELECT width * height INTO rtn FROM ST_Metadata(rast);
 		ELSE
 			SELECT count INTO rtn FROM st_summarystats($1, $2, $3, $4);
 		END IF;
@@ -502,6 +492,7 @@ CREATE OR REPLACE FUNCTION _st_count(rastertable text, rastercolumn text, nband 
 		stats summarystats;
 
 		rtn bigint;
+		tmp bigint;
 	BEGIN
 		-- nband
 		IF nband < 1 THEN
@@ -544,7 +535,8 @@ CREATE OR REPLACE FUNCTION _st_count(rastertable text, rastercolumn text, nband 
 			FETCH curs INTO rast;
 			EXIT WHEN NOT FOUND;
 
-			rtn := rtn + (ST_Width(rast) * ST_Height(rast));
+			SELECT (width * height) INTO tmp FROM ST_Metadata(rast);
+			rtn := rtn + tmp;
 		END LOOP;
 
 		CLOSE curs;
