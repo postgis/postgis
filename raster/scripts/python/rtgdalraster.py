@@ -79,7 +79,7 @@ try:
 	logit("Raster expression is %s" % opts.raster)
 
 	cur = conn.cursor()
-	sql = "SELECT ST_AsGDALRaster(%s, %%s, %%s::text[], NULL::text)" % (opts.raster)
+	sql = "SELECT ST_AsGDALRaster(%s, %%s, %%s::text[], NULL::integer)" % (opts.raster)
 	cur.execute(sql, (opts.format, opts.cfg))
 	logit("Number of rows: %i" % cur.rowcount)
 	rec = cur.fetchone()[0];

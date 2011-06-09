@@ -4426,8 +4426,15 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 	char **options = NULL;
 	text *optiontext = NULL;
 	char *option = NULL;
-	text *srstext = NULL;
+	int srid = -1;
 	char *srs = NULL;
+
+	int sqllen = 0;
+	char *sql = NULL;
+	int ret;
+	TupleDesc tupdesc;
+	SPITupleTable * tuptable = NULL;
+	HeapTuple tuple;
 
 	ArrayType *array;
 	Oid etype;
@@ -4537,12 +4544,57 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 		}
 	}
 
-	/* process srs */
-	if (!PG_ARGISNULL(3)) {
-		srstext = PG_GETARG_TEXT_P(3);
-		srs = text_to_cstring(srstext);
+	/* process srid */
+	/* NULL srid means use raster's srid */
+	if (PG_ARGISNULL(3))
+		srid = rt_raster_get_srid(raster);
+	else 
+		srid = PG_GETARG_INT32(3);
+
+	/* get srs from srid */
+	if (srid != SRID_UNKNOWN) {
+		sqllen = sizeof(char) * (strlen("SELECT _ST_srtext()") + MAX_INT_CHARLEN);
+		sql = (char *) palloc(sqllen);
+		if (NULL == sql) {
+			elog(ERROR, "RASTER_transform: Unable to allocate memory for SRID query");
+			rt_raster_destroy(raster);
+			PG_RETURN_NULL();
+		}
+
+		SPI_connect();
+
+		/* srs */
+		snprintf(sql, sqllen, "SELECT _ST_srtext(%d)", srid);
+		POSTGIS_RT_DEBUGF(4, "srs sql: %s", sql);
+		ret = SPI_execute(sql, TRUE, 0);
+		if (ret != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
+			elog(ERROR, "RASTER_transform: SRID provided is unknown");
+			if (SPI_tuptable) SPI_freetuptable(tuptable);
+			SPI_finish();
+			rt_raster_destroy(raster);
+			pfree(sql);
+			PG_RETURN_NULL();
+		}
+		tupdesc = SPI_tuptable->tupdesc;
+		tuptable = SPI_tuptable;
+		tuple = tuptable->vals[0];
+		srs = SPI_getvalue(tuple, tupdesc, 1);
+		if (NULL == srs || !strlen(srs)) {
+			elog(ERROR, "RASTER_transform: SRID provided (%d) is invalid", srid);
+			if (SPI_tuptable) SPI_freetuptable(tuptable);
+			SPI_finish();
+			rt_raster_destroy(raster);
+			pfree(sql);
+			PG_RETURN_NULL();
+		}
+		SPI_freetuptable(tuptable);
+		SPI_finish();
+		pfree(sql);
+
 		POSTGIS_RT_DEBUGF(3, "RASTER_asGDALRaster: Arg 3 (srs) is %s", srs);
 	}
+	else
+		srs = NULL;
 
 	POSTGIS_RT_DEBUG(3, "RASTER_asGDALRaster: Generating GDAL raster");
 	gdal = rt_raster_to_gdal(raster, srs, format, options, &gdal_size);
@@ -4789,7 +4841,7 @@ Datum RASTER_transform(PG_FUNCTION_ARGS)
 
 	/* target srid */
 	if (PG_ARGISNULL(1)) PG_RETURN_NULL();
-	dst_srid = PG_GETARG_UINT32(1);
+	dst_srid = PG_GETARG_INT32(1);
 	if (dst_srid == SRID_UNKNOWN) {
 		elog(ERROR, "RASTER_transform: -1 is an invalid target SRID");
 		rt_raster_destroy(raster);

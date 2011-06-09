@@ -1406,7 +1406,7 @@ CREATE OR REPLACE FUNCTION st_gdaldrivers(OUT idx int, OUT short_name text, OUT 
 	AS 'MODULE_PATHNAME', 'RASTER_getGDALDrivers'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- return the srtext or proj4text of an srid
+-- return the srtext of an srid
 CREATE OR REPLACE FUNCTION _st_srtext(q_srid integer)
 	RETURNS text
 	AS $$
@@ -1418,8 +1418,6 @@ CREATE OR REPLACE FUNCTION _st_srtext(q_srid integer)
 				CASE
 					WHEN length(srtext) > 0
 						THEN srtext
-					WHEN length(proj4text) > 0
-						THEN proj4text
 					ELSE NULL
 				END
 			INTO q_srs
@@ -1437,27 +1435,17 @@ CREATE OR REPLACE FUNCTION _st_srtext(q_srid integer)
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_srtext(q raster)
-	RETURNS text
-	AS $$ SELECT _st_srtext(st_srid($1)) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Cannot be strict as "options" and "srs" can be NULL
-CREATE OR REPLACE FUNCTION st_asgdalraster(rast raster, format text, options text[], srs text)
+-- Cannot be strict as "options" and "srid" can be NULL
+CREATE OR REPLACE FUNCTION st_asgdalraster(rast raster, format text, options text[] DEFAULT NULL, srid integer DEFAULT NULL)
 	RETURNS bytea
 	AS 'MODULE_PATHNAME', 'RASTER_asGDALRaster'
 	LANGUAGE 'C' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_asgdalraster(rast raster, format text, options text[] DEFAULT NULL)
-	RETURNS bytea
-	AS $$ SELECT st_asgdalraster($1, $2, $3, st_srtext($1)) $$
-	LANGUAGE 'SQL' IMMUTABLE;
-
 -----------------------------------------------------------------------
 -- ST_AsTIFF
 -----------------------------------------------------------------------
--- Cannot be strict as "options" and "srs" can be NULL
-CREATE OR REPLACE FUNCTION st_astiff(rast raster, options text[], srs text)
+-- Cannot be strict as "options" and "srid" can be NULL
+CREATE OR REPLACE FUNCTION st_astiff(rast raster, options text[] DEFAULT NULL, srid integer DEFAULT NULL)
 	RETURNS bytea
 	AS $$
 	DECLARE
@@ -1482,25 +1470,14 @@ CREATE OR REPLACE FUNCTION st_astiff(rast raster, options text[], srs text)
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
--- Cannot be strict as "options" can be NULL
-CREATE OR REPLACE FUNCTION st_astiff(rast raster, options text[] DEFAULT NULL)
-	RETURNS bytea
-	AS $$ SELECT st_astiff($1, $2, st_srtext($1)) $$
-	LANGUAGE 'SQL' IMMUTABLE;
-
-CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[], options text[], srs text)
+-- Cannot be strict as "options" and "srid" can be NULL
+CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[], options text[] DEFAULT NULL, srid integer DEFAULT NULL)
 	RETURNS bytea
 	AS $$ SELECT st_astiff(st_band($1, $2), $3, $4) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Cannot be strict as "options" can be NULL
-CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[], options text[] DEFAULT NULL)
-	RETURNS bytea
-	AS $$ SELECT st_astiff(st_band($1, $2), $3, st_srtext($1)) $$
 	LANGUAGE 'SQL' IMMUTABLE;
 
--- Cannot be strict as "srs" can be NULL
-CREATE OR REPLACE FUNCTION st_astiff(rast raster, compression text, srs text)
+-- Cannot be strict as "srid" can be NULL
+CREATE OR REPLACE FUNCTION st_astiff(rast raster, compression text, srid integer DEFAULT NULL)
 	RETURNS bytea
 	AS $$
 	DECLARE
@@ -1580,20 +1557,11 @@ CREATE OR REPLACE FUNCTION st_astiff(rast raster, compression text, srs text)
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_astiff(rast raster, compression text)
-	RETURNS bytea
-	AS $$ SELECT st_astiff($1, $2, st_srtext($1)) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[], compression text, srs text)
+-- Cannot be strict as "srid" can be NULL
+CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[], compression text, srid integer DEFAULT NULL)
 	RETURNS bytea
 	AS $$ SELECT st_astiff(st_band($1, $2), $3, $4) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[], compression text)
-	RETURNS bytea
-	AS $$ SELECT st_astiff(st_band($1, $2), $3, st_srtext($1)) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'SQL' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- ST_AsJPEG
