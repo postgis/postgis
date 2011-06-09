@@ -133,6 +133,12 @@ psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
 		  .
 		</para>
 	  </listitem>
+	  
+	  <listitem>
+		<para>
+		 CUnit (<filename>CUnit</filename>). This is needed for regression tests. <ulink url="http://cunit.sourceforge.net/">http://cunit.sourceforge.net/</ulink>
+		</para>
+	  </listitem>
 	
 	  <listitem>
 		<para>
