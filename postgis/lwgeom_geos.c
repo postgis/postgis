@@ -1763,6 +1763,9 @@ Datum isvalid(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 	bool result;
 	GEOSGeom g1;
+#if POSTGIS_GEOS_VERSION < 33
+  BOX2DFLOAT4 box1;
+#endif
 
 	PROFSTART(PROF_QRUN);
 
@@ -1771,6 +1774,20 @@ Datum isvalid(PG_FUNCTION_ARGS)
 	/* Empty.IsValid() == TRUE */
 	if ( pglwgeom_is_empty(geom1) )
 		PG_RETURN_BOOL(true);
+
+#if POSTGIS_GEOS_VERSION < 33
+  /* Short circuit and return FALSE if we have infinite coordinates */
+  /* GEOS 3.3+ is supposed to  handle this stuff OK */
+	if ( pglwgeom_getbox2d_p(geom1, &box1) )	
+	{
+		if ( isinf(box1.xmax) || isinf(box1.ymax) || isinf(box1.xmin) || isinf(box1.ymin) || 
+		     isnan(box1.xmax) || isnan(box1.ymax) || isnan(box1.xmin) || isnan(box1.ymin)  )
+		{
+      lwnotice("Geometry contains an Inf or NaN coordinate");
+			PG_RETURN_BOOL(FALSE);
+		}
+	}
+#endif
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
@@ -1825,8 +1842,30 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 	char *reason_str = NULL;
 	text *result = NULL;
 	const GEOSGeometry *g1 = NULL;
+#if POSTGIS_GEOS_VERSION < 33
+  BOX2DFLOAT4 box;
+#endif
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+#if POSTGIS_GEOS_VERSION < 33
+	/* Short circuit and return if we have infinite coordinates */
+	/* GEOS 3.3+ is supposed to  handle this stuff OK */
+	if ( pglwgeom_getbox2d_p(geom, &box) )	
+	{
+		if ( isinf(box.xmax) || isinf(box.ymax) || isinf(box.xmin) || isinf(box.ymin) || 
+		     isnan(box.xmax) || isnan(box.ymax) || isnan(box.xmin) || isnan(box.ymin)  )
+		{
+			const char *rsn = "Geometry contains an Inf or NaN coordinate";
+			size_t len = strlen(rsn);
+			result = palloc(VARHDRSZ + len);
+			SET_VARSIZE(result, VARHDRSZ + len);
+			memcpy(VARDATA(result), rsn, len);
+			PG_FREE_IF_COPY(geom, 0);
+			PG_RETURN_POINTER(result);			
+		}
+	}
+#endif
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
@@ -3669,6 +3708,13 @@ ptarray_to_GEOSCoordSeq(POINTARRAY *pa)
 		getPoint3dz_p(pa, i, &p);
 
 		POSTGIS_DEBUGF(4, "Point: %g,%g,%g", p.x, p.y, p.z);
+
+    /* Make sure we don't pass any infinite values down into GEOS */
+    /* GEOS 3.3+ is supposed to  handle this stuff OK */
+#if POSTGIS_GEOS_VERSION < 33
+    if ( isinf(p.x) || isinf(p.y) || (dims == 3 && isinf(p.z)) )
+      lwerror("Infinite coordinate value found in geometry.");
+#endif
 
 		GEOSCoordSeq_setX(sq, i, p.x);
 		GEOSCoordSeq_setY(sq, i, p.y);
