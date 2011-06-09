@@ -99,7 +99,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
 	LWGEOM *lwgeom;
-	char *gml;
+	char *gml = NULL;
 	text *result;
 	int version;
 	char *srs;
@@ -170,13 +170,13 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 
 	lwgeom = pglwgeom_deserialize(geom);
 
-             if (version == 2 && lwopts & LW_GML_EXTENT)
+        if (version == 2 && lwopts & LW_GML_EXTENT)
 		gml = lwgeom_extent_to_gml2(lwgeom, srs, precision, prefix);
 	else if (version == 2)
 		gml = lwgeom_to_gml2(lwgeom, srs, precision, prefix);
         else if (version == 3 && lwopts & LW_GML_EXTENT)
 		gml = lwgeom_extent_to_gml3(lwgeom, srs, precision, lwopts, prefix);
-	else if (version == 3)
+	else if (version == 3) 
 		gml = lwgeom_to_gml3(lwgeom, srs, precision, lwopts, prefix);
 
 	lwgeom_free(lwgeom);
