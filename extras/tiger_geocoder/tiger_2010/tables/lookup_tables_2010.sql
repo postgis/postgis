@@ -947,7 +947,7 @@ CREATE TABLE state
   CONSTRAINT enforce_geotype_the_geom CHECK (geometrytype(the_geom) = 'MULTIPOLYGON'::text OR the_geom IS NULL),
   CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4269)
 );
-CREATE INDEX tiger_state_the_geom_gist ON faces USING gist(the_geom);
+CREATE INDEX tiger_state_the_geom_gist ON state USING gist(the_geom);
 
 DROP TABLE IF EXISTS place;
 CREATE TABLE place
