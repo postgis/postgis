@@ -1837,36 +1837,17 @@ CREATE OR REPLACE FUNCTION st_bandpixeltype(raster)
     AS $$ SELECT st_bandpixeltype($1, 1) $$
     LANGUAGE SQL IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_bandmetadata(rast raster,
-                                           band int,
-                                           OUT pixeltype text,
-                                           OUT hasnodatavalue boolean,
-                                           OUT nodatavalue float4,
-                                           OUT isoutdb boolean,
-                                           OUT path text)
-    AS $$
-    SELECT st_bandpixeltype($1, $2),
-       st_bandnodatavalue($1, $2) IS NOT NULL,
-       st_bandnodatavalue($1, $2),
-       st_bandpath($1, $2) IS NOT NULL,
-       st_bandpath($1, $2)
-    $$
-    LANGUAGE SQL IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_bandmetadata(rast raster,
-                                           OUT pixeltype text,
-                                           OUT hasnodatavalue boolean,
-                                           OUT nodatavalue float4,
-                                           OUT isoutdb boolean,
-                                           OUT path text)
-    AS $$
-    SELECT st_bandpixeltype($1, 1),
-       st_bandnodatavalue($1, 1) IS NOT NULL,
-       st_bandnodatavalue($1, 1),
-       st_bandpath($1, 1) IS NOT NULL,
-       st_bandpath($1, 1)
-    $$
-    LANGUAGE SQL IMMUTABLE STRICT;
+CREATE OR REPLACE FUNCTION st_bandmetadata(
+	rast raster,
+	band int DEFAULT 1,
+	OUT pixeltype text,
+	OUT hasnodatavalue boolean,
+	OUT nodatavalue float4,
+	OUT isoutdb boolean,
+	OUT path text
+)
+	AS 'MODULE_PATHNAME','RASTER_bandmetadata'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- Raster Pixel Accessors

@@ -61,6 +61,7 @@ TEST_PROPS = \
 	create_rt_empty_raster_test.sql \
 	rt_isempty.sql \
 	rt_hasnoband.sql \
+	rt_metadata.sql \
 	$(NULL)
 
 TEST_BANDPROPS = \
@@ -77,6 +78,7 @@ TEST_BANDPROPS = \
 	rt_quantile.sql \
 	rt_valuecount.sql \
 	rt_valuepercent.sql \
+	rt_bandmetadata.sql \
 	$(NULL)
 
 TEST_PIXEL = \
