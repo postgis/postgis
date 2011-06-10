@@ -4562,7 +4562,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 		sqllen = sizeof(char) * (strlen("SELECT _ST_srtext()") + MAX_INT_CHARLEN);
 		sql = (char *) palloc(sqllen);
 		if (NULL == sql) {
-			elog(ERROR, "RASTER_transform: Unable to allocate memory for SRID query");
+			elog(ERROR, "RASTER_asGDALRaster: Unable to allocate memory for SRID query");
 			rt_raster_destroy(raster);
 			PG_RETURN_NULL();
 		}
@@ -4574,7 +4574,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 		POSTGIS_RT_DEBUGF(4, "srs sql: %s", sql);
 		ret = SPI_execute(sql, TRUE, 0);
 		if (ret != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
-			elog(ERROR, "RASTER_transform: SRID provided is unknown");
+			elog(ERROR, "RASTER_asGDALRaster: SRID provided is unknown");
 			if (SPI_tuptable) SPI_freetuptable(tuptable);
 			SPI_finish();
 			rt_raster_destroy(raster);
@@ -4586,7 +4586,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 		tuple = tuptable->vals[0];
 		srs = SPI_getvalue(tuple, tupdesc, 1);
 		if (NULL == srs || !strlen(srs)) {
-			elog(ERROR, "RASTER_transform: SRID provided (%d) is invalid", srid);
+			elog(ERROR, "RASTER_asGDALRaster: SRID provided (%d) is invalid", srid);
 			if (SPI_tuptable) SPI_freetuptable(tuptable);
 			SPI_finish();
 			rt_raster_destroy(raster);
