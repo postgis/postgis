@@ -1784,16 +1784,28 @@ SELECt ST_MPolyFromText('MULTIPOLYGON(((-70.916 42.1002,-70.9468 42.0946,-70.976
 
 
 	  <refsection>
-		<title>Examples</title>
+		<title>Examples: Geometry</title>
 
 		<programlisting>SELECT ST_SetSRID(ST_Point(-71.1043443253471, 42.3150676015829),4326)</programlisting>
 	  </refsection>
+	  
+	  <refsection>
+		<title>Examples: Geography</title>
+
+		<programlisting>SELECT CAST(ST_SetSRID(ST_Point(-71.1043443253471, 42.3150676015829),4326) As geography);</programlisting>
+		<programlisting>-- the :: is PostgreSQL short-hand for casting.
+SELECT ST_SetSRID(ST_Point(-71.1043443253471, 42.3150676015829),4326)::geography;</programlisting>
+
+        <programlisting>--If your point coordinates are in a different spatial reference from WGS-84 long lat, then you need to transform before casting
+-- This example we convert a point in Pennsylvania State Plane feet to WGS 84 and then geography
+SELECT ST_Transform(ST_SetSRID(ST_Point(3637510, 3014852),2273),4326)::geography</programlisting>
+	  </refsection>;
 
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_MakePoint" />, <xref linkend="ST_SetSRID" /></para>
+		<para><xref linkend="Geography_Basics" />, <xref linkend="ST_MakePoint" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" /></para>
 	  </refsection>
 	</refentry>
 
