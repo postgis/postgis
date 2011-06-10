@@ -5940,7 +5940,9 @@ rt_raster_transform(rt_raster raster, char *src_srs, char *dst_srs,
 	numBands = rt_raster_get_num_bands(raster);
 	wopts = GDALCreateWarpOptions();
 	wopts->padfSrcNoDataReal = (double *) CPLMalloc(numBands * sizeof(double));
+	wopts->padfSrcNoDataImag = (double *) CPLMalloc(numBands * sizeof(double));
 	wopts->padfDstNoDataReal = (double *) CPLMalloc(numBands * sizeof(double));
+	wopts->padfDstNoDataImag = (double *) CPLMalloc(numBands * sizeof(double));
 	if (NULL == wopts->padfSrcNoDataReal || NULL == wopts->padfDstNoDataReal) {
 		rterror("rt_raster_transform: Out of memory allocating nodata mapping\n");
 		GDALDestroyWarpOptions(wopts);
@@ -5964,7 +5966,6 @@ rt_raster_transform(rt_raster raster, char *src_srs, char *dst_srs,
 				the problem is that there is a chance that this number is a legitamate value
 			*/
 			wopts->padfSrcNoDataReal[i] = -123456.789;
-			;
 		}
 		else {
 			hasnodata = 1;
@@ -5973,6 +5974,7 @@ rt_raster_transform(rt_raster raster, char *src_srs, char *dst_srs,
 		}
 
 		wopts->padfDstNoDataReal[i] = wopts->padfSrcNoDataReal[i];
+		wopts->padfDstNoDataImag[i] = wopts->padfSrcNoDataImag[i] = 0.0;
 	}
 	if (!hasnodata) {
 		RASTER_DEBUG(3, "No nodata mapping found");
