@@ -5940,10 +5940,16 @@ rt_raster_transform(rt_raster raster, char *src_srs, char *dst_srs,
 	numBands = rt_raster_get_num_bands(raster);
 	wopts = GDALCreateWarpOptions();
 	wopts->padfSrcNoDataReal = (double *) CPLMalloc(numBands * sizeof(double));
-	wopts->padfSrcNoDataImag = (double *) CPLMalloc(numBands * sizeof(double));
 	wopts->padfDstNoDataReal = (double *) CPLMalloc(numBands * sizeof(double));
+	wopts->padfSrcNoDataImag = (double *) CPLMalloc(numBands * sizeof(double));
 	wopts->padfDstNoDataImag = (double *) CPLMalloc(numBands * sizeof(double));
-	if (NULL == wopts->padfSrcNoDataReal || NULL == wopts->padfDstNoDataReal) {
+	if (
+		NULL == wopts ||
+		NULL == wopts->padfSrcNoDataReal ||
+		NULL == wopts->padfDstNoDataReal ||
+		NULL == wopts->padfSrcNoDataImag ||
+		NULL == wopts->padfDstNoDataImag
+	) {
 		rterror("rt_raster_transform: Out of memory allocating nodata mapping\n");
 		GDALDestroyWarpOptions(wopts);
 		GDALDeregisterDriver(src_drv);
@@ -5963,7 +5969,7 @@ rt_raster_transform(rt_raster raster, char *src_srs, char *dst_srs,
 		if (!rt_band_get_hasnodata_flag(band)) {
 			/*
 				based on line 1004 of gdalwarp.cpp
-				the problem is that there is a chance that this number is a legitamate value
+				the problem is that there is a chance that this number is a legitimate value
 			*/
 			wopts->padfSrcNoDataReal[i] = -123456.789;
 		}
@@ -5994,9 +6000,10 @@ rt_raster_transform(rt_raster raster, char *src_srs, char *dst_srs,
 		resamplealg, max_err,
 		wopts
 	);
-	if (NULL != wopts) GDALDestroyWarpOptions(wopts);
+	RASTER_DEBUG(3, "Raster reprojected");
 	if (NULL == dst_ds) {
 		rterror("rt_raster_transform: Unable to transform raster\n");
+		if (NULL != wopts) GDALDestroyWarpOptions(wopts);
 		GDALClose(src_ds);
 		GDALDeregisterDriver(src_drv);
 		GDALDestroyDriver(src_drv);
@@ -6007,6 +6014,7 @@ rt_raster_transform(rt_raster raster, char *src_srs, char *dst_srs,
 	RASTER_DEBUG(3, "Converting GDAL dataset to raster");
 	rast = rt_raster_from_gdal_dataset(dst_ds);
 
+	if (NULL != wopts) GDALDestroyWarpOptions(wopts);
 	GDALClose(dst_ds);
 	GDALClose(src_ds);
 	GDALDeregisterDriver(src_drv);
