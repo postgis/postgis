@@ -1291,7 +1291,7 @@ rt_band_get_pixel(rt_band band, uint16_t x, uint16_t y, double *result) {
     pixtype = band->pixtype;
 
     if (x >= band->width || y >= band->height) {
-        rterror("Attempting to get pixel value with out of range raster coordinates");
+        rtwarn("Attempting to get pixel value with out of range raster coordinates");
         return -1;
     }
 
@@ -1657,7 +1657,7 @@ rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
 	}
 
 	RASTER_DEBUGF(3, "sampling %d of %d available pixels w/ %d per set"
-		, sample_size, (band->width * band->height), sample_per); 
+		, sample_size, (band->width * band->height), sample_per);
 
 	if (inc_vals) {
 		values = rtalloc(sizeof(double) * sample_size);
@@ -1764,7 +1764,7 @@ rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
 		}
 	}
 
-	RASTER_DEBUG(3, "sampling complete"); 
+	RASTER_DEBUG(3, "sampling complete");
 
 	if (k > 0) {
 		if (inc_vals) {
@@ -1858,7 +1858,7 @@ rt_band_get_histogram(rt_bandstats stats,
 	double elapsed = 0;
 #endif
 
-	RASTER_DEBUG(3, "starting"); 
+	RASTER_DEBUG(3, "starting");
 #if POSTGIS_DEBUG_LEVEL > 0
 	start = clock();
 #endif
@@ -1933,7 +1933,7 @@ rt_band_get_histogram(rt_bandstats stats,
 	if (fabs(qmax - qmin) < FLT_EPSILON)
 		bin_count = 1;
 
-	RASTER_DEBUGF(3, "bin_count = %d", bin_count); 
+	RASTER_DEBUGF(3, "bin_count = %d", bin_count);
 
 	/* bin count = 1, all values are in one bin */
 	if (bin_count < 2) {
@@ -2104,7 +2104,7 @@ struct rt_quantile_t {
 /**
  * Compute the default set of or requested quantiles for a set of data
  * the quantile formula used is same as Excel and R default method
- * 
+ *
  * @param stats: a populated stats struct for processing
  * @param quantiles: the quantiles to be computed
  * @param quantiles_count: the number of quantiles to be computed
@@ -2126,7 +2126,7 @@ rt_band_get_quantiles(rt_bandstats stats,
 	double elapsed = 0;
 #endif
 
-	RASTER_DEBUG(3, "starting"); 
+	RASTER_DEBUG(3, "starting");
 #if POSTGIS_DEBUG_LEVEL > 0
 	start = clock();
 #endif
@@ -2492,7 +2492,7 @@ struct rt_reclassexpr_t {
 
 /**
  * Returns new band with values reclassified
- * 
+ *
  * @param srcband : the band who's values will be reclassified
  * @param pixtype : pixel type of the new band
  * @param hasnodata : indicates if the band has a nodata value
@@ -3476,7 +3476,7 @@ rt_raster_dump_as_wktpolygons(rt_raster raster, int nband, int * pnElements)
     /**
      * We don't need a raster mask band. Each band has a nodata value.
      **/
-#if GDALFPOLYGONIZE == 1 
+#if GDALFPOLYGONIZE == 1
     GDALFPolygonize(gdal_band, NULL, hLayer, iPixVal, NULL, NULL, NULL);
 #else
     GDALPolygonize(gdal_band, NULL, hLayer, iPixVal, NULL, NULL, NULL);
@@ -5164,7 +5164,7 @@ rt_raster_from_band(rt_raster raster, uint32_t *bandNums, int count) {
 
 /**
  * Replace band at provided index with new band
- * 
+ *
  * @param raster: raster of band to be replaced
  * @param band : new band to add to raster
  * @param index : index of band to replace (1-based)
@@ -5510,7 +5510,7 @@ rt_raster_to_gdal_mem(rt_raster raster, char *srs,
 		allocBandNums = 1;
 		for (i = 0; i < count; i++) bandNums[i] = i;
 	}
-	
+
 	/* add band(s) */
 	for (i = 0; i < count; i++) {
 		rtband = rt_raster_get_band(raster, bandNums[i]);
@@ -5806,7 +5806,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 				for (x = 0; x < width; x++) {
 					value = values[x + y * width];
 
-					RASTER_DEBUGF(5, "(x, y, value) = (%d, %d, %f)", x, y, value); 
+					RASTER_DEBUGF(5, "(x, y, value) = (%d, %d, %f)", x, y, value);
 
 					if (rt_band_set_pixel(band, x, y, value) < 0) {
 						rterror("rt_raster_from_gdal_dataset: Unable to save data from transformed raster\n");
@@ -6011,7 +6011,7 @@ rt_raster_transform(rt_raster raster, char *src_srs, char *dst_srs,
 	GDALClose(src_ds);
 	GDALDeregisterDriver(src_drv);
 	GDALDestroyDriver(src_drv);
-	
+
 	if (NULL == rast) {
 		rterror("rt_raster_transform: Unable to transform raster\n");
 		return NULL;

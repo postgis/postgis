@@ -47,6 +47,10 @@ SELECT 'test 1.9', id
     FROM rt_band_properties_test
     WHERE st_value(st_setbandnodatavalue(rast, b1val), 1, 1, 1, FALSE) != b1val;
 
+-- Make sure we return only a warning when getting vlue with out of range pixel coordinates
+SELECT 'test 1.10', id
+    FROM rt_band_properties_test
+    WHERE NOT st_value(rast, -1, -1) IS NULL;
 
 -----------------------------------------------------------------------
 -- Test 2 - st_value(rast raster, band integer, pt geometry)
