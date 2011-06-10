@@ -470,14 +470,13 @@ public static void main(String[] args) {
     * must cast the connection to the pgsql-specific connection 
     * implementation before calling the addDataType() method. 
     */
-    ((org.postgresql.Connection)conn).addDataType("geometry","org.postgis.PGgeometry")
-;
-    ((org.postgresql.Connection)conn).addDataType("box3d","org.postgis.PGbox3d");
+    ((org.postgresql.PGConnection)conn).addDataType("geometry","org.postgis.PGgeometry");
+    ((org.postgresql.PGConnection)conn).addDataType("box3d","org.postgis.PGbox3d");
     /* 
     * Create a statement and execute a select query. 
     */ 
     Statement s = conn.createStatement(); 
-    ResultSet r = s.executeQuery("select ST_AsText(geom) as geom,id from geomtable"); 
+    ResultSet r = s.executeQuery("select geom,id from geomtable"); 
     while( r.next() ) { 
       /* 
       * Retrieve the geometry as an object then cast it to the geometry type. 
@@ -503,7 +502,7 @@ catch( Exception e ) {
     MultiLineString, MultiPolygon.</para>
 
     <programlisting>PGgeometry geom = (PGgeometry)r.getObject(1); 
-if( geom.getType() = Geometry.POLYGON ) { 
+if( geom.getType() == Geometry.POLYGON ) { 
   Polygon pl = (Polygon)geom.getGeometry(); 
   for( int r = 0; r &lt; pl.numRings(); r++) { 
     LinearRing rng = pl.getRing(r); 
