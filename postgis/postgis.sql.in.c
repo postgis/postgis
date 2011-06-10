@@ -1506,7 +1506,7 @@ $$ LANGUAGE plpgsql;
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_DumpPoints(geometry) RETURNS SETOF geometry_dump AS $$
   SELECT * FROM _ST_DumpPoints($1, NULL);
-$$ LANGUAGE SQL;
+$$ LANGUAGE SQL  STRICT;
 
 
 ------------------------------------------------------------------------
