@@ -378,7 +378,17 @@ VALUES (1,
 			    </varlistentry>
 			    <varlistentry>
 			        <term><parameter>reclassexpr </parameter><type>text</type></term>
-			        <listitem><para>range expression consisting of comma delimited range:map_range mappings. : to define mapping that defines how to map old band values to new band values. ( means &gt;, ) means less than, ] &lt; or equal, [ means &gt; or equal</para></listitem>
+			        <listitem><para>range expression consisting of comma delimited range:map_range mappings. : to define mapping that defines how to map old band values to new band values. ( means &gt;, ) means less than, ] &lt; or equal, [ means &gt; or equal</para>
+			            <para><programlisting>1. [a-b] = a &lt;= x &lt;= b
+
+2. (a-b] = a &lt; x &lt;= b
+
+3. [a-b) = a &lt;= x &lt; b
+
+4. (a-b) = a &lt; x &lt; b</programlisting></para>
+<para>( notation is optional so a-b means the same as (a-b)</para>
+			        </listitem>
+			        
 			    </varlistentry>
 			    <varlistentry>
 			        <term><parameter>pixeltype </parameter><type>text</type></term>
@@ -4835,8 +4845,9 @@ POLYGON((3427928 5793243.85,3427928 5793243.8,3427928 5793243.75,3427927.85 5793
 			<refsection>
 				<title>Description</title>
 				
-				<para>Creates a new raster formed by applying a valid PostgreSQL algebraic operation defined by the <varname>expression</varname> on the input raster (<varname>rast</varname>). If no <varname>band</varname> is specified
-        band 1 is assumed.  The new raster will have the same georeference, width, and height as the original raster.  Bands not designated will come back unchanged.</para>
+				<para>Creates a new raster formed by applying a valid PostgreSQL algebraic operation defined by the <varname>reclassexpr</varname> on the input raster (<varname>rast</varname>). If no <varname>band</varname> is specified
+        band 1 is assumed.  The new raster will have the same georeference, width, and height as the original raster.  Bands not designated will come back unchanged.
+        Refer to <xref linkend="reclassarg" /> for description of valid reclassification expressions.</para>
         
                  <para>The bands of the new raster will have pixel type of <varname>pixeltype</varname>.  If <varname>reclassargset</varname> is passed in then each reclassarg defines behavior of each band generated.</para>
                
