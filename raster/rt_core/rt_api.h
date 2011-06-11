@@ -873,9 +873,9 @@ rt_raster rt_raster_from_band(rt_raster raster, uint32_t *bandNums,
  * @param band : new band to add to raster
  * @param index : index of band to replace (1-based)
  *
- * @return 0 on error or 1 on success
+ * @return 0 on error or replaced band
  */
-int rt_raster_replace_band(rt_raster raster, rt_band band,
+rt_band rt_raster_replace_band(rt_raster raster, rt_band band,
 	int index);
 
 /**

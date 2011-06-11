@@ -4392,7 +4392,7 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 		}
 
 		/* replace old band with new band */
-		if (rt_raster_replace_band(raster, newband, nband - 1) == 0) {
+		if (rt_raster_replace_band(raster, newband, nband - 1) == NULL) {
 			elog(ERROR, "RASTER_reclass: Could not replace raster band of index %d with reclassified band. Returning NULL", nband);
 			rt_band_destroy(newband);
 			rt_raster_destroy(raster);

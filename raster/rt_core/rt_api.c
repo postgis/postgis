@@ -5174,7 +5174,7 @@ rt_raster_from_band(rt_raster raster, uint32_t *bandNums, int count) {
  *
  * @return 0 on error or replaced band
  */
-int
+rt_band
 rt_raster_replace_band(rt_raster raster, rt_band band, int index) {
 	rt_band oldband = NULL;
 	assert(NULL != raster);
@@ -5197,8 +5197,7 @@ rt_raster_replace_band(rt_raster raster, rt_band band, int index) {
 	raster->bands[index] = band;
 	RASTER_DEBUGF(3, "rt_raster_replace_band: new band at %p", raster->bands[index]);
 
-	rt_band_destroy(oldband);
-	return 1;
+	return oldband;
 }
 
 /**
