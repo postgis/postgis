@@ -3171,6 +3171,46 @@ WHERE rid = 2;
 				<para><xref linkend="RT_ST_UpperLeftX" />,<xref linkend="RT_ST_UpperLeftY" /></para>
 			</refsection>
 		</refentry>
+		
+		<refentry id="RT_ST_Transform">
+			<refnamediv>
+				<refname>ST_Transform</refname>
+				<refpurpose>Reprojects a raster in a known spatial reference system to another known spatial reference system using specified resampling algorithm. 
+				    Uses NearestNeighbor if no algorithm is specified Options: NearestNeighbor, Bilinear, Cubic, CubicSpline, Lanczos.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>raster <function>ST_Transform</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+					<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Reprojects a raster in a known spatial reference system to another known spatial reference system using specified pixel warping algorithm. 
+				    Uses 'NearestNeighbor' if no algorithm is specified and maxerror percent of 0.125 if no maxerr is specified.</para>
+				<para>Algorithm options are: 'NearestNeighbor', 'Bilinear', 'Cubic', 'CubicSpline', and 'Lanczos'.  Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details.</para>
+				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
+			</refsection>
+				
+			<refsection>
+					<title>Examples</title>
+				
+					<programlisting>-- TO DO --</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="ST_Transform" />, <xref linkend="RT_ST_SetSRID" /></para>
+			</refsection>
+		</refentry>
 
 	</sect1>
 	<sect1 id="RasterBand_Editors">
