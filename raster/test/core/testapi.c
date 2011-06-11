@@ -1131,6 +1131,7 @@ static void testBandStats() {
 static void testRasterReplaceBand() {
 	rt_raster raster;
 	rt_band band;
+	rt_band rband;
 	void* mem;
 	size_t datasize;
 	uint16_t width;
@@ -1140,8 +1141,8 @@ static void testRasterReplaceBand() {
 
 	raster = rt_raster_new(10, 10);
 	assert(raster); /* or we're out of virtual memory */
-	band = addBand(raster, PT_8BUI, 0, 0);
-	CHECK(band);
+	rband = addBand(raster, PT_8BUI, 0, 0);
+	CHECK(rband);
 	band = addBand(raster, PT_8BUI, 1, 255);
 	CHECK(band);
 
@@ -1153,14 +1154,19 @@ static void testRasterReplaceBand() {
 	band = rt_band_new_inline(width, height, PT_8BUI, 1, 1, mem);
 	assert(band);
 
+	rband = rt_raster_get_band(raster, 0);
+	assert(rband);
+
 	rtn = rt_raster_replace_band(raster, band, 0);
 	CHECK(rtn);
 	nodata = rt_band_get_nodata(rt_raster_get_band(raster, 0));
 	CHECK((nodata == 1));
 
-	rt_band_destroy(band);
-	rt_raster_destroy(raster);
-	free(mem);
+	deepRelease(raster);
+
+	mem = rt_band_get_data(rband);
+	if (mem) free(mem);
+	rt_band_destroy(rband);
 }
 
 struct rt_reclassexpr_t {
@@ -1186,6 +1192,7 @@ static void testBandReclass() {
 	int rtn;
 	rt_band newband;
 	double val;
+	void *mem = NULL;
 
 	raster = rt_raster_new(100, 10);
 	assert(raster); /* or we're out of virtual memory */
@@ -1254,11 +1261,13 @@ static void testBandReclass() {
 	CHECK_EQUALS(val, 255);
 
 
-	for (i = cnt - 1; i >= 0; i--)
-		free(exprset[i]);
+	for (i = cnt - 1; i >= 0; i--) free(exprset[i]);
 	free(exprset);
-	rt_band_destroy(newband);
 	deepRelease(raster);
+
+	mem = rt_band_get_data(newband);
+	if (mem) free(mem);
+	rt_band_destroy(newband);
 }
 
 struct rt_gdaldriver_t {
@@ -1279,7 +1288,10 @@ static void testGDALDrivers() {
 	for (i = 0; i < size; i++) {
 		/*printf("gdal_driver: %s\n", drv[i].short_name);*/
 		CHECK(drv[i].short_name);
+		rtdealloc(drv[i].create_options);
 	}
+
+	rtdealloc(drv);
 }
 
 static void testRasterToGDAL() {

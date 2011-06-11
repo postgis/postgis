@@ -1770,7 +1770,7 @@ rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
 		if (inc_vals) {
 			/* free unused memory */
 			if (sample_size != k) {
-				rtrealloc(values, k * sizeof(double));
+				values = rtrealloc(values, k * sizeof(double));
 			}
 
 			stats->values = values;
@@ -2208,6 +2208,7 @@ rt_band_get_quantiles(rt_bandstats stats,
 #endif
 
 	*rtn_count = quantiles_count;
+	if (init_quantiles) rtdealloc(quantiles);
 	RASTER_DEBUG(3, "done");
 	return rtn;
 }
@@ -3525,6 +3526,7 @@ rt_raster_dump_as_wktpolygons(rt_raster raster, int nband, int * pnElements)
 
         OGR_Fld_Destroy(hFldDfn);
         OGR_DS_DeleteLayer(memdatasource, 0);
+				if (NULL != pszQuery) rtdealloc(pszQuery);
         OGRReleaseDataSource(memdatasource);
 
         return 0;
@@ -3582,6 +3584,7 @@ rt_raster_dump_as_wktpolygons(rt_raster raster, int nband, int * pnElements)
 
     OGR_Fld_Destroy(hFldDfn);
     OGR_DS_DeleteLayer(memdatasource, 0);
+		if (NULL != pszQuery) rtdealloc(pszQuery);
     OGRReleaseDataSource(memdatasource);
 
     return pols;
@@ -5382,7 +5385,7 @@ rt_raster_gdal_drivers(uint32_t *drv_count) {
 	}
 
 	/* free unused memory */
-	rtrealloc(rtn, j * sizeof(struct rt_gdaldriver_t));
+	rtn = rtrealloc(rtn, j * sizeof(struct rt_gdaldriver_t));
 	*drv_count = j;
 
 	return rtn;
@@ -5624,6 +5627,8 @@ rt_raster_to_gdal_mem(rt_raster raster, char *srs,
 
 	/* necessary??? */
 	GDALFlushCache(ds);
+
+	if (allocBandNums) rtdealloc(bandNums);
 
 	return ds;
 }
