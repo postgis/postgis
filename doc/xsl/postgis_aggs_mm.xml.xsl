@@ -448,7 +448,7 @@
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
 					<xsl:for-each select='//refentry'>
-						<xsl:sort select="@id"/>
+						<xsl:sort select="refnamediv/refname"/>
 						<xsl:variable name='comment'>
 							<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
 						</xsl:variable>
