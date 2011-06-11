@@ -92,7 +92,7 @@ main()
         rt_raster rast2;
 
         serialized = rt_raster_serialize(raster);
-        rast2 = rt_raster_deserialize(serialized);
+        rast2 = rt_raster_deserialize(serialized, FALSE);
 
         rt_raster_destroy(rast2);
         free(serialized);
@@ -294,7 +294,7 @@ main()
         rt_raster rast2;
 
         serialized = rt_raster_serialize(raster);
-        rast2 = rt_raster_deserialize(serialized);
+        rast2 = rt_raster_deserialize(serialized, FALSE);
 
         rt_raster_destroy(rast2);
         free(serialized);
@@ -610,7 +610,7 @@ main()
         rt_raster rast2;
 
         serialized = rt_raster_serialize(raster);
-        rast2 = rt_raster_deserialize(serialized);
+        rast2 = rt_raster_deserialize(serialized, FALSE);
 
         rt_raster_destroy(rast2);
         free(serialized);
@@ -773,7 +773,7 @@ main()
         rt_raster rast2;
 
         serialized = rt_raster_serialize(raster);
-        rast2 = rt_raster_deserialize(serialized);
+        rast2 = rt_raster_deserialize(serialized, FALSE);
 
         rt_raster_destroy(rast2);
         free(serialized);

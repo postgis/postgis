@@ -4859,7 +4859,7 @@ rt_raster_serialize(rt_raster raster) {
 }
 
 rt_raster
-rt_raster_deserialize(void* serialized) {
+rt_raster_deserialize(void* serialized, int header_only) {
     rt_raster rast = NULL;
     const uint8_t *ptr = NULL;
     const uint8_t *beg = NULL;
@@ -4890,7 +4890,7 @@ rt_raster_deserialize(void* serialized) {
     RASTER_DEBUG(3, "rt_raster_deserialize: Deserialize raster header");
     memcpy(rast, serialized, sizeof (struct rt_raster_serialized_t));
 
-    if (0 == rast->numBands) {
+    if (0 == rast->numBands || header_only) {
         rast->bands = 0;
         return rast;
     }
@@ -5995,7 +5995,7 @@ rt_raster_transform(rt_raster raster, char *src_srs, char *dst_srs,
 	/*
 		for now, just use GDALAutoCreateWarpedVRT as it gets the job done
 		in the future, it may be better to go down the more flexible but challenging path
-		described in the "Creating the Output File" section of http://gdal.org/warptut.html
+		of gdal/apps/gdalwarp.cpp
 	*/
 	RASTER_DEBUG(3, "Reprojecting raster");
 	dst_ds = GDALAutoCreateWarpedVRT(

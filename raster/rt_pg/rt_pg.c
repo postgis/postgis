@@ -64,6 +64,24 @@
 #define MAX_DBL_CHARLEN (3 + DBL_MANT_DIG - DBL_MIN_EXP)
 #define MAX_INT_CHARLEN 32
 
+/* size of rt_raster_serialized_t */
+struct rt_raster_serialized_t {
+    uint32_t size;
+    uint16_t version;
+    uint16_t numBands;
+    double scaleX;
+    double scaleY;
+    double ipX;
+    double ipY;
+    double skewX;
+    double skewY;
+    int32_t srid;
+    uint16_t width;
+    uint16_t height;
+};
+
+#define RT_RASTER_SERIALIZED_T_LEN sizeof(struct rt_raster_serialized_t)
+
 /*
  * This is required for builds against pgsql 8.2
  */
@@ -500,7 +518,7 @@ Datum RASTER_out(PG_FUNCTION_ARGS)
 
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-    raster = rt_raster_deserialize(pgraster);
+    raster = rt_raster_deserialize(pgraster, FALSE);
     if ( ! raster ) {
         elog(ERROR, "RASTER_out: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -536,7 +554,7 @@ Datum RASTER_to_bytea(PG_FUNCTION_ARGS)
     int result_size = 0;
 
     /* Get raster object */
-    raster = rt_raster_deserialize(pgraster);
+    raster = rt_raster_deserialize(pgraster, FALSE);
     if ( ! raster ) {
         elog(ERROR, "RASTER_to_bytea: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -579,7 +597,7 @@ Datum RASTER_to_binary(PG_FUNCTION_ARGS)
     int result_size = 0;
 
     /* Get raster object */
-    raster = rt_raster_deserialize(pgraster);
+    raster = rt_raster_deserialize(pgraster, FALSE);
     if ( ! raster ) {
         elog(ERROR, "RASTER_to_binary: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -614,13 +632,16 @@ Datum RASTER_to_binary(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_convex_hull);
 Datum RASTER_convex_hull(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+    rt_pgraster *pgraster;
     rt_raster raster;
     LWPOLY* convexhull;
     uchar* pglwgeom;
 
-    { /* TODO: can be optimized to only detoast the header! */
-        raster = rt_raster_deserialize(pgraster);
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+
+    {
+        raster = rt_raster_deserialize(pgraster, TRUE);
         if ( ! raster ) {
             elog(ERROR, "RASTER_convex_hull: Could not deserialize raster");
             PG_RETURN_NULL();
@@ -699,7 +720,7 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
 
         /* Get input arguments */
         pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-        raster = rt_raster_deserialize(pgraster);
+        raster = rt_raster_deserialize(pgraster, FALSE);
         if ( ! raster )
         {
             ereport(ERROR,
@@ -919,12 +940,14 @@ Datum RASTER_makeEmpty(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_getSRID);
 Datum RASTER_getSRID(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+    rt_pgraster *pgraster;
     rt_raster raster;
     int32_t srid;
 
-    /* TODO: can be optimized to only detoast the header! */
-    raster = rt_raster_deserialize(pgraster);
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+
+    raster = rt_raster_deserialize(pgraster, TRUE);
     if ( ! raster ) {
         elog(ERROR, "RASTER_getSRID: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -948,8 +971,7 @@ Datum RASTER_setSRID(PG_FUNCTION_ARGS)
     rt_raster raster;
     int32_t newSRID = PG_GETARG_INT32(1);
 
-    /* TODO: can be optimized to only detoast the header! */
-    raster = rt_raster_deserialize(pgraster);
+    raster = rt_raster_deserialize(pgraster, FALSE);
     if ( ! raster ) {
         elog(ERROR, "RASTER_setSRID: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -975,12 +997,14 @@ Datum RASTER_setSRID(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_getWidth);
 Datum RASTER_getWidth(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+    rt_pgraster *pgraster;
     rt_raster raster;
     uint16_t width;
 
-    /* TODO: can be optimized to only detoast the header! */
-    raster = rt_raster_deserialize(pgraster);
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+
+    raster = rt_raster_deserialize(pgraster, TRUE);
     if ( ! raster ) {
         elog(ERROR, "RASTER_getWidth: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -1000,12 +1024,14 @@ Datum RASTER_getWidth(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_getHeight);
 Datum RASTER_getHeight(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+    rt_pgraster *pgraster;
     rt_raster raster;
     uint16_t height;
 
-    /* TODO: can be optimized to only detoast the header! */
-    raster = rt_raster_deserialize(pgraster);
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+
+    raster = rt_raster_deserialize(pgraster, TRUE);
     if ( ! raster ) {
         elog(ERROR, "RASTER_getHeight: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -1025,12 +1051,14 @@ Datum RASTER_getHeight(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_getNumBands);
 Datum RASTER_getNumBands(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+    rt_pgraster *pgraster;
     rt_raster raster;
     int32_t num_bands;
 
-    /* TODO: can be optimized to only detoast the header! */
-    raster = rt_raster_deserialize(pgraster);
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+
+    raster = rt_raster_deserialize(pgraster, TRUE);
     if ( ! raster ) {
         elog(ERROR, "RASTER_getNumBands: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -1050,12 +1078,14 @@ Datum RASTER_getNumBands(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_getXScale);
 Datum RASTER_getXScale(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+    rt_pgraster *pgraster;
     rt_raster raster;
     double xsize;
 
-    /* TODO: can be optimized to only detoast the header! */
-    raster = rt_raster_deserialize(pgraster);
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+
+    raster = rt_raster_deserialize(pgraster, TRUE);
     if ( ! raster ) {
         elog(ERROR, "RASTER_getXScale: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -1075,12 +1105,14 @@ Datum RASTER_getXScale(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_getYScale);
 Datum RASTER_getYScale(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+    rt_pgraster *pgraster;
     rt_raster raster;
     double ysize;
 
-    /* TODO: can be optimized to only detoast the header! */
-    raster = rt_raster_deserialize(pgraster);
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+
+    raster = rt_raster_deserialize(pgraster, TRUE);
     if ( ! raster ) {
         elog(ERROR, "RASTER_getYScale: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -1105,7 +1137,7 @@ Datum RASTER_setScale(PG_FUNCTION_ARGS)
     rt_raster raster;
     double size = PG_GETARG_FLOAT8(1);
 
-    raster = rt_raster_deserialize(pgraster);
+    raster = rt_raster_deserialize(pgraster, FALSE);
     if (! raster ) {
         elog(ERROR, "RASTER_setScale: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -1136,7 +1168,7 @@ Datum RASTER_setScaleXY(PG_FUNCTION_ARGS)
     double xscale = PG_GETARG_FLOAT8(1);
     double yscale = PG_GETARG_FLOAT8(2);
 
-    raster = rt_raster_deserialize(pgraster);
+    raster = rt_raster_deserialize(pgraster, FALSE);
     if (! raster ) {
         elog(ERROR, "RASTER_setScaleXY: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -1162,12 +1194,14 @@ Datum RASTER_setScaleXY(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_getXSkew);
 Datum RASTER_getXSkew(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+    rt_pgraster *pgraster;
     rt_raster raster;
     double xskew;
 
-    /* TODO: can be optimized to only detoast the header! */
-    raster = rt_raster_deserialize(pgraster);
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+
+    raster = rt_raster_deserialize(pgraster, TRUE);
     if ( ! raster ) {
         elog(ERROR, "RASTER_getXSkew: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -1188,12 +1222,14 @@ Datum RASTER_getXSkew(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_getYSkew);
 Datum RASTER_getYSkew(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+    rt_pgraster *pgraster;
     rt_raster raster;
     double yskew;
 
-    /* TODO: can be optimized to only detoast the header! */
-    raster = rt_raster_deserialize(pgraster);
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+
+    raster = rt_raster_deserialize(pgraster, TRUE);
     if ( ! raster ) {
         elog(ERROR, "RASTER_getYSkew: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -1218,7 +1254,7 @@ Datum RASTER_setSkew(PG_FUNCTION_ARGS)
     rt_raster raster;
     double skew = PG_GETARG_FLOAT8(1);
 
-    raster = rt_raster_deserialize(pgraster);
+    raster = rt_raster_deserialize(pgraster, FALSE);
     if (! raster ) {
         elog(ERROR, "RASTER_setSkew: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -1249,7 +1285,7 @@ Datum RASTER_setSkewXY(PG_FUNCTION_ARGS)
     double xskew = PG_GETARG_FLOAT8(1);
     double yskew = PG_GETARG_FLOAT8(2);
 
-    raster = rt_raster_deserialize(pgraster);
+    raster = rt_raster_deserialize(pgraster, FALSE);
     if (! raster ) {
         elog(ERROR, "RASTER_setSkewXY: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -1275,12 +1311,14 @@ Datum RASTER_setSkewXY(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_getXUpperLeft);
 Datum RASTER_getXUpperLeft(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+    rt_pgraster *pgraster;
     rt_raster raster;
     double xul;
 
-    /* TODO: can be optimized to only detoast the header! */
-    raster = rt_raster_deserialize(pgraster);
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+
+    raster = rt_raster_deserialize(pgraster, TRUE);
     if ( ! raster ) {
         elog(ERROR, "RASTER_getXUpperLeft: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -1300,12 +1338,14 @@ Datum RASTER_getXUpperLeft(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_getYUpperLeft);
 Datum RASTER_getYUpperLeft(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+    rt_pgraster *pgraster;
     rt_raster raster;
     double yul;
 
-    /* TODO: can be optimized to only detoast the header! */
-    raster = rt_raster_deserialize(pgraster);
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+
+    raster = rt_raster_deserialize(pgraster, TRUE);
     if ( ! raster ) {
         elog(ERROR, "RASTER_getYUpperLeft: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -1330,7 +1370,7 @@ Datum RASTER_setUpperLeftXY(PG_FUNCTION_ARGS)
     double xoffset = PG_GETARG_FLOAT8(1);
     double yoffset = PG_GETARG_FLOAT8(2);
 
-    raster = rt_raster_deserialize(pgraster);
+    raster = rt_raster_deserialize(pgraster, FALSE);
     if (! raster ) {
         elog(ERROR, "RASTER_setUpperLeftXY: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -1373,7 +1413,7 @@ Datum RASTER_getBandPixelType(PG_FUNCTION_ARGS)
     /* Deserialize raster */
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-    raster = rt_raster_deserialize(pgraster);
+    raster = rt_raster_deserialize(pgraster, FALSE);
     if ( ! raster ) {
         elog(ERROR, "RASTER_getBandPixelType: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -1422,7 +1462,7 @@ Datum RASTER_getBandPixelTypeName(PG_FUNCTION_ARGS)
     /* Deserialize raster */
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-    raster = rt_raster_deserialize(pgraster);
+    raster = rt_raster_deserialize(pgraster, FALSE);
     if ( ! raster ) {
         elog(ERROR, "RASTER_getBandPixelTypeName: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -1519,7 +1559,7 @@ Datum RASTER_getBandNoDataValue(PG_FUNCTION_ARGS)
     /* Deserialize raster */
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-    raster = rt_raster_deserialize(pgraster);
+    raster = rt_raster_deserialize(pgraster, FALSE);
     if ( ! raster ) {
         elog(ERROR, "RASTER_getBandNoDataValue: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -1577,7 +1617,7 @@ Datum RASTER_setBandNoDataValue(PG_FUNCTION_ARGS)
     }
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-    raster = rt_raster_deserialize(pgraster);
+    raster = rt_raster_deserialize(pgraster, FALSE);
     if (! raster) {
         elog(ERROR, "RASTER_setBandNoDataValue: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -1641,7 +1681,7 @@ Datum RASTER_setBandIsNoData(PG_FUNCTION_ARGS)
 
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-    raster = rt_raster_deserialize(pgraster);
+    raster = rt_raster_deserialize(pgraster, FALSE);
     if ( ! raster ) {
         elog(ERROR, "RASTER_setBandIsNoData: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -1699,7 +1739,7 @@ Datum RASTER_bandIsNoData(PG_FUNCTION_ARGS)
     /* Deserialize raster */
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-    raster = rt_raster_deserialize(pgraster);
+    raster = rt_raster_deserialize(pgraster, FALSE);
     if ( ! raster ) {
         elog(ERROR, "RASTER_bandIsNoData: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -1748,7 +1788,7 @@ Datum RASTER_getBandPath(PG_FUNCTION_ARGS)
     /* Deserialize raster */
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-    raster = rt_raster_deserialize(pgraster);
+    raster = rt_raster_deserialize(pgraster, FALSE);
     if ( ! raster ) {
         elog(ERROR, "RASTER_getBandPath: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -1818,7 +1858,7 @@ Datum RASTER_getPixelValue(PG_FUNCTION_ARGS)
     /* Deserialize raster */
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-    raster = rt_raster_deserialize(pgraster);
+    raster = rt_raster_deserialize(pgraster, FALSE);
     if (!raster) {
         elog(ERROR, "RASTER_getPixelValue: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -1899,7 +1939,7 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS)
     /* Deserialize raster */
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 
-    raster = rt_raster_deserialize(pgraster);
+    raster = rt_raster_deserialize(pgraster, FALSE);
     if ( ! raster ) {
         elog(ERROR, "RASTER_setPixelValue: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -2005,7 +2045,7 @@ Datum RASTER_addband(PG_FUNCTION_ARGS)
         PG_RETURN_NULL();
     }
 
-    raster = rt_raster_deserialize(pgraster);
+    raster = rt_raster_deserialize(pgraster, FALSE);
     if ( ! raster ) {
         elog(ERROR, "RASTER_addband: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -2078,7 +2118,7 @@ Datum RASTER_copyband(PG_FUNCTION_ARGS)
     }
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 
-    torast = rt_raster_deserialize(pgraster);
+    torast = rt_raster_deserialize(pgraster, FALSE);
     if ( ! torast ) {
         elog(ERROR, "RASTER_copyband: Could not deserialize first raster");
         PG_RETURN_NULL();
@@ -2088,7 +2128,7 @@ Datum RASTER_copyband(PG_FUNCTION_ARGS)
     if (!PG_ARGISNULL(1)) {
         pgraster = (rt_pgraster *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(1));
 
-        fromrast = rt_raster_deserialize(pgraster);
+        fromrast = rt_raster_deserialize(pgraster, FALSE);
         if ( ! fromrast ) {
             elog(ERROR, "RASTER_copyband: Could not deserialize second raster");
             PG_RETURN_NULL();
@@ -2143,8 +2183,10 @@ Datum RASTER_isEmpty(PG_FUNCTION_ARGS)
     bool isempty = FALSE;
 
     /* Deserialize raster */
-    pgraster = (rt_pgraster *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
-    raster = rt_raster_deserialize(pgraster);
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+
+    raster = rt_raster_deserialize(pgraster, TRUE);
     if ( ! raster )
     {
         ereport(ERROR,
@@ -2173,8 +2215,10 @@ Datum RASTER_hasNoBand(PG_FUNCTION_ARGS)
     bool hasnoband = FALSE;
 
     /* Deserialize raster */
-    pgraster = (rt_pgraster *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
-    raster = rt_raster_deserialize(pgraster);
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+
+    raster = rt_raster_deserialize(pgraster, TRUE);
     if ( ! raster )
     {
         ereport(ERROR,
@@ -2235,7 +2279,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
 
     /* Deserialize raster */
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
-    raster = rt_raster_deserialize(pgraster);
+    raster = rt_raster_deserialize(pgraster, FALSE);
     if (NULL == raster) {
         elog(ERROR, "RASTER_mapAlgebra: Could not deserialize raster");
         PG_RETURN_NULL();
@@ -2810,7 +2854,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_band);
 Datum RASTER_band(PG_FUNCTION_ARGS)
 {
-	rt_pgraster *pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	rt_pgraster *pgraster;
 	rt_pgraster *pgrast;
 	rt_raster raster;
 	rt_raster rast;
@@ -2833,7 +2877,10 @@ Datum RASTER_band(PG_FUNCTION_ARGS)
 	int i = 0;
 	int j = 0;
 
-	raster = rt_raster_deserialize(pgraster);
+	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	raster = rt_raster_deserialize(pgraster, FALSE);
 	if (!raster) {
 		elog(ERROR, "RASTER_band: Could not deserialize raster");
 		PG_RETURN_NULL();
@@ -2912,13 +2959,14 @@ Datum RASTER_band(PG_FUNCTION_ARGS)
 		}
 
 		pgrast = rt_raster_serialize(rast);
+		rt_raster_destroy(rast);
+		PG_FREE_IF_COPY(pgraster, 0);
 	}
 	else {
 		pgrast = pgraster;
 	}
 
-	if (!pgrast)
-		PG_RETURN_NULL();
+	if (!pgrast) PG_RETURN_NULL();
 
 	SET_VARSIZE(pgrast, pgrast->size);
 	PG_RETURN_POINTER(pgrast);
@@ -2970,7 +3018,7 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
 	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	raster = rt_raster_deserialize(pgraster);
+	raster = rt_raster_deserialize(pgraster, FALSE);
 	if (!raster) {
 		elog(ERROR, "RASTER_summaryStats: Could not deserialize raster");
 		PG_RETURN_NULL();
@@ -3005,7 +3053,7 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 		sample = 1;
 
 	/* one-pass standard deviation variables */
-	if (PG_NARGS()> 4) {
+	if (PG_NARGS() > 4) {
 		cstddev = 1;
 		if (!PG_ARGISNULL(4)) cK = PG_GETARG_INT64(4);
 		if (!PG_ARGISNULL(5)) cM = PG_GETARG_FLOAT8(5);
@@ -3027,6 +3075,7 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 		stats = rt_band_get_summary_stats(band, (int) exclude_nodata_value, sample, 0, &cK, &cM, &cQ);
 	rt_band_destroy(band);
 	rt_raster_destroy(raster);
+	PG_FREE_IF_COPY(pgraster, 0);
 	if (NULL == stats) {
 		elog(NOTICE, "Could not retrieve summary statistics of band of index %d. Returning NULL", bandindex);
 		PG_RETURN_NULL();
@@ -3209,7 +3258,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		if (PG_ARGISNULL(0)) SRF_RETURN_DONE(funcctx);
 		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-		raster = rt_raster_deserialize(pgraster);
+		raster = rt_raster_deserialize(pgraster, FALSE);
 		if (!raster) {
 			elog(ERROR, "RASTER_histogram: Could not deserialize raster");
 			PG_RETURN_NULL();
@@ -3327,6 +3376,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		stats = rt_band_get_summary_stats(band, (int) exclude_nodata_value, sample, 1, NULL, NULL, NULL);
 		rt_band_destroy(band);
 		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
 		if (NULL == stats || NULL == stats->values) {
 			elog(NOTICE, "Could not retrieve summary statistics of raster band of index %d", bandindex);
 			SRF_RETURN_DONE(funcctx);
@@ -3507,7 +3557,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		if (PG_ARGISNULL(0)) SRF_RETURN_DONE(funcctx);
 		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-		raster = rt_raster_deserialize(pgraster);
+		raster = rt_raster_deserialize(pgraster, FALSE);
 		if (!raster) {
 			elog(ERROR, "RASTER_quantile: Could not deserialize raster");
 			PG_RETURN_NULL();
@@ -3609,6 +3659,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		stats = rt_band_get_summary_stats(band, (int) exclude_nodata_value, sample, 1, NULL, NULL, NULL);
 		rt_band_destroy(band);
 		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
 		if (NULL == stats || NULL == stats->values) {
 			elog(NOTICE, "Could not retrieve summary statistics of raster band of index %d", bandindex);
 			SRF_RETURN_DONE(funcctx);
@@ -3768,7 +3819,7 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 		if (PG_ARGISNULL(0)) SRF_RETURN_DONE(funcctx);
 		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-		raster = rt_raster_deserialize(pgraster);
+		raster = rt_raster_deserialize(pgraster, FALSE);
 		if (!raster) {
 			elog(ERROR, "RASTER_valueCount: Could not deserialize raster");
 			PG_RETURN_NULL();
@@ -3854,6 +3905,7 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 		vcnts = rt_band_get_value_count(band, (int) exclude_nodata_value, search_values, search_values_count, roundto, &count);
 		rt_band_destroy(band);
 		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
 		if (NULL == vcnts || !count) {
 			elog(NOTICE, "Could not count the values of raster band of index %d", bandindex);
 			SRF_RETURN_DONE(funcctx);
@@ -3970,7 +4022,7 @@ struct rt_reclassexpr_t {
  */
 PG_FUNCTION_INFO_V1(RASTER_reclass);
 Datum RASTER_reclass(PG_FUNCTION_ARGS) {
-	rt_pgraster *pgrast = NULL;
+	rt_pgraster *pgraster = NULL;
 	rt_raster raster = NULL;
 	rt_band band = NULL;
 	rt_band newband = NULL;
@@ -4024,10 +4076,10 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 
 	/* pgraster is null, return null */
 	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-	pgrast = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	/* raster */
-	raster = rt_raster_deserialize(pgrast);
+	raster = rt_raster_deserialize(pgraster, FALSE);
 	if (!raster) {
 		elog(ERROR, "RASTER_reclass: Could not deserialize raster");
 		PG_RETURN_NULL();
@@ -4052,8 +4104,8 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 		elog(NOTICE, "Invalid argument for reclassargset. Returning original raster");
 		rt_raster_destroy(raster);
 
-		SET_VARSIZE(pgrast, pgrast->size);
-		PG_RETURN_POINTER(pgrast);
+		SET_VARSIZE(pgraster, pgraster->size);
+		PG_RETURN_POINTER(pgraster);
 	}
 
 	/*
@@ -4070,8 +4122,8 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 			elog(NOTICE, "Invalid argument for reclassargset. Returning original raster");
 			rt_raster_destroy(raster);
 
-			SET_VARSIZE(pgrast, pgrast->size);
-			PG_RETURN_POINTER(pgrast);
+			SET_VARSIZE(pgraster, pgraster->size);
+			PG_RETURN_POINTER(pgraster);
 		}
 
 		/* band index (1-based) */
@@ -4080,8 +4132,8 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 			elog(NOTICE, "Invalid argument for reclassargset. Missing value of nband for reclassarg of index %d . Returning original raster", i);
 			rt_raster_destroy(raster);
 
-			SET_VARSIZE(pgrast, pgrast->size);
-			PG_RETURN_POINTER(pgrast);
+			SET_VARSIZE(pgraster, pgraster->size);
+			PG_RETURN_POINTER(pgraster);
 		}
 		nband = DatumGetInt32(tupv);
 		POSTGIS_RT_DEBUGF(3, "RASTER_reclass: expression for band %d", nband);
@@ -4091,8 +4143,8 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 			elog(NOTICE, "Invalid argument for reclassargset. Invalid band index (must use 1-based) for reclassarg of index %d . Returning original raster", i);
 			rt_raster_destroy(raster);
 
-			SET_VARSIZE(pgrast, pgrast->size);
-			PG_RETURN_POINTER(pgrast);
+			SET_VARSIZE(pgraster, pgraster->size);
+			PG_RETURN_POINTER(pgraster);
 		}
 
 		/* reclass expr */
@@ -4101,16 +4153,16 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 			elog(NOTICE, "Invalid argument for reclassargset. Missing value of reclassexpr for reclassarg of index %d . Returning original raster", i);
 			rt_raster_destroy(raster);
 
-			SET_VARSIZE(pgrast, pgrast->size);
-			PG_RETURN_POINTER(pgrast);
+			SET_VARSIZE(pgraster, pgraster->size);
+			PG_RETURN_POINTER(pgraster);
 		}
 		exprtext = (text *) DatumGetPointer(tupv);
 		if (NULL == exprtext) {
 			elog(NOTICE, "Invalid argument for reclassargset. Missing value of reclassexpr for reclassarg of index %d . Returning original raster", i);
 			rt_raster_destroy(raster);
 
-			SET_VARSIZE(pgrast, pgrast->size);
-			PG_RETURN_POINTER(pgrast);
+			SET_VARSIZE(pgraster, pgraster->size);
+			PG_RETURN_POINTER(pgraster);
 		}
 		expr = text_to_cstring(exprtext);
 		POSTGIS_RT_DEBUGF(5, "RASTER_reclass: expr (raw) %s", expr);
@@ -4124,8 +4176,8 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 			elog(NOTICE, "Invalid argument for reclassargset. Invalid expression of reclassexpr for reclassarg of index %d . Returning original raster", i);
 			rt_raster_destroy(raster);
 
-			SET_VARSIZE(pgrast, pgrast->size);
-			PG_RETURN_POINTER(pgrast);
+			SET_VARSIZE(pgraster, pgraster->size);
+			PG_RETURN_POINTER(pgraster);
 		}
 
 		/* set of reclass expressions */
@@ -4143,8 +4195,8 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 				pfree(exprset);
 				rt_raster_destroy(raster);
 
-				SET_VARSIZE(pgrast, pgrast->size);
-				PG_RETURN_POINTER(pgrast);
+				SET_VARSIZE(pgraster, pgraster->size);
+				PG_RETURN_POINTER(pgraster);
 			}
 
 			/* allocate mem for reclass expression */
@@ -4161,8 +4213,8 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 					pfree(exprset);
 					rt_raster_destroy(raster);
 
-					SET_VARSIZE(pgrast, pgrast->size);
-					PG_RETURN_POINTER(pgrast);
+					SET_VARSIZE(pgraster, pgraster->size);
+					PG_RETURN_POINTER(pgraster);
 				}
 
 				for (c = 0; c < dash_n; c++) {
@@ -4210,8 +4262,8 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 						pfree(exprset);
 						rt_raster_destroy(raster);
 
-						SET_VARSIZE(pgrast, pgrast->size);
-						PG_RETURN_POINTER(pgrast);
+						SET_VARSIZE(pgraster, pgraster->size);
+						PG_RETURN_POINTER(pgraster);
 					}
 
 					/* check interval flags */
@@ -4267,8 +4319,8 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 						pfree(exprset);
 						rt_raster_destroy(raster);
 
-						SET_VARSIZE(pgrast, pgrast->size);
-						PG_RETURN_POINTER(pgrast);
+						SET_VARSIZE(pgraster, pgraster->size);
+						PG_RETURN_POINTER(pgraster);
 					}
 					POSTGIS_RT_DEBUGF(5, "RASTER_reclass: min/max (double) %f", val);
 
@@ -4342,16 +4394,16 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 			elog(NOTICE, "Invalid argument for reclassargset. Missing value of pixeltype for reclassarg of index %d . Returning original raster", i);
 			rt_raster_destroy(raster);
 
-			SET_VARSIZE(pgrast, pgrast->size);
-			PG_RETURN_POINTER(pgrast);
+			SET_VARSIZE(pgraster, pgraster->size);
+			PG_RETURN_POINTER(pgraster);
 		}
 		pixeltypetext = (text *) DatumGetPointer(tupv);
 		if (NULL == pixeltypetext) {
 			elog(NOTICE, "Invalid argument for reclassargset. Missing value of pixeltype for reclassarg of index %d . Returning original raster", i);
 			rt_raster_destroy(raster);
 
-			SET_VARSIZE(pgrast, pgrast->size);
-			PG_RETURN_POINTER(pgrast);
+			SET_VARSIZE(pgraster, pgraster->size);
+			PG_RETURN_POINTER(pgraster);
 		}
 		pixeltype = text_to_cstring(pixeltypetext);
 		POSTGIS_RT_DEBUGF(3, "RASTER_reclass: pixeltype %s", pixeltype);
@@ -4378,8 +4430,8 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 			pfree(exprset);
 			rt_raster_destroy(raster);
 
-			SET_VARSIZE(pgrast, pgrast->size);
-			PG_RETURN_POINTER(pgrast);
+			SET_VARSIZE(pgraster, pgraster->size);
+			PG_RETURN_POINTER(pgraster);
 		}
 		newband = rt_band_reclass(band, pixtype, hasnodata, nodataval, exprset, j);
 		if (!newband) {
@@ -4407,15 +4459,14 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 		pfree(exprset);
 	}
 
-	pgrast = rt_raster_serialize(raster);
+	pgraster = rt_raster_serialize(raster);
 	rt_raster_destroy(raster);
 
-	if (!pgrast)
-		PG_RETURN_NULL();
+	if (!pgraster) PG_RETURN_NULL();
 
 	POSTGIS_RT_DEBUG(3, "RASTER_reclass: Finished");
-	SET_VARSIZE(pgrast, pgrast->size);
-	PG_RETURN_POINTER(pgrast);
+	SET_VARSIZE(pgraster, pgraster->size);
+	PG_RETURN_POINTER(pgraster);
 }
 
 /**
@@ -4467,7 +4518,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
 	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	raster = rt_raster_deserialize(pgraster);
+	raster = rt_raster_deserialize(pgraster, FALSE);
 	if (!raster) {
 		elog(ERROR, "RASTER_asGDALRaster: Could not deserialize raster");
 		PG_RETURN_NULL();
@@ -4612,6 +4663,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 		pfree(options);
 	}
 	rt_raster_destroy(raster);
+	PG_FREE_IF_COPY(pgraster, 0);
 
 	if (!gdal) {
 		elog(ERROR, "RASTER_asGDALRaster: Could not allocate and generate GDAL raster");
@@ -4619,6 +4671,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 	}
 	POSTGIS_RT_DEBUGF(3, "RASTER_asGDALRaster: GDAL raster generated with %d bytes", (int) gdal_size);
 
+	/* result is a varlena */
 	result_size = gdal_size + VARHDRSZ;
 	result = (bytea *) palloc(result_size);
 	if (NULL == result) {
@@ -4830,7 +4883,7 @@ Datum RASTER_transform(PG_FUNCTION_ARGS)
 	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	/* raster */
-	raster = rt_raster_deserialize(pgraster);
+	raster = rt_raster_deserialize(pgraster, FALSE);
 	if (!raster) {
 		elog(ERROR, "RASTER_transform: Could not deserialize raster");
 		PG_RETURN_NULL();
@@ -4948,6 +5001,8 @@ Datum RASTER_transform(PG_FUNCTION_ARGS)
 
 	pgrast = rt_raster_serialize(rast);
 	rt_raster_destroy(rast);
+	PG_FREE_IF_COPY(pgraster, 0);
+
 	if (NULL == pgrast) PG_RETURN_NULL();
 
 	SET_VARSIZE(pgrast, pgrast->size);
@@ -4987,11 +5042,10 @@ Datum RASTER_metadata(PG_FUNCTION_ARGS)
 
 	/* pgraster is null, return null */
 	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
 
 	/* raster */
-	/* TODO: can be optimized to only detoast the header! */
-	raster = rt_raster_deserialize(pgraster);
+	raster = rt_raster_deserialize(pgraster, TRUE);
 	if (!raster) {
 		elog(ERROR, "RASTER_transform: Could not deserialize raster");
 		PG_RETURN_NULL();
@@ -5165,8 +5219,7 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	/* raster */
-	/* TODO: can be optimized to only detoast the header! */
-	raster = rt_raster_deserialize(pgraster);
+	raster = rt_raster_deserialize(pgraster, FALSE);
 	if (!raster) {
 		elog(ERROR, "RASTER_transform: Could not deserialize raster");
 		PG_RETURN_NULL();

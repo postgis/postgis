@@ -822,7 +822,7 @@ void* rt_raster_serialize(rt_raster raster);
  * NOTE: the raster will contain pointer to the serialized
  *       form, which must be kept alive.
  */
-rt_raster rt_raster_deserialize(void* serialized);
+rt_raster rt_raster_deserialize(void* serialized, int header_only);
 
 
 /**
