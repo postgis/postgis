@@ -3198,6 +3198,8 @@ WHERE rid = 2;
 				    Uses 'NearestNeighbor' if no algorithm is specified and maxerror percent of 0.125 if no maxerr is specified.</para>
 				<para>Algorithm options are: 'NearestNeighbor', 'Bilinear', 'Cubic', 'CubicSpline', and 'Lanczos'.  Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details.</para>
 				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
+				<note><para>Currently having issues getting this to work right on some platforms: Windows, some Linux.  We are working on resolving these. 
+				Refer to <ulink url="http://trac.osgeo.org/postgis/ticket/925">Raster ST_Transform</ulink> for gorydetails.</para></note>
 			</refsection>
 				
 			<refsection>
