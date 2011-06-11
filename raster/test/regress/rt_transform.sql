@@ -5,230 +5,275 @@ INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","srtext","proj4tex
 INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","srtext","proj4text") VALUES (1004269,'EPSG',4269,'GEOGCS["NAD83",DATUM["North_American_Datum_1983",SPHEROID["GRS 1980",6378137,298.257222101,AUTHORITY["EPSG","7019"]],AUTHORITY["EPSG","6269"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4269"]]','+proj=longlat +ellps=GRS80 +datum=NAD83 +no_defs ');
 END;
 SELECT
-	ST_SRID(rast),
-	ST_Width(rast),
-	ST_Height(rast),
-	ST_NumBands(rast),
-	round(ST_ScaleX(rast)::numeric, 3),
-	round(ST_ScaleY(rast)::numeric, 3),
-	ST_Count(rast),
-	round(ST_Mean(rast)::numeric, 3)
-FROM (SELECT ST_Transform(
-	ST_SetValue(
-		ST_SetValue(
+	srid,
+	width > 0,
+	height > 0,
+	numbands,
+	round(scalex::numeric, 3) > 0,
+	round(scaley::numeric, 3) > 0,
+	count > 0,
+	min >= -10,
+	max <= 3.14159
+FROM (
+	SELECT foo.rast, (st_summarystats(foo.rast)).*, (st_metadata(foo.rast)).* FROM (
+		SELECT ST_Transform(
 			ST_SetValue(
-				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, -500000, 600000, 1000, 1000, 0, 0, 1002163)
-					, 1, '64BF', 0, 0
+				ST_SetValue(
+					ST_SetValue(
+						ST_AddBand(
+							ST_MakeEmptyRaster(10, 10, -500000, 600000, 1000, 1000, 0, 0, 1002163)
+							, 1, '64BF', 0, 0
+						)
+						, 1, 1, 1, -10
+					)
+					, 1, 5, 4, 0
 				)
-				, 1, 1, 1, -10
+				, 1, 5, 5, 3.14159
 			)
-			, 1, 5, 4, 0
-		)
-		, 1, 5, 5, 3.14159
-	)
-	, 1003310) AS rast
-) foo;
+			, 1003310
+		) AS rast
+	) foo
+) bar;
 SELECT
-	ST_SRID(rast),
-	ST_Width(rast),
-	ST_Height(rast),
-	ST_NumBands(rast),
-	round(ST_ScaleX(rast)::numeric, 3),
-	round(ST_ScaleY(rast)::numeric, 3),
-	ST_Count(rast),
-	round(ST_Mean(rast)::numeric, 3)
-FROM (SELECT ST_Transform(
-	ST_SetValue(
-		ST_SetValue(
+	srid,
+	width > 0,
+	height > 0,
+	numbands,
+	round(scalex::numeric, 3) > 0,
+	round(scaley::numeric, 3) > 0,
+	count > 0,
+	min >= -10,
+	max <= 3.14159
+FROM (
+	SELECT foo.rast, (st_summarystats(foo.rast)).*, (st_metadata(foo.rast)).* FROM (
+		SELECT ST_Transform(
 			ST_SetValue(
-				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, -500000, 600000, 1000, 1000, 0, 0, 1002163)
-					, 1, '64BF', 0, 0
+				ST_SetValue(
+					ST_SetValue(
+						ST_AddBand(
+							ST_MakeEmptyRaster(10, 10, -500000, 600000, 1000, 1000, 0, 0, 1002163)
+							, 1, '64BF', 0, 0
+						)
+						, 1, 1, 1, -10
+					)
+					, 1, 5, 4, 0
 				)
-				, 1, 1, 1, -10
+				, 1, 5, 5, 3.14159
 			)
-			, 1, 5, 4, 0
-		)
-		, 1, 5, 5, 3.14159
-	)
-	, 1003309) AS rast
-) foo;
+			, 1003309
+		) AS rast
+	) foo
+) bar;
 SELECT
-	ST_SRID(rast),
-	ST_Width(rast),
-	ST_Height(rast),
-	ST_NumBands(rast),
-	round(ST_ScaleX(rast)::numeric, 3),
-	round(ST_ScaleY(rast)::numeric, 3),
-	ST_Count(rast),
-	round(ST_Mean(rast)::numeric, 3)
-FROM (SELECT ST_Transform(
-	ST_SetValue(
-		ST_SetValue(
+	srid,
+	width > 0,
+	height > 0,
+	numbands,
+	round(scalex::numeric, 3) > 0,
+	round(scaley::numeric, 3) > 0,
+	count > 0,
+	min >= -10,
+	max <= 3.14159
+FROM (
+	SELECT foo.rast, (st_summarystats(foo.rast)).*, (st_metadata(foo.rast)).* FROM (
+		SELECT ST_Transform(
 			ST_SetValue(
-				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, -500000, 600000, 1000, 1000, 0, 0, 1003310)
-					, 1, '64BF', 0, 0
+				ST_SetValue(
+					ST_SetValue(
+						ST_AddBand(
+							ST_MakeEmptyRaster(10, 10, -500000, 600000, 1000, 1000, 0, 0, 1002163)
+							, 1, '64BF', 0, 0
+						)
+						, 1, 1, 1, -10
+					)
+					, 1, 5, 4, 0
 				)
-				, 1, 1, 1, -10
+				, 1, 5, 5, 3.14159
 			)
-			, 1, 5, 4, 0
-		)
-		, 1, 5, 5, 3.14159
-	)
-	, 1004269) AS rast
-) foo;
+			, 1004269
+		) AS rast
+	) foo
+) bar;
 SELECT
-	ST_SRID(rast),
-	ST_Width(rast),
-	ST_Height(rast),
-	ST_NumBands(rast),
-	round(ST_ScaleX(rast)::numeric, 3),
-	round(ST_ScaleY(rast)::numeric, 3),
-	ST_Count(rast),
-	round(ST_Mean(rast)::numeric, 3)
-FROM (SELECT ST_Transform(
-	ST_SetValue(
-		ST_SetValue(
+	srid,
+	width > 0,
+	height > 0,
+	numbands,
+	round(scalex::numeric, 3) > 0,
+	round(scaley::numeric, 3) > 0,
+	count > 0,
+	min >= -10,
+	max <= 3.14159
+FROM (
+	SELECT foo.rast, (st_summarystats(foo.rast)).*, (st_metadata(foo.rast)).* FROM (
+		SELECT ST_Transform(
 			ST_SetValue(
-				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, -500000, 600000, 1000, 1000, 0, 0, 1002163)
-					, 1, '64BF', 0, 0
+				ST_SetValue(
+					ST_SetValue(
+						ST_AddBand(
+							ST_MakeEmptyRaster(10, 10, -500000, 600000, 1000, 1000, 0, 0, 1002163)
+							, 1, '64BF', 0, 0
+						)
+						, 1, 1, 1, -10
+					)
+					, 1, 5, 4, 0
 				)
-				, 1, 1, 1, -10
+				, 1, 5, 5, 3.14159
 			)
-			, 1, 5, 4, 0
-		)
-		, 1, 5, 5, 3.14159
-	)
-	, 1003310, NULL) AS rast
-) foo;
+			, 1003310, NULL
+		) AS rast
+	) foo
+) bar;
 SELECT
-	ST_SRID(rast),
-	ST_Width(rast),
-	ST_Height(rast),
-	ST_NumBands(rast),
-	round(ST_ScaleX(rast)::numeric, 3),
-	round(ST_ScaleY(rast)::numeric, 3),
-	ST_Count(rast),
-	round(ST_Mean(rast)::numeric, 3)
-FROM (SELECT ST_Transform(
-	ST_SetValue(
-		ST_SetValue(
+	srid,
+	width > 0,
+	height > 0,
+	numbands,
+	round(scalex::numeric, 3) > 0,
+	round(scaley::numeric, 3) > 0,
+	count > 0,
+	min >= -10,
+	max <= 3.14159
+FROM (
+	SELECT foo.rast, (st_summarystats(foo.rast)).*, (st_metadata(foo.rast)).* FROM (
+		SELECT ST_Transform(
 			ST_SetValue(
-				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, -500000, 600000, 1000, 1000, 0, 0, 1002163)
-					, 1, '64BF', 0, 0
+				ST_SetValue(
+					ST_SetValue(
+						ST_AddBand(
+							ST_MakeEmptyRaster(10, 10, -500000, 600000, 1000, 1000, 0, 0, 1002163)
+							, 1, '64BF', 0, 0
+						)
+						, 1, 1, 1, -10
+					)
+					, 1, 5, 4, 0
 				)
-				, 1, 1, 1, -10
+				, 1, 5, 5, 3.14159
 			)
-			, 1, 5, 4, 0
-		)
-		, 1, 5, 5, 3.14159
-	)
-	, 1003310, 'Bilinear') AS rast
-) foo;
+			, 1003310, 'Bilinear'
+		) AS rast
+	) foo
+) bar;
 SELECT
-	ST_SRID(rast),
-	ST_Width(rast),
-	ST_Height(rast),
-	ST_NumBands(rast),
-	round(ST_ScaleX(rast)::numeric, 3),
-	round(ST_ScaleY(rast)::numeric, 3),
-	ST_Count(rast),
-	round(ST_Mean(rast)::numeric, 3)
-FROM (SELECT ST_Transform(
-	ST_SetValue(
-		ST_SetValue(
+	srid,
+	width > 0,
+	height > 0,
+	numbands,
+	round(scalex::numeric, 3) > 0,
+	round(scaley::numeric, 3) > 0,
+	count > 0,
+	min >= -10,
+	max <= 3.14159
+FROM (
+	SELECT foo.rast, (st_summarystats(foo.rast)).*, (st_metadata(foo.rast)).* FROM (
+		SELECT ST_Transform(
 			ST_SetValue(
-				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, -500000, 600000, 1000, 1000, 0, 0, 1002163)
-					, 1, '64BF', 0, 0
+				ST_SetValue(
+					ST_SetValue(
+						ST_AddBand(
+							ST_MakeEmptyRaster(10, 10, -500000, 600000, 1000, 1000, 0, 0, 1002163)
+							, 1, '64BF', 0, 0
+						)
+						, 1, 1, 1, -10
+					)
+					, 1, 5, 4, 0
 				)
-				, 1, 1, 1, -10
+				, 1, 5, 5, 3.14159
 			)
-			, 1, 5, 4, 0
-		)
-		, 1, 5, 5, 3.14159
-	)
-	, 1003310, 'Bilinear', NULL) AS rast
-) foo;
+			, 1003310, 'Bilinear', NULL
+		) AS rast
+	) foo
+) bar;
 SELECT
-	ST_SRID(rast),
-	ST_Width(rast),
-	ST_Height(rast),
-	ST_NumBands(rast),
-	round(ST_ScaleX(rast)::numeric, 3),
-	round(ST_ScaleY(rast)::numeric, 3),
-	ST_Count(rast),
-	round(ST_Mean(rast)::numeric, 3)
-FROM (SELECT ST_Transform(
-	ST_SetValue(
-		ST_SetValue(
+	srid,
+	width > 0,
+	height > 0,
+	numbands,
+	round(scalex::numeric, 3) > 0,
+	round(scaley::numeric, 3) > 0,
+	count > 0,
+	min >= -10,
+	max <= 3.14159
+FROM (
+	SELECT foo.rast, (st_summarystats(foo.rast)).*, (st_metadata(foo.rast)).* FROM (
+		SELECT ST_Transform(
 			ST_SetValue(
-				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, -500000, 600000, 1000, 1000, 0, 0, 1002163)
-					, 1, '64BF', 0, 0
+				ST_SetValue(
+					ST_SetValue(
+						ST_AddBand(
+							ST_MakeEmptyRaster(10, 10, -500000, 600000, 1000, 1000, 0, 0, 1002163)
+							, 1, '64BF', 0, 0
+						)
+						, 1, 1, 1, -10
+					)
+					, 1, 5, 4, 0
 				)
-				, 1, 1, 1, -10
+				, 1, 5, 5, 3.14159
 			)
-			, 1, 5, 4, 0
-		)
-		, 1, 5, 5, 3.14159
-	)
-	, 1003310, 'Cubic', 0.0) AS rast
-) foo;
+			, 1003310, 'Cubic', 0.0
+		) AS rast
+	) foo
+) bar;
 SELECT
-	ST_SRID(rast),
-	ST_Width(rast),
-	ST_Height(rast),
-	ST_NumBands(rast),
-	round(ST_ScaleX(rast)::numeric, 3),
-	round(ST_ScaleY(rast)::numeric, 3),
-	ST_Count(rast),
-	round(ST_Mean(rast)::numeric, 3)
-FROM (SELECT ST_Transform(
-	ST_SetValue(
-		ST_SetValue(
+	srid,
+	width > 0,
+	height > 0,
+	numbands,
+	round(scalex::numeric, 3) > 0,
+	round(scaley::numeric, 3) > 0,
+	count > 0,
+	min >= -10,
+	max <= 3.14159
+FROM (
+	SELECT foo.rast, (st_summarystats(foo.rast)).*, (st_metadata(foo.rast)).* FROM (
+		SELECT ST_Transform(
 			ST_SetValue(
-				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, -500000, 600000, 1000, 1000, 0, 0, 1003309)
-					, 1, '64BF', 0, 0
+				ST_SetValue(
+					ST_SetValue(
+						ST_AddBand(
+							ST_MakeEmptyRaster(10, 10, -500000, 600000, 1000, 1000, 0, 0, 1002163)
+							, 1, '64BF', 0, 0
+						)
+						, 1, 1, 1, -10
+					)
+					, 1, 5, 4, 0
 				)
-				, 1, 1, 1, -10
+				, 1, 5, 5, 3.14159
 			)
-			, 1, 5, 4, 0
-		)
-		, 1, 5, 5, 3.14159
-	)
-	, 1003310, 'NearestNeighbour', 0.0) AS rast
-) foo;
+			, 1003310, 'NearestNeighbour', 0.0
+		) AS rast
+	) foo
+) bar;
 SELECT
-	ST_SRID(rast),
-	ST_Width(rast),
-	ST_Height(rast),
-	ST_NumBands(rast),
-	round(ST_ScaleX(rast)::numeric, 3),
-	round(ST_ScaleY(rast)::numeric, 3),
-	ST_Count(rast),
-	round(ST_Mean(rast)::numeric, 3)
-FROM (SELECT ST_Transform(
-	ST_SetValue(
-		ST_SetValue(
+	srid,
+	width > 0,
+	height > 0,
+	numbands,
+	round(scalex::numeric, 3) > 0,
+	round(scaley::numeric, 3) > 0,
+	count > 0,
+	min >= -10,
+	max <= 3.14159
+FROM (
+	SELECT foo.rast, (st_summarystats(foo.rast)).*, (st_metadata(foo.rast)).* FROM (
+		SELECT ST_Transform(
 			ST_SetValue(
-				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, -500000, 600000, 1000, 1000, 0, 0, 1003310)
-					, 1, '64BF', 0, 0
+				ST_SetValue(
+					ST_SetValue(
+						ST_AddBand(
+							ST_MakeEmptyRaster(10, 10, -500000, 600000, 1000, 1000, 0, 0, 1002163)
+							, 1, '64BF', 0, 0
+						)
+						, 1, 1, 1, -10
+					)
+					, 1, 5, 4, 0
 				)
-				, 1, 1, 1, -10
+				, 1, 5, 5, 3.14159
 			)
-			, 1, 5, 4, 0
-		)
-		, 1, 5, 5, 3.14159
-	)
-	, 1003309, 'NearestNeighbor', 0.0) AS rast
-) foo;
+			, 1003310, 'NearestNeighbor', 0.0
+		) AS rast
+	) foo
+) bar;
 BEGIN;
 DELETE FROM "spatial_ref_sys" WHERE srid = 1002163;
 DELETE FROM "spatial_ref_sys" WHERE srid = 1003309;
