@@ -3,7 +3,8 @@
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://www.postgis.org
 --
--- Copyright (C) 2010, 2011 Regina Obe and Leo Hsu
+-- Copyright (C) 2010, 2011 Regina Obe and Leo Hsu 
+-- Paragon Corporation
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
@@ -99,7 +100,16 @@ CREATE TABLE loader_lookuptables(process_order integer NOT NULL DEFAULT 1000,
 		load boolean NOT NULL DEFAULT true, 
 		level_county boolean NOT NULL DEFAULT false, 
 		level_state boolean NOT NULL DEFAULT false,
-		post_load_process text, single_geom_mode boolean DEFAULT false, insert_mode char(1) NOT NULL DEFAULT 'c', pre_load_process text,columns_exclude text[]);
+		post_load_process text, single_geom_mode boolean DEFAULT false, 
+		insert_mode char(1) NOT NULL DEFAULT 'c', 
+		pre_load_process text,columns_exclude text[]);
+		
+-- put in explanatory comments of what each column is for
+COMMENT ON COLUMN loader_lookuptables.lookup_name IS 'This is the table name to inherit from and suffix of resulting output table -- how the table will be named --  edges where would mean -- ma_edges , pa_edges etc.';
+COMMENT ON COLUMN loader_lookuptables.table_name IS 'suffix of the tables to load e.g.  edges would load all tables like *edges.dbf(shp)  -- so tl_2010_42129_edges.dbf .  ';
+COMMENT ON COLUMN loader_lookuptables.load IS 'Whether or not to load the table.  For states and zcta5 (you may just want to download states10, zcta510 nationwide file manually) load your own into a single table that inherits from tiger.states, tiger.zcta5.  You''ll get improved performance for some geocoding cases.';
+COMMENT ON COLUMN loader_lookuptables.columns_exclude IS 'List of columns to exclude as an array. This is excluded from both input table and output table and rest of columns remaining are assumed to be in same order in both tables. gid, geoid10,cpi,suffix1ce are excluded if no columns are specified.';
+
 INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state,  single_geom_mode, pre_load_process, post_load_process)
 VALUES(2, 'county', 'county10', true, false, true,
 	false, '${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_${lookup_name}(CONSTRAINT pk_${state_abbrev}_${lookup_name} PRIMARY KEY (gid) ) INHERITS(county); " ',

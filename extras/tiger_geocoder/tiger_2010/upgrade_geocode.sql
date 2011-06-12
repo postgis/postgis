@@ -23,6 +23,7 @@ CREATE INDEX idx_tiger_faces_countyfp ON faces USING btree(countyfp);
 CREATE INDEX tiger_place_the_geom_gist ON place USING gist(the_geom);
 CREATE INDEX tiger_edges_the_geom_gist ON edges USING gist(the_geom);
 CREATE INDEX tiger_state_the_geom_gist ON faces USING gist(the_geom);
+DROP FUNCTION IF EXISTS reverse_geocode(geometry); /** changed to use default parameters **/
 
 CREATE TABLE zcta5
 (
