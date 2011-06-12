@@ -97,7 +97,10 @@ BEGIN
 				ORDER BY ST_Distance(e.the_geom, ' || quote_literal(var_pt::text) || '::geometry) LIMIT 4) As foo 
 				WHERE dist < 150 --less than 150 m
 				ORDER BY foo.fullname, foo.dist) As f ORDER BY f.dist ';
-	RAISE NOTICE 'Statement 1: %', var_stmt;
+				
+	IF var_debug THEN
+	    RAISE NOTICE 'Statement 1: %', var_stmt;
+	END IF;
 	/** FOR var_redge IN
 		SELECT * 
 		FROM (SELECT DISTINCT ON(fullname)  foo.fullname, foo.stusps, foo.zip, 
