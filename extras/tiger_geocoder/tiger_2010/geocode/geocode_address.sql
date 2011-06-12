@@ -79,7 +79,7 @@ BEGIN
          || '        ELSE'
          || '            ((1.0 - '
          ||              '(least_hn(' || coalesce(quote_literal(parsed.address || '.0'),'NULL') || ',least_hn(b.fromhn,b.tohn)::text) /'
-         ||              ' greatest_hn(' || coalesce(quote_literal(parsed.address || '.0'),'NULL') || ',greatest_hn(b.fromhn,b.tohn)::text))'
+         ||              ' greatest(1,greatest_hn(' || coalesce(quote_literal(parsed.address || '.0'),'NULL') || ',greatest_hn(b.fromhn,b.tohn)::text)))'
          ||              ') * 5)::integer + 5'
          || '        END'
          || '    as sub_rating,'
