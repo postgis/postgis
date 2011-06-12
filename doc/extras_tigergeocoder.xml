@@ -399,18 +399,9 @@ wget http://www2.census.gov/geo/pvs/tiger2010st/44_Rhode_Island/ --no-parent --r
       <refsynopsisdiv>
         <funcsynopsis>
           <funcprototype>
-            <funcdef>record <function>Reverse_Gecode</function></funcdef>
+            <funcdef>record <function>Reverse_Geocode</function></funcdef>
             <paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
-            <paramdef><type>geometry[] </type> <parameter>OUT intpt</parameter></paramdef>
-            <paramdef><type>norm_addy[] </type> <parameter>OUT addy</parameter></paramdef>
-            <paramdef><type>varchar[] </type> <parameter>OUT street</parameter></paramdef>
-          </funcprototype>
-    
-          <!-- an optional second method prototype -->
-          <funcprototype>
-            <funcdef>record <function>Reverse_Gecode</function></funcdef>
-            <paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
-            <paramdef><type>boolean </type> <parameter>include_strnum_range</parameter></paramdef>
+            <paramdef choice='opt'><type>boolean </type> <parameter>include_strnum_range=false</parameter></paramdef>
             <paramdef><type>geometry[] </type> <parameter>OUT intpt</parameter></paramdef>
             <paramdef><type>norm_addy[] </type> <parameter>OUT addy</parameter></paramdef>
             <paramdef><type>varchar[] </type> <parameter>OUT street</parameter></paramdef>
