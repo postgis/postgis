@@ -7,6 +7,7 @@
 -- and array of cross streets, as well as interpolated points along the streets
 -- Use case example an address at the intersection of 3 streets: SELECT pprint_addy(r.addy[1]) As st1, pprint_addy(r.addy[2]) As st2, pprint_addy(r.addy[3]) As st3, array_to_string(r.street, ',') FROM reverse_geocode(ST_GeomFromText('POINT(-71.057811 42.358274)',4269)) As r;
 --set search_path=tiger,public;
+
 CREATE OR REPLACE FUNCTION reverse_geocode(IN pt geometry, IN include_strnum_range boolean, OUT intpt geometry[], OUT addy norm_addy[], OUT street character varying[])
   RETURNS record AS
 $$
@@ -72,12 +73,15 @@ BEGIN
 			f AS 
 			( SELECT * FROM faces 
 			WHERE statefp = ' || quote_literal(var_state) || ' AND countyfp = ' || quote_literal(var_countyfp) || ' 
-				AND ST_DWithin(faces.the_geom, ' || quote_literal(var_pt::text) || '::geometry, 0.001) ),
+				AND ST_DWithin(faces.the_geom, ' || quote_literal(var_pt::text) || '::geometry,0.0001) ),
 			e AS 
-			( SELECT * FROM edges 
-			WHERE statefp = ' || quote_literal(var_state) || ' AND countyfp = ' || quote_literal(var_countyfp) || ' 
-				AND ST_DWithin(edges.the_geom, ' || quote_literal(var_pt::text) || '::geometry, 0.05)
-				  )
+			( SELECT DISTINCT ON (edges.tlid) edges.* 
+				FROM edges INNER JOIN f ON (edges.tfidr = f.tfid OR edges.tfidl = f.tfid) 
+			WHERE edges.statefp = ' || quote_literal(var_state) || ' AND edges.countyfp = ' || quote_literal(var_countyfp) || ' 
+				AND ST_DWithin(edges.the_geom, ' || quote_literal(var_pt::text) || '::geometry, 0.05) AND (edges.mtfcc BETWEEN ''R'' AND ''T'') --only consider streets and roads
+				  ),
+			a AS (SELECT addr.* FROM addr INNER JOIN e ON addr.tlid = e.tlid
+				WHERE addr.statefp = ' || quote_literal(var_state) || ')
 				
 		SELECT * 
 		FROM (SELECT DISTINCT ON(fullname)  foo.fullname, foo.stusps, foo.zip, 
@@ -88,19 +92,15 @@ BEGIN
 			ST_Distance_Sphere(e.the_geom, ' || quote_literal(var_pt::text) || '::geometry) As dist
 				FROM e 
 					INNER JOIN (SELECT * FROM state_lookup WHERE statefp = ' || quote_literal(var_state) || ' ) As s ON (e.statefp = s.statefp )
-					INNER JOIN f As fl ON (e.tfidl = fl.tfid)
-					INNER JOIN f As fr ON (e.tfidr = fr.tfid)
-					INNER JOIN (SELECT * FROM addr WHERE statefp = ' || quote_literal(var_state) || ' ) As a ON ( e.tlid = a.tlid AND e.statefp = a.statefp AND  
-					   ( ( ST_Covers(fl.the_geom, ' || quote_literal(var_pt::text) || '::geometry) AND a.side = ''L'') OR ( ST_Covers(fr.the_geom, ' || quote_literal(var_pt::text) || '::geometry) AND a.side = ''R'' ) ) )
+					LEFT JOIN f As fl ON (e.tfidl = fl.tfid)
+					LEFT JOIN f As fr ON (e.tfidr = fr.tfid)
+					LEFT JOIN a ON    
+					   ( a.tlid = e.tlid AND ( ST_Covers(fl.the_geom, ' || quote_literal(var_pt::text) || '::geometry) AND a.side = ''L'') OR ( ST_Covers(fr.the_geom, ' || quote_literal(var_pt::text) || '::geometry) AND a.side = ''R'' ) ) 
 					-- INNER JOIN zip_state_loc As z ON (a.statefp =  z.statefp AND a.zip = z.zip) /** really slow with this join **/
-				WHERE ST_DWithin(e.the_geom, ' || quote_literal(var_pt::text) || '::geometry, 0.005)
 				ORDER BY ST_Distance(e.the_geom, ' || quote_literal(var_pt::text) || '::geometry) LIMIT 4) As foo 
-				WHERE dist < 150 --less than 150 m
+				WHERE dist < 200 --less than 150 m
 				ORDER BY foo.fullname, foo.dist) As f ORDER BY f.dist ';
-				
-	IF var_debug THEN
-	    RAISE NOTICE 'Statement 1: %', var_stmt;
-	END IF;
+	RAISE NOTICE 'Statement 1: %', var_stmt;
 	/** FOR var_redge IN
 		SELECT * 
 		FROM (SELECT DISTINCT ON(fullname)  foo.fullname, foo.stusps, foo.zip, 
@@ -129,8 +129,8 @@ BEGIN
 	   -- We only consider other edges as matches if they intersect our primary edge -- that would mean we are at a corner place
 	   IF ST_Intersects(var_redge.line, var_primary_line) THEN
 		   intpt := array_append(intpt,var_redge.center_pt); 
-		   IF var_redge.fullname IS NOT NULL THEN
-				street := array_append(street, (CASE WHEN include_strnum_range THEN COALESCE(var_redge.fromhn::varchar, '')::varchar || ' - ' || COALESCE(var_redge.tohn::varchar,'')::varchar || ' '::varchar  ELSE '' END::varchar ||  var_redge.fullname::varchar)::varchar);
+		   IF var_redge.fullname IS NOT NULL or var_redge.place IS NOT NULL THEN
+				street := array_append(street, (CASE WHEN include_strnum_range THEN COALESCE(var_redge.fromhn::varchar, '')::varchar || ' - ' || COALESCE(var_redge.tohn::varchar,'')::varchar || ' '::varchar  ELSE '' END::varchar ||  COALESCE(var_redge.fullname::varchar,''))::varchar);
 				--interploate the number -- note that if fromhn > tohn we will be subtracting which is what we want
 				-- We only consider differential distances are reeally close from our primary pt
 				IF var_redge.dist < var_primary_dist*1.1 THEN 
@@ -140,7 +140,15 @@ BEGIN
 						var_nstrnum := CASE WHEN var_nstrnum + 1 NOT BETWEEN var_redge.fromhn AND var_redge.tohn THEN var_nstrnum - 1 ELSE var_nstrnum + 1 END;
 					END IF;
 					var_strnum := var_nstrnum::varchar;
-					var_addy := normalize_address( COALESCE(var_strnum::varchar || ' ', '') || var_redge.fullname || ', ' || var_redge.place || ', ' || var_redge.stusps || ' ' || var_redge.zip);
+					IF var_redge.fullname IS NULL THEN --not a full address so can't be fully normalized
+						var_addy := NULL;
+						var_addy.address = var_strnum;
+						var_addy.location = var_redge.place;
+						var_addy.stateAbbrev = var_redge.stusps;
+						var_addy.zip = var_redge.zip;
+					ELSE
+						var_addy := normalize_address( COALESCE(var_strnum::varchar || ' ', '') || COALESCE(var_redge.fullname || ', ') || var_redge.place || ', ' || var_redge.stusps || ' ' || COALESCE(var_redge.zip,''));
+					END IF;
 					addy := array_append(addy, var_addy);
 				END IF;
 		   END IF;
@@ -154,4 +162,5 @@ BEGIN
 	RETURN;   
 END;
 $$
-  LANGUAGE plpgsql STABLE COST 1000;
+  LANGUAGE plpgsql STABLE
+  COST 1000;
