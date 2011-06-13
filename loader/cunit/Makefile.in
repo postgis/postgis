@@ -28,6 +28,15 @@ PGSQL_FE_LDFLAGS=@PGSQL_FE_LDFLAGS@
 # liblwgeom
 LIBLWGEOM=../../liblwgeom/liblwgeom.a
 
+# GetText includes and libraries
+LIBICONV=@LIBICONV@
+LTLIBICONV=@LTLIBICONV@
+GETTEXT_CFLAGS = @GETTEXT_CFLAGS@
+GETTEXT_LDFLAGS = @GETTEXT_LDFLAGS@ @LIBINTL@
+
+# Build full linking line
+LDFLAGS = -lm $(GETTEXT_LDFLAGS) $(PGSQL_FE_LDFLAGS) $(LTLIBICONV) $(CUNIT_LDFLAGS)
+
 OBJS=	\
 	cu_list.o \
 	cu_pgsql2shp.o \
@@ -62,8 +71,7 @@ endif
 
 # Build the main unit test executable
 cu_tester: $(LOADER_OBJS) $(OBJS) 
-	#$(CC) $(GTK_WIN32_FLAGS) $^ -o $@ $(GTK_LIBS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) -lm $(CUNIT_LDFLAGS)
-	$(CC)  $^ -o $@ $(LIBLWGEOM) $(PGSQL_FE_LDFLAGS) -lm $(CUNIT_LDFLAGS)
+	$(CC)  $^ -o $@ $(LIBLWGEOM) $(LDFLAGS)
 
 # Command to build each of the .o files
 $(OBJS): %.o: %.c
