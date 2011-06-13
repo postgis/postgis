@@ -4658,8 +4658,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 
 	/* free memory */
 	if (NULL != options) {
-		for (i = j - 1; i >= 0; i--)
-			pfree(options[i]);
+		for (i = j - 1; i >= 0; i--) pfree(options[i]);
 		pfree(options);
 	}
 	rt_raster_destroy(raster);
@@ -4687,6 +4686,9 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 	fwrite(gdal, sizeof(uint8_t), gdal_size, fh);
 	fclose(fh);
 	*/
+
+	/* free gdal mem buffer */
+	if (gdal) CPLFree(gdal);
 
 	POSTGIS_RT_DEBUG(3, "RASTER_asGDALRaster: Returning pointer to GDAL raster");
 	PG_RETURN_POINTER(result);

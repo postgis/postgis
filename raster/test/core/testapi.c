@@ -1331,6 +1331,8 @@ static void testRasterToGDAL() {
 	fclose(fh);
 	*/
 
+	if (gdal) CPLFree(gdal);
+
 	deepRelease(raster);
 }
 

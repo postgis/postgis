@@ -5209,7 +5209,8 @@ rt_raster_replace_band(rt_raster raster, rt_band band, int index) {
  * @param options : list of format creation options. array of strings
  * @param gdalsize : will be set to the size of returned bytea
  *
- * @return formatted GDAL raster
+ * @return formatted GDAL raster.  the calling function is responsible
+ *   for freeing the returned data using CPLFree()
  */
 uint8_t*
 rt_raster_to_gdal(rt_raster raster, char *srs,
