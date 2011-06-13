@@ -133,7 +133,7 @@ HINT:  "MULTIPOINT(1 1, 2 2" <-- parse error at position 19 within geometry
 108|2
 109|4
 110|6
-111|528
+111|552
 112|3
 121|BOX3D(1.19894826 1.20265412 0,999.932129 999.692932 0)|BOX3D(1.40486765 1.3484304 0,999.857666 999.936401 0)
 122|f
@@ -143,7 +143,7 @@ HINT:  "MULTIPOINT(1 1, 2 2" <-- parse error at position 19 within geometry
 126|f
 127|f
 128|f
-129|34009|34009
+129|48016|48016
 131|1
 132|2
 133|
@@ -183,7 +183,7 @@ ERROR:  Input geometries must be points
 164|POLYGON((0 0 0,1 0 0,1 1 0,0 1 0,0 0 1))
 ERROR:  geometry contains non-closed rings
 HINT:  "...(0 0 0, 1 0 0, 1 1 0, 0 1 0, 0 0.1 1)" <-- parse error at position 45 within geometry
-166|MULTIPOINT EMPTY
+166|POINT EMPTY
 167|LINESTRING EMPTY
 168|POLYGON EMPTY
 169|CIRCULARSTRING EMPTY

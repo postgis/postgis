@@ -1,3 +1,3 @@
-#undef GSERIALIZED_ON
+#define GSERIALIZED_ON
 
 
