@@ -470,8 +470,8 @@ public static void main(String[] args) {
     * must cast the connection to the pgsql-specific connection 
     * implementation before calling the addDataType() method. 
     */
-    ((org.postgresql.PGConnection)conn).addDataType("geometry","org.postgis.PGgeometry");
-    ((org.postgresql.PGConnection)conn).addDataType("box3d","org.postgis.PGbox3d");
+    ((org.postgresql.PGConnection)conn).addDataType("geometry",Class.forName("org.postgis.PGgeometry"));
+    ((org.postgresql.PGConnection)conn).addDataType("box3d",Class.forName("org.postgis.PGbox3d"));
     /* 
     * Create a statement and execute a select query. 
     */ 
