@@ -54,6 +54,41 @@
         	<para>Extras - revised tiger_geocoder to work with TIGER census 2010 data and addition of reverse geocoder function. (Regina Obe, Leo Hsu)</para>  
         </simplesect>
       </sect1>
+     
+      <sect1>
+        <title>Release 1.5.3</title>
+        <para>Release date: 2011/06/xx</para>
+        <para>This is a bug fix release, addressing issues that have been filed since the 1.5.2 release.</para>
+        <simplesect>
+          <title>Bug Fixes</title>
+			   <para>#1007, ST_IsValid crash fix requires GEOS 3.3.0+ or 3.2.3+ 
+				 (Sandro Santilli, reported by Birgit Laggner)</para>
+			   <para>#940, support for PostgreSQL 9.1 beta 1 
+				 (Regina Obe, Paul Ramsey, patch submitted by stl)</para>
+			   <para>#845, ST_Intersects precision error (Sandro Santilli, Nicklas Avén)
+				 Reported by cdestigter</para>
+			   <para>#884, Unstable results with ST_Within, ST_Intersects (Chris Hodgson)</para>
+			   <para>#779, shp2pgsql -S option seems to fail on points (Jeff Adams)</para>
+			   <para>#666, ST_DumpPoints is not null safe (Regina Obe)</para>
+			   <para>#631, Update NZ projections for grid transformation support (jpalmer)</para>
+			   <para>#630, Peculiar Null treatment in arrays in ST_Collect (Chris Hodgson)
+				 Reported by David Bitner</para>
+			   <para>#624, Memory leak in ST_GeogFromText (ryang, Paul Ramsey)</para>
+			   <para>#609, Bad source code in manual section 5.2 Java Clients (simoc, Regina Obe)</para>
+			   <para>#604, shp2pgsql usage touchups (Mike Toews, Paul Ramsey)</para>
+			   <para>#573 ST_Union fails on a group of linestrings 
+				 Not a PostGIS bug, fixed in GEOS 3.3.0</para>
+			   <para>#457 ST_CollectionExtract returns non-requested type
+				(Nicklas Avén, Paul Ramsey)</para>
+			  <para>#441 ST_AsGeoJson Bbox on GeometryCollection error (Olivier Courtin)</para>
+			  <para>#411 Ability to backup invalid geometries (Sando Santilli)
+				 Reported by Regione Toscana</para>
+			  <para>#409 ST_AsSVG - degraded (Olivier Courtin)
+				 Reported by Sdikiy</para>
+			  <para>#373 Documentation syntax error in hard upgrade (Paul Ramsey)
+				 Reported by psvensso</para>
+        </simplesect>
+      </sect1>
       
       <sect1>
         <title>Release 1.5.2</title>
@@ -84,7 +119,7 @@
            <para>#603, shp2pgsql: "-w" produces invalid WKT for MULTI* objects. (Mark Cave-Ayland)</para>
         </simplesect>
       </sect1>
-      
+          
       <sect1>
         <title>Release 1.5.1</title>
         <para>Release date: 2010/03/11</para>

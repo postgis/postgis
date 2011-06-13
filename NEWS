@@ -1,5 +1,5 @@
 PostGIS 2.0.0
-YYYY/MM/DD
+2011/MM/DD
 
   * Important / Breaking Changes *
 
@@ -65,6 +65,40 @@ YYYY/MM/DD
     include in Official documentation. 
     (Regina Obe, Leo Hsu / Paragon Corporation)
 
+PostGIS 1.5.3
+2011/06/XX
+
+ - This is a bug fix release, addressing issues that have been
+   filed since the 1.5.2 release.
+ - Bug Fixes
+   - #1007, ST_IsValid crash - fix requires GEOS 3.3.0+ or 3.2.3+ 
+   	 (Sandro Santilli, reported by Birgit Laggner)
+   - #940, support for PostgreSQL 9.1 beta 1 
+     (Regina Obe, Paul Ramsey, patch submitted by stl)
+   - #845, ST_Intersects precision error (Sandro Santilli, Nicklas Avén)
+     Reported by cdestigter
+   - #884, Unstable results with ST_Within, ST_Intersects (Chris Hodgson)
+   - #779, shp2pgsql -S option seems to fail on points (Jeff Adams)
+   - #666, ST_DumpPoints is not null safe (Regina Obe)
+   - #631, Update NZ projections for grid transformation support (jpalmer)
+   - #630, Peculiar Null treatment in arrays in ST_Collect (Chris Hodgson)
+     Reported by David Bitner
+   - #624, Memory leak in ST_GeogFromText (ryang, Paul Ramsey)
+   - #609, Bad source code in manual section 5.2 Java Clients 
+    (simoc, Regina Obe)
+   - #604, shp2pgsql usage touchups (Mike Toews, Paul Ramsey)
+   - #573 ST_Union fails on a group of linestrings 
+   	 Not a PostGIS bug, fixed in GEOS 3.3.0
+   - #457 ST_CollectionExtract returns non-requested type
+    (Nicklas Avén, Paul Ramsey)
+   - #441 ST_AsGeoJson Bbox on GeometryCollection error (Olivier Courtin)
+   - #411 Ability to backup invalid geometries (Sando Santilli)
+     Reported by Regione Toscana
+   - #409 ST_AsSVG - degraded (Olivier Courtin)
+     Reported by Sdikiy
+   - #373 Documentation syntax error in hard upgrade (Paul Ramsey)
+     Reported by psvensso
+     
 PostGIS 1.5.2
 2010/09/27
 
