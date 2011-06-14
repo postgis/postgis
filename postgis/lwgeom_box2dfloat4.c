@@ -42,7 +42,7 @@ Datum BOX2DFLOAT4_in(PG_FUNCTION_ARGS)
 		elog(ERROR,"box2d parser - doesnt start with BOX(");
 		PG_RETURN_NULL();
 	}
-	nitems = sscanf(str,"BOX(%f %f,%f %f)", &box.xmin, &box.ymin, &box.xmax, &box.ymax);
+	nitems = sscanf(str,"BOX(%lf %lf,%lf %lf)", &box.xmin, &box.ymin, &box.xmax, &box.ymax);
 	if (nitems != 4)
 	{
 		elog(ERROR,"box2d parser - couldnt parse.  It should look like: BOX(xmin ymin,xmax ymax)");
