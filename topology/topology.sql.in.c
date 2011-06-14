@@ -1437,7 +1437,7 @@ BEGIN
 
 	-- Build a gist index on geom
 	EXECUTE 'CREATE INDEX "face_check_gist" ON '
-	  || 'face_check USING gist (geom gist_geometry_ops);';
+	  || 'face_check USING gist (geom);';
 
 	-- Build a btree index on id
 	EXECUTE 'CREATE INDEX "face_check_bt" ON ' 
@@ -1804,17 +1804,17 @@ CREATE SCHEMA ' || quote_ident(atopology) || ';
 	------- GiST index on face
 	EXECUTE 'CREATE INDEX face_gist ON '
 		|| quote_ident(atopology)
-		|| '.face using gist (mbr gist_geometry_ops);';
+		|| '.face using gist (mbr);';
 
 	------- GiST index on node
 	EXECUTE 'CREATE INDEX node_gist ON '
 		|| quote_ident(atopology)
-		|| '.node using gist (geom gist_geometry_ops);';
+		|| '.node using gist (geom);';
 
 	------- GiST index on edge
 	EXECUTE 'CREATE INDEX edge_gist ON '
 		|| quote_ident(atopology)
-		|| '.edge_data using gist (geom gist_geometry_ops);';
+		|| '.edge_data using gist (geom);';
 
 	------- Indexes on left_face and right_face of edge_data
 	------- NOTE: these indexes speed up GetFaceGeometry (and thus
