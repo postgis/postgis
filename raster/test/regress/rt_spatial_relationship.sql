@@ -48,7 +48,7 @@ VALUES ( 1, '1x1, nbband:2 b1pixeltype:4BUI b1hasnodatavalue:true b1nodatavalue:
 ||
 '0000000000000840' -- skewY (float64 3)
 ||
-'73E58A00' -- SRID (int32 9102707)
+'AD100000' -- SRID (int32 4269)
 ||
 '0200' -- width (uint16 1)
 ||
@@ -142,58 +142,58 @@ CREATE TABLE rt_spatial_relationship_test_geom (
 -- Insert points for raster no 1
 
 INSERT INTO rt_spatial_relationship_test_geom 
-VALUES ( 1, 1, st_setsrid(st_makepoint(782325.5, 26744042.5), 9102707));
+VALUES ( 1, 1, st_setsrid(st_makepoint(782325.5, 26744042.5), 4269));
 
 INSERT INTO rt_spatial_relationship_test_geom 
-VALUES ( 2, 1, st_setsrid(st_makepoint(782325.5 + 1, 26744042.5), 9102707));
+VALUES ( 2, 1, st_setsrid(st_makepoint(782325.5 + 1, 26744042.5), 4269));
 
 INSERT INTO rt_spatial_relationship_test_geom 
-VALUES ( 3, 1, st_setsrid(st_makepoint(782325.5 + 10, 26744042.5 + 10), 9102707));
+VALUES ( 3, 1, st_setsrid(st_makepoint(782325.5 + 10, 26744042.5 + 10), 4269));
 
 INSERT INTO rt_spatial_relationship_test_geom 
-VALUES ( 4, 1, st_setsrid(st_makepoint(782325.5 + 10, 26744042.5 - 2), 9102707));
+VALUES ( 4, 1, st_setsrid(st_makepoint(782325.5 + 10, 26744042.5 - 2), 4269));
 
 INSERT INTO rt_spatial_relationship_test_geom 
-VALUES ( 5, 1, st_setsrid(st_makepoint(782325.5 + 5 + 3, 26744042.5 - 5 + 3), 9102707));
+VALUES ( 5, 1, st_setsrid(st_makepoint(782325.5 + 5 + 3, 26744042.5 - 5 + 3), 4269));
 
 INSERT INTO rt_spatial_relationship_test_geom 
-VALUES ( 6, 1, st_setsrid(st_makepoint(782325.5 + 2*5 + 0.5*3, 26744042.5 + 2*3 - 0.5*5), 9102707));
+VALUES ( 6, 1, st_setsrid(st_makepoint(782325.5 + 2*5 + 0.5*3, 26744042.5 + 2*3 - 0.5*5), 4269));
 
 INSERT INTO rt_spatial_relationship_test_geom 
-VALUES ( 7, 1, st_setsrid(st_makepoint(782325.5 + 1, 26744042.5 - 3), 9102707));
+VALUES ( 7, 1, st_setsrid(st_makepoint(782325.5 + 1, 26744042.5 - 3), 4269));
 
 -- Insert lines for raster no 1
 
 INSERT INTO rt_spatial_relationship_test_geom 
 VALUES ( 11, 1, st_setsrid(st_makeline(ARRAY[st_makepoint(782325.5 + 1, 26744042.5 + 1),
-                                             st_makepoint(782325.5 + 11, 26744042.5 + 11)]), 9102707));
+                                             st_makepoint(782325.5 + 11, 26744042.5 + 11)]), 4269));
 INSERT INTO rt_spatial_relationship_test_geom 
 VALUES ( 12, 1, st_setsrid(st_makeline(ARRAY[st_makepoint(782325.5 - 1, 26744042.5 - 2),
-                                             st_makepoint(782325.5 + 5, 26744042.5 + 4)]), 9102707));
+                                             st_makepoint(782325.5 + 5, 26744042.5 + 4)]), 4269));
 INSERT INTO rt_spatial_relationship_test_geom 
 VALUES ( 13, 1, st_setsrid(st_makeline(ARRAY[st_makepoint(782325.5, 26744042.5 - 10),
-                                             st_makepoint(782325.5 + 18, 26744042.5 - 2)]), 9102707));
+                                             st_makepoint(782325.5 + 18, 26744042.5 - 2)]), 4269));
 INSERT INTO rt_spatial_relationship_test_geom 
 VALUES ( 14, 1, st_setsrid(st_makeline(ARRAY[st_makepoint(782325.5 + 13, 26744042.5 - 3),
-                                             st_makepoint(782325.5 + 18, 26744042.5 - 1)]), 9102707));
+                                             st_makepoint(782325.5 + 18, 26744042.5 - 1)]), 4269));
 INSERT INTO rt_spatial_relationship_test_geom 
 VALUES ( 15, 1, st_setsrid(st_makeline(ARRAY[st_makepoint(782325.5 + 2*5 - 0.3*3, 26744042.5 + 2*3 + 0.3*5),
                                              st_makepoint(782325.5 + 2*5 + 0.5*3, 26744042.5 + 2*3 - 0.5*5)
                                             ]), 
-                                       9102707));
+                                       4269));
 INSERT INTO rt_spatial_relationship_test_geom 
 VALUES ( 16, 1, st_setsrid(st_makeline(ARRAY[st_makepoint(782325.5 + 2*5 + 1.5*3, 26744042.5 + 2*3 - 1.5*5),
                                              st_makepoint(782325.5 + 2*5 + 2.5*3, 26744042.5 + 2*3 - 2.5*5)
                                             ]),
-                                       9102707));
+                                       4269));
 INSERT INTO rt_spatial_relationship_test_geom 
 VALUES ( 17, 1, st_setsrid(st_makeline(ARRAY[st_makepoint(782325.5 + 2*5 + 1.0*3, 26744042.5 + 2*3 - 1.0*5),
                                              st_makepoint(782325.5 + 2*5 + 1.5*3, 26744042.5 + 2*3 - 1.5*5)
                                             ]),
-                                       9102707));
+                                       4269));
 INSERT INTO rt_spatial_relationship_test_geom 
 VALUES ( 18, 1, st_setsrid(st_makeline(ARRAY[st_makepoint(782325.5 + 4, 26744042.5 - 8),
-                                             st_makepoint(782325.5 + 7, 26744042.5 + 6)]), 9102707));
+                                             st_makepoint(782325.5 + 7, 26744042.5 + 6)]), 4269));
 
 -- Insert points for raster no 2
 

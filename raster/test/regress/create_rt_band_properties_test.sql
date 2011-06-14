@@ -52,7 +52,7 @@ VALUES ( 1, '1x1, nbband:2 b1pixeltype:4BUI b1hasnodatavalue:true b1nodatavalue:
 ||
 '0000000000000840' -- skewY (float64 3)
 ||
-'73E58A00' -- SRID (int32 9102707)
+'E6100000' -- SRID (int32 4326)
 ||
 '0100' -- width (uint16 1)
 ||
