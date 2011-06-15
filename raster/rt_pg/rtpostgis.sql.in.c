@@ -1469,16 +1469,10 @@ CREATE OR REPLACE FUNCTION st_transform(rast raster, srid integer, algorithm tex
 -- This function can not be STRICT, because nodatavalueexpr can be NULL (could be just '' though)
 -- or pixeltype can not be determined (could be st_bandpixeltype(raster, band) though)
 CREATE OR REPLACE FUNCTION st_mapalgebra(rast raster, band integer,
-        expression text, nodatavalueexpr text, pixeltype text)
+        expression text, nodatavalueexpr text DEFAULT NULL, pixeltype text DEFAULT NULL)
     RETURNS raster
     AS 'MODULE_PATHNAME', 'RASTER_mapAlgebra'
     LANGUAGE 'C' IMMUTABLE;
-
-CREATE OR REPLACE FUNCTION st_mapalgebra(rast raster, band integer,
-        expression text)
-    RETURNS raster
-    AS $$ SELECT st_mapalgebra($1, $2, $3, NULL, NULL) $$
-    LANGUAGE SQL IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_mapalgebra(rast raster, expression text,
         pixeltype text)
@@ -1486,31 +1480,12 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(rast raster, expression text,
     AS $$ SELECT st_mapalgebra($1, 1, $2, NULL, $3) $$
     LANGUAGE SQL IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_mapalgebra(rast raster, expression text)
-    RETURNS raster
-    AS $$ SELECT st_mapalgebra($1, 1, $2, NULL, NULL) $$
-    LANGUAGE SQL IMMUTABLE STRICT;
-
--- This function can not be STRICT, because nodatavalueexpr can be NULL (could be just '' though)
-CREATE OR REPLACE FUNCTION st_mapalgebra(rast raster, band integer,
-        expression text, nodatavalueexpr text)
-    RETURNS raster
-    AS $$ SELECT st_mapalgebra($1, $2, $3, $4, NULL) $$
-    LANGUAGE SQL;
-
 -- This function can not be STRICT, because nodatavalueexpr can be NULL (could be just '' though)
 -- or pixeltype can not be determined (could be st_bandpixeltype(raster, band) though)
 CREATE OR REPLACE FUNCTION st_mapalgebra(rast raster, expression text,
-        nodatavalueexpr text, pixeltype text)
+        nodatavalueexpr text DEFAULT NULL, pixeltype text DEFAULT NULL)
     RETURNS raster
     AS $$ SELECT st_mapalgebra($1, 1, $2, $3, $4) $$
-    LANGUAGE SQL;
-
--- This function can not be STRICT, because nodatavalueexpr can be NULL (could be just '' though)
-CREATE OR REPLACE FUNCTION st_mapalgebra(rast raster, expression text,
-        nodatavalueexpr text)
-    RETURNS raster
-    AS $$ SELECT st_mapalgebra($1, 1, $2, $3, NULL) $$
     LANGUAGE SQL;
 
 
