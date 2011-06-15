@@ -1306,7 +1306,7 @@ static void testRasterToGDAL() {
 
 	raster = rt_raster_new(xmax, ymax);
 	assert(raster); /* or we're out of virtual memory */
-	band = addBand(raster, PT_32BF, 0, 0);
+	band = addBand(raster, PT_64BF, 0, 0);
 	CHECK(band);
 	rt_band_set_nodata(band, 0);
 
@@ -1356,7 +1356,7 @@ static void testValueCount() {
 
 	raster = rt_raster_new(xmax, ymax);
 	assert(raster); /* or we're out of virtual memory */
-	band = addBand(raster, PT_32BF, 0, 0);
+	band = addBand(raster, PT_64BF, 0, 0);
 	CHECK(band);
 	rt_band_set_nodata(band, 0);
 
@@ -1415,7 +1415,7 @@ static void testGDALToRaster() {
 
 	raster = rt_raster_new(xmax, ymax);
 	assert(raster); /* or we're out of virtual memory */
-	band = addBand(raster, PT_32BF, 0, 0);
+	band = addBand(raster, PT_64BF, 0, 0);
 	CHECK(band);
 	rt_band_set_nodata(band, 0);
 
@@ -1476,7 +1476,7 @@ static void testTransform() {
 
 	raster = rt_raster_new(xmax, ymax);
 	assert(raster); /* or we're out of virtual memory */
-	band = addBand(raster, PT_32BF, 0, 0);
+	band = addBand(raster, PT_64BF, 0, 0);
 	CHECK(band);
 	rt_band_set_nodata(band, 0);
 
