@@ -64,7 +64,7 @@ CREATE OR REPLACE FUNCTION geometry_out(geometry)
 CREATE OR REPLACE FUNCTION geometry_analyze(internal)
 	RETURNS bool
 #ifdef GSERIALIZED_ON
-	AS 'MODULE_PATHNAME', 'geometry_analyze'
+	AS 'MODULE_PATHNAME', 'geometry_analyze_2d'
 #else
 	AS 'MODULE_PATHNAME', 'LWGEOM_analyze'
 #endif
@@ -526,16 +526,16 @@ CREATE OR REPLACE FUNCTION geometry_gist_decompress_2d(internal)
 	LANGUAGE 'C';
 
 -- Availability: 2.0.0
---CREATE OR REPLACE FUNCTION geometry_gist_sel_2d (internal, oid, internal, int4)
---	RETURNS float8
---	AS 'MODULE_PATHNAME', 'gserialized_gist_sel_2d'
---	LANGUAGE 'C';
+CREATE OR REPLACE FUNCTION geometry_gist_sel_2d (internal, oid, internal, int4)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'geometry_gist_sel_2d'
+	LANGUAGE 'C';
 
 -- Availability: 2.0.0
---CREATE OR REPLACE FUNCTION geometry_gist_joinsel_2d(internal, oid, internal, smallint)
---	RETURNS float8
---	AS 'MODULE_PATHNAME', 'gserialized_gist_joinsel_2d'
---	LANGUAGE 'C';
+CREATE OR REPLACE FUNCTION geometry_gist_joinsel_2d(internal, oid, internal, smallint)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'geometry_gist_joinsel_2d'
+	LANGUAGE 'C';
 
 -----------------------------------------------------------------------------
 -- GEOMETRY Operators
@@ -550,8 +550,8 @@ CREATE OR REPLACE FUNCTION geometry_overlaps(geometry, geometry)
 CREATE OPERATOR && (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overlaps,
 	COMMUTATOR = '&&'
-	,RESTRICT = contsel, JOIN = contjoinsel
--- 	,RESTRICT = geometry_gist_sel_2d, JOIN = geometry_gist_joinsel_2d	
+--	,RESTRICT = contsel, JOIN = contjoinsel
+ 	,RESTRICT = geometry_gist_sel_2d, JOIN = geometry_gist_joinsel_2d	
 );
 
 -- Availability: 2.0.0

@@ -1415,6 +1415,7 @@ extern int box3d_union_p(BOX3D *b1, BOX3D *b2, BOX3D *ubox);
 
 
 extern BOX3D* box3d_from_gbox(const GBOX *gbox);
+extern GBOX* box3d_to_gbox(const BOX3D *b3d);
 
 /*
  * Returns a pointer to the BBOX internal to the serialized form.

@@ -192,7 +192,11 @@ PG_FUNCTION_INFO_V1(BOX3D_to_BOX2DFLOAT4);
 Datum BOX3D_to_BOX2DFLOAT4(PG_FUNCTION_ARGS)
 {
 	BOX3D *in = (BOX3D *)PG_GETARG_POINTER(0);
+#ifdef GSERIALIZED_ON
+	BOX2DFLOAT4 *out = box3d_to_gbox(in);
+#else
 	BOX2DFLOAT4 *out = box3d_to_box2df(in);
+#endif
 	PG_RETURN_POINTER(out);
 }
 

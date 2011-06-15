@@ -110,9 +110,9 @@ static float8 estimate_selectivity(GBOX *box, GEOM_STATS *geomstats);
  */
 #define REALLY_DO_JOINSEL 1
 
-Datum geometry_gist_sel(PG_FUNCTION_ARGS);
-Datum geometry_gist_joinsel(PG_FUNCTION_ARGS);
-Datum geometry_analyze(PG_FUNCTION_ARGS);
+Datum geometry_gist_sel_2d(PG_FUNCTION_ARGS);
+Datum geometry_gist_joinsel_2d(PG_FUNCTION_ARGS);
+Datum geometry_analyze_2d(PG_FUNCTION_ARGS);
 Datum geometry_estimated_extent(PG_FUNCTION_ARGS);
 
 
@@ -164,8 +164,8 @@ calculate_column_intersection(GBOX *search_box, GEOM_STATS *geomstats1, GEOM_STA
 * JOIN selectivity in the GiST && operator
 * for all PG versions
 */
-PG_FUNCTION_INFO_V1(geometry_gist_joinsel);
-Datum geometry_gist_joinsel(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geometry_gist_joinsel_2d);
+Datum geometry_gist_joinsel_2d(PG_FUNCTION_ARGS)
 {
 	PlannerInfo *root = (PlannerInfo *) PG_GETARG_POINTER(0);
 
@@ -626,8 +626,8 @@ estimate_selectivity(GBOX *box, GEOM_STATS *geomstats)
  * This is the one used for PG version >= 7.5
  *
  */
-PG_FUNCTION_INFO_V1(geometry_gist_sel);
-Datum geometry_gist_sel(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geometry_gist_sel_2d);
+Datum geometry_gist_sel_2d(PG_FUNCTION_ARGS)
 {
 	PlannerInfo *root = (PlannerInfo *) PG_GETARG_POINTER(0);
 
@@ -1289,8 +1289,8 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
  * value for now.
  *
  */
-PG_FUNCTION_INFO_V1(geometry_analyze);
-Datum geometry_analyze(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geometry_analyze_2d);
+Datum geometry_analyze_2d(PG_FUNCTION_ARGS)
 {
 	VacAttrStats *stats = (VacAttrStats *)PG_GETARG_POINTER(0);
 	Form_pg_attribute attr = stats->attr;

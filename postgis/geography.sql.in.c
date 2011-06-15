@@ -819,14 +819,14 @@ CREATE OR REPLACE FUNCTION geometry_gist_decompress_nd(internal)
 --	LANGUAGE 'C';
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_overlaps_nd(geography, geography) 
+CREATE OR REPLACE FUNCTION geometry_overlaps_nd(geometry, geometry) 
 	RETURNS boolean 
 	AS 'MODULE_PATHNAME' ,'gserialized_overlaps'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 2.0.0
 CREATE OPERATOR &&& (
-	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overlaps,
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overlaps_nd,
 	COMMUTATOR = '&&&'
 	,RESTRICT = contsel, JOIN = contjoinsel
 --	,RESTRICT = geometry_gist_selectivity_nd 

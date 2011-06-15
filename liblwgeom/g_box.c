@@ -88,6 +88,23 @@ BOX3D* box3d_from_gbox(const GBOX *gbox)
  	return b;	
 }
 
+/* TODO to be removed */
+GBOX* box3d_to_gbox(const BOX3D *b3d)
+{
+	GBOX *b;
+	assert(b3d);
+	
+	b = lwalloc(sizeof(GBOX));
+
+	b->xmin = b3d->xmin;
+	b->xmax = b3d->xmax;
+	b->ymin = b3d->ymin;
+	b->ymax = b3d->ymax;
+	b->zmin = b3d->zmin;
+	b->zmax = b3d->zmax;
+
+ 	return b;
+}
 
 void gbox_expand(GBOX *g, double d)
 {
