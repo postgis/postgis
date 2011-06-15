@@ -5944,6 +5944,7 @@ rt_raster_transform(rt_raster raster, char *src_srs, char *dst_srs,
 	RASTER_DEBUG(3, "Setting nodata mapping");
 	numBands = rt_raster_get_num_bands(raster);
 	wopts = GDALCreateWarpOptions();
+	wopts->nBandCount = numBands;
 	wopts->padfSrcNoDataReal = (double *) CPLMalloc(numBands * sizeof(double));
 	wopts->padfDstNoDataReal = (double *) CPLMalloc(numBands * sizeof(double));
 	wopts->padfSrcNoDataImag = (double *) CPLMalloc(numBands * sizeof(double));
@@ -6008,7 +6009,7 @@ rt_raster_transform(rt_raster raster, char *src_srs, char *dst_srs,
 	RASTER_DEBUG(3, "Raster reprojected");
 	if (NULL == dst_ds) {
 		rterror("rt_raster_transform: Unable to transform raster\n");
-		if (NULL != wopts) GDALDestroyWarpOptions(wopts);
+		GDALDestroyWarpOptions(wopts);
 		GDALClose(src_ds);
 		GDALDeregisterDriver(src_drv);
 		GDALDestroyDriver(src_drv);
@@ -6019,7 +6020,7 @@ rt_raster_transform(rt_raster raster, char *src_srs, char *dst_srs,
 	RASTER_DEBUG(3, "Converting GDAL dataset to raster");
 	rast = rt_raster_from_gdal_dataset(dst_ds);
 
-	if (NULL != wopts) GDALDestroyWarpOptions(wopts);
+	GDALDestroyWarpOptions(wopts);
 	GDALClose(dst_ds);
 	GDALClose(src_ds);
 	GDALDeregisterDriver(src_drv);
