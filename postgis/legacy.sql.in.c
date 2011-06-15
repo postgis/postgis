@@ -1664,6 +1664,12 @@ CREATE OR REPLACE FUNCTION Simplify(geometry, float8)
 	
 -- SnapToGrid(input, size) # xsize=ysize=size, offsets=0
 -- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION SnapToGrid(geometry, float8, float8, float8, float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_snaptogrid'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION SnapToGrid(geometry, float8)
 	RETURNS geometry
 	AS 'SELECT ST_SnapToGrid($1, 0, 0, $2, $2)'
@@ -1675,6 +1681,13 @@ CREATE OR REPLACE FUNCTION SnapToGrid(geometry, geometry, float8, float8, float8
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_snaptogrid_pointoff'
 	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- SnapToGrid(input, xsize, ysize) # offsets=0
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION SnapToGrid(geometry, float8, float8)
+	RETURNS geometry
+	AS 'SELECT ST_SnapToGrid($1, 0, 0, $2, $3)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
 	
 -- Availability: 1.2.2 -- this should be deprecated (do not think anyone has ever used it)
 CREATE OR REPLACE FUNCTION ST_MakeLine_GArray (geometry[])
@@ -1704,6 +1717,11 @@ CREATE OR REPLACE FUNCTION symmetricdifference(geometry,geometry)
 CREATE OR REPLACE FUNCTION summary(geometry)
 	RETURNS text
 	AS 'MODULE_PATHNAME', 'LWGEOM_summary'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION transform(geometry,integer)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','transform'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3

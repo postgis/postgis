@@ -2721,12 +2721,7 @@ CREATE OR REPLACE FUNCTION postgis_transform_geometry(geometry,text,text,int)
 	AS 'MODULE_PATHNAME','transform_geom'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION transform(geometry,integer)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','transform'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- PostGIS equivalent function: transform(geometry,integer)
+-- PostGIS equivalent of old function: transform(geometry,integer)
 CREATE OR REPLACE FUNCTION ST_Transform(geometry,integer)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','transform'
@@ -2936,26 +2931,14 @@ CREATE OR REPLACE FUNCTION ST_Simplify(geometry, float8)
 	AS 'MODULE_PATHNAME', 'LWGEOM_simplify2d'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- SnapToGrid(input, xoff, yoff, xsize, ysize)
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION SnapToGrid(geometry, float8, float8, float8, float8)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_snaptogrid'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
+-- ST_SnapToGrid(input, xoff, yoff, xsize, ysize)
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_SnapToGrid(geometry, float8, float8, float8, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_snaptogrid'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- SnapToGrid(input, xsize, ysize) # offsets=0
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION SnapToGrid(geometry, float8, float8)
-	RETURNS geometry
-	AS 'SELECT ST_SnapToGrid($1, 0, 0, $2, $3)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
+-- ST_SnapToGrid(input, xsize, ysize) # offsets=0
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_SnapToGrid(geometry, float8, float8)
 	RETURNS geometry

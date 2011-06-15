@@ -79,4 +79,9 @@ DROP FUNCTION IF EXISTS Force_3dz(geometry);
 DROP FUNCTION IF EXISTS Force_4d(geometry);
 DROP FUNCTION IF EXISTS Force_Collection(geometry);
 DROP FUNCTION IF EXISTS ForceRHR(geometry);
+DROP FUNCTION IF EXISTS SnapToGrid(geometry, float8, float8, float8, float8);
+DROP FUNCTION IF EXISTS SnapToGrid(geometry, float8);
+DROP FUNCTION IF EXISTS SnapToGrid(geometry, geometry, float8, float8, float8, float8);
+DROP FUNCTION IF EXISTS SnapToGrid(geometry, float8, float8);
+DROP FUNCTION IF FUNCTION transform(geometry,integer);
 
