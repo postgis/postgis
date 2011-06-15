@@ -107,6 +107,37 @@ void gbox_expand(GBOX *g, double d)
 	}
 }
 
+int gbox_union(const GBOX *g1, const GBOX *g2, GBOX *gout)
+{
+	if ( (g1 == NULL) && (g2 == NULL) )
+		return LW_FALSE;
+
+	if  (g1 == NULL)
+	{
+		memcpy(gout, g2, sizeof(GBOX));
+		return LW_TRUE;
+	}
+	if (g2 == NULL)
+	{
+		memcpy(gout, g1, sizeof(GBOX));
+		return LW_TRUE;
+	}
+
+	if (g1->xmin < g2->xmin) gout->xmin = g1->xmin;
+	else gout->xmin = g2->xmin;
+
+	if (g1->ymin < g2->ymin) gout->ymin = g1->ymin;
+	else gout->ymin = g2->ymin;
+
+	if (g1->xmax > g2->xmax) gout->xmax = g1->xmax;
+	else gout->xmax = g2->xmax;
+
+	if (g1->ymax > g2->ymax) gout->ymax = g1->ymax;
+	else gout->ymax = g2->ymax;
+
+	return LW_TRUE;    
+}
+
 int gbox_same(const GBOX *g1, const GBOX *g2)
 {
 	if (FLAGS_GET_ZM(g1->flags) != FLAGS_GET_ZM(g2->flags))

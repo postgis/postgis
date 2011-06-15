@@ -819,7 +819,7 @@ Datum LWGEOM_gist_union(PG_FUNCTION_ARGS)
 
 	*sizep = sizeof(BOX2DFLOAT4);
 
-	POSTGIS_DEBUGF(3, "GIST: gbox_union called with numranges=%i pageunion is: <%.16g %.16g,%.16g %.16g>", numranges,pageunion->xmin, pageunion->ymin, pageunion->xmax, pageunion->ymax);
+	POSTGIS_DEBUGF(3, "GIST: LWGEOM_gist_union called with numranges=%i pageunion is: <%.16g %.16g,%.16g %.16g>", numranges,pageunion->xmin, pageunion->ymin, pageunion->xmax, pageunion->ymax);
 
 	PG_RETURN_POINTER(pageunion);
 }

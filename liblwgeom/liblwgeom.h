@@ -1965,6 +1965,11 @@ extern void gbox_init(GBOX *gbox);
 extern int gbox_merge(const GBOX *new_box, GBOX *merged_box);
 
 /**
+* Update the output #GBOX to be large enough to include both inputs.
+*/
+extern int gbox_union(const GBOX *g1, const GBOX *g2, GBOX *gout);
+
+/**
 * Move the box minimums down and the maximums up by the distance provided.
 */
 extern void gbox_expand(GBOX *g, double d);

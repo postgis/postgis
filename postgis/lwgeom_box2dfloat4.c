@@ -371,7 +371,11 @@ Datum BOX2D_union(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 *n;
 
 	n = (BOX2DFLOAT4 *) lwalloc(sizeof(BOX2DFLOAT4));
+#ifdef GSERIALIZED_ON
+	if ( ! gbox_union(a,b,n) ) PG_RETURN_NULL();
+#else
 	if ( ! box2d_union_p(a,b,n) ) PG_RETURN_NULL();
+#endif
 	PG_RETURN_POINTER(n);
 }
 
@@ -403,8 +407,12 @@ Datum BOX2DFLOAT4_expand(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 *result = (BOX2DFLOAT4 *)palloc(sizeof(BOX2DFLOAT4));
 
 	memcpy(result, box, sizeof(BOX2DFLOAT4));
+#ifdef GSERIALIZED_ON
+    gbox_expand(result, d);
+#else
 	expand_box2d(result, d);
-
+#endif
+    
 	PG_RETURN_POINTER(result);
 }
 
