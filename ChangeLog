@@ -1,3 +1,350 @@
+2011-06-13 12:26  robe
+
+	* NEWS, doc/release_notes.xml: Update 1.5.3 release notes
+
+2011-06-13 11:24  robe
+
+	* doc/using_postgis_app.xml: #609 corrected to use non-deprecate
+	  JDBC calling syntax.
+
+2011-06-10 17:21  robe
+
+	* doc/using_postgis_app.xml: #609 documentation correction on use
+	  of JDBC
+
+2011-06-10 16:55  robe
+
+	* postgis/postgis.sql.in.c: #666 mark ST_DumpPoints sql function as
+	  STRICT so doesn't error out with null input.
+
+2011-06-10 16:15  pramsey
+
+	* spatial_ref_sys.sql: Update NZ projections for grid
+	  transformation support (#631)
+
+2011-06-10 01:54  robe
+
+	* doc/reference_constructor.xml: more examples for ST_Point and
+	  example converting to geography
+
+2011-06-09 20:31  robe
+
+	* doc/installation.xml: #448 add CUnit to optional items
+
+2011-06-09 13:59  pramsey
+
+	* postgis/lwgeom_geos.c: Add guard code to avoid Inf-caused loops
+	  or crashes. (#987)
+
+2011-06-07 13:07  robe
+
+	* doc/faq.xml: more clarification on choice between
+	  geometry/geography
+
+2011-05-25 18:42  pramsey
+
+	* postgis/geography_inout.c: #661 Type info of geography columns
+	  incomplete - pg_dump output wrong
+
+2011-05-19 02:32  pramsey
+
+	* NEWS, postgis/lwgeom_accum.c: Support for PostgreSQL 9.1 (#940)
+
+2011-05-13 01:01  chodgson
+
+	* postgis/lwgeom_rtree.c: additional bug fix for #844
+
+2011-05-12 21:46  chodgson
+
+	* regress/tickets.sql, regress/tickets_expected: added regess test
+	  for #884
+
+2011-05-12 18:39  chodgson
+
+	* postgis/lwgeom_functions_analytic.c,
+	  postgis/lwgeom_functions_analytic.h, postgis/lwgeom_geos.c,
+	  postgis/lwgeom_rtree.c, postgis/lwgeom_rtree.h: Fixed incorret
+	  logic in point_in_multipolygon_rtree, for #884.
+
+2011-05-04 22:13  chodgson
+
+	* postgis/lwgeom_functions_basic.c, regress/tickets.sql,
+	  regress/tickets_expected: committed patch from ticket #912 which
+	  also fixes #630 (duplicate)
+
+2011-04-30 08:38  colivier
+
+	* postgis/lwgeom_in_gml.c, regress/in_gml.sql,
+	  regress/in_gml_expected: ST_GeomFromGML: Fix #933 for 1.5 branch.
+	  Remove a wrong srsName definition. Update related unit tests
+
+2011-04-27 10:18  nicklas
+
+	* postgis/postgis.sql.in.c: fix for #918
+
+2011-04-17 16:35  robe
+
+	* doc/xsl/postgis_gardentest.sql.xsl: variable for buffer
+	  parameters
+
+2011-02-24 15:38  strk
+
+	* NEWS, postgis/lwgeom_functions_analytic.c, regress/tickets.sql,
+	  regress/tickets_expected: Back-port fix for #845. Fixes both
+	  point_in_ring (regress-tested) and point_in_ring_rtree (deduced
+	  as bogus having the exact same code pattern but not
+	  regress-tested)
+
+2011-02-06 00:36  robe
+
+	* doc/reference_editor.xml: Same corrections to ST_SetSRID as made
+	  for trunk
+
+2011-01-28 12:13  robe
+
+	* doc/faq.xml: backport r6748
+
+2010-12-30 18:43  nicklas
+
+	* regress/measures.sql, regress/measures_expected: rounding away
+	  difference between platforms in measures regress test
+
+2010-12-30 14:11  robe
+
+	* doc/xsl/postgis_gardentest.sql.xsl: a lot of functions
+	  (particular geos ST_LineMerge etc) still crash with Polygon Empty
+	  in PostGIS 2.0. Exclude Polygon Empty for now so can regress
+	  test.
+
+2010-12-29 22:21  robe
+
+	* doc/xsl/postgis_gardentest.sql.xsl: postgis 2.0 can't handled
+	  nested empty geometry collections with all functions yet -- so
+	  exclude
+
+2010-12-26 19:13  robe
+
+	* doc/using_postgis_dataman.xml: tag typo
+
+2010-12-21 22:19  robe
+
+	* doc/reference_measure.xml, doc/using_postgis_dataman.xml: point
+	  relation functions to DE-9IM section of docs for more info
+
+2010-12-20 12:02  robe
+
+	* doc/xsl/postgis_gardentest.sql.xsl: fix spatial_class update
+
+2010-12-18 21:50  robe
+
+	* doc/using_postgis_dataman.xml,
+	  doc/xsl/postgis_gardentest.sql.xsl: fix spatial_class update
+	  statement. Give Geometry Columns section pretty anchor, fix typo
+
+2010-12-14 13:17  robe
+
+	* regress/loader/Arc-wkb.expected, regress/loader/Arc-wkt.expected,
+	  regress/loader/ArcM-wkb.expected,
+	  regress/loader/ArcM-wkt.expected,
+	  regress/loader/ArcZ-wkb.expected,
+	  regress/loader/ArcZ-wkt.expected,
+	  regress/loader/MultiPoint-wkb.expected,
+	  regress/loader/MultiPoint-wkt.expected,
+	  regress/loader/MultiPointM-wkb.expected,
+	  regress/loader/MultiPointM-wkt.expected,
+	  regress/loader/MultiPointZ-wkb.expected,
+	  regress/loader/MultiPointZ-wkt.expected,
+	  regress/loader/Point-wkb.expected,
+	  regress/loader/Point-wkt.expected,
+	  regress/loader/PointM-wkb.expected,
+	  regress/loader/PointM-wkt.expected,
+	  regress/loader/PointZ-wkb.expected,
+	  regress/loader/PointZ-wkt.expected,
+	  regress/loader/Polygon-wkb.expected,
+	  regress/loader/Polygon-wkt.expected,
+	  regress/loader/PolygonM-wkb.expected,
+	  regress/loader/PolygonM-wkt.expected,
+	  regress/loader/PolygonZ-wkb.expected,
+	  regress/loader/PolygonZ-wkt.expected: ditto
+
+2010-12-14 13:14  robe
+
+	* regress/affine_expected, regress/ctors_expected,
+	  regress/dumppoints_expected, regress/geojson_expected,
+	  regress/gml_expected, regress/hausdorff_expected,
+	  regress/in_gml_expected, regress/in_kml_expected,
+	  regress/kml_expected, regress/long_xact_expected,
+	  regress/lwgeom_regress_expected, regress/measures_expected,
+	  regress/regress_bdpoly_expected,
+	  regress/regress_buffer_params_expected, regress/regress_expected,
+	  regress/regress_index_expected,
+	  regress/regress_index_nulls_expected,
+	  regress/regress_lrs_expected, regress/regress_ogc_cover_expected,
+	  regress/regress_ogc_expected, regress/regress_ogc_prep_expected,
+	  regress/regress_proj_expected, regress/removepoint_expected,
+	  regress/setpoint_expected, regress/simplify_expected,
+	  regress/snaptogrid_expected,
+	  regress/sql-mm-circularstring_expected,
+	  regress/sql-mm-compoundcurve_expected,
+	  regress/sql-mm-curvepoly_expected,
+	  regress/sql-mm-general_expected,
+	  regress/sql-mm-multicurve_expected,
+	  regress/sql-mm-multisurface_expected,
+	  regress/sql-mm-serialize_expected, regress/svg_expected,
+	  regress/tickets_expected, regress/wkt_expected,
+	  regress/wmsservers_expected: switch to end-of-line LF so regress
+	  tests will work under mingw with dos2unix voodoo. Postgres by
+	  default outputs with LF even on windows VC build.
+
+2010-12-14 06:02  pramsey
+
+	* postgis/geography_inout.c: Oops, don't overwrite end of buffer.
+
+2010-12-14 05:53  pramsey
+
+	* postgis/geography_inout.c: Memory leak in geography_from_text
+	  (#624)
+
+2010-12-14 04:57  pramsey
+
+	* loader/shp2pgsql-cli.c: Update usage slightly (#604)
+
+2010-12-14 01:04  mleslie
+
+	* liblwgeom/lwcircstring.c, regress/sql-mm-circularstring.sql,
+	  regress/sql-mm-circularstring_expected: Fix for ticket #668 -
+	  Adding bbox generating code to the short-cut case of a
+	  straight-line curve.
+
+2010-12-13 21:30  pramsey
+
+	* postgis/lwgeom_functions_basic.c, regress/tickets.sql,
+	  regress/tickets_expected: ST_CollectionExtract returns
+	  non-requested type (#457)
+
+2010-12-13 20:42  pramsey
+
+	* loader/shp2pgsql-core.c: Return value of snprintf not correctly
+	  checked (#556)
+
+2010-12-08 13:12  robe
+
+	* doc/reference_output.xml: change name of geojson version argument
+	  so tests can input the right number and not generate false alarms
+
+2010-12-08 02:38  robe
+
+	* doc/xsl/postgis_gardentest.sql.xsl: backport logging feature from
+	  2.0 in preparation for intensive regression testing
+
+2010-12-02 16:03  robe
+
+	* doc/reference_operator.xml: ditto
+
+2010-11-12 15:46  robe
+
+	* doc/faq.xml: Update 9.0 FAQ to include npgsql fixed driver for
+	  bytea support
+
+2010-11-02 14:22  robe
+
+	* doc/reference_processing.xml: relevant links to ST_Difference and
+	  ST_SymDifference -- people think intersection when looking for
+	  these
+
+2010-10-13 14:34  robe
+
+	* doc/reference_processing.xml: correct spelling of Peucker
+
+2010-10-03 01:40  robe
+
+	* doc/faq.xml: typo
+
+2010-10-02 15:47  robe
+
+	* doc/faq.xml: update FAQ about what to do when can't render
+	  PostgreSQL 9.0 postgis geometries
+
+2010-09-29 20:43  nicklas
+
+	* liblwgeom/measures.c: removing run-time sized array
+
+2010-09-27 15:21  pramsey
+
+	* NEWS, Version.config: Bump branch versions up
+
+2010-09-27 15:16  pramsey
+
+	* NEWS, README.postgis: Set the release date
+
+2010-09-27 13:24  robe
+
+	* doc/installation.xml, doc/release_notes.xml: put in libxml, gtk
+	  missing dependencies for compile, update links, put in release
+	  date assume WE WILL RELEASE TODAY.
+
+2010-09-25 18:05  pramsey
+
+	* NEWS: Accents corrected (in latin1, hm)
+
+2010-09-24 18:35  pramsey
+
+	* regress/tickets.sql, regress/tickets_expected,
+	  regress/wmsservers.sql, regress/wmsservers_expected: Fix
+	  regressions that appeared in 9.0 by removing the CREATE table AS
+	  SELECT form from tests and replacing with CREATE-then-INSERT
+	  method
+
+2010-09-22 12:57  robe
+
+	* doc/installation.xml, doc/postgis.xml: amend documents to reflect
+	  postgis_comments.sql don't get installed unless if make of
+	  postgis comments is done.
+
+2010-09-19 17:41  robe
+
+	* NEWS, doc/release_notes.xml: one more fix from Mark C. Hopefully
+	  we will have a release before he makes any more changes :)
+
+2010-09-19 16:54  mcayland
+
+	* loader/shp2pgsql-core.c: Fix #603: shp2pgsql: "-w" produces
+	  invalid WKT for MULTI* objects.
+
+2010-09-19 12:46  robe
+
+	* NEWS, doc/release_notes.xml: More additions per Mark C.
+
+2010-09-19 12:21  mcayland
+
+	* doc/Makefile.in: Fix the comments-uninstall target so it now
+	  works correctly with the new PGXS code.
+
+2010-09-19 11:27  mcayland
+
+	* loader/shp2pgsql-core.c, loader/shp2pgsql-core.h,
+	  loader/shp2pgsql-gui.c: Fix #572: Password whitespace for Shape
+	  File to PostGIS Importer not supported. Fixed by adding a new
+	  function especially designed for escaping arguments for
+	  PQconnectdb strings, and plugging it into the GUI.
+
+2010-09-18 23:51  robe
+
+	* NEWS, doc/release_notes.xml: Add some missing closed items while
+	  patiently waiting for Mark and Kevin to give their blessings :)
+
+2010-09-18 19:38  pramsey
+
+	* doc/release_notes.xml: Prep for 1.5.2
+
+2010-09-18 19:34  pramsey
+
+	* NEWS: Update for 1.5.2
+
+2010-09-18 19:22  pramsey
+
+	* ChangeLog: Update changelog for 1.5.2
+
 2010-09-18 18:51  pramsey
 
 	* loader/shp2pgsql-gui.c: Add DBF *.dbf filter to file chooser..
