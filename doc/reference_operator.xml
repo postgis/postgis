@@ -99,6 +99,7 @@ FROM ( VALUES
 		  </refnamediv>
 
 		  <refsynopsisdiv>
+		      <funcsynopsis>
 		      <funcprototype>
 				<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef>
 
