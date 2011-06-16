@@ -18,7 +18,7 @@ CREATE OR REPLACE FUNCTION geography_typmod_in(cstring[])
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_typmod_out(integer)
 	RETURNS cstring
-	AS 'MODULE_PATHNAME','geography_typmod_out'
+	AS 'MODULE_PATHNAME','postgis_typmod_out'
 	LANGUAGE 'C' IMMUTABLE STRICT; 
 	
 -- Availability: 1.5.0
@@ -46,6 +46,7 @@ CREATE TYPE geography (
 	output = geography_out,
 	typmod_in = geography_typmod_in,
 	typmod_out = geography_typmod_out,
+	delimiter = ':',
 	analyze = geography_analyze,
 	storage = main,
 	alignment = double
@@ -131,21 +132,21 @@ CREATE OR REPLACE FUNCTION ST_GeogFromWKB(bytea)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION geography_typmod_dims(integer)
+CREATE OR REPLACE FUNCTION postgis_typmod_dims(integer)
 	RETURNS integer
-	AS 'MODULE_PATHNAME','geography_typmod_dims'
+	AS 'MODULE_PATHNAME','postgis_typmod_dims'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION geography_typmod_srid(integer)
+CREATE OR REPLACE FUNCTION postgis_typmod_srid(integer)
 	RETURNS integer
-	AS 'MODULE_PATHNAME','geography_typmod_srid'
+	AS 'MODULE_PATHNAME','postgis_typmod_srid'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION geography_typmod_type(integer)
+CREATE OR REPLACE FUNCTION postgis_typmod_type(integer)
 	RETURNS text
-	AS 'MODULE_PATHNAME','geography_typmod_type'
+	AS 'MODULE_PATHNAME','postgis_typmod_type'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
@@ -155,9 +156,9 @@ CREATE OR REPLACE VIEW geography_columns AS
 		n.nspname AS f_table_schema, 
 		c.relname AS f_table_name, 
 		a.attname AS f_geography_column,
-		geography_typmod_dims(a.atttypmod) AS coord_dimension,
-		geography_typmod_srid(a.atttypmod) AS srid,
-		geography_typmod_type(a.atttypmod) AS type
+		postgis_typmod_dims(a.atttypmod) AS coord_dimension,
+		postgis_typmod_srid(a.atttypmod) AS srid,
+		postgis_typmod_type(a.atttypmod) AS type
 	FROM 
 		pg_class c, 
 		pg_attribute a, 

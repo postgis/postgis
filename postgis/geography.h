@@ -36,8 +36,9 @@
 
 /* Convert lwgeom to newly allocated gserialized */
 GSERIALIZED* geography_serialize(LWGEOM *lwgeom);
+GSERIALIZED* geometry_serialize(LWGEOM *lwgeom);
 /* Check that the typmod matches the flags on the lwgeom */
-void geography_valid_typmod(LWGEOM *lwgeom, int32 typmod);
+void postgis_valid_typmod(LWGEOM *lwgeom, int32 typmod);
 /* Check that the type is legal in geography (no curves please!) */
 void geography_valid_type(uchar type);
 

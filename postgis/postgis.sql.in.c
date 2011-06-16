@@ -61,6 +61,25 @@ CREATE OR REPLACE FUNCTION geometry_out(geometry)
 	AS 'MODULE_PATHNAME','LWGEOM_out'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
+CREATE OR REPLACE FUNCTION geometry_out(geometry)
+	RETURNS cstring
+	AS 'MODULE_PATHNAME','LWGEOM_out'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+#ifdef GSERIALIZED_ON
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_typmod_in(cstring[])
+	RETURNS integer
+	AS 'MODULE_PATHNAME','geometry_typmod_in'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_typmod_out(integer)
+	RETURNS cstring
+	AS 'MODULE_PATHNAME','postgis_typmod_out'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
+#endif
+
 CREATE OR REPLACE FUNCTION geometry_analyze(internal)
 	RETURNS bool
 #ifdef GSERIALIZED_ON
@@ -86,10 +105,27 @@ CREATE TYPE geometry (
 	output = geometry_out,
 	send = geometry_send,
 	receive = geometry_recv,
+#ifdef GSERIALIZED_ON
+	typmod_in = geometry_typmod_in,
+	typmod_out = geometry_typmod_out,
 	delimiter = ':',
+    alignment = double,
+#endif
 	analyze = geometry_analyze,
 	storage = main
 );
+
+
+-- Availability: 2.0.0
+-- Special cast for enforcing the typmod restrictions
+CREATE OR REPLACE FUNCTION geometry(geometry, integer, boolean)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','geometry_enforce_typmod'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
+
+-- Availability: 2.0.0
+CREATE CAST (geometry AS geometry) WITH FUNCTION geometry(geometry, integer, boolean) AS IMPLICIT;
+
 
 -------------------------------------------
 -- Affine transforms
@@ -1570,6 +1606,7 @@ CREATE TABLE geometry_columns (
 		f_table_name,
 		f_geometry_column )
 ) WITH OIDS;
+
 
 -----------------------------------------------------------------------
 -- RENAME_GEOMETRY_TABLE_CONSTRAINTS()
@@ -4748,6 +4785,37 @@ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 #include "long_xact.sql.in.c"
 #include "sqlmm.sql.in.c"
 #include "geography.sql.in.c"
+
+
+
+
+
+#ifdef GSERIALIZED_ON
+---------------------------------------------------------------
+-- GEOMETRY_COLUMNS view
+---------------------------------------------------------------
+CREATE OR REPLACE VIEW geometry_columns_v AS
+	SELECT
+		current_database() AS f_table_catalog, 
+		n.nspname AS f_table_schema, 
+		c.relname AS f_table_name, 
+		a.attname AS f_geography_column,
+		postgis_typmod_dims(a.atttypmod) AS coord_dimension,
+		postgis_typmod_srid(a.atttypmod) AS srid,
+		postgis_typmod_type(a.atttypmod) AS type
+	FROM 
+		pg_class c, 
+		pg_attribute a, 
+		pg_type t, 
+		pg_namespace n
+	WHERE t.typname = 'geometry'
+        AND a.attisdropped = false
+        AND a.atttypid = t.oid
+        AND a.attrelid = c.oid
+        AND c.relnamespace = n.oid
+        AND NOT pg_is_other_temp_schema(c.relnamespace);
+#endif
+
 
 
 ---------------------------------------------------------------
