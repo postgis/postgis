@@ -890,7 +890,7 @@ postgis_raster_lib_version
 		<title>Description</title>
 
 		<para>Returns a list of raster formats short_name,long_name and creator options of each format supported by your lib gdal.  Use the short_name as input in the <varname>format</varname> parameter of <xref linkend="RT_ST_AsGDALRaster" />.
-		Options vary depending on what drivers your libgdal was compiled with. <varname>create_options</varname> returns and xml formatted list of create_options for the specific driver.</para>
+		Options vary depending on what drivers your libgdal was compiled with. <varname>create_options</varname> returns an xml formatted list of opt_name/opt_description create_options for the specific driver.</para>
 		
 		 <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
 	  </refsection>
@@ -961,7 +961,7 @@ WHERE short_name = 'GTiff';
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="RT_ST_AsGDALRaster" /></para>
+		<para><xref linkend="RT_ST_AsGDALRaster" />, <xref linkend="ST_SRID" /> </para>
 	  </refsection>
 	</refentry>
 
@@ -4117,9 +4117,10 @@ FROM dummy_rast WHERE rid=2;
 					<programlisting>SELECT ST_AsGDALRaster(rast, 'GTiff') As rastjpg
 FROM dummy_rast WHERE rid=2;
 
+-- Set georeferencing infornation to NAD83 long lat
 SELECT ST_AsGDALRaster(rast, 'GTiff',  
   ARRAY['COMPRESS=JPEG', 'JPEG_QUALITY=90'], 
-  '+proj=aea +lat_1=34 +lat_2=40.5 +lat_0=0 +lon_0=-120 +x_0=0 +y_0=-4000000 +ellps=GRS80 +datum=NAD83 +units=m +no_defs') As rasttiff
+  4269) As rasttiff
 FROM dummy_rast WHERE rid=2;
 				</programlisting>
 			
