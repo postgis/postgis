@@ -87,6 +87,24 @@ CREATE OR REPLACE FUNCTION geography(geography, integer, boolean)
 -- Availability: 1.5.0
 CREATE CAST (geography AS geography) WITH FUNCTION geography(geography, integer, boolean) AS IMPLICIT;
 
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geography(bytea)
+	RETURNS geography
+	AS 'MODULE_PATHNAME','LWGEOM_from_bytea'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION bytea(geography)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME','LWGEOM_to_bytea'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 2.0.0
+CREATE CAST (bytea AS geography) WITH FUNCTION geography(bytea) AS IMPLICIT;
+-- Availability: 2.0.0
+CREATE CAST (geography AS bytea) WITH FUNCTION bytea(geography) AS IMPLICIT;
+
+
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_AsText(geography)
 	RETURNS text
