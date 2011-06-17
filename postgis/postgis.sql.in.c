@@ -4799,7 +4799,7 @@ CREATE OR REPLACE VIEW geometry_columns_v AS
 		current_database() AS f_table_catalog, 
 		n.nspname AS f_table_schema, 
 		c.relname AS f_table_name, 
-		a.attname AS f_geography_column,
+		a.attname AS f_geometry_column,
 		postgis_typmod_dims(a.atttypmod) AS coord_dimension,
 		postgis_typmod_srid(a.atttypmod) AS srid,
 		postgis_typmod_type(a.atttypmod) AS type
@@ -4813,6 +4813,7 @@ CREATE OR REPLACE VIEW geometry_columns_v AS
         AND a.atttypid = t.oid
         AND a.attrelid = c.oid
         AND c.relnamespace = n.oid
+        AND ( c.relkind = 'r' OR c.relkind = 'v' )
         AND NOT pg_is_other_temp_schema(c.relnamespace);
 #endif
 
