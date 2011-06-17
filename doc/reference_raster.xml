@@ -4253,7 +4253,7 @@ FROM dummy_rast WHERE rid=2;
                     <listitem>
                         <varname>nbands</varname> is an array of bands to export (note that max is 3 for PNG) and the order of the bands is RGB. e.g ARRAY[3,2,1] means map band 3 to Red, band 2 to green and band 1 to blue
                     </listitem>
-                   <listitem><varname>compression</varname> Compression expression -- JPEG90 (or someother percent), LZMA, JPEG, DEFALTE9.  </listitem>
+                   <listitem><varname>compression</varname> Compression expression -- JPEG90 (or someother percent), LZW, JPEG, DEFLATE9.  </listitem>
                    <listitem><varname>options</varname> text Array of GDAL create options as defined for GTiff (look at create_options for GTiff of <xref linkend="RT_ST_GDALDrivers" />). or refer to <ulink url="http://www.gdal.org/frmt_various.html">GDAL Raster format options</ulink> for more details. </listitem>
                    <listitem><varname>srid</varname> srid of spatial_ref_sys of the raster. This is used to populate the georeference information </listitem>
                 </itemizedlist>
