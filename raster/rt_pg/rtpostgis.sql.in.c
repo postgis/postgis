@@ -252,43 +252,42 @@ CREATE TYPE summarystats AS (
 	max double precision
 );
 
-CREATE OR REPLACE FUNCTION st_summarystats(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1)
-	RETURNS summarystats
-	AS 'MODULE_PATHNAME','RASTER_summaryStats'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_summarystats(rast raster, exclude_nodata_value boolean)
-	RETURNS summarystats
-	AS $$ SELECT count, sum, mean, stddev, min, max FROM st_summarystats($1, 1, $2, 1) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
-	RETURNS summarystats
-	AS $$ SELECT count, sum, mean, stddev, min, max FROM st_summarystats($1, $2, $3, $4) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, nband int, sample_percent double precision)
-	RETURNS summarystats
-	AS $$ SELECT count, sum, mean, stddev, min, max FROM st_summarystats($1, $2, TRUE, $3) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, exclude_nodata_value boolean, sample_percent double precision DEFAULT 0.1)
-	RETURNS summarystats
-	AS $$ SELECT count, sum, mean, stddev, min, max FROM st_summarystats($1, 1, $2, $3) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, sample_percent double precision)
-	RETURNS summarystats
-	AS $$ SELECT count, sum, mean, stddev, min, max FROM st_summarystats($1, 1, TRUE, $2) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- "hidden" function for use by ST_SummaryStats for coverage tables
 CREATE OR REPLACE FUNCTION _st_summarystats(
 	rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1, k bigint DEFAULT NULL, M double precision DEFAULT NULL, Q double precision DEFAULT NULL,
 	OUT count bigint, OUT sum double precision, OUT mean double precision, OUT stddev double precision, OUT min double precision, OUT max double precision, OUT "M" double precision, OUT "Q" double precision
 )
 	AS 'MODULE_PATHNAME','RASTER_summaryStats'
 	LANGUAGE 'C' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_summarystats(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE)
+	RETURNS summarystats
+	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, $2, $3, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_summarystats(rast raster, exclude_nodata_value boolean)
+	RETURNS summarystats
+	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, 1, $2, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
+	RETURNS summarystats
+	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, $2, $3, $4) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, nband int, sample_percent double precision)
+	RETURNS summarystats
+	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, $2, TRUE, $3) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, exclude_nodata_value boolean, sample_percent double precision DEFAULT 0.1)
+	RETURNS summarystats
+	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, 1, $2, $3) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, sample_percent double precision)
+	RETURNS summarystats
+	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, 1, TRUE, $2) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_summarystats(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1)
 	RETURNS summarystats
@@ -445,7 +444,7 @@ CREATE OR REPLACE FUNCTION _st_count(rast raster, nband int DEFAULT 1, exclude_n
 		IF exclude_nodata_value IS FALSE THEN
 			SELECT width * height INTO rtn FROM ST_Metadata(rast);
 		ELSE
-			SELECT count INTO rtn FROM st_summarystats($1, $2, $3, $4);
+			SELECT count INTO rtn FROM _st_summarystats($1, $2, $3, $4);
 		END IF;
 
 		RETURN rtn;
