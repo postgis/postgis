@@ -268,25 +268,33 @@ Datum geography_area(PG_FUNCTION_ARGS)
 
 }
 
-
 /*
-** geography_length_sphere(GSERIALIZED *g)
-** returns double length in meters
+** geography_perimeter(GSERIALIZED *g)
+** returns double perimeter in meters for area features
 */
-PG_FUNCTION_INFO_V1(geography_length);
-Datum geography_length(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geography_perimeter);
+Datum geography_perimeter(PG_FUNCTION_ARGS)
 {
 	LWGEOM *lwgeom = NULL;
 	GSERIALIZED *g = NULL;
 	double length;
 	bool use_spheroid = LW_TRUE;
 	SPHEROID s;
+    int type;
 
 	/* Get our geometry object loaded into memory. */
 	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	
+	/* Only return for area features. */
+    type = gserialized_get_type(g);
+    if ( ! (type == POLYGONTYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE) )
+    {
+		PG_RETURN_FLOAT8(0.0);
+    }
+	
 	lwgeom = lwgeom_from_gserialized(g);
 
-	/* EMPTY things have no length */
+	/* EMPTY things have no perimeter */
 	if ( lwgeom_is_empty(lwgeom) )
 	{
 		lwgeom_free(lwgeom);
@@ -309,12 +317,63 @@ Datum geography_length(PG_FUNCTION_ARGS)
 	/* Something went wrong... */
 	if ( length < 0.0 )
 	{
-		elog(ERROR, "geography_length_sphere returned length < 0.0");
+		elog(ERROR, "lwgeom_length_spheroid returned length < 0.0");
 		PG_RETURN_NULL();
 	}
 
 	/* Clean up, but not all the way to the point arrays */
-	lwgeom_release(lwgeom);
+	lwgeom_free(lwgeom);
+
+	PG_FREE_IF_COPY(g, 0);
+	PG_RETURN_FLOAT8(length);
+}
+
+/*
+** geography_length(GSERIALIZED *g)
+** returns double length in meters
+*/
+PG_FUNCTION_INFO_V1(geography_length);
+Datum geography_length(PG_FUNCTION_ARGS)
+{
+	LWGEOM *lwgeom = NULL;
+	GSERIALIZED *g = NULL;
+	double length;
+	bool use_spheroid = LW_TRUE;
+	SPHEROID s;
+
+	/* Get our geometry object loaded into memory. */
+	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	lwgeom = lwgeom_from_gserialized(g);
+
+	/* EMPTY things have no length */
+	if ( lwgeom_is_empty(lwgeom) || lwgeom->type == POLYGONTYPE || lwgeom->type == MULTIPOLYGONTYPE )
+	{
+		lwgeom_free(lwgeom);
+		PG_RETURN_FLOAT8(0.0);
+	}
+
+	/* Read our calculation type */
+	use_spheroid = PG_GETARG_BOOL(1);
+
+	/* Initialize spheroid */
+	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
+
+	/* User requests spherical calculation, turn our spheroid into a sphere */
+	if ( ! use_spheroid )
+		s.a = s.b = s.radius;
+
+	/* Calculate the length */
+	length = lwgeom_length_spheroid(lwgeom, &s);
+
+	/* Something went wrong... */
+	if ( length < 0.0 )
+	{
+		elog(ERROR, "lwgeom_length_spheroid returned length < 0.0");
+		PG_RETURN_NULL();
+	}
+
+	/* Clean up */
+	lwgeom_free(lwgeom);
 
 	PG_FREE_IF_COPY(g, 0);
 	PG_RETURN_FLOAT8(length);
