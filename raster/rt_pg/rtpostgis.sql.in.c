@@ -1294,7 +1294,7 @@ CREATE OR REPLACE FUNCTION st_astiff(rast raster, compression text, srid integer
 			END IF;
 		END IF;
 
-		RETURN st_astiff($1, options, $4);
+		RETURN st_astiff($1, options, $3);
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
