@@ -2186,10 +2186,9 @@ void error_if_srid_mismatch(int srid1, int srid2);
  ******************************************************************************/
 
 int lwgeom_has_arc(const LWGEOM *geom);
-double lwcircle_center(POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D **result);
+double lwcircle_center(POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D *result);
 LWGEOM *lwgeom_segmentize(LWGEOM *geom, uint32 perQuad);
 LWGEOM *lwgeom_desegmentize(LWGEOM *geom);
-double lwcircle_center(POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D **result);
 
 #endif /* !defined _LIBLWGEOM_H  */
 

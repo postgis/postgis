@@ -347,22 +347,31 @@ static int lwcircle_calculate_gbox_cartesian(POINT4D p1, POINT4D p2, POINT4D p3,
 	/* angles from center once a1 is rotated to zero */
 	double r2, r3;
 	double xe = 0.0, ye = 0.0;
-	POINT4D *center;
+	POINT4D center;
 	int i;
 
 	LWDEBUG(2, "lwcircle_calculate_gbox called.");
 
 	radius = lwcircle_center(&p1, &p2, &p3, &center);
-	if (radius < 0.0) return LW_FAILURE;
+	if (radius < 0.0) /* p1,p2,p3 are colinear */
+	{
+        gbox->xmin = FP_MIN(p1.x, p3.x);
+        gbox->ymin = FP_MIN(p1.y, p3.y);
+        gbox->zmin = FP_MIN(p1.z, p3.z);
+        gbox->xmax = FP_MAX(p1.x, p3.x);
+        gbox->ymax = FP_MAX(p1.y, p3.y);
+        gbox->zmax = FP_MAX(p1.z, p3.z);
+	    return LW_SUCCESS;
+	}
 
 	x1 = MAXFLOAT;
 	x2 = -1 * MAXFLOAT;
 	y1 = MAXFLOAT;
 	y2 = -1 * MAXFLOAT;
 
-	a1 = atan2(p1.y - center->y, p1.x - center->x);
-	a2 = atan2(p2.y - center->y, p2.x - center->x);
-	a3 = atan2(p3.y - center->y, p3.x - center->x);
+	a1 = atan2(p1.y - center.y, p1.x - center.x);
+	a2 = atan2(p2.y - center.y, p2.x - center.x);
+	a3 = atan2(p3.y - center.y, p3.x - center.x);
 
 	/* Rotate a2 and a3 such that a1 = 0 */
 	r2 = a2 - a1;
@@ -424,26 +433,26 @@ static int lwcircle_calculate_gbox_cartesian(POINT4D p1, POINT4D p2, POINT4D p3,
 			/* right extent */
 		case 0:
 			angle = 0.0;
-			xe = center->x + radius;
-			ye = center->y;
+			xe = center.x + radius;
+			ye = center.y;
 			break;
 			/* top extent */
 		case 1:
 			angle = M_PI_2;
-			xe = center->x;
-			ye = center->y + radius;
+			xe = center.x;
+			ye = center.y + radius;
 			break;
 			/* left extent */
 		case 2:
 			angle = M_PI;
-			xe = center->x - radius;
-			ye = center->y;
+			xe = center.x - radius;
+			ye = center.y;
 			break;
 			/* bottom extent */
 		case 3:
 			angle = -1 * M_PI_2;
-			xe = center->x;
-			ye = center->y - radius;
+			xe = center.x;
+			ye = center.y - radius;
 			break;
 			/* first point */
 		case 4:

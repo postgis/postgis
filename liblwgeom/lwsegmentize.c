@@ -85,11 +85,13 @@ lwgeom_has_arc(const LWGEOM *geom)
  * point is coincident with either end point, they are taken as colinear.
  */
 double
-lwcircle_center(POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D **result)
+lwcircle_center(POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D *result)
 {
-	POINT4D *c;
+	POINT4D c;
 	double cx, cy, cr;
 	double temp, bc, cd, det;
+
+    c.x = c.y = c.z = c.m = 0.0;
 
 	LWDEBUGF(2, "lwcircle_center called (%.16f, %.16f), (%.16f, %.16f), (%.16f, %.16f).", p1->x, p1->y, p2->x, p2->y, p3->x, p3->y);
 
@@ -99,9 +101,8 @@ lwcircle_center(POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D **result)
 	{
 		cx = p1->x + (p2->x - p1->x) / 2.0;
 		cy = p1->y + (p2->y - p1->y) / 2.0;
-		c = lwalloc(sizeof(POINT2D));
-		c->x = cx;
-		c->y = cy;
+		c.x = cx;
+		c.y = cy;
 		*result = c;
 		cr = sqrt((cx-p1->x)*(cx-p1->x)+(cy-p1->y)*(cy-p1->y));
 		return cr;
@@ -114,17 +115,14 @@ lwcircle_center(POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D **result)
 
 	/* Check colinearity */
 	if (fabs(det) < EPSILON_SQLMM)
-	{
-		*result = NULL;
 		return -1.0;
-	}
+
 
 	det = 1.0 / det;
 	cx = (bc*(p2->y - p3->y)-cd*(p1->y - p2->y))*det;
 	cy = ((p1->x - p2->x)*cd-(p2->x - p3->x)*bc)*det;
-	c = lwalloc(sizeof(POINT4D));
-	c->x = cx;
-	c->y = cy;
+	c.x = cx;
+	c.y = cy;
 	*result = c;
 	cr = sqrt((cx-p1->x)*(cx-p1->x)+(cy-p1->y)*(cy-p1->y));
 	return cr;
@@ -156,7 +154,7 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad)
 	uint32 ptcount;
 	uchar *pt;
 
-	POINT4D *center;
+	POINT4D center;
 	double radius = 0.0,
 	                sweep = 0.0,
 	                        angle = 0.0,
@@ -174,11 +172,11 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad)
 		return NULL;
 	}
 
-	LWDEBUGF(3, "lwcircle_segmentize, (%.16f, %.16f) radius=%.16f", center->x, center->y, radius);
+	LWDEBUGF(3, "lwcircle_segmentize, (%.16f, %.16f) radius=%.16f", center.x, center.y, radius);
 
-	a1 = atan2(p1->y - center->y, p1->x - center->x);
-	a2 = atan2(p2->y - center->y, p2->x - center->x);
-	a3 = atan2(p3->y - center->y, p3->x - center->x);
+	a1 = atan2(p1->y - center.y, p1->x - center.x);
+	a2 = atan2(p2->y - center.y, p2->x - center.x);
+	a3 = atan2(p3->y - center.y, p3->x - center.x);
 
 	LWDEBUGF(3, "a1 = %.16f, a2 = %.16f, a3 = %.16f", a1, a2, a3);
 
@@ -228,8 +226,8 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad)
 		angle += increment;
 		if (increment > 0.0 && angle > M_PI) angle -= 2*M_PI;
 		if (increment < 0.0 && angle < -1*M_PI) angle -= 2*M_PI;
-		pbuf.x = center->x + radius*cos(angle);
-		pbuf.y = center->y + radius*sin(angle);
+		pbuf.x = center.x + radius*cos(angle);
+		pbuf.y = center.y + radius*sin(angle);
 		if ((sweep > 0 && angle < a2) || (sweep < 0 && angle > a2))
 		{
 			if ((sweep > 0 && a1 < a2) || (sweep < 0 && a1 > a2))
@@ -277,8 +275,6 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad)
 
 	pt = getPoint_internal(result, ptcount - 1);
 	memcpy(pt, (uchar *)p3, ptsize);
-
-	lwfree(center);
 
 	return result;
 }

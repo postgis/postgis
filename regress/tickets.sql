@@ -384,5 +384,8 @@ select '#938', 'POLYGON EMPTY'::geometry::box2d;
 
 DROP TABLE foo;
 
+-- #668 --
+select '#668',box2d('CIRCULARSTRING(10 2,12 2,14 2)'::geometry) as b;
+
 -- Clean up
 DELETE FROM spatial_ref_sys;

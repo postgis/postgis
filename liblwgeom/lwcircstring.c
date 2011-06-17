@@ -290,21 +290,30 @@ lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3)
 	/* angles from center once a1 is rotated to zero */
 	double r2, r3;
 	double xe = 0.0, ye = 0.0;
-	POINT4D *center;
+	POINT4D center;
 	int i;
 	BOX3D *box;
 
 	LWDEBUG(2, "lwcircle_compute_box3d called.");
 
-	center = lwalloc(sizeof(POINT4D));
+	box = lwalloc(sizeof(BOX3D));
 	radius = lwcircle_center(p1, p2, p3, &center);
-	if (radius < 0.0) return NULL;
+	if (radius < 0.0) 
+	{
+        box->xmin = FP_MIN(p1->x, p3->x);
+        box->ymin = FP_MIN(p1->y, p3->y);
+        box->zmin = FP_MIN(p1->z, p3->z);
+        box->xmax = FP_MAX(p1->x, p3->x);
+        box->ymax = FP_MAX(p1->y, p3->y);
+        box->zmax = FP_MAX(p1->z, p3->z);
+        return box;
+	}
 
 	/*
-	top = center->y + radius;
-	left = center->x - radius;
+	top = center.y + radius;
+	left = center.x - radius;
 
-	LWDEBUGF(3, "lwcircle_compute_box3d: center (%.16f, %.16f)", center->x, center->y);
+	LWDEBUGF(3, "lwcircle_compute_box3d: center (%.16f, %.16f)", center.x, center.y);
 	*/
 
 	x1 = MAXFLOAT;
@@ -312,9 +321,9 @@ lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3)
 	y1 = MAXFLOAT;
 	y2 = -1 * MAXFLOAT;
 
-	a1 = atan2(p1->y - center->y, p1->x - center->x);
-	a2 = atan2(p2->y - center->y, p2->x - center->x);
-	a3 = atan2(p3->y - center->y, p3->x - center->x);
+	a1 = atan2(p1->y - center.y, p1->x - center.x);
+	a2 = atan2(p2->y - center.y, p2->x - center.x);
+	a3 = atan2(p3->y - center.y, p3->x - center.x);
 
 	/* Rotate a2 and a3 such that a1 = 0 */
 	r2 = a2 - a1;
@@ -376,26 +385,26 @@ lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3)
 			/* right extent */
 		case 0:
 			angle = 0.0;
-			xe = center->x + radius;
-			ye = center->y;
+			xe = center.x + radius;
+			ye = center.y;
 			break;
 			/* top extent */
 		case 1:
 			angle = M_PI_2;
-			xe = center->x;
-			ye = center->y + radius;
+			xe = center.x;
+			ye = center.y + radius;
 			break;
 			/* left extent */
 		case 2:
 			angle = M_PI;
-			xe = center->x - radius;
-			ye = center->y;
+			xe = center.x - radius;
+			ye = center.y;
 			break;
 			/* bottom extent */
 		case 3:
 			angle = -1 * M_PI_2;
-			xe = center->x;
-			ye = center->y - radius;
+			xe = center.x;
+			ye = center.y - radius;
 			break;
 			/* first point */
 		case 4:
@@ -448,25 +457,22 @@ lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3)
 	LWDEBUGF(3, "lwcircle_compute_box3d: extreames found (%.16f %.16f, %.16f %.16f)", x1, y1, x2, y2);
 
 	/*
-	x1 = center->x + x1 * radius;
-	x2 = center->x + x2 * radius;
-	y1 = center->y + y1 * radius;
-	y2 = center->y + y2 * radius;
+	x1 = center.x + x1 * radius;
+	x2 = center.x + x2 * radius;
+	y1 = center.y + y1 * radius;
+	y2 = center.y + y2 * radius;
 	*/
 	z1 = (FP_LT(p1->z, p2->z)) ? p1->z : p2->z;
 	z1 = (FP_LT(z1, p3->z)) ? z1 : p3->z;
 	z2 = (FP_GT(p1->z, p2->z)) ? p1->z : p2->z;
 	z2 = (FP_GT(z2, p3->z)) ? z2 : p3->z;
 
-	box = lwalloc(sizeof(BOX3D));
 	box->xmin = x1;
 	box->xmax = x2;
 	box->ymin = y1;
 	box->ymax = y2;
 	box->zmin = z1;
 	box->zmax = z2;
-
-	lwfree(center);
 
 	return box;
 }
