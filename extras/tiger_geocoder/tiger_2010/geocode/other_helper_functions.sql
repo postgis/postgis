@@ -9,7 +9,7 @@
 -- and least(to_number(b.fromhn,''99999999''),to_number(b.tohn,''99999999''))
 CREATE OR REPLACE FUNCTION least_hn(fromhn varchar, tohn varchar)
   RETURNS integer AS
-$$ SELECT least(to_number( CASE WHEN trim($1) ~ '^[0-9]+$' THEN $1 ELSE '0' END,'9999999'),to_number(CASE WHEN trim($2) ~ '^[0-9.]+$' THEN $2 ELSE '0' END,'9999999') )::integer;  $$
+$$ SELECT least(to_number( CASE WHEN trim($1) ~ '^[0-9]+$' THEN $1 ELSE '0' END,'9999999'),to_number(CASE WHEN trim($2) ~ '^[0-9]+$' THEN $2 ELSE '0' END,'9999999') )::integer;  $$
   LANGUAGE sql IMMUTABLE
   COST 5;
   
