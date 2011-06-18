@@ -642,7 +642,7 @@ SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,
 
 			<funcprototype>
 			  <funcdef>float <function>ST_Area</function></funcdef>
-				<paramdef><type>geography </type><parameter>g1</parameter></paramdef>
+				<paramdef><type>geography </type><parameter>geog</parameter></paramdef>
 				<paramdef choice='opt'><type>boolean </type><parameter>use_spheroid=true</parameter></paramdef>
 			</funcprototype>
 		  </funcsynopsis>
@@ -2667,12 +2667,8 @@ t
 			</funcprototype>
 			<funcprototype>
 			  <funcdef>float <function>ST_Length</function></funcdef>
-				<paramdef><type>geography </type><parameter>gg</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-			  <funcdef>float <function>ST_Length</function></funcdef>
-				<paramdef><type>geography </type><parameter>gg</parameter></paramdef>
-				<paramdef><type>boolean </type><parameter>use_spheroid</parameter></paramdef>
+				<paramdef><type>geography </type><parameter>geog</parameter></paramdef>
+				<paramdef choice='opt'><type>boolean </type><parameter>use_spheroid=true</parameter></paramdef>
 			</funcprototype>
 		  </funcsynopsis>
 		</refsynopsisdiv>
@@ -3312,7 +3308,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a,
 		  <refname>ST_Perimeter</refname>
 
 		  <refpurpose>Return the length measurement of the boundary of an ST_Surface
-		  or ST_MultiSurface value. (Polygon, Multipolygon)</refpurpose>
+		  or ST_MultiSurface geometry or geography. (Polygon, Multipolygon).  geometry measurement is in units of spatial reference and geography is in meters.</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
 		  <funcsynopsis>
@@ -3321,22 +3317,31 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a,
 				<paramdef><type>geometry </type><parameter>g1</parameter></paramdef>
 			</funcprototype>
 		  </funcsynopsis>
+		   <funcsynopsis>
+			<funcprototype>
+			  <funcdef>float <function>ST_Perimeter</function></funcdef>
+				<paramdef><type>geography </type><parameter>geog</parameter></paramdef>
+				<paramdef choice='opt'><type>boolean </type><parameter>use_spheroid=true</parameter></paramdef>
+			</funcprototype>
+		  </funcsynopsis>
 		</refsynopsisdiv>
 		<refsection>
 			<title>Description</title>
 
-			<para>Returns the 2D perimeter of the geometry if it is a ST_Surface, ST_MultiSurface (Polygon, Multipolygon).  0 is returned for
-				non-areal geometries.  For linestrings use ST_Length.  Measurements are in the units of the
-				spatial reference system of the geometry.</para>
+			<para>Returns the 2D perimeter of the geometry/geography if it is a ST_Surface, ST_MultiSurface (Polygon, Multipolygon).  0 is returned for
+				non-areal geometries.  For linestrings use ST_Length.  Measurements for geometry are in the units of the
+				spatial reference system of the geometry. Measurements for geography are in meters. If <varname>use_spheroid</varname> is set to false, then will
+				model earth as a sphere instead of a spheroid.</para>
 
 			<para>Currently this is an alias for ST_Perimeter2D, but this may change to support higher dimensions.</para>
 
 			<para>&sfs_compliant; s2.1.5.1</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 8.1.3, 9.5.4</para>
+			<para>Availability 2.0.0: Support for geography was introduced</para>
 		</refsection>
 
-		  <refsection>
-			<title>Examples</title>
+		<refsection>
+			<title>Examples: Geometry</title>
 			<para>Return perimeter in feet for polygon and multipolygon. Note this is in feet because 2249 is
 				Mass State Plane Feet</para>
 			<programlisting>
@@ -3364,9 +3369,38 @@ st_perimeter
 (1 row)
 			</programlisting>
 		  </refsection>
+		  <refsection>
+			<title>Examples: Geography</title>
+			<para>Return perimeter in meters and feet for polygon and multipolygon. Note this is geography (WGS 84 long lat)</para>
+			<programlisting>
+SELECT  ST_Perimeter(geog) As per_meters, ST_Perimeter(geog)/0.3048 As per_ft 
+FROM ST_GeogFromText('POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766326 42.3903829478009,
+-71.1775844305465 42.3903826677917,-71.1775825927231 42.3902893647987,-71.1776848522251 42.3902896512902))') As geog;
+
+   per_meters    |      per_ft
+-----------------+------------------
+37.3790462565251 | 122.634666195949
+
+
+-- Multipolygon example --
+SELECT  ST_Perimeter(geog) As per_meters, ST_Perimeter(geog,false) As per_sphere_meters,  ST_Perimeter(geog)/0.3048 As per_ft 
+FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.1044542869917 42.3406744369506,
+-71.1044553562977 42.340673886454,-71.1044543107478 42.340674480411)),
+((-71.1044543107478 42.340674480411,-71.1044860600303 42.3407237015564,-71.1045215770124 42.3407653385914,
+-71.1045498002983 42.3407946553165,-71.1045611902745 42.3408058316308,-71.1046016507427 42.340837442371,
+-71.104617893173 42.3408475056957,-71.1048586153981 42.3409875993595,-71.1048736143677 42.3409959528211,
+-71.1048878050242 42.3410084812078,-71.1044020965803 42.3414730072048,
+-71.1039672113619 42.3412202916693,-71.1037740497748 42.3410666421308,
+-71.1044280218456 42.3406894151355,-71.1044543107478 42.340674480411)))') As geog;
+
+    per_meters    | per_sphere_meters |      per_ft
+------------------+-------------------+------------------
+ 257.634283683311 |  257.412311446337 | 845.256836231335
+			</programlisting>
+		  </refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Length" /></para>
+			<para><xref linkend="ST_GeogFromText" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_Length" /></para>
 		</refsection>
 	</refentry>
 

@@ -657,17 +657,11 @@ CREATE OR REPLACE FUNCTION ST_Area(text)
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_Length(geography, boolean)
+CREATE OR REPLACE FUNCTION ST_Length(geog geography, use_spheroid boolean DEFAULT true)
 	RETURNS float8
 	AS 'MODULE_PATHNAME','geography_length'
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
-
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_Length(geography)
-	RETURNS float8
-	AS 'SELECT ST_Length($1, true)'
-	LANGUAGE 'SQL' IMMUTABLE;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 -- TODO Remove in 2.0
@@ -678,18 +672,11 @@ CREATE OR REPLACE FUNCTION ST_Length(text)
 
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_Perimeter(geography, boolean)
+CREATE OR REPLACE FUNCTION ST_Perimeter(geog geography, use_spheroid boolean DEFAULT true)
 	RETURNS float8
 	AS 'MODULE_PATHNAME','geography_perimeter'
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
-
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_Perimeter(geography)
-	RETURNS float8
-	AS 'SELECT ST_Perimeter($1, true)'
-	LANGUAGE 'SQL' IMMUTABLE;
-
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION _ST_PointOutside(geography)

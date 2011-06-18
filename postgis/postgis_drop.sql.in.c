@@ -48,6 +48,8 @@ DROP FUNCTION IF EXISTS st_dropbbox(geometry);
 DROP FUNCTION IF EXISTS st_hasbbox(geometry); 
 DROP FUNCTION IF EXISTS cache_bbox();
 DROP FUNCTION IF EXISTS st_cache_bbox();
+DROP FUNCTION IF EXISTS st_length(geography); -- this one changed to use default parameters
+DROP FUNCTION IF EXISTS st_perimeter(geography); -- this one changed to use default parameters
 DROP FUNCTION IF EXISTS transform_geometry(geometry,text,text,int);
 DROP FUNCTION IF EXISTS collector(geometry, geometry);
 DROP FUNCTION IF EXISTS st_collector(geometry, geometry);
