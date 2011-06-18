@@ -8,6 +8,7 @@ DECLARE
   stmt VARCHAR;
   in_statefp VARCHAR;
   exact_street boolean := false;
+  var_debug boolean := false;
 BEGIN
   IF parsed.streetName IS NULL THEN
     -- A street name must be given.  Think about it.
@@ -78,8 +79,8 @@ BEGIN
          || '            THEN 2'
          || '        ELSE'
          || '            ((1.0 - '
-         ||              '(least_hn(' || coalesce(quote_literal(parsed.address || '.0'),'NULL') || ',least_hn(b.fromhn,b.tohn)::text) /'
-         ||              ' greatest(1,greatest_hn(' || coalesce(quote_literal(parsed.address || '.0'),'NULL') || ',greatest_hn(b.fromhn,b.tohn)::text)))'
+         ||              '(least_hn(' || coalesce(quote_literal(parsed.address),'NULL') || ',least_hn(b.fromhn,b.tohn)::text)::numeric /'
+         ||              ' greatest(1,greatest_hn(' || coalesce(quote_literal(parsed.address),'NULL') || ',greatest_hn(b.fromhn,b.tohn)::text)))'
          ||              ') * 5)::integer + 5'
          || '        END'
          || '    as sub_rating,'
@@ -110,7 +111,9 @@ BEGIN
          || ' ORDER BY 1,2,3,4,5,6,7,9'
          || ' LIMIT 10'
          ;
-    --RAISE NOTICE '%', stmt;
+    IF var_debug THEN
+        RAISE NOTICE '%', stmt;
+    END IF;
     -- If we got an exact street match then when we hit the non-exact
     -- set of tests, just drop out.
     IF NOT zip_info.exact AND exact_street THEN
@@ -157,6 +160,6 @@ BEGIN
   RETURN;
 END;
 $$
-  LANGUAGE 'plpgsql' STABLE COST 1000;
+  LANGUAGE 'plpgsql' STABLE COST 1000 ROWS 50;
 
 
