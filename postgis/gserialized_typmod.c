@@ -132,7 +132,7 @@ void postgis_valid_typmod(LWGEOM *lwgeom, int32 typmod)
 	{
 		ereport(ERROR, (
 		            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-		            errmsg("Geography SRID (%d) does not match column SRID (%d)", lwgeom_srid, typmod_srid) ));
+		            errmsg("Geometry SRID (%d) does not match column SRID (%d)", lwgeom_srid, typmod_srid) ));
 	}
 
 	/* Typmod has a preference for geometry type. */
