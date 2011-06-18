@@ -56,7 +56,7 @@ BEGIN
          || '    coalesce(p.name,zip.city,cs.name,co.name)::varchar as place,'
          || '    s.stusps as state,'
          || '    sub.zip as zip,'
-         || '    interpolate_from_address(' || coalesce(quote_literal(parsed.address),'NULL') || ', to_number(sub.fromhn,''99999999'')::integer,'
+         || '    interpolate_from_address(' || coalesce(parsed.address,'NULL') || ', to_number(sub.fromhn,''99999999'')::integer,'
          || '        to_number(sub.tohn,''99999999'')::integer, e.the_geom) as address_geom,'
          || coalesce('    sub.sub_rating + coalesce(levenshtein_ignore_case(' || quote_literal(zip_info.zip[1]) || ', sub.zip),0)',
                      '    sub.sub_rating + coalesce(levenshtein_ignore_case(' || quote_literal(parsed.location) || ', coalesce(p.name,zip.city,cs.name,co.name)),0)',
