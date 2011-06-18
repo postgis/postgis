@@ -336,12 +336,12 @@ BEGIN
     tempString := substring(reducedStreet, '(?i)(^' || name
         || ')' || ws) FROM direction_lookup WHERE
          reducedStreet ILIKE '%' || name || '%'  AND texticregexeq(reducedStreet, '(?i)(^' || name || ')' || ws)
-        ORDER BY length(name) DESC;
+        ORDER BY length(name) DESC LIMIT 1;
     IF tempString IS NOT NULL THEN
       preDir := tempString;
       result.preDirAbbrev := abbrev FROM direction_lookup
           where reducedStreet ILIKE '%' || name '%' AND texticregexeq(reducedStreet, '(?i)(^' || name || ')' || ws)
-          ORDER BY length(name) DESC;
+          ORDER BY length(name) DESC LIMIT 1;
       result.streetName := substring(reducedStreet, '^' || preDir || ws || '(.*)');
     ELSE
       result.streetName := reducedStreet;
@@ -354,7 +354,7 @@ BEGIN
           substring(result.location, '(?i)^(' || name || ')' || ws) as value
           FROM direction_lookup 
             WHERE result.location ILIKE '%' || name || '%' AND texticregexeq(result.location, '(?i)^'
-          || name || ws) ORDER BY length(name) desc;
+          || name || ws) ORDER BY length(name) desc LIMIT 1;
       IF rec.value IS NOT NULL THEN
         postDir := rec.value;
         result.postDirAbbrev := rec.abbrev;
@@ -374,11 +374,11 @@ BEGIN
         SELECT INTO tempString substring(result.location, '(?i)(^' || name
             || ')' || ws) FROM direction_lookup WHERE
             result.location ILIKE '%' || name || '%' AND texticregexeq(result.location, '(?i)(^' || name || ')' || ws)
-            ORDER BY length(name) desc;
+            ORDER BY length(name) desc LIMIT 1;
         IF tempString IS NOT NULL THEN
           postDir := tempString;
           SELECT INTO result.postDirAbbrev abbrev FROM direction_lookup
-              WHERE result.location ILIKE '%' || name || '%' AND texticregexeq(result.location, '(?i)(^' || name || ')' || ws);
+              WHERE result.location ILIKE '%' || name || '%' AND texticregexeq(result.location, '(?i)(^' || name || ')' || ws) ORDER BY length(name) DESC LIMIT 1;
           result.location := substring(result.location, '^' || postDir || ws || '+(.*)');
         END IF;
       END IF;
@@ -389,7 +389,7 @@ BEGIN
           || ws || '+(' || name || ')' || ws || '+' || result.internal)
           FROM direction_lookup 
           WHERE fullStreet ILIKE '%' || name || '%' AND texticregexeq(fullStreet, '(?i)'
-          || ws || name || ws || '+' || result.internal) ORDER BY length(name) desc;
+          || ws || name || ws || '+' || result.internal) ORDER BY length(name) desc LIMIT 1;
       IF tempString IS NOT NULL THEN
         postDir := tempString;
         SELECT INTO result.postDirAbbrev abbrev FROM direction_lookup
