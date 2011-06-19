@@ -872,12 +872,6 @@ Failed: 0
 	  </para>
 
 	  <para>
-		PostGIS provides an utility script to restore a dump produced with the
-		pg_dump -Fc command. It is experimental so redirecting its output to a
-		file will help in case of problems. The procedure is as follow:
-	  </para>
-
-	  <para>
 		Create a "custom-format" dump of the database you want to upgrade (let's
 		call it "olddb") include binary blobs (-b) and verbose (-v) output.  The user can be the owner of the db, need not be postgres
 		super account.
@@ -895,12 +889,12 @@ Failed: 0
 
 	  <programlisting>pg_restore -h localhost -p 5432 -U postgres -d newdb "/somepath/olddb.backup"</programlisting>
 
-	  <para>Finally run the <varname>uninstall_legacy.sql</varname> script in this new database.  NOTE: This step is
+	  <para>Finally run the <filename>uninstall_legacy.sql</filename> script in this new database.  NOTE: This step is
 	      important even if you plan to reinstall legacy functions.  This is because many functions have been revised to use default parameters, and
 	      your old install would therefore restore these which would result in ambiguous name conflicts when called.</para>
 	  <programlisting>psql  -h localhost -p 5432 -U postgres -d newdb -f uninstall_legacy.sql</programlisting>
 
-	  <para>If your applications or GIS tools rely on old deprecated functions, you can restore these back with</para>
+	  <para>If your applications or GIS tools rely on old deprecated functions, you can restore these by installing the <filename>legacy.sql</filename></para>
 	  <programlisting>psql  -h localhost -p 5432 -U postgres -d newdb -f legacy.sql</programlisting>
 	</sect2>
   </sect1>
