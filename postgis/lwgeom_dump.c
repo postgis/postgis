@@ -126,6 +126,8 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 
 	/* Handled simple geometries */
 	if ( ! state->root ) SRF_RETURN_DONE(funcctx);
+	/* Return nothing for empties */
+	if ( lwgeom_is_empty(state->root) ) SRF_RETURN_DONE(funcctx);
 	if ( ! lwgeom_is_collection(state->root) )
 	{
 		values[0] = "{}";
