@@ -221,27 +221,30 @@ int gbox_merge(const GBOX *new_box, GBOX *merge_box)
 int gbox_overlaps(const GBOX *g1, const GBOX *g2)
 {
 
-	/* Make sure our boxes have the same dimensionality */
-	if ( (FLAGS_GET_Z(g1->flags) != FLAGS_GET_Z(g2->flags)) ||
-	     (FLAGS_GET_M(g1->flags) != FLAGS_GET_M(g2->flags)) ||
-	     (FLAGS_GET_GEODETIC(g1->flags) != FLAGS_GET_GEODETIC(g2->flags)) )
-	{
-		lwerror("gbox_overlaps: geometries have mismatched dimensionality");
-	}
+	/* Make sure our boxes are consistent */
+	if ( FLAGS_GET_GEODETIC(g1->flags) != FLAGS_GET_GEODETIC(g2->flags) )
+		lwerror("gbox_overlaps: cannot compare geodetic and non-geodetic boxes");
 
+	/* Check X/Y first */
 	if ( g1->xmax < g2->xmin || g1->ymax < g2->ymin ||
-	        g1->xmin > g2->xmax || g1->ymin > g2->ymax )
+	     g1->xmin > g2->xmax || g1->ymin > g2->ymax )
 		return LW_FALSE;
-	if ( FLAGS_GET_Z(g1->flags) || FLAGS_GET_GEODETIC(g1->flags) )
+		
+	/* If both geodetic or both have Z, check Z */
+	if ( (FLAGS_GET_Z(g1->flags) && FLAGS_GET_Z(g2->flags)) || 
+	     (FLAGS_GET_GEODETIC(g1->flags) && FLAGS_GET_GEODETIC(g2->flags)) )
 	{
 		if ( g1->zmax < g2->zmin || g1->zmin > g2->zmax )
 			return LW_FALSE;
 	}
-	if ( FLAGS_GET_M(g1->flags) )
+	
+	/* If both have M, check M */
+	if ( FLAGS_GET_M(g1->flags) && FLAGS_GET_M(g2->flags) )
 	{
 		if ( g1->mmax < g2->mmin || g1->mmin > g2->mmax )
 			return LW_FALSE;
 	}
+	
 	return LW_TRUE;
 }
 
