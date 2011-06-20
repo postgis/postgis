@@ -171,6 +171,15 @@
 --   ST_GetFaceGeometry
 --  	Implemented using polygonize()
 --  
+--   ST_RemEdgeNewFace
+--    Unimplemented
+--  
+--   ST_RemEdgeModFace
+--    Unimplemented
+--  
+--   ST_ValidateTopoGeo
+--    Unimplemented (probably a wrapper around ValidateTopology)
+--  
 --  
 
 -- Uninstalling previous installation isn't really a good habit ...
