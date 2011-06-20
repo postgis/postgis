@@ -61,6 +61,7 @@ DROP FUNCTION IF EXISTS geosnoop(geometry);
 DROP FUNCTION IF EXISTS jtsnoop(geometry);
 DROP FUNCTION IF EXISTS st_noop(geometry);
 DROP FUNCTION IF EXISTS st_max_distance(geometry, geometry);
+DROP FUNCTION IF EXISTS  ST_MinimumBoundingCircle(geometry); --changed to use default parameters
 -- Drop internals that should never have existed --
 DROP FUNCTION IF EXISTS st_geometry_analyze(internal);
 DROP FUNCTION IF EXISTS st_geometry_in(cstring);
@@ -74,3 +75,4 @@ DROP FUNCTION IF EXISTS st_geometry_gt(geometry, geometry);
 DROP FUNCTION IF EXISTS st_geometry_ge(geometry, geometry);
 DROP FUNCTION IF EXISTS st_geometry_eq(geometry, geometry);
 DROP FUNCTION IF EXISTS st_geometry_cmp(geometry, geometry);
+DROP FUNCTION IF EXISTS SnapToGrid(geometry, float8, float8);

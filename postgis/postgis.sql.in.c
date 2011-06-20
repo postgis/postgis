@@ -4938,7 +4938,7 @@ CREATE OR REPLACE FUNCTION ST_LineToCurve(geometry)
 -- Contributed by Bruce Rindahl
 -- Availability: 1.4.0
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION ST_MinimumBoundingCircle(inputgeom geometry, segs_per_quarter integer)
+CREATE OR REPLACE FUNCTION ST_MinimumBoundingCircle(inputgeom geometry, segs_per_quarter integer DEFAULT 48)
 	RETURNS geometry AS
 $BODY$
 	DECLARE
@@ -5011,20 +5011,20 @@ $BODY$
 				-- Compute the midpoint
 				p1 = ST_line_interpolate_point(l1,0.5);
 				-- Rotate the line 90 degrees around the midpoint (perpendicular bisector)
-				l1 = ST_Translate(ST_Rotate(ST_Translate(l1,-X(p1),-Y(p1)),pi()/2),X(p1),Y(p1));
+				l1 = ST_Translate(ST_Rotate(ST_Translate(l1,-ST_X(p1),-ST_Y(p1)),pi()/2),ST_X(p1),ST_Y(p1));
 				--  Compute the azimuth of the bisector
 				a1 = ST_Azimuth(ST_PointN(l1,1),ST_PointN(l1,2));
 				--  Extend the line in each direction the new computed distance to insure they will intersect
-				l1 = ST_AddPoint(l1,ST_Makepoint(X(ST_PointN(l1,2))+sin(a1)*dist,Y(ST_PointN(l1,2))+cos(a1)*dist),-1);
-				l1 = ST_AddPoint(l1,ST_Makepoint(X(ST_PointN(l1,1))-sin(a1)*dist,Y(ST_PointN(l1,1))-cos(a1)*dist),0);
+				l1 = ST_AddPoint(l1,ST_Makepoint(ST_X(ST_PointN(l1,2))+sin(a1)*dist,ST_Y(ST_PointN(l1,2))+cos(a1)*dist),-1);
+				l1 = ST_AddPoint(l1,ST_Makepoint(ST_X(ST_PointN(l1,1))-sin(a1)*dist,ST_Y(ST_PointN(l1,1))-cos(a1)*dist),0);
 
 				-- Repeat for the line from the point to the other diameter point
 				l2 = ST_Makeline(ST_PointN(ring,idx2),ST_PointN(ring,k));
 				p2 = ST_Line_interpolate_point(l2,0.5);
-				l2 = ST_Translate(ST_Rotate(ST_Translate(l2,-X(p2),-Y(p2)),pi()/2),X(p2),Y(p2));
+				l2 = ST_Translate(ST_Rotate(ST_Translate(l2,-ST_X(p2),-ST_Y(p2)),pi()/2),ST_X(p2),ST_Y(p2));
 				a2 = ST_Azimuth(ST_PointN(l2,1),ST_PointN(l2,2));
-				l2 = ST_AddPoint(l2,ST_Makepoint(X(ST_PointN(l2,2))+sin(a2)*dist,Y(ST_PointN(l2,2))+cos(a2)*dist),-1);
-				l2 = ST_AddPoint(l2,ST_Makepoint(X(ST_PointN(l2,1))-sin(a2)*dist,Y(ST_PointN(l2,1))-cos(a2)*dist),0);
+				l2 = ST_AddPoint(l2,ST_Makepoint(ST_X(ST_PointN(l2,2))+sin(a2)*dist,ST_Y(ST_PointN(l2,2))+cos(a2)*dist),-1);
+				l2 = ST_AddPoint(l2,ST_Makepoint(ST_X(ST_PointN(l2,1))-sin(a2)*dist,ST_Y(ST_PointN(l2,1))-cos(a2)*dist),0);
 
 				-- The new center is the intersection of the two bisectors
 				center = ST_Intersection(l1,l2);
@@ -5040,10 +5040,6 @@ $BODY$
 $BODY$
 	LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION ST_MinimumBoundingCircle(geometry)
- RETURNS geometry AS
-'SELECT ST_MinimumBoundingCircle($1, 48)'
- LANGUAGE 'sql' IMMUTABLE STRICT;
  
 -- ST_ConcaveHull and Helper functions starts here --
 -----------------------------------------------------------------------

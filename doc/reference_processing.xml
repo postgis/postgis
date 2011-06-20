@@ -1685,11 +1685,7 @@ SELECT ST_AsEWKT(ST_LineToCurve(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 8, 5 6 4,
 		  <funcprototype>
 			<funcdef>geometry <function>ST_MinimumBoundingCircle</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
-		  </funcprototype>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_MinimumBoundingCircle</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
-			<paramdef><type>integer </type> <parameter>num_segs_per_qt_circ</parameter></paramdef>
+			<paramdef choice='opt'><type>integer </type> <parameter>num_segs_per_qt_circ=48</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
