@@ -364,7 +364,7 @@ int main( int argc, const char* argv[] )
 	while ( fgets ( line, sizeof line, pfile ) != NULL && !isspace(*line) )
 	{
 
-		char output[2048];
+		char output[32768];
 		char *ptr = output;
 		char *styleName;
 		int useDefaultStyle;
