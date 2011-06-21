@@ -890,13 +890,13 @@ postgis_raster_lib_version
 		<title>Description</title>
 
 		<para>Returns a list of raster formats short_name,long_name and creator options of each format supported by your lib gdal.  Use the short_name as input in the <varname>format</varname> parameter of <xref linkend="RT_ST_AsGDALRaster" />.
-		Options vary depending on what drivers your libgdal was compiled with. <varname>create_options</varname> returns an xml formatted set of CreationOptionList/Option consisting of name and optional <varname>type</varname>,<varname>description</varname> for each creator option for the specific driver.</para>
+		Options vary depending on what drivers your libgdal was compiled with. <varname>create_options</varname> returns an xml formatted set of CreationOptionList/Option consisting of name and optional <varname>type</varname>,<varname>description</varname> and set of <varname>VALUE</varname> for each creator option for the specific driver.</para>
 		
 		 <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
 	  </refsection>
 
 	  <refsection>
-		<title>Examples</title>
+		<title>Examples: List of Drivers</title>
 
 		<programlisting>SELECT short_name, long_name
 FROM st_gdaldrivers()
@@ -927,6 +927,8 @@ VRT             | Virtual Raster
 XPM             | X11 PixMap Format
 
 </programlisting>
+</refsection>
+<refsection><title>Example: List of options for each driver</title>
 <programlisting>-- Output the create options XML column of JPEG as a table  --
 -- Note you can use these creator options in ST_AsGDALRaster options argument
 SELECT (xpath('@name', g.opt))[1]::text As oname,
@@ -943,36 +945,103 @@ WHERE short_name = 'JPEG') As g;
  WORLDFILE   | boolean |
 </programlisting>
 
-<programlisting>-- Output the create options XML column for GTiff as a table  --
--- Note you can use these creator options in ST_AsGDALRaster options argument
+<programlisting>
+-- raw xml output for creator options for GeoTiff --
+SELECT create_options
+FROM st_gdaldrivers()
+WHERE short_name = 'GTiff';
+
+<![CDATA[<CreationOptionList>
+    <Option name="COMPRESS" type="string-select">
+        <Value>NONE</Value>
+        <Value>LZW</Value>
+        <Value>PACKBITS</Value>
+        <Value>JPEG</Value>
+        <Value>CCITTRLE</Value>
+        <Value>CCITTFAX3</Value>
+        <Value>CCITTFAX4</Value>
+        <Value>DEFLATE</Value>
+    </Option>
+    <Option name="PREDICTOR" type="int" description="Predictor Type"/>
+    <Option name="JPEG_QUALITY" type="int" description="JPEG quality 1-100" default="75"/>
+    <Option name="ZLEVEL" type="int" description="DEFLATE compression level 1-9" default="6"/>
+    <Option name="NBITS" type="int" description="BITS for sub-byte files (1-7), sub-uint16 (9-15), sub-uint32 (17-31)"/>
+    <Option name="INTERLEAVE" type="string-select" default="PIXEL">
+        <Value>BAND</Value>
+        <Value>PIXEL</Value>
+    </Option>
+    <Option name="TILED" type="boolean" description="Switch to tiled format"/>
+    <Option name="TFW" type="boolean" description="Write out world file"/>
+    <Option name="RPB" type="boolean" description="Write out .RPB (RPC) file"/>
+    <Option name="BLOCKXSIZE" type="int" description="Tile Width"/>
+    <Option name="BLOCKYSIZE" type="int" description="Tile/Strip Height"/>
+    <Option name="PHOTOMETRIC" type="string-select">
+        <Value>MINISBLACK</Value>
+        <Value>MINISWHITE</Value>
+        <Value>PALETTE</Value>
+        <Value>RGB</Value>
+        <Value>CMYK</Value>
+        <Value>YCBCR</Value>
+        <Value>CIELAB</Value>
+        <Value>ICCLAB</Value>
+        <Value>ITULAB</Value>
+    </Option>
+    <Option name="SPARSE_OK" type="boolean" description="Can newly created files have missing blocks?" default="FALSE"/>
+    <Option name="ALPHA" type="boolean" description="Mark first extrasample as being alpha"/>
+    <Option name="PROFILE" type="string-select" default="GDALGeoTIFF">
+        <Value>GDALGeoTIFF</Value>
+        <Value>GeoTIFF</Value>
+        <Value>BASELINE</Value>
+    </Option>
+    <Option name="PIXELTYPE" type="string-select">
+        <Value>DEFAULT</Value>
+        <Value>SIGNEDBYTE</Value>
+    </Option>
+    <Option name="BIGTIFF" type="string-select" description="Force creation of BigTIFF file">
+        <Value>YES</Value>
+        <Value>NO</Value>
+        <Value>IF_NEEDED</Value>
+        <Value>IF_SAFER</Value>
+    </Option>
+    <Option name="ENDIANNESS" type="string-select" default="NATIVE" description="Force endianness of created file. For DEBUG purpose mostly">
+        <Value>NATIVE</Value>
+        <Value>INVERTED</Value>
+        <Value>LITTLE</Value>
+        <Value>BIG</Value>
+    </Option>
+    <Option name="COPY_SRC_OVERVIEWS" type="boolean" default="NO" description="Force copy of overviews of source dataset (CreateCopy())"/>
+</CreationOptionList>]]>
+
+-- Output the create options XML column for GTiff as a table  --
 SELECT (xpath('@name', g.opt))[1]::text As oname,
        (xpath('@type', g.opt))[1]::text As otype,
-       (xpath('@description', g.opt))[1]::text As descrip
+       (xpath('@description', g.opt))[1]::text As descrip,
+       array_to_string(xpath('Value/text()', g.opt),', ') As vals 
 FROM (SELECT unnest(xpath('/CreationOptionList/Option', create_options::xml)) As opt
 FROM  st_gdaldrivers()
 WHERE short_name = 'GTiff') As g;
 
-       oname        |     otype     |                               descrip
---------------------+---------------+----------------------------------------------------------------------
- COMPRESS           | string-select |
- PREDICTOR          | int           | Predictor Type
- JPEG_QUALITY       | int           | JPEG quality 1-100
- ZLEVEL             | int           | DEFLATE compression level 1-9
- NBITS              | int           | BITS for sub-byte files (1-7), sub-uint16 (9-15), sub-uint32 (17-31)
- INTERLEAVE         | string-select |
- TILED              | boolean       | Switch to tiled format
- TFW                | boolean       | Write out world file
- RPB                | boolean       | Write out .RPB (RPC) file
- BLOCKXSIZE         | int           | Tile Width
- BLOCKYSIZE         | int           | Tile/Strip Height
- PHOTOMETRIC        | string-select |
- SPARSE_OK          | boolean       | Can newly created files have missing blocks?
- ALPHA              | boolean       | Mark first extrasample as being alpha
- PROFILE            | string-select |
- PIXELTYPE          | string-select |
- BIGTIFF            | string-select | Force creation of BigTIFF file
- ENDIANNESS         | string-select | Force endianness of created file. For DEBUG purpose mostly
- COPY_SRC_OVERVIEWS | boolean       | Force copy of overviews of source dataset (CreateCopy())
+       oname        |     otype     |                               descrip                                |                                   vals                                    
+--------------------+---------------+----------------------------------------------------------------------+---------------------------------------------------------------------------
+ COMPRESS           | string-select |                                                                      | NONE, LZW, PACKBITS, JPEG, CCITTRLE, CCITTFAX3, CCITTFAX4, DEFLATE
+ PREDICTOR          | int           | Predictor Type                                                       | 
+ JPEG_QUALITY       | int           | JPEG quality 1-100                                                   | 
+ ZLEVEL             | int           | DEFLATE compression level 1-9                                        | 
+ NBITS              | int           | BITS for sub-byte files (1-7), sub-uint16 (9-15), sub-uint32 (17-31) | 
+ INTERLEAVE         | string-select |                                                                      | BAND, PIXEL
+ TILED              | boolean       | Switch to tiled format                                               | 
+ TFW                | boolean       | Write out world file                                                 | 
+ RPB                | boolean       | Write out .RPB (RPC) file                                            | 
+ BLOCKXSIZE         | int           | Tile Width                                                           | 
+ BLOCKYSIZE         | int           | Tile/Strip Height                                                    | 
+ PHOTOMETRIC        | string-select |                                                                      | MINISBLACK, MINISWHITE, PALETTE, RGB, CMYK, YCBCR, CIELAB, ICCLAB, ITULAB
+ SPARSE_OK          | boolean       | Can newly created files have missing blocks?                         | 
+ ALPHA              | boolean       | Mark first extrasample as being alpha                                | 
+ PROFILE            | string-select |                                                                      | GDALGeoTIFF, GeoTIFF, BASELINE
+ PIXELTYPE          | string-select |                                                                      | DEFAULT, SIGNEDBYTE
+ BIGTIFF            | string-select | Force creation of BigTIFF file                                       | YES, NO, IF_NEEDED, IF_SAFER
+ ENDIANNESS         | string-select | Force endianness of created file. For DEBUG purpose mostly           | NATIVE, INVERTED, LITTLE, BIG
+ COPY_SRC_OVERVIEWS | boolean       | Force copy of overviews of source dataset (CreateCopy())             | 
 (19 rows)
 </programlisting>
 	  </refsection>
