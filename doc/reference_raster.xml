@@ -890,7 +890,7 @@ postgis_raster_lib_version
 		<title>Description</title>
 
 		<para>Returns a list of raster formats short_name,long_name and creator options of each format supported by your lib gdal.  Use the short_name as input in the <varname>format</varname> parameter of <xref linkend="RT_ST_AsGDALRaster" />.
-		Options vary depending on what drivers your libgdal was compiled with. <varname>create_options</varname> returns an xml formatted list of opt_name/opt_description create_options for the specific driver.</para>
+		Options vary depending on what drivers your libgdal was compiled with. <varname>create_options</varname> returns an xml formatted set of CreationOptionList/Option consisting of name and optional <varname>type</varname>,<varname>description</varname> for each creator option for the specific driver.</para>
 		
 		 <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
 	  </refsection>
@@ -927,64 +927,53 @@ VRT             | Virtual Raster
 XPM             | X11 PixMap Format
 
 </programlisting>
-<programlisting>-- Output the create options XML column of Geo Tiff as a table  --
+<programlisting>-- Output the create options XML column of JPEG as a table  --
 -- Note you can use these creator options in ST_AsGDALRaster options argument
-SELECT unnest(xpath('/CreationOptionList/Option/@name', create_options::xml)) As opt_name,
-       unnest(xpath('/CreationOptionList/Option/@description', create_options::xml)) As opt_descrip
-FROM st_gdaldrivers()
-WHERE short_name = 'GTiff';
+SELECT (xpath('@name', g.opt))[1]::text As oname,
+       (xpath('@type', g.opt))[1]::text As otype,
+       (xpath('@description', g.opt))[1]::text As descrip
+FROM (SELECT unnest(xpath('/CreationOptionList/Option', create_options::xml)) As opt
+FROM  st_gdaldrivers()
+WHERE short_name = 'JPEG') As g;
 
-      opt_name      |                             opt_descrip
---------------------+----------------------------------------------------------------------
- COMPRESS           | Predictor Type
- PREDICTOR          | JPEG quality 1-100
- JPEG_QUALITY       | DEFLATE compression level 1-9
- ZLEVEL             | BITS for sub-byte files (1-7), sub-uint16 (9-15), sub-uint 32 (17-31)
- NBITS              | Switch to tiled format
- INTERLEAVE         | Write out world file
- TILED              | Write out .RPB (RPC) file
- TFW                | Tile Width
- RPB                | Tile/Strip Height
- BLOCKXSIZE         | Can newly created files have missing blocks?
- BLOCKYSIZE         | Mark first extrasample as being alpha
- PHOTOMETRIC        | Force creation of BigTIFF file
- SPARSE_OK          | Force endianness of created file. For DEBUG purpose mostly
- ALPHA              | Force copy of overviews of source dataset (CreateCopy())
- PROFILE            | Predictor Type
- PIXELTYPE          | JPEG quality 1-100
-:
-:
-
+    oname    |  otype  |           descrip
+-------------+---------+-----------------------------
+ PROGRESSIVE | boolean |
+ QUALITY     | int     | good=100, bad=0, default=75
+ WORLDFILE   | boolean |
 </programlisting>
 
-<programlisting>-- Output the create options XML column for JPEG as a table  --
+<programlisting>-- Output the create options XML column for GTiff as a table  --
 -- Note you can use these creator options in ST_AsGDALRaster options argument
-SELECT unnest(xpath('/CreationOptionList/Option/@name', create_options::xml)) As opt_name,
-       unnest(xpath('/CreationOptionList/Option/@description', create_options::xml)) As opt_descrip
-FROM st_gdaldrivers()
-WHERE short_name = 'GTiff';
+SELECT (xpath('@name', g.opt))[1]::text As oname,
+       (xpath('@type', g.opt))[1]::text As otype,
+       (xpath('@description', g.opt))[1]::text As descrip
+FROM (SELECT unnest(xpath('/CreationOptionList/Option', create_options::xml)) As opt
+FROM  st_gdaldrivers()
+WHERE short_name = 'GTiff') As g;
 
-      opt_name      |                             opt_descrip
---------------------+----------------------------------------------------------------------
- COMPRESS           | Predictor Type
- PREDICTOR          | JPEG quality 1-100
- JPEG_QUALITY       | DEFLATE compression level 1-9
- ZLEVEL             | BITS for sub-byte files (1-7), sub-uint16 (9-15), sub-uint 32 (17-31)
- NBITS              | Switch to tiled format
- INTERLEAVE         | Write out world file
- TILED              | Write out .RPB (RPC) file
- TFW                | Tile Width
- RPB                | Tile/Strip Height
- BLOCKXSIZE         | Can newly created files have missing blocks?
- BLOCKYSIZE         | Mark first extrasample as being alpha
- PHOTOMETRIC        | Force creation of BigTIFF file
- SPARSE_OK          | Force endianness of created file. For DEBUG purpose mostly
- ALPHA              | Force copy of overviews of source dataset (CreateCopy())
- PROFILE            | Predictor Type
- PIXELTYPE          | JPEG quality 1-100
-:
-:
-
+       oname        |     otype     |                               descrip
+--------------------+---------------+----------------------------------------------------------------------
+ COMPRESS           | string-select |
+ PREDICTOR          | int           | Predictor Type
+ JPEG_QUALITY       | int           | JPEG quality 1-100
+ ZLEVEL             | int           | DEFLATE compression level 1-9
+ NBITS              | int           | BITS for sub-byte files (1-7), sub-uint16 (9-15), sub-uint32 (17-31)
+ INTERLEAVE         | string-select |
+ TILED              | boolean       | Switch to tiled format
+ TFW                | boolean       | Write out world file
+ RPB                | boolean       | Write out .RPB (RPC) file
+ BLOCKXSIZE         | int           | Tile Width
+ BLOCKYSIZE         | int           | Tile/Strip Height
+ PHOTOMETRIC        | string-select |
+ SPARSE_OK          | boolean       | Can newly created files have missing blocks?
+ ALPHA              | boolean       | Mark first extrasample as being alpha
+ PROFILE            | string-select |
+ PIXELTYPE          | string-select |
+ BIGTIFF            | string-select | Force creation of BigTIFF file
+ ENDIANNESS         | string-select | Force endianness of created file. For DEBUG purpose mostly
+ COPY_SRC_OVERVIEWS | boolean       | Force copy of overviews of source dataset (CreateCopy())
+(19 rows)
 </programlisting>
 	  </refsection>
 
