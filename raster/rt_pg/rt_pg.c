@@ -2916,7 +2916,7 @@ Datum RASTER_band(PG_FUNCTION_ARGS)
 		deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
 			&nulls, &n);
 
-		bandNums = (uint32_t *) palloc(sizeof(uint32_t) * n);
+		bandNums = palloc(sizeof(uint32_t) * n);
 		for (i = 0, j = 0; i < n; i++) {
 			if (nulls[i]) continue;
 
@@ -2932,10 +2932,9 @@ Datum RASTER_band(PG_FUNCTION_ARGS)
 			POSTGIS_RT_DEBUGF(3, "band idx (before): %d", idx);
 			if (idx > pgraster->numBands || idx < 1) {
         elog(NOTICE, "Invalid band index (must use 1-based). Returning original raster");
-				pfree(bandNums);
 				skip = TRUE;
+				break;
 			}
-			if (skip) break;
 
 			bandNums[j] = idx - 1;
 			POSTGIS_RT_DEBUGF(3, "bandNums[%d] = %d", j, bandNums[j]);
@@ -2961,15 +2960,14 @@ Datum RASTER_band(PG_FUNCTION_ARGS)
 		pgrast = rt_raster_serialize(rast);
 		rt_raster_destroy(rast);
 		PG_FREE_IF_COPY(pgraster, 0);
-	}
-	else {
-		pgrast = pgraster;
+
+		if (!pgrast) PG_RETURN_NULL();
+
+		SET_VARSIZE(pgrast, pgrast->size);
+		PG_RETURN_POINTER(pgrast);
 	}
 
-	if (!pgrast) PG_RETURN_NULL();
-
-	SET_VARSIZE(pgrast, pgrast->size);
-	PG_RETURN_POINTER(pgrast);
+	PG_RETURN_POINTER(pgraster);
 }
 
 struct rt_bandstats_t {

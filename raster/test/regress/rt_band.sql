@@ -298,3 +298,31 @@ SELECT ST_NumBands(
 		)
 	)
 );
+SELECT ST_NumBands(
+	ST_Band(
+		ST_AddBand(
+			ST_AddBand(
+				ST_AddBand(
+					ST_MakeEmptyRaster(200, 200, 10, 10, 2, 2, 0, 0,-1)
+					, 1, '64BF', 1234.5678, NULL
+				)
+				, '64BF', 987.654321, NULL
+			)
+			, '64BF', 9876.54321, NULL
+		)
+	, ARRAY[1,1,3,999])
+);
+SELECT ST_NumBands(
+	ST_Band(
+		ST_AddBand(
+			ST_AddBand(
+				ST_AddBand(
+					ST_MakeEmptyRaster(200, 200, 10, 10, 2, 2, 0, 0,-1)
+					, 1, '64BF', 1234.5678, NULL
+				)
+				, '64BF', 987.654321, NULL
+			)
+			, '64BF', 9876.54321, NULL
+		)
+	, ARRAY[999])
+);

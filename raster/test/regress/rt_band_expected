@@ -21,3 +21,7 @@
 1
 1
 1
+NOTICE:  Invalid band index (must use 1-based). Returning original raster
+3
+NOTICE:  Invalid band index (must use 1-based). Returning original raster
+3
