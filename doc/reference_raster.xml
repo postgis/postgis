@@ -956,6 +956,36 @@ WHERE short_name = 'GTiff';
 :
 
 </programlisting>
+
+<programlisting>-- Output the create options XML column for JPEG as a table  --
+-- Note you can use these creator options in ST_AsGDALRaster options argument
+SELECT unnest(xpath('/CreationOptionList/Option/@name', create_options::xml)) As opt_name,
+       unnest(xpath('/CreationOptionList/Option/@description', create_options::xml)) As opt_descrip
+FROM st_gdaldrivers()
+WHERE short_name = 'GTiff';
+
+      opt_name      |                             opt_descrip
+--------------------+----------------------------------------------------------------------
+ COMPRESS           | Predictor Type
+ PREDICTOR          | JPEG quality 1-100
+ JPEG_QUALITY       | DEFLATE compression level 1-9
+ ZLEVEL             | BITS for sub-byte files (1-7), sub-uint16 (9-15), sub-uint 32 (17-31)
+ NBITS              | Switch to tiled format
+ INTERLEAVE         | Write out world file
+ TILED              | Write out .RPB (RPC) file
+ TFW                | Tile Width
+ RPB                | Tile/Strip Height
+ BLOCKXSIZE         | Can newly created files have missing blocks?
+ BLOCKYSIZE         | Mark first extrasample as being alpha
+ PHOTOMETRIC        | Force creation of BigTIFF file
+ SPARSE_OK          | Force endianness of created file. For DEBUG purpose mostly
+ ALPHA              | Force copy of overviews of source dataset (CreateCopy())
+ PROFILE            | Predictor Type
+ PIXELTYPE          | JPEG quality 1-100
+:
+:
+
+</programlisting>
 	  </refsection>
 
 	  <refsection>
@@ -3842,7 +3872,7 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
 					<paramdef choice="opt"><type>double precision[] </type> <parameter>searchvalues=NULL</parameter></paramdef>
 					<paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>OUT value</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>OUT count</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>OUT count</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
@@ -3851,7 +3881,7 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
 					<paramdef><type>double precision[] </type> <parameter>searchvalues</parameter></paramdef>
 					<paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>OUT value</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>OUT count</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>OUT count</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
@@ -3859,18 +3889,27 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
 					<paramdef><type>double precision[] </type> <parameter>searchvalues</parameter></paramdef>
 					<paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>OUT value</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>OUT count</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>OUT count</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
-					<funcdef>integer <function>ST_ValueCount</function></funcdef>
+					<funcdef>bigint <function>ST_ValueCount</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>searchvalue</parameter></paramdef>
 					<paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
-					<funcdef>integer <function>ST_ValueCount</function></funcdef>
+					<funcdef>bigint <function>ST_ValueCount</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>searchvalue</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>bigint <function>ST_ValueCount</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>searchvalue</parameter></paramdef>
@@ -3886,7 +3925,7 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
 					<paramdef choice="opt"><type>double precision[] </type> <parameter>searchvalues=NULL</parameter></paramdef>
 					<paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>OUT value</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>OUT count</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>OUT count</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
@@ -3895,7 +3934,26 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
 					<paramdef><type>double precision[] </type> <parameter>searchvalues</parameter></paramdef>
 					<paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>OUT value</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>OUT count</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>OUT count</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
+					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+					<paramdef><type>double precision[] </type> <parameter>searchvalues</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>OUT value</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>OUT count</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>bigint<function>ST_ValueCount</function></funcdef>
+					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>searchvalue</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>bigint <function>ST_ValueCount</function></funcdef>
@@ -4129,6 +4187,94 @@ FROM dummy_rast WHERE rid=2;
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="RT_ST_GDALDrivers" />, <xref linkend="RT_ST_SRID" /></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_AsJPEG">
+			<refnamediv>
+				<refname>ST_AsJPEG</refname>
+				<refpurpose>Return the raster tile selected bands as a single Joint Photographic Exports Group (JPEG) image (byte array).  If no band is specified, then the first 3 bands are used.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>bytea <function>ST_AsJPEG</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef choice='opt'><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>bytea <function>ST_AsJPEG</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>quality</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>bytea <function>ST_AsJPEG</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+					<paramdef choice='opt'><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>bytea <function>ST_AsJPEG</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer[] </type> <parameter>nbands</parameter></paramdef>
+					<paramdef choice='opt'><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>bytea <function>ST_AsJPEG</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer[] </type> <parameter>nbands</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>quality</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer[] </type> <parameter>nbands</parameter></paramdef>
+					<paramdef choice='opt'><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the selected bands of the raster as a single  Joint Photographic Exports Group Image (JPEG).  Use <xref linkend="RT_ST_AsGDALRaster" /> if you need to export as less common raster types. If no band is specified, then the first 3 bands are exported.  There are many variants of the function with many options. These are itemized below:</para>
+                <itemizedlist>
+                    <listitem>
+                       <varname>nband</varname> is for single band exports.
+                    </listitem>
+                    <listitem>
+                        <varname>nbands</varname> is an array of bands to export (note that max is 3 for JPEG) and the order of the bands is RGB. e.g ARRAY[3,2,1] means map band 3 to Red, band 2 to green and band 1 to blue
+                    </listitem>
+                   <listitem><varname>quality</varname> number from 0 to 100.  The higher the number the crisper the image.</listitem>
+                   <listitem><varname>options</varname> text Array of GDAL options as defined for JPEG (look at create_options for JPEG <xref linkend="RT_ST_GDALDrivers" />). For JPEG valid ones are <varname>PROGRESSIVE</varname> ON or OFF and <varname>QUALITY</varname> a range from 0 to 100 and default to 75. Refer to <ulink url="http://www.gdal.org/frmt_various.html">GDAL Raster format options</ulink> for more details.
+                   </listitem>
+                </itemizedlist>
+                <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
+			</refsection>
+				
+				<refsection>
+					<title>Examples: Output</title>
+				
+					<programlisting>-- output first 3 bands 75% quality
+SELECT ST_AsJPEG(rast) As rastjpg
+    FROM dummy_rast WHERE rid=2;
+    
+-- output only first band as 90% quality
+SELECT ST_AsJPEG(rast,1,90) As rastjpg
+    FROM dummy_rast WHERE rid=2;
+    
+-- output first 3 bands (but make band 2 Red, band 1 green, and band 3 blue, progressive and 90% quality
+SELECT ST_AsJPEG(rast,ARRAY[2,1,3],ARRAY['QUALITY=90','PROGRESSIVE=ON']) As rastjpg
+    FROM dummy_rast WHERE rid=2;</programlisting>
+			
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_GDALDrivers" />, <xref linkend="RT_ST_AsGDALRaster" />,<xref linkend="RT_ST_AsPNG" />, <xref linkend="RT_ST_AsTIFF" /> </para>
 			</refsection>
 		</refentry>
 		
