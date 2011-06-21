@@ -3872,7 +3872,7 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
 					<paramdef choice="opt"><type>double precision[] </type> <parameter>searchvalues=NULL</parameter></paramdef>
 					<paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>OUT value</parameter></paramdef>
-					<paramdef><type>bigint </type> <parameter>OUT count</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>OUT count</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
@@ -3881,7 +3881,7 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
 					<paramdef><type>double precision[] </type> <parameter>searchvalues</parameter></paramdef>
 					<paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>OUT value</parameter></paramdef>
-					<paramdef><type>bigint </type> <parameter>OUT count</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>OUT count</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
@@ -3889,7 +3889,7 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
 					<paramdef><type>double precision[] </type> <parameter>searchvalues</parameter></paramdef>
 					<paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>OUT value</parameter></paramdef>
-					<paramdef><type>bigint </type> <parameter>OUT count</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>OUT count</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -3925,7 +3925,7 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
 					<paramdef choice="opt"><type>double precision[] </type> <parameter>searchvalues=NULL</parameter></paramdef>
 					<paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>OUT value</parameter></paramdef>
-					<paramdef><type>bigint </type> <parameter>OUT count</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>OUT count</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
@@ -3934,7 +3934,7 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
 					<paramdef><type>double precision[] </type> <parameter>searchvalues</parameter></paramdef>
 					<paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>OUT value</parameter></paramdef>
-					<paramdef><type>bigint </type> <parameter>OUT count</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>OUT count</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
@@ -3944,7 +3944,7 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
 					<paramdef><type>double precision[] </type> <parameter>searchvalues</parameter></paramdef>
 					<paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>OUT value</parameter></paramdef>
-					<paramdef><type>bigint </type> <parameter>OUT count</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>OUT count</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>bigint<function>ST_ValueCount</function></funcdef>
