@@ -3730,7 +3730,7 @@ ORDER BY value, quantile,rid
 		<refentry id="RT_ST_SummaryStats">
 			<refnamediv>
 				<refname>ST_SummaryStats</refname>
-				<refpurpose>Returns summary stats consisting of count,sum,mean,stddev,min,max for a given raster band of a raster or raster coverage.</refpurpose>
+				<refpurpose>Returns summary stats consisting of count,sum,mean,stddev,min,max for a given raster band of a raster or raster coverage. Band 1 is assumed is no band is specified.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -3738,14 +3738,13 @@ ORDER BY value, quantile,rid
 				  <funcprototype>
 					<funcdef>summarystats <function>ST_SummaryStats</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
-					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
-					<paramdef choice="opt"><type>double precision </type> <parameter>sample_percent=1</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
 					<funcdef>summarystats <function>ST_SummaryStats</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 				  </funcprototype>
 				  
