@@ -2150,12 +2150,12 @@ FROM (SELECT ST_MetaData(rast) As rmd
 			<refsynopsisdiv>
 				<funcsynopsis>
 				   <funcprototype>
-				   <funcprototype>
 					<funcdef>raster <function>ST_Band</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef choice='opt'><type>integer[] </type> <parameter>nbands = ARRAY[1]</parameter></paramdef>
 				  </funcprototype>
 				  
+				  <funcprototype>
 					<funcdef>raster <function>ST_Band</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>nbands</parameter></paramdef>
@@ -3315,11 +3315,13 @@ WHERE rid = 2;
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>val</parameter></paramdef>
 				  </funcprototype>
+				  
 				  <funcprototype>
 					<funcdef>raster <function>ST_SetBandNoDataValue</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>val</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>forcechecking=false</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -3548,7 +3550,7 @@ rid | exclude_nodata | include_nodata
 		<refentry id="RT_ST_Histogram">
 			<refnamediv>
 				<refname>ST_Histogram</refname>
-				<refpurpose>Returns a set of histogram summarizing a raster's data distribution separate bin ranges. Number of bins are autocomputed if not specified.</refpurpose>
+				<refpurpose>Returns a set of histogram summarizing a raster or raster coverage data distribution separate bin ranges. Number of bins are autocomputed if not specified.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -3587,6 +3589,46 @@ rid | exclude_nodata | include_nodata
 					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>bins</parameter></paramdef>
 					<paramdef><type>boolean </type> <parameter>right</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>SETOF histogram <function>ST_Histogram</function></funcdef>
+					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>bins</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>right</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>SETOF histogram <function>ST_Histogram</function></funcdef>
+					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>bins</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>right</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>SETOF histogram <function>ST_Histogram</function></funcdef>
+					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
+					<paramdef choice='opt'><type>integer </type> <parameter>nband=1</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+					<paramdef choice='opt'><type>integer </type> <parameter>bins=autocomputed</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision[] </type> <parameter>width=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>right=false</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>SETOF histogram <function>ST_Histogram</function></funcdef>
+					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
+					<paramdef choice='opt'><type>integer </type> <parameter>nband=1</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>bins</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision[] </type> <parameter>width=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>right=false</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
