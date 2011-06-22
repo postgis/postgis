@@ -236,7 +236,12 @@ lwgeom_reverse(LWGEOM *lwgeom)
 
 BOX3D *lwgeom_compute_box3d(const LWGEOM *lwgeom)
 {
+    /* Null can't have a box */
 	if ( ! lwgeom ) return NULL;
+
+    /* Empty things can't have a box */
+    if ( lwgeom_is_empty(lwgeom) )
+        return NULL;
 
 	switch (lwgeom->type)
 	{
@@ -263,6 +268,7 @@ BOX3D *lwgeom_compute_box3d(const LWGEOM *lwgeom)
 		return lwcollection_compute_box3d((LWCOLLECTION *)lwgeom);
 	}
 	/* Never get here, please. */
+    lwerror("Unhandled type in lwgeom_compute_box3d: %d", lwgeom->type);
 	return NULL;
 }
 
