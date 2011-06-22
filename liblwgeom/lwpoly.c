@@ -503,18 +503,19 @@ lwpoly_force_clockwise(LWPOLY *poly)
 {
 	int i;
 
-	if ( ptarray_isccw(poly->rings[0]) )
-	{
-		ptarray_reverse(poly->rings[0]);
-	}
+	/* No-op empties */
+	if ( lwpoly_is_empty(poly) )
+		return;
 
+	/* External ring */
+	if ( ptarray_isccw(poly->rings[0]) )
+		ptarray_reverse(poly->rings[0]);
+
+	/* Internal rings */
 	for (i=1; i<poly->nrings; i++)
-	{
 		if ( ! ptarray_isccw(poly->rings[i]) )
-		{
 			ptarray_reverse(poly->rings[i]);
-		}
-	}
+
 }
 
 void
