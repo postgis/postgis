@@ -955,6 +955,7 @@ postgis=# SELECT ST_IsCollection('GEOMETRYCOLLECTION(POINT(0 0))'::geometry);
 		<para>&sfs_compliant; s2.1.1.1</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.7</para>
 		<para>&curve_support;</para>
+		<warning><para>Changed: 2.0.0 In prior versions of PostGIS ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)') was allowed.  This is now illegal in PostGIS 2.0.0 to better conform with SQL/MM standards</para></warning>
 
 	  </refsection>
 
