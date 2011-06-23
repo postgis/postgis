@@ -10,6 +10,7 @@
  **********************************************************************/
 
 #include "liblwgeom_internal.h"
+#include "lwalgorithm.h"
 #include <math.h>
 #include <stdlib.h>
 
@@ -336,202 +337,92 @@ size_t gbox_serialized_size(uchar flags)
 }
 
 
+static inline int signum(double n)
+{
+	if( n < 0 ) return -1;
+	if( n > 0 ) return 1;
+	return 0;
+}
 
 /* ********************************************************************************
 ** Compute cartesian bounding GBOX boxes from LWGEOM.
 */
 
-static int lwcircle_calculate_gbox_cartesian(POINT4D p1, POINT4D p2, POINT4D p3, GBOX *gbox)
+static int lwcircle_calculate_gbox_cartesian(const POINT4D *p1, const POINT4D *p2, const POINT4D *p3, GBOX *gbox)
 {
-	double x1, x2, y1, y2, z1, z2, m1, m2;
-	double angle, radius, sweep;
-	/* angles from center */
-	double a1, a2, a3;
-	/* angles from center once a1 is rotated to zero */
-	double r2, r3;
-	double xe = 0.0, ye = 0.0;
+	POINT2D xmin, ymin, xmax, ymax;
 	POINT4D center;
-	int i;
+	int p2_side;
+	double radius;
 
 	LWDEBUG(2, "lwcircle_calculate_gbox called.");
 
-	radius = lwcircle_center(&p1, &p2, &p3, &center);
-	if (radius < 0.0) /* p1,p2,p3 are colinear */
+	radius = lwcircle_center(p1, p2, p3, &center);
+	
+	/* Negative radius signals straight line, p1/p2/p3 are colinear */
+	if (radius < 0.0)
 	{
-        gbox->xmin = FP_MIN(p1.x, p3.x);
-        gbox->ymin = FP_MIN(p1.y, p3.y);
-        gbox->zmin = FP_MIN(p1.z, p3.z);
-        gbox->xmax = FP_MAX(p1.x, p3.x);
-        gbox->ymax = FP_MAX(p1.y, p3.y);
-        gbox->zmax = FP_MAX(p1.z, p3.z);
+        gbox->xmin = FP_MIN(p1->x, p3->x);
+        gbox->ymin = FP_MIN(p1->y, p3->y);
+        gbox->zmin = FP_MIN(p1->z, p3->z);
+        gbox->xmax = FP_MAX(p1->x, p3->x);
+        gbox->ymax = FP_MAX(p1->y, p3->y);
+        gbox->zmax = FP_MAX(p1->z, p3->z);
 	    return LW_SUCCESS;
 	}
-
-	x1 = MAXFLOAT;
-	x2 = -1 * MAXFLOAT;
-	y1 = MAXFLOAT;
-	y2 = -1 * MAXFLOAT;
-
-	a1 = atan2(p1.y - center.y, p1.x - center.x);
-	a2 = atan2(p2.y - center.y, p2.x - center.x);
-	a3 = atan2(p3.y - center.y, p3.x - center.x);
-
-	/* Rotate a2 and a3 such that a1 = 0 */
-	r2 = a2 - a1;
-	r3 = a3 - a1;
-
-	/*
-	 * There are six cases here I'm interested in
-	 * Clockwise:
-	 *   1. a1-a2 < 180 == r2 < 0 && (r3 > 0 || r3 < r2)
-	 *   2. a1-a2 > 180 == r2 > 0 && (r3 > 0 && r3 < r2)
-	 *   3. a1-a2 > 180 == r2 > 0 && (r3 > r2 || r3 < 0)
-	 * Counter-clockwise:
-	 *   4. a1-a2 < 180 == r2 > 0 && (r3 < 0 || r3 > r2)
-	 *   5. a1-a2 > 180 == r2 < 0 && (r3 < 0 && r3 > r2)
-	 *   6. a1-a2 > 180 == r2 < 0 && (r3 < r2 || r3 > 0)
-	 * 3 and 6 are invalid cases where a3 is the midpoint.
-	 * BBOX is fundamental, so these cannot error out and will instead
-	 * calculate the sweep using a3 as the middle point.
-	 */
-
-	/* clockwise 1 */
-	if (FP_LT(r2, 0) && (FP_GT(r3, 0) || FP_LT(r3, r2)))
+	
+	/* Matched start/end points imply circle */
+	if ( p1->x == p3->x && p1->y == p3->y )
 	{
-		sweep = (FP_GT(r3, 0)) ? (r3 - 2 * M_PI) : r3;
-	}
-	/* clockwise 2 */
-	else if (FP_GT(r2, 0) && FP_GT(r3, 0) && FP_LT(r3, r2))
-	{
-		sweep = (FP_GT(r3, 0)) ? (r3 - 2 * M_PI) : r3;
-	}
-	/* counter-clockwise 4 */
-	else if (FP_GT(r2, 0) && (FP_LT(r3, 0) || FP_GT(r3, r2)))
-	{
-		sweep = (FP_LT(r3, 0)) ? (r3 + 2 * M_PI) : r3;
-	}
-	/* counter-clockwise 5 */
-	else if (FP_LT(r2, 0) && FP_LT(r3, 0) && FP_GT(r3, r2))
-	{
-		sweep = (FP_LT(r3, 0)) ? (r3 + 2 * M_PI) : r3;
-	}
-	/* clockwise invalid 3 */
-	else if (FP_GT(r2, 0) && (FP_GT(r3, r2) || FP_LT(r3, 0)))
-	{
-		sweep = (FP_GT(r2, 0)) ? (r2 - 2 * M_PI) : r2;
-	}
-	/* clockwise invalid 6 */
-	else
-	{
-		sweep = (FP_LT(r2, 0)) ? (r2 + 2 * M_PI) : r2;
+		gbox->xmin = center.x - radius;
+		gbox->ymin = center.y - radius;
+		gbox->zmin = FP_MIN(p1->z,p2->z);
+		gbox->mmin = FP_MIN(p1->m,p2->m);
+		gbox->xmax = center.x + radius;
+		gbox->ymax = center.y + radius;
+		gbox->zmax = FP_MAX(p1->z,p2->z);
+		gbox->mmax = FP_MAX(p1->m,p2->m);
+		return LW_SUCCESS;
 	}
 
-	LWDEBUGF(3, "a1 %.16f, a2 %.16f, a3 %.16f, sweep %.16f", a1, a2, a3, sweep);
+	/* First approximation, bounds of start/end points */
+    gbox->xmin = FP_MIN(p1->x, p3->x);
+    gbox->ymin = FP_MIN(p1->y, p3->y);
+    gbox->zmin = FP_MIN(p1->z, p3->z);
+    gbox->mmin = FP_MIN(p1->m, p3->m);
+    gbox->xmax = FP_MAX(p1->x, p3->x);
+    gbox->ymax = FP_MAX(p1->y, p3->y);
+    gbox->zmax = FP_MAX(p1->z, p3->z);
+    gbox->mmax = FP_MAX(p1->m, p3->m);
 
-	angle = 0.0;
-	for (i=0; i < 6; i++)
-	{
-		switch (i)
-		{
-			/* right extent */
-		case 0:
-			angle = 0.0;
-			xe = center.x + radius;
-			ye = center.y;
-			break;
-			/* top extent */
-		case 1:
-			angle = M_PI_2;
-			xe = center.x;
-			ye = center.y + radius;
-			break;
-			/* left extent */
-		case 2:
-			angle = M_PI;
-			xe = center.x - radius;
-			ye = center.y;
-			break;
-			/* bottom extent */
-		case 3:
-			angle = -1 * M_PI_2;
-			xe = center.x;
-			ye = center.y - radius;
-			break;
-			/* first point */
-		case 4:
-			angle = a1;
-			xe = p1.x;
-			ye = p1.y;
-			break;
-			/* last point */
-		case 5:
-			angle = a3;
-			xe = p3.x;
-			ye = p3.y;
-			break;
-		}
-		/* determine if the extents are outside the arc */
-		if (i < 4)
-		{
-			if (FP_GT(sweep, 0.0))
-			{
-				if (FP_LT(a3, a1))
-				{
-					if (FP_GT(angle, (a3 + 2 * M_PI)) || FP_LT(angle, a1)) continue;
-				}
-				else
-				{
-					if (FP_GT(angle, a3) || FP_LT(angle, a1)) continue;
-				}
-			}
-			else
-			{
-				if (FP_GT(a3, a1))
-				{
-					if (FP_LT(angle, (a3 - 2 * M_PI)) || FP_GT(angle, a1)) continue;
-				}
-				else
-				{
-					if (FP_LT(angle, a3) || FP_GT(angle, a1)) continue;
-				}
-			}
-		}
+	/* Create points for the possible extrema */
+	xmin.x = center.x - radius;
+	xmin.y = center.y;
+	ymin.x = center.x;
+	ymin.y = center.y - radius;
+	xmax.x = center.x + radius;
+	xmax.y = center.y;
+	ymax.x = center.x;
+	ymax.y = center.y + radius;
+	
+	
+	/* Divide the circle into two parts, one on each side of a line
+	   joining p1 and p3. The circle extrema on the same side of that line
+	   as p2 is on, are also the extrema of the bbox. */
+	
+	p2_side = signum(lw_segment_side((POINT2D*)p1, (POINT2D*)p3, (POINT2D*)p2));
 
-		LWDEBUGF(3, "lwcircle_calculate_gbox: potential extreame %d (%.16f, %.16f)", i, xe, ye);
+	if ( p2_side == signum(lw_segment_side((POINT2D*)p1, (POINT2D*)p3, &xmin)) )
+		gbox->xmin = xmin.x;
 
-		x1 = (FP_LT(x1, xe)) ? x1 : xe;
-		y1 = (FP_LT(y1, ye)) ? y1 : ye;
-		x2 = (FP_GT(x2, xe)) ? x2 : xe;
-		y2 = (FP_GT(y2, ye)) ? y2 : ye;
-	}
+	if ( p2_side == signum(lw_segment_side((POINT2D*)p1, (POINT2D*)p3, &ymin)) )
+		gbox->ymin = ymin.y;
 
-	LWDEBUGF(3, "lwcircle_calculate_gbox: extreames found (%.16f %.16f, %.16f %.16f)", x1, y1, x2, y2);
+	if ( p2_side == signum(lw_segment_side((POINT2D*)p1, (POINT2D*)p3, &xmax)) )
+		gbox->xmax = xmax.x;
 
-	z1 = FP_MIN(p1.z, p2.z);
-	z1 = FP_MIN(z1, p3.z);
-	z2 = FP_MAX(p1.z, p2.z);
-	z2 = FP_MAX(z2, p3.z);
-
-	m1 = FP_MIN(p1.m, p2.m);
-	m1 = FP_MIN(m1, p3.m);
-	m2 = FP_MAX(p1.m, p2.m);
-	m2 = FP_MAX(m2, p3.m);
-
-	gbox->xmin = x1;
-	gbox->xmax = x2;
-	gbox->ymin = y1;
-	gbox->ymax = y2;
-
-	if ( FLAGS_GET_Z(gbox->flags) )
-	{
-		gbox->zmin = z1;
-		gbox->zmax = z2;
-	}
-	if ( FLAGS_GET_M(gbox->flags) )
-	{
-		gbox->mmin = m1;
-		gbox->mmax = m2;
-	}
+	if ( p2_side == signum(lw_segment_side((POINT2D*)p1, (POINT2D*)p3, &ymax)) )
+		gbox->ymax = ymax.y;
 
 	return LW_SUCCESS;
 }
@@ -602,7 +493,7 @@ static int lwcircstring_calculate_gbox_cartesian(LWCIRCSTRING *curve, GBOX *gbox
 		getPoint4d_p(curve->points, i-1, &p2);
 		getPoint4d_p(curve->points, i, &p3);
 
-		if (lwcircle_calculate_gbox_cartesian(p1, p2, p3, &tmp) == LW_FAILURE)
+		if (lwcircle_calculate_gbox_cartesian(&p1, &p2, &p3, &tmp) == LW_FAILURE)
 			continue;
 
 		gbox_merge(&tmp, gbox);

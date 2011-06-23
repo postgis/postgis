@@ -85,7 +85,7 @@ lwgeom_has_arc(const LWGEOM *geom)
  * point is coincident with either end point, they are taken as colinear.
  */
 double
-lwcircle_center(POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D *result)
+lwcircle_center(const POINT4D *p1, const POINT4D *p2, const POINT4D *p3, POINT4D *result)
 {
 	POINT4D c;
 	double cx, cy, cr;
@@ -93,18 +93,18 @@ lwcircle_center(POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D *result)
 
     c.x = c.y = c.z = c.m = 0.0;
 
-	LWDEBUGF(2, "lwcircle_center called (%.16f, %.16f), (%.16f, %.16f), (%.16f, %.16f).", p1->x, p1->y, p2->x, p2->y, p3->x, p3->y);
+	LWDEBUGF(2, "lwcircle_center called (%.16f,%.16f), (%.16f,%.16f), (%.16f,%.16f).", p1->x, p1->y, p2->x, p2->y, p3->x, p3->y);
 
 	/* Closed circle */
-	if (fabs(p1->x - p3->x) < EPSILON_SQLMM
-	        && fabs(p1->y - p3->y) < EPSILON_SQLMM)
+	if (fabs(p1->x - p3->x) < EPSILON_SQLMM &&
+	    fabs(p1->y - p3->y) < EPSILON_SQLMM)
 	{
 		cx = p1->x + (p2->x - p1->x) / 2.0;
 		cy = p1->y + (p2->y - p1->y) / 2.0;
 		c.x = cx;
 		c.y = cy;
 		*result = c;
-		cr = sqrt((cx-p1->x)*(cx-p1->x)+(cy-p1->y)*(cy-p1->y));
+		cr = sqrt(pow(cx - p1->x, 2.0) + pow(cy - p1->y, 2.0));
 		return cr;
 	}
 
@@ -125,6 +125,9 @@ lwcircle_center(POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D *result)
 	c.y = cy;
 	*result = c;
 	cr = sqrt((cx-p1->x)*(cx-p1->x)+(cy-p1->y)*(cy-p1->y));
+	
+	LWDEBUGF(2, "lwcircle_center center is (%.16f,%.16f)", result->x, result->y);
+	
 	return cr;
 }
 
