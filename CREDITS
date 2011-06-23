@@ -3,18 +3,19 @@ CREDITS: 2011/02/24
 The core team of PostGIS is:
  
  mcayland (Mark Cave-Ayland) <mark.cave-ayland@siriusit.co.uk> - psc, index support, PostgreSQL/PostGIS integration issues
- pramsey (Paul Ramsey) <pramsey@cleverelephant.ca> - psc, index, geodetic, shapefile gui loader
- robe (Regina Obe) <lr@pcorp.us> - psc, documentation, windows experimental and production builds, QA testing, plpgsql functions
- kneufeld (Kevin Neufeld) - psc, documentation, plpgsql functions, document and buildbot, website administration (past)
- colivier (Olivier Courtin) <olivier.courtin@camptocamp.com> - output functions, 3D support
+ chodgson (Chris Hodgson) - psc, core website maintenance, postgis core bug fixes, build bot, osgeo incubation management
+ pramsey (Paul Ramsey) <pramsey@cleverelephant.ca> - psc, chair, index, geodetic, infrastructure, shapefile gui loader
+ robe (Regina Obe) <lr@pcorp.us> - psc, documentation, windows experimental and production builds, 
+   QA testing, plpgsql functions
  strk (Sandro Santilli) <strk@keybit.net> - GEOS integration, topology, raster
+ kneufeld (Kevin Neufeld) - prior psc, documentation, plpgsql functions, document and buildbot, website administration (past)
+ colivier (Olivier Courtin) <olivier.courtin@camptocamp.com> - output functions, 3D support
  pracine (Pierre Racine) <Pierre.Racine@sbf.ulaval.ca> - raster
  jorgearevalo (Jorge Arévalo) <jorge.arevalo at deimos-space.com> - raster 
  mleslie (Mark Leslie) <mark.leslie@lisasoft.com> - curve support, shp2pgsql gui loader 
  nicklas (Nicklas Avén) <nicklas.aven@jordogskog.no> - measurement functions (2D and 3D)
  mloskot (Mateusz Loskot) - raster
- chodgson (Chris Hodgson) - core website maintenance, postgis core bug fixes, build bot, osgeo incubation management
- dustymugs (BBorie Park) bkpark at ucdavis.edu - raster 
+ dustymugs (Bborie Park) bkpark at ucdavis.edu - raster 
 
 All versions include substantial contributions from the 
 core team.
@@ -30,7 +31,7 @@ provide hosting and infrastructure support to the project.
 The following is a partial list of contributors who have participated 
 in the project:
 
-See the postgis manual and the ChangeLog for more contributors.
+See the postgis manual and the ChangeLog for more recent contributor credits and versions.
 
 Version 1.2.1 of PostGIS includes patches from:
   Eduin Carrillo <yecarrillo@cas.gov.co> for AsKML() and Transform() 
