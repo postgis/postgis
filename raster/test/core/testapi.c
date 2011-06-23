@@ -1459,7 +1459,7 @@ static void testGDALToRaster() {
 	deepRelease(raster);
 }
 
-static void testTransform() {
+static void testGDALWarp() {
 	rt_raster raster;
 	rt_raster rast;
 	rt_band band;
@@ -1489,31 +1489,6 @@ static void testTransform() {
 			CHECK((rtn != -1));
 		}
 	}
-
-	/*
-	rast = rt_raster_transform(
-		raster,
-		src_srs,
-		dst_srs,
-		GRA_NearestNeighbour,
-		-1
-	);
-	CHECK(rast);
-	CHECK((rt_raster_get_width(rast) == 124));
-	CHECK((rt_raster_get_height(rast) == 117));
-	CHECK((rt_raster_get_num_bands(rast) != 0));
-
-	band = rt_raster_get_band(rast, 0);
-	CHECK(band);
-
-	CHECK(rt_band_get_hasnodata_flag(band));
-	CHECK((fabs(rt_band_get_nodata(band) - 0.) < FLT_EPSILON));
-
-	CHECK(rt_band_get_pixel(band, 0, 0, &value) == 0);
-	CHECK(fabs(value - 0.) < FLT_EPSILON);
-
-	deepRelease(rast);
-	*/
 
 	rast = rt_raster_gdal_warp(
 		raster,
@@ -1927,9 +1902,9 @@ main()
 		testGDALToRaster();
 		printf("Successfully tested rt_raster_from_gdal_dataset\n");
 
-		printf("Testing rt_raster_transform\n");
-		testTransform();
-		printf("Successfully tested rt_raster_transform\n");
+		printf("Testing rt_raster_gdal_warp\n");
+		testGDALWarp();
+		printf("Successfully tested rt_raster_gdal_warp\n");
 
     deepRelease(raster);
 

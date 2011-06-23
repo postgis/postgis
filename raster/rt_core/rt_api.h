@@ -928,21 +928,6 @@ GDALDatasetH rt_raster_to_gdal_mem(rt_raster raster, char *srs,
 rt_raster rt_raster_from_gdal_dataset(GDALDatasetH ds);
 
 /**
- * Return a transformed raster using GDALAutoCreateWarpedVRT()
- *
- * @param raster : raster to transform
- * @param src_srs : the raster's coordinate system in OGC WKT or PROJ.4
- * @param dst_srs : the transformed raster's coordinate system
- * @param resample_alg : the resampling algorithm
- * @param max_err : maximum error measured in input pixels permitted
- *   (0.0 for exact calculations)
- *
- * @return the transformed raster
- */
-rt_raster rt_raster_transform(rt_raster raster, char *src_srs,
-	char *dst_srs, GDALResampleAlg resample_alg, double max_err);
-
-/**
  * Return a warped raster using GDAL Warp API
  *
  * @param raster : raster to transform

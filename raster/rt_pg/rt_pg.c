@@ -4990,9 +4990,6 @@ Datum RASTER_transform(PG_FUNCTION_ARGS)
 	SPI_finish();
 	pfree(sql);
 
-	/*
-	rast = rt_raster_transform(raster, src_srs, dst_srs, alg, max_err);
-	*/
 	rast = rt_raster_gdal_warp(raster, src_srs,
 		dst_srs,
 		NULL, NULL,
