@@ -30,14 +30,14 @@ asewkt01|MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2
 asewkt02|MULTISURFACEM(CURVEPOLYGON(CIRCULARSTRING(-2 0 0,-1 -1 2,0 0 4,1 -1 6,2 0 8,0 2 4,-2 0 0),(-1 0 2,0 0.5 4,1 0 6,0 1 4,-1 0 2)),((7 8 8,10 10 5,6 14 1,4 11 6,7 8 8)))
 asewkt03|MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0 0,-1 -1 1,0 0 2,1 -1 3,2 0 4,0 2 2,-2 0 0),(-1 0 1,0 0.5 2,1 0 3,0 1 3,-1 0 1)),((7 8 7,10 10 5,6 14 3,4 11 4,7 8 7)))
 asewkt04|MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0 0 0,-1 -1 1 2,0 0 2 4,1 -1 3 6,2 0 4 8,0 2 2 4,-2 0 0 0),(-1 0 1 2,0 0.5 2 4,1 0 3 6,0 1 3 4,-1 0 1 2)),((7 8 7 8,10 10 5 5,6 14 3 1,4 11 4 6,7 8 7 8)))
-box2d01|BOX(-2 0,10 14)
-box2d02|BOX(-2 0,10 14)
-box2d03|BOX(-2 0,10 14)
-box2d04|BOX(-2 0,10 14)
-box3d01|BOX3D(-2 0 0,10 14 0)
-box3d02|BOX3D(-2 0 0,10 14 0)
-box3d03|BOX3D(-2 0 0,10 14 7)
-box3d04|BOX3D(-2 0 0,10 14 7)
+box2d01|BOX(-2 -1,10 14)
+box2d02|BOX(-2 -1,10 14)
+box2d03|BOX(-2 -1,10 14)
+box2d04|BOX(-2 -1,10 14)
+box3d01|BOX3D(-2 -1 0,10 14 0)
+box3d02|BOX3D(-2 -1 0,10 14 0)
+box3d03|BOX3D(-2 -1 0,10 14 7)
+box3d04|BOX3D(-2 -1 0,10 14 7)
 ERROR:  Exception in LWGEOM2GEOS: curved geometry not supported.
 ERROR:  Exception in LWGEOM2GEOS: curved geometry not supported.
 ERROR:  Exception in LWGEOM2GEOS: curved geometry not supported.

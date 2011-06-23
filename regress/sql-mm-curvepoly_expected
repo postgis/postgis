@@ -43,10 +43,10 @@ SRID01|-1
 SRID02|-1
 SRID03|-1
 SRID04|-1
-envelope01|POLYGON((-2 0,-2 2,2 2,2 0,-2 0))
-envelope02|POLYGON((-2 0,-2 2,2 2,2 0,-2 0))
-envelope03|POLYGON((-2 0,-2 2,2 2,2 0,-2 0))
-envelope04|POLYGON((-2 0,-2 2,2 2,2 0,-2 0))
+envelope01|POLYGON((-2 -1,-2 2,2 2,2 -1,-2 -1))
+envelope02|POLYGON((-2 -1,-2 2,2 2,2 -1,-2 -1))
+envelope03|POLYGON((-2 -1,-2 2,2 2,2 -1,-2 -1))
+envelope04|POLYGON((-2 -1,-2 2,2 2,2 -1,-2 -1))
 startPoint01|t
 startPoint02|t
 startPoint03|t

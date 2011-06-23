@@ -97,13 +97,13 @@ ERROR:  Exception in LWGEOM2GEOS: curved geometry not supported.
 ERROR:  Exception in LWGEOM2GEOS: curved geometry not supported.
 ERROR:  Exception in LWGEOM2GEOS: curved geometry not supported.
 envelope01|POLYGON((0 0,0 1.41421356,0.58578644 1.41421356,0.58578644 0,0 0))
-envelope01|POLYGON((-5 0,-5 5,15 5,15 0,-5 0))
+envelope01|POLYGON((-5 -5,-5 5,15 5,15 -5,-5 -5))
 envelope02|POLYGON((0 0,0 1.41421356,0.58578644 1.41421356,0.58578644 0,0 0))
-envelope02|POLYGON((-5 0,-5 5,15 5,15 0,-5 0))
+envelope02|POLYGON((-5 -5,-5 5,15 5,15 -5,-5 -5))
 envelope03|POLYGON((0 0,0 1.41421356,0.58578644 1.41421356,0.58578644 0,0 0))
-envelope03|POLYGON((-5 0,-5 5,15 5,15 0,-5 0))
+envelope03|POLYGON((-5 -5,-5 5,15 5,15 -5,-5 -5))
 envelope04|POLYGON((0 0,0 1.41421356,0.58578644 1.41421356,0.58578644 0,0 0))
-envelope04|POLYGON((-5 0,-5 5,15 5,15 0,-5 0))
+envelope04|POLYGON((-5 -5,-5 5,15 5,15 -5,-5 -5))
 public.circularstring.the_geom_4d effectively removed.
 public.circularstring.the_geom_3dz effectively removed.
 public.circularstring.the_geom_3dm effectively removed.
