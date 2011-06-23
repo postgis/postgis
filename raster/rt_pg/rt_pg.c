@@ -4586,8 +4586,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 
 			if (j > 0) {
 				/* add NULL to end */
-				options[j] = (char *) palloc(sizeof(char));
-				options[j] = '\0';
+				options[j] = NULL;
 
 				/* trim allocation */
 				options = repalloc(options, j * sizeof(char *));
@@ -4958,6 +4957,7 @@ Datum RASTER_transform(PG_FUNCTION_ARGS)
 		pfree(sql);
 		PG_RETURN_NULL();
 	}
+	POSTGIS_RT_DEBUGF(4, "sourse srs: %s", src_srs);
 	SPI_freetuptable(tuptable);
 
 	/* target srs */
@@ -4984,12 +4984,21 @@ Datum RASTER_transform(PG_FUNCTION_ARGS)
 		pfree(sql);
 		PG_RETURN_NULL();
 	}
+	POSTGIS_RT_DEBUGF(4, "destination srs: %s", dst_srs);
 	SPI_freetuptable(tuptable);
 
 	SPI_finish();
 	pfree(sql);
 
+	/*
 	rast = rt_raster_transform(raster, src_srs, dst_srs, alg, max_err);
+	*/
+	rast = rt_raster_gdal_warp(raster, src_srs,
+		dst_srs,
+		NULL, NULL,
+		NULL, NULL,
+		NULL, NULL,
+		alg, max_err);
 	rt_raster_destroy(raster);
 	if (!rast) {
 		elog(ERROR, "RASTER_band: Could not create transformed raster");

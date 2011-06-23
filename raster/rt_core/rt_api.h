@@ -940,7 +940,32 @@ rt_raster rt_raster_from_gdal_dataset(GDALDatasetH ds);
  * @return the transformed raster
  */
 rt_raster rt_raster_transform(rt_raster raster, char *src_srs,
-	char *dst_srs, GDALResampleAlg resamplealg, double max_err);
+	char *dst_srs, GDALResampleAlg resample_alg, double max_err);
+
+/**
+ * Return a warped raster using GDAL Warp API
+ *
+ * @param raster : raster to transform
+ * @param src_srs : the raster's coordinate system in OGC WKT or PROJ.4
+ * @param dst_srs : the warped raster's coordinate system
+ * @param scale_x : the pixel width of the warped raster
+ * @param scale_y : the pixel height of the warped raster
+ * @param ul_x : the X value of upper left corner of the warped raster
+ * @param ul_y : the Y value of upper left corner of the warped raster
+ * @param skew_x : the X skew of the warped raster
+ * @param skew_y : the Y skew of the warped raster
+ * @param resample_alg : the resampling algorithm
+ * @param max_err : maximum error measured in input pixels permitted
+ *   (0.0 for exact calculations)
+ *
+ * @return the warped raster
+ */
+rt_raster rt_raster_gdal_warp(rt_raster raster, char *src_srs,
+	char *dst_srs,
+	double *scale_x, double *scale_y,
+	double *ul_x, double *ul_y,
+	double *skew_x, double *skew_y,
+	GDALResampleAlg resample_alg, double max_err);
 
 /*- utilities -------------------------------------------------------*/
 
@@ -1004,5 +1029,10 @@ rt_util_display_dbl_trunc_warning(double initialvalue,
 GDALResampleAlg
 rt_util_gdal_resample_alg(const char *algname);
 
+/*
+	convert rt_pixtype to GDALDataType
+*/
+GDALDataType
+rt_util_pixtype_to_gdal_datatype(rt_pixtype pt);
 
 #endif /* RT_API_H_INCLUDED */

@@ -883,7 +883,7 @@ CREATE TYPE valuecount AS (
 	percent double precision
 );
 
--- None of the "searchvaleus" functions can be strict as "searchvalues" and "roundto" can be NULL
+-- None of the "valuecount" functions with "searchvalues" can be strict as "searchvalues" and "roundto" can be NULL
 -- Allowing "searchvalues" to be NULL instructs the function to count all values
 
 CREATE OR REPLACE FUNCTION _st_valuecount(rast raster, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, searchvalues double precision[] DEFAULT NULL, roundto double precision DEFAULT 0)
