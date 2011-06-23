@@ -1,5 +1,5 @@
 --$Id$-
-- normalize_address(addressString)
+-- normalize_address(addressString)
 -- This takes an address string and parses it into address (internal/street)
 -- street name, type, direction prefix and suffix, location, state and
 -- zip code, depending on what can be found in the string.
